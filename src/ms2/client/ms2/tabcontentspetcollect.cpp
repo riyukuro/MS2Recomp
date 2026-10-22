@@ -142,7 +142,7 @@ CFieldMetaTable* FUN_140700390();
 // Camera of the pet preview (see uiitempetboxdialog.cpp): the position and target are built from an efd::Point3.
 struct Unk_PetBoxVector
 {
-    Unk_PetBoxVector(const Unk_StreamPoint& pt);                        // 0x14027dcf0
+    Unk_PetBoxVector(const Vector3& pt);                        // 0x14027dcf0
     float x, y, z;
 };
 struct Unk_PetBoxCameraData
@@ -173,7 +173,7 @@ public:
     virtual void vfunc_13(const Unk_PetBoxCameraData&);
 };
 
-extern Unk_StreamPoint DAT_143b01a60;
+extern Vector3 DAT_143b01a60;
 
 // ---- TabContentsPetCollect ----
 

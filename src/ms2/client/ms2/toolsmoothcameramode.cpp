@@ -129,7 +129,7 @@ struct Unk_EfdPoint3
     float x, y, z;
 };
 float FUN_140a00f20(const Unk_EfdPoint3& a, const Unk_EfdPoint3& b);   // Dot
-void FUN_140a01190(const Unk_EfdMatrix3* pMatrix, unsigned int uiCol, Unk_StreamPoint* pOut);   // GetCol
+void FUN_140a01190(const Unk_EfdMatrix3* pMatrix, unsigned int uiCol, Vector3* pOut);   // GetCol
 extern int DAT_143ab0248;
 extern int DAT_143ab2914;
 
@@ -165,7 +165,7 @@ CToolSmoothCameraMode::~CToolSmoothCameraMode()
 // @0x141856f60
 void CToolSmoothCameraMode::vfunc_9()
 {
-    Unk_StreamPoint ptMove = g_143b01a60;
+    Vector3 ptMove = g_143b01a60;
     m_148 = m_13c = m_130 = g_143b01a60;
     if (FUN_14025e7c0()->FUN_14116d950(0x11, false, 0))
         m_130.x = m_154 * m_160;
@@ -245,7 +245,7 @@ void CToolSmoothCameraMode::vfunc_8(double fTime)
             }
         }
     }
-    Unk_StreamPoint ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
+    Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
     float fRate = 15.0f;
     float fStep = FUN_140a17940((float)fTime, 0.0f, 1.0f / fRate);
     float fScale = fStep;
@@ -257,7 +257,7 @@ void CToolSmoothCameraMode::vfunc_8(double fTime)
     if (m_13c.FUN_140552700(g_143b01a60))
     {
         m_13c = m_13c.FUN_14097fc90(fScale);
-        Unk_StreamPoint ptRot = FUN_140af8260();
+        Vector3 ptRot = FUN_140af8260();
         ptRot.y = ptRot.y - m_13c.x;
         ptRot.z = ptRot.z - m_13c.y;
         m_d8.m_rot = ptRot;
@@ -265,7 +265,7 @@ void CToolSmoothCameraMode::vfunc_8(double fTime)
     if (ptMove.FUN_140552700(g_143b01a60))
     {
         ptMove = ptMove.FUN_14097fc90(fScale);
-        Unk_StreamPoint ptRot = m_c0.m_rot;
+        Vector3 ptRot = m_c0.m_rot;
         ptRot.y = ptRot.y - ptMove.y;
         ptRot.z = ptRot.z - ptMove.z;
         m_d8.m_rot = ptRot;
@@ -273,19 +273,19 @@ void CToolSmoothCameraMode::vfunc_8(double fTime)
     if (m_130.FUN_140552700(g_143b01a60))
     {
         m_130 = m_130.FUN_14097fc90(fScale);
-        Unk_StreamPoint ptAngle = m_c0.m_rot;
+        Vector3 ptAngle = m_c0.m_rot;
         ptAngle = ptAngle.FUN_14097fc90(3.14159274f).FUN_140ae9180(180.0f);
         Unk_EfdMatrix3 kRot;
         kRot.FUN_142083d40(ptAngle.x, ptAngle.y, ptAngle.z);
-        Unk_StreamPoint ptRight;
+        Vector3 ptRight;
         FUN_140a01190(&kRot, 0, &ptRight);
         ptRight.FUN_140968990();
-        Unk_StreamPoint ptForward;
+        Vector3 ptForward;
         FUN_140a01190(&kRot, 2, &ptForward);
         ptForward.FUN_140968990();
-        Unk_StreamPoint ptPos = m_d8.m_pos;
+        Vector3 ptPos = m_d8.m_pos;
         float fDelta = (float)fTime;
-        const Unk_StreamPoint& ptSide = ptForward.FUN_14097fc90(m_130.y);
+        const Vector3& ptSide = ptForward.FUN_14097fc90(m_130.y);
         ptPos = ptPos.FUN_14097fd50(ptRight.FUN_14097fc90(m_130.x).FUN_14097fd50(ptSide).FUN_14097fc90(1000.0f).FUN_14097fc90(fDelta));
         m_d8.m_pos = ptPos;
     }
@@ -306,7 +306,7 @@ void CToolSmoothCameraMode::vfunc_6(int n)
     if (pTarget)
     {
         float fRotation = FUN_1403ed2d0()->FUN_141bd30a0().FUN_140885340()->m_154;
-        Unk_StreamPoint ptRot(90.0f, fRotation, -60.0f);
+        Vector3 ptRot(90.0f, fRotation, -60.0f);
         vfunc_4(ptRot);
         vfunc_24(pTarget, 1);
     }
@@ -408,7 +408,7 @@ void CToolSmoothCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
         m_50 = m_c0.m_pos.FUN_140965c40(p->vfunc_18()).FUN_140967ac0();
         m_78 = p->vfunc_18();
         m_78.z = m_78.z + vfunc_27();
-        Unk_StreamPoint ptRot = FUN_1410a0a00(FUN_1409f2540());
+        Vector3 ptRot = FUN_1410a0a00(FUN_1409f2540());
         vfunc_4(ptRot);
         m_d8.m_rot = ptRot;
         m_c0.m_rot = ptRot;

@@ -25,7 +25,7 @@ public:
     virtual void vfunc_39(double fTime);                            // smooth the pose towards m_d8
 
     void FUN_1416c5b00(int nTargetId);                              // select the opponent
-    Unk_StreamPoint FUN_1416c5d30();                                // framing centre (midpoint with the opponent)
+    Vector3 FUN_1416c5d30();                                // framing centre (midpoint with the opponent)
 
     int m_108;                                                      // +0x108 opponent object id
     Unk_CameraTargetEntity* m_110;                                  // +0x110 opponent (null without one)

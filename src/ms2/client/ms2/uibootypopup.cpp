@@ -18,15 +18,15 @@
 #include "hook/ms2hook.h"
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names / symbols) ----
-extern Unk_StreamPoint DAT_143b01a60;                               // the zero point
+extern Vector3 DAT_143b01a60;                               // the zero point
 class Unk_BootyWorld { public: void* FUN_141bd0cc0(); };            // non-null while the local player is in the world
 Unk_BootyWorld* FUN_1403ed2d0();
-class Unk_WorldToScreen { public: bool FUN_140af0700(const Unk_StreamPoint& world, Unk_StreamPoint& out); };
+class Unk_WorldToScreen { public: bool FUN_140af0700(const Vector3& world, Vector3& out); };
 Unk_WorldToScreen* FUN_1409478c0();                                 // camera service
 class Unk_UIScale;
 Unk_UIScale* FUN_14025e7a0();                                       // ui scale service
 float FUN_1422afec0(Unk_UIScale* pScale, int nLayer);               // scale of a layer
-Unk_StreamPoint* FUN_140ad0c10(Unk_StreamPoint* pt, float f);       // efd::Point3::operator*=
+Vector3* FUN_140ad0c10(Vector3* pt, float f);       // efd::Point3::operator*=
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
 CStringTable* GetStringTable();                                     // the string tables
 CStringW GetStringCommon(int nId);                                    // string table entry
@@ -114,7 +114,7 @@ void UIBootyPopup::FUN_1410315f0()
 MS2_REPLACE_METHOD(0x1410315F0, UIBootyPopup, FUN_1410315f0, 106, 0x1FFCB117);
 
 // @0x141031660
-void UIBootyPopup::FUN_141031660(const Unk_StreamPoint& pt)
+void UIBootyPopup::FUN_141031660(const Vector3& pt)
 {
     m_68 = pt;
 }
@@ -183,7 +183,7 @@ void UIBootyPopup::FUN_141031890()
         return;
     if (m_7c != 0)
     {
-        Unk_StreamPoint screen;
+        Vector3 screen;
         if (FUN_1409478c0()->FUN_140af0700(m_68, screen))
         {
             MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));

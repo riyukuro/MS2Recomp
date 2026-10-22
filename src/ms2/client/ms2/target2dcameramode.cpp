@@ -16,7 +16,7 @@
 
 // ---- unit-local placeholders ----
 
-extern const Unk_StreamPoint g_143a08cf8;   // NiPoint3::UNIT_Z
+extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 
 // The input state (FUN_14025e7c0).
 class Unk_InputState
@@ -99,11 +99,11 @@ void CTarget2DCameraMode::vfunc_8(double fTime)
         m_78 = pTarget->vfunc_18();
         m_78.z += vfunc_27();
 
-        Unk_StreamPoint ptPos = g_143b01a60;
-        Unk_StreamPoint ptRot = g_143b01a60;
+        Vector3 ptPos = g_143b01a60;
+        Vector3 ptRot = g_143b01a60;
         if (m_88 == 0)
         {
-            Unk_StreamPoint ptEye = m_78.FUN_14097fd50(FUN_141839600());
+            Vector3 ptEye = m_78.FUN_14097fd50(FUN_141839600());
             m_c0.m_pos = ptEye;
         }
 
@@ -120,8 +120,8 @@ void CTarget2DCameraMode::vfunc_8(double fTime)
             if (m_dc == 0)
                 m_84 = m_84 * 0.9f;
             ptPos = m_c0.m_pos;
-            Unk_StreamPoint ptTarget = m_78;
-            Unk_StreamPoint ptDir = ptTarget.FUN_140965c40(ptPos);
+            Vector3 ptTarget = m_78;
+            Vector3 ptDir = ptTarget.FUN_140965c40(ptPos);
             ptDir.FUN_140968990();
             ptPos = ptPos.FUN_14097fd50(ptDir.FUN_14097fc90(m_84));
             if (m_50 < m_58 || m_50 > m_54)
@@ -133,7 +133,7 @@ void CTarget2DCameraMode::vfunc_8(double fTime)
                 {
                     m_6c = FUN_1418398e0(m_58, m_50, m_54, m_4c * 180.0f / 3.14159265f, 90.0f);
                     ptPos.z = ptTarget.z;
-                    Unk_StreamPoint ptDist = ptTarget.FUN_140965c40(ptPos);
+                    Vector3 ptDist = ptTarget.FUN_140965c40(ptPos);
                     m_50 = ptDist.FUN_140967ac0();
                     m_50 = FUN_140a17940(m_50, m_58, m_54);
                     if (-1.0f != m_5c && FUN_14029d220(m_98 - m_50) <= 5.0f)
@@ -162,10 +162,10 @@ void CTarget2DCameraMode::vfunc_8(double fTime)
             vfunc_37();
         }
 
-        Unk_StreamPoint ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
+        Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
         if (ptMove.FUN_140552700(g_143b01a60))
         {
-            Unk_StreamPoint ptInput = ptMove;
+            Vector3 ptInput = ptMove;
             float fRate = 15.0f;
             float fStep = FUN_140a17940((float)fTime, 0.0f, 1.0f / fRate);
             float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x),
@@ -182,10 +182,10 @@ void CTarget2DCameraMode::vfunc_8(double fTime)
             if (fYaw != 0.0f || fPitch != 0.0f)
             {
                 m_68 += fYaw;
-                Unk_StreamPoint ptCenter = m_78;
+                Vector3 ptCenter = m_78;
                 ptPos = m_c0.m_pos;
                 ptPos.z = ptCenter.z;
-                Unk_StreamPoint ptDist = ptCenter.FUN_140965c40(ptPos);
+                Vector3 ptDist = ptCenter.FUN_140965c40(ptPos);
                 m_50 = ptDist.FUN_140967ac0();
                 m_50 = FUN_140a17940(m_50, m_58, m_54);
                 m_6c -= fPitch;
@@ -216,7 +216,7 @@ MS2_REPLACE_METHOD(0x141837B30, CTarget2DCameraMode, vfunc_8, 2881, 0xDC1B36B3);
 // @0x141838680
 void CTarget2DCameraMode::vfunc_9()
 {
-    Unk_StreamPoint ptMove = g_143b01a60;
+    Vector3 ptMove = g_143b01a60;
     if (FUN_14025e7c0()->FUN_14116d950(5, true, 0) && FUN_14025e7c0()->FUN_14116d950(0x1d, true, 0))
         ptMove.z = 1.0f;
     else if (FUN_14025e7c0()->FUN_14116d950(6, true, 0) && FUN_14025e7c0()->FUN_14116d950(0x1d, true, 0))
@@ -287,9 +287,9 @@ void CTarget2DCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
         float fX = m_50 * FUN_1409f25a0(m_68) + m_78.x;
         float fY = m_50 * FUN_1409f2310(m_68) + m_78.y;
         float fZ = m_78.z;
-        m_c0.m_pos = Unk_StreamPoint(fX, fY, fZ);
-        vfunc_3(Unk_StreamPoint(fX, fY, fZ));
-        Unk_StreamPoint ptRot = CCameraMode::FUN_140afdd40(m_78, m_c0.m_pos, g_143a08cf8);
+        m_c0.m_pos = Vector3(fX, fY, fZ);
+        vfunc_3(Vector3(fX, fY, fZ));
+        Vector3 ptRot = CCameraMode::FUN_140afdd40(m_78, m_c0.m_pos, g_143a08cf8);
         vfunc_4(ptRot);
         m_c0.m_rot = ptRot;
         vfunc_37();
@@ -298,7 +298,7 @@ void CTarget2DCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
 MS2_REPLACE_METHOD(0x141838AB0, CTarget2DCameraMode, vfunc_24, 691, 0x2C89D0CB);
 
 // @0x141838d70
-Unk_StreamPoint CTarget2DCameraMode::vfunc_26()
+Vector3 CTarget2DCameraMode::vfunc_26()
 {
     vfunc_24(Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60(), 1);
     return m_78.FUN_14097fd50(FUN_141839600());
@@ -327,7 +327,7 @@ float CTarget2DCameraMode::vfunc_27()
 MS2_REPLACE_METHOD(0x141838E40, CTarget2DCameraMode, vfunc_27, 147, 0xCF35E811);
 
 // @0x141838ee0
-void CTarget2DCameraMode::vfunc_3(Unk_StreamPoint pt)
+void CTarget2DCameraMode::vfunc_3(Vector3 pt)
 {
     if (pt.FUN_140552700(m_setting.m_c))
     {
@@ -339,7 +339,7 @@ void CTarget2DCameraMode::vfunc_3(Unk_StreamPoint pt)
 MS2_REPLACE_METHOD(0x141838EE0, CTarget2DCameraMode, vfunc_3, 128, 0x198561E9);
 
 // @0x141838f70
-void CTarget2DCameraMode::vfunc_4(Unk_StreamPoint pt)
+void CTarget2DCameraMode::vfunc_4(Vector3 pt)
 {
     if (pt.FUN_140552700(m_setting.m_18))
     {
@@ -362,21 +362,21 @@ void CTarget2DCameraMode::vfunc_21(float f, int n)
     {
         bool bDone = false;
         float fStep = m_98 > m_50 ? -10.0f : 10.0f;
-        Unk_StreamPoint ptPos = FUN_1409f2540();
-        Unk_StreamPoint ptRot;
-        Unk_StreamPoint ptCenter = g_143b01a60;
+        Vector3 ptPos = FUN_1409f2540();
+        Vector3 ptRot;
+        Vector3 ptCenter = g_143b01a60;
         unsigned int nLoop = 0;
         while (!bDone)
         {
             m_78 = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60()->vfunc_17();
             m_78.z += vfunc_27();
             ptCenter = m_78;
-            Unk_StreamPoint ptDir = ptCenter.FUN_140965c40(ptPos);
+            Vector3 ptDir = ptCenter.FUN_140965c40(ptPos);
             ptDir.FUN_140968990();
             ptPos = ptPos.FUN_14097fd50(ptDir.FUN_14097fc90(fStep));
             m_6c = FUN_1418398e0(m_58, m_50, m_54, m_4c * 180.0f / 3.14159265f, 90.0f);
             ptPos.z = ptCenter.z;
-            Unk_StreamPoint ptDist = ptCenter.FUN_140965c40(ptPos);
+            Vector3 ptDist = ptCenter.FUN_140965c40(ptPos);
             m_50 = ptDist.FUN_140967ac0();
             m_50 = FUN_140a17940(m_50, m_58, m_54);
             ptPos.x = m_50 * FUN_1409f25a0(m_68) + ptCenter.x;
@@ -408,26 +408,26 @@ void CTarget2DCameraMode::vfunc_21(float f, int n)
 MS2_REPLACE_METHOD(0x141839000, CTarget2DCameraMode, vfunc_21, 1488, 0xD0976145);
 
 // @0x141839600
-Unk_StreamPoint CTarget2DCameraMode::FUN_141839600()
+Vector3 CTarget2DCameraMode::FUN_141839600()
 {
     return m_8c;
 }
 MS2_REPLACE_METHOD(0x141839600, CTarget2DCameraMode, FUN_141839600, 44, 0xE877299E);
 
 // @0x141839640
-bool CTarget2DCameraMode::FUN_141839640(Unk_StreamPoint& ptPos, Unk_StreamPoint& ptRot)
+bool CTarget2DCameraMode::FUN_141839640(Vector3& ptPos, Vector3& ptRot)
 {
     Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
     if (pTarget)
     {
         float fYaw = 3.14159265f;
         float fDist = Unk_CameraManager::FUN_1409478c0()->FUN_140b67d10();
-        Unk_StreamPoint ptTarget = pTarget->vfunc_17();
+        Vector3 ptTarget = pTarget->vfunc_17();
         ptTarget.z += Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0()->vfunc_27();
         float fX = fDist * FUN_1409f25a0(fYaw) + ptTarget.x;
         float fY = fDist * FUN_1409f2310(fYaw) + ptTarget.y;
         float fZ = ptTarget.z;
-        ptPos = Unk_StreamPoint(fX, fY, fZ);
+        ptPos = Vector3(fX, fY, fZ);
         ptRot = CCameraMode::FUN_140afdd40(ptTarget, ptPos, g_143a08cf8);
         return true;
     }
@@ -449,7 +449,7 @@ void CTarget2DCameraMode::vfunc_37()
     float fX = m_50 * FUN_1409f25a0(m_68) + m_78.x;
     float fY = m_50 * FUN_1409f2310(m_68) + m_78.y;
     float fZ = m_78.z;
-    m_c0.m_pos = Unk_StreamPoint(fX, fY, fZ);
+    m_c0.m_pos = Vector3(fX, fY, fZ);
     m_8c = m_c0.m_pos.FUN_140965c40(m_78);
 }
 MS2_REPLACE_METHOD(0x1418397F0, CTarget2DCameraMode, vfunc_37, 231, 0x1834ACDB);

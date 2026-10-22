@@ -82,8 +82,8 @@ public:
     CString m_strModel;                                           // +0x88
     int m_n90;                                                    // +0x90
     CString m_strStr98;                                           // +0x98
-    Unk_StreamPoint m_vA0;                                               // +0xa0
-    Unk_StreamPoint m_vAC;                                               // +0xac
+    Vector3 m_vA0;                                               // +0xa0
+    Vector3 m_vAC;                                               // +0xac
     CString m_strB8;                                              // +0xb8
     CString m_strC0;                                              // +0xc0
     CString m_strC8;                                              // +0xc8
@@ -155,8 +155,8 @@ struct Unk_FcRow
     CString m_strModel;                                           // +0x110
     int m_n118;                                                   // +0x118
     CString m_strStr98;                                           // +0x120
-    Unk_StreamPoint m_vA0;                                               // +0x128
-    Unk_StreamPoint m_vAC;                                               // +0x134
+    Vector3 m_vA0;                                               // +0x128
+    Vector3 m_vAC;                                               // +0x134
     CString m_strB8;                                              // +0x140
     CString m_strC0;                                              // +0x148
     CString m_strC8;                                              // +0x150
@@ -258,7 +258,7 @@ public:
     CString FUN_141226bd0();                                      // 0x141226bd0 the id
     void FUN_141226c20(bool bFlag);                               // 0x141226c20
     int FUN_141226cd0();                                          // 0x141226cd0 item id
-    Unk_StreamPoint FUN_141226d00();                                     // 0x141226d00 position property
+    Vector3 FUN_141226d00();                                     // 0x141226d00 position property
     // @0x140967140 (inline; COMDAT in actionkeyobject.cpp's range)
     unsigned char FUN_140967140() { return m_bAlt; }
     Unk_EntRef GetEnt();                                   // 0x141226e60 copy of the entity handle
@@ -501,9 +501,9 @@ public:
     MS2Ptr<CFunctionCubeObject> FUN_141230c00(CString strId);
     void FUN_141230c90(MS2Ptr<CFunctionCubeObject> spObject);
     void FUN_141230df0(CString strId);
-    MS2Ptr<CFunctionCubeObject> FUN_141230f60(Unk_StreamPoint pt, float fRange, __int64 nOwner);
-    MS2Ptr<CFunctionCubeObject> FUN_141231200(Unk_StreamPoint pt, float fRange, __int64 nOwner, int nKind);
-    void FUN_1412314e0(Unk_StreamPoint pt, ATL::CAtlArray<MS2Ptr<CFunctionCubeObject> >& aOut);
+    MS2Ptr<CFunctionCubeObject> FUN_141230f60(Vector3 pt, float fRange, __int64 nOwner);
+    MS2Ptr<CFunctionCubeObject> FUN_141231200(Vector3 pt, float fRange, __int64 nOwner, int nKind);
+    void FUN_1412314e0(Vector3 pt, ATL::CAtlArray<MS2Ptr<CFunctionCubeObject> >& aOut);
     void FUN_1412316a0(MS2Ptr<Unk_FcArea> spArea, MS2Ptr<Unk_FcTag> spTag);
     void FUN_141231730();
     void FUN_141231be0();

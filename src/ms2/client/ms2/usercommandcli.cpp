@@ -128,7 +128,7 @@ int FUN_14136f660(void*,const char*,int&);
 #include "ms2/placeholder/coutpacket.h"
 extern bool DAT_143af62d0;
 extern int DAT_143ab2914,DAT_143ab0248;
-extern Unk_StreamPoint DAT_143b01a60;
+extern Vector3 DAT_143b01a60;
 #include "ms2/placeholder/mstime.h"
 void FUN_1401d9a30(const CStringW&,ATL::CAtlArray<int>&,const wchar_t*);
 void* FUN_140ad4b90(); void FUN_141863340(void*,const ATL::CAtlArray<int>&,unsigned);
@@ -145,7 +145,7 @@ void FUN_14138d460(void*); void FUN_14138d160(void*,int); void FUN_14138d520(voi
 CString FUN_14016a600(const wchar_t*,int); CString FUN_1401d4330(const wchar_t*,int);
 void FUN_14138d090(void*,CString); void FUN_14138d790(void*); void FUN_14138ba40(void*);
 __int64 FUN_140869440();
-void* FUN_1403ed280(); void FUN_1411a4f40(void*,CString,const Unk_StreamPoint&);
+void* FUN_1403ed280(); void FUN_1411a4f40(void*,CString,const Vector3&);
 void* FUN_140d13c40(); void FUN_14177c100(void*,int,float,unsigned,int); struct Unk_UcSoundView { CStringW FUN_14177e020(); };
 void* FUN_14025e7d0(); void FUN_140259930(void*); void FUN_1409c51f0(); void* FUN_141371b20(); void FUN_141815db0(void*);
 void* FUN_14136f3e0(int); void FUN_14195b970(void*); void* FUN_14136f5c0(int); void FUN_14134dc50(void*,int);
@@ -220,7 +220,7 @@ class Unk_CommandActor { public:
     virtual void vfunc_16();
     virtual void vfunc_17();
     virtual void vfunc_18();
-    virtual void vfunc_19(Unk_StreamPoint);
+    virtual void vfunc_19(Vector3);
     virtual void vfunc_20();
     virtual void vfunc_21();
     virtual void vfunc_22();
@@ -1745,7 +1745,7 @@ int CUserCommandCli::FUN_14136bac0(Unk_CommandArgs& args) {
 }
 // @0x14136be40
 int CUserCommandCli::FUN_14136be40(Unk_CommandArgs& args) {
-    Unk_StreamPoint pos=DAT_143b01a60;
+    Vector3 pos=DAT_143b01a60;
     pos.x=args.FUN_1408d2280(0,0);
     pos.y=args.FUN_1408d2280(1,0);
     pos.z=args.FUN_1408d2280(2,0);

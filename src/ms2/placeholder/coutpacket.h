@@ -31,8 +31,8 @@ public:
     void WriteString(const CString& value) override;
     void WriteUnicodeString(const CStringW& value) override;
     void WriteBytes(const void* data, int count) override;
-    void WriteVector3(const Unk_StreamPoint& value) override;
-    void WriteVector3Short(const Unk_StreamPoint& value) override;
+    void WriteVector3(const Vector3& value) override;
+    void WriteVector3Short(const Vector3& value) override;
     void WriteShortX10(float value) override;
     void WriteShortX100(float value) override;
     void WriteShortScaled(float value, int scale) override;

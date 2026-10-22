@@ -10,7 +10,7 @@
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 extern __int64 DAT_143ab2828;                                       // the "self" object pointer
-extern Unk_StreamPoint DAT_143b01a60;                               // the zero point
+extern Vector3 DAT_143b01a60;                               // the zero point
 extern int DAT_143b059e8;
 
 class Unk_ProxyTarget                                               // what handle +0x18 points at
@@ -46,7 +46,7 @@ public:
     virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
     virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
     virtual void vfunc_16(); virtual void vfunc_17();
-    virtual Unk_StreamPoint vfunc_18();
+    virtual Vector3 vfunc_18();
 };
 Unk_Tbl1403ed2d0* FUN_1403ed2d0();
 Unk_PosObject* FUN_141bd1180(Unk_Tbl1403ed2d0* tbl, int id);
@@ -250,7 +250,7 @@ Unk_ProxyHandle28 CProxyGameObject::FUN_1416c2220()
 MS2_REPLACE_METHOD(0x1416C2220, CProxyGameObject, FUN_1416c2220, 65, 0xD6E756B3);
 
 // @0x1416c2270
-Unk_StreamPoint CProxyGameObject::FUN_1416c2270()
+Vector3 CProxyGameObject::FUN_1416c2270()
 {
     Unk_PosObject* obj = FUN_141bd1180(FUN_1403ed2d0(), m_proxyId);
     if (obj != 0) {

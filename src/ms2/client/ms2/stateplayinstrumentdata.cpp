@@ -46,7 +46,7 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_StateDataArg, m_n64, 0x64);
 
-extern Unk_StreamPoint DAT_143b01a60;                       // the zero point
+extern Vector3 DAT_143b01a60;                       // the zero point
 extern NiRTTI DAT_143afa4d8;                                // RTTI NiNode
 
 // A player seen with the slots after PCBase's last declared one (123): the held item of the player.
@@ -137,7 +137,7 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 bool FUN_14087ddc0(const efd::ClassInfo* pInfo, unsigned nId);   // efd::ClassInfo::IsKindOf
 void FUN_140a0b300(NiAVObject* pNode, char bCulled);         // set app-culled
 bool FUN_14212c720(egf::Entity* pEntity);                    // the entity has finished loading
-void FUN_140a38a50(egf::Entity* pEntity, unsigned nProp, const Unk_StreamPoint* pValue);   // SetProperty(point)
+void FUN_140a38a50(egf::Entity* pEntity, unsigned nProp, const Vector3* pValue);   // SetProperty(point)
 void FUN_14098c6e0(egf::Entity* pEntity, unsigned nProp, bool* pValue);                    // SetProperty(bool)
 void FUN_140ae1240(egf::Entity* pEntity, unsigned nProp, const efd::utf8string* pValue);   // SetProperty(string)
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);             // the scene root of an entity
@@ -149,7 +149,7 @@ CString FUN_140298360(const char* pszPrefix, const CString& str);   // prefix + 
 __int64 FUN_14028d0e0();                                     // the current time
 int FUN_1416627d0(PCBase* pPC, int n);                       // the ensemble size of the player
 
-static inline Unk_StreamPoint PiPoint(const NiPoint3& k) { return *reinterpret_cast<const Unk_StreamPoint*>(&k); }
+static inline Vector3 PiPoint(const NiPoint3& k) { return *reinterpret_cast<const Vector3*>(&k); }
 static inline efd::Point3 PiEfd(const NiPoint3& k) { return efd::Point3(k.x, k.y, k.z); }
 
 // @0x140de0900
@@ -428,13 +428,13 @@ void StatePlayInstrument::vfunc_3(double fTime)
             }
         }
     }
-    Unk_StreamPoint kZero = DAT_143b01a60;
+    Vector3 kZero = DAT_143b01a60;
     m_pOwner->vfunc_68(&kZero, fTime, 0, 0, 0);
     if (FUN_1417b8560() != 0)
     {
         if (m_pOwner->vfunc_99(0) == 0)
         {
-            Unk_StreamPoint kPos = PiPoint(m_pOwner->vfunc_18());
+            Vector3 kPos = PiPoint(m_pOwner->vfunc_18());
             if (50.0f < kPos.FUN_140965c40(m_vPos).FUN_140967ac0())
                 m_pOwner->vfunc_59(1, 0, 0, 0);
         }

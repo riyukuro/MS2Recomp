@@ -95,8 +95,8 @@ public:
     virtual void vfunc_6(CInputStream&);
     void FUN_14059aa20();                           // clamp the scales to >= 0
     float m_fScale[2];                              // +0x58
-    Unk_StreamPoint m_aPt1[2];                      // +0x60
-    Unk_StreamPoint m_aPt2[2];                      // +0x78
+    Vector3 m_aPt1[2];                      // +0x60
+    Vector3 m_aPt2[2];                      // +0x78
     int m_bUseScale, m_bUsePt2, m_bUsePt1;          // +0x90 +0x94 +0x98 which of the values the item lets the player override
 };
 MS2_CHECK_SIZE(CHairExtraData,0xa0);
@@ -109,6 +109,6 @@ public:
     virtual void vfunc_5(COutputStream&);
     virtual void vfunc_6(CInputStream&);
     float m_f58;                                    // +0x58
-    Unk_StreamPoint m_aPt[4];                       // +0x5c +0x68 +0x74 +0x80
+    Vector3 m_aPt[4];                       // +0x5c +0x68 +0x74 +0x80
 };
 MS2_CHECK_SIZE(CCapExtraData,0x90);

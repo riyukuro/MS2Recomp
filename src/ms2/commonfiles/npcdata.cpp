@@ -85,7 +85,7 @@ void FUN_140873ca0(void* pElem, const char* pszName, int nValue);               
 void FUN_140874050(void* pElem, const char* pszName, const CStringA& strValue); // SetAttribute(name, string)
 struct Unk_NpcPoint3
 {
-    Unk_NpcPoint3(const Unk_StreamPoint& pt);   // 0x14027dcf0
+    Unk_NpcPoint3(const Vector3& pt);   // 0x14027dcf0
     float x, y, z;
 };
 void FUN_140874ad0(void* pElem, const char* pszName, const Unk_NpcPoint3& vValue);      // SetAttribute(name, "x, y, z")
@@ -108,7 +108,7 @@ Unk_NpcModel::Unk_NpcModel() : m_fScale(1.0f), m_fAniSpeed(1.0f), m_nSpawnAlphaA
 }
 
 // @0x1406c8990
-// MS2-FUNCTIONAL: frame is 2 bytes larger in the exe (the zero Unk_StreamPoint temp / Unk_NpcPoint3 temp placement)
+// MS2-FUNCTIONAL: frame is 2 bytes larger in the exe (the zero Vector3 temp / Unk_NpcPoint3 temp placement)
 void Unk_NpcModel::WriteXml(Unk_140165cf0* pParent) const
 {
     static Unk_NpcModel s_default;
@@ -123,7 +123,7 @@ void Unk_NpcModel::WriteXml(Unk_140165cf0* pParent) const
             FUN_14086f970(&elem, "anispeed", m_fAniSpeed);
         if (m_nSpawnAlphaAnimation != 1)
             FUN_140873ca0(&elem, "spawnAlphaAnimation", m_nSpawnAlphaAnimation);
-        if (m_vOffset.FUN_140552700(Unk_StreamPoint(0.0f, 0.0f, 0.0f)))
+        if (m_vOffset.FUN_140552700(Vector3(0.0f, 0.0f, 0.0f)))
             FUN_140874ad0(&elem, "offset", Unk_NpcPoint3(m_vOffset));
         FUN_14086e000(pParent, &elem);
     }
@@ -1395,7 +1395,7 @@ int FUN_1401788f0(Unk_140165cf0*, const char*, ATL::CAtlArray<CStringA>&);
 int FUN_140178570(Unk_140165cf0*, const char*, ATL::CAtlArray<int>&);
 int FUN_140178770(Unk_140165cf0*, const char*, std::vector<unsigned>&);
 int FUN_1403759c0(Unk_140165cf0*, const char*, std::vector<short>&);
-int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, Unk_StreamPoint& ptOut);
+int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, Vector3& ptOut);
 CString FUN_14016a5c0(const char* psz, int n);
 void FUN_14015f050(const CString& str, ATL::CAtlArray<CString>& arr, const char* pszDelim);
 

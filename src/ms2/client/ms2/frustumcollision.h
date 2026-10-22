@@ -30,13 +30,13 @@ class CFrustumCollision : public CBaseCollision
 public:
     CFrustumCollision();                                    // 0x141222df0
     virtual ~CFrustumCollision();                           // 0x141222f20
-    virtual void vfunc_3(Unk_StreamPoint ptPos, Unk_StreamPoint ptDir, float fScale);   // 0x141222f50 builds the corners
+    virtual void vfunc_3(Vector3 ptPos, Vector3 ptDir, float fScale);   // 0x141222f50 builds the corners
     virtual void vfunc_4();                                 // 0x141223bc0 derives the cone angles
     virtual void vfunc_5();                                 // 0x141224920 builds the wire mesh
     virtual float vfunc_6();                                // 0x141224800
 
-    int Contains(const Unk_StreamPoint& pt) const;          // 0x141223d30
-    int ContainsPoint(const Unk_StreamPoint& pt) const;     // 0x141223d80
+    int Contains(const Vector3& pt) const;          // 0x141223d30
+    int ContainsPoint(const Vector3& pt) const;     // 0x141223d80
     int IntersectsBox(const void* pBox) const;              // 0x141223e70 (pBox: the NxBox of a box collision)
     int SegmentIntersect(const NiPoint2* pA1, const NiPoint2* pA2, const NiPoint2* pB1, const NiPoint2* pB2,
                          NiPoint2* pOut) const;             // 0x1412245a0
@@ -48,15 +48,15 @@ public:
     float m_fHeight;                    // +0x7c (half height; the volume is twice as tall)
     float m_fFarHalfWidth;              // +0x80
     float m_fDepth;                     // +0x84
-    Unk_StreamPoint m_aCorners[8];      // +0x88 near bottom/top corners, then the far ones (z = the vertical axis)
-    Unk_StreamPoint m_ptRight;          // +0xe8
-    Unk_StreamPoint m_ptForward;        // +0xf4
+    Vector3 m_aCorners[8];      // +0x88 near bottom/top corners, then the far ones (z = the vertical axis)
+    Vector3 m_ptRight;          // +0xe8
+    Vector3 m_ptForward;        // +0xf4
     float m_fHalfAngle;                 // +0x100
     float m_fVertAngle;                 // +0x104
     float m_fTan;                       // +0x108
     float m_fApexDist;                  // +0x10c distance from the near plane back to the cone apex
-    Unk_StreamPoint m_ptOrigin;         // +0x110
-    Unk_StreamPoint m_ptApex;           // +0x11c
+    Vector3 m_ptOrigin;         // +0x110
+    Vector3 m_ptApex;           // +0x11c
     Unk_FcPoint3 m_aEdgeA[3];           // +0x128 apex and the two far corners of the first side face
     Unk_FcPoint3 m_aEdgeB[3];           // +0x14c apex and the two far corners of the second side face
     NiPoint2 m_akEdge2[4];              // +0x170 the two side edges projected onto the ground plane (pairs)

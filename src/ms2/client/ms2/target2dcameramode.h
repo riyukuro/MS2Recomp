@@ -13,8 +13,8 @@ struct Unk_Target2DPose
     Unk_Target2DPose();                                             // 0x141839de0
     Unk_Target2DPose& operator=(const Unk_Target2DPose& o);         // 0x141839e20
 
-    Unk_StreamPoint m_rot;
-    Unk_StreamPoint m_pos;
+    Vector3 m_rot;
+    Vector3 m_pos;
 };
 MS2_CHECK_SIZE(Unk_Target2DPose, 0x18);
 
@@ -29,8 +29,8 @@ public:
     virtual int vfunc_1() { return 11; }
     // @0x141839ec0
     virtual bool vfunc_2() { return false; }
-    virtual void vfunc_3(Unk_StreamPoint pt);
-    virtual void vfunc_4(Unk_StreamPoint pt);
+    virtual void vfunc_3(Vector3 pt);
+    virtual void vfunc_4(Vector3 pt);
     virtual void vfunc_6(int n);
     virtual void vfunc_8(double fTime);
     virtual void vfunc_9();
@@ -40,21 +40,21 @@ public:
     virtual float vfunc_23();
     virtual void vfunc_24(Unk_CameraTargetEntity* p, int n);
     virtual Unk_CameraTargetEntity* vfunc_25();
-    virtual Unk_StreamPoint vfunc_26();
+    virtual Vector3 vfunc_26();
     virtual float vfunc_27();
     virtual void vfunc_29(float f1, float f2, float f3);
     virtual void vfunc_37();                                        // recompute the wanted eye from the angles
 
-    Unk_StreamPoint FUN_141839600();                                // m_8c
-    static bool FUN_141839640(Unk_StreamPoint& ptPos, Unk_StreamPoint& ptRot);
+    Vector3 FUN_141839600();                                // m_8c
+    static bool FUN_141839640(Vector3& ptPos, Vector3& ptRot);
     static Unk_CameraSetting FUN_1418397a0(Unk_CameraSetting setting);
     float FUN_1418398e0(float fMin, float fCur, float fMax, float fDegMin, float fDegMax);
     void FUN_1418399e0(double fTime);                               // ease the shown pose towards the wanted one
 
-    Unk_StreamPoint m_78;               // +0x78 target position
+    Vector3 m_78;               // +0x78 target position
     float m_84;                         // +0x84 zoom speed
     int m_88;                           // +0x88 zooming
-    Unk_StreamPoint m_8c;               // +0x8c eye offset
+    Vector3 m_8c;               // +0x8c eye offset
     float m_98;                         // +0x98 wanted distance
     float m_9c;                         // +0x9c pose follow speed (from the config)
     float m_a0;                         // +0xa0 current follow speed

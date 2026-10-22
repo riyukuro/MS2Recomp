@@ -81,16 +81,16 @@ public:
 Unk_PtItemEvents* FUN_140a6a840();
 
 // efd::Point3 / NiPoint3 helpers called out of line.
-struct Unk_PtVec3 : public Unk_StreamPoint
+struct Unk_PtVec3 : public Vector3
 {
-    Unk_PtVec3(const Unk_StreamPoint& pt);                  // 0x14027dcf0 (NiPoint3(const efd::Point3&))
+    Unk_PtVec3(const Vector3& pt);                  // 0x14027dcf0 (NiPoint3(const efd::Point3&))
     Unk_PtVec3(float x, float y, float z);                  // 0x14097f250
 };
 
 // ---- out-of-unit callees ----
 
 extern char DAT_143acdb20;                                  // set while the avatar previews are disabled
-extern Unk_StreamPoint DAT_143b01a60;                              // the zero point
+extern Vector3 DAT_143b01a60;                              // the zero point
 
 void FUN_1411e1b80(Unk_PCEquipSet* pEquipSet, ATL::CAtlList<MS2Ptr<CEquipItem> >& kOut);   // the worn items
 void FUN_1411e3de0(Unk_PCEquipSet* pEquipSet, int n);       // clears the equip set

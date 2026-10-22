@@ -127,10 +127,10 @@ Unk_GameClock* FUN_14086d260();
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
 void* FUN_14098d8d0(const void* pRtti, void* pObj);                 // dynamic cast through an NiRTTI
 void* FUN_14098d0f0(void* pHandle);                                 // handle -> object
-const Unk_StreamPoint& FUN_140947900(void* pNode);                  // world translate
+const Vector3& FUN_140947900(void* pNode);                  // world translate
 bool FUN_14098dad0(void* pNode);                                    // node is app-culled
 void FUN_141d16040(void* pNode, float fTime, bool bUpdateControllers);    // NiAVObject::Update
-void FUN_14097fad0(NiPoint3* pDst, const Unk_StreamPoint* pSrc);    // NiPoint3 assignment
+void FUN_14097fad0(NiPoint3* pDst, const Vector3* pSrc);    // NiPoint3 assignment
 bool FUN_1409a7f70(NiAVObjectPtr* pPtr, int nNull);                 // pointer == NULL?
 void FUN_140a0b2a0(NiAVObject* pObj);                               // detach from the parent
 void FUN_140a0b300(NiAVObject* pObj, bool bCulled);                 // SetAppCulled
@@ -223,7 +223,7 @@ MS2_CHECK_SIZE(Unk_SeparateNode, 0x138);
 
 struct Unk_SwooshTarget { char m_pad_00[0x10]; void* m_hNode; };            // +0x10 handle of the owner's scene node
 MS2_CHECK_OFFSET(Unk_SwooshTarget, m_hNode, 0x10);
-NiPoint3 FUN_141820e00(const Unk_StreamPoint& p0, const Unk_StreamPoint& p1, const Unk_StreamPoint& p2, const Unk_StreamPoint& p3, float fT);
+NiPoint3 FUN_141820e00(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float fT);
 int FUN_141820fa0(const Unk_EffectMgr* pMgr);
 
 #ifndef MS2_HOOK_DLL
@@ -324,7 +324,7 @@ CSwooshEffect::CSwooshEffect()
     m_kCurveB.reserve(0x28);
 }
 
-// MS2-FUNCTIONAL: the vector<Unk_StreamPoint> dtor instance is bound to another unit's copy (beameffect) in symbols.tsv.
+// MS2-FUNCTIONAL: the vector<Vector3> dtor instance is bound to another unit's copy (beameffect) in symbols.tsv.
 // @0x14181d650
 CSwooshEffect::~CSwooshEffect()
 {
@@ -597,12 +597,12 @@ int CSwooshEffect::vfunc_8(void* p)
 {
     if (m_b2e)
     {
-        *static_cast<Unk_StreamPoint*>(p) = FUN_140947900(FUN_1409475f0(&m_spRoot));
+        *static_cast<Vector3*>(p) = FUN_140947900(FUN_1409475f0(&m_spRoot));
     }
     else
     {
         if (FUN_1409475d0(&m_spTarget) != 0)
-            *static_cast<Unk_StreamPoint*>(p) = FUN_140947900(FUN_1409475f0(&m_spTarget));
+            *static_cast<Vector3*>(p) = FUN_140947900(FUN_1409475f0(&m_spTarget));
     }
     return 1;
 }
@@ -633,8 +633,8 @@ void CSwooshEffect::UpdateTrail()
                 for (unsigned j = 0; j < nSteps; ++j)
                 {
                     float fT = (float)j / fPerSegment;
-                    m_kCurveA.push_back(reinterpret_cast<Unk_StreamPoint&&>(static_cast<NiPoint3&&>(FUN_141820e00(m_kPointsA[i], m_kPointsA[i + 1], m_kPointsA[i + 2], m_kPointsA[i + 3], fT))));
-                    m_kCurveB.push_back(reinterpret_cast<Unk_StreamPoint&&>(static_cast<NiPoint3&&>(FUN_141820e00(m_kPointsB[i], m_kPointsB[i + 1], m_kPointsB[i + 2], m_kPointsB[i + 3], fT))));
+                    m_kCurveA.push_back(reinterpret_cast<Vector3&&>(static_cast<NiPoint3&&>(FUN_141820e00(m_kPointsA[i], m_kPointsA[i + 1], m_kPointsA[i + 2], m_kPointsA[i + 3], fT))));
+                    m_kCurveB.push_back(reinterpret_cast<Vector3&&>(static_cast<NiPoint3&&>(FUN_141820e00(m_kPointsB[i], m_kPointsB[i + 1], m_kPointsB[i + 2], m_kPointsB[i + 3], fT))));
                 }
             }
             m_kCurveA.push_back(m_kPointsA[m_kPointsA.size() - 1]);
@@ -703,9 +703,9 @@ void CSwooshEffect::UpdateTrail()
 }
 #endif
 
-// FUN_141820e00 builds its result with NiPoint3(x,y,z) (0x14097f250); the curve vectors store it as Unk_StreamPoint.
+// FUN_141820e00 builds its result with NiPoint3(x,y,z) (0x14097f250); the curve vectors store it as Vector3.
 // @0x141820e00
-NiPoint3 FUN_141820e00(const Unk_StreamPoint& p0, const Unk_StreamPoint& p1, const Unk_StreamPoint& p2, const Unk_StreamPoint& p3, float fT)
+NiPoint3 FUN_141820e00(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float fT)
 {
     D3DXVECTOR3 v0(p0.x, p0.y, p0.z), v1(p1.x, p1.y, p1.z), v2(p2.x, p2.y, p2.z), v3(p3.x, p3.y, p3.z), kOut(0, 0, 0);
     D3DXVec3CatmullRom(&kOut, &v0, &v1, &v2, &v3, fT);
@@ -724,8 +724,8 @@ int FUN_141820fa0(const Unk_EffectMgr* pMgr)
     return pMgr->m_nTrailMode;
 }
 
-// ---- typed stand-ins for the small std::vector<Unk_StreamPoint> glue the toolchain's STL does not produce ----
-typedef std::vector<Unk_StreamPoint, efd::CustomAllocator<Unk_StreamPoint> > Unk_PointVec;
+// ---- typed stand-ins for the small std::vector<Vector3> glue the toolchain's STL does not produce ----
+typedef std::vector<Vector3, efd::CustomAllocator<Vector3> > Unk_PointVec;
 
 // @0x14181fd60 max by value
 unsigned FUN_14181fd60(unsigned nA, unsigned nB)
@@ -737,13 +737,13 @@ unsigned FUN_14181fd60(unsigned nA, unsigned nB)
 }
 
 // @0x1418205a0 identity (pointer unwrap)
-Unk_StreamPoint* FUN_1418205a0(Unk_StreamPoint* pPoint)
+Vector3* FUN_1418205a0(Vector3* pPoint)
 {
     return pPoint;
 }
 
 // @0x141820700 store pointer
-void FUN_141820700(Unk_StreamPoint** ppDst, Unk_StreamPoint* pPoint)
+void FUN_141820700(Vector3** ppDst, Vector3* pPoint)
 {
     *ppDst = pPoint;
 }
@@ -774,10 +774,10 @@ void* FUN_141821210(void* p)
 }
 
 // @0x1418217d0 allocator construct (placement copy)
-void FUN_1418217d0(void* pAlloc, Unk_StreamPoint* pDst, const Unk_StreamPoint* pSrc)
+void FUN_1418217d0(void* pAlloc, Vector3* pDst, const Vector3* pSrc)
 {
     if (pDst != 0)
-        new (pDst) Unk_StreamPoint(*pSrc);
+        new (pDst) Vector3(*pSrc);
 }
 
 // @0x141821880 empty

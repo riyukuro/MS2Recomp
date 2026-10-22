@@ -11,7 +11,7 @@
 
 // The exe stores the unit components as IEEE bit patterns (mov dword, 0x3f800000), so the fields are plain dwords here.
 #pragma pack(push, 1)
-struct Unk_StreamPoint { unsigned x, y, z; };
+struct Vector3 { unsigned x, y, z; };
 #pragma pack(pop)
 enum { UNK_ONE = 0x3f800000, UNK_MINUS_ONE = 0xbf800000 };
 
@@ -101,9 +101,9 @@ public:
     bool FUN_141683100(int nKey);
     bool FUN_141683150(int nKey);
     bool FUN_141683200(int nKey);
-    Unk_StreamPoint* FUN_141683290(Unk_StreamPoint* pOut);
-    Unk_StreamPoint* FUN_1416836d0(Unk_StreamPoint* pOut);
-    Unk_StreamPoint* FUN_141683900(Unk_StreamPoint* pOut);
+    Vector3* FUN_141683290(Vector3* pOut);
+    Vector3* FUN_1416836d0(Vector3* pOut);
+    Vector3* FUN_141683900(Vector3* pOut);
     bool FUN_1416839b0();
     void FUN_141683a90();
     bool FUN_141683ef0();
@@ -113,7 +113,7 @@ public:
 
     Unk_PCActor* m_pOwner;                  // +0x00
     char m_timer[0x38];                     // +0x08
-    Unk_StreamPoint m_dir;                  // +0x40
+    Vector3 m_dir;                  // +0x40
     int m_moving;                           // +0x4c
     int m_ready;                            // +0x50
     int m_pad54;
@@ -123,7 +123,7 @@ MS2_CHECK_OFFSET(Unk_PCMove, m_moving, 0x4c);
 MS2_CHECK_OFFSET(Unk_PCMove, m_ready, 0x50);
 
 extern int DAT_143af7d40;                   // input enabled
-extern Unk_StreamPoint DAT_143b01a60;       // the zero point
+extern Vector3 DAT_143b01a60;       // the zero point
 
 // Out-of-unit callees.
 Unk_PCServices* FUN_14025e7c0();
@@ -147,7 +147,7 @@ bool FUN_140d8ac50(void* p, int n, int m);
 bool FUN_140d8ad60(void* p, int n);
 bool FUN_140d8af70(void* p, int n);
 bool FUN_140d8c550(void* p);
-void FUN_140d8c2f0(void* p, Unk_StreamPoint* pOut);
+void FUN_140d8c2f0(void* p, Vector3* pOut);
 void* FUN_140a58500(void* p);
 int FUN_140a58520(void* p);
 Unk_PCActor* FUN_141468360(Unk_PCActor* p);
@@ -158,10 +158,10 @@ Unk_PCClimb* FUN_140953f30();
 int FUN_140ad21f0(Unk_PCClimb* p);
 void FUN_140ad2070(Unk_PCClimb* p);
 void* FUN_140ad22a0(Unk_PCClimb* p, char* pBuf32);
-void FUN_140194470(Unk_StreamPoint* pDst, void* pSrc);
-bool FUN_140552690(Unk_StreamPoint* a, Unk_StreamPoint* b);
-bool FUN_140552700(Unk_StreamPoint* a, Unk_StreamPoint* b);
-void FUN_140ad0c10(Unk_StreamPoint* p, float f);
+void FUN_140194470(Vector3* pDst, void* pSrc);
+bool FUN_140552690(Vector3* a, Vector3* b);
+bool FUN_140552700(Vector3* a, Vector3* b);
+void FUN_140ad0c10(Vector3* p, float f);
 void* FUN_140166410();
 bool FUN_14036d570(void* p, int n);
 void* FUN_1409a8b10();
@@ -270,9 +270,9 @@ bool Unk_PCMove::FUN_141683200(int nKey)
 
 // @0x141683290
 // MS2-FUNCTIONAL: exe has no /GS cookie on the 12-byte direction local and different branch layout; logic identical
-Unk_StreamPoint* Unk_PCMove::FUN_141683290(Unk_StreamPoint* pOut)
+Vector3* Unk_PCMove::FUN_141683290(Vector3* pOut)
 {
-    Unk_StreamPoint kDir = DAT_143b01a60;
+    Vector3 kDir = DAT_143b01a60;
     if (FUN_14138c900(FUN_1409331e0(), 0x15) != 0) {
         *pOut = kDir;
         return pOut;
@@ -335,7 +335,7 @@ Unk_StreamPoint* Unk_PCMove::FUN_141683290(Unk_StreamPoint* pOut)
                 return pOut;
             }
             if (FUN_140a58520(FUN_140a58540()) == 0) {
-                Unk_StreamPoint kCur;
+                Vector3 kCur;
                 FUN_140d8c2f0(FUN_140a58540(), &kCur);
                 if (FUN_140552700(&kCur, &DAT_143b01a60))
                     FUN_140194470(&kDir, &kCur);
@@ -353,9 +353,9 @@ Unk_StreamPoint* Unk_PCMove::FUN_141683290(Unk_StreamPoint* pOut)
 
 // @0x1416836d0
 // MS2-FUNCTIONAL: exe has no /GS cookie on the 12-byte direction local; logic identical
-Unk_StreamPoint* Unk_PCMove::FUN_1416836d0(Unk_StreamPoint* pOut)
+Vector3* Unk_PCMove::FUN_1416836d0(Vector3* pOut)
 {
-    Unk_StreamPoint kDir = DAT_143b01a60;
+    Vector3 kDir = DAT_143b01a60;
     if (FUN_141683100(0x30d43)) {
         kDir.x = UNK_ONE;
     } else if (FUN_141683100(0x30d44)) {
@@ -394,7 +394,7 @@ Unk_StreamPoint* Unk_PCMove::FUN_1416836d0(Unk_StreamPoint* pOut)
 }
 
 // @0x141683900
-Unk_StreamPoint* Unk_PCMove::FUN_141683900(Unk_StreamPoint* pOut)
+Vector3* Unk_PCMove::FUN_141683900(Vector3* pOut)
 {
     if (!FUN_141683ef0()) {
         *pOut = DAT_143b01a60;

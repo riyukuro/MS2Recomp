@@ -62,8 +62,8 @@ MS2_CHECK_OFFSET(Unk_StateDataArg, m_str70, 0x70);
 
 CString FUN_140b62550(int n);                                // number -> text
 
-extern Unk_StreamPoint DAT_143b01a60;                       // the zero point
-extern Unk_StreamPoint DAT_143a08cf8;                       // the up vector
+extern Vector3 DAT_143b01a60;                       // the zero point
+extern Vector3 DAT_143a08cf8;                       // the up vector
 extern NiRTTI DAT_143afa4d8;                                // RTTI NiNode
 
 class AdditionalCli : public CPtred
@@ -161,15 +161,15 @@ PCBase* FUN_140974230(PCBase* pPC);                          // the player of an
 ClonePC* FUN_1405a7e30(PCBase* pPC);                         // the mannequin of a player
 CFishingGuideObject* FUN_1416625e0(PCBase* pPC);             // the fishing guide object of a player
 MS2Ptr<AdditionalCli> FUN_14096fd30(Unk_PCBaseBuffs* pBuffs, int n);
-Unk_StreamPoint FUN_140a0b080(const NiPoint3& kA, const NiPoint3& kB, const Unk_StreamPoint& kC);
+Vector3 FUN_140a0b080(const NiPoint3& kA, const NiPoint3& kB, const Vector3& kC);
 void FUN_140b86230(const efd::Point3& kDir, NiMatrix3& kOut);   // rotation matrix of a direction
-Unk_FsCell FUN_1408a1430(Unk_StreamPoint k);                 // the grid cell of a point
+Unk_FsCell FUN_1408a1430(Vector3 k);                 // the grid cell of a point
 int FUN_1408a03c0(Unk_FsCell kCell);                         // the cell as a key
 void FUN_140ae1160(egf::Entity* pEntity, unsigned nProp, short* pValue);   // GetProperty(short)
 
-static inline Unk_StreamPoint FsPoint(const NiPoint3& k) { return *reinterpret_cast<const Unk_StreamPoint*>(&k); }
-static inline Unk_StreamPoint FsPoint(const efd::Point3& k) { return *reinterpret_cast<const Unk_StreamPoint*>(&k); }
-static inline efd::Point3 FsEfd(const Unk_StreamPoint& k) { return efd::Point3(k.x, k.y, k.z); }
+static inline Vector3 FsPoint(const NiPoint3& k) { return *reinterpret_cast<const Vector3*>(&k); }
+static inline Vector3 FsPoint(const efd::Point3& k) { return *reinterpret_cast<const Vector3*>(&k); }
+static inline efd::Point3 FsEfd(const Vector3& k) { return efd::Point3(k.x, k.y, k.z); }
 
 // Plays an animation on the owner at the owner's speed.
 static void FsPlay(PCBase* pOwner, const char* pszAnim)
@@ -331,7 +331,7 @@ void StateFishing::vfunc_3(double fTime)
             CFishingGuideObject* pGuide = FUN_1416625e0(pPC);
             if (pGuide != 0)
             {
-                Unk_StreamPoint kRot = FUN_140a0b080(pGuide->vfunc_18(), pPC->vfunc_18(), DAT_143a08cf8);
+                Vector3 kRot = FUN_140a0b080(pGuide->vfunc_18(), pPC->vfunc_18(), DAT_143a08cf8);
                 pPC->FUN_14166d970(FsEfd(kRot));
                 if (m_spEffect != 0)
                 {
@@ -343,7 +343,7 @@ void StateFishing::vfunc_3(double fTime)
             }
         }
     }
-    Unk_StreamPoint kZero = DAT_143b01a60;
+    Vector3 kZero = DAT_143b01a60;
     m_pOwner->vfunc_68(&kZero, fTime, 0, 0, 0);
 }
 
@@ -651,8 +651,8 @@ void StateFishingFloat::vfunc_3(double fTime)
     {
         float* pSpeed = m_pOwner->FUN_141671920();
         efd::Point3 kDir = m_pOwner->FUN_141674b60(FsEfd(FsPoint(m_pOwner->FUN_14123c360())));
-        Unk_StreamPoint kWorld = FsPoint(kDir);
-        Unk_StreamPoint kStep = kWorld.FUN_14097fc90(pSpeed[2]).FUN_14097fc90((float)fTime);
+        Vector3 kWorld = FsPoint(kDir);
+        Vector3 kStep = kWorld.FUN_14097fc90(pSpeed[2]).FUN_14097fc90((float)fTime);
         if (FUN_140ddc4b0(kWorld))
             m_pOwner->vfunc_68(&kStep, fTime, 0, 0xffffffff, 1);
     }
@@ -682,9 +682,9 @@ void StateFishingFloat::vfunc_9(double fTime)
 }
 
 // @0x140ddc3c0
-Unk_FsCell StateFishingFloat::FUN_140ddc3c0(Unk_StreamPoint kPoint)
+Unk_FsCell StateFishingFloat::FUN_140ddc3c0(Vector3 kPoint)
 {
-    Unk_StreamPoint kCorner;
+    Vector3 kCorner;
     kCorner.x = (kPoint.x <= 0.0f) ? -75.0f : 75.0f;
     kCorner.y = (kPoint.y <= 0.0f) ? -75.0f : 75.0f;
     kCorner.z = 0.0f;
@@ -693,7 +693,7 @@ Unk_FsCell StateFishingFloat::FUN_140ddc3c0(Unk_StreamPoint kPoint)
 
 // @0x140ddc4b0
 // MS2-FUNCTIONAL: temporaries and the EH frame differ from the exe
-bool StateFishingFloat::FUN_140ddc4b0(Unk_StreamPoint kDir)
+bool StateFishingFloat::FUN_140ddc4b0(Vector3 kDir)
 {
     if (kDir.FUN_140552690(DAT_143b01a60))
         return true;
@@ -703,7 +703,7 @@ bool StateFishingFloat::FUN_140ddc4b0(Unk_StreamPoint kDir)
     PCBase* pPC = pGuide->FUN_1410a1310();
     if (!FUN_14087ddc0(pPC ? pPC->GetClassDesc() : 0, 0x6200004))
         return true;
-    Unk_StreamPoint kStart = FsPoint(m_pOwner->vfunc_18());
+    Vector3 kStart = FsPoint(m_pOwner->vfunc_18());
     kStart.FUN_140a4e560(kDir.FUN_14097fc90(30.0f));
     kStart.z = FsPoint(pPC->vfunc_18()).z + 150.0f;
     Unk_RayCastInfo kRay;
@@ -711,7 +711,7 @@ bool StateFishingFloat::FUN_140ddc4b0(Unk_StreamPoint kDir)
     kRay.m_dir = DAT_143a08cf8.FUN_1409f7960();
     kRay.m_maxDist = 0;
     kRay.m_groups = 0x301;
-    Unk_FsCell kCellA = FUN_140ddc3c0(FsPoint(m_pOwner->vfunc_18()).FUN_14097fd50(Unk_StreamPoint(0.0f, 0.0f, 5.0f)));
+    Unk_FsCell kCellA = FUN_140ddc3c0(FsPoint(m_pOwner->vfunc_18()).FUN_14097fd50(Vector3(0.0f, 0.0f, 5.0f)));
     if (!FUN_1409f7ca0()->CastRay(&kRay, 0))
         return false;
     if (kRay.m_hitEntity != 0)
@@ -720,7 +720,7 @@ bool StateFishingFloat::FUN_140ddc4b0(Unk_StreamPoint kDir)
         FUN_140ae1160(static_cast<egf::Entity*>(kRay.m_hitEntity), 0xada5c5d2, &nType);
         if (nType != 8)
             return false;
-        Unk_StreamPoint kHigh = kRay.m_hitPoint.FUN_14097fd50(Unk_StreamPoint(0.0f, 0.0f, 55.0f));
+        Vector3 kHigh = kRay.m_hitPoint.FUN_14097fd50(Vector3(0.0f, 0.0f, 55.0f));
         Unk_FsCell kCellB = FUN_140ddc3c0(kHigh);
         Unk_FsCell kCellC = FUN_140ddc3c0(kRay.m_hitPoint);
         MS2Ptr<Unk_FishPacket> spPacket = FsFishMgr()->FUN_140cdbb10(FUN_1408a03c0(kCellC));

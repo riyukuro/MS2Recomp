@@ -82,9 +82,9 @@ public:
     virtual void vfunc_9(float x, float y, float z, int bUpdate);               // 9  0x1418b9140 sets the translation
     virtual void vfunc_10(int dx, int dy, int dz, int bUpdate);                 // 10 0x1418b7f00 drags the object
     virtual void vfunc_11(int dx, int dy, int dz, int bUpdate);                 // 11 0x1418b8300 drags the camera
-    virtual void vfunc_12(const Unk_StreamPoint& kDelta, Unk_StreamPoint& kRot);    // 12 0x1418b84c0 limits the rotation
-    virtual void vfunc_13(float rx, float ry, float rz, const Unk_StreamPoint* pPivot,
-                          const Unk_StreamPoint* pPos, int bUpdate);            // 13 0x1418b8750 rotates about a pivot
+    virtual void vfunc_12(const Vector3& kDelta, Vector3& kRot);    // 12 0x1418b84c0 limits the rotation
+    virtual void vfunc_13(float rx, float ry, float rz, const Vector3* pPivot,
+                          const Vector3* pPos, int bUpdate);            // 13 0x1418b8750 rotates about a pivot
     virtual void vfunc_14(int dx, int dy, int dz, int bUpdate);                 // 14 0x1418b8560 rotates the object
     virtual void vfunc_15(float rx, float ry, float rz, int bUpdate);           // 15 0x1418b89f0
     virtual void vfunc_16(int n, int bUpdate);              // 16 0x1418b8b00
@@ -120,13 +120,13 @@ public:
     int GetMode();                                    // 0x1418ba140 m_nMode
     int FUN_1418ba160(int nButton);                         // 0x1418ba160 m_nMode = FUN_1418ba1a0(nButton)
     int FUN_1418ba1a0(int nButton);                         // 0x1418ba1a0 button -> drag mode
-    void FUN_1418ba200(Unk_StreamPoint* pDst, float x, float y, float z);       // 0x1418ba200
-    void FUN_1418ba250(Unk_StreamPoint* pDst, const Unk_StreamPoint* pSrc);     // 0x1418ba250
+    void FUN_1418ba200(Vector3* pDst, float x, float y, float z);       // 0x1418ba200
+    void FUN_1418ba250(Vector3* pDst, const Vector3* pSrc);     // 0x1418ba250
     void FUN_1418ba280(int bUpdate);                        // 0x1418ba280 back to the stored position
     void FUN_1418ba340(int bUpdate);                        // 0x1418ba340 back to the stored angle
     void SetLocked(int n);                              // 0x1418ba3f0 m_nLocked = n
-    void FUN_1418ba410(Unk_StreamPoint* pOut);              // 0x1418ba410
-    void FUN_1418ba4a0(Unk_NiMatrix3* pRot, const Unk_StreamPoint* pPos, Unk_StreamPoint* pOut);   // 0x1418ba4a0
+    void FUN_1418ba410(Vector3* pOut);              // 0x1418ba410
+    void FUN_1418ba4a0(Unk_NiMatrix3* pRot, const Vector3* pPos, Vector3* pOut);   // 0x1418ba4a0
 
 public:
     int m_nKind;                                            // +0x20 1 PC, 2 cube, 3 ridee, 4 pet
@@ -134,13 +134,13 @@ public:
     unsigned int m_nObjectId;                                      // +0x28 object id in the world (0 = none)
     int m_pad_2c;
     efd::SmartPointer<UIRenderView> m_spView;               // +0x30
-    Unk_StreamPoint m_kAngle;                               // +0x38 current angle (degrees)
-    Unk_StreamPoint m_kAngleBase;                           // +0x44 angle before the drag
-    Unk_StreamPoint m_kPos;                                 // +0x50 current position
-    Unk_StreamPoint m_kPosBase;                             // +0x5c position before the drag
-    Unk_StreamPoint m_kPivotBase;                           // +0x68
-    Unk_StreamPoint m_kPivot;                               // +0x74 framing pivot (centre offset)
-    Unk_StreamPoint m_kScratch;                             // +0x80 (NiPoint3 default constructed)
+    Vector3 m_kAngle;                               // +0x38 current angle (degrees)
+    Vector3 m_kAngleBase;                           // +0x44 angle before the drag
+    Vector3 m_kPos;                                 // +0x50 current position
+    Vector3 m_kPosBase;                             // +0x5c position before the drag
+    Vector3 m_kPivotBase;                           // +0x68
+    Vector3 m_kPivot;                               // +0x74 framing pivot (centre offset)
+    Vector3 m_kScratch;                             // +0x80 (NiPoint3 default constructed)
     int m_nMode;                                            // +0x8c drag mode (0 none, 1 rotate, 2 move, 3 camera)
     float m_fMoveStep;                                      // +0x90 0.7
     float m_fRotStep;                                       // +0x94 0.2
@@ -317,10 +317,10 @@ MS2_CHECK_SIZE(UIAvatarPet, 0xc8);
 // ---- free functions of the unit -----------------------------------------------------------------------------------
 
 void FUN_1418bee30(ASObj* pObj, int nSkinTable);           // 0x1418bee30 skinColors of the skin colour table
-void FUN_1418bf1e0(Unk_StreamPoint* pAngles);               // 0x1418bf1e0 wraps the three angles (degrees)
+void FUN_1418bf1e0(Vector3* pAngles);               // 0x1418bf1e0 wraps the three angles (degrees)
 void FUN_1418bf230(float* pX, float* pY, float* pZ);        // 0x1418bf230
 void FUN_1418bf270(float* pAngle);                          // 0x1418bf270 wraps an angle into 0..360
 void FUN_1418bf2e0(int* pAngle);                            // 0x1418bf2e0
-void FUN_1418bf330(Unk_StreamPoint* pAngles);               // 0x1418bf330 wraps the three angles (radians)
+void FUN_1418bf330(Vector3* pAngles);               // 0x1418bf330 wraps the three angles (radians)
 void FUN_1418bf380(float* pX, float* pY, float* pZ);        // 0x1418bf380
 void FUN_1418bf3c0(float* pAngle);                          // 0x1418bf3c0 wraps an angle into 0..2pi

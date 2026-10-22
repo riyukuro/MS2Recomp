@@ -54,8 +54,8 @@ struct Unk_CmEaseIn { float FUN_1410af700(float t); };
 class Unk_CmEntity
 {
 public:
-    void FUN_1409618c0(unsigned nProp, Unk_StreamPoint* pOut);          // get a point property
-    void FUN_140a38a50(unsigned nProp, const Unk_StreamPoint* pValue);  // set a point property
+    void FUN_1409618c0(unsigned nProp, Vector3* pOut);          // get a point property
+    void FUN_140a38a50(unsigned nProp, const Vector3* pValue);  // set a point property
     void FUN_1409457c0(unsigned nProp, const float* pValue);            // set a float property
     void FUN_14098c6e0(unsigned nProp, const bool* pValue);             // set a bool property
 };
@@ -316,7 +316,7 @@ void CCubeMotionManager::Update()
         {
             float fRatio = Unk_CmEaseOut().FUN_140cd8c20(rotate.m_timer.FUN_140868940());
             float fValue = rotate.m_fFrom + (rotate.m_fTo - rotate.m_fFrom) * fRatio;
-            Unk_StreamPoint pt;
+            Vector3 pt;
             ((Unk_CmEntity*)spEntity.operator->())->FUN_1409618c0(0x68c7c29d, &pt);
             pt.z = fValue;
             ((Unk_CmEntity*)spEntity.operator->())->FUN_140a38a50(0x68c7c29d, &pt);
@@ -360,7 +360,7 @@ void CCubeMotionManager::Update()
                 fT = bounce.m_timer.FUN_140868940();
                 float fRatio = Unk_CmEaseIn().FUN_1410af700((fT - 0.5f) * 2.0f);
                 float fValue = bounce.m_fTo + (bounce.m_fFrom - bounce.m_fTo) * fRatio;
-                Unk_StreamPoint pt;
+                Vector3 pt;
                 ((Unk_CmEntity*)spEntity.operator->())->FUN_1409618c0(0xfd95ca52, &pt);
                 pt.z = fValue;
                 ((Unk_CmEntity*)spEntity.operator->())->FUN_140a38a50(0xfd95ca52, &pt);
@@ -375,7 +375,7 @@ void CCubeMotionManager::Update()
                 fT = bounce.m_timer.FUN_140868940();
                 float fRatio = Unk_CmEaseOut().FUN_140cd8c20(fT * 2.0f);
                 float fValue = bounce.m_fFrom + (bounce.m_fTo - bounce.m_fFrom) * fRatio;
-                Unk_StreamPoint pt;
+                Vector3 pt;
                 ((Unk_CmEntity*)spEntity.operator->())->FUN_1409618c0(0xfd95ca52, &pt);
                 pt.z = fValue;
                 ((Unk_CmEntity*)spEntity.operator->())->FUN_140a38a50(0xfd95ca52, &pt);

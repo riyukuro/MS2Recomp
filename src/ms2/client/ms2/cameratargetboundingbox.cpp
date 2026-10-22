@@ -18,7 +18,7 @@
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 
-int FUN_1409618c0(egf::Entity* pEntity, unsigned uPropId, Unk_StreamPoint* pOut);   // read a Point3 property (0 = ok)
+int FUN_1409618c0(egf::Entity* pEntity, unsigned uPropId, Vector3* pOut);   // read a Point3 property (0 = ok)
 float FUN_140968970(float f);                                                       // sqrtf
 
 void FUN_140add1a0(Unk_CtbBounds3* pSelf, float x0, float y0, float z0, float x1, float y1, float z1);   // set
@@ -29,11 +29,11 @@ bool FUN_140adc610(const Unk_CtbObb* pObb, const Unk_CtbVec3& pt);              
 void FUN_140adcdd0(const Unk_CtbMat33* pMat, const Unk_CtbVec3& vec, Unk_CtbVec3* pOut);   // pOut = mat * vec
 
 // @0x140afef30
-float CCameraTargetBounding::GetDistance(const Unk_StreamPoint& pt)
+float CCameraTargetBounding::GetDistance(const Vector3& pt)
 {
     if (Contains(pt))
         return 0.0f;
-    Unk_StreamPoint ptClosest = GetClosest(pt);
+    Vector3 ptClosest = GetClosest(pt);
     float fDist = ptClosest.FUN_140965c40(pt).FUN_140967ac0();
     return fDist;
 }
@@ -53,9 +53,9 @@ CCameraTargetBoundingBox::~CCameraTargetBoundingBox()
 // @0x140aff0f0
 int CCameraTargetBoundingBox::InitFromEntity(egf::Entity* pEntity)
 {
-    Unk_StreamPoint ptPos;
-    Unk_StreamPoint ptRot;
-    Unk_StreamPoint ptSize;
+    Vector3 ptPos;
+    Vector3 ptRot;
+    Vector3 ptSize;
     if (FUN_1409618c0(pEntity, 0x9dc22aea, &ptSize) != 0)
         return 0;
     if (FUN_1409618c0(pEntity, 0xfd95ca52, &ptPos) != 0)
@@ -63,7 +63,7 @@ int CCameraTargetBoundingBox::InitFromEntity(egf::Entity* pEntity)
     if (FUN_1409618c0(pEntity, 0x68c7c29d, &ptRot) != 0)
         return 0;
     m_entityId = pEntity->GetEntityIDValue();
-    Unk_StreamPoint ptHalf = ptSize.FUN_14097fc90(0.5f);
+    Vector3 ptHalf = ptSize.FUN_14097fc90(0.5f);
     FUN_140add1a0(&m_bounds, -ptHalf.x, -ptHalf.y, -ptHalf.z, ptHalf.x, ptHalf.y, ptHalf.z);
     m_pose.m_pos.x = ptPos.x;
     m_pose.m_pos.y = ptPos.y;
@@ -77,14 +77,14 @@ int CCameraTargetBoundingBox::InitFromEntity(egf::Entity* pEntity)
 MS2_REPLACE_METHOD(0x140AFF0F0, CCameraTargetBoundingBox, InitFromEntity, 560, 0x6AA13F9C);
 
 // @0x140aff330
-int CCameraTargetBoundingBox::Contains(Unk_StreamPoint pt)
+int CCameraTargetBoundingBox::Contains(Vector3 pt)
 {
     return FUN_140adc610(&m_obb, Unk_CtbVec3(pt.x, pt.y, pt.z)) != 0;
 }
 MS2_REPLACE_METHOD(0x140AFF330, CCameraTargetBoundingBox, Contains, 104, 0xFF706066);
 
 // @0x140aff3a0
-Unk_StreamPoint CCameraTargetBoundingBox::GetClosest(const Unk_StreamPoint& pt)
+Vector3 CCameraTargetBoundingBox::GetClosest(const Vector3& pt)
 {
     if (Contains(pt))
         return pt;
@@ -103,7 +103,7 @@ Unk_StreamPoint CCameraTargetBoundingBox::GetClosest(const Unk_StreamPoint& pt)
     if (vLocal.z > m_bounds.m_max.z)
         vLocal.z = m_bounds.m_max.z;
     vWorld.FUN_140adbbc0(m_pose.FUN_140adbcb0(vLocal));
-    return Unk_StreamPoint(vWorld.x, vWorld.y, vWorld.z);
+    return Vector3(vWorld.x, vWorld.y, vWorld.z);
 }
 MS2_REPLACE_METHOD(0x140AFF3A0, CCameraTargetBoundingBox, GetClosest, 514, 0x1D624BCD);
 
@@ -120,7 +120,7 @@ CCameraTargetBoundingSphere::~CCameraTargetBoundingSphere()
 // @0x140aff630
 int CCameraTargetBoundingSphere::InitFromEntity(egf::Entity* pEntity)
 {
-    Unk_StreamPoint ptSize;
+    Vector3 ptSize;
     if (FUN_1409618c0(pEntity, 0x9dc22aea, &ptSize) != 0)
         return 0;
     if (FUN_1409618c0(pEntity, 0xfd95ca52, &m_center) != 0)
@@ -132,7 +132,7 @@ int CCameraTargetBoundingSphere::InitFromEntity(egf::Entity* pEntity)
 MS2_REPLACE_METHOD(0x140AFF630, CCameraTargetBoundingSphere, InitFromEntity, 140, 0xD967970C);
 
 // @0x140aff6d0
-int CCameraTargetBoundingSphere::Contains(Unk_StreamPoint pt)
+int CCameraTargetBoundingSphere::Contains(Vector3 pt)
 {
     if (pt.FUN_140965c40(m_center).FUN_140967ac0() < m_radius)
         return 1;
@@ -142,14 +142,14 @@ int CCameraTargetBoundingSphere::Contains(Unk_StreamPoint pt)
 MS2_REPLACE_METHOD(0x140AFF6D0, CCameraTargetBoundingSphere, Contains, 74, 0x4D191DD8);
 
 // @0x140aff730
-Unk_StreamPoint CCameraTargetBoundingSphere::GetClosest(const Unk_StreamPoint& pt)
+Vector3 CCameraTargetBoundingSphere::GetClosest(const Vector3& pt)
 {
     if (Contains(pt))
         return pt;
-    Unk_StreamPoint ptDir = pt.FUN_140965c40(m_center);
+    Vector3 ptDir = pt.FUN_140965c40(m_center);
     ptDir.FUN_140968990();
-    Unk_StreamPoint ptNear = m_center.FUN_14097fd50(ptDir.FUN_14097fc90(m_radius));
-    return Unk_StreamPoint(ptNear.x, ptNear.y, ptNear.z);
+    Vector3 ptNear = m_center.FUN_14097fd50(ptDir.FUN_14097fc90(m_radius));
+    return Vector3(ptNear.x, ptNear.y, ptNear.z);
 }
 MS2_REPLACE_METHOD(0x140AFF730, CCameraTargetBoundingSphere, GetClosest, 253, 0x1DF3CA6D);
 
@@ -166,7 +166,7 @@ CCameraTargetBoundingCylinder::~CCameraTargetBoundingCylinder()
 // @0x140aff8c0
 int CCameraTargetBoundingCylinder::InitFromEntity(egf::Entity* pEntity)
 {
-    Unk_StreamPoint ptSize;
+    Vector3 ptSize;
     if (FUN_1409618c0(pEntity, 0x9dc22aea, &ptSize) != 0)
         return 0;
     if (FUN_1409618c0(pEntity, 0xfd95ca52, &m_center) != 0)
@@ -179,7 +179,7 @@ int CCameraTargetBoundingCylinder::InitFromEntity(egf::Entity* pEntity)
 MS2_REPLACE_METHOD(0x140AFF8C0, CCameraTargetBoundingCylinder, InitFromEntity, 164, 0x316AC71E);
 
 // @0x140aff970
-int CCameraTargetBoundingCylinder::Contains(Unk_StreamPoint pt)
+int CCameraTargetBoundingCylinder::Contains(Vector3 pt)
 {
     if (m_center.z + m_halfHeight < pt.z || pt.z < m_center.z - m_halfHeight)
         return false;
@@ -192,11 +192,11 @@ int CCameraTargetBoundingCylinder::Contains(Unk_StreamPoint pt)
 MS2_REPLACE_METHOD(0x140AFF970, CCameraTargetBoundingCylinder, Contains, 195, 0x7580B175);
 
 // @0x140affa40
-Unk_StreamPoint CCameraTargetBoundingCylinder::GetClosest(const Unk_StreamPoint& pt)
+Vector3 CCameraTargetBoundingCylinder::GetClosest(const Vector3& pt)
 {
     if (Contains(pt))
         return pt;
-    Unk_StreamPoint ptNear = pt;
+    Vector3 ptNear = pt;
     float fDx = pt.x - m_center.x;
     float fDy = pt.y - m_center.y;
     if (fDx * fDx + fDy * fDy > m_radius * m_radius)

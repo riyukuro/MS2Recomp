@@ -31,7 +31,7 @@ public:
     int m_n14;                          // +0x14
     int m_n18;                          // +0x18
     int m_n1c;                          // +0x1c
-    Unk_StreamPoint m_ptOffset;         // +0x20
+    Vector3 m_ptOffset;         // +0x20
 };
 MS2_CHECK_OFFSET(Unk_ColInfo, m_ptOffset, 0x20);
 
@@ -66,7 +66,7 @@ public:
     CBoxCollision();                                    // 0x140ada4c0
     virtual void vfunc_5();
     virtual float vfunc_6();
-    Unk_StreamPoint m_ptBox;                            // +0x78
+    Vector3 m_ptBox;                            // +0x78
     char m_pad_84[0x150 - 0x84];
 };
 MS2_CHECK_SIZE(CBoxCollision, 0x150);
@@ -159,7 +159,7 @@ CollisionPtr CSkillCollisionManager::GetCached(Unk_SkillSrc* pSrc, int nLevel, i
         if (spShape->m_nShape == 1 && pInfo->m_nShape == 1)
         {
             CBoxCollision* pB = static_cast<CBoxCollision*>(spShape.get());
-            pB->m_ptBox = Unk_StreamPoint((float)pInfo->m_n18, (float)pInfo->m_n10 + fZOffset, (float)pInfo->m_n14);
+            pB->m_ptBox = Vector3((float)pInfo->m_n18, (float)pInfo->m_n10 + fZOffset, (float)pInfo->m_n14);
             spShape->vfunc_4();
             return spShape;
         }
@@ -195,7 +195,7 @@ CollisionPtr CSkillCollisionManager::GetCached(Unk_SkillSrc* pSrc, int nLevel, i
     else if (pInfo->m_nShape == 1)
     {
         CBoxCollision* pB = new CBoxCollision();
-        pB->m_ptBox = Unk_StreamPoint((float)pInfo->m_n18, (float)pInfo->m_n10 + fZOffset, (float)pInfo->m_n14);
+        pB->m_ptBox = Vector3((float)pInfo->m_n18, (float)pInfo->m_n10 + fZOffset, (float)pInfo->m_n14);
         m_mapCache.SetAt(strKey, CollisionPtr(pB));
         spShape.AssignRaw(pB);
     }
@@ -278,7 +278,7 @@ CollisionPtr CSkillCollisionManager::Create(Unk_SkillSrc* pSrc, int nLevel, int 
     else if (pInfo->m_nShape == 1)
     {
         CBoxCollision* pB = new CBoxCollision();
-        pB->m_ptBox = Unk_StreamPoint((float)pInfo->m_n18, (float)pInfo->m_n10 + fZOffset, (float)pInfo->m_n14);
+        pB->m_ptBox = Vector3((float)pInfo->m_n18, (float)pInfo->m_n10 + fZOffset, (float)pInfo->m_n14);
         spShape.AssignRaw(pB);
     }
     else if (pInfo->m_nShape == 2)
@@ -325,7 +325,7 @@ CollisionPtr CSkillCollisionManager::CreateFromInfo(Unk_ColInfo* pInfo, float fZ
     else if (pInfo->m_nShape == 1)
     {
         CBoxCollision* pB = new CBoxCollision();
-        pB->m_ptBox = Unk_StreamPoint((float)pInfo->m_n18, (float)pInfo->m_n10 + fZOffset, (float)pInfo->m_n14);
+        pB->m_ptBox = Vector3((float)pInfo->m_n18, (float)pInfo->m_n10 + fZOffset, (float)pInfo->m_n14);
         spShape.AssignRaw(pB);
     }
     else if (pInfo->m_nShape == 2)
@@ -407,9 +407,9 @@ void CSkillCollisionManager::Show(PCBase* pActor, MS2Ptr<Unk_ClubSkillAttr> spSk
     {
         CBaseCollision* pShape = spShape.get();
         Unk_NiPt3 kDir(pDir);
-        Unk_StreamPoint ptDir = *(Unk_StreamPoint*)&kDir;
+        Vector3 ptDir = *(Vector3*)&kDir;
         Unk_NiPt3 kPos(pPos);
-        Unk_StreamPoint ptPos = *(Unk_StreamPoint*)&kPos;
+        Vector3 ptPos = *(Vector3*)&kPos;
         pShape->vfunc_3(ptPos, ptDir, 1.0f);
         spShape->m_n58 = FUN_140869420();
         TSingleton<CSkillCollisionManager>::GetInstance()->Add(spShape);

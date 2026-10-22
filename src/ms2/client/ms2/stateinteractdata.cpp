@@ -44,7 +44,7 @@
 
 // ---- unit-local placeholders ----
 
-extern Unk_StreamPoint DAT_143b01a60;                    // the zero point
+extern Vector3 DAT_143b01a60;                    // the zero point
 
 // A PCBase seen through its slot 18 (the position, returned as the 12-byte point of the FUN_ operators).
 class Unk_SiPos
@@ -68,7 +68,7 @@ public:
     virtual void vfunc_15();
     virtual void vfunc_16();
     virtual void vfunc_17();
-    virtual Unk_StreamPoint vfunc_18();
+    virtual Vector3 vfunc_18();
 };
 
 // The casting bar request (FUN_1418e12b0): duration, flags, speed and four texts (+0x28 the label).
@@ -100,7 +100,7 @@ UICastingBar* FUN_140ac2270(int nId);
 
 void* FUN_14165f100(PCBase* p);
 void FUN_14165f170(PCBase* p);
-class Unk_SiBuffMgr { public: Unk_StreamPoint FUN_141683290(); };
+class Unk_SiBuffMgr { public: Vector3 FUN_141683290(); };
 Unk_SiBuffMgr* FUN_14166d240(PCBase* p);
 bool FUN_1416749c0(PCBase* p);
 CStringW GetStringCommonByKey(const CStringW& str);
@@ -118,7 +118,7 @@ public:
 class Unk_SiWorld
 {
 public:
-    MS2Ptr<CInteractObject> FUN_141bc6090(Unk_StreamPoint pt, int nSkipDisabled);   // the interactable object at a point
+    MS2Ptr<CInteractObject> FUN_141bc6090(Vector3 pt, int nSkipDisabled);   // the interactable object at a point
     MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);                  // an interact object by name
     void FUN_141bc5fb0(void* pOut, int nCategory);                                  // the interact objects of a kind
     void* FUN_141bd0cc0();                                                          // the local player
@@ -345,7 +345,7 @@ void StateInteraction::vfunc_4(StateData* pData)
 void StateInteraction::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    Unk_StreamPoint kZero = DAT_143b01a60;
+    Vector3 kZero = DAT_143b01a60;
     m_pOwner->vfunc_68(&kZero, fTime, 0, 0, 0);
 }
 
@@ -419,8 +419,8 @@ void StateInteraction::vfunc_8(double fTime)
             }
         }
         Unk_SiBuffMgr* pBuff = FUN_14166d240(pPC);
-        Unk_StreamPoint kPos = pBuff->FUN_141683290();
-        Unk_StreamPoint kArg = kPos;
+        Vector3 kPos = pBuff->FUN_141683290();
+        Vector3 kArg = kPos;
         pPC->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
         if (FUN_1416749c0(m_pOwner))
             pPC->vfunc_59(2, 0, 0, 0);
@@ -525,11 +525,11 @@ void StateInteraction::FUN_1417d22f0(MS2Ptr<CInteractObjectData> spRow)
             MS2Ptr<CInteractObject> spObject = FUN_1403ed2d0()->FUN_141bc6090(reinterpret_cast<Unk_SiPos*>(m_pOwner)->vfunc_18(), 1);
             if (spObject.get())
             {
-                Unk_StreamPoint kRot = spObject->GetRot();
+                Vector3 kRot = spObject->GetRot();
                 Unk_SiXform kXform;
                 FUN_140a332d0(&kXform);
-                Unk_StreamPoint kUp(0.0f, 0.0f, 1.0f);
-                Unk_StreamPoint kPos = spObject->GetPos().FUN_14097fd50(kUp);
+                Vector3 kUp(0.0f, 0.0f, 1.0f);
+                Vector3 kPos = spObject->GetPos().FUN_14097fd50(kUp);
                 Unk_NiPoint3 kNiPos(kPos);
                 FUN_14097faa0(kXform.m_afTranslate, &kNiPos);
                 kXform.m_rotate.FUN_142083d40((kRot.x * 3.1415927f) / 180.0f, (kRot.y * 3.1415927f) / 180.0f,
@@ -686,8 +686,8 @@ void StateInteractionNpc::vfunc_8(double fTime)
             }
         }
         Unk_SiBuffMgr* pBuff = FUN_14166d240(pPC);
-        Unk_StreamPoint kPos = pBuff->FUN_141683290();
-        Unk_StreamPoint kArg = kPos;
+        Vector3 kPos = pBuff->FUN_141683290();
+        Vector3 kArg = kPos;
         pPC->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
         if (FUN_1416749c0(m_pOwner))
             pPC->vfunc_59(2, 0, 0, 0);
@@ -790,8 +790,8 @@ void StateAutoInteraction::vfunc_8(double fTime)
     if (pPC == 0)
         return;
     Unk_SiBuffMgr* pBuff = FUN_14166d240(pPC);
-    Unk_StreamPoint kPos = pBuff->FUN_141683290();
-    Unk_StreamPoint kArg = kPos;
+    Vector3 kPos = pBuff->FUN_141683290();
+    Vector3 kArg = kPos;
     pPC->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
     if (FUN_1416749c0(m_pOwner))
         pPC->vfunc_59(2, 0, 0, 0);
@@ -836,7 +836,7 @@ MS2Ptr<StateData> StateInteraction::vfunc_27()
 }
 
 // @0x1417d4940
-Unk_StreamPoint CInteractObject::GetRot()
+Vector3 CInteractObject::GetRot()
 {
     return m_vRot;
 }

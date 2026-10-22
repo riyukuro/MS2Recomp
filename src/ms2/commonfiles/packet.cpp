@@ -533,9 +533,9 @@ void CInPacket::ReadBytes(void* data, int count)
 // @0x1407140a0
 short CInPacket::FUN_1407140a0() { return ReadInt16(); }
 // @0x1407140d0
-Unk_StreamPoint CInPacket::FUN_1407140d0()
+Vector3 CInPacket::FUN_1407140d0()
 {
-    Unk_StreamPoint point;
+    Vector3 point;
     point.x = ReadFloat();
     point.y = ReadFloat();
     point.z = ReadFloat();
@@ -562,11 +562,11 @@ CStringW CInPacket::ReadUnicodeString()
     return value;
 }
 // @0x1407149c0
-Unk_StreamPoint CInPacket::ReadVector3() { return FUN_1407140d0(); }
+Vector3 CInPacket::ReadVector3() { return FUN_1407140d0(); }
 // @0x1407149f0
-Unk_StreamPoint CInPacket::ReadVector3Short()
+Vector3 CInPacket::ReadVector3Short()
 {
-    Unk_StreamPoint point;
+    Vector3 point;
     point.x = (float)ReadInt16();
     point.y = (float)ReadInt16();
     point.z = (float)ReadInt16();

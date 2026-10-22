@@ -46,7 +46,7 @@ public:
         bool IsRemote() const;                              // 0x140d13c90 m_percussion != 0 (a drum part)
         int m_channel;                                      // +0x00 the performer slot key (0 = the local player)
         int m_owner;                                        // +0x04 the actor id
-        Unk_StreamPoint m_position;                         // +0x08
+        Vector3 m_position;                         // +0x08
         int m_program;                                      // +0x14 GM program
         int m_percussion;                                   // +0x18 the drum note (0 = melodic)
     };

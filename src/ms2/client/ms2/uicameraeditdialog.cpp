@@ -146,7 +146,7 @@ int FUN_1408746f0(Unk_140165cf0* pElem, const char* pszName, efd::Point3& kOut);
 
 // The camera manager's "move the current camera mode to a point" helper (a CameraMgr inline).
 // @0x1418df360
-static void CameraMgrMoveTo(CameraMgr* pMgr, Unk_StreamPoint vPos)
+static void CameraMgrMoveTo(CameraMgr* pMgr, Vector3 vPos)
 {
     if (pMgr->m_spMode.get() != 0)
         pMgr->m_spMode->vfunc_3(vPos);
@@ -302,14 +302,14 @@ void UICameraEditDialog::vfunc_15()
             if (CameraMgr::GetInstance()->FUN_140af7e30() == 4 && (pTarget = FUN_1418dea40()) != 0)
             {
                 NiPoint3 kPos = pTarget->vfunc_18();
-                Unk_StreamPoint vTop(kPos.x, kPos.y, kPos.z + 100.0f);
-                Unk_StreamPoint vCamera = CameraMgr::GetInstance()->FUN_140a17e10();
+                Vector3 vTop(kPos.x, kPos.y, kPos.z + 100.0f);
+                Vector3 vCamera = CameraMgr::GetInstance()->FUN_140a17e10();
                 float fLength = vTop.FUN_140965c40(vCamera).FUN_140967ac0();
                 s_fArrive = (std::max)(fLength, s_fMaxArrive);
                 m_vMoveStart = CameraMgr::GetInstance()->FUN_140a17e10();
                 m_1dc = 1;
                 NiPoint3 kDir = pTarget->vfunc_20();
-                m_vMoveTarget = Unk_StreamPoint(kDir.x, kDir.y, kDir.z);
+                m_vMoveTarget = Vector3(kDir.x, kDir.y, kDir.z);
             }
         }
         if (m_1dc != 0)
@@ -344,12 +344,12 @@ void UICameraEditDialog::vfunc_38(void* p, float x, float y)
                 CSize sizeDelta = CPoint((int)x, (int)y) - ptStart;
                 CSize sizeMove(sizeDelta);
                 float fAngle = ((float)sizeMove.cx / 256.0f) * 180.0f;
-                Unk_StreamPoint vRotated = Unk_StreamPoint(0.0f, 0.0f, fAngle).FUN_14097fd50(m_vDragRotation);
+                Vector3 vRotated = Vector3(0.0f, 0.0f, fAngle).FUN_14097fd50(m_vDragRotation);
                 if (vRotated.z < 0.0f)
                     vRotated.z = vRotated.z + 360.0f;
                 if (360.0f < vRotated.z)
                     vRotated.z = vRotated.z - 360.0f;
-                Unk_StreamPoint vApply = vRotated;
+                Vector3 vApply = vRotated;
                 pTarget->vfunc_21(efd::Point3(vApply.x, vApply.y, vApply.z));
                 PCBase* pPlayer = FUN_14099eef0(pTarget);
                 if (pPlayer != 0)
@@ -421,7 +421,7 @@ void UICameraEditDialog::vfunc_36(void* p, float x, float y)
     if (m_bEnable != 0)
     {
         m_bDragging = 1;
-        m_vDragRotation = reinterpret_cast<const Unk_StreamPoint&>(static_cast<const NiPoint3&>(pTarget->vfunc_20()));
+        m_vDragRotation = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_20()));
         m_ptDrag.SetPoint((int)x, (int)y);
         Unk_CamCursorPtr spCursor = FUN_14025e7a0()->FUN_1422b0370(6);
         if (spCursor == 0)
@@ -481,8 +481,8 @@ void UICameraEditDialog::FUN_1418de570()
     if (CameraMgr::GetInstance()->FUN_140a18070() == 0)
         return;
     NiPoint3 kPos = pTarget->vfunc_18();
-    Unk_StreamPoint vTop(kPos.x, kPos.y, kPos.z + 100.0f);
-    Unk_StreamPoint vCamera = CameraMgr::GetInstance()->FUN_140a17e10();
+    Vector3 vTop(kPos.x, kPos.y, kPos.z + 100.0f);
+    Vector3 vCamera = CameraMgr::GetInstance()->FUN_140a17e10();
     float fLength = vTop.FUN_140965c40(vCamera).FUN_140967ac0();
     if (fLength <= s_fMinArrive)
     {
@@ -506,8 +506,8 @@ void UICameraEditDialog::FUN_1418de690()
     if (CameraMgr::GetInstance()->FUN_140a18070() == 0)
         return;
     NiPoint3 kPos = pTarget->vfunc_18();
-    Unk_StreamPoint vTop(kPos.x, kPos.y, kPos.z + 100.0f);
-    Unk_StreamPoint vCamera = CameraMgr::GetInstance()->FUN_140a17e10();
+    Vector3 vTop(kPos.x, kPos.y, kPos.z + 100.0f);
+    Vector3 vCamera = CameraMgr::GetInstance()->FUN_140a17e10();
     float fLength = vTop.FUN_140965c40(vCamera).FUN_140967ac0();
     if (s_fArrive <= fLength)
     {
@@ -523,12 +523,12 @@ void UICameraEditDialog::FUN_1418de690()
 }
 
 // @0x1418de7b0
-void UICameraEditDialog::FUN_1418de7b0(const Unk_StreamPoint& vFrom, float fStep)
+void UICameraEditDialog::FUN_1418de7b0(const Vector3& vFrom, float fStep)
 {
-    Unk_StreamPoint vDirection = vFrom.FUN_140965c40(CameraMgr::GetInstance()->FUN_140a17e10());
+    Vector3 vDirection = vFrom.FUN_140965c40(CameraMgr::GetInstance()->FUN_140a17e10());
     vDirection.FUN_140968990();
-    Unk_StreamPoint vMove = vDirection.FUN_14097fc90(fStep);
-    Unk_StreamPoint vNext = CameraMgr::GetInstance()->FUN_140a17e10().FUN_14097fd50(vMove);
+    Vector3 vMove = vDirection.FUN_14097fc90(fStep);
+    Vector3 vNext = CameraMgr::GetInstance()->FUN_140a17e10().FUN_14097fd50(vMove);
     float fLength = vFrom.FUN_140965c40(vNext).FUN_140967ac0();
     if (fLength <= s_fArrive)
         CameraMgrMoveTo(CameraMgr::GetInstance(), vNext);
@@ -548,8 +548,8 @@ void UICameraEditDialog::FUN_1418de980()
     GameObject* pTarget = FUN_1418dea40();
     if (pTarget != 0)
     {
-        Unk_StreamPoint vDirection;
-        Unk_StreamPoint vPosition;
+        Vector3 vDirection;
+        Vector3 vPosition;
         if (FUN_1403ed2d0()->FUN_141bd0dd0(&vPosition, &vDirection) == 0)
             return;
         pTarget->vfunc_21(*reinterpret_cast<efd::Point3*>(&vDirection));

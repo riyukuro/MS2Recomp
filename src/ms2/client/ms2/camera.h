@@ -66,8 +66,8 @@ public:
     egf::EntityID FUN_140af7fd0();                                      // the camera entity id (inline, camera.cpp)
     unsigned __int64 FUN_141bfe700();                                   // the camera entity id value (inline: its COMDAT reads
                                                                         // the including TU's kENTITY_INVALID copy; worldservice.cpp)
-    void FUN_140a38dc0(Unk_StreamPoint pt);                             // look-at offset (another obj)
-    void FUN_140a38e00(Unk_StreamPoint pt);                             // second point property (another obj)
+    void FUN_140a38dc0(Vector3 pt);                             // look-at offset (another obj)
+    void FUN_140a38e00(Vector3 pt);                             // second point property (another obj)
 
     int m_c;                                                            // +0x0c
     egf::Entity* m_10;                                                  // +0x10 (the camera entity)
@@ -81,7 +81,7 @@ public:
     CCameraEffect(double fStart, double fEnd);                          // 0x140ae9370
     virtual ~CCameraEffect();                                           // 0x140ae93d0
     // Moves the look-at point / up vector of the current mode; false once the effect is over.
-    virtual bool vfunc_1(double fTime, Unk_StreamPoint& ptLook, Unk_StreamPoint& ptUp);  // 0x140ae9400
+    virtual bool vfunc_1(double fTime, Vector3& ptLook, Vector3& ptUp);  // 0x140ae9400
 
     double m_fStart;                                                    // +0x18
     double m_fEnd;                                                      // +0x20
@@ -96,13 +96,13 @@ public:
     CVibrateCameraEffect(double fStart, double fEnd, float fFrequency, float fAmplitude, float fMinScale,
         double fFadeStart, int bVertical);                              // 0x140ae9450
     virtual ~CVibrateCameraEffect();                                    // 0x140ae9520
-    virtual bool vfunc_1(double fTime, Unk_StreamPoint& ptLook, Unk_StreamPoint& ptUp);  // 0x140ae9550
+    virtual bool vfunc_1(double fTime, Vector3& ptLook, Vector3& ptUp);  // 0x140ae9550
 
     float m_fFrequency;                                                 // +0x28
     float m_fAmplitude;                                                 // +0x2c
     float m_fMinScale;                                                  // +0x30
     double m_fFadeStart;                                                // +0x38
-    Unk_StreamPoint m_ptDir;                                            // +0x40
+    Vector3 m_ptDir;                                            // +0x40
     int m_bNegative;                                                    // +0x4c
     int m_bVertical;                                                    // +0x50
 };
@@ -129,7 +129,7 @@ struct Unk_CameraEffectState
     Unk_CameraEffectState();                                            // 0x140af6760
 
     double m_fStart;                                                    // +0x00
-    Unk_StreamPoint m_ptOffset;                                         // +0x08
+    Vector3 m_ptOffset;                                         // +0x08
     double m_fMaxTime;                                                  // +0x18
     float m_20;                                                         // +0x20
     int m_24;                                                           // +0x24
@@ -162,7 +162,7 @@ public:
     CameraMgr();                                                        // 0x140ae9b10
     virtual ~CameraMgr();                                               // 0x140ae9db0
 
-    void FUN_140ae9ed0(egf::Entity* pEntity, const Unk_StreamPoint* pLook, const Unk_StreamPoint* pRot);  // init
+    void FUN_140ae9ed0(egf::Entity* pEntity, const Vector3* pLook, const Vector3* pRot);  // init
     void FUN_140aea4c0(float fTime);                                    // per-frame update
     void FUN_140aea7f0();                                               // debug camera keys
     void FUN_140aead90();                                               // release the camera, the modes and effects
@@ -240,7 +240,7 @@ public:
     bool FUN_140af0d80();
     void FUN_140af0de0(MS2Ptr<CCameraEffect> spEffect);                 // add a camera effect
     float FUN_140ad4b40();                                              // current mode: setting m_0 (another obj)
-    Unk_StreamPoint FUN_140a17e10();                                    // current mode: setting m_c (another obj)
+    Vector3 FUN_140a17e10();                                    // current mode: setting m_c (another obj)
     void FUN_140ad4ff0(float f);                                        // (another obj)
 
     // @0x140af2520
@@ -262,7 +262,7 @@ public:
     // @0x140af81a0
     bool FUN_140af81a0() { if (m_spMode.get()) return m_spMode->FUN_140af8140(); return false; }
     // @0x140af8290
-    Unk_StreamPoint FUN_140af8290() { if (m_spMode.get()) return m_spMode->FUN_140af8260(); return g_143b01a60; }
+    Vector3 FUN_140af8290() { if (m_spMode.get()) return m_spMode->FUN_140af8260(); return g_143b01a60; }
     // @0x140aed720
     void FUN_140aed720(const Unk_CameraSetting& setting) { m_setting = setting; }
     // @0x140af7f70
@@ -296,7 +296,7 @@ public:
     Camera* m_pCamera;                                                  // +0x110
     MS2Ptr<CCameraMode> m_spMode;                                       // +0x118
     MS2Ptr<CCameraMode> m_spTargetMode;                                 // +0x128
-    Unk_StreamPoint m_ptMove;                                           // +0x138
+    Vector3 m_ptMove;                                           // +0x138
     NiFrustumPlanes m_frustumPlanes;                                    // +0x144
     int m_1a8;                                                          // +0x1a8
     int m_1ac;                                                          // +0x1ac

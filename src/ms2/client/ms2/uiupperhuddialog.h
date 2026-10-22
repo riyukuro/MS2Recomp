@@ -24,7 +24,7 @@ class CMsTime;
 class UIPcBangDialog;
 class Unk_UISwfEntity_25;
 
-// A 12-byte xyz value with its own ctor/assign (not the shared Unk_StreamPoint, whose ctor lives at 0x1402bd040).
+// A 12-byte xyz value with its own ctor/assign (not the shared Vector3, whose ctor lives at 0x1402bd040).
 struct Unk_HudStreamPoint
 {
     Unk_HudStreamPoint();                                           // 0x1405522f0

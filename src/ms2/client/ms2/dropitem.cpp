@@ -48,7 +48,7 @@ class Unk_WsC_GameObj : public GameObject
 public:
     virtual void vfunc_57(); virtual void vfunc_58(); virtual void vfunc_59(); virtual void vfunc_60(); virtual void vfunc_61();
     virtual void vfunc_62(); virtual void vfunc_63(); virtual void vfunc_64(); virtual void vfunc_65(); virtual void vfunc_66();
-    virtual void vfunc_67(Unk_StreamPoint* pForward, Unk_StreamPoint* pSide);   // 0x218
+    virtual void vfunc_67(Vector3* pForward, Vector3* pSide);   // 0x218
 };
 
 // The actor's ground shadow (unit_14160fb10 holds its methods; only the members this unit reads are named).
@@ -139,7 +139,7 @@ private:
 
 // More unit-local views of exe objects (the drop source, the model attachment, the item data, the prop of a tree).
 class Unk_WsB_Prop : public CInteractObject { };
-class Unk_GoAttachment { public: char m_pad[0xb4]; Unk_StreamPoint m_pos; };   // +0xb4 the placement point
+class Unk_GoAttachment { public: char m_pad[0xb4]; Vector3 m_pos; };   // +0xb4 the placement point
 class Unk_ItemEquipData { public: int FUN_14053c5c0(); };                      // the item kind
 class Unk_DropAnimSvc { public: NiActorManager* FUN_140999440(const egf::EntityID& kId); };
 Unk_DropAnimSvc* FUN_141b6f910();
@@ -151,12 +151,12 @@ bool FUN_140184310(const CStringA& str, const char* psz);            // str == p
 class CBlockManager* FUN_140a6a830();
 extern Unk_Inventory DAT_143ab2a90;
 int FUN_140768010(unsigned nRange, unsigned nBase);                  // random in base..base+range-1
-float FUN_140966f00(Unk_StreamPoint kA, Unk_StreamPoint kB);        // the horizontal distance
+float FUN_140966f00(Vector3 kA, Vector3 kB);        // the horizontal distance
 CPhysXHelper* FUN_1409f7ca0();
-int FUN_14147a500(Unk_StreamPoint* pOut, const Unk_StreamPoint* pStart, const Unk_StreamPoint* pEnd, char bProbe, float fProbeLen, const NxGroupsMask* pMask);
-extern Unk_StreamPoint DAT_143a08ce8;                               // NiPoint3::UNIT_Y
-extern Unk_StreamPoint DAT_143a08cf8;                               // NiPoint3::UNIT_Z
-extern Unk_StreamPoint DAT_143a08d08;                               // NiPoint3::ALL_ONES
+int FUN_14147a500(Vector3* pOut, const Vector3* pStart, const Vector3* pEnd, char bProbe, float fProbeLen, const NxGroupsMask* pMask);
+extern Vector3 DAT_143a08ce8;                               // NiPoint3::UNIT_Y
+extern Vector3 DAT_143a08cf8;                               // NiPoint3::UNIT_Z
+extern Vector3 DAT_143a08d08;                               // NiPoint3::ALL_ONES
 
 // Fills an identity transform at kPos (the sound and effect placement of a drop).
 static void MakeXform(NiTransform& kXform, const NiPoint3& kPos)
@@ -177,13 +177,13 @@ static CString s_strWarningBag("system_notice_error_warningBag");   // @0x1400e7
 
 // The horizontal direction kTo - kFrom (z cleared on the copies), unit length when bUnitize.
 // @0x141192780
-Unk_StreamPoint FUN_141192780(Unk_StreamPoint kFrom, Unk_StreamPoint kTo, bool bUnitize)
+Vector3 FUN_141192780(Vector3 kFrom, Vector3 kTo, bool bUnitize)
 {
     kFrom.z = 0.0f;
     kTo.z = 0.0f;
     if (bUnitize)
     {
-        Unk_StreamPoint kDir = kTo.FUN_140965c40(kFrom);
+        Vector3 kDir = kTo.FUN_140965c40(kFrom);
         kDir.FUN_140968990();
         return kDir;
     }
@@ -381,15 +381,15 @@ void CDropItem::vfunc_32(bool bForce)
         if (bMoved || bForce || bDirty)
         {
             Unk_RayCastInfo kInfo;
-            Unk_StreamPoint kNormal(0.0f, 0.0f, 1.0f);
-            Unk_StreamPoint kHit(0.0f, 0.0f, 0.0f);
+            Vector3 kNormal(0.0f, 0.0f, 1.0f);
+            Vector3 kHit(0.0f, 0.0f, 0.0f);
             int nHit = 0;
             if (bMoved)
             {
                 if (FUN_141192830(m_spShadow))
                 {
                     NiPoint3 kPos = vfunc_18();
-                    nHit = FUN_1409f7ca0()->FUN_14168a310(reinterpret_cast<Unk_StreamPoint&>(kPos), kHit, &kInfo, 0.0f, &kNormal, 0);
+                    nHit = FUN_1409f7ca0()->FUN_14168a310(reinterpret_cast<Vector3&>(kPos), kHit, &kInfo, 0.0f, &kNormal, 0);
                 }
             }
             m_spShadow->FUN_14160feb0(nHit, reinterpret_cast<efd::Point3&>(kHit), reinterpret_cast<efd::Point3&>(kNormal), kInfo.m_hitDist, bForce);
@@ -468,14 +468,14 @@ void CDropItem::FUN_14118d9a0(int nState)
                 NiPoint3 kOwnerPos = pOwner->vfunc_18();
                 m_posGround = kOwnerPos;
                 NiPoint3 kGoalPos = pOwner->vfunc_18();
-                Unk_StreamPoint kGoal(reinterpret_cast<Unk_StreamPoint&>(kGoalPos));
+                Vector3 kGoal(reinterpret_cast<Vector3&>(kGoalPos));
                 kGoal.z += m_f218;
                 unsigned nHalf = (unsigned)(__int64)m_f224 >> 1;
                 int nRandom = FUN_140768010(nHalf, 0);
                 m_f224 = (float)(nRandom + nHalf);
-                Unk_StreamPoint kGoalCopy(kGoal);
+                Vector3 kGoalCopy(kGoal);
                 NiPoint3 kStartPos = pOwner == 0 ? NiPoint3() : vfunc_18();
-                Unk_StreamPoint kStart(reinterpret_cast<Unk_StreamPoint&>(kStartPos));
+                Vector3 kStart(reinterpret_cast<Vector3&>(kStartPos));
                 m_arc.FUN_141479ed0(kStart, kGoalCopy, m_f224, m_f228);
             }
             m_pfnState = &CDropItem::FUN_141191d10;
@@ -483,7 +483,7 @@ void CDropItem::FUN_14118d9a0(int nState)
         else if (nState == 3)
         {
             NiPoint3 kPos = vfunc_18();
-            m_arc.m_origin = reinterpret_cast<Unk_StreamPoint&>(kPos);
+            m_arc.m_origin = reinterpret_cast<Vector3&>(kPos);
             egf::EntityID kKey;
             if (FUN_141b6f910()->FUN_140999440(FUN_14123c460(kKey)))
             {
@@ -546,7 +546,7 @@ void CDropItem::FUN_14118d9a0(int nState)
         {
             m_fGrow = 0.0f;
             NiPoint3 kPos = vfunc_18();
-            m_posGrow = reinterpret_cast<Unk_StreamPoint&>(kPos);
+            m_posGrow = reinterpret_cast<Vector3&>(kPos);
             m_pfnState = &CDropItem::FUN_1411923a0;
         }
     }
@@ -568,7 +568,7 @@ void CDropItem::FUN_14118d9a0(int nState)
             if (m_nDropKind == 0x21)
             {
                 NiPoint3 kSelfPos = vfunc_18();
-                MS2Ptr<Unk_WsB_Prop> spProp = WorldService::GetInstance()->FUN_141bc6090(reinterpret_cast<Unk_StreamPoint&>(kSelfPos), 0);
+                MS2Ptr<Unk_WsB_Prop> spProp = WorldService::GetInstance()->FUN_141bc6090(reinterpret_cast<Vector3&>(kSelfPos), 0);
                 Unk_WsB_Prop* pProp = spProp.get();
                 bool bProp = false;
                 if (pProp)
@@ -593,8 +593,8 @@ void CDropItem::FUN_14118d9a0(int nState)
             fDropSpeed = spNpc->m_drop.m_fFireVelocity;
         }
         NiPoint3 kSelfPos = vfunc_18();
-        Unk_StreamPoint kSelf(reinterpret_cast<Unk_StreamPoint&>(kSelfPos));
-        m_posOrigin = kSelf.FUN_140965c40(Unk_StreamPoint(0.0f, 0.0f, 70.0f));
+        Vector3 kSelf(reinterpret_cast<Vector3&>(kSelfPos));
+        m_posOrigin = kSelf.FUN_140965c40(Vector3(0.0f, 0.0f, 70.0f));
         kSelf.z += fDropHeight;
         if (FUN_14118ffb0())
         {
@@ -618,7 +618,7 @@ void CDropItem::FUN_14118d9a0(int nState)
         }
         vfunc_19(reinterpret_cast<efd::Point3&>(kSelf));
         NiPoint3 kBasePos = vfunc_18();
-        Unk_StreamPoint kBase(reinterpret_cast<Unk_StreamPoint&>(kBasePos));
+        Vector3 kBase(reinterpret_cast<Vector3&>(kBasePos));
         kBase.z += 85.0f;
         int nObjectId = FUN_14123c580();
         Unk_Random kRand(nObjectId, nObjectId + 0x7fff, nObjectId * 0x7fff);
@@ -634,11 +634,11 @@ void CDropItem::FUN_14118d9a0(int nState)
                     efd::Matrix3 kRot;
                     kRot.MakeZRotation(((float)(kRand.FUN_1407684c0() % 0x168) * 3.1415927f) / 180.0f);
                     efd::Point3 kDirection = efd::Point3::UNIT_Y * kRot;
-                    Unk_StreamPoint kDir(reinterpret_cast<Unk_StreamPoint&>(kDirection));
+                    Vector3 kDir(reinterpret_cast<Vector3&>(kDirection));
                     float fDistance = fDropBase + (float)(kRand.FUN_1407684c0() % nDropRange);
-                    Unk_StreamPoint kTarget = kBase.FUN_14097fd50(kDir.FUN_14097fc90(fDistance));
+                    Vector3 kTarget = kBase.FUN_14097fd50(kDir.FUN_14097fc90(fDistance));
                     kTargetPos = reinterpret_cast<NiPoint3&>(kTarget);
-                    m_f27c = FUN_140966f00(m_posOrigin, reinterpret_cast<Unk_StreamPoint&>(kTargetPos));
+                    m_f27c = FUN_140966f00(m_posOrigin, reinterpret_cast<Vector3&>(kTargetPos));
                 }
                 else
                 {
@@ -657,32 +657,32 @@ void CDropItem::FUN_14118d9a0(int nState)
                         kBase = pAttach->m_pos;
                         vfunc_19(reinterpret_cast<efd::Point3&>(kBase));
                         float fDistance = fDropBase + (float)(kRand.FUN_1407684c0() % nDropRange);
-                        m_f27c = FUN_140966f00(m_posOrigin, reinterpret_cast<Unk_StreamPoint&>(kTargetPos));
+                        m_f27c = FUN_140966f00(m_posOrigin, reinterpret_cast<Vector3&>(kTargetPos));
                         NiPoint3 kOwnerPos = pOwnerPc->vfunc_18();
-                        Unk_StreamPoint kDir = FUN_141192780(kBase, reinterpret_cast<Unk_StreamPoint&>(kOwnerPos), true);
+                        Vector3 kDir = FUN_141192780(kBase, reinterpret_cast<Vector3&>(kOwnerPos), true);
                         if (kDir.FUN_140552690(DAT_143b01a60))
                         {
                             kDir.y = ((float)(kRand.FUN_1407684c0() % 0x168) * 3.1415927f) / 180.0f + 1.0f;
                             kDir.FUN_140968990();
                         }
-                        Unk_StreamPoint kTarget = kBase.FUN_14097fd50(kDir.FUN_14097fc90(fDistance));
+                        Vector3 kTarget = kBase.FUN_14097fd50(kDir.FUN_14097fc90(fDistance));
                         kTargetPos = reinterpret_cast<NiPoint3&>(kTarget);
                     }
                 }
             }
             else
             {
-                Unk_StreamPoint kForward, kSide;
+                Vector3 kForward, kSide;
                 pSource->vfunc_67(&kForward, &kSide);
                 kForward.z = 0.0f;
-                Unk_StreamPoint kTarget = kBase.FUN_140965c40(kForward.FUN_14097fc90(50.0f));
+                Vector3 kTarget = kBase.FUN_140965c40(kForward.FUN_14097fc90(50.0f));
                 kTargetPos = reinterpret_cast<NiPoint3&>(kTarget);
             }
         }
         else
         {
             NiPoint3 kSelfNow = vfunc_18();
-            Unk_StreamPoint kTarget = reinterpret_cast<Unk_StreamPoint&>(kSelfNow).FUN_14097fd50(DAT_143a08d08);
+            Vector3 kTarget = reinterpret_cast<Vector3&>(kSelfNow).FUN_14097fd50(DAT_143a08d08);
             kTargetPos = reinterpret_cast<NiPoint3&>(kTarget);
         }
         NxGroupsMask kMask;
@@ -693,7 +693,7 @@ void CDropItem::FUN_14118d9a0(int nState)
         NiPoint3 kHit;
         float fGravity = -15.0f - (float)(kRand.FUN_1407684c0() % 0x19);
         float fProbe = fDropHeight + 85.0f + 100.0f;
-        if (!FUN_14147a500(&reinterpret_cast<Unk_StreamPoint&>(kHit), &kBase, &reinterpret_cast<Unk_StreamPoint&>(kTargetPos), 1, fProbe, &kMask))
+        if (!FUN_14147a500(&reinterpret_cast<Vector3&>(kHit), &kBase, &reinterpret_cast<Vector3&>(kTargetPos), 1, fProbe, &kMask))
         {
             Unk_RayCastInfo kInfo;
             kInfo.m_origin = kBase;
@@ -707,7 +707,7 @@ void CDropItem::FUN_14118d9a0(int nState)
                 float aSideY[4] = { 1.0f, 1.0f, -1.0f, -1.0f };
                 for (int i = 0; i < 4; ++i)
                 {
-                    Unk_StreamPoint kSide;
+                    Vector3 kSide;
                     kSide.x = aSideX[i];
                     kSide.y = aSideY[i];
                     kSide.FUN_140968990();
@@ -717,28 +717,28 @@ void CDropItem::FUN_14118d9a0(int nState)
                     kMaskSide.bits2 = 0;
                     kMaskSide.bits3 = 0;
                     Unk_RayCastInfo kInfoSide;
-                    Unk_StreamPoint kOffset = kSide.FUN_14097fc90(150.0f).FUN_14097fc90(0.5f);
+                    Vector3 kOffset = kSide.FUN_14097fc90(150.0f).FUN_14097fc90(0.5f);
                     NiPoint3 kHere = vfunc_18();
-                    kInfoSide.m_origin = reinterpret_cast<Unk_StreamPoint&>(kHere).FUN_14097fd50(kOffset);
+                    kInfoSide.m_origin = reinterpret_cast<Vector3&>(kHere).FUN_14097fd50(kOffset);
                     kInfoSide.m_dir = DAT_143a08cf8.FUN_1409f7960();
                     kInfoSide.m_maxDist = 0.0f;
                     kInfoSide.m_groups = 0x389;
                     if (!FUN_1409f7ca0()->CastRay(&kInfoSide, &kMaskSide))
                         continue;
-                    reinterpret_cast<Unk_StreamPoint&>(kHit) = kInfoSide.m_hitPoint;
+                    reinterpret_cast<Vector3&>(kHit) = kInfoSide.m_hitPoint;
                     kHit.z += m_spEffect->unknown1c;
                     NiPoint3 kStartPos = vfunc_18();
-                    m_arc.FUN_141479ed0(reinterpret_cast<Unk_StreamPoint&>(kStartPos), reinterpret_cast<Unk_StreamPoint&>(kHit), fDropSpeed, fGravity);
+                    m_arc.FUN_141479ed0(reinterpret_cast<Vector3&>(kStartPos), reinterpret_cast<Vector3&>(kHit), fDropSpeed, fGravity);
                     nFound = 1;
                     break;
                 }
                 if (nFound == 0)
                 {
                     NiPoint3 kHere = vfunc_18();
-                    m_arc.m_origin = reinterpret_cast<Unk_StreamPoint&>(kHere);
+                    m_arc.m_origin = reinterpret_cast<Vector3&>(kHere);
                     m_arc.m_direction = DAT_143b01a60;
                     NiPoint3 kHere2 = vfunc_18();
-                    m_arc.m_target = reinterpret_cast<Unk_StreamPoint&>(kHere2);
+                    m_arc.m_target = reinterpret_cast<Vector3&>(kHere2);
                     m_arc.m_gravity = -9.8f;
                     m_arc.m_flightScale = 0.0f;
                     m_arc.m_angle.m_cos = 0.0f;
@@ -751,12 +751,12 @@ void CDropItem::FUN_14118d9a0(int nState)
             }
             else
             {
-                reinterpret_cast<Unk_StreamPoint&>(kHit) = kInfo.m_hitPoint;
+                reinterpret_cast<Vector3&>(kHit) = kInfo.m_hitPoint;
                 kHit.z += m_spEffect->unknown1c;
                 NiPoint3 kHere = vfunc_18();
-                m_arc.m_origin = reinterpret_cast<Unk_StreamPoint&>(kHere);
+                m_arc.m_origin = reinterpret_cast<Vector3&>(kHere);
                 m_arc.m_direction = DAT_143b01a60;
-                m_arc.m_target = reinterpret_cast<Unk_StreamPoint&>(kHit);
+                m_arc.m_target = reinterpret_cast<Vector3&>(kHit);
                 m_arc.m_gravity = -9.8f;
                 m_arc.m_flightScale = 5.0f;
                 m_arc.m_angle.m_cos = 0.0f;
@@ -768,7 +768,7 @@ void CDropItem::FUN_14118d9a0(int nState)
         {
             kHit.z += m_spEffect->unknown1c;
             NiPoint3 kStartPos = vfunc_18();
-            m_arc.FUN_141479ed0(reinterpret_cast<Unk_StreamPoint&>(kStartPos), reinterpret_cast<Unk_StreamPoint&>(kHit), fDropSpeed, fGravity);
+            m_arc.FUN_141479ed0(reinterpret_cast<Vector3&>(kStartPos), reinterpret_cast<Vector3&>(kHit), fDropSpeed, fGravity);
         }
         if (250.0f < m_arc.m_target.z - m_posOrigin.z)
         {
@@ -860,9 +860,9 @@ int CDropItem::FUN_141190120(const efd::Point3& kPos, int nA, int nB)
                 return 0;
             if (FUN_1409331e0()->FUN_14138c900(7))
                 return 0;
-            Unk_StreamPoint kPlayer(reinterpret_cast<const Unk_StreamPoint&>(kPos));
+            Vector3 kPlayer(reinterpret_cast<const Vector3&>(kPos));
             NiPoint3 kSelf = vfunc_18();
-            Unk_StreamPoint kDelta = kPlayer.FUN_140965c40(reinterpret_cast<Unk_StreamPoint&>(kSelf));
+            Vector3 kDelta = kPlayer.FUN_140965c40(reinterpret_cast<Vector3&>(kSelf));
             float fDistance = kDelta.FUN_140967ac0();
             kPlayer.z += m_f218;
             float fRange = m_f21c;
@@ -922,9 +922,9 @@ int CDropItem::FUN_1411903c0(GameObject* pActor, float fRange, int nA, int nB)
             if (FUN_1409331e0()->FUN_14138c900(7))
                 return 0;
             NiPoint3 kActor = pActor->vfunc_18();
-            Unk_StreamPoint kPlayer(reinterpret_cast<Unk_StreamPoint&>(kActor));
+            Vector3 kPlayer(reinterpret_cast<Vector3&>(kActor));
             NiPoint3 kSelf = vfunc_18();
-            Unk_StreamPoint kDelta = kPlayer.FUN_140965c40(reinterpret_cast<Unk_StreamPoint&>(kSelf));
+            Vector3 kDelta = kPlayer.FUN_140965c40(reinterpret_cast<Vector3&>(kSelf));
             float fDistance = kDelta.FUN_140967ac0();
             kPlayer.z += m_f218;
             if (fDistance <= fRange)
@@ -1244,9 +1244,9 @@ void CDropItem::FUN_141191780(double fTime, GameObject* pTarget)
     if (m_fElapsed <= m_arc.m_flightScale)
     {
         m_fElapsed += (float)fTime * 10.0f;
-        Unk_StreamPoint kOffset = FUN_1409ab5c0(m_arc.m_speed * m_arc.m_angle.m_cos * m_fElapsed, m_arc.m_direction);
+        Vector3 kOffset = FUN_1409ab5c0(m_arc.m_speed * m_arc.m_angle.m_cos * m_fElapsed, m_arc.m_direction);
         kOffset.z = m_arc.m_gravity * 0.5f * m_fElapsed * m_fElapsed + m_arc.m_speed * m_arc.m_angle.m_sin * m_fElapsed;
-        Unk_StreamPoint kPos = m_arc.m_origin.FUN_14097fd50(kOffset);
+        Vector3 kPos = m_arc.m_origin.FUN_14097fd50(kOffset);
         vfunc_19(reinterpret_cast<efd::Point3&>(kPos));
         if (m_spItem.get())
             FUN_1411925e0(m_spEffect->dropAni, m_spEffect->dropAniSpeed);
@@ -1254,7 +1254,7 @@ void CDropItem::FUN_141191780(double fTime, GameObject* pTarget)
     else
     {
         FUN_14118d9a0(0);
-        Unk_StreamPoint kTarget = m_arc.m_target;
+        Vector3 kTarget = m_arc.m_target;
         vfunc_19(reinterpret_cast<efd::Point3&>(kTarget));
     }
 }
@@ -1273,13 +1273,13 @@ void CDropItem::FUN_141191a10(double fTime, GameObject* pTarget)
                 if (m_spEffect->bouncePeriod < m_fElapsed)
                     m_fElapsed = 0.0f;
                 float fSin = sinf((m_fElapsed * 3.1415927f * 2.0f) / m_spEffect->bouncePeriod);
-                Unk_StreamPoint kOffset(0.0f, 0.0f, m_spEffect->bounceHeight * fSin * -1.0f * 0.5f);
-                Unk_StreamPoint kPos = m_arc.m_target.FUN_14097fd50(kOffset);
+                Vector3 kOffset(0.0f, 0.0f, m_spEffect->bounceHeight * fSin * -1.0f * 0.5f);
+                Vector3 kPos = m_arc.m_target.FUN_14097fd50(kOffset);
                 vfunc_19(reinterpret_cast<efd::Point3&>(kPos));
             }
             NiPoint3 kSelf = vfunc_18();
-            Unk_StreamPoint kHere(reinterpret_cast<Unk_StreamPoint&>(kSelf));
-            Unk_StreamPoint kOrigin(m_posOrigin);
+            Vector3 kHere(reinterpret_cast<Vector3&>(kSelf));
+            Vector3 kOrigin(m_posOrigin);
             m_f27c = FUN_140966f00(kOrigin, kHere) + 10.0f;
         }
     }
@@ -1292,22 +1292,22 @@ void CDropItem::FUN_141191a10(double fTime, GameObject* pTarget)
 void CDropItem::FUN_141191d10(double fTime, GameObject* pTarget)
 {
     NiPoint3 kTargetPos = pTarget->vfunc_18();
-    Unk_StreamPoint kGoal(reinterpret_cast<Unk_StreamPoint&>(kTargetPos));
+    Vector3 kGoal(reinterpret_cast<Vector3&>(kTargetPos));
     kGoal.z += m_f218;
     if (m_fElapsed <= m_arc.m_flightScale)
     {
         m_fElapsed += (float)fTime * 10.0f;
         NiPoint3 kNow = pTarget->vfunc_18();
-        Unk_StreamPoint kTo(reinterpret_cast<Unk_StreamPoint&>(kNow));
-        Unk_StreamPoint kFrom(m_arc.m_origin);
-        Unk_StreamPoint kDir = FUN_141192780(kFrom, kTo, true);
-        Unk_StreamPoint kDirCopy(kDir);
-        Unk_StreamPoint kOffset = FUN_1409ab5c0(m_arc.m_speed * m_arc.m_angle.m_cos * m_fElapsed, m_arc.m_direction);
+        Vector3 kTo(reinterpret_cast<Vector3&>(kNow));
+        Vector3 kFrom(m_arc.m_origin);
+        Vector3 kDir = FUN_141192780(kFrom, kTo, true);
+        Vector3 kDirCopy(kDir);
+        Vector3 kOffset = FUN_1409ab5c0(m_arc.m_speed * m_arc.m_angle.m_cos * m_fElapsed, m_arc.m_direction);
         kOffset.z = m_arc.m_gravity * 0.5f * m_fElapsed * m_fElapsed + m_arc.m_speed * m_arc.m_angle.m_sin * m_fElapsed;
         NiPoint3 kPull = pTarget->vfunc_18();
-        Unk_StreamPoint kDrift(reinterpret_cast<Unk_StreamPoint&>(kPull).FUN_140965c40(reinterpret_cast<Unk_StreamPoint&>(m_posGround)));
+        Vector3 kDrift(reinterpret_cast<Vector3&>(kPull).FUN_140965c40(reinterpret_cast<Vector3&>(m_posGround)));
         kOffset.FUN_140a4e560(kDrift);
-        Unk_StreamPoint kPos = m_arc.m_origin.FUN_14097fd50(kOffset);
+        Vector3 kPos = m_arc.m_origin.FUN_14097fd50(kOffset);
         vfunc_19(reinterpret_cast<efd::Point3&>(kPos));
         if (m_spItem.get())
             FUN_1411925e0(m_spEffect->getAni, m_spEffect->getAniSpeed);
@@ -1338,11 +1338,11 @@ void CDropItem::FUN_141192200(double fTime, GameObject* pTarget)
 {
     NiPoint3 kSelf = vfunc_18();
     NiPoint3 kTargetPos = pTarget->vfunc_18();
-    Unk_StreamPoint kDelta = reinterpret_cast<Unk_StreamPoint&>(kTargetPos).FUN_140965c40(reinterpret_cast<Unk_StreamPoint&>(kSelf));
+    Vector3 kDelta = reinterpret_cast<Vector3&>(kTargetPos).FUN_140965c40(reinterpret_cast<Vector3&>(kSelf));
     if (100.0f <= kDelta.FUN_140967ac0() && kDelta.FUN_140967ac0() <= 300.0f)
     {
         NiPoint3 kAgain = pTarget->vfunc_18();
-        Unk_StreamPoint kPos(reinterpret_cast<Unk_StreamPoint&>(kAgain));
+        Vector3 kPos(reinterpret_cast<Vector3&>(kAgain));
         NiPoint3 kHere = vfunc_18();
         kPos.z = kHere.z - (float)fTime * 1000.0f;
         vfunc_19(reinterpret_cast<efd::Point3&>(kPos));
@@ -1362,8 +1362,8 @@ void CDropItem::FUN_1411923a0(double fTime, GameObject* pTarget)
     if (fRatio < 1.0f)
     {
         float fSin = sinf(fRatio * 3.1415927f);
-        Unk_StreamPoint kOffset(0.0f, 0.0f, fSin * s_fFailHeight);
-        Unk_StreamPoint kPos = m_posGrow.FUN_14097fd50(kOffset);
+        Vector3 kOffset(0.0f, 0.0f, fSin * s_fFailHeight);
+        Vector3 kPos = m_posGrow.FUN_14097fd50(kOffset);
         vfunc_19(reinterpret_cast<efd::Point3&>(kPos));
     }
     else
@@ -1380,7 +1380,7 @@ void CDropItem::FUN_1411925e0(efd::Point3 kAxis, float fDegrees)
 {
     if (FUN_14118ffb0())
         return;
-    Unk_StreamPoint kRot = reinterpret_cast<Unk_StreamPoint&>(kAxis).FUN_14097fc90(fDegrees).FUN_14097fc90(360.0f).FUN_14097fc90(m_fSpawnTime);
+    Vector3 kRot = reinterpret_cast<Vector3&>(kAxis).FUN_14097fc90(fDegrees).FUN_14097fc90(360.0f).FUN_14097fc90(m_fSpawnTime);
     vfunc_21(reinterpret_cast<efd::Point3&>(kRot));
 }
 

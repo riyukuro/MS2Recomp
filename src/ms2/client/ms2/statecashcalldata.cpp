@@ -78,7 +78,7 @@ public:
 UICastingBar* FUN_140ac2270(int nId);
 
 // The actor's move-key state (PCBase::FUN_14166d240).
-class Unk_CcBuffMgr { public: Unk_StreamPoint FUN_141683290(); };
+class Unk_CcBuffMgr { public: Vector3 FUN_141683290(); };
 Unk_CcBuffMgr* FUN_14166d240(PCBase* p);
 bool FUN_1416749c0(PCBase* p);
 
@@ -116,10 +116,10 @@ void FUN_140a52ef0(Unk_CcRequest* p);                    // construct
 void FUN_1405a89e0(Unk_CcRequest* p);                    // destroy
 
 // Point3 helpers (out-of-line in the exe).
-Unk_StreamPoint FUN_1420834e0(const Unk_StreamPoint& v, const efd::Matrix3& m);   // efd::operator*(Point3, Matrix3)
+Vector3 FUN_1420834e0(const Vector3& v, const efd::Matrix3& m);   // efd::operator*(Point3, Matrix3)
 void FUN_14097faa0(NiPoint3* pDst, const NiPoint3* pSrc);   // NiPoint3 assignment
-extern Unk_StreamPoint DAT_143a08ce8;                       // the default direction
-extern Unk_StreamPoint DAT_143b01a60;                       // the zero point
+extern Vector3 DAT_143a08ce8;                       // the default direction
+extern Vector3 DAT_143b01a60;                       // the zero point
 
 // ---- StateCashCallData ----
 
@@ -259,7 +259,7 @@ MS2_REPLACE_METHOD(0x141022F60, StateCashCall, vfunc_5, 412, 0x78998610);
 void StateCashCall::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    Unk_StreamPoint kPoint = DAT_143b01a60;
+    Vector3 kPoint = DAT_143b01a60;
     m_pOwner->vfunc_68(&kPoint, fTime, 0, 0, 0);
     m_nElapsed += FUN_14028d260((float)fTime);
     if (m_nElapsed >= m_nEnd)
@@ -286,8 +286,8 @@ void StateCashCall::vfunc_8(double fTime)
     MyPC* pRider = FUN_1417b84b0();
     if (pRider == 0)
         return;
-    Unk_StreamPoint kPos = FUN_14166d240(pRider)->FUN_141683290();
-    Unk_StreamPoint kArg = kPos;
+    Vector3 kPos = FUN_14166d240(pRider)->FUN_141683290();
+    Vector3 kArg = kPos;
     pRider->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
     if (FUN_1416749c0(m_pOwner) != 0)
         pRider->vfunc_59(2, 0, 0, 0);
@@ -432,19 +432,19 @@ MS2_REPLACE_METHOD(0x141023890, StateCashCall, SetPhase, 47, 0xD4E241C4);
 // MS2-FUNCTIONAL: transliterated from the decompile (effect request / transform stand-ins)
 void StateCashCall::SpawnEffect(const CString& strEffect)
 {
-    Unk_StreamPoint kPos;
-    Unk_StreamPoint kRot;
+    Vector3 kPos;
+    Vector3 kRot;
     NiTransform xf;
     PCBase* pPC = FUN_1417b8370();
     NiPoint3 kDirNi = pPC->vfunc_20();
-    kRot = reinterpret_cast<Unk_StreamPoint&>(kDirNi);
+    kRot = reinterpret_cast<Vector3&>(kDirNi);
     efd::Matrix3 kMat;
     kMat.MakeZRotation((kRot.z * 3.1415927f) / 180.0f);
-    Unk_StreamPoint kDir = FUN_1420834e0(DAT_143a08ce8.FUN_1409f7960(), kMat);
+    Vector3 kDir = FUN_1420834e0(DAT_143a08ce8.FUN_1409f7960(), kMat);
     xf.MakeIdentity();
-    Unk_StreamPoint kAhead = kDir.FUN_14097fc90(150.0f);
+    Vector3 kAhead = kDir.FUN_14097fc90(150.0f);
     NiPoint3 kNowNi = FUN_1417b8370()->vfunc_18();
-    Unk_StreamPoint kSum = reinterpret_cast<Unk_StreamPoint&>(kNowNi).FUN_14097fd50(kAhead);
+    Vector3 kSum = reinterpret_cast<Vector3&>(kNowNi).FUN_14097fd50(kAhead);
     FUN_14097faa0(&xf.m_Translate, reinterpret_cast<const NiPoint3*>(&kSum));
     float fAngle = ((180.0f - kRot.z) * 3.1415927f) / 180.0f - 1.5707964f;
     xf.m_Rotate.FromEulerAnglesXYZ(0.0f, 0.0f, fAngle);

@@ -19,7 +19,7 @@ struct Unk_UbTag
 {
     MS2_LAYOUT_FRIEND;
     void* m_pad_00[12];
-    Unk_StreamPoint m_ptPos;                                // +0x60
+    Vector3 m_ptPos;                                // +0x60
 };
 MS2_CHECK_OFFSET(Unk_UbTag, m_ptPos, 0x60);
 
@@ -35,7 +35,7 @@ public:
     virtual void vfunc_14();                                // 14 0x140dedc30 releases the physics actor
     virtual void vfunc_53(float f);                         // 53 0x140dedc60 per-frame update / send
 
-    int FUN_140decfc0(__int64 nOwner, int nObjectId, const Unk_StreamPoint* pPos, float fRadius);   // 0x140decfc0
+    int FUN_140decfc0(__int64 nOwner, int nObjectId, const Vector3* pPos, float fRadius);   // 0x140decfc0
     int FUN_140ded420(Unk_UbTag* pTag, void* pShape);       // 0x140ded420 kick the player standing in the range
     void FUN_140ded6d0();                                   // 0x140ded6d0 wake the actor up
     void FUN_140ded740();                                   // 0x140ded740 create the material and the sphere actor

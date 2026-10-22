@@ -11,7 +11,7 @@
 #include "hook/ms2hook.h"
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names / symbols) ----
-extern Unk_StreamPoint DAT_143b01a60;                               // the zero point
+extern Vector3 DAT_143b01a60;                               // the zero point
 extern int DAT_143ae0fc0;                                           // debug switch: UI always shown
 int FUN_141277f40();                                                // next UI layer
 int FUN_140707660(int nKind);
@@ -19,14 +19,14 @@ int FUN_140707710(int nKind);
 class Unk_UgcUiMgr { public: int FUN_141adc890(int nUIType); };
 Unk_UgcUiMgr* FUN_1403ed2b0();
 struct Unk_UgcRes16 { Unk_UgcRes16(const Unk_UgcRes16& o) : m_a(o.m_a), m_b(o.m_b) {} __int64 m_a, m_b; };
-Unk_UgcRes16 FUN_1408a15b0(Unk_UgcCell cell, Unk_StreamPoint ptOrigin);   // the world point of a cell
+Unk_UgcRes16 FUN_1408a15b0(Unk_UgcCell cell, Vector3 ptOrigin);   // the world point of a cell
 Unk_UgcRes16 FUN_14027dcf0(Unk_UgcRes16 res);
-class Unk_WorldToScreen { public: bool FUN_140af0700(Unk_UgcRes16 world, Unk_StreamPoint& out); };
+class Unk_WorldToScreen { public: bool FUN_140af0700(Unk_UgcRes16 world, Vector3& out); };
 Unk_WorldToScreen* FUN_1409478c0();                                 // camera service
 class Unk_UIScale;
 Unk_UIScale* FUN_14025e7a0();                                       // ui scale service
 float FUN_1422afec0(Unk_UIScale* pScale, int nLayer);               // scale of a layer
-Unk_StreamPoint* FUN_140ad0c10(Unk_StreamPoint* pt, float f);       // efd::Point3::operator*=
+Vector3* FUN_140ad0c10(Vector3* pt, float f);       // efd::Point3::operator*=
 void FUN_1422bfe00(ASDisplayObject* pObj, float fAlpha);            // set the alpha
 void FUN_1422c00f0(ASGameEntity* pEntity, float x, float y);        // set the position
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
@@ -163,8 +163,8 @@ int UICubeUGCHead::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
 // @0x141906b60
 void UICubeUGCHead::FUN_141906b60()
 {
-    Unk_StreamPoint screen;
-    Unk_StreamPoint ptZero = DAT_143b01a60;
+    Vector3 screen;
+    Vector3 ptZero = DAT_143b01a60;
     Unk_UgcRes16 world = FUN_14027dcf0(FUN_1408a15b0(m_68, ptZero));
     if (FUN_1409478c0()->FUN_140af0700(world, screen) == 0)
         vfunc_8(0);

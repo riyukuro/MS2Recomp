@@ -599,7 +599,7 @@ bool MS2ShadowClickGenerator::HandleCameraFollowDirectionalLight(NiShadowGenerat
     // along the scene camera's direction.
     Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
     NiPoint3 kLightOffset = pkDirLight->GetWorldDirection() * 10000.0f;
-    Unk_StreamPoint ptTarget = pTarget->vfunc_18();
+    Vector3 ptTarget = pTarget->vfunc_18();
     NiPoint3 kCameraPos = NiPoint3(ptTarget.x, ptTarget.y, ptTarget.z) - kLightOffset;
     NiCamera* pkSceneCamera = Unk_SceneRoot::FUN_1413f9890()->GetSceneCamera();
     if (pkSceneCamera)

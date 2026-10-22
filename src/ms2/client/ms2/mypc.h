@@ -315,7 +315,7 @@ public:
     ATL::CAtlMap<unsigned int, unsigned int> m_map16f8;     // +0x16f8 item id -> equipped count
     ATL::CAtlMap<unsigned int, unsigned short> m_map1740;   // +0x1740 item group -> highest grade
     Unk_CloneTimer m_timer1788;                             // +0x1788
-    Unk_StreamPoint m_pos1790;                              // +0x1790
+    Vector3 m_pos1790;                              // +0x1790
     int m_n179c;                                            // +0x179c
     Unk_MyPCPortalMove m_kPortalMove;                       // +0x17a0
     ATL::CAtlMap<Unk_MyPCLapenSlot, DWORD> m_map17c0;      // +0x17c0 slot -> tick of the last change

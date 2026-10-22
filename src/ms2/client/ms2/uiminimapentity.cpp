@@ -556,7 +556,7 @@ void UIMinimapEntity::SendSetDebugMode()
     if (FUN_14025e7c0()->IsDebugMode() && m_position != efd::Point3::ZERO) {
         COutPacket packet(static_cast<int>(SendOp::SetDebugMode), 0);
         packet.Encode1(2);
-        packet.WriteVector3Short(reinterpret_cast<const Unk_StreamPoint&>(m_position));
+        packet.WriteVector3Short(reinterpret_cast<const Vector3&>(m_position));
         FUN_140710590(packet);
     }
 }
@@ -1924,9 +1924,9 @@ void UIMinimapDialog::FUN_141a39e40()
 }
 MS2_REPLACE_METHOD(0x141a39e40, UIMinimapDialog, FUN_141a39e40, 19, 0x7CB65D04);
 
-extern Unk_StreamPoint DAT_143b01a60;                               // the zero point
+extern Vector3 DAT_143b01a60;                               // the zero point
 CBuddyManager* FUN_14097a780();                                    // TSingleton<CBuddyManager>::GetInstance
-void FUN_1409618c0(egf::Entity* pEntity, unsigned nProperty, Unk_StreamPoint* pOut);   // reads a point property
+void FUN_1409618c0(egf::Entity* pEntity, unsigned nProperty, Vector3* pOut);   // reads a point property
 
 // @0x141a39e60
 void UIMinimapDialog::FUN_141a39e60()
@@ -1946,7 +1946,7 @@ void UIMinimapDialog::FUN_141a39e60()
                 FUN_141a3f930(m_taxi);
                 m_taxi = 0;
             } else if (m_taxi == 0 || m_taxi->m_clip == 0) {
-                Unk_StreamPoint kPos = DAT_143b01a60;
+                Vector3 kPos = DAT_143b01a60;
                 FUN_1409618c0(spObject.operator->(), 0xfd95ca52, &kPos);
                 EntityPtr spEntity = new UIMinimapEntityTaxi(reinterpret_cast<const efd::Point3&>(kPos));
                 if (FUN_141a3e7d0(spEntity))
@@ -2595,7 +2595,7 @@ CStringW UIMinimapDialog::FUN_141a45ed0(const int& nId, int nKind)
 }
 MS2_REPLACE_METHOD(0x141a45ed0, UIMinimapDialog, FUN_141a45ed0, 151, 0xFEC1B993);
 
-void FUN_14020af60(COutPacket* pPacket, const Unk_StreamPoint* pPt);    // writes the three floats of a point
+void FUN_14020af60(COutPacket* pPacket, const Vector3* pPt);    // writes the three floats of a point
 
 // @0x141a45020
 void UIMinimapDialog::SendMinimapPing(int nKind, float x, float y)
@@ -2613,7 +2613,7 @@ void UIMinimapDialog::SendMinimapPing(int nKind, float x, float y)
         COutPacket packet(static_cast<int>(SendOp::MinimapPing), 0);
         packet.Encode8(pPC->FUN_141656a80());
         packet.Encode1((unsigned char)nKind);
-        FUN_14020af60(&packet, reinterpret_cast<const Unk_StreamPoint*>(&kPos));
+        FUN_14020af60(&packet, reinterpret_cast<const Vector3*>(&kPos));
         FUN_140710590(packet);
     }
 }
@@ -2778,7 +2778,7 @@ void UIMinimapDialog::FUN_141a3dbb0()
     if (static_cast<bool>(list.FUN_1409f2170()) && !list.FUN_1409f2190()->IsEmpty()) {
         efd::SmartPointer<egf::Entity> spObject = list.FUN_1409f2190()->GetAt(list.FUN_1409f2190()->GetHeadPosition());
         if (spObject) {
-            Unk_StreamPoint kPos = DAT_143b01a60;
+            Vector3 kPos = DAT_143b01a60;
             FUN_1409618c0(spObject.operator->(), 0xfd95ca52, &kPos);
             EntityPtr spEntity = new UIMinimapEntityTaxi(reinterpret_cast<const efd::Point3&>(kPos));
             if (FUN_141a3e7d0(spEntity))
@@ -2811,7 +2811,7 @@ void UIMinimapDialog::FUN_141a3e2d0(Unk_BuddyPtr<CBuddy> spBuddy)
 {
     if (spBuddy == 0 || !spBuddy->FUN_1401cc5f0())
         return;
-    Unk_StreamPoint kPos = DAT_143b01a60;
+    Vector3 kPos = DAT_143b01a60;
     if (spBuddy->FUN_1401cc400(&kPos)) {
         EntityPtr spEntity = new UIMinimapEntityBuddyHome(spBuddy);
         spEntity->m_icon = s_strFriendHome;
@@ -2858,7 +2858,7 @@ void UIMinimapDialog::FUN_141a3df40()
     if (static_cast<bool>(list.FUN_1409f2170()) && !list.FUN_1409f2190()->IsEmpty()) {
         for (POSITION pos = list.FUN_1409f2190()->GetHeadPosition(); pos != 0; list.FUN_1409f2190()->GetNext(pos)) {
             efd::SmartPointer<egf::Entity> spObject = list.FUN_1409f2190()->GetAt(pos);
-            Unk_StreamPoint kPos;
+            Vector3 kPos;
             int nId = 0;
             FUN_1409618c0(spObject.operator->(), 0xfd95ca52, &kPos);
             FUN_1408a2020(spObject.operator->(), 0xd460e9bc, &nId);
@@ -2890,7 +2890,7 @@ void UIMinimapDialog::FUN_141a3e4e0(efd::SmartPointer<egf::Entity> spEntity)
     spEntity->GetPropertyValue(0x6814a50e, strIcon);
     if (strIcon.length() == 0)
         return;
-    Unk_StreamPoint kPos = DAT_143b01a60;
+    Vector3 kPos = DAT_143b01a60;
     int nId = 0;
     bool bVisible = false;
     FUN_1409618c0(spEntity.operator->(), 0xfd95ca52, &kPos);
@@ -2939,7 +2939,7 @@ void UIMinimapDialog::FUN_141a3f1c0()
             efd::SmartPointer<egf::Entity> spObject = list.FUN_1409f2190()->GetAt(pos);
             if (spObject == 0)
                 continue;
-            Unk_StreamPoint kPos = DAT_143b01a60;
+            Vector3 kPos = DAT_143b01a60;
             efd::utf8string strIcon;
             efd::utf8string strUnused;
             FUN_1409618c0(spObject.operator->(), 0xfd95ca52, &kPos);

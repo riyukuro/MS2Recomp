@@ -168,7 +168,7 @@ public:
 class Unk_RxGrid
 {
 public:
-    Unk_RxCellInfo* FUN_1410b8ab0(Unk_StreamPoint pt);          // cell info at a point
+    Unk_RxCellInfo* FUN_1410b8ab0(Vector3 pt);          // cell info at a point
     Unk_RxCellInfo* FUN_1410b8a60(Unk_Int3 cell);               // cell info of a cell
 };
 class Unk_RxGridRef
@@ -188,11 +188,11 @@ public:
     char m_pad_18[0xc4 - 0x18];
     int m_nKind;                                                // +0xc4
 };
-Unk_Int3 FUN_1408a14c0(Unk_StreamPoint pt);                     // cell of a point
+Unk_Int3 FUN_1408a14c0(Vector3 pt);                     // cell of a point
 int FUN_1408a03c0(Unk_Int3 cell);                               // cell id
 Unk_Int3 FUN_1408a0400(int nCellId);
-Unk_StreamPoint FUN_1408a15b0(Unk_Int3 cell, Unk_StreamPoint& ptCenter);   // fills the cell center
-struct Unk_IbActorPos { Unk_StreamPoint FUN_1409673c0(); }; // actor position copy
+Vector3 FUN_1408a15b0(Unk_Int3 cell, Vector3& ptCenter);   // fills the cell center
+struct Unk_IbActorPos { Vector3 FUN_1409673c0(); }; // actor position copy
 class Unk_RxNpcData : public CPtred { public: int FUN_1406ccfc0(); };
 class Unk_RxNpc : public CPtred { public: MS2Ptr<Unk_RxNpcData> FUN_141093270(); };
 static const int DAT_142e03614 = -2060086266;   // rdata constants copied from 0x142e03614 ...
@@ -431,17 +431,17 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
     ATL::CAtlArray<MS2Ptr<Unk_WsPtred298> > arrNear;
     FUN_1403ed2d0()->FUN_141bc5f10(&arrNear);
     NiPoint3 posPc = ((GameObject*)pPc)->vfunc_18();
-    Unk_StreamPoint ptPc(posPc.x, posPc.y, posPc.z);
+    Vector3 ptPc(posPc.x, posPc.y, posPc.z);
     Unk_Int3 cellOfPc = FUN_1408a14c0(ptPc);
     int nCellId = FUN_1408a03c0(cellOfPc);
     Unk_Int3 cell = FUN_1408a0400(nCellId);
-    Unk_StreamPoint ptCenter;
+    Vector3 ptCenter;
     FUN_1408a15b0(cell, ptCenter);
 
     for (size_t i = 0; i < arrNear.GetCount(); ++i) {
         MS2Ptr<Unk_WsPtred298> spObj = arrNear[i];
         if (!(spObj == (Unk_WsPtred298*)0)) {
-            Unk_StreamPoint pt = reinterpret_cast<Unk_IbActorPos*>(spObj.get())->FUN_1409673c0();
+            Vector3 pt = reinterpret_cast<Unk_IbActorPos*>(spObj.get())->FUN_1409673c0();
             if (pt.FUN_140965c40(ptCenter).FUN_140967ac0() < 230.0f) {
                 CStringW strKey(L"s_msg_item_install_bill_board_cant_install");
                 FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
@@ -467,9 +467,9 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
             bool bNotNpcKind = spActor->FUN_141093270()->FUN_1406ccfc0() != 2;
             if (!bNotNpcKind) {
                 if (FUN_1416769d0((PCBase*)spActor.get()) == 0) {
-                    Unk_StreamPoint pt;
+                    Vector3 pt;
                     NiPoint3 posActor = ((GameObject*)spActor.get())->vfunc_18();
-                    Unk_Int3 cellOfActor = FUN_1408a14c0(Unk_StreamPoint(posActor.x, posActor.y, posActor.z));
+                    Unk_Int3 cellOfActor = FUN_1408a14c0(Vector3(posActor.x, posActor.y, posActor.z));
                     int nActorCell = FUN_1408a03c0(cellOfActor);
                     FUN_1408a15b0(FUN_1408a0400(nActorCell), pt);
                     if (pt.FUN_140965c40(ptCenter).FUN_140967ac0() < 230.0f) {
@@ -484,7 +484,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
 
     {
         Unk_RxGridRef grid(FUN_1401cd040(&DAT_143b059e8));
-        Unk_StreamPoint ptLow = ptCenter;
+        Vector3 ptLow = ptCenter;
         ptLow.z = ptLow.z - 150.0f;
         Unk_RxCellInfo* pInfo = grid.FUN_1401cd1a0()->FUN_1410b8ab0(ptLow);
         if (pInfo == 0) {

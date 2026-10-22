@@ -318,7 +318,7 @@ MS2_REPLACE_METHOD(0x141ac78f0, UISceneGame, vfunc_56, 108, 0xF5771772);
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/placeholder/commandchat.h"
 
-class Unk_GsEnt { public: Unk_StreamPoint FUN_14169d2f0(); };
+class Unk_GsEnt { public: Vector3 FUN_14169d2f0(); };
 class Unk_GsObjRef { public: void* FUN_140c9b7d0(); Unk_GsEnt* FUN_140965960(); void FUN_140964a70(); void* m_0; void* m_8; };
 MS2_CHECK_SIZE(Unk_GsObjRef, 0x10);
 class Unk_GsMode { public: void FUN_140953310(); bool FUN_140953410(); };
@@ -330,10 +330,10 @@ public:
     virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
     virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
     virtual void vfunc_16(); virtual void vfunc_17();
-    virtual Unk_StreamPoint vfunc_18();                 // 0x90 position
-    virtual void vfunc_19(Unk_StreamPoint kPos);        // 0x98 set position
+    virtual Vector3 vfunc_18();                 // 0x90 position
+    virtual void vfunc_19(Vector3 kPos);        // 0x98 set position
     virtual void vfunc_20(); virtual void vfunc_21();
-    virtual void vfunc_22(Unk_StreamPoint kDir);        // 0xb0 set direction
+    virtual void vfunc_22(Vector3 kDir);        // 0xb0 set direction
     virtual void vfunc_23(); virtual void vfunc_24(); virtual void vfunc_25(); virtual void vfunc_26();
     virtual void vfunc_27(); virtual void vfunc_28(); virtual void vfunc_29(); virtual void vfunc_30();
     virtual void vfunc_31(); virtual void vfunc_32(); virtual void vfunc_33(); virtual void vfunc_34();
@@ -348,7 +348,7 @@ public:
     virtual int vfunc_63();                             // 0x1f8
     int FUN_1416764d0();                                // is riding
     void FUN_14152c280(RideOffActionBeautyShop* pAction);
-    void FUN_14166d8e0(Unk_StreamPoint kDir);
+    void FUN_14166d8e0(Vector3 kDir);
     void FUN_14166cc40(int n);
     int FUN_14166c930();
     int FUN_14166ce30();
@@ -374,8 +374,8 @@ public:
 class Unk_GsCamParam
 {
 public:
-    int m_0; float m_4; Unk_StreamPoint m_8; Unk_StreamPoint m_14; Unk_StreamPoint m_20; char m_pad2c[4];
-    Unk_StreamPoint m_30; Unk_StreamPoint m_3c; Unk_StreamPoint m_48; char m_pad54[0x10]; Unk_StreamPoint m_64; char m_pad70[0x10];
+    int m_0; float m_4; Vector3 m_8; Vector3 m_14; Vector3 m_20; char m_pad2c[4];
+    Vector3 m_30; Vector3 m_3c; Vector3 m_48; char m_pad54[0x10]; Vector3 m_64; char m_pad70[0x10];
 };
 MS2_CHECK_SIZE(Unk_GsCamParam, 0x80);
 class Unk_GsCamera2                                     // the active camera state (FUN_140af24f0)
@@ -384,27 +384,27 @@ public:
     float FUN_140ad4b30();
     float FUN_140af7ef0();
     float FUN_140af7e90();
-    Unk_StreamPoint FUN_140af8260();
+    Vector3 FUN_140af8260();
 };
 class Unk_GsCamera                                      // the camera service (FUN_1409478c0)
 {
 public:
     char m_pad_00[0xe0];
-    Unk_StreamPoint m_e0;                               // +0xe0
+    Vector3 m_e0;                               // +0xe0
     int FUN_140a18070();
     void FUN_140aefa70();
     float FUN_140ad4b40();
     float FUN_140af7f00();
     float FUN_140af7ea0();
-    Unk_StreamPoint FUN_140a17e10();
-    Unk_StreamPoint FUN_140af8290();
+    Vector3 FUN_140a17e10();
+    Vector3 FUN_140af8290();
     int FUN_140af0210();
     Unk_GsCamera2* FUN_140af24f0();
     void FUN_140aed580(Unk_GsCamParam* pParam, int n, float f);
     void FUN_140aed750(int a, int b);
 };
 class Unk_GsPhysics;
-int FUN_14168a310(Unk_GsPhysics* pPhysics, const Unk_StreamPoint* pFrom, Unk_StreamPoint* pHit, void* pInfo, float fRange, __int64 n, int nMask);
+int FUN_14168a310(Unk_GsPhysics* pPhysics, const Vector3* pFrom, Vector3* pHit, void* pInfo, float fRange, __int64 n, int nMask);
 class Unk_GsGround { public: int FUN_1410d2f10(); };
 
 Unk_GsWorld* FUN_1403ed2d0();
@@ -413,20 +413,20 @@ Unk_GsGround* FUN_1409670e0();
 Unk_GsPhysics* FUN_1409f7ca0();
 void FUN_141901390(int nRelease, int nUiType);
 void FUN_14151f200();
-void FUN_141ac9310(Unk_StreamPoint* pRot, Unk_StreamPoint* pDir, Unk_StreamPoint* pOut);
+void FUN_141ac9310(Vector3* pRot, Vector3* pDir, Vector3* pOut);
 void FUN_140947440(Unk_GsCamParam* pParam);                 // the camera parameter ctor
-void FUN_140ae7de0(Unk_StreamPoint* pDst, const Unk_StreamPoint* pSrc);
-extern Unk_StreamPoint DAT_143a08cf8;                       // the up vector
+void FUN_140ae7de0(Vector3* pDst, const Vector3* pSrc);
+extern Vector3 DAT_143a08cf8;                       // the up vector
 struct Unk_GsMatrix3
 {
     Unk_GsMatrix3() {}                                      // 0x1409f72e0
     void FUN_142083d40(float fX, float fY, float fZ);       // efd::Matrix3::FromEulerAnglesXYZ
-    void FUN_140a01190(unsigned uiCol, Unk_StreamPoint& kCol) const;   // GetCol
+    void FUN_140a01190(unsigned uiCol, Vector3& kCol) const;   // GetCol
     float m_afEntry[3][3];
 };
 MS2_CHECK_SIZE(Unk_GsMatrix3, 0x24);
-Unk_StreamPoint FUN_1420834e0(Unk_StreamPoint* pPt, Unk_GsMatrix3* pMat);    // efd::operator*(Point3, Matrix3)
-Unk_StreamPoint FUN_140afdd40(Unk_StreamPoint* pA, Unk_StreamPoint* pB, Unk_StreamPoint* pC);
+Vector3 FUN_1420834e0(Vector3* pPt, Unk_GsMatrix3* pMat);    // efd::operator*(Point3, Matrix3)
+Vector3 FUN_140afdd40(Vector3* pA, Vector3* pB, Vector3* pC);
 class Unk_GsUIMsg : public UIMsg
 {
 public:
@@ -591,7 +591,7 @@ void UISceneGameBeautyShop::FUN_141ac8660()
     Unk_GsPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0) return;
     if (FUN_1409478c0()->FUN_140a18070() == 0) return;
-    pPlayer->FUN_14166d8e0(Unk_StreamPoint(0.0f, -1.0f, 0.0f));
+    pPlayer->FUN_14166d8e0(Vector3(0.0f, -1.0f, 0.0f));
     pPlayer->vfunc_59(0xe, 0, 0, 0);
 }
 MS2_REPLACE_METHOD(0x141ac8660, UISceneGameBeautyShop, FUN_141ac8660, 160, 0xC0E3A86A);
@@ -601,7 +601,7 @@ void UISceneGameBeautyShop::FUN_141ac8710()
 {
     Unk_GsPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer != 0) {
-        pPlayer->FUN_14166d8e0(Unk_StreamPoint(0.0f, -1.0f, 0.0f));
+        pPlayer->FUN_14166d8e0(Vector3(0.0f, -1.0f, 0.0f));
         pPlayer->FUN_14166cc40(0x4d);
         pPlayer->vfunc_59(1, 0, 0, 0);
     }
@@ -665,14 +665,14 @@ MS2_REPLACE_METHOD(0x141ac8900, UISceneGameBeautyShop, FUN_141ac8900, 491, 0x974
 
 // @0x141ac8b00
 // MS2-FUNCTIONAL: not byte-exact yet (stack frame / branch layout differ)
-void UISceneGameBeautyShop::FUN_141ac8b00(Unk_StreamPoint* pOut1, Unk_StreamPoint* pOut2, Unk_StreamPoint* pOut3)
+void UISceneGameBeautyShop::FUN_141ac8b00(Vector3* pOut1, Vector3* pOut2, Vector3* pOut3)
 {
     Unk_GsPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0) return;
-    Unk_StreamPoint kA;
-    Unk_StreamPoint kB;
+    Vector3 kA;
+    Vector3 kB;
     if (FUN_1409670e0()->FUN_1410d2f10() != 0 && FUN_1409478c0()->FUN_140af0210() != 0) {
-        Unk_StreamPoint kEuler = FUN_1409478c0()->FUN_140af8290().FUN_14097fc90(3.1415927f).FUN_140ae9180(180.0f);
+        Vector3 kEuler = FUN_1409478c0()->FUN_140af8290().FUN_14097fc90(3.1415927f).FUN_140ae9180(180.0f);
         Unk_GsMatrix3 mX;
         mX.FUN_142083d40(-90.0f, 0.0f, 0.0f);
         Unk_GsMatrix3 mY;
@@ -683,13 +683,13 @@ void UISceneGameBeautyShop::FUN_141ac8b00(Unk_StreamPoint* pOut1, Unk_StreamPoin
         kA.FUN_140968990();
         kB = kA.FUN_140a00e10(DAT_143a08cf8).FUN_1409f7960();
     } else {
-        Unk_StreamPoint kCam = FUN_1409478c0()->FUN_140af8290();
+        Vector3 kCam = FUN_1409478c0()->FUN_140af8290();
         FUN_141ac9310(&kCam, &kA, &kB);
     }
     kA = kA.FUN_1409f7960();
-    Unk_StreamPoint kP = pPlayer->vfunc_18().FUN_14097fd50(kA.FUN_14097fc90(350.0f));
+    Vector3 kP = pPlayer->vfunc_18().FUN_14097fd50(kA.FUN_14097fc90(350.0f));
     kP.z += 80.0f;
-    Unk_StreamPoint kQ = pPlayer->vfunc_18().FUN_14097fd50(kB.FUN_14097fc90(-50.0f));
+    Vector3 kQ = pPlayer->vfunc_18().FUN_14097fd50(kB.FUN_14097fc90(-50.0f));
     kQ.z += 80.0f;
     *pOut3 = kQ;
     *pOut1 = kP;
@@ -714,8 +714,8 @@ void UISceneGameBeautyShop::FUN_141ac8e90()
     if (m_b0 != 0) {
         Unk_GsObjRef ref = FUN_1403ed2d0()->FUN_141bc2800(m_b0);
         if (ref.FUN_140c9b7d0() != 0) {
-            Unk_StreamPoint kHit;
-            Unk_StreamPoint kFrom = ref.FUN_140965960()->FUN_14169d2f0();
+            Vector3 kHit;
+            Vector3 kFrom = ref.FUN_140965960()->FUN_14169d2f0();
             if (FUN_14168a310(FUN_1409f7ca0(), &kFrom, &kHit, 0, 0.0f, 0, 0) != 0) {
                 kHit.z += 1.0f;
                 pPlayer->vfunc_19(kHit);
@@ -727,11 +727,11 @@ void UISceneGameBeautyShop::FUN_141ac8e90()
     if (!bMoved && m_b4 != 0) {
         Unk_GsPlayer* pNpc = FUN_1403ed2d0()->FUN_141bd1320(m_b4);
         if (pNpc != 0) {
-            Unk_StreamPoint kHit;
-            Unk_StreamPoint kDir = pPlayer->vfunc_18().FUN_140965c40(FUN_1409478c0()->FUN_140a17e10());
+            Vector3 kHit;
+            Vector3 kDir = pPlayer->vfunc_18().FUN_140965c40(FUN_1409478c0()->FUN_140a17e10());
             kDir.FUN_140968990();
             kDir.z = 0.0f;
-            Unk_StreamPoint kFrom = pNpc->vfunc_18().FUN_140965c40(kDir.FUN_14097fc90(100.0f));
+            Vector3 kFrom = pNpc->vfunc_18().FUN_140965c40(kDir.FUN_14097fc90(100.0f));
             if (FUN_14168a310(FUN_1409f7ca0(), &kFrom, &kHit, 0, 0.0f, 0, 0) != 0) {
                 kHit.z += 1.0f;
                 pPlayer->vfunc_19(kHit);
@@ -758,7 +758,7 @@ void UISceneGameBeautyShop::FUN_141ac9270()
 MS2_REPLACE_METHOD(0x141ac9270, UISceneGameBeautyShop, FUN_141ac9270, 93, 0xEF3CF752);
 
 // @0x141ac9310
-void FUN_141ac9310(Unk_StreamPoint* pRot, Unk_StreamPoint* pDir, Unk_StreamPoint* pOut)
+void FUN_141ac9310(Vector3* pRot, Vector3* pDir, Vector3* pOut)
 {
     *pRot = pRot->FUN_14097fc90(3.1415927f).FUN_140ae9180(180.0f);
     Unk_GsMatrix3 m;
@@ -803,7 +803,7 @@ void FUN_141a251f0(void* pTarget, int n);
 Unk_GsScale* FUN_14025e7a0();
 Unk_GsTutMgr* FUN_140b632f0();
 float FUN_141ac9b00();
-extern Unk_StreamPoint DAT_143b01a60;
+extern Vector3 DAT_143b01a60;
 extern unsigned DAT_143af62d4;
 extern unsigned DAT_143af62d8;
 

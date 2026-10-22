@@ -55,7 +55,7 @@ public:
     virtual int vfunc_12();                                     // 12 0x14144ddc0 effect type 0x10
 
     void Rebuild();                                             // 0x14144cc30 pick the texture, build path + mesh
-    void BuildPath(Unk_StreamPoint kStart, Unk_StreamPoint kEnd);   // 0x14144d670 jagged path + the two edge lines
+    void BuildPath(Vector3 kStart, Vector3 kEnd);   // 0x14144d670 jagged path + the two edge lines
 public:
     MS2_LAYOUT_FRIEND;
     Unk_NodePtr m_spRoot;           // +0x30 "Effect Root" EffectNode
@@ -66,14 +66,14 @@ public:
     float m_fJointLen;              // +0x54
     float m_fWidth;                 // +0x58
     int m_nUVSets;                  // +0x5c = 1
-    ATL::CAtlArray<Unk_StreamPoint> m_arrPath;     // +0x60 centre line
-    ATL::CAtlArray<Unk_StreamPoint> m_arrLeft;     // +0x80 centre + width/2 * side
-    ATL::CAtlArray<Unk_StreamPoint> m_arrRight;    // +0xa0 centre - width/2 * side
+    ATL::CAtlArray<Vector3> m_arrPath;     // +0x60 centre line
+    ATL::CAtlArray<Vector3> m_arrLeft;     // +0x80 centre + width/2 * side
+    ATL::CAtlArray<Vector3> m_arrRight;    // +0xa0 centre - width/2 * side
     bool m_bSequence;               // +0xc0 param m_bTextureSequence
     unsigned __int64 m_nSequence;   // +0xc8 last texture index
     unsigned int m_nTick;           // +0xd0 param m_nTextureChangeTick (0 = every update)
     unsigned int m_nLastTick;       // +0xd4
-    ATL::CAtlArray<Unk_StreamPoint>* m_pPoints;    // +0xd8 the target's point list
+    ATL::CAtlArray<Vector3>* m_pPoints;    // +0xd8 the target's point list
     NiPointer<NiTexturingProperty> m_spTexProp;    // +0xe0
     MS2Ptr<LightningEffectParam> m_spParam;        // +0xe8 (pointer at +0xf0)
 };

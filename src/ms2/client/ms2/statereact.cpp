@@ -23,7 +23,7 @@
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
-extern Unk_StreamPoint DAT_143b01a60;                    // the zero point
+extern Vector3 DAT_143b01a60;                    // the zero point
 
 class Unk_StateDataArg                                   // the state-sync record (slots 1/2 of StateData)
 {
@@ -95,7 +95,7 @@ public:
 UICastingBar* FUN_140ac2270(int nId);
 void* FUN_14165f100(PCBase* p);
 void FUN_14165f170(PCBase* p);
-class Unk_ReactBuffMgr { public: Unk_StreamPoint FUN_141683290(); };
+class Unk_ReactBuffMgr { public: Vector3 FUN_141683290(); };
 Unk_ReactBuffMgr* FUN_14166d240(PCBase* p);
 bool FUN_1416749c0(PCBase* p);
 void FUN_140b78d90(PCBase* pActor, Unk_CastInfo* pInfo);           // fill the casting request from the actor
@@ -199,7 +199,7 @@ void StateReact::vfunc_4(StateData* pData)
 void StateReact::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    Unk_StreamPoint kZero = DAT_143b01a60;
+    Vector3 kZero = DAT_143b01a60;
     m_pOwner->vfunc_68(&kZero, fTime, 0, 0, 0);
     if (FUN_1417b8560() == 0)
         return;
@@ -254,7 +254,7 @@ void StateReact::vfunc_8(double fTime)
                 Unk_ReactActor* pActor = static_cast<Unk_ReactActor*>(kRef.FUN_1409658b0());
                 float fReach = pActor->FUN_140966e50().get() != 0 ? pActor->FUN_140966e50()->m_fReach : 0.0f;
                 PCBase* pTarget = kRef.FUN_1409658b0();
-                Unk_StreamPoint kDelta = reinterpret_cast<const Unk_StreamPoint&>(static_cast<const NiPoint3&>(pTarget->vfunc_18())).FUN_140965c40(reinterpret_cast<const Unk_StreamPoint&>(static_cast<const NiPoint3&>(pRider->vfunc_18())));
+                Vector3 kDelta = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18())).FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pRider->vfunc_18())));
                 if (fReach < kDelta.FUN_140967ac0())
                 {
                     pRider->vfunc_59(1, 0, 0, 0);
@@ -272,7 +272,7 @@ void StateReact::vfunc_8(double fTime)
             return;
         }
     }
-    const Unk_StreamPoint& kPos = FUN_14166d240(pRider)->FUN_141683290();
+    const Vector3& kPos = FUN_14166d240(pRider)->FUN_141683290();
     char kArg[16];
     memcpy(kArg, &kPos, 12);
     pRider->vfunc_22(*reinterpret_cast<const efd::Point3*>(kArg));

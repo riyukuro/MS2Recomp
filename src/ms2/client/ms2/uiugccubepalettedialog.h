@@ -150,7 +150,7 @@ public:
     bool FUN_140eec330(int nBtn, const CMsgBoxData& data);
     bool FUN_140eec410(int nBtn, const CMsgBoxData& data);
     void FUN_140eec480();
-    int FUN_140eec4d0(int nTypeId, Unk_StreamPoint* pPos);
+    int FUN_140eec4d0(int nTypeId, Vector3* pPos);
     void FUN_140eeca50();
     void FUN_140eecfe0();
     void FUN_140eed2d0();

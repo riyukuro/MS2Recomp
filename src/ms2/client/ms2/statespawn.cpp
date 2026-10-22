@@ -41,7 +41,7 @@ struct Unk_SpawnRot { float m_af[9]; };
 struct Unk_SpawnXform
 {
     Unk_SpawnRot m_rotate;
-    Unk_StreamPoint m_translate;
+    Vector3 m_translate;
     float m_fScale;
 };
 MS2_CHECK_SIZE(Unk_SpawnXform, 0x34);
@@ -61,11 +61,11 @@ void FUN_140a52ef0(Unk_SpawnRequest* p);                                   // co
 void FUN_1405a89e0(Unk_SpawnRequest* p);                                   // destroy
 void* FUN_140a332d0(Unk_SpawnXform* p);                                    // NiTransform default ctor
 void FUN_1420849a0(Unk_SpawnRot* p);                                       // efd::Matrix3::MakeIdentity
-struct Unk_SpawnNiPoint3 : public Unk_StreamPoint
+struct Unk_SpawnNiPoint3 : public Vector3
 {
     Unk_SpawnNiPoint3(const NiPoint3& pt);                          // 0x14027dcf0
 };
-void FUN_14097faa0(Unk_StreamPoint* pDst, const Unk_SpawnNiPoint3* pSrc);  // NiPoint3::operator=
+void FUN_14097faa0(Vector3* pDst, const Unk_SpawnNiPoint3* pSrc);  // NiPoint3::operator=
 
 // @0x1417f6050
 StateSpawn::StateSpawn(PCBase* pOwner) : State(pOwner)

@@ -18,7 +18,7 @@
 
 // ---- unit-local placeholders ----
 
-extern const Unk_StreamPoint g_143a08cf8;   // NiPoint3::UNIT_Z
+extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 
 float FUN_14029d220(float f);                       // fabs
 float FUN_14059d930(float f);                       // fabs
@@ -56,7 +56,7 @@ Unk_BossGameContext* FUN_1403ed2d0();
 struct Unk_CameraManagerView
 {
     char m_pad_000[0x138];
-    Unk_StreamPoint m_138;                              // pending move input
+    Vector3 m_138;                              // pending move input
     char m_pad_144[0x1c0 - 0x144];
     Unk_CameraTargetEntity* m_1c0;                      // the camera target
 };
@@ -145,9 +145,9 @@ void CBossTargetCamera::vfunc_6(int n)
 {
     CCameraMode::vfunc_6(n);
     m_f0 = 0;
-    Unk_StreamPoint ptEye = m_d8.m_pos;
-    Unk_StreamPoint ptRot = g_143b01a60;
-    Unk_StreamPoint ptTarget = FUN_140a38570();
+    Vector3 ptEye = m_d8.m_pos;
+    Vector3 ptRot = g_143b01a60;
+    Vector3 ptTarget = FUN_140a38570();
     m_50 = m_data.m_zoomOut;
     ptEye.x = m_50 * FUN_1409f25a0(m_68) + ptTarget.x;
     ptEye.y = m_50 * FUN_1409f2310(m_68) + ptTarget.y;
@@ -169,13 +169,13 @@ MS2_REPLACE_METHOD(0x140a377e0, CBossTargetCamera, vfunc_6, 726, 0xE9751F50);
 // @0x140a37ac0
 void CBossTargetCamera::vfunc_8(double fTime)
 {
-    Unk_StreamPoint ptEye = m_d8.m_pos;
-    Unk_StreamPoint ptRot = g_143b01a60;
-    Unk_StreamPoint ptTarget = FUN_140a38570();
-    Unk_StreamPoint ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
+    Vector3 ptEye = m_d8.m_pos;
+    Vector3 ptRot = g_143b01a60;
+    Vector3 ptTarget = FUN_140a38570();
+    Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
     if (ptMove.FUN_140552700(g_143b01a60))
     {
-        Unk_StreamPoint ptInput = ptMove;
+        Vector3 ptInput = ptMove;
         float fRate = 15.0f;
         float fStep = FUN_140a17940((float)fTime, 0.0f, 1.0f / fRate);
         float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x),
@@ -343,14 +343,14 @@ static Unk_CameraTargetEntity* FUN_140a38a00(Unk_BossObject* pObject)
 }
 
 // @0x140a38570
-Unk_StreamPoint CBossTargetCamera::FUN_140a38570()
+Vector3 CBossTargetCamera::FUN_140a38570()
 {
-    Unk_StreamPoint ptRet(0.0f, 0.0f, 0.0f);
-    Unk_StreamPoint ptOther(0.0f, 0.0f, 0.0f);
+    Vector3 ptRet(0.0f, 0.0f, 0.0f);
+    Vector3 ptOther(0.0f, 0.0f, 0.0f);
     Unk_CameraTargetEntity* pTarget = vfunc_25();
     if (pTarget != NULL)
     {
-        ptOther = ptRet = pTarget->vfunc_18().FUN_14097fd50(Unk_StreamPoint(0.0f, 0.0f, m_data.m_viewOffsetZ));
+        ptOther = ptRet = pTarget->vfunc_18().FUN_14097fd50(Vector3(0.0f, 0.0f, m_data.m_viewOffsetZ));
         m_50 = m_data.m_zoomOut;
     }
     Unk_BossObject* pObject = FUN_1403ed2d0()->FUN_141bd1180(m_108);
@@ -360,7 +360,7 @@ Unk_StreamPoint CBossTargetCamera::FUN_140a38570()
         if (pBoss != NULL)
         {
             float fDist = 0.0f;
-            ptOther = pBoss->vfunc_18().FUN_14097fd50(Unk_StreamPoint(0.0f, 0.0f, m_data.m_viewOffsetZ));
+            ptOther = pBoss->vfunc_18().FUN_14097fd50(Vector3(0.0f, 0.0f, m_data.m_viewOffsetZ));
             fDist = ptOther.FUN_140965c40(ptRet).FUN_140967ac0() + m_data.m_distanceOffset;
             if (fDist > m_data.m_detachDistance)
             {
@@ -378,9 +378,9 @@ Unk_StreamPoint CBossTargetCamera::FUN_140a38570()
     {
         return ptRet;
     }
-    Unk_StreamPoint ptDir = ptOther.FUN_140965c40(ptRet);
+    Vector3 ptDir = ptOther.FUN_140965c40(ptRet);
     float fLen = ptDir.FUN_140968990();
-    Unk_StreamPoint ptHalf = ptDir.FUN_14097fc90(fLen);
+    Vector3 ptHalf = ptDir.FUN_14097fc90(fLen);
     ptHalf.z = ptHalf.z * 0.5f;
     return ptRet.FUN_14097fd50(ptHalf);
 }
@@ -402,30 +402,30 @@ public:
 // ---- inline helpers of the entity property cache ----
 
 // @0x140a388b0
-static void FUN_140a388b0(Unk_CachedEntity* pEntity, unsigned nId, const Unk_StreamPoint& pt)
+static void FUN_140a388b0(Unk_CachedEntity* pEntity, unsigned nId, const Vector3& pt)
 {
     if (pEntity->m_c8)
     {
         if (pEntity->m_d0.FUN_140948250(nId).FUN_140947540(pEntity->m_d0.FUN_1409481f0()))
         {
-            Unk_StreamPoint ptOld;
+            Vector3 ptOld;
             pEntity->GetPropertyValueUnsafe(nId, &ptOld, FUN_1409614a0());
-            pEntity->m_d0.FUN_140947580(nId) = Unk_PropertyCacheEntry(nId, new Unk_StreamPoint(ptOld), FUN_1409614a0());
+            pEntity->m_d0.FUN_140947580(nId) = Unk_PropertyCacheEntry(nId, new Vector3(ptOld), FUN_1409614a0());
         }
     }
 }
 
 // @0x140a38a50
-static void FUN_140a38a50(Unk_CachedEntity* pEntity, unsigned nId, const Unk_StreamPoint& pt)
+static void FUN_140a38a50(Unk_CachedEntity* pEntity, unsigned nId, const Vector3& pt)
 {
     FUN_140a388b0(pEntity, nId, pt);
-    pEntity->SetPropertyValueUnsafe(nId, const_cast<Unk_StreamPoint*>(&pt), FUN_1409614a0());
+    pEntity->SetPropertyValueUnsafe(nId, const_cast<Vector3*>(&pt), FUN_1409614a0());
 }
 
 // ---- inline accessors of the camera owner and the camera manager ----
 
 // @0x140a38d00
-Unk_StreamPoint Unk_CameraManager::FUN_140a38d00()
+Vector3 Unk_CameraManager::FUN_140a38d00()
 {
     return reinterpret_cast<Unk_CameraManagerView*>(this)->m_138;
 }
@@ -437,20 +437,20 @@ Unk_CameraTargetEntity* Unk_CameraManager::FUN_140a38d60()
 }
 
 // @0x140a38d90
-void Unk_CameraManager::FUN_140a38d90(Unk_StreamPoint pt)
+void Unk_CameraManager::FUN_140a38d90(Vector3 pt)
 {
     reinterpret_cast<Unk_CameraManagerView*>(this)->m_138 = pt;
 }
 
 // @0x140a38dc0
-void Unk_CameraOwner::FUN_140a38dc0(Unk_StreamPoint pt)
+void Unk_CameraOwner::FUN_140a38dc0(Vector3 pt)
 {
     if (m_10)
         FUN_140a38a50(reinterpret_cast<Unk_CachedEntity*>(m_10), 0xfd95ca52, pt);
 }
 
 // @0x140a38e00
-void Unk_CameraOwner::FUN_140a38e00(Unk_StreamPoint pt)
+void Unk_CameraOwner::FUN_140a38e00(Vector3 pt)
 {
     if (m_10)
         FUN_140a38a50(reinterpret_cast<Unk_CachedEntity*>(m_10), 0x68c7c29d, pt);

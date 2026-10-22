@@ -62,7 +62,7 @@ struct Unk_RxXform
 MS2_CHECK_SIZE(Unk_RxXform, 0x34);
 void* FUN_140a332d0(Unk_RxXform* p);
 void FUN_14097faa0(float* pDst, const Unk_NiPoint3* pSrc);
-Unk_NiPoint3 FUN_14027dcf0(const Unk_StreamPoint& pt);          // NiPoint3(const efd::Point3&)
+Unk_NiPoint3 FUN_14027dcf0(const Vector3& pt);          // NiPoint3(const efd::Point3&)
 struct Unk_RxFxRequest
 {
     CString m_strName;
@@ -158,7 +158,7 @@ class Unk_RxGrid
 {
 public:
     void* FUN_1410b8b00(int nCellId);                           // occupied cell (null when free)
-    Unk_RxCellInfo* FUN_1410b8ab0(Unk_StreamPoint pt);          // cell info at a point
+    Unk_RxCellInfo* FUN_1410b8ab0(Vector3 pt);          // cell info at a point
     Unk_RxCellInfo* FUN_1410b8a60(Unk_Int3 cell);               // cell info of a cell
 };
 class Unk_RxGridRef
@@ -181,12 +181,12 @@ public:
 };
 class Unk_RxPhys;
 Unk_RxPhys* FUN_1409f7ca0();
-int FUN_14168a450(Unk_RxPhys* p, Unk_StreamPoint* pPos, int* pOut, float fRange);
-Unk_Int3 FUN_1408a14c0(Unk_StreamPoint pt);                     // cell of a point
+int FUN_14168a450(Unk_RxPhys* p, Vector3* pPos, int* pOut, float fRange);
+Unk_Int3 FUN_1408a14c0(Vector3 pt);                     // cell of a point
 int FUN_1408a03c0(Unk_Int3 cell);                               // cell id
 Unk_Int3 FUN_1408a0400(int nCellId);
-Unk_StreamPoint FUN_1408a15b0(Unk_Int3 cell, Unk_StreamPoint& ptCenter);   // fills the cell center
-struct Unk_RxActorView { Unk_StreamPoint FUN_1409673c0(); };     // actor position copy (member: this=rcx, hidden return=rdx)
+Vector3 FUN_1408a15b0(Unk_Int3 cell, Vector3& ptCenter);   // fills the cell center
+struct Unk_RxActorView { Vector3 FUN_1409673c0(); };     // actor position copy (member: this=rcx, hidden return=rdx)
 class Unk_RxNpcData : public CPtred { public: int FUN_1406ccfc0(); };
 class Unk_RxNpc : public CPtred { public: MS2Ptr<Unk_RxNpcData> FUN_141093270(); };
 static const int DAT_142de2684 = -2060086266;   // rdata constant copied from 0x142de2684
@@ -297,7 +297,7 @@ bool CReactor::FUN_140b78ef0(const CString& strEffect)
         const NiPoint3& rot = vfunc_20();
         Unk_RxXform xf;
         FUN_140a332d0(&xf);
-        Unk_NiPoint3 niTop = FUN_14027dcf0(reinterpret_cast<const Unk_StreamPoint&>(pos).FUN_14097fd50(Unk_StreamPoint(0.0f, 0.0f, 1.0f)));
+        Unk_NiPoint3 niTop = FUN_14027dcf0(reinterpret_cast<const Vector3&>(pos).FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f)));
         FUN_14097faa0(xf.m_afTranslate, &niTop);
         xf.m_rotate.FUN_142083d40((rot.x * 3.1415927f) / 180.0f, (rot.y * 3.1415927f) / 180.0f,
                                   (rot.z * 3.1415927f) / 180.0f);
@@ -374,8 +374,8 @@ bool CReactor::FUN_140b79490(CInPacket* pPacket)
     int nObjId = pPacket->ReadInt32();
     CString strName = pPacket->ReadString();
     int nReactorId = pPacket->ReadInt32();
-    Unk_StreamPoint pos = pPacket->ReadVector3();
-    Unk_StreamPoint rot = pPacket->ReadVector3();
+    Vector3 pos = pPacket->ReadVector3();
+    Vector3 rot = pPacket->ReadVector3();
     m_nStateIdx = pPacket->ReadInt32();
     m_n150 = pPacket->ReadInt64();
     m_setPlayers.clear();
@@ -656,11 +656,11 @@ int FUN_140b7a650(PCBase* pPc)
     ATL::CAtlArray<MS2Ptr<Unk_WsPtred298> > arrNear;
     pWorld->FUN_141bc5f10(&arrNear);
     NiPoint3 posPc = ((GameObject*)pPc)->vfunc_18();
-    Unk_StreamPoint ptPc(posPc.x, posPc.y, posPc.z);
+    Vector3 ptPc(posPc.x, posPc.y, posPc.z);
     Unk_Int3 cellOfPc = FUN_1408a14c0(ptPc);
     int nCellId = FUN_1408a03c0(cellOfPc);
     Unk_Int3 cell = FUN_1408a0400(nCellId);
-    Unk_StreamPoint ptCenter;
+    Vector3 ptCenter;
     FUN_1408a15b0(cell, ptCenter);
 
     for (size_t i = 0; i < arrNear.GetCount(); ++i)
@@ -668,7 +668,7 @@ int FUN_140b7a650(PCBase* pPc)
         MS2Ptr<Unk_WsPtred298> spObj = arrNear[i];
         if (!spObj.IsNull())
         {
-            Unk_StreamPoint pt = reinterpret_cast<Unk_RxActorView*>(spObj.get())->FUN_1409673c0();
+            Vector3 pt = reinterpret_cast<Unk_RxActorView*>(spObj.get())->FUN_1409673c0();
             if (pt.FUN_140965c40(ptCenter).FUN_140967ac0() < 230.0f)
                 return 1;
         }
@@ -695,9 +695,9 @@ int FUN_140b7a650(PCBase* pPc)
             {
                 if (FUN_1416769d0((PCBase*)spActor.get()) == 0)
                 {
-                    Unk_StreamPoint pt;
+                    Vector3 pt;
                     NiPoint3 posActor = ((GameObject*)spActor.get())->vfunc_18();
-                    Unk_Int3 cellOfActor = FUN_1408a14c0(Unk_StreamPoint(posActor.x, posActor.y, posActor.z));
+                    Unk_Int3 cellOfActor = FUN_1408a14c0(Vector3(posActor.x, posActor.y, posActor.z));
                     int nActorCell = FUN_1408a03c0(cellOfActor);
                     FUN_1408a15b0(FUN_1408a0400(nActorCell), pt);
                     if (pt.FUN_140965c40(ptCenter).FUN_140967ac0() < 230.0f)
@@ -720,11 +720,11 @@ int FUN_140b7a650(PCBase* pPc)
         efd::Point3* pSample = &samples[i];
         pSample->z = pSample->z + 10.0f;
         int nHit = 0;
-        if (FUN_14168a450(FUN_1409f7ca0(), reinterpret_cast<Unk_StreamPoint*>(pSample), &nHit, 50.0f) == 0)
+        if (FUN_14168a450(FUN_1409f7ca0(), reinterpret_cast<Vector3*>(pSample), &nHit, 50.0f) == 0)
             return 1;
     }
 
-    Unk_StreamPoint ptLow = ptCenter;
+    Vector3 ptLow = ptCenter;
     ptLow.z = ptLow.z - 150.0f;
     Unk_RxCellInfo* pInfo = grid.FUN_1401cd1a0()->FUN_1410b8ab0(ptLow);
     if (pInfo == 0)

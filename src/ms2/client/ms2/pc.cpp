@@ -3387,9 +3387,9 @@ BOOL PC::FUN_141661e40(int* pnEnchant, int* pnGrade)
 }
 
 // @0x1416629d0
-void PC::FUN_1416629d0(Unk_StreamPoint kPos, Unk_StreamPoint kRot)
+void PC::FUN_1416629d0(Vector3 kPos, Vector3 kRot)
 {
-    // kPos / kRot are efd::Point3 values (Unk_StreamPoint is the shared header's spelling)
+    // kPos / kRot are efd::Point3 values (Vector3 is the shared header's spelling)
     efd::SmartPointer<Ridee> spRidee = FUN_1416764a0();
     if (spRidee)
     {
@@ -4351,7 +4351,7 @@ void PC::vfunc_126(MS2Ptr<Unk_PCArg125> spInfo, int nLayer)
     spInfo->m_3d0 += nAttackMax;
 }
 
-// The damage record's points as efd::Point3 (skillrecord.h keeps them as Unk_StreamPoint).
+// The damage record's points as efd::Point3 (skillrecord.h keeps them as Vector3).
 #define PC_RECORD_PT(f) reinterpret_cast<efd::Point3&>(spRecord->f)
 
 // Knock-back from a hit (PCBase::vfunc_107 plus the PC's state / hold checks and the equipment's push resistance).

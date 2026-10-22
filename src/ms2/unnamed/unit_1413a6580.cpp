@@ -25,7 +25,7 @@ class Unk_GcWorld
 public:
     int FUN_141bc2f40();                                    // any field object of type 6?
     void* FUN_141bd0cc0();                                  // the local player
-    void FUN_141bc2c90(Unk_StreamPoint pt, ATL::CAtlArray<void*>& arrOut);   // field objects containing pt, nearest first
+    void FUN_141bc2c90(Vector3 pt, ATL::CAtlArray<void*>& arrOut);   // field objects containing pt, nearest first
 };
 Unk_GcWorld* FUN_1403ed2d0();
 
@@ -38,7 +38,7 @@ public:
     virtual void Unk_Slot8(); virtual void Unk_Slot9(); virtual void Unk_Slot10(); virtual void Unk_Slot11();
     virtual void Unk_Slot12(); virtual void Unk_Slot13(); virtual void Unk_Slot14(); virtual void Unk_Slot15();
     virtual void Unk_Slot16(); virtual void Unk_Slot17();
-    virtual Unk_StreamPoint vfunc_18();                     // 0x90 the position
+    virtual Vector3 vfunc_18();                     // 0x90 the position
 };
 
 class Unk_GcUI { public: int FUN_141adbb00(); };            // CUIService
@@ -226,7 +226,7 @@ int CGuideConditionPortalEnable::vfunc_3()
     if (pPC == 0)
         return 0;
     ATL::CAtlArray<void*> arrPortals;
-    Unk_StreamPoint pt = pPC->vfunc_18();
+    Vector3 pt = pPC->vfunc_18();
     FUN_1403ed2d0()->FUN_141bc2c90(pt, arrPortals);
     return FUN_1413a5600(FUN_140966da0(arrPortals) != 0);
 }

@@ -90,7 +90,7 @@ int FUN_141424760(MS2Ptr<CItem> spItem, int* pnColor, int nSlot, PC* pPc);
 NiPointer<CItemCustomizeController> FUN_1414131e0(MS2Ptr<CEquipItem> spEquip, PC* pPc, IItemCustomizeEventListener* pListener);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // CItemData of an item id
 __int64 FUN_14028d0e0();                                            // a new uid
-extern Unk_StreamPoint DAT_143b01a60;                               // efd::Point3::ZERO
+extern Vector3 DAT_143b01a60;                               // efd::Point3::ZERO
 
 // The part handle FUN_140cd1a30 returns (the callers declare their own view of it).
 class Unk_BSPartHandle : public NiPointer<CItemCustomizeController>

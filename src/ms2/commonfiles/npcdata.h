@@ -39,7 +39,7 @@ struct Unk_NpcModel
     float m_fScale;
     float m_fAniSpeed;
     int m_nSpawnAlphaAnimation;
-    Unk_StreamPoint m_vOffset;
+    Vector3 m_vOffset;
 };
 MS2_CHECK_SIZE(Unk_NpcModel, 0x20);
 
@@ -232,8 +232,8 @@ public:
         void WriteXml(Unk_140165cf0* pParent) const;            // 0x1406c9200 (empty)
         bool operator!=(const NodeCollision& o) const;      // 0x1406c9220
         CStringA m_strTargetNode;
-        Unk_StreamPoint m_vVolume;
-        Unk_StreamPoint m_vOffset;
+        Vector3 m_vVolume;
+        Vector3 m_vOffset;
     };
 
     CNpcData();                                             // 0x1406ca1c0

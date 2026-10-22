@@ -185,7 +185,7 @@ int FUN_1408731e0(Unk_140165cf0* pElem, const char* pszName, int& nOut);
 int FUN_140873890(Unk_140165cf0* pElem, const char* pszName, int& nOut);
 int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CStringA& strOut);
 int FUN_1408730a0(Unk_140165cf0* pElem, const char* pszName, bool& bOut);
-int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, Unk_StreamPoint& ptOut);
+int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, Vector3& ptOut);
 void FUN_1413747d0(Unk_GcOptInt* pOpt);                     // reset to unset
 void FUN_1413b5850(Unk_GcOptVec3* pOpt);
 void FUN_1413b5860(Unk_GcOptBool* pOpt);
@@ -229,7 +229,7 @@ int FUN_1413b1d60(Unk_140165cf0* pElem, const char* pszName, void* pOut)
 int FUN_1413b1e70(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptVec3& oOut)
 {
     FUN_1413b5850(&oOut);
-    Unk_StreamPoint pt;
+    Vector3 pt;
     int nResult = FUN_140874670(pElem, pszName, pt);
     if (nResult == 0)
         oOut = pt;

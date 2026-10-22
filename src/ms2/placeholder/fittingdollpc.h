@@ -10,7 +10,7 @@ class NiAVObject;
 class NiColor;
 class CEquipmentSlotLayerInfo;   // MS2Ptr<T> (cequipmentslotlayerinfo.h)
 class Unk_PCWaterGunInfo;   // MS2Ptr<T> (?\watergunbattleinfo.cpp)
-struct Unk_StreamPoint;
+struct Vector3;
 struct Unk_CharEquip;   // tcreatecharinfo.h (0xc)
 
 // Heap-only views. PC derives PCBase (ctor 14164dfd0), and FittingDollPC
@@ -264,7 +264,7 @@ public:
     class Unk_MyPCEmotion* FUN_14165f100();                 // the playing emotion (actionkeyobject.cpp)
     // @0x140967420
     MS2Ptr<Unk_PCInteractMode> FUN_140967420() { return m_spInteractMode; }   // COMDAT in actionkeyobject.cpp's range
-    Unk_StreamPoint FUN_1416767d0();                        // PCBase member: the position (the ride's when riding; actionkeyobject.cpp)
+    Vector3 FUN_1416767d0();                        // PCBase member: the position (the ride's when riding; actionkeyobject.cpp)
     void FUN_141660000(__int64 nValue);
     void FUN_141661ba0(int n);                              // scenestategame packet (state reset flag)
     void FUN_141661dc0(unsigned short nA, int nB);          // scenestategame packet 0xb1
@@ -360,7 +360,7 @@ public:
     void FUN_141661880(int bEnable, int nValue, const CubeItemInfo* pInfo);   // enter / leave the cube mode (+0x1000 / +0x1008)
     void FUN_14165d300(int nA, int nB, int nC);             // PCBase member (pcbase.cpp; scenestategame 0x5d)
     void FUN_14165d550(int bHide);                          // the tomb stone breaks (bHide: hide its entity)
-    void FUN_1416629d0(Unk_StreamPoint kPos, Unk_StreamPoint kRot);   // scenestategame 0x141721a30
+    void FUN_1416629d0(Vector3 kPos, Vector3 kRot);   // scenestategame 0x141721a30
     MS2Ptr<Unk_PCWaterGunInfo> FUN_141664250();             // the water gun battle info (+0x1260)
     void FUN_141662640(__int64 nValue);                      // scenestategame 0x1417340f0
     void FUN_141662690(int nValue);

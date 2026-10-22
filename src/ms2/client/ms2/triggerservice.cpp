@@ -458,7 +458,7 @@ void CTriggerService::FUN_141861c20(CInPacket* pEvent)
     char nSub = pEvent->ReadUInt8();
     if (nSub == 0)
     {
-        Unk_StreamPoint ptCenter = pEvent->FUN_1407140d0();
+        Vector3 ptCenter = pEvent->FUN_1407140d0();
         unsigned uOuter = pEvent->ReadInt32();
         unsigned uInner = pEvent->ReadInt32();
         Unk_CameraManager* pCamera = Unk_CameraManager::FUN_1409478c0();
@@ -780,7 +780,7 @@ void CTriggerService::FUN_141863030(CInPacket* pEvent)
 }
 
 // @0x141863100
-bool CTriggerService::FUN_141863100(int nObject, Unk_StreamPoint pt)
+bool CTriggerService::FUN_141863100(int nObject, Vector3 pt)
 {
     MS2Ptr<TriggerObject> spObject;
     m_mapObjects.Lookup(nObject, spObject);
@@ -1078,7 +1078,7 @@ void CTriggerService::FUN_1418642e0(CInPacket* pEvent)
     PCBase* pPlayer = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    Unk_StreamPoint pt = pEvent->ReadVector3Short();
+    Vector3 pt = pEvent->ReadVector3Short();
     bool bMove = pEvent->ReadBool();
     FUN_14166d8b0(pPlayer, pt.z);
     if (bMove)
@@ -1091,7 +1091,7 @@ void CTriggerService::FUN_1418643c0(CInPacket* pEvent)
     PCBase* pPlayer = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    Unk_StreamPoint pt = pEvent->ReadVector3Short();
+    Vector3 pt = pEvent->ReadVector3Short();
     bool bFlag = pEvent->ReadBool();
     FUN_14166d2d0(pPlayer, reinterpret_cast<const efd::Point3&>(pt), bFlag);
 }

@@ -31,7 +31,7 @@ public:
     int IsShown();                                            // m_bShown
     void FUN_140fb4bb0();                                           // start showing (m_bShown = m_bPending = 1)
     void FUN_140fb4be0();                                           // unregister the popup and stop showing
-    void SetPtWorld(Unk_StreamPoint ptWorld);                    // the world point the popup floats at
+    void SetPtWorld(Vector3 ptWorld);                    // the world point the popup floats at
     void SetIdEntity(const egf::EntityID& id);                    // the cube's entity
     void FUN_140fb4cc0(const CStringW& strTitle, const CStringW& strText);   // the texts
     void FUN_140fb4eb0();                                           // project the world point and place the movie
@@ -39,7 +39,7 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    Unk_StreamPoint m_ptWorld;                                      // +0x68 the world point above the cube
+    Vector3 m_ptWorld;                                      // +0x68 the world point above the cube
     int m_bShown;                                                   // +0x74 the popup is wanted
     int m_bPending;                                                 // +0x78 hide it once the movie clip is up (vfunc_52)
     int m_bVisible;                                                 // +0x7c the last visibility sent to the movie

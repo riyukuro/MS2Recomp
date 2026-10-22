@@ -44,12 +44,12 @@ struct Unk_PickTarget : public CPtred
     Unk_PickPartInfo* FUN_141200ab0() const;                    // the part's model facts
     MS2Ptr<CEquipItem> FUN_141200a40() const;                   // the equip item the part belongs to (caprotationcontroller.cpp)
     MS2Ptr<Unk_PickTarget> FUN_1411de2e0();                     // an MS2Ptr to this part (itemugcmesh.cpp)
-    void FUN_1412014f0(Unk_StreamPoint kOffset);                // stores the offset (itemugcmesh.cpp)
-    void FUN_141201620(Unk_StreamPoint kEuler);                 // stores the euler (itemugcmesh.cpp)
+    void FUN_1412014f0(Vector3 kOffset);                // stores the offset (itemugcmesh.cpp)
+    void FUN_141201620(Vector3 kEuler);                 // stores the euler (itemugcmesh.cpp)
     void FUN_141201cb0(std::set<NiAVObjectPtr>& kOut);          // copies the node set of the part (itemugcmesh.cpp)
     std::set<NiAVObjectPtr>& FUN_141201c90() const;                // the part's node set (itemugcmesh.cpp)
-    void FUN_141200160(Unk_StreamPoint kOffset);                // sets the part's model offset
-    void FUN_141200100(Unk_StreamPoint kEuler);                 // sets the part's model rotation (euler degrees)
+    void FUN_141200160(Vector3 kOffset);                // sets the part's model offset
+    void FUN_141200100(Vector3 kEuler);                 // sets the part's model rotation (euler degrees)
     NiAVObject* FUN_1411673f0(const CString* pName) const;      // the scene node named pName (unit_1411673f0)
     NiAVObject* FUN_1411676d0(const CString* pPartName) const;  // the model node of one attach part (w22: NiRenderObject**)
     // highlight: fScale/fMode from CItemCustomizeController::vfunc_39, pNode = the picked mesh or NULL

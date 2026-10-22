@@ -58,7 +58,7 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/imessagelistener.h"
 #include "ms2/placeholder/iworldservicecallback.h"
-#include "ms2/placeholder/nipoint3.h"           // Unk_StreamPoint (NiPoint3 / efd::Point3)
+#include "ms2/placeholder/nipoint3.h"           // Vector3 (NiPoint3 / efd::Point3)
 
 class WorldService;
 template <class T> class TSingleton;
@@ -304,7 +304,7 @@ public:
     int FUN_141bbbe40(int mapId, int arg2, int arg3);                            // start loading map mapId
     int FUN_141bbc1d0(const char* urn, int arg2);                                // begin loading the xblock urn
     void FUN_141bbd490(egf::Entity* entity, void* sceneNode);                           // track a shadow-casting entity in m_2e8
-    Unk_StreamPoint FUN_141bc0ff0(GameObject* obj, void* classIds, int skipId);        // unit push-away direction from nearby objects of the given class ids
+    Vector3 FUN_141bc0ff0(GameObject* obj, void* classIds, int skipId);        // unit push-away direction from nearby objects of the given class ids
     void FUN_141bc12b0();                                                              // take extra refs on the parts of every object of the active class filter
     void FUN_141bc2730();                                                              // clear the field-object registry (m_350) and destroy the entities in m_838
     Unk_WsP16* FUN_141bc2800(Unk_WsP16* out, int id);                                  // m_350.Lookup(field object id) -> *out (null when absent)
@@ -317,17 +317,17 @@ public:
     void FUN_141bc3000(int id, int enabled);                                           // set the field object's enabled property
     void FUN_141bc30a0(int id, int visible);                                           // set the field object's visible property
     void FUN_141bc3140(int id, int visible, int enabled, int hidden);                  // set the field object's visible / enabled / hidden properties
-    void FUN_141bc31d0(int id, Unk_StreamPoint pos, Unk_StreamPoint scale);            // set the field object's position / scale
+    void FUN_141bc31d0(int id, Vector3 pos, Vector3 scale);            // set the field object's position / scale
     bool FUN_141bc32d0(void* obj);                                                     // register obj (id at +0x40) in m_3a0; true if it was new
     void* FUN_141bc3360(int id);                                                       // m_3a0 lookup, or null
     void FUN_141bc33d0(int id);                                                        // unregister id from m_3a0 after removing its effects / sounds
     void FUN_141bc3470(const Unk_WsP16& value, const Unk_WsP16& key);                  // m_3f0.SetAt(key, value) when key is registrable (callee releases both)
-    void FUN_141bc2c90(Unk_StreamPoint pt, void* outRefs);                             // field objects containing pt appended to the ref array, sorted nearest first
+    void FUN_141bc2c90(Vector3 pt, void* outRefs);                             // field objects containing pt appended to the ref array, sorted nearest first
     // ws4 part B member declarations (0x141bc4000..0x141bcb2ff)
     void FUN_141bc49c0(); // 0x141bc49c0
     void FUN_141bc4b10(MS2Ptr<class Unk_WsB_Marker> marker); // 0x141bc4b10
     void FUN_141bc4bf0(CString name); // 0x141bc4bf0
-    MS2Ptr<class Unk_WsB_Marker> FUN_141bc4ca0(const Unk_StreamPoint& pos, float maxDist, int type); // 0x141bc4ca0
+    MS2Ptr<class Unk_WsB_Marker> FUN_141bc4ca0(const Vector3& pos, float maxDist, int type); // 0x141bc4ca0
     MS2Ptr<class Unk_WsB_Marker> FUN_141bc4e70(CString name); // 0x141bc4e70
     MS2Ptr<class Unk_WsB_Marker> FUN_141bc4f10(egf::Entity* entity); // 0x141bc4f10
     void FUN_141bc4fc0(float dt); // 0x141bc4fc0
@@ -342,14 +342,14 @@ public:
     void FUN_141bc5d60(const CString& name); // 0x141bc5d60
     void FUN_141bc5e20(int category); // 0x141bc5e20
     void FUN_141bc5fb0(void* out, int category); // 0x141bc5fb0
-    MS2Ptr<class Unk_WsB_Prop> FUN_141bc6090(const Unk_StreamPoint& pos, int skipDisabled); // 0x141bc6090
-    MS2Ptr<class Unk_WsB_Prop> FUN_141bc62b0(const Unk_StreamPoint& pos, int category, int skipDisabled); // 0x141bc62b0
-    MS2Ptr<class Unk_WsB_Prop> FUN_141bc6510(const Unk_StreamPoint& pos, int kind); // 0x141bc6510
+    MS2Ptr<class Unk_WsB_Prop> FUN_141bc6090(const Vector3& pos, int skipDisabled); // 0x141bc6090
+    MS2Ptr<class Unk_WsB_Prop> FUN_141bc62b0(const Vector3& pos, int category, int skipDisabled); // 0x141bc62b0
+    MS2Ptr<class Unk_WsB_Prop> FUN_141bc6510(const Vector3& pos, int kind); // 0x141bc6510
     MS2Ptr<class Unk_WsB_Prop> FUN_141bc66b0(const CString& name); // 0x141bc66b0
     void FUN_141bc6760(const CString& name, int arg3, int category, int arg5); // 0x141bc6760
     void FUN_141bc6860(const CString& name, int arg3, int category); // 0x141bc6860
     void FUN_141bc6930(int kind, int arg); // 0x141bc6930
-    efd::SmartPointer<class Unk_WsB_Spawn> FUN_141bc6c60(const Unk_StreamPoint& pos, int skipUnusable); // 0x141bc6c60
+    efd::SmartPointer<class Unk_WsB_Spawn> FUN_141bc6c60(const Vector3& pos, int skipUnusable); // 0x141bc6c60
     efd::SmartPointer<class Unk_WsB_Spawn> FUN_141bc6eb0(const CString& name); // 0x141bc6eb0
     int FUN_141bc6fb0(int* a, int* b, int* c, int* flag) const;  // 0x141bc6fb0 (returns 0/1 in eax)
     class FieldProperty* FUN_141bcab60(unsigned type); // 0x141bcab60
@@ -389,7 +389,7 @@ public:
     bool FUN_141bcb150(); // 0x141bcb150
     bool FUN_141bcb1a0(); // 0x141bcb1a0
     bool FUN_141bcb210(); // 0x141bcb210
-    bool FUN_141bc8420(class Unk_WsB_Actor* actor, float dt, int* lifted, Unk_StreamPoint* velocity); // 0x141bc8420
+    bool FUN_141bc8420(class Unk_WsB_Actor* actor, float dt, int* lifted, Vector3* velocity); // 0x141bc8420
     void FUN_141bc7100(class Unk_WsB_SceneObj* root); // 0x141bc7100
     void FUN_141bc7490(egf::Entity* entity, NiNode* root); // 0x141bc7490
     // ---- helper C (0x141bcb300-0x141bd2fff) ----
@@ -401,16 +401,16 @@ public:
     int FUN_141bcfc10();                                // m_prevState == 4 && m_state == 6
     float FUN_141bcfc50();                              // scale from the local player
     int GetState();                                // return m_state
-    egf::Entity* FUN_141bcfd30(unsigned key, const Unk_StreamPoint& pos, float maxDist, int nearest, int flat);
+    egf::Entity* FUN_141bcfd30(unsigned key, const Vector3& pos, float maxDist, int nearest, int flat);
     int FUN_141bcfff0(int id, struct Unk_WsC_NpcAnim* out);
-    egf::Entity* FUN_141bd0220(const Unk_StreamPoint& pos, float maxDist);
+    egf::Entity* FUN_141bd0220(const Vector3& pos, float maxDist);
     struct Unk_WsC_TagPtr FUN_141bd0420(unsigned key);
     egf::Entity* FUN_141bd04d0(unsigned key);
     egf::Entity* FUN_141bd0560(unsigned key, unsigned prop, float x, float y);
     egf::Entity* FUN_141bd08f0(unsigned key, unsigned prop, float x, float y, __int64 filter);
     void FUN_141bd0cf0(void* pPlayer);                  // m_2d8 = pPlayer
     CStringW FUN_141bd0d30();                           // m_2d8's name or ""
-    int FUN_141bd0dd0(Unk_StreamPoint* pos, Unk_StreamPoint* dir);
+    int FUN_141bd0dd0(Vector3* pos, Vector3* dir);
     class Unk_WsC_GameObj* FUN_141bd0f50(class Unk_WsC_GameObj* p);
     class Unk_WsC_GameObj* FUN_141bd0fa0(const egf::EntityID& id);   // the game object of an entity
     class Unk_WsC_GameObj* FUN_141bd0fe0(unsigned __int64 key);
@@ -433,9 +433,9 @@ public:
     void FUN_141bd1ed0(std::list<class Unk_WsC_GameObj*>* outA, std::list<class Unk_WsC_GameObj*>* outB, int skipOwned, int a, int b);
     void FUN_141bd2030(std::list<class Unk_WsC_GameObj*>* out);
     class Unk_WsC_GameObj* FUN_141bd2170(int type, float range, int useFront, int addBonus);
-    class Unk_WsC_GameObj* FUN_141bd2690(const Unk_StreamPoint& pos, float maxDist, float up, float down, int needHp, int includeDead);
-    class Unk_WsC_GameObj* FUN_141bd28d0(const Unk_StreamPoint& pos, float maxDist, float up, float down, int needHp, class Unk_WsC_GameObj* exclude, int includeDead);
-    class Unk_WsC_GameObj* FUN_141bd2bf0(const Unk_StreamPoint& pos, int id);   // pos unused (exe caller 0x14176b489)
+    class Unk_WsC_GameObj* FUN_141bd2690(const Vector3& pos, float maxDist, float up, float down, int needHp, int includeDead);
+    class Unk_WsC_GameObj* FUN_141bd28d0(const Vector3& pos, float maxDist, float up, float down, int needHp, class Unk_WsC_GameObj* exclude, int includeDead);
+    class Unk_WsC_GameObj* FUN_141bd2bf0(const Vector3& pos, int id);   // pos unused (exe caller 0x14176b489)
     efd::SmartPointer<egf::Entity> FUN_141bd2cd0(CString name);
     void FUN_141bd2db0(ATL::CAtlList<efd::SmartPointer<class Unk_WsC_GameObj> >* out, int (*filter)(class Unk_WsC_GameObj*));
     void FUN_141bd2ea0(void* ctx, ATL::CAtlList<efd::SmartPointer<class Unk_WsC_GameObj> >* out, int a, int b, int (*filter)(void*, class Unk_WsC_GameObj*, int, int));
@@ -448,15 +448,15 @@ public:
     CStringW* FUN_141bd3080();                          // &m_290
     MS2Ptr<Unk_WsPtred298> FUN_141bd30a0();             // copy of m_298
     void FUN_141bd30f0(char b);                         // set shadow flag on every m_2e8 entity's scene graph + hw instancing
-    Unk_WsP16* FUN_141bd3210(Unk_WsP16* out, Unk_StreamPoint pt);   // field object containing pt, else the nearest (m_2f8)
+    Unk_WsP16* FUN_141bd3210(Unk_WsP16* out, Vector3 pt);   // field object containing pt, else the nearest (m_2f8)
     Unk_WsP16* FUN_141bd3430(Unk_WsP16* out, unsigned __int64 key); // m_2f8 lookup
     TextureLayerManager* GetTextureLayerManager();               // return m_spTextureLayerManager
     ChaosLightEffectLayerManager* GetChaosLightEffectLayerManager();      // return m_spChaosLightEffectLayerManager
     ATL::CRBMap<unsigned, Unk_WsV118>* FUN_141bd36b0(); // &m_118
     ATL::CRBMap<unsigned, Unk_WsV148>* FUN_141bd36d0(); // &m_148
-    bool FUN_141bd36f0(Unk_StreamPoint pt, Unk_StreamPoint* pOut);   // offset of pt outside the world bounds into *pOut; true if inside
-    Unk_StreamPoint GetBoundsMin();                    // m_boundsMin
-    Unk_StreamPoint GetBoundsMax();                    // m_boundsMax
+    bool FUN_141bd36f0(Vector3 pt, Vector3* pOut);   // offset of pt outside the world bounds into *pOut; true if inside
+    Vector3 GetBoundsMin();                    // m_boundsMin
+    Vector3 GetBoundsMax();                    // m_boundsMax
     void FUN_141bd3860();                               // m_978 = 1
     void FUN_141bd3880();                               // each m_350 value: FUN_14169d0e0
     void FUN_141bd3920();                               // each m_540 / m_570 value: FUN_1414483e0
@@ -467,8 +467,8 @@ public:
     void FUN_141bd3cf0(bool b);                         // m_915 = b
     bool FUN_141bd3d10();                               // return m_915
     int FUN_141bd3d50();                                // return m_918
-    void FUN_141bd3d70(const Unk_StreamPoint& a, const Unk_StreamPoint& b);   // m_8d8 = a, m_8e4 = b
-    Unk_StreamPoint FUN_141bd3dc0();                    // return m_8d8
+    void FUN_141bd3d70(const Vector3& a, const Vector3& b);   // m_8d8 = a, m_8e4 = b
+    Vector3 FUN_141bd3dc0();                    // return m_8d8
     int FUN_141bd3e00();                                // player camera has the default 1100/45/30 values
     void FUN_141bd3ec0(int id, char b);                 // each m_148 object with this id: set its flag
     unsigned FUN_141bd3fe0(int id);                     // key of the m_148 entry whose object has this id
@@ -478,10 +478,10 @@ public:
     void FUN_141bd42f0(void* pMsg);                     // effect message: read effects into m_848 and apply
     void FUN_141bd4490(void* pMsg);                     // effect message: add one effect
     void FUN_141bd4670(void* pMsg);                     // effect message: remove one effect
-    int FUN_141bd4700(const std::set<unsigned __int64>& ids, Unk_StreamPoint* pOutPos, float* pOutDist);   // nearest m_118 actor in ids
-    int FUN_141bd49d0(const std::set<unsigned>& ids, Unk_StreamPoint* pOutPos, float* pOutDist);           // nearest m_148/m_930 object in ids
-    int FUN_141bd4ed0(const std::set<int>& ids, Unk_StreamPoint* pOutPos, float* pOutDist);                // nearest m_678 object in ids
-    int FUN_141bd51a0(const std::set<unsigned>& ids, Unk_StreamPoint* pOutPos, float* pOutDist);           // nearest m_510 object in ids
+    int FUN_141bd4700(const std::set<unsigned __int64>& ids, Vector3* pOutPos, float* pOutDist);   // nearest m_118 actor in ids
+    int FUN_141bd49d0(const std::set<unsigned>& ids, Vector3* pOutPos, float* pOutDist);           // nearest m_148/m_930 object in ids
+    int FUN_141bd4ed0(const std::set<int>& ids, Vector3* pOutPos, float* pOutDist);                // nearest m_678 object in ids
+    int FUN_141bd51a0(const std::set<unsigned>& ids, Vector3* pOutPos, float* pOutDist);           // nearest m_510 object in ids
     void FUN_141bd5460();                               // each m_208 value: FUN_141b948b0(list) (RemoveAll)
     void FUN_141bd5500(unsigned modelId, Unk_WsP8* pEntity);   // drop the entity from m_208[modelId]'s list; destroys *pEntity
     void FUN_141bd5650();                               // player->m_250 notification (1)
@@ -491,8 +491,8 @@ public:
     void FUN_141bd6520();                               // rebuild m_088 from the flat model 0xe4fc9d5d entities
     void FUN_141bd6690();                               // retune m_0b4 and drain the backlog
     void FUN_141bd6810(char flag);                      // update the sight-range war fog and every npc's visibility
-    void FUN_141bd6c40(void* npc, Unk_StreamPoint* center, class FieldPropertySightRange* range, float sight, char flag);   // fade one npc by distance
-    bool FUN_141bd7230(Unk_StreamPoint* pt);            // player is outside the sight range of pt
+    void FUN_141bd6c40(void* npc, Vector3* center, class FieldPropertySightRange* range, float sight, char flag);   // fade one npc by distance
+    bool FUN_141bd7230(Vector3* pt);            // player is outside the sight range of pt
     void FUN_141bd7350(bool enable);                    // set m_a98 and refresh the sight range
     void FUN_141bd7390();                               // refresh zone-based fading of the player and the m_118 objects
     void FUN_141bd7bf0();                               // request the preload of the resource id DAT_143ab2870
@@ -562,7 +562,7 @@ public:
     ATL::CAtlList<Unk_WsV058> m_058;                      // +0x058 0x141bef200 / 0x141bf4960
     std::list<Unk_WsElem> m_088;                        // +0x088 0x141bf2fa0 / 0x141bf5c60 TYPE?
     std::list<Unk_WsElem> m_098;                        // +0x098 same type as m_088
-    Unk_StreamPoint m_0a8;                              // +0x0a8 copy of DAT_143b01a60 (a point constant)
+    Vector3 m_0a8;                              // +0x0a8 copy of DAT_143b01a60 (a point constant)
     float m_0b4;                                        // +0x0b4 3000.0f
     ATL::CRBMap<unsigned __int64, Unk_WsV0b8> m_0b8;      // +0x0b8 0x141beff50 / 0x141bf4d50
     ATL::CRBMap<unsigned, Unk_WsV0e8> m_0e8;              // +0x0e8 0x141befd10 / 0x141bf4bd0
@@ -631,16 +631,16 @@ public:
     int m_808;                                          // +0x808
     Unk_WsNiPtr<TextureLayerManager> m_spTextureLayerManager;               // +0x810 0x141bf1130 / 0x141bf5540
     Unk_WsNiPtr<ChaosLightEffectLayerManager> m_spChaosLightEffectLayerManager;   // +0x818 0x141bf1060 / 0x141bf5510
-    Unk_StreamPoint m_boundsMin;                           // +0x820 (FLT_MAX x3)
-    Unk_StreamPoint m_boundsMax;                           // +0x82c (-FLT_MAX x3)
+    Vector3 m_boundsMin;                           // +0x820 (FLT_MAX x3)
+    Vector3 m_boundsMax;                           // +0x82c (-FLT_MAX x3)
     std::set<unsigned __int64> m_838;                   // +0x838 0x140a15e30 / 0x140a16650 (shared)
     ATL::CAtlMap<unsigned, Unk_WsV848> m_848;            // +0x848 0x141bef440 / 0x141bf49e0
     ATL::CRBMap<unsigned, Unk_WsPod8> m_890;            // +0x890 with m_8c0: one 0x38-byte CRBTree-derived class (ctor 0x1416c3150 = base(10) + [+0x30]=0, dtor 0x1416c3190, other obj) TYPE?
     int m_8c0;                                          // +0x8c0 (part of the m_890 class)
     Unk_WsDeletable* m_8c8;                             // +0x8c8 owned, deleted in OnShutdown
     Unk_WsDeletable* m_8d0;                             // +0x8d0 owned, deleted in OnShutdown
-    Unk_StreamPoint m_8d8;                                 // +0x8d8 (0,0,0)
-    Unk_StreamPoint m_8e4;                                 // +0x8e4 (0,0,0)
+    Vector3 m_8d8;                                 // +0x8d8 (0,0,0)
+    Vector3 m_8e4;                                 // +0x8e4 (0,0,0)
     bool m_8f0;                                         // +0x8f0 = true
     int m_8f4;                                          // +0x8f4
     int m_8f8;                                          // +0x8f8

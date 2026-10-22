@@ -115,8 +115,8 @@ struct Unk_InventorySkillRequest
     unsigned short level;
     unsigned __int64 tick;
     unsigned serial, unknown14;
-    Unk_StreamPoint origin;
-    Unk_StreamPoint direction;
+    Vector3 origin;
+    Vector3 direction;
     float fValue;
     unsigned unknown34;
     bool remap, suppressDispatch, itemUse;

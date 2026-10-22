@@ -22,8 +22,8 @@ struct Unk_CameraSetup
     int m_34;                           // +0x34 map id
     float m_38;                         // +0x38 camera distance
     float m_3c;                         // +0x3c blend time
-    Unk_StreamPoint m_40;               // +0x40 offset
-    Unk_StreamPoint m_4c;               // +0x4c player rotation
+    Vector3 m_40;               // +0x40 offset
+    Vector3 m_4c;               // +0x4c player rotation
     bool m_58;                          // +0x58 turn the player
     bool m_59;                          // +0x59
     int m_5c;                           // +0x5c easing types
@@ -54,7 +54,7 @@ public:
     virtual bool vfunc_34() { return m_108.m_59; }
     virtual void vfunc_37();
     // @0x140d4f9d0
-    virtual BOOL vfunc_38(Unk_StreamPoint ptPos, Unk_StreamPoint ptRot) { return 0; }
+    virtual BOOL vfunc_38(Vector3 ptPos, Vector3 ptRot) { return 0; }
 
     void FUN_140d4f680(const Unk_CameraSetup& setup);   // start blending to a setup
     void FUN_140d4f830();                               // abort the blend (return to the previous setup)
@@ -77,9 +77,9 @@ public:
     float m_188;                        // +0x188 blend time
     float m_18c;                        // +0x18c
     float m_190;                        // +0x190
-    Unk_StreamPoint m_194;              // +0x194
-    Unk_StreamPoint m_1a0;              // +0x1a0
-    Unk_StreamPoint m_1ac;              // +0x1ac
+    Vector3 m_194;              // +0x194
+    Vector3 m_1a0;              // +0x1a0
+    Vector3 m_1ac;              // +0x1ac
     float m_1b8;
     float m_1bc;
     float m_1c0;

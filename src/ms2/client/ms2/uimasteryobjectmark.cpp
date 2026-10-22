@@ -50,14 +50,14 @@ class Unk_HmCube
 public:
     MS2Ptr<FunctionCubeData> FUN_140ca6580();                   // the cube's table row
 };
-class Unk_QgCamera { public: bool FUN_140af0700(const Unk_StreamPoint& ptWorld, Unk_StreamPoint& rptScreen); };
+class Unk_QgCamera { public: bool FUN_140af0700(const Vector3& ptWorld, Vector3& rptScreen); };
 Unk_QgCamera* FUN_1409478c0();
 class Unk_QgUIScale;
 Unk_QgUIScale* FUN_14025e7a0();
 float FUN_1422afec0(Unk_QgUIScale* pScale, int nMovie);
 int FUN_141277f40();
-float FUN_1412762d0(const Unk_StreamPoint& pt);                 // the screen y offset of a world point
-int FUN_1408a1360(Unk_StreamPoint a, Unk_StreamPoint b);        // the two points are on the same side
+float FUN_1412762d0(const Vector3& pt);                 // the screen y offset of a world point
+int FUN_1408a1360(Vector3 a, Vector3 b);        // the two points are on the same side
 class Unk_AuCfgValue
 {
 public:
@@ -82,10 +82,10 @@ CStringTable* GetStringTable();                                  // the string t
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
 // The player's position as the engine point type.
-static Unk_StreamPoint PlayerPos(PCBase* pPC)
+static Vector3 PlayerPos(PCBase* pPC)
 {
     NiPoint3 pt = pPC->vfunc_18();
-    return Unk_StreamPoint(pt.x, pt.y, pt.z);
+    return Vector3(pt.x, pt.y, pt.z);
 }
 
 using namespace ATL;
@@ -130,7 +130,7 @@ void UIMasteryObjectMark::FUN_140e59bb0(CInteractObject* pObject)
 {
     if (m_30.get() != 0)
     {
-        Unk_StreamPoint pt = pObject->GetPos();
+        Vector3 pt = pObject->GetPos();
         Scaleform::GFx::Value v = m_30->FUN_140e5bfe0("create", pObject->GetName(), pt.x, pt.y);
         if (!FUN_1409b0390(&v))
         {
@@ -156,7 +156,7 @@ void UIMasteryObjectMark::FUN_140e59ea0(CFunctionCubeObject* pCube)
 {
     if (m_30.get() != 0)
     {
-        Unk_StreamPoint pt = pCube->FUN_141226d00();
+        Vector3 pt = pCube->FUN_141226d00();
         Scaleform::GFx::Value v = m_30->FUN_140e5bfe0("create", pCube->FUN_141226bd0(), pt.x, pt.y);
         if (!FUN_1409b0390(&v))
         {
@@ -274,8 +274,8 @@ void UIMasteryObjectMark::FUN_140e5a600()
             FUN_140e5b450(strKey);
             continue;
         }
-        Unk_StreamPoint ptScreen;
-        Unk_StreamPoint ptWorld = pGather->GetPos().FUN_14097fd50(Unk_StreamPoint(0.0f, 0.0f, 200.0f));
+        Vector3 ptScreen;
+        Vector3 ptWorld = pGather->GetPos().FUN_14097fd50(Vector3(0.0f, 0.0f, 200.0f));
         float fDist = PlayerPos(pPC).FUN_140965c40(pGather->GetPos()).FUN_140967ac0();
         if (!FUN_1409478c0()->FUN_140af0700(ptWorld, ptScreen) || 1000.0f < fDist)
         {
@@ -293,8 +293,8 @@ void UIMasteryObjectMark::FUN_140e5a600()
                 nShow = 0;
             else
                 nShow = 1;
-            Unk_StreamPoint ptObject = pGather->GetPos();
-            Unk_StreamPoint ptPlayer = PlayerPos(pPC);
+            Vector3 ptObject = pGather->GetPos();
+            Vector3 ptPlayer = PlayerPos(pPC);
             if (FUN_1408a1360(ptPlayer, ptObject) == 0)
                 nShow = 0;
             if (spContext->m_nShown != nShow)
@@ -351,8 +351,8 @@ void UIMasteryObjectMark::FUN_140e5ac30()
             FUN_140e5b450(strKey);
             continue;
         }
-        Unk_StreamPoint ptScreen;
-        Unk_StreamPoint ptWorld = spHome->FUN_141226d00().FUN_14097fd50(Unk_StreamPoint(0.0f, 0.0f, 200.0f));
+        Vector3 ptScreen;
+        Vector3 ptWorld = spHome->FUN_141226d00().FUN_14097fd50(Vector3(0.0f, 0.0f, 200.0f));
         float fDist = PlayerPos(pPC).FUN_140965c40(spHome->FUN_141226d00()).FUN_140967ac0();
         int nRiding = static_cast<Unk_McPc*>(pPC)->FUN_1416595b0() != 0;
         if (!FUN_1409478c0()->FUN_140af0700(ptWorld, ptScreen) || 1000.0f < fDist || nRiding != 0)
@@ -376,8 +376,8 @@ void UIMasteryObjectMark::FUN_140e5ac30()
                 nShow = 0;
             else
                 nShow = 1;
-            Unk_StreamPoint ptObject = spHome->FUN_141226d00();
-            Unk_StreamPoint ptPlayer = PlayerPos(pPC);
+            Vector3 ptObject = spHome->FUN_141226d00();
+            Vector3 ptPlayer = PlayerPos(pPC);
             if (FUN_1408a1360(ptPlayer, ptObject) == 0)
                 nShow = 0;
             if (spContext->m_nShown != nShow)

@@ -26,8 +26,8 @@
 #include "hook/ms2hook.h"
 
 // ---- the unit's own statics: two offsets of the orb's launch spread, and the dummy node name ----
-static Unk_StreamPoint s_ptSpreadMin(-0.5f, 0.0f, 0.25f);       // @0x1400eb710
-static Unk_StreamPoint s_ptSpreadMax(0.5f, 0.0f, 0.5f);         // @0x1400eb740
+static Vector3 s_ptSpreadMin(-0.5f, 0.0f, 0.25f);       // @0x1400eb710
+static Vector3 s_ptSpreadMax(0.5f, 0.0f, 0.5f);         // @0x1400eb740
 static CString s_strEffDummy = "Eff_Dummy";                      // @0x1400eb770 (reassigned from the constants)
 
 // ---- the shared header statics, once more (this unit includes the header twice) ----
@@ -38,10 +38,10 @@ static CString s_strStun2 = "stun";                  // @0x1400eba00
 static Unk_1402a9d70 s_unk1402a9d70_2(17, 0.75f, 0.25f, 2.25f, 10);   // @0x1400eba30
 
 // ---- exe data ----
-extern Unk_StreamPoint DAT_143b01a60;       // the zero point
+extern Vector3 DAT_143b01a60;       // the zero point
 extern Unk_EfdMatrix3 DAT_143a09600;        // the identity matrix
-extern Unk_StreamPoint DAT_143a08cf8;       // axis a (the up axis)
-extern Unk_StreamPoint DAT_143a08cd8;       // axis b
+extern Vector3 DAT_143a08cf8;       // axis a (the up axis)
+extern Vector3 DAT_143a08cd8;       // axis b
 extern float DAT_1439f733c;                 // minimum travel distance
 extern float DAT_1439f7340;                 // travel distance scale
 extern float DAT_1439f7344;                 // arrival radius scale
@@ -53,7 +53,7 @@ extern float DAT_1439f7354;                 // player flash b
 // ---- unit-local views of exe objects ----
 
 // 3-float point whose default ctor is the efd::Point3 one (0x1405522f0).
-struct Unk_GVec3 : public Unk_StreamPoint
+struct Unk_GVec3 : public Vector3
 {
     Unk_GVec3();                                                // 0x1405522f0
     Unk_GVec3& operator=(const Unk_NiPoint3& pt);              // 0x14097faa0
@@ -72,14 +72,14 @@ public:
     virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10();
     virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14();
     virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17();
-    virtual Unk_StreamPoint* GetPosition(Unk_StreamPoint* pOut);    // slot 18 (+0x90)
+    virtual Vector3* GetPosition(Vector3* pOut);    // slot 18 (+0x90)
 };
 float FUN_14123c260(Unk_ExpActor* p);                               // radius scale
 int FUN_14123c580(Unk_ExpActor* p);                                 // object id
 int FUN_14123cec0(Unk_ExpActor* p);                                 // player seed
 void FUN_141673f70(Unk_ExpActor* p, float fR, float fG, float fB);  // flash the object
 NiAVObject* FUN_141675150(Unk_ExpActor* p, const CString& strName); // find a named dummy node
-const Unk_StreamPoint& FUN_140947900(NiAVObject* pNode);            // node translate
+const Vector3& FUN_140947900(NiAVObject* pNode);            // node translate
 int FUN_14028d0e0();                                                // seed counter
 bool FUN_14087ddc0(void* pClassInfo, int nKind);                    // efd::ClassInfo::IsKindOf
 
@@ -136,12 +136,12 @@ class Unk_ConfigFloat { public: float FUN_1402bac70(); };                       
 class Unk_ConfigPoint
 {
 public:
-    Unk_StreamPoint FUN_141273d00() const;                          // copy of the value (0x141273d00)
-    const Unk_StreamPoint& FUN_141274420() const;                   // the value, "constants is not set" when unset
+    Vector3 FUN_141273d00() const;                          // copy of the value (0x141273d00)
+    const Vector3& FUN_141274420() const;                   // the value, "constants is not set" when unset
     virtual void vfunc_0(); virtual void vfunc_1();
     bool m_bInit; char m_flag9, m_flagA, m_flagB; unsigned m_unkC;
     char m_pad_10[0x40];
-    Unk_StreamPoint m_value;                                        // +0x50
+    Vector3 m_value;                                        // +0x50
 };
 class Unk_ConfigString { public: CString* FUN_140298f80(); };      // Value<CString>::get
 Unk_ClientConfig* FUN_1401d3200();
@@ -152,7 +152,7 @@ void FUN_1402b7560(void* pObj, const char* pszMessage);
 // Unit helpers declared elsewhere.
 void FUN_140194470(void* pDst, void* pSrc);
 const float* FUN_140805fc0(const float* pA, const float* pB);                        // min / max of two floats
-Unk_StreamPoint FUN_141b71390(Unk_StreamPoint a, Unk_StreamPoint b, Unk_StreamPoint c, float t);   // curve point
+Vector3 FUN_141b71390(Vector3 a, Vector3 b, Vector3 c, float t);   // curve point
 char FUN_14147aa60(const Unk_NiPoint3& kOrigin, const Unk_NiPoint3& kDir, const Unk_NiPoint3& kCenter,
                    float fRadius, Unk_GVec3* pHit);                                  // ray / sphere hit
 void FUN_140981070(void* pNode, const void* pPoint);                                 // SetTranslate
@@ -181,25 +181,25 @@ CExpEffectInfo::~CExpEffectInfo()
 }
 
 // @0x1412727d0
-Unk_StreamPoint CExpEffectInfo::GetAxis0() const
+Vector3 CExpEffectInfo::GetAxis0() const
 {
-    Unk_StreamPoint pt;
+    Vector3 pt;
     m_rot.FUN_140a01190(0, pt);
     return pt;
 }
 
 // @0x141272830
-Unk_StreamPoint CExpEffectInfo::GetAxis1() const
+Vector3 CExpEffectInfo::GetAxis1() const
 {
-    Unk_StreamPoint pt;
+    Vector3 pt;
     m_rot.FUN_140a01190(1, pt);
     return pt;
 }
 
 // @0x141272890
-Unk_StreamPoint CExpEffectInfo::GetAxis2() const
+Vector3 CExpEffectInfo::GetAxis2() const
 {
-    Unk_StreamPoint pt;
+    Vector3 pt;
     m_rot.FUN_140a01190(2, pt);
     return pt;
 }
@@ -207,11 +207,11 @@ Unk_StreamPoint CExpEffectInfo::GetAxis2() const
 // @0x1412728f0
 void CExpEffectInfo::UpdateOrientation()
 {
-    Unk_StreamPoint vDir = m_ptTarget.FUN_140965c40(m_ptSource);
+    Vector3 vDir = m_ptTarget.FUN_140965c40(m_ptSource);
     vDir.FUN_140968990();
     Unk_NiMatrix3 kMat;
-    Unk_StreamPoint vNeg = vDir.FUN_1409f7960();
-    Unk_StreamPoint vUp = DAT_143b01a60;
+    Vector3 vNeg = vDir.FUN_1409f7960();
+    Vector3 vUp = DAT_143b01a60;
     if (vNeg.FUN_140552690(DAT_143a08cf8))
     {
         vUp = DAT_143a08cd8;
@@ -224,7 +224,7 @@ void CExpEffectInfo::UpdateOrientation()
     {
         vUp = vNeg.FUN_14109adc0(DAT_143a08cf8);
     }
-    Unk_StreamPoint vSide = vUp.FUN_14109adc0(vNeg);
+    Vector3 vSide = vUp.FUN_14109adc0(vNeg);
     kMat.FUN_14109aa30(0, vUp);
     kMat.FUN_14109aa30(1, vNeg);
     kMat.FUN_14109aa30(2, vSide);
@@ -246,9 +246,9 @@ void CExpEffectInfo::InitConstants()
     DAT_1439f7340 = reinterpret_cast<Unk_ConfigFloat*>((char*)FUN_1401d3200() + 0x2210)->FUN_1402bac70();
     DAT_1439f7348 = reinterpret_cast<Unk_ConfigFloat*>((char*)FUN_1401d3200() + 0x2268)->FUN_1402bac70();
     DAT_1439f7344 = reinterpret_cast<Unk_ConfigFloat*>((char*)FUN_1401d3200() + 0x22c0)->FUN_1402bac70();
-    Unk_StreamPoint kMin = reinterpret_cast<Unk_ConfigPoint*>((char*)FUN_1401d3200() + 0x2318)->FUN_141273d00();
+    Vector3 kMin = reinterpret_cast<Unk_ConfigPoint*>((char*)FUN_1401d3200() + 0x2318)->FUN_141273d00();
     s_ptSpreadMin = kMin;
-    Unk_StreamPoint kMax = reinterpret_cast<Unk_ConfigPoint*>((char*)FUN_1401d3200() + 0x2380)->FUN_141273d00();
+    Vector3 kMax = reinterpret_cast<Unk_ConfigPoint*>((char*)FUN_1401d3200() + 0x2380)->FUN_141273d00();
     s_ptSpreadMax = kMax;
     s_strEffDummy = *reinterpret_cast<Unk_ConfigString*>((char*)FUN_1401d3200() + 0x23e8)->FUN_140298f80();
     s_nConstInit = 1;
@@ -314,9 +314,9 @@ bool CExpEffectInfo::Create(int nObjectId, void* pOwner)
     m_pOwner = pOwner;
     m_fElapsed = 0;
     Unk_PosBuf kBuf;
-    FUN_140194470(&m_ptSource, pObj->GetPosition(reinterpret_cast<Unk_StreamPoint*>(&kBuf)));
+    FUN_140194470(&m_ptSource, pObj->GetPosition(reinterpret_cast<Vector3*>(&kBuf)));
     GetTargetPos(pPlayer, &m_ptTarget);
-    Unk_StreamPoint vDir = m_ptTarget.FUN_140965c40(m_ptSource);
+    Vector3 vDir = m_ptTarget.FUN_140965c40(m_ptSource);
     float fLen = vDir.FUN_140968990();
     float fScaled = fLen * DAT_1439f7340;
     m_fTotal = *FUN_140805fc0(&DAT_1439f733c, &fScaled);
@@ -329,13 +329,13 @@ bool CExpEffectInfo::Create(int nObjectId, void* pOwner)
     float fRandX = kRandom.FUN_1407680d0();
     float fRandY = kRandom.FUN_1407680d0();
     float fRandZ = kRandom.FUN_1407680d0();
-    Unk_StreamPoint ptMin = s_ptSpreadMin.FUN_14097fc90(fLen);
-    Unk_StreamPoint ptMax = s_ptSpreadMax.FUN_14097fc90(fLen);
+    Vector3 ptMin = s_ptSpreadMin.FUN_14097fc90(fLen);
+    Vector3 ptMax = s_ptSpreadMax.FUN_14097fc90(fLen);
     ptMin.y = ptMin.y / m_fTotal;
     ptMax.y = ptMax.y / m_fTotal;
-    Unk_StreamPoint ptRange = ptMax.FUN_140965c40(ptMin);
-    Unk_StreamPoint ptOffset(ptMin.x + ptRange.x * fRandX, ptMin.y + ptRange.y * fRandY, ptMin.z + ptRange.z * fRandZ);
-    Unk_StreamPoint ptNew = m_ptSource.FUN_14097fd50(vDir.FUN_14097fc90(ptOffset.y).FUN_14097fc90(fLen))
+    Vector3 ptRange = ptMax.FUN_140965c40(ptMin);
+    Vector3 ptOffset(ptMin.x + ptRange.x * fRandX, ptMin.y + ptRange.y * fRandY, ptMin.z + ptRange.z * fRandZ);
+    Vector3 ptNew = m_ptSource.FUN_14097fd50(vDir.FUN_14097fc90(ptOffset.y).FUN_14097fc90(fLen))
                                   .FUN_14097fd50(GetAxis2().FUN_14097fc90(ptOffset.z))
                                   .FUN_14097fd50(GetAxis0().FUN_14097fc90(ptOffset.x));
     FUN_140194470(&m_ptPos, &ptNew);
@@ -358,7 +358,7 @@ int CExpEffectInfo::GetState() const
 }
 
 // @0x141273590
-void CExpEffectInfo::SetPosition(const Unk_StreamPoint& pt)
+void CExpEffectInfo::SetPosition(const Vector3& pt)
 {
     if (FUN_1409475d0(&m_spNode) != 0)
     {
@@ -382,7 +382,7 @@ void CExpEffectInfo::Finish()
     if (pPlayer != 0)
     {
         float fRadius = DAT_1439f7344 * FUN_14123c260(pPlayer);
-        Unk_StreamPoint ptCur = *(const Unk_StreamPoint*)&((NiAVObject*)FUN_1409475f0(&m_spNode))->GetTranslate();
+        Vector3 ptCur = *(const Vector3*)&((NiAVObject*)FUN_1409475f0(&m_spNode))->GetTranslate();
         Unk_GVec3 ptHit;
         if (!FUN_14147aa60(Unk_NiPoint3(ptCur), Unk_NiPoint3(ptCur.FUN_140965c40(m_ptTarget)), Unk_NiPoint3(m_ptTarget),
                            fRadius, &ptHit))
@@ -400,7 +400,7 @@ void CExpEffectInfo::Finish()
 }
 
 // @0x141273890
-void CExpEffectInfo::GetTargetPos(Unk_ExpActor* pActor, Unk_StreamPoint* pOut)
+void CExpEffectInfo::GetTargetPos(Unk_ExpActor* pActor, Vector3* pOut)
 {
     if (pActor == 0)
         return;
@@ -412,7 +412,7 @@ void CExpEffectInfo::GetTargetPos(Unk_ExpActor* pActor, Unk_StreamPoint* pOut)
     else
     {
         Unk_PosBuf kBuf;
-        FUN_140194470(pOut, pActor->GetPosition(reinterpret_cast<Unk_StreamPoint*>(&kBuf)));
+        FUN_140194470(pOut, pActor->GetPosition(reinterpret_cast<Vector3*>(&kBuf)));
     }
 }
 
@@ -518,13 +518,13 @@ int FUN_141274b80(Unk_ExpActor* p)
 }
 
 // @0x141273d00
-Unk_StreamPoint Unk_ConfigPoint::FUN_141273d00() const
+Vector3 Unk_ConfigPoint::FUN_141273d00() const
 {
     return FUN_141274420();
 }
 
 // @0x141274420
-const Unk_StreamPoint& Unk_ConfigPoint::FUN_141274420() const
+const Vector3& Unk_ConfigPoint::FUN_141274420() const
 {
     if (!m_bInit)
         FUN_1402b7560((void*)this, "constants is not set");

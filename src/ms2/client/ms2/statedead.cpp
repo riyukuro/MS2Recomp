@@ -26,7 +26,7 @@
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
-extern Unk_StreamPoint DAT_143b01a60;                    // the zero point
+extern Vector3 DAT_143b01a60;                    // the zero point
 
 void FUN_1408a8700(void* pStr);                          // 0x1408a8700 efd::utf8string()
 void FUN_1408a8900(void* pStr);                          // 0x1408a8900 ~efd::utf8string
@@ -235,7 +235,7 @@ void StateDead::vfunc_5(int n)
 void StateDead::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    Unk_StreamPoint kZero = DAT_143b01a60;
+    Vector3 kZero = DAT_143b01a60;
     m_pOwner->vfunc_68(&kZero, fTime, 0, 0, 0);
 }
 

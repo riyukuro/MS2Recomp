@@ -19,9 +19,9 @@
 #include "hook/ms2hook.h"
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
-extern Unk_StreamPoint DAT_143b01a60;                               // the zero point
-extern Unk_StreamPoint DAT_143a08ce8;                               // (0, 1, 0)
-extern const Unk_StreamPoint g_143a08cf8;                           // (0, 0, 1)
+extern Vector3 DAT_143b01a60;                               // the zero point
+extern Vector3 DAT_143a08ce8;                               // (0, 1, 0)
+extern const Vector3 g_143a08cf8;                           // (0, 0, 1)
 extern int DAT_143b059e8;
 extern int DAT_143ad1b20;                                           // running actor counter
 extern int DAT_1439f7060;                                           // number of collision masks (8)
@@ -44,20 +44,20 @@ public:
     char m_pad_00[0x18];
     unsigned m_18;                                                  // start time
     char m_pad_1c[0x34];
-    Unk_StreamPoint m_50;                                           // impact point
+    Vector3 m_50;                                           // impact point
 };
 
 // The entity: property accessors by hash.
 class Unk_Entity
 {
 public:
-    void FUN_1409618c0(unsigned nProp, Unk_StreamPoint* pOut);
+    void FUN_1409618c0(unsigned nProp, Vector3* pOut);
     void FUN_140961880(unsigned nProp, float* pOut);
     void FUN_1408a20a0(unsigned nProp, bool* pOut);
     void FUN_1408a2020(unsigned nProp, int* pOut);
     void FUN_1408a2060(unsigned nProp, efd::utf8string* pOut);
     void FUN_14098c6e0(unsigned nProp, const bool* pValue);
-    void FUN_140a38a50(unsigned nProp, const Unk_StreamPoint& rValue);
+    void FUN_140a38a50(unsigned nProp, const Vector3& rValue);
     void FUN_140de8bd0(unsigned nProp, efd::AssetID* pValue);
     egf::FlatModel* FUN_1408a9bd0();
     void* FUN_1408b76f0();                                          // &entity id
@@ -92,8 +92,8 @@ float FUN_140768090();                                              // random 0.
 float FUN_14109ace0();                                              // random 0..1
 float FUN_140968970(float f);                                       // sqrt
 int FUN_14028d260(float f);                                         // seconds -> milliseconds
-bool FUN_140a33ff0(const Unk_StreamPoint* p);                       // all components finite
-Unk_StreamPoint* FUN_140ad0c10(Unk_StreamPoint* pt, float f);       // efd::Point3::operator*=
+bool FUN_140a33ff0(const Vector3* p);                       // all components finite
+Vector3* FUN_140ad0c10(Vector3* pt, float f);       // efd::Point3::operator*=
 void* FUN_1408b6b20(void* pDst, void* pSrc);                        // copy-construct an entity id
 CString FUN_140298360(const char* a, const CString& b);             // a + b
 void FUN_140de0cb0(efd::AssetID* pAsset, const efd::utf8string* pUrn);
@@ -102,7 +102,7 @@ class Unk_VibObjTbl { public: bool FUN_141bd8e30(void* pEntityId, char nShow, fl
 Unk_VibObjTbl* FUN_1403ed2d0();
 
 struct Unk_VibInt3 { int x, y, z; };
-Unk_VibInt3 FUN_1408a1430(Unk_StreamPoint pt);                      // point -> cube cell
+Unk_VibInt3 FUN_1408a1430(Vector3 pt);                      // point -> cube cell
 class Unk_VibCubeSub { public: void FUN_1410b25a0(int x, int y, int z); void FUN_1410b2510(int x, int y, int z); };
 class Unk_VibCubeSvc
 {
@@ -113,11 +113,11 @@ public:
 Unk_VibCubeSvc* FUN_1410b27c0();
 
 // Point with the cross product (0x14109adc0).
-struct Unk_VibPt : Unk_StreamPoint
+struct Unk_VibPt : Vector3
 {
     Unk_VibPt() {}
-    Unk_VibPt(const Unk_StreamPoint& p) : Unk_StreamPoint(p) {}
-    Unk_StreamPoint FUN_14109adc0(const Unk_StreamPoint& v) const;
+    Unk_VibPt(const Vector3& p) : Vector3(p) {}
+    Vector3 FUN_14109adc0(const Vector3& v) const;
 };
 // 3x3 matrix with column setters.
 struct Unk_VibMat : Unk_NiMatrix3
@@ -126,22 +126,22 @@ struct Unk_VibMat : Unk_NiMatrix3
     Unk_VibMat(const Unk_EfdMatrix3& m) : Unk_NiMatrix3(m) {}
     void FUN_1420849a0();                                           // identity
     void FUN_140a34220(unsigned nCol, float x, float y, float z);   // set column
-    void FUN_14109aa30(unsigned nCol, const Unk_StreamPoint& v);    // set column
-    Unk_StreamPoint FUN_140a00720(const Unk_StreamPoint& v) const;  // matrix * vector
+    void FUN_14109aa30(unsigned nCol, const Vector3& v);    // set column
+    Vector3 FUN_140a00720(const Vector3& v) const;  // matrix * vector
 };
 // Rotation, translation and scale (0x34 bytes).
 struct Unk_VibXform
 {
     Unk_VibXform() {}
     Unk_NiMatrix3 m_rot;
-    Unk_StreamPoint m_trans;
+    Vector3 m_trans;
     float m_scale;
 };
 MS2_CHECK_SIZE(Unk_VibXform, 0x34);
 class Unk_VibObj                                                    // the entity's scene graph root
 {
 public:
-    Unk_StreamPoint* FUN_140e69200();                               // world translation
+    Vector3* FUN_140e69200();                               // world translation
     Unk_NiMatrix3* FUN_1410b23c0();                                 // world rotation
 };
 Unk_VibObj* FUN_141b6efc0(Unk_Entity* pEntity);
@@ -165,7 +165,7 @@ class Unk_VibFxMgr { public: int FUN_1411a4a00(Unk_VibEffectReq& rReq); };
 Unk_VibFxMgr* FUN_1403ed280();
 
 // NiPoint3(x, y, z) (0x140a00350).
-struct Unk_VibNiPt : Unk_StreamPoint
+struct Unk_VibNiPt : Vector3
 {
     Unk_VibNiPt(float x, float y, float z);
 };
@@ -196,7 +196,7 @@ CEntityVibrator::CEntityVibrator(Unk_Entity* pEntity, Unk_VibParamRef params, CS
     if (m_90 != 0 && nLimit < params.FUN_140975bd0()->FUN_14175a130()) {
         m_7c = 1;
         Unk_VibCubeSub* pCube = FUN_1410b27c0()->FUN_1410b9e70();
-        Unk_StreamPoint ptCell = m_ac;
+        Vector3 ptCell = m_ac;
         Unk_VibInt3 cell = FUN_1408a1430(ptCell);
         pCube->FUN_1410b25a0(cell.x, cell.y, cell.z);
         if (m_ab != 0) {
@@ -338,8 +338,8 @@ int CEntityVibrator::FUN_1411cba60()
         if (nNow < m_8c) {
             m_8c = nNow;
         }
-        Unk_StreamPoint ptDrop(0.0f, 0.0f, m_98.z * 3.0f);
-        Unk_StreamPoint ptStart = m_48.FUN_140965c40(ptDrop);
+        Vector3 ptDrop(0.0f, 0.0f, m_98.z * 3.0f);
+        Vector3 ptStart = m_48.FUN_140965c40(ptDrop);
         float fK;
         float fRaw = (float)(nNow - m_8c) / 500.0f;
         if (fRaw <= 1.0f) {
@@ -367,7 +367,7 @@ int CEntityVibrator::FUN_1411cba60()
             void* pId = FUN_1408b6b20(&nId, m_entity.FUN_1408a9280()->FUN_1408b76f0());
             if (pCube->FUN_1410b8be0(pId) != 0) {
                 Unk_VibCubeSub* pSub = pCube->FUN_1410b9e70();
-                Unk_StreamPoint ptCell = m_ac;
+                Vector3 ptCell = m_ac;
                 Unk_VibInt3 cell = FUN_1408a1430(ptCell);
                 pSub->FUN_1410b2510(cell.x, cell.y, cell.z);
             }
@@ -428,13 +428,13 @@ void CEntityVibrator::MakePhysxActor(Unk_VibParamRef params)
     Unk_VibPt ptDir = m_48.FUN_140965c40(m_70);
     ptDir.FUN_140968990();
     Unk_VibPt ptSide = ptDir.FUN_14109adc0(g_143a08cf8);
-    Unk_StreamPoint ptNeg = ptSide.FUN_14109adc0(g_143a08cf8).FUN_1409f7960();
+    Vector3 ptNeg = ptSide.FUN_14109adc0(g_143a08cf8).FUN_1409f7960();
     basis.FUN_14109aa30(0, ptSide);
     basis.FUN_14109aa30(1, ptNeg);
     basis.FUN_14109aa30(2, g_143a08cf8);
     Unk_VibMat comb = basis.FUN_140a33480(rot);
     float fSpeed = (1.0f * fScale) / (fTime * 2.0f);
-    Unk_StreamPoint vel = comb.FUN_140a00720(DAT_143a08ce8).FUN_14097fc90(fSpeed);
+    Vector3 vel = comb.FUN_140a00720(DAT_143a08ce8).FUN_14097fc90(fSpeed);
     NxVec3 vSize(m_98.x, m_98.y, m_98.z);
     vSize -= NxVec3(1.0f, 1.0f, 1.0f);
     NxBoxShapeDesc boxDesc;
@@ -495,24 +495,24 @@ MS2_REPLACE_METHOD(0x1411CD040, CEntityVibrator, FUN_1411cd040, 118, 0xD620F7BF)
 void CEntityVibrator::FUN_1411cd0c0()
 {
     if (m_68 != 0) {
-        Unk_StreamPoint ptBox = m_98;
+        Vector3 ptBox = m_98;
         NxMat34 pose = m_68->getGlobalPose();
         Unk_VibNiMat orient;
         memcpy(&orient, &pose.M, sizeof(orient));
-        Unk_StreamPoint ptPos(pose.t.x, pose.t.y, pose.t.z);
+        Vector3 ptPos(pose.t.x, pose.t.y, pose.t.z);
         FUN_140ad0c10(&ptPos, 100.0f);
-        Unk_StreamPoint col0 = orient.FUN_1411ce070(0);
-        Unk_StreamPoint col1 = orient.FUN_1411ce070(1);
-        Unk_StreamPoint col2 = orient.FUN_1411ce070(2);
+        Vector3 col0 = orient.FUN_1411ce070(0);
+        Vector3 col1 = orient.FUN_1411ce070(1);
+        Vector3 col2 = orient.FUN_1411ce070(2);
         Unk_VibMat rot;
         rot.FUN_140a34220(0, col0.x, col0.y, col0.z);
         rot.FUN_140a34220(1, col1.x, col1.y, col1.z);
         rot.FUN_140a34220(2, col2.x, col2.y, col2.z);
-        Unk_StreamPoint ptUp;
+        Vector3 ptUp;
         rot.FUN_140a01190(2, ptUp);
         ptUp = ptUp.FUN_1409f7960();
         ptPos = ptPos.FUN_14097fd50(ptUp.FUN_14097fc90(ptBox.z * 0.5f));
-        Unk_StreamPoint ptEuler;
+        Vector3 ptEuler;
         if (rot.FUN_142085840(ptEuler.x, ptEuler.y, ptEuler.z)) {
             FUN_140ad0c10(&ptEuler, -57.29578f);
             FUN_1411cdb00(ptEuler);
@@ -602,7 +602,7 @@ void CEntityVibrator::FUN_1411cd570(Unk_Entity* pEntity)
 MS2_REPLACE_METHOD(0x1411CD570, CEntityVibrator, FUN_1411cd570, 1251, 0xF0018A6D);
 
 // @0x1411cda60
-void CEntityVibrator::FUN_1411cda60(Unk_StreamPoint pos)
+void CEntityVibrator::FUN_1411cda60(Vector3 pos)
 {
     if (m_ac.FUN_140552700(pos)) {
         if (!FUN_140a33ff0(&pos)) {
@@ -615,7 +615,7 @@ void CEntityVibrator::FUN_1411cda60(Unk_StreamPoint pos)
 MS2_REPLACE_METHOD(0x1411CDA60, CEntityVibrator, FUN_1411cda60, 144, 0x24E4DCF5);
 
 // @0x1411cdb00
-void CEntityVibrator::FUN_1411cdb00(Unk_StreamPoint rot)
+void CEntityVibrator::FUN_1411cdb00(Vector3 rot)
 {
     if (m_b8.FUN_140552700(rot)) {
         if (!FUN_140a33ff0(&rot)) {
@@ -647,7 +647,7 @@ void CEntityVibrator::FUN_1411cdba0()
         m_7c = 1;
         m_a9 = true;
         Unk_VibCubeSub* pSub = FUN_1410b27c0()->FUN_1410b9e70();
-        Unk_StreamPoint ptCell = m_ac;
+        Vector3 ptCell = m_ac;
         Unk_VibInt3 cell = FUN_1408a1430(ptCell);
         pSub->FUN_1410b25a0(cell.x, cell.y, cell.z);
     }

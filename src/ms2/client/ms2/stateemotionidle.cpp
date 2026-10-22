@@ -49,8 +49,8 @@ static CString s_strStun2 = "stun";
 
 // ---- unit-local placeholders ----
 
-struct Unk_StreamPoint { float x, y, z; };
-extern Unk_StreamPoint DAT_143b01a60;                    // the zero point
+struct Vector3 { float x, y, z; };
+extern Vector3 DAT_143b01a60;                    // the zero point
 
 // StateData slots 1/2 argument: the state-sync record; +0x64 carries the emotion / npc id.
 class Unk_StateDataArg
@@ -98,7 +98,7 @@ public:
 class Unk_BuffMgr
 {
 public:
-    Unk_StreamPoint FUN_141683290();                     // knock-back direction
+    Vector3 FUN_141683290();                     // knock-back direction
     bool FUN_141683100(int nBuff);
     bool FUN_141682fe0(int nBuff);
 };
@@ -278,8 +278,8 @@ void StateEmotion::vfunc_8(double fTime)
     if (pPC)
     {
         Unk_BuffMgr* pBuff = FUN_14166d240(pPC);
-        Unk_StreamPoint kPos = pBuff->FUN_141683290();
-        Unk_StreamPoint kArg = kPos;
+        Vector3 kPos = pBuff->FUN_141683290();
+        Vector3 kArg = kPos;
         pPC->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
         if (!FUN_1416749c0(m_pOwner))
         {
@@ -339,7 +339,7 @@ void StateEmotion::vfunc_3(double fTime)
     }
     else
     {
-        Unk_StreamPoint kMove = DAT_143b01a60;
+        Vector3 kMove = DAT_143b01a60;
         m_pOwner->vfunc_68(&kMove, fTime, 0, 0, 0);
     }
 }
@@ -761,7 +761,7 @@ void StateEmotionIdle::vfunc_3(double fTime)
                 return;
             }
         }
-        Unk_StreamPoint kMove = DAT_143b01a60;
+        Vector3 kMove = DAT_143b01a60;
         m_pOwner->vfunc_68(&kMove, fTime, 0, 0, 0);
     }
 }
@@ -787,8 +787,8 @@ void StateEmotionIdle::vfunc_8(double fTime)
     if (pPC && m_pOwner->vfunc_63() != 0)
     {
         Unk_BuffMgr* pBuff = FUN_14166d240(m_pOwner);
-        Unk_StreamPoint kPos = pBuff->FUN_141683290();
-        Unk_StreamPoint kArg = kPos;
+        Vector3 kPos = pBuff->FUN_141683290();
+        Vector3 kArg = kPos;
         m_pOwner->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
         if (pPC == 0 || !pBuff->FUN_141683100(0x30d41))
         {

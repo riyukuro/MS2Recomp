@@ -98,7 +98,7 @@ struct Unk_TaxiHolder
 };
 class Unk_TaxiResTable;
 class Unk_TaxiTimer;
-struct Unk_TaxiEnt { void FUN_1409618c0(unsigned hash, Unk_StreamPoint* out); };
+struct Unk_TaxiEnt { void FUN_1409618c0(unsigned hash, Vector3* out); };
 
 struct Unk_TaxiIdArray { int* m_data; unsigned __int64 m_count; unsigned __int64 m_cap; };   // ATL::CAtlArray<int>
 extern Unk_TaxiIdArray DAT_143ab3078;
@@ -220,7 +220,7 @@ void CAutoFindTaxiStation::FUN_1409f1450()
                             }
                             else
                             {
-                                Unk_StreamPoint base;
+                                Vector3 base;
                                 ent.FUN_1408a9280()->FUN_1409618c0(0xfd95ca52, &base);
                                 float fDist = FUN_1409f2430(Unk_CameraManager::FUN_1409478c0());
                                 float fYaw = FUN_140af0c70(Unk_CameraManager::FUN_1409478c0());
@@ -228,8 +228,8 @@ void CAutoFindTaxiStation::FUN_1409f1450()
                                 float x = fDist * FUN_1409f25a0(fYaw) + base.x;
                                 float y = fDist * FUN_1409f2310(fYaw) + base.y;
                                 float z = fDist * FUN_1409f2310(fPitch) + base.z;
-                                Unk_StreamPoint delta = setting.m_c.FUN_140965c40(Unk_StreamPoint(x, y, z));
-                                setting.m_c = Unk_StreamPoint(x, y, z);
+                                Vector3 delta = setting.m_c.FUN_140965c40(Vector3(x, y, z));
+                                setting.m_c = Vector3(x, y, z);
                                 float fLen = delta.FUN_140967ac0();
                                 Unk_TaxiCamMove mv;
                                 FUN_140aeffd0(Unk_CameraManager::FUN_1409478c0(), &mv, (fLen * 0.8) / 1000.0, &setting);
@@ -314,7 +314,7 @@ void CAutoFindTaxiStation::FUN_1409f1af0()
     else
     {
         CCameraMode* pMode = Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0();
-        Unk_StreamPoint delta = setting.m_c.FUN_140965c40(pMode->FUN_1409f2540());
+        Vector3 delta = setting.m_c.FUN_140965c40(pMode->FUN_1409f2540());
         float fLen = delta.FUN_140967ac0();
         pMode = Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0();
         setting.m_c = pMode->FUN_1409f2540();

@@ -65,9 +65,9 @@ public:
     virtual void Unk_Slot8();  virtual void Unk_Slot9();  virtual void Unk_Slot10(); virtual void Unk_Slot11();
     virtual void Unk_Slot12(); virtual void Unk_Slot13(); virtual void Unk_Slot14(); virtual void Unk_Slot15();
     virtual void Unk_Slot16(); virtual void Unk_Slot17();
-    virtual Unk_StreamPoint vfunc_18();
+    virtual Vector3 vfunc_18();
     virtual void Unk_Slot19();
-    virtual Unk_StreamPoint vfunc_20();
+    virtual Vector3 vfunc_20();
     void FUN_1415293b0();                               // stop the auto move
 };
 

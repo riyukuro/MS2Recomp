@@ -71,7 +71,7 @@ public:
     int FUN_140d8c0a0(__int64 nSetting);   // gamepad button for a key setting
     int FUN_140d8c150(int nKey);                        // remap a gamepad key id for the dual layout
     void FUN_140d8c230();                               // rumble timer update
-    Unk_StreamPoint FUN_140d8c2f0();                           // gamepad left stick as a direction
+    Vector3 FUN_140d8c2f0();                           // gamepad left stick as a direction
     int FUN_140d8c450();                                // left stick Y percent
     int FUN_140d8c4d0();                                // left stick X percent
     bool FUN_140d8c550();                               // stick changed direction

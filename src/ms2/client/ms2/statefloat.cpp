@@ -20,7 +20,7 @@
 class Unk_FloatMove
 {
 public:
-    Unk_StreamPoint FUN_141683900();                                       // 0x141683900 the current move direction
+    Vector3 FUN_141683900();                                       // 0x141683900 the current move direction
 };
 
 float FUN_1410a7600(PCBase* p);                                           // 0x1410a7600 vertical velocity (PCBase +0xbf0)
@@ -60,12 +60,12 @@ void StateFloat::vfunc_3(double fTime)
     {
         float* pfVel = m_pOwner->FUN_141671920();
         NiPoint3 kSurface = m_pOwner->FUN_14123c360();
-        Unk_StreamPoint kLocal = *reinterpret_cast<const Unk_StreamPoint*>(&kSurface);
+        Vector3 kLocal = *reinterpret_cast<const Vector3*>(&kSurface);
         efd::Point3 kDir = *reinterpret_cast<const efd::Point3*>(&kLocal);
         efd::Point3 kWorld = m_pOwner->FUN_141674b60(kDir);
-        Unk_StreamPoint kSpeed = reinterpret_cast<const Unk_StreamPoint&>(kWorld).FUN_14097fc90(pfVel[2]);
-        Unk_StreamPoint kStep = kSpeed.FUN_14097fc90((float)fTime);
-        Unk_StreamPoint* pStep = FUN_1417c85d0(&kStep, kStep, fTime);
+        Vector3 kSpeed = reinterpret_cast<const Vector3&>(kWorld).FUN_14097fc90(pfVel[2]);
+        Vector3 kStep = kSpeed.FUN_14097fc90((float)fTime);
+        Vector3* pStep = FUN_1417c85d0(&kStep, kStep, fTime);
         kStep = *pStep;
         m_pOwner->vfunc_68(&kStep, fTime, 0, 0, 1);
     }
@@ -73,15 +73,15 @@ void StateFloat::vfunc_3(double fTime)
 MS2_REPLACE_METHOD(0x1417C8310, StateFloat, vfunc_3, 410, 0x5EB73EE0);
 
 // @0x1417c84b0
-// MS2-FUNCTIONAL: stack-slot/temporary placement of the Unk_StreamPoint copies differs
+// MS2-FUNCTIONAL: stack-slot/temporary placement of the Vector3 copies differs
 void StateFloat::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
     if (m_pOwner->vfunc_63() != 0)
     {
         Unk_FloatMove* pMove = static_cast<Unk_FloatMove*>(m_pOwner->FUN_14166d240());
-        Unk_StreamPoint kDir = pMove->FUN_141683900();
-        Unk_StreamPoint kArg = kDir;
+        Vector3 kDir = pMove->FUN_141683900();
+        Vector3 kArg = kDir;
         m_pOwner->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
     }
 }
@@ -100,7 +100,7 @@ MS2_REPLACE_METHOD(0x1417C8560, StateFloat, FUN_1417c8560, 100, 0xC818D17A);
 
 // @0x1417c85d0
 // MS2-FUNCTIONAL: the damping chain keeps the min/max helper results in extra stack slots the exe reuses
-Unk_StreamPoint* StateFloat::FUN_1417c85d0(Unk_StreamPoint* pOut, const Unk_StreamPoint& kIn, double fTime)
+Vector3* StateFloat::FUN_1417c85d0(Vector3* pOut, const Vector3& kIn, double fTime)
 {
     if (m_pOwner == 0)
     {

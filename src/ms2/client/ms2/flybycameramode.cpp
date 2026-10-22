@@ -32,8 +32,8 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-extern Unk_StreamPoint DAT_143a08cd8;
-extern const Unk_StreamPoint g_143a08cf8;       // NiPoint3::UNIT_Z
+extern Vector3 DAT_143a08cd8;
+extern const Vector3 g_143a08cf8;       // NiPoint3::UNIT_Z
 float FUN_141b6fdb0(float f, int n);            // ease curve (n = exponent)
 void FUN_140947860(Unk_CameraManager* pMgr, int n);
 void FUN_140947980(Unk_CameraManager* pMgr, int n);
@@ -75,7 +75,7 @@ void CFlyByCameraMode::vfunc_8(double fTime)
     if (1.0f < fRatio)
         fRatio = 1.0f;
     Unk_FlyByCameraData* pFly = Unk_CameraManager::FUN_1409478c0()->FUN_1412201a0();
-    Unk_StreamPoint ptRot = CCameraMode::FUN_140afdec0(fRatio, pFly->m_from.m_18, pFly->m_to.m_18);
+    Vector3 ptRot = CCameraMode::FUN_140afdec0(fRatio, pFly->m_from.m_18, pFly->m_to.m_18);
     vfunc_11(data.m_0);
     ::FUN_140af99d0(this, data.m_4);
     ::FUN_140af9950(this, data.m_8);
@@ -147,11 +147,11 @@ void CFlyByCameraMode::vfunc_7()
 MS2_REPLACE_METHOD(0x14121F850, CFlyByCameraMode, vfunc_7, 172, 0x7400C59E);
 
 // @0x14121f910
-Unk_StreamPoint CFlyByCameraMode::FUN_14121f910(const Unk_StreamPoint& a, const Unk_StreamPoint& b, const Unk_StreamPoint& c)
+Vector3 CFlyByCameraMode::FUN_14121f910(const Vector3& a, const Vector3& b, const Vector3& c)
 {
-    Unk_StreamPoint ptMid = a.FUN_14097fd50(b).FUN_14097fc90(0.5f);
-    Unk_StreamPoint ptDiff = c.FUN_140965c40(a);
-    Unk_StreamPoint ptUp = g_143a08cf8.FUN_14097fd50(DAT_143a08cd8);
+    Vector3 ptMid = a.FUN_14097fd50(b).FUN_14097fc90(0.5f);
+    Vector3 ptDiff = c.FUN_140965c40(a);
+    Vector3 ptUp = g_143a08cf8.FUN_14097fd50(DAT_143a08cd8);
     ptMid.FUN_140a4e560(FUN_1409ab5c0(ptDiff.FUN_140967ac0() * 0.5f, ptUp));
     return ptMid;
 }

@@ -293,7 +293,7 @@ bool FUN_1407640c0(CQuestData*);
 // Field object handle filled by WorldService::FUN_141bc2800 (16 bytes, Unk_WsP16 layout).
 class Unk_QmFieldObject {
 public:
-    Unk_StreamPoint FUN_14169d2f0() const;
+    Vector3 FUN_14169d2f0() const;
     char m_pad_00[0x38];
     float m_rotX, m_rotY, m_rotZ;               // +0x38 euler angles in degrees
 };
@@ -302,7 +302,7 @@ struct Unk_QmFieldHandle : Unk_WsP16 {
     bool IsNull() const;                        // 0x140965190
     Unk_QmFieldObject* operator->() const;      // 0x140965960
 };
-extern Unk_StreamPoint DAT_143b01a60;           // NiPoint3::ZERO
+extern Vector3 DAT_143b01a60;           // NiPoint3::ZERO
 class Unk_QmClientConfig { public: void* m_0; CContentShutdown m_shutdown; };
 Unk_QmClientConfig* FUN_14025e7b0();
 void FUN_141275260(int stringId, int, int);
@@ -391,7 +391,7 @@ CStringW FUN_14016a730(const char* text, int codePage);
 extern int DAT_143abdf50;
 // The quest portal effect (?\questmanager.cpp case 0x12): NiTransform and the effect request.
 struct Unk_QmNiPoint3 {
-    Unk_QmNiPoint3(const Unk_StreamPoint& pt);                         // 0x14027dcf0 NiPoint3(const efd::Point3&)
+    Unk_QmNiPoint3(const Vector3& pt);                         // 0x14027dcf0 NiPoint3(const efd::Point3&)
     Unk_QmNiPoint3& FUN_14097faa0(const Unk_QmNiPoint3& o);             // NiPoint3::operator=
     float x, y, z;
 };
@@ -1251,7 +1251,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
         FUN_1403ed2d0()->FUN_141bc2800(&target, m_targetObject);
         if (target.IsNull()) return;
         Unk_QmXform xform;
-        xform.m_translate.FUN_14097faa0(Unk_QmNiPoint3(target->FUN_14169d2f0().FUN_14097fd50(Unk_StreamPoint(0.0f, 0.0f, 1.0f))));
+        xform.m_translate.FUN_14097faa0(Unk_QmNiPoint3(target->FUN_14169d2f0().FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f))));
         xform.m_rotate.FUN_142083d40((target->m_rotX * 3.1415927f) / 180.0f, (target->m_rotY * 3.1415927f) / 180.0f,
             (target->m_rotZ * 3.1415927f) / 180.0f);
         xform.m_fScale = 1.0f;
@@ -1786,7 +1786,7 @@ MS2_REPLACE_METHOD(0x1416d0610, CQuestManager, FUN_1416d0610, 111, 0x70EBE08B);
 // MS2-FUNCTIONAL: the exe receives the field object handle as a by-value return (EH state starts after the
 // call); worldservice.h declares FUN_141bc2800 with an out parameter, so the handle is live from its declaration.
 // @0x1416d0690
-Unk_StreamPoint CQuestManager::FUN_1416d0690()
+Vector3 CQuestManager::FUN_1416d0690()
 {
     Unk_QmFieldHandle target;
     FUN_1403ed2d0()->FUN_141bc2800(&target, m_targetObject);

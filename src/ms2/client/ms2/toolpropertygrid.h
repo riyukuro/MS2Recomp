@@ -88,7 +88,7 @@ public:
 
     COLORREF GetColor();                                    // 0x1418563f0
     Unk_GridPoint2 GetVector2();                            // 0x141856680
-    Unk_StreamPoint GetVector3();                           // 0x141856770
+    Vector3 GetVector3();                           // 0x141856770
     BOOL UpdateColor();                                     // 0x141855eb0 range-checks r, g, b
     BOOL UpdateWithParent();                                // 0x1418568a0
 };

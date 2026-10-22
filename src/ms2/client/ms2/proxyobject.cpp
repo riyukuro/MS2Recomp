@@ -54,7 +54,7 @@ void FUN_1411ce5a0(Unk_PxEntMgr* pMgr, Unk_PxEntIter* pIter);
 bool FUN_1411ce5f0(Unk_PxEntMgr* pMgr, Unk_PxEntIter* pIter, egf::Entity** ppOut);
 egf::Entity* FUN_1411cf440(Unk_PxEntMgr* pMgr, const egf::EntityID& id);
 egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);
-void FUN_1409618c0(egf::Entity* pEntity, unsigned nProperty, Unk_StreamPoint* pOut);   // reads a point property
+void FUN_1409618c0(egf::Entity* pEntity, unsigned nProperty, Vector3* pOut);   // reads a point property
 void FUN_140961880(egf::Entity* pEntity, unsigned nProperty, float* pOut);
 int FUN_140998250(egf::Entity* pEntity, unsigned nProperty, efd::AssetID* pOut);   // 0 = read
 const egf::EntityID* FUN_1408b76f0(egf::Entity* pEntity);
@@ -133,7 +133,7 @@ void CProxyObject::vfunc_19(efd::Point3 kPos)
 {
     GameObject::vfunc_19(kPos);
     if (m_pCollision != 0)
-        m_pCollision->vfunc_3(Unk_StreamPoint(kPos.x, kPos.y, kPos.z), Unk_StreamPoint(0, 0, 0), 1.0f);
+        m_pCollision->vfunc_3(Vector3(kPos.x, kPos.y, kPos.z), Vector3(0, 0, 0), 1.0f);
 }
 
 // @0x1416c3ee0
@@ -159,7 +159,7 @@ int CProxyObject::FUN_1416c2e70(efd::AssetID asset, efd::Point3 kPos, efd::Point
         m_pCollision = new CTwoCircleCollision();
         m_pCollision->SetInnerRadius(1.0f);
         m_pCollision->SetOuterRadius(fRadius);
-        m_pCollision->vfunc_3(Unk_StreamPoint(kPos.x, kPos.y, kPos.z), Unk_StreamPoint(kRot.x, kRot.y, kRot.z), 1.0f);
+        m_pCollision->vfunc_3(Vector3(kPos.x, kPos.y, kPos.z), Vector3(kRot.x, kRot.y, kRot.z), 1.0f);
     }
     return 1;
 }
@@ -207,8 +207,8 @@ void Unk_ProxyMgr::FUN_1416c33c0(int bEnable)
         egf::FlatModel* pModel = FUN_1408a9bd0(pEntity);
         if (!pModel->ContainsModel(0xbd4f8e8e) && !pModel->ContainsModel(0x48ccc02d) && pModel->ContainsModel(0x9eca2f69))
         {
-            Unk_StreamPoint kPos;
-            Unk_StreamPoint kRot;
+            Vector3 kPos;
+            Vector3 kRot;
             FUN_1409618c0(pEntity, 0xfd95ca52, &kPos);
             FUN_1409618c0(pEntity, 0x68c7c29d, &kRot);
             float fRadius = 0.0f;

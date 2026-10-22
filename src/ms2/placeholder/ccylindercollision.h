@@ -10,7 +10,7 @@ public:
     CCylinderCollision();                                           // 0x141083230
     virtual ~CCylinderCollision();                                  // 0x141083320
     virtual void vfunc_1();                                         // 0x1410846a0
-    virtual void vfunc_3(Unk_StreamPoint pos, Unk_StreamPoint rot, float scale);   // 0x1410833c0
+    virtual void vfunc_3(Vector3 pos, Vector3 rot, float scale);   // 0x1410833c0
     virtual void vfunc_5();                                         // 0x1410834d0
     virtual float vfunc_6();                                        // 0x141083450
 
@@ -22,7 +22,7 @@ public:
     NiMeshPtr m_spLineMesh;                                         // +0x88
     NiMeshPtr m_aspMeshes[4];                                       // +0x90
     float m_radius;                                                 // +0xb0
-    Unk_StreamPoint m_center;                                       // +0xb4
+    Vector3 m_center;                                       // +0xb4
     float m_height;                                                 // +0xc0
 };
 MS2_CHECK_OFFSET(CCylinderCollision, m_radius, 0xb0);

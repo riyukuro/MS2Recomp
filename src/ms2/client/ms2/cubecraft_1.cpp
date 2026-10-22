@@ -84,7 +84,7 @@ extern char DAT_143b059e8;                                    // cube grid servi
 extern NiFixedString DAT_143ae50a0;                               // extra data key
 
 
-inline const Unk_StreamPoint& SP(const efd::Point3& p) { return *(const Unk_StreamPoint*)&p; }
+inline const Vector3& SP(const efd::Point3& p) { return *(const Vector3*)&p; }
 
 class Unk_CubeSceneIterator {
 public:
@@ -140,12 +140,12 @@ struct Unk_RayHit { char m_pad[0x48]; float m_fHeight; char m_pad_4c[4]; };
 void FUN_140ad4440(Unk_RayHit*);
 class CPhysXHelper;
 CPhysXHelper* FUN_1409f7ca0();
-int FUN_14168a310(CPhysXHelper*, NiPoint3*, Unk_StreamPoint*, Unk_RayHit*, int, int, int);
-Unk_StreamPoint FUN_1408a1430(const NiPoint3&);
+int FUN_14168a310(CPhysXHelper*, NiPoint3*, Vector3*, Unk_RayHit*, int, int, int);
+Vector3 FUN_1408a1430(const NiPoint3&);
 
 class Unk_CubeGridSvc {
 public:
-    int FUN_1410ba5f0(const Unk_StreamPoint& kPos, const NiPoint3& kRef);
+    int FUN_1410ba5f0(const Vector3& kPos, const NiPoint3& kRef);
     float FUN_1410ba440(int nCell);
     int FUN_1410cdd80(NiPoint3 kPos, NiPoint3 kDir, float fRange, efd::Point3 kDown);
 };
@@ -187,7 +187,7 @@ int FUN_140ddcc90(void*);
 void FUN_141568d80(NiNode*);
 struct Unk_FishCatch { char m_pad_00[0x18]; int m_nCount; int m_nFishId; int m_nSize; };
 
-extern Unk_StreamPoint DAT_143b01a60;
+extern Vector3 DAT_143b01a60;
 class Unk_FishData : public CPtred
 {
 public:
@@ -689,7 +689,7 @@ void CConstructionGuideObject::FUN_1410a2440()
     }
     if (m_bLocal && (NiNode*)m_spModel)
     {
-        Unk_StreamPoint kHit;
+        Vector3 kHit;
         Unk_RayHit kInfo;
         FUN_140ad4440(&kInfo);
         NiPoint3 kPos = vfunc_18();
@@ -816,7 +816,7 @@ void CConstructionGuideObject::FUN_1410a3190()
     else
     {
         NiPoint3 kSel = *pSel->FUN_1410aa520(&kSel);
-        Unk_StreamPoint kLocal = FUN_1408a1430(kSel);
+        Vector3 kLocal = FUN_1408a1430(kSel);
         Unk_CubeGridSvc* pGrid = FUN_1401cd040(&DAT_143b059e8);
         int nCell = pGrid->FUN_1410ba5f0(kLocal, kA);
         kB.z = pGrid->FUN_1410ba440(nCell);

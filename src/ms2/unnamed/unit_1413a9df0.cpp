@@ -508,7 +508,7 @@ int CGuideConditionPlaceUgcCubeItem::vfunc_3()
 {
     if (!m_pos.m_bSet)
         return 0;
-    Unk_StreamPoint pos(m_pos.m_x, m_pos.m_y, m_pos.m_z);
+    Vector3 pos(m_pos.m_x, m_pos.m_y, m_pos.m_z);
     void* pCube = FUN_1409670e0()->FUN_1410b8ab0(pos);
     if (pCube == 0)
         return FUN_1413a55a0(0);
@@ -601,13 +601,13 @@ int CGuideConditionInteractObject::vfunc_3()
     Unk_G9Player* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
-    Unk_StreamPoint posPC = pPC->vfunc_18();
+    Vector3 posPC = pPC->vfunc_18();
     Unk_G9ObjRef ref = FUN_1403ed2d0()->FUN_141bc6510(posPC, m_nInteractId);
     Unk_G9Obj* pObj = static_cast<Unk_G9Obj*>(ref.FUN_1409657e0());
     FUN_1409649b0(&ref);
     if (pObj == 0)
         return 0;
-    Unk_StreamPoint posObj = pObj->FUN_1409673c0();
+    Vector3 posObj = pObj->FUN_1409673c0();
     float fDist = pPC->vfunc_18().FUN_140965c40(posObj).FUN_140967ac0();
     if (fDist <= m_fDistance)
         return FUN_1413a55a0(FUN_1413b5600(pObj) == m_nState);

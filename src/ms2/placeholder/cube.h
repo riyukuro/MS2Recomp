@@ -40,7 +40,7 @@ public:
     int fieldD4,fieldD8;
     Unk_CubeTextRecord record;
     Unk_PayloadPtr<NoticeCubeInfo> notice;
-    struct Unk_StreamPoint FUN_1408b5370();                 // the world position of the cube
+    struct Vector3 FUN_1408b5370();                 // the world position of the cube
     int FUN_1408b4f20();                                    // the item id (ugcmanager.cpp#4)
     class CUgcItemLook* FUN_1408b4f80();                    // the UGC look of the item (ugcmanager.cpp#4)
     unsigned FUN_1408b4e90() const;                         // field5c

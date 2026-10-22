@@ -42,7 +42,7 @@ public:
     CStringA FUN_1414472a0();                                   // the liftable's name
     int FUN_141447cc0();                                        // its id
     int FUN_141447ae0();                                        // nonzero: already carried
-    Unk_StreamPoint FUN_141447c80();                            // its position
+    Vector3 FUN_141447c80();                            // its position
 };
 class Unk_SSGNamedObj : public CLiftableObject {};
 class Unk_SSGWorld
@@ -65,13 +65,13 @@ public:
 };
 extern Unk_QgNavi* DAT_143abf7e8;                              // the quest navigator
 Unk_QgNavi* FUN_140e7c990() { return DAT_143abf7e8; }           // 0x140e7c990
-class Unk_QgCamera { public: bool FUN_140af0700(const Unk_StreamPoint& ptWorld, Unk_StreamPoint& rptScreen); };
+class Unk_QgCamera { public: bool FUN_140af0700(const Vector3& ptWorld, Vector3& rptScreen); };
 Unk_QgCamera* FUN_1409478c0();
 class Unk_QgUIScale;
 Unk_QgUIScale* FUN_14025e7a0();
 float FUN_1422afec0(Unk_QgUIScale* pScale, int nMovie);
 int FUN_141277f40();
-float FUN_1412762d0(const Unk_StreamPoint& pt);                 // the screen y offset of a world point
+float FUN_1412762d0(const Vector3& pt);                 // the screen y offset of a world point
 class Unk_AuCfgValue
 {
 public:
@@ -84,12 +84,12 @@ struct Unk_AuConfig
     Unk_AuCfgValue m_5e0;               // +0x5e0 the marker's screen y offset
 };
 Unk_AuConfig* FUN_1401d3200();
-const Unk_StreamPoint& FUN_140947900(void* pNode);
+const Vector3& FUN_140947900(void* pNode);
 bool FUN_1409b0390(Scaleform::GFx::Value* pValue);              // the value is undefined
 NotifySystem* FUN_140939a10();
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
-extern Unk_StreamPoint DAT_143b01a60;                           // the zero point
+extern Vector3 DAT_143b01a60;                           // the zero point
 
 // Out-of-unit instantiations the exe calls rather than inlines.
 template<> TraceContext* MS2Ptr<TraceContext>::operator->() const;
@@ -136,7 +136,7 @@ void NavigationEntity::vfunc_4(const TraceResult* pResult)
 {
     if (!(m_20 == 0) && m_18 != 0)
     {
-        Unk_StreamPoint pt;
+        Vector3 pt;
         if (!FUN_1409478c0()->FUN_140af0700(vfunc_7(), pt))
         {
             m_20->vfunc_3(0);
@@ -164,7 +164,7 @@ int NavigationEntity::vfunc_6(const TraceContext* pContext)
 }
 
 // @0x140e78a10
-Unk_StreamPoint NavigationEntity::vfunc_7()
+Vector3 NavigationEntity::vfunc_7()
 {
     return DAT_143b01a60;
 }
@@ -209,13 +209,13 @@ void PcHudNavigationEntity::vfunc_4(const TraceResult* pResult)
 }   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
 
 // @0x140e78c40
-Unk_StreamPoint PcHudNavigationEntity::vfunc_7()
+Vector3 PcHudNavigationEntity::vfunc_7()
 {
     MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (!pPC)
         return DAT_143b01a60;
     NiPoint3 pt = pPC->vfunc_18();
-    return Unk_StreamPoint(pt.x, pt.y, pt.z);
+    return Vector3(pt.x, pt.y, pt.z);
 }   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
 
 // @0x140e78cc0
@@ -279,7 +279,7 @@ int NpcNavigationEntity::vfunc_6(const TraceContext* pContext)
 }   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
 
 // @0x140e79010
-Unk_StreamPoint NpcNavigationEntity::vfunc_7()
+Vector3 NpcNavigationEntity::vfunc_7()
 {
     Unk_SSGNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(m_30);
     if (!pNpc)
@@ -288,7 +288,7 @@ Unk_StreamPoint NpcNavigationEntity::vfunc_7()
     if (!pNode)
     {
         NiPoint3 pt = pNpc->vfunc_18();
-        return Unk_StreamPoint(pt.x, pt.y, pt.z);
+        return Vector3(pt.x, pt.y, pt.z);
     }
     return FUN_140947900(pNode);
 }   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
@@ -354,12 +354,12 @@ int InteractNavigationEntity::vfunc_6(const TraceContext* pContext)
 }   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
 
 // @0x140e79590
-Unk_StreamPoint InteractNavigationEntity::vfunc_7()
+Vector3 InteractNavigationEntity::vfunc_7()
 {
     MS2Ptr<CInteractObject> spObj = FUN_1403ed2d0()->FUN_141bc66b0(m_38);
     if (spObj.get() == 0)
         return DAT_143b01a60;
-    Unk_StreamPoint pt = spObj->GetPos();
+    Vector3 pt = spObj->GetPos();
     pt.z += 200.0f;
     return pt;
 }   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
@@ -419,12 +419,12 @@ int LiftableNavigationEntity::vfunc_6(const TraceContext* pContext)
 }   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
 
 // @0x140e79b20
-Unk_StreamPoint LiftableNavigationEntity::vfunc_7()
+Vector3 LiftableNavigationEntity::vfunc_7()
 {
     MS2Ptr<Unk_SSGNamedObj> spObj = FUN_1403ed2d0()->FUN_141bc5a20(m_38);
     if (spObj.get() == 0)
         return DAT_143b01a60;
-    Unk_StreamPoint pt = spObj->FUN_141447c80();
+    Vector3 pt = spObj->FUN_141447c80();
     pt.z += 200.0f;
     return pt;
 }   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
@@ -461,19 +461,19 @@ int PortalNavigationEntity::vfunc_5(const TraceResult* pResult)
     MS2Ptr<CPortal> spPortal = FUN_1403ed2d0()->FUN_141bc2800(m_30);
     if (spPortal.IsNull())
         return 0;
-    Unk_StreamPoint pt = spPortal->FUN_14169d2f0();
-    if (pt.FUN_140552700(Unk_StreamPoint(pResult->m_20.x, pResult->m_20.y, pResult->m_20.z)))
+    Vector3 pt = spPortal->FUN_14169d2f0();
+    if (pt.FUN_140552700(Vector3(pResult->m_20.x, pResult->m_20.y, pResult->m_20.z)))
         return 0;
     return spPortal->FUN_14169d160() ? 1 : 0;
 }   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
 
 // @0x140e79e50
-Unk_StreamPoint PortalNavigationEntity::vfunc_7()
+Vector3 PortalNavigationEntity::vfunc_7()
 {
     MS2Ptr<CPortal> spPortal = FUN_1403ed2d0()->FUN_141bc2800(m_30);
     if (spPortal.get() == 0)
         return DAT_143b01a60;
-    Unk_StreamPoint pt = spPortal->FUN_14169d2f0();
+    Vector3 pt = spPortal->FUN_14169d2f0();
     pt.z += 200.0f;
     return pt;
 }   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
@@ -554,7 +554,7 @@ void UIQuestNavigation::vfunc_15()
     while (pos)
     {
         MS2Ptr<NavigationEntity> spEntity = m_entities.GetValueAt(pos);
-        Unk_StreamPoint ptTemp;
+        Vector3 ptTemp;
         int nState;
         float fAlpha = 0.0f;
         if (spEntity->vfunc_5(pResult))

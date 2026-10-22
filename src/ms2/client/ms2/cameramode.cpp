@@ -104,7 +104,7 @@ CCameraMode::~CCameraMode()
 }
 
 // @0x140afd570
-void CCameraMode::vfunc_3(Unk_StreamPoint pt)
+void CCameraMode::vfunc_3(Vector3 pt)
 {
     m_setting.m_c = pt;
     m_pOwner->FUN_140a38dc0(pt);
@@ -112,7 +112,7 @@ void CCameraMode::vfunc_3(Unk_StreamPoint pt)
 MS2_REPLACE_METHOD(0x140afd570, CCameraMode, vfunc_3, 84, 0xFD1CE8FB);
 
 // @0x140afd5d0
-void CCameraMode::vfunc_4(Unk_StreamPoint pt)
+void CCameraMode::vfunc_4(Vector3 pt)
 {
     m_setting.m_18 = pt;
     m_pOwner->FUN_140a38e00(pt);
@@ -261,7 +261,7 @@ Unk_CameraTargetEntity* CCameraMode::vfunc_25()
 }
 
 // @0x140afda20
-Unk_StreamPoint CCameraMode::vfunc_26()
+Vector3 CCameraMode::vfunc_26()
 {
     return FUN_1409f2540();
 }
@@ -323,16 +323,16 @@ void CCameraMode::FUN_140afdaa0(MS2Ptr<CCameraMode> pPrev)
 MS2_REPLACE_METHOD(0x140afdaa0, CCameraMode, FUN_140afdaa0, 653, 0xB7F15223);
 
 // @0x140afdd40
-Unk_StreamPoint CCameraMode::FUN_140afdd40(const Unk_StreamPoint& ptEye, const Unk_StreamPoint& ptAt,
-                                           const Unk_StreamPoint& ptUp)
+Vector3 CCameraMode::FUN_140afdd40(const Vector3& ptEye, const Vector3& ptAt,
+                                           const Vector3& ptUp)
 {
-    Unk_StreamPoint dir = ptEye.FUN_140965c40(ptAt);
+    Vector3 dir = ptEye.FUN_140965c40(ptAt);
     dir.FUN_140968990();
-    Unk_StreamPoint right = dir.FUN_140a00e10(ptUp);
+    Vector3 right = dir.FUN_140a00e10(ptUp);
     right.FUN_140968990();
-    Unk_StreamPoint up = right.FUN_140a00e10(dir);
+    Vector3 up = right.FUN_140a00e10(dir);
     Unk_NiMatrix3 m(dir, up, right);
-    Unk_StreamPoint angles;
+    Vector3 angles;
     m.FUN_142085840(angles.x, angles.y, angles.z);
     angles.x *= -57.2957764f;
     angles.y *= -57.2957764f;
@@ -342,28 +342,28 @@ Unk_StreamPoint CCameraMode::FUN_140afdd40(const Unk_StreamPoint& ptEye, const U
 MS2_REPLACE(0x140afdd40, CCameraMode::FUN_140afdd40, 364, 0xA788D22D);
 
 // @0x140afdec0
-Unk_StreamPoint CCameraMode::FUN_140afdec0(float t, const Unk_StreamPoint& a, const Unk_StreamPoint& b)
+Vector3 CCameraMode::FUN_140afdec0(float t, const Vector3& a, const Vector3& b)
 {
-    Unk_StreamPoint a0, a1;
+    Vector3 a0, a1;
     Unk_NiMatrix3 ma;
     ma.FUN_142083d40(a.x * -0.0174532924f, a.y * -0.0174532924f, a.z * -0.0174532924f);
     ma.FUN_140a01190(0, a0);
     ma.FUN_140a01190(1, a1);
-    Unk_StreamPoint b0, b1;
+    Vector3 b0, b1;
     Unk_NiMatrix3 mb;
     mb.FUN_142083d40(b.x * -0.0174532924f, b.y * -0.0174532924f, b.z * -0.0174532924f);
     mb.FUN_140a01190(0, b0);
     mb.FUN_140a01190(1, b1);
-    Unk_StreamPoint c0, c1;
+    Vector3 c0, c1;
     c0 = a0.FUN_14097fd50(FUN_1409ab5c0(t, b0.FUN_140965c40(a0)));
     c0.FUN_140968990();
     c1 = a1.FUN_14097fd50(FUN_1409ab5c0(t, b1.FUN_140965c40(a1)));
     c1.FUN_140968990();
-    Unk_StreamPoint c2 = c0.FUN_140a00e10(c1);
+    Vector3 c2 = c0.FUN_140a00e10(c1);
     c2.FUN_140968990();
     c1 = c2.FUN_140a00e10(c0);
     c1.FUN_140968990();
-    Unk_StreamPoint angles;
+    Vector3 angles;
     Unk_NiMatrix3 m(c0, c1, c2);
     m.FUN_142085840(angles.x, angles.y, angles.z);
     angles.x *= -57.2957764f;
@@ -413,9 +413,9 @@ void CCameraMode::vfunc_33()
 }
 
 // @0x140afe360
-Unk_StreamPoint CCameraMode::vfunc_35()
+Vector3 CCameraMode::vfunc_35()
 {
-    Unk_StreamPoint pt(0.0f, 0.0f, 0.0f);
+    Vector3 pt(0.0f, 0.0f, 0.0f);
     Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
     if (pTarget)
     {

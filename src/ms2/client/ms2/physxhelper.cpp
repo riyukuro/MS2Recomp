@@ -105,7 +105,7 @@ void FUN_140d852c0(char* pLock);
 // NxVec3 <-> game point conversions (member-style calls with the result in the hidden return slot).
 struct Unk_PhysVecView
 {
-    Unk_StreamPoint FUN_140deea90() const;                  // NxVec3 to game point
+    Vector3 FUN_140deea90() const;                  // NxVec3 to game point
     float x, y, z;
 };
 
@@ -133,8 +133,8 @@ NxActor* FUN_1410c5420(efd::ISystemService*, egf::EntityID);
 void* FUN_1403ed2d0();
 void FUN_141bc8e00(void*);
 extern int DAT_143ae2b30;
-extern const Unk_StreamPoint g_143b01a60;
-extern const Unk_StreamPoint g_143a08cf8;
+extern const Vector3 g_143b01a60;
+extern const Vector3 g_143a08cf8;
 struct Unk_PointView
 {
     NxVec3 FUN_140ae1df0() const;                           // game point to NxVec3 (this = the point, result in the hidden slot)
@@ -421,7 +421,7 @@ float CPhysXHelper::FUN_14168a210()
 }
 // @0x14168a230
 // MS2-FUNCTIONAL: minor codegen shape differs from exe
-bool CPhysXHelper::FUN_14168a230(Unk_StreamPoint ptFrom, Unk_StreamPoint& ptHit, Unk_StreamPoint ptDir, float fLen, int nMask)
+bool CPhysXHelper::FUN_14168a230(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, float fLen, int nMask)
 {
     int nDefaultGroups = 0x389;
     Unk_RayCastInfo kInfo;
@@ -437,8 +437,8 @@ bool CPhysXHelper::FUN_14168a230(Unk_StreamPoint ptFrom, Unk_StreamPoint& ptHit,
     return bHit;
 }
 // @0x14168a310
-int CPhysXHelper::FUN_14168a310(const Unk_StreamPoint& ptFrom, Unk_StreamPoint& ptHit, Unk_RayCastInfo* pInfo, float fLen,
-                                Unk_StreamPoint* pNormal, int nMask)
+int CPhysXHelper::FUN_14168a310(const Vector3& ptFrom, Vector3& ptHit, Unk_RayCastInfo* pInfo, float fLen,
+                                Vector3* pNormal, int nMask)
 {
     int nDefaultGroups = 0x389;
     Unk_RayCastInfo kInfo;
@@ -461,7 +461,7 @@ int CPhysXHelper::FUN_14168a310(const Unk_StreamPoint& ptFrom, Unk_StreamPoint& 
     return 0;
 }
 // @0x14168a450
-int CPhysXHelper::FUN_14168a450(Unk_StreamPoint ptFrom, float* pDist, float fLen)
+int CPhysXHelper::FUN_14168a450(Vector3 ptFrom, float* pDist, float fLen)
 {
     Unk_RayCastInfo kInfo;
     kInfo.m_origin = ptFrom;
@@ -516,7 +516,7 @@ void* CPhysXHelper::FUN_14168a750()
 }
 // @0x14168a770
 // MS2-FUNCTIONAL: codegen shape differs from exe
-bool CPhysXHelper::FUN_14168a770(const Unk_StreamPoint* pPoint)
+bool CPhysXHelper::FUN_14168a770(const Vector3* pPoint)
 {
     if (FUN_14168a1c0() == 0)
     {
@@ -545,10 +545,10 @@ bool CPhysXHelper::FUN_14168a770(const Unk_StreamPoint* pPoint)
 }
 // @0x14168a9b0
 // MS2-FUNCTIONAL: codegen shape differs from exe
-int CPhysXHelper::FUN_14168a9b0(void* pEntity, const Unk_StreamPoint& ptFrom)
+int CPhysXHelper::FUN_14168a9b0(void* pEntity, const Vector3& ptFrom)
 {
     Unk_RayCastInfo kInfo;
-    Unk_StreamPoint ptHit = g_143b01a60;
+    Vector3 ptHit = g_143b01a60;
     return FUN_1409f7ca0()->FUN_14168a310(ptFrom, ptHit, &kInfo, 0, 0, 0) != 0 && kInfo.m_hitEntity == pEntity;
 }
 // @0x14168aa60

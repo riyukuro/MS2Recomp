@@ -34,7 +34,7 @@ void FUN_140adc7f0(NiMesh* pkMesh, int nType);                      // NiMesh::S
 void FUN_140adc720(NiMesh* pkMesh);
 void FUN_140adc810(NiMesh* pkMesh, int n);                          // NiMesh::SetSelectiveUpdate-like flag
 float FUN_14028aed0(float f);                                       // floorf
-Unk_StreamPoint FUN_141198410(Unk_StreamPoint ptCenter, float fRadius);
+Vector3 FUN_141198410(Vector3 ptCenter, float fRadius);
 
 // The detach answered by the parent of an instance (slot 37 of the parent, as in cubecraft_2.cpp).
 struct Unk_BrushHandle { void* m_pA; void* m_pB; };
@@ -109,13 +109,13 @@ void EditBrush::SetKColor(const NiColorA& kColor)
 }
 
 // @0x1411974a0
-void EditBrush::SetPtPos(Unk_StreamPoint pt)
+void EditBrush::SetPtPos(Vector3 pt)
 {
     m_ptPos = pt;
 }
 
 // @0x1411974d0
-Unk_StreamPoint EditBrush::GetPtPos()
+Vector3 EditBrush::GetPtPos()
 {
     return m_ptPos;
 }
@@ -173,9 +173,9 @@ void PaintBrush::vfunc_4()
         NiTransform xf;
         xf.MakeIdentity();
         xf.m_fScale = 1.0f;
-        Unk_StreamPoint ptHit = FUN_141198410(m_ptPos, m_fRadius);
+        Vector3 ptHit = FUN_141198410(m_ptPos, m_fRadius);
         xf.m_Translate = *(NiPoint3*)&ptHit;
-        if (ptHit.FUN_140552700(Unk_StreamPoint(0.0f, 0.0f, 0.0f)))
+        if (ptHit.FUN_140552700(Vector3(0.0f, 0.0f, 0.0f)))
             BrushService()->AddTransform(xf);
     }
     BrushService()->RefreshLayers();
@@ -365,16 +365,16 @@ NiMesh* FUN_141197f80(float fRadius, NiColorA kColor)
 
 // @0x141198410
 // MS2-FUNCTIONAL: a random point inside the circle dropped onto the ground
-Unk_StreamPoint FUN_141198410(Unk_StreamPoint ptCenter, float fRadius)
+Vector3 FUN_141198410(Vector3 ptCenter, float fRadius)
 {
     int nAngle = FUN_14109a9e0();
     int nDist = FUN_14109a9e0();
     float fSin = sinf((float)(nAngle % 360) * 3.1415927f / 180.0f);
     float fCos = cosf((float)(nAngle % 360) * 3.1415927f / 180.0f);
-    Unk_StreamPoint ptOff(fCos * (float)(nDist % (int)fRadius), fSin * (float)(nDist % (int)fRadius), 100.0f);
+    Vector3 ptOff(fCos * (float)(nDist % (int)fRadius), fSin * (float)(nDist % (int)fRadius), 100.0f);
     Unk_RayCastInfo info;
-    Unk_StreamPoint ptHit(0.0f, 0.0f, 0.0f);
-    Unk_StreamPoint ptFrom = ptCenter.FUN_14097fd50(ptOff);
+    Vector3 ptHit(0.0f, 0.0f, 0.0f);
+    Vector3 ptFrom = ptCenter.FUN_14097fd50(ptOff);
     FUN_1409f7ca0()->FUN_14168a310(ptFrom, ptHit, &info, 800.0f, 0, 0x201);
     return ptHit;
 }

@@ -9,7 +9,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/ascript.h"      // MS2Ptr<T>
-#include "ms2/placeholder/nipoint3.h"     // Unk_StreamPoint (NiPoint3 with out-of-line special members)
+#include "ms2/placeholder/nipoint3.h"     // Vector3 (NiPoint3 with out-of-line special members)
 #include "ms2/client/ms2/effectparam.h"
 
 typedef MS2Ptr<CEffectParam> Unk_PeParamPtr;
@@ -32,7 +32,7 @@ struct Unk_PeXform
 };
 MS2_CHECK_SIZE(Unk_PeXform, 0x34);
 
-typedef ATL::CAtlArray<Unk_StreamPoint> Unk_PePointArray;
+typedef ATL::CAtlArray<Vector3> Unk_PePointArray;
 
 // 8-byte millisecond poll timer (ctor 0x140517b00; "elapsed since last hit" test 0x140268870).
 struct Unk_PeTick

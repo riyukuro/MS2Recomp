@@ -40,7 +40,7 @@ void FUN_141689ec0(CPhysXHelper* pHelper, Unk_Entity* pEntity, short nKind, int 
 // Entity properties read by hash.
 int FUN_140961880(Unk_Entity* pEntity, unsigned nHash, float* pValue);
 int FUN_1408a20a0(Unk_Entity* pEntity, unsigned nHash, bool* pValue);
-int FUN_1409618c0(Unk_Entity* pEntity, unsigned nHash, Unk_StreamPoint* pValue);
+int FUN_1409618c0(Unk_Entity* pEntity, unsigned nHash, Vector3* pValue);
 int FUN_140ae11a0(Unk_Entity* pEntity, unsigned nHash, int* pValue);
 void FUN_14098c6e0(Unk_Entity* pEntity, unsigned nHash, bool* pValue);
 
@@ -79,8 +79,8 @@ Unk_LiftSvc* FUN_1401cd040(char* pCell);
 void FUN_1401cd0b0(Unk_LiftSvcPtr* pThis, Unk_LiftSvc* p);          // construct
 Unk_LiftSvc* FUN_1401cd1a0(Unk_LiftSvcPtr* pThis);                  // operator->
 void FUN_1401cd150(Unk_LiftSvcPtr* pThis);                          // destroy
-Unk_StreamPoint FUN_1408a1430(Unk_StreamPoint pt);
-int FUN_1408a03c0(Unk_StreamPoint pt);
+Vector3 FUN_1408a1430(Vector3 pt);
+int FUN_1408a03c0(Vector3 pt);
 
 // The "lift state changed" notice posted through the notify manager.
 struct Unk_LiftNotifyPtr
@@ -208,11 +208,11 @@ void CLiftableObject::FUN_141447410(Unk_Entity* pEntity)
         }
         else
         {
-            Unk_StreamPoint pt;
+            Vector3 pt;
             FUN_1409618c0(pEntity, 0xfd95ca52, &pt);
             Unk_LiftSvcPtr spSvc;
             FUN_1401cd0b0(&spSvc, FUN_1401cd040(&DAT_143b059e8));
-            Unk_StreamPoint cell = FUN_1408a1430(pt);
+            Vector3 cell = FUN_1408a1430(pt);
             int nKey = FUN_1408a03c0(cell);
             Unk_LiftCube* pCube = FUN_1401cd1a0(&spSvc)->FUN_1410b8b00(nKey);
             if (pCube != 0)
@@ -344,7 +344,7 @@ void CLiftableObject::FUN_141447c10()
 }
 
 // @0x141447c80
-Unk_StreamPoint CLiftableObject::FUN_141447c80() const
+Vector3 CLiftableObject::FUN_141447c80() const
 {
     return m_vC4;
 }

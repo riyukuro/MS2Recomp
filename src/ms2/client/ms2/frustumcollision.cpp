@@ -25,7 +25,7 @@ struct Unk_FcPoint2 : public NiPoint2
     float FUN_140affe70() const;                                // Length
 };
 
-void FUN_140a01250(Unk_StreamPoint ptRot, Unk_StreamPoint* pForward, Unk_StreamPoint* pRight);   // basis from a z rotation (degrees)
+void FUN_140a01250(Vector3 ptRot, Vector3* pForward, Vector3* pRight);   // basis from a z rotation (degrees)
 void FUN_140adc650(const void* pBox, Unk_FcNxVec3* pCorners);   // NxUtilLib::NxComputeBoxPoints
 
 static const Unk_FcPoint2& AsPoint2(const NiPoint2& pt)
@@ -33,9 +33,9 @@ static const Unk_FcPoint2& AsPoint2(const NiPoint2& pt)
     return reinterpret_cast<const Unk_FcPoint2&>(pt);
 }
 
-static const Unk_StreamPoint& AsPoint3(const Unk_FcPoint3& pt)
+static const Vector3& AsPoint3(const Unk_FcPoint3& pt)
 {
-    return reinterpret_cast<const Unk_StreamPoint&>(pt);
+    return reinterpret_cast<const Vector3&>(pt);
 }
 
 // @0x141222df0
@@ -51,26 +51,26 @@ CFrustumCollision::~CFrustumCollision()
 
 // @0x141222f50
 // MS2-FUNCTIONAL: the exe expands the corner arithmetic with one set of Point3 temporaries per term
-void CFrustumCollision::vfunc_3(Unk_StreamPoint ptPos, Unk_StreamPoint ptDir, float fScale)
+void CFrustumCollision::vfunc_3(Vector3 ptPos, Vector3 ptDir, float fScale)
 {
     FUN_140a01250(ptDir, &m_ptForward, &m_ptRight);
     m_ptForward.FUN_140968990();
     m_ptRight.FUN_140968990();
 
-    m_ptOrigin = ptPos.FUN_14097fd50(m_ptForward.FUN_14097fc90(-m_ptSize.y)).FUN_14097fd50(Unk_StreamPoint(0.0f, 0.0f, -m_ptSize.z));
+    m_ptOrigin = ptPos.FUN_14097fd50(m_ptForward.FUN_14097fc90(-m_ptSize.y)).FUN_14097fd50(Vector3(0.0f, 0.0f, -m_ptSize.z));
     m_ptApex = m_ptOrigin.FUN_14097fd50(m_ptForward.FUN_14097fc90(-m_fApexDist));
 
     float fTwiceH = m_fHeight * 2.0f;
-    m_aCorners[0] = m_ptOrigin.FUN_14097fd50(m_ptRight.FUN_14097fc90(-m_fNearHalfWidth)).FUN_14097fd50(Unk_StreamPoint(0.0f, 0.0f, fTwiceH));
-    m_aCorners[1] = m_ptOrigin.FUN_14097fd50(m_ptRight.FUN_14097fc90(-m_fNearHalfWidth)).FUN_14097fd50(Unk_StreamPoint(0.0f, 0.0f, 0.0f));
-    m_aCorners[2] = m_ptOrigin.FUN_14097fd50(m_ptRight.FUN_14097fc90(m_fNearHalfWidth)).FUN_14097fd50(Unk_StreamPoint(0.0f, 0.0f, 0.0f));
-    m_aCorners[3] = m_ptOrigin.FUN_14097fd50(m_ptRight.FUN_14097fc90(m_fNearHalfWidth)).FUN_14097fd50(Unk_StreamPoint(0.0f, 0.0f, fTwiceH));
+    m_aCorners[0] = m_ptOrigin.FUN_14097fd50(m_ptRight.FUN_14097fc90(-m_fNearHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, fTwiceH));
+    m_aCorners[1] = m_ptOrigin.FUN_14097fd50(m_ptRight.FUN_14097fc90(-m_fNearHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, 0.0f));
+    m_aCorners[2] = m_ptOrigin.FUN_14097fd50(m_ptRight.FUN_14097fc90(m_fNearHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, 0.0f));
+    m_aCorners[3] = m_ptOrigin.FUN_14097fd50(m_ptRight.FUN_14097fc90(m_fNearHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, fTwiceH));
 
-    Unk_StreamPoint ptFar = m_ptOrigin.FUN_14097fd50(m_ptForward.FUN_14097fc90(m_fDepth));
-    m_aCorners[4] = ptFar.FUN_14097fd50(m_ptRight.FUN_14097fc90(-m_fFarHalfWidth)).FUN_14097fd50(Unk_StreamPoint(0.0f, 0.0f, fTwiceH));
-    m_aCorners[5] = ptFar.FUN_14097fd50(m_ptRight.FUN_14097fc90(-m_fFarHalfWidth)).FUN_14097fd50(Unk_StreamPoint(0.0f, 0.0f, 0.0f));
-    m_aCorners[6] = ptFar.FUN_14097fd50(m_ptRight.FUN_14097fc90(m_fFarHalfWidth)).FUN_14097fd50(Unk_StreamPoint(0.0f, 0.0f, 0.0f));
-    m_aCorners[7] = ptFar.FUN_14097fd50(m_ptRight.FUN_14097fc90(m_fFarHalfWidth)).FUN_14097fd50(Unk_StreamPoint(0.0f, 0.0f, fTwiceH));
+    Vector3 ptFar = m_ptOrigin.FUN_14097fd50(m_ptForward.FUN_14097fc90(m_fDepth));
+    m_aCorners[4] = ptFar.FUN_14097fd50(m_ptRight.FUN_14097fc90(-m_fFarHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, fTwiceH));
+    m_aCorners[5] = ptFar.FUN_14097fd50(m_ptRight.FUN_14097fc90(-m_fFarHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, 0.0f));
+    m_aCorners[6] = ptFar.FUN_14097fd50(m_ptRight.FUN_14097fc90(m_fFarHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, 0.0f));
+    m_aCorners[7] = ptFar.FUN_14097fd50(m_ptRight.FUN_14097fc90(m_fFarHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, fTwiceH));
 
     m_aEdgeA[0] = Unk_NiPoint3(m_ptApex);
     m_aEdgeA[1] = Unk_NiPoint3(m_aCorners[4]);
@@ -99,19 +99,19 @@ void CFrustumCollision::vfunc_4()
 }
 
 // @0x141223d30
-int CFrustumCollision::Contains(const Unk_StreamPoint& pt) const
+int CFrustumCollision::Contains(const Vector3& pt) const
 {
-    return ContainsPoint(Unk_StreamPoint(pt.x, pt.y, pt.z));
+    return ContainsPoint(Vector3(pt.x, pt.y, pt.z));
 }
 
 // @0x141223d80
-int CFrustumCollision::ContainsPoint(const Unk_StreamPoint& pt) const
+int CFrustumCollision::ContainsPoint(const Vector3& pt) const
 {
-    Unk_StreamPoint kRel = pt.FUN_140965c40(m_ptOrigin);
+    Vector3 kRel = pt.FUN_140965c40(m_ptOrigin);
     float fDepth = m_ptForward.FUN_140a00f20(kRel);
     if (fDepth <= 0.0f || m_fDepth <= fDepth)
         return 0;
-    Unk_StreamPoint kDir = pt.FUN_140965c40(m_ptApex);
+    Vector3 kDir = pt.FUN_140965c40(m_ptApex);
     kDir.z = 0.0f;
     kDir.FUN_140968990();
     float fDot = m_ptForward.FUN_140a00f20(kDir);
@@ -227,7 +227,7 @@ void CFrustumCollision::vfunc_5()
     m_spMesh->RemoveAllStreamRefs();
 
     int nPoints = 16;
-    Unk_StreamPoint aPts[16];
+    Vector3 aPts[16];
     aPts[0] = m_aCorners[0];
     aPts[1] = m_aCorners[3];
     aPts[2] = m_aCorners[2];

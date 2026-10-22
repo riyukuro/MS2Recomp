@@ -377,7 +377,7 @@ void FUN_141a01ca0(void*,int,int,const CStringW&);void FUN_141a02460(void*,bool)
 CStringW FUN_140632a60(int,const CStringW&,const CStringW&);CStringW FUN_14052bd00(int,const CStringW&);
 void FUN_1412751f0(const CStringW&,int,int);void FUN_140b84010(unsigned);
 void* FUN_14166ccb0(Unk_NetworkPlayer*);int FUN_14166cc80(Unk_NetworkPlayer*);int FUN_140b81fe0(void*);int FUN_140b82030(void*);int FUN_14123c580(Unk_NetworkPlayer*);
-__int64 FUN_141656a80(Unk_NetworkPlayer*);void FUN_140b820d0(void*,const Unk_StreamPoint&);void FUN_140b82130(void*,const Unk_StreamPoint&);
+__int64 FUN_141656a80(Unk_NetworkPlayer*);void FUN_140b820d0(void*,const Vector3&);void FUN_140b82130(void*,const Vector3&);
 void* FUN_1403ed280();void FUN_1411a8e50(void*,int);void FUN_14166cc40(Unk_NetworkPlayer*,int);
 
 inline void FUN_141540130(ATL::CRBMap<unsigned,unsigned>&,const ATL::CRBMap<unsigned,unsigned>&);
@@ -1108,7 +1108,7 @@ void CNetworkService::FUN_14153e280(CInPacket& input) {
     }
     case 5: {
         int emotion=input.ReadInt32();__int64 first=input.ReadInt64();__int64 second=input.ReadInt64();
-        Unk_StreamPoint start=input.ReadVector3();Unk_StreamPoint end=input.ReadVector3();int value=input.ReadInt32();
+        Vector3 start=input.ReadVector3();Vector3 end=input.ReadVector3();int value=input.ReadInt32();
         Unk_NetworkPlayer* player=FUN_1403ed2d0()->FUN_141bd0cc0();if(!player) { MS2_ASSERT_AT(0x6d7,"pMyPC" && 0);return; }
         if(FUN_14166c930(player)==0x3a) {
             __int64 peer=FUN_141656a80(player)==first?second:first;Unk_NetworkPlayer* target=FUN_141bd1530(FUN_1403ed2d0(),peer);

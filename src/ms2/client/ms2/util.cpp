@@ -117,13 +117,13 @@ NiSequenceData* FUN_141b72540(NiControllerSequence* pSeq);          // sequence 
 float FUN_141b72480(NiControllerSequence* pSeq, const NiFixedString& kKey);   // text key time (-FLT_MAX if unknown)
 bool FUN_14028d470(float fA, float fB);                             // float equality
 float FUN_140a17940(float fValue, float fMin, float fMax);          // clamp
-int FUN_1409618c0(egf::Entity* pEntity, unsigned uPropId, Unk_StreamPoint* pOut);   // read a Point3 property (0 = ok)
+int FUN_1409618c0(egf::Entity* pEntity, unsigned uPropId, Vector3* pOut);   // read a Point3 property (0 = ok)
 int FUN_140961880(egf::Entity* pEntity, unsigned uPropId, float* pOut);             // read a float property (0 = ok)
 
 // NiPoint3 with the out-of-line conversion / move-assign of the exe.
 struct Unk_UtilNiPoint3
 {
-    Unk_UtilNiPoint3(const Unk_StreamPoint& pt);                    // 0x14027dcf0
+    Unk_UtilNiPoint3(const Vector3& pt);                    // 0x14027dcf0
     Unk_UtilNiPoint3& operator=(Unk_UtilNiPoint3&& pt);             // 0x14097faa0
     float x, y, z;
 };
@@ -252,9 +252,9 @@ Unk_UtilFloat3 FUN_141b6dff0(const Unk_UtilFloat3* pVec)
 MS2_REPLACE(0x141b6dff0, FUN_141b6dff0, 121, 0xB7A204A8);
 
 // @0x141b6e070
-Unk_StreamPoint FUN_141b6e070(const Unk_UtilFloat3* pVec)
+Vector3 FUN_141b6e070(const Unk_UtilFloat3* pVec)
 {
-    Unk_StreamPoint vCopy;
+    Vector3 vCopy;
     vCopy.x = pVec->x;
     vCopy.y = pVec->y;
     vCopy.z = pVec->z;
@@ -274,9 +274,9 @@ Unk_UtilNxVec3 FUN_141b6e0e0(const Unk_UtilFloat3* pVec)
 MS2_REPLACE(0x141b6e0e0, FUN_141b6e0e0, 96, 0x9AD7DDE3);
 
 // @0x141b6e150
-Unk_StreamPoint FUN_141b6e150(const Unk_UtilFloat3* pVec)
+Vector3 FUN_141b6e150(const Unk_UtilFloat3* pVec)
 {
-    Unk_StreamPoint vCopy;
+    Vector3 vCopy;
     vCopy.x = pVec->x;
     vCopy.y = pVec->y;
     vCopy.z = pVec->z;
@@ -826,11 +826,11 @@ MS2_REPLACE(0x141b6ffc0, FUN_141b6ffc0, 88, 0x5FA463E7);
 // MS2-FUNCTIONAL: temp/copy-ctor layout of Unk_UtilTransform math differs
 bool FUN_141b70020(egf::Entity* pEntity, Unk_UtilTransform* pOut)
 {
-    Unk_StreamPoint vTranslation;
+    Vector3 vTranslation;
     if (FUN_1409618c0(pEntity, 0xfd95ca52, &vTranslation) != 0)
         return false;
     pOut->m_kTranslate = Unk_UtilNiPoint3(vTranslation);
-    Unk_StreamPoint vEuler;
+    Vector3 vEuler;
     if (FUN_1409618c0(pEntity, 0x68c7c29d, &vEuler) != 0)
         return false;
     Unk_NiMatrix3 kX;
@@ -1218,20 +1218,20 @@ float FUN_141b72560(float fBase, float fExp);
 float FUN_141b72600(float fBase, float fExp);
 float FUN_141b725e0(float fValue);
 float FUN_14096b1c0(float fValue);                                  // sqrtf
-float FUN_140993fe0(const Unk_StreamPoint& kA, const Unk_StreamPoint& kB);   // dot product
+float FUN_140993fe0(const Vector3& kA, const Vector3& kB);   // dot product
 
 // @0x141b71390
 // MS2-FUNCTIONAL: temp slot order of the two power terms differs
-Unk_StreamPoint FUN_141b71390(const Unk_StreamPoint& kStart, const Unk_StreamPoint& kControl, const Unk_StreamPoint& kEnd, float fT)
+Vector3 FUN_141b71390(const Vector3& kStart, const Vector3& kControl, const Vector3& kEnd, float fT)
 {
     if (kStart.FUN_140552690(kControl) || kEnd.FUN_140552690(kControl)) {
-        Unk_StreamPoint kDelta = kEnd.FUN_140965c40(kStart);
+        Vector3 kDelta = kEnd.FUN_140965c40(kStart);
         return kStart.FUN_14097fd50(kDelta.FUN_14097fc90(fT));
     } else {
         float fInverse = 1.0f - fT;
         float fT2 = FUN_141b72560(fT, 2.0f);
         float fS2 = FUN_141b72560(fInverse, 2.0f);
-        Unk_StreamPoint kResult = kStart.FUN_14097fc90(fS2);
+        Vector3 kResult = kStart.FUN_14097fc90(fS2);
         kResult.FUN_140a4e560(FUN_1409ab5c0(2.0f, kControl).FUN_14097fc90(fT).FUN_14097fc90(1.0f - fT));
         kResult.FUN_140a4e560(kEnd.FUN_14097fc90(fT2));
         return kResult;
@@ -1240,10 +1240,10 @@ Unk_StreamPoint FUN_141b71390(const Unk_StreamPoint& kStart, const Unk_StreamPoi
 
 // @0x141b71550
 // MS2-FUNCTIONAL: float temporaries are scheduled differently in the arc-length term
-float FUN_141b71550(const Unk_StreamPoint& kStart, const Unk_StreamPoint& kControl, const Unk_StreamPoint& kEnd)
+float FUN_141b71550(const Vector3& kStart, const Vector3& kControl, const Vector3& kEnd)
 {
-    Unk_StreamPoint kA;
-    Unk_StreamPoint kB;
+    Vector3 kA;
+    Vector3 kB;
     kA = kStart.FUN_140965c40(FUN_1409ab5c0(2.0f, kControl)).FUN_14097fd50(kEnd);
     kA = kStart.FUN_140965c40(FUN_1409ab5c0(2.0f, kControl)).FUN_14097fd50(kEnd);
     kB = FUN_1409ab5c0(2.0f, kControl).FUN_140965c40(FUN_1409ab5c0(2.0f, kStart));

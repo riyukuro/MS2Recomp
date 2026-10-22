@@ -34,7 +34,7 @@ CTwoCircleCollision::~CTwoCircleCollision()
 }
 
 // @0x141868c60
-void CTwoCircleCollision::vfunc_3(Unk_StreamPoint ptPos, Unk_StreamPoint ptDir, float fScale)
+void CTwoCircleCollision::vfunc_3(Vector3 ptPos, Vector3 ptDir, float fScale)
 {
     if (m_ptCenter.FUN_140552700(ptPos))
     {
@@ -75,13 +75,13 @@ void CTwoCircleCollision::vfunc_5()
         m_spOuter->AttachProperty(pProp);
     }
 
-    Unk_StreamPoint aPts[kRingPoints];
+    Vector3 aPts[kRingPoints];
     for (int i = 0; i < kRingPoints; i++)
     {
         float fSin = sinf((float)i * 3.1415927f / 180.0f);
         fSin = fSin * m_fInnerRadius;
         aPts[i] = m_ptCenter.FUN_14097fd50(
-            Unk_StreamPoint(cosf((float)i * 3.1415927f / 180.0f) * m_fInnerRadius, fSin, 0.0f));
+            Vector3(cosf((float)i * 3.1415927f / 180.0f) * m_fInnerRadius, fSin, 0.0f));
     }
     m_spInner->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINESTRIPS);
     BuildWire(m_spInner, aPts, kRingPoints);
@@ -90,7 +90,7 @@ void CTwoCircleCollision::vfunc_5()
         float fSin = sinf((float)i * 3.1415927f / 180.0f);
         fSin = fSin * m_fOuterRadius;
         aPts[i] = m_ptCenter.FUN_14097fd50(
-            Unk_StreamPoint(cosf((float)i * 3.1415927f / 180.0f) * m_fOuterRadius, fSin, 0.0f));
+            Vector3(cosf((float)i * 3.1415927f / 180.0f) * m_fOuterRadius, fSin, 0.0f));
     }
     m_spOuter->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINESTRIPS);
     BuildWire(m_spOuter, aPts, kRingPoints);
@@ -101,7 +101,7 @@ void CTwoCircleCollision::vfunc_5()
 MS2_REPLACE_METHOD(0x141868DB0, CTwoCircleCollision, vfunc_5, 1293, 0x3C30EDE8);
 
 // @0x1418692d0
-void CTwoCircleCollision::BuildWire(NiMesh* pMesh, const Unk_StreamPoint* pPoints, unsigned int nCount)
+void CTwoCircleCollision::BuildWire(NiMesh* pMesh, const Vector3* pPoints, unsigned int nCount)
 {
     pMesh->RemoveAllStreamRefs();
     pMesh->AddStream(NiCommonSemantics::POSITION(), 0, NiDataStreamElement::F_FLOAT32_3, nCount, 0x13,

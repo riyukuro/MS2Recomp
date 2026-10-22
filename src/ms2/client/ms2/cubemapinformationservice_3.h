@@ -102,12 +102,12 @@ public:
 
     int FUN_1410b76a0();
     void FUN_1410b76d0();
-    Unk_StreamPoint FUN_1410b7a20(Unk_StreamPoint pt, Unk_StreamPoint* pOut);
-    Unk_StreamPoint FUN_1410b7ad0(PCBase* pActor, float fDist, Unk_StreamPoint* pOut, int bSnap);
-    Unk_StreamPoint FUN_1410b7ba0(Unk_StreamPoint ptFrom, Unk_StreamPoint ptTo, float fDist, Unk_StreamPoint* pOut, int bSnap);
+    Vector3 FUN_1410b7a20(Vector3 pt, Vector3* pOut);
+    Vector3 FUN_1410b7ad0(PCBase* pActor, float fDist, Vector3* pOut, int bSnap);
+    Vector3 FUN_1410b7ba0(Vector3 ptFrom, Vector3 ptTo, float fDist, Vector3* pOut, int bSnap);
     bool FUN_1410b7d50();
-    bool FUN_1410b7da0(Unk_StreamPoint pt);
-    bool FUN_1410b7e80(Unk_StreamPoint pt);
+    bool FUN_1410b7da0(Vector3 pt);
+    bool FUN_1410b7e80(Vector3 pt);
     bool FUN_1410b7ed0(int nKey);
     bool FUN_1410b7f90(Unk_Int3 cell);
     Unk_CMISTree<287>* FUN_1410b7fe0(int nKey);
@@ -118,18 +118,18 @@ public:
     Cube* FUN_1410b8790(Unk_Int3 pt);
     Cube* FUN_1410b8980(Unk_Int3 pt);
     Cube* FUN_1410b8a60(Unk_Int3 pt);
-    Cube* FUN_1410b8ab0(Unk_StreamPoint pt);
+    Cube* FUN_1410b8ab0(Vector3 pt);
     Cube* FUN_1410b8b00(int nKey);
     Cube* FUN_1410b8be0(const Unk_CMISEntityRef& ref);
     Cube* FUN_1410b8c90(const Unk_CMISEntityRef& ref);
     Cube* FUN_1410b8d90(Cube* pBase, int nOffset, int nField44);
     Cube* FUN_1410b8e60(egf::Entity* pEntity);
-    Cube* FUN_1410b8f30(Unk_StreamPoint ptFrom, Unk_StreamPoint* pHit, float fRange);
-    Unk_StreamPoint FUN_1410b9150(Unk_StreamPoint ptIn);
-    bool FUN_1410b9330(void* pArg, Unk_StreamPoint pt, float fStep, Unk_StreamPoint* pOutPos, Unk_StreamPoint* pOutRot, int* pnResult, void** ppHit);
-    int FUN_1410d1320(void* pArg, Unk_StreamPoint pt, float fStep, Unk_StreamPoint* pOut);
-    int FUN_1410d1820(void* pArg, int nDir, Unk_StreamPoint pt, Unk_StreamPoint ptCur, void** ppFound);
-    int FUN_1410d2130(void* pFound, int nDir, float fRadius, Unk_StreamPoint* pOutPos, Unk_StreamPoint* pOutRot);
+    Cube* FUN_1410b8f30(Vector3 ptFrom, Vector3* pHit, float fRange);
+    Vector3 FUN_1410b9150(Vector3 ptIn);
+    bool FUN_1410b9330(void* pArg, Vector3 pt, float fStep, Vector3* pOutPos, Vector3* pOutRot, int* pnResult, void** ppHit);
+    int FUN_1410d1320(void* pArg, Vector3 pt, float fStep, Vector3* pOut);
+    int FUN_1410d1820(void* pArg, int nDir, Vector3 pt, Vector3 ptCur, void** ppFound);
+    int FUN_1410d2130(void* pFound, int nDir, float fRadius, Vector3* pOutPos, Vector3* pOutRot);
     Cube* FUN_1410b9850(int nItemId);
     int FUN_1410b9950(int nCategory);
     int FUN_1410b9a50();
@@ -138,9 +138,9 @@ public:
     Unk_CMISTree<277>* FUN_1410b9e70();
     int FUN_1410b9c20(int nItemId, __int64 nOwnerId);
     float FUN_1410ba440(int nDir);
-    int FUN_1410ba4a0(Unk_StreamPoint ptDir);
+    int FUN_1410ba4a0(Vector3 ptDir);
     Unk_Int3 FUN_1410bab50(Unk_Int3 pt, int nDir);
-    Unk_Int3 FUN_1410bac00(Unk_StreamPoint ptDir);
+    Unk_Int3 FUN_1410bac00(Vector3 ptDir);
     int FUN_1410bb950(Unk_Int3 pt);
     void FUN_1410bba60(int nKey);
     int FUN_1410bbab0(int nKey);
@@ -195,8 +195,8 @@ public:
     int FUN_1410cb420(const Unk_CMISEntityRef* pRef);
     int FUN_1410d2730(const Unk_Int3* pPt);
     int FUN_1410d4340(Unk_CubePoint* pOut);
-    void FUN_1410c4d80(const Unk_StreamPoint& pt, float fDist);
-    bool FUN_1410c2840(Unk_StreamPoint pt, float fDist);
+    void FUN_1410c4d80(const Vector3& pt, float fDist);
+    bool FUN_1410c2840(Vector3 pt, float fDist);
     bool FUN_1410d2340(const Unk_CMISPt2* a, const Unk_CMISPt2* b, float fLimX, float fLimY);
     void FUN_1410caa60(const CString* pKey, int v);
     void FUN_1410c51d0(int nA, int nB, CStringW strName);
@@ -216,7 +216,7 @@ public:
     void FUN_1410cef70(const egf::EntityChangeMessage* pMsg, efd::Category cat);
     void FUN_1410cf160(egf::Entity* pEntity);
     void FUN_1410cf5c0(egf::Entity* pEntity);
-    int FUN_1410cdd80(Unk_StreamPoint* pFrom, Unk_StreamPoint* pTo, float fDist, Unk_Int3* pOffset);
+    int FUN_1410cdd80(Vector3* pFrom, Vector3* pTo, float fDist, Unk_Int3* pOffset);
     int FUN_1410ca900(int nGroup);
     int FUN_1410c88b0(PCBase* pActor);
     int FUN_1410c81c0(int nGroup, int* pnWidth, int* pnHeight, int* pnDepth);
@@ -232,8 +232,8 @@ public:
     void GenerateAreaPhysX(int n);                  // 0x1410c6100
     int FUN_1410c6b90(unsigned nMask, int* pOutGroup, int nMode, Unk_CMISEntityRef* pOutEnt);
     bool FUN_1410d27c0(__int64 nOwner, int nMode, int* pCount, int* pLimit);
-    void FUN_1410cbb40(struct Unk_CMISXformVec* pOut, int nMode, int nGroup, Unk_StreamPoint ptPlayer, Unk_Int3 cell, bool bRot, int nMs);
-    Unk_StreamPoint FUN_1410c54a0(Unk_EntRef spEnt);
+    void FUN_1410cbb40(struct Unk_CMISXformVec* pOut, int nMode, int nGroup, Vector3 ptPlayer, Unk_Int3 cell, bool bRot, int nMs);
+    Vector3 FUN_1410c54a0(Unk_EntRef spEnt);
     void FUN_1410ce560();
     bool FUN_1410c1910(const Unk_Int3& pt, int bDefer);
     bool FUN_1410c06b0(MS2Ptr<Cube> spCube);
@@ -243,7 +243,7 @@ public:
     void FUN_1410c3fc0(PCBase* pActor, float* pOutLo, float* pOutHi);
     int FUN_1410d2da0(int nKey, Unk_Int3 pt);
     int FUN_1410d23f0(int nGroup, int nBlock);
-    bool FUN_1410d2130(Cube* pCube, int nDir, float fSize, float* pOutXY, Unk_StreamPoint* pOutPt);
+    bool FUN_1410d2130(Cube* pCube, int nDir, float fSize, float* pOutXY, Vector3* pOutPt);
     int FUN_1410d2590(Unk_Int3 pt, int nGroup, int nBlock);
     void FUN_1410d4450(__int64 nId, int nIdx, CStringA strName, __int64 nValue);
     void FUN_1410d4710(__int64 nId, int nIdx, CStringA strName, __int64 nValue);
@@ -259,7 +259,7 @@ public:
     void FUN_1410c2ce0(egf::Entity* pEntity);
     bool FUN_1410be0c0(Unk_Int3 pt, int nGroup, int nFloor, struct Unk_CMISCell56* pVal);
     int FUN_1410ce310();
-    int FUN_1410d33a0(int nKey, Unk_StreamPoint* pOut);
+    int FUN_1410d33a0(int nKey, Vector3* pOut);
     CStringW FUN_1410c7f60(int nA, int nB);
     void SendRequestCubeMode68(__int64 nId);
     int FUN_1410c3000();
@@ -320,21 +320,21 @@ public:
     bool FUN_1410bd080(__int64 nOwner, Unk_Int3 pt, float fRot, class CubeItemInfo* pInfo, const efd::utf8string& strName,
         int nField50, int nField54, unsigned char bField4c, __int64 nUnused, int nFieldD8, Unk_PayloadPtr<class NoticeCubeInfo> spNotice);
     egf::EntityPtr FUN_1410bc3d0(struct Unk_CMISBlock rec);
-    egf::EntityPtr FUN_1410bc7f0(Unk_StreamPoint ptPos, Unk_StreamPoint ptRot, unsigned nIdx, int nItemId);
+    egf::EntityPtr FUN_1410bc7f0(Vector3 ptPos, Vector3 ptRot, unsigned nIdx, int nItemId);
     bool FUN_1410c3600(int v);
     void FUN_1410c3630(int v);
     int FUN_1410c3650();
 
     void FUN_1410cab10(Cube* pCube);
-    int FUN_1410ba5f0(Unk_Int3 pt, Unk_StreamPoint ptRef);
+    int FUN_1410ba5f0(Unk_Int3 pt, Vector3 ptRef);
     void FUN_1410be6e0(MS2Ptr<Cube> spCube);
     int FUN_1410b9e90(__int64 nOwnerId, struct Unk_CMISCubePtrSet* pOut);
-    MS2Ptr<Cube> FUN_1410c1330(Unk_StreamPoint ptWorld, float fUnused, class CubeItemInfo* pInfo, int nKind, egf::EntityPtr spEnt, bool bUnused, int nField50);
+    MS2Ptr<Cube> FUN_1410c1330(Vector3 ptWorld, float fUnused, class CubeItemInfo* pInfo, int nKind, egf::EntityPtr spEnt, bool bUnused, int nField50);
 
     // w138
     int FUN_1410b77e0(int nItemId, struct Unk_CMISStr* pOut);
     int FUN_1410cb980(int nItemId);
-    void GeneratePhysX(Unk_EntRef spEnt, Unk_StreamPoint pt);
+    void GeneratePhysX(Unk_EntRef spEnt, Vector3 pt);
     void FUN_1410c5570(Unk_EntRef spEnt);
     void FUN_1410c3330(CStringW* pOut);
     void FUN_1410c79a0(int nA, int nB);

@@ -28,7 +28,7 @@ public:
     BeamPointCurveInfo();                                       // 0x140a0caa0
     virtual bool vfunc_1(Unk_140165cf0* pNode);                 // 1 0x140a0c790 passThroughPoint
 public:
-    Unk_StreamPoint m_kPassThroughPoint;    // +0x20
+    Vector3 m_kPassThroughPoint;    // +0x20
 };
 MS2_CHECK_SIZE(BeamPointCurveInfo, 0x30);
 

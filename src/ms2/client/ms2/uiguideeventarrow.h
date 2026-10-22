@@ -13,12 +13,12 @@ public:
     UIGuideEventArrow();                                            // 0x14195dd10
     virtual ~UIGuideEventArrow();                                   // 0 0x1419609a0
     virtual void vfunc_1(MS2Ptr<AScript>);                          // 1 0x14195dd90 push the position to the swf (updateArrow/hideArrow)
-    virtual int vfunc_2(void*);                                     // 2 0x14195dee0 screen position (Unk_StreamPoint*), 0 when off screen
+    virtual int vfunc_2(void*);                                     // 2 0x14195dee0 screen position (Vector3*), 0 when off screen
     void FUN_14195dfa0();                                           // ++m_34
     int FUN_14195dfc0();                                            // --m_34 (asserts when 0)
     int GetUseCount();                                            // m_34
     int m_id;                                                       // +0x18 arrow id
-    Unk_StreamPoint m_pos;                                          // +0x1c world position
+    Vector3 m_pos;                                          // +0x1c world position
     int m_direction;                                                // +0x28
     int m_align;                                                    // +0x2c
     int m_textId;                                                   // +0x30 stringGuide id of the text arrow (0: plain arrow)

@@ -46,9 +46,9 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 class Unk_UhStrings { public: CStringW FUN_141811980(int nTable, int nId); };
 Unk_UhStrings* FUN_1401a9d70();
 
-extern Unk_StreamPoint DAT_143a08d08;   // zero colour
-extern Unk_StreamPoint DAT_143b01a60;   // zero point
-extern Unk_StreamPoint DAT_143a08cf8;   // zero up axis
+extern Vector3 DAT_143a08d08;   // zero colour
+extern Vector3 DAT_143b01a60;   // zero point
+extern Vector3 DAT_143a08cf8;   // zero up axis
 
 // The statics of the home apply functions (opaque stand-ins for helpers of other units).
 class Unk_UhUiService { public: void FUN_141ad9980(unsigned char nStage); };

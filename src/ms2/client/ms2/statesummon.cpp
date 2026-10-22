@@ -121,7 +121,7 @@ CStringW GetStringCommon(int nId);                                           // 
 void FUN_141276180(const CStringA& strCommand, const CStringA& strArg);    // 0x141276180 run a client command
 
 // The pet's position buffer (statehomemade.cpp owns the real one).
-class Unk_SmBuffMgr { public: Unk_StreamPoint FUN_141683290(); };
+class Unk_SmBuffMgr { public: Vector3 FUN_141683290(); };
 Unk_SmBuffMgr* FUN_14166d240(PCBase* p);                                   // 0x14166d240 &m_unk_6d8
 
 // The ride-on action the summon packet carries (RideOnActionUseItem: ms2/commonfiles/rideonaction.h).
@@ -141,7 +141,7 @@ struct Unk_SummonUid3 { Unk_SummonUid3(); __int64 m_nUid; };
 MS2_CHECK_SIZE(Unk_SummonUid0, 8);
 MS2_CHECK_SIZE(Unk_SummonUid3, 8);
 
-extern Unk_StreamPoint DAT_143b01a60;                                      // the zero point
+extern Vector3 DAT_143b01a60;                                      // the zero point
 
 // ---- unit statics (.text$di): the shared sort-name / skill / stun / condition / command statics ----
 
@@ -251,7 +251,7 @@ void StateSummon::vfunc_4(StateData* pData)
 void StateSummon::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    Unk_StreamPoint kPos = DAT_143b01a60;
+    Vector3 kPos = DAT_143b01a60;
     m_pOwner->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kPos));
     m_pOwner->vfunc_68(&kPos, fTime, 0, 0, 0);
 }
@@ -280,7 +280,7 @@ void StateSummon::vfunc_8(double fTime)
 
     if (m_n48 == 0)
     {
-        Unk_StreamPoint kPos = FUN_14166d240(pRider)->FUN_141683290();
+        Vector3 kPos = FUN_14166d240(pRider)->FUN_141683290();
         pRider->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kPos));
         if (pRider->FUN_1416749c0() == 0)
             FUN_1417b9460();
@@ -532,7 +532,7 @@ void StateRecall::vfunc_8(double fTime)
         return;
     }
 
-    Unk_StreamPoint kPos = FUN_14166d240(pRider)->FUN_141683290();
+    Vector3 kPos = FUN_14166d240(pRider)->FUN_141683290();
     pRider->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kPos));
     if (pRider->FUN_1416749c0() == 0)
         FUN_1417b9460();

@@ -66,10 +66,10 @@ void* FUN_14086e090(void* pParent, Unk_TiXmlElement* pChild);       // LinkEndCh
 Unk_TiXmlElement* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);  // FirstChildElement
 void FUN_140873e30(Unk_TiXmlElement* pElem, const char* pszName, float fValue);   // SetFloatAttribute
 void FUN_140873ca0(Unk_TiXmlElement* pElem, const char* pszName, int nValue);     // SetAttribute
-void FUN_140874ad0(Unk_TiXmlElement* pElem, const char* pszName, Unk_StreamPoint pt);   // SetPointAttribute
+void FUN_140874ad0(Unk_TiXmlElement* pElem, const char* pszName, Vector3 pt);   // SetPointAttribute
 void FUN_140870f90(TiXmlDocument* pDoc);                            // SaveFile
 
-void FUN_140a01190(const Unk_EfdMatrix3* pMatrix, unsigned int uiCol, Unk_StreamPoint* pOut);  // GetCol
+void FUN_140a01190(const Unk_EfdMatrix3* pMatrix, unsigned int uiCol, Vector3* pOut);  // GetCol
 bool FUN_14028d470(float a, float b);                       // nearly equal
 float FUN_140a38cd0(float f);                       // fabs
 float FUN_140a17940(float f, float fMin, float fMax);   // clamp
@@ -95,10 +95,10 @@ CEditCameraMode::~CEditCameraMode()
 void CEditCameraMode::vfunc_8(double fTime)
 {
     vfunc_9();
-    Unk_StreamPoint ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
+    Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
     if (FUN_14025e7c0()->FUN_14116daa0(0, false, 0) && FUN_14025e7c0()->FUN_14116daa0(1, false, 0))
     {
-        Unk_StreamPoint ptPos = FUN_1409f2540();
+        Vector3 ptPos = FUN_1409f2540();
         ptPos.z = ptPos.z - ptMove.z * 2.0f;
         vfunc_3(ptPos);
     }
@@ -106,7 +106,7 @@ void CEditCameraMode::vfunc_8(double fTime)
     {
         if (ptMove.FUN_140552700(g_143b01a60))
         {
-            Unk_StreamPoint ptInput = ptMove;
+            Vector3 ptInput = ptMove;
             float fRate = 15.0f;
             float fDelta = (float)fTime;
             float fStep = FUN_140a17940(fDelta, 0.0f, 1.0f / 15.0f);
@@ -122,7 +122,7 @@ void CEditCameraMode::vfunc_8(double fTime)
                     fRotX = (0.0f <= fRotX) ? 1.0f : -1.0f;
                 if (1.0f < FUN_140a38cd0(fRotY))
                     fRotY = (0.0f <= fRotY) ? 1.0f : -1.0f;
-                Unk_StreamPoint ptRot = FUN_140af8260();
+                Vector3 ptRot = FUN_140af8260();
                 ptRot.y = ptRot.y - fRotX;
                 ptRot.z = ptRot.z - fRotY;
                 vfunc_4(ptRot);
@@ -131,23 +131,23 @@ void CEditCameraMode::vfunc_8(double fTime)
     }
     if (m_78.FUN_140552700(g_143b01a60))
     {
-        Unk_StreamPoint ptRot = FUN_140af8260();
+        Vector3 ptRot = FUN_140af8260();
         ptRot = ptRot.FUN_14097fc90(3.14159274f).FUN_140ae9180(180.0f);
         Unk_EfdMatrix3 kRot;
         kRot.FUN_142083d40(ptRot.x, ptRot.y, ptRot.z);
-        Unk_StreamPoint ptRight;
+        Vector3 ptRight;
         FUN_140a01190(&kRot, 0, &ptRight);
         ptRight.FUN_140968990();
-        Unk_StreamPoint ptUp;
+        Vector3 ptUp;
         FUN_140a01190(&kRot, 1, &ptUp);
         ptUp.FUN_140968990();
-        Unk_StreamPoint ptForward;
+        Vector3 ptForward;
         FUN_140a01190(&kRot, 2, &ptForward);
         ptForward.FUN_140968990();
-        Unk_StreamPoint ptPos = FUN_1409f2540();
+        Vector3 ptPos = FUN_1409f2540();
         float fDelta = (float)fTime;
-        const Unk_StreamPoint& ptSideF = ptForward.FUN_14097fc90(m_78.y);
-        const Unk_StreamPoint& ptSideU = ptUp.FUN_14097fc90(m_78.z);
+        const Vector3& ptSideF = ptForward.FUN_14097fc90(m_78.y);
+        const Vector3& ptSideU = ptUp.FUN_14097fc90(m_78.z);
         ptPos = ptPos.FUN_14097fd50(ptRight.FUN_14097fc90(m_78.x).FUN_14097fd50(ptSideU).FUN_14097fd50(ptSideF).FUN_14097fc90(1000.0f).FUN_14097fc90(fDelta));
         vfunc_3(ptPos);
     }
@@ -157,7 +157,7 @@ MS2_REPLACE_METHOD(0x1411988e0, CEditCameraMode, vfunc_8, 1555, 0x18A044F7);
 // @0x141198f00
 void CEditCameraMode::vfunc_9()
 {
-    Unk_StreamPoint ptMove = g_143b01a60;
+    Vector3 ptMove = g_143b01a60;
     m_78 = g_143b01a60;
     if (FUN_14025e7c0()->FUN_14116d950(0x11, false, 0))
         m_78.z = -1.0f;

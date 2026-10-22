@@ -92,7 +92,7 @@ Unk_Cursor* FUN_140aadf80();
 namespace egf { class Entity; }
 egf::Entity* FUN_14123c410(Unk_RpgActor* p);                // m_80 of the game object
 NiAVObject* FUN_141b6efc0(egf::Entity* p);
-const Unk_StreamPoint* FUN_140947900(NiAVObject* p);        // &world translate
+const Vector3* FUN_140947900(NiAVObject* p);        // &world translate
 
 float FUN_140a38cd0(float f);                       // fabs
 float FUN_140a17940(float f, float fMin, float fMax);   // clamp
@@ -158,7 +158,7 @@ void CTPSCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
     float fX = m_50 * FUN_1409f25a0(m_68) + m_78.x;
     float fY = m_50 * FUN_1409f2310(m_68) + m_78.y;
     float fZ = m_50 * FUN_1409f2310(m_6c) + m_78.z;
-    m_d8.m_pos = Unk_StreamPoint(fX, fY, fZ);
+    m_d8.m_pos = Vector3(fX, fY, fZ);
     m_8c = m_d8.m_pos.FUN_140965c40(m_78);
     m_d8.m_rot = FUN_1410a0a00(m_d8.m_pos);
     m_c0 = m_d8;

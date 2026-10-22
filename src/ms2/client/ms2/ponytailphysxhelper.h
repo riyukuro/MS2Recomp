@@ -61,7 +61,7 @@ class Unk_PonyPlayer;
 // scene root, two values of the caller, and returns the part's position, euler angles and scale.
 #pragma pointers_to_members(full_generality, multiple_inheritance)
 typedef void (CPonyTailController::*Unk_PonyPoseFn)(MS2Ptr<Unk_PickTarget> spPart, NiNode* pRoot, int nValue, int nSecond,
-                                                    Unk_StreamPoint& kPos, Unk_StreamPoint& kEuler, float& fScale);
+                                                    Vector3& kPos, Vector3& kEuler, float& fScale);
 
 class CPonyTailController : public CItemCustomizeController
 {
@@ -92,14 +92,14 @@ public:
     void FUN_141694650();                                           // reset both parts and rebuild them from the item
     void FUN_141694ea0(Unk_PickTarget** ppFirst, Unk_PickTarget** ppSecond);   // the two pony models in drag order
     void FUN_141694fb0(MS2Ptr<Unk_PickTarget> spPart, NiNode* pRoot, int nValue, int nSecond,
-                       Unk_StreamPoint& kPos, Unk_StreamPoint& kEuler, float& fScale);   // pose: current model transform
+                       Vector3& kPos, Vector3& kEuler, float& fScale);   // pose: current model transform
     void FUN_141695120(MS2Ptr<Unk_PickTarget> spPart, NiNode* pRoot, int nIndex, int nSecond,
-                       Unk_StreamPoint& kPos, Unk_StreamPoint& kEuler, float& fScale);   // pose: stored preset nIndex
+                       Vector3& kPos, Vector3& kEuler, float& fScale);   // pose: stored preset nIndex
     void FUN_141695220();                                           // puts the parts to their rest pose once
     void FUN_1416952c0(Unk_PonyPart* pPart);                        // applies a part's rest pose to its model
     void FUN_1416955b0(int nMode, int nIndex, Unk_PonyPoseFn pFn, int nValue);   // runs the pose callback for both parts
     void FUN_141695710(Unk_PonyPart* pPart, int nMode, int nIndex, Unk_PonyPoseFn pFn, int nValue, int bSecond);
-    Unk_StreamPoint FUN_141695bc0(const Unk_StreamPoint& kOrigin, const Unk_StreamPoint& kPoint, const Unk_StreamPoint& kPlane);
+    Vector3 FUN_141695bc0(const Vector3& kOrigin, const Vector3& kPoint, const Vector3& kPlane);
     NiTransform FUN_141695ca0(Unk_PickTarget* pModel);              // the transform of a part model
 
     float m_fSensitivity;                                           // +0xb8 drag speed (client config)

@@ -44,8 +44,8 @@ public:
     int HasNpc(int nNpcId);                                // 0x140c9ae80
     int HasInteractObject(int nObjectId);                  // 0x140c9aef0
     bool FUN_140c9af60();                                   // the beam may be shown
-    Unk_StreamPoint FUN_140c9b0a0(const Unk_StreamPoint& pos);   // the beam's end point towards pos
-    CStringW FUN_140c9b150(const Unk_StreamPoint& pos);     // the distance text to pos
+    Vector3 FUN_140c9b0a0(const Vector3& pos);   // the beam's end point towards pos
+    CStringW FUN_140c9b150(const Vector3& pos);     // the distance text to pos
 
 private:
     MS2_LAYOUT_FRIEND;

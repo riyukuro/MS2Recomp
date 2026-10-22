@@ -14,7 +14,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/gfxui/uiswfentity.h"
 
-struct Unk_StreamPoint;
+struct Vector3;
 class NotifyObject;
 
 class Unk_GsRef { public: void FUN_14015b020(); int FUN_140159bc0(); void FUN_140159ba0(); };
@@ -118,7 +118,7 @@ public:
     void FUN_141ac8710();                                       // 0x141ac8710
     void FUN_141ac87b0();                                       // 0x141ac87b0 camera: beauty shop view
     void FUN_141ac8900();                                       // 0x141ac8900
-    void FUN_141ac8b00(Unk_StreamPoint* pPos, Unk_StreamPoint* pLook, Unk_StreamPoint* pOut);   // 0x141ac8b00
+    void FUN_141ac8b00(Vector3* pPos, Vector3* pLook, Vector3* pOut);   // 0x141ac8b00
     void FUN_141ac8e70(int nDialogMode);                        // 0x141ac8e70 m_a8 = n
     void FUN_141ac8e90();                                       // 0x141ac8e90
     void FUN_141ac9270();                                       // 0x141ac9270

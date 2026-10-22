@@ -19,8 +19,8 @@ class Unk_BuddyReadStream : public CInputStream {
 public:
     virtual bool ReadBool(); virtual unsigned char ReadUInt8(); virtual short ReadInt16(); virtual int ReadInt32();
     virtual __int64 ReadInt64(); virtual float ReadFloat(); virtual CString ReadUnicodeStringA(); virtual CString ReadString();
-    virtual CStringW ReadUnicodeString(); virtual void ReadBytes(void* data, int count); virtual Unk_StreamPoint ReadVector3();
-    virtual Unk_StreamPoint ReadVector3Short(); virtual float ReadShortX10(); virtual float ReadShortX100();
+    virtual CStringW ReadUnicodeString(); virtual void ReadBytes(void* data, int count); virtual Vector3 ReadVector3();
+    virtual Vector3 ReadVector3Short(); virtual float ReadShortX10(); virtual float ReadShortX100();
     virtual float ReadShortScaled(int scale); virtual float ReadShortDiv10(); virtual float ReadShortDivScaled(int scale);
 };
 class Unk_BuddyInput : public Unk_BuddyInputBase { public: Unk_BuddyReadStream stream; };
@@ -30,11 +30,11 @@ class Unk_BuddyInput : public Unk_BuddyInputBase { public: Unk_BuddyReadStream s
 class Unk_Service6100017 : public efd::ISystemService {
 public:
     static const efd::ClassID CLASS_ID = 0x06100017;
-    int FUN_1410d33a0(unsigned, Unk_StreamPoint*);
+    int FUN_1410d33a0(unsigned, Vector3*);
 };
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 extern Unk_EntityAppFramework DAT_143b059e8;
-extern Unk_StreamPoint DAT_143b01a60;
+extern Vector3 DAT_143b01a60;
 Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework*);
 
 // A header static of this unit: a pointer-sized handle constructed from 0 through a base ctor (the two COMDATs
@@ -116,7 +116,7 @@ MS2_REPLACE_METHOD(0x1401CC3C0, CBuddy, FUN_1401cc3c0, 17, 0x33D25353);
 int CBuddy::FUN_1401cc3e0() { return m_b8; }
 MS2_REPLACE_METHOD(0x1401CC3E0, CBuddy, FUN_1401cc3e0, 17, 0x54C6247B);
 // @0x1401cc400
-int CBuddy::FUN_1401cc400(Unk_StreamPoint* out) {
+int CBuddy::FUN_1401cc400(Vector3* out) {
     *out = DAT_143b01a60;
     if ((unsigned)m_b8 > 0) {
         efd::SmartPointer<Unk_Service6100017> service(FUN_1401cd040(&DAT_143b059e8));

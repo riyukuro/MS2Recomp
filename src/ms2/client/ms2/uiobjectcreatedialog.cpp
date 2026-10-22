@@ -111,7 +111,7 @@ Unk_ObjectCreateStrings* FUN_1401a9d70();
 void FUN_14051f800(ATL::CAtlArray<MS2Ptr<CInteractObjectData> >& aData);            // every row of the interact-object table
 MS2Ptr<CInteractObjectData> FUN_14051f670(int nIndex);                              // a row by index
 int FUN_1407181d0(const CString& str);                                              // text to number
-void FUN_14020af60(COutPacket* pPacket, const Unk_StreamPoint* pPoint);             // encode a point
+void FUN_14020af60(COutPacket* pPacket, const Vector3* pPoint);             // encode a point
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -179,9 +179,9 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             packet.WriteUnicodeStringA(str4);
             packet.Encode4(nCount);
             NiPoint3 kPos = pPlayer->vfunc_18();
-            FUN_14020af60(&packet, reinterpret_cast<const Unk_StreamPoint*>(&kPos));
+            FUN_14020af60(&packet, reinterpret_cast<const Vector3*>(&kPos));
             NiPoint3 kRot = pPlayer->vfunc_20();
-            FUN_14020af60(&packet, reinterpret_cast<const Unk_StreamPoint*>(&kRot));
+            FUN_14020af60(&packet, reinterpret_cast<const Vector3*>(&kRot));
             FUN_140710590(packet);
         }
         return 1;
@@ -206,7 +206,7 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
                         MS2Ptr<CInteractObject> obj = aObjects[i];
                         if (obj->GetRowId() == nIndex)
                         {
-                            Unk_StreamPoint kPoint = obj->GetPos();
+                            Vector3 kPoint = obj->GetPos();
                             ASObj row(2);
                             row.FUN_1409c4a30("xpos", kPoint.x);
                             row.FUN_1409c4a30("ypos", kPoint.y);
@@ -224,7 +224,7 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         }
         else if (_stricmp("OnMove", szMethod) == 0 && data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
-            Unk_StreamPoint kPoint;
+            Vector3 kPoint;
             kPoint.x = data.FUN_1422b8c10();
             kPoint.y = data.FUN_1422b8c10();
             kPoint.z = data.FUN_1422b8c10();

@@ -45,7 +45,7 @@ Unk_AuWorld* FUN_1403ed2d0();
 class Unk_AuEntity
 {
 public:
-    void FUN_1409618c0(unsigned nProp, Unk_StreamPoint* pOut);          // get a point property
+    void FUN_1409618c0(unsigned nProp, Vector3* pOut);          // get a point property
 };
 EntityWorldManager* FUN_1409670f0();
 
@@ -74,9 +74,9 @@ MS2ActorUpdater::~MS2ActorUpdater()
 }
 
 // @0x1414a8410
-float MS2ActorUpdater::FUN_1414a8410(const Unk_StreamPoint& kPos)
+float MS2ActorUpdater::FUN_1414a8410(const Vector3& kPos)
 {
-    Unk_StreamPoint kEntityPos(0.0f, 0.0f, 0.0f);
+    Vector3 kEntityPos(0.0f, 0.0f, 0.0f);
     egf::EntityPtr spEntity(FUN_1409670f0()->FUN_1411cf440(m_kId));
     if ((egf::Entity*)spEntity != 0)
         ((Unk_AuEntity*)spEntity.operator->())->FUN_1409618c0(0xfd95ca52, &kEntityPos);
@@ -85,9 +85,9 @@ float MS2ActorUpdater::FUN_1414a8410(const Unk_StreamPoint& kPos)
 }
 
 // @0x1414a84f0
-float MS2ActorUpdater::FUN_1414a84f0(const Unk_StreamPoint& kPos)
+float MS2ActorUpdater::FUN_1414a84f0(const Vector3& kPos)
 {
-    Unk_StreamPoint kEntityPos(0.0f, 0.0f, 0.0f);
+    Vector3 kEntityPos(0.0f, 0.0f, 0.0f);
     egf::EntityPtr spEntity(FUN_1409670f0()->FUN_1411cf440(m_kId));
     if ((egf::Entity*)spEntity != 0)
         ((Unk_AuEntity*)spEntity.operator->())->FUN_1409618c0(0xfd95ca52, &kEntityPos);

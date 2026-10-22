@@ -105,7 +105,7 @@ int FUN_140f48d40(void* pComp);                            // 0x140f48d40 the co
 void* FUN_14165f100(PCBase* p);                            // 0x14165f100 the playing emotion
 void FUN_14165f170(PCBase* p);                             // 0x14165f170 stop it
 
-extern Unk_StreamPoint DAT_143b01a60;                      // 0x143b01a60 the zero point
+extern Vector3 DAT_143b01a60;                      // 0x143b01a60 the zero point
 
 // The effect-spawn request (0x70 bytes; ctor 0x140a52ef0, dtor 0x1405a89e0) and the manager that takes it.
 struct Unk_TalkEffectReq
@@ -204,7 +204,7 @@ void StateTalk::vfunc_5(int n)
 void StateTalk::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    Unk_StreamPoint kZero = DAT_143b01a60;
+    Vector3 kZero = DAT_143b01a60;
     m_pOwner->vfunc_68(&kZero, fTime, 0, 0, 0);
 }
 
@@ -341,7 +341,7 @@ void StateTalkNpc::vfunc_4(StateData* pData)
 void StateTalkNpc::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    Unk_StreamPoint kZero = DAT_143b01a60;
+    Vector3 kZero = DAT_143b01a60;
     m_pOwner->vfunc_68(&kZero, fTime, 0, 0, 0);
 }
 

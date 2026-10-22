@@ -11,15 +11,15 @@
 #include "hook/ms2hook.h"
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names / symbols) ----
-extern Unk_StreamPoint DAT_143b01a60;                               // the zero point
+extern Vector3 DAT_143b01a60;                               // the zero point
 extern int DAT_143ae0fc0;                                           // debug switch: UI always shown
 int FUN_141277f40();                                                // next UI layer
-class Unk_WorldToScreen { public: bool FUN_140af0700(const Unk_StreamPoint& world, Unk_StreamPoint& out); };
+class Unk_WorldToScreen { public: bool FUN_140af0700(const Vector3& world, Vector3& out); };
 Unk_WorldToScreen* FUN_1409478c0();                                 // camera service
 class Unk_UIScale;
 Unk_UIScale* FUN_14025e7a0();                                       // ui scale service
 float FUN_1422afec0(Unk_UIScale* pScale, int nLayer);               // scale of a layer
-Unk_StreamPoint* FUN_140ad0c10(Unk_StreamPoint* pt, float f);       // efd::Point3::operator*=
+Vector3* FUN_140ad0c10(Vector3* pt, float f);       // efd::Point3::operator*=
 void FUN_1422bfe00(ASDisplayObject* pObj, float fAlpha);            // set the alpha
 void FUN_1422c00f0(ASGameEntity* pEntity, float x, float y);        // set the position
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
@@ -83,7 +83,7 @@ void UIBirdHead::FUN_1418ce890()
 MS2_REPLACE_METHOD(0x1418CE890, UIBirdHead, FUN_1418ce890, 30, 0xA515CB4B);
 
 // @0x1418ce8c0
-void UIBirdHead::FUN_1418ce8c0(const Unk_StreamPoint& pt)
+void UIBirdHead::FUN_1418ce8c0(const Vector3& pt)
 {
     m_6c = pt;
 }
@@ -174,7 +174,7 @@ MS2_REPLACE_METHOD(0x1418CEE20, UIBirdHead, vfunc_28, 67, 0xFC04CE34);
 // @0x1418cee70
 void UIBirdHead::FUN_1418cee70()
 {
-    Unk_StreamPoint screen;
+    Vector3 screen;
     if (FUN_1409478c0()->FUN_140af0700(m_6c, screen))
     {
         MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));

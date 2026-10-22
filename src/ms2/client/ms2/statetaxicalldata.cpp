@@ -79,7 +79,7 @@ UICastingBar* FUN_140ac2270(int nId);
 CStringW GetStringCommon(int nId);                         // string table text by id
 
 // The actor's move-key state (PCBase::FUN_14166d240).
-class Unk_TcBuffMgr { public: Unk_StreamPoint FUN_141683290(); };
+class Unk_TcBuffMgr { public: Vector3 FUN_141683290(); };
 Unk_TcBuffMgr* FUN_14166d240(PCBase* p);
 bool FUN_1416749c0(PCBase* p);
 
@@ -109,14 +109,14 @@ void FUN_1405a89e0(Unk_TcRequest* p);                    // destroy
 
 // The world: the taxi stop entity near a position, its properties.
 class Unk_TcEntity;
-class Unk_TcWorld { public: Unk_TcEntity* FUN_141bcfd30(unsigned nHash, Unk_StreamPoint kPos, float fRange, int nA, int nB); };
+class Unk_TcWorld { public: Unk_TcEntity* FUN_141bcfd30(unsigned nHash, Vector3 kPos, float fRange, int nA, int nB); };
 Unk_TcWorld* FUN_1403ed2d0();
-void FUN_1409618c0(Unk_TcEntity* pEntity, unsigned nHash, Unk_StreamPoint* pOut);   // property read (point)
+void FUN_1409618c0(Unk_TcEntity* pEntity, unsigned nHash, Vector3* pOut);   // property read (point)
 
 // Point3 helpers (out-of-line in the exe).
-Unk_StreamPoint FUN_1420834e0(const Unk_StreamPoint& v, const efd::Matrix3& m);   // efd::operator*(Point3, Matrix3)
+Vector3 FUN_1420834e0(const Vector3& v, const efd::Matrix3& m);   // efd::operator*(Point3, Matrix3)
 void FUN_14097faa0(NiPoint3* pDst, const NiPoint3* pSrc);   // NiPoint3 assignment
-extern Unk_StreamPoint DAT_143a08ce8;                       // the default direction
+extern Vector3 DAT_143a08ce8;                       // the default direction
 
 void FUN_140710590(COutPacket& packet);
 void FUN_1401fe9e0(unsigned char* payload, COutputStream& stream);
@@ -316,8 +316,8 @@ void StateTaxiCall::vfunc_8(double fTime)
         MyPC* pRider = FUN_1417b84b0();
         if (pRider != 0)
         {
-            Unk_StreamPoint kPos = FUN_14166d240(pRider)->FUN_141683290();
-            Unk_StreamPoint kArg = kPos;
+            Vector3 kPos = FUN_14166d240(pRider)->FUN_141683290();
+            Vector3 kArg = kPos;
             pRider->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
             if (FUN_1416749c0(m_pOwner) != 0)
                 pRider->vfunc_59(2, 0, 0, 0);
@@ -356,25 +356,25 @@ void StateTaxiCall::FUN_1417fdbc0(int nState, int nAdd)
 // MS2-FUNCTIONAL: transliterated from the decompile (effect request / transform stand-ins)
 void StateTaxiCall::FUN_1417fdc00(const CString& strEffect)
 {
-    Unk_StreamPoint kPos;
-    Unk_StreamPoint kRot;
+    Vector3 kPos;
+    Vector3 kRot;
     NiTransform xf;
     PCBase* pPC = FUN_1417b8370();
     NiPoint3 kOwnerNi = pPC->vfunc_18();
-    Unk_StreamPoint kOwner = reinterpret_cast<Unk_StreamPoint&>(kOwnerNi);
+    Vector3 kOwner = reinterpret_cast<Vector3&>(kOwnerNi);
     float fRange = *FUN_140298f40(&static_cast<Client::Constants*>(FUN_1401d3200())->TaxiStationFindDistance) + 100.0f;
     Unk_TcEntity* pStop = FUN_1403ed2d0()->FUN_141bcfd30(0x85359406, kOwner, fRange, 1, 0);
     if (pStop == 0)
     {
         NiPoint3 kDirNi = pPC->vfunc_20();
-        kRot = reinterpret_cast<Unk_StreamPoint&>(kDirNi);
+        kRot = reinterpret_cast<Vector3&>(kDirNi);
         efd::Matrix3 kMat;
         kMat.MakeZRotation((kRot.z * 3.1415927f) / 180.0f);
-        Unk_StreamPoint kDir = FUN_1420834e0(DAT_143a08ce8.FUN_1409f7960(), kMat);
+        Vector3 kDir = FUN_1420834e0(DAT_143a08ce8.FUN_1409f7960(), kMat);
         xf.MakeIdentity();
-        Unk_StreamPoint kAhead = kDir.FUN_14097fc90(150.0f);
+        Vector3 kAhead = kDir.FUN_14097fc90(150.0f);
         NiPoint3 kNowNi = pPC->vfunc_18();
-        Unk_StreamPoint kSum = reinterpret_cast<Unk_StreamPoint&>(kNowNi).FUN_14097fd50(kAhead);
+        Vector3 kSum = reinterpret_cast<Vector3&>(kNowNi).FUN_14097fd50(kAhead);
         FUN_14097faa0(&xf.m_Translate, reinterpret_cast<const NiPoint3*>(&kSum));
     }
     else
@@ -383,10 +383,10 @@ void StateTaxiCall::FUN_1417fdc00(const CString& strEffect)
         FUN_1409618c0(pStop, 0x68c7c29d, &kRot);
         efd::Matrix3 kMat;
         kMat.MakeZRotation((kRot.z * 3.1415927f) / 180.0f);
-        Unk_StreamPoint kDir = FUN_1420834e0(DAT_143a08ce8, kMat);
+        Vector3 kDir = FUN_1420834e0(DAT_143a08ce8, kMat);
         xf.MakeIdentity();
-        Unk_StreamPoint kAhead = kDir.FUN_14097fc90(150.0f).FUN_14097fc90(2.0f);
-        Unk_StreamPoint kSum = kPos.FUN_14097fd50(kAhead);
+        Vector3 kAhead = kDir.FUN_14097fc90(150.0f).FUN_14097fc90(2.0f);
+        Vector3 kSum = kPos.FUN_14097fd50(kAhead);
         FUN_14097faa0(&xf.m_Translate, reinterpret_cast<const NiPoint3*>(&kSum));
     }
     float fAngle = ((180.0f - kRot.z) * 3.1415927f) / 180.0f;

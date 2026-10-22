@@ -33,7 +33,7 @@ public:
     int GetState() const;
     void FUN_141447b00(int nState);                             // set state, collision group
     void FUN_141447c10();                                       // stop the cooldown
-    Unk_StreamPoint FUN_141447c80() const;                      // +0xc4
+    Vector3 FUN_141447c80() const;                      // +0xc4
     int FUN_141447cc0() const;                                  // +0xa8
     void FUN_141447ce0();
     bool FUN_141447d10() const;                                 // not fixed
@@ -53,10 +53,10 @@ public:
     char m_bC0;                         // +0xc0
     char m_bC1;                         // +0xc1
     char m_bC2;                         // +0xc2
-    Unk_StreamPoint m_vC4;              // +0xc4
+    Vector3 m_vC4;              // +0xc4
     Timer m_timer;                      // +0xd0
     char m_b108;                        // +0x108
-    Unk_StreamPoint m_v10c;             // +0x10c
+    Vector3 m_v10c;             // +0x10c
     float m_fRange;                     // +0x118
     int m_nEffect;                      // +0x11c
 };

@@ -126,7 +126,7 @@ float FUN_141032e60(CameraMgr* pCamera);                            // the verti
 void FUN_141032ed0(CameraMgr* pCamera, float f);
 void FUN_141032f30(CameraMgr* pCamera, float f);
 void FUN_140b6bd30(CameraMgr* pCamera);                             // apply the current mode setting
-void FUN_1418df360(CameraMgr* pCamera, Unk_StreamPoint ptPos);      // set the camera position
+void FUN_1418df360(CameraMgr* pCamera, Vector3 ptPos);      // set the camera position
 
 // entity iteration, properties and the instancing service
 struct Unk_MeEntIter { void* m_a; void* m_b; };
@@ -190,7 +190,7 @@ void FUN_141a551a0(CameraMgr* pCamera, bool b)
 }
 
 // @0x141a55200
-void FUN_141a55200(CameraMgr* pCamera, Unk_StreamPoint pt)
+void FUN_141a55200(CameraMgr* pCamera, Vector3 pt)
 {
     if (pCamera->FUN_140af2520())
         pCamera->FUN_140af2520()->vfunc_4(pt);
@@ -420,8 +420,8 @@ void UIMinimapEditDialog::FUN_141a53100()
     FUN_140874210(pRoot->FUN_140165cf0("minimap"), "edit", "zoomfactor", &m_spMinimap->m_fZoomFactor);
     m_spMinimap->m_rcImage.r = m_spMinimap->m_rcImage.l + 1024.0f;
     m_spMinimap->m_rcImage.b = m_spMinimap->m_rcImage.t + 1024.0f;
-    FUN_1418df360(CameraMgr::GetInstance(), Unk_StreamPoint(m_spMinimap->m_vecCamPos.x, m_spMinimap->m_vecCamPos.y, m_spMinimap->m_vecCamPos.z));
-    FUN_141a55200(CameraMgr::GetInstance(), Unk_StreamPoint(m_spMinimap->m_vecCamRot.x, m_spMinimap->m_vecCamRot.y, m_spMinimap->m_vecCamRot.z));
+    FUN_1418df360(CameraMgr::GetInstance(), Vector3(m_spMinimap->m_vecCamPos.x, m_spMinimap->m_vecCamPos.y, m_spMinimap->m_vecCamPos.z));
+    FUN_141a55200(CameraMgr::GetInstance(), Vector3(m_spMinimap->m_vecCamRot.x, m_spMinimap->m_vecCamRot.y, m_spMinimap->m_vecCamRot.z));
     float fZoom = m_spMinimap->m_fZoomFactor >= 1.0f ? m_spMinimap->m_fZoomFactor : 1.0f;
     CameraMgr::GetInstance()->FUN_140af0170(fZoom, false);
     FUN_140b6bd30(CameraMgr::GetInstance());
@@ -443,9 +443,9 @@ void UIMinimapEditDialog::FUN_141a53750()
             void* pCamera = FUN_14200aae0(FUN_1413f9910(), pSurface);
             if (pCamera != NULL && CameraMgr::GetInstance()->FUN_140a18070() != 0)
             {
-                Unk_StreamPoint ptPos = CameraMgr::GetInstance()->FUN_140a17e10();
+                Vector3 ptPos = CameraMgr::GetInstance()->FUN_140a17e10();
                 m_spMinimap->m_vecCamPos = Unk_GVec3(ptPos.x, ptPos.y, ptPos.z);
-                Unk_StreamPoint ptRot = CameraMgr::GetInstance()->FUN_140af8290();
+                Vector3 ptRot = CameraMgr::GetInstance()->FUN_140af8290();
                 m_spMinimap->m_vecCamRot = Unk_GVec3(ptRot.x, ptRot.y, ptRot.z);
                 m_spMinimap->m_frustum = *FUN_142008b80(pCamera)->FUN_1409a8de0();
                 m_spMinimap->m_fZoomFactor = CameraMgr::GetInstance()->FUN_140af0140();

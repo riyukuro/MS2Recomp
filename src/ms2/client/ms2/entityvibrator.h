@@ -35,8 +35,8 @@ public:
     void FUN_1411cd3b0();                       // stop: restore the rest pose and remove the actor
     int FUN_1411cd550();                        // physics mode flag
     void FUN_1411cd570(Unk_Entity* pEntity);    // read the entity's properties
-    void FUN_1411cda60(Unk_StreamPoint pos);    // set the entity position when it changed
-    void FUN_1411cdb00(Unk_StreamPoint rot);    // set the entity rotation when it changed
+    void FUN_1411cda60(Vector3 pos);    // set the entity position when it changed
+    void FUN_1411cdb00(Vector3 rot);    // set the entity rotation when it changed
     void FUN_1411cdba0();                       // start the physics fall
     void FUN_1411cdd90();                       // cancel the fall
     void FUN_1411cddc0(CString strModel, unsigned char nMode);   // swap the model and set the mode
@@ -49,13 +49,13 @@ public:
     unsigned m_30;                              // spawn time
     unsigned m_34;                              // end time
     unsigned m_38;                              // fade start time
-    Unk_StreamPoint m_3c;                       // shake direction
-    Unk_StreamPoint m_48;                       // rest position
-    Unk_StreamPoint m_54;                       // rest rotation
+    Vector3 m_3c;                       // shake direction
+    Vector3 m_48;                       // rest position
+    Vector3 m_54;                       // rest rotation
     int m_60;                                   // sign of the last sample
     float m_64;                                 // phase
     NxActor* m_68;                              // physics actor
-    Unk_StreamPoint m_70;                       // impact point
+    Vector3 m_70;                       // impact point
     int m_7c;                                   // physics mode
     int m_80;
     int m_84;
@@ -63,14 +63,14 @@ public:
     unsigned m_8c;
     unsigned m_90;
     int m_94;
-    Unk_StreamPoint m_98;                       // box size
+    Vector3 m_98;                       // box size
     float m_a4;                                 // scale
     bool m_a8;
     bool m_a9;
     bool m_aa;
     bool m_ab;
-    Unk_StreamPoint m_ac;                       // last position written
-    Unk_StreamPoint m_b8;                       // last rotation written
+    Vector3 m_ac;                       // last position written
+    Vector3 m_b8;                       // last rotation written
     int m_c4;
     CString m_c8;                               // model name
     unsigned char m_d0;                         // mode

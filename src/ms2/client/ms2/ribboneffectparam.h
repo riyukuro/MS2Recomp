@@ -40,7 +40,7 @@ struct Unk_RibbonTarget
     char m_pad_00[0x10];
     void* m_hNode;                                  // +0x10 handle of the owner's scene node
     char m_pad_18[0x10];
-    ATL::CAtlArray<Unk_StreamPoint>* m_pPoints;     // +0x28 the points the ribbon follows
+    ATL::CAtlArray<Vector3>* m_pPoints;     // +0x28 the points the ribbon follows
 };
 MS2_CHECK_OFFSET(Unk_RibbonTarget, m_hNode, 0x10);
 MS2_CHECK_OFFSET(Unk_RibbonTarget, m_pPoints, 0x28);
@@ -75,7 +75,7 @@ public:
     float m_fFadeEnd;               // +0x68 = 1 alpha ramp: end
     float m_fAlphaFrom;             // +0x6c = 1
     float m_fAlphaTo;               // +0x70 = 1
-    ATL::CAtlArray<Unk_StreamPoint>* m_pPoints;    // +0x78 the target's point list
+    ATL::CAtlArray<Vector3>* m_pPoints;    // +0x78 the target's point list
 };
 MS2_CHECK_SIZE(CRibbonEffect, 0x80);
 MS2_CHECK_OFFSET(CRibbonEffect, m_spOwner, 0x30);

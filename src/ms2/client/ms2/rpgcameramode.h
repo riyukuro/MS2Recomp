@@ -26,6 +26,6 @@ public:
     virtual BOOL vfunc_31();
     virtual void vfunc_39(double fTime);
 
-    Unk_StreamPoint FUN_14170b320(Unk_StreamPoint ptPos);              // look-at angles (degrees) from ptPos to m_78
+    Vector3 FUN_14170b320(Vector3 ptPos);              // look-at angles (degrees) from ptPos to m_78
 };
 MS2_CHECK_SIZE(CRPGCameraMode, 0x108);

@@ -56,7 +56,7 @@ public:
     virtual void vfunc_5(float fStep);                                  // 5 0x28 zoom in
     virtual void vfunc_6(float fStep);                                  // 6 0x30 zoom out
     virtual void vfunc_7(float fX, float fY, float fZ, int bUpdate,
-                         const Unk_StreamPoint* pPivot, const Unk_StreamPoint* pPivotBase);   // 7 0x38 drags the camera
+                         const Vector3* pPivot, const Vector3* pPivotBase);   // 7 0x38 drags the camera
     virtual void vfunc_8(float f);
     virtual void vfunc_9(float f);
 };
@@ -105,25 +105,25 @@ Unk_UabClock* FUN_14086d260();
 double FUN_141473280(Unk_UabClock* pClock);
 
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                        // the scene root of an entity
-const Unk_StreamPoint& FUN_140e69200(NiAVObject* pNode);                // local translation
+const Vector3& FUN_140e69200(NiAVObject* pNode);                // local translation
 Unk_NiMatrix3* FUN_1410b23c0(NiAVObject* pNode);                        // local rotation
 void FUN_140981070(NiAVObject* pNode, const Unk_NiPoint3& kPos);        // SetTranslate
 void FUN_140ddcca0(NiAVObject* pNode, const Unk_NiMatrix3* pRot);       // SetRotate
 void FUN_1410a7800(NiAVObject* pNode, float fX, float fY, float fZ);    // SetTranslate(x, y, z)
-Unk_NiPoint3 FUN_14027dcf0(const Unk_StreamPoint& kPt);                 // NiPoint3(const efd::Point3&)
+Unk_NiPoint3 FUN_14027dcf0(const Vector3& kPt);                 // NiPoint3(const efd::Point3&)
 void FUN_1420849a0(Unk_NiMatrix3* pMat);                                // MakeIdentity
 float FUN_14059d930(float f);                                           // fabs
 void* FUN_140166440();                                                  // the log
 void FUN_140e68a40(void* pLog, int nLevel, int nLine, const wchar_t* szFmt,
                    const float* pA, const float* pB, const float* pC);  // formatted log (3 arguments)
 void FUN_1418c1dd0(NiAVObject* pNode, Unk_NiMatrix3* pRot, const Unk_NiPoint3& kPivot, const Unk_NiPoint3& kPos);   // rotates about a pivot
-const Unk_StreamPoint* FUN_140947900(NiAVObject* pNode);                // world translate
+const Vector3* FUN_140947900(NiAVObject* pNode);                // world translate
 void* FUN_140994490(NiAVObject* pNode);                                 // GetWorldBound
-const Unk_StreamPoint* FUN_140980350(void* pBound);                     // bound centre
+const Vector3* FUN_140980350(void* pBound);                     // bound centre
 int FUN_141b48430(int nKind);                                           // camera set of a kind
 float FUN_141b48480(int nSet, int nIndex);                              // default angle
 void FUN_1408995b0(Unk_GoModelKey* pKey);                               // Unk_GoModelKey()
-extern Unk_StreamPoint DAT_143b01a60;                                   // the zero point
+extern Vector3 DAT_143b01a60;                                   // the zero point
 
 // The swf entity the avatar is dragged onto, and its point (the width / height are ints here).
 struct Unk_UabPoint { int x; int y; };
@@ -238,10 +238,10 @@ void UIAvatarBase::vfunc_10(int dx, int dy, int dz, int bUpdate)
     float fY = (float)dx * m_fRotStep;
     float fX = (float)dy * m_fRotStep;
     float fZ = -((float)dz * m_fRotStep);
-    Unk_StreamPoint kDelta(fX, fY, fZ);
-    Unk_StreamPoint kNewPos = kDelta.FUN_14097fd50(m_kPosBase);
+    Vector3 kDelta(fX, fY, fZ);
+    Vector3 kNewPos = kDelta.FUN_14097fd50(m_kPosBase);
     float fLimit = m_kPivot.z;
-    Unk_StreamPoint kTarget = kDelta.FUN_14097fd50(m_kPivotBase);
+    Vector3 kTarget = kDelta.FUN_14097fd50(m_kPivotBase);
     if (fLimit < m_kPos.FUN_140965c40(kTarget).FUN_140967ac0())
     {
         float fClamp;
@@ -266,7 +266,7 @@ void UIAvatarBase::vfunc_10(int dx, int dy, int dz, int bUpdate)
                 fClamp = -fLimit;
             kTarget.z = m_kPos.z + fClamp;
         }
-        Unk_StreamPoint kRotated = FUN_1410b23c0(pNode)->FUN_140a00720(m_kPivot);
+        Vector3 kRotated = FUN_1410b23c0(pNode)->FUN_140a00720(m_kPivot);
         kNewPos = kTarget.FUN_14097fd50(m_kPivot).FUN_140965c40(kRotated);
     }
     FUN_140981070(pNode, FUN_14027dcf0(kNewPos));
@@ -282,7 +282,7 @@ void UIAvatarBase::vfunc_11(int dx, int dy, int dz, int bUpdate)
     float fX = -((float)dx * m_fMoveStep);
     float fY = -((float)dy * m_fMoveStep);
     float fZ = -((float)dz * m_fMoveStep);
-    Unk_StreamPoint kDelta(fX, fY, fZ);
+    Vector3 kDelta(fX, fY, fZ);
     float fWrapX = kDelta.x;
     float fWrapY = kDelta.y;
     float fWrapZ = kDelta.z;
@@ -296,7 +296,7 @@ void UIAvatarBase::vfunc_11(int dx, int dy, int dz, int bUpdate)
 MS2_REPLACE_METHOD(0x1418B8300, UIAvatarBase, vfunc_11, 439, 0xE0EE83C6);
 
 // @0x1418b84c0
-void UIAvatarBase::vfunc_12(const Unk_StreamPoint& kDelta, Unk_StreamPoint& kRot)
+void UIAvatarBase::vfunc_12(const Vector3& kDelta, Vector3& kRot)
 {
     if (m_spRotLimit == 0)
         return;
@@ -319,15 +319,15 @@ void UIAvatarBase::vfunc_14(int dx, int dy, int dz, int bUpdate)
         float fZ = -((float)dz * m_fMoveStep);
         if (90.0f < m_kAngle.y && m_kAngle.y < 270.0f)
             fZ = -fZ;
-        Unk_StreamPoint kDelta(-((float)dx * m_fMoveStep), -((float)dy * m_fMoveStep), fZ);
-        Unk_StreamPoint kRot = kDelta.FUN_14097fd50(m_kAngle);
+        Vector3 kDelta(-((float)dx * m_fMoveStep), -((float)dy * m_fMoveStep), fZ);
+        Vector3 kRot = kDelta.FUN_14097fd50(m_kAngle);
         vfunc_12(kDelta, kRot);
         vfunc_13(kRot.x, kRot.y, kRot.z, &m_kPivot, &m_kPivotBase, bUpdate);
     }
 }
 
 // @0x1418b8750
-void UIAvatarBase::vfunc_13(float rx, float ry, float rz, const Unk_StreamPoint* pPivot, const Unk_StreamPoint* pPos, int bUpdate)
+void UIAvatarBase::vfunc_13(float rx, float ry, float rz, const Vector3* pPivot, const Vector3* pPos, int bUpdate)
 {
     float fRx = rx;
     float fRy = ry;
@@ -370,7 +370,7 @@ void UIAvatarBase::vfunc_15(float rx, float ry, float rz, int bUpdate)
         NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
         if (pNode)
         {
-            const Unk_StreamPoint& kPos = FUN_140e69200(pNode);
+            const Vector3& kPos = FUN_140e69200(pNode);
             vfunc_13(rx, ry, rz, &m_kPivot, &kPos, bUpdate);
             FUN_1418ba250(&m_kAngle, &m_kAngleBase);
         }
@@ -385,7 +385,7 @@ void UIAvatarBase::vfunc_16(int n, int bUpdate)
     GameObject* pObj = vfunc_23();
     if (pObj != 0)
     {
-        Unk_StreamPoint kAngle = Unk_StreamPoint(0.0f, (float)n * m_fMoveStep, 0.0f).FUN_14097fd50(m_kAngle);
+        Vector3 kAngle = Vector3(0.0f, (float)n * m_fMoveStep, 0.0f).FUN_14097fd50(m_kAngle);
         FUN_1418bf270(&kAngle.y);
         vfunc_20(kAngle.x, kAngle.y, kAngle.z, bUpdate);
         FUN_1418ba250(&m_kAngleBase, &kAngle);
@@ -399,7 +399,7 @@ void UIAvatarBase::vfunc_17(float f, int bUpdate)
         return;
     if (vfunc_23())
     {
-        Unk_StreamPoint kAngle(0.0f, f, 0.0f);
+        Vector3 kAngle(0.0f, f, 0.0f);
         FUN_1418bf270(&kAngle.y);
         vfunc_20(kAngle.x, kAngle.y, kAngle.z, bUpdate);
         FUN_1418ba250(&m_kAngle, &kAngle);
@@ -414,7 +414,7 @@ void UIAvatarBase::vfunc_18(int n, int bUpdate)
         return;
     if (vfunc_23())
     {
-        Unk_StreamPoint kAngle = Unk_StreamPoint(0.0f, 0.0f, (float)n * m_fMoveStep).FUN_14097fd50(m_kAngle);
+        Vector3 kAngle = Vector3(0.0f, 0.0f, (float)n * m_fMoveStep).FUN_14097fd50(m_kAngle);
         FUN_1418bf270(&kAngle.z);
         vfunc_20(kAngle.x, kAngle.y, kAngle.z, bUpdate);
         FUN_1418ba250(&m_kAngleBase, &kAngle);
@@ -428,7 +428,7 @@ void UIAvatarBase::vfunc_19(float f, int bUpdate)
         return;
     if (vfunc_23())
     {
-        Unk_StreamPoint kAngle(0.0f, 0.0f, f);
+        Vector3 kAngle(0.0f, 0.0f, f);
         FUN_1418bf270(&kAngle.z);
         vfunc_20(kAngle.x, kAngle.y, kAngle.z, bUpdate);
         FUN_1418ba250(&m_kAngle, &kAngle);
@@ -441,7 +441,7 @@ void UIAvatarBase::vfunc_20(float x, float y, float z, int bUpdate)
 {
     if (IsLoaded() == 0)
         return;
-    Unk_StreamPoint kAngle(x, y, z);
+    Vector3 kAngle(x, y, z);
     vfunc_12(DAT_143b01a60, kAngle);
     GameObject* pObj = vfunc_23();
     if (pObj)
@@ -734,7 +734,7 @@ void UIAvatarBase::FUN_1418b9c10()
         {
             Unk_NiMatrix3* pRot = FUN_1410b23c0(pNode);
             FUN_1418ba250(&m_kAngle, &m_kAngleBase);
-            const Unk_StreamPoint& kPos = FUN_140e69200(pNode);
+            const Vector3& kPos = FUN_140e69200(pNode);
             m_kPosBase = kPos;
             if (m_kAngleBase.FUN_140552700(DAT_143b01a60))
                 FUN_1418ba4a0(pRot, &kPos, &m_kPos);
@@ -781,9 +781,9 @@ void UIAvatarBase::FUN_1418b9e40()
             float fExtra = fHeight - fBody;
             if (0.0f < fBody && 25.0f < fExtra)
                 fHeight = fBody + 25.0f;
-            m_kPivot = Unk_StreamPoint(0.0f, 0.0f, fHeight);
+            m_kPivot = Vector3(0.0f, 0.0f, fHeight);
             NiPoint3 kRaw = pObj->vfunc_20();
-            Unk_StreamPoint kAngle(kRaw.x, kRaw.y, kRaw.z);
+            Vector3 kAngle(kRaw.x, kRaw.y, kRaw.z);
             FUN_1410b23c0(pNode)->FUN_142085840(kAngle.x, kAngle.y, kAngle.z);
             kAngle.x = (kAngle.x * 180.0f) / 3.1415927f;
             kAngle.y = (kAngle.y * 180.0f) / 3.1415927f;
@@ -828,7 +828,7 @@ int UIAvatarBase::FUN_1418ba1a0(int nButton)
 }
 
 // @0x1418ba200
-void UIAvatarBase::FUN_1418ba200(Unk_StreamPoint* pDst, float x, float y, float z)
+void UIAvatarBase::FUN_1418ba200(Vector3* pDst, float x, float y, float z)
 {
     pDst->x = x;
     pDst->y = y;
@@ -837,7 +837,7 @@ void UIAvatarBase::FUN_1418ba200(Unk_StreamPoint* pDst, float x, float y, float 
 MS2_REPLACE_METHOD(0x1418BA200, UIAvatarBase, FUN_1418ba200, 70, 0x3C835994);
 
 // @0x1418ba250
-void UIAvatarBase::FUN_1418ba250(Unk_StreamPoint* pDst, const Unk_StreamPoint* pSrc)
+void UIAvatarBase::FUN_1418ba250(Vector3* pDst, const Vector3* pSrc)
 {
     *pDst = *pSrc;
 }
@@ -861,7 +861,7 @@ void UIAvatarBase::FUN_1418ba340(int bUpdate)
 {
     if (IsLoaded() == 0)
         return;
-    Unk_StreamPoint kAngle;
+    Vector3 kAngle;
     FUN_1418ba410(&kAngle);
     vfunc_9(kAngle.x, kAngle.y, kAngle.z, 0);
     int nSet = FUN_141b48430(GetKind());
@@ -877,7 +877,7 @@ void UIAvatarBase::SetLocked(int n)
 MS2_REPLACE_METHOD(0x1418BA3F0, UIAvatarBase, SetLocked, 25, 0x9EB3CF4F);
 
 // @0x1418ba410
-void UIAvatarBase::FUN_1418ba410(Unk_StreamPoint* pOut)
+void UIAvatarBase::FUN_1418ba410(Vector3* pOut)
 {
     GameObject* pObj = vfunc_23();
     if (pObj)
@@ -891,11 +891,11 @@ void UIAvatarBase::FUN_1418ba410(Unk_StreamPoint* pOut)
 }
 
 // @0x1418ba4a0
-void UIAvatarBase::FUN_1418ba4a0(Unk_NiMatrix3* pRot, const Unk_StreamPoint* pPos, Unk_StreamPoint* pOut)
+void UIAvatarBase::FUN_1418ba4a0(Unk_NiMatrix3* pRot, const Vector3* pPos, Vector3* pOut)
 {
     if (m_kAngleBase.FUN_140552700(DAT_143b01a60))
     {
-        Unk_StreamPoint kRotated = pRot->FUN_140a00720(m_kPivot);
+        Vector3 kRotated = pRot->FUN_140a00720(m_kPivot);
         *pOut = pPos->FUN_140965c40(m_kPivot).FUN_14097fd50(kRotated);
     }
     else
@@ -2278,7 +2278,7 @@ void FUN_1418bee30(ASObj* pObj, int nSkinTable)
 // ---- angle wraps --------------------------------------------------------------------------------------------------
 
 // @0x1418bf1e0
-void FUN_1418bf1e0(Unk_StreamPoint* pAngles)
+void FUN_1418bf1e0(Vector3* pAngles)
 {
     FUN_1418bf270(&pAngles->x);
     FUN_1418bf270(&pAngles->y);
@@ -2312,7 +2312,7 @@ void FUN_1418bf2e0(int* pAngle)
 }
 
 // @0x1418bf330
-void FUN_1418bf330(Unk_StreamPoint* pAngles)
+void FUN_1418bf330(Vector3* pAngles)
 {
     FUN_1418bf3c0(&pAngles->x);
     FUN_1418bf3c0(&pAngles->y);
@@ -2538,11 +2538,11 @@ CAvatarPackageEquip::~CAvatarPackageEquip()
 // MS2-FUNCTIONAL: sets the rotation and the translation through the SetRotate / SetTranslate wrappers (the exe writes the node's local transform inline)
 void FUN_1418c1dd0(NiAVObject* pNode, Unk_NiMatrix3* pRot, const Unk_NiPoint3& kPivot, const Unk_NiPoint3& kPos)
 {
-    Unk_StreamPoint kPivotPt(kPivot.x, kPivot.y, kPivot.z);
-    Unk_StreamPoint kPosPt(kPos.x, kPos.y, kPos.z);
+    Vector3 kPivotPt(kPivot.x, kPivot.y, kPivot.z);
+    Vector3 kPosPt(kPos.x, kPos.y, kPos.z);
     FUN_140ddcca0(pNode, pRot);
-    Unk_StreamPoint kRotated = pRot->FUN_140a00720(kPivotPt);
-    Unk_StreamPoint kShift = kPosPt.FUN_14097fd50(kPivotPt);
+    Vector3 kRotated = pRot->FUN_140a00720(kPivotPt);
+    Vector3 kShift = kPosPt.FUN_14097fd50(kPivotPt);
     FUN_140981070(pNode, FUN_14027dcf0(kShift.FUN_140965c40(kRotated)));
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

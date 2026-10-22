@@ -101,7 +101,7 @@ class Unk_EventSink { public: void FUN_140a1f970(const CString& strEvent, const 
 extern int DAT_143af7d40;                               // input enabled
 extern float DAT_143ac30a8;                             // last stick x
 extern float DAT_143ac30ac;                             // last stick y
-extern Unk_StreamPoint DAT_143b01a60;                          // zero vector
+extern Vector3 DAT_143b01a60;                          // zero vector
 extern Unk_EventSink* DAT_143ab5c70;                    // UI event sink
 
 class CMsgBoxData : public CPtred
@@ -811,7 +811,7 @@ void MS2InputService::FUN_140d8c230()
 MS2_REPLACE_METHOD(0x140D8C230, MS2InputService, FUN_140d8c230, 171, 0x76B0BCD7);
 
 // @0x140d8c2f0
-Unk_StreamPoint MS2InputService::FUN_140d8c2f0()
+Vector3 MS2InputService::FUN_140d8c2f0()
 {
     if (!m_spGamePad)
         return DAT_143b01a60;
@@ -819,7 +819,7 @@ Unk_StreamPoint MS2InputService::FUN_140d8c2f0()
         return DAT_143b01a60;
     float fX = (float)m_spGamePad->GetStickAxisValue(NiInputGamePad::NIGP_STICK_LEFT | NiInputGamePad::NIGP_STICK_AXIS_H);
     float fY = (float)m_spGamePad->GetStickAxisValue(NiInputGamePad::NIGP_STICK_LEFT | NiInputGamePad::NIGP_STICK_AXIS_V);
-    Unk_StreamPoint kDir = DAT_143b01a60;
+    Vector3 kDir = DAT_143b01a60;
     if (fX != 0.0f || fY != 0.0f)
     {
         kDir.x = fX * -1.0f;

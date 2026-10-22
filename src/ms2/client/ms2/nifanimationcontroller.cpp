@@ -182,7 +182,7 @@ void CNifAnimationController::FUN_141544ec0(float time)
     if (m_58 == 1) {
         FUN_141d16040(FUN_1409475f0(&m_28), time, true);
         void* xf = FUN_140a33f90(FUN_1409475f0(&m_28));
-        ((Unk_StreamPoint*)&m_38)->operator=(*(Unk_StreamPoint*)((char*)xf + 0x24));
+        ((Vector3*)&m_38)->operator=(*(Vector3*)((char*)xf + 0x24));
         float* e = (float*)&m_44;
         FUN_142085840(FUN_1409478e0(FUN_140e68fd0(&m_30)), &e[0], &e[1], &e[2]);
         e[0] = -((e[0] * 180.0f) / 3.1415927f);

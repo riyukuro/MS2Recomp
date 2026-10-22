@@ -36,7 +36,7 @@ CHoleCylinderCollision::~CHoleCylinderCollision()
 }
 
 // @0x140d03840
-void CHoleCylinderCollision::vfunc_3(Unk_StreamPoint ptPos, Unk_StreamPoint ptDir, float fScale)
+void CHoleCylinderCollision::vfunc_3(Vector3 ptPos, Vector3 ptDir, float fScale)
 {
     m_ptCenter = ptPos;
     CBaseCollision::vfunc_3(ptPos, ptDir, fScale);
@@ -61,13 +61,13 @@ float CHoleCylinderCollision::GetBottom() const
 }
 
 // @0x140d03950
-int CHoleCylinderCollision::Contains(const Unk_StreamPoint& pt) const
+int CHoleCylinderCollision::Contains(const Vector3& pt) const
 {
-    return ContainsPoint(Unk_StreamPoint(pt.x, pt.y, pt.z));
+    return ContainsPoint(Vector3(pt.x, pt.y, pt.z));
 }
 
 // @0x140d039a0
-int CHoleCylinderCollision::ContainsPoint(const Unk_StreamPoint& pt) const
+int CHoleCylinderCollision::ContainsPoint(const Vector3& pt) const
 {
     if (GetBottom() > pt.z || GetTop() < pt.z)
         return 0;
@@ -78,7 +78,7 @@ int CHoleCylinderCollision::ContainsPoint(const Unk_StreamPoint& pt) const
 }
 
 // @0x140d056f0
-void CHoleCylinderCollision::BuildWire(NiMesh* pMesh, const Unk_StreamPoint* pPoints, unsigned int nCount)
+void CHoleCylinderCollision::BuildWire(NiMesh* pMesh, const Vector3* pPoints, unsigned int nCount)
 {
     pMesh->RemoveAllStreamRefs();
     pMesh->AddStream(NiCommonSemantics::POSITION(), 0, NiDataStreamElement::F_FLOAT32_3, nCount, 0x13,
@@ -128,7 +128,7 @@ void CHoleCylinderCollision::vfunc_5()
         }
     }
 
-    Unk_StreamPoint aPts[kRingPoints];
+    Vector3 aPts[kRingPoints];
     struct Ring { NiMeshPtr* pMesh; float fRadius; float fZ; };
     float fTop = GetTop() - m_ptCenter.z;
     float fBottom = GetBottom() - m_ptCenter.z;
@@ -145,7 +145,7 @@ void CHoleCylinderCollision::vfunc_5()
         {
             float fSin = sinf((float)i * 3.1415927f / 180.0f) * aRings[r].fRadius;
             float fCos = cosf((float)i * 3.1415927f / 180.0f);
-            aPts[i] = m_ptCenter.FUN_14097fd50(Unk_StreamPoint(fCos * aRings[r].fRadius, fSin, aRings[r].fZ));
+            aPts[i] = m_ptCenter.FUN_14097fd50(Vector3(fCos * aRings[r].fRadius, fSin, aRings[r].fZ));
         }
         (*aRings[r].pMesh)->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINESTRIPS);
         BuildWire(*aRings[r].pMesh, aPts, kRingPoints);
@@ -165,8 +165,8 @@ void CHoleCylinderCollision::vfunc_5()
                 float fR = aR[ri];
                 float fX = axis == 0 ? -fR : 0.0f;
                 float fY = axis == 0 ? 0.0f : -fR;
-                aPts[n++] = m_ptCenter.FUN_14097fd50(Unk_StreamPoint(fX, fY, aZ[z]));
-                aPts[n++] = m_ptCenter.FUN_14097fd50(Unk_StreamPoint(-fX, -fY, aZ[z]));
+                aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(fX, fY, aZ[z]));
+                aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(-fX, -fY, aZ[z]));
             }
         }
     }
@@ -177,8 +177,8 @@ void CHoleCylinderCollision::vfunc_5()
         const float aY[4] = { 0.0f, 0.0f, -fR, fR };
         for (int k = 0; k < 4; k++)
         {
-            aPts[n++] = m_ptCenter.FUN_14097fd50(Unk_StreamPoint(aX[k], aY[k], fBottom));
-            aPts[n++] = m_ptCenter.FUN_14097fd50(Unk_StreamPoint(aX[k], aY[k], fTop));
+            aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(aX[k], aY[k], fBottom));
+            aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(aX[k], aY[k], fTop));
         }
     }
     m_spLines->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINES);

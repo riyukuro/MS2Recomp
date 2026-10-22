@@ -21,8 +21,8 @@ public:
     void FUN_141448920();                                       // stop the marker effect
 
     int m_nId;                          // +0x18 target id (property 0x79ec600a)
-    Unk_StreamPoint m_vPos;             // +0x1c position (property 0xfd95ca52)
-    Unk_StreamPoint m_vRot;             // +0x28 rotation in degrees (property 0x68c7c29d)
+    Vector3 m_vPos;             // +0x1c position (property 0xfd95ca52)
+    Vector3 m_vRot;             // +0x28 rotation in degrees (property 0x68c7c29d)
     Unk_EntRef m_ent;                   // +0x38
     int m_nFx;                          // +0x40 effect handle
 };

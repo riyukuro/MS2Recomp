@@ -35,7 +35,7 @@ CBankTable* FUN_1401b59c0();                                // TSingleton<CBankT
 CUgcManager* FUN_14052d220();                               // TSingleton<CUgcManager>::GetInstance
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);               // the item table record
 CStringA FUN_1410280d0(int nPathType, CStringA strName);    // a local resource path
-Unk_StreamPoint FUN_1408a15b0(Unk_Int3 kCell, Unk_StreamPoint& kOffset);   // the world position of a cube cell
+Vector3 FUN_1408a15b0(Unk_Int3 kCell, Vector3& kOffset);   // the world position of a cube cell
 
 // ---- UGCMapOptions -------------------------------------------------------------------------------------------------
 
@@ -532,9 +532,9 @@ int Cube::FUN_1408b51d0()
 MS2_REPLACE_METHOD(0x1408B51D0, Cube, FUN_1408b51d0, 405, 0x984A0955);
 
 // @0x1408b5370
-Unk_StreamPoint Cube::FUN_1408b5370()
+Vector3 Cube::FUN_1408b5370()
 {
-    Unk_StreamPoint kOffset;
+    Vector3 kOffset;
     return FUN_1408a15b0(position, kOffset);
 }
 MS2_REPLACE_METHOD(0x1408B5370, Cube, FUN_1408b5370, 82, 0xC52D8A9F);

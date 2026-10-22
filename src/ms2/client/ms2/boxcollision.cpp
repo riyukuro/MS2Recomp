@@ -43,7 +43,7 @@ CBoxCollision::~CBoxCollision()
 }
 
 // @0x140ada620
-void CBoxCollision::vfunc_3(Unk_StreamPoint ptPos, Unk_StreamPoint ptDir, float fScale)
+void CBoxCollision::vfunc_3(Vector3 ptPos, Vector3 ptDir, float fScale)
 {
     NxMat34 kPose(true);
     kPose.t.x = ptPos.x;
@@ -73,7 +73,7 @@ void CBoxCollision::vfunc_3(Unk_StreamPoint ptPos, Unk_StreamPoint ptDir, float 
 MS2_REPLACE_METHOD(0x140ADA620, CBoxCollision, vfunc_3, 746, 0x68FFF7F0);
 
 // @0x140ada910
-void CBoxCollision::vfunc_2(Unk_StreamPoint ptPos, const NiMatrix3& kRot, float fScale)
+void CBoxCollision::vfunc_2(Vector3 ptPos, const NiMatrix3& kRot, float fScale)
 {
     NxMat34 kPose(true);
     kPose.t.x = ptPos.x;
@@ -99,8 +99,8 @@ MS2_REPLACE_METHOD(0x140ADA910, CBoxCollision, vfunc_2, 529, 0xAAF2271F);
 // @0x140adab30
 void CBoxCollision::vfunc_4()
 {
-    m_ptMin = Unk_StreamPoint(-m_ptBox.x / 2.0f, -m_ptSize.y, -m_ptSize.z);
-    m_ptMax = Unk_StreamPoint(m_ptBox.x / 2.0f, m_ptBox.y, m_ptBox.z);
+    m_ptMin = Vector3(-m_ptBox.x / 2.0f, -m_ptSize.y, -m_ptSize.z);
+    m_ptMax = Vector3(m_ptBox.x / 2.0f, m_ptBox.y, m_ptBox.z);
     m_kBounds.set(m_ptMin.x, m_ptMin.y, m_ptMin.z, m_ptMax.x, m_ptMax.y, m_ptMax.z);
 }
 MS2_REPLACE_METHOD(0x140ADAB30, CBoxCollision, vfunc_4, 313, 0x78BA12DE);
@@ -113,7 +113,7 @@ int CBoxCollision::FUN_140adac70(const NxVec3& pt) const
 MS2_REPLACE_METHOD(0x140ADAC70, CBoxCollision, FUN_140adac70, 46, 0xEB1EFC06);
 
 // @0x140adacb0
-int CBoxCollision::FUN_140adacb0(const Unk_StreamPoint& pt) const
+int CBoxCollision::FUN_140adacb0(const Vector3& pt) const
 {
     return FUN_140adac70(NxVec3(pt.x, pt.y, pt.z));
 }
@@ -160,23 +160,23 @@ void CBoxCollision::vfunc_5()
     m_spMesh->RemoveAllStreamRefs();
 
     const int nPts = 16;
-    Unk_StreamPoint aPts[nPts];
-    aPts[0] = Unk_StreamPoint(m_akCorners[0].x, m_akCorners[0].y, m_akCorners[0].z);
-    aPts[1] = Unk_StreamPoint(m_akCorners[3].x, m_akCorners[3].y, m_akCorners[3].z);
-    aPts[2] = Unk_StreamPoint(m_akCorners[2].x, m_akCorners[2].y, m_akCorners[2].z);
-    aPts[3] = Unk_StreamPoint(m_akCorners[1].x, m_akCorners[1].y, m_akCorners[1].z);
-    aPts[4] = Unk_StreamPoint(m_akCorners[0].x, m_akCorners[0].y, m_akCorners[0].z);
-    aPts[5] = Unk_StreamPoint(m_akCorners[4].x, m_akCorners[4].y, m_akCorners[4].z);
-    aPts[6] = Unk_StreamPoint(m_akCorners[7].x, m_akCorners[7].y, m_akCorners[7].z);
-    aPts[7] = Unk_StreamPoint(m_akCorners[6].x, m_akCorners[6].y, m_akCorners[6].z);
-    aPts[8] = Unk_StreamPoint(m_akCorners[5].x, m_akCorners[5].y, m_akCorners[5].z);
-    aPts[9] = Unk_StreamPoint(m_akCorners[4].x, m_akCorners[4].y, m_akCorners[4].z);
-    aPts[10] = Unk_StreamPoint(m_akCorners[5].x, m_akCorners[5].y, m_akCorners[5].z);
-    aPts[11] = Unk_StreamPoint(m_akCorners[1].x, m_akCorners[1].y, m_akCorners[1].z);
-    aPts[12] = Unk_StreamPoint(m_akCorners[2].x, m_akCorners[2].y, m_akCorners[2].z);
-    aPts[13] = Unk_StreamPoint(m_akCorners[6].x, m_akCorners[6].y, m_akCorners[6].z);
-    aPts[14] = Unk_StreamPoint(m_akCorners[7].x, m_akCorners[7].y, m_akCorners[7].z);
-    aPts[15] = Unk_StreamPoint(m_akCorners[3].x, m_akCorners[3].y, m_akCorners[3].z);
+    Vector3 aPts[nPts];
+    aPts[0] = Vector3(m_akCorners[0].x, m_akCorners[0].y, m_akCorners[0].z);
+    aPts[1] = Vector3(m_akCorners[3].x, m_akCorners[3].y, m_akCorners[3].z);
+    aPts[2] = Vector3(m_akCorners[2].x, m_akCorners[2].y, m_akCorners[2].z);
+    aPts[3] = Vector3(m_akCorners[1].x, m_akCorners[1].y, m_akCorners[1].z);
+    aPts[4] = Vector3(m_akCorners[0].x, m_akCorners[0].y, m_akCorners[0].z);
+    aPts[5] = Vector3(m_akCorners[4].x, m_akCorners[4].y, m_akCorners[4].z);
+    aPts[6] = Vector3(m_akCorners[7].x, m_akCorners[7].y, m_akCorners[7].z);
+    aPts[7] = Vector3(m_akCorners[6].x, m_akCorners[6].y, m_akCorners[6].z);
+    aPts[8] = Vector3(m_akCorners[5].x, m_akCorners[5].y, m_akCorners[5].z);
+    aPts[9] = Vector3(m_akCorners[4].x, m_akCorners[4].y, m_akCorners[4].z);
+    aPts[10] = Vector3(m_akCorners[5].x, m_akCorners[5].y, m_akCorners[5].z);
+    aPts[11] = Vector3(m_akCorners[1].x, m_akCorners[1].y, m_akCorners[1].z);
+    aPts[12] = Vector3(m_akCorners[2].x, m_akCorners[2].y, m_akCorners[2].z);
+    aPts[13] = Vector3(m_akCorners[6].x, m_akCorners[6].y, m_akCorners[6].z);
+    aPts[14] = Vector3(m_akCorners[7].x, m_akCorners[7].y, m_akCorners[7].z);
+    aPts[15] = Vector3(m_akCorners[3].x, m_akCorners[3].y, m_akCorners[3].z);
 
     m_spMesh->AddStream(NiCommonSemantics::POSITION(), 0, NiDataStreamElement::F_FLOAT32_3, 16, 0x13,
                         NiDataStream::USAGE_VERTEX, aPts, false, true);

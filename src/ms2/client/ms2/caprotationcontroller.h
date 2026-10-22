@@ -35,9 +35,9 @@ public:
     // non-virtual (names invented)
     int InitPart();                                                 // 0x140b01bb0
     void ResetHighlight();                                          // 0x140b01fa0
-    Unk_StreamPoint UpdateRotationMatrix();                                // 0x140b020d0
-    Unk_StreamPoint GetPartEuler();                                        // 0x140b02180
-    void SetPartEuler(Unk_StreamPoint kEuler);                             // 0x140b02310
+    Vector3 UpdateRotationMatrix();                                // 0x140b020d0
+    Vector3 GetPartEuler();                                        // 0x140b02180
+    void SetPartEuler(Vector3 kEuler);                             // 0x140b02310
     float WrapAngle(float fDegrees, float fMin, float fMax);        // 0x140b02730
     static float SafeAcos(float fCos);                              // 0x140b02b90
 
@@ -45,11 +45,11 @@ public:
     MS2Ptr<Unk_PickTarget> m_spPart;                                // +0xc0 the cap attach part
     float m_fSpeed;                                                 // +0xd0 = 0.5
     float m_fRadius;                                                // +0xd4
-    Unk_StreamPoint m_kDragDir;                                            // +0xd8
-    Unk_StreamPoint m_kMinEuler;                                           // +0xe4
-    Unk_StreamPoint m_kMaxEuler;                                           // +0xf0
-    Unk_StreamPoint m_kCurEuler;                                           // +0xfc
-    Unk_StreamPoint m_kInitEuler;                                          // +0x108
+    Vector3 m_kDragDir;                                            // +0xd8
+    Vector3 m_kMinEuler;                                           // +0xe4
+    Vector3 m_kMaxEuler;                                           // +0xf0
+    Vector3 m_kCurEuler;                                           // +0xfc
+    Vector3 m_kInitEuler;                                          // +0x108
     Unk_EfdMatrix3 m_kInitRot;                                        // +0x114
     efd::Point2 m_kDragStart;                                       // +0x138
 };

@@ -169,18 +169,18 @@
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 bool FUN_14028d470(float a, float b);                               // nearly equal
-bool FUN_14028d530(const Unk_StreamPoint& a, const Unk_StreamPoint& b);   // the two end points coincide
+bool FUN_14028d530(const Vector3& a, const Vector3& b);   // the two end points coincide
 class Unk_GameClock { public: double FUN_141473280(); };
 Unk_GameClock* FUN_14086d260();
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
 void* FUN_14098d8d0(const void* pRtti, void* pObj);                 // dynamic cast through an NiRTTI
-const Unk_StreamPoint& FUN_140947900(void* pNode);                  // world translate
+const Vector3& FUN_140947900(void* pNode);                  // world translate
 const Unk_NiMatrix3& FUN_1409478e0(void* pNode);                    // world rotate
 void FUN_141d16040(void* pNode, float fTime, bool bUpdateControllers);    // NiAVObject::Update
 bool FUN_14098dad0(void* pNode);                                    // node is app-culled
 class Unk_1403ed280 { public: void* FUN_1411a6b10(); };             // the effect manager: scene root
 Unk_1403ed280* FUN_1403ed280();
-void FUN_140a01250(Unk_StreamPoint kEuler, Unk_StreamPoint* pkOut1, Unk_StreamPoint* pkOut2);   // axes of an euler rotation
+void FUN_140a01250(Vector3 kEuler, Vector3* pkOut1, Vector3* pkOut2);   // axes of an euler rotation
 
 // Resource manager (singleton, instance pointer at 0x143ab5bc8): texture load by path. 0x140cc2ba0 joins directory + file name.
 class Unk_ResourceMgr
@@ -215,24 +215,24 @@ public:
 };
 MS2_CHECK_SIZE(Unk_EffectNode, 400);
 
-extern const Unk_StreamPoint DAT_143a08cf8;
+extern const Vector3 DAT_143a08cf8;
 Unk_ResourceMgr* FUN_140a0afd0() { return DAT_143ab5bc8; }                                                                // @0x140a0afd0
 
 // @0x140a0adf0
-Unk_StreamPoint FUN_140a0adf0(const Unk_StreamPoint& p0, const Unk_StreamPoint& p1, const Unk_StreamPoint& p2, const Unk_StreamPoint& p3, float fT)
+Vector3 FUN_140a0adf0(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float fT)
 {
     D3DXVECTOR3 v0(p0.x, p0.y, p0.z), v1(p1.x, p1.y, p1.z), v2(p2.x, p2.y, p2.z), v3(p3.x, p3.y, p3.z), kOut(0, 0, 0);
     D3DXVec3CatmullRom(&kOut, &v0, &v1, &v2, &v3, fT);
-    return Unk_StreamPoint(kOut.x, kOut.y, kOut.z);
+    return Vector3(kOut.x, kOut.y, kOut.z);
 }
 
 // @0x140a0b080 look-at euler angles (degrees; z + 90)
 // MS2-FUNCTIONAL: local temporaries (the three NiPoint3 conversions) are laid out 4 bytes apart in the exe; frame differs.
-Unk_StreamPoint FUN_140a0b080(const Unk_StreamPoint& kEnd, const Unk_StreamPoint& kStart, const Unk_StreamPoint& kUp)
+Vector3 FUN_140a0b080(const Vector3& kEnd, const Vector3& kStart, const Vector3& kUp)
 {
-    Unk_StreamPoint kForward = kEnd.FUN_140965c40(kStart);
-    Unk_StreamPoint kSide = kForward.FUN_140a00e10(kUp);
-    Unk_StreamPoint kEuler;
+    Vector3 kForward = kEnd.FUN_140965c40(kStart);
+    Vector3 kSide = kForward.FUN_140a00e10(kUp);
+    Vector3 kEuler;
     Unk_NiPoint3 kCol2(kUp);
     Unk_NiPoint3 kCol1(kSide);
     Unk_NiPoint3 kCol0(kForward);
@@ -246,7 +246,7 @@ Unk_StreamPoint FUN_140a0b080(const Unk_StreamPoint& kEnd, const Unk_StreamPoint
 }
 
 // @0x140a0b1f0 rotation -> euler angles (degrees, negated)
-void FUN_140a0b1f0(const Unk_NiMatrix3& kRot, Unk_StreamPoint* pkEuler)
+void FUN_140a0b1f0(const Unk_NiMatrix3& kRot, Vector3* pkEuler)
 {
     kRot.FUN_142085840(pkEuler->x, pkEuler->y, pkEuler->z);
     pkEuler->x = pkEuler->x * -57.295776f;
@@ -439,7 +439,7 @@ int CBeamEffect::vfunc_8(void* p)
         MS2_ASSERT_AT(0xaf, 0);
         return 0;
     }
-    *static_cast<Unk_StreamPoint*>(p) = FUN_140947900(FUN_1409475f0(&m_spRoot));
+    *static_cast<Vector3*>(p) = FUN_140947900(FUN_1409475f0(&m_spRoot));
     return 1;
 }
 MS2_REPLACE_METHOD(0x140A08150, CBeamEffect, vfunc_8, 122, 0x9C3991E3);
@@ -450,7 +450,7 @@ MS2_REPLACE_METHOD(0x140A08150, CBeamEffect, vfunc_8, 122, 0x9C3991E3);
 // the curve, offset by half the width along the camera-facing side vector) and the 2 triangles per curve segment.
 void CBeamEffect::UpdateMesh()
 {
-    efd::vector<Unk_StreamPoint> kCurve;
+    efd::vector<Vector3> kCurve;
     if (!BuildCurve(kCurve))
         return;
 
@@ -465,12 +465,12 @@ void CBeamEffect::UpdateMesh()
     }
     m_spMesh->GetMesh()->UpdateProperties();
 
-    Unk_StreamPoint kCamera = Unk_CameraManager::FUN_1409478c0()->FUN_140af0250();
-    efd::vector<Unk_StreamPoint> kLeft;
-    efd::vector<Unk_StreamPoint> kRight;
+    Vector3 kCamera = Unk_CameraManager::FUN_1409478c0()->FUN_140af0250();
+    efd::vector<Vector3> kLeft;
+    efd::vector<Vector3> kRight;
     for (unsigned int i = 0; i < kCurve.size(); ++i)
     {
-        Unk_StreamPoint kDir;
+        Vector3 kDir;
         if (i == 0)
             kDir = kCurve[1].FUN_140965c40(kCurve[0]);
         else if (i == kCurve.size() - 1)
@@ -478,7 +478,7 @@ void CBeamEffect::UpdateMesh()
         else
             kDir = kCurve[i + 1].FUN_140965c40(kCurve[i - 1]);
         kDir.FUN_140968990();
-        Unk_StreamPoint kSide = kDir.FUN_140a00e10(kCamera);
+        Vector3 kSide = kDir.FUN_140a00e10(kCamera);
         kLeft.push_back(kCurve[i].FUN_14097fd50(FUN_1409ab5c0(m_fHalfWidth, kSide)));
         kRight.push_back(kCurve[i].FUN_140965c40(FUN_1409ab5c0(m_fHalfWidth, kSide)));
     }
@@ -530,7 +530,7 @@ void CBeamEffect::UpdateMesh()
 // Samples a Catmull-Rom curve (m_nQuality samples per segment) through five control points built from the end points
 // of the target's point list and the third control point from the param's BeamInfo (pass-through point for a
 // pointCurve, direction / length rates relative to the node's rotation for a directionCurve).
-bool CBeamEffect::BuildCurve(efd::vector<Unk_StreamPoint>& kOut)
+bool CBeamEffect::BuildCurve(efd::vector<Vector3>& kOut)
 {
     if (FUN_1409475d0(&m_spTarget) == 0)
         return false;
@@ -542,21 +542,21 @@ bool CBeamEffect::BuildCurve(efd::vector<Unk_StreamPoint>& kOut)
     int nPoints = (int)m_pPoints->GetCount();
     if (nPoints < 2)
         return false;
-    Unk_StreamPoint kStart = (*m_pPoints)[0];
-    Unk_StreamPoint kEnd = (*m_pPoints)[nPoints - 1];
+    Vector3 kStart = (*m_pPoints)[0];
+    Vector3 kEnd = (*m_pPoints)[nPoints - 1];
     if (FUN_14028d530(kStart, kEnd))
         return false;
     int nType = spInfo->m_nType;
     if (nType == 1)
     {
         BeamPointCurveInfo* pInfo = static_cast<BeamPointCurveInfo*>(spInfo.get());
-        Unk_StreamPoint kEuler = FUN_140a0b080(kEnd, kStart, DAT_143a08cf8);
+        Vector3 kEuler = FUN_140a0b080(kEnd, kStart, DAT_143a08cf8);
         Unk_NiPoint3 kEulerNi(kEuler);
         Unk_NiMatrix3 kRot;
         kRot.FUN_142083d40((-kEulerNi.x * 3.1415927f) / 180.0f, (-kEulerNi.y * 3.1415927f) / 180.0f,
             (-kEulerNi.z * 3.1415927f) / 180.0f);
-        Unk_StreamPoint kMid = kStart.FUN_14097fd50(kRot.FUN_140a00720(pInfo->m_kPassThroughPoint));
-        efd::vector<Unk_StreamPoint> kControl;
+        Vector3 kMid = kStart.FUN_14097fd50(kRot.FUN_140a00720(pInfo->m_kPassThroughPoint));
+        efd::vector<Vector3> kControl;
         kControl.push_back(kStart);
         kControl.push_back(kStart);
         kControl.push_back(kMid);
@@ -582,20 +582,20 @@ bool CBeamEffect::BuildCurve(efd::vector<Unk_StreamPoint>& kOut)
             return false;
         }
         BeamDirectionCurveInfo* pInfo = static_cast<BeamDirectionCurveInfo*>(spInfo.get());
-        Unk_StreamPoint kDelta = kEnd.FUN_140965c40(kStart);
+        Vector3 kDelta = kEnd.FUN_140965c40(kStart);
         float fLength = kDelta.FUN_140968990();
-        Unk_StreamPoint kEuler;
+        Vector3 kEuler;
         FUN_140a0b1f0(FUN_1409478e0(FUN_1409475f0(&m_spTarget)), &kEuler);
-        Unk_StreamPoint kAxisA;
-        Unk_StreamPoint kAxisB;
-        Unk_StreamPoint kEulerArg = kEuler;
+        Vector3 kAxisA;
+        Vector3 kAxisB;
+        Vector3 kEulerArg = kEuler;
         FUN_140a01250(kEulerArg, &kAxisA, &kAxisB);
         kAxisA.FUN_140968990();
-        Unk_StreamPoint kBend = kAxisA.FUN_14097fd50(kDelta.FUN_14097fc90(pInfo->m_fDirectionRate));
+        Vector3 kBend = kAxisA.FUN_14097fd50(kDelta.FUN_14097fc90(pInfo->m_fDirectionRate));
         kBend.FUN_140968990();
         float fBend = fLength * pInfo->m_fLengthRate;
-        Unk_StreamPoint kMid = kStart.FUN_14097fd50(kBend.FUN_14097fc90(fBend));
-        efd::vector<Unk_StreamPoint> kControl;
+        Vector3 kMid = kStart.FUN_14097fd50(kBend.FUN_14097fc90(fBend));
+        efd::vector<Vector3> kControl;
         kControl.push_back(kStart);
         kControl.push_back(kStart);
         kControl.push_back(kMid);
@@ -627,3 +627,4 @@ MS2_REPLACE_METHOD(0x140A0AFC0, CBeamEffect, vfunc_12, 11, 0xB512670C);
 MS2_EMIT_CRT_MEMMOVE_S();
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9ede0-0x142c9eee0 .text$yd
+// MS2-PIN: ?construct@?$CustomAllocator@UVector3@@@efd@@QEAAXPEAUVector3@@AEBU3@@Z 0x140a0bff0 ; nam2: Unk_StreamPoint -> Vector3 (was auto-paired by its old symbols.tsv name)

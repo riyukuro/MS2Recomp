@@ -27,11 +27,11 @@
 CPhysXHelper* FUN_1409f7ca0();                                      // TSingleton<CPhysXHelper>::GetInstance
 extern __int64 DAT_143ab2828;                                       // my character id
 unsigned int FUN_140869420();                                       // tick count (ms)
-void FUN_14020af60(COutPacket* pPacket, const Unk_StreamPoint* pPt);    // writes the three floats of a point
+void FUN_14020af60(COutPacket* pPacket, const Vector3* pPt);    // writes the three floats of a point
 void FUN_140710590(COutPacket& packet);                             // send
-Unk_StreamPoint FUN_140204500(CInPacket* pPacket);                  // reads a point (three floats)
-NxVec3 FUN_141b6e0e0(const Unk_StreamPoint& kPt);                   // Point3 -> NxVec3
-Unk_StreamPoint FUN_141b6e150(const NxVec3& kVec);                  // NxVec3 -> Point3
+Vector3 FUN_140204500(CInPacket* pPacket);                  // reads a point (three floats)
+NxVec3 FUN_141b6e0e0(const Vector3& kPt);                   // Point3 -> NxVec3
+Vector3 FUN_141b6e150(const NxVec3& kVec);                  // NxVec3 -> Point3
 char FUN_1409ff0d0(void* pShape, CBoxCollision* pBox);              // does the box touch the shape
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CUGCBallObject);
@@ -63,7 +63,7 @@ CUGCBallObject::~CUGCBallObject()
 
 // @0x140decfc0
 // MS2-FUNCTIONAL: frame layout/temps differ from exe (reloc-order and stack offsets); behaviour-equivalent
-int CUGCBallObject::FUN_140decfc0(__int64 nOwner, int nObjectId, const Unk_StreamPoint* pPos, float fRadius)
+int CUGCBallObject::FUN_140decfc0(__int64 nOwner, int nObjectId, const Vector3* pPos, float fRadius)
 {
     m_nOwner = nOwner;
     m_str88 = "MS2VibrateNoPhysX";
@@ -78,15 +78,15 @@ int CUGCBallObject::FUN_140decfc0(__int64 nOwner, int nObjectId, const Unk_Strea
     if (300.0f < m_fRadius)
         m_fRadius = 300.0f;
     FUN_14123c280(m_fRadius / 75.0f);
-    Unk_StreamPoint kBox(m_fRadius * 2.0f, m_fRadius * 2.0f, m_fRadius * 2.0f);
+    Vector3 kBox(m_fRadius * 2.0f, m_fRadius * 2.0f, m_fRadius * 2.0f);
     m_spBox.AssignRaw(new CBoxCollision);
     m_spBox->m_ptBox = kBox;
     m_spBox->m_kColor = NiColorA(1.0f, 1.0f, 1.0f, 1.0f);
     m_spBox->vfunc_4();
     CBoxCollision* pBox = m_spBox.operator->();
-    Unk_NiPoint3 kZero(reinterpret_cast<const Unk_StreamPoint&>(NiPoint3::ZERO));
-    Unk_NiPoint3 kAt(Unk_StreamPoint(pPos->x, pPos->y, pPos->z));
-    pBox->vfunc_3(reinterpret_cast<Unk_StreamPoint&>(kAt), reinterpret_cast<Unk_StreamPoint&>(kZero), 1.0f);
+    Unk_NiPoint3 kZero(reinterpret_cast<const Vector3&>(NiPoint3::ZERO));
+    Unk_NiPoint3 kAt(Vector3(pPos->x, pPos->y, pPos->z));
+    pBox->vfunc_3(reinterpret_cast<Vector3&>(kAt), reinterpret_cast<Vector3&>(kZero), 1.0f);
     return 1;
 }
 
@@ -101,14 +101,14 @@ int CUGCBallObject::FUN_140ded420(Unk_UbTag* pTag, void* pShape)
         if (pPlayer != 0)
         {
             CBoxCollision* pBox = m_spBox.operator->();
-            Unk_NiPoint3 kZero(reinterpret_cast<const Unk_StreamPoint&>(NiPoint3::ZERO));
-            Unk_NiPoint3 kAt(reinterpret_cast<const Unk_StreamPoint&>(static_cast<const NiPoint3&>(vfunc_18())));
-            pBox->vfunc_3(reinterpret_cast<Unk_StreamPoint&>(kAt), reinterpret_cast<Unk_StreamPoint&>(kZero), 1.0f);
+            Unk_NiPoint3 kZero(reinterpret_cast<const Vector3&>(NiPoint3::ZERO));
+            Unk_NiPoint3 kAt(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())));
+            pBox->vfunc_3(reinterpret_cast<Vector3&>(kAt), reinterpret_cast<Vector3&>(kZero), 1.0f);
             if (FUN_1409ff0d0(pShape, m_spBox.get()) != 0)
             {
                 NiPoint3 kDir = static_cast<const NiPoint3&>(pPlayer->vfunc_18()) - static_cast<const NiPoint3&>(vfunc_18());
                 efd::Point3::UnitizeVector(kDir);
-                Unk_StreamPoint kForce = pTag->m_ptPos;
+                Vector3 kForce = pTag->m_ptPos;
                 kForce.z = kForce.z + 0.75f;
                 kForce.FUN_140ad0c10(1500.0f);
                 COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
@@ -116,7 +116,7 @@ int CUGCBallObject::FUN_140ded420(Unk_UbTag* pTag, void* pShape)
                 packet.Encode1(3);
                 packet.Encode4(FUN_14123c580());
                 FUN_14020af60(&packet, &kForce);
-                FUN_14020af60(&packet, reinterpret_cast<const Unk_StreamPoint*>(&kDir));
+                FUN_14020af60(&packet, reinterpret_cast<const Vector3*>(&kDir));
                 FUN_140710590(packet);
             }
         }
@@ -251,10 +251,10 @@ void CUGCBallObject::vfunc_53(float f)
             packet.Encode1(7);
             packet.Encode1(2);
             packet.Encode4(FUN_14123c580());
-            FUN_14020af60(&packet, reinterpret_cast<const Unk_StreamPoint*>(&kNiPos));
-            Unk_StreamPoint kLin = FUN_141b6e150(kLinVel);
+            FUN_14020af60(&packet, reinterpret_cast<const Vector3*>(&kNiPos));
+            Vector3 kLin = FUN_141b6e150(kLinVel);
             FUN_14020af60(&packet, &kLin);
-            Unk_StreamPoint kAng = FUN_141b6e150(kAngVel);
+            Vector3 kAng = FUN_141b6e150(kAngVel);
             FUN_14020af60(&packet, &kAng);
             FUN_140710590(packet);
             m_nLastSend = nTick;
@@ -286,11 +286,11 @@ void CUGCBallObject::FUN_140dee220(CInPacket* pPacket)
 {
     if (static_cast<CInputStream*>(pPacket)->ReadInt64() == DAT_143ab2828 && m_pActor != 0)
     {
-        Unk_StreamPoint kForce = pPacket->FUN_1407140d0();
-        Unk_StreamPoint kAt = pPacket->FUN_1407140d0();
-        Unk_StreamPoint kScaled = kAt.FUN_14097fc90(m_fRadius);
-        Unk_StreamPoint kScaled2 = kScaled.FUN_140ae9180(100.0f);
-        Unk_StreamPoint kPos = reinterpret_cast<const Unk_StreamPoint&>(static_cast<const NiPoint3&>(vfunc_18())).FUN_140965c40(kScaled2);
+        Vector3 kForce = pPacket->FUN_1407140d0();
+        Vector3 kAt = pPacket->FUN_1407140d0();
+        Vector3 kScaled = kAt.FUN_14097fc90(m_fRadius);
+        Vector3 kScaled2 = kScaled.FUN_140ae9180(100.0f);
+        Vector3 kPos = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())).FUN_140965c40(kScaled2);
         FUN_1409f7ca0()->FUN_14168a540(0);
         m_pActor->addForceAtPos(FUN_141b6e0e0(kForce), FUN_141b6e0e0(kPos), NX_FORCE, true);
         FUN_1409f7ca0()->FUN_14168a570();
@@ -319,7 +319,7 @@ void FUN_140dee4a0(CInPacket& packet)
     {
         int nObjectId = pStream->ReadInt32();
         __int64 nOwner = pStream->ReadInt64();
-        Unk_StreamPoint kPos = FUN_140204500(&packet);
+        Vector3 kPos = FUN_140204500(&packet);
         float fRadius = pStream->ReadFloat();
         CUGCBallObject* pBall = new (efd::MemHint(efd::MemHint::NONE)) CUGCBallObject;
         if (pBall->FUN_140decfc0(nOwner, nObjectId, &kPos, fRadius) != 0)

@@ -670,14 +670,14 @@ class CCylinderCollision : public CBaseCollision
 public:
     CCylinderCollision();                                           // 0x141083230
     virtual ~CCylinderCollision();                                  // 0x141083320
-    // 0x1410833c0, the slot 3 override (declared with Unk_StreamPoint by its owner; only called directly here)
+    // 0x1410833c0, the slot 3 override (declared with Vector3 by its owner; only called directly here)
     void vfunc_3(NiPoint3 kPos, NiPoint3 kDir, float fScale);
     virtual void vfunc_5();
     virtual float vfunc_6();
     void FUN_1409fc390(MS2Ptr<CDetectContext> spCtx, const NiPoint3& kDir);   // CBaseCollision: collect the objects inside
     char m_pad_78[0xb0 - 0x78];
     float m_fRadius;                                                // +0xb0
-    Unk_StreamPoint m_ptCenter;                                     // +0xb4
+    Vector3 m_ptCenter;                                     // +0xb4
     float m_fHeight;                                                // +0xc0
     char m_pad_c4[4];
 };
@@ -4396,8 +4396,8 @@ MS2_REPLACE_METHOD(0x14166f380, PCBase, FUN_14166f380, 831, 0xC410A395);
 void PCBase::FUN_141670fd0(efd::Point3 kSize, efd::Point3 kOffset)
 {
     m_sp628.AssignRaw(new CBoxCollision);
-    m_sp628->m_ptBox = reinterpret_cast<const Unk_StreamPoint&>(kSize);
-    m_sp628->m_ptSize = reinterpret_cast<const Unk_StreamPoint&>(kOffset);
+    m_sp628->m_ptBox = reinterpret_cast<const Vector3&>(kSize);
+    m_sp628->m_ptSize = reinterpret_cast<const Vector3&>(kOffset);
     m_sp628->m_kColor = Unk_AfterImageColor(0, 0, 1.0f, 1.0f);
     m_sp628->vfunc_4();
 }

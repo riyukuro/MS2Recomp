@@ -36,7 +36,7 @@ void FUN_1405a89e0(Unk_LtFxReq* p);                                 // destroy
 struct Unk_LtXform
 {
     efd::Matrix3 m_rot;                                             // +0x00
-    Unk_StreamPoint m_pos;                                          // +0x24
+    Vector3 m_pos;                                          // +0x24
     float m_fScale;                                                 // +0x30
 };
 
@@ -44,7 +44,7 @@ struct Unk_LtXform
 class Unk_Entity
 {
 public:
-    int FUN_1409618c0(unsigned nHash, Unk_StreamPoint* pValue);     // point property
+    int FUN_1409618c0(unsigned nHash, Vector3* pValue);     // point property
     int FUN_1408a2020(unsigned nHash, int* pValue);                 // int property
     int FUN_1408a2060(unsigned nHash, struct Unk_LtName* pValue);   // string property
 };
@@ -220,7 +220,7 @@ void CLiftableTarget::FUN_141448750()
         return;
     {
         Unk_LtXform xform;
-        xform.m_pos = m_vPos.FUN_14097fd50(Unk_StreamPoint(0.0f, 0.0f, 1.0f));
+        xform.m_pos = m_vPos.FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f));
         xform.m_rot.FromEulerAnglesXYZ(m_vRot.x * 3.1415927f / 180.0f, m_vRot.y * 3.1415927f / 180.0f, m_vRot.z * 3.1415927f / 180.0f);
         xform.m_fScale = 1.0f;
         Unk_LtFxReq req;

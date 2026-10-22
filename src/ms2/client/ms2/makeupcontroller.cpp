@@ -124,7 +124,7 @@ public:
     virtual void vfunc_1(CItemCustomizeController* pController);                                // drag begin
     virtual void vfunc_2(CItemCustomizeController* pController, float fValue, int nIndex);      // value changed
     virtual void vfunc_3(CItemCustomizeController* pController, float fDegrees);                // angle changed
-    virtual void vfunc_4(CItemCustomizeController* pController, Unk_StreamPoint kPos);          // x / y changed
+    virtual void vfunc_4(CItemCustomizeController* pController, Vector3 kPos);          // x / y changed
 };
 
 // This unit's free functions.
@@ -453,7 +453,7 @@ void CMakeupController::vfunc_44(float fX, float fY, NiFloatsExtraData* pExtra)
             pData->m_fY = fY;
         }
         if (m_pListener != 0)
-            reinterpret_cast<Unk_MakeupListener*>(m_pListener)->vfunc_4(this, Unk_StreamPoint(fX, fY, 0.0f));
+            reinterpret_cast<Unk_MakeupListener*>(m_pListener)->vfunc_4(this, Vector3(fX, fY, 0.0f));
     }
 }
 

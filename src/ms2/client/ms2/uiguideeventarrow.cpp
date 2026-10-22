@@ -31,7 +31,7 @@ static CString s_stun("stun");
 class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
 static Unk_1401cd100 s_pointer(NULL);
 static ATL::CAtlMap<unsigned int,CString> s_conditions(17,.75f,.25f,2.25f,10);
-class Unk_1403ed280 { public: void FUN_1411a6060(int); int FUN_1411a49c0(NoticeMessage*); void FUN_1411a4f40(CString,const Unk_StreamPoint&); };
+class Unk_1403ed280 { public: void FUN_1411a6060(int); int FUN_1411a49c0(NoticeMessage*); void FUN_1411a4f40(CString,const Vector3&); };
 Unk_1403ed280* FUN_1403ed280();
 int FUN_1412755a0();
 void FUN_141276180(const CString&,const CString&);
@@ -157,7 +157,7 @@ void UIGuideEvent::FUN_14195bfc0() { if(!m_expiry) return; if(FUN_140869420()>=m
 
 
 // ---- out-of-unit callees of the recovered (functional) part ----
-extern Unk_StreamPoint DAT_143b01a60;                               // the zero point
+extern Vector3 DAT_143b01a60;                               // the zero point
 typedef Scaleform::GFx::Value GfxValue;
 void* FUN_1403ed2b0();                                              // UI manager
 void* FUN_1403ed2d0();                                              // world service
@@ -168,8 +168,8 @@ struct Unk_GeaUiMgrView                                             // UI manage
 };
 int FUN_141274f80();
 float FUN_141adbe70(void*);                                         // UI scale
-Unk_StreamPoint* FUN_140ad0c10(Unk_StreamPoint*,float);             // efd::Point3::operator*=
-float FUN_1412762d0(const Unk_StreamPoint&);
+Vector3* FUN_140ad0c10(Vector3*,float);             // efd::Point3::operator*=
+float FUN_1412762d0(const Vector3&);
 bool FUN_1403b3c40(const CStringW&,const wchar_t*);                 // equals
 int FUN_141389500(const CStringW&,int);                             // wide string to int
 bool FUN_140184310(const CString&,const char*);
@@ -200,7 +200,7 @@ void* FUN_1408e57f0();
 int FUN_1422b9e00(void*);
 int FUN_1422b9ea0(void*);
 UIMessageBox* FUN_14151f890();
-class Unk_GuideCamera { public: bool FUN_140af0700(const Unk_StreamPoint&,Unk_StreamPoint&); };
+class Unk_GuideCamera { public: bool FUN_140af0700(const Vector3&,Vector3&); };
 Unk_GuideCamera* FUN_1409478c0();
 
 // A display object seen through its accessors (the exe's inline/COMDAT members, bound by their FUN_ names).
@@ -213,11 +213,11 @@ public:
 };
 class Unk_GuideValue { public: bool FUN_1409b4d40() const; void FUN_1409c1770(const char*,GfxValue*) const; };
 static Unk_GuideDO* GuideDO(ASDisplayObject* p) { return reinterpret_cast<Unk_GuideDO*>(p); }
-static Unk_StreamPoint GuideDOPoint(ASDisplayObject* o)
+static Vector3 GuideDOPoint(ASDisplayObject* o)
 {
     Unk_GuideDO* d = GuideDO(o);
     float z = d->FUN_1422c1180(); float y = d->FUN_1422c1110(); float x = d->FUN_1422c10a0();
-    return Unk_StreamPoint(x, y, z);
+    return Vector3(x, y, z);
 }
 static MS2Ptr<ASDisplayObject> GuideRoot(UISwfEntity* ui)
 {
@@ -248,7 +248,7 @@ int FUN_14123c580(void*);
 class Unk_GuideHouseMark : public CPtred {};
 class Unk_GuideHouse { public: MS2Ptr<Unk_GuideHouseMark> FUN_14198ce50(int*); };
 Unk_GuideHouse* FUN_1410dc020();
-const Unk_StreamPoint& FUN_14198b2b0(Unk_GuideHouseMark*);
+const Vector3& FUN_14198b2b0(Unk_GuideHouseMark*);
 class Unk_GuideParty : public UISwfEntity { public: int FUN_141a75680(void*); };
 Unk_GuideParty* FUN_1413b1c60(const CString&);
 class Unk_GuideMessenger : public UISwfEntity { public: UISwfEntity* FUN_141a25970(); };
@@ -381,7 +381,7 @@ void UIGuideEvent::FUN_141959a60(MS2Ptr<UIGuideEventArrow> arrow)
     }
     existing = arrow;
     m_arrows.SetAt(arrow->m_id, existing);
-    Unk_StreamPoint pos = DAT_143b01a60;
+    Vector3 pos = DAT_143b01a60;
     int hide = 0;
     if (arrow->vfunc_2(&pos) == 0)
         hide = 1;
@@ -536,7 +536,7 @@ UIGuideEventArrow::~UIGuideEventArrow() {}
 // @0x14195dd90
 void UIGuideEventArrow::vfunc_1(MS2Ptr<AScript> movie)
 {
-    Unk_StreamPoint pos;
+    Vector3 pos;
     if (vfunc_2(&pos) == 0) {
         GuideAS(movie)->FUN_140ba26d0("hideArrow", m_id);
         return;
@@ -551,7 +551,7 @@ void UIGuideEventArrow::vfunc_1(MS2Ptr<AScript> movie)
 // MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 int UIGuideEventArrow::vfunc_2(void* out)
 {
-    Unk_StreamPoint* pos = (Unk_StreamPoint*)out;
+    Vector3* pos = (Vector3*)out;
     if (FUN_141274f80() != 0)
         return 0;
     *pos = DAT_143b01a60;
@@ -606,7 +606,7 @@ int UIGuideEventArrowDialog::vfunc_2(void* out)
     case 11: if (FUN_14195f530(out) == 0) return 0; break;
     case 12: if (FUN_14195f5a0(out) == 0) return 0; break;
     }
-    ((Unk_StreamPoint*)out)->FUN_140a4e560(m_pos);
+    ((Vector3*)out)->FUN_140a4e560(m_pos);
     return 1;
 }
 
@@ -683,7 +683,7 @@ static UIObject* GuideUIByName2(const CString& name)
 // @0x14195e320
 int UIGuideEventArrowDialog::FUN_14195e320(void* out)
 {
-    *(Unk_StreamPoint*)out = DAT_143b01a60;
+    *(Vector3*)out = DAT_143b01a60;
     UIObject* ui = 0;
     if (m_38 != 0)
         ui = GuideUIById(m_38);
@@ -705,7 +705,7 @@ int UIGuideEventArrowDialog::FUN_14195e3f0(void* out)
     MS2Ptr<ASDisplayObject> root(dynamic_cast<ASDisplayObject*>((AScript*)ui->FUN_1422dba00()));
     if (root == 0)
         return 0;
-    *(Unk_StreamPoint*)out = Unk_StreamPoint(reinterpret_cast<Unk_GuideDO*>(root.operator->())->FUN_1422c10a0(),
+    *(Vector3*)out = Vector3(reinterpret_cast<Unk_GuideDO*>(root.operator->())->FUN_1422c10a0(),
         reinterpret_cast<Unk_GuideDO*>(root.operator->())->FUN_1422c1110(), reinterpret_cast<Unk_GuideDO*>(root.operator->())->FUN_1422c1180());
     int slot = FUN_1409331f0()->FUN_14142e090(m_param, 0);
     if (slot == -1)
@@ -718,7 +718,7 @@ int UIGuideEventArrowDialog::FUN_14195e3f0(void* out)
     else { baseX = 400.0f; baseY = 0.0f; }
     slot %= 4;
     baseX += (float)(slot * 0x44 + 0x20);
-    ((Unk_StreamPoint*)out)->FUN_140a4e560(Unk_StreamPoint(baseX + 57.0f, baseY + 103.0f, 0.0f));
+    ((Vector3*)out)->FUN_140a4e560(Vector3(baseX + 57.0f, baseY + 103.0f, 0.0f));
     return 1;
 }
 
@@ -747,7 +747,7 @@ int UIGuideEventArrowDialog::FUN_14195e6e0(void* out)
         return 0;
     const int nCols = 6;
     const int nRows = 6;
-    *(Unk_StreamPoint*)out = Unk_StreamPoint(reinterpret_cast<Unk_GuideDO*>(root.operator->())->FUN_1422c10a0(),
+    *(Vector3*)out = Vector3(reinterpret_cast<Unk_GuideDO*>(root.operator->())->FUN_1422c10a0(),
         reinterpret_cast<Unk_GuideDO*>(root.operator->())->FUN_1422c1110(), reinterpret_cast<Unk_GuideDO*>(root.operator->())->FUN_1422c1180());
     ATL::CAtlArray<MS2Ptr<CItem> > items;
     DAT_143ab2a90.FUN_140a60880(inv->FUN_141999de0(), items);
@@ -765,7 +765,7 @@ int UIGuideEventArrowDialog::FUN_14195e6e0(void* out)
             int row = (slot - start) / nCols;
             float fx = (float)(col * 0x3f);
             float fy = (float)(row * 0x3e);
-            ((Unk_StreamPoint*)out)->FUN_140a4e560(Unk_StreamPoint(fx + 17.0f, fy + 99.0f, 0.0f));
+            ((Vector3*)out)->FUN_140a4e560(Vector3(fx + 17.0f, fy + 99.0f, 0.0f));
             return 1;
         } else {
             return 0;
@@ -791,12 +791,12 @@ int UIGuideEventArrowDialog::FUN_14195ead0(void* out)
     int index = inv->FUN_14199ab20(m_path[0]);
     if (index == -1)
         return 0;
-    *(Unk_StreamPoint*)out = Unk_StreamPoint(root->FUN_1422c10a0(), root->FUN_1422c1110(), root->FUN_1422c1180());
-    ((Unk_StreamPoint*)out)->FUN_140a4e560(Unk_StreamPoint(tabs->FUN_1422c10a0(), tabs->FUN_1422c1110(), tabs->FUN_1422c1180()));
+    *(Vector3*)out = Vector3(root->FUN_1422c10a0(), root->FUN_1422c1110(), root->FUN_1422c1180());
+    ((Vector3*)out)->FUN_140a4e560(Vector3(tabs->FUN_1422c10a0(), tabs->FUN_1422c1110(), tabs->FUN_1422c1180()));
     MS2Ptr<ASButton> tab = tabs->FUN_1422e32b0(index);
     if (tab == 0)
         return 0;
-    ((Unk_StreamPoint*)out)->FUN_140a4e560(Unk_StreamPoint(tab->FUN_1422c10a0(), tab->FUN_1422c1110(), tab->FUN_1422c1180()));
+    ((Vector3*)out)->FUN_140a4e560(Vector3(tab->FUN_1422c10a0(), tab->FUN_1422c1110(), tab->FUN_1422c1180()));
     return 1;
 }
 
@@ -830,10 +830,10 @@ int UIGuideEventArrowDialog::FUN_14195eee0(void* out)
     MS2Ptr<Unk_GuideMarker> marker = minimap->FUN_141a3b510(MS2Ptr<CPtred>(object));
     if (marker.IsNull())
         return 0;
-    ((Unk_StreamPoint*)out)->x = (float)FUN_140f17ed0(minimap->FUN_1422dba00()->Invoke("getGlobalX", marker->m_18->FUN_1422bb870()));
-    ((Unk_StreamPoint*)out)->y = (float)FUN_140f17ed0(minimap->FUN_1422dba00()->Invoke("getGlobalY", marker->m_18->FUN_1422bb870()));
-    ((Unk_StreamPoint*)out)->z = 0.0f;
-    if (((Unk_StreamPoint*)out)->x == 0.0f || ((Unk_StreamPoint*)out)->y == 0.0f)
+    ((Vector3*)out)->x = (float)FUN_140f17ed0(minimap->FUN_1422dba00()->Invoke("getGlobalX", marker->m_18->FUN_1422bb870()));
+    ((Vector3*)out)->y = (float)FUN_140f17ed0(minimap->FUN_1422dba00()->Invoke("getGlobalY", marker->m_18->FUN_1422bb870()));
+    ((Vector3*)out)->z = 0.0f;
+    if (((Vector3*)out)->x == 0.0f || ((Vector3*)out)->y == 0.0f)
         return 0;
     return 1;
 }
@@ -849,10 +849,10 @@ int UIGuideEventArrowDialog::FUN_14195f270(void* out)
     MS2Ptr<Unk_GuideHouseMark> mark = house->FUN_14198ce50(&m_param);
     if (mark == 0)
         return 0;
-    Unk_StreamPoint tmp;
-    if (!FUN_1409478c0()->FUN_140af0700(FUN_14198b2b0(mark.operator->()), *(Unk_StreamPoint*)out))
+    Vector3 tmp;
+    if (!FUN_1409478c0()->FUN_140af0700(FUN_14198b2b0(mark.operator->()), *(Vector3*)out))
         return 0;
-    FUN_140ad0c10((Unk_StreamPoint*)out, FUN_141adbe70(FUN_1403ed2b0()));
+    FUN_140ad0c10((Vector3*)out, FUN_141adbe70(FUN_1403ed2b0()));
     return 1;
 }
 
@@ -865,7 +865,7 @@ int UIGuideEventArrowDialog::FUN_14195f3a0(void* out)
     MS2Ptr<ASDisplayObject> root(dynamic_cast<ASDisplayObject*>((AScript*)party->FUN_1422dba00()));
     if (root == 0)
         return 0;
-    *(Unk_StreamPoint*)out = Unk_StreamPoint(reinterpret_cast<Unk_GuideDO*>(root.operator->())->FUN_1422c10a0(),
+    *(Vector3*)out = Vector3(reinterpret_cast<Unk_GuideDO*>(root.operator->())->FUN_1422c10a0(),
         reinterpret_cast<Unk_GuideDO*>(root.operator->())->FUN_1422c1110(), reinterpret_cast<Unk_GuideDO*>(root.operator->())->FUN_1422c1180());
     return party->FUN_141a75680(out);
 }
@@ -899,7 +899,7 @@ int UIGuideEventArrowDialog::FUN_14195f870(UISwfEntity* ui, void* out)
     MS2Ptr<ASDisplayObject> root(dynamic_cast<ASDisplayObject*>((AScript*)ui->FUN_1422dba00()));
     if (root == 0)
         return 0;
-    *(Unk_StreamPoint*)out = Unk_StreamPoint(root->FUN_1422c10a0(), root->FUN_1422c1110(), root->FUN_1422c1180());
+    *(Vector3*)out = Vector3(root->FUN_1422c10a0(), root->FUN_1422c1110(), root->FUN_1422c1180());
     MS2Ptr<ASDisplayObject> last(0);
     if (m_path.GetCount() != 0) {
         MS2Ptr<ASDisplayObject> cur = ui->FUN_1422dba50();
@@ -909,12 +909,12 @@ int UIGuideEventArrowDialog::FUN_14195f870(UISwfEntity* ui, void* out)
                 return 0;
             if (!cur->FUN_1422bfca0())
                 return 0;
-            ((Unk_StreamPoint*)out)->FUN_140a4e560(Unk_StreamPoint(cur->FUN_1422c10a0(), cur->FUN_1422c1110(), cur->FUN_1422c1180()));
+            ((Vector3*)out)->FUN_140a4e560(Vector3(cur->FUN_1422c10a0(), cur->FUN_1422c1110(), cur->FUN_1422c1180()));
             last = cur;
         }
     }
     if (last.get() != 0)
-        ((Unk_StreamPoint*)out)->x += (float)(last->FUN_1422c1340() / 2);
+        ((Vector3*)out)->x += (float)(last->FUN_1422c1340() / 2);
     return 1;
 }
 
@@ -928,7 +928,7 @@ int FUN_14193a010();
 // MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 int UIGuideEventArrowDialog::FUN_14195fc40(UISwfEntity* ui, void* out)
 {
-    Unk_StreamPoint* pos = (Unk_StreamPoint*)out;
+    Vector3* pos = (Vector3*)out;
     MS2Ptr<ASDisplayObject> root = GuideRoot(ui);
     if (root.IsNull())
         return 0;

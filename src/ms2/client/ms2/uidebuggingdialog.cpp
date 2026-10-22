@@ -26,7 +26,7 @@ class CMeshUVPicker : public efd::MemObject
 {
 public:
     CMeshUVPicker();                                                    // 0x14147e6e0
-    bool FUN_14147ea50(void* pMesh, void* pCam, float fX, float fY, Unk_StreamPoint* pHit, Unk_StreamPoint* pNormal,
+    bool FUN_14147ea50(void* pMesh, void* pCam, float fX, float fY, Vector3* pHit, Vector3* pNormal,
                        efd::Point2* pUV, unsigned* pTri, void* pSkins);   // pick
     char m_pad[0x98];
 };
@@ -89,7 +89,7 @@ void* FUN_1413f9850();                                                  // the s
 void* FUN_140af2a30(void* pManager);
 ecr::SceneGraphService* FUN_1413f98b0();                                // the scene graph service
 efd::Point2* FUN_140a0a600(efd::Point2* pOut, float fX, float fY);
-extern Unk_StreamPoint DAT_143b01a60;                                   // the zero point
+extern Vector3 DAT_143b01a60;                                   // the zero point
 void* FUN_140a7b840(void* pMap);                                        // npc tree iterator
 void* FUN_140a7b8e0(void* pMap, void* pos);
 PCBase* FUN_140a7b650(void* pEntry);
@@ -251,8 +251,8 @@ void UIDebuggingDialog::vfunc_33(void* p, float fX, float fY)
             if (pMesh == 0)
                 continue;
             void* pView = FUN_1413f9a70();
-            Unk_StreamPoint kHit;
-            Unk_StreamPoint kNormal;
+            Vector3 kHit;
+            Vector3 kNormal;
             efd::Point2 kUV;
             efd::Point2 kCursor;
             if (FUN_140aadf80()->FUN_141b90e30(&kCursor.x, &kCursor.y) == 0)

@@ -27,7 +27,7 @@ public:
     virtual void vfunc_39(double fTime);
 
     void FUN_140a38550(int nObjectId);                  // 0x140a38550 (inline COMDAT in the exe)
-    Unk_StreamPoint FUN_140a38570();                    // the look-at point (the boss, nudged towards the player)
+    Vector3 FUN_140a38570();                    // the look-at point (the boss, nudged towards the player)
 
     int m_108;                          // +0x108 object id of the boss
     CBossTargetCameraData m_data;       // +0x110

@@ -41,10 +41,10 @@ public:
     virtual void vfunc_8(Unk_BrushVec2 v);  // 8  set the scale range
     virtual void vfunc_9(Unk_BrushVec2 v);  // 9  set the rotation range
     void SetKColor(const NiColorA& kColor);     // 0x141197470 set the circle colour
-    void SetPtPos(Unk_StreamPoint pt);         // 0x1411974a0 sets the brush point (+0x28)
-    Unk_StreamPoint GetPtPos();                // 0x1411974d0 the brush point
+    void SetPtPos(Vector3 pt);         // 0x1411974a0 sets the brush point (+0x28)
+    Vector3 GetPtPos();                // 0x1411974d0 the brush point
     NiColorA m_kColor;                      // +0x18
-    Unk_StreamPoint m_ptPos;                // +0x28
+    Vector3 m_ptPos;                // +0x28
     Unk_BrushVec2 m_vUnused;                // +0x34
     Timer m_timer;                          // +0x40
 };

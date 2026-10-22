@@ -26,7 +26,7 @@ CArcController::~CArcController()
 }
 
 // @0x1409ab1b0
-bool CArcController::FUN_1409ab1b0(Unk_StreamPoint from, Unk_StreamPoint to, float speed, float gravityScale)
+bool CArcController::FUN_1409ab1b0(Vector3 from, Vector3 to, float speed, float gravityScale)
 {
     m_bRising = true;
     m_offset = DAT_143b01a60;
@@ -55,7 +55,7 @@ bool CArcController::IsRising() const
 MS2_REPLACE_METHOD(0x1409ab320, CArcController, IsRising, 15, 0x138EA3C5);
 
 // @0x1409ab340
-Unk_StreamPoint CArcController::GetPosition() const
+Vector3 CArcController::GetPosition() const
 {
     return m_position;
 }
@@ -77,7 +77,7 @@ void CArcController::FUN_1409ab3b0(float fDelta)
         m_elapsed += fDelta;
         if (m_elapsed > m_arc.m_flightScale)
             m_elapsed = m_arc.m_flightScale;
-        Unk_StreamPoint delta = FUN_1409ab5c0(m_arc.m_speed * m_arc.m_angle.m_cos * m_elapsed, m_arc.m_direction);
+        Vector3 delta = FUN_1409ab5c0(m_arc.m_speed * m_arc.m_angle.m_cos * m_elapsed, m_arc.m_direction);
         delta.z = 0.5f * m_arc.m_gravity * m_elapsed * m_elapsed + m_arc.m_speed * m_arc.m_angle.m_sin * m_elapsed;
         if (m_offset.FUN_140552690(DAT_143b01a60))
             m_offset = delta;
@@ -90,9 +90,9 @@ void CArcController::FUN_1409ab3b0(float fDelta)
 MS2_REPLACE_METHOD(0x1409ab3b0, CArcController, FUN_1409ab3b0, 430, 0x4EB1F775);
 
 // @0x1409ab5c0 (efd::Point3 operator*(float, const Point3&), declared in nipoint3.h)
-Unk_StreamPoint FUN_1409ab5c0(float fScalar, const Unk_StreamPoint& pt)
+Vector3 FUN_1409ab5c0(float fScalar, const Vector3& pt)
 {
-    return Unk_StreamPoint(fScalar * pt.x, fScalar * pt.y, fScalar * pt.z);
+    return Vector3(fScalar * pt.x, fScalar * pt.y, fScalar * pt.z);
 }
 
 // @0x1409ab690

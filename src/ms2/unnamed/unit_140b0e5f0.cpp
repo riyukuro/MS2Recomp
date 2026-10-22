@@ -90,7 +90,7 @@ struct Unk_CeConstTable
 Unk_CeConstTable* FUN_1401d3200();
 float* FUN_140298f40(Unk_CeConstFloat* p);
 unsigned* FUN_140b0f480(Unk_CeConstUInt* pSlot);
-extern Unk_StreamPoint DAT_143b01a60;              // checked value getter
+extern Vector3 DAT_143b01a60;              // checked value getter
 void FUN_1402b7560(void* pSlot, const char* pszMessage);
 
 // World service / players.
@@ -107,7 +107,7 @@ int FUN_141658e60(PCBase* p);
 int FUN_141663940(PCBase* p);
 __int64 FUN_141663990(PCBase* p);
 int FUN_14123c580(PCBase* p);                           // object id
-float FUN_140966f00(Unk_StreamPoint a, Unk_StreamPoint b);  // distance
+float FUN_140966f00(Vector3 a, Vector3 b);  // distance
 int FUN_140268870(Unk_CoupleTick* p, unsigned nInterval);   // true once the interval elapsed (re-arms)
 bool FUN_140164830(const CStringW& a, const CStringW& b);
 
@@ -140,7 +140,7 @@ void CoupleEffectSystem::FUN_140b0e7a0()
         return;
     NiPoint3 ptPartner = pPartner->vfunc_18();
     NiPoint3 ptOwner = m_pOwner->vfunc_18();
-    float fDistance = FUN_140966f00(reinterpret_cast<Unk_StreamPoint&>(ptOwner), reinterpret_cast<Unk_StreamPoint&>(ptPartner));
+    float fDistance = FUN_140966f00(reinterpret_cast<Vector3&>(ptOwner), reinterpret_cast<Vector3&>(ptPartner));
     float fMaxDistance = *FUN_140298f40(&FUN_1401d3200()->m_maxDistance);
     if (fDistance > fMaxDistance)
     {
@@ -159,7 +159,7 @@ void CoupleEffectSystem::FUN_140b0e7a0()
         if (m_timer.FUN_140868c00() != 0)
         {
             Unk_CoupleVec ptMid = FUN_140b0f160();
-            float fMove = FUN_140966f00(reinterpret_cast<Unk_StreamPoint&>(m_posEffect), reinterpret_cast<Unk_StreamPoint&>(ptMid));
+            float fMove = FUN_140966f00(reinterpret_cast<Vector3&>(m_posEffect), reinterpret_cast<Vector3&>(ptMid));
             if (50.0f < fMove && m_nEffectId != 0)
                 FUN_140b0f3a0(1);
         }
@@ -301,7 +301,7 @@ Unk_CoupleVec CoupleEffectSystem::FUN_140b0f160()
         return Unk_CoupleVec(DAT_143b01a60);
     NiPoint3 ptPartner = pPartner->vfunc_18();
     NiPoint3 ptOwner = m_pOwner->vfunc_18();
-    Unk_StreamPoint ptMid = reinterpret_cast<Unk_StreamPoint&>(ptOwner).FUN_14097fd50(reinterpret_cast<Unk_StreamPoint&>(ptPartner)).FUN_140ae9180(2.0f);
+    Vector3 ptMid = reinterpret_cast<Vector3&>(ptOwner).FUN_14097fd50(reinterpret_cast<Vector3&>(ptPartner)).FUN_140ae9180(2.0f);
     return Unk_CoupleVec(ptMid);
 }
 

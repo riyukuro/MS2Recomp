@@ -286,7 +286,7 @@ Unk_MyPCFieldRef FUN_140a55460(int nMapId);
 class Unk_RideeFieldObj : public CPtred {};                  // a named field object (Ridee view)
 class Unk_MyPCWorld { public: bool FUN_141bcb210(); NiPoint3 FUN_141bd37e0(); int FUN_141bdb660(int nKind); MS2Ptr<Unk_RideeFieldObj> FUN_141bc4e70(CString strName); int FUN_141bdb5a0(int nObserveMode); void FUN_141bbbda0(); int FUN_141bd3e00(); PCBase* FUN_141bd1200(int nObjectId); PCBase* FUN_141bd2170(int nType, float fRange, int bFrontOnly, int bBonus); int FUN_141bd3060(); PCBase* FUN_141bd1320(int nObjectId); void FUN_141bca240(); PCBase* FUN_141bd0cc0(); efd::IBase* FUN_141bd1530(__int64 nId);
     void FUN_141bd1750(ATL::CAtlList<efd::SmartPointer<GameObject> >& aOut); Unk_MyPCFieldRef FUN_141bd30a0();
-    egf::Entity* FUN_141bcfd30(unsigned nModelId, Unk_StreamPoint kPos, float fRange, int bNearest, int nSkip);
+    egf::Entity* FUN_141bcfd30(unsigned nModelId, Vector3 kPos, float fRange, int bNearest, int nSkip);
     void FUN_141bd1ed0(std::list<class Unk_MyPCDropItem*>* pOut, std::list<class Unk_MyPCDropItem*>* pOutMeso, int bSkipOwned, int a, int b);
     class Unk_MyPCDropItem* FUN_141bd1d10(int a, int b); PCBase* FUN_141bd1290(int nObjectId); };
 Unk_MyPCWorld* FUN_1403ed2d0();
@@ -504,7 +504,7 @@ bool FUN_141682f80(void* pQueue, int nId);                  // the queue holds n
 void FUN_141676140(PCBase* pActor);                         // move update
 // PC members fittingdollpc.h does not declare.
 void* FUN_141659b80(PC* pPC, int nSide, unsigned nType, float fRange);   // the nearest object of nType on a side
-extern Unk_StreamPoint DAT_143b01a60;                       // the zero point
+extern Vector3 DAT_143b01a60;                       // the zero point
 int FUN_14165b500(PCBase* pPC, int nKind);                  // PCBase member: holds a usable item of nKind
 int FUN_14165c1b0(PCBase* pPC, int* pOut, CString& strOut, float f);   // PCBase member
 extern int DAT_143ab2914;                                   // the local character level
@@ -714,8 +714,8 @@ class Unk_MyPCCameraCtl : public CTargetCameraMode
 {
 public:
     // 0x141533e80 (inline)
-    Unk_StreamPoint FUN_141533e80() { return m_c0.m_pos; }
-    Unk_StreamPoint FUN_140af8260();   // the setting's m_18 (CCameraMode's inline; its harvested name is another copy)
+    Vector3 FUN_141533e80() { return m_c0.m_pos; }
+    Vector3 FUN_140af8260();   // the setting's m_18 (CCameraMode's inline; its harvested name is another copy)
 };
 class Unk_MyPCCamera { public: int FUN_140a18070(); NiPoint3 FUN_140af8290(); void FUN_140aeaf40(PCBase* pTarget, int bReset); void FUN_140af0cc0(float fYaw); int FUN_140af7e30(); Unk_CameraTarget* FUN_140a38d60(); void FUN_140af9b40(float fDistance); Unk_MyPCCameraCtl* FUN_140af2520(); void FUN_140aed580(const Unk_CameraFlyBy* pFlyBy, int nKind, float fDuration); void FUN_140aed750(int nMode, int bKeep); };   // the camera target position
 Unk_MyPCCamera* FUN_1409478c0();
@@ -734,7 +734,7 @@ struct Unk_MyPCGuildSummary
 MS2_CHECK_OFFSET(Unk_MyPCGuildSummary, m_strEmblemPath, 0xc8);
 class Unk_MyPCSingleton { public: bool FUN_141b89990(); Unk_MyPCGuildSummary* FUN_140d295d0(); void FUN_141b89030(); };
 Unk_MyPCSingleton* FUN_1409eed90();
-CStringW FUN_140b8f730(const Unk_StreamPoint& kPos);           // "x,y,z"
+CStringW FUN_140b8f730(const Vector3& kPos);           // "x,y,z"
 
 // The lapenshard table (FUN_1409c4b30): the record of an item id (MS2Ptr view; ==0 0x1405b7050, -> 0x1405b70e0,
 // dtor 0x1405b6e60) and its group.
@@ -3707,7 +3707,7 @@ void MyPC::FUN_14152e170(int nMode, int nArg)
     packet.Encode1(nArg);
     packet.Encode4(FUN_14086d260()->FUN_141473390());
     if (nMode == 0)
-        packet.WriteVector3(reinterpret_cast<const Unk_StreamPoint&>(static_cast<const NiPoint3&>(vfunc_18())));
+        packet.WriteVector3(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())));
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x14152E170, MyPC, FUN_14152e170, 199, 0xEDEFDAF6);

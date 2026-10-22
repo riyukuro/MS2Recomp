@@ -52,9 +52,9 @@ extern char DAT_143afafe0;          // NiFloatsExtraData::ms_RTTI
 extern char DAT_143afc8c0;          // RTTI of the joint-carrying scene component
 extern char DAT_143afc898;          // assertions throw when set
 extern char DAT_1439fc800;          // texture format preferences
-extern Unk_StreamPoint DAT_143b01a60;   // the zero point
-extern Unk_StreamPoint DAT_143a08cf8;   // the up axis
-extern Unk_StreamPoint DAT_143a08cd8;   // reference axis
+extern Vector3 DAT_143b01a60;   // the zero point
+extern Vector3 DAT_143a08cf8;   // the up axis
+extern Vector3 DAT_143a08cd8;   // reference axis
 
 // ---- out-of-unit callees ----
 
@@ -117,8 +117,8 @@ void FUN_141200e30(Unk_PickTarget* pPart, int n);
 NiAVObject* FUN_1411673f0(Unk_PickTarget* pPart, const CString* pNodeName);   // the part's attach node
 float FUN_141422340(Unk_PickTarget* pPart, int nIndex);         // customize value nIndex of the part
 void FUN_1414225d0(MS2Ptr<Unk_PickTarget> spPart, int nIndex, float fValue);   // stores value nIndex
-void FUN_141422840(Unk_PickTarget* pPart, const Unk_StreamPoint& kPos, const Unk_StreamPoint& kEuler, float fScale);
-void FUN_141422950(const NiTransform& kXf, Unk_StreamPoint* pEuler);   // transform -> euler angles (degrees)
+void FUN_141422840(Unk_PickTarget* pPart, const Vector3& kPos, const Vector3& kEuler, float fScale);
+void FUN_141422950(const NiTransform& kXf, Vector3* pEuler);   // transform -> euler angles (degrees)
 Unk_PickPartInfo* FUN_141200ab0(Unk_PickTarget* pPart);
 
 // Preset list inside the part facts (+0x58).
@@ -127,13 +127,13 @@ bool FUN_14059da70(Unk_PonyPresets* p);                         // empty
 int FUN_1401e5720(Unk_PonyPresets* p);                          // count
 void* FUN_14059ce40(Unk_PonyPresets* p, size_t nIndex);         // element holder
 #define PONY_PRESETS(pInfo) ((Unk_PonyPresets*)((char*)(pInfo) + 0x58)) // the part info's preset array
-struct Unk_PonyPresetEntry { char m_pad[0x18]; Unk_StreamPoint m_kPos; Unk_StreamPoint m_kEuler; };
+struct Unk_PonyPresetEntry { char m_pad[0x18]; Vector3 m_kPos; Vector3 m_kEuler; };
 Unk_PonyPresetEntry* FUN_14059cf20(void* pHolder);                             // element data
 
 // Geometry / scene helpers.
-float FUN_140a00f20(const Unk_StreamPoint& a, const Unk_StreamPoint& b);   // Dot
-void FUN_140a01250(Unk_StreamPoint ptRot, Unk_StreamPoint* pForward, Unk_StreamPoint* pRight);   // basis from a z rotation
-Unk_StreamPoint FUN_140a0b080(const Unk_StreamPoint& kEnd, const Unk_StreamPoint& kStart, const Unk_StreamPoint& kUp);   // euler of a look-at
+float FUN_140a00f20(const Vector3& a, const Vector3& b);   // Dot
+void FUN_140a01250(Vector3 ptRot, Vector3* pForward, Vector3* pRight);   // basis from a z rotation
+Vector3 FUN_140a0b080(const Vector3& kEnd, const Vector3& kStart, const Vector3& kUp);   // euler of a look-at
 void FUN_1420849a0(Unk_EfdMatrix3* p);                          // efd::Matrix3::MakeIdentity
 void* FUN_1409478e0(void* pNode);                               // the node's world transform
 void* FUN_14098d8d0(const void* pRTTI, const void* pObject);    // dynamic cast (NULL-safe)
@@ -203,9 +203,9 @@ MS2_CHECK_SIZE(Unk_PonyJointEntry, 0x18);
 typedef std::set<efd::SmartPointer<NiAVObject> > Unk_MeshSet;   // the part's mesh objects
 Unk_MeshSet* FUN_141201c90(Unk_PickTarget* pPart);
 
-static inline const NiPoint3& N3(const Unk_StreamPoint& p) { return reinterpret_cast<const NiPoint3&>(p); }
-static inline Unk_StreamPoint SPV(const NiPoint3& p) { return Unk_StreamPoint(p.x, p.y, p.z); }
-static inline Unk_StreamPoint& SP(Unk_FcPoint3& p) { return reinterpret_cast<Unk_StreamPoint&>(p); }
+static inline const NiPoint3& N3(const Vector3& p) { return reinterpret_cast<const NiPoint3&>(p); }
+static inline Vector3 SPV(const NiPoint3& p) { return Vector3(p.x, p.y, p.z); }
+static inline Vector3& SP(Unk_FcPoint3& p) { return reinterpret_cast<Vector3&>(p); }
 
 void* FUN_1412018c0(void* self);
 class Unk_PonyPlayer;
@@ -509,10 +509,10 @@ void CPonyTailController::vfunc_37()
 // The position of a point mirrored across the plane through kOrigin (with its z taken from the point) whose normal is
 // kAxis.
 // @0x141695bc0
-Unk_StreamPoint CPonyTailController::FUN_141695bc0(const Unk_StreamPoint& kOrigin, const Unk_StreamPoint& kPoint,
-                                                   const Unk_StreamPoint& kAxis)
+Vector3 CPonyTailController::FUN_141695bc0(const Vector3& kOrigin, const Vector3& kPoint,
+                                                   const Vector3& kAxis)
 {
-    Unk_StreamPoint kPlane = kOrigin;
+    Vector3 kPlane = kOrigin;
     kPlane.z = kPoint.z;
     kPlane = kPoint.FUN_140965c40(kPlane);
     return kPoint.FUN_140965c40(kAxis.FUN_14097fc90(2.0f).FUN_14097fc90(FUN_140a00f20(kPlane, kAxis)));
@@ -520,27 +520,27 @@ Unk_StreamPoint CPonyTailController::FUN_141695bc0(const Unk_StreamPoint& kOrigi
 
 // Applies the pose of a drag to one part: the look-at (kind 1) or the surface frame (other kinds) of the part's
 // model at kPos with the direction kDir.
-static void ApplyPartPose(CPonyTailController* pThis, Unk_PonyPart& kPart, Unk_PickTarget* pPart, const Unk_StreamPoint& kPos,
-                          const Unk_StreamPoint& kDir, int nPickIndex)
+static void ApplyPartPose(CPonyTailController* pThis, Unk_PonyPart& kPart, Unk_PickTarget* pPart, const Vector3& kPos,
+                          const Vector3& kDir, int nPickIndex)
 {
     CEquipModel* pModel = reinterpret_cast<CEquipModel*>(pPart);
     int nKind = FUN_141200ab0(pPart)->m_nKind;
     Unk_NiMatrix3 mRot;
     if (nKind == 1)
     {
-        Unk_StreamPoint kTip = kPos.FUN_14097fd50(kDir.FUN_14097fc90(10.0f));
-        Unk_StreamPoint kEuler = FUN_140a0b080(kPos, kTip, DAT_143a08cf8);
+        Vector3 kTip = kPos.FUN_14097fd50(kDir.FUN_14097fc90(10.0f));
+        Vector3 kEuler = FUN_140a0b080(kPos, kTip, DAT_143a08cf8);
         kEuler.z = kEuler.z + 90.0f;
-        Unk_StreamPoint kRad = kEuler.FUN_14097fc90(3.1415927f).FUN_140ae9180(180.0f);
+        Vector3 kRad = kEuler.FUN_14097fc90(3.1415927f).FUN_140ae9180(180.0f);
         mRot.FUN_142083d40(kRad.x, kRad.y, kRad.z);
     }
     else
     {
-        Unk_StreamPoint kN = kDir;
+        Vector3 kN = kDir;
         kN.FUN_140968990();
-        Unk_StreamPoint kUp = kN.FUN_140a00e10(DAT_143a08cf8).FUN_1409f7960();
+        Vector3 kUp = kN.FUN_140a00e10(DAT_143a08cf8).FUN_1409f7960();
         kUp.FUN_140968990();
-        Unk_StreamPoint kFwd = kN.FUN_140a00e10(kUp);
+        Vector3 kFwd = kN.FUN_140a00e10(kUp);
         kFwd.FUN_140968990();
         Unk_NiPoint3 cN(kN), cU(kUp), cF(kFwd);
         Unk_NiMatrix3 mBasis(cN, cU, cF);
@@ -628,8 +628,8 @@ void CPonyTailController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNormal
     float fThreshold = (float)*(int*)((char*)FUN_141200ab0(spFirst.operator->()) + 0x50) / 255.0f;
     if (!(fThreshold < fValue))
         return;
-    const Unk_StreamPoint& kHitPt = reinterpret_cast<const Unk_StreamPoint&>(kHit);
-    const Unk_StreamPoint& kNormalPt = reinterpret_cast<const Unk_StreamPoint&>(kNormal);
+    const Vector3& kHitPt = reinterpret_cast<const Vector3&>(kHit);
+    const Vector3& kNormalPt = reinterpret_cast<const Vector3&>(kNormal);
     ApplyPartPose(this, m_kFirst, spFirst.operator->(), kHitPt, kNormalPt, 0);
     reinterpret_cast<NiPoint3&>(m_kFirst.m_kAnchor) = kNormal;
     CPonyTailPhysXHelper::UpdateModelPhysXValues(spFirst.get(), (char*)FUN_141200ab0(spFirst.operator->()) + 0xb8);
@@ -637,14 +637,14 @@ void CPonyTailController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNormal
     MS2Ptr<Unk_PickTarget> spSecond = m_kSecond.m_spModel;
     if (spSecond.get() == 0)
         return;
-    Unk_StreamPoint kForward, kRight;
-    FUN_140a01250(Unk_StreamPoint(pPlayer->vfunc_20().x, pPlayer->vfunc_20().y, pPlayer->vfunc_20().z), &kForward, &kRight);
-    Unk_StreamPoint kAnchor = SP(m_kFirst.m_kAnchor);
-    Unk_StreamPoint kPlayerPos = SPV(pPlayer->vfunc_18());
-    Unk_StreamPoint kMirror = FUN_141695bc0(kPlayerPos, kHitPt, kRight);
-    Unk_StreamPoint kTip = kHitPt.FUN_14097fd50(kAnchor.FUN_14097fc90(10.0f));
+    Vector3 kForward, kRight;
+    FUN_140a01250(Vector3(pPlayer->vfunc_20().x, pPlayer->vfunc_20().y, pPlayer->vfunc_20().z), &kForward, &kRight);
+    Vector3 kAnchor = SP(m_kFirst.m_kAnchor);
+    Vector3 kPlayerPos = SPV(pPlayer->vfunc_18());
+    Vector3 kMirror = FUN_141695bc0(kPlayerPos, kHitPt, kRight);
+    Vector3 kTip = kHitPt.FUN_14097fd50(kAnchor.FUN_14097fc90(10.0f));
     kPlayerPos = SPV(pPlayer->vfunc_18());
-    Unk_StreamPoint kMirrorTip = FUN_141695bc0(kPlayerPos, kTip, kRight);
+    Vector3 kMirrorTip = FUN_141695bc0(kPlayerPos, kTip, kRight);
     SP(m_kSecond.m_kAnchor) = kMirrorTip.FUN_140965c40(kMirror);
     SP(m_kSecond.m_kAnchor).FUN_140968990();
     ApplyPartPose(this, m_kSecond, spSecond.operator->(), kMirror, SP(m_kSecond.m_kAnchor), 1);
@@ -701,7 +701,7 @@ void CPonyTailController::FUN_141694650()
             pModel->vfunc_24(kPos);
             pModel->vfunc_26(kEuler);
             FUN_1412021a0(m_kFirst.m_spModel.operator->(), &m_kFirst.m_kRest);
-            m_kFirst.m_kAnchor = Unk_NiPoint3(reinterpret_cast<Unk_StreamPoint&>(kAnchor));
+            m_kFirst.m_kAnchor = Unk_NiPoint3(reinterpret_cast<Vector3&>(kAnchor));
         }
     }
     if (m_kFirst.m_spModel.get() && m_kSecond.m_spModel.get())
@@ -711,20 +711,20 @@ void CPonyTailController::FUN_141694650()
         if (pModel1->vfunc_9() != 0 && pModel2->vfunc_9() != 0)
         {
             m_kSecond.m_kAnchor = Unk_NiPoint3(DAT_143b01a60);
-            Unk_StreamPoint kForward, kRight;
+            Vector3 kForward, kRight;
             FUN_140a01250(SPV(pPlayer->vfunc_20()), &kForward, &kRight);
-            Unk_StreamPoint kPlayerPos = SPV(pPlayer->vfunc_18());
-            Unk_StreamPoint kPartPos = SPV(pModel1->vfunc_23());
-            Unk_StreamPoint kMirror = FUN_141695bc0(kPlayerPos, kPartPos, kRight);
+            Vector3 kPlayerPos = SPV(pPlayer->vfunc_18());
+            Vector3 kPartPos = SPV(pModel1->vfunc_23());
+            Vector3 kMirror = FUN_141695bc0(kPlayerPos, kPartPos, kRight);
             pModel2->vfunc_24(N3(kMirror));
-            Unk_StreamPoint kTip = SPV(pModel1->vfunc_23())
+            Vector3 kTip = SPV(pModel1->vfunc_23())
                                        .FUN_14097fd50(SP(m_kFirst.m_kAnchor).FUN_14097fc90(10.0f));
             kPlayerPos = SPV(pPlayer->vfunc_18());
-            Unk_StreamPoint kMirrorTip = FUN_141695bc0(kPlayerPos, kTip, kRight);
+            Vector3 kMirrorTip = FUN_141695bc0(kPlayerPos, kTip, kRight);
             m_kSecond.m_kAnchor = Unk_NiPoint3(kMirrorTip.FUN_140965c40(kMirror));
             SP(m_kSecond.m_kAnchor).FUN_140968990();
-            Unk_StreamPoint kLookAt = kMirror.FUN_14097fd50(SP(m_kSecond.m_kAnchor).FUN_14097fc90(10.0f));
-            Unk_StreamPoint kEuler = FUN_140a0b080(kMirror, kLookAt, DAT_143a08cf8);
+            Vector3 kLookAt = kMirror.FUN_14097fd50(SP(m_kSecond.m_kAnchor).FUN_14097fc90(10.0f));
+            Vector3 kEuler = FUN_140a0b080(kMirror, kLookAt, DAT_143a08cf8);
             kEuler.z = kEuler.z + 90.0f;
             pModel2->vfunc_26(N3(kEuler));
             FUN_1412021a0(m_kSecond.m_spModel.operator->(), &m_kSecond.m_kRest);
@@ -763,7 +763,7 @@ void CPonyTailController::FUN_141694ea0(Unk_PickTarget** ppFirst, Unk_PickTarget
 
 // @0x141694fb0
 void CPonyTailController::FUN_141694fb0(MS2Ptr<Unk_PickTarget> spPart, NiNode* pRoot, int nValue, int nSecond,
-                                        Unk_StreamPoint& kPos, Unk_StreamPoint& kEuler, float& fScale)
+                                        Vector3& kPos, Vector3& kEuler, float& fScale)
 {
     if ((bool)spPart.get() && pRoot != 0)
     {
@@ -771,7 +771,7 @@ void CPonyTailController::FUN_141694fb0(MS2Ptr<Unk_PickTarget> spPart, NiNode* p
         ((NiTransform*)FUN_1409478e0(pRoot))->Invert(kInverse);
         NiTransform kLocal = FUN_141695ca0(spPart.get());
         kLocal = kInverse * kLocal;
-        kPos = reinterpret_cast<const Unk_StreamPoint&>(kLocal.m_Translate);
+        kPos = reinterpret_cast<const Vector3&>(kLocal.m_Translate);
         FUN_141422950(kLocal, &kEuler);
         fScale = kLocal.m_fScale;
     }
@@ -784,7 +784,7 @@ void CPonyTailController::FUN_141694fb0(MS2Ptr<Unk_PickTarget> spPart, NiNode* p
 
 // @0x141695120
 void CPonyTailController::FUN_141695120(MS2Ptr<Unk_PickTarget> spPart, NiNode* pRoot, int nIndex, int nSecond,
-                                        Unk_StreamPoint& kPos, Unk_StreamPoint& kEuler, float& fScale)
+                                        Vector3& kPos, Vector3& kEuler, float& fScale)
 {
     Unk_PickPartInfo* pInfo = FUN_141200ab0(spPart.operator->());
     if (pInfo != 0)
@@ -880,7 +880,7 @@ void CPonyTailController::FUN_141695710(Unk_PonyPart* pPart, int nMode, int nInd
     NiAVObject* pNode = FUN_1411673f0(spPart.operator->(), (const CString*)((char*)FUN_141200ab0(spPart.operator->()) + 8));
     if (pNode == 0)
         return;
-    Unk_StreamPoint kPos, kEuler;
+    Vector3 kPos, kEuler;
     kEuler = DAT_143b01a60;
     kPos = kEuler;
     float fScale = 0;
@@ -891,7 +891,7 @@ void CPonyTailController::FUN_141695710(Unk_PonyPart* pPart, int nMode, int nInd
     }
     else
     {
-        kPos = reinterpret_cast<const Unk_StreamPoint&>(pPart->m_kStart.m_Translate);
+        kPos = reinterpret_cast<const Vector3&>(pPart->m_kStart.m_Translate);
         FUN_141422950(pPart->m_kStart, &kEuler);
         fScale = pPart->m_kStart.m_fScale;
     }
@@ -1031,7 +1031,7 @@ void CPonyTailPhysXHelper::UpdateModelPhysXValues(Unk_PickTarget* pModel, const 
     NiObjectNET* pNode = (NiObjectNET*)FUN_1412018c0(pModel);
     if (pNode == 0)
         return;
-    Unk_StreamPoint kReference = FUN_141024c90(pNode)->FUN_140a00720(DAT_143a08cd8);
+    Vector3 kReference = FUN_141024c90(pNode)->FUN_140a00720(DAT_143a08cd8);
     (void)kReference;
     for (unsigned i = 0; i < nJoints; i++)
     {

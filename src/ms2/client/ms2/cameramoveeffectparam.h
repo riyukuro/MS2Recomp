@@ -56,8 +56,8 @@ public:
 public:
     CString m_strFilePath;          // +0x48 "filePath"
     CString m_str50;                // +0x50
-    Unk_StreamPoint m_kTranslate;   // +0x58 transform "translate"
-    Unk_StreamPoint m_kRotation;    // +0x64 transform "rotation"
+    Vector3 m_kTranslate;   // +0x58 transform "translate"
+    Vector3 m_kRotation;    // +0x64 transform "rotation"
     bool m_bAttachToNode;           // +0x70 attachInfo "attachToNode" = true
     bool m_bApplyNodeTransform;     // +0x71 attachInfo "applyNodeTransform"
     CString m_strParentNode;        // +0x78 attachInfo "parentNode"

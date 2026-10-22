@@ -33,8 +33,8 @@ public:
 
     bool FUN_14177a8d0();                                       // start
     void FUN_14177a920(int bFadeOut);                           // stop (0 = request stop, else reset)
-    void FUN_14177a990(const Unk_StreamPoint& vPos);            // 3D position (+ attenuation shape)
-    void FUN_14177aac0(const Unk_StreamPoint& vPos, const Unk_StreamPoint& vVel);   // 3D position + velocity
+    void FUN_14177a990(const Vector3& vPos);            // 3D position (+ attenuation shape)
+    void FUN_14177aac0(const Vector3& vPos, const Vector3& vVel);   // 3D position + velocity
     int FUN_14177ab80();                                        // the event is playing
     // @0x1411b1ba0
     CTwoCircleCollision* FUN_1411b1ba0() { return m_pRange; }

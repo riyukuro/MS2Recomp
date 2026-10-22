@@ -59,9 +59,9 @@ void CActionCameraMode::vfunc_8(double fTime)
     {
         pEffect->m_spCameraNode->Update((float)fNow, true);
         NiPoint3 kLook = pEffect->m_spCameraNode->GetWorldTransform().m_Translate;
-        Unk_StreamPoint ptLook = *(const Unk_StreamPoint*)&kLook;
+        Vector3 ptLook = *(const Vector3*)&kLook;
         vfunc_3(ptLook);
-        Unk_StreamPoint ptRot = g_143b01a60;
+        Vector3 ptRot = g_143b01a60;
         pEffect->m_pCamera->GetWorldTransform().m_Rotate.ToEulerAnglesXYZ(ptRot.x, ptRot.y, ptRot.z);
         ptRot.x = -(ptRot.x * 180.0f / 3.1415927f);
         ptRot.y = -(ptRot.y * 180.0f / 3.1415927f);
@@ -111,11 +111,11 @@ int CActionCameraMode::vfunc_28()
 MS2_REPLACE_METHOD(0x140945460, CActionCameraMode, vfunc_28, 8, 0x7F371472);
 
 // @0x140945470
-Unk_StreamPoint CActionCameraMode::vfunc_26()
+Vector3 CActionCameraMode::vfunc_26()
 {
     NiNode* pNode = CameraMgr::GetInstance()->FUN_1409478a0()->m_spCameraNode;
-    return pNode ? *(const Unk_StreamPoint*)&static_cast<const NiPoint3&>(NiPoint3(pNode->GetWorldTranslate()))
-                 : Unk_StreamPoint(0, 0, 0);
+    return pNode ? *(const Vector3*)&static_cast<const NiPoint3&>(NiPoint3(pNode->GetWorldTranslate()))
+                 : Vector3(0, 0, 0);
 }
 MS2_REPLACE_METHOD(0x140945470, CActionCameraMode, vfunc_26, 186, 0xDDB40B2A);
 

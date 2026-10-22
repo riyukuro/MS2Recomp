@@ -21,12 +21,12 @@
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 
-extern Unk_StreamPoint DAT_143b01a60;                               // the zero point
+extern Vector3 DAT_143b01a60;                               // the zero point
 
 egf::EntityManager* FUN_1409670f0();
 egf::Entity* FUN_1411cf440(egf::EntityManager* pMgr, const egf::EntityID& id);
-int FUN_1409618c0(egf::Entity* pEntity, unsigned uPropId, Unk_StreamPoint* pOut);   // read a Point3 property (0 = ok)
-void FUN_140a38a50(egf::Entity* pEntity, unsigned uPropId, const Unk_StreamPoint& pt);   // write a Point3 property
+int FUN_1409618c0(egf::Entity* pEntity, unsigned uPropId, Vector3* pOut);   // read a Point3 property (0 = ok)
+void FUN_140a38a50(egf::Entity* pEntity, unsigned uPropId, const Vector3& pt);   // write a Point3 property
 void FUN_140add1a0(Unk_CtbBounds3* pSelf, float x0, float y0, float z0, float x1, float y1, float z1);   // set
 void FUN_140adca00(Unk_CtbMat33* pSelf);                            // identity
 void FUN_140add040(Unk_CtbMat33* pSelf, float fAngle);              // rotation about z
@@ -146,10 +146,10 @@ Unk_PortalBox::~Unk_PortalBox()
 // @0x14169b080
 int Unk_PortalBox::FUN_14169b080(egf::Entity* pEntity)
 {
-    Unk_StreamPoint ptPos;
-    Unk_StreamPoint ptRot;
-    Unk_StreamPoint ptSize;
-    Unk_StreamPoint ptCenter;
+    Vector3 ptPos;
+    Vector3 ptRot;
+    Vector3 ptSize;
+    Vector3 ptCenter;
     if (FUN_1409618c0(pEntity, 0xfb190620, &ptSize) != 0)
         return 0;
     if (FUN_1409618c0(pEntity, 0x1e1de032, &ptCenter) != 0)
@@ -158,7 +158,7 @@ int Unk_PortalBox::FUN_14169b080(egf::Entity* pEntity)
         return 0;
     if (FUN_1409618c0(pEntity, 0x68c7c29d, &ptRot) != 0)
         return 0;
-    Unk_StreamPoint ptHalf = ptSize.FUN_14097fc90(0.5f);
+    Vector3 ptHalf = ptSize.FUN_14097fc90(0.5f);
     FUN_140add1a0(&m_bounds, -ptHalf.x, -ptHalf.y, -ptHalf.z, ptHalf.x, ptHalf.y, ptHalf.z);
     m_pose.m_pos.x = ptPos.x;
     m_pose.m_pos.y = ptPos.y;
@@ -172,7 +172,7 @@ int Unk_PortalBox::FUN_14169b080(egf::Entity* pEntity)
 }
 
 // @0x14169b2e0
-int Unk_PortalBox::FUN_14169b2e0(const Unk_StreamPoint* pPoint)
+int Unk_PortalBox::FUN_14169b2e0(const Vector3* pPoint)
 {
     return FUN_140adc610(&m_obb, Unk_CtbVec3(pPoint->x, pPoint->y, pPoint->z)) != 0;
 }
@@ -203,7 +203,7 @@ bool CPortal::FUN_14169b650(efd::SmartPointer<egf::Entity> spEntity)
         return false;
     NiPoint3 ptSize = reinterpret_cast<const NiPoint3&>(DAT_143b01a60);
     ((egf::Entity*)spEntity)->GetPropertyValue(0xfb190620, static_cast<efd::Point3&>(ptSize));
-    m_pos44 = reinterpret_cast<const Unk_StreamPoint&>(ptSize);
+    m_pos44 = reinterpret_cast<const Vector3&>(ptSize);
     CString strA(strModel.c_str());
     CString strB(strTheme.c_str());
     FUN_140764310(strA, strB, &m_questMask);
@@ -221,11 +221,11 @@ bool CPortal::FUN_14169b890()
         egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), m_idEntity);
         if (pEntity == 0)
             return false;
-        Unk_StreamPoint ptPos = DAT_143b01a60;
+        Vector3 ptPos = DAT_143b01a60;
         FUN_1409618c0(pEntity, 0xfd95ca52, &ptPos);
         m_tooltip = new UIDebugTooltip(CString(""));
         m_tooltip->SetFollowsAnchor(0);
-        Unk_StreamPoint ptCopy = ptPos;
+        Vector3 ptCopy = ptPos;
         m_tooltip->FUN_14191aae0(ptCopy);
         m_tooltip->FUN_14191ab10(CStringW(L""));
         m_tooltip->FUN_14191aa10();
@@ -446,7 +446,7 @@ int CPortal::FUN_14169cc40()
 }
 
 // @0x14169cc70
-void CPortal::FUN_14169cc70(const Unk_StreamPoint& pos, const Unk_StreamPoint& rot)
+void CPortal::FUN_14169cc70(const Vector3& pos, const Vector3& rot)
 {
     efd::SmartPointer<egf::Entity> spEntity = FUN_1411cf440(FUN_1409670f0(), m_idEntity);
     if (spEntity == 0)
@@ -561,12 +561,12 @@ int CPortal::FUN_14169d280()
 }
 
 // @0x14169d2f0
-Unk_StreamPoint CPortal::FUN_14169d2f0()
+Vector3 CPortal::FUN_14169d2f0()
 {
     egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), m_idEntity);
     if (pEntity == 0)
         return DAT_143b01a60;
-    Unk_StreamPoint ptPos = DAT_143b01a60;
+    Vector3 ptPos = DAT_143b01a60;
     FUN_1409618c0(pEntity, 0xfd95ca52, &ptPos);
     return ptPos;
 }

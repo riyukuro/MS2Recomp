@@ -43,8 +43,8 @@
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
-extern Unk_StreamPoint DAT_143b01a60;                    // the zero point
-extern Unk_StreamPoint DAT_143a08cf8;                    // the up axis
+extern Vector3 DAT_143b01a60;                    // the zero point
+extern Vector3 DAT_143a08cf8;                    // the up axis
 extern char DAT_143ab2a90;                               // the rps event's context table
 
 // A PCBase seen through its slot 18 (the position, returned as the 12-byte point of the FUN_ operators).
@@ -69,7 +69,7 @@ public:
     virtual void vfunc_15();
     virtual void vfunc_16();
     virtual void vfunc_17();
-    virtual Unk_StreamPoint vfunc_18();
+    virtual Vector3 vfunc_18();
 };
 
 // The component of an actor that shows the micro game result (PCBase slot 83).
@@ -142,10 +142,10 @@ class Unk_MgGameService { public: Unk_MgEventHolder* FUN_1403ed140(); };
 Unk_MgGameService* FUN_140302b00();
 
 // Actor helpers (the bodies are in the earlier objs).
-class Unk_MgBuffMgr { public: Unk_StreamPoint FUN_141683290(); };
+class Unk_MgBuffMgr { public: Vector3 FUN_141683290(); };
 Unk_MgBuffMgr* FUN_14166d240(PCBase* p);                 // 0x14166d240
 bool FUN_1416749c0(PCBase* p);                           // 0x1416749c0
-Unk_StreamPoint FUN_140a0b080(const Unk_StreamPoint& kEnd, const Unk_StreamPoint& kStart, const Unk_StreamPoint& kUp);   // 0x140a0b080 look-at euler
+Vector3 FUN_140a0b080(const Vector3& kEnd, const Vector3& kStart, const Vector3& kUp);   // 0x140a0b080 look-at euler
 unsigned FUN_140869420();                                // 0x140869420 the clock
 bool FUN_1401647e0(const CString& strA, const CString& strB);   // 0x1401647e0 the strings are equal
 CString FUN_1401d4330(const wchar_t* psz, int nCodePage);       // 0x1401d4330 wide to ansi
@@ -224,10 +224,10 @@ void StateMicroGameRps::vfunc_3(double fTime)
     PCBase* pPartner = FUN_140b879d0();
     if (pPartner == 0)
         return;
-    Unk_StreamPoint kLook = FUN_140a0b080(reinterpret_cast<Unk_MgPos*>(pPartner)->vfunc_18(),
+    Vector3 kLook = FUN_140a0b080(reinterpret_cast<Unk_MgPos*>(pPartner)->vfunc_18(),
         reinterpret_cast<Unk_MgPos*>(pActor)->vfunc_18(), DAT_143a08cf8);
     pActor->FUN_14166d8b0(kLook.z);
-    Unk_StreamPoint kZero = DAT_143b01a60;
+    Vector3 kZero = DAT_143b01a60;
     pActor->vfunc_68(&kZero, fTime, 0, 0, 0);
 }
 
@@ -298,7 +298,7 @@ void StateMicroGameRps::vfunc_8(double fTime)
     if (FUN_1417b8560() == 0)
         return;
     Unk_MgBuffMgr* pBuff = FUN_14166d240(m_pOwner);
-    efd::Point3 kArg = reinterpret_cast<const efd::Point3&>(static_cast<const Unk_StreamPoint&>(pBuff->FUN_141683290()));
+    efd::Point3 kArg = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290()));
     m_pOwner->vfunc_22(kArg);
     if (FUN_1416749c0(m_pOwner))
         m_pOwner->vfunc_59(2, 0, 0, 0);
@@ -652,7 +652,7 @@ bool FUN_140b883c0()
 
 // Both players are within the micro game's reach.
 // @0x140b88470
-bool FUN_140b88470(const Unk_StreamPoint& kA, const Unk_StreamPoint& kB)
+bool FUN_140b88470(const Vector3& kA, const Vector3& kB)
 {
     float fMax = (float)*static_cast<Client::Constants*>(FUN_1401d3200())->MicroGameMaxDistance.Get();
     float fDist = kA.FUN_140965c40(kB).FUN_140967ac0();
@@ -664,7 +664,7 @@ bool FUN_140b88470(const Unk_StreamPoint& kA, const Unk_StreamPoint& kB)
 // Is the point a legal spot to stand: ground below, not blocked, and no solid / forbidden object on it?
 // @0x140b884e0
 // MS2-FUNCTIONAL: written from the call sequence.
-bool FUN_140b884e0(Unk_StreamPoint& kPoint)
+bool FUN_140b884e0(Vector3& kPoint)
 {
     kPoint.z += 5.0f;
     float fDist = 0.0f;
@@ -672,7 +672,7 @@ bool FUN_140b884e0(Unk_StreamPoint& kPoint)
         return false;
     if (FUN_1409f7ca0()->FUN_14168a770((const efd::Point3*)&kPoint))
         return false;
-    Unk_StreamPoint kDown = DAT_143b01a60;
+    Vector3 kDown = DAT_143b01a60;
     Unk_MgRayHit kHit;
     if (FUN_1409f7ca0()->FUN_14168a310(efd::Point3(kPoint.x, kPoint.y, kPoint.z), (efd::Point3&)kDown, &kHit, 0.0f, 0, 0) == 0)
         return false;
@@ -763,10 +763,10 @@ void StateMicroGameCoupleDance::vfunc_3(double fTime)
     PCBase* pPartner = FUN_140b89dd0();
     if (pPartner == 0)
         return;
-    Unk_StreamPoint kLook = FUN_140a0b080(reinterpret_cast<Unk_MgPos*>(pPartner)->vfunc_18(),
+    Vector3 kLook = FUN_140a0b080(reinterpret_cast<Unk_MgPos*>(pPartner)->vfunc_18(),
         reinterpret_cast<Unk_MgPos*>(pActor)->vfunc_18(), DAT_143a08cf8);
     pActor->FUN_14166d8b0(kLook.z);
-    Unk_StreamPoint kZero = DAT_143b01a60;
+    Vector3 kZero = DAT_143b01a60;
     pActor->vfunc_68(&kZero, fTime, 0, 0, 0);
     if (m_nDeadline != 0 && FUN_140869420() >= (unsigned)m_nDeadline)
         FUN_140b8a060();
@@ -810,7 +810,7 @@ void StateMicroGameCoupleDance::vfunc_8(double fTime)
     if (FUN_1417b8560() == 0)
         return;
     Unk_MgBuffMgr* pBuff = FUN_14166d240(m_pOwner);
-    efd::Point3 kArg = reinterpret_cast<const efd::Point3&>(static_cast<const Unk_StreamPoint&>(pBuff->FUN_141683290()));
+    efd::Point3 kArg = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290()));
     m_pOwner->vfunc_22(kArg);
     if (FUN_1416749c0(m_pOwner))
         m_pOwner->vfunc_59(2, 0, 0, 0);

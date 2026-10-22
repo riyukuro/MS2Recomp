@@ -25,7 +25,7 @@ struct Unk_PortalBox
     Unk_PortalBox();                                                    // 0x14169afb0
     ~Unk_PortalBox();                                                   // 0x14169b020
     int FUN_14169b080(egf::Entity* pEntity);                           // read size / position / rotation from the entity
-    int FUN_14169b2e0(const Unk_StreamPoint* pPoint);                  // is the point inside the box
+    int FUN_14169b2e0(const Vector3* pPoint);                  // is the point inside the box
 
     Unk_CtbBounds3 m_bounds;                                            // +0x00 local box
     Unk_CtbObb m_obb;                                                   // +0x18 the box in world space
@@ -54,7 +54,7 @@ public:
     CString FUN_14169c5f0();                                            // portal kind name ("portal", "dungeon", ...)
     CStringW FUN_14169cae0();                                           // display name
     int FUN_14169cc40();                                                // quest-npc table lookup for this portal
-    void FUN_14169cc70(const Unk_StreamPoint& pos, const Unk_StreamPoint& rot);   // move the entity, reload the box
+    void FUN_14169cc70(const Vector3& pos, const Vector3& rot);   // move the entity, reload the box
     void FUN_14169cd50(int bShown, int bGlow);                          // show / glow flags on the entity
     void FUN_14169ce50(int bShown, int bGlow, int bExtra);              // same with a third flag
     void FUN_14169cf90(int bShown);
@@ -63,16 +63,16 @@ public:
     bool FUN_14169d160();                                               // entity "shown" flag
     bool FUN_14169d1d0();                                               // shown flag and the extra flag
     int FUN_14169d280();                                                // entity int property 0xa162d321
-    Unk_StreamPoint FUN_14169d2f0();                                    // entity position (zero point when the entity is gone)
+    Vector3 FUN_14169d2f0();                                    // entity position (zero point when the entity is gone)
     void FUN_14169d3a0();                                               // scale the entity of type 0x10 by 1.5
 
     egf::EntityID m_idEntity;                                           // +0x18
     int m_nId;                                                          // +0x20 portal / room id
     int m_unk_24;
     int m_unk_28;
-    Unk_StreamPoint m_pos2c;                                            // +0x2c
-    Unk_StreamPoint m_pos38;                                            // +0x38
-    Unk_StreamPoint m_pos44;                                            // +0x44
+    Vector3 m_pos2c;                                            // +0x2c
+    Vector3 m_pos38;                                            // +0x38
+    Vector3 m_pos44;                                            // +0x44
     Unk_PortalBox m_box;                                                // +0x50
     QuestMask m_questMask;                                              // +0x108
     int m_unk_148;                                                      // +0x148 (string-table argument of the tooltip)

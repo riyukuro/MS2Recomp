@@ -19,7 +19,7 @@
 
 // ---- unit-local stand-ins and unrecovered callees ----
 
-extern Unk_StreamPoint DAT_143b01a60;                    // the zero point
+extern Vector3 DAT_143b01a60;                    // the zero point
 
 // A Constants::Value<int> seen through its Read (the inline COMDAT 0x140ad5c50 of this obj; Get is FUN_1402056b0).
 class Unk_SSGConstValue { public: int* FUN_1402056b0(); int FUN_140ad5c50(); };
@@ -45,7 +45,7 @@ UICastingBar* FUN_140ac2270(int nId);
 CStringW GetStringCommon(int nId);                         // string table text by id
 void* FUN_14165f100(PCBase* p);
 void FUN_14165f170(PCBase* p);
-class Unk_TwBuffMgr { public: Unk_StreamPoint FUN_141683290(); };
+class Unk_TwBuffMgr { public: Vector3 FUN_141683290(); };
 Unk_TwBuffMgr* FUN_14166d240(PCBase* p);
 bool FUN_1416749c0(PCBase* p);
 
@@ -142,7 +142,7 @@ void StateTreeWatering::vfunc_7(int n)
 void StateTreeWatering::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    Unk_StreamPoint kZero = DAT_143b01a60;
+    Vector3 kZero = DAT_143b01a60;
     m_pOwner->vfunc_68(&kZero, fTime, 0, 0, 0);
 }
 
@@ -184,8 +184,8 @@ void StateTreeWatering::vfunc_8(double fTime)
         m_pOwner->vfunc_59(1, 0, 0, 0);
     }
     Unk_TwBuffMgr* pBuff = FUN_14166d240(pRider);
-    Unk_StreamPoint kPos = pBuff->FUN_141683290();
-    Unk_StreamPoint kArg = kPos;
+    Vector3 kPos = pBuff->FUN_141683290();
+    Vector3 kArg = kPos;
     pRider->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
     if (FUN_1416749c0(m_pOwner) != 0)
         pRider->vfunc_59(2, 0, 0, 0);

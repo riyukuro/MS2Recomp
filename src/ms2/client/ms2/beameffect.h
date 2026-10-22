@@ -23,7 +23,7 @@ struct Unk_BeamTarget
     char m_pad_00[0x10];
     void* m_hNode;                                  // +0x10 handle of the owner's scene node
     char m_pad_18[0x10];
-    ATL::CAtlArray<Unk_StreamPoint>* m_pPoints;     // +0x28 the points of the beam (first and last are the end points)
+    ATL::CAtlArray<Vector3>* m_pPoints;     // +0x28 the points of the beam (first and last are the end points)
 };
 MS2_CHECK_OFFSET(Unk_BeamTarget, m_hNode, 0x10);
 MS2_CHECK_OFFSET(Unk_BeamTarget, m_pPoints, 0x28);
@@ -44,7 +44,7 @@ public:
     virtual int vfunc_12();                                     // 12 0x140a0afc0 effect type 0x15
 
     void UpdateMesh();                                          // 0x140a081d0 pick the texture, build curve + strip
-    bool BuildCurve(efd::vector<Unk_StreamPoint>& kOut);        // 0x140a08c60 Catmull-Rom samples between the end points
+    bool BuildCurve(efd::vector<Vector3>& kOut);        // 0x140a08c60 Catmull-Rom samples between the end points
 public:
     MS2_LAYOUT_FRIEND;
     NiPointer<CMesh> m_spMesh;      // +0x30 "BeamEffect"
@@ -54,7 +54,7 @@ public:
     float m_fHalfWidth;             // +0x50 param width / 2
     int m_nQuality;                 // +0x54 param quality (samples per curve segment)
     int m_nUVSets;                  // +0x58 = 1
-    ATL::CAtlArray<Unk_StreamPoint>* m_pPoints;    // +0x60 the target's point list
+    ATL::CAtlArray<Vector3>* m_pPoints;    // +0x60 the target's point list
     MS2Ptr<CBeamEffectParam> m_spParam;            // +0x68 (pointer at +0x70)
 };
 MS2_CHECK_SIZE(CBeamEffect, 0x78);

@@ -291,7 +291,7 @@ public:
   int m_98, m_9c, m_a0;
   __int64 m_a8, m_b0, m_b8;
   int m_c0;
-  Unk_StreamPoint m_c4;
+  Vector3 m_c4;
   int m_d0;
   Unk_UserProxyColor m_d4;
   Unk_UserProxyLabel m_e0[3];

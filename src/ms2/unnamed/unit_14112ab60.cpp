@@ -171,9 +171,9 @@ void Unk_DkLessAnchor(const void* a, const void* b, const int& c, const int& d)
 }
 
 // Sorts entities by their distance to the player (the lambda's capture) from the banner-style point property 0xfd95ca52.
-extern Unk_StreamPoint DAT_143b01a60;                       // the zero point
-void FUN_1409618c0(Unk_Entity* pEntity, unsigned nProperty, Unk_StreamPoint* pOut);   // reads a point property
-float FUN_140966f00(NiPoint3 kA, Unk_StreamPoint kB);       // the distance
+extern Vector3 DAT_143b01a60;                       // the zero point
+void FUN_1409618c0(Unk_Entity* pEntity, unsigned nProperty, Vector3* pOut);   // reads a point property
+float FUN_140966f00(NiPoint3 kA, Vector3 kB);       // the distance
 
 struct Unk_DkNearer
 {
@@ -183,8 +183,8 @@ struct Unk_DkNearer
     bool operator()(Unk_EntRef kA, Unk_EntRef kB) const
     {
         NiPoint3 kPlayer = m_pPlayer->vfunc_18();
-        Unk_StreamPoint kPosA = DAT_143b01a60;
-        Unk_StreamPoint kPosB = DAT_143b01a60;
+        Vector3 kPosA = DAT_143b01a60;
+        Vector3 kPosB = DAT_143b01a60;
         FUN_1409618c0(kA.FUN_1408a9280(), 0xfd95ca52, &kPosA);
         FUN_1409618c0(kB.FUN_1408a9280(), 0xfd95ca52, &kPosB);
         float fA = FUN_140966f00(kPlayer, kPosA);

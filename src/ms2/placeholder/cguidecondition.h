@@ -151,7 +151,7 @@ public:
     virtual int vfunc_3();                                  // 3 0x1413a7820
     virtual void vfunc_4();                                 // 4 0x1413a7950
 
-    Unk_StreamPoint m_vLastPos;                             // +0x28 the player position at the previous check
+    Vector3 m_vLastPos;                             // +0x28 the player position at the previous check
     float m_fMoved;                                         // +0x34 the distance walked so far
 };
 MS2_CHECK_SIZE(CGuideConditionMovement, 0x38);
@@ -278,7 +278,7 @@ public:
 MS2_CHECK_SIZE(CGuideConditionDialog, 0x60);
 
 // 16 bytes. One "cube" child of a Position condition: a point and the radius around it.
-struct Unk_GuideCube : Unk_StreamPoint
+struct Unk_GuideCube : Vector3
 {
     Unk_GuideCube() {}                                      // 0x1413b3580 (the exe leaves fRange unset)
     float fRange;
@@ -482,9 +482,9 @@ MS2_CHECK_SIZE(Unk_GcOptInt, 8);
 struct Unk_GcOptVec3
 {
     Unk_GcOptVec3() : m_bSet(false) {}
-    Unk_GcOptVec3& operator=(const Unk_StreamPoint& pt);    // 0x1413b4040 (Nullable<Point3>::operator=(value))
-    Unk_StreamPoint& GetValue();                            // 0x1413b4180 (asserts m_isValueSet)
-    const Unk_StreamPoint& GetValue() const;                // 0x1413b4140
+    Unk_GcOptVec3& operator=(const Vector3& pt);    // 0x1413b4040 (Nullable<Point3>::operator=(value))
+    Vector3& GetValue();                            // 0x1413b4180 (asserts m_isValueSet)
+    const Vector3& GetValue() const;                // 0x1413b4140
     bool m_bSet; float m_x; float m_y; float m_z;
 };
 MS2_CHECK_SIZE(Unk_GcOptVec3, 0x10);

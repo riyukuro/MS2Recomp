@@ -30,20 +30,20 @@ void* FUN_1416561a0(PCBase* p);                                     // skill com
 float FUN_1411e0f50(void* pSkill, float fSpeed);                    // speed after skill bonuses
 bool FUN_14028d470(float a, float b);                               // nearly equal
 int FUN_14028d260(float f);                                         // float -> fixed
-Unk_StreamPoint FUN_14123cc80(Unk_StreamPoint kDir);                // facing direction -> move direction
-Unk_StreamPoint* FUN_14123c360(PCBase* p, Unk_StreamPoint* pOut);   // input move direction (member: this=rcx, hidden return=rdx)
-Unk_StreamPoint* FUN_141674b60(PCBase* p, Unk_StreamPoint* pOut, Unk_StreamPoint* pDir);   // move direction on the ground (by-value dir = pointer to a copy)
-int FUN_1416725c0(PCBase* p, Unk_StreamPoint kDir, float fSpeed, float fMax, float fZero);  // move is blocked
-float FUN_141b71550(Unk_StreamPoint kStart, Unk_StreamPoint kCtrl, Unk_StreamPoint kEnd);   // bezier length
-Unk_StreamPoint FUN_141b71390(Unk_StreamPoint kStart, Unk_StreamPoint kCtrl, Unk_StreamPoint kEnd, float t);   // bezier point
+Vector3 FUN_14123cc80(Vector3 kDir);                // facing direction -> move direction
+Vector3* FUN_14123c360(PCBase* p, Vector3* pOut);   // input move direction (member: this=rcx, hidden return=rdx)
+Vector3* FUN_141674b60(PCBase* p, Vector3* pOut, Vector3* pDir);   // move direction on the ground (by-value dir = pointer to a copy)
+int FUN_1416725c0(PCBase* p, Vector3 kDir, float fSpeed, float fMax, float fZero);  // move is blocked
+float FUN_141b71550(Vector3 kStart, Vector3 kCtrl, Vector3 kEnd);   // bezier length
+Vector3 FUN_141b71390(Vector3 kStart, Vector3 kCtrl, Vector3 kEnd, float t);   // bezier point
 void* FUN_140166440();                                              // the logger
 int FUN_141489940(PCBase* p);
 void FUN_1414894f0(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat,
                    const float* pA, const float* pB, const float* pC, const float* pD);
 
-extern Unk_StreamPoint DAT_143b01a60;       // zero point
-extern Unk_StreamPoint DAT_143a08cd8;       // reference axis of the type 10 base direction
-extern Unk_StreamPoint DAT_143a08cf8;       // up axis
+extern Vector3 DAT_143b01a60;       // zero point
+extern Vector3 DAT_143a08cd8;       // reference axis of the type 10 base direction
+extern Vector3 DAT_143a08cf8;       // up axis
 
 // @0x141489940
 int FUN_141489940(PCBase* p)
@@ -52,9 +52,9 @@ int FUN_141489940(PCBase* p)
 }
 
 // Views a NiPoint3 returned by PCBase::vfunc_18 as the unit's point type (same 12 byte layout).
-static const Unk_StreamPoint& AsPoint(const NiPoint3& kPt)
+static const Vector3& AsPoint(const NiPoint3& kPt)
 {
-    return reinterpret_cast<const Unk_StreamPoint&>(kPt);
+    return reinterpret_cast<const Vector3&>(kPt);
 }
 
 // ---- static initializers (.text$di) ----
@@ -92,7 +92,7 @@ int CMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
 }
 
 // @0x141488030
-Unk_StreamPoint CMotionController::vfunc_3()
+Vector3 CMotionController::vfunc_3()
 {
     return m_kMove;
 }
@@ -115,7 +115,7 @@ bool CMotionController::vfunc_5(double fTime)
         if (pPc != 0)
             m_fSpeed = FUN_1411e0f50(FUN_1416561a0(pPc), m_fSpeed);
     }
-    Unk_StreamPoint kDir;
+    Vector3 kDir;
     float fTiltSpeed = 0;
     float fTiltAngle = 0;
     Unk_MotionTilt* pTilt = FUN_141759830(m_pData);
@@ -130,12 +130,12 @@ bool CMotionController::vfunc_5(double fTime)
     }
     else
     {
-        Unk_StreamPoint kBase;
+        Vector3 kBase;
         PCBase* pPc = FUN_140974230(m_pTarget);
         if (pPc != 0 && FUN_141489940(pPc) == 10)
         {
-            Unk_StreamPoint kEuler = m_pData->m_kDir.FUN_14097fc90(3.1415927f).FUN_140ae9180(180.0f);
-            Unk_StreamPoint kAxis = DAT_143a08cd8;
+            Vector3 kEuler = m_pData->m_kDir.FUN_14097fc90(3.1415927f).FUN_140ae9180(180.0f);
+            Vector3 kAxis = DAT_143a08cd8;
             Unk_EfdMatrix3 mxEuler;
             mxEuler.FUN_142083d40(kEuler.x, kEuler.y, kEuler.z);
             kAxis = mxEuler.FUN_140a00720(kAxis);
@@ -143,7 +143,7 @@ bool CMotionController::vfunc_5(double fTime)
         }
         else
         {
-            Unk_StreamPoint kFacing = m_pData->m_kDir;
+            Vector3 kFacing = m_pData->m_kDir;
             kBase = FUN_14123cc80(kFacing);
         }
         Unk_EfdMatrix3 mxTilt;
@@ -152,7 +152,7 @@ bool CMotionController::vfunc_5(double fTime)
         float fRad = (fTiltAngle * 3.1415927f) / 180.0f;
         if (0.0f < fRad)
         {
-            Unk_StreamPoint kAxis = kDir.FUN_140a00e10(DAT_143a08cf8);
+            Vector3 kAxis = kDir.FUN_140a00e10(DAT_143a08cf8);
             kAxis.FUN_140968990();
             mxTilt.FUN_14107cc40(-fRad, kAxis);
             kDir = mxTilt.FUN_140a00720(kDir);
@@ -186,13 +186,13 @@ int CArcMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
     m_dDuration = m_pData->m_fDuration;
     m_dDuration = 0.4f;
     m_kStartPos = AsPoint(pTarget->vfunc_18());
-    Unk_StreamPoint kRot;
-    Unk_StreamPoint kBase;
+    Vector3 kRot;
+    Vector3 kBase;
     PCBase* pPc = FUN_140974230(pTarget);
     if (pPc != 0 && FUN_141489940(pPc) == 10)
     {
-        Unk_StreamPoint kEuler = m_pData->m_kDir.FUN_14097fc90(3.1415927f).FUN_140ae9180(180.0f);
-        Unk_StreamPoint kAxis = DAT_143a08cd8.FUN_1409f7960();
+        Vector3 kEuler = m_pData->m_kDir.FUN_14097fc90(3.1415927f).FUN_140ae9180(180.0f);
+        Vector3 kAxis = DAT_143a08cd8.FUN_1409f7960();
         Unk_EfdMatrix3 mxEuler;
         mxEuler.FUN_142083d40(kEuler.x, kEuler.y, kEuler.z);
         kAxis = mxEuler.FUN_140a00720(kAxis);
@@ -200,7 +200,7 @@ int CArcMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
     }
     else
     {
-        Unk_StreamPoint kFacing = m_pData->m_kDir;
+        Vector3 kFacing = m_pData->m_kDir;
         kBase = FUN_14123cc80(kFacing);
     }
     float fSpeed = 0;
@@ -219,7 +219,7 @@ int CArcMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
     float fRad = (fAngle * 3.1415927f) / 180.0f;
     if (0.0f < fRad)
     {
-        Unk_StreamPoint kAxis = kRot.FUN_140a00e10(DAT_143a08cf8);
+        Vector3 kAxis = kRot.FUN_140a00e10(DAT_143a08cf8);
         kAxis.FUN_140968990();
         mxTilt.FUN_14107cc40(-fRad, kAxis);
         kRot = mxTilt.FUN_140a00720(kRot);
@@ -227,11 +227,11 @@ int CArcMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
     m_kDir = kRot;
     if (!FUN_14028d470(m_pData->m_fSpeedScale, 0))
         fSpeed = m_pData->m_fSpeedScale;
-    Unk_StreamPoint kStep = m_kDir.FUN_14097fc90(fSpeed);
+    Vector3 kStep = m_kDir.FUN_14097fc90(fSpeed);
     m_kEndPos = AsPoint(pTarget->vfunc_18()).FUN_14097fd50(kStep);
     m_fCtrlHeight = fCtrlHeight;
     m_fCtrlWeight = fCtrlWeight;
-    Unk_StreamPoint kEndPart = m_kEndPos.FUN_14097fc90(1.0f - m_fCtrlWeight);
+    Vector3 kEndPart = m_kEndPos.FUN_14097fc90(1.0f - m_fCtrlWeight);
     m_kCtrlPos = m_kStartPos.FUN_14097fc90(m_fCtrlWeight).FUN_14097fd50(kEndPart);
     m_kCtrlPos.z = m_kCtrlPos.z + m_fCtrlHeight;
     m_kMove = AsPoint(pTarget->vfunc_18());
@@ -240,7 +240,7 @@ int CArcMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
 }
 
 // @0x141488b40
-Unk_StreamPoint CArcMotionController::vfunc_3()
+Vector3 CArcMotionController::vfunc_3()
 {
     return m_kHeading.FUN_140ae9180(100.0f);
 }
@@ -256,14 +256,14 @@ bool CArcMotionController::vfunc_5(double fTime)
 {
     CMotionController::vfunc_5(fTime);
     m_dElapsed += fTime;
-    Unk_StreamPoint kUnused;
+    Vector3 kUnused;
     m_fSpeed = FUN_141759d20(m_pData, fTime, m_fSpeedLimit);
     float fT = (float)m_dElapsed / (float)m_dDuration;
     if (fT < 0.0f)
         fT = 0.0f;
     if (1.0f < fT)
         fT = 1.0f;
-    Unk_StreamPoint kPos = FUN_141b71390(m_kStartPos, m_kCtrlPos, m_kEndPos, fT);
+    Vector3 kPos = FUN_141b71390(m_kStartPos, m_kCtrlPos, m_kEndPos, fT);
     FUN_1414894f0(FUN_140166440(), 0xc, 0x13, L"{0} {1} {2} {3}", &fT, &kPos.x, &kPos.y, &kPos.z);
     m_kDir = kPos.FUN_140965c40(m_kMove);
     m_kHeading = m_kDir;
@@ -280,7 +280,7 @@ int CLinearMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
 }
 
 // @0x141488e30
-Unk_StreamPoint CLinearMotionController::vfunc_3()
+Vector3 CLinearMotionController::vfunc_3()
 {
     return m_kMove;
 }
@@ -343,7 +343,7 @@ int CBlinkMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
 }
 
 // @0x141489140
-Unk_StreamPoint CBlinkMotionController::vfunc_3()
+Vector3 CBlinkMotionController::vfunc_3()
 {
     return m_kMove;
 }
@@ -368,7 +368,7 @@ int CMoveMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
 }
 
 // @0x141489200
-Unk_StreamPoint CMoveMotionController::vfunc_3()
+Vector3 CMoveMotionController::vfunc_3()
 {
     return m_kMove;
 }
@@ -401,7 +401,7 @@ bool CMoveMotionController::vfunc_5(double fTime)
         m_kMove = DAT_143b01a60;
         return false;
     }
-    Unk_StreamPoint kInput, kGround;
+    Vector3 kInput, kGround;
     m_kDir = *FUN_141674b60(m_pTarget, &kGround, FUN_14123c360(m_pTarget, &kInput));
     if (m_kDir.FUN_140552690(DAT_143b01a60))
     {

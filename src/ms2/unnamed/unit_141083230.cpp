@@ -22,13 +22,13 @@ public:
     CCylinderCollision();                                                   // 0x141083230
     virtual ~CCylinderCollision();                                          // 0x141083320
     virtual void vfunc_1();                                                 // 0x1410846a0
-    virtual void vfunc_3(Unk_StreamPoint pos, Unk_StreamPoint rot, float scale);   // 0x1410833c0
+    virtual void vfunc_3(Vector3 pos, Vector3 rot, float scale);   // 0x1410833c0
     virtual void vfunc_5();                                                 // 0x1410834d0
     virtual float vfunc_6();                                                // 0x141083450
 
     float GetTopZ() const { return m_center.z + m_height; }                 // 0x141083470
     float GetBottomZ() const { return m_center.z - m_ptSize.z; }                // 0x1410834a0
-    void BuildLines(NiMesh* pkMesh, Unk_StreamPoint* pkPoints, unsigned int uiCount);   // 0x141084740
+    void BuildLines(NiMesh* pkMesh, Vector3* pkPoints, unsigned int uiCount);   // 0x141084740
     void FUN_1410848f0();
 
     NiMeshPtr m_spTopMesh;                                                  // +0x78
@@ -36,7 +36,7 @@ public:
     NiMeshPtr m_spLineMesh;                                                 // +0x88
     NiMeshPtr m_aspMeshes[4];                                               // +0x90 (base, top, bottom, lines)
     float m_radius;                                                         // +0xb0
-    Unk_StreamPoint m_center;                                               // +0xb4
+    Vector3 m_center;                                               // +0xb4
     float m_height;                                                         // +0xc0
 };
 MS2_CHECK_SIZE(CCylinderCollision, 0xc8);
@@ -60,7 +60,7 @@ CCylinderCollision::~CCylinderCollision()
 }
 
 // @0x1410833c0
-void CCylinderCollision::vfunc_3(Unk_StreamPoint pos, Unk_StreamPoint rot, float scale)
+void CCylinderCollision::vfunc_3(Vector3 pos, Vector3 rot, float scale)
 {
     m_center = pos;
     CBaseCollision::vfunc_3(pos, rot, scale);
@@ -92,11 +92,11 @@ void CCylinderCollision::vfunc_5()
         m_spLineMesh->AttachProperty(pkVCProp);
     }
     const int kSegments = 0x168;
-    Unk_StreamPoint akPoints[0x168];
+    Vector3 akPoints[0x168];
     for (int i = 0; i < kSegments; i++)
     {
         float fSin = sinf((float)i * 3.1415927f / 180.0f) * m_radius;
-        akPoints[i] = m_center.FUN_14097fd50(Unk_StreamPoint(cosf((float)i * 3.1415927f / 180.0f) * m_radius, fSin, 0));
+        akPoints[i] = m_center.FUN_14097fd50(Vector3(cosf((float)i * 3.1415927f / 180.0f) * m_radius, fSin, 0));
     }
     m_spMesh->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINESTRIPS);
     BuildLines(m_spMesh, akPoints, kSegments);
@@ -105,39 +105,39 @@ void CCylinderCollision::vfunc_5()
     for (int j = 0; j < kSegments; j++)
     {
         float fSin = sinf((float)j * 3.1415927f / 180.0f) * m_radius;
-        akPoints[j] = m_center.FUN_14097fd50(Unk_StreamPoint(cosf((float)j * 3.1415927f / 180.0f) * m_radius, fSin, fTop));
+        akPoints[j] = m_center.FUN_14097fd50(Vector3(cosf((float)j * 3.1415927f / 180.0f) * m_radius, fSin, fTop));
     }
     m_spTopMesh->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINESTRIPS);
     BuildLines(m_spTopMesh, akPoints, kSegments);
     for (int k = 0; k < kSegments; k++)
     {
         float fSin = sinf((float)k * 3.1415927f / 180.0f) * m_radius;
-        akPoints[k] = m_center.FUN_14097fd50(Unk_StreamPoint(cosf((float)k * 3.1415927f / 180.0f) * m_radius, fSin, fBottom));
+        akPoints[k] = m_center.FUN_14097fd50(Vector3(cosf((float)k * 3.1415927f / 180.0f) * m_radius, fSin, fBottom));
     }
     m_spBottomMesh->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINESTRIPS);
     BuildLines(m_spBottomMesh, akPoints, kSegments);
 
-    akPoints[0] = m_center.FUN_14097fd50(Unk_StreamPoint(-m_radius, 0, fBottom));
+    akPoints[0] = m_center.FUN_14097fd50(Vector3(-m_radius, 0, fBottom));
     int nCount = 1;
-    akPoints[nCount++] = m_center.FUN_14097fd50(Unk_StreamPoint(m_radius, 0, fBottom));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Unk_StreamPoint(0, -m_radius, fBottom));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Unk_StreamPoint(0, m_radius, fBottom));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Unk_StreamPoint(-m_radius, 0, 0));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Unk_StreamPoint(m_radius, 0, 0));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Unk_StreamPoint(0, -m_radius, 0));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Unk_StreamPoint(0, m_radius, 0));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Unk_StreamPoint(-m_radius, 0, fTop));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Unk_StreamPoint(m_radius, 0, fTop));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Unk_StreamPoint(0, -m_radius, fTop));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Unk_StreamPoint(0, m_radius, fTop));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Unk_StreamPoint(-m_radius, 0, fBottom));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Unk_StreamPoint(-m_radius, 0, fTop));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Unk_StreamPoint(m_radius, 0, fBottom));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Unk_StreamPoint(m_radius, 0, fTop));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Unk_StreamPoint(0, -m_radius, fBottom));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Unk_StreamPoint(0, -m_radius, fTop));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Unk_StreamPoint(0, m_radius, fBottom));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Unk_StreamPoint(0, m_radius, fTop));
+    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(m_radius, 0, fBottom));
+    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(0, -m_radius, fBottom));
+    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(0, m_radius, fBottom));
+    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(-m_radius, 0, 0));
+    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(m_radius, 0, 0));
+    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(0, -m_radius, 0));
+    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(0, m_radius, 0));
+    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(-m_radius, 0, fTop));
+    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(m_radius, 0, fTop));
+    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(0, -m_radius, fTop));
+    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(0, m_radius, fTop));
+    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(-m_radius, 0, fBottom));
+    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(-m_radius, 0, fTop));
+    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(m_radius, 0, fBottom));
+    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(m_radius, 0, fTop));
+    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(0, -m_radius, fBottom));
+    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(0, -m_radius, fTop));
+    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(0, m_radius, fBottom));
+    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(0, m_radius, fTop));
     m_spLineMesh->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINES);
     BuildLines(m_spLineMesh, akPoints, nCount);
     m_aspMeshes[0] = m_spMesh;
@@ -162,7 +162,7 @@ void CCylinderCollision::vfunc_1()
 
 // Uploads the points as the position stream and a constant-colour stream (the shape colour), then refreshes the mesh.
 // @0x141084740
-void CCylinderCollision::BuildLines(NiMesh* pkMesh, Unk_StreamPoint* pkPoints, unsigned int uiCount)
+void CCylinderCollision::BuildLines(NiMesh* pkMesh, Vector3* pkPoints, unsigned int uiCount)
 {
     pkMesh->RemoveAllStreamRefs();
     pkMesh->AddStream(NiCommonSemantics::POSITION(), 0, NiDataStreamElement::F_FLOAT32_3, uiCount,

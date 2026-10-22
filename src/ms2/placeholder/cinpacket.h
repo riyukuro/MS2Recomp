@@ -26,8 +26,8 @@ public:
     CString ReadString() override;
     CStringW ReadUnicodeString() override;
     void ReadBytes(void* data,int count) override;
-    Unk_StreamPoint ReadVector3() override;
-    Unk_StreamPoint ReadVector3Short() override;
+    Vector3 ReadVector3() override;
+    Vector3 ReadVector3Short() override;
     float ReadShortX10() override;
     float ReadShortX100() override;
     float ReadShortScaled(int scale) override;
@@ -44,7 +44,7 @@ public:
     void FUN_140715280(unsigned offset);                           // SetOffset (throws past the end)
     CString FUN_140710300() const;                                 // hex dump "%02x " of the buffer, @0x140710300
     short FUN_1407140a0();                                         // Decode2 through the secondary vtable
-    Unk_StreamPoint FUN_1407140d0();                               // three int reads -> point
+    Vector3 FUN_1407140d0();                               // three int reads -> point
     unsigned FUN_141269940(unsigned key) { return m_opcode ^ (unsigned short)((key >> 16) & 0xffff); }
     void FUN_14126c7b0(int n) { m_sequence=n; }
     int m_flags,m_nState;

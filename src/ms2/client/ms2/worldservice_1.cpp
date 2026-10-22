@@ -99,7 +99,7 @@ void* FUN_140876480(void* out, int cat);                // efd memory hint helpe
 void* FUN_14208a860(size_t cb, int hint);               // efd::MemObject operator new
 TextureLayerManager* FUN_141bf48f0(void* p);            // TextureLayerManager::TextureLayerManager (COMDAT, #4)
 ChaosLightEffectLayerManager* FUN_141046850(void* p);   // ChaosLightEffectLayerManager::ChaosLightEffectLayerManager (other obj)
-extern Unk_StreamPoint DAT_143b01a60;
+extern Vector3 DAT_143b01a60;
 
 // The 32 hashes pre-registered in m_208 (each with an empty new-tag pointer).
 struct Unk_WsHashList
@@ -806,7 +806,7 @@ class Unk_WsB_Effect : public CPtred            // target of Unk_WsB_Marker::m_e
 public:
     virtual void vfunc_1();
     virtual void vfunc_2();
-    virtual void vfunc_3(const Unk_StreamPoint& a, const Unk_StreamPoint& b, float f);
+    virtual void vfunc_3(const Vector3& a, const Vector3& b, float f);
 };
 class Unk_WsB_Marker : public CPtred            // value of m_4b0 (by name) and m_4e0 (by entity)
 {
@@ -818,9 +818,9 @@ public:
     char m_pad_34[4];
     MS2Ptr<Unk_WsB_Effect> m_effect;            // +0x38
     char m_pad_48[0x100];
-    Unk_StreamPoint m_pos;                      // +0x148
+    Vector3 m_pos;                      // +0x148
     char m_pad_154[0xc];
-    Unk_StreamPoint m_pos2;                     // +0x160
+    Vector3 m_pos2;                     // +0x160
 };
 MS2_CHECK_OFFSET(Unk_WsB_Marker, m_type, 0x30);
 MS2_CHECK_OFFSET(Unk_WsB_Marker, m_pos, 0x148);
@@ -917,7 +917,7 @@ public:
     char m_pad_2c[0xc];
     MS2Ptr<Unk_WsB_PropRec> m_rec;              // +0x38
     int m_kind;                                 // +0x48
-    Unk_StreamPoint m_pos;                      // +0x4c
+    Vector3 m_pos;                      // +0x4c
 };
 MS2_CHECK_OFFSET(Unk_WsB_Prop, m_entity, 0x18);
 MS2_CHECK_OFFSET(Unk_WsB_Prop, m_name, 0x20);
@@ -957,7 +957,7 @@ public:
     virtual void vfunc_15();
     virtual void vfunc_16();
     virtual void vfunc_17();
-    virtual Unk_StreamPoint GetPosition();       // 18 (0x90)
+    virtual Vector3 GetPosition();       // 18 (0x90)
 };
 
 // The m_298 target (field/map data record) as accessed by this unit (checked offsets).
@@ -1028,7 +1028,7 @@ public:
     virtual void vfunc_15();
     virtual void vfunc_16();
     virtual void vfunc_17();
-    virtual Unk_StreamPoint GetPosition();       // 18 (0x90)
+    virtual Vector3 GetPosition();       // 18 (0x90)
     virtual void vfunc_19();
     virtual void vfunc_20();
     virtual void vfunc_21();
@@ -1128,7 +1128,7 @@ public:
     virtual void vfunc_115();
     virtual void vfunc_116();
     virtual void vfunc_117();
-    virtual int vfunc_118(Unk_StreamPoint pos, float* dist, CString& name);   // 0x3b0: distance to pos and display name; 0 = not applicable
+    virtual int vfunc_118(Vector3 pos, float* dist, CString& name);   // 0x3b0: distance to pos and display name; 0 = not applicable
     virtual void vfunc_119();
 };
 // Camera-shake / vibration controller registered per entity in m_468.
@@ -1380,17 +1380,17 @@ struct Unk_WsC_TagPtr
 MS2_CHECK_SIZE(Unk_WsC_TagPtr, 16);
 
 // Entity property getters (typed wrappers over egf::Entity::GetPropertyValueUnsafe with a fixed class id).
-int FUN_1409618c0(egf::Entity* e, unsigned propId, Unk_StreamPoint* out);   // Point3 property
+int FUN_1409618c0(egf::Entity* e, unsigned propId, Vector3* out);   // Point3 property
 void FUN_1408a2020(egf::Entity* e, unsigned propId, int* out);              // int32 property
 void FUN_1408a2060(egf::Entity* e, unsigned propId, efd::utf8string* out);   // string property
 int FUN_1408a20a0(egf::Entity* e, unsigned propId, char* out);             // bool property
-float FUN_140966f00(Unk_StreamPoint a, Unk_StreamPoint b);                  // distance (3D)
+float FUN_140966f00(Vector3 a, Vector3 b);                  // distance (3D)
 
 // Animation info of a world npc entity (out parameter of FUN_141bcfff0; only the written fields are modelled).
 struct Unk_WsC_NpcAnim
 {
     unsigned char m_pad00[0x18];
-    Unk_StreamPoint m_offset;                                       // +0x18
+    Vector3 m_offset;                                       // +0x18
     unsigned char m_pad24[4];
     CString m_anim;                                                 // +0x28
 };
@@ -1554,15 +1554,15 @@ class Unk_WsC_Box : public CPtred                                   // CBoxColli
 public:
     virtual void vfunc_1();
     virtual void vfunc_2();
-    virtual void SetTransform(Unk_StreamPoint pos, Unk_StreamPoint rot, float scale);   // slot 3
+    virtual void SetTransform(Vector3 pos, Vector3 rot, float scale);   // slot 3
     virtual void Build();                                           // slot 4
     char m_pad_18[0x28 - 0x18];
-    Unk_StreamPoint m_center;                                       // +0x28
+    Vector3 m_center;                                       // +0x28
     char m_pad_34[0x44 - 0x34];
     float m_color[4];                                               // +0x44
     char m_blocking;                                                // +0x54
     char m_pad_55[0x78 - 0x55];
-    Unk_StreamPoint m_size;                                         // +0x78
+    Vector3 m_size;                                         // +0x78
 };
 MS2_CHECK_OFFSET(Unk_WsC_Box, m_center, 0x28);
 MS2_CHECK_OFFSET(Unk_WsC_Box, m_color, 0x44);
@@ -1636,9 +1636,9 @@ public:
     virtual void vfunc_15();
     virtual void vfunc_16();
     virtual void vfunc_17();
-    virtual Unk_StreamPoint GetPosition();                        // slot 18 (0x90)
+    virtual Vector3 GetPosition();                        // slot 18 (0x90)
     virtual void vfunc_19();
-    virtual Unk_StreamPoint GetDirection();                       // slot 20 (0xa0)
+    virtual Vector3 GetDirection();                       // slot 20 (0xa0)
     virtual void vfunc_21();
     virtual void vfunc_22();
     virtual void vfunc_23();
@@ -1705,7 +1705,7 @@ public:
     float FUN_140b11020();
     int FUN_140b109f0();
     // members of the monster / npc subclass (cast target of class id 0x6200011)
-    bool FUN_141190120(Unk_StreamPoint pt, int a, int b);
+    bool FUN_141190120(Vector3 pt, int a, int b);
     int FUN_141190320(Unk_WsC_GameObj* player, int a, int b);
     int FUN_141190370(Unk_WsC_GameObj* player, int a, int b);
     bool FUN_14118fea0();
@@ -1716,7 +1716,7 @@ public:
     struct Unk_WsC_MobData* FUN_140b12380();                        // &this->+0x1a0
     unsigned __int64 FUN_140affe40();                               // key at +0x40
     egf::Entity* FUN_14123c410();
-    Unk_StreamPoint FUN_14123cc20();                                // facing vector
+    Vector3 FUN_14123cc20();                                // facing vector
     Unk_WsC_DataRef FUN_141093270();                                // data ref (+0xd50)                                   // entity at +0x80
 };
 typedef efd::SmartPointer<Unk_WsC_GameObj> Unk_WsC_GameObjPtr;      // copy ctor 0x140c20410, dtor 0x140aac150 ...
@@ -1739,8 +1739,8 @@ class Unk_WsD_FieldObj
 public:
     virtual void vfunc_0();
     virtual void vfunc_1();
-    virtual int ContainsPoint(Unk_StreamPoint pt);              // slot 2
-    virtual float DistanceTo(Unk_StreamPoint pt);               // slot 3
+    virtual int ContainsPoint(Vector3 pt);              // slot 2
+    virtual float DistanceTo(Vector3 pt);               // slot 3
 };
 // m_298 target viewed as the local player (Unk_WsPtred298 in the header; reached with reinterpret_cast): fields at their proven offsets.
 struct Unk_WsD_Player : public CPtred
@@ -1836,7 +1836,7 @@ public:
     virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
     virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
     virtual void vfunc_16(); virtual void vfunc_17();
-    virtual Unk_StreamPoint GetPosition();                      // slot 18 (0x90)
+    virtual Vector3 GetPosition();                      // slot 18 (0x90)
     char pad_8[0xdb8 - 8];
     unsigned __int64 m_uniqueId;                                // +0xdb8
 };
@@ -1850,7 +1850,7 @@ public:
     virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
     virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
     virtual void vfunc_16(); virtual void vfunc_17();
-    virtual Unk_StreamPoint GetPosition();                      // slot 18 (0x90)
+    virtual Vector3 GetPosition();                      // slot 18 (0x90)
 };
 // Value object of m_678 (class-id test at slot 7).
 class Unk_WsD_ObjC
@@ -1893,7 +1893,7 @@ public:
     virtual void vfunc_15();
     virtual void vfunc_16();
     virtual void vfunc_17();
-    virtual Unk_StreamPoint* GetPosition(Unk_StreamPoint* out);   // slot 18 (0x90)
+    virtual Vector3* GetPosition(Vector3* out);   // slot 18 (0x90)
     virtual void vfunc_19();
     virtual void vfunc_20();
     virtual void vfunc_21();
@@ -2122,9 +2122,9 @@ public:
     int m_id;                                                       // +0x20 field object id (m_350 key; entity prop 0x60f82816)
     int m_visible;                                                  // +0x24 entity prop 0xa0b6b179; FUN_141bc30a0 arg
     int m_enabled;                                                  // +0x28 entity prop 0x14969c28; FUN_141bc3000 arg
-    Unk_StreamPoint m_pos;                                          // +0x2c entity prop 0xfd95ca52
-    Unk_StreamPoint m_scale;                                        // +0x38 entity prop 0x68c7c29d
-    Unk_StreamPoint m_rot;                                          // +0x44 entity prop 0xfb190620
+    Vector3 m_pos;                                          // +0x2c entity prop 0xfd95ca52
+    Vector3 m_scale;                                        // +0x38 entity prop 0x68c7c29d
+    Vector3 m_rot;                                          // +0x44 entity prop 0xfb190620
     Placement m_placement;                                          // +0x50
     int m_mapType;                                                  // +0x148 entity prop 0xa162d321
     int m_proxyId;                                                  // +0x14c copied to the proxy at +0x38
@@ -2272,7 +2272,7 @@ struct Unk_WsF_TagEnter
     unsigned f58;
     unsigned f5c;
     unsigned f8c;
-    Unk_StreamPoint pos;
+    Vector3 pos;
     Unk_WsF_TagEnter();
     ~Unk_WsF_TagEnter();
 };
@@ -2314,7 +2314,7 @@ public:
     virtual void vfunc_15();
     virtual void vfunc_16();
     virtual void vfunc_17();
-    virtual Unk_StreamPoint GetPosition();           // slot 18 (+0x90)
+    virtual Vector3 GetPosition();           // slot 18 (+0x90)
     virtual void vfunc_19();
     virtual void vfunc_20();
     virtual void vfunc_21();
@@ -2441,7 +2441,7 @@ public:
     virtual int GetClassId();                                        // +0x38 (0x6200004 / 0x6200046 are the special kinds)
     virtual void vf08(); virtual void vf09(); virtual void vf10(); virtual void vf11(); virtual void vf12();
     virtual void vf13(); virtual void vf14(); virtual void vf15(); virtual void vf16(); virtual void vf17();
-    virtual Unk_StreamPoint* GetPosition(Unk_StreamPoint* pOut);     // +0x90
+    virtual Vector3* GetPosition(Vector3* pOut);     // +0x90
     virtual void vf19(); virtual void vf20(); virtual void vf21(); virtual void vf22(); virtual void vf23();
     virtual void vf24(); virtual void vf25(); virtual void vf26(); virtual void vf27(); virtual void vf28();
     virtual void vf29(); virtual void vf30(); virtual void vf31(); virtual void vf32(); virtual void vf33();
@@ -2449,7 +2449,7 @@ public:
     virtual void vf39(); virtual void vf40(); virtual void vf41(); virtual void vf42(); virtual void vf43();
     virtual void vf44();
     virtual void SetDistanceToFocus(float fDist);                    // +0x168
-    virtual void SetCameraPosition(Unk_StreamPoint* pPos);           // +0x170
+    virtual void SetCameraPosition(Vector3* pPos);           // +0x170
 };
 
 // An effect with a start time and a duration (m_178 elements).
@@ -2674,8 +2674,8 @@ struct Unk_WsI_CameraTarget
     float m_00;                 // +0x00 prop 0x88b558f6 (ctor writes 0)
     float m_near;               // +0x04 = 250.0f
     float m_far;                // +0x08 = 18000.0f
-    Unk_StreamPoint m_pos;      // +0x0c
-    Unk_StreamPoint m_look;     // +0x18 (pad to +0x24)
+    Vector3 m_pos;      // +0x0c
+    Vector3 m_look;     // +0x18 (pad to +0x24)
     char m_pad_24[4];
     bool m_flag;                // +0x24 (byte at +0x24 in the exe)
     char m_pad_25[3];
@@ -2686,8 +2686,8 @@ struct Unk_WsI_CameraSetup
     float m_00;                 // prop 0x88b558f6
     float m_04;                 // prop 0xd2c672d5
     float m_08;                 // prop 0x04b35f1d
-    Unk_StreamPoint m_pos;      // +0x0c prop 0xfd95ca52
-    Unk_StreamPoint m_look;     // +0x18 prop 0x68c7c29d
+    Vector3 m_pos;      // +0x0c prop 0xfd95ca52
+    Vector3 m_look;     // +0x18 prop 0x68c7c29d
     int m_24;
     int m_28;                   // prop 0xce9df0b0
     int m_2c;                   // prop 0x85247390
@@ -2695,8 +2695,8 @@ struct Unk_WsI_CameraSetup
     unsigned m_34;              // prop 0x5a75483a
     float m_38;                 // prop 0xe52cd1c1
     float m_3c;                 // prop 0xfb3975ef
-    Unk_StreamPoint m_40;       // prop 0xa7387736
-    Unk_StreamPoint m_4c;       // prop 0xeb55d7a2
+    Vector3 m_40;       // prop 0xa7387736
+    Vector3 m_4c;       // prop 0xeb55d7a2
     bool m_58;                  // prop 0xeed7f03c
     bool m_59;                  // prop 0xb6a50805
     char m_pad_5a[2];
@@ -2750,7 +2750,7 @@ struct Unk_WsI_PortalRef
 class Unk_WsI_DebugTooltip
 {
 public:
-    void FUN_14191aae0(Unk_StreamPoint pos);                    // set the world position
+    void FUN_14191aae0(Vector3 pos);                    // set the world position
     void FUN_14191ab10(CStringW text);                          // set the text (+0x88), callee destroys the argument
     void FUN_14191aa10();                                       // show
 };
@@ -3695,7 +3695,7 @@ MS2_REPLACE_METHOD(0x141BC0A70, WorldService, FUN_141bc0a70, 1233, 0x1D6A9D92);
 
 // ---- 0x141bc0ff0 ----
 struct Unk_WsA_IntArray { int* m_data; unsigned __int64 m_count; };      // CAtlArray<int>-like list of class ids
-extern Unk_StreamPoint DAT_143b01a60;
+extern Vector3 DAT_143b01a60;
 void* FUN_1409ffd30(GameObject* obj);                                     // cast to class 0x6200013 (null if not)
 float FUN_141671600(void* actor);                                         // collision radius (+0x1a0)
 void* FUN_141750870(void* map);                                           // m_0b8.GetStartPosition
@@ -3703,10 +3703,10 @@ Unk_WsA_ObjPtr* FUN_141750950(void* map, void* pos);                      // m_0
 void* FUN_141750910(void* map, void** pos);                               // m_0b8.GetNext
 int FUN_140408410(Unk_WsA_IntArray* arr, const int* value);               // index of value or -1
 // @0x141bc0ff0
-Unk_StreamPoint WorldService::FUN_141bc0ff0(GameObject* obj, void* idList, int skipId)
+Vector3 WorldService::FUN_141bc0ff0(GameObject* obj, void* idList, int skipId)
 {
     Unk_WsA_IntArray* classIds = static_cast<Unk_WsA_IntArray*>(idList);
-    Unk_StreamPoint dir = DAT_143b01a60;
+    Vector3 dir = DAT_143b01a60;
     float selfRadius = 0.0f;
     void* selfActor = FUN_1409ffd30(obj);
     if (selfActor != 0)
@@ -3726,10 +3726,10 @@ Unk_StreamPoint WorldService::FUN_141bc0ff0(GameObject* obj, void* idList, int s
         if (otherActor != 0)
             otherRadius = FUN_141671600(otherActor);
         NiPoint3 p1 = cur->vfunc_18();
-        Unk_StreamPoint curPos(p1.x, p1.y, p1.z);
+        Vector3 curPos(p1.x, p1.y, p1.z);
         NiPoint3 p2 = obj->vfunc_18();
-        Unk_StreamPoint objPos(p2.x, p2.y, p2.z);
-        Unk_StreamPoint diff = objPos.FUN_140965c40(curPos);
+        Vector3 objPos(p2.x, p2.y, p2.z);
+        Vector3 diff = objPos.FUN_140965c40(curPos);
         if (diff.FUN_140967ac0() < otherRadius + selfRadius)
         {
             dir.FUN_140a4e560(diff);
@@ -4060,9 +4060,9 @@ void WorldService::FUN_141bc3140(int id, int visible, int enabled, int hidden)
 }
 MS2_REPLACE_METHOD(0x141BC3140, WorldService, FUN_141bc3140, 130, 0x5BCABC4E);
 
-void FUN_14169cc70(Unk_WsA_FieldObj* o, Unk_StreamPoint pos, Unk_StreamPoint scale);   // set the position / scale properties
+void FUN_14169cc70(Unk_WsA_FieldObj* o, Vector3 pos, Vector3 scale);   // set the position / scale properties
 // @0x141bc31d0
-void WorldService::FUN_141bc31d0(int id, Unk_StreamPoint pos, Unk_StreamPoint scale)
+void WorldService::FUN_141bc31d0(int id, Vector3 pos, Vector3 scale)
 {
     Unk_WsA_FieldRef ref;
     FUN_141bc2800(&ref, id);
@@ -4146,15 +4146,15 @@ void WorldService::FUN_141bc3470(const Unk_WsP16& value, const Unk_WsP16& key)
 MS2_REPLACE_METHOD(0x141BC3470, WorldService, FUN_141bc3470, 222, 0x32C2ADCD);
 
 // ---- 0x141bc2c90: the field objects whose volume contains a point, nearest first ----
-int FUN_14169b2e0(Unk_WsA_Placement* p, Unk_StreamPoint pt);           // does the volume contain pt
+int FUN_14169b2e0(Unk_WsA_Placement* p, Vector3 pt);           // does the volume contain pt
 unsigned __int64 FUN_140966da0(void* refs);                            // CAtlArray<field ref>::GetCount
 Unk_WsA_FieldRef* FUN_140965690(void* refs, unsigned i);               // CAtlArray<field ref>::operator[]
-Unk_StreamPoint* FUN_14169d2f0(Unk_WsA_FieldObj* o, Unk_StreamPoint* out);   // the object's position
-float FUN_140966f00(Unk_StreamPoint a, Unk_StreamPoint b);             // distance between two points
+Vector3* FUN_14169d2f0(Unk_WsA_FieldObj* o, Vector3* out);   // the object's position
+float FUN_140966f00(Vector3 a, Vector3 b);             // distance between two points
 void FUN_141bef110(Unk_WsA_FieldRef* a, Unk_WsA_FieldRef* b);          // swap
-// MS2-FUNCTIONAL: Unk_StreamPoint by-value arg and its temps are placeholders: 2 extra copy callees (23 vs exe 21) and frame 0xe8 vs exe 0xd8
+// MS2-FUNCTIONAL: Vector3 by-value arg and its temps are placeholders: 2 extra copy callees (23 vs exe 21) and frame 0xe8 vs exe 0xd8
 // @0x141bc2c90
-void WorldService::FUN_141bc2c90(Unk_StreamPoint pt, void* outRefs)
+void WorldService::FUN_141bc2c90(Vector3 pt, void* outRefs)
 {
     for (void* pos = FUN_141bffee0(&m_350); pos != 0; FUN_141bfedb0(&m_350, &pos))
     {
@@ -4166,7 +4166,7 @@ void WorldService::FUN_141bc2c90(Unk_StreamPoint pt, void* outRefs)
     {
         for (unsigned j = i + 1; j < FUN_140966da0(outRefs); ++j)
         {
-            Unk_StreamPoint posI, posJ;
+            Vector3 posI, posJ;
             float distI = FUN_140966f00(*FUN_14169d2f0(FUN_140965690(outRefs, i)->operator->(), &posI), pt);
             float distJ = FUN_140966f00(*FUN_14169d2f0(FUN_140965690(outRefs, j)->operator->(), &posJ), pt);
             if (distJ < distI)
@@ -4231,7 +4231,7 @@ MS2_REPLACE_METHOD(0x141BC4BF0, WorldService, FUN_141bc4bf0, 165, 0x63F5BACF);
 
 // MS2-FUNCTIONAL: MS2Ptr/container COMDATs called by VA; not byte-identical to the exe
 // @0x141bc4ca0
-MS2Ptr<Unk_WsB_Marker> WorldService::FUN_141bc4ca0(const Unk_StreamPoint& pos, float maxDist, int type)
+MS2Ptr<Unk_WsB_Marker> WorldService::FUN_141bc4ca0(const Vector3& pos, float maxDist, int type)
 {
     float best = 3.402823466e+38f;
     MS2Ptr<Unk_WsB_Marker> found(0);
@@ -4514,7 +4514,7 @@ MS2_REPLACE_METHOD(0x141BC5FB0, WorldService, FUN_141bc5fb0, 209, 0x06F63C71);
 // Nearest enabled interactive object whose range covers pos.
 // MS2-FUNCTIONAL: MS2Ptr/container COMDATs called by VA; not byte-identical to the exe
 // @0x141bc6090
-MS2Ptr<Unk_WsB_Prop> WorldService::FUN_141bc6090(const Unk_StreamPoint& pos, int skipDisabled)
+MS2Ptr<Unk_WsB_Prop> WorldService::FUN_141bc6090(const Vector3& pos, int skipDisabled)
 {
     float best = 3.402823466e+38f;
     MS2Ptr<Unk_WsB_Prop> found(0);
@@ -4540,7 +4540,7 @@ MS2_REPLACE_METHOD(0x141BC6090, WorldService, FUN_141bc6090, 536, 0x3181060A);
 // Same, restricted to one category.
 // MS2-FUNCTIONAL: MS2Ptr/container COMDATs called by VA; not byte-identical to the exe
 // @0x141bc62b0
-MS2Ptr<Unk_WsB_Prop> WorldService::FUN_141bc62b0(const Unk_StreamPoint& pos, int category, int skipDisabled)
+MS2Ptr<Unk_WsB_Prop> WorldService::FUN_141bc62b0(const Vector3& pos, int category, int skipDisabled)
 {
     float best = 3.402823466e+38f;
     MS2Ptr<Unk_WsB_Prop> found(0);
@@ -4569,7 +4569,7 @@ MS2_REPLACE_METHOD(0x141BC62B0, WorldService, FUN_141bc62b0, 594, 0xC25DDBB8);
 // Nearest interactive object of this kind.
 // MS2-FUNCTIONAL: MS2Ptr/container COMDATs called by VA; not byte-identical to the exe
 // @0x141bc6510
-MS2Ptr<Unk_WsB_Prop> WorldService::FUN_141bc6510(const Unk_StreamPoint& pos, int kind)
+MS2Ptr<Unk_WsB_Prop> WorldService::FUN_141bc6510(const Vector3& pos, int kind)
 {
     float best = 3.402823466e+38f;
     MS2Ptr<Unk_WsB_Prop> found(0);
@@ -4678,7 +4678,7 @@ struct Unk_WsSpawnView { MS2Ptr<Unk_WsB_RestartRec> FUN_140966e50(); };         
 // Nearest usable spawn point whose restart radius covers pos.
 // MS2-FUNCTIONAL: MS2Ptr/container COMDATs called by VA; not byte-identical to the exe
 // @0x141bc6c60
-efd::SmartPointer<Unk_WsB_Spawn> WorldService::FUN_141bc6c60(const Unk_StreamPoint& pos, int skipUnusable)
+efd::SmartPointer<Unk_WsB_Spawn> WorldService::FUN_141bc6c60(const Vector3& pos, int skipUnusable)
 {
     float best = 3.402823466e+38f;
     efd::SmartPointer<Unk_WsB_Spawn> found(0);
@@ -5154,7 +5154,7 @@ bool WorldService::FUN_141bc9830(int* id, CString& name, float maxDist)
     name.Empty();
     if (FUN_141bd0cc0() == 0)
         return false;
-    Unk_StreamPoint origin = static_cast<Unk_WsB_Actor*>(m_2d8.data() ? (void*)m_2d8.data() : 0)->GetPosition();
+    Vector3 origin = static_cast<Unk_WsB_Actor*>(m_2d8.data() ? (void*)m_2d8.data() : 0)->GetPosition();
     Unk_WsB_Actor* nearest = 0;
     float best = 3.402823466e+38f;
     for (void* pos = FUN_141bfeb30(&m_0e8); pos != 0; FUN_141bff0b0(&m_0e8, &pos))
@@ -5273,14 +5273,14 @@ int WorldService::FUN_141bca2e0()
 }
 MS2_REPLACE_METHOD(0x141BCA2E0, WorldService, FUN_141bca2e0, 169, 0x59FC8B0C);
 
-int FUN_14027dda0(Unk_StreamPoint* out, float x, float y, float z);
-int FUN_140a38a50(egf::Entity* entity, unsigned propId, Unk_StreamPoint* value);          // SetPropertyValue<Point3>
+int FUN_14027dda0(Vector3* out, float x, float y, float z);
+int FUN_140a38a50(egf::Entity* entity, unsigned propId, Vector3* value);          // SetPropertyValue<Point3>
 // Moves the first tagged spawn entity without the marker model to (0, 0, z) and refreshes; true when one was found.
 // MS2-FUNCTIONAL: ATL list COMDATs inlined, property setter by VA
 // @0x141bca3c0
 int WorldService::FUN_141bca3c0(float z)
 {
-    Unk_StreamPoint target(0.0f, 0.0f, z);
+    Vector3 target(0.0f, 0.0f, z);
     Unk_WsB_TagList tags = reinterpret_cast<Unk_WsTagView*>(this)->FUN_141bd0420(0xb9c85df1);
     if (!tags.IsNull() && tags->GetCount() != 0)
     {
@@ -5298,14 +5298,14 @@ int WorldService::FUN_141bca3c0(float z)
 }
 MS2_REPLACE_METHOD(0x141BCA3C0, WorldService, FUN_141bca3c0, 295, 0x10764988);
 
-int FUN_1409618c0(egf::Entity* entity, unsigned propId, Unk_StreamPoint* out);              // GetPropertyValue<Point3>
-extern Unk_StreamPoint DAT_143b01a60;
+int FUN_1409618c0(egf::Entity* entity, unsigned propId, Vector3* out);              // GetPropertyValue<Point3>
+extern Vector3 DAT_143b01a60;
 // Reads the z of the first tagged spawn entity without the marker model; true when one was found.
 // MS2-FUNCTIONAL: ATL list COMDATs inlined, property getter by VA
 // @0x141bca4f0
 int WorldService::FUN_141bca4f0(float* z)
 {
-    Unk_StreamPoint value = DAT_143b01a60;
+    Vector3 value = DAT_143b01a60;
     Unk_WsB_TagList tags = reinterpret_cast<Unk_WsTagView*>(this)->FUN_141bd0420(0xb9c85df1);
     if (!tags.IsNull() && tags->GetCount() != 0)
     {
@@ -5423,7 +5423,7 @@ void WorldService::FUN_141bcabf0()
 MS2_REPLACE_METHOD(0x141BCABF0, WorldService, FUN_141bcabf0, 362, 0x0736473B);
 
 unsigned FUN_141472bc0();                                                                   // current time
-bool FUN_141863100(void* service, int mapId, Unk_StreamPoint pos);
+bool FUN_141863100(void* service, int mapId, Vector3 pos);
 void* FUN_140ad4b90();
 int FUN_140375740(Unk_WsB_MapInfo* info);                                                    // map id
 int FUN_141661bc0(Unk_WsB_Actor* actor);                                                    // party / group id
@@ -5439,7 +5439,7 @@ int WorldService::FUN_141bcada0(__int64 id)
     Unk_WsB_Actor* actor = reinterpret_cast<Unk_WsB_Actor*>(FUN_141bd1530(id));
     if (actor == 0)
         return 0;
-    Unk_StreamPoint pos = actor->GetPosition();
+    Vector3 pos = actor->GetPosition();
     MS2Ptr<Unk_WsPtred298> mapRef = FUN_141bd30a0();
     int mapId = FUN_140375740(reinterpret_cast<Unk_WsB_MapInfo*>(mapRef.operator->()));
     if (!FUN_141863100(FUN_140ad4b90(), mapId, pos))
@@ -5521,12 +5521,12 @@ bool WorldService::FUN_141bcb210()
 }
 MS2_REPLACE_METHOD(0x141BCB210, WorldService, FUN_141bcb210, 132, 0xDCA497F4);
 
-extern Unk_StreamPoint DAT_143a08cf8;                                                       // +z unit vector
+extern Vector3 DAT_143a08cf8;                                                       // +z unit vector
 void* FUN_141c000a0(void* map);                                                             // m_3a0.GetStartPosition
 void* FUN_141c004c0(void* map, void* pos);                                                  // m_3a0.GetValueAt
 void FUN_141bfeef0_B(void* map, void** pos);                                                  // m_3a0.GetNext
 Unk_WsB_Zone* FUN_141747290(void* value);
-Unk_StreamPoint* FUN_1416f6ed0(Unk_WsB_Zone* zone, Unk_StreamPoint* out);                   // zone centre
+Vector3* FUN_1416f6ed0(Unk_WsB_Zone* zone, Vector3* out);                   // zone centre
 void* FUN_140a7b840(void* map);                                                             // m_148.GetStartPosition
 void* FUN_140a7b8e0(void* map, void* pos);                                                  // m_148.GetValueAt
 void FUN_140a7b860(void* map, void** pos);                                                  // m_148.GetNext
@@ -5534,7 +5534,7 @@ Unk_WsB_Actor* FUN_140a7b650_B(void* value);
 int FUN_14166c930(Unk_WsB_Actor* actor);                                                    // actor kind
 Unk_WsB_ZoneParams* FUN_141759830(Unk_WsB_ZoneDef* def);
 bool FUN_14028d470(float a, float b);                                                       // |a - b| < 1e-6
-float FUN_141403f20(Unk_StreamPoint a, Unk_StreamPoint b);                                  // horizontal distance
+float FUN_141403f20(Vector3 a, Vector3 b);                                  // horizontal distance
 // Force zones: whether a zone parameter block has any effect.
 inline bool Unk_WsB_ZoneActive(const Unk_WsB_ZoneParams* p)
 {
@@ -5544,22 +5544,22 @@ inline bool Unk_WsB_ZoneActive(const Unk_WsB_ZoneParams* p)
 // Finds the closest force zone around the actor and accumulates its push / lift velocity.
 // MS2-FUNCTIONAL: container and MS2Ptr COMDATs by VA, float compares inlined
 // @0x141bc8420
-bool WorldService::FUN_141bc8420(Unk_WsB_Actor* actor, float dt, int* lifted, Unk_StreamPoint* velocity)
+bool WorldService::FUN_141bc8420(Unk_WsB_Actor* actor, float dt, int* lifted, Vector3* velocity)
 {
     bool changed = false;
     float best = 3.402823466e+38f;
     Unk_WsB_ZoneParams* zone = 0;
-    Unk_StreamPoint zonePos = DAT_143b01a60;
+    Vector3 zonePos = DAT_143b01a60;
     if (FUN_14166ce30(actor) != 0)
         return false;
-    Unk_StreamPoint playerPos = actor->GetPosition();
+    Vector3 playerPos = actor->GetPosition();
     for (void* pos = FUN_141c000a0(&m_3a0); pos != 0; FUN_141bfeef0_B(&m_3a0, &pos))
     {
         Unk_WsB_Zone* obj = FUN_141747290(FUN_141c004c0(&m_3a0, pos));
         Unk_WsB_ZoneParams* p = obj->m_params;
         if (Unk_WsB_ZoneActive(p))
         {
-            Unk_StreamPoint centre;
+            Vector3 centre;
             FUN_1416f6ed0(obj, &centre);
             float dist = FUN_141403f20(centre, playerPos);
             if (dist <= p->m_outer && p->m_inner <= dist
@@ -5582,7 +5582,7 @@ bool WorldService::FUN_141bc8420(Unk_WsB_Actor* actor, float dt, int* lifted, Un
         Unk_WsB_ZoneParams* p = FUN_141759830(def.operator->());
         if (p == 0 || !Unk_WsB_ZoneActive(p))
             continue;
-        Unk_StreamPoint centre = other->GetPosition();
+        Vector3 centre = other->GetPosition();
         float dist = FUN_141403f20(centre, playerPos);
         if (dist <= p->m_outer && p->m_inner <= dist
             && playerPos.z <= centre.z + p->m_baseZ && centre.z <= playerPos.z + 105.0f && dist < best)
@@ -5598,7 +5598,7 @@ bool WorldService::FUN_141bc8420(Unk_WsB_Actor* actor, float dt, int* lifted, Un
         {
             if (zone->m_push > 0.0f)
             {
-                Unk_StreamPoint dir = playerPos.FUN_140965c40(zonePos);
+                Vector3 dir = playerPos.FUN_140965c40(zonePos);
                 dir.z = 0.0f;
                 dir.FUN_140968990();
                 float step = zone->m_push * dt;
@@ -5609,7 +5609,7 @@ bool WorldService::FUN_141bc8420(Unk_WsB_Actor* actor, float dt, int* lifted, Un
         }
         else if (zone->m_inner < best)
         {
-            Unk_StreamPoint dir = playerPos.FUN_140965c40(zonePos);
+            Vector3 dir = playerPos.FUN_140965c40(zonePos);
             dir.z = 0.0f;
             dir.FUN_140968990();
             float step = zone->m_push * dt;
@@ -5890,7 +5890,7 @@ MS2_REPLACE_METHOD(0x141BCFD10, WorldService, GetState, 17, 0x96358E1D);
 bool FUN_141c06b80(void* map, unsigned key, Unk_WsC_TagPtr* out);   // m_208.Lookup
 // MS2-FUNCTIONAL: codegen differs (call/temporary ordering of out-of-line COMDATs)
 // @0x141bcfd30
-egf::Entity* WorldService::FUN_141bcfd30(unsigned key, const Unk_StreamPoint& pos, float maxDist, int nearest, int flat)
+egf::Entity* WorldService::FUN_141bcfd30(unsigned key, const Vector3& pos, float maxDist, int nearest, int flat)
 {
     Unk_WsC_TagPtr tags;
     if (!FUN_141c06b80(&m_208, key, &tags))
@@ -5901,7 +5901,7 @@ egf::Entity* WorldService::FUN_141bcfd30(unsigned key, const Unk_StreamPoint& po
     while (p)
     {
         Unk_WsC_EntityPtr ent = tags->GetNext(p);
-        Unk_StreamPoint entPos = DAT_143b01a60;
+        Vector3 entPos = DAT_143b01a60;
         FUN_1409618c0(ent, 0xfd95ca52, &entPos);
         float d;
         if (flat == 0)
@@ -5960,7 +5960,7 @@ void* FUN_141bfeb50(void* map);                         // m_708.GetHeadPosition
 Unk_WsC_ActorRef* FUN_141c00800(void* map, void* pos);  // m_708.GetValueAt
 void FUN_141bff0f0(void* map, void** pos);              // m_708.GetNext
 // @0x141bd0220
-egf::Entity* WorldService::FUN_141bd0220(const Unk_StreamPoint& pos, float maxDist)
+egf::Entity* WorldService::FUN_141bd0220(const Vector3& pos, float maxDist)
 {
     Unk_WsC_EntityPtr best;
     float bestDist = FLT_MAX;
@@ -5970,7 +5970,7 @@ egf::Entity* WorldService::FUN_141bd0220(const Unk_StreamPoint& pos, float maxDi
         if (!actor->FUN_140b9c7f0())
             continue;
         Unk_WsC_EntityPtr ent(actor->FUN_140b9c810());
-        Unk_StreamPoint entPos = DAT_143b01a60;
+        Vector3 entPos = DAT_143b01a60;
         FUN_1409618c0(ent.operator->(), 0xfd95ca52, &entPos);
         float d = FUN_140966f00(pos, entPos);
         if (d < maxDist && d < bestDist)
@@ -6141,7 +6141,7 @@ MS2_REPLACE_METHOD(0x141BD0D30, WorldService, FUN_141bd0d30, 148, 0x366491AF);
 
 bool FUN_141c07410(void* map, unsigned __int64 key, Unk_WsC_GameObjPtr* out);   // m_0b8.Lookup
 // @0x141bd0dd0
-int WorldService::FUN_141bd0dd0(Unk_StreamPoint* pos, Unk_StreamPoint* dir)
+int WorldService::FUN_141bd0dd0(Vector3* pos, Vector3* dir)
 {
     Unk_WsC_TagPtr tags;
     if (!FUN_141c06b80(&m_208, 0x1c68270c, &tags))
@@ -6393,7 +6393,7 @@ void FUN_141bff0b0(ATL::CRBMap<unsigned, Unk_WsV0e8>* map, void** pos);         
 Unk_WsC_GameObj* FUN_1417411e0(Unk_WsC_GameObj* p);                                // cast to class 0x6200011
 void* FUN_140535320();
 Unk_WsC_Config* FUN_140c8b450(void* p);
-float FUN_14160c230(const Unk_StreamPoint& v);                                     // squared length
+float FUN_14160c230(const Vector3& v);                                     // squared length
 // MS2-FUNCTIONAL: codegen differs (call/temporary ordering of out-of-line COMDATs)
 // @0x141bd1a50
 Unk_WsC_GameObj* WorldService::FUN_141bd1a50(Unk_WsC_GameObj* self)
@@ -6513,9 +6513,9 @@ void WorldService::FUN_141bd2030(std::list<Unk_WsC_GameObj*>* out)
 }
 MS2_REPLACE_METHOD(0x141BD2030, WorldService, FUN_141bd2030, 311, 0x958CE419);
 
-float FUN_140993fe0(Unk_StreamPoint a, Unk_StreamPoint b);
+float FUN_140993fe0(Vector3 a, Vector3 b);
 Unk_WsC_GameObj* FUN_1416764a0(Unk_WsC_GameObj* player);   // mounted/rider object (+0xb10), raw pointer in rax
-float FUN_140a00ef0(const NiPlane* plane, Unk_StreamPoint pt);   // NiPlane distance
+float FUN_140a00ef0(const NiPlane* plane, Vector3 pt);   // NiPlane distance
 void* FUN_140a7b840(ATL::CRBMap<unsigned, Unk_WsV148>* map);     // m_148.GetHeadPosition
 Unk_WsC_GameObjPtr* FUN_140a7b8e0(ATL::CRBMap<unsigned, Unk_WsV148>* map, void* pos);   // GetValueAt
 void FUN_140a7b860(ATL::CRBMap<unsigned, Unk_WsV148>* map, void** pos);   // GetNext
@@ -6530,7 +6530,7 @@ Unk_WsC_GameObj* WorldService::FUN_141bd2170(int type, float range, int useFront
     NiPlane plane;
     Unk_WsC_GameObjPtr rider(FUN_1416764a0(reinterpret_cast<Unk_WsC_GameObj*>(m_2d8.data())));
     Unk_WsC_GameObj* ref = (rider != 0) ? static_cast<Unk_WsC_GameObj*>(rider) : reinterpret_cast<Unk_WsC_GameObj*>(m_2d8.data());
-    Unk_StreamPoint f = ref->FUN_14123cc20();
+    Vector3 f = ref->FUN_14123cc20();
     plane.SetNormal(NiPoint3(f.x, f.y, f.z));
     plane.SetConstant(FUN_140993fe0(ref->FUN_14123cc20(), ref->GetPosition()));
     Unk_WsC_GameObj* best = 0;
@@ -6567,7 +6567,7 @@ float FUN_14028d380(float v);   // x100 (commonutil.cpp)
 Unk_WsC_GameObj* FUN_140aac420(Unk_WsC_GameObjPtr* sp);
 // MS2-FUNCTIONAL: codegen differs (call/temporary ordering of out-of-line COMDATs)
 // @0x141bd2690
-Unk_WsC_GameObj* WorldService::FUN_141bd2690(const Unk_StreamPoint& pos, float maxDist, float up, float down, int needHp, int includeDead)
+Unk_WsC_GameObj* WorldService::FUN_141bd2690(const Vector3& pos, float maxDist, float up, float down, int needHp, int includeDead)
 {
     float zUp = FUN_14028d380(up);
     float zDown = FUN_14028d380(down);
@@ -6599,7 +6599,7 @@ MS2_REPLACE_METHOD(0x141BD2690, WorldService, FUN_141bd2690, 560, 0x7C10E89D);
 
 // MS2-FUNCTIONAL: ATL array and random pick
 // @0x141bd28d0
-Unk_WsC_GameObj* WorldService::FUN_141bd28d0(const Unk_StreamPoint& pos, float maxDist, float up, float down, int needHp, Unk_WsC_GameObj* exclude, int includeDead)
+Unk_WsC_GameObj* WorldService::FUN_141bd28d0(const Vector3& pos, float maxDist, float up, float down, int needHp, Unk_WsC_GameObj* exclude, int includeDead)
 {
     float zUp = FUN_14028d380(up);
     float zDown = FUN_14028d380(down);
@@ -6633,7 +6633,7 @@ MS2_REPLACE_METHOD(0x141BD28D0, WorldService, FUN_141bd28d0, 767, 0x4AE4497E);
 
 // MS2-FUNCTIONAL: codegen differs (call/temporary ordering of out-of-line COMDATs)
 // @0x141bd2bf0
-Unk_WsC_GameObj* WorldService::FUN_141bd2bf0(const Unk_StreamPoint& /*pos*/, int id)
+Unk_WsC_GameObj* WorldService::FUN_141bd2bf0(const Vector3& /*pos*/, int id)
 {
     for (void* p = FUN_140a7b840(&m_148); p; FUN_140a7b860(&m_148, &p))
     {
@@ -6941,7 +6941,7 @@ void WorldService::FUN_141bcda90()
                 char enabled = 1;
                 if (FUN_1408a20a0(ent, 0x2683e9ec, &enabled) != 0 || enabled == 0)
                     continue;
-                Unk_StreamPoint size = DAT_143b01a60;
+                Vector3 size = DAT_143b01a60;
                 if (FUN_1409618c0(ent, 0x9dc22aea, &size) != 0 || !size.FUN_140552700(DAT_143b01a60))
                     continue;
                 efd::utf8string name;
@@ -6956,12 +6956,12 @@ void WorldService::FUN_141bcda90()
                     Unk_WsC_EntityPtr aliasRef(ent);
                     FUN_141c1b810(&m_618, aliasKey, aliasRef);
                 }
-                Unk_StreamPoint pos = DAT_143b01a60;
+                Vector3 pos = DAT_143b01a60;
                 FUN_1409618c0(ent, 0xfd95ca52, &pos);
-                Unk_StreamPoint rot = DAT_143b01a60;
+                Vector3 rot = DAT_143b01a60;
                 FUN_1409618c0(ent, 0x68c7c29d, &rot);
-                Unk_StreamPoint halfSize(size.x, size.y * 0.5f, size.z);
-                Unk_StreamPoint center(0.0f, size.y * 0.5f, 0.0f);
+                Vector3 halfSize(size.x, size.y * 0.5f, size.z);
+                Vector3 center(0.0f, size.y * 0.5f, 0.0f);
                 void* mem = ::operator new(0x150);
                 MS2Ptr<Unk_WsC_Box> box(mem ? FUN_140ada4c0(mem) : 0);
                 box->m_size = halfSize;
@@ -7072,10 +7072,10 @@ void WorldService::FUN_141bcda90()
 // ==== functions from part D ====
 
 
-extern Unk_StreamPoint DAT_143b01a60;                           // the zero point constant
-extern Unk_StreamPoint DAT_143a08cd8;                           // +x unit vector
-extern Unk_StreamPoint DAT_143a08ce8;                           // +y unit vector
-extern Unk_StreamPoint DAT_143a08cf8;                           // +z unit vector
+extern Vector3 DAT_143b01a60;                           // the zero point constant
+extern Vector3 DAT_143a08cd8;                           // +x unit vector
+extern Vector3 DAT_143a08ce8;                           // +y unit vector
+extern Vector3 DAT_143a08cf8;                           // +z unit vector
 
 // @0x141bd3040
 int WorldService::FUN_141bd3040() { return m_28c; }
@@ -7149,7 +7149,7 @@ void FUN_14123ebe0(Unk_WsP16* self);                         // dtor
 // the field object containing pt, else the nearest one (returned through *out)
 // MS2-FUNCTIONAL: not byte-identical (EH/unwind shape or opaque COMDAT callees)
 // @0x141bd3210
-Unk_WsP16* WorldService::FUN_141bd3210(Unk_WsP16* out, Unk_StreamPoint pt)
+Unk_WsP16* WorldService::FUN_141bd3210(Unk_WsP16* out, Vector3 pt)
 {
     for (void* pos = FUN_141c001f0(&m_2f8); pos; FUN_141bfefe0(&m_2f8, &pos))
     {
@@ -7219,11 +7219,11 @@ MS2_REPLACE_METHOD(0x141BD36B0, WorldService, FUN_141bd36b0, 17, 0xA6391362);
 ATL::CRBMap<unsigned, Unk_WsV148>* WorldService::FUN_141bd36d0() { return &m_148; }
 MS2_REPLACE_METHOD(0x141BD36D0, WorldService, FUN_141bd36d0, 17, 0x3A7EB6D2);
 
-bool FUN_140552690(const Unk_StreamPoint* a, const Unk_StreamPoint* b);   // efd::Point3::operator==
+bool FUN_140552690(const Vector3* a, const Vector3* b);   // efd::Point3::operator==
 // How far pt lies outside the world bounds: the per-axis unit offsets are summed into *pOut; true if inside.
 // MS2-FUNCTIONAL: not byte-identical (EH/unwind shape or opaque COMDAT callees)
 // @0x141bd36f0
-bool WorldService::FUN_141bd36f0(Unk_StreamPoint pt, Unk_StreamPoint* pOut)
+bool WorldService::FUN_141bd36f0(Vector3 pt, Vector3* pOut)
 {
     *pOut = DAT_143b01a60;
     if (pt.x < m_boundsMin.x || m_boundsMax.x < pt.x)
@@ -7237,11 +7237,11 @@ bool WorldService::FUN_141bd36f0(Unk_StreamPoint pt, Unk_StreamPoint* pOut)
 MS2_REPLACE_METHOD(0x141BD36F0, WorldService, FUN_141bd36f0, 230, 0x9BCB5A80);
 
 // @0x141bd37e0
-Unk_StreamPoint WorldService::GetBoundsMin() { return m_boundsMin; }
+Vector3 WorldService::GetBoundsMin() { return m_boundsMin; }
 MS2_REPLACE_METHOD(0x141BD37E0, WorldService, GetBoundsMin, 44, 0x714FF8C2);
 
 // @0x141bd3820
-Unk_StreamPoint WorldService::GetBoundsMax() { return m_boundsMax; }
+Vector3 WorldService::GetBoundsMax() { return m_boundsMax; }
 MS2_REPLACE_METHOD(0x141BD3820, WorldService, GetBoundsMax, 44, 0xAFB99E16);
 
 // @0x141bd3860
@@ -7404,7 +7404,7 @@ int WorldService::FUN_141bd3d50() { return m_918; }
 MS2_REPLACE_METHOD(0x141BD3D50, WorldService, FUN_141bd3d50, 17, 0xCE1E118A);
 
 // @0x141bd3d70
-void WorldService::FUN_141bd3d70(const Unk_StreamPoint& a, const Unk_StreamPoint& b)
+void WorldService::FUN_141bd3d70(const Vector3& a, const Vector3& b)
 {
     m_8d8 = a;
     m_8e4 = b;
@@ -7412,7 +7412,7 @@ void WorldService::FUN_141bd3d70(const Unk_StreamPoint& a, const Unk_StreamPoint
 MS2_REPLACE_METHOD(0x141BD3D70, WorldService, FUN_141bd3d70, 72, 0xE8A6E0D9);
 
 // @0x141bd3dc0
-Unk_StreamPoint WorldService::FUN_141bd3dc0() { return m_8d8; }
+Vector3 WorldService::FUN_141bd3dc0() { return m_8d8; }
 MS2_REPLACE_METHOD(0x141BD3DC0, WorldService, FUN_141bd3dc0, 44, 0x3A5A4D7A);
 
 // the local player's camera looks like the default (1100 / 45 / 30)
@@ -7616,7 +7616,7 @@ void FUN_140c20a30(void* map, void** pos);              // m_118.GetNext
 unsigned __int64 FUN_141656a80(Unk_WsD_Actor* a);       // unique id
 // MS2-FUNCTIONAL: not byte-identical (EH/unwind shape or opaque COMDAT callees)
 // @0x141bd4700
-int WorldService::FUN_141bd4700(const std::set<unsigned __int64>& ids, Unk_StreamPoint* pOutPos, float* pOutDist)
+int WorldService::FUN_141bd4700(const std::set<unsigned __int64>& ids, Vector3* pOutPos, float* pOutDist)
 {
     Unk_WsD_Actor* player = (Unk_WsD_Actor*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (!player)
@@ -7677,10 +7677,10 @@ void* FUN_1406c71b0(Unk_WsP8* sp);                      // raw pointer
 int FUN_1416c2090(void* obj);
 int FUN_1416c21c0(void* obj);
 unsigned FUN_1416c2350(void* obj);        // id used for the set test
-Unk_StreamPoint* FUN_1416c2270(void* obj, Unk_StreamPoint* out);   // position (hidden return slot)
+Vector3* FUN_1416c2270(void* obj, Vector3* out);   // position (hidden return slot)
 // MS2-FUNCTIONAL: not byte-identical (EH/unwind shape or opaque COMDAT callees)
 // @0x141bd49d0
-int WorldService::FUN_141bd49d0(const std::set<unsigned>& ids, Unk_StreamPoint* pOutPos, float* pOutDist)
+int WorldService::FUN_141bd49d0(const std::set<unsigned>& ids, Vector3* pOutPos, float* pOutDist)
 {
     Unk_WsD_Positioned* player = (Unk_WsD_Positioned*)FUN_141bd0cc0();
     if (!player)
@@ -7722,8 +7722,8 @@ int WorldService::FUN_141bd49d0(const std::set<unsigned>& ids, Unk_StreamPoint* 
                 unsigned id = FUN_1416c2350(FUN_1406c71d0(&sp));
                 if (ids.find(id) != ids.end())
                 {
-                    Unk_StreamPoint tmp;
-                    Unk_StreamPoint target = *FUN_1416c2270(FUN_1406c71d0(&sp), &tmp);
+                    Vector3 tmp;
+                    Vector3 target = *FUN_1416c2270(FUN_1406c71d0(&sp), &tmp);
                     float d = FUN_140966ea0(player->GetPosition(), target);
                     if (d < bestDist)
                     {
@@ -7740,7 +7740,7 @@ int WorldService::FUN_141bd49d0(const std::set<unsigned>& ids, Unk_StreamPoint* 
             FUN_140a7b530(&best);
             return 0;
         }
-        Unk_StreamPoint tmp;
+        Vector3 tmp;
         *pOutPos = *FUN_1416c2270(FUN_1406c71d0(&best2), &tmp);
         *pOutDist = bestDist;
         FUN_1406c70a0(&best2);
@@ -7764,10 +7764,10 @@ void FUN_140963fd0(Unk_WsP16* self, int zero);          // ctor (null)
 void FUN_141bf6d60(Unk_WsP16* self, Unk_WsP16* src);    // assign
 void* FUN_1409657e0(Unk_WsP16* sp);                     // raw pointer
 int FUN_140967110(void* obj);                           // id used for the set test
-Unk_StreamPoint* FUN_1409673c0(void* obj, Unk_StreamPoint* out);   // position (hidden return slot)
+Vector3* FUN_1409673c0(void* obj, Vector3* out);   // position (hidden return slot)
 // MS2-FUNCTIONAL: not byte-identical (EH/unwind shape or opaque COMDAT callees)
 // @0x141bd4ed0
-int WorldService::FUN_141bd4ed0(const std::set<int>& ids, Unk_StreamPoint* pOutPos, float* pOutDist)
+int WorldService::FUN_141bd4ed0(const std::set<int>& ids, Vector3* pOutPos, float* pOutDist)
 {
     Unk_WsD_Positioned* player = (Unk_WsD_Positioned*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (!player)
@@ -7791,8 +7791,8 @@ int WorldService::FUN_141bd4ed0(const std::set<int>& ids, Unk_StreamPoint* pOutP
             int id = FUN_140967110(FUN_140965920(&sp));
             if (ids.find(id) != ids.end())
             {
-                Unk_StreamPoint tmp;
-                Unk_StreamPoint target = *FUN_1409673c0(FUN_140965920(&sp), &tmp);
+                Vector3 tmp;
+                Vector3 target = *FUN_1409673c0(FUN_140965920(&sp), &tmp);
                 float d = FUN_140966ea0(player->GetPosition(), target);
                 if (d < bestDist)
                 {
@@ -7808,7 +7808,7 @@ int WorldService::FUN_141bd4ed0(const std::set<int>& ids, Unk_StreamPoint* pOutP
         FUN_1409649b0(&best);
         return 0;
     }
-    Unk_StreamPoint tmp;
+    Vector3 tmp;
     *pOutPos = *FUN_1409673c0(FUN_140965920(&best), &tmp);
     *pOutDist = bestDist;
     FUN_1409649b0(&best);
@@ -7821,10 +7821,10 @@ void FUN_141bf6da0(Unk_WsP16* self, Unk_WsP16* src);    // assign
 void* FUN_1409657f0(void* sp);                          // raw pointer
 int FUN_141447ae0(void* obj);
 int FUN_141447cc0(void* obj);                           // id used for the set test
-Unk_StreamPoint* FUN_141447c80(void* obj, Unk_StreamPoint* out);   // position (hidden return slot)
+Vector3* FUN_141447c80(void* obj, Vector3* out);   // position (hidden return slot)
 // MS2-FUNCTIONAL: not byte-identical (EH/unwind shape or opaque COMDAT callees)
 // @0x141bd51a0
-int WorldService::FUN_141bd51a0(const std::set<unsigned>& ids, Unk_StreamPoint* pOutPos, float* pOutDist)
+int WorldService::FUN_141bd51a0(const std::set<unsigned>& ids, Vector3* pOutPos, float* pOutDist)
 {
     Unk_WsD_Positioned* player = (Unk_WsD_Positioned*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (!player)
@@ -7843,8 +7843,8 @@ int WorldService::FUN_141bd51a0(const std::set<unsigned>& ids, Unk_StreamPoint* 
             int id = FUN_141447cc0(FUN_140965930(&sp));
             if (ids.find(id) != ids.end())
             {
-                Unk_StreamPoint tmp;
-                Unk_StreamPoint target = *FUN_141447c80(FUN_140965930(&sp), &tmp);
+                Vector3 tmp;
+                Vector3 target = *FUN_141447c80(FUN_140965930(&sp), &tmp);
                 float d = FUN_140966ea0(player->GetPosition(), target);
                 if (d < bestDist)
                 {
@@ -7864,7 +7864,7 @@ int WorldService::FUN_141bd51a0(const std::set<unsigned>& ids, Unk_StreamPoint* 
         FUN_1409649e0(&best);
         return 0;
     }
-    Unk_StreamPoint tmp;
+    Vector3 tmp;
     *pOutPos = *FUN_141447c80(FUN_140965930(&best), &tmp);
     *pOutDist = bestDist;
     FUN_1409649e0(&best);
@@ -8037,7 +8037,7 @@ MS2_REPLACE_METHOD(0x141BD6170, WorldService, FUN_141bd6170, 189, 0xF01A0641);
 void FUN_140a000f0(Unk_WsP8* self, int zero);           // ctor (null)
 int FUN_1408a20a0(void* entity, unsigned hash, void* out);   // Entity::GetPropertyValueUnsafe<char>
 void FUN_14098c6e0(void* entity, unsigned hash, void* in);   // Entity::SetPropertyValueUnsafe<char>
-int FUN_1409618c0(void* entity, unsigned hash, Unk_StreamPoint* out);   // GetPropertyValueUnsafe<Point3>
+int FUN_1409618c0(void* entity, unsigned hash, Vector3* out);   // GetPropertyValueUnsafe<Point3>
 int FUN_140961880(void* entity, unsigned hash, float* out);  // GetPropertyValueUnsafe<float>
 void* FUN_140994490(void* sceneGraph);                  // the scene graph's world bound
 float FUN_1409803f0(void* bound);                       // bound radius
@@ -8079,7 +8079,7 @@ void WorldService::FUN_141bd6240(void* entity)
             }
         }
     }
-    Unk_StreamPoint offset(0, 0, 0);
+    Vector3 offset(0, 0, 0);
     float maxDist = 8000.0f;
     FUN_1409618c0(entity, 0xfd95ca52, &offset);
     FUN_140961880(entity, 0x8ef55d4, &maxDist);
@@ -8104,7 +8104,7 @@ MS2_REPLACE_METHOD(0x141BD6240, WorldService, FUN_141bd6240, 724, 0x6EDA0E45);
 void FUN_1411ce5a0(void* mgr, void* it);                // entity manager begin
 bool FUN_1411ce5f0(void* mgr, void* it, void** out);    // next entity
 int FUN_140a18070(void*);
-Unk_StreamPoint* FUN_140a17e10(void* camera, Unk_StreamPoint* out);   // camera position (hidden return slot)
+Vector3* FUN_140a17e10(void* camera, Vector3* out);   // camera position (hidden return slot)
 bool FUN_14028d470(float a, float b);                   // |a - b| < 1e-6
 // rebuild the near list from every entity of the flat model 0xe4fc9d5d that is visible and has no range override
 // MS2-FUNCTIONAL: not byte-identical (EH/unwind shape or opaque COMDAT callees)
@@ -8115,11 +8115,11 @@ void WorldService::FUN_141bd6520()
     FUN_1411ce5a0(FUN_1409670f0(), it);
     if (FUN_140a18070(FUN_1409478c0()) == 0)
     {
-        m_0a8 = Unk_StreamPoint(0, 0, 0);
+        m_0a8 = Vector3(0, 0, 0);
     }
     else
     {
-        Unk_StreamPoint tmp;
+        Vector3 tmp;
         m_0a8 = *FUN_140a17e10(FUN_1409478c0(), &tmp);
     }
     void* entity;
@@ -8129,7 +8129,7 @@ void WorldService::FUN_141bd6520()
         char visible;
         if (model->ContainsModel(0xe4fc9d5d) && FUN_1408a20a0(entity, 0xa0b6b179, &visible) == 0 && visible)
         {
-            Unk_StreamPoint offset;
+            Vector3 offset;
             float maxDist;
             if (FUN_1409618c0(entity, 0xfd95ca52, &offset) == 0 &&
                 (FUN_140961880(entity, 0x8ef55d4, &maxDist) != 0 || !FUN_14028d470(maxDist, 0)))
@@ -8163,7 +8163,7 @@ void WorldService::FUN_141bd6690()
             if (FUN_14166c930(FUN_140dc1660(&m_2d8)) == 0x1e)
                 m_0b4 = 8000.0f;
         }
-        Unk_StreamPoint tmp;
+        Vector3 tmp;
         m_0a8 = *FUN_140a17e10(FUN_1409478c0(), &tmp);
         float nFar = FUN_140bf4fd0((float)m_098.size() / 300.0f);
         float nNear = FUN_140bf4fd0((float)m_088.size() / 60.0f);
@@ -8174,9 +8174,9 @@ MS2_REPLACE_METHOD(0x141BD6690, WorldService, FUN_141bd6690, 371, 0x64AF5C83);
 
 class Unk_WsD_WarFog;                                   // CWarFogEffect (0x38 bytes)
 Unk_WsD_WarFog* FUN_141b732c0(void* mem);               // CWarFogEffect ctor
-void FUN_141b73530(Unk_WsD_WarFog* fog, FieldPropertySightRange* range, Unk_StreamPoint* center);
+void FUN_141b73530(Unk_WsD_WarFog* fog, FieldPropertySightRange* range, Vector3* center);
 void FUN_141b734a0(Unk_WsD_WarFog* fog, bool enable);
-Unk_StreamPoint* FUN_141678710(void* player, Unk_StreamPoint* out);   // player's saved position
+Vector3* FUN_141678710(void* player, Vector3* out);   // player's saved position
 void* FUN_141bf7d90(void* smartPtr);                    // operator->
 bool FUN_141bf72c0(void* smartPtr, void* other);        // operator==
 void* FUN_141bf6ec0(void* smartPtr, int zero);          // assign null
@@ -8202,12 +8202,12 @@ void WorldService::FUN_141bd6810(char flag)
     if (FUN_140dc1560(&m_2d8, 0) == 0)
     {
         Unk_WsD_Npc* player = (Unk_WsD_Npc*)FUN_140dc1660(&m_2d8);
-        Unk_StreamPoint tmp;
-        Unk_StreamPoint center = *player->GetPosition(&tmp);
-        Unk_StreamPoint saved;
+        Vector3 tmp;
+        Vector3 center = *player->GetPosition(&tmp);
+        Vector3 saved;
         FUN_141678710(FUN_140dc1660(&m_2d8), &saved);
         bool closeEnough = center.z - saved.z < 1500.0f;
-        Unk_StreamPoint pos = center;
+        Vector3 pos = center;
         int cls = FUN_14166c930(FUN_140dc1660(&m_2d8));
         if (4 < cls)
         {
@@ -8268,11 +8268,11 @@ float FUN_140970720(void* npcPart);                     // alpha of the part
 const float& FUN_1409ffe80(const float& a, const float& b);   // min
 // MS2-FUNCTIONAL: opaque COMDATs (EH sentinel, RTTI-less vtable calls)
 // @0x141bd6c40
-void WorldService::FUN_141bd6c40(void* npcPtr, Unk_StreamPoint* center, FieldPropertySightRange* range, float sight, char flag)
+void WorldService::FUN_141bd6c40(void* npcPtr, Vector3* center, FieldPropertySightRange* range, float sight, char flag)
 {
     Unk_WsD_Npc* npcObj = (Unk_WsD_Npc*)npcPtr;
-    Unk_StreamPoint tmp;
-    Unk_StreamPoint d = npcObj->GetPosition(&tmp)->FUN_140965c40(*center);
+    Vector3 tmp;
+    Vector3 d = npcObj->GetPosition(&tmp)->FUN_140965c40(*center);
     float fade = 1.0f;
     float up = FUN_1403812c0(range);
     float down = FUN_1403812e0(range);
@@ -8393,11 +8393,11 @@ bool FUN_141bd71e0(float dist, float limit, float* pFade)
 }
 MS2_REPLACE(0x141BD71E0, FUN_141bd71e0, 73, 0xBBA87B61);
 
-float FUN_140966f00(Unk_StreamPoint a, Unk_StreamPoint b);   // distance (3D)
+float FUN_140966f00(Vector3 a, Vector3 b);   // distance (3D)
 // true when the local player is farther from the point than the sight range
 // MS2-FUNCTIONAL: not byte-identical (EH/unwind shape or opaque COMDAT callees)
 // @0x141bd7230
-bool WorldService::FUN_141bd7230(Unk_StreamPoint* pt)
+bool WorldService::FUN_141bd7230(Vector3* pt)
 {
     bool result;
     if (FUN_140dc1560(&m_2d8, 0))
@@ -8405,9 +8405,9 @@ bool WorldService::FUN_141bd7230(Unk_StreamPoint* pt)
     else if (!m_a90)
     {
         Unk_WsD_Npc* player = (Unk_WsD_Npc*)FUN_140dc1660(&m_2d8);
-        Unk_StreamPoint tmp;
-        Unk_StreamPoint playerPos = *player->GetPosition(&tmp);
-        Unk_StreamPoint other = *pt;
+        Vector3 tmp;
+        Vector3 playerPos = *player->GetPosition(&tmp);
+        Vector3 other = *pt;
         float d = FUN_140966f00(other, playerPos);
         float limit = m_a90.get();
         result = limit < d;
@@ -8426,8 +8426,8 @@ void WorldService::FUN_141bd7350(bool enable)
 }
 MS2_REPLACE_METHOD(0x141BD7350, WorldService, FUN_141bd7350, 46, 0x1F6BAC60);
 
-Unk_StreamPoint* FUN_1408a14c0(Unk_StreamPoint* out, Unk_StreamPoint pos);   // grid cell of a position
-int FUN_1408a03c0(Unk_StreamPoint* cell);               // cell key
+Vector3* FUN_1408a14c0(Vector3* out, Vector3 pos);   // grid cell of a position
+int FUN_1408a03c0(Vector3* cell);               // cell key
 Unk_WsD_ZoneRec* FUN_141bf79d0(void* map, int* key);    // m_1f8[key]
 bool FUN_141c04f70(void* npc);                          // npc is faded out
 void FUN_141bfaec0(void* npc, bool faded);
@@ -8463,8 +8463,8 @@ void WorldService::FUN_141bd7390()
     int* delayBase = FUN_140b0f480(&FUN_1401d3200()->m_e310);
     float* fadeAlpha = FUN_140298f40(&FUN_1401d3200()->m_e2b8);
     Unk_WsD_Npc* player = (Unk_WsD_Npc*)FUN_140dc1660(&m_2d8);
-    Unk_StreamPoint tmp;
-    Unk_StreamPoint cell1;
+    Vector3 tmp;
+    Vector3 cell1;
     int key = FUN_1408a03c0(FUN_1408a14c0(&cell1, *player->GetPosition(&tmp)));
     int zone = 0;
     if (m_1f8.find(key) != m_1f8.end())
@@ -8494,7 +8494,7 @@ void WorldService::FUN_141bd7390()
         {
             void* other = FUN_140aac440(&holder);
             Unk_WsD_Npc* otherNpc = (Unk_WsD_Npc*)other;
-            Unk_StreamPoint tmp2, cell2;
+            Vector3 tmp2, cell2;
             int otherKey = FUN_1408a03c0(FUN_1408a14c0(&cell2, *otherNpc->GetPosition(&tmp2)));
             int otherZone = 0;
             if (m_1f8.find(otherKey) != m_1f8.end())
@@ -8937,12 +8937,12 @@ int FUN_140967110(void* obj);                           // interaction id
 unsigned FUN_1413b5600_D(void* npcData);                  // interaction state
 bool FUN_1408b70b0(Unk_WsP8* ref, void* other);         // ref == other
 void FUN_1409649b0(Unk_WsP16* ref);                     // release (by-value parameter)
-int FUN_1409618c0(void* entity, unsigned hash, Unk_StreamPoint* out);
-extern Unk_StreamPoint DAT_143b01a60;
+int FUN_1409618c0(void* entity, unsigned hash, Vector3* out);
+extern Vector3 DAT_143b01a60;
 Unk_WsD_Tooltip* FUN_14191a7e0(void* mem, CStringA text);   // UIDebugTooltip ctor
 Unk_WsP16* FUN_141374fe0(Unk_WsP16* self, Unk_WsD_Tooltip* tip);   // holder ctor
 void* FUN_1413750f0(Unk_WsP16* self);                   // holder->
-void FUN_14191aae0(void* tip, Unk_StreamPoint pos);     // set position
+void FUN_14191aae0(void* tip, Vector3 pos);     // set position
 void FUN_14191ab10(void* tip, CStringW text);           // set text
 void FUN_14191aa10(void* tip);                          // show
 void FUN_141375010(Unk_WsP16* self);                    // holder dtor
@@ -8969,7 +8969,7 @@ void WorldService::FUN_141bd9410(Unk_WsP16* pObj)
         text.Format("InteractID( %d )", FUN_140967110(FUN_140965920(pObj)));
         CStringW state;
         state.Format(L"State(%d)", FUN_1413b5600_D(FUN_140965920(pObj)));
-        Unk_StreamPoint pos = DAT_143b01a60;
+        Vector3 pos = DAT_143b01a60;
         Unk_WsP8 ent;
         FUN_1409618c0(FUN_1408a9280(FUN_1413fd890(FUN_140965920(pObj), &ent)), 0xfd95ca52, &pos);
         FUN_1408a8720(&ent);
@@ -9600,7 +9600,7 @@ MS2_REPLACE_METHOD(0x141BDB030, WorldService, FUN_141bdb030, 179, 0x208C2F51);
 void* FUN_1409670f0();                                              // the EntityWorld singleton (Unk_WsE_EntityWorld)
 // typed Entity::SetPropertyValue wrappers (egf::Entity* + property id + value pointer)
 void FUN_1410dc360(egf::Entity* e, unsigned propId, const int* v);
-void FUN_140a38a50(egf::Entity* e, unsigned propId, const Unk_StreamPoint* v);
+void FUN_140a38a50(egf::Entity* e, unsigned propId, const Vector3* v);
 void FUN_14098c6e0(egf::Entity* e, unsigned propId, const bool* v);
 void FUN_140de8bd0(egf::Entity* e, unsigned propId, const efd::AssetID* v);
 int FUN_1408a2020_E(const egf::Entity* e, unsigned propId, int* out);  // Entity::GetPropertyValue (int), 0 = ok
@@ -9836,15 +9836,15 @@ unsigned FUN_1407e9a40(void* p);                                                
 void* FUN_14063ed50(Unk_WsF_Fld38* f);
 unsigned short FUN_140803df0(void* p);
 void* FUN_1407ebbf0(Unk_WsF_Fld48* f);
-Unk_StreamPoint FUN_141b6dff0(Unk_StreamPoint p);                               // identity copy
-Unk_StreamPoint FUN_1417f5940(Unk_StreamPoint p);                               // snap/transform point
+Vector3 FUN_141b6dff0(Vector3 p);                               // identity copy
+Vector3 FUN_1417f5940(Vector3 p);                               // snap/transform point
 void FUN_1417591b0(Unk_WsF_TagObj* tag);                                        // tag notify
 // effects
 Unk_WsF_CacheData* FUN_1401d3200_F();
 float FUN_1402bac70(Unk_WsF_Param* p);
 void* FUN_1403ed280();                                                          // effect service
-int FUN_1411a5580(void* effects, int level, int effectId, int flag, Unk_StreamPoint pos, float volume);
-extern Unk_StreamPoint DAT_143b01a60;
+int FUN_1411a5580(void* effects, int level, int effectId, int flag, Vector3 pos, float volume);
+extern Vector3 DAT_143b01a60;
 extern char DAT_143b059e8;
 
 Unk_WsF_EntRef::Unk_WsF_EntRef(const Unk_WsF_EntRef& o) { FUN_1408a7ed0(this, &o); }
@@ -9971,7 +9971,7 @@ void WorldService::FUN_141bc3560()
             FUN_1401fddd0(&info, &packet);
             FUN_140710590(packet);
 
-            Unk_StreamPoint entPos = DAT_143b01a60;
+            Vector3 entPos = DAT_143b01a60;
             FUN_1409618c0_F(FUN_1408a9280(&entity), 0xfd95ca52, &entPos);
             int level = FUN_141235250(&found)->level;
             if (level == 0)
@@ -10158,18 +10158,18 @@ void FUN_14169bd40(void* obj);
 // actors: distance bookkeeping
 void* FUN_141750870(void* map);                                       // m_0b8.GetHeadPosition
 Unk_WsG_Pair0b8* FUN_141750910_G(void* map, void** pos);                // m_0b8.GetNext (returns the visited pair)
-float FUN_14123daa0(Unk_WsG_Actor* actor, Unk_StreamPoint* pFocus);   // stores + returns distance to the focus
-float FUN_14123db60(Unk_WsG_Actor* actor, Unk_StreamPoint* pEye);     // stores distance to the camera eye
+float FUN_14123daa0(Unk_WsG_Actor* actor, Vector3* pFocus);   // stores + returns distance to the focus
+float FUN_14123db60(Unk_WsG_Actor* actor, Vector3* pEye);     // stores distance to the camera eye
 void FUN_14123bb30(Unk_WsG_Actor* actor, float dt);
-float FUN_1414a84f0(void* actor, Unk_StreamPoint* pFocus);            // m_9a0 element: distance to the focus
-void FUN_1414a8410(void* actor, Unk_StreamPoint* pCamera);
+float FUN_1414a84f0(void* actor, Vector3* pFocus);            // m_9a0 element: distance to the focus
+void FUN_1414a8410(void* actor, Vector3* pCamera);
 void FUN_141c1bb30(void* actor, float fDist);
 void FUN_1414a85d0(void* actor, float dt);
 // camera
 void* FUN_1409478c0();                                                 // camera singleton (Unk_WsG_Camera)
 int FUN_140a18070(Unk_WsG_Camera* cam);                               // follow-target mode flag (+0x1b0)
 Unk_WsG_Actor* FUN_140a38d60(Unk_WsG_Camera* cam);                    // follow target (+0x1c0)
-Unk_StreamPoint* FUN_140a17e10(Unk_WsG_Camera* cam, Unk_StreamPoint* pOut);   // eye position
+Vector3* FUN_140a17e10(Unk_WsG_Camera* cam, Vector3* pOut);   // eye position
 void FUN_140aea4c0(Unk_WsG_Camera* cam, float dt);
 void FUN_140aece50(Unk_WsG_Camera* cam);
 int FUN_140af7e30(Unk_WsG_Camera* cam);                               // camera mode
@@ -10192,7 +10192,7 @@ Unk_WsG_ZoneTemp* FUN_1416c2220(Unk_WsG_Region* region, Unk_WsG_ZoneTemp* pOut);
 Unk_WsG_ZoneRef* FUN_1406cf850(Unk_WsG_ZoneRef* dst, Unk_WsG_ZoneTemp* src);   // move
 void FUN_1406d5390(Unk_WsG_ZoneTemp* tmp);
 void FUN_14035e5b0(Unk_WsG_ZoneRef* ref);                             // release
-Unk_StreamPoint* FUN_1416c2270(Unk_WsG_Region* region, Unk_StreamPoint* pOut);   // region centre
+Vector3* FUN_1416c2270(Unk_WsG_Region* region, Vector3* pOut);   // region centre
 void* FUN_141bfeb70(void* map);                                       // m_6d8.GetHeadPosition
 Unk_WsV6d8* FUN_141c00860(void* map, void* pos);
 void FUN_141bff130(void* map, void** pos);
@@ -10234,9 +10234,9 @@ void FUN_140aaba50(Unk_WsPtredaa0* p);
 
 static Unk_WsG_Camera* G_Camera() { return static_cast<Unk_WsG_Camera*>(FUN_1409478c0()); }
 
-static Unk_StreamPoint G_PositionOf(Unk_WsG_Actor* actor)
+static Vector3 G_PositionOf(Unk_WsG_Actor* actor)
 {
-    Unk_StreamPoint tmp;
+    Vector3 tmp;
     return *actor->GetPosition(&tmp);
 }
 
@@ -10362,8 +10362,8 @@ efd::AsyncResult WorldService::OnTick()
     // ---- focus / camera positions and the actors' distance bookkeeping ----
     float dt = FUN_141473230(FUN_14086d260_G());
     void* actorPos = FUN_141750870(&m_0b8);
-    Unk_StreamPoint focusPos(0.0f, 0.0f, 0.0f);
-    Unk_StreamPoint cameraPos(0.0f, 0.0f, 0.0f);
+    Vector3 focusPos(0.0f, 0.0f, 0.0f);
+    Vector3 cameraPos(0.0f, 0.0f, 0.0f);
     Unk_WsG_Actor* focus = reinterpret_cast<Unk_WsG_Actor*>(m_2d8.data());
     if (focus != 0)
     {
@@ -10376,16 +10376,16 @@ efd::AsyncResult WorldService::OnTick()
     if (FUN_140a18070(cam) != 0)
     {
         Unk_WsG_Actor* target = FUN_140a38d60(G_Camera());
-        Unk_StreamPoint tmp;
+        Vector3 tmp;
         if (target == 0)
             cameraPos = *FUN_140a17e10(G_Camera(), &tmp);
         else
             cameraPos = G_PositionOf(target);
     }
-    Unk_StreamPoint eyePos;
+    Vector3 eyePos;
     FUN_140a17e10(G_Camera(), &eyePos);
 
-    Unk_StreamPoint* reference = (m_2d8 != 0) ? &focusPos : &cameraPos;
+    Vector3* reference = (m_2d8 != 0) ? &focusPos : &cameraPos;
     bool bCameraMoved = !(focusPos.x == cameraPos.x && focusPos.y == cameraPos.y && focusPos.z == cameraPos.z);
     while (actorPos != 0)
     {
@@ -10468,8 +10468,8 @@ efd::AsyncResult WorldService::OnTick()
                 FUN_1406d5390(&tmp);
                 if (zone.m_p != 0 && zone.m_p->m_range > 0.0f && bestValue < zone.m_p->m_value)
                 {
-                    Unk_StreamPoint centre;
-                    Unk_StreamPoint pCentre = *FUN_1416c2270(region, &centre);
+                    Vector3 centre;
+                    Vector3 pCentre = *FUN_1416c2270(region, &centre);
                     float dist = FUN_140966ea0(G_PositionOf(focus), pCentre);
                     if (dist <= zone.m_p->m_range && bestValue < zone.m_p->m_value)
                     {
@@ -10488,7 +10488,7 @@ efd::AsyncResult WorldService::OnTick()
             egf::Entity* ent = static_cast<egf::Entity*>(FUN_141c00860(&m_6d8, pos)->p);
             float value = 0.0f;
             float range = 0.0f;
-            Unk_StreamPoint entPos = DAT_143b01a60;
+            Vector3 entPos = DAT_143b01a60;
             FUN_140961880(ent, 0x1b792b9f, &value);
             FUN_140961880(ent, 0xcb75ea6a, &range);
             if (range > 0.0f && bestValue < value)
@@ -10935,8 +10935,8 @@ int WorldService::FUN_141bbc580(int resetFlag, int mapId)
         m_284 = 0;
         m_290.Empty();
     }
-    m_boundsMin = Unk_StreamPoint(FLT_MAX, FLT_MAX, FLT_MAX);
-    m_boundsMax = Unk_StreamPoint(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+    m_boundsMin = Vector3(FLT_MAX, FLT_MAX, FLT_MAX);
+    m_boundsMax = Vector3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
     if (FUN_14086d260())
         FUN_141472fe0(FUN_14086d260());
     m_97c = 0;
@@ -10972,10 +10972,10 @@ void FUN_140aeb070(void* camera);
 void FUN_140aeb540(void* camera, egf::EntityID id, Unk_WsI_CameraTarget* pTarget);
 Unk_WsI_CameraSetup* FUN_140ae8aa0(Unk_WsI_CameraSetup* self);  // ctor
 Unk_WsI_CameraTarget* FUN_140ae7ce0(Unk_WsI_CameraTarget* self);   // ctor
-void FUN_140291bc0(Unk_StreamPoint* p);
+void FUN_140291bc0(Vector3* p);
 // entity property reads/writes (GetPropertyValueUnsafe wrappers)
 void FUN_140961880_I(egf::Entity* e, unsigned id, float* out);
-void FUN_1409618c0_I(egf::Entity* e, unsigned id, Unk_StreamPoint* out);
+void FUN_1409618c0_I(egf::Entity* e, unsigned id, Vector3* out);
 int FUN_1408a2020_I(egf::Entity* e, unsigned id, unsigned* out);
 int FUN_1408a2020_I(egf::Entity* e, unsigned id, int* out);
 void FUN_140ae11a0(egf::Entity* e, unsigned id, int* out);
@@ -11014,7 +11014,7 @@ bool FUN_141bf7580(Unk_WsI_Iter* a, Unk_WsI_Iter* b);           // iterator ==
 Unk_WsV1d8* FUN_141bf7a90(void* map, const unsigned __int64* key);   // m_1d8[key]
 Unk_WsV1d8* FUN_141bf46d0(Unk_WsV1d8* self, egf::EntityID id, void* sceneNode, int state, int group);   // ctor
 Unk_WsV1d8* FUN_141bf7110(Unk_WsV1d8* dst, Unk_WsV1d8* src);    // assign
-int FUN_1408a13d0(Unk_StreamPoint pos);                         // grid cell key of a position
+int FUN_1408a13d0(Vector3 pos);                         // grid cell key of a position
 Unk_WsV1f8* FUN_141bf79d0(void* map, const int* key);           // m_1f8[key]
 void FUN_141bdd030(Unk_WsV1f8* slot, Unk_WsI_IdValue* v);       // assign
 Unk_WsVac0* FUN_141bf7a50(void* map, const unsigned* key);      // m_ac0[key]
@@ -11192,7 +11192,7 @@ void WorldService::FUN_141bbd640(const egf::EntityChangeMessage* pMsg, efd::Cate
         FUN_1408a2020_I(pEntity, 0xbf7d3061, &gridValue);
         if (gridValue != 0)
         {
-            Unk_StreamPoint pos;
+            Vector3 pos;
             FUN_1409618c0_I(pEntity, 0xfd95ca52, &pos);
             int cell = FUN_1408a13d0(pos);
             Unk_WsI_IdValue entry = { entityId, gridValue };
@@ -11292,7 +11292,7 @@ void WorldService::FUN_141bbd640(const egf::EntityChangeMessage* pMsg, efd::Cate
     else if (pEntity->GetModel()->ContainsModel(0x5bc8a3b8))
     {
         // grow the world bounds by this entity's position
-        Unk_StreamPoint pos;
+        Vector3 pos;
         FUN_1409618c0_I(pEntity, 0xfd95ca52, &pos);
         if (pos.x < m_boundsMin.x) m_boundsMin.x = pos.x;
         if (pos.y < m_boundsMin.y) m_boundsMin.y = pos.y;
@@ -11393,7 +11393,7 @@ void WorldService::FUN_141bbd640(const egf::EntityChangeMessage* pMsg, efd::Cate
         }
         float startDistance = 0.0f;
         float range = 0.0f;
-        Unk_StreamPoint pos = DAT_143b01a60;
+        Vector3 pos = DAT_143b01a60;
         FUN_140961880_I(pEntity, 0x1b792b9f, &startDistance);
         if (FUN_141bd4120() < startDistance)
         {
@@ -11428,7 +11428,7 @@ void WorldService::FUN_141bbd640(const egf::EntityChangeMessage* pMsg, efd::Cate
             CStringW fieldName;
             FUN_141811980(FUN_1401a9d70(), &fieldName, 3, fieldId);
             descText.Format(L"Target ID(%d), FieldID(%d, %s)", targetId, fieldId, (LPCWSTR)fieldName);
-            Unk_StreamPoint pos = DAT_143b01a60;
+            Vector3 pos = DAT_143b01a60;
             FUN_1409618c0_I(pEntity, 0xfd95ca52, &pos);
             void* mem = ::operator new(0xa0);
             Unk_WsI_TooltipRef tip(mem ? FUN_14191a7e0_I(mem, CStringA(nameText)) : 0);
@@ -11592,8 +11592,8 @@ MS2_REPLACE_METHOD_VIA(0x141BC8230, WorldService, IMessageListener, OnMessage, 4
 struct Unk_WsK_Box
 {
     Unk_WsK_Box() : m_min(FLT_MAX, FLT_MAX, FLT_MAX), m_max(-FLT_MAX, -FLT_MAX, -FLT_MAX) {}
-    Unk_StreamPoint m_min;
-    Unk_StreamPoint m_max;
+    Vector3 m_min;
+    Vector3 m_max;
 };
 MS2_CHECK_SIZE(Unk_WsK_Box, 24);
 // Rotation matrix + translation (identity by default).
@@ -11603,7 +11603,7 @@ struct Unk_WsK_Pose
     void Identity() { for (int i = 0; i < 9; ++i) m_rot[i] = (i % 4 == 0) ? 1.0f : 0.0f; }
     void RotateZ(float a) { float c = cosf(a), s = sinf(a); Identity(); m_rot[4] = c; m_rot[0] = c; m_rot[1] = -s; m_rot[3] = s; }
     float m_rot[9];
-    Unk_StreamPoint m_pos;                      // +0x24
+    Vector3 m_pos;                      // +0x24
 };
 MS2_CHECK_SIZE(Unk_WsK_Pose, 48);
 // Oriented box produced by NxUtilLib from (box, pose); only used as an opaque out parameter.
@@ -11634,15 +11634,15 @@ double FUN_141473280(void* timeSvc);
 void* FUN_141b6f910();
 bool FUN_141c06b80(void* map, unsigned key, Unk_WsC_TagPtr* out);   // m_208.Lookup
 int FUN_140961880(egf::Entity* e, unsigned propId, float* out);
-int FUN_1409618c0(egf::Entity* e, unsigned propId, Unk_StreamPoint* out);
+int FUN_1409618c0(egf::Entity* e, unsigned propId, Vector3* out);
 int FUN_1408a20a0(egf::Entity* e, unsigned propId, char* out);
 int FUN_1408a2060(egf::Entity* e, unsigned propId, Unk_WsK_Utf8* out);
 void FUN_14098c6e0(egf::Entity* e, unsigned propId, const bool* v);
 void FUN_1409457c0(egf::Entity* e, unsigned propId, const float* v);
-bool FUN_140552690(const Unk_StreamPoint* a, const Unk_StreamPoint* b);
-extern Unk_StreamPoint DAT_143b01a60;
+bool FUN_140552690(const Vector3* a, const Vector3* b);
+extern Vector3 DAT_143b01a60;
 void FUN_140adc690(Unk_WsK_Obb* out, const Unk_WsK_Box* box, const Unk_WsK_Pose* pose);   // NxUtilLib: build the OBB
-char FUN_140adc610(const Unk_WsK_Obb* obb, const Unk_StreamPoint* pt);                    // NxUtilLib: point inside OBB
+char FUN_140adc610(const Unk_WsK_Obb* obb, const Vector3* pt);                    // NxUtilLib: point inside OBB
 void* FUN_140c20a10(void* map);
 void* FUN_140c20a80(void* map, void* pos);
 void FUN_140c20a30(void* map, void** pos);
@@ -11668,7 +11668,7 @@ void FUN_141bd56b0(WorldService* self)
             continue;
         if (period > now - lastTime)
             continue;
-        Unk_StreamPoint size = DAT_143b01a60;
+        Vector3 size = DAT_143b01a60;
         if (FUN_1409618c0(ent.operator->(), 0x9dc22aea, &size) != 0)
             continue;
         if (FUN_140552690(&size, &DAT_143b01a60))
@@ -11690,13 +11690,13 @@ void FUN_141bd56b0(WorldService* self)
         if (FUN_1408a20a0(ent.operator->(), 0x2683e9ec, &enabled) != 0)
             continue;
 
-        Unk_StreamPoint pos = DAT_143b01a60;
+        Vector3 pos = DAT_143b01a60;
         FUN_1409618c0(ent.operator->(), 0xfd95ca52, &pos);
-        Unk_StreamPoint rot = DAT_143b01a60;
+        Vector3 rot = DAT_143b01a60;
         FUN_1409618c0(ent.operator->(), 0x68c7c29d, &rot);
-        Unk_StreamPoint half = size.FUN_14097fc90(0.5f);
+        Vector3 half = size.FUN_14097fc90(0.5f);
         Unk_WsK_Box box;
-        box.m_min = Unk_StreamPoint(-half.x, -half.y, -half.z);
+        box.m_min = Vector3(-half.x, -half.y, -half.z);
         box.m_max = half;
         Unk_WsK_Pose pose;
         pose.m_pos = pos;
@@ -11710,7 +11710,7 @@ void FUN_141bd56b0(WorldService* self)
             for (void* pos2 = FUN_140c20a10(&self->m_118); pos2 != 0; FUN_140c20a30(&self->m_118, &pos2))
             {
                 Unk_WsC_GameObj* obj = FUN_140aac420(static_cast<Unk_WsC_GameObjPtr*>(FUN_140c20a80(&self->m_118, pos2)));
-                Unk_StreamPoint at = obj->GetPosition();
+                Vector3 at = obj->GetPosition();
                 if (FUN_140adc610(&obb, &at) != 0)
                 {
                     inside = true;

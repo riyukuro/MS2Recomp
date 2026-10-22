@@ -24,12 +24,12 @@ struct Unk_ArcFlight
     float m_flightScale;                // +0x00 flight time
     float m_speed;                      // +0x04
     float m_gravity;                    // +0x08
-    Unk_StreamPoint m_target;           // +0x0c
-    Unk_StreamPoint m_direction;        // +0x18 horizontal unit direction
-    Unk_StreamPoint m_origin;           // +0x24
+    Vector3 m_target;           // +0x0c
+    Vector3 m_direction;        // +0x18 horizontal unit direction
+    Vector3 m_origin;           // +0x24
     Unk_ArcAngle m_angle;               // +0x30
 
-    void FUN_141479ed0(Unk_StreamPoint origin, Unk_StreamPoint target, float speed, float gravity);
+    void FUN_141479ed0(Vector3 origin, Vector3 target, float speed, float gravity);
 };
 MS2_CHECK_SIZE(Unk_ArcFlight, 0x38);
 
@@ -43,22 +43,22 @@ public:
     virtual ~CArcController();                                  // 0x1409ab180
     virtual const NiRTTI* GetRTTI() const;                      // slot 2, 0x1409ab690
 
-    bool FUN_1409ab1b0(Unk_StreamPoint from, Unk_StreamPoint to, float speed, float gravityScale);  // start; false if from/to coincide
+    bool FUN_1409ab1b0(Vector3 from, Vector3 to, float speed, float gravityScale);  // start; false if from/to coincide
     float FUN_1409ab300() const;                                // flight time
     bool IsRising() const;                                 // still rising
-    Unk_StreamPoint GetPosition() const;                      // current world position
+    Vector3 GetPosition() const;                      // current world position
     bool FUN_1409ab370() const;                                 // finished
     void FUN_1409ab3b0(float fDelta);                           // advance
 
 public:
     Unk_ArcFlight m_arc;                                        // +0x10
     float m_elapsed;                                            // +0x48
-    Unk_StreamPoint m_offset;                                   // +0x4c offset from the origin
+    Vector3 m_offset;                                   // +0x4c offset from the origin
     bool m_bRising;                                             // +0x58
-    Unk_StreamPoint m_position;                                 // +0x5c
+    Vector3 m_position;                                 // +0x5c
 };
 MS2_CHECK_SIZE(CArcController, 0x68);
 MS2_CHECK_OFFSET(CArcController, m_elapsed, 0x48);
 MS2_CHECK_OFFSET(CArcController, m_position, 0x5c);
 
-extern Unk_StreamPoint DAT_143b01a60;                           // the zero point constant
+extern Vector3 DAT_143b01a60;                           // the zero point constant

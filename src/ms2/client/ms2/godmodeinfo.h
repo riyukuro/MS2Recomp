@@ -18,9 +18,9 @@ public:
     CGodModeInfo();                                     // 0x141374a90
     virtual ~CGodModeInfo();                            // 0x141374af0 (??_G 0x141375100)
 
-    void FUN_141374b80(Unk_StreamPoint kPos);           // 0x141374b80 create the tooltip at kPos
+    void FUN_141374b80(Vector3 kPos);           // 0x141374b80 create the tooltip at kPos
     void FUN_141374d10(int n);                          // 0x141374d10 set the index and push it
-    void FUN_141374d40(Unk_StreamPoint kPos);           // 0x141374d40 anchor the tooltip at kPos + (0, 0, 150)
+    void FUN_141374d40(Vector3 kPos);           // 0x141374d40 anchor the tooltip at kPos + (0, 0, 150)
     void FUN_141374dd0(void* pInput);                   // 0x141374dd0 '-' (0x7d) / 'x' (0x78) step the index
     void SendRequestCube();                               // 0x141374ea0 refresh the text and send 0x37/0x13
 

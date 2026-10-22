@@ -37,12 +37,12 @@ class Unk_FtSeasonTable;
 Unk_FtSeasonTable* FUN_140dc19b0();
 Unk_FtSeasonEntry* FUN_140769000(Unk_FtSeasonTable* pTable, int nTrophy);
 
-class Unk_FtWorldToScreen { public: bool FUN_140af0700(const Unk_StreamPoint& world, Unk_StreamPoint& out); };
+class Unk_FtWorldToScreen { public: bool FUN_140af0700(const Vector3& world, Vector3& out); };
 Unk_FtWorldToScreen* FUN_1409478c0();                                   // camera service
 class Unk_FtUIScale;
 Unk_FtUIScale* FUN_14025e7a0();                                         // ui scale service
 float FUN_1422afec0(Unk_FtUIScale* pScale, int nLayer);                 // scale of a layer
-Unk_StreamPoint* FUN_140ad0c10(Unk_StreamPoint* pt, float f);           // efd::Point3::operator*=
+Vector3* FUN_140ad0c10(Vector3* pt, float f);           // efd::Point3::operator*=
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
 
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);  // Value = string
@@ -180,9 +180,9 @@ bool UIGuildFlagTooltip::FUN_1412c46d0()
         return false;
     if (dynamic_cast<CInteractDisplayImage*>(pObject) == 0)
         return false;
-    Unk_StreamPoint kWorld = pObject->GetPos();
+    Vector3 kWorld = pObject->GetPos();
     kWorld.z += 150.0f;
-    Unk_StreamPoint kScreen;
+    Vector3 kScreen;
     if (FUN_1409478c0()->FUN_140af0700(kWorld, kScreen))
     {
         MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));

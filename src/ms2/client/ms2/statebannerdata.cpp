@@ -43,7 +43,7 @@ void* FUN_141b6f910();                                  // 0x141b6f910: the anim
 NiActorManager* FUN_140999440(void* pSvc, const egf::EntityID& kId);   // 0x140999440 (ICF: AnimationService)
 unsigned int FUN_1409a1a00(NiActorManager* pActor);     // 0x1409a1a00: the actor's playing sequence id
 bool FUN_140b73bc0(MyPC* pPlayer);                      // 0x140b73bc0: the player can join the banner micro game
-extern Unk_StreamPoint DAT_143b01a60;                   // 0x143b01a60: the zero point
+extern Vector3 DAT_143b01a60;                   // 0x143b01a60: the zero point
 int FUN_140b7f6a0(void* pSvc, const egf::EntityID& kId);   // 0x140b7f6a0 (defined below)
 
 // ---- StateBannerData ----
@@ -134,7 +134,7 @@ void StateBanner::vfunc_5(int n)
 void StateBanner::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    Unk_StreamPoint kZero = DAT_143b01a60;
+    Vector3 kZero = DAT_143b01a60;
     m_pOwner->vfunc_68(&kZero, fTime, 0, 0, 0);
 }
 

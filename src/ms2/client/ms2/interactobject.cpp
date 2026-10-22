@@ -58,7 +58,7 @@ public:
     virtual void vf08() = 0; virtual void vf09() = 0; virtual void vf10() = 0; virtual void vf11() = 0;
     virtual void vf12() = 0; virtual void vf13() = 0; virtual void vf14() = 0; virtual void vf15() = 0;
     virtual void vf16() = 0; virtual void vf17() = 0;
-    virtual Unk_StreamPoint* GetPosition(Unk_StreamPoint* pOut) = 0;        // 18
+    virtual Vector3* GetPosition(Vector3* pOut) = 0;        // 18
     virtual void vf19() = 0;
     virtual void vf20() = 0;
     virtual void vf21() = 0;
@@ -114,7 +114,7 @@ public:
     Unk_IoInvView* FUN_1416749a0();                         // equip / inventory view
     int FUN_14123c580();
     Unk_EntRef* FUN_141529900();
-    Unk_StreamPoint* FUN_1416767d0(Unk_StreamPoint* pOut);  // position
+    Vector3* FUN_1416767d0(Vector3* pOut);  // position
 };
 struct Unk_IoCutData
 {
@@ -282,11 +282,11 @@ struct Unk_IoRefOwner;
 int FUN_140743710(Unk_IoHomeInfo* p);
 
 // entity and property access
-int FUN_1409618c0(Unk_Entity* e, unsigned nHash, Unk_StreamPoint* pOut);
+int FUN_1409618c0(Unk_Entity* e, unsigned nHash, Vector3* pOut);
 int FUN_1408a2020(Unk_Entity* e, unsigned nHash, int* pOut);
 int FUN_1408a20a0(Unk_Entity* e, unsigned nHash, bool* pOut);
 int FUN_140961880(Unk_Entity* e, unsigned nHash, float* pOut);   // float property
-int FUN_140b27ec0(Unk_Entity* e, unsigned nHash, Unk_StreamPoint* pOut);
+int FUN_140b27ec0(Unk_Entity* e, unsigned nHash, Vector3* pOut);
 int FUN_1408a2060(Unk_Entity* e, unsigned nHash, efd::utf8string* pOut);
 int FUN_140998250(Unk_Entity* e, unsigned nHash, efd::AssetID* pOut);
 void FUN_14098c6e0(Unk_Entity* e, unsigned nHash, unsigned char* pValue);
@@ -547,8 +547,8 @@ void CInteractObject::FUN_1413fda50()
     {
         Unk_IoXform xf;
         FUN_140a332d0(&xf);
-        Unk_StreamPoint ptUp(0.0f, 0.0f, 1.0f);
-        Unk_StreamPoint ptPos = m_vPos.FUN_14097fd50(ptUp);
+        Vector3 ptUp(0.0f, 0.0f, 1.0f);
+        Vector3 ptPos = m_vPos.FUN_14097fd50(ptUp);
         Unk_NiPoint3 niPos(ptPos);
         FUN_14097faa0(xf.m_afTranslate, &niPos);
         xf.m_rotate.FUN_142083d40((m_vRot.x * 3.1415927f) / 180.0f, (m_vRot.y * 3.1415927f) / 180.0f,
@@ -751,7 +751,7 @@ void CInteractObject::vfunc_11()
     }
 }
 
-// MS2-FUNCTIONAL: the effect transform is built through named Unk_StreamPoint / Unk_NiPoint3 locals and an explicit transform init (3 calls more than the exe, which passes the summed point temp straight to the translate setter)
+// MS2-FUNCTIONAL: the effect transform is built through named Vector3 / Unk_NiPoint3 locals and an explicit transform init (3 calls more than the exe, which passes the summed point temp straight to the translate setter)
 // @0x1413fe5d0
 void CInteractObject::vfunc_12()
 {
@@ -759,8 +759,8 @@ void CInteractObject::vfunc_12()
     {
         Unk_IoXform xf;
         FUN_140a332d0(&xf);
-        Unk_StreamPoint ptUp(0.0f, 0.0f, 1.0f);
-        Unk_StreamPoint ptPos = m_vPos.FUN_14097fd50(ptUp);
+        Vector3 ptUp(0.0f, 0.0f, 1.0f);
+        Vector3 ptPos = m_vPos.FUN_14097fd50(ptUp);
         Unk_NiPoint3 niPos(ptPos);
         FUN_14097faa0(xf.m_afTranslate, &niPos);
         xf.m_rotate.FUN_142083d40((m_vRot.x * 3.1415927f) / 180.0f, (m_vRot.y * 3.1415927f) / 180.0f,
@@ -975,7 +975,7 @@ void CInteractMeshObject::MakeNxBoxController()
     NxScene* pScene = FUN_1409f7ca0()->FUN_14168a1c0();
     if (pScene == 0)
         return;
-    Unk_StreamPoint ptPos;
+    Vector3 ptPos;
     ptPos = m_vPos;
     NxBoxShapeDesc box;
     box.dimensions.set(m_spRow->m_mesh.m_shapeDimension.x, m_spRow->m_mesh.m_shapeDimension.y, m_spRow->m_mesh.m_shapeDimension.z);
@@ -1109,8 +1109,8 @@ void CInteractTelescopeObject::vfunc_2(Unk_InteractMsg* pMsg)
         FUN_140939a10()->FUN_140da4e40(CStringW(L"NotifyCutSceneCinematicSkip"),
                                        Delegate<void(NotifyObject*)>(this, &CInteractTelescopeObject::OnCutSceneSkip));
     }
-    Unk_StreamPoint colA;
-    Unk_StreamPoint colB;
+    Vector3 colA;
+    Vector3 colB;
     FUN_1406c4340(&colA.x, 0.0f, 0.0f, 0.0f);
     FUN_1406c4340(&colB.x, 0.0f, 0.0f, 0.0f);
     bool bFilter = false;
@@ -1201,8 +1201,8 @@ void CInteractUIObject::vfunc_11()
         else
         {
             float fRange = GetRow()->m_validate.m_fInteractionDistance;
-            Unk_StreamPoint ptSelf = GetPos();
-            Unk_StreamPoint ptPlayer;
+            Vector3 ptSelf = GetPos();
+            Vector3 ptPlayer;
             pPlayer->FUN_1416767d0(&ptPlayer);
             float fDist = ptPlayer.FUN_140965c40(ptSelf).FUN_140967ac0();
             if (fRange < fDist)
@@ -1990,7 +1990,7 @@ void CInteractWatchTowerObject::vfunc_3(int nState)
 }
 
 // @0x141403f20
-static float FUN_141403f20(Unk_StreamPoint* pA, Unk_StreamPoint* pB)
+static float FUN_141403f20(Vector3* pA, Vector3* pB)
 {
     pA->z = 0.0f;
     pB->z = 0.0f;
@@ -2005,8 +2005,8 @@ void CInteractWatchTowerObject::vfunc_11()
     Unk_IoPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
-        Unk_StreamPoint ptSelf = GetPos();
-        Unk_StreamPoint ptPlayer;
+        Vector3 ptSelf = GetPos();
+        Vector3 ptPlayer;
         pPlayer->GetPosition(&ptPlayer);
         float fDist = FUN_141403f20(&ptPlayer, &ptSelf);
         if (fDist < 2000.0f)

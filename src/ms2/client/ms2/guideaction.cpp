@@ -108,7 +108,7 @@ void FUN_141a5d0a0(int bUse);                               // the tutorial weap
 unsigned FUN_140869420();                                   // millisecond clock
 
 const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);   // attribute text (null = absent)
-int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, Unk_StreamPoint& ptOut);
+int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, Vector3& ptOut);
 int FUN_140e8ecb0(Unk_140165cf0* pElem, const char* pszName, int& nOut);   // the side popup ui type
 unsigned FUN_141389420(const CStringA& strName, unsigned nDefault);      // the limit kind of a name
 CGuideControllerType FUN_14021ade0(const CStringA& strName);
@@ -373,7 +373,7 @@ CStringW CGuideActionEffect::GetTypeName()
 }
 MS2_REPLACE_METHOD(0x141383160, CGuideActionEffect, GetTypeName, 61, 0x579BAC8D);
 
-extern const Unk_StreamPoint DAT_143b01a60;                 // efd::Point3::ZERO
+extern const Vector3 DAT_143b01a60;                 // efd::Point3::ZERO
 
 // @0x1413831b0
 void CGuideActionEffect::vfunc_2(Unk_140165cf0* pElem)

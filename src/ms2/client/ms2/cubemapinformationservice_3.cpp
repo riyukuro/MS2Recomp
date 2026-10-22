@@ -137,12 +137,12 @@ Unk_CMISWorld* FUN_1403ed2d0();
 class Unk_CMISActor
 {
 public:
-    Unk_StreamPoint FUN_141676880();                            // PCBase member: the facing point
-    Unk_StreamPoint FUN_1416767d0();                            // PCBase member: the position
+    Vector3 FUN_141676880();                            // PCBase member: the facing point
+    Vector3 FUN_1416767d0();                            // PCBase member: the position
 };
-void FUN_140a01250(Unk_StreamPoint ptDir, Unk_StreamPoint* pForward, Unk_StreamPoint* pRight);
-Unk_Int3 FUN_1408a1430(Unk_StreamPoint pt);                     // the cube cell of a world point
-int FUN_1408a13d0(Unk_StreamPoint pt);                          // the cell key of a world point
+void FUN_140a01250(Vector3 ptDir, Vector3* pForward, Vector3* pRight);
+Unk_Int3 FUN_1408a1430(Vector3 pt);                     // the cube cell of a world point
+int FUN_1408a13d0(Vector3 pt);                          // the cell key of a world point
 int FUN_1408a0370(int x, int y, int z);                         // the cell key of a cube point
 template <unsigned __int64 N> struct Unk_CMISIter { void* node; };
 Unk_CMISIter<281>* FUN_141152210(Unk_CMISTree<281>*, Unk_CMISIter<281>*);
@@ -194,7 +194,7 @@ void FUN_1402237c0(ATL::CAtlArray<Unk_CMISElem458*>*);
 struct Unk_CMISPt2 { float x, y; };
 Unk_CubeOwnerPtr FUN_1408a0fa0(Unk_CubeOwners& owners, int nGroup, int nBlock);
 struct Unk_CMISRes16 { Unk_CMISRes16(const Unk_CMISRes16&); __int64 m_a, m_b; };
-Unk_CMISRes16 FUN_1408a15b0(Unk_StreamPoint, Unk_StreamPoint);
+Unk_CMISRes16 FUN_1408a15b0(Vector3, Vector3);
 Unk_CMISIter<257>* FUN_141152030(Unk_CMISTree<257>*, Unk_CMISIter<257>*);
 Unk_CMISIter<257>* FUN_1411580e0(Unk_CMISTree<257>*, Unk_CMISIter<257>*, const Unk_CMISEntityRef*);
 bool FUN_141127050(Unk_CMISIter<257>*, Unk_CMISIter<257>*);
@@ -228,13 +228,13 @@ unsigned FUN_141bd3060(Unk_CMISWorld*);
 Unk_CMISIter<278>* FUN_141157040(Unk_CMISTree<278>*, Unk_CMISIter<278>*, const int*);
 const Unk_CMISEntityRef* FUN_1408b76f0(egf::Entity*);                   // &entity id
 egf::Entity* FUN_1408a9280(const void* pSp);
-void FUN_1409618c0(egf::Entity*, unsigned, Unk_StreamPoint*);   // GetProperty(Point3)
-struct Unk_CMISPt3 { float x, y, z; Unk_CMISPt3(const Unk_StreamPoint&); };   // efd::Point3 copy (0x14027dcf0)
+void FUN_1409618c0(egf::Entity*, unsigned, Vector3*);   // GetProperty(Point3)
+struct Unk_CMISPt3 { float x, y, z; Unk_CMISPt3(const Vector3&); };   // efd::Point3 copy (0x14027dcf0)
 struct Unk_CMISRayHit { __int64 m_q0, m_q1, m_q2, m_q3, m_q4, m_q5; egf::Entity* m_pEntity; __int64 m_q7, m_q8, m_q9, m_q10, m_q11, m_q12; };
 void FUN_140ad4440(Unk_CMISRayHit*);
 class CPhysXHelper;
 CPhysXHelper* FUN_1409f7ca0();
-int FUN_14168a310(CPhysXHelper*, Unk_CMISPt3*, Unk_StreamPoint*, Unk_CMISRayHit*, float, __int64, int);
+int FUN_14168a310(CPhysXHelper*, Unk_CMISPt3*, Vector3*, Unk_CMISRayHit*, float, __int64, int);
 class Unk_CMISPhysScene
 {
 public:
@@ -251,8 +251,8 @@ void FUN_1411556d0(Unk_CMISTree<258>*, const Unk_CMISEntityRef*);
 Unk_CMISEntityRef* FUN_141127ed0(Unk_CMISTree<265>*, const int*);
 void FUN_1411547a0(Unk_CMISTree<265>*, const int*);
 bool FUN_14028d470(float, float);
-extern Unk_StreamPoint DAT_143a08cf8;                                       // up vector
-extern Unk_StreamPoint DAT_143b01a60;                                       // zero / fall-through direction
+extern Vector3 DAT_143a08cf8;                                       // up vector
+extern Vector3 DAT_143b01a60;                                       // zero / fall-through direction
 struct Unk_CMISCubeByKey { int first; MS2Ptr<Cube> second; };                // the node value of the cubes by key
 void FUN_14114dd70(Unk_CMISTree<260>*, Unk_CMISIter<260>*);                 // begin
 bool FUN_1411274c0(Unk_CMISIter<260>*, Unk_CMISIter<260>*);                 // operator!=
@@ -296,7 +296,7 @@ void FUN_14035ebf0(Unk_CMISListIter*);                                      // o
 struct Unk_CMISHouseInfo : public CPtred                                    // a house marker record (0x38)
 {
     int m_nGroup;                                                           // +0x18
-    Unk_StreamPoint m_pt;                                                   // +0x1c
+    Vector3 m_pt;                                                   // +0x1c
     CStringW m_strOwner;                                                    // +0x28
     bool m_bNoSalable;                                                      // +0x30
     int m_nValue;                                                           // +0x34
@@ -361,7 +361,7 @@ void CubeMapInformationService::FUN_1410b76d0()
     f218 = FUN_1408ad3f0(FUN_1403ed2d0()->FUN_141bd3060());
 }
 // @0x1410b7a20
-Unk_StreamPoint CubeMapInformationService::FUN_1410b7a20(Unk_StreamPoint pt, Unk_StreamPoint* pOut)
+Vector3 CubeMapInformationService::FUN_1410b7a20(Vector3 pt, Vector3* pOut)
 {
     Unk_Int3 cell = FUN_1408a1430(pt);
     pOut->x = (float)cell.x * 150.0f;
@@ -370,14 +370,14 @@ Unk_StreamPoint CubeMapInformationService::FUN_1410b7a20(Unk_StreamPoint pt, Unk
     return *pOut;
 }
 // @0x1410b7ad0
-Unk_StreamPoint CubeMapInformationService::FUN_1410b7ad0(PCBase* pActor, float fDist, Unk_StreamPoint* pOut, int bSnap)
+Vector3 CubeMapInformationService::FUN_1410b7ad0(PCBase* pActor, float fDist, Vector3* pOut, int bSnap)
 {
     return FUN_1410b7ba0(reinterpret_cast<Unk_CMISActor*>(pActor)->FUN_1416767d0(), reinterpret_cast<Unk_CMISActor*>(pActor)->FUN_141676880(), fDist, pOut, bSnap);
 }
 // @0x1410b7ba0
-Unk_StreamPoint CubeMapInformationService::FUN_1410b7ba0(Unk_StreamPoint ptFrom, Unk_StreamPoint ptTo, float fDist, Unk_StreamPoint* pOut, int bSnap)
+Vector3 CubeMapInformationService::FUN_1410b7ba0(Vector3 ptFrom, Vector3 ptTo, float fDist, Vector3* pOut, int bSnap)
 {
-    Unk_StreamPoint kForward, kRight;
+    Vector3 kForward, kRight;
     FUN_140a01250(ptTo, &kForward, &kRight);
     *pOut = ptFrom.FUN_14097fd50(kForward.FUN_14097fc90((float)bSnap).FUN_14097fc90(150.0f));
     pOut->x = pOut->x + 75.0f;
@@ -395,7 +395,7 @@ bool CubeMapInformationService::FUN_1410b7d50()
     return FUN_14115ad10(&f78) == 0;
 }
 // @0x1410b7da0
-bool CubeMapInformationService::FUN_1410b7da0(Unk_StreamPoint pt)
+bool CubeMapInformationService::FUN_1410b7da0(Vector3 pt)
 {
     if (!FUN_1410b7e80(pt))
         return false;
@@ -406,7 +406,7 @@ bool CubeMapInformationService::FUN_1410b7da0(Unk_StreamPoint pt)
     return false;
 }
 // @0x1410b7e80
-bool CubeMapInformationService::FUN_1410b7e80(Unk_StreamPoint pt)
+bool CubeMapInformationService::FUN_1410b7e80(Vector3 pt)
 {
     return FUN_1410b7ed0(FUN_1408a13d0(pt));
 }
@@ -552,7 +552,7 @@ Cube* CubeMapInformationService::FUN_1410b8a60(Unk_Int3 pt)
     return FUN_1410b8b00(FUN_1408a0370(pt.x, pt.y, pt.z));
 }
 // @0x1410b8ab0
-Cube* CubeMapInformationService::FUN_1410b8ab0(Unk_StreamPoint pt)
+Cube* CubeMapInformationService::FUN_1410b8ab0(Vector3 pt)
 {
     return FUN_1410b8b00(FUN_1408a13d0(pt));
 }
@@ -631,7 +631,7 @@ Cube* CubeMapInformationService::FUN_1410b9080(Cube* pBase, int nOffset)
 Cube* CubeMapInformationService::FUN_1410b8e60(egf::Entity* pEntity)
 {
     if (pEntity != 0) {
-        Unk_StreamPoint pt;
+        Vector3 pt;
         FUN_1409618c0(pEntity, 0xfd95ca52, &pt);
         Cube* pCube = FUN_1410b8ab0(pt);
         if (pCube != 0 && pCube->field70 != 0) {
@@ -643,9 +643,9 @@ Cube* CubeMapInformationService::FUN_1410b8e60(egf::Entity* pEntity)
 }
 
 // @0x1410b8f30
-Cube* CubeMapInformationService::FUN_1410b8f30(Unk_StreamPoint ptFrom, Unk_StreamPoint* pHit, float fRange)
+Cube* CubeMapInformationService::FUN_1410b8f30(Vector3 ptFrom, Vector3* pHit, float fRange)
 {
-    static Unk_StreamPoint s_kDown = DAT_143a08cf8.FUN_14097fc90(20.0f);
+    static Vector3 s_kDown = DAT_143a08cf8.FUN_14097fc90(20.0f);
     Unk_CMISPt3 ptStart(ptFrom.FUN_14097fd50(s_kDown));
     if (FUN_14028d470(fRange, 0.0f))
         fRange = 150.0f;
@@ -657,16 +657,16 @@ Cube* CubeMapInformationService::FUN_1410b8f30(Unk_StreamPoint ptFrom, Unk_Strea
 }
 
 // @0x1410b9150
-Unk_StreamPoint CubeMapInformationService::FUN_1410b9150(Unk_StreamPoint ptIn)
+Vector3 CubeMapInformationService::FUN_1410b9150(Vector3 ptIn)
 {
-    static Unk_StreamPoint s_kDown = DAT_143a08cf8.FUN_14097fc90(20.0f);
+    static Vector3 s_kDown = DAT_143a08cf8.FUN_14097fc90(20.0f);
     Unk_CMISPt3 ptStart(ptIn.FUN_14097fd50(s_kDown));
-    Unk_StreamPoint ptDir = DAT_143b01a60;
+    Vector3 ptDir = DAT_143b01a60;
     Unk_CMISRayHit hit;
     FUN_140ad4440(&hit);
     Cube* pCube;
     if (FUN_14168a310(FUN_1409f7ca0(), &ptStart, &ptDir, &hit, 750.0f, 0, 0) != 0 && (pCube = FUN_1410b8e60(hit.m_pEntity)) != 0 && pCube->field70 != 0) {
-        Unk_StreamPoint ptRes;
+        Vector3 ptRes;
         FUN_1409618c0(FUN_1408a9280(&pCube->entity), 0xfd95ca52, &ptRes);
         ptRes.z = ptIn.z;
         return ptRes;
@@ -676,13 +676,13 @@ Unk_StreamPoint CubeMapInformationService::FUN_1410b9150(Unk_StreamPoint ptIn)
 
 // @0x1410b9330
 // MS2-FUNCTIONAL: frame 0x10 larger than the exe (the operator+ temp is allocated before the by-value copies); same calls and control flow
-bool CubeMapInformationService::FUN_1410b9330(void* pArg, Unk_StreamPoint pt, float fStep, Unk_StreamPoint* pOutPos, Unk_StreamPoint* pOutRot, int* pnResult, void** ppHit)
+bool CubeMapInformationService::FUN_1410b9330(void* pArg, Vector3 pt, float fStep, Vector3* pOutPos, Vector3* pOutRot, int* pnResult, void** ppHit)
 {
     float fLimit = 75.0f;
     void* pFound = 0;
     float fRadius = fStep;
-    Unk_StreamPoint ptCur;
-    Unk_StreamPoint ptOffset = DAT_143b01a60;
+    Vector3 ptCur;
+    Vector3 ptOffset = DAT_143b01a60;
     Unk_CMISPair kCursor = DAT_143b02320;
     *pnResult = FUN_1410d1320(pArg, pt, fStep, &ptCur);
     if (*pnResult == 9)
@@ -864,13 +864,13 @@ float CubeMapInformationService::FUN_1410ba440(int nDir)
     }
 }
 // @0x1410ba4a0
-int CubeMapInformationService::FUN_1410ba4a0(Unk_StreamPoint ptDir)
+int CubeMapInformationService::FUN_1410ba4a0(Vector3 ptDir)
 {
-    Unk_StreamPoint kWest(-1.0f, 0.0f, 0.0f);
-    Unk_StreamPoint kNorth(0.0f, 1.0f, 0.0f);
-    Unk_StreamPoint kEast(1.0f, 0.0f, 0.0f);
-    Unk_StreamPoint kSouth(0.0f, -1.0f, 0.0f);
-    Unk_StreamPoint kForward, kRight;
+    Vector3 kWest(-1.0f, 0.0f, 0.0f);
+    Vector3 kNorth(0.0f, 1.0f, 0.0f);
+    Vector3 kEast(1.0f, 0.0f, 0.0f);
+    Vector3 kSouth(0.0f, -1.0f, 0.0f);
+    Vector3 kForward, kRight;
     FUN_140a01250(ptDir, &kForward, &kRight);
     if (kWest.FUN_140a00f20(kForward) == 1.0f)
         return 1;
@@ -902,13 +902,13 @@ Unk_Int3 CubeMapInformationService::FUN_1410bab50(Unk_Int3 pt, int nDir)
     return pt;
 }
 // @0x1410bac00
-Unk_Int3 CubeMapInformationService::FUN_1410bac00(Unk_StreamPoint ptDir)
+Unk_Int3 CubeMapInformationService::FUN_1410bac00(Vector3 ptDir)
 {
-    Unk_StreamPoint kWest(-1.0f, 0.0f, 0.0f);
-    Unk_StreamPoint kNorth(0.0f, 1.0f, 0.0f);
-    Unk_StreamPoint kEast(1.0f, 0.0f, 0.0f);
-    Unk_StreamPoint kSouth(0.0f, -1.0f, 0.0f);
-    Unk_StreamPoint kForward, kRight;
+    Vector3 kWest(-1.0f, 0.0f, 0.0f);
+    Vector3 kNorth(0.0f, 1.0f, 0.0f);
+    Vector3 kEast(1.0f, 0.0f, 0.0f);
+    Vector3 kSouth(0.0f, -1.0f, 0.0f);
+    Vector3 kForward, kRight;
     FUN_140a01250(ptDir, &kForward, &kRight);
     if (kWest.FUN_140a00f20(kForward) == 1.0f)
         return Unk_Int3(-1, 0, 0);
@@ -1244,7 +1244,7 @@ int CubeMapInformationService::FUN_1410d4340(Unk_CubePoint* pOut)
     return 1;
 }
 // @0x1410c4d80
-void CubeMapInformationService::FUN_1410c4d80(const Unk_StreamPoint& pt, float fDist)
+void CubeMapInformationService::FUN_1410c4d80(const Vector3& pt, float fDist)
 {
     FUN_1408a15b0(pt, DAT_143b01a60);
     FUN_1410c2840(pt, fDist);
@@ -1384,10 +1384,10 @@ void CubeMapInformationService::FUN_1410c3020(int nField)
     }
 }
 // @0x1410c54a0
-Unk_StreamPoint CubeMapInformationService::FUN_1410c54a0(Unk_EntRef spEnt)
+Vector3 CubeMapInformationService::FUN_1410c54a0(Unk_EntRef spEnt)
 {
-    Unk_StreamPoint ptRes(150.0f, 150.0f, 150.0f);
-    Unk_StreamPoint ptProp;
+    Vector3 ptRes(150.0f, 150.0f, 150.0f);
+    Vector3 ptProp;
     FUN_1409618c0(FUN_1408a9280(&spEnt), 0xcb086a2d, &ptProp);
     if (ptProp.FUN_140552700(DAT_143b01a60))
         ptRes = ptProp;
@@ -1415,7 +1415,7 @@ int CubeMapInformationService::FUN_1410ce310()
     return nCount;
 }
 // @0x1410d33a0
-int CubeMapInformationService::FUN_1410d33a0(int nKey, Unk_StreamPoint* pOut)
+int CubeMapInformationService::FUN_1410d33a0(int nKey, Vector3* pOut)
 {
     Unk_CMISIter<274> itEnd, itFind;
     if (FUN_141127440(FUN_1411573c0(&f238, &itFind, &nKey), FUN_141151a30(&f238, &itEnd))) {
@@ -1533,7 +1533,7 @@ struct Unk_CMISEntId { Unk_CMISEntId(const Unk_CMISEntId&); __int64 m_id; };
 void FUN_14115b260(CCubeMotionManager* pMgr, const Unk_CMISEntityRef* pId, float fFrom, float fTo, unsigned nMs);   // AddRotate
 CCubeMotionManager* GetCubeMotionManager();
 struct Unk_CMISSlot;
-class Unk_CMISMagicCube { public: void FUN_141230df0(CString strKey); void FUN_141232330(int nKey, float fRot); Unk_CMISSlot FUN_141230f60(Unk_StreamPoint ptPos, float fRange, int nPc); };
+class Unk_CMISMagicCube { public: void FUN_141230df0(CString strKey); void FUN_141232330(int nKey, float fRot); Unk_CMISSlot FUN_141230f60(Vector3 ptPos, float fRange, int nPc); };
 Unk_CMISMagicCube* FUN_1409670b0();
 bool FUN_14034eee0(const CStringW& s, const wchar_t* pSz);                 // operator==
 CStringW* FUN_141bd3080(Unk_CMISWorld*);                                   // the current map name
@@ -1581,7 +1581,7 @@ void FUN_14112d900(ATL::CAtlArray<MS2Ptr<Cube>>*, const MS2Ptr<Cube>*);         
 
 // @0x1410c2840
 // MS2-FUNCTIONAL: behaviour-equivalent; the exe frame has extra by-value temporaries / a different local order that no source form reproduced
-bool CubeMapInformationService::FUN_1410c2840(Unk_StreamPoint pt, float fDist)
+bool CubeMapInformationService::FUN_1410c2840(Vector3 pt, float fDist)
 {
     Unk_Int3 cell;
     memcpy(&cell, &pt, sizeof(cell));
@@ -1589,7 +1589,7 @@ bool CubeMapInformationService::FUN_1410c2840(Unk_StreamPoint pt, float fDist)
     Unk_CMISIter<260> itEnd, itFind;
     if (FUN_141126d90(FUN_141157580(&f98, &itFind, &nKey), FUN_141151af0(&f98, &itEnd)) == 0) {
         MS2Ptr<Cube> spCube(*FUN_141127cd0(&f98, &nKey));
-        Unk_StreamPoint kRot;
+        Vector3 kRot;
         FUN_1409618c0(FUN_1408a9280(&spCube->entity), 0x68c7c29d, &kRot);
         spCube->fieldD4 = (int)fDist;
         Unk_CMISEntityRef kId(*FUN_1408b76f0(FUN_1408a9280(&spCube->entity)));
@@ -1658,7 +1658,7 @@ void CubeMapInformationService::FUN_1410cb380(Unk_Int3 pt, const Unk_CMISEntityR
 {
     Unk_CMISEntityRef kRef(ref);
     if (FUN_1410cb420(&kRef) == 0) {
-        int nKey = FUN_1408a13d0(*reinterpret_cast<Unk_StreamPoint*>(&pt));
+        int nKey = FUN_1408a13d0(*reinterpret_cast<Vector3*>(&pt));
         FUN_140899bd0(FUN_141127e90(&f108, &nKey), ref);
     }
 }
@@ -1751,7 +1751,7 @@ void CubeMapInformationService::FUN_1410c5570(Unk_EntRef spEnt)
     FUN_1408a20a0((egf::Entity*)spEnt.FUN_1408a9280(), 0x38141815, &bFlag);
     if (bFlag == false)
         return;
-    Unk_StreamPoint pt = FUN_1410c54a0(spEnt);
+    Vector3 pt = FUN_1410c54a0(spEnt);
     GeneratePhysX(spEnt, pt);
 }
 // ---- w138 batch 3 ----
@@ -1763,8 +1763,8 @@ struct Unk_CMISCell56                                                           
     Unk_CMISCell56(const Unk_CMISCell56&);
     ~Unk_CMISCell56();
     void* m_pName; void* m_pB; void* m_pC; void* m_pD;                                      // +0 (32 bytes of tree/string state)
-    Unk_StreamPoint m_pos;                                                                  // +0x20
-    Unk_StreamPoint m_rot;                                                                  // +0x2c
+    Vector3 m_pos;                                                                  // +0x20
+    Vector3 m_rot;                                                                  // +0x2c
 };
 MS2_CHECK_SIZE(Unk_CMISCell56, 56);
 Unk_CMISCell56* FUN_141127b10(Unk_CMISTree<278>*, const int*);                              // operator[]
@@ -1843,7 +1843,7 @@ void CubeMapInformationService::FUN_1410c2ce0(egf::Entity* pEntity)
     if (f218 != 0 && FUN_1409657a0(&f208) != 0) {
         if (FUN_140885340(&f208)->FUN_140375100() != 0)
             return;
-        Unk_StreamPoint pt = DAT_143b01a60;
+        Vector3 pt = DAT_143b01a60;
         FUN_1409618c0(pEntity, 0xfd95ca52, &pt);
         int nFound = 0;
         for (unsigned __int64 nFloor = 1; nFloor <= f218->floors.size(); ++nFloor) {
@@ -2158,8 +2158,8 @@ void CubeMapInformationService::FUN_1410d4710(__int64 nId, int nIdx, CStringA st
 }
 // ---- w138 batch 6 ----
 bool FUN_1411272b0(const Unk_Int3*, const Unk_Int3*);
-Unk_CMISRes16 FUN_1408a15b0(Unk_Int3, const Unk_StreamPoint&);
-Unk_Int3 FUN_1408a15b0(Unk_Int3, Unk_StreamPoint&);   // same function; 12-byte result temp (0x1410cb1b0)                              // the world point of a cell (writes the xy centre)                                        // operator==
+Unk_CMISRes16 FUN_1408a15b0(Unk_Int3, const Vector3&);
+Unk_Int3 FUN_1408a15b0(Unk_Int3, Vector3&);   // same function; 12-byte result temp (0x1410cb1b0)                              // the world point of a cell (writes the xy centre)                                        // operator==
 // @0x1410d2da0
 int CubeMapInformationService::FUN_1410d2da0(int nKey, Unk_Int3 pt)
 {
@@ -2203,9 +2203,9 @@ int CubeMapInformationService::FUN_1410d23f0(int nGroup, int nBlock)
 }
 // @0x1410d2130
 // MS2-FUNCTIONAL: branch/return layout of the result differs from the exe; same calls and compares
-bool CubeMapInformationService::FUN_1410d2130(Cube* pCube, int nDir, float fSize, float* pOutXY, Unk_StreamPoint* pOutPt)
+bool CubeMapInformationService::FUN_1410d2130(Cube* pCube, int nDir, float fSize, float* pOutXY, Vector3* pOutPt)
 {
-    Unk_StreamPoint ptCenter;
+    Vector3 ptCenter;
     FUN_1408a15b0(pCube->position, ptCenter);
     float fHalf = 75.0f + fSize * 0.5f;
     *pOutPt = DAT_143b01a60;
@@ -2271,9 +2271,9 @@ void CubeMapInformationService::FUN_1410c3fc0(PCBase* pActor, float* pOutLo, flo
         *pOutHi = 0.0f;
         return;
     }
-    Unk_StreamPoint ptFront;
+    Vector3 ptFront;
     FUN_1410b7ad0(pActor, 0, &ptFront, 0);
-    Unk_StreamPoint ptCell;
+    Vector3 ptCell;
     FUN_1410b7a20(ptFront, &ptCell);
     int nFound = 0;
     for (unsigned __int64 nFloor = 1; nFloor <= (unsigned __int64)(__int64)f1dc; ++nFloor) {
@@ -2392,9 +2392,9 @@ int CubeMapInformationService::FUN_1410c88b0(PCBase* pActor)
     int nFound = 0;
     if (f218 == 0)
         return 0;
-    Unk_StreamPoint ptFront;
+    Vector3 ptFront;
     FUN_1410b7ad0(pActor, 0, &ptFront, 0);
-    Unk_StreamPoint ptCell;
+    Vector3 ptCell;
     FUN_1410b7a20(ptFront, &ptCell);
     for (unsigned __int64 nFloor = 1; nFloor <= (unsigned __int64)(__int64)f1dc; ++nFloor) {
         int nKey = (int)nFloor;
@@ -2426,13 +2426,13 @@ int CubeMapInformationService::FUN_1410ca900(int nGroup)
     return 0;
 }
 // @0x1410cdd80
-int CubeMapInformationService::FUN_1410cdd80(Unk_StreamPoint* pFrom, Unk_StreamPoint* pTo, float fDist, Unk_Int3* pOffset)
+int CubeMapInformationService::FUN_1410cdd80(Vector3* pFrom, Vector3* pTo, float fDist, Unk_Int3* pOffset)
 {
     if (DAT_143ae0fb4 != 0)
         return 1;
     if (FUN_1408a07b0(FUN_1403ed2d0()->FUN_141bd3060(), DAT_1439f4a7c, DAT_143ab2820))
         return 1;
-    Unk_StreamPoint ptHit;
+    Vector3 ptHit;
     FUN_1410b7ba0(*pFrom, *pTo, -fDist, &ptHit, 0);
     Unk_Int3 kCell = FUN_1408a1430(ptHit);
     kCell = static_cast<const Unk_DkPoint&>(kCell) + static_cast<const Unk_DkPoint&>(*pOffset);
@@ -2472,7 +2472,7 @@ void CubeMapInformationService::FUN_1410cef70(const egf::EntityChangeMessage* pM
         FUN_1410cf5c0(pEntity);
     else
         FUN_1410cf160(pEntity);
-    Unk_StreamPoint pt = DAT_143b01a60;
+    Vector3 pt = DAT_143b01a60;
     FUN_1409618c0(pEntity, 0xfd95ca52, &pt);
     int nKey = FUN_1408a13d0(pt);
     Cube* pCube = FUN_1410b8b00(nKey);
@@ -2721,9 +2721,9 @@ bool CubeMapInformationService::FUN_1410bd080(__int64 nOwner, Unk_Int3 pt, float
     Unk_CMISIter<260> itEnd, itFind;
     if (FUN_1411274c0(FUN_141157580(&f98, &itFind, &nCell), FUN_141151af0(&f98, &itEnd)))
         return false;
-    Unk_StreamPoint ptCell = DAT_143b01a60;
+    Vector3 ptCell = DAT_143b01a60;
     FUN_1408a15b0(pt, ptCell);
-    Unk_StreamPoint ptRot = DAT_143b01a60;
+    Vector3 ptRot = DAT_143b01a60;
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     CItemData* pItem = spItem.get();
     if (pItem == 0)
@@ -2849,7 +2849,7 @@ void CubeMapInformationService::FUN_1410c4850(__int64 nOwner, Unk_Int3 pt, CubeI
 // @0x1410c4b50
 void CubeMapInformationService::FUN_1410c4b50(Unk_Int3 pt, bool bKeep)
 {
-    Unk_StreamPoint ptCell = DAT_143b01a60;
+    Vector3 ptCell = DAT_143b01a60;
     FUN_1408a15b0(pt, ptCell);
     int nCell = FUN_1408a03c0(pt);
     Unk_CMISIter<260> itEnd, itFind;
@@ -2875,7 +2875,7 @@ void CubeMapInformationService::FUN_1410c4e20(__int64 nOwner, Unk_Int3 pt, CubeI
 {
     if (pInfo == 0)
         return;
-    Unk_StreamPoint ptCell = DAT_143b01a60;
+    Vector3 ptCell = DAT_143b01a60;
     FUN_1408a15b0(pt, ptCell);
     MS2Ptr<Cube> spCube(FUN_1410b8ab0(ptCell));
     if (spCube.get() == 0) {
@@ -3325,12 +3325,12 @@ public:
     virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4(); virtual void vfunc_5();
     virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
     virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17();
-    virtual Unk_StreamPoint vfunc_18();
-    virtual Unk_StreamPoint vfunc_19();
-    virtual Unk_StreamPoint vfunc_20();
+    virtual Vector3 vfunc_18();
+    virtual Vector3 vfunc_19();
+    virtual Vector3 vfunc_20();
     virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23(); virtual void vfunc_24();
     int FUN_141656ad0();
-    Unk_StreamPoint FUN_1416767d0();
+    Vector3 FUN_1416767d0();
 };
 float* FUN_140298f40(Unk_CMISLimitF* pLimit);
 // @0x1410cb1b0
@@ -3344,8 +3344,8 @@ Unk_CMISEntityRef CubeMapInformationService::FUN_1410cb1b0()
         for (FUN_14114e010(&f108, &it); FUN_141127640(&it, FUN_141151d30(&f108, &itEnd)); FUN_141129bd0(&it)) {
             int nKey = FUN_1411286a0(&it)->m_key;
             Unk_CMISEntityRef ref(FUN_1411286a0(&it)->m_ref);
-            Unk_StreamPoint ptCell;
-            FUN_1408a15b0(FUN_1408a0400(nKey), static_cast<Unk_StreamPoint&>(ptCell));
+            Vector3 ptCell;
+            FUN_1408a15b0(FUN_1408a0400(nKey), static_cast<Vector3&>(ptCell));
             float fDist = pPawn->vfunc_18().FUN_140965c40(ptCell).FUN_140967ac0();
             if (fDist > *FUN_140298f40(&FUN_1401d3200()->m_fNear))
                 continue;
@@ -3430,7 +3430,7 @@ void CubeMapInformationService::FUN_1410bbf20(int nGroup, const egf::EntityID& i
 {
     egf::EntityPtr spEnt(static_cast<Unk_CMISWorldMgr*>(FUN_1409670f0())->FUN_1411cf440(id));
     FUN_140964eb0(FUN_141127b90(&ff8, &nGroup), &spEnt);
-    Unk_StreamPoint pt = DAT_143b01a60;
+    Vector3 pt = DAT_143b01a60;
     FUN_1409618c0(FUN_1408a9280(&spEnt), 0xfd95ca52, &pt);
     CStringW strKey;
     strKey.Format(L"%d", nGroup);
@@ -3454,7 +3454,7 @@ void CubeMapInformationService::FUN_1410bbf20(int nGroup, const egf::EntityID& i
 }
 
 // ---- w138 batch 12 ----
-struct Unk_CMISDollRec { char m_pad0[0x18]; int m_nId; int m_pad1c; __int64 m_nChar; int m_nSlot; Unk_StreamPoint m_ptPos; Unk_StreamPoint m_ptRot; int m_bItems; int m_pad48[2]; char m_items[1]; };
+struct Unk_CMISDollRec { char m_pad0[0x18]; int m_nId; int m_pad1c; __int64 m_nChar; int m_nSlot; Vector3 m_ptPos; Vector3 m_ptRot; int m_bItems; int m_pad48[2]; char m_items[1]; };
 class Unk_CMISDoll
 {
 public:
@@ -3462,9 +3462,9 @@ public:
     virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9();
     virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14();
     virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18();
-    virtual void vfunc_19(Unk_StreamPoint ptPos);
+    virtual void vfunc_19(Vector3 ptPos);
     virtual void vfunc_20();
-    virtual void vfunc_21(Unk_StreamPoint ptRot);
+    virtual void vfunc_21(Vector3 ptRot);
     void FUN_141656a50(__int64 nCharId);
     void FUN_14121c6e0(__int64 nCharId);
     void FUN_14123c5a0(int nId);
@@ -3492,7 +3492,7 @@ static Unk_CMISDoll* NewCMISDoll()
 
 // @0x1410bc7f0
 // MS2-FUNCTIONAL: the exe's CComPtr temp and EH frame are not reproduced
-egf::EntityPtr CubeMapInformationService::FUN_1410bc7f0(Unk_StreamPoint ptPos, Unk_StreamPoint ptRot, unsigned nIdx, int nItemId)
+egf::EntityPtr CubeMapInformationService::FUN_1410bc7f0(Vector3 ptPos, Vector3 ptRot, unsigned nIdx, int nItemId)
 {
     Unk_CMISDoll* pc = NewCMISDoll();
     pc->FUN_141656a50(0);
@@ -3537,7 +3537,7 @@ egf::EntityPtr CubeMapInformationService::FUN_1410bc3d0(Unk_CMISBlock rec)
 
 // ---- w138 batch 13 ----
 struct Unk_CMISRefList;                                                                     // list of entities found near a point
-extern Unk_StreamPoint DAT_143b01a60;                                                       // the zero point
+extern Vector3 DAT_143b01a60;                                                       // the zero point
 void FUN_14114dbb0(Unk_CMISTree<264>*, Unk_CMISIter<264>*);                                 // begin
 bool FUN_1411516a0(Unk_CMISTree<264>*);                                                     // empty
 Unk_CMISRefElem* FUN_141128560(Unk_CMISIter<264>*);                                         // operator*
@@ -3546,7 +3546,7 @@ bool FUN_1408b70b0(egf::EntityPtr*, int);                                       
 void* FUN_140965820(Unk_CubeOwnerPtr*);                                                     // get
 void FUN_1408a8790(Unk_CubeOwnerPtr*);                                                      // dtor
 void FUN_1408a8720(egf::EntityPtr*);                                                        // dtor
-float FUN_140966f00(Unk_StreamPoint ptA, Unk_StreamPoint ptB);                              // distance
+float FUN_140966f00(Vector3 ptA, Vector3 ptB);                              // distance
 void FUN_14115a960(Unk_CMISRefList*, egf::EntityPtr*);                                      // push_back
 void** FUN_141123230(void* pOut, Unk_CMISPawn*);
 void** FUN_1411525d0(Unk_CMISRefList*, void** pOut);                                        // end
@@ -3569,8 +3569,8 @@ void CubeMapInformationService::FUN_1410bb610(unsigned nMask, Unk_CMISPawn* pPaw
                 FUN_1408a8790(&spOwner);
                 for (unsigned nBit = 1; (int)nBit < 5; nBit <<= 1) {
                     if ((nMask & nBit) == nBit && (pOwner == 0 || nBit == 1) && (pOwner != 0 || nBit != 1)) {
-                        Unk_StreamPoint ptPawn = pPawn->vfunc_18();
-                        Unk_StreamPoint ptEnt = DAT_143b01a60;
+                        Vector3 ptPawn = pPawn->vfunc_18();
+                        Vector3 ptEnt = DAT_143b01a60;
                         FUN_1409618c0(FUN_1408a9280(&spEnt), 0xfd95ca52, &ptEnt);
                         float fD = FUN_140966f00(ptPawn, ptEnt);
                         if (fD < fDist)
@@ -3607,7 +3607,7 @@ void CubeMapInformationService::FUN_1410d0000(void* pCtx, MS2Ptr<Cube> spCube)
         Unk_CMISObjRec30* pRec = (Unk_CMISObjRec30*)FUN_140708eb0(&hObj);
         if (pRec->m_n30 != 0) {
             Unk_CMISSlot slot(FUN_141225470(FUN_140708eb0(&hObj)->nKind));
-            Unk_StreamPoint ptCube = *(Unk_StreamPoint*)&spCube->position;
+            Vector3 ptCube = *(Vector3*)&spCube->position;
             Unk_CMISObj498* pObj = FUN_1409658e0(&slot);
             void* pItem = FUN_1408b7270(&spCube->item);
             __int64 nOwner = FUN_1410c8030(spCube->field50, spCube->field54);
@@ -3627,7 +3627,7 @@ struct Unk_CMISRefList { Unk_CMISRefList(); ~Unk_CMISRefList(); char m_buf[0x20]
 bool FUN_1411517a0(Unk_CMISRefList*);                                                       // empty
 Unk_CMISEntityRef* FUN_1408a9050(Unk_CMISRefList*, int nIdx);
 void FUN_1408a2020(egf::Entity*, unsigned, int*);                                           // SetProperty(int)
-float FUN_140966ea0(Unk_StreamPoint ptA, Unk_StreamPoint ptB);                              // distance
+float FUN_140966ea0(Vector3 ptA, Vector3 ptB);                              // distance
 
 // @0x1410c93c0
 // MS2-FUNCTIONAL: exe's temporaries and unwind states are laid out differently
@@ -3638,9 +3638,9 @@ void CubeMapInformationService::FUN_1410c93c0()
     if (pPawn != 0 && (pMark = reinterpret_cast<UIHouseMark*>(FUN_1410dc020())) != 0) {
         if (!f158.FUN_1408b70b0(0)) {
             if (f158.FUN_1408a9090() != 0) {
-                Unk_StreamPoint ptEnt = DAT_143b01a60;
+                Vector3 ptEnt = DAT_143b01a60;
                 FUN_1409618c0(reinterpret_cast<egf::Entity*>(f158.FUN_1408a9280()), 0xfd95ca52, &ptEnt);
-                Unk_StreamPoint ptPawn = pPawn->vfunc_18();
+                Vector3 ptPawn = pPawn->vfunc_18();
                 float fDist = FUN_140966ea0(ptEnt, ptPawn);
                 if ((float)*FUN_1402056b0(&FUN_1401d3200()->m_limits1348) <= fDist) {
                     int nVal = 0;
@@ -3674,7 +3674,7 @@ struct Unk_CMISNpcElem;
 struct Unk_CMISNpcList { Unk_CMISNpcList(); ~Unk_CMISNpcList(); void* m_buf[4]; };           // ctor 140964560, dtor 140964ca0
 struct Unk_CMISNpcIter { void* m_p; };
 struct Unk_CMISNpcRef { Unk_CMISNpcRef(Unk_CMISNpcElem* p); ~Unk_CMISNpcRef(); void* m_p; };  // ctor 140963ff0, dtor 1409649e0
-class Unk_CMISNpc { public: void FUN_141447410(egf::Entity* pEntity); int FUN_141447340(); Unk_StreamPoint FUN_141447c80(); CString FUN_1414472a0(); };
+class Unk_CMISNpc { public: void FUN_141447410(egf::Entity* pEntity); int FUN_141447340(); Vector3 FUN_141447c80(); CString FUN_1414472a0(); };
 void* FUN_14096b140(Unk_CMISNpcList*);
 Unk_CMISNpcIter* FUN_14096adc0(Unk_CMISNpcList*, Unk_CMISNpcIter*);                            // end
 Unk_CMISNpcIter* FUN_14096aab0(Unk_CMISNpcList*, Unk_CMISNpcIter*);                            // begin
@@ -3692,9 +3692,9 @@ int CubeMapInformationService::FUN_1410c7110(int* pCell)
     Unk_CMISPawn* pPawn = reinterpret_cast<Unk_CMISPawn*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPawn == 0)
         return 0;
-    Unk_StreamPoint kForward, kRight;
+    Vector3 kForward, kRight;
     FUN_140a01250(pPawn->vfunc_20(), &kForward, &kRight);
-    Unk_StreamPoint ptHit;
+    Vector3 ptHit;
     FUN_1410b7ad0(reinterpret_cast<PCBase*>(pPawn), 0.0f, &ptHit, 1);
     Unk_Int3 cell = FUN_1408a1430(ptHit);
     if (!FUN_1410b7f90(cell))
@@ -3709,9 +3709,9 @@ int CubeMapInformationService::FUN_1410c7110(int* pCell)
     egf::EntityPtr spEnt(reinterpret_cast<Unk_CMISWorldMgr*>(FUN_1409670f0())->FUN_1411cf440(*reinterpret_cast<const egf::EntityID*>(FUN_1408b76f0(FUN_1408a9280(&spCube->entity)))));
     if (FUN_1408b70b0(&spEnt, 0))
         return 0;
-    Unk_StreamPoint ptDir;
+    Vector3 ptDir;
     FUN_1409618c0(FUN_1408a9280(&spEnt), 0x68c7c29d, &ptDir);
-    Unk_StreamPoint kForward2, kRight2;
+    Vector3 kForward2, kRight2;
     FUN_140a01250(ptDir, &kForward2, &kRight2);
     float fDot = FUN_140a17940(kForward.FUN_140a00f20(kForward2), -1.0f, 1.0f);
     if (fDot <= 0.7f)
@@ -3730,9 +3730,9 @@ bool CubeMapInformationService::FUN_1410c7500(CString* pOut)
         FUN_1403ed2d0()->FUN_141bc58d0(&list);
         if (FUN_14096b140(&list) == 0)
             return false;
-        Unk_StreamPoint kForward, kRight;
+        Vector3 kForward, kRight;
         FUN_140a01250(pPawn->vfunc_20(), &kForward, &kRight);
-        Unk_StreamPoint ptHit;
+        Vector3 ptHit;
         FUN_1410b7ad0(reinterpret_cast<PCBase*>(pPawn), 0.0f, &ptHit, 1);
         Unk_Int3 cellHit = FUN_1408a1430(ptHit);
         Unk_CMISNpcIter itEnd, itCur, itTmp;
@@ -3741,9 +3741,9 @@ bool CubeMapInformationService::FUN_1410c7500(CString* pOut)
         while (FUN_140965510(&itCur, &itEnd)) {
             Unk_CMISNpcRef spNpc(FUN_140965a50(&itCur));
             if (FUN_140965930(&spNpc)->FUN_141447340() != 0) {
-                Unk_StreamPoint ptNpc = FUN_140965930(&spNpc)->FUN_141447c80();
+                Vector3 ptNpc = FUN_140965930(&spNpc)->FUN_141447c80();
                 Unk_Int3 cellNpc = FUN_1408a1430(ptNpc);
-                Unk_StreamPoint ptDelta = ptNpc.FUN_140965c40(pPawn->vfunc_18());
+                Vector3 ptDelta = ptNpc.FUN_140965c40(pPawn->vfunc_18());
                 float fLen = ptDelta.FUN_140968990();
                 if (fLen <= 150.0f) {
                     float fDot = FUN_140a17940(ptDelta.FUN_140a00f20(kForward), -1.0f, 1.0f);
@@ -3785,7 +3785,7 @@ void CubeMapInformationService::FUN_1410c8a90()
         return;
     int nPc = pPawn->FUN_141656ad0();
     float fRange = FUN_1402bac70(&FUN_1401d3200()->m_fAtF80);
-    Unk_StreamPoint ptPawn = pPawn->FUN_1416767d0();
+    Vector3 ptPawn = pPawn->FUN_1416767d0();
     Unk_CMISSlot slot = FUN_1409670b0()->FUN_141230f60(ptPawn, fRange, nPc);
     bool bShown = false;
     if (FUN_1409657b0(&slot) != 0) {
@@ -4025,10 +4025,10 @@ Cube* CubeMapInformationService::FUN_1410badf0(int nGroup, Unk_CMISPawn* pPawn)
             if (!FUN_1411279c0(&cellBest, &DAT_143ab2388)) {
                 cellBest = *(Unk_Int3*)&pCube->position;
             } else {
-                Unk_StreamPoint ptBest;
-                FUN_1408a15b0(*(Unk_StreamPoint*)&cellBest, ptBest);
-                Unk_StreamPoint ptCube;
-                FUN_1408a15b0(*(Unk_StreamPoint*)&pCube->position, ptCube);
+                Vector3 ptBest;
+                FUN_1408a15b0(*(Vector3*)&cellBest, ptBest);
+                Vector3 ptCube;
+                FUN_1408a15b0(*(Vector3*)&pCube->position, ptCube);
                 float fCube = FUN_140966f00(pPawn->vfunc_18(), ptCube);
                 float fBest = FUN_140966f00(pPawn->vfunc_18(), ptBest);
                 if (fCube < fBest)
@@ -4058,10 +4058,10 @@ void CubeMapInformationService::FUN_1410d0e30(egf::Entity* pEntity, MS2Ptr<Cube>
     if (spCube->field6c != 0) {
         bool bOn = true;
         FUN_14098c6e0(pEntity, 0x38141815, &bOn);
-        if (!(*(Unk_StreamPoint*)&spCube->offset).FUN_140552700(DAT_143b01a60))
+        if (!(*(Vector3*)&spCube->offset).FUN_140552700(DAT_143b01a60))
             FUN_1410c5570(Unk_EntRef((Unk_Entity*)pEntity));
         else
-            GeneratePhysX(Unk_EntRef((Unk_Entity*)pEntity), *(Unk_StreamPoint*)&spCube->offset);
+            GeneratePhysX(Unk_EntRef((Unk_Entity*)pEntity), *(Vector3*)&spCube->offset);
     }
     if ((const char*)spCube->textA0 == 0) {
         Unk_CMISStr strName;
@@ -4096,7 +4096,7 @@ void CubeMapInformationService::FUN_1410d0e30(egf::Entity* pEntity, MS2Ptr<Cube>
 }
 
 // ---- w138 batch 22 ----
-void FUN_1412314e0(Unk_CMISMagicCube*, Unk_StreamPoint ptPos, ATL::CAtlArray<void*>* pOut);   // the objects around a point
+void FUN_1412314e0(Unk_CMISMagicCube*, Vector3 ptPos, ATL::CAtlArray<void*>* pOut);   // the objects around a point
 int FUN_14112e290(Unk_CMISObj498*);                                                         // the object kind (1 = cube)
 bool FUN_141126b90(Unk_PayloadPtr<NoticeCubeInfo>*, int);                                   // operator==
 void* FUN_1411284a0(Unk_PayloadPtr<NoticeCubeInfo>*);                                       // operator->
@@ -4117,7 +4117,7 @@ void CubeMapInformationService::FUN_1410c8e40()
     Unk_CMISPawn* pPawn = reinterpret_cast<Unk_CMISPawn*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPawn == 0)
         return;
-    Unk_StreamPoint ptPawn = pPawn->FUN_1416767d0();
+    Vector3 ptPawn = pPawn->FUN_1416767d0();
     ATL::CAtlArray<void*> aNear;
     FUN_1412314e0(FUN_1409670b0(), ptPawn, &aNear);
     Unk_CMISTree<284> found;
@@ -4170,9 +4170,9 @@ Unk_Int3* FUN_141127ad0(Unk_CMISNearMap*, const int*);                          
 // MS2-FUNCTIONAL: exe's temporaries and unwind states are laid out differently
 void CubeMapInformationService::FUN_1410bb170(Unk_CMISPawn* pPawn, int nDx, int nDy, int nDz, Unk_CMISNearMap* pMap)
 {
-    Unk_StreamPoint ptA;
+    Vector3 ptA;
     FUN_1410b7ad0(reinterpret_cast<PCBase*>(pPawn), -150.0f, &ptA, 0);
-    Unk_StreamPoint ptB;
+    Vector3 ptB;
     FUN_1410b7a20(ptA, &ptB);
     Cube* pBase = FUN_1410b8ab0(ptB);
     if (pBase == 0) {
@@ -4190,10 +4190,10 @@ void CubeMapInformationService::FUN_1410bb170(Unk_CMISPawn* pPawn, int nDx, int 
                     if (FUN_141127340(FUN_141156f60(pMap, &itFind, &pCube->field50), FUN_1411518b0(pMap, &itEnd)) == 0) {
                         *FUN_141127ad0(pMap, &pCube->field50) = pCube->position;
                     } else {
-                        Unk_StreamPoint ptNear;
-                        FUN_1408a15b0(*(Unk_StreamPoint*)FUN_141127ad0(pMap, &pCube->field50), ptNear);
-                        Unk_StreamPoint ptThis;
-                        FUN_1408a15b0(*(Unk_StreamPoint*)&pCube->position, ptThis);
+                        Vector3 ptNear;
+                        FUN_1408a15b0(*(Vector3*)FUN_141127ad0(pMap, &pCube->field50), ptNear);
+                        Vector3 ptThis;
+                        FUN_1408a15b0(*(Vector3*)&pCube->position, ptThis);
                         float fThis = FUN_140966f00(pPawn->vfunc_18(), ptThis);
                         float fNear = FUN_140966f00(pPawn->vfunc_18(), ptNear);
                         if (fThis < fNear)
@@ -4225,9 +4225,9 @@ bool CubeMapInformationService::FUN_1410bca70(__int64 nOwner, Unk_Int3 pt, float
     egf::EntityPtr spOld(static_cast<Unk_CMISWorldMgr*>(FUN_1409670f0())->FUN_1411cf440(*reinterpret_cast<const egf::EntityID*>(&idOld)));
     if (FUN_1408b70b0(&spOld, 0))
         return false;
-    Unk_StreamPoint ptCell = DAT_143b01a60;
-    FUN_1408a15b0(*(Unk_StreamPoint*)&pt, ptCell);
-    Unk_StreamPoint ptRot = DAT_143b01a60;
+    Vector3 ptCell = DAT_143b01a60;
+    FUN_1408a15b0(*(Vector3*)&pt, ptCell);
+    Vector3 ptRot = DAT_143b01a60;
     ptRot.z = fRot;
     Unk_CMISStr strKind;
     FUN_1409989e0(&strKind, "None");
@@ -4350,13 +4350,13 @@ void FUN_141126970(Unk_CMISCell56* pDst, Unk_CMISCell56* pSrc);                 
 Unk_CMISCell56* FUN_141127b50(Unk_CMISTree<278>*, const int*);                              // operator[]
 void* FUN_14112e120(egf::Entity* pEntity);
 void FUN_1409a10d0(Unk_CMISCell56* pCell, void* pName);
-Unk_StreamPoint FUN_1413fa320(egf::Entity* pEntity);                                        // the position of an entity
-void FUN_1402bd040(Unk_StreamPoint* p);
+Vector3 FUN_1413fa320(egf::Entity* pEntity);                                        // the position of an entity
+void FUN_1402bd040(Vector3* p);
 int FUN_140ae11a0(egf::Entity*, unsigned, int*);                                            // GetProperty(int), 0 = found
 
 // @0x1410c1330
 // MS2-FUNCTIONAL: exe's temporaries and unwind states are laid out differently
-MS2Ptr<Cube> CubeMapInformationService::FUN_1410c1330(Unk_StreamPoint ptWorld, float fUnused, CubeItemInfo* pInfo, int nKind,
+MS2Ptr<Cube> CubeMapInformationService::FUN_1410c1330(Vector3 ptWorld, float fUnused, CubeItemInfo* pInfo, int nKind,
     egf::EntityPtr spEnt, bool bUnused, int nField50)
 {
     Unk_Int3 cell = FUN_1408a1430(ptWorld);
@@ -4411,7 +4411,7 @@ void CubeMapInformationService::FUN_1410cf160(egf::Entity* pEntity)
         Unk_CMISEntityRef idCopy(*FUN_1408b76f0(pEntity));
         FUN_1410bbf20(nGroup, reinterpret_cast<const egf::EntityID&>(idCopy));
     } else if (FUN_1408a9bd0(pEntity)->FUN_14211e240(0xd8dea70d)) {
-        Unk_StreamPoint pt;
+        Vector3 pt;
         FUN_1402bd040(&pt);
         FUN_1409618c0(pEntity, 0xfd95ca52, &pt);
         int nField50 = 0;
@@ -4437,7 +4437,7 @@ void CubeMapInformationService::FUN_1410cf160(egf::Entity* pEntity)
     if (FUN_1408a9bd0(pEntity)->FUN_14211e240(0xe34a6afd)) {
         int nValue = 0;
         if (FUN_140ae11a0(pEntity, 0x1a1899fc, &nValue) == 0 && nValue != 0) {
-            Unk_StreamPoint pt;
+            Vector3 pt;
             FUN_1402bd040(&pt);
             FUN_1409618c0(pEntity, 0xfd95ca52, &pt);
             int nKey = FUN_1408a13d0(pt);
@@ -4462,7 +4462,7 @@ int* FUN_1411283c0(Unk_CMISIntVec* pVec, unsigned __int64 nIdx);                
 
 // @0x1410ba5f0
 // MS2-FUNCTIONAL: exe's temporaries and unwind states are laid out differently
-int CubeMapInformationService::FUN_1410ba5f0(Unk_Int3 pt, Unk_StreamPoint ptRef)
+int CubeMapInformationService::FUN_1410ba5f0(Unk_Int3 pt, Vector3 ptRef)
 {
     Cube* pCube = FUN_1410b8a60(pt);
     if (pCube == 0 || pCube->field60 == 0) {
@@ -4512,13 +4512,13 @@ int CubeMapInformationService::FUN_1410ba5f0(Unk_Int3 pt, Unk_StreamPoint ptRef)
         }
         return 0;
     }
-    Unk_StreamPoint ptDir = DAT_143b01a60;
+    Vector3 ptDir = DAT_143b01a60;
     *(int*)&ptDir.z = pCube->fieldD4;
     return FUN_1410ba4a0(ptDir);
 }
 
-void FUN_140b27f00(egf::Entity* pEntity, unsigned nId, const Unk_StreamPoint* pValue);      // SetProperty(Point3)
-void FUN_140a38a50(egf::Entity* pEntity, unsigned nId, const Unk_StreamPoint* pValue);      // SetProperty(Point3)
+void FUN_140b27f00(egf::Entity* pEntity, unsigned nId, const Vector3* pValue);      // SetProperty(Point3)
+void FUN_140a38a50(egf::Entity* pEntity, unsigned nId, const Vector3* pValue);      // SetProperty(Point3)
 void FUN_141568a90(egf::Entity* pEntity);
 void FUN_1408b3810(CubeItemInfo* pInfo);
 unsigned __int64 FUN_1410db860(Unk_CMISLog* pLog, int nLevel, int nCategory, const wchar_t* pFormat, const int* pA, const int* pB,
@@ -4532,9 +4532,9 @@ bool CubeMapInformationService::FUN_1410be0c0(Unk_Int3 pt, int nGroup, int nFloo
     Unk_CMISIter<260> itEnd, itFind;
     if (FUN_1411274c0(FUN_141157580(&f98, &itFind, &nKey), FUN_141151af0(&f98, &itEnd)) != 0)
         return false;
-    Unk_StreamPoint ptCell = DAT_143b01a60;
+    Vector3 ptCell = DAT_143b01a60;
     FUN_1408a15b0(pt, ptCell);
-    Unk_StreamPoint ptRot = DAT_143b01a60;
+    Vector3 ptRot = DAT_143b01a60;
     egf::EntityPtr spEnt = static_cast<Unk_CMISWorldMgr*>(FUN_1409670f0())->FUN_1411ce7c0(
         efd::utf8string(reinterpret_cast<const efd::utf8string&>(pCell->m_pName)), efd::utf8string(""),
         NiPoint3(ptCell.x, ptCell.y, ptCell.z), NiPoint3(ptRot.x, ptRot.y, ptRot.z), 1.0f, 0, 0);
@@ -4717,10 +4717,10 @@ Unk_CMISPropPtr* FUN_141128150(Unk_CMISTree<258>*, const Unk_CMISEntityRef*);   
 void FUN_141126090(Unk_CMISPropPtr* pDst, Unk_CMISPropPtr* pSrc);       // assign
 void* FUN_14225f250(void* pMem, Unk_EntRef spOwner);                    // prop object ctor
 bool FUN_141127780(Unk_CMISIter<257>*, Unk_CMISIter<257>*);
-extern Unk_StreamPoint DAT_143b01a60;
+extern Vector3 DAT_143b01a60;
 
 // A static box actor at pos (cm, centre of the bottom face) with the given size (cm) turned around z by fAngle degrees.
-static NxActor* CMISCreateBoxActor(NxScene* pScene, const Unk_StreamPoint& pos, float sx, float sy, float sz, float fAngle, const char* pszName, int nGroup)
+static NxActor* CMISCreateBoxActor(NxScene* pScene, const Vector3& pos, float sx, float sy, float sz, float fAngle, const char* pszName, int nGroup)
 {
     NxBoxShapeDesc box;
     box.dimensions.set(sx, sy, sz);
@@ -4748,7 +4748,7 @@ static NxActor* CMISCreateBoxActor(NxScene* pScene, const Unk_StreamPoint& pos, 
 
 // @0x1410c5680
 // MS2-FUNCTIONAL: PhysX descriptor setup written with the SDK's own members; the shape group is a guess (the exe passes none)
-void CubeMapInformationService::GeneratePhysX(Unk_EntRef spEnt, Unk_StreamPoint pt)
+void CubeMapInformationService::GeneratePhysX(Unk_EntRef spEnt, Vector3 pt)
 {
     Unk_CMISIter<257> itEnd, itFind;
     if (FUN_141127780(FUN_1411580e0(&f48, &itFind, FUN_1408b76f0(FUN_1408a9280(&spEnt))), FUN_141152030(&f48, &itEnd)) != 0)
@@ -4756,7 +4756,7 @@ void CubeMapInformationService::GeneratePhysX(Unk_EntRef spEnt, Unk_StreamPoint 
     NxScene* pScene = reinterpret_cast<NxScene*>(FUN_14168a1c0(FUN_1409f7ca0()));
     if (pScene == 0)
         return;
-    Unk_StreamPoint ptPos, ptRot;
+    Vector3 ptPos, ptRot;
     FUN_1409618c0(FUN_1408a9280(&spEnt), 0xfd95ca52, &ptPos);
     FUN_1409618c0(FUN_1408a9280(&spEnt), 0x68c7c29d, &ptRot);
     NxActor* pActor = CMISCreateBoxActor(pScene, ptPos, pt.x, pt.y, pt.z, ptRot.z, "CubeMapInformationService::GeneratePhysX", 0);
@@ -4788,7 +4788,7 @@ void CubeMapInformationService::GenerateFloorPhysX()
     if ((int)f218->floors.size() == f1dc)
         return;
     const Unk_UGCFloor& floor = f218->floors[f1dc];
-    Unk_StreamPoint pos = DAT_143b01a60;
+    Vector3 pos = DAT_143b01a60;
     pos.z = floor.startHeight + (float)floor.field4 * 150.0f;
     NxActor* pActor = CMISCreateBoxActor(pScene, pos, 1500.0f, 1500.0f, 150.0f, 0.0f, "CubeMapInformationService::GenerateFloorPhysX", 9);
     f40 = pActor;
@@ -4805,10 +4805,10 @@ void CubeMapInformationService::GenerateAreaPhysX(int n)
     NxScene* pScene = reinterpret_cast<NxScene*>(FUN_14168a1c0(FUN_1409f7ca0()));
     if (pScene == 0)
         return;
-    Unk_StreamPoint ptLo = DAT_143b01a60, ptHi = DAT_143b01a60;
+    Vector3 ptLo = DAT_143b01a60, ptHi = DAT_143b01a60;
     FUN_1408a15b0(p300, ptLo);
     FUN_1408a15b0(p30c, ptHi);
-    Unk_StreamPoint size = DAT_143b01a60, pos = ptLo;
+    Vector3 size = DAT_143b01a60, pos = ptLo;
     if (n == 0) {
         size.x = 150.0f;
         size.y = (ptHi.y - ptLo.y) + 300.0f;
@@ -4845,7 +4845,7 @@ int CubeMapInformationService::FUN_1410c6b90(unsigned nMask, int* pOutGroup, int
     Unk_CMISRoster* pRoster = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pRoster == 0)
         return 0;
-    Unk_StreamPoint ptA = DAT_143b01a60, ptB = DAT_143b01a60;
+    Vector3 ptA = DAT_143b01a60, ptB = DAT_143b01a60;
     FUN_1410b7ad0(reinterpret_cast<PCBase*>(pRoster), 0.0f, &ptA, 1);
     FUN_1410b7ad0(reinterpret_cast<PCBase*>(pRoster), 0.0f, &ptB, 0);
     Unk_Int3 cellA = FUN_1408a1430(ptA);
@@ -4875,7 +4875,7 @@ int CubeMapInformationService::FUN_1410c6b90(unsigned nMask, int* pOutGroup, int
                 else if ((nMask & 4) && bOwned)
                     bSkip = true;
                 else {
-                    Unk_StreamPoint ptEnt = DAT_143b01a60;
+                    Vector3 ptEnt = DAT_143b01a60;
                     FUN_1409618c0(FUN_1408a9280(&spEnt), 0xfd95ca52, &ptEnt);
                     Unk_Int3 cell = FUN_1408a1430(ptEnt);
                     if (FUN_1411272b0(&cell, &cellA) || FUN_1411272b0(&cell, &cellB)) {
@@ -4892,11 +4892,11 @@ int CubeMapInformationService::FUN_1410c6b90(unsigned nMask, int* pOutGroup, int
 
 // @0x1410d1320
 // MS2-FUNCTIONAL: the eight neighbour probes are a loop over a table instead of the exe's nested ifs
-int CubeMapInformationService::FUN_1410d1320(void* pArg, Unk_StreamPoint pt, float fStep, Unk_StreamPoint* pOut)
+int CubeMapInformationService::FUN_1410d1320(void* pArg, Vector3 pt, float fStep, Vector3* pOut)
 {
     Cube* pCube = static_cast<Cube*>(pArg);
-    Unk_StreamPoint ptCenter = DAT_143b01a60;
-    Unk_StreamPoint ptProbe = DAT_143b01a60;
+    Vector3 ptCenter = DAT_143b01a60;
+    Vector3 ptProbe = DAT_143b01a60;
     float fHalf = fStep * 0.5f;
     FUN_1408a15b0(pCube->position, ptCenter);
     float fLimit = 75.0f;
@@ -5005,17 +5005,17 @@ bool FUN_141126bd0(Unk_CMISIter<275>*, Unk_CMISIter<275>*);                     
 Unk_CMISMarkRec* FUN_141127a90(Unk_CMISTree<275>*, const int*);                                     // operator[]
 // @0x1410cbb40
 // MS2-FUNCTIONAL: the exe's NiTransform temporary / security cookie frame is not reproduced
-void CubeMapInformationService::FUN_1410cbb40(Unk_CMISXformVec* pOut, int nMode, int nGroup, Unk_StreamPoint ptPlayer, Unk_Int3 cell, bool bRot, int nMs)
+void CubeMapInformationService::FUN_1410cbb40(Unk_CMISXformVec* pOut, int nMode, int nGroup, Vector3 ptPlayer, Unk_Int3 cell, bool bRot, int nMs)
 {
-    Unk_StreamPoint ptCell = DAT_143b01a60;
+    Vector3 ptCell = DAT_143b01a60;
     FUN_1408a15b0(cell, ptCell);
-    Unk_StreamPoint ptDir = ptPlayer.FUN_140965c40(ptCell);
+    Vector3 ptDir = ptPlayer.FUN_140965c40(ptCell);
     ptDir.FUN_140968990();
     ptCell = ptCell.FUN_14097fd50(ptDir.FUN_14097fc90(75.0f));
     ptCell.z = ptCell.z + 150.0f;
-    Unk_StreamPoint ptRot = DAT_143b01a60;
+    Vector3 ptRot = DAT_143b01a60;
     if (bRot)
-        ptRot = Unk_StreamPoint(0.0f, 0.0f, 90.0f);
+        ptRot = Vector3(0.0f, 0.0f, 90.0f);
     if (nMode == 0) {
         int nHeight = 0;
         if (FUN_140885340(&f208)->FUN_140375130() == 0) {
@@ -5277,7 +5277,7 @@ void CubeMapInformationService::FUN_1410c9710()
             Unk_CMISStr strKind;
             FUN_1409989e0(&strKind, "None");
             FUN_1408a2060(pEnt, 0x15014205, &strKind);
-            Unk_StreamPoint ptEnt = DAT_143b01a60;
+            Vector3 ptEnt = DAT_143b01a60;
             FUN_1409618c0(pEnt, 0xfd95ca52, &ptEnt);
             float fStart = *FUN_1408b0470(&f218->floors, &f1e0);
             if (!FUN_140de8e30(strKind, "Stair") || ptEnt.z != fStart) {
@@ -5301,7 +5301,7 @@ void CubeMapInformationService::FUN_1410c9710()
             Unk_CMISStr strKind;
             FUN_1409989e0(&strKind, "None");
             FUN_1408a2060(pEnt, 0x15014205, &strKind);
-            Unk_StreamPoint ptEnt = DAT_143b01a60;
+            Vector3 ptEnt = DAT_143b01a60;
             FUN_1409618c0(pEnt, 0xfd95ca52, &ptEnt);
             float fStart = *FUN_1408b0470(&f218->floors, &nFloor);
             if (!FUN_140de8e30(strKind, "Stair") || ptEnt.z != fStart) {
@@ -5398,10 +5398,10 @@ void CubeMapInformationService::FUN_1410ca170()
             } else {
                 Cube* pNear = FUN_1410badf0(nGroup, pPawn);
                 if (pNear != 0) {
-                    Unk_StreamPoint ptA;
+                    Vector3 ptA;
                     FUN_1402bd040(&ptA);
                     FUN_1410b7ad0(reinterpret_cast<PCBase*>(pPawn), -150.0f, &ptA, 0);
-                    Unk_StreamPoint ptB;
+                    Vector3 ptB;
                     FUN_1402bd040(&ptB);
                     FUN_1410b7a20(ptA, &ptB);
                     Unk_Int3 cell = FUN_1408a1430(ptB);
@@ -5463,7 +5463,7 @@ bool CubeMapInformationService::FUN_1410c06b0(MS2Ptr<Cube> spCube)
         FUN_1410b2510(&f2a8, spCube->position.x, spCube->position.y, spCube->position.z);
     if (spCube->fieldD8 != 0) {
         int nHouse = spCube->fieldD8;
-        Unk_StreamPoint ptDir;
+        Vector3 ptDir;
         FUN_1402bd040(&ptDir);
         FUN_1409618c0(FUN_1408a9280(&spCube->entity), 0x68c7c29d, &ptDir);
         int nDir = FUN_1410ba4a0(ptDir);
@@ -5802,7 +5802,7 @@ int CubeMapInformationService::ExportUGCMap(CString strName)
                     FUN_14086e000(&elemMap, &elemCube);
                     FUN_14086f450(&elemCube);
                 } else {
-                    Unk_StreamPoint ptRef;
+                    Vector3 ptRef;
                     FUN_1402bd040(&ptRef);
                     memcpy(&ptRef.z, &spCube->fieldD4, sizeof(float));
                     int nWallDir = FUN_1410ba5f0(cell, ptRef);
@@ -6099,20 +6099,20 @@ void CubeMapInformationService::FUN_1410cc160(int nKind)
             int nCellKey2 = FUN_1408a03c0(pCube->position);
             Unk_CMISInsRes resIns;
             FUN_14111d240(&setSeen, &resIns, &nCellKey2);
-            Unk_StreamPoint ptGuide;
+            Vector3 ptGuide;
             FUN_1402bd040(&ptGuide);
             FUN_1408a15b0(pCube->position, ptGuide);
             Unk_CMISPt3 ptWalk(ptGuide);
             Unk_Int3 cellX = pCube->position;
             cellX.x = cellX.x + 1;
             if (FUN_1410cba80(pCube->field44, nGroup, &cellX, &ptWalk) != 0)
-                FUN_1410cbb40(&vecXform, 0, nGroup, Unk_StreamPoint(ptWalk.x, ptWalk.y, ptWalk.z), cellX, true, 0);
+                FUN_1410cbb40(&vecXform, 0, nGroup, Vector3(ptWalk.x, ptWalk.y, ptWalk.z), cellX, true, 0);
             ptWalk = Unk_CMISPt3(ptGuide);
             Unk_Int3 cellY = pCube->position;
             cellY.y = cellY.y + 1;
             if (FUN_1410cba80(pCube->field44, nGroup, &cellY, &ptWalk) != 0)
-                FUN_1410cbb40(&vecXform, 0, nGroup, Unk_StreamPoint(ptWalk.x, ptWalk.y, ptWalk.z), cellY, false, 0);
-            Unk_StreamPoint ptRot(90.0f, 0.0f, 0.0f);
+                FUN_1410cbb40(&vecXform, 0, nGroup, Vector3(ptWalk.x, ptWalk.y, ptWalk.z), cellY, false, 0);
+            Vector3 ptRot(90.0f, 0.0f, 0.0f);
             if (pCube->field44 != 2)
                 ptGuide.z = ptGuide.z + 150.0f;
             NiTransform xform;
@@ -6301,7 +6301,7 @@ void CubeMapInformationService::FUN_1410cd440()
 struct Unk_CMISCorner { int m_nDiag, m_nSideB, m_nSideC, m_nRetB, m_nRetC, m_nDirB, m_nDirC; };    // neighbours of a diagonal walk direction
 // @0x1410d1820
 // MS2-FUNCTIONAL: exe's switch is compiled to a jump table with per-case temporaries
-int CubeMapInformationService::FUN_1410d1820(void* pArg, int nDir, Unk_StreamPoint pt, Unk_StreamPoint ptCur, void** ppFound)
+int CubeMapInformationService::FUN_1410d1820(void* pArg, int nDir, Vector3 pt, Vector3 ptCur, void** ppFound)
 {
     Cube* pBase = static_cast<Cube*>(pArg);
     static const Unk_CMISCorner s_aCorners[4] = {
@@ -6421,7 +6421,7 @@ void CubeMapInformationService::FUN_1410ccc00(int nGroup, int nA, int nB)
         int nCellKey2 = FUN_1408a03c0(pCube->position);
         Unk_CMISInsRes resIns;
         FUN_14111d240(&setSeen, &resIns, &nCellKey2);
-        Unk_StreamPoint ptGuide;
+        Vector3 ptGuide;
         FUN_1402bd040(&ptGuide);
         FUN_1408a15b0(pCube->position, ptGuide);
         static const int s_aSides[4][2] = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} };
@@ -6431,7 +6431,7 @@ void CubeMapInformationService::FUN_1410ccc00(int nGroup, int nA, int nB)
             cellSide.x = cellSide.x + s_aSides[i][0];
             cellSide.y = cellSide.y + s_aSides[i][1];
             if (FUN_1410cba80(pCube->field44, nGroup, &cellSide, &ptWalk) != 0)
-                FUN_1410cbb40(&vecXform, 1, nGroup, Unk_StreamPoint(ptWalk.x, ptWalk.y, ptWalk.z), cellSide, i < 2, nB);
+                FUN_1410cbb40(&vecXform, 1, nGroup, Vector3(ptWalk.x, ptWalk.y, ptWalk.z), cellSide, i < 2, nB);
         }
     }
 }

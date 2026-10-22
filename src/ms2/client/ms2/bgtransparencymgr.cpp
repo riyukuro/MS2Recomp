@@ -160,7 +160,7 @@ void FUN_14098c6e0(egf::Entity* pEntity, unsigned nHash, const bool* pValue);// 
 void FUN_14098f4d0(NiAVObject* pNode, bool b);
 const NiBound* FUN_140994490(NiAVObject* pNode);                // world bound
 extern char DAT_143d69198;                                      // NiRTTI of the material class the fade supports
-extern Unk_StreamPoint DAT_143b01a60;                           // zero point
+extern Vector3 DAT_143b01a60;                           // zero point
 
 // A scene-graph walk over a model: the exe's iterator helpers (construct 0x14098cb80, next 0x14098e0d0, destroy 0x14098cf00).
 struct Unk_CmWalker
@@ -182,7 +182,7 @@ inline float GameObject::FUN_140a17da0() { return m_fUnk110; }
 inline float GameObject::FUN_140a17dc0() { return m_fUnk114; }
 
 // @0x140a17e10
-inline Unk_StreamPoint CameraMgr::FUN_140a17e10()
+inline Vector3 CameraMgr::FUN_140a17e10()
 {
     if (m_spMode.get() != 0)
         return m_spMode->FUN_1409f2540();
@@ -398,7 +398,7 @@ void BGTransparencyMgr::vfunc_1()
     {
         std::set<Unk_BGTRegion> kVisible;
         Unk_BGTEntitySet kHit;
-        Unk_StreamPoint pc = pCamera->FUN_140a17e10();
+        Vector3 pc = pCamera->FUN_140a17e10();
     efd::Point3 ptCamera(pc.x, pc.y, pc.z);
         FUN_1403ed2d0()->FUN_141bc7920(reinterpret_cast<std::set<void*>&>(kVisible));
         for (std::set<efd::SmartPointer<GameObject> >::iterator it = m_set20.begin(); it != m_set20.end(); ++it)
@@ -739,7 +739,7 @@ bool BGTransparencyMgr::CompareDistance(egf::Entity* pA, egf::Entity* pB)
     CameraMgr* pCamera = FUN_1409478c0();
     if (pCamera->FUN_140a18070() == 0)
         return false;
-    Unk_StreamPoint pc = pCamera->FUN_140a17e10();
+    Vector3 pc = pCamera->FUN_140a17e10();
     efd::Point3 ptCamera(pc.x, pc.y, pc.z);
     float fA = (ptA - ptCamera).Length();
     float fB = (ptB - ptCamera).Length();

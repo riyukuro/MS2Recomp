@@ -14,7 +14,7 @@
 
 // ---- unit-local placeholders ----
 
-extern const Unk_StreamPoint g_143a08cf8;   // NiPoint3::UNIT_Z
+extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 extern float g_143aef240;                   // remembered camera distance (vfunc_24)
 
 // The game context (FUN_1403ed2d0).
@@ -57,7 +57,7 @@ CTargetLookCenterCameraMode::CTargetLookCenterCameraMode(Unk_CameraOwner* pOwner
       m_138(0.03f),
       m_13c(0.0f)
 {
-    m_114 = Unk_StreamPoint(850.0f, -1150.0f, 1950.0f);
+    m_114 = Vector3(850.0f, -1150.0f, 1950.0f);
 }
 
 // @0x140a4c5e0
@@ -82,8 +82,8 @@ MS2_REPLACE_METHOD(0x140a4c640, CTargetLookCenterCameraMode, vfunc_9, 24, 0x68D4
 // @0x140a4c660
 void CTargetLookCenterCameraMode::vfunc_8(double fTime)
 {
-    Unk_StreamPoint ptPrevTarget = m_78;
-    Unk_StreamPoint ptPrevPos = m_d8.m_pos;
+    Vector3 ptPrevTarget = m_78;
+    Vector3 ptPrevPos = m_d8.m_pos;
     const int nMaxLoop = 100;
     int nLoop = 1;
     for (int i = 0; i < nLoop && i < 100; ++i)
@@ -94,11 +94,11 @@ void CTargetLookCenterCameraMode::vfunc_8(double fTime)
         m_78 = pTarget->vfunc_17();
         m_78.z += vfunc_27();
 
-        Unk_StreamPoint ptPos = g_143b01a60;
-        Unk_StreamPoint ptRot = g_143b01a60;
+        Vector3 ptPos = g_143b01a60;
+        Vector3 ptRot = g_143b01a60;
         if (m_88 == 0)
         {
-            Unk_StreamPoint ptEye = m_78.FUN_14097fd50(FUN_14183c370());
+            Vector3 ptEye = m_78.FUN_14097fd50(FUN_14183c370());
             m_d8.m_pos = ptEye;
         }
 
@@ -119,8 +119,8 @@ void CTargetLookCenterCameraMode::vfunc_8(double fTime)
             if (m_f4 == 0)
                 m_84 = m_84 * 0.9f;
             ptPos = m_d8.m_pos;
-            Unk_StreamPoint ptTarget = m_78;
-            Unk_StreamPoint ptDir = ptTarget.FUN_140965c40(ptPos);
+            Vector3 ptTarget = m_78;
+            Vector3 ptDir = ptTarget.FUN_140965c40(ptPos);
             ptDir.FUN_140968990();
             ptPos.FUN_140a4e560(ptDir.FUN_14097fc90(m_84));
             float fTargetMove = FUN_140966ea0(ptPrevTarget, m_78);
@@ -150,10 +150,10 @@ void CTargetLookCenterCameraMode::vfunc_8(double fTime)
         }
         FUN_140a4d5f0(fTime);
 
-        Unk_StreamPoint ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
+        Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
         if (ptMove.FUN_140552700(g_143b01a60))
         {
-            Unk_StreamPoint ptInput = ptMove;
+            Vector3 ptInput = ptMove;
             float fRate = 15.0f;
             float fStep = FUN_140a17940((float)fTime, 0.0f, 1.0f / fRate);
             float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x),
@@ -170,10 +170,10 @@ void CTargetLookCenterCameraMode::vfunc_8(double fTime)
             if (fYaw != 0.0f || fPitch != 0.0f)
             {
                 m_68 += fYaw;
-                Unk_StreamPoint ptCenter = m_78;
+                Vector3 ptCenter = m_78;
                 ptPos = m_d8.m_pos;
                 ptPos.z = ptCenter.z;
-                Unk_StreamPoint ptDist = ptCenter.FUN_140965c40(ptPos);
+                Vector3 ptDist = ptCenter.FUN_140965c40(ptPos);
                 m_50 = ptDist.FUN_140967ac0();
                 m_50 = FUN_140a17940(m_50, m_58, m_54 + m_b4);
                 m_6c -= fPitch;
@@ -240,7 +240,7 @@ MS2_REPLACE_METHOD(0x140a4d380, CTargetLookCenterCameraMode, vfunc_24, 615, 0xB9
 // @0x140a4d5f0
 void CTargetLookCenterCameraMode::FUN_140a4d5f0(double fTime)
 {
-    Unk_StreamPoint ptDir = m_78.FUN_140965c40(m_114);
+    Vector3 ptDir = m_78.FUN_140965c40(m_114);
     ptDir.z = 0.0f;
     ptDir.FUN_140968990();
     m_13c = m_68;
@@ -283,9 +283,9 @@ void CTargetLookCenterCameraMode::FUN_140a4d5f0(double fTime)
     float fX = m_50 * FUN_1409f25a0(m_68) + m_78.x;
     float fY = m_50 * FUN_1409f2310(m_68) + m_78.y;
     float fZ = m_50 * FUN_1409f2310(m_6c) + m_78.z;
-    m_d8.m_pos = Unk_StreamPoint(fX, fY, fZ);
+    m_d8.m_pos = Vector3(fX, fY, fZ);
     m_8c = m_d8.m_pos.FUN_140965c40(m_78);
-    Unk_StreamPoint pose = CCameraMode::FUN_140afdd40(m_78, m_d8.m_pos, g_143a08cf8);
+    Vector3 pose = CCameraMode::FUN_140afdd40(m_78, m_d8.m_pos, g_143a08cf8);
     m_d8.m_rot = pose;
 }
 MS2_REPLACE_METHOD(0x140a4d5f0, CTargetLookCenterCameraMode, FUN_140a4d5f0, 1049, 0xDC61BE42);
@@ -368,7 +368,7 @@ void CTargetLookCenterCameraMode::vfunc_39(double fTime)
 MS2_REPLACE_METHOD(0x140a4da10, CTargetLookCenterCameraMode, vfunc_39, 1451, 0x30C4D227);
 
 // @0x140a4dfd0
-void CTargetLookCenterCameraMode::vfunc_3(Unk_StreamPoint pt)
+void CTargetLookCenterCameraMode::vfunc_3(Vector3 pt)
 {
     if (pt.FUN_140552700(m_setting.m_c))
     {
@@ -379,7 +379,7 @@ void CTargetLookCenterCameraMode::vfunc_3(Unk_StreamPoint pt)
 MS2_REPLACE_METHOD(0x140a4dfd0, CTargetLookCenterCameraMode, vfunc_3, 113, 0x344F33C7);
 
 // @0x140a4e050
-void CTargetLookCenterCameraMode::vfunc_4(Unk_StreamPoint pt)
+void CTargetLookCenterCameraMode::vfunc_4(Vector3 pt)
 {
     if (pt.FUN_140552700(m_setting.m_18))
     {
@@ -390,7 +390,7 @@ void CTargetLookCenterCameraMode::vfunc_4(Unk_StreamPoint pt)
 MS2_REPLACE_METHOD(0x140a4e050, CTargetLookCenterCameraMode, vfunc_4, 113, 0xA640E6FF);
 
 // @0x140a4e0d0
-void CTargetLookCenterCameraMode::FUN_140a4e0d0(const Unk_StreamPoint& ptCenter)
+void CTargetLookCenterCameraMode::FUN_140a4e0d0(const Vector3& ptCenter)
 {
     m_110 = true;
     m_114 = ptCenter;
@@ -525,7 +525,7 @@ Unk_Point2 Unk_Point2::FUN_140a4e500(const Unk_Point2& pt) const
 }
 
 // @0x140a4e560
-Unk_StreamPoint& Unk_StreamPoint::FUN_140a4e560(const Unk_StreamPoint& pt)
+Vector3& Vector3::FUN_140a4e560(const Vector3& pt)
 {
     x = x + pt.x;
     y = y + pt.y;
@@ -547,7 +547,7 @@ inline float FUN_140a4e660(float fY, float fX)
 }
 
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
-MS2_REPLACE_METHOD(0x140a4e560, Unk_StreamPoint, FUN_140a4e560, 103, 0xF0625B3A);
+MS2_REPLACE_METHOD(0x140a4e560, Vector3, FUN_140a4e560, 103, 0xF0625B3A);
 MS2_REPLACE_METHOD(0x140a4e630, Unk_Point2, FUN_140a4e630, 48, 0xD7D57138);
 MS2_REPLACE(0x140a4e660, FUN_140a4e660, 39, 0x14F80A4A);
 

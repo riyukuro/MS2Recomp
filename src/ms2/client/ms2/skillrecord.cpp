@@ -13,7 +13,7 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
 
-extern Unk_StreamPoint DAT_143b01a60;                       // the zero point
+extern Vector3 DAT_143b01a60;                       // the zero point
 SkillDataTable* FUN_1401958b0();                            // the skill table
 unsigned FUN_141472bc0();                                   // the tick count
 
@@ -88,7 +88,7 @@ Unk_SrBuffs* FUN_1416749a0(Unk_SrEntity* pEntity);          // the buffs of an a
 
 // @0x141758d70
 bool SkillTargetRecord::FUN_141758d70(unsigned long long nTagId, unsigned long long nTagSub, int nOwnerId,
-    int nCasterId, int nSkillId, short nLevel, int nMotion, const Unk_StreamPoint& ptDir, int n80, int n84,
+    int nCasterId, int nSkillId, short nLevel, int nMotion, const Vector3& ptDir, int n80, int n84,
     int nAttack, int n8c)
 {
     m_spSkill = FUN_1401958b0()->GetSkillData(nSkillId);
@@ -206,9 +206,9 @@ bool CSkillRecord::Init(Unk_InventorySkillRequest& kReq)
     m_nSendTick = kReq.m_nTick;
     m_nCastId = kReq.m_nCastId;
     m_nMotion = kReq.m_nMotion;
-    m_ptPos = *(const Unk_StreamPoint*)&kReq.m_ptPos;
-    m_ptDir = *(const Unk_StreamPoint*)&kReq.m_ptDir;
-    m_ptRot = Unk_StreamPoint(0, 0, kReq.m_fRotZ);
+    m_ptPos = *(const Vector3*)&kReq.m_ptPos;
+    m_ptDir = *(const Vector3*)&kReq.m_ptDir;
+    m_ptRot = Vector3(0, 0, kReq.m_fRotZ);
     m_bAE = kReq.m_b3a;
     m_bAD = kReq.m_b38;
     m_nA4 = kReq.m_n34;
@@ -486,8 +486,8 @@ CDamageRecord::CDamageRecord()
 
 // @0x14175a610
 int CDamageRecord::Init(unsigned long long nTagId, unsigned long long nTagSub, int nOwnerId, int nCasterId,
-    int nSkillId, short nLevel, int nMotion, int nAttack, const Unk_StreamPoint& ptPos,
-    const Unk_StreamPoint& ptDir, const Unk_StreamPoint& ptHit)
+    int nSkillId, short nLevel, int nMotion, int nAttack, const Vector3& ptPos,
+    const Vector3& ptDir, const Vector3& ptHit)
 {
     m_nTagId = nTagId;
     m_nTagSub = nTagSub;
@@ -697,7 +697,7 @@ CSplashDamageRecord::CSplashDamageRecord()
 
 // @0x14175b1c0
 int CSplashDamageRecord::Init(int nCasterId, int nOwnerId, unsigned long long nTagId, int nSkillId, short nLevel,
-    int nMotion, int nAttack, const Unk_StreamPoint& ptPos, const Unk_StreamPoint& ptDir)
+    int nMotion, int nAttack, const Vector3& ptPos, const Vector3& ptDir)
 {
     m_nCasterId = nCasterId;
     m_nOwnerId = nOwnerId;

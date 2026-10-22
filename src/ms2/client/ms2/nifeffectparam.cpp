@@ -238,7 +238,7 @@ int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
 int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);
 int FUN_1408731e0(Unk_140165cf0* pNode, const char* pszName, int& nOut);
 int FUN_1408730a0(Unk_140165cf0* pNode, const char* pszName, bool& bOut);
-int FUN_140874670(Unk_140165cf0* pNode, const char* pszName, Unk_StreamPoint& kOut);
+int FUN_140874670(Unk_140165cf0* pNode, const char* pszName, Vector3& kOut);
 
 // The nif / texture cache service (CNifLoadingService::s_instance).
 CNifLoadingService* FUN_140a0afd0();
@@ -506,7 +506,7 @@ void FUN_140a0b330(void* pObj, bool bOn, short sFlags);
 void* FUN_140a33f90(void* pObj);                                    // local transform
 void* FUN_1409478e0(void* pObj);                                    // world transform
 void FUN_140aacb60(void* pObj, const void* pXform);                 // SetLocalTransform
-const Unk_StreamPoint& FUN_140947900(void* pNode);                  // world translate
+const Vector3& FUN_140947900(void* pNode);                  // world translate
 void* FUN_141024c90(void* pNode);                                   // world rotation
 void FUN_140a0b1f0(void* pRotation, float* pDirection);             // rotation -> facing direction
 void FUN_1402bd040(float* p);                                       // NiPoint3()
@@ -879,7 +879,7 @@ bool CNifEffect::vfunc_9()
     {
         if (FUN_140aac3e0(&m_spRoot, 0))
         {
-            const Unk_StreamPoint& rPos = FUN_140947900(FUN_1409475f0(&m_spRoot));
+            const Vector3& rPos = FUN_140947900(FUN_1409475f0(&m_spRoot));
             efd::Point3 kPos(rPos.x, rPos.y, rPos.z);
             m_spEffectObject->vfunc_19(kPos);
             float aDir[4];

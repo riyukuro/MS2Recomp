@@ -26,7 +26,7 @@ public:
     virtual void Unk_Slot8(); virtual void Unk_Slot9(); virtual void Unk_Slot10(); virtual void Unk_Slot11();
     virtual void Unk_Slot12(); virtual void Unk_Slot13(); virtual void Unk_Slot14(); virtual void Unk_Slot15();
     virtual void Unk_Slot16(); virtual void Unk_Slot17();
-    virtual Unk_StreamPoint vfunc_18();                     // 0x90 the position
+    virtual Vector3 vfunc_18();                     // 0x90 the position
 };
 
 // The world manager (FUN_1403ed2d0).
@@ -48,7 +48,7 @@ Unk_TabInventory* FUN_1405344f0(int nId);
 void* FUN_1408e57f0();
 int FUN_1422b9e00(void* p);                                 // the current scene id
 
-extern Unk_StreamPoint DAT_143b01a60;                       // the zero point
+extern Vector3 DAT_143b01a60;                       // the zero point
 
 #ifndef MS2_HOOK_DLL
 static ClassObjectRegistrar s_regGameScene(L"CGuideConditionGameScene", CGuideConditionGameScene::CreateObject);     // .text$di 0x1400f36a0

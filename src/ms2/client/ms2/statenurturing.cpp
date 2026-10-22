@@ -30,7 +30,7 @@
 
 // ---- unit-local placeholders ----
 
-extern Unk_StreamPoint DAT_143b01a60;                    // the zero point
+extern Vector3 DAT_143b01a60;                    // the zero point
 
 // A PCBase seen through its slot 18 (the position, returned as the 12-byte point of the FUN_ operators).
 class Unk_NuPos
@@ -54,7 +54,7 @@ public:
     virtual void vfunc_15();
     virtual void vfunc_16();
     virtual void vfunc_17();
-    virtual Unk_StreamPoint vfunc_18();
+    virtual Vector3 vfunc_18();
 };
 
 // The casting bar request (FUN_1418e12b0): duration, flags, speed and four texts (+0x28 the label).
@@ -112,10 +112,10 @@ UICastingBar* FUN_140ac2270(int nId);
 
 void* FUN_14165f100(PCBase* p);
 void FUN_14165f170(PCBase* p);
-class Unk_NuBuffMgr { public: Unk_StreamPoint FUN_141683290(); };
+class Unk_NuBuffMgr { public: Vector3 FUN_141683290(); };
 Unk_NuBuffMgr* FUN_14166d240(PCBase* p);
 bool FUN_1416749c0(PCBase* p);
-int FUN_1408a1360(Unk_StreamPoint a, Unk_StreamPoint b);
+int FUN_1408a1360(Vector3 a, Vector3 b);
 CStringW GetStringCommonByKey(const CStringW& str);
 CFunctionCubeService* FUN_1409670b0();
 
@@ -275,7 +275,7 @@ MS2_REPLACE_METHOD(0x140AC0F80, StateNurturing, vfunc_5, 306, 0x16327DE0);
 void StateNurturing::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    Unk_StreamPoint kZero = DAT_143b01a60;
+    Vector3 kZero = DAT_143b01a60;
     m_pOwner->vfunc_68(&kZero, fTime, 0, 0, 0);
     if (m_n48 != 0)
     {
@@ -292,7 +292,7 @@ void StateNurturing::vfunc_3(double fTime)
 }
 MS2_REPLACE_METHOD(0x140AC10C0, StateNurturing, vfunc_3, 245, 0xD3F33937);
 
-// MS2-FUNCTIONAL: stack-slot/temporary placement of the Unk_StreamPoint copies differs
+// MS2-FUNCTIONAL: stack-slot/temporary placement of the Vector3 copies differs
 // @0x140ac11c0
 void StateNurturing::vfunc_8(double fTime)
 {
@@ -301,8 +301,8 @@ void StateNurturing::vfunc_8(double fTime)
     if (pPC)
     {
         Unk_NuBuffMgr* pBuff = FUN_14166d240(pPC);
-        Unk_StreamPoint kPos = pBuff->FUN_141683290();
-        Unk_StreamPoint kArg = kPos;
+        Vector3 kPos = pBuff->FUN_141683290();
+        Vector3 kArg = kPos;
         pPC->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
         if (FUN_1416749c0(m_pOwner))
             pPC->vfunc_59(2, 0, 0, 0);

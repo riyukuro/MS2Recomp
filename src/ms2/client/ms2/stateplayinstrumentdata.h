@@ -72,7 +72,7 @@ public:
     int m_nEffect6c;                                        // +0x6c id of the instrument effect
     MS2Ptr<CInstrumentData> m_spInstrument;                 // +0x70
     CString m_str80;                                        // +0x80
-    Unk_StreamPoint m_vPos;                                 // +0x88
+    Vector3 m_vPos;                                 // +0x88
     egf::EntityPtr m_spEntity;                              // +0x98
     bool m_bA0;                                             // +0xa0 the first level animation was requested
     CString m_strLastAnim;                                  // +0xa8

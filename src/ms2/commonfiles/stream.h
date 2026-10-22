@@ -4,7 +4,7 @@
 #include <atlcoll.h>
 #include <string>
 #include "ms2/ms2recover.h"
-#include "ms2/placeholder/nipoint3.h"   // Unk_StreamPoint
+#include "ms2/placeholder/nipoint3.h"   // Vector3
 class CIOBuffer {
 public:
     virtual unsigned GetOffset() = 0;
@@ -33,8 +33,8 @@ class CInputStream { public:
     virtual CString ReadString() = 0;
     virtual CStringW ReadUnicodeString() = 0;
     virtual void ReadBytes(void* data,int count) = 0;
-    virtual Unk_StreamPoint ReadVector3() = 0;
-    virtual Unk_StreamPoint ReadVector3Short() = 0;
+    virtual Vector3 ReadVector3() = 0;
+    virtual Vector3 ReadVector3Short() = 0;
     virtual float ReadShortX10() = 0;
     virtual float ReadShortX100() = 0;
     virtual float ReadShortScaled(int scale) = 0;
@@ -52,8 +52,8 @@ class COutputStream { public:
     virtual void WriteString(const CString& value) = 0;
     virtual void WriteUnicodeString(const CStringW& value) = 0;
     virtual void WriteBytes(const void* data,int count) = 0;
-    virtual void WriteVector3(const Unk_StreamPoint& value) = 0;
-    virtual void WriteVector3Short(const Unk_StreamPoint& value) = 0;
+    virtual void WriteVector3(const Vector3& value) = 0;
+    virtual void WriteVector3Short(const Vector3& value) = 0;
     virtual void WriteShortX10(float value) = 0;
     virtual void WriteShortX100(float value) = 0;
     virtual void WriteShortScaled(float value, int scale) = 0;
@@ -76,8 +76,8 @@ class CByteBuffer : public CIOBuffer, public CInputStream, public COutputStream 
     CString ReadString() override;
     CStringW ReadUnicodeString() override;
     void ReadBytes(void* data,int count) override;
-    Unk_StreamPoint ReadVector3() override;
-    Unk_StreamPoint ReadVector3Short() override;
+    Vector3 ReadVector3() override;
+    Vector3 ReadVector3Short() override;
     float ReadShortX10() override;
     float ReadShortX100() override;
     float ReadShortScaled(int scale) override;
@@ -93,8 +93,8 @@ class CByteBuffer : public CIOBuffer, public CInputStream, public COutputStream 
     void WriteString(const CString& value) override;
     void WriteUnicodeString(const CStringW& value) override;
     void WriteBytes(const void* data,int count) override;
-    void WriteVector3(const Unk_StreamPoint& value) override;
-    void WriteVector3Short(const Unk_StreamPoint& value) override;
+    void WriteVector3(const Vector3& value) override;
+    void WriteVector3Short(const Vector3& value) override;
     void WriteShortX10(float value) override;
     void WriteShortX100(float value) override;
     void WriteShortScaled(float value, int scale) override;

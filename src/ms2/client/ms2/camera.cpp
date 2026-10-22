@@ -115,20 +115,20 @@ const char* FUN_14086f4b0(Unk_140165cf0*, const char*);                 // attri
 CString FUN_140188f50(const char* psz, int n);                         // CString from an attribute value
 int FUN_140873360(Unk_140165cf0*, const char*, float*);                 // float attribute
 int FUN_140873220(Unk_140165cf0*, const char*, int*);                   // int attribute
-int FUN_140874670(Unk_140165cf0*, const char*, Unk_StreamPoint*);       // point attribute
+int FUN_140874670(Unk_140165cf0*, const char*, Vector3*);       // point attribute
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // data path of a file
 unsigned int FUN_140768010(unsigned int nRange, unsigned int nBase);    // random integer
 float FUN_140768090();                                                  // random float in [0, 1)
 extern "C" float (__cdecl* __imp_sinf)(float);                        // the exe calls the CRT import
-extern const Unk_StreamPoint g_143a08ce8;                              // efd::Point3::UNIT_Y
-extern const Unk_StreamPoint g_143a08cf8;                              // efd::Point3::UNIT_Z
+extern const Vector3 g_143a08ce8;                              // efd::Point3::UNIT_Y
+extern const Vector3 g_143a08cf8;                              // efd::Point3::UNIT_Z
 class Unk_GameContext
 {
 public:
     // @0x140af8310
     efd::ServiceManager* FUN_140af8310() { return m_pServiceManager; }
     MS2Ptr<class CFieldDataCli> FUN_141bd30a0();                        // the current field data
-    Unk_StreamPoint FUN_141bd3dc0();                                    // the map camera center
+    Vector3 FUN_141bd3dc0();                                    // the map camera center
 
     void* m_0;
     efd::ServiceManager* m_pServiceManager;                             // +0x08
@@ -235,7 +235,7 @@ void FUN_1422ba250(Unk_UIManager* pUI);
 class Unk_140ad4b90;
 Unk_140ad4b90* FUN_140ad4b90();
 void FUN_1418631a0(Unk_140ad4b90* p);
-bool FUN_141863100(Unk_140ad4b90* p, int nMapId, const Unk_StreamPoint& ptPos);   // the point is in the map's area
+bool FUN_141863100(Unk_140ad4b90* p, int nMapId, const Vector3& ptPos);   // the point is in the map's area
 Unk_CameraTargetEntity* FUN_141bd1200(Unk_GameContext* pContext, int nId);   // an npc by object id
 Unk_CameraTargetEntity* FUN_141bd0cc0(Unk_GameContext* pContext);       // the local player
 void FUN_141bdb5a0(Unk_GameContext* pContext, int bOn);
@@ -658,14 +658,14 @@ void CBossTargetCameraData::vfunc_1(void* pParam)
 // ---- efd::Point3 operators (COMDATs of this obj) ----
 
 // @0x140ae9180
-Unk_StreamPoint Unk_StreamPoint::FUN_140ae9180(float f) const
+Vector3 Vector3::FUN_140ae9180(float f) const
 {
     float fInv = 1.0f / f;
-    return Unk_StreamPoint(fInv * x, fInv * y, fInv * z);
+    return Vector3(fInv * x, fInv * y, fInv * z);
 }
 
 // @0x140ae9200
-Unk_StreamPoint& Unk_StreamPoint::FUN_140ae9200(const Unk_StreamPoint& pt)
+Vector3& Vector3::FUN_140ae9200(const Vector3& pt)
 {
     x = x - pt.x;
     y = y - pt.y;
@@ -674,7 +674,7 @@ Unk_StreamPoint& Unk_StreamPoint::FUN_140ae9200(const Unk_StreamPoint& pt)
 }
 
 // @0x140ae9270
-Unk_StreamPoint& Unk_StreamPoint::FUN_140ae9270(float f)
+Vector3& Vector3::FUN_140ae9270(float f)
 {
     float fInv = 1.0f / f;
     x = x * fInv;
@@ -698,7 +698,7 @@ CCameraEffect::~CCameraEffect()
 }
 
 // @0x140ae9400
-bool CCameraEffect::vfunc_1(double fTime, Unk_StreamPoint& ptLook, Unk_StreamPoint& ptUp)
+bool CCameraEffect::vfunc_1(double fTime, Vector3& ptLook, Vector3& ptUp)
 {
     if (fTime < m_fStart)
         return true;
@@ -722,7 +722,7 @@ CVibrateCameraEffect::~CVibrateCameraEffect()
 }
 
 // @0x140ae9550
-bool CVibrateCameraEffect::vfunc_1(double fTime, Unk_StreamPoint& ptLook, Unk_StreamPoint& ptUp)
+bool CVibrateCameraEffect::vfunc_1(double fTime, Vector3& ptLook, Vector3& ptUp)
 {
     if (fTime < m_fStart)
         return true;
@@ -792,7 +792,7 @@ CameraMgr::~CameraMgr()
 }
 
 // @0x140ae9ed0
-void CameraMgr::FUN_140ae9ed0(egf::Entity* pEntity, const Unk_StreamPoint* pLook, const Unk_StreamPoint* pRot)
+void CameraMgr::FUN_140ae9ed0(egf::Entity* pEntity, const Vector3* pLook, const Vector3* pRot)
 {
     if (!m_pCamera)
     {
@@ -1722,8 +1722,8 @@ MS2_REPLACE_METHOD(0x140AF1A90, CameraMgr, FUN_140af1a90, 833, 0xCA1747D0);
 void CameraMgr::FUN_140af1de0()
 {
     double fTime = FUN_141473280(FUN_14086d260());
-    Unk_StreamPoint ptLook = FUN_140a17e10();
-    Unk_StreamPoint ptUp = FUN_140af8290();
+    Vector3 ptLook = FUN_140a17e10();
+    Vector3 ptUp = FUN_140af8290();
     if (!m_effect.m_effects.empty())
     {
         if ((*m_effect.m_effects.begin())->vfunc_1(fTime, ptLook, ptUp))
@@ -1872,13 +1872,13 @@ void CameraMgr::FUN_140aec4c0()
             float fDistance = m_spMapCameraData->m_distance;
             float fHAngle = ((m_spMapCameraData->m_hAngle + 180.0f) * 3.1415927f) / 180.0f;
             float fVAngle = (m_spMapCameraData->m_vAngle * 3.1415927f) / 180.0f;
-            Unk_StreamPoint ptAt = FUN_1403ed2d0()->FUN_141bd3dc0();
+            Vector3 ptAt = FUN_1403ed2d0()->FUN_141bd3dc0();
             ptAt.z += m_278 + 25.0f;
-            Unk_StreamPoint ptEye;
+            Vector3 ptEye;
             ptEye.x = fDistance * FUN_1409f25a0(fHAngle) + ptAt.x;
             ptEye.y = fDistance * FUN_1409f2310(fHAngle) + ptAt.y;
             ptEye.z = fDistance * FUN_1409f2310(fVAngle) + ptAt.z;
-            Unk_StreamPoint ptRot = CCameraMode::FUN_140afdd40(ptAt, ptEye, g_143a08cf8);
+            Vector3 ptRot = CCameraMode::FUN_140afdd40(ptAt, ptEye, g_143a08cf8);
             FUN_140ae9ed0(FUN_1408a9090(&spEntity), &ptEye, &ptRot);
             egf::Entity* pEntity = FUN_1408a9090(&spEntity);
             FUN_1409670f0()->FUN_1411cf2d0(pEntity, 0);
@@ -2111,7 +2111,7 @@ void CameraMgr::FUN_140aed750(int nMode, int bKeep)
             {
                 if (FUN_140a38d60())
                 {
-                    Unk_StreamPoint ptTarget = FUN_140a38d60()->vfunc_17();
+                    Vector3 ptTarget = FUN_140a38d60()->vfunc_17();
                     ptTarget.z += m_spTargetMode->vfunc_27();
                     if (FUN_140af7e30() == 2)
                         m_flyBy.m_to.m_c = ptTarget.FUN_14097fd50(((CTargetCameraMode*)m_spTargetMode.get())->FUN_14183c370());
@@ -2387,12 +2387,12 @@ void CameraMgr::FUN_140af1f70()
                 else
                 {
                     NiTransform kCamera = pCamera->GetLocalTransform();
-                    Unk_StreamPoint ptPos = FUN_140a17e10();
+                    Vector3 ptPos = FUN_140a17e10();
                     kCamera.m_Translate = NiPoint3(ptPos.x, ptPos.y, ptPos.z);
-                    Unk_StreamPoint ptRot = FUN_140af8290();
+                    Vector3 ptRot = FUN_140af8290();
                     kCamera.m_Rotate.FromEulerAnglesXYZ((-ptRot.x * 3.1415927f) / 180.0f,
                         (-ptRot.y * 3.1415927f) / 180.0f, (-ptRot.z * 3.1415927f) / 180.0f);
-                    Unk_StreamPoint ptZero = g_143b01a60;
+                    Vector3 ptZero = g_143b01a60;
                     NiTransform kNode = m_effect.m_spCameraNode->GetLocalTransform();
                     NiTransform kEffect = m_effect.m_pCamera->GetWorldTransform();
                     NiTransform kAxis;
@@ -2418,7 +2418,7 @@ void CameraMgr::FUN_140af1f70()
 MS2_REPLACE_METHOD(0x140AF1F70, CameraMgr, FUN_140af1f70, 1388, 0x45606797);
 
 // @0x140aefb20
-// MS2-FUNCTIONAL: the node translation is copied through Unk_StreamPoint(x, y, z) instead of the exe's point
+// MS2-FUNCTIONAL: the node translation is copied through Vector3(x, y, z) instead of the exe's point
 // assignment straight from the NiPoint3.
 // Plays a camera path nif: its "Camera01" drives the camera directly (no effect root).
 void CameraMgr::FUN_140aefb20(const Unk_CameraPathRow* pRow)
@@ -2465,7 +2465,7 @@ void CameraMgr::FUN_140aefb20(const Unk_CameraPathRow* pRow)
             m_effect.m_fStart = 0;
             m_effect.m_20 = pRow->m_f8;
             const NiPoint3& kTranslate = m_effect.m_spCameraNode->GetLocalTransform().m_Translate;
-            m_effect.m_ptOffset = Unk_StreamPoint(kTranslate.x, kTranslate.y, kTranslate.z);
+            m_effect.m_ptOffset = Vector3(kTranslate.x, kTranslate.y, kTranslate.z);
             m_effect.m_fMaxTime = 0;
             NiTimeController* pTime = m_effect.m_spCameraNode->GetControllers();
             while (pTime)
@@ -2485,8 +2485,8 @@ MS2_REPLACE_METHOD(0x140AEFB20, CameraMgr, FUN_140aefb20, 1189, 0x2179FBDC);
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
 MS2_REPLACE_METHOD(0x140ae8d40, CMapCameraData, vfunc_1, 164, 0xE859B609);
 MS2_REPLACE_METHOD(0x140ae9070, CBossTargetCameraData, vfunc_1, 266, 0x8439EAC2);
-MS2_REPLACE_METHOD(0x140ae9200, Unk_StreamPoint, FUN_140ae9200, 103, 0x45B786DE);
-MS2_REPLACE_METHOD(0x140ae9270, Unk_StreamPoint, FUN_140ae9270, 117, 0x9974293E);
+MS2_REPLACE_METHOD(0x140ae9200, Vector3, FUN_140ae9200, 103, 0x45B786DE);
+MS2_REPLACE_METHOD(0x140ae9270, Vector3, FUN_140ae9270, 117, 0x9974293E);
 MS2_REPLACE_METHOD(0x140ae9400, CCameraEffect, vfunc_1, 68, 0xFF2FBAB8);
 MS2_REPLACE_METHOD(0x140ae9550, CVibrateCameraEffect, vfunc_1, 699, 0x7790AEBC);
 MS2_REPLACE_METHOD(0x140aea4c0, CameraMgr, FUN_140aea4c0, 808, 0xBE964AC8);

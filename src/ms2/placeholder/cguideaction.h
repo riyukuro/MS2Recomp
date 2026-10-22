@@ -68,8 +68,8 @@ public:
     // 0x20. The ctor 0x1413874d0 is implicit.
     struct Cube
     {
-        Unk_StreamPoint m_pos;                              // +0x00
-        Unk_StreamPoint m_rotate;                           // +0x0c degrees
+        Vector3 m_pos;                              // +0x00
+        Vector3 m_rotate;                           // +0x0c degrees
         float m_scale;                                      // +0x18
         int m_handle;                                       // +0x1c the spawned effect (0: none)
     };
@@ -195,7 +195,7 @@ public:
     virtual void vfunc_3();                                 // 3 0x141384680
     virtual void vfunc_4();                                 // 4 0x1413847f0
 
-    Unk_StreamPoint m_offset;                               // +0x28
+    Vector3 m_offset;                               // +0x28
     unsigned m_direction;                                   // +0x34
     unsigned m_align;                                       // +0x38
 };

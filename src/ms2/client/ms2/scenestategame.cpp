@@ -220,7 +220,7 @@ public:
     void FUN_141bc9480(CString strName);
     void FUN_141bca220();
     void FUN_141bca6d0(CInPacket& packet);
-    void FUN_141bd3d70(Unk_StreamPoint pos, Unk_StreamPoint rot);
+    void FUN_141bd3d70(Vector3 pos, Vector3 rot);
     void FUN_141bbbe40(int nMapId, int a, int nPortal);
     MyPC* FUN_141bd0cc0();                                  // the local player actor
     MS2Ptr<class Unk_SSGNamedObj> FUN_141bc5a20(CString strName);   // a named field object (0x73)
@@ -247,7 +247,7 @@ public:
     void FUN_141bc24e0(int nId);                            // unregister a field object
     MS2Ptr<class CPortal> FUN_141bc2800(int nId);            // a field object by id
     void FUN_141bc3140(int nId, int nVisible, int nEnabled, int nHidden);
-    void FUN_141bc31d0(int nId, Unk_StreamPoint kPos, Unk_StreamPoint kScale);
+    void FUN_141bc31d0(int nId, Vector3 kPos, Vector3 kScale);
     void FUN_141bc5e20(int nType);                          // refresh the field objects of a type (0xcd)
 };
 Unk_SSGWorld* FUN_1403ed2d0();
@@ -619,7 +619,7 @@ class Unk_SSG6aeee0 { public: bool FUN_1406af0c0(); };
 Unk_SSG6aeee0* FUN_1406aeee0();
 
 // 0x1a / 0x1b: character / channel move results
-struct Unk_StreamPoint;
+struct Vector3;
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 CStringW FUN_140cc20a0(int nError);
 CStringW GetStringCommon(int nId);
@@ -665,10 +665,10 @@ class CSplashDamageRecord : public CPtred
 public:
     CSplashDamageRecord();                                  // 0x14175b180
     virtual ~CSplashDamageRecord();                         // 0x14175b5f0
-    int FUN_14175b1c0(int nOwnerId, int n, __int64 nSkillUid, int nSkillId, short nLevel, int a, int b, Unk_StreamPoint kDir, Unk_StreamPoint kPos);
+    int FUN_14175b1c0(int nOwnerId, int n, __int64 nSkillUid, int nSkillId, short nLevel, int a, int b, Vector3 kDir, Vector3 kPos);
     void FUN_14175abc0(int nFlag, __int64 nDamage);
     char m_pad_18[0x78 - 0x18];
-    Unk_StreamPoint m_kPos;                                 // +0x78 the hit position
+    Vector3 m_kPos;                                 // +0x78 the hit position
     char m_pad_84[0xd8 - 0x84];
 };
 MS2_CHECK_OFFSET(CSplashDamageRecord, m_kPos, 0x78);
@@ -690,14 +690,14 @@ class CDamageRecord : public CPtred
 public:
     CDamageRecord();
     int FUN_14175a610(__int64 nCasterUid, __int64 nCastUid, int nOwnerId, int nCasterId, int nSkillId, short nLevel,
-                      int nMotion, int nAttack, Unk_StreamPoint kPos, Unk_StreamPoint kAim, Unk_StreamPoint kDir);
+                      int nMotion, int nAttack, Vector3 kPos, Vector3 kAim, Vector3 kDir);
     void FUN_14175abc0(int nFlag, __int64 nDamage);
     int FUN_14175acc0();                                    // nonzero: the skill tracks its target
     Unk_SSGSkillAim* FUN_14175a850();
     Unk_PCBaseSkillLevel* FUN_14175a8b0();
     char m_pad_18[0x6c - 0x18];
-    Unk_StreamPoint m_kDir;                                 // +0x6c
-    Unk_StreamPoint m_kPos;                                 // +0x78
+    Vector3 m_kDir;                                 // +0x6c
+    Vector3 m_kPos;                                 // +0x78
     char m_pad_84[0xd0 - 0x84];
     int m_nd0;                                              // +0xd0
     char m_pad_d4[0xd8 - 0xd4];
@@ -707,16 +707,16 @@ MS2_CHECK_OFFSET(CDamageRecord, m_nd0, 0xd0);
 MS2_CHECK_SIZE(CDamageRecord, 0xd8);
 struct Unk_MagicXform { Unk_MagicXform(); char m_pad[0x34]; };   // NiTransform (0x140a332d0)
 // Builds the hit transform from a position and a direction (?\magicdata.cpp).
-void FUN_141467f60(Unk_StreamPoint kPos, Unk_StreamPoint kDir, Unk_MagicXform* pOut);
+void FUN_141467f60(Vector3 kPos, Vector3 kDir, Unk_MagicXform* pOut);
 // Moves the hit position / direction onto the target (?\magicdata.cpp).
-int FUN_14145e1a0(int nFrom, int nTo, Unk_SSGSkillAim* pAim, const Unk_PCBaseSkillLevel* pLevel, Unk_StreamPoint* pPos,
-                  Unk_StreamPoint* pDir);
+int FUN_14145e1a0(int nFrom, int nTo, Unk_SSGSkillAim* pAim, const Unk_PCBaseSkillLevel* pLevel, Vector3* pPos,
+                  Vector3* pDir);
 class Unk_SSGMagicService
 {
 public:
     void FUN_14146bc20(CDotDamageRecord* pRecord);
     void FUN_14146bc80(CSplashDamageRecord* pRecord);
-    void FUN_14146b440(CDamageRecord* pRecord, int bTracked, Unk_MagicXform* pXform, Unk_StreamPoint kDir);
+    void FUN_14146b440(CDamageRecord* pRecord, int bTracked, Unk_MagicXform* pXform, Vector3 kDir);
     void FUN_14146c4b0(unsigned long long nCaster, unsigned long long nCast);   // drop the cast's model
     Unk_SocketPtr<CMagicModel> FUN_14146c5d0(unsigned long long nCaster, unsigned long long nCast);   // find one
 };
@@ -826,7 +826,7 @@ class Unk_SSGStBody { public: void FUN_141240730(); Unk_SSGHitReport* FUN_141240
 Unk_SSGStBody* FUN_14166d220(PCBase* pActor);
 
 // 0x3f..0x5a: npc / actor state packets
-// The skill request a skill record is built from (0x48; avatarpc.cpp's view, points as Unk_StreamPoint).
+// The skill request a skill record is built from (0x48; avatarpc.cpp's view, points as Vector3).
 struct Unk_InventorySkillRequest
 {
     Unk_InventorySkillRequest(int nSkillId, unsigned short nLevel);   // 0x141763fa0
@@ -834,8 +834,8 @@ struct Unk_InventorySkillRequest
     unsigned short level;
     unsigned __int64 tick;                                  // +0x08 the cast uid
     unsigned serial, unknown14;                             // +0x10 / +0x14
-    Unk_StreamPoint origin;                                 // +0x18
-    Unk_StreamPoint direction;                              // +0x24
+    Vector3 origin;                                 // +0x18
+    Vector3 direction;                              // +0x24
     float fValue;                                           // +0x30
     unsigned unknown34;
     bool remap, suppressDispatch, itemUse;
@@ -850,7 +850,7 @@ public:
     char m_pad[0x28 - sizeof(CPtred)];
     __int64 m_nSkillUid;                                    // +0x28
     char m_pad_30[0x68 - 0x30];
-    Unk_StreamPoint m_kRot;                                 // +0x68 the cast rotation
+    Vector3 m_kRot;                                 // +0x68 the cast rotation
     float m_fSpeed;                                         // +0x74 the caster's speed scale
     char m_pad_78[0x8c - 0x78];
     unsigned int m_nMotion;                                 // +0x8c the motion index of the cast
@@ -1131,7 +1131,7 @@ Unk_SSGSkillTable* FUN_1401958b0();                         // SkillDataTableCli
 class Unk_SSGSkillCollision
 {
 public:
-    void FUN_141755cd0(PCBase* pActor, MS2Ptr<Unk_SSGSkillAttr> spSkill, const Unk_StreamPoint& kPos, const Unk_StreamPoint& kDir);
+    void FUN_141755cd0(PCBase* pActor, MS2Ptr<Unk_SSGSkillAttr> spSkill, const Vector3& kPos, const Vector3& kDir);
 };
 Unk_SSGSkillCollision* FUN_141469a90();                     // CSkillCollisionManager
 class Unk_SSGMyPCV : public PC
@@ -1140,7 +1140,7 @@ public:
     virtual void vfunc_147(); virtual void vfunc_148(); virtual void vfunc_149();
 };
 
-extern Unk_StreamPoint DAT_143b01a60;                      // efd::Point3::ZERO
+extern Vector3 DAT_143b01a60;                      // efd::Point3::ZERO
 int FUN_1417692f0(__int64 nUid);                            // skill id from the low half of an item uid
 void FUN_1419f37f0(unsigned int n);
 
@@ -2471,8 +2471,8 @@ void CSceneStateGame::FUN_14170f930(CInPacket& packet)
         DAT_143ab287c = packet.ReadUInt8();
         DAT_143ab2880 = packet.ReadInt32();
         FUN_140930ba0(packet.ReadInt32());
-        Unk_StreamPoint pos = packet.ReadVector3();
-        Unk_StreamPoint rot = packet.ReadVector3();
+        Vector3 pos = packet.ReadVector3();
+        Vector3 rot = packet.ReadVector3();
         int nPortal = packet.ReadInt32();
         FUN_1403ed2d0()->FUN_141bd3d70(pos, rot);
         FUN_1403ed2d0()->FUN_141bbbe40(DAT_143ab2870, 1, nPortal);
@@ -3447,9 +3447,9 @@ void CSceneStateGame::OnSkillUse(CInPacket& packet)
     int nSkillId = packet.ReadInt32();
     short nLevel = packet.ReadInt16();
     int nMotion = packet.ReadUInt8();
-    Unk_StreamPoint kPos = packet.ReadVector3Short();
-    Unk_StreamPoint kDir = packet.ReadVector3();
-    Unk_StreamPoint kRot = packet.ReadVector3();
+    Vector3 kPos = packet.ReadVector3Short();
+    Vector3 kDir = packet.ReadVector3();
+    Vector3 kRot = packet.ReadVector3();
     float fSpeed = packet.ReadShortDiv10();
     bool bEffect = packet.ReadBool();
     int nExtra = 0;
@@ -3510,10 +3510,10 @@ void CSceneStateGame::FUN_141718150(CInPacket& packet)
     int nSkillId = packet.ReadInt32();
     short nLevel = packet.ReadInt16();
     int nMotion = packet.ReadUInt8();
-    Unk_StreamPoint kPos = packet.ReadVector3();
-    Unk_StreamPoint kDir = packet.ReadVector3();
-    Unk_StreamPoint kRot = packet.ReadVector3();
-    Unk_StreamPoint kMove = packet.ReadVector3();
+    Vector3 kPos = packet.ReadVector3();
+    Vector3 kDir = packet.ReadVector3();
+    Vector3 kRot = packet.ReadVector3();
+    Vector3 kMove = packet.ReadVector3();
     bool bA = packet.ReadBool();
     bool bB = packet.ReadBool();
     float fSpeed = packet.ReadFloat();
@@ -3678,8 +3678,8 @@ void CSceneStateGame::OnFieldAddNpc(CInPacket& packet)
 {
     int nObjId = packet.ReadInt32();
     int nNpcId = packet.ReadInt32();
-    Unk_StreamPoint kPos = packet.ReadVector3();
-    Unk_StreamPoint kDir = packet.ReadVector3();
+    Vector3 kPos = packet.ReadVector3();
+    Vector3 kDir = packet.ReadVector3();
     Unk_SSGWorld* pWorld = FUN_1403ed2d0();
     kPos.z += 4.0f;
     efd::SmartPointer<Unk_SSGNpc> spNpc = new (efd::MemHint(efd::MemHint::NONE)) CNpc;
@@ -5626,7 +5626,7 @@ struct Unk_MagicTag : public CPtred
     Unk_MagicTag() = default;                                       // 0x141746440 (implicit: 0x3d mode 8 value-inits it)
     virtual ~Unk_MagicTag() = default;                              // 0x141746cb0 (pinned)
     bool FUN_141758d70(unsigned long long nTagId, unsigned long long nTagSub, int nOwnerId, int nCasterId, int nSkillId,
-        short nLevel, int nSrcLevel, Unk_StreamPoint ptDir, int n80, int n84, int nSrcIndex, int n8c);   // 0x141758d70 fill in
+        short nLevel, int nSrcLevel, Vector3 ptDir, int n80, int n84, int nSrcIndex, int n8c);   // 0x141758d70 fill in
 
     unsigned long long m_nTagId;                                    // +0x18
     unsigned long long m_nTagSub;                                   // +0x20
@@ -5637,7 +5637,7 @@ struct Unk_MagicTag : public CPtred
     MS2Ptr<Unk_SSGSkillLevel> m_spLevel;                            // +0x48
     int m_nSrcLevel;                                                // +0x58
     int m_nSrcIndex;                                                // +0x5c
-    Unk_StreamPoint m_ptDir;                                        // +0x60
+    Vector3 m_ptDir;                                        // +0x60
     Unk_MagicTagPtr m_spLinked;                                     // +0x70 the cast this one continues into
     int m_n80;                                                      // +0x80
     int m_n84;                                                      // +0x84
@@ -5659,8 +5659,8 @@ void CSceneStateGame::FUN_14171c1d0(CInPacket& packet)
     short nLevel = packet.ReadInt16();
     int nSrcLevel = packet.ReadUInt8();
     int nSrcIndex = packet.ReadUInt8();
-    Unk_StreamPoint ptStart = packet.ReadVector3Short();
-    Unk_StreamPoint ptDir = packet.ReadVector3();
+    Vector3 ptStart = packet.ReadVector3Short();
+    Vector3 ptDir = packet.ReadVector3();
     int bServer = packet.ReadUInt8();
     int nCount = packet.ReadUInt8();
 
@@ -5756,8 +5756,8 @@ void CSceneStateGame::FUN_14171cdf0(CInPacket& packet)
     short nLevel = packet.ReadInt16();
     int nMotion = packet.ReadUInt8();
     int nAttack = packet.ReadUInt8();
-    Unk_StreamPoint kPos = packet.ReadVector3Short();
-    Unk_StreamPoint kDir = packet.ReadVector3Short();
+    Vector3 kPos = packet.ReadVector3Short();
+    Vector3 kDir = packet.ReadVector3Short();
     int nCount = packet.ReadUInt8();
     for (int i = 0; i < nCount; i++)
     {
@@ -5776,8 +5776,8 @@ void CSceneStateGame::FUN_14171cdf0(CInPacket& packet)
         GameObject* pCaster = FUN_1403ed2d0()->FUN_141bd1180(nCasterId);
         if (pCaster != 0)
         {
-            Unk_StreamPoint ptPos = kPos;
-            Unk_StreamPoint ptDir = kDir;
+            Vector3 ptPos = kPos;
+            Vector3 ptDir = kDir;
             if (spRecord->FUN_14175acc0() == 0)
                 FUN_14145e1a0(nCasterId, nOwnerId, spRecord->FUN_14175a850(), spRecord->FUN_14175a8b0(), &ptPos, &ptDir);
             else
@@ -5856,17 +5856,17 @@ void CSceneStateGame::FUN_14171d820(CInPacket& packet)
         __int64 nValue = 0;
         if (FUN_1417403b0(nValue1, 5, nType, nValue))
         {
-            Unk_StreamPoint kPos = DAT_143b01a60;
+            Vector3 kPos = DAT_143b01a60;
             pOwner->vfunc_111((void*)nValue, nType, nTargetId, &kPos);
         }
         if (FUN_1417403b0(nValue2, 6, nType, nValue))
         {
-            Unk_StreamPoint kPos = DAT_143b01a60;
+            Vector3 kPos = DAT_143b01a60;
             pOwner->vfunc_111((void*)nValue, nType, nTargetId, &kPos);
         }
         if (FUN_1417403b0(nValue3, 7, nType, nValue))
         {
-            Unk_StreamPoint kPos = DAT_143b01a60;
+            Vector3 kPos = DAT_143b01a60;
             pOwner->vfunc_111((void*)nValue, nType, nTargetId, &kPos);
         }
     }
@@ -5883,8 +5883,8 @@ void CSceneStateGame::FUN_14171e440(CInPacket& packet)
     {
         int nOwnerId = packet.ReadInt32();
         int nHits = packet.ReadUInt8();
-        Unk_StreamPoint kDir = packet.ReadVector3Short();
-        Unk_StreamPoint kPos = packet.ReadVector3();
+        Vector3 kDir = packet.ReadVector3Short();
+        Vector3 kPos = packet.ReadVector3();
         MS2Ptr<CSplashDamageRecord> spRecord(new CSplashDamageRecord());
         if (!spRecord->FUN_14175b1c0(nOwnerId, 0, nSkillUid, nSkillId, nLevel, 0, 0, kDir, kPos))
             return;
@@ -5921,8 +5921,8 @@ MS2_REPLACE_METHOD(0x141721940, CSceneStateGame, OnUserState, 232, 0x5ADFE327);
 void CSceneStateGame::OnUserMoveByPortal(CInPacket& packet)
 {
     int nId = packet.ReadInt32();
-    Unk_StreamPoint kPos = packet.ReadVector3();
-    Unk_StreamPoint kRot = packet.ReadVector3();
+    Vector3 kPos = packet.ReadVector3();
+    Vector3 kRot = packet.ReadVector3();
     int nFlag = packet.ReadUInt8();
     PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
     if (pPC == 0)
@@ -6136,7 +6136,7 @@ void CSceneStateGame::FUN_14172a1c0(CInPacket& packet)
         unsigned short nLevel = packet.ReadInt16();
         int nMotion = packet.ReadUInt8();
         int n94 = packet.ReadUInt8();
-        Unk_StreamPoint kPos = packet.ReadVector3Short();
+        Vector3 kPos = packet.ReadVector3Short();
         int nSerial = packet.ReadInt32();
         CString strBone = packet.ReadString();
         unsigned char nFlag = packet.ReadUInt8();
@@ -6182,7 +6182,7 @@ struct Unk_SSGPt3 { float x, y, z; };
 struct Unk_SSGNiPt3
 {
     Unk_SSGNiPt3(const NiPoint3& src);                      // 0x14027dcf0 NiPoint3 from efd::Point3
-    Unk_SSGNiPt3(const Unk_StreamPoint& src);               // 0x14027dcf0 (the same ctor)
+    Unk_SSGNiPt3(const Vector3& src);               // 0x14027dcf0 (the same ctor)
     Unk_SSGNiPt3(const efd::Point3& src);                   // 0x14027dcf0 (the same ctor)
     float x, y, z;
 };
@@ -6484,8 +6484,8 @@ void CSceneStateGame::OnInteractObject(CInPacket& packet)
         int nState = packet.ReadUInt8();
         unsigned char nKind = packet.ReadUInt8();
         int nRowId = packet.ReadInt32();
-        Unk_StreamPoint ptPos = packet.ReadVector3();
-        Unk_StreamPoint ptRot = packet.ReadVector3();
+        Vector3 ptPos = packet.ReadVector3();
+        Vector3 ptRot = packet.ReadVector3();
         CString strModel = packet.ReadUnicodeStringA();
         CString strAnim = packet.ReadUnicodeStringA();
         CString strAssetA = packet.ReadUnicodeStringA();
@@ -7335,7 +7335,7 @@ void CSceneStateGame::FUN_14171e9a0(CInPacket& packet)
         int nOwnerId = packet.ReadInt32();
         int nCasterId = packet.ReadInt32();
         Unk_MagicTagPtr spTag(new Unk_MagicTag());
-        if (!spTag->FUN_141758d70(nTagId, 0, nOwnerId, nCasterId, nSkillId, nLevel, 0, Unk_StreamPoint(0, 0, 0), 0, 0,
+        if (!spTag->FUN_141758d70(nTagId, 0, nOwnerId, nCasterId, nSkillId, nLevel, 0, Vector3(0, 0, 0), 0, 0,
                 0, 0))
             return;
         PCBase* pOwner = FUN_1403ed2d0()->FUN_141bd1200(nOwnerId);
@@ -7346,7 +7346,7 @@ void CSceneStateGame::FUN_14171e9a0(CInPacket& packet)
         if (spModel == 0)
         {
             spModel = new CMagicModel();
-            spModel->FUN_141467500(spTag, Unk_MagicTagPtr(0), Unk_StreamPoint(0, 0, 0), 0, 1, 1);
+            spModel->FUN_141467500(spTag, Unk_MagicTagPtr(0), Vector3(0, 0, 0), 0, 1, 1);
         }
     }
     else
@@ -7369,9 +7369,9 @@ public:
     int m_nId;                                              // +0x20
     int m_nVisible;                                         // +0x24
     int m_nEnabled;                                         // +0x28
-    Unk_StreamPoint m_kPos;                                 // +0x2c
-    Unk_StreamPoint m_kScale;                               // +0x38
-    Unk_StreamPoint m_kRot;                                 // +0x44
+    Vector3 m_kPos;                                 // +0x2c
+    Vector3 m_kScale;                               // +0x38
+    Vector3 m_kRot;                                 // +0x44
     char m_pad_50[0xf8];                                    // +0x50 placement
     int m_nMapType;                                         // +0x148
     int m_nTargetField;                                     // +0x14c
@@ -7412,9 +7412,9 @@ void CSceneStateGame::OnFieldPortal(CInPacket& packet)
         spPortal->m_nId = nId;
         int nVisible = packet.ReadUInt8();
         int nEnabled = packet.ReadUInt8();
-        Unk_StreamPoint kPos = packet.ReadVector3();
-        Unk_StreamPoint kScale = packet.ReadVector3();
-        Unk_StreamPoint kRot = packet.ReadVector3();
+        Vector3 kPos = packet.ReadVector3();
+        Vector3 kScale = packet.ReadVector3();
+        Vector3 kRot = packet.ReadVector3();
         CString strModel = packet.ReadUnicodeStringA();
         int nMapType = packet.ReadInt32();
         int nTargetField = packet.ReadInt32();
@@ -7474,8 +7474,8 @@ void CSceneStateGame::OnFieldPortal(CInPacket& packet)
     }
     else if (nMode == 3)
     {
-        Unk_StreamPoint kPos = packet.ReadVector3();
-        Unk_StreamPoint kScale = packet.ReadVector3();
+        Vector3 kPos = packet.ReadVector3();
+        Vector3 kScale = packet.ReadVector3();
         FUN_1403ed2d0()->FUN_141bc31d0(nId, kPos, kScale);
     }
 }
@@ -7884,8 +7884,8 @@ void CSceneStateGame::FUN_141720c60(CInPacket& packet)
     int nId = packet.ReadInt32();
     int nSkillId = packet.ReadInt32();
     unsigned short nLevel = packet.ReadInt16();
-    Unk_StreamPoint kPos = packet.ReadVector3();
-    Unk_StreamPoint kDir = packet.ReadVector3();
+    Vector3 kPos = packet.ReadVector3();
+    Vector3 kDir = packet.ReadVector3();
     PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1200(nId);
     if (pActor == 0)
         return;
@@ -7903,7 +7903,7 @@ class CRegionSkillObject : public CPtred
 public:
     CRegionSkillObject();                                   // 0x1416f57c0
     virtual ~CRegionSkillObject();
-    int FUN_1416f5a20(int nId, int nSkillId, const ATL::CAtlArray<Unk_StreamPoint>& kPoints, int nOwnerId, short nLevel, float fB, float fA, int nTick);
+    int FUN_1416f5a20(int nId, int nSkillId, const ATL::CAtlArray<Vector3>& kPoints, int nOwnerId, short nLevel, float fB, float fA, int nTick);
     void FUN_1416f6e40();                                   // end the region skill
     void FUN_1416f6900();                                   // a tick hit
     char m_pad_18[0x28 - 0x18];
@@ -7922,7 +7922,7 @@ void CSceneStateGame::OnRegionSkill(CInPacket& packet)
     {
         int nSkillId = packet.ReadInt32();
         int nTick = packet.ReadInt32();
-        ATL::CAtlArray<Unk_StreamPoint> kPoints;
+        ATL::CAtlArray<Vector3> kPoints;
         int nCount = packet.ReadUInt8();
         for (int i = 0; i < nCount; i++)
             kPoints.Add(packet.ReadVector3());
@@ -7950,7 +7950,7 @@ MS2_REPLACE_METHOD(0x141720E50, CSceneStateGame, OnRegionSkill, 1037, 0xEEED3063
 
 // Part anchors of an actor (gameobject.cpp's 16-byte handle; GameObject::vfunc_27 collects them).
 struct Unk_UtilFloat3 { float x, y, z; };
-Unk_StreamPoint FUN_141b6e150(const Unk_UtilFloat3* p);
+Vector3 FUN_141b6e150(const Unk_UtilFloat3* p);
 class Unk_GoAnchor
 {
 public:
@@ -7985,8 +7985,8 @@ void CSceneStateGame::FUN_14171dc40(CInPacket& packet)
     {
         int nTargetId = packet.ReadInt32();
         int nHits = packet.ReadUInt8();
-        Unk_StreamPoint kOrigin = packet.ReadVector3Short();
-        Unk_StreamPoint kDir = packet.ReadVector3();
+        Vector3 kOrigin = packet.ReadVector3Short();
+        Vector3 kDir = packet.ReadVector3();
         MS2Ptr<CSplashDamageRecord> spRecord(new CSplashDamageRecord());
         if (!spRecord->FUN_14175b1c0(nTargetId, nOwnerId, nSkillUid, spRegion->m_spSkill->FUN_140803dc0(),
                                      spRegion->m_spSkill->FUN_140803df0(), 0, nAttack, kOrigin, kDir))
@@ -8003,7 +8003,7 @@ void CSceneStateGame::FUN_14171dc40(CInPacket& packet)
             CNpc* pNpc = dynamic_cast<CNpc*>(pTarget);
             if (pNpc != 0 && pNpc->FUN_141093270()->FUN_1406cd200(0x1d))
             {
-                Unk_StreamPoint kBest = kOrigin;
+                Vector3 kBest = kOrigin;
                 ATL::CAtlArray<Unk_GoAnchorPtr> kAnchors;
                 pNpc->vfunc_27(kAnchors);
                 if (kAnchors.IsEmpty() == true)
@@ -8014,7 +8014,7 @@ void CSceneStateGame::FUN_14171dc40(CInPacket& packet)
                     Unk_GoAnchorPtr spAnchor(kAnchors[k]);
                     if (spAnchor.FUN_140a00660(0))
                         continue;
-                    Unk_StreamPoint kPt = FUN_141b6e150(&spAnchor.FUN_140ae1940()->m_kPos);
+                    Vector3 kPt = FUN_141b6e150(&spAnchor.FUN_140ae1940()->m_kPos);
                     float fDist = kOrigin.FUN_140965c40(kPt).FUN_140967ac0();
                     if (fDist < fMin)
                     {
@@ -8094,17 +8094,17 @@ void CSceneStateGame::FUN_141731190(CInPacket& packet)
         return;
     if (nType == 4)
     {
-        Unk_StreamPoint kPos = DAT_143b01a60;
+        Vector3 kPos = DAT_143b01a60;
         pActor->vfunc_111(reinterpret_cast<void*>(nValue), 5, nId, &kPos);
     }
     if (nType == 7)
     {
-        Unk_StreamPoint kPos = DAT_143b01a60;
+        Vector3 kPos = DAT_143b01a60;
         pActor->vfunc_111(reinterpret_cast<void*>(nValue), 6, nId, &kPos);
     }
     if (nType == 0xa)
     {
-        Unk_StreamPoint kPos = DAT_143b01a60;
+        Vector3 kPos = DAT_143b01a60;
         pActor->vfunc_111(reinterpret_cast<void*>(nValue), 7, nId, &kPos);
     }
 }
@@ -9798,7 +9798,7 @@ void CSceneStateGame::OnFieldAddItem(CInPacket& packet)
     __int64 nOwnerUid = packet.ReadInt64();
     ATL::CAtlList<__int64> kOwners(10);
     kOwners.AddTail(nOwnerUid);
-    Unk_StreamPoint kPos = packet.ReadVector3();
+    Vector3 kPos = packet.ReadVector3();
     int nB = packet.ReadInt32();
     int nType = packet.ReadUInt8();
     int nA = packet.ReadInt32();
@@ -9901,8 +9901,8 @@ void CSceneStateGame::OnFieldAddPet(CInPacket& packet)
     int nObjId = packet.ReadInt32();
     int nNpcId = packet.ReadInt32();
     int nLevel = packet.ReadInt32();
-    Unk_StreamPoint kPos = packet.ReadVector3();
-    Unk_StreamPoint kDir = packet.ReadVector3();
+    Vector3 kPos = packet.ReadVector3();
+    Vector3 kDir = packet.ReadVector3();
     float fScale = packet.ReadFloat();
     int nValue = packet.ReadInt32();
     Unk_SSGWorld* pWorld = FUN_1403ed2d0();
@@ -11172,9 +11172,9 @@ struct Unk_RayCastInfo;
 class CPhysXHelper
 {
 public:
-    int FUN_14168a310(const Unk_StreamPoint& ptFrom, Unk_StreamPoint& ptHit, Unk_RayCastInfo* pInfo, float fLen,
-                      Unk_StreamPoint* pNormal, int nMask);
-    bool FUN_14168a770(const Unk_StreamPoint* pPoint);
+    int FUN_14168a310(const Vector3& ptFrom, Vector3& ptHit, Unk_RayCastInfo* pInfo, float fLen,
+                      Vector3* pNormal, int nMask);
+    bool FUN_14168a770(const Vector3* pPoint);
 };
 CPhysXHelper* FUN_1409f7ca0();
 // The compressed sub packet (efd RTTI "CZlibPacket"; ctor 0x141746040, vftable 0x142f5f9e8).
@@ -11319,8 +11319,8 @@ void CSceneStateGame::OnAddUser(CInPacket& packet)
     }
     Unk_UserProxy proxy;
     proxy.FUN_1408eeb60(&packet);
-    Unk_StreamPoint kPos;
-    Unk_StreamPoint kDir;
+    Vector3 kPos;
+    Vector3 kDir;
     CString strAnim;
     if (proxy.m_14 == 0)
         strAnim = "urn:gamebryo-animation:Male";
@@ -11386,7 +11386,7 @@ void CSceneStateGame::OnAddUser(CInPacket& packet)
         spPC->FUN_141662790((int)i, proxy.m_140[i]);
 
     // snap the spawn point to the ground
-    Unk_StreamPoint kHit;
+    Vector3 kHit;
     if (FUN_1409f7ca0()->FUN_14168a310(kPos, kHit, 0, 0.0f, 0, 0))
     {
         kHit.z += 25.0f;
@@ -12363,8 +12363,8 @@ void CSceneStateGame::FUN_14172b350(CInPacket& packet)
         spDoll->kind = packet.ReadInt32();
         spDoll->instanceId = packet.ReadInt64();
         spDoll->field28 = packet.ReadInt32();
-        reinterpret_cast<Unk_StreamPoint&>(spDoll->position) = packet.ReadVector3();
-        reinterpret_cast<Unk_StreamPoint&>(spDoll->rotation) = packet.ReadVector3();
+        reinterpret_cast<Vector3&>(spDoll->position) = packet.ReadVector3();
+        reinterpret_cast<Vector3&>(spDoll->rotation) = packet.ReadVector3();
         spDoll->field44 = packet.ReadUInt8();
         if (spDoll->field44 != 0)
         {
@@ -12485,8 +12485,8 @@ void CSceneStateGame::FUN_14172c170(CInPacket& packet)
         int nType = static_cast<unsigned short>(packet.ReadInt16());
         int nGuideId = packet.ReadInt32();
         __int64 nOwnerUid = packet.ReadInt64();
-        Unk_StreamPoint ptPos = packet.ReadVector3();
-        Unk_StreamPoint ptDir = packet.ReadVector3();
+        Vector3 ptPos = packet.ReadVector3();
+        Vector3 ptDir = packet.ReadVector3();
         PCBase* pOwner = FUN_1403ed2d0()->FUN_141bd1530(nOwnerUid);
         if (pOwner == 0)
             return;

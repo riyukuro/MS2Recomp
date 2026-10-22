@@ -12,8 +12,8 @@ struct Unk_CameraPose
     // @0x14183e0a0
     Unk_CameraPose() : m_rot(g_143b01a60), m_pos(g_143b01a60) {}
 
-    Unk_StreamPoint m_rot;              // +0x00
-    Unk_StreamPoint m_pos;              // +0x0c
+    Vector3 m_rot;              // +0x00
+    Vector3 m_pos;              // +0x0c
 };
 MS2_CHECK_SIZE(Unk_CameraPose, 0x18);
 
@@ -28,8 +28,8 @@ public:
     virtual int vfunc_1() { return 2; }
     // 0x140a4e620 (COMDAT of another obj)
     virtual bool vfunc_2() { return false; }
-    virtual void vfunc_3(Unk_StreamPoint pt);
-    virtual void vfunc_4(Unk_StreamPoint pt);
+    virtual void vfunc_3(Vector3 pt);
+    virtual void vfunc_4(Vector3 pt);
     virtual void vfunc_6(int n);
     virtual void vfunc_7();
     virtual void vfunc_8(double fTime);
@@ -43,22 +43,22 @@ public:
     virtual float vfunc_23();
     virtual void vfunc_24(Unk_CameraTargetEntity* p, int n);
     virtual Unk_CameraTargetEntity* vfunc_25();
-    virtual Unk_StreamPoint vfunc_26();
+    virtual Vector3 vfunc_26();
     virtual float vfunc_27();
     virtual void vfunc_29(float f1, float f2, float f3);
     virtual BOOL vfunc_31();
     virtual void vfunc_33();
     // @0x140a38d30
-    virtual Unk_StreamPoint vfunc_35() { return m_78; }
+    virtual Vector3 vfunc_35() { return m_78; }
     virtual void vfunc_37();                                                // recompute the eye from the angles
-    virtual BOOL vfunc_38(Unk_StreamPoint ptPos, Unk_StreamPoint ptRot);    // view frustum blocked?
+    virtual BOOL vfunc_38(Vector3 ptPos, Vector3 ptRot);    // view frustum blocked?
     virtual void vfunc_39(double fTime);                                    // smooth the pose towards m_d8
 
-    void FUN_14183bfd0(Unk_StreamPoint ptPos, Unk_StreamPoint ptRot, Unk_StreamPoint ptTarget, bool bClamp);
+    void FUN_14183bfd0(Vector3 ptPos, Vector3 ptRot, Vector3 ptTarget, bool bClamp);
     void FUN_14183c350(int n);
-    Unk_StreamPoint FUN_14183c370();
+    Vector3 FUN_14183c370();
     void FUN_14183c3b0(float f);
-    static bool FUN_14183c3e0(Unk_StreamPoint& ptPos, Unk_StreamPoint& ptRot);
+    static bool FUN_14183c3e0(Vector3& ptPos, Vector3& ptRot);
     static Unk_CameraSetting FUN_14183c5b0(Unk_CameraSetting setting);
     void FUN_14183c600(float f);
     float FUN_14183c630();
@@ -71,10 +71,10 @@ public:
     void FUN_14183dfe0(const Unk_CameraPose& cur, const Unk_CameraPose& target);
     void FUN_14183e040();
 
-    Unk_StreamPoint m_78;               // +0x78 target position
+    Vector3 m_78;               // +0x78 target position
     float m_84;                         // +0x84 zoom speed
     int m_88;                           // +0x88
-    Unk_StreamPoint m_8c;               // +0x8c eye offset
+    Vector3 m_8c;               // +0x8c eye offset
     float m_98;                         // +0x98 wanted distance
     float m_9c;
     float m_a0;

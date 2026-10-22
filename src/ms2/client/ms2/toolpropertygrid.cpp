@@ -252,10 +252,10 @@ Unk_GridPoint2 CMS2VectorProperty::GetVector2()
 }
 
 // @0x141856770
-Unk_StreamPoint CMS2VectorProperty::GetVector3()
+Vector3 CMS2VectorProperty::GetVector3()
 {
     CString strText = FormatProperty();
-    Unk_StreamPoint kResult;
+    Vector3 kResult;
     CAtlArray<CString> arrParts;
     if (FUN_14028c3e0(strText, arrParts, ",", 3))
     {

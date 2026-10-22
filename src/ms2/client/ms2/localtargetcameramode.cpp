@@ -20,7 +20,7 @@
 
 // ---- unit-local placeholders ----
 
-extern const Unk_StreamPoint g_143a08cf8;   // NiPoint3::UNIT_Z
+extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 
 // A float table value of the client configuration (FUN_1401d3200).
 struct Unk_ConfigFloat
@@ -43,7 +43,7 @@ class Unk_TargetEnt : public Unk_CameraTargetEntity
 public:
     virtual void vfunc_19();
     virtual void vfunc_20();
-    virtual void vfunc_21(Unk_StreamPoint pt);              // set the player rotation
+    virtual void vfunc_21(Vector3 pt);              // set the player rotation
 };
 
 // The target's rpg object (FUN_1409ffd30); slot 20 reads the player rotation.
@@ -55,7 +55,7 @@ public:
     virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
     virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual Unk_StreamPoint vfunc_20();
+    virtual Vector3 vfunc_20();
 };
 Unk_TargetRpg* FUN_1409ffd30(Unk_CameraTargetEntity* p);    // rpg object of a target
 void FUN_14166d8b0(Unk_TargetRpg* p, float fYaw);
@@ -69,7 +69,7 @@ void FUN_140aeb920(Unk_CameraManager* pMgr);
 void FUN_140aed720(Unk_CameraManager* pMgr, Unk_CameraSetup* pSetup);
 void FUN_140947980(Unk_CameraManager* pMgr, int nMode);
 void* FUN_140ad4b90();                                      // world service
-bool FUN_141863100(void* service, int mapId, const Unk_StreamPoint& pos);   // is the position inside the map?
+bool FUN_141863100(void* service, int mapId, const Vector3& pos);   // is the position inside the map?
 float FUN_141b6fe40(float t, int nInterpolator);            // easing
 
 // @0x140d4fc90
@@ -199,7 +199,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
         return;
 
     Unk_TargetRpg* pRpg = FUN_1409ffd30(pTarget);
-    Unk_StreamPoint ptCenter;
+    Vector3 ptCenter;
     m_78 = pTarget->vfunc_17();
     m_78.z += vfunc_27();
     ptCenter = m_78;
@@ -209,7 +209,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
         float t = 0.0f;
         if (m_184 != 0)
         {
-            Unk_StreamPoint ptEye = m_d8.m_pos;
+            Vector3 ptEye = m_d8.m_pos;
             if (m_6c <= 0.15f)
                 m_6c = 0.15f;
             if (1.57f <= m_6c)
@@ -226,7 +226,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
                 m_50 = m_108.m_38 * t + (1.0f - t) * m_18c;
                 ptCenter = ptCenter.FUN_14097fd50(m_108.m_40.FUN_14097fc90(t));
                 m_d8.m_pos = m_1a0.FUN_14097fd50(FUN_1409ab5c0(t, m_108.m_setting.m_c.FUN_140965c40(m_1a0)));
-                Unk_StreamPoint ptDelta = ptCenter.FUN_140965c40(m_d8.m_pos);
+                Vector3 ptDelta = ptCenter.FUN_140965c40(m_d8.m_pos);
                 if (ptDelta.x == ptDelta.y)
                     m_d8.m_pos.x += 5.0f;
                 m_d8.m_rot = CCameraMode::FUN_140afdd40(ptCenter, m_d8.m_pos, g_143a08cf8);
@@ -259,7 +259,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
                 Unk_NiMatrix3 kRot;
                 kRot.FUN_142083d40(m_d8.m_rot.x * -0.0174532924f, m_d8.m_rot.y * -0.0174532924f,
                                    m_d8.m_rot.z * -0.0174532924f);
-                Unk_StreamPoint ptDir;
+                Vector3 ptDir;
                 kRot.FUN_140a01190(0, ptDir);
                 ptCenter = ptCenter.FUN_14097fd50(m_108.m_40.FUN_14097fc90(t));
                 m_d8.m_pos = ptDir.FUN_1409f7960().FUN_14097fc90(m_50).FUN_14097fd50(ptCenter);
@@ -267,7 +267,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
                 vfunc_39(fTime);
                 if (m_108.m_58)
                 {
-                    Unk_StreamPoint ptRot = m_1ac.FUN_14097fd50(FUN_1409ab5c0(t, m_108.m_4c.FUN_140965c40(m_1ac)));
+                    Vector3 ptRot = m_1ac.FUN_14097fd50(FUN_1409ab5c0(t, m_108.m_4c.FUN_140965c40(m_1ac)));
                     pTarget->vfunc_21(ptRot);
                     if (pRpg)
                         FUN_14166d8b0(pRpg, ptRot.z);
@@ -281,7 +281,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
                 Unk_NiMatrix3 kRot;
                 kRot.FUN_142083d40(m_108.m_setting.m_18.x * -0.0174532924f, m_108.m_setting.m_18.y * -0.0174532924f,
                                    m_108.m_setting.m_18.z * -0.0174532924f);
-                Unk_StreamPoint ptDir;
+                Vector3 ptDir;
                 kRot.FUN_140a01190(0, ptDir);
                 ptCenter = ptCenter.FUN_14097fd50(m_108.m_40);
                 m_50 = m_108.m_38;
@@ -301,7 +301,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
     }
     else
     {
-        Unk_StreamPoint ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
+        Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
         if (ptMove.FUN_140552700(g_143b01a60))
         {
             m_1f0 = (int)((float)m_1f0 - ptMove.x);
@@ -313,7 +313,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
         m_d8.m_rot = m_108.m_setting.m_18;
         Unk_NiMatrix3 kRot;
         kRot.FUN_142083d40(m_108.m_setting.m_18.x * -0.0174532924f, m_108.m_setting.m_18.y * -0.0174532924f, m_108.m_setting.m_18.z * -0.0174532924f);
-        Unk_StreamPoint ptDir;
+        Vector3 ptDir;
         kRot.FUN_140a01190(0, ptDir);
         ptCenter = ptCenter.FUN_14097fd50(m_108.m_40);
         float fDist = m_108.m_38 + (float)(m_1f0 * m_108.m_6c);
@@ -341,7 +341,7 @@ void CLocalTargetCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
     Unk_TargetRpg* pRpg = FUN_1409ffd30(p);
     if (pRpg)
     {
-        const Unk_StreamPoint& ptPos = m_setting.m_c;
+        const Vector3& ptPos = m_setting.m_c;
         m_194 = CCameraMode::FUN_140afdd40(CCameraMode::vfunc_35(), ptPos, g_143a08cf8);
     }
 }
@@ -393,7 +393,7 @@ void CLocalTargetCameraMode::FUN_140d4f830()
     m_188 = 0;
     m_108.m_setting = m_1c4;
     m_108.m_38 = m_18c;
-    m_108.m_40 = Unk_StreamPoint(0.0f, 0.0f, 0.0f);
+    m_108.m_40 = Vector3(0.0f, 0.0f, 0.0f);
     m_108.m_58 = false;
     m_108.m_setting.m_0 = m_190;
     m_18c = m_50;
@@ -417,7 +417,7 @@ bool CLocalTargetCameraMode::FUN_140d4fa60(const Unk_CameraSetup& setup)
 {
     if (m_178 == 0)
     {
-        Unk_StreamPoint ptPos = setup.m_setting.m_c;
+        Vector3 ptPos = setup.m_setting.m_c;
         Unk_TargetEnt* pTarget = static_cast<Unk_TargetEnt*>(Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60());
         if (pTarget)
             ptPos = pTarget->vfunc_18();

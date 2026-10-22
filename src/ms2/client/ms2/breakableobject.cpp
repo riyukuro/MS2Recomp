@@ -220,7 +220,7 @@ MS2_REPLACE_METHOD(0x140addea0, CBreakableObject, FUN_140addea0, 0, 0);
 MS2Ptr<CBoxCollision> CBreakableObject::FUN_140addf10()
 {
     if (m_spBox.get())
-        m_spBox->vfunc_3(Unk_StreamPoint(m_ptPos), Unk_StreamPoint(m_ptRot), 1.0f);
+        m_spBox->vfunc_3(Vector3(m_ptPos), Vector3(m_ptRot), 1.0f);
     return m_spBox;
 }
 
@@ -583,7 +583,7 @@ egf::EntityPtr CBreakableObject::GetEntity()
     return m_spEntity;
 }
 
-// MS2-FUNCTIONAL: property read + box build: same calls, Unk_StreamPoint temp order differs
+// MS2-FUNCTIONAL: property read + box build: same calls, Vector3 temp order differs
 // @0x140adf9d0
 void CBreakableObject::FUN_140adf9d0(egf::Entity* pEntity)
 {
@@ -625,14 +625,14 @@ void CBreakableObject::FUN_140adf9d0(egf::Entity* pEntity)
     pEntity->GetPropertyValue(0x76ba4184, m_nMoveMode);
     m_ptRotBase = m_ptRot;
     m_ptPosBase = m_ptPos;
-    Unk_StreamPoint kSize(m_ptSize.x, m_ptSize.y * 0.5f, m_ptSize.z);
-    Unk_StreamPoint kOffset(0.0f, m_ptSize.y * 0.5f, 0.0f);
+    Vector3 kSize(m_ptSize.x, m_ptSize.y * 0.5f, m_ptSize.z);
+    Vector3 kOffset(0.0f, m_ptSize.y * 0.5f, 0.0f);
     m_spBox.AssignRaw(new CBoxCollision);
     m_spBox->m_ptBox = kSize;
     m_spBox->m_ptSize = kOffset;
     m_spBox->m_kColor = NiColorA(1.0f, 1.0f, 1.0f, 1.0f);
     m_spBox->vfunc_4();
-    m_spBox->vfunc_3(Unk_StreamPoint(m_ptPos), Unk_StreamPoint(m_ptRot), 1.0f);
+    m_spBox->vfunc_3(Vector3(m_ptPos), Vector3(m_ptRot), 1.0f);
     pEntity->GetPropertyValue(0xa34897b1, m_spBox->m_b54);
     pEntity->GetPropertyValue(0x8843d885, m_nHitSound);
     m_bHasAnim = pEntity->GetModel()->ContainsModel(0x48ccc02d);

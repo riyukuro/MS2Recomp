@@ -216,7 +216,7 @@ MS2_REPLACE(0x140B8F550, FUN_140b8f550, 463, 0xEE2BF939);
 
 // "x, y, z" with one decimal.
 // @0x140b8f730
-CStringW FUN_140b8f730(const Unk_StreamPoint& pos)
+CStringW FUN_140b8f730(const Vector3& pos)
 {
     return StringFormat(L"{0:0.1f}, {1:0.1f}, {2:0.1f}", pos.x, pos.y, pos.z);
 }

@@ -216,7 +216,7 @@ class Unk_BgCamera
 {
 public:
     int FUN_140a18070();
-    Unk_StreamPoint FUN_140af0340();
+    Vector3 FUN_140af0340();
 };
 Unk_BgCamera* FUN_1409478c0();
 float FUN_140b02b90(float f);                                               // angle of the dot product
@@ -483,9 +483,9 @@ void GFxMovieBackground::vfunc_8(float fTime)
     Unk_BgCamera* pCamera = FUN_1409478c0();
     if (pCamera->FUN_140a18070() != 0 && !m_spScript.IsNull() && m_n98 != 0)
     {
-        Unk_StreamPoint kDir = pCamera->FUN_140af0340();
+        Vector3 kDir = pCamera->FUN_140af0340();
         kDir.FUN_140968990();
-        float fDot = kDir.FUN_140a00f20(*(const Unk_StreamPoint*)&DAT_143a08cd8);
+        float fDot = kDir.FUN_140a00f20(*(const Vector3*)&DAT_143a08cd8);
         if (m_nCameraFlag != 0)
         {
             float fAngle = FUN_140b02b90(fDot);

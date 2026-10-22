@@ -83,7 +83,7 @@ public:
     IM_V(0) IM_V(1) IM_V(2) IM_V(3) IM_V(4) IM_V(5) IM_V(6) IM_V(7) IM_V(8) IM_V(9)
     IM_V(10) IM_V(11) IM_V(12) IM_V(13) IM_V(14) IM_V(15) IM_V(16) IM_V(17)
 #undef IM_V
-    virtual Unk_StreamPoint vfunc_18();                                     // the position
+    virtual Vector3 vfunc_18();                                     // the position
     int FUN_14123c580();                                                    // the object id
     int FUN_14166c930();                                                    // the state id (0x2f = play instrument)
     StatePlayInstrument* FUN_14166ccb0();                                   // the play instrument state
@@ -199,7 +199,7 @@ int FUN_141276180(const CString& strChannel, const CString& strArg);        // t
 void FUN_1402c8940(const CString& strText, std::vector<CString>& out, const char* pszSep);   // split
 void FUN_1401ffdc0(void* pScore, COutPacket* pPacket);                      // write a composed score
 
-extern Unk_StreamPoint DAT_143b01a60;                                       // the zero point
+extern Vector3 DAT_143b01a60;                                       // the zero point
 
 // ---- CInstrumentManager::Voice / RemoteVoice / Slot ----
 
@@ -331,7 +331,7 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         // a performer's program
         int nKey = packet.ReadInt32();
         int nOwner = packet.ReadInt32();
-        Unk_StreamPoint ptPos = packet.ReadVector3();
+        Vector3 ptPos = packet.ReadVector3();
         int nProgram = packet.ReadInt32();
         int nPercussion = packet.ReadInt32();
         Voice voice;
@@ -374,7 +374,7 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         unsigned char nKind = packet.ReadUInt8();
         int nKey = packet.ReadInt32();
         int nOwner = packet.ReadInt32();
-        Unk_StreamPoint ptPos = packet.ReadVector3();
+        Vector3 ptPos = packet.ReadVector3();
         int nStart = packet.ReadInt32();
         int nProgram = packet.ReadInt32();
         int nPercussion = packet.ReadInt32();
@@ -1263,7 +1263,7 @@ void CInstrumentManager::UpdateVolume(bool bForce)
         }
         else if (FUN_1403ed2d0()->FUN_141bcb150() != true)
         {
-            Unk_StreamPoint* pPos = &m_slots[i].m_position;
+            Vector3* pPos = &m_slots[i].m_position;
             float fDistance = pMe->vfunc_18().FUN_140965c40(*pPos).FUN_140967ac0();
             Client::Constants* pConst = Client::Constants::GetInstance();
             if (*pConst->MusicListenInRadius.Get() <= fDistance)

@@ -22,7 +22,7 @@ public:
     void FUN_1418ce800();                                           // m_78 = m_7c = 1
     void FUN_1418ce890();                                           // m_78 = m_7c = 0
     void FUN_1418ce830();                                           // unregister from the manager
-    void FUN_1418ce8c0(const Unk_StreamPoint& pt);                  // m_6c = pt (the world anchor)
+    void FUN_1418ce8c0(const Vector3& pt);                  // m_6c = pt (the world anchor)
     void FUN_1418ce8f0(CStringW strMain, CStringW strExtra);        // m_88 = main, m_98 = extra; m_7c = 1
     void FUN_1418ce970(CStringW strAdditional);                     // m_90 = text; m_7c = 1
     void FUN_1418ce9d0();                                           // toggle the "additional" text
@@ -31,7 +31,7 @@ public:
 private:
     MS2_LAYOUT_FRIEND;
     int m_68;                           // +0x68 1
-    Unk_StreamPoint m_6c;               // +0x6c world anchor (starts as the zero point DAT_143b01a60)
+    Vector3 m_6c;               // +0x6c world anchor (starts as the zero point DAT_143b01a60)
     int m_78;                           // +0x78 shown
     int m_7c;                           // +0x7c texts dirty
     int m_80;                           // +0x80 additional text visible

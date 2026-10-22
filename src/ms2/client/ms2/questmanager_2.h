@@ -143,7 +143,7 @@ public:
     int FUN_1416cff70();
     int FUN_1416d0260(MS2Ptr<class CLearningQuestData>, int);
     int FUN_1416d0530();
-    struct Unk_StreamPoint FUN_1416d0690();
+    struct Vector3 FUN_1416d0690();
     void SendQuestMode15(int);
     int FUN_1416d0f60(int);
     unsigned FUN_1416d1100(int, int, int*);

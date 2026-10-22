@@ -47,11 +47,11 @@ CGodModeInfo::~CGodModeInfo()
 
 // Creates the tooltip at `kPos`, anchors it there and fills in the current index.
 // @0x141374b80
-void CGodModeInfo::FUN_141374b80(Unk_StreamPoint kPos)
+void CGodModeInfo::FUN_141374b80(Vector3 kPos)
 {
     m_spTooltip.AssignRaw(new UIDebugTooltip(CString("Consturction Group")));
     // The anchor is materialised in a local: the exe's call site copies the 12 bytes before the pass.
-    alignas(16) Unk_StreamPoint ptAnchor = kPos;
+    alignas(16) Vector3 ptAnchor = kPos;
     m_spTooltip->FUN_14191aae0(ptAnchor);
     CStringW strText;
     strText.Format(L"%d", m_n18);
@@ -68,17 +68,17 @@ void CGodModeInfo::FUN_141374d10(int n)
 
 // Moves the tooltip 150 units above `kPos`.
 // @0x141374d40
-void CGodModeInfo::FUN_141374d40(Unk_StreamPoint kPos)
+void CGodModeInfo::FUN_141374d40(Vector3 kPos)
 {
     if (m_spTooltip.get() != 0)
     {
-        Unk_StreamPoint ptMoved = kPos.FUN_14097fd50(Unk_StreamPoint(0.0f, 0.0f, 150.0f));
+        Vector3 ptMoved = kPos.FUN_14097fd50(Vector3(0.0f, 0.0f, 150.0f));
         // MS2-FUNCTIONAL: the exe's FUN_14191aae0 takes the point by value, so its call site copies the operator+
         // result into the outgoing argument slot (rep movsb into [rsp+0x20], the sret living at [rsp+0x3c]); the
         // committed header binds that callee as const&, so the copy is an explicit local instead and MSVC sizes the
         // slots the other way round (sret [rsp+0x20], copy [rsp+0x30]). Instruction-by-instruction identical
         // otherwise; 49 bytes differ in which 12-byte slot is which.
-        alignas(16) Unk_StreamPoint ptAnchor = ptMoved;
+        alignas(16) Vector3 ptAnchor = ptMoved;
         m_spTooltip->FUN_14191aae0(ptAnchor);
     }
 }

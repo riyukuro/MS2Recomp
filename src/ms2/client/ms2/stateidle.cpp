@@ -34,7 +34,7 @@
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
-extern Unk_StreamPoint DAT_143b01a60;                    // the zero point
+extern Vector3 DAT_143b01a60;                    // the zero point
 
 // The item a state is told about in its slots 29/30.
 class Unk_StateArg29 : public CItem { };
@@ -50,7 +50,7 @@ public:
 class Unk_SiBuffMgr
 {
 public:
-    Unk_StreamPoint FUN_141683290();                     // knock-back direction
+    Vector3 FUN_141683290();                     // knock-back direction
     bool FUN_141683100(int nBuff);
     bool FUN_141682fe0(int nBuff);
 };
@@ -206,7 +206,7 @@ void StateIdle::vfunc_4(StateData* pData)
 void StateIdle::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    Unk_StreamPoint kMove = DAT_143b01a60;
+    Vector3 kMove = DAT_143b01a60;
     m_pOwner->vfunc_68(&kMove, fTime, 0, 0, 0);
 }
 
@@ -244,8 +244,8 @@ void StateIdle::vfunc_8(double fTime)
         return;
     int nWater = m_pOwner->FUN_141675ed0();
     Unk_SiBuffMgr* pBuff = static_cast<Unk_SiBuffMgr*>(m_pOwner->FUN_14166d240());
-    Unk_StreamPoint kPos = pBuff->FUN_141683290();
-    Unk_StreamPoint kArg = kPos;
+    Vector3 kPos = pBuff->FUN_141683290();
+    Vector3 kArg = kPos;
     m_pOwner->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
     if (m_pOwner->FUN_141676b70() == 0)
     {

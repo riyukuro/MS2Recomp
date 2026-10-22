@@ -1404,8 +1404,8 @@ bool RequestCoupleEmotion(int nTargetId, int nEmotionId)
     kPacket.Encode1(3);
     kPacket.Encode4(nEmotionId);
     kPacket.Encode8(nTargetId);
-    kPacket.WriteVector3(reinterpret_cast<const Unk_StreamPoint&>(posA));
-    kPacket.WriteVector3(reinterpret_cast<const Unk_StreamPoint&>(posB));
+    kPacket.WriteVector3(reinterpret_cast<const Vector3&>(posA));
+    kPacket.WriteVector3(reinterpret_cast<const Vector3&>(posB));
     kPacket.WriteFloat(fYaw);
     FUN_140710590(kPacket);
     return true;

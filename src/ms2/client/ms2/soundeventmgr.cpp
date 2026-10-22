@@ -182,10 +182,10 @@ public:
 Unk_SmApp* FUN_1409a8b10();
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
 void* FUN_14098d8d0(const void* pRtti, void* pObj);                 // dynamic cast through an NiRTTI
-const Unk_StreamPoint& FUN_140947900(void* pNode);                  // world translate
+const Vector3& FUN_140947900(void* pNode);                  // world translate
 void FUN_140a0b2a0(NiAVObject* pObj);                               // detach from the parent
 bool FUN_14028d470(float a, float b);                               // nearly equal
-void FUN_140194470(void* pDst, const Unk_StreamPoint& vSrc);        // NiPoint3 assignment
+void FUN_140194470(void* pDst, const Vector3& vSrc);        // NiPoint3 assignment
 void FUN_140a332d0(NiTransform* pXform);                            // NiTransform default constructor
 NiTransform* FUN_140a33de0(const NiTransform* pThis, void* pOut, const NiTransform* pOther);   // NiTransform::operator*
 void FUN_140a35bd0(NiTransform* pDst, const NiTransform* pSrc);     // NiTransform assignment
@@ -705,10 +705,10 @@ int CSoundEventEffect::vfunc_12()
 
 // ---- CSoundEvent ----
 // NiPoint3 built from coordinates / from an efd::Point3 (out-of-line copies 0x14097f250 / 0x14027dcf0).
-struct Unk_SmPoint3 : public Unk_StreamPoint
+struct Unk_SmPoint3 : public Vector3
 {
     Unk_SmPoint3(float fX, float fY, float fZ);                     // 0x14097f250
-    Unk_SmPoint3(const Unk_StreamPoint& pt);                        // 0x14027dcf0
+    Unk_SmPoint3(const Vector3& pt);                        // 0x14027dcf0
 };
 // @0x14177a590
 CSoundEvent::CSoundEvent(FMOD::Event* pEvent, CString strName)
@@ -774,7 +774,7 @@ void CSoundEvent::FUN_14177a920(int bFadeOut)
 }
 
 // @0x14177a990
-void CSoundEvent::FUN_14177a990(const Unk_StreamPoint& vPos)
+void CSoundEvent::FUN_14177a990(const Vector3& vPos)
 {
     FMOD_VECTOR kPos = {vPos.x, vPos.z, vPos.y};
     m_pEvent->set3DAttributes(&kPos, 0, 0);
@@ -783,7 +783,7 @@ void CSoundEvent::FUN_14177a990(const Unk_StreamPoint& vPos)
 }
 
 // @0x14177aac0
-void CSoundEvent::FUN_14177aac0(const Unk_StreamPoint& vPos, const Unk_StreamPoint& vVel)
+void CSoundEvent::FUN_14177aac0(const Vector3& vPos, const Vector3& vVel)
 {
     FMOD_VECTOR kPos = {vPos.x, vPos.z, vPos.y};
     FMOD_VECTOR kVel = {vVel.x, vVel.z, vVel.y};
@@ -915,7 +915,7 @@ void FUN_1401859c0(CLogString* pLog, int nLevel, int nCategory, const wchar_t* p
 void FUN_140177a80(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const int& nArg);
 void FUN_1403a1280(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const char* const& pszArg);
 int FUN_1408a2060(egf::Entity* pEntity, unsigned nProperty, efd::utf8string* pOut);         // property: string
-void FUN_1409618c0(egf::Entity* pEntity, unsigned nProperty, Unk_StreamPoint* pOut);        // property: point
+void FUN_1409618c0(egf::Entity* pEntity, unsigned nProperty, Vector3* pOut);        // property: point
 class Unk_SmUiMgr { public: void FUN_141adbf70(unsigned bMute); };
 Unk_SmUiMgr* FUN_1403ed2b0();
 
@@ -1420,7 +1420,7 @@ void CSoundEventMgr::FUN_14177ce30(Unk_EntityPtr spEntity, int bOn)
     }
     else if (bOn != 0)
     {
-        Unk_StreamPoint vPos;
+        Vector3 vPos;
         efd::utf8string strEvent;
         FUN_1408a2060(spEntity, 0xed530c5f, &strEvent);
         FUN_1409618c0(spEntity, 0xfd95ca52, &vPos);
@@ -1441,7 +1441,7 @@ void CSoundEventMgr::FUN_14177d230()
 {
     if (m_bReady == 0)
         return;
-    Unk_StreamPoint vPos;
+    Vector3 vPos;
     for (std::map<Unk_EntityPtr, MS2Ptr<CSoundEvent> >::iterator it = m_mapEnvSounds.begin();
          it != m_mapEnvSounds.end(); ++it)
     {

@@ -25,7 +25,7 @@ MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);    //
 char FUN_140a467d0(const MS2Ptr<AScript>* p);                        // has the AS object been released
 
 // The camera (FUN_1409478c0): projects a world point to the screen.
-class Unk_PeCamera { public: bool FUN_140af0700(const Unk_StreamPoint* pWorld, Unk_StreamPoint* pScreen); };
+class Unk_PeCamera { public: bool FUN_140af0700(const Vector3* pWorld, Vector3* pScreen); };
 Unk_PeCamera* FUN_1409478c0();
 
 // The ui scale service: scale of a layer.
@@ -45,7 +45,7 @@ public:
     virtual void vfunc_24(bool b);
 };
 
-extern const Unk_StreamPoint DAT_143b01a60;                          // the zero point
+extern const Vector3 DAT_143b01a60;                          // the zero point
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -99,10 +99,10 @@ void UIPortalEmoticon::FUN_140f9bbd0()
 }
 
 // @0x140f9bc40
-void UIPortalEmoticon::FUN_140f9bc40(Unk_StreamPoint ptWorld)
+void UIPortalEmoticon::FUN_140f9bc40(Vector3 ptWorld)
 {
     m_ptWorld = ptWorld;
-    m_ptWorld.FUN_140a4e560(Unk_StreamPoint(0.0f, 0.0f, 150.0f));
+    m_ptWorld.FUN_140a4e560(Vector3(0.0f, 0.0f, 150.0f));
 }
 
 // @0x140f9bca0
@@ -165,7 +165,7 @@ void UIPortalEmoticon::vfunc_15()
 // @0x140f9bf70
 void UIPortalEmoticon::FUN_140f9bf70()
 {
-    Unk_StreamPoint ptScreen;
+    Vector3 ptScreen;
     if (!FUN_1409478c0()->FUN_140af0700(&m_ptWorld, &ptScreen))
         vfunc_8(0);
     else

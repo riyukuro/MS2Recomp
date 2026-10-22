@@ -99,7 +99,7 @@ public:
     virtual void vfunc_8(double fTime);                                 // 0x14121f260
     virtual void vfunc_9();                                             // 0x14121f430
 
-    Unk_StreamPoint FUN_14121f910(const Unk_StreamPoint& a, const Unk_StreamPoint& b, const Unk_StreamPoint& c);
+    Vector3 FUN_14121f910(const Vector3& a, const Vector3& b, const Vector3& c);
     void FUN_14121f9f0();                                               // interpolation finished: apply the end setting
 
     int m_nMode;                                                        // +0x78 (5: the cut-scene variant)

@@ -118,10 +118,10 @@ MS2_SOCKETPTR_DIRECT(CMagic)
 MS2_SOCKETPTR_DIRECT(CMagicData)
 MS2_SOCKETPTR_DIRECT(CMagicModel)
 
-extern Unk_StreamPoint DAT_143b01a60;       // the zero point
+extern Vector3 DAT_143b01a60;       // the zero point
 extern char DAT_143ae95e0;                   // debug: show skill collision shapes
 extern char DAT_143ae95e1;
-extern Unk_StreamPoint DAT_143a08ce8;       // the default direction
+extern Vector3 DAT_143a08ce8;       // the default direction
 
 class Unk_140165cf0 {
 public:
@@ -139,8 +139,8 @@ int FUN_140873120(Unk_140165cf0*, const char*, unsigned char&);
 int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
 const char* FUN_14086f4b0(Unk_140165cf0*, const char*);
 CString FUN_14015f710(Unk_140165cf0*, const char*, CString);
-Unk_StreamPoint FUN_14028f060(CString);
-void FUN_140deec40(Unk_StreamPoint*);
+Vector3 FUN_14028f060(CString);
+void FUN_140deec40(Vector3*);
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
 void FUN_140353fc0(void*, int, int, const wchar_t*, const int&);
 
@@ -174,7 +174,7 @@ static Unk_1402a9d70 s_conditions2(17, 0.75f, 0.25f, 2.25f, 10);
 
 extern Unk_EfdMatrix3 DAT_143a09600;        // identity rotation
 extern Unk_EfdMatrix3 DAT_143b01a90;        // identity rotation (second copy)
-class Unk_MagicEffectMgr { public: void FUN_1411a6060(int nHandle); int FUN_1411a49c0(void* pReq); void FUN_1411a4a00(void* pReq); int FUN_1411a5580(int nLevel, int nEffect, int nFlag, Unk_StreamPoint ptAt, float fRange); void FUN_1411a68f0(int nHandle, bool bHidden); NiNode* FUN_1411a6b10(); };    // releases a spawned effect
+class Unk_MagicEffectMgr { public: void FUN_1411a6060(int nHandle); int FUN_1411a49c0(void* pReq); void FUN_1411a4a00(void* pReq); int FUN_1411a5580(int nLevel, int nEffect, int nFlag, Vector3 ptAt, float fRange); void FUN_1411a68f0(int nHandle, bool bHidden); NiNode* FUN_1411a6b10(); };    // releases a spawned effect
 Unk_MagicEffectMgr* FUN_1403ed280();
 void* FUN_1409475d0(Unk_NodePtr*);
 void FUN_140a0b2a0(void* pNode);            // detach the node from its parent
@@ -185,7 +185,7 @@ void FUN_141468cd0(Unk_SocketPtr<CMagicData>* p) { p->~Unk_SocketPtr(); }
 // @0x141469a90
 CSkillCollisionManager* FUN_141469a90() { return CSkillCollisionManager::s_instance; }
 extern float FUN_1407680d0(void* pRandom);
-extern void FUN_140965c40(Unk_StreamPoint* pRange, Unk_StreamPoint* pOut, Unk_StreamPoint* pBase, void* pCtx, float x, float z);
+extern void FUN_140965c40(Vector3* pRange, Vector3* pOut, Vector3* pBase, void* pCtx, float x, float z);
 
 // @0x14145bd70
 CMagicData::CMagicData()
@@ -221,14 +221,14 @@ CMagicData::CMagicData()
 
 // @0x14145c030
 // MS2-FUNCTIONAL: efd::Point3 random-range helper; the exe keeps the random floats in the outgoing-argument slots, a different temp layout than any source form probed
-Unk_StreamPoint CMagicData::FUN_14145c030(void* pRandom)
+Vector3 CMagicData::FUN_14145c030(void* pRandom)
 {
     float rx = FUN_1407680d0(pRandom);
     float ry = FUN_1407680d0(pRandom);
     float rz = FUN_1407680d0(pRandom);
-    Unk_StreamPoint range;
+    Vector3 range;
     FUN_140965c40(&m_ptControl[1], &range, &m_ptControl[0], pRandom, rx, rz);
-    Unk_StreamPoint result = DAT_143b01a60;
+    Vector3 result = DAT_143b01a60;
     result.x = m_ptControl[0].x + range.x * rx;
     result.y = m_ptControl[0].y + range.y * ry;
     result.z = m_ptControl[0].z + range.z * rz;
@@ -240,13 +240,13 @@ MS2_REPLACE_METHOD(0x14145C030, CMagicData, FUN_14145c030, 321, 0xF39C8023);
 // MS2-FUNCTIONAL: any-nonzero-control-point test; exe passes the Point3 ctor's returned pointer to operator!=, 7 bytes of temp shuffling differ
 bool CMagicData::FUN_14145c180()
 {
-    Unk_StreamPoint zeroA(0, 0, 0);
+    Vector3 zeroA(0, 0, 0);
     if (m_ptControl[0].FUN_140552700(zeroA))
         return true;
-    Unk_StreamPoint zeroB(0, 0, 0);
+    Vector3 zeroB(0, 0, 0);
     if (m_ptControl[1].FUN_140552700(zeroB))
         return true;
-    Unk_StreamPoint zeroC(0, 0, 0);
+    Vector3 zeroC(0, 0, 0);
     return m_ptControlEnd.FUN_140552700(zeroC);
 }
 MS2_REPLACE_METHOD(0x14145C180, CMagicData, FUN_14145c180, 188, 0x4477E028);
@@ -425,7 +425,7 @@ struct Unk_MagicSkillRow {
     float m_f9c;                                                    // +0x9c height offset
     char m_pada0[0x10];
     float m_fb0;                                                    // +0xb0 height offset
-    Unk_StreamPoint m_ptB4;                                         // +0xb4 collision offset
+    Vector3 m_ptB4;                                         // +0xb4 collision offset
     float m_fC0;                                                    // +0xc0 collision offset z
     char m_padc4[8];
     unsigned m_nCC;                                                 // +0xcc flags (2: sort the hits)
@@ -436,8 +436,8 @@ struct Unk_MagicSkillRow {
     char m_pad114[8];
     int m_n11c;                                                     // +0x11c beam mode (0: from the caster, 1: chained, 2: along the aim)
     int m_n120;                                                     // +0x120
-    Unk_StreamPoint m_ptBox;                                        // +0x124 box collision size
-    Unk_StreamPoint m_ptBoxSize;                                    // +0x130 box collision extent (y, z)
+    Vector3 m_ptBox;                                        // +0x124 box collision size
+    Vector3 m_ptBoxSize;                                    // +0x130 box collision extent (y, z)
     char m_pad13c[0xc];
     CString m_str148;                                               // +0x148 end effect
     CString m_str150;                                               // +0x150 end effect when the flight was cut short
@@ -506,7 +506,7 @@ struct Unk_MagicTag : public CPtred {
         int m_nSrcIndex;                                            // +0x5c
         unsigned char m_b5c;
     };
-    Unk_StreamPoint m_ptDefaultDir;                                  // +0x60
+    Vector3 m_ptDefaultDir;                                  // +0x60
     char m_pad6c[4];
     Unk_MagicLinkPtr m_spLinked;                                    // +0x70 the cast this one continues
     char m_pad80[4];
@@ -535,22 +535,22 @@ struct Unk_MagicEntity {
     virtual void vf6(); virtual int vf7_GetClassId(); virtual void vf8(); virtual void vf9(); virtual void vf10();
     virtual void vf11(); virtual void vf12(); virtual void vf13(); virtual void vf14(); virtual void vf15();
     virtual void vf16(); virtual void vf17();
-    virtual Unk_StreamPoint vf18_GetPosition();                     // MS2: slot 18 (+0x90)
-    virtual void vf19(); virtual Unk_StreamPoint vf20_GetRotation(); virtual void vf21(); virtual void vf22(); virtual void vf23();
+    virtual Vector3 vf18_GetPosition();                     // MS2: slot 18 (+0x90)
+    virtual void vf19(); virtual Vector3 vf20_GetRotation(); virtual void vf21(); virtual void vf22(); virtual void vf23();
     virtual void vf24();
     virtual int vf25_IsDead();                                      // MS2: slot 25 (+0xc8)
     virtual void vf26(); virtual void vf27_CollectPartsA(ATL::CAtlArray<void*>* pOut); virtual void vf28_CollectPartsB(ATL::CAtlArray<void*>* pOut); virtual void vf29(); virtual void vf30();
     virtual void vf31(); virtual void vf32();
-    virtual void vf33_Hit(Unk_MagicTag* pTag, Unk_StreamPoint ptAt);  // MS2: slot 33 (+0x108)
+    virtual void vf33_Hit(Unk_MagicTag* pTag, Vector3 ptAt);  // MS2: slot 33 (+0x108)
     virtual void vf34_Cast(Unk_MagicTag* pTag);                     // MS2: slot 34 (+0x110)
     virtual void vf35_End(Unk_MagicTag* pTag);                      // MS2: slot 35 (+0x118)
-    virtual void vf36_GetNodePosition(CString strNode, Unk_StreamPoint* pOut);   // MS2: slot 36 (+0x120)
-    virtual Unk_StreamPoint vf37_GetExtent();                       // MS2: slot 37 (+0x128)
-    virtual Unk_StreamPoint vf38_Trace(Unk_StreamPoint ptFrom, Unk_StreamPoint ptTo, float fRange);   // MS2: slot 38 (+0x130)
+    virtual void vf36_GetNodePosition(CString strNode, Vector3* pOut);   // MS2: slot 36 (+0x120)
+    virtual Vector3 vf37_GetExtent();                       // MS2: slot 37 (+0x128)
+    virtual Vector3 vf38_Trace(Vector3 ptFrom, Vector3 ptTo, float fRange);   // MS2: slot 38 (+0x130)
     virtual void vf39();
     virtual void vf40(); virtual void vf41(); virtual void vf42(); virtual void vf43(); virtual void vf44(); virtual void vf45(); virtual void vf46(); virtual void vf47(); virtual void vf48(); virtual void vf49(); virtual void vf50(); virtual void vf51(); virtual void vf52(); virtual void vf53(); virtual void vf54(); virtual void vf55(); virtual void vf56(); virtual void vf57(); virtual void vf58(); virtual void vf59(); virtual void vf60(); virtual void vf61(); virtual void vf62(); virtual void vf63(); virtual void vf64(); virtual void vf65(); virtual void vf66(); virtual void vf67(); virtual void vf68(); virtual void vf69(); virtual void vf70(); virtual void vf71(); virtual void vf72(); virtual void vf73(); virtual void vf74(); virtual void vf75(); virtual void vf76(); virtual void vf77(); virtual void vf78(); virtual void vf79(); virtual void vf80(); virtual void vf81(); virtual void vf82(); virtual void vf83(); virtual void vf84(); virtual void vf85(); virtual void vf86(); virtual void vf87(); virtual void vf88(); virtual void vf89(); virtual void vf90(); virtual void vf91(); virtual void vf92(); virtual void vf93(); virtual void vf94(); virtual void vf95(); virtual void vf96(); virtual void vf97(); virtual void vf98(); virtual void vf99(); virtual void vf100(); virtual void vf101(); virtual void vf102(); virtual void vf103(); virtual void vf104(); virtual void vf105(); virtual void vf106(); virtual void vf107();
     virtual bool vf108_GetLockOn();                                 // MS2: slot 108 (+0x360)
-    Unk_StreamPoint FUN_14123cc20();                                // facing direction
+    Vector3 FUN_14123cc20();                                // facing direction
     int FUN_14123dc30(unsigned nKey);                               // the last time of an attack key
     void FUN_14123dcb0(unsigned nKey, int nValue);
 };
@@ -610,20 +610,20 @@ MS2_CHECK_SIZE(Unk_MagicRandom, 0x48);
 
 
 // The target's actor (FUN_1409ffd30): its attach point (0x141678710).
-struct Unk_MagicActor { Unk_StreamPoint FUN_141678710(); };
+struct Unk_MagicActor { Vector3 FUN_141678710(); };
 Unk_MagicActor* FUN_1409ffd30(Unk_MagicEntity* pEntity);
-extern Unk_StreamPoint DAT_143b01a60;                               // the zero point
+extern Vector3 DAT_143b01a60;                               // the zero point
 
-extern Unk_StreamPoint DAT_143a08cd8;                                       // the right axis
-bool FUN_14028d530(const Unk_StreamPoint* pA, const Unk_StreamPoint* pB);   // approximately equal
+extern Vector3 DAT_143a08cd8;                                       // the right axis
+bool FUN_14028d530(const Vector3* pA, const Vector3* pB);   // approximately equal
 void FUN_1420849a0(Unk_NiMatrix3* pMatrix);                         // efd::Matrix3::MakeIdentity
 void FUN_140ddcca0(void* pNode, const Unk_NiMatrix3& matRotation);  // NiAVObject::SetRotate
 
 // The 0x34 byte NiTransform the effect system takes (rotate, translate, scale).
 struct Unk_MagicXform { Unk_MagicXform(); /* 0x140a332d0 */ Unk_MagicXform& FUN_140a35c30(const Unk_MagicXform& kOther); /* NiTransform::operator= */ Unk_NiMatrix3 m_rotate; Unk_NiPoint3 m_translate; float m_fScale; };
 MS2_CHECK_SIZE(Unk_MagicXform, 0x34);
-extern Unk_StreamPoint DAT_143a08d08;                               // the forward axis
-void FUN_140a0b1f0(const Unk_NiMatrix3& matRotation, Unk_StreamPoint* pOut);    // rotate a vector by the matrix
+extern Vector3 DAT_143a08d08;                               // the forward axis
+void FUN_140a0b1f0(const Unk_NiMatrix3& matRotation, Vector3* pOut);    // rotate a vector by the matrix
 // @0x14146aa10
 static inline void FUN_14146aa10(Unk_EfdMatrix3* pMatrix, unsigned nRow, unsigned nCol, float fValue) { pMatrix->m_afEntry[nRow][nCol] = fValue; }
 
@@ -635,12 +635,12 @@ int FUN_14028d260(float fMs);                                       // float -> 
 bool FUN_14028d470(float a, float b);                               // approx equal
 void FUN_140a90720(void* pArray, unsigned nIndex, unsigned nCount); // CAtlArray::RemoveAt
 void FUN_140188720(Unk_MagicUIntMap* pMap);                         // clear the map
-void FUN_1410a7400(void* pArray, Unk_StreamPoint* pPoint);          // append a point
+void FUN_1410a7400(void* pArray, Vector3* pPoint);          // append a point
 void FUN_140981070(void* pNode, const Unk_NiPoint3& kPoint);              // NiAVObject::SetTranslate
 bool FUN_14098dad0(void* pNode);                                    // NiAVObject::GetAppCulled
 void FUN_140a0b300(void* pNode, char bCulled);                      // set app-culled
 void FUN_1409fabf0(Unk_NodePtr* pDst, void* pNode);                 // Unk_NodePtr::Reset
-void FUN_141467f60(const Unk_StreamPoint& ptPos, const Unk_StreamPoint* pDirection, Unk_MagicXform* pOut);
+void FUN_141467f60(const Vector3& ptPos, const Vector3* pDirection, Unk_MagicXform* pOut);
 const Unk_NiMatrix3& FUN_1410b23c0(void* pNode);                      // NiAVObject::GetRotate
 const CString* FUN_1417590d0(Unk_MagicTag* pTag);                   // the effect name of the skill
 Unk_MagicEffectFiles* FUN_1411b1dd0();
@@ -653,7 +653,7 @@ void FUN_140a53190(Unk_MagicEffectReq* pReq, unsigned nTarget);      // bind the
 unsigned FUN_14123c580(Unk_MagicEntity* pEntity);                   // the entity's effect handle
 double FUN_141473280(Unk_MagicTime* pTime);                          // the frame time in seconds
 Unk_MagicTime* FUN_14086d260();
-float FUN_140966f00(const Unk_StreamPoint& a, const Unk_StreamPoint& b);   // distance
+float FUN_140966f00(const Vector3& a, const Vector3& b);   // distance
 Unk_MagicCullCfg* FUN_141bd9c00(Unk_MagicWorld* pWorld);
 bool FUN_1410a82b0(Unk_MagicCullCfg* pCfg);
 CMagicService* FUN_1410a7630();
@@ -673,12 +673,12 @@ void FUN_140a00490(Unk_MagicAnchorPtr* p);                          // release
 bool FUN_140a01900(ATL::CAtlArray<void*>* a);                       // IsEmpty
 unsigned long long FUN_140a01230(ATL::CAtlArray<void*>* a);         // GetCount
 void* FUN_140a010d0(ATL::CAtlArray<void*>* a, unsigned long long i);    // GetAt
-Unk_StreamPoint FUN_141b6e150(const void* pFloat3);                 // the anchor position as a Point3
+Vector3 FUN_141b6e150(const void* pFloat3);                 // the anchor position as a Point3
 
 // @0x14145d5d0
 // MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
 int CMagic::FUN_14145d5d0(Unk_MagicTagPtr spSkill, Unk_MagicTagPtr spCaster, const CMagicData* pData,
-    Unk_StreamPoint ptStart, unsigned n530, unsigned n534, unsigned n53c)
+    Vector3 ptStart, unsigned n530, unsigned n534, unsigned n53c)
 {
     Unk_MagicTag* pTag = spSkill.operator->();
     if (FUN_1403ed2d0()->FUN_141bd1180(pTag->m_nOwnerId) == NULL)
@@ -724,23 +724,23 @@ void CMagic::FUN_14145d9d0()
     if (m_data.m_fVelocity == 0.0f) {
         m_fTotalTime = 0;
     } else {
-        Unk_StreamPoint kDiff = m_ptTarget.FUN_140965c40(m_ptStart);
+        Vector3 kDiff = m_ptTarget.FUN_140965c40(m_ptStart);
         m_fTotalTime = kDiff.FUN_140967ac0() / m_data.m_fVelocity;
     }
     m_fRemainTime = m_fTotalTime;
     if (m_data.m_fVelocity == 0.0f) {
         m_fTotalTime = 0;
     } else {
-        Unk_StreamPoint kDiff = m_ptTarget.FUN_140965c40(m_ptStart);
+        Vector3 kDiff = m_ptTarget.FUN_140965c40(m_ptStart);
         m_fTotalTime = kDiff.FUN_140967ac0() / m_data.m_fVelocity;
     }
     m_fRemainTime = m_fTotalTime;
     int nSeedX = (int)m_spSkill->m_nTagId + m_spSkill->m_nOwnerId;
     int nSeedY = (int)m_spSkill->m_nTagSub + m_spSkill->m_nOwnerId;
     Unk_MagicRandom kRandom(nSeedX, nSeedY, nSeedX * nSeedY * m_spSkill->m_nOwnerId);
-    Unk_StreamPoint kRandomPoint = m_data.FUN_14145c030(&kRandom);
-    Unk_StreamPoint kAxisX = FUN_141464520().FUN_14097fc90(kRandomPoint.x);
-    Unk_StreamPoint kAxisZ = FUN_1414645e0().FUN_14097fc90(kRandomPoint.z);
+    Vector3 kRandomPoint = m_data.FUN_14145c030(&kRandom);
+    Vector3 kAxisX = FUN_141464520().FUN_14097fc90(kRandomPoint.x);
+    Vector3 kAxisZ = FUN_1414645e0().FUN_14097fc90(kRandomPoint.z);
     float fDistance = m_ptTarget.FUN_140965c40(m_ptStart).FUN_140967ac0();
     m_ptPredicted = m_ptStart.FUN_14097fd50(m_ptDirection.FUN_14097fc90(kRandomPoint.y).FUN_14097fc90(fDistance))
         .FUN_14097fd50(kAxisZ).FUN_14097fd50(kAxisX);
@@ -755,7 +755,7 @@ MS2_REPLACE_METHOD(0x14145D9D0, CMagic, FUN_14145d9d0, 1010, 0x7394C1D9);
 
 // @0x14145ddd0
 // MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
-void CMagic::FUN_14145ddd0(const Unk_StreamPoint& ptStart)
+void CMagic::FUN_14145ddd0(const Vector3& ptStart)
 {
     m_ptStart = ptStart;
     m_ptLast = m_ptStart;
@@ -831,7 +831,7 @@ template <> Unk_NpcData* MS2Ptr<Unk_NpcData>::operator->() const;           // 0
 class Unk_MagicNpc : public Unk_MagicEntity { public: MS2Ptr<Unk_NpcData> FUN_141093270(); };
 Unk_MagicNpc* FUN_140a38a00(Unk_MagicEntity* pEntity);                      // cast to class 0x6200028
 float FUN_14109ace0();                                                      // random in [-1, 1]
-extern Unk_StreamPoint DAT_143a08cf8;                                       // the up axis
+extern Vector3 DAT_143a08cf8;                                       // the up axis
 
 // ---- callees of the hit-effect spawner (unit-local; names invented) ----
 struct Unk_MagicConstValue { float FUN_1402bac70(); };
@@ -872,17 +872,17 @@ void* FUN_14096e160(Unk_MagicEntity* pEntity);                      // as MyPC
 class Unk_MagicCubeService { public: void FUN_1412316a0(Unk_MagicValPtr spVal, Unk_MagicTagPtr spTag); };
 Unk_MagicCubeService* FUN_1409670b0();
 int FUN_14166ce30(Unk_MagicEntity* pEntity);
-Unk_StreamPoint* FUN_14144dcb0(ATL::CAtlArray<Unk_StreamPoint>* pArray, unsigned nIndex);     // element address
-long long FUN_140a0afb0(ATL::CAtlArray<Unk_StreamPoint>* pArray);  // GetCount
+Vector3* FUN_14144dcb0(ATL::CAtlArray<Vector3>* pArray, unsigned nIndex);     // element address
+long long FUN_140a0afb0(ATL::CAtlArray<Vector3>* pArray);  // GetCount
 void FUN_1410a76c0(void* pArray);                                   // RemoveAll
 
 // ---- callees of the projectile start (unit-local; names invented) ----
-float FUN_14123ce70(Unk_StreamPoint ptDirection);                   // direction -> yaw
+float FUN_14123ce70(Vector3 ptDirection);                   // direction -> yaw
 Unk_MagicEntity* FUN_14099eef0(Unk_MagicEntity* pEntity);           // entity -> player (0 if it is not one)
 
 // @0x14145e1a0
 // MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
-int FUN_14145e1a0(int nFrom, int nTo, Unk_MagicAimInfo* pInfo, const Unk_MagicSkillRow* pRow, Unk_StreamPoint* pPos, Unk_StreamPoint* pDir)
+int FUN_14145e1a0(int nFrom, int nTo, Unk_MagicAimInfo* pInfo, const Unk_MagicSkillRow* pRow, Vector3* pPos, Vector3* pDir)
 {
     Unk_MagicEntity* pFrom = FUN_1403ed2d0()->FUN_141bd1180(nFrom);
     if (pFrom == NULL)
@@ -890,7 +890,7 @@ int FUN_14145e1a0(int nFrom, int nTo, Unk_MagicAimInfo* pInfo, const Unk_MagicSk
     if (pInfo == NULL || pRow == NULL)
         return 0;
     int bAttach = 0;
-    Unk_StreamPoint ptPos = pFrom->vf18_GetPosition().FUN_14097fd50(pFrom->vf37_GetExtent());
+    Vector3 ptPos = pFrom->vf18_GetPosition().FUN_14097fd50(pFrom->vf37_GetExtent());
     Unk_MagicNpc* pNpc = FUN_140a38a00(pFrom);
     if (pNpc != NULL) {
         if (pNpc->FUN_141093270()->FUN_1406cd200(0x11)) {
@@ -907,9 +907,9 @@ int FUN_14145e1a0(int nFrom, int nTo, Unk_MagicAimInfo* pInfo, const Unk_MagicSk
             else
                 fHeight = pTo->vf37_GetExtent().z;
             float fRand = FUN_14109ace0();
-            Unk_StreamPoint ptOff(0, 0, fHeight * (fRand * 0.2f + 1.0f));
+            Vector3 ptOff(0, 0, fHeight * (fRand * 0.2f + 1.0f));
             ptPos = pFrom->vf18_GetPosition().FUN_14097fd50(ptOff);
-            Unk_StreamPoint ptDirTo = pTo->FUN_14123cc20();
+            Vector3 ptDirTo = pTo->FUN_14123cc20();
             if (pRow->m_n38 == 3) {
                 if (pInfo->m_fAim == 0.0f)
                     *pDir = ptDirTo;
@@ -923,10 +923,10 @@ int FUN_14145e1a0(int nFrom, int nTo, Unk_MagicAimInfo* pInfo, const Unk_MagicSk
                     *pDir = pDir->FUN_1409f7960();
                 pDir->FUN_140968990();
             } else if (pRow->m_n38 == 2) {
-                Unk_StreamPoint ptDiff = pFrom->vf18_GetPosition().FUN_140965c40(pTo->vf18_GetPosition());
+                Vector3 ptDiff = pFrom->vf18_GetPosition().FUN_140965c40(pTo->vf18_GetPosition());
                 *pDir = ptDiff.FUN_14109adc0(DAT_143a08cf8).FUN_1409f7960();
             } else if (pRow->m_n38 == 1) {
-                Unk_StreamPoint ptDiff = pFrom->vf18_GetPosition().FUN_140965c40(pTo->vf18_GetPosition());
+                Vector3 ptDiff = pFrom->vf18_GetPosition().FUN_140965c40(pTo->vf18_GetPosition());
                 *pDir = ptDiff.FUN_14109adc0(DAT_143a08cf8);
             } else {
                 *pDir = pTo->FUN_14123cc20();
@@ -939,8 +939,8 @@ int FUN_14145e1a0(int nFrom, int nTo, Unk_MagicAimInfo* pInfo, const Unk_MagicSk
             pDir->FUN_140968990();
             float fExtent = pTo->vf37_GetExtent().z;
             float fRand = FUN_14109ace0();
-            ptPos = ptPos.FUN_14097fd50(Unk_StreamPoint(0, 0, fExtent * (fRand * 0.2f + 1.0f)));
-            Unk_StreamPoint ptHit = pFrom->vf38_Trace(*pDir, ptPos, 0.0f);
+            ptPos = ptPos.FUN_14097fd50(Vector3(0, 0, fExtent * (fRand * 0.2f + 1.0f)));
+            Vector3 ptHit = pFrom->vf38_Trace(*pDir, ptPos, 0.0f);
             if (ptHit.FUN_140552690(ptPos))
                 ptHit.FUN_140a4e560(pDir->FUN_14097fc90(100.0f));
             ptPos = ptHit;
@@ -983,12 +983,12 @@ void CMagic::FUN_14145e960(unsigned nNow)
 MS2_REPLACE_METHOD(0x14145E960, CMagic, FUN_14145e960, 746, 0xDD0A920B);
 
 // The physics query service (decoeditservice.cpp names the same member).
-class Unk_MagicPhysX { public: int FUN_14168a230(Unk_StreamPoint ptFrom, Unk_StreamPoint& ptHit, Unk_StreamPoint ptDir, float fLength, int nMask); };
+class Unk_MagicPhysX { public: int FUN_14168a230(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, float fLength, int nMask); };
 Unk_MagicPhysX* FUN_1409f7ca0();
 float FUN_14028d280(unsigned nMs);                                  // ms -> seconds
 float FUN_141403f20(Unk_NiPoint3 ptA, Unk_NiPoint3 ptB);            // distance
-Unk_StreamPoint FUN_141b71390(Unk_StreamPoint ptStart, Unk_StreamPoint ptControl, Unk_StreamPoint ptEnd, float fT);   // bezier point
-Unk_StreamPoint FUN_140a0adf0(const Unk_StreamPoint& p0, const Unk_StreamPoint& p1, const Unk_StreamPoint& p2, const Unk_StreamPoint& p3, float fT);   // catmull-rom point
+Vector3 FUN_141b71390(Vector3 ptStart, Vector3 ptControl, Vector3 ptEnd, float fT);   // bezier point
+Vector3 FUN_140a0adf0(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float fT);   // catmull-rom point
 
 // @0x14145ec50
 // MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
@@ -997,7 +997,7 @@ void CMagic::FUN_14145ec50(unsigned nNow)
     if (!FUN_14028d470(m_data.m_fVelocity, 0)) {
         if (!FUN_141464490()) {
             FUN_141461140();
-            Unk_StreamPoint ptNew;
+            Vector3 ptNew;
             if (m_n26C == 0) {
                 float fStep = FUN_14028d280(nNow - m_nLastTick);
                 if (fStep < m_fRemainTime) {
@@ -1041,7 +1041,7 @@ void CMagic::FUN_14145ec50(unsigned nNow)
                 }
             }
             if (m_nState != 5) {
-                Unk_StreamPoint ptHit;
+                Vector3 ptHit;
                 float fDelta = ptNew.FUN_140965c40(m_ptCurrent).FUN_140967ac0();
                 if (0.0f < fDelta) {
                     const Unk_MagicSkillRow* pRow = m_spSkill->FUN_141759050();
@@ -1133,14 +1133,14 @@ void CMagic::FUN_14145f570(unsigned nNow)
             }
         }
     } else {
-        Unk_StreamPoint ptEnd = m_ptCurrent;
+        Vector3 ptEnd = m_ptCurrent;
         if (m_spSkill->FUN_141759090() == 0) {
             FUN_14145e1a0(m_spSkill->m_nCasterId, m_spSkill->m_nOwnerId, m_spSkill->FUN_141759010(),
                 m_spSkill->FUN_141759050(), &ptEnd, &m_ptDirection);
         } else {
             Unk_MagicEntity* pTarget = FUN_141464360();
             if (pTarget != NULL) {
-                Unk_StreamPoint ptAim = pTarget->vf18_GetPosition().FUN_14097fd50(pTarget->vf37_GetExtent());
+                Vector3 ptAim = pTarget->vf18_GetPosition().FUN_14097fd50(pTarget->vf37_GetExtent());
                 Unk_MagicEntity* pOwner = FUN_1403ed2d0()->FUN_141bd1180(m_spSkill->m_nOwnerId);
                 if (pOwner != NULL) {
                     float fHeight;
@@ -1149,7 +1149,7 @@ void CMagic::FUN_14145f570(unsigned nNow)
                     else
                         fHeight = pOwner->vf37_GetExtent().z;
                     fHeight = fHeight * (FUN_14109ace0() * 0.2f + 1.0f);
-                    ptAim = pTarget->vf18_GetPosition().FUN_14097fd50(Unk_StreamPoint(0, 0, fHeight));
+                    ptAim = pTarget->vf18_GetPosition().FUN_14097fd50(Vector3(0, 0, fHeight));
                 }
                 ptEnd = pTarget->vf38_Trace(m_ptDirection, ptAim, 2000.0f);
             }
@@ -1182,7 +1182,7 @@ void CMagic::FUN_14145f570(unsigned nNow)
             packet.Encode4(m_spSkill->m_n8c);
             packet.Encode4(m_spSkill->m_n84);
             packet.WriteVector3(m_ptCurrent);
-            Unk_StreamPoint ptDir = DAT_143a08d08;
+            Vector3 ptDir = DAT_143a08d08;
             FUN_140a0b1f0(m_matRotation, &ptDir);
             packet.WriteVector3(ptDir);
             FUN_140710590(packet);
@@ -1194,7 +1194,7 @@ MS2_REPLACE_METHOD(0x14145F570, CMagic, FUN_14145f570, 4298, 0x191156C3);
 // The fill-target (area pick) context a beam cast builds (stateskill.cpp's CFillTargetContext: 0x88 bytes, ctor 0x1417e4e80).
 struct Unk_FillTargetCtx : public CPtred {
     Unk_MagicEntity* m_pOwner;                                      // +0x18 the caster
-    Unk_StreamPoint m_ptOwner;                                      // +0x20 the caster's position
+    Vector3 m_ptOwner;                                      // +0x20 the caster's position
     char m_pad2c[4];
     char m_aHits[0x20];                                             // +0x30 CAtlArray<Unk_MagicHitRef> of the picked entities
     Unk_MagicSrcPtr m_spSrc;                                        // +0x50 the skill source
@@ -1222,7 +1222,7 @@ int FUN_140a01220(void* pArray);                                    // CAtlArray
 int FUN_140186270(void* pArray);                                    // CAtlArray<unsigned>::GetCount
 unsigned* FUN_140184510(void* pArray, long long nIndex);   // CAtlArray<unsigned>::GetAt
 unsigned long long FUN_1401855a0(void* pArray, unsigned nValue);    // CAtlArray<unsigned>::Add
-float FUN_140966ea0(Unk_StreamPoint ptA, Unk_StreamPoint ptB);      // planar distance
+float FUN_140966ea0(Vector3 ptA, Vector3 ptB);      // planar distance
 
 // @0x141462900
 // MS2-FUNCTIONAL: first-pass source; frame layout, temp order and the point-array glue not byte-compared
@@ -1276,13 +1276,13 @@ void CMagic::FUN_141462900(unsigned nNow)
     }
     if (m_n280 == 0 && nEnd <= nNow) {
         m_n280 = 1;
-        ATL::CAtlArray<Unk_StreamPoint> aPoints;
+        ATL::CAtlArray<Vector3> aPoints;
         FUN_1410a7400(&aPoints, &m_ptStart);
         for (int i = 0; i < FUN_140186270(&m_arr288); ++i) {
             unsigned* pId = FUN_140184510(&m_arr288, i);
             Unk_MagicEntity* pEnt = FUN_1403ed2d0()->FUN_141bd1200(*pId);
             if (pEnt != NULL) {
-                Unk_StreamPoint ptHit = DAT_143b01a60;
+                Vector3 ptHit = DAT_143b01a60;
                 if (FUN_141467100(pEnt, &ptHit) == 0)
                     ptHit = pEnt->vf18_GetPosition().FUN_14097fd50(pEnt->vf37_GetExtent());
                 if (pRow->m_n11c == 2) {
@@ -1293,7 +1293,7 @@ void CMagic::FUN_141462900(unsigned nNow)
             }
         }
         bool bSingle = false;
-        Unk_StreamPoint ptLast = m_ptTarget;
+        Vector3 ptLast = m_ptTarget;
         if (FUN_140a0afb0(&aPoints) == 1) {
             if (pRow->m_n11c == 0) {
                 FUN_1410a7400(&aPoints, &m_ptStart);
@@ -1335,13 +1335,13 @@ void CMagic::FUN_141462900(unsigned nNow)
         }
     }
     if (m_n280 != 0 && nEnd <= nNow) {
-        ATL::CAtlArray<Unk_StreamPoint> aPoints;
+        ATL::CAtlArray<Vector3> aPoints;
         FUN_1410a7400(&aPoints, &m_ptStart);
         for (int i = 0; i < FUN_140186270(&m_arr288); ++i) {
             unsigned* pId = FUN_140184510(&m_arr288, i);
             Unk_MagicEntity* pEnt = FUN_1403ed2d0()->FUN_141bd1200(*pId);
             if (pEnt != NULL) {
-                Unk_StreamPoint ptHit = DAT_143b01a60;
+                Vector3 ptHit = DAT_143b01a60;
                 if (FUN_141467100(pEnt, &ptHit) == 0)
                     ptHit = pEnt->vf18_GetPosition().FUN_14097fd50(pEnt->vf37_GetExtent());
                 if (pRow->m_n11c == 2) {
@@ -1452,14 +1452,14 @@ void CMagic::FUN_1414609e0()
         if (m_spSkill->FUN_141759090() != 0 && m_data.m_nIgnorePhysxTestInitPosition == 0) {
             Unk_MagicEntity* pPlayer = FUN_14099eef0(pOwner);
             if (pPlayer != NULL && m_nState != 5) {
-                Unk_StreamPoint ptDelta = m_ptStart.FUN_140965c40(pPlayer->vf18_GetPosition());
+                Vector3 ptDelta = m_ptStart.FUN_140965c40(pPlayer->vf18_GetPosition());
                 if (m_n530 != 0 && bFollowHand == 0)
                     ptDelta = m_ptStart.FUN_140965c40(m_ptAc);
                 ptDelta.z = 0;
                 float fLen = ptDelta.FUN_140968990();
                 if (0.0f < fLen) {
-                    Unk_StreamPoint ptHit;
-                    Unk_StreamPoint ptFrom = m_ptStart.FUN_14097fd50(ptDelta.FUN_1409f7960().FUN_14097fc90(fLen));
+                    Vector3 ptHit;
+                    Vector3 ptFrom = m_ptStart.FUN_14097fd50(ptDelta.FUN_1409f7960().FUN_14097fc90(fLen));
                     if (FUN_1409f7ca0()->FUN_14168a230(ptFrom, ptHit, ptDelta, fLen, 0x201) != 0) {
                         m_ptStart = ptHit.FUN_140965c40(ptDelta.FUN_14097fc90(5.0f));
                         m_ptTarget = m_ptStart;
@@ -1484,14 +1484,14 @@ void CMagic::FUN_141461140()
     Unk_MagicEntity* pTarget = FUN_141464360();
     if (pTarget != NULL && bTrack) {
         if (m_spSkill->FUN_141759050()->m_n34 == 0) {
-            Unk_StreamPoint ptHit = DAT_143b01a60;
+            Vector3 ptHit = DAT_143b01a60;
             if (FUN_141467100(pTarget, &ptHit) == 0)
                 m_ptTarget = pTarget->vf18_GetPosition().FUN_14097fd50(pTarget->vf37_GetExtent());
             else
                 m_ptTarget = ptHit;
         } else {
             m_ptTarget = DAT_143b01a60;
-            Unk_StreamPoint ptHit = DAT_143b01a60;
+            Vector3 ptHit = DAT_143b01a60;
             if (FUN_141467100(pTarget, &ptHit) == 0) {
                 if (m_data.m_nTraceTargetOffsetPos == 0) {
                     Unk_MagicActor* pActor = FUN_1409ffd30(pTarget);
@@ -1523,11 +1523,11 @@ void CMagic::FUN_1414614d0()
     m_ptDirection.FUN_140968990();
     Unk_NiMatrix3 matRotation;
     FUN_1420849a0(&matRotation);
-    Unk_StreamPoint ptAxis = m_ptDirection.FUN_1409f7960();
+    Vector3 ptAxis = m_ptDirection.FUN_1409f7960();
     if (FUN_14028d530(&ptAxis, &DAT_143b01a60))
         ptAxis = m_spSkill->m_ptDefaultDir;
-    Unk_StreamPoint ptRight = DAT_143b01a60;
-    Unk_StreamPoint ptDown;
+    Vector3 ptRight = DAT_143b01a60;
+    Vector3 ptDown;
     if (FUN_14028d530(&ptAxis, &DAT_143a08cf8)) {
         ptRight = DAT_143a08cd8;
     } else if (FUN_14028d530(&ptAxis, &(ptDown = DAT_143a08cf8.FUN_1409f7960()))) {
@@ -1535,7 +1535,7 @@ void CMagic::FUN_1414614d0()
     } else {
         ptRight = ptAxis.FUN_14109adc0(DAT_143a08cf8);
     }
-    Unk_StreamPoint ptUp = ptRight.FUN_14109adc0(ptAxis);
+    Vector3 ptUp = ptRight.FUN_14109adc0(ptAxis);
     matRotation.FUN_14109aa30(0, ptRight);
     matRotation.FUN_14109aa30(1, ptAxis);
     matRotation.FUN_14109aa30(2, ptUp);
@@ -1552,7 +1552,7 @@ void CMagic::FUN_141461720(int nFlag)
         m_ptDirection.FUN_140968990();
     }
     Unk_NiMatrix3 matRotation;
-    Unk_StreamPoint ptAxis = m_ptDirection.FUN_1409f7960();
+    Vector3 ptAxis = m_ptDirection.FUN_1409f7960();
     if (m_data.m_nLookAtType == 0) {
         ptAxis = m_ptDirection.FUN_1409f7960();
     } else if (m_data.m_nLookAtType == 1) {
@@ -1560,13 +1560,13 @@ void CMagic::FUN_141461720(int nFlag)
         ptAxis.z = 0;
         ptAxis.FUN_140968990();
     } else if (m_data.m_nLookAtType == 2) {
-        Unk_StreamPoint ptMove = m_ptCurrent.FUN_140965c40(m_ptLast);
+        Vector3 ptMove = m_ptCurrent.FUN_140965c40(m_ptLast);
         ptMove.FUN_140968990();
         ptAxis = ptMove.FUN_1409f7960();
     }
     if (ptAxis.FUN_140552690(DAT_143b01a60))
         ptAxis = m_spSkill->m_ptDefaultDir;
-    Unk_StreamPoint ptRight = DAT_143b01a60;
+    Vector3 ptRight = DAT_143b01a60;
     if (ptAxis.FUN_140552690(DAT_143a08cf8)) {
         ptRight = DAT_143a08cd8;
     } else if (ptAxis.FUN_140552690(DAT_143a08cf8.FUN_1409f7960())) {
@@ -1574,7 +1574,7 @@ void CMagic::FUN_141461720(int nFlag)
     } else {
         ptRight = ptAxis.FUN_14109adc0(DAT_143a08cf8);
     }
-    Unk_StreamPoint ptUp = ptRight.FUN_14109adc0(ptAxis);
+    Vector3 ptUp = ptRight.FUN_14109adc0(ptAxis);
     matRotation.FUN_14109aa30(0, ptRight);
     matRotation.FUN_14109aa30(1, ptAxis);
     matRotation.FUN_14109aa30(2, ptUp);
@@ -1594,7 +1594,7 @@ void CMagic::FUN_1414607e0()
     if (FUN_1414691d0(&kLookup, 0))
         return;
     Unk_MagicEntity* pEntity = static_cast<Unk_MagicEntity*>(kLookup.m_p);
-    Unk_StreamPoint ptNew = m_ptCurrent;
+    Vector3 ptNew = m_ptCurrent;
     ptNew.x = pEntity->vf18_GetPosition().x;
     ptNew.y = pEntity->vf18_GetPosition().y;
     ptNew.z = pEntity->vf18_GetPosition().z;
@@ -1669,11 +1669,11 @@ void CMagic::FUN_141463960()
     int nCaster = m_spSkill->m_nCasterId;
     if (m_n280 == 0) {
         m_n280 = 1;
-        ATL::CAtlArray<Unk_StreamPoint> kPoints;
+        ATL::CAtlArray<Vector3> kPoints;
         FUN_1410a7400(&kPoints, &m_ptStart);
         Unk_MagicEntity* pCaster = FUN_1403ed2d0()->FUN_141bd1200(nCaster);
         if (pCaster != NULL) {
-            Unk_StreamPoint ptEnd = DAT_143b01a60;
+            Vector3 ptEnd = DAT_143b01a60;
             if (FUN_141467100(pCaster, &ptEnd) == 0)
                 ptEnd = pCaster->vf18_GetPosition().FUN_14097fd50(pCaster->vf37_GetExtent());
             FUN_1410a7400(&kPoints, &ptEnd);
@@ -1694,11 +1694,11 @@ void CMagic::FUN_141463960()
         }
     }
     if (m_n280 != 0) {
-        ATL::CAtlArray<Unk_StreamPoint> kPoints;
+        ATL::CAtlArray<Vector3> kPoints;
         FUN_1410a7400(&kPoints, &m_ptStart);
         Unk_MagicEntity* pCaster = FUN_1403ed2d0()->FUN_141bd1200(nCaster);
         if (pCaster != NULL) {
-            Unk_StreamPoint ptEnd = DAT_143b01a60;
+            Vector3 ptEnd = DAT_143b01a60;
             if (FUN_141467100(pCaster, &ptEnd) == 0)
                 ptEnd = pCaster->vf18_GetPosition().FUN_14097fd50(pCaster->vf37_GetExtent());
             FUN_1410a7400(&kPoints, &ptEnd);
@@ -1742,11 +1742,11 @@ void CMagic::FUN_141464790(void* pHits, int nHits)
             Unk_MagicNpc* pNpc = FUN_140a38a00(pHit);
             if (pNpc == NULL) {
                 float fRange = FUN_1401d3200()->m_hitRange.FUN_1402bac70();
-                Unk_StreamPoint ptAt = pHit->vf18_GetPosition();
+                Vector3 ptAt = pHit->vf18_GetPosition();
                 FUN_1403ed280()->FUN_1411a5580(nEffect, 1, 1, ptAt, fRange);
             } else {
                 float fRange = FUN_1401d3200()->m_hitRange.FUN_1402bac70();
-                Unk_StreamPoint ptAt = pNpc->vf18_GetPosition();
+                Vector3 ptAt = pNpc->vf18_GetPosition();
                 MS2Ptr<Unk_NpcData> spData = pNpc->FUN_141093270();
                 FUN_1403ed280()->FUN_1411a5580(nEffect, spData->m_nHitEffect, 1, ptAt, fRange);
             }
@@ -1762,7 +1762,7 @@ void FUN_140a00cb0(void* pDst, void* pSrc);                         // CAtlArray
 void FUN_140a00a20(void* pArray, Unk_MagicHitRef* pRef);            // CAtlArray::Add
 void FUN_1417ea310(Unk_MagicEntity* pEntity, void* pHits);          // sort the hits by distance
 void FUN_14152e0c0(void* pPC);
-float FUN_14123cd50(Unk_StreamPoint ptDir);                         // yaw of a facing
+float FUN_14123cd50(Vector3 ptDir);                         // yaw of a facing
 class Unk_MagicHitHolder {
 public:
     Unk_MagicHitHolder(int nNull);                                  // 0x140963df0
@@ -1826,15 +1826,15 @@ void CMagic::FUN_141464d00(unsigned nNow, const Unk_MagicSkillRow* pRow)
             if (FUN_14123c580(pHit) == FUN_14123c580(pOwner)) {
                 FUN_140a00a20(&aKeep, FUN_140a006a0(&spCtx->m_aHits, i));
             } else {
-                Unk_StreamPoint ptHit(0.0f, 0.0f, 0.0f);
+                Vector3 ptHit(0.0f, 0.0f, 0.0f);
                 if (FUN_141467100(pHit, &ptHit) == 0)
                     ptHit = pHit->vf18_GetPosition();
-                Unk_StreamPoint ptDelta = ptHit.FUN_140965c40(pOwner->vf18_GetPosition());
+                Vector3 ptDelta = ptHit.FUN_140965c40(pOwner->vf18_GetPosition());
                 ptDelta.z = 0.0f;
                 float fLen = ptDelta.FUN_140968990();
                 if (fLen > 0.0f) {
-                    Unk_StreamPoint ptBlock(0.0f, 0.0f, 0.0f);
-                    Unk_StreamPoint ptFrom = pOwner->vf18_GetPosition();
+                    Vector3 ptBlock(0.0f, 0.0f, 0.0f);
+                    Vector3 ptFrom = pOwner->vf18_GetPosition();
                     if (FUN_1409f7ca0()->FUN_14168a230(ptFrom, ptBlock, ptDelta, fLen, 0x201) == 0)
                         FUN_140a00a20(&aKeep, FUN_140a006a0(&spCtx->m_aHits, i));
                 }
@@ -1891,8 +1891,8 @@ void CMagic::FUN_141464d00(unsigned nNow, const Unk_MagicSkillRow* pRow)
     packet.Encode8(m_spSkill->m_nTagSub);
     packet.WriteVector3(m_ptStart);
     packet.WriteVector3(pOwner->vf18_GetPosition());
-    Unk_StreamPoint ptFace = pOwner->FUN_14123cc20();
-    packet.WriteVector3(Unk_StreamPoint(0.0f, 0.0f, FUN_14123cd50(ptFace)));
+    Vector3 ptFace = pOwner->FUN_14123cc20();
+    packet.WriteVector3(Vector3(0.0f, 0.0f, FUN_14123cd50(ptFace)));
     packet.Encode1(m_spSkill->m_b5c);
     packet.Encode1((unsigned char)nHits);
     packet.Encode4(m_spSkill->m_n8c);
@@ -2015,7 +2015,7 @@ void CMagic::FUN_141465b30(unsigned nNow, const Unk_MagicSkillRow* pRow)
     }
     if (!FUN_141464490() && m_n528 == 2) {
         m_n1CC = 1;
-        Unk_StreamPoint ptSide = m_ptDirection.FUN_1409f7960();
+        Vector3 ptSide = m_ptDirection.FUN_1409f7960();
         float fAngle = FUN_14109ace0() * (FUN_141198810() * 1.5707964f * 0.5f + 0.7853982f);
         Unk_NiMatrix3 matRot;
         matRot.FUN_142084c10(fAngle);
@@ -2112,17 +2112,17 @@ void CMagic::FUN_141461bd0(unsigned nNow)
             ATL::CAtlArray<void*> aUnused;
             CSkillCollisionManager::CollisionPtr spShape(0);
             if (m_spSkill->FUN_141759090() == 0) {
-                Unk_StreamPoint ptPos = pOwner->vf18_GetPosition();
-                Unk_StreamPoint ptRot = pOwner->vf20_GetRotation();
+                Vector3 ptPos = pOwner->vf18_GetPosition();
+                Vector3 ptRot = pOwner->vf20_GetRotation();
                 spShape = FUN_141469a90()->Create(m_spSkill->m_spSrc.m_p, m_spSkill->m_nSrcLevel, m_spSkill->m_nSrcIndex,
                     pOwner, 0.0f);
                 if (spShape.get() != 0) {
                     if (pOwner->vf108_GetLockOn()) {
-                        Unk_StreamPoint ptAdd = DAT_143b01a60;
-                        Unk_StreamPoint ptAddRot = DAT_143b01a60;
+                        Vector3 ptAdd = DAT_143b01a60;
+                        Vector3 ptAddRot = DAT_143b01a60;
                         ptAdd = pRow->m_ptB4;
                         ptAddRot.z = pRow->m_fC0;
-                        Unk_StreamPoint ptFace = pOwner->FUN_14123cc20();
+                        Vector3 ptFace = pOwner->FUN_14123cc20();
                         float fYaw = FUN_14123ce70(ptFace);
                         Unk_NiMatrix3 matRot;
                         matRot.FUN_142084c10(fYaw + 3.1415927f);
@@ -2133,13 +2133,13 @@ void CMagic::FUN_141461bd0(unsigned nNow)
                     spShape->vfunc_3(ptPos, ptRot, 1.0f);
                 }
             } else {
-                Unk_StreamPoint ptSpan = m_ptLast.FUN_140965c40(m_ptCurrent);
+                Vector3 ptSpan = m_ptLast.FUN_140965c40(m_ptCurrent);
                 float fLen = ptSpan.FUN_140968990();
                 CBoxCollision* pBox = new CBoxCollision();
                 MS2Ptr<CBoxCollision> spBox(0);
                 spBox.AssignRaw(pBox);
-                pBox->m_ptBox = Unk_StreamPoint(pRow->m_ptBox.x, fLen + pRow->m_ptBox.y, pRow->m_ptBox.z);
-                pBox->m_ptSize = Unk_StreamPoint(0, pRow->m_ptBoxSize.y, pRow->m_ptBoxSize.z);
+                pBox->m_ptBox = Vector3(pRow->m_ptBox.x, fLen + pRow->m_ptBox.y, pRow->m_ptBox.z);
+                pBox->m_ptSize = Vector3(0, pRow->m_ptBoxSize.y, pRow->m_ptBoxSize.z);
                 pBox->m_kColor = NiColorA(0.0f, 0.0f, 1.0f, 1.0f);
                 pBox->vfunc_4();
                 pBox->vfunc_2(m_ptLast, reinterpret_cast<const NiMatrix3&>(m_matRotation), 1.0f);
@@ -2178,14 +2178,14 @@ MS2_REPLACE_METHOD(0x141464b40, CMagic, FUN_141464b40, 435, 0xE5AFB908);
 
 // MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
 // @0x141467f60
-void FUN_141467f60(const Unk_StreamPoint& ptPos, const Unk_StreamPoint* pDirection, Unk_MagicXform* pOut)
+void FUN_141467f60(const Vector3& ptPos, const Vector3* pDirection, Unk_MagicXform* pOut)
 {
     Unk_NiMatrix3 matRotation;
     FUN_1420849a0(&matRotation);
     if (pDirection->FUN_140552700(DAT_143b01a60)) {
-        Unk_StreamPoint ptAxis = *pDirection;
-        Unk_StreamPoint ptRight = DAT_143b01a60;
-        Unk_StreamPoint ptDown;
+        Vector3 ptAxis = *pDirection;
+        Vector3 ptRight = DAT_143b01a60;
+        Vector3 ptDown;
         if (ptAxis.FUN_140552690(DAT_143a08cf8)) {
             ptRight = DAT_143a08cd8;
         } else if (ptAxis.FUN_140552690(ptDown = DAT_143a08cf8.FUN_1409f7960())) {
@@ -2193,7 +2193,7 @@ void FUN_141467f60(const Unk_StreamPoint& ptPos, const Unk_StreamPoint* pDirecti
         } else {
             ptRight = ptAxis.FUN_14109adc0(DAT_143a08cf8);
         }
-        Unk_StreamPoint ptUp = ptRight.FUN_14109adc0(ptAxis);
+        Vector3 ptUp = ptRight.FUN_14109adc0(ptAxis);
         matRotation.FUN_14109aa30(0, ptRight);
         matRotation.FUN_14109aa30(1, ptAxis);
         matRotation.FUN_14109aa30(2, ptUp);
@@ -2214,7 +2214,7 @@ void FUN_141467f60(const Unk_StreamPoint& ptPos, const Unk_StreamPoint* pDirecti
 }
 
 // @0x141461a80
-void CMagic::FUN_141461a80(Unk_StreamPoint ptNew)
+void CMagic::FUN_141461a80(Vector3 ptNew)
 {
     m_ptLast = m_ptCurrent;
     m_ptCurrent = ptNew;
@@ -2226,7 +2226,7 @@ void CMagic::FUN_141461a80(Unk_StreamPoint ptNew)
 MS2_REPLACE_METHOD(0x141461A80, CMagic, FUN_141461a80, 210, 0x555ADF73);
 
 // @0x141461b60
-void CMagic::FUN_141461b60(const Unk_StreamPoint& ptDirection)
+void CMagic::FUN_141461b60(const Vector3& ptDirection)
 {
     m_ptDirection = ptDirection;
     FUN_141461720(0);
@@ -2294,7 +2294,7 @@ bool CMagic::FUN_141464220()
     Unk_MagicEntity* pLocal = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pLocal == NULL)
         return false;
-    Unk_StreamPoint ptLocal = pLocal->vf18_GetPosition();
+    Vector3 ptLocal = pLocal->vf18_GetPosition();
     float fDist = FUN_140966f00(m_ptCurrent, ptLocal);
     return *pCfg->FUN_1410a71d0() < fDist;
 }
@@ -2341,27 +2341,27 @@ void CMagic::FUN_1414644d0(int bShow)
 MS2_REPLACE_METHOD(0x1414644D0, CMagic, FUN_1414644d0, 69, 0x367BA853);
 
 // @0x141464520
-Unk_StreamPoint CMagic::FUN_141464520()
+Vector3 CMagic::FUN_141464520()
 {
-    Unk_StreamPoint kColumn;
+    Vector3 kColumn;
     m_matRotation.FUN_140a01190(0, kColumn);
     return kColumn;
 }
 MS2_REPLACE_METHOD(0x141464520, CMagic, FUN_141464520, 84, 0x57A64776);
 
 // @0x141464580
-Unk_StreamPoint CMagic::FUN_141464580()
+Vector3 CMagic::FUN_141464580()
 {
-    Unk_StreamPoint kColumn;
+    Vector3 kColumn;
     m_matRotation.FUN_140a01190(1, kColumn);
     return kColumn;
 }
 MS2_REPLACE_METHOD(0x141464580, CMagic, FUN_141464580, 87, 0xCDD09EF7);
 
 // @0x1414645e0
-Unk_StreamPoint CMagic::FUN_1414645e0()
+Vector3 CMagic::FUN_1414645e0()
 {
-    Unk_StreamPoint kColumn;
+    Vector3 kColumn;
     m_matRotation.FUN_140a01190(2, kColumn);
     return kColumn;
 }
@@ -2429,7 +2429,7 @@ void CMagic::FUN_141466da0(unsigned nNow, const Unk_MagicSkillRow* pRow)
         packet.Encode4(m_spSkill->m_n8c);
         packet.Encode4(m_spSkill->m_n84);
         packet.WriteVector3(m_ptCurrent);
-        Unk_StreamPoint ptDir = DAT_143a08d08;
+        Vector3 ptDir = DAT_143a08d08;
         FUN_140a0b1f0(m_matRotation, &ptDir);
         packet.WriteVector3(ptDir);
         FUN_140710590(packet);
@@ -2440,7 +2440,7 @@ MS2_REPLACE_METHOD(0x141466DA0, CMagic, FUN_141466da0, 848, 0x980F5959);
 
 // @0x141467100
 // MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
-int CMagic::FUN_141467100(Unk_MagicEntity* pEntity, Unk_StreamPoint* pOut)
+int CMagic::FUN_141467100(Unk_MagicEntity* pEntity, Vector3* pOut)
 {
     const Unk_MagicSkillRow* pRow = m_spSkill->FUN_141759050();
     if (pRow == NULL)
@@ -2456,12 +2456,12 @@ int CMagic::FUN_141467100(Unk_MagicEntity* pEntity, Unk_StreamPoint* pOut)
     if (m_data.FUN_14145c180())
         fMaxZ = fMaxZ + m_data.m_ptControlEnd.z;
     float fNearest = FLT_MAX;
-    Unk_StreamPoint ptNearest = DAT_143b01a60;
+    Vector3 ptNearest = DAT_143b01a60;
     for (unsigned i = 0; i < FUN_140a01230(&kParts); ++i) {
         Unk_MagicAnchorPtr spAnchor;
         FUN_140a00180(&spAnchor, FUN_140a010d0(&kParts, i));
         if (!spAnchor.FUN_140a00660(0)) {
-            Unk_StreamPoint ptAnchor = FUN_141b6e150(spAnchor.FUN_140ae1940()->m_kPose.FUN_140a01180());
+            Vector3 ptAnchor = FUN_141b6e150(spAnchor.FUN_140ae1940()->m_kPose.FUN_140a01180());
             if (fMaxZ < ptAnchor.z)
                 ptAnchor.z = fMaxZ;
             float fDist = FUN_140966f00(m_ptCurrent, ptAnchor);
@@ -2519,14 +2519,14 @@ Unk_MagicTagPtr CMagicModel::FUN_141467bc0()
 }
 
 // @0x141467c10
-Unk_StreamPoint CMagicModel::FUN_141467c10()
+Vector3 CMagicModel::FUN_141467c10()
 {
     return m_spMagic->m_ptCurrent;
 }
 MS2_REPLACE_METHOD(0x141467C10, CMagicModel, FUN_141467c10, 61, 0xE0BDA332);
 
 // @0x141467c60
-Unk_StreamPoint CMagicModel::FUN_141467c60()
+Vector3 CMagicModel::FUN_141467c60()
 {
     return m_spMagic->m_ptDirection;
 }
@@ -2540,16 +2540,16 @@ Unk_NiMatrix3 CMagicModel::FUN_141467cb0()
 MS2_REPLACE_METHOD(0x141467CB0, CMagicModel, FUN_141467cb0, 64, 0xFF5606DF);
 
 // @0x141467d00
-void CMagicModel::FUN_141467d00(Unk_StreamPoint ptNew)
+void CMagicModel::FUN_141467d00(Vector3 ptNew)
 {
     m_spMagic->FUN_141461a80(ptNew);
 }
 MS2_REPLACE_METHOD(0x141467D00, CMagicModel, FUN_141467d00, 73, 0x42C0EDEA);
 
 // @0x141467d50
-void CMagicModel::FUN_141467d50(Unk_StreamPoint ptDirection)
+void CMagicModel::FUN_141467d50(Vector3 ptDirection)
 {
-    Unk_StreamPoint ptCopy = ptDirection;
+    Vector3 ptCopy = ptDirection;
     m_spMagic->FUN_141461b60(ptCopy);
 }
 MS2_REPLACE_METHOD(0x141467D50, CMagicModel, FUN_141467d50, 73, 0x85005B77);
@@ -2630,7 +2630,7 @@ void CMagicModel::FUN_141467da0()
 MS2_REPLACE_METHOD(0x141467DA0, CMagicModel, FUN_141467da0, 39, 0x0E5A1776);
 
 // @0x141467500
-void CMagicModel::FUN_141467500(Unk_MagicTagPtr spSkill, Unk_MagicTagPtr spCaster, Unk_StreamPoint ptStart,
+void CMagicModel::FUN_141467500(Unk_MagicTagPtr spSkill, Unk_MagicTagPtr spCaster, Vector3 ptStart,
     unsigned n530, unsigned n534, unsigned n53c)
 {
     m_spMagic = new CMagic();
@@ -2761,7 +2761,7 @@ MS2_REPLACE_METHOD(0x14146B420, CMagicService, GetDisplayName, 13, 0xE5D35438);
 
 // MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
 // @0x14146b440
-void CMagicService::FUN_14146b440(Unk_MagicTag* pTag, int bTracked, Unk_MagicXform* pXform, Unk_StreamPoint ptDirection)
+void CMagicService::FUN_14146b440(Unk_MagicTag* pTag, int bTracked, Unk_MagicXform* pXform, Vector3 ptDirection)
 {
     if (pTag->m_arrB0.IsEmpty())
         return;
@@ -2874,7 +2874,7 @@ void CMagicService::FUN_14146bc80(Unk_MagicTag* pTag)
     if (pCaster == NULL)
         return;
     // MS2: the cast record's +0x78 is read as the hit point here (it aliases the second word of m_spLinked)
-    const Unk_StreamPoint& ptHit = *reinterpret_cast<const Unk_StreamPoint*>(&pTag->m_spLinked.m_p);
+    const Vector3& ptHit = *reinterpret_cast<const Vector3*>(&pTag->m_spLinked.m_p);
     if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(0x73) == 0) {
         Unk_MagicXform kXform;
         kXform.m_translate = Unk_NiPoint3(pCaster->vf18_GetPosition());

@@ -46,11 +46,11 @@ public:
     void FUN_1410aa380(bool bVisible);                                  // show / hide the guide
     bool FUN_1410aa420();                                               // the guide is idle
     void FUN_1410aa4a0(bool bVisible);                                  // show / hide the second guide
-    Unk_StreamPoint GetPtCell();                                    // the cell position
+    Vector3 GetPtCell();                                    // the cell position
     void FUN_1410aa550(int nMode);                                      // set the mode
     void FUN_1410aa590();                                               // arm the move timer (200 ms)
     void FUN_1410aa5c0(CubeItemInfo* pInfo);                            // set the item (or clear it)
-    void FUN_1410aa6f0(Unk_StreamPoint kPos, char bNoUpdate);    // place the guide at a cell
+    void FUN_1410aa6f0(Vector3 kPos, char bNoUpdate);    // place the guide at a cell
     void FUN_1410aad50();                                               // confirm: build / move / rotate
     void FUN_1410ab5a0();                                               // remove (without the notice)
     void FUN_1410ab5c0(unsigned char bNotice);                          // remove the cube at the cell
@@ -68,9 +68,9 @@ public:
     void FUN_1410ad780();                                               // create the three effect items
     void FUN_1410add30();                                               // drop the three effect items
     void FUN_1410aded0();                                               // request a move / install
-    void FUN_1410ae380(Unk_StreamPoint kPos);                    // run the build validator
+    void FUN_1410ae380(Vector3 kPos);                    // run the build validator
     void FUN_1410ae960(unsigned* pLeft, unsigned* pRight);              // can the character lift up / down
-    void FUN_1410aeec0(const Unk_StreamPoint& kPos);                    // snap down to the nearest cube column
+    void FUN_1410aeec0(const Vector3& kPos);                    // snap down to the nearest cube column
     void FUN_1410af0c0();                                               // empty
     void FUN_1410af0d0();                                               // drop the third guide
     void FUN_1410af140();                                               // orient the third guide
@@ -85,8 +85,8 @@ public:
     int m_pad_34;
     MS2Ptr<CubeItemInfo> m_spItem;          // +0x38
     MS2Ptr<CubeItemInfo> m_spItem2;         // +0x48
-    Unk_StreamPoint m_ptLast;               // +0x58
-    Unk_StreamPoint m_ptCell;               // +0x64
+    Vector3 m_ptLast;               // +0x58
+    Vector3 m_ptCell;               // +0x64
     Timer m_tPulse;                         // +0x70
     Timer m_tSlide;                         // +0xa8
     Timer m_tRotate;                        // +0xe0
@@ -105,7 +105,7 @@ public:
     bool m_bFirstMove;                      // +0x180
     int m_nCheck;                           // +0x184 the validator result
     MS2Ptr<CCubeGuideWrapper> m_spGuide3;   // +0x188
-    Unk_StreamPoint m_ptOffset;             // +0x198
+    Vector3 m_ptOffset;             // +0x198
     bool m_bVisible;                        // +0x1a4
     bool m_bPending;                        // +0x1a5
     short m_pad_1a6;

@@ -154,7 +154,7 @@ struct Unk_DecoCamera
 Unk_DecoCamera* FUN_1409478c0();
 struct Unk_DecoCollision
 {
-    int FUN_14168a230(Unk_DecoPoint3 ptFrom, Unk_StreamPoint& ptHit, Unk_DecoPoint3 ptDir, float fLen, int nMask);
+    int FUN_14168a230(Unk_DecoPoint3 ptFrom, Vector3& ptHit, Unk_DecoPoint3 ptDir, float fLen, int nMask);
 };
 Unk_DecoCollision* FUN_1409f7ca0();
 
@@ -408,7 +408,7 @@ bool DecoEditService::AddTransform(const NiTransform& xf)
 MS2_REPLACE_METHOD(0x1411704D0, DecoEditService, AddTransform, 61, 0x47FC5A4B);
 
 // @0x141170520
-void DecoEditService::CollectNear(Unk_StreamPoint pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut)
+void DecoEditService::CollectNear(Vector3 pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut)
 {
     DecoLayer* pLayer = GetLayer();
     if (pLayer == 0)
@@ -449,7 +449,7 @@ efd::AsyncResult DecoEditService::OnTick()
                 Unk_DecoPoint3 kDir;
                 if (FUN_1409478c0()->FUN_140af0520(kCursor, &kOrigin, &kDir) != 0)
                 {
-                    Unk_StreamPoint kHit;
+                    Vector3 kHit;
                     if (FUN_1409f7ca0()->FUN_14168a230(Unk_DecoPoint3(kOrigin), kHit, Unk_DecoPoint3(kDir), 10000.0f, 0x201) != 0)
                     {
                         spBrush->SetPtPos(kHit);
@@ -679,7 +679,7 @@ bool DecoItem::AddTransform(const NiTransform& xf)
 }
 
 // @0x141174ab0
-void DecoItem::CollectNear(Unk_StreamPoint pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut)
+void DecoItem::CollectNear(Vector3 pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut)
 {
     NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
     if (pRoot != 0)
@@ -691,7 +691,7 @@ void DecoItem::CollectNear(Unk_StreamPoint pt, float fRadius, ATL::CAtlArray<NiM
             NiMeshHWInstance* pInstance = NiDynamicCast(NiMeshHWInstance, pObject);
             if (pInstance != 0)
             {
-                Unk_StreamPoint kDelta = *(const Unk_StreamPoint*)&FUN_140e69200(pInstance);
+                Vector3 kDelta = *(const Vector3*)&FUN_140e69200(pInstance);
                 kDelta = kDelta.FUN_140965c40(pt);
                 if (kDelta.FUN_140967ac0() < fRadius)
                     aOut.Add(pInstance);
@@ -1042,7 +1042,7 @@ bool DecoLayer::AddTransform(const NiTransform& xf)
 }
 
 // @0x141177580
-void DecoLayer::CollectNear(Unk_StreamPoint pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut)
+void DecoLayer::CollectNear(Vector3 pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut)
 {
     for (unsigned i = 0; i < m_aItems.GetCount(); i++)
     {

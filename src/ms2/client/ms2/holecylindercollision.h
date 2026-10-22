@@ -10,17 +10,17 @@ public:
     CHoleCylinderCollision();                                       // 0x140d03650
     virtual ~CHoleCylinderCollision();                              // 0x140d03780
     virtual void vfunc_1();                                         // 0x140d05650
-    virtual void vfunc_3(Unk_StreamPoint ptPos, Unk_StreamPoint ptDir, float fScale);   // 0x140d03840
+    virtual void vfunc_3(Vector3 ptPos, Vector3 ptDir, float fScale);   // 0x140d03840
     virtual void vfunc_5();                                         // 0x140d03a60
     virtual float vfunc_6();                                          // 0x140d038d0
 
     float GetTop() const;                                           // 0x140d038f0 (inline)
     float GetBottom() const;                                        // 0x140d03920 (inline)
-    int Contains(const Unk_StreamPoint& pt) const;                 // 0x140d03950
-    int ContainsPoint(const Unk_StreamPoint& pt) const;                   // 0x140d039a0
+    int Contains(const Vector3& pt) const;                 // 0x140d03950
+    int ContainsPoint(const Vector3& pt) const;                   // 0x140d039a0
 
 private:
-    void BuildWire(NiMesh* pMesh, const Unk_StreamPoint* pPoints, unsigned int nCount);   // 0x140d056f0
+    void BuildWire(NiMesh* pMesh, const Vector3* pPoints, unsigned int nCount);   // 0x140d056f0
 
     MS2_LAYOUT_FRIEND;
     friend class CBaseCollision;        // the detect/intersect shape tests read the ring geometry
@@ -32,7 +32,7 @@ private:
     NiMeshPtr m_aspDraw[6];             // +0xa0 meshes vfunc_1 renders
     float m_fInnerRadius;               // +0xd0
     float m_fOuterRadius;               // +0xd4
-    Unk_StreamPoint m_ptCenter;         // +0xd8
+    Vector3 m_ptCenter;         // +0xd8
     float m_fHeight;                    // +0xe4
 };
 MS2_CHECK_SIZE(CHoleCylinderCollision, 0xe8);

@@ -67,10 +67,10 @@ public:
     int m_nCurveSamples;            // +0x64 samples kept in the ribbon (segments * quality)
     int m_nSegments;                // +0x68 control segments kept (length * sampling rate)
     int m_unk_6c;                   // +0x6c
-    efd::vector<Unk_StreamPoint> m_kPointsA;    // +0x70 trail 1 control points (reserved 0x28)
-    efd::vector<Unk_StreamPoint> m_kPointsB;    // +0x88 trail 2 control points
-    efd::vector<Unk_StreamPoint> m_kCurveA;     // +0xa0 trail 1 smoothed samples
-    efd::vector<Unk_StreamPoint> m_kCurveB;     // +0xb8 trail 2 smoothed samples
+    efd::vector<Vector3> m_kPointsA;    // +0x70 trail 1 control points (reserved 0x28)
+    efd::vector<Vector3> m_kPointsB;    // +0x88 trail 2 control points
+    efd::vector<Vector3> m_kCurveA;     // +0xa0 trail 1 smoothed samples
+    efd::vector<Vector3> m_kCurveB;     // +0xb8 trail 2 smoothed samples
     double m_dLastSample;           // +0xd0 time of the last control point
     float m_fInterval;              // +0xd8 seconds between control points
     CString m_strNode1;             // +0xe0 param node1

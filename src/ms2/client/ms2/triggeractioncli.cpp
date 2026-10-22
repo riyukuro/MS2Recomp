@@ -80,7 +80,7 @@
 // ---- exe data ----
 extern char DAT_143afa4d8;      // NiNode::ms_RTTI
 extern char DAT_143afa950;      // RTTI of the camera-carrying scene node
-extern Unk_StreamPoint DAT_143b01a60;   // NiPoint3::ZERO
+extern Vector3 DAT_143b01a60;   // NiPoint3::ZERO
 
 // ---- unit-local views of exe objects ----
 
@@ -363,30 +363,30 @@ void TriggerObject::Init(int nId, Unk_EntRef ent)
 }
 
 // ---- trigger-box test ----
-int FUN_1409618c0(egf::Entity* pEntity, unsigned uPropId, Unk_StreamPoint* pOut);
+int FUN_1409618c0(egf::Entity* pEntity, unsigned uPropId, Vector3* pOut);
 void FUN_140add1a0(Unk_CtbBounds3* pSelf, float x0, float y0, float z0, float x1, float y1, float z1);
 void FUN_140adca00(Unk_CtbMat33* pSelf);
 void FUN_140add040(Unk_CtbMat33* pSelf, float fAngle);
 void FUN_140adc690(Unk_CtbObb* pOut, const Unk_CtbBounds3* pBounds, const Unk_CtbMat34* pPose);
 bool FUN_140adc610(const Unk_CtbObb* pObb, const Unk_CtbVec3& pt);
-const Unk_CtbVec3* FUN_141b6e0e0(void* pTmp, const Unk_StreamPoint* pPt);
+const Unk_CtbVec3* FUN_141b6e0e0(void* pTmp, const Vector3* pPt);
 
 // @0x140de5f60
 // MS2-FUNCTIONAL: box locals are laid out by the compiler
-bool TriggerObject::Contains(Unk_StreamPoint pt)
+bool TriggerObject::Contains(Vector3 pt)
 {
     if (m_spEntity.FUN_1408b70b0(0) != 0)
         return false;
-    Unk_StreamPoint ptPos;
-    Unk_StreamPoint ptSize;
-    Unk_StreamPoint ptRot;
+    Vector3 ptPos;
+    Vector3 ptSize;
+    Vector3 ptRot;
     egf::FlatModel* pModel = FUN_1408a9bd0(TRIG_ENT());
     if (!pModel->ContainsModel(0x5fc1ef17))
         return false;
     FUN_1409618c0(TRIG_ENT(), 0xfd95ca52, &ptPos);
     FUN_1409618c0(TRIG_ENT(), 0x9dc22aea, &ptSize);
     FUN_1409618c0(TRIG_ENT(), 0x68c7c29d, &ptRot);
-    Unk_StreamPoint ptHalf = ptSize.FUN_14097fc90(0.5f);
+    Vector3 ptHalf = ptSize.FUN_14097fc90(0.5f);
     Unk_CtbBounds3 bounds;
     FUN_140add1a0(&bounds, -ptHalf.x, -ptHalf.y, -ptHalf.z, ptHalf.x, ptHalf.y, ptHalf.z);
     Unk_CtbMat34 pose(true);
@@ -902,8 +902,8 @@ public:
     void FUN_140aed750(int n, int b);
     void FUN_140aed1c0();
     int FUN_140af7e30();
-    Unk_StreamPoint FUN_140a17e10();                    // current mode: setting m_c (hidden return=rdx)
-    Unk_StreamPoint FUN_140af8290();                    // current mode: setting m_18
+    Vector3 FUN_140a17e10();                    // current mode: setting m_c (hidden return=rdx)
+    Vector3 FUN_140af8290();                    // current mode: setting m_18
 };
 Unk_TrigCamMgr* FUN_1409478c0();
 float FUN_140ad4b40(Unk_TrigCamMgr* p);
@@ -1010,7 +1010,7 @@ void TriggerObjectCamera::vfunc_3()
                     goto LAB_done;
             } while (FUN_14098d8d0(&DAT_143afa950, pChild) == 0);
             {
-                Unk_StreamPoint euler = DAT_143b01a60;
+                Vector3 euler = DAT_143b01a60;
                 ((efd::Matrix3*)FUN_1409478e0(pChild))->ToEulerAnglesXYZ(euler.x, euler.y, euler.z);
                 set.m_0 = FUN_141bcfc50(FUN_1403ed2d0());
                 FUN_140194470(&set.m_c, FUN_140947900(pChild));

@@ -1011,7 +1011,7 @@ void Unk_UserProxy::FUN_1408ebe30() {
   m_b0 = 0;
   m_b8 = 0;
   m_c0 = 0;
-  m_c4 = Unk_StreamPoint(0, 0, 0);
+  m_c4 = Vector3(0, 0, 0);
   m_d0 = 0;
   m_d4.Clear();
   FUN_1408f0850("");

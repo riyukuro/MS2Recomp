@@ -30,7 +30,7 @@ public:
     virtual void Unk_Slot15();
     virtual void Unk_Slot16();
     virtual void Unk_Slot17();
-    virtual Unk_StreamPoint vfunc_18();
+    virtual Vector3 vfunc_18();
     virtual void Unk_Slot19();
     virtual void Unk_Slot20();
     virtual void Unk_Slot21();
@@ -114,7 +114,7 @@ public:
 };
 MS2_CHECK_SIZE(Unk_G9ObjRef, 0x10);
 void FUN_1409649b0(Unk_G9ObjRef* pRef);
-class Unk_G9Obj { public: Unk_StreamPoint FUN_1409673c0(); };
+class Unk_G9Obj { public: Vector3 FUN_1409673c0(); };
 int FUN_1413b5600(Unk_G9Obj* pObj);                     // the interact state
 
 class Unk_G9World
@@ -122,7 +122,7 @@ class Unk_G9World
 public:
     Unk_G9Player* FUN_141bd0cc0();                      // the local player
     Unk_G9MapInfo FUN_141bd30a0();
-    Unk_G9ObjRef FUN_141bc6510(const Unk_StreamPoint& pos, int nId);
+    Unk_G9ObjRef FUN_141bc6510(const Vector3& pos, int nId);
 };
 Unk_G9World* FUN_1403ed2d0();
 
@@ -151,7 +151,7 @@ class Unk_G9Home
 public:
     void* FUN_1410b9850(int nItemId);
     int FUN_1410b9a50();
-    void* FUN_1410b8ab0(const Unk_StreamPoint& pos);
+    void* FUN_1410b8ab0(const Vector3& pos);
     int FUN_1410b9950(int nIconType);
 };
 Unk_G9Home* FUN_1409670e0();

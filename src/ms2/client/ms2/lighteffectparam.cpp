@@ -42,7 +42,7 @@ const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);
 int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);
 int FUN_1408730a0(Unk_140165cf0* pNode, const char* pszName, bool& bOut);
 int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
-int FUN_140874670(Unk_140165cf0* pNode, const char* pszName, Unk_StreamPoint& kOut);
+int FUN_140874670(Unk_140165cf0* pNode, const char* pszName, Vector3& kOut);
 CString FUN_140188f50(const char* psz, int n);                      // null-safe CString
 void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned int>& arr, const char* pszDelim);   // split to uints
 void FUN_14185f0b0(TransitionData* pData, Unk_140165cf0* pNode, float* pfTime);    // type / duration / start time
@@ -58,7 +58,7 @@ void* FUN_1409849b0(void* pHandle);                                 // handle ->
 void* FUN_14098d8d0(const void* pRtti, void* pObj);                 // dynamic cast through an NiRTTI
 void FUN_140a0b2a0(void* pNode);                                    // detach the node from its parent
 void FUN_141d16040(void* pNode, float fTime, bool bUpdateControllers);    // NiAVObject::Update
-const Unk_StreamPoint& FUN_140947900(void* pNode);                  // world translate
+const Vector3& FUN_140947900(void* pNode);                  // world translate
 void FUN_1414737d0(Unk_Entity* pEntity);                            // remove the entity from the world
 extern char DAT_143b059e8;                                          // service lookup cell
 ecr::SceneGraphService* FUN_1410a68f0(char* pCell);
@@ -100,7 +100,7 @@ public:
     void FUN_14098c6e0(unsigned nProp, const bool* pValue);
     void FUN_1409457c0(unsigned nProp, const float* pValue);
     void FUN_140b27f00(unsigned nProp, const Unk_LightColor& rValue);
-    void FUN_140a38a50(unsigned nProp, const Unk_StreamPoint& rValue);
+    void FUN_140a38a50(unsigned nProp, const Vector3& rValue);
 };
 
 // Scene nodes of the effect system. EffectNode (400 bytes) carries the effect-space point; SeparateNode (0x138) follows
@@ -109,7 +109,7 @@ class Unk_EffectNode : public NiNode
 {
 public:
     Unk_EffectNode(int nA, int nB);                                 // 0x1411a34b0
-    void FUN_1411a4040(const Unk_StreamPoint& rPoint);
+    void FUN_1411a4040(const Vector3& rPoint);
     char m_pad_node[400 - sizeof(NiNode)];
 };
 MS2_CHECK_SIZE(Unk_EffectNode, 400);
@@ -376,7 +376,7 @@ bool CLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget
     pEntity->FUN_1409457c0(0x4dcec447, &pLightParam->m_fAttConstant);
     pEntity->FUN_1409457c0(0x8cd1ae89, &pLightParam->m_fAttLinear);
     pEntity->FUN_1409457c0(0x9f7d1fa7, &pLightParam->m_fAttQuadratic);
-    Unk_StreamPoint ptWorld(kWorld.m_Translate.x, kWorld.m_Translate.y, kWorld.m_Translate.z);
+    Vector3 ptWorld(kWorld.m_Translate.x, kWorld.m_Translate.y, kWorld.m_Translate.z);
     pEntity->FUN_140a38a50(0xfd95ca52, ptWorld);
     FUN_1409670f0()->FUN_1411cf2d0(reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9090()), 0);
     if (FUN_14028d470(pLightParam->m_fStartDelay, 0.0f))
@@ -426,7 +426,7 @@ void CLightEffect::FUN_14144b0d0()
 {
     if ((bool)m_entity.FUN_1408a9090() && (bool)FUN_1409475d0(&m_spLightNode))
     {
-        Unk_StreamPoint pt = FUN_140947900(FUN_1409475f0(&m_spLightNode));
+        Vector3 pt = FUN_140947900(FUN_1409475f0(&m_spLightNode));
         m_entity.FUN_1408a9280()->FUN_140a38a50(0xfd95ca52, pt);
     }
 }

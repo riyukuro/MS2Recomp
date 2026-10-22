@@ -27,13 +27,13 @@ public:
     virtual void vfunc_32(float f);                                     // wanted yaw (radians)
     virtual void vfunc_39(double fTime);                                // smooth the pose towards m_d8
 
-    Unk_StreamPoint FUN_1410a0a00(Unk_StreamPoint ptPos);               // look-at angles (degrees) from ptPos to m_78
+    Vector3 FUN_1410a0a00(Vector3 ptPos);               // look-at angles (degrees) from ptPos to m_78
 
     int m_108;                                                          // +0x108 yaw interpolation running
     float m_10c;                                                        // +0x10c wanted yaw (radians)
     float m_110;                                                        // +0x110 yaw interpolation speed (ctor 100)
     float m_114;                                                        // +0x114 mouse rotation speed (ctor 50)
-    Unk_StreamPoint m_118;                                              // +0x118 target offset (ctor 0, 0, 100)
+    Vector3 m_118;                                              // +0x118 target offset (ctor 0, 0, 100)
     float m_124;                                                        // +0x124 min distance (ctor 400)
     float m_128;                                                        // +0x128 max distance (ctor 1100)
 };

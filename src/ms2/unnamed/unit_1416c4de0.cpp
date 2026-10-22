@@ -18,7 +18,7 @@
 
 // ---- unit-local placeholders ----
 
-extern const Unk_StreamPoint g_143a08cf8;   // NiPoint3::UNIT_Z
+extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 
 // The game context (FUN_1403ed2d0).
 class Unk_GameContext
@@ -84,9 +84,9 @@ void CPVPCameraMode::vfunc_6(int n)
     m_68 = 3.14159265f;
     vfunc_31();
     m_f0 = 0;
-    Unk_StreamPoint ptPos = m_d8.m_pos;
-    Unk_StreamPoint ptRot = g_143b01a60;
-    Unk_StreamPoint ptCenter = FUN_1416c5d30();
+    Vector3 ptPos = m_d8.m_pos;
+    Vector3 ptRot = g_143b01a60;
+    Vector3 ptCenter = FUN_1416c5d30();
     m_50 = m_124;
     ptPos.x = m_50 * FUN_1409f25a0(m_68) + ptCenter.x;
     ptPos.y = m_50 * FUN_1409f2310(m_68) + ptCenter.y;
@@ -108,13 +108,13 @@ MS2_REPLACE_METHOD(0x1416c4f10, CPVPCameraMode, vfunc_6, 793, 0x057BE7BB);
 // @0x1416c5230
 void CPVPCameraMode::vfunc_8(double fTime)
 {
-    Unk_StreamPoint ptPos = m_d8.m_pos;
-    Unk_StreamPoint ptRot = g_143b01a60;
-    Unk_StreamPoint ptCenter = FUN_1416c5d30();
-    Unk_StreamPoint ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
+    Vector3 ptPos = m_d8.m_pos;
+    Vector3 ptRot = g_143b01a60;
+    Vector3 ptCenter = FUN_1416c5d30();
+    Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
     if (ptMove.FUN_140552700(g_143b01a60))
     {
-        Unk_StreamPoint ptInput = ptMove;
+        Vector3 ptInput = ptMove;
         float fRate = 15.0f;
         float fStep = FUN_140a17940((float)fTime, 0.0f, 1.0f / fRate);
         float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x),
@@ -253,14 +253,14 @@ BOOL CPVPCameraMode::vfunc_31()
 MS2_REPLACE_METHOD(0x1416c5b20, CPVPCameraMode, vfunc_31, 514, 0x392A4514);
 
 // @0x1416c5d30
-Unk_StreamPoint CPVPCameraMode::FUN_1416c5d30()
+Vector3 CPVPCameraMode::FUN_1416c5d30()
 {
-    Unk_StreamPoint ptCenter(0.0f, 0.0f, 0.0f);
-    Unk_StreamPoint ptOther(0.0f, 0.0f, 0.0f);
+    Vector3 ptCenter(0.0f, 0.0f, 0.0f);
+    Vector3 ptOther(0.0f, 0.0f, 0.0f);
     Unk_CameraTargetEntity* pSelf = vfunc_25();
     if (pSelf)
     {
-        ptOther = ptCenter = pSelf->vfunc_18().FUN_14097fd50(Unk_StreamPoint(0.0f, 0.0f, m_128));
+        ptOther = ptCenter = pSelf->vfunc_18().FUN_14097fd50(Vector3(0.0f, 0.0f, m_128));
         m_50 = m_124;
     }
     m_110 = FUN_1403ed2d0()->FUN_141bd1180(m_108);
@@ -269,7 +269,7 @@ Unk_StreamPoint CPVPCameraMode::FUN_1416c5d30()
         float fDist = 0.0f;
         if (m_110 != NULL)
         {
-            ptOther = m_110->vfunc_18().FUN_14097fd50(Unk_StreamPoint(0.0f, 0.0f, m_128));
+            ptOther = m_110->vfunc_18().FUN_14097fd50(Vector3(0.0f, 0.0f, m_128));
             fDist = ptOther.FUN_140965c40(ptCenter).FUN_140967ac0() + m_11c;
             if (fDist > m_120)
             {
@@ -288,7 +288,7 @@ Unk_StreamPoint CPVPCameraMode::FUN_1416c5d30()
     {
         return ptCenter;
     }
-    Unk_StreamPoint kDir = ptOther.FUN_140965c40(ptCenter);
+    Vector3 kDir = ptOther.FUN_140965c40(ptCenter);
     float fLen = kDir.FUN_140968990();
     return ptCenter.FUN_14097fd50(kDir.FUN_14097fc90(fLen * 0.5f));
 }

@@ -98,7 +98,7 @@ public:
     virtual void vfunc_8(double fTime);                     // 8  0x140ddc180
     virtual void vfunc_9(double fTime);                     // 9  0x140ddc240
 
-    Unk_FsCell FUN_140ddc3c0(Unk_StreamPoint kPoint);       // the grid cell of a point, shifted to the corner of its quadrant
-    bool FUN_140ddc4b0(Unk_StreamPoint kStep);              // the owner may move by this step (ray cast to the water)
+    Unk_FsCell FUN_140ddc3c0(Vector3 kPoint);       // the grid cell of a point, shifted to the corner of its quadrant
+    bool FUN_140ddc4b0(Vector3 kStep);              // the owner may move by this step (ray cast to the water)
 };
 MS2_CHECK_SIZE(StateFishingFloat, 0x40);

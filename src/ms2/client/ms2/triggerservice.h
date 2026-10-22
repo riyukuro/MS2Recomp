@@ -92,7 +92,7 @@ public:
     void FUN_141862ec0(CInPacket* pEvent);   // type 0x15
     void FUN_141862ff0(int nType, CInPacket* pEvent);    // types 0x17-0x19
     void FUN_141863030(CInPacket* pEvent);   // type 9 sub 0xc: typing game dialog
-    bool FUN_141863100(int nObject, Unk_StreamPoint pt);        // is the point inside the object
+    bool FUN_141863100(int nObject, Vector3 pt);        // is the point inside the object
     void FUN_1418631a0();
     void FUN_1418631c0();                           // clear the camera step list
     void FUN_1418631f0(int nObject, int bStart);    // queue a camera step

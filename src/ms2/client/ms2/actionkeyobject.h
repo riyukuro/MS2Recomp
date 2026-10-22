@@ -33,10 +33,10 @@ struct Unk_AkoTarget
     // @0x140963d20
     Unk_AkoTarget() { m_bValid = false; }
     // @0x140963cd0
-    Unk_AkoTarget(const Unk_StreamPoint& pt) { m_pos = pt; m_bValid = true; }
+    Unk_AkoTarget(const Vector3& pt) { m_pos = pt; m_bValid = true; }
 
     bool m_bValid;                      // +0x00
-    Unk_StreamPoint m_pos;              // +0x04
+    Vector3 m_pos;              // +0x04
 };
 MS2_CHECK_SIZE(Unk_AkoTarget, 0x10);
 

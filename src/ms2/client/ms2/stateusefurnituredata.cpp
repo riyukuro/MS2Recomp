@@ -38,7 +38,7 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_StateDataArg, m_str70, 0x70);
 
-extern Unk_StreamPoint DAT_143b01a60;                       // the zero point
+extern Vector3 DAT_143b01a60;                       // the zero point
 extern NiRTTI DAT_143afa4d8;                                // RTTI NiNode
 
 // The skill record of a ride / sit target (CPtred, a point at +0x50 where the player is put).
@@ -46,7 +46,7 @@ class Unk_PCBaseComp_b18 : public CPtred
 {
 public:
     char m_pad_18[0x38];
-    Unk_StreamPoint m_vPos50;                                // +0x50
+    Vector3 m_vPos50;                                // +0x50
 };
 class CSkillRecord : public Unk_PCBaseComp_b18 {};
 
@@ -111,8 +111,8 @@ void FUN_140a332d0(NiTransform* pXform);                     // NiTransform defa
 NiTransform* FUN_140a35c30(NiTransform* pDst, const NiTransform& kSrc);   // NiTransform::operator=
 void FUN_140a35bd0(NiTransform* pDst, const NiTransform* pSrc);           // NiTransform assignment
 NiTransform* FUN_140a33de0(const NiTransform* pThis, void* pOut, const NiTransform* pOther);   // NiTransform::operator*
-void FUN_140b86230(const Unk_StreamPoint& kEuler, Unk_NiMatrix3& kOut);   // matrix of euler angles (degrees)
-void FUN_140a0b1f0(const Unk_NiMatrix3& kRot, Unk_StreamPoint* pOut);
+void FUN_140b86230(const Vector3& kEuler, Unk_NiMatrix3& kOut);   // matrix of euler angles (degrees)
+void FUN_140a0b1f0(const Unk_NiMatrix3& kRot, Vector3* pOut);
 
 // Explicit views of the MS2Ptr members instantiated by earlier objs (FunctionCubeData / CFunctionCubeObject).
 template <> MS2Ptr<CFunctionCubeObject>::MS2Ptr();                              // 0x14111e8c0
@@ -126,8 +126,8 @@ template <> MS2Ptr<FunctionCubeData>::MS2Ptr(const MS2Ptr& o);                  
 template <> MS2Ptr<FunctionCubeData>::~MS2Ptr();                                // 0x140ca62a0
 template <> FunctionCubeData* MS2Ptr<FunctionCubeData>::operator->() const;     // 0x1409658d0
 
-static inline Unk_StreamPoint UfPoint(const NiPoint3& k) { return *reinterpret_cast<const Unk_StreamPoint*>(&k); }
-static inline efd::Point3 UfEfd(const Unk_StreamPoint& k) { return efd::Point3(k.x, k.y, k.z); }
+static inline Vector3 UfPoint(const NiPoint3& k) { return *reinterpret_cast<const Vector3*>(&k); }
+static inline efd::Point3 UfEfd(const Vector3& k) { return efd::Point3(k.x, k.y, k.z); }
 
 int FUN_140de9280(const efd::utf8string& s, const char* psz);   // compare
 
@@ -262,21 +262,21 @@ void StateUseFurniture::vfunc_3(double fTime)
         FUN_140a35c30(&kParent, FUN_1409478e0(FUN_140a0b000(pChild)));
     NiTransform kTemp;
     FUN_140a35bd0(&kXf, FUN_140a33de0(&kParent, &kTemp, &kXf));
-    Unk_StreamPoint kPos = UfPoint(kXf.m_Translate);
+    Vector3 kPos = UfPoint(kXf.m_Translate);
     Unk_NiMatrix3 kRot = *reinterpret_cast<const Unk_NiMatrix3*>(&kXf.m_Rotate);
-    Unk_StreamPoint kDir;
-    Unk_StreamPoint kEuler = DAT_143b01a60;
+    Vector3 kDir;
+    Vector3 kEuler = DAT_143b01a60;
     MS2Ptr<FunctionCubeData> spData = static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580();
-    kEuler = Unk_StreamPoint(spData->m_vAC.x, spData->m_vAC.y, spData->m_vAC.z);
+    kEuler = Vector3(spData->m_vAC.x, spData->m_vAC.y, spData->m_vAC.z);
     Unk_NiMatrix3 kAdd;
     FUN_140b86230(kEuler, kAdd);
     kRot = Unk_NiMatrix3(kRot.FUN_140a33480(kAdd));
     FUN_140a0b1f0(kRot, &kDir);
-    Unk_StreamPoint kCol0;
+    Vector3 kCol0;
     kRot.FUN_140a01190(0, kCol0);
-    Unk_StreamPoint kCol1;
+    Vector3 kCol1;
     kRot.FUN_140a01190(1, kCol1);
-    Unk_StreamPoint kCol2;
+    Vector3 kCol2;
     kRot.FUN_140a01190(2, kCol2);
     kPos = kPos.FUN_14097fd50(kCol1.FUN_14097fc90(-spData->m_vA0.y));
     kPos = kPos.FUN_14097fd50(kCol0.FUN_14097fc90(spData->m_vA0.x));
@@ -352,7 +352,7 @@ void StateUseFurniture::vfunc_5(int n)
             }
             pPC->vfunc_19(UfEfd(m_vPos));
         }
-        Unk_StreamPoint kRot = DAT_143b01a60;
+        Vector3 kRot = DAT_143b01a60;
         kRot.z = UfPoint(pPC->vfunc_20()).z;
         pPC->FUN_14166d970(UfEfd(kRot));
     }

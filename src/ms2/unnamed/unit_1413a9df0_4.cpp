@@ -40,9 +40,9 @@ Unk_GcOptInt& Unk_GcOptInt::operator=(const int& nValue)
 }
 
 // @0x1413b4040
-Unk_GcOptVec3& Unk_GcOptVec3::operator=(const Unk_StreamPoint& pt)
+Unk_GcOptVec3& Unk_GcOptVec3::operator=(const Vector3& pt)
 {
-    reinterpret_cast<Unk_StreamPoint&>(m_x) = pt;
+    reinterpret_cast<Vector3&>(m_x) = pt;
     m_bSet = true;
     return *this;
 }
@@ -71,19 +71,19 @@ void* Unk_GcSmartRef::FUN_1413b4130() const
 }
 
 // @0x1413b4140
-const Unk_StreamPoint& Unk_GcOptVec3::GetValue() const
+const Vector3& Unk_GcOptVec3::GetValue() const
 {
     if (!m_bSet)
         _wassert(L"m_isValueSet", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\nullable.h", 0x6a);
-    return reinterpret_cast<const Unk_StreamPoint&>(m_x);
+    return reinterpret_cast<const Vector3&>(m_x);
 }
 
 // @0x1413b4180
-Unk_StreamPoint& Unk_GcOptVec3::GetValue()
+Vector3& Unk_GcOptVec3::GetValue()
 {
     if (!m_bSet)
         _wassert(L"m_isValueSet", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\nullable.h", 0x5c);
-    return reinterpret_cast<Unk_StreamPoint&>(m_x);
+    return reinterpret_cast<Vector3&>(m_x);
 }
 
 // @0x1413b41c0

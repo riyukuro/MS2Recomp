@@ -193,7 +193,7 @@ public:
     int FUN_141bbb1e0(GameObject* pObj, int bFullInit, unsigned nCamera);     // registers an object
     void FUN_141bbb7f0(GameObject* pObj, int bImmediate);                    // unregisters it
     void FUN_141bca390(unsigned nKey);
-    int FUN_141bd0dd0(Unk_StreamPoint* pPos, Unk_StreamPoint* pDir);                       // spawn point
+    int FUN_141bd0dd0(Vector3* pPos, Vector3* pDir);                       // spawn point
     PC* FUN_141bd1530(unsigned __int64 nPcId);                               // the pc of a record id
     void* FUN_141bd1180(unsigned nId);                                       // object registered under the pet / ridee id
     void* FUN_141bd1290(unsigned nId);                                       // object registered under the avatar id
@@ -231,8 +231,8 @@ extern Unk_AvModeSvc* DAT_143ab50c0;
 class Unk_AvPhysicsSvc
 {
 public:
-    int FUN_14168a310(const Unk_StreamPoint& ptFrom, Unk_StreamPoint& ptHit, void* pInfo, float fLen,
-                      Unk_StreamPoint* pNormal, int nMask);
+    int FUN_14168a310(const Vector3& ptFrom, Vector3& ptHit, void* pInfo, float fLen,
+                      Vector3* pNormal, int nMask);
 };
 extern Unk_AvPhysicsSvc* DAT_143ab50b8;
 Unk_AvModeSvc* FUN_1409f7c90();
@@ -532,8 +532,8 @@ AvatarPC* FUN_1409f3650(int nGender, int nPreset)
         nSex = (unsigned char)nGender;
     kUser.m_14 = nSex;
     CString strName = FUN_14107b3d0(nSex);
-    Unk_StreamPoint kDir;
-    Unk_StreamPoint kPos;
+    Vector3 kDir;
+    Vector3 kPos;
     if (pWorld->FUN_141bd0dd0(&kPos, &kDir) == 0)
         return 0;
     efd::SmartPointer<AvatarPC> spAvatar(new (efd::MemHint(efd::MemHint::NONE)) AvatarPC(0));
@@ -582,7 +582,7 @@ AvatarPC* FUN_1409f3650(int nGender, int nPreset)
             FUN_141653d10(spAvatar, MS2Ptr<CItem>(spItem));
         }
     }
-    Unk_StreamPoint kGround;
+    Vector3 kGround;
     if (FUN_1409f7ca0()->FUN_14168a310(kPos, kGround, 0, 0.0f, 0, 0) != 0)
     {
         kGround.z = kGround.z + 1.0f;

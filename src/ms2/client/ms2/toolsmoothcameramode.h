@@ -26,9 +26,9 @@ public:
     virtual BOOL vfunc_31();                                            // 0x141858790 reads the ToolSmooth_* settings
     virtual void vfunc_39(double fTime);                                // 0x141857e80 smooth the pose towards m_d8
 
-    Unk_StreamPoint m_130;                                              // +0x130 move velocity (x: right, y: forward)
-    Unk_StreamPoint m_13c;                                              // +0x13c rotate velocity
-    Unk_StreamPoint m_148;                                              // +0x148 vertical velocity (z)
+    Vector3 m_130;                                              // +0x130 move velocity (x: right, y: forward)
+    Vector3 m_13c;                                              // +0x13c rotate velocity
+    Vector3 m_148;                                              // +0x148 vertical velocity (z)
     float m_154;                                                        // +0x154 key move speed (ctor 50)
     float m_158;                                                        // +0x158 key rotation speed (ctor 360)
     float m_15c;                                                        // +0x15c mouse rotation speed (ctor 5)

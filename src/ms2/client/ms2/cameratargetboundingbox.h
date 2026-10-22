@@ -72,9 +72,9 @@ public:
     virtual ~CCameraTargetBounding() = default;
 
     virtual int InitFromEntity(egf::Entity* pEntity) = 0;              // slot 1: read the size / position / rotation properties
-    virtual int Contains(Unk_StreamPoint pt) = 0;                      // slot 2
-    virtual float GetDistance(const Unk_StreamPoint& pt);               // slot 3: distance to the shape (0 inside)
-    virtual Unk_StreamPoint GetClosest(const Unk_StreamPoint& pt) = 0;  // slot 4: the nearest point of the shape
+    virtual int Contains(Vector3 pt) = 0;                      // slot 2
+    virtual float GetDistance(const Vector3& pt);               // slot 3: distance to the shape (0 inside)
+    virtual Vector3 GetClosest(const Vector3& pt) = 0;  // slot 4: the nearest point of the shape
 
     unsigned __int64 m_entityId;                                        // +0x18
 };
@@ -88,8 +88,8 @@ public:
     CCameraTargetBoundingBox();                                         // 0x140afefe0
     virtual ~CCameraTargetBoundingBox();                                // 0x140aff070
     virtual int InitFromEntity(egf::Entity* pEntity);
-    virtual int Contains(Unk_StreamPoint pt);
-    virtual Unk_StreamPoint GetClosest(const Unk_StreamPoint& pt);
+    virtual int Contains(Vector3 pt);
+    virtual Vector3 GetClosest(const Vector3& pt);
 
     Unk_CtbBounds3 m_bounds;                                            // +0x20 local box
     Unk_CtbObb m_obb;                                                   // +0x38 the box in world space
@@ -108,10 +108,10 @@ public:
     CCameraTargetBoundingSphere();                                      // 0x140aff5b0
     virtual ~CCameraTargetBoundingSphere();                             // 0x140aff600
     virtual int InitFromEntity(egf::Entity* pEntity);
-    virtual int Contains(Unk_StreamPoint pt);
-    virtual Unk_StreamPoint GetClosest(const Unk_StreamPoint& pt);
+    virtual int Contains(Vector3 pt);
+    virtual Vector3 GetClosest(const Vector3& pt);
 
-    Unk_StreamPoint m_center;                                           // +0x20
+    Vector3 m_center;                                           // +0x20
     float m_radius;                                                     // +0x2c
 };
 MS2_CHECK_SIZE(CCameraTargetBoundingSphere, 0x30);
@@ -124,10 +124,10 @@ public:
     CCameraTargetBoundingCylinder();                                    // 0x140aff840
     virtual ~CCameraTargetBoundingCylinder();                           // 0x140aff890
     virtual int InitFromEntity(egf::Entity* pEntity);
-    virtual int Contains(Unk_StreamPoint pt);
-    virtual Unk_StreamPoint GetClosest(const Unk_StreamPoint& pt);
+    virtual int Contains(Vector3 pt);
+    virtual Vector3 GetClosest(const Vector3& pt);
 
-    Unk_StreamPoint m_center;                                           // +0x20
+    Vector3 m_center;                                           // +0x20
     float m_radius;                                                     // +0x2c
     float m_halfHeight;                                                 // +0x30
 };

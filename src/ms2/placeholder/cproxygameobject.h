@@ -72,7 +72,7 @@ public:
     int FUN_1416c21c0();
     Unk_ProxyValue88* FUN_1416c2200();
     Unk_ProxyHandle28 FUN_1416c2220();
-    Unk_StreamPoint FUN_1416c2270();
+    Vector3 FUN_1416c2270();
     void* FUN_1416c22f0();
     void* FUN_1416c2310();
     unsigned short FUN_1416c2330();
@@ -100,7 +100,7 @@ public:
     CStringW m_58;
     CStringW m_60;
     int kind; // initialized to zero at +68; party member count tests it
-    Unk_StreamPoint m_6c;
+    Vector3 m_6c;
     int m_78;                                           // template id
     int m_7c;
     int m_80;

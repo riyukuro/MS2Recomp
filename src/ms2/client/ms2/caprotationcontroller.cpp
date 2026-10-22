@@ -41,16 +41,16 @@
 #include "hook/ms2hook.h"
 
 // ---- exe data ----
-extern Unk_StreamPoint DAT_143b01a60;       // the zero point
+extern Vector3 DAT_143b01a60;       // the zero point
 extern Unk_EfdMatrix3 DAT_143a09600;        // the identity matrix
-extern Unk_StreamPoint DAT_143a08cf8;       // the up axis
+extern Vector3 DAT_143a08cf8;       // the up axis
 struct Unk_PickXY { float x, y; };          // cursor position
 extern Unk_PickXY DAT_143b02320;            // initial value of the cursor position
 
 // ---- unit-local views of exe objects ----
 
 // 3-float point whose default ctor is the efd::Point3 one (0x1405522f0); used for the camera ray.
-struct Unk_GVec3 : public Unk_StreamPoint
+struct Unk_GVec3 : public Vector3
 {
     Unk_GVec3();                                                // 0x1405522f0
 };
@@ -74,8 +74,8 @@ struct Unk_CapModelData
     char m_pad_00[0x58];
     float m_fScale;                                             // +0x58 world scale of the cap node
     char m_pad_5c[0x18];
-    Unk_StreamPoint m_kOffset;                                  // +0x74 world offset of the cap node
-    Unk_StreamPoint m_kEuler;                                   // +0x80 euler angles (degrees) of the cap
+    Vector3 m_kOffset;                                  // +0x74 world offset of the cap node
+    Vector3 m_kEuler;                                   // +0x80 euler angles (degrees) of the cap
 };
 MS2_CHECK_SIZE(Unk_CapModelData, 0x8c);
 
@@ -83,8 +83,8 @@ MS2_CHECK_SIZE(Unk_CapModelData, 0x8c);
 struct Unk_CapPartInfo
 {
     char m_pad_00[0x70];
-    Unk_StreamPoint m_kMin;                                     // +0x70
-    Unk_StreamPoint m_kMax;                                     // +0x7c
+    Vector3 m_kMin;                                     // +0x70
+    Vector3 m_kMax;                                     // +0x7c
 };
 MS2_CHECK_SIZE(Unk_CapPartInfo, 0x88);
 
@@ -108,7 +108,7 @@ public:
     virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
     virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual Unk_StreamPoint vfunc_20();                         // rotation (x, y, z degrees)
+    virtual Vector3 vfunc_20();                         // rotation (x, y, z degrees)
     Unk_CapEntityKey& FUN_14123c460(Unk_CapEntityKey& kOut);    // the entity key
     float FUN_14123c260();                                      // model scale
 };
@@ -129,7 +129,7 @@ Unk_CapCursor* FUN_140aadf80();
 struct Unk_CapCamera
 {
     int FUN_140a18070();                                        // camera ready
-    char FUN_140af0520(const Unk_PickXY& kCursor, Unk_StreamPoint* pOrigin, Unk_StreamPoint* pDir);   // cursor ray
+    char FUN_140af0520(const Unk_PickXY& kCursor, Vector3* pOrigin, Vector3* pDir);   // cursor ray
 };
 Unk_CapCamera* FUN_1409478c0();
 
@@ -141,11 +141,11 @@ float FUN_140a34650(float fCos);                                // acos
 void FUN_140968990(Unk_NiPoint3* p);                            // efd::Point3::Unitize
 void FUN_142084020(Unk_EfdMatrix3* p, float fY, float fX, float fZ);   // efd::Matrix3::FromEulerAnglesYXZ
 void FUN_140a33310(void* pQuat);                                // efd::Quaternion::Quaternion()
-void FUN_14209bc90(void* pQuat, float fAngle, const Unk_StreamPoint* pAxis);   // efd::Quaternion::FromAngleAxis
+void FUN_14209bc90(void* pQuat, float fAngle, const Vector3* pAxis);   // efd::Quaternion::FromAngleAxis
 void FUN_140a34450(const void* pQuat, Unk_EfdMatrix3* pMat);   // efd::Quaternion::ToRotation
-char FUN_14147aa60(const Unk_StreamPoint& kOrigin, const Unk_StreamPoint& kDir, const Unk_StreamPoint& kCenter,
-                   float fRadius, Unk_StreamPoint* pHit);       // ray / sphere hit
-void FUN_141422950(const NiTransform& kXf, Unk_StreamPoint* pEuler);   // transform -> euler angles (degrees)
+char FUN_14147aa60(const Vector3& kOrigin, const Vector3& kDir, const Vector3& kCenter,
+                   float fRadius, Vector3* pHit);       // ray / sphere hit
+void FUN_141422950(const NiTransform& kXf, Vector3* pEuler);   // transform -> euler angles (degrees)
 void FUN_140aacaa0(NiAVObject* pNode, const NiTransform& kXf);  // sets the node's transform
 NiTransform* FUN_140a33f90(NiAVObject* pNode);                  // the node's transform
 NiTransform* FUN_140a33de0(const NiTransform* pThis, void* pOut, const NiTransform* pOther);   // NiTransform::operator*
@@ -154,7 +154,7 @@ void FUN_14097fad0(NiPoint3* pDst, const NiPoint3* pSrc);       // NiPoint3 assi
 // efd::Matrix3::Inverse() (0x1420845e0): a member that returns the matrix by value.
 struct Unk_CapMatrix : public Unk_EfdMatrix3 { Unk_EfdMatrix3 FUN_1420845e0() const; };
 const NiFixedString& FUN_1409a8b90(NiAVObject* pNode);          // node name
-const Unk_StreamPoint& FUN_140947900(NiAVObject* pNode);        // world translate
+const Vector3& FUN_140947900(NiAVObject* pNode);        // world translate
 NiObject* FUN_14098d8d0(const NiRTTI* pRTTI, NiObject* pObject);   // dynamic cast (NULL-safe)
 
 // Depth-first walker over a scene graph (0x38 bytes; unrecovered class). Next(bDescend) yields the next NiAVObject.
@@ -289,7 +289,7 @@ void CCapRotationController::vfunc_30(const NiPoint3& kPos)
         {
             Unk_EfdMatrix3 kRotZ;
             kRotZ.FUN_142084c10((pPlayer->vfunc_20().z * 3.1415927f) / 180.0f);
-            Unk_StreamPoint kPoint = reinterpret_cast<const Unk_StreamPoint&>(kPos);
+            Vector3 kPoint = reinterpret_cast<const Vector3&>(kPos);
             m_kDragDir = kPoint.FUN_140965c40(FUN_140947900(m_spMesh.operator->()));
             m_fRadius = m_kDragDir.FUN_140968990();
             m_kDragDir = kRotZ.FUN_140a00720(m_kDragDir);
@@ -319,14 +319,14 @@ void CCapRotationController::vfunc_31()
                     if (FUN_1409478c0()->FUN_140af0520(kCursor, &kOrigin, &kDir) != 0)
                     {
                         Unk_GVec3 kHit;
-                        const Unk_StreamPoint& kCenter = FUN_140947900(m_spMesh.operator->());
+                        const Vector3& kCenter = FUN_140947900(m_spMesh.operator->());
                         FUN_14147aa60(kOrigin, kDir, kCenter, m_fRadius, &kHit);
-                        Unk_StreamPoint kDelta = kHit.FUN_140965c40(FUN_140947900(m_spMesh.operator->()));
+                        Vector3 kDelta = kHit.FUN_140965c40(FUN_140947900(m_spMesh.operator->()));
                         kDelta.FUN_140968990();
                         Unk_EfdMatrix3 kRotZ;
                         kRotZ.FUN_142084c10((pPlayer->vfunc_20().z * 3.1415927f) / 180.0f);
                         kDelta = kRotZ.FUN_140a00720(kDelta);
-                        Unk_StreamPoint kAxis = m_kDragDir.FUN_140a00e10(kDelta);
+                        Vector3 kAxis = m_kDragDir.FUN_140a00e10(kDelta);
                         kAxis.FUN_140968990();
                         float fAngle = SafeAcos(m_kDragDir.FUN_140a00f20(kDelta));
                         char kQuat[16];
@@ -335,7 +335,7 @@ void CCapRotationController::vfunc_31()
                         Unk_EfdMatrix3 kRot;
                         FUN_140a34450(kQuat, &kRot);
                         kRot = kRot.FUN_140a33480(m_kInitRot);
-                        Unk_StreamPoint kEuler;
+                        Vector3 kEuler;
                         kRot.FUN_142085840(kEuler.x, kEuler.y, kEuler.z);
                         kEuler.x = WrapAngle((kEuler.x * 180.0f) / 3.1415927f, m_kMinEuler.x, m_kMaxEuler.x);
                         kEuler.y = WrapAngle((kEuler.y * 180.0f) / 3.1415927f, m_kMinEuler.y, m_kMaxEuler.y);
@@ -371,9 +371,9 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
                     {
                         if (FUN_14025e7c0()->FUN_14116d950(0x1d, 0, 0) == 0)
                         {
-                            Unk_StreamPoint kN = reinterpret_cast<const Unk_StreamPoint&>(kNormal);
+                            Vector3 kN = reinterpret_cast<const Vector3&>(kNormal);
                             kN.FUN_140968990();
-                            Unk_StreamPoint kSide = kN.FUN_140a00e10(DAT_143a08cf8).FUN_1409f7960();
+                            Vector3 kSide = kN.FUN_140a00e10(DAT_143a08cf8).FUN_1409f7960();
                             kSide.FUN_140968990();
                             Unk_NiPoint3 kUp(kN.FUN_140a00e10(kSide));
                             FUN_140968990(&kUp);
@@ -395,7 +395,7 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
                                 spNode.operator->()->UpdateWorldData();
                                 NiTransform kWorld = *FUN_140a33f90(spNode.operator->());
                                 pData->m_fScale = kWorld.m_fScale;
-                                pData->m_kOffset = reinterpret_cast<const Unk_StreamPoint&>(kWorld.m_Translate);
+                                pData->m_kOffset = reinterpret_cast<const Vector3&>(kWorld.m_Translate);
                                 FUN_141422950(kWorld, &pData->m_kEuler);
                                 m_spPart->FUN_141200160(pData->m_kOffset);
                                 m_spPart->FUN_141200100(pData->m_kEuler);
@@ -450,7 +450,7 @@ void CCapRotationController::vfunc_35()
                     float fDelta = (m_kDragStart.x - kCursor.x) * m_fSpeed;
                     float fYaw = m_kCurEuler.z + fDelta;
                     float fWrapped = WrapAngle(fYaw, m_kMinEuler.z, m_kMaxEuler.z);
-                    Unk_StreamPoint kEuler(m_kCurEuler.x, m_kCurEuler.y, fWrapped);
+                    Vector3 kEuler(m_kCurEuler.x, m_kCurEuler.y, fWrapped);
                     SetPartEuler(kEuler);
                     if (m_pListener != 0)
                         static_cast<Unk_CapListener*>(m_pListener)->vfunc_3(this, fYaw);
@@ -521,9 +521,9 @@ void CCapRotationController::ResetHighlight()
 }
 
 // @0x140b020d0
-Unk_StreamPoint CCapRotationController::UpdateRotationMatrix()
+Vector3 CCapRotationController::UpdateRotationMatrix()
 {
-    Unk_StreamPoint kEuler = GetPartEuler();
+    Vector3 kEuler = GetPartEuler();
     m_kInitRot.FUN_142083d40((kEuler.x * 3.1415927f) / 180.0f, (kEuler.y * 3.1415927f) / 180.0f,
                              (kEuler.z * 3.1415927f) / 180.0f);
     return kEuler;
@@ -531,7 +531,7 @@ Unk_StreamPoint CCapRotationController::UpdateRotationMatrix()
 
 // @0x140b02180
 // MS2-FUNCTIONAL: struct-return copy / temp layout differs (imul copy)
-Unk_StreamPoint CCapRotationController::GetPartEuler()
+Vector3 CCapRotationController::GetPartEuler()
 {
     MS2Ptr<CEquipItem> spItem = m_spPart->FUN_141200a40();
     if (spItem == (CEquipItem*)0)
@@ -546,7 +546,7 @@ Unk_StreamPoint CCapRotationController::GetPartEuler()
 
 // @0x140b02310
 // MS2-FUNCTIONAL: struct-return copy / temp layout differs (imul copy)
-void CCapRotationController::SetPartEuler(Unk_StreamPoint kEuler)
+void CCapRotationController::SetPartEuler(Vector3 kEuler)
 {
     MS2Ptr<CEquipItem> spItem = m_spPart->FUN_141200a40();
     if (!(spItem == (CEquipItem*)0))
@@ -556,7 +556,7 @@ void CCapRotationController::SetPartEuler(Unk_StreamPoint kEuler)
             Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(spItem->GetItem()->FUN_140527870());
             if (pData != 0)
             {
-                Unk_StreamPoint kCur = pData->m_kEuler;
+                Vector3 kCur = pData->m_kEuler;
                 Unk_NiMatrix3 kNew;
                 Unk_NiMatrix3 kOld;
                 float fNewX = (kEuler.x * 3.1415927f) / 180.0f;

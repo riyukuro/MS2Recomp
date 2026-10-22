@@ -35,7 +35,7 @@
 
 // ---- unit-local placeholders ----
 
-extern Unk_StreamPoint DAT_143b01a60;                    // the zero point
+extern Vector3 DAT_143b01a60;                    // the zero point
 
 // A PCBase seen through its slot 18 (the position, returned as the 12-byte point of the FUN_ operators).
 class Unk_HmPos
@@ -59,7 +59,7 @@ public:
     virtual void vfunc_15();
     virtual void vfunc_16();
     virtual void vfunc_17();
-    virtual Unk_StreamPoint vfunc_18();
+    virtual Vector3 vfunc_18();
 };
 
 // The casting bar request (FUN_1418e12b0): duration, flags, speed and four texts (+0x28 the label).
@@ -120,10 +120,10 @@ Unk_HmEquip* FUN_14165f460(PCBase* p);
 
 void* FUN_14165f100(PCBase* p);
 void FUN_14165f170(PCBase* p);
-class Unk_HmBuffMgr { public: Unk_StreamPoint FUN_141683290(); };
+class Unk_HmBuffMgr { public: Vector3 FUN_141683290(); };
 Unk_HmBuffMgr* FUN_14166d240(PCBase* p);
 bool FUN_1416749c0(PCBase* p);
-int FUN_1408a1360(Unk_StreamPoint a, Unk_StreamPoint b);
+int FUN_1408a1360(Vector3 a, Vector3 b);
 CStringW GetStringCommonByKey(const CStringW& str);
 CFunctionCubeService* FUN_1409670b0();
 __int64 FUN_141656ad0(PCBase* p);
@@ -175,8 +175,8 @@ void StateHomemade::vfunc_4(StateData* pData)
                 float fDist = reinterpret_cast<Unk_HmPos*>(m_pOwner)->vfunc_18().FUN_140965c40(aCubes[i]->FUN_141226d00()).FUN_140967ac0();
                 if (fDist <= *static_cast<Client::Constants*>(FUN_1401d3200())->MasteryObjectInteractionDistance.Get())
                 {
-                    Unk_StreamPoint kCube = aCubes[i]->FUN_141226d00();
-                    Unk_StreamPoint kRider = reinterpret_cast<Unk_HmPos*>(pRider)->vfunc_18();
+                    Vector3 kCube = aCubes[i]->FUN_141226d00();
+                    Vector3 kRider = reinterpret_cast<Unk_HmPos*>(pRider)->vfunc_18();
                     if (FUN_1408a1360(kRider, kCube) != 0)
                         m_aCubes.push_back(aCubes[i]);
                 }
@@ -224,7 +224,7 @@ void StateHomemade::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
     MyPC* pPC;
-    Unk_StreamPoint kZero = DAT_143b01a60;
+    Vector3 kZero = DAT_143b01a60;
     m_pOwner->vfunc_68(&kZero, fTime, 0, 0, 0);
     if (m_n48 != 0)
     {
@@ -255,8 +255,8 @@ void StateHomemade::vfunc_8(double fTime)
         pPC->vfunc_59(0x37, spData.get(), 0x8f, 0);
     }
     Unk_HmBuffMgr* pBuff = FUN_14166d240(pPC);
-    Unk_StreamPoint kPos = pBuff->FUN_141683290();
-    Unk_StreamPoint kArg = kPos;
+    Vector3 kPos = pBuff->FUN_141683290();
+    Vector3 kArg = kPos;
     pPC->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
     if (FUN_1416749c0(m_pOwner))
         pPC->vfunc_59(2, 0, 0, 0);
@@ -337,8 +337,8 @@ int StateHomemade::FUN_140ca4fd0(int nMode)
             float fDist = reinterpret_cast<Unk_HmPos*>(m_pOwner)->vfunc_18().FUN_140965c40(spCube->FUN_141226d00()).FUN_140967ac0();
             if (fDist <= *static_cast<Client::Constants*>(FUN_1401d3200())->MasteryObjectInteractionDistance.Get())
             {
-                Unk_StreamPoint kCube = spCube->FUN_141226d00();
-                Unk_StreamPoint kRider = reinterpret_cast<Unk_HmPos*>(pRider)->vfunc_18();
+                Vector3 kCube = spCube->FUN_141226d00();
+                Vector3 kRider = reinterpret_cast<Unk_HmPos*>(pRider)->vfunc_18();
                 if (FUN_1408a1360(kRider, kCube) != 0)
                 {
                     if (!static_cast<Unk_HmCube*>(spCube.get())->FUN_140ca6580())

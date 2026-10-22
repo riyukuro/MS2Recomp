@@ -64,7 +64,7 @@ public:
 public:
     MS2_LAYOUT_FRIEND;
     CString m_strParentNode;        // +0x70 <attachInfo parentNode>
-    Unk_StreamPoint m_ptTranslate;  // +0x78 <transform translate>
+    Vector3 m_ptTranslate;  // +0x78 <transform translate>
     Unk_LightColor m_clrDiffuse;    // +0x84 <light diffuse> (default 1,1,1 if not 3 components)
     Unk_LightColor m_clrSpecular;   // +0x90 <light specular>
     float m_fDimmer;                // +0x9c 1.0
@@ -106,7 +106,7 @@ public:
     Unk_NodePtr m_spLightNode;      // +0x68 "Light Effect Root" EffectNode
     Unk_EntRef m_entity;            // +0x70 the "EffectPointLight" entity
     float m_fDimmer;                // +0x78
-    Unk_StreamPoint m_ptTranslate;  // +0x7c
+    Vector3 m_ptTranslate;  // +0x7c
 };
 MS2_CHECK_SIZE(CLightEffect, 0x88);
 MS2_CHECK_OFFSET(CLightEffect, m_spParent, 0x58);

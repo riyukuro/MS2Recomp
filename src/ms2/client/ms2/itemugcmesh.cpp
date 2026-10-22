@@ -155,11 +155,11 @@ MS2_CHECK_SIZE(Unk_NodeQueue, 0x30);
 
 void FUN_141422660(MS2Ptr<CEquipItem> spItem, int nIndex, float fValue);
 int FUN_141424580(MS2Ptr<CEquipItem> spItem, unsigned* pOut, int nIndex);
-void FUN_141422b30(Unk_PickTarget* pPart, std::set<NiAVObjectPtr>& kNodes, const Unk_StreamPoint& kPos, const Unk_StreamPoint& kEuler,
+void FUN_141422b30(Unk_PickTarget* pPart, std::set<NiAVObjectPtr>& kNodes, const Vector3& kPos, const Vector3& kEuler,
                    float fScale);
 NiAVObjectPtr FUN_141423480(NiAVObjectPtr spRoot, const CString& strName);
-void FUN_1412014f0(Unk_PickTarget* pPart, const Unk_StreamPoint& kOffset);   // equipmodel.cpp: stores the offset
-void FUN_141201620(Unk_PickTarget* pPart, const Unk_StreamPoint& kEuler);    // equipmodel.cpp: stores the euler
+void FUN_1412014f0(Unk_PickTarget* pPart, const Vector3& kOffset);   // equipmodel.cpp: stores the offset
+void FUN_141201620(Unk_PickTarget* pPart, const Vector3& kEuler);    // equipmodel.cpp: stores the euler
 bool FUN_141427d60(NiAVObject* pObj);                               // the object is a mesh-type leaf
 int FUN_140f02bc0();
 NiTimeController* FUN_14098dc80(NiObjectNET* pObj);                 // first controller
@@ -435,7 +435,7 @@ void FUN_141422660(MS2Ptr<CEquipItem> spItem, int nIndex, float fValue)
 }
 
 // @0x141422840
-void FUN_141422840(Unk_PickTarget* pPart, Unk_StreamPoint kPos, Unk_StreamPoint kEuler, float fScale)
+void FUN_141422840(Unk_PickTarget* pPart, Vector3 kPos, Vector3 kEuler, float fScale)
 {
     if (pPart == 0)
         return;
@@ -447,7 +447,7 @@ void FUN_141422840(Unk_PickTarget* pPart, Unk_StreamPoint kPos, Unk_StreamPoint 
 }
 
 // @0x141422950 - transform -> euler angles in degrees
-void FUN_141422950(const NiMatrix3& kRot, Unk_StreamPoint* pEuler)
+void FUN_141422950(const NiMatrix3& kRot, Vector3* pEuler)
 {
     kRot.ToEulerAnglesXYZ(pEuler->x, pEuler->y, pEuler->z);
     pEuler->x = (pEuler->x * 180.0f) / 3.1415927f;
@@ -456,11 +456,11 @@ void FUN_141422950(const NiMatrix3& kRot, Unk_StreamPoint* pEuler)
 }
 
 // @0x141422a00
-void FUN_141422a00(Unk_PickTarget* pPart, Unk_StreamPoint kPos, const NiMatrix3& kRot, float fScale)
+void FUN_141422a00(Unk_PickTarget* pPart, Vector3 kPos, const NiMatrix3& kRot, float fScale)
 {
     if (pPart == 0)
         return;
-    Unk_StreamPoint kEuler;
+    Vector3 kEuler;
     FUN_141422950(kRot, &kEuler);
     FUN_1414225d0(MS2Ptr<Unk_PickTarget>(pPart), 0, fScale);
     FUN_1414225d0(MS2Ptr<Unk_PickTarget>(pPart), 1, fScale);
@@ -471,7 +471,7 @@ void FUN_141422a00(Unk_PickTarget* pPart, Unk_StreamPoint kPos, const NiMatrix3&
 
 // @0x141422b30 - applies a pose to every node of the part's node set
 // MS2-FUNCTIONAL: logic recovered from the decomp; /Od codegen (local layout / temporaries) still differs from the exe
-void FUN_141422b30(Unk_PickTarget* pPart, std::set<NiAVObjectPtr>& kNodes, const Unk_StreamPoint& kPos, const Unk_StreamPoint& kEuler,
+void FUN_141422b30(Unk_PickTarget* pPart, std::set<NiAVObjectPtr>& kNodes, const Vector3& kPos, const Vector3& kEuler,
                    float fScale)
 {
     if (pPart == 0)
@@ -482,7 +482,7 @@ void FUN_141422b30(Unk_PickTarget* pPart, std::set<NiAVObjectPtr>& kNodes, const
     Unk_UgcPartInfo* pInfo = (Unk_UgcPartInfo*)pPart->FUN_141200ab0();
     if (pInfo == 0)
         return;
-    Unk_StreamPoint kShift = kPos;
+    Vector3 kShift = kPos;
     NiMatrix3 kRot;
     kRot.FromEulerAnglesXYZ((kEuler.x * 3.1415927f) / 180.0f, (kEuler.y * 3.1415927f) / 180.0f,
                             (kEuler.z * 3.1415927f) / 180.0f);

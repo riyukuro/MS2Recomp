@@ -137,12 +137,12 @@ void FUN_14152e0c0(void* pPC);
 void FUN_140710590(COutPacket& packet);                     // send
 bool FUN_14025cd60(const CStringW& a, const CStringW& b);   // equal names
 
-// Both the NiPoint3 the owner hands out and the efd::Point3 it takes are the same three floats as Unk_StreamPoint.
-static const Unk_StreamPoint& AsPoint(const NiPoint3& pt)
+// Both the NiPoint3 the owner hands out and the efd::Point3 it takes are the same three floats as Vector3.
+static const Vector3& AsPoint(const NiPoint3& pt)
 {
-    return reinterpret_cast<const Unk_StreamPoint&>(pt);
+    return reinterpret_cast<const Vector3&>(pt);
 }
-static efd::Point3 AsEfd(const Unk_StreamPoint& pt)
+static efd::Point3 AsEfd(const Vector3& pt)
 {
     return efd::Point3(pt.x, pt.y, pt.z);
 }
@@ -471,7 +471,7 @@ void StateObserver::FUN_140ac48e0()
         Unk_ObsWorld* pWorld = FUN_1403ed2d0();
         if (pWorld != 0)
         {
-            Unk_StreamPoint vTarget;
+            Vector3 vTarget;
             MS2Ptr<CProxyGameObject> spProxy = pWorld->FUN_141bc9c60(m_spObserve->m_nTarget);
             if (!spProxy.IsNull())
             {
@@ -489,13 +489,13 @@ void StateObserver::FUN_140ac48e0()
                     PCBase* pTarget = pWorld->FUN_141bd1530(m_spObserve->m_nTarget);
                     if (pTarget != 0)
                         vTarget = AsPoint(pTarget->vfunc_18());
-                    Unk_StreamPoint vOwner = AsPoint(m_pOwner->vfunc_18());
-                    Unk_StreamPoint vDir = vTarget.FUN_140965c40(vOwner);
+                    Vector3 vOwner = AsPoint(m_pOwner->vfunc_18());
+                    Vector3 vDir = vTarget.FUN_140965c40(vOwner);
                     float fLen = vDir.FUN_140968990();
                     if (fLen <= 1000.0f)
                     {
                         float fStep = (fLen / 60.0f) * 10.0f;
-                        Unk_StreamPoint vNew = vOwner.FUN_14097fd50(vDir.FUN_14097fc90(fStep));
+                        Vector3 vNew = vOwner.FUN_14097fd50(vDir.FUN_14097fc90(fStep));
                         m_pOwner->vfunc_19(AsEfd(vNew));
                     }
                     else

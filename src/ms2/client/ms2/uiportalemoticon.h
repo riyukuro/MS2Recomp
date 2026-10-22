@@ -29,13 +29,13 @@ public:
     void FUN_140f9bb70();                                           // start showing (m_bShown = m_bPending = 1)
     void FUN_140f9bba0();                                           // stop showing
     void FUN_140f9bbd0();                                           // unregister the emoticon and stop showing
-    void FUN_140f9bc40(Unk_StreamPoint ptWorld);                    // the portal's point (the bubble floats 150 above it)
+    void FUN_140f9bc40(Vector3 ptWorld);                    // the portal's point (the bubble floats 150 above it)
     void SetName(const CStringW& strName);                    // the emoticon name
     void FUN_140f9bf70();                                           // project the world point and place the movie
 
 private:
     MS2_LAYOUT_FRIEND;
-    Unk_StreamPoint m_ptWorld;                                      // +0x68 the world point above the portal
+    Vector3 m_ptWorld;                                      // +0x68 the world point above the portal
     int m_bShown;                                                   // +0x74 the emoticon is wanted
     int m_bPending;                                                 // +0x78 open the movie once it is loaded (vfunc_52)
     int m_pad_7c;

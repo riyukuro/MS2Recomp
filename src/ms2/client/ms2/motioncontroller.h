@@ -18,8 +18,8 @@ class PCBase;
 struct Unk_MotionData
 {
     char m_pad_00[0x5c];
-    Unk_StreamPoint m_kStart;           // +0x5c
-    Unk_StreamPoint m_kDir;             // +0x68 base direction (euler degrees for type 10 actors)
+    Vector3 m_kStart;           // +0x5c
+    Vector3 m_kDir;             // +0x68 base direction (euler degrees for type 10 actors)
     float m_fSpeedScale;                // +0x74
     float m_fDuration;                  // +0x78
     float m_fPad7c;                     // +0x7c
@@ -49,13 +49,13 @@ public:
     virtual ~CMotionController();                               // 0x141487f90 (??_G 0x141489900)
     virtual const NiRTTI* vfunc_1();                            // 0x141489970
     virtual int vfunc_2(Unk_MotionData* pData, PCBase* pTarget);    // 0x141487fc0 arm
-    virtual Unk_StreamPoint vfunc_3();                          // 0x141488030 current displacement
+    virtual Vector3 vfunc_3();                          // 0x141488030 current displacement
     virtual int vfunc_4();                                      // 0x141488060
     virtual bool vfunc_5(double fTime);                         // 0x141488080 tick
     virtual int vfunc_6();                                      // 0x141488470 motion kind
 
-    Unk_StreamPoint m_kMove;                                    // +0x18
-    Unk_StreamPoint m_kDir;                                     // +0x24
+    Vector3 m_kMove;                                    // +0x18
+    Vector3 m_kDir;                                     // +0x24
     float m_fSpeed;                                             // +0x30
     int m_nPad34;                                               // +0x34
     int m_nPad38;                                               // +0x38
@@ -81,17 +81,17 @@ public:
     virtual ~CArcMotionController();                            // 0x1414898a0 (??_G 0x1414898c0)
     virtual const NiRTTI* vfunc_1();                            // 0x141489960
     virtual int vfunc_2(Unk_MotionData* pData, PCBase* pTarget);    // 0x141488520
-    virtual Unk_StreamPoint vfunc_3();                          // 0x141488b40
+    virtual Vector3 vfunc_3();                          // 0x141488b40
     virtual int vfunc_4();                                      // 0x141488b80
     virtual bool vfunc_5(double fTime);                         // 0x141488ba0
 
-    Unk_StreamPoint m_kHeading;                                 // +0x58 last step direction
-    Unk_StreamPoint m_kStartPos;                                // +0x64 actor position when armed
-    Unk_StreamPoint m_kEndPos;                                  // +0x70 destination
+    Vector3 m_kHeading;                                 // +0x58 last step direction
+    Vector3 m_kStartPos;                                // +0x64 actor position when armed
+    Vector3 m_kEndPos;                                  // +0x70 destination
     int m_nPad7c;
     double m_dDuration;                                         // +0x80
     double m_dElapsed;                                          // +0x88
-    Unk_StreamPoint m_kCtrlPos;                                 // +0x90 bezier control point
+    Vector3 m_kCtrlPos;                                 // +0x90 bezier control point
     float m_fCtrlWeight;                                        // +0x9c
     float m_fCtrlHeight;                                        // +0xa0 added to the control point's z
     float m_fSpeedLimit;                                        // +0xa4 bezier length
@@ -113,7 +113,7 @@ public:
     // ~CLinearMotionController() is implicit (0x1417f5b00 in stateskill.obj: no vptr store).
     virtual const NiRTTI* vfunc_1();                            // 0x1417f5ee0
     virtual int vfunc_2(Unk_MotionData* pData, PCBase* pTarget);    // 0x141488df0
-    virtual Unk_StreamPoint vfunc_3();                          // 0x141488e30
+    virtual Vector3 vfunc_3();                          // 0x141488e30
     virtual int vfunc_4();                                      // 0x141488e60
     virtual bool vfunc_5(double fTime);                         // 0x141488e80
     char m_pad58[8];                                            // +0x58
@@ -129,7 +129,7 @@ public:
     // ~CBlinkMotionController() is implicit (0x1417f5a90 in stateskill.obj: no vptr store).
     virtual const NiRTTI* vfunc_1();                            // 0x1417f5ed0
     virtual int vfunc_2(Unk_MotionData* pData, PCBase* pTarget);    // 0x141489100
-    virtual Unk_StreamPoint vfunc_3();                          // 0x141489140
+    virtual Vector3 vfunc_3();                          // 0x141489140
     virtual int vfunc_4();                                      // 0x141489170
     virtual bool vfunc_5(double fTime);                         // 0x141489190
     char m_pad58[8];                                            // +0x58
@@ -145,7 +145,7 @@ public:
     // ~CMoveMotionController() is implicit (0x1417f5b20 in stateskill.obj: no vptr store).
     virtual const NiRTTI* vfunc_1();                            // 0x1417f5ef0
     virtual int vfunc_2(Unk_MotionData* pData, PCBase* pTarget);    // 0x1414891c0
-    virtual Unk_StreamPoint vfunc_3();                          // 0x141489200
+    virtual Vector3 vfunc_3();                          // 0x141489200
     virtual int vfunc_4();                                      // 0x141489230
     virtual bool vfunc_5(double fTime);                         // 0x141489250
 };

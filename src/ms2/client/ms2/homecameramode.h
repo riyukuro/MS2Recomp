@@ -8,11 +8,11 @@
 #include "cameramode.h"
 
 // The camera points are NiPoint3 in the exe: efd::Point3 results convert through the out-of-line NiPoint3(const
-// efd::Point3&) and are move-assigned; NiPoint3 values are copy-assigned. Unk_StreamPoint stands for efd::Point3 and
+// efd::Point3&) and are move-assigned; NiPoint3 values are copy-assigned. Vector3 stands for efd::Point3 and
 // the base slices implicitly, as in the exe.
-struct Unk_HomeNiPoint3 : public Unk_StreamPoint
+struct Unk_HomeNiPoint3 : public Vector3
 {
-    Unk_HomeNiPoint3(const Unk_StreamPoint& pt);                    // 0x14027dcf0
+    Unk_HomeNiPoint3(const Vector3& pt);                    // 0x14027dcf0
     Unk_HomeNiPoint3& operator=(Unk_HomeNiPoint3&& pt);             // 0x14097faa0
     Unk_HomeNiPoint3& operator=(const Unk_HomeNiPoint3& pt);        // 0x14097fad0
 };
@@ -24,8 +24,8 @@ struct Unk_HomeCameraPose
     Unk_HomeCameraPose();                                           // 0x140b67c40
     Unk_HomeCameraPose& operator=(const Unk_HomeCameraPose& o);     // 0x140b67c80
 
-    Unk_StreamPoint m_rot;
-    Unk_StreamPoint m_pos;
+    Vector3 m_rot;
+    Vector3 m_pos;
 };
 MS2_CHECK_SIZE(Unk_HomeCameraPose, 0x18);
 
@@ -64,11 +64,11 @@ public:
     virtual float vfunc_27();
     virtual void vfunc_33();
     virtual void vfunc_37(double fTime);                                // ease the shown pose towards m_c4
-    virtual BOOL vfunc_38(Unk_StreamPoint ptPos, Unk_StreamPoint ptRot);   // view frustum blocked?
+    virtual BOOL vfunc_38(Vector3 ptPos, Vector3 ptRot);   // view frustum blocked?
 
     void FUN_140b66570();                                               // m_c4.m_pos from the zoom, refresh m_7c
-    Unk_StreamPoint FUN_140b66660();                                    // m_7c
-    void FUN_140b66730(Unk_StreamPoint ptPos, Unk_StreamPoint ptRot, Unk_StreamPoint ptTarget, bool bClamp);
+    Vector3 FUN_140b66660();                                    // m_7c
+    void FUN_140b66730(Vector3 ptPos, Vector3 ptRot, Vector3 ptTarget, bool bClamp);
     float FUN_140b66b10(float fMin, float fCur, float fMax, float fDegMin, float fDegMax);
 
     int m_78;                           // +0x78 zooming

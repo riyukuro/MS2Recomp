@@ -380,7 +380,7 @@ __int64 FUN_1410947c0(void* pObject);                     // the item uid of a r
 bool FUN_140633700(MS2Ptr<CItem> spItem);                 // the item is destroyed without a box
 void FUN_1409e4950(MS2Ptr<CItem> spItem, CStringW& strOut, bool* pHas);   // the warning prefix of the item
 CPhysXHelper* FUN_1409f7ca0();                            // the physics scene
-extern Unk_StreamPoint DAT_143a08cf8;                     // NiPoint3::UNIT_Z
+extern Vector3 DAT_143a08cf8;                     // NiPoint3::UNIT_Z
 static CStringW FUN_14140c2b0(MS2Ptr<CItem> spItem);
 
 // The tooltip paths (vfunc_0).

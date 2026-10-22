@@ -104,7 +104,7 @@ void CDebugHelper::FUN_14116c580(const NiPoint3* pPos, const NiPoint3* pTarget, 
     NiTStridedRandomAccessIterator<NiColorA> kColors = kColor.begin<NiColorA>(0);
     kColors[0] = *pColor;
     kColors[1] = *pColor;
-    Unk_StreamPoint kDir = ((const Unk_StreamPoint*)pTarget)->FUN_140965c40(*(const Unk_StreamPoint*)pPos);
+    Vector3 kDir = ((const Vector3*)pTarget)->FUN_140965c40(*(const Vector3*)pPos);
     kDir.FUN_140968990();
     NiTStridedRandomAccessIterator<NiPoint3> kPts = kPos.begin<NiPoint3>(0);
     kPts[0] = NiPoint3(0.0f, 0.0f, 0.0f);

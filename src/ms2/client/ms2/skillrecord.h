@@ -20,7 +20,7 @@ class CMagicModel;
 // The skill request a cast record is built from (the 3rd argument of CSkillRecord::Init).
 // The request's point fields are a 12-byte float triple with no default ctor in the exe: the request ctor copy-
 // initialises them (implicit copy ctor, rep movsb) and constructs nothing. The user-declared ctor keeps the request a
-// non-POD (no /GS cookie in functions with a request local); the efd::Point3 operations go through Unk_StreamPoint casts.
+// non-POD (no /GS cookie in functions with a request local); the efd::Point3 operations go through Vector3 casts.
 struct Unk_IsrPoint
 {
     Unk_IsrPoint(float fX, float fY, float fZ);             // declared only
@@ -53,7 +53,7 @@ class SkillTargetRecord : public CPtred
 {
 public:
     bool FUN_141758d70(unsigned long long nTagId, unsigned long long nTagSub, int nOwnerId, int nCasterId, int nSkillId,
-        short nLevel, int nMotion, const Unk_StreamPoint& ptDir, int n80, int n84, int nAttack, int n8c);   // fill in
+        short nLevel, int nMotion, const Vector3& ptDir, int n80, int n84, int nAttack, int n8c);   // fill in
     SkillMotionData* FUN_141759010();                       // the motion
     SkillAttackData* FUN_141759050();                       // the attack
     int FUN_141759090();                                    // whether the attack exists
@@ -72,7 +72,7 @@ public:
     MS2Ptr<SkillLevelData> m_spLevel;                       // +0x48
     int m_nMotion;                                        // +0x58
     int m_nAttack;                                        // +0x5c
-    Unk_StreamPoint m_ptDir;                                // +0x60
+    Vector3 m_ptDir;                                // +0x60
     Unk_SocketPtr<SkillTargetRecord> m_spLinked;            // +0x70 the cast this one continues into
     int m_n80;                                              // +0x80
     int m_n84;                                              // +0x84
@@ -129,9 +129,9 @@ public:
     __int64 m_nCastId;                                      // +0x28
     MS2Ptr<SkillData> m_spSkill;                            // +0x30
     MS2Ptr<SkillLevelData> m_spLevel;                       // +0x40
-    Unk_StreamPoint m_ptPos;                                // +0x50
-    Unk_StreamPoint m_ptDir;                                // +0x5c
-    Unk_StreamPoint m_ptRot;                                // +0x68
+    Vector3 m_ptPos;                                // +0x50
+    Vector3 m_ptDir;                                // +0x5c
+    Vector3 m_ptRot;                                // +0x68
     float m_fCooldown;                                      // +0x74 (0: the motion's)
     float m_fDuration;                                      // +0x78
     float m_fElapsed;                                       // +0x7c
@@ -175,8 +175,8 @@ public:
     CDamageRecord();                                        // 0x14175a4e0 (the implicit dtor is 0x14175b530)
     virtual int vfunc_1();                                  // 0x14175af50
     int Init(unsigned long long nTagId, unsigned long long nTagSub, int nOwnerId, int nCasterId, int nSkillId,
-        short nLevel, int nMotion, int nAttack, const Unk_StreamPoint& ptPos, const Unk_StreamPoint& ptDir,
-        const Unk_StreamPoint& ptHit);                      // 0x14175a610
+        short nLevel, int nMotion, int nAttack, const Vector3& ptPos, const Vector3& ptDir,
+        const Vector3& ptHit);                      // 0x14175a610
     SkillData* FUN_14175a820();                             // the skill
     SkillMotionData* FUN_14175a850();                       // the motion
     SkillAttackData* FUN_14175a8b0();                       // the attack
@@ -202,10 +202,10 @@ public:
     MS2Ptr<SkillLevelData> m_spLevel;                       // +0x48
     int m_nMotion;                                        // +0x58
     int m_nAttack;                                        // +0x5c
-    Unk_StreamPoint m_ptPos;                                // +0x60
-    Unk_StreamPoint m_ptDir;                                // +0x6c
-    Unk_StreamPoint m_pt78;                                 // +0x78
-    Unk_StreamPoint m_ptHit;                                // +0x84
+    Vector3 m_ptPos;                                // +0x60
+    Vector3 m_ptDir;                                // +0x6c
+    Vector3 m_pt78;                                 // +0x78
+    Vector3 m_ptHit;                                // +0x84
     ATL::CAtlArray<int> m_types;                            // +0x90
     ATL::CAtlArray<__int64> m_damages;                      // +0xb0
     int m_nD0;                                              // +0xd0
@@ -236,6 +236,6 @@ class CSplashDamageRecord : public CDamageRecord
 public:
     CSplashDamageRecord();                                  // 0x14175b180 (the implicit dtor is 0x14175b5f0)
     int Init(int nCasterId, int nOwnerId, unsigned long long nTagId, int nSkillId, short nLevel, int nMotion,
-        int nAttack, const Unk_StreamPoint& ptPos, const Unk_StreamPoint& ptDir);   // 0x14175b1c0
+        int nAttack, const Vector3& ptPos, const Vector3& ptDir);   // 0x14175b1c0
 };
 MS2_CHECK_SIZE(CSplashDamageRecord, 0xd8);

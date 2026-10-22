@@ -17,13 +17,13 @@ public:
     virtual int vfunc_1() { return 6; }
     // @0x141853bb0
     virtual bool vfunc_2() { return true; }
-    virtual void vfunc_3(Unk_StreamPoint pt);                           // 0x141853a40 keeps the eye inside the world
+    virtual void vfunc_3(Vector3 pt);                           // 0x141853a40 keeps the eye inside the world
     virtual void vfunc_6(int n);                                        // 0x141852d20
     virtual void vfunc_8(double fTime);                                 // 0x1418532e0
     virtual void vfunc_9();                                             // 0x141853780
     virtual void vfunc_24(Unk_CameraTargetEntity* p, int n);            // 0x141852ea0 frame the target
 
-    Unk_StreamPoint m_78;                                               // +0x78 move input (x: right, y: forward)
+    Vector3 m_78;                                               // +0x78 move input (x: right, y: forward)
     int m_84;                                                           // +0x84 initial target framed
     int m_88;                                                           // +0x88 re-frame pending
     int m_8c;                                                           // +0x8c vfunc_24's n

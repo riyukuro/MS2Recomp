@@ -74,10 +74,10 @@ public:
     MS2Ptr<CEquipItem> FUN_141655c30(__int64 itemUid);      // a worn item by uid
 };
 
-extern Unk_StreamPoint DAT_143b01a60;                       // the zero point
-void FUN_1409618c0(egf::Entity* pEntity, unsigned nProperty, Unk_StreamPoint* pOut);   // reads a point property
-float FUN_140966f00(NiPoint3 kA, Unk_StreamPoint kB);           // the distance
-float FUN_140966ea0(NiPoint3 kA, Unk_StreamPoint kB);           // the planar distance
+extern Vector3 DAT_143b01a60;                       // the zero point
+void FUN_1409618c0(egf::Entity* pEntity, unsigned nProperty, Vector3* pOut);   // reads a point property
+float FUN_140966f00(NiPoint3 kA, Vector3 kB);           // the distance
+float FUN_140966ea0(NiPoint3 kA, Vector3 kB);           // the planar distance
 struct Unk_VwConfig { char m_pad[0xd8]; CStringA m_strUploadDir; };   // the client config
 void* FUN_140166410();                                      // the game settings
 bool FUN_14036e510(void* pSettings);                        // a content switch
@@ -550,7 +550,7 @@ void CUgcViewerBanner::vfunc_1()
     if (pPlayer == 0)
         return;
     NiPoint3 kPlayer = pPlayer->vfunc_18();
-    Unk_StreamPoint kBanner = DAT_143b01a60;
+    Vector3 kBanner = DAT_143b01a60;
     FUN_1409618c0(spEntity, 0xfd95ca52, &kBanner);
     int bPlanar = 0;
     float fDistance = bPlanar ? FUN_140966ea0(kPlayer, kBanner) : FUN_140966f00(kPlayer, kBanner);

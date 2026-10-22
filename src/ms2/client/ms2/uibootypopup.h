@@ -23,7 +23,7 @@ public:
     int FUN_1410315a0();                                            // m_74 (shown)
     void FUN_1410315c0();                                           // m_78 = m_74 = 1
     void FUN_1410315f0();                                           // unregister from the manager; m_78 = m_74 = 0
-    void FUN_141031660(const Unk_StreamPoint& pt);                  // m_68 = pt (the world anchor)
+    void FUN_141031660(const Vector3& pt);                  // m_68 = pt (the world anchor)
     void FUN_141031690(const egf::EntityID& kId);                   // m_80 = kId
     void FUN_1410316d0(int nItemId);                                // m_88 = nItemId
     void FUN_141031890();                                           // project m_68 to the screen and move the movie
@@ -31,7 +31,7 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    Unk_StreamPoint m_68;               // +0x68 world anchor (starts as the zero point DAT_143b01a60)
+    Vector3 m_68;               // +0x68 world anchor (starts as the zero point DAT_143b01a60)
     int m_74;                           // +0x74 shown
     int m_78;                           // +0x78 hide request pending
     int m_7c;                           // +0x7c state last sent to the swf

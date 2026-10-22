@@ -60,7 +60,7 @@ class Unk_GameClock { public: double FUN_141473280(); };
 Unk_GameClock* FUN_14086d260();
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
 void* FUN_14098d8d0(const void* pRtti, void* pObj);                 // dynamic cast through an NiRTTI
-const Unk_StreamPoint& FUN_140947900(void* pNode);                  // world translate
+const Vector3& FUN_140947900(void* pNode);                  // world translate
 bool FUN_14098dad0(void* pNode);                                    // node is app-culled
 void FUN_141d16040(void* pNode, float fTime, bool bUpdateControllers);    // NiAVObject::Update
 void FUN_140a0b2a0(NiAVObject* pObj);                               // detach from the parent
@@ -96,7 +96,7 @@ void* FUN_14098ddb0(Unk_PropList* pList);                           // head posi
 void* FUN_14098de00(Unk_PropList* pList, void** ppPos);             // slot at the position, advances it
 NiProperty* FUN_140993f00(void* pSlot);                             // slot -> property
 // The Catmull-Rom point between four control points (beameffect.cpp).
-Unk_StreamPoint FUN_140a0adf0(const Unk_StreamPoint& p0, const Unk_StreamPoint& p1, const Unk_StreamPoint& p2, const Unk_StreamPoint& p3, float fT);
+Vector3 FUN_140a0adf0(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float fT);
 
 // Depth-first walker over a scene graph (0x38 bytes; unrecovered class).
 class Unk_SceneWalker
@@ -386,7 +386,7 @@ void CRibbonEffect::vfunc_10(bool bVisible)
 // @0x141702c50
 int CRibbonEffect::vfunc_8(void* p)
 {
-    *static_cast<Unk_StreamPoint*>(p) = FUN_140947900(FUN_1409475f0(&m_spRoot));
+    *static_cast<Vector3*>(p) = FUN_140947900(FUN_1409475f0(&m_spRoot));
     return 1;
 }
 
@@ -400,7 +400,7 @@ void CRibbonEffect::UpdateMesh()
     unsigned nPoints = (unsigned)m_pPoints->GetCount();
     if (3 < nPoints)
     {
-        efd::vector<Unk_StreamPoint> kCurve;
+        efd::vector<Vector3> kCurve;
         for (unsigned i = 0; i < nPoints - 3; ++i)
         {
             for (unsigned j = 0; j < (unsigned)m_nQuality; ++j)
@@ -409,12 +409,12 @@ void CRibbonEffect::UpdateMesh()
                 kCurve.push_back(FUN_140a0adf0((*m_pPoints)[i], (*m_pPoints)[i + 1], (*m_pPoints)[i + 2], (*m_pPoints)[i + 3], fT));
             }
         }
-        Unk_StreamPoint kCamera = Unk_CameraManager::FUN_1409478c0()->FUN_140af0250();
-        efd::vector<Unk_StreamPoint> kMinus;
-        efd::vector<Unk_StreamPoint> kPlus;
+        Vector3 kCamera = Unk_CameraManager::FUN_1409478c0()->FUN_140af0250();
+        efd::vector<Vector3> kMinus;
+        efd::vector<Vector3> kPlus;
         for (unsigned i = 0; i < kCurve.size(); ++i)
         {
-            Unk_StreamPoint kDir;
+            Vector3 kDir;
             if (i == 0)
                 kDir = kCurve[1].FUN_140965c40(kCurve[0]);
             else if (i == kCurve.size() - 1)
@@ -422,7 +422,7 @@ void CRibbonEffect::UpdateMesh()
             else
                 kDir = kCurve[i + 1].FUN_140965c40(kCurve[i - 1]);
             kDir.FUN_140968990();
-            Unk_StreamPoint kSide = kDir.FUN_140a00e10(kCamera);
+            Vector3 kSide = kDir.FUN_140a00e10(kCamera);
             kMinus.push_back(kCurve[i].FUN_140965c40(FUN_1409ab5c0(m_fHalfWidth, kSide)));
             kPlus.push_back(kCurve[i].FUN_14097fd50(FUN_1409ab5c0(m_fHalfWidth, kSide)));
         }

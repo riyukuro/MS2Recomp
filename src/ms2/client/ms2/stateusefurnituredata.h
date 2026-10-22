@@ -51,7 +51,7 @@ public:
     MS2Ptr<StateUseFurnitureData> m_spFurniture;            // +0x50
     int m_nEffect;                                          // +0x60
     int m_n64;                                              // +0x64
-    Unk_StreamPoint m_vPos;                                 // +0x68
+    Vector3 m_vPos;                                 // +0x68
 };
 MS2_CHECK_SIZE(StateUseFurniture, 0x78);
 MS2_CHECK_OFFSET(StateUseFurniture, m_spCube, 0x40);

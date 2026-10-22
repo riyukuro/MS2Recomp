@@ -23,18 +23,18 @@ public:
     CMagicData();                                                   // 0x14145bd70
     virtual ~CMagicData() = default;                                // 0 0x141468d80
     // A position between the two control points (random fractions per axis).
-    Unk_StreamPoint FUN_14145c030(void* pRandom);                   // 0x14145c030
+    Vector3 FUN_14145c030(void* pRandom);                   // 0x14145c030
     CMagicData& operator=(const CMagicData& kOther);                // 0x141468f10 (the implicit copy assignment)
     bool FUN_14145c180();                                           // 0x14145c180 any control point is not the zero point
 
-    Unk_StreamPoint m_ptFireOffset;                                 // +0x18 fireOffsetPosition
-    Unk_StreamPoint m_ptFireFixed;                                  // +0x24 fireFixedPosition
+    Vector3 m_ptFireOffset;                                 // +0x18 fireOffsetPosition
+    Vector3 m_ptFireFixed;                                  // +0x24 fireFixedPosition
     CString m_strFireNode;                                          // +0x30 fireNode
     int m_nRotation;                                                // +0x38 rotation
     float m_fLifeTime;                                              // +0x3c lifeTime
     float m_fDelayTime;                                             // +0x40 delayTime
     float m_fSpawnTime;                                             // +0x44 spawnTime
-    Unk_StreamPoint m_ptDirection;                                  // +0x48 direction
+    Vector3 m_ptDirection;                                  // +0x48 direction
     float m_fDirRotZ;                                               // +0x54 dirRotZDegree
     float m_fVelocity;                                              // +0x58 vel
     float m_fDistance;                                              // +0x5c distance
@@ -42,9 +42,9 @@ public:
     float m_fNonTargetMoveDistance;                                 // +0x64 nonTargetMoveDistance
     float m_fTraceTargetDuration;                                   // +0x68 traceTargetDuration
     float m_fDestroyTime;                                           // +0x6c destroyTime
-    Unk_StreamPoint m_ptControl[2];                                 // +0x70 controlValue0 / controlValue1
+    Vector3 m_ptControl[2];                                 // +0x70 controlValue0 / controlValue1
     float m_fControlRate;                                           // +0x88 controlRate
-    Unk_StreamPoint m_ptControlEnd;                                 // +0x8c controlEndOffsetValue
+    Vector3 m_ptControlEnd;                                 // +0x8c controlEndOffsetValue
     int m_nCatmullRom;                                              // +0x98 catmullrom
     unsigned m_nMoveEndHoldDuration;                                // +0x9c moveEndHoldDuration
     int m_nExplosionByDestroy;                                      // +0xa0 explosionByDestroy
@@ -148,16 +148,16 @@ public:
 
     // Start the projectile: bind the skill and caster records, copy the move data, build the scene root and prime the effects.
     int FUN_14145d5d0(Unk_MagicTagPtr spSkill, Unk_MagicTagPtr spCaster, const CMagicData* pData,
-        Unk_StreamPoint ptStart, unsigned n530, unsigned n534, unsigned n53c);   // 0x14145d5d0
+        Vector3 ptStart, unsigned n530, unsigned n534, unsigned n53c);   // 0x14145d5d0
     void FUN_14145d9d0();                                           // 0x14145d9d0 flight time and the random landing point
-    void FUN_14145ddd0(const Unk_StreamPoint& ptStart);             // 0x14145ddd0 restart from a new start point
+    void FUN_14145ddd0(const Vector3& ptStart);             // 0x14145ddd0 restart from a new start point
     void FUN_14145de80();                                           // 0x14145de80 per-frame state machine
     void FUN_14145e960(unsigned nNow);                              // 0x14145e960 spawn the main effect
     void FUN_141460640(unsigned nNow);                              // 0x141460640 release every spawned effect (nNow unused)
     void FUN_141460700(unsigned nNow);                              // 0x141460700 restart the flight from the current point
     void FUN_141461140();                                           // 0x141461140 pick the target point
-    void FUN_141461a80(Unk_StreamPoint ptNew);                      // 0x141461a80 move the projectile and its scene root
-    void FUN_141461b60(const Unk_StreamPoint& ptDirection);         // 0x141461b60 set the direction and rotate
+    void FUN_141461a80(Vector3 ptNew);                      // 0x141461a80 move the projectile and its scene root
+    void FUN_141461b60(const Vector3& ptDirection);         // 0x141461b60 set the direction and rotate
     void SetMatRotation(const Unk_NiMatrix3& matRotation);           // 0x141461ba0 set the rotation matrix
     void FUN_141463fb0(unsigned nNow);                              // 0x141463fb0 end-of-flight transitions
     void FUN_141464160();                                           // 0x141464160 show/hide the scene root by distance
@@ -166,9 +166,9 @@ public:
     bool FUN_141464410();                                           // 0x141464410 the caster's lock-on entity
     int FUN_141464490();                                            // 0x141464490 has an attacker record
     void FUN_1414644d0(int bHide);                                  // 0x1414644d0 show or hide the scene root
-    Unk_StreamPoint FUN_141464520();                                // 0x141464520 rotation matrix column 0
-    Unk_StreamPoint FUN_141464580();                                // 0x141464580 rotation matrix column 1
-    Unk_StreamPoint FUN_1414645e0();                                // 0x1414645e0 rotation matrix column 2
+    Vector3 FUN_141464520();                                // 0x141464520 rotation matrix column 0
+    Vector3 FUN_141464580();                                // 0x141464580 rotation matrix column 1
+    Vector3 FUN_1414645e0();                                // 0x1414645e0 rotation matrix column 2
     float FUN_141464640();                                          // 0x141464640 move-end hold duration
     int FUN_141464670();                                            // 0x141464670 total duration in ms
     unsigned FUN_141467440();                                       // 0x141467440 the current time for this skill
@@ -179,7 +179,7 @@ public:
     void FUN_141464d00(unsigned nNow, const Unk_MagicSkillRow* pRow);   // 0x141464d00
     void FUN_141465b30(unsigned nNow, const Unk_MagicSkillRow* pRow);   // 0x141465b30                              // 0x141461bd0
     void FUN_141462490(unsigned nNow);                              // 0x141462490
-    int FUN_141467100(Unk_MagicEntity* pEntity, Unk_StreamPoint* pOut);   // 0x141467100 nearest hit point of the target
+    int FUN_141467100(Unk_MagicEntity* pEntity, Vector3* pOut);   // 0x141467100 nearest hit point of the target
     void FUN_141463960();                                           // 0x141463960
     void FUN_14145f570(unsigned nNow);                              // 0x14145f570 begin the destroy phase
     void FUN_14145ec50(unsigned nNow);                              // 0x14145ec50 per-frame update while alive
@@ -195,15 +195,15 @@ public:
     unsigned m_nStateTick;                                          // +0x1c
     Unk_MagicTagPtr m_spSkill;                                      // +0x20
     Unk_MagicTagPtr m_spCaster;                                     // +0x30
-    Unk_StreamPoint m_ptStart;                                      // +0x40
-    Unk_StreamPoint m_ptTarget;                                     // +0x4c
-    Unk_StreamPoint m_ptCurrent;                                    // +0x58
-    Unk_StreamPoint m_ptDirection;                                  // +0x64
-    Unk_StreamPoint m_ptLast;                                       // +0x70
-    Unk_StreamPoint m_ptPredicted;                                  // +0x7c
+    Vector3 m_ptStart;                                      // +0x40
+    Vector3 m_ptTarget;                                     // +0x4c
+    Vector3 m_ptCurrent;                                    // +0x58
+    Vector3 m_ptDirection;                                  // +0x64
+    Vector3 m_ptLast;                                       // +0x70
+    Vector3 m_ptPredicted;                                  // +0x7c
     Unk_NiMatrix3 m_matRotation;                                    // +0x88
-    Unk_StreamPoint m_ptAc;                                         // +0xac
-    Unk_StreamPoint m_ptB8;                                         // +0xb8
+    Vector3 m_ptAc;                                         // +0xac
+    Vector3 m_ptB8;                                         // +0xb8
     float m_fTotalTime;                                             // +0xc4
     float m_fRemainTime;                                            // +0xc8
     unsigned m_nLastTick;                                           // +0xcc
@@ -245,18 +245,18 @@ public:
     int FUN_141467ae0();                                            // 0x141467ae0 state == 4
     Unk_MagicTagPtr FUN_141467bc0();                                // 0x141467bc0 copy of the cast record handle
     unsigned long long FUN_141467b60();                             // 0x141467b60 the tag's sub id
-    Unk_StreamPoint FUN_141467c10();                                // 0x141467c10 projectile position
-    Unk_StreamPoint FUN_141467c60();                                // 0x141467c60 projectile direction
+    Vector3 FUN_141467c10();                                // 0x141467c10 projectile position
+    Vector3 FUN_141467c60();                                // 0x141467c60 projectile direction
     Unk_NiMatrix3 FUN_141467cb0();                                  // 0x141467cb0 projectile rotation
-    void FUN_141467d00(Unk_StreamPoint ptNew);                      // 0x141467d00 move the projectile
-    void FUN_141467d50(Unk_StreamPoint ptDirection);                // 0x141467d50 turn the projectile
+    void FUN_141467d00(Vector3 ptNew);                      // 0x141467d00 move the projectile
+    void FUN_141467d50(Vector3 ptDirection);                // 0x141467d50 turn the projectile
     void FUN_141467ed0();                                           // 0x141467ed0 begin the destroy phase of an orphaned model
     void FUN_141467da0();                                           // 0x141467da0
     void FUN_141467800();                                           // 0x141467800
     int FUN_141467dd0(unsigned long long nTag);                     // 0x141467dd0 can this cast be cancelled
     CMagic* FUN_141467b90();                                        // 0x141467b90 the projectile
     void FUN_141467860();                                           // 0x141467860 per-tick update
-    void FUN_141467500(Unk_MagicTagPtr spSkill, Unk_MagicTagPtr spCaster, Unk_StreamPoint ptStart,
+    void FUN_141467500(Unk_MagicTagPtr spSkill, Unk_MagicTagPtr spCaster, Vector3 ptStart,
         unsigned n530, unsigned n534, unsigned n53c);                // 0x141467500 start a projectile for a cast
 
     Unk_SocketPtr<CMagic> m_spMagic;                                // +0x18
@@ -274,8 +274,8 @@ public:
     Unk_MagicTagPtr m_spOwner;                                      // +0x18
     void* m_p28;
     ATL::CAtlArray<Unk_MagicArrowRef*> m_arr30;
-    Unk_StreamPoint m_ptFrom;                                       // +0x50
-    Unk_StreamPoint m_ptTo;                                         // +0x5c
+    Vector3 m_ptFrom;                                       // +0x50
+    Vector3 m_ptTo;                                         // +0x5c
     Unk_NiMatrix3 m_matAim;                                         // +0x68
     int m_n8C;
     Unk_MagicValPtr m_spVal;                                        // +0x90
@@ -344,7 +344,7 @@ public:
     std::pair<bool, bool> FUN_14146c990(int* pKey, Unk_NiPoint3* pPoint, unsigned nOwner, Unk_MagicEntity* pCaster, int* pType);   // 0x14146c990 may the cast and end effects of a hit play
     void FUN_14146bc20(Unk_MagicTag* pTag);          // 0x14146bc20 the cast animation of a cast record
     void FUN_14146bc80(Unk_MagicTag* pTag);          // 0x14146bc80 play the end of a cast record
-    void FUN_14146b440(Unk_MagicTag* pTag, int bTracked, Unk_MagicXform* pXform, Unk_StreamPoint ptDirection);   // 0x14146b440 play the hit of a cast record
+    void FUN_14146b440(Unk_MagicTag* pTag, int bTracked, Unk_MagicXform* pXform, Vector3 ptDirection);   // 0x14146b440 play the hit of a cast record
 
     ATL::CRBMap<unsigned long long, Unk_SocketPtr<Unk_MagicTag> > m_mapCasts;     // +0x28 cast id -> cast record
     ATL::CAtlMap<unsigned long long, Unk_MagicModelMapPtr> m_mapModels;            // +0x58 caster id -> (cast id -> model)

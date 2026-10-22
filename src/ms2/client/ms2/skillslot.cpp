@@ -3054,7 +3054,7 @@ int CSkillSystem::FUN_141769410(SkillData* pData)
     return pData->m_nJump;
 }
 
-extern Unk_StreamPoint DAT_143b01a60;                     // the zero point
+extern Vector3 DAT_143b01a60;                     // the zero point
 __int64 FUN_14028d0e0();                                  // the next cast id
 
 // @0x141763fa0

@@ -7,7 +7,7 @@
 
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/state.h"          // State / StateData
-#include "ms2/placeholder/nipoint3.h"       // Unk_StreamPoint (efd::Point3 / NiPoint3)
+#include "ms2/placeholder/nipoint3.h"       // Vector3 (efd::Point3 / NiPoint3)
 
 class PCBase;
 
@@ -23,7 +23,7 @@ public:
     void vfunc_8(double fTime);                                                         // 0x1417c84b0
 
     void FUN_1417c8560();                                                               // 0x1417c8560 band = (surface z - 200) / 150
-    Unk_StreamPoint* FUN_1417c85d0(Unk_StreamPoint* pOut, const Unk_StreamPoint& kIn,
+    Vector3* FUN_1417c85d0(Vector3* pOut, const Vector3& kIn,
         double fTime);                                                                  // 0x1417c85d0 damp + clamp the step
 
     int m_nBand;                        // +0x40 surface band the actor is in

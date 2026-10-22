@@ -29,7 +29,7 @@
 #include "hook/ms2hook.h"
 
 // ---- unit-local stand-ins and unrecovered callees (names invented from use) ----------------------------------------------
-extern Unk_StreamPoint DAT_143b01a60;                           // the zero point
+extern Vector3 DAT_143b01a60;                           // the zero point
 extern unsigned DAT_143af62d4;                                  // client area width
 extern unsigned DAT_143af62d8;                                  // client area height
 extern RECT g_rcWindow;                                         // 0x143af7d48: last GetWindowRect of the game window
@@ -127,7 +127,7 @@ public:
     virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10();
     virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14();
     virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17();
-    virtual Unk_StreamPoint vfunc_18();                         // MS2: slot 18 (0x90) world position
+    virtual Vector3 vfunc_18();                         // MS2: slot 18 (0x90) world position
 };
 class Unk_McPc
 {
@@ -137,7 +137,7 @@ public:
     virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
     virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
     virtual void vfunc_16(); virtual void vfunc_17();
-    virtual Unk_StreamPoint vfunc_18();                         // MS2: slot 18 (0x90) world position
+    virtual Vector3 vfunc_18();                         // MS2: slot 18 (0x90) world position
     virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22();
     virtual void vfunc_23(); virtual void vfunc_24(); virtual void vfunc_25(); virtual void vfunc_26();
     virtual void vfunc_27(); virtual void vfunc_28(); virtual void vfunc_29(); virtual void vfunc_30();
@@ -151,7 +151,7 @@ public:
     virtual void vfunc_59(int a, void* b, int c, int d);        // MS2: slot 59 (0x1d8)
     virtual void vfunc_60(); virtual void vfunc_61(); virtual void vfunc_62(); virtual void vfunc_63();
     virtual void vfunc_64(); virtual void vfunc_65(); virtual void vfunc_66();
-    virtual void vfunc_67(Unk_StreamPoint* pA, Unk_StreamPoint* pB);   // MS2: slot 67 (0x218) two plane vectors
+    virtual void vfunc_67(Vector3* pA, Vector3* pB);   // MS2: slot 67 (0x218) two plane vectors
     int FUN_1416595b0();                                        // state flag
     int FUN_14166c930();                                        // action id
     Unk_McState* FUN_14166ccb0();                               // current state
@@ -159,7 +159,7 @@ public:
     Unk_McPc* FUN_1416764a0();                                  // ridden character
     Unk_McAttach* FUN_141662440(int nSlot);                     // attachment (mount / vehicle)
     int FUN_141662490(unsigned nSlot);                          // slot occupied
-    Unk_StreamPoint FUN_14123cc20();                            // facing vector
+    Vector3 FUN_14123cc20();                            // facing vector
 };
 
 class Unk_McWorld
@@ -259,10 +259,10 @@ struct Unk_McPickHit
 {
     NiAVObject* FUN_140a17cb0();                                // scene graph node
     // @0x140ad4bd0
-    Unk_StreamPoint* FUN_140ad4bd0() { return &m_pt; }
+    Vector3* FUN_140ad4bd0() { return &m_pt; }
     void* m_pad_00;
     void* m_pad_08;
-    Unk_StreamPoint m_pt;                                       // +0x10 hit point
+    Vector3 m_pt;                                       // +0x10 hit point
 };
 MS2_CHECK_OFFSET(Unk_McPickHit, m_pt, 0x10);
 class Unk_McPickVec
@@ -284,12 +284,12 @@ private:
 };
 
 // Camera: the ray under the cursor.
-bool FUN_140af0520(Unk_CameraManager* pCam, const Unk_Point2& pt, Unk_StreamPoint* pOrigin, Unk_StreamPoint* pDir);
+bool FUN_140af0520(Unk_CameraManager* pCam, const Unk_Point2& pt, Vector3* pOrigin, Vector3* pDir);
 
 // Math helpers.
 bool FUN_14028d470(float a, float b);                           // approx equal
-float FUN_140966f00(Unk_StreamPoint a, Unk_StreamPoint b);      // distance
-Unk_StreamPoint FUN_1420834e0(const Unk_StreamPoint& v, const Unk_EfdMatrix3& m);   // efd::operator*(Point3, Matrix3)
+float FUN_140966f00(Vector3 a, Vector3 b);      // distance
+Vector3 FUN_1420834e0(const Vector3& v, const Unk_EfdMatrix3& m);   // efd::operator*(Point3, Matrix3)
 
 // The effect manager and the request it takes (constructed / destroyed out of line).
 struct Unk_McRot { float m_af[9]; };
@@ -350,15 +350,15 @@ Unk_McEntityRules* FUN_140ad4b90();
 void FUN_140ad4ff0(Unk_CameraManager* pCam, float fValue);
 
 // Convert between the point types of the pick helpers and the mouse ray.
-static void ToVec3(Unk_Vec3& dst, const Unk_StreamPoint& src)
+static void ToVec3(Unk_Vec3& dst, const Vector3& src)
 {
     dst.x = src.x;
     dst.y = src.y;
     dst.z = src.z;
 }
-static Unk_StreamPoint FromVec3(const Unk_Vec3& src)
+static Vector3 FromVec3(const Unk_Vec3& src)
 {
-    return Unk_StreamPoint(src.x, src.y, src.z);
+    return Vector3(src.x, src.y, src.z);
 }
 
 // @0x140ad1860
@@ -520,7 +520,7 @@ int CMouseController::FUN_140ad2260()
 MS2_REPLACE_METHOD(0x140AD2260, CMouseController, FUN_140ad2260, 47, 0x6343EA31);
 
 // @0x140ad22a0
-Unk_StreamPoint CMouseController::GetMove()
+Vector3 CMouseController::GetMove()
 {
     return m_vMove;
 }
@@ -536,7 +536,7 @@ MS2_REPLACE_METHOD(0x140AD22D0, CMouseController, FUN_140ad22d0, 36, 0x7D4F70F3)
 
 // @0x140ad2300
 // MS2-FUNCTIONAL: effect request / transform stand-ins; frame layout differs
-void CMouseController::FUN_140ad2300(Unk_StreamPoint pt)
+void CMouseController::FUN_140ad2300(Vector3 pt)
 {
     Unk_McXform xf;
     FUN_140a332d0(&xf);
@@ -563,7 +563,7 @@ void CMouseController::FUN_140ad23f0(int nX, int nY)
     if (pPc == 0 || pPc->FUN_1416595b0() == 1)
         return;
     int nAction = pPc->FUN_14166c930();
-    Unk_StreamPoint pt = DAT_143b01a60;
+    Vector3 pt = DAT_143b01a60;
     if (FUN_140ad3550(nX, nY, &pt) == 0)
     {
         if (nAction == 0x1e)
@@ -616,7 +616,7 @@ void CMouseController::FUN_140ad26d0(int nX, int nY)
     }
     float fHalfWidth = (float)DAT_143af62d4 / 2.0f;
     float fHalfHeight = (float)DAT_143af62d8 / 2.0f;
-    Unk_StreamPoint v;
+    Vector3 v;
     v.x = (float)nX - fHalfWidth;
     v.y = (float)nY - fHalfHeight;
     v.z = 0;
@@ -645,7 +645,7 @@ void CMouseController::FUN_140ad2830()
     if (m_tmMove.FUN_140268870(100) == 0)
         return;
     Unk_RayCastInfo info;
-    Unk_StreamPoint vUp(0.0f, 0.0f, 75.0f);
+    Vector3 vUp(0.0f, 0.0f, 75.0f);
     info.m_origin = pPc->vfunc_18().FUN_14097fd50(vUp);
     info.m_dir = pPc->FUN_14123cc20();
     info.m_maxDist = 50.0f;
@@ -680,15 +680,15 @@ int CMouseController::FUN_140ad2ac0(int nX, int nY, CStringW* pStrHint)
 {
     if (m_nMode == 0)
         return 0;
-    Unk_StreamPoint vOrigin;
-    Unk_StreamPoint vDir;
+    Vector3 vOrigin;
+    Vector3 vDir;
     Unk_Point2 ptCursor((float)nX, (float)nY);
     if (!FUN_140af0520(Unk_CameraManager::FUN_1409478c0(), ptCursor, &vOrigin, &vDir))
         return 0;
     Unk_McPc* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == 0)
         return 0;
-    Unk_StreamPoint vPos = pPc->vfunc_18();
+    Vector3 vPos = pPc->vfunc_18();
     Unk_MouseRay ray = {};
     ToVec3(ray.vOrigin, vOrigin);
     ToVec3(ray.vEnd, vDir);
@@ -771,8 +771,8 @@ void CMouseController::FUN_140ad3040()
     }
     if (m_vDown.FUN_140552700(DAT_143b01a60))
     {
-        Unk_StreamPoint vPos = FUN_140ad3c70();
-        const Unk_StreamPoint& vTarget = (pPc->FUN_1416749a0()->FUN_140970a40() == 0) ? m_vDown : m_vDir;
+        Vector3 vPos = FUN_140ad3c70();
+        const Vector3& vTarget = (pPc->FUN_1416749a0()->FUN_140970a40() == 0) ? m_vDown : m_vDir;
         float fDist = vPos.FUN_140965c40(vTarget).FUN_140967ac0();
         if (fDist <= m_fLastDist || m_fLastDist == 0.0f)
         {
@@ -801,14 +801,14 @@ MS2_REPLACE_METHOD(0x140AD3040, CMouseController, FUN_140ad3040, 524, 0xF761C44F
 
 // @0x140ad3260
 // MS2-FUNCTIONAL: transliterated from the decompile
-Unk_StreamPoint CMouseController::FUN_140ad3260(Unk_StreamPoint pt)
+Vector3 CMouseController::FUN_140ad3260(Vector3 pt)
 {
     if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0)
         return DAT_143b01a60;
     Unk_McMapPtr spMap = FUN_1403ed2d0()->FUN_141bd30a0();
     if (spMap.FUN_1408851f0())
         return DAT_143b01a60;
-    Unk_StreamPoint v = pt.FUN_140965c40(FUN_140ad3c70());
+    Vector3 v = pt.FUN_140965c40(FUN_140ad3c70());
     v.x = v.x * -1.0f;
     v.FUN_140968990();
     Unk_NiMatrix3 rot;
@@ -818,12 +818,12 @@ Unk_StreamPoint CMouseController::FUN_140ad3260(Unk_StreamPoint pt)
 MS2_REPLACE_METHOD(0x140AD3260, CMouseController, FUN_140ad3260, 401, 0x0F977D87);
 
 // @0x140ad3400
-Unk_StreamPoint CMouseController::FUN_140ad3400(Unk_StreamPoint pt)
+Vector3 CMouseController::FUN_140ad3400(Vector3 pt)
 {
     Unk_McPc* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-    Unk_StreamPoint vFacing = pPc->FUN_14123cc20();
-    Unk_StreamPoint vPos = FUN_140ad3c70();
-    Unk_StreamPoint v = DAT_143b01a60;
+    Vector3 vFacing = pPc->FUN_14123cc20();
+    Vector3 vPos = FUN_140ad3c70();
+    Vector3 v = DAT_143b01a60;
     if (FUN_14028d470(vFacing.x, 1.0f))
     {
         v = DAT_143b01a60;
@@ -844,13 +844,13 @@ MS2_REPLACE_METHOD(0x140AD3400, CMouseController, FUN_140ad3400, 319, 0xC44D571F
 
 // @0x140ad3550
 // MS2-FUNCTIONAL: transliterated from the decompile; the ray holds Unk_Vec3 members
-int CMouseController::FUN_140ad3550(int nX, int nY, Unk_StreamPoint* pOut)
+int CMouseController::FUN_140ad3550(int nX, int nY, Vector3* pOut)
 {
     if (!FUN_140166410()->FUN_14036d570(0xe2))
         return 0;
     FUN_140ad40b0();
-    Unk_StreamPoint vOrigin;
-    Unk_StreamPoint vDir;
+    Vector3 vOrigin;
+    Vector3 vDir;
     Unk_Point2 ptCursor((float)nX, (float)nY);
     if (!FUN_140af0520(Unk_CameraManager::FUN_1409478c0(), ptCursor, &vOrigin, &vDir))
         return 0;
@@ -873,7 +873,7 @@ MS2_REPLACE_METHOD(0x140AD3550, CMouseController, FUN_140ad3550, 488, 0x5FC70789
 
 // @0x140ad3740
 // MS2-FUNCTIONAL: transliterated from the decompile
-Unk_StreamPoint CMouseController::FUN_140ad3740(int nX, int nY)
+Vector3 CMouseController::FUN_140ad3740(int nX, int nY)
 {
     Unk_PickListPtr spPick = Unk_CameraManager::FUN_1409478c0()->FUN_140af0850((float)nX, (float)nY, true, true, false, 0);
     if (spPick.FUN_140a16c00() == 0)
@@ -914,21 +914,21 @@ MS2_REPLACE_METHOD(0x140AD3740, CMouseController, FUN_140ad3740, 794, 0xD0619D77
 
 // @0x140ad3a60
 // MS2-FUNCTIONAL: transliterated from the decompile
-Unk_StreamPoint CMouseController::FUN_140ad3a60(int nX, int nY)
+Vector3 CMouseController::FUN_140ad3a60(int nX, int nY)
 {
     Unk_McPc* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == 0)
         return DAT_143b01a60;
-    Unk_StreamPoint vDir;
-    Unk_StreamPoint vOrigin;
+    Vector3 vDir;
+    Vector3 vOrigin;
     Unk_Point2 ptCursor((float)nX, (float)nY);
     if (FUN_140af0520(Unk_CameraManager::FUN_1409478c0(), ptCursor, &vOrigin, &vDir))
     {
-        Unk_StreamPoint vA;
-        Unk_StreamPoint vB;
+        Vector3 vA;
+        Vector3 vB;
         pPc->vfunc_67(&vA, &vB);
-        Unk_StreamPoint vNormal = vA.FUN_140a00e10(vB);
-        Unk_StreamPoint vPos = pPc->vfunc_18();
+        Vector3 vNormal = vA.FUN_140a00e10(vB);
+        Vector3 vPos = pPc->vfunc_18();
         float fDen = vNormal.FUN_140a00f20(vDir);
         if (fDen != 0.0f)
         {
@@ -941,7 +941,7 @@ Unk_StreamPoint CMouseController::FUN_140ad3a60(int nX, int nY)
 MS2_REPLACE_METHOD(0x140AD3A60, CMouseController, FUN_140ad3a60, 514, 0x7514812C);
 
 // @0x140ad3c70
-Unk_StreamPoint CMouseController::FUN_140ad3c70()
+Vector3 CMouseController::FUN_140ad3c70()
 {
     Unk_McPc* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == 0)
@@ -1025,11 +1025,11 @@ bool CMouseController::FUN_140ad3fb0(const egf::EntityID& id)
 MS2_REPLACE_METHOD(0x140AD3FB0, CMouseController, FUN_140ad3fb0, 69, 0xA918C04A);
 
 // @0x140ad4000
-void CMouseController::FUN_140ad4000(const Unk_StreamPoint* pPoint)
+void CMouseController::FUN_140ad4000(const Vector3* pPoint)
 {
     m_vDown = *pPoint;
-    Unk_StreamPoint vPos = FUN_140ad3c70();
-    Unk_StreamPoint vDelta;
+    Vector3 vPos = FUN_140ad3c70();
+    Vector3 vDelta;
     vDelta.x = vPos.x - m_vDown.x;
     vDelta.y = vPos.y - m_vDown.y;
     vDelta.z = 0;

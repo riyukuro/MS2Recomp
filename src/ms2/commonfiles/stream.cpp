@@ -120,10 +120,10 @@ MS2_REPLACE_METHOD_VIA(0x14083A060, CByteBuffer, COutputStream, WriteUnicodeStri
 void CByteBuffer::WriteBytes(const void* data,int count) { FUN_140204670(count);m_uOffset+=FUN_14020aec0(data,count,&m_aByteBuff[0]+m_uOffset); }
 MS2_REPLACE_METHOD_VIA(0x14083A150, CByteBuffer, COutputStream, WriteBytes, 108, 0xAF97CEE0);
 // @0x14083a1d0
-void CByteBuffer::WriteVector3(const Unk_StreamPoint& value) { WriteFloat(value.x);WriteFloat(value.y);WriteFloat(value.z); }
+void CByteBuffer::WriteVector3(const Vector3& value) { WriteFloat(value.x);WriteFloat(value.y);WriteFloat(value.z); }
 MS2_REPLACE_METHOD_VIA(0x14083A1D0, CByteBuffer, COutputStream, WriteVector3, 135, 0x188D4181);
 // @0x14083a260
-void CByteBuffer::WriteVector3Short(const Unk_StreamPoint& value) { WriteInt16((short)value.x);WriteInt16((short)value.y);WriteInt16((short)(value.z+0.0001f)); }
+void CByteBuffer::WriteVector3Short(const Vector3& value) { WriteInt16((short)value.x);WriteInt16((short)value.y);WriteInt16((short)(value.z+0.0001f)); }
 MS2_REPLACE_METHOD_VIA(0x14083A260, CByteBuffer, COutputStream, WriteVector3Short, 147, 0x0CFE1934);
 // @0x14083a300
 void CByteBuffer::vfunc_2(int n,unsigned uOffset) { MS2_ASSERT_AT(200,m_aByteBuff.GetCount() >= uOffset + FUN_14020abe0(n));FUN_14020ad80(n,&m_aByteBuff[0]+uOffset); }
@@ -174,10 +174,10 @@ MS2_REPLACE_METHOD_VIA(0x14083A9E0, CByteBuffer, CInputStream, ReadUnicodeString
 void CByteBuffer::ReadBytes(void* data,int count) { m_uOffset+=DecodeBuffer(data,count,&m_aByteBuff[0]+m_uOffset,m_uLength-m_uOffset); }
 MS2_REPLACE_METHOD_VIA(0x14083AAA0, CByteBuffer, CInputStream, ReadBytes, 124, 0xA2775042);
 // @0x14083ab30
-Unk_StreamPoint CByteBuffer::ReadVector3() { Unk_StreamPoint value;value.x=ReadFloat();value.y=ReadFloat();value.z=ReadFloat();return value; }
+Vector3 CByteBuffer::ReadVector3() { Vector3 value;value.x=ReadFloat();value.y=ReadFloat();value.z=ReadFloat();return value; }
 MS2_REPLACE_METHOD_VIA(0x14083AB30, CByteBuffer, CInputStream, ReadVector3, 163, 0x8FBF854D);
 // @0x14083abe0
-Unk_StreamPoint CByteBuffer::ReadVector3Short() { Unk_StreamPoint value;value.x=(float)ReadInt16();value.y=(float)ReadInt16();value.z=(float)ReadInt16();return value; }
+Vector3 CByteBuffer::ReadVector3Short() { Vector3 value;value.x=(float)ReadInt16();value.y=(float)ReadInt16();value.z=(float)ReadInt16();return value; }
 MS2_REPLACE_METHOD_VIA(0x14083ABE0, CByteBuffer, CInputStream, ReadVector3Short, 178, 0x1B7A6561);
 // @0x14083aca0
 float CByteBuffer::ReadShortX10() { float value=(float)ReadInt16()*10.f;return value; }

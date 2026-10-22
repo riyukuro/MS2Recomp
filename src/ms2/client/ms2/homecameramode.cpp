@@ -14,8 +14,8 @@
 
 // ---- unit-local placeholders ----
 
-extern const Unk_StreamPoint g_143a08ce8;   // NiPoint3::UNIT_X
-extern const Unk_StreamPoint g_143a08cf8;   // NiPoint3::UNIT_Z
+extern const Vector3 g_143a08ce8;   // NiPoint3::UNIT_X
+extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 extern float g_143abb090;                   // remembered camera distance (vfunc_7 / vfunc_24)
 
 class Unk_BuffContainer
@@ -105,7 +105,7 @@ class Unk_Collision
 {
 public:
     static Unk_Collision* FUN_1409f7ca0();
-    int FUN_14168a230(Unk_StreamPoint ptFrom, Unk_StreamPoint& ptHit, Unk_StreamPoint ptDir, float fLen, int nMask);
+    int FUN_14168a230(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, float fLen, int nMask);
 };
 
 float FUN_14029d220(float f);                       // fabs
@@ -234,11 +234,11 @@ void CHomeCameraMode::vfunc_8(double fTime)
         m_88 = pTarget->vfunc_17();
         m_88.z += vfunc_27();
 
-        Unk_StreamPoint ptPos = g_143b01a60;
-        Unk_StreamPoint ptRot = g_143b01a60;
+        Vector3 ptPos = g_143b01a60;
+        Vector3 ptRot = g_143b01a60;
         if (m_78 == 0)
         {
-            Unk_StreamPoint ptEye = m_88.FUN_14097fd50(FUN_140b66660());
+            Vector3 ptEye = m_88.FUN_14097fd50(FUN_140b66660());
             m_c4.m_pos = ptEye;
         }
 
@@ -259,8 +259,8 @@ void CHomeCameraMode::vfunc_8(double fTime)
             if (m_bc == 0)
                 m_94 = m_94 * 0.9f;
             ptPos = m_c4.m_pos;
-            Unk_StreamPoint ptTarget = m_88;
-            Unk_StreamPoint ptDir = ptTarget.FUN_140965c40(ptPos);
+            Vector3 ptTarget = m_88;
+            Vector3 ptDir = ptTarget.FUN_140965c40(ptPos);
             ptDir.FUN_140968990();
             ptPos.FUN_140a4e560(ptDir.FUN_14097fc90(m_94));
             if (m_50 < m_58 || m_54 + m_9c < m_50)
@@ -286,10 +286,10 @@ void CHomeCameraMode::vfunc_8(double fTime)
             FUN_140b66570();
         }
 
-        Unk_StreamPoint ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
+        Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
         if (ptMove.FUN_140552700(g_143b01a60))
         {
-            Unk_StreamPoint ptInput = ptMove;
+            Vector3 ptInput = ptMove;
             float fRate = 15.0f;
             float fStep = FUN_140a17940((float)fTime, 0.0f, 1.0f / fRate);
             float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x),
@@ -306,10 +306,10 @@ void CHomeCameraMode::vfunc_8(double fTime)
             if (fYaw != 0.0f || fPitch != 0.0f)
             {
                 m_68 += fYaw;
-                Unk_StreamPoint ptCenter = m_88;
+                Vector3 ptCenter = m_88;
                 ptPos = m_c4.m_pos;
                 ptPos.z = ptCenter.z;
-                Unk_StreamPoint ptDist = ptCenter.FUN_140965c40(ptPos);
+                Vector3 ptDist = ptCenter.FUN_140965c40(ptPos);
                 m_50 = ptDist.FUN_140967ac0();
                 m_50 = FUN_140a17940(m_50, m_58, m_54 + m_9c);
                 ptPos.x = m_50 * m_100.x + ptCenter.x;
@@ -337,7 +337,7 @@ MS2_REPLACE_METHOD(0x140B65310, CHomeCameraMode, vfunc_8, 2901, 0xFFFC5422);
 // @0x140b65e70
 void CHomeCameraMode::vfunc_9()
 {
-    Unk_StreamPoint ptMove = g_143b01a60;
+    Vector3 ptMove = g_143b01a60;
     Unk_LocalPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer && pPlayer->FUN_14166d240()->FUN_141682fe0(300008))
         ptMove.x = 1.0f;
@@ -410,7 +410,7 @@ void CHomeCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
         m_c4.m_pos.y = m_50 * m_100.y + m_88.y;
         m_c4.m_pos.z = m_50 * m_100.z + m_88.z;
         vfunc_3(m_c4.m_pos);
-        Unk_StreamPoint ptRot = CCameraMode::FUN_140afdd40(m_88, m_c4.m_pos, m_10c);
+        Vector3 ptRot = CCameraMode::FUN_140afdd40(m_88, m_c4.m_pos, m_10c);
         vfunc_4(ptRot);
         m_c4.m_rot = ptRot;
         FUN_140b66570();
@@ -431,7 +431,7 @@ void CHomeCameraMode::FUN_140b66570()
 MS2_REPLACE_METHOD(0x140B66570, CHomeCameraMode, FUN_140b66570, 232, 0x61C01930);
 
 // @0x140b66660
-Unk_StreamPoint CHomeCameraMode::FUN_140b66660()
+Vector3 CHomeCameraMode::FUN_140b66660()
 {
     return m_7c;
 }
@@ -449,7 +449,7 @@ float CHomeCameraMode::vfunc_27()
 MS2_REPLACE_METHOD(0x140B66690, CHomeCameraMode, vfunc_27, 147, 0xB6BA5502);
 
 // @0x140b66730
-void CHomeCameraMode::FUN_140b66730(Unk_StreamPoint ptPos, Unk_StreamPoint ptRot, Unk_StreamPoint ptTarget, bool bClamp)
+void CHomeCameraMode::FUN_140b66730(Vector3 ptPos, Vector3 ptRot, Vector3 ptTarget, bool bClamp)
 {
     float fAngle = FUN_140b66b10(m_58, m_50, m_54, m_4c * 180.0f / 3.14159265f, 90.0f);
     m_100.z = FUN_1409f2310(fAngle);
@@ -458,7 +458,7 @@ void CHomeCameraMode::FUN_140b66730(Unk_StreamPoint ptPos, Unk_StreamPoint ptRot
     else if (m_10c.FUN_140552690(g_143a08cf8))
         ptPos.z = ptTarget.z;
     float fPrevDist = m_50;
-    Unk_StreamPoint ptDir = ptTarget.FUN_140965c40(ptPos);
+    Vector3 ptDir = ptTarget.FUN_140965c40(ptPos);
     m_50 = ptDir.FUN_140967ac0();
     if (bClamp)
         m_50 = FUN_140a17940(m_50, m_58, m_54 + m_9c);
@@ -590,7 +590,7 @@ void CHomeCameraMode::vfunc_37(double fTime)
 MS2_REPLACE_METHOD(0x140B66BC0, CHomeCameraMode, vfunc_37, 1489, 0x509869EC);
 
 // @0x140b671a0
-BOOL CHomeCameraMode::vfunc_38(Unk_StreamPoint ptPos, Unk_StreamPoint ptRot)
+BOOL CHomeCameraMode::vfunc_38(Vector3 ptPos, Vector3 ptRot)
 {
     Unk_SceneCamera* pSceneCamera = FUN_1413f9890()->FUN_140af7da0();
     if (pSceneCamera)
@@ -606,9 +606,9 @@ BOOL CHomeCameraMode::vfunc_38(Unk_StreamPoint ptPos, Unk_StreamPoint ptRot)
             kY.FUN_142084ba0(ptRot.y * -0.0174532924f);
             kZ.FUN_142084c10(ptRot.z * -0.0174532924f);
             kRot = kX.FUN_140a33480(kY).FUN_140a33480(kZ);
-            Unk_StreamPoint kDir;
-            Unk_StreamPoint kUp;
-            Unk_StreamPoint kRight;
+            Vector3 kDir;
+            Vector3 kUp;
+            Vector3 kRight;
             kRot.FUN_140a01190(0, kDir);
             kRot.FUN_140a01190(1, kUp);
             kRot.FUN_140a01190(2, kRight);
@@ -618,7 +618,7 @@ BOOL CHomeCameraMode::vfunc_38(Unk_StreamPoint ptPos, Unk_StreamPoint ptRot)
             float fAspect = (pFrustum->m_4 - pFrustum->m_0) / (pFrustum->m_8 - pFrustum->m_c);
             float fTan = __imp_tanf(fFov * 3.14159265f / 180.0f);
             float fTanAspect = fTan * fAspect;
-            Unk_StreamPoint aptCorner[9];
+            Vector3 aptCorner[9];
             aptCorner[0] = ptPos.FUN_14097fd50(kDir.FUN_14097fc90(fNear))
                                .FUN_140965c40(FUN_1409ab5c0(fNear, kRight).FUN_14097fc90(fTanAspect))
                                .FUN_14097fd50(kUp.FUN_14097fc90(fTan).FUN_14097fc90(fNear));
@@ -638,10 +638,10 @@ BOOL CHomeCameraMode::vfunc_38(Unk_StreamPoint ptPos, Unk_StreamPoint ptRot)
             aptCorner[8] = aptCorner[2].FUN_14097fd50(aptCorner[3]).FUN_14097fc90(0.5f);
             for (int i = 0; i < 9; ++i)
             {
-                Unk_StreamPoint ptDir = m_88.FUN_140965c40(aptCorner[i]);
+                Vector3 ptDir = m_88.FUN_140965c40(aptCorner[i]);
                 float fLen = ptDir.FUN_140968990();
-                Unk_StreamPoint ptBack = ptDir.FUN_1409f7960();
-                Unk_StreamPoint ptHit = g_143b01a60;
+                Vector3 ptBack = ptDir.FUN_1409f7960();
+                Vector3 ptHit = g_143b01a60;
                 if (Unk_Collision::FUN_1409f7ca0()->FUN_14168a230(aptCorner[i], ptHit, ptDir, fLen, 0x209) == 0)
                 {
                     if (Unk_Collision::FUN_1409f7ca0()->FUN_14168a230(m_88, ptHit, ptBack, fLen, 0x209))
@@ -649,7 +649,7 @@ BOOL CHomeCameraMode::vfunc_38(Unk_StreamPoint ptPos, Unk_StreamPoint ptRot)
                 }
                 else
                 {
-                    Unk_StreamPoint ptHit2 = g_143b01a60;
+                    Vector3 ptHit2 = g_143b01a60;
                     if (Unk_Collision::FUN_1409f7ca0()->FUN_14168a230(ptHit, ptHit2, ptBack, fLen, 0x209))
                         return 1;
                 }

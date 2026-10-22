@@ -26,10 +26,10 @@ Unk_JtAnimService* FUN_141b6f910();
 // The temporary returned by vfunc_18 viewed as the 12-byte point of the arc API (cl takes the address of the temporary;
 // clang-cl refuses, so it goes through a helper there).
 #ifdef __clang__
-static Unk_StreamPoint& Unk_JtPoint(const NiPoint3& kPt) { return *const_cast<Unk_StreamPoint*>(reinterpret_cast<const Unk_StreamPoint*>(&kPt)); }
+static Vector3& Unk_JtPoint(const NiPoint3& kPt) { return *const_cast<Vector3*>(reinterpret_cast<const Vector3*>(&kPt)); }
 #define MS2_JT_POINT(expr) Unk_JtPoint(expr)
 #else
-#define MS2_JT_POINT(expr) (*reinterpret_cast<Unk_StreamPoint*>(&(expr)))
+#define MS2_JT_POINT(expr) (*reinterpret_cast<Vector3*>(&(expr)))
 #endif
 
 // @0x1417d6c00
@@ -60,7 +60,7 @@ void StateJumpTo::vfunc_4(StateData* pData)
     {
         int cFlag = m_spJump->m_b2c;
         cStarted = m_spArc->FUN_1409ab1b0(MS2_JT_POINT(m_pOwner->vfunc_18()),
-                                          *reinterpret_cast<Unk_StreamPoint*>(&m_spJump->m_pos), m_spJump->m_f24, m_spJump->m_fGravity);
+                                          *reinterpret_cast<Vector3*>(&m_spJump->m_pos), m_spJump->m_f24, m_spJump->m_fGravity);
         if (cFlag != 0)
         {
             m_nRiseAnim = 0x2a;
@@ -105,7 +105,7 @@ void StateJumpTo::vfunc_3(double fTime)
     else
     {
         m_spArc->FUN_1409ab3b0((float)fTime);
-        Unk_StreamPoint kPos = m_spArc->GetPosition();
+        Vector3 kPos = m_spArc->GetPosition();
         m_pOwner->vfunc_19(*reinterpret_cast<efd::Point3*>(&kPos));
         if ((m_spJump.get() != 0 ? true : false) && m_spJump->m_n34 != 0)
         {

@@ -41,7 +41,7 @@ Unk_C2World* FUN_1403ed2d0();
 class Unk_C2LiftObj : public CPtred
 {
 public:
-    Unk_StreamPoint FUN_1409673f0();                                // the position
+    Vector3 FUN_1409673f0();                                // the position
     int FUN_1410af780() { return m_nId; }                          // 0x1410af780
     int m_nId;                                                      // +0x18
 };
@@ -89,18 +89,18 @@ public:
 class Unk_Service6100017 : public efd::ISystemService
 {
 public:
-    Unk_StreamPoint FUN_1410b7ad0(PC* pActor, float fDist, Unk_StreamPoint* pOut, int bSnap);   // the cell in front of the actor
-    Unk_StreamPoint FUN_1410b7a20(Unk_StreamPoint pt, Unk_StreamPoint* pOut);                   // the cell position of a point
-    Unk_StreamPoint FUN_1410b7ba0(Unk_StreamPoint ptFrom, Unk_StreamPoint ptTo, float fDist, Unk_StreamPoint* pOut, int bSnap);
-    bool FUN_1410b7e80(Unk_StreamPoint pt);                                                     // a cube stands at a cell position
+    Vector3 FUN_1410b7ad0(PC* pActor, float fDist, Vector3* pOut, int bSnap);   // the cell in front of the actor
+    Vector3 FUN_1410b7a20(Vector3 pt, Vector3* pOut);                   // the cell position of a point
+    Vector3 FUN_1410b7ba0(Vector3 ptFrom, Vector3 ptTo, float fDist, Vector3* pOut, int bSnap);
+    bool FUN_1410b7e80(Vector3 pt);                                                     // a cube stands at a cell position
     Cube* FUN_1410b8a60(Unk_Int3 point);                                                      // the cube at a grid point
-    Cube* FUN_1410b8ab0(Unk_StreamPoint pt);                                                    // the cube at a cell position
+    Cube* FUN_1410b8ab0(Vector3 pt);                                                    // the cube at a cell position
     void FUN_1410ce1e0(int nKind, int* pValue);
     int FUN_1410c6980(Cube* pCube, int nKind, Unk_C2Reason& rReason, __int64 nOwner, int nMode);   // may the cube be removed / moved
-    int FUN_1410cdd80(Unk_StreamPoint ptFrom, Unk_StreamPoint ptTo, float fDist, Unk_Int3 kDir);   // the sweep from ptFrom to ptTo is free
+    int FUN_1410cdd80(Vector3 ptFrom, Vector3 ptTo, float fDist, Unk_Int3 kDir);   // the sweep from ptFrom to ptTo is free
     void FUN_1410d6590(int nMessage);                                                           // show the build notice
     int FUN_1410cdf60(Unk_Int3 kFrom, Unk_Int3 kDir);                                           // the column step is free
-    int FUN_1410ba5f0(Unk_Int3 kGrid, Unk_StreamPoint kRef);                                    // the cell index of a grid point
+    int FUN_1410ba5f0(Unk_Int3 kGrid, Vector3 kRef);                                    // the cell index of a grid point
     float FUN_1410ba440(int nCell);                                                             // the height of a cell
 };
 Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* pFramework);
@@ -146,7 +146,7 @@ int FUN_1408b38c0(CubeItemInfo* pA, CubeItemInfo* pB);
 void FUN_1408b39c0(CubeItemInfo* pInfo, COutPacket& packet);   // encode the cube
 int FUN_1408a03c0(Unk_Int3 point);
 int FUN_1408a13d0(efd::Point3 kPos);
-Unk_StreamPoint FUN_1408a15b0(Unk_Int3 cell, Unk_StreamPoint& ptCenter);   // fills the cell center
+Vector3 FUN_1408a15b0(Unk_Int3 cell, Vector3& ptCenter);   // fills the cell center
 int FUN_141659690(PC* pPC);
 int FUN_14166c930(PC* pPC);
 __int64 FUN_14166d240(PC* pPC);
@@ -234,9 +234,9 @@ public:
     virtual void vfunc_15();
     virtual void vfunc_16();
     virtual void vfunc_17();
-    virtual Unk_StreamPoint vfunc_18();
+    virtual Vector3 vfunc_18();
     virtual void vfunc_19();
-    virtual Unk_StreamPoint vfunc_20();
+    virtual Vector3 vfunc_20();
     void FUN_1410a77e0(float fStep);
 };
 Unk_C2Lift* FUN_1416625b0(PC* pPC);
@@ -429,11 +429,11 @@ void Unk_PCCubeCraft::FUN_1410a8af0(bool bEnable)
         if (pPC != 0 && pPC == m_pOwner)
         {
             m_fLift = 0.0f;
-            Unk_StreamPoint kFront;
-            Unk_StreamPoint kCell;
+            Vector3 kFront;
+            Vector3 kCell;
             if (FUN_141659610(pPC) == 0)
             {
-                Unk_StreamPoint kTmp;
+                Vector3 kTmp;
                 m_svc->FUN_1410b7ad0(pPC, m_fLift, &kFront, 1);
             }
             else
@@ -441,8 +441,8 @@ void Unk_PCCubeCraft::FUN_1410a8af0(bool bEnable)
                 Unk_C2Lift* pLift = FUN_1416625b0(pPC);
                 if (pLift != 0)
                 {
-                    Unk_StreamPoint kRear = pLift->vfunc_20();
-                    Unk_StreamPoint kHead = pLift->vfunc_18();
+                    Vector3 kRear = pLift->vfunc_20();
+                    Vector3 kHead = pLift->vfunc_18();
                     m_svc->FUN_1410b7ba0(kHead, kRear, -200.0f, &kFront, 0);
                 }
             }
@@ -457,7 +457,7 @@ void Unk_PCCubeCraft::FUN_1410a8af0(bool bEnable)
         {
             MS2Ptr<Cube> spCube(m_svc->FUN_1410b8ab0(m_ptCell));
             FUN_140961880(spCube->entity, 0x2d7cad2d, &m_fScale);
-            Unk_StreamPoint kTop = m_ptCell;
+            Vector3 kTop = m_ptCell;
             kTop.z = FLT_MAX;
             FUN_1410aa6f0(kTop, 0);
         }
@@ -750,7 +750,7 @@ void Unk_PCCubeCraft::FUN_1410aa4a0(bool bVisible)
 MS2_REPLACE_METHOD(0x1410AA4A0, Unk_PCCubeCraft, FUN_1410aa4a0, 109, 0x13D950CB);
 
 // @0x1410aa520
-Unk_StreamPoint Unk_PCCubeCraft::GetPtCell()
+Vector3 Unk_PCCubeCraft::GetPtCell()
 {
     return m_ptCell;
 }
@@ -934,7 +934,7 @@ MS2_REPLACE_METHOD(0x1410AD780, Unk_PCCubeCraft, FUN_1410ad780, 1450, 0xC4517146
 
 // @0x1410aa6f0
 // MS2-FUNCTIONAL: behaviour-equivalent; frame layout / local order and temporaries differ from the exe
-void Unk_PCCubeCraft::FUN_1410aa6f0(Unk_StreamPoint kPos, char bNoUpdate)
+void Unk_PCCubeCraft::FUN_1410aa6f0(Vector3 kPos, char bNoUpdate)
 {
     if (!m_spGuide.operator==(0))
         return;
@@ -1070,7 +1070,7 @@ void Unk_PCCubeCraft::FUN_1410aad50()
                     return;
                 }
             }
-            Unk_StreamPoint kEuler;
+            Vector3 kEuler;
             if (FUN_141659610(pPC) == 0)
             {
                 NiMatrix3 kRot = m_spGuide->vfunc_5();
@@ -1099,7 +1099,7 @@ void Unk_PCCubeCraft::FUN_1410aad50()
         }
         else
         {
-            Unk_StreamPoint kEuler;
+            Vector3 kEuler;
             if (FUN_141659610(pPC) == 0)
             {
                 NiMatrix3 kRot = m_spGuide->vfunc_5();
@@ -1143,11 +1143,11 @@ void Unk_PCCubeCraft::FUN_1410ab5c0(unsigned char bNotice)
     PC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0)
         return;
-    Unk_StreamPoint kCell = m_ptCell;
+    Vector3 kCell = m_ptCell;
     if (m_spGuide.operator==(0))
     {
-        Unk_StreamPoint kFront;
-        Unk_StreamPoint kOut;
+        Vector3 kFront;
+        Vector3 kOut;
         if (FUN_141659610(pPC) == 0)
         {
             m_svc->FUN_1410b7ad0(pPC, m_fLift, &kFront, 1);
@@ -1157,8 +1157,8 @@ void Unk_PCCubeCraft::FUN_1410ab5c0(unsigned char bNotice)
             Unk_C2Lift* pLift = FUN_1416625b0(pPC);
             if (pLift != 0)
             {
-                Unk_StreamPoint kRear = pLift->vfunc_20();
-                Unk_StreamPoint kHead = pLift->vfunc_18();
+                Vector3 kRear = pLift->vfunc_20();
+                Vector3 kHead = pLift->vfunc_18();
                 m_svc->FUN_1410b7ba0(kHead, kRear, -200.0f, &kFront, 0);
             }
         }
@@ -1206,11 +1206,11 @@ void Unk_PCCubeCraft::FUN_1410abb40()
     PC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0)
         return;
-    Unk_StreamPoint kCell = m_ptCell;
+    Vector3 kCell = m_ptCell;
     if (m_spGuide.operator==(0))
     {
-        Unk_StreamPoint kFront;
-        Unk_StreamPoint kSpare;
+        Vector3 kFront;
+        Vector3 kSpare;
         if (FUN_141659610(pPC) == 0)
         {
             m_svc->FUN_1410b7ad0(pPC, m_fLift, &kFront, 1);
@@ -1220,8 +1220,8 @@ void Unk_PCCubeCraft::FUN_1410abb40()
             Unk_C2Lift* pLift = FUN_1416625b0(pPC);
             if (pLift != 0)
             {
-                Unk_StreamPoint kRear = pLift->vfunc_20();
-                Unk_StreamPoint kHead = pLift->vfunc_18();
+                Vector3 kRear = pLift->vfunc_20();
+                Vector3 kHead = pLift->vfunc_18();
                 m_svc->FUN_1410b7ba0(kHead, kRear, -200.0f, &kFront, 0);
             }
         }
@@ -1326,11 +1326,11 @@ void Unk_PCCubeCraft::FUN_1410ac540()
     PC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0 || FUN_1416595d0(pPC) == 0)
         return;
-    Unk_StreamPoint kCell = m_ptCell;
+    Vector3 kCell = m_ptCell;
     if (m_spGuide.operator==(0))
     {
-        Unk_StreamPoint kFront;
-        Unk_StreamPoint kSpare;
+        Vector3 kFront;
+        Vector3 kSpare;
         if (FUN_141659610(pPC) == 0)
         {
             m_svc->FUN_1410b7ad0(pPC, m_fLift, &kFront, 1);
@@ -1340,8 +1340,8 @@ void Unk_PCCubeCraft::FUN_1410ac540()
             Unk_C2Lift* pLift = FUN_1416625b0(pPC);
             if (pLift != 0)
             {
-                Unk_StreamPoint kRear = pLift->vfunc_20();
-                Unk_StreamPoint kHead = pLift->vfunc_18();
+                Vector3 kRear = pLift->vfunc_20();
+                Vector3 kHead = pLift->vfunc_18();
                 m_svc->FUN_1410b7ba0(kHead, kRear, -200.0f, &kFront, 0);
             }
         }
@@ -1377,12 +1377,12 @@ void Unk_PCCubeCraft::FUN_1410aded0()
         return;
     MS2Ptr<Cube> spCube(m_svc->FUN_1410b8ab0(m_ptCell));
     Unk_Int3 kGrid = FUN_1408a1430((const NiPoint3&)m_ptCell);
-    Unk_StreamPoint kPos;
+    Vector3 kPos;
     Unk_C2Lift* pLift = FUN_1416625b0(pPC);
     if (pLift == 0)
     {
         NiPoint3 kRear = pPC->vfunc_20();
-        kPos = (const Unk_StreamPoint&)kRear;
+        kPos = (const Vector3&)kRear;
     }
     else
         kPos = pLift->vfunc_20();
@@ -1430,7 +1430,7 @@ void Unk_PCCubeCraft::FUN_1410aded0()
 
 // @0x1410ae380
 // MS2-FUNCTIONAL: behaviour-equivalent; frame layout / local order and temporaries differ from the exe
-void Unk_PCCubeCraft::FUN_1410ae380(Unk_StreamPoint kPos)
+void Unk_PCCubeCraft::FUN_1410ae380(Vector3 kPos)
 {
     PC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0)
@@ -1457,12 +1457,12 @@ void Unk_PCCubeCraft::FUN_1410ae380(Unk_StreamPoint kPos)
     unsigned nErr;
     if (GetMode() == 2 && spData->install.attachable != 0)
     {
-        Unk_StreamPoint kFoot;
+        Vector3 kFoot;
         Unk_C2Lift* pLift = FUN_1416625b0(pPC);
         if (pLift == 0)
         {
             NiPoint3 kRear = pPC->vfunc_20();
-            kFoot = (const Unk_StreamPoint&)kRear;
+            kFoot = (const Vector3&)kRear;
         }
         else
         {
@@ -1518,10 +1518,10 @@ void Unk_PCCubeCraft::FUN_1410ae960(unsigned* pLeft, unsigned* pRight)
     PC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0)
         return;
-    Unk_StreamPoint kFloor;
+    Vector3 kFloor;
     m_svc->FUN_1410b7ad0(pPC, 0, &kFloor, 1);
     Unk_Int3 kFloorGrid = FUN_1408a1430((const NiPoint3&)kFloor);
-    Unk_StreamPoint kTop;
+    Vector3 kTop;
     m_svc->FUN_1410b7ad0(pPC, m_fLift, &kTop, 1);
     Unk_Int3 kTopGrid = FUN_1408a1430((const NiPoint3&)kTop);
     if (GetMode() == 2)
@@ -1547,8 +1547,8 @@ void Unk_PCCubeCraft::FUN_1410ae960(unsigned* pLeft, unsigned* pRight)
         {
             Unk_C2Lift* pLift = FUN_1416625b0(pPC);
             Unk_Int3 kUp(0, 0, 1);
-            Unk_StreamPoint kRear = pLift->vfunc_20();
-            Unk_StreamPoint kHead = pLift->vfunc_18();
+            Vector3 kRear = pLift->vfunc_20();
+            Vector3 kHead = pLift->vfunc_18();
             *pLeft = m_svc->FUN_1410cdd80(kHead, kRear, 200.0f, kUp);
             Unk_Int3 kDown(0, 0, -2);
             kRear = pLift->vfunc_20();
@@ -1564,7 +1564,7 @@ void Unk_PCCubeCraft::FUN_1410ae960(unsigned* pLeft, unsigned* pRight)
 }
 
 // @0x1410aeec0
-void Unk_PCCubeCraft::FUN_1410aeec0(const Unk_StreamPoint& kPos)
+void Unk_PCCubeCraft::FUN_1410aeec0(const Vector3& kPos)
 {
     Cube* pCube = 0;
     Unk_Int3 kCell = FUN_1408a1430((const NiPoint3&)kPos);
@@ -1572,7 +1572,7 @@ void Unk_PCCubeCraft::FUN_1410aeec0(const Unk_StreamPoint& kPos)
     pCube = m_svc->FUN_1410b8a60(kCell);
     if (pCube == 0)
     {
-        FUN_1408a15b0(kCell, const_cast<Unk_StreamPoint&>(kPos));
+        FUN_1408a15b0(kCell, const_cast<Vector3&>(kPos));
     }
     else
     {
@@ -1580,14 +1580,14 @@ void Unk_PCCubeCraft::FUN_1410aeec0(const Unk_StreamPoint& kPos)
         pCube = m_svc->FUN_1410b8a60(kCell);
         if (pCube == 0)
         {
-            FUN_1408a15b0(kCell, const_cast<Unk_StreamPoint&>(kPos));
+            FUN_1408a15b0(kCell, const_cast<Vector3&>(kPos));
         }
         else
         {
             kCell.z = kCell.z + 1;
             pCube = m_svc->FUN_1410b8a60(kCell);
             if (pCube == 0)
-                FUN_1408a15b0(kCell, const_cast<Unk_StreamPoint&>(kPos));
+                FUN_1408a15b0(kCell, const_cast<Vector3&>(kPos));
         }
     }
 }
@@ -1666,8 +1666,8 @@ void Unk_PCCubeCraft::FUN_1410ac9b0()
         FUN_1410aa4a0(true);
         m_nHud = 1;
     }
-    Unk_StreamPoint kFront;
-    Unk_StreamPoint kDown;
+    Vector3 kFront;
+    Vector3 kDown;
     if (FUN_141659610(pPC) == 0)
     {
         m_svc->FUN_1410b7ad0(pPC, m_fLift, &kFront, 1);
@@ -1679,8 +1679,8 @@ void Unk_PCCubeCraft::FUN_1410ac9b0()
         Unk_C2Lift* pLift = FUN_1416625b0(pPC);
         if (pLift != 0)
         {
-            Unk_StreamPoint kRear = pLift->vfunc_20();
-            Unk_StreamPoint kHead = pLift->vfunc_18();
+            Vector3 kRear = pLift->vfunc_20();
+            Vector3 kHead = pLift->vfunc_18();
             m_svc->FUN_1410b7ba0(kHead, kRear, -200.0f, &kFront, 0);
         }
     }
@@ -1691,9 +1691,9 @@ void Unk_PCCubeCraft::FUN_1410ac9b0()
         FUN_1410a92c0();
     if (kDown.FUN_140552700(m_ptCell))
     {
-        Unk_StreamPoint kOld = m_ptCell;
+        Vector3 kOld = m_ptCell;
         NiPoint3 kGuidePos = m_spGuide->vfunc_3();
-        m_ptLast = (const Unk_StreamPoint&)kGuidePos;
+        m_ptLast = (const Vector3&)kGuidePos;
         m_ptCell = kDown;
         m_tSlide.FUN_140868750(200);
         char bSameColumn = 0;
@@ -1712,7 +1712,7 @@ void Unk_PCCubeCraft::FUN_1410ac9b0()
         float fRatio = m_tRotate.FUN_140868940();
         float fEase = kEase.FUN_140cd8c20(fRatio);
         float fYaw = m_fRotFrom + (m_fRotTo - m_fRotFrom) * fEase;
-        Unk_StreamPoint kAngles;
+        Vector3 kAngles;
         NiMatrix3 kCur = m_spGuide->vfunc_5();
         kCur.ToEulerAnglesXYZ(kAngles.x, kAngles.y, kAngles.z);
         kAngles.x = kAngles.x * -57.29578f;
@@ -1728,16 +1728,16 @@ void Unk_PCCubeCraft::FUN_1410ac9b0()
     {
         float fRatio = m_tSlide.FUN_140868940();
         float fEase = kEase.FUN_140cd8c20(fRatio);
-        Unk_StreamPoint kDelta = m_ptCell.FUN_140965c40(m_ptLast);
+        Vector3 kDelta = m_ptCell.FUN_140965c40(m_ptLast);
         float fLen = kDelta.FUN_140967ac0();
         kDelta.FUN_140968990();
-        Unk_StreamPoint kStep = kDelta.FUN_14097fc90(fEase);
+        Vector3 kStep = kDelta.FUN_14097fc90(fEase);
         kStep = kStep.FUN_14097fc90(fLen);
         kDown = m_ptLast.FUN_14097fd50(kStep);
         m_spGuide->vfunc_2((const NiPoint3&)kDown);
         if (m_spGuide3.get() != 0)
         {
-            Unk_StreamPoint kUp = kDown;
+            Vector3 kUp = kDown;
             kUp.z = kUp.z + 150.0f;
             m_spGuide3->vfunc_2((const NiPoint3&)kUp);
         }

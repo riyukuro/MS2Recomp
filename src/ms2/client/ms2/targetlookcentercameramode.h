@@ -29,8 +29,8 @@ public:
 
     // @0x140a4e620
     virtual bool vfunc_2() { return false; }
-    virtual void vfunc_3(Unk_StreamPoint pt);
-    virtual void vfunc_4(Unk_StreamPoint pt);
+    virtual void vfunc_3(Vector3 pt);
+    virtual void vfunc_4(Vector3 pt);
     virtual void vfunc_6(int n);
     virtual void vfunc_8(double fTime);
     virtual void vfunc_9();
@@ -41,7 +41,7 @@ public:
     virtual int vfunc_1() { return 0x13; }
 
     void FUN_140a4d5f0(double fTime);               // recompute the yaw and the eye from the centre point
-    void FUN_140a4e0d0(const Unk_StreamPoint& ptCenter);    // set the look-at centre
+    void FUN_140a4e0d0(const Vector3& ptCenter);    // set the look-at centre
     void FUN_140a4e110(float fAngle);               // fixed yaw
     void FUN_140a4e150(float f);                    // outer radius
     void FUN_140a4e180(bool b);                     // inner-radius check on/off
@@ -57,7 +57,7 @@ public:
     int m_108;                          // +0x108 (not written)
     float m_10c;                        // +0x10c rotation interpolate speed (ctor 100)
     bool m_110;                         // +0x110 a centre is set
-    Unk_StreamPoint m_114;              // +0x114 centre
+    Vector3 m_114;              // +0x114 centre
     float m_120;                        // +0x120 inner radius
     float m_124;                        // +0x124 outer radius
     float m_128;                        // +0x128 fixed yaw

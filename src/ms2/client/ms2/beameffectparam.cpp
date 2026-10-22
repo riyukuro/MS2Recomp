@@ -29,7 +29,7 @@ const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);
 int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);
 int FUN_1408731e0(Unk_140165cf0* pNode, const char* pszName, int& nOut);
 int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
-int FUN_140874670(Unk_140165cf0* pNode, const char* pszName, Unk_StreamPoint& kOut);
+int FUN_140874670(Unk_140165cf0* pNode, const char* pszName, Vector3& kOut);
 float FUN_1401973d0(Unk_140165cf0* pNode, const char* pszName, float fDefault);
 CString FUN_140188f50(const char* psz, int n);                                          // null-safe CString
 int FUN_1401788f0(Unk_140165cf0* pNode, const char* pszName, ATL::CAtlArray<CString>& arr);   // split to list

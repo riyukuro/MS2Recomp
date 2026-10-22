@@ -239,7 +239,7 @@ NiActorManager* FUN_140999440(void* pLoader, const egf::EntityID& kId);   // the
 static unsigned s_aDeadGroupMask[] = { 0x400, 0x800, 0x1000, 0x2000, 0x4000, 0x8000, 0x10000, 0x20000 };
 static int s_nDeadGroupMask = 8;
 static int s_nDeadActorSerial;
-NxVec3 FUN_140ae1df0(const Unk_StreamPoint* pPoint);               // game point -> PhysX point
+NxVec3 FUN_140ae1df0(const Vector3* pPoint);               // game point -> PhysX point
 // The maid description table (the row's +0x08 is the maid npc's title); the 16 byte row pointer of the maid tables
 // (uimanufacturedialog.cpp), its members are COMDATs of other units.
 template <class T> class Unk_UmValuePtr
@@ -950,10 +950,10 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
     unsigned char nFlags = in.ReadUInt8();
     int bRotate = (nFlags & 1) == 1;
     int bEmotion = (nFlags & 2) == 2;
-    Unk_StreamPoint ptPos = in.ReadVector3Short();
+    Vector3 ptPos = in.ReadVector3Short();
     efd::Point3 kPos = reinterpret_cast<const efd::Point3&>(ptPos);
     float fRotZ = in.ReadShortDiv10();
-    Unk_StreamPoint ptVel = in.ReadVector3Short();
+    Vector3 ptVel = in.ReadVector3Short();
     efd::Point3 kVel = reinterpret_cast<const efd::Point3&>(ptVel);
     float fSpeed = in.ReadShortDivScaled(100);
     int nOwnerActor = 0;
@@ -981,14 +981,14 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
     if (!strAnim.IsEmpty()) {
         if ((short)m_nDE8 == -2 || (short)m_nDE8 == -3) {
             if (in.ReadUInt8() == 0) {
-                Unk_StreamPoint ptTo = in.ReadVector3();
+                Vector3 ptTo = in.ReadVector3();
                 efd::Point3 kTo = reinterpret_cast<const efd::Point3&>(ptTo);
                 kTo.z = kTo.z + 2.0f;
                 m_unkDB0.Set(kPos, kTo, strAnim);
                 FUN_14166dd20(efd::utf8string((const char*)strAnim), fSpeed, true, false);
             } else {
-                Unk_StreamPoint ptFrom = in.ReadVector3();
-                Unk_StreamPoint ptTo = in.ReadVector3();
+                Vector3 ptFrom = in.ReadVector3();
+                Vector3 ptTo = in.ReadVector3();
                 float fWidth = in.ReadFloat();
                 float fScale = in.ReadFloat();
                 efd::Point3 kTo = reinterpret_cast<const efd::Point3&>(ptTo);
@@ -1057,7 +1057,7 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
             if (GetNpcData()->m_bLookAtMyPCWhenTalking) {
                 CQuestManager* pQuest = reinterpret_cast<CQuestManager*>(FUN_140764020());
                 if (pQuest->FUN_1416d0610() != 0) {
-                    Unk_StreamPoint ptTarget = reinterpret_cast<CQuestManager*>(FUN_140764020())->FUN_1416d0690();
+                    Vector3 ptTarget = reinterpret_cast<CQuestManager*>(FUN_140764020())->FUN_1416d0690();
                     if (reinterpret_cast<const efd::Point3&>(ptTarget) != efd::Point3::ZERO)
                         FUN_14166d2d0(reinterpret_cast<const efd::Point3&>(ptTarget), 0);
                 }
@@ -1077,7 +1077,7 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
     } else if (nState == 0x38) {
         if (reinterpret_cast<CQuestManager*>(FUN_140764020())->FUN_1416d0610() != 0) {
             if (GetNpcData()->m_bLookAtMyPCWhenTalking) {
-                Unk_StreamPoint ptTarget = reinterpret_cast<CQuestManager*>(FUN_140764020())->FUN_1416d0690();
+                Vector3 ptTarget = reinterpret_cast<CQuestManager*>(FUN_140764020())->FUN_1416d0690();
                 if (reinterpret_cast<const efd::Point3&>(ptTarget) != efd::Point3::ZERO)
                     FUN_14166d2d0(reinterpret_cast<const efd::Point3&>(ptTarget), 0);
             }
@@ -1736,8 +1736,8 @@ void CNpc::FUN_141096730()
                 continue;
             MS2Ptr<CBoxCollision> spBox(new CBoxCollision);
             spBox->m_strName = spNode->m_strTargetNode;
-            Unk_StreamPoint ptBox(spNode->m_vVolume.x, spNode->m_vVolume.y * 0.5f, spNode->m_vVolume.z);
-            Unk_StreamPoint ptSize(0.0f, spNode->m_vVolume.y * 0.5f, 0.0f);
+            Vector3 ptBox(spNode->m_vVolume.x, spNode->m_vVolume.y * 0.5f, spNode->m_vVolume.z);
+            Vector3 ptSize(0.0f, spNode->m_vVolume.y * 0.5f, 0.0f);
             spBox->m_ptBox = ptBox;
             spBox->m_ptSize = ptSize;
             spBox->m_ptDir = spNode->m_vOffset;
@@ -1752,8 +1752,8 @@ void CNpc::FUN_141096730()
             if (spNode == 0)
                 continue;
             MS2Ptr<CBoxCollision> spBox(new CBoxCollision);
-            Unk_StreamPoint ptBox(spNode->m_vVolume.x, spNode->m_vVolume.y * 0.5f, spNode->m_vVolume.z);
-            Unk_StreamPoint ptSize(0.0f, spNode->m_vVolume.y * 0.5f, 0.0f);
+            Vector3 ptBox(spNode->m_vVolume.x, spNode->m_vVolume.y * 0.5f, spNode->m_vVolume.z);
+            Vector3 ptSize(0.0f, spNode->m_vVolume.y * 0.5f, 0.0f);
             spBox->m_ptBox = ptBox;
             spBox->m_ptSize = ptSize;
             spBox->m_ptDir = spNode->m_vOffset;
@@ -2275,7 +2275,7 @@ void CNpc::vfunc_50()
             if (pNode != NULL) {
                 CBoxCollision* pBox = spBox.operator->();
                 const NiMatrix3& kRot = FUN_141024c90(pNode);
-                Unk_StreamPoint ptPos = *reinterpret_cast<const Unk_StreamPoint*>(&FUN_140947900(pNode));
+                Vector3 ptPos = *reinterpret_cast<const Vector3*>(&FUN_140947900(pNode));
                 pBox->vfunc_2(ptPos, kRot, 1.0f);
             }
         }
@@ -2288,7 +2288,7 @@ void CNpc::vfunc_50()
         float fScale = FUN_14123c260();
         efd::Point3 kDir = vfunc_20();
         efd::Point3 kPos = static_cast<const efd::Point3&>(vfunc_18()) + efd::Point3(0.0f, 0.0f, m_unk_108);
-        pBox->vfunc_3(Unk_StreamPoint(kPos), Unk_StreamPoint(kDir), fScale);
+        pBox->vfunc_3(Vector3(kPos), Vector3(kDir), fScale);
     }
     if (FUN_14166ce30() != 0 && GetNpcData()->GetCorpseHitAble() != 0) {
         Unk_GoAttachment* pAttachment = vfunc_26();
@@ -2409,7 +2409,7 @@ void CNpc::NxTerrainPhsyx()
     if (pScene == NULL)
         return;
     NxVec3 kUnused;
-    Unk_StreamPoint ptSelf(vfunc_18());
+    Vector3 ptSelf(vfunc_18());
     kUnused = FUN_140ae1df0(&ptSelf);
     NxBoxShapeDesc kBoxDesc;
     kBoxDesc.dimensions.set(m_spNpcData->m_collision.m_fWidth, m_spNpcData->m_collision.m_fDepth,

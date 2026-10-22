@@ -124,7 +124,7 @@ public:
     float m_f22c;                       // +0x22c
     float m_f230;                       // +0x230
     float m_fGrow;                      // +0x234
-    Unk_StreamPoint m_posGrow;          // +0x238
+    Vector3 m_posGrow;          // +0x238
     int m_nOwnerType;                   // +0x244 0 / 1 = owners only, 2 = anyone
     int m_nDropKind;                    // +0x248
     int m_n24c;                         // +0x24c
@@ -134,7 +134,7 @@ public:
     void (CDropItem::*m_pfnState)(double fTime, GameObject* pTarget);  // +0x268 the state update
     int m_n278;                         // +0x278
     float m_f27c;                       // +0x27c
-    Unk_StreamPoint m_posOrigin;        // +0x280
+    Vector3 m_posOrigin;        // +0x280
     int m_n28c;                         // +0x28c
     unsigned int m_nFadeTime;           // +0x290
     int m_n294;                         // +0x294

@@ -357,7 +357,7 @@ public:
 class Unk_CubeObject
 {
 public:
-    Unk_StreamPoint* FUN_140947900();
+    Vector3* FUN_140947900();
     int FUN_140a17cd0();
 };
 
@@ -442,8 +442,8 @@ public:
     virtual void vfunc_16();
     virtual void vfunc_17();
     virtual void vfunc_18();
-    virtual void vfunc_19(Unk_StreamPoint pt);
-    virtual Unk_StreamPoint vfunc_20();
+    virtual void vfunc_19(Vector3 pt);
+    virtual Vector3 vfunc_20();
 };
 
 // the refcounted cube manager (a COM-like interface: slot 1 AddRef, slot 2 Release)
@@ -453,14 +453,14 @@ public:
     virtual void vfunc_0();
     virtual void vfunc_1();
     virtual void vfunc_2();
-    int FUN_1410b7e80(const Unk_StreamPoint& pt);
+    int FUN_1410b7e80(const Vector3& pt);
     int FUN_1410c35c0();
     bool FUN_1410c3600(int n);
     void* FUN_1410c8030(int a, int b);
     int FUN_1410d55d0(int a, int b);
-    void* FUN_1410b8790(Unk_StreamPoint pt);
-    void* FUN_1410b8ab0(Unk_StreamPoint pt);
-    int FUN_1410cdd80(Unk_StreamPoint a, Unk_StreamPoint b, float f, Unk_StreamPoint c);
+    void* FUN_1410b8790(Vector3 pt);
+    void* FUN_1410b8ab0(Vector3 pt);
+    int FUN_1410cdd80(Vector3 a, Vector3 b, float f, Vector3 c);
 };
 void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member
 UIObject* FUN_1403e8a70(Unk_UIRef* p);                          // the held object
@@ -521,7 +521,7 @@ extern Unk_CubeKindMgr DAT_143d69198;
 extern char DAT_143b059e8;
 extern int DAT_1439f4a7c;
 extern int DAT_143ab2820;
-extern Unk_StreamPoint DAT_143ab2398;
+extern Vector3 DAT_143ab2398;
 extern char DAT_142e6b390;
 extern char DAT_142e6b1bc;
 
@@ -673,7 +673,7 @@ Unk_CubeEditDlg* FUN_140931900(int nId);
 void* FUN_141656a80(void* pWorld);
 int FUN_1408a18d0(void* p);
 int FUN_1408a07b0(int nMapId, int a, int b);
-Unk_StreamPoint FUN_1408a1430(Unk_StreamPoint pt);
+Vector3 FUN_1408a1430(Vector3 pt);
 int FUN_1408b54c0(int nKind);
 int FUN_1408b5570(int nKind);
 int FUN_1408b5820(int nKind);
@@ -692,7 +692,7 @@ void FUN_1410a8a20(void* pEditor, int n);
 int FUN_1410a8a90(void* pEditor);
 int FUN_1410a8ab0(void* pEditor);
 void FUN_1410aa0c0(void* pEditor, CubeItemInfo* p);
-struct Unk_PalEditorView { Unk_StreamPoint FUN_1410aa520(); };   // cursor cell (member: this=rcx, hidden return=rdx)
+struct Unk_PalEditorView { Vector3 FUN_1410aa520(); };   // cursor cell (member: this=rcx, hidden return=rdx)
 void FUN_1410aad50(void* pEditor);
 void FUN_1410ab5a0(void* p);
 void FUN_1410abb40(void* pEditor);
@@ -1467,7 +1467,7 @@ void UIUGCCubePaletteDialog::FUN_140eec480()
 }
 
 // @0x140eec4d0 (the screen position of the list row of a cube type; false when the type or the row is missing)
-int UIUGCCubePaletteDialog::FUN_140eec4d0(int nTypeId, Unk_StreamPoint* pPos)
+int UIUGCCubePaletteDialog::FUN_140eec4d0(int nTypeId, Vector3* pPos)
 {
     RTypeTbl spTypes;
     FUN_140886490(FUN_1409eed80(), &spTypes);
@@ -1490,16 +1490,16 @@ int UIUGCCubePaletteDialog::FUN_140eec4d0(int nTypeId, Unk_StreamPoint* pPos)
         if ((FUN_140930c50() == 0 || FUN_140889020(&spType)->flag != 0) && FUN_140889020(&spType)->id == nTypeId)
         {
             Unk_CubeCtl* pRoot = FUN_140d03230(&spRoot);
-            *pPos = Unk_StreamPoint(pRoot->FUN_1422c10a0(), pRoot->FUN_1422c1110(), pRoot->FUN_1422c1180());
+            *pPos = Vector3(pRoot->FUN_1422c10a0(), pRoot->FUN_1422c1110(), pRoot->FUN_1422c1180());
             Unk_CubeCtl* pList = FUN_140bcc3f0(&spList);
-            pPos->FUN_140a4e560(Unk_StreamPoint(pList->FUN_1422c10a0(), pList->FUN_1422c1110(), pList->FUN_1422c1180()));
+            pPos->FUN_140a4e560(Vector3(pList->FUN_1422c10a0(), pList->FUN_1422c1110(), pList->FUN_1422c1180()));
             Scaleform::GFx::Value vRow = FUN_140bcc3f0(&spList)->FUN_140ba26d0("getRendererAt", i);
             if (FUN_1407cce10(&vRow) == 0)
                 return 0;
             RDisp spRow;
             FUN_140d02fa0(&spRow, new Unk_CubeRenderer(vRow, m_28));
             Unk_CubeCtl* pRow = FUN_140d03230(&spRow);
-            pPos->FUN_140a4e560(Unk_StreamPoint(pRow->FUN_1422c10a0(), pRow->FUN_1422c1110(), pRow->FUN_1422c1180()));
+            pPos->FUN_140a4e560(Vector3(pRow->FUN_1422c10a0(), pRow->FUN_1422c1110(), pRow->FUN_1422c1180()));
             return 1;
         }
     }
@@ -2208,19 +2208,19 @@ void UGCKeyMode1::vfunc_1()
         Unk_CubeKind* pKind = DAT_143d69198.FUN_140a17af0(pObj->FUN_140a17cd0());
         if (pKind != 0 && (pKind->FUN_140ef4dd0() == 1 || pKind->FUN_140ef4dd0() == 2 || pKind->FUN_140ef4dd0() == 3))
             continue;
-        Unk_StreamPoint vUp(0, 0, 250.0f);
-        Unk_StreamPoint vPos = *pObj->FUN_140947900();
-        Unk_NiPoint3 vEnd(vPos.FUN_14097fd50(Unk_StreamPoint(0, 0, 75.0f)));
+        Vector3 vUp(0, 0, 250.0f);
+        Vector3 vPos = *pObj->FUN_140947900();
+        Unk_NiPoint3 vEnd(vPos.FUN_14097fd50(Vector3(0, 0, 75.0f)));
         if (FUN_1409670e0()->FUN_1410cdd80(vPos, pPlayer->vfunc_20(), 200.0f, DAT_143ab2398) == 0)
             continue;
-        void* pCube = FUN_1409670e0()->FUN_1410b8ab0(Unk_StreamPoint(vEnd.x, vEnd.y, vEnd.z));
+        void* pCube = FUN_1409670e0()->FUN_1410b8ab0(Vector3(vEnd.x, vEnd.y, vEnd.z));
         if (pCube == 0)
             continue;
-        Unk_NiPoint3 vTop(Unk_StreamPoint(vEnd.x, vEnd.y, vEnd.z).FUN_14097fd50(vUp));
-        Unk_StreamPoint vCell = FUN_1408a1430(Unk_StreamPoint(vTop.x, vTop.y, vTop.z));
+        Unk_NiPoint3 vTop(Vector3(vEnd.x, vEnd.y, vEnd.z).FUN_14097fd50(vUp));
+        Vector3 vCell = FUN_1408a1430(Vector3(vTop.x, vTop.y, vTop.z));
         if (pCube == FUN_1409670e0()->FUN_1410b8790(vCell))
             vTop.z += 150.0f;
-        pPlayer->vfunc_19(Unk_StreamPoint(vTop.x, vTop.y, vTop.z));
+        pPlayer->vfunc_19(Vector3(vTop.x, vTop.y, vTop.z));
         return;
     }
 }
@@ -2237,7 +2237,7 @@ void UGCKeyMode1::vfunc_5(void*, float, float)
     void* pEditor = FUN_141530290(pWorld);
     if (pEditor == 0)
         return;
-    Unk_StreamPoint pt = static_cast<Unk_PalEditorView*>(pEditor)->FUN_1410aa520();
+    Vector3 pt = static_cast<Unk_PalEditorView*>(pEditor)->FUN_1410aa520();
     if (spMgr.FUN_1401cd1a0()->FUN_1410b7e80(pt) == 0)
         FUN_140ef2fb0();
     else
@@ -2293,19 +2293,19 @@ void UGCKeyMode2::vfunc_1()
         Unk_CubeObject* pObj = DAT_143afbbb0.FUN_14098d8d0(pHit->FUN_140a17cb0());
         if (pObj == 0)
             continue;
-        Unk_StreamPoint vUp(0, 0, 250.0f);
-        Unk_StreamPoint vPos = *pObj->FUN_140947900();
-        Unk_NiPoint3 vEnd(vPos.FUN_14097fd50(Unk_StreamPoint(0, 0, 75.0f)));
+        Vector3 vUp(0, 0, 250.0f);
+        Vector3 vPos = *pObj->FUN_140947900();
+        Unk_NiPoint3 vEnd(vPos.FUN_14097fd50(Vector3(0, 0, 75.0f)));
         if (FUN_1409670e0()->FUN_1410cdd80(vPos, pPlayer->vfunc_20(), 200.0f, DAT_143ab2398) == 0)
             continue;
-        void* pCube = FUN_1409670e0()->FUN_1410b8ab0(Unk_StreamPoint(vEnd.x, vEnd.y, vEnd.z));
+        void* pCube = FUN_1409670e0()->FUN_1410b8ab0(Vector3(vEnd.x, vEnd.y, vEnd.z));
         if (pCube == 0)
             continue;
-        Unk_NiPoint3 vTop(Unk_StreamPoint(vEnd.x, vEnd.y, vEnd.z).FUN_14097fd50(vUp));
-        Unk_StreamPoint vCell = FUN_1408a1430(Unk_StreamPoint(vTop.x, vTop.y, vTop.z));
+        Unk_NiPoint3 vTop(Vector3(vEnd.x, vEnd.y, vEnd.z).FUN_14097fd50(vUp));
+        Vector3 vCell = FUN_1408a1430(Vector3(vTop.x, vTop.y, vTop.z));
         if (pCube == FUN_1409670e0()->FUN_1410b8790(vCell))
             vTop.z += 150.0f;
-        pPlayer->vfunc_19(Unk_StreamPoint(vTop.x, vTop.y, vTop.z));
+        pPlayer->vfunc_19(Vector3(vTop.x, vTop.y, vTop.z));
         return;
     }
 }
@@ -2322,7 +2322,7 @@ void UGCKeyMode2::vfunc_5(void*, float, float)
     void* pEditor = FUN_141530290(pWorld);
     if (pEditor == 0)
         return;
-    Unk_StreamPoint pt = static_cast<Unk_PalEditorView*>(pEditor)->FUN_1410aa520();
+    Vector3 pt = static_cast<Unk_PalEditorView*>(pEditor)->FUN_1410aa520();
     if (spMgr.FUN_1401cd1a0()->FUN_1410b7e80(pt) == 0)
         FUN_140ef2fb0();
     else

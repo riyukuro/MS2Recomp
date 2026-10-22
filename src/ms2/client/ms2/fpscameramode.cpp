@@ -60,7 +60,7 @@ Unk_Cursor* FUN_140aadf80();
 namespace egf { class Entity; }
 egf::Entity* FUN_14123c410(Unk_RpgActor* p);                // m_80 of the game object
 NiAVObject* FUN_141b6efc0(egf::Entity* p);
-const Unk_StreamPoint* FUN_140947900(NiAVObject* p);        // &world translate
+const Vector3* FUN_140947900(NiAVObject* p);        // &world translate
 
 float FUN_140a38cd0(float f);                       // fabs
 float FUN_140a17940(float f, float fMin, float fMax);   // clamp
@@ -115,7 +115,7 @@ MS2_REPLACE_METHOD(0x141221480, CFPSCameraMode, vfunc_7, 75, 0xC5DEA605);
 // @0x1412214e0
 void CFPSCameraMode::vfunc_9()
 {
-    Unk_StreamPoint ptMove = g_143b01a60;
+    Vector3 ptMove = g_143b01a60;
     unsigned int nButton = FUN_14025e7c0()->FUN_14116daa0(1, true, 0);
     if (m_144 != 0 && nButton == 0)
         return;
@@ -143,13 +143,13 @@ void CFPSCameraMode::vfunc_8(double fTime)
         m_78 = *FUN_140947900(m_138);
         m_78.z += vfunc_27();
     }
-    Unk_StreamPoint ptEye = m_78.FUN_14097fd50(FUN_14183c370());
+    Vector3 ptEye = m_78.FUN_14097fd50(FUN_14183c370());
     m_d8.m_pos = ptEye;
-    Unk_StreamPoint ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
+    Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
     if (ptMove.FUN_140552700(g_143b01a60))
     {
-        Unk_StreamPoint ptNew = g_143b01a60;
-        Unk_StreamPoint ptInput = ptMove;
+        Vector3 ptNew = g_143b01a60;
+        Vector3 ptInput = ptMove;
         float fRate = 15.0f;
         float fStep = FUN_140a17940((float)fTime, 0.0f, 1.0f / fRate);
         float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x),
@@ -162,7 +162,7 @@ void CFPSCameraMode::vfunc_8(double fTime)
             m_68 += fYaw;
             m_6c -= fPitch;
             m_6c = FUN_140a17940(m_6c, 0.0f, 2.0f);
-            Unk_StreamPoint ptBase = m_78;
+            Vector3 ptBase = m_78;
             ptNew = m_d8.m_pos;
             ptNew.z = ptBase.z;
             ptNew.x = m_50 * FUN_1409f25a0(m_68) + ptBase.x;
@@ -227,7 +227,7 @@ void CFPSCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
     float fX = m_50 * FUN_1409f25a0(m_68) + m_78.x;
     float fY = m_50 * FUN_1409f2310(m_68) + m_78.y;
     float fZ = m_50 * FUN_1409f2310(m_6c) + m_78.z;
-    m_d8.m_pos = Unk_StreamPoint(fX, fY, fZ);
+    m_d8.m_pos = Vector3(fX, fY, fZ);
     m_8c = m_d8.m_pos.FUN_140965c40(m_78);
     m_d8.m_rot = FUN_1410a0a00(m_d8.m_pos);
     m_c0 = m_d8;

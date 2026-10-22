@@ -46,7 +46,7 @@ public:
     virtual void vfunc_4(const TraceResult* pResult);               //  4 0x140e78870
     virtual int vfunc_5(const TraceResult* pResult);                //  5 0x140e789d0 0
     virtual int vfunc_6(const TraceContext* pContext);              //  6 0x140e789f0 0
-    virtual Unk_StreamPoint vfunc_7();                              //  7 0x140e78a10 the zero point
+    virtual Vector3 vfunc_7();                              //  7 0x140e78a10 the zero point
     virtual float vfunc_8();                                        //  8 0x140e78a40
 
     int m_18;                                                       // +0x18 shown
@@ -67,7 +67,7 @@ public:
     virtual CString vfunc_2() { return "pc"; }                      //  2
     virtual void vfunc_4(const TraceResult* pResult);               //  4 0x140e78b40 distance text
     virtual int vfunc_5(const TraceResult* pResult);                //  5 0x140e78af0
-    virtual Unk_StreamPoint vfunc_7();                              //  7 0x140e78c40
+    virtual Vector3 vfunc_7();                              //  7 0x140e78c40
     virtual float vfunc_8();                                        //  8 0x140e78cc0
 };
 MS2_CHECK_SIZE(PcHudNavigationEntity, 0x30);
@@ -82,7 +82,7 @@ public:
     virtual CString vfunc_2() { return "target"; }                  //  2
     virtual int vfunc_5(const TraceResult* pResult);                //  5 0x140e78e00
     virtual int vfunc_6(const TraceContext* pContext);              //  6 0x140e78f50
-    virtual Unk_StreamPoint vfunc_7();                              //  7 0x140e79010
+    virtual Vector3 vfunc_7();                              //  7 0x140e79010
     virtual float vfunc_8();                                        //  8 0x140e790f0
 
     int m_30;                                                       // +0x30 npc object id
@@ -100,7 +100,7 @@ public:
     virtual CString vfunc_2() { return "target"; }                  //  2
     virtual int vfunc_5(const TraceResult* pResult);                //  5 0x140e79280
     virtual int vfunc_6(const TraceContext* pContext);              //  6 0x140e79450
-    virtual Unk_StreamPoint vfunc_7();                              //  7 0x140e79590
+    virtual Vector3 vfunc_7();                              //  7 0x140e79590
 
     int m_30;                                                       // +0x30 interact object id
     CStringA m_38;                                                  // +0x38 interact object name
@@ -117,7 +117,7 @@ public:
     virtual CString vfunc_2() { return "target"; }                  //  2
     virtual int vfunc_5(const TraceResult* pResult);                //  5 0x140e797b0
     virtual int vfunc_6(const TraceContext* pContext);              //  6 0x140e799b0
-    virtual Unk_StreamPoint vfunc_7();                              //  7 0x140e79b20
+    virtual Vector3 vfunc_7();                              //  7 0x140e79b20
 
     int m_30;                                                       // +0x30 liftable id
     CStringA m_38;                                                  // +0x38 liftable name
@@ -133,7 +133,7 @@ public:
     // @0x140e7c8d0
     virtual CString vfunc_2() { return "portal"; }                  //  2
     virtual int vfunc_5(const TraceResult* pResult);                //  5 0x140e79d00
-    virtual Unk_StreamPoint vfunc_7();                              //  7 0x140e79e50
+    virtual Vector3 vfunc_7();                              //  7 0x140e79e50
 
     int m_30;                                                       // +0x30 portal id
 };

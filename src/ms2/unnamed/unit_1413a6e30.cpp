@@ -41,7 +41,7 @@ class Unk_GcWorld
 {
 public:
     void* FUN_141bd0cc0();                                  // the local player
-    MS2Ptr<CInteractObject> FUN_141bc6090(Unk_StreamPoint pt, int nSkipDisabled);   // the interactable object at a point
+    MS2Ptr<CInteractObject> FUN_141bc6090(Vector3 pt, int nSkipDisabled);   // the interactable object at a point
 };
 Unk_GcWorld* FUN_1403ed2d0();
 
@@ -54,10 +54,10 @@ public:
     virtual void Unk_Slot8(); virtual void Unk_Slot9(); virtual void Unk_Slot10(); virtual void Unk_Slot11();
     virtual void Unk_Slot12(); virtual void Unk_Slot13(); virtual void Unk_Slot14(); virtual void Unk_Slot15();
     virtual void Unk_Slot16(); virtual void Unk_Slot17();
-    virtual Unk_StreamPoint vfunc_18();                     // 0x90 the position
+    virtual Vector3 vfunc_18();                     // 0x90 the position
 };
 void* FUN_1416625b0(Unk_GcPC* pPC);
-class Unk_GcCore { public: Unk_StreamPoint FUN_1410aa520(); };   // the cube-craft core: its position
+class Unk_GcCore { public: Vector3 FUN_1410aa520(); };   // the cube-craft core: its position
 Unk_GcCore* FUN_141530290(Unk_GcPC* pPC);                   // the cube-craft core of the player
 int FUN_14166c930(Unk_GcPC* pPC);                           // the action id
 
@@ -168,7 +168,7 @@ int CGuideConditionPosition::vfunc_3()
     Unk_GcPC* pPC = (Unk_GcPC*)FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
-    Unk_StreamPoint pos = pPC->vfunc_18();
+    Vector3 pos = pPC->vfunc_18();
     if (FUN_1416625b0(pPC) != 0 && FUN_141530290(pPC) != 0)
         pos = FUN_141530290(pPC)->FUN_1410aa520();
     for (size_t i = 0; i < m_arrCube.GetCount(); i++)

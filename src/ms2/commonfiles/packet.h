@@ -27,7 +27,7 @@ inline int FUN_14020b170(const CStringW& s, unsigned char* dst)                 
 { *(unsigned short*)dst = (unsigned short)s.GetLength(); memcpy(dst + 2, (const wchar_t*)s, (size_t)s.GetLength() * 2); return FUN_14020ac20(s); }
 inline int FUN_14020b410(float v, unsigned char* dst) { *(float*)dst = v; int n = (int)(__int64)v; return FUN_14020abe0(n); }  // @0x14020b410
 // Writes the three floats of a point through the virtual float encoder (slot 5).
-inline void FUN_14020af60(COutPacket* out, const Unk_StreamPoint* p)                                        // @0x14020af60
+inline void FUN_14020af60(COutPacket* out, const Vector3* p)                                        // @0x14020af60
 { out->WriteFloat(p->x); out->WriteFloat(p->y); out->WriteFloat(p->z); }
 
 #define MS2_PKT_FILE L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\packet.h"
@@ -81,9 +81,9 @@ inline void COutPacket::WriteUnicodeString(const CStringW& value)
     m_nLength += FUN_14020b170(text, (unsigned char*)&m_aBuffer[0] + m_nLength);
 }
 // @0x14020b2c0
-inline void COutPacket::WriteVector3(const Unk_StreamPoint& value) { FUN_14020af60(this, &value); }
+inline void COutPacket::WriteVector3(const Vector3& value) { FUN_14020af60(this, &value); }
 // @0x14020b2f0
-inline void COutPacket::WriteVector3Short(const Unk_StreamPoint& value)
+inline void COutPacket::WriteVector3Short(const Vector3& value)
 {
     float x = value.x;
     if (x < 0.0f) x -= 0.001f; else x += 0.001f;

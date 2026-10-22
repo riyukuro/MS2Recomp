@@ -70,9 +70,9 @@ Unk_AtConstants* FUN_1401d3200();
 // The target point accessors (a "valid" flag then the point, see Unk_AkoTarget).
 int FUN_1413b58d0(Unk_AkoTarget* p);                                   // has a point
 int FUN_1413b5870(Unk_AkoTarget* p);                                   // has no point
-Unk_StreamPoint* FUN_1413b4140(Unk_AkoTarget* p);
-Unk_StreamPoint* FUN_1413b4180(Unk_AkoTarget* p);
-void FUN_140d00fb0(Unk_StreamPoint ptWorld, NiPoint2* pScreen);        // project a world point to the screen
+Vector3* FUN_1413b4140(Unk_AkoTarget* p);
+Vector3* FUN_1413b4180(Unk_AkoTarget* p);
+void FUN_140d00fb0(Vector3 ptWorld, NiPoint2* pScreen);        // project a world point to the screen
 float FUN_1408f2120(const float& v, float fLo, float fHi);             // clamp
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

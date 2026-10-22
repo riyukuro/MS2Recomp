@@ -23,7 +23,7 @@ public:
     virtual void vfunc_7();                                             // 0x140945030
     virtual void vfunc_8(double fTime);                                 // 0x140945060
     virtual void vfunc_9();                                             // 0x140945450
-    virtual Unk_StreamPoint vfunc_26();                                 // 0x140945470 the camera node position
+    virtual Vector3 vfunc_26();                                 // 0x140945470 the camera node position
     virtual int vfunc_28();                                             // 0x140945460
 
     float m_78;                                                         // +0x78 (never set)

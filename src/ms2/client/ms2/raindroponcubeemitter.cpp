@@ -83,9 +83,9 @@
 
 // ---- unit-local placeholders ----
 
-extern const Unk_StreamPoint g_143a08cf8;   // NiPoint3::UNIT_Z
-extern const Unk_StreamPoint g_143a08ce8;   // NiPoint3::ZERO
-extern const Unk_StreamPoint g_143b01a60;   // the zero point
+extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
+extern const Vector3 g_143a08ce8;   // NiPoint3::ZERO
+extern const Vector3 g_143b01a60;   // the zero point
 extern const NiColor g_143a09660;
 extern const NiColor g_143b01ef0;
 
@@ -98,7 +98,7 @@ public:
     virtual void vfunc_8();   virtual void vfunc_9();   virtual void vfunc_10();  virtual void vfunc_11();
     virtual void vfunc_12();  virtual void vfunc_13();  virtual void vfunc_14();  virtual void vfunc_15();
     virtual void vfunc_16();  virtual void vfunc_17();
-    virtual Unk_StreamPoint GetPosition();                          // MS2: slot 18
+    virtual Vector3 GetPosition();                          // MS2: slot 18
 };
 class Unk_RainContext
 {
@@ -121,9 +121,9 @@ class Unk_CubeService;
 Unk_CubeService* FUN_1410b27c0();
 Unk_CubeWorld* FUN_1410b9e70(Unk_CubeService* pService);
 
-int FUN_1408a13d0(Unk_StreamPoint kPos);                            // column key of a position
-void FUN_1408a1430(int* pXY, Unk_StreamPoint kPos);                 // column (x, y) of a position
-Unk_StreamPoint FUN_1408a15b0(Unk_Int3 kCube, Unk_StreamPoint* pOut);   // position of a column (also in pOut)
+int FUN_1408a13d0(Vector3 kPos);                            // column key of a position
+void FUN_1408a1430(int* pXY, Vector3 kPos);                 // column (x, y) of a position
+Vector3 FUN_1408a15b0(Unk_Int3 kCube, Vector3* pOut);   // position of a column (also in pOut)
 unsigned int FUN_1408a03c0(Unk_Int3 kCube);                      // key of a column
 
 // The client paths (texture directory at +0x100) and the texture factory.
@@ -201,7 +201,7 @@ Unk_RainDrop::Unk_RainDrop(double dTime, const Unk_Int3& kPos)
 // Fills the columns around a position (a 20 x 20 window) that have a surface.
 // @0x1416edfd0
 // MS2-FUNCTIONAL: cube column walk: register allocation / loop layout differs
-static void FillColumns(const Unk_StreamPoint& kPos, ATL::CAtlArray<Unk_Int3>& arrCube)
+static void FillColumns(const Vector3& kPos, ATL::CAtlArray<Unk_Int3>& arrCube)
 {
     Unk_CubeWorld* pWorld = FUN_1410b9e70(FUN_1410b27c0());
     int arrXY[2];
@@ -267,7 +267,7 @@ RainDropOnCubeEmitter::RainDropOnCubeEmitter(const NiFixedString& kName, NiAVObj
                         fLifeSpanVar, 0.0f, 6.2831855f, 0.0f, 0.0f, false, NiPoint3(AsPoint(g_143a08cf8)), false)
 {
     m_fCooldown = fLifeSpan;
-    Unk_StreamPoint kPos = g_143b01a60;
+    Vector3 kPos = g_143b01a60;
     Unk_RainActor* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pActor)
         kPos = pActor->GetPosition();
@@ -300,7 +300,7 @@ void RainDropOnCubeEmitter::Refresh()
     Unk_RainActor* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pActor)
     {
-        Unk_StreamPoint kPos = pActor->GetPosition();
+        Vector3 kPos = pActor->GetPosition();
         int nKey = FUN_1408a13d0(kPos);
         if (!m_bDirty)
         {
@@ -348,7 +348,7 @@ bool RainDropOnCubeEmitter::ComputeVolumeInitialPositionAndVelocity(NiQuatTransf
     if (kDrop.GetTime() > dNow)
         return false;
 
-    Unk_StreamPoint kLocal;
+    Vector3 kLocal;
     FUN_1408a15b0(kDrop.GetPos(), &kLocal);
     kLocal.z = kLocal.z + 3.0f;
     kPosition = kEmitterToPSys * NiPoint3(AsPoint(kLocal));

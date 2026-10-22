@@ -81,11 +81,11 @@ Unk_QnUIMgr* FUN_1403ed2b0();
 void FUN_141a3ada0(UIMinimapDialog* pDialog);                       // refresh the minimap's quest marker
 
 // engine helpers (non-inlined in the exe)
-Unk_StreamPoint FUN_140a0b080(const Unk_StreamPoint& a, const Unk_StreamPoint& b, const Unk_StreamPoint& c);
-void FUN_140b86230(const Unk_StreamPoint* pTarget, NiTransform* pXf);
-float FUN_140966f00(Unk_StreamPoint a, Unk_StreamPoint b);
-extern Unk_StreamPoint DAT_143b01a60;                               // the zero point
-extern Unk_StreamPoint DAT_143a08cf8;                               // the up axis
+Vector3 FUN_140a0b080(const Vector3& a, const Vector3& b, const Vector3& c);
+void FUN_140b86230(const Vector3* pTarget, NiTransform* pXf);
+float FUN_140966f00(Vector3 a, Vector3 b);
+extern Vector3 DAT_143b01a60;                               // the zero point
+extern Vector3 DAT_143a08cf8;                               // the up axis
 extern const NiRTTI DAT_143afa4d8;                                  // NiNode::ms_RTTI
 NiObject* FUN_14098d8d0(const NiRTTI* pRTTI, NiObject* pObject);   // NiDynamicCast
 
@@ -248,7 +248,7 @@ void CQuestNavigator::FUN_140c99ee0()
                 NiTransform xf;
                 xf.MakeIdentity();
                 xf.m_Translate = NiPoint3(pPC->vfunc_18());
-                FUN_140b86230(reinterpret_cast<Unk_StreamPoint*>(&m_18.m_2c), &xf);
+                FUN_140b86230(reinterpret_cast<Vector3*>(&m_18.m_2c), &xf);
                 m_10->SetLocalTransform(xf);
             }
         }
@@ -353,7 +353,7 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
     {
         float fBest = FLT_MAX;
         float fDist = FLT_MAX;
-        Unk_StreamPoint pos = DAT_143b01a60;
+        Vector3 pos = DAT_143b01a60;
         if (FUN_1403ed2d0()->FUN_141bd49d0(spContext->m_20, &pos, &fDist) != 0 && (nFailed = 0, fDist < fBest))
         {
             fBest = fDist;
@@ -361,19 +361,19 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
                 pResult->m_1c = 1;
             else
                 pResult->m_1c = 2;
-            reinterpret_cast<Unk_StreamPoint&>(pResult->m_20) = pos;
+            reinterpret_cast<Vector3&>(pResult->m_20) = pos;
         }
         if (FUN_1403ed2d0()->FUN_141bd4ed0(spContext->m_30, &pos, &fDist) != 0 && (nFailed = 0, fDist < fBest))
         {
             fBest = fDist;
             pResult->m_1c = 3;
-            reinterpret_cast<Unk_StreamPoint&>(pResult->m_20) = pos;
+            reinterpret_cast<Vector3&>(pResult->m_20) = pos;
         }
         if (FUN_1403ed2d0()->FUN_141bd51a0(spContext->m_40, &pos, &fDist) != 0 && (nFailed = 0, fDist < fBest))
         {
             fBest = fDist;
             pResult->m_1c = 5;
-            reinterpret_cast<Unk_StreamPoint&>(pResult->m_20) = pos;
+            reinterpret_cast<Vector3&>(pResult->m_20) = pos;
         }
     }
     else
@@ -393,7 +393,7 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
                     if (FUN_140408410(aPath, nPortalMap) != -1)
                     {
                         pResult->m_1c = 4;
-                        reinterpret_cast<Unk_StreamPoint&>(pResult->m_20) = spPortal->FUN_14169d2f0();
+                        reinterpret_cast<Vector3&>(pResult->m_20) = spPortal->FUN_14169d2f0();
                         nFailed = 0;
                         bFound = true;
                         break;
@@ -411,7 +411,7 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
                         if (spNext->FUN_14169d160() == 1)
                         {
                             pResult->m_1c = 4;
-                            reinterpret_cast<Unk_StreamPoint&>(pResult->m_20) = spNext->FUN_14169d2f0();
+                            reinterpret_cast<Vector3&>(pResult->m_20) = spNext->FUN_14169d2f0();
                             nFailed = 0;
                         }
                     }
@@ -421,9 +421,9 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
     }
     if (nFailed == 0)
     {
-        Unk_StreamPoint posTarget = reinterpret_cast<Unk_StreamPoint&>(pResult->m_20);
-        reinterpret_cast<Unk_StreamPoint&>(pResult->m_2c) = FUN_140c9b0a0(posTarget);
-        Unk_StreamPoint posText = reinterpret_cast<Unk_StreamPoint&>(pResult->m_20);
+        Vector3 posTarget = reinterpret_cast<Vector3&>(pResult->m_20);
+        reinterpret_cast<Vector3&>(pResult->m_2c) = FUN_140c9b0a0(posTarget);
+        Vector3 posText = reinterpret_cast<Vector3&>(pResult->m_20);
         pResult->m_38 = FUN_140c9b150(posText);
         pResult->m_40 = spContext;
     }
@@ -506,27 +506,27 @@ bool CQuestNavigator::FUN_140c9af60()
 
 // The end point of the beam: from the player towards pos.
 // @0x140c9b0a0
-Unk_StreamPoint CQuestNavigator::FUN_140c9b0a0(const Unk_StreamPoint& pos)
+Vector3 CQuestNavigator::FUN_140c9b0a0(const Vector3& pos)
 {
     PCBase* pPC = (PCBase*)FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0)
         return DAT_143b01a60;
     const auto& ptPC = pPC->vfunc_18();
-    Unk_StreamPoint posPC = reinterpret_cast<const Unk_StreamPoint&>(ptPC);
+    Vector3 posPC = reinterpret_cast<const Vector3&>(ptPC);
     return FUN_140a0b080(posPC, pos, DAT_143a08cf8);
 }
 
 // The distance text from the player to pos.
 // @0x140c9b150
-CStringW CQuestNavigator::FUN_140c9b150(const Unk_StreamPoint& pos)
+CStringW CQuestNavigator::FUN_140c9b150(const Vector3& pos)
 {
     PCBase* pPC = (PCBase*)FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0)
         return CStringW(L"");
     CStringW strText;
-    Unk_StreamPoint posTo = pos;
+    Vector3 posTo = pos;
     const auto& ptPC = pPC->vfunc_18();
-    Unk_StreamPoint posPC = reinterpret_cast<const Unk_StreamPoint&>(ptPC);
+    Vector3 posPC = reinterpret_cast<const Vector3&>(ptPC);
     int nDist = (int)FUN_140966f00(posPC, posTo);
     if (nDist <= 100000)
     {

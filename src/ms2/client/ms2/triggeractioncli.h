@@ -176,7 +176,7 @@ public:
 
     bool HasModel(const unsigned& rModelId);                    // 0x140de5e70
     void Init(int nId, Unk_EntRef ent);                         // 0x140de5ef0
-    bool Contains(Unk_StreamPoint pt);                          // 0x140de5f60 point inside the trigger box
+    bool Contains(Vector3 pt);                          // 0x140de5f60 point inside the trigger box
     static MS2Ptr<TriggerObject> Create(egf::Entity* pEntity);  // 0x140de6260 (by FlatModel id)
 
     int m_nId;                                                  // +0x18

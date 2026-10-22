@@ -17,9 +17,9 @@ class CExpEffectInfo : public CPtred
 public:
     CExpEffectInfo();                                       // 0x141272630
     virtual ~CExpEffectInfo();                              // 0x141272760
-    Unk_StreamPoint GetAxis0() const;                       // 0x1412727d0 column 0 of the orientation
-    Unk_StreamPoint GetAxis1() const;                       // 0x141272830
-    Unk_StreamPoint GetAxis2() const;                       // 0x141272890
+    Vector3 GetAxis0() const;                       // 0x1412727d0 column 0 of the orientation
+    Vector3 GetAxis1() const;                       // 0x141272830
+    Vector3 GetAxis2() const;                       // 0x141272890
     void UpdateOrientation();                               // 0x1412728f0 face the node along (target - source)
     void InitConstants();                                   // 0x141272b10 lazy-load the tuning values
     void StopEffect();                                      // 0x141272c20 release the effect handle
@@ -27,10 +27,10 @@ public:
     void UpdateMove(float fElapsed);                        // 0x141272cb0
     bool Create(int nObjectId, void* pOwner);               // 0x141272f20
     int GetState() const;                                   // 0x141273570 0 flying, 1 arrived
-    void SetPosition(const Unk_StreamPoint& pt);            // 0x141273590
+    void SetPosition(const Vector3& pt);            // 0x141273590
     void SetVisible(int nHide);                             // 0x141273630
     void Finish();                                          // 0x141273680
-    void GetTargetPos(Unk_ExpActor* pActor, Unk_StreamPoint* pOut);   // 0x141273890 attach point or the actor position
+    void GetTargetPos(Unk_ExpActor* pActor, Vector3* pOut);   // 0x141273890 attach point or the actor position
 
     void* m_pOwner;                         // +0x18
     int m_n20;                              // +0x20
@@ -38,13 +38,13 @@ public:
     int m_pad_28;
     int m_pad_2c;
     Unk_NodePtr m_spNode;                   // +0x30 the orb's NiNode
-    Unk_StreamPoint m_ptPos;                // +0x38 current position
+    Vector3 m_ptPos;                // +0x38 current position
     float m_fElapsed;                       // +0x44
     Unk_NiMatrix3 m_rot;                    // +0x48 orientation
     float m_fProgress;                      // +0x6c distance / total
     float m_fTotal;                         // +0x70 total travel distance (scaled, clamped)
-    Unk_StreamPoint m_ptTarget;             // +0x74 where it flies to (the player)
-    Unk_StreamPoint m_ptSource;             // +0x80 where it started (the monster)
+    Vector3 m_ptTarget;             // +0x74 where it flies to (the player)
+    Vector3 m_ptSource;             // +0x80 where it started (the monster)
     int m_nState;                           // +0x8c
 };
 MS2_CHECK_SIZE(CExpEffectInfo, 0x90);

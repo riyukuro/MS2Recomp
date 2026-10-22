@@ -184,7 +184,7 @@ class Unk_AkoPortal : public CPtred
 public:
     CStringW FUN_14169c3b0();                               // the portal's name
     int FUN_14169d280();                                    // moves to another field
-    Unk_StreamPoint FUN_14169d2f0();                        // the portal's position
+    Vector3 FUN_14169d2f0();                        // the portal's position
     egf::EntityID m_entityId;                               // +0x18 id of the egf entity
     char m_pad_20[0x14c - 0x20];
     int m_nFieldId;                                         // +0x14c the target field
@@ -208,21 +208,21 @@ class Unk_Service6100017 : public efd::ISystemService
 public:
     egf::EntityID FUN_1410cb1b0();                          // the entity of the house's fitting doll
     bool FUN_1410c35c0();                                   // the player is in a house
-    Unk_StreamPoint FUN_1410b7ad0(PCBase* pActor, float fDist, Unk_StreamPoint* pOut, int bSnap);  // the cell in front of the actor
-    Unk_StreamPoint FUN_1410b7a20(Unk_StreamPoint pt, Unk_StreamPoint* pOut);   // the cell position of a point
-    Cube* FUN_1410b8ab0(Unk_StreamPoint pt);                // the cube at a cell position
+    Vector3 FUN_1410b7ad0(PCBase* pActor, float fDist, Vector3* pOut, int bSnap);  // the cell in front of the actor
+    Vector3 FUN_1410b7a20(Vector3 pt, Vector3* pOut);   // the cell position of a point
+    Cube* FUN_1410b8ab0(Vector3 pt);                // the cube at a cell position
     // The same three as PullObjectWeaponAction calls them (its cell list is a std::vector<efd::Point3>).
     efd::Point3 FUN_1410b7ad0(PCBase* pActor, float fDist, efd::Point3* pOut, int bSnap);
     efd::Point3 FUN_1410b7a20(efd::Point3 pt, efd::Point3* pOut);
     Cube* FUN_1410b8ab0(efd::Point3 pt);
-    bool FUN_1410b7e80(Unk_StreamPoint pt);                 // a cube stands at a cell position
+    bool FUN_1410b7e80(Vector3 pt);                 // a cube stands at a cell position
     void FUN_1410ccc00(int nMapId, int nType, int nSize);   // show the map's owner profile
     int FUN_1410c8580(int nGroup);                          // the error code for buying a house group (0 = ok)
     CStringW FUN_1410d5d80(int nError);                     // the text of a house error code
 };
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 extern Unk_EntityAppFramework DAT_143b059e8;
-extern Unk_StreamPoint DAT_143b01a60;                       // the zero point                // the game framework
+extern Vector3 DAT_143b01a60;                       // the zero point                // the game framework
 Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* pFramework);
 
 // The player's lifted object (MyPC::FUN_141523c00); only tested for null here.
@@ -331,7 +331,7 @@ public:
     CString FUN_1414472a0();                                // the lift's name
     int FUN_141447340();                                    // can be lifted
     float FUN_141447ac0();                                  // the lift radius
-    Unk_StreamPoint FUN_141447c80();                        // the lift's position
+    Vector3 FUN_141447c80();                        // the lift's position
     void FUN_141447d50(int bHighlight);                     // highlight the lift
 };
 typedef MS2Ptr<Unk_WsB_Lift> Unk_WsB_LiftPtr;
@@ -342,10 +342,10 @@ class Unk_AkoLiftTarget : public CPtred
 {
 public:
     // @0x1409673f0
-    Unk_StreamPoint FUN_1409673f0() { return m_pos; }
+    Vector3 FUN_1409673f0() { return m_pos; }
 
     unsigned char m_unk_18[4];
-    Unk_StreamPoint m_pos;                                  // +0x1c
+    Vector3 m_pos;                                  // +0x1c
 };
 MS2_CHECK_OFFSET(Unk_AkoLiftTarget, m_pos, 0x1c);
 typedef MS2Ptr<Unk_AkoLiftTarget> Unk_AkoLiftTargetPtr;
@@ -386,7 +386,7 @@ public:
     virtual void vfunc_15();
     virtual void vfunc_16();
     virtual void vfunc_17();
-    virtual Unk_StreamPoint vfunc_18();                     // 18: the position
+    virtual Vector3 vfunc_18();                     // 18: the position
     CStringW FUN_141093310();                               // the npc name
     int FUN_14166ce30();                                    // dead (1)
     MS2Ptr<Unk_AkoNpcData> FUN_141093270();                 // the npc data
@@ -450,7 +450,7 @@ public:
 };
 Unk_AkoQuestGlobal* FUN_140764020();
 int FUN_140855d10(int nNpcId);                              // the npc has an event talk
-Unk_Int3 FUN_1408a1430(Unk_StreamPoint pt);                 // the cube cell of a world position
+Unk_Int3 FUN_1408a1430(Vector3 pt);                 // the cube cell of a world position
 // MyPC's npc in front with its true return type (mypc.h spells it PCBase*).
 class Unk_AkoPlayerView
 {
@@ -522,8 +522,8 @@ template <class A, class B> void Unk_AkoMessage(int nStringId, int nA, int nB, c
 // @0x1409670b0 the function cube service singleton
 inline CFunctionCubeService* FUN_1409670b0() { return TSingleton<CFunctionCubeService>::s_instance; }
 int FUN_140b60d90(egf::Entity* pEntity);
-float FUN_140966f00(Unk_StreamPoint a, Unk_StreamPoint b);  // the distance of two points
-int FUN_1408a1360(Unk_StreamPoint a, Unk_StreamPoint b);   // the points are on the same level
+float FUN_140966f00(Vector3 a, Vector3 b);  // the distance of two points
+int FUN_1408a1360(Vector3 a, Vector3 b);   // the points are on the same level
 int FUN_1408a2060(egf::Entity* pEntity, unsigned nProperty, efd::utf8string* pOut);   // read a string property (0 = ok)
 int FUN_1408a03c0(Unk_Int3 pt);                             // the packed key of a cube cell                    // the banner id of a ugc banner entity
 
@@ -964,7 +964,7 @@ int PortalAction::vfunc_1()
         return 0;
     m_spEntity = 0;
     m_spPortal = 0;
-    Unk_StreamPoint pos = pPlayer->FUN_1416767d0();
+    Vector3 pos = pPlayer->FUN_1416767d0();
     ATL::CAtlArray<MS2Ptr<Unk_AkoPortal> > aPortals;
     FUN_1403ed2d0()->FUN_141bc2c90(pos, &aPortals);
     if (aPortals.GetCount() == 0)
@@ -1023,9 +1023,9 @@ void PortalAction::vfunc_2()
     efd::SmartPointer<Unk_Service6100017> spCubeMap = FUN_1401cd040(&DAT_143b059e8);
     if (m_spPortal->m_nOwnerId)
     {
-        Unk_StreamPoint ptFront;
+        Vector3 ptFront;
         spCubeMap->FUN_1410b7ad0(pPlayer, 0.0f, &ptFront, 1);
-        Unk_StreamPoint ptCell;
+        Vector3 ptCell;
         spCubeMap->FUN_1410b7a20(ptFront, &ptCell);
         Cube* pCell = spCubeMap->FUN_1410b8ab0(ptCell);
         if (m_spPortal->m_nType == 0xb)
@@ -1123,7 +1123,7 @@ Unk_AkoTarget PortalAction::vfunc_12()
 {
     if (m_spPortal == 0)
         return Unk_AkoTarget();
-    Unk_StreamPoint pos = m_spPortal->FUN_14169d2f0();
+    Vector3 pos = m_spPortal->FUN_14169d2f0();
     if (m_spPortal->m_nType == 5)
         pos.z += 75.0f;
     return Unk_AkoTarget(pos);
@@ -1421,12 +1421,12 @@ Unk_WsB_Lift* LiftCubeAction::FUN_140957890()
     FUN_1403ed2d0()->FUN_141bc58d0(&aLifts);
     if (aLifts.size() <= 0)
         return 0;
-    Unk_StreamPoint pos = pPlayer->FUN_1416767d0();
+    Vector3 pos = pPlayer->FUN_1416767d0();
     MS2_FOR_EACH(Unk_WsB_LiftPtr spLift, aLifts)
     {
         if (spLift->FUN_141447340() == 0)
             continue;
-        Unk_StreamPoint ptLift = spLift->FUN_141447c80();
+        Vector3 ptLift = spLift->FUN_141447c80();
         Unk_Int3 cell = FUN_1408a1430(ptLift);
         float fDist = ptLift.FUN_140965c40(pos).FUN_140968990();
         if (fDist > spLift->FUN_141447ac0())
@@ -1581,7 +1581,7 @@ CInteractObject* InteractAction::FUN_140958e70()
     MyPC* pPlayer = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
-    Unk_StreamPoint pos = pPlayer->FUN_1416767d0();
+    Vector3 pos = pPlayer->FUN_1416767d0();
     CInteractObject* pObject = FUN_1403ed2d0()->FUN_141bc6090(pos, 1);
     if (!pObject)
         return 0;
@@ -1864,7 +1864,7 @@ int RegistUgcAction::vfunc_1()
     if (!pPlayer)
         return 0;
     float fDist = FUN_1401d3200()->RegistUgcDistance.Read();
-    Unk_StreamPoint pos = pPlayer->vfunc_18();
+    Vector3 pos = pPlayer->vfunc_18();
     egf::Entity* pEntity = FUN_1403ed2d0()->FUN_141bd0220(pos, fDist);
     if (m_spEntity != pEntity)
     {
@@ -2067,9 +2067,9 @@ int PutDownLiftableAction::vfunc_1()
     if (reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_141659690() && pPlayer->FUN_14166c930() == 1)
         return 1;
     efd::SmartPointer<Unk_Service6100017> spCubeMap = FUN_1401cd040(&DAT_143b059e8);
-    Unk_StreamPoint ptFront;
+    Vector3 ptFront;
     spCubeMap->FUN_1410b7ad0(pPlayer, 0.0f, &ptFront, 1);
-    Unk_StreamPoint ptCell;
+    Vector3 ptCell;
     spCubeMap->FUN_1410b7a20(ptFront, &ptCell);
     if (spCubeMap->FUN_1410b7e80(ptCell))
         return 0;
@@ -2078,7 +2078,7 @@ int PutDownLiftableAction::vfunc_1()
     for (size_t i = 0; i < aTargets.size(); ++i)
     {
         Unk_AkoLiftTargetPtr spTarget = aTargets[i];
-        Unk_StreamPoint ptTargetCell = DAT_143b01a60;
+        Vector3 ptTargetCell = DAT_143b01a60;
         spCubeMap->FUN_1410b7a20(spTarget->FUN_1409673f0(), &ptTargetCell);
         if (ptCell.FUN_140552690(ptTargetCell))
             return 1;
@@ -3335,19 +3335,19 @@ MS2_REPLACE_METHOD(0x1409609F0, TreeWateringAction, vfunc_5, 11, 0x25A49707);
 // ---- inline members of other headers (COMDATs of this obj) ------------------------------------------------------------
 
 // @0x140965c40
-Unk_StreamPoint Unk_StreamPoint::FUN_140965c40(const Unk_StreamPoint& pt) const
+Vector3 Vector3::FUN_140965c40(const Vector3& pt) const
 {
-    return Unk_StreamPoint(x - pt.x, y - pt.y, z - pt.z);
+    return Vector3(x - pt.x, y - pt.y, z - pt.z);
 }
 
 // @0x140967ac0
-float Unk_StreamPoint::FUN_140967ac0() const
+float Vector3::FUN_140967ac0() const
 {
     return efd::Sqrt(x * x + y * y + z * z);
 }
 
 // @0x140968990
-float Unk_StreamPoint::FUN_140968990()
+float Vector3::FUN_140968990()
 {
     float fLength = FUN_140967ac0();
     if (fLength > 1e-06f)
@@ -3368,7 +3368,7 @@ float Unk_StreamPoint::FUN_140968990()
 }
 
 // @0x140966ea0 the distance in the xy plane
-float FUN_140966ea0(Unk_StreamPoint a, Unk_StreamPoint b)
+float FUN_140966ea0(Vector3 a, Vector3 b)
 {
     a.z = 0.0f;
     b.z = 0.0f;
@@ -3377,7 +3377,7 @@ float FUN_140966ea0(Unk_StreamPoint a, Unk_StreamPoint b)
 }
 
 // @0x140966f00
-float FUN_140966f00(Unk_StreamPoint a, Unk_StreamPoint b)
+float FUN_140966f00(Vector3 a, Vector3 b)
 {
     a = b.FUN_140965c40(a);
     return a.FUN_140967ac0();
@@ -3430,7 +3430,7 @@ int CInteractObject::GetRowId()
 }
 
 // @0x1409673c0
-Unk_StreamPoint CInteractObject::GetPos()
+Vector3 CInteractObject::GetPos()
 {
     return m_vPos;
 }

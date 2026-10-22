@@ -56,7 +56,7 @@ class Unk_GameClock { public: double FUN_141473280(); };
 Unk_GameClock* FUN_14086d260();
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
 void* FUN_14098d8d0(const void* pRtti, void* pObj);                 // dynamic cast through an NiRTTI
-const Unk_StreamPoint& FUN_140947900(void* pNode);                  // world translate
+const Vector3& FUN_140947900(void* pNode);                  // world translate
 void FUN_141d16040(void* pNode, float fTime, bool bUpdateControllers);    // NiAVObject::Update
 void FUN_140a0b2a0(void* pNode);                                    // detach the node from its parent
 void FUN_140a0b300(void* pNode, bool bCulled);                      // NiAVObject::SetAppCulled
@@ -78,8 +78,8 @@ Unk_ResourceMgr* FUN_140a0afd0();
 CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 
 // Elements of the target's point list (CAtlArray operator[] / GetCount instances of another obj).
-Unk_StreamPoint* FUN_140a0af70(ATL::CAtlArray<Unk_StreamPoint>* pArr, __int64 nIndex);
-int FUN_140a0afb0(ATL::CAtlArray<Unk_StreamPoint>* pArr);
+Vector3* FUN_140a0af70(ATL::CAtlArray<Vector3>* pArr, __int64 nIndex);
+int FUN_140a0afb0(ATL::CAtlArray<Vector3>* pArr);
 
 // NiProperty setters (NiMain inline members the exe instantiated in other objs).
 void FUN_140980200(NiAVObject* pObj, NiProperty* pProp);            // NiAVObject::AttachProperty
@@ -113,7 +113,7 @@ struct Unk_LightningTarget
     char m_pad_00[0x10];
     void* m_hNode;                                  // +0x10 handle of the owner's scene node
     char m_pad_18[0x10];
-    ATL::CAtlArray<Unk_StreamPoint>* m_pPoints;     // +0x28 the two (or more) end points
+    ATL::CAtlArray<Vector3>* m_pPoints;     // +0x28 the two (or more) end points
 };
 MS2_CHECK_OFFSET(Unk_LightningTarget, m_hNode, 0x10);
 MS2_CHECK_OFFSET(Unk_LightningTarget, m_pPoints, 0x28);
@@ -325,7 +325,7 @@ int LightningEffect::vfunc_8(void* p)
 {
     if (FUN_1409475d0(&m_spTarget) != 0)
     {
-        *static_cast<Unk_StreamPoint*>(p) = FUN_140947900(FUN_1409475f0(&m_spTarget));
+        *static_cast<Vector3*>(p) = FUN_140947900(FUN_1409475f0(&m_spTarget));
         return 1;
     }
     return 0;
@@ -340,8 +340,8 @@ void LightningEffect::Rebuild()
     int nPoints = FUN_140a0afb0(m_pPoints);
     if (1 < nPoints)
     {
-        Unk_StreamPoint kFirst = *FUN_140a0af70(m_pPoints, 0);
-        Unk_StreamPoint kLast = *FUN_140a0af70(m_pPoints, nPoints - 1);
+        Vector3 kFirst = *FUN_140a0af70(m_pPoints, 0);
+        Vector3 kLast = *FUN_140a0af70(m_pPoints, nPoints - 1);
         float fDist = kLast.FUN_140965c40(kFirst).FUN_140967ac0();
         int nClass = 2;
         if (256.0f < fDist)
@@ -447,14 +447,14 @@ void LightningEffect::Rebuild()
 // MS2-FUNCTIONAL: frame 0x10 smaller (the exe copies the camera direction out of a separate temporary).
 // Random walk from kStart toward kEnd in steps of m_fJointLen (at most 100 points); then the two edge lines are the
 // path offset by +-width/2 along the horizontal direction crossed with the camera direction.
-void LightningEffect::BuildPath(Unk_StreamPoint kStart, Unk_StreamPoint kEnd)
+void LightningEffect::BuildPath(Vector3 kStart, Vector3 kEnd)
 {
     m_arrPath.RemoveAll();
-    Unk_StreamPoint kLast;
-    Unk_StreamPoint kCur = kStart;
-    Unk_StreamPoint kStep;
-    Unk_StreamPoint kDelta = kEnd.FUN_140965c40(kStart);
-    Unk_StreamPoint kDir = kDelta;
+    Vector3 kLast;
+    Vector3 kCur = kStart;
+    Vector3 kStep;
+    Vector3 kDelta = kEnd.FUN_140965c40(kStart);
+    Vector3 kDir = kDelta;
     kDir.FUN_140968990();
     m_arrPath.Add(kStart);
     float fAlong = 0.0f;
@@ -471,7 +471,7 @@ void LightningEffect::BuildPath(Unk_StreamPoint kStart, Unk_StreamPoint kEnd)
         kStep.y = kStep.y * m_fJointLen;
         kCur.x = kCur.x + kStep.x;
         kCur.y = kCur.y + kStep.y;
-        Unk_StreamPoint kRel = kCur.FUN_140965c40(kStart);
+        Vector3 kRel = kCur.FUN_140965c40(kStart);
         fAlong = kDir.FUN_140a00f20(kRel);
         kCur.z = kStart.z + kDir.z * fAlong;
         m_arrPath.Add(kCur);
@@ -482,14 +482,14 @@ void LightningEffect::BuildPath(Unk_StreamPoint kStart, Unk_StreamPoint kEnd)
     m_arrPath.Add(kEnd);
     m_arrLeft.RemoveAll();
     m_arrRight.RemoveAll();
-    Unk_StreamPoint kFlat = kDelta;
+    Vector3 kFlat = kDelta;
     kFlat.z = 0.0f;
     kFlat.FUN_140968990();
-    Unk_StreamPoint kCamera = Unk_CameraManager::FUN_1409478c0()->FUN_140af0250();
-    Unk_StreamPoint kSide = kFlat.FUN_140a00e10(kCamera);
+    Vector3 kCamera = Unk_CameraManager::FUN_1409478c0()->FUN_140af0250();
+    Vector3 kSide = kFlat.FUN_140a00e10(kCamera);
     for (int i = 0; i < (int)m_arrPath.GetCount(); ++i)
     {
-        Unk_StreamPoint kPoint = m_arrPath[i];
+        Vector3 kPoint = m_arrPath[i];
         m_arrLeft.Add(kPoint.FUN_14097fd50(kSide.FUN_14097fc90(m_fWidth).FUN_14097fc90(0.5f)));
         m_arrRight.Add(kPoint.FUN_14097fd50(kSide.FUN_14097fc90(m_fWidth).FUN_14097fc90(-0.5f)));
     }

@@ -20,15 +20,15 @@ extern "C" float (__cdecl* __imp_tanf)(float);
 #include "hook/ms2hook.h"
 
 // ---- exe callees ----
-Unk_StreamPoint FUN_141192780(Unk_StreamPoint kFrom, Unk_StreamPoint kTo, bool bFlag);  // direction of the pair (flag 1)
-float FUN_141403f20(Unk_StreamPoint kA, Unk_StreamPoint kB);                // horizontal distance (z cleared on the copies)
+Vector3 FUN_141192780(Vector3 kFrom, Vector3 kTo, bool bFlag);  // direction of the pair (flag 1)
+float FUN_141403f20(Vector3 kA, Vector3 kB);                // horizontal distance (z cleared on the copies)
 float FUN_140968970(float fValue);                                          // sqrtf wrapper
 CPhysXHelper* FUN_1409f7ca0();
-Unk_StreamPoint* FUN_14097faa0(Unk_StreamPoint* pDst, const Unk_NiPoint3* pSrc);    // NiPoint3 assignment
-Unk_StreamPoint* FUN_14097fad0(Unk_StreamPoint* pDst, const Unk_NiPoint3* pSrc);    // NiPoint3 assignment
+Vector3* FUN_14097faa0(Vector3* pDst, const Unk_NiPoint3* pSrc);    // NiPoint3 assignment
+Vector3* FUN_14097fad0(Vector3* pDst, const Unk_NiPoint3* pSrc);    // NiPoint3 assignment
 extern float FUN_1407680d0(void* pRandom);                                  // random float in [0, 1)
 void FUN_140e69330(float fAngle, float* pSin, float* pCos);                 // sin and cos of the angle
-extern Unk_StreamPoint DAT_143a08cf8;                                       // the up axis
+extern Vector3 DAT_143a08cf8;                                       // the up axis
 
 // A 2D point and its NiPoint2 / efd::Point2 helpers.
 struct Unk_Pt2 { float x, y; };
@@ -45,21 +45,21 @@ struct Unk_Parabola
     float m_fTime;              // +0x00
     float m_fSpeed;             // +0x04
     float m_fGravity;           // +0x08
-    Unk_StreamPoint m_ptEnd;    // +0x0c
-    Unk_StreamPoint m_ptDir;    // +0x18
-    Unk_StreamPoint m_ptStart;  // +0x24
+    Vector3 m_ptEnd;    // +0x0c
+    Vector3 m_ptDir;    // +0x18
+    Vector3 m_ptStart;  // +0x24
     float m_fCos;               // +0x30
     float m_fSin;               // +0x34
-    void FUN_14147a2a0(const Unk_StreamPoint& ptStart, const Unk_StreamPoint& ptEnd, float fAngle, float fGravity);
+    void FUN_14147a2a0(const Vector3& ptStart, const Vector3& ptEnd, float fAngle, float fGravity);
 };
 MS2_CHECK_SIZE(Unk_Parabola, 0x38);
 
 float FUN_14147af60(float fAngle);
 float FUN_14147aed0(const Unk_Pt2* pA, const Unk_Pt2* pB);
-Unk_StreamPoint FUN_14147af10(Unk_StreamPoint kVec);
+Vector3 FUN_14147af10(Vector3 kVec);
 
 // @0x14147a2a0
-void Unk_Parabola::FUN_14147a2a0(const Unk_StreamPoint& ptStart, const Unk_StreamPoint& ptEnd, float fAngle, float fGravity)
+void Unk_Parabola::FUN_14147a2a0(const Vector3& ptStart, const Vector3& ptEnd, float fAngle, float fGravity)
 {
     m_ptStart = ptStart;
     m_ptEnd = ptEnd;
@@ -87,12 +87,12 @@ void Unk_Parabola::FUN_14147a2a0(const Unk_StreamPoint& ptStart, const Unk_Strea
 // MS2-FUNCTIONAL: call-temp spill layout of the Point3 chain differs
 // Casts from the start towards the end (horizontal distance), moving the start along or stopping at the hit; with bProbe
 // it then drops a ray along -up and writes the hit point lifted by 5 units.
-int FUN_14147a500(Unk_StreamPoint* pOut, const Unk_StreamPoint* pStart, const Unk_StreamPoint* pEnd, char bProbe, float fProbeLen, const NxGroupsMask* pMask)
+int FUN_14147a500(Vector3* pOut, const Vector3* pStart, const Vector3* pEnd, char bProbe, float fProbeLen, const NxGroupsMask* pMask)
 {
     Unk_RayCastInfo kInfo;
     kInfo.m_origin = *pStart;
     Unk_NiPoint3 kDelta(pEnd->FUN_140965c40(*pStart));
-    kInfo.m_dir = FUN_14147af10(reinterpret_cast<const Unk_StreamPoint&>(kDelta));
+    kInfo.m_dir = FUN_14147af10(reinterpret_cast<const Vector3&>(kDelta));
     kInfo.m_groups = 0x389;
     float fDist = FUN_141403f20(*pStart, *pEnd);
     if (!FUN_1409f7ca0()->CastRay(&kInfo, pMask))
@@ -101,7 +101,7 @@ int FUN_14147a500(Unk_StreamPoint* pOut, const Unk_StreamPoint* pStart, const Un
     }
     else
     {
-        Unk_StreamPoint kFrom = *pStart;
+        Vector3 kFrom = *pStart;
         float fHit = FUN_140966ea0(kFrom, kInfo.m_hitPoint);
         if (fDist <= fHit)
         {
@@ -162,15 +162,15 @@ bool FUN_14147a850(const Unk_Pt2& kOrigin, const Unk_Pt2& kDir, const Unk_Pt2& k
 // @0x14147aa60
 // MS2-FUNCTIONAL: the hit-branch point sits at 0x90 (exe packs it at 0x8c), shifting the call temporaries by 8
 // Ray against a sphere; writes the first hit point (or the closest point on the sphere when the ray misses) to pHit.
-char FUN_14147aa60(const Unk_StreamPoint& kOrigin, const Unk_StreamPoint& kDir, const Unk_StreamPoint& kCenter, float fRadius, Unk_StreamPoint* pHit)
+char FUN_14147aa60(const Vector3& kOrigin, const Vector3& kDir, const Vector3& kCenter, float fRadius, Vector3* pHit)
 {
     char bHit = 0;
-    Unk_StreamPoint kUnit = kDir;
+    Vector3 kUnit = kDir;
     kUnit.FUN_140968990();
     Unk_NiPoint3 kToCenter(kCenter.FUN_140965c40(kOrigin));
-    float fProj = reinterpret_cast<const Unk_StreamPoint&>(kToCenter).FUN_140a00f20(kUnit);
+    float fProj = reinterpret_cast<const Vector3&>(kToCenter).FUN_140a00f20(kUnit);
     float fProjSqr = fProj * fProj;
-    float fSqr = reinterpret_cast<const Unk_StreamPoint&>(kToCenter).FUN_140a00f20(reinterpret_cast<const Unk_StreamPoint&>(kToCenter));
+    float fSqr = reinterpret_cast<const Vector3&>(kToCenter).FUN_140a00f20(reinterpret_cast<const Vector3&>(kToCenter));
     float fRR = fRadius * fRadius;
     if (fProj < 0.0f && fSqr > fRR)
         return 0;
@@ -179,10 +179,10 @@ char FUN_14147aa60(const Unk_StreamPoint& kOrigin, const Unk_StreamPoint& kDir, 
     {
         bHit = 0;
         Unk_NiPoint3 kNear(kOrigin.FUN_14097fd50(FUN_1409ab5c0(fProj, kUnit)));
-        Unk_NiPoint3 kNormal(kCenter.FUN_140965c40(reinterpret_cast<const Unk_StreamPoint&>(kNear)));
-        reinterpret_cast<Unk_StreamPoint&>(kNormal).FUN_140968990();
-        Unk_NiPoint3 kPoint(reinterpret_cast<const Unk_StreamPoint&>(kNear).FUN_14097fd50(
-            reinterpret_cast<const Unk_StreamPoint&>(kNormal).FUN_14097fc90(FUN_140968970(fPerp) - fRadius)));
+        Unk_NiPoint3 kNormal(kCenter.FUN_140965c40(reinterpret_cast<const Vector3&>(kNear)));
+        reinterpret_cast<Vector3&>(kNormal).FUN_140968990();
+        Unk_NiPoint3 kPoint(reinterpret_cast<const Vector3&>(kNear).FUN_14097fd50(
+            reinterpret_cast<const Vector3&>(kNormal).FUN_14097fc90(FUN_140968970(fPerp) - fRadius)));
         FUN_14097faa0(pHit, &kPoint);
     }
     else
@@ -202,14 +202,14 @@ char FUN_14147aa60(const Unk_StreamPoint& kOrigin, const Unk_StreamPoint& kDir, 
 
 // @0x14147ad10
 // True when the ray (unit direction kDir) from kOrigin passes within fRadius of kCenter.
-bool FUN_14147ad10(const Unk_StreamPoint& kOrigin, const Unk_StreamPoint& kDir, const Unk_StreamPoint& kCenter, float fRadius)
+bool FUN_14147ad10(const Vector3& kOrigin, const Vector3& kDir, const Vector3& kCenter, float fRadius)
 {
-    Unk_StreamPoint kUnit = kDir;
+    Vector3 kUnit = kDir;
     kUnit.FUN_140968990();
     Unk_NiPoint3 kToCenter(kCenter.FUN_140965c40(kOrigin));
-    float fProj = reinterpret_cast<const Unk_StreamPoint&>(kToCenter).FUN_140a00f20(kUnit);
+    float fProj = reinterpret_cast<const Vector3&>(kToCenter).FUN_140a00f20(kUnit);
     float fProjSqr = fProj * fProj;
-    float fSqr = reinterpret_cast<const Unk_StreamPoint&>(kToCenter).FUN_140a00f20(reinterpret_cast<const Unk_StreamPoint&>(kToCenter));
+    float fSqr = reinterpret_cast<const Vector3&>(kToCenter).FUN_140a00f20(reinterpret_cast<const Vector3&>(kToCenter));
     float fRadiusSqr = fRadius * fRadius;
     if (fProj < 0.0f && fSqr > fRadiusSqr)
         return false;
@@ -236,7 +236,7 @@ float FUN_14147aed0(const Unk_Pt2* pA, const Unk_Pt2* pB)
 
 // @0x14147af10
 // The vector with z cleared, normalised.
-Unk_StreamPoint FUN_14147af10(Unk_StreamPoint kVec)
+Vector3 FUN_14147af10(Vector3 kVec)
 {
     kVec.z = 0.0f;
     kVec.FUN_140968990();

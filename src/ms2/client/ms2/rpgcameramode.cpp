@@ -41,7 +41,7 @@ static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local placeholders ----
 
-extern const Unk_StreamPoint g_143a08cf8;   // NiPoint3::UNIT_Z
+extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 
 // Lower bound of the per-frame yaw input (-0.1f): a named constant in the obj's own .rdata (0x142f5c218), bound to the
 // exe copy so that the hooked vfunc_8 reads no DLL-local static.
@@ -153,7 +153,7 @@ CRPGCameraMode::~CRPGCameraMode()
 // @0x141709a20
 void CRPGCameraMode::vfunc_9()
 {
-    Unk_StreamPoint ptMove = g_143b01a60;
+    Vector3 ptMove = g_143b01a60;
     Unk_CameraTargetEntity* pTarget = vfunc_25();
     Unk_RpgActor* pActor = FUN_1409ffd30(pTarget);
     if (pActor)
@@ -194,11 +194,11 @@ void CRPGCameraMode::vfunc_8(double fTime)
         m_78 = pTarget->vfunc_17();
         m_78.z += vfunc_27();
 
-        Unk_StreamPoint ptPos = g_143b01a60;
-        Unk_StreamPoint ptRot = g_143b01a60;
+        Vector3 ptPos = g_143b01a60;
+        Vector3 ptRot = g_143b01a60;
         if (m_88 == 0)
         {
-            Unk_StreamPoint ptEye = m_78.FUN_14097fd50(FUN_14183c370());
+            Vector3 ptEye = m_78.FUN_14097fd50(FUN_14183c370());
             m_d8.m_pos = ptEye;
         }
 
@@ -215,8 +215,8 @@ void CRPGCameraMode::vfunc_8(double fTime)
             if (m_f4 == 0)
                 m_84 = m_84 * 0.9f;
             ptPos = m_d8.m_pos;
-            Unk_StreamPoint ptTarget = m_78;
-            Unk_StreamPoint ptDir = ptTarget.FUN_140965c40(ptPos);
+            Vector3 ptTarget = m_78;
+            Vector3 ptDir = ptTarget.FUN_140965c40(ptPos);
             ptDir.FUN_140968990();
             ptPos = ptPos.FUN_14097fd50(ptDir.FUN_14097fc90(m_84));
             if (m_50 < m_58 || m_50 > m_54)
@@ -226,7 +226,7 @@ void CRPGCameraMode::vfunc_8(double fTime)
             {
                 m_6c = FUN_14183ce10(m_58, m_50, m_54, m_4c * 180.0f / 3.14159265f, 90.0f);
                 ptPos.z = ptTarget.z;
-                Unk_StreamPoint ptDist = ptTarget.FUN_140965c40(ptPos);
+                Vector3 ptDist = ptTarget.FUN_140965c40(ptPos);
                 m_50 = ptDist.FUN_140967ac0();
                 m_50 = FUN_140a17940(m_50, m_58, m_54);
                 if (-1.0f != m_5c && FUN_14029d220(m_98 - m_50) <= 5.0f)
@@ -254,10 +254,10 @@ void CRPGCameraMode::vfunc_8(double fTime)
             vfunc_37();
         }
 
-        Unk_StreamPoint ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
+        Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
         if (ptMove.FUN_140552700(g_143b01a60))
         {
-            Unk_StreamPoint ptInput = ptMove;
+            Vector3 ptInput = ptMove;
             float fRate = 15.0f;
             float fStep = FUN_140a17940((float)fTime, 0.0f, 1.0f / fRate);
             float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x),
@@ -275,10 +275,10 @@ void CRPGCameraMode::vfunc_8(double fTime)
             {
                 m_68 += FUN_140a17940(fYaw, g_142f5c218, 0.1f);
                 m_6c -= fPitch;
-                Unk_StreamPoint ptCenter = m_78;
+                Vector3 ptCenter = m_78;
                 ptPos = m_d8.m_pos;
                 ptPos.z = ptCenter.z;
-                Unk_StreamPoint ptDist = ptCenter.FUN_140965c40(ptPos);
+                Vector3 ptDist = ptCenter.FUN_140965c40(ptPos);
                 m_50 = ptDist.FUN_140967ac0();
                 m_50 = FUN_140a17940(m_50, m_58, m_54);
                 ptPos.x = m_50 * FUN_1409f25a0(m_68) + ptCenter.x;
@@ -320,14 +320,14 @@ void CRPGCameraMode::vfunc_6(int n)
     float fX = m_50 * FUN_1409f25a0(m_68) + m_78.x;
     float fY = m_50 * FUN_1409f2310(m_68) + m_78.y;
     float fZ = m_50 * FUN_1409f2310(m_6c) + m_78.z;
-    m_d8.m_pos = Unk_StreamPoint(fX, fY, fZ);
-    Unk_StreamPoint ptRot = CCameraMode::FUN_140afdd40(m_78, m_d8.m_pos, g_143a08cf8);
+    m_d8.m_pos = Vector3(fX, fY, fZ);
+    Vector3 ptRot = CCameraMode::FUN_140afdd40(m_78, m_d8.m_pos, g_143a08cf8);
     m_d8.m_rot = ptRot;
     vfunc_37();
     if (n == 0)
     {
         m_c0 = m_d8;
-        vfunc_3(Unk_StreamPoint(fX, fY, fZ));
+        vfunc_3(Vector3(fX, fY, fZ));
         vfunc_4(ptRot);
     }
     m_9c = FUN_1401d3200()->m_1a80.FUN_1402bac70();
@@ -424,19 +424,19 @@ void CRPGCameraMode::vfunc_39(double fTime)
 MS2_REPLACE_METHOD(0x14170ada0, CRPGCameraMode, vfunc_39, 1395, 0xB0210DC3);
 
 // @0x14170b320
-Unk_StreamPoint CRPGCameraMode::FUN_14170b320(Unk_StreamPoint ptPos)
+Vector3 CRPGCameraMode::FUN_14170b320(Vector3 ptPos)
 {
-    Unk_StreamPoint ptTarget = m_78;
-    Unk_StreamPoint kDir = ptTarget.FUN_140965c40(ptPos);
+    Vector3 ptTarget = m_78;
+    Vector3 kDir = ptTarget.FUN_140965c40(ptPos);
     kDir.FUN_140968990();
-    Unk_StreamPoint kRight = kDir.FUN_140a00e10(g_143a08cf8);
+    Vector3 kRight = kDir.FUN_140a00e10(g_143a08cf8);
     kRight.FUN_140968990();
-    Unk_StreamPoint kUp = kRight.FUN_140a00e10(kDir);
+    Vector3 kUp = kRight.FUN_140a00e10(kDir);
     Unk_NiMatrix3 kRot(kDir, kUp, kRight);
     float fZ;
     float fY;
     float fX;
     kRot.FUN_142085840(fX, fY, fZ);
-    return Unk_StreamPoint(-fX, -fY, -fZ).FUN_14097fc90(180.0f).FUN_140ae9180(3.14159265f);
+    return Vector3(-fX, -fY, -fZ).FUN_14097fc90(180.0f).FUN_140ae9180(3.14159265f);
 }
 MS2_REPLACE_METHOD(0x14170b320, CRPGCameraMode, FUN_14170b320, 416, 0xAAC9EF95);

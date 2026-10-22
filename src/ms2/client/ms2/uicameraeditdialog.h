@@ -74,7 +74,7 @@ public:
     unsigned LoadCustomizeCamera();                                       // 0x1418de2b0 load customize.xml; 1 if it has presets
     void FUN_1418de570();                                           // 0x1418de570 zoom-in step
     void FUN_1418de690();                                           // 0x1418de690 zoom-out step
-    void FUN_1418de7b0(const Unk_StreamPoint& vFrom, float fStep);  // 0x1418de7b0 move the camera one step
+    void FUN_1418de7b0(const Vector3& vFrom, float fStep);  // 0x1418de7b0 move the camera one step
     void FUN_1418de920();                                           // 0x1418de920 m_1ec = 0
     void FUN_1418de980();                                           // 0x1418de980 turn the actor to the spawn direction
     GameObject* FUN_1418dea40();                                    // 0x1418dea40 the actor of m_nTargetId, else the local player
@@ -88,13 +88,13 @@ public:
     int m_bEnable;                                                  // +0x18c
     int m_bDragging;                                                // +0x190
     CPoint m_ptDrag;                                                // +0x194
-    Unk_StreamPoint m_vDragRotation;                                // +0x19c
+    Vector3 m_vDragRotation;                                // +0x19c
     int m_nState;                                                   // +0x1a8 0 idle, 4 zoom in, 5 zoom out
     int m_1ac;                                                      // +0x1ac
     CameraDataArray m_aPresets;                                     // +0x1b0
-    Unk_StreamPoint m_vMoveStart;                                   // +0x1d0
+    Vector3 m_vMoveStart;                                   // +0x1d0
     int m_1dc;                                                      // +0x1dc
-    Unk_StreamPoint m_vMoveTarget;                                  // +0x1e0
+    Vector3 m_vMoveTarget;                                  // +0x1e0
     int m_1ec;                                                      // +0x1ec
     int m_1f0;                                                      // +0x1f0
     int m_1f4;                                                      // +0x1f4

@@ -24,7 +24,7 @@ public:
     virtual void vfunc_8(double fTime);                                 // 0x1412222c0
     virtual void vfunc_9();                                             // 0x141222b80
 
-    Unk_StreamPoint m_78;                                               // +0x78
+    Vector3 m_78;                                               // +0x78
     int m_pad_84;
 };
 MS2_CHECK_SIZE(CFreeCameraMode, 0x88);

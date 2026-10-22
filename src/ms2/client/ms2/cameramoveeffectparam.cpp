@@ -26,7 +26,7 @@ public:
 const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);
 int FUN_1408730a0(Unk_140165cf0* pNode, const char* pszName, bool& bOut);
 int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
-int FUN_140874670(Unk_140165cf0* pNode, const char* pszName, Unk_StreamPoint& kOut);
+int FUN_140874670(Unk_140165cf0* pNode, const char* pszName, Vector3& kOut);
 
 // Game clock (commonfiles singleton 0x14086d260): current time in seconds.
 class Unk_GameClock

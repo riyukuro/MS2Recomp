@@ -89,7 +89,7 @@ class Unk_NpWorld
 public:
     PCBase* FUN_141bd1320(int nId);                     // the actor of an object id
     PCBase* FUN_141bd0cc0();                            // the local player
-    int FUN_141bd0dd0(Unk_StreamPoint* pPos, Unk_StreamPoint* pDir);    // a spawn position in front of the camera
+    int FUN_141bd0dd0(Vector3* pPos, Vector3* pDir);    // a spawn position in front of the camera
     int FUN_141bbb1e0(GameObject* pObj, int nA, unsigned nB);   // add an actor to the field
     void FUN_141bbb7f0(GameObject* pObj, int nA);       // remove an actor from the field
     ATL::CRBMap<unsigned int, efd::SmartPointer<CNpc> >* FUN_141bd36d0();   // the npc tree
@@ -148,7 +148,7 @@ Unk_NpXml* FUN_140166420();
 CStringW FUN_1401bf530(Unk_140165cf0*, const char*, CStringW strDefault);   // string attribute with default
 void* FUN_14208a860(unsigned __int64 nSize, unsigned nCategory);            // tracked allocation
 void* FUN_140876480(void* pkOut, int nCategory);                            // memory category helper, returns unsigned int*
-class Unk_NpPhys { public: int FUN_14168a310(const Unk_StreamPoint& ptFrom, Unk_StreamPoint& ptHit, void* pInfo, float fLen, Unk_StreamPoint* pNormal, int nMask); };
+class Unk_NpPhys { public: int FUN_14168a310(const Vector3& ptFrom, Vector3& ptHit, void* pInfo, float fLen, Vector3* pNormal, int nMask); };
 Unk_NpPhys* FUN_1409f7ca0();
 int FUN_1404ad1f0(void* pMap, unsigned nKey, CStringW* pValue);     // CAtlMap::SetAt of the filter result
 extern int DAT_143ab2914;                               // the ui level: below 0x32 the panel does not react
@@ -599,14 +599,14 @@ efd::SmartPointer<CNpc> UINpcPreviewDialog::FUN_141a71280()
 // @0x141a713a0
 void UINpcPreviewDialog::FUN_141a713a0()
 {
-    Unk_StreamPoint kPos;
-    Unk_StreamPoint kDir;
+    Vector3 kPos;
+    Vector3 kDir;
     PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer != 0) {
         NiPoint3 kP = pPlayer->vfunc_18();
-        kPos = reinterpret_cast<Unk_StreamPoint&>(kP);
+        kPos = reinterpret_cast<Vector3&>(kP);
         NiPoint3 kD = pPlayer->vfunc_20();
-        kDir = reinterpret_cast<Unk_StreamPoint&>(kD);
+        kDir = reinterpret_cast<Vector3&>(kD);
     } else if (FUN_1403ed2d0()->FUN_141bd0dd0(&kPos, &kDir) == 0) {
         return;
     }
@@ -620,7 +620,7 @@ void UINpcPreviewDialog::FUN_141a713a0()
     if (spNpc->vfunc_124(m_nNpcId) == 0)
         return;
     kPos.z += 100.0f;
-    Unk_StreamPoint kHit;
+    Vector3 kHit;
     if (FUN_1409f7ca0()->FUN_14168a310(kPos, kHit, 0, 0.0f, 0, 0) == 0)
         return;
     kHit.z += 1.0f;

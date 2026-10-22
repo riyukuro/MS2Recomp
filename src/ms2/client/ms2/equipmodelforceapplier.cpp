@@ -55,7 +55,7 @@ public:
     virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
     virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual Unk_StreamPoint GetRotation();                          // slot 20 (+0xa0)
+    virtual Vector3 GetRotation();                          // slot 20 (+0xa0)
 };
 class Unk_WindWorld { public: Unk_WindObj* FUN_141bd1180(int nId); };
 Unk_WindWorld* FUN_1403ed2d0();
@@ -173,7 +173,7 @@ void EquipModelWindApplier::OnTick(double fDeltaTime)
     float fGust = fStrength * (FUN_1409f2310((m_fElapsed / m_fPeriod) * 2.0 * 3.1415927 - 3.1415927) + 1.0);
     m_fElapsed = (float)(m_fElapsed + fDeltaTime);
 
-    Unk_StreamPoint ptRot = pObj->GetRotation();
+    Vector3 ptRot = pObj->GetRotation();
     ptRot = ptRot.FUN_14097fc90(3.1415927f).FUN_140ae9180(180.0f);
     float fY = fGust * FUN_1409f2310(ptRot.z);
     float fX = -fGust * FUN_1409f25a0(ptRot.z);

@@ -24,7 +24,7 @@
 
 // ---- unit-local placeholders ----
 
-extern Unk_StreamPoint DAT_143b01a60;                    // the zero point
+extern Vector3 DAT_143b01a60;                    // the zero point
 
 // The state-sync record (Unk_StateArg22 in statemanager.h) as StateData slots 1/2 see it: +0x70 carries the kind.
 class Unk_StateDataArg
@@ -88,7 +88,7 @@ MS2Ptr<Unk_HcNpcScript> FUN_140856c50(unsigned nNpcId, int nMode);
 class Unk_HcDialogMgr { public: int FUN_141b213f0(MS2Ptr<Unk_HcNpcScript> spScript, unsigned nNpcId, unsigned nMode, int nFlags); };
 Unk_HcDialogMgr* FUN_140967100();
 int FUN_141661aa0(MyPC* p);
-class Unk_HcBuffMgr { public: Unk_StreamPoint FUN_141683290(); };
+class Unk_HcBuffMgr { public: Vector3 FUN_141683290(); };
 Unk_HcBuffMgr* FUN_14166d240(PCBase* p);
 bool FUN_1416749c0(PCBase* p);
 void* FUN_14165f100(PCBase* p);
@@ -307,7 +307,7 @@ void StateHomeConvenient::vfunc_5(int n)
 void StateHomeConvenient::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    Unk_StreamPoint kZero = DAT_143b01a60;
+    Vector3 kZero = DAT_143b01a60;
     m_pOwner->vfunc_68(&kZero, fTime, 0, 0, 0);
     m_n44 += FUN_14028d260((float)fTime);
     if ((unsigned)m_n44 >= (unsigned)m_n48)
@@ -329,8 +329,8 @@ void StateHomeConvenient::vfunc_8(double fTime)
     MyPC* pPC = FUN_1417b84b0();
     if (pPC)
     {
-        Unk_StreamPoint kPos = FUN_14166d240(pPC)->FUN_141683290();
-        Unk_StreamPoint kArg = kPos;
+        Vector3 kPos = FUN_14166d240(pPC)->FUN_141683290();
+        Vector3 kArg = kPos;
         pPC->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
         if (FUN_1416749c0(m_pOwner))
             pPC->vfunc_59(2, 0, 0, 0);

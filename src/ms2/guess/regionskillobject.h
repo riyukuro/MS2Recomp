@@ -50,14 +50,14 @@ class CRegionSkillObject : public CPtred
 public:
     CRegionSkillObject();                                   // 0x1416f57c0
     virtual ~CRegionSkillObject();                          // 0x1416f5930
-    int FUN_1416f5a20(int nId, int nSkillId, const ATL::CAtlArray<Unk_StreamPoint>& kPoints, int nOwnerId, short nLevel, float fB, float fA, int nTick);
+    int FUN_1416f5a20(int nId, int nSkillId, const ATL::CAtlArray<Vector3>& kPoints, int nOwnerId, short nLevel, float fB, float fA, int nTick);
     void FUN_1416f67e0();                                   // stop every spawned effect
     void FUN_1416f6860();                                   // fade out every spawned effect
     void FUN_1416f6900();                                   // a tick hit
     void FUN_1416f6b90();                                   // reset
     int FUN_1416f6e20();                                    // the id
     void FUN_1416f6e40();                                   // end the region skill
-    Unk_StreamPoint FUN_1416f6ed0();                        // the first point
+    Vector3 FUN_1416f6ed0();                        // the first point
     void FUN_1416f6f50();                                   // per frame: respawn the culled effects
     void FUN_1416f7790();                                   // the late effect
     MS2_LAYOUT_FRIEND;
@@ -66,14 +66,14 @@ public:
     Unk_RsAttr* m_pAttr;                                    // +0x38
     int m_nId;                                              // +0x40
     int m_nOwnerId;                                         // +0x44
-    ATL::CAtlArray<Unk_StreamPoint> m_points;               // +0x48 the area's points
+    ATL::CAtlArray<Vector3> m_points;               // +0x48 the area's points
     ATL::CAtlArray<unsigned> m_effects;                     // +0x68 the spawned effect ids
     ATL::CAtlArray<unsigned> m_loopEffects;                 // +0x88 the ones that loop
     int m_nOwnerType;                                       // +0xa8 world entity kind of the owner
     CEffectDataPtr m_spEffect;                              // +0xb0
     CEffectDataPtr m_spEffect2;                             // +0xc0
-    std::list<std::pair<Unk_StreamPoint, unsigned> > m_pending;   // +0xd0 points waiting for their tick
-    ATL::CAtlList<Unk_StreamPoint> m_waiting;               // +0xe0
+    std::list<std::pair<Vector3, unsigned> > m_pending;   // +0xd0 points waiting for their tick
+    ATL::CAtlList<Vector3> m_waiting;               // +0xe0
     float m_fRotX;                                          // +0x110
     float m_fRotY;                                          // +0x114
     int m_bLocal;                                           // +0x118 the owner is a local player

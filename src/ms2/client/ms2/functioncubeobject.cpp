@@ -210,7 +210,7 @@ class Unk_FcFxMgr
 public:
     int FUN_1411a49c0(Unk_FcSoundReq* pRequest);                    // play, returns the handle
     void FUN_1411a6060(int nHandle);                                // stop
-    void FUN_1411a5580(int nId, int nOwner, int bFlag, const Unk_StreamPoint& vPos, float fRange);
+    void FUN_1411a5580(int nId, int nOwner, int bFlag, const Vector3& vPos, float fRange);
 };
 Unk_FcFxMgr* FUN_1403ed280();
 void FUN_140a52ef0(Unk_FcSoundReq* p);                              // construct
@@ -228,8 +228,8 @@ struct Unk_FcCamFx
     float m_f8;                                                     // +0x08
     float m_fC;                                                     // +0x0c
     float m_f10;                                                    // +0x10
-    Unk_StreamPoint m_v14;                                          // +0x14
-    Unk_StreamPoint m_v20;                                          // +0x20
+    Vector3 m_v14;                                          // +0x14
+    Vector3 m_v20;                                          // +0x20
     int m_n2c;                                                      // +0x2c
     float m_f30;                                                    // +0x30
     float m_f34;                                                    // +0x34
@@ -245,8 +245,8 @@ public:
     float FUN_140ad4b40();
     float FUN_140af7f00();
     float FUN_140af7ea0();
-    Unk_StreamPoint* FUN_140a17e10(Unk_StreamPoint* pOut);
-    Unk_StreamPoint* FUN_140af8290(Unk_StreamPoint* pOut);
+    Vector3* FUN_140a17e10(Vector3* pOut);
+    Vector3* FUN_140af8290(Vector3* pOut);
     void FUN_140aeb420(int nEffect, Unk_FcCamFx* pParam);
 };
 Unk_FcCamMgr* FUN_1409478c0();
@@ -255,9 +255,9 @@ void FUN_141839640(void* pDst, void* pSrc);
 void FUN_14183c3e0(void* pDst, void* pSrc);
 
 // Entity property access and ids (free functions: x64 has one calling convention).
-int FUN_1409618c0(Unk_Entity* pEntity, unsigned uPropId, Unk_StreamPoint* pOut);           // point property (0 = ok)
-void FUN_1402bd040(Unk_StreamPoint* p);
-Unk_StreamPoint* FUN_14027dda0(Unk_StreamPoint* t, float x, float y, float z);
+int FUN_1409618c0(Unk_Entity* pEntity, unsigned uPropId, Vector3* pOut);           // point property (0 = ok)
+void FUN_1402bd040(Vector3* p);
+Vector3* FUN_14027dda0(Vector3* t, float x, float y, float z);
 void FUN_1408a20a0(Unk_Entity* pEntity, unsigned nHash, unsigned char* pbOut);
 const egf::EntityID* FUN_1408b76f0(Unk_Entity* pEntity);
 egf::EntityID* FUN_1408b6b20(egf::EntityID* pDst, const egf::EntityID* pSrc);
@@ -371,13 +371,13 @@ void FUN_1419f37f0(unsigned nFlag);
 
 // The popups the object owns (members of unrecovered UI classes, called as free functions).
 void FUN_1410315f0(UIBootyPopup* p);                                // close and release
-void FUN_141031660(UIBootyPopup* p, Unk_StreamPoint vPos);
+void FUN_141031660(UIBootyPopup* p, Vector3 vPos);
 void FUN_141031690(UIBootyPopup* p, egf::EntityID kId);
 void FUN_1410316d0(UIBootyPopup* p, int nItemId);
 void FUN_1410315c0(UIBootyPopup* p);                                // show
 void FUN_141031a60(UIBootyPopup* p, int bShow);
 void FUN_140fb4be0(UIUGCCubeNoticePopup* p);                        // close and release
-void FUN_140fb4c50(UIUGCCubeNoticePopup* p, Unk_StreamPoint vPos);
+void FUN_140fb4c50(UIUGCCubeNoticePopup* p, Vector3 vPos);
 void FUN_140fb4cc0(UIUGCCubeNoticePopup* p, const CStringW& strA, const CStringW& strB);
 void FUN_140fb4bb0(UIUGCCubeNoticePopup* p);
 void FUN_140fb5080(UIUGCCubeNoticePopup* p, int bShow);
@@ -389,7 +389,7 @@ CStringW GetStringCommon(int nId);                                    // string 
 CStringW FUN_14061ad70(const CStringW& str, const wchar_t* psz);    // str + psz
 CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB); // strA + strB
 void FUN_140997ab0(egf::EntityPtr spEntity, NiActorManager::CallbackObject* pCb);
-extern Unk_StreamPoint DAT_143b01a60;                               // the zero point
+extern Vector3 DAT_143b01a60;                               // the zero point
 
 // ---- the unit's header statics ----
 // @0x1400e9c70
@@ -564,9 +564,9 @@ int CFunctionCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, int
     for (size_t i = 0; i < 3; i++)
         m_spData->m_aAnim[i] = pRow->m_aAnim[i];
     m_ent.FUN_1408b6ec0(pEntity);
-    Unk_StreamPoint vSize;
-    Unk_StreamPoint vRot;
-    Unk_StreamPoint vPos;
+    Vector3 vSize;
+    Vector3 vRot;
+    Vector3 vPos;
     FUN_1409618c0(pEntity, 0xcb086a2d, &vSize);
     FUN_1409618c0(pEntity, 0xfd95ca52, &vPos);
     FUN_1409618c0(pEntity, 0x68c7c29d, &vRot);
@@ -576,8 +576,8 @@ int CFunctionCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, int
         vSize.y = 150.0f;
         vSize.z = 150.0f;
     }
-    Unk_StreamPoint vBox(vSize.x, vSize.y * 0.5f, vSize.z);
-    Unk_StreamPoint vOffset(0.0f, vSize.y * 0.5f, 0.0f);
+    Vector3 vBox(vSize.x, vSize.y * 0.5f, vSize.z);
+    Vector3 vOffset(0.0f, vSize.y * 0.5f, 0.0f);
     m_spBox.AssignRaw(new CBoxCollision);
     m_spBox->m_ptBox = vBox;
     m_spBox->m_ptSize = vOffset;
@@ -589,7 +589,7 @@ int CFunctionCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, int
     if (pRow->m_opt.m_n14 != 0)
     {
         m_spBooty.AssignRaw(new UIBootyPopup);
-        FUN_141031660(m_spBooty.operator->(), Unk_StreamPoint(vPos.x, vPos.y, vPos.z + 150.0f));
+        FUN_141031660(m_spBooty.operator->(), Vector3(vPos.x, vPos.y, vPos.z + 150.0f));
         FUN_141031690(m_spBooty.operator->(), *FUN_1408b76f0(m_ent.FUN_1408a9280()));
         FUN_1410316d0(m_spBooty.operator->(), FUN_141226cd0());
         FUN_1410315c0(m_spBooty.operator->());
@@ -757,9 +757,9 @@ int CFunctionCubeObject::FUN_141226cd0()
 }
 
 // @0x141226d00
-Unk_StreamPoint CFunctionCubeObject::FUN_141226d00()
+Vector3 CFunctionCubeObject::FUN_141226d00()
 {
-    Unk_StreamPoint vPos;
+    Vector3 vPos;
     FUN_1409618c0(m_ent.FUN_1408a9280(), 0xfd95ca52, &vPos);
     return vPos;
 }
@@ -812,8 +812,8 @@ int CFunctionCubeObject::vfunc_15()
 // MS2-FUNCTIONAL: pose refresh through unit-local stand-ins; frame layout differs
 MS2Ptr<CBoxCollision> CFunctionCubeObject::FUN_141226f90()
 {
-    Unk_StreamPoint vPos;
-    Unk_StreamPoint vRot;
+    Vector3 vPos;
+    Vector3 vRot;
     FUN_1409618c0(m_ent.FUN_1408a9280(), 0xfd95ca52, &vPos);
     FUN_1409618c0(m_ent.FUN_1408a9280(), 0x68c7c29d, &vRot);
     if (m_spBox.get() != 0)
@@ -825,7 +825,7 @@ MS2Ptr<CBoxCollision> CFunctionCubeObject::FUN_141226f90()
 // MS2-FUNCTIONAL: the position copy and the float temporary differ
 void CFunctionCubeObject::FUN_141227100(int nSound)
 {
-    Unk_StreamPoint vPos;
+    Vector3 vPos;
     FUN_1409618c0(m_ent.FUN_1408a9280(), 0xfd95ca52, &vPos);
     float fRange = FUN_1401d3200()->m_range.FUN_1402bac70();
     FUN_1403ed280()->FUN_1411a5580(nSound, m_n60, 1, vPos, fRange);
@@ -889,10 +889,10 @@ void CFunctionCubeObject::FUN_1412273b0()
         return;
     if (m_spNotice == 0)
     {
-        Unk_StreamPoint vPos;
+        Vector3 vPos;
         FUN_1409618c0(m_ent.FUN_1408a9280(), 0xfd95ca52, &vPos);
         m_spNotice.AssignRaw(new UIUGCCubeNoticePopup);
-        FUN_140fb4c50(m_spNotice.operator->(), Unk_StreamPoint(vPos.x, vPos.y, vPos.z + 150.0f));
+        FUN_140fb4c50(m_spNotice.operator->(), Vector3(vPos.x, vPos.y, vPos.z + 150.0f));
         FUN_140fb4cc0(m_spNotice.operator->(), m_spData->m_strNotice, spText->FUN_1408b49c0());
         FUN_140fb4bb0(m_spNotice.operator->());
     }
@@ -972,9 +972,9 @@ void CFunctionCubeObject::FUN_141227950()
             kFx.m_f8 = FUN_1409478c0()->FUN_140ad4b40();
             kFx.m_fC = FUN_1409478c0()->FUN_140af7f00();
             kFx.m_f10 = FUN_1409478c0()->FUN_140af7ea0();
-            Unk_StreamPoint vTmpA;
+            Vector3 vTmpA;
             kFx.m_v14 = *FUN_1409478c0()->FUN_140a17e10(&vTmpA);
-            Unk_StreamPoint vTmpB;
+            Vector3 vTmpB;
             kFx.m_v20 = *FUN_1409478c0()->FUN_140af8290(&vTmpB);
             kFx.m_f30 = kFx.m_f8;
             kFx.m_f34 = kFx.m_fC;
@@ -1004,9 +1004,9 @@ void CFunctionCubeObject::FUN_141227950()
         kFx.m_f8 = FUN_1409478c0()->FUN_140ad4b40();
         kFx.m_fC = FUN_1409478c0()->FUN_140af7f00();
         kFx.m_f10 = FUN_1409478c0()->FUN_140af7ea0();
-        Unk_StreamPoint vTmpA;
+        Vector3 vTmpA;
         kFx.m_v14 = *FUN_1409478c0()->FUN_140a17e10(&vTmpA);
-        Unk_StreamPoint vTmpB;
+        Vector3 vTmpB;
         kFx.m_v20 = *FUN_1409478c0()->FUN_140af8290(&vTmpB);
         kFx.m_f30 = kFx.m_f8;
         kFx.m_f34 = kFx.m_fC;
@@ -1473,7 +1473,7 @@ struct Unk_FcAnimRow
     CString m_strName;                                              // +0x50 animation / model name
     void* m_pFx;                                                    // +0x58
     char m_pad_60[4];
-    Unk_StreamPoint m_vOffset;                                      // +0x64
+    Vector3 m_vOffset;                                      // +0x64
 };
 MS2_CHECK_OFFSET(Unk_FcAnimRow, m_vOffset, 0x64);
 void FUN_1406cd330(Unk_FcSp16* pOut, int nId);                      // find the row
@@ -1483,7 +1483,7 @@ void FUN_14035e5b0(Unk_FcSp16* p);
 void FUN_140de0cb0(efd::AssetID* pAsset, Unk_FcAnimName* pName);
 void FUN_140de8bd0(Unk_Entity* pEntity, unsigned uHash, efd::AssetID* pAsset);
 void FUN_140ae1240(Unk_Entity* pEntity, unsigned uHash, Unk_FcAnimName* pName);
-void FUN_140a38a50(Unk_Entity* pEntity, unsigned uHash, Unk_StreamPoint* pPoint);
+void FUN_140a38a50(Unk_Entity* pEntity, unsigned uHash, Vector3* pPoint);
 void FUN_1409457c0(Unk_Entity* pEntity, unsigned uHash, void* p);
 void FUN_14098c6e0(Unk_Entity* pEntity, unsigned uHash, unsigned char* pb);
 CString* FUN_1409a2360(CString* pOut, const char* psz, int nFlag);
@@ -1545,8 +1545,8 @@ int CBreedingCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, int
         FUN_1408a8900(&kClass);
         if (m_entPet.FUN_1408a9090() != 0)
         {
-            Unk_StreamPoint vPos = DAT_143b01a60;
-            Unk_StreamPoint vRot = DAT_143b01a60;
+            Vector3 vPos = DAT_143b01a60;
+            Vector3 vRot = DAT_143b01a60;
             FUN_1409618c0(pEntity, 0xfd95ca52, &vPos);
             FUN_1409618c0(pEntity, 0x68c7c29d, &vRot);
             vPos = vPos.FUN_14097fd50(FUN_14035eb90(&kAnim)->m_vOffset);
@@ -1597,7 +1597,7 @@ void CBreedingCubeObject::vfunc_5(float fArg)
 {
     if (m_entPet.FUN_1408a9090() != 0)
     {
-        Unk_StreamPoint vRot;
+        Vector3 vRot;
         FUN_1409618c0(m_entPet.FUN_1408a9280(), 0x68c7c29d, &vRot);
         vRot.z = fArg;
         FUN_140a38a50(m_entPet.FUN_1408a9280(), 0x68c7c29d, &vRot);
@@ -1929,7 +1929,7 @@ void CNurturingCubeObject::vfunc_3()
         if (FUN_14152ebd0(pActor) != 0)
             FUN_14152eb80(pActor);
         NiPoint3 kActor = pActor->vfunc_18();
-        float fDist = reinterpret_cast<Unk_StreamPoint&>(kActor).FUN_140965c40(FUN_141226d00()).FUN_140967ac0();
+        float fDist = reinterpret_cast<Vector3&>(kActor).FUN_140965c40(FUN_141226d00()).FUN_140967ac0();
         unsigned nNear = fDist < *FUN_140298f40(&FUN_1401d3200()->m_near);
         if ((unsigned)m_bNear != nNear)
         {
@@ -2824,7 +2824,7 @@ void CFunctionCubeService::FUN_141230df0(CString strId)
 // The nearest usable cube within a range of a point.
 // MS2-FUNCTIONAL: the map walk and the temporaries differ from the exe
 // @0x141230f60
-MS2Ptr<CFunctionCubeObject> CFunctionCubeService::FUN_141230f60(Unk_StreamPoint pt, float fRange, __int64 nOwner)
+MS2Ptr<CFunctionCubeObject> CFunctionCubeService::FUN_141230f60(Vector3 pt, float fRange, __int64 nOwner)
 {
     float fBest = 3.4028234e+38f;
     MS2Ptr<CFunctionCubeObject> spBest(0);
@@ -2838,7 +2838,7 @@ MS2Ptr<CFunctionCubeObject> CFunctionCubeService::FUN_141230f60(Unk_StreamPoint 
             if (spCube->vfunc_15() != 0)
             {
                 Unk_EntRef kEnt = spCube->GetEnt();
-                Unk_StreamPoint vPos;
+                Vector3 vPos;
                 FUN_1409618c0(kEnt.FUN_1408a9280(), 0xfd95ca52, &vPos);
                 float fDist = pt.FUN_140965c40(vPos).FUN_140967ac0();
                 if (fDist <= fRange && fDist <= fBest)
@@ -2856,7 +2856,7 @@ MS2Ptr<CFunctionCubeObject> CFunctionCubeService::FUN_141230f60(Unk_StreamPoint 
 // The same with a kind filter.
 // MS2-FUNCTIONAL: the map walk and the temporaries differ from the exe
 // @0x141231200
-MS2Ptr<CFunctionCubeObject> CFunctionCubeService::FUN_141231200(Unk_StreamPoint pt, float fRange, __int64 nOwner, int nKind)
+MS2Ptr<CFunctionCubeObject> CFunctionCubeService::FUN_141231200(Vector3 pt, float fRange, __int64 nOwner, int nKind)
 {
     float fBest = 3.4028234e+38f;
     MS2Ptr<CFunctionCubeObject> spBest(0);
@@ -2872,7 +2872,7 @@ MS2Ptr<CFunctionCubeObject> CFunctionCubeService::FUN_141231200(Unk_StreamPoint 
                 if (spCube->vfunc_15() != 0)
                 {
                     Unk_EntRef kEnt = spCube->GetEnt();
-                    Unk_StreamPoint vPos;
+                    Vector3 vPos;
                     FUN_1409618c0(kEnt.FUN_1408a9280(), 0xfd95ca52, &vPos);
                     float fDist = pt.FUN_140965c40(vPos).FUN_140967ac0();
                     if (fDist <= fRange && fDist <= fBest)
@@ -2891,7 +2891,7 @@ MS2Ptr<CFunctionCubeObject> CFunctionCubeService::FUN_141231200(Unk_StreamPoint 
 // Every kind 12 cube within 600 units of a point.
 // MS2-FUNCTIONAL: the map walk and the temporaries differ from the exe
 // @0x1412314e0
-void CFunctionCubeService::FUN_1412314e0(Unk_StreamPoint pt, ATL::CAtlArray<MS2Ptr<CFunctionCubeObject> >& aOut)
+void CFunctionCubeService::FUN_1412314e0(Vector3 pt, ATL::CAtlArray<MS2Ptr<CFunctionCubeObject> >& aOut)
 {
     POSITION pos = m_mapCubes.GetHeadPosition();
     while (pos)
@@ -2901,7 +2901,7 @@ void CFunctionCubeService::FUN_1412314e0(Unk_StreamPoint pt, ATL::CAtlArray<MS2P
         if (spCube->FUN_140966fc0() == 0xc)
         {
             Unk_EntRef kEnt = spCube->GetEnt();
-            Unk_StreamPoint vPos;
+            Vector3 vPos;
             FUN_1409618c0(kEnt.FUN_1408a9280(), 0xfd95ca52, &vPos);
             if (pt.FUN_140965c40(vPos).FUN_140967ac0() <= 600.0f)
                 aOut.Add(spCube);

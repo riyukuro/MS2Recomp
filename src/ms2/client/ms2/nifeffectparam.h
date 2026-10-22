@@ -72,8 +72,8 @@ public:
 public:
     MS2_LAYOUT_FRIEND;
     CString m_strFilePath;              // +0x48 "filePath" (relative to "Effect")
-    Unk_StreamPoint m_ptTranslate;      // +0x50 <transform translate>
-    Unk_StreamPoint m_ptRotation;       // +0x5c <transform rotation> (degrees)
+    Vector3 m_ptTranslate;      // +0x50 <transform translate>
+    Vector3 m_ptRotation;       // +0x5c <transform rotation> (degrees)
     float m_fScale;                     // +0x68 <transform scale> = 1
     bool m_bApplyNodeTransform;         // +0x6c <attachInfo applyNodeTransform>
     bool m_bOnGround;                   // +0x6d <attachInfo onGround>

@@ -136,14 +136,14 @@ void CBaseCollision::vfunc_1()
 }
 
 // @0x1409fbfa0
-void CBaseCollision::vfunc_3(Unk_StreamPoint ptPos, Unk_StreamPoint ptDir, float fScale)
+void CBaseCollision::vfunc_3(Vector3 ptPos, Vector3 ptDir, float fScale)
 {
     m_ptPos = ptPos;
     Invalidate();
 }
 
 // @0x1409fbff0
-void CBaseCollision::vfunc_2(Unk_StreamPoint ptPos, const NiMatrix3& kRot, float fScale)
+void CBaseCollision::vfunc_2(Vector3 ptPos, const NiMatrix3& kRot, float fScale)
 {
     m_ptPos = ptPos;
     Invalidate();
@@ -162,7 +162,7 @@ int CBaseCollision::vfunc_7(efd::SmartPointer<GameObject> spSelf, efd::SmartPoin
         return 0;
     efd::Point3 kPos = spSelf->vfunc_18();
     efd::Point3 kRot = spSelf->vfunc_20();
-    vfunc_3(*(Unk_StreamPoint*)&kPos, *(Unk_StreamPoint*)&kRot, 1.0f);
+    vfunc_3(*(Vector3*)&kPos, *(Vector3*)&kRot, 1.0f);
     efd::Point3 kDir;
     efd::Point3 kRight;
     FUN_140a01250(kRot, &kDir, &kRight);
@@ -182,7 +182,7 @@ int CBaseCollision::vfunc_7(efd::SmartPointer<GameObject> spSelf, efd::SmartPoin
 void CBaseCollision::FUN_1409fc390(MS2Ptr<CDetectContext> spCtx, const efd::Point3& kRot)
 {
     NiPoint3 kPos(spCtx->m_kPos);
-    vfunc_3(*(const Unk_StreamPoint*)&kPos, *(const Unk_StreamPoint*)&kRot, 1.0f);
+    vfunc_3(*(const Vector3*)&kPos, *(const Vector3*)&kRot, 1.0f);
     NiPoint3 kDir;
     NiPoint3 kRight;
     FUN_140a01250(kRot, &spCtx->m_kDir, &spCtx->m_kRight);
@@ -582,7 +582,7 @@ bool CBaseCollision::TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3
     else if (pShape->m_nShape == 4 && pBox->m_nShape == 1)
     {
         CHoleCylinderCollision* pRing = static_cast<CHoleCylinderCollision*>(pShape);
-        if (pRing->Contains(*(const Unk_StreamPoint*)&pBox->m_kBox.center))
+        if (pRing->Contains(*(const Vector3*)&pBox->m_kBox.center))
         {
             bHit = true;
         }
@@ -590,7 +590,7 @@ bool CBaseCollision::TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3
         {
             for (int i = 0; i < 8; i++)
             {
-                if (pRing->Contains(reinterpret_cast<const Unk_StreamPoint&>(pBox->m_akCorners[i])))
+                if (pRing->Contains(reinterpret_cast<const Vector3&>(pBox->m_akCorners[i])))
                 {
                     bHit = true;
                     break;
@@ -627,7 +627,7 @@ bool CBaseCollision::TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3
             float fBottom = pFrustum->GetMinZ();
             if (fBottom < pBox->FUN_140adad00())
             {
-                if (pFrustum->Contains(*(const Unk_StreamPoint*)&pBox->m_kBox.center))
+                if (pFrustum->Contains(*(const Vector3*)&pBox->m_kBox.center))
                 {
                     bHit = true;
                 }
@@ -635,7 +635,7 @@ bool CBaseCollision::TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3
                 {
                     for (int i = 0; i < 8; i++)
                     {
-                        if (pFrustum->Contains(reinterpret_cast<const Unk_StreamPoint&>(pBox->m_akCorners[i])))
+                        if (pFrustum->Contains(reinterpret_cast<const Vector3&>(pBox->m_akCorners[i])))
                         {
                             bHit = true;
                             break;
@@ -720,7 +720,7 @@ bool CBaseCollision::Intersect(CBaseCollision* pShape, CBaseCollision* pTarget)
         else if (pShape->m_nShape == 4 && pTarget->m_nShape == 1)
         {
             CHoleCylinderCollision* pRing = static_cast<CHoleCylinderCollision*>(pShape);
-            if (pRing->Contains(*(const Unk_StreamPoint*)&pBox->m_kBox.center))
+            if (pRing->Contains(*(const Vector3*)&pBox->m_kBox.center))
             {
                 bHit = true;
             }
@@ -728,7 +728,7 @@ bool CBaseCollision::Intersect(CBaseCollision* pShape, CBaseCollision* pTarget)
             {
                 for (int i = 0; i < 8; i++)
                 {
-                    if (pRing->Contains(reinterpret_cast<const Unk_StreamPoint&>(pBox->m_akCorners[i])))
+                    if (pRing->Contains(reinterpret_cast<const Vector3&>(pBox->m_akCorners[i])))
                     {
                         bHit = true;
                         break;
@@ -762,7 +762,7 @@ bool CBaseCollision::Intersect(CBaseCollision* pShape, CBaseCollision* pTarget)
                 float fBottom = pFrustum->GetMinZ();
                 if (fBottom < pBox->FUN_140adad00())
                 {
-                    if (pFrustum->Contains(*(const Unk_StreamPoint*)&pBox->m_kBox.center))
+                    if (pFrustum->Contains(*(const Vector3*)&pBox->m_kBox.center))
                     {
                         bHit = true;
                     }
@@ -770,7 +770,7 @@ bool CBaseCollision::Intersect(CBaseCollision* pShape, CBaseCollision* pTarget)
                     {
                         for (int i = 0; i < 8; i++)
                         {
-                            if (pFrustum->Contains(reinterpret_cast<const Unk_StreamPoint&>(pBox->m_akCorners[i])))
+                            if (pFrustum->Contains(reinterpret_cast<const Vector3&>(pBox->m_akCorners[i])))
                             {
                                 bHit = true;
                                 break;

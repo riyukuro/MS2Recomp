@@ -93,11 +93,11 @@ public:
     virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
     virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
     virtual void vfunc_16(); virtual void vfunc_17();
-    virtual void GetPosition(Unk_StreamPoint* pOut);                // slot 18
+    virtual void GetPosition(Vector3* pOut);                // slot 18
 };
 Unk_AudioCam* FUN_140a38d60(void* pCameras);
 // the camera manager's vectors return by value (member: this, hidden return pointer; exe 0x1417b0b1d / 0x1417b0b47)
-class Unk_SndCameras { public: Unk_StreamPoint FUN_140af0340(); Unk_StreamPoint FUN_140af0250(); };
+class Unk_SndCameras { public: Vector3 FUN_140af0340(); Vector3 FUN_140af0250(); };
 
 // the open-state strings of the voice streams: a vector<CStringA> of another unit, opaque here
 struct Unk_StrVec { void* m_p0; void* m_p1; void* m_p2; };
@@ -941,10 +941,10 @@ efd::AsyncResult CSoundService::OnTick()
     if (FUN_140a18070(FUN_1409478c0()) != 0 && FUN_140a38d60(FUN_1409478c0()) != 0)
     {
         Unk_AudioCam* pCam = FUN_140a38d60(FUN_1409478c0());
-        Unk_StreamPoint kPos;
+        Vector3 kPos;
         pCam->GetPosition(&kPos);
-        Unk_StreamPoint kForward = static_cast<Unk_SndCameras*>(FUN_1409478c0())->FUN_140af0340();
-        Unk_StreamPoint kUp = static_cast<Unk_SndCameras*>(FUN_1409478c0())->FUN_140af0250();
+        Vector3 kForward = static_cast<Unk_SndCameras*>(FUN_1409478c0())->FUN_140af0340();
+        Vector3 kUp = static_cast<Unk_SndCameras*>(FUN_1409478c0())->FUN_140af0250();
         if (GetEventSystem() != 0)
         {
             FMOD_VECTOR vPos = {kPos.x, kPos.z, kPos.y};

@@ -36,10 +36,10 @@ MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);    //
 bool FUN_140a467d0(const MS2Ptr<AScript>* p);                        // has the AS object been released
 WorldService* FUN_1403ed2d0();
 
-extern const Unk_StreamPoint DAT_143b01a60;                          // the zero point
+extern const Vector3 DAT_143b01a60;                          // the zero point
 
 // The camera (FUN_1409478c0): projects a world point to the screen.
-class Unk_UnpCamera { public: bool FUN_140af0700(const Unk_StreamPoint* pWorld, Unk_StreamPoint* pScreen); };
+class Unk_UnpCamera { public: bool FUN_140af0700(const Vector3* pWorld, Vector3* pScreen); };
 Unk_UnpCamera* FUN_1409478c0();
 
 // The ui scale service: scale of a layer.
@@ -97,7 +97,7 @@ void UIUGCCubeNoticePopup::FUN_140fb4be0()
 }
 
 // @0x140fb4c50
-void UIUGCCubeNoticePopup::SetPtWorld(Unk_StreamPoint ptWorld)
+void UIUGCCubeNoticePopup::SetPtWorld(Vector3 ptWorld)
 {
     m_ptWorld = ptWorld;
 }
@@ -162,7 +162,7 @@ void UIUGCCubeNoticePopup::FUN_140fb4eb0()
 {
     if (FUN_1403ed2d0()->FUN_141bd0cc0() != 0 && m_bVisible != 0)
     {
-        Unk_StreamPoint ptScreen;
+        Vector3 ptScreen;
         if (!FUN_1409478c0()->FUN_140af0700(&m_ptWorld, &ptScreen))
             vfunc_8(0);
         else

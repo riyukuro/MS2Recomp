@@ -1273,9 +1273,9 @@ CInteractGatheringObject* CSmartPushAutoInteractObject::FUN_140dd3dd0()
         if (spRecipe->m_nMastery != nKind)
             continue;
         float fRange = pObj->GetRow()->m_validate.m_fInteractionDistance;
-        Unk_StreamPoint ptObj = pObj->GetPos();
+        Vector3 ptObj = pObj->GetPos();
         NiPoint3 pt = pMy->vfunc_18();
-        Unk_StreamPoint ptMy(pt.x, pt.y, pt.z);
+        Vector3 ptMy(pt.x, pt.y, pt.z);
         if (ptMy.FUN_140965c40(ptObj).FUN_140967ac0() <= fRange)
             return dynamic_cast<CInteractGatheringObject*>(pObj);
     }
@@ -1343,7 +1343,7 @@ CHomemadeCubeObject* CSmartPushAutoFunctionCubeObject::FUN_140dd4230()
         __int64 nOwner = FUN_141656ad0(pMy);
         float fRange = Client::Constants::GetInstance()->FunctionCubeDistance.Read();
         NiPoint3 pt = pMy->vfunc_18();
-        Unk_StreamPoint ptMy;
+        Vector3 ptMy;
         ptMy.x = pt.x;
         ptMy.y = pt.y;
         ptMy.z = pt.z;
@@ -1354,7 +1354,7 @@ CHomemadeCubeObject* CSmartPushAutoFunctionCubeObject::FUN_140dd4230()
         __int64 nOwner = FUN_141656ad0(pMy);
         float fRange = Client::Constants::GetInstance()->FunctionCubeDistance.Read();
         NiPoint3 pt = pMy->vfunc_18();
-        Unk_StreamPoint ptMy;
+        Vector3 ptMy;
         ptMy.x = pt.x;
         ptMy.y = pt.y;
         ptMy.z = pt.z;

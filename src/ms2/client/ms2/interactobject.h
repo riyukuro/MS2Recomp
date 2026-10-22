@@ -72,8 +72,8 @@ public:
     MS2Ptr<CInteractObjectData> GetRow();                // 0x140966e00 copy of the row pointer
     CString GetName();                                    // 0x140967060 copy of the name
     int GetRowId();                                        // 0x140967110 id of the entity's template
-    Unk_StreamPoint GetPos();                            // 0x1409673c0 position copy
-    Unk_StreamPoint GetRot();                            // 0x1417d4940 rotation copy (stateinteractdata.cpp)
+    Vector3 GetPos();                            // 0x1409673c0 position copy
+    Vector3 GetRot();                            // 0x1417d4940 rotation copy (stateinteractdata.cpp)
     int FUN_1413b5600();                                        // 0x1413b5600 the interact state (0: usable; uiminimapentity.cpp)
     // @0x140967150
     int FUN_140967150() { return m_nVisible; }
@@ -109,8 +109,8 @@ public:
     int m_nParticle;                                            // +0x34 handle of the placed particle
     MS2Ptr<CInteractObjectData> m_spRow;                        // +0x38
     int m_nRowId;                                               // +0x48 id of the table row
-    Unk_StreamPoint m_vPos;                                     // +0x4c entity position
-    Unk_StreamPoint m_vRot;                                     // +0x58 entity rotation, degrees
+    Vector3 m_vPos;                                     // +0x4c entity position
+    Vector3 m_vRot;                                     // +0x58 entity rotation, degrees
     int m_nVisible;                                             // +0x64
     unsigned char m_bHighlight;                                 // +0x68 registered with the highlight manager
     Timer m_timer;                                              // +0x70

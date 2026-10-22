@@ -26,8 +26,8 @@ public:
 // the two points; the assignment (0x14168ad40) is the implicit member-wise one.
 struct Unk_RayCastInfo {
     Unk_RayCastInfo();              // 0x140ad4440 (inline in another obj)
-    Unk_StreamPoint m_origin;       // +0x00
-    Unk_StreamPoint m_dir;          // +0x0c
+    Vector3 m_origin;       // +0x00
+    Vector3 m_dir;          // +0x0c
     float m_maxDist;                // +0x18
     int m_groups;                   // +0x1c collision groups (0x389 by default)
     void* m_20;                     // +0x20 first ignored entity
@@ -36,8 +36,8 @@ struct Unk_RayCastInfo {
     void* m_hitActor;               // +0x38 hit NxActor
     void* m_hitShape;               // +0x40 hit NxShape
     float m_hitDist;                // +0x48 distance in game units
-    Unk_StreamPoint m_hitPoint;     // +0x4c
-    Unk_StreamPoint m_hitNormal;    // +0x58
+    Vector3 m_hitPoint;     // +0x4c
+    Vector3 m_hitNormal;    // +0x58
 };
 MS2_CHECK_SIZE(Unk_RayCastInfo, 0x68);
 
@@ -74,17 +74,17 @@ public:
     void FUN_141689ec0(egf::Entity* pEntity, unsigned short nGroup, const NxGroupsMask* pMask, int bRefresh);
     NxScene* FUN_14168a1c0();
     float FUN_14168a210();
-    bool FUN_14168a230(Unk_StreamPoint ptFrom, Unk_StreamPoint& ptHit, Unk_StreamPoint ptDir, float fLen, int nMask);
-    int FUN_14168a310(const Unk_StreamPoint& ptFrom, Unk_StreamPoint& ptHit, Unk_RayCastInfo* pInfo, float fLen,
-                      Unk_StreamPoint* pNormal, int nMask);
-    int FUN_14168a450(Unk_StreamPoint ptFrom, float* pDist, float fLen);
+    bool FUN_14168a230(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, float fLen, int nMask);
+    int FUN_14168a310(const Vector3& ptFrom, Vector3& ptHit, Unk_RayCastInfo* pInfo, float fLen,
+                      Vector3* pNormal, int nMask);
+    int FUN_14168a450(Vector3 ptFrom, float* pDist, float fLen);
     void FUN_14168a540(int);
     void FUN_14168a570();
     void FUN_14168a5a0();
     void FUN_14168a710();
     void* FUN_14168a750();
-    bool FUN_14168a770(const Unk_StreamPoint* pPoint);
-    int FUN_14168a9b0(void* pEntity, const Unk_StreamPoint& ptFrom);
+    bool FUN_14168a770(const Vector3* pPoint);
+    int FUN_14168a9b0(void* pEntity, const Vector3& ptFrom);
     NxControllerManager* m_pControllerMgr;      // +0x08
     Unk_PhysXLockOwner* m_pLock;                // +0x10
     Unk_PhysXSceneHandle* m_apScene[2];         // +0x18 default / item scene

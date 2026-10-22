@@ -36,8 +36,8 @@ void FUN_140159b70(long hr);                                    // ATL throw
 float FUN_14029dd40(float f);                                   // fabs
 CStringW GetStringCommon(int nId, void* a, void* b, int nFlag);   // string table text with two arguments
 
-static bool FUN_14059d190(Unk_StreamPoint* p);
-static inline const Unk_StreamPoint& AsPt(const efd::Point3& p) { return *(const Unk_StreamPoint*)&p; }
+static bool FUN_14059d190(Vector3* p);
+static inline const Vector3& AsPt(const efd::Point3& p) { return *(const Vector3*)&p; }
 
 // ---- the float helpers of the unit ----
 
@@ -54,7 +54,7 @@ static int FUN_14059bfe0(float a, float b)
 
 // @0x14059c020
 // MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
-static bool FUN_14059c020(const Unk_StreamPoint& a, const Unk_StreamPoint& b)
+static bool FUN_14059c020(const Vector3& a, const Vector3& b)
 {
     return FUN_14059d930(a.x - b.x) > 0.0001f || FUN_14059d930(a.y - b.y) > 0.0001f || FUN_14059d930(a.z - b.z) > 0.0001f;
 }
@@ -890,7 +890,7 @@ int FUN_14059d150(float* p)
 
 // @0x14059d190
 // MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
-static bool FUN_14059d190(Unk_StreamPoint* p)
+static bool FUN_14059d190(Vector3* p)
 {
     return (_fpclass((double)p->x) & 0x207) == 0 && (_fpclass((double)p->y) & 0x207) == 0 && (_fpclass((double)p->z) & 0x207) == 0;
 }

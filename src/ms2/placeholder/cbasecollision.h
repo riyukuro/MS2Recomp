@@ -34,8 +34,8 @@ public:
     CBaseCollision();                                               // 0x1409fbc80
     virtual ~CBaseCollision();                                      // 0x1409fbed0
     virtual void vfunc_1();                                         // 0x1409fbf20: draws the wire mesh
-    virtual void vfunc_2(Unk_StreamPoint ptPos, const NiMatrix3& kRot, float fScale);   // 0x1409fbff0 (same body as vfunc_3)
-    virtual void vfunc_3(Unk_StreamPoint ptPos, Unk_StreamPoint ptDir, float fScale);   // 0x1409fbfa0
+    virtual void vfunc_2(Vector3 ptPos, const NiMatrix3& kRot, float fScale);   // 0x1409fbff0 (same body as vfunc_3)
+    virtual void vfunc_3(Vector3 ptPos, Vector3 ptDir, float fScale);   // 0x1409fbfa0
     virtual void vfunc_4();                                         // 0x1409fc040
     virtual void vfunc_5() = 0;                                     // builds the wire meshes
     virtual float vfunc_6() = 0;
@@ -52,9 +52,9 @@ public:
     static bool Intersect(CBaseCollision* pShape, CBaseCollision* pBox);   // 0x1409ff0d0
 
     int m_n18;                          // +0x18
-    Unk_StreamPoint m_ptPos;            // +0x1c
-    Unk_StreamPoint m_ptSize;           // +0x28 (size / half extents)
-    Unk_StreamPoint m_ptDir;            // +0x34
+    Vector3 m_ptPos;            // +0x1c
+    Vector3 m_ptSize;           // +0x28 (size / half extents)
+    Vector3 m_ptDir;            // +0x34
     int m_nShape;                       // +0x40 shape kind (the hole cylinder stores 4)
     NiColorA m_kColor;                  // +0x44 wire color (red)
     bool m_b54;                         // +0x54

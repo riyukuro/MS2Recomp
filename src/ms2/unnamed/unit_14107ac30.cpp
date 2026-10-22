@@ -95,7 +95,7 @@ extern NiFixedString DAT_143ae53a0;
 WorldService* FUN_1403ed2d0();
 void FUN_1402a9d70(void*, int, float, float, float, int);
 void FUN_1401cd100(void* pId, __int64 nId);
-Unk_StreamPoint* FUN_14097f250(void* p, float x, float y, float z);
+Vector3* FUN_14097f250(void* p, float x, float y, float z);
 int FUN_140a18070(Unk_CameraManager*);
 class Unk_PCLook;
 Unk_PCLook* FUN_1416546d0(PC* pPC);
@@ -111,12 +111,12 @@ Unk_CharEquip FUN_141b6dea0(unsigned nColor);     // Unk_CharEquip from a colour
 bool FUN_1402226b0(int nJob);
 void FUN_140584ff0(TCreateCharInfo* pInfo, ATL::CAtlArray<int>* pItems);
 unsigned FUN_140869420();
-Unk_NiPoint3 FUN_14027dcf0(const Unk_StreamPoint& pt);
-Unk_StreamPoint* FUN_14097faa0(Unk_StreamPoint* pDst, const Unk_NiPoint3& kSrc);
-void FUN_140deec40(Unk_StreamPoint* p);
+Unk_NiPoint3 FUN_14027dcf0(const Vector3& pt);
+Vector3* FUN_14097faa0(Vector3* pDst, const Unk_NiPoint3& kSrc);
+void FUN_140deec40(Vector3* p);
 bool FUN_140a33ff0(const void* pf);
 __declspec(noreturn) void FUN_140159b70(long hr);
-void FUN_14107b050(const Unk_StreamPoint& kDir);
+void FUN_14107b050(const Vector3& kDir);
 void FUN_14107b2d0();
 void FUN_14097fad0(Unk_Color3* pDst, const Unk_Color3* pSrc);
 void FUN_14107cad0(NiFixedString* pName, void* pData, int n);
@@ -281,14 +281,14 @@ MS2_REPLACE(0x14107b010, FUN_14107b010, 57, 0x7150A5CF);
 
 // @0x14107b050
 // MS2-FUNCTIONAL: temporary slot order of the point conversions differs
-void FUN_14107b050(const Unk_StreamPoint& kDir)
+void FUN_14107b050(const Vector3& kDir)
 {
-    Unk_StreamPoint kRight = kDir;
-    Unk_StreamPoint kFlat = kDir;
+    Vector3 kRight = kDir;
+    Vector3 kFlat = kDir;
     kFlat.z = 0;
     FUN_140deec40(&kFlat);
     Unk_NiMatrix3 matRot;
-    Unk_StreamPoint kAxis(0, 0, 1.0f);
+    Vector3 kAxis(0, 0, 1.0f);
     FUN_14097faa0(&kAxis, FUN_14027dcf0(kAxis.FUN_140a00e10(kRight)));
     matRot.FUN_14107cc40(-((Unk_RimLight::s_fPitch * 3.1415927f) / 180.0f), kAxis);
     FUN_14097faa0(&kRight, FUN_14027dcf0(matRot.FUN_140a00720(kRight)));
@@ -344,8 +344,8 @@ MS2_REPLACE(0x14107b3d0, FUN_14107b3d0, 103, 0xAA813896);
 int TCreateCharInfo::FUN_14107b440(PC* pPC)
 {
     WorldService* pWorld = FUN_1403ed2d0();
-    Unk_StreamPoint kDir;
-    Unk_StreamPoint kPos;
+    Vector3 kDir;
+    Vector3 kPos;
     if (pWorld->FUN_141bd0dd0(&kPos, &kDir) == 0)
         return 0;
     pPC->FUN_14123c5a0(m_nType);
@@ -369,7 +369,7 @@ int TCreateCharInfo::FUN_14107b440(PC* pPC)
     pPC->vfunc_59(1, 0, 0, 0);
     for (int i = 0; i < 2; i++)
         pPC->FUN_1416591e0(i, reinterpret_cast<const NiColor&>(m_equip[i]));
-    Unk_StreamPoint kHit;
+    Vector3 kHit;
     if (FUN_1409f7ca0()->FUN_14168a310(kPos, kHit, 0, 0.0f, 0, 0) != 0)
     {
         kHit.z += 1.0f;
@@ -384,8 +384,8 @@ int TCreateCharInfo::FUN_14107b440(PC* pPC)
 int FUN_14107b7e0(unsigned nSlot, const Unk_UserProxy* pState, PC* pPC)
 {
     WorldService* pWorld = FUN_1403ed2d0();
-    Unk_StreamPoint kDir;
-    Unk_StreamPoint kPos;
+    Vector3 kDir;
+    Vector3 kPos;
     if (pWorld->FUN_141bd0dd0(&kPos, &kDir) == 0)
         return 0;
     pPC->FUN_14123c5a0(nSlot);
@@ -405,7 +405,7 @@ int FUN_14107b7e0(unsigned nSlot, const Unk_UserProxy* pState, PC* pPC)
     aEquip[1] = FUN_141b6dea0(pState->m_58[1]);
     pPC->FUN_1416591e0(0, reinterpret_cast<const NiColor&>(aEquip[0]));
     pPC->FUN_1416591e0(1, reinterpret_cast<const NiColor&>(aEquip[1]));
-    Unk_StreamPoint kHit;
+    Vector3 kHit;
     if (FUN_1409f7ca0()->FUN_14168a310(kPos, kHit, 0, 0.0f, 0, 0) != 0)
     {
         kHit.z += 1.0f;
@@ -553,7 +553,7 @@ int FUN_14107c5f0(int nSlot, PC* pSrc, PC* pDst)
         NiPoint3 kPos = pSrc->vfunc_18();
         pDst->vfunc_19(reinterpret_cast<efd::Point3&>(kPos));
         Unk_ColorTemp kTmp;
-        Unk_StreamPoint kRot = *FUN_14097f250(&kTmp, 0.0f, 0.0f, 90.0f);
+        Vector3 kRot = *FUN_14097f250(&kTmp, 0.0f, 0.0f, 90.0f);
         pDst->vfunc_21(reinterpret_cast<efd::Point3&>(kRot));
         pDst->vfunc_131((short)pSrc->vfunc_78());
         pDst->vfunc_76(CStringW(L""));
@@ -643,7 +643,7 @@ NiObject** FUN_14107cbe0(Unk_C930Walker& rWalker)
 }
 
 // @0x14107cc40
-void Unk_EfdMatrix3::FUN_14107cc40(float fAngle, const Unk_StreamPoint& kAxis)
+void Unk_EfdMatrix3::FUN_14107cc40(float fAngle, const Vector3& kAxis)
 {
     reinterpret_cast<efd::Matrix3*>(this)->MakeRotation(fAngle, kAxis.x, kAxis.y, kAxis.z);
 }

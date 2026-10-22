@@ -55,7 +55,7 @@ public:
     FieldProperty* FUN_141bcab60(unsigned int nType);
     bool FUN_141bd3cd0();
     bool FUN_141bd3d10();
-    int FUN_141bd36f0(Unk_StreamPoint pt, Unk_StreamPoint* pOut);   // nonzero if inside
+    int FUN_141bd36f0(Vector3 pt, Vector3* pOut);   // nonzero if inside
 };
 Unk_GameContext* FUN_1403ed2d0();
 
@@ -73,7 +73,7 @@ NiAVObject* FUN_141b6efc0(egf::Entity* p);
 const NiBound& FUN_140994490(NiAVObject* p);                // GetWorldBound
 float FUN_1409803f0(const NiBound& kBound);                 // GetRadius
 const NiPoint3& FUN_140980350(const NiBound& kBound);       // GetCenter
-void FUN_140a01190(const Unk_EfdMatrix3* pMatrix, unsigned int uiCol, Unk_StreamPoint* pOut);  // GetCol
+void FUN_140a01190(const Unk_EfdMatrix3* pMatrix, unsigned int uiCol, Vector3* pOut);  // GetCol
 bool FUN_14028d470(float a, float b);                       // nearly equal
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -103,7 +103,7 @@ void CToolCameraMode::vfunc_6(int n)
         {
             m_84 = 1;
             float fRotation = FUN_1403ed2d0()->FUN_141bd30a0().FUN_140885340()->m_154;
-            Unk_StreamPoint ptRot(90.0f, fRotation, -60.0f);
+            Vector3 ptRot(90.0f, fRotation, -60.0f);
             vfunc_4(ptRot);
             vfunc_24(pTarget, 1);
         }
@@ -120,18 +120,18 @@ void CToolCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
     if (!p)
         return;
     m_88 = 1;
-    Unk_StreamPoint ptRot = FUN_140af8260();
+    Vector3 ptRot = FUN_140af8260();
     if (FUN_1403ed2d0()->FUN_141bd3cd0() && FUN_1403ed2d0()->FUN_141bd3d10())
         ptRot.z = 0.0f;
     else
         ptRot.z = -45.0f;
     vfunc_4(ptRot);
     ptRot = ptRot.FUN_14097fc90(3.14159274f).FUN_140ae9180(180.0f);
-    Unk_StreamPoint ptPos = p->vfunc_18();
+    Vector3 ptPos = p->vfunc_18();
     vfunc_3(ptPos);
     Unk_EfdMatrix3 kRot;
     kRot.FUN_142083d40(ptRot.x, ptRot.y, ptRot.z);
-    Unk_StreamPoint ptAxis;
+    Vector3 ptAxis;
     FUN_140a01190(&kRot, 0, &ptAxis);
     ptAxis.FUN_140968990();
     float fDist = 200.0f;
@@ -150,7 +150,7 @@ void CToolCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
     fHeight = (FUN_140980350(kBound).z - ptPos.z < 0.0f) ? 0.0f : FUN_140980350(kBound).z - ptPos.z;
     if (n != 0)
     {
-        const Unk_StreamPoint& ptUp = Unk_StreamPoint(0.0f, 0.0f, fHeight);
+        const Vector3& ptUp = Vector3(0.0f, 0.0f, fHeight);
         ptPos = ptPos.FUN_14097fd50(ptAxis.FUN_14097fc90(-fDist)).FUN_14097fd50(ptUp);
         vfunc_3(ptPos);
     }
@@ -166,13 +166,13 @@ void CToolCameraMode::vfunc_8(double fTime)
     {
         vfunc_24(Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60(), m_8c);
     }
-    Unk_StreamPoint ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
+    Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
     unsigned int bShift = FUN_14025e7c0()->FUN_14116d950(0x2a, false, 0);
     unsigned int bLeft = FUN_14025e7c0()->FUN_14116daa0(0, false, 0);
     unsigned int bRight = FUN_14025e7c0()->FUN_14116daa0(1, false, 0);
     if (bLeft != 0 && bRight != 0)
     {
-        Unk_StreamPoint ptPos = FUN_1409f2540();
+        Vector3 ptPos = FUN_1409f2540();
         ptPos.z = ptPos.z - ptMove.z * 2.0f;
         vfunc_3(ptPos);
     }
@@ -182,7 +182,7 @@ void CToolCameraMode::vfunc_8(double fTime)
         {
             if (ptMove.FUN_140552700(g_143b01a60))
             {
-                Unk_StreamPoint ptRot = FUN_140af8260();
+                Vector3 ptRot = FUN_140af8260();
                 ptRot.y = ptRot.y - ptMove.y / 512.0f * 90.0f;
                 ptRot.z = ptRot.z - ptMove.z / 512.0f * 90.0f;
                 vfunc_4(ptRot);
@@ -191,19 +191,19 @@ void CToolCameraMode::vfunc_8(double fTime)
     }
     if (m_78.FUN_140552700(g_143b01a60))
     {
-        Unk_StreamPoint ptRot = FUN_140af8260();
+        Vector3 ptRot = FUN_140af8260();
         ptRot = ptRot.FUN_14097fc90(3.14159274f).FUN_140ae9180(180.0f);
         Unk_EfdMatrix3 kRot;
         kRot.FUN_142083d40(ptRot.x, ptRot.y, ptRot.z);
-        Unk_StreamPoint ptRight;
+        Vector3 ptRight;
         FUN_140a01190(&kRot, 0, &ptRight);
         ptRight.FUN_140968990();
-        Unk_StreamPoint ptForward;
+        Vector3 ptForward;
         FUN_140a01190(&kRot, 2, &ptForward);
         ptForward.FUN_140968990();
-        Unk_StreamPoint ptPos = FUN_1409f2540();
+        Vector3 ptPos = FUN_1409f2540();
         float fDelta = (float)fTime;
-        const Unk_StreamPoint& ptSide = ptForward.FUN_14097fc90(m_78.y);
+        const Vector3& ptSide = ptForward.FUN_14097fc90(m_78.y);
         ptPos = ptPos.FUN_14097fd50(ptRight.FUN_14097fc90(m_78.x).FUN_14097fd50(ptSide).FUN_14097fc90(1000.0f).FUN_14097fc90(fDelta));
         vfunc_3(ptPos);
     }
@@ -213,7 +213,7 @@ MS2_REPLACE_METHOD(0x1418532e0, CToolCameraMode, vfunc_8, 1177, 0xB27624DC);
 // @0x141853780
 void CToolCameraMode::vfunc_9()
 {
-    Unk_StreamPoint ptMove = g_143b01a60;
+    Vector3 ptMove = g_143b01a60;
     m_78 = g_143b01a60;
     if (FUN_14025e7c0()->FUN_14116d950(0x11, false, 0))
     {
@@ -262,12 +262,12 @@ void CToolCameraMode::vfunc_9()
 MS2_REPLACE_METHOD(0x141853780, CToolCameraMode, vfunc_9, 687, 0x270105CE);
 
 // @0x141853a40
-void CToolCameraMode::vfunc_3(Unk_StreamPoint pt)
+void CToolCameraMode::vfunc_3(Vector3 pt)
 {
     if (m_90)
     {
-        Unk_StreamPoint ptCur = FUN_1409f2540();
-        Unk_StreamPoint ptOut;
+        Vector3 ptCur = FUN_1409f2540();
+        Vector3 ptOut;
         if (!FUN_1403ed2d0()->FUN_141bd36f0(pt, &ptOut))
         {
             if (!FUN_14028d470(ptOut.x, 0.0f))

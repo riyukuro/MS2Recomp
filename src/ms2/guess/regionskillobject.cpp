@@ -1,6 +1,6 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). CRegionSkillObject: a skill area on the ground (the effect files
 // spawned at every point of the area, the re-spawn of the culled ones, the collision shapes) and the std::list / ATL::CAtlList
-// glue over its Unk_StreamPoint points. The unit name is a guess (queue row ?\regionskillobject.cpp).
+// glue over its Vector3 points. The unit name is a guess (queue row ?\regionskillobject.cpp).
 // MS2-UNIT: ?\regionskillobject.cpp
 // MS2-FUNCTIONAL: CRegionSkillObject::FUN_1416f5a20 (Init) is behaviour-equivalent; the frame temp layout of the collision-shape loops is not reproduced
 // MS2-RANGE: 0x1416f57c0-0x1416f8f46 .text$mn
@@ -57,15 +57,15 @@ Unk_RsCuller* FUN_14119f490();
 CSkillCollisionManager* FUN_141469a90();
 extern bool DAT_143ae95e0;
 extern bool DAT_143ae95e1;
-extern Unk_StreamPoint DAT_143b01a60;                           // the zero point
+extern Vector3 DAT_143b01a60;                           // the zero point
 
 // efd::Point3 / NiPoint3 helpers called out of line.
-struct Unk_RsNiPoint3 : public Unk_StreamPoint
+struct Unk_RsNiPoint3 : public Vector3
 {
-    Unk_RsNiPoint3(const Unk_StreamPoint& pt);                  // 0x14027dcf0
+    Unk_RsNiPoint3(const Vector3& pt);                  // 0x14027dcf0
 };
 void FUN_14097faa0(NiPoint3* pDst, const Unk_RsNiPoint3* pSrc); // NiPoint3::operator=
-struct Unk_RsRot : public Unk_StreamPoint { Unk_RsRot(float x, float y, float z); };   // 0x14097f250
+struct Unk_RsRot : public Vector3 { Unk_RsRot(float x, float y, float z); };   // 0x14097f250
 
 // The skill source of a skill level, as the collision manager takes it (0x140932d90).
 class Unk_SkillSrc;
@@ -86,7 +86,7 @@ CRegionSkillObject::~CRegionSkillObject()
 }
 
 // @0x1416f5a20
-int CRegionSkillObject::FUN_1416f5a20(int nId, int nOwnerId, const ATL::CAtlArray<Unk_StreamPoint>& kPoints, int nSkillId, short nLevel, float fRotX, float fRotY, int nTick)
+int CRegionSkillObject::FUN_1416f5a20(int nId, int nOwnerId, const ATL::CAtlArray<Vector3>& kPoints, int nSkillId, short nLevel, float fRotX, float fRotY, int nTick)
 {
     m_nId = nId;
     m_nOwnerId = nOwnerId;
@@ -304,7 +304,7 @@ void CRegionSkillObject::FUN_1416f6e40()
 }
 
 // @0x1416f6ed0
-Unk_StreamPoint CRegionSkillObject::FUN_1416f6ed0()
+Vector3 CRegionSkillObject::FUN_1416f6ed0()
 {
     if (m_points.IsEmpty())
         return DAT_143b01a60;
@@ -316,15 +316,15 @@ void CRegionSkillObject::FUN_1416f6f50()
 {
     if (m_spEffect.get() != 0)
     {
-        ATL::CAtlArray<Unk_StreamPoint> kSpawned;
-        std::list<std::pair<Unk_StreamPoint, unsigned> >::iterator it = m_pending.begin();
+        ATL::CAtlArray<Vector3> kSpawned;
+        std::list<std::pair<Vector3, unsigned> >::iterator it = m_pending.begin();
         for (; it != m_pending.end(); ++it)
         {
             unsigned nTime = it->second;
             if (FUN_141472bc0() < nTime)
                 continue;
             {
-                Unk_StreamPoint pt = it->first;
+                Vector3 pt = it->first;
                 NiTransform xf;
                 xf.MakeIdentity();
                 Unk_RsNiPoint3 niPt(pt);
@@ -350,10 +350,10 @@ void CRegionSkillObject::FUN_1416f6f50()
         }
         for (unsigned i = 0; i < kSpawned.GetCount(); i++)
         {
-            Unk_StreamPoint ptDone = kSpawned[i];
+            Vector3 ptDone = kSpawned[i];
             for (it = m_pending.begin(); it != m_pending.end(); ++it)
             {
-                Unk_StreamPoint ptCur = it->first;
+                Vector3 ptCur = it->first;
                 if (ptDone.FUN_140552690(ptCur))
                 {
                     m_pending.erase(it);
@@ -364,10 +364,10 @@ void CRegionSkillObject::FUN_1416f6f50()
     }
     if (m_spEffect2.get() != 0)
     {
-        ATL::CAtlArray<Unk_StreamPoint> kSpawned;
+        ATL::CAtlArray<Vector3> kSpawned;
         for (POSITION pos = m_waiting.GetHeadPosition(); pos != 0; m_waiting.GetNext(pos))
         {
-            Unk_StreamPoint pt = m_waiting.GetAt(pos);
+            Vector3 pt = m_waiting.GetAt(pos);
             NiTransform xf;
             xf.MakeIdentity();
             Unk_RsNiPoint3 niPt(pt);
@@ -392,10 +392,10 @@ void CRegionSkillObject::FUN_1416f6f50()
         }
         for (unsigned i = 0; i < kSpawned.GetCount(); i++)
         {
-            Unk_StreamPoint ptDone = kSpawned[i];
+            Vector3 ptDone = kSpawned[i];
             for (POSITION posCur = m_waiting.GetHeadPosition(); posCur != 0; m_waiting.GetNext(posCur))
             {
-                Unk_StreamPoint ptCur = m_waiting.GetAt(posCur);
+                Vector3 ptCur = m_waiting.GetAt(posCur);
                 if (ptDone.FUN_140552690(ptCur))
                 {
                     m_waiting.RemoveAt(posCur);

@@ -85,8 +85,8 @@ class Unk_PCBaseComp_b18 : public CSkillRecord {};
 // The running projectile handle's target (a SkillTargetRecord; magicdata.h keeps Unk_MagicTag opaque).
 #define SS_TARGET(spTag) reinterpret_cast<SkillTargetRecord*>((spTag).get())
 #define SS_TAG(spTag) reinterpret_cast<SkillTargetRecord*>((spTag).operator->())
-// CSkillRecord keeps its points as Unk_StreamPoint; the actor and the packets use efd::Point3 / Unk_StreamPoint.
-#define SS_SP(pt) reinterpret_cast<const Unk_StreamPoint&>(pt)
+// CSkillRecord keeps its points as Vector3; the actor and the packets use efd::Point3 / Vector3.
+#define SS_SP(pt) reinterpret_cast<const Vector3&>(pt)
 #define SS_PT(pt) reinterpret_cast<const efd::Point3&>(pt)
 
 // PCBase slot 98 returns the stat-scaled sequence speed (pcbase.h declares it void); called by address.
@@ -1217,13 +1217,13 @@ int StateSkill::FUN_1417e9d20(Unk_SocketPtr<CArrowFillTargetContext> spCtx)
         nKind = kRange.m_n48;
     if (spCtx->m_nA0 != 0)
         nKind |= spCtx->m_nA0;
-    Unk_StreamPoint kDelta = spCtx->m_ptTo.FUN_140965c40(spCtx->m_ptFrom);
+    Vector3 kDelta = spCtx->m_ptTo.FUN_140965c40(spCtx->m_ptFrom);
     float fLength = kDelta.FUN_140968990();
     efd::Point3 kSize = pAttack->m_arrow.m_collision;
     MS2Ptr<CBoxCollision> spBox(new CBoxCollision);
-    spBox->m_ptBox = Unk_StreamPoint(kSize.x, fLength + kSize.y, kSize.z);
+    spBox->m_ptBox = Vector3(kSize.x, fLength + kSize.y, kSize.z);
     efd::Point3 kAdd = pAttack->m_arrow.m_collisionAdd;
-    Unk_StreamPoint ptAdd(0.0f, kAdd.y, kAdd.z);
+    Vector3 ptAdd(0.0f, kAdd.y, kAdd.z);
     spBox->m_ptSize = ptAdd;
     spBox->m_kColor = NiColorA(0.0f, 0.0f, 1.0f, 1.0f);
     spBox->vfunc_4();
@@ -2672,7 +2672,7 @@ public:
     virtual float vfunc_6();
     char m_pad_78[0xb0 - 0x78];
     float m_fRadius;                                                    // +0xb0
-    Unk_StreamPoint m_ptCenter;                                         // +0xb4
+    Vector3 m_ptCenter;                                         // +0xb4
     float m_fHeight;                                                    // +0xc0
     char m_pad_c4[4];
 };
@@ -2858,14 +2858,14 @@ void StateSkill::FUN_1417edc20(double fTime)
     if (m_spRecord->m_spSkill->m_bMovingInMovekey && FUN_14028d470(m_spRecord->FUN_14175a1b0(), 0.0f))
         bMoveInput = false;
     m_bMoved = m_pMotion->vfunc_5(fTime);
-    Unk_StreamPoint kDelta = m_pMotion->vfunc_3();
+    Vector3 kDelta = m_pMotion->vfunc_3();
     unsigned nIgnoreGroups = 0;
     SkillMotionData* pMotion = m_spRecord->FUN_141759830();
     if (pMotion != NULL)
         nIgnoreGroups = pMotion->m_nIgnoreCollisionGroups;
     bool bMoved = m_bMoved;
     int nKind = m_pMotion->vfunc_6();
-    Unk_StreamPoint kMove = kDelta;
+    Vector3 kMove = kDelta;
     m_bMoved = bMoved | m_pOwner->vfunc_68(&kMove, fTime, 0, nIgnoreGroups, nKind);
     if (m_spRecord->m_spSkill->m_nMoveType != 2 && m_spRecord->m_spSkill->m_nMoveType != 3)
         return;
