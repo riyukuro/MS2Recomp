@@ -7918,3 +7918,5 @@ sfr_atan2f_thunk	14280f28e	func
 ?RectangleCI@fl_geom@AS3@GFx@Scaleform@@3UClassInfo@234@B	14315d1d0	data
 ?TransformCI@fl_geom@AS3@GFx@Scaleform@@3UClassInfo@234@B	14315d220	data
 ?Vector3DCI@fl_geom@AS3@GFx@Scaleform@@3UClassInfo@234@B	14315d040	data
+?ThrowTypeError@VM@AS3@GFx@Scaleform@@QEAAXAEBVError@1234@@Z	14252f1e0	func
+?constructBuiltinObject@VM@AS3@GFx@Scaleform@@QEAA?AVCheckResult@234@AEAV?$SPtr@VObject@AS3@GFx@Scaleform@@@234@PEBDIPEBVValue@234@@Z	142532130	func
