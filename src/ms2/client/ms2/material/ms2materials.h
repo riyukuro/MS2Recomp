@@ -387,6 +387,49 @@ public:
 };
 
 //--------------------------------------------------------------------------------------------------
+class MS2DepthMaterial : public MS2StandardMaterial
+{
+    NiDeclareRTTI;
+
+public:
+    MS2DepthMaterial(bool bAutoCreateCaches);
+
+protected:
+    MS2DepthMaterial(const NiFixedString& kName, bool bAutoCreateCaches, unsigned int uiVersionOffset);
+
+    // protected in the original; public here so the hooks can bind them
+public:
+    virtual ReturnCode GenerateShaderDescArray(NiMaterialDescriptor* pkMaterialDescriptor,
+        RenderPassDescriptor* pkRenderPasses, unsigned int uiMaxCount, unsigned int& uiCountAdded);
+    virtual bool HandleViewProjectionFragment(Context& kContext, bool bForceViewPos,
+        NiMaterialResource* pkVertWorldPos, NiMaterialResource*& pkVertOutProjectedPos,
+        NiMaterialResource*& pkVertOutViewPos);
+    virtual bool HandleFinalVertexOutputs(Context& kContext, NiStandardVertexProgramDescriptor* pkVertDesc,
+        NiMaterialResource* pkWorldPos, NiMaterialResource* pkWorldNormal, NiMaterialResource* pkWorldReflect,
+        NiMaterialResource* pkViewPos, NiMaterialResource* pkProjectedPos);
+    virtual bool HandlePixelInputs(Context& kContext, NiStandardPixelProgramDescriptor* pkPixelDesc,
+        NiMaterialResource*& pkPixelWorldPos, NiMaterialResource*& pkPixelWorldNorm,
+        NiMaterialResource*& pkPixelWorldBinormal, NiMaterialResource*& pkPixelWorldTangent,
+        NiMaterialResource*& pkPixelWorldViewVector, NiMaterialResource*& pkPixelTangentViewVector);
+    virtual bool HandleNormalMap(Context& kContext, NiMaterialResource* pkUVSet, NormalMapType eType,
+        NiMaterialResource*& pkWorldNormal, NiMaterialResource* pkWorldBinormal,
+        NiMaterialResource* pkWorldTangent);
+    virtual bool HandleEnvMap(Context& kContext, NiStandardMaterial::TexEffectType eTexEffect,
+        NiMaterialResource* pkUVResource, NiMaterialResource*& pkDiffuseAccum,
+        NiMaterialResource*& pkSpecularAccum, NiMaterialResource* pkBumpOffset,
+        NiMaterialResource* pkGlossiness);
+    virtual bool HandleMS2FinalPixelOutputs(Context& kContext, NiStandardPixelProgramDescriptor* pkPixDesc,
+        NiMaterialResource* pkWorldNormal, NiMaterialResource* pkViewVector, NiMaterialResource* pkDiffuseAccum,
+        NiMaterialResource* pkSpecularAccum, NiMaterialResource* pkOpacityAccum);
+
+    // ---- new virtual ----
+    // +0x398 adds the named depth node, feeding it the projected position ("Input") and, when there is one, the
+    // final opacity ("FinalOpacity")
+    virtual NiMaterialNodePtr AttachDepthNode(const NiFixedString& kNodeName, Context& kContext,
+        NiMaterialResource* pkOpacity, NiMaterialResource* pkInput);
+};
+
+//--------------------------------------------------------------------------------------------------
 #define MS2_DECLARE_STANDARD_MATERIAL(classname)                                                    \
     class classname : public MS2StandardMaterial                                                    \
     {                                                                                               \
@@ -394,7 +437,6 @@ public:
         classname(bool bAutoCreateCaches);                                                          \
     }
 
-MS2_DECLARE_STANDARD_MATERIAL(MS2DepthMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2DefaultShimmerValueMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2ShimmerMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2GlassMaterial);
@@ -404,8 +446,16 @@ MS2_DECLARE_STANDARD_MATERIAL(MS2TextureDensityMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2ForceColorMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2UIMaterial);
 
+//--------------------------------------------------------------------------------------------------
 class MS2CharacterDepthMaterial : public MS2DepthMaterial
 {
+    NiDeclareRTTI;
+
 public:
     MS2CharacterDepthMaterial(bool bAutoCreateCaches);
+
+    // protected in the original; public here so the hooks can bind them
+    // "PositionToDepthForCharacter" plus the gfNearZ global
+    virtual NiMaterialNodePtr AttachDepthNode(const NiFixedString& kNodeName, Context& kContext,
+        NiMaterialResource* pkOpacity, NiMaterialResource* pkInput);
 };
