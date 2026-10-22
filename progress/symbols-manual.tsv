@@ -8166,3 +8166,5 @@ compress2	142724100	func
 ??1ListenersHash@EventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@QEAA@XZ	1424624f0	func
 ?ExecuteInternalUnsafe@VM@AS3@GFx@Scaleform@@QEAAXAEBVValue@234@0AEAV5234@IPEBV5234@_N@Z	1424fef00	func
 ?OutputError@VM@AS3@GFx@Scaleform@@QEAAXAEBVValue@234@@Z	14251bdc0	func
+??0ProgressEvent@fl_events@Instances@AS3@GFx@Scaleform@@QEAA@AEAVTraits@InstanceTraits@345@@Z	142461040	func
+??0TransformGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@QEAA@AEAVTraits@InstanceTraits@345@@Z	1424620d0	func
