@@ -2603,6 +2603,10 @@ class CNMSessionMemberList : public CNMSerializable
 public:
     virtual ~CNMSessionMemberList() = default;
 
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+
     std::vector<CNMSessionMemberInfo> m_10; // +0x10
 };
 MS2_CHECK_SIZE(CNMSessionMemberList, 0x28);
