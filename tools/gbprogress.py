@@ -49,7 +49,7 @@ FUNCS = ms2paths.FUNCTIONS_TSV
 GB_BAND = (0x141bf0000, 0x142303c10)        # main Gamebryo band (report only)
 GB_TAIL = (0x1427b6c90, 0x1428d6000)        # Gamebryo tail: renderer / shader libs (report only)
 STUB_GAP = 48                                # longest run of uncredited functions counted as one TU's stubs
-KEY = "gb1"                                  # bump to recompile everything
+KEY = "gb2"                                  # gb2: .deps now case-repaired (Wine lowercases dirs); bump to recompile everything
 MATCH_KEY = "rtti-pin1"                         # bump to re-match every obj (pairing logic changed)
 if bm.CHAIN:
     MATCH_KEY += "-chain"
@@ -94,9 +94,33 @@ def needs_compile(cache, u):
     return False
 
 
+_CASE_DIRS = {}
+
+
+def _case_fix(p):
+    """Wine prints /showIncludes directories lowercased: resolve each component case-insensitively (None if absent)."""
+    cur = "/"
+    for part in p.strip("/").split("/"):
+        nxt = os.path.join(cur, part)
+        if not os.path.exists(nxt):
+            if cur not in _CASE_DIRS:
+                try:
+                    _CASE_DIRS[cur] = {n.lower(): n for n in os.listdir(cur)}
+                except OSError:
+                    _CASE_DIRS[cur] = {}
+            hit = _CASE_DIRS[cur].get(part.lower())
+            if hit is None:
+                return None
+            nxt = os.path.join(cur, hit)
+        cur = nxt
+    return cur
+
+
 def _real(p):
     p = ms2paths.host_path(p)
-    return os.path.realpath(p) if os.path.exists(p) else None
+    if not os.path.exists(p):
+        p = _case_fix(p) if os.path.isabs(p) else None
+    return os.path.realpath(p) if p else None
 
 
 def compile_unit(args):
@@ -165,7 +189,9 @@ def _is_text(va):
 def _init():
     exe = bm.Exe(bm.EXE)
     names, dnames = {}, {}
-    for f in ("symbols-manual.tsv", "symbols.tsv", "symbols-engine.tsv", "symbols-engine-manual.tsv"):
+    # symbols-engine-manual first (gb15): an engine function whose mangled name the game also defines (the game's own
+    # TinyXML has a global ?TiXmlFOpen too) is pinned to the engine copy by a row there; no other row overlaps.
+    for f in ("symbols-engine-manual.tsv", "symbols-manual.tsv", "symbols.tsv", "symbols-engine.tsv"):
         p = os.path.join(ROOT, "progress", f)
         if not os.path.exists(p):
             continue
@@ -1062,7 +1088,7 @@ def assign_blocks(res, paths, windows, j, log=print):
 # not have are skipped. Byte-identical thunks of one shape (atexit registrations, kCAT copies) are thus paired k-th to
 # k-th in link order. Only the TU-private statics they write go unchecked (the exe TU's data layout differs with its
 # header set). A run that reaches a VA another TU pairs exactly is dropped whole (it walked past its TU).
-SUB_KEY = "sub5"
+SUB_KEY = "sub6"
 SUB_PAD = 64            # most int3 padding between two functions of a block
 
 
@@ -1118,6 +1144,18 @@ def _sub_job(job):
                 t = obj.syms[si]
                 if t[0] in own and t[2] > 0 and obj.sec(t[2]).get("comdat", (0,))[0] in (0, 1):
                     strong.setdefault((t[0], t[2], t[1]), own[t[0]])
+            # (2026-10-22 gb15, sub6) and the TU's own statics those exact functions address: an atexit destructor
+            # of a static smart pointer (`??__F?ms_sp...`) is one of hundreds of identical release thunks, told apart
+            # only by the static it releases. A key two exact functions resolve differently is dropped.
+            dk = {}
+            for n, va in own.items():
+                if n in obj.by_name:
+                    for key, tva in resolve(n, va):
+                        if not obj.sec(key[1])["chars"] & 0x20:
+                            dk.setdefault(key, set()).add(tva)
+            for key, vs in dk.items():
+                if len(vs) == 1:
+                    strong.setdefault(key, vs.pop())
         for i, (n, off, data, fields, leaf, al) in enumerate(lay):
             if i in anc:
                 continue
