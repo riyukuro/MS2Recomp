@@ -37,6 +37,7 @@
 #include "ms2/client/ms2/usercommandcli.h"
 #include "ms2/placeholder/asbutton.h"
 #include "ms2/placeholder/asdata.h"
+#include "ms2/placeholder/asevent.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/astooltip.h"
 #include "ms2/placeholder/asuicomponent.h"
@@ -121,16 +122,6 @@ class Unk_IcButton : public ASButton
 {
 };
 
-// The click event of a list row (ctor 0x1422e2740).
-class ASListEvent
-{
-public:
-    ASListEvent(const Scaleform::GFx::FunctionHandler::Params& params);
-    ~ASListEvent();
-    Scaleform::GFx::Value FUN_1422e2780();                  // the row object
-    char m_pad[0x40];
-};
-
 // The game TinyXML element (ctor 0x14086f2f0, 0x90 bytes; the document owns and deletes it).
 class TiXmlElement
 {
@@ -151,9 +142,9 @@ MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);          // the item row (NUL
 int FUN_14053feb0(int nItemId);                             // the default rank of an item
 bool FUN_14053ff30(int nItemId, int nRank);                 // the item has the rank
 int FUN_1405451c0(const CString& strGroup);                 // the item group index of a group name
-unsigned short FUN_140718200(const CStringW& strText);      // text to number
+int FUN_140718200(const CStringW& strText);      // text to number
 CStringW FUN_1407196b0(int n);                              // number to text
-CStringW FUN_14083f330(CStringW strText, wchar_t chBegin, wchar_t chEnd);  // the text between two characters
+CStringW FUN_14083f330(const CStringW& strText, wchar_t chBegin, wchar_t chEnd);  // the text between two characters
 void FUN_140841420(CStringW& str);                          // lower case
 void FUN_14025a680(const CStringW& strText, ATL::CAtlArray<CStringW>& tokens, const wchar_t* szSeparator);   // split
 void FUN_14083d890(CStringW strText);                       // copy to the clipboard
@@ -193,15 +184,13 @@ CString UIItemCreateDialog::vfunc_1()
 }
 MS2_REPLACE_METHOD(0x1419b3d10, UIItemCreateDialog, vfunc_1, 61, 0xB554FE81);
 
-// MS2-FUNCTIONAL: child binding / delegate temporaries ordered differently
 // @0x1419b3d60
 void UIItemCreateDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     m_90->vfunc_24(false);
     FUN_1419b4c70();
-    m_spClearInven = FUN_140bb4b10("m_clearInven");
-    if ((Unk_IcButton*)m_spClearInven) {
+    if ((Unk_IcButton*)(m_spClearInven = FUN_140bb4b10("m_clearInven"))) {
         m_spClearInven->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemCreateDialog::FUN_1419b4dd0), 0);
     }
     FUN_1419b6350();
@@ -218,28 +207,25 @@ void UIItemCreateDialog::vfunc_26()
 }
 MS2_REPLACE_METHOD(0x1419b3f10, UIItemCreateDialog, vfunc_26, 66, 0xDE173C0D);
 
-// MS2-FUNCTIONAL: key handler branch layout differs
 // @0x1419b3f60
 int UIItemCreateDialog::vfunc_13()
 {
-    if (UIDialog::vfunc_13() == 0) {
-        if (CInputKeyHandler::GetInstance()->FUN_14116d9c0(0x1c, 0, 0) == 0) {
-            if (CInputKeyHandler::GetInstance()->FUN_14116d9c0(0xf, 0, 0) == 0) {
-                if (CInputKeyHandler::GetInstance()->FUN_14116d950(0x1d, 0, 0) && CInputKeyHandler::GetInstance()->FUN_14116d9c0(0x2e, 0, 0)) {
-                    FUN_14083d890(CStringW(FUN_1407196b0(FUN_1419b5080())));
-                    return 1;
-                }
-                return 0;
-            }
-            if (m_30.get() != 0)
-                m_30->Invoke("onTabKey");
-            return 1;
-        }
+    if (UIDialog::vfunc_13() != 0)
+        return 1;
+    if (CInputKeyHandler::GetInstance()->FUN_14116d9c0(0x1c, 0, 0)) {
         if (m_30.get() != 0)
             m_30->Invoke("onEnterKey");
         return 1;
+    } else if (CInputKeyHandler::GetInstance()->FUN_14116d9c0(0xf, 0, 0)) {
+        if (m_30.get() != 0)
+            m_30->Invoke("onTabKey");
+        return 1;
+    } else if (CInputKeyHandler::GetInstance()->FUN_14116d950(0x1d, 0, 0) && CInputKeyHandler::GetInstance()->FUN_14116d9c0(0x2e, 0, 0)) {
+        CStringW strText = FUN_1407196b0(FUN_1419b5080());
+        FUN_14083d890(strText);
+        return 1;
     }
-    return 1;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x1419b3f60, UIItemCreateDialog, vfunc_13, 444, 0x223A8463);
 
@@ -375,22 +361,21 @@ void UIItemCreateDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 MS2_REPLACE_METHOD(0x1419b4a00, UIItemCreateDialog, vfunc_49, 603, 0xA49C1F61);
 
 // Collect the items of the item table (once) and their function names.
-// MS2-FUNCTIONAL: item table walk: temporaries and loop shape differ
 // @0x1419b4c70
 void UIItemCreateDialog::FUN_1419b4c70()
 {
-    if (m_items.IsEmpty()) {
-        m_items.RemoveAll();
-        std::vector<unsigned> ids;
-        CItemDataTable::GetInstance()->LoadItemNameIds(ids);
-        for (size_t i = 0; i < ids.size(); ++i) {
-            MS2Ptr<CItemData> item = FUN_14053f870(ids[i]);
-            if (item == 0)
-                continue;
-            m_items.Add(item);
-            if (item->function.name.GetLength() > 0)
-                m_functions.insert(item->function.name);
-        }
+    if (!m_items.IsEmpty())
+        return;
+    m_items.RemoveAll();
+    std::vector<unsigned> ids;
+    CItemDataTable::GetInstance()->LoadItemNameIds(ids);
+    for (size_t i = 0; i < ids.size(); ++i) {
+        MS2Ptr<CItemData> item = FUN_14053f870(ids[i]);
+        if (!item)
+            continue;
+        m_items.Add(item);
+        if (item->function.name.GetLength() > 0)
+            m_functions.insert(item->function.name);
     }
 }
 MS2_REPLACE_METHOD(0x1419b4c70, UIItemCreateDialog, FUN_1419b4c70, 336, 0x9B91A89C);
@@ -406,15 +391,13 @@ void UIItemCreateDialog::FUN_1419b4dd0(const Scaleform::GFx::FunctionHandler::Pa
 MS2_REPLACE_METHOD(0x1419b4dd0, UIItemCreateDialog, FUN_1419b4dd0, 90, 0x17D725EF);
 
 // The context menu click: "openDropInfo" opens the drop info of the selected box item.
-// MS2-FUNCTIONAL: context menu arguments: temporary order differs
 // @0x1419b4e30
 void UIItemCreateDialog::FUN_1419b4e30(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (m_30 == 0 || m_spContextMenu == 0)
         return;
     ASListEvent evt(params);
-    Scaleform::GFx::Value target = evt.FUN_1422e2780();
-    ASObj row(target, 2);
+    ASObj row(evt.FUN_1422e2780(), 2);
     if (row.FUN_1422ba9a0())
         return;
     CStringW strFunc = row.FUN_1422bb2b0("func");
@@ -426,8 +409,8 @@ void UIItemCreateDialog::FUN_1419b4e30(const Scaleform::GFx::FunctionHandler::Pa
     if (strFunc.CompareNoCase(L"openDropInfo") == 0) {
         MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
         if ((CItemData*)item) {
-            int nBox = item->function.FUN_14054a460();
-            if (nBox) {
+            unsigned int nBox = item->function.FUN_14054a460();
+            if (nBox > 0) {
                 UIItemDropInfoDialog* pDialog = Unk_IcGetDialog<UIItemDropInfoDialog>(0x4f74);
                 if (pDialog) {
                     pDialog->FUN_140c3b7d0(nItemId, nBox);
@@ -440,17 +423,17 @@ void UIItemCreateDialog::FUN_1419b4e30(const Scaleform::GFx::FunctionHandler::Pa
 MS2_REPLACE_METHOD(0x1419b4e30, UIItemCreateDialog, FUN_1419b4e30, 584, 0x6CAD080F);
 
 // The item id of the selected row: the label starts with "[<id>]".
-// MS2-FUNCTIONAL: list selection temporaries differ
 // @0x1419b5080
 int UIItemCreateDialog::FUN_1419b5080()
 {
     MS2Ptr<Unk_IcList> list = FUN_140c02900("m_items");
-    if (list == 0)
+    if (!list)
         return 0;
     CStringW strLabel = list->FUN_1422dd520();
     if (strLabel.IsEmpty())
         return 0;
-    return FUN_140718200(FUN_14083f330(strLabel, L'[', L']'));
+    CStringW strId = FUN_14083f330(strLabel, L'[', L']');
+    return FUN_140718200(strId);
 }
 MS2_REPLACE_METHOD(0x1419b5080, UIItemCreateDialog, FUN_1419b5080, 274, 0xAE5E507B);
 
@@ -467,11 +450,10 @@ int UIItemCreateDialog::FUN_1419b51a0()
 MS2_REPLACE_METHOD(0x1419b51a0, UIItemCreateDialog, FUN_1419b51a0, 206, 0xF74AB5D1);
 
 // The enchant level of a created item: the level above 15, capped by the item's limit.
-// MS2-FUNCTIONAL: enchant clamp branch layout differs
 // @0x1419b5280
 unsigned UIItemCreateDialog::FUN_1419b5280(int nItemId, unsigned nLevel)
 {
-    if (nLevel < 0x10)
+    if (nLevel <= 0xf)
         return 0;
     MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
     if (item == 0)
@@ -479,9 +461,9 @@ unsigned UIItemCreateDialog::FUN_1419b5280(int nItemId, unsigned nLevel)
     unsigned nMax = item->FUN_14053e9e0();
     if (nMax == 0)
         return 0;
-    if (nLevel - 0xf < nMax)
-        nMax = nLevel - 0xf;
-    return nMax;
+    unsigned nEnchant = nLevel - 0xf;
+    nEnchant = nEnchant < nMax ? nEnchant : nMax;
+    return nEnchant;
 }
 MS2_REPLACE_METHOD(0x1419b5280, UIItemCreateDialog, FUN_1419b5280, 226, 0x663C0A39);
 
@@ -521,17 +503,14 @@ void UIItemCreateDialog::FUN_1419b54a0(CCCompareItemPacket& packet)
 MS2_REPLACE_METHOD(0x1419b54a0, UIItemCreateDialog, FUN_1419b54a0, 186, 0x285F60FD);
 
 // The picked item changed: fill the rank combo and reset the period.
-// MS2-FUNCTIONAL: temporaries ordered differently
 // @0x1419b5560
 void UIItemCreateDialog::FUN_1419b5560(int nItemId, int nRank)
 {
-    MS2Ptr<Unk_IcCombo> combo = FUN_140c28560("m_itemGrade");
-    if ((Unk_IcCombo*)combo)
+    if (MS2Ptr<Unk_IcCombo> combo = FUN_140c28560("m_itemGrade"))
         FUN_1418fc840(combo, nItemId, nRank);
     MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
     if ((CItemData*)item) {
-        MS2Ptr<Unk_IcInput> input = FUN_140e35bd0("m_periodInput");
-        if ((Unk_IcInput*)input) {
+        if (MS2Ptr<Unk_IcInput> input = FUN_140e35bd0("m_periodInput")) {
             input->FUN_1422e0ab0(L"0");
             input->FUN_1422c1fe0(1);
         }
@@ -684,12 +663,10 @@ void UIItemCreateDialog::FUN_1419b6350()
 MS2_REPLACE_METHOD(0x1419b6350, UIItemCreateDialog, FUN_1419b6350, 1078, 0x57B2A9BC);
 
 // Fill the function list with the item function names.
-// MS2-FUNCTIONAL: set iteration shape differs
 // @0x1419b6790
 void UIItemCreateDialog::FUN_1419b6790()
 {
-    MS2Ptr<Unk_IcList> list = FUN_140c02900("m_function");
-    if ((Unk_IcList*)list) {
+    if (MS2Ptr<Unk_IcList> list = FUN_140c02900("m_function")) {
         list->FUN_1422dd1d0();
         for (std::set<CStringW>::iterator it = m_functions.begin(); it != m_functions.end(); ++it)
             list->FUN_1422dd310(*it);
@@ -1025,7 +1002,6 @@ TiXmlElement* ItemOptionDebug::FUN_1419b7b10(int nGroup, int nStat)
 MS2_REPLACE_METHOD(0x1419b7b10, ItemOptionDebug, FUN_1419b7b10, 737, 0x51695B5A);
 
 // <value name="<stat>" minimum maximum><output option count/>..</value>
-// MS2-FUNCTIONAL: XML builder: local layout differs
 // @0x1419b7e00
 TiXmlElement* ItemOptionDebug::FUN_1419b7e00(int nGroup, int nStat)
 {
@@ -1039,10 +1015,10 @@ TiXmlElement* ItemOptionDebug::FUN_1419b7e00(int nGroup, int nStat)
     FUN_1419b6fc0(nGroup, nStat, counts);
     if (!counts.IsEmpty()) {
         for (POSITION pos = counts.GetHeadPosition(); pos; counts.GetNext(pos)) {
-            __int64 nKey = counts.GetKeyAt(pos);
+            int nKey = (int)counts.GetKeyAt(pos);
             int nCount = counts.GetValueAt(pos);
             TiXmlElement* pOutput = new TiXmlElement("output");
-            FUN_140873ce0(pOutput, "option", (int)nKey);
+            FUN_140873ce0(pOutput, "option", nKey);
             FUN_140873ce0(pOutput, "count", nCount);
             FUN_14086e090(pValue, pOutput);
         }
@@ -1076,12 +1052,11 @@ TiXmlElement* ItemOptionDebug::FUN_1419b80e0(int nGroup, unsigned nSpecial)
 }
 MS2_REPLACE_METHOD(0x1419b80e0, ItemOptionDebug, FUN_1419b80e0, 737, 0x232FA530);
 
-// MS2-FUNCTIONAL: XML builder: local layout differs
 // @0x1419b83d0
 TiXmlElement* ItemOptionDebug::FUN_1419b83d0(int nGroup, unsigned nSpecial)
 {
-    int nMinimum = (int)FUN_1419b7520(nGroup, nSpecial);
-    int nMaximum = (int)FUN_1419b7670(nGroup, nSpecial);
+    unsigned nMinimum = (unsigned)FUN_1419b7520(nGroup, nSpecial);
+    unsigned nMaximum = (unsigned)FUN_1419b7670(nGroup, nSpecial);
     TiXmlElement* pValue = new TiXmlElement("value");
     FUN_140874050(pValue, "name", FUN_14016a600(FUN_140630e10(nSpecial), 0));
     FUN_140873ce0(pValue, "minimum", nMinimum);
@@ -1189,17 +1164,17 @@ void Unk_ItemOptionSimulator::FUN_1419b9030(int nItemId, int nRank, MS2Ptr<CItem
 }
 MS2_REPLACE_METHOD(0x1419b9030, Unk_ItemOptionSimulator, FUN_1419b9030, 440, 0x5EA07D29);
 
-// MS2-FUNCTIONAL: MS2Ptr copy / dtor sequence in the multimap walk differs
 // @0x1419b91f0
 MS2Ptr<ItemOptionDebug> Unk_ItemOptionSimulator::FUN_1419b91f0(int nItemId, int nRank)
 {
     POSITION pos = m_mapItems.FindFirstWithKey(nItemId);
     while (pos) {
         MS2Ptr<ItemOptionDebug> debug = m_mapItems.GetNextValueWithKey(pos, nItemId);
-        if (!debug)
+        if (debug == 0)
             continue;
-        if (debug->m_nRank == nRank)
-            return debug;
+        if (debug->m_nRank != nRank)
+            continue;
+        return debug;
     }
     return MS2Ptr<ItemOptionDebug>(0);
 }
