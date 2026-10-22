@@ -8349,3 +8349,15 @@ compress2	142724100	func
 ?GetClassString@VM@AS3@GFx@Scaleform@@QEBAAEAVString@fl@Classes@234@XZ	142507ef0	func
 ?CheckCoerce@ArrayBase@AS3@GFx@Scaleform@@QEBA?AVCheckResult@234@AEBVTraits@ClassTraits@234@AEBVValue@234@AEAV8234@@Z	14255afd0	func
 ?GetClassVectorNumber@VM@AS3@GFx@Scaleform@@QEBAAEAVClass@234@XZ	142508230	func
+?GetStringCommon@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HPEAX0H@Z	14028de60	func
+?SendRequestItemInventory@Unk_Inventory@@QEAAXE@Z	140a62cc0	func
+?g_143b01a60@@3UVector3@@B	143b01a60	data
+?g_143a08ce8@@3UVector3@@B	143a08ce8	data
+?g_143a08cf8@@3UVector3@@B	143a08cf8	data
+?DAT_143b01a60@@3UVector3@@B	143b01a60	data
+??0Vector3@@QEAA@XZ	1402bd040	func
+??4Vector3@@QEAAAEAU0@AEBU0@@Z	140194470	func
+??0Unk_PtVec3@@QEAA@AEBUVector3@@@Z	14027dcf0	func
+??0Unk_SSGNiPt3@@QEAA@AEBUVector3@@@Z	14027dcf0	func
+??0Unk_UhPoint3@@QEAA@AEBUVector3@@@Z	14027dcf0	func
+??0Unk_RsNiPoint3@@QEAA@AEBUVector3@@@Z	14027dcf0	func
