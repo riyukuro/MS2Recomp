@@ -8265,3 +8265,10 @@ compress2	142724100	func
 ?GetStringCommon@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@W4EBanStringId@@@Z	14028de60	func
 ?GetStringCommonByKey@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@AEBV12@@Z	14028b8e0	func
 ?GetStringTable@@YAPEAVCStringTable@@XZ	1401a9d70	func
+?EOFErrorCI@fl_errors@AS3@GFx@Scaleform@@3UClassInfo@234@B	14314ee30	data
+?IOErrorCI@fl_errors@AS3@GFx@Scaleform@@3UClassInfo@234@B	14314ede0	data
+?IllegalOperationErrorCI@fl_errors@AS3@GFx@Scaleform@@3UClassInfo@234@B	14314ed40	data
+?InvalidSWFErrorCI@fl_errors@AS3@GFx@Scaleform@@3UClassInfo@234@B	14314ed90	data
+?MemoryErrorCI@fl_errors@AS3@GFx@Scaleform@@3UClassInfo@234@B	14314ee80	data
+?ScriptTimeoutErrorCI@fl_errors@AS3@GFx@Scaleform@@3UClassInfo@234@B	14314eed0	data
+?StackOverflowErrorCI@fl_errors@AS3@GFx@Scaleform@@3UClassInfo@234@B	14314ef20	data
