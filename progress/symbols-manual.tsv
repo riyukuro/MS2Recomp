@@ -8344,3 +8344,6 @@ compress2	142724100	func
 ?AS3hasOwnProperty@Object@fl@InstanceTraits@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@456@AEAVVM@456@AEBVValue@456@AEAV9456@IPEBV9456@@Z	1423fa9e0	func
 ?AS3propertyIsEnumerable@Object@fl@InstanceTraits@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@456@AEAVVM@456@AEBVValue@456@AEAV9456@IPEBV9456@@Z	1423fd170	func
 ?AvmTextFieldCSSHolder_vftable@AS3@GFx@Scaleform@@3QBQEAXB	14316b3f0	data
+?AS3toString@String@fl@InstanceTraits@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@456@AEAVVM@456@AEBVValue@456@AEAV9456@IPEBV9456@@Z	142402a90	func
+?AS3valueOf@String@fl@InstanceTraits@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@456@AEAVVM@456@AEBVValue@456@AEAV9456@IPEBV9456@@Z	142403880	func
+?GetClassString@VM@AS3@GFx@Scaleform@@QEBAAEAVString@fl@Classes@234@XZ	142507ef0	func
