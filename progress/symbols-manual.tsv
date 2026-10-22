@@ -7968,3 +7968,6 @@ sfr_atan2f_thunk	14280f28e	func
 ?MouseCursorCI@fl_ui@AS3@GFx@Scaleform@@3UClassInfo@234@B	14316d270	data
 ?MultitouchCI@fl_ui@AS3@GFx@Scaleform@@3UClassInfo@234@B	14316d2c0	data
 ?MultitouchInputModeCI@fl_ui@AS3@GFx@Scaleform@@3UClassInfo@234@B	14316d310	data
+?GetMaxTouchPoints@MovieImpl@GFx@Scaleform@@QEBAIXZ	14256f780	func
+?GetMultitouchInputMode@MovieImpl@GFx@Scaleform@@QEBA?AW4MultitouchInputMode@123@XZ	14256f920	func
+?GetSupportedGesturesMask@MovieImpl@GFx@Scaleform@@QEBAKXZ	14256fd70	func
