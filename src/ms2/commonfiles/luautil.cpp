@@ -312,19 +312,19 @@ void CLua::Validate()
         m_bError = true;
         return;
     }
-    FUN_140674100(0, 0);
-    FUN_140674290(0);
-    FUN_140674420(0, 0);
-    FUN_1406745e0(0, 0);
-    FUN_140674bb0(0, "");
-    FUN_140675730(0, 0, 0);
-    FUN_140675920(0);
-    FUN_140675ab0(0);
-    FUN_140675c30(0);
-    FUN_140675e00(0, 0, 0, 0);
-    FUN_140676020(0, 0, 0, 0, 0, 0, 0);
-    FUN_1406762d0(0, 0, 0, 0);
-    FUN_1406764e0(0, 0);
+    CalcMsiR(0, 0);
+    CalcRmsiR(0);
+    CalcPcAsiR(0, 0);
+    CalcNpcAsiR(0, 0);
+    CalcMarketRegisterFee(0, "");
+    CalcResolvePaneltyPrice(0, 0, 0);
+    CalcKillCountBonusExpRate(0);
+    CalcKillCountGrade(0);
+    CalcKillCountMsg(0);
+    CalcKillCount(0, 0, 0, 0);
+    CalcSendMailFee(0, 0, 0, 0, 0, 0, 0);
+    CalcNpcSpawnWeight(0, 0, 0, 0);
+    CalcTaxiCharge(0, 0);
 }
 
 // @0x140673670
@@ -453,7 +453,7 @@ int CLua::Truncate(double dValue, int nDigits)
 }
 
 // @0x140674100
-float CLua::FUN_140674100(long long p2, int unused) {
+float CLua::CalcMsiR(long long p2, int unused) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x261, 0);
@@ -470,7 +470,7 @@ float CLua::FUN_140674100(long long p2, int unused) {
 }
 
 // @0x140674290
-float CLua::FUN_140674290(long long p2) {
+float CLua::CalcRmsiR(long long p2) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x277, 0);
@@ -487,7 +487,7 @@ float CLua::FUN_140674290(long long p2) {
 }
 
 // @0x140674420
-float CLua::FUN_140674420(long long p2, float p3) {
+float CLua::CalcPcAsiR(long long p2, float p3) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x28d, 0);
@@ -505,7 +505,7 @@ float CLua::FUN_140674420(long long p2, float p3) {
 }
 
 // @0x1406745e0
-float CLua::FUN_1406745e0(long long p2, float p3) {
+float CLua::CalcNpcAsiR(long long p2, float p3) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x2a4, 0);
@@ -558,7 +558,7 @@ float CLua::FUN_140674a70(long long value,float rate,long long bonus) {
 }
 
 // @0x140674bb0
-long long CLua::FUN_140674bb0(int p2, const CString& p3) {
+long long CLua::CalcMarketRegisterFee(int p2, const CString& p3) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x304, 0);
@@ -576,7 +576,7 @@ long long CLua::FUN_140674bb0(int p2, const CString& p3) {
 }
 
 // @0x140674d70
-bool CLua::FUN_140674d70(const CString& p2, long long* p3, long long* p4) {
+bool CLua::CalcMarketSellPriceMinMaxMusicScore(const CString& p2, long long* p3, long long* p4) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x31c, 0);
@@ -595,7 +595,7 @@ bool CLua::FUN_140674d70(const CString& p2, long long* p3, long long* p4) {
 }
 
 // @0x140674f30
-long long CLua::FUN_140674f30(long long p2, int p3, int p4, int p5) {
+long long CLua::CalcBlackMarketBuyFeeCost(long long p2, int p3, int p4, int p5) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x2eb, 0);
@@ -615,7 +615,7 @@ long long CLua::FUN_140674f30(long long p2, int p3, int p4, int p5) {
 }
 
 // @0x140675150
-float CLua::FUN_140675150(int p2) {
+float CLua::CalcBlackMarketCostRate(int p2) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x334, 0);
@@ -632,7 +632,7 @@ float CLua::FUN_140675150(int p2) {
 }
 
 // @0x1406752e0
-long long CLua::FUN_1406752e0(long long p2) {
+long long CLua::CalcBlackMarketRegisterDeposit(long long p2) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x34a, 0);
@@ -649,7 +649,7 @@ long long CLua::FUN_1406752e0(long long p2) {
 }
 
 // @0x140675470
-float CLua::FUN_140675470() {
+float CLua::CalcBlackMarketRegisterDepositPercent() {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x360, 0);
@@ -665,7 +665,7 @@ float CLua::FUN_140675470() {
 }
 
 // @0x1406755d0
-long long CLua::FUN_1406755d0() {
+long long CLua::CalcBlackMarketRegisterDepositMax() {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x374, 0);
@@ -681,7 +681,7 @@ long long CLua::FUN_1406755d0() {
 }
 
 // @0x140675730
-int CLua::FUN_140675730(unsigned short p2, int p3, int p4) {
+int CLua::CalcResolvePaneltyPrice(unsigned short p2, int p3, int p4) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x388, 0);
@@ -700,7 +700,7 @@ int CLua::FUN_140675730(unsigned short p2, int p3, int p4) {
 }
 
 // @0x140675920
-double CLua::FUN_140675920(int p2) {
+double CLua::CalcKillCountBonusExpRate(int p2) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x3a0, 0);
@@ -717,7 +717,7 @@ double CLua::FUN_140675920(int p2) {
 }
 
 // @0x140675ab0
-int CLua::FUN_140675ab0(int p2) {
+int CLua::CalcKillCountGrade(int p2) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x3b6, 0);
@@ -734,7 +734,7 @@ int CLua::FUN_140675ab0(int p2) {
 }
 
 // @0x140675c30
-CString CLua::FUN_140675c30(int p3) {
+CString CLua::CalcKillCountMsg(int p3) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x3cc, 0);
@@ -751,7 +751,7 @@ CString CLua::FUN_140675c30(int p3) {
 }
 
 // @0x140675e00
-unsigned int CLua::FUN_140675e00(unsigned short p2, unsigned short p3, unsigned int p4, int p5) {
+unsigned int CLua::CalcKillCount(unsigned short p2, unsigned short p3, unsigned int p4, int p5) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x3e2, 0);
@@ -771,7 +771,7 @@ unsigned int CLua::FUN_140675e00(unsigned short p2, unsigned short p3, unsigned 
 }
 
 // @0x140676020
-long long CLua::FUN_140676020(long long p2, long long p3, long long p4, long long p5, long long p6, long long p7, long long p8) {
+long long CLua::CalcSendMailFee(long long p2, long long p3, long long p4, long long p5, long long p6, long long p7, long long p8) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x3fb, 0);
@@ -794,7 +794,7 @@ long long CLua::FUN_140676020(long long p2, long long p3, long long p4, long lon
 }
 
 // @0x1406762d0
-int CLua::FUN_1406762d0(int p2, int p3, int p4, int p5) {
+int CLua::CalcNpcSpawnWeight(int p2, int p3, int p4, int p5) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x417, 0);
@@ -814,7 +814,7 @@ int CLua::FUN_1406762d0(int p2, int p3, int p4, int p5) {
 }
 
 // @0x1406764e0
-int CLua::FUN_1406764e0(int p2, unsigned short p3) {
+int CLua::CalcTaxiCharge(int p2, unsigned short p3) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x430, 0);
@@ -832,7 +832,7 @@ int CLua::FUN_1406764e0(int p2, unsigned short p3) {
 }
 
 // @0x1406766a0
-int CLua::FUN_1406766a0(unsigned short p2) {
+int CLua::CalcAirTaxiCharge(unsigned short p2) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x447, 0);
@@ -849,7 +849,7 @@ int CLua::FUN_1406766a0(unsigned short p2) {
 }
 
 // @0x140676830
-int CLua::FUN_140676830(unsigned short p2, unsigned int p3) {
+int CLua::CalcRevivalMerat(unsigned short p2, unsigned int p3) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x45d, 0);
@@ -867,7 +867,7 @@ int CLua::FUN_140676830(unsigned short p2, unsigned int p3) {
 }
 
 // @0x1406769f0
-int CLua::FUN_1406769f0(int p2) {
+int CLua::CalcManufactureCompleteByMerat(int p2) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x4a2, 0);
@@ -884,7 +884,7 @@ int CLua::FUN_1406769f0(int p2) {
 }
 
 // @0x140676b70
-int CLua::FUN_140676b70(int p2) {
+int CLua::CalcGetExtendCapacity(int p2) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x4b9, 0);
@@ -901,7 +901,7 @@ int CLua::FUN_140676b70(int p2) {
 }
 
 // @0x140676cf0
-long long CLua::FUN_140676cf0(int p2) {
+long long CLua::CalcGetExtendCapacityPrice(int p2) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x4d0, 0);
@@ -918,7 +918,7 @@ long long CLua::FUN_140676cf0(int p2) {
 }
 
 // @0x140676e80
-int CLua::FUN_140676e80(int p2) {
+int CLua::CalcGuildFundMax(int p2) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x4e7, 0);
@@ -935,7 +935,7 @@ int CLua::FUN_140676e80(int p2) {
 }
 
 // @0x140677000
-int CLua::FUN_140677000(int p2, int p3, int p4) {
+int CLua::CalcGuildSkillCost(int p2, int p3, int p4) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x4fe, 0);
@@ -954,7 +954,7 @@ int CLua::FUN_140677000(int p2, int p3, int p4) {
 }
 
 // @0x1406771e0
-int CLua::FUN_1406771e0(unsigned short p2, unsigned int p3, int p4) {
+int CLua::CalcRevivalMeso(unsigned short p2, unsigned int p3, int p4) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x474, 0);
@@ -973,7 +973,7 @@ int CLua::FUN_1406771e0(unsigned short p2, unsigned int p3, int p4) {
 }
 
 // @0x1406773d0
-int CLua::FUN_1406773d0() {
+int CLua::GetMesoRevivalDailyMaxCount() {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x48c, 0);
@@ -989,7 +989,7 @@ int CLua::FUN_1406773d0() {
 }
 
 // @0x140677530
-void CLua::FUN_140677530(unsigned short a, int b, long long c, int d, CIngredientContainer& rRewards)
+void CLua::CalcMeratSkinItemBreakReward(unsigned short a, int b, long long c, int d, CIngredientContainer& rRewards)
 {
     ContextPtr context = GetContext();
     if (!context)
@@ -1027,7 +1027,7 @@ void CLua::FUN_140677530(unsigned short a, int b, long long c, int d, CIngredien
 }
 
 // @0x140677910
-unsigned int CLua::FUN_140677910() {
+unsigned int CLua::CalcMeratSkinItemBreakRefundPercent() {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x543, 0);
@@ -1043,7 +1043,7 @@ unsigned int CLua::FUN_140677910() {
 }
 
 // @0x140677a70
-bool CLua::FUN_140677a70(int p2, int p3, unsigned short p4, int p5, int *p6) {
+bool CLua::CalcItemSocketMaxCount(int p2, int p3, unsigned short p4, int p5, int *p6) {
     ContextPtr context=GetContext();
     if (!context) {
         return 0;
@@ -1063,7 +1063,7 @@ bool CLua::FUN_140677a70(int p2, int p3, unsigned short p4, int p5, int *p6) {
 }
 
 // @0x140677c60
-unsigned int CLua::FUN_140677c60(unsigned int p2, unsigned int p3, unsigned int p4) {
+unsigned int CLua::CalcGatheringReceipeRewardItemCount(unsigned int p2, unsigned int p3, unsigned int p4) {
     ContextPtr context=GetContext();
     if (!context) {
         return 0;
@@ -1081,7 +1081,7 @@ unsigned int CLua::FUN_140677c60(unsigned int p2, unsigned int p3, unsigned int 
 }
 
 // @0x140677e20
-unsigned int CLua::FUN_140677e20(unsigned int p2, unsigned int p3, unsigned int p4) {
+unsigned int CLua::CalcCraftReceipeRequireItemCount(unsigned int p2, unsigned int p3, unsigned int p4) {
     ContextPtr context=GetContext();
     if (!context) {
         return 0;
@@ -1099,7 +1099,7 @@ unsigned int CLua::FUN_140677e20(unsigned int p2, unsigned int p3, unsigned int 
 }
 
 // @0x140677fe0
-double CLua::FUN_140677fe0(unsigned int p2, unsigned int p3, unsigned int p4) {
+double CLua::CalcGatheringObjectgSuccessProp(unsigned int p2, unsigned int p3, unsigned int p4) {
     ContextPtr context=GetContext();
     if (!context) {
         return 0;
@@ -1118,7 +1118,7 @@ double CLua::FUN_140677fe0(unsigned int p2, unsigned int p3, unsigned int p4) {
 }
 
 // @0x1406781c0
-unsigned int CLua::FUN_1406781c0(unsigned int p2, unsigned int p3) {
+unsigned int CLua::CalcGatheringObjectgMaxCount(unsigned int p2, unsigned int p3) {
     ContextPtr context=GetContext();
     if (!context) {
         return 0;
@@ -1135,7 +1135,7 @@ unsigned int CLua::FUN_1406781c0(unsigned int p2, unsigned int p3) {
 }
 
 // @0x140678350
-unsigned int CLua::FUN_140678350(float p2, unsigned int p3, unsigned int p4, unsigned int p5, unsigned int p6) {
+unsigned int CLua::CalcGatheringActionCount(float p2, unsigned int p3, unsigned int p4, unsigned int p5, unsigned int p6) {
     ContextPtr context=GetContext();
     if (!context) {
         return 0;
@@ -1155,7 +1155,7 @@ unsigned int CLua::FUN_140678350(float p2, unsigned int p3, unsigned int p4, uns
 }
 
 // @0x140678570
-void CLua::FUN_140678570(unsigned int p2, unsigned int p3, unsigned int p4, unsigned int p5, int *p6, int *p7) {
+void CLua::CalcOHItemAdditionalLevel(unsigned int p2, unsigned int p3, unsigned int p4, unsigned int p5, int *p6, int *p7) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x5ec, 0);
@@ -1176,7 +1176,7 @@ void CLua::FUN_140678570(unsigned int p2, unsigned int p3, unsigned int p4, unsi
 }
 
 // @0x140678760
-int CLua::FUN_140678760(int p2, int p3, int p4) {
+int CLua::CalcUnlimitedEnchantItemLevel(int p2, int p3, int p4) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x606, 0);
@@ -1195,7 +1195,7 @@ int CLua::FUN_140678760(int p2, int p3, int p4) {
 }
 
 // @0x140678940
-unsigned short CLua::FUN_140678940(unsigned short a,unsigned short b,unsigned short c) {
+unsigned short CLua::CalcLapenshardLevel(unsigned short a,unsigned short b,unsigned short c) {
     ContextPtr context=GetContext(); if(!context) { MS2_ASSERT_AT(0x61e, 0); return 0; }
     if (Unk_LockGuard guard = context->m_lock) {
         __assume(0);
@@ -1207,7 +1207,7 @@ unsigned short CLua::FUN_140678940(unsigned short a,unsigned short b,unsigned sh
 }
 
 // @0x140678b50
-int CLua::FUN_140678b50(unsigned short p2) {
+int CLua::CalcTamingPetRank(unsigned short p2) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x636, 0);
@@ -1224,7 +1224,7 @@ int CLua::FUN_140678b50(unsigned short p2) {
 }
 
 // @0x140678cd0
-long long CLua::FUN_140678cd0(long long p2, unsigned short p3) {
+long long CLua::CalcPetExp(long long p2, unsigned short p3) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x6f0, 0);
@@ -1242,7 +1242,7 @@ long long CLua::FUN_140678cd0(long long p2, unsigned short p3) {
 }
 
 // @0x140678e80
-void CLua::FUN_140678e80(int p2, int p3, unsigned short p4, long long p5, unsigned int p6, unsigned int p7, unsigned short p8, long long *p9, long long *p10) {
+void CLua::CalcPetEnchantExp(int p2, int p3, unsigned short p4, long long p5, unsigned int p6, unsigned int p7, unsigned short p8, long long *p9, long long *p10) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x707, 0);
@@ -1266,7 +1266,7 @@ void CLua::FUN_140678e80(int p2, int p3, unsigned short p4, long long p5, unsign
 }
 
 // @0x1406790e0
-long long CLua::FUN_1406790e0(int p2) {
+long long CLua::CalcPetEnchantBookCost(int p2) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x724, 0);
@@ -1283,7 +1283,7 @@ long long CLua::FUN_1406790e0(int p2) {
 }
 
 // @0x140679260
-long long CLua::FUN_140679260(int p2, int p3, unsigned short p4, long long p5) {
+long long CLua::CalcPetEnchantCost(int p2, int p3, unsigned short p4, long long p5) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x73a, 0);
@@ -1303,7 +1303,7 @@ long long CLua::FUN_140679260(int p2, int p3, unsigned short p4, long long p5) {
 }
 
 // @0x140679460
-long long CLua::FUN_140679460(int p2) {
+long long CLua::CalcPetEvolutionCost(int p2) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x752, 0);
@@ -1320,7 +1320,7 @@ long long CLua::FUN_140679460(int p2) {
 }
 
 // @0x1406795e0
-unsigned short CLua::FUN_1406795e0(int p2, unsigned short p3) {
+unsigned short CLua::CalcPetEvolutionResultLevel(int p2, unsigned short p3) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x767, 0);
@@ -1338,7 +1338,7 @@ unsigned short CLua::FUN_1406795e0(int p2, unsigned short p3) {
 }
 
 // @0x140679790
-long long CLua::FUN_140679790(int p2, int p3) {
+long long CLua::CalcItemMergeRevertMeso(int p2, int p3) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x64c, 0);
@@ -1356,7 +1356,7 @@ long long CLua::FUN_140679790(int p2, int p3) {
 }
 
 // @0x140679950
-int CLua::FUN_140679950(int p2, unsigned int p3) {
+int CLua::CalcItemMergeMaterialCount(int p2, unsigned int p3) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x663, 0);
@@ -1374,7 +1374,7 @@ int CLua::FUN_140679950(int p2, unsigned int p3) {
 }
 
 // @0x140679b00
-long long CLua::FUN_140679b00(int p2, long long p3) {
+long long CLua::CalcItemMergeRequireMeso(int p2, long long p3) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x67a, 0);
@@ -1392,7 +1392,7 @@ long long CLua::FUN_140679b00(int p2, long long p3) {
 }
 
 // @0x140679ca0
-int CLua::FUN_140679ca0(int p2, int p3, int p4, int p5) {
+int CLua::CalcQuestRewardFamePoint(int p2, int p3, int p4, int p5) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x691, 0);
@@ -1412,7 +1412,7 @@ int CLua::FUN_140679ca0(int p2, int p3, int p4, int p5) {
 }
 
 // @0x140679ea0
-float CLua::FUN_140679ea0(int p2, int p3, int p4, int p5) {
+float CLua::CalcQuestRewardExpFactorRateByRank(int p2, int p3, int p4, int p5) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x6aa, 0);
@@ -1432,7 +1432,7 @@ float CLua::FUN_140679ea0(int p2, int p3, int p4, int p5) {
 }
 
 // @0x14067a0b0
-int CLua::FUN_14067a0b0(int p2, int p3) {
+int CLua::CalcFameCompletionTicketCount(int p2, int p3) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x6c3, 0);
@@ -1450,7 +1450,7 @@ int CLua::FUN_14067a0b0(int p2, int p3) {
 }
 
 // @0x14067a260
-bool CLua::FUN_14067a260(int* item,long long* price) {
+bool CLua::CalcBlueprintCreateCost(int* item,long long* price) {
     ContextPtr context=GetContext(); if(!context) { MS2_ASSERT_AT(0x6d9, 0); return false; }
     if (Unk_LockGuard guard = context->m_lock) {
         __assume(0);
@@ -1467,8 +1467,8 @@ bool CLua::FUN_14067a260(int* item,long long* price) {
 void CLuaClient::Validate()
 {
     CLua::Validate();
-    FUN_14067a4f0(0);
-    FUN_14067a680(0, 0, 0, 0, 0);
+    CalcRevivalPrice(0);
+    CalcPcDamage(0, 0, 0, 0, 0);
 }
 
 // @0x14067a440
@@ -1484,7 +1484,7 @@ CString Exception::GetText() { return m_message; }
 bool CLuaClient::IsClient() { return false; }
 
 // @0x14067a4f0
-int CLua::FUN_14067a4f0(unsigned short p2) {
+int CLua::CalcRevivalPrice(unsigned short p2) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x793, 0);
@@ -1501,7 +1501,7 @@ int CLua::FUN_14067a4f0(unsigned short p2) {
 }
 
 // @0x14067a680
-long long CLua::FUN_14067a680(long long p2, long long p3, long long p4, float p5, float p6) {
+long long CLua::CalcPcDamage(long long p2, long long p3, long long p4, float p5, float p6) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x7a9, 0);
@@ -1522,7 +1522,7 @@ long long CLua::FUN_14067a680(long long p2, long long p3, long long p4, float p5
 }
 
 // @0x14067a8d0
-int CLua::FUN_14067a8d0(unsigned short p2) {
+int CLua::CalcAvailableSkillPoint(unsigned short p2) {
     ContextPtr context=GetContext();
     if (!context) {
         MS2_ASSERT_AT(0x7c3, 0);
@@ -1539,7 +1539,7 @@ int CLua::FUN_14067a8d0(unsigned short p2) {
 }
 
 // @0x14067aa60
-unsigned int CLua::FUN_14067aa60(const Unk_OffenseScore* score) {
+unsigned int CLua::CalePcOffenseScore(const Unk_OffenseScore* score) {
     ContextPtr context=GetContext(); if(!context) { MS2_ASSERT_AT(0x7d9, 0); return 0; }
     if (Unk_LockGuard guard = context->m_lock) {
         __assume(0);
@@ -1583,7 +1583,7 @@ unsigned int CLua::FUN_14067aa60(const Unk_OffenseScore* score) {
 }
 
 // @0x14067b230
-unsigned int CLua::FUN_14067b230(const Unk_DefenseScore* score) {
+unsigned int CLua::CalePcDefenseScore(const Unk_DefenseScore* score) {
     ContextPtr context=GetContext(); if(!context) { MS2_ASSERT_AT(0x80f, 0); return 0; }
     if (Unk_LockGuard guard = context->m_lock) {
         __assume(0);

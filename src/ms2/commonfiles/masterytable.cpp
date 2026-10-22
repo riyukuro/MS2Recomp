@@ -645,7 +645,7 @@ int CMasteryTable::LimitState(int nReceipeId)
     int nHeld = 0;
     g_143ab3150.Lookup(nReceipeId, nHeld);
     unsigned nCount = nHeld;
-    double dLimit = FUN_1401c0db0()->FUN_140677fe0(nCount, sp->m_nHighPropLimit, sp->m_nNormalPropLimit);
+    double dLimit = FUN_1401c0db0()->CalcGatheringObjectgSuccessProp(nCount, sp->m_nHighPropLimit, sp->m_nNormalPropLimit);
     if (FUN_14028d470((float)dLimit, 0.0f))
         return 3;
     if (nCount < sp->m_nHighPropLimit)

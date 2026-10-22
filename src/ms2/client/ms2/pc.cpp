@@ -4337,7 +4337,7 @@ void PC::vfunc_126(MS2Ptr<Unk_PCArg125> spInfo, int nLayer)
         unsigned int nHighMax = nRightMax > nLeftMax ? nRightMax : nLeftMax;
         int nAddMin = 0;
         int nAddMax = 0;
-        FUN_1401c0db0()->FUN_140678570(nLow, nHigh, nLowMax, nHighMax, &nAddMin, &nAddMax);
+        FUN_1401c0db0()->CalcOHItemAdditionalLevel(nLow, nHigh, nLowMax, nHighMax, &nAddMin, &nAddMax);
         nAttackMin += nAddMin;
         nAttackMax += nAddMax;
         break;

@@ -461,7 +461,7 @@ void UIPCInfoDialog::FUN_14132c330(CPCDataPack* pPack)
             unsigned int nHighMax = nLeftMax < nRightMax ? nRightMax : nLeftMax;
             int nAddMin = 0;
             int nAddMax = 0;
-            FUN_1401c0db0()->FUN_140678570(nLow, nHigh, nLowMax, nHighMax, &nAddMin, &nAddMax);
+            FUN_1401c0db0()->CalcOHItemAdditionalLevel(nLow, nHigh, nLowMax, nHighMax, &nAddMin, &nAddMax);
             nAttackMin += nAddMin;
             nAttackMax += nAddMax;
             break;
@@ -1512,7 +1512,7 @@ __int64 UIPCInfoDialog::FUN_141334890()
         score.m_b0 = (__int64)FUN_141335940(0x1e, &fA, &fB, &fC);
         score.m_b8 = FUN_141335d20(0xb1, true, &fA, &fB, &fC);
         score.m_bc = FUN_141335d20(0xb2, true, &fA, &fB, &fC);
-        return (int)FUN_1401c0db0()->FUN_14067aa60(&score);
+        return (int)FUN_1401c0db0()->CalePcOffenseScore(&score);
     }
     int nFieldLevel = 0;
     MS2Ptr<Unk_PciFieldInfo> spField = FUN_1403ed2d0()->FUN_141bd30a0();
@@ -1533,7 +1533,7 @@ __int64 UIPCInfoDialog::FUN_141334890()
     float fA3, fB3, fC3;
     __int64 nCritDamage = (__int64)FUN_141335d20(0xcd, false, &fA3, &fB3, &fC3);
     float fDamage = FUN_1401c0db0()->FUN_1406747a0(m_spInfo->m_1c, nDex, nLuk, nBase, nAccuracy, nCritDamage);
-    __int64 nScore = FUN_1401c0db0()->FUN_14067a680(nMeanAttack, nAttackMin, nAttackMax, fCritRate, fDamage);
+    __int64 nScore = FUN_1401c0db0()->CalcPcDamage(nMeanAttack, nAttackMin, nAttackMax, fCritRate, fDamage);
     return nScore;
 }
 MS2_REPLACE_METHOD(0x141334890, UIPCInfoDialog, FUN_141334890, 2554, 0xA471D6B9);
@@ -1568,7 +1568,7 @@ __int64 UIPCInfoDialog::FUN_141335290()
         score.m_64 = FUN_141335d20(0x24, true, &fA, &fB, &fC);
         score.m_68 = (__int64)FUN_141335940(5, &fA, &fB, &fC);
         score.m_70 = (__int64)FUN_141335d20(0x37, false, &fA, &fB, &fC);
-        return (int)FUN_1401c0db0()->FUN_14067b230(&score);
+        return (int)FUN_1401c0db0()->CalePcDefenseScore(&score);
     }
     return m_spInfo->m_aStats2[0x14];
 }

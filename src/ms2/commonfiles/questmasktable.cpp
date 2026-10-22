@@ -889,7 +889,7 @@ void FUN_140762500(int nQuestId, Unk_QuestRewardCalc& calc)
     if (spData->m_50 != 5)
     {
         int nExtra = calc.m_enabled ? spData->m_complete.m_rewardExpExtra : 0;
-        float fAdd = FUN_1401c0db0()->FUN_140679ea0(FUN_14074b050(spData.operator->()), spData->m_50, nExtra, spData->m_4c);
+        float fAdd = FUN_1401c0db0()->CalcQuestRewardExpFactorRateByRank(FUN_14074b050(spData.operator->()), spData->m_50, nExtra, spData->m_4c);
         if (!FUN_14028d470(fAdd, 0))
             nExp = FUN_140632990(nExp, fAdd);
     }
@@ -1004,7 +1004,7 @@ void FUN_140762c80(int nQuestId, Unk_QuestRewardCalc& calc)
     Unk_FameAlliance nAlliance = spData->m_4c;
     int nPoint = FUN_140762280(&calc, nAlliance);
     int nGrade = FameTable()->GetGradeByPoint(nAlliance, nPoint);
-    calc.m_value = FUN_1401c0db0()->FUN_140679ca0(nKind, nGrade, pReward->m_useMainFamePoint, spData->m_4c);
+    calc.m_value = FUN_1401c0db0()->CalcQuestRewardFamePoint(nKind, nGrade, pReward->m_useMainFamePoint, spData->m_4c);
     calc.m_bonus = 0;
 }
 MS2_REPLACE(0x140762c80, FUN_140762c80, 331, 0xDADB60B6);

@@ -128,7 +128,7 @@ Unk_MCastingBar* FUN_140ac2270(int nId);
 // The AS value setters / getters used by the Invoke helpers of this unit.
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);
-void FUN_1422bcdd0(Scaleform::GFx::Value* pValue, unsigned long n);
+void FUN_1422bcdd0(Scaleform::GFx::Value* pValue, unsigned __int64 n);
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
@@ -284,8 +284,8 @@ public:
     Scaleform::GFx::Value FUN_140eb9e40(const char* szMethod, int a1, int a2, CStringW a3, int a4);
     Scaleform::GFx::Value FUN_140eb9f50(const char* szMethod, unsigned int a1, unsigned int a2, CStringW a3, int a4);
     Scaleform::GFx::Value FUN_140eba060(const char* szMethod, const AScript& a1, unsigned int a2);
-    Scaleform::GFx::Value FUN_140eba120(const char* szMethod, const AScript& a1, unsigned long a2, int a3);
-    Scaleform::GFx::Value FUN_140eba380(const char* szMethod, unsigned long a1, unsigned int a2, CStringW a3, int a4);
+    Scaleform::GFx::Value FUN_140eba120(const char* szMethod, const AScript& a1, unsigned __int64 a2, int a3);
+    Scaleform::GFx::Value FUN_140eba380(const char* szMethod, unsigned __int64 a1, unsigned int a2, CStringW a3, int a4);
 };
 // "m_magicScroll": the magic scroll page.
 class Unk_MScroll : public Unk_MCtl { };
@@ -742,10 +742,10 @@ void UIMasteryDialog::OnCastingFinished()
     }
     m_craft.m_nDone++;
     int nResult = FUN_140eb6d40(m_craft.m_nType, m_craft.m_nId);
-    if (m_craft.m_nTotal < m_craft.m_nDone || nResult == 0)
-        m_craft.FUN_140eadda0();
-    else
+    if (m_craft.m_nDone <= m_craft.m_nTotal && nResult != 0)
         m_craft.m_nPending = 1;
+    else
+        m_craft.FUN_140eadda0();
 }
 
 // @0x140eafa10
@@ -1374,17 +1374,17 @@ bool UIMasteryDialog::FUN_140eb4c70(int nResult, const CMsgBoxData& box)
 // @0x140eb4d40
 bool UIMasteryDialog::FUN_140eb4d40(int nResult, const CMsgBoxData& box)
 {
-    if (nResult == 0) {
-        FUN_140eb6c80();
-        CStringW strInput = box.FUN_141a02d50();
-        strInput.Remove(L',');
-        m_craft.m_nType = 1;
-        m_craft.m_nTotal = FUN_1407181a0(strInput);
-        m_craft.m_nId = box.FUN_141a02e50(0, 0);
-        m_craft.m_nDone = 1;
-        m_craft.m_nPending = 1;
-        FUN_140eb4210(m_craft.m_nId);
-    }
+    if (nResult != 0)
+        return true;
+    FUN_140eb6c80();
+    CStringW strInput = box.FUN_141a02d50();
+    strInput.Remove(L',');
+    m_craft.m_nType = 1;
+    m_craft.m_nTotal = FUN_1407181a0(strInput);
+    m_craft.m_nId = box.FUN_141a02e50(0, 0);
+    m_craft.m_nDone = 1;
+    m_craft.m_nPending = 1;
+    FUN_140eb4210(m_craft.m_nId);
     return true;
 }
 
@@ -1845,9 +1845,9 @@ CStringW UIMasteryDialog::FUN_140eb7c50(int nType)
 {
     CStringW strName = FUN_1409670c0()->FUN_14066bdd0(nType);
     int nRewards = FUN_140e5ca20()->FUN_140b6d140(nType);
-    if (nRewards == 0)
-        return strName;
-    return FUN_140bfa7f0(CStringW(L"s_mastery_subtab_mastery_name_and_reward"), strName, nRewards);
+    if (nRewards != 0)
+        return FUN_140bfa7f0(CStringW(L"s_mastery_subtab_mastery_name_and_reward"), strName, nRewards);
+    return strName;
 }
 
 // @0x140eb7d40
@@ -1855,9 +1855,9 @@ CStringW UIMasteryDialog::FUN_140eb7d40()
 {
     CStringW strName = FUN_14028b8e0(CStringW(L"s_mastery_housing"));
     int nRewards = FUN_140930e10();
-    if (nRewards == 0)
-        return strName;
-    return FUN_140bfa7f0(CStringW(L"s_mastery_subtab_mastery_name_and_reward"), strName, nRewards);
+    if (nRewards != 0)
+        return FUN_140bfa7f0(CStringW(L"s_mastery_subtab_mastery_name_and_reward"), strName, nRewards);
+    return strName;
 }
 
 // @0x140eb7e30
@@ -1943,14 +1943,14 @@ int UIMasteryDialog::FUN_140eb8410()
 }
 
 // @0x140eb8550
-bool UIMasteryDialog::FUN_140eb8550(MS2Ptr<Unk_MRec> spRec)
+int UIMasteryDialog::FUN_140eb8550(MS2Ptr<Unk_MRec> spRec)
 {
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (!pPc)
-        return false;
-    if (spRec->m_nNeedLevel == 0)
-        return true;
-    return spRec->m_nNeedLevel <= pPc->vfunc_78();
+        return 0;
+    if (spRec->m_nNeedLevel != 0)
+        return pPc->vfunc_78() >= spRec->m_nNeedLevel;
+    return 1;
 }
 
 // @0x140eb8630
@@ -2122,13 +2122,14 @@ int UIMasteryDialog::FUN_140eb8f40(const void* pA, const void* pB)
     int nLockA = FUN_140eb8cd0(spA);
     int nLockB = FUN_140eb8cd0(spB);
     if (nLockA == nLockB) {
+        int nKindB;
         int nKindA = FUN_140eb8eb0(spA);
-        int nKindB = FUN_140eb8eb0(spB);
+        nKindB = FUN_140eb8eb0(spB);
         if (nKindA == nKindB)
-            return spB->m_n18 < spA->m_n18 ? 1 : -1;
-        return nKindB < nKindA ? 1 : -1;
+            return spA->m_n18 > spB->m_n18 ? 1 : -1;
+        return nKindA > nKindB ? 1 : -1;
     }
-    return nLockA == 0 ? 1 : -1;
+    return nLockA != 0 ? -1 : 1;
 }
 
 // @0x140eb9160
@@ -2220,7 +2221,7 @@ Scaleform::GFx::Value Unk_MLevelCtrl::FUN_140eba060(const char* szMethod, const 
 }
 
 // @0x140eba120
-Scaleform::GFx::Value Unk_MLevelCtrl::FUN_140eba120(const char* szMethod, const AScript& a1, unsigned long a2, int a3)
+Scaleform::GFx::Value Unk_MLevelCtrl::FUN_140eba120(const char* szMethod, const AScript& a1, unsigned __int64 a2, int a3)
 {
     ASArgList args;
     args.FUN_1409b2800(3);
@@ -2251,7 +2252,7 @@ Scaleform::GFx::Value Unk_MInvoker::FUN_140eba2c0(const char* szMethod, int a1, 
 }
 
 // @0x140eba380
-Scaleform::GFx::Value Unk_MLevelCtrl::FUN_140eba380(const char* szMethod, unsigned long a1, unsigned int a2, CStringW a3, int a4)
+Scaleform::GFx::Value Unk_MLevelCtrl::FUN_140eba380(const char* szMethod, unsigned __int64 a1, unsigned int a2, CStringW a3, int a4)
 {
     ASArgList args;
     args.FUN_1409b2800(4);

@@ -181,7 +181,7 @@ class COptimizer { public: int FUN_1409f7ea0(); void FUN_14161d010(const egf::En
 COptimizer* FUN_1409f7c90();
 class Unk_CsoSpawnMgr { public: Unk_PCBaseFxLib* FUN_1411bf1e0(); };
 Unk_CsoSpawnMgr* FUN_140a50010();
-class CLua { public: float FUN_1406745e0(long long a, float b); };
+class CLua { public: float CalcNpcAsiR(long long a, float b); };
 CLua* FUN_1401c0db0();
 bool FUN_14028d470(float a, float b);                               // a != b (with epsilon)
 unsigned char FUN_140a7c8d0(NpcDataCli* pData);                     // NpcDataCli::GetNametag
@@ -870,7 +870,7 @@ float CNpc::vfunc_115(float a, float b, float c, float d, int nFlag, int* pOut)
 // @0x141090950
 float CNpc::vfunc_98(float f)
 {
-    return FUN_1401c0db0()->FUN_1406745e0(FUN_141670a00(0xd), f);
+    return FUN_1401c0db0()->CalcNpcAsiR(FUN_141670a00(0xd), f);
 }
 
 // @0x141090ba0

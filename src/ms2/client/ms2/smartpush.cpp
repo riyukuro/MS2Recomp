@@ -1154,7 +1154,7 @@ void CSmartPushAutoInteraction::vfunc_3()
         return;
     int nUsed = 0;
     FUN_140450290(&DAT_143ab3150, nId, &nUsed);
-    unsigned nAvail = FUN_1401c0db0()->FUN_1406781c0(spRecipe->m_nCountA, spRecipe->m_nCountB) - nUsed;
+    unsigned nAvail = FUN_1401c0db0()->CalcGatheringObjectgMaxCount(spRecipe->m_nCountA, spRecipe->m_nCountB) - nUsed;
     if (nAvail == 0)
     {
         FUN_1412751f0(FUN_140298ea0(CStringW(L"s_mastery_autointeraction_none_available_count")), 1, 1);
