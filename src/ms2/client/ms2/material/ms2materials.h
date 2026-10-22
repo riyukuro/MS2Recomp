@@ -430,6 +430,29 @@ public:
 };
 
 //--------------------------------------------------------------------------------------------------
+class MS2DefaultShimmerValueMaterial : public MS2StandardMaterial
+{
+    NiDeclareRTTI;
+
+public:
+    MS2DefaultShimmerValueMaterial(bool bAutoCreateCaches);
+
+    // protected in the original; public here so the hooks can bind them
+    virtual bool GenerateVertexShadeTree(Context& kContext, NiGPUProgramDescriptor* pkDesc);
+    virtual bool GeneratePixelShadeTree(Context& kContext, NiGPUProgramDescriptor* pkDesc);
+    virtual ReturnCode GenerateShaderDescArray(NiMaterialDescriptor* pkMaterialDescriptor,
+        RenderPassDescriptor* pkRenderPasses, unsigned int uiMaxCount, unsigned int& uiCountAdded);
+    virtual bool HandleVertexUVSets(Context& kContext, NiStandardVertexProgramDescriptor* pkVertDesc,
+        NiMaterialResource* pkWorldPos, NiMaterialResource* pkWorldNormal, NiMaterialResource* pkWorldReflect);
+    virtual bool HandleFinalVertexOutputs(Context& kContext, NiStandardVertexProgramDescriptor* pkVertDesc,
+        NiMaterialResource* pkWorldPos, NiMaterialResource* pkWorldNormal, NiMaterialResource* pkWorldReflect,
+        NiMaterialResource* pkViewPos, NiMaterialResource* pkProjectedPos);
+    virtual bool HandleMS2FinalPixelOutputs(Context& kContext, NiStandardPixelProgramDescriptor* pkPixDesc,
+        NiMaterialResource* pkWorldNormal, NiMaterialResource* pkViewVector, NiMaterialResource* pkDiffuseAccum,
+        NiMaterialResource* pkSpecularAccum, NiMaterialResource* pkOpacityAccum);
+};
+
+//--------------------------------------------------------------------------------------------------
 #define MS2_DECLARE_STANDARD_MATERIAL(classname)                                                    \
     class classname : public MS2StandardMaterial                                                    \
     {                                                                                               \
@@ -437,7 +460,6 @@ public:
         classname(bool bAutoCreateCaches);                                                          \
     }
 
-MS2_DECLARE_STANDARD_MATERIAL(MS2DefaultShimmerValueMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2ShimmerMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2GlassMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2DecorationMaterial);
