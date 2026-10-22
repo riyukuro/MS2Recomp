@@ -103,7 +103,7 @@ void* FUN_1403ed2d0();   void* FUN_141bd1180(void* mgr, unsigned id);   void* FU
 void* FUN_1403ed280();   int FUN_1411a49c0(void* mgr, void* rec);   void FUN_1411a6060(void* mgr, int h);
 void* FUN_141b6f910();   void* FUN_140999440(void* svc, void* id);   void* FUN_14123c460(void* ent, void* out);
 unsigned FUN_14123c580(void* ent);
-void* FUN_1416561a0(void* p);   void FUN_1411e9fa0(void* p, unsigned a, CString s, unsigned b, unsigned c);
+void* FUN_1416561a0(void* p);   void FUN_1411e9fa0(void* p, unsigned a, const CString& s, unsigned b, unsigned c);
 void FUN_1411ea430(void* p, void* sp);   void FUN_1411ea500(void* p, void* sp);   void* FUN_141655c90(void* p, void* out, unsigned id);
 void* FUN_141206030(void* svc, void* out, void* id);   char* FUN_1408ac310(void* s);   void FUN_1408a8900(void* s);
 unsigned FUN_141658e60(void* ent);

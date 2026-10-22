@@ -303,6 +303,7 @@ public:
 };
 Unk_EqAnimSvc* FUN_141b6f910();
 // The scene graph walker (0x38 bytes) of 0x1411eac40 / 0x1411ed270.
+struct Unk_EqSceneIter { bool FUN_14098df00(); NiAVObject** FUN_14107cbe0(); };   // the scene walker at +0
 class Unk_EqSceneDump
 {
 public:
@@ -310,8 +311,6 @@ public:
     void FUN_14098cf00();                               // destroy
     NiAVObject* FUN_14098e0d0(int n);                   // the next object (NULL at the end)
     void FUN_1411f88a0(bool bCulled, NiAVObject* pObject, unsigned nDepth);   // dump (recursive)
-    bool FUN_14098df00();                               // done (no current object)
-    NiAVObject** FUN_14107cbe0();                       // the current object
     void FUN_1411fa480(const NiTransform& kTransform);  // log a transform
 private:
     char m_buf[0x38];
@@ -418,11 +417,10 @@ public:
 };
 
 // @0x1411df590
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 CEquipmentSlot::CEquipmentSlot()
+    : m_nIndex(0)
 {
-    m_nIndex = 0;
-    m_items.resize(6, MS2Ptr<CEquipItem>(0));
+    m_items.resize(6, 0);
     m_bShown.resize(6, 0);
 }
 
@@ -481,22 +479,23 @@ int CEquipmentSlotLayerInfo::FUN_1411df830()
 MS2_REPLACE_METHOD(0x1411DF830, CEquipmentSlotLayerInfo, FUN_1411df830, 161, 0x240A1BD9);
 
 // @0x1411df910
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 unsigned char CEquipmentSlotLayerInfo::FUN_1411df910()
 {
     if (!m_bBusy && (m_48 == 0 || m_timer.Check(m_48) == 0)) {
         unsigned last = m_timer.GetLast();
         unsigned now = GetTickCountMs2();
-        if (now <= last || now - last <= 60000)
+        if (now > last && now - last > 60000) {
+            m_bBusy = true;
+            m_timer.Check(0);
+        } else {
             return false;
-        m_bBusy = true;
-        m_timer.Check(0);
+        }
     }
     bool bActive = !FUN_1411df700();
-    unsigned char bChanged = bActive != m_bActive;
+    unsigned char bChanged = bActive != m_bActive ? 1 : 0;
     m_bActive = bActive;
     m_3c = FUN_1411df830();
-    int nInterval;
+    int nInterval = 0;
     if (m_3c == 1) {
         CMsTime now(GetServerTime());
         if (now < m_end) {
@@ -608,7 +607,6 @@ CEquipment::CEquipment(PC* pPC)
 }
 
 // @0x1411e06e0
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 CEquipment::~CEquipment()
 {
     m_pPC = 0;
@@ -688,7 +686,6 @@ void CEquipment::FUN_1411e0c10()
 MS2_REPLACE_METHOD(0x1411E0C10, CEquipment, FUN_1411e0c10, 24, 0xB748DA86);
 
 // @0x1411e0c30
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 int CEquipment::FUN_1411e0c30(int nItemId)
 {
     ATL::CAtlList<MS2Ptr<CEquipItem> > items(10);
@@ -696,7 +693,7 @@ int CEquipment::FUN_1411e0c30(int nItemId)
     POSITION pos = items.GetHeadPosition();
     while (pos != NULL) {
         MS2Ptr<CEquipItem> spItem = items.GetNext(pos);
-        if (spItem.get() != NULL && spItem->FUN_1411dc820() == nItemId)
+        if ((bool)spItem.get() && spItem->FUN_1411dc820() == nItemId)
             return 1;
     }
     return 0;
@@ -704,7 +701,6 @@ int CEquipment::FUN_1411e0c30(int nItemId)
 MS2_REPLACE_METHOD(0x1411E0C30, CEquipment, FUN_1411e0c30, 258, 0x13E7BCD3);
 
 // @0x1411e0d40
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 int CEquipment::FUN_1411e0d40(int nItemId)
 {
     ATL::CAtlList<MS2Ptr<CEquipItem> > items(10);
@@ -712,7 +708,7 @@ int CEquipment::FUN_1411e0d40(int nItemId)
     POSITION pos = items.GetHeadPosition();
     while (pos != NULL) {
         MS2Ptr<CEquipItem> spItem = items.GetNext(pos);
-        if (spItem.get() != NULL && spItem->FUN_1411dc7a0()->FUN_140528980() && spItem->FUN_1411dc820() == nItemId)
+        if ((bool)spItem.get() && spItem->FUN_1411dc7a0()->FUN_140528980() && spItem->FUN_1411dc820() == nItemId)
             return 1;
     }
     return 0;
@@ -788,7 +784,6 @@ int CEquipment::FUN_1411e1160(SAType eType)
 MS2_REPLACE_METHOD(0x1411E1160, CEquipment, FUN_1411e1160, 231, 0xFAF634DB);
 
 // @0x1411e1250
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 float CEquipment::FUN_1411e1250(int nOption, unsigned nKey)
 {
     MS2Ptr<SAInvokeEffectStat> spStat;
@@ -801,14 +796,13 @@ float CEquipment::FUN_1411e1250(int nOption, unsigned nKey)
     if (!spStat)
         return 0;
     MS2Ptr<InvokeEffectOption> spOption;
-    if (!spStat->m_18.Lookup((Unk_InvokeOptionType)nOption, spOption))
+    if (!spStat->m_18.Lookup(reinterpret_cast<Unk_InvokeOptionType&>(nOption), spOption))
         return 0;
     return spOption->FUN_140267350();
 }
 MS2_REPLACE_METHOD(0x1411E1250, CEquipment, FUN_1411e1250, 393, 0x8631731B);
 
 // @0x1411e13e0
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 float CEquipment::FUN_1411e13e0(int nOption, unsigned nKey)
 {
     MS2Ptr<SAInvokeEffectStat> spStat;
@@ -821,7 +815,7 @@ float CEquipment::FUN_1411e13e0(int nOption, unsigned nKey)
     if (!spStat)
         return 0.0f;
     MS2Ptr<InvokeEffectOption> spOption;
-    if (!spStat->m_18.Lookup((Unk_InvokeOptionType)nOption, spOption))
+    if (!spStat->m_18.Lookup(reinterpret_cast<Unk_InvokeOptionType&>(nOption), spOption))
         return 0.0f;
     return (float)spOption->FUN_140267370();
 }
@@ -845,11 +839,10 @@ MS2Ptr<CEquipItem> CEquipment::FUN_1411e1580(__int64 nUid)
 MS2_REPLACE_METHOD(0x1411E1580, CEquipment, FUN_1411e1580, 502, 0x411B38E6);
 
 // @0x1411e1780
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 MS2Ptr<CEquipItem> CEquipment::FUN_1411e1780(int nSlot, int nLayer)
 {
     MS2Ptr<CEquipmentSlot> spSlot(0);
-    if (!m_slots.Lookup((Unk_EquipSlotId)nSlot, spSlot))
+    if (!m_slots.Lookup(reinterpret_cast<Unk_EquipSlotId&>(nSlot), spSlot))
         return 0;
     return spSlot->m_items[nLayer];
 }
@@ -1134,13 +1127,12 @@ void CEquipment::FUN_1411e3de0(int bKeepLoaded)
 MS2_REPLACE_METHOD(0x1411E3DE0, CEquipment, FUN_1411e3de0, 408, 0xF5635027);
 
 // @0x1411e3f80
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411e3f80(const ATL::CRBMap<Unk_EquipSlotId, int>& keep, int bKeepLoaded)
 {
     for (POSITION pos = m_slots.GetHeadPosition(); pos != NULL; m_slots.GetNext(pos)) {
         MS2Ptr<CEquipmentSlot> spSlot = m_slots.GetValueAt(pos);
         for (int i = 0; i < 6; i++) {
-            if (keep.Lookup((Unk_EquipSlotId)spSlot->m_nIndex) != NULL)
+            if (keep.Lookup(reinterpret_cast<Unk_EquipSlotId&>(spSlot->m_nIndex)) != NULL)
                 continue;
             MS2Ptr<CEquipItem> spItem = spSlot->m_items[i];
             if (spItem.get() != NULL) {
@@ -1195,7 +1187,6 @@ MS2Ptr<CEquipItem> CEquipment::FUN_1411e2610(NiAVObject* pObj, bool bActive, int
 MS2_REPLACE_METHOD(0x1411E2610, CEquipment, FUN_1411e2610, 1096, 0x8C22F7A4);
 
 // @0x1411e2a60
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 NiAVObjectPtr CEquipment::FUN_1411e2a60(__int64 nUid, const CString& strName, bool bDeep)
 {
     MS2Ptr<CEquipItem> spItem = FUN_1411e1580(nUid);
@@ -1205,17 +1196,20 @@ NiAVObjectPtr CEquipment::FUN_1411e2a60(__int64 nUid, const CString& strName, bo
     spItem->FUN_1411dcc80(models);
     if (models.IsEmpty())
         return 0;
-    for (unsigned i = 0; i < models.GetCount(); i++) {
+    for (size_t i = 0; i < models.GetCount(); i++) {
         MS2Ptr<CEquipModel> spModel = models[i];
         if (spModel == 0)
             continue;
         std::set<NiAVObjectPtr>* pNodes = FUN_141201c90(spModel.operator->());
         const char* pszName = strName;
-        for (NiAVObjectPtr spNode : *pNodes) {
+        std::set<NiAVObjectPtr>& nodes = *pNodes;
+        std::set<NiAVObjectPtr>::iterator itEnd = nodes.end();
+        for (std::set<NiAVObjectPtr>::iterator it = nodes.begin(); it != itEnd; ++it) {
+            NiAVObjectPtr spNode = *it;
             if (spNode->GetName() == pszName)
                 return spNode;
             if (bDeep) {
-                NiAVObjectPtr spFound = spNode->GetObjectByName(NiFixedString(pszName));
+                NiAVObjectPtr spFound = spNode->GetObjectByName(pszName);
                 if (spFound)
                     return spFound;
             }
@@ -1390,7 +1384,7 @@ void CEquipment::FUN_1411e4b30(MS2Ptr<CEquipItem> spItem)
             FUN_1411e5790(spItem);
     }
     int nLayer = spData->FUN_14052a170();
-    for (unsigned i = 0; i < pData->FUN_14053eba0()->FUN_14054b3d0(); i++) {
+    for (size_t i = 0; i < pData->FUN_14053eba0()->FUN_14054b3d0(); i++) {
         unsigned nSlot = spData->FUN_140527a90(i);
         for (int j = 5; j >= 0; j--) {
             MS2Ptr<CEquipItem> spWorn = FUN_1411e1780(nSlot, j);
@@ -1416,36 +1410,36 @@ void CEquipment::FUN_1411e4b30(MS2Ptr<CEquipItem> spItem)
 MS2_REPLACE_METHOD(0x1411E4B30, CEquipment, FUN_1411e4b30, 1469, 0xA5ED6CA1);
 
 // @0x1411e5100
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411e5100(MS2Ptr<CEquipItem> spItem)
 {
     if (m_pPC == 0 || spItem == 0)
         return;
     MS2Ptr<CItem> spData = spItem->FUN_1411dc7a0();
-    if (spData == 0)
-        return;
-    if (spData->FUN_140527840() == NULL)
+    if (spData == 0 || spData->FUN_140527840() == NULL)
         return;
     if (spData->FUN_14052a150() == 2) {
-        if (!FUN_1411ea770())
-            FUN_1411e5810(spItem, s_tagLayerExpired);
-        else
+        if (FUN_1411ea770())
             FUN_1411e58c0(spItem, s_tagLayerExpired);
+        else
+            FUN_1411e5810(spItem, s_tagLayerExpired);
     }
 }
 MS2_REPLACE_METHOD(0x1411E5100, CEquipment, FUN_1411e5100, 377, 0xE9C3365C);
 
 // @0x1411e5280
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 int CEquipment::FUN_1411e5280(int nLayer)
 {
-    for (int i = nLayer + 1; i <= 5; i++) {
+    for (int i = nLayer + 1; i < 6; i++) {
         MS2Ptr<CEquipItem> spUpper = FUN_1411e1780(9, i);
-        if (spUpper.get() != NULL && m_pPC->FUN_141662eb0(spUpper->FUN_1411dc7a0().get()) != 0)
-            return 0;
+        if (spUpper.get() != NULL) {
+            if (m_pPC->FUN_141662eb0(spUpper->FUN_1411dc7a0().get()))
+                return 0;
+        }
         MS2Ptr<CEquipItem> spLower = FUN_1411e1780(8, i);
-        if (spLower.get() != NULL && m_pPC->FUN_141662eb0(spLower->FUN_1411dc7a0().get()) != 0)
-            return 0;
+        if (spLower.get() != NULL) {
+            if (m_pPC->FUN_141662eb0(spLower->FUN_1411dc7a0().get()))
+                return 0;
+        }
     }
     return 1;
 }
@@ -1537,32 +1531,31 @@ void CEquipment::FUN_1411e58c0(MS2Ptr<CEquipItem> spItem, const CString& strTag)
 MS2_REPLACE_METHOD(0x1411E58C0, CEquipment, FUN_1411e58c0, 114, 0x3C864B8A);
 
 // @0x1411e5940
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411e5940(MS2Ptr<CEquipItem> spItem)
 {
     if (!spItem)
         return;
     MS2Ptr<CItem> spData = spItem->FUN_1411dc7a0();
-    if (!spData) {
-        Unk_ItemEquipData* pData = spData->FUN_140527840();
-        if (pData == NULL)
-            return;
-        if (pData->FUN_14053c620() == 0xe || pData->FUN_14053c620() == 0xf || pData->FUN_14053c620() == 0x16 ||
-            pData->FUN_14053c620() == 0x10 || pData->FUN_14053c620() == 0x11) {
-            int nSlot = spData->FUN_140527a20();
-            MS2Ptr<CEquipmentSlot> spSlot(0);
-            if (m_slots.Lookup((Unk_EquipSlotId)nSlot, spSlot)) {
-                bool bShown = false;
-                for (int i = 0; i < 6; i++) {
-                    MS2Ptr<CEquipItem> spWorn = spSlot->m_items[i];
-                    if (spWorn == 0)
-                        continue;
-                    if (FUN_1411ef780(spWorn, i) != 0)
-                        bShown = true;
-                }
-                if (!bShown)
-                    FUN_1411e9530(nSlot, FUN_14021c050(spData->FUN_140527a20()));
+    if (!spData)
+        return;
+    Unk_ItemEquipData* pData = spData->FUN_140527840();
+    if (pData == NULL)
+        return;
+    if (pData->FUN_14053c620() == 0xe || pData->FUN_14053c620() == 0xf || pData->FUN_14053c620() == 0x16 ||
+        pData->FUN_14053c620() == 0x10 || pData->FUN_14053c620() == 0x11) {
+        int nSlot = spData->FUN_140527a20();
+        MS2Ptr<CEquipmentSlot> spSlot(0);
+        if (m_slots.Lookup(reinterpret_cast<Unk_EquipSlotId&>(nSlot), spSlot)) {
+            int bShown = 0;
+            for (int i = 0; i < 6; i++) {
+                MS2Ptr<CEquipItem> spWorn = spSlot->m_items[i];
+                if (spWorn == 0)
+                    continue;
+                if (FUN_1411ef780(spWorn, i) != 0)
+                    bShown = 1;
             }
+            if (!bShown)
+                FUN_1411e9530(nSlot, FUN_14021c050(spData->FUN_140527a20()));
         }
     }
 }
@@ -1576,7 +1569,6 @@ void CEquipment::FUN_1411e7320()
 MS2_REPLACE_METHOD(0x1411E7320, CEquipment, FUN_1411e7320, 85, 0xE5AB6BCD);
 
 // @0x1411e7380
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411e7380()
 {
     MS2Ptr<CEquipItem> spItem = m_pPC->FUN_141655e10(7);
@@ -1594,7 +1586,9 @@ void CEquipment::FUN_1411e7380()
     for (unsigned i = 0; i < models.GetCount(); i++) {
         models[i]->vfunc_22(fScale);
         std::set<NiAVObjectPtr>* pNodes = FUN_141201c90(models[i].operator->());
-        for (std::set<NiAVObjectPtr>::iterator it = pNodes->begin(); it != pNodes->end(); ++it) {
+        std::set<NiAVObjectPtr>& nodes = *pNodes;
+        std::set<NiAVObjectPtr>::iterator itEnd = nodes.end();
+        for (std::set<NiAVObjectPtr>::iterator it = nodes.begin(); it != itEnd; ++it) {
             NiAVObjectPtr spNode = *it;
             spNode->SetScale(fScale);
         }
@@ -1679,24 +1673,22 @@ void CEquipment::FUN_1411ef740()
 MS2_REPLACE_METHOD(0x1411EF740, CEquipment, FUN_1411ef740, 52, 0xA33D0B18);
 
 // @0x1411ef780
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 int CEquipment::FUN_1411ef780(MS2Ptr<CEquipItem> spItem, int nLayer)
 {
     if (spItem == 0)
         return 0;
-    if (nLayer == 2 && m_spLayerInfo.get() != NULL && !m_spLayerInfo->FUN_1411df810())
+    if (nLayer == 2 && (bool)m_spLayerInfo.get() && !m_spLayerInfo->FUN_1411df810())
         return 0;
     return spItem->FUN_1411dc670();
 }
 MS2_REPLACE_METHOD(0x1411EF780, CEquipment, FUN_1411ef780, 225, 0x96AF8FEE);
 
 // @0x1411ef870
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 int CEquipment::FUN_1411ef870(MS2Ptr<CEquipmentSlot> spSlot, int nLayer)
 {
     if (spSlot == 0)
         return 0;
-    if (nLayer == 2 && m_spLayerInfo.get() != NULL && !m_spLayerInfo->FUN_1411df810())
+    if (nLayer == 2 && (bool)m_spLayerInfo.get() && !m_spLayerInfo->FUN_1411df810())
         return 0;
     return spSlot->m_bShown[nLayer];
 }
@@ -1761,14 +1753,13 @@ void CEquipment::FUN_1411e6ab0()
 MS2_REPLACE_METHOD(0x1411E6AB0, CEquipment, FUN_1411e6ab0, 148, 0xB5CD7ED8);
 
 // @0x1411e6b50
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411e6b50()
 {
     NiAVObject* pRoot = FUN_141b6efc0(FUN_14123c410(m_pPC));
     if (pRoot == NULL)
         return;
-    NiMesh* pMesh = NiDynamicCast(NiMesh, pRoot->GetObjectByName(NiFixedString("FA_Skin")));
-    if (m_meshes68.GetCount() != 0)
+    NiMesh* pMesh = (NiMesh*)NiDynamicCast(NiRenderObject, pRoot->GetObjectByName("FA_Skin"));
+    if (m_meshes68.GetCount() > 0)
         pMesh = m_meshes68[0];
     if (pMesh == NULL)
         return;
@@ -1781,12 +1772,10 @@ void CEquipment::FUN_1411e6b50()
     Unk_EquipSkinRecord* pRecord = static_cast<Unk_EquipSkinRecord*>(spItem->FUN_1411dc7a0()->FUN_140527870());
     CharacterDecalData* pDecal = spItem->FUN_1411dc7f0()->FUN_14053eba0()->FUN_14054b6b0();
     if (pRecord->m_f60 != 0.0f) {
-        const NiColor& kColor2 = FUN_141b6dea0(pRecord->FUN_140599fd0(2));
-        const NiColor& kColor1 = FUN_141b6dea0(pRecord->FUN_140599fd0(1));
-        const NiColor& kColor0 = FUN_141b6dea0(pRecord->FUN_140599fd0(0));
-        const CString& strTexture = pDecal->GetTexture();
         FUN_14116e3f0(pMesh, pRecord->m_f58, pRecord->m_f5c, pRecord->m_f64, pRecord->m_f60,
-            spItem->FUN_1411dc7f0()->FUN_14053ec70()->FUN_140547190(), strTexture, kColor0, kColor1, kColor2);
+            spItem->FUN_1411dc7f0()->FUN_14053ec70()->FUN_140547190(), pDecal->GetTexture(),
+            FUN_141b6dea0(pRecord->FUN_140599fd0(0)), FUN_141b6dea0(pRecord->FUN_140599fd0(1)),
+            FUN_141b6dea0(pRecord->FUN_140599fd0(2)));
     }
 }
 MS2_REPLACE_METHOD(0x1411E6B50, CEquipment, FUN_1411e6b50, 790, 0x4B9F4B63);
@@ -1922,7 +1911,6 @@ void CEquipment::FUN_1411e9020(const CString& strTag)
 MS2_REPLACE_METHOD(0x1411E9020, CEquipment, FUN_1411e9020, 362, 0x47CBC4FF);
 
 // @0x1411e9190
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411e9190(int bShow)
 {
     for (POSITION pos = m_slots.GetHeadPosition(); pos != NULL; m_slots.GetNext(pos)) {
@@ -1933,10 +1921,10 @@ void CEquipment::FUN_1411e9190(int bShow)
             MS2Ptr<ReplaceObject> spReplace = spSlot->m_replaced.GetValueAt(pos2);
             if (spReplace == 0)
                 continue;
-            if (spReplace->m_spMesh != NULL)
-                FUN_140a0b300(spReplace->m_spMesh, bShow != 0);
-            if (spReplace->m_spNode != NULL)
-                FUN_140a0b300(spReplace->m_spNode, bShow != 0);
+            if (spReplace->m_spMesh)
+                FUN_140a0b300(spReplace->m_spMesh.operator->(), bShow != 0);
+            if (spReplace->m_spNode)
+                FUN_140a0b300(spReplace->m_spNode.operator->(), bShow != 0);
         }
     }
     for (POSITION pos = m_slots.GetHeadPosition(); pos != NULL; m_slots.GetNext(pos)) {
@@ -1948,10 +1936,10 @@ void CEquipment::FUN_1411e9190(int bShow)
             if (spSlot->m_nIndex == 1)
                 continue;
             if (spSlot->m_bShown[i] != 0) {
-                if (bShow == 0)
-                    spItem->FUN_1411dcf10(s_tagCustomize);
-                else
+                if (bShow != 0)
                     spItem->FUN_1411dce60(s_tagCustomize);
+                else
+                    spItem->FUN_1411dcf10(s_tagCustomize);
             }
         }
     }
@@ -1960,47 +1948,45 @@ void CEquipment::FUN_1411e9190(int bShow)
 MS2_REPLACE_METHOD(0x1411E9190, CEquipment, FUN_1411e9190, 922, 0xDA3737DC);
 
 // @0x1411e9530
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 int CEquipment::FUN_1411e9530(int nSlot, const CString& strName)
 {
     MS2Ptr<CEquipmentSlot> spSlot(0);
-    if (!m_slots.Lookup((Unk_EquipSlotId)nSlot, spSlot))
-        return 0;
-    CString strMesh;
-    POSITION pos = s_meshSuffixes.GetHeadPosition();
-    while (pos != NULL) {
+    if (m_slots.Lookup(reinterpret_cast<Unk_EquipSlotId&>(nSlot), spSlot)) {
+        CString strMesh;
+        POSITION pos = s_meshSuffixes.GetHeadPosition();
+        while (pos != NULL) {
 #ifdef __clang__
-        strMesh = FUN_1401d2b10(strName, s_meshSuffixes.GetNext(pos));
+            strMesh = FUN_1401d2b10(strName, s_meshSuffixes.GetNext(pos));
 #else
-        strMesh = strName + s_meshSuffixes.GetNext(pos);
+            strMesh = strName + s_meshSuffixes.GetNext(pos);
 #endif
-        MS2Ptr<ReplaceObject> spReplace(0);
-        if (spSlot->m_replaced.Lookup(strMesh, spReplace) && spReplace->m_spNode != NULL && spReplace->m_spMesh != NULL &&
-            FUN_140a0b000(spReplace->m_spMesh) == NULL)
-            spReplace->m_spNode->AttachChild(spReplace->m_spMesh, true);
+            MS2Ptr<ReplaceObject> spReplace(0);
+            if (spSlot->m_replaced.Lookup(strMesh, spReplace) && (bool)spReplace->m_spNode && (bool)spReplace->m_spMesh &&
+                FUN_140a0b000(spReplace->m_spMesh.operator->()) == NULL)
+                spReplace->m_spNode->AttachChild(spReplace->m_spMesh, true);
+        }
     }
     return 1;
 }
 
 // @0x1411e9760
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 int CEquipment::FUN_1411e9760(int nSlot, const CString& strName)
 {
     MS2Ptr<CEquipmentSlot> spSlot(0);
-    if (!m_slots.Lookup((Unk_EquipSlotId)nSlot, spSlot))
-        return 0;
-    CString strMesh;
-    POSITION pos = s_meshSuffixes.GetHeadPosition();
-    while (pos != NULL) {
+    if (m_slots.Lookup(reinterpret_cast<Unk_EquipSlotId&>(nSlot), spSlot)) {
+        CString strMesh;
+        POSITION pos = s_meshSuffixes.GetHeadPosition();
+        while (pos != NULL) {
 #ifdef __clang__
-        strMesh = FUN_1401d2b10(strName, s_meshSuffixes.GetNext(pos));
+            strMesh = FUN_1401d2b10(strName, s_meshSuffixes.GetNext(pos));
 #else
-        strMesh = strName + s_meshSuffixes.GetNext(pos);
+            strMesh = strName + s_meshSuffixes.GetNext(pos);
 #endif
-        MS2Ptr<ReplaceObject> spReplace(0);
-        if (spSlot->m_replaced.Lookup(strMesh, spReplace) && spReplace->m_spNode != NULL && spReplace->m_spMesh != NULL &&
-            FUN_140a0b000(spReplace->m_spMesh) != NULL)
-            spReplace->m_spNode->DetachChild(spReplace->m_spMesh);
+            MS2Ptr<ReplaceObject> spReplace(0);
+            if (spSlot->m_replaced.Lookup(strMesh, spReplace) && (bool)spReplace->m_spNode && (bool)spReplace->m_spMesh &&
+                FUN_140a0b000(spReplace->m_spMesh.operator->()) != NULL)
+                spReplace->m_spNode->DetachChild(spReplace->m_spMesh);
+        }
     }
     return 1;
 }
@@ -2020,24 +2006,28 @@ void CEquipment::FUN_1411ea320()
 MS2_REPLACE_METHOD(0x1411EA320, CEquipment, FUN_1411ea320, 259, 0x10C77115);
 
 // @0x1411ea430
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411ea430(MS2Ptr<CEquipItem> spItem)
 {
     if (SetItemTable::GetInstance()->FUN_1407c51f0(spItem->FUN_1411dc7f0()->FUN_14053c560()))
         m_bSetDirty = true;
-    else if (spItem->FUN_1411dc7a0()->FUN_14052a170() == 3)
-        m_bSetDirty = true;
+    else {
+        int nType = spItem->FUN_1411dc7a0()->FUN_14052a170();
+        if (nType == 3)
+            m_bSetDirty = true;
+    }
 }
 MS2_REPLACE_METHOD(0x1411EA430, CEquipment, FUN_1411ea430, 191, 0x13E459D7);
 
 // @0x1411ea500
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411ea500(MS2Ptr<CEquipItem> spItem)
 {
     if (SetItemTable::GetInstance()->FUN_1407c51f0(spItem->FUN_1411dc7f0()->FUN_14053c560()))
         m_bSetDirty = true;
-    else if (spItem->FUN_1411dc7a0()->FUN_14052a170() == 3)
-        m_bSetDirty = true;
+    else {
+        int nType = spItem->FUN_1411dc7a0()->FUN_14052a170();
+        if (nType == 3)
+            m_bSetDirty = true;
+    }
 }
 MS2_REPLACE_METHOD(0x1411EA500, CEquipment, FUN_1411ea500, 191, 0xDF304086);
 
@@ -2087,7 +2077,6 @@ void CEquipment::FUN_1411ea8c0()
 MS2_REPLACE_METHOD(0x1411EA8C0, CEquipment, FUN_1411ea8c0, 308, 0xF9AC0534);
 
 // @0x1411eaa00
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411eaa00(MS2Ptr<Equipment::SetEffectInfo> spInfo)
 {
     if (spInfo == 0)
@@ -2099,7 +2088,8 @@ void CEquipment::FUN_1411eaa00(MS2Ptr<Equipment::SetEffectInfo> spInfo)
     static_cast<Unk_EqNotice&>(msg).FUN_140a531f0(Delegate<void(unsigned, CString, bool)>(this, &CEquipment::FUN_1411efcb0));
     msg.SetMode48(spInfo->m_nGroup);
     spInfo->m_nEffect = FUN_1411a49c0(CEffectService::GetInstance(), msg);
-    if ((size_t)spInfo->m_nGroup < m_setEffects.size())
+    size_t nGroup = spInfo->m_nGroup;
+    if (nGroup >= 0 && nGroup < m_setEffects.size())
         m_setEffects[spInfo->m_nGroup] = spInfo;
 }
 
@@ -2162,7 +2152,6 @@ void CEquipment::FUN_1411efcb0(unsigned nId, CString strName, bool bInserted)
 MS2_REPLACE_METHOD(0x1411EFCB0, CEquipment, FUN_1411efcb0, 147, 0x6545D614);
 
 // @0x1411efd50
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 int FUN_1411efd50(MS2Ptr<CEquipItem> spItem)
 {
     if (spItem == 0)
@@ -2170,10 +2159,11 @@ int FUN_1411efd50(MS2Ptr<CEquipItem> spItem)
     Unk_EquipItemData* pData = spItem->FUN_1411dc7f0();
     if (pData == NULL)
         return 0;
-    for (unsigned i = 0; i < pData->FUN_14053eba0()->FUN_14054b3d0(); i++) {
+    for (size_t i = 0; i < pData->FUN_14053eba0()->FUN_14054b3d0(); i++) {
         const ModelGroup* pGroup = pData->FUN_14053eba0()->FUN_14054b2f0(i);
         for (int j = 0; j < (int)pGroup->FUN_1405450c0(); j++) {
-            if (pGroup->FUN_140544fe0(j)->name0.Find("_D.nif", 0) != -1)
+            const ModelPart* pPart = pGroup->FUN_140544fe0(j);
+            if (pPart->name0.Find("_D.nif", 0) != -1)
                 return 1;
         }
     }
@@ -2181,7 +2171,6 @@ int FUN_1411efd50(MS2Ptr<CEquipItem> spItem)
 }
 
 // @0x1411ebec0
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411ebec0(MS2Ptr<CEquipItem> spItem, int nFlag)
 {
     MS2Ptr<CItem> spData = spItem->FUN_1411dc7a0();
@@ -2191,11 +2180,11 @@ void CEquipment::FUN_1411ebec0(MS2Ptr<CEquipItem> spItem, int nFlag)
     if (pData == NULL)
         return;
     int nLayer = spData->FUN_14052a170();
-    for (unsigned i = 0; i < pData->FUN_14053eba0()->FUN_14054b3d0(); i++) {
+    for (size_t i = 0; i < pData->FUN_14053eba0()->FUN_14054b3d0(); i++) {
         MS2Ptr<CEquipmentSlot> spSlot(0);
         int nSlot = FUN_141420a30(spData->FUN_140527840()->FUN_14053eba0()->FUN_14054b2f0(i)->FUN_1405451a0(),
             spData.get(), m_pPC);
-        if (m_slots.Lookup((Unk_EquipSlotId)nSlot, spSlot) && spSlot->m_items[nLayer] == spItem.get()) {
+        if (m_slots.Lookup(reinterpret_cast<Unk_EquipSlotId&>(nSlot), spSlot) && spSlot->m_items[nLayer] == spItem.get()) {
             spSlot->m_items[nLayer] = 0;
             spSlot->m_bShown[nLayer] = 0;
         }
@@ -2207,7 +2196,6 @@ void CEquipment::FUN_1411ebec0(MS2Ptr<CEquipItem> spItem, int nFlag)
 MS2_REPLACE_METHOD(0x1411EBEC0, CEquipment, FUN_1411ebec0, 711, 0xCF7FF0BD);
 
 // @0x1411ec190
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411ec190(MS2Ptr<CEquipItem> spItem, int nFlag)
 {
     MS2Ptr<CItem> spData = spItem->FUN_1411dc7a0();
@@ -2218,12 +2206,12 @@ void CEquipment::FUN_1411ec190(MS2Ptr<CEquipItem> spItem, int nFlag)
         return;
     int nLayer = spData->FUN_14052a170();
     size_t nCount = spItemData->FUN_14053eba0()->FUN_14054b3d0();
-    for (unsigned i = 0; i < nCount; i++) {
+    for (size_t i = 0; i < nCount; i++) {
         MS2Ptr<CEquipmentSlot> spSlot(0);
         int nSlot = FUN_141420990(spItemData->FUN_14053eba0()->FUN_14054b2f0(i)->FUN_1405451a0(), spData.get(), m_pPC);
         if (nSlot == 0)
             continue;
-        if (m_slots.Lookup((Unk_EquipSlotId)nSlot, spSlot)) {
+        if (m_slots.Lookup(reinterpret_cast<Unk_EquipSlotId&>(nSlot), spSlot)) {
             spSlot->m_items[nLayer] = spItem;
             spSlot->m_bShown[nLayer] = i == 0;
         }
@@ -2235,21 +2223,9 @@ void CEquipment::FUN_1411ec190(MS2Ptr<CEquipItem> spItem, int nFlag)
 MS2_REPLACE_METHOD(0x1411EC190, CEquipment, FUN_1411ec190, 736, 0xC951536C);
 
 // @0x1411ee980
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411ee980(int bMissMatch, MS2Ptr<CEquipItem> spA, MS2Ptr<CEquipItem> spB)
 {
-    if (bMissMatch == 0) {
-        if (spA.get() != NULL) {
-            spA->FUN_1411dcf10(s_tagMissMatch);
-            spA->FUN_1411dd280();
-            FUN_1411e46b0(spA);
-        }
-        if (spB.get() != NULL) {
-            spB->FUN_1411dcf10(s_tagMissMatch);
-            spB->FUN_1411dd280();
-            FUN_1411e46b0(spB);
-        }
-    } else {
+    if (bMissMatch != 0) {
         if (spA.get() != NULL) {
             spA->FUN_1411dce60(s_tagMissMatch);
             spA->FUN_1411dd280();
@@ -2260,25 +2236,34 @@ void CEquipment::FUN_1411ee980(int bMissMatch, MS2Ptr<CEquipItem> spA, MS2Ptr<CE
             spB->FUN_1411dd280();
             FUN_1411e4b30(spB);
         }
+    } else {
+        if (spA.get() != NULL) {
+            spA->FUN_1411dcf10(s_tagMissMatch);
+            spA->FUN_1411dd280();
+            FUN_1411e46b0(spA);
+        }
+        if (spB.get() != NULL) {
+            spB->FUN_1411dcf10(s_tagMissMatch);
+            spB->FUN_1411dd280();
+            FUN_1411e46b0(spB);
+        }
     }
 }
 MS2_REPLACE_METHOD(0x1411EE980, CEquipment, FUN_1411ee980, 568, 0xF46D1936);
 
 // @0x1411eebc0
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411eebc0()
 {
     for (POSITION pos = m_slots.GetHeadPosition(); pos != NULL; m_slots.GetNext(pos)) {
         Unk_EquipSlotId nSlot = m_slots.GetKeyAt(pos);
         MS2Ptr<CEquipmentSlot> spSlot = m_slots.GetValueAt(pos);
-        if (spSlot.get() == NULL)
-            continue;
-        for (int i = 0; i < 6; i++) {
-            MS2Ptr<CEquipItem> spItem = spSlot->m_items[i];
-            if (spItem.get() != NULL) {
-                int nItemId = spItem->FUN_1411dc820();
-                Unk_EquipLog(CLogString::GetInstance(), 0xc, 0x13, L"[Slot {0}][Layer {1}][Item {2}]", nSlot, i,
-                    CStringTable::GetInstance()->FUN_141811980(1, nItemId));
+        if (spSlot.get() != NULL) {
+            for (int i = 0; i < 6; i++) {
+                MS2Ptr<CEquipItem> spItem = spSlot->m_items[i];
+                if (spItem.get() != NULL) {
+                    Unk_EquipLog(CLogString::GetInstance(), 0xc, 0x13, L"[Slot {0}][Layer {1}][Item {2}]", nSlot, i,
+                        CStringTable::GetInstance()->FUN_141811980(1, spItem->FUN_1411dc820()));
+                }
             }
         }
     }
@@ -2303,17 +2288,19 @@ void CEquipment::FUN_1411eeda0()
 MS2_REPLACE_METHOD(0x1411EEDA0, CEquipment, FUN_1411eeda0, 429, 0x6BA0B7ED);
 
 // @0x1411e9fa0
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
-int CEquipment::FUN_1411e9fa0(int nSlot, CString strName, int nType, int bByName)
+int CEquipment::FUN_1411e9fa0(int nSlot, const CString& strName, int nType, int bByName)
 {
-    if (bByName == 0) {
-        if (nSlot != 1 && FUN_1411e1860(nSlot, 6, 0).get() != NULL)
+    if (bByName != 0) {
+        MS2Ptr<CEquipItem> spItem = FUN_1411e1860(FUN_1405451c0(strName), 6, 0);
+        if (spItem.get() != NULL)
             return 1;
-    } else if (FUN_1411e1860(FUN_1405451c0(strName), 6, 0).get() != NULL) {
-        return 1;
+    } else if (nSlot != 1) {
+        MS2Ptr<CEquipItem> spItem = FUN_1411e1860(nSlot, 6, 0);
+        if (spItem.get() != NULL)
+            return 1;
     }
     MS2Ptr<CEquipmentSlot> spSlot(0);
-    if (m_slots.Lookup((Unk_EquipSlotId)nSlot, spSlot)) {
+    if (m_slots.Lookup(reinterpret_cast<Unk_EquipSlotId&>(nSlot), spSlot)) {
         CString strMesh;
         POSITION pos = s_meshSuffixes.GetHeadPosition();
         while (pos != NULL) {
@@ -2323,7 +2310,7 @@ int CEquipment::FUN_1411e9fa0(int nSlot, CString strName, int nType, int bByName
             strMesh = strName + s_meshSuffixes.GetNext(pos);
 #endif
             MS2Ptr<ReplaceObject> spReplace(0);
-            if (spSlot->m_replaced.Lookup(strMesh, spReplace) && spReplace->m_spNode != NULL && spReplace->m_spMesh != NULL)
+            if (spSlot->m_replaced.Lookup(strMesh, spReplace) && (bool)spReplace->m_spNode && (bool)spReplace->m_spMesh)
                 spReplace->m_spNode->AttachChild(spReplace->m_spMesh, true);
         }
     }
@@ -2394,12 +2381,11 @@ int CEquipment::FUN_1411eacf0()
 MS2_REPLACE_METHOD(0x1411EACF0, CEquipment, FUN_1411eacf0, 1729, 0x620D6137);
 
 // @0x1411eb3c0
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 int CEquipment::FUN_1411eb3c0()
 {
     CString strName("A");
     MS2Ptr<CEquipItem> spCap = FUN_1411e1860(6, 6, 0);
-    if (spCap.get() != NULL && spCap->FUN_1411dc670() != 0) {
+    if ((bool)spCap.get() && spCap->FUN_1411dc670() != 0) {
         ATL::CAtlArray<MS2Ptr<CEquipModel> > models;
         spCap->FUN_1411dcc80(models);
         if (!models.IsEmpty())
@@ -2460,24 +2446,25 @@ int CEquipment::FUN_1411eb550(CString strName)
 MS2_REPLACE_METHOD(0x1411EB550, CEquipment, FUN_1411eb550, 2186, 0xFBA28A0D);
 
 // @0x1411eef60
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411eef60()
 {
-    if (!m_bOptimize || GetTickCountMs2() - m_64 <= 4999)
+    if (!m_bOptimize)
+        return;
+    if (GetTickCountMs2() - m_64 < 5000)
         return;
     NiAVObject* pRoot = FUN_141b6efc0(m_pPC->FUN_14123c410());
     NiNode* pNode = NiDynamicCast(NiNode, pRoot);
     if (pNode == NULL)
         return;
-    for (unsigned i = 0; i < m_meshes68.GetCount(); i++)
+    for (size_t i = 0; i < m_meshes68.GetCount(); i++)
         FUN_140a0b2a0(m_meshes68[i]);
     m_meshes68.RemoveAll();
     FUN_141049240(pRoot, m_meshes88, m_meshes68);
-    for (unsigned i = 0; i < m_meshes68.GetCount(); i++) {
+    for (size_t i = 0; i < m_meshes68.GetCount(); i++) {
         pNode->AttachChild(m_meshes68[i], false);
         FUN_141567330(m_meshes68[i], true);
     }
-    for (unsigned i = 0; i < m_meshes88.GetCount(); i++)
+    for (size_t i = 0; i < m_meshes88.GetCount(); i++)
         FUN_140a0b300(m_meshes88[i].operator->(), true);
     pNode->UpdateEffects();
     m_5e = false;
@@ -3131,26 +3118,26 @@ MS2Ptr<CSetItemManager> PC::FUN_1411f9310()
 MS2_REPLACE_METHOD(0x1411F9310, PC, FUN_1411f9310, 67, 0x99EF29FF);
 
 // @0x1411f88a0
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void Unk_EqSceneDump::FUN_1411f88a0(bool bCulled, NiAVObject* pObject, unsigned nDepth)
 {
     if (pObject == NULL) {
-        if (FUN_14098df00())
+        if (reinterpret_cast<Unk_EqSceneIter*>(m_buf)->FUN_14098df00())
             return;
-        pObject = *FUN_14107cbe0();
+        pObject = *reinterpret_cast<Unk_EqSceneIter*>(m_buf)->FUN_14107cbe0();
     }
     if (pObject == NULL)
         return;
     NiTransform kLocal = pObject->GetLocalTransform();
     NiMesh* pMesh = NiDynamicCast(NiMesh, pObject);
     if (pMesh != NULL) {
-        if (!pMesh->GetAppCulled()) {
+        bool bAppCulled = pMesh->GetAppCulled();
+        if (bAppCulled) {
             if (CLogString::GetInstance() != NULL)
-                Unk_EquipLog2(CLogString::GetInstance(), 0xb, 0x134, L"Height : {0}, Mesh Name(Not Culled) : {1}", nDepth,
+                Unk_EquipLog2(CLogString::GetInstance(), 0xb, 0x134, L"Height : {0}, Mesh Name(Culled) : {1}", nDepth,
                     (const char*)pMesh->GetName());
         } else {
             if (CLogString::GetInstance() != NULL)
-                Unk_EquipLog2(CLogString::GetInstance(), 0xb, 0x134, L"Height : {0}, Mesh Name(Culled) : {1}", nDepth,
+                Unk_EquipLog2(CLogString::GetInstance(), 0xb, 0x134, L"Height : {0}, Mesh Name(Not Culled) : {1}", nDepth,
                     (const char*)pMesh->GetName());
         }
         FUN_1411fa480(kLocal);
@@ -3168,8 +3155,8 @@ void Unk_EqSceneDump::FUN_1411f88a0(bool bCulled, NiAVObject* pObject, unsigned 
         Unk_EquipLog2(CLogString::GetInstance(), 0xb, 0x134, L"Height : {0}, Node Name : {1}", nDepth,
             (const char*)pNode->GetName());
     FUN_1411fa480(kLocal);
-    unsigned nCount = pNode->GetArrayCount();
-    for (unsigned i = 0; i < nCount; i++) {
+    int nCount = pNode->GetArrayCount();
+    for (int i = 0; i < nCount; i++) {
         NiAVObject* pChild = pNode->GetAt(i);
         if (pChild != NULL)
             FUN_1411f88a0(bCulled, pChild, nDepth + 1);
@@ -3177,10 +3164,9 @@ void Unk_EqSceneDump::FUN_1411f88a0(bool bCulled, NiAVObject* pObject, unsigned 
 }
 
 // @0x1411fa480
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void Unk_EqSceneDump::FUN_1411fa480(const NiTransform& kTransform)
 {
-    NiPoint3 kRot;
+    efd::Point3 kRot;
     kTransform.m_Rotate.ToEulerAnglesXYZ(kRot.x, kRot.y, kRot.z);
     if (CLogString::GetInstance() != NULL)
         Unk_EquipLog(CLogString::GetInstance(), 0xb, 0x134, L"Translate : {0}, {1}, {2}", kTransform.m_Translate.x,
