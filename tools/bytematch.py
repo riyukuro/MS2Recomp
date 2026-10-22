@@ -601,7 +601,8 @@ LAST_TARGETS = {}  # every symbol -> exe target of the last match_one call (stat
 LOCAL_KNOWN = {}   # name -> va pairs of the current unit (statics included), checked like SYMBOLS
 # Statically linked runtime (CRT startup/helpers, import stubs) at the end of .text: never mapped - the hook DLL
 # links its own CRT/MFC. Gamebryo resumes at 0x1427b6c90 (NOTES "Binary map").
-RUNTIME_RANGES = [(0x1427485e6, 0x1427b6c90)]  # first import thunk; 0x142748000.. is still Scaleform Sound code
+# 0x14274d700-0x1427784c0 between them is not runtime: the MS2 material classes + node library (gb14, /O2 game code)
+RUNTIME_RANGES = [(0x1427485e6, 0x14274d700), (0x1427784c0, 0x1427b6c90)]  # first import thunk; 0x142748000.. is still Scaleform Sound code
 NO_HARVEST_PREFIXES = ("__imp_", "??_C@", "__real@", "__xmm@", "__mask@", "__ymm@", "$", ".", "??_R", "__security_",
                        "_tls_", "__GSHandler", "__CxxFrameHandler", "_CxxThrowException", "__chkstk", "_fltused",
                        "_RTC_", "__std_", "_Init_thread_", "_Thrd_", "__acrt_", "__vcrt_", "__report_")

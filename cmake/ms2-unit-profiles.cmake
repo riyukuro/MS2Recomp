@@ -8,6 +8,9 @@
 #               GFx_Config_Release + GFx_Lib (work/lb5/gen_gfx.py): /Ox /Ob2 /Ot /GF /Gy /GR- /Zp8 /MD, no EH
 #               (/EHs-c- cancels the directory's /EHsc), /fp:precise, SF_BUILD_SHIPPING + NDEBUG,
 #               GFX_USE_VIDEO (the exe links GFx video: Video state 0x1e, the CRI decoder).
+#   gamebryo    MS2 code built inside the game's Gamebryo-flagged projects (the MS2 material classes and node library at
+#               0x14274d700-0x142778550, gb14): the engine's release switches (engine/units-gb.json flags 0) /O2 /GR-;
+#               /EHsc /fp:fast /GS /Gy are the game's already.
 
 set(MS2_PROFILE_scaleform_OPTIONS
     "/Ox"
@@ -26,7 +29,14 @@ set(MS2_PROFILE_scaleform_DEFINITIONS
     "_CRT_SECURE_NO_WARNINGS"
     "GFX_USE_VIDEO"
 )
-set(MS2_UNIT_PROFILES scaleform)
+set(MS2_PROFILE_gamebryo_OPTIONS
+    "/O2"
+    "/Ob2"
+    "/GR-"
+)
+set(MS2_PROFILE_gamebryo_DEFINITIONS
+)
+set(MS2_UNIT_PROFILES scaleform gamebryo)
 
 # Apply the profiles to the sources of `srcvar` that declare one. Options only under real MSVC (clang-cl never
 # byte-matches and keeps the project's codegen); definitions for both compilers so the code is the same.

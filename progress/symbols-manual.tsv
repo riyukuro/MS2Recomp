@@ -8050,3 +8050,4 @@ compress2	142724100	func
 ?StageQualityCI@fl_display@AS3@GFx@Scaleform@@3UClassInfo@234@B	143146cb0	data
 ?StageScaleModeCI@fl_display@AS3@GFx@Scaleform@@3UClassInfo@234@B	143146d00	data
 ?ReleaseAS3Obj@AvmDisplayObj@AS3@GFx@Scaleform@@QEAAXXZ	142521eb0	func
+?ms_RTTI@NiMaterialFragmentNode@@2VNiRTTI@@B	143afbad8	data
