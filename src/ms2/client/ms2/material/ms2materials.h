@@ -335,6 +335,26 @@ public:
 };
 
 //--------------------------------------------------------------------------------------------------
+class MS2MotionBlurMaterial : public MS2StandardMaterial
+{
+    NiDeclareRTTI;
+public:
+    MS2MotionBlurMaterial(bool bAutoCreateCaches);
+
+    // protected in the original; public here so the hooks can bind them
+    virtual bool HandlePositionFragment(Context& kContext, TransformType eTransType,
+        NiMaterialResource*& pkVertWorldPos, NiMaterialResource*& pkWorldMatrix);
+    virtual bool HandleFinalVertexOutputs(Context& kContext, NiStandardVertexProgramDescriptor* pkVertDesc,
+        NiMaterialResource* pkWorldPos, NiMaterialResource* pkWorldNormal, NiMaterialResource* pkWorldReflect,
+        NiMaterialResource* pkViewPos, NiMaterialResource* pkProjectedPos);
+    virtual bool HandleVertexLightingAndMaterials(Context& kContext, NiStandardVertexProgramDescriptor* pkVertexDesc,
+        NiMaterialResource* pkWorldPos, NiMaterialResource* pkWorldNormal, NiMaterialResource* pkWorldView);
+    virtual bool HandleMS2FinalPixelOutputs(Context& kContext, NiStandardPixelProgramDescriptor* pkPixDesc,
+        NiMaterialResource* pkWorldNormal, NiMaterialResource* pkViewVector, NiMaterialResource* pkDiffuseAccum,
+        NiMaterialResource* pkSpecularAccum, NiMaterialResource* pkOpacityAccum);
+};
+
+//--------------------------------------------------------------------------------------------------
 #define MS2_DECLARE_STANDARD_MATERIAL(classname)                                                    \
     class classname : public MS2StandardMaterial                                                    \
     {                                                                                               \
@@ -342,7 +362,6 @@ public:
         classname(bool bAutoCreateCaches);                                                          \
     }
 
-MS2_DECLARE_STANDARD_MATERIAL(MS2MotionBlurMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2OuterGlowCharacterMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2DepthMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2DefaultShimmerValueMaterial);
