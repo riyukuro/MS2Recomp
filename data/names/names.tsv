@@ -472,3 +472,39 @@
 1408013f0	Unk_SkillSensor::FUN_1408013f0	Unk_SkillSensor::LoadElement	certain	certain: reads/writes the child element named by strName; base Load is hidden otherwise; reads 7 attributes of data XML skilldata (element parameter, xmlattr read helpers)	nam1	2026-10-22
 140801540	Unk_SkillSensor::FUN_140801540	Unk_SkillSensor::SaveElement	certain	certain: reads/writes the child element named by strName; base Save is hidden otherwise; writes 7 attributes of data XML skilldata (builds Unk_TiXmlElement, appends to pParent)	nam1	2026-10-22
 141847560	Unk_TextureFrame::FUN_141847560	Unk_TextureFrame::Load	certain	certain: reads 3 attributes of data XML emotion (element parameter, xmlattr read helpers)	nam1	2026-10-22
+141260f40	FUN_141260f40	LoadGameOptionAutoLooting	certain	certain: reads 10 options of game option section "autoLooting" (Unk_GsAutoLoot; table/default/defaultgameoption.xml)	nam1	2026-10-22
+14125b480	FUN_14125b480	LoadGameOptionCamera	certain	certain: reads 5 options of game option section "camera" (Unk_CameraState; table/default/defaultgameoption.xml)	nam1	2026-10-22
+141260600	FUN_141260600	LoadGameOptionConnect	certain	certain: reads 8 options of game option section "connect" (Unk_GsConnect; table/default/defaultgameoption.xml)	nam1	2026-10-22
+141261810	FUN_141261810	LoadGameOptionEtc	certain	certain: reads 12 options of game option section "etc" (Unk_GsEtc; table/default/defaultgameoption.xml)	nam1	2026-10-22
+14125f330	FUN_14125f330	LoadGameOptionGamepad	certain	certain: reads 6 options of game option section "gamepad" (Unk_GpState; table/default/defaultgameoption.xml)	nam1	2026-10-22
+14125b820	FUN_14125b820	LoadGameOptionInterface	certain	certain: reads 8 options of game option section "interface" (Unk_InterfaceState; table/default/defaultgameoption.xml)	nam1	2026-10-22
+14125f190	FUN_14125f190	LoadGameOptionLanguage	certain	certain: reads 2 options of game option section "language" (Unk_LgState; table/default/defaultgameoption.xml)	nam1	2026-10-22
+14125ecc0	FUN_14125ecc0	LoadGameOptionOptimizer	certain	certain: reads 8 options of game option section "optimizer" (Unk_GraphicState2; table/default/defaultgameoption.xml)	nam1	2026-10-22
+14125f7f0	FUN_14125f7f0	LoadGameOptionSound	certain	certain: reads 14 options of game option section "sound" (Unk_SoundState; table/default/defaultgameoption.xml)	nam1	2026-10-22
+141261150	FUN_141261150	SaveGameOptionAutoLooting	certain	certain: writes 10 options of game option section "autoLooting" (Unk_GsAutoLoot; table/default/defaultgameoption.xml)	nam1	2026-10-22
+14125b5e0	FUN_14125b5e0	SaveGameOptionCamera	certain	certain: writes 5 options of game option section "camera" (Unk_CameraState; table/default/defaultgameoption.xml)	nam1	2026-10-22
+1412607a0	FUN_1412607a0	SaveGameOptionConnect	certain	certain: writes 7 options of game option section "connect" (Unk_GsConnect; table/default/defaultgameoption.xml)	nam1	2026-10-22
+1412619e0	FUN_1412619e0	SaveGameOptionEtc	certain	certain: writes 12 options of game option section "etc" (Unk_GsEtc; table/default/defaultgameoption.xml)	nam1	2026-10-22
+14125f520	FUN_14125f520	SaveGameOptionGamepad	certain	certain: writes 6 options of game option section "gamepad" (Unk_GpState; table/default/defaultgameoption.xml)	nam1	2026-10-22
+14125de00	FUN_14125de00	SaveGameOptionGraphic	certain	certain: writes 14 options of game option section "graphic" (Unk_GraphicState; table/default/defaultgameoption.xml)	nam1	2026-10-22
+14125ba30	FUN_14125ba30	SaveGameOptionInterface	certain	certain: writes 8 options of game option section "interface" (Unk_InterfaceState; table/default/defaultgameoption.xml)	nam1	2026-10-22
+14125f200	FUN_14125f200	SaveGameOptionLanguage	certain	certain: writes 2 options of game option section "language" (Unk_LgState; table/default/defaultgameoption.xml)	nam1	2026-10-22
+14125ee30	FUN_14125ee30	SaveGameOptionOptimizer	certain	certain: writes 8 options of game option section "optimizer" (Unk_GraphicState2; table/default/defaultgameoption.xml)	nam1	2026-10-22
+14125fc00	FUN_14125fc00	SaveGameOptionSound	certain	certain: writes 14 options of game option section "sound" (Unk_SoundState; table/default/defaultgameoption.xml)	nam1	2026-10-22
+14125c270	FUN_14125c270	SaveGameOptionStatus	certain	certain: writes 23 options of game option section "status" (Unk_StatusState; table/default/defaultgameoption.xml)	nam1	2026-10-22
+141262f40	FUN_141262f40	WriteGameOptionBool	certain	certain: writes attribute pszKey of section element pszSection under the game option document root as bool (creates the section when missing)	nam1	2026-10-22
+141263090	FUN_141263090	WriteGameOptionInt	certain	certain: writes attribute pszKey of section element pszSection under the game option document root as int (creates the section when missing)	nam1	2026-10-22
+141263190	FUN_141263190	WriteGameOptionFloat	certain	certain: writes attribute pszKey of section element pszSection under the game option document root as float (creates the section when missing)	nam1	2026-10-22
+1412632a0	FUN_1412632a0	WriteGameOptionString	certain	certain: writes attribute pszKey of section element pszSection under the game option document root as const CString& (creates the section when missing)	nam1	2026-10-22
+1412633b0	FUN_1412633b0	WriteGameOptionStringW	certain	certain: writes attribute pszKey of section element pszSection under the game option document root as const CStringW& (creates the section when missing)	nam1	2026-10-22
+141263540	FUN_141263540	WriteGameOptionInt64	certain	certain: writes attribute pszKey of section element pszSection under the game option document root as __int64 (creates the section when missing)	nam1	2026-10-22
+141263640	FUN_141263640	WriteGameOptionUInt64	certain	certain: writes attribute pszKey of section element pszSection under the game option document root as unsigned __int64 (creates the section when missing)	nam1	2026-10-22
+141263740	FUN_141263740	WriteGameOptionUInt	certain	certain: writes attribute pszKey of section element pszSection under the game option document root as unsigned (creates the section when missing)	nam1	2026-10-22
+141263840	FUN_141263840	ReadGameOptionBool	certain	certain: reads attribute pszKey of section element pszSection under the game option document root as bool* (returns 0 when absent)	nam1	2026-10-22
+141263940	FUN_141263940	ReadGameOptionInt	certain	certain: reads attribute pszKey of section element pszSection under the game option document root as int* (returns 0 when absent)	nam1	2026-10-22
+1412639c0	FUN_1412639c0	ReadGameOptionUInt	certain	certain: reads attribute pszKey of section element pszSection under the game option document root as unsigned* (returns 0 when absent)	nam1	2026-10-22
+141263a40	FUN_141263a40	ReadGameOptionFloat	certain	certain: reads attribute pszKey of section element pszSection under the game option document root as float* (returns 0 when absent)	nam1	2026-10-22
+141263ad0	FUN_141263ad0	ReadGameOptionString	certain	certain: reads attribute pszKey of section element pszSection under the game option document root as CString* (returns 0 when absent)	nam1	2026-10-22
+141263b60	FUN_141263b60	ReadGameOptionStringW	certain	certain: reads attribute pszKey of section element pszSection under the game option document root as CStringW* (returns 0 when absent)	nam1	2026-10-22
+141263c30	FUN_141263c30	ReadGameOptionInt64	certain	certain: reads attribute pszKey of section element pszSection under the game option document root as __int64* (returns 0 when absent)	nam1	2026-10-22
+141263cb0	FUN_141263cb0	ReadGameOptionUInt64	certain	certain: reads attribute pszKey of section element pszSection under the game option document root as unsigned __int64* (returns 0 when absent)	nam1	2026-10-22

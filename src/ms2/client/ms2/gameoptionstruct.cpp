@@ -118,7 +118,7 @@ void FUN_1412616a0(Unk_GoChroma* p);
 struct Unk_GsEtc;
 void FUN_141261780(Unk_GsEtc* p);
 void FUN_14125b7a0(Unk_InterfaceState* p);
-int FUN_14125b820(Unk_InterfaceState* p, TiXmlDocument* pDoc);
+int LoadGameOptionInterface(Unk_InterfaceState* p, TiXmlDocument* pDoc);
 void FUN_14125bb60(Unk_InterfaceState* pDst, const Unk_InterfaceState* pSrc);
 bool FUN_14125bb90(const Unk_InterfaceState* p);
 bool FUN_14125bbe0(const Unk_InterfaceState* p);
@@ -132,7 +132,7 @@ void FUN_14125c5a0(Unk_StatusState* pDst, const Unk_StatusState* pSrc);
 int FUN_14125c8d0(Unk_StatusFlag* p, TiXmlDocument* pDoc);
 void FUN_14125c950(Unk_StatusFlag* pDst, const Unk_StatusFlag* pSrc);
 void FUN_14125f740(Unk_SoundState* p);
-int FUN_14125f7f0(Unk_SoundState* p, TiXmlDocument* pDoc);
+int LoadGameOptionSound(Unk_SoundState* p, TiXmlDocument* pDoc);
 void FUN_14125fdf0(Unk_SoundState* pDst, const Unk_SoundState* pSrc);
 void FUN_14125fe20(Unk_SoundState* p);
 void FUN_1412603b0(Unk_SoundFlag* p);
@@ -379,7 +379,7 @@ void CGameOptionInterface::vfunc_12()
 {
     CBaseOption::vfunc_12();
     FUN_14125b7a0(&m_state);
-    FUN_14125b820(&m_state, TSingleton<CGameOption>::GetInstance()->FUN_1412442a0());
+    LoadGameOptionInterface(&m_state, TSingleton<CGameOption>::GetInstance()->FUN_1412442a0());
     FUN_14125bc60(&m_flag);
     FUN_14125bc80(&m_flag, TSingleton<CGameOption>::GetInstance()->FUN_1412442a0());
     vfunc_6();
@@ -635,7 +635,7 @@ void CGameOptionSoundDefault::vfunc_12()
 {
     CBaseOption::vfunc_12();
     FUN_14125f740(&m_state);
-    FUN_14125f7f0(&m_state, TSingleton<CGameOption>::GetInstance()->FUN_1412442a0());
+    LoadGameOptionSound(&m_state, TSingleton<CGameOption>::GetInstance()->FUN_1412442a0());
     FUN_1412603b0(&m_flag);
     FUN_1412603d0(&m_flag, TSingleton<CGameOption>::GetInstance()->FUN_1412442a0());
     vfunc_6();
@@ -1047,22 +1047,22 @@ MS2_REPLACE_METHOD(0x14125B140, CGameOptionStatus, FUN_14125b140, 10, 0x208A1D67
 
 // The TinyXML read/write helpers of the blocks (this unit, 0x141262f40..0x141263d30). The readers return 1 when the
 // attribute was found.
-void FUN_141262f40(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, bool bValue);
-void FUN_141263090(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, int nValue);
-void FUN_141263190(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, float fValue);
-void FUN_1412632a0(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, const CString& strValue);
-void FUN_1412633b0(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, const CStringW& strValue);
-void FUN_141263540(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, __int64 nValue);
-void FUN_141263640(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, unsigned __int64 nValue);
-void FUN_141263740(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, unsigned nValue);
-int FUN_141263840(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, bool* pbValue);
-int FUN_141263940(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, int* pnValue);
-int FUN_1412639c0(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, unsigned* pnValue);
-int FUN_141263a40(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, float* pfValue);
-int FUN_141263ad0(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, CString* pstrValue);
-int FUN_141263b60(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, CStringW* pstrValue);
-int FUN_141263c30(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, __int64* pnValue);
-int FUN_141263cb0(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, unsigned __int64* pnValue);
+void WriteGameOptionBool(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, bool bValue);
+void WriteGameOptionInt(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, int nValue);
+void WriteGameOptionFloat(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, float fValue);
+void WriteGameOptionString(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, const CString& strValue);
+void WriteGameOptionStringW(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, const CStringW& strValue);
+void WriteGameOptionInt64(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, __int64 nValue);
+void WriteGameOptionUInt64(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, unsigned __int64 nValue);
+void WriteGameOptionUInt(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, unsigned nValue);
+int ReadGameOptionBool(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, bool* pbValue);
+int ReadGameOptionInt(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, int* pnValue);
+int ReadGameOptionUInt(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, unsigned* pnValue);
+int ReadGameOptionFloat(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, float* pfValue);
+int ReadGameOptionString(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, CString* pstrValue);
+int ReadGameOptionStringW(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, CStringW* pstrValue);
+int ReadGameOptionInt64(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, __int64* pnValue);
+int ReadGameOptionUInt64(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, unsigned __int64* pnValue);
 void FUN_141263d30(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey);
 
 // The mouse-control switch of the camera.
@@ -1116,13 +1116,13 @@ void FUN_14125b430(Unk_CameraState* p)
 MS2_REPLACE(0x14125B430, FUN_14125b430, 59, 0x0F68ACC0);
 
 // @0x14125b480
-int FUN_14125b480(Unk_CameraState* p, TiXmlDocument* pDoc)
+int LoadGameOptionCamera(Unk_CameraState* p, TiXmlDocument* pDoc)
 {
-    FUN_141263840(pDoc, "camera", "bgTransparency", &p->m_b00);
-    FUN_141263840(pDoc, "camera", "vibrateEffect", &p->m_b01);
-    FUN_141263940(pDoc, "camera", "cameraLooseStep", &p->m_n04);
-    FUN_141263940(pDoc, "camera", "cameraFovStep", &p->m_n08);
-    FUN_141263940(pDoc, "camera", "cameraFovStepMouseMode", &p->m_n0c);
+    ReadGameOptionBool(pDoc, "camera", "bgTransparency", &p->m_b00);
+    ReadGameOptionBool(pDoc, "camera", "vibrateEffect", &p->m_b01);
+    ReadGameOptionInt(pDoc, "camera", "cameraLooseStep", &p->m_n04);
+    ReadGameOptionInt(pDoc, "camera", "cameraFovStep", &p->m_n08);
+    ReadGameOptionInt(pDoc, "camera", "cameraFovStepMouseMode", &p->m_n0c);
     if (p->m_n04 < 20)
         p->m_n04 = 20;
     if (p->m_n04 > 120)
@@ -1137,19 +1137,19 @@ int FUN_14125b480(Unk_CameraState* p, TiXmlDocument* pDoc)
         p->m_n0c = 130;
     return 1;
 }
-MS2_REPLACE(0x14125B480, FUN_14125b480, 343, 0x9298A67F);
+MS2_REPLACE(0x14125B480, LoadGameOptionCamera, 343, 0x9298A67F);
 
 // The mouse-mode fov step is read back instead of written (as the exe has it).
 // @0x14125b5e0
-void FUN_14125b5e0(Unk_CameraState* p, TiXmlDocument* pDoc)
+void SaveGameOptionCamera(Unk_CameraState* p, TiXmlDocument* pDoc)
 {
-    FUN_141262f40(pDoc, "camera", "bgTransparency", p->m_b00);
-    FUN_141262f40(pDoc, "camera", "vibrateEffect", p->m_b01);
-    FUN_141263090(pDoc, "camera", "cameraLooseStep", p->m_n04);
-    FUN_141263090(pDoc, "camera", "cameraFovStep", p->m_n08);
-    FUN_141263940(pDoc, "camera", "cameraFovStepMouseMode", &p->m_n0c);
+    WriteGameOptionBool(pDoc, "camera", "bgTransparency", p->m_b00);
+    WriteGameOptionBool(pDoc, "camera", "vibrateEffect", p->m_b01);
+    WriteGameOptionInt(pDoc, "camera", "cameraLooseStep", p->m_n04);
+    WriteGameOptionInt(pDoc, "camera", "cameraFovStep", p->m_n08);
+    ReadGameOptionInt(pDoc, "camera", "cameraFovStepMouseMode", &p->m_n0c);
 }
-MS2_REPLACE(0x14125B5E0, FUN_14125b5e0, 188, 0xC19837D2);
+MS2_REPLACE(0x14125B5E0, SaveGameOptionCamera, 188, 0xC19837D2);
 
 // @0x14125b6b0
 void FUN_14125b6b0(Unk_CameraState* pDst, const Unk_CameraState* pSrc)
@@ -1203,16 +1203,16 @@ void FUN_14125b7a0(Unk_InterfaceState* p)
 MS2_REPLACE(0x14125B7A0, FUN_14125b7a0, 110, 0x18FE6E62);
 
 // @0x14125b820
-int FUN_14125b820(Unk_InterfaceState* p, TiXmlDocument* pDoc)
+int LoadGameOptionInterface(Unk_InterfaceState* p, TiXmlDocument* pDoc)
 {
-    FUN_141263840(pDoc, "interface", "EnableCloseAllDlg", &p->m_b00);
-    FUN_141263840(pDoc, "interface", "EnableAutoDesc", &p->m_b01);
-    FUN_141263840(pDoc, "interface", "EnableShowTipText", &p->m_b02);
-    FUN_141263840(pDoc, "interface", "EnableIndividualDamageMeter", &p->m_b03);
-    FUN_141263840(pDoc, "interface", "EnableChaosDamageMeter", &p->m_b04);
-    FUN_141263a40(pDoc, "interface", "UIScale", &p->m_f08);
-    FUN_141263940(pDoc, "interface", "DamageTextScaleStep", &p->m_n10);
-    FUN_141263940(pDoc, "interface", "damageEffectAlpha", &p->m_n0c);
+    ReadGameOptionBool(pDoc, "interface", "EnableCloseAllDlg", &p->m_b00);
+    ReadGameOptionBool(pDoc, "interface", "EnableAutoDesc", &p->m_b01);
+    ReadGameOptionBool(pDoc, "interface", "EnableShowTipText", &p->m_b02);
+    ReadGameOptionBool(pDoc, "interface", "EnableIndividualDamageMeter", &p->m_b03);
+    ReadGameOptionBool(pDoc, "interface", "EnableChaosDamageMeter", &p->m_b04);
+    ReadGameOptionFloat(pDoc, "interface", "UIScale", &p->m_f08);
+    ReadGameOptionInt(pDoc, "interface", "DamageTextScaleStep", &p->m_n10);
+    ReadGameOptionInt(pDoc, "interface", "damageEffectAlpha", &p->m_n0c);
     if (p->m_f08 < 0.8f)
         p->m_f08 = 0.8f;
     if (p->m_f08 > 1.2f)
@@ -1229,21 +1229,21 @@ int FUN_14125b820(Unk_InterfaceState* p, TiXmlDocument* pDoc)
         p->m_b04 = false;
     return 1;
 }
-MS2_REPLACE(0x14125B820, FUN_14125b820, 510, 0x1CFDA126);
+MS2_REPLACE(0x14125B820, LoadGameOptionInterface, 510, 0x1CFDA126);
 
 // @0x14125ba30
-void FUN_14125ba30(Unk_InterfaceState* p, TiXmlDocument* pDoc)
+void SaveGameOptionInterface(Unk_InterfaceState* p, TiXmlDocument* pDoc)
 {
-    FUN_141262f40(pDoc, "interface", "EnableCloseAllDlg", p->m_b00);
-    FUN_141262f40(pDoc, "interface", "EnableAutoDesc", p->m_b01);
-    FUN_141262f40(pDoc, "interface", "EnableShowTipText", p->m_b02);
-    FUN_141262f40(pDoc, "interface", "EnableIndividualDamageMeter", p->m_b03);
-    FUN_141262f40(pDoc, "interface", "EnableChaosDamageMeter", p->m_b04);
-    FUN_141263190(pDoc, "interface", "UIScale", p->m_f08);
-    FUN_141263090(pDoc, "interface", "DamageTextScaleStep", p->m_n10);
-    FUN_141263090(pDoc, "interface", "damageEffectAlpha", p->m_n0c);
+    WriteGameOptionBool(pDoc, "interface", "EnableCloseAllDlg", p->m_b00);
+    WriteGameOptionBool(pDoc, "interface", "EnableAutoDesc", p->m_b01);
+    WriteGameOptionBool(pDoc, "interface", "EnableShowTipText", p->m_b02);
+    WriteGameOptionBool(pDoc, "interface", "EnableIndividualDamageMeter", p->m_b03);
+    WriteGameOptionBool(pDoc, "interface", "EnableChaosDamageMeter", p->m_b04);
+    WriteGameOptionFloat(pDoc, "interface", "UIScale", p->m_f08);
+    WriteGameOptionInt(pDoc, "interface", "DamageTextScaleStep", p->m_n10);
+    WriteGameOptionInt(pDoc, "interface", "damageEffectAlpha", p->m_n0c);
 }
-MS2_REPLACE(0x14125BA30, FUN_14125ba30, 288, 0x5AF41E6A);
+MS2_REPLACE(0x14125BA30, SaveGameOptionInterface, 288, 0x5AF41E6A);
 
 // @0x14125bb60
 void FUN_14125bb60(Unk_InterfaceState* pDst, const Unk_InterfaceState* pSrc)
@@ -1286,7 +1286,7 @@ MS2_REPLACE(0x14125BC60, FUN_14125bc60, 14, 0x322C4B62);
 // @0x14125bc80
 int FUN_14125bc80(Unk_InterfaceFlag* p, TiXmlDocument* pDoc)
 {
-    FUN_141263840(pDoc, "interface", "EnableMouseControl", &p->m_b);
+    ReadGameOptionBool(pDoc, "interface", "EnableMouseControl", &p->m_b);
     return 1;
 }
 MS2_REPLACE(0x14125BC80, FUN_14125bc80, 56, 0x21B48804);
@@ -1294,7 +1294,7 @@ MS2_REPLACE(0x14125BC80, FUN_14125bc80, 56, 0x21B48804);
 // @0x14125bcc0
 void FUN_14125bcc0(Unk_InterfaceFlag* p, TiXmlDocument* pDoc)
 {
-    FUN_141262f40(pDoc, "interface", "EnableMouseControl", p->m_b);
+    WriteGameOptionBool(pDoc, "interface", "EnableMouseControl", p->m_b);
 }
 MS2_REPLACE(0x14125BCC0, FUN_14125bcc0, 52, 0xF4D04A6F);
 
@@ -1359,29 +1359,29 @@ MS2_REPLACE(0x14125BDD0, FUN_14125bdd0, 252, 0x9CBFCD59);
 // @0x14125bee0
 int FUN_14125bee0(Unk_StatusState* p, TiXmlDocument* pDoc)
 {
-    FUN_141263840(pDoc, "status", "DisplayMyName", &p->m_bDisplayMyName);
-    FUN_141263840(pDoc, "status", "DisplayPlayerSymbol", &p->m_bDisplayPlayerSymbol);
-    FUN_141263840(pDoc, "status", "DisplayFriendlyName", &p->m_bDisplayFriendlyName);
-    FUN_141263840(pDoc, "status", "DisplayEnemyName", &p->m_bDisplayEnemyName);
-    FUN_141263840(pDoc, "status", "DisplayNpcName", &p->m_bDisplayNpcName);
-    FUN_141263840(pDoc, "status", "DisplayMonsterName", &p->m_bDisplayMonsterName);
-    FUN_141263840(pDoc, "status", "DisplayPcIllust", &p->m_bDisplayPcIllust);
-    FUN_141263840(pDoc, "status", "DisplayMonsterGaugeValue", &p->m_bDisplayMonsterGaugeValue);
-    FUN_141263840(pDoc, "status", "DisplayExpValue", &p->m_bDisplayExpValue);
-    FUN_141263840(pDoc, "status", "DisplayOnlyMyEffectToMonster", &p->m_bDisplayOnlyMyEffectToMonster);
-    FUN_141263840(pDoc, "status", "DisplayMyHpGauge", &p->m_bDisplayMyHpGauge);
-    FUN_141263840(pDoc, "status", "DisplayMyShieldGauge", &p->m_bDisplayMyShieldGauge);
-    FUN_141263840(pDoc, "status", "DisplayPartyHpGauge", &p->m_bDisplayPartyHpGauge);
-    FUN_141263840(pDoc, "status", "DisplayPartyShieldGauge", &p->m_bDisplayPartyShieldGauge);
-    FUN_141263840(pDoc, "status", "DisplayMonsterHpGauge", &p->m_bDisplayMonsterHpGauge);
-    FUN_141263940(pDoc, "status", "DisplayBossMonsterNotify", &p->m_n18);
-    FUN_141263840(pDoc, "status", "DisplayNormalChatBalloon", &p->m_bDisplayNormalChatBalloon);
-    FUN_141263840(pDoc, "status", "DisplayPartyChatBalloon", &p->m_bDisplayPartyChatBalloon);
-    FUN_141263840(pDoc, "status", "DisplayGuildChatBalloon", &p->m_bDisplayGuildChatBalloon);
-    FUN_141263840(pDoc, "status", "DisplayShowOnlyMyPet", &p->m_bDisplayShowOnlyMyPet);
-    FUN_141263840(pDoc, "status", "DisplayHideMyPet", &p->m_bDisplayHideMyPet);
-    FUN_141263840(pDoc, "status", "DisplayHideSmartPush", &p->m_bDisplayHideSmartPush);
-    FUN_141263840(pDoc, "status", "DisplayHideHighlightMenu", &p->m_bDisplayHideHighlightMenu);
+    ReadGameOptionBool(pDoc, "status", "DisplayMyName", &p->m_bDisplayMyName);
+    ReadGameOptionBool(pDoc, "status", "DisplayPlayerSymbol", &p->m_bDisplayPlayerSymbol);
+    ReadGameOptionBool(pDoc, "status", "DisplayFriendlyName", &p->m_bDisplayFriendlyName);
+    ReadGameOptionBool(pDoc, "status", "DisplayEnemyName", &p->m_bDisplayEnemyName);
+    ReadGameOptionBool(pDoc, "status", "DisplayNpcName", &p->m_bDisplayNpcName);
+    ReadGameOptionBool(pDoc, "status", "DisplayMonsterName", &p->m_bDisplayMonsterName);
+    ReadGameOptionBool(pDoc, "status", "DisplayPcIllust", &p->m_bDisplayPcIllust);
+    ReadGameOptionBool(pDoc, "status", "DisplayMonsterGaugeValue", &p->m_bDisplayMonsterGaugeValue);
+    ReadGameOptionBool(pDoc, "status", "DisplayExpValue", &p->m_bDisplayExpValue);
+    ReadGameOptionBool(pDoc, "status", "DisplayOnlyMyEffectToMonster", &p->m_bDisplayOnlyMyEffectToMonster);
+    ReadGameOptionBool(pDoc, "status", "DisplayMyHpGauge", &p->m_bDisplayMyHpGauge);
+    ReadGameOptionBool(pDoc, "status", "DisplayMyShieldGauge", &p->m_bDisplayMyShieldGauge);
+    ReadGameOptionBool(pDoc, "status", "DisplayPartyHpGauge", &p->m_bDisplayPartyHpGauge);
+    ReadGameOptionBool(pDoc, "status", "DisplayPartyShieldGauge", &p->m_bDisplayPartyShieldGauge);
+    ReadGameOptionBool(pDoc, "status", "DisplayMonsterHpGauge", &p->m_bDisplayMonsterHpGauge);
+    ReadGameOptionInt(pDoc, "status", "DisplayBossMonsterNotify", &p->m_n18);
+    ReadGameOptionBool(pDoc, "status", "DisplayNormalChatBalloon", &p->m_bDisplayNormalChatBalloon);
+    ReadGameOptionBool(pDoc, "status", "DisplayPartyChatBalloon", &p->m_bDisplayPartyChatBalloon);
+    ReadGameOptionBool(pDoc, "status", "DisplayGuildChatBalloon", &p->m_bDisplayGuildChatBalloon);
+    ReadGameOptionBool(pDoc, "status", "DisplayShowOnlyMyPet", &p->m_bDisplayShowOnlyMyPet);
+    ReadGameOptionBool(pDoc, "status", "DisplayHideMyPet", &p->m_bDisplayHideMyPet);
+    ReadGameOptionBool(pDoc, "status", "DisplayHideSmartPush", &p->m_bDisplayHideSmartPush);
+    ReadGameOptionBool(pDoc, "status", "DisplayHideHighlightMenu", &p->m_bDisplayHideHighlightMenu);
     if (p->m_n18 < 0)
         p->m_n18 = 0;
     if (p->m_n18 > 2)
@@ -1391,33 +1391,33 @@ int FUN_14125bee0(Unk_StatusState* p, TiXmlDocument* pDoc)
 MS2_REPLACE(0x14125BEE0, FUN_14125bee0, 893, 0x3971AAC4);
 
 // @0x14125c270
-void FUN_14125c270(Unk_StatusState* p, TiXmlDocument* pDoc)
+void SaveGameOptionStatus(Unk_StatusState* p, TiXmlDocument* pDoc)
 {
-    FUN_141262f40(pDoc, "status", "DisplayMyName", p->m_bDisplayMyName);
-    FUN_141262f40(pDoc, "status", "DisplayPlayerSymbol", p->m_bDisplayPlayerSymbol);
-    FUN_141262f40(pDoc, "status", "DisplayFriendlyName", p->m_bDisplayFriendlyName);
-    FUN_141262f40(pDoc, "status", "DisplayEnemyName", p->m_bDisplayEnemyName);
-    FUN_141262f40(pDoc, "status", "DisplayNpcName", p->m_bDisplayNpcName);
-    FUN_141262f40(pDoc, "status", "DisplayMonsterName", p->m_bDisplayMonsterName);
-    FUN_141262f40(pDoc, "status", "DisplayPcIllust", p->m_bDisplayPcIllust);
-    FUN_141262f40(pDoc, "status", "DisplayMonsterGaugeValue", p->m_bDisplayMonsterGaugeValue);
-    FUN_141262f40(pDoc, "status", "DisplayExpValue", p->m_bDisplayExpValue);
-    FUN_141262f40(pDoc, "status", "DisplayOnlyMyEffectToMonster", p->m_bDisplayOnlyMyEffectToMonster);
-    FUN_141262f40(pDoc, "status", "DisplayMyHpGauge", p->m_bDisplayMyHpGauge);
-    FUN_141262f40(pDoc, "status", "DisplayMyShieldGauge", p->m_bDisplayMyShieldGauge);
-    FUN_141262f40(pDoc, "status", "DisplayPartyHpGauge", p->m_bDisplayPartyHpGauge);
-    FUN_141262f40(pDoc, "status", "DisplayPartyShieldGauge", p->m_bDisplayPartyShieldGauge);
-    FUN_141262f40(pDoc, "status", "DisplayMonsterHpGauge", p->m_bDisplayMonsterHpGauge);
-    FUN_141263090(pDoc, "status", "DisplayBossMonsterNotify", p->m_n18);
-    FUN_141262f40(pDoc, "status", "DisplayNormalChatBalloon", p->m_bDisplayNormalChatBalloon);
-    FUN_141262f40(pDoc, "status", "DisplayPartyChatBalloon", p->m_bDisplayPartyChatBalloon);
-    FUN_141262f40(pDoc, "status", "DisplayGuildChatBalloon", p->m_bDisplayGuildChatBalloon);
-    FUN_141262f40(pDoc, "status", "DisplayShowOnlyMyPet", p->m_bDisplayShowOnlyMyPet);
-    FUN_141262f40(pDoc, "status", "DisplayHideMyPet", p->m_bDisplayHideMyPet);
-    FUN_141262f40(pDoc, "status", "DisplayHideSmartPush", p->m_bDisplayHideSmartPush);
-    FUN_141262f40(pDoc, "status", "DisplayHideHighlightMenu", p->m_bDisplayHideHighlightMenu);
+    WriteGameOptionBool(pDoc, "status", "DisplayMyName", p->m_bDisplayMyName);
+    WriteGameOptionBool(pDoc, "status", "DisplayPlayerSymbol", p->m_bDisplayPlayerSymbol);
+    WriteGameOptionBool(pDoc, "status", "DisplayFriendlyName", p->m_bDisplayFriendlyName);
+    WriteGameOptionBool(pDoc, "status", "DisplayEnemyName", p->m_bDisplayEnemyName);
+    WriteGameOptionBool(pDoc, "status", "DisplayNpcName", p->m_bDisplayNpcName);
+    WriteGameOptionBool(pDoc, "status", "DisplayMonsterName", p->m_bDisplayMonsterName);
+    WriteGameOptionBool(pDoc, "status", "DisplayPcIllust", p->m_bDisplayPcIllust);
+    WriteGameOptionBool(pDoc, "status", "DisplayMonsterGaugeValue", p->m_bDisplayMonsterGaugeValue);
+    WriteGameOptionBool(pDoc, "status", "DisplayExpValue", p->m_bDisplayExpValue);
+    WriteGameOptionBool(pDoc, "status", "DisplayOnlyMyEffectToMonster", p->m_bDisplayOnlyMyEffectToMonster);
+    WriteGameOptionBool(pDoc, "status", "DisplayMyHpGauge", p->m_bDisplayMyHpGauge);
+    WriteGameOptionBool(pDoc, "status", "DisplayMyShieldGauge", p->m_bDisplayMyShieldGauge);
+    WriteGameOptionBool(pDoc, "status", "DisplayPartyHpGauge", p->m_bDisplayPartyHpGauge);
+    WriteGameOptionBool(pDoc, "status", "DisplayPartyShieldGauge", p->m_bDisplayPartyShieldGauge);
+    WriteGameOptionBool(pDoc, "status", "DisplayMonsterHpGauge", p->m_bDisplayMonsterHpGauge);
+    WriteGameOptionInt(pDoc, "status", "DisplayBossMonsterNotify", p->m_n18);
+    WriteGameOptionBool(pDoc, "status", "DisplayNormalChatBalloon", p->m_bDisplayNormalChatBalloon);
+    WriteGameOptionBool(pDoc, "status", "DisplayPartyChatBalloon", p->m_bDisplayPartyChatBalloon);
+    WriteGameOptionBool(pDoc, "status", "DisplayGuildChatBalloon", p->m_bDisplayGuildChatBalloon);
+    WriteGameOptionBool(pDoc, "status", "DisplayShowOnlyMyPet", p->m_bDisplayShowOnlyMyPet);
+    WriteGameOptionBool(pDoc, "status", "DisplayHideMyPet", p->m_bDisplayHideMyPet);
+    WriteGameOptionBool(pDoc, "status", "DisplayHideSmartPush", p->m_bDisplayHideSmartPush);
+    WriteGameOptionBool(pDoc, "status", "DisplayHideHighlightMenu", p->m_bDisplayHideHighlightMenu);
 }
-MS2_REPLACE(0x14125C270, FUN_14125c270, 799, 0xDD0F9536);
+MS2_REPLACE(0x14125C270, SaveGameOptionStatus, 799, 0xDD0F9536);
 
 // @0x14125c5a0
 void FUN_14125c5a0(Unk_StatusState* pDst, const Unk_StatusState* pSrc)
@@ -1506,7 +1506,7 @@ MS2_REPLACE(0x14125C8B0, FUN_14125c8b0, 14, 0x322C4B62);
 // @0x14125c8d0
 int FUN_14125c8d0(Unk_StatusFlag* p, TiXmlDocument* pDoc)
 {
-    FUN_141263840(pDoc, "status", "displayLearningQuestV2", &p->m_b);
+    ReadGameOptionBool(pDoc, "status", "displayLearningQuestV2", &p->m_b);
     return 1;
 }
 MS2_REPLACE(0x14125C8D0, FUN_14125c8d0, 56, 0x5911D3D6);
@@ -1514,7 +1514,7 @@ MS2_REPLACE(0x14125C8D0, FUN_14125c8d0, 56, 0x5911D3D6);
 // @0x14125c910
 void FUN_14125c910(Unk_StatusFlag* p, TiXmlDocument* pDoc)
 {
-    FUN_141262f40(pDoc, "status", "displayLearningQuestV2", p->m_b);
+    WriteGameOptionBool(pDoc, "status", "displayLearningQuestV2", p->m_b);
 }
 MS2_REPLACE(0x14125C910, FUN_14125c910, 52, 0xD8B62C79);
 
@@ -1530,7 +1530,7 @@ MS2_REPLACE(0x14125C950, FUN_14125c950, 26, 0x0A97A110);
 int FUN_14125c970(Unk_StatusFlag* p, TiXmlDocument* pDoc)
 {
     bool bValue = false;
-    if (FUN_141263840(pDoc, "status", "displayLearningQuestV2", &bValue) == 0)
+    if (ReadGameOptionBool(pDoc, "status", "displayLearningQuestV2", &bValue) == 0)
     {
         Unk_GsMyPC* pPlayer = (Unk_GsMyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
         if (pPlayer != 0)
@@ -1540,7 +1540,7 @@ int FUN_14125c970(Unk_StatusFlag* p, TiXmlDocument* pDoc)
             if (timeCreate < timeLimit)
                 bValue = true;
             p->m_b = bValue;
-            FUN_141262f40(pDoc, "status", "displayLearningQuestV2", p->m_b);
+            WriteGameOptionBool(pDoc, "status", "displayLearningQuestV2", p->m_b);
             return 1;
         }
     }
@@ -1576,22 +1576,22 @@ MS2_REPLACE(0x14125CAB0, FUN_14125cab0, 95, 0x347A1EFF);
 // @0x14125cb20
 int FUN_14125cb20(Unk_BattleState* p, TiXmlDocument* pDoc)
 {
-    FUN_141263840(pDoc, "battle", "DisplayGetMeso", &p->m_bDisplayGetMeso);
-    FUN_141263840(pDoc, "battle", "DisplayGetExp", &p->m_bDisplayGetExp);
-    FUN_141263840(pDoc, "battle", "DisplayEpGauge", &p->m_bDisplayEpGauge);
-    FUN_141263840(pDoc, "battle", "DisplayMyGiveRecovery", &p->m_bDisplayMyGiveRecovery);
-    FUN_141263840(pDoc, "battle", "DisplayMyTakeRecovery", &p->m_bDisplayMyTakeRecovery);
-    FUN_141263840(pDoc, "battle", "DisplayPartyRecovery", &p->m_bDisplayPartyRecovery);
+    ReadGameOptionBool(pDoc, "battle", "DisplayGetMeso", &p->m_bDisplayGetMeso);
+    ReadGameOptionBool(pDoc, "battle", "DisplayGetExp", &p->m_bDisplayGetExp);
+    ReadGameOptionBool(pDoc, "battle", "DisplayEpGauge", &p->m_bDisplayEpGauge);
+    ReadGameOptionBool(pDoc, "battle", "DisplayMyGiveRecovery", &p->m_bDisplayMyGiveRecovery);
+    ReadGameOptionBool(pDoc, "battle", "DisplayMyTakeRecovery", &p->m_bDisplayMyTakeRecovery);
+    ReadGameOptionBool(pDoc, "battle", "DisplayPartyRecovery", &p->m_bDisplayPartyRecovery);
     CString strGive;
-    if (FUN_141263ad0(pDoc, "damage", "giveDamage", &strGive) == 0)
+    if (ReadGameOptionString(pDoc, "damage", "giveDamage", &strGive) == 0)
     {
         bool bAll = TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x66);
         if (!bAll)
         {
             bool bMine = true;
             bool bParty = false;
-            FUN_141263840(pDoc, "battle", "DisplayMyGiveDamage", &bMine);
-            FUN_141263840(pDoc, "battle", "DisplayPartyGiveDamage", &bParty);
+            ReadGameOptionBool(pDoc, "battle", "DisplayMyGiveDamage", &bMine);
+            ReadGameOptionBool(pDoc, "battle", "DisplayPartyGiveDamage", &bParty);
             if (bMine && !bParty)
                 p->m_n08 = 1;
             else
@@ -1603,8 +1603,8 @@ int FUN_14125cb20(Unk_BattleState* p, TiXmlDocument* pDoc)
         }
         bool bMineTake = true;
         bool bPartyTake = false;
-        FUN_141263840(pDoc, "battle", "DisplayMyTakeDamage", &bMineTake);
-        FUN_141263840(pDoc, "battle", "DisplayPartyTakeDamage", &bPartyTake);
+        ReadGameOptionBool(pDoc, "battle", "DisplayMyTakeDamage", &bMineTake);
+        ReadGameOptionBool(pDoc, "battle", "DisplayPartyTakeDamage", &bPartyTake);
         if (bMineTake && !bPartyTake)
             p->m_n0c = 1;
         else
@@ -1615,10 +1615,10 @@ int FUN_14125cb20(Unk_BattleState* p, TiXmlDocument* pDoc)
     {
         p->m_n08 = FUN_140219900(strGive);
         CString strTake;
-        FUN_141263ad0(pDoc, "damage", "takeDamage", &strTake);
+        ReadGameOptionString(pDoc, "damage", "takeDamage", &strTake);
         p->m_n0c = FUN_140219900(strTake);
         CString strOther;
-        FUN_141263ad0(pDoc, "damage", "otherDamageform", &strOther);
+        ReadGameOptionString(pDoc, "damage", "otherDamageform", &strOther);
         p->m_n10 = FUN_140219960(strOther);
     }
     return 1;
@@ -1629,12 +1629,12 @@ MS2_REPLACE(0x14125CB20, FUN_14125cb20, 756, 0xFCD95ED1);
 // @0x14125ce20
 void FUN_14125ce20(Unk_BattleState* p, TiXmlDocument* pDoc)
 {
-    FUN_141262f40(pDoc, "battle", "DisplayMyGiveRecovery", p->m_bDisplayMyGiveRecovery);
-    FUN_141262f40(pDoc, "battle", "DisplayMyTakeRecovery", p->m_bDisplayMyTakeRecovery);
-    FUN_141262f40(pDoc, "battle", "DisplayPartyRecovery", p->m_bDisplayPartyRecovery);
-    FUN_141262f40(pDoc, "battle", "DisplayGetMeso", p->m_bDisplayGetMeso);
-    FUN_141262f40(pDoc, "battle", "DisplayGetExp", p->m_bDisplayGetExp);
-    FUN_141262f40(pDoc, "battle", "DisplayEpGauge", p->m_bDisplayEpGauge);
+    WriteGameOptionBool(pDoc, "battle", "DisplayMyGiveRecovery", p->m_bDisplayMyGiveRecovery);
+    WriteGameOptionBool(pDoc, "battle", "DisplayMyTakeRecovery", p->m_bDisplayMyTakeRecovery);
+    WriteGameOptionBool(pDoc, "battle", "DisplayPartyRecovery", p->m_bDisplayPartyRecovery);
+    WriteGameOptionBool(pDoc, "battle", "DisplayGetMeso", p->m_bDisplayGetMeso);
+    WriteGameOptionBool(pDoc, "battle", "DisplayGetExp", p->m_bDisplayGetExp);
+    WriteGameOptionBool(pDoc, "battle", "DisplayEpGauge", p->m_bDisplayEpGauge);
     FUN_141263d30(pDoc, "battle", "DisplayDropIcon");
     FUN_141263d30(pDoc, "battle", "DisplayMyGiveDamage");
     FUN_141263d30(pDoc, "battle", "DisplayPartyGiveDamage");
@@ -1643,9 +1643,9 @@ void FUN_14125ce20(Unk_BattleState* p, TiXmlDocument* pDoc)
     FUN_141263d30(pDoc, "battle", "DiffColor");
     FUN_141263d30(pDoc, "battle", "DiffSize");
     FUN_141263d30(pDoc, "battle", "DiffAlpha");
-    FUN_1412632a0(pDoc, "damage", "giveDamage", FUN_140219790(p->m_n08));
-    FUN_1412632a0(pDoc, "damage", "takeDamage", FUN_140219790(p->m_n0c));
-    FUN_1412632a0(pDoc, "damage", "otherDamageform", FUN_140219830(p->m_n10));
+    WriteGameOptionString(pDoc, "damage", "giveDamage", FUN_140219790(p->m_n08));
+    WriteGameOptionString(pDoc, "damage", "takeDamage", FUN_140219790(p->m_n0c));
+    WriteGameOptionString(pDoc, "damage", "otherDamageform", FUN_140219830(p->m_n10));
 }
 MS2_REPLACE(0x14125CE20, FUN_14125ce20, 723, 0xDBA396EF);
 
@@ -1676,9 +1676,9 @@ MS2_REPLACE(0x14125D160, FUN_14125d160, 32, 0xFCBEDFB9);
 // @0x14125d190
 int FUN_14125d190(Unk_CommunityStateA* p, TiXmlDocument* pDoc)
 {
-    FUN_141263840(pDoc, "community", "displayMyChatBalloon", &p->m_bDisplayMyChatBalloon);
-    FUN_141263840(pDoc, "community", "displayOtherChatBalloon", &p->m_bDisplayOtherChatBalloon);
-    FUN_141263840(pDoc, "community", "disableSingleRiding", &p->m_bDisableSingleRiding);
+    ReadGameOptionBool(pDoc, "community", "displayMyChatBalloon", &p->m_bDisplayMyChatBalloon);
+    ReadGameOptionBool(pDoc, "community", "displayOtherChatBalloon", &p->m_bDisplayOtherChatBalloon);
+    ReadGameOptionBool(pDoc, "community", "disableSingleRiding", &p->m_bDisableSingleRiding);
     return 1;
 }
 MS2_REPLACE(0x14125D190, FUN_14125d190, 127, 0x605F6137);
@@ -1686,9 +1686,9 @@ MS2_REPLACE(0x14125D190, FUN_14125d190, 127, 0x605F6137);
 // @0x14125d220
 void FUN_14125d220(Unk_CommunityStateA* p, TiXmlDocument* pDoc)
 {
-    FUN_141262f40(pDoc, "community", "displayMyChatBalloon", p->m_bDisplayMyChatBalloon);
-    FUN_141262f40(pDoc, "community", "displayOtherChatBalloon", p->m_bDisplayOtherChatBalloon);
-    FUN_141262f40(pDoc, "community", "disableSingleRiding", p->m_bDisableSingleRiding);
+    WriteGameOptionBool(pDoc, "community", "displayMyChatBalloon", p->m_bDisplayMyChatBalloon);
+    WriteGameOptionBool(pDoc, "community", "displayOtherChatBalloon", p->m_bDisplayOtherChatBalloon);
+    WriteGameOptionBool(pDoc, "community", "disableSingleRiding", p->m_bDisableSingleRiding);
 }
 MS2_REPLACE(0x14125D220, FUN_14125d220, 120, 0x2160F316);
 
@@ -1740,17 +1740,17 @@ MS2_REPLACE(0x14125D360, FUN_14125d360, 104, 0xC8A648D8);
 // @0x14125d3d0
 int FUN_14125d3d0(Unk_CommunityStateB* p, TiXmlDocument* pDoc)
 {
-    FUN_141263840(pDoc, "community", "displayChatComfirmSuper", &p->m_bDisplayChatComfirmSuper);
-    FUN_141263840(pDoc, "community", "displayChatComfirmWorld", &p->m_bDisplayChatComfirmWorld);
-    FUN_141263840(pDoc, "community", "displayChatComfirmChannel", &p->m_bDisplayChatComfirmChannel);
-    FUN_141263840(pDoc, "community", "disablePartyRequest", &p->m_bDisablePartyRequest);
-    FUN_141263840(pDoc, "community", "disableBuddyRequest", &p->m_bDisableBuddyRequest);
-    FUN_141263840(pDoc, "community", "disableGuildRequest", &p->m_bDisableGuildRequest);
-    FUN_141263840(pDoc, "community", "disableGroupRequest", &p->m_bDisableGroupRequest);
-    FUN_141263840(pDoc, "community", "disableWhisperNotify", &p->m_bDisableWhisperNotify);
-    FUN_141263840(pDoc, "community", "disableTradeRequest", &p->m_bDisableTradeRequest);
-    FUN_141263840(pDoc, "community", "disableHomeRequest", &p->m_bDisableHomeRequest);
-    FUN_141263840(pDoc, "community", "disableCouplemotionRequest", &p->m_bDisableCouplemotionRequest);
+    ReadGameOptionBool(pDoc, "community", "displayChatComfirmSuper", &p->m_bDisplayChatComfirmSuper);
+    ReadGameOptionBool(pDoc, "community", "displayChatComfirmWorld", &p->m_bDisplayChatComfirmWorld);
+    ReadGameOptionBool(pDoc, "community", "displayChatComfirmChannel", &p->m_bDisplayChatComfirmChannel);
+    ReadGameOptionBool(pDoc, "community", "disablePartyRequest", &p->m_bDisablePartyRequest);
+    ReadGameOptionBool(pDoc, "community", "disableBuddyRequest", &p->m_bDisableBuddyRequest);
+    ReadGameOptionBool(pDoc, "community", "disableGuildRequest", &p->m_bDisableGuildRequest);
+    ReadGameOptionBool(pDoc, "community", "disableGroupRequest", &p->m_bDisableGroupRequest);
+    ReadGameOptionBool(pDoc, "community", "disableWhisperNotify", &p->m_bDisableWhisperNotify);
+    ReadGameOptionBool(pDoc, "community", "disableTradeRequest", &p->m_bDisableTradeRequest);
+    ReadGameOptionBool(pDoc, "community", "disableHomeRequest", &p->m_bDisableHomeRequest);
+    ReadGameOptionBool(pDoc, "community", "disableCouplemotionRequest", &p->m_bDisableCouplemotionRequest);
     return 1;
 }
 MS2_REPLACE(0x14125D3D0, FUN_14125d3d0, 415, 0x3E37BCD3);
@@ -1758,17 +1758,17 @@ MS2_REPLACE(0x14125D3D0, FUN_14125d3d0, 415, 0x3E37BCD3);
 // @0x14125d580
 void FUN_14125d580(Unk_CommunityStateB* p, TiXmlDocument* pDoc)
 {
-    FUN_141262f40(pDoc, "community", "displayChatComfirmSuper", p->m_bDisplayChatComfirmSuper);
-    FUN_141262f40(pDoc, "community", "displayChatComfirmWorld", p->m_bDisplayChatComfirmWorld);
-    FUN_141262f40(pDoc, "community", "displayChatComfirmChannel", p->m_bDisplayChatComfirmChannel);
-    FUN_141262f40(pDoc, "community", "disablePartyRequest", p->m_bDisablePartyRequest);
-    FUN_141262f40(pDoc, "community", "disableBuddyRequest", p->m_bDisableBuddyRequest);
-    FUN_141262f40(pDoc, "community", "disableGuildRequest", p->m_bDisableGuildRequest);
-    FUN_141262f40(pDoc, "community", "disableGroupRequest", p->m_bDisableGroupRequest);
-    FUN_141262f40(pDoc, "community", "disableWhisperNotify", p->m_bDisableWhisperNotify);
-    FUN_141262f40(pDoc, "community", "disableTradeRequest", p->m_bDisableTradeRequest);
-    FUN_141262f40(pDoc, "community", "disableHomeRequest", p->m_bDisableHomeRequest);
-    FUN_141262f40(pDoc, "community", "disableCouplemotionRequest", p->m_bDisableCouplemotionRequest);
+    WriteGameOptionBool(pDoc, "community", "displayChatComfirmSuper", p->m_bDisplayChatComfirmSuper);
+    WriteGameOptionBool(pDoc, "community", "displayChatComfirmWorld", p->m_bDisplayChatComfirmWorld);
+    WriteGameOptionBool(pDoc, "community", "displayChatComfirmChannel", p->m_bDisplayChatComfirmChannel);
+    WriteGameOptionBool(pDoc, "community", "disablePartyRequest", p->m_bDisablePartyRequest);
+    WriteGameOptionBool(pDoc, "community", "disableBuddyRequest", p->m_bDisableBuddyRequest);
+    WriteGameOptionBool(pDoc, "community", "disableGuildRequest", p->m_bDisableGuildRequest);
+    WriteGameOptionBool(pDoc, "community", "disableGroupRequest", p->m_bDisableGroupRequest);
+    WriteGameOptionBool(pDoc, "community", "disableWhisperNotify", p->m_bDisableWhisperNotify);
+    WriteGameOptionBool(pDoc, "community", "disableTradeRequest", p->m_bDisableTradeRequest);
+    WriteGameOptionBool(pDoc, "community", "disableHomeRequest", p->m_bDisableHomeRequest);
+    WriteGameOptionBool(pDoc, "community", "disableCouplemotionRequest", p->m_bDisableCouplemotionRequest);
 }
 MS2_REPLACE(0x14125D580, FUN_14125d580, 392, 0xBFF9E235);
 
@@ -1956,15 +1956,15 @@ int FUN_14125d9b0(Unk_GraphicState* p, TiXmlDocument* pDoc, int nDefault)
     }
     else
     {
-        FUN_141263840(pDoc, "graphic", "displayHdr", &p->m_bHdr);
-        FUN_141263840(pDoc, "graphic", "displayShimmer", &p->m_bShimmer);
-        FUN_141263940(pDoc, "graphic", "multisamplingIdx", &p->m_nMultisampling);
-        FUN_141263940(pDoc, "graphic", "resolutionWidth", &p->m_nWidth);
-        FUN_141263940(pDoc, "graphic", "resolutionHeight", &p->m_nHeight);
-        FUN_141263940(pDoc, "graphic", "resolution", &p->m_nResIdx);
-        FUN_141263940(pDoc, "graphic", "quality", &p->m_nQuality);
-        FUN_141263940(pDoc, "graphic", "effectStep", &p->m_nEffectStep);
-        FUN_141263940(pDoc, "graphic", "shadowLevel", &p->m_nShadow);
+        ReadGameOptionBool(pDoc, "graphic", "displayHdr", &p->m_bHdr);
+        ReadGameOptionBool(pDoc, "graphic", "displayShimmer", &p->m_bShimmer);
+        ReadGameOptionInt(pDoc, "graphic", "multisamplingIdx", &p->m_nMultisampling);
+        ReadGameOptionInt(pDoc, "graphic", "resolutionWidth", &p->m_nWidth);
+        ReadGameOptionInt(pDoc, "graphic", "resolutionHeight", &p->m_nHeight);
+        ReadGameOptionInt(pDoc, "graphic", "resolution", &p->m_nResIdx);
+        ReadGameOptionInt(pDoc, "graphic", "quality", &p->m_nQuality);
+        ReadGameOptionInt(pDoc, "graphic", "effectStep", &p->m_nEffectStep);
+        ReadGameOptionInt(pDoc, "graphic", "shadowLevel", &p->m_nShadow);
         if (p->m_nQuality < 0)
             p->m_nQuality = 0;
         if (p->m_nQuality > 3)
@@ -1982,12 +1982,12 @@ int FUN_14125d9b0(Unk_GraphicState* p, TiXmlDocument* pDoc, int nDefault)
         if (p->m_nMultisampling > 2)
             p->m_nMultisampling = 2;
     }
-    FUN_141263940(pDoc, "graphic", "fullScreen", &p->m_nScreenMode);
-    FUN_141263940(pDoc, "graphic", "brightness", &p->m_n0c);
-    FUN_141263840(pDoc, "graphic", "showFramerate", &p->m_bShowFrameRate);
-    FUN_141263840(pDoc, "graphic", "advancedEffect", &p->m_b15);
-    FUN_141263840(pDoc, "graphic", "vsync", &p->m_bVsync);
-    FUN_141263840(pDoc, "graphic", "showEnchantEffect", &p->m_bEnchantEffect);
+    ReadGameOptionInt(pDoc, "graphic", "fullScreen", &p->m_nScreenMode);
+    ReadGameOptionInt(pDoc, "graphic", "brightness", &p->m_n0c);
+    ReadGameOptionBool(pDoc, "graphic", "showFramerate", &p->m_bShowFrameRate);
+    ReadGameOptionBool(pDoc, "graphic", "advancedEffect", &p->m_b15);
+    ReadGameOptionBool(pDoc, "graphic", "vsync", &p->m_bVsync);
+    ReadGameOptionBool(pDoc, "graphic", "showEnchantEffect", &p->m_bEnchantEffect);
     p->m_b1a = p->m_b15;
     p->m_b1b = p->m_b15;
     p->m_b1f = FUN_140ae1c00()->FUN_141376580(p->m_nQuality) ? true : false;
@@ -1996,24 +1996,24 @@ int FUN_14125d9b0(Unk_GraphicState* p, TiXmlDocument* pDoc, int nDefault)
 MS2_REPLACE(0x14125D9B0, FUN_14125d9b0, 1092, 0xF1FFDCB9);
 
 // @0x14125de00
-void FUN_14125de00(Unk_GraphicState* p, TiXmlDocument* pDoc)
+void SaveGameOptionGraphic(Unk_GraphicState* p, TiXmlDocument* pDoc)
 {
-    FUN_141263090(pDoc, "graphic", "quality", p->m_nQuality);
-    FUN_141263090(pDoc, "graphic", "resolution", p->m_nResIdx);
-    FUN_141263090(pDoc, "graphic", "fullScreen", p->m_nScreenMode);
-    FUN_141263090(pDoc, "graphic", "brightness", p->m_n0c);
-    FUN_141262f40(pDoc, "graphic", "showFramerate", p->m_bShowFrameRate);
-    FUN_141263090(pDoc, "graphic", "effectStep", p->m_nEffectStep);
-    FUN_141263090(pDoc, "graphic", "resolutionWidth", p->m_nWidth);
-    FUN_141263090(pDoc, "graphic", "resolutionHeight", p->m_nHeight);
-    FUN_141262f40(pDoc, "graphic", "displayHdr", p->m_bHdr);
-    FUN_141262f40(pDoc, "graphic", "displayShimmer", p->m_bShimmer);
-    FUN_141263090(pDoc, "graphic", "multisamplingIdx", p->m_nMultisampling);
-    FUN_141263090(pDoc, "graphic", "shadowLevel", p->m_nShadow);
-    FUN_141262f40(pDoc, "graphic", "vsync", p->m_bVsync);
-    FUN_141262f40(pDoc, "graphic", "showEnchantEffect", p->m_bEnchantEffect);
+    WriteGameOptionInt(pDoc, "graphic", "quality", p->m_nQuality);
+    WriteGameOptionInt(pDoc, "graphic", "resolution", p->m_nResIdx);
+    WriteGameOptionInt(pDoc, "graphic", "fullScreen", p->m_nScreenMode);
+    WriteGameOptionInt(pDoc, "graphic", "brightness", p->m_n0c);
+    WriteGameOptionBool(pDoc, "graphic", "showFramerate", p->m_bShowFrameRate);
+    WriteGameOptionInt(pDoc, "graphic", "effectStep", p->m_nEffectStep);
+    WriteGameOptionInt(pDoc, "graphic", "resolutionWidth", p->m_nWidth);
+    WriteGameOptionInt(pDoc, "graphic", "resolutionHeight", p->m_nHeight);
+    WriteGameOptionBool(pDoc, "graphic", "displayHdr", p->m_bHdr);
+    WriteGameOptionBool(pDoc, "graphic", "displayShimmer", p->m_bShimmer);
+    WriteGameOptionInt(pDoc, "graphic", "multisamplingIdx", p->m_nMultisampling);
+    WriteGameOptionInt(pDoc, "graphic", "shadowLevel", p->m_nShadow);
+    WriteGameOptionBool(pDoc, "graphic", "vsync", p->m_bVsync);
+    WriteGameOptionBool(pDoc, "graphic", "showEnchantEffect", p->m_bEnchantEffect);
 }
-MS2_REPLACE(0x14125DE00, FUN_14125de00, 485, 0xF73079B7);
+MS2_REPLACE(0x14125DE00, SaveGameOptionGraphic, 485, 0xF73079B7);
 
 // @0x14125dff0
 void FUN_14125dff0(Unk_GraphicState* pDst, const Unk_GraphicState* pSrc)
@@ -2322,37 +2322,37 @@ void FUN_14125ec50(Unk_GraphicState2* p)
 MS2_REPLACE(0x14125EC50, FUN_14125ec50, 92, 0x97A4BCCF);
 
 // @0x14125ecc0
-int FUN_14125ecc0(Unk_GraphicState2* p, TiXmlDocument* pDoc)
+int LoadGameOptionOptimizer(Unk_GraphicState2* p, TiXmlDocument* pDoc)
 {
-    FUN_141263940(pDoc, "optimizer", "optimalHide", &p->m_nOptimalHide);
-    FUN_141263840(pDoc, "optimizer", "hideAlways", &p->m_bHideAlways);
-    FUN_141263840(pDoc, "optimizer", "hideBossBattle", &p->m_bHideBossBattle);
-    FUN_141263840(pDoc, "optimizer", "showGuild", &p->m_bShowGuild);
-    FUN_141263840(pDoc, "optimizer", "showParty", &p->m_bShowParty);
-    FUN_141263840(pDoc, "optimizer", "showCustom", &p->m_bShowCustom);
-    FUN_141263940(pDoc, "optimizer", "customCount", &p->m_nCustomInput);
-    FUN_141263840(pDoc, "optimizer", "showphysx", &p->m_bShowPhysx);
+    ReadGameOptionInt(pDoc, "optimizer", "optimalHide", &p->m_nOptimalHide);
+    ReadGameOptionBool(pDoc, "optimizer", "hideAlways", &p->m_bHideAlways);
+    ReadGameOptionBool(pDoc, "optimizer", "hideBossBattle", &p->m_bHideBossBattle);
+    ReadGameOptionBool(pDoc, "optimizer", "showGuild", &p->m_bShowGuild);
+    ReadGameOptionBool(pDoc, "optimizer", "showParty", &p->m_bShowParty);
+    ReadGameOptionBool(pDoc, "optimizer", "showCustom", &p->m_bShowCustom);
+    ReadGameOptionInt(pDoc, "optimizer", "customCount", &p->m_nCustomInput);
+    ReadGameOptionBool(pDoc, "optimizer", "showphysx", &p->m_bShowPhysx);
     if (p->m_nOptimalHide < 0)
         p->m_nOptimalHide = 0;
     if (p->m_nOptimalHide > 2)
         p->m_nOptimalHide = 2;
     return 1;
 }
-MS2_REPLACE(0x14125ECC0, FUN_14125ecc0, 350, 0x5E0C9BE5);
+MS2_REPLACE(0x14125ECC0, LoadGameOptionOptimizer, 350, 0x5E0C9BE5);
 
 // @0x14125ee30
-void FUN_14125ee30(Unk_GraphicState2* p, TiXmlDocument* pDoc)
+void SaveGameOptionOptimizer(Unk_GraphicState2* p, TiXmlDocument* pDoc)
 {
-    FUN_141263090(pDoc, "optimizer", "optimalHide", p->m_nOptimalHide);
-    FUN_141262f40(pDoc, "optimizer", "hideAlways", p->m_bHideAlways);
-    FUN_141262f40(pDoc, "optimizer", "hideBossBattle", p->m_bHideBossBattle);
-    FUN_141262f40(pDoc, "optimizer", "showGuild", p->m_bShowGuild);
-    FUN_141262f40(pDoc, "optimizer", "showParty", p->m_bShowParty);
-    FUN_141262f40(pDoc, "optimizer", "showCustom", p->m_bShowCustom);
-    FUN_141263090(pDoc, "optimizer", "customCount", p->m_nCustomInput);
-    FUN_141262f40(pDoc, "optimizer", "showphysx", p->m_bShowPhysx);
+    WriteGameOptionInt(pDoc, "optimizer", "optimalHide", p->m_nOptimalHide);
+    WriteGameOptionBool(pDoc, "optimizer", "hideAlways", p->m_bHideAlways);
+    WriteGameOptionBool(pDoc, "optimizer", "hideBossBattle", p->m_bHideBossBattle);
+    WriteGameOptionBool(pDoc, "optimizer", "showGuild", p->m_bShowGuild);
+    WriteGameOptionBool(pDoc, "optimizer", "showParty", p->m_bShowParty);
+    WriteGameOptionBool(pDoc, "optimizer", "showCustom", p->m_bShowCustom);
+    WriteGameOptionInt(pDoc, "optimizer", "customCount", p->m_nCustomInput);
+    WriteGameOptionBool(pDoc, "optimizer", "showphysx", p->m_bShowPhysx);
 }
-MS2_REPLACE(0x14125EE30, FUN_14125ee30, 288, 0x73ED29C2);
+MS2_REPLACE(0x14125EE30, SaveGameOptionOptimizer, 288, 0x73ED29C2);
 
 // @0x14125ef60
 void FUN_14125ef60(Unk_GraphicState2* pDst, const Unk_GraphicState2* pSrc)
@@ -2504,21 +2504,21 @@ void FUN_14125f0c0(Unk_LgState* p)
 MS2_REPLACE(0x14125F0C0, FUN_14125f0c0, 188, 0xAC912855);
 
 // @0x14125f190
-int FUN_14125f190(Unk_LgState* p, TiXmlDocument* pDoc)
+int LoadGameOptionLanguage(Unk_LgState* p, TiXmlDocument* pDoc)
 {
-    FUN_141263940(pDoc, "language", "languageIndex", &p->m_nLanguage);
-    FUN_141263940(pDoc, "language", "voiceIndex", &p->m_nVoice);
+    ReadGameOptionInt(pDoc, "language", "languageIndex", &p->m_nLanguage);
+    ReadGameOptionInt(pDoc, "language", "voiceIndex", &p->m_nVoice);
     return 1;
 }
-MS2_REPLACE(0x14125F190, FUN_14125f190, 92, 0x8E30F7A4);
+MS2_REPLACE(0x14125F190, LoadGameOptionLanguage, 92, 0x8E30F7A4);
 
 // @0x14125f200
-void FUN_14125f200(Unk_LgState* p, TiXmlDocument* pDoc)
+void SaveGameOptionLanguage(Unk_LgState* p, TiXmlDocument* pDoc)
 {
-    FUN_141263090(pDoc, "language", "languageIndex", p->m_nLanguage);
-    FUN_141263090(pDoc, "language", "voiceIndex", p->m_nVoice);
+    WriteGameOptionInt(pDoc, "language", "languageIndex", p->m_nLanguage);
+    WriteGameOptionInt(pDoc, "language", "voiceIndex", p->m_nVoice);
 }
-MS2_REPLACE(0x14125F200, FUN_14125f200, 84, 0x0ABF8DE1);
+MS2_REPLACE(0x14125F200, SaveGameOptionLanguage, 84, 0x0ABF8DE1);
 
 // @0x14125f260
 void FUN_14125f260(Unk_LgState* pDst, const Unk_LgState* pSrc)
@@ -2548,12 +2548,12 @@ void FUN_14125f2c0(Unk_GpState* p)
 MS2_REPLACE(0x14125F2C0, FUN_14125f2c0, 105, 0x15717390);
 
 // @0x14125f330
-int FUN_14125f330(Unk_GpState* p, TiXmlDocument* pDoc)
+int LoadGameOptionGamepad(Unk_GpState* p, TiXmlDocument* pDoc)
 {
-    FUN_141263840(pDoc, "gamepad", "bGamePadUse", &p->m_bUse);
-    FUN_141263840(pDoc, "gamepad", "bShowSkillName", &p->m_bShowSkillName);
-    FUN_141263a40(pDoc, "gamepad", "sensitivityH", &p->m_fSensitivityH);
-    FUN_141263a40(pDoc, "gamepad", "sensitivityV", &p->m_fSensitivityV);
+    ReadGameOptionBool(pDoc, "gamepad", "bGamePadUse", &p->m_bUse);
+    ReadGameOptionBool(pDoc, "gamepad", "bShowSkillName", &p->m_bShowSkillName);
+    ReadGameOptionFloat(pDoc, "gamepad", "sensitivityH", &p->m_fSensitivityH);
+    ReadGameOptionFloat(pDoc, "gamepad", "sensitivityV", &p->m_fSensitivityV);
     if (p->m_fSensitivityH < 0.01f)
         p->m_fSensitivityH = 0.01f;
     if (p->m_fSensitivityH > 0.5f)
@@ -2563,10 +2563,10 @@ int FUN_14125f330(Unk_GpState* p, TiXmlDocument* pDoc)
     if (p->m_fSensitivityV > 0.5f)
         p->m_fSensitivityV = 0.5f;
     if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xc3))
-        FUN_141263840(pDoc, "gamepad", "bVibration", &p->m_bVibration);
+        ReadGameOptionBool(pDoc, "gamepad", "bVibration", &p->m_bVibration);
     if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xd6))
     {
-        FUN_141263940(pDoc, "gamepad", "gamePadLStickMoveSensitivity", &p->m_nLStickSensitivity);
+        ReadGameOptionInt(pDoc, "gamepad", "gamePadLStickMoveSensitivity", &p->m_nLStickSensitivity);
         if (p->m_nLStickSensitivity < 0)
             p->m_nLStickSensitivity = 0;
         if (p->m_nLStickSensitivity > 100)
@@ -2574,21 +2574,21 @@ int FUN_14125f330(Unk_GpState* p, TiXmlDocument* pDoc)
     }
     return 1;
 }
-MS2_REPLACE(0x14125F330, FUN_14125f330, 479, 0x2289B370);
+MS2_REPLACE(0x14125F330, LoadGameOptionGamepad, 479, 0x2289B370);
 
 // @0x14125f520
-void FUN_14125f520(Unk_GpState* p, TiXmlDocument* pDoc)
+void SaveGameOptionGamepad(Unk_GpState* p, TiXmlDocument* pDoc)
 {
-    FUN_141262f40(pDoc, "gamepad", "bGamePadUse", p->m_bUse);
-    FUN_141262f40(pDoc, "gamepad", "bShowSkillName", p->m_bShowSkillName);
-    FUN_141263190(pDoc, "gamepad", "sensitivityH", p->m_fSensitivityH);
-    FUN_141263190(pDoc, "gamepad", "sensitivityV", p->m_fSensitivityV);
+    WriteGameOptionBool(pDoc, "gamepad", "bGamePadUse", p->m_bUse);
+    WriteGameOptionBool(pDoc, "gamepad", "bShowSkillName", p->m_bShowSkillName);
+    WriteGameOptionFloat(pDoc, "gamepad", "sensitivityH", p->m_fSensitivityH);
+    WriteGameOptionFloat(pDoc, "gamepad", "sensitivityV", p->m_fSensitivityV);
     if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xc3))
-        FUN_141262f40(pDoc, "gamepad", "bVibration", p->m_bVibration);
+        WriteGameOptionBool(pDoc, "gamepad", "bVibration", p->m_bVibration);
     if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xd6))
-        FUN_141263090(pDoc, "gamepad", "gamePadLStickMoveSensitivity", p->m_nLStickSensitivity);
+        WriteGameOptionInt(pDoc, "gamepad", "gamePadLStickMoveSensitivity", p->m_nLStickSensitivity);
 }
-MS2_REPLACE(0x14125F520, FUN_14125f520, 271, 0x07E9F562);
+MS2_REPLACE(0x14125F520, SaveGameOptionGamepad, 271, 0x07E9F562);
 
 // @0x14125f640
 void FUN_14125f640(Unk_GpState* pDst, const Unk_GpState* pSrc)
@@ -2642,22 +2642,22 @@ void FUN_14125f740(Unk_SoundState* p)
 MS2_REPLACE(0x14125F740, FUN_14125f740, 164, 0x9E1D1C29);
 
 // @0x14125f7f0
-int FUN_14125f7f0(Unk_SoundState* p, TiXmlDocument* pDoc)
+int LoadGameOptionSound(Unk_SoundState* p, TiXmlDocument* pDoc)
 {
-    FUN_141263840(pDoc, "sound", "bMuteAll", &p->m_b00);
-    FUN_141263840(pDoc, "sound", "bPlayAll", &p->m_b01);
-    FUN_141263940(pDoc, "sound", "mainSoundStep", &p->m_nMainSoundStep);
-    FUN_141263940(pDoc, "sound", "effectSoundStep", &p->m_nEffectSoundStep);
-    FUN_141263940(pDoc, "sound", "enviromentSound", &p->m_nEnviromentSoundStep);
-    FUN_141263940(pDoc, "sound", "uiSoundStep", &p->m_nUiSoundStep);
-    FUN_141263940(pDoc, "sound", "npcSoundStep", &p->m_nNpcSoundStep);
-    FUN_141263940(pDoc, "sound", "bossSoundStep", &p->m_nBossSoundStep);
-    FUN_141263940(pDoc, "sound", "bgmSoundStep", &p->m_nBgmSoundStep);
-    FUN_141263940(pDoc, "sound", "systemSoundStep", &p->m_nSystemSoundStep);
-    FUN_141263940(pDoc, "sound", "movieSoundStep", &p->m_nMovieSoundStep);
-    FUN_141263940(pDoc, "sound", "instrumentSoundStep", &p->m_n2c);
-    FUN_141263940(pDoc, "sound", "charSoundStep", &p->m_n28);
-    FUN_141263840(pDoc, "sound", "bOffBgmWhilePlayInstrument", &p->m_b30);
+    ReadGameOptionBool(pDoc, "sound", "bMuteAll", &p->m_b00);
+    ReadGameOptionBool(pDoc, "sound", "bPlayAll", &p->m_b01);
+    ReadGameOptionInt(pDoc, "sound", "mainSoundStep", &p->m_nMainSoundStep);
+    ReadGameOptionInt(pDoc, "sound", "effectSoundStep", &p->m_nEffectSoundStep);
+    ReadGameOptionInt(pDoc, "sound", "enviromentSound", &p->m_nEnviromentSoundStep);
+    ReadGameOptionInt(pDoc, "sound", "uiSoundStep", &p->m_nUiSoundStep);
+    ReadGameOptionInt(pDoc, "sound", "npcSoundStep", &p->m_nNpcSoundStep);
+    ReadGameOptionInt(pDoc, "sound", "bossSoundStep", &p->m_nBossSoundStep);
+    ReadGameOptionInt(pDoc, "sound", "bgmSoundStep", &p->m_nBgmSoundStep);
+    ReadGameOptionInt(pDoc, "sound", "systemSoundStep", &p->m_nSystemSoundStep);
+    ReadGameOptionInt(pDoc, "sound", "movieSoundStep", &p->m_nMovieSoundStep);
+    ReadGameOptionInt(pDoc, "sound", "instrumentSoundStep", &p->m_n2c);
+    ReadGameOptionInt(pDoc, "sound", "charSoundStep", &p->m_n28);
+    ReadGameOptionBool(pDoc, "sound", "bOffBgmWhilePlayInstrument", &p->m_b30);
     if (p->m_nMainSoundStep < 0)
         p->m_nMainSoundStep = 0;
     if (p->m_nMainSoundStep > 10)
@@ -2704,27 +2704,27 @@ int FUN_14125f7f0(Unk_SoundState* p, TiXmlDocument* pDoc)
         p->m_n28 = 10;
     return 1;
 }
-MS2_REPLACE(0x14125F7F0, FUN_14125f7f0, 1029, 0x16C55A33);
+MS2_REPLACE(0x14125F7F0, LoadGameOptionSound, 1029, 0x16C55A33);
 
 // @0x14125fc00
-void FUN_14125fc00(Unk_SoundState* p, TiXmlDocument* pDoc)
+void SaveGameOptionSound(Unk_SoundState* p, TiXmlDocument* pDoc)
 {
-    FUN_141262f40(pDoc, "sound", "bMuteAll", p->m_b00);
-    FUN_141262f40(pDoc, "sound", "bPlayAll", p->m_b01);
-    FUN_141263090(pDoc, "sound", "mainSoundStep", p->m_nMainSoundStep);
-    FUN_141263090(pDoc, "sound", "effectSoundStep", p->m_nEffectSoundStep);
-    FUN_141263090(pDoc, "sound", "enviromentSound", p->m_nEnviromentSoundStep);
-    FUN_141263090(pDoc, "sound", "uiSoundStep", p->m_nUiSoundStep);
-    FUN_141263090(pDoc, "sound", "npcSoundStep", p->m_nNpcSoundStep);
-    FUN_141263090(pDoc, "sound", "bossSoundStep", p->m_nBossSoundStep);
-    FUN_141263090(pDoc, "sound", "bgmSoundStep", p->m_nBgmSoundStep);
-    FUN_141263090(pDoc, "sound", "systemSoundStep", p->m_nSystemSoundStep);
-    FUN_141263090(pDoc, "sound", "movieSoundStep", p->m_nMovieSoundStep);
-    FUN_141263090(pDoc, "sound", "instrumentSoundStep", p->m_n2c);
-    FUN_141263090(pDoc, "sound", "charSoundStep", p->m_n28);
-    FUN_141262f40(pDoc, "sound", "bOffBgmWhilePlayInstrument", p->m_b30);
+    WriteGameOptionBool(pDoc, "sound", "bMuteAll", p->m_b00);
+    WriteGameOptionBool(pDoc, "sound", "bPlayAll", p->m_b01);
+    WriteGameOptionInt(pDoc, "sound", "mainSoundStep", p->m_nMainSoundStep);
+    WriteGameOptionInt(pDoc, "sound", "effectSoundStep", p->m_nEffectSoundStep);
+    WriteGameOptionInt(pDoc, "sound", "enviromentSound", p->m_nEnviromentSoundStep);
+    WriteGameOptionInt(pDoc, "sound", "uiSoundStep", p->m_nUiSoundStep);
+    WriteGameOptionInt(pDoc, "sound", "npcSoundStep", p->m_nNpcSoundStep);
+    WriteGameOptionInt(pDoc, "sound", "bossSoundStep", p->m_nBossSoundStep);
+    WriteGameOptionInt(pDoc, "sound", "bgmSoundStep", p->m_nBgmSoundStep);
+    WriteGameOptionInt(pDoc, "sound", "systemSoundStep", p->m_nSystemSoundStep);
+    WriteGameOptionInt(pDoc, "sound", "movieSoundStep", p->m_nMovieSoundStep);
+    WriteGameOptionInt(pDoc, "sound", "instrumentSoundStep", p->m_n2c);
+    WriteGameOptionInt(pDoc, "sound", "charSoundStep", p->m_n28);
+    WriteGameOptionBool(pDoc, "sound", "bOffBgmWhilePlayInstrument", p->m_b30);
 }
-MS2_REPLACE(0x14125FC00, FUN_14125fc00, 483, 0x0F3B23E0);
+MS2_REPLACE(0x14125FC00, SaveGameOptionSound, 483, 0x0F3B23E0);
 
 // @0x14125fdf0
 void FUN_14125fdf0(Unk_SoundState* pDst, const Unk_SoundState* pSrc)
@@ -2836,7 +2836,7 @@ MS2_REPLACE(0x1412603B0, FUN_1412603b0, 14, 0x322C4B62);
 // @0x1412603d0
 int FUN_1412603d0(Unk_SoundFlag* p, TiXmlDocument* pDoc)
 {
-    FUN_141263840(pDoc, "sound", "disableJobSound", &p->m_b);
+    ReadGameOptionBool(pDoc, "sound", "disableJobSound", &p->m_b);
     return 1;
 }
 MS2_REPLACE(0x1412603D0, FUN_1412603d0, 56, 0x701F4CE5);
@@ -2844,7 +2844,7 @@ MS2_REPLACE(0x1412603D0, FUN_1412603d0, 56, 0x701F4CE5);
 // @0x141260410
 void FUN_141260410(Unk_SoundFlag* p, TiXmlDocument* pDoc)
 {
-    FUN_141262f40(pDoc, "sound", "disableJobSound", p->m_b);
+    WriteGameOptionBool(pDoc, "sound", "disableJobSound", p->m_b);
 }
 MS2_REPLACE(0x141260410, FUN_141260410, 52, 0x42DE2D8F);
 
@@ -2886,38 +2886,38 @@ void FUN_141260550(Unk_GsConnect* p)
 MS2_REPLACE(0x141260550, FUN_141260550, 166, 0xD45BD42F);
 
 // @0x141260600
-int FUN_141260600(Unk_GsConnect* p, TiXmlDocument* pDoc)
+int LoadGameOptionConnect(Unk_GsConnect* p, TiXmlDocument* pDoc)
 {
-    FUN_141263b60(pDoc, "connect", "Region", &p->m_strRegion);
-    FUN_141263b60(pDoc, "connect", "WorldName", &p->m_strWorldName);
-    FUN_141263ad0(pDoc, "connect", "Channel", &p->m_strChannel);
-    FUN_141263ad0(pDoc, "connect", "UserName", &p->m_strUserName);
-    FUN_141263cb0(pDoc, "connect", "CharSN", &p->m_nCharSN);
-    FUN_141263b60(pDoc, "connect", "CharName", &p->m_strCharName);
+    ReadGameOptionStringW(pDoc, "connect", "Region", &p->m_strRegion);
+    ReadGameOptionStringW(pDoc, "connect", "WorldName", &p->m_strWorldName);
+    ReadGameOptionString(pDoc, "connect", "Channel", &p->m_strChannel);
+    ReadGameOptionString(pDoc, "connect", "UserName", &p->m_strUserName);
+    ReadGameOptionUInt64(pDoc, "connect", "CharSN", &p->m_nCharSN);
+    ReadGameOptionStringW(pDoc, "connect", "CharName", &p->m_strCharName);
     p->m_charList.FUN_1403f19e0();
     CString strList;
-    FUN_141263ad0(pDoc, "connect", "CharList", &strList);
+    ReadGameOptionString(pDoc, "connect", "CharList", &strList);
     if (!strList.IsEmpty())
         FUN_141263f00(strList, &p->m_charList, ",");
-    FUN_141263840(pDoc, "connect", "LoginByLocaleName", &p->m_bLoginByLocaleName);
+    ReadGameOptionBool(pDoc, "connect", "LoginByLocaleName", &p->m_bLoginByLocaleName);
     return 1;
 }
-MS2_REPLACE(0x141260600, FUN_141260600, 404, 0x859D1061);
+MS2_REPLACE(0x141260600, LoadGameOptionConnect, 404, 0x859D1061);
 
 // @0x1412607a0
-void FUN_1412607a0(Unk_GsConnect* p, TiXmlDocument* pDoc)
+void SaveGameOptionConnect(Unk_GsConnect* p, TiXmlDocument* pDoc)
 {
-    FUN_1412633b0(pDoc, "connect", "Region", p->m_strRegion);
-    FUN_1412633b0(pDoc, "connect", "WorldName", p->m_strWorldName);
-    FUN_1412632a0(pDoc, "connect", "Channel", p->m_strChannel);
-    FUN_1412632a0(pDoc, "connect", "UserName", p->m_strUserName);
-    FUN_1412633b0(pDoc, "connect", "CharName", p->m_strCharName);
-    FUN_141263640(pDoc, "connect", "CharSN", p->m_nCharSN);
+    WriteGameOptionStringW(pDoc, "connect", "Region", p->m_strRegion);
+    WriteGameOptionStringW(pDoc, "connect", "WorldName", p->m_strWorldName);
+    WriteGameOptionString(pDoc, "connect", "Channel", p->m_strChannel);
+    WriteGameOptionString(pDoc, "connect", "UserName", p->m_strUserName);
+    WriteGameOptionStringW(pDoc, "connect", "CharName", p->m_strCharName);
+    WriteGameOptionUInt64(pDoc, "connect", "CharSN", p->m_nCharSN);
     p->m_strCharName = "";
     FUN_141260ce0(p);
-    FUN_141262f40(pDoc, "connect", "LoginByLocaleName", p->m_bLoginByLocaleName);
+    WriteGameOptionBool(pDoc, "connect", "LoginByLocaleName", p->m_bLoginByLocaleName);
 }
-MS2_REPLACE(0x1412607A0, FUN_1412607a0, 297, 0x02C59038);
+MS2_REPLACE(0x1412607A0, SaveGameOptionConnect, 297, 0x02C59038);
 
 // @0x1412608d0
 void FUN_1412608d0(Unk_GsConnect* pDst, const Unk_GsConnect* pSrc)
@@ -2939,7 +2939,7 @@ void FUN_1412609c0(Unk_GsConnect* p, const CStringW& strRegion)
 {
     p->m_strRegion = strRegion;
     TiXmlDocument* pDoc = TSingleton<CGameOption>::GetInstance()->FUN_1412442e0();
-    FUN_1412633b0(pDoc, "connect", "Region", p->m_strRegion);
+    WriteGameOptionStringW(pDoc, "connect", "Region", p->m_strRegion);
     TSingleton<CGameOption>::GetInstance()->FUN_141243450();
 }
 MS2_REPLACE(0x1412609C0, FUN_1412609c0, 101, 0x0F9E1263);
@@ -2949,7 +2949,7 @@ void FUN_141260a30(Unk_GsConnect* p, const CStringW& strWorldName)
 {
     p->m_strWorldName = strWorldName;
     TiXmlDocument* pDoc = TSingleton<CGameOption>::GetInstance()->FUN_1412442e0();
-    FUN_1412633b0(pDoc, "connect", "WorldName", p->m_strWorldName);
+    WriteGameOptionStringW(pDoc, "connect", "WorldName", p->m_strWorldName);
     TSingleton<CGameOption>::GetInstance()->FUN_141243450();
 }
 MS2_REPLACE(0x141260A30, FUN_141260a30, 109, 0x5FC78FF4);
@@ -2959,7 +2959,7 @@ void FUN_141260ab0(Unk_GsConnect* p, int nChannel)
 {
     p->m_strChannel = FUN_1402bad60("{0}", &nChannel);
     TiXmlDocument* pDoc = TSingleton<CGameOption>::GetInstance()->FUN_1412442e0();
-    FUN_1412632a0(pDoc, "connect", "Channel", p->m_strChannel);
+    WriteGameOptionString(pDoc, "connect", "Channel", p->m_strChannel);
     TSingleton<CGameOption>::GetInstance()->FUN_141243450();
 }
 MS2_REPLACE(0x141260AB0, FUN_141260ab0, 166, 0x41FFF08B);
@@ -2972,7 +2972,7 @@ void FUN_141260b60(Unk_GsConnect* p, const CString& strUserName)
     else
         p->m_strUserName = "";
     TiXmlDocument* pDoc = TSingleton<CGameOption>::GetInstance()->FUN_1412442e0();
-    FUN_1412632a0(pDoc, "connect", "UserName", p->m_strUserName);
+    WriteGameOptionString(pDoc, "connect", "UserName", p->m_strUserName);
     TSingleton<CGameOption>::GetInstance()->FUN_141243450();
 }
 MS2_REPLACE(0x141260B60, FUN_141260b60, 149, 0xD20113B6);
@@ -2983,8 +2983,8 @@ void FUN_141260c00(Unk_GsConnect* p, const unsigned __int64& nCharSN)
     p->m_nCharSN = nCharSN;
     p->m_strCharName = L"";
     TiXmlDocument* pDoc = TSingleton<CGameOption>::GetInstance()->FUN_1412442e0();
-    FUN_141263640(pDoc, "connect", "CharSN", p->m_nCharSN);
-    FUN_1412633b0(pDoc, "connect", "CharName", p->m_strCharName);
+    WriteGameOptionUInt64(pDoc, "connect", "CharSN", p->m_nCharSN);
+    WriteGameOptionStringW(pDoc, "connect", "CharName", p->m_strCharName);
     TSingleton<CGameOption>::GetInstance()->FUN_141243450();
 }
 MS2_REPLACE(0x141260C00, FUN_141260c00, 161, 0x6FB68DB0);
@@ -3010,7 +3010,7 @@ void FUN_141260ce0(Unk_GsConnect* p)
         strList.Append(FUN_140719530(*p->m_charList.FUN_1403ed000(i)));
     }
     TiXmlDocument* pDoc = TSingleton<CGameOption>::GetInstance()->FUN_1412442e0();
-    FUN_1412632a0(pDoc, "connect", "CharList", strList);
+    WriteGameOptionString(pDoc, "connect", "CharList", strList);
 }
 MS2_REPLACE(0x141260CE0, FUN_141260ce0, 271, 0xECBFCDCB);
 
@@ -3019,7 +3019,7 @@ void FUN_141260e00(Unk_GsConnect* p, bool b)
 {
     p->m_bLoginByLocaleName = b;
     TiXmlDocument* pDoc = TSingleton<CGameOption>::GetInstance()->FUN_1412442e0();
-    FUN_141262f40(pDoc, "connect", "LoginByLocaleName", p->m_bLoginByLocaleName);
+    WriteGameOptionBool(pDoc, "connect", "LoginByLocaleName", p->m_bLoginByLocaleName);
     TSingleton<CGameOption>::GetInstance()->FUN_141243450();
 }
 MS2_REPLACE(0x141260E00, FUN_141260e00, 96, 0xDCA96A2F);
@@ -3056,50 +3056,50 @@ void FUN_141260ed0(Unk_GsAutoLoot* p)
 MS2_REPLACE(0x141260ED0, FUN_141260ed0, 98, 0x4B6CFCBE);
 
 // @0x141260f40
-int FUN_141260f40(Unk_GsAutoLoot* p, TiXmlDocument* pDoc)
+int LoadGameOptionAutoLooting(Unk_GsAutoLoot* p, TiXmlDocument* pDoc)
 {
     int nGrade = p->m_nEquipGrade;
-    FUN_141263840(pDoc, "autoLooting", "isEnableEquip", &p->m_bEquip);
-    FUN_141263940(pDoc, "autoLooting", "equipGrade", &nGrade);
-    FUN_141263840(pDoc, "autoLooting", "isEnableConsume", &p->m_bConsume);
-    FUN_141263840(pDoc, "autoLooting", "isEnableETC", &p->m_bEtc);
-    FUN_141263840(pDoc, "autoLooting", "isEnableMeso", &p->m_bMeso);
+    ReadGameOptionBool(pDoc, "autoLooting", "isEnableEquip", &p->m_bEquip);
+    ReadGameOptionInt(pDoc, "autoLooting", "equipGrade", &nGrade);
+    ReadGameOptionBool(pDoc, "autoLooting", "isEnableConsume", &p->m_bConsume);
+    ReadGameOptionBool(pDoc, "autoLooting", "isEnableETC", &p->m_bEtc);
+    ReadGameOptionBool(pDoc, "autoLooting", "isEnableMeso", &p->m_bMeso);
     if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036e510())
     {
-        if (FUN_141263840(pDoc, "autoLooting", "isEnableMerat", &p->m_bMerat) == 0)
+        if (ReadGameOptionBool(pDoc, "autoLooting", "isEnableMerat", &p->m_bMerat) == 0)
             p->m_bMerat = p->m_bMeso;
     }
-    if (FUN_141263840(pDoc, "autoLooting", "isEnableToken", &p->m_bToken) == 0)
+    if (ReadGameOptionBool(pDoc, "autoLooting", "isEnableToken", &p->m_bToken) == 0)
         p->m_bToken = p->m_bMeso;
-    FUN_141263840(pDoc, "autoLooting", "isEnableOther", &p->m_bOther);
+    ReadGameOptionBool(pDoc, "autoLooting", "isEnableOther", &p->m_bOther);
     if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x2e) == true)
-        FUN_141263840(pDoc, "autoLooting", "IsEnableGemStone", &p->m_bGemStone);
+        ReadGameOptionBool(pDoc, "autoLooting", "IsEnableGemStone", &p->m_bGemStone);
     if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x8c))
-        FUN_141263840(pDoc, "autoLooting", "isEnablePet", &p->m_bPet);
+        ReadGameOptionBool(pDoc, "autoLooting", "isEnablePet", &p->m_bPet);
     p->m_nEquipGrade = nGrade;
     return 1;
 }
-MS2_REPLACE(0x141260F40, FUN_141260f40, 509, 0xB969B3F5);
+MS2_REPLACE(0x141260F40, LoadGameOptionAutoLooting, 509, 0xB969B3F5);
 
 // @0x141261150
-void FUN_141261150(Unk_GsAutoLoot* p, TiXmlDocument* pDoc)
+void SaveGameOptionAutoLooting(Unk_GsAutoLoot* p, TiXmlDocument* pDoc)
 {
     int nGrade = p->m_nEquipGrade;
-    FUN_141262f40(pDoc, "autoLooting", "isEnableEquip", p->m_bEquip);
-    FUN_141263090(pDoc, "autoLooting", "equipGrade", nGrade);
-    FUN_141262f40(pDoc, "autoLooting", "isEnableConsume", p->m_bConsume);
-    FUN_141262f40(pDoc, "autoLooting", "isEnableETC", p->m_bEtc);
-    FUN_141262f40(pDoc, "autoLooting", "isEnableMeso", p->m_bMeso);
+    WriteGameOptionBool(pDoc, "autoLooting", "isEnableEquip", p->m_bEquip);
+    WriteGameOptionInt(pDoc, "autoLooting", "equipGrade", nGrade);
+    WriteGameOptionBool(pDoc, "autoLooting", "isEnableConsume", p->m_bConsume);
+    WriteGameOptionBool(pDoc, "autoLooting", "isEnableETC", p->m_bEtc);
+    WriteGameOptionBool(pDoc, "autoLooting", "isEnableMeso", p->m_bMeso);
     if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036e510())
-        FUN_141262f40(pDoc, "autoLooting", "isEnableMerat", p->m_bMerat);
-    FUN_141262f40(pDoc, "autoLooting", "isEnableToken", p->m_bToken);
-    FUN_141262f40(pDoc, "autoLooting", "isEnableOther", p->m_bOther);
+        WriteGameOptionBool(pDoc, "autoLooting", "isEnableMerat", p->m_bMerat);
+    WriteGameOptionBool(pDoc, "autoLooting", "isEnableToken", p->m_bToken);
+    WriteGameOptionBool(pDoc, "autoLooting", "isEnableOther", p->m_bOther);
     if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x2e) == true)
-        FUN_141262f40(pDoc, "autoLooting", "IsEnableGemStone", p->m_bGemStone);
+        WriteGameOptionBool(pDoc, "autoLooting", "IsEnableGemStone", p->m_bGemStone);
     if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x8c))
-        FUN_141262f40(pDoc, "autoLooting", "isEnablePet", p->m_bPet);
+        WriteGameOptionBool(pDoc, "autoLooting", "isEnablePet", p->m_bPet);
 }
-MS2_REPLACE(0x141261150, FUN_141261150, 436, 0x5ADE5DCC);
+MS2_REPLACE(0x141261150, SaveGameOptionAutoLooting, 436, 0x5ADE5DCC);
 
 // @0x141261310
 void FUN_141261310(Unk_GsAutoLoot* pDst, const Unk_GsAutoLoot* pSrc)
@@ -3238,7 +3238,7 @@ MS2_REPLACE(0x1412616A0, FUN_1412616a0, 14, 0x322C4B62);
 // @0x1412616c0
 int FUN_1412616c0(Unk_GoChroma* p, TiXmlDocument* pDoc)
 {
-    FUN_141263840(pDoc, "chroma", "disable", &p->m_bDisable);
+    ReadGameOptionBool(pDoc, "chroma", "disable", &p->m_bDisable);
     return 1;
 }
 MS2_REPLACE(0x1412616C0, FUN_1412616c0, 56, 0xD013648D);
@@ -3247,7 +3247,7 @@ MS2_REPLACE(0x1412616C0, FUN_1412616c0, 56, 0xD013648D);
 void FUN_141261700(Unk_GoChroma* p, TiXmlDocument* pDoc)
 {
     if (p->m_bDisable)
-        FUN_141262f40(pDoc, "chroma", "disable", p->m_bDisable);
+        WriteGameOptionBool(pDoc, "chroma", "disable", p->m_bDisable);
 }
 MS2_REPLACE(0x141261700, FUN_141261700, 64, 0x860376F9);
 
@@ -3278,41 +3278,41 @@ void FUN_141261780(Unk_GsEtc* p)
 MS2_REPLACE(0x141261780, FUN_141261780, 137, 0xE1CF642C);
 
 // @0x141261810
-int FUN_141261810(Unk_GsEtc* p, TiXmlDocument* pDoc)
+int LoadGameOptionEtc(Unk_GsEtc* p, TiXmlDocument* pDoc)
 {
-    FUN_141263840(pDoc, "etc", "informGuildArenaMatching", &p->m_bInformGuildArenaMatching);
-    FUN_141263840(pDoc, "etc", "informRankDuelMatchingObserve", &p->m_bInformRankDuelMatchingObserve);
-    FUN_141263c30(pDoc, "etc", "lastCheckDontAskCubeBuy", &p->m_nLastCheckDontAskCubeBuy);
-    FUN_141263c30(pDoc, "etc", "lastCheckDontAskOpenBoxMessage", &p->m_nLastCheckDontAskOpenBoxMessage);
-    FUN_141263c30(pDoc, "etc", "lastCheckDontAskCurrencyOverflow", &p->m_nLastCheckDontAskCurrencyOverflow);
-    FUN_141263840(pDoc, "etc", "displayEpicQuest", &p->m_bDisplayEpicQuest);
-    FUN_141263840(pDoc, "etc", "displayWorldQuestV2", &p->m_bDisplayWorldQuestV2);
-    FUN_141263840(pDoc, "etc", "displayRepeatQuest", &p->m_bDisplayRepeatQuest);
-    FUN_141263940(pDoc, "etc", "autoFishingLastPackageIndex", &p->m_nAutoFishingLastPackageIndex);
-    FUN_141263940(pDoc, "etc", "autoPlayInstrumentLastPackageIndex", &p->m_nAutoPlayInstrumentLastPackageIndex);
-    FUN_141263940(pDoc, "etc", "autoFishingLastExtendMoneyType", &p->m_nAutoFishingLastExtendMoneyType);
-    FUN_1412639c0(pDoc, "etc", "tracingQuestID", &p->m_nTracingQuestID);
+    ReadGameOptionBool(pDoc, "etc", "informGuildArenaMatching", &p->m_bInformGuildArenaMatching);
+    ReadGameOptionBool(pDoc, "etc", "informRankDuelMatchingObserve", &p->m_bInformRankDuelMatchingObserve);
+    ReadGameOptionInt64(pDoc, "etc", "lastCheckDontAskCubeBuy", &p->m_nLastCheckDontAskCubeBuy);
+    ReadGameOptionInt64(pDoc, "etc", "lastCheckDontAskOpenBoxMessage", &p->m_nLastCheckDontAskOpenBoxMessage);
+    ReadGameOptionInt64(pDoc, "etc", "lastCheckDontAskCurrencyOverflow", &p->m_nLastCheckDontAskCurrencyOverflow);
+    ReadGameOptionBool(pDoc, "etc", "displayEpicQuest", &p->m_bDisplayEpicQuest);
+    ReadGameOptionBool(pDoc, "etc", "displayWorldQuestV2", &p->m_bDisplayWorldQuestV2);
+    ReadGameOptionBool(pDoc, "etc", "displayRepeatQuest", &p->m_bDisplayRepeatQuest);
+    ReadGameOptionInt(pDoc, "etc", "autoFishingLastPackageIndex", &p->m_nAutoFishingLastPackageIndex);
+    ReadGameOptionInt(pDoc, "etc", "autoPlayInstrumentLastPackageIndex", &p->m_nAutoPlayInstrumentLastPackageIndex);
+    ReadGameOptionInt(pDoc, "etc", "autoFishingLastExtendMoneyType", &p->m_nAutoFishingLastExtendMoneyType);
+    ReadGameOptionUInt(pDoc, "etc", "tracingQuestID", &p->m_nTracingQuestID);
     return 1;
 }
-MS2_REPLACE(0x141261810, FUN_141261810, 451, 0xBA04600F);
+MS2_REPLACE(0x141261810, LoadGameOptionEtc, 451, 0xBA04600F);
 
 // @0x1412619e0
-void FUN_1412619e0(Unk_GsEtc* p, TiXmlDocument* pDoc)
+void SaveGameOptionEtc(Unk_GsEtc* p, TiXmlDocument* pDoc)
 {
-    FUN_141262f40(pDoc, "etc", "informGuildArenaMatching", p->m_bInformGuildArenaMatching);
-    FUN_141262f40(pDoc, "etc", "informRankDuelMatchingObserve", p->m_bInformRankDuelMatchingObserve);
-    FUN_141263540(pDoc, "etc", "lastCheckDontAskCubeBuy", p->m_nLastCheckDontAskCubeBuy);
-    FUN_141263540(pDoc, "etc", "lastCheckDontAskOpenBoxMessage", p->m_nLastCheckDontAskOpenBoxMessage);
-    FUN_141263540(pDoc, "etc", "lastCheckDontAskCurrencyOverflow", p->m_nLastCheckDontAskCurrencyOverflow);
-    FUN_141262f40(pDoc, "etc", "displayEpicQuest", p->m_bDisplayEpicQuest);
-    FUN_141262f40(pDoc, "etc", "displayWorldQuestV2", p->m_bDisplayWorldQuestV2);
-    FUN_141262f40(pDoc, "etc", "displayRepeatQuest", p->m_bDisplayRepeatQuest);
-    FUN_141263090(pDoc, "etc", "autoFishingLastPackageIndex", p->m_nAutoFishingLastPackageIndex);
-    FUN_141263090(pDoc, "etc", "autoPlayInstrumentLastPackageIndex", p->m_nAutoPlayInstrumentLastPackageIndex);
-    FUN_141263090(pDoc, "etc", "autoFishingLastExtendMoneyType", p->m_nAutoFishingLastExtendMoneyType);
-    FUN_141263740(pDoc, "etc", "tracingQuestID", p->m_nTracingQuestID);
+    WriteGameOptionBool(pDoc, "etc", "informGuildArenaMatching", p->m_bInformGuildArenaMatching);
+    WriteGameOptionBool(pDoc, "etc", "informRankDuelMatchingObserve", p->m_bInformRankDuelMatchingObserve);
+    WriteGameOptionInt64(pDoc, "etc", "lastCheckDontAskCubeBuy", p->m_nLastCheckDontAskCubeBuy);
+    WriteGameOptionInt64(pDoc, "etc", "lastCheckDontAskOpenBoxMessage", p->m_nLastCheckDontAskOpenBoxMessage);
+    WriteGameOptionInt64(pDoc, "etc", "lastCheckDontAskCurrencyOverflow", p->m_nLastCheckDontAskCurrencyOverflow);
+    WriteGameOptionBool(pDoc, "etc", "displayEpicQuest", p->m_bDisplayEpicQuest);
+    WriteGameOptionBool(pDoc, "etc", "displayWorldQuestV2", p->m_bDisplayWorldQuestV2);
+    WriteGameOptionBool(pDoc, "etc", "displayRepeatQuest", p->m_bDisplayRepeatQuest);
+    WriteGameOptionInt(pDoc, "etc", "autoFishingLastPackageIndex", p->m_nAutoFishingLastPackageIndex);
+    WriteGameOptionInt(pDoc, "etc", "autoPlayInstrumentLastPackageIndex", p->m_nAutoPlayInstrumentLastPackageIndex);
+    WriteGameOptionInt(pDoc, "etc", "autoFishingLastExtendMoneyType", p->m_nAutoFishingLastExtendMoneyType);
+    WriteGameOptionUInt(pDoc, "etc", "tracingQuestID", p->m_nTracingQuestID);
 }
-MS2_REPLACE(0x1412619E0, FUN_1412619e0, 419, 0x9ACA52B7);
+MS2_REPLACE(0x1412619E0, SaveGameOptionEtc, 419, 0x9ACA52B7);
 
 // Show the quest on the quest list (by its kind).
 // @0x141261b90
@@ -3732,7 +3732,7 @@ CStringW FUN_1408767c0(const char* sz);                         // a UTF-8 strin
 CString FUN_140390ea0(const wchar_t* psz, int nCodePage);       // a wide string as a UTF-8 CString
 
 // @0x141262f40
-void FUN_141262f40(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, bool bValue)
+void WriteGameOptionBool(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, bool bValue)
 {
     TiXmlElement* pRoot = FUN_14081b310(pDoc);
     if (pRoot != 0)
@@ -3753,10 +3753,10 @@ void FUN_141262f40(TiXmlDocument* pDoc, const char* pszSection, const char* pszK
         }
     }
 }
-MS2_REPLACE(0x141262F40, FUN_141262f40, 326, 0x3B08BE16);
+MS2_REPLACE(0x141262F40, WriteGameOptionBool, 326, 0x3B08BE16);
 
 // @0x141263090
-void FUN_141263090(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, int nValue)
+void WriteGameOptionInt(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, int nValue)
 {
     TiXmlElement* pRoot = FUN_14081b310(pDoc);
     if (pRoot != 0)
@@ -3777,10 +3777,10 @@ void FUN_141263090(TiXmlDocument* pDoc, const char* pszSection, const char* pszK
         }
     }
 }
-MS2_REPLACE(0x141263090, FUN_141263090, 244, 0xB61D45E2);
+MS2_REPLACE(0x141263090, WriteGameOptionInt, 244, 0xB61D45E2);
 
 // @0x141263190
-void FUN_141263190(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, float fValue)
+void WriteGameOptionFloat(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, float fValue)
 {
     TiXmlElement* pRoot = FUN_14081b310(pDoc);
     if (pRoot != 0)
@@ -3801,10 +3801,10 @@ void FUN_141263190(TiXmlDocument* pDoc, const char* pszSection, const char* pszK
         }
     }
 }
-MS2_REPLACE(0x141263190, FUN_141263190, 253, 0xE0441726);
+MS2_REPLACE(0x141263190, WriteGameOptionFloat, 253, 0xE0441726);
 
 // @0x1412632a0
-void FUN_1412632a0(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, const CString& strValue)
+void WriteGameOptionString(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, const CString& strValue)
 {
     TiXmlElement* pRoot = FUN_14081b310(pDoc);
     if (pRoot != 0)
@@ -3825,10 +3825,10 @@ void FUN_1412632a0(TiXmlDocument* pDoc, const char* pszSection, const char* pszK
         }
     }
 }
-MS2_REPLACE(0x1412632A0, FUN_1412632a0, 265, 0x33BA8204);
+MS2_REPLACE(0x1412632A0, WriteGameOptionString, 265, 0x33BA8204);
 
 // @0x1412633b0
-void FUN_1412633b0(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, const CStringW& strValue)
+void WriteGameOptionStringW(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, const CStringW& strValue)
 {
     TiXmlElement* pRoot = FUN_14081b310(pDoc);
     if (pRoot != 0)
@@ -3849,10 +3849,10 @@ void FUN_1412633b0(TiXmlDocument* pDoc, const char* pszSection, const char* pszK
         }
     }
 }
-MS2_REPLACE(0x1412633B0, FUN_1412633b0, 391, 0x6A3756CD);
+MS2_REPLACE(0x1412633B0, WriteGameOptionStringW, 391, 0x6A3756CD);
 
 // @0x141263540
-void FUN_141263540(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, __int64 nValue)
+void WriteGameOptionInt64(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, __int64 nValue)
 {
     TiXmlElement* pRoot = FUN_14081b310(pDoc);
     if (pRoot != 0)
@@ -3873,10 +3873,10 @@ void FUN_141263540(TiXmlDocument* pDoc, const char* pszSection, const char* pszK
         }
     }
 }
-MS2_REPLACE(0x141263540, FUN_141263540, 244, 0x6403AA0D);
+MS2_REPLACE(0x141263540, WriteGameOptionInt64, 244, 0x6403AA0D);
 
 // @0x141263640
-void FUN_141263640(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, unsigned __int64 nValue)
+void WriteGameOptionUInt64(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, unsigned __int64 nValue)
 {
     TiXmlElement* pRoot = FUN_14081b310(pDoc);
     if (pRoot != 0)
@@ -3897,10 +3897,10 @@ void FUN_141263640(TiXmlDocument* pDoc, const char* pszSection, const char* pszK
         }
     }
 }
-MS2_REPLACE(0x141263640, FUN_141263640, 244, 0xDA07D754);
+MS2_REPLACE(0x141263640, WriteGameOptionUInt64, 244, 0xDA07D754);
 
 // @0x141263740
-void FUN_141263740(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, unsigned nValue)
+void WriteGameOptionUInt(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, unsigned nValue)
 {
     TiXmlElement* pRoot = FUN_14081b310(pDoc);
     if (pRoot != 0)
@@ -3921,10 +3921,10 @@ void FUN_141263740(TiXmlDocument* pDoc, const char* pszSection, const char* pszK
         }
     }
 }
-MS2_REPLACE(0x141263740, FUN_141263740, 244, 0x4A2D9A5C);
+MS2_REPLACE(0x141263740, WriteGameOptionUInt, 244, 0x4A2D9A5C);
 
 // @0x141263840
-int FUN_141263840(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, bool* pbValue)
+int ReadGameOptionBool(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, bool* pbValue)
 {
     TiXmlElement* pRoot = FUN_14081b310(pDoc);
     TiXmlElement* pSection;
@@ -3942,10 +3942,10 @@ int FUN_141263840(TiXmlDocument* pDoc, const char* pszSection, const char* pszKe
     }
     return 0;
 }
-MS2_REPLACE(0x141263840, FUN_141263840, 237, 0x3A837688);
+MS2_REPLACE(0x141263840, ReadGameOptionBool, 237, 0x3A837688);
 
 // @0x141263940
-int FUN_141263940(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, int* pnValue)
+int ReadGameOptionInt(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, int* pnValue)
 {
     TiXmlElement* pRoot = FUN_14081b310(pDoc);
     TiXmlElement* pElem;
@@ -3953,10 +3953,10 @@ int FUN_141263940(TiXmlDocument* pDoc, const char* pszSection, const char* pszKe
         return 1;
     return 0;
 }
-MS2_REPLACE(0x141263940, FUN_141263940, 114, 0xEE6BB2B0);
+MS2_REPLACE(0x141263940, ReadGameOptionInt, 114, 0xEE6BB2B0);
 
 // @0x1412639c0
-int FUN_1412639c0(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, unsigned* pnValue)
+int ReadGameOptionUInt(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, unsigned* pnValue)
 {
     TiXmlElement* pRoot = FUN_14081b310(pDoc);
     TiXmlElement* pElem;
@@ -3964,10 +3964,10 @@ int FUN_1412639c0(TiXmlDocument* pDoc, const char* pszSection, const char* pszKe
         return 1;
     return 0;
 }
-MS2_REPLACE(0x1412639C0, FUN_1412639c0, 113, 0x607BE37F);
+MS2_REPLACE(0x1412639C0, ReadGameOptionUInt, 113, 0x607BE37F);
 
 // @0x141263a40
-int FUN_141263a40(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, float* pfValue)
+int ReadGameOptionFloat(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, float* pfValue)
 {
     TiXmlElement* pRoot = FUN_14081b310(pDoc);
     TiXmlElement* pElem;
@@ -3982,10 +3982,10 @@ int FUN_141263a40(TiXmlDocument* pDoc, const char* pszSection, const char* pszKe
     }
     return 0;
 }
-MS2_REPLACE(0x141263A40, FUN_141263a40, 138, 0xF8EF9F96);
+MS2_REPLACE(0x141263A40, ReadGameOptionFloat, 138, 0xF8EF9F96);
 
 // @0x141263ad0
-int FUN_141263ad0(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, CString* pstrValue)
+int ReadGameOptionString(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, CString* pstrValue)
 {
     TiXmlElement* pRoot = FUN_14081b310(pDoc);
     TiXmlElement* pElem;
@@ -3996,10 +3996,10 @@ int FUN_141263ad0(TiXmlDocument* pDoc, const char* pszSection, const char* pszKe
     }
     return 0;
 }
-MS2_REPLACE(0x141263AD0, FUN_141263ad0, 138, 0x5B5595A6);
+MS2_REPLACE(0x141263AD0, ReadGameOptionString, 138, 0x5B5595A6);
 
 // @0x141263b60
-int FUN_141263b60(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, CStringW* pstrValue)
+int ReadGameOptionStringW(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, CStringW* pstrValue)
 {
     TiXmlElement* pRoot = FUN_14081b310(pDoc);
     TiXmlElement* pElem;
@@ -4010,10 +4010,10 @@ int FUN_141263b60(TiXmlDocument* pDoc, const char* pszSection, const char* pszKe
     }
     return 0;
 }
-MS2_REPLACE(0x141263B60, FUN_141263b60, 189, 0x405B97F8);
+MS2_REPLACE(0x141263B60, ReadGameOptionStringW, 189, 0x405B97F8);
 
 // @0x141263c30
-int FUN_141263c30(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, __int64* pnValue)
+int ReadGameOptionInt64(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, __int64* pnValue)
 {
     TiXmlElement* pRoot = FUN_14081b310(pDoc);
     TiXmlElement* pElem;
@@ -4021,10 +4021,10 @@ int FUN_141263c30(TiXmlDocument* pDoc, const char* pszSection, const char* pszKe
         return 1;
     return 0;
 }
-MS2_REPLACE(0x141263C30, FUN_141263c30, 113, 0xD30995A9);
+MS2_REPLACE(0x141263C30, ReadGameOptionInt64, 113, 0xD30995A9);
 
 // @0x141263cb0
-int FUN_141263cb0(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, unsigned __int64* pnValue)
+int ReadGameOptionUInt64(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, unsigned __int64* pnValue)
 {
     TiXmlElement* pRoot = FUN_14081b310(pDoc);
     TiXmlElement* pElem;
@@ -4032,7 +4032,7 @@ int FUN_141263cb0(TiXmlDocument* pDoc, const char* pszSection, const char* pszKe
         return 1;
     return 0;
 }
-MS2_REPLACE(0x141263CB0, FUN_141263cb0, 113, 0x8F7453E9);
+MS2_REPLACE(0x141263CB0, ReadGameOptionUInt64, 113, 0x8F7453E9);
 
 // @0x141263d30
 void FUN_141263d30(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey)

@@ -156,7 +156,7 @@ public:
 // The state blocks' methods (declared here; they live in client\ms2\gameoptionstruct.cpp).
 void FUN_14125b400(Unk_CameraState* p);
 void FUN_14125b430(Unk_CameraState* p);
-int FUN_14125b480(Unk_CameraState* p, TiXmlDocument* pDoc);
+int LoadGameOptionCamera(Unk_CameraState* p, TiXmlDocument* pDoc);
 void FUN_14125b6b0(Unk_CameraState* pDst, const Unk_CameraState* pSrc);
 int FUN_14125b6e0(const Unk_CameraState* p);
 void FUN_14125b720(Unk_CameraState* p, int n);
@@ -544,7 +544,7 @@ void CGameOptionCamera::vfunc_12()
 {
     CBaseOption::vfunc_12();
     FUN_14125b430(&m_state);
-    FUN_14125b480(&m_state, TSingleton<CGameOption>::GetInstance()->FUN_1412442a0());
+    LoadGameOptionCamera(&m_state, TSingleton<CGameOption>::GetInstance()->FUN_1412442a0());
     vfunc_6();
 }
 
@@ -1012,7 +1012,7 @@ bool FUN_14125e7e0(Unk_GraphicState* p, int nFormat, int nWidth, int nHeight);
 void FUN_14125e910(Unk_GraphicState* p, int nScreenMode, int nResIdx);
 void FUN_14125ec20(Unk_GraphicState2* p);
 void FUN_14125ec50(Unk_GraphicState2* p);
-int FUN_14125ecc0(Unk_GraphicState2* p, TiXmlDocument* pDoc);
+int LoadGameOptionOptimizer(Unk_GraphicState2* p, TiXmlDocument* pDoc);
 void FUN_14125ef60(Unk_GraphicState2* pDst, const Unk_GraphicState2* pSrc);
 void FUN_14125ef90(Unk_GraphicState2* p);
 
@@ -1485,7 +1485,7 @@ void CGameOptionGraphicDefault::vfunc_12()
     FUN_14125d8c0(&m_state);
     FUN_14125d9b0(&m_state, TSingleton<CGameOption>::GetInstance()->FUN_1412442a0(), 1);
     FUN_14125ec50(&m_state2);
-    FUN_14125ecc0(&m_state2, TSingleton<CGameOption>::GetInstance()->FUN_1412442a0());
+    LoadGameOptionOptimizer(&m_state2, TSingleton<CGameOption>::GetInstance()->FUN_1412442a0());
     vfunc_6();
 }
 
@@ -1650,12 +1650,12 @@ void FUN_14125f090(Unk_LgState* p);
 void FUN_14125f290(Unk_GpState* p);
 void FUN_141261670(Unk_GoChroma* p);
 void FUN_141261cf0(Unk_PiAgreeState* p);
-int FUN_14125b820(Unk_InterfaceState* p, TiXmlDocument* pDoc);
+int LoadGameOptionInterface(Unk_InterfaceState* p, TiXmlDocument* pDoc);
 int FUN_14125bee0(Unk_StatusState* p, TiXmlDocument* pDoc);
-int FUN_14125f7f0(Unk_SoundState* p, TiXmlDocument* pDoc);
+int LoadGameOptionSound(Unk_SoundState* p, TiXmlDocument* pDoc);
 int FUN_141260600(Unk_GoConnect* p, TiXmlDocument* pDoc);
 int FUN_1412616c0(Unk_GoChroma* p, TiXmlDocument* pDoc);
-int FUN_14125f190(Unk_LgState* p, TiXmlDocument* pDoc);
+int LoadGameOptionLanguage(Unk_LgState* p, TiXmlDocument* pDoc);
 void FUN_141260ed0(Unk_GoAutoLoot* p);
 void FUN_141261780(Unk_GoEtc* p);
 void FUN_14125c8b0(Unk_StatusFlag* p);
@@ -1667,18 +1667,18 @@ int FUN_141261810(Unk_GoEtc* p, TiXmlDocument* pDoc);
 int FUN_14125c8d0(Unk_StatusFlag* p, TiXmlDocument* pDoc);
 int FUN_1412603d0(Unk_SoundFlag* p, TiXmlDocument* pDoc);
 int FUN_14125bc80(Unk_InterfaceFlag* p, TiXmlDocument* pDoc);
-int FUN_14125f330(Unk_GpState* p, TiXmlDocument* pDoc);
+int LoadGameOptionGamepad(Unk_GpState* p, TiXmlDocument* pDoc);
 int FUN_14125c970(Unk_StatusFlag* p, TiXmlDocument* pDoc);
-void FUN_14125b5e0(Unk_CameraState* p, TiXmlDocument* pDoc);
-void FUN_14125ba30(Unk_InterfaceState* p, TiXmlDocument* pDoc);
-void FUN_14125c270(Unk_StatusState* p, TiXmlDocument* pDoc);
+void SaveGameOptionCamera(Unk_CameraState* p, TiXmlDocument* pDoc);
+void SaveGameOptionInterface(Unk_InterfaceState* p, TiXmlDocument* pDoc);
+void SaveGameOptionStatus(Unk_StatusState* p, TiXmlDocument* pDoc);
 void FUN_14125ce20(Unk_BattleState* p, TiXmlDocument* pDoc);
 void FUN_14125d220(Unk_CommunityStateA* p, TiXmlDocument* pDoc);
-void FUN_14125de00(Unk_GraphicState* p, TiXmlDocument* pDoc);
-void FUN_14125fc00(Unk_SoundState* p, TiXmlDocument* pDoc);
+void SaveGameOptionGraphic(Unk_GraphicState* p, TiXmlDocument* pDoc);
+void SaveGameOptionSound(Unk_SoundState* p, TiXmlDocument* pDoc);
 void FUN_1412607a0(Unk_GoConnect* p, TiXmlDocument* pDoc);
-void FUN_14125ee30(Unk_GraphicState2* p, TiXmlDocument* pDoc);
-void FUN_14125f200(Unk_LgState* p, TiXmlDocument* pDoc);
+void SaveGameOptionOptimizer(Unk_GraphicState2* p, TiXmlDocument* pDoc);
+void SaveGameOptionLanguage(Unk_LgState* p, TiXmlDocument* pDoc);
 void FUN_14125d580(Unk_CommunityStateB* p, TiXmlDocument* pDoc);
 void FUN_141261700(Unk_GoChroma* p, TiXmlDocument* pDoc);
 void FUN_141261150(Unk_GoAutoLoot* p, TiXmlDocument* pDoc);
@@ -1686,7 +1686,7 @@ void FUN_1412619e0(Unk_GoEtc* p, TiXmlDocument* pDoc);
 void FUN_14125c910(Unk_StatusFlag* p, TiXmlDocument* pDoc);
 void FUN_141260410(Unk_SoundFlag* p, TiXmlDocument* pDoc);
 void FUN_14125bcc0(Unk_InterfaceFlag* p, TiXmlDocument* pDoc);
-void FUN_14125f520(Unk_GpState* p, TiXmlDocument* pDoc);
+void SaveGameOptionGamepad(Unk_GpState* p, TiXmlDocument* pDoc);
 void FUN_14125e5c0(Unk_GraphicState* p, int n);
 static void FUN_141244320(TiXmlDocument* pDoc);
 
@@ -1760,9 +1760,9 @@ void CGameOption::FUN_141241f30()
     }
     if (bRead == 0)
         EE_LOG_AT(1, 1, ("Failed to read %s", "GameOption.xml"), MS2_THIS_FILE, 0x59);
-    if (FUN_14125b480(&m_camera, &m_docGame) == 0)
+    if (LoadGameOptionCamera(&m_camera, &m_docGame) == 0)
         FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read camera option");
-    if (FUN_14125b820(&m_interface, &m_docGame) == 0)
+    if (LoadGameOptionInterface(&m_interface, &m_docGame) == 0)
         FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read interface option");
     if (FUN_14125bee0(&m_status, &m_docGame) == 0)
         FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read status option");
@@ -1772,11 +1772,11 @@ void CGameOption::FUN_141241f30()
         FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read community option");
     if (FUN_14125d9b0(&m_graphic, &m_docGame, 0) == 0)
         FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read graphic option");
-    if (FUN_14125f7f0(&m_sound, &m_docGame) == 0)
+    if (LoadGameOptionSound(&m_sound, &m_docGame) == 0)
         FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read sound option");
     if (FUN_141260600(&m_connect, &m_docGame) == 0)
         FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read connect option");
-    if (FUN_14125ecc0(&m_graphic2, &m_docGame) == 0)
+    if (LoadGameOptionOptimizer(&m_graphic2, &m_docGame) == 0)
         FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read optimal hide option");
     if (FUN_1412616c0(&m_chroma, &m_docGame) == 0)
         FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read chroma option");
@@ -1841,7 +1841,7 @@ void CGameOption::FUN_141242990()
         FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read m_soundCharacter option");
     if (FUN_14125bc80(&m_interfaceChar, &m_docCharacter) == 0)
         FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read m_interfaceCharacter option");
-    if (FUN_14125f330(&m_gamepad, &m_docCharacter) == 0)
+    if (LoadGameOptionGamepad(&m_gamepad, &m_docCharacter) == 0)
         FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read m_gamePadOption option");
     if (FUN_14125c970(&m_statusChar, &m_docCharacter) != 0)
         FUN_141243540();
@@ -1866,7 +1866,7 @@ int CGameOption::FUN_141242f60()
         bRead = FUN_140166420()->FUN_1403974b0(&doc, FUN_141241b60(0, false), 0, true, false);
     if (bRead == 0)
         EE_LOG_AT(1, 1, ("Failed to read %s", "GameOption.xml"), MS2_THIS_FILE, 0xe2);
-    if (FUN_14125f190(&m_language, &doc) == 0)
+    if (LoadGameOptionLanguage(&m_language, &doc) == 0)
         FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read language hide option");
     if (FUN_140166410()->FUN_14036e560() && bDefaulted != 0)
     {
@@ -1881,16 +1881,16 @@ int CGameOption::FUN_141242f60()
 // @0x1412432d0
 void CGameOption::FUN_1412432d0()
 {
-    FUN_14125b5e0(&m_camera, &m_docGame);
-    FUN_14125ba30(&m_interface, &m_docGame);
-    FUN_14125c270(&m_status, &m_docGame);
+    SaveGameOptionCamera(&m_camera, &m_docGame);
+    SaveGameOptionInterface(&m_interface, &m_docGame);
+    SaveGameOptionStatus(&m_status, &m_docGame);
     FUN_14125ce20(&m_battle, &m_docGame);
     FUN_14125d220(&m_communityA, &m_docGame);
-    FUN_14125de00(&m_graphic, &m_docGame);
-    FUN_14125fc00(&m_sound, &m_docGame);
+    SaveGameOptionGraphic(&m_graphic, &m_docGame);
+    SaveGameOptionSound(&m_sound, &m_docGame);
     FUN_1412607a0(&m_connect, &m_docGame);
-    FUN_14125ee30(&m_graphic2, &m_docGame);
-    FUN_14125f200(&m_language, &m_docGame);
+    SaveGameOptionOptimizer(&m_graphic2, &m_docGame);
+    SaveGameOptionLanguage(&m_language, &m_docGame);
     FUN_14125d580(&m_account, &m_docAccount);
     FUN_141261700(&m_chroma, &m_docGame);
     FUN_141243450();
@@ -1913,7 +1913,7 @@ void CGameOption::FUN_141243540()
     FUN_14125c910(&m_statusChar, &m_docCharacter);
     FUN_141260410(&m_soundChar, &m_docCharacter);
     FUN_14125bcc0(&m_interfaceChar, &m_docCharacter);
-    FUN_14125f520(&m_gamepad, &m_docCharacter);
+    SaveGameOptionGamepad(&m_gamepad, &m_docCharacter);
     FUN_141244320(&m_docCharacter);
     FUN_1412437e0();
 }
