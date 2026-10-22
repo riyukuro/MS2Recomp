@@ -4652,7 +4652,7 @@ MS2_SF_VideoCharacterDef_vftable	14318b778	data
 ?lastIndexSet@RegExp@fl@Instances@AS3@GFx@Scaleform@@QEAAXAEBVValue@456@J@Z	1424291c0	func
 ?dotallGet@RegExp@fl@Instances@AS3@GFx@Scaleform@@QEAAXAEA_N@Z	142428130	func
 ?extendedGet@RegExp@fl@Instances@AS3@GFx@Scaleform@@QEAAXAEA_N@Z	142428490	func
-?settings@XML@fl@Classes@AS3@GFx@Scaleform@@QEAAXAEAV?$SPtr@VObject@fl@Instances@AS3@GFx@Scaleform@@@456@@Z	1423ff120	func
+?settings@XML@fl@Classes@AS3@GFx@Scaleform@@QEAAXAEAV?$SPtr@VObject@fl@Instances@AS3@GFx@Scaleform@@@456@@Z	14242afb0	func
 ?AS3length@XMLList@fl@Instances@AS3@GFx@Scaleform@@QEAAXAEAJ@Z	1423fb880	func
 ?Convert2Number@Value@AS3@GFx@Scaleform@@QEBA?AVCheckResult@234@AEAN@Z	1424f0f60	func
 ?Convert2Int32@Value@AS3@GFx@Scaleform@@QEBA?AVCheckResult@234@AEAJ@Z	1424f0d30	func
