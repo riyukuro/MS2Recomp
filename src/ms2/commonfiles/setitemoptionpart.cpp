@@ -25,7 +25,7 @@ SetItemOptionPart::SetItemOptionPart() : m_nCount(0)
 }
 
 // @0x1407bc580
-bool SetItemOptionPart::FUN_1407bc580(Unk_140165cf0* pElem)
+bool SetItemOptionPart::Load(Unk_140165cf0* pElem)
 {
     FUN_140873220(pElem, "count", m_nCount);
     if (m_nCount == 0)

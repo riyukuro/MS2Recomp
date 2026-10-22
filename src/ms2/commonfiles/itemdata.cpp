@@ -317,7 +317,7 @@ CItemData::~CItemData()
 
 // @0x14053b830
 // MS2-FUNCTIONAL: stack frame is 0x10 larger than the exe (temp slot layout of the log-argument locals); behaviour matches
-bool CItemData::FUN_14053b830(Unk_140165cf0* pElem)
+bool CItemData::Load(Unk_140165cf0* pElem)
 {
     Unk_140165cf0* pBasic = pElem->FUN_140165cf0("basic");
     if (pBasic) {
@@ -336,18 +336,18 @@ bool CItemData::FUN_14053b830(Unk_140165cf0* pElem)
         FUN_14015f500(pProperty, "rank", &rank);
         FUN_1408731e0(pProperty, "param1", param1);
         FUN_1408731e0(pProperty, "param2", param2);
-        property.FUN_1405475c0(pProperty);
+        property.Load(pProperty);
     }
     if (!material.FUN_1405473c0(pElem)) return false;
-    if (!period.FUN_140546150(pElem)) return false;
-    if (!limit.FUN_1405452f0(pElem)) return false;
+    if (!period.Load(pElem)) return false;
+    if (!limit.Load(pElem)) return false;
     if (!skill.FUN_140546770(pElem)) return false;
-    if (!install.FUN_140548320(pElem)) return false;
+    if (!install.Load(pElem)) return false;
     if (!cubeTextureName.FUN_1405495d0(pElem)) return false;
-    if (!effect.FUN_140549740(pElem)) return false;
+    if (!effect.Load(pElem)) return false;
     if (!fusion.FUN_140549520(pElem)) return false;
     if (!additionalEffect.FUN_140549c00(pElem)) return false;
-    if (!function.FUN_140549f00(pElem)) return false;
+    if (!function.Load(pElem)) return false;
     Unk_140165cf0* pTool = pElem->FUN_140165cf0("tool");
     if (pTool) {
         FUN_140873220(pTool, "itemPreset", itemPreset);
@@ -382,7 +382,7 @@ bool CItemData::FUN_14053b830(Unk_140165cf0* pElem)
 }
 
 // @0x14053be30
-bool CItemData::FUN_14053be30(void* pParent)
+bool CItemData::Save(void* pParent)
 {
     {
         Unk_TiXmlElement property("property");
@@ -398,12 +398,12 @@ bool CItemData::FUN_14053be30(void* pParent)
         FUN_14086e000(pParent, &property);
     }
     cubeTextureName.FUN_140549630(pParent);
-    period.FUN_140546370(pParent);
-    limit.FUN_140545510(pParent);
+    period.Save(pParent);
+    limit.Save(pParent);
     skill.FUN_1405467f0(pParent);
-    effect.FUN_1405498b0(pParent);
+    effect.Save(pParent);
     fusion.FUN_140549580(pParent);
-    install.FUN_1405485b0(pParent);
+    install.Save(pParent);
     material.FUN_140547440(pParent);
     additionalEffect.FUN_140549d40(pParent);
     if (itemPreset != 0) {

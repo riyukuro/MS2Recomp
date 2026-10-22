@@ -30,7 +30,7 @@ struct Unk_TextureFrame
 {
     Unk_TextureFrame();                                         // 0x141847510
     ~Unk_TextureFrame();                                        // 0x141849de0
-    void FUN_141847560(Unk_140165cf0* pNode);                   // read "file", "control" and "delay"
+    void Load(Unk_140165cf0* pNode);                   // read "file", "control" and "delay"
     void FUN_1418475d0(const CString& strDir, int nFlags);      // load the textures into the resource manager
     bool FUN_1418476e0(const CString& strDir);                  // both textures are loaded
     void FUN_141847880(const CString& strDir);                  // queue the textures in the file preload

@@ -943,7 +943,7 @@ bool CItemOptionTable::FUN_1405f8540()
     // @0x140606320 (the lambda body)
     Concurrency::parallel_for_each(std::begin(elems), std::end(elems), [&lock, this](Unk_140165cf0* pElem) {
         MS2Ptr<ItemOptionRandom> spRandom(new ItemOptionRandom);
-        if (!spRandom->FUN_1405d3d00(pElem))
+        if (!spRandom->Load(pElem))
             return;
         Unk_CriticalSectionLock guard(lock, 1);
         m_randoms.insert(std::make_pair(spRandom->FUN_1405d3c80(), (ItemOptionRandom*)spRandom));

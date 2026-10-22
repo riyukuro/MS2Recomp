@@ -109,7 +109,7 @@ int SetItemTable::LoadSets()
     {
         Unk_140165cf0* pNode = nodes[i];
         SetItemInfoPtr spInfo(new SetItemInfo);
-        if (!spInfo->FUN_1407ad2f0(pNode))
+        if (!spInfo->Load(pNode))
             return 0;
         if (m_map.Lookup(spInfo->FUN_1407ad550()) != 0)
         {

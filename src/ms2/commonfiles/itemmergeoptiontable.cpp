@@ -282,7 +282,7 @@ CItemMergeOptionData::~CItemMergeOptionData()
 
 // @0x1405bf470
 // The <slot> element: its options and, per option, the steps idx0_max..idx9_max the value range is cut into.
-int CItemMergeOptionData::FUN_1405bf470(Unk_140165cf0* pSlot)
+int CItemMergeOptionData::Load(Unk_140165cf0* pSlot)
 {
     FUN_140873220(pSlot, "probVer", (unsigned&)m_nProbVer);
     FUN_1408731e0(pSlot, "part", m_nId);
@@ -412,7 +412,7 @@ void CItemMergeOptionTable::FUN_1405bfc70()
         for (Unk_140165cf0* pSlot : pNode->FUN_140165cf0("slot"))
         {
             DataPtr spData(new CItemMergeOptionData);
-            if (!spData->FUN_1405bf470(pSlot))
+            if (!spData->Load(pSlot))
             {
                 Unk_MergeLog(CLogString::GetInstance(), 0, 0, 0x72, L"Invalid Item merge option [ID:{0}, Part:{1}]", nItemType, spData->m_nId);
                 continue;

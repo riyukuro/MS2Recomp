@@ -30,7 +30,7 @@ SetItemInfo::SetItemInfo() : m_nId(0), m_bShowEffect(false), m_bDisableTooltip(f
 }
 
 // @0x1407ad2f0
-bool SetItemInfo::FUN_1407ad2f0(Unk_140165cf0* pNode)
+bool SetItemInfo::Load(Unk_140165cf0* pNode)
 {
     FUN_140873220(pNode, "id", m_nId);
     FUN_1408736d0(pNode, "showEffectIfItsSetItemMotion", m_bShowEffect);
@@ -41,7 +41,7 @@ bool SetItemInfo::FUN_1407ad2f0(Unk_140165cf0* pNode)
         if (!FUN_14028f710(pPart))
             continue;
         MS2Ptr<SetItemOptionPart> spPart(new SetItemOptionPart);
-        if (!spPart->FUN_1407bc580(pPart))
+        if (!spPart->Load(pPart))
             return false;
         if (!AddOptionPart(spPart))
         {

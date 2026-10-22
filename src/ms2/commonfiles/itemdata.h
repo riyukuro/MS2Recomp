@@ -93,7 +93,7 @@ struct ModelFloatList               // <scale> element, 0x28 bytes
 {
     ModelFloatList();               // 0x140544b10
     // implicit dtor (COMDAT 0x140541080 in itemdata.cpp) and moves: no user-declared dtor
-    int FUN_140544b70(Unk_140165cf0* pElem);        // XML read
+    int Load(Unk_140165cf0* pElem);        // XML read
     int FUN_140544c00(void* pParent);            // XML write (nothing)
     float FUN_140544c20() const;    // a random entry of values, 1.0 when empty
     float maxValue;                 // +0x00 "max" (default 1.0)
@@ -119,7 +119,7 @@ struct ModelPart                    // <asset> element, 0x158 bytes
 {
     ModelPart();                    // 0x140543a90
     // implicit dtor (COMDAT 0x140540f60 in itemdata.cpp) and moves: no user-declared dtor
-    int FUN_140543ca0(Unk_140165cf0* pElem);        // XML read
+    int Load(Unk_140165cf0* pElem);        // XML read
     int FUN_140544a80(void* pParent);            // XML write (nothing)
     int FUN_140544aa0(int nGender, int nWeapon) const;   // the part is worn by the gender / weapon
     CString name0;                  // +0x00 "name"
@@ -192,8 +192,8 @@ struct ItemModelHead                // <customize> block, 0x50 bytes at ItemMode
 {
     ItemModelHead();                // 0x140546a00
     ~ItemModelHead();               // 0x140540c70
-    int FUN_140546a90(Unk_140165cf0* pElem);        // XML read
-    int FUN_140546d70(void* pParent);               // XML write
+    int Load(Unk_140165cf0* pElem);        // XML read
+    int Save(void* pParent);               // XML write
     bool FUN_140547130();           // scale
     bool FUN_140547150();           // rotation
     bool FUN_140547170();           // translation
@@ -279,7 +279,7 @@ class ItemDropEffect : public CPtred    // 0x88 bytes
 public:
     ItemDropEffect();               // 0x1405435b0
     virtual ~ItemDropEffect() = default;    // COMDAT 0x1405524c0 (no vptr store)
-    void FUN_140543730(Unk_140165cf0* pElem);   // XML read
+    void Load(Unk_140165cf0* pElem);   // XML read
     int typeID;                     // +0x18
     float unknown1c;                // +0x1c (default 50.0)
     float scale;                    // +0x20

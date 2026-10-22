@@ -71,13 +71,13 @@ Unk_TextureFrame::Unk_TextureFrame()
 }
 
 // @0x141847560
-void Unk_TextureFrame::FUN_141847560(Unk_140165cf0* pNode)
+void Unk_TextureFrame::Load(Unk_140165cf0* pNode)
 {
     FUN_1408733e0(pNode, "file", m_strFile);
     FUN_1408733e0(pNode, "control", m_strControl);
     FUN_1408731e0(pNode, "delay", m_nDelay);
 }
-MS2_REPLACE_METHOD(0x141847560, Unk_TextureFrame, FUN_141847560, 102, 0x6C83B0D1);
+MS2_REPLACE_METHOD(0x141847560, Unk_TextureFrame, Load, 102, 0x6C83B0D1);
 
 // @0x1418475d0
 void Unk_TextureFrame::FUN_1418475d0(const CString& strDir, int nFlags)
@@ -209,7 +209,7 @@ bool CTextureAnimationData::FUN_141847e30(Unk_140165cf0* pNode)
         m_arrFrames.Add(Unk_TextureFrame());
         int nLast = (int)m_arrFrames.GetCount() - 1;
         Unk_TextureFrame* pFrame = &m_arrFrames.GetAt(nLast);
-        pFrame->FUN_141847560(pTexture);
+        pFrame->Load(pTexture);
         int nLoop = 0;
         FUN_140873710(pTexture, "loop", &nLoop);
         if (nLoop != 0)

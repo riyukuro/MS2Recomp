@@ -433,3 +433,42 @@
 140a65bb0	Unk_Inventory::FUN_140a65bb0	Unk_Inventory::SendEmotion	certain	certain: send opcode KMS 0x13 mode 1 = GMS 0x13 Emotion (MapleShark2-Scripts recv.properties, shift +0; senders UICoupleActionDialog/UIDynamicActionDialog)	nam1	2026-10-22
 140a62cc0	Unk_Inventory::FUN_140a62cc0	Unk_Inventory::SendRequestItemInventory	certain	certain: send opcode KMS 0x17 mode 9 = GMS 0x17 RequestItemInventory (MapleShark2-Scripts recv.properties, shift +0; senders Unk_Inventory/UIInventoryDialog)	nam1	2026-10-22
 1410a8a20	Unk_PCCubeCraft::FUN_1410a8a20	Unk_PCCubeCraft::SendRequestCubeMode0	certain	certain: send opcode KMS 0x37 mode 0 = GMS 0x37 RequestCube (MapleShark2-Scripts recv.properties, shift +0; senders CUserCommandCli/cube building (21/42 modes))	nam1	2026-10-22
+14053b830	CItemData::FUN_14053b830	CItemData::Load	certain	certain: reads 11 attributes of data XML itemdata (element parameter, xmlattr read helpers)	nam1	2026-10-22
+14053be30	CItemData::FUN_14053be30	CItemData::Save	certain	certain: writes 9 attributes of data XML itemdata (builds Unk_TiXmlElement, appends to pParent)	nam1	2026-10-22
+1405bf470	CItemMergeOptionData::FUN_1405bf470	CItemMergeOptionData::Load	certain	certain: reads 5 attributes of data XML table/itemmergeoptionbase (element parameter, xmlattr read helpers)	nam1	2026-10-22
+1407495d0	CQuestData::FUN_1407495d0	CQuestData::Load	certain	certain: reads 74 attributes of data XML questdata (element parameter, xmlattr read helpers)	nam1	2026-10-22
+140543730	ItemDropEffect::FUN_140543730	ItemDropEffect::Load	certain	certain: reads 17 attributes of data XML table/itemdata (element parameter, xmlattr read helpers)	nam1	2026-10-22
+140549740	ItemEffect::FUN_140549740	ItemEffect::Load	certain	certain: reads 5 attributes of data XML itemdata (element parameter, xmlattr read helpers)	nam1	2026-10-22
+1405498b0	ItemEffect::FUN_1405498b0	ItemEffect::Save	certain	certain: writes 5 attributes of data XML itemdata (builds Unk_TiXmlElement, appends to pParent)	nam1	2026-10-22
+140549f00	ItemFunction::FUN_140549f00	ItemFunction::Load	certain	certain: reads 5 attributes of data XML itemdata (element parameter, xmlattr read helpers)	nam1	2026-10-22
+140549160	ItemHousing::FUN_140549160	ItemHousing::Save	certain	certain: writes 5 attributes of data XML table/housing (builds Unk_TiXmlElement, appends to pParent)	nam1	2026-10-22
+140548320	ItemInstallData::FUN_140548320	ItemInstallData::Load	certain	certain: reads 17 attributes of data XML itemdata (element parameter, xmlattr read helpers)	nam1	2026-10-22
+1405485b0	ItemInstallData::FUN_1405485b0	ItemInstallData::Save	certain	certain: writes 17 attributes of data XML itemdata (builds Unk_TiXmlElement, appends to pParent)	nam1	2026-10-22
+1405452f0	ItemLimit::FUN_1405452f0	ItemLimit::Load	certain	certain: reads 15 attributes of data XML itemdata (element parameter, xmlattr read helpers)	nam1	2026-10-22
+140545510	ItemLimit::FUN_140545510	ItemLimit::Save	certain	certain: writes 9 attributes of data XML itemdata (builds Unk_TiXmlElement, appends to pParent)	nam1	2026-10-22
+140546a90	ItemModelHead::FUN_140546a90	ItemModelHead::Load	certain	certain: reads 6 attributes of data XML itemmodel (element parameter, xmlattr read helpers)	nam1	2026-10-22
+140546d70	ItemModelHead::FUN_140546d70	ItemModelHead::Save	certain	certain: writes 6 attributes of data XML itemmodel (builds Unk_TiXmlElement, appends to pParent)	nam1	2026-10-22
+14054a9b0	ItemMusicScore::FUN_14054a9b0	ItemMusicScore::Save	certain	certain: writes 6 attributes of data XML table/musicscore (builds Unk_TiXmlElement, appends to pParent)	nam1	2026-10-22
+1405d3d00	ItemOptionRandom::FUN_1405d3d00	ItemOptionRandom::Load	certain	certain: reads 6 attributes of data XML table/itemoptionrandom (element parameter, xmlattr read helpers)	nam1	2026-10-22
+140546150	ItemPeriod::FUN_140546150	ItemPeriod::Load	certain	certain: reads 5 attributes of data XML itemdata (element parameter, xmlattr read helpers)	nam1	2026-10-22
+140546370	ItemPeriod::FUN_140546370	ItemPeriod::Save	certain	certain: writes 5 attributes of data XML itemdata (builds Unk_TiXmlElement, appends to pParent)	nam1	2026-10-22
+1405475c0	ItemProperty::FUN_1405475c0	ItemProperty::Load	certain	certain: reads 21 attributes of data XML item (element parameter, xmlattr read helpers)	nam1	2026-10-22
+140544b70	ModelFloatList::FUN_140544b70	ModelFloatList::Load	certain	certain: reads 4 attributes of data XML itempreset (element parameter, xmlattr read helpers)	nam1	2026-10-22
+140543ca0	ModelPart::FUN_140543ca0	ModelPart::Load	certain	certain: reads 25 attributes of data XML itempreset (element parameter, xmlattr read helpers)	nam1	2026-10-22
+1407ad2f0	SetItemInfo::FUN_1407ad2f0	SetItemInfo::Load	certain	certain: reads 4 attributes of data XML table/setiteminfo (element parameter, xmlattr read helpers)	nam1	2026-10-22
+1407bc580	SetItemOptionPart::FUN_1407bc580	SetItemOptionPart::Load	certain	certain: reads 4 attributes of data XML table/setitemoption (element parameter, xmlattr read helpers)	nam1	2026-10-22
+140802830	SkillGlideData::FUN_140802830	SkillGlideData::Load	certain	certain: reads 17 attributes of data XML table/glidedata (element parameter, xmlattr read helpers)	nam1	2026-10-22
+140804690	SkillLevelData::FUN_140804690	SkillLevelData::Load	certain	certain: reads 8 attributes of data XML skilldata (element parameter, xmlattr read helpers)	nam1	2026-10-22
+140808350	SkillMotionData::FUN_140808350	SkillMotionData::Load	certain	certain: reads 34 attributes of data XML skilldata (element parameter, xmlattr read helpers)	nam1	2026-10-22
+140800b50	Unk_RangeProperty::FUN_140800b50	Unk_RangeProperty::LoadElement	certain	certain: reads/writes the child element named by strName; base Load is hidden otherwise; reads 13 attributes of data XML skilldata (element parameter, xmlattr read helpers)	nam1	2026-10-22
+140800de0	Unk_RangeProperty::FUN_140800de0	Unk_RangeProperty::SaveElement	certain	certain: reads/writes the child element named by strName; base Save is hidden otherwise; writes 13 attributes of data XML skilldata (builds Unk_TiXmlElement, appends to pParent)	nam1	2026-10-22
+1408003b0	Unk_RangeShape::FUN_1408003b0	Unk_RangeShape::Load	certain	certain: reads 8 attributes of data XML skill (element parameter, xmlattr read helpers)	nam1	2026-10-22
+140803860	Unk_SkillBlock150::FUN_140803860	Unk_SkillBlock150::Load	certain	certain: reads 4 attributes of data XML skilldata (element parameter, xmlattr read helpers)	nam1	2026-10-22
+140803930	Unk_SkillBlock150::FUN_140803930	Unk_SkillBlock150::Save	certain	certain: writes 4 attributes of data XML skilldata (builds Unk_TiXmlElement, appends to pParent)	nam1	2026-10-22
+140803140	Unk_SkillBlock160::FUN_140803140	Unk_SkillBlock160::Load	certain	certain: reads 4 attributes of data XML skill (element parameter, xmlattr read helpers)	nam1	2026-10-22
+140802ef0	Unk_SkillBlockA4::FUN_140802ef0	Unk_SkillBlockA4::Load	certain	certain: reads 5 attributes of data XML skill (element parameter, xmlattr read helpers)	nam1	2026-10-22
+1408034a0	Unk_SkillBlockB0::FUN_1408034a0	Unk_SkillBlockB0::Load	certain	certain: reads 6 attributes of data XML skilldata (element parameter, xmlattr read helpers)	nam1	2026-10-22
+1407e6080	Unk_SkillOverlapCondition::FUN_1407e6080	Unk_SkillOverlapCondition::Load	certain	certain: reads 4 attributes of data XML additional (element parameter, xmlattr read helpers)	nam1	2026-10-22
+1408013f0	Unk_SkillSensor::FUN_1408013f0	Unk_SkillSensor::LoadElement	certain	certain: reads/writes the child element named by strName; base Load is hidden otherwise; reads 7 attributes of data XML skilldata (element parameter, xmlattr read helpers)	nam1	2026-10-22
+140801540	Unk_SkillSensor::FUN_140801540	Unk_SkillSensor::SaveElement	certain	certain: reads/writes the child element named by strName; base Save is hidden otherwise; writes 7 attributes of data XML skilldata (builds Unk_TiXmlElement, appends to pParent)	nam1	2026-10-22
+141847560	Unk_TextureFrame::FUN_141847560	Unk_TextureFrame::Load	certain	certain: reads 3 attributes of data XML emotion (element parameter, xmlattr read helpers)	nam1	2026-10-22

@@ -1682,7 +1682,7 @@ int ItemOptionRandom::FUN_1405d3ce0()
 }
 
 // @0x1405d3d00
-bool ItemOptionRandom::FUN_1405d3d00(Unk_140165cf0* pElem)
+bool ItemOptionRandom::Load(Unk_140165cf0* pElem)
 {
     FUN_140873220(pElem, "code", m_nCode);
     if (m_nCode == 0)

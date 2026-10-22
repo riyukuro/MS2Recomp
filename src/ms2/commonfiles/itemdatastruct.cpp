@@ -225,7 +225,7 @@ ItemDropEffect::ItemDropEffect()
 }
 
 // @0x140543730
-void ItemDropEffect::FUN_140543730(Unk_140165cf0* pElem)
+void ItemDropEffect::Load(Unk_140165cf0* pElem)
 {
     FUN_140873220(pElem, "typeID", reinterpret_cast<unsigned&>(typeID));
     FUN_140873360(pElem, "scale", scale);
@@ -273,7 +273,7 @@ ModelPart::ModelPart()
 }
 
 // @0x140543ca0
-int ModelPart::FUN_140543ca0(Unk_140165cf0* pElem)
+int ModelPart::Load(Unk_140165cf0* pElem)
 {
     FUN_1408733e0(pElem, "name", name0);
     FUN_1408733e0(pElem, "selfnode", name8);
@@ -426,7 +426,7 @@ ModelFloatList::ModelFloatList() : maxValue(1.0f), minValue(0), reverse(0)
 }
 
 // @0x140544b70
-int ModelFloatList::FUN_140544b70(Unk_140165cf0* pElem)
+int ModelFloatList::Load(Unk_140165cf0* pElem)
 {
     XmlTokenList(pElem, "value", values);
     FUN_140873360(pElem, "min", minValue);
@@ -465,7 +465,7 @@ void ModelGroup::FUN_140544cf0(Unk_140165cf0* pElem)
     {
         parts.push_back(ModelPart());
         ModelPart* pPart = &parts[parts.size() - 1];
-        pPart->FUN_140543ca0(pAsset);
+        pPart->Load(pAsset);
         if (pPart->pony != 0)
             pPart->ponyIndex = nPony++;
     }
@@ -474,7 +474,7 @@ void ModelGroup::FUN_140544cf0(Unk_140165cf0* pElem)
     {
         floats.push_back(ModelFloatList());
         ModelFloatList* pFloats = &floats[floats.size() - 1];
-        pFloats->FUN_140544b70(pScale);
+        pFloats->Load(pScale);
     }
 }
 
@@ -553,7 +553,7 @@ ItemLimit::ItemLimit()
 }
 
 // @0x1405452f0
-int ItemLimit::FUN_1405452f0(Unk_140165cf0* pElem)
+int ItemLimit::Load(Unk_140165cf0* pElem)
 {
     Unk_140165cf0* pLimit = pElem->FUN_140165cf0("limit");
     if (pLimit != 0)
@@ -579,7 +579,7 @@ int ItemLimit::FUN_1405452f0(Unk_140165cf0* pElem)
 }
 
 // @0x140545510
-int ItemLimit::FUN_140545510(void* pParent)
+int ItemLimit::Save(void* pParent)
 {
     static ItemLimit s_default;
     if (FUN_140545a80(&s_default))
@@ -783,7 +783,7 @@ ItemPeriod::ItemPeriod() : usePeriod(0), expirationType(ItemExpirationTypeNone),
 }
 
 // @0x140546150
-int ItemPeriod::FUN_140546150(Unk_140165cf0* pElem)
+int ItemPeriod::Load(Unk_140165cf0* pElem)
 {
     Unk_140165cf0* pLife = pElem->FUN_140165cf0("life");
     if (pLife != 0)
@@ -803,7 +803,7 @@ int ItemPeriod::FUN_140546150(Unk_140165cf0* pElem)
 }
 
 // @0x140546370
-int ItemPeriod::FUN_140546370(void* pParent)
+int ItemPeriod::Save(void* pParent)
 {
     if (usePeriod == 0 && expiration.Get() == 0 && expirationType == ItemExpirationTypeNone && numberOfWeeksMonths == 0 &&
         termTag.IsEmpty())
@@ -916,7 +916,7 @@ ItemModelHead::ItemModelHead() : flag10(false), flag11(false), unknown14(0), sca
 }
 
 // @0x140546a90
-int ItemModelHead::FUN_140546a90(Unk_140165cf0* pElem)
+int ItemModelHead::Load(Unk_140165cf0* pElem)
 {
     Unk_140165cf0* pCustomize = pElem->FUN_140165cf0("customize");
     if (pCustomize == 0)
@@ -945,7 +945,7 @@ int ItemModelHead::FUN_140546a90(Unk_140165cf0* pElem)
 
 // The joined id/delay lists are built and trimmed but never written (as in the original).
 // @0x140546d70
-int ItemModelHead::FUN_140546d70(void* pParent)
+int ItemModelHead::Save(void* pParent)
 {
     Unk_TiXmlElement elem("customize");
     if (flag10)
@@ -1108,7 +1108,7 @@ ItemProperty::ItemProperty()
 }
 
 // @0x1405475c0
-void ItemProperty::FUN_1405475c0(Unk_140165cf0* pElem)
+void ItemProperty::Load(Unk_140165cf0* pElem)
 {
     FUN_140873220(pElem, "slotMax", slotMax);
     slotMax = (std::min<unsigned>)(slotMax, 99999);
@@ -1276,7 +1276,7 @@ ItemInstallData::ItemInstallData()
 }
 
 // @0x140548320
-int ItemInstallData::FUN_140548320(Unk_140165cf0* pElem)
+int ItemInstallData::Load(Unk_140165cf0* pElem)
 {
     Unk_140165cf0* pInstall = pElem->FUN_140165cf0("install");
     if (pInstall != 0)
@@ -1306,7 +1306,7 @@ int ItemInstallData::FUN_140548320(Unk_140165cf0* pElem)
 }
 
 // @0x1405485b0
-int ItemInstallData::FUN_1405485b0(void* pParent)
+int ItemInstallData::Save(void* pParent)
 {
     static ItemInstallData s_default;
     if (FUN_140548a50(&s_default))
@@ -1475,7 +1475,7 @@ void ItemHousing::FUN_140548fe0(Unk_140165cf0* pElem, int nItemId)
 }
 
 // @0x140549160
-int ItemHousing::FUN_140549160(void* pParent)
+int ItemHousing::Save(void* pParent)
 {
     static ItemHousing s_default;
     if (FUN_140549380(&s_default))
@@ -1595,7 +1595,7 @@ ItemEffect::ItemEffect() : enchantShape(1), sameBattleIdle(false), sameCharacter
 }
 
 // @0x140549740
-int ItemEffect::FUN_140549740(Unk_140165cf0* pElem)
+int ItemEffect::Load(Unk_140165cf0* pElem)
 {
     Unk_140165cf0* pEffect = pElem->FUN_140165cf0("effect");
     if (pEffect != 0)
@@ -1614,7 +1614,7 @@ int ItemEffect::FUN_140549740(Unk_140165cf0* pElem)
 }
 
 // @0x1405498b0
-int ItemEffect::FUN_1405498b0(void* pParent)
+int ItemEffect::Save(void* pParent)
 {
     if (FUN_140549b10())
     {
@@ -1739,7 +1739,7 @@ ItemFunction::ItemFunction()
 }
 
 // @0x140549f00
-int ItemFunction::FUN_140549f00(Unk_140165cf0* pElem)
+int ItemFunction::Load(Unk_140165cf0* pElem)
 {
     Unk_140165cf0* p = pElem->FUN_140165cf0("function");
     if (p != 0)
@@ -1883,7 +1883,7 @@ int ItemMusicScore::FUN_14054a8c0(Unk_140165cf0* pElem)
 }
 
 // @0x14054a9b0
-int ItemMusicScore::FUN_14054a9b0(void* pParent)
+int ItemMusicScore::Save(void* pParent)
 {
     static ItemMusicScore s_default;
     if (FUN_14054abd0(&s_default))
@@ -2005,7 +2005,7 @@ void ItemModelData::FUN_14054af00(Unk_140165cf0* pElem)
             }
         }
     }
-    head.FUN_140546a90(pElem);
+    head.Load(pElem);
     Unk_140165cf0* pCutting = pElem->FUN_140165cf0("cutting");
     if (pCutting != 0)
     {

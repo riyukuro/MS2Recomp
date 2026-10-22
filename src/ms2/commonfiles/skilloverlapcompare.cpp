@@ -256,7 +256,7 @@ bool Unk_SkillOverlapCondition::FUN_1407e5fe0(const Unk_SkillOverlapCondition& o
 
 // @0x1407e6080
 // MS2-FUNCTIONAL: m_n4[5] array (see the ctor), and the original returns int 1 where the shared header declares void
-void Unk_SkillOverlapCondition::FUN_1407e6080(Unk_140165cf0* pElem)
+void Unk_SkillOverlapCondition::Load(Unk_140165cf0* pElem)
 {
     FUN_140873220(pElem, "targetCheckRange", (unsigned&)m_n4[0]);
     FUN_140873220(pElem, "targetCheckMinRange", (unsigned&)m_n4[1]);
@@ -854,19 +854,19 @@ void SkillData::Load(Unk_140165cf0* pElem)
         FUN_1408730a0(pState, "movingInMovekey", m_bMovingInMovekey);
         FUN_140873220(pState, "splashMaxCount", m_nSplashMaxCount);
     }
-    m_blockA4.FUN_140802ef0(pBasic);
-    m_blockB0.FUN_1408034a0(pBasic);
-    m_block150.FUN_140803860(pBasic);
-    m_block160.FUN_140803140(pBasic);
+    m_blockA4.Load(pBasic);
+    m_blockB0.Load(pBasic);
+    m_block150.Load(pBasic);
+    m_block160.Load(pBasic);
     m_block170.FUN_140802d50(pBasic);
-    m_sensor.FUN_1408013f0(pBasic, "sensor");
+    m_sensor.LoadElement(pBasic, "sensor");
     m_condition.Load(pBasic);
     std::vector<Unk_140165cf0*> vLevels;
     FUN_14028faa0(pElem, "level", "value", vLevels);
     for (Unk_140165cf0* pLevel : vLevels)
     {
         MS2Ptr<SkillLevelData> spLevel(new SkillLevelData(this));
-        if (spLevel->FUN_140804690(pLevel) == 0)
+        if (spLevel->Load(pLevel) == 0)
             return;
         m_levels.SetAt(spLevel->FUN_140803df0(), spLevel);
         m_nMaxLevel = max(m_nMaxLevel, spLevel->FUN_140803df0());
@@ -1377,7 +1377,7 @@ void SkillDataTable::LoadGlideData()
     for (Unk_140165cf0* pGlide : pRoot->FUN_140165cf0("glide"))
     {
         MS2Ptr<SkillGlideData> spGlide(new SkillGlideData);
-        spGlide->FUN_140802830(pGlide);
+        spGlide->Load(pGlide);
         int nId = spGlide->FUN_140802ab0();
         m_glides.insert(std::make_pair(nId, spGlide));
     }

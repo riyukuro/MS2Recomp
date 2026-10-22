@@ -166,12 +166,12 @@ bool Unk_SkillSensor::FUN_140801270(const Unk_SkillSensor& o)
 }
 
 // @0x1408013f0
-void Unk_SkillSensor::FUN_1408013f0(Unk_140165cf0* pElem, CString strName)
+void Unk_SkillSensor::LoadElement(Unk_140165cf0* pElem, CString strName)
 {
     Unk_140165cf0* pSensor = pElem->FUN_140165cf0(strName);
     if (pSensor == 0)
         return;
-    FUN_1408003b0(pSensor);
+    Load(pSensor);
     FUN_1408732a0(pSensor, "sensorStartDelay", m_nSensorStartDelay);
     FUN_1408732a0(pSensor, "sensorSplashStartDelay", m_nSensorSplashStartDelay);
     FUN_1408731e0(pSensor, "sensorForceInvokeByInterval", m_nSensorForceInvokeByInterval);
@@ -182,7 +182,7 @@ void Unk_SkillSensor::FUN_1408013f0(Unk_140165cf0* pElem, CString strName)
 }
 
 // @0x140801540
-void Unk_SkillSensor::FUN_140801540(void* pParent, CString strName)
+void Unk_SkillSensor::SaveElement(void* pParent, CString strName)
 {
     static Unk_SkillSensor kDefault;
     Unk_TiXmlElement elem(strName);
@@ -372,7 +372,7 @@ bool SkillGlideData::FUN_140802640(const SkillGlideData& o)
 }
 
 // @0x140802830
-void SkillGlideData::FUN_140802830(Unk_140165cf0* pElem)
+void SkillGlideData::Load(Unk_140165cf0* pElem)
 {
     FUN_140873220(pElem, "id", m_nId);
     FUN_140873360(pElem, "gravity", m_fGravity);
@@ -398,7 +398,7 @@ int SkillGlideData::FUN_140802a40(Unk_140165cf0* pElem)
 {
     Unk_140165cf0* pGlide = pElem->FUN_140165cf0("glideProperty");
     if (pGlide != 0)
-        FUN_140802830(pGlide);
+        Load(pGlide);
     return 1;
 }
 
@@ -477,7 +477,7 @@ bool Unk_SkillBlockA4::FUN_140802e40(const Unk_SkillBlockA4& o)
 }
 
 // @0x140802ef0
-int Unk_SkillBlockA4::FUN_140802ef0(Unk_140165cf0* pElem)
+int Unk_SkillBlockA4::Load(Unk_140165cf0* pElem)
 {
     Unk_140165cf0* pCombo = pElem->FUN_140165cf0("combo");
     if (pCombo != 0)
@@ -535,7 +535,7 @@ bool Unk_SkillBlock160::FUN_1408030c0(const Unk_SkillBlock160& o)
 }
 
 // @0x140803140
-int Unk_SkillBlock160::FUN_140803140(Unk_140165cf0* pElem)
+int Unk_SkillBlock160::Load(Unk_140165cf0* pElem)
 {
     Unk_140165cf0* pTargeting = pElem->FUN_140165cf0("autoTargeting");
     if (pTargeting != 0)
@@ -584,7 +584,7 @@ bool Unk_SkillBlockB0::FUN_1408033b0(const Unk_SkillBlockB0& o)
 }
 
 // @0x1408034a0
-int Unk_SkillBlockB0::FUN_1408034a0(Unk_140165cf0* pElem)
+int Unk_SkillBlockB0::Load(Unk_140165cf0* pElem)
 {
     Unk_140165cf0* pChange = pElem->FUN_140165cf0("changeSkill");
     if (pChange != 0)
@@ -637,7 +637,7 @@ bool Unk_SkillBlock150::FUN_1408037e0(const Unk_SkillBlock150& o)
 }
 
 // @0x140803860
-int Unk_SkillBlock150::FUN_140803860(Unk_140165cf0* pElem)
+int Unk_SkillBlock150::Load(Unk_140165cf0* pElem)
 {
     Unk_140165cf0* pMagic = pElem->FUN_140165cf0("magicControl");
     if (pMagic != 0)
@@ -652,7 +652,7 @@ int Unk_SkillBlock150::FUN_140803860(Unk_140165cf0* pElem)
 }
 
 // @0x140803930
-int Unk_SkillBlock150::FUN_140803930(void* pParent)
+int Unk_SkillBlock150::Save(void* pParent)
 {
     if (m_eEnable == 0)
         return 1;
@@ -907,7 +907,7 @@ float SkillLevelData::FUN_140804660()
 }
 
 // @0x140804690
-int SkillLevelData::FUN_140804690(Unk_140165cf0* pElem)
+int SkillLevelData::Load(Unk_140165cf0* pElem)
 {
     FUN_1408731a0(pElem, "value", m_nLevel);
     FUN_1408731e0(pElem, "sp", m_nSp);
@@ -927,7 +927,7 @@ int SkillLevelData::FUN_140804690(Unk_140165cf0* pElem)
     }
     Unk_140165cf0* pDetect = pElem->FUN_140165cf0("detectProperty");
     if (pDetect != 0)
-        m_detect.FUN_1408003b0(pDetect);
+        m_detect.Load(pDetect);
     for (Unk_140165cf0* pChild : pElem->FUN_140165cf0("actionAdditional"))
     {
         MS2Ptr<SkillActionAdditional> spAction(new SkillActionAdditional);
@@ -1119,7 +1119,7 @@ __int64 SkillMotionData::FUN_140808040()
 // @0x1408080d0
 int SkillMotionData::FUN_1408080d0(Unk_140165cf0* pElem)
 {
-    FUN_140808350(pElem);
+    Load(pElem);
     for (Unk_140165cf0* pChild : pElem->FUN_140165cf0("attack"))
     {
         MS2Ptr<SkillAttackData> spAttack(new SkillAttackData);
@@ -1145,7 +1145,7 @@ int SkillMotionData::FUN_140808240(void* pParent)
 }
 
 // @0x140808350
-void SkillMotionData::FUN_140808350(Unk_140165cf0* pElem)
+void SkillMotionData::Load(Unk_140165cf0* pElem)
 {
     FUN_1408733e0(pElem, "sequenceName", m_strSequenceName);
     FUN_140873360(pElem, "sequenceSpeed", m_fSequenceSpeed);

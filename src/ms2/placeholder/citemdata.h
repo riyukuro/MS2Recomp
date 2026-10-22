@@ -49,7 +49,7 @@ struct ItemProperty                 // <property> block: slotMax, collection, pr
 {
     ItemProperty();                 // 0x1405474a0
     ~ItemProperty();                // 0x140540eb0
-    void FUN_1405475c0(Unk_140165cf0* pElem);       // XML read
+    void Load(Unk_140165cf0* pElem);       // XML read
     void FUN_1405479a0(void* pElem);                // XML write (attributes of the <property> element)
     bool FUN_140547ec0(const ItemProperty* pOther); // operator!=
     __int64 FUN_1405480f0(int nRarity);             // sell price (one value, or one per rarity 1..6)
@@ -87,8 +87,8 @@ struct ItemPeriod                   // <life ...>
 {
     ItemPeriod();                   // 0x1405460f0
     ~ItemPeriod();                  // 0x140540db0
-    int FUN_140546150(Unk_140165cf0* pElem);        // XML read (the <life> child of pElem)
-    int FUN_140546370(void* pParent);               // XML write (nothing when all fields are empty)
+    int Load(Unk_140165cf0* pElem);        // XML read (the <life> child of pElem)
+    int Save(void* pParent);               // XML write (nothing when all fields are empty)
     bool FUN_140546620(const ItemPeriod* pOther);   // operator!=
     int FUN_1405466d0();            // the item has a limited life
     int usePeriod;                  // +0x00 "usePeriod"
@@ -107,8 +107,8 @@ struct ItemLimit                    // <limit ...>
 {
     ItemLimit();                    // 0x140545220
     ~ItemLimit();                   // 0x140540dd0
-    int FUN_1405452f0(Unk_140165cf0* pElem);        // XML read (the <limit> child of pElem)
-    int FUN_140545510(void* pParent);               // XML write (nothing when equal to the default)
+    int Load(Unk_140165cf0* pElem);        // XML read (the <limit> child of pElem)
+    int Save(void* pParent);               // XML write (nothing when equal to the default)
     bool FUN_140545a80(const ItemLimit* pOther);    // operator==
     bool FUN_140545ad0(const ItemLimit* pOther);    // operator!=
     bool FUN_140545c80(int nJob);                   // job allowed
@@ -159,8 +159,8 @@ struct ItemInstallData {
     CString mapAttribute;     // +0x50 "mapAttribute"
     int propCollisionGroup;   // +0x58 "propCollisionGroup"
     bool useInstancing;       // +0x5c "useInstancing" (default true)
-    int FUN_140548320(Unk_140165cf0* pElem);     // XML read
-    int FUN_1405485b0(void* pParent);            // XML write
+    int Load(Unk_140165cf0* pElem);     // XML read
+    int Save(void* pParent);            // XML write
     bool FUN_140548a50(const ItemInstallData* pOther);   // operator==
     bool FUN_140548aa0(const ItemInstallData* pOther);   // operator!=
     int FUN_140548cb0();      // stackable
@@ -191,8 +191,8 @@ struct ItemEffect                   // <effect ...>
 {
     ItemEffect();                   // 0x1405496c0
     ~ItemEffect();                  // 0x140540cb0
-    int FUN_140549740(Unk_140165cf0* pElem);
-    int FUN_1405498b0(void* pParent);
+    int Load(Unk_140165cf0* pElem);
+    int Save(void* pParent);
     bool FUN_140549a40(const ItemEffect* pOther);   // operator!=
     bool FUN_140549b10();           // any field differs from the default
     int enchantShape;               // +0x00 "enchantShape" (default 1)
@@ -216,7 +216,7 @@ public:
     ItemMusicScore();                                       // 0x14054a720
     int FUN_14054a7b0(Unk_140165cf0* pElem);                // XML read (the <MusicScore> child of pElem)
     int FUN_14054a8c0(Unk_140165cf0* pElem);                // XML read (the attributes of pElem)
-    int FUN_14054a9b0(void* pParent);                       // XML write (nothing when equal to the default)
+    int Save(void* pParent);                       // XML write (nothing when equal to the default)
     bool FUN_14054abd0(const ItemMusicScore* pOther);       // operator!=
     bool FUN_14054aca0();                                   // isCustomNote
     int FUN_14054acc0();                                    // noteLengthMax
@@ -245,7 +245,7 @@ public:
     ItemHousing();                                          // 0x140548d90
     int FUN_140548e50(Unk_140165cf0* pElem, int nItemId);   // XML read (the <housing> child of pElem)
     void FUN_140548fe0(Unk_140165cf0* pElem, int nItemId);  // XML read (the attributes of pElem)
-    int FUN_140549160(void* pParent);                       // XML write (nothing when equal to the default)
+    int Save(void* pParent);                       // XML write (nothing when equal to the default)
     bool FUN_140549380(const ItemHousing* pOther);          // operator!=
     int FUN_140549470(int nItemId, __int64 nUid, __int64 nUgc);     // the item can be placed
     int FUN_1405494e0();                                    // item id
@@ -312,7 +312,7 @@ struct ItemFunction                 // <function name parameter ...>
 {
     ItemFunction();                 // 0x140549e70
     ~ItemFunction();                // 0x140540d10
-    int FUN_140549f00(Unk_140165cf0* pElem);
+    int Load(Unk_140165cf0* pElem);
     bool FUN_14054a2b0(const ItemFunction* pOther);    // operator!=
     int FUN_14054a350();            // 0 when the parameter is malformed
     bool FUN_14054a3d0();           // has a name
@@ -333,8 +333,8 @@ class CItemData : public CPtred, public CValidData<CItemData>, public CObjectCou
 public:
     CItemData();             // 0x14053b510
     virtual ~CItemData();    // 0x14053b730
-    bool FUN_14053b830(Unk_140165cf0* pElem);    // 0x14053b830 XML read
-    bool FUN_14053be30(void* pParent);    // 0x14053be30 XML write
+    bool Load(Unk_140165cf0* pElem);    // 0x14053b830 XML read
+    bool Save(void* pParent);    // 0x14053be30 XML write
     bool FUN_14053c170(const CItemData* pOther);    // 0x14053c170 operator!=
     int FUN_14053c560();     // 0x14053c560 (uiitemenchantdialog.cpp)
     bool FUN_14053d510();    // 0x14053d510

@@ -1253,7 +1253,7 @@ unsigned char FUN_14036d570(Unk_FeatureFlags* pFlags, int nFeature);
 
 // MS2-FUNCTIONAL: stack temporaries of the XML loader (default-string and condition-loop slots) differ.
 // @0x1407495d0
-int CQuestData::FUN_1407495d0(Unk_140165cf0* pElem)
+int CQuestData::Load(Unk_140165cf0* pElem)
 {
     FUN_140873220(pElem, "id", (unsigned&)m_id);
     Unk_140165cf0* pBasic = pElem->FUN_140165cf0("basic");
@@ -1495,7 +1495,7 @@ int CQuestData::FUN_1407495d0(Unk_140165cf0* pElem)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1407495D0, CQuestData, FUN_1407495d0, 6736, 0x22FFC8F3);
+MS2_REPLACE_METHOD(0x1407495D0, CQuestData, Load, 6736, 0x22FFC8F3);
 
 // Quest-data accessors on top of the table (0x14074b030 ...).
 int ConditionKindOfType(int nType);                         // 0x14029f2b0
@@ -1799,7 +1799,7 @@ void QuestDataTable::FUN_14074c320()
         if (FUN_14028f650(pNode))
         {
             MS2Ptr<CQuestData> spData(new CQuestData);
-            if (spData->FUN_1407495d0(pNode))
+            if (spData->Load(pNode))
                 m_quests.insert(std::make_pair(FUN_14074b030(spData.operator->()), spData));
         }
     }

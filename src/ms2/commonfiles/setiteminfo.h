@@ -18,7 +18,7 @@ public:
     SetItemInfo();                              // 0x1407ad240
     virtual ~SetItemInfo() = default;           // 0x1407adff0 (no vptr store; deleting 0x1407ae0f0)
 
-    bool FUN_1407ad2f0(Unk_140165cf0* pNode);   // read a <set> element; false when it is invalid
+    bool Load(Unk_140165cf0* pNode);   // read a <set> element; false when it is invalid
     int FUN_1407ad550();                        // the set id
     int HasItem(unsigned nItemId) const;        // 0x1407ad570 the item is one of the pieces
     bool FUN_1407ad600();                       // showEffectIfItsSetItemMotion (+0x80)

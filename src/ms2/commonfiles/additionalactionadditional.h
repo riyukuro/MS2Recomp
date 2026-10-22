@@ -165,7 +165,7 @@ struct Unk_RangeShape
 
     Unk_RangeShape();                                       // 0x1408001f0
     bool FUN_1408002b0(const Unk_RangeShape& o);            // is different
-    void FUN_1408003b0(Unk_140165cf0* pElem);               // reads the shape attributes
+    void Load(Unk_140165cf0* pElem);               // reads the shape attributes
     void FUN_140800570(void* pElem);                        // writes the shape attributes
     // Declared (0x140184190), so SpreadProperty::Clear assigns through the copy operator= 0x1401945c0 like the exe.
     ~Unk_RangeShape() {}
@@ -178,8 +178,8 @@ public:
     Unk_RangeProperty();                                                // 0x140800860
     ~Unk_RangeProperty() {}                                             // 0x140184170 (no move: copy operator= 0x1401944c0)
     bool FUN_140800920(const Unk_RangeProperty& o);                     // is different
-    int FUN_140800b50(Unk_140165cf0* pElem, CString strName);           // reads the named child element
-    void FUN_140800de0(void* pParent, CString strName);                 // writes the named child element
+    int LoadElement(Unk_140165cf0* pElem, CString strName);           // reads the named child element
+    void SaveElement(void* pParent, CString strName);                 // writes the named child element
 
     // Thirteen scalars, not an array: SpreadProperty::Clear 0x140192e20 has no /GS cookie for the 0x78 temporary and
     // operator= 0x1401944c0 copies them one by one.
@@ -210,7 +210,7 @@ class Unk_SkillOverlapCondition
 {
 public:
     Unk_SkillOverlapCondition();                                        // 0x1407e5f80
-    void FUN_1407e6080(Unk_140165cf0* pElem);
+    void Load(Unk_140165cf0* pElem);
     bool FUN_1407e5fe0(const Unk_SkillOverlapCondition& o);             // is different
 
     bool m_b0;

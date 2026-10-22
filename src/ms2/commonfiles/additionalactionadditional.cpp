@@ -1344,7 +1344,7 @@ bool AdditionalLevelData::Load(Unk_140165cf0* pElem)
         XmlValue(pSpread, "type", m_spread.m_eType);
         FUN_140873220(pSpread, "count", m_spread.m_nCount);
         if (m_spread.m_nCount != 0)
-            m_spread.m_rangeProperty.FUN_140800b50(pSpread, "rangeProperty");
+            m_spread.m_rangeProperty.LoadElement(pSpread, "rangeProperty");
     }
     for (Unk_140165cf0* pAdditional = pElem->FUN_140165cf0("Additional"); pAdditional;
          pAdditional = pAdditional->FUN_140168650("Additional"))
@@ -1581,7 +1581,7 @@ void AdditionalLevelData::LoadCondition(Unk_140165cf0* pElem)
     XmlValue(pElem, "eventCondition", m_eEventCondition);
     FUN_1408731e0(pElem, "ignoreOwnerEvent", m_nIgnoreOwnerEvent);
     FUN_140873220(pElem, "hasNotBuffID", m_nHasNotBuffID);
-    m_overlapCondition.FUN_1407e6080(pElem);
+    m_overlapCondition.Load(pElem);
     ATL::CAtlArray<CString> arrStates;
     XmlTokenList(pElem, "requireStates", arrStates);
     for (unsigned i = 0; i < arrStates.GetCount(); i++)

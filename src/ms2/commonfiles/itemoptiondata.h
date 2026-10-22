@@ -273,7 +273,7 @@ public:
     ItemOptionStatGroup FUN_1405d3ca0();        // "statGroup"
     int FUN_1405d3cc0();                        // "probVer"
     int FUN_1405d3ce0();                        // "levelGroupID"
-    bool FUN_1405d3d00(Unk_140165cf0* pElem);   // xml read
+    bool Load(Unk_140165cf0* pElem);   // xml read
     // Rolls the random options onto an option.
     void FUN_1405d3f70(MS2Ptr<CItemOption> spOption, int nRank, Unk_Random* pRandom);
     bool FUN_1405d4270(MS2Ptr<Unk_ItemOptionPreset> spPreset, MS2Ptr<CItemOption> spOption, int nRank, Unk_Random* pRandom);

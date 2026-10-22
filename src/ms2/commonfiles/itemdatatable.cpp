@@ -674,7 +674,7 @@ void CItemDataTable::LoadItemFile(const CString& strPath, std::vector<ItemDataPt
         Unk_140165cf0* pEnv = FUN_14028f8d0(pNode);
         if (pEnv == 0)
             continue;
-        spItem->FUN_14053b830(pEnv);
+        spItem->Load(pEnv);
         out.push_back(spItem);
     }
 }
@@ -704,7 +704,7 @@ void CItemDataTable::LoadItemDataFile(unsigned nFile)
         Unk_140165cf0* pEnv = FUN_14028f8d0(pNode);
         if (pEnv == 0)
             continue;
-        spItem->FUN_14053b830(pEnv);
+        spItem->Load(pEnv);
         OnItemLoaded(spItem);
         m_mapItem.insert(std::make_pair(spItem->FUN_14053c510(), spItem));
     }
@@ -915,7 +915,7 @@ void CItemDataTable::LoadDropStyle(Unk_140165cf0* pRoot)
     for (Unk_140165cf0* pNode = pStyle->FUN_140165cf0("v"); pNode != 0; pNode = pNode->FUN_140168650("v"))
     {
         MS2Ptr<ItemDropEffect> spEffect(new ItemDropEffect);
-        spEffect->FUN_140543730(pNode);
+        spEffect->Load(pNode);
         m_mapDropEffect.SetAt(spEffect->typeID, spEffect);
     }
 }

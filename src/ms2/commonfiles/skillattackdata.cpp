@@ -593,7 +593,7 @@ int SkillAttackData::Load(Unk_140165cf0* pElem)
     XmlTokenList(pElem, "splashActiveSkillID", m_vSplashActiveSkillID);
     if (!m_pause.Load(pElem))
         return 0;
-    m_range.FUN_140800b50(pElem, CString("range"));
+    m_range.LoadElement(pElem, CString("range"));
     if (!m_chain.Load(pElem))
         return 0;
     if (!m_arrow.Load(pElem))
@@ -656,7 +656,7 @@ int SkillAttackData::Save(void* pParent)
         if (m_eGrabTargetType != kDefault.m_eGrabTargetType)
             FUN_140873ce0(&elem, "grabTargetType", m_eGrabTargetType);
         m_pause.Save(&elem);
-        m_range.FUN_140800de0(&elem, CString("rangeProperty"));
+        m_range.SaveElement(&elem, CString("rangeProperty"));
         m_chain.Save(&elem);
         m_arrow.Save(&elem);
         m_damage.Save(&elem);

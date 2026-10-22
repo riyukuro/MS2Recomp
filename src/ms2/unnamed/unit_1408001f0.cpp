@@ -64,7 +64,7 @@ bool Unk_RangeShape::FUN_1408002b0(const Unk_RangeShape& o)
 }
 
 // @0x1408003b0
-void Unk_RangeShape::FUN_1408003b0(Unk_140165cf0* pElem)
+void Unk_RangeShape::Load(Unk_140165cf0* pElem)
 {
     FUN_1408733e0(pElem, "rangeType", m_str);
     if (m_str == "box")
@@ -150,12 +150,12 @@ bool Unk_RangeProperty::FUN_140800920(const Unk_RangeProperty& o)
 // MS2-FUNCTIONAL: the exe's reader is void with an early `return;` that destroys strName on its own path; the shared header
 // declares int, so the early exit here falls through the single cleanup (no value is returned, as in the exe).
 #pragma warning(disable : 4716)
-int Unk_RangeProperty::FUN_140800b50(Unk_140165cf0* pElem, CString strName)
+int Unk_RangeProperty::LoadElement(Unk_140165cf0* pElem, CString strName)
 {
     Unk_140165cf0* pRange = pElem->FUN_140165cf0(strName);
     if (pRange != 0)
     {
-        FUN_1408003b0(pRange);
+        Load(pRange);
         FUN_1408731e0(pRange, "includeCaster", &m_n40);
         FUN_1408731e0(pRange, "applyTarget", &m_n44);
         FUN_1408731e0(pRange, "castTarget", &m_n48);
@@ -179,7 +179,7 @@ int Unk_RangeProperty::FUN_140800b50(Unk_140165cf0* pElem, CString strName)
 }
 
 // @0x140800de0
-void Unk_RangeProperty::FUN_140800de0(void* pParent, CString strName)
+void Unk_RangeProperty::SaveElement(void* pParent, CString strName)
 {
     static Unk_RangeProperty kDefault;
     if (FUN_140800920(kDefault))
