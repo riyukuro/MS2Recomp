@@ -3933,9 +3933,9 @@ int ReadGameOptionBool(TiXmlDocument* pDoc, const char* pszSection, const char* 
         NiString strValue(FUN_14086f4b0(pSection, pszKey));
         if (!strValue.IsEmpty())
         {
-            if (strValue.Compare("true") == 0)
+            if (strValue.CompareNoCase("true") == 0)
                 *pbValue = true;
-            if (strValue.Compare("false") == 0)
+            if (strValue.CompareNoCase("false") == 0)
                 *pbValue = false;
             return 1;
         }
