@@ -55,6 +55,7 @@ if bm.CHAIN:
     MATCH_KEY += "-chain"
 LEAF_SMALL, LEAF_NEAR = 16, 0x10000             # assign_copies: small leaf copies only this near the obj's own functions
 STATIC_NEAR = 0x10000                           # match_obj: a COMDAT caller's static callee only this near the obj's own code
+RELOK_KEY = "relok6:"                         # assign_copies: relocation-consistency cache version
 COPY_ROUNDS = 8                              # assign_copies: offers of an unpaired copy to the next claimant
 LIB_RECIPE = "/obj/lib-"                         # obj path part of the library units' recipes (lib-cef, ...)
 NO_CALLEE = bool(os.environ.get("MS2_GB_NO_CALLEE"))     # old pairing (no callee pass), for before/after comparisons
@@ -559,6 +560,63 @@ def _small_leaf():
     return out
 
 
+def _reloc_targets(obj, data, fields):
+    """[(field offset, extra, addend, key)] of the function's REL32 relocations; key names the target within the obj"""
+    out = []
+    for f in fields:
+        tsi = f[5]
+        if tsi is not None and bm.REL_REL32 <= f[3] <= bm.REL_REL32 + 5:
+            t = obj.syms[tsi]
+            if t[2] <= 0 or obj.sec(t[2])["chars"] & 0x20 and obj.sec(t[2]).get("comdat", (0,))[0] != 0:
+                continue        # an inline callee has several identical copies in the exe: says nothing of the TU
+            out.append((f[0], f[3] - bm.REL_REL32, struct.unpack_from("<i", data, f[0])[0], (t[0], t[2], t[1])))
+    return out
+
+
+def _relok_job(job):
+    """{"name@va": 1 | 0 | -1}: the copy's relocations resolve to the exe VAs the obj's exact pairs give the same
+    targets (1), none of its targets is known (0), or one resolves elsewhere (-1: another TU's copy)"""
+    k, path, exact, todo = job
+    exe = G["exe"]
+    out = {}
+    try:
+        obj = bm.Obj(path)
+    except Exception:
+        return k, out
+
+    def resolve(n, va):
+        data, fields, _ = obj.function(obj.by_name[n])
+        rva = va - exe.base
+        for fo, extra, add, key in _reloc_targets(obj, data, fields):
+            yield key, va + fo + 4 + extra + struct.unpack_from("<i", exe.img, rva + fo)[0] - add
+    # anchors: only the obj's own (non pick-any COMDAT) exact pairs; a COMDAT's exact pair may itself be a sibling
+    # instantiation's byte-identical copy. A target the anchors disagree on is dropped.
+    seen = collections.defaultdict(set)
+    for n, va in exact:
+        if n in obj.by_name and obj.sec(obj.syms[obj.by_name[n]][2]).get("comdat", (0,))[0] != 2:
+            for key, t in resolve(n, va):
+                seen[key].add(t)
+    known = {key: next(iter(ts)) for key, ts in seen.items() if len(ts) == 1}
+    for n, hits in todo:
+        if n not in obj.by_name:
+            continue
+        at = {v: dict(resolve(n, v)) for v in hits}
+        # only a target the copies disagree on tells them apart (one all of them share, e.g. a merged string, does not)
+        disc = {key for key in known if len({m.get(key) for m in at.values()}) > 1}
+        for v, m in at.items():
+            # a vote: an anchor may itself be a same-named sibling TU's copy (the material node libraries' static
+            # CreateFragmentN), so one stray target does not rule a copy out; only agreement on a TU-private target
+            # (static, own function) confirms it, a shared COMDAT one (vftable, string) can only tell against it
+            ks = disc & m.keys()
+            bad = sum(known[key] != m[key] for key in ks)
+            good = len(ks) - bad
+            r = -1 if bad > good else 0
+            if good > bad and any(known[key] == m[key] and obj.sec(key[1]).get("comdat", (0,))[0] == 0 for key in ks):
+                r = 1
+            out[f"{n}@{v:x}"] = r
+    return k, out
+
+
 def assign_copies(res, cgroups, paths, j, log=print):
     """Pair the objs' unpaired functions that have several byte-identical exe copies (template instantiations of
     same-size types, e.g. map<utf8string,int> / map<utf8string,unsigned int>, kept apart by the linker): every copy no
@@ -573,6 +631,31 @@ def assign_copies(res, cgroups, paths, j, log=print):
         for n, gid in c.get("cands", ()):
             if gid in cgroups:
                 groups[(k, tuple(cgroups[gid]))].append(n)
+
+    # relocation consistency (gb12): the obj's exact pairs give exe VAs for its relocation targets (vftable, RTTI,
+    # strings, statics); a copy whose relocations resolve elsewhere is another TU's (sibling classes' CreateObject /
+    # ??_G / CreateClone are byte-identical but for those), one that resolves the same is the obj's own
+    rjobs = []
+    for k, c in res.items():
+        todo = sorted((n, tuple(cgroups[gid])) for n, gid in c.get("cands", ()) if gid in cgroups)
+        if not todo or k not in paths:
+            continue
+        exact = sorted((n, va) for n, va, ok, _ in c["pairs"] if ok)
+        rk = RELOK_KEY + hashlib.sha1(repr((exact, todo)).encode()).hexdigest()[:16]
+        if c.get("relok", {}).get("key") != rk:
+            rjobs.append((rk, (k, paths[k], exact, todo)))
+    if rjobs:
+        log(f"engine: copy relocation targets of {len(rjobs)} obj(s) ...")
+        rks = {jb[0]: rk for rk, jb in rjobs}
+        with Pool(max(1, j), initializer=_init) as p:
+            for k, out in p.imap_unordered(_relok_job, [jb for _, jb in rjobs], chunksize=4):
+                res[k]["relok"] = {"key": rks[k], "ok": out}
+    rel = {k: c.get("relok", {}).get("ok", {}) for k, c in res.items()}
+
+    def xview(k):
+        # exact copy matches, less those another TU's relocation targets rule out
+        r = rel.get(k, {})
+        return {t: b and r.get(t, 0) >= 0 for t, b in res[k].get("xok", {}).items()}
 
     def dist(k, v):
         # an exact copy pair of an earlier round anchors the obj too (an obj whose only own code was a copy, e.g. a
@@ -591,9 +674,14 @@ def assign_copies(res, cgroups, paths, j, log=print):
             for v in hits:
                 if v in claimed or (v, k) in refused:
                     continue
+                rv = [rel.get(k, {}).get(f"{n}@{v:x}", 0) for n in ns]
+                if rv and min(rv) == -1 and max(rv) == -1:
+                    continue                              # every name of the group resolves to other targets there
                 d = dist(k, v)
                 if v in small_leaf and d > LEAF_NEAR:     # a few-byte leaf body (ret, return a constant) says
                     continue                              # nothing about its TU: only near the obj's own code
+                if max(rv, default=0) == 1:
+                    d -= 1 << 50                          # its relocations confirm the obj: before any distance
                 if v not in owner or (d, k) < owner[v]:
                     owner[v] = (d, k)
         todo = collections.defaultdict(list)
@@ -605,7 +693,7 @@ def assign_copies(res, cgroups, paths, j, log=print):
         if not todo:
             break
         jobs = [(paths[k], prs, res[k].get("xok", {}), k) for k, prs in todo.items()
-                if k in paths and _greedy(prs, res[k].get("xok", {})) is None]
+                if k in paths and _greedy(prs, xview(k)) is None]
         if jobs:
             log(f"engine: pairing byte-identical copies in {len(jobs)} obj(s) ...")
             byp = {p: k for p, _, _, k in jobs}
@@ -614,7 +702,7 @@ def assign_copies(res, cgroups, paths, j, log=print):
                     res[byp[path]]["xok"] = xok
         grew, r0 = False, len(refused)
         for k, prs in todo.items():
-            got = _greedy(prs, res[k].get("xok", {})) or ()
+            got = _greedy(prs, xview(k)) or ()
             xpairs[k] += got
             claimed |= {v for _, v in got}
             grew |= bool(got)
