@@ -563,14 +563,16 @@ def _small_leaf():
     return out
 
 
-def _reloc_targets(obj, data, fields):
-    """[(field offset, extra, addend, key)] of the function's REL32 relocations; key names the target within the obj"""
+def _reloc_targets(obj, data, fields, nodup=False):
+    """[(field offset, extra, addend, key)] of the function's REL32 relocations; key names the target within the obj
+    (nodup: also code in /Gy COMDATs of selection NODUPLICATES, the TU's own non-inline functions)"""
     out = []
     for f in fields:
         tsi = f[5]
         if tsi is not None and bm.REL_REL32 <= f[3] <= bm.REL_REL32 + 5:
             t = obj.syms[tsi]
-            if t[2] <= 0 or obj.sec(t[2])["chars"] & 0x20 and obj.sec(t[2]).get("comdat", (0,))[0] != 0:
+            if t[2] <= 0 or obj.sec(t[2])["chars"] & 0x20 and \
+                    obj.sec(t[2]).get("comdat", (0,))[0] not in ((0, 1) if nodup else (0,)):
                 continue        # an inline callee has several identical copies in the exe: says nothing of the TU
             out.append((f[0], f[3] - bm.REL_REL32, struct.unpack_from("<i", data, f[0])[0], (t[0], t[2], t[1])))
     return out
@@ -1060,12 +1062,12 @@ def assign_blocks(res, paths, windows, j, log=print):
 # not have are skipped. Byte-identical thunks of one shape (atexit registrations, kCAT copies) are thus paired k-th to
 # k-th in link order. Only the TU-private statics they write go unchecked (the exe TU's data layout differs with its
 # header set). A run that reaches a VA another TU pairs exactly is dropped whole (it walked past its TU).
-SUB_KEY = "sub3"
+SUB_KEY = "sub5"
 SUB_PAD = 64            # most int3 padding between two functions of a block
 
 
 def _sub_job(job):
-    path, win, todo = job
+    path, win, todo, own = job
     G["win"] = win
     exe = G["exe"]
     out = {}
@@ -1078,7 +1080,7 @@ def _sub_job(job):
     def resolve(n, va):
         data, fields, _ = obj.function(obj.by_name[n])
         rva = va - base
-        for fo, extra, add, key in _reloc_targets(obj, data, fields):
+        for fo, extra, add, key in _reloc_targets(obj, data, fields, True):
             yield key, va + fo + 4 + extra + struct.unpack_from("<i", img, rva + fo)[0] - add
     strong = None
     for sec, anchors in todo.items():
@@ -1110,10 +1112,16 @@ def _sub_job(job):
         # ms_RTTI), found once in .text with those targets
         if strong is None:
             strong = _exe_anchors(obj, resolve)
+            # (2026-10-22 gb15) and the obj's own non-COMDAT functions the unit pairs exactly outside its blocks: a
+            # message-handler registration (EE_HANDLER's HandlerObjectN) loads its TU's handler method
+            for si in obj.func_symbols():
+                t = obj.syms[si]
+                if t[0] in own and t[2] > 0 and obj.sec(t[2]).get("comdat", (0,))[0] in (0, 1):
+                    strong.setdefault((t[0], t[2], t[1]), own[t[0]])
         for i, (n, off, data, fields, leaf, al) in enumerate(lay):
             if i in anc:
                 continue
-            keys = {r[3] for r in _reloc_targets(obj, data, fields)} & strong.keys()
+            keys = {r[3] for r in _reloc_targets(obj, data, fields, True)} & strong.keys()
             if not keys:
                 continue
             pk = ("subthunk", bytes(data), tuple((f[0], f[1]) for f in fields))
@@ -1184,14 +1192,16 @@ def assign_subblocks(res, paths, windows, j, log=print):
                 todo[sec] = {n: ex[n] for n in names if n in ex}
         if not todo or k not in paths:
             continue
-        sk = c["key"] + [SUB_KEY, hashlib.sha1(json.dumps(todo, sort_keys=True).encode()).hexdigest()[:16]]
+        blkn = {n for s in secs.values() for n, _, _ in s["lay"]}
+        own = {n: va for n, va in ex.items() if n not in blkn}
+        sk = c["key"] + [SUB_KEY, hashlib.sha1(json.dumps([todo, own], sort_keys=True).encode()).hexdigest()[:16]]
         if c.get("sblk", {}).get("key") != sk:
-            jobs.append((paths[k], unit_window(c["unit"], windows), todo, k, sk))
+            jobs.append((paths[k], unit_window(c["unit"], windows), todo, k, sk, own))
     if jobs:
         log(f"engine: sub-block layouts of {len(jobs)} obj(s) ...")
-        byp = {p: (k, sk) for p, _, _, k, sk in jobs}
+        byp = {p: (k, sk) for p, _, _, k, sk, _ in jobs}
         with Pool(max(1, j), initializer=_init) as p:
-            for path, out in p.imap_unordered(_sub_job, [(p_, w, t) for p_, w, t, _, _ in jobs], chunksize=2):
+            for path, out in p.imap_unordered(_sub_job, [(p_, w, t, o) for p_, w, t, _, _, o in jobs], chunksize=2):
                 k, sk = byp[path]
                 res[k]["sblk"] = {"key": sk, "secs": out}
     claims = collections.defaultdict(set)
@@ -1219,6 +1229,123 @@ def assign_subblocks(res, paths, windows, j, log=print):
         if "xpairs" in c:
             c["xpairs"] = [x for x in c["xpairs"] if x[0] not in sn and x[1] not in sva]
     log(f"engine: sub-block pairs {n_ok} in {len(new)} obj(s) ({len(runs)} runs)")
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# header-static equivalence rule (2026-10-22 gb15). NiAnimationKeyMacros.h's NiRegisterAnimationStream(Key) defines a
+# namespace-scope `static int Keyregisterloaderreturn = Key::RegisterLoader();` in every TU that includes a key header:
+# each includer emits a 20-byte .text$di initializer (sub rsp,28 / call Key::RegisterLoader / mov [rip+int],eax / add
+# rsp,28 / ret) writing a TU-private int nothing reads. The exe has 980 of them in 48 TUs, interleaved with other
+# libraries' initializers by LTCG, so which TU emitted a given copy is not provable (the sub-block walk mostly guesses
+# k-th to k-th). The copies are interchangeable: a copy no unit pairs is credited to the header pseudo-unit
+# HSTATIC_UNIT when (all of) its bytes and unwind data match an obj's ??__E<Key>registerloaderreturn@@YAXXZ exactly
+# (bytematch, relocations masked), its call resolves to the exe VA a unit pairs exactly with <Key>::RegisterLoader,
+# and its store target is a .bss int that no other rip-relative operand in .text references. Nothing else qualifies.
+HSTATIC_UNIT = "gb:NiAnimation/NiAnimationKeyMacros"
+HSTATIC_RES = "header:NiAnimationKeyMacros"
+HSTATIC_RE = re.compile(r"^\?\?__E(\w+)registerloaderreturn@@YAXXZ$")
+HSTATIC_SHAPE = (bytes.fromhex("4883ec28e8"), bytes.fromhex("8905"), bytes.fromhex("4883c428c3"))
+
+
+def _hstatic_job(job):
+    tmpl, loaders, taken = job
+    exe = G["exe"]
+    head, mid, tail = HSTATIC_SHAPE
+    cand = {}           # exe VA -> (key, store target)
+    for rva in G["bylen"].get(20, ()):
+        va = rva + exe.base
+        b = bytes(exe.img[rva:rva + 20])
+        if va in taken or b[:5] != head or b[9:11] != mid or b[15:] != tail or _in_game(va):
+            continue
+        key = loaders.get(va + 9 + struct.unpack_from("<i", b, 5)[0])
+        if key in tmpl:
+            cand[va] = (key, va + 15 + struct.unpack_from("<i", b, 11)[0])
+    # the store target: in .bss (past the raw data of its section) and referenced by one rip-relative disp32 in .text
+    bss = [(exe.base + s.VirtualAddress + s.SizeOfRawData, exe.base + s.VirtualAddress + s.Misc_VirtualSize)
+           for s in exe.pe.sections if s.Misc_VirtualSize > s.SizeOfRawData]
+    tg = {t for _, t in cand.values() if any(lo <= t < hi for lo, hi in bss)}
+    refs, at = collections.Counter(), {}
+    if tg:
+        lo_t, hi_t = min(tg), max(tg)
+        for s in exe.pe.sections:
+            if s.Name.rstrip(b"\0") != b".text":
+                continue
+            buf = bytes(exe.img[s.VirtualAddress:s.VirtualAddress + s.Misc_VirtualSize])
+            for k in range(4):
+                base = exe.base + s.VirtualAddress + k + 4
+                for i, (dv,) in enumerate(struct.iter_unpack("<i", buf[k:k + (len(buf) - k) // 4 * 4])):
+                    t = base + 4 * i + dv
+                    if lo_t <= t <= hi_t and t in tg:
+                        refs[t] += 1
+                        at.setdefault(t, []).append(base + 4 * i - 4)
+    # a disp32 hit outside the thunk counts only if it is the operand of a decoded rip-relative instruction of the
+    # function containing it (most are byte coincidences)
+    import capstone
+    md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_64)
+    md.detail = True
+    fstarts = G.get("fstarts")
+    if fstarts is None:
+        fstarts = G["fstarts"] = sorted((int(p[0], 16), int(p[1])) for p in
+                                        (ln.split("\t") for ln in open(FUNCS)) if p[0] and p[0][0] != "#")
+    for va, (key, t) in cand.items():
+        if refs[t] <= 1:
+            continue
+        real = 0
+        for q in at[t]:
+            if va <= q < va + 20:
+                real += 1
+                continue
+            i = bisect.bisect_right(fstarts, (q, 1 << 62)) - 1
+            f0, fz = fstarts[i] if i >= 0 else (0, 0)
+            if f0 <= q < f0 + fz:
+                for ins in md.disasm(bytes(exe.img[f0 - exe.base:f0 - exe.base + fz]), f0):
+                    if ins.address < q < ins.address + ins.size:
+                        real += "rip" in ins.op_str and ins.address + ins.disp_offset == q
+                        break
+            else:
+                real += 1           # outside the function map: undecidable, keep it as a reference
+        refs[t] = real
+    objs, out = {}, []
+    for va, (key, t) in sorted(cand.items()):
+        if t not in tg or refs[t] != 1:
+            continue
+        path, n = tmpl[key]
+        if path not in objs:
+            objs[path] = bm.Obj(path)
+        obj = objs[path]
+        if _match(obj, n, va) and sorted(bm.LAST_TARGETS.values()) == sorted([loaders_va(loaders, key), t]):
+            out.append([n, va, True, "hstatic"])
+    return out
+
+
+def loaders_va(loaders, key):
+    return next(v for v, k in loaders.items() if k == key)
+
+
+def header_statics(res, paths, log=print):
+    """credit the unclaimed exe copies of the NiAnimation key loader initializers (see HSTATIC_UNIT)"""
+    res.pop(HSTATIC_RES, None)
+    loaders, tmpl, taken = {}, {}, set()
+    for k, c in sorted(res.items()):
+        allp = c["pairs"] + c.get("xpairs", []) + c.get("hpairs", []) + c.get("bpairs", [])
+        for n, va, ok, how in allp:
+            if ok:
+                taken.add(va)
+                m = re.match(r"^\?RegisterLoader@(\w+)@@SAHXZ$", n)
+                if m:
+                    loaders[va] = m.group(1)
+        for n, _, _ in c.get("blk", {}).get("secs", {}).get(".text$di", {}).get("lay", ()):
+            m = HSTATIC_RE.match(n)
+            if m and k in paths:
+                tmpl.setdefault(m.group(1), (paths[k], n))
+    if len(set(loaders.values())) != len(loaders):      # a key class whose loader two exe VAs claim: no rule
+        dup = {v for v in loaders.values() if list(loaders.values()).count(v) > 1}
+        loaders = {va: key for va, key in loaders.items() if key not in dup}
+    with Pool(1, initializer=_init) as p:
+        out = p.apply(_hstatic_job, ((tmpl, loaders, taken),))
+    if out:
+        res[HSTATIC_RES] = {"key": [], "unit": HSTATIC_UNIT, "recipe": "stock", "pairs": out, "xpairs": [], "cands": [], "own": []}
+    log(f"engine: header-static copies {len(out)} ({len(loaders)} key loaders, {len(tmpl)} templates)")
 
 
 def run(cache, j=8, filters=(), log=print):
@@ -1285,6 +1412,7 @@ def run(cache, j=8, filters=(), log=print):
         lib_hints(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, windows, j, log)
         assign_blocks(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, windows, j, log)
         assign_subblocks(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, windows, j, log)
+        header_statics(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, log)
         used = {g for c in res.values() for _, g in c.get("cands", ())}
         groups = {g: h for g, h in groups.items() if g in used}
         json.dump(groups, open(gpath + ".tmp", "w"))
@@ -1344,7 +1472,8 @@ def credit(res, game_rows):
     # stubs: uncredited functions between two credited functions of the same unit. A credited function shorter than
     # LEAF_SMALL (ret, return a constant, an empty virtual: the linker folds such bodies across TUs) is no evidence of
     # where its TU lies: it neither bounds nor interrupts a run
-    cred = sorted(v for v in rows if info[v][0] >= LEAF_SMALL)
+    # (the header pseudo-unit's copies lie in many TUs' blocks: they bound no stub run either)
+    cred = sorted(v for v in rows if info[v][0] >= LEAF_SMALL and rows[v][1] != HSTATIC_UNIT)
     for a, b in zip(cred, cred[1:]):
         if rows[a][1] != rows[b][1]:
             continue
