@@ -289,7 +289,16 @@ bool SoftParticlesMaterial::HandleViewProjectionFragment(Context& kContext, bool
 }
 MS2_REPLACE_METHOD(0x1427569D0, SoftParticlesMaterial, HandleViewProjectionFragment, 42, 0x6276F5B2);
 
+// NiImplementRTTI(SoftParticlesMaterial, NiStandardMaterial): the initializer sits in the shared .text$di run. The hook
+// DLL binds the exe's copy (symbols-manual row), so only the byte-match build defines it.
+// MS2-RANGE: 0x14014d230-0x14014d250 .text$di
+#ifndef MS2_HOOK_DLL
+// @0x14014d230
+const NiRTTI SoftParticlesMaterial::ms_RTTI("SoftParticlesMaterial", &NiStandardMaterial::ms_RTTI);
+#endif
+
 // MS2-PIN: ??_7SoftParticlesMaterial@@6B@ 0x1431c68e0
+// MS2-PIN: ?GetRTTI@SoftParticlesMaterial@@UEBAPEBVNiRTTI@@XZ 0x1427563a0
 // MS2-PIN: ??_7?$NiTArray@P6A_NPEAVNiMaterialDescriptor@@W4ReturnCode@NiFragmentMaterial@@IPEAVRenderPassDescriptor@3@IAEAI3@ZV?$NiTMallocInterface@P6A_NPEAVNiMaterialDescriptor@@W4ReturnCode@NiFragmentMaterial@@IPEAVRenderPassDescriptor@3@IAEAI3@Z@@@@6B@ 0x143020d68
 // MS2-PIN: ??_7?$NiTArray@V?$SmartPointer@VNiCodeBlock@@@efd@@V?$NiTNewInterface@V?$SmartPointer@VNiCodeBlock@@@efd@@@@@@6B@ 0x143026d38
 // MS2-PIN: ??_7?$NiTObjectArray@V?$SmartPointer@VNiCodeBlock@@@efd@@@@6B@ 0x143026d40

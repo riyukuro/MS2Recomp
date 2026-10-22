@@ -180,6 +180,8 @@ public:
 // Vtable 0x1431c68e0 (sizeof 0x540, no new members): soft particles faded against the scene depth.
 class SoftParticlesMaterial : public NiStandardMaterial
 {
+    NiDeclareRTTI;
+
 public:
     SoftParticlesMaterial(bool bAutoCreateCaches);
 
