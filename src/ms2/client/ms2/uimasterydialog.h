@@ -113,7 +113,7 @@ public:
     int FUN_140eb8120(MS2Ptr<Unk_MRec> spRec);  // 0x140eb8120
     int FUN_140eb82e0();  // 0x140eb82e0
     int FUN_140eb8410();  // 0x140eb8410
-    bool FUN_140eb8550(MS2Ptr<Unk_MRec> spRec);  // 0x140eb8550
+    int FUN_140eb8550(MS2Ptr<Unk_MRec> spRec);  // 0x140eb8550
     int FUN_140eb8630(int nType);  // 0x140eb8630
     void FUN_140eb8670(int nType, int nValue);  // 0x140eb8670
     int FUN_140eb86b0();  // 0x140eb86b0

@@ -377,7 +377,7 @@ class Unk_MFurnInv { public: Unk_MFurnState FUN_1408fbe90(unsigned int nId); };
 extern Unk_MFurnInv DAT_143ab2e20;
 
 
-class Unk_MScrollDef : public CPtred { public: int m_n1c; };
+class Unk_MScrollDef : public CPtred { public: int m_n18; int m_n1c; };
 class Unk_MScrollRec : public CPtred
 {
 public:
@@ -1853,7 +1853,7 @@ CStringW UIMasteryDialog::FUN_140eb7c50(int nType)
 // @0x140eb7d40
 CStringW UIMasteryDialog::FUN_140eb7d40()
 {
-    CStringW strName = FUN_14028b8e0(CStringW(L"s_mastery_housing"));
+    CStringW strName = FUN_14028b8e0(L"s_mastery_housing");
     int nRewards = FUN_140930e10();
     if (nRewards != 0)
         return FUN_140bfa7f0(CStringW(L"s_mastery_subtab_mastery_name_and_reward"), strName, nRewards);
@@ -1949,7 +1949,7 @@ int UIMasteryDialog::FUN_140eb8550(MS2Ptr<Unk_MRec> spRec)
     if (!pPc)
         return 0;
     if (spRec->m_nNeedLevel != 0)
-        return pPc->vfunc_78() >= spRec->m_nNeedLevel;
+        return (unsigned short)pPc->vfunc_78() >= spRec->m_nNeedLevel;
     return 1;
 }
 
@@ -2114,7 +2114,6 @@ int FUN_140eb8eb0(MS2Ptr<Unk_MFurn> spFurn)
 }
 
 // @0x140eb8f40
-// MS2-FUNCTIONAL: qsort comparator over MS2Ptr<Unk_MFurn> elements.
 int UIMasteryDialog::FUN_140eb8f40(const void* pA, const void* pB)
 {
     MS2Ptr<Unk_MFurn> spA = *(const MS2Ptr<Unk_MFurn>*)pA;
@@ -2133,7 +2132,6 @@ int UIMasteryDialog::FUN_140eb8f40(const void* pA, const void* pB)
 }
 
 // @0x140eb9160
-// MS2-FUNCTIONAL: qsort comparator over MS2Ptr<Unk_MScrollRec> elements.
 int UIMasteryDialog::FUN_140eb9160(const void* pA, const void* pB)
 {
     MS2Ptr<Unk_MScrollRec> spA = *(const MS2Ptr<Unk_MScrollRec>*)pA;
@@ -2141,9 +2139,9 @@ int UIMasteryDialog::FUN_140eb9160(const void* pA, const void* pB)
     if (spA->m_nState == spB->m_nState) {
         MS2Ptr<Unk_MScrollDef> spDefA = FUN_14034f780()->FUN_14034e360(spA->m_n20);
         MS2Ptr<Unk_MScrollDef> spDefB = FUN_14034f780()->FUN_14034e360(spB->m_n20);
-        if (!spDefA.IsNull() && !spDefB.IsNull())
-            return spDefA->m_n1c < spDefB->m_n1c ? -1 : 1;
-        return -1;
+        if (spDefA.IsNull() || spDefB.IsNull())
+            return -1;
+        return spDefA->m_n1c < spDefB->m_n1c ? -1 : 1;
     }
     return spA->m_nState < spB->m_nState ? -1 : 1;
 }
