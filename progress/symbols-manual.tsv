@@ -8352,3 +8352,4 @@ compress2	142724100	func
 ?UnloadMovie@MovieRoot@AS3@GFx@Scaleform@@QEAAXPEAVLoader@fl_display@Instances@234@_N1@Z	1425305f0	func
 ?AddNewLoadQueueEntry@MovieRoot@AS3@GFx@Scaleform@@QEAAXPEAVURLRequest@fl_net@Instances@234@PEAVLoader@fl_display@7234@W4LoadMethod@LoadQueueEntry@34@@Z	1424e9090	func
 ?AddNewLoadQueueEntry@MovieRoot@AS3@GFx@Scaleform@@QEAAXPEAVByteArray@fl_utils@Instances@234@PEAVLoader@fl_display@7234@W4LoadMethod@LoadQueueEntry@34@@Z	1424e9010	func
+?SetKeyboardFocusTo@MovieImpl@GFx@Scaleform@@QEAAXPEAVInteractiveObject@23@IW4FocusMovedType@23@@Z	142575cd0	func
