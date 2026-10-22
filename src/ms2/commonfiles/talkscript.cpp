@@ -334,7 +334,7 @@ TalkArrayPtr FUN_140857660(int nNpcId)
 
 // @0x140855d10
 // MS2-FUNCTIONAL: calls into ATL/TPtr COMDATs owned by other units resolve to different targets and the hand-written control flow differs in the large body; permuter lane
-bool FUN_140855d10(int nNpcId)
+int FUN_140855d10(int nNpcId)
 {
     return !!FUN_140857330(nNpcId);
 }
