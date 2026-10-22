@@ -302,7 +302,7 @@ MS2Ptr<CItem> FUN_140ebc360(int nItemId, int nGrade)
 
 // The basket holds at most 100 products.
 // @0x140ebc4a0
-bool FUN_140ebc4a0()
+int FUN_140ebc4a0()
 {
     int nCount = FUN_140939a00()->FUN_140d56160();
     if (nCount >= 100)
