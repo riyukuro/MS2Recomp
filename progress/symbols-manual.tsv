@@ -8307,3 +8307,6 @@ compress2	142724100	func
 ?vfunc_o10_7@COutPacket@@UEAAXAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	14020b090	func
 ?vfunc_o10_8@COutPacket@@UEAAXAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	14020b1e0	func
 ?vfunc_o10_9@COutPacket@@UEAAXPEBXH@Z	14020aef0	func
+?Empty@StringView@Abc@AS3@GFx@Scaleform@@2EB	14317fe92	data
+?IsValidValueKind@Abc@AS3@GFx@Scaleform@@YA_NE@Z	142546080	func
+?ToStringDataPtr@StringView@Abc@AS3@GFx@Scaleform@@QEBA?AVStringDataPtr@5@XZ	142545310	func
