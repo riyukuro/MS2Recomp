@@ -7910,3 +7910,11 @@ sfr_atan2f_thunk	14280f28e	func
 ?GlowFilterCI@fl_filters@AS3@GFx@Scaleform@@3UClassInfo@234@B	1431598f0	data
 ?GradientBevelFilterCI@fl_filters@AS3@GFx@Scaleform@@3UClassInfo@234@B	143159940	data
 ?GradientGlowFilterCI@fl_filters@AS3@GFx@Scaleform@@3UClassInfo@234@B	143159990	data
+?ColorTransformCI@fl_geom@AS3@GFx@Scaleform@@3UClassInfo@234@B	14315cff0	data
+?Matrix3DCI@fl_geom@AS3@GFx@Scaleform@@3UClassInfo@234@B	14315d090	data
+?MatrixCI@fl_geom@AS3@GFx@Scaleform@@3UClassInfo@234@B	14315d0e0	data
+?PerspectiveProjectionCI@fl_geom@AS3@GFx@Scaleform@@3UClassInfo@234@B	14315d130	data
+?PointCI@fl_geom@AS3@GFx@Scaleform@@3UClassInfo@234@B	14315d180	data
+?RectangleCI@fl_geom@AS3@GFx@Scaleform@@3UClassInfo@234@B	14315d1d0	data
+?TransformCI@fl_geom@AS3@GFx@Scaleform@@3UClassInfo@234@B	14315d220	data
+?Vector3DCI@fl_geom@AS3@GFx@Scaleform@@3UClassInfo@234@B	14315d040	data
