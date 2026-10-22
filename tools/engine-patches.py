@@ -13,6 +13,8 @@ Script format (bytes decoded as latin-1 only inside JSON strings):
   N a / N,M c / N,M d   text lines follow for a/c, terminated by a "." line
                         (lines starting with "." are dot-stuffed with one more ".")
   N@COL s "old" "new"   in 1-based line N, at 0-based byte COL, replace old by new
+  eol lf                (first line only) the stock file is CRLF and ours LF: strip the CRs before the commands,
+                        so a line-ending conversion does not turn into a whole-file replacement
 Line numbers refer to the stock file; commands run in descending order.
 File model: data.split(b"\\n") (last element is the text after the final newline).
 
@@ -189,10 +191,14 @@ def main():
             man.append((rel, "-", sha(new), "added"))
         elif st == "M":
             old = git("show", f"{STOCK}:{p}")
+            ol = old.split(b"\n")
+            crlf = b"\r\n" in old and b"\r" not in new
+            if crlf:
+                ol = [l[:-1] if l.endswith(b"\r") else l for l in ol]
             fs = []
-            ops = make_ops(rel, old.split(b"\n"), new.split(b"\n"), pol, fs)
+            ops = make_ops(rel, ol, new.split(b"\n"), pol, fs)
             stats += fs
-            script = emit(ops)
+            script = (b"eol lf\n" if crlf else b"") + emit(ops)
             man.append((rel, sha(old), sha(new), "modified"))
         else:
             sys.exit(f"unsupported status {st} {p}")

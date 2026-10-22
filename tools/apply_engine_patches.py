@@ -18,6 +18,9 @@ def apply(script, data):
     cmds, sl, i = [], script.split(b"\n"), 0
     if sl and sl[-1] == b"":
         sl.pop()
+    if sl and sl[0] == b"eol lf":   # stock CRLF file converted to LF: strip every CR first
+        lines = [l[:-1] if l.endswith(b"\r") else l for l in lines]
+        i = 1
     while i < len(sl):
         c = sl[i].decode("ascii")
         i += 1

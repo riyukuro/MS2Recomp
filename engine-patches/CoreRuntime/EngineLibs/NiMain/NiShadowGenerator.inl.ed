@@ -1,0 +1,36 @@
+eol lf
+355a
+}
+
+//--------------------------------------------------------------------------------------------------
+// MS2
+inline void NiShadowGenerator::SetMS2DepthBiasScale(float fScale)
+{
+    m_fMS2DepthBiasScale = fScale;
+}
+
+//--------------------------------------------------------------------------------------------------
+// MS2
+inline float NiShadowGenerator::GetMS2DepthBiasScale() const
+{
+    return m_fMS2DepthBiasScale;
+.
+348c
+    // MS2: set instead of list; the exe swaps in the last element (RemoveAt, verified at 0x141175a70).
+    int iIndex = m_kUnaffectedReceiverList.Find(pkUnaffectedNode);
+    if (iIndex > -1)
+    {
+        m_kUnaffectedReceiverList.RemoveAt((unsigned int)iIndex);
+        return true;
+    }
+    return false;
+.
+339@33s "Head" ""
+335c
+    // MS2: set instead of list; nodes are appended (game ProcessClone).
+    if (m_kUnaffectedReceiverList.Find(pkUnaffectedNode) != -1)
+.
+325c
+inline const NiTPrimitiveSet<NiNode*>&
+    NiShadowGenerator::GetUnaffectedReceiverNodeList() // MS2: was NiNodeList
+.
