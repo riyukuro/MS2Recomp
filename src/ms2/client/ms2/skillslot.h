@@ -45,16 +45,16 @@ public:
     virtual MS2Ptr<CItem> vfunc_25();                   // 25 0x14175fbf0 the item of the slot
     virtual int vfunc_0(void* p);                       // ITooltip 0x14175e3c0 build the tooltip into p
 
-    int FUN_14175cb90();                                // the skill id
-    void FUN_14175cbb0(int nSkillId);
-    __int64 FUN_14175cbd0();                            // the item uid
-    void FUN_14175cbf0(__int64 nItemUid);
-    int FUN_14175cc20();                                // the item id
-    void FUN_14175cc40(int nItemId);
+    int GetSkillId();                                // the skill id
+    void SetSkillId(int nSkillId);
+    __int64 GetItemUid();                            // the item uid
+    void SetItemUid(__int64 nItemUid);
+    int GetItemId();                                // the item id
+    void SetItemId(int nItemId);
     int FUN_14175cc60();                                // 0
     void FUN_14175cc70();                               // refresh the key bindings of the three keys
-    int FUN_14175cd90();                                // the slot is fixed
-    void FUN_14175cdb0(int bFixed);
+    int IsFixed();                                // the slot is fixed
+    void SetFixed(int bFixed);
     void FUN_14175e310(int nFlags);                     // a slot of the bag: refresh the cooldown
     void FUN_14175e350(int nFlags);
     void FUN_14175f200();                               // stop the icon tween

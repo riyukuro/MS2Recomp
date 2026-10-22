@@ -1088,7 +1088,7 @@ void StateSkill::vfunc_26(Unk_StateDataArg* p)
     {
         if (FUN_1417b7e40() == 0x3b)
         {
-            MS2Ptr<CSkillRecord> spRecord = FUN_1417ed6f0();
+            MS2Ptr<CSkillRecord> spRecord = GetRecord();
             if (spRecord.get())
             {
                 p->m_n90 = spRecord->m_nB0;
@@ -1121,11 +1121,11 @@ unsigned StateSkill::FUN_1417e9330()
 MS2_REPLACE_METHOD(0x1417e9330, StateSkill, FUN_1417e9330, 69, 0xE1CA125F);
 
 // @0x1417e9380
-float StateSkill::FUN_1417e9380()
+float StateSkill::GetSpeed()
 {
     return m_fSpeed;
 }
-MS2_REPLACE_METHOD(0x1417e9380, StateSkill, FUN_1417e9380, 19, 0xAABC9E7C);
+MS2_REPLACE_METHOD(0x1417e9380, StateSkill, GetSpeed, 19, 0xAABC9E7C);
 
 // @0x1417e93a0
 int StateSkill::FUN_1417e93a0(PCBase* pOwner, MS2Ptr<SkillLevelData> spLevel, int n60, int nAttack)
@@ -1489,11 +1489,11 @@ void StateSkill::FUN_1417ec630(bool bCharge, bool bStart)
 MS2_REPLACE_METHOD(0x1417ec630, StateSkill, FUN_1417ec630, 1432, 0x65202FA4);
 
 // @0x1417ed6f0
-MS2Ptr<CSkillRecord> StateSkill::FUN_1417ed6f0()
+MS2Ptr<CSkillRecord> StateSkill::GetRecord()
 {
     return m_spRecord;
 }
-MS2_REPLACE_METHOD(0x1417ed6f0, StateSkill, FUN_1417ed6f0, 65, 0x1490D003);
+MS2_REPLACE_METHOD(0x1417ed6f0, StateSkill, GetRecord, 65, 0x1490D003);
 
 // @0x1417ed740
 void StateSkill::FUN_1417ed740(MS2Ptr<CSkillRecord> spRecord)
@@ -1504,11 +1504,11 @@ void StateSkill::FUN_1417ed740(MS2Ptr<CSkillRecord> spRecord)
 MS2_REPLACE_METHOD(0x1417ed740, StateSkill, FUN_1417ed740, 87, 0x3BB4FF37);
 
 // @0x1417ed7a0
-MS2Ptr<CSkillRecord> StateSkill::FUN_1417ed7a0()
+MS2Ptr<CSkillRecord> StateSkill::GetCharge()
 {
     return m_spCharge;
 }
-MS2_REPLACE_METHOD(0x1417ed7a0, StateSkill, FUN_1417ed7a0, 65, 0x4E486D38);
+MS2_REPLACE_METHOD(0x1417ed7a0, StateSkill, GetCharge, 65, 0x4E486D38);
 
 // The move input during a cast: the self combo / chain casts take the input direction as the push (the move key
 // direction or, with CancelSwing_KeyIsDown, the held direction); a continuing skill whose key is held and a charging
@@ -1647,7 +1647,7 @@ void StateSkill::FUN_1417f16f0(MS2Ptr<CSkillRecord> spRecord)
         return;
     float fStart = FUN_141b6fe90(m_pSequence, "loopstart", 1.0f);
     float fEnd = FUN_141b6fe90(m_pSequence, "loopend", 1.0f);
-    float fLeft = (fEnd - fStart) / FUN_1417e9380();
+    float fLeft = (fEnd - fStart) / GetSpeed();
     if (fLeft - FUN_14028d280(m_nChargeTick) >= 0.0f)
         fLeft = fLeft - FUN_14028d280(m_nChargeTick);
     else
@@ -2035,8 +2035,8 @@ int StateSkill::FUN_1417eb3a0(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int
             return 0;
         if (pMy->FUN_14166c930() == 0x1e)
         {
-            StateGlide* pGlide = static_cast<StateGlide*>(pMy->FUN_141678750()->FUN_1417db1c0());
-            if (pGlide->FUN_1417df3c0() == 1 && pGlide->FUN_1417df3e0() == (int)spRecord->GetSkillId()
+            StateGlide* pGlide = static_cast<StateGlide*>(pMy->GetStateMgr()->GetState());
+            if (pGlide->GetMode() == 1 && pGlide->FUN_1417df3e0() == (int)spRecord->GetSkillId()
                 && pGlide->FUN_1417c9740() == SS_ITEMDATA(spItem)->FUN_14053dde0())
             {
                 pGlide->FUN_1417df370();

@@ -528,7 +528,7 @@ MS2_REPLACE_METHOD(0x140F301D0, UICharacterCreateSelectDialog, FUN_140f301d0, 86
 // @0x140f30370
 inline CSceneStateMulti* FUN_140f30370()
 {
-    CSceneStateMulti* pScene = static_cast<CSceneStateMulti*>(FUN_140aa6d30()->FUN_1417e26d0().operator CSceneStateBase*());
+    CSceneStateMulti* pScene = static_cast<CSceneStateMulti*>(FUN_140aa6d30()->GetCurrent().operator CSceneStateBase*());
     return pScene;
 }
 

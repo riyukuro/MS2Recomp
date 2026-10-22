@@ -2455,7 +2455,7 @@ void UIMinimapDialog::FUN_141a42a70()
     bool bVisible = true;
     Unk_MmRideeRef spRidee(pPC->FUN_1416764a0());
     if (spRidee.FUN_140965790()) {
-        if (spRidee.FUN_140975bc0()->FUN_141707750()->m_nSeats != 0)
+        if (spRidee.FUN_140975bc0()->GetData()->m_nSeats != 0)
             bVisible = false;
     }
     m_30->Invoke("visiblePlayers", bVisible);

@@ -39,25 +39,25 @@ void CUGCMapItem::FUN_140dfc280(int n)
 }
 
 // @0x140dfc2a0
-void CUGCMapItem::FUN_140dfc2a0(int nItemId)
+void CUGCMapItem::SetItemId(int nItemId)
 {
     m_nItemId = nItemId;
 }
 
 // @0x140dfc2c0
-void CUGCMapItem::FUN_140dfc2c0(__int64 nUid)
+void CUGCMapItem::SetUid(__int64 nUid)
 {
     m_nUid = nUid;
 }
 
 // @0x140dfc2e0
-void CUGCMapItem::FUN_140dfc2e0(__int64 nCount)
+void CUGCMapItem::SetCount(__int64 nCount)
 {
     m_nCount = nCount;
 }
 
 // @0x140dfc300
-void CUGCMapItem::FUN_140dfc300(MS2Ptr<CUgcItemLook> spLook)
+void CUGCMapItem::SetLook(MS2Ptr<CUgcItemLook> spLook)
 {
     m_spLook = spLook;
 }
@@ -69,25 +69,25 @@ int CUGCMapItem::FUN_140dfc350()
 }
 
 // @0x140dfc370
-int CUGCMapItem::FUN_140dfc370()
+int CUGCMapItem::GetItemId()
 {
     return m_nItemId;
 }
 
 // @0x140dfc390
-__int64 CUGCMapItem::FUN_140dfc390()
+__int64 CUGCMapItem::GetUid()
 {
     return m_nUid;
 }
 
 // @0x140dfc3b0
-__int64 CUGCMapItem::FUN_140dfc3b0()
+__int64 CUGCMapItem::GetCount()
 {
     return m_nCount;
 }
 
 // @0x140dfc3d0
-MS2Ptr<CUgcItemLook> CUGCMapItem::FUN_140dfc3d0()
+MS2Ptr<CUgcItemLook> CUGCMapItem::GetLook()
 {
     return m_spLook;
 }
@@ -127,13 +127,13 @@ void Unk_CubeStock::FUN_140dfc4f0()
 // @0x140dfc520
 int Unk_CubeStock::FUN_140dfc520(CUGCMapItem* pItem)
 {
-    if (m_map.Lookup(pItem->FUN_140dfc390()) != 0)
+    if (m_map.Lookup(pItem->GetUid()) != 0)
         return 0x11;
     {
         MS2Ptr<CUGCMapItem> spItem(pItem);
-        m_map.SetAt(pItem->FUN_140dfc390(), spItem);
+        m_map.SetAt(pItem->GetUid(), spItem);
     }
-    MS2Ptr<CUgcItemLook> spLook = pItem->FUN_140dfc3d0();
+    MS2Ptr<CUgcItemLook> spLook = pItem->GetLook();
     bool bName = (spLook.get() ? true : false) && spLook->GetLocalPath().GetLength() > 0;
     if (bName)
         FUN_14052d220()->FUN_1418841f0(spLook, MS2Ptr<CItem>(0), 0);
@@ -166,7 +166,7 @@ MS2Ptr<CUGCMapItem> Unk_CubeStock::FUN_140dfc800(int nItemId)
     for (POSITION pos = m_map.GetHeadPosition(); pos != NULL; m_map.GetNext(pos))
     {
         MS2Ptr<CUGCMapItem> spItem = m_map.GetValueAt(pos);
-        if (spItem->FUN_140dfc370() == nItemId)
+        if (spItem->GetItemId() == nItemId)
             return spItem;
     }
     return MS2Ptr<CUGCMapItem>(0);
@@ -213,7 +213,7 @@ int Unk_CubeStock::FUN_140dfcb00(int nItemId)
         MS2Ptr<CUGCMapItem> spItem = m_map.GetValueAt(pos);
         if (spItem == 0)
             continue;
-        if (spItem->FUN_140dfc370() == nItemId)
+        if (spItem->GetItemId() == nItemId)
             n = n + spItem->FUN_140dfc350();
     }
     return n;
@@ -228,7 +228,7 @@ int Unk_CubeStock::FUN_140dfcbf0(int nItemId, __int64 nLookId)
         MS2Ptr<CUGCMapItem> spItem = m_map.GetValueAt(pos);
         if (spItem == 0)
             continue;
-        if (spItem->FUN_140dfc370() == nItemId)
+        if (spItem->GetItemId() == nItemId)
         {
             if (spItem->FUN_140dfc420() == nLookId)
                 n = n + spItem->FUN_140dfc350();
@@ -243,12 +243,12 @@ void Unk_CubeStock::FUN_140dfcd00(void* pFilter, ATL::CAtlArray<MS2Ptr<CItem> >&
     for (POSITION pos = m_map.GetHeadPosition(); pos != NULL; m_map.GetNext(pos))
     {
         MS2Ptr<CUGCMapItem> spItem = m_map.GetValueAt(pos);
-        if (spItem == 0 || spItem->FUN_140dfc3d0() == 0)
+        if (spItem == 0 || spItem->GetLook() == 0)
             continue;
-        const MS2Ptr<CUgcItemLook>& rLook = spItem->FUN_140dfc3d0();
+        const MS2Ptr<CUgcItemLook>& rLook = spItem->GetLook();
         if (!FUN_14026d4d0(pFilter, rLook->m_n34, rLook->m_n38))
             continue;
-        int nItemId = spItem->FUN_140dfc370();
+        int nItemId = spItem->GetItemId();
         MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
         if (spData == 0)
             continue;
@@ -258,11 +258,11 @@ void Unk_CubeStock::FUN_140dfcd00(void* pFilter, ATL::CAtlArray<MS2Ptr<CItem> >&
             if (spNew.get() != 0)
             {
                 spNew->FUN_14052b130(nItemId, 1, 0);
-                spNew->FUN_140526a70(spItem->FUN_140dfc390());
+                spNew->FUN_140526a70(spItem->GetUid());
                 if (spNew->FUN_1405278d0() != 0)
                 {
                     {
-                        MS2Ptr<CUgcItemLook> spItemLook = spItem->FUN_140dfc3d0();
+                        MS2Ptr<CUgcItemLook> spItemLook = spItem->GetLook();
                         if (spItemLook.get() != 0)
                             FUN_140892da0(&reinterpret_cast<CItemUgc*>(spNew->FUN_1405278d0())->m_look, spItemLook.get());
                     }

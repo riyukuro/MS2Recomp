@@ -1112,7 +1112,7 @@ void UIMeratMarketDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* 
     m_spModelView = 0;
     if (pAvatar != 0) {
         pAvatar->vfunc_28(p1, p2, p3);
-        m_spModelView = pAvatar->FUN_1418b9bc0();
+        m_spModelView = pAvatar->GetView();
         int nKind = SlotKindOfPreview(pAvatar, m_spItemData);
         ShowAvatarItem(pAvatar, nKind, MS2Ptr<CItemData>(0), true);
         m_spAvatar.AssignRaw(pAvatar);
@@ -1799,7 +1799,7 @@ void UIMeratMarketDialog::RefreshAvatarOwner(UIAvatarBase* pAvatar, MS2Ptr<CItem
 {
     if (pAvatar == 0 || spOwner == 0 || spOwner->FUN_140525f60() == 0)
         return;
-    int nKind = pAvatar->FUN_1418b9ba0();
+    int nKind = pAvatar->GetKind();
     UIAvatarCube* pCube;
     if (nKind == 2 && (pCube = dynamic_cast<UIAvatarCube*>(pAvatar)) != 0 && pCube->FUN_1418bde80() != 0)
         pCube->FUN_1418bde80()->FUN_141085530(spOwner);
@@ -1824,7 +1824,7 @@ void UIMeratMarketDialog::AddPreviewSlot(MS2Ptr<CItem> spItem, MS2Ptr<CMeratMark
             MS2Ptr<Customize> spCustomize(0);
             MS2Ptr<UIAvatarPC> spAvatar(dynamic_cast<UIAvatarPC*>((UIAvatarBase*)spPreview));
             if (spAvatar.get() != 0)
-                spCustomize = spAvatar->FUN_1418bd710();
+                spCustomize = spAvatar->GetCustomize();
             MS2Ptr<ASEquipIcon> spIcon = spContainer->FUN_140e2a090(nEvent, spItem, spSrc, reinterpret_cast<MS2Ptr<Unk_EquipOutfit>&>(spCustomize));
             if (spIcon.get() != 0) {
                 spIcon->FUN_1409b9240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIMeratMarketDialog::OnEquipIconTooltip), (long long)spIcon.get());
@@ -1933,7 +1933,7 @@ void UIMeratMarketDialog::PreviewBundle(MS2Ptr<CMeratMarketProduct> spProduct)
                     return;
                 spPick = pItems->GetAt(0);
                 if (m_spAvatar.get() != 0) {
-                    if (m_spAvatar->FUN_1418b9ba0() == 1)
+                    if (m_spAvatar->GetKind() == 1)
                         ApplyPreviewChanges(1);
                 }
                 if (!arrSecond.IsEmpty() && pPC == m_spAvatarPC.get()) {
@@ -1948,7 +1948,7 @@ void UIMeratMarketDialog::PreviewBundle(MS2Ptr<CMeratMarketProduct> spProduct)
                 MS2Ptr<CItemData> spOther = PickItem(arrSecond, 0);
                 if (spOther.operator CItemData*() != 0) {
                     if (m_spAvatar.get() != 0) {
-                        if (m_spAvatar->FUN_1418b9ba0() == 1)
+                        if (m_spAvatar->GetKind() == 1)
                             ApplyPreviewChanges(1);
                     }
                     spPick = spOther;
@@ -2563,7 +2563,7 @@ bool UIMeratMarketDialog::ShowEquipIcons(UIAvatarBase* pAvatar, int nSlot, bool 
     if (pAvatar == 0)
         return 0;
     Refresh7710(1);
-    if (pAvatar->FUN_1418b9ba0() == 1) {
+    if (pAvatar->GetKind() == 1) {
         UIAvatarPC* pPC = dynamic_cast<UIAvatarPC*>(pAvatar);
         if (pPC != 0) {
             MS2Ptr<UIEquipIconContainer> spIcons = GetEquipIcon(nSlot);
@@ -2652,7 +2652,7 @@ void UIMeratMarketDialog::ResetPreview()
 // @0x1412f7f90
 bool UIMeratMarketDialog::OnAvatarEquipChanged(const int* pItemId, bool* pChanged, bool* pItemMatch, bool* pHandItem)
 {
-    if (m_spAvatar == 0 || m_spAvatar->FUN_1418b9ba0() != 1)
+    if (m_spAvatar == 0 || m_spAvatar->GetKind() != 1)
         return 0;
     MS2Ptr<UIAvatarPC> spPC(dynamic_cast<UIAvatarPC*>(m_spAvatar.operator UIAvatarBase*()));
     if (spPC.get() != 0) {
@@ -3666,7 +3666,7 @@ void UIMeratMarketDialog::OnUnEquip(ASData& data)
     bool bReset = false;
     bool bRefresh = false;
     if (nSlot == 0x79) {
-        if ((bool)m_spAvatar.get() && m_spAvatar->FUN_1418b9ba0() == 1) {
+        if ((bool)m_spAvatar.get() && m_spAvatar->GetKind() == 1) {
             CStringA strId;
             icon.FUN_1422bac00("itemID", strId);
             int nItemId = FUN_1407181d0(strId);
@@ -3674,7 +3674,7 @@ void UIMeratMarketDialog::OnUnEquip(ASData& data)
         }
     }
     else if (nSlot == 0x7a) {
-        if ((bool)m_spAvatar.get() && m_spAvatar->FUN_1418b9ba0() == 1) {
+        if ((bool)m_spAvatar.get() && m_spAvatar->GetKind() == 1) {
             {
                 MS2Ptr<UIAvatarPC> spPC(dynamic_cast<UIAvatarPC*>(m_spAvatar.operator UIAvatarBase*()));
                 if (spPC.get() != 0) {
@@ -3696,7 +3696,7 @@ void UIMeratMarketDialog::OnUnEquip(ASData& data)
         }
     }
     else if (nSlot == 0x7b) {
-        if ((bool)m_spAvatar.get() && m_spAvatar->FUN_1418b9ba0() == 1) {
+        if ((bool)m_spAvatar.get() && m_spAvatar->GetKind() == 1) {
             bApply = true;
             if ((bool)m_spItem.get()) {
                 if (FUN_141b48710(MS2Ptr<CItemData>(FUN_140527840(m_spItem.operator->())))) {
@@ -5210,7 +5210,7 @@ void UIMeratMarketDialog::EquipPreview(UIAvatarBase* pAvatar, MS2Ptr<CItemData> 
     if (pObject == 0)
         return;
     float fAngle = 0.0f;
-    int nKind = pAvatar->FUN_1418b9ba0();
+    int nKind = pAvatar->GetKind();
     pAvatar->FUN_1418b9df0(bA, true);
     if (bB)
     {
@@ -6879,7 +6879,7 @@ void UIMeratMarketDialog::ApplyPreviewChanges(bool bApply)
         }
         else
         {
-            if (spPC->FUN_1418bcd20(spPC->FUN_1418bd760()))
+            if (spPC->FUN_1418bcd20(spPC->GetPose()))
                 bChanged = true;
         }
         if (bChanged && bApply)

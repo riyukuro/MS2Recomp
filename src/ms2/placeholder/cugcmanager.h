@@ -147,7 +147,7 @@ public:
     CStringW FUN_14187f210(int nResult);                    // upload result message
     CStringW FUN_14187f2e0(int nResult);
     void FUN_14187f380(int nMode);
-    int FUN_14187f3b0();                                    // mode (1: uploads disabled)
+    int GetMode();                                    // mode (1: uploads disabled)
     bool FUN_14187f3d0();                                    // open the equip upload
     bool FUN_14187f410();
     void FUN_14187f590(efd::SmartPointer<egf::Entity> spEntity);   // open the banner upload of a banner object
@@ -214,14 +214,14 @@ public:
     void FUN_1418885b0(int nBannerId);                      // drop the registration, show the default image
     int FUN_141888770(efd::SmartPointer<egf::Entity> spEntity, NiTexture* pTexture);   // the decal of a banner object
     efd::SmartPointer<NiTexture> FUN_1418896e0(int nObjectId);   // the image of an object
-    efd::SmartPointer<NiTexture> FUN_1418897a0();           // the default banner image
+    efd::SmartPointer<NiTexture> GetDefaultTexture();       // the default banner image
     void FUN_1418889d0(int nBannerId, unsigned __int64 key, const ReserveBannerInfo& info);   // add a reservation
     void FUN_141888af0(int nBannerId, unsigned __int64 key, int nState);  // the state of a reservation
     void FUN_141888bf0(int nBannerId, int nDate, CRBMap<int, ReserveBannerInfo>& hours);   // the reservations of a day
     void FUN_141888de0(int nBannerId, const Unk_BannerDay& day, CRBMap<int, int>& selected, ASArray* pArray);   // the AS rows of a day
     void FUN_141888d30(int nBannerId);                      // drop the reservations of a banner
-    void FUN_141888da0(bool bChanged);
-    bool FUN_141888dc0();                                   // the reservations changed
+    void SetReserveChanged(bool bChanged);
+    bool IsReserveChanged();                                   // the reservations changed
     void FUN_141889150();                                   // keep the images of the banner objects
     void FUN_1418894d0();                                   // drop the images of the banner objects
     void FUN_1418895d0(int nObjectId, efd::SmartPointer<NiTexture> spTexture);

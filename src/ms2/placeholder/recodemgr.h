@@ -17,7 +17,7 @@ public:
     RecodeMgr();                                            // 0x140c9ba20
     virtual ~RecodeMgr();                                   // 0x140c9bac0 (deleting 0x140c9c160)
     void FUN_140c9bb20();                                   // stops the recording (also on device loss)
-    int FUN_140c9bb40();                                    // 1 while recording
+    int IsRecording();                                    // 1 while recording
     int FUN_140c9bb60();                                    // start recording with the default text
     int FUN_140c9bc00();                                    // stop the recording
     int FUN_140c9bc70(CString strText);                     // start recording with a text line (callee destroys it)

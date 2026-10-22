@@ -18,7 +18,7 @@ class RoomStageDungeonCli : public CPtred
 public:
     RoomStageDungeonCli(unsigned nRoomId, int nStage);                          // 0x140c9cc60 registers packet handler 0x100
     virtual ~RoomStageDungeonCli();                                             // 0x140c9cda0 unregisters it
-    void FUN_140c9ce60(bool bFlag);                                             // 0x140c9ce60
+    void SetFlag(bool bFlag);                                             // 0x140c9ce60
     void GetMissions(std::vector<MS2Ptr<DungeonMissionCli> >& out);             // 0x140c9ce80 appends the missions
     int GetScore();                                                             // 0x140c9ceb0 sum over the missions
     int GetMaxScore();                                                          // 0x140c9cf50

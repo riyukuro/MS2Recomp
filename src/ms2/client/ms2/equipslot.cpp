@@ -110,7 +110,7 @@ EquipSlot::EquipSlot(const CString& strName, int nIndex, MS2Ptr<PCInfo> spPC, in
     m_nKind = nKind;
     m_nUnkA4 = nUnk;
     m_nSlot = nSlot;
-    FUN_140a7bd80(true);
+    SetEnabled(true);
 }
 
 // @0x14120c1b0
@@ -224,7 +224,7 @@ int EquipSlot::vfunc_0(void* p)
     if (tip.FUN_1409e0d40(spItem.get()) == 0)
         return 0;
     tip.FUN_1409c69b0(vfunc_22());
-    if (FUN_140a7bd60() == true)
+    if (IsEnabled() == true)
         tip.FUN_1409db7b0(spItem);
     *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
     return 1;

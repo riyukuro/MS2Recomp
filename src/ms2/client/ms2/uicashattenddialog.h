@@ -60,7 +60,7 @@ public:
     void FUN_140bc4340(int nEventId);                               // select an event by id
     void FUN_140bc4390(GameEventVariable* pVar);
     void FUN_140bc43d0(GameEventVariable* pVar);
-    MS2Ptr<GameEventCashAttendCli> FUN_140bc4410();                 // the selected event
+    MS2Ptr<GameEventCashAttendCli> GetSelected();                 // the selected event
     void FUN_140bc4460();                                           // refresh
     void FUN_140bc44b0();                                           // refresh the event buttons
     void FUN_140bc4980();                                           // refresh the gauge, list and period text

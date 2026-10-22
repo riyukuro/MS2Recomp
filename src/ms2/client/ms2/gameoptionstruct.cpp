@@ -2132,7 +2132,7 @@ void FUN_14125e4c0(Unk_GraphicState* p, int b)
     if (p->m_b1a != (b != 0))
     {
         p->m_b1a = p->m_b15;
-        FUN_1409a8b20()->FUN_1416aad00()->FUN_141178020(p->m_b1a);
+        FUN_1409a8b20()->GetDoF()->FUN_141178020(p->m_b1a);
     }
 }
 MS2_REPLACE(0x14125E4C0, FUN_14125e4c0, 222, 0x0F1B671C);

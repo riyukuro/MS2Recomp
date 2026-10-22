@@ -356,13 +356,13 @@ void UIDungeonRoomRankPanel::Refresh(MS2Ptr<DungeonRoom> spRoom)
             m_missions[i]->FUN_1422bffe0(0x88, 5);
         }
     }
-    short nHighScore = FUN_140931510()->FUN_140d9f2c0()->GetRoomScore60(spRoom->GetDungeonRoomID());
+    short nHighScore = FUN_140931510()->GetRecord()->GetRoomScore60(spRoom->GetDungeonRoomID());
     if (nHighScore >= 0)
     {
         m_missionRankIcon->vfunc_15(GetRankName(spRoom->GetRank(nHighScore)));
         FUN_140cfee80((*m_summaryScore).FUN_1422bb890(), "highScore", FUN_140719b50(nHighScore));
     }
-    short nSeasonScore = FUN_140931510()->FUN_140d9f2c0()->GetRoomScore68(spRoom->GetDungeonRoomID());
+    short nSeasonScore = FUN_140931510()->GetRecord()->GetRoomScore68(spRoom->GetDungeonRoomID());
     if (nSeasonScore >= 0)
         FUN_140cfee80((*m_summaryScore).FUN_1422bb890(), "seasonScore", FUN_140719b50(nSeasonScore));
 }
@@ -456,7 +456,7 @@ void UIDungeonRoomSeasonRankReward::Refresh(MS2Ptr<DungeonRoom> spRoom)
     int nGap = 0xe;
     int nRewardY = (int)m_seasonRankReward[0]->FUN_1422c1110();
     int nRankY = (int)m_seasonRank[0]->FUN_1422c1110();
-    int nCount = FUN_140931510()->FUN_140d9f2c0()->GetRankRewardCount(spRoom->GetSeasonRankRewardID());
+    int nCount = FUN_140931510()->GetRecord()->GetRankRewardCount(spRoom->GetSeasonRankRewardID());
     for (size_t i = 0; i < 5; i++)
     {
         if (i > nLast)
@@ -644,7 +644,7 @@ void UIDungeonRoomInfo::Refresh()
     m_dungeonDesc->FUN_1422c4f00(FUN_1401a9d70()->FUN_141811980(0x15, m_spRoom->GetDungeonRoomID()));
     m_dungeonDesc->FUN_1422c0ec0((int)m_dungeonDesc->FUN_1422c59e0() + 0x14);
     FUN_140cff840((*m_spPanel).FUN_1422bb890(), "m_cooldownIcon", IsCooldown());
-    m_favoriteMark->FUN_1422ce090(FUN_140931510()->FUN_140d9f2c0()->IsSeasonRoom(m_spRoom->GetDungeonRoomID()));
+    m_favoriteMark->FUN_1422ce090(FUN_140931510()->GetRecord()->IsSeasonRoom(m_spRoom->GetDungeonRoomID()));
     RefreshSubTabVisibility();
     RefreshLimits();
     FUN_1412b0110();
@@ -718,7 +718,7 @@ void UIDungeonRoomInfo::RefreshLimits()
     {
         for (unsigned nRoomId : m_spRoom->m_limitClearDungeon)
         {
-            int nColor = FUN_140931510()->FUN_140d9f2c0()->HasProgress(nRoomId) ? 0xffffff : 0xff0000;
+            int nColor = FUN_140931510()->GetRecord()->HasProgress(nRoomId) ? 0xffffff : 0xff0000;
             strLimit += FUN_1401e8510(L"{0}\n", FUN_14183e930(FUN_1405c2690(L"s_dungeonRoom_limit_clearDungeon", FUN_1401a9d70()->FUN_141811980(0x14, nRoomId)), nColor));
         }
     }
@@ -822,7 +822,7 @@ void UIDungeonRoomInfo::FUN_1412b0110()
     m_changeExpertButton->vfunc_4(false);
     FUN_140cff1b0((*m_spPanel).FUN_1422bb890(), "m_findHelperStatus", L"");
     unsigned nRoomId = m_spRoom->GetDungeonRoomID();
-    int nClearCount = FUN_140931510()->FUN_140d9f2c0()->GetRoomValue5c(nRoomId);
+    int nClearCount = FUN_140931510()->GetRecord()->GetRoomValue5c(nRoomId);
     if (!m_spRoom->IsSingleRound())
     {
         m_clearCount->vfunc_4(false);
@@ -835,7 +835,7 @@ void UIDungeonRoomInfo::FUN_1412b0110()
     if (!FUN_140166410()->FUN_14036d570(0x93))
         return;
     unsigned nHelperRoomId = m_spRoom->GetDungeonRoomID();
-    bool bCanClaim = FUN_140931510()->FUN_140d9f2c0()->CanClaimHelperReward(nHelperRoomId);
+    bool bCanClaim = FUN_140931510()->GetRecord()->CanClaimHelperReward(nHelperRoomId);
     if (m_spRoom->m_dungeonHelperRequireClearCount == 0)
     {
         FUN_140cff1b0((*m_spPanel).FUN_1422bb890(), "m_findHelperStatus", FUN_140298ea0(L"s_dungeonRoom_findHelper_dont_use"));
@@ -949,7 +949,7 @@ void UIDungeonRoomInfo::RefreshNormalReward()
         else
         {
             unsigned nRoomId = spRewardRoom->GetDungeonRoomID();
-            int nBonus = FUN_140931510()->FUN_140d9f2c0()->GetRoomBonusCount(nRoomId);
+            int nBonus = FUN_140931510()->GetRecord()->GetRoomBonusCount(nRoomId);
             m_addExtraRewardCount->FUN_1422cdfb0(FUN_1409e9890(L"s_dungeonRoom_addExtraRewardCount", nBonus, nMaxExtra));
         }
     }
@@ -964,7 +964,7 @@ void UIDungeonRoomInfo::RefreshRoundReward()
     MS2Ptr<DungeonRoom> spRewardRoom = FUN_14031c2a0()->GetRewardRoom(m_spRoom->GetDungeonRoomID());
     if (spRewardRoom == 0)
         return;
-    DungeonRecordCliPtr spRecord = FUN_140931510()->FUN_140d9f2c0()->GetRecord(spRewardRoom->GetDungeonRoomID());
+    DungeonRecordCliPtr spRecord = FUN_140931510()->GetRecord()->GetRecord(spRewardRoom->GetDungeonRoomID());
     if (spRecord == 0)
         return;
     int nCount = spRecord->GetBonusRewardCountNow();
@@ -1372,7 +1372,7 @@ void UIDungeonRoomInfo::OnAddExtraRewardCount(const ASParams& params)
         return;
     }
     MS2Ptr<CItem> spItem;
-    unsigned nCost = FUN_140931510()->FUN_140d9f2c0()->GetExtraTicketCost(spRewardRoom);
+    unsigned nCost = FUN_140931510()->GetRecord()->GetExtraTicketCost(spRewardRoom);
     if (nCost == 0)
         return;
     CStringW strItem = FUN_1401a9d70()->FUN_141811980(1, spRewardRoom->GetCouponBaseItemID());
@@ -1691,7 +1691,7 @@ bool UIDungeonRoomInfo::AskExtraTicketEnter(bool bParty)
         return false;
     if (!IsCooldown())
         return false;
-    unsigned nCost = FUN_140931510()->FUN_140d9f2c0()->GetExtraTicketCost(m_spRoom);
+    unsigned nCost = FUN_140931510()->GetRecord()->GetExtraTicketCost(m_spRoom);
     CStringW strItem = FUN_1401a9d70()->FUN_141811980(1, m_spRoom->GetCouponBaseItemID());
     CStringW strRoom = FUN_1401a9d70()->FUN_141811980(0x14, m_spRoom->GetDungeonRoomID());
     CStringW strMsg = FUN_14028dfa0(CStringW(L"s_dungeonRoom_use_extra_count_item_enter"), strItem, nCost, strRoom);
@@ -1811,7 +1811,7 @@ int UIDungeonRoomInfo::IsCooldown()
         return 0;
     if (m_spRoom->GetLimitType() != 2)
         return 0;
-    if (FUN_140931510()->FUN_140d9f2c0()->CanEnter(m_spRoom->GetRewardRoomID()))
+    if (FUN_140931510()->GetRecord()->CanEnter(m_spRoom->GetRewardRoomID()))
         return 0;
     return 1;
 }
@@ -1975,7 +1975,7 @@ void UIDungeonRoomDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
     {
         ASTooltip tooltip(*pRetVal, 2);
         unsigned nRewardRoomId = m_spRoom->GetRewardRoomID();
-        DungeonRecordCliPtr spRecord = FUN_140931510()->FUN_140d9f2c0()->GetRecord(nRewardRoomId);
+        DungeonRecordCliPtr spRecord = FUN_140931510()->GetRecord()->GetRecord(nRewardRoomId);
         if (spRecord.get() != NULL)
             tooltip.FUN_1409e26b0(FUN_14052bd00(0x9a4, FUN_140b8e9a0(CMsTime(spRecord->GetExpire()))));
     }
@@ -2412,7 +2412,7 @@ void UIDungeonRoomDialog::ShowGroup(int nGroup, int nRoomId)
     }
     else if (nGroup == 0)
     {
-        FUN_140931510()->FUN_140d9f2c0()->GetSeasonRooms(m_rooms);
+        FUN_140931510()->GetRecord()->GetSeasonRooms(m_rooms);
     }
     else
     {

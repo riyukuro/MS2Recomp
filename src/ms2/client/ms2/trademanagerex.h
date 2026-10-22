@@ -63,7 +63,7 @@ public:
     void FUN_14185d7b0();                           // reset the trade state
     void FUN_14185d820(__int64 uid, CStringW strName, CString strChar); // begin a trade with uid
     bool FUN_14185d8b0();                           // can a new trade start?
-    __int64 FUN_14185d920();                        // m_uidLastSent
+    __int64 GetUidLastSent();                        // m_uidLastSent
     void FUN_14185dc90();                           // m_bConfirmed = false
     // Inline accessors (COMDATs first emitted in uitradedialogex.cpp).
     __int64 FUN_141b29c10() { return m_uidPartner; }    // 0x141b29c10
@@ -132,11 +132,11 @@ public:
     virtual int vfunc_0(void* p);                   // ITooltip 0x14185df40 build the item tooltip into p
 
     void FUN_14185e370(MS2Ptr<CItem> spItem);       // play the item's pickup/drop sound
-    void FUN_14185e4e0(MS2Ptr<CItem> spItem);       // m_spItem = spItem
+    void SetItem(MS2Ptr<CItem> spItem);       // m_spItem = spItem
     int FUN_14185e530();                            // item template id, 0 if empty
     __int64 FUN_14185e580();                        // item uid, 0 if empty
     void FUN_14185e5d0();                           // send "remove item" for this slot if it is mine
-    bool FUN_14185e630();                           // return m_bMine
+    bool IsMine();                           // return m_bMine
 
 public:
     MS2_LAYOUT_FRIEND;
@@ -163,8 +163,8 @@ public:
     virtual void vfunc_19(void* p);
     virtual void vfunc_20(void* p);
 
-    void FUN_14185ec30(bool b);                     // m_bMine = b
-    bool FUN_14185ec50();                           // return m_bMine
+    void SetMine(bool b);                     // m_bMine = b
+    bool IsMine();                           // return m_bMine
     int FUN_14185ec70(void*);                       // return 1 (not virtual)
 
 public:

@@ -49,7 +49,7 @@ public:
     virtual ~MS2MaterialSwapProcessor();                    // 0x1414d14b0, ??_G 0x1414d1720
     virtual void PreRenderProcessList(const NiVisibleArray* pkInput, NiVisibleArray& kOutput, void* pvExtraData);   // 0x1414cfc00
 
-    void FUN_1414cfbc0(int bUseMS2List);                    // set the use-MS2-list flag
+    void SetUseMS2List(int bUseMS2List);                    // set the use-MS2-list flag
     std::vector<NiPointer<MaterialSwapper> >& FUN_1414cfbe0();   // the swapper list
     void FUN_1414cfce0(const NiVisibleArray* pkInput, NiVisibleArray& kList, MaterialSwapSavedMap& kSaved);   // apply
     void FUN_1414cfe70(MaterialSwapSavedMap& kSaved);                                                         // restore

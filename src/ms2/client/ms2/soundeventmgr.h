@@ -42,7 +42,7 @@ public:
     bool FUN_14177ac00();                                       // getMute succeeded
     void FUN_14177ac50(unsigned bMute);
     int FUN_14177ac80();                                        // started or stopped
-    CString FUN_14177aca0();                                    // the event name
+    CString GetName();                                    // the event name
     void FUN_14177acf0(float fVolume);
 
 public:
@@ -127,7 +127,7 @@ public:
     virtual int vfunc_12();                                     // 12 0x141778980 effect type 2
 
     CString& FUN_141777700() { return m_strExtra; }
-    MS2Ptr<CSoundEvent> FUN_141777720();                        // the playing sound
+    MS2Ptr<CSoundEvent> GetSound();                        // the playing sound
     void FUN_141777770() { m_b2d = true; }                      // finished
 
 public:

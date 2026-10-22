@@ -31,8 +31,8 @@ public:
     virtual int vfunc_19();                             // 19 0x140a7bcc0 if enabled: key/state check 0x49406
     virtual MS2Ptr<CItem> vfunc_25();                   // 25 0x140a7bd20 base: null
 
-    bool FUN_140a7bd60();                               // return m_bEnabled
-    void FUN_140a7bd80(bool b);                         // m_bEnabled = b
+    bool IsEnabled();                               // return m_bEnabled
+    void SetEnabled(bool b);                         // m_bEnabled = b
 
 public:
     MS2_LAYOUT_FRIEND;

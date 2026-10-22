@@ -75,9 +75,9 @@ public:
     virtual efd::AsyncResult OnTick();                          // 0x1417b0730
     virtual efd::AsyncResult OnShutdown();                      // 0x1417b0d70
 
-    FMOD::System* FUN_1417ae700();                              // m_pSystem
-    FMOD::EventSystem* FUN_1417ae720();                         // m_pEventSystem
-    FMOD::Sound* FUN_1417ae740();                               // m_pNetSound
+    FMOD::System* GetSystem();                              // m_pSystem
+    FMOD::EventSystem* GetEventSystem();                         // m_pEventSystem
+    FMOD::Sound* GetNetSound();                               // m_pNetSound
     void FUN_1417ae760(float fVolume);                          // set the volume (also of the net stream)
     bool FUN_1417ae990();                                       // (re)acquire the system objects after a device change
     int FUN_1417aea70();                                       // init the event system for the client language
@@ -95,7 +95,7 @@ public:
     int FUN_1417b04d0(const CStringA& strName, size_t* pBank);  // length of the name, -1 if absent
     void FUN_1417b0560(const CStringA& strName, FMOD::Sound** ppSound);   // the sub sound of the name
     void FUN_1417ae840(int nFlag);                              // set the channel volumes
-    float FUN_1417b4b20();                                      // m_fVolume
+    float GetVolume();                                      // m_fVolume
 
     FMOD::System* m_pSystem;                                    // +0x28
     FMOD::EventSystem* m_pEventSystem;                          // +0x30

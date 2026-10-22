@@ -926,9 +926,9 @@ int CSmartPushSafeRiding::vfunc_6()
         return 0;
     if (pMy->FUN_1416764d0() == 0)
         return 0;
-    if (pMy->FUN_1416764a0()->FUN_141707750()->m_nType == 1)
+    if (pMy->FUN_1416764a0()->GetData()->m_nType == 1)
         return 0;
-    if (pMy->FUN_1416764a0()->FUN_141707750()->m_nType == 2)
+    if (pMy->FUN_1416764a0()->GetData()->m_nType == 2)
         return 0;
     return pMy->FUN_1416749a0()->FUN_1409701d0(2) == 0 ? 1 : 2;
 }
@@ -998,9 +998,9 @@ int CSmartPushSafeWaterRiding::vfunc_6()
         return 0;
     if (pMy->FUN_1416764d0() == 0)
         return 0;
-    if (pMy->FUN_1416764a0()->FUN_141707750()->m_nType == 1)
+    if (pMy->FUN_1416764a0()->GetData()->m_nType == 1)
         return 0;
-    if (pMy->FUN_1416764a0()->FUN_141707750()->m_nType == 2)
+    if (pMy->FUN_1416764a0()->GetData()->m_nType == 2)
         return 0;
     if (FUN_140ba4fa0()->FUN_1401955f0(pMy->vfunc_141()))
         return 0;
@@ -1079,9 +1079,9 @@ int CSmartPushSafeWaterRidingToggle::vfunc_6()
         return 0;
     if (pMy->FUN_1416764d0() == 0)
         return 0;
-    if (pMy->FUN_1416764a0()->FUN_141707750()->m_nType == 1)
+    if (pMy->FUN_1416764a0()->GetData()->m_nType == 1)
         return 0;
-    if (pMy->FUN_1416764a0()->FUN_141707750()->m_nType == 2)
+    if (pMy->FUN_1416764a0()->GetData()->m_nType == 2)
         return 0;
     if (!FUN_140ba4fa0()->FUN_1401955f0(pMy->vfunc_141()))
         return 0;

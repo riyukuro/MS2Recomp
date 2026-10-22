@@ -179,7 +179,7 @@ void PaybackManagerClient::FUN_140a8b290()
 }
 
 // @0x140a8b340
-unsigned PaybackManagerClient::FUN_140a8b340() const
+unsigned PaybackManagerClient::GetMerat() const
 {
     return m_nMerat;
 }
@@ -359,7 +359,7 @@ MS2_REPLACE_METHOD(0x140A8AFB0, PaybackManagerClient, FUN_140a8afb0, 640, 0x6AD2
 MS2_REPLACE_METHOD(0x140A8B490, PaybackManagerClient, FUN_140a8b490, 1382, 0xA2727696);
 MS2_REPLACE_METHOD(0x140A8B240, PaybackManagerClient, FUN_140a8b240, 71, 0x9AE2BB34);
 MS2_REPLACE_METHOD(0x140A8B290, PaybackManagerClient, FUN_140a8b290, 129, 0x0F49EC32);
-MS2_REPLACE_METHOD(0x140A8B340, PaybackManagerClient, FUN_140a8b340, 14, 0xAAC7684B);
+MS2_REPLACE_METHOD(0x140A8B340, PaybackManagerClient, GetMerat, 14, 0xAAC7684B);
 MS2_REPLACE_METHOD(0x140A8B360, PaybackManagerClient, FUN_140a8b360, 279, 0x2D2911F8);
 MS2_REPLACE_METHOD(0x140A8BA00, PaybackManagerClient, FUN_140a8ba00, 689, 0x75A28861);
 MS2_REPLACE_METHOD(0x140A8BCC0, PaybackManagerClient, FUN_140a8bcc0, 335, 0x0FAD4756);

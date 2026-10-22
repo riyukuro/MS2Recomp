@@ -26,7 +26,7 @@ public:
     virtual void EndOfSequence(NiActorManager* pkManager, NiActorManager::SequenceID eSequenceID,
         NiControllerSequence* pkSeq, float fEventTime);     // 0x140b7a1b0 pops the finished animation off the queue
 
-    CString FUN_140b78af0();                                // copy of m_strName
+    CString GetName();                                // copy of m_strName
     void FUN_140b78b40(bool bFlag);                         // tells the animation service about the entity
     int FUN_140b78bb0();                                    // reactor table id (0 without data)
     MS2Ptr<ReactorStateData> FUN_140b78c00(int nIdx);       // state nIdx of the data (null when out of range)

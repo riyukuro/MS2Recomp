@@ -95,7 +95,7 @@ public:
     virtual int vfunc_6(const char* szEvent, const Scaleform::GFx::Value* pArgs, unsigned nArgs);   // 6 0x140cb4590
     virtual int vfunc_8();                              //  8 0x140cb4790 (1)
 
-    unsigned __int64 FUN_140cb47b0();                   // the pet's item uid
+    unsigned __int64 GetUidPet();                   // the pet's item uid
     void FUN_140cb47d0(ATL::CAtlArray<unsigned __int64>& out);   // copy of m_petCards
     void FUN_140cb4800(ATL::CAtlArray<unsigned __int64>& out);   // copy of m_candidates
     void FUN_140cb4830(ATL::CAtlArray<IdCount>& out);   // copy of m_pool

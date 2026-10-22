@@ -24,7 +24,7 @@ public:
     void FUN_140a8b240(CStringW& strButton, bool& bShow);           // 0x140a8b240 the payback button of the merat market
     void FUN_140a8b290();                                           // 0x140a8b290 click on that button: open / toggle the dialog
     int FUN_140a8b320() const { return m_nLevel; }                  // 0x140a8b320
-    unsigned FUN_140a8b340() const;             // 0x140a8b340
+    unsigned GetMerat() const;             // 0x140a8b340
     MS2Ptr<CMeratMarketProduct> FUN_140a8b360() const;              // 0x140a8b360 the first product that is on sale
     void FUN_140a8b490(MS2Ptr<TMarketBillDataParam> spParam);       // 0x140a8b490 text of the bottom line of the bill
     CStringW FUN_140a8ba00();                                       // 0x140a8ba00 "from y/m/d to y/m/d"

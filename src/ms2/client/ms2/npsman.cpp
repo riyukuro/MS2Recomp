@@ -59,22 +59,22 @@ void CNPSMan::FUN_140db8f30()
 {
     if (!FUN_140db9110())
         return;
-    if (!FUN_140db9130())
+    if (!IsArmed())
         return;
-    if (FUN_140db9150())
+    if (IsShown())
         return;
     __imp_OpenSurveyWindowA((const char*)m_strSurveyUrl, 1, (const char*)FUN_1401d9af0(DAT_142e36cd4, &m_hPlayer), DAT_1439f5dd0);
     m_bShown = true;
 }
 
 // @0x140db9000
-void CNPSMan::FUN_140db9000(int nMode)
+void CNPSMan::SetMode(int nMode)
 {
     m_nMode = nMode;
 }
 
 // @0x140db9020
-void CNPSMan::FUN_140db9020(__int64 hPlayer)
+void CNPSMan::SetPlayer(__int64 hPlayer)
 {
     m_hPlayer = hPlayer;
 }
@@ -106,13 +106,13 @@ bool CNPSMan::FUN_140db9110()
 }
 
 // @0x140db9130
-bool CNPSMan::FUN_140db9130()
+bool CNPSMan::IsArmed()
 {
     return m_bArmed;
 }
 
 // @0x140db9150
-bool CNPSMan::FUN_140db9150()
+bool CNPSMan::IsShown()
 {
     return m_bShown;
 }

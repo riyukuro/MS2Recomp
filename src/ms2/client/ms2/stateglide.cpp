@@ -118,8 +118,8 @@ void StateGlide::vfunc_4(StateData* pData)
     m_bTooHigh = false;
     bool bFromGlide;
     {
-        MS2Ptr<CStateManager> spMgr = m_pOwner->FUN_141678750();
-        bFromGlide = spMgr->FUN_1417db2c0() == 0x1e;
+        MS2Ptr<CStateManager> spMgr = m_pOwner->GetStateMgr();
+        bFromGlide = spMgr->GetPrev() == 0x1e;
     }
     if (bFromGlide)
     {

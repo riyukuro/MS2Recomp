@@ -137,19 +137,19 @@ void UIActionTooltip::FUN_1418b16f0()
 }
 
 // @0x1418b17d0
-ActionKeyObject* UIActionTooltip::FUN_1418b17d0()
+ActionKeyObject* UIActionTooltip::GetAction()
 {
     return m_pAction;
 }
 
 // @0x1418b17f0
-CStringW UIActionTooltip::FUN_1418b17f0()
+CStringW UIActionTooltip::GetTitle()
 {
     return m_strTitle;
 }
 
 // @0x1418b1840
-CStringW UIActionTooltip::FUN_1418b1840()
+CStringW UIActionTooltip::GetText()
 {
     return m_strText;
 }

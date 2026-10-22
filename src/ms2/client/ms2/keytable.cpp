@@ -1588,7 +1588,7 @@ int CKeyTable::FUN_14142dfb0(unsigned nKey)
     Unk_KtMainPlayerInfo* pInfo;
     SkillSlot* pSlot;
     if (FUN_14142dcb0(nKey, nIndex) && (pInfo = FUN_140931900(0x4e5f)) != 0 && (pSlot = pInfo->FUN_1419f2930(nIndex)) != 0)
-        return pSlot->FUN_14175cc20();
+        return pSlot->GetItemId();
     return 0;
 }
 MS2_REPLACE_METHOD(0x14142DFB0, CKeyTable, FUN_14142dfb0, 113, 0x6C96D5D5);
@@ -1788,11 +1788,11 @@ int CKeyTable::FUN_14142e7c0(int nSkillId, int nItemId, __int64 nItemUid, unsign
         SkillSlot* pSlot = pInfo->FUN_1419f2930(s_aSlotIndex[i]);
         if (!pSlot)
             continue;
-        if (nItemId != 0 && pSlot->FUN_14175cc20() == nItemId)
+        if (nItemId != 0 && pSlot->GetItemId() == nItemId)
             return 1;
-        if (nSkillId != 0 && pSlot->FUN_14175cb90() == nSkillId)
+        if (nSkillId != 0 && pSlot->GetSkillId() == nSkillId)
             return 1;
-        if (nItemUid != 0 && pSlot->FUN_14175cbd0() == nItemUid)
+        if (nItemUid != 0 && pSlot->GetItemUid() == nItemUid)
             return 1;
     }
     return 0;
@@ -1827,7 +1827,7 @@ void CKeyTable::FUN_14142e8c0(MS2Ptr<CSkillSet> spSet)
             Unk_SsQuickEntry entry;
             entry.m_nSkillId = spSet->m_arrSkillIds[nSkill];
             pPage->SetAt(s_aSlotIndex[i], entry);
-            pSlot->FUN_14175cbb0(entry.m_nSkillId);
+            pSlot->SetSkillId(entry.m_nSkillId);
             nSkill++;
         }
         else if (nItem < spSet->m_arrItemIds.size())
@@ -1845,12 +1845,12 @@ void CKeyTable::FUN_14142e8c0(MS2Ptr<CSkillSet> spSet)
             entry.m_nItemId = nItemId;
             entry.m_nItemUid = 0;
             pPage->SetAt(s_aSlotIndex[i], entry);
-            pSlot->FUN_14175cc40(entry.m_nItemId);
-            pSlot->FUN_14175cbb0(entry.m_nSkillId);
+            pSlot->SetItemId(entry.m_nItemId);
+            pSlot->SetSkillId(entry.m_nSkillId);
             nItem++;
         }
         if (spSet->m_nSlotLock != 0)
-            pSlot->FUN_14175cdb0(1);
+            pSlot->SetFixed(1);
         pSlot->vfunc_10();
     }
 }
@@ -1883,9 +1883,9 @@ void CKeyTable::FUN_14142ece0(const ATL::CAtlArray<unsigned>& aItemIds)
             entry.m_nItemId = aItemIds[i];
             entry.m_nItemUid = 0;
             pPage->SetAt(s_aSlotIndex[i], entry);
-            pSlot->FUN_14175cc40(aItemIds[i]);
+            pSlot->SetItemId(aItemIds[i]);
         }
-        pSlot->FUN_14175cdb0(1);
+        pSlot->SetFixed(1);
         pSlot->vfunc_10();
     }
 }
@@ -1906,11 +1906,11 @@ void CKeyTable::FUN_14142ef50(int nSkillId, int nItemId, __int64 nItemUid, unsig
         SkillSlot* pSlot = pInfo->FUN_1419f2930(s_aSlotIndex[i]);
         if (!pSlot)
             continue;
-        if (nItemId != 0 && pSlot->FUN_14175cc20() == nItemId)
+        if (nItemId != 0 && pSlot->GetItemId() == nItemId)
             return;
-        if (nSkillId != 0 && pSlot->FUN_14175cb90() == nSkillId)
+        if (nSkillId != 0 && pSlot->GetSkillId() == nSkillId)
             return;
-        if (nItemUid != 0 && pSlot->FUN_14175cbd0() == nItemUid)
+        if (nItemUid != 0 && pSlot->GetItemUid() == nItemUid)
             return;
     }
     QuickSlotPage* pPage = FUN_141431c20(m_nQuickSlotPage);
@@ -1921,17 +1921,17 @@ void CKeyTable::FUN_14142ef50(int nSkillId, int nItemId, __int64 nItemUid, unsig
         SkillSlot* pSlot = pInfo->FUN_1419f2930(s_aSlotIndex[j]);
         if (!pSlot)
             continue;
-        if (pSlot->FUN_14175cc20() == 0 && pSlot->FUN_14175cb90() == 0 && pSlot->FUN_14175cbd0() == 0)
+        if (pSlot->GetItemId() == 0 && pSlot->GetSkillId() == 0 && pSlot->GetItemUid() == 0)
         {
             Unk_SsQuickEntry entry;
             entry.m_nSkillId = nSkillId;
             entry.m_nItemId = nItemId;
             entry.m_nItemUid = nItemUid;
             pPage->SetAt(s_aSlotIndex[j], entry);
-            pSlot->FUN_14175cbb0(nSkillId);
-            pSlot->FUN_14175cc40(nItemId);
-            pSlot->FUN_14175cbf0(nItemUid);
-            pSlot->FUN_14175cdb0(0);
+            pSlot->SetSkillId(nSkillId);
+            pSlot->SetItemId(nItemId);
+            pSlot->SetItemUid(nItemUid);
+            pSlot->SetFixed(0);
             pSlot->vfunc_10();
             FUN_1414321f0();
             return;
@@ -1952,7 +1952,7 @@ void CKeyTable::FUN_14142f1c0(int nSkillId, int nItemId, __int64 nItemUid)
     SkillSlot* pSlot = pInfo->FUN_1419f2930(nSlot);
     if (pSlot == 0)
         return;
-    if (pSlot->FUN_14175cb90() != 0 || pSlot->FUN_14175cbd0() != 0 || pSlot->FUN_14175cc20() != 0)
+    if (pSlot->GetSkillId() != 0 || pSlot->GetItemUid() != 0 || pSlot->GetItemId() != 0)
         return;
     if (FUN_14142e7c0(nSkillId, nItemId, nItemUid, 25))
         return;
@@ -1985,10 +1985,10 @@ void CKeyTable::FUN_14142f1c0(int nSkillId, int nItemId, __int64 nItemUid)
     entry.m_nItemUid = nItemUid;
     entry.m_nItemId = nItemId;
     pPage->SetAt(nSlot, entry);
-    pSlot->FUN_14175cbb0(nSkillId);
-    pSlot->FUN_14175cbf0(nItemUid);
-    pSlot->FUN_14175cc40(nItemId);
-    pSlot->FUN_14175cdb0(0);
+    pSlot->SetSkillId(nSkillId);
+    pSlot->SetItemUid(nItemUid);
+    pSlot->SetItemId(nItemId);
+    pSlot->SetFixed(0);
     pSlot->vfunc_10();
     FUN_1414321f0();
     FUN_14092f690(nSkillId, nItemId, nItemUid, m_nQuickSlotPage, nSlot);
@@ -2028,10 +2028,10 @@ void CKeyTable::FUN_14142f470(int nPage, int nSlot)
             SkillSlot* pSlot = pInfo->FUN_1419f2930(nJobSlot);
             if (pSlot == 0)
                 continue;
-            pSlot->FUN_14175cbb0(nSkillId);
-            pSlot->FUN_14175cbf0(nItemUid);
-            pSlot->FUN_14175cc40(nItemId);
-            pSlot->FUN_14175cdb0(0);
+            pSlot->SetSkillId(nSkillId);
+            pSlot->SetItemUid(nItemUid);
+            pSlot->SetItemId(nItemId);
+            pSlot->SetFixed(0);
             pSlot->vfunc_10();
         }
         FUN_1414321f0();
@@ -2098,8 +2098,8 @@ void CKeyTable::SaveKeySetting(CString strName)
         SkillSlot* pSlot = pInfo->FUN_1419f2930((int)i);
         if (!pSlot)
             continue;
-        int nItemId = pSlot->FUN_14175cc20();
-        int nSkillId = pSlot->FUN_14175cb90();
+        int nItemId = pSlot->GetItemId();
+        int nSkillId = pSlot->GetSkillId();
         int nJobItemId = FUN_14142f830(nItemId);
         if (nJobItemId != nItemId)
         {
@@ -2160,8 +2160,8 @@ void CKeyTable::LoadKeySetting(CString strName)
         entry.m_nItemId = nJobItemId;
         entry.m_nItemUid = 0;
         FUN_14142e2a0(nIndex, entry);
-        pSlot->FUN_14175cbb0(nSkillId);
-        pSlot->FUN_14175cc40(nJobItemId);
+        pSlot->SetSkillId(nSkillId);
+        pSlot->SetItemId(nJobItemId);
         pSlot->vfunc_10();
     }
 }
@@ -2659,7 +2659,7 @@ int CKeyTable::FUN_141432010(int nAction)
     efd::SmartPointer<Ridee> spRidee = pPlayer->FUN_1416764a0();
     if (spRidee == 0)
         return 1;
-    if (spRidee->FUN_141707750()->m_nSeats == 0)
+    if (spRidee->GetData()->m_nSeats == 0)
         return 1;
     switch (nAction)
     {

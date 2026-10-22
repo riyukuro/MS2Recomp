@@ -616,7 +616,7 @@ unsigned AdditionalCliList::FUN_140970b30()
         StateSkill* pState = static_cast<StateSkill*>(m_pOwner->FUN_14166ccb0());
         if (pState)
         {
-            MS2Ptr<CSkillRecord> spRecord = pState->FUN_1417ed6f0();
+            MS2Ptr<CSkillRecord> spRecord = pState->GetRecord();
             if (spRecord.get())
                 nValue = spRecord->FUN_14175a210();
         }

@@ -32,7 +32,7 @@ public:
     virtual void vfunc_67();                                        // 67 0x1418df710 Close
 
     int FUN_1418dfb30(int nBookId, int n2c, int nLayer);            // 0x1418dfb30 show a book (open the dialog when closed)
-    int FUN_1418dfc40();                                            // 0x1418dfc40 m_nBookId
+    int GetBookId();                                            // 0x1418dfc40 m_nBookId
     void FUN_1418dfc60(CInPacket& packet);                          // 0x1418dfc60 packet 0x88: show the book
     void FUN_1418dfd50();                                           // 0x1418dfd50 send the current pages to the movie
     void OnNext();                                           // 0x1418dffc0 next pages

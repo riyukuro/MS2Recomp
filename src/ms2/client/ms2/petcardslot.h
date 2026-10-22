@@ -28,7 +28,7 @@ public:
     virtual MS2Ptr<CItem> vfunc_25();                   // 25 0x140b77330 the item in the slot (by uid)
     virtual int vfunc_0(void* p);                       // ITooltip 0x140b770b0 build the tooltip into p
 
-    unsigned __int64 FUN_140b77380();                   // the item uid
+    unsigned __int64 GetItemUid();                   // the item uid
 
 public:
     MS2_LAYOUT_FRIEND;
@@ -74,7 +74,7 @@ public:
     virtual MS2Ptr<CItem> vfunc_25();                   // 25 0x140b77b70 the item in the slot (by uid)
     virtual int vfunc_0(void* p);                       // ITooltip 0x140b778b0 build the tooltip into p
 
-    unsigned __int64 FUN_140b77bc0();                   // the item uid
+    unsigned __int64 GetItemUid();                   // the item uid
     int FUN_140b77be0();                                // the item is sealed (or missing)
 
 public:

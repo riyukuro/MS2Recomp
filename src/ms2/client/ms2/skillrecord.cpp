@@ -156,7 +156,7 @@ unsigned short SkillTargetRecord::FUN_141758fe0()
 }
 
 // @0x141759190
-int SkillTargetRecord::FUN_141759190()
+int SkillTargetRecord::GetStartTick()
 {
     return m_nStartTick;
 }

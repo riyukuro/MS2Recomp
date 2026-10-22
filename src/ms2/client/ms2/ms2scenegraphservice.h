@@ -48,7 +48,7 @@ public:
         const efd::Bool toolMode);                                          // 0x1414f0d10
     virtual ~MS2SceneGraphService();                                        // 0x1414f0e40, ??_G 0x1414fc660
 
-    void FUN_1414f0f00(bool bPauseUpdate);                                  // 0x1414f0f00 OnTick skips the update while set
+    void SetPauseUpdate(bool bPauseUpdate);                                  // 0x1414f0f00 OnTick skips the update while set
     virtual efd::AsyncResult OnInit();                                      // 0x1414f0f20
     virtual efd::AsyncResult OnTick();                                      // 0x1414f1090
     virtual efd::AsyncResult OnShutdown();                                  // 0x1414f10e0

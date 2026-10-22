@@ -459,7 +459,7 @@ void CPetInventory::SendRequestPetInventoryMode7()
 // @0x140c88160
 void CPetInventory::SendRequestPetInventoryMode3(__int64 nUid, int nSlot)
 {
-    if (FUN_140535320()->FUN_140c8b2e0() == nUid)
+    if (FUN_140535320()->GetSummonUid() == nUid)
         return;
     COutPacket packet(0x79, 0);
     packet.Encode1(3);
@@ -472,7 +472,7 @@ void CPetInventory::FUN_140c88200(__int64 nUid, int nSlot, int nCount)
 {
     if (0 < nCount)
     {
-        if (FUN_140535320()->FUN_140c8b2e0() != nUid)
+        if (FUN_140535320()->GetSummonUid() != nUid)
         {
             ItemPtr spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
             if (spItem.get() != 0)
@@ -497,7 +497,7 @@ void CPetInventory::FUN_140c88200(__int64 nUid, int nSlot, int nCount)
                             return;
                         }
                     }
-                    ItemPtr spPet = DAT_143ab2a90.FUN_140a5d680(FUN_140535320()->FUN_140c8b2e0());
+                    ItemPtr spPet = DAT_143ab2a90.FUN_140a5d680(FUN_140535320()->GetSummonUid());
                     if (spPet.get() != 0 && !spPet->FUN_140528930())
                     {
                         COutPacket packet(0x79, 0);
@@ -519,7 +519,7 @@ void CPetInventory::SendRequestPetInventoryMode1(__int64 nUid, int nSlot, int nC
 {
     if (nCount < 1)
         return;
-    if (FUN_140535320()->FUN_140c8b2e0() == nUid)
+    if (FUN_140535320()->GetSummonUid() == nUid)
         return;
     COutPacket packet(0x79, 0);
     packet.Encode1(1);
@@ -752,7 +752,7 @@ void CPetManager::FUN_140c89980(CInPacket& in)
         m_info.FUN_1401ffd00(&in);
         if (m_info.identity.name.IsEmpty())
         {
-            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_140c8b2e0());
+            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(GetSummonUid());
             if (spItem == 0)
                 return;
             m_info.identity.name = spItem->FUN_140527b10();
@@ -775,7 +775,7 @@ void CPetManager::FUN_140c89b20(CInPacket& in)
     FUN_1411e7660(pPlayer->FUN_1416561a0());
     if (pPlayer == FUN_1403ed2d0()->FUN_141bd0cc0())
     {
-        FUN_140535320()->FUN_140c8b300(pPlayer->FUN_1416769f0());
+        FUN_140535320()->SetSummonUid(pPlayer->FUN_1416769f0());
         Unk_PmInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
         if (pInventory != 0)
             pInventory->FUN_14199a3f0(pPlayer->FUN_1416769f0());
@@ -801,7 +801,7 @@ void CPetManager::FUN_140c89d00(CInPacket& in)
     FUN_1411e7660(pPlayer->FUN_1416561a0());
     if (pPlayer == FUN_1403ed2d0()->FUN_141bd0cc0())
     {
-        FUN_140535320()->FUN_140c8b300(0);
+        FUN_140535320()->SetSummonUid(0);
         Unk_PmInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
         if (pInventory != 0)
             pInventory->FUN_14199a3f0(nUid);
@@ -852,7 +852,7 @@ void CPetManager::FUN_140c8a140(CInPacket& in)
     }
     if (FUN_1403ed2d0()->FUN_141bd0cc0() != 0 && FUN_1403ed2d0()->FUN_141bd0cc0()->FUN_14123c580() == nObjectId)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_140535320()->FUN_140c8b2e0());
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_140535320()->GetSummonUid());
         if (spItem == 0)
             return;
         m_info.identity.FUN_1401ff0f0(identity);
@@ -1068,20 +1068,20 @@ int CPetManager::FUN_140c8b220(int nKey)
 // @0x140c8b2b0
 bool CPetManager::FUN_140c8b2b0()
 {
-    return FUN_140c8b2e0() != 0;
+    return GetSummonUid() != 0;
 }
 // @0x140c8b2e0
-__int64 CPetManager::FUN_140c8b2e0()
+__int64 CPetManager::GetSummonUid()
 {
     return m_nSummonUid;
 }
 // @0x140c8b300
-void CPetManager::FUN_140c8b300(__int64 nUid)
+void CPetManager::SetSummonUid(__int64 nUid)
 {
     m_nSummonUid = nUid;
 }
 // @0x140c8b320
-int CPetManager::FUN_140c8b320()
+int CPetManager::GetAuto()
 {
     return m_nAuto;
 }
@@ -1113,7 +1113,7 @@ CCPetInfoPacket::Info* CPetManager::FUN_140c8b450()
 // @0x140c8b470
 MS2Ptr<Unk_PetRow> CPetManager::FUN_140c8b470()
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_140c8b2e0());
+    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(GetSummonUid());
     if (spItem == 0)
         return MS2Ptr<Unk_PetRow>(0);
     MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(spItem->FUN_140527840()));

@@ -1431,7 +1431,7 @@ void CMagic::FUN_1414609e0()
     Unk_NiMatrix3 matRot;
     float fYaw = FUN_14123ce70(m_spSkill->m_ptDefaultDir);
     matRot.FUN_142084c10(fYaw);
-    FUN_141461ba0(matRot);
+    SetMatRotation(matRot);
     FUN_1420849a0(&matRot);
     if (m_data.m_nRotation == 0) {
         FUN_1420849a0(&matRot);
@@ -1539,7 +1539,7 @@ void CMagic::FUN_1414614d0()
     matRotation.FUN_14109aa30(0, ptRight);
     matRotation.FUN_14109aa30(1, ptAxis);
     matRotation.FUN_14109aa30(2, ptUp);
-    FUN_141461ba0(matRotation);
+    SetMatRotation(matRotation);
     FUN_141461720(0);
 }
 MS2_REPLACE_METHOD(0x1414614d0, CMagic, FUN_1414614d0, 585, 0x283D7457);
@@ -2234,11 +2234,11 @@ void CMagic::FUN_141461b60(const Unk_StreamPoint& ptDirection)
 MS2_REPLACE_METHOD(0x141461B60, CMagic, FUN_141461b60, 53, 0x479E3C1A);
 
 // @0x141461ba0
-void CMagic::FUN_141461ba0(const Unk_NiMatrix3& matRotation)
+void CMagic::SetMatRotation(const Unk_NiMatrix3& matRotation)
 {
     m_matRotation = matRotation;
 }
-MS2_REPLACE_METHOD(0x141461BA0, CMagic, FUN_141461ba0, 39, 0x16B62C85);
+MS2_REPLACE_METHOD(0x141461BA0, CMagic, SetMatRotation, 39, 0x16B62C85);
 
 // @0x141463fb0
 void CMagic::FUN_141463fb0(unsigned nNow)
@@ -2478,11 +2478,11 @@ int CMagic::FUN_141467100(Unk_MagicEntity* pEntity, Unk_StreamPoint* pOut)
 MS2_REPLACE_METHOD(0x141467100, CMagic, FUN_141467100, 788, 0x479E08E3);
 
 // @0x141467420
-int CMagic::FUN_141467420()
+int CMagic::GetState()
 {
     return m_nState;
 }
-MS2_REPLACE_METHOD(0x141467420, CMagic, FUN_141467420, 14, 0x72E52537);
+MS2_REPLACE_METHOD(0x141467420, CMagic, GetState, 14, 0x72E52537);
 
 // @0x141467a90
 int CMagicModel::FUN_141467a90()
@@ -2625,7 +2625,7 @@ MS2_REPLACE_METHOD(0x141467B90, CMagicModel, FUN_141467b90, 31, 0x693D9C48);
 // @0x141467da0
 void CMagicModel::FUN_141467da0()
 {
-    m_spMagic->FUN_141467420();
+    m_spMagic->GetState();
 }
 MS2_REPLACE_METHOD(0x141467DA0, CMagicModel, FUN_141467da0, 39, 0x0E5A1776);
 

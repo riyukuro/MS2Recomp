@@ -156,7 +156,7 @@ void UIUGCImageUploadDialog::OnLoadComplete()
         vfunc_67();
         return;
     }
-    if (spUpload->FUN_1418a3ad0() == vfunc_48())
+    if (spUpload->GetDialog() == vfunc_48())
     {
         Unk_UgcOpenType nKind = (Unk_UgcOpenType)spUpload->m_nKind;
         if (FUN_141b3a780((const int*)&nKind) == 0)

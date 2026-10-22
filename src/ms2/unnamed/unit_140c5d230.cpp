@@ -2324,7 +2324,7 @@ class SkillSlot : public MS2DragSlot
 public:
     SkillSlot(const CString& strName, int nIndex, unsigned nSkillId, int nUnk, __int64 nUnk2);      // 0x14175c840
     virtual ~SkillSlot();
-    void FUN_14175cdb0(int n);                                          // m_bc = n
+    void SetFixed(int n);                                          // m_bc = n
 private:
     unsigned char m_pad_90[0x150 - 0x90];
 };
@@ -2349,7 +2349,7 @@ void UILapenshardShieldBar::FUN_140c5fbd0()
     SkillSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) SkillSlot(m_strBind, 0, pInfo->m_nSkillId, 0, 0);
     if (pSlot == 0)
         return;
-    pSlot->FUN_14175cdb0(1);
+    pSlot->SetFixed(1);
     FUN_1422c8f10(m_strBind, pSlot);
     CStringW strLeft = FUN_140c5f9e0();
     m_30->Invoke("open", m_spBuff->m_nId, FUN_14096d810(m_spBuff.operator->())->m_nValue, strLeft, m_strBind);

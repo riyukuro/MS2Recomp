@@ -342,7 +342,7 @@ void CWebBrowserService::FUN_141b78aa0(int nIndex, bool bUnk)
 {
     COffscreenWebBrowser* pBrowser = FindBrowser(nIndex);
     if (pBrowser) {
-        pBrowser->FUN_141612c50(bUnk);
+        pBrowser->SetKeyboard(bUnk);
     }
 }
 MS2_REPLACE_METHOD(0x141B78AA0, CWebBrowserService, FUN_141b78aa0, 65, 0x8AADAA9C);
@@ -352,7 +352,7 @@ void CWebBrowserService::FUN_141b78af0(int nIndex, int nUnk)
 {
     COffscreenWebBrowser* pBrowser = FindBrowser(nIndex);
     if (pBrowser) {
-        pBrowser->FUN_141612c70(nUnk);
+        pBrowser->SetWindowType(nUnk);
     }
 }
 MS2_REPLACE_METHOD(0x141B78AF0, CWebBrowserService, FUN_141b78af0, 64, 0x90148246);

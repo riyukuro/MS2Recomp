@@ -182,8 +182,8 @@ public:
     void FUN_141705ac0(double fTime);                       // per-frame update of the run effects
     void FUN_141705b60(double fTime);                       // run / stamina effects
     bool FUN_1417060d0();                                   // the rider has the stamina to run
-    void FUN_141706510(PCBase* pRider);                     // set the rider
-    PCBase* FUN_141706540();                                // the rider
+    void SetRider(PCBase* pRider);                     // set the rider
+    PCBase* GetRider();                                // the rider
     NiNode* FUN_141706560();                                // 0x141706560
     void FUN_141706590();                                   // flush the state controller
     void FUN_141706650(bool bForce);                        // send the state record when it changed
@@ -194,7 +194,7 @@ public:
     MS2Ptr<Unk_PCBaseComp_b18> FUN_141707440();             // the rider's ugc ridee item
     void FUN_1417074c0();                                   // seat the rider
     int FUN_1417075e0();                                   // the rider may ride now
-    MS2Ptr<Unk_RideeData> FUN_141707750();                 // copy of m_spData
+    MS2Ptr<Unk_RideeData> GetData();                 // copy of m_spData
     float FUN_141707960();                                  // +0x64 of the default model entry
     void MakeNxBoxController();                             // 0x141707e60
     void FUN_1417082c0();                                   // release the PhysX box

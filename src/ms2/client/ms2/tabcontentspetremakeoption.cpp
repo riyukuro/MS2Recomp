@@ -518,8 +518,8 @@ void PetRemakeOptionBoard::vfunc_7(int nSelect)
     MS2Ptr<ASUIComponent> board = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_petRemakeOptionBoard"));
     if (board == 0)
         return;
-    ItemPtr picked = (nSelect != 0) ? m_pOwner->FUN_140b951d0() : m_pOwner->FUN_140b95180();
-    if (!(picked == m_pOwner->FUN_140b951d0().get()))
+    ItemPtr picked = (nSelect != 0) ? m_pOwner->GetPetNext() : m_pOwner->GetPet();
+    if (!(picked == m_pOwner->GetPetNext().get()))
     {
         COutPacket pkt(0x75, 0);
         pkt.Encode1(3);
@@ -566,18 +566,18 @@ void PetRemakeOptionBoard::FUN_140b92da0()
     MS2Ptr<ASUIComponent> board = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_petRemakeOptionBoard"));
     if (board == 0)
         return;
-    ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_pOwner->FUN_140b95140());
+    ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
     unsigned nMaxLock = 0;
-    if (m_pOwner->FUN_140b95160() != 0)
+    if (m_pOwner->GetUidIngredient() != 0)
     {
-        ItemPtr ingredient = DAT_143ab2a90.FUN_140a5d680(m_pOwner->FUN_140b95160());
+        ItemPtr ingredient = DAT_143ab2a90.FUN_140a5d680(m_pOwner->GetUidIngredient());
         if (ingredient.get() != 0)
             nMaxLock = ingredient->FUN_140527840()->function.parameter.FUN_1408d1f60(0, 0);
     }
     CAtlArray<unsigned __int64> ids;
-    ids.Add(m_pOwner->FUN_140b95140());
+    ids.Add(m_pOwner->GetUidPet());
     FUN_140b773a0(&m_strBag, ids);
     ASObj obj(2);
     obj.FUN_1407cbb20(s_itemName, pet->FUN_140527b10());
@@ -613,7 +613,7 @@ void PetRemakeOptionBoard::FUN_140b93460()
     MS2Ptr<ASUIComponent> board = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_petRemakeOptionBoard"));
     if (board == 0)
         return;
-    ItemPtr ingredient = DAT_143ab2a90.FUN_140a5d680(m_pOwner->FUN_140b95160());
+    ItemPtr ingredient = DAT_143ab2a90.FUN_140a5d680(m_pOwner->GetUidIngredient());
     if (ingredient == 0)
         return;
     MS2Ptr<CItemData> data(ingredient->FUN_140527840());
@@ -621,7 +621,7 @@ void PetRemakeOptionBoard::FUN_140b93460()
         return;
     if (data->function.name != L"LockItemOptionPet")
         return;
-    ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_pOwner->FUN_140b95140());
+    ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
     unsigned nMaxLock = data->function.parameter.FUN_1408d1f60(0, 0);
@@ -935,32 +935,32 @@ void TabContentsPetRemakeOption::vfunc_10(void* pItem, bool b)
 }
 
 // @0x140b95140
-unsigned __int64 TabContentsPetRemakeOption::FUN_140b95140()
+unsigned __int64 TabContentsPetRemakeOption::GetUidPet()
 {
     return m_uidPet;
 }
-MS2_REPLACE_METHOD(0x140B95140, TabContentsPetRemakeOption, FUN_140b95140, 15, 0xBBB219C9);
+MS2_REPLACE_METHOD(0x140B95140, TabContentsPetRemakeOption, GetUidPet, 15, 0xBBB219C9);
 
 // @0x140b95160
-unsigned __int64 TabContentsPetRemakeOption::FUN_140b95160()
+unsigned __int64 TabContentsPetRemakeOption::GetUidIngredient()
 {
     return m_uidIngredient;
 }
-MS2_REPLACE_METHOD(0x140B95160, TabContentsPetRemakeOption, FUN_140b95160, 15, 0xCBEE5D21);
+MS2_REPLACE_METHOD(0x140B95160, TabContentsPetRemakeOption, GetUidIngredient, 15, 0xCBEE5D21);
 
 // @0x140b95180
-MS2Ptr<CItem> TabContentsPetRemakeOption::FUN_140b95180()
+MS2Ptr<CItem> TabContentsPetRemakeOption::GetPet()
 {
     return m_pet;
 }
-MS2_REPLACE_METHOD(0x140B95180, TabContentsPetRemakeOption, FUN_140b95180, 65, 0xF7EAD2D8);
+MS2_REPLACE_METHOD(0x140B95180, TabContentsPetRemakeOption, GetPet, 65, 0xF7EAD2D8);
 
 // @0x140b951d0
-MS2Ptr<CItem> TabContentsPetRemakeOption::FUN_140b951d0()
+MS2Ptr<CItem> TabContentsPetRemakeOption::GetPetNext()
 {
     return m_petNext;
 }
-MS2_REPLACE_METHOD(0x140B951D0, TabContentsPetRemakeOption, FUN_140b951d0, 65, 0x1EA85501);
+MS2_REPLACE_METHOD(0x140B951D0, TabContentsPetRemakeOption, GetPetNext, 65, 0x1EA85501);
 
 // @0x140b95220
 void TabContentsPetRemakeOption::FUN_140b95220(CAtlArray<unsigned __int64>& out)
@@ -1207,11 +1207,11 @@ void TabContentsPetRemakeOption::FUN_140b96560()
 }
 
 // @0x140b967a0
-int TabContentsPetRemakeOption::FUN_140b967a0()
+int TabContentsPetRemakeOption::GetState()
 {
     return m_nState;
 }
-MS2_REPLACE_METHOD(0x140B967A0, TabContentsPetRemakeOption, FUN_140b967a0, 17, 0x33D25353);
+MS2_REPLACE_METHOD(0x140B967A0, TabContentsPetRemakeOption, GetState, 17, 0x33D25353);
 
 // @0x140b967c0
 void TabContentsPetRemakeOption::FUN_140b967c0(int bEnable)
@@ -1594,7 +1594,7 @@ void TabContentsPetRemakeOption::FUN_140b98610(CInPacket* pPacket)
 {
     int nKind = pPacket->vfunc_o8_1();
     Unk_RemakeError eError = (Unk_RemakeError)pPacket->vfunc_o8_3();
-    if (FUN_140b967a0() == 4 && nKind == 0)
+    if (GetState() == 4 && nKind == 0)
         FUN_140b96520(2);
     CStringW strKey;
     switch (eError)

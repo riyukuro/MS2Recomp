@@ -15,8 +15,8 @@ public:
     virtual void vfunc_3(Unk_StreamPoint ptPos, Unk_StreamPoint ptDir, float fScale);   // 0x141868c60
     virtual void vfunc_5();                                         // 0x141868db0 builds the two wire circles
     virtual float vfunc_6();                                        // 0x1418694c0
-    void FUN_1416c4b60(float fMin);                                 // 0x1416c4b60 the inner radius
-    void FUN_1416c4bf0(float fMax);                                 // 0x1416c4bf0 the outer radius
+    void SetInnerRadius(float fMin);                                 // 0x1416c4b60 the inner radius
+    void SetOuterRadius(float fMax);                                 // 0x1416c4bf0 the outer radius
 
 private:
     void BuildWire(NiMesh* pMesh, const Unk_StreamPoint* pPoints, unsigned int nCount);   // 0x1418692d0

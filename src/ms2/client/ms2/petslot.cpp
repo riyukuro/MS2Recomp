@@ -149,7 +149,7 @@ PetSlot::PetSlot(const CString& strName, int nIndex, unsigned __int64 nPetItemUi
     : MS2DragSlot(strName, nIndex), m_nPetItemUid(nPetItemUid)
 {
     FUN_140bfc4b0()->FUN_141aa87c0(this);
-    FUN_140a7bd80(true);
+    SetEnabled(true);
 }
 
 // @0x140dbae00
@@ -171,7 +171,7 @@ float PetSlot::FUN_140dbaeb0()
 // @0x140dbaf10
 int PetSlot::FUN_140dbaf10()
 {
-    MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(FUN_140dbb060());
+    MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(GetPetItemUid());
     int nType;
     if (spItem.get() == 0)
         nType = 0;
@@ -183,20 +183,20 @@ int PetSlot::FUN_140dbaf10()
 // @0x140dbafc0
 int PetSlot::FUN_140dbafc0()
 {
-    MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(FUN_140dbb060());
+    MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(GetPetItemUid());
     if (spItem)
         return spItem->FUN_1405276c0();
     return 0;
 }
 
 // @0x140dbb060
-unsigned __int64 PetSlot::FUN_140dbb060()
+unsigned __int64 PetSlot::GetPetItemUid()
 {
     return m_nPetItemUid;
 }
 
 // @0x140dbb080
-void PetSlot::FUN_140dbb080(unsigned __int64 nUid)
+void PetSlot::SetPetItemUid(unsigned __int64 nUid)
 {
     m_nPetItemUid = nUid;
 }
@@ -205,9 +205,9 @@ void PetSlot::FUN_140dbb080(unsigned __int64 nUid)
 void PetSlot::vfunc_6(void* p)
 {
     CString str;
-    str.Format("%d", FUN_140dbb060());
+    str.Format("%d", GetPetItemUid());
     FUN_140165270(p, str);
-    MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(FUN_140dbb060());
+    MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(GetPetItemUid());
     if (spItem.get() != 0)
     {
         if (spItem->FUN_140527840()->FUN_14053c5c0() == 2)
@@ -230,7 +230,7 @@ int PetSlot::vfunc_11()
 // @0x140dbb240
 int PetSlot::vfunc_13()
 {
-    MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(FUN_140dbb060());
+    MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(GetPetItemUid());
     if (spItem.get() != 0)
     {
         if (spItem->FUN_140527840()->FUN_14053d150())
@@ -245,7 +245,7 @@ int PetSlot::vfunc_13()
 // @0x140dbb340
 int PetSlot::vfunc_14()
 {
-    MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(FUN_140dbb060());
+    MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(GetPetItemUid());
     if (!(spItem == 0))
     {
         Unk_PsPane* pPane = FUN_140cbe1c0(0x4ef4);
@@ -288,7 +288,7 @@ int PetSlot::vfunc_18(void* p)
     Unk_PsPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return pDrag->vfunc_10();
-    MS2Ptr<CItem> spPet = DAT_143ab2a90.FUN_140a5d680(FUN_140535320()->FUN_140c8b2e0());
+    MS2Ptr<CItem> spPet = DAT_143ab2a90.FUN_140a5d680(FUN_140535320()->GetSummonUid());
     if (!(spPet == 0))
     {
         PetSlot* pFrom = FUN_140dbc0d0(pDrag);
@@ -305,7 +305,7 @@ int PetSlot::vfunc_18(void* p)
             }
             return pDrag->vfunc_10();
         }
-        __int64 nUid = pFrom->FUN_140dbb060();
+        __int64 nUid = pFrom->GetPetItemUid();
         FUN_140535320()->FUN_140c8b410()->SendRequestPetInventoryMode3(nUid, m_nIndex);
         FUN_141404930(nUid);
         return pDrag->vfunc_10();
@@ -363,7 +363,7 @@ int PetSlot::vfunc_0(void* p)
             FUN_141276180(s_strChangeDagger, CString(""));
         FUN_1405a85f0(&handle);
     }
-    if (FUN_140a7bd60() == true)
+    if (IsEnabled() == true)
         tip.FUN_1409db930(MS2Ptr<CItem>(0), spItem);
     *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
     return 1;
@@ -490,7 +490,7 @@ void PetSlotBag::vfunc_il6(void* p)
     PetSlot* pPetSlot = FUN_140dbc0d0(pSlot);
     if (pPetSlot != 0)
     {
-        pPetSlot->FUN_140dbb080(pItem->FUN_140526a50());
+        pPetSlot->SetPetItemUid(pItem->FUN_140526a50());
         pPetSlot->vfunc_10();
     }
     Unk_PsPetDialog* pDlg = FUN_140b99ba0(0x4f38);
@@ -518,7 +518,7 @@ void PetSlotBag::vfunc_il8(void* p)
     PetSlot* pPetSlot = FUN_140dbc0d0(pSlot);
     if (pPetSlot != 0)
     {
-        pPetSlot->FUN_140dbb080(pItem->FUN_140526a50());
+        pPetSlot->SetPetItemUid(pItem->FUN_140526a50());
         pPetSlot->vfunc_10();
     }
     Unk_PsPetDialog* pDlg = FUN_140b99ba0(0x4f38);

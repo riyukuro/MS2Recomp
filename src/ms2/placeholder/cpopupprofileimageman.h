@@ -21,8 +21,8 @@ public:
     virtual ~CPopupProfileImageData() = default;            //  0 0x141697eb0 (??_G 0x141698080)
     void FUN_141697180(unsigned __int64 nId);               // set the character id
     unsigned __int64 FUN_1416971a0();                       // the character id
-    void FUN_1416971c0(int nTime);                          // set the tick it was shown
-    int FUN_1416971e0();                                    // the tick it was shown
+    void SetTime(int nTime);                          // set the tick it was shown
+    int GetTime();                                    // the tick it was shown
     int FUN_141697200(int nNow);                            // shown long enough ago to be dropped
     int FUN_141697260(int nNow, void* pA, void* pB);       // same, with the extra delay of the character's state
 private:

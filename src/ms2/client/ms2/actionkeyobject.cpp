@@ -274,9 +274,9 @@ void FUN_140dff580(int nTarget, int nPortalId);             // the shop portal (
 class UIActionTooltip : public UIHeadUpDisplay
 {
 public:
-    ActionKeyObject* FUN_1418b17d0();                       // the action shown
-    CStringW FUN_1418b17f0();                               // the title shown
-    CStringW FUN_1418b1840();                               // the text shown
+    ActionKeyObject* GetAction();                       // the action shown
+    CStringW GetTitle();                               // the title shown
+    CStringW GetText();                               // the text shown
     void FUN_1418b16f0();                                   // refresh from the current action
 };
 
@@ -686,11 +686,11 @@ void Unk_ActionKeyManager::FUN_140952ef0()
     {
         if (ActionKeyObject* pCur = FUN_140953550())
         {
-            if (pTooltip->FUN_1418b17d0() != pCur)
+            if (pTooltip->GetAction() != pCur)
                 bRefresh = 1;
-            else if (pTooltip->FUN_1418b17f0() != pCur->vfunc_7())
+            else if (pTooltip->GetTitle() != pCur->vfunc_7())
                 bRefresh = 1;
-            else if (pTooltip->FUN_1418b1840() != pCur->vfunc_6())
+            else if (pTooltip->GetText() != pCur->vfunc_6())
                 bRefresh = 1;
         }
     }
@@ -3006,12 +3006,12 @@ void ReactorAction::vfunc_2()
         {
             MS2Ptr<RideOffActionReact> spRideOff(new RideOffActionReact(0));
             spRideOff->m_n28 = spReactor->FUN_140b78bb0();
-            spRideOff->m_s30 = spReactor->FUN_140b78af0();
+            spRideOff->m_s30 = spReactor->GetName();
             pPlayer->SendRequestRideMode1(spRideOff);
         }
         else
         {
-            MS2Ptr<StateReactData> spState(new StateReactData(spReactor->FUN_140b78bb0(), spReactor->FUN_140b78af0(), ""));
+            MS2Ptr<StateReactData> spState(new StateReactData(spReactor->FUN_140b78bb0(), spReactor->GetName(), ""));
             pPlayer->vfunc_59(0x3d, spState, 0x9f, 0);
         }
     }

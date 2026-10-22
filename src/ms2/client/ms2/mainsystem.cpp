@@ -401,7 +401,7 @@ void CMainSystem::FUN_141473690(__time64_t tServer)
 }
 
 // @0x1414736e0
-CString CMainSystem::FUN_1414736e0()
+CString CMainSystem::GetDataPath()
 {
     return m_strDataPath;
 }
@@ -453,7 +453,7 @@ int CMainSystem::FUN_1414738f0(int nIndex)
 }
 
 // @0x141473920
-void CMainSystem::FUN_141473920(DWORD dwThreadId)
+void CMainSystem::SetMainThreadId(DWORD dwThreadId)
 {
     m_dwMainThreadId = dwThreadId;
 }

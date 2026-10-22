@@ -668,11 +668,11 @@ void CUgcManager::FUN_14187f380(int nMode)
 MS2_REPLACE_METHOD(0x14187f380, CUgcManager, FUN_14187f380, 38, 0xAD7901CA);
 
 // @0x14187f3b0
-int CUgcManager::FUN_14187f3b0()
+int CUgcManager::GetMode()
 {
     return m_nMode;
 }
-MS2_REPLACE_METHOD(0x14187f3b0, CUgcManager, FUN_14187f3b0, 14, 0xCAA08B3B);
+MS2_REPLACE_METHOD(0x14187f3b0, CUgcManager, GetMode, 14, 0xCAA08B3B);
 
 // @0x14187f3d0
 bool CUgcManager::FUN_14187f3d0()
@@ -696,7 +696,7 @@ bool CUgcManager::FUN_14187f410()
             return false;
         }
     }
-    if (FUN_14187f3b0() == 1)
+    if (GetMode() == 1)
     {
         FUN_141275260(0x2e7, 1, 1);
         return false;
@@ -705,7 +705,7 @@ bool CUgcManager::FUN_14187f410()
     MS2Ptr<CUgcUploadCtrl> spCtrl(new CUgcUploadCtrl());
     spCtrl->FUN_1418a3840(nType);
     FUN_141882450(spCtrl);
-    spCtrl->FUN_1418a3ab0(0x4e69);
+    spCtrl->SetDialog(0x4e69);
     return true;
 }
 MS2_REPLACE_METHOD(0x14187f410, CUgcManager, FUN_14187f410, 373, 0x37EF1166);
@@ -715,7 +715,7 @@ MS2_REPLACE_METHOD(0x14187f410, CUgcManager, FUN_14187f410, 373, 0x37EF1166);
 // page opens the page instead.
 void CUgcManager::FUN_14187f590(efd::SmartPointer<egf::Entity> spEntity)
 {
-    if (FUN_14187f3b0() == 1)
+    if (GetMode() == 1)
     {
         FUN_141275260(0x2e7, 1, 1);
         return;
@@ -770,7 +770,7 @@ void CUgcManager::FUN_14187f590(efd::SmartPointer<egf::Entity> spEntity)
     spCtrl->FUN_1418a3840(nType);
     spCtrl->m_spViewer = spViewer;
     FUN_141882450(spCtrl);
-    spCtrl->FUN_1418a3ab0(nDialog);
+    spCtrl->SetDialog(nDialog);
     FUN_1403ed2b0()->ToggleDialog((eUIClassID)nDialog);
 }
 MS2_REPLACE_METHOD(0x14187f590, CUgcManager, FUN_14187f590, 1434, 0x6D889E75);
@@ -779,7 +779,7 @@ MS2_REPLACE_METHOD(0x14187f590, CUgcManager, FUN_14187f590, 1434, 0x6D889E75);
 // Starts the profile image upload.
 void CUgcManager::FUN_14187fb30()
 {
-    if (FUN_14187f3b0() == 1)
+    if (GetMode() == 1)
     {
         FUN_141275260(0x2e7, 1, 1);
         return;
@@ -802,7 +802,7 @@ void CUgcManager::FUN_14187fb30()
     spCtrl->FUN_1418a3840(5);
     spCtrl->m_spViewer = spViewer;
     FUN_141882450(spCtrl);
-    spCtrl->FUN_1418a3ab0(0x4e56);
+    spCtrl->SetDialog(0x4e56);
     FUN_1403ed2b0()->ToggleDialog(eUI_4e56);
 }
 MS2_REPLACE_METHOD(0x14187fb30, CUgcManager, FUN_14187fb30, 576, 0x62F8DDA3);
@@ -813,7 +813,7 @@ bool FUN_140900550();                                       // the wedding profi
 // Starts the wedding profile image upload.
 void CUgcManager::FUN_14187fd80()
 {
-    if (FUN_14187f3b0() == 1)
+    if (GetMode() == 1)
     {
         FUN_141275260(0x2e7, 1, 1);
         return;
@@ -838,7 +838,7 @@ void CUgcManager::FUN_14187fd80()
     spCtrl->FUN_1418a3840(10);
     spCtrl->m_spViewer = spViewer;
     FUN_141882450(spCtrl);
-    spCtrl->FUN_1418a3ab0(0x4e56);
+    spCtrl->SetDialog(0x4e56);
     FUN_1403ed2b0()->ToggleDialog(eUI_4e56);
 }
 MS2_REPLACE_METHOD(0x14187fd80, CUgcManager, FUN_14187fd80, 593, 0x14D4A975);
@@ -847,7 +847,7 @@ MS2_REPLACE_METHOD(0x14187fd80, CUgcManager, FUN_14187fd80, 593, 0x14D4A975);
 // Starts the guild mark upload.
 void CUgcManager::FUN_14187ffe0()
 {
-    if (FUN_14187f3b0() == 1)
+    if (GetMode() == 1)
     {
         FUN_141275260(0x2e7, 1, 1);
         return;
@@ -871,7 +871,7 @@ void CUgcManager::FUN_14187ffe0()
     spCtrl->FUN_1418a3840(6);
     spCtrl->m_spViewer = spViewer;
     FUN_141882450(spCtrl);
-    spCtrl->FUN_1418a3ab0(0x4e56);
+    spCtrl->SetDialog(0x4e56);
     FUN_1403ed2b0()->ToggleDialog(eUI_4e56);
 }
 MS2_REPLACE_METHOD(0x14187ffe0, CUgcManager, FUN_14187ffe0, 575, 0xFFED958F);
@@ -880,7 +880,7 @@ MS2_REPLACE_METHOD(0x14187ffe0, CUgcManager, FUN_14187ffe0, 575, 0xFFED958F);
 // Starts the guild poster upload of a poster slot.
 void CUgcManager::FUN_141880230(CString strName, int nIndex)
 {
-    if (FUN_14187f3b0() == 1)
+    if (GetMode() == 1)
     {
         FUN_141275260(0x2e7, 1, 1);
         return;
@@ -898,7 +898,7 @@ void CUgcManager::FUN_141880230(CString strName, int nIndex)
     spCtrl->FUN_1418a3840(8);
     spCtrl->m_spViewer = spViewer;
     FUN_141882450(spCtrl);
-    spCtrl->FUN_1418a3ab0(0x4e56);
+    spCtrl->SetDialog(0x4e56);
     FUN_1403ed2b0()->ToggleDialog(eUI_4e56);
 }
 MS2_REPLACE_METHOD(0x141880230, CUgcManager, FUN_141880230, 598, 0x8F015935);
@@ -909,7 +909,7 @@ bool CUgcManager::FUN_141880490(MS2Ptr<CUgcUploadCtrl> spCtrl)
 {
     if (spCtrl == 0)
         return false;
-    if (FUN_14187f3b0() == 1)
+    if (GetMode() == 1)
     {
         FUN_141275260(0x2e7, 1, 1);
         return false;
@@ -920,7 +920,7 @@ bool CUgcManager::FUN_141880490(MS2Ptr<CUgcUploadCtrl> spCtrl)
     if (FUN_14188fdb0(0x4e56) == 0)
         return false;
     FUN_141882450(spCtrl);
-    spCtrl->FUN_1418a3ab0(0x4e56);
+    spCtrl->SetDialog(0x4e56);
     FUN_1403ed2b0()->ToggleDialog(eUI_4e56);
     return true;
 }
@@ -1351,19 +1351,19 @@ void CUgcManager::FUN_1418826a0(int nResult)
     MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_141882610();
     if (spCtrl == 0)
         return;
-    if (spCtrl->FUN_1418a3ad0() == 0x4e56)
+    if (spCtrl->GetDialog() == 0x4e56)
     {
         UIUGCImageUploadDialog* pDialog = UgcFindDialog<UIUGCImageUploadDialog>(eUI_4e56);
         if (pDialog != 0 && pDialog->vfunc_55() == 0)
             pDialog->FUN_141b3a690(nResult);
     }
-    else if (spCtrl->FUN_1418a3ad0() == 0x4e69)
+    else if (spCtrl->GetDialog() == 0x4e69)
     {
         UIUGCItemEditDialog* pDialog = FUN_140eeff60(0x4e69);
         if (pDialog != 0 && pDialog->vfunc_55() == 0)
             pDialog->FUN_141b450d0(nResult);
     }
-    else if (spCtrl->FUN_1418a3ad0() == 0x4e70)
+    else if (spCtrl->GetDialog() == 0x4e70)
     {
         UIUGCBannerDialog* pDialog = UgcFindDialog<UIUGCBannerDialog>(eUI_4e70);
         if (pDialog != 0 && pDialog->vfunc_55() == 0)
@@ -1616,9 +1616,9 @@ void CUgcManager::FUN_141883860(CString strPath)
     {
         CAtlArray<MS2Ptr<CUgcUploadCtrl> > ctrls;
         ctrls.Add(spCtrl);
-        CUgcUploadCtrl* pChained = spCtrl->FUN_1418a4100().get();
+        CUgcUploadCtrl* pChained = spCtrl->GetImage().get();
         if (pChained != 0)
-            ctrls.Add(spCtrl->FUN_1418a4100());
+            ctrls.Add(spCtrl->GetImage());
         for (size_t i = 0; i < ctrls.GetCount(); i++)
         {
             MS2Ptr<CUgcUploadCtrl> spItem = ctrls[i];
@@ -2527,7 +2527,7 @@ void CUgcManager::FUN_141888af0(int nBannerId, unsigned __int64 key, int nState)
             CReserveMap::CPair* pPair = spMap->Lookup(key);
             if (pPair != 0)
                 pPair->m_value.m_nState = nState;
-            FUN_141888da0(1);
+            SetReserveChanged(1);
         }
     }
 }
@@ -2573,18 +2573,18 @@ void CUgcManager::FUN_141888d30(int nBannerId)
 MS2_REPLACE_METHOD(0x141888d30, CUgcManager, FUN_141888d30, 100, 0x379982FC);
 
 // @0x141888da0
-void CUgcManager::FUN_141888da0(bool bChanged)
+void CUgcManager::SetReserveChanged(bool bChanged)
 {
     m_bReserveChanged = bChanged;
 }
-MS2_REPLACE_METHOD(0x141888da0, CUgcManager, FUN_141888da0, 23, 0x2A7F450D);
+MS2_REPLACE_METHOD(0x141888da0, CUgcManager, SetReserveChanged, 23, 0x2A7F450D);
 
 // @0x141888dc0
-bool CUgcManager::FUN_141888dc0()
+bool CUgcManager::IsReserveChanged()
 {
     return m_bReserveChanged;
 }
-MS2_REPLACE_METHOD(0x141888dc0, CUgcManager, FUN_141888dc0, 15, 0x43A40A0D);
+MS2_REPLACE_METHOD(0x141888dc0, CUgcManager, IsReserveChanged, 15, 0x43A40A0D);
 
 // @0x141888de0
 // The AS rows of the 24 hours of a banner's day: reserved (by state), past, or free (selected when picked).
@@ -2757,11 +2757,11 @@ NiTexturePtr CUgcManager::FUN_1418896e0(int nObjectId)
 MS2_REPLACE_METHOD(0x1418896e0, CUgcManager, FUN_1418896e0, 173, 0x12A96D24);
 
 // @0x1418897a0
-NiTexturePtr CUgcManager::FUN_1418897a0()
+NiTexturePtr CUgcManager::GetDefaultTexture()
 {
     return m_spDefaultTexture;
 }
-MS2_REPLACE_METHOD(0x1418897a0, CUgcManager, FUN_1418897a0, 67, 0x94B9AF46);
+MS2_REPLACE_METHOD(0x1418897a0, CUgcManager, GetDefaultTexture, 67, 0x94B9AF46);
 
 // @0x1418897f0
 void CUgcManager::OnUgc(CInPacket& packet)
@@ -3215,8 +3215,8 @@ void CUgcManager::FUN_14188bbb0()
         MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_141882610();
         if (spCtrl == NULL)
             return;
-        if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)spCtrl->FUN_1418a3ad0()))
-            FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)spCtrl->FUN_1418a3ad0());
+        if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)spCtrl->GetDialog()))
+            FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)spCtrl->GetDialog());
     }
 }
 MS2_REPLACE_METHOD(0x14188bbb0, CUgcManager, FUN_14188bbb0, 291, 0x207117CD);
@@ -3667,7 +3667,7 @@ void CUgcManager::FUN_14188e200(CInPacket& packet)
     int nObjectId = packet.vfunc_o8_3();
     __int64 characterId = packet.vfunc_o8_4();
     CString strUrl = packet.vfunc_o8_6();
-    if (FUN_14187f3b0() == 1)
+    if (GetMode() == 1)
         strUrl = "";
     if (nObjectId == 0)
     {

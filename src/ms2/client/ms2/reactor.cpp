@@ -224,7 +224,7 @@ CReactor::~CReactor()
 }
 
 // @0x140b78af0
-CString CReactor::FUN_140b78af0()
+CString CReactor::GetName()
 {
     return m_strName;
 }

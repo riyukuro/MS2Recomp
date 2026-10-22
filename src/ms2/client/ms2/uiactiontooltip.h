@@ -28,9 +28,9 @@ public:
     virtual int vfunc_48() { return 0x4e5c; }                       // 48 0x1418b24c0 UI type id
 
     void FUN_1418b16f0();                                           // refresh from the current action
-    ActionKeyObject* FUN_1418b17d0();                               // the action shown
-    CStringW FUN_1418b17f0();                                       // the title shown
-    CStringW FUN_1418b1840();                                       // the text shown
+    ActionKeyObject* GetAction();                               // the action shown
+    CStringW GetTitle();                                       // the title shown
+    CStringW GetText();                                       // the text shown
     ActionKeyObject* FUN_1418b1900();                               // the current action of the local player (NULL without)
     int FUN_1418b1950();                                            // string table id of the key hint
     CStringW FUN_1418b1990();                                       // the key hint text

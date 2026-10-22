@@ -40,8 +40,8 @@ public:
     virtual ~MS2TextureDensityProcessor();                  // 0x1415118c0, ??_G 0x141511ff0
     virtual void PreRenderProcessList(const NiVisibleArray* pkInput, NiVisibleArray& kOutput, void* pvExtraData);   // 0x14150cdb0
 
-    void FUN_14150d360(int nMode);                          // 0 = base map, 1 = normal map, 2 = parallax map
-    int FUN_14150d380() const;
+    void SetMode(int nMode);                          // 0 = base map, 1 = normal map, 2 = parallax map
+    int GetMode() const;
     NiTexture* FUN_14150d3a0(int nWidth, int nHeight);      // cached density texture for a source texture size
 
 public:

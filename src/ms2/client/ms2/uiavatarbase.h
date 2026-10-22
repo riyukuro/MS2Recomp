@@ -108,23 +108,23 @@ public:
     virtual int vfunc_3(GameObject* pObj);                  // o18 slot 3 0x1418b9a00
     virtual int vfunc_4(GameObject* pObj);                  // o18 slot 4 0x1418b9a60
 
-    int FUN_1418b9b40();                                    // 0x1418b9b40 m_nState
-    void FUN_1418b9b60(int bLoaded);                        // 0x1418b9b60 m_bLoaded = n
-    int FUN_1418b9b80();                                    // 0x1418b9b80 m_bLoaded
-    int FUN_1418b9ba0();                                    // 0x1418b9ba0 m_nKind
-    efd::SmartPointer<UIRenderView> FUN_1418b9bc0();        // 0x1418b9bc0 copy of the view pointer
+    int GetState();                                    // 0x1418b9b40 m_nState
+    void SetLoaded(int bLoaded);                        // 0x1418b9b60 m_bLoaded = n
+    int IsLoaded();                                    // 0x1418b9b80 m_bLoaded
+    int GetKind();                                    // 0x1418b9ba0 m_nKind
+    efd::SmartPointer<UIRenderView> GetView();        // 0x1418b9bc0 copy of the view pointer
     void FUN_1418b9c10();                                   // 0x1418b9c10 remembers the current pose, tells the view
     void FUN_1418b9df0(bool bAngle, bool bPosition);        // 0x1418b9df0
     void FUN_1418b9e40();                                   // 0x1418b9e40 reads the object's pose and framing
-    void FUN_1418ba120(int nMode);                          // 0x1418ba120 m_nMode = n
-    int FUN_1418ba140();                                    // 0x1418ba140 m_nMode
+    void SetMode(int nMode);                          // 0x1418ba120 m_nMode = n
+    int GetMode();                                    // 0x1418ba140 m_nMode
     int FUN_1418ba160(int nButton);                         // 0x1418ba160 m_nMode = FUN_1418ba1a0(nButton)
     int FUN_1418ba1a0(int nButton);                         // 0x1418ba1a0 button -> drag mode
     void FUN_1418ba200(Unk_StreamPoint* pDst, float x, float y, float z);       // 0x1418ba200
     void FUN_1418ba250(Unk_StreamPoint* pDst, const Unk_StreamPoint* pSrc);     // 0x1418ba250
     void FUN_1418ba280(int bUpdate);                        // 0x1418ba280 back to the stored position
     void FUN_1418ba340(int bUpdate);                        // 0x1418ba340 back to the stored angle
-    void FUN_1418ba3f0(int n);                              // 0x1418ba3f0 m_nLocked = n
+    void SetLocked(int n);                              // 0x1418ba3f0 m_nLocked = n
     void FUN_1418ba410(Unk_StreamPoint* pOut);              // 0x1418ba410
     void FUN_1418ba4a0(Unk_NiMatrix3* pRot, const Unk_StreamPoint* pPos, Unk_StreamPoint* pOut);   // 0x1418ba4a0
 
@@ -146,7 +146,7 @@ public:
     float m_fRotStep;                                       // +0x94 0.2
     float m_fZoomStep;                                      // +0x98 30.0
     int m_nState;                                           // +0x9c set by vfunc_29 (view attached)
-    int m_nLocked;                                          // +0xa0 FUN_1418ba3f0
+    int m_nLocked;                                          // +0xa0 SetLocked
     bool m_bWheelCamera;                                    // +0xa4
     IUIAvatarEventListener* m_pListener;                    // +0xa8
     MS2Ptr<ItemPreviewCommon::CLimitCharRotate> m_spRotLimit;   // +0xb0
@@ -218,8 +218,8 @@ public:
     bool FUN_1418bd300();                                   // 0x1418bd300 has equip sets
     bool FUN_1418bd350(Unk_AvPackageKey* pKeyOut, int nItemId);   // 0x1418bd350
     MS2Ptr<CItem> FUN_1418bd510(int nItemId);               // 0x1418bd510
-    MS2Ptr<Customize> FUN_1418bd710();                      // 0x1418bd710 copy of the customize
-    int FUN_1418bd760();                                    // 0x1418bd760 m_nPose
+    MS2Ptr<Customize> GetCustomize();                      // 0x1418bd710 copy of the customize
+    int GetPose();                                    // 0x1418bd760 m_nPose
     void FUN_1418bd780(PC* pSource, AvatarPC* pAvatar);     // 0x1418bd780
     void FUN_1418bd7f0(bool bEnabled);                      // 0x1418bd7f0
     void FUN_1418bd830();                                   // 0x1418bd830 re-applies m_nPose
@@ -281,7 +281,7 @@ public:
     void FUN_1418be460(CItemData* pData);                   // 0x1418be460
     void FUN_1418be580(Unk_RideePtr spRow);                 // 0x1418be580
     AvatarRidee* FUN_1418be7e0();                           // 0x1418be7e0
-    Unk_RideePtr FUN_1418be810();                           // 0x1418be810 copy of the row
+    Unk_RideePtr GetRow();                           // 0x1418be810 copy of the row
 
 public:
     MS2_LAYOUT_FRIEND;

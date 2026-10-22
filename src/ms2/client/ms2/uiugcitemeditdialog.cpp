@@ -465,7 +465,7 @@ void UIUGCItemEditDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* 
     if (pAvatar == 0)
         return;
     pAvatar->vfunc_28(p1, p2, p3);
-    m_spView = pAvatar->FUN_1418b9bc0();
+    m_spView = pAvatar->GetView();
 }
 
 // @0x141b3cca0
@@ -574,7 +574,7 @@ void UIUGCItemEditDialog::vfunc_72()
     if (FUN_1418ffe80(m_nDirty, 4))
     {
         UIAvatarBase* pAvatar = FUN_141b43490();
-        if (pAvatar != 0 && pAvatar->FUN_1418b9ba0() == 1)
+        if (pAvatar != 0 && pAvatar->GetKind() == 1)
         {
             UIAvatarPC* pPC = dynamic_cast<UIAvatarPC*>(pAvatar);
             if (pPC != 0 && pPC->FUN_1418bd1d0() != 0)
@@ -691,7 +691,7 @@ void UIUGCItemEditDialog::FUN_141b3da90(int nModel)
         if (spAvatar.get() != 0)
         {
             spAvatar->vfunc_1(static_cast<IUIAvatarEventListener*>(this));
-            spAvatar->FUN_1418ba3f0(1);
+            spAvatar->SetLocked(1);
             m_avatars[1] = spAvatar;
         }
     }
@@ -704,7 +704,7 @@ void UIUGCItemEditDialog::FUN_141b3da90(int nModel)
         if (spAvatar.get() != 0)
         {
             spAvatar->vfunc_1(static_cast<IUIAvatarEventListener*>(this));
-            spAvatar->FUN_1418ba3f0(1);
+            spAvatar->SetLocked(1);
             m_avatars[0] = spAvatar;
         }
     }
@@ -718,7 +718,7 @@ void UIUGCItemEditDialog::FUN_141b3da90(int nModel)
         if (spAvatar.get() != 0)
         {
             spAvatar->vfunc_1(static_cast<IUIAvatarEventListener*>(this));
-            spAvatar->FUN_1418ba3f0(1);
+            spAvatar->SetLocked(1);
             m_avatars[2] = spAvatar;
         }
     }
@@ -729,7 +729,7 @@ void UIUGCItemEditDialog::FUN_141b3da90(int nModel)
         if (spAvatar.get() != 0)
         {
             spAvatar->vfunc_1(static_cast<IUIAvatarEventListener*>(this));
-            spAvatar->FUN_1418ba3f0(1);
+            spAvatar->SetLocked(1);
             m_avatars[3] = spAvatar;
         }
     }
@@ -740,7 +740,7 @@ void UIUGCItemEditDialog::FUN_141b3da90(int nModel)
         if (spAvatar.get() != 0)
         {
             spAvatar->vfunc_1(static_cast<IUIAvatarEventListener*>(this));
-            spAvatar->FUN_1418ba3f0(1);
+            spAvatar->SetLocked(1);
             m_avatars[4] = spAvatar;
         }
     }
@@ -816,7 +816,7 @@ void UIUGCItemEditDialog::FUN_141b3e780(MS2Ptr<UIAvatarBase> spAvatar, bool bUse
     }
     else
     {
-        fAngle = FUN_141b48480(FUN_141b48430(spAvatar->FUN_1418b9ba0()), 0);
+        fAngle = FUN_141b48480(FUN_141b48430(spAvatar->GetKind()), 0);
     }
     spAvatar->vfunc_19(fAngle, 0);
 }
@@ -847,7 +847,7 @@ bool UIUGCItemEditDialog::FUN_141b3ea70(int* pnY, int* pnZoom)
     MS2Ptr<UIAvatarBase> spAvatar = FUN_141b433f0(m_nModel);
     if (spAvatar == 0)
         return false;
-    int nKind = spAvatar->FUN_1418b9ba0();
+    int nKind = spAvatar->GetKind();
     if (nKind == 2)
     {
         *pnY = 0x91;
@@ -933,7 +933,7 @@ void UIUGCItemEditDialog::FUN_141b3f180(MS2Ptr<UIAvatarBase> spAvatar)
     Unk_ModelViewCamera kCamera;
     UIRenderView* pView = m_spView;
     NiPoint3 kPos = pObj->vfunc_18();
-    int nKind = spAvatar->FUN_1418b9ba0();
+    int nKind = spAvatar->GetKind();
     if (nKind == 1)
     {
         kCamera.FUN_141b48530();
@@ -1038,11 +1038,11 @@ void UIUGCItemEditDialog::FUN_141b3fb60(MS2Ptr<CItem> spItem, bool* pbModelChang
     {
         if (pSlot->vfunc_25().get() != m_spItem.get())
         {
-            pSlot->FUN_14187d8c0(spItem);
+            pSlot->SetItem(spItem);
             pSlot->vfunc_10();
         }
     }
-    int nKind = m_spAvatar.get() != 0 ? m_spAvatar->FUN_1418b9ba0() : 0;
+    int nKind = m_spAvatar.get() != 0 ? m_spAvatar->GetKind() : 0;
     if (spItem.get() == 0)
     {
         if (m_spAvatar.get() != 0 && nKind == 1)
@@ -1342,7 +1342,7 @@ bool UIUGCItemEditDialog::FUN_141b417e0()
     MS2Ptr<IUgcViewer> spViewer = spUpload->m_spViewer;
     if (spViewer == 0)
         return false;
-    if (m_spAvatar.get() != 0 && m_spAvatar->FUN_1418b9ba0() == 1)
+    if (m_spAvatar.get() != 0 && m_spAvatar->GetKind() == 1)
     {
         MS2Ptr<CUgcViewerEquip> spEquip(dynamic_cast<CUgcViewerEquip*>((IUgcViewer*)spViewer));
         if (spEquip.get() != 0)
@@ -1380,9 +1380,9 @@ bool UIUGCItemEditDialog::FUN_141b41a80(const NiRect<unsigned int>& kRect)
     if (m_30 == 0)
         return false;
     UIAvatarBase* pAvatar = FUN_141b43490();
-    if (pAvatar == 0 || pAvatar->FUN_1418b9bc0() == 0)
+    if (pAvatar == 0 || pAvatar->GetView() == 0)
         return false;
-    NiRenderTargetGroup* pGroup = pAvatar->FUN_1418b9bc0()->FUN_141ab7440();
+    NiRenderTargetGroup* pGroup = pAvatar->GetView()->FUN_141ab7440();
     if (pGroup == 0)
         return false;
     Unk_UgcFileResult result = SaveRenderTargetImage(kRect, pGroup);
@@ -1407,7 +1407,7 @@ void UIUGCItemEditDialog::FUN_141b41cd0()
     if (GFxService::FUN_141b47780() != 0)
         return;
     UIAvatarBase* pAvatar = FUN_141b43490();
-    if (pAvatar == 0 || pAvatar->FUN_1418b9bc0() == 0 || pAvatar->FUN_1418b9bc0()->FUN_141ab7660() == 0)
+    if (pAvatar == 0 || pAvatar->GetView() == 0 || pAvatar->GetView()->FUN_141ab7660() == 0)
         return;
     if (m_nCapture == 1)
     {
@@ -1589,7 +1589,7 @@ int UIUGCItemEditDialog::FUN_141b42b20(MS2Ptr<CItemData> spData, MS2Ptr<UIAvatar
     if (spData->FUN_14053d2f0())
         bJob = spData->limit.FUN_140545da0(pPC->FUN_141654700());
     int nGender = pPC->FUN_141658e60();
-    if (spAvatar.get() != 0 && spAvatar->FUN_1418b9ba0() == 1)
+    if (spAvatar.get() != 0 && spAvatar->GetKind() == 1)
     {
         MS2Ptr<UIAvatarPC> spPC(dynamic_cast<UIAvatarPC*>((UIAvatarBase*)spAvatar));
         if (spPC.get() != 0 && FUN_141b433f0(1).get() != spAvatar.get())
@@ -2006,7 +2006,7 @@ void UIUGCItemEditDialog::FUN_141b45180(MS2Ptr<CItem> spItem)
         return;
     if (spUpload->m_nKind == 1 || spUpload->m_nKind == 2 || spUpload->m_nKind == 7)
     {
-        MS2Ptr<CUgcUploadCtrl> spNext = spUpload->FUN_1418a4100();
+        MS2Ptr<CUgcUploadCtrl> spNext = spUpload->GetImage();
         if (spNext == 0)
             return;
         m_spMadeItem = spItem;

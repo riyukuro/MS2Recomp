@@ -171,18 +171,18 @@ unsigned __int64 CPopupProfileImageData::FUN_1416971a0()
 MS2_REPLACE_METHOD(0x1416971A0, CPopupProfileImageData, FUN_1416971a0, 15, 0xBBB219C9);
 
 // @0x1416971c0
-void CPopupProfileImageData::FUN_1416971c0(int nTime)
+void CPopupProfileImageData::SetTime(int nTime)
 {
     m_nTime = nTime;
 }
-MS2_REPLACE_METHOD(0x1416971C0, CPopupProfileImageData, FUN_1416971c0, 22, 0xF6E32213);
+MS2_REPLACE_METHOD(0x1416971C0, CPopupProfileImageData, SetTime, 22, 0xF6E32213);
 
 // @0x1416971e0
-int CPopupProfileImageData::FUN_1416971e0()
+int CPopupProfileImageData::GetTime()
 {
     return m_nTime;
 }
-MS2_REPLACE_METHOD(0x1416971E0, CPopupProfileImageData, FUN_1416971e0, 14, 0xA25B27BF);
+MS2_REPLACE_METHOD(0x1416971E0, CPopupProfileImageData, GetTime, 14, 0xA25B27BF);
 
 // @0x141697200
 int CPopupProfileImageData::FUN_141697200(int nNow)
@@ -280,7 +280,7 @@ int CPopupProfileImageMan::FUN_141697760(unsigned __int64 nId)
         DataPtr spData(0);
         if (m_shown.Lookup(nId, spData))
         {
-            spData->FUN_1416971c0(nNow);
+            spData->SetTime(nNow);
             return 1;
         }
         int bNew = 0;
@@ -293,7 +293,7 @@ int CPopupProfileImageMan::FUN_141697760(unsigned __int64 nId)
         spData->FUN_141697180(nId);
         if (bNew != 0)
             m_pending.SetAt(nId, spData);
-        spData->FUN_1416971c0(nNow);
+        spData->SetTime(nNow);
         m_shown.SetAt(nId, spData);
     }
     return 1;

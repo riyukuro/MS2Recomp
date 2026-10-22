@@ -43,7 +43,7 @@ Unk_TradeOptions* FUN_140ae6540(Unk_TradeConfig*);
 class Unk_TradeDialog : public UIDialog
 {
 public:
-    CStringW FUN_14185dc40();                           // m_strPartner (this unit)
+    CStringW GetPartner();                           // m_strPartner (this unit)
     void FUN_141b27de0(bool bMine, int nSlot, MS2Ptr<CItem> spItem);    // an item was put on the table
     void FUN_141b27fa0(bool bMine, int nSlot);          // an item was taken off
     void FUN_141b28130(unsigned char a, __int64 value); // a money amount changed
@@ -552,7 +552,7 @@ void CTradeManagerEx::FUN_14185cee0(CInPacket& packet)
     Unk_TradeDialog* pDlg = FUN_14140e820(0x4e83);
     if (pDlg != 0)
     {
-        CStringW strPartner = pDlg->FUN_14185dc40();
+        CStringW strPartner = pDlg->GetPartner();
         FUN_1403ed2b0()->FUN_141adc5d0(0x4e83);
         if (!bAccepted)
             FUN_1412751b0(FUN_14052bd00(0x825, strPartner), 0x12);
@@ -713,13 +713,13 @@ bool CTradeManagerEx::FUN_14185d8b0()
 }
 
 // @0x14185d920
-__int64 CTradeManagerEx::FUN_14185d920()
+__int64 CTradeManagerEx::GetUidLastSent()
 {
     return m_uidLastSent;
 }
 
 // @0x14185dc40
-CStringW Unk_TradeDialog::FUN_14185dc40()
+CStringW Unk_TradeDialog::GetPartner()
 {
     return m_strPartner;
 }

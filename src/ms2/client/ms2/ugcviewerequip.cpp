@@ -1458,13 +1458,13 @@ void CUgcUploadCtrl::FUN_1418a38a0()
 }
 
 // @0x1418a3ab0
-void CUgcUploadCtrl::FUN_1418a3ab0(int nDialog)
+void CUgcUploadCtrl::SetDialog(int nDialog)
 {
     m_nDialog = nDialog;
 }
 
 // @0x1418a3ad0
-int CUgcUploadCtrl::FUN_1418a3ad0()
+int CUgcUploadCtrl::GetDialog()
 {
     return m_nDialog;
 }
@@ -1493,7 +1493,7 @@ int CUgcUploadCtrl::FUN_1418a3b80(__int64 uid)
 }
 
 // @0x1418a3bd0
-CStringW CUgcUploadCtrl::FUN_1418a3bd0()
+CStringW CUgcUploadCtrl::GetResult()
 {
     return m_strResult;
 }
@@ -1550,7 +1550,7 @@ void CUgcUploadCtrl::FUN_1418a3db0()
 }
 
 // @0x1418a4100
-MS2Ptr<CUgcUploadCtrl> CUgcUploadCtrl::FUN_1418a4100()
+MS2Ptr<CUgcUploadCtrl> CUgcUploadCtrl::GetImage()
 {
     return m_spImage;
 }

@@ -187,7 +187,7 @@ void UIAvatarBase::vfunc_4(__int64 nItemUid)
 // @0x1418b7d40
 void UIAvatarBase::vfunc_5()
 {
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
         return;
     if (m_spView)
         m_spView->vfunc_5(m_fZoomStep);
@@ -197,7 +197,7 @@ MS2_REPLACE_METHOD(0x1418B7D40, UIAvatarBase, vfunc_5, 103, 0xD0149146);
 // @0x1418b7db0
 void UIAvatarBase::vfunc_6()
 {
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
         return;
     if (m_spView)
         m_spView->vfunc_6(m_fZoomStep);
@@ -207,7 +207,7 @@ MS2_REPLACE_METHOD(0x1418B7DB0, UIAvatarBase, vfunc_6, 103, 0x89FCB062);
 // @0x1418b7e20
 void UIAvatarBase::vfunc_7(float n)
 {
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
         return;
     if (m_spView)
         m_spView->vfunc_9(n);
@@ -217,7 +217,7 @@ MS2_REPLACE_METHOD(0x1418B7E20, UIAvatarBase, vfunc_7, 102, 0x8C6A2478);
 // @0x1418b7e90
 void UIAvatarBase::vfunc_8(float n)
 {
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
         return;
     if (m_spView)
         m_spView->vfunc_8(n);
@@ -227,7 +227,7 @@ MS2_REPLACE_METHOD(0x1418B7E90, UIAvatarBase, vfunc_8, 102, 0x80C33D6C);
 // @0x1418b7f00
 void UIAvatarBase::vfunc_10(int dx, int dy, int dz, int bUpdate)
 {
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
         return;
     GameObject* pObj = vfunc_23();
     if (pObj == 0)
@@ -277,7 +277,7 @@ void UIAvatarBase::vfunc_10(int dx, int dy, int dz, int bUpdate)
 // @0x1418b8300
 void UIAvatarBase::vfunc_11(int dx, int dy, int dz, int bUpdate)
 {
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
         return;
     float fX = -((float)dx * m_fMoveStep);
     float fY = -((float)dy * m_fMoveStep);
@@ -308,7 +308,7 @@ MS2_REPLACE_METHOD(0x1418B84C0, UIAvatarBase, vfunc_12, 151, 0x9A7F514C);
 // @0x1418b8560
 void UIAvatarBase::vfunc_14(int dx, int dy, int dz, int bUpdate)
 {
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
         return;
     GameObject* pObj = vfunc_23();
     if (pObj)
@@ -332,7 +332,7 @@ void UIAvatarBase::vfunc_13(float rx, float ry, float rz, const Unk_StreamPoint*
     float fRx = rx;
     float fRy = ry;
     float fRz = rz;
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
         return;
     GameObject* pObj = vfunc_23();
     if (pObj)
@@ -362,7 +362,7 @@ void UIAvatarBase::vfunc_13(float rx, float ry, float rz, const Unk_StreamPoint*
 // @0x1418b89f0
 void UIAvatarBase::vfunc_15(float rx, float ry, float rz, int bUpdate)
 {
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
         return;
     GameObject* pObj = vfunc_23();
     if (pObj)
@@ -380,7 +380,7 @@ void UIAvatarBase::vfunc_15(float rx, float ry, float rz, int bUpdate)
 // @0x1418b8b00
 void UIAvatarBase::vfunc_16(int n, int bUpdate)
 {
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
         return;
     GameObject* pObj = vfunc_23();
     if (pObj != 0)
@@ -395,7 +395,7 @@ void UIAvatarBase::vfunc_16(int n, int bUpdate)
 // @0x1418b8c20
 void UIAvatarBase::vfunc_17(float f, int bUpdate)
 {
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
         return;
     if (vfunc_23())
     {
@@ -410,7 +410,7 @@ void UIAvatarBase::vfunc_17(float f, int bUpdate)
 // @0x1418b8d00
 void UIAvatarBase::vfunc_18(int n, int bUpdate)
 {
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
         return;
     if (vfunc_23())
     {
@@ -424,7 +424,7 @@ void UIAvatarBase::vfunc_18(int n, int bUpdate)
 // @0x1418b8e20
 void UIAvatarBase::vfunc_19(float f, int bUpdate)
 {
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
         return;
     if (vfunc_23())
     {
@@ -439,7 +439,7 @@ void UIAvatarBase::vfunc_19(float f, int bUpdate)
 // @0x1418b8f00
 void UIAvatarBase::vfunc_20(float x, float y, float z, int bUpdate)
 {
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
         return;
     Unk_StreamPoint kAngle(x, y, z);
     vfunc_12(DAT_143b01a60, kAngle);
@@ -477,7 +477,7 @@ void UIAvatarBase::vfunc_20(float x, float y, float z, int bUpdate)
 // @0x1418b9140
 void UIAvatarBase::vfunc_9(float x, float y, float z, int bUpdate)
 {
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
         return;
     GameObject* pObj = vfunc_23();
     if (pObj == 0)
@@ -545,7 +545,7 @@ Unk_GoModelKey* UIAvatarBase::vfunc_26(Unk_GoModelKey* pKey)
 // @0x1418b9390
 int UIAvatarBase::vfunc_27(const char* szEvent, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
         return 0;
     if (_stricmp("OnAvatarMouseDown", szEvent) == 0)
     {
@@ -557,7 +557,7 @@ int UIAvatarBase::vfunc_27(const char* szEvent, const Scaleform::GFx::Value* pAr
             {
                 if (m_nLocked == 0 && m_nMode == 2)
                 {
-                    FUN_1418ba120(0);
+                    SetMode(0);
                     return 1;
                 }
                 FUN_1418b9c10();
@@ -587,7 +587,7 @@ int UIAvatarBase::vfunc_27(const char* szEvent, const Scaleform::GFx::Value* pAr
                 int nDx = kData.FUN_1422b8a10();
                 int nDy = kData.FUN_1422b8a10();
                 int nButton = kData.FUN_1422b8a10();
-                int nMode = FUN_1418ba140();
+                int nMode = GetMode();
                 if (FUN_1418ba1a0(nButton) != nMode)
                     return 1;
                 if (abs(nDx) > 2 || abs(nDy) > 2)
@@ -634,7 +634,7 @@ int UIAvatarBase::vfunc_0(GameObject* pObj)
 {
     if (pObj && m_nObjectId == pObj->FUN_14123c580())
     {
-        FUN_1418b9b60(1);
+        SetLoaded(1);
         vfunc_22();
         FUN_1418b9e40();
         if (m_pListener)
@@ -661,7 +661,7 @@ int UIAvatarBase::vfunc_3(GameObject* pObj)
 {
     if (pObj && m_nObjectId == pObj->FUN_14123c580())
     {
-        FUN_1418b9b60(0);
+        SetLoaded(0);
         return 1;
     }
     return 0;
@@ -672,7 +672,7 @@ int UIAvatarBase::vfunc_4(GameObject* pObj)
 {
     if (pObj && m_nObjectId == pObj->FUN_14123c580())
     {
-        FUN_1418b9b60(1);
+        SetLoaded(1);
         if (m_pListener)
             m_pListener->vfunc_o178_2(this);
         FUN_1418b9e40();
@@ -689,39 +689,39 @@ void UIAvatarBase::vfunc_29(int n)
 MS2_REPLACE_METHOD(0x1418B9B20, UIAvatarBase, vfunc_29, 25, 0x79F379CB);
 
 // @0x1418b9b40
-int UIAvatarBase::FUN_1418b9b40()
+int UIAvatarBase::GetState()
 {
     return m_nState;
 }
-MS2_REPLACE_METHOD(0x1418B9B40, UIAvatarBase, FUN_1418b9b40, 17, 0x444DCEE7);
+MS2_REPLACE_METHOD(0x1418B9B40, UIAvatarBase, GetState, 17, 0x444DCEE7);
 
 // @0x1418b9b60
-void UIAvatarBase::FUN_1418b9b60(int bLoaded)
+void UIAvatarBase::SetLoaded(int bLoaded)
 {
     m_bLoaded = bLoaded;
 }
-MS2_REPLACE_METHOD(0x1418B9B60, UIAvatarBase, FUN_1418b9b60, 22, 0x5ED7A56F);
+MS2_REPLACE_METHOD(0x1418B9B60, UIAvatarBase, SetLoaded, 22, 0x5ED7A56F);
 
 // @0x1418b9b80
-int UIAvatarBase::FUN_1418b9b80()
+int UIAvatarBase::IsLoaded()
 {
     return m_bLoaded;
 }
-MS2_REPLACE_METHOD(0x1418B9B80, UIAvatarBase, FUN_1418b9b80, 14, 0xBA6447E3);
+MS2_REPLACE_METHOD(0x1418B9B80, UIAvatarBase, IsLoaded, 14, 0xBA6447E3);
 
 // @0x1418b9ba0
-int UIAvatarBase::FUN_1418b9ba0()
+int UIAvatarBase::GetKind()
 {
     return m_nKind;
 }
-MS2_REPLACE_METHOD(0x1418B9BA0, UIAvatarBase, FUN_1418b9ba0, 14, 0xA25B27BF);
+MS2_REPLACE_METHOD(0x1418B9BA0, UIAvatarBase, GetKind, 14, 0xA25B27BF);
 
 // @0x1418b9bc0
-efd::SmartPointer<UIRenderView> UIAvatarBase::FUN_1418b9bc0()
+efd::SmartPointer<UIRenderView> UIAvatarBase::GetView()
 {
     return m_spView;
 }
-MS2_REPLACE_METHOD(0x1418B9BC0, UIAvatarBase, FUN_1418b9bc0, 65, 0x23CF6EC9);
+MS2_REPLACE_METHOD(0x1418B9BC0, UIAvatarBase, GetView, 65, 0x23CF6EC9);
 
 // @0x1418b9c10
 void UIAvatarBase::FUN_1418b9c10()
@@ -796,18 +796,18 @@ void UIAvatarBase::FUN_1418b9e40()
 }
 
 // @0x1418ba120
-void UIAvatarBase::FUN_1418ba120(int nMode)
+void UIAvatarBase::SetMode(int nMode)
 {
     m_nMode = nMode;
 }
-MS2_REPLACE_METHOD(0x1418BA120, UIAvatarBase, FUN_1418ba120, 25, 0xE467F5FB);
+MS2_REPLACE_METHOD(0x1418BA120, UIAvatarBase, SetMode, 25, 0xE467F5FB);
 
 // @0x1418ba140
-int UIAvatarBase::FUN_1418ba140()
+int UIAvatarBase::GetMode()
 {
     return m_nMode;
 }
-MS2_REPLACE_METHOD(0x1418BA140, UIAvatarBase, FUN_1418ba140, 17, 0xD9D952B7);
+MS2_REPLACE_METHOD(0x1418BA140, UIAvatarBase, GetMode, 17, 0xD9D952B7);
 
 // @0x1418ba160
 int UIAvatarBase::FUN_1418ba160(int nButton)
@@ -846,7 +846,7 @@ MS2_REPLACE_METHOD(0x1418BA250, UIAvatarBase, FUN_1418ba250, 39, 0xE8027097);
 // @0x1418ba280
 void UIAvatarBase::FUN_1418ba280(int bUpdate)
 {
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
         return;
     if (vfunc_23())
     {
@@ -859,22 +859,22 @@ void UIAvatarBase::FUN_1418ba280(int bUpdate)
 // @0x1418ba340
 void UIAvatarBase::FUN_1418ba340(int bUpdate)
 {
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
         return;
     Unk_StreamPoint kAngle;
     FUN_1418ba410(&kAngle);
     vfunc_9(kAngle.x, kAngle.y, kAngle.z, 0);
-    int nSet = FUN_141b48430(FUN_1418b9ba0());
+    int nSet = FUN_141b48430(GetKind());
     vfunc_19(FUN_141b48480(nSet, 0), bUpdate);
 }
 MS2_REPLACE_METHOD(0x1418BA340, UIAvatarBase, FUN_1418ba340, 160, 0xB1D02095);
 
 // @0x1418ba3f0
-void UIAvatarBase::FUN_1418ba3f0(int n)
+void UIAvatarBase::SetLocked(int n)
 {
     m_nLocked = n;
 }
-MS2_REPLACE_METHOD(0x1418BA3F0, UIAvatarBase, FUN_1418ba3f0, 25, 0x9EB3CF4F);
+MS2_REPLACE_METHOD(0x1418BA3F0, UIAvatarBase, SetLocked, 25, 0x9EB3CF4F);
 
 // @0x1418ba410
 void UIAvatarBase::FUN_1418ba410(Unk_StreamPoint* pOut)
@@ -1389,7 +1389,7 @@ bool UIAvatarPC::FUN_1418bbfe0()
 // @0x1418bc110
 void UIAvatarPC::FUN_1418bc110(MS2Ptr<CItem> spItem)
 {
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
         return;
     if (spItem == 0 || !FUN_140527840(spItem.operator->()))
         return;
@@ -1623,7 +1623,7 @@ bool UIAvatarPC::FUN_1418bcd80(int nPose)
         nState = 1;
         nParam = 0x16;
     }
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
     {
         m_nAction = nState;
         m_nActionParam = nParam;
@@ -1636,7 +1636,7 @@ bool UIAvatarPC::FUN_1418bcd80(int nPose)
 // @0x1418bce80
 void UIAvatarPC::FUN_1418bce80(int nValue)
 {
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
         return;
     AvatarPC* pAvatar = FUN_1418bd1d0();
     if (pAvatar)
@@ -1647,7 +1647,7 @@ MS2_REPLACE_METHOD(0x1418BCE80, UIAvatarPC, FUN_1418bce80, 71, 0x16AEDF01);
 // @0x1418bced0
 void UIAvatarPC::FUN_1418bced0(MS2Ptr<CItemData> spData)
 {
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
         return;
     AvatarPC* pAvatar = FUN_1418bd1d0();
     if (pAvatar)
@@ -1658,7 +1658,7 @@ MS2_REPLACE_METHOD(0x1418BCED0, UIAvatarPC, FUN_1418bced0, 133, 0x1531DAE4);
 // @0x1418bcf60
 void UIAvatarPC::FUN_1418bcf60(int nSkillId, short nLevel)
 {
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
         return;
     AvatarPC* pAvatar = FUN_1418bd1d0();
     if (pAvatar)
@@ -1669,7 +1669,7 @@ MS2_REPLACE_METHOD(0x1418BCF60, UIAvatarPC, FUN_1418bcf60, 83, 0xDC9E76BB);
 // @0x1418bcfc0
 void UIAvatarPC::FUN_1418bcfc0(MS2Ptr<CItemData> spData)
 {
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
         return;
     AvatarPC* pAvatar = FUN_1418bd1d0();
     if (pAvatar)
@@ -1680,7 +1680,7 @@ MS2_REPLACE_METHOD(0x1418BCFC0, UIAvatarPC, FUN_1418bcfc0, 133, 0xDDA4CAF5);
 // @0x1418bd050
 void UIAvatarPC::FUN_1418bd050(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
 {
-    if (FUN_1418b9b80() == 0)
+    if (IsLoaded() == 0)
         return;
     AvatarPC* pAvatar = FUN_1418bd1d0();
     if (pAvatar)
@@ -1691,7 +1691,7 @@ MS2_REPLACE_METHOD(0x1418BD050, UIAvatarPC, FUN_1418bd050, 238, 0x27EC8CD8);
 // @0x1418bd150
 void UIAvatarPC::FUN_1418bd150(unsigned int a, unsigned int b)
 {
-    if (!FUN_1418b9b80())
+    if (!IsLoaded())
         return;
     vfunc_20(0.0f, 0.0f, 0.0f, 1);
     AvatarPC* pAvatar = FUN_1418bd1d0();
@@ -1767,18 +1767,18 @@ MS2Ptr<CItem> UIAvatarPC::FUN_1418bd510(int nItemId)
 }
 
 // @0x1418bd710
-MS2Ptr<Customize> UIAvatarPC::FUN_1418bd710()
+MS2Ptr<Customize> UIAvatarPC::GetCustomize()
 {
     return m_spCustomize;
 }
-MS2_REPLACE_METHOD(0x1418BD710, UIAvatarPC, FUN_1418bd710, 67, 0xBAB44D00);
+MS2_REPLACE_METHOD(0x1418BD710, UIAvatarPC, GetCustomize, 67, 0xBAB44D00);
 
 // @0x1418bd760
-int UIAvatarPC::FUN_1418bd760()
+int UIAvatarPC::GetPose()
 {
     return m_nPose;
 }
-MS2_REPLACE_METHOD(0x1418BD760, UIAvatarPC, FUN_1418bd760, 17, 0x38E3250F);
+MS2_REPLACE_METHOD(0x1418BD760, UIAvatarPC, GetPose, 17, 0x38E3250F);
 
 // @0x1418bd780
 void UIAvatarPC::FUN_1418bd780(PC* pSource, AvatarPC* pAvatar)
@@ -1878,7 +1878,7 @@ MS2_REPLACE_METHOD(0x1418BDAE0, UIAvatarCube, FUN_1418bdae0, 195, 0x801587E0);
 // @0x1418bdbb0
 void UIAvatarCube::vfunc_22()
 {
-    float fAngle = FUN_141b48480(FUN_141b48430(FUN_1418b9ba0()), 0);
+    float fAngle = FUN_141b48480(FUN_141b48430(GetKind()), 0);
     vfunc_19(fAngle, 0);
 }
 MS2_REPLACE_METHOD(0x1418BDBB0, UIAvatarCube, vfunc_22, 74, 0x7F20A675);
@@ -2014,7 +2014,7 @@ MS2_REPLACE_METHOD(0x1418BE340, UIAvatarRidee, FUN_1418be340, 195, 0x8032C0BF);
 // @0x1418be410
 void UIAvatarRidee::vfunc_22()
 {
-    float fAngle = FUN_141b48480(FUN_141b48430(FUN_1418b9ba0()), 0);
+    float fAngle = FUN_141b48480(FUN_141b48430(GetKind()), 0);
     vfunc_19(fAngle, 0);
 }
 MS2_REPLACE_METHOD(0x1418BE410, UIAvatarRidee, vfunc_22, 74, 0x28660A3D);
@@ -2081,17 +2081,17 @@ AvatarRidee* UIAvatarRidee::FUN_1418be7e0()
 MS2_REPLACE_METHOD(0x1418BE7E0, UIAvatarRidee, FUN_1418be7e0, 41, 0xCB75113F);
 
 // @0x1418be810
-Unk_RideePtr UIAvatarRidee::FUN_1418be810()
+Unk_RideePtr UIAvatarRidee::GetRow()
 {
     return m_spRow;
 }
-MS2_REPLACE_METHOD(0x1418BE810, UIAvatarRidee, FUN_1418be810, 67, 0xAA3AAE8D);
+MS2_REPLACE_METHOD(0x1418BE810, UIAvatarRidee, GetRow, 67, 0xAA3AAE8D);
 
 // @0x1418be860 (secondary vftable: the listener slot 4)
 int UIAvatarRidee::vfunc_4(GameObject* pObj)
 {
     int nRet = UIAvatarBase::vfunc_4(pObj);
-    float fAngle = FUN_141b48480(FUN_141b48430(FUN_1418b9ba0()), 0);
+    float fAngle = FUN_141b48480(FUN_141b48430(GetKind()), 0);
     vfunc_19(fAngle, 0);
     return nRet;
 }
@@ -2151,7 +2151,7 @@ MS2_REPLACE_METHOD(0x1418BEAF0, UIAvatarPet, FUN_1418beaf0, 126, 0x9094177A);
 // @0x1418beb80
 void UIAvatarPet::vfunc_22()
 {
-    float fAngle = FUN_141b48480(FUN_141b48430(FUN_1418b9ba0()), 0);
+    float fAngle = FUN_141b48480(FUN_141b48430(GetKind()), 0);
     vfunc_19(fAngle, 0);
 }
 MS2_REPLACE_METHOD(0x1418BEB80, UIAvatarPet, vfunc_22, 74, 0xAE818566);

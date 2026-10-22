@@ -341,7 +341,7 @@ void Customize::EditItems::Update()
     int bDragging = 0;
     UICameraEditDialog* pCamera = FUN_140cd47b0(eUI_4ef2);
     if (pCamera)
-        bDragging = pCamera->FUN_1418dead0();
+        bDragging = pCamera->IsDragging();
     if (bDragging == 0) {
         efd::Point3 kHit = reinterpret_cast<efd::Point3&>(DAT_143b01a60);
         int bPick = m_spController->IsPickable(&kHit);

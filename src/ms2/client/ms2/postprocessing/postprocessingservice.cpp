@@ -1270,7 +1270,7 @@ Unk_PPKeyboard* FUN_14025e7c0();
 class Unk_PPSecondView
 {
 public:
-    NiViewRenderClick* FUN_141774010();
+    NiViewRenderClick* GetClick();
 };
 CLogString* FUN_140166440();                                                // the client log
 void FUN_1401859c0(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pwszText);
@@ -1682,14 +1682,14 @@ MS2_REPLACE_METHOD(0x1416a4620, PostProcessingService, FUN_1416a4620, 53, 0x7A4B
 // @0x1416a4660
 void PostProcessingService::FUN_1416a4660(int nMode)
 {
-    m_spDensity->FUN_14150d360(nMode);
+    m_spDensity->SetMode(nMode);
 }
 MS2_REPLACE_METHOD(0x1416a4660, PostProcessingService, FUN_1416a4660, 49, 0xB62389FA);
 
 // @0x1416a46a0
 int PostProcessingService::FUN_1416a46a0()
 {
-    return m_spDensity->FUN_14150d380();
+    return m_spDensity->GetMode();
 }
 MS2_REPLACE_METHOD(0x1416a46a0, PostProcessingService, FUN_1416a46a0, 41, 0x16BD3474);
 
@@ -2057,7 +2057,7 @@ void PostProcessingService::FUN_1416ac3b0(NiRenderTargetGroup* pkTarget)
     Unk_PPSecondView* pkView = pkMgr->FUN_1409a5160();
     if (pkView == 0)
         return;
-    NiViewRenderClick* pkSecondClick = pkView->FUN_141774010();
+    NiViewRenderClick* pkSecondClick = pkView->GetClick();
     if (pkSecondClick == 0)
         return;
     pkSecondClick->SetRenderTargetGroup(pkTarget);
@@ -2123,11 +2123,11 @@ void PostProcessingService::FUN_1416aac60(NiAVObject* pkScene)
 MS2_REPLACE_METHOD(0x1416aac60, PostProcessingService, FUN_1416aac60, 151, 0x8060DB8C);
 
 // @0x1416aad00
-CDepthOfFieldManager* PostProcessingService::FUN_1416aad00()
+CDepthOfFieldManager* PostProcessingService::GetDoF()
 {
     return m_spDoF;
 }
-MS2_REPLACE_METHOD(0x1416aad00, PostProcessingService, FUN_1416aad00, 33, 0x74B8236B);
+MS2_REPLACE_METHOD(0x1416aad00, PostProcessingService, GetDoF, 33, 0x74B8236B);
 
 // @0x1416aad30
 void PostProcessingService::vfunc_3(int)
@@ -2820,7 +2820,7 @@ efd::SmartPointer<NiViewRenderClick> PostProcessingService::FUN_1416a92e0()
         if (!spMaterial)
             return 0;
         MS2MaterialSwapProcessor* pkProcessor = NiNew MS2MaterialSwapProcessor(spMaterial, FUN_1414cffc0);
-        pkProcessor->FUN_1414cfbc0(0);
+        pkProcessor->SetUseMS2List(0);
         pkProcessor->DisableOutlineColor();
         spClick->SetProcessor(pkProcessor);
         spClick->SetPreProcessingCallbackFunc(FUN_1416ac150, &DAT_143a09680);
@@ -2874,7 +2874,7 @@ efd::SmartPointer<NiViewRenderClick> PostProcessingService::FUN_1416a8600()
         kSwappers.push_back(NiNew MaterialSwapper(FUN_1414cfef0, spSkinned));
         kSwappers.push_back(NiNew MaterialSwapper(FUN_1414d00b0, spAlpha));
         MS2MaterialSwapProcessor* pkProcessor = NiNew MS2MaterialSwapProcessor(kSwappers);
-        pkProcessor->FUN_1414cfbc0(0);
+        pkProcessor->SetUseMS2List(0);
         spClick->SetProcessor(pkProcessor);
         return spClick;
     }

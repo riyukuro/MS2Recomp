@@ -27,7 +27,7 @@ public:
     CSoapClient();                                          // 0x14176fbb0
     virtual ~CSoapClient();
     void FUN_14176fcf0(CString strPath, int nMode);         // sets the mode: 2 = soap (keeps the path), else plain
-    CString FUN_14176fde0();                                // the last error text
+    CString GetError();                                // the last error text
     void FUN_14176fe30(CString strError);                   // keeps and logs an error text
     int FUN_14176feb0();                                    // sends the pending UGC uploads (always 0)
     MS2Ptr<CGameRankingWebResult> FUN_141770670(MS2Ptr<CGameRankingParam> spParam);   // the game ranking request

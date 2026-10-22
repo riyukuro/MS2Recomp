@@ -42,7 +42,7 @@ int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
 
 CLogString* FUN_140166440();                                        // the logger
 // The sound service (?\soundservice.cpp) and its FMOD event system.
-class CSoundService { public: FMOD::EventSystem* FUN_1417ae720(); };
+class CSoundService { public: FMOD::EventSystem* GetEventSystem(); };
 CSoundService* FUN_140c9cb10();
 // The FMOD event manager (?\soundeventmgr.cpp): the music API.
 class CSoundEventMgr
@@ -97,7 +97,7 @@ bool CSoundMusicEffectParam::vfunc_2()
     if (m_nCueID > 0)
     {
         FMOD::MusicSystem* pMusic;
-        if (FUN_140c9cb10()->FUN_1417ae720()->getMusicSystem(&pMusic) == FMOD_OK)
+        if (FUN_140c9cb10()->GetEventSystem()->getMusicSystem(&pMusic) == FMOD_OK)
         {
             FMOD::MusicPrompt* pPrompt;
             if (pMusic->prepareCue(m_nCueID, &pPrompt) != FMOD_OK)

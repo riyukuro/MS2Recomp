@@ -115,7 +115,7 @@ CGameRule* FUN_1401c0d90();
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags);
 void FUN_141415600(const CString& strName);
 void FUN_140710590(COutPacket&);
-StringManager* FUN_141025b70();
+StringManager* GetStringManager();
 
 // the string table loader of the arena strings
 CLogString* FUN_140166440();
@@ -180,7 +180,7 @@ void UIIndividualPvPDialog::OnLoadComplete()
         MS2Ptr<Unk_ArenaData> spData = FUN_1412818c0()->FUN_14051a980(it->first);
         if (spData == 0)
             return;
-        CStringW strName = FUN_141025b70()->GetText(StringXmlCategory(4), IndividualArenaStringId(spData->m_nNameId));
+        CStringW strName = GetStringManager()->GetText(StringXmlCategory(4), IndividualArenaStringId(spData->m_nNameId));
         it->second->FUN_1422cdfb0(strName);
         it->second->FUN_1407cbb20("label2", FUN_14028de60(0x425));
     }
@@ -270,8 +270,8 @@ void UIIndividualPvPDialog::FUN_1412cae10(int nArena)
     if (spData == 0)
         return;
     m_nSelected = nArena;
-    m_spName->FUN_1422c4cd0(FUN_141025b70()->GetText(StringXmlCategory(4), IndividualArenaStringId(spData->m_nNameId)));
-    m_spDetail->FUN_1422c4f00(FUN_141025b70()->GetText(StringXmlCategory(4), IndividualArenaStringId(spData->m_nDetailId)));
+    m_spName->FUN_1422c4cd0(GetStringManager()->GetText(StringXmlCategory(4), IndividualArenaStringId(spData->m_nNameId)));
+    m_spDetail->FUN_1422c4f00(GetStringManager()->GetText(StringXmlCategory(4), IndividualArenaStringId(spData->m_nDetailId)));
     FUN_1412cacc0();
     m_30->Invoke("setBanner", CStringW(m_strBannerDir), CString(spData->m_strBanner));
     ASObj rewards(2);
@@ -451,7 +451,7 @@ void UIIndividualPvPDialog::FUN_1412cbf20()
     m_spUnregister->vfunc_3(0);
 }
 
-// ---- StringXmlProc<IndividualArenaStringId>: the table behind FUN_141025b70()->GetText(4, id) ----
+// ---- StringXmlProc<IndividualArenaStringId>: the table behind GetStringManager()->GetText(4, id) ----
 
 // @0x1412cc350
 template <class T> CStringW StringManager::GetText(StringXmlCategory category, T id)

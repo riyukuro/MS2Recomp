@@ -97,9 +97,9 @@ public:
     virtual int vfunc_22(MS2Ptr<Unk_StateArg22> p);                     // 22 0x1417e67c0
     virtual void vfunc_26(Unk_StateDataArg* p);                         // 26 0x1417e91f0
 
-    MS2Ptr<CSkillRecord> FUN_1417ed6f0();                               // the running cast
+    MS2Ptr<CSkillRecord> GetRecord();                               // the running cast
     void FUN_1417ed740(MS2Ptr<CSkillRecord> spRecord);                  // set the charging cast
-    MS2Ptr<CSkillRecord> FUN_1417ed7a0();                               // the charging cast
+    MS2Ptr<CSkillRecord> GetCharge();                               // the charging cast
     void FUN_1417ec2f0();                                               // send the charge / aim state
     void FUN_1417ec630(bool bCharge, bool bStart);                      // charge input on/off
     void FUN_1417ecc10(Unk_MagicTagPtr spTag);
@@ -131,7 +131,7 @@ public:
     void FUN_1417f2150();
     void FUN_1417f27d0();
     void FUN_1417f2a90(bool bFinish);
-    float FUN_1417e9380();                                              // the sequence frequency
+    float GetSpeed();                                              // the sequence frequency
     static int FUN_1417e93a0(PCBase* pOwner, MS2Ptr<SkillLevelData> spLevel, int n60, int nAttack);
                                                                         // pick per motion until one finds targets
     static int FUN_1417e95a0(Unk_SocketPtr<CFillTargetContext> spCtx);  // run an area pick (callee releases)

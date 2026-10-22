@@ -60,7 +60,7 @@ public:
     const CString& FUN_1417590d0();                         // the arrow effect of an arrow attack
     unsigned FUN_141758fb0();                               // the skill id
     unsigned short FUN_141758fe0();                         // the skill level
-    int FUN_141759190();                                    // the start tick
+    int GetStartTick();                                    // the start tick
     void FUN_1417591b0();                                   // hands the record to the attack state of the own player
 
     unsigned long long m_nTagId;                            // +0x18

@@ -752,11 +752,11 @@ int MS2InputService::FUN_140d8c0a0(__int64 nSetting)
 MS2_REPLACE_METHOD(0x140D8C0A0, MS2InputService, FUN_140d8c0a0, 82, 0x08BBEB54);
 
 // @0x140d8c100
-NiPointer<NiInputGamePad> MS2InputService::FUN_140d8c100()
+NiPointer<NiInputGamePad> MS2InputService::GetGamePad()
 {
     return m_spGamePad;
 }
-MS2_REPLACE_METHOD(0x140D8C100, MS2InputService, FUN_140d8c100, 67, 0xD0E3CADB);
+MS2_REPLACE_METHOD(0x140D8C100, MS2InputService, GetGamePad, 67, 0xD0E3CADB);
 
 // @0x140d8c150
 int MS2InputService::FUN_140d8c150(int nKey)

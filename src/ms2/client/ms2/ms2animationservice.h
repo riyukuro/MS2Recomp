@@ -28,7 +28,7 @@ public:
     size_t GetKFMCacheCount();                                            // 0x1414a99a0 (FUN_1414a99a0), cached KFM files
     bool RemoveUnusedAsset(efd::utf8string kPhysicalID);                    // 0x1414a9a80 (FUN_1414a9a80)
 
-    egmAnimation::KFMCache* FUN_1414ac8a0();                                // 0x1414ac8a0, the KFM cache service
+    egmAnimation::KFMCache* GetKFMCache();                                // 0x1414ac8a0, the KFM cache service
 
     static bool FUN_1414a9810(Unk_AssetEvent* pEvent);                      // 0x1414a9810, filter stored by OnInit
 };

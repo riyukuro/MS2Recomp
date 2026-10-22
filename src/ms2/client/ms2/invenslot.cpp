@@ -778,7 +778,7 @@ InvenSlot::InvenSlot(const CString& strName, int nIndex, __int64 nItemUid)
     : MS2DragSlot(strName, nIndex)
 {
     m_nItemUid = nItemUid;
-    FUN_140a7bd80(true);
+    SetEnabled(true);
     FUN_140bfc4b0()->FUN_141aa87c0(this);
 }
 
@@ -1363,7 +1363,7 @@ int InvenSlot::vfunc_18(void* p)
     }
     else if (StoreSlot* pStore = efd::DynamicCast<StoreSlot>(pDrag))
     {
-        MS2Ptr<CItem> spItem = IS_STORE_VIEW.FUN_140de1490(pStore->FUN_1418088f0());
+        MS2Ptr<CItem> spItem = IS_STORE_VIEW.FUN_140de1490(pStore->GetStoreItemId());
         if (spItem == 0)
             return pDrag->vfunc_10();
         if (pStore->vfunc_26(spItem) == 1)
@@ -1392,7 +1392,7 @@ int InvenSlot::vfunc_18(void* p)
         {
             FUN_1414045d0(spItem->FUN_140526a50(), spItem->FUN_140526c50(), spItem->FUN_1405281e0(), 1, m_nIndex);
         }
-        FUN_141404930(pStore->FUN_1418088f0());
+        FUN_141404930(pStore->GetStoreItemId());
     }
     else if (TradeSlot* pTrade = efd::DynamicCast<TradeSlot>(pDrag))
     {
@@ -1455,7 +1455,7 @@ int InvenSlot::vfunc_18(void* p)
     }
     else if (PetSlot* pPet = FUN_140dbc0d0(pDrag))
     {
-        __int64 nUid = pPet->FUN_140dbb060();
+        __int64 nUid = pPet->GetPetItemUid();
         MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(nUid);
         if (spItem.get() != 0)
         {
@@ -1778,7 +1778,7 @@ int InvenSlot::vfunc_0(void* p)
         if (bDagger)
             FUN_141276180(s_strChangeDagger, CString(""));
     }
-    if (FUN_140a7bd60() == true)
+    if (IsEnabled() == true)
         tip.FUN_1409db930(MS2Ptr<CItem>(0), spItem);
     *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
     return 1;

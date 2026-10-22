@@ -428,11 +428,11 @@ StateLocalController::StateLocalController()
 }
 
 // @0x1417b7430
-void StatePcGuideObjectController::FUN_1417b7430(PCBase* pOwner)
+void StatePcGuideObjectController::SetOwner(PCBase* pOwner)
 {
     m_pOwner = pOwner;
 }
-MS2_REPLACE_METHOD(0x1417b7430, StatePcGuideObjectController, FUN_1417b7430, 25, 0x4C00882B);
+MS2_REPLACE_METHOD(0x1417b7430, StatePcGuideObjectController, SetOwner, 25, 0x4C00882B);
 
 // @0x1417b7450
 void StatePcGuideObjectController::FUN_1417b7450()
@@ -470,11 +470,11 @@ int StatePcGuideObjectController::FUN_1417b7540()
 MS2_REPLACE_METHOD(0x1417b7540, StatePcGuideObjectController, FUN_1417b7540, 207, 0x4BE4E6B4);
 
 // @0x1417b7620
-MS2Ptr<Unk_GuideRecord> StatePcGuideObjectController::FUN_1417b7620()
+MS2Ptr<Unk_GuideRecord> StatePcGuideObjectController::GetCurrent()
 {
     return m_spCurrent;
 }
-MS2_REPLACE_METHOD(0x1417b7620, StatePcGuideObjectController, FUN_1417b7620, 65, 0x19C58750);
+MS2_REPLACE_METHOD(0x1417b7620, StatePcGuideObjectController, GetCurrent, 65, 0x19C58750);
 
 // @0x1417b7670
 void StatePcGuideObjectController::FUN_1417b7670(Unk_GuideRecord* pRec)
@@ -562,11 +562,11 @@ void StatePcGuideObjectController::vfunc_0()
 MS2_REPLACE_METHOD(0x1417b7a00, StatePcGuideObjectController, vfunc_0, 317, 0x9B009223);
 
 // @0x1417b7b50
-void StatePcGuideObjectController::FUN_1417b7b50(int nKind)
+void StatePcGuideObjectController::SetKind(int nKind)
 {
     m_nKind = nKind;
 }
-MS2_REPLACE_METHOD(0x1417b7b50, StatePcGuideObjectController, FUN_1417b7b50, 22, 0x55CC0123);
+MS2_REPLACE_METHOD(0x1417b7b50, StatePcGuideObjectController, SetKind, 22, 0x55CC0123);
 
 // @0x1417b7b70
 void StateRideeController::vfunc_0()

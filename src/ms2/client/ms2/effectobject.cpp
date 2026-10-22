@@ -187,7 +187,7 @@ void CEffectObject::vfunc_21(efd::Point3 kDir)
         PCBase* pOwner = FUN_141bd1290(FUN_1403ed2d0(), m_nOwnerId);
         if (pOwner && FUN_14166c930(pOwner) == 0x10)
         {
-            Unk_EffState* pState = FUN_1417db1c0(pOwner->FUN_141678750());
+            Unk_EffState* pState = FUN_1417db1c0(pOwner->GetStateMgr());
             if (pState)
             {
                 Unk_EffTarget* pTarget = pState->FUN_1417ed6f0().get();
@@ -220,7 +220,7 @@ void CEffectObject::vfunc_53(float f)
             float fScale = 1.0f;
             if (FUN_14166c930(pOwner) == 0x10)
             {
-                Unk_EffState* pState = FUN_1417db1c0(pOwner->FUN_141678750());
+                Unk_EffState* pState = FUN_1417db1c0(pOwner->GetStateMgr());
                 if (pState)
                     fScale = pState->FUN_1417e9380();
             }

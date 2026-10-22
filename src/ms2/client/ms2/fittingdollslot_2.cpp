@@ -112,7 +112,7 @@ FittingDollSlot::FittingDollSlot(const CString& strName, int nIndex, int nPcId, 
     m_nPcId = nPcId;
     m_nDollId = nDollId;
     m_nSlot = nSlot;
-    FUN_140a7bd80(true);
+    SetEnabled(true);
 }
 
 // @0x14121d1c0
@@ -193,7 +193,7 @@ int FittingDollSlot::vfunc_0(void* p)
     if (tip.FUN_1409e0d40(pItem) == 0)
         return 0;
     tip.FUN_1409c69b0(FUN_14028de60(0x75c));
-    if (FUN_140a7bd60() == true)
+    if (IsEnabled() == true)
         tip.FUN_1409db7b0(MS2Ptr<CItem>(pItem));
     *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
     return 1;

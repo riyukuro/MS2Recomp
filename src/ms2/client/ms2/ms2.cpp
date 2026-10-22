@@ -895,7 +895,7 @@ bool MS2::RegisterServices(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR l
     CreateLogger()->ReadConfig(spConfig, spEnumManager, false);
 
     efd::SmartPointer<CMainSystem> spMainSystem = EE_NEW CMainSystem;
-    spMainSystem->FUN_141473920(GetCurrentThreadId());
+    spMainSystem->SetMainThreadId(GetCurrentThreadId());
     spMainSystem->FUN_141472eb0(spConfig);
     m_spServiceManager->RegisterSystemService(spMainSystem, 9999);
 
@@ -939,7 +939,7 @@ bool MS2::RegisterServices(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR l
     bLua &= spSchedulerLua->AddStaticBuiltinInitFunction(luaopen_PhysX);
 
     efd::SmartPointer<egf::FlatModelManager> spFlatModelManager = EE_NEW MS2FlatModelManager;
-    spFlatModelManager->SetModelPath((const char*)CMainSystem::GetInstance()->FUN_1414736e0());
+    spFlatModelManager->SetModelPath((const char*)CMainSystem::GetInstance()->GetDataPath());
     m_spServiceManager->RegisterSystemService(spFlatModelManager);
     efd::SmartPointer<egf::EntityLoaderService> spEntityLoader = EE_NEW MS2EntityLoaderService;
     m_spServiceManager->RegisterSystemService(spEntityLoader);
@@ -948,7 +948,7 @@ bool MS2::RegisterServices(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR l
     CNiStreamLoadThread::GetInstance()->SetTexturePalette(spTexturePalette);
     NiSPWorkflowManager* pWorkflowManager = EE_NEW NiSPWorkflowManager(0x40, NiStreamProcessor::MEDIUM, 3);
     ecr::SceneGraphServicePtr spSceneGraph = EE_NEW MS2SceneGraphService(pWorkflowManager, spTexturePalette, false);
-    spSceneGraph->SetDataPath(CMainSystem::GetInstance()->FUN_1414736e0());
+    spSceneGraph->SetDataPath(CMainSystem::GetInstance()->GetDataPath());
     m_spServiceManager->RegisterSystemService(spSceneGraph, 1500);
 
     DAT_143afe6f8 = FUN_140d96230;

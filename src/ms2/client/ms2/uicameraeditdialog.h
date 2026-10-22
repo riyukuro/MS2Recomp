@@ -78,7 +78,7 @@ public:
     void FUN_1418de920();                                           // 0x1418de920 m_1ec = 0
     void FUN_1418de980();                                           // 0x1418de980 turn the actor to the spawn direction
     GameObject* FUN_1418dea40();                                    // 0x1418dea40 the actor of m_nTargetId, else the local player
-    int FUN_1418dead0();                                            // 0x1418dead0 m_bDragging
+    int IsDragging();                                            // 0x1418dead0 m_bDragging
 
     int m_nTargetId;                                                // +0x178
     int m_nDialogId;                                                // +0x17c

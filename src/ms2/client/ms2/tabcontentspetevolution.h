@@ -97,15 +97,15 @@ public:
     virtual int vfunc_6(const char* szEvent, const Scaleform::GFx::Value* pArgs, unsigned nArgs);   // 6 0x140acabf0
     virtual int vfunc_8();                              //  8 0x140acae80 (4)
 
-    unsigned __int64 FUN_140acaea0();                   // the pet's item uid
+    unsigned __int64 GetUidPet();                   // the pet's item uid
     void FUN_140acaec0(ATL::CAtlArray<unsigned __int64>& out);   // copy of m_petCards
     void FUN_140acaef0(ATL::CAtlArray<IdCount>& out);   // copy of m_pool
     void FUN_140acaf20(ATL::CAtlArray<IdCount>& out);   // copy of m_selected
     void OnPetEnchant(int bUsePoint);                  // send the evolution request
     void FUN_140acb560(unsigned nPoint);                // debug: /petevolutionpoint
     int FUN_140acb6f0();                                // number of selected ingredients (an empty count is 1)
-    void FUN_140acb810(int nState);
-    int FUN_140acb830();
+    void SetState(int nState);
+    int GetState();
     void FUN_140acb850();                               // rebuild the pet card list from the inventory
     void FUN_140acba80();                               // rebuild the ingredient pool
     void FUN_140acbd40();                               // drop the selected ingredients

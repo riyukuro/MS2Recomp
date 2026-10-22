@@ -161,7 +161,7 @@ public:
     virtual int vfunc_0(void* p);                   // ITooltip 0x14187dc70 build the item tooltip into p
 
     int FUN_14187d870();                            // item template id, 0 if empty
-    void FUN_14187d8c0(MS2Ptr<CItem> spItem);       // m_spItem = spItem
+    void SetItem(MS2Ptr<CItem> spItem);       // m_spItem = spItem
 
 public:
     MS2_LAYOUT_FRIEND;

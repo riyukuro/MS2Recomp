@@ -1622,7 +1622,7 @@ CStringW PC::vfunc_77()
     efd::SmartPointer<Ridee> spRidee = FUN_1416764a0();
     if (spRidee)
     {
-        MS2Ptr<Unk_RideeData> spData = spRidee->FUN_141707750();
+        MS2Ptr<Unk_RideeData> spData = spRidee->GetData();
         if (spData.get() && spData->m_nAC != 0)
             return FUN_1401a9d70()->FUN_141811980(0x31, spData->m_nNameId);
     }
@@ -1875,7 +1875,7 @@ CString PC::FUN_141658d20()
         StateSkill* pState = static_cast<StateSkill*>(FUN_14166ccb0());
         if (pState == 0)
             break;
-        MS2Ptr<CSkillRecord> spSkill = pState->FUN_1417ed6f0();
+        MS2Ptr<CSkillRecord> spSkill = pState->GetRecord();
         if (!spSkill)
             break;
         Unk_PCSkillMotion* pMotion = reinterpret_cast<Unk_PCSkillRecord*>(spSkill.operator->())->FUN_141759830();
@@ -1942,9 +1942,9 @@ int PC::FUN_141659650() { return m_nCubeModeFFC == 2; }
 // @0x141659690
 int PC::FUN_141659690()
 {
-    if (FUN_141659700() == 0)
+    if (GetCubeCraft() == 0)
         return 0;
-    return FUN_141659700()->FUN_1410a8ab0();
+    return GetCubeCraft()->FUN_1410a8ab0();
 }
 
 // @0x1416596d0
@@ -1956,8 +1956,8 @@ int PC::FUN_1416596d0()
 }
 
 // @0x141659700
-Unk_PCCubeCraft* PC::FUN_141659700() { return m_pCubeCraft; }
-MS2_REPLACE_METHOD(0x141659700, PC, FUN_141659700, 18, 0x829A31E1);
+Unk_PCCubeCraft* PC::GetCubeCraft() { return m_pCubeCraft; }
+MS2_REPLACE_METHOD(0x141659700, PC, GetCubeCraft, 18, 0x829A31E1);
 
 // @0x141659720
 void PC::FUN_141659720()
@@ -2579,10 +2579,10 @@ void PC::FUN_141657c80(bool bEnable)
 // @0x141659000
 void PC::FUN_141659000(int bForce)
 {
-    int bActive = vfunc_65() && m_spStateMgr->FUN_1417db1c0()->vfunc_15();
+    int bActive = vfunc_65() && m_spStateMgr->GetState()->vfunc_15();
     if (FUN_1416595d0())
         bActive = 0;
-    if (m_spStateMgr->FUN_1417db1c0()->vfunc_16())
+    if (m_spStateMgr->GetState()->vfunc_16())
         bActive = 1;
     if (bActive && (m_spWeaponActionD70 == 0 || m_spWeaponActionD70->m_nRightHand == 0))
         bActive = 0;
@@ -3393,13 +3393,13 @@ void PC::FUN_1416629d0(Unk_StreamPoint kPos, Unk_StreamPoint kRot)
     efd::SmartPointer<Ridee> spRidee = FUN_1416764a0();
     if (spRidee)
     {
-        MS2Ptr<CStateManager> spStates = spRidee->FUN_141678750();
+        MS2Ptr<CStateManager> spStates = spRidee->GetStateMgr();
         if (spStates.get())
             ((CStateManager*)spStates)->FUN_1417daa70();
     }
     else
     {
-        MS2Ptr<CStateManager> spStates = FUN_141678750();
+        MS2Ptr<CStateManager> spStates = GetStateMgr();
         if (spStates.get())
             ((CStateManager*)spStates)->FUN_1417daa70();
     }
@@ -4836,7 +4836,7 @@ void PC::FUN_141656780()
 // Set the profile image key; request the image when it is not cached yet.
 void PC::FUN_141660fc0(CString str)
 {
-    if (FUN_14052d220()->FUN_14187f3b0() == 1)
+    if (FUN_14052d220()->GetMode() == 1)
         m_str1028 = "";
     else
         m_str1028 = str;

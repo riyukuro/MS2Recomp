@@ -415,7 +415,7 @@ CGuideObject::CGuideObject()
     m_unk_190.m_z = 3.5f;
     m_unk_190.m_y = 1.2f;
     m_unk_190.m_w = 3.5f;
-    m_ctrl.FUN_1417b7430(this);
+    m_ctrl.SetOwner(this);
 }
 
 // @0x1410a0fa0
@@ -490,7 +490,7 @@ void CGuideObject::vfunc_126()
     m_ctrl.FUN_1417b76b0(FUN_14086d260()->FUN_141473230());
     if (m_ctrl.FUN_1417b7490())
         m_ctrl.vfunc_0();
-    MS2Ptr<Unk_GuideRecord> spOld = m_ctrl.FUN_1417b7620();
+    MS2Ptr<Unk_GuideRecord> spOld = m_ctrl.GetCurrent();
     if (!spOld.IsNull()
         && spOld->m_pos3c == m_pos98
         && spOld->m_nType == ::FUN_14166c930(this)
@@ -581,7 +581,7 @@ CConstructionGuideObject::CConstructionGuideObject()
     vfunc_59(0x24, 0, 0, 0);
     m_fUnk110 = -20.0f;
     m_fUnk114 = 50.0f;
-    m_ctrl.FUN_1417b7b50(0);
+    m_ctrl.SetKind(0);
 }
 
 // @0x1410a1d60
@@ -1007,7 +1007,7 @@ CFishingGuideObject::CFishingGuideObject()
     if (pState)
         FUN_140ddbf50(pState, this);
     m_spStateMgr->FUN_1417daeb0(0x2e, pState);
-    m_ctrl.FUN_1417b7b50(1);
+    m_ctrl.SetKind(1);
     vfunc_59(0x2e, 0, 0, 0);
     m_fishLine.m_pOwner = this;
     m_nEffectA = 0;
@@ -1381,7 +1381,7 @@ CSkillMagicControlGuide::CSkillMagicControlGuide()
     // the state is new'd straight into the call (no named local)
     m_spStateMgr->FUN_1417daeb0(0x41, new StateSkillMagicControl(this));
     vfunc_59(0x41, 0, 0, 0);
-    m_ctrl.FUN_1417b7b50(2);
+    m_ctrl.SetKind(2);
 }
 
 // @0x1410a5e50

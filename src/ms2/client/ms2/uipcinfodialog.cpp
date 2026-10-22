@@ -1870,7 +1870,7 @@ void UIPCInfoDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, v
     kCamera.m_kTarget += pObj->vfunc_18() + NiPoint3(0.0f, 0.0f, -5.0f);
     kCamera.m_kPosition += kCamera.m_kTarget + NiPoint3(-30.0f, 0.0f, 0.0f);
     kCamera.m_nSteps = 5;
-    m_spAvatar->FUN_1418b9bc0()->vfunc_13(kCamera);
+    m_spAvatar->GetView()->vfunc_13(kCamera);
 }
 
 // @0x141337380

@@ -200,12 +200,12 @@
 140a6d8e0	JobSystemCli::FUN_140a6d8e0	SetOwner	high	setter	body stores the argument in m_pOwner	client/ms2/jobsystemcli.cpp	nam1	2026-10-22	applied desc-1 as SetOwner
 140a6f860	LapenshardSlot::FUN_140a6f860	GetSlot	high	getter	body returns m_nSlot	client/ms2/lapenshardslot.cpp	nam1	2026-10-22	applied desc-1 as GetSlot
 140a700b0	Unk_LsHud::FUN_140a700b0	GetPage	high	getter	body returns m_nPage	client/ms2/lapenshardslot.cpp	nam1	2026-10-22	applied desc-1 as GetPage
-140a7bd60	MS2DragSlot::FUN_140a7bd60	IsEnabled	high	getter	body returns m_bEnabled	client/ms2/ms2dragslot.cpp	nam1	2026-10-22	
-140a7bd80	MS2DragSlot::FUN_140a7bd80	SetEnabled	high	setter	body stores the argument in m_bEnabled	client/ms2/ms2dragslot.cpp	nam1	2026-10-22	
-140a8b340	PaybackManagerClient::FUN_140a8b340	GetMerat	high	getter	body returns m_nMerat	client/ms2/paybackmanagerclient.cpp	nam1	2026-10-22	
-140acaea0	TabContentsPetEvolution::FUN_140acaea0	GetUidPet	high	getter	body returns m_uidPet	client/ms2/tabcontentspetevolution.cpp	nam1	2026-10-22	
-140acb810	TabContentsPetEvolution::FUN_140acb810	SetState	high	setter	body stores the argument in m_nState	client/ms2/tabcontentspetevolution.cpp	nam1	2026-10-22	
-140acb830	TabContentsPetEvolution::FUN_140acb830	GetState	high	getter	body returns m_nState	client/ms2/tabcontentspetevolution.cpp	nam1	2026-10-22	
+140a7bd60	MS2DragSlot::FUN_140a7bd60	IsEnabled	high	getter	body returns m_bEnabled	client/ms2/ms2dragslot.cpp	nam1	2026-10-22	applied desc-2 as IsEnabled
+140a7bd80	MS2DragSlot::FUN_140a7bd80	SetEnabled	high	setter	body stores the argument in m_bEnabled	client/ms2/ms2dragslot.cpp	nam1	2026-10-22	applied desc-2 as SetEnabled
+140a8b340	PaybackManagerClient::FUN_140a8b340	GetMerat	high	getter	body returns m_nMerat	client/ms2/paybackmanagerclient.cpp	nam1	2026-10-22	applied desc-2 as GetMerat
+140acaea0	TabContentsPetEvolution::FUN_140acaea0	GetUidPet	high	getter	body returns m_uidPet	client/ms2/tabcontentspetevolution.cpp	nam1	2026-10-22	applied desc-2 as GetUidPet
+140acb810	TabContentsPetEvolution::FUN_140acb810	SetState	high	setter	body stores the argument in m_nState	client/ms2/tabcontentspetevolution.cpp	nam1	2026-10-22	applied desc-2 as SetState
+140acb830	TabContentsPetEvolution::FUN_140acb830	GetState	high	getter	body returns m_nState	client/ms2/tabcontentspetevolution.cpp	nam1	2026-10-22	applied desc-2 as GetState
 140ad21b0	CMouseController::FUN_140ad21b0	HasMode	medium	bool-test	body returns m_nMode != 0	unnamed/unit_140ad1860.cpp	nam1	2026-10-22	
 140ad22a0	CMouseController::FUN_140ad22a0	GetMove	high	getter	body returns m_vMove	unnamed/unit_140ad1860.cpp	nam1	2026-10-22	
 140ad4ba0	FUN_140ad4ba0	GetSceneGraphService	medium	singleton	returns the SceneGraphService instance pointer DAT_143ab9508	unnamed/unit_140ad1860.cpp	nam1	2026-10-22	
@@ -244,14 +244,14 @@
 140b1f0e0	DungeonMissionDamageToNpc::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "DungeonMissionDamageToNpc" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/dungeonmissioncli.cpp	nam1	2026-10-22	
 140b1f190	DungeonMissionTrigger::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "DungeonMissionTrigger" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/dungeonmissioncli.cpp	nam1	2026-10-22	
 140b6cb20	ItemExchangeSlot::vfunc_25	GetItem	medium	getter	body returns m_spItem; virtual slot: rename the whole override family	client/ms2/itemexchangeslot.cpp	nam1	2026-10-22	
-140b77380	PetCardSlot::FUN_140b77380	GetItemUid	high	getter	body returns m_nItemUid	client/ms2/petcardslot.cpp	nam1	2026-10-22	
-140b77bc0	PetConsumeSlot::FUN_140b77bc0	GetItemUid	high	getter	body returns m_nItemUid	client/ms2/petcardslot.cpp	nam1	2026-10-22	
-140b78af0	CReactor::FUN_140b78af0	GetName	high	getter	body returns m_strName	client/ms2/reactor.cpp	nam1	2026-10-22	
-140b95140	TabContentsPetRemakeOption::FUN_140b95140	GetUidPet	high	getter	body returns m_uidPet	client/ms2/tabcontentspetremakeoption.cpp	nam1	2026-10-22	
-140b95160	TabContentsPetRemakeOption::FUN_140b95160	GetUidIngredient	high	getter	body returns m_uidIngredient	client/ms2/tabcontentspetremakeoption.cpp	nam1	2026-10-22	
-140b95180	TabContentsPetRemakeOption::FUN_140b95180	GetPet	high	getter	body returns m_pet	client/ms2/tabcontentspetremakeoption.cpp	nam1	2026-10-22	
-140b951d0	TabContentsPetRemakeOption::FUN_140b951d0	GetPetNext	high	getter	body returns m_petNext	client/ms2/tabcontentspetremakeoption.cpp	nam1	2026-10-22	
-140b967a0	TabContentsPetRemakeOption::FUN_140b967a0	GetState	high	getter	body returns m_nState	client/ms2/tabcontentspetremakeoption.cpp	nam1	2026-10-22	
+140b77380	PetCardSlot::FUN_140b77380	GetItemUid	high	getter	body returns m_nItemUid	client/ms2/petcardslot.cpp	nam1	2026-10-22	applied desc-2 as GetItemUid
+140b77bc0	PetConsumeSlot::FUN_140b77bc0	GetItemUid	high	getter	body returns m_nItemUid	client/ms2/petcardslot.cpp	nam1	2026-10-22	applied desc-2 as GetItemUid
+140b78af0	CReactor::FUN_140b78af0	GetName	high	getter	body returns m_strName	client/ms2/reactor.cpp	nam1	2026-10-22	applied desc-2 as GetName
+140b95140	TabContentsPetRemakeOption::FUN_140b95140	GetUidPet	high	getter	body returns m_uidPet	client/ms2/tabcontentspetremakeoption.cpp	nam1	2026-10-22	applied desc-2 as GetUidPet
+140b95160	TabContentsPetRemakeOption::FUN_140b95160	GetUidIngredient	high	getter	body returns m_uidIngredient	client/ms2/tabcontentspetremakeoption.cpp	nam1	2026-10-22	applied desc-2 as GetUidIngredient
+140b95180	TabContentsPetRemakeOption::FUN_140b95180	GetPet	high	getter	body returns m_pet	client/ms2/tabcontentspetremakeoption.cpp	nam1	2026-10-22	applied desc-2 as GetPet
+140b951d0	TabContentsPetRemakeOption::FUN_140b951d0	GetPetNext	high	getter	body returns m_petNext	client/ms2/tabcontentspetremakeoption.cpp	nam1	2026-10-22	applied desc-2 as GetPetNext
+140b967a0	TabContentsPetRemakeOption::FUN_140b967a0	GetState	high	getter	body returns m_nState	client/ms2/tabcontentspetremakeoption.cpp	nam1	2026-10-22	applied desc-2 as GetState
 140ba2290	UIStanceBar::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "StanceBar" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	unnamed/unit_140ba2180.cpp	nam1	2026-10-22	
 140ba2ba0	UIAdventureLevelDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "AdventureLevelDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiadventureleveldialog.cpp	nam1	2026-10-22	
 140ba54f0	UIAdventureLevelOldDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "AdventureLevelOldDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiadventurelevelolddialog.cpp	nam1	2026-10-22	
@@ -261,7 +261,7 @@
 140bb9810	UIBirthdayCardDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "BirthdayCardDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uibirthdaycarddialog.cpp	nam1	2026-10-22	
 140bb9f00	UIBlueprintMarketDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "BlueprintMarketDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiblueprintmarketdialog.cpp	nam1	2026-10-22	
 140bc3250	UICashAttendDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "CashAttendGiftDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uicashattenddialog.cpp	nam1	2026-10-22	
-140bc4410	UICashAttendDialog::FUN_140bc4410	GetSelected	high	getter	body returns m_selected	client/ms2/uicashattenddialog.cpp	nam1	2026-10-22	
+140bc4410	UICashAttendDialog::FUN_140bc4410	GetSelected	high	getter	body returns m_selected	client/ms2/uicashattenddialog.cpp	nam1	2026-10-22	applied desc-2 as GetSelected
 140bd0ab0	UIChangeJobEffect::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ChangeJobEffect" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uichangejobeffect.cpp	nam1	2026-10-22	
 140bd0f60	UIChatEmoticonDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ChatEmoticonDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uichatemoticondialog.cpp	nam1	2026-10-22	
 140bd7f00	UIChangeJobDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ChangeJobDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	unnamed/unit_140bd7e10.cpp	nam1	2026-10-22	
@@ -308,12 +308,12 @@
 140c6b4a0	UILongTermAttendGiftDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "LongTermAttendGiftDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uilongtermattendgiftdialog.cpp	nam1	2026-10-22	
 140c74d70	UIMentoringPage::FUN_140c74d70	GetScript	high	getter	body returns m_script	client/ms2/uimentoringmentorpage.cpp	nam1	2026-10-22	
 140c74dc0	UIMentoringPage::FUN_140c74dc0	GetOwner	high	getter	body returns m_owner	client/ms2/uimentoringmentorpage.cpp	nam1	2026-10-22	
-140c8b2e0	CPetManager::FUN_140c8b2e0	GetSummonUid	high	getter	body returns m_nSummonUid	client/ms2/petmanager.cpp	nam1	2026-10-22	
-140c8b300	CPetManager::FUN_140c8b300	SetSummonUid	high	setter	body stores the argument in m_nSummonUid	client/ms2/petmanager.cpp	nam1	2026-10-22	
-140c8b320	CPetManager::FUN_140c8b320	GetAuto	high	getter	body returns m_nAuto	client/ms2/petmanager.cpp	nam1	2026-10-22	
-140c9bb40	RecodeMgr::FUN_140c9bb40	IsRecording	high	getter	body returns m_bRecording	client/ms2/recodemgr.cpp	nam1	2026-10-22	
-140c9ce60	RoomStageDungeonCli::FUN_140c9ce60	SetFlag	high	setter	body stores the argument in m_bFlag	client/ms2/roomstagedungeoncli.cpp	nam1	2026-10-22	
-140cb47b0	TabContentsPetCompose::FUN_140cb47b0	GetUidPet	high	getter	body returns m_uidPet	client/ms2/tabcontentspetcompose.cpp	nam1	2026-10-22	
+140c8b2e0	CPetManager::FUN_140c8b2e0	GetSummonUid	high	getter	body returns m_nSummonUid	client/ms2/petmanager.cpp	nam1	2026-10-22	applied desc-2 as GetSummonUid
+140c8b300	CPetManager::FUN_140c8b300	SetSummonUid	high	setter	body stores the argument in m_nSummonUid	client/ms2/petmanager.cpp	nam1	2026-10-22	applied desc-2 as SetSummonUid
+140c8b320	CPetManager::FUN_140c8b320	GetAuto	high	getter	body returns m_nAuto	client/ms2/petmanager.cpp	nam1	2026-10-22	applied desc-2 as GetAuto
+140c9bb40	RecodeMgr::FUN_140c9bb40	IsRecording	high	getter	body returns m_bRecording	client/ms2/recodemgr.cpp	nam1	2026-10-22	applied desc-2 as IsRecording
+140c9ce60	RoomStageDungeonCli::FUN_140c9ce60	SetFlag	high	setter	body stores the argument in m_bFlag	client/ms2/roomstagedungeoncli.cpp	nam1	2026-10-22	applied desc-2 as SetFlag
+140cb47b0	TabContentsPetCompose::FUN_140cb47b0	GetUidPet	high	getter	body returns m_uidPet	client/ms2/tabcontentspetcompose.cpp	nam1	2026-10-22	applied desc-2 as GetUidPet
 140cd1bd0	Customize::FUN_140cd1bd0	GetListener	high	getter	body returns m_pListener	client/ms2/customize.cpp	nam1	2026-10-22	applied desc-1 as GetListener
 140cd3800	Customize::FUN_140cd3800	IsPreview	high	getter	body returns m_bPreview	client/ms2/customize.cpp	nam1	2026-10-22	applied desc-1 as IsPreview
 140cd38b0	Customize::FUN_140cd38b0	GetPalette	high	getter	body returns m_nPalette	client/ms2/customize.cpp	nam1	2026-10-22	applied desc-1 as GetPalette
@@ -339,14 +339,14 @@
 140d41400	CItemGem::FUN_140d41400	GetGem	high	getter	body returns m_spGem	client/ms2/itempreview.cpp	nam1	2026-10-22	applied desc-1 as GetGem
 140d41b40	ItemLockSlot::vfunc_25	GetItem	medium	getter	body returns m_spItem; virtual slot: rename the whole override family	client/ms2/itemlockslot.cpp	nam1	2026-10-22	
 140d42850	ItemScrollSlot::vfunc_25	GetItem	medium	getter	body returns m_spItem; virtual slot: rename the whole override family	unnamed/unit_1400d2c20.cpp	nam1	2026-10-22	
-140d566d0	CMeratMarketMan::FUN_140d566d0	GetSellerState	high	getter	body returns m_nSellerState	client/ms2/meratmarketman.cpp	nam1	2026-10-22	
+140d566d0	CMeratMarketMan::FUN_140d566d0	GetSellerState	high	getter	body returns m_nSellerState	client/ms2/meratmarketman.cpp	nam1	2026-10-22	applied desc-2 as GetSellerState
 140d6e940	CMesoMarketMan::FUN_140d6e940	GetLimits	medium	getter	body returns m_limits	client/ms2/mesomarketproductcli.cpp	nam1	2026-10-22	
-140d6eb50	CMesoMarketMan::FUN_140d6eb50	GetOwn	high	getter	body returns m_nOwn	client/ms2/mesomarketproductcli.cpp	nam1	2026-10-22	
-140d6eb70	CMesoMarketMan::FUN_140d6eb70	GetBuy	high	getter	body returns m_nBuy	client/ms2/mesomarketproductcli.cpp	nam1	2026-10-22	
-140d8c100	MS2InputService::FUN_140d8c100	GetGamePad	high	getter	body returns m_spGamePad	client/ms2/ms2inputservice.cpp	nam1	2026-10-22	
-140d9f2c0	CMyCharacter::FUN_140d9f2c0	GetRecord	high	getter	body returns m_spRecord	client/ms2/notifydebugstate.cpp	nam1	2026-10-22	
-140d9f4e0	CMyCharacter::FUN_140d9f4e0	GetStage	high	getter	body returns m_spStage	client/ms2/notifydebugstate.cpp	nam1	2026-10-22	
-140d9f8f0	CMyCharacter::FUN_140d9f8f0	GetChatEmoticon	high	getter	body returns m_spChatEmoticon	client/ms2/notifydebugstate.cpp	nam1	2026-10-22	
+140d6eb50	CMesoMarketMan::FUN_140d6eb50	GetOwn	high	getter	body returns m_nOwn	client/ms2/mesomarketproductcli.cpp	nam1	2026-10-22	applied desc-2 as GetOwn
+140d6eb70	CMesoMarketMan::FUN_140d6eb70	GetBuy	high	getter	body returns m_nBuy	client/ms2/mesomarketproductcli.cpp	nam1	2026-10-22	applied desc-2 as GetBuy
+140d8c100	MS2InputService::FUN_140d8c100	GetGamePad	high	getter	body returns m_spGamePad	client/ms2/ms2inputservice.cpp	nam1	2026-10-22	applied desc-2 as GetGamePad
+140d9f2c0	CMyCharacter::FUN_140d9f2c0	GetRecord	high	getter	body returns m_spRecord	client/ms2/notifydebugstate.cpp	nam1	2026-10-22	applied desc-2 as GetRecord
+140d9f4e0	CMyCharacter::FUN_140d9f4e0	GetStage	high	getter	body returns m_spStage	client/ms2/notifydebugstate.cpp	nam1	2026-10-22	applied desc-2 as GetStage
+140d9f8f0	CMyCharacter::FUN_140d9f8f0	GetChatEmoticon	high	getter	body returns m_spChatEmoticon	client/ms2/notifydebugstate.cpp	nam1	2026-10-22	applied desc-2 as GetChatEmoticon
 140db40d0	NotifyObject::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "NotifyObject" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	unnamed/unit_140da50e0.cpp	nam1	2026-10-22	
 140db4130	NotifyGameEventChanged::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "NotifyGameEventChanged" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	unnamed/unit_140da50e0.cpp	nam1	2026-10-22	
 140db4190	NotifyLearnEmotion::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "NotifyLearnEmotion" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	unnamed/unit_140da50e0.cpp	nam1	2026-10-22	
@@ -394,21 +394,21 @@
 140db5580	NotifyChangeGameOptionInput::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "NotifyChangeGameOptionInput" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/notifychangebuff.cpp	nam1	2026-10-22	
 140db55e0	NotifyChangeUIBuildingCount::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "NotifyChangeUIBuildingCount" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/notifychangebuff.cpp	nam1	2026-10-22	
 140db5640	NotifyChangeEnableFeature::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "NotifyChangeEnableFeature" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/notifychangebuff.cpp	nam1	2026-10-22	
-140db9000	CNPSMan::FUN_140db9000	SetMode	high	setter	body stores the argument in m_nMode	client/ms2/npsman.cpp	nam1	2026-10-22	
-140db9020	CNPSMan::FUN_140db9020	SetPlayer	high	setter	body stores the argument in m_hPlayer	client/ms2/npsman.cpp	nam1	2026-10-22	
-140db9130	CNPSMan::FUN_140db9130	IsArmed	high	getter	body returns m_bArmed	client/ms2/npsman.cpp	nam1	2026-10-22	
-140db9150	CNPSMan::FUN_140db9150	IsShown	high	getter	body returns m_bShown	client/ms2/npsman.cpp	nam1	2026-10-22	
-140dbb060	PetSlot::FUN_140dbb060	GetPetItemUid	high	getter	body returns m_nPetItemUid	client/ms2/petslot.cpp	nam1	2026-10-22	
-140dbb080	PetSlot::FUN_140dbb080	SetPetItemUid	high	setter	body stores the argument in m_nPetItemUid	client/ms2/petslot.cpp	nam1	2026-10-22	
+140db9000	CNPSMan::FUN_140db9000	SetMode	high	setter	body stores the argument in m_nMode	client/ms2/npsman.cpp	nam1	2026-10-22	applied desc-2 as SetMode
+140db9020	CNPSMan::FUN_140db9020	SetPlayer	high	setter	body stores the argument in m_hPlayer	client/ms2/npsman.cpp	nam1	2026-10-22	applied desc-2 as SetPlayer
+140db9130	CNPSMan::FUN_140db9130	IsArmed	high	getter	body returns m_bArmed	client/ms2/npsman.cpp	nam1	2026-10-22	applied desc-2 as IsArmed
+140db9150	CNPSMan::FUN_140db9150	IsShown	high	getter	body returns m_bShown	client/ms2/npsman.cpp	nam1	2026-10-22	applied desc-2 as IsShown
+140dbb060	PetSlot::FUN_140dbb060	GetPetItemUid	high	getter	body returns m_nPetItemUid	client/ms2/petslot.cpp	nam1	2026-10-22	applied desc-2 as GetPetItemUid
+140dbb080	PetSlot::FUN_140dbb080	SetPetItemUid	high	setter	body stores the argument in m_nPetItemUid	client/ms2/petslot.cpp	nam1	2026-10-22	applied desc-2 as SetPetItemUid
 140dbdc80	CPostEffect::vfunc_12	GetType	medium	getter	body returns m_nType; virtual slot: rename the whole override family	client/ms2/posteffectparam.cpp	nam1	2026-10-22	
-140dfc2a0	CUGCMapItem::FUN_140dfc2a0	SetItemId	high	setter	body stores the argument in m_nItemId	client/ms2/ugcmapitem.cpp	nam1	2026-10-22	
-140dfc2c0	CUGCMapItem::FUN_140dfc2c0	SetUid	high	setter	body stores the argument in m_nUid	client/ms2/ugcmapitem.cpp	nam1	2026-10-22	
-140dfc2e0	CUGCMapItem::FUN_140dfc2e0	SetCount	high	setter	body stores the argument in m_nCount	client/ms2/ugcmapitem.cpp	nam1	2026-10-22	
-140dfc300	CUGCMapItem::FUN_140dfc300	SetLook	high	setter	body stores the argument in m_spLook	client/ms2/ugcmapitem.cpp	nam1	2026-10-22	
-140dfc370	CUGCMapItem::FUN_140dfc370	GetItemId	high	getter	body returns m_nItemId	client/ms2/ugcmapitem.cpp	nam1	2026-10-22	
-140dfc390	CUGCMapItem::FUN_140dfc390	GetUid	high	getter	body returns m_nUid	client/ms2/ugcmapitem.cpp	nam1	2026-10-22	
-140dfc3b0	CUGCMapItem::FUN_140dfc3b0	GetCount	high	getter	body returns m_nCount	client/ms2/ugcmapitem.cpp	nam1	2026-10-22	
-140dfc3d0	CUGCMapItem::FUN_140dfc3d0	GetLook	high	getter	body returns m_spLook	client/ms2/ugcmapitem.cpp	nam1	2026-10-22	
+140dfc2a0	CUGCMapItem::FUN_140dfc2a0	SetItemId	high	setter	body stores the argument in m_nItemId	client/ms2/ugcmapitem.cpp	nam1	2026-10-22	applied desc-2 as SetItemId
+140dfc2c0	CUGCMapItem::FUN_140dfc2c0	SetUid	high	setter	body stores the argument in m_nUid	client/ms2/ugcmapitem.cpp	nam1	2026-10-22	applied desc-2 as SetUid
+140dfc2e0	CUGCMapItem::FUN_140dfc2e0	SetCount	high	setter	body stores the argument in m_nCount	client/ms2/ugcmapitem.cpp	nam1	2026-10-22	applied desc-2 as SetCount
+140dfc300	CUGCMapItem::FUN_140dfc300	SetLook	high	setter	body stores the argument in m_spLook	client/ms2/ugcmapitem.cpp	nam1	2026-10-22	applied desc-2 as SetLook
+140dfc370	CUGCMapItem::FUN_140dfc370	GetItemId	high	getter	body returns m_nItemId	client/ms2/ugcmapitem.cpp	nam1	2026-10-22	applied desc-2 as GetItemId
+140dfc390	CUGCMapItem::FUN_140dfc390	GetUid	high	getter	body returns m_nUid	client/ms2/ugcmapitem.cpp	nam1	2026-10-22	applied desc-2 as GetUid
+140dfc3b0	CUGCMapItem::FUN_140dfc3b0	GetCount	high	getter	body returns m_nCount	client/ms2/ugcmapitem.cpp	nam1	2026-10-22	applied desc-2 as GetCount
+140dfc3d0	CUGCMapItem::FUN_140dfc3d0	GetLook	high	getter	body returns m_spLook	client/ms2/ugcmapitem.cpp	nam1	2026-10-22	applied desc-2 as GetLook
 140e020f0	UIAdPushLimitedDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "AdPushLimitedDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiadpushlimiteddialog.cpp	nam1	2026-10-22	
 140e05310	UICameraModeHelpDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "CameraModeHelpDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uicameramodehelpdialog.cpp	nam1	2026-10-22	
 140e05560	UIChaosDPSDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ChaosDPSDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uichaosdpsdialog.cpp	nam1	2026-10-22	
@@ -581,8 +581,8 @@
 140ff4500	UIWriteMusicDialog::FUN_140ff4500	SetItem	high	setter	body stores the argument in m_spItem	client/ms2/uiwritemusicdialog.cpp	nam1	2026-10-22	
 14100a420	UIPlayInstrumentDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "PlayInstrumentDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiplayinstrumentdialog.cpp	nam1	2026-10-22	
 14100d9f0	UIPlayInstrumentDialog::FUN_14100d9f0	GetAutoPlay	high	getter	body returns m_nAutoPlay	client/ms2/uiplayinstrumentdialog.cpp	nam1	2026-10-22	
-141020a70	RideeInterpolator::FUN_141020a70	SetObjectId	high	setter	body stores the argument in m_nObjectId	client/ms2/rideeinterpolator.cpp	nam1	2026-10-22	
-141025b70	FUN_141025b70	GetStringManager	medium	singleton	returns the StringManager instance pointer DAT_143ab1c98	client/ms2/string/stringidinterface.cpp	nam1	2026-10-22	
+141020a70	RideeInterpolator::FUN_141020a70	SetObjectId	high	setter	body stores the argument in m_nObjectId	client/ms2/rideeinterpolator.cpp	nam1	2026-10-22	applied desc-2 as SetObjectId
+141025b70	FUN_141025b70	GetStringManager	medium	singleton	returns the StringManager instance pointer DAT_143ab1c98	client/ms2/string/stringidinterface.cpp	nam1	2026-10-22	applied desc-2 as GetStringManager
 14102bab0	UIAttendGiftDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "AttendGiftDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiattendgiftdialog.cpp	nam1	2026-10-22	
 141030f60	UIBannerAdvertisingDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "BannerAdvertisingDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiattendgiftdialog.cpp	nam1	2026-10-22	
 141031550	UIBootyPopup::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "BootyPopup" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uibootypopup.cpp	nam1	2026-10-22	
@@ -847,97 +847,97 @@
 141447ae0	CLiftableObject::FUN_141447ae0	GetState	high	getter	body returns m_nState	client/ms2/liftableobject.cpp	nam1	2026-10-22	applied desc-1 as GetState
 141448b00	CLiftableTargetGuide::vfunc_2	GetGuide	medium	getter	body returns m_strGuide; virtual slot: rename the whole override family	client/ms2/liftabletarget.cpp	nam1	2026-10-22	
 141448c20	UILightDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "LightDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	unnamed/unit_141448b90.cpp	nam1	2026-10-22	
-14144e250	LightUnaffectedNode::FUN_14144e250	IsTemplate	high	getter	body returns m_bTemplate	client/ms2/lightunaffectednode.cpp	nam1	2026-10-22	
-141461ba0	CMagic::FUN_141461ba0	SetMatRotation	high	setter	body stores the argument in m_matRotation	client/ms2/magicdata.cpp	nam1	2026-10-22	
-141467420	CMagic::FUN_141467420	GetState	high	getter	body returns m_nState	client/ms2/magicdata.cpp	nam1	2026-10-22	
+14144e250	LightUnaffectedNode::FUN_14144e250	IsTemplate	high	getter	body returns m_bTemplate	client/ms2/lightunaffectednode.cpp	nam1	2026-10-22	applied desc-2 as IsTemplate
+141461ba0	CMagic::FUN_141461ba0	SetMatRotation	high	setter	body stores the argument in m_matRotation	client/ms2/magicdata.cpp	nam1	2026-10-22	applied desc-2 as SetMatRotation
+141467420	CMagic::FUN_141467420	GetState	high	getter	body returns m_nState	client/ms2/magicdata.cpp	nam1	2026-10-22	applied desc-2 as GetState
 141472960	MailItemSlot::vfunc_25	GetItem	medium	getter	body returns m_spItem; virtual slot: rename the whole override family	client/ms2/mailitemslot.cpp	nam1	2026-10-22	
-1414736e0	CMainSystem::FUN_1414736e0	GetDataPath	high	getter	body returns m_strDataPath	client/ms2/mainsystem.cpp	nam1	2026-10-22	
-141473920	CMainSystem::FUN_141473920	SetMainThreadId	high	setter	body stores the argument in m_dwMainThreadId	client/ms2/mainsystem.cpp	nam1	2026-10-22	
+1414736e0	CMainSystem::FUN_1414736e0	GetDataPath	high	getter	body returns m_strDataPath	client/ms2/mainsystem.cpp	nam1	2026-10-22	applied desc-2 as GetDataPath
+141473920	CMainSystem::FUN_141473920	SetMainThreadId	high	setter	body stores the argument in m_dwMainThreadId	client/ms2/mainsystem.cpp	nam1	2026-10-22	applied desc-2 as SetMainThreadId
 141476850	CMakeupController::vfunc_17	GetPresetIndex	medium	getter	body returns m_nPresetIndex; virtual slot: rename the whole override family	client/ms2/makeupcontroller.cpp	nam1	2026-10-22	
 141476e00	CMakeupController::vfunc_40	GetWheelStep	medium	getter	body returns m_fWheelStep; virtual slot: rename the whole override family	client/ms2/makeupcontroller.cpp	nam1	2026-10-22	
 141482940	MessengerData::TalkTab::FUN_141482940	GetName	high	getter	body returns m_strName	client/ms2/messengerdata.cpp	nam1	2026-10-22	
-141483d80	Unk_MdEntry::FUN_141483d80	GetKind	high	getter	body returns m_nKind	client/ms2/messengerdata.cpp	nam1	2026-10-22	
-141483dc0	Unk_MdEntry::FUN_141483dc0	GetImage	high	getter	body returns m_strImage	client/ms2/messengerdata.cpp	nam1	2026-10-22	
-141483e10	Unk_MdEntry::FUN_141483e10	GetName	high	getter	body returns m_strName	client/ms2/messengerdata.cpp	nam1	2026-10-22	
-141483e60	Unk_MdEntry::FUN_141483e60	GetInfo	high	getter	body returns m_strInfo	client/ms2/messengerdata.cpp	nam1	2026-10-22	
+141483d80	Unk_MdEntry::FUN_141483d80	GetKind	high	getter	body returns m_nKind	client/ms2/messengerdata.cpp	nam1	2026-10-22	applied desc-2 as GetKind
+141483dc0	Unk_MdEntry::FUN_141483dc0	GetImage	high	getter	body returns m_strImage	client/ms2/messengerdata.cpp	nam1	2026-10-22	applied desc-2 as GetImage
+141483e10	Unk_MdEntry::FUN_141483e10	GetName	high	getter	body returns m_strName	client/ms2/messengerdata.cpp	nam1	2026-10-22	applied desc-2 as GetName
+141483e60	Unk_MdEntry::FUN_141483e60	GetInfo	high	getter	body returns m_strInfo	client/ms2/messengerdata.cpp	nam1	2026-10-22	applied desc-2 as GetInfo
 141488030	CMotionController::vfunc_3	GetKMove	medium	getter	body returns m_kMove; virtual slot: rename the whole override family	client/ms2/motioncontroller.cpp	nam1	2026-10-22	
 141488470	CMotionController::vfunc_6	GetType	medium	getter	body returns m_nType; virtual slot: rename the whole override family	client/ms2/motioncontroller.cpp	nam1	2026-10-22	
 141488e30	CLinearMotionController::vfunc_3	GetKMove	medium	getter	body returns m_kMove; virtual slot: rename the whole override family	client/ms2/motioncontroller.cpp	nam1	2026-10-22	
 141489140	CBlinkMotionController::vfunc_3	GetKMove	medium	getter	body returns m_kMove; virtual slot: rename the whole override family	client/ms2/motioncontroller.cpp	nam1	2026-10-22	
 141489200	CMoveMotionController::vfunc_3	GetKMove	medium	getter	body returns m_kMove; virtual slot: rename the whole override family	client/ms2/motioncontroller.cpp	nam1	2026-10-22	
-1414a8750	MS2ActorUpdater::FUN_1414a8750	GetDistB	high	getter	body returns m_fDistB	client/ms2/ms2actorupdater.cpp	nam1	2026-10-22	
-1414a8760	MS2ActorUpdater::FUN_1414a8760	GetDistA	high	getter	body returns m_fDistA	client/ms2/ms2actorupdater.cpp	nam1	2026-10-22	
-1414ac8a0	MS2AnimationService::FUN_1414ac8a0	GetKFMCache	high	getter	body returns m_spKFMCache	client/ms2/ms2animationservice.cpp	nam1	2026-10-22	
-1414ac920	Unk_AssetEvent::FUN_1414ac920	GetAsset	high	getter	body returns m_pAsset	client/ms2/ms2animationservice.cpp	nam1	2026-10-22	
-1414ac930	Unk_AssetEvent::FUN_1414ac930	GetState	high	getter	body returns m_nState	client/ms2/ms2animationservice.cpp	nam1	2026-10-22	
-1414cfbc0	MS2MaterialSwapProcessor::FUN_1414cfbc0	SetUseMS2List	high	setter	body stores the argument in m_nUseMS2List	client/ms2/ms2materialswapprocessor.cpp	nam1	2026-10-22	
+1414a8750	MS2ActorUpdater::FUN_1414a8750	GetDistB	high	getter	body returns m_fDistB	client/ms2/ms2actorupdater.cpp	nam1	2026-10-22	applied desc-2 as GetDistB
+1414a8760	MS2ActorUpdater::FUN_1414a8760	GetDistA	high	getter	body returns m_fDistA	client/ms2/ms2actorupdater.cpp	nam1	2026-10-22	applied desc-2 as GetDistA
+1414ac8a0	MS2AnimationService::FUN_1414ac8a0	GetKFMCache	high	getter	body returns m_spKFMCache	client/ms2/ms2animationservice.cpp	nam1	2026-10-22	applied desc-2 as GetKFMCache
+1414ac920	Unk_AssetEvent::FUN_1414ac920	GetAsset	high	getter	body returns m_pAsset	client/ms2/ms2animationservice.cpp	nam1	2026-10-22	applied desc-2 as GetAsset
+1414ac930	Unk_AssetEvent::FUN_1414ac930	GetState	high	getter	body returns m_nState	client/ms2/ms2animationservice.cpp	nam1	2026-10-22	applied desc-2 as GetState
+1414cfbc0	MS2MaterialSwapProcessor::FUN_1414cfbc0	SetUseMS2List	high	setter	body stores the argument in m_nUseMS2List	client/ms2/ms2materialswapprocessor.cpp	nam1	2026-10-22	applied desc-2 as SetUseMS2List
 1414cfbe0	MS2MaterialSwapProcessor::FUN_1414cfbe0	GetSwappers	medium	getter	body returns m_swappers	client/ms2/ms2materialswapprocessor.cpp	nam1	2026-10-22	
-1414f0f00	MS2SceneGraphService::FUN_1414f0f00	SetPauseUpdate	high	setter	body stores the argument in m_bPauseUpdate	client/ms2/ms2scenegraphservice.cpp	nam1	2026-10-22	
-14150d360	MS2TextureDensityProcessor::FUN_14150d360	SetMode	high	setter	body stores the argument in m_nMode	client/ms2/ms2texturedensityprocessor.cpp	nam1	2026-10-22	
-14150d380	MS2TextureDensityProcessor::FUN_14150d380	GetMode	high	getter	body returns m_nMode	client/ms2/ms2texturedensityprocessor.cpp	nam1	2026-10-22	
-14151e7e0	FUN_14151e7e0	GetIDirect3D9	medium	singleton	returns the IDirect3D9 instance pointer DAT_143d6ea00	client/ms2/ms2visualtrackermanager.cpp	nam1	2026-10-22	
-141539210	CNetworkService::FUN_141539210	GetConnectionCount	high	getter	body returns m_connectionCount	client/ms2/networkservice.cpp	nam1	2026-10-22	
+1414f0f00	MS2SceneGraphService::FUN_1414f0f00	SetPauseUpdate	high	setter	body stores the argument in m_bPauseUpdate	client/ms2/ms2scenegraphservice.cpp	nam1	2026-10-22	applied desc-2 as SetPauseUpdate
+14150d360	MS2TextureDensityProcessor::FUN_14150d360	SetMode	high	setter	body stores the argument in m_nMode	client/ms2/ms2texturedensityprocessor.cpp	nam1	2026-10-22	applied desc-2 as SetMode
+14150d380	MS2TextureDensityProcessor::FUN_14150d380	GetMode	high	getter	body returns m_nMode	client/ms2/ms2texturedensityprocessor.cpp	nam1	2026-10-22	applied desc-2 as GetMode
+14151e7e0	FUN_14151e7e0	GetIDirect3D9	medium	singleton	returns the IDirect3D9 instance pointer DAT_143d6ea00	client/ms2/ms2visualtrackermanager.cpp	nam1	2026-10-22	applied desc-2 as GetIDirect3D9
+141539210	CNetworkService::FUN_141539210	GetConnectionCount	high	getter	body returns m_connectionCount	client/ms2/networkservice.cpp	nam1	2026-10-22	applied desc-2 as GetConnectionCount
 1415392c0	CNetworkService::FUN_1415392c0	GetSocket	medium	getter	body returns m_socket	client/ms2/networkservice.cpp	nam1	2026-10-22	
-14153a230	CNetworkService::FUN_14153a230	GetConnectionState	high	getter	body returns m_connectionState	client/ms2/networkservice.cpp	nam1	2026-10-22	
+14153a230	CNetworkService::FUN_14153a230	GetConnectionState	high	getter	body returns m_connectionState	client/ms2/networkservice.cpp	nam1	2026-10-22	applied desc-2 as GetConnectionState
 141565ac0	CNifModel::vfunc_9	GetState	medium	getter	body returns m_nState; virtual slot: rename the whole override family	client/ms2/nifmodel.cpp	nam1	2026-10-22	
 14160c1c0	Unk_ArcMover::FUN_14160c1c0	IsMoving	high	getter	body returns m_bMoving	unnamed/unit_14160bf90.cpp	nam1	2026-10-22	
 14160c1e0	Unk_ArcMover::FUN_14160c1e0	GetName	high	getter	body returns m_strName	unnamed/unit_14160bf90.cpp	nam1	2026-10-22	
-141612b50	COffscreenWebBrowser::FUN_141612b50	SetOnNavigate	high	setter	body stores the argument in m_onNavigate	client/ms2/offscreenwebbrowser.cpp	nam1	2026-10-22	
-141612bd0	COffscreenWebBrowser::FUN_141612bd0	SetOnUrlChanged	high	setter	body stores the argument in m_onUrlChanged	client/ms2/offscreenwebbrowser.cpp	nam1	2026-10-22	
-141612c50	COffscreenWebBrowser::FUN_141612c50	SetKeyboard	high	setter	body stores the argument in m_bKeyboard	client/ms2/offscreenwebbrowser.cpp	nam1	2026-10-22	
-141612c70	COffscreenWebBrowser::FUN_141612c70	SetWindowType	high	setter	body stores the argument in m_nWindowType	client/ms2/offscreenwebbrowser.cpp	nam1	2026-10-22	
-14161cf40	COptimizer::FUN_14161cf40	GetSuppressed	high	getter	body returns m_nSuppressed	client/ms2/optimizer.cpp	nam1	2026-10-22	
-141622790	COptimizer::FUN_141622790	GetEnabled	high	getter	body returns m_nEnabled	client/ms2/optimizer.cpp	nam1	2026-10-22	
-141659700	PC::FUN_141659700	GetCubeCraft	high	getter	body returns m_pCubeCraft	client/ms2/pc.cpp	nam1	2026-10-22	
-141678750	PCBase::FUN_141678750	GetStateMgr	high	getter	body returns m_spStateMgr	client/ms2/pcbase.cpp	nam1	2026-10-22	
+141612b50	COffscreenWebBrowser::FUN_141612b50	SetOnNavigate	high	setter	body stores the argument in m_onNavigate	client/ms2/offscreenwebbrowser.cpp	nam1	2026-10-22	applied desc-2 as SetOnNavigate
+141612bd0	COffscreenWebBrowser::FUN_141612bd0	SetOnUrlChanged	high	setter	body stores the argument in m_onUrlChanged	client/ms2/offscreenwebbrowser.cpp	nam1	2026-10-22	applied desc-2 as SetOnUrlChanged
+141612c50	COffscreenWebBrowser::FUN_141612c50	SetKeyboard	high	setter	body stores the argument in m_bKeyboard	client/ms2/offscreenwebbrowser.cpp	nam1	2026-10-22	applied desc-2 as SetKeyboard
+141612c70	COffscreenWebBrowser::FUN_141612c70	SetWindowType	high	setter	body stores the argument in m_nWindowType	client/ms2/offscreenwebbrowser.cpp	nam1	2026-10-22	applied desc-2 as SetWindowType
+14161cf40	COptimizer::FUN_14161cf40	GetSuppressed	high	getter	body returns m_nSuppressed	client/ms2/optimizer.cpp	nam1	2026-10-22	applied desc-2 as GetSuppressed
+141622790	COptimizer::FUN_141622790	GetEnabled	high	getter	body returns m_nEnabled	client/ms2/optimizer.cpp	nam1	2026-10-22	applied desc-2 as GetEnabled
+141659700	PC::FUN_141659700	GetCubeCraft	high	getter	body returns m_pCubeCraft	client/ms2/pc.cpp	nam1	2026-10-22	applied desc-2 as GetCubeCraft
+141678750	PCBase::FUN_141678750	GetStateMgr	high	getter	body returns m_spStateMgr	client/ms2/pcbase.cpp	nam1	2026-10-22	applied desc-2 as GetStateMgr
 1416925c0	CPonyTailController::vfunc_17	GetValue	medium	getter	body returns m_nValue; virtual slot: rename the whole override family	client/ms2/ponytailphysxhelper.cpp	nam1	2026-10-22	
 141692b40	CPonyTailController::vfunc_40	GetSensitivity	medium	getter	body returns m_fSensitivity; virtual slot: rename the whole override family	client/ms2/ponytailphysxhelper.cpp	nam1	2026-10-22	
-1416971c0	CPopupProfileImageData::FUN_1416971c0	SetTime	high	setter	body stores the argument in m_nTime	client/ms2/popupprofileimagedata.cpp	nam1	2026-10-22	
-1416971e0	CPopupProfileImageData::FUN_1416971e0	GetTime	high	getter	body returns m_nTime	client/ms2/popupprofileimagedata.cpp	nam1	2026-10-22	
-1416aad00	PostProcessingService::FUN_1416aad00	GetDoF	high	getter	body returns m_spDoF	client/ms2/postprocessing/postprocessingservice.cpp	nam1	2026-10-22	
-1416c4b60	CTwoCircleCollision::FUN_1416c4b60	SetInnerRadius	high	setter	body stores the argument in m_fInnerRadius	client/ms2/proxyobject.cpp	nam1	2026-10-22	
-1416c4bf0	CTwoCircleCollision::FUN_1416c4bf0	SetOuterRadius	high	setter	body stores the argument in m_fOuterRadius	client/ms2/proxyobject.cpp	nam1	2026-10-22	
-141706510	Ridee::FUN_141706510	SetRider	high	setter	body stores the argument in m_pRider	client/ms2/ridee.cpp	nam1	2026-10-22	
-141706540	Ridee::FUN_141706540	GetRider	high	getter	body returns m_pRider	client/ms2/ridee.cpp	nam1	2026-10-22	
-141707750	Ridee::FUN_141707750	GetData	high	getter	body returns m_spData	client/ms2/ridee.cpp	nam1	2026-10-22	
+1416971c0	CPopupProfileImageData::FUN_1416971c0	SetTime	high	setter	body stores the argument in m_nTime	client/ms2/popupprofileimagedata.cpp	nam1	2026-10-22	applied desc-2 as SetTime
+1416971e0	CPopupProfileImageData::FUN_1416971e0	GetTime	high	getter	body returns m_nTime	client/ms2/popupprofileimagedata.cpp	nam1	2026-10-22	applied desc-2 as GetTime
+1416aad00	PostProcessingService::FUN_1416aad00	GetDoF	high	getter	body returns m_spDoF	client/ms2/postprocessing/postprocessingservice.cpp	nam1	2026-10-22	applied desc-2 as GetDoF
+1416c4b60	CTwoCircleCollision::FUN_1416c4b60	SetInnerRadius	high	setter	body stores the argument in m_fInnerRadius	client/ms2/proxyobject.cpp	nam1	2026-10-22	applied desc-2 as SetInnerRadius
+1416c4bf0	CTwoCircleCollision::FUN_1416c4bf0	SetOuterRadius	high	setter	body stores the argument in m_fOuterRadius	client/ms2/proxyobject.cpp	nam1	2026-10-22	applied desc-2 as SetOuterRadius
+141706510	Ridee::FUN_141706510	SetRider	high	setter	body stores the argument in m_pRider	client/ms2/ridee.cpp	nam1	2026-10-22	applied desc-2 as SetRider
+141706540	Ridee::FUN_141706540	GetRider	high	getter	body returns m_pRider	client/ms2/ridee.cpp	nam1	2026-10-22	applied desc-2 as GetRider
+141707750	Ridee::FUN_141707750	GetData	high	getter	body returns m_spData	client/ms2/ridee.cpp	nam1	2026-10-22	applied desc-2 as GetData
 1417093b0	UIRimLightDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "RimLightDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uirimlightdialog.cpp	nam1	2026-10-22	
-141759190	SkillTargetRecord::FUN_141759190	GetStartTick	high	getter	body returns m_nStartTick	client/ms2/skillrecord.cpp	nam1	2026-10-22	
-14175cb90	SkillSlot::FUN_14175cb90	GetSkillId	high	getter	body returns m_nSkillId	client/ms2/skillslot.cpp	nam1	2026-10-22	
-14175cbb0	SkillSlot::FUN_14175cbb0	SetSkillId	high	setter	body stores the argument in m_nSkillId	client/ms2/skillslot.cpp	nam1	2026-10-22	
-14175cbd0	SkillSlot::FUN_14175cbd0	GetItemUid	high	getter	body returns m_nItemUid	client/ms2/skillslot.cpp	nam1	2026-10-22	
-14175cbf0	SkillSlot::FUN_14175cbf0	SetItemUid	high	setter	body stores the argument in m_nItemUid	client/ms2/skillslot.cpp	nam1	2026-10-22	
-14175cc20	SkillSlot::FUN_14175cc20	GetItemId	high	getter	body returns m_nItemId	client/ms2/skillslot.cpp	nam1	2026-10-22	
-14175cc40	SkillSlot::FUN_14175cc40	SetItemId	high	setter	body stores the argument in m_nItemId	client/ms2/skillslot.cpp	nam1	2026-10-22	
-14175cd90	SkillSlot::FUN_14175cd90	IsFixed	high	getter	body returns m_bFixed	client/ms2/skillslot.cpp	nam1	2026-10-22	
-14175cdb0	SkillSlot::FUN_14175cdb0	SetFixed	high	setter	body stores the argument in m_bFixed	client/ms2/skillslot.cpp	nam1	2026-10-22	
-141765d70	CSkillSystem::FUN_141765d70	GetCastAllowed	high	getter	body returns m_nCastAllowed	client/ms2/skillslot.cpp	nam1	2026-10-22	
-141768380	CSkillSystem::FUN_141768380	GetSkillSet	high	getter	body returns m_spSkillSet	client/ms2/skillslot.cpp	nam1	2026-10-22	
+141759190	SkillTargetRecord::FUN_141759190	GetStartTick	high	getter	body returns m_nStartTick	client/ms2/skillrecord.cpp	nam1	2026-10-22	applied desc-2 as GetStartTick
+14175cb90	SkillSlot::FUN_14175cb90	GetSkillId	high	getter	body returns m_nSkillId	client/ms2/skillslot.cpp	nam1	2026-10-22	applied desc-2 as GetSkillId
+14175cbb0	SkillSlot::FUN_14175cbb0	SetSkillId	high	setter	body stores the argument in m_nSkillId	client/ms2/skillslot.cpp	nam1	2026-10-22	applied desc-2 as SetSkillId
+14175cbd0	SkillSlot::FUN_14175cbd0	GetItemUid	high	getter	body returns m_nItemUid	client/ms2/skillslot.cpp	nam1	2026-10-22	applied desc-2 as GetItemUid
+14175cbf0	SkillSlot::FUN_14175cbf0	SetItemUid	high	setter	body stores the argument in m_nItemUid	client/ms2/skillslot.cpp	nam1	2026-10-22	applied desc-2 as SetItemUid
+14175cc20	SkillSlot::FUN_14175cc20	GetItemId	high	getter	body returns m_nItemId	client/ms2/skillslot.cpp	nam1	2026-10-22	applied desc-2 as GetItemId
+14175cc40	SkillSlot::FUN_14175cc40	SetItemId	high	setter	body stores the argument in m_nItemId	client/ms2/skillslot.cpp	nam1	2026-10-22	applied desc-2 as SetItemId
+14175cd90	SkillSlot::FUN_14175cd90	IsFixed	high	getter	body returns m_bFixed	client/ms2/skillslot.cpp	nam1	2026-10-22	applied desc-2 as IsFixed
+14175cdb0	SkillSlot::FUN_14175cdb0	SetFixed	high	setter	body stores the argument in m_bFixed	client/ms2/skillslot.cpp	nam1	2026-10-22	applied desc-2 as SetFixed
+141765d70	CSkillSystem::FUN_141765d70	GetCastAllowed	high	getter	body returns m_nCastAllowed	client/ms2/skillslot.cpp	nam1	2026-10-22	applied desc-2 as GetCastAllowed
+141768380	CSkillSystem::FUN_141768380	GetSkillSet	high	getter	body returns m_spSkillSet	client/ms2/skillslot.cpp	nam1	2026-10-22	applied desc-2 as GetSkillSet
 14176fa50	CMeshUpdateGate::FUN_14176fa50	GetDuration	high	getter	body returns m_fDuration	unnamed/unit_14176f2a0.cpp	nam1	2026-10-22	
 14176fa60	CMeshUpdateGate::FUN_14176fa60	IsActive	high	getter	body returns m_bActive	unnamed/unit_14176f2a0.cpp	nam1	2026-10-22	
 14176fa70	CMeshUpdateGate::FUN_14176fa70	SetProcess	high	setter	body stores the argument in m_pProcess	unnamed/unit_14176f2a0.cpp	nam1	2026-10-22	
-14176fde0	CSoapClient::FUN_14176fde0	GetError	high	getter	body returns m_strError	client/ms2/soapclient.cpp	nam1	2026-10-22	
-141774010	Unk_PPSecondView::FUN_141774010	GetClick	high	getter	body returns m_spClick	client/ms2/softparticlesmanager.cpp	nam1	2026-10-22	
-141777720	CSoundEventEffect::FUN_141777720	GetSound	high	getter	body returns m_spSound	client/ms2/soundeventmgr.cpp	nam1	2026-10-22	
-14177aca0	CSoundEvent::FUN_14177aca0	GetName	high	getter	body returns m_strName	client/ms2/soundeventmgr.cpp	nam1	2026-10-22	
-1417ae700	CSoundService::FUN_1417ae700	GetSystem	high	getter	body returns m_pSystem	client/ms2/soundservice.cpp	nam1	2026-10-22	
-1417ae720	CSoundService::FUN_1417ae720	GetEventSystem	high	getter	body returns m_pEventSystem	client/ms2/soundservice.cpp	nam1	2026-10-22	
-1417ae740	CSoundService::FUN_1417ae740	GetNetSound	high	getter	body returns m_pNetSound	client/ms2/soundservice.cpp	nam1	2026-10-22	
-1417b4b20	CSoundService::FUN_1417b4b20	GetVolume	high	getter	body returns m_fVolume	client/ms2/soundservice.cpp	nam1	2026-10-22	
-1417b7430	StatePcGuideObjectController::FUN_1417b7430	SetOwner	high	setter	body stores the argument in m_pOwner	client/ms2/state.cpp	nam1	2026-10-22	
-1417b7620	StatePcGuideObjectController::FUN_1417b7620	GetCurrent	high	getter	body returns m_spCurrent	client/ms2/state.cpp	nam1	2026-10-22	
-1417b7b50	StatePcGuideObjectController::FUN_1417b7b50	SetKind	high	setter	body stores the argument in m_nKind	client/ms2/state.cpp	nam1	2026-10-22	
+14176fde0	CSoapClient::FUN_14176fde0	GetError	high	getter	body returns m_strError	client/ms2/soapclient.cpp	nam1	2026-10-22	applied desc-2 as GetError
+141774010	Unk_PPSecondView::FUN_141774010	GetClick	high	getter	body returns m_spClick	client/ms2/softparticlesmanager.cpp	nam1	2026-10-22	applied desc-2 as GetClick
+141777720	CSoundEventEffect::FUN_141777720	GetSound	high	getter	body returns m_spSound	client/ms2/soundeventmgr.cpp	nam1	2026-10-22	applied desc-2 as GetSound
+14177aca0	CSoundEvent::FUN_14177aca0	GetName	high	getter	body returns m_strName	client/ms2/soundeventmgr.cpp	nam1	2026-10-22	applied desc-2 as GetName
+1417ae700	CSoundService::FUN_1417ae700	GetSystem	high	getter	body returns m_pSystem	client/ms2/soundservice.cpp	nam1	2026-10-22	applied desc-2 as GetSystem
+1417ae720	CSoundService::FUN_1417ae720	GetEventSystem	high	getter	body returns m_pEventSystem	client/ms2/soundservice.cpp	nam1	2026-10-22	applied desc-2 as GetEventSystem
+1417ae740	CSoundService::FUN_1417ae740	GetNetSound	high	getter	body returns m_pNetSound	client/ms2/soundservice.cpp	nam1	2026-10-22	applied desc-2 as GetNetSound
+1417b4b20	CSoundService::FUN_1417b4b20	GetVolume	high	getter	body returns m_fVolume	client/ms2/soundservice.cpp	nam1	2026-10-22	applied desc-2 as GetVolume
+1417b7430	StatePcGuideObjectController::FUN_1417b7430	SetOwner	high	setter	body stores the argument in m_pOwner	client/ms2/state.cpp	nam1	2026-10-22	applied desc-2 as SetOwner
+1417b7620	StatePcGuideObjectController::FUN_1417b7620	GetCurrent	high	getter	body returns m_spCurrent	client/ms2/state.cpp	nam1	2026-10-22	applied desc-2 as GetCurrent
+1417b7b50	StatePcGuideObjectController::FUN_1417b7b50	SetKind	high	setter	body stores the argument in m_nKind	client/ms2/state.cpp	nam1	2026-10-22	applied desc-2 as SetKind
 1417c47b0	StateTriggerEmotion::vfunc_16	GetFlag	medium	getter	body returns m_nFlag; virtual slot: rename the whole override family	client/ms2/stateemotionidle.cpp	nam1	2026-10-22	
-1417d4940	CInteractObject::FUN_1417d4940	GetRot	high	getter	body returns m_vRot	client/ms2/stateinteractdata.cpp	nam1	2026-10-22	
-1417db1c0	CStateManager::FUN_1417db1c0	GetState	high	getter	body returns m_pState	client/ms2/statemanager.cpp	nam1	2026-10-22	
-1417db270	CStateManager::FUN_1417db270	GetCur	high	getter	body returns m_nCur	client/ms2/statemanager.cpp	nam1	2026-10-22	
-1417db2c0	CStateManager::FUN_1417db2c0	GetPrev	high	getter	body returns m_nPrev	client/ms2/statemanager.cpp	nam1	2026-10-22	
-1417df3c0	StateMoveSkill::FUN_1417df3c0	GetMode	high	getter	body returns m_nMode	client/ms2/statemanager.cpp	nam1	2026-10-22	
-1417e26d0	CStateService::FUN_1417e26d0	GetCurrent	high	getter	body returns m_spCurrent	client/ms2/statemanager.cpp	nam1	2026-10-22	
-1417e9380	StateSkill::FUN_1417e9380	GetSpeed	high	getter	body returns m_fSpeed	client/ms2/stateskill.cpp	nam1	2026-10-22	
-1417ed6f0	StateSkill::FUN_1417ed6f0	GetRecord	high	getter	body returns m_spRecord	client/ms2/stateskill.cpp	nam1	2026-10-22	
-1417ed7a0	StateSkill::FUN_1417ed7a0	GetCharge	high	getter	body returns m_spCharge	client/ms2/stateskill.cpp	nam1	2026-10-22	
-1418088c0	StoreSlot::FUN_1418088c0	SetStoreItemId	high	setter	body stores the argument in m_nStoreItemId	client/ms2/storeslot.cpp	nam1	2026-10-22	
-1418088f0	StoreSlot::FUN_1418088f0	GetStoreItemId	high	getter	body returns m_nStoreItemId	client/ms2/storeslot.cpp	nam1	2026-10-22	
+1417d4940	CInteractObject::FUN_1417d4940	GetRot	high	getter	body returns m_vRot	client/ms2/stateinteractdata.cpp	nam1	2026-10-22	applied desc-2 as GetRot
+1417db1c0	CStateManager::FUN_1417db1c0	GetState	high	getter	body returns m_pState	client/ms2/statemanager.cpp	nam1	2026-10-22	applied desc-2 as GetState
+1417db270	CStateManager::FUN_1417db270	GetCur	high	getter	body returns m_nCur	client/ms2/statemanager.cpp	nam1	2026-10-22	applied desc-2 as GetCur
+1417db2c0	CStateManager::FUN_1417db2c0	GetPrev	high	getter	body returns m_nPrev	client/ms2/statemanager.cpp	nam1	2026-10-22	applied desc-2 as GetPrev
+1417df3c0	StateMoveSkill::FUN_1417df3c0	GetMode	high	getter	body returns m_nMode	client/ms2/statemanager.cpp	nam1	2026-10-22	applied desc-2 as GetMode
+1417e26d0	CStateService::FUN_1417e26d0	GetCurrent	high	getter	body returns m_spCurrent	client/ms2/statemanager.cpp	nam1	2026-10-22	applied desc-2 as GetCurrent
+1417e9380	StateSkill::FUN_1417e9380	GetSpeed	high	getter	body returns m_fSpeed	client/ms2/stateskill.cpp	nam1	2026-10-22	applied desc-2 as GetSpeed
+1417ed6f0	StateSkill::FUN_1417ed6f0	GetRecord	high	getter	body returns m_spRecord	client/ms2/stateskill.cpp	nam1	2026-10-22	applied desc-2 as GetRecord
+1417ed7a0	StateSkill::FUN_1417ed7a0	GetCharge	high	getter	body returns m_spCharge	client/ms2/stateskill.cpp	nam1	2026-10-22	applied desc-2 as GetCharge
+1418088c0	StoreSlot::FUN_1418088c0	SetStoreItemId	high	setter	body stores the argument in m_nStoreItemId	client/ms2/storeslot.cpp	nam1	2026-10-22	applied desc-2 as SetStoreItemId
+1418088f0	StoreSlot::FUN_1418088f0	GetStoreItemId	high	getter	body returns m_nStoreItemId	client/ms2/storeslot.cpp	nam1	2026-10-22	applied desc-2 as GetStoreItemId
 141811960	CStringTable::FUN_141811960	Reload	medium	v2525	v2525 CStringTable.h: Load()/Reload(); body calls Load()	client/ms2/stringtable.cpp	nam1	2026-10-22	
 141811980	CStringTable::FUN_141811980	GetText	medium	v2525	v2525 CStringTable.h: GetText(kind,id) 0x141811980 (inferred there); (table, id) lookup	client/ms2/stringtable.cpp	nam1	2026-10-22	
 141812290	CStringTable::FUN_141812290	GetSkillField	medium	v2525	v2525 CStringTable.h: SkillField(id, level, field) 0x141812290 (inferred there)	client/ms2/stringtable.cpp	nam1	2026-10-22	
@@ -955,55 +955,55 @@
 1418158b0	CStringTable::FUN_1418158b0	MakeLevelDesc	medium	v2525	v2525 CStringTable.h: MakeLevelDesc(TiXmlElement*)	client/ms2/stringtable.cpp	nam1	2026-10-22	
 141815a20	CStringTable::FUN_141815a20	ReadDescMap	medium	v2525	v2525 CStringTable.h: ReadDescMap(DescMap&, TiXmlElement*)	client/ms2/stringtable.cpp	nam1	2026-10-22	
 141815b30	CStringTable::FUN_141815b30	ReadLevelMap	medium	v2525	v2525 CStringTable.h: ReadLevelMap(LevelMap&, TiXmlElement*)	client/ms2/stringtable.cpp	nam1	2026-10-22	
-141847c00	Unk_TextureFrame::FUN_141847c00	GetDelay	high	getter	body returns m_nDelay	client/ms2/textureanimationdata.cpp	nam1	2026-10-22	
+141847c00	Unk_TextureFrame::FUN_141847c00	GetDelay	high	getter	body returns m_nDelay	client/ms2/textureanimationdata.cpp	nam1	2026-10-22	applied desc-2 as GetDelay
 14184ad50	UITextureDensityDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "TextureDensityDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/textureanimationdata.cpp	nam1	2026-10-22	
-14185d920	CTradeManagerEx::FUN_14185d920	GetUidLastSent	high	getter	body returns m_uidLastSent	client/ms2/trademanagerex_1.cpp	nam1	2026-10-22	
-14185dc40	Unk_TradeDialog::FUN_14185dc40	GetPartner	high	getter	body returns m_strPartner	client/ms2/trademanagerex_1.cpp	nam1	2026-10-22	
+14185d920	CTradeManagerEx::FUN_14185d920	GetUidLastSent	high	getter	body returns m_uidLastSent	client/ms2/trademanagerex_1.cpp	nam1	2026-10-22	applied desc-2 as GetUidLastSent
+14185dc40	Unk_TradeDialog::FUN_14185dc40	GetPartner	high	getter	body returns m_strPartner	client/ms2/trademanagerex_1.cpp	nam1	2026-10-22	applied desc-2 as GetPartner
 14185e320	TradeSlot::vfunc_25	GetItem	medium	getter	body returns m_spItem; virtual slot: rename the whole override family	client/ms2/trademanagerex_2.cpp	nam1	2026-10-22	
-14185e4e0	TradeSlot::FUN_14185e4e0	SetItem	high	setter	body stores the argument in m_spItem	client/ms2/trademanagerex_2.cpp	nam1	2026-10-22	
-14185e630	TradeSlot::FUN_14185e630	IsMine	high	getter	body returns m_bMine	client/ms2/trademanagerex_2.cpp	nam1	2026-10-22	
-14185ec30	TradeSlotBag::FUN_14185ec30	SetMine	high	setter	body stores the argument in m_bMine	client/ms2/trademanagerex_3.cpp	nam1	2026-10-22	
-14185ec50	TradeSlotBag::FUN_14185ec50	IsMine	high	getter	body returns m_bMine	client/ms2/trademanagerex_3.cpp	nam1	2026-10-22	
-14187d8c0	UGCItemSlot::FUN_14187d8c0	SetItem	high	setter	body stores the argument in m_spItem	client/ms2/ugcmanager_3.cpp	nam1	2026-10-22	
+14185e4e0	TradeSlot::FUN_14185e4e0	SetItem	high	setter	body stores the argument in m_spItem	client/ms2/trademanagerex_2.cpp	nam1	2026-10-22	applied desc-2 as SetItem
+14185e630	TradeSlot::FUN_14185e630	IsMine	high	getter	body returns m_bMine	client/ms2/trademanagerex_2.cpp	nam1	2026-10-22	applied desc-2 as IsMine
+14185ec30	TradeSlotBag::FUN_14185ec30	SetMine	high	setter	body stores the argument in m_bMine	client/ms2/trademanagerex_3.cpp	nam1	2026-10-22	applied desc-2 as SetMine
+14185ec50	TradeSlotBag::FUN_14185ec50	IsMine	high	getter	body returns m_bMine	client/ms2/trademanagerex_3.cpp	nam1	2026-10-22	applied desc-2 as IsMine
+14187d8c0	UGCItemSlot::FUN_14187d8c0	SetItem	high	setter	body stores the argument in m_spItem	client/ms2/ugcmanager_3.cpp	nam1	2026-10-22	applied desc-2 as SetItem
 14187d910	UGCItemSlot::vfunc_25	GetItem	medium	getter	body returns m_spItem; virtual slot: rename the whole override family	client/ms2/ugcmanager_3.cpp	nam1	2026-10-22	
-14187f3b0	CUgcManager::FUN_14187f3b0	GetMode	high	getter	body returns m_nMode	client/ms2/ugcmanager_4.cpp	nam1	2026-10-22	
-141888da0	CUgcManager::FUN_141888da0	SetReserveChanged	high	setter	body stores the argument in m_bReserveChanged	client/ms2/ugcmanager_4.cpp	nam1	2026-10-22	
-141888dc0	CUgcManager::FUN_141888dc0	IsReserveChanged	high	getter	body returns m_bReserveChanged	client/ms2/ugcmanager_4.cpp	nam1	2026-10-22	
-1418897a0	CUgcManager::FUN_1418897a0	GetDefaultTexture	high	getter	body returns m_spDefaultTexture	client/ms2/ugcmanager_4.cpp	nam1	2026-10-22	
-1418a3ab0	CUgcUploadCtrl::FUN_1418a3ab0	SetDialog	high	setter	body stores the argument in m_nDialog	client/ms2/ugcviewerequip.cpp	nam1	2026-10-22	
-1418a3ad0	CUgcUploadCtrl::FUN_1418a3ad0	GetDialog	high	getter	body returns m_nDialog	client/ms2/ugcviewerequip.cpp	nam1	2026-10-22	
-1418a3bd0	CUgcUploadCtrl::FUN_1418a3bd0	GetResult	high	getter	body returns m_strResult	client/ms2/ugcviewerequip.cpp	nam1	2026-10-22	
-1418a4100	CUgcUploadCtrl::FUN_1418a4100	GetImage	high	getter	body returns m_spImage	client/ms2/ugcviewerequip.cpp	nam1	2026-10-22	
+14187f3b0	CUgcManager::FUN_14187f3b0	GetMode	high	getter	body returns m_nMode	client/ms2/ugcmanager_4.cpp	nam1	2026-10-22	applied desc-2 as GetMode
+141888da0	CUgcManager::FUN_141888da0	SetReserveChanged	high	setter	body stores the argument in m_bReserveChanged	client/ms2/ugcmanager_4.cpp	nam1	2026-10-22	applied desc-2 as SetReserveChanged
+141888dc0	CUgcManager::FUN_141888dc0	IsReserveChanged	high	getter	body returns m_bReserveChanged	client/ms2/ugcmanager_4.cpp	nam1	2026-10-22	applied desc-2 as IsReserveChanged
+1418897a0	CUgcManager::FUN_1418897a0	GetDefaultTexture	high	getter	body returns m_spDefaultTexture	client/ms2/ugcmanager_4.cpp	nam1	2026-10-22	applied desc-2 as GetDefaultTexture
+1418a3ab0	CUgcUploadCtrl::FUN_1418a3ab0	SetDialog	high	setter	body stores the argument in m_nDialog	client/ms2/ugcviewerequip.cpp	nam1	2026-10-22	applied desc-2 as SetDialog
+1418a3ad0	CUgcUploadCtrl::FUN_1418a3ad0	GetDialog	high	getter	body returns m_nDialog	client/ms2/ugcviewerequip.cpp	nam1	2026-10-22	applied desc-2 as GetDialog
+1418a3bd0	CUgcUploadCtrl::FUN_1418a3bd0	GetResult	high	getter	body returns m_strResult	client/ms2/ugcviewerequip.cpp	nam1	2026-10-22	applied desc-2 as GetResult
+1418a4100	CUgcUploadCtrl::FUN_1418a4100	GetImage	high	getter	body returns m_spImage	client/ms2/ugcviewerequip.cpp	nam1	2026-10-22	applied desc-2 as GetImage
 1418a7530	UIAchieveDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "AchieveDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiachievedialog.cpp	nam1	2026-10-22	
 1418b15e0	UIActionTooltip::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ActionTooltip" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiactiontooltip.cpp	nam1	2026-10-22	
-1418b17d0	UIActionTooltip::FUN_1418b17d0	GetAction	high	getter	body returns m_pAction	client/ms2/uiactiontooltip.cpp	nam1	2026-10-22	
-1418b17f0	UIActionTooltip::FUN_1418b17f0	GetTitle	high	getter	body returns m_strTitle	client/ms2/uiactiontooltip.cpp	nam1	2026-10-22	
-1418b1840	UIActionTooltip::FUN_1418b1840	GetText	high	getter	body returns m_strText	client/ms2/uiactiontooltip.cpp	nam1	2026-10-22	
+1418b17d0	UIActionTooltip::FUN_1418b17d0	GetAction	high	getter	body returns m_pAction	client/ms2/uiactiontooltip.cpp	nam1	2026-10-22	applied desc-2 as GetAction
+1418b17f0	UIActionTooltip::FUN_1418b17f0	GetTitle	high	getter	body returns m_strTitle	client/ms2/uiactiontooltip.cpp	nam1	2026-10-22	applied desc-2 as GetTitle
+1418b1840	UIActionTooltip::FUN_1418b1840	GetText	high	getter	body returns m_strText	client/ms2/uiactiontooltip.cpp	nam1	2026-10-22	applied desc-2 as GetText
 1418b2670	UIAdditionalControlDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "AdditionalEffectControlDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiadditionalcontroldialog.cpp	nam1	2026-10-22	
 1418b5a10	UIApartmentDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ApartmentDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiapartmentdialog.cpp	nam1	2026-10-22	
 1418b7cd0	UIAvatarBase::vfunc_1	SetListener	medium	setter	body stores the argument in m_pListener; virtual slot: rename the whole override family	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	
 1418b9310	UIAvatarBase::vfunc_25	GetObjectId	medium	getter	body returns m_nObjectId; virtual slot: rename the whole override family	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	
 1418b9b20	UIAvatarBase::vfunc_29	SetState	medium	setter	body stores the argument in m_nState; virtual slot: rename the whole override family	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	
-1418b9b40	UIAvatarBase::FUN_1418b9b40	GetState	high	getter	body returns m_nState	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	
-1418b9b60	UIAvatarBase::FUN_1418b9b60	SetLoaded	high	setter	body stores the argument in m_bLoaded	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	
-1418b9b80	UIAvatarBase::FUN_1418b9b80	IsLoaded	high	getter	body returns m_bLoaded	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	
-1418b9ba0	UIAvatarBase::FUN_1418b9ba0	GetKind	high	getter	body returns m_nKind	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	
-1418b9bc0	UIAvatarBase::FUN_1418b9bc0	GetView	high	getter	body returns m_spView	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	
-1418ba120	UIAvatarBase::FUN_1418ba120	SetMode	high	setter	body stores the argument in m_nMode	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	
-1418ba140	UIAvatarBase::FUN_1418ba140	GetMode	high	getter	body returns m_nMode	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	
-1418ba3f0	UIAvatarBase::FUN_1418ba3f0	SetLocked	high	setter	body stores the argument in m_nLocked	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	
-1418bd710	UIAvatarPC::FUN_1418bd710	GetCustomize	high	getter	body returns m_spCustomize	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	
-1418bd760	UIAvatarPC::FUN_1418bd760	GetPose	high	getter	body returns m_nPose	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	
-1418be810	UIAvatarRidee::FUN_1418be810	GetRow	high	getter	body returns m_spRow	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	
+1418b9b40	UIAvatarBase::FUN_1418b9b40	GetState	high	getter	body returns m_nState	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	applied desc-2 as GetState
+1418b9b60	UIAvatarBase::FUN_1418b9b60	SetLoaded	high	setter	body stores the argument in m_bLoaded	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	applied desc-2 as SetLoaded
+1418b9b80	UIAvatarBase::FUN_1418b9b80	IsLoaded	high	getter	body returns m_bLoaded	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	applied desc-2 as IsLoaded
+1418b9ba0	UIAvatarBase::FUN_1418b9ba0	GetKind	high	getter	body returns m_nKind	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	applied desc-2 as GetKind
+1418b9bc0	UIAvatarBase::FUN_1418b9bc0	GetView	high	getter	body returns m_spView	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	applied desc-2 as GetView
+1418ba120	UIAvatarBase::FUN_1418ba120	SetMode	high	setter	body stores the argument in m_nMode	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	applied desc-2 as SetMode
+1418ba140	UIAvatarBase::FUN_1418ba140	GetMode	high	getter	body returns m_nMode	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	applied desc-2 as GetMode
+1418ba3f0	UIAvatarBase::FUN_1418ba3f0	SetLocked	high	setter	body stores the argument in m_nLocked	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	applied desc-2 as SetLocked
+1418bd710	UIAvatarPC::FUN_1418bd710	GetCustomize	high	getter	body returns m_spCustomize	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	applied desc-2 as GetCustomize
+1418bd760	UIAvatarPC::FUN_1418bd760	GetPose	high	getter	body returns m_nPose	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	applied desc-2 as GetPose
+1418be810	UIAvatarRidee::FUN_1418be810	GetRow	high	getter	body returns m_spRow	client/ms2/uiavatarbase.cpp	nam1	2026-10-22	applied desc-2 as GetRow
 1418c3b00	UIBeautyShopDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "BeautyShopDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uibeautyshopdialog.cpp	nam1	2026-10-22	
 1418ce790	UIBirdHead::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "BirdHead" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uibirdhead.cpp	nam1	2026-10-22	
 1418cf5d0	UIBlackMarketDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "BlackMarketDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiblackmarketdialog.cpp	nam1	2026-10-22	
 1418dcc40	UIBuildBtnGuide::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "BuildBtnGuideAni" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uibuildbtnguide.cpp	nam1	2026-10-22	
 1418dd040	UIBuiltInDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "BuiltInDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uibuiltindialog.cpp	nam1	2026-10-22	
 1418dd810	UICameraEditDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "CameraEditDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uicameraeditdialog.cpp	nam1	2026-10-22	
-1418dead0	UICameraEditDialog::FUN_1418dead0	IsDragging	high	getter	body returns m_bDragging	client/ms2/uicameraeditdialog.cpp	nam1	2026-10-22	
+1418dead0	UICameraEditDialog::FUN_1418dead0	IsDragging	high	getter	body returns m_bDragging	client/ms2/uicameraeditdialog.cpp	nam1	2026-10-22	applied desc-2 as IsDragging
 1418df6c0	UICartoonDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "CartoonDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uicameraeditdialog.cpp	nam1	2026-10-22	
-1418dfc40	UICartoonDialog::FUN_1418dfc40	GetBookId	high	getter	body returns m_nBookId	client/ms2/uicameraeditdialog.cpp	nam1	2026-10-22	
+1418dfc40	UICartoonDialog::FUN_1418dfc40	GetBookId	high	getter	body returns m_nBookId	client/ms2/uicameraeditdialog.cpp	nam1	2026-10-22	applied desc-2 as GetBookId
 1418e1100	UICastingBar::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "CastingBar" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uicameraeditdialog.cpp	nam1	2026-10-22	
 1418e23e0	UICharacterCreateDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "CharacterCreateDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uicameraeditdialog.cpp	nam1	2026-10-22	
 1418ea020	UICharacterListDialog::CCharacterInfo::FUN_1418ea020	GetDeleteTime	high	getter	body returns m_nDeleteTime	client/ms2/uicharacterlistdialog.cpp	nam1	2026-10-22	

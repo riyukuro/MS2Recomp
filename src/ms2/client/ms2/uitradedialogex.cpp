@@ -335,7 +335,7 @@ void UITradeDialogEx::FUN_141b27de0(int nSide, int nIndex, MS2Ptr<CItem> spItem)
             efd::SmartPointer<TradeSlot> spSlot(FUN_14140e720(FUN_1422cd070(pBag, nIndex)));
             if (spSlot == 0)
                 return;
-            spSlot->FUN_14185e4e0(spItem);
+            spSlot->SetItem(spItem);
             spSlot->vfunc_10();
         }
     }
@@ -353,7 +353,7 @@ void UITradeDialogEx::FUN_141b27fa0(int nSide, int nIndex)
             efd::SmartPointer<TradeSlot> spSlot(FUN_14140e720(FUN_1422cd070(pBag, nIndex)));
             if (spSlot == 0)
                 return;
-            spSlot->FUN_14185e4e0(MS2Ptr<CItem>(0));
+            spSlot->SetItem(MS2Ptr<CItem>(0));
             spSlot->vfunc_10();
         }
     }
@@ -407,7 +407,7 @@ int UITradeDialogEx::FUN_141b283f0(int* pnSlot)
 void UITradeDialogEx::vfunc_oa0_11(void* a1)
 {
     if (FUN_140ba28d0(&m_30, 0) == 0)
-        FUN_141b27d90(FUN_14140ea30()->FUN_14185d920() + DAT_143ab2898);
+        FUN_141b27d90(FUN_14140ea30()->GetUidLastSent() + DAT_143ab2898);
 }
 
 // @0x141b284b0

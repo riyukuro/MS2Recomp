@@ -61,17 +61,17 @@ void TradeSlotBag::vfunc_20(void*)
 DragSlot* TradeSlotBag::vfunc_16(int nIndex)
 {
     CString strName = static_cast<DragSlotBag*>(this)->vfunc_15(nIndex);
-    return new (efd::MemHint(efd::MemHint::PLATFORM_NONE)) TradeSlot(strName, MS2Ptr<CItem>(0), nIndex, FUN_14185ec50());
+    return new (efd::MemHint(efd::MemHint::PLATFORM_NONE)) TradeSlot(strName, MS2Ptr<CItem>(0), nIndex, IsMine());
 }
 
 // @0x14185ec30
-void TradeSlotBag::FUN_14185ec30(bool b)
+void TradeSlotBag::SetMine(bool b)
 {
     m_bMine = b;
 }
 
 // @0x14185ec50
-bool TradeSlotBag::FUN_14185ec50()
+bool TradeSlotBag::IsMine()
 {
     return m_bMine;
 }

@@ -376,7 +376,7 @@ void ItemPreview::FUN_140d3d600(MS2Ptr<CItem> spItem)
     if (spItem == 0)
         return;
     int nItemId = spItem->FUN_1405276c0();
-    UIRenderView* pView = m_spAvatar->FUN_1418b9bc0();
+    UIRenderView* pView = m_spAvatar->GetView();
     if (pView == 0)
         return;
     GameObject* pObj = m_spAvatar->vfunc_23();
@@ -489,7 +489,7 @@ MS2_REPLACE_METHOD(0x140D3DE80, ItemPreview, FUN_140d3de80, 679, 0xB525CDB5);
 // MS2-FUNCTIONAL: behaviour from the decompile; temporaries / branch layout not byte-matched yet
 void ItemPreview::FUN_140d3e130()
 {
-    UIRenderView* pView = m_spAvatar->FUN_1418b9bc0();
+    UIRenderView* pView = m_spAvatar->GetView();
     if (pView == 0)
         return;
     GameObject* pObj = m_spAvatar->vfunc_23();

@@ -1138,7 +1138,7 @@ void UIPartyDialog::FUN_141a79770()
 // @0x141a79840
 void UIPartyDialog::FUN_141a79840()
 {
-    RoomStageDungeonCli* pStage = FUN_140931510()->FUN_140d9f4e0().get();
+    RoomStageDungeonCli* pStage = FUN_140931510()->GetStage().get();
     if (pStage != 0 && pStage->IsStageFlagSet() && FUN_1409670d0()->FUN_14162ab60())
     {
         m_giveUpDungeon->vfunc_4(true);

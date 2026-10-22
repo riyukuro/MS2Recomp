@@ -261,7 +261,7 @@ ItemInfoSlot::ItemInfoSlot(const CString& strName, MS2Ptr<CItem> spItem, int nIn
         n2 = 0x20;
     m_nFlags = n2;
     UpdateItemId();
-    FUN_140a7bd80(false);
+    SetEnabled(false);
 }
 
 // @0x1414157d0
@@ -283,7 +283,7 @@ ItemInfoSlot::ItemInfoSlot(const CString& strName, CreateParam* pParam)
     m_nFlags = n2;
     m_strCount = pParam->m_strCount;
     UpdateItemId();
-    FUN_140a7bd80(pParam->m_bEnabled);
+    SetEnabled(pParam->m_bEnabled);
 }
 
 // @0x1414159a0
@@ -407,7 +407,7 @@ int ItemInfoSlot::vfunc_0(void* p)
             }
         }
         nResult = tip.FUN_1409e0d40(m_spItem.get());
-        if (FUN_140a7bd60())
+        if (IsEnabled())
             tip.FUN_1409db7b0(m_spItem);
     }
 done:

@@ -41,12 +41,12 @@ public:
     CefRefPtr<CefBrowserHost> FUN_141612a10();      // the browser host
     CefRefPtr<CefBrowser> FUN_141612aa0();          // the CEF browser
     void* FUN_141612b20();                          // the texture the page is rendered into (NiDynamicTexture*)
-    void FUN_141612b50(Delegate<void(const CStringA&)> onNavigate);
+    void SetOnNavigate(Delegate<void(const CStringA&)> onNavigate);
     void FUN_141612ba0();
-    void FUN_141612bd0(Delegate<void(const std::string&)> onUrlChanged);
+    void SetOnUrlChanged(Delegate<void(const std::string&)> onUrlChanged);
     void FUN_141612c20();
-    void FUN_141612c50(bool bKeyboard);             // keyboard input on/off
-    void FUN_141612c70(int nWindowType);
+    void SetKeyboard(bool bKeyboard);             // keyboard input on/off
+    void SetWindowType(int nWindowType);
 
     static bool IsKeyDown(WPARAM wParam);           // 0x141612c90
     static unsigned GetMouseModifiers(WPARAM wParam);              // 0x141612cd0

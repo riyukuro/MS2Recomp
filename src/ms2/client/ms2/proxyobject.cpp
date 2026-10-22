@@ -87,13 +87,13 @@ private:
 };
 
 // @0x1416c4b60
-void CTwoCircleCollision::FUN_1416c4b60(float fMin)
+void CTwoCircleCollision::SetInnerRadius(float fMin)
 {
     m_fInnerRadius = fMin;
 }
 
 // @0x1416c4bf0
-void CTwoCircleCollision::FUN_1416c4bf0(float fMax)
+void CTwoCircleCollision::SetOuterRadius(float fMax)
 {
     m_fOuterRadius = fMax;
 }
@@ -157,8 +157,8 @@ int CProxyObject::FUN_1416c2e70(efd::AssetID asset, efd::Point3 kPos, efd::Point
         if (m_pCollision != 0)
             delete m_pCollision;
         m_pCollision = new CTwoCircleCollision();
-        m_pCollision->FUN_1416c4b60(1.0f);
-        m_pCollision->FUN_1416c4bf0(fRadius);
+        m_pCollision->SetInnerRadius(1.0f);
+        m_pCollision->SetOuterRadius(fRadius);
         m_pCollision->vfunc_3(Unk_StreamPoint(kPos.x, kPos.y, kPos.z), Unk_StreamPoint(kRot.x, kRot.y, kRot.z), 1.0f);
     }
     return 1;

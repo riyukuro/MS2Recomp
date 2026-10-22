@@ -53,7 +53,7 @@ RoomStageDungeonCli::~RoomStageDungeonCli()
 }
 
 // @0x140c9ce60
-void RoomStageDungeonCli::FUN_140c9ce60(bool bFlag)
+void RoomStageDungeonCli::SetFlag(bool bFlag)
 {
     m_bFlag = bFlag;
 }

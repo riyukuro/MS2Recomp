@@ -485,7 +485,7 @@ void UIWriteMusicDialog::vfunc_67()
     UICartoonDialog* pCartoon = FUN_140ff7030(0x4e87);
     if (pCartoon != 0 && pCartoon->vfunc_55() == 0)
     {
-        if (pCartoon->FUN_1418dfc40() == *TSingleton<Client::Constants>::GetInstance()->WriteMusicStoryBookID.Get())
+        if (pCartoon->GetBookId() == *TSingleton<Client::Constants>::GetInstance()->WriteMusicStoryBookID.Get())
             FUN_1403ed2b0()->FUN_141adc5d0(0x4e87);
     }
     m_nPage = 0;

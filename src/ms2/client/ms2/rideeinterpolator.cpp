@@ -52,7 +52,7 @@ bool RideeInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatT
 }
 
 // @0x141020a70
-void RideeInterpolator::FUN_141020a70(int nObjectId)
+void RideeInterpolator::SetObjectId(int nObjectId)
 {
     m_nObjectId = nObjectId;
 }

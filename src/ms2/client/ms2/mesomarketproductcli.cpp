@@ -359,13 +359,13 @@ bool CMesoMarketMan::FUN_140d6ea50(unsigned __int64 qwId)
 }
 
 // @0x140d6eb50
-int CMesoMarketMan::FUN_140d6eb50()
+int CMesoMarketMan::GetOwn()
 {
     return m_nOwn;
 }
 
 // @0x140d6eb70
-int CMesoMarketMan::FUN_140d6eb70()
+int CMesoMarketMan::GetBuy()
 {
     return m_nBuy;
 }

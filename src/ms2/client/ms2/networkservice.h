@@ -129,10 +129,10 @@ public:
     void FUN_141538bb0(CStringW,int); void FUN_141538c40(int,int);
     unsigned FUN_141538f20(); unsigned FUN_141538f40(); unsigned FUN_141538f60();
     void FUN_141538f80(); void FUN_141539130(); int FUN_141539180();
-    int FUN_141539210(); void FUN_141539230(); void FUN_141539260(); CGameSocket& FUN_1415392c0();
+    int GetConnectionCount(); void FUN_141539230(); void FUN_141539260(); CGameSocket& FUN_1415392c0();
     void FUN_1415392e0(); const float* FUN_141539330(); const float* FUN_141539380();
     void FUN_141539630(); void FUN_1415396b0(Unk_InPtr); void FUN_1415397d0(CInPacket&);
-    void FUN_14153a020(COutPacket&); void FUN_14153a1d0(unsigned,unsigned); void FUN_14153a210(int); int FUN_14153a230();
+    void FUN_14153a020(COutPacket&); void FUN_14153a1d0(unsigned,unsigned); void FUN_14153a210(int); int GetConnectionState();
     void FUN_14153a250();
     void FUN_14153ad10(CInPacket&);
     void FUN_14153af70(CInPacket&);

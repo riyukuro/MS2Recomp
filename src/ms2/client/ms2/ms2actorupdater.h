@@ -15,8 +15,8 @@ public:
     float FUN_1414a8410(const Unk_StreamPoint& kPos);               // m_fDistB = |kPos - entity position|
     float FUN_1414a84f0(const Unk_StreamPoint& kPos);               // m_fDistA = |kPos - entity position|
     void FUN_1414a85d0(float fInterval);                            // run the gate with the mode's duration
-    float FUN_1414a8750() const;                                    // m_fDistB
-    float FUN_1414a8760() const;                                    // m_fDistA
+    float GetDistB() const;                                    // m_fDistB
+    float GetDistA() const;                                    // m_fDistA
     void FUN_141c1bb30(float f) { m_fDistB = f; }                  // 0x141c1bb30 (inline; COMDAT in worldservice.cpp)
     // @0x141bfe6d0
     egf::EntityID FUN_141bfe6d0() { return m_kId; }                 // (inline; COMDAT in worldservice.cpp)

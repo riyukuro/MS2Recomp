@@ -310,7 +310,7 @@ void CStateManager::FUN_1417dafa0(int nState, StateData* pData, int nSub, int bF
 }
 
 // @0x1417db1c0
-State* CStateManager::FUN_1417db1c0()
+State* CStateManager::GetState()
 {
     return m_pState;
 }
@@ -330,7 +330,7 @@ void CStateManager::FUN_1417db230(int nValue)
 }
 
 // @0x1417db270
-int CStateManager::FUN_1417db270()
+int CStateManager::GetCur()
 {
     return m_nCur;
 }
@@ -342,7 +342,7 @@ int CStateManager::FUN_1417db290()
 }
 
 // @0x1417db2c0
-int CStateManager::FUN_1417db2c0()
+int CStateManager::GetPrev()
 {
     return m_nPrev;
 }
@@ -426,7 +426,7 @@ void CStateManager::FUN_1417db550(Unk_StateArg22* pReq)
                 if (FUN_14166c930(pActor) != 0x10 && pReq->m_nState != 0x10)
                 {
                     int nForce = 0;
-                    if (FUN_1417db270() == pReq->m_nState)
+                    if (GetCur() == pReq->m_nState)
                     {
                         if (m_pState->vfunc_28(MS2Ptr<Unk_StateArg22>(pReq)))
                             nForce = 1;
@@ -604,7 +604,7 @@ void CStateManager::FUN_1417dc4c0(Unk_StateArg22* pReq)
     PCBase* pActor = FUN_140974230(m_pOwner);
     if (FUN_141675eb0(pActor)->m_pos18 == efd::Point3::ZERO)
     {
-        if (FUN_1417dc070(FUN_1417db270()) == 1)
+        if (FUN_1417dc070(GetCur()) == 1)
         {
             FUN_1417dbd00(pActor, pReq);
             pActor->vfunc_21(pReq->m_dir2c);
@@ -631,7 +631,7 @@ void CStateManager::FUN_1417dc4c0(Unk_StateArg22* pReq)
     if (m_pState->vfunc_32() != false && pReq->m_nState != 0xd && pReq->m_nState != 0x12)
     {
         int nForce = 0;
-        if (FUN_1417db270() == pReq->m_nState)
+        if (GetCur() == pReq->m_nState)
         {
             if (m_pState->vfunc_28(MS2Ptr<Unk_StateArg22>(pReq)))
                 nForce = 1;
@@ -740,7 +740,7 @@ void StateMoveSkill::FUN_1417df370()
 }
 
 // @0x1417df3c0
-int StateMoveSkill::FUN_1417df3c0()
+int StateMoveSkill::GetMode()
 {
     return m_nMode;
 }
@@ -1682,7 +1682,7 @@ int CStateService::FUN_1417e2670()
 }
 
 // @0x1417e26d0
-efd::SmartPointer<CSceneStateBase> CStateService::FUN_1417e26d0()
+efd::SmartPointer<CSceneStateBase> CStateService::GetCurrent()
 {
     return m_spCurrent;
 }

@@ -73,7 +73,7 @@ public:
     CString GetName();                                    // 0x140967060 copy of the name
     int GetRowId();                                        // 0x140967110 id of the entity's template
     Unk_StreamPoint GetPos();                            // 0x1409673c0 position copy
-    Unk_StreamPoint FUN_1417d4940();                            // 0x1417d4940 rotation copy (stateinteractdata.cpp)
+    Unk_StreamPoint GetRot();                            // 0x1417d4940 rotation copy (stateinteractdata.cpp)
     int FUN_1413b5600();                                        // 0x1413b5600 the interact state (0: usable; uiminimapentity.cpp)
     // @0x140967150
     int FUN_140967150() { return m_nVisible; }

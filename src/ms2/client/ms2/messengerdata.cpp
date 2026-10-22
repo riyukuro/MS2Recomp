@@ -218,11 +218,11 @@ struct Unk_MdEntry
     Unk_MdEntry(Unk_MdSrcB& src);                                           // 0x141483580
     Unk_MdEntry(Unk_MdSrcC& src);                                           // 0x141483830
     Unk_MdEntry(Unk_MdSrcD& src);                                           // 0x141483af0
-    unsigned FUN_141483d80();                                               // 0x141483d80 the kind
+    unsigned GetKind();                                               // 0x141483d80 the kind
     __int64 FUN_141483da0();                                                // 0x141483da0 the sender id
-    CStringW FUN_141483dc0();                                               // 0x141483dc0 the image
-    CStringW FUN_141483e10();                                               // 0x141483e10 the name
-    CStringW FUN_141483e60();                                               // 0x141483e60 the info line
+    CStringW GetImage();                                               // 0x141483dc0 the image
+    CStringW GetName();                                               // 0x141483e10 the name
+    CStringW GetInfo();                                               // 0x141483e60 the info line
     unsigned m_nKind;                                                       // +0x00
     __int64 m_nId;                                                          // +0x08
     CStringW m_strImage;                                                    // +0x10
@@ -957,7 +957,7 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcD& src)
 }
 
 // @0x141483d80
-unsigned Unk_MdEntry::FUN_141483d80()
+unsigned Unk_MdEntry::GetKind()
 {
     return m_nKind;
 }
@@ -969,19 +969,19 @@ __int64 Unk_MdEntry::FUN_141483da0()
 }
 
 // @0x141483dc0
-CStringW Unk_MdEntry::FUN_141483dc0()
+CStringW Unk_MdEntry::GetImage()
 {
     return m_strImage;
 }
 
 // @0x141483e10
-CStringW Unk_MdEntry::FUN_141483e10()
+CStringW Unk_MdEntry::GetName()
 {
     return m_strName;
 }
 
 // @0x141483e60
-CStringW Unk_MdEntry::FUN_141483e60()
+CStringW Unk_MdEntry::GetInfo()
 {
     return m_strInfo;
 }

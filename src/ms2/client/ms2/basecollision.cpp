@@ -243,7 +243,7 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
                     {
                         efd::SmartPointer<Ridee> spRidee = efd::DynamicCast<Ridee>(pObj);
                         if (spRidee)
-                            pObj = spRidee->FUN_141706540();
+                            pObj = spRidee->GetRider();
                         pFirst = pObj;
                     }
                     goto next;
@@ -291,7 +291,7 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
                         {
                             efd::SmartPointer<Ridee> spRidee = efd::DynamicCast<Ridee>(pObj);
                             if (spRidee)
-                                pObj = spRidee->FUN_141706540();
+                                pObj = spRidee->GetRider();
                             pFirst = pObj;
                         }
                         goto next;

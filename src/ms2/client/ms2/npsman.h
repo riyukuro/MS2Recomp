@@ -29,15 +29,15 @@ public:
 
     void FUN_140db8eb0();                               // arms the survey (+0x30) and caches the survey url (+0x28)
     void FUN_140db8f30();                               // opens the survey window once (+0x31)
-    void FUN_140db9000(int nMode);
-    void FUN_140db9020(__int64 hPlayer);
+    void SetMode(int nMode);
+    void SetPlayer(__int64 hPlayer);
     void FUN_140db9040(CStringW& strText);              // -> +0x18
     void FUN_140db9070(CStringA& strText);              // -> +0x20 (widened)
     void FUN_140db90e0(CStringW& strText);              // -> +0x20
     void FUN_140db9170();                               // adds the "platform" survey parameter
     bool FUN_140db9110();                               // has a player handle
-    bool FUN_140db9130();                               // armed
-    bool FUN_140db9150();                               // survey already shown
+    bool IsArmed();                               // armed
+    bool IsShown();                               // survey already shown
 
     __int64 m_hPlayer;                                  // +0x08
     int m_nMode;                                        // +0x10

@@ -73,7 +73,7 @@ public:
     MS2Ptr<CSkillRecord> FUN_141765570(Unk_InventorySkillRequest& kReq);   // build the record of a request
     void FUN_141767f80(int nSkillId);                       // add a temporary skill
     void FUN_1417683d0();                                   // refresh the skill slots
-    MS2Ptr<Unk_MyPCSkillSet> FUN_141768380();               // the temporary (ridee) skill set, if any
+    MS2Ptr<Unk_MyPCSkillSet> GetSkillSet();               // the temporary (ridee) skill set, if any
     void FUN_141768100(int nSkillId);                       // remove a temporary skill
     MS2Ptr<CSkillRecord> FUN_141764e30(Unk_InventorySkillRequest& kReq);   // cast a request
     MS2Ptr<Unk_PCBaseComp_b18> FUN_141764e30(Unk_InventorySkillRequest* pReq);   // the same, the record as the casting skill (vfunc_104)
@@ -96,7 +96,7 @@ public:
     int FUN_141764be0(int nSkillId);                        // the skill the equipped weapon swaps in
     MS2Ptr<SkillLevelData> FUN_141764c80(int nSkillId);     // the learned level of a skill
     bool FUN_141765b80(int nSkillId);                       // the skill may be cast (by a row of the table)
-    int FUN_141765d70();                                    // m_88
+    int GetCastAllowed();                                    // m_88
     int FUN_141765d90();                                    // the cooldown table is not empty
     void FUN_141765de0();                                   // end every cooldown
     void FUN_141765e70(int nSkillId);                       // clear the cooldown of a skill

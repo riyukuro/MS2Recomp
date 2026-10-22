@@ -185,7 +185,7 @@ void COptimizer::FUN_14161bb60()
         else
         {
             bool bUpdate;
-            if (FUN_141622790() == 0 || FUN_14161cf40() != 0)
+            if (GetEnabled() == 0 || GetSuppressed() != 0)
             {
                 bUpdate = true;
             }
@@ -589,7 +589,7 @@ void COptimizer::FUN_14161cee0(int nSuppressed)
 }
 
 // @0x14161cf40
-int COptimizer::FUN_14161cf40() const
+int COptimizer::GetSuppressed() const
 {
     return m_nSuppressed;
 }
@@ -886,7 +886,7 @@ bool operator<(const COptimizer::Entry& left, const COptimizer::Entry& right)
 }
 
 // @0x141622790
-int COptimizer::FUN_141622790() const
+int COptimizer::GetEnabled() const
 {
     return m_nEnabled;
 }

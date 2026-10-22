@@ -71,8 +71,8 @@ public:
     Unk_MesoLimits& FUN_140d6e940();                        // the limits
     bool FUN_140d6e960(__int64 nCount, __int64 nPrice);      // validate a sale (true when allowed)
     bool FUN_140d6ea50(unsigned __int64 qwId);              // validate a buy
-    int FUN_140d6eb50();                                    // the own count
-    int FUN_140d6eb70();                                    // the buy count
+    int GetOwn();                                    // the own count
+    int GetBuy();                                    // the buy count
     void FUN_140d6eb90(CInPacket& packet);                  // 0: result code
     void FUN_140d6ebe0(CInPacket& packet);                  // 1: the limits
     void FUN_140d6ec20(CInPacket& packet);                  // 2: the counts

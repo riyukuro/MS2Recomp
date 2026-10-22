@@ -120,12 +120,12 @@ public:
     void FUN_1417daaa0(double fTime);                               // per-frame update
     void FUN_1417daeb0(int nId, State* pState);                     // AddState (asserts nId == pState->vfunc_1())
     void FUN_1417dafa0(int nState, StateData* pData, int nSub, int bForce);   // change state
-    State* FUN_1417db1c0();                                         // current state
+    State* GetState();                                         // current state
     State* FUN_1417db1e0(int nId);                                  // state by id, or NULL
     void FUN_1417db230(int nValue);                                 // current state slot 2
-    int FUN_1417db270();                                            // current state id
+    int GetCur();                                            // current state id
     int FUN_1417db290();                                            // current state's m_n10
-    int FUN_1417db2c0();                                            // previous state id
+    int GetPrev();                                            // previous state id
     void FUN_1417db2e0(Unk_StateArg22* pReq);                       // queue a request
     void FUN_1417db550(Unk_StateArg22* pReq);                       // apply a request to the actor
     void FUN_1417dbd00(PCBase* pActor, Unk_StateArg22* pReq);       // snap the actor to the request position
@@ -204,7 +204,7 @@ public:
     virtual bool vfunc_38(StateData* pData);                        // 38 0x1417df570
 
     void FUN_1417df370();                                           // go to the fallback state
-    int FUN_1417df3c0();                                            // m_nMode
+    int GetMode();                                            // m_nMode
     int FUN_1417df3e0();                                            // skill id of the data (0 if none)
     long long FUN_1417df430();                                      // skill cooldown (0 if none)
     bool FUN_1417df6a0();                                           // keep-playing check
@@ -349,7 +349,7 @@ public:
     int FUN_1417e25a0(int nScene);                  // switch to a scene state (0 = none)
     int FUN_1417e2610();                            // current scene id
     int FUN_1417e2670();                            // current scene slot 15
-    efd::SmartPointer<CSceneStateBase> FUN_1417e26d0();       // copy of the current scene
+    efd::SmartPointer<CSceneStateBase> GetCurrent();       // copy of the current scene
     efd::SmartPointer<CSceneStateBase> FUN_1417e2720(unsigned nScene);   // scene by id
     void FUN_1417e27d0(CInPacket* pPacket);         // forward a packet to the current scene
     int FUN_1417e2830(int nScene);                  // the switch itself

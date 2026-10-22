@@ -31,7 +31,7 @@ Unk_PPOptions* FUN_1409a8b10();
 class Unk_PPSecondView
 {
 public:
-    NiViewRenderClick* FUN_141774010();         // 0x141774010
+    NiViewRenderClick* GetClick();         // 0x141774010
     char m_pad_00[0x10];
     NiViewRenderClickPtr m_spClick;             // +0x10
     Ni3DRenderViewPtr m_spView;                 // +0x18
@@ -244,7 +244,7 @@ void FUN_141773ed0(Unk_PPSecondView* pkSoftParticles)
 }
 
 // @0x141774010
-NiViewRenderClick* Unk_PPSecondView::FUN_141774010()
+NiViewRenderClick* Unk_PPSecondView::GetClick()
 {
     return m_spClick;
 }
@@ -306,7 +306,7 @@ CRuntimeClass* FUN_141774210()
 MS2_REPLACE(0x141773940, FUN_141773940, 321, 0x4C2A5D6B);
 MS2_REPLACE(0x141773cc0, FUN_141773cc0, 198, 0xFB373809);
 MS2_REPLACE(0x141773ed0, FUN_141773ed0, 310, 0xBBA392D9);
-MS2_REPLACE_METHOD(0x141774010, Unk_PPSecondView, FUN_141774010, 31, 0x7FC3E510);
+MS2_REPLACE_METHOD(0x141774010, Unk_PPSecondView, GetClick, 31, 0x7FC3E510);
 MS2_REPLACE(0x141774040, FUN_141774040, 43, 0x9063ABCD);
 MS2_REPLACE(0x141774080, FUN_141774080, 43, 0x71E5F04D);
 MS2_REPLACE(0x1417740c0, FUN_1417740c0, 116, 0xD1935A30);

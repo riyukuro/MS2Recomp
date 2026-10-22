@@ -112,9 +112,9 @@ public:
     void FUN_140c8b1f0();                                   // clear the counts
     int FUN_140c8b220(int nKey);                            // count of a key
     bool FUN_140c8b2b0();                                   // has a summoned pet item
-    __int64 FUN_140c8b2e0();                                // the summoned pet item uid
-    void FUN_140c8b300(__int64 nUid);
-    int FUN_140c8b320();                                    // auto flag
+    __int64 GetSummonUid();                                // the summoned pet item uid
+    void SetSummonUid(__int64 nUid);
+    int GetAuto();                                    // auto flag
     int SendRequestPet();                                    // toggle the auto flag (sends it)
     CPetInventory* FUN_140c8b410();                         // &m_inv
     Unk_PetManagerEmpty* FUN_140c8b430();                   // &m_a0

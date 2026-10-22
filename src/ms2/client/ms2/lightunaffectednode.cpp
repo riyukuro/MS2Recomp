@@ -79,9 +79,9 @@ void LightUnaffectedNode::UpdateEffectsDownward(NiDynamicEffectState* pkParentSt
 MS2_REPLACE_METHOD(0x14144E210, LightUnaffectedNode, UpdateEffectsDownward, 52, 0xDFEF2499);
 
 // @0x14144e250
-bool LightUnaffectedNode::FUN_14144e250() { return m_bTemplate; }
+bool LightUnaffectedNode::IsTemplate() { return m_bTemplate; }
 
-MS2_REPLACE_METHOD(0x14144E250, LightUnaffectedNode, FUN_14144e250, 18, 0xABE20AAB);
+MS2_REPLACE_METHOD(0x14144E250, LightUnaffectedNode, IsTemplate, 18, 0xABE20AAB);
 
 // @0x14144e2d0
 const NiRTTI* LightUnaffectedNode::GetRTTI() const { return &ms_RTTI; }

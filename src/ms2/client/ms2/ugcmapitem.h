@@ -20,15 +20,15 @@ public:
     CUGCMapItem();                                          // 0x140dfc1b0
     ~CUGCMapItem();                                         // 0x140dfc240
     void FUN_140dfc280(int n);
-    void FUN_140dfc2a0(int nItemId);
-    void FUN_140dfc2c0(__int64 nUid);
-    void FUN_140dfc2e0(__int64 nCount);
-    void FUN_140dfc300(MS2Ptr<CUgcItemLook> spLook);
+    void SetItemId(int nItemId);
+    void SetUid(__int64 nUid);
+    void SetCount(__int64 nCount);
+    void SetLook(MS2Ptr<CUgcItemLook> spLook);
     int FUN_140dfc350();                                    // m_n18
-    int FUN_140dfc370();                                    // the item id
-    __int64 FUN_140dfc390();                                // the uid
-    __int64 FUN_140dfc3b0();                                // the count
-    MS2Ptr<CUgcItemLook> FUN_140dfc3d0();                   // the look
+    int GetItemId();                                    // the item id
+    __int64 GetUid();                                // the uid
+    __int64 GetCount();                                // the count
+    MS2Ptr<CUgcItemLook> GetLook();                   // the look
     __int64 FUN_140dfc420();                                // the id of the look (0 without one)
     int m_n18;                                              // +0x18
     int m_nItemId;                                          // +0x1c

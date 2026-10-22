@@ -65,7 +65,7 @@ MS2MaterialSwapProcessor::MS2MaterialSwapProcessor(const std::vector<NiPointer<M
 }
 
 // @0x1414cfbc0
-void MS2MaterialSwapProcessor::FUN_1414cfbc0(int bUseMS2List)
+void MS2MaterialSwapProcessor::SetUseMS2List(int bUseMS2List)
 {
     m_nUseMS2List = bUseMS2List;
 }

@@ -261,7 +261,7 @@ int UIPetSystemDialog::vfunc_84()
 // @0x140e74730
 MS2Ptr<CItem> UIPetSystemDialog::vfunc_85()
 {
-    return DAT_143ab2a90.FUN_140a5d680(FUN_140535320()->FUN_140c8b2e0());
+    return DAT_143ab2a90.FUN_140a5d680(FUN_140535320()->GetSummonUid());
 }
 
 // @0x140e74790

@@ -1158,7 +1158,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 class StateSkill : public State
 {
 public:
-    MS2Ptr<CSkillRecord> FUN_1417ed6f0();                   // the record being cast
+    MS2Ptr<CSkillRecord> GetRecord();                   // the record being cast
     void FUN_1417ed740(MS2Ptr<CSkillRecord> spRecord);      // queue the next record
     // @0x141534030
     unsigned int FUN_141534030() { return m_nElapsed; }
@@ -1189,7 +1189,7 @@ bool MyPC::vfunc_102(MS2Ptr<CSkillRecord> spRecord)
         if (pSkill == 0)
             return false;
         pSkill->FUN_1417ed740(spRecord);
-        MS2Ptr<CSkillRecord> spCur = pSkill->FUN_1417ed6f0();
+        MS2Ptr<CSkillRecord> spCur = pSkill->GetRecord();
         if (spCur.get() != 0)
             spCur->m_n90 = 0;
         return true;
@@ -1224,10 +1224,10 @@ bool MyPC::vfunc_102(MS2Ptr<CSkillRecord> spRecord)
     }
     float fDelay = 0.0f;
     float fElapsed = 0.0f;
-    StateSkill* pSkill = dynamic_cast<StateSkill*>(m_spStateMgr->FUN_1417db1c0());
+    StateSkill* pSkill = dynamic_cast<StateSkill*>(m_spStateMgr->GetState());
     if (pSkill != 0)
     {
-        MS2Ptr<CSkillRecord> spCur = pSkill->FUN_1417ed6f0();
+        MS2Ptr<CSkillRecord> spCur = pSkill->GetRecord();
         if (spCur.get() != 0)
             fElapsed = FUN_14028d280(pSkill->FUN_141534030());
     }
@@ -2350,7 +2350,7 @@ void MyPC::FUN_141524a80(bool bForce)
     int bFlushAfter = 0;
     if (spCur.get())
     {
-        if (spCur->m_nState == 2 && m_spStateMgr->FUN_1417db270() != 2)
+        if (spCur->m_nState == 2 && m_spStateMgr->GetCur() != 2)
             bFlushAfter = 1;
         else
             (&m_kStateCtl)->vfunc_0();
@@ -3344,13 +3344,13 @@ void MyPC::vfunc_120(MS2Ptr<RideOnAction> spAction)
     m_kStateCtl.FUN_1417b7450();
     if (FUN_1416764a0() != 0)
     {
-        const int& nSkillId = FUN_1416764a0()->FUN_141707750()->m_nSkillId;   // outlives the temp copy (the ridee keeps the data)
+        const int& nSkillId = FUN_1416764a0()->GetData()->m_nSkillId;   // outlives the temp copy (the ridee keeps the data)
         if (nSkillId != 0)
         {
             FUN_141523bc0()->FUN_141767f80(nSkillId);
             FUN_141523bc0()->FUN_1417683d0();
         }
-        if (FUN_1416764a0()->FUN_141707750()->m_nSeats > 1)
+        if (FUN_1416764a0()->GetData()->m_nSeats > 1)
         {
             FUN_1403ed2b0()->FUN_141adc5d0(0x4e2d);
             FUN_1403ed2b0()->FUN_141adc5d0(0x4f2d);
@@ -3399,10 +3399,10 @@ void MyPC::vfunc_121(MS2Ptr<RideOffAction> spAction)
     MS2Ptr<Unk_PCBaseComp_b18> spCast = FUN_141676930();
     if (FUN_1416764a0() != 0)
     {
-        MS2Ptr<Unk_MyPCSkillSet> spSet = FUN_141523bc0()->FUN_141768380();
+        MS2Ptr<Unk_MyPCSkillSet> spSet = FUN_141523bc0()->GetSkillSet();
         if (spSet.get() != 0)
         {
-            int nSkillId = FUN_1416764a0()->FUN_141707750()->m_nSkillId;
+            int nSkillId = FUN_1416764a0()->GetData()->m_nSkillId;
             if (nSkillId != 0)
             {
                 FUN_141523bc0()->FUN_141768100(nSkillId);
@@ -3614,7 +3614,7 @@ int MyPC::SendRequestRideMode1(RideOffAction* pAction)
 {
     if (FUN_1416764d0() == 0)
         return 1;
-    MS2Ptr<Unk_RideeData> spData = m_spB10->FUN_141707750();
+    MS2Ptr<Unk_RideeData> spData = m_spB10->GetData();
     if (spData == 0)
         return 1;
     if (pAction == 0)
@@ -4567,7 +4567,7 @@ Unk_PCCubeCraft* MyPC::FUN_141530290()
         return 0;
     if (FUN_1416595d0() == 0)
         return 0;
-    return FUN_141659700();
+    return GetCubeCraft();
 }
 MS2_REPLACE_METHOD(0x141530290, MyPC, FUN_141530290, 60, 0x717F35CD);
 

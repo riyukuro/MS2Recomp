@@ -440,7 +440,7 @@ void* COffscreenWebBrowser::FUN_141612b20()
 MS2_REPLACE_METHOD(0x141612B20, COffscreenWebBrowser, FUN_141612b20, 31, 0);
 
 // @0x141612b50
-void COffscreenWebBrowser::FUN_141612b50(Delegate<void(const CStringA&)> onNavigate)
+void COffscreenWebBrowser::SetOnNavigate(Delegate<void(const CStringA&)> onNavigate)
 {
     m_onNavigate = onNavigate;
 }
@@ -453,7 +453,7 @@ void COffscreenWebBrowser::FUN_141612ba0()
 MS2_REPLACE_METHOD(0x141612BA0, COffscreenWebBrowser, FUN_141612ba0, 33, 0);
 
 // @0x141612bd0
-void COffscreenWebBrowser::FUN_141612bd0(Delegate<void(const std::string&)> onUrlChanged)
+void COffscreenWebBrowser::SetOnUrlChanged(Delegate<void(const std::string&)> onUrlChanged)
 {
     m_onUrlChanged = onUrlChanged;
 }
@@ -466,18 +466,18 @@ void COffscreenWebBrowser::FUN_141612c20()
 MS2_REPLACE_METHOD(0x141612C20, COffscreenWebBrowser, FUN_141612c20, 33, 0);
 
 // @0x141612c50
-void COffscreenWebBrowser::FUN_141612c50(bool bKeyboard)
+void COffscreenWebBrowser::SetKeyboard(bool bKeyboard)
 {
     m_bKeyboard = bKeyboard;
 }
-MS2_REPLACE_METHOD(0x141612C50, COffscreenWebBrowser, FUN_141612c50, 26, 0);
+MS2_REPLACE_METHOD(0x141612C50, COffscreenWebBrowser, SetKeyboard, 26, 0);
 
 // @0x141612c70
-void COffscreenWebBrowser::FUN_141612c70(int nWindowType)
+void COffscreenWebBrowser::SetWindowType(int nWindowType)
 {
     m_nWindowType = nWindowType;
 }
-MS2_REPLACE_METHOD(0x141612C70, COffscreenWebBrowser, FUN_141612c70, 25, 0);
+MS2_REPLACE_METHOD(0x141612C70, COffscreenWebBrowser, SetWindowType, 25, 0);
 
 // @0x141612c90
 bool COffscreenWebBrowser::IsKeyDown(WPARAM wParam)

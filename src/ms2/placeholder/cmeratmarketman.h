@@ -107,7 +107,7 @@ public:
     __int64 FUN_140d56490();
     int FUN_140d564b0();
     int FUN_140d565c0();
-    int FUN_140d566d0();
+    int GetSellerState();
     void FUN_140d566f0(int nState);
     __int64 FUN_140d56780();
     int FUN_140d567a0(MS2Ptr<CUgcMarketSeller> spSeller);

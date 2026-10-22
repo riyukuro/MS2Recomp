@@ -370,7 +370,7 @@ class RideeInterpolator : public NiTransformInterpolator
 {
 public:
     RideeInterpolator(NiTransformData* pData);                      // 0x1410203a0
-    void FUN_141020a70(int nObjectId);
+    void SetObjectId(int nObjectId);
 };
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(Ridee);
@@ -543,7 +543,7 @@ void Ridee::vfunc_12()
         {
             NiTransformData* pData = NiNew NiTransformData;
             m_pDC0 = NiNew RideeInterpolator(pData);
-            m_pDC0->FUN_141020a70(m_pRider->FUN_14123c580());
+            m_pDC0->SetObjectId(m_pRider->FUN_14123c580());
             NiTransformController* pController = NiNew NiTransformController;
             pController->SetInterpolator(m_pDC0, 0);
             pController->SetTarget(m_spSeat);
@@ -575,7 +575,7 @@ void Ridee::vfunc_12()
 // @0x141705220
 int Ridee::vfunc_58()
 {
-    PCBase* pRider = FUN_141706540();
+    PCBase* pRider = GetRider();
     if (pRider)
         return pRider->vfunc_58();
     return 3;
@@ -675,7 +675,7 @@ MS2_REPLACE_METHOD(0x141705620, Ridee, vfunc_110, 18, 0xA7C52B60);
 // MS2-FUNCTIONAL: stack layout of the CString/SmartPointer temporaries differs
 void Ridee::vfunc_119()
 {
-    MS2Ptr<Unk_RideeData> spData = FUN_141707750();
+    MS2Ptr<Unk_RideeData> spData = GetData();
     if (!spData.get())
         return;
     for (int i = 0; i < spData->m_seats.FUN_140784180(); i++)
@@ -691,7 +691,7 @@ void Ridee::vfunc_119()
                 if (NiAVObject* pNode = pRoot->GetObjectByName(NiFixedString(strNode)))
                 {
                     efd::SmartPointer<NiAVObject> spNode(pNode);
-                    FUN_141706540()->FUN_141708b10().SetAt(FUN_140188f50(pNode->GetName(), 0), spNode);
+                    GetRider()->FUN_141708b10().SetAt(FUN_140188f50(pNode->GetName(), 0), spNode);
                 }
             }
         }
@@ -709,7 +709,7 @@ MS2_REPLACE_METHOD(0x141705880, Ridee, vfunc_70, 27, 0x48167045);
 // MS2-FUNCTIONAL: stack layout of the CString temporaries differs
 void Ridee::FUN_1417058b0()
 {
-    MS2Ptr<Unk_RideeData> spData = FUN_141707750();
+    MS2Ptr<Unk_RideeData> spData = GetData();
     if (!spData.get())
         return;
     for (int i = 0; i < spData->m_seats.FUN_140784180(); i++)
@@ -723,7 +723,7 @@ void Ridee::FUN_1417058b0()
             if (NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410())))
             {
                 if (NiAVObject* pNode = pRoot->GetObjectByName(NiFixedString(strNode)))
-                    FUN_141706540()->FUN_141708b10().RemoveKey(FUN_140188f50(pNode->GetName(), 0));
+                    GetRider()->FUN_141708b10().RemoveKey(FUN_140188f50(pNode->GetName(), 0));
             }
         }
     }
@@ -893,18 +893,18 @@ float Ridee::vfunc_115(float a, float b, float c, float d, int nFlag, int* pOut)
 MS2_REPLACE_METHOD(0x141706490, Ridee, vfunc_115, 116, 0x6486A19D);
 
 // @0x141706510
-void Ridee::FUN_141706510(PCBase* pRider)
+void Ridee::SetRider(PCBase* pRider)
 {
     m_pRider = pRider;
 }
-MS2_REPLACE_METHOD(0x141706510, Ridee, FUN_141706510, 28, 0x3CB6144A);
+MS2_REPLACE_METHOD(0x141706510, Ridee, SetRider, 28, 0x3CB6144A);
 
 // @0x141706540
-PCBase* Ridee::FUN_141706540()
+PCBase* Ridee::GetRider()
 {
     return m_pRider;
 }
-MS2_REPLACE_METHOD(0x141706540, Ridee, FUN_141706540, 18, 0xB14E6424);
+MS2_REPLACE_METHOD(0x141706540, Ridee, GetRider, 18, 0xB14E6424);
 
 // @0x141706560
 NiNode* Ridee::FUN_141706560()
@@ -960,7 +960,7 @@ void Ridee::FUN_141706650(bool bForce)
     int bFlushAfter = 0;
     if (spCur.get())
     {
-        if (spCur->m_nState == 2 && m_spStateMgr->FUN_1417db270() != 2)
+        if (spCur->m_nState == 2 && m_spStateMgr->GetCur() != 2)
             bFlushAfter = 1;
         else
             m_controller.vfunc_0();
@@ -1096,9 +1096,9 @@ MS2_REPLACE_METHOD(0x1417072b0, Ridee, FUN_1417072b0, 393, 0x60E382B1);
 // @0x141707440
 MS2Ptr<Unk_PCBaseComp_b18> Ridee::FUN_141707440()
 {
-    if (!FUN_141706540())
+    if (!GetRider())
         return MS2Ptr<Unk_PCBaseComp_b18>(0);
-    return FUN_141706540()->FUN_141676930();
+    return GetRider()->FUN_141676930();
 }
 MS2_REPLACE_METHOD(0x141707440, Ridee, FUN_141707440, 111, 0x7A3B4502);
 
@@ -1124,7 +1124,7 @@ int Ridee::FUN_1417075e0()
     Unk_RideePC* pc = FUN_140974230(m_pRider);
     if (!pc)
         return 0;
-    if (FUN_141707750()->m_nType == 1 || FUN_141707750()->m_nType == 2)
+    if (GetData()->m_nType == 1 || GetData()->m_nType == 2)
         return 1;
     if (pc->FUN_1416749a0()->FUN_1409701d0(3))
         return 1;
@@ -1133,11 +1133,11 @@ int Ridee::FUN_1417075e0()
 MS2_REPLACE_METHOD(0x1417075e0, Ridee, FUN_1417075e0, 354, 0x578429A8);
 
 // @0x141707750
-MS2Ptr<Unk_RideeData> Ridee::FUN_141707750()
+MS2Ptr<Unk_RideeData> Ridee::GetData()
 {
     return m_spData;
 }
-MS2_REPLACE_METHOD(0x141707750, Ridee, FUN_141707750, 67, 0x6F354F30);
+MS2_REPLACE_METHOD(0x141707750, Ridee, GetData, 67, 0x6F354F30);
 
 // @0x1417077a0
 MS2Ptr<Unk_PCBaseComp_a58> Ridee::vfunc_80()

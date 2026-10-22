@@ -201,7 +201,7 @@ StoreSlot::StoreSlot(const CString& strName, int nIndex, unsigned __int64 nStore
     : MS2DragSlot(strName, nIndex), m_nStoreItemId(nStoreItemId)
 {
     FUN_140bfc4b0()->FUN_141aa87c0(this);
-    FUN_140a7bd80(true);
+    SetEnabled(true);
 }
 
 // @0x141808810
@@ -211,13 +211,13 @@ StoreSlot::~StoreSlot()
 }
 
 // @0x1418088c0
-void StoreSlot::FUN_1418088c0(unsigned __int64 nItemId)
+void StoreSlot::SetStoreItemId(unsigned __int64 nItemId)
 {
     m_nStoreItemId = nItemId;
 }
 
 // @0x1418088f0
-unsigned __int64 StoreSlot::FUN_1418088f0()
+unsigned __int64 StoreSlot::GetStoreItemId()
 {
     return m_nStoreItemId;
 }
@@ -225,7 +225,7 @@ unsigned __int64 StoreSlot::FUN_1418088f0()
 // @0x141808910
 int StoreSlot::FUN_141808910()
 {
-    MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(FUN_1418088f0());
+    MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(GetStoreItemId());
     if (spItem.get() == 0)
         return 0;
     return spItem->FUN_140527840()->FUN_14053dc20();
@@ -285,7 +285,7 @@ int StoreSlot::vfunc_13()
 // @0x141808d90
 int StoreSlot::vfunc_14()
 {
-    MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(FUN_1418088f0());
+    MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(GetStoreItemId());
     if (spItem.IsNull())
         return 0;
     if (vfunc_26(spItem) == 1)
@@ -330,7 +330,7 @@ int StoreSlot::vfunc_14()
 // @0x141809280
 int StoreSlot::vfunc_15()
 {
-    MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(FUN_1418088f0());
+    MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(GetStoreItemId());
     if (spItem.get() != 0)
         FUN_140d2cfc0(spItem);
     return DragSlot::vfunc_15();
@@ -339,7 +339,7 @@ int StoreSlot::vfunc_15()
 // @0x141809310
 int StoreSlot::vfunc_17()
 {
-    MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(FUN_1418088f0());
+    MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(GetStoreItemId());
     int nResult = vfunc_26(spItem);
     if (nResult == 0)
     {
@@ -372,10 +372,10 @@ int StoreSlot::vfunc_18(void* p)
             COutPacket packet(0x18, 0);
             packet.vfunc_o10_1(2);
             packet.vfunc_o10_4(MS2_STORE_TABLE.Id());
-            packet.vfunc_o10_4(pFrom->FUN_1418088f0());
+            packet.vfunc_o10_4(pFrom->GetStoreItemId());
             packet.vfunc_o10_2((short)m_nIndex);
             FUN_140710590(packet);
-            MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(pFrom->FUN_1418088f0());
+            MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(pFrom->GetStoreItemId());
             if (spItem.get() != 0 && spItem.get() != 0)
             {
                 if (spItem->FUN_140527840() != 0)
@@ -429,7 +429,7 @@ int StoreSlot::vfunc_18(void* p)
 // @0x141809b20
 MS2Ptr<CItem> StoreSlot::vfunc_25()
 {
-    MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(FUN_1418088f0());
+    MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(GetStoreItemId());
     return spItem;
 }
 
@@ -554,7 +554,7 @@ int StoreSlot::vfunc_0(void* p)
     if (tip.FUN_1409e0d40(spItem.get()) == 0)
         return 0;
     tip.FUN_1409c69b0(FUN_14028de60(0x754));
-    if (FUN_140a7bd60() == true)
+    if (IsEnabled() == true)
         tip.FUN_1409db7b0(spItem);
     *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
     return 1;
@@ -616,7 +616,7 @@ void StoreSlot::vfunc_o178_5(void*)
 // @0x14180ade0
 void StoreSlot::FUN_14180ade0()
 {
-    MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(FUN_1418088f0());
+    MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(GetStoreItemId());
     if (spItem.IsNull())
         return;
     if (FUN_140764020()->FUN_1416ce170(spItem) != 0)
@@ -712,7 +712,7 @@ void StoreSlotBag::vfunc_9(void* p)
     StoreSlot* pSlot = FUN_14140e6d0(FUN_1422cd070(pItem->FUN_140526b50()));
     if (pSlot != 0)
     {
-        pSlot->FUN_1418088c0(pItem->FUN_140526a50());
+        pSlot->SetStoreItemId(pItem->FUN_140526a50());
         pSlot->vfunc_10();
     }
 }
@@ -733,7 +733,7 @@ void StoreSlotBag::vfunc_il11(void* p)
     StoreSlot* pSlot = FUN_14140e6d0(FUN_1422cd070(pItem->FUN_140526b50()));
     if (pSlot != 0)
     {
-        pSlot->FUN_1418088c0(pItem->FUN_140526a50());
+        pSlot->SetStoreItemId(pItem->FUN_140526a50());
         pSlot->vfunc_10();
     }
 }

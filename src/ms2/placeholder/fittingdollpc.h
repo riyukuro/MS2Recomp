@@ -259,7 +259,7 @@ public:
     int FUN_141662eb0(class CItem* pItem);                  // 0x141662eb0 the item may be used (mypc)
     class Unk_PCItemCooldowns* FUN_1416561c0();             // 0x1416561c0
     int FUN_1416595d0();                                    // the cube craft mode (scenestategame 0x1417235a0)
-    class Unk_PCCubeCraft* FUN_141659700();                 // the cube craft controller
+    class Unk_PCCubeCraft* GetCubeCraft();                 // the cube craft controller
     void FUN_14165f1f0(int nA, int nB);                     // scenestategame 0x69 (cube weapon held / dropped)
     class Unk_MyPCEmotion* FUN_14165f100();                 // the playing emotion (actionkeyobject.cpp)
     // @0x140967420
@@ -450,7 +450,7 @@ public:
     int m_n1000;                                            // +0x1000
     MS2Ptr<CubeItemInfo> m_spCube1008;                      // +0x1008
     int m_n1018;                                            // +0x1018
-    class Unk_PCCubeCraft* m_pCubeCraft;                    // +0x1020 (FUN_141659700; cube craft mode only)
+    class Unk_PCCubeCraft* m_pCubeCraft;                    // +0x1020 (GetCubeCraft; cube craft mode only)
     CStringA m_str1028;                                     // +0x1028 the profile image key (FUN_1416612e0)
     CStringW m_strName1030;                                 // +0x1030 the displayed name (FUN_141661330)
     int m_n1038;                                            // +0x1038 (FUN_14165f090)

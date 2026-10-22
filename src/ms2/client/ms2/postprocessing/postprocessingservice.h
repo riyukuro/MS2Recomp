@@ -114,7 +114,7 @@ public:
     bool FUN_1416aa850(int nClick);                 // is click nClick active
     bool FUN_1416aa8b0(NiRenderStep* pkStep);       // is the step one of the fade steps
     void FUN_1416aac60(NiAVObject* pkScene);        // remove a scene from the mirrored view
-    CDepthOfFieldManager* FUN_1416aad00();          // m_spDoF
+    CDepthOfFieldManager* GetDoF();          // m_spDoF
     void FUN_1416aa6a0(Unk_PPTexture eClick, bool bActive);   // SetPreprocessRCActiveRef: reference-counted SetActive of a pre-process click
     void FUN_1416aa950();                           // attach the reflection texture effect to the reflective nodes
     void FUN_1416ab960();                           // remove the steps from the active render frame

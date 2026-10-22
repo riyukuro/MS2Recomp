@@ -249,7 +249,7 @@ void UIPaybackDialog::FUN_140e6f8c0()
         row.FUN_1407cb9c0("index", nIndex++);
         row.FUN_1409c0d20("level", pEntry->m_nLevel);
         row.FUN_1407cbb20("merat", FUN_140e70010(StringFormat(L"{0}", FUN_14071d7d0()->GetLevelMerat(
-                                                     pEntry, FUN_1409c1740()->FUN_140a8b340(), nNow))));
+                                                     pEntry, FUN_1409c1740()->GetMerat(), nNow))));
         row.FUN_1407cbb20("percent", StringFormat(L"{0}", FUN_140291d90(FUN_14071d7d0()->GetLevelPercent(pEntry, nNow))));
         row.FUN_1409c0d20("targetLevel", FUN_1409c1740()->FUN_140a8b320());
         row.FUN_1407cbbe0("isRed", FUN_14071d7d0()->IsLocaleEnabled());
@@ -263,9 +263,9 @@ void UIPaybackDialog::FUN_140e6fba0()
     if (m_30 == 0)
         return;
     __int64 nNow = FUN_140869440();
-    CStringW strTotal = FUN_1409404f0(FUN_14071d7d0()->GetMeratTotal(FUN_1409c1740()->FUN_140a8b340(), nNow));
+    CStringW strTotal = FUN_1409404f0(FUN_14071d7d0()->GetMeratTotal(FUN_1409c1740()->GetMerat(), nNow));
     CStringW strCurrent = FUN_1409404f0(
-        FUN_14071d7d0()->GetMeratUpTo(FUN_1409c1740()->FUN_140a8b320(), FUN_1409c1740()->FUN_140a8b340(), nNow));
+        FUN_14071d7d0()->GetMeratUpTo(FUN_1409c1740()->FUN_140a8b320(), FUN_1409c1740()->GetMerat(), nNow));
     CStringW strText = FUN_1408f71a0(CStringW(L"s_payback_dialog_maret"), strCurrent, strTotal);
     if (FUN_14071d7d0()->IsLocaleEnabled())
         strText = FUN_1408f71a0(CStringW(L"s_payback_dialog_merat_text_red_merat"), strCurrent, strTotal);

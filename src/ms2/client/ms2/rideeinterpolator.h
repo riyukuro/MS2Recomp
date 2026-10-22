@@ -15,7 +15,7 @@ public:
     virtual bool Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatTransform& kValue);   // 0x141020430
     virtual bool AlwaysUpdate() const;                          // 0x141020a90
 
-    void FUN_141020a70(int nObjectId);                          // the rider's object id
+    void SetObjectId(int nObjectId);                          // the rider's object id
 
 private:
     MS2_LAYOUT_FRIEND;

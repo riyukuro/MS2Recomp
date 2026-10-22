@@ -525,7 +525,7 @@ void StateInteraction::FUN_1417d22f0(MS2Ptr<CInteractObjectData> spRow)
             MS2Ptr<CInteractObject> spObject = FUN_1403ed2d0()->FUN_141bc6090(reinterpret_cast<Unk_SiPos*>(m_pOwner)->vfunc_18(), 1);
             if (spObject.get())
             {
-                Unk_StreamPoint kRot = spObject->FUN_1417d4940();
+                Unk_StreamPoint kRot = spObject->GetRot();
                 Unk_SiXform kXform;
                 FUN_140a332d0(&kXform);
                 Unk_StreamPoint kUp(0.0f, 0.0f, 1.0f);
@@ -836,7 +836,7 @@ MS2Ptr<StateData> StateInteraction::vfunc_27()
 }
 
 // @0x1417d4940
-Unk_StreamPoint CInteractObject::FUN_1417d4940()
+Unk_StreamPoint CInteractObject::GetRot()
 {
     return m_vRot;
 }

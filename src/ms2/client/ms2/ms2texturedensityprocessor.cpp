@@ -133,13 +133,13 @@ void MS2TextureDensityProcessor::PreRenderProcessList(const NiVisibleArray* pkIn
 MS2_REPLACE_METHOD(0x14150CDB0, MS2TextureDensityProcessor, PreRenderProcessList, 1440, 0x5375FCE8);
 
 // @0x14150d360
-void MS2TextureDensityProcessor::FUN_14150d360(int nMode)
+void MS2TextureDensityProcessor::SetMode(int nMode)
 {
     m_nMode = nMode;
 }
 
 // @0x14150d380
-int MS2TextureDensityProcessor::FUN_14150d380() const
+int MS2TextureDensityProcessor::GetMode() const
 {
     return m_nMode;
 }
@@ -206,7 +206,7 @@ const NiRTTI MS2TextureDensityProcessor::ms_RTTI("MS2TextureDensityProcessor", &
 #endif
 
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
-MS2_REPLACE_METHOD(0x14150d360, MS2TextureDensityProcessor, FUN_14150d360, 25, 0xA8D572C7);
-MS2_REPLACE_METHOD(0x14150d380, MS2TextureDensityProcessor, FUN_14150d380, 17, 0x690E246B);
+MS2_REPLACE_METHOD(0x14150d360, MS2TextureDensityProcessor, SetMode, 25, 0xA8D572C7);
+MS2_REPLACE_METHOD(0x14150d380, MS2TextureDensityProcessor, GetMode, 17, 0x690E246B);
 MS2_REPLACE_METHOD(0x1415120e0, MS2TextureDensityProcessor, GetRTTI, 13, 0xB0C3BA1A);
 

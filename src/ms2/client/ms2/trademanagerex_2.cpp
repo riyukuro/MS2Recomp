@@ -88,13 +88,13 @@ static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
 TradeSlot::TradeSlot(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, bool bMine)
     : MS2DragSlot(strName, nIndex), m_spItem(spItem), m_bMine(bMine)
 {
-    FUN_140a7bd80(true);
+    SetEnabled(true);
 }
 
 // @0x14185dd50
 int TradeSlot::vfunc_14()
 {
-    if (FUN_14185e630())
+    if (IsMine())
     {
         FUN_14185e370(m_spItem);
         FUN_14140ea30()->SendTradeMode9(FUN_14185e580(), FUN_1422cc410());
@@ -116,7 +116,7 @@ int TradeSlot::vfunc_18(void* p)
     Unk_InvenSlot* pInven = FUN_140a50b50(static_cast<DragSlot*>(p));
     if (pInven != 0)
     {
-        if (FUN_14185e630())
+        if (IsMine())
         {
             MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(pInven->FUN_141405a10());
             if (spItem.get())
@@ -134,12 +134,12 @@ int TradeSlot::vfunc_18(void* p)
 // @0x14185df40 (ITooltip::vfunc_0)
 int TradeSlot::vfunc_0(void* p)
 {
-    bool bMine = FUN_14185e630();
+    bool bMine = IsMine();
     int nFlags = bMine ? 0x80 : 0x1000;
     ASTooltip tip(FUN_1403ed2d0()->FUN_141bd0cc0(), nFlags, 2);
     if (tip.FUN_1409e0d40(m_spItem.get()))
     {
-        if (FUN_14185e630())
+        if (IsMine())
         {
             tip.FUN_1409c69b0(FUN_14028de60(0x750));
             {
@@ -158,7 +158,7 @@ int TradeSlot::vfunc_0(void* p)
                 tip.FUN_1409c65f0(strText);
             }
         }
-        if (FUN_140a7bd60() == 1)
+        if (IsEnabled() == 1)
             tip.FUN_1409db7b0(vfunc_25());
         *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
         return 1;
@@ -174,7 +174,7 @@ int TradeSlot::vfunc_8(void* p)
     ASSlot slot(2);
     if (slot.FUN_1409c3860(m_spItem.get(), FUN_1403ed2d0()->FUN_141bd0cc0(), 0x1c81f))
     {
-        if (!FUN_14185e630())
+        if (!IsMine())
             slot.FUN_1409c2650();
         *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
         return 1;
@@ -209,7 +209,7 @@ void TradeSlot::FUN_14185e370(MS2Ptr<CItem> spItem)
 }
 
 // @0x14185e4e0
-void TradeSlot::FUN_14185e4e0(MS2Ptr<CItem> spItem)
+void TradeSlot::SetItem(MS2Ptr<CItem> spItem)
 {
     m_spItem = spItem;
 }
@@ -233,12 +233,12 @@ __int64 TradeSlot::FUN_14185e580()
 // @0x14185e5d0
 void TradeSlot::FUN_14185e5d0()
 {
-    if (FUN_14185e630())
+    if (IsMine())
         FUN_14140ea30()->SendTradeMode9(FUN_14185e580(), FUN_1422cc410());
 }
 
 // @0x14185e630
-bool TradeSlot::FUN_14185e630()
+bool TradeSlot::IsMine()
 {
     return m_bMine;
 }
@@ -255,7 +255,7 @@ void FUN_14185e850(const CString& strName, int nCount, bool bMine)
     TradeSlotBag* pBag = new (efd::MemHint(efd::MemHint::PLATFORM_NONE)) TradeSlotBag(strName);
     if (pBag)
     {
-        pBag->FUN_14185ec30(bMine);
+        pBag->SetMine(bMine);
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount);
         FUN_1422c8f10(strName, pBag);
     }

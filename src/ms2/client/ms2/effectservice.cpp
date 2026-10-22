@@ -2169,9 +2169,9 @@ void CEffectService::FUN_1411a8e90()
             CEffectPtr spEffect = *itEffect;
             if (spEffect->vfunc_12() == 2) {
                 CSoundEventEffect* pSound = static_cast<CSoundEventEffect*>((CEffect*)spEffect);
-                if (pSound != 0 && pSound->FUN_141777720()) {
-                    if (pSound->FUN_141777720()->FUN_1411b1ba0() != 0 && pSound->FUN_141777720()->FUN_14177ab80())
-                        pSound->FUN_141777720()->FUN_1411b1ba0()->vfunc_1();
+                if (pSound != 0 && pSound->GetSound()) {
+                    if (pSound->GetSound()->FUN_1411b1ba0() != 0 && pSound->GetSound()->FUN_14177ab80())
+                        pSound->GetSound()->FUN_1411b1ba0()->vfunc_1();
                 }
             }
         }

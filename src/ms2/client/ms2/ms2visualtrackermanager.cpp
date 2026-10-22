@@ -331,7 +331,7 @@ static const LinePtr s_physX1Lines[10] = {
 
 // ---- small helpers that the exe keeps as separate functions ----
 // @0x14151e7e0
-IDirect3D9* FUN_14151e7e0() { return DAT_143d6ea00; }
+IDirect3D9* GetIDirect3D9() { return DAT_143d6ea00; }
 // @0x14151e740
 int FUN_14151e740() { return DAT_143b0d788; }
 // @0x14151e750: the allocator behind the memory manager
@@ -748,10 +748,10 @@ bool MS2VisualTrackerManager::CreateVisualTrackers()
         RegQueryValueExA(hKey, "ProcessorNameString", NULL, NULL, (LPBYTE)szText, &cb);
         m_spCpuName = AddDebugString(m_idSystemPage, szText, 300, 20, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
     }
-    if (FUN_14151e7e0())
+    if (GetIDirect3D9())
     {
         D3DADAPTER_IDENTIFIER9 kIdent;
-        FUN_14151e7e0()->GetAdapterIdentifier(0, 0, &kIdent);
+        GetIDirect3D9()->GetAdapterIdentifier(0, 0, &kIdent);
         CString strGpu(kIdent.Description);
         if (FUN_141245aa0(FUN_141245b20()) != 0)
             strGpu.Format("%s [bw:%d]", kIdent.Description, FUN_141245aa0(FUN_141245b20()));

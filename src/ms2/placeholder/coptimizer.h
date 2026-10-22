@@ -48,7 +48,7 @@ public:
     void FUN_14161cdd0(unsigned nId);
     int FUN_14161ce60(unsigned nId);
     void FUN_14161cee0(int nSuppressed);
-    int FUN_14161cf40() const;
+    int GetSuppressed() const;
     void FUN_14161cf60(PCBase* pPC);
     void FUN_14161d010(const egf::EntityID& kId);
     void FUN_14161d070(const egf::EntityID& kId);
@@ -57,7 +57,7 @@ public:
     void FUN_14161db10(int nFlags);
     void FUN_14161dbe0(PCBase* pPC, int nFlags);
     void FUN_14161dd30(int nFlags, int nLimit);
-    int FUN_141622790() const;
+    int GetEnabled() const;
     void FUN_14109ac50(int n);                              // m_nUpdateOn = n
     std::set<unsigned __int64> m_players;                   // +0x08
     std::set<egf::EntityID> m_suppress;                     // +0x18

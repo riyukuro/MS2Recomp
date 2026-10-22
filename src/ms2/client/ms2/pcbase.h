@@ -262,7 +262,7 @@ public:
     bool FUN_14166dd20(const efd::utf8string& strAnim, float fSpeed, bool bA, bool bB);   // 0x14166dd20 play animation
     void FUN_14166fff0(CStringW str);                       // 0x14166fff0 chat balloon text (by value)
     bool FUN_141674ef0(const CEffectDummy& kDummy);         // 0x141674ef0 attach an effect node per the dummy
-    MS2Ptr<CStateManager> FUN_141678750();                  // 0x141678750 copy of m_spStateMgr (w17)
+    MS2Ptr<CStateManager> GetStateMgr();                  // 0x141678750 copy of m_spStateMgr (w17)
     void FUN_141676310(int n);                              // 0x141676310 empty
     bool FUN_141679220(const char* szName);                 // 0x141679220 FUN_141679270 found a sequence
     int FUN_1416765b0();                                    // 0x1416765b0 the ridee has a free seat

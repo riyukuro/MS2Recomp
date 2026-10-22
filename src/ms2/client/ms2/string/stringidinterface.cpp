@@ -82,7 +82,7 @@ StringIdInterface::StringIdInterface(const StringIdInterfaceBase& base) : String
 }
 
 // @0x141025b70
-StringManager* FUN_141025b70()
+StringManager* GetStringManager()
 {
     return DAT_143ab1c98;
 }
@@ -109,12 +109,12 @@ CStringW StringIdInterface::FUN_141024e60()
         switch (kind)
         {
         case 1:
-            strFormat = FUN_141025b70()->FUN_14084f9c0(StringXmlCategory(1), id);
+            strFormat = GetStringManager()->FUN_14084f9c0(StringXmlCategory(1), id);
             break;
         case 2:
             return CStringW(L"");
         case 3:
-            strFormat = FUN_141025b70()->GetText(StringXmlCategory(3), PVPStringId(id));
+            strFormat = GetStringManager()->GetText(StringXmlCategory(3), PVPStringId(id));
             break;
         default:
             MS2_ASSERT_AT(0x25, 0);

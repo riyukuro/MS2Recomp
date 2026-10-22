@@ -608,7 +608,7 @@ bool CSoundEventEffect::vfunc_9()
         if (m_bStopRequested && m_dStopTime <= dNow)
         {
             FUN_14015eb90(FUN_140166440(), 1, 0x13, L"sound event - doNotStop이 True 이며, Stop 메시지 이후 10초 경과[{0}]",
-                          m_spSound->FUN_14177aca0());
+                          m_spSound->GetName());
             m_bDoNotStop = false;
             vfunc_5();
         }
@@ -622,7 +622,7 @@ void CSoundEventEffect::vfunc_4()
     if (m_spSound.get() != 0)
     {
         if (FUN_140166440() != 0)
-            Unk_SoundLog(FUN_140166440(), 0xc, 0x12f, L"Start SoundID {0} volume {1} {2}", m_spSound->FUN_14177aca0(),
+            Unk_SoundLog(FUN_140166440(), 0xc, 0x12f, L"Start SoundID {0} volume {1} {2}", m_spSound->GetName(),
                          m_fVolume, FUN_1411a8ae0(m_unk_18));
         m_spSound->FUN_14177a990(FUN_140947900(FUN_1409475f0(&m_spRoot)));
         m_spSound->FUN_14177acf0(m_fVolume);
@@ -692,7 +692,7 @@ int CSoundEventEffect::vfunc_8(void* p)
 }
 
 // @0x141777720
-MS2Ptr<CSoundEvent> CSoundEventEffect::FUN_141777720()
+MS2Ptr<CSoundEvent> CSoundEventEffect::GetSound()
 {
     return m_spSound;
 }
@@ -721,8 +721,8 @@ CSoundEvent::CSoundEvent(FMOD::Event* pEvent, CString strName)
         if (m_pEvent->getProperty("3DMaxDistance", &fMax, true) == FMOD_OK)
         {
             CTwoCircleCollision* pRange = new CTwoCircleCollision;
-            pRange->FUN_1416c4b60(fMin);
-            pRange->FUN_1416c4bf0(fMax);
+            pRange->SetInnerRadius(fMin);
+            pRange->SetOuterRadius(fMax);
             m_pRange = pRange;
         }
     }
@@ -733,8 +733,8 @@ CSoundEvent::CSoundEvent(FMOD::Event* pEvent, CString strName)
             pGroup->getProperty("3DMaxDistance", &fMax) == FMOD_OK)
         {
             CTwoCircleCollision* pRange = new CTwoCircleCollision;
-            pRange->FUN_1416c4b60(fMin);
-            pRange->FUN_1416c4bf0(fMax);
+            pRange->SetInnerRadius(fMin);
+            pRange->SetOuterRadius(fMax);
             m_pRange = pRange;
         }
     }
@@ -824,7 +824,7 @@ int CSoundEvent::FUN_14177ac80()
 }
 
 // @0x14177aca0
-CString CSoundEvent::FUN_14177aca0()
+CString CSoundEvent::GetName()
 {
     return m_strName;
 }
@@ -1404,7 +1404,7 @@ void CSoundEventMgr::FUN_14177ce30(Unk_EntityPtr spEntity, int bOn)
         {
             it->second->FUN_14177a920(0);
         }
-        else if (it->second->FUN_14177aca0() == CString(strEvent.c_str()))
+        else if (it->second->GetName() == CString(strEvent.c_str()))
         {
             it->second->FUN_14177a920(bOn);
         }

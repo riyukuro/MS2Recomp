@@ -37,7 +37,7 @@ struct Unk_TextureFrame
     CString FUN_141847960(const CString& strDir);               // resource path of the base texture
     CString FUN_141847a60(const CString& strDir);               // resource path of the control (map) texture, "" if none
     bool FUN_141847bb0();                                       // has a control texture
-    int FUN_141847c00();                                        // delay of the frame (ms)
+    int GetDelay();                                        // delay of the frame (ms)
 
     CString m_strFile;                  // +0x00 "file"
     CString m_strControl;               // +0x08 "control"

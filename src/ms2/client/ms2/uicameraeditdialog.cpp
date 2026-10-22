@@ -569,7 +569,7 @@ GameObject* UICameraEditDialog::FUN_1418dea40()
 }
 
 // @0x1418dead0
-int UICameraEditDialog::FUN_1418dead0()
+int UICameraEditDialog::IsDragging()
 {
     return m_bDragging;
 }
@@ -742,7 +742,7 @@ int UICartoonDialog::FUN_1418dfb30(int nBookId, int n2c, int nLayer)
 }
 
 // @0x1418dfc40
-int UICartoonDialog::FUN_1418dfc40()
+int UICartoonDialog::GetBookId()
 {
     return m_nBookId;
 }
@@ -2582,14 +2582,14 @@ MS2_REPLACE_METHOD(0x1418de260, UICameraEditDialog, FUN_1418de260, 61, 0x2B88562
 MS2_REPLACE_METHOD(0x1418de920, UICameraEditDialog, FUN_1418de920, 21, 0x66B4D63A);
 MS2_REPLACE_METHOD(0x1418de980, UICameraEditDialog, FUN_1418de980, 183, 0xDCA76300);
 MS2_REPLACE_METHOD(0x1418dea40, UICameraEditDialog, FUN_1418dea40, 71, 0x588E1B03);
-MS2_REPLACE_METHOD(0x1418dead0, UICameraEditDialog, FUN_1418dead0, 17, 0x46A120FA);
+MS2_REPLACE_METHOD(0x1418dead0, UICameraEditDialog, IsDragging, 17, 0x46A120FA);
 MS2_REPLACE_METHOD(0x1418def90, UICameraEditDialog, vfunc_48, 11, 0x723AB6AB);
 MS2_REPLACE_METHOD(0x1418df710, UICartoonDialog, vfunc_67, 117, 0x76CF1088);
 MS2_REPLACE_METHOD(0x1418df790, UICartoonDialog, OnLoadComplete, 70, 0xDC3D700A);
 MS2_REPLACE_METHOD(0x1418df7e0, UICartoonDialog, vfunc_13, 658, 0xBBAF8D9C);
 MS2_REPLACE_METHOD(0x1418dfa90, UICartoonDialog, vfunc_28, 143, 0xF1096833);
 MS2_REPLACE_METHOD(0x1418dfb30, UICartoonDialog, FUN_1418dfb30, 261, 0xB013CD5A);
-MS2_REPLACE_METHOD(0x1418dfc40, UICartoonDialog, FUN_1418dfc40, 17, 0x24676F72);
+MS2_REPLACE_METHOD(0x1418dfc40, UICartoonDialog, GetBookId, 17, 0x24676F72);
 MS2_REPLACE_METHOD(0x1418dfc60, UICartoonDialog, FUN_1418dfc60, 231, 0x4D91903C);
 MS2_REPLACE_METHOD(0x1418dfd50, UICartoonDialog, FUN_1418dfd50, 608, 0x1AA40152);
 MS2_REPLACE_METHOD(0x1418dffc0, UICartoonDialog, OnNext, 69, 0x2F6F3AAF);

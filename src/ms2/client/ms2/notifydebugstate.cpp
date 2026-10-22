@@ -161,7 +161,7 @@ void CMyCharacter::FUN_140d9f200(CInPacket& packet)
 }
 
 // @0x140d9f2c0
-MS2Ptr<DungeonRecordManagerCli> CMyCharacter::FUN_140d9f2c0()
+MS2Ptr<DungeonRecordManagerCli> CMyCharacter::GetRecord()
 {
     return m_spRecord;
 }
@@ -189,7 +189,7 @@ void CMyCharacter::FUN_140d9f310(__int64 nExpire)
 void CMyCharacter::FUN_140d9f400(int nA, int nB, bool bFlag)
 {
     m_spStage.AssignRaw(new RoomStageDungeonCli(nA, nB));
-    m_spStage->FUN_140c9ce60(bFlag);
+    m_spStage->SetFlag(bFlag);
 }
 
 // @0x140d9f4b0
@@ -199,7 +199,7 @@ void CMyCharacter::FUN_140d9f4b0()
 }
 
 // @0x140d9f4e0
-MS2Ptr<RoomStageDungeonCli> CMyCharacter::FUN_140d9f4e0()
+MS2Ptr<RoomStageDungeonCli> CMyCharacter::GetStage()
 {
     return m_spStage;
 }
@@ -264,7 +264,7 @@ unsigned CMyCharacter::FUN_140d9f880(int nId)
 }
 
 // @0x140d9f8f0
-MS2Ptr<CChatEmoticonCli> CMyCharacter::FUN_140d9f8f0()
+MS2Ptr<CChatEmoticonCli> CMyCharacter::GetChatEmoticon()
 {
     return m_spChatEmoticon;
 }

@@ -250,10 +250,10 @@ void UIUGCBannerDialog::vfunc_72()
                 bChanged = true;
             if (FUN_14052d220() != 0)
             {
-                if (FUN_14052d220()->FUN_141888dc0())
+                if (FUN_14052d220()->IsReserveChanged())
                 {
                     bChanged = true;
-                    FUN_14052d220()->FUN_141888da0(false);
+                    FUN_14052d220()->SetReserveChanged(false);
                 }
             }
             if (bChanged == true)
@@ -277,7 +277,7 @@ void UIUGCBannerDialog::OnLoadInit()
         vfunc_67();
         return;
     }
-    if (spUpload->FUN_1418a3ad0() != vfunc_48())
+    if (spUpload->GetDialog() != vfunc_48())
     {
         vfunc_67();
         return;

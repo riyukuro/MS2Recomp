@@ -213,11 +213,11 @@ MS2SceneGraphService::~MS2SceneGraphService()
 }
 
 // @0x1414f0f00
-void MS2SceneGraphService::FUN_1414f0f00(bool bPauseUpdate)
+void MS2SceneGraphService::SetPauseUpdate(bool bPauseUpdate)
 {
     m_bPauseUpdate = bPauseUpdate;
 }
-MS2_REPLACE_METHOD(0x1414F0F00, MS2SceneGraphService, FUN_1414f0f00, 26, 0xBCD448CC);
+MS2_REPLACE_METHOD(0x1414F0F00, MS2SceneGraphService, SetPauseUpdate, 26, 0xBCD448CC);
 
 // @0x1414f0f20
 efd::AsyncResult MS2SceneGraphService::OnInit()

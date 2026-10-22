@@ -86,7 +86,7 @@ void RecodeMgr::FUN_140c9bb20()
 }
 
 // @0x140c9bb40
-int RecodeMgr::FUN_140c9bb40()
+int RecodeMgr::IsRecording()
 {
     return m_bRecording;
 }

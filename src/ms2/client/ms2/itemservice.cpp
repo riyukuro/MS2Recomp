@@ -534,7 +534,7 @@ DragSlot* ItemSlotBag::vfunc_16(int nIndex)
     {
         pSlot->SetSlotFn(m_spParam->m_pfnSlot);
         pSlot->SetTipFn(m_spParam->m_pfnTip);
-        pSlot->FUN_140a7bd80(m_spParam->m_bEnabled);
+        pSlot->SetEnabled(m_spParam->m_bEnabled);
     }
     return pSlot;
 }

@@ -158,7 +158,7 @@ public:
     void FUN_141461140();                                           // 0x141461140 pick the target point
     void FUN_141461a80(Unk_StreamPoint ptNew);                      // 0x141461a80 move the projectile and its scene root
     void FUN_141461b60(const Unk_StreamPoint& ptDirection);         // 0x141461b60 set the direction and rotate
-    void FUN_141461ba0(const Unk_NiMatrix3& matRotation);           // 0x141461ba0 set the rotation matrix
+    void SetMatRotation(const Unk_NiMatrix3& matRotation);           // 0x141461ba0 set the rotation matrix
     void FUN_141463fb0(unsigned nNow);                              // 0x141463fb0 end-of-flight transitions
     void FUN_141464160();                                           // 0x141464160 show/hide the scene root by distance
     bool FUN_141464220();                                           // 0x141464220 is the projectile out of the visible range
@@ -172,7 +172,7 @@ public:
     float FUN_141464640();                                          // 0x141464640 move-end hold duration
     int FUN_141464670();                                            // 0x141464670 total duration in ms
     unsigned FUN_141467440();                                       // 0x141467440 the current time for this skill
-    int FUN_141467420();                                            // 0x141467420 the state
+    int GetState();                                            // 0x141467420 the state
 
     void FUN_141462900(unsigned nNow);                              // 0x141462900
     void FUN_141461bd0(unsigned nNow);

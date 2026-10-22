@@ -1614,7 +1614,7 @@ int OpenDungeonItemBox(MS2Ptr<CItem> spItem, PC* pPlayer)
     if (spRoom == 0)
         return 0;
     unsigned nRoomId = spRoom->GetRewardRoomID();
-    DungeonRecordCliPtr spRecord = FUN_140931510()->FUN_140d9f2c0()->GetRecord(nRoomId);
+    DungeonRecordCliPtr spRecord = FUN_140931510()->GetRecord()->GetRecord(nRoomId);
     int nNow = spRecord->GetBonusRewardCountNow();
     int nMax = spRecord->GetMaxCount();
     if (nNow >= nMax)

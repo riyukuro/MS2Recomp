@@ -979,8 +979,8 @@ void PCBase::vfunc_14()
     if (FUN_1416764a0())
         vfunc_121(MS2Ptr<RideOffAction>(0));
     if (m_spStateMgr.get() ? true : false) {
-        if (m_spStateMgr->FUN_1417db1c0())
-            m_spStateMgr->FUN_1417db1c0()->vfunc_5(0);
+        if (m_spStateMgr->GetState())
+            m_spStateMgr->GetState()->vfunc_5(0);
     }
     m_unk_b88.RemoveAll();
     GameObject::vfunc_14();
@@ -1225,7 +1225,7 @@ void PCBase::vfunc_59(int nState, StateData* pData, int nSub, int bForce)
         m_unk_c64 = bForce;
     }
     else {
-        if (m_spStateMgr->FUN_1417db270() == 0x21 && m_spB10 != 0) {
+        if (m_spStateMgr->GetCur() == 0x21 && m_spB10 != 0) {
             m_spB10->vfunc_59(nState, pData, nSub, bForce);
             return;
         }
@@ -1237,7 +1237,7 @@ MS2_REPLACE_METHOD(0x14166c800, PCBase, vfunc_59, 292, 0xAA88E2C6);
 // @0x14166c930
 int PCBase::FUN_14166c930()
 {
-    return m_spStateMgr->FUN_1417db270();
+    return m_spStateMgr->GetCur();
 }
 MS2_REPLACE_METHOD(0x14166c930, PCBase, FUN_14166c930, 41, 0xB1D51893);
 
@@ -1250,7 +1250,7 @@ int PCBase::FUN_14166c960()
 // @0x14166c980
 int PCBase::FUN_14166c980()
 {
-    return m_spStateMgr->FUN_1417db2c0();
+    return m_spStateMgr->GetPrev();
 }
 MS2_REPLACE_METHOD(0x14166c980, PCBase, FUN_14166c980, 41, 0x7E67C403);
 
@@ -1341,7 +1341,7 @@ MS2_REPLACE_METHOD(0x14166cc80, PCBase, FUN_14166cc80, 41, 0x305EC96C);
 // @0x14166ccb0
 State* PCBase::FUN_14166ccb0()
 {
-    return m_spStateMgr->FUN_1417db1c0();
+    return m_spStateMgr->GetState();
 }
 MS2_REPLACE_METHOD(0x14166ccb0, PCBase, FUN_14166ccb0, 41, 0x7B781849);
 
@@ -2694,14 +2694,14 @@ void PCBase::vfunc_100(MS2Ptr<CSkillRecord> spSkill, int n)
     efd::Point3 kTarget;
     efd::Point3 kDir;
     int bAim = 1;
-    if (m_spStateMgr->FUN_1417db270() == 0x10) {
+    if (m_spStateMgr->GetCur() == 0x10) {
         int nMode = spSkill->m_sp30->m_n88;
         int bKeep = 0;
         if (nMode == 0)
             bKeep = 1;
         else if (FUN_14036d570(FUN_140166410(), 0xca) && nMode == 2)
             bKeep = 1;
-        State* pState = m_spStateMgr->FUN_1417db1c0();
+        State* pState = m_spStateMgr->GetState();
         if (bKeep && FUN_1417e9330(pState) == spSkill->FUN_141759960() && spSkill->m_sp30->m_b34) {
             MS2Ptr<CSkillRecord> spCur = static_cast<Unk_PCBaseSkillState*>(pState)->FUN_1417ed6f0();
             if (spCur.get()) {
@@ -2876,7 +2876,7 @@ int PCBase::FUN_141676410()
 {
     if (m_spB10 == 0)
         return 0;
-    return m_spB10->FUN_141707750()->m_nNameId;
+    return m_spB10->GetData()->m_nNameId;
 }
 MS2_REPLACE_METHOD(0x141676410, PCBase, FUN_141676410, 133, 0x8F2137E9);
 
@@ -3057,8 +3057,8 @@ MS2_REPLACE_METHOD(0x141673e10, PCBase, FUN_141673e10, 206, 0x44C1FD7A);
 int PCBase::FUN_141673ef0()
 {
     if (m_spStateMgr.get() != 0) {
-        if (m_spStateMgr->FUN_1417db270() == 0x10) {
-            State* pState = m_spStateMgr->FUN_1417db1c0();
+        if (m_spStateMgr->GetCur() == 0x10) {
+            State* pState = m_spStateMgr->GetState();
             return FUN_1417e9330(pState);
         }
     }
@@ -3306,7 +3306,7 @@ int PCBase::FUN_141676500()
 {
     if (m_spB10 == 0)
         return 0;
-    return m_spB10->FUN_141707750()->m_nType == 1;
+    return m_spB10->GetData()->m_nType == 1;
 }
 MS2_REPLACE_METHOD(0x141676500, PCBase, FUN_141676500, 158, 0x9A8E329D);
 
@@ -3435,7 +3435,7 @@ void PCBase::vfunc_120(MS2Ptr<RideOnAction> spAction)
     spRidee->m_unk_158 = m_unk_158;
     spRidee->vfunc_19(vfunc_18());
     spRidee->vfunc_21(vfunc_20());
-    spRidee->FUN_141706510(this);
+    spRidee->SetRider(this);
     m_spB10 = spRidee;
     FUN_141676320(spAction);
     FUN_1416766b0(spItem);
@@ -3453,7 +3453,7 @@ void PCBase::vfunc_120(MS2Ptr<RideOnAction> spAction)
         kQuery.FUN_140a53190(FUN_14123c580());
         FUN_1403ed280()->FUN_1411a4a00(&kQuery);
     }
-    int nHide = m_spB10->FUN_141707750()->m_n5c;
+    int nHide = m_spB10->GetData()->m_n5c;
     if (nHide != 0)
         FUN_14166ca20(2);
     if (FUN_14166cb00(1))
@@ -3519,11 +3519,11 @@ void PCBase::vfunc_121(MS2Ptr<RideOffAction> spAction)
     int bGround = m_spB10->FUN_141671a30();
     CString strEffect("");
     if (spAction.get() && spAction->m_nType == 0x18) {
-        bool bEffect = !m_spB10->FUN_141707750()->m_strE8.IsEmpty();
+        bool bEffect = !m_spB10->GetData()->m_strE8.IsEmpty();
         if (bEffect)
-            strEffect = m_spB10->FUN_141707750()->m_strE8;
+            strEffect = m_spB10->GetData()->m_strE8;
     }
-    int nHide = m_spB10->FUN_141707750()->m_n5c;
+    int nHide = m_spB10->GetData()->m_n5c;
     if (nHide != 0)
         FUN_14166ca80(2);
     m_spB10 = 0;
@@ -3682,7 +3682,7 @@ void PCBase::FUN_1416795e0()
 {
     if (m_unk_c48 == 0)
         return;
-    if (m_spStateMgr->FUN_1417db270() == 0x21 && m_spB10 != 0)
+    if (m_spStateMgr->GetCur() == 0x21 && m_spB10 != 0)
         m_spB10->vfunc_59(m_unk_c48, m_unk_c50.get(), m_unk_c60, m_unk_c64);
     else
         m_spStateMgr->FUN_1417dafa0(m_unk_c48, m_unk_c50.get(), m_unk_c60, m_unk_c64);
@@ -3740,11 +3740,11 @@ void PCBase::FUN_141676310(int n)
 MS2_REPLACE_METHOD(0x141676310, PCBase, FUN_141676310, 10, 0x96F6F902);
 
 // @0x141678750
-MS2Ptr<CStateManager> PCBase::FUN_141678750()
+MS2Ptr<CStateManager> PCBase::GetStateMgr()
 {
     return m_spStateMgr;
 }
-MS2_REPLACE_METHOD(0x141678750, PCBase, FUN_141678750, 67, 0xE1DD1C3D);
+MS2_REPLACE_METHOD(0x141678750, PCBase, GetStateMgr, 67, 0xE1DD1C3D);
 
 // @0x141679220
 bool PCBase::FUN_141679220(const char* szName)
@@ -3758,7 +3758,7 @@ MS2_REPLACE_METHOD(0x141679220, PCBase, FUN_141679220, 73, 0x7A70E4CC);
 int PCBase::FUN_1416765b0()
 {
     if (FUN_1416764a0() != 0)
-        return (int)m_mapB28.GetCount() < FUN_1416764a0()->FUN_141707750()->m_seats.FUN_140784180();
+        return (int)m_mapB28.GetCount() < FUN_1416764a0()->GetData()->m_seats.FUN_140784180();
     else
         return 0;
 }
@@ -4167,9 +4167,9 @@ int PCBase::FUN_141677f40(PCBase* pActor)
 {
     efd::SmartPointer<Ridee> spRidee = FUN_141468360(pActor);
     if (spRidee) {
-        PCBase* pRider = spRidee->FUN_141706540();
+        PCBase* pRider = spRidee->GetRider();
         PCBase* pLocal = FUN_1403ed2d0()->FUN_141bd0cc0();
-        MS2Ptr<Unk_RideeData> spData = spRidee->FUN_141707750();
+        MS2Ptr<Unk_RideeData> spData = spRidee->GetData();
         if ((spData.get() ? true : false) && pLocal != 0 && pRider != 0) {
             if (pLocal->FUN_14123c580() == pRider->FUN_14123c580() && spData->m_n88 == 0) {
                 if (spRidee->FUN_1417075e0() == 0) {

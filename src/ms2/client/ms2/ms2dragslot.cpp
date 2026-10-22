@@ -46,7 +46,7 @@ MS2DragSlot::~MS2DragSlot()
 // @0x140a7bbd0
 int MS2DragSlot::vfunc_16()
 {
-    if (!FUN_140a7bd60())
+    if (!IsEnabled())
         return 0;
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem == NULL)
@@ -60,7 +60,7 @@ MS2_REPLACE_METHOD(0x140a7bbd0, MS2DragSlot, vfunc_16, 225, 0xF2650599);
 // @0x140a7bcc0
 int MS2DragSlot::vfunc_19()
 {
-    if (!FUN_140a7bd60())
+    if (!IsEnabled())
         return 0;
     if (FUN_14025e7c0()->FUN_14116dcb0(0x49406, 0, 0))
         return 1;
@@ -76,17 +76,17 @@ MS2Ptr<CItem> MS2DragSlot::vfunc_25()
 MS2_REPLACE_METHOD(0x140a7bd20, MS2DragSlot, vfunc_25, 55, 0xCCB7CA10);
 
 // @0x140a7bd60
-bool MS2DragSlot::FUN_140a7bd60()
+bool MS2DragSlot::IsEnabled()
 {
     return m_bEnabled;
 }
-MS2_REPLACE_METHOD(0x140a7bd60, MS2DragSlot, FUN_140a7bd60, 18, 0x01A1D2ED);
+MS2_REPLACE_METHOD(0x140a7bd60, MS2DragSlot, IsEnabled, 18, 0x01A1D2ED);
 
 // @0x140a7bd80
-void MS2DragSlot::FUN_140a7bd80(bool b)
+void MS2DragSlot::SetEnabled(bool b)
 {
     m_bEnabled = b;
 }
-MS2_REPLACE_METHOD(0x140a7bd80, MS2DragSlot, FUN_140a7bd80, 26, 0xF01D1BED);
+MS2_REPLACE_METHOD(0x140a7bd80, MS2DragSlot, SetEnabled, 26, 0xF01D1BED);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9f8e0-0x142c9f910 .text$yd

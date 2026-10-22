@@ -299,7 +299,7 @@ UICashAttendGifList::UICashAttendGifList(UICashAttendDialog* pDialog,MS2Ptr<Unk_
 // MS2-FUNCTIONAL: stack-slot assignment of the day/flag temporaries differs; calls and logic identical.
 void UICashAttendGifList::FUN_140bc2620(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    MS2Ptr<GameEventCashAttendCli> spEvent=m_pDialog->FUN_140bc4410();
+    MS2Ptr<GameEventCashAttendCli> spEvent=m_pDialog->GetSelected();
     if(spEvent==NULL) return;
     unsigned nDay=FUN_1409c17e0(params.pArgs[0]);
     m_bg1->vfunc_4(nDay%2==0);
@@ -480,7 +480,7 @@ void UICashAttendDialog::FUN_140bc4390(GameEventVariable*) { if(!FUN_1422dc2d0()
 // @0x140bc43d0
 void UICashAttendDialog::FUN_140bc43d0(GameEventVariable*) { if(!FUN_1422dc2d0()) return; FUN_140bc4d40(); }
 // @0x140bc4410
-MS2Ptr<GameEventCashAttendCli> UICashAttendDialog::FUN_140bc4410() { return m_selected; }
+MS2Ptr<GameEventCashAttendCli> UICashAttendDialog::GetSelected() { return m_selected; }
 
 // @0x140bc4460
 void UICashAttendDialog::FUN_140bc4460()

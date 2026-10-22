@@ -80,7 +80,7 @@ public:
     CStringW FUN_140d8c750();           // layout display text
     bool FUN_140d8c8d0(int nResult, const CMsgBoxData& data);   // message box callback: resume the input system
     bool FUN_140d8c920(int nKey);                       // key is held
-    NiPointer<NiInputGamePad> FUN_140d8c100();           // the active gamepad (by value)
+    NiPointer<NiInputGamePad> GetGamePad();           // the active gamepad (by value)
     bool FUN_140d8cd50(int nKey);                       // key was pressed
     bool FUN_140d8d2d0(int nKey);                       // key was released
     bool FUN_140d8d840(int nKey);                       // inject a key press

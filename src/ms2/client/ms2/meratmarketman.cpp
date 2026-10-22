@@ -1004,7 +1004,7 @@ int CMeratMarketMan::FUN_140d565c0()
 }
 
 // @0x140d566d0
-int CMeratMarketMan::FUN_140d566d0()
+int CMeratMarketMan::GetSellerState()
 {
     return m_nSellerState;
 }
@@ -1041,7 +1041,7 @@ int CMeratMarketMan::FUN_140d567a0(MS2Ptr<CUgcMarketSeller> spSeller)
 // @0x140d56840
 int CMeratMarketMan::FUN_140d56840()
 {
-    int nOld = FUN_140d566d0();
+    int nOld = GetSellerState();
     FUN_140d566f0(0);
     if (nOld != 0 && 0 < m_ne0) {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, FormatStringId(0xa36, FUN_1409404f0(m_ne0)), 0, CStringW(L""));
@@ -2378,7 +2378,7 @@ void CMeratMarketMan::FUN_140d5d500(CInPacket& packet)
     if (nType != 0x3fa)
         return;
     m_ne0 += nAmount;
-    if (FUN_140d566d0() == 0)
+    if (GetSellerState() == 0)
         return;
     bool bDone = m_sellers.IsEmpty();
     if (!bDone) {

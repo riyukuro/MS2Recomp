@@ -61,11 +61,11 @@ int UGCItemSlot::FUN_14187d870()
 MS2_REPLACE_METHOD(0x14187d870, UGCItemSlot, FUN_14187d870, 73, 0xC60F55F1);
 
 // @0x14187d8c0
-void UGCItemSlot::FUN_14187d8c0(MS2Ptr<CItem> spItem)
+void UGCItemSlot::SetItem(MS2Ptr<CItem> spItem)
 {
     m_spItem = spItem;
 }
-MS2_REPLACE_METHOD(0x14187d8c0, UGCItemSlot, FUN_14187d8c0, 63, 0x6996C064);
+MS2_REPLACE_METHOD(0x14187d8c0, UGCItemSlot, SetItem, 63, 0x6996C064);
 
 // @0x14187d910
 MS2Ptr<CItem> UGCItemSlot::vfunc_25()

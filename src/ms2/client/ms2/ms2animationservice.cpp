@@ -143,19 +143,19 @@ struct Unk_AssetEvent
     int m_nState;
     int m_nPad;
     char* m_pAsset;
-    char* FUN_1414ac920();      // 0x1414ac920
-    int FUN_1414ac930();        // 0x1414ac930
+    char* GetAsset();      // 0x1414ac920
+    int GetState();        // 0x1414ac930
 };
 MS2_CHECK_SIZE(Unk_AssetEvent, 0x50);
 
 // @0x1414ac920
-char* Unk_AssetEvent::FUN_1414ac920()
+char* Unk_AssetEvent::GetAsset()
 {
     return m_pAsset;
 }
 
 // @0x1414ac930
-int Unk_AssetEvent::FUN_1414ac930()
+int Unk_AssetEvent::GetState()
 {
     return m_nState;
 }
@@ -452,9 +452,9 @@ bool MS2AnimationService::FUN_1414a9810(Unk_AssetEvent* pEvent)
 {
     if (pEvent != 0)
     {
-        char* pRaw = pEvent->FUN_1414ac920();
+        char* pRaw = pEvent->GetAsset();
         AssetData* pAsset = pRaw != 0 ? (AssetData*)(pRaw - 8) : 0;
-        if (pEvent->FUN_1414ac930() == 1)
+        if (pEvent->GetState() == 1)
             return false;
         if (pAsset == 0)
             return false;
@@ -495,7 +495,7 @@ struct Unk_KFMCacheView : public egmAnimation::KFMCache
 };
 
 // @0x1414ac8a0
-egmAnimation::KFMCache* MS2AnimationService::FUN_1414ac8a0()
+egmAnimation::KFMCache* MS2AnimationService::GetKFMCache()
 {
     return m_spKFMCache;
 }
@@ -503,8 +503,8 @@ egmAnimation::KFMCache* MS2AnimationService::FUN_1414ac8a0()
 // @0x1414a99a0
 size_t MS2AnimationService::GetKFMCacheCount()
 {
-    if (FUN_1414ac8a0())
-        return static_cast<Unk_KFMCacheView*>(FUN_1414ac8a0())->FUN_1414ac840();
+    if (GetKFMCache())
+        return static_cast<Unk_KFMCacheView*>(GetKFMCache())->FUN_1414ac840();
     return 0;
 }
 MS2_REPLACE_METHOD(0x1414A99A0, MS2AnimationService, GetKFMCacheCount, 51, 0x7CDB4B62);

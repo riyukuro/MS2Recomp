@@ -81,7 +81,7 @@ static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 ItemBreakSlot::ItemBreakSlot(const CString& strName, int nIndex)
     : MS2DragSlot(strName, nIndex)
 {
-    FUN_140a7bd80(true);
+    SetEnabled(true);
 }
 
 // @0x14140ff80
@@ -133,7 +133,7 @@ int ItemBreakSlot::vfunc_0(void* p)
     MS2Ptr<CItem> spItem = vfunc_25();
     if (tip.FUN_1409e0d40(spItem.get()) != 0)
     {
-        if (FUN_140a7bd60() == true)
+        if (IsEnabled() == true)
             tip.FUN_1409db7b0(spItem);
         *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
         return 1;

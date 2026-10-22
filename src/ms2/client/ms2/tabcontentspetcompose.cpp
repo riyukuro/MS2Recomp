@@ -444,7 +444,7 @@ void PetComposePetEnchant::vfunc_3()
     MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_petEnchant"));
     if (ench == 0)
         return;
-    ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_pOwner->FUN_140cb47b0());
+    ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
     __int64 nExp = FUN_140528b90(pet);
@@ -564,11 +564,11 @@ void PetComposePetEnchant::FUN_140cb2fb0()
     MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_petEnchant"));
     if (ench == 0)
         return;
-    ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_pOwner->FUN_140cb47b0());
+    ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
     ATL::CAtlArray<unsigned __int64> ids;
-    ids.Add(m_pOwner->FUN_140cb47b0());
+    ids.Add(m_pOwner->GetUidPet());
     FUN_140b77500(&m_strBag);
     FUN_140b773a0(&m_strTarget, ids);
     int nBonus = Unk_ComposeBonus(player);
@@ -594,7 +594,7 @@ void PetComposePetEnchant::FUN_140cb34b0()
     MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_petEnchant"));
     if (ench == 0)
         return;
-    ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_pOwner->FUN_140cb47b0());
+    ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
     ATL::CAtlArray<IdCount> selected;
@@ -642,7 +642,7 @@ void PetComposePetEnchant::FUN_140cb3a30()
     MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_petEnchant"));
     if (ench == 0)
         return;
-    ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_pOwner->FUN_140cb47b0());
+    ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
     int nBonus = Unk_ComposeBonus(player);
@@ -792,7 +792,7 @@ int TabContentsPetCompose::vfunc_8()
 }
 
 // @0x140cb47b0
-unsigned __int64 TabContentsPetCompose::FUN_140cb47b0()
+unsigned __int64 TabContentsPetCompose::GetUidPet()
 {
     return m_uidPet;
 }
@@ -885,7 +885,7 @@ void TabContentsPetCompose::FUN_140cb4ed0(__int64* pBase, __int64* pBonus)
     Unk_PetPlayer* player = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (player == 0)
         return;
-    ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(FUN_140cb47b0());
+    ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(GetUidPet());
     if (pet == 0)
         return;
     *pBase = 0;
@@ -938,7 +938,7 @@ void TabContentsPetCompose::FUN_140cb5300(unsigned short* pClass, __int64* pExp)
     Unk_PetPlayer* player = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (player == 0)
         return;
-    ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(FUN_140cb47b0());
+    ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(GetUidPet());
     if (pet == 0)
         return;
     unsigned short nClass = FUN_140528c20(pet);

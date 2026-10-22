@@ -224,7 +224,7 @@ private:
 Unk_SsItemPtr FUN_14053f870(unsigned __int64 nItemId);    // the item data record of an item id
 int FUN_141769320(Unk_SsItemPtr kPtr);                    // the skill id of the item
 
-// The skill set of a ridee (see CSkillSystem::FUN_141768380).
+// The skill set of a ridee (see CSkillSystem::GetSkillSet).
 class Unk_MyPCSkillSet : public CPtred
 {
 public:
@@ -403,41 +403,41 @@ void SkillSlot::vfunc_6(void* p)
     int nValue = 0;
     if (m_kKeys.Lookup(m_nIndex, nValue))
         FUN_140165270(arr, FUN_140719530(nValue));
-    FUN_1414049c0(p, FUN_14175cb90());
+    FUN_1414049c0(p, GetSkillId());
 }
 
 // @0x14175cb90
-int SkillSlot::FUN_14175cb90()
+int SkillSlot::GetSkillId()
 {
     return m_nSkillId;
 }
 
 // @0x14175cbb0
-void SkillSlot::FUN_14175cbb0(int nSkillId)
+void SkillSlot::SetSkillId(int nSkillId)
 {
     m_nSkillId = nSkillId;
 }
 
 // @0x14175cbd0
-__int64 SkillSlot::FUN_14175cbd0()
+__int64 SkillSlot::GetItemUid()
 {
     return m_nItemUid;
 }
 
 // @0x14175cbf0
-void SkillSlot::FUN_14175cbf0(__int64 nItemUid)
+void SkillSlot::SetItemUid(__int64 nItemUid)
 {
     m_nItemUid = nItemUid;
 }
 
 // @0x14175cc20
-int SkillSlot::FUN_14175cc20()
+int SkillSlot::GetItemId()
 {
     return m_nItemId;
 }
 
 // @0x14175cc40
-void SkillSlot::FUN_14175cc40(int nItemId)
+void SkillSlot::SetItemId(int nItemId)
 {
     m_nItemId = nItemId;
 }
@@ -463,13 +463,13 @@ void SkillSlot::FUN_14175cc70()
 }
 
 // @0x14175cd90
-int SkillSlot::FUN_14175cd90()
+int SkillSlot::IsFixed()
 {
     return m_bFixed;
 }
 
 // @0x14175cdb0
-void SkillSlot::FUN_14175cdb0(int bFixed)
+void SkillSlot::SetFixed(int bFixed)
 {
     m_bFixed = bFixed;
 }
@@ -507,7 +507,7 @@ int SkillSlot::vfunc_13()
         PC* pPc = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
         if (pPc == 0)
             return 0;
-        MS2Ptr<Unk_MyPCSkillSet> spSet = static_cast<MyPC*>(pPc)->FUN_141523bc0()->FUN_141768380();
+        MS2Ptr<Unk_MyPCSkillSet> spSet = static_cast<MyPC*>(pPc)->FUN_141523bc0()->GetSkillSet();
         if (spSet == 0)
         {
             Unk_SsPc* pSsPc = static_cast<Unk_SsPc*>(pPc);
@@ -520,7 +520,7 @@ int SkillSlot::vfunc_13()
                 return 0;
             }
         }
-        FUN_14092f4e0(FUN_14175cb90());
+        FUN_14092f4e0(GetSkillId());
     }
     else
     {
@@ -619,9 +619,9 @@ int SkillSlot::vfunc_18(void* p)
                                         int nSlot = FUN_1422cc410();
                                         if (FUN_14092f690(nSkillId, 0, 0, nPage, nSlot) != 0)
                                         {
-                                            FUN_14175cbb0(nSkillId);
-                                            FUN_14175cbf0(0);
-                                            FUN_14175cc40(0);
+                                            SetSkillId(nSkillId);
+                                            SetItemUid(0);
+                                            SetItemId(0);
                                         }
                                     }
                                 }
@@ -669,9 +669,9 @@ int SkillSlot::vfunc_18(void* p)
                             int nSlot = FUN_1422cc410();
                             if (FUN_14092f690(nSkillId, nItemId, nItemUid, nPage, nSlot) != 0)
                             {
-                                FUN_14175cbb0(nSkillId);
-                                FUN_14175cbf0(nItemUid);
-                                FUN_14175cc40(nItemId);
+                                SetSkillId(nSkillId);
+                                SetItemUid(nItemUid);
+                                SetItemId(nItemId);
                                 if (FUN_140930d70())
                                 {
                                     Unk_SsQuickEntry kEntry;
@@ -693,24 +693,24 @@ int SkillSlot::vfunc_18(void* p)
                 int nSlot = FUN_1422cc410();
                 if (FUN_14092f690(nSkillId, 0, 0, nPage, nSlot) != 0)
                 {
-                    FUN_14175cbb0(nSkillId);
-                    FUN_14175cbf0(0);
-                    FUN_14175cc40(0);
+                    SetSkillId(nSkillId);
+                    SetItemUid(0);
+                    SetItemId(0);
                 }
             }
         }
         else
         {
             int nPage = FUN_1409331f0()->FUN_140a700b0();
-            int nSkillId = pSkillSlot->FUN_14175cb90();
-            __int64 nItemUid = pSkillSlot->FUN_14175cbd0();
-            int nItemId = pSkillSlot->FUN_14175cc20();
+            int nSkillId = pSkillSlot->GetSkillId();
+            __int64 nItemUid = pSkillSlot->GetItemUid();
+            int nItemId = pSkillSlot->GetItemId();
             int nSlot = FUN_1422cc410();
             if (FUN_14092f690(nSkillId, nItemId, nItemUid, nPage, nSlot) != 0)
             {
-                pSkillSlot->FUN_14175cbb0(m_nSkillId);
-                pSkillSlot->FUN_14175cbf0(m_nItemUid);
-                pSkillSlot->FUN_14175cc40(m_nItemId);
+                pSkillSlot->SetSkillId(m_nSkillId);
+                pSkillSlot->SetItemUid(m_nItemUid);
+                pSkillSlot->SetItemId(m_nItemId);
                 if (FUN_140930d70())
                 {
                     Unk_SsQuickEntry kEntry;
@@ -726,9 +726,9 @@ int SkillSlot::vfunc_18(void* p)
                     int nOtherIdx = pSkillSlot->FUN_1422cc410();
                     FUN_1409331f0()->FUN_14142e2a0(nOtherIdx, &kOther);
                 }
-                FUN_14175cbb0(nSkillId);
-                FUN_14175cc40(nItemId);
-                FUN_14175cbf0(nItemUid);
+                SetSkillId(nSkillId);
+                SetItemId(nItemId);
+                SetItemUid(nItemUid);
             }
         }
         if (pFrom != 0)
@@ -791,7 +791,7 @@ void SkillSlot::FUN_14175e350(int nSkillId)
 {
     int nPage = FUN_1409331f0()->FUN_140a700b0();
     FUN_14092f690(nSkillId, 0, 0, nPage, FUN_1422cc410());
-    FUN_14175cbb0(nSkillId);
+    SetSkillId(nSkillId);
     vfunc_10();
 }
 
@@ -806,7 +806,7 @@ int SkillSlot::vfunc_0(void* p)
         ASTooltip tip(static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0()), 0x40, 2);
         if (tip.FUN_1409e1770(m_nItemId, nRarity) != 0)
         {
-            if (FUN_14175cd90() == 0)
+            if (IsFixed() == 0)
                 tip.FUN_1409c69b0(FUN_14028de60(0x759));
             FUN_1409b4bc0(p, tip.FUN_1422bb870());
             return 1;
@@ -820,7 +820,7 @@ int SkillSlot::vfunc_0(void* p)
             ASTooltip tip(static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0()), 0x40, 2);
             if (tip.FUN_1409e0d40(spItem.get()) != 0)
             {
-                if (FUN_14175cd90() == 0)
+                if (IsFixed() == 0)
                     tip.FUN_1409c69b0(FUN_14028de60(0x759));
                 FUN_1409b4bc0(p, tip.FUN_1422bb870());
                 return 1;
@@ -843,7 +843,7 @@ int SkillSlot::vfunc_0(void* p)
                 ASTooltip tip(pPc, 0x40, 2);
                 if (tip.FUN_1409e1c50(nSkillId, nLevel, 0) != 0)
                 {
-                    if (FUN_14175cd90() == 0)
+                    if (IsFixed() == 0)
                         tip.FUN_1409c69b0(FUN_14028de60(0x759));
                     FUN_1409b4bc0(p, tip.FUN_1422bb870());
                     return 1;
@@ -1356,7 +1356,7 @@ int SkillSlot::FUN_141760c00()
         int nKey = FUN_141760980(0);
         if (nKey == 0)
         {
-            if (static_cast<MyPC*>(pPc)->FUN_141523bc0()->FUN_141768380().IsNull())
+            if (static_cast<MyPC*>(pPc)->FUN_141523bc0()->GetSkillSet().IsNull())
             {
                 if (spLevel->FUN_140804450())
                     return 1;
@@ -1486,7 +1486,7 @@ bool SkillSlot::FUN_141761900()
 // @0x141761990
 int SkillSlot::FUN_141761990()
 {
-    if (FUN_14175cd90() != 0)
+    if (IsFixed() != 0)
         return 1;
     return FUN_1417619d0();
 }
@@ -1505,7 +1505,7 @@ int SkillSlot::FUN_141761a10()
     PC* pPc = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
-    MS2Ptr<Unk_MyPCSkillSet> spSet = static_cast<MyPC*>(pPc)->FUN_141523bc0()->FUN_141768380();
+    MS2Ptr<Unk_MyPCSkillSet> spSet = static_cast<MyPC*>(pPc)->FUN_141523bc0()->GetSkillSet();
     if (spSet.IsNull())
         return 0;
     std::vector<unsigned>& vItems = spSet->m_vItems;
@@ -1656,7 +1656,7 @@ SkillSlot* SkillSlotBag::FUN_141763710(int nItemId)
     for (std::pair<const int, CString> entry : m_slots)
     {
         SkillSlot* pSlot = FUN_141761e60(FUN_1422cd0f0(entry.second));
-        if (pSlot != 0 && pSlot->FUN_14175cc20() == nItemId)
+        if (pSlot != 0 && pSlot->GetItemId() == nItemId)
             return pSlot;
     }
     return 0;
@@ -1668,7 +1668,7 @@ SkillSlot* SkillSlotBag::FUN_141763800(__int64 nItemUid)
     for (std::pair<const int, CString> entry : m_slots)
     {
         SkillSlot* pSlot = FUN_141761e60(FUN_1422cd0f0(entry.second));
-        if (pSlot != 0 && pSlot->FUN_14175cbd0() == nItemUid)
+        if (pSlot != 0 && pSlot->GetItemUid() == nItemUid)
             return pSlot;
     }
     return 0;
@@ -1712,7 +1712,7 @@ void SkillSlotBag::FUN_141763bd0(int nSkillId, int nFlags)
         SkillSlot* pSlot = FUN_141761e60(FUN_1422cd0f0(entry.second));
         if (pSlot != 0)
         {
-            if (pSlot->FUN_14175cb90() == nSkillId)
+            if (pSlot->GetSkillId() == nSkillId)
                 pSlot->FUN_14175e350(nFlags);
         }
     }
@@ -1943,7 +1943,7 @@ int CSkillSystem::FUN_141765d30(int n)
 }
 
 // @0x141765d70
-int CSkillSystem::FUN_141765d70()
+int CSkillSystem::GetCastAllowed()
 {
     return m_nCastAllowed;
 }
@@ -2784,7 +2784,7 @@ void CSkillSystem::FUN_141768100(int nSkillSetId)
 }
 
 // @0x141768380
-MS2Ptr<Unk_MyPCSkillSet> CSkillSystem::FUN_141768380()
+MS2Ptr<Unk_MyPCSkillSet> CSkillSystem::GetSkillSet()
 {
     return m_spSkillSet;
 }

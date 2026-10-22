@@ -2630,7 +2630,7 @@ void CSceneStateGame::FUN_1417127b0(CInPacket& packet, PCBase* pActor)
             spReq->FUN_1408356f0(packet);
         }
         pMyPC->FUN_141523be0()->FUN_1417b7450();
-        static_cast<CStateManager*>(pMyPC->FUN_141678750())->FUN_1417db550(spReq.get());
+        static_cast<CStateManager*>(pMyPC->GetStateMgr())->FUN_1417db550(spReq.get());
         if (FUN_14166d220(pMyPC) != 0)
         {
             FUN_14166d220(pMyPC)->FUN_141240730();
@@ -6027,7 +6027,7 @@ void CSceneStateGame::FUN_1417235a0(CInPacket& packet)
         return;
     if (pPC->FUN_1416595d0() != 0)
     {
-        Unk_PCCubeCraft* pCraft = pPC->FUN_141659700();
+        Unk_PCCubeCraft* pCraft = pPC->GetCubeCraft();
         if (pCraft != 0)
             pCraft->FUN_1410aa5c0(&info);
     }
@@ -9566,10 +9566,10 @@ class CUGCMapItem : public CPtred
 public:
     CUGCMapItem();                                          // 0x140dfc1b0
     void FUN_140dfc280(int n);
-    void FUN_140dfc2a0(int nItemId);
-    void FUN_140dfc2c0(__int64 nUid);
-    void FUN_140dfc2e0(__int64 nCount);
-    void FUN_140dfc300(MS2Ptr<CUgcItemLook> spLook);
+    void SetItemId(int nItemId);
+    void SetUid(__int64 nUid);
+    void SetCount(__int64 nCount);
+    void SetLook(MS2Ptr<CUgcItemLook> spLook);
     int m_n18;                                              // +0x18 (FUN_140dfc280)
     int m_nItemId;                                          // +0x1c
     __int64 m_nUid;                                         // +0x20
@@ -9609,10 +9609,10 @@ void CSceneStateGame::OnFurnishingInventory(CInPacket& packet)
             FUN_140893250(spLook.operator->(), &static_cast<CInputStream&>(packet));
         }
         MS2Ptr<CUGCMapItem> spItem(new CUGCMapItem);
-        spItem->FUN_140dfc2a0(nItemId);
-        spItem->FUN_140dfc2c0(nUid);
-        spItem->FUN_140dfc2e0(nCount);
-        spItem->FUN_140dfc300(spLook);
+        spItem->SetItemId(nItemId);
+        spItem->SetUid(nUid);
+        spItem->SetCount(nCount);
+        spItem->SetLook(spLook);
         DAT_143ab2e50.FUN_140dfc520(spItem.get());
     }
     else if (nMode == 2)
@@ -10106,7 +10106,7 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
             return;
         if (pPC->FUN_1416595d0() != 0)
         {
-            Unk_PCCubeCraft* pCraft = pPC->FUN_141659700();
+            Unk_PCCubeCraft* pCraft = pPC->GetCubeCraft();
             if (pCraft != 0)
                 pCraft->FUN_1410aa550(nValue);
         }
@@ -10121,7 +10121,7 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
             return;
         if (pPC->FUN_1416595d0() != 0)
         {
-            Unk_PCCubeCraft* pCraft = pPC->FUN_141659700();
+            Unk_PCCubeCraft* pCraft = pPC->GetCubeCraft();
             if (pCraft != 0)
                 pCraft->FUN_1410aa5c0(&info);
         }
@@ -12300,7 +12300,7 @@ void CSceneStateGame::OnResponseRide(CInPacket& packet)
             efd::SmartPointer<Ridee> spRidee = pOwner->FUN_1416764a0();
             if (spRidee)
             {
-                MS2Ptr<Unk_RideeModel> spModel = spRidee->FUN_141707750()->FUN_1407849c0(nSeat);
+                MS2Ptr<Unk_RideeModel> spModel = spRidee->GetData()->FUN_1407849c0(nSeat);
                 if (spModel.get() != 0)
                     strNode = spModel->m_strNode;
             }

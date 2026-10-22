@@ -111,10 +111,10 @@ public:
     virtual void vfunc_9(void* pPacket);                //  9 0x140b94fc0 a 0x75 (item remake option) packet
     virtual void vfunc_10(void* pItem, bool b);         // 10 0x140b950b0 an item changed
 
-    unsigned __int64 FUN_140b95140();                   // m_uidPet
-    unsigned __int64 FUN_140b95160();                   // m_uidIngredient
-    MS2Ptr<CItem> FUN_140b95180();                      // copy of m_pet
-    MS2Ptr<CItem> FUN_140b951d0();                      // copy of m_petNext
+    unsigned __int64 GetUidPet();                   // m_uidPet
+    unsigned __int64 GetUidIngredient();                   // m_uidIngredient
+    MS2Ptr<CItem> GetPet();                      // copy of m_pet
+    MS2Ptr<CItem> GetPetNext();                      // copy of m_petNext
     void FUN_140b95220(ATL::CAtlArray<unsigned __int64>& out);   // copy of m_petCards
     void FUN_140b95250(ATL::CAtlArray<IdCount>& out);   // copy of m_ingredients
     void FUN_140b95280(int bUsePoint);                  // ask for / send the remake request
@@ -125,7 +125,7 @@ public:
     bool FUN_140b964f0(int nResult, const CMsgBoxData& box);   // "lock option" confirmation
     void FUN_140b96520(int nState);                     // m_nState = nState, refresh the ingredient bag
     void FUN_140b96560();                               // enable / disable the ingredient bag by state
-    int FUN_140b967a0();                                // m_nState
+    int GetState();                                // m_nState
     void FUN_140b967c0(int bEnable);                    // enable the pet system dialog's tabs
     void FUN_140b96800(MS2Ptr<CItem> cur, MS2Ptr<CItem> next);   // hand a remake result to the sections
     void FUN_140b96960(MS2Ptr<CItem> item);             // the remade item was applied

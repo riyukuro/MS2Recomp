@@ -45,8 +45,8 @@ public:
     virtual void vfunc_o178_2(void* p) override;        // 0x14180ad50
     virtual void vfunc_o178_5(void* p) override;        // 0x14180adb0
 
-    void FUN_1418088c0(unsigned __int64 nItemId);       // m_nStoreItemId = nItemId
-    unsigned __int64 FUN_1418088f0();                   // return m_nStoreItemId
+    void SetStoreItemId(unsigned __int64 nItemId);       // m_nStoreItemId = nItemId
+    unsigned __int64 GetStoreItemId();                   // return m_nStoreItemId
     int FUN_141808910();                                // item type of the store item (0: gone)
     int FUN_141808b10(CStringW strSearch);              // slot index when the item name contains strSearch (-1: no)
     void FUN_14180ade0();                               // re-check the store item (the listener slots)

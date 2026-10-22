@@ -552,7 +552,7 @@ int CNetworkService::FUN_141539180() {
     return 1;
 }
 // @0x141539210
-int CNetworkService::FUN_141539210() { return m_connectionCount; }
+int CNetworkService::GetConnectionCount() { return m_connectionCount; }
 // @0x141539230
 void CNetworkService::FUN_141539230() { ++m_connectionCount; }
 // @0x141539260
@@ -703,7 +703,7 @@ void CNetworkService::FUN_14153a1d0(unsigned first,unsigned second) { m_socket.F
 // @0x14153a210
 void CNetworkService::FUN_14153a210(int state) { m_connectionState=state; }
 // @0x14153a230
-int CNetworkService::FUN_14153a230() { return m_connectionState; }
+int CNetworkService::GetConnectionState() { return m_connectionState; }
 // @0x14153a250
 void CNetworkService::FUN_14153a250() {
     unsigned sequence=CPtred::InterlockedInc(&m_pingSequence);
@@ -1257,7 +1257,7 @@ MS2_REPLACE_METHOD(0x141538f60, CNetworkService, FUN_141538f60, 17, 0x33D25353);
 MS2_REPLACE_METHOD(0x141538f80, CNetworkService, FUN_141538f80, 415, 0xFF261F0C);
 MS2_REPLACE_METHOD(0x141539130, CNetworkService, FUN_141539130, 71, 0x49ADBDB6);
 MS2_REPLACE_METHOD(0x141539180, CNetworkService, FUN_141539180, 126, 0x26089769);
-MS2_REPLACE_METHOD(0x141539210, CNetworkService, FUN_141539210, 17, 0x88444049);
+MS2_REPLACE_METHOD(0x141539210, CNetworkService, GetConnectionCount, 17, 0x88444049);
 MS2_REPLACE_METHOD(0x141539230, CNetworkService, FUN_141539230, 30, 0xC901F3BF);
 MS2_REPLACE_METHOD(0x141539260, CNetworkService, FUN_141539260, 79, 0x0ABD6394);
 MS2_REPLACE_METHOD(0x1415392c0, CNetworkService, FUN_1415392c0, 17, 0x7500A253);
@@ -1272,7 +1272,7 @@ MS2_REPLACE_METHOD(0x1415395a0, CNetworkService, FUN_1415395a0, 128, 0x759D4D2C)
 MS2_REPLACE_METHOD(0x1415397d0, CNetworkService, FUN_1415397d0, 1573, 0x151C027B);
 MS2_REPLACE_METHOD(0x14153a1d0, CNetworkService, FUN_14153a1d0, 51, 0x33D2563B);
 MS2_REPLACE_METHOD(0x14153a210, CNetworkService, FUN_14153a210, 25, 0xAD719599);
-MS2_REPLACE_METHOD(0x14153a230, CNetworkService, FUN_14153a230, 17, 0xEDA7EABD);
+MS2_REPLACE_METHOD(0x14153a230, CNetworkService, GetConnectionState, 17, 0xEDA7EABD);
 MS2_REPLACE_METHOD(0x14153a250, CNetworkService, FUN_14153a250, 127, 0x827339AB);
 MS2_REPLACE_METHOD(0x14153a2e0, CNetworkService, FUN_14153a2e0, 154, 0x119BF7E2);
 MS2_REPLACE_METHOD(0x14153a380, CNetworkService, FUN_14153a380, 1013, 0xDB706029);

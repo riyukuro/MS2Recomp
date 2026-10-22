@@ -364,7 +364,7 @@ void BlackMarketPageMesoSearch::FUN_140f1a8f0()
     if (m_30 == 0)
         return;
     Unk_MesoLimits& limits = CMesoMarketMan::GetInstance()->FUN_140d6e940();
-    int nCount = CMesoMarketMan::GetInstance()->FUN_140d6eb70();
+    int nCount = CMesoMarketMan::GetInstance()->GetBuy();
     FUN_140cff1b0(m_30->FUN_1422bb870(), "m_buyCount", FUN_14028dfa0(CStringW(L"s_mesoMarket_buy_count"), nCount, limits.m_n20));
 }
 MS2_REPLACE_METHOD(0x140F1A8F0, BlackMarketPageMesoSearch, FUN_140f1a8f0, 297, 0xCEBD89B5);
@@ -772,7 +772,7 @@ void BlackMarketPageMesoRegister::FUN_140f1dab0()
     if (m_30 == 0)
         return;
     Unk_MesoLimits& limits = CMesoMarketMan::GetInstance()->FUN_140d6e940();
-    int nCount = CMesoMarketMan::GetInstance()->FUN_140d6eb50();
+    int nCount = CMesoMarketMan::GetInstance()->GetOwn();
     FUN_140cff1b0(m_30->FUN_1422bb870(), "m_registerCount", FUN_14028dfa0(CStringW(L"s_mesoMarket_register_count_per_day"), nCount, limits.m_n1C));
 }
 MS2_REPLACE_METHOD(0x140F1DAB0, BlackMarketPageMesoRegister, FUN_140f1dab0, 297, 0xF3F7FEAD);

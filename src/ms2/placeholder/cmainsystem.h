@@ -56,12 +56,12 @@ public:
     int GetElapsedTime();                                           // 0x141473610 ms since StartTimer
     __time64_t FUN_141473640();                                     // the server time now
     void FUN_141473690(__time64_t tServer);                         // sets the server time base
-    CString FUN_1414736e0();                                        // m_strDataPath (+0xa8)
+    CString GetDataPath();                                        // m_strDataPath (+0xa8)
     void FUN_141473730(bool bDisable);                              // sticky-keys hotkey off (saves the flags) / restore
     static void FUN_1414737d0(egf::Entity* pEntity);                // drops the entity's scene-graph override and destroys it
     static void FUN_141473870(egf::EntityID id);                    // same for an entity id
     static int FUN_1414738f0(int nIndex);                           // s_143add400[nIndex] (8 entries)
-    void FUN_141473920(DWORD dwThreadId);                           // +0xb0
+    void SetMainThreadId(DWORD dwThreadId);                           // +0xb0
     bool FUN_141473940();                                           // called on the main thread
     CStringW FUN_141473990();                                       // "<cpu vendor> / <cpu brand>"
     virtual efd::SyncResult OnPreInit(efd::IDependencyRegistrar* pDependencyRegistrar);    // 0x141473c20

@@ -38,12 +38,12 @@ public:
     ~StatePcGuideObjectController();                        // 0x1410a6df0 (member cleanup body 0x1410a6dc0)
     virtual void vfunc_0() override;                        // 0 0x1417b7a00
 
-    void FUN_1417b7430(PCBase* pOwner);                     // init with the owning guide object
+    void SetOwner(PCBase* pOwner);                     // init with the owning guide object
     int FUN_1417b7490();                                    // has a pending record
-    MS2Ptr<Unk_GuideRecord> FUN_1417b7620();                // copy of the current record
+    MS2Ptr<Unk_GuideRecord> GetCurrent();                // copy of the current record
     void FUN_1417b7670(Unk_GuideRecord* pRec);              // set the current record
     void FUN_1417b76b0(float fTime);                        // advance with the game time
-    void FUN_1417b7b50(int nKind);                          // 0 construction, 1 fishing, 2 skill magic
+    void SetKind(int nKind);                          // 0 construction, 1 fishing, 2 skill magic
     // w77 (state.cpp)
     void FUN_1417b7450();                                   // drop the current and queued records
     int FUN_1417b7540();                                    // total queued time (ms)

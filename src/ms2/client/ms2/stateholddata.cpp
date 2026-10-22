@@ -258,7 +258,7 @@ void StateHold::vfunc_3(double fTime)
         Ridee* pRidee = FUN_1417cd1c0(pTarget->FUN_1416764a0());
         if (pRidee == 0)
             return;
-        MS2Ptr<Unk_RideeData> spData = pRidee->FUN_141707750();
+        MS2Ptr<Unk_RideeData> spData = pRidee->GetData();
         if (spData == 0)
             return;
         int nSeat = pTarget->FUN_141676790(m_pOwner->FUN_14123c580());
@@ -340,7 +340,7 @@ void StateHold::vfunc_9(double fTime)
         Ridee* pRidee = pPlayer->FUN_1416764a0();
         if (pRidee == 0)
             return;
-        MS2Ptr<Unk_RideeData> spData = pRidee->FUN_141707750();
+        MS2Ptr<Unk_RideeData> spData = pRidee->GetData();
         if (spData == 0)
         {
             int nSeat = pPlayer->FUN_141676790(m_pOwner->FUN_14123c580());

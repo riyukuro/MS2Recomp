@@ -81,7 +81,7 @@ void CSoapClient::FUN_14176fcf0(CString strPath, int nMode)
 }
 
 // @0x14176fde0
-CString CSoapClient::FUN_14176fde0()
+CString CSoapClient::GetError()
 {
     return m_strError;
 }
@@ -108,13 +108,13 @@ int CSoapClient::FUN_14176feb0()
     spCtrl = FUN_14052d220()->FUN_141882610();
     if (spCtrl == 0)
         throw Exception(CString("pUgcUploadCtrl"), 0xd);
-    if (spCtrl->FUN_1418a4100().get() != 0)
-        arrUploads.Add(spCtrl->FUN_1418a4100());
+    if (spCtrl->GetImage().get() != 0)
+        arrUploads.Add(spCtrl->GetImage());
     arrUploads.Add(spCtrl);
     for (size_t i = 0; i < arrUploads.GetCount(); ++i)
     {
         MS2Ptr<CUgcUploadCtrl> spUpload = arrUploads[i];
-        CStringW strPath = spUpload->FUN_1418a3bd0();
+        CStringW strPath = spUpload->GetResult();
         if (strPath.GetLength() == 0)
             throw Exception(CString("UploadFilePath"), 0xf);
         CStringW strMode(L"rb");

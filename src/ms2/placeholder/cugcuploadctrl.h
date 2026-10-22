@@ -270,14 +270,14 @@ public:
     virtual ~CUgcUploadCtrl();                              // 0x1418a3740 (??_G 0x1418a6de0)
     void FUN_1418a3840(int nType);                          // set the content kind
     void FUN_1418a38a0();                                   // refresh the preview of the dialog
-    void FUN_1418a3ab0(int nDialog);                        // set the dialog that shows the upload
-    int FUN_1418a3ad0();                                    // the dialog that shows the upload
+    void SetDialog(int nDialog);                        // set the dialog that shows the upload
+    int GetDialog();                                    // the dialog that shows the upload
     void FUN_1418a3af0(int nResult);
     int FUN_1418a3b80(__int64 uid);                         // prepare the upload (0 = ok)
-    CStringW FUN_1418a3bd0();                               // the result text
+    CStringW GetResult();                               // the result text
     int FUN_1418a3c20(__int64 uid);
     void FUN_1418a3db0();
-    MS2Ptr<CUgcUploadCtrl> FUN_1418a4100();
+    MS2Ptr<CUgcUploadCtrl> GetImage();
     void FUN_1418a4150();
     __int64 FUN_1418a41a0();
     CString FUN_1418a41e0();

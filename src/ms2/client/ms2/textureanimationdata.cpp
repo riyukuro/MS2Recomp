@@ -149,11 +149,11 @@ bool Unk_TextureFrame::FUN_141847bb0()
 MS2_REPLACE_METHOD(0x141847BB0, Unk_TextureFrame, FUN_141847bb0, 62, 0x1690B4C0);
 
 // @0x141847c00
-int Unk_TextureFrame::FUN_141847c00()
+int Unk_TextureFrame::GetDelay()
 {
     return m_nDelay;
 }
-MS2_REPLACE_METHOD(0x141847C00, Unk_TextureFrame, FUN_141847c00, 14, 0xC2D0886F);
+MS2_REPLACE_METHOD(0x141847C00, Unk_TextureFrame, GetDelay, 14, 0xC2D0886F);
 
 // @0x141847c20
 CTextureAnimationData::CTextureAnimationData()
@@ -172,7 +172,7 @@ int CTextureAnimationData::FUN_141847c90(int nTime)
     {
         if (i == m_nLoopFrame)
             nLoopStart = nSum;
-        nSum += m_arrFrames[i].FUN_141847c00();
+        nSum += m_arrFrames[i].GetDelay();
         if (nSum < nTime)
             nIndex++;
         else
@@ -188,7 +188,7 @@ int CTextureAnimationData::FUN_141847c90(int nTime)
     nIndex = m_nLoopFrame;
     for (int j = m_nLoopFrame; j < nCount; j++)
     {
-        nSum += m_arrFrames[j].FUN_141847c00();
+        nSum += m_arrFrames[j].GetDelay();
         if (nSum < nTime)
             nIndex++;
         else

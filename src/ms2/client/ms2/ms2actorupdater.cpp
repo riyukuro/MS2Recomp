@@ -103,13 +103,13 @@ void MS2ActorUpdater::FUN_1414a85d0(float fInterval)
     switch (nMode)
     {
     case 0:
-        fDuration = FUN_1414a8760();
+        fDuration = GetDistA();
         break;
     case 1:
-        fDuration = FUN_1414a8750();
+        fDuration = GetDistB();
         break;
     case 2:
-        fDuration = FUN_1414a8750() - FUN_1401d3200()->m_kUpdateDuration.FUN_140298f40();
+        fDuration = GetDistB() - FUN_1401d3200()->m_kUpdateDuration.FUN_140298f40();
         break;
     default:
         MS2_ASSERT_AT(0x31, FALSE);
@@ -119,13 +119,13 @@ void MS2ActorUpdater::FUN_1414a85d0(float fInterval)
 }
 
 // @0x1414a8750
-float MS2ActorUpdater::FUN_1414a8750() const
+float MS2ActorUpdater::GetDistB() const
 {
     return m_fDistB;
 }
 
 // @0x1414a8760
-float MS2ActorUpdater::FUN_1414a8760() const
+float MS2ActorUpdater::GetDistA() const
 {
     return m_fDistA;
 }
