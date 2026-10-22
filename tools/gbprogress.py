@@ -575,7 +575,9 @@ def assign_copies(res, cgroups, paths, j, log=print):
                 groups[(k, tuple(cgroups[gid]))].append(n)
 
     def dist(k, v):
-        own = res[k].get("own") or ()
+        # an exact copy pair of an earlier round anchors the obj too (an obj whose only own code was a copy, e.g. a
+        # NiPSys* modifier's CreateObject, then pulls its ??_G / ctor copies next to it)
+        own = list(res[k].get("own") or ()) + [a for _, a in xpairs.get(k, ())]
         if own:
             return min(abs(v - a) for a in own)
         ex = [va for _, va, ok, _ in res[k]["pairs"] if ok]
@@ -624,6 +626,243 @@ def assign_copies(res, cgroups, paths, j, log=print):
 
 
 # ---------------------------------------------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------------------------------------------
+# block pass (2026-10-22 gb12): a TU's dynamic initializers (.text$di) and atexit destructors (.text$yd) are one
+# section per function; the linker lays an obj's sections of one name out contiguously, in the obj's section order, at
+# the section alignment. Header statics (NiXKeyregisterloaderreturn, efd kCAT_* FixedStrings, NiFloodgateSDM) give
+# every includer the same byte-identical functions (hundreds of copies), which assign_copies cannot place (its
+# distance is to the obj's .text code, far away). Here each obj's whole block is placed: an exe base where every
+# function's masked bytes match; relocations into the obj's own (non-COMDAT) data sections that agree on one base per
+# section are counted as a score (the exe TU's data layout may differ a little), used only to rank placements.
+BLOCK_SECS = (".text$di", ".text$yd")
+BLOCK_KEY = "blk7"
+
+
+def _block_layout(obj, secname):
+    """[(symbol, offset, data, fields, leaf, alignment)] of the obj's functions in sections named secname, in link
+    order"""
+    secs = [(i + 1, s) for i, s in enumerate(obj.sections) if s["name"] == secname and s["chars"] & 0x20]
+    fsyms = {}
+    for si in obj.func_symbols():
+        n, v, sn = obj.syms[si][0], obj.syms[si][1], obj.syms[si][2]
+        if not n.startswith(bm.FUNCLET_PREFIXES):
+            fsyms.setdefault(sn, []).append((v, si))
+    out, off = [], 0
+    for sn, s in secs:
+        al = 1 << (((s["chars"] >> 20) & 0xF) - 1) if (s["chars"] >> 20) & 0xF else 16
+        off = (off + al - 1) & -al
+        for v, si in sorted(fsyms.get(sn, ())):
+            data, fields, unw = obj.function(si)
+            out.append((obj.syms[si][0], off + v, bytes(data), fields, unw is None, al))
+        off += s["size"]
+    return out
+
+
+def _block_cands(obj, lay):
+    """[(base, score, bad, shifts)] where the block lay fits the exe; score = own-data relocations agreeing on a base
+    per section, bad = functions (at most 1/8) whose bytes differ, shifts = [[index, delta]] of the functions placed
+    off their obj offset (after a function whose exe size differs)"""
+    exe = G["exe"]
+    if not lay:
+        return []
+    pats = []
+    for n, off, data, fields, leaf, al in lay:
+        m = bytearray(b"\xff") * len(data)
+        loc = []
+        for f in fields:
+            for k in range(f[0], min(f[0] + f[1], len(data))):
+                m[k] = 0
+            tsi = f[5]
+            if tsi is not None and bm.REL_REL32 <= f[3] <= bm.REL_REL32 + 5:
+                t = obj.syms[tsi]
+                if t[2] > 0 and not obj.sec(t[2])["chars"] & 0x20 and obj.sec(t[2]).get("comdat", (0,))[0] == 0:
+                    loc.append((f[0], f[3] - bm.REL_REL32, struct.unpack_from("<i", data, f[0])[0] + 0, t[2], t[1]))
+        mi = int.from_bytes(bytes(m), "little")
+        pats.append((len(data), mi, int.from_bytes(data, "little") & mi, loc, al))
+    # seed: the non-leaf function with the fewest (but some) masked hits
+    best = None
+    for i, (n, off, data, fields, leaf, al) in enumerate(lay):
+        if leaf:
+            continue
+        hits = _search(obj, obj.by_name[n])
+        if hits and (best is None or len(hits) < len(best[1])):
+            best = (i, hits)
+        if 0 < len(hits) <= 2:
+            break
+    if best is None:
+        return []
+    starts = G.get("starts")
+    if starts is None:
+        starts = G["starts"] = sorted(exe.rf)
+
+    def fits(i, va):
+        """None: the exe function at va is ours; else the size of the (different) exe function there, or -1"""
+        ln, mi, want, loc, al = pats[i]
+        rva = va - exe.base
+        if not _allowed(va) or _in_game(va):
+            return -1
+        if (rva not in exe.rf or exe.chain_end(rva) - rva == ln) and \
+                int.from_bytes(bytes(exe.img[rva:rva + ln]), "little") & mi == want:
+            return None
+        # a function the exe builds differently (MS2 change, other inlining): tolerated where the exe has a
+        # function of its own (with unwind data, so its size is known)
+        return exe.chain_end(rva) - rva if rva in exe.rf else -1
+    # no tolerance: blocks are mostly identical header thunks, so a block with one differing function fits at many
+    # wrong places (tried 1/8 in gb12: NiBezPosKey's thunks landed on NiAlphaController's block)
+    out, lim = [], 0
+    for h in best[1]:
+        si = best[0]
+        pos, bad = {si: h}, 0
+        # walk forward: each function follows the previous one's exe size at its own section alignment
+        for i in range(si, len(pats)):
+            if i > si:
+                pos[i] = (end + pats[i][4] - 1) & -pats[i][4]
+            r = fits(i, pos[i])
+            if r == -1:
+                bad = len(pats)
+                break
+            if r is not None:
+                bad += 1
+            end = pos[i] + (pats[i][0] if r is None else r)
+            if bad > lim:
+                break
+        # walk back: the previous function ends right below (our size if it matches there, else the exe function
+        # that starts before)
+        for i in range(si - 1, -1, -1):
+            if bad > lim:
+                break
+            nxt = pos[i + 1]
+            a = pats[i][4]
+            guess = (nxt - pats[i][0]) & -a
+            if fits(i, guess) is None and ((guess + pats[i][0] + pats[i + 1][4] - 1) & -pats[i + 1][4]) == nxt:
+                pos[i] = guess
+                continue
+            j = bisect.bisect_left(starts, nxt - exe.base) - 1
+            if j < 0:
+                bad = len(pats)
+                break
+            pos[i] = starts[j] + exe.base
+            r = fits(i, pos[i])
+            if r is None or r == -1 or ((pos[i] + r + pats[i + 1][4] - 1) & -pats[i + 1][4]) != nxt:
+                bad = len(pats)
+                break
+            bad += 1
+        if bad > lim:
+            continue
+        bases = collections.defaultdict(collections.Counter)
+        for i, va in pos.items():
+            rva = va - exe.base
+            if fits(i, va) is None:
+                for fo, extra, add, sn, sv in pats[i][3]:
+                    disp = struct.unpack_from("<i", exe.img, rva + fo)[0]
+                    bases[sn][va + fo + 4 + extra + disp - add - sv] += 1
+        base = pos[0] - lay[0][1]
+        shifts = [[i, va - base - lay[i][1]] for i, va in sorted(pos.items()) if va != base + lay[i][1]]
+        # score: relocations into the obj's own data that agree with one base per section (the exe TU's data layout
+        # may differ a little, so this only ranks placements)
+        out.append((base, sum(c.most_common(1)[0][1] for c in bases.values()), bad, shifts))
+    return out
+
+
+def _block_job(job):
+    path, win = job
+    G["win"] = win
+    out = {}
+    try:
+        obj = bm.Obj(path)
+    except Exception:
+        return path, out
+    for sec in BLOCK_SECS:
+        lay = _block_layout(obj, sec)
+        if lay:
+            out[sec] = {"lay": [[n, off, len(d)] for n, off, d, _, _, _ in lay],
+                        "cands": [list(c) for c in _block_cands(obj, lay)]}
+    return path, out
+
+
+def assign_blocks(res, paths, windows, j, log=print):
+    """place every obj's .text$di / .text$yd block (see BLOCK_SECS); writes res[key]["bpairs"]"""
+    jobs = []
+    for k, c in res.items():
+        if c.get("blk", {}).get("key") != c["key"] + [BLOCK_KEY] and k in paths:
+            jobs.append((paths[k], unit_window(c["unit"], windows), k))
+    if jobs:
+        log(f"engine: block layouts of {len(jobs)} obj(s) ...")
+        byp = {p: k for p, _, k in jobs}
+        with Pool(max(1, j), initializer=_init) as p:
+            for path, out in p.imap_unordered(_block_job, [(p_, w) for p_, w, _ in jobs], chunksize=4):
+                res[byp[path]]["blk"] = {"key": res[byp[path]]["key"] + [BLOCK_KEY], "secs": out}
+    # exe VAs paired exactly by a name / unique search / callee hint / copy: another TU's function, never inside a
+    # block. A copy pair of a block function is not: assign_copies places those by distance to the obj's .text and
+    # never checks the data they initialise, so the block placement decides them (see the end).
+    blkfn = {k: {n for s in c.get("blk", {}).get("secs", {}).values() for n, _, _ in s["lay"]} for k, c in res.items()}
+    fixed, ex = {}, {}
+    for k, c in res.items():
+        for n, va, ok, how in c["pairs"] + c.get("hpairs", []) + [x for x in c.get("xpairs", []) if x[0] not in blkfn[k]]:
+            if ok:
+                fixed.setdefault(va, set()).add((k, n))
+                ex[(k, n)] = va
+    taken = []          # sorted [(lo, hi, unit)] of placed blocks
+    bp = collections.defaultdict(list)
+    for sec in BLOCK_SECS:
+        todo = []
+        for k, c in res.items():
+            s = c.get("blk", {}).get("secs", {}).get(sec)
+            if not s or not s["cands"]:
+                continue
+            lay = s["lay"]
+            # the obj's own exact pairs inside the block are anchors: a placement must keep every one of them
+            anchors = [(i, ex[(k, n)]) for i, (n, off, _) in enumerate(lay) if (k, n) in ex]
+            good = []
+            for b, score, bad, shifts in s["cands"]:
+                sh = dict(shifts)
+                pos = [b + off + sh.get(i, 0) for i, (n, off, _) in enumerate(lay)]
+                if any(pos[i] != va for i, va in anchors):
+                    continue
+                if any(v in fixed and (k, n) not in fixed[v] for (n, _, _), v in zip(lay, pos)):
+                    continue
+                good.append(((bad, -score), pos))
+            if good:
+                best = min(good)[0]
+                todo.append((k, lay, sorted(g[1] for g in good if g[0] == best)))
+        # fewest (best-ranked) placements first, larger blocks first; a placement never overlaps an earlier one, but
+        # the stock and v2525 objs of one unit share theirs
+        todo.sort(key=lambda t: (len(t[2]), -(t[1][-1][1] + t[1][-1][2]), t[0]))
+        for k, lay, good in todo:
+            u = res[k]["unit"]
+            for pos in good:
+                lo, hi = pos[0], pos[-1] + lay[-1][2]
+                i = bisect.bisect_right(taken, (lo, 1 << 62)) - 1
+                if i >= 0 and taken[i][:3] == (lo, hi, u):
+                    pass
+                elif (i >= 0 and taken[i][1] > lo) or (i + 1 < len(taken) and taken[i + 1][0] < hi):
+                    continue
+                else:
+                    bisect.insort(taken, (lo, hi, u))
+                bp[k] += [(n, v) for (n, _, _), v in zip(lay, pos)]
+                break
+    # verify exactly (unwind included); a placed function that differs stays a functional pair
+    vjobs = [(paths[k], [([n], [v]) for n, v in prs], res[k].get("bok", {})) for k, prs in bp.items()]
+    vjobs = [jb for jb in vjobs if _greedy(jb[1], jb[2]) is None]
+    if vjobs:
+        byp = {paths[k]: k for k in bp}
+        with Pool(max(1, j), initializer=_init) as p:
+            for path, xok in p.imap_unordered(_verify_job, vjobs):
+                res[byp[path]]["bok"] = xok
+    n_ok = 0
+    for k, c in res.items():
+        xok = c.get("bok", {})
+        c["bpairs"] = [[n, v, bool(xok.get(f"{n}@{v:x}")), "block"] for n, v in bp.get(k, ())]
+        n_ok += sum(1 for p in c["bpairs"] if p[2])
+    # an exact block pair supersedes copy pairs of the same function or exe VA
+    bva = {p[1] for c in res.values() for p in c["bpairs"] if p[2]}
+    for k, c in res.items():
+        bn = {p[0] for p in c["bpairs"] if p[2]}
+        if "xpairs" in c:
+            c["xpairs"] = [x for x in c["xpairs"] if x[0] not in bn and x[1] not in bva]
+    log(f"engine: block pairs {sum(len(v) for v in bp.values())} ({n_ok} exact) in {len(bp)} obj(s)")
+
 
 def run(cache, j=8, filters=(), log=print):
     """Compile + match every engine unit (those whose name contains one of `filters`); returns (results, failed)."""
@@ -687,6 +926,7 @@ def run(cache, j=8, filters=(), log=print):
         allu = gbtree.load_units(tree)
         assign_copies(res, groups, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, j, log)
         lib_hints(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, windows, j, log)
+        assign_blocks(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, windows, j, log)
         used = {g for c in res.values() for _, g in c.get("cands", ())}
         groups = {g: h for g, h in groups.items() if g in used}
         json.dump(groups, open(gpath + ".tmp", "w"))
@@ -731,8 +971,8 @@ def credit(res, game_rows):
         canon.setdefault(c["unit"].lower(), c["unit"])
     for k, c in sorted(res.items()):
         c = dict(c, unit=canon[c["unit"].lower()])
-        better = {x[0] for x in c.get("xpairs", ())}
-        for sym, va, ok, how in c["pairs"] + c.get("xpairs", []) + c.get("hpairs", []):
+        better = {x[0] for x in c.get("xpairs", []) + c.get("bpairs", []) if x[2]}
+        for sym, va, ok, how in c["pairs"] + c.get("xpairs", []) + c.get("hpairs", []) + c.get("bpairs", []):
             if not ok and sym in better:      # a non-exact table-name pair superseded by an exact copy pair
                 continue
             if how == "name":
