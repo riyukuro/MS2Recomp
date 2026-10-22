@@ -144,7 +144,7 @@ int CItemRePackingScrollTable::Check(MS2Ptr<CItem> pItem, CItemRePackingScrollDa
         return 7;
     if (!((CItem*)pItem)->FUN_140528980() || ((CItem*)pItem)->FUN_140527030() != 0)
         return 2;
-    CItemEnchantInfo* pEnchant = reinterpret_cast<CItemStatus*>(((CItem*)pItem)->FUN_1405278a0())->FUN_140630d60();
+    CItemEnchantInfo* pEnchant = reinterpret_cast<CItemStatus*>(((CItem*)pItem)->FUN_1405278a0())->GetEnchant();
     if (pEnchant != 0 && !pEnchant->FUN_14058c9a0())
         return 10;
     MS2Ptr<CItemData> pItemData(FUN_140527840(pItem));
@@ -189,7 +189,7 @@ int CItemRePackingScrollTable::Check(MS2Ptr<CItem> pItem, CItemRePackingScrollDa
         return 8;
     if (((CItem*)pItem)->FUN_140527930() == 0)
         return 2;
-    if (reinterpret_cast<CItemTransfer*>(((CItem*)pItem)->FUN_140527930())->FUN_140634fa0() > 0)
+    if (reinterpret_cast<CItemTransfer*>(((CItem*)pItem)->FUN_140527930())->GetCount() > 0)
         return 9;
     if (FUN_140634230(pItem))
         return 1;

@@ -1854,7 +1854,7 @@ bool UICharacterListDialog::FUN_1418f31a0(int nButton, const CMsgBoxData& box)
     Unk_ClBox* pBox = static_cast<Unk_ClBox*>(m_228.operator->());
     if (m_224 == 1)
     {
-        pBox->FUN_141a01570(FUN_140298ea0(CStringW(L"s_delete_account_terms_step_2")));
+        pBox->SetMsg(FUN_140298ea0(CStringW(L"s_delete_account_terms_step_2")));
         pBox->FUN_141a024e0(FUN_140298ea0(CStringW(L"s_delete_account_check_msg_step_2")), 0);
         pBox->FUN_141a02a70(FUN_140298ea0(CStringW(L"s_delete_account_hyperlink_msg")), FUN_1401d3200()->m_url);
         pBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f31a0));
@@ -1864,9 +1864,9 @@ bool UICharacterListDialog::FUN_1418f31a0(int nButton, const CMsgBoxData& box)
     }
     if (m_224 == 2)
     {
-        pBox->FUN_141a01570(FUN_140298ea0(CStringW(L"s_delete_account_terms_step_3")));
+        pBox->SetMsg(FUN_140298ea0(CStringW(L"s_delete_account_terms_step_3")));
         pBox->FUN_141a02670(false);
-        pBox->FUN_141a02730(true);
+        pBox->SetAgreement(true);
         pBox->FUN_141a02a70(CStringW(L""), CString(""));
         pBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f31a0));
         FUN_14151f4e0(pBox->FUN_141a02b90(), m_228);
@@ -1929,7 +1929,7 @@ bool UICharacterListDialog::FUN_1418f3bd0(int nButton, const CMsgBoxData& box)
             m_228->FUN_141a01800(3);
             m_228->FUN_141a01690(FUN_14028b8e0(L"s_delete_account_terms_step_end_game_button"), L"", L"");
             static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a015d0(FUN_14028b8e0(L"s_delete_account_terms_step_end_title"));
-            m_228->FUN_141a02730(true);
+            m_228->SetAgreement(true);
             m_228->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f3bd0));
             FUN_140d73c60(m_228);
             m_224 = 6;

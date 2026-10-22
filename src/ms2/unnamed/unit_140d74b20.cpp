@@ -22,14 +22,14 @@ class CMsgBoxData                                               // 0x2a0 bytes
 {
 public:
     CMsgBoxData(int nType);
-    void FUN_141a01660(const CStringW& str);
-    void FUN_141a01570(const CStringW& str);
+    void SetExtra(const CStringW& str);
+    void SetMsg(const CStringW& str);
     void FUN_141a027c0(Unk_MsgBoxCallback cb);
     void FUN_141a01800(int n);
-    void FUN_141a015d0(const CStringW& str);
+    void SetTitle(const CStringW& str);
     void FUN_141a024e0(CStringW str, bool b);
     void FUN_141a02560(CStringW str, bool b);
-    void FUN_141a02730(bool b);
+    void SetAgreement(bool b);
 
     char m_pad[0x2a0];
 };
@@ -81,18 +81,18 @@ Unk_MsgBoxPtr FUN_140d74b20(int nBit, const CStringW& strA, const CStringW& strB
 {
     g_1439f5a0c = nBit;
     Unk_MsgBoxPtr box(new CMsgBoxData(0x1c));
-    box->FUN_141a01570(strText);
+    box->SetMsg(strText);
     {
         CStringW tag(L"terms");
-        box->FUN_141a01660(tag);
+        box->SetExtra(tag);
     }
     box->FUN_141a01800(1);
-    box->FUN_141a015d0(strA);
+    box->SetTitle(strA);
     box->FUN_141a024e0(FUN_14028de60(0x9d0), 1);
     CStringW coupon = FUN_1405c2690(CStringW(L"s_ugc_edit_terms_coupon_agree"), strB);
     FUN_1403b4750()->FUN_1416fb300(coupon);
     box->FUN_141a02560(CStringW(coupon), 1);
-    box->FUN_141a02730(g_143ac2fb8.FUN_140d75090(nBit).FUN_140d750f0());
+    box->SetAgreement(g_143ac2fb8.FUN_140d75090(nBit).FUN_140d750f0());
     box->FUN_141a027c0(cb);
     FUN_140d73c60(box);
     return box;

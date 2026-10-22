@@ -25,13 +25,13 @@ public:
     virtual void vfunc_2(CInputStream&);                // 0x140634e30 read
     unsigned char FUN_1406352b0();
     unsigned char FUN_1406351f0(void*, void*);
-    int FUN_140634fa0();
-    void FUN_140634fc0(unsigned);
-    int FUN_140634fe0();
-    void FUN_140635000(unsigned);
+    int GetCount();
+    void SetCount(unsigned);
+    int GetMax();
+    void SetMax(unsigned);
     void FUN_140635300();
     MS2Ptr<CItemTransfer> FUN_140634b30();
-    void FUN_140634970(CItem*);
+    void SetItem(CItem*);
     void FUN_140634990(CItem*);
     CItemTransfer& operator=(const CItemTransfer&);     // 0x140635cf0
     int FUN_140634cc0();
@@ -40,7 +40,7 @@ public:
     unsigned FUN_140635100();                           // m_nRule & 8
     int FUN_140635120();                               // has a binding
     CItemBinding* FUN_140635160();                      // the binding
-    int FUN_140635190();
+    int GetType();
     bool FUN_1406351b0();
     void FUN_140635320(bool);
     void FUN_140635350(class PCBase* pPc, CStringW* pName);   // the binding owner name

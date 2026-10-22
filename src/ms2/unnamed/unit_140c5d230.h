@@ -257,10 +257,10 @@ public:
     void FUN_140c68a50();                                           // reset the page state
     void SendLapenshardMode4();                                           // tell the server the ingredients changed
     void SendLapenshardMode3(MS2Ptr<CItem> spItem);                       // pick the source item
-    MS2Ptr<CItem> FUN_140c68da0();                                  // the source item
+    MS2Ptr<CItem> GetSource();                                  // the source item
     void FUN_140c68df0();                                           // clear the source item
     int FUN_140c68e20() { return m_nState; }                        // 0 idle, 1 source set, 2 requested, 3 answered, 4 processed
-    int FUN_140c68e40();
+    int GetN_bc();
     void FUN_140c68e60(unsigned __int64 nUid, int nDelta);          // add / remove ingredients of an item
     void FUN_140c68f90();                                           // clear the ingredients
     int FUN_140c68fd0() { return m_nTotal; }                        // the number of ingredients
@@ -322,7 +322,7 @@ public:
     // UIItemEventListener slot 3 (this+0x180 thunk 0x140c61f60)
     virtual void vfunc_3(void* pItem, bool b);
 
-    MS2Ptr<LapenshardSystemTabContents> FUN_140c62440();           // the page shown (a copy)
+    MS2Ptr<LapenshardSystemTabContents> GetPage();           // the page shown (a copy)
     void FUN_140c623c0(int nEvent);                                 // notify the shown page
     void FUN_140c62490(int nSlot);                                  // select a slot, notify 10
     void FUN_140c624d0();                                           // notify 11
@@ -399,7 +399,7 @@ public:
     virtual int vfunc_48() { return 0x4f73; }                       // 48 0x140c607c0
 
     void FUN_140c5f8f0(MS2Ptr<Unk_LsBuff> spBuff);                  // show a buff (by value: the callee destroys it)
-    MS2Ptr<Unk_LsBuff> FUN_140c5f990();                             // the shown buff
+    MS2Ptr<Unk_LsBuff> GetBuff();                             // the shown buff
     CStringW FUN_140c5f9e0();                                       // "mm:ss" left
     void FUN_140c5faf0();                                           // play "end"
     int FUN_140c5fbb0();                                            // the buff ended

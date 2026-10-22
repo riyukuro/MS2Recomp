@@ -330,7 +330,7 @@ int CQuestManagerCommon::vfunc_o10_21(int questId, int npcId, int flag)
     if (quest.get() != 0)
     {
         tStart = quest->GetStartTime();
-        nState = quest->FUN_1407476d0();
+        nState = quest->GetState();
     }
     if (data->m_schedule.GetLength() != 0)
     {
@@ -602,7 +602,7 @@ int CQuestManagerCommon::FUN_140746850(int questId, int npcId, int bStart)
         return 0;
     if (quest->FUN_1407447c0() != 0)
         return 0;
-    if (quest->FUN_1407476d0() != 1)
+    if (quest->GetState() != 1)
         return 0;
     if (bStart == 0)
     {
@@ -628,7 +628,7 @@ int CQuestManagerCommon::FUN_140746ba0(int questId, int npcId, bool bSkip)
         return 4;
     if (quest->GetData().operator==(0))
         return 6;
-    if (bSkip == 0 && quest->FUN_1407476d0() != 1)
+    if (bSkip == 0 && quest->GetState() != 1)
         return 6;
     if (bSkip == 0 && npcId != 0 && quest->GetData()->m_2ec != npcId)
         return 6;
@@ -717,7 +717,7 @@ bool CQuestManagerCommon::FUN_140747350(int questId)
     Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
     if (quest == 0)
         return true;
-    if (quest->FUN_1407476d0() == 0)
+    if (quest->GetState() == 0)
         return true;
     return false;
 }
@@ -759,7 +759,7 @@ int FUN_1407474d0(const ATL::CAtlArray<int>* pArr, const int* pValue)
 }
 
 // @0x1407476d0
-int CQuest::FUN_1407476d0() const
+int CQuest::GetState() const
 {
     return m_state;
 }

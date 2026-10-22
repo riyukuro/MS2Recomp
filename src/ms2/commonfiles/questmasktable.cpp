@@ -1184,9 +1184,9 @@ int FUN_140764480(Unk_PayloadPtr<CQuest> spQuest, int nMode)
     BOOL bAbsent = FALSE;
     if (spQuest.get())
     {
-        bActive = spQuest->FUN_1407476d0() == 1 && spQuest->IsComplete() == 0;
-        bCompleted = spQuest->FUN_1407476d0() == 1 && spQuest->IsComplete() != 0;
-        bRewarded = spQuest->FUN_1407476d0() == 2;
+        bActive = spQuest->GetState() == 1 && spQuest->IsComplete() == 0;
+        bCompleted = spQuest->GetState() == 1 && spQuest->IsComplete() != 0;
+        bRewarded = spQuest->GetState() == 2;
     }
     else
         bAbsent = TRUE;

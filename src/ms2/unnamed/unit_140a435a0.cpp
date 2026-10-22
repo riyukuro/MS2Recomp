@@ -32,7 +32,7 @@ extern "C" __declspec(dllimport) void __cdecl CrashReporter_SetFullDumpPath(cons
 class Unk_CrashDialog : public CDialog
 {
 public:
-    void FUN_140a45970(CString strMessage);                 // 0x140a45970
+    void SetMessage(CString strMessage);                 // 0x140a45970
     void* m_unknown130[8];                                  // +0x130 unrecovered dialog members
     CString m_strMessage;                                   // +0x170
 };
@@ -69,7 +69,7 @@ void CrashManagerCli::FUN_140a435a0()
     m_nLogId = TSingleton<CFileLogger>::GetInstance()->FUN_140392110(L"MS2Log.txt");
     __imp_CrashReporter_RegisterCallback_AfterDump(FUN_140a43d40);
     g_pfnPrevExceptionFilter = SetUnhandledExceptionFilter(FUN_140a43fa0);
-    g_dlgCrash.FUN_140a45970(FUN_14016a600(FUN_14028de60(0xc3d), 0));
+    g_dlgCrash.SetMessage(FUN_14016a600(FUN_14028de60(0xc3d), 0));
     FUN_140a43f00();
 }
 
@@ -268,7 +268,7 @@ std::list<TFunctor<void, EmptyParam> >& CrashManagerCli::FUN_140a44800()
 }
 
 // @0x140a45970
-void Unk_CrashDialog::FUN_140a45970(CString strMessage)
+void Unk_CrashDialog::SetMessage(CString strMessage)
 {
     m_strMessage = strMessage;
 }

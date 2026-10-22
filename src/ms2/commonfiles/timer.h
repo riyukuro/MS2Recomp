@@ -27,7 +27,7 @@ public:
     __int64 FUN_1408688e0();                    // now in milliseconds (cached IClock 0xe001001b)
     float FUN_140868940();                      // elapsed / period, 1.0 once expired
     float FUN_1408689a0();                      // eased ratio (x + 2x capped at 1.0)
-    int FUN_140868a50() const;                  // start time
+    int GetStart() const;                  // start time
     int FUN_140868a70();                        // elapsed milliseconds
     int FUN_140868ab0();                        // remaining milliseconds
     int FUN_140868af0() const;                  // period (1 if unset)
@@ -35,7 +35,7 @@ public:
     int FUN_140868b80() const;                 // armed
     int FUN_140868ba0();                       // armed and not expired
     int FUN_140868c00();                       // expired
-    int FUN_140868c60() const;                 // paused
+    int HasPauseTime() const;                 // paused
 
     int m_nPeriod;                  // +0x18
     int m_nStart;                   // +0x1c

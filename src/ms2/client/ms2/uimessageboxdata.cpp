@@ -174,7 +174,7 @@ int CMsgBoxData::FUN_141a034d0(ASObj& obj)
     obj.FUN_1407cbb20("strikeStr", m_strStrike);
     if (m_nAlign != 4)
         obj.FUN_1407cba60("textAlign", m_strAlign[m_nAlign]);
-    if (FUN_141a03070() && g_messageBoxState.m_bSaved != 0)
+    if (IsModaless() && g_messageBoxState.m_bSaved != 0)
     {
         ASObj posData(2);
         posData.FUN_1409c4a30("posX", g_messageBoxState.m_pos.x);

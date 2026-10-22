@@ -1206,7 +1206,7 @@ bool FUN_140b83ec0()
     MS2Ptr<CMsgBoxData> spBox = FUN_14151f820();
     if (spBox == NULL)
         return true;
-    if (spBox->FUN_141a02ce0() == s_strCoupleEmotion)
+    if (spBox->GetExtra() == s_strCoupleEmotion)
         return false;
     return true;
 }

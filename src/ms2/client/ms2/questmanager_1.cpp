@@ -122,7 +122,7 @@ MS2Ptr<CQuestData> CQuest::GetData() { return m_data; }
 // @0x1416c63b0
 int CQuest::IsComplete() const
 {
-    if (FUN_1407476d0() != 1) return 0;
+    if (GetState() != 1) return 0;
     for (size_t i = 0; i < m_progress.FUN_1401b8910(); ++i) {
         if (m_progress.FUN_1401b88c0(i) < m_data->m_conditions.GetAt(i)->m_nGoal) return 0;
     }
@@ -132,9 +132,9 @@ MS2_REPLACE_METHOD_VIA(0x1416C6360, CQuest, CQuestCommon, GetData, 65, 0x751C857
 MS2_REPLACE_METHOD_VIA(0x1416C63B0, CQuest, CQuestCommon, IsComplete, 184, 0xB165BA86);
 
 // @0x1416c6470
-int CQuest::IsActive() { return FUN_1407476d0() == 1; }
+int CQuest::IsActive() { return GetState() == 1; }
 // @0x1416c64b0
-int CQuest::IsRewarded() { return FUN_1407476d0() == 2; }
+int CQuest::IsRewarded() { return GetState() == 2; }
 MS2_REPLACE_METHOD_VIA(0x1416C6470, CQuest, CQuestCommon, IsActive, 58, 0x37339AA1);
 // @0x1416c64f0
 __int64 CQuest::GetStartTime() { return m_startTime; }
@@ -181,7 +181,7 @@ MS2_REPLACE_METHOD(0x1416C6690, CQuest, SetProgress, 78, 0xA488EC14);
 // @0x1416c66f0
 int CQuest::IsConditionComplete(int index)
 {
-    if (FUN_1407476d0() != 1) return 0;
+    if (GetState() != 1) return 0;
     if (index >= (int)m_progress.FUN_1401b8910()) return 0;
     if (index >= (int)m_data->m_conditions.GetCount()) return 0;
     return m_progress.FUN_1401b7ff0(index) >= m_data->m_conditions[index]->m_nGoal;

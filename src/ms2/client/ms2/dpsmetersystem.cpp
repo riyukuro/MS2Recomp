@@ -1235,8 +1235,8 @@ static const CStringW& GetItemText(CItem* pItem)
         for (unsigned nStat = 0; nStat < 0x23; nStat++)
         {
             Unk_EnchantPtr<BaseOption> spStat(new BaseOption);
-            spStat->FUN_140266e90(pItem->FUN_1405278a0()->FUN_14062ffb0(nStat, 0, nRank));
-            int nValue = spStat->FUN_140266e30();
+            spStat->SetValue(pItem->FUN_1405278a0()->FUN_14062ffb0(nStat, 0, nRank));
+            int nValue = spStat->GetValue();
             if (nValue != 0)
             {
                 if (!IsStatKindTwo(nStat))

@@ -3038,8 +3038,8 @@ void CEquipment::FUN_1411e76c0(double fTime)
     }
     CPet* pPet = static_cast<CPet*>(m_pPC->FUN_141676a10());
     MS2Ptr<CItem> spPetItem = static_cast<Unk_EqPC*>(m_pPC)->FUN_141663450();
-    if (spPetItem.get() != NULL && pPet != NULL && pPet->FUN_140b102b0().get() != NULL) {
-        float fRate = static_cast<Unk_EqPetRow*>(pPet->FUN_140b102b0().operator->())->m_fStatRate;
+    if (spPetItem.get() != NULL && pPet != NULL && pPet->GetRow().get() != NULL) {
+        float fRate = static_cast<Unk_EqPetRow*>(pPet->GetRow().operator->())->m_fStatRate;
         for (int k = 0; k < 0x23; k++) {
             Unk_EquipAttrType eType = (Unk_EquipAttrType)k;
             m_attrs[eType] += EQITEM(spPetItem)->FUN_1405278a0()->FUN_14062ffb0(eType, 3, 5);

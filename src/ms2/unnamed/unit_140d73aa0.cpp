@@ -22,13 +22,13 @@ class CMsgBoxData
 public:
     CMsgBoxData(int nType);
     void FUN_141a02860(void* p);
-    void FUN_141a01660(const CStringW& str);
-    void FUN_141a01570(const CStringW& str);
+    void SetExtra(const CStringW& str);
+    void SetMsg(const CStringW& str);
     void FUN_141a027c0(Unk_MsgBoxCallback cb);
     void FUN_141a01800(int n);
-    void FUN_141a015d0(const CStringW& str);
+    void SetTitle(const CStringW& str);
     void FUN_141a024e0(CStringW str, bool b);
-    void FUN_141a02730(bool b);
+    void SetAgreement(bool b);
 
     char m_pad[0x2a0];
 };
@@ -75,8 +75,8 @@ void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag)
 {
     Unk_MsgBoxPtr box(new CMsgBoxData(nType));
     box->FUN_141a02860(p);
-    box->FUN_141a01660(tag);
-    box->FUN_141a01570(text);
+    box->SetExtra(tag);
+    box->SetMsg(text);
     FUN_14151f150(box);
 }
 
@@ -105,8 +105,8 @@ Unk_MsgBoxPtr FUN_140d73d20(int nType, CStringW text, void* p, CStringW tag)
 {
     Unk_MsgBoxPtr box(new CMsgBoxData(nType));
     box->FUN_141a02860(p);
-    box->FUN_141a01660(tag);
-    box->FUN_141a01570(text);
+    box->SetExtra(tag);
+    box->SetMsg(text);
     return box;
 }
 
@@ -120,7 +120,7 @@ Unk_MsgBoxPtr FUN_140d73e40(int nType, int nStrId, void* p, CStringW tag)
 Unk_MsgBoxPtr FUN_140d73f20(CStringW text, int nType)
 {
     Unk_MsgBoxPtr box(new CMsgBoxData(nType));
-    box->FUN_141a01570(text);
+    box->SetMsg(text);
     return box;
 }
 
@@ -134,7 +134,7 @@ void FUN_140d73ff0(CStringW text)
 Unk_MsgBoxPtr FUN_140d74090(Unk_MsgBoxCallback cb, CStringW text)
 {
     Unk_MsgBoxPtr box(new CMsgBoxData(1));
-    box->FUN_141a01570(FUN_14028b8e0(text));
+    box->SetMsg(FUN_14028b8e0(text));
     box->FUN_141a027c0(cb);
     FUN_14151f150(box);
     return box;
@@ -144,7 +144,7 @@ Unk_MsgBoxPtr FUN_140d74090(Unk_MsgBoxCallback cb, CStringW text)
 Unk_MsgBoxPtr FUN_140d74230(Unk_MsgBoxCallback cb, CStringW text)
 {
     Unk_MsgBoxPtr box(new CMsgBoxData(1));
-    box->FUN_141a01570(text);
+    box->SetMsg(text);
     box->FUN_141a027c0(cb);
     FUN_14151f150(box);
     return box;
@@ -154,7 +154,7 @@ Unk_MsgBoxPtr FUN_140d74230(Unk_MsgBoxCallback cb, CStringW text)
 Unk_MsgBoxPtr FUN_140d74390(CStringW text, int nType, Unk_MsgBoxCallback cb)
 {
     Unk_MsgBoxPtr box(new CMsgBoxData(nType));
-    box->FUN_141a01570(text);
+    box->SetMsg(text);
     box->FUN_141a027c0(cb);
     FUN_14151f150(box);
     return box;
@@ -164,7 +164,7 @@ Unk_MsgBoxPtr FUN_140d74390(CStringW text, int nType, Unk_MsgBoxCallback cb)
 Unk_MsgBoxPtr FUN_140d74500(CStringW text, int nType, Unk_MsgBoxCallback cb)
 {
     Unk_MsgBoxPtr box(new CMsgBoxData(nType));
-    box->FUN_141a01570(text);
+    box->SetMsg(text);
     box->FUN_141a027c0(cb);
     return box;
 }
@@ -184,10 +184,10 @@ void FUN_140d746e0(void* p, int nBit, const CStringW& strA, const CStringW& strB
     if (box.get() != 0)
     {
         box->FUN_141a01800(1);
-        box->FUN_141a015d0(strA);
+        box->SetTitle(strA);
         box->FUN_141a024e0(FUN_14028de60(0x9d0), 1);
         g_1439f5a0c = nBit;
-        box->FUN_141a02730(g_143ac2fb8.FUN_140d75090(nBit).FUN_140d750f0());
+        box->SetAgreement(g_143ac2fb8.FUN_140d75090(nBit).FUN_140d750f0());
         FUN_140d73c60(box);
     }
 }
@@ -197,15 +197,15 @@ Unk_MsgBoxPtr FUN_140d748b0(int nBit, const CStringW& strA, const CStringW& strB
 {
     g_1439f5a0c = nBit;
     Unk_MsgBoxPtr box(new CMsgBoxData(0x1b));
-    box->FUN_141a01570(strB);
+    box->SetMsg(strB);
     {
         CStringW tag(L"terms");
-        box->FUN_141a01660(tag);
+        box->SetExtra(tag);
     }
     box->FUN_141a01800(1);
-    box->FUN_141a015d0(strA);
+    box->SetTitle(strA);
     box->FUN_141a024e0(FUN_14028de60(0x9d0), 1);
-    box->FUN_141a02730(g_143ac2fb8.FUN_140d75090(nBit).FUN_140d750f0());
+    box->SetAgreement(g_143ac2fb8.FUN_140d75090(nBit).FUN_140d750f0());
     box->FUN_141a027c0(cb);
     FUN_140d73c60(box);
     return box;

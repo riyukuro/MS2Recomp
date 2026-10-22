@@ -1585,7 +1585,7 @@ CStringW UIItemEnchantDialog::FUN_1419c65b0(MS2Ptr<CItem> item, CEnchantOption* 
         unsigned int key = pOption->m_options.GetKeyAt(pos);
         Unk_PayloadPtr<BaseOption> opt = pOption->m_options.GetValueAt(pos);
         if (!(!opt)) {
-            if (opt->FUN_140266ce0()) {
+            if (opt->HasValue()) {
                 __int64 base = item->FUN_1405278a0()->FUN_14062ffb0(key, 0, 0);
                 float extra = item->FUN_1405278a0()->FUN_1406303e0(key);
                 float rate = opt->FUN_140266e10();
@@ -1609,7 +1609,7 @@ void UIItemEnchantDialog::FUN_1419c6840(MS2Ptr<CItem> item, CEnchantOption* pOpt
         unsigned int key = pOption->m_options.GetKeyAt(pos);
         Unk_PayloadPtr<BaseOption> opt = pOption->m_options.GetValueAt(pos);
         if (!(!opt)) {
-            if (opt->FUN_140266ce0()) {
+            if (opt->HasValue()) {
                 ASObj obj(2);
                 __int64 base = item->FUN_1405278a0()->FUN_14062ffb0(key, 0, 0);
                 float extra = item->FUN_1405278a0()->FUN_1406303e0(key);

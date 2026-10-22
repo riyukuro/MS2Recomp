@@ -342,25 +342,25 @@ void TShopPaymentAttr::FUN_1406dc3c0(Unk_140165cf0* pElem, const CString& strTyp
 MS2_REPLACE_METHOD(0x1406DC3C0, TShopPaymentAttr, FUN_1406dc3c0, 226, 0xD6E6362F);
 
 // @0x1406dc4b0
-const CString& TShopPaymentAttr::FUN_1406dc4b0() const
+const CString& TShopPaymentAttr::GetIconTag() const
 {
     return m_strIconTag;
 }
-MS2_REPLACE_METHOD(0x1406DC4B0, TShopPaymentAttr, FUN_1406dc4b0, 15, 0x271C8F51);
+MS2_REPLACE_METHOD(0x1406DC4B0, TShopPaymentAttr, GetIconTag, 15, 0x271C8F51);
 
 // @0x1406dc4d0
-unsigned TShopPaymentAttr::FUN_1406dc4d0() const
+unsigned TShopPaymentAttr::GetItemId() const
 {
     return m_nItemId;
 }
-MS2_REPLACE_METHOD(0x1406DC4D0, TShopPaymentAttr, FUN_1406dc4d0, 14, 0xBA6447E3);
+MS2_REPLACE_METHOD(0x1406DC4D0, TShopPaymentAttr, GetItemId, 14, 0xBA6447E3);
 
 // @0x1406dc4f0
-__int64 TShopPaymentAttr::FUN_1406dc4f0() const
+__int64 TShopPaymentAttr::GetAmount() const
 {
     return m_nAmount;
 }
-MS2_REPLACE_METHOD(0x1406DC4F0, TShopPaymentAttr, FUN_1406dc4f0, 15, 0x9BD8F6D9);
+MS2_REPLACE_METHOD(0x1406DC4F0, TShopPaymentAttr, GetAmount, 15, 0x9BD8F6D9);
 
 // @0x1406dc510
 ePaymentType TShopPaymentAttr::FUN_1406dc510() const
@@ -374,11 +374,11 @@ ePaymentType TShopPaymentAttr::FUN_1406dc510() const
 MS2_REPLACE_METHOD(0x1406DC510, TShopPaymentAttr, FUN_1406dc510, 100, 0x8A0DEC43);
 
 // @0x1406dc580
-void TShopPaymentAttr::FUN_1406dc580(int nFeature)
+void TShopPaymentAttr::SetFeature(int nFeature)
 {
     m_nFeature = nFeature;
 }
-MS2_REPLACE_METHOD(0x1406DC580, TShopPaymentAttr, FUN_1406dc580, 22, 0x16BC4503);
+MS2_REPLACE_METHOD(0x1406DC580, TShopPaymentAttr, SetFeature, 22, 0x16BC4503);
 
 // ---- CNpcShopBuyPeriod --------------------------------------------------------------------------------------------
 
@@ -630,16 +630,16 @@ bool CNpcShopBuyPeriod::FUN_1406ddb40(const CMsTime& tm) const
 MS2_REPLACE_METHOD(0x1406DDB40, CNpcShopBuyPeriod, FUN_1406ddb40, 231, 0xA26375FC);
 
 // @0x1406ddc30
-bool CNpcShopBuyPeriod::FUN_1406ddc30() const
+bool CNpcShopBuyPeriod::IsVisible() const
 {
     return m_bVisible;
 }
-MS2_REPLACE_METHOD(0x1406DDC30, CNpcShopBuyPeriod, FUN_1406ddc30, 18, 0x01A1D2ED);
+MS2_REPLACE_METHOD(0x1406DDC30, CNpcShopBuyPeriod, IsVisible, 18, 0x01A1D2ED);
 
 // @0x1406ddc50
 bool CNpcShopBuyPeriod::FUN_1406ddc50(const CMsTime& tmNow)
 {
-    if (FUN_1406ddc30())
+    if (IsVisible())
         return true;
     return FUN_1406ddc90(tmNow);
 }
@@ -1693,7 +1693,7 @@ void FUN_1406e35b0(const CString& strPath)
 CBeautyShopItem::CBeautyShopItem()
     : m_nItemId(0), m_nWeight(0), m_nSaleTag(0), m_nRequireLevel(0), m_nAchieveId(0), m_nAchieveGrade(0)
 {
-    m_payment.FUN_1406dc580(0x10b);
+    m_payment.SetFeature(0x10b);
 }
 
 // @0x1406e3740
@@ -1761,7 +1761,7 @@ int CBeautyShopItem::FUN_1406e3900(CString& strError)
 // @0x1406e3bc0
 __int64 CBeautyShopItem::FUN_1406e3bc0()
 {
-    return m_payment.FUN_1406dc4f0();
+    return m_payment.GetAmount();
 }
 MS2_REPLACE_METHOD(0x1406E3BC0, CBeautyShopItem, FUN_1406e3bc0, 31, 0x069E603D);
 
@@ -1775,7 +1775,7 @@ MS2_REPLACE_METHOD(0x1406E3BF0, CBeautyShopItem, FUN_1406e3bf0, 31, 0x935EF1AD);
 // @0x1406e3c20
 unsigned CBeautyShopItem::FUN_1406e3c20()
 {
-    return m_payment.FUN_1406dc4d0();
+    return m_payment.GetItemId();
 }
 MS2_REPLACE_METHOD(0x1406E3C20, CBeautyShopItem, FUN_1406e3c20, 31, 0xE77E2D9C);
 
@@ -1785,8 +1785,8 @@ MS2_REPLACE_METHOD(0x1406E3C20, CBeautyShopItem, FUN_1406e3c20, 31, 0xE77E2D9C);
 CBeautyShopDataCommon::CBeautyShopDataCommon()
     : m_nShopId(0), m_nCategory(0), m_nDisplayCouponId(0), m_b24(false), m_nReturnCouponId(0), m_n2c(0), m_b30(false)
 {
-    m_payment.FUN_1406dc580(0x10b);
-    m_recolorPayment.FUN_1406dc580(0x10b);
+    m_payment.SetFeature(0x10b);
+    m_recolorPayment.SetFeature(0x10b);
 }
 
 // @0x1406e3d30
@@ -1866,11 +1866,11 @@ unsigned CBeautyShopItemGroup::FUN_1406e3fe0(int nGender)
 MS2_REPLACE_METHOD(0x1406E3FE0, CBeautyShopItemGroup, FUN_1406e3fe0, 84, 0x997D3341);
 
 // @0x1406e4040
-__int64 CBeautyShopItemGroup::FUN_1406e4040()
+__int64 CBeautyShopItemGroup::GetKey()
 {
     return m_nKey;
 }
-MS2_REPLACE_METHOD(0x1406E4040, CBeautyShopItemGroup, FUN_1406e4040, 15, 0xBBB219C9);
+MS2_REPLACE_METHOD(0x1406E4040, CBeautyShopItemGroup, GetKey, 15, 0xBBB219C9);
 
 // @0x1406e4060
 const CString& CBeautyShopItemGroup::FUN_1406e4060()
@@ -1880,11 +1880,11 @@ const CString& CBeautyShopItemGroup::FUN_1406e4060()
 MS2_REPLACE_METHOD(0x1406E4060, CBeautyShopItemGroup, FUN_1406e4060, 15, 0x5731F599);
 
 // @0x1406e4080
-unsigned CBeautyShopItemGroup::FUN_1406e4080()
+unsigned CBeautyShopItemGroup::GetValue()
 {
     return m_nValue;
 }
-MS2_REPLACE_METHOD(0x1406E4080, CBeautyShopItemGroup, FUN_1406e4080, 14, 0xD26D6807);
+MS2_REPLACE_METHOD(0x1406E4080, CBeautyShopItemGroup, GetValue, 14, 0xD26D6807);
 
 // @0x1406e40a0
 void CBeautyShopItemGroup::FUN_1406e40a0(MS2Ptr<CBeautyShopItem> spItem, int nGender)
@@ -1928,7 +1928,7 @@ void CBeautyShopItemGroups::FUN_1406e4260(std::vector<MS2Ptr<CBeautyShopItemGrou
 // @0x1406e4350
 bool CBeautyShopItemGroups::FUN_1406e4350(MS2Ptr<CBeautyShopItemGroup> spGroup)
 {
-    __int64 nKey = spGroup->FUN_1406e4040();
+    __int64 nKey = spGroup->GetKey();
     if (m_groups.find(nKey) != m_groups.end())
         return false;
     m_groups[nKey] = spGroup;
@@ -2028,7 +2028,7 @@ void CBeautyShopData::AddShopItemGroup(MS2Ptr<CBeautyShopItemGroup> spGroup)
     bool bAdded = m_spGroups->FUN_1406e4350(spGroup);
     if (!bAdded)
     {
-        __int64 nKey = spGroup->FUN_1406e4040();
+        __int64 nKey = spGroup->GetKey();
         static_cast<Unk_NpcShopLog*>(CLogString::GetInstance())->Log(0, 0, 0x2d, L"{0} failed. shopid={1}, itemGroupKey={2}", L"CBeautyShopData::AddShopItemGroup",
                           m_nShopId, nKey);
     }

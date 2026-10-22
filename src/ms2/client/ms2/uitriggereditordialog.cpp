@@ -1040,7 +1040,7 @@ inline void ASObj::FUN_141b2ffc0(const char* szName, int n)
 inline MS2Ptr<CMsgBoxData> FUN_141b30060(CStringW strText, int nType, Unk_TeBoxDelegate cb, const wchar_t* pszTag)
 {
     MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(nType));
-    spBox->FUN_141a01570(strText);
+    spBox->SetMsg(strText);
     spBox->FUN_141a027c0(cb);
     spBox->FUN_141b2fe80(pszTag);
     FUN_14151f150(spBox);

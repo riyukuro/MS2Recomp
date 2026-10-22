@@ -163,7 +163,7 @@ void CTextLogFile::FUN_140867260(unsigned long long nLimit)
 }
 
 // @0x140867310
-const CStringW& CTextLogFile::FUN_140867310() const
+const CStringW& CTextLogFile::GetName() const
 {
     return m_name;
 }

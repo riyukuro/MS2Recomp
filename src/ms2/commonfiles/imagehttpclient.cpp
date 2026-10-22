@@ -132,7 +132,7 @@ bool CImageHttpClient::UploadTemporaryKey(std::string strKey)
         if (BuildTemporaryKey(buffer, strKey))
         {
             const TPtrValue<CWinHttpClient> request = CreateRequest(GetUrl());
-            request->FUN_140922b90(buffer.FUN_140204eb0(), buffer.FUN_140205190());
+            request->FUN_140922b90(buffer.FUN_140204eb0(), buffer.GetLength());
             request->FUN_140922d20(MakeHeaders(buffer));
             SetRequest(request);
             m_pUploadThread = AfxBeginThread(ResponseServer, this);
@@ -153,7 +153,7 @@ bool CImageHttpClient::BeginImage()
         if (BuildImage(buffer))
         {
             const TPtrValue<CWinHttpClient> request = CreateRequest(GetUrl());
-            request->FUN_140922b90(buffer.FUN_140204eb0(), buffer.FUN_140205190());
+            request->FUN_140922b90(buffer.FUN_140204eb0(), buffer.GetLength());
             request->FUN_140922d20(MakeHeaders(buffer));
             SetRequest(request);
             m_pImageThread = AfxBeginThread(ResponseClient, this);
@@ -172,7 +172,7 @@ unsigned CImageHttpClient::SendWebScreenshot()
     {
         if (request->FUN_140922f20() != 0)
             return 0;
-        std::string strKey = ParseTemporaryKey(request->FUN_140922860());
+        std::string strKey = ParseTemporaryKey(request->GetResponseContent());
         COutPacket packet(0xb8, 0);
         packet.vfunc_o10_1((unsigned char)m_nMode);
         packet.vfunc_o10_7(CString(strKey.c_str()));
@@ -268,7 +268,7 @@ std::wstring CImageHttpClient::MakeHeaders(CByteBuffer& data)
 {
     const char* szContentType = "Content-Type: application/json\r\n";
     const char* szConnection = "Connection: close\r\n";
-    unsigned nLength = data.FUN_140205190();
+    unsigned nLength = data.GetLength();
     CString strLength = Unk_SocketFormat("Content-Length: {0}\r\n", nLength);
     std::wstring strHeaders((const wchar_t*)StringFormat(L"{0}{1}{2}", szContentType, strLength, szConnection));
     return strHeaders;
@@ -312,7 +312,7 @@ TPtrValue<CWinHttpClient> CImageHttpClient::CreateRequest(const std::wstring& st
 {
     TPtrValue<CWinHttpClient> request;
     request = Unk_GrNewTag(0);
-    request->FUN_140920cc0(strUrl);
+    request->SetRequestURL(strUrl);
     if (Unk_LockGuard guard = m_lock) { __assume(0); } else
     {
         m_request = request;

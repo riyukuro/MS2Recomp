@@ -620,7 +620,7 @@ void StateInteractionNpc::vfunc_4(StateData* pData)
         Unk_SiNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(m_spNpc->m_nNpc);
         if (pNpc)
         {
-            MS2Ptr<CNpcData> spNpcData = MS2Ptr<CNpcData>(pNpc->FUN_141093270());
+            MS2Ptr<CNpcData> spNpcData = MS2Ptr<CNpcData>(pNpc->GetNpcData());
             if (spNpcData.get())
             {
                 kInfo.m_nDuration = spNpcData->m_interact.m_nCastingTime;

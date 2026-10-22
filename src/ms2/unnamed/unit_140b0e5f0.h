@@ -38,8 +38,8 @@ public:
     void FUN_140b0e7a0();                                   // per-tick update
     void FUN_140b0ead0(__int64 nValue);                     // report a result to the server
     void FUN_140b0eba0(int nObjectId);
-    int FUN_140b0ec10() const;                              // couple type
-    CStringW FUN_140b0ec30() const;                         // name
+    int GetCoupleType() const;                              // couple type
+    CStringW GetName() const;                         // name
     __int64 FUN_140b0ec80();                                // id of the character this effect is keyed by
     void FUN_140b0ecd0();                                   // arm: activate when the partner exists
     void FUN_140b0ed30();                                   // spawn the effect

@@ -491,7 +491,7 @@ CNpcVibrate::~CNpcVibrate()
 }
 
 // @0x14108e280
-int CNpcVibrate::FUN_14108e280()
+int CNpcVibrate::IsActive()
 {
     return m_bActive;
 }
@@ -652,13 +652,13 @@ void CNpc::vfunc_12()
     for (unsigned __int64 i = 0; i < m_spNpcData->m_effectDummies.size(); i++)
         FUN_141674ef0(m_spNpcData->m_effectDummies[i]);
     if (FUN_14028d470(FUN_1416749a0()->FUN_140970720(), 1.0f)) {
-        if (FUN_141093270()->m_model.m_nSpawnAlphaAnimation != 0)
+        if (GetNpcData()->m_model.m_nSpawnAlphaAnimation != 0)
             vfunc_40(0.0f, 1.0f, 0.0f, 0.5f);
     }
     vfunc_119();
     FUN_141675980();
     vfunc_82();
-    if (!FUN_141093270()->HasPropertyTag(2))
+    if (!GetNpcData()->HasPropertyTag(2))
         return;
     if (!(FUN_14166ce30() == 0 && vfunc_80().get() != 0))
         return;
@@ -714,7 +714,7 @@ void CNpc::vfunc_28(void* p)
 // @0x14108fcf0
 int CNpc::vfunc_58()
 {
-    if (FUN_141093270()->IsBoss())
+    if (GetNpcData()->IsBoss())
         return 6;
     return 5;
 }
@@ -757,7 +757,7 @@ MS2Ptr<Unk_PCBaseComp_a58> CNpc::vfunc_80()
     if (FUN_1409f7c90()->FUN_1409f7ea0() != 0 && FUN_14123dbd0() == 0)
         return MS2Ptr<Unk_PCBaseComp_a58>(0);
     if (m_spA58 == 0) {
-        bool bHpBar = FUN_141093270()->m_bHpBar;
+        bool bHpBar = GetNpcData()->m_bHpBar;
         if (bHpBar) {
             if ((m_spA58 = FUN_141992920(m_unk_70)).get() != 0)
                 m_spA58->FUN_141992140(0);
@@ -773,10 +773,10 @@ MS2Ptr<Unk_PCBaseComp_a78> CNpc::vfunc_82()
     if (FUN_1409f7c90()->FUN_1409f7ea0() != 0 && FUN_14123dbd0() == 0)
         return MS2Ptr<Unk_PCBaseComp_a78>(0);
     if (m_spA78.get() == 0) {
-        if (FUN_140a7c8d0(FUN_141093270().operator->())) {
+        if (FUN_140a7c8d0(GetNpcData().operator->())) {
             if ((m_spA78 = FUN_141a60da0(m_unk_70)).get() != 0) {
-                m_spA78->FUN_141a5e4c0(FUN_141093270()->GetUnknown12());
-                m_spA78->FUN_141a5e500(FUN_140a7c970(FUN_141093270().operator->()));
+                m_spA78->FUN_141a5e4c0(GetNpcData()->GetUnknown12());
+                m_spA78->FUN_141a5e500(FUN_140a7c970(GetNpcData().operator->()));
                 m_spA78->vfunc_2();
             }
         }
@@ -828,7 +828,7 @@ const char* CNpc::vfunc_123(int n)
 // @0x141090620
 void CNpc::vfunc_111(void* p, int a, int b, void* q)
 {
-    if (FUN_14166ce30() != 0 && FUN_141093270()->GetCorpseHitAble() != 0)
+    if (FUN_14166ce30() != 0 && GetNpcData()->GetCorpseHitAble() != 0)
         return;
     efd::Point3 kPos = *static_cast<efd::Point3*>(q);
     PCBase::vfunc_111(p, a, b, &kPos);
@@ -837,7 +837,7 @@ void CNpc::vfunc_111(void* p, int a, int b, void* q)
 // @0x141090740
 void CNpc::vfunc_112(void* p, int n)
 {
-    if (FUN_14166ce30() != 0 && FUN_141093270()->GetCorpseHitAble() != 0)
+    if (FUN_14166ce30() != 0 && GetNpcData()->GetCorpseHitAble() != 0)
         return;
     PCBase::vfunc_112(p, n);
 }
@@ -997,7 +997,7 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
             }
         } else {
             if (strAnim.Find("Run_", 0) == 0) {
-                float fRunSpeed = FUN_141093270()->m_model.m_fAniSpeed * vfunc_97();
+                float fRunSpeed = GetNpcData()->m_model.m_fAniSpeed * vfunc_97();
                 fSpeed = fRunSpeed;
                 float fDist = (static_cast<const efd::Point3&>(vfunc_18()) - kPos).Length();
                 if (30.0f < fDist) {
@@ -1054,7 +1054,7 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
     } else if (nState == 0x16) {
         int nTalking = reinterpret_cast<UITalkManager*>(FUN_140967100())->GetTalking();
         if (FUN_14166cc80() == 0x49 && nTalking == 0) {
-            if (FUN_141093270()->m_bLookAtMyPCWhenTalking) {
+            if (GetNpcData()->m_bLookAtMyPCWhenTalking) {
                 CQuestManager* pQuest = reinterpret_cast<CQuestManager*>(FUN_140764020());
                 if (pQuest->FUN_1416d0610() != 0) {
                     Unk_StreamPoint ptTarget = reinterpret_cast<CQuestManager*>(FUN_140764020())->FUN_1416d0690();
@@ -1065,7 +1065,7 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
             return;
         }
         if (FUN_14166cc80() == 0x48 && nTalking != 0) {
-            if (FUN_141093270()->m_bLookAtMyPCWhenTalking) {
+            if (GetNpcData()->m_bLookAtMyPCWhenTalking) {
                 PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
                 if (pPlayer != NULL)
                     FUN_14166d2d0(static_cast<const efd::Point3&>(pPlayer->vfunc_18()), 0);
@@ -1076,7 +1076,7 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
         return;
     } else if (nState == 0x38) {
         if (reinterpret_cast<CQuestManager*>(FUN_140764020())->FUN_1416d0610() != 0) {
-            if (FUN_141093270()->m_bLookAtMyPCWhenTalking) {
+            if (GetNpcData()->m_bLookAtMyPCWhenTalking) {
                 Unk_StreamPoint ptTarget = reinterpret_cast<CQuestManager*>(FUN_140764020())->FUN_1416d0690();
                 if (reinterpret_cast<const efd::Point3&>(ptTarget) != efd::Point3::ZERO)
                     FUN_14166d2d0(reinterpret_cast<const efd::Point3&>(ptTarget), 0);
@@ -1168,7 +1168,7 @@ int CNpc::FUN_1410930a0()
         return 0;
     if (FUN_14166c930() != 0xc)
         return 0;
-    bool bNoHit = FUN_141093270()->GetCorpseHitAble() == 0;
+    bool bNoHit = GetNpcData()->GetCorpseHitAble() == 0;
     if (bNoHit)
         return 0;
     return 1;
@@ -1199,7 +1199,7 @@ int CNpc::FUN_141093220()
 }
 
 // @0x141093270
-MS2Ptr<NpcDataCli> CNpc::FUN_141093270()
+MS2Ptr<NpcDataCli> CNpc::GetNpcData()
 {
     return m_spNpcData;
 }
@@ -1337,7 +1337,7 @@ void CNpc::FUN_141093c80()
     m_nE10 = 0;
     int nIcon = m_questState.m_icon;
     int nState = m_questState.m_state;
-    if (!FUN_141093270().IsNull() && vfunc_116() != 0 && m_cE40 != 0) {
+    if (!GetNpcData().IsNull() && vfunc_116() != 0 && m_cE40 != 0) {
         m_questState.FUN_1409669c0();
         FUN_1416d12d0(FUN_140764020(), FUN_141092fa0(), &m_questState, 0);
         if (nIcon != m_questState.m_icon || nState != m_questState.m_state) {
@@ -1491,7 +1491,7 @@ void CNpc::vfunc_43(float f)
 int CNpc::vfunc_69()
 {
     MS2Ptr<CNpcData> spData;
-    spData = FUN_141093270();
+    spData = GetNpcData();
     if (spData == 0)
         return 0;
     if (spData->m_nEmotionId != 0)
@@ -1608,13 +1608,13 @@ done:
 }
 
 // @0x141094f20
-void CNpc::FUN_141094f20(int nOwnerId)
+void CNpc::SetOwnerId(int nOwnerId)
 {
     m_nOwnerId = nOwnerId;
 }
 
 // @0x141094f40
-int CNpc::FUN_141094f40()
+int CNpc::GetOwnerId()
 {
     return m_nOwnerId;
 }
@@ -1784,8 +1784,8 @@ void CNpc::MakeDeadPhysXActor()
     efd::Matrix3 kRot;
     kRot.MakeIdentity();
     if (m_spSkillRow.get() != 0) {
-        fPushUp = FUN_14028d3a0(m_spSkillRow->FUN_140803e10()->m_block170.m_fUp) * m_spNpcData->m_push.m_fUp;
-        fPushBack = FUN_14028d3a0(m_spSkillRow->FUN_140803e10()->m_block170.m_fBack) * m_spNpcData->m_push.m_fBack;
+        fPushUp = FUN_14028d3a0(m_spSkillRow->GetSkill()->m_block170.m_fUp) * m_spNpcData->m_push.m_fUp;
+        fPushBack = FUN_14028d3a0(m_spSkillRow->GetSkill()->m_block170.m_fBack) * m_spNpcData->m_push.m_fBack;
         static float s_fRate = FUN_1401d3200()->NPCRandomDeadPushRate.Read();
         fPushBack = fPushBack * (FUN_14109ace0() * s_fRate + 1.0f);
         fPushUp = fPushUp * (FUN_14109ace0() * s_fRate + 1.0f);
@@ -1927,7 +1927,7 @@ void CNpc::vfunc_33(void* a, void* b)
     FUN_141671c20(MS2Ptr<CDamageRecord>(pRecord));
     PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     int nOwnerRel = reinterpret_cast<Unk_PCWorld*>(FUN_1403ed2d0())->FUN_141bd19d0(pRecord->m_nOwnerId);
-    bool bBoss = FUN_141093270()->IsBoss();
+    bool bBoss = GetNpcData()->IsBoss();
     SkillAttackData* pAttack = pRecord->FUN_14175a8b0();
     if (pAttack != 0 && pAttack->m_damage.m_nInvokeEffectDisable == 0)
         m_unk_748.FUN_14096fb20(1);
@@ -2001,7 +2001,7 @@ void CNpc::vfunc_34(void* p)
     FUN_141672020(MS2Ptr<CDotDamageRecord>(pRecord));
     m_unk_748.FUN_14096fb20(0);
     int nOwnerRel = reinterpret_cast<Unk_PCWorld*>(FUN_1403ed2d0())->FUN_141bd19d0(pRecord->m_nOwnerId);
-    bool bBoss = FUN_141093270()->IsBoss();
+    bool bBoss = GetNpcData()->IsBoss();
     if (bBoss && nOwnerRel == 1) {
         if (FUN_1409478c0()->FUN_140af7e30() == 0x12) {
             CBossTargetCamera* pCamera = dynamic_cast<CBossTargetCamera*>(FUN_1409478c0()->FUN_140af2520());
@@ -2028,9 +2028,9 @@ void CNpc::vfunc_34(void* p)
         vfunc_125(1);
         PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (nOwnerRel == 1) {
-            if (pPlayer != NULL && FUN_141093270()->IsBoss())
+            if (pPlayer != NULL && GetNpcData()->IsBoss())
                 reinterpret_cast<Unk_PCFxMgr*>(FUN_1403ed280())->FUN_1411a5770(2, pPlayer);
-        } else if (pPlayer != NULL && FUN_141093270()->IsBoss() && pPlayer->FUN_14166ce30() == 0) {
+        } else if (pPlayer != NULL && GetNpcData()->IsBoss() && pPlayer->FUN_14166ce30() == 0) {
             if (FUN_140f4a450() <= *Client::Constants::GetInstance()->BossKillSoundRange.Get()) {
                 if (reinterpret_cast<MyPC*>(pPlayer)->FUN_14152e280(FUN_14123c580()) != 0)
                     reinterpret_cast<Unk_PCFxMgr*>(FUN_1403ed280())->FUN_1411a5770(1, pPlayer);
@@ -2057,7 +2057,7 @@ void CNpc::vfunc_35(void* p)
     SkillAttackData* pAttack = pRecord->FUN_14175a8b0();
     if (pAttack != 0 && pAttack->m_damage.m_nInvokeEffectDisable == 0)
         m_unk_748.FUN_14096fb20(1);
-    bool bBoss = FUN_141093270()->IsBoss();
+    bool bBoss = GetNpcData()->IsBoss();
     if (bBoss && nOwnerRel == 1) {
         if (FUN_1409478c0()->FUN_140af7e30() == 0x12) {
             CBossTargetCamera* pCamera = dynamic_cast<CBossTargetCamera*>(FUN_1409478c0()->FUN_140af2520());
@@ -2085,9 +2085,9 @@ void CNpc::vfunc_35(void* p)
         vfunc_125(1);
         PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (nOwnerRel == 1) {
-            if (pPlayer != NULL && FUN_141093270()->IsBoss())
+            if (pPlayer != NULL && GetNpcData()->IsBoss())
                 reinterpret_cast<Unk_PCFxMgr*>(FUN_1403ed280())->FUN_1411a5770(2, pPlayer);
-        } else if (pPlayer != NULL && FUN_141093270()->IsBoss() && pPlayer->FUN_14166ce30() == 0) {
+        } else if (pPlayer != NULL && GetNpcData()->IsBoss() && pPlayer->FUN_14166ce30() == 0) {
             if (FUN_140f4a450() <= *Client::Constants::GetInstance()->BossKillSoundRange.Get()) {
                 if (reinterpret_cast<MyPC*>(pPlayer)->FUN_14152e280(FUN_14123c580()) != 0)
                     reinterpret_cast<Unk_PCFxMgr*>(FUN_1403ed280())->FUN_1411a5770(1, pPlayer);
@@ -2110,7 +2110,7 @@ void CNpc::FUN_141098fb0(int nKind)
     if (!strEffect.IsEmpty()) {
         NoticeMessage kQuery;
         kQuery.m_strName = strEffect;
-        kQuery.m_nObject = FUN_141093270()->IsBoss() ? 6 : 5;
+        kQuery.m_nObject = GetNpcData()->IsBoss() ? 6 : 5;
         kQuery.SetActor(FUN_14123c580());
         reinterpret_cast<Unk_PoEffectSvc*>(FUN_1403ed280())->FUN_1411a4a00(kQuery);
     }
@@ -2241,7 +2241,7 @@ void CNpc::vfunc_125(int bShow)
         if (m_spNpcData.get() != 0)
             FUN_1411a4f40(FUN_1403ed280(), m_spNpcData->m_strSoundDead, vfunc_18());
     }
-    if (FUN_141093270()->GetCorpseHitAble() != 0) {
+    if (GetNpcData()->GetCorpseHitAble() != 0) {
         const Unk_NpcCorpse& kCorpse = m_spNpcData->m_corpse;
         efd::Point3 kSize(m_spNpcData->m_corpse.m_shape.m_fWidth, m_spNpcData->m_corpse.m_shape.m_fDepth,
             m_spNpcData->m_corpse.m_shape.m_fHeight);
@@ -2290,7 +2290,7 @@ void CNpc::vfunc_50()
         efd::Point3 kPos = static_cast<const efd::Point3&>(vfunc_18()) + efd::Point3(0.0f, 0.0f, m_unk_108);
         pBox->vfunc_3(Unk_StreamPoint(kPos), Unk_StreamPoint(kDir), fScale);
     }
-    if (FUN_14166ce30() != 0 && FUN_141093270()->GetCorpseHitAble() != 0) {
+    if (FUN_14166ce30() != 0 && GetNpcData()->GetCorpseHitAble() != 0) {
         Unk_GoAttachment* pAttachment = vfunc_26();
         if (pAttachment != NULL && FUN_14166c930() == 0xc) {
             State* pState = FUN_14166ccb0();
@@ -2401,7 +2401,7 @@ void CNpc::NxTerrainPhsyx()
 {
     if (m_pD68 != NULL)
         return;
-    if (!FUN_141093270()->HasPropertyTag(0x13))
+    if (!GetNpcData()->HasPropertyTag(0x13))
         return;
     if (m_spNpcData->m_collision.m_strShape != "box")
         return;
@@ -2489,8 +2489,8 @@ void CNpc::vfunc_53(float fTime)
     if (m_spA78.get() == 0) {
         if (reinterpret_cast<char&>(FUN_1401d3200()->m_unk8) != 0) {
             if ((m_spA78 = FUN_141a60da0(m_unk_70)).get() != 0) {
-                m_spA78->FUN_141a5e4c0(FUN_141093270()->GetUnknown12());
-                m_spA78->FUN_141a5e500(FUN_140a7c970(FUN_141093270().operator->()));
+                m_spA78->FUN_141a5e4c0(GetNpcData()->GetUnknown12());
+                m_spA78->FUN_141a5e500(FUN_140a7c970(GetNpcData().operator->()));
                 m_spA78->vfunc_2();
             }
         }
@@ -2514,14 +2514,14 @@ void CNpc::vfunc_53(float fTime)
                     static_cast<Unk_NameTagView*>(m_spA78.operator->())->FUN_140f48dc0(0);
                     m_timerEE8.FUN_1408687f0();
                 } else if (FUN_14166ce30() == 0) {
-                    m_spA78->FUN_141a5e500(FUN_140a7c970(FUN_141093270().operator->()));
+                    m_spA78->FUN_141a5e500(FUN_140a7c970(GetNpcData().operator->()));
                 } else {
                     m_spA78->FUN_141a5e500(FUN_140a7d630(&Client::Constants::GetInstance()->NameTagColorDead));
                 }
             }
         }
     }
-    if (m_vibrate.FUN_14108e280() != 0) {
+    if (m_vibrate.IsActive() != 0) {
         efd::Point3 kPos = vfunc_18();
         m_vibrate.FUN_14108e300(fNow, kPos);
         if (m_unk_80 != NULL)
@@ -2533,7 +2533,7 @@ void CNpc::vfunc_53(float fTime)
 }
 
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
-MS2_REPLACE_METHOD(0x14108e280, CNpcVibrate, FUN_14108e280, 14, 0xBA6447E3);
+MS2_REPLACE_METHOD(0x14108e280, CNpcVibrate, IsActive, 14, 0xBA6447E3);
 MS2_REPLACE_METHOD(0x14108e2a0, CNpcVibrate, FUN_14108e2a0, 84, 0xA436AECD);
 MS2_REPLACE_METHOD(0x14108e300, CNpcVibrate, FUN_14108e300, 277, 0xC450E9F6);
 MS2_REPLACE_METHOD(0x14108f710, CNpc, vfunc_12, 997, 0x8D05F8E6);

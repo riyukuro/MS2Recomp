@@ -167,13 +167,13 @@ void CPCDataPack::FUN_14071f580(COutputStream& out)
     out.vfunc_o10_4(m_n20);
     out.vfunc_o10_4(m_n28);
     unsigned nSize = 0;
-    nSize = m_bufRecord.FUN_140205190();
+    nSize = m_bufRecord.GetLength();
     out.vfunc_o10_3(nSize);
     out.vfunc_o10_9(m_bufRecord.FUN_14067c4c0(), nSize);
-    nSize = m_bufItems.FUN_140205190();
+    nSize = m_bufItems.GetLength();
     out.vfunc_o10_3(nSize);
     out.vfunc_o10_9(m_bufItems.FUN_14067c4c0(), nSize);
-    nSize = m_bufExtra.FUN_140205190();
+    nSize = m_bufExtra.GetLength();
     out.vfunc_o10_3(nSize);
     out.vfunc_o10_9(m_bufExtra.FUN_14067c4c0(), nSize);
 }
@@ -322,15 +322,15 @@ int CPCDataPack::FUN_140720850()
     Unk_Crc32 crc;
     crc.FUN_142351b30();
     int nOut;
-    unsigned nRecord = m_bufRecord.FUN_140205190();
+    unsigned nRecord = m_bufRecord.GetLength();
     const unsigned char* pRecord = m_bufRecord.FUN_14067c4c0();
     crc.FUN_1403901d0(nOut, pRecord, nRecord);
     nCrcRecord = nOut;
-    unsigned nItems = m_bufItems.FUN_140205190();
+    unsigned nItems = m_bufItems.GetLength();
     const unsigned char* pItems = m_bufItems.FUN_14067c4c0();
     crc.FUN_1403901d0(nOut, pItems, nItems);
     nCrcItems = nOut;
-    unsigned nExtra = m_bufExtra.FUN_140205190();
+    unsigned nExtra = m_bufExtra.GetLength();
     const unsigned char* pExtra = m_bufExtra.FUN_14067c4c0();
     crc.FUN_1403901d0(nOut, pExtra, nExtra);
     nCrcExtra = nOut;

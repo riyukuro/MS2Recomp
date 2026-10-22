@@ -274,13 +274,13 @@ void UIItemOptionCreateDialog::FUN_1412d2e50(unsigned nItemId, unsigned nCount, 
                 Unk_PacketOptionA key = (Unk_PacketOptionA)FUN_1409c17e0(vIndex);
                 Unk_PayloadPtr<BaseOption> option = new BaseOption;
                 int nValue = FUN_1409c1750(vValue);
-                option->FUN_140266e90(nValue);
+                option->SetValue(nValue);
                 packet.optionsA[nKind].SetAt(key, option);
             } else if (_stricmp("specialAbility", FUN_140b63540(vType)) == 0) {
                 Unk_PacketOptionB key = (Unk_PacketOptionB)FUN_1409c17e0(vIndex);
                 Unk_PayloadPtr<BaseOption> option = new BaseOption;
                 int nValue = FUN_1409c1750(vValue);
-                option->FUN_140266e90(nValue);
+                option->SetValue(nValue);
                 packet.optionsB[nKind].SetAt(key, option);
             }
         }

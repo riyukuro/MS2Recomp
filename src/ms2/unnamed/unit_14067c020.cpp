@@ -63,9 +63,9 @@ MS2_REPLACE_METHOD(0x14067C080, Unk_MachineId, FUN_14067c080, 49, 0xD3408B84);
 // @0x14067c0c0
 Unk_MachineId* Unk_MachineId::FUN_14067c0c0(const CByteBuffer& buf)
 {
-    if (!(buf.FUN_140205190() > 0x10))
+    if (!(buf.GetLength() > 0x10))
     {
-        unsigned __int64 nLen = buf.FUN_140205190();
+        unsigned __int64 nLen = buf.GetLength();
         memcpy(m_data, buf.FUN_14067c4c0(), nLen);
     }
     return this;

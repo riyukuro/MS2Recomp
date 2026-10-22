@@ -42,7 +42,7 @@ MS2_CHECK_SIZE(CBannerUrlGetter, 0x38);
 // ---- callees ----
 extern CAdBannerManagerCli* DAT_143ab3920;
 NotifySystem* FUN_140939a10();
-CAdBannerManagerCli* FUN_1409fb930();
+CAdBannerManagerCli* GetAdBannerManagerCli();
 AdBannerData* FUN_14016e5a0(Unk_AdBannerPtr* pPtr);
 CString FUN_14016a600(const wchar_t* psz, int n);           // wide -> narrow
 CString FUN_141029ed0(int nKind, const CString& strUrl);    // the cached file of a url
@@ -58,7 +58,7 @@ CBannerUrlGetter::~CBannerUrlGetter()
 // @0x1409fb100
 void CBannerUrlGetter::LoadBanner()
 {
-    Unk_AdBannerPtr spBanner = FUN_1409fb930()->FUN_14096b3e0(m_nKind);
+    Unk_AdBannerPtr spBanner = GetAdBannerManagerCli()->FUN_14096b3e0(m_nKind);
     if (spBanner.get() != 0)
     {
         m_strUrl = FUN_14016a600((const wchar_t*)FUN_14016e5a0(&spBanner)->m_str40, 0);
@@ -140,6 +140,6 @@ template<> Delegate<void(NotifyObject*)>::DelegateImplBase::~DelegateImplBase() 
 AdBannerData* Unk_AdBannerPtr::get() const { return m_p; }
 
 // @0x1409fb930
-CAdBannerManagerCli* FUN_1409fb930() { return DAT_143ab3920; }
+CAdBannerManagerCli* GetAdBannerManagerCli() { return DAT_143ab3920; }
 
 MS2_EMIT_CRT_MEMMOVE_S();

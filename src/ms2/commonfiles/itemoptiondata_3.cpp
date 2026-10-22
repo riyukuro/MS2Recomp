@@ -739,7 +739,7 @@ void CItemOptionTable::FUN_1405f70f0(MS2Ptr<CItemData> spItem, int nRank, unsign
                 while (pos != NULL)
                 {
                     int nKey = kStats.GetKeyAt(pos);
-                    int nValue = kStats.GetValueAt(pos)->FUN_140266e30();
+                    int nValue = kStats.GetValueAt(pos)->GetValue();
                     CString strName = FUN_14082efb0(nKey);
                     if (mapCounts.find(strName) == mapCounts.end())
                         mapCounts.insert(std::make_pair(strName, std::map<unsigned long, unsigned long>()));
@@ -751,7 +751,7 @@ void CItemOptionTable::FUN_1405f70f0(MS2Ptr<CItemData> spItem, int nRank, unsign
                 while (pos != NULL)
                 {
                     int nKey = kSpecials.GetKeyAt(pos);
-                    int nValue = kSpecials.GetValueAt(pos)->FUN_140266e30();
+                    int nValue = kSpecials.GetValueAt(pos)->GetValue();
                     CString strName = FUN_14081d380(nKey);
                     if (mapCounts.find(strName) == mapCounts.end())
                         mapCounts.insert(std::make_pair(strName, std::map<unsigned long, unsigned long>()));
@@ -769,7 +769,7 @@ void CItemOptionTable::FUN_1405f70f0(MS2Ptr<CItemData> spItem, int nRank, unsign
                     if (spBase->m_nIndex == nIndex - 1)
                     {
                         int nKey = kStats.GetKeyAt(pos);
-                        int nValue = spBase->FUN_140266e30();
+                        int nValue = spBase->GetValue();
                         CString strName = FUN_14082efb0(nKey);
                         if (mapCounts.find(strName) == mapCounts.end())
                             mapCounts.insert(std::make_pair(strName, std::map<unsigned long, unsigned long>()));
@@ -785,7 +785,7 @@ void CItemOptionTable::FUN_1405f70f0(MS2Ptr<CItemData> spItem, int nRank, unsign
                     if (spBase->m_nIndex == nIndex - 1)
                     {
                         int nKey = kSpecials.GetKeyAt(pos);
-                        int nValue = spBase->FUN_140266e30();
+                        int nValue = spBase->GetValue();
                         CString strName = FUN_14081d380(nKey);
                         if (mapCounts.find(strName) == mapCounts.end())
                             mapCounts.insert(std::make_pair(strName, std::map<unsigned long, unsigned long>()));

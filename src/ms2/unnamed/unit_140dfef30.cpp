@@ -186,9 +186,9 @@ void FUN_140dfef30(CInPacket& packet)
     FUN_140e011c0(strMsg, strName, nFee, nMax, nShareRate);
     CStringW strTitle = FUN_140298ea0(CStringW(L"s_ugcox_create_confirm"));
     MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(0x27));
-    spBox->FUN_141a01570(strMsg);
+    spBox->SetMsg(strMsg);
     spBox->FUN_141a01800(1);
-    spBox->FUN_141a015d0(strTitle);
+    spBox->SetTitle(strTitle);
     spBox->FUN_141a027c0(FUN_140b76b10(FUN_140dff210));
     FUN_140d73c60(spBox);
 }
@@ -235,9 +235,9 @@ void FUN_140dff3a0(__int64 nId, const CStringW& strName, __int64 nFee, int nMax,
     CStringW strTitle;
     FUN_140e013e0(strTitle, strName);
     MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(0x27));
-    spBox->FUN_141a01570(strMsg);
+    spBox->SetMsg(strMsg);
     spBox->FUN_141a01800(1);
-    spBox->FUN_141a015d0(strTitle);
+    spBox->SetTitle(strTitle);
     spBox->FUN_141a027c0(FUN_140b76b10(FUN_140dff8d0));
     spBox->FUN_1405340b0(nId);
     FUN_140d73c60(spBox);
@@ -334,7 +334,7 @@ void FUN_140dff970()
 {
     CStringW strMsg = FUN_140298ea0(L"s_ugcox_finish_warning_host");
     MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(1));
-    spBox->FUN_141a01570(strMsg);
+    spBox->SetMsg(strMsg);
     spBox->FUN_141a01800(1);
     spBox->FUN_141a027c0(FUN_140b76b10(FUN_140dffad0));
     FUN_140d73c60(spBox);
@@ -366,11 +366,11 @@ void FUN_140dffb50(void* pListener)
         strMsg = FUN_140298ea0(L"s_ugcox_leave_warning_entry");
     }
     MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(1));
-    spBox->FUN_141a01570(strMsg);
+    spBox->SetMsg(strMsg);
     spBox->FUN_141a01800(1);
     spBox->FUN_141a027c0(FUN_140b76b10(FUN_140dffdf0));
     spBox->FUN_141a02860(pListener);
-    spBox->FUN_141a01660(L"leaveInField");
+    spBox->SetExtra(L"leaveInField");
     FUN_140d73c60(spBox);
 }
 
@@ -534,9 +534,9 @@ void FUN_140e00690(CInPacket& packet)
         CStringW strMsg;
         FUN_140e011c0(strMsg, strName, nFee, nMax, nShareRate);
         MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(0x27));
-        spBox->FUN_141a01570(strMsg);
+        spBox->SetMsg(strMsg);
         spBox->FUN_141a01800(1);
-        spBox->FUN_141a015d0(FUN_14028b8e0(CStringW(L"s_ugcox_move_eventmap_confirm")));
+        spBox->SetTitle(FUN_14028b8e0(CStringW(L"s_ugcox_move_eventmap_confirm")));
         spBox->FUN_141a027c0(FUN_140b76b10(FUN_140dff700));
         spBox->FUN_140534050(nMapId);
         spBox->FUN_140534050(nPortalId);

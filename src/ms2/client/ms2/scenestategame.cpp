@@ -3276,7 +3276,7 @@ void CSceneStateGame::OnItemPutOn(CInPacket& packet)
             if (pBox != 0)
             {
                 MS2Ptr<CMsgBoxData> spBox = pBox->FUN_1419f8470();
-                if (spBox.get() != 0 && spBox->FUN_141a02ce0() == DAT_143ae7980)
+                if (spBox.get() != 0 && spBox->GetExtra() == DAT_143ae7980)
                     pBox->FUN_1419f8120();
             }
         }

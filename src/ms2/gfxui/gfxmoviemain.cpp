@@ -62,7 +62,7 @@ bool FUN_1409b4d40(const Scaleform::GFx::Value& v);            // the value is s
 template <class T>
 void BindNotifyHandler(int nMovieId, Scaleform::GFx::Value& obj)
 {
-    efd::SmartPointer<Unk_NotifyContext> spContext = FUN_14025e7a0()->FUN_1422b0260();
+    efd::SmartPointer<Unk_NotifyContext> spContext = FUN_14025e7a0()->GetNotifyContext();
     if (spContext)
     {
         Scaleform::Ptr<T> spHandler = *new T(spContext);

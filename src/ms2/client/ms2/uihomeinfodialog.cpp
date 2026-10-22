@@ -813,7 +813,7 @@ bool UIHomeInfoDialog::FUN_1412c7af0(int nSlot)
         {
             spBox->FUN_141a01800(2);
             spBox->FUN_141a024e0(FUN_14028de60(0x9d1), 0);
-            spBox->FUN_141a02730(0);
+            spBox->SetAgreement(0);
             spBox->FUN_141a02770(0x1c0, 400);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeInfoDialog::SendRequestCubeMode31));
             FUN_140d73c60(spBox);

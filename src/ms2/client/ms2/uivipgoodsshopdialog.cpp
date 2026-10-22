@@ -310,7 +310,7 @@ void UIVIPGoodsShopDialog::vfunc_79(void* pPacket)
         CStringW strMsg = FUN_140656190(FUN_14028de60(0x9f6), FUN_1401a9d70()->FUN_141811980(0x2e, nGoodsId), spGoods->GetPriceText(0));
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x10, FUN_140632a60(0x9f4, FUN_14028de60(0x9f8), strMsg), 0, CStringW(L""));
         if (spBox.get() != 0) {
-            spBox->FUN_141a015d0(FUN_14028de60(0x9f5));
+            spBox->SetTitle(FUN_14028de60(0x9f5));
             static_cast<Unk_VgMsgBox*>(spBox.operator->())->FUN_141a01c30(s_sndCashBuy);
             spBox->FUN_141a02770(0x1e0, 300);
             FUN_140d73c60(spBox);

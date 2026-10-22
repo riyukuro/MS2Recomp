@@ -13,7 +13,7 @@ public:
     Unk_TextFormat& FUN_14083ff40(const wchar_t* pszArg);       // replaces "{n}" / "{n:fmt}" by the next argument
     Unk_TextFormat& FUN_140840530(CStringW strArg);
     CStringA FUN_140840580() const;                             // the formatted text, narrowed
-    CStringW FUN_1408405d0() const;                             // the formatted text
+    CStringW GetStr() const;                             // the formatted text
 private:
     CStringW m_str;
     int m_nArg, m_nPos;

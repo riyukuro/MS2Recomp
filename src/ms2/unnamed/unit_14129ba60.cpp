@@ -212,10 +212,10 @@ void UIRecallScrollNotifyDialog::vfunc_72()
 }
 
 // @0x14129c8e0
-void UIRecallScrollNotifyDialog::FUN_14129c8e0(int nOffset) { m_nOffset = nOffset; }
+void UIRecallScrollNotifyDialog::SetOffset(int nOffset) { m_nOffset = nOffset; }
 
 // @0x14129c900
-bool UIRecallScrollNotifyDialog::FUN_14129c900() { return m_bActive; }
+bool UIRecallScrollNotifyDialog::IsActive() { return m_bActive; }
 
 // @0x14129c920
 void UIRecallScrollNotifyDialog::FUN_14129c920(int nSlot, __time64_t nTime, const CStringW& strName, int nField)

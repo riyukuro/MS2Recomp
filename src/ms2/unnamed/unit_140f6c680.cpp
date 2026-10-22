@@ -1045,7 +1045,7 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f70770()
             for (size_t i = 0; i < count; ++i) {
                 MS2Ptr<CItem> item(items.GetAt(i));
                 if (!(item == 0) && item->FUN_1405279c0() != 0 && item->FUN_140529560() != 0
-                    && item->FUN_1405279c0()->FUN_140620a50() != 0)
+                    && item->FUN_1405279c0()->GetMaxSlot() != 0)
                     m_equipment.Add(item);
             }
         }
@@ -1058,7 +1058,7 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f70770()
             MS2Ptr<CEquipItem> equip(equipped.GetAt(pos));
             if (!!equip) {
                 MS2Ptr<CItem> item = equip->GetItem();
-                if (!!item && item->FUN_1405279c0() != 0 && item->FUN_1405279c0()->FUN_140620a50() != 0)
+                if (!!item && item->FUN_1405279c0() != 0 && item->FUN_1405279c0()->GetMaxSlot() != 0)
                     m_equipment.Add(item);
             }
             equipped.GetNext(pos);
@@ -1167,7 +1167,7 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f71530(int slot)
 {
     if (!(m_selected == 0) && m_selected->FUN_140527840() != 0) {
         CItemSocket* socket = m_selected->FUN_1405279c0();
-        if (socket != 0 && socket->FUN_140620a50() != 0 && socket->FUN_140620a20() != 0) {
+        if (socket != 0 && socket->GetMaxSlot() != 0 && socket->FUN_140620a20() != 0) {
             if (socket->FUN_140621020(slot)) {
                 FUN_1412752d0(L"s_itemsocketsystem_error_socket_empty", 1);
                 return;
@@ -1212,8 +1212,8 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f71530(int slot)
                 else
                     countText = FUN_1409e8970(L"s_itemsocketsystem_text_item_count", have, costCount);
                 FUN_141a020b0(box.operator->(), itemId, grade, 0);
-                box->FUN_141a01570(msg);
-                box->FUN_141a015d0(countText);
+                box->SetMsg(msg);
+                box->SetTitle(countText);
                 box->FUN_141a01800(1);
             }
             box->FUN_141a024a0(0);
@@ -1338,7 +1338,7 @@ void ItemSocketSystemPageGemStoneManage::SendItemSocketSystemMode16(const Scalef
     if (m_state != 1)
         return;
     CItemSocket* socket = m_selected->FUN_1405279c0();
-    if (socket->FUN_140620a50() == 0 || socket->FUN_140620a20() == 0)
+    if (socket->GetMaxSlot() == 0 || socket->FUN_140620a20() == 0)
         return;
     int gemId = socket->FUN_140621d60();
     if (gemId == 0)

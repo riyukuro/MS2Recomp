@@ -338,7 +338,7 @@ void CGameOptionInterface::vfunc_10()
     CBaseOption::vfunc_10();
     if (FUN_14125bb90(&m_state))
     {
-        if (FUN_1408e57f0()->FUN_1422b9e00() == 0x620001d)
+        if (FUN_1408e57f0()->GetSubSceneId() == 0x620001d)
             CUIService::GetInstance()->OpenDialog((eUIClassID)0x4edf);
     }
     else if (!FUN_14125bb90(&m_state))
@@ -3562,10 +3562,10 @@ void CPersonalInfoAgreement::FUN_141262180()
                 CStringW strPublic = FUN_14028b8e0(CStringW(L"s_personal_infomaion_agreement_visit_myhome_btn_public"));
                 CStringW strPassword = FUN_14028b8e0(CStringW(L"s_personal_infomaion_agreement_visit_myhome_btn_password"));
                 CStringW strPrivate = FUN_14028b8e0(CStringW(L"s_personal_infomaion_agreement_visit_myhome_btn_private"));
-                spBox->FUN_141a015d0(FUN_14028b8e0(CStringW(L"s_personal_infomaion_agreement_title")));
+                spBox->SetTitle(FUN_14028b8e0(CStringW(L"s_personal_infomaion_agreement_title")));
                 spBox->FUN_141a024a0(0);
                 spBox->FUN_141a024c0();
-                spBox->FUN_141a01640(0);
+                spBox->SetAlign(0);
                 spBox->FUN_141a01690(strPublic, strPassword, strPrivate);
                 spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CPersonalInfoAgreement::FUN_141262830));
                 FUN_140d73c60(spBox);

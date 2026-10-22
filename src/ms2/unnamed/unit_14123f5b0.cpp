@@ -179,7 +179,7 @@ efd::Point3 GameObjectController::FUN_14123fd90()
     kResult.x = FUN_14028d380((float)kPos.x);
     kResult.y = FUN_14028d380((float)kPos.y);
     kResult.z = FUN_14028d380((float)kPos.z);
-    kResult.z += FUN_141241320();
+    kResult.z += GetCenterOffset();
     return kResult;
 }
 MS2_REPLACE_METHOD(0x14123FD90, GameObjectController, FUN_14123fd90, 208, 0x55BC2F64);
@@ -188,7 +188,7 @@ MS2_REPLACE_METHOD(0x14123FD90, GameObjectController, FUN_14123fd90, 208, 0x55BC
 void GameObjectController::FUN_14123fe70(efd::Point3 kPos)
 {
     NxExtendedVec3 kNxPos;
-    kPos.z -= FUN_141241320();
+    kPos.z -= GetCenterOffset();
     kNxPos.x = FUN_14028d3a0(kPos.x);
     kNxPos.y = FUN_14028d3a0(kPos.y);
     kNxPos.z = FUN_14028d3a0(kPos.z);
@@ -321,11 +321,11 @@ void GameObjectController::FUN_141240610(float fHeight, efd::Point3 kVelocity, f
 MS2_REPLACE_METHOD(0x141240610, GameObjectController, FUN_141240610, 232, 0x77644077);
 
 // @0x141240700
-void GameObjectController::FUN_141240700(efd::Point3 kVelocity)
+void GameObjectController::SetKVelocity(efd::Point3 kVelocity)
 {
     m_kVelocity = kVelocity;
 }
-MS2_REPLACE_METHOD(0x141240700, GameObjectController, FUN_141240700, 41, 0x589555EC);
+MS2_REPLACE_METHOD(0x141240700, GameObjectController, SetKVelocity, 41, 0x589555EC);
 
 // @0x141240730
 void GameObjectController::FUN_141240730()
@@ -337,11 +337,11 @@ void GameObjectController::FUN_141240730()
 MS2_REPLACE_METHOD(0x141240730, GameObjectController, FUN_141240730, 69, 0x772A8ECD);
 
 // @0x141240780
-int GameObjectController::FUN_141240780()
+int GameObjectController::IsJumping()
 {
     return m_bJumping;
 }
-MS2_REPLACE_METHOD(0x141240780, GameObjectController, FUN_141240780, 14, 0x69D980EB);
+MS2_REPLACE_METHOD(0x141240780, GameObjectController, IsJumping, 14, 0x69D980EB);
 
 // @0x1412407a0
 int GameObjectController::FUN_1412407a0()
@@ -430,18 +430,18 @@ void GameObjectController::FUN_141240d70()
 MS2_REPLACE_METHOD(0x141240D70, GameObjectController, FUN_141240d70, 48, 0xB43DF174);
 
 // @0x141240db0
-int GameObjectController::FUN_141240db0()
+int GameObjectController::IsLift()
 {
     return m_bLift;
 }
-MS2_REPLACE_METHOD(0x141240DB0, GameObjectController, FUN_141240db0, 17, 0x0A012C13);
+MS2_REPLACE_METHOD(0x141240DB0, GameObjectController, IsLift, 17, 0x0A012C13);
 
 // @0x141240dd0
-int GameObjectController::FUN_141240dd0()
+int GameObjectController::IsLiftFalling()
 {
     return m_bLiftFalling;
 }
-MS2_REPLACE_METHOD(0x141240DD0, GameObjectController, FUN_141240dd0, 17, 0xA9AE535B);
+MS2_REPLACE_METHOD(0x141240DD0, GameObjectController, IsLiftFalling, 17, 0xA9AE535B);
 
 // @0x141240df0
 efd::Point3 GameObjectController::FUN_141240df0()
@@ -463,11 +463,11 @@ NxActor* GameObjectController::FUN_141240e70()
 MS2_REPLACE_METHOD(0x141240E70, GameObjectController, FUN_141240e70, 76, 0x80148672);
 
 // @0x141240ed0
-NxU32 GameObjectController::FUN_141240ed0()
+NxU32 GameObjectController::GetCollisionFlags()
 {
     return m_nCollisionFlags;
 }
-MS2_REPLACE_METHOD(0x141240ED0, GameObjectController, FUN_141240ed0, 14, 0xB9C4E423);
+MS2_REPLACE_METHOD(0x141240ED0, GameObjectController, GetCollisionFlags, 14, 0xB9C4E423);
 
 // @0x141240ef0
 int GameObjectController::FUN_141240ef0()
@@ -486,7 +486,7 @@ MS2_REPLACE_METHOD(0x141240F20, GameObjectController, FUN_141240f20, 15, 0x271C8
 // @0x141240f40
 int GameObjectController::FUN_141240f40()
 {
-    return (m_nCollisionFlags & NXCC_COLLISION_DOWN) != 0 && FUN_141240780() == 0 && FUN_141240db0() == 0;
+    return (m_nCollisionFlags & NXCC_COLLISION_DOWN) != 0 && IsJumping() == 0 && IsLift() == 0;
 }
 MS2_REPLACE_METHOD(0x141240F40, GameObjectController, FUN_141240f40, 79, 0xABB10CA2);
 
@@ -498,11 +498,11 @@ void GameObjectController::FUN_141240fa0()
 MS2_REPLACE_METHOD(0x141240FA0, GameObjectController, FUN_141240fa0, 33, 0x4ADCCA03);
 
 // @0x141240fd0
-efd::Point3 GameObjectController::FUN_141240fd0()
+efd::Point3 GameObjectController::GetKVelocity()
 {
     return m_kVelocity;
 }
-MS2_REPLACE_METHOD(0x141240FD0, GameObjectController, FUN_141240fd0, 41, 0x604E0F2C);
+MS2_REPLACE_METHOD(0x141240FD0, GameObjectController, GetKVelocity, 41, 0x604E0F2C);
 
 // @0x141241000
 float GameObjectController::FUN_141241000()
@@ -568,8 +568,8 @@ int GameObjectController::FUN_1412412b0()
 MS2_REPLACE_METHOD(0x1412412B0, GameObjectController, FUN_1412412b0, 105, 0x4B49306D);
 
 // @0x141241320
-float GameObjectController::FUN_141241320()
+float GameObjectController::GetCenterOffset()
 {
     return m_fCenterOffset;
 }
-MS2_REPLACE_METHOD(0x141241320, GameObjectController, FUN_141241320, 16, 0x1BE201AE);
+MS2_REPLACE_METHOD(0x141241320, GameObjectController, GetCenterOffset, 16, 0x1BE201AE);

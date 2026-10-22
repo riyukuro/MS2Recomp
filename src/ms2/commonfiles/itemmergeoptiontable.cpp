@@ -526,7 +526,7 @@ bool CItemMergeOptionTable::FUN_1405c0870(int nItemId, int nMaterialId, bool bSp
             for (size_t i = 0; i < spData->m_aOptions.GetCount(); i++)
             {
                 if (spData->m_aOptions[i]->m_nNormal == nOption && FUN_1405c7ba0(&spData->m_aOptions[i]->m_kSecond.m_range))
-                    return FUN_1403ef200(&spData->m_aOptions[i]->m_kSecond.m_range, spValue->FUN_140266e30());
+                    return FUN_1403ef200(&spData->m_aOptions[i]->m_kSecond.m_range, spValue->GetValue());
             }
         }
     }
@@ -544,7 +544,7 @@ bool CItemMergeOptionTable::FUN_1405c0a70(int nItemId, int nMaterialId, bool bSp
             for (size_t i = 0; i < spData->m_aOptions.GetCount(); i++)
             {
                 if (spData->m_aOptions[i]->m_nSpecial == nOption && FUN_1405c7ba0(&spData->m_aOptions[i]->m_kSecond.m_range))
-                    return FUN_1403ef200(&spData->m_aOptions[i]->m_kSecond.m_range, spValue->FUN_140266e30());
+                    return FUN_1403ef200(&spData->m_aOptions[i]->m_kSecond.m_range, spValue->GetValue());
             }
         }
     }
@@ -565,7 +565,7 @@ bool CItemMergeOptionTable::FUN_1405c0c70(int nItemId, int nMaterialId, bool bSp
                 if (spData->m_aOptions[i]->m_nNormal == nOption && FUN_1405c7ba0(&spData->m_aOptions[i]->m_kFirst.m_range))
                 {
                     CItemMergeOption* pOption = spData->m_aOptions[i].get();
-                    return pOption->m_kFirst.m_range.m_nMax == spValue->FUN_140266e30();
+                    return pOption->m_kFirst.m_range.m_nMax == spValue->GetValue();
                 }
             }
             return false;
@@ -588,7 +588,7 @@ bool CItemMergeOptionTable::FUN_1405c0e80(int nItemId, int nMaterialId, bool bSp
                 if (spData->m_aOptions[i]->m_nSpecial == nOption && FUN_1405c7ba0(&spData->m_aOptions[i]->m_kFirst.m_range))
                 {
                     CItemMergeOption* pOption = spData->m_aOptions[i].get();
-                    return pOption->m_kFirst.m_range.m_nMax == spValue->FUN_140266e30();
+                    return pOption->m_kFirst.m_range.m_nMax == spValue->GetValue();
                 }
             }
             return false;
@@ -645,7 +645,7 @@ CStringW CItemMergeOptionTable::FUN_1405c1090(MS2Ptr<CItem> spItem, int nFlag)
         Unk_EnchantPtr<BaseOption> spValue = rSpecial.GetValueAt(pos);
         if (spValue.get() == 0)
             continue;
-        CStringW strLine = FUN_1401d0080(FUN_140631830(nStat, spValue->FUN_140266e30(), spItem->FUN_140527840()), strTag);
+        CStringW strLine = FUN_1401d0080(FUN_140631830(nStat, spValue->GetValue(), spItem->FUN_140527840()), strTag);
         CStringW strExtra;
         if (FUN_1405c0a70(spItem->FUN_1405276c0(), nMergeId, bSpecial, nStat, spValue))
         {

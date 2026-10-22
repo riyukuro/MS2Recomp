@@ -2,18 +2,18 @@
 140166420	FUN_140166420	GetFileSystem	medium	singleton	returns the CFileSystem instance pointer DAT_143aab398	commonfiles/achievedata.cpp	nam1	2026-10-22	applied desc-3 as GetFileSystem
 140166440	FUN_140166440	GetLogString	medium	singleton	returns the CLogString instance pointer DAT_143aab390	commonfiles/achievedata.cpp	nam1	2026-10-22	applied desc-3 as GetLogString
 1401a9d70	FUN_1401a9d70	GetStringTable	medium	body	inline accessor returning the CStringTable singleton DAT_143aac298 (v2525: CStringTable::GetInstance)	client/ms2/stringtable.cpp	nam1	2026-10-22	
-140205190	CByteBuffer::FUN_140205190	GetLength	high	getter	body returns m_uLength	unnamed/unit_1401f9eb0.cpp	nam1	2026-10-22	
+140205190	CByteBuffer::FUN_140205190	GetLength	high	getter	body returns m_uLength	unnamed/unit_1401f9eb0.cpp	nam1	2026-10-22	applied desc-4 as GetLength
 140209340	COutPacketBuffer::FUN_140209340	SetLimit	high	setter	body stores the argument in m_limit	commonfiles/clientreconnectionstructs.cpp	nam1	2026-10-22	applied desc-3 as SetLimit
 140209430	COutPacketBuffer::FUN_140209430	GetSequence	high	getter	body returns m_sequence	commonfiles/clientreconnectionstructs.cpp	nam1	2026-10-22	applied desc-3 as GetSequence
 140209490	COutPacketBuffer::FUN_140209490	GetCaptureEnabled	high	getter	body returns m_captureEnabled	commonfiles/clientreconnectionstructs.cpp	nam1	2026-10-22	applied desc-3 as GetCaptureEnabled
-140266ce0	BaseOption::FUN_140266ce0	HasValue	medium	bool-test	body returns m_nValue != 0	unnamed/unit_140266860.cpp	nam1	2026-10-22	
-140266e30	BaseOption::FUN_140266e30	GetValue	high	getter	body returns m_nValue	unnamed/unit_140266860.cpp	nam1	2026-10-22	
-140266e90	BaseOption::FUN_140266e90	SetValue	high	setter	body stores the argument in m_nValue	unnamed/unit_140266860.cpp	nam1	2026-10-22	
+140266ce0	BaseOption::FUN_140266ce0	HasValue	medium	bool-test	body returns m_nValue != 0	unnamed/unit_140266860.cpp	nam1	2026-10-22	applied desc-4 as HasValue
+140266e30	BaseOption::FUN_140266e30	GetValue	high	getter	body returns m_nValue	unnamed/unit_140266860.cpp	nam1	2026-10-22	applied desc-4 as GetValue
+140266e90	BaseOption::FUN_140266e90	SetValue	high	setter	body stores the argument in m_nValue	unnamed/unit_140266860.cpp	nam1	2026-10-22	applied desc-4 as SetValue
 14026b1c0	ItemEntity::FUN_14026b1c0	SetRank	high	setter	body stores the argument in m_rank	commonfiles/commonstruct_wa.cpp	nam1	2026-10-22	applied desc-3 as SetRank
 14028b8e0	FUN_14028b8e0	GetStringCommonByKey	medium	body	body: string-common lookup by key (callers pass L"s_..."); ~300 users, shared header	client/ms2/stringtable.cpp	nam1	2026-10-22	
 14028de60	FUN_14028de60	GetStringCommon	medium	body	body: string-common table lookup by numeric id (callers pass s_* ids); ~300 users, shared header	client/ms2/stringtable.cpp	nam1	2026-10-22	
 14029f070	CConditionCommon::vfunc_2	GetCount	medium	getter	body returns m_nCount; virtual slot: rename the whole override family	commonfiles/conditionutil.cpp	nam1	2026-10-22	
-1402e14c0	Unk_PerfLog::FUN_1402e14c0	GetFirstTick	high	getter	body returns m_nFirstTick	unnamed/unit_1402e12c0.cpp	nam1	2026-10-22	
+1402e14c0	Unk_PerfLog::FUN_1402e14c0	GetFirstTick	high	getter	body returns m_nFirstTick	unnamed/unit_1402e12c0.cpp	nam1	2026-10-22	applied desc-4 as GetFirstTick
 140314890	DungeonMissionData::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "DungeonMissionData" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	commonfiles/dungeonmissiondata.cpp	nam1	2026-10-22	
 140314f80	DungeonMissionDataPlayTime::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "DungeonMissionDataPlayTime" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	commonfiles/dungeonmissiondata.cpp	nam1	2026-10-22	
 1403150c0	DungeonMissionDataLimitUserCount::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "DungeonMissionDataLimitUserCount" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	commonfiles/dungeonmissiondata.cpp	nam1	2026-10-22	
@@ -77,73 +77,73 @@
 1405d3ce0	ItemOptionRandom::FUN_1405d3ce0	GetLevelGroupId	high	getter	body returns m_nLevelGroupId	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	applied desc-3 as GetLevelGroupId
 1405d9be0	ItemOptionRandomContext::FUN_1405d9be0	SetTarget	high	setter	body stores the argument in m_spTarget	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	applied desc-3 as SetTarget
 1405d9e50	ItemOptionRandomContext::FUN_1405d9e50	GetOption	high	getter	body returns m_spOption	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	applied desc-3 as GetOption
-140620260	TSocketGemStoneInfo::FUN_140620260	GetGemId	high	getter	body returns m_nGemId	commonfiles/itemsocket.cpp	nam1	2026-10-22	
-140620280	TSocketGemStoneInfo::FUN_140620280	GetLock	high	getter	body returns m_spLock	commonfiles/itemsocket.cpp	nam1	2026-10-22	
-1406202d0	TSocketGemStoneInfo::FUN_1406202d0	GetBind	high	getter	body returns m_spBind	commonfiles/itemsocket.cpp	nam1	2026-10-22	
-140620a50	CItemSocket::FUN_140620a50	GetMaxSlot	high	getter	body returns m_nMaxSlot	commonfiles/itemsocket.cpp	nam1	2026-10-22	
+140620260	TSocketGemStoneInfo::FUN_140620260	GetGemId	high	getter	body returns m_nGemId	commonfiles/itemsocket.cpp	nam1	2026-10-22	applied desc-4 as GetGemId
+140620280	TSocketGemStoneInfo::FUN_140620280	GetLock	high	getter	body returns m_spLock	commonfiles/itemsocket.cpp	nam1	2026-10-22	applied desc-4 as GetLock
+1406202d0	TSocketGemStoneInfo::FUN_1406202d0	GetBind	high	getter	body returns m_spBind	commonfiles/itemsocket.cpp	nam1	2026-10-22	applied desc-4 as GetBind
+140620a50	CItemSocket::FUN_140620a50	GetMaxSlot	high	getter	body returns m_nMaxSlot	commonfiles/itemsocket.cpp	nam1	2026-10-22	applied desc-4 as GetMaxSlot
 140620c20	CItemSocket::FUN_140620c20	GetGems	medium	getter	body returns m_aGems	commonfiles/itemsocket.cpp	nam1	2026-10-22	
-140630d30	CItemStatus::FUN_140630d30	GetOption	high	getter	body returns m_spOption	commonfiles/itemsocketsystemutil.cpp	nam1	2026-10-22	
-140630d60	CItemStatus::FUN_140630d60	GetEnchant	high	getter	body returns m_spEnchant	commonfiles/itemsocketsystemutil.cpp	nam1	2026-10-22	
-140634970	CItemTransfer::FUN_140634970	SetItem	high	setter	body stores the argument in m_pItem	commonfiles/itemsocketsystemutil.cpp	nam1	2026-10-22	
-140634fa0	CItemTransfer::FUN_140634fa0	GetCount	high	getter	body returns m_nCount	commonfiles/itemsocketsystemutil.cpp	nam1	2026-10-22	
-140634fc0	CItemTransfer::FUN_140634fc0	SetCount	high	setter	body stores the argument in m_nCount	commonfiles/itemsocketsystemutil.cpp	nam1	2026-10-22	
-140634fe0	CItemTransfer::FUN_140634fe0	GetMax	high	getter	body returns m_nMax	commonfiles/itemsocketsystemutil.cpp	nam1	2026-10-22	
-140635000	CItemTransfer::FUN_140635000	SetMax	high	setter	body stores the argument in m_nMax	commonfiles/itemsocketsystemutil.cpp	nam1	2026-10-22	
-140635190	CItemTransfer::FUN_140635190	GetType	high	getter	body returns m_nType	commonfiles/itemsocketsystemutil.cpp	nam1	2026-10-22	
-140653820	CLogString::FUN_140653820	GetErrors	high	getter	body returns m_errors	commonfiles/logstring.cpp	nam1	2026-10-22	
-140653840	CLogString::FUN_140653840	GetWarnings	high	getter	body returns m_warnings	commonfiles/logstring.cpp	nam1	2026-10-22	
-140653860	CLogString::FUN_140653860	GetFileLevel	high	getter	body returns m_fileLevel	commonfiles/logstring.cpp	nam1	2026-10-22	
-140653b30	CLogString::FUN_140653b30	GetRoot	high	getter	body returns m_root	commonfiles/logstring.cpp	nam1	2026-10-22	
-14067def0	CMaid::FUN_14067def0	SetMode	high	setter	body stores the argument in m_nMode	commonfiles/maid.cpp	nam1	2026-10-22	
-1406af060	Unk_LaunchOptions::FUN_1406af060	IsDisableValidate	high	getter	body returns m_bDisableValidate	unnamed/unit_1406aee80.cpp	nam1	2026-10-22	
-1406af080	Unk_LaunchOptions::FUN_1406af080	IsPreloadNoThread	high	getter	body returns m_bPreloadNoThread	unnamed/unit_1406aee80.cpp	nam1	2026-10-22	
-1406af170	Unk_LaunchOptions::FUN_1406af170	IsSkipNpcLoading	high	getter	body returns m_bSkipNpcLoading	unnamed/unit_1406aee80.cpp	nam1	2026-10-22	
-1406c75c0	Unk_NametagActor::FUN_1406c75c0	GetGmGrade	high	getter	body returns m_nGmGrade	commonfiles/nametagsymboltable.cpp	nam1	2026-10-22	
-1406dc4b0	TShopPaymentAttr::FUN_1406dc4b0	GetIconTag	high	getter	body returns m_strIconTag	commonfiles/npcshopdata.cpp	nam1	2026-10-22	
-1406dc4d0	TShopPaymentAttr::FUN_1406dc4d0	GetItemId	high	getter	body returns m_nItemId	commonfiles/npcshopdata.cpp	nam1	2026-10-22	
-1406dc4f0	TShopPaymentAttr::FUN_1406dc4f0	GetAmount	high	getter	body returns m_nAmount	commonfiles/npcshopdata.cpp	nam1	2026-10-22	
-1406dc580	TShopPaymentAttr::FUN_1406dc580	SetFeature	high	setter	body stores the argument in m_nFeature	commonfiles/npcshopdata.cpp	nam1	2026-10-22	
-1406ddc30	CNpcShopBuyPeriod::FUN_1406ddc30	IsVisible	high	getter	body returns m_bVisible	commonfiles/npcshopdata.cpp	nam1	2026-10-22	
+140630d30	CItemStatus::FUN_140630d30	GetOption	high	getter	body returns m_spOption	commonfiles/itemsocketsystemutil.cpp	nam1	2026-10-22	applied desc-4 as GetOption
+140630d60	CItemStatus::FUN_140630d60	GetEnchant	high	getter	body returns m_spEnchant	commonfiles/itemsocketsystemutil.cpp	nam1	2026-10-22	applied desc-4 as GetEnchant
+140634970	CItemTransfer::FUN_140634970	SetItem	high	setter	body stores the argument in m_pItem	commonfiles/itemsocketsystemutil.cpp	nam1	2026-10-22	applied desc-4 as SetItem
+140634fa0	CItemTransfer::FUN_140634fa0	GetCount	high	getter	body returns m_nCount	commonfiles/itemsocketsystemutil.cpp	nam1	2026-10-22	applied desc-4 as GetCount
+140634fc0	CItemTransfer::FUN_140634fc0	SetCount	high	setter	body stores the argument in m_nCount	commonfiles/itemsocketsystemutil.cpp	nam1	2026-10-22	applied desc-4 as SetCount
+140634fe0	CItemTransfer::FUN_140634fe0	GetMax	high	getter	body returns m_nMax	commonfiles/itemsocketsystemutil.cpp	nam1	2026-10-22	applied desc-4 as GetMax
+140635000	CItemTransfer::FUN_140635000	SetMax	high	setter	body stores the argument in m_nMax	commonfiles/itemsocketsystemutil.cpp	nam1	2026-10-22	applied desc-4 as SetMax
+140635190	CItemTransfer::FUN_140635190	GetType	high	getter	body returns m_nType	commonfiles/itemsocketsystemutil.cpp	nam1	2026-10-22	applied desc-4 as GetType
+140653820	CLogString::FUN_140653820	GetErrors	high	getter	body returns m_errors	commonfiles/logstring.cpp	nam1	2026-10-22	applied desc-4 as GetErrors
+140653840	CLogString::FUN_140653840	GetWarnings	high	getter	body returns m_warnings	commonfiles/logstring.cpp	nam1	2026-10-22	applied desc-4 as GetWarnings
+140653860	CLogString::FUN_140653860	GetFileLevel	high	getter	body returns m_fileLevel	commonfiles/logstring.cpp	nam1	2026-10-22	applied desc-4 as GetFileLevel
+140653b30	CLogString::FUN_140653b30	GetRoot	high	getter	body returns m_root	commonfiles/logstring.cpp	nam1	2026-10-22	applied desc-4 as GetRoot
+14067def0	CMaid::FUN_14067def0	SetMode	high	setter	body stores the argument in m_nMode	commonfiles/maid.cpp	nam1	2026-10-22	applied desc-4 as SetMode
+1406af060	Unk_LaunchOptions::FUN_1406af060	IsDisableValidate	high	getter	body returns m_bDisableValidate	unnamed/unit_1406aee80.cpp	nam1	2026-10-22	applied desc-4 as IsDisableValidate
+1406af080	Unk_LaunchOptions::FUN_1406af080	IsPreloadNoThread	high	getter	body returns m_bPreloadNoThread	unnamed/unit_1406aee80.cpp	nam1	2026-10-22	applied desc-4 as IsPreloadNoThread
+1406af170	Unk_LaunchOptions::FUN_1406af170	IsSkipNpcLoading	high	getter	body returns m_bSkipNpcLoading	unnamed/unit_1406aee80.cpp	nam1	2026-10-22	applied desc-4 as IsSkipNpcLoading
+1406c75c0	Unk_NametagActor::FUN_1406c75c0	GetGmGrade	high	getter	body returns m_nGmGrade	commonfiles/nametagsymboltable.cpp	nam1	2026-10-22	applied desc-4 as GetGmGrade
+1406dc4b0	TShopPaymentAttr::FUN_1406dc4b0	GetIconTag	high	getter	body returns m_strIconTag	commonfiles/npcshopdata.cpp	nam1	2026-10-22	applied desc-4 as GetIconTag
+1406dc4d0	TShopPaymentAttr::FUN_1406dc4d0	GetItemId	high	getter	body returns m_nItemId	commonfiles/npcshopdata.cpp	nam1	2026-10-22	applied desc-4 as GetItemId
+1406dc4f0	TShopPaymentAttr::FUN_1406dc4f0	GetAmount	high	getter	body returns m_nAmount	commonfiles/npcshopdata.cpp	nam1	2026-10-22	applied desc-4 as GetAmount
+1406dc580	TShopPaymentAttr::FUN_1406dc580	SetFeature	high	setter	body stores the argument in m_nFeature	commonfiles/npcshopdata.cpp	nam1	2026-10-22	applied desc-4 as SetFeature
+1406ddc30	CNpcShopBuyPeriod::FUN_1406ddc30	IsVisible	high	getter	body returns m_bVisible	commonfiles/npcshopdata.cpp	nam1	2026-10-22	applied desc-4 as IsVisible
 1406e3dc0	CBeautyShopDataCommon::FUN_1406e3dc0	GetPayment	low	getter	body returns m_payment; same proposal for another function of this class (overload/duplicate?)	commonfiles/npcshopdata.cpp	nam1	2026-10-22	
 1406e3de0	CBeautyShopDataCommon::FUN_1406e3de0	GetRecolorPayment	low	getter	body returns m_recolorPayment; same proposal for another function of this class (overload/duplicate?)	commonfiles/npcshopdata.cpp	nam1	2026-10-22	
 1406e3e00	CBeautyShopDataCommon::FUN_1406e3e00	GetPayment	low	getter	body returns m_payment; same proposal for another function of this class (overload/duplicate?)	commonfiles/npcshopdata.cpp	nam1	2026-10-22	
 1406e3e20	CBeautyShopDataCommon::FUN_1406e3e20	GetRecolorPayment	low	getter	body returns m_recolorPayment; same proposal for another function of this class (overload/duplicate?)	commonfiles/npcshopdata.cpp	nam1	2026-10-22	
-1406e4040	CBeautyShopItemGroup::FUN_1406e4040	GetKey	high	getter	body returns m_nKey	commonfiles/npcshopdata.cpp	nam1	2026-10-22	
+1406e4040	CBeautyShopItemGroup::FUN_1406e4040	GetKey	high	getter	body returns m_nKey	commonfiles/npcshopdata.cpp	nam1	2026-10-22	applied desc-4 as GetKey
 1406e4060	CBeautyShopItemGroup::FUN_1406e4060	GetName	medium	getter	body returns m_strName	commonfiles/npcshopdata.cpp	nam1	2026-10-22	
-1406e4080	CBeautyShopItemGroup::FUN_1406e4080	GetValue	high	getter	body returns m_nValue	commonfiles/npcshopdata.cpp	nam1	2026-10-22	
+1406e4080	CBeautyShopItemGroup::FUN_1406e4080	GetValue	high	getter	body returns m_nValue	commonfiles/npcshopdata.cpp	nam1	2026-10-22	applied desc-4 as GetValue
 140714de0	Unk_CompressedStream::FUN_140714de0	GetRaw	medium	getter	body returns m_raw	commonfiles/packet.cpp	nam1	2026-10-22	
-140714f80	FUN_140714f80	GetBufferCryptManager	medium	singleton	returns the CBufferCryptManager instance pointer DAT_143aac528	commonfiles/packet.cpp	nam1	2026-10-22	
-140714fa0	CPacketBuffer::FUN_140714fa0	GetSize	high	getter	body returns m_size	commonfiles/packet.cpp	nam1	2026-10-22	
+140714f80	FUN_140714f80	GetBufferCryptManager	medium	singleton	returns the CBufferCryptManager instance pointer DAT_143aac528	commonfiles/packet.cpp	nam1	2026-10-22	applied desc-4 as GetBufferCryptManager
+140714fa0	CPacketBuffer::FUN_140714fa0	GetSize	high	getter	body returns m_size	commonfiles/packet.cpp	nam1	2026-10-22	applied desc-4 as GetSize
 140714fb0	CInPacket::vfunc_0	GetOffset	medium	getter	body returns m_offset; virtual slot: rename the whole override family	commonfiles/packet.cpp	nam1	2026-10-22	
-140743710	CPvPInfo::FUN_140743710	GetPoint	high	getter	body returns m_nPoint	commonfiles/pvpinfo.cpp	nam1	2026-10-22	
-1407476d0	CQuest::FUN_1407476d0	GetState	high	getter	body returns m_state	commonfiles/questdata.cpp	nam1	2026-10-22	
-1407ad600	SetItemInfo::FUN_1407ad600	IsShowEffect	high	getter	body returns m_bShowEffect	commonfiles/setiteminfo.cpp	nam1	2026-10-22	
+140743710	CPvPInfo::FUN_140743710	GetPoint	high	getter	body returns m_nPoint	commonfiles/pvpinfo.cpp	nam1	2026-10-22	applied desc-4 as GetPoint
+1407476d0	CQuest::FUN_1407476d0	GetState	high	getter	body returns m_state	commonfiles/questdata.cpp	nam1	2026-10-22	applied desc-4 as GetState
+1407ad600	SetItemInfo::FUN_1407ad600	IsShowEffect	high	getter	body returns m_bShowEffect	commonfiles/setiteminfo.cpp	nam1	2026-10-22	applied desc-4 as IsShowEffect
 1407ad710	SetItemInfo::FUN_1407ad710	GetItems	medium	getter	body returns m_items	commonfiles/setiteminfo.cpp	nam1	2026-10-22	
-1407bc9b0	SetItemOptionPart::FUN_1407bc9b0	GetCount	high	getter	body returns m_nCount	commonfiles/setitemoptionpart.cpp	nam1	2026-10-22	
+1407bc9b0	SetItemOptionPart::FUN_1407bc9b0	GetCount	high	getter	body returns m_nCount	commonfiles/setitemoptionpart.cpp	nam1	2026-10-22	applied desc-4 as GetCount
 1407bc9d0	SetItemOptionPart::FUN_1407bc9d0	GetEffectIds	medium	getter	body returns m_effectIds	commonfiles/setitemoptionpart.cpp	nam1	2026-10-22	
 1407bc9f0	SetItemOptionPart::FUN_1407bc9f0	GetEffectLevels	medium	getter	body returns m_effectLevels	commonfiles/setitemoptionpart.cpp	nam1	2026-10-22	
 1407bce70	SetItemOptionPart::FUN_1407bce70	GetAnimationPrefix	medium	getter	body returns m_animationPrefix	commonfiles/setitemoptionpart.cpp	nam1	2026-10-22	
 1407bce90	SetItemOptionPart::FUN_1407bce90	GetSetEffect	medium	getter	body returns m_setEffect	commonfiles/setitemoptionpart.cpp	nam1	2026-10-22	
 1407bceb0	SetItemOptionPart::FUN_1407bceb0	GetGroundAttribute	medium	getter	body returns m_groundAttribute	commonfiles/setitemoptionpart.cpp	nam1	2026-10-22	
-1407e9b10	SkillData::FUN_1407e9b10	GetMaxLevel	high	getter	body returns m_nMaxLevel	commonfiles/skilloverlapcompare.cpp	nam1	2026-10-22	
-140803df0	SkillLevelData::FUN_140803df0	GetLevel	high	getter	body returns m_nLevel	commonfiles/skillleveldata.cpp	nam1	2026-10-22	
-140803e10	SkillLevelData::FUN_140803e10	GetSkill	high	getter	body returns m_pSkill	commonfiles/skillleveldata.cpp	nam1	2026-10-22	
-140804250	SkillLevelData::FUN_140804250	GetStanceDamageRate	high	getter	body returns m_nStanceDamageRate	commonfiles/skillleveldata.cpp	nam1	2026-10-22	
-1408405d0	Unk_TextFormat::FUN_1408405d0	GetStr	high	getter	body returns m_str	unnamed/unit_14083f3d0.cpp	nam1	2026-10-22	
-140867310	CTextLogFile::FUN_140867310	GetName	high	getter	body returns m_name	commonfiles/textlogfile.cpp	nam1	2026-10-22	
-140868a50	Timer::FUN_140868a50	GetStart	high	getter	body returns m_nStart	commonfiles/timer.cpp	nam1	2026-10-22	
-140868c60	Timer::FUN_140868c60	HasPauseTime	medium	bool-test	body returns m_nPauseTime != 0	commonfiles/timer.cpp	nam1	2026-10-22	
+1407e9b10	SkillData::FUN_1407e9b10	GetMaxLevel	high	getter	body returns m_nMaxLevel	commonfiles/skilloverlapcompare.cpp	nam1	2026-10-22	applied desc-4 as GetMaxLevel
+140803df0	SkillLevelData::FUN_140803df0	GetLevel	high	getter	body returns m_nLevel	commonfiles/skillleveldata.cpp	nam1	2026-10-22	applied desc-4 as GetLevel
+140803e10	SkillLevelData::FUN_140803e10	GetSkill	high	getter	body returns m_pSkill	commonfiles/skillleveldata.cpp	nam1	2026-10-22	applied desc-4 as GetSkill
+140804250	SkillLevelData::FUN_140804250	GetStanceDamageRate	high	getter	body returns m_nStanceDamageRate	commonfiles/skillleveldata.cpp	nam1	2026-10-22	applied desc-4 as GetStanceDamageRate
+1408405d0	Unk_TextFormat::FUN_1408405d0	GetStr	high	getter	body returns m_str	unnamed/unit_14083f3d0.cpp	nam1	2026-10-22	applied desc-4 as GetStr
+140867310	CTextLogFile::FUN_140867310	GetName	high	getter	body returns m_name	commonfiles/textlogfile.cpp	nam1	2026-10-22	applied desc-4 as GetName
+140868a50	Timer::FUN_140868a50	GetStart	high	getter	body returns m_nStart	commonfiles/timer.cpp	nam1	2026-10-22	applied desc-4 as GetStart
+140868c60	Timer::FUN_140868c60	HasPauseTime	medium	bool-test	body returns m_nPauseTime != 0	commonfiles/timer.cpp	nam1	2026-10-22	applied desc-4 as HasPauseTime
 140868f20	TimeRange::FUN_140868f20	GetStart	medium	getter	body returns m_start	commonfiles/timer.cpp	nam1	2026-10-22	
 140868f40	TimeRange::FUN_140868f40	GetEnd	medium	getter	body returns m_end	commonfiles/timer.cpp	nam1	2026-10-22	
-1408809e0	CUGCBuildValidator::FUN_1408809e0	GetMode	high	getter	body returns m_nMode	commonfiles/ugcbuildvalidator.cpp	nam1	2026-10-22	
-1408bbc50	UnlimitedEnchantInfo::FUN_1408bbc50	GetLevel	high	getter	body returns m_nLevel	commonfiles/unlimitedenchantinfo.cpp	nam1	2026-10-22	
-1408bc1d0	UnlimitedEnchantInfo::FUN_1408bc1d0	SetChanged	high	setter	body stores the argument in m_bChanged	commonfiles/unlimitedenchantinfo.cpp	nam1	2026-10-22	
-1408bc1f0	UnlimitedEnchantInfo::FUN_1408bc1f0	IsChanged	high	getter	body returns m_bChanged	commonfiles/unlimitedenchantinfo.cpp	nam1	2026-10-22	
+1408809e0	CUGCBuildValidator::FUN_1408809e0	GetMode	high	getter	body returns m_nMode	commonfiles/ugcbuildvalidator.cpp	nam1	2026-10-22	applied desc-4 as GetMode
+1408bbc50	UnlimitedEnchantInfo::FUN_1408bbc50	GetLevel	high	getter	body returns m_nLevel	commonfiles/unlimitedenchantinfo.cpp	nam1	2026-10-22	applied desc-4 as GetLevel
+1408bc1d0	UnlimitedEnchantInfo::FUN_1408bc1d0	SetChanged	high	setter	body stores the argument in m_bChanged	commonfiles/unlimitedenchantinfo.cpp	nam1	2026-10-22	applied desc-4 as SetChanged
+1408bc1f0	UnlimitedEnchantInfo::FUN_1408bc1f0	IsChanged	high	getter	body returns m_bChanged	commonfiles/unlimitedenchantinfo.cpp	nam1	2026-10-22	applied desc-4 as IsChanged
 1408bc2d0	UnlimitedEnchantInfo::FUN_1408bc2d0	GetOptions	medium	getter	body returns m_options	commonfiles/unlimitedenchantinfo.cpp	nam1	2026-10-22	
 1408bc3b0	UnlimitedEnchantInfo::FUN_1408bc3b0	GetSecondary	medium	getter	body returns m_secondary	commonfiles/unlimitedenchantinfo.cpp	nam1	2026-10-22	
 1408e3700	CUserMail::FUN_1408e3700	GetMails	medium	getter	body returns m_mails	commonfiles/usermail.cpp	nam1	2026-10-22	
-140920cc0	CWinHttpClient::FUN_140920cc0	SetRequestURL	high	setter	body stores the argument in m_requestURL	unnamed/unit_140920cf0.cpp	nam1	2026-10-22	
-140922860	CWinHttpClient::FUN_140922860	GetResponseContent	high	getter	body returns m_responseContent	unnamed/unit_140920cf0.cpp	nam1	2026-10-22	
+140920cc0	CWinHttpClient::FUN_140920cc0	SetRequestURL	high	setter	body stores the argument in m_requestURL	unnamed/unit_140920cf0.cpp	nam1	2026-10-22	applied desc-4 as SetRequestURL
+140922860	CWinHttpClient::FUN_140922860	GetResponseContent	high	getter	body returns m_responseContent	unnamed/unit_140920cf0.cpp	nam1	2026-10-22	applied desc-4 as GetResponseContent
 140922f20	CWinHttpClient::FUN_140922f20	GetLastError	high	getter	body returns m_dwLastError	unnamed/unit_140920cf0.cpp	nam1	2026-10-22	
 140953530	Unk_ActionKeyManager::FUN_140953530	GetCur	high	getter	body returns m_nCur	client/ms2/actionkeyobject.cpp	nam1	2026-10-22	applied desc-1 as GetCur
 140953690	Unk_ActionKeyManager::FUN_140953690	IsEnabled	high	getter	body returns m_bEnabled	client/ms2/actionkeyobject.cpp	nam1	2026-10-22	applied desc-1 as IsEnabled
@@ -180,7 +180,7 @@
 1409f6560	AvatarPC::FUN_1409f6560	IsEnabled	high	getter	body returns m_bEnabled	client/ms2/avatarpc.cpp	nam1	2026-10-22	applied desc-1 as IsEnabled
 1409f65a0	AvatarPC::FUN_1409f65a0	IsFishing	high	getter	body returns m_bFishing	client/ms2/avatarpc.cpp	nam1	2026-10-22	applied desc-1 as IsFishing
 1409fa170	AvatarRidee::FUN_1409fa170	GetRow	high	getter	body returns m_spRow	client/ms2/avatarpc.cpp	nam1	2026-10-22	applied desc-1 as GetRow
-1409fb930	FUN_1409fb930	GetAdBannerManagerCli	medium	singleton	returns the CAdBannerManagerCli instance pointer DAT_143ab3920	unnamed/unit_1409faff0.cpp	nam1	2026-10-22	
+1409fb930	FUN_1409fb930	GetAdBannerManagerCli	medium	singleton	returns the CAdBannerManagerCli instance pointer DAT_143ab3920	unnamed/unit_1409faff0.cpp	nam1	2026-10-22	applied desc-4 as GetAdBannerManagerCli
 140a02dd0	CBaseOption::FUN_140a02dd0	IsEnabled	high	getter	body returns m_bEnabled	client/ms2/baseoption.cpp	nam1	2026-10-22	applied desc-1 as IsEnabled
 140a02df0	CBaseOption::FUN_140a02df0	SetEnabled	high	setter	body stores the argument in m_bEnabled	client/ms2/baseoption.cpp	nam1	2026-10-22	applied desc-1 as SetEnabled
 140a02e10	CBaseOption::FUN_140a02e10	GetType	high	getter	body returns m_nType	client/ms2/baseoption.cpp	nam1	2026-10-22	applied desc-1 as GetType
@@ -195,7 +195,7 @@
 140a357c0	CBoneRotateManager::FUN_140a357c0	GetCurrent	high	getter	body returns m_nCurrent	client/ms2/bonerotateinterpolator.cpp	nam1	2026-10-22	applied desc-1 as GetCurrent
 140a358e0	CBoneRotateManager::FUN_140a358e0	GetOwner	high	getter	body returns m_pOwner	client/ms2/bonerotateinterpolator.cpp	nam1	2026-10-22	applied desc-1 as GetOwner
 140a44800	CrashManagerCli::FUN_140a44800	GetCallbacks	medium	getter	body returns m_callbacks	unnamed/unit_140a435a0.cpp	nam1	2026-10-22	
-140a45970	Unk_CrashDialog::FUN_140a45970	SetMessage	high	setter	body stores the argument in m_strMessage	unnamed/unit_140a435a0.cpp	nam1	2026-10-22	
+140a45970	Unk_CrashDialog::FUN_140a45970	SetMessage	high	setter	body stores the argument in m_strMessage	unnamed/unit_140a435a0.cpp	nam1	2026-10-22	applied desc-4 as SetMessage
 140a4f1b0	CubeSpawnObject::FUN_140a4f1b0	GetNpc	high	getter	body returns m_spNpc	client/ms2/cubespawnobject.cpp	nam1	2026-10-22	applied desc-1 as GetNpc
 140a6d8e0	JobSystemCli::FUN_140a6d8e0	SetOwner	high	setter	body stores the argument in m_pOwner	client/ms2/jobsystemcli.cpp	nam1	2026-10-22	applied desc-1 as SetOwner
 140a6f860	LapenshardSlot::FUN_140a6f860	GetSlot	high	getter	body returns m_nSlot	client/ms2/lapenshardslot.cpp	nam1	2026-10-22	applied desc-1 as GetSlot
@@ -206,9 +206,9 @@
 140acaea0	TabContentsPetEvolution::FUN_140acaea0	GetUidPet	high	getter	body returns m_uidPet	client/ms2/tabcontentspetevolution.cpp	nam1	2026-10-22	applied desc-2 as GetUidPet
 140acb810	TabContentsPetEvolution::FUN_140acb810	SetState	high	setter	body stores the argument in m_nState	client/ms2/tabcontentspetevolution.cpp	nam1	2026-10-22	applied desc-2 as SetState
 140acb830	TabContentsPetEvolution::FUN_140acb830	GetState	high	getter	body returns m_nState	client/ms2/tabcontentspetevolution.cpp	nam1	2026-10-22	applied desc-2 as GetState
-140ad21b0	CMouseController::FUN_140ad21b0	HasMode	medium	bool-test	body returns m_nMode != 0	unnamed/unit_140ad1860.cpp	nam1	2026-10-22	
-140ad22a0	CMouseController::FUN_140ad22a0	GetMove	high	getter	body returns m_vMove	unnamed/unit_140ad1860.cpp	nam1	2026-10-22	
-140ad4ba0	FUN_140ad4ba0	GetSceneGraphService	medium	singleton	returns the SceneGraphService instance pointer DAT_143ab9508	unnamed/unit_140ad1860.cpp	nam1	2026-10-22	
+140ad21b0	CMouseController::FUN_140ad21b0	HasMode	medium	bool-test	body returns m_nMode != 0	unnamed/unit_140ad1860.cpp	nam1	2026-10-22	applied desc-4 as HasMode
+140ad22a0	CMouseController::FUN_140ad22a0	GetMove	high	getter	body returns m_vMove	unnamed/unit_140ad1860.cpp	nam1	2026-10-22	applied desc-4 as GetMove
+140ad4ba0	FUN_140ad4ba0	GetSceneGraphService	medium	singleton	returns the SceneGraphService instance pointer DAT_143ab9508	unnamed/unit_140ad1860.cpp	nam1	2026-10-22	applied desc-4 as GetSceneGraphService
 140adde00	CBreakableObject::FUN_140adde00	SetName	high	setter	body stores the argument in m_strName	client/ms2/breakableobject.cpp	nam1	2026-10-22	applied desc-1 as SetName
 140adde50	CBreakableObject::FUN_140adde50	GetName	high	getter	body returns m_strName	client/ms2/breakableobject.cpp	nam1	2026-10-22	applied desc-1 as GetName
 140adea80	CBreakableObject::FUN_140adea80	GetState	high	getter	body returns m_nState	client/ms2/breakableobject.cpp	nam1	2026-10-22	applied desc-1 as GetState
@@ -219,14 +219,14 @@
 140ae0660	CBreakableObject::FUN_140ae0660	GetPtSize	high	getter	body returns m_ptSize	client/ms2/breakableobject.cpp	nam1	2026-10-22	applied desc-1 as GetPtSize
 140b051c0	Unk_CashShopRef::FUN_140b051c0	GetDialog	low	getter	body returns m_pDialog; same proposal for another function of this class (overload/duplicate?)	client/ms2/cashchargedialog.cpp	nam1	2026-10-22	
 140b051d0	Unk_CashShopRef::FUN_140b051d0	GetDialog	low	getter	body returns m_pDialog; same proposal for another function of this class (overload/duplicate?)	client/ms2/cashchargedialog.cpp	nam1	2026-10-22	
-140b0ec10	CoupleEffectSystem::FUN_140b0ec10	GetCoupleType	high	getter	body returns m_nCoupleType	unnamed/unit_140b0e5f0.cpp	nam1	2026-10-22	
-140b0ec30	CoupleEffectSystem::FUN_140b0ec30	GetName	high	getter	body returns m_strName	unnamed/unit_140b0e5f0.cpp	nam1	2026-10-22	
-140b10290	CPet::FUN_140b10290	GetPetId	high	getter	body returns m_nPetId	unnamed/unit_140b0f4c0.cpp	nam1	2026-10-22	
-140b102b0	CPet::FUN_140b102b0	GetRow	high	getter	body returns m_spRow	unnamed/unit_140b0f4c0.cpp	nam1	2026-10-22	
-140b109f0	CPet::FUN_140b109f0	GetKind	high	getter	body returns m_nKind	unnamed/unit_140b0f4c0.cpp	nam1	2026-10-22	
-140b10c00	CPet::FUN_140b10c00	GetTamingPoint	high	getter	body returns m_nTamingPoint	unnamed/unit_140b0f4c0.cpp	nam1	2026-10-22	
-140b10fe0	CPet::FUN_140b10fe0	GetGrade	high	getter	body returns m_nGrade	unnamed/unit_140b0f4c0.cpp	nam1	2026-10-22	
-140b11000	CPet::FUN_140b11000	GetGradeFx	high	getter	body returns m_nGradeFx	unnamed/unit_140b0f4c0.cpp	nam1	2026-10-22	
+140b0ec10	CoupleEffectSystem::FUN_140b0ec10	GetCoupleType	high	getter	body returns m_nCoupleType	unnamed/unit_140b0e5f0.cpp	nam1	2026-10-22	applied desc-4 as GetCoupleType
+140b0ec30	CoupleEffectSystem::FUN_140b0ec30	GetName	high	getter	body returns m_strName	unnamed/unit_140b0e5f0.cpp	nam1	2026-10-22	applied desc-4 as GetName
+140b10290	CPet::FUN_140b10290	GetPetId	high	getter	body returns m_nPetId	unnamed/unit_140b0f4c0.cpp	nam1	2026-10-22	applied desc-4 as GetPetId
+140b102b0	CPet::FUN_140b102b0	GetRow	high	getter	body returns m_spRow	unnamed/unit_140b0f4c0.cpp	nam1	2026-10-22	applied desc-4 as GetRow
+140b109f0	CPet::FUN_140b109f0	GetKind	high	getter	body returns m_nKind	unnamed/unit_140b0f4c0.cpp	nam1	2026-10-22	applied desc-4 as GetKind
+140b10c00	CPet::FUN_140b10c00	GetTamingPoint	high	getter	body returns m_nTamingPoint	unnamed/unit_140b0f4c0.cpp	nam1	2026-10-22	applied desc-4 as GetTamingPoint
+140b10fe0	CPet::FUN_140b10fe0	GetGrade	high	getter	body returns m_nGrade	unnamed/unit_140b0f4c0.cpp	nam1	2026-10-22	applied desc-4 as GetGrade
+140b11000	CPet::FUN_140b11000	GetGradeFx	high	getter	body returns m_nGradeFx	unnamed/unit_140b0f4c0.cpp	nam1	2026-10-22	applied desc-4 as GetGradeFx
 140b1e240	DungeonMissionPlayTime::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "DungeonMissionPlayTime" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/dungeonmissioncli.cpp	nam1	2026-10-22	
 140b1e3a0	DungeonMissionLimitUserCount::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "DungeonMissionLimitUserCount" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/dungeonmissioncli.cpp	nam1	2026-10-22	
 140b1e490	DungeonMissionEvent::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "DungeonMissionEvent" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/dungeonmissioncli.cpp	nam1	2026-10-22	
@@ -300,11 +300,11 @@
 140c59590	UILevelUpPackageWidgetDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "LevelUpPackageWidget" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uileveluppackagewidgetdialog.cpp	nam1	2026-10-22	
 140c5a0b0	UIBurningEventWidgetDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "BurningEventWidget" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uileveluppackagewidgetdialog.cpp	nam1	2026-10-22	
 140c5f120	UILapenshardShieldBar::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "LapenshardShieldBar" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	unnamed/unit_140c5d230.cpp	nam1	2026-10-22	
-140c5f990	UILapenshardShieldBar::FUN_140c5f990	GetBuff	high	getter	body returns m_spBuff	unnamed/unit_140c5d230.cpp	nam1	2026-10-22	
+140c5f990	UILapenshardShieldBar::FUN_140c5f990	GetBuff	high	getter	body returns m_spBuff	unnamed/unit_140c5d230.cpp	nam1	2026-10-22	applied desc-4 as GetBuff
 140c612a0	UILapenshardSystemDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "LapenshardSystemDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	unnamed/unit_140c5d230.cpp	nam1	2026-10-22	
-140c62440	UILapenshardSystemDialog::FUN_140c62440	GetPage	high	getter	body returns m_spPage	unnamed/unit_140c5d230.cpp	nam1	2026-10-22	
-140c68da0	UILapenshardUpgradeTab::FUN_140c68da0	GetSource	high	getter	body returns m_spSource	unnamed/unit_140c5d230.cpp	nam1	2026-10-22	
-140c68e40	UILapenshardUpgradeTab::FUN_140c68e40	GetN_bc	high	getter	body returns m_n_bc	unnamed/unit_140c5d230.cpp	nam1	2026-10-22	
+140c62440	UILapenshardSystemDialog::FUN_140c62440	GetPage	high	getter	body returns m_spPage	unnamed/unit_140c5d230.cpp	nam1	2026-10-22	applied desc-4 as GetPage
+140c68da0	UILapenshardUpgradeTab::FUN_140c68da0	GetSource	high	getter	body returns m_spSource	unnamed/unit_140c5d230.cpp	nam1	2026-10-22	applied desc-4 as GetSource
+140c68e40	UILapenshardUpgradeTab::FUN_140c68e40	GetN_bc	high	getter	body returns m_n_bc	unnamed/unit_140c5d230.cpp	nam1	2026-10-22	applied desc-4 as GetN_bc
 140c6b4a0	UILongTermAttendGiftDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "LongTermAttendGiftDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uilongtermattendgiftdialog.cpp	nam1	2026-10-22	
 140c74d70	UIMentoringPage::FUN_140c74d70	GetScript	high	getter	body returns m_script	client/ms2/uimentoringmentorpage.cpp	nam1	2026-10-22	applied desc-3 as GetScript
 140c74dc0	UIMentoringPage::FUN_140c74dc0	GetOwner	high	getter	body returns m_owner	client/ms2/uimentoringmentorpage.cpp	nam1	2026-10-22	applied desc-3 as GetOwner
@@ -433,7 +433,7 @@
 140e57150	UIItemPetTrainingDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ItemPetTrainingDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiitempettrainingdialog.cpp	nam1	2026-10-22	
 140e57c80	UIItemPetTrainingDialog::FUN_140e57c80	SetOwner	high	setter	body stores the argument in m_nOwner	client/ms2/uiitempettrainingdialog.cpp	nam1	2026-10-22	applied desc-3 as SetOwner
 140e59b60	UIMasteryObjectMark::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "MasteryObjectMark" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uimasteryobjectmark.cpp	nam1	2026-10-22	
-140e5cbf0	CHomemadeCubeObject::FUN_140e5cbf0	GetArg2	high	getter	body returns m_nArg2	client/ms2/uimasteryobjectmark.cpp	nam1	2026-10-22	
+140e5cbf0	CHomemadeCubeObject::FUN_140e5cbf0	GetArg2	high	getter	body returns m_nArg2	client/ms2/uimasteryobjectmark.cpp	nam1	2026-10-22	withdrawn desc-3 (m_nArg2 is not descriptive)
 140e5e330	UIMentoringDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "MentoringDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uimentoringrewardpage.cpp	nam1	2026-10-22	
 140e63f20	UIMicroGameCoupleDance::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "MicroGameCoupleDance" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uimicrogamecoupledance.cpp	nam1	2026-10-22	
 140e65a30	UIMicroGameCoupleDanceMessage::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "MicroGameCoupleDanceMessage" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uimicrogamecoupledancemessage.cpp	nam1	2026-10-22	
@@ -603,10 +603,10 @@
 141085ae0	CloneCube::FUN_141085ae0	GetListener	high	getter	body returns m_pListener	client/ms2/clonecube.cpp	nam1	2026-10-22	applied desc-1 as GetListener
 141086bc0	ClonePC::vfunc_147	SetModelView	medium	setter	body stores the argument in m_spModelView; virtual slot: rename the whole override family	client/ms2/clonepc.cpp	nam1	2026-10-22	
 141086c00	ClonePC::vfunc_148	GetModelView	medium	getter	body returns m_spModelView; virtual slot: rename the whole override family	client/ms2/clonepc.cpp	nam1	2026-10-22	
-14108e280	CNpcVibrate::FUN_14108e280	IsActive	high	getter	body returns m_bActive	unnamed/unit_14108e1e0.cpp	nam1	2026-10-22	
-141093270	CNpc::FUN_141093270	GetNpcData	high	getter	body returns m_spNpcData	unnamed/unit_14108e1e0.cpp	nam1	2026-10-22	
-141094f20	CNpc::FUN_141094f20	SetOwnerId	high	setter	body stores the argument in m_nOwnerId	unnamed/unit_14108e1e0.cpp	nam1	2026-10-22	
-141094f40	CNpc::FUN_141094f40	GetOwnerId	high	getter	body returns m_nOwnerId	unnamed/unit_14108e1e0.cpp	nam1	2026-10-22	
+14108e280	CNpcVibrate::FUN_14108e280	IsActive	high	getter	body returns m_bActive	unnamed/unit_14108e1e0.cpp	nam1	2026-10-22	applied desc-4 as IsActive
+141093270	CNpc::FUN_141093270	GetNpcData	high	getter	body returns m_spNpcData	unnamed/unit_14108e1e0.cpp	nam1	2026-10-22	applied desc-4 as GetNpcData
+141094f20	CNpc::FUN_141094f20	SetOwnerId	high	setter	body stores the argument in m_nOwnerId	unnamed/unit_14108e1e0.cpp	nam1	2026-10-22	applied desc-4 as SetOwnerId
+141094f40	CNpc::FUN_141094f40	GetOwnerId	high	getter	body returns m_nOwnerId	unnamed/unit_14108e1e0.cpp	nam1	2026-10-22	applied desc-4 as GetOwnerId
 14109b990	UIColorBoostDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ColorBoostDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/colorboostdata.cpp	nam1	2026-10-22	
 1410a6730	CSkillMagicControlGuide::FUN_1410a6730	IsReleased	high	getter	body returns m_bReleased	client/ms2/cubecraft_1.cpp	nam1	2026-10-22	applied desc-1 as IsReleased
 1410a8a90	Unk_PCCubeCraft::FUN_1410a8a90	GetMode	high	getter	body returns m_nMode	client/ms2/cubecraft_2.cpp	nam1	2026-10-22	applied desc-1 as GetMode
@@ -648,13 +648,13 @@
 14123c300	GameObject::FUN_14123c300	SetScaleAC	high	setter	body stores the argument in m_fScaleAC	client/ms2/gameobject.cpp	nam1	2026-10-22	applied desc-1 as SetScaleAC
 14123c3e0	GameObject::FUN_14123c3e0	SetKEntityID	high	setter	body stores the argument in m_kEntityID	client/ms2/gameobject.cpp	nam1	2026-10-22	applied desc-1 as SetKEntityID
 14123c6f0	GameObject::FUN_14123c6f0	GetAnimMgr	high	getter	body returns m_spAnimMgr	client/ms2/gameobject.cpp	nam1	2026-10-22	applied desc-1 as GetAnimMgr
-141240700	GameObjectController::FUN_141240700	SetKVelocity	high	setter	body stores the argument in m_kVelocity	unnamed/unit_14123f5b0.cpp	nam1	2026-10-22	
-141240780	GameObjectController::FUN_141240780	IsJumping	high	getter	body returns m_bJumping	unnamed/unit_14123f5b0.cpp	nam1	2026-10-22	
-141240db0	GameObjectController::FUN_141240db0	IsLift	high	getter	body returns m_bLift	unnamed/unit_14123f5b0.cpp	nam1	2026-10-22	
-141240dd0	GameObjectController::FUN_141240dd0	IsLiftFalling	high	getter	body returns m_bLiftFalling	unnamed/unit_14123f5b0.cpp	nam1	2026-10-22	
-141240ed0	GameObjectController::FUN_141240ed0	GetCollisionFlags	high	getter	body returns m_nCollisionFlags	unnamed/unit_14123f5b0.cpp	nam1	2026-10-22	
-141240fd0	GameObjectController::FUN_141240fd0	GetKVelocity	high	getter	body returns m_kVelocity	unnamed/unit_14123f5b0.cpp	nam1	2026-10-22	
-141241320	GameObjectController::FUN_141241320	GetCenterOffset	high	getter	body returns m_fCenterOffset	unnamed/unit_14123f5b0.cpp	nam1	2026-10-22	
+141240700	GameObjectController::FUN_141240700	SetKVelocity	high	setter	body stores the argument in m_kVelocity	unnamed/unit_14123f5b0.cpp	nam1	2026-10-22	applied desc-4 as SetKVelocity
+141240780	GameObjectController::FUN_141240780	IsJumping	high	getter	body returns m_bJumping	unnamed/unit_14123f5b0.cpp	nam1	2026-10-22	applied desc-4 as IsJumping
+141240db0	GameObjectController::FUN_141240db0	IsLift	high	getter	body returns m_bLift	unnamed/unit_14123f5b0.cpp	nam1	2026-10-22	applied desc-4 as IsLift
+141240dd0	GameObjectController::FUN_141240dd0	IsLiftFalling	high	getter	body returns m_bLiftFalling	unnamed/unit_14123f5b0.cpp	nam1	2026-10-22	applied desc-4 as IsLiftFalling
+141240ed0	GameObjectController::FUN_141240ed0	GetCollisionFlags	high	getter	body returns m_nCollisionFlags	unnamed/unit_14123f5b0.cpp	nam1	2026-10-22	applied desc-4 as GetCollisionFlags
+141240fd0	GameObjectController::FUN_141240fd0	GetKVelocity	high	getter	body returns m_kVelocity	unnamed/unit_14123f5b0.cpp	nam1	2026-10-22	applied desc-4 as GetKVelocity
+141241320	GameObjectController::FUN_141241320	GetCenterOffset	high	getter	body returns m_fCenterOffset	unnamed/unit_14123f5b0.cpp	nam1	2026-10-22	applied desc-4 as GetCenterOffset
 141245aa0	Unk_GoDeviceInfo::FUN_141245aa0	GetBandwidth	high	getter	body returns m_nBandwidth	client/ms2/gameoption.cpp	nam1	2026-10-22	applied desc-1 as GetBandwidth
 141245b00	Unk_GoDeviceInfo::FUN_141245b00	GetVendor	high	getter	body returns m_nVendor	client/ms2/gameoption.cpp	nam1	2026-10-22	applied desc-1 as GetVendor
 141245b10	Unk_GoGpuMgr::FUN_141245b10	GetVideoMem	high	getter	body returns m_nVideoMem	client/ms2/gameoption.cpp	nam1	2026-10-22	applied desc-1 as GetVideoMem
@@ -676,10 +676,10 @@
 141299780	UIHomeSummonDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "HomeSummonDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	unnamed/unit_141299650.cpp	nam1	2026-10-22	
 14129a590	UIQuizDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "QuizDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiquizdialog.cpp	nam1	2026-10-22	
 14129bc10	UIRecallScrollNotifyDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "RecallScrollNotifyDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	unnamed/unit_14129ba60.cpp	nam1	2026-10-22	
-14129c8e0	UIRecallScrollNotifyDialog::FUN_14129c8e0	SetOffset	high	setter	body stores the argument in m_nOffset	unnamed/unit_14129ba60.cpp	nam1	2026-10-22	
-14129c900	UIRecallScrollNotifyDialog::FUN_14129c900	IsActive	high	getter	body returns m_bActive	unnamed/unit_14129ba60.cpp	nam1	2026-10-22	
-1412a1c40	UIItemRemakeOptionDialog::FUN_1412a1c40	SetState	high	setter	body stores the argument in m_state	unnamed/unit_14129cfa0.cpp	nam1	2026-10-22	
-1412a1c60	UIItemRemakeOptionDialog::FUN_1412a1c60	GetState	high	getter	body returns m_state	unnamed/unit_14129cfa0.cpp	nam1	2026-10-22	
+14129c8e0	UIRecallScrollNotifyDialog::FUN_14129c8e0	SetOffset	high	setter	body stores the argument in m_nOffset	unnamed/unit_14129ba60.cpp	nam1	2026-10-22	applied desc-4 as SetOffset
+14129c900	UIRecallScrollNotifyDialog::FUN_14129c900	IsActive	high	getter	body returns m_bActive	unnamed/unit_14129ba60.cpp	nam1	2026-10-22	applied desc-4 as IsActive
+1412a1c40	UIItemRemakeOptionDialog::FUN_1412a1c40	SetState	high	setter	body stores the argument in m_state	unnamed/unit_14129cfa0.cpp	nam1	2026-10-22	applied desc-4 as SetState
+1412a1c60	UIItemRemakeOptionDialog::FUN_1412a1c60	GetState	high	getter	body returns m_state	unnamed/unit_14129cfa0.cpp	nam1	2026-10-22	applied desc-4 as GetState
 1412a4070	UIItemModifyDialogBase::vfunc_86	GetEnchantAni	medium	getter	body returns m_enchantAni; virtual slot: rename the whole override family	unnamed/unit_14129cfa0.cpp	nam1	2026-10-22	
 1412a49b0	UISystemMailNotifyDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "SystemMailNotifyDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uisystemmailnotifydialog.cpp	nam1	2026-10-22	
 1412a5c50	UISystemMailNotifyDialog::FUN_1412a5c50	SetOnTime	high	setter	body stores the argument in m_bOnTime	client/ms2/uisystemmailnotifydialog.cpp	nam1	2026-10-22	applied desc-3 as SetOnTime
@@ -880,8 +880,8 @@
 1415392c0	CNetworkService::FUN_1415392c0	GetSocket	medium	getter	body returns m_socket	client/ms2/networkservice.cpp	nam1	2026-10-22	
 14153a230	CNetworkService::FUN_14153a230	GetConnectionState	high	getter	body returns m_connectionState	client/ms2/networkservice.cpp	nam1	2026-10-22	applied desc-2 as GetConnectionState
 141565ac0	CNifModel::vfunc_9	GetState	medium	getter	body returns m_nState; virtual slot: rename the whole override family	client/ms2/nifmodel.cpp	nam1	2026-10-22	
-14160c1c0	Unk_ArcMover::FUN_14160c1c0	IsMoving	high	getter	body returns m_bMoving	unnamed/unit_14160bf90.cpp	nam1	2026-10-22	
-14160c1e0	Unk_ArcMover::FUN_14160c1e0	GetName	high	getter	body returns m_strName	unnamed/unit_14160bf90.cpp	nam1	2026-10-22	
+14160c1c0	Unk_ArcMover::FUN_14160c1c0	IsMoving	high	getter	body returns m_bMoving	unnamed/unit_14160bf90.cpp	nam1	2026-10-22	applied desc-4 as IsMoving
+14160c1e0	Unk_ArcMover::FUN_14160c1e0	GetName	high	getter	body returns m_strName	unnamed/unit_14160bf90.cpp	nam1	2026-10-22	applied desc-4 as GetName
 141612b50	COffscreenWebBrowser::FUN_141612b50	SetOnNavigate	high	setter	body stores the argument in m_onNavigate	client/ms2/offscreenwebbrowser.cpp	nam1	2026-10-22	applied desc-2 as SetOnNavigate
 141612bd0	COffscreenWebBrowser::FUN_141612bd0	SetOnUrlChanged	high	setter	body stores the argument in m_onUrlChanged	client/ms2/offscreenwebbrowser.cpp	nam1	2026-10-22	applied desc-2 as SetOnUrlChanged
 141612c50	COffscreenWebBrowser::FUN_141612c50	SetKeyboard	high	setter	body stores the argument in m_bKeyboard	client/ms2/offscreenwebbrowser.cpp	nam1	2026-10-22	applied desc-2 as SetKeyboard
@@ -912,9 +912,9 @@
 14175cdb0	SkillSlot::FUN_14175cdb0	SetFixed	high	setter	body stores the argument in m_bFixed	client/ms2/skillslot.cpp	nam1	2026-10-22	applied desc-2 as SetFixed
 141765d70	CSkillSystem::FUN_141765d70	GetCastAllowed	high	getter	body returns m_nCastAllowed	client/ms2/skillslot.cpp	nam1	2026-10-22	applied desc-2 as GetCastAllowed
 141768380	CSkillSystem::FUN_141768380	GetSkillSet	high	getter	body returns m_spSkillSet	client/ms2/skillslot.cpp	nam1	2026-10-22	applied desc-2 as GetSkillSet
-14176fa50	CMeshUpdateGate::FUN_14176fa50	GetDuration	high	getter	body returns m_fDuration	unnamed/unit_14176f2a0.cpp	nam1	2026-10-22	
-14176fa60	CMeshUpdateGate::FUN_14176fa60	IsActive	high	getter	body returns m_bActive	unnamed/unit_14176f2a0.cpp	nam1	2026-10-22	
-14176fa70	CMeshUpdateGate::FUN_14176fa70	SetProcess	high	setter	body stores the argument in m_pProcess	unnamed/unit_14176f2a0.cpp	nam1	2026-10-22	
+14176fa50	CMeshUpdateGate::FUN_14176fa50	GetDuration	high	getter	body returns m_fDuration	unnamed/unit_14176f2a0.cpp	nam1	2026-10-22	applied desc-4 as GetDuration
+14176fa60	CMeshUpdateGate::FUN_14176fa60	IsActive	high	getter	body returns m_bActive	unnamed/unit_14176f2a0.cpp	nam1	2026-10-22	applied desc-4 as IsActive
+14176fa70	CMeshUpdateGate::FUN_14176fa70	SetProcess	high	setter	body stores the argument in m_pProcess	unnamed/unit_14176f2a0.cpp	nam1	2026-10-22	applied desc-4 as SetProcess
 14176fde0	CSoapClient::FUN_14176fde0	GetError	high	getter	body returns m_strError	client/ms2/soapclient.cpp	nam1	2026-10-22	applied desc-2 as GetError
 141774010	Unk_PPSecondView::FUN_141774010	GetClick	high	getter	body returns m_spClick	client/ms2/softparticlesmanager.cpp	nam1	2026-10-22	applied desc-2 as GetClick
 141777720	CSoundEventEffect::FUN_141777720	GetSound	high	getter	body returns m_spSound	client/ms2/soundeventmgr.cpp	nam1	2026-10-22	applied desc-2 as GetSound
@@ -1066,21 +1066,21 @@
 1419eea30	UIMainPlayerInfo::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "MainPlayerInfo" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uimainplayerinfo.cpp	nam1	2026-10-22	
 1419f5740	UIMassiveEvent::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "MassiveEvent" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uimassiveevent.cpp	nam1	2026-10-22	
 1419f7380	UIMessageBox::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "MessageBox" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uimessagebox.cpp	nam1	2026-10-22	
-141a01570	CMsgBoxData::FUN_141a01570	SetMsg	high	setter	body stores the argument in m_strMsg	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	
-141a015a0	CMsgBoxData::FUN_141a015a0	SetMsg2	high	setter	body stores the argument in m_strMsg2	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	
-141a015d0	CMsgBoxData::FUN_141a015d0	SetTitle	high	setter	body stores the argument in m_strTitle	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	
-141a01640	CMsgBoxData::FUN_141a01640	SetAlign	high	setter	body stores the argument in m_nAlign	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	
-141a01660	CMsgBoxData::FUN_141a01660	SetExtra	high	setter	body stores the argument in m_strExtra	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	
-141a01c30	CMsgBoxData::FUN_141a01c30	SetSound	high	setter	body stores the argument in m_strSound	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	
-141a01c70	CMsgBoxData::FUN_141a01c70	SetStrike	high	setter	body stores the argument in m_strStrike	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	
-141a02730	CMsgBoxData::FUN_141a02730	SetAgreement	high	setter	body stores the argument in m_bAgreement	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	
-141a02750	CMsgBoxData::FUN_141a02750	SetRetraction	high	setter	body stores the argument in m_nRetraction	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	
-141a02be0	CMsgBoxData::FUN_141a02be0	GetSound	high	getter	body returns m_strSound	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	
-141a02c40	CMsgBoxData::FUN_141a02c40	GetType	high	getter	body returns m_nType	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	
-141a02ce0	CMsgBoxData::FUN_141a02ce0	GetExtra	high	getter	body returns m_strExtra	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	
+141a01570	CMsgBoxData::FUN_141a01570	SetMsg	high	setter	body stores the argument in m_strMsg	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	applied desc-4 as SetMsg
+141a015a0	CMsgBoxData::FUN_141a015a0	SetMsg2	high	setter	body stores the argument in m_strMsg2	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	applied desc-4 as SetMsg2
+141a015d0	CMsgBoxData::FUN_141a015d0	SetTitle	high	setter	body stores the argument in m_strTitle	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	applied desc-4 as SetTitle
+141a01640	CMsgBoxData::FUN_141a01640	SetAlign	high	setter	body stores the argument in m_nAlign	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	applied desc-4 as SetAlign
+141a01660	CMsgBoxData::FUN_141a01660	SetExtra	high	setter	body stores the argument in m_strExtra	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	applied desc-4 as SetExtra
+141a01c30	CMsgBoxData::FUN_141a01c30	SetSound	high	setter	body stores the argument in m_strSound	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	applied desc-4 as SetSound
+141a01c70	CMsgBoxData::FUN_141a01c70	SetStrike	high	setter	body stores the argument in m_strStrike	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	applied desc-4 as SetStrike
+141a02730	CMsgBoxData::FUN_141a02730	SetAgreement	high	setter	body stores the argument in m_bAgreement	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	applied desc-4 as SetAgreement
+141a02750	CMsgBoxData::FUN_141a02750	SetRetraction	high	setter	body stores the argument in m_nRetraction	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	applied desc-4 as SetRetraction
+141a02be0	CMsgBoxData::FUN_141a02be0	GetSound	high	getter	body returns m_strSound	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	applied desc-4 as GetSound
+141a02c40	CMsgBoxData::FUN_141a02c40	GetType	high	getter	body returns m_nType	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	applied desc-4 as GetType
+141a02ce0	CMsgBoxData::FUN_141a02ce0	GetExtra	high	getter	body returns m_strExtra	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	applied desc-4 as GetExtra
 141a02da0	CMsgBoxData::FUN_141a02da0	GetCallback	high	getter	body returns m_callback	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	
-141a02dc0	CMsgBoxData::FUN_141a02dc0	GetLinkUrl	high	getter	body returns m_strLinkUrl	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	
-141a03070	CMsgBoxData::FUN_141a03070	IsModaless	high	getter	body returns m_bModaless	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	
+141a02dc0	CMsgBoxData::FUN_141a02dc0	GetLinkUrl	high	getter	body returns m_strLinkUrl	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	applied desc-4 as GetLinkUrl
+141a03070	CMsgBoxData::FUN_141a03070	IsModaless	high	getter	body returns m_bModaless	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	applied desc-4 as IsModaless
 141a04a80	CMsgBoxData::FUN_141a04a80	GetTimer	high	getter	body returns m_timer	client/ms2/uimessageboxdata.cpp	nam1	2026-10-22	applied desc-3 as GetTimer
 141a08eb0	UIMessenger::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "MessengerDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uimessenger.cpp	nam1	2026-10-22	
 141a0df70	UIMessenger::FUN_141a0df70	GetName	high	getter	body returns m_strName	client/ms2/uimessenger.cpp	nam1	2026-10-22	applied desc-3 as GetName
@@ -1168,23 +1168,23 @@
 141bd3680	WorldService::FUN_141bd3680	GetChaosLightEffectLayerManager	high	getter	body returns m_spChaosLightEffectLayerManager	client/ms2/worldservice_1.cpp	nam1	2026-10-22	applied desc-3 as GetChaosLightEffectLayerManager
 141bd37e0	WorldService::FUN_141bd37e0	GetBoundsMin	high	getter	body returns m_boundsMin	client/ms2/worldservice_1.cpp	nam1	2026-10-22	applied desc-3 as GetBoundsMin
 141bd3820	WorldService::FUN_141bd3820	GetBoundsMax	high	getter	body returns m_boundsMax	client/ms2/worldservice_1.cpp	nam1	2026-10-22	applied desc-3 as GetBoundsMax
-1422aef70	GFxManager::FUN_1422aef70	IsPause	high	getter	body returns m_bPause	gfxui/gfxmanager.cpp	nam1	2026-10-22	
-1422af090	GFxManager::FUN_1422af090	IsArchive	high	getter	body returns m_bArchive	gfxui/gfxmanager.cpp	nam1	2026-10-22	
-1422b0230	GFxManager::FUN_1422b0230	GetVideo	high	getter	body returns m_spVideo	gfxui/gfxmanager.cpp	nam1	2026-10-22	
-1422b0260	GFxManager::FUN_1422b0260	GetNotifyContext	high	getter	body returns m_spNotifyContext	gfxui/gfxmanager.cpp	nam1	2026-10-22	
-1422b0d10	GFxManager::FUN_1422b0d10	GetIme	high	getter	body returns m_strIme	gfxui/gfxmanager.cpp	nam1	2026-10-22	
-1422b9da0	GFxSceneService::FUN_1422b9da0	GetPrevSceneId	high	getter	body returns m_nPrevSceneId	gfxui/gfxsceneservice.cpp	nam1	2026-10-22	
-1422b9dc0	GFxSceneService::FUN_1422b9dc0	GetSceneId	high	getter	body returns m_nSceneId	gfxui/gfxsceneservice.cpp	nam1	2026-10-22	
-1422b9de0	GFxSceneService::FUN_1422b9de0	GetPrevSubSceneId	high	getter	body returns m_nPrevSubSceneId	gfxui/gfxsceneservice.cpp	nam1	2026-10-22	
-1422b9e00	GFxSceneService::FUN_1422b9e00	GetSubSceneId	high	getter	body returns m_nSubSceneId	gfxui/gfxsceneservice.cpp	nam1	2026-10-22	
-1422b9e80	GFxSceneService::FUN_1422b9e80	GetScene	high	getter	body returns m_pScene	gfxui/gfxsceneservice.cpp	nam1	2026-10-22	
+1422aef70	GFxManager::FUN_1422aef70	IsPause	high	getter	body returns m_bPause	gfxui/gfxmanager.cpp	nam1	2026-10-22	applied desc-4 as IsPause
+1422af090	GFxManager::FUN_1422af090	IsArchive	high	getter	body returns m_bArchive	gfxui/gfxmanager.cpp	nam1	2026-10-22	applied desc-4 as IsArchive
+1422b0230	GFxManager::FUN_1422b0230	GetVideo	high	getter	body returns m_spVideo	gfxui/gfxmanager.cpp	nam1	2026-10-22	applied desc-4 as GetVideo
+1422b0260	GFxManager::FUN_1422b0260	GetNotifyContext	high	getter	body returns m_spNotifyContext	gfxui/gfxmanager.cpp	nam1	2026-10-22	applied desc-4 as GetNotifyContext
+1422b0d10	GFxManager::FUN_1422b0d10	GetIme	high	getter	body returns m_strIme	gfxui/gfxmanager.cpp	nam1	2026-10-22	applied desc-4 as GetIme
+1422b9da0	GFxSceneService::FUN_1422b9da0	GetPrevSceneId	high	getter	body returns m_nPrevSceneId	gfxui/gfxsceneservice.cpp	nam1	2026-10-22	applied desc-4 as GetPrevSceneId
+1422b9dc0	GFxSceneService::FUN_1422b9dc0	GetSceneId	high	getter	body returns m_nSceneId	gfxui/gfxsceneservice.cpp	nam1	2026-10-22	applied desc-4 as GetSceneId
+1422b9de0	GFxSceneService::FUN_1422b9de0	GetPrevSubSceneId	high	getter	body returns m_nPrevSubSceneId	gfxui/gfxsceneservice.cpp	nam1	2026-10-22	applied desc-4 as GetPrevSubSceneId
+1422b9e00	GFxSceneService::FUN_1422b9e00	GetSubSceneId	high	getter	body returns m_nSubSceneId	gfxui/gfxsceneservice.cpp	nam1	2026-10-22	applied desc-4 as GetSubSceneId
+1422b9e80	GFxSceneService::FUN_1422b9e80	GetScene	high	getter	body returns m_pScene	gfxui/gfxsceneservice.cpp	nam1	2026-10-22	applied desc-4 as GetScene
 1422bb870	AScript::FUN_1422bb870	GetValue	medium	getter	body returns m_value	gfxui/ascript.cpp	nam1	2026-10-22	
 1422c89f0	BindData::FUN_1422c89f0	GetName	high	getter	body returns m_strName	gfxui/notifycontext.cpp	nam1	2026-10-22	
-1422cc410	DragSlot::FUN_1422cc410	GetIndex	high	getter	body returns m_nIndex	gfxui/dragslot.cpp	nam1	2026-10-22	
+1422cc410	DragSlot::FUN_1422cc410	GetIndex	high	getter	body returns m_nIndex	gfxui/dragslot.cpp	nam1	2026-10-22	applied desc-4 as GetIndex
 1422db670	UISwfEntity::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "SwfEntity" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	gfxui/uiswfentity.cpp	nam1	2026-10-22	
 1422e4520	UIMsg::FUN_1422e4520	GetMessage	high	getter	body returns m_nMessage	gfxui/uimsg.cpp	nam1	2026-10-22	
-1422e6580	UIAlignWidget::FUN_1422e6580	SetAlignType	high	setter	body stores the argument in m_nAlignType	gfxui/uialignwidget.cpp	nam1	2026-10-22	
+1422e6580	UIAlignWidget::FUN_1422e6580	SetAlignType	high	setter	body stores the argument in m_nAlignType	gfxui/uialignwidget.cpp	nam1	2026-10-22	applied desc-4 as SetAlignType
 1422e78d0	UISceneEntity::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "SceneEntity" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	gfxui/uisceneentity.cpp	nam1	2026-10-22	
-1422ea230	GFxService::FUN_1422ea230	SetFont	high	setter	body stores the argument in m_strFont	gfxui/gfxservice.cpp	nam1	2026-10-22	
-1422ec830	GFxVideo::FUN_1422ec830	GetVideo	high	getter	body returns m_spVideo	gfxui/gfxvideo.cpp	nam1	2026-10-22	
+1422ea230	GFxService::FUN_1422ea230	SetFont	high	setter	body stores the argument in m_strFont	gfxui/gfxservice.cpp	nam1	2026-10-22	applied desc-4 as SetFont
+1422ec830	GFxVideo::FUN_1422ec830	GetVideo	high	getter	body returns m_spVideo	gfxui/gfxvideo.cpp	nam1	2026-10-22	applied desc-4 as GetVideo
 1422f4470	GFxRenderSingleThread::vfunc_2	GetRenderer2D	medium	getter	body returns m_spRenderer2D; virtual slot: rename the whole override family	gfxui/gfxrendersinglethread.cpp	nam1	2026-10-22	

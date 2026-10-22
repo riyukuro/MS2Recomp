@@ -206,7 +206,7 @@ MS2Ptr<SkillLevelData> JobSystem::vfunc_1(unsigned nSkillId)
         if (spData == 0)
             return 0;
         unsigned short nLevel = spSkill->m_bLearned ? spSkill->m_nLevel : 0;
-        unsigned short nCur = spData->FUN_1407e9b10() < nLevel + nBonus ? spData->FUN_1407e9b10() : nLevel + nBonus;
+        unsigned short nCur = spData->GetMaxLevel() < nLevel + nBonus ? spData->GetMaxLevel() : nLevel + nBonus;
         return spData->FUN_1407e90a0(nCur);
     }
     MS2Ptr<SkillData> spData = GetSkillData(nSkillId);

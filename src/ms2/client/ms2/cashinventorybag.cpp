@@ -769,7 +769,7 @@ void CCashMarketMan::FUN_140b07cb0(CInPacket& packet)
         MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(0));
         if (spBox.get() != 0)
         {
-            spBox->FUN_141a01570(FUN_14052bd00(0xa63, strArg));
+            spBox->SetMsg(FUN_14052bd00(0xa63, strArg));
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CCashMarketMan::FUN_140b08fe0));
             FUN_140d73c60(spBox);
         }
@@ -1108,7 +1108,7 @@ int CashInventorySlot::vfunc_8(void* p)
 // @0x140b0d290
 MS2Ptr<CItem> CashInventorySlot::vfunc_25()
 {
-    MS2Ptr<CCashInventoryProduct> spProd = CCashMarketMan::GetInstance()->FUN_140b067d0(FUN_1422cc410());
+    MS2Ptr<CCashInventoryProduct> spProd = CCashMarketMan::GetInstance()->FUN_140b067d0(GetIndex());
     if (!spProd)
         return MS2Ptr<CItem>(0);
     MS2Ptr<CItem> spItem(new CItem);
@@ -1122,7 +1122,7 @@ void CashInventorySlot::FUN_140b0d440()
 {
     if (m_spItem.get() == 0)
         return;
-    MS2Ptr<CCashInventoryProduct> spProd = CCashMarketMan::GetInstance()->FUN_140b067d0(FUN_1422cc410());
+    MS2Ptr<CCashInventoryProduct> spProd = CCashMarketMan::GetInstance()->FUN_140b067d0(GetIndex());
     if (!spProd)
         return;
     int nMsg = spProd->m_data.m_n50 == 0 ? 0xa56 : 0xa57;

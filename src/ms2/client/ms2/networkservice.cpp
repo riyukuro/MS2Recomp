@@ -68,7 +68,7 @@ int FUN_140768010(unsigned,unsigned);
 CBufferCryptManager* FUN_1415415f0();
 void FUN_141541700();
 extern CBufferCryptManager* DAT_143aac528;
-CBufferCryptManager* FUN_140714f80();
+CBufferCryptManager* GetBufferCryptManager();
 extern CString DAT_143ae0928;
 extern int DAT_143ae08f4,DAT_143ab2904,DAT_143ab0240;
 extern CString DAT_143ab2a50,DAT_143ab2a48;
@@ -1218,11 +1218,11 @@ inline UIObject* FUN_141540270(int id) {
 }
 // @0x1415415f0
 inline CBufferCryptManager* FUN_1415415f0() {
-    return DAT_143aac528!=0 ? FUN_140714f80() : new CBufferCryptManager;
+    return DAT_143aac528!=0 ? GetBufferCryptManager() : new CBufferCryptManager;
 }
 // @0x141541700
 inline void FUN_141541700() {
-    if(DAT_143aac528!=0) { delete FUN_140714f80();DAT_143aac528=0; }
+    if(DAT_143aac528!=0) { delete GetBufferCryptManager();DAT_143aac528=0; }
 }
 
 // @0x141541bc0

@@ -1452,7 +1452,7 @@ int CItem::FUN_140526fc0()
 {
     if (m_spStatus == NULL)
         return 0;
-    CItemEnchantInfo* pInfo = m_spStatus->FUN_140630d60();
+    CItemEnchantInfo* pInfo = m_spStatus->GetEnchant();
     if (pInfo == 0)
         return 0;
     return pInfo->GetLevel();
@@ -1464,7 +1464,7 @@ int CItem::FUN_140527030()
 {
     if (m_spStatus == NULL)
         return 0;
-    CItemEnchantInfo* pInfo = m_spStatus->FUN_140630d60();
+    CItemEnchantInfo* pInfo = m_spStatus->GetEnchant();
     if (pInfo == 0)
         return 0;
     return pInfo->FUN_14058c8a0();
@@ -1476,7 +1476,7 @@ int CItem::FUN_1405270a0()
 {
     if (m_spStatus == NULL)
         return 0;
-    CItemEnchantInfo* pInfo = m_spStatus->FUN_140630d60();
+    CItemEnchantInfo* pInfo = m_spStatus->GetEnchant();
     if (pInfo == 0)
         return 0;
     return pInfo->GetCharge();
@@ -1488,7 +1488,7 @@ void CItem::FUN_140527110(int nExp)
 {
     if (m_spStatus == NULL)
         return;
-    CItemEnchantInfo* pInfo = m_spStatus->FUN_140630d60();
+    CItemEnchantInfo* pInfo = m_spStatus->GetEnchant();
     if (pInfo == 0)
         return;
     pInfo->FUN_14058c7c0(nExp);
@@ -1523,7 +1523,7 @@ MS2_REPLACE_METHOD(0x140527360, CItem, FUN_140527360, 50, 0x6B1F3D35);
 int CItem::FUN_1405273a0()
 {
     if (m_spTransfer.get() != 0)
-        return m_spTransfer->FUN_140634fa0();
+        return m_spTransfer->GetCount();
     return 0;
 }
 MS2_REPLACE_METHOD(0x1405273A0, CItem, FUN_1405273a0, 69, 0xCE7A4785);
@@ -1532,7 +1532,7 @@ MS2_REPLACE_METHOD(0x1405273A0, CItem, FUN_1405273a0, 69, 0xCE7A4785);
 void CItem::FUN_1405273f0(unsigned n)
 {
     if (m_spTransfer.get() != 0)
-        m_spTransfer->FUN_140634fc0(n);
+        m_spTransfer->SetCount(n);
 }
 MS2_REPLACE_METHOD(0x1405273F0, CItem, FUN_1405273f0, 73, 0x5F564C20);
 
@@ -1540,7 +1540,7 @@ MS2_REPLACE_METHOD(0x1405273F0, CItem, FUN_1405273f0, 73, 0x5F564C20);
 int CItem::FUN_140527440()
 {
     if (m_spTransfer.get() != 0)
-        return m_spTransfer->FUN_140634fe0();
+        return m_spTransfer->GetMax();
     return 0;
 }
 MS2_REPLACE_METHOD(0x140527440, CItem, FUN_140527440, 69, 0xFB6124AE);
@@ -1549,7 +1549,7 @@ MS2_REPLACE_METHOD(0x140527440, CItem, FUN_140527440, 69, 0xFB6124AE);
 void CItem::FUN_140527490(unsigned n)
 {
     if (m_spTransfer.get() != 0)
-        m_spTransfer->FUN_140635000(n);
+        m_spTransfer->SetMax(n);
 }
 MS2_REPLACE_METHOD(0x140527490, CItem, FUN_140527490, 73, 0xB4A0DF13);
 
@@ -1594,7 +1594,7 @@ bool CItem::FUN_140526e60(int nLevel, bool bFlag)
         MS2_ASSERT_MSG_AT(0xca8, L"FALSE", false);
         return false;
     }
-    CItemEnchantInfo* pInfo = m_spStatus->FUN_140630d60();
+    CItemEnchantInfo* pInfo = m_spStatus->GetEnchant();
     if (pInfo == 0)
     {
         MS2_ASSERT_MSG_AT(0xcaf, L"FALSE", false);
@@ -1639,7 +1639,7 @@ void CItem::FUN_140526f50(unsigned nLevel, bool bFlag)
 {
     if (!FUN_140526e60(nLevel, bFlag))
         return;
-    CItemEnchantInfo* pInfo = FUN_1405278a0()->FUN_140630d60();
+    CItemEnchantInfo* pInfo = FUN_1405278a0()->GetEnchant();
     if (pInfo != 0)
         pInfo->FUN_14058c830();
 }
@@ -2395,7 +2395,7 @@ int CItem::FUN_140528f90(int)
     Unk_ItemEnchantData* pEnchant = FUN_1405278a0();
     if (pEnchant == 0)
         return 0;
-    CItemEnchantInfo* pInfo = pEnchant->FUN_140630d60();
+    CItemEnchantInfo* pInfo = pEnchant->GetEnchant();
     if (pInfo == 0)
         return 0;
     int nRate = 0;
@@ -2657,7 +2657,7 @@ bool CItem::FUN_14052b760(MS2Ptr<CItem> spItem)
         return false;
     m_spTransfer = spItem->FUN_140527930()->FUN_140634b30();
     if (static_cast<CItemTransfer*>(m_spTransfer) != 0)
-        m_spTransfer->FUN_140634970(this);
+        m_spTransfer->SetItem(this);
     return true;
 }
 MS2_REPLACE_METHOD(0x14052B760, CItem, FUN_14052b760, 252, 0x53E6689C);
@@ -2766,7 +2766,7 @@ MS2Ptr<CItem> CItem::FUN_140524250()
     if (static_cast<CItemTransfer*>(m_spTransfer) != 0)
     {
         spNew->m_spTransfer = m_spTransfer->FUN_140634b30();
-        spNew->m_spTransfer->FUN_140634970(spNew.get());
+        spNew->m_spTransfer->SetItem(spNew.get());
     }
     if (static_cast<CItemCustomMusicScore*>(m_spMusic) != 0)
         spNew->m_spMusic = m_spMusic->FUN_1406322c0();

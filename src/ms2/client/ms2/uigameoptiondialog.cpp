@@ -456,7 +456,7 @@ void UIGameOptionDialog::FUN_141943a30()
         if (8 < m_nTab && m_nTab < 0xe)
             strCategory = FUN_14028b8e0(CStringW(L"s_gameoption_init_shoutcut"));
         spBox->FUN_141a01690(FUN_14028de60(0x848), FUN_140632a60(0x849, strTab, strCategory), FUN_14028de60(0x476));
-        spBox->FUN_141a015d0(FUN_14028de60(0x847));
+        spBox->SetTitle(FUN_14028de60(0x847));
         FUN_140d73c60(spBox);
     }
 }

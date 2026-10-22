@@ -186,7 +186,7 @@ public:
     void FUN_141a01800(int n);
     bool FUN_141a01480();
     bool FUN_141a014d0(int n, Scaleform::GFx::Value* pMovie);
-    bool FUN_141a03070() const;
+    bool IsModaless() const;
     int FUN_141a02e50(int nIndex, int nDefault) const;              // the nIndex-th argument as an int
     CStringW FUN_141a02fd0(int nIndex, CStringW strDefault) const;  // the nIndex-th argument as a string
     CStringW FUN_141a02d50() const;                                 // the +0x218 string (the text input's text)
@@ -200,13 +200,13 @@ public:
     void FUN_141a02480(int n);
     void FUN_141a024a0(int n);
     void FUN_141a024c0();                                           // m_20f = true
-    void FUN_141a02730(bool b);
+    void SetAgreement(bool b);
     void FUN_141a02770(int nWidth, int nHeight);
     void FUN_141a01ee0(MS2Ptr<CItem> spItem, const CStringW& strName, int nA, int nB, int nC, int nD, int nE);   // item entry
     void FUN_141a01700(int nA, int nB, int nC);
     void FUN_141a020b0(int nItemId, int nRarity, int n);       // item icon entry (unit_140d1ae30: ChatEmoticonAdd)
-    void FUN_141a01c70(const CStringW& str);
-    void FUN_141a01c30(const CString& strUrl);                      // the link url (unit_141347b10: shop item box)
+    void SetStrike(const CStringW& str);
+    void SetSound(const CString& strUrl);                      // the link url (unit_141347b10: shop item box)
     void FUN_141a02670(bool b);
     void FUN_141a024e0(CStringW str, bool bSelected);               // check box 0 label and state
     void FUN_141a02560(CStringW str, bool bSelected);               // check box 1 label and state (skill window reset)
@@ -224,24 +224,24 @@ public:
     void FUN_141b2fe80(const wchar_t* psz);                         // appends a string argument (inline COMDAT, uitriggereditordialog.cpp)
 
     // Accessors uimessagebox.cpp calls (0x141a01570-0x141a03470 and outside COMDATs).
-    void FUN_141a01570(const CStringW& strMsg);                     // set the message text
-    void FUN_141a01660(const CStringW& strTag);                     // set the tag (the micro game request boxes)
+    void SetMsg(const CStringW& strMsg);                     // set the message text
+    void SetExtra(const CStringW& strTag);                     // set the tag (the micro game request boxes)
     void FUN_141a01540(const CStringW& strTag);                     // set the tag (uirevivaldialog.cpp)
-    void FUN_141a015d0(const CStringW& str);                        // quest dispatch box: the sender name argument
+    void SetTitle(const CStringW& str);                        // quest dispatch box: the sender name argument
     void FUN_141a02810(CStringW strTag);                            // the clicked tag (OnClick)
-    const CString& FUN_141a02be0() const;                           // the sound event name
+    const CString& GetSound() const;                           // the sound event name
     __int64 FUN_141a02c00() const;                                  // the item uid
     __int64 FUN_141a02c20() const;                                  // the first __int64 argument (item uid of the remake)
     bool FUN_141a02e10(int nIndex, bool bDefault) const;            // the nIndex-th argument as a bool
-    int FUN_141a02c40() const;                                      // keep the box open after the result
+    int GetType() const;                                      // keep the box open after the result
     int FUN_141a02c60() const;                                      // the storage slot
     int FUN_141a02c80() const;                                      // the inventory slot argument (set by FUN_141a01620)
     int FUN_141a02ca0() const;                                      // the box id
     IMessageListener* FUN_141a02cc0() const;                        // the listener
-    const CStringW& FUN_141a02ce0() const;                          // the tag
+    const CStringW& GetExtra() const;                          // the tag
     CStringW FUN_141a02b90() const;                                 // copy of the tag (messageboxqueue.cpp)
     const Delegate<bool(int, const CMsgBoxData&)>& FUN_141a02da0() const;  // the result callback
-    CString FUN_141a02dc0() const;                                  // the hyper link url
+    CString GetLinkUrl() const;                                  // the hyper link url
     unsigned int FUN_141a02e90(int nIndex, unsigned int nDefault) const;    // the nIndex-th argument as an unsigned
     __int64 FUN_141a02ed0(int nIndex, __int64 nDefault) const;      // the nIndex-th argument as an __int64
     __int64 FUN_141a02f10(int nIndex, __int64 nDefault) const;      // the nIndex-th argument as an __int64
@@ -259,12 +259,12 @@ public:
     bool FUN_140be25f0(unsigned int nIndex, int& nOut) const;
     bool FUN_140e01c50(unsigned int nIndex, __int64& nOut) const;
     // More members of unit_141a00db0 (0x141a00db0-0x141a034d0, the setters and getters).
-    void FUN_141a015a0(const CStringW& str);                        // msg2
-    void FUN_141a01640(int nAlign);                                 // the text align (4: none)
+    void SetMsg2(const CStringW& str);                        // msg2
+    void SetAlign(int nAlign);                                 // the text align (4: none)
     void FUN_141a01bc0(int nSound);                                 // the sound event by id (FUN_141a06ff0)
     void FUN_141a02220(MS2Ptr<CMsgBoxDataItem> spItem);             // the second item entry (the callee destroys it)
     void FUN_141a025e0(CStringW strLabel0, CStringW strLabel1);     // both check box labels
-    void FUN_141a02750(int n);                                      // the retraction value
+    void SetRetraction(int n);                                      // the retraction value
     void FUN_141a02880(int nBuffId, short nLevel, CStringW strExtra);   // buffNotify: the buff and its description
     void FUN_141a029b0(const Unk_MsgBoxBuff& buff);                 // buffNotify: copy the buff record
     void FUN_141a02a30(const ATL::CAtlArray<ItemEntity>& items);    // the required items

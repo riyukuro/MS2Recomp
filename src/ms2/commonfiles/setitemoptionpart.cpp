@@ -49,8 +49,8 @@ bool SetItemOptionPart::Load(Unk_140165cf0* pElem)
         Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
         int nValue = 0;
         FUN_1408731e0(pElem, (const char*)FUN_14082efb0(nStat), nValue);
-        spOption->FUN_140266e90(nValue);
-        if (spOption->FUN_140266ce0())
+        spOption->SetValue(nValue);
+        if (spOption->HasValue())
             FUN_1407bca10(nStat, spOption);
     }
     const SpecialKey* pSpecials = DAT_1439f4910;
@@ -60,15 +60,15 @@ bool SetItemOptionPart::Load(Unk_140165cf0* pElem)
         Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
         int nValue = 0;
         FUN_1408731e0(pElem, (const char*)FUN_14081d380(nStat), nValue);
-        spOption->FUN_140266e90(nValue);
-        if (spOption->FUN_140266ce0())
+        spOption->SetValue(nValue);
+        if (spOption->HasValue())
             FUN_1407bcac0(nStat, spOption);
     }
     return true;
 }
 
 // @0x1407bc9b0
-unsigned SetItemOptionPart::FUN_1407bc9b0()
+unsigned SetItemOptionPart::GetCount()
 {
     return m_nCount;
 }
@@ -88,7 +88,7 @@ ATL::CAtlArray<unsigned short>& SetItemOptionPart::FUN_1407bc9f0()
 // @0x1407bca10
 void SetItemOptionPart::FUN_1407bca10(StatKey nStat, Unk_EnchantPtr<BaseOption> spOption)
 {
-    if (!spOption->FUN_140266ce0())
+    if (!spOption->HasValue())
         return;
     m_stats.insert(std::make_pair(nStat, spOption));
 }
@@ -96,7 +96,7 @@ void SetItemOptionPart::FUN_1407bca10(StatKey nStat, Unk_EnchantPtr<BaseOption> 
 // @0x1407bcac0
 void SetItemOptionPart::FUN_1407bcac0(SpecialKey nStat, Unk_EnchantPtr<BaseOption> spOption)
 {
-    if (!spOption->FUN_140266ce0())
+    if (!spOption->HasValue())
         return;
     m_specials.insert(std::make_pair(nStat, spOption));
 }

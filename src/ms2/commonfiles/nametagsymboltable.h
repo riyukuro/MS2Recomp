@@ -183,7 +183,7 @@ public:
     unsigned int FUN_141660030();                       // birthday
     unsigned char FUN_1415275b0(unsigned short nId);    // burning
     unsigned short FUN_141663b50();                     // survival level
-    int FUN_1406c75c0();                                // the gm grade (member +0x11c8)
+    int GetGmGrade();                                // the gm grade (member +0x11c8)
 private:
     char m_pad[0x11c8 - 8];
     int m_nGmGrade;

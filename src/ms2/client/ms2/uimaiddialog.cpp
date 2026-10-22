@@ -429,9 +429,9 @@ void UIMaidDialog::FUN_1412d7aa0()
 
     ASObj obj(2);
     m_strSpecialTitle = spDesc.FUN_1406810d0()->m_strSpecialTitle;
-    if (pNpc->FUN_141093270().get() != 0)
+    if (pNpc->GetNpcData().get() != 0)
     {
-        CString strFace = pNpc->FUN_141093270()->m_strPortrait;
+        CString strFace = pNpc->GetNpcData()->m_strPortrait;
         if (strFace.GetLength() != 0)
             obj.FUN_1407cba60("maidFace", CString(strFace));
     }

@@ -2192,10 +2192,10 @@ MS2Ptr<CSkillRecord> StateSkill::FUN_1417f0570(int nKind)
     if (pMyPC == NULL)
         return MS2Ptr<CSkillRecord>(0);
     Unk_InventorySkillRequest kReq(m_spRecord->m_spLevel->FUN_140803dc0(), 1);
-    kReq.m_nLevel = m_spRecord->m_spLevel->FUN_140803df0();
+    kReq.m_nLevel = m_spRecord->m_spLevel->GetLevel();
     pMyPC->FUN_141526c80(kReq.m_nSkillId, kReq.m_nLevel);
     if (kReq.m_nSkillId == m_spRecord->m_spLevel->FUN_140803dc0()
-        && kReq.m_nLevel == m_spRecord->m_spLevel->FUN_140803df0())
+        && kReq.m_nLevel == m_spRecord->m_spLevel->GetLevel())
         return MS2Ptr<CSkillRecord>(0);
     MS2Ptr<CSkillRecord> spChange = pMyPC->FUN_141523bc0()->FUN_141765570(kReq);
     if (spChange == NULL)
@@ -3159,9 +3159,9 @@ void StateSkill::FUN_1417ef4a0()
         if (pMy != NULL)
         {
             int nSkillId = nId;
-            unsigned short nLevel = m_spRecord->m_spLevel->FUN_140803df0();
+            unsigned short nLevel = m_spRecord->m_spLevel->GetLevel();
             pMy->FUN_141526c80(nSkillId, nLevel);
-            if (nSkillId == nNextId && (unsigned)nLevel == m_spNext->m_spLevel->FUN_140803df0())
+            if (nSkillId == nNextId && (unsigned)nLevel == m_spNext->m_spLevel->GetLevel())
                 bChain = false;
         }
     }

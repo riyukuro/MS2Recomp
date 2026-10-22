@@ -566,7 +566,7 @@ bool ItemSocketSystemPageGemstoneSwap::FUN_140c4a620(MS2Ptr<CItem> item)
     CItemSocket* socket = static_cast<CItem*>(item)->FUN_1405279c0();
     if (socket == 0)
         return false;
-    if (socket->FUN_140620a50() == 0)
+    if (socket->GetMaxSlot() == 0)
         return false;
     if (socket->FUN_140620a20() == 0)
         return false;
@@ -586,7 +586,7 @@ bool ItemSocketSystemPageGemstoneSwap::FUN_140c4a760(MS2Ptr<CItem> source, MS2Pt
     CItemSocket* targetSocket = static_cast<CItem*>(target)->FUN_1405279c0();
     if (sourceSocket == 0 || targetSocket == 0)
         return false;
-    if (sourceSocket->FUN_140620a50() != targetSocket->FUN_140620a50())
+    if (sourceSocket->GetMaxSlot() != targetSocket->GetMaxSlot())
         return false;
     if (sourceSocket->FUN_140620a20() != targetSocket->FUN_140620a20())
         return false;
@@ -623,7 +623,7 @@ bool ItemSocketSystemPageGemstoneSwap::FUN_140c4ab30(MS2Ptr<CItem> item, CString
     CItemSocket* socket = static_cast<CItem*>(item)->FUN_1405279c0();
     if (socket == 0)
         return false;
-    if (socket->FUN_140620a50() == 0)
+    if (socket->GetMaxSlot() == 0)
         return false;
     int open = socket->FUN_140620a20();
     if (open == 0)

@@ -570,7 +570,7 @@ void FUN_14141ff80(ItemSlotBag* pBag, int nCount)
             ItemInfoSlot* pSlot = FUN_140cfe6c0(pBag->FUN_1422cd0f0(kv.second));
             if (pSlot == 0)
                 continue;
-            int nIndex = pSlot->FUN_1422cc410();
+            int nIndex = pSlot->GetIndex();
             MS2Ptr<CItem> spItem = pBag->m_spParam.get() == 0 ? MS2Ptr<CItem>(0)
                                                                : pBag->m_spParam->m_pfnGetItem(pBag->m_pItems, nIndex);
             pSlot->SetItem(spItem);

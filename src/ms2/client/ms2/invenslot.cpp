@@ -2114,7 +2114,7 @@ static void FUN_14140cb90(__int64 nUid, int nItemId, int nCount, int nMax, int n
         if (spCur.get() != 0)
         {
             spBox->FUN_141a01600(nUid);
-            spBox->FUN_141a015d0(FUN_14028de60(0x460));
+            spBox->SetTitle(FUN_14028de60(0x460));
             spBox->FUN_141a01700(0x47e, 0x476, 0);
             spBox->FUN_141a01ee0(spCur, strName, 1, nCount, nMax, nPrice, 1);
             FUN_140d73c60(spBox);

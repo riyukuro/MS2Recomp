@@ -97,7 +97,7 @@ int TradeSlot::vfunc_14()
     if (IsMine())
     {
         FUN_14185e370(m_spItem);
-        FUN_14140ea30()->SendTradeMode9(FUN_14185e580(), FUN_1422cc410());
+        FUN_14140ea30()->SendTradeMode9(FUN_14185e580(), GetIndex());
     }
     return 1;
 }
@@ -234,7 +234,7 @@ __int64 TradeSlot::FUN_14185e580()
 void TradeSlot::FUN_14185e5d0()
 {
     if (IsMine())
-        FUN_14140ea30()->SendTradeMode9(FUN_14185e580(), FUN_1422cc410());
+        FUN_14140ea30()->SendTradeMode9(FUN_14185e580(), GetIndex());
 }
 
 // @0x14185e630

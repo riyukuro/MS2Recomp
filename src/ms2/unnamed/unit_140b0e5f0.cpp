@@ -195,13 +195,13 @@ void CoupleEffectSystem::FUN_140b0eba0(int nObjectId)
 }
 
 // @0x140b0ec10
-int CoupleEffectSystem::FUN_140b0ec10() const
+int CoupleEffectSystem::GetCoupleType() const
 {
     return m_nCoupleType;
 }
 
 // @0x140b0ec30
-CStringW CoupleEffectSystem::FUN_140b0ec30() const
+CStringW CoupleEffectSystem::GetName() const
 {
     return m_strName;
 }

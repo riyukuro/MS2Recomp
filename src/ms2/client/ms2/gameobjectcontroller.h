@@ -37,30 +37,30 @@ public:
     void FUN_14123ff80(efd::Point3 kDisp, unsigned int nExcludeGroups);             // move by kDisp (game units)
     void FUN_141240520(float fRadius, float fHeight);                               // resize the capsule
     void FUN_141240610(float fHeight, efd::Point3 kVelocity, float fUnused);        // start a jump fHeight high
-    void FUN_141240700(efd::Point3 kVelocity);                                      // the horizontal velocity
+    void SetKVelocity(efd::Point3 kVelocity);                                      // the horizontal velocity
     void FUN_141240730();                                                           // stop jumping (land)
-    int FUN_141240780();                                                            // jumping
+    int IsJumping();                                                            // jumping
     int FUN_1412407a0();                                                            // still rising
     efd::Point3 FUN_1412407f0(float fDelta, int bMove);                             // vertical step of this frame
     static float FUN_141240c40(bool bDefault);                                      // gravity (scene z, else the default)
     void FUN_141240cb0(float fDuration, float fPeak, float fBase);                  // start a lift (knock-up)
     void FUN_141240d70();                                                           // end the lift
-    int FUN_141240db0();                                                            // lifting
-    int FUN_141240dd0();                                                            // the lift is past its peak
+    int IsLift();                                                            // lifting
+    int IsLiftFalling();                                                            // the lift is past its peak
     efd::Point3 FUN_141240df0();                                                     // the last hit normal
     NxActor* FUN_141240e70();                                                       // the controller actor
-    NxU32 FUN_141240ed0();                                                          // collision flags of the last move
+    NxU32 GetCollisionFlags();                                                          // collision flags of the last move
     int FUN_141240ef0();                                                            // falling time (ms)
     GameObjectControllerHitReport* FUN_141240f20();                                 // the hit report
     int FUN_141240f40();                                                            // standing on the ground
     void FUN_141240fa0();                                                           // reset the fall timer
-    efd::Point3 FUN_141240fd0();                                                    // the horizontal velocity
+    efd::Point3 GetKVelocity();                                                    // the horizontal velocity
     float FUN_141241000();                                                          // capsule radius (PhysX units)
     void FUN_141241070();                                                           // forget the collision flags
     float FUN_141241090();                                                          // jump apex time (0 unless jumping)
     bool FUN_1412410c0(efd::Point3 kPos, float fOffset);                            // would the capsule overlap at kPos
     int FUN_1412412b0();                                                            // in the air (falling or descending)
-    float FUN_141241320();                                                          // feet-to-centre offset
+    float GetCenterOffset();                                                          // feet-to-centre offset
 
     NxMaterial* m_pMaterial;                        // +0x00 the shape material (restitution 1)
     NxCapsuleController* m_pController;             // +0x08

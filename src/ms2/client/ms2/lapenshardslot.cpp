@@ -301,7 +301,7 @@ MS2Ptr<CItem> LapenshardSlot::vfunc_25()
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem->FUN_14052b130(nItemId, 0, 0) == 0)
             return MS2Ptr<CItem>(0);
-        if (spItem->FUN_140527930()->FUN_140635190() == 2)
+        if (spItem->FUN_140527930()->GetType() == 2)
         {
             __int64 nKey = pPc->FUN_141656a80();
             CStringW strName = pPc->vfunc_77();

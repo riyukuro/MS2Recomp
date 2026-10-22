@@ -126,7 +126,7 @@ CWinHttpClient::~CWinHttpClient()
 }
 
 // @0x140920cc0
-void CWinHttpClient::FUN_140920cc0(const wstring &url)
+void CWinHttpClient::SetRequestURL(const wstring &url)
 {
     m_requestURL = url;
 }
@@ -657,7 +657,7 @@ wstring CWinHttpClient::GetResponseHeader()
 }
 
 // @0x140922860
-wstring CWinHttpClient::FUN_140922860()
+wstring CWinHttpClient::GetResponseContent()
 {
     return m_responseContent;
 }

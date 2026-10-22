@@ -13,8 +13,8 @@ class Unk_ArcMover
 {
 public:
     void FUN_14160bf90(float fDelta, Unk_StreamPoint* pPos, float* pAngle);     // advance and sample
-    bool FUN_14160c1c0() const;                                                 // moving
-    CString FUN_14160c1e0() const;                                              // the moving animation name
+    bool IsMoving() const;                                                 // moving
+    CString GetName() const;                                              // the moving animation name
 
     bool m_bMoving;                 // +0x00
     Unk_StreamPoint m_vStart;       // +0x04
@@ -54,15 +54,15 @@ void Unk_ArcMover::FUN_14160bf90(float fDelta, Unk_StreamPoint* pPos, float* pAn
 }
 
 // @0x14160c1c0
-bool Unk_ArcMover::FUN_14160c1c0() const
+bool Unk_ArcMover::IsMoving() const
 {
     return m_bMoving;
 }
-MS2_REPLACE_METHOD(0x14160C1C0, Unk_ArcMover, FUN_14160c1c0, 14, 0xDA496095);
+MS2_REPLACE_METHOD(0x14160C1C0, Unk_ArcMover, IsMoving, 14, 0xDA496095);
 
 // @0x14160c1e0
-CString Unk_ArcMover::FUN_14160c1e0() const
+CString Unk_ArcMover::GetName() const
 {
     return m_strName;
 }
-MS2_REPLACE_METHOD(0x14160C1E0, Unk_ArcMover, FUN_14160c1e0, 66, 0x9DF20AC9);
+MS2_REPLACE_METHOD(0x14160C1E0, Unk_ArcMover, GetName, 66, 0x9DF20AC9);

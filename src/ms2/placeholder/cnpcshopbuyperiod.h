@@ -31,7 +31,7 @@ public:
     bool FUN_1406dda70() const;                             // the period has a day / time-of-day restriction
     bool FUN_1406ddad0(const CMsTime& tm) const;            // tm is inside the current window
     bool FUN_1406ddb40(const CMsTime& tm) const;            // tm is outside the configured dates
-    bool FUN_1406ddc30() const;                             // visible outside the period
+    bool IsVisible() const;                             // visible outside the period
     bool FUN_1406ddc50(const CMsTime& tmNow);               // visible now
     bool FUN_1406ddc90(const CMsTime& tmNow);               // tmNow is inside the period
 

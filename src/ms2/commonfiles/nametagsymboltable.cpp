@@ -231,7 +231,7 @@ unsigned int CNametagSymbolTable::CheckCondition(unsigned short nId)
         nResult = pActor->FUN_1416630c0();
         break;
     case NAMETAG_CONDITION_GM:
-        nResult = pActor->FUN_1406c75c0() > 0x31;
+        nResult = pActor->GetGmGrade() > 0x31;
         break;
     case NAMETAG_CONDITION_RETURN_USER:
         if (!DAT_143ab0468->m_bEnabled)
@@ -424,7 +424,7 @@ void CNametagSymbolTable::CheckInit()
 }
 
 // @0x1406c75c0
-int Unk_NametagActor::FUN_1406c75c0()
+int Unk_NametagActor::GetGmGrade()
 {
     return m_nGmGrade;
 }

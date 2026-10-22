@@ -74,11 +74,11 @@ int SetItemInfo::HasItem(unsigned nItemId) const
 MS2_REPLACE_METHOD(0x1407AD570, SetItemInfo, HasItem, 133, 0x28AE5B7B);
 
 // @0x1407ad600
-bool SetItemInfo::FUN_1407ad600()
+bool SetItemInfo::IsShowEffect()
 {
     return m_bShowEffect;
 }
-MS2_REPLACE_METHOD(0x1407AD600, SetItemInfo, FUN_1407ad600, 18, 0xCC6927D5);
+MS2_REPLACE_METHOD(0x1407AD600, SetItemInfo, IsShowEffect, 18, 0xCC6927D5);
 
 // @0x1407ad620
 bool SetItemInfo::IsDisableTooltip()
@@ -114,17 +114,17 @@ int SetItemInfo::AddOptionPart(MS2Ptr<SetItemOptionPart> spPart)
 {
     if (spPart.IsNull())
         return 0;
-    if (spPart->FUN_1407bc9b0() < 1)
+    if (spPart->GetCount() < 1)
     {
-        unsigned nCount = spPart->FUN_1407bc9b0();
+        unsigned nCount = spPart->GetCount();
         FUN_1403d7960(FUN_140166440(), 1, 0x13,
                       L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[<ms2> {0}] PartCount Error!, optionID = {1}, PartCount = {2}",
                       m_nId, nCount);
         return 0;
     }
-    if (m_parts.Lookup(spPart->FUN_1407bc9b0()) != NULL)
+    if (m_parts.Lookup(spPart->GetCount()) != NULL)
         return 0;
-    m_parts.SetAt(spPart->FUN_1407bc9b0(), spPart);
+    m_parts.SetAt(spPart->GetCount(), spPart);
     return 1;
 }
 

@@ -52,7 +52,7 @@ CPhysXHelper* FUN_1409f7ca0();                                      // TSingleto
 CEffectService* FUN_1403ed280();                                    // TSingleton<CEffectService>::GetInstance
 CMainSystem* FUN_14086d260();                                       // TSingleton<CMainSystem>::GetInstance
 efd::ServiceManager* FUN_1413f9850();                               // the framework's service manager
-ecr::SceneGraphService* FUN_140ad4ba0();                            // the scene graph service
+ecr::SceneGraphService* GetSceneGraphService();                            // the scene graph service
 void FUN_1414f11d0(ecr::SceneGraphService* pService, egf::Entity* pEntity);    // attach the entity's scene graph
 void FUN_1414f1240(ecr::SceneGraphService* pService, egf::Entity* pEntity);    // detach it
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                    // the entity's scene root
@@ -852,7 +852,7 @@ void CBreakableObject::FUN_140ae0e40()
         return;
     if (m_spEntity == 0)
         return;
-    FUN_1414f11d0(FUN_140ad4ba0(), m_spEntity);
+    FUN_1414f11d0(GetSceneGraphService(), m_spEntity);
     m_bDetached = true;
 }
 
@@ -869,7 +869,7 @@ void CBreakableObject::FUN_140ae0ec0(int nDelay)
     }
     else
     {
-        FUN_1414f1240(FUN_140ad4ba0(), m_spEntity);
+        FUN_1414f1240(GetSceneGraphService(), m_spEntity);
         m_bDetached = false;
     }
 }

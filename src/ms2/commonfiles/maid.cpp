@@ -328,11 +328,11 @@ int CMaid::AddMood(int nDelta)
 MS2_REPLACE_METHOD(0x14067DE50, CMaid, AddMood, 147, 0x4A09A432);
 
 // @0x14067def0
-void CMaid::FUN_14067def0(int nMode)
+void CMaid::SetMode(int nMode)
 {
     m_nMode = nMode;
 }
-MS2_REPLACE_METHOD(0x14067DEF0, CMaid, FUN_14067def0, 22, 0x6608447B);
+MS2_REPLACE_METHOD(0x14067DEF0, CMaid, SetMode, 22, 0x6608447B);
 
 // ---- CMaidExpTable ----------------------------------------------------------------------------------------------------
 

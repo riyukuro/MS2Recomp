@@ -232,11 +232,11 @@ bool SkillDataTableCli::CheckAdditionalChain(MS2Ptr<SkillLevelData> spLevel, uns
     if (nDepth == 0)
         return false;
     Unk_SkillTableLog(TSingleton<CLogString>::GetInstance(), 0xc, 0x13, L"LevelData = {0}, {1}, {2}",
-                      spLevel->FUN_140803dc0(), spLevel->FUN_140803df0(), nDepth);
+                      spLevel->FUN_140803dc0(), spLevel->GetLevel(), nDepth);
     for (const MS2Ptr<SkillActionAdditional>& spAdditional : spLevel->m_vAdditional)
     {
         if (CheckSkillChain(spAdditional->m_nAdditionalID, spAdditional->m_nLevel, spLevel->FUN_140803dc0(),
-                            spLevel->FUN_140803df0(), nDepth) == 0)
+                            spLevel->GetLevel(), nDepth) == 0)
             return false;
     }
     return true;

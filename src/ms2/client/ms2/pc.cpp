@@ -2389,7 +2389,7 @@ void PC::FUN_141663870()
 CStringW PC::FUN_1416638b0()
 {
     if (m_spCouple11d8.get())
-        return m_spCouple11d8->FUN_140b0ec30();
+        return m_spCouple11d8->GetName();
     return CStringW(L"");
 }
 
@@ -2397,7 +2397,7 @@ CStringW PC::FUN_1416638b0()
 int PC::FUN_141663940()
 {
     if (m_spCouple11d8.get())
-        return m_spCouple11d8->FUN_140b0ec10();
+        return m_spCouple11d8->GetCoupleType();
     return 0;
 }
 

@@ -52,12 +52,12 @@ void CByteBuffer::FromHex(const std::string& hex) {
 MS2_REPLACE_METHOD(0x140838E70, CByteBuffer, FromHex, 2202, 0xE897382F);
 // @0x140839710
 bool CByteBuffer::Compress(CByteBuffer& dest) const {
-    unsigned length=FUN_140205190(); unsigned result=0;
+    unsigned length=GetLength(); unsigned result=0;
     if(length==0) return false;
     unsigned long len=length+13+length/100;
     if(len>=0x80000000u) return false;
     dest.FUN_140715230(len+4);
-    MS2_ASSERT_AT(342,dest.FUN_140205190() >= len + 4);
+    MS2_ASSERT_AT(342,dest.GetLength() >= len + 4);
     if(compress(dest.FUN_140204eb0()+4,&len,FUN_14067c4c0(),length)==0) {
         dest.SetLength(len+4);result=len+4;
         dest[0]=(length&0xff000000)>>24;dest[1]=(length&0xff0000)>>16;dest[2]=(length&0xff00)>>8;dest[3]=length&0xff;
@@ -67,14 +67,14 @@ bool CByteBuffer::Compress(CByteBuffer& dest) const {
 MS2_REPLACE_METHOD(0x140839710, CByteBuffer, Compress, 444, 0x44DF5BC1);
 // @0x1408398e0
 bool CByteBuffer::Uncompress(CByteBuffer& dest) const {
-    unsigned length=FUN_140205190(); unsigned result=0;
+    unsigned length=GetLength(); unsigned result=0;
     const CByteBuffer& source=*this;
     if(length<=4) return false;
     unsigned n=(source[0]<<24)|(source[1]<<16)|(source[2]<<8)|source[3];
     unsigned long len=n>1?n:1;
     if(len>=0x80000000u) return false;
     dest.FUN_140715230(len);
-    MS2_ASSERT_AT(385,dest.FUN_140205190() >= len);
+    MS2_ASSERT_AT(385,dest.GetLength() >= len);
     unsigned long original=len;
     if(uncompress(dest.FUN_140204eb0(),&len,FUN_14067c4c0()+4,length-4)==0) {
         if(len!=original && len>=0x80000000u) return false;
@@ -84,7 +84,7 @@ bool CByteBuffer::Uncompress(CByteBuffer& dest) const {
 }
 MS2_REPLACE_METHOD(0x1408398E0, CByteBuffer, Uncompress, 461, 0x5CF06288);
 // @0x140839ac0
-void CByteBuffer::WriteBuffer(CByteBuffer& data) { vfunc_o10_3(data.FUN_140205190());vfunc_o10_9(data.FUN_140204eb0(),data.FUN_140205190()); }
+void CByteBuffer::WriteBuffer(CByteBuffer& data) { vfunc_o10_3(data.GetLength());vfunc_o10_9(data.FUN_140204eb0(),data.GetLength()); }
 MS2_REPLACE_METHOD(0x140839AC0, CByteBuffer, WriteBuffer, 125, 0xBA8A965F);
 // @0x140839b50
 void CByteBuffer::ReadBuffer(CByteBuffer& data) { unsigned count=vfunc_o8_3();data.FUN_140204670(count);vfunc_o8_9(data.FUN_140204eb0(),count); }
@@ -215,7 +215,7 @@ bool CByteBuffer::TestCompression() {
     copy.byte=unpacked.vfunc_o8_1();copy.number=unpacked.vfunc_o8_3();copy.text=unpacked.vfunc_o8_8();
     ok=original.byte==copy.byte && original.number==copy.number && original.text==copy.text;
     if(!ok){MS2_ASSERT_AT(534,0);return false;}
-    int len=source.FUN_140205190();int len2=unpacked.FUN_140205190();
+    int len=source.GetLength();int len2=unpacked.GetLength();
     ok=len==len2;
     if(!ok){MS2_ASSERT_AT(548,0);return false;}
     return true;
@@ -224,9 +224,9 @@ MS2_REPLACE(0x14083AF10, CByteBuffer::TestCompression, 976, 0xE3CCF212);
 // @0x14083b2f0
 void Unk_CompressedStream::Encode(COutputStream& out) {
     CByteBuffer* data=0;
-    if(m_raw.FUN_140205190()<m_threshold)m_useCompression=false;
+    if(m_raw.GetLength()<m_threshold)m_useCompression=false;
     if(m_useCompression){m_raw.Compress(m_compressed);data=&Compressed();} else {m_raw.FUN_140720e90(0);m_raw.FUN_140720c30(m_compressed);data=&FUN_140714de0();}
-    out.vfunc_o10_0(m_useCompression);out.vfunc_o10_3(data->FUN_140205190());out.vfunc_o10_9(data->FUN_140204eb0(),data->FUN_140205190());
+    out.vfunc_o10_0(m_useCompression);out.vfunc_o10_3(data->GetLength());out.vfunc_o10_9(data->FUN_140204eb0(),data->GetLength());
 }
 MS2_REPLACE_METHOD(0x14083B2F0, Unk_CompressedStream, Encode, 298, 0x2C116931);
 // @0x14083b420
@@ -241,12 +241,12 @@ MS2_REPLACE_METHOD(0x14083B420, Unk_CompressedStream, Decode, 260, 0xE4D13373);
 // @0x14083b530
 void Unk_CompressedStream::EncodeReady(COutputStream& out) {
     CByteBuffer* data=0; if(m_useCompression)data=&Compressed();else data=&FUN_140714de0();
-    out.vfunc_o10_0(m_useCompression);out.vfunc_o10_3(data->FUN_140205190());out.vfunc_o10_9(data->FUN_140204eb0(),data->FUN_140205190());
+    out.vfunc_o10_0(m_useCompression);out.vfunc_o10_3(data->GetLength());out.vfunc_o10_9(data->FUN_140204eb0(),data->GetLength());
 }
 MS2_REPLACE_METHOD(0x14083B530, Unk_CompressedStream, EncodeReady, 201, 0xD0C38066);
 // @0x14083b600
 void Unk_StreamWrapper::Encode(COutputStream& out,bool raw) {
-    if(raw){CByteBuffer& data=Raw();out.vfunc_o10_9(data.FUN_140204eb0(),data.FUN_140205190());}
+    if(raw){CByteBuffer& data=Raw();out.vfunc_o10_9(data.FUN_140204eb0(),data.GetLength());}
     else {if(m_dirty){Prepare(out);SetDirty(false);}else EncodeReady(out);}
 }
 MS2_REPLACE_METHOD(0x14083B600, Unk_StreamWrapper, Encode, 170, 0xACEB3D74);

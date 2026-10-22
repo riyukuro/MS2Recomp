@@ -245,11 +245,11 @@ CStringA Unk_TextFormat::FUN_140840580() const
 MS2_REPLACE_METHOD(0x140840580, Unk_TextFormat, FUN_140840580, 73, 0xFC51BFCB);
 
 // @0x1408405d0
-CStringW Unk_TextFormat::FUN_1408405d0() const
+CStringW Unk_TextFormat::GetStr() const
 {
     return m_str;
 }
-MS2_REPLACE_METHOD(0x1408405D0, Unk_TextFormat, FUN_1408405d0, 62, 0xB9C4D915);
+MS2_REPLACE_METHOD(0x1408405D0, Unk_TextFormat, GetStr, 62, 0xB9C4D915);
 
 // The <xlocale> helpers call strlen/wcslen as functions in the exe (imported wcslen); this build expands them
 // inline, so they stay functional (pinned).

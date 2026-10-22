@@ -311,8 +311,8 @@ void FUN_1401f9f20(unsigned char* payload, COutputStream& stream)
     stream.vfunc_o10_8(reinterpret_cast<CStringW*>(payload + 0x20)->Trim());
     stream.vfunc_o10_3(*reinterpret_cast<int*>(payload + 0x28));
     stream.vfunc_o10_3(*reinterpret_cast<int*>(payload + 0x2c));
-    stream.vfunc_o10_2(static_cast<short>(reinterpret_cast<CByteBuffer*>(payload + 0x30)->FUN_140205190()));
-    stream.vfunc_o10_9(reinterpret_cast<CByteBuffer*>(payload + 0x30)->FUN_140204eb0(),reinterpret_cast<CByteBuffer*>(payload + 0x30)->FUN_140205190());
+    stream.vfunc_o10_2(static_cast<short>(reinterpret_cast<CByteBuffer*>(payload + 0x30)->GetLength()));
+    stream.vfunc_o10_9(reinterpret_cast<CByteBuffer*>(payload + 0x30)->FUN_140204eb0(),reinterpret_cast<CByteBuffer*>(payload + 0x30)->GetLength());
     stream.vfunc_o10_3(*reinterpret_cast<int*>(payload + 0x70));
 }
 MS2_REPLACE(0x1401F9F20, FUN_1401f9f20, 345, 0x728AE70E);
@@ -2193,5 +2193,5 @@ inline void CByteBuffer::FUN_140204670(int count) {
 // @0x140204eb0
 inline unsigned char* CByteBuffer::FUN_140204eb0(){return &m_aByteBuff[0];}
 // @0x140205190
-inline unsigned CByteBuffer::FUN_140205190()const{return m_uLength;}
+inline unsigned CByteBuffer::GetLength()const{return m_uLength;}
 MS2_EMIT_CRT_MEMMOVE_S();

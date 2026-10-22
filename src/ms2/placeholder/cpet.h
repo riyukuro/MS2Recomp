@@ -43,8 +43,8 @@ public:
 
     int FUN_140b10150();                                    // the pet is unusable by its owner (hidden / forbidden)
     void FUN_140b10210(int nPetId);                         // m_nPetId + its table row
-    int FUN_140b10290();                                    // m_nPetId
-    MS2Ptr<Unk_PetRow> FUN_140b102b0();                     // copy of the row
+    int GetPetId();                                    // m_nPetId
+    MS2Ptr<Unk_PetRow> GetRow();                     // copy of the row
     int FUN_140b10300();                                    // m_nF44
     PCBase* FUN_140b10320();                                // the owner as a PC (null when it is not one)
     PCBase* FUN_140b10360();                                // the owner (class 0x6200003 cast helper 0x1409613d0)
@@ -53,14 +53,14 @@ public:
     void FUN_140b10400();                                   // refresh the field object's drop / light state
     void FUN_140b10510();                                   // keep the two aura effects of the taming state alive
     void FUN_140b107f0(int nId);                            // m_nTargetId; arm the taming bar when it is the local player's pet
-    int FUN_140b109f0();                                    // m_nKind
+    int GetKind();                                    // m_nKind
     void FUN_140b10a10(unsigned __int64 nPoint);            // taming point changed
-    unsigned __int64 FUN_140b10c00();                       // m_nTamingPoint
+    unsigned __int64 GetTamingPoint();                       // m_nTamingPoint
     int FUN_140b10c20();                                    // m_nTamingPoint == TamingPetMaxPoint
     void FUN_140b10c80(CStringW str);                       // set the pet's display name
     void FUN_140b10f90(unsigned short n);                   // m_nGrade + its sound/effect id
-    unsigned short FUN_140b10fe0();                         // m_nGrade
-    int FUN_140b11000();                                    // m_nGradeFx
+    unsigned short GetGrade();                         // m_nGrade
+    int GetGradeFx();                                    // m_nGradeFx
     void FUN_140b11020();                                   // FUN_140291d10(m_nGradeFx)
     int FUN_140b11180();                                    // use a pet skill (returns 1: used)
     void FUN_140b11320(float fTime);                        // accumulate the idle time, finish the owner's emote

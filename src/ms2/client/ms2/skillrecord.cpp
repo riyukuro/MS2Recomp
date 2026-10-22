@@ -152,7 +152,7 @@ unsigned SkillTargetRecord::FUN_141758fb0()
 // @0x141758fe0
 unsigned short SkillTargetRecord::FUN_141758fe0()
 {
-    return m_spLevel->FUN_140803df0();
+    return m_spLevel->GetLevel();
 }
 
 // @0x141759190
@@ -249,7 +249,7 @@ unsigned CSkillRecord::GetSkillId()
 // @0x141759990
 unsigned short CSkillRecord::GetLevel()
 {
-    return m_spLevel->FUN_140803df0();
+    return m_spLevel->GetLevel();
 }
 
 // @0x1417599c0

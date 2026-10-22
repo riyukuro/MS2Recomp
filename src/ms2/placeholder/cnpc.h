@@ -28,7 +28,7 @@ class CNpcVibrate : public CPtred
 public:
     CNpcVibrate();                                          // 0x14108e1e0
     virtual ~CNpcVibrate();                                 // 0x14108e250
-    int FUN_14108e280();                                    // armed flag (+0x24)
+    int IsActive();                                    // armed flag (+0x24)
     void FUN_14108e2a0(float fStart, float fEnd, float fAmp); // +0x18/+0x1c/+0x20, armed
     void FUN_14108e300(float fTime, efd::Point3& kPos);     // shakes kPos while armed (disarms at m_fEnd)
     float m_fStart;                                         // +0x18
@@ -114,11 +114,11 @@ public:
     virtual int vfunc_128();                               // 0x141091760
 
     // non-virtual members called from other units
-    MS2Ptr<NpcDataCli> FUN_141093270();                     // copy of the npc row (+0xd50)
+    MS2Ptr<NpcDataCli> GetNpcData();                     // copy of the npc row (+0xd50)
     void FUN_1410932c0(bool b);                             // forwarded to the object's UI entity
     int FUN_141092fa0();                                    // npc id of the row (0: no row)
-    void FUN_141094f20(int nOwnerId);                       // m_nOwnerId = nOwnerId
-    int FUN_141094f40();                                    // m_nOwnerId
+    void SetOwnerId(int nOwnerId);                       // m_nOwnerId = nOwnerId
+    int GetOwnerId();                                    // m_nOwnerId
     PCBase* FUN_141094f60();                                // the owner actor looked up by m_nOwnerId (world FindPC; null: none)
     int FUN_1410930a0();                                    // 0x1410930a0 (basecollision: a dead npc that still counts as a target)
     int FUN_1410934c0();                                  // 0x1410934c0 the npc kind (bit index of a kind mask)

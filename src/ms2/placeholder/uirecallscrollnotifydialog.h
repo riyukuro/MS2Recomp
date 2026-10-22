@@ -32,8 +32,8 @@ public:
     virtual void vfunc_72();                                // 72 0x14129c610 per second: count down the popups
     virtual int vfunc_48() { return 0x4edd; }               // 48 (COMDAT 0x14129ce70)
 
-    void FUN_14129c8e0(int nOffset);                        // 0x14129c8e0 stores the int at +0x208
-    bool FUN_14129c900();                                   // 0x14129c900 returns the byte at +0x20c
+    void SetOffset(int nOffset);                        // 0x14129c8e0 stores the int at +0x208
+    bool IsActive();                                   // 0x14129c900 returns the byte at +0x20c
     void FUN_14129c920(int nSlot, __time64_t nTime, const CStringW& strName, int nField);   // open a popup
     void FUN_14129caa0(int nSlot);                          // close a popup
     void FUN_14129cb20();                                   // forget the three expiry times
@@ -48,8 +48,8 @@ private:
     CStringW m_names[3];                                    // +0x1b0 sender name
     int m_fields[3];                                        // +0x1c8 field id
     MS2Ptr<ASMovieClip> m_clips[3];                         // +0x1d8
-    int m_nOffset;                                          // +0x208 (FUN_14129c8e0)
-    bool m_bActive;                                         // +0x20c (FUN_14129c900)
+    int m_nOffset;                                          // +0x208 (SetOffset)
+    bool m_bActive;                                         // +0x20c (IsActive)
     int m_nCount;                                           // +0x210 popups showing
 };
 MS2_CHECK_SIZE(UIRecallScrollNotifyDialog, 0x218);

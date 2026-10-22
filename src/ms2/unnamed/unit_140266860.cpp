@@ -57,15 +57,15 @@ class BaseOption : public CPtred
 public:
     BaseOption();                                       // 0x140266c70
     void FUN_140266cc0();                               // clear
-    bool FUN_140266ce0() const;
+    bool HasValue() const;
     void FUN_140266d20(Unk_EnchantWrite& rOut) const;
     void FUN_140266d60(Unk_EnchantRead& rIn);
     void FUN_140266da0(const BaseOption* pSource);      // copy
     void FUN_140266dd0(const BaseOption* pSource);      // add
     float FUN_140266e10() const;
-    int FUN_140266e30() const;
+    int GetValue() const;
     void FUN_140266e50(float fValue);
-    void FUN_140266e90(int nValue);
+    void SetValue(int nValue);
     bool FUN_140266ee0(const BaseOption* pOther) const;
 
     int m_nValue;                                       // +0x18
@@ -207,7 +207,7 @@ void BaseOption::FUN_140266cc0()
 }
 
 // @0x140266ce0
-bool BaseOption::FUN_140266ce0() const
+bool BaseOption::HasValue() const
 {
     return m_nValue != 0;
 }
@@ -247,7 +247,7 @@ float BaseOption::FUN_140266e10() const
 }
 
 // @0x140266e30
-int BaseOption::FUN_140266e30() const
+int BaseOption::GetValue() const
 {
     return m_nValue;
 }
@@ -259,7 +259,7 @@ void BaseOption::FUN_140266e50(float fValue)
 }
 
 // @0x140266e90
-void BaseOption::FUN_140266e90(int nValue)
+void BaseOption::SetValue(int nValue)
 {
     m_nValue = nValue;
 }

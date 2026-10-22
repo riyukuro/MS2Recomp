@@ -1048,7 +1048,7 @@ int UIShopDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                             spBox->FUN_140533ff0(nCount);
                             spBox->FUN_141a01800(2);
                             spBox->FUN_141a024e0(FUN_14028de60(0x9d1), 0);
-                            spBox->FUN_141a02730(0);
+                            spBox->SetAgreement(0);
                             spBox->FUN_141a02770(0x1c0, 400);
                             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIShopDialog::ConfirmUgcPurchase));
                             FUN_140d73c60(spBox);
@@ -2685,7 +2685,7 @@ void UIShopDialog::CloseShop()
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_14151f820();
         if ((CMsgBoxData*)spBox) {
-            if (spBox->FUN_141a02c40() == 0x12 || spBox->FUN_141a02ce0().Find(L"buyItem,", 0) == 0)
+            if (spBox->GetType() == 0x12 || spBox->GetExtra().Find(L"buyItem,", 0) == 0)
                 FUN_14151f200();
         }
     }
@@ -3208,7 +3208,7 @@ void UIShopDialog::ShowPurchaseBill(MS2Ptr<CNpcShopProductCli> spProduct, unsign
         if (spBox.get() != 0) {
             m_selection.Set(nSerial, nQuantity, 4);
             int nUnit = spProduct->m_b8;
-            spBox->FUN_141a015d0(FUN_14028de60(0x45f));
+            spBox->SetTitle(FUN_14028de60(0x45f));
             spBox->FUN_141a01700(0x47d, 0x476, 0);
             MS2Ptr<CMsgBoxDataItem> spData = new CMsgBoxDataItem();
             int nRarity = spItem->FUN_140526bd0();
@@ -3223,7 +3223,7 @@ void UIShopDialog::ShowPurchaseBill(MS2Ptr<CNpcShopProductCli> spProduct, unsign
             ASFunction fn(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIShopDialog::OnPriceChanged), 0, nMovie);
             FUN_141b070a0(spBox.operator->(), "shopTradeChangePriceFuntion", Scaleform::GFx::Value(fn.FUN_1422bb870()));
             FUN_140dd6030(spBox.operator->(), "shopSerialID", nSerial);
-            spBox->FUN_141a01660(FUN_1401ceea0(L"buyItem,{0}", spProduct->FUN_140db5e70()));
+            spBox->SetExtra(FUN_1401ceea0(L"buyItem,{0}", spProduct->FUN_140db5e70()));
             spBox->FUN_141a024a0(0);
             FUN_140d73c60(spBox);
         }

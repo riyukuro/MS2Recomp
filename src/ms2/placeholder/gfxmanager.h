@@ -70,9 +70,9 @@ public:
     void FUN_1422aeea0(void (*pfn)(AScript& kCommon, int nMovieId));        // m_pfnCommon =
     int FUN_1422aeed0(int n);                                       // input state query (NotifyDragSlot passes 2: drop outside any slot)
     void FUN_1422aef20(int nMovieId, int n);                        // GFxMovie::FUN_1422be380 of a movie
-    int FUN_1422aef70();                                            // m_118 (paused)
+    int IsPause();                                            // m_118 (paused)
     void FUN_1422aef90(int bPause);                                 // pause every movie
-    int FUN_1422af090();                                            // m_b0 (resources from the archive)
+    int IsArchive();                                            // m_b0 (resources from the archive)
     void FUN_1422af0b0(int bArchive, int bRelease);                 // the movie paths (gfx / gfxDebug)
     int FUN_1422af2d0(int nMovieId);                                // the movie takes text input (GFxMovieEventHandler: CharEvent, Insert)
     int FUN_1422af390(int nMovieId);                                // WM_IME_COMPOSITION handled by the manager
@@ -92,8 +92,8 @@ public:
     int FUN_1422aff10(float fScale);                                // scale every movie except the background
     void FUN_1422b0060(float fScale);                               // the same without the viewport (if it differs from movie 2's)
     GFxMovie* FUN_1422b01a0(int nMovieId);                          // the movie of a movie id (NULL if not loaded)
-    GFxVideo* FUN_1422b0230();                                      // m_spVideo
-    Unk_NotifyContext* FUN_1422b0260();                             // the notify context (SmartPointer at +0x98)
+    GFxVideo* GetVideo();                                      // m_spVideo
+    Unk_NotifyContext* GetNotifyContext();                             // the notify context (SmartPointer at +0x98)
     Scaleform::GFx::Loader* FUN_1422b0290();                        // the loader
     Unk_GFxUIRenderer2D* FUN_1422b02b0();                           // the movie renderer's Renderer2D (+0x40 member, slot 2)
     MS2Ptr<ASStage> FUN_1422b02f0(int nMovieId);                    // the stage of a movie (null if the movie is not loaded)
@@ -113,7 +113,7 @@ public:
     int FUN_1422b09d0(CString a, CString b, int n);                 // m_pfn110(a, b, n) (0 without callback)
     int FUN_1422b0a70(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);   // GFxService::vfunc_18
     int FUN_1422b0bc0(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);   // GFxService::vfunc_19 (every window message)
-    CString FUN_1422b0d10();                                        // the path of the IME movie
+    CString GetIme();                                        // the path of the IME movie
     Scaleform::Ptr<Scaleform::File> FUN_1422b0d60(Scaleform::String strPath);   // the cached memory file of a path
     void FUN_1422b0e20(Scaleform::String strPath, Scaleform::Ptr<Scaleform::File> pFile);   // cache (NULL: drop) it
     void FUN_1422b0ea0(const CStringW& strText);                    // copy to the clipboard (GFxMovieMain)

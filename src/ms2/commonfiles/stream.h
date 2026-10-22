@@ -112,7 +112,7 @@ class CByteBuffer : public CIOBuffer, public CInputStream, public COutputStream 
     void FUN_140715230(int);
     void FUN_140720e90(unsigned);
     void FUN_140518490();
-    unsigned FUN_140205190() const;
+    unsigned GetLength() const;
     unsigned char* FUN_140204eb0();
     const unsigned char* FUN_14067c4c0() const;
     CByteBuffer& FUN_140714de0();

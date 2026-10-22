@@ -613,7 +613,7 @@ void ClientLogManager::Flush()
         if (!m_bQuiet)
         {
             MS2Ptr<LogDialogCtx> spCtx = *m_itPending;
-            if (spCtx->m_nLevel <= TSingleton<CLogString>::GetInstance()->FUN_140653860() && spCtx->m_nLevel <= 2)
+            if (spCtx->m_nLevel <= TSingleton<CLogString>::GetInstance()->GetFileLevel() && spCtx->m_nLevel <= 2)
                 FUN_1412751b0(spCtx->m_strTextW, 0x14);
         }
     }

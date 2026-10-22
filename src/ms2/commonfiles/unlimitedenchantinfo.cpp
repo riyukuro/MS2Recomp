@@ -47,7 +47,7 @@ void UnlimitedEnchantInfo::FUN_1408bbc00()
 }
 
 // @0x1408bbc50
-int UnlimitedEnchantInfo::FUN_1408bbc50()
+int UnlimitedEnchantInfo::GetLevel()
 {
     return m_nLevel;
 }
@@ -56,7 +56,7 @@ int UnlimitedEnchantInfo::FUN_1408bbc50()
 int UnlimitedEnchantInfo::FUN_1408bbc70()
 {
     FUN_1408bbcb0(m_nLevel + 1, true);
-    return FUN_1408bbc50();
+    return GetLevel();
 }
 
 // @0x1408bbcb0
@@ -69,7 +69,7 @@ void UnlimitedEnchantInfo::FUN_1408bbcb0(int nLevel, bool bChanged)
     }
     m_nLevel = nLevel;
     FUN_1408bc3d0();
-    FUN_1408bc1d0(bChanged);
+    SetChanged(bChanged);
 }
 
 // @0x1408bbd30
@@ -122,13 +122,13 @@ void UnlimitedEnchantInfo::FUN_1408bbef0(CInputStream& in)
 }
 
 // @0x1408bc1d0
-void UnlimitedEnchantInfo::FUN_1408bc1d0(bool bChanged)
+void UnlimitedEnchantInfo::SetChanged(bool bChanged)
 {
     m_bChanged = bChanged;
 }
 
 // @0x1408bc1f0
-bool UnlimitedEnchantInfo::FUN_1408bc1f0()
+bool UnlimitedEnchantInfo::IsChanged()
 {
     return m_bChanged;
 }

@@ -109,7 +109,7 @@ void TSocketGemStoneInfo::FUN_14061f930(MS2Ptr<CItem> spGem)
     FUN_14061fc00(spGem);
     FUN_14061fde0(spGem);
     if (Unk_ItemOwnerRef* pTransfer = spGem->FUN_140527930())
-        m_n40 = pTransfer->FUN_140634fa0();
+        m_n40 = pTransfer->GetCount();
 }
 
 // @0x14061fa50
@@ -251,19 +251,19 @@ CStringW TSocketGemStoneInfo::FUN_1406201d0()
 }
 
 // @0x140620260
-int TSocketGemStoneInfo::FUN_140620260()
+int TSocketGemStoneInfo::GetGemId()
 {
     return m_nGemId;
 }
 
 // @0x140620280
-MS2Ptr<TSocketGemStoneLock> TSocketGemStoneInfo::FUN_140620280()
+MS2Ptr<TSocketGemStoneLock> TSocketGemStoneInfo::GetLock()
 {
     return m_spLock;
 }
 
 // @0x1406202d0
-MS2Ptr<TSocketGemStoneBind> TSocketGemStoneInfo::FUN_1406202d0()
+MS2Ptr<TSocketGemStoneBind> TSocketGemStoneInfo::GetBind()
 {
     return m_spBind;
 }
@@ -361,7 +361,7 @@ unsigned CItemSocket::FUN_140620a20()
 }
 
 // @0x140620a50
-unsigned CItemSocket::FUN_140620a50()
+unsigned CItemSocket::GetMaxSlot()
 {
     return m_nMaxSlot;
 }
@@ -370,7 +370,7 @@ unsigned CItemSocket::FUN_140620a50()
 int CItemSocket::FUN_140620a70()
 {
     unsigned nOpen = FUN_140620a20();
-    unsigned nMax = FUN_140620a50();
+    unsigned nMax = GetMaxSlot();
     if (nMax < nOpen)
         return 0;
     return nMax - nOpen;
@@ -578,7 +578,7 @@ MS2Ptr<TSocketGemStoneInfo> CItemSocket::FUN_140621830(unsigned nIndex)
 bool CItemSocket::FUN_1406219d0(int* pIndex)
 {
     *pIndex = -1;
-    if (FUN_140620a70() == 0 || FUN_140620a20() > FUN_140620a50())
+    if (FUN_140620a70() == 0 || FUN_140620a20() > GetMaxSlot())
         return false;
     *pIndex = (int)m_aGems.GetCount();
     MS2Ptr<TSocketGemStoneInfo> spInfo(new TSocketGemStoneInfo);
@@ -640,7 +640,7 @@ Unk_EnchantPtr<BaseOption> CItemSocket::FUN_140621ca0(int)
 // @0x140621cf0
 bool CItemSocket::FUN_140621cf0(unsigned nCount)
 {
-    unsigned nMax = FUN_140620a50();
+    unsigned nMax = GetMaxSlot();
     if (nMax == 0)
         return false;
     unsigned nWanted = nMax < nCount ? nMax : nCount;
@@ -668,7 +668,7 @@ int CItemSocket::FUN_140621d60()
 // @0x140621e60
 int CItemSocket::FUN_140621e60(Unk_GemFilter pfnFilter)
 {
-    if (FUN_140620a50() == 0 || FUN_140620a20() == 0)
+    if (GetMaxSlot() == 0 || FUN_140620a20() == 0)
         return 1;
     unsigned nOpen = FUN_140620a20();
     for (unsigned i = 0; i < nOpen; i++)
@@ -676,7 +676,7 @@ int CItemSocket::FUN_140621e60(Unk_GemFilter pfnFilter)
         MS2Ptr<TSocketGemStoneInfo> spInfo = FUN_140620b70(i);
         if (spInfo == 0 || spInfo->FUN_14061fab0())
             continue;
-        unsigned nGemId = spInfo->FUN_140620260();
+        unsigned nGemId = spInfo->GetGemId();
         MS2Ptr<CItemData> spData = FUN_14053f870(nGemId);
         if (spData == 0)
             continue;
@@ -910,7 +910,7 @@ void CItemSocket::FUN_140622d00()
 {
     m_kStat.RemoveAll();
     m_kSpecial.RemoveAll();
-    if (FUN_140620a50() == 0 || FUN_140620a20() == 0)
+    if (GetMaxSlot() == 0 || FUN_140620a20() == 0)
         return;
     unsigned nOpen = FUN_140620a20();
     for (unsigned i = 0; i < nOpen; i++)
@@ -944,7 +944,7 @@ void CItemSocket::FUN_140622f10(MS2Ptr<CItemOption> spOption)
         int nStat = kFrom.GetKeyAt(pos);
         Unk_EnchantPtr<BaseOption> spSum(0);
         if (m_kStat.Lookup(nStat, spSum))
-            spSum->FUN_140266e90(spSum->FUN_140266e30() + spFrom->FUN_140266e30());
+            spSum->SetValue(spSum->GetValue() + spFrom->GetValue());
         else
             m_kStat.SetAt(nStat, spFrom);
     }
@@ -966,7 +966,7 @@ void CItemSocket::FUN_1406230e0(MS2Ptr<CItemOption> spOption)
         Unk_SocketSpecialStat nStat = kFrom.GetKeyAt(pos);
         Unk_EnchantPtr<BaseOption> spSum(0);
         if (m_kSpecial.Lookup(nStat, spSum))
-            spSum->FUN_140266e90(spSum->FUN_140266e30() + spFrom->FUN_140266e30());
+            spSum->SetValue(spSum->GetValue() + spFrom->GetValue());
         else
             m_kSpecial.SetAt(nStat, spFrom);
     }

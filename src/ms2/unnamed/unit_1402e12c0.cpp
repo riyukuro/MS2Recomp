@@ -46,7 +46,7 @@ public:
     Unk_PerfLogCallback* m_pCallback;   // +0x50
 
     void FUN_1402e12c0(const char* pszFormat, ...);
-    unsigned FUN_1402e14c0();
+    unsigned GetFirstTick();
     CString FUN_1402e14e0();
     unsigned FUN_1402e1570();
     void FUN_1402e15b0(void* pCallback);
@@ -167,7 +167,7 @@ void Unk_PerfLog::FUN_1402e12c0(const char* pszFormat, ...)
 }
 
 // @0x1402e14c0
-unsigned Unk_PerfLog::FUN_1402e14c0()
+unsigned Unk_PerfLog::GetFirstTick()
 {
     return m_nFirstTick;
 }

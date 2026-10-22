@@ -1230,3 +1230,121 @@
 1405d3ce0	ItemOptionRandom::FUN_1405d3ce0	ItemOptionRandom::GetLevelGroupId	descriptive	descriptive (high): getter: body returns m_nLevelGroupId	nam1	2026-10-22
 1405d9be0	ItemOptionRandomContext::FUN_1405d9be0	ItemOptionRandomContext::SetTarget	descriptive	descriptive (high): setter: body stores the argument in m_spTarget	nam1	2026-10-22
 1405d9e50	ItemOptionRandomContext::FUN_1405d9e50	ItemOptionRandomContext::GetOption	descriptive	descriptive (high): getter: body returns m_spOption	nam1	2026-10-22
+140620260	TSocketGemStoneInfo::FUN_140620260	TSocketGemStoneInfo::GetGemId	descriptive	descriptive (high): getter: body returns m_nGemId	nam1	2026-10-22
+140620280	TSocketGemStoneInfo::FUN_140620280	TSocketGemStoneInfo::GetLock	descriptive	descriptive (high): getter: body returns m_spLock	nam1	2026-10-22
+1406202d0	TSocketGemStoneInfo::FUN_1406202d0	TSocketGemStoneInfo::GetBind	descriptive	descriptive (high): getter: body returns m_spBind	nam1	2026-10-22
+140620a50	CItemSocket::FUN_140620a50	CItemSocket::GetMaxSlot	descriptive	descriptive (high): getter: body returns m_nMaxSlot	nam1	2026-10-22
+140630d30	CItemStatus::FUN_140630d30	CItemStatus::GetOption	descriptive	descriptive (high): getter: body returns m_spOption	nam1	2026-10-22
+140630d60	CItemStatus::FUN_140630d60	CItemStatus::GetEnchant	descriptive	descriptive (high): getter: body returns m_spEnchant	nam1	2026-10-22
+140634970	CItemTransfer::FUN_140634970	CItemTransfer::SetItem	descriptive	descriptive (high): setter: body stores the argument in m_pItem	nam1	2026-10-22
+140634fa0	CItemTransfer::FUN_140634fa0	CItemTransfer::GetCount	descriptive	descriptive (high): getter: body returns m_nCount	nam1	2026-10-22
+140634fc0	CItemTransfer::FUN_140634fc0	CItemTransfer::SetCount	descriptive	descriptive (high): setter: body stores the argument in m_nCount	nam1	2026-10-22
+140634fe0	CItemTransfer::FUN_140634fe0	CItemTransfer::GetMax	descriptive	descriptive (high): getter: body returns m_nMax	nam1	2026-10-22
+140635000	CItemTransfer::FUN_140635000	CItemTransfer::SetMax	descriptive	descriptive (high): setter: body stores the argument in m_nMax	nam1	2026-10-22
+140635190	CItemTransfer::FUN_140635190	CItemTransfer::GetType	descriptive	descriptive (high): getter: body returns m_nType	nam1	2026-10-22
+140653820	CLogString::FUN_140653820	CLogString::GetErrors	descriptive	descriptive (high): getter: body returns m_errors	nam1	2026-10-22
+140653840	CLogString::FUN_140653840	CLogString::GetWarnings	descriptive	descriptive (high): getter: body returns m_warnings	nam1	2026-10-22
+140653860	CLogString::FUN_140653860	CLogString::GetFileLevel	descriptive	descriptive (high): getter: body returns m_fileLevel	nam1	2026-10-22
+140653b30	CLogString::FUN_140653b30	CLogString::GetRoot	descriptive	descriptive (high): getter: body returns m_root	nam1	2026-10-22
+14067def0	CMaid::FUN_14067def0	CMaid::SetMode	descriptive	descriptive (high): setter: body stores the argument in m_nMode	nam1	2026-10-22
+1406c75c0	Unk_NametagActor::FUN_1406c75c0	Unk_NametagActor::GetGmGrade	descriptive	descriptive (high): getter: body returns m_nGmGrade	nam1	2026-10-22
+1406dc4b0	TShopPaymentAttr::FUN_1406dc4b0	TShopPaymentAttr::GetIconTag	descriptive	descriptive (high): getter: body returns m_strIconTag	nam1	2026-10-22
+1406dc4d0	TShopPaymentAttr::FUN_1406dc4d0	TShopPaymentAttr::GetItemId	descriptive	descriptive (high): getter: body returns m_nItemId	nam1	2026-10-22
+1406dc4f0	TShopPaymentAttr::FUN_1406dc4f0	TShopPaymentAttr::GetAmount	descriptive	descriptive (high): getter: body returns m_nAmount	nam1	2026-10-22
+1406dc580	TShopPaymentAttr::FUN_1406dc580	TShopPaymentAttr::SetFeature	descriptive	descriptive (high): setter: body stores the argument in m_nFeature	nam1	2026-10-22
+1406ddc30	CNpcShopBuyPeriod::FUN_1406ddc30	CNpcShopBuyPeriod::IsVisible	descriptive	descriptive (high): getter: body returns m_bVisible	nam1	2026-10-22
+1406e4040	CBeautyShopItemGroup::FUN_1406e4040	CBeautyShopItemGroup::GetKey	descriptive	descriptive (high): getter: body returns m_nKey	nam1	2026-10-22
+1406e4080	CBeautyShopItemGroup::FUN_1406e4080	CBeautyShopItemGroup::GetValue	descriptive	descriptive (high): getter: body returns m_nValue	nam1	2026-10-22
+140714f80	FUN_140714f80	GetBufferCryptManager	descriptive	descriptive (medium): singleton: returns the CBufferCryptManager instance pointer DAT_143aac528	nam1	2026-10-22
+140714fa0	CPacketBuffer::FUN_140714fa0	CPacketBuffer::GetSize	descriptive	descriptive (high): getter: body returns m_size	nam1	2026-10-22
+140743710	CPvPInfo::FUN_140743710	CPvPInfo::GetPoint	descriptive	descriptive (high): getter: body returns m_nPoint	nam1	2026-10-22
+1407476d0	CQuest::FUN_1407476d0	CQuest::GetState	descriptive	descriptive (high): getter: body returns m_state	nam1	2026-10-22
+1407ad600	SetItemInfo::FUN_1407ad600	SetItemInfo::IsShowEffect	descriptive	descriptive (high): getter: body returns m_bShowEffect	nam1	2026-10-22
+1407bc9b0	SetItemOptionPart::FUN_1407bc9b0	SetItemOptionPart::GetCount	descriptive	descriptive (high): getter: body returns m_nCount	nam1	2026-10-22
+140803df0	SkillLevelData::FUN_140803df0	SkillLevelData::GetLevel	descriptive	descriptive (high): getter: body returns m_nLevel	nam1	2026-10-22
+140803e10	SkillLevelData::FUN_140803e10	SkillLevelData::GetSkill	descriptive	descriptive (high): getter: body returns m_pSkill	nam1	2026-10-22
+140804250	SkillLevelData::FUN_140804250	SkillLevelData::GetStanceDamageRate	descriptive	descriptive (high): getter: body returns m_nStanceDamageRate	nam1	2026-10-22
+1407e9b10	SkillData::FUN_1407e9b10	SkillData::GetMaxLevel	descriptive	descriptive (high): getter: body returns m_nMaxLevel	nam1	2026-10-22
+140867310	CTextLogFile::FUN_140867310	CTextLogFile::GetName	descriptive	descriptive (high): getter: body returns m_name	nam1	2026-10-22
+140868a50	Timer::FUN_140868a50	Timer::GetStart	descriptive	descriptive (high): getter: body returns m_nStart	nam1	2026-10-22
+140868c60	Timer::FUN_140868c60	Timer::HasPauseTime	descriptive	descriptive (medium): bool-test: body returns m_nPauseTime != 0	nam1	2026-10-22
+1408809e0	CUGCBuildValidator::FUN_1408809e0	CUGCBuildValidator::GetMode	descriptive	descriptive (high): getter: body returns m_nMode	nam1	2026-10-22
+1408bbc50	UnlimitedEnchantInfo::FUN_1408bbc50	UnlimitedEnchantInfo::GetLevel	descriptive	descriptive (high): getter: body returns m_nLevel	nam1	2026-10-22
+1408bc1d0	UnlimitedEnchantInfo::FUN_1408bc1d0	UnlimitedEnchantInfo::SetChanged	descriptive	descriptive (high): setter: body stores the argument in m_bChanged	nam1	2026-10-22
+1408bc1f0	UnlimitedEnchantInfo::FUN_1408bc1f0	UnlimitedEnchantInfo::IsChanged	descriptive	descriptive (high): getter: body returns m_bChanged	nam1	2026-10-22
+1422cc410	DragSlot::FUN_1422cc410	DragSlot::GetIndex	descriptive	descriptive (high): getter: body returns m_nIndex	nam1	2026-10-22
+1422aef70	GFxManager::FUN_1422aef70	GFxManager::IsPause	descriptive	descriptive (high): getter: body returns m_bPause	nam1	2026-10-22
+1422af090	GFxManager::FUN_1422af090	GFxManager::IsArchive	descriptive	descriptive (high): getter: body returns m_bArchive	nam1	2026-10-22
+1422b0230	GFxManager::FUN_1422b0230	GFxManager::GetVideo	descriptive	descriptive (high): getter: body returns m_spVideo	nam1	2026-10-22
+1422b0260	GFxManager::FUN_1422b0260	GFxManager::GetNotifyContext	descriptive	descriptive (high): getter: body returns m_spNotifyContext	nam1	2026-10-22
+1422b0d10	GFxManager::FUN_1422b0d10	GFxManager::GetIme	descriptive	descriptive (high): getter: body returns m_strIme	nam1	2026-10-22
+1422b9da0	GFxSceneService::FUN_1422b9da0	GFxSceneService::GetPrevSceneId	descriptive	descriptive (high): getter: body returns m_nPrevSceneId	nam1	2026-10-22
+1422b9dc0	GFxSceneService::FUN_1422b9dc0	GFxSceneService::GetSceneId	descriptive	descriptive (high): getter: body returns m_nSceneId	nam1	2026-10-22
+1422b9de0	GFxSceneService::FUN_1422b9de0	GFxSceneService::GetPrevSubSceneId	descriptive	descriptive (high): getter: body returns m_nPrevSubSceneId	nam1	2026-10-22
+1422b9e00	GFxSceneService::FUN_1422b9e00	GFxSceneService::GetSubSceneId	descriptive	descriptive (high): getter: body returns m_nSubSceneId	nam1	2026-10-22
+1422b9e80	GFxSceneService::FUN_1422b9e80	GFxSceneService::GetScene	descriptive	descriptive (high): getter: body returns m_pScene	nam1	2026-10-22
+1422ea230	GFxService::FUN_1422ea230	GFxService::SetFont	descriptive	descriptive (high): setter: body stores the argument in m_strFont	nam1	2026-10-22
+1422ec830	GFxVideo::FUN_1422ec830	GFxVideo::GetVideo	descriptive	descriptive (high): getter: body returns m_spVideo	nam1	2026-10-22
+1422e6580	UIAlignWidget::FUN_1422e6580	UIAlignWidget::SetAlignType	descriptive	descriptive (high): setter: body stores the argument in m_nAlignType	nam1	2026-10-22
+140205190	CByteBuffer::FUN_140205190	CByteBuffer::GetLength	descriptive	descriptive (high): getter: body returns m_uLength	nam1	2026-10-22
+140266ce0	BaseOption::FUN_140266ce0	BaseOption::HasValue	descriptive	descriptive (medium): bool-test: body returns m_nValue != 0	nam1	2026-10-22
+140266e30	BaseOption::FUN_140266e30	BaseOption::GetValue	descriptive	descriptive (high): getter: body returns m_nValue	nam1	2026-10-22
+140266e90	BaseOption::FUN_140266e90	BaseOption::SetValue	descriptive	descriptive (high): setter: body stores the argument in m_nValue	nam1	2026-10-22
+1402e14c0	Unk_PerfLog::FUN_1402e14c0	Unk_PerfLog::GetFirstTick	descriptive	descriptive (high): getter: body returns m_nFirstTick	nam1	2026-10-22
+1406af060	Unk_LaunchOptions::FUN_1406af060	Unk_LaunchOptions::IsDisableValidate	descriptive	descriptive (high): getter: body returns m_bDisableValidate	nam1	2026-10-22
+1406af080	Unk_LaunchOptions::FUN_1406af080	Unk_LaunchOptions::IsPreloadNoThread	descriptive	descriptive (high): getter: body returns m_bPreloadNoThread	nam1	2026-10-22
+1406af170	Unk_LaunchOptions::FUN_1406af170	Unk_LaunchOptions::IsSkipNpcLoading	descriptive	descriptive (high): getter: body returns m_bSkipNpcLoading	nam1	2026-10-22
+1408405d0	Unk_TextFormat::FUN_1408405d0	Unk_TextFormat::GetStr	descriptive	descriptive (high): getter: body returns m_str	nam1	2026-10-22
+140920cc0	CWinHttpClient::FUN_140920cc0	CWinHttpClient::SetRequestURL	descriptive	descriptive (high): setter: body stores the argument in m_requestURL	nam1	2026-10-22
+140922860	CWinHttpClient::FUN_140922860	CWinHttpClient::GetResponseContent	descriptive	descriptive (high): getter: body returns m_responseContent	nam1	2026-10-22
+1409fb930	FUN_1409fb930	GetAdBannerManagerCli	descriptive	descriptive (medium): singleton: returns the CAdBannerManagerCli instance pointer DAT_143ab3920	nam1	2026-10-22
+140a45970	Unk_CrashDialog::FUN_140a45970	Unk_CrashDialog::SetMessage	descriptive	descriptive (high): setter: body stores the argument in m_strMessage	nam1	2026-10-22
+140ad21b0	CMouseController::FUN_140ad21b0	CMouseController::HasMode	descriptive	descriptive (medium): bool-test: body returns m_nMode != 0	nam1	2026-10-22
+140ad22a0	CMouseController::FUN_140ad22a0	CMouseController::GetMove	descriptive	descriptive (high): getter: body returns m_vMove	nam1	2026-10-22
+140ad4ba0	FUN_140ad4ba0	GetSceneGraphService	descriptive	descriptive (medium): singleton: returns the SceneGraphService instance pointer DAT_143ab9508	nam1	2026-10-22
+140b0ec10	CoupleEffectSystem::FUN_140b0ec10	CoupleEffectSystem::GetCoupleType	descriptive	descriptive (high): getter: body returns m_nCoupleType	nam1	2026-10-22
+140b0ec30	CoupleEffectSystem::FUN_140b0ec30	CoupleEffectSystem::GetName	descriptive	descriptive (high): getter: body returns m_strName	nam1	2026-10-22
+140b10290	CPet::FUN_140b10290	CPet::GetPetId	descriptive	descriptive (high): getter: body returns m_nPetId	nam1	2026-10-22
+140b102b0	CPet::FUN_140b102b0	CPet::GetRow	descriptive	descriptive (high): getter: body returns m_spRow	nam1	2026-10-22
+140b109f0	CPet::FUN_140b109f0	CPet::GetKind	descriptive	descriptive (high): getter: body returns m_nKind	nam1	2026-10-22
+140b10c00	CPet::FUN_140b10c00	CPet::GetTamingPoint	descriptive	descriptive (high): getter: body returns m_nTamingPoint	nam1	2026-10-22
+140b10fe0	CPet::FUN_140b10fe0	CPet::GetGrade	descriptive	descriptive (high): getter: body returns m_nGrade	nam1	2026-10-22
+140b11000	CPet::FUN_140b11000	CPet::GetGradeFx	descriptive	descriptive (high): getter: body returns m_nGradeFx	nam1	2026-10-22
+140c5f990	UILapenshardShieldBar::FUN_140c5f990	UILapenshardShieldBar::GetBuff	descriptive	descriptive (high): getter: body returns m_spBuff	nam1	2026-10-22
+140c62440	UILapenshardSystemDialog::FUN_140c62440	UILapenshardSystemDialog::GetPage	descriptive	descriptive (high): getter: body returns m_spPage	nam1	2026-10-22
+140c68da0	UILapenshardUpgradeTab::FUN_140c68da0	UILapenshardUpgradeTab::GetSource	descriptive	descriptive (high): getter: body returns m_spSource	nam1	2026-10-22
+140c68e40	UILapenshardUpgradeTab::FUN_140c68e40	UILapenshardUpgradeTab::GetN_bc	descriptive	descriptive (high): getter: body returns m_n_bc	nam1	2026-10-22
+14108e280	CNpcVibrate::FUN_14108e280	CNpcVibrate::IsActive	descriptive	descriptive (high): getter: body returns m_bActive	nam1	2026-10-22
+141093270	CNpc::FUN_141093270	CNpc::GetNpcData	descriptive	descriptive (high): getter: body returns m_spNpcData	nam1	2026-10-22
+141094f20	CNpc::FUN_141094f20	CNpc::SetOwnerId	descriptive	descriptive (high): setter: body stores the argument in m_nOwnerId	nam1	2026-10-22
+141094f40	CNpc::FUN_141094f40	CNpc::GetOwnerId	descriptive	descriptive (high): getter: body returns m_nOwnerId	nam1	2026-10-22
+141240700	GameObjectController::FUN_141240700	GameObjectController::SetKVelocity	descriptive	descriptive (high): setter: body stores the argument in m_kVelocity	nam1	2026-10-22
+141240780	GameObjectController::FUN_141240780	GameObjectController::IsJumping	descriptive	descriptive (high): getter: body returns m_bJumping	nam1	2026-10-22
+141240db0	GameObjectController::FUN_141240db0	GameObjectController::IsLift	descriptive	descriptive (high): getter: body returns m_bLift	nam1	2026-10-22
+141240dd0	GameObjectController::FUN_141240dd0	GameObjectController::IsLiftFalling	descriptive	descriptive (high): getter: body returns m_bLiftFalling	nam1	2026-10-22
+141240ed0	GameObjectController::FUN_141240ed0	GameObjectController::GetCollisionFlags	descriptive	descriptive (high): getter: body returns m_nCollisionFlags	nam1	2026-10-22
+141240fd0	GameObjectController::FUN_141240fd0	GameObjectController::GetKVelocity	descriptive	descriptive (high): getter: body returns m_kVelocity	nam1	2026-10-22
+141241320	GameObjectController::FUN_141241320	GameObjectController::GetCenterOffset	descriptive	descriptive (high): getter: body returns m_fCenterOffset	nam1	2026-10-22
+14129c8e0	UIRecallScrollNotifyDialog::FUN_14129c8e0	UIRecallScrollNotifyDialog::SetOffset	descriptive	descriptive (high): setter: body stores the argument in m_nOffset	nam1	2026-10-22
+14129c900	UIRecallScrollNotifyDialog::FUN_14129c900	UIRecallScrollNotifyDialog::IsActive	descriptive	descriptive (high): getter: body returns m_bActive	nam1	2026-10-22
+1412a1c40	UIItemRemakeOptionDialog::FUN_1412a1c40	UIItemRemakeOptionDialog::SetState	descriptive	descriptive (high): setter: body stores the argument in m_state	nam1	2026-10-22
+1412a1c60	UIItemRemakeOptionDialog::FUN_1412a1c60	UIItemRemakeOptionDialog::GetState	descriptive	descriptive (high): getter: body returns m_state	nam1	2026-10-22
+14160c1c0	Unk_ArcMover::FUN_14160c1c0	Unk_ArcMover::IsMoving	descriptive	descriptive (high): getter: body returns m_bMoving	nam1	2026-10-22
+14160c1e0	Unk_ArcMover::FUN_14160c1e0	Unk_ArcMover::GetName	descriptive	descriptive (high): getter: body returns m_strName	nam1	2026-10-22
+14176fa50	CMeshUpdateGate::FUN_14176fa50	CMeshUpdateGate::GetDuration	descriptive	descriptive (high): getter: body returns m_fDuration	nam1	2026-10-22
+14176fa60	CMeshUpdateGate::FUN_14176fa60	CMeshUpdateGate::IsActive	descriptive	descriptive (high): getter: body returns m_bActive	nam1	2026-10-22
+14176fa70	CMeshUpdateGate::FUN_14176fa70	CMeshUpdateGate::SetProcess	descriptive	descriptive (high): setter: body stores the argument in m_pProcess	nam1	2026-10-22
+141a01570	CMsgBoxData::FUN_141a01570	CMsgBoxData::SetMsg	descriptive	descriptive (high): setter: body stores the argument in m_strMsg	nam1	2026-10-22
+141a015a0	CMsgBoxData::FUN_141a015a0	CMsgBoxData::SetMsg2	descriptive	descriptive (high): setter: body stores the argument in m_strMsg2	nam1	2026-10-22
+141a015d0	CMsgBoxData::FUN_141a015d0	CMsgBoxData::SetTitle	descriptive	descriptive (high): setter: body stores the argument in m_strTitle	nam1	2026-10-22
+141a01640	CMsgBoxData::FUN_141a01640	CMsgBoxData::SetAlign	descriptive	descriptive (high): setter: body stores the argument in m_nAlign	nam1	2026-10-22
+141a01660	CMsgBoxData::FUN_141a01660	CMsgBoxData::SetExtra	descriptive	descriptive (high): setter: body stores the argument in m_strExtra	nam1	2026-10-22
+141a01c30	CMsgBoxData::FUN_141a01c30	CMsgBoxData::SetSound	descriptive	descriptive (high): setter: body stores the argument in m_strSound	nam1	2026-10-22
+141a01c70	CMsgBoxData::FUN_141a01c70	CMsgBoxData::SetStrike	descriptive	descriptive (high): setter: body stores the argument in m_strStrike	nam1	2026-10-22
+141a02730	CMsgBoxData::FUN_141a02730	CMsgBoxData::SetAgreement	descriptive	descriptive (high): setter: body stores the argument in m_bAgreement	nam1	2026-10-22
+141a02750	CMsgBoxData::FUN_141a02750	CMsgBoxData::SetRetraction	descriptive	descriptive (high): setter: body stores the argument in m_nRetraction	nam1	2026-10-22
+141a02be0	CMsgBoxData::FUN_141a02be0	CMsgBoxData::GetSound	descriptive	descriptive (high): getter: body returns m_strSound	nam1	2026-10-22
+141a02c40	CMsgBoxData::FUN_141a02c40	CMsgBoxData::GetType	descriptive	descriptive (high): getter: body returns m_nType	nam1	2026-10-22
+141a02ce0	CMsgBoxData::FUN_141a02ce0	CMsgBoxData::GetExtra	descriptive	descriptive (high): getter: body returns m_strExtra	nam1	2026-10-22
+141a02dc0	CMsgBoxData::FUN_141a02dc0	CMsgBoxData::GetLinkUrl	descriptive	descriptive (high): getter: body returns m_strLinkUrl	nam1	2026-10-22
+141a03070	CMsgBoxData::FUN_141a03070	CMsgBoxData::IsModaless	descriptive	descriptive (high): getter: body returns m_bModaless	nam1	2026-10-22

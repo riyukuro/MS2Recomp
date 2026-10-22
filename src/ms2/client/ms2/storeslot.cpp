@@ -367,7 +367,7 @@ int StoreSlot::vfunc_18(void* p)
         StoreSlot* pFrom = FUN_14140e6d0(pDrag);
         if (pFrom != 0)
         {
-            if (pFrom->FUN_1422cc410() == m_nIndex)
+            if (pFrom->GetIndex() == m_nIndex)
                 return pDrag->vfunc_10();
             COutPacket packet(0x18, 0);
             packet.vfunc_o10_1(2);

@@ -276,11 +276,11 @@ int CUGCBuildValidator::FUN_140880990()
 MS2_REPLACE_METHOD(0x140880990, CUGCBuildValidator, FUN_140880990, 70, 0x0A914660);
 
 // @0x1408809e0
-int CUGCBuildValidator::FUN_1408809e0()
+int CUGCBuildValidator::GetMode()
 {
     return m_nMode;
 }
-MS2_REPLACE_METHOD(0x1408809e0, CUGCBuildValidator, FUN_1408809e0, 14, 0xCAA08B3B);
+MS2_REPLACE_METHOD(0x1408809e0, CUGCBuildValidator, GetMode, 14, 0xCAA08B3B);
 
 // @0x140880a00 mode 1: build
 int CUGCBuildValidator::vfunc_36(unsigned* pErr)

@@ -20,7 +20,7 @@ public:
     int FUN_1422ec460(HWND hWnd, Scaleform::GFx::Loader* pLoader);
     void FUN_1422ec670();                                                               // drops the sound, pauses
     bool FUN_1422ec700(HWND hWnd);                                                      // (re)creates the sound system
-    Scaleform::GFx::Video::Video* FUN_1422ec830();                                      // the video system
+    Scaleform::GFx::Video::Video* GetVideo();                                            // the video system
     Scaleform::GFx::Video::VideoDecoder* FUN_1422ec860();                               // its decoder (NULL if none)
 
 private:

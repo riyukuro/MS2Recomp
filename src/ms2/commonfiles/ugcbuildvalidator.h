@@ -72,7 +72,7 @@ public:
     int FUN_140880890();                    // the item must exist unless mode is 4 or 5
     int FUN_1408808d0();                    // loads the item data of the item; fails when it has none
     int FUN_140880990();                    // the neighbour cube exists and has a non-zero +0x68
-    int FUN_1408809e0();                    // m_nMode
+    int GetMode();                    // m_nMode
 
     Unk_CubePoint m_point;                  // +0x08
     Cube* m_pCube;                          // +0x18 filled by vfunc_36 from vfunc_34

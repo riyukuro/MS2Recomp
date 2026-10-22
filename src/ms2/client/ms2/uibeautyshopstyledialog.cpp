@@ -2007,7 +2007,7 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, Scaleform::GFx::Valu
 MS2Ptr<CMsgBoxData> FUN_140f0a930(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb, int nArg)
 {
     MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(nType));
-    spBox->FUN_141a01570(strText);
+    spBox->SetMsg(strText);
     spBox->FUN_141a027c0(cb);
     spBox->FUN_140533ff0(nArg);
     FUN_14151f150(MS2Ptr<CMsgBoxData>(spBox));

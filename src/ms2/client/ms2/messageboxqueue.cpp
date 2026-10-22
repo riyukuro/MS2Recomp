@@ -191,7 +191,7 @@ int FUN_14151f9c0()
             MS2Ptr<CMsgBoxData> spItem = s_queue.GetAt(pos);
             if (spItem.get() != 0)
             {
-                if (!spItem->FUN_141a03070())
+                if (!spItem->IsModaless())
                     return 0;
             }
         }

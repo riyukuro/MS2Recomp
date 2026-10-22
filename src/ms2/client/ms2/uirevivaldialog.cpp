@@ -959,7 +959,7 @@ void UIRevivalDialog::FUN_141abccb0()
             strMsg = FUN_14086d060(0x283, m_190);
         else
             strMsg = FUN_140c160b0(CStringW(L"s_msg_revival_merat_msg_box_cn"), m_190);
-        m_180->FUN_141a01570(strMsg);
+        m_180->SetMsg(strMsg);
         FUN_14151f4e0(m_180->FUN_141a02b90(), m_180);
     }
 }

@@ -194,7 +194,7 @@ static CStringA s_strTabIndex = "tabIndex";
 static CStringA s_strDesignUpload = "design_Upload";
 
 NotifySystem* FUN_140939a10();
-CAdBannerManagerCli* FUN_1409fb930();
+CAdBannerManagerCli* GetAdBannerManagerCli();
 
 // @0x1412e84b0
 UIMeratMarketDialog::UIMeratMarketDialog()
@@ -238,7 +238,7 @@ void UIMeratMarketDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
     Unk_AdBannerArray banners;
-    if (FUN_1409fb930()->FUN_14096b540(2, banners))
+    if (GetAdBannerManagerCli()->FUN_14096b540(2, banners))
         ApplyBanners(banners);
 }
 
@@ -1557,7 +1557,7 @@ void UIMeratMarketDialog::ShowUgcTerms(int nParam, int nKind)
     if (spBox.operator CMsgBoxData*() != 0) {
         {
             CStringW strTitle(L"$s_msgbox_ugc_shop_terms_title");
-            spBox->FUN_141a015d0(strTitle);
+            spBox->SetTitle(strTitle);
         }
         spBox->FUN_140533ff0(nParam);
         FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
@@ -4694,7 +4694,7 @@ void UIMeratMarketDialog::OnShowHistory()
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x10, strText, 0, CStringW(L""));
     if (spBox.operator CMsgBoxData*() != 0)
     {
-        spBox->FUN_141a015d0(FUN_14028de60(0xa31));
+        spBox->SetTitle(FUN_14028de60(0xa31));
         FUN_141a02770(spBox.operator->(), 0x26c, 0x226);
         FUN_140d73c60(spBox);
     }

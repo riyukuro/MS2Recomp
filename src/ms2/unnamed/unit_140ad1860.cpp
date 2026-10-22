@@ -345,7 +345,7 @@ struct Unk_McCameraView                                         // the part of t
 };
 MS2_CHECK_OFFSET(Unk_McCameraView, m_mode, 0x118);
 
-ecr::SceneGraphService* FUN_140ad4ba0();
+ecr::SceneGraphService* GetSceneGraphService();
 Unk_McEntityRules* FUN_140ad4b90();
 void FUN_140ad4ff0(Unk_CameraManager* pCam, float fValue);
 
@@ -492,11 +492,11 @@ int CMouseController::FUN_140ad20f0(int bEnable)
 MS2_REPLACE_METHOD(0x140AD20F0, CMouseController, FUN_140ad20f0, 174, 0xFAD91CFF);
 
 // @0x140ad21b0
-int CMouseController::FUN_140ad21b0()
+int CMouseController::HasMode()
 {
     return m_nMode != 0;
 }
-MS2_REPLACE_METHOD(0x140AD21B0, CMouseController, FUN_140ad21b0, 44, 0x126CFED4);
+MS2_REPLACE_METHOD(0x140AD21B0, CMouseController, HasMode, 44, 0x126CFED4);
 
 // @0x140ad21f0
 int CMouseController::FUN_140ad21f0()
@@ -520,11 +520,11 @@ int CMouseController::FUN_140ad2260()
 MS2_REPLACE_METHOD(0x140AD2260, CMouseController, FUN_140ad2260, 47, 0x6343EA31);
 
 // @0x140ad22a0
-Unk_StreamPoint CMouseController::FUN_140ad22a0()
+Unk_StreamPoint CMouseController::GetMove()
 {
     return m_vMove;
 }
-MS2_REPLACE_METHOD(0x140AD22A0, CMouseController, FUN_140ad22a0, 41, 0x23DA3C24);
+MS2_REPLACE_METHOD(0x140AD22A0, CMouseController, GetMove, 41, 0x23DA3C24);
 
 // @0x140ad22d0
 void CMouseController::FUN_140ad22d0()
@@ -884,7 +884,7 @@ Unk_StreamPoint CMouseController::FUN_140ad3740(int nX, int nY)
     for (unsigned i = 0; i < spPick.FUN_140a16c30()->FUN_140a17e00()->FUN_140a17ea0(); i++)
     {
         Unk_McPickHit* pHit = spPick.FUN_140a16c30()->FUN_140a17e00()->FUN_140a17d70(i);
-        egf::Entity* pEntity = FUN_140ad4ba0()->GetEntityFromSceneGraphNode(pHit->FUN_140a17cb0());
+        egf::Entity* pEntity = GetSceneGraphService()->GetEntityFromSceneGraphNode(pHit->FUN_140a17cb0());
         if (pEntity == 0)
             continue;
         bool bClickable = false;
@@ -1124,7 +1124,7 @@ Unk_McEntityRules* FUN_140ad4b90()
 }
 
 // @0x140ad4ba0
-ecr::SceneGraphService* FUN_140ad4ba0()
+ecr::SceneGraphService* GetSceneGraphService()
 {
     return DAT_143ab9508;
 }

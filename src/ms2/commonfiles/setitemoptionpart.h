@@ -20,7 +20,7 @@ public:
 
     SetItemOptionPart();                                            // 0x1407bc4b0
     bool Load(Unk_140165cf0* pElem);                       // 0x1407bc580 load the part from its xml element
-    unsigned FUN_1407bc9b0();                                       // 0x1407bc9b0 the part count
+    unsigned GetCount();                                       // 0x1407bc9b0 the part count
     ATL::CAtlArray<int>& FUN_1407bc9d0();                           // 0x1407bc9d0 the additional effect ids
     ATL::CAtlArray<unsigned short>& FUN_1407bc9f0();                // 0x1407bc9f0 the additional effect levels
     void FUN_1407bca10(StatKey nStat, Unk_EnchantPtr<BaseOption> spOption);         // 0x1407bca10

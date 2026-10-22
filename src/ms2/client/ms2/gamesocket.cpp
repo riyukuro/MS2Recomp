@@ -161,11 +161,11 @@ void CGameSocket::vfunc_2(CSimpleSocket*,int error)
             Unk_LockGuard guard(m_lock);
             if(guard!=0) {} else {
                 m_state=1;
-                if(m_receiveBuffer==NULL || m_receiveBuffer->FUN_140714fa0()==m_received) {
+                if(m_receiveBuffer==NULL || m_receiveBuffer->GetSize()==m_received) {
                     m_receiveBuffer=FUN_1407138b0(0x5b4,Unk_SocketNew(0)); m_received=0;
                 }
                 int received=0;
-                int result=recv(m_socket,m_receiveBuffer->FUN_140713530()+(unsigned)m_received,m_receiveBuffer->FUN_140714fa0()-m_received,0);
+                int result=recv(m_socket,m_receiveBuffer->FUN_140713530()+(unsigned)m_received,m_receiveBuffer->GetSize()-m_received,0);
                 if(result==SOCKET_ERROR) { int last=WSAGetLastError(); if(last!=WSAEWOULDBLOCK) throw Exception(last); }
                 else received=result;
                 if(received==0) return;
@@ -339,10 +339,10 @@ void CGameSocket::FUN_141267070()
         if((SOCKET)m_socket==0 || (SOCKET)m_socket==INVALID_SOCKET) return;
         while(m_sendQueue.GetHeadPosition()) {
             CPacketBuffer* buffer=m_sendQueue.GetHead().get();
-            int n=m_socket.FUN_14126c3d0(buffer->FUN_140713530()+m_sent,buffer->FUN_140714fa0()-m_sent,0);
+            int n=m_socket.FUN_14126c3d0(buffer->FUN_140713530()+m_sent,buffer->GetSize()-m_sent,0);
             if(n==0) break;
             m_sent+=n;
-            if(m_sent>=(unsigned)buffer->FUN_140714fa0()) { m_sendQueue.RemoveHead(); m_sent=0; }
+            if(m_sent>=(unsigned)buffer->GetSize()) { m_sendQueue.RemoveHead(); m_sent=0; }
         }
     }
 }

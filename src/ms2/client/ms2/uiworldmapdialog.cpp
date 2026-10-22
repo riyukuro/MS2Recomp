@@ -2183,7 +2183,7 @@ void UIWorldMapDialog::FUN_141b5f740(MS2Ptr<UIWorldMap::MapTile> spTile, ASObj* 
         Unk_PayloadPtr<CQuest> spQuest = static_cast<CQuestManagerCommon*>(FUN_140764020())->vfunc_o10_3(quests[i]);
         if (spQuest.get() != 0)
         {
-            if (spQuest->FUN_1407476d0() == 2 || static_cast<CQuestCommon*>(spQuest.operator->())->IsComplete() != 0)
+            if (spQuest->GetState() == 2 || static_cast<CQuestCommon*>(spQuest.operator->())->IsComplete() != 0)
                 nClear++;
         }
         if (strTooltip.GetLength() != 0)
@@ -2553,7 +2553,7 @@ template <class T> bool Common::Constants::Values<T>::Get(ATL::CAtlArray<T>& out
 static MS2Ptr<CMsgBoxData> FUN_141b62fc0(Delegate<bool(int, const CMsgBoxData&)> kHandler, CStringW strKey, CStringW strArg)
 {
     MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(1));
-    spBox->FUN_141a01570(FUN_1405c2690(CStringW(strKey), strArg));
+    spBox->SetMsg(FUN_1405c2690(CStringW(strKey), strArg));
     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(kHandler));
     FUN_14151f150(MS2Ptr<CMsgBoxData>(spBox));
     return spBox;
@@ -2563,7 +2563,7 @@ static MS2Ptr<CMsgBoxData> FUN_141b62fc0(Delegate<bool(int, const CMsgBoxData&)>
 static MS2Ptr<CMsgBoxData> FUN_141b62e40(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> kHandler, __int64 nPrice)
 {
     MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(nType));
-    spBox->FUN_141a01570(strText);
+    spBox->SetMsg(strText);
     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(kHandler));
     spBox->FUN_140e01830(nPrice);
     FUN_14151f150(MS2Ptr<CMsgBoxData>(spBox));

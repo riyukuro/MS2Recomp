@@ -1046,7 +1046,7 @@ int CMeratMarketMan::FUN_140d56840()
     if (nOld != 0 && 0 < m_ne0) {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, FormatStringId(0xa36, FUN_1409404f0(m_ne0)), 0, CStringW(L""));
         if (spBox.get() != 0) {
-            spBox->FUN_141a01c30(s_marketCalculate);
+            spBox->SetSound(s_marketCalculate);
             FUN_140d73c60(spBox);
             FUN_141276180(s_ugcEndSale, CString(""));
         }
@@ -1473,18 +1473,18 @@ void CMeratMarketMan::FUN_140d589f0(int bCancel)
         if (spBox.get() != 0) {
             CStringW strTitle = FUN_14028de60(0x9f4);
             CStringW strCaption = FUN_14028de60(bPremium ? 0x9fb : 0x9f5);
-            spBox->FUN_141a015d0(strCaption);
+            spBox->SetTitle(strCaption);
             spBox->FUN_141a02770(0x1e0, 300);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CMeratMarketMan::FUN_140d60280));
             if (nFailed == 0) {
-                spBox->FUN_141a01570(StringFormat(strTitle, FUN_14028de60(bPremium ? 0x9fe : 0x9f8), strOk));
-                spBox->FUN_141a01c30(s_cashBuy);
+                spBox->SetMsg(StringFormat(strTitle, FUN_14028de60(bPremium ? 0x9fe : 0x9f8), strOk));
+                spBox->SetSound(s_cashBuy);
             } else if (nCount == nFailed) {
-                spBox->FUN_141a01570(StringFormat(strTitle, FUN_14028de60(bPremium ? 0xa00 : 0x9fa), strFail));
+                spBox->SetMsg(StringFormat(strTitle, FUN_14028de60(bPremium ? 0xa00 : 0x9fa), strFail));
             } else {
-                spBox->FUN_141a01570(StringFormat(strTitle, FUN_14028de60(bPremium ? 0x9ff : 0x9f9),
+                spBox->SetMsg(StringFormat(strTitle, FUN_14028de60(bPremium ? 0x9ff : 0x9f9),
                                                   StringFormat(L"{0}\n{1}", strOk, strFail)));
-                spBox->FUN_141a01c30(s_cashBuy);
+                spBox->SetSound(s_cashBuy);
             }
             FUN_140d73c60(spBox);
         }
@@ -2793,7 +2793,7 @@ void CMeratMarketMan::FUN_140d5fea0(CMeratMarketPacket::ErrorPacket& error)
         UIMessageBox* pBox = FUN_14151f890();
         if (pBox != 0) {
             MS2Ptr<CMsgBoxData> spBox = pBox->FUN_1419f8470();
-            if (spBox.get() != 0 && spBox->FUN_141a02ce0().Find(L"inputSeller", 0) != -1)
+            if (spBox.get() != 0 && spBox->GetExtra().Find(L"inputSeller", 0) != -1)
                 pBox->FUN_1419f82b0(FUN_14028de60(0xa20));
         }
     }

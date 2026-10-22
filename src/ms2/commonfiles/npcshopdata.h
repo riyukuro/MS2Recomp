@@ -51,11 +51,11 @@ public:
     void FUN_1406dc2c0(CInPacket& in);               // read
     void FUN_1406dc3c0(Unk_140165cf0* pElem, const CString& strType, const CString& strItem, const CString& strIcon,
                        const CString& strPrice);     // read the four attributes (names given by the caller)
-    const CString& FUN_1406dc4b0() const;            // icon tag
-    unsigned FUN_1406dc4d0() const;                  // payment item id
-    __int64 FUN_1406dc4f0() const;                   // amount
+    const CString& GetIconTag() const;            // icon tag
+    unsigned GetItemId() const;                  // payment item id
+    __int64 GetAmount() const;                   // amount
     ePaymentType FUN_1406dc510() const;              // payment type (a gated type falls back to 4 while its feature is off)
-    void FUN_1406dc580(int nFeature);                // the feature that gates types 9 and 10
+    void SetFeature(int nFeature);                // the feature that gates types 9 and 10
 
     CString m_strIconTag;                            // +0x18
     ePaymentType m_eType;                            // +0x20
@@ -228,9 +228,9 @@ public:
     CBeautyShopItemGroup(__int64 nKey, const CString& strName, unsigned nValue);  // 0x1406e3e40
     ATL::CAtlArray<MS2Ptr<CBeautyShopItem> >& FUN_1406e3f10(int nGender);
     unsigned FUN_1406e3fe0(int nGender);             // the gender's weight sum
-    __int64 FUN_1406e4040();                         // key (start time yyyymmddhhmmss)
+    __int64 GetKey();                         // key (start time yyyymmddhhmmss)
     const CString& FUN_1406e4060();
-    unsigned FUN_1406e4080();
+    unsigned GetValue();
     void FUN_1406e40a0(MS2Ptr<CBeautyShopItem> spItem, int nGender);
 
     __int64 m_nKey;                                  // +0x18

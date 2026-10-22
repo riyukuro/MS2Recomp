@@ -317,7 +317,7 @@ void UIItemSocketScrollDialog::FUN_140f65130(ItemScrollSlot& slot, DragSlot* pDr
         {
             strProb = FUN_140938ae0(CStringW(L"s_itemsocket_scroll_success_prob"), m_nProb);
             CItemSocket* pSocket = spTarget->FUN_1405279c0();
-            unsigned nMax = pSocket->FUN_140620a50();
+            unsigned nMax = pSocket->GetMaxSlot();
             unsigned nShown = nMax;
             if (m_nCount <= nMax)
                 nShown = m_nCount;
@@ -497,9 +497,9 @@ void UIItemSocketScrollDialog::OnClickAction()
         {
             unsigned nCount = m_nCount;
             CItemSocket* pSocket = spTarget->FUN_1405279c0();
-            if (pSocket->FUN_140620a50() < nCount)
+            if (pSocket->GetMaxSlot() < nCount)
             {
-                unsigned nMax = pSocket->FUN_140620a50();
+                unsigned nMax = pSocket->GetMaxSlot();
                 MS2Ptr<CMsgBoxData> box = FUN_140b191a0(FUN_140e63450(CStringW(L"s_itemsocket_scroll_ask_continue_socket_unlock"), nCount, nMax, nMax),
                                                         1, SsMsgBoxFn(this, &UIItemSocketScrollDialog::FUN_140f65a40), nTargetUid);
                 return;

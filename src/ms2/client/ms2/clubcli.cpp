@@ -96,7 +96,7 @@ class CMsgBoxData : public CPtred
 {
 public:
     CMsgBoxData(int nType);
-    void FUN_141a01570(const CStringW& strText);
+    void SetMsg(const CStringW& strText);
     void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)> cb);
     bool FUN_140b19130(unsigned nIndex, __int64& nValue) const;    // the nIndex-th stored value (this unit)
 
@@ -1630,7 +1630,7 @@ bool CMsgBoxData::FUN_140b19130(unsigned nIndex, __int64& nValue) const
 Unk_MsgBoxPtr FUN_140b191a0(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb, __int64 nUid)
 {
     Unk_MsgBoxPtr box(new CMsgBoxData(nType));
-    box->FUN_141a01570(strText);
+    box->SetMsg(strText);
     box->FUN_141a027c0(cb);
     FUN_1405340b0(box.operator->(), nUid);
     FUN_14151f150(box);

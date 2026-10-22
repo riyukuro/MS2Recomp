@@ -1818,7 +1818,7 @@ template <class T> T* Unk_PmGetDialog(int nUiId)
 template <class A> MS2Ptr<CMsgBoxData> Unk_PmShowYesNo(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb, A arg)
 {
     MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(nType));
-    spBox->FUN_141a01570(strText);
+    spBox->SetMsg(strText);
     spBox->FUN_141a027c0(cb);
     spBox->FUN_140b76940(arg);
     FUN_14151f150(spBox);
@@ -3570,7 +3570,7 @@ Unk_PpScene* FUN_1408e57f0();                                           // the u
 int FUN_1422b9e00(Unk_PpScene* pScene);                                 // the focused scene id
 int FUN_1422b9dc0(Unk_PpScene* pScene);                                 // the current scene id
 class Unk_PpKeyState : public Unk_PeUiScale { public: int FUN_1422aeed0(int nKey); };   // a mouse button state
-ecr::SceneGraphService* FUN_140ad4ba0();
+ecr::SceneGraphService* GetSceneGraphService();
 int FUN_140ae11a0(egf::Entity* pEntity, unsigned int nPropId, int* pValue);   // an int property
 void FUN_1408a2020(egf::Entity* pEntity, unsigned int nPropId, int* pValue);  // an int property
 void FUN_1413fb630(egf::Entity* pEntity, std::vector<unsigned __int64>& meshes);   // the meshes of an entity
@@ -3698,7 +3698,7 @@ void FUN_141a8a010(float x, float y)
             Unk_GoPickHit* pHit = FUN_140a17e00(spPick.FUN_140a16c30())->FUN_140a17d70(i);
             GameObject* pObject = 0;
             NiAVObject* pNode = static_cast<NiAVObject*>(FUN_140a17cb0(pHit));
-            egf::Entity* pEntity = FUN_140ad4ba0()->GetEntityFromSceneGraphNode(pNode);
+            egf::Entity* pEntity = GetSceneGraphService()->GetEntityFromSceneGraphNode(pNode);
             int nId = 0;
             if (FUN_140ae11a0(pEntity, 0x85b708e6, &nId) == 0)
                 pObject = static_cast<Unk_PpWorld*>(FUN_1403ed2d0())->FUN_141bd1180(nId);
@@ -3813,19 +3813,19 @@ bool FUN_141a8ab90(GameObject* pObject, float x, float y)
         info.m_infoA.m_00 = FUN_141656ad0(pMe);
         info.m_infoA.m_08 = FUN_141656a80(pMe);
         info.m_infoA.m_10 = pMe->vfunc_77();
-        info.m_infoA.m_18 = pPet->FUN_140b10290();
+        info.m_infoA.m_18 = pPet->GetPetId();
         info.m_infoA.m_20 = FUN_1416769f0(pMe);
         pMenu->FUN_141a7e870(info, pPetTarget, 0xf);
         return true;
     }
-    PCBase* pOwner = static_cast<Unk_PpWorld*>(FUN_1403ed2d0())->FUN_141bd1290(pPet->FUN_141094f40());
+    PCBase* pOwner = static_cast<Unk_PpWorld*>(FUN_1403ed2d0())->FUN_141bd1290(pPet->GetOwnerId());
     if (pOwner == 0)
         return false;
     Unk_PopupMenuInfo info(x, y, 1, 0x440, 0, CString(""), 0);
     info.m_infoA.m_00 = FUN_141656ad0(pOwner);
     info.m_infoA.m_08 = FUN_141656a80(pOwner);
     info.m_infoA.m_10 = pOwner->vfunc_77();
-    info.m_infoA.m_18 = pPet->FUN_140b10290();
+    info.m_infoA.m_18 = pPet->GetPetId();
     info.m_infoA.m_20 = FUN_1416769f0(pOwner);
     pMenu->FUN_141a7e870(info, pPetTarget, 0xf);
     return true;

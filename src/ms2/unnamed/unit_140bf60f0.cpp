@@ -251,7 +251,7 @@ typedef Delegate<bool(int, const CMsgBoxData&)> AqAnswerDelegate;
 MS2Ptr<CMsgBoxData> FUN_140bfab20(CStringW strText, int nType, AqAnswerDelegate cb, int nQuest)
 {
     MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(nType));
-    spBox->FUN_141a01570(strText);
+    spBox->SetMsg(strText);
     spBox->FUN_141a027c0(cb);
     spBox->FUN_140534050(nQuest);
     FUN_14151f150(MS2Ptr<CMsgBoxData>(spBox));

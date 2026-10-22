@@ -17,10 +17,10 @@ public:
     CWinHttpClient();                                       // 0x140920690
     CWinHttpClient(const std::wstring& strUrl);             // 0x1409208e0
     ~CWinHttpClient();                                      // 0x140920b30
-    void FUN_140920cc0(const std::wstring& strUrl);         // SetRequestUrl (m_requestURL = url)
+    void SetRequestURL(const std::wstring& strUrl);         // SetRequestUrl (m_requestURL = url)
     bool FUN_140920cf0(const std::wstring& strVerb, bool bAsync);   // SendHttpRequest(httpVerb, disableAutoRedirect)
     std::wstring GetResponseHeader();
-    std::wstring FUN_140922860();                           // GetResponseContent
+    std::wstring GetResponseContent();                        // GetResponseContent
     std::wstring GetResponseCharset();
     std::wstring GetResponseStatusCode();
     std::wstring GetResponseLocation();

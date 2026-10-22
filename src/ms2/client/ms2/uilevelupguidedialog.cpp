@@ -584,7 +584,7 @@ void UILevelUpGuideDialog::FUN_140f869f0()
                 continue;
             if (spQuest->FUN_1407447c0() != 0)
                 continue;
-            if (spQuest->FUN_1407476d0() != 1 && spQuest->FUN_1407476d0() != 2)
+            if (spQuest->GetState() != 1 && spQuest->GetState() != 2)
                 continue;
             if (spData->m_conditions.GetCount() > 0) {
                 ASObj row(2);

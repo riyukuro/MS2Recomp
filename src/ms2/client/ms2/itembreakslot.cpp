@@ -92,7 +92,7 @@ int ItemBreakSlot::vfunc_18(void* p)
     {
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10(pItemSlot));
         if (spItem.get() != 0)
-            FUN_1409c4b20()->FUN_140532de0(spItem, FUN_1422cc410());
+            FUN_1409c4b20()->FUN_140532de0(spItem, GetIndex());
     }
     return static_cast<DragSlot*>(p)->vfunc_10();
 }

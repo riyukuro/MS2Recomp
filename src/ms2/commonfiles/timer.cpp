@@ -109,7 +109,7 @@ float Timer::FUN_1408689a0()
 }
 
 // @0x140868a50
-int Timer::FUN_140868a50() const
+int Timer::GetStart() const
 {
     return m_nStart;
 }
@@ -172,7 +172,7 @@ int Timer::FUN_140868c00()
 }
 
 // @0x140868c60
-int Timer::FUN_140868c60() const
+int Timer::HasPauseTime() const
 {
     return m_nPauseTime != 0;
 }

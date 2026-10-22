@@ -38,32 +38,32 @@ const char* GFxSceneService::GetDisplayName() const
 MS2_REPLACE_METHOD(0x1422B9D80, GFxSceneService, GetDisplayName, 13, 0xAEFBC23C);
 
 // @0x1422b9da0
-int GFxSceneService::FUN_1422b9da0()
+int GFxSceneService::GetPrevSceneId()
 {
     return m_nPrevSceneId;
 }
-MS2_REPLACE_METHOD(0x1422B9DA0, GFxSceneService, FUN_1422b9da0, 14, 0xA25B27BF);
+MS2_REPLACE_METHOD(0x1422B9DA0, GFxSceneService, GetPrevSceneId, 14, 0xA25B27BF);
 
 // @0x1422b9dc0
-int GFxSceneService::FUN_1422b9dc0()
+int GFxSceneService::GetSceneId()
 {
     return m_nSceneId;
 }
-MS2_REPLACE_METHOD(0x1422B9DC0, GFxSceneService, FUN_1422b9dc0, 14, 0xBA6447E3);
+MS2_REPLACE_METHOD(0x1422B9DC0, GFxSceneService, GetSceneId, 14, 0xBA6447E3);
 
 // @0x1422b9de0
-int GFxSceneService::FUN_1422b9de0()
+int GFxSceneService::GetPrevSubSceneId()
 {
     return m_nPrevSubSceneId;
 }
-MS2_REPLACE_METHOD(0x1422B9DE0, GFxSceneService, FUN_1422b9de0, 14, 0xD26D6807);
+MS2_REPLACE_METHOD(0x1422B9DE0, GFxSceneService, GetPrevSubSceneId, 14, 0xD26D6807);
 
 // @0x1422b9e00
-int GFxSceneService::FUN_1422b9e00()
+int GFxSceneService::GetSubSceneId()
 {
     return m_nSubSceneId;
 }
-MS2_REPLACE_METHOD(0x1422B9E00, GFxSceneService, FUN_1422b9e00, 14, 0x6A78E4AB);
+MS2_REPLACE_METHOD(0x1422B9E00, GFxSceneService, GetSubSceneId, 14, 0x6A78E4AB);
 
 // @0x1422b9e20
 UISceneEntity* GFxSceneService::FUN_1422b9e20(int nSceneId)
@@ -82,16 +82,16 @@ UISceneEntity* GFxSceneService::FUN_1422b9e50()
 MS2_REPLACE_METHOD(0x1422B9E50, GFxSceneService, FUN_1422b9e50, 38, 0x08895A49);
 
 // @0x1422b9e80
-UISceneEntity* GFxSceneService::FUN_1422b9e80()
+UISceneEntity* GFxSceneService::GetScene()
 {
     return m_pScene;
 }
-MS2_REPLACE_METHOD(0x1422B9E80, GFxSceneService, FUN_1422b9e80, 15, 0x7BFFD3E9);
+MS2_REPLACE_METHOD(0x1422B9E80, GFxSceneService, GetScene, 15, 0x7BFFD3E9);
 
 // @0x1422b9ea0
 int GFxSceneService::FUN_1422b9ea0()
 {
-    switch (FUN_1422b9e00())
+    switch (GetSubSceneId())
     {
     case 0x6200041:
     case 0x620007f:

@@ -110,7 +110,7 @@ public:
     // ITooltip
     virtual int vfunc_0(void* p);                   // 0x1422cc690 return 0
 
-    int FUN_1422cc410();                            // return m_nIndex
+    int GetIndex();                            // return m_nIndex
 
 public:
     int m_nIndex;                                   // +0x80 ctor arg

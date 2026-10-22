@@ -37,7 +37,7 @@ class CMsgBoxData : public CPtred
 {
 public:
     CStringW FUN_141a02d50() const;                                     // the input text
-    void FUN_141a01660(const CStringW& strTag);                         // tag
+    void SetExtra(const CStringW& strTag);                         // tag
     void FUN_141a01800(int n);
     void FUN_141a01d30(int nMode, const CStringW& strDefault, unsigned nMax, int a4, int a5);   // input box setup
     void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)> cb);     // result callback
@@ -299,7 +299,7 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         unsigned short nLevel = buff->m_nLevel;
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x25, FUN_140298ea0(CStringW(L"s_club_ui_msg_buff_setting")), 0, CStringW(L""));
         if (box.get() != 0) {
-            box->FUN_141a01660(s_strClubBuff);
+            box->SetExtra(s_strClubBuff);
             box->FUN_141a01800(2);
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClubDialog::FUN_140e0be00));
             if (club->FUN_14020f640() == 0) {

@@ -328,7 +328,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                 MS2Ptr<CMsgBoxData> spBox = FUN_14151f820();
                 if (!(spBox == 0))
                 {
-                    if (!FUN_140164830(spBox->FUN_141a02ce0(), s_strRpsRequest))
+                    if (!FUN_140164830(spBox->GetExtra(), s_strRpsRequest))
                     {
                         CStringW strRequester;
                         if (spBox->FUN_140b76a70(0, strRequester))
@@ -421,7 +421,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                 }
                 else
                 {
-                    spBox->FUN_141a01660(s_strRpsWaiting);
+                    spBox->SetExtra(s_strRpsWaiting);
                     spBox->FUN_141a01ca0(FUN_1401d3200()->m_boxSeconds.FUN_14025a620(), 1, FUN_14028de60(0x2b8));
                     spBox->FUN_141a027c0(FUN_140b76b10(FUN_140bac700));
                     spBox->FUN_141a024a0(0);
@@ -593,7 +593,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                 }
                 else
                 {
-                    spBox->FUN_141a01660(s_strCoupleDanceWaiting);
+                    spBox->SetExtra(s_strCoupleDanceWaiting);
                     spBox->FUN_141a01ca0(FUN_1401d3200()->m_boxSeconds.FUN_14025a620(), 1, FUN_14028de60(0x2b8));
                     spBox->FUN_141a027c0(FUN_140b76b10(FUN_140bacda0));
                     spBox->FUN_141a024a0(0);
@@ -671,7 +671,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
             MS2Ptr<CMsgBoxData> spBox = FUN_14151f820();
             if (!(spBox == 0))
             {
-                if (!FUN_140164830(spBox->FUN_141a02ce0(), s_strCoupleDanceRequest))
+                if (!FUN_140164830(spBox->GetExtra(), s_strCoupleDanceRequest))
                 {
                     int nFirst = 0;
                     if (spBox->FUN_140961900(0, nFirst))
@@ -752,7 +752,7 @@ static bool FUN_140b768a0(const CStringW& strTag)
     MS2Ptr<CMsgBoxData> spBox = FUN_14151f820();
     if (spBox == 0)
         return false;
-    bool bSame = !FUN_140164830(spBox->FUN_141a02ce0(), strTag);
+    bool bSame = !FUN_140164830(spBox->GetExtra(), strTag);
     return bSame;
 }
 

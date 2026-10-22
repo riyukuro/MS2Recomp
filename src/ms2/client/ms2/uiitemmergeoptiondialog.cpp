@@ -1151,7 +1151,7 @@ CStringW UIItemMergeOptionDialog::GetCurrentOption(MS2Ptr<CItem> spItem)
             Unk_EnchantPtr<BaseOption> spOption(stats.GetValueAt(pos));
             if (!spOption)
                 continue;
-            if (spOption->FUN_140266ce0())
+            if (spOption->HasValue())
                 return FUN_140631600(nStat, spOption.get());
         }
         for (POSITION pos = specials.GetStartPosition(); pos != 0; specials.GetNext(pos))
@@ -1160,11 +1160,11 @@ CStringW UIItemMergeOptionDialog::GetCurrentOption(MS2Ptr<CItem> spItem)
             Unk_EnchantPtr<BaseOption> spOption(specials.GetValueAt(pos));
             if (!spOption)
                 continue;
-            if (spOption->FUN_140266ce0())
+            if (spOption->HasValue())
             {
                 if (FUN_14081d9e0(nSpecial) != 0)
                     return FUN_140630e10(nSpecial);
-                return FUN_140631830(nSpecial, spOption->FUN_140266e30(), 0);
+                return FUN_140631830(nSpecial, spOption->GetValue(), 0);
             }
         }
     }

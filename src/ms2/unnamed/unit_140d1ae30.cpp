@@ -744,7 +744,7 @@ void OpenItemBoxContents(CItem* pItem, CStringW strArgs)
             spEntry->m_nMax = nCount;
             spEntry->m_spItem.AssignRaw(pItem);
             spBox->FUN_141a01e60(spEntry);
-            spBox->FUN_141a015d0(FUN_14028b8e0(L"s_msg_item_open_item_box_multiopen_title"));
+            spBox->SetTitle(FUN_14028b8e0(L"s_msg_item_open_item_box_multiopen_title"));
             spBox->FUN_141a01690(FUN_14028b8e0(L"s_msg_item_open_item_box_multiopen_ok"), FUN_14028b8e0(L"s_word_cancel"), L"");
             spBox->FUN_140b76940(strArgs);
             spBox->FUN_141a027c0(Unk_IuBoxCallback(OnOpenItemBoxMulti));
@@ -1756,7 +1756,7 @@ int QuestStart(MS2Ptr<CItem> spItem, PC* pPlayer)
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(2, strMsg, 0, s_strUseFunctionItem);
     if (spBox.get() == 0)
         return DAT_143ab2a90.FUN_140a63880(spItem.get(), L"");
-    spBox->FUN_141a015d0(strTitle);
+    spBox->SetTitle(strTitle);
     spBox->FUN_141a01600(spItem->FUN_140526a50());
     spBox->FUN_141a024a0(0);
     spBox->FUN_141a01700(0x477, 0x478, 0);

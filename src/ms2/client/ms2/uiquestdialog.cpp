@@ -1357,14 +1357,14 @@ int UIQuestDialog::AddQuestNode(int nChapter, ASArray& rNodes)
         }
         if (bProgressOnly != 0)
         {
-            if (spQuest->FUN_1407476d0() != 1)
+            if (spQuest->GetState() != 1)
                 continue;
         }
         ASObj node(2);
         node.FUN_1409c0d20("id", spQuest->FUN_140bfc580());
         node.FUN_1407cb9c0("regist", spQuest->GetTrackingState());
         node.FUN_1407cb9c0("forceRegist", FUN_14074b790(spQuest->FUN_140bfc580()));
-        node.FUN_1407cbbe0("progress", spQuest->FUN_1407476d0() == 1);
+        node.FUN_1407cbbe0("progress", spQuest->GetState() == 1);
         node.FUN_1407cbb20("label", QuestListLabel(spQuest->FUN_140bfc580()));
         node.FUN_1407cb9c0("isNew", HasPinned(spQuest->FUN_140bfc580()));
         node.FUN_1407cba60("icon", QuestStateName(spQuest.get()));
@@ -1706,7 +1706,7 @@ void UIQuestDialog::GroupChapters(QuestGroups& rOut)
             }
             if (!bRepeat)
             {
-                if (bProgressOnly != 0 && spQuest->FUN_1407476d0() != 1)
+                if (bProgressOnly != 0 && spQuest->GetState() != 1)
                     continue;
                 FUN_1416dd240(kept, spQuest);
             }
@@ -1890,7 +1890,7 @@ void UIQuestDialog::GiveUpQuest(int nQuestId)
         return;
     if (spQuest->GetData().get() == 0)
         return;
-    if (spQuest->FUN_1407476d0() != 1)
+    if (spQuest->GetState() != 1)
         return;
     bool bConfirm = false;
     if (FUN_14074b090(spQuest->GetData().operator->()) != 0 && spQuest->FUN_140744b90(0) == 0)

@@ -159,7 +159,7 @@ void CPetInventory::FUN_140c868d0()
         void* pPet = pPlayer->FUN_141676a10();
         if (pPet != 0)
         {
-            MS2Ptr<Unk_PetRow> spRow = static_cast<CPet*>(pPet)->FUN_140b102b0();
+            MS2Ptr<Unk_PetRow> spRow = static_cast<CPet*>(pPet)->GetRow();
             if (spRow.get() != 0)
                 nSlots = spRow->m_nSlots;
         }

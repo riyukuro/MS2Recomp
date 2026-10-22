@@ -99,7 +99,7 @@ void CFileLogger::FUN_1403922d0(int nId)
     CTextLogFile* pFile = FUN_140394b50(nId);
     if (pFile != 0)
     {
-        ms_paths.insert(pFile->FUN_140867310());
+        ms_paths.insert(pFile->GetName());
         pFile->FUN_140866c70();
     }
     LeaveCriticalSection(&ms_cs);
@@ -113,7 +113,7 @@ void CFileLogger::FUN_140392350()
     EnterCriticalSection(&ms_cs);
     for (std::map<int, MS2Ptr<CTextLogFile> >::iterator it = ms_files.begin(); it != ms_files.end(); ++it)
     {
-        ms_paths.insert(it->second->FUN_140867310());
+        ms_paths.insert(it->second->GetName());
         it->second->FUN_140866c70();
     }
     ms_files.clear();

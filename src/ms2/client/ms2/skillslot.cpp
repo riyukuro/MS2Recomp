@@ -544,7 +544,7 @@ int SkillSlot::vfunc_17()
     if (FUN_141761990() == 0)
     {
         int nPage = FUN_1409331f0()->FUN_140a700b0();
-        int nSlot = FUN_1422cc410();
+        int nSlot = GetIndex();
         if (SendKeyTableMode5(m_nSkillId, m_nItemId, m_nItemUid, nPage, nSlot) == 0)
         {
             vfunc_12();
@@ -616,7 +616,7 @@ int SkillSlot::vfunc_18(void* p)
                                     {
                                         int nPage = FUN_1409331f0()->FUN_140a700b0();
                                         int nSkillId = spItem->FUN_140527840()->FUN_14053dc20();
-                                        int nSlot = FUN_1422cc410();
+                                        int nSlot = GetIndex();
                                         if (FUN_14092f690(nSkillId, 0, 0, nPage, nSlot) != 0)
                                         {
                                             SetSkillId(nSkillId);
@@ -666,7 +666,7 @@ int SkillSlot::vfunc_18(void* p)
                         int nPage = FUN_1409331f0()->FUN_140a700b0();
                         if (bUsable)
                         {
-                            int nSlot = FUN_1422cc410();
+                            int nSlot = GetIndex();
                             if (FUN_14092f690(nSkillId, nItemId, nItemUid, nPage, nSlot) != 0)
                             {
                                 SetSkillId(nSkillId);
@@ -678,7 +678,7 @@ int SkillSlot::vfunc_18(void* p)
                                     kEntry.m_nSkillId = nSkillId;
                                     kEntry.m_nItemUid = nItemUid;
                                     kEntry.m_nItemId = nItemId;
-                                    int nSlotIdx = FUN_1422cc410();
+                                    int nSlotIdx = GetIndex();
                                     FUN_1409331f0()->FUN_14142e2a0(nSlotIdx, &kEntry);
                                 }
                             }
@@ -690,7 +690,7 @@ int SkillSlot::vfunc_18(void* p)
             {
                 int nPage = FUN_1409331f0()->FUN_140a700b0();
                 int nSkillId = pBookSlot->FUN_140a366a0();
-                int nSlot = FUN_1422cc410();
+                int nSlot = GetIndex();
                 if (FUN_14092f690(nSkillId, 0, 0, nPage, nSlot) != 0)
                 {
                     SetSkillId(nSkillId);
@@ -705,7 +705,7 @@ int SkillSlot::vfunc_18(void* p)
             int nSkillId = pSkillSlot->GetSkillId();
             __int64 nItemUid = pSkillSlot->GetItemUid();
             int nItemId = pSkillSlot->GetItemId();
-            int nSlot = FUN_1422cc410();
+            int nSlot = GetIndex();
             if (FUN_14092f690(nSkillId, nItemId, nItemUid, nPage, nSlot) != 0)
             {
                 pSkillSlot->SetSkillId(m_nSkillId);
@@ -717,13 +717,13 @@ int SkillSlot::vfunc_18(void* p)
                     kEntry.m_nSkillId = nSkillId;
                     kEntry.m_nItemUid = nItemUid;
                     kEntry.m_nItemId = nItemId;
-                    int nIdx = FUN_1422cc410();
+                    int nIdx = GetIndex();
                     FUN_1409331f0()->FUN_14142e2a0(nIdx, &kEntry);
                     Unk_SsQuickEntry kOther;
                     kOther.m_nSkillId = m_nSkillId;
                     kOther.m_nItemUid = m_nItemUid;
                     kOther.m_nItemId = m_nItemId;
-                    int nOtherIdx = pSkillSlot->FUN_1422cc410();
+                    int nOtherIdx = pSkillSlot->GetIndex();
                     FUN_1409331f0()->FUN_14142e2a0(nOtherIdx, &kOther);
                 }
                 SetSkillId(nSkillId);
@@ -790,7 +790,7 @@ void SkillSlot::FUN_14175e310(int nSkillId)
 void SkillSlot::FUN_14175e350(int nSkillId)
 {
     int nPage = FUN_1409331f0()->FUN_140a700b0();
-    FUN_14092f690(nSkillId, 0, 0, nPage, FUN_1422cc410());
+    FUN_14092f690(nSkillId, 0, 0, nPage, GetIndex());
     SetSkillId(nSkillId);
     vfunc_10();
 }
@@ -839,7 +839,7 @@ int SkillSlot::vfunc_0(void* p)
                 unsigned short nLevel = 1;
                 MS2Ptr<SkillLevelData> spLevel = static_cast<Unk_SsPc*>(pPc)->FUN_1416546d0()->vfunc_1(nSkillId);
                 if (spLevel.get() != 0)
-                    nLevel = spLevel->FUN_140803df0();
+                    nLevel = spLevel->GetLevel();
                 ASTooltip tip(pPc, 0x40, 2);
                 if (tip.FUN_1409e1c50(nSkillId, nLevel, 0) != 0)
                 {
@@ -1446,7 +1446,7 @@ int SkillSlot::FUN_141761530(MS2Ptr<SkillData>* pOut)
         spLevel = FUN_1401958b0()->GetSkillLevelData(m_nSkillId, 1);
     if (spLevel.IsNull())
         return 0;
-    SkillData* pData = spLevel->FUN_140803e10();
+    SkillData* pData = spLevel->GetSkill();
     int nReplace = 0;
     ATL::CAtlArray<unsigned>& arrEffect = pData->m_blockB0.m_arrCheckEffectID;
     ATL::CAtlArray<unsigned short>& arrLevel = pData->m_blockB0.m_arrCheckEffectLevel;
@@ -1459,7 +1459,7 @@ int SkillSlot::FUN_141761530(MS2Ptr<SkillData>* pOut)
         if (reinterpret_cast<Unk_SsBuffs*>(pPc->FUN_1416749a0())->FUN_140970020(nEffect, nLevel, nOverlap, 1) != 0)
         {
             nReplace = pData->m_blockB0.m_arrChangeSkillID[i];
-            spLevel->FUN_140803df0();
+            spLevel->GetLevel();
             break;
         }
     }
@@ -2193,7 +2193,7 @@ MS2Ptr<CSkillRecord> CSkillSystem::FUN_141764e30(Unk_InventorySkillRequest& kReq
         MS2Ptr<SkillLevelData> spLevel = FUN_141764c80(kReq.m_nSkillId);
         if (spLevel == 0)
             return MS2Ptr<CSkillRecord>(nullptr);
-        if (spLevel->FUN_140803e10()->m_nUseDefaultSkillID == 0 && !spLevel->FUN_140803e10()->m_bUseDefaultSkill)
+        if (spLevel->GetSkill()->m_nUseDefaultSkillID == 0 && !spLevel->GetSkill()->m_bUseDefaultSkill)
             return MS2Ptr<CSkillRecord>(nullptr);
         int nWhy = FUN_141769b70(spLevel, &kReq);
         if (nWhy == 0)
@@ -2201,10 +2201,10 @@ MS2Ptr<CSkillRecord> CSkillSystem::FUN_141764e30(Unk_InventorySkillRequest& kReq
         if (nWhy != 6 && nWhy != 7 && nWhy != 2)
             return MS2Ptr<CSkillRecord>(nullptr);
         int nOrigin = 0;
-        int nDefaultId = spLevel->FUN_140803e10()->m_nUseDefaultSkillID;
+        int nDefaultId = spLevel->GetSkill()->m_nUseDefaultSkillID;
         if (nDefaultId == 0 || nWhy == 2)
         {
-            if (!spLevel->FUN_140803e10()->m_bUseDefaultSkill)
+            if (!spLevel->GetSkill()->m_bUseDefaultSkill)
                 return MS2Ptr<CSkillRecord>(nullptr);
             nDefaultId = pOwner->FUN_14165c570();
             nOrigin = kReq.m_nSkillId;
@@ -2214,7 +2214,7 @@ MS2Ptr<CSkillRecord> CSkillSystem::FUN_141764e30(Unk_InventorySkillRequest& kReq
         if (spDefaultLevel == 0)
             return MS2Ptr<CSkillRecord>(nullptr);
         kReq.m_nSkillId = nDefaultId;
-        kReq.m_nLevel = spDefaultLevel->FUN_140803df0();
+        kReq.m_nLevel = spDefaultLevel->GetLevel();
         kReq.m_b38 = spDefaultLevel->FUN_140804450();
         spRecord = FUN_141765570(kReq);
         if (spRecord.get() != 0)
@@ -2233,17 +2233,17 @@ MS2Ptr<CSkillRecord> CSkillSystem::FUN_141765570(Unk_InventorySkillRequest& kReq
     MS2Ptr<SkillLevelData> spCur = spLevel;
     if (kReq.m_b38)
     {
-        int nBase = FUN_141764be0(spCur->FUN_140803e10()->GetId());
+        int nBase = FUN_141764be0(spCur->GetSkill()->GetId());
         if (nBase != spCur->FUN_140803dc0())
         {
-            spCur = FUN_14176b7c0(nBase, spCur->FUN_140803df0());
+            spCur = FUN_14176b7c0(nBase, spCur->GetLevel());
             if (spCur == 0)
                 return MS2Ptr<CSkillRecord>(nullptr);
         }
-        int nJump = FUN_141764ad0(spCur->FUN_140803e10());
+        int nJump = FUN_141764ad0(spCur->GetSkill());
         if (nJump != spCur->FUN_140803dc0())
         {
-            spCur = FUN_14176b7c0(nJump, spCur->FUN_140803df0());
+            spCur = FUN_14176b7c0(nJump, spCur->GetLevel());
             if (spCur == 0)
                 return MS2Ptr<CSkillRecord>(nullptr);
         }
@@ -2252,7 +2252,7 @@ MS2Ptr<CSkillRecord> CSkillSystem::FUN_141765570(Unk_InventorySkillRequest& kReq
     if (nWhy == 0)
     {
         kReq.m_nSkillId = spCur->FUN_140803dc0();
-        kReq.m_nLevel = spCur->FUN_140803df0();
+        kReq.m_nLevel = spCur->GetLevel();
         MS2Ptr<CSkillRecord> spRecord(new CSkillRecord);
         if (!spRecord->Init(kReq))
             return MS2Ptr<CSkillRecord>(nullptr);
@@ -2564,7 +2564,7 @@ LAB_CHECK:
                 if (spLevel.IsNull())
                 {
                 }
-                else if (spLevel->FUN_140803e10()->m_condition.m_nUseCoolDownShowUI == 0)
+                else if (spLevel->GetSkill()->m_condition.m_nUseCoolDownShowUI == 0)
                 {
                     if (bChainsEmpty && m_lstLapenChains.Find(nSkillId) == 0)
                     {
@@ -2616,7 +2616,7 @@ int CSkillSystem::FUN_1417674a0(int bAny)
             if (bAny == 0)
             {
                 float fCool = FUN_141765fe0(spLevel->FUN_140803dc0(), 0);
-                int bRecharge = spLevel->FUN_140803e10()->GetRechargeMaxCount() != 0;
+                int bRecharge = spLevel->GetSkill()->GetRechargeMaxCount() != 0;
                 bool bCooling;
                 if (bRecharge != 0 || fCool <= 0.0f)
                 {
@@ -2628,7 +2628,7 @@ int CSkillSystem::FUN_1417674a0(int bAny)
                     bCooling = true;
                 if (bCooling)
                 {
-                    if (spLevel->FUN_140803e10()->m_condition.m_nUseCoolDownShowUI == 0 && m_nCastAllowed != 0)
+                    if (spLevel->GetSkill()->m_condition.m_nUseCoolDownShowUI == 0 && m_nCastAllowed != 0)
                         bTry = true;
                     else
                         bTry = false;
@@ -2637,9 +2637,9 @@ int CSkillSystem::FUN_1417674a0(int bAny)
             if (bTry)
             {
                 unsigned nId = spLevel->FUN_140803dc0();
-                unsigned short nLevel = spLevel->FUN_140803df0();
+                unsigned short nLevel = spLevel->GetLevel();
                 m_pOwner->FUN_141526c80((int&)nId, nLevel);
-                if (nId != spLevel->FUN_140803dc0() || nLevel != spLevel->FUN_140803df0())
+                if (nId != spLevel->FUN_140803dc0() || nLevel != spLevel->GetLevel())
                 {
                     spLevel = FUN_141764c80(nId);
                     if (spLevel.IsNull())
@@ -3220,25 +3220,25 @@ int CSkillSystem::FUN_141769b70(MS2Ptr<SkillLevelData> spLevel, Unk_InventorySki
         }
         if (nFlag == 0 && m_pOwner->vfunc_99(0) != 0)
         {
-            int nMainType = spLevel->FUN_140803e10()->FUN_1407e9bd0();
+            int nMainType = spLevel->GetSkill()->FUN_1407e9bd0();
             if (nMainType != 0x1e)
             {
-                nMainType = spLevel->FUN_140803e10()->FUN_1407e9bd0();
+                nMainType = spLevel->GetSkill()->FUN_1407e9bd0();
                 if (nMainType != 0x1d)
                 {
-                    nMainType = spLevel->FUN_140803e10()->FUN_1407e9bd0();
+                    nMainType = spLevel->GetSkill()->FUN_1407e9bd0();
                     if (nMainType != 0x20)
                         return 1;
                 }
             }
         }
     }
-    if (spLevel->FUN_140803e10()->GetMainType() == 5)
+    if (spLevel->GetSkill()->GetMainType() == 5)
     {
         if (FUN_1403ed2d0()->FUN_141bdb660(4) != 0)
             return 0x12;
     }
-    if (spLevel->FUN_140803e10()->FUN_1407e9d70())
+    if (spLevel->GetSkill()->FUN_1407e9d70())
     {
         if (pReq->m_n34 != 0)
         {
@@ -3296,7 +3296,7 @@ int CSkillSystem::FUN_14176a380(MS2Ptr<SkillLevelData> spLevel, Unk_InventorySki
                 spLevel = spBase;
         }
     }
-    int nWhy = FUN_14176a8c0(spLevel->FUN_140803e10(), pReq);
+    int nWhy = FUN_14176a8c0(spLevel->GetSkill(), pReq);
     if (nWhy == 0)
     {
         nWhy = FUN_14176a530(spLevel);
@@ -3332,15 +3332,15 @@ int CSkillSystem::FUN_14176a530(MS2Ptr<SkillLevelData> spLevel)
             return 7;
     }
     float fCool = FUN_141765fe0(spLevel->FUN_140803dc0(), 0);
-    int nRecharge = spLevel->FUN_140803e10()->GetRechargeMaxCount();
+    int nRecharge = spLevel->GetSkill()->GetRechargeMaxCount();
     if (nRecharge != 0 || fCool <= 0.0f)
     {
         if (nRecharge == 0)
             return 0;
-        if (FUN_141768770(spLevel->FUN_140803e10()) != 0)
+        if (FUN_141768770(spLevel->GetSkill()) != 0)
             return 0;
     }
-    if (spLevel->FUN_140803e10()->m_condition.m_nUseCoolDownShowUI != 0)
+    if (spLevel->GetSkill()->m_condition.m_nUseCoolDownShowUI != 0)
     {
         fCool = FUN_141765fe0(spLevel->FUN_140803dc0(), 1);
         if (0.0f < fCool)

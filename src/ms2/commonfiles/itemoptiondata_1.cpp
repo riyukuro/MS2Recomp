@@ -62,14 +62,14 @@ void CItemOption::FUN_1405cb190(int nGroup) {
 
 // @0x1405cb200
 bool CItemOption::FUN_1405cb200(int nGroup, int nStat, Unk_EnchantPtr<BaseOption> spOption) {
-    if (!spOption->FUN_140266ce0()) return false;
+    if (!spOption->HasValue()) return false;
     m_aStat[nGroup].SetAt(nStat,spOption);
     return true;
 }
 
 // @0x1405cb2a0
 bool CItemOption::FUN_1405cb2a0(int nGroup, unsigned nStat, Unk_EnchantPtr<BaseOption> spOption) {
-    if (!spOption->FUN_140266ce0()) return false;
+    if (!spOption->HasValue()) return false;
     m_aSpecial[nGroup].SetAt(reinterpret_cast<const Unk_SocketSpecialStat&>(nStat),spOption);
     return true;
 }
@@ -94,7 +94,7 @@ int CItemOption::FUN_1405cb3a0(unsigned nType) {
     int nSum=0;
     for (size_t i=0;i<5;i++) {
         Unk_EnchantPtr<BaseOption> spOption=FUN_1405cb760((int)i,nType);
-        if (spOption.get()!=0) nSum+=spOption->FUN_140266e30();
+        if (spOption.get()!=0) nSum+=spOption->GetValue();
     }
     return nSum;
 }
@@ -104,7 +104,7 @@ int CItemOption::FUN_1405cb440(unsigned nType) {
     int nSum=0;
     for (size_t i=0;i<5;i++) {
         Unk_EnchantPtr<BaseOption> spOption=FUN_1405cb800((int)i,nType);
-        if (spOption.get()!=0) nSum+=spOption->FUN_140266e30();
+        if (spOption.get()!=0) nSum+=spOption->GetValue();
     }
     return nSum;
 }
@@ -114,7 +114,7 @@ std::pair<Unk_StatType, int> CItemOption::FUN_1405cb4e0(int nGroup) const {
     if (m_aStat[nGroup].IsEmpty()) return std::make_pair((Unk_StatType)-1,0);
     Unk_StatType eStat=(Unk_StatType)m_aStat[nGroup].GetKeyAt(m_aStat[nGroup].GetStartPosition());
     Unk_EnchantPtr<BaseOption> spOption=m_aStat[nGroup].GetValueAt(m_aStat[nGroup].GetStartPosition());
-    int nValue=spOption->FUN_140266e30();
+    int nValue=spOption->GetValue();
     return std::make_pair(eStat,nValue);
 }
 
@@ -123,7 +123,7 @@ std::pair<Unk_SocketSpecialStat, int> CItemOption::FUN_1405cb620(int nGroup) con
     if (m_aSpecial[nGroup].IsEmpty()) return std::make_pair((Unk_SocketSpecialStat)0,0);
     Unk_SocketSpecialStat eStat=m_aSpecial[nGroup].GetKeyAt(m_aSpecial[nGroup].GetStartPosition());
     Unk_EnchantPtr<BaseOption> spOption=m_aSpecial[nGroup].GetValueAt(m_aSpecial[nGroup].GetStartPosition());
-    int nValue=spOption->FUN_140266e30();
+    int nValue=spOption->GetValue();
     return std::make_pair(eStat,nValue);
 }
 
@@ -157,7 +157,7 @@ void CItemOption::FUN_1405cb900(int nGroup, Unk_OptionTextMap& kOut) {
         int nStat=m_aStat[nGroup].GetKeyAt(pos);
         Unk_EnchantPtr<BaseOption> spOption=m_aStat[nGroup].GetValueAt(pos);
         int nKey=0;
-        if (spOption->FUN_140266ce0()) nKey=FUN_14081d480(nStat);
+        if (spOption->HasValue()) nKey=FUN_14081d480(nStat);
         unsigned nOrder=FUN_140166430()->FUN_1405f6ed0(nKey);
         kOut.SetAt(nOrder,FUN_14082efb0(nStat));
     }
@@ -165,7 +165,7 @@ void CItemOption::FUN_1405cb900(int nGroup, Unk_OptionTextMap& kOut) {
         Unk_SocketSpecialStat eStat=m_aSpecial[nGroup].GetKeyAt(pos);
         Unk_EnchantPtr<BaseOption> spOption=m_aSpecial[nGroup].GetValueAt(pos);
         CString strName;
-        if (spOption->FUN_140266ce0()) strName=FUN_14081d380(eStat);
+        if (spOption->HasValue()) strName=FUN_14081d380(eStat);
         unsigned nOrder=FUN_140166430()->FUN_1405f6ed0(eStat);
         kOut.SetAt(nOrder,FUN_14081d380(eStat));
     }
@@ -209,7 +209,7 @@ void CItemOption::FUN_1405cbd70(ATL::CAtlMap<unsigned, unsigned short>& kOut) {
             if (spOption.get()!=0) {
                 unsigned short nValue=0;
                 kOut.Lookup(nAbility,nValue);
-                nValue+=(unsigned short)spOption->FUN_140266e30();
+                nValue+=(unsigned short)spOption->GetValue();
                 kOut.SetAt(nAbility,nValue);
             }
         }

@@ -118,7 +118,7 @@ CStringW FUN_14016a730(const char* psz, int nCodePage);
 CString FUN_14038f6d0(const CString& str1, const char* psz2);      // the exe's ATL::operator+ copies (the hook build
 CString FUN_1401d2b10(const CString& str1, const CString& str2);   // would import MFC CopyChars)
 #endif
-ecr::SceneGraphService* FUN_140ad4ba0();
+ecr::SceneGraphService* GetSceneGraphService();
 void* FUN_1413f9810();
 
 // @0x1400f7980
@@ -431,7 +431,7 @@ void CMainSystem::FUN_1414737d0(egf::Entity* pEntity)
 {
     if (pEntity)
     {
-        static_cast<MS2SceneGraphService*>(FUN_140ad4ba0())->FUN_1414f1ef0(egf::EntityID(pEntity->GetEntityID()));
+        static_cast<MS2SceneGraphService*>(GetSceneGraphService())->FUN_1414f1ef0(egf::EntityID(pEntity->GetEntityID()));
         ((egf::Scheduler*)FUN_1413f9810())->DestroyEntity(egf::EntityID(pEntity->GetEntityID()));
     }
 }
@@ -440,7 +440,7 @@ void CMainSystem::FUN_1414737d0(egf::Entity* pEntity)
 // @0x141473870
 void CMainSystem::FUN_141473870(egf::EntityID id)
 {
-    static_cast<MS2SceneGraphService*>(FUN_140ad4ba0())->FUN_1414f1ef0(egf::EntityID(id));
+    static_cast<MS2SceneGraphService*>(GetSceneGraphService())->FUN_1414f1ef0(egf::EntityID(id));
     ((egf::Scheduler*)FUN_1413f9810())->DestroyEntity(egf::EntityID(id));
 }
 

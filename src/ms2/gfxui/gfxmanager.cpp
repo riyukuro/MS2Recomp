@@ -468,11 +468,11 @@ void GFxManager::FUN_1422aef20(int nMovieId, int n)
 MS2_REPLACE_METHOD(0x1422AEF20, GFxManager, FUN_1422aef20, 64, 0x6FB42BE8);
 
 // @0x1422aef70
-int GFxManager::FUN_1422aef70()
+int GFxManager::IsPause()
 {
     return m_bPause;
 }
-MS2_REPLACE_METHOD(0x1422AEF70, GFxManager, FUN_1422aef70, 17, 0xCF7F4092);
+MS2_REPLACE_METHOD(0x1422AEF70, GFxManager, IsPause, 17, 0xCF7F4092);
 
 // @0x1422aef90
 void GFxManager::FUN_1422aef90(int bPause)
@@ -491,11 +491,11 @@ void GFxManager::FUN_1422aef90(int bPause)
 MS2_REPLACE_METHOD(0x1422AEF90, GFxManager, FUN_1422aef90, 238, 0x71BE0341);
 
 // @0x1422af090
-int GFxManager::FUN_1422af090()
+int GFxManager::IsArchive()
 {
     return m_bArchive;
 }
-MS2_REPLACE_METHOD(0x1422AF090, GFxManager, FUN_1422af090, 17, 0x1F8D7963);
+MS2_REPLACE_METHOD(0x1422AF090, GFxManager, IsArchive, 17, 0x1F8D7963);
 
 // @0x1422af0b0
 void GFxManager::FUN_1422af0b0(int bArchive, int bRelease)
@@ -779,18 +779,18 @@ GFxMovie* GFxManager::FUN_1422b01a0(int nMovieId)
 MS2_REPLACE_METHOD(0x1422B01A0, GFxManager, FUN_1422b01a0, 130, 0x37892ECF);
 
 // @0x1422b0230
-GFxVideo* GFxManager::FUN_1422b0230()
+GFxVideo* GFxManager::GetVideo()
 {
     return m_spVideo;
 }
-MS2_REPLACE_METHOD(0x1422B0230, GFxManager, FUN_1422b0230, 31, 0x26D40716);
+MS2_REPLACE_METHOD(0x1422B0230, GFxManager, GetVideo, 31, 0x26D40716);
 
 // @0x1422b0260
-Unk_NotifyContext* GFxManager::FUN_1422b0260()
+Unk_NotifyContext* GFxManager::GetNotifyContext()
 {
     return m_spNotifyContext;
 }
-MS2_REPLACE_METHOD(0x1422B0260, GFxManager, FUN_1422b0260, 33, 0xDC21CB16);
+MS2_REPLACE_METHOD(0x1422B0260, GFxManager, GetNotifyContext, 33, 0xDC21CB16);
 
 // @0x1422b0290
 Scaleform::GFx::Loader* GFxManager::FUN_1422b0290()
@@ -992,11 +992,11 @@ int GFxManager::FUN_1422b0bc0(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 MS2_REPLACE_METHOD(0x1422B0BC0, GFxManager, FUN_1422b0bc0, 326, 0x1C4C63E4);
 
 // @0x1422b0d10
-CString GFxManager::FUN_1422b0d10()
+CString GFxManager::GetIme()
 {
     return m_strIme;
 }
-MS2_REPLACE_METHOD(0x1422B0D10, GFxManager, FUN_1422b0d10, 68, 0x6EDCBFF9);
+MS2_REPLACE_METHOD(0x1422B0D10, GFxManager, GetIme, 68, 0x6EDCBFF9);
 
 // @0x1422b0d60
 Ptr<File> GFxManager::FUN_1422b0d60(String strPath)
@@ -1232,7 +1232,7 @@ MS2_REPLACE_METHOD(0x1422B22B0, GFxManager, FUN_1422b22b0, 564, 0x4175898C);
 // @0x1422b24f0
 void GFxManager::FUN_1422b24f0()
 {
-    if (FUN_1422af090() == 0) {
+    if (IsArchive() == 0) {
         m_lock.DoLock();
         m_mapMovies.RemoveKey(2);
         m_mapMovies.RemoveKey(5);

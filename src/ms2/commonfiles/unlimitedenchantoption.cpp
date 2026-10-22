@@ -180,7 +180,7 @@ bool UnlimitedEnchantTable::Load()
             {
                 Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
                 if (nValue != 0)
-                    spOption->FUN_140266e90((int)nValue);
+                    spOption->SetValue((int)nValue);
                 else
                     spOption->FUN_140266e50(fRate);
                 std::pair<UnlimitedEnchantInfo::OptionKey, Unk_EnchantPtr<BaseOption> > entry(nOption, spOption);

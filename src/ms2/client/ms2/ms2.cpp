@@ -1036,7 +1036,7 @@ bool MS2::RegisterServices(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR l
     m_spServiceManager->RegisterSystemService(EE_NEW GFxService, 1997);
     m_spServiceManager->RegisterSystemService(EE_NEW GFxSceneService, 1997);
     DAT_143b0d368 = CUIService::FUN_141ade400;
-    FUN_1414a56c0()->FUN_1422ea230(FUN_140652330(DAT_143ab0248));
+    FUN_1414a56c0()->SetFont(FUN_140652330(DAT_143ab0248));
     efd::SmartPointer<CWebBrowserService> spWebBrowser = EE_NEW CWebBrowserService(hInstance);
     spWebBrowser->FUN_141b77e10();
     m_spServiceManager->RegisterSystemService(spWebBrowser);
@@ -1561,7 +1561,7 @@ public:
     ~Unk_TextFormat();                                          // 0x141025530
     Unk_TextFormat& FUN_14083ff40(const wchar_t* pszArg);
     Unk_TextFormat& FUN_140840530(CStringW strArg);
-    CStringW FUN_1408405d0() const;                             // the formatted text
+    CStringW GetStr() const;                             // the formatted text
     // @0x141492ba0 (COMDAT)
     Unk_TextFormat& Arg(int nArg) { return FUN_140840530(FUN_140719630(nArg)); }
 private:
@@ -1662,7 +1662,7 @@ BOOL CGameApp::InitInstance()
     GetClientPlatform()->vfunc_28();
     if (DAT_143ac2fd4 != 0 && FUN_1406c34b0() == 0)
     {
-        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(11).FUN_1408405d0(), CStringW(L""), 0);
+        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(11).GetStr(), CStringW(L""), 0);
         return FALSE;
     }
     Unk_SingletonCreator<CrashManagerCli>::CreateInstance();
@@ -1754,7 +1754,7 @@ BOOL CGameApp::InitInstance()
     Unk_SingletonCreator<CFileSystem>::CreateInstance();
     if (TSingleton<CFileSystem>::GetInstance()->FUN_140396770(DAT_143ae08fc > 0, DAT_143ae08fc) == 0)
     {
-        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x29).FUN_1408405d0(), CStringW(L""), 0);
+        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x29).GetStr(), CStringW(L""), 0);
         return FALSE;
     }
     if (TSingleton<CFileSystem>::GetInstance()->FUN_1403981d0())
@@ -1926,7 +1926,7 @@ BOOL CGameApp::InitInstance()
     if (!TSingleton<CLuaClient>::GetInstance()->vfunc_1())
     {
         AfxMessageBox("error lua function");
-        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x33).FUN_1408405d0(), CStringW(L""), 0);
+        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x33).GetStr(), CStringW(L""), 0);
         return FALSE;
     }
     Unk_SingletonCreator<CContentShutdownManager>::CreateInstance();
@@ -1970,33 +1970,33 @@ BOOL CGameApp::InitInstance()
     Unk_SingletonCreator<CTailEffectDataTable>::CreateInstance()->Reload();
     if (!TSingleton<CDirWatcher>::GetInstance()->Start(0, 0, 0, 0, 0))
     {
-        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x34).FUN_1408405d0(), CStringW(L""), 0);
+        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x34).GetStr(), CStringW(L""), 0);
         return FALSE;
     }
     if (FUN_1409f7c90()->FUN_1409f7ea0() != 0)
     {
         if (!TSingleton<CItemLoader>::GetInstance()->Start(0, 0, 0, 0, 0))
         {
-            FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x35).FUN_1408405d0(), CStringW(L""), 0);
+            FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x35).GetStr(), CStringW(L""), 0);
             return FALSE;
         }
     }
     Unk_SingletonCreator<CUgcDownloadDown>::CreateInstance();
     if (!TSingleton<CUgcDownloadDown>::GetInstance()->Start(0, 0, 0, 0, 0))
     {
-        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x36).FUN_1408405d0(), CStringW(L""), 0);
+        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x36).GetStr(), CStringW(L""), 0);
         return FALSE;
     }
     Unk_SingletonCreator<CUgcDownloadLoad>::CreateInstance();
     if (!TSingleton<CUgcDownloadLoad>::GetInstance()->Start(0, 0, 0, 0, 0))
     {
-        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x36).FUN_1408405d0(), CStringW(L""), 0);
+        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x36).GetStr(), CStringW(L""), 0);
         return FALSE;
     }
     Unk_SingletonCreator<CAsyncImageLoader>::CreateInstance();
     if (!TSingleton<CAsyncImageLoader>::GetInstance()->Start(0, 0, 0, 0, 0))
     {
-        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x37).FUN_1408405d0(), CStringW(L""), 0);
+        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x37).GetStr(), CStringW(L""), 0);
         return FALSE;
     }
     Unk_SingletonCreator<CBigDataLogSystem>::CreateInstance();

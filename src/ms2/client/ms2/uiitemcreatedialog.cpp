@@ -755,7 +755,7 @@ __int64 ItemOptionDebug::FUN_1419b6d40(int nGroup, int nStat)
         Unk_EnchantPtr<BaseOption> value = option->FUN_1405cb760(nGroup, nStat);
         if (value == 0)
             continue;
-        __int64 n = value->FUN_140266e30();
+        __int64 n = value->GetValue();
         if (nMin > n || nMin == 0)
             nMin = n;
     }
@@ -775,7 +775,7 @@ __int64 ItemOptionDebug::FUN_1419b6e80(int nGroup, int nStat)
         Unk_EnchantPtr<BaseOption> value = option->FUN_1405cb760(nGroup, nStat);
         if (value == 0)
             continue;
-        __int64 n = value->FUN_140266e30();
+        __int64 n = value->GetValue();
         if (nMax < n || nMax == 0)
             nMax = n;
     }
@@ -794,7 +794,7 @@ void ItemOptionDebug::FUN_1419b6fc0(int nGroup, int nStat, Unk_IcValueCounts& co
         Unk_EnchantPtr<BaseOption> value = option->FUN_1405cb760(nGroup, nStat);
         if (value == 0)
             continue;
-        __int64 nKey = value->FUN_140266e30();
+        __int64 nKey = value->GetValue();
         int n = 0;
         counts.Lookup(nKey, n);
         n++;
@@ -875,7 +875,7 @@ float ItemOptionDebug::FUN_1419b7520(int nGroup, unsigned nSpecial)
         Unk_EnchantPtr<BaseOption> value = option->FUN_1405cb800(nGroup, nSpecial);
         if (value == 0)
             continue;
-        float f = (float)value->FUN_140266e30();
+        float f = (float)value->GetValue();
         if (fMin > f || fMin == 0)
             fMin = f;
     }
@@ -895,7 +895,7 @@ float ItemOptionDebug::FUN_1419b7670(int nGroup, unsigned nSpecial)
         Unk_EnchantPtr<BaseOption> value = option->FUN_1405cb800(nGroup, nSpecial);
         if (value == 0)
             continue;
-        float f = (float)value->FUN_140266e30();
+        float f = (float)value->GetValue();
         if (fMax < f || fMax == 0)
             fMax = f;
     }
@@ -914,7 +914,7 @@ void ItemOptionDebug::FUN_1419b77c0(int nGroup, unsigned nSpecial, Unk_IcRateCou
         Unk_EnchantPtr<BaseOption> value = option->FUN_1405cb800(nGroup, nSpecial);
         if (value == 0)
             continue;
-        float fKey = (float)value->FUN_140266e30();
+        float fKey = (float)value->GetValue();
         int n = 0;
         counts.Lookup(fKey, n);
         n++;

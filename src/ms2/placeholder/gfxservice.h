@@ -40,7 +40,7 @@ public:
     static bool FUN_1422ea110(bool bBeforeReset, void* pvData);     // NiDX9Renderer reset notification
     static bool FUN_1422ea1f0(void* pvData);                        // NiDX9Renderer lost device notification
     static void FUN_1422ea210(int nCaptureBlock);                   // s_nCaptureBlock =
-    void FUN_1422ea230(CString strFont);                            // +0x28
+    void SetFont(CString strFont);                            // +0x28
     void FUN_1422ea280(bool b);
     static int FUN_141b47780();                                     // s_nCaptureBlock (inline COMDAT, uiugcitemeditdialog.cpp)
     bool FUN_1422ea2a0();                                           // 0x1422ea2a0 the font is "CN" (GFxMovieMouseCursor::vfunc_5)
@@ -71,13 +71,13 @@ public:
     virtual efd::AsyncResult OnShutdown();                          // 0x1422ba380
     virtual const char* GetDisplayName() const;                     // 0x1422b9d80
 
-    int FUN_1422b9da0();                                            // 0x1422b9da0 the previous scene id
-    int FUN_1422b9dc0();                                            // 0x1422b9dc0 the scene id
-    int FUN_1422b9de0();                                            // 0x1422b9de0 the previous sub-scene id
-    int FUN_1422b9e00();                                            // 0x1422b9e00 the sub-scene id
+    int GetPrevSceneId();                                            // 0x1422b9da0 the previous scene id
+    int GetSceneId();                                            // 0x1422b9dc0 the scene id
+    int GetPrevSubSceneId();                                            // 0x1422b9de0 the previous sub-scene id
+    int GetSubSceneId();                                            // 0x1422b9e00 the sub-scene id
     UISceneEntity* FUN_1422b9e20(int nSceneId);                     // 0x1422b9e20 the scene entity of an id (UISwfEntityManager)
     UISceneEntity* FUN_1422b9e50();                                 // 0x1422b9e50 the sub-scene, else the scene
-    UISceneEntity* FUN_1422b9e80();                                 // 0x1422b9e80 the scene
+    UISceneEntity* GetScene();                                 // 0x1422b9e80 the scene
     int FUN_1422b9ea0();                                            // 0x1422b9ea0 the sub-scene is 0x6200041 or 0x620007f
     int FUN_1422b9ef0(int nSceneId);                                // 0x1422b9ef0 switch the scene (0 if already there)
     int FUN_1422b9fd0(int nSubSceneId);                             // 0x1422b9fd0 switch the sub-scene of the scene

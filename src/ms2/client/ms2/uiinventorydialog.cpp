@@ -2071,7 +2071,7 @@ void UIInviteGroupDialog::FUN_14199fe70(unsigned nCount)
             spButton->FUN_1422c1fe0(0);
             CStringW strText = FUN_14028de60(0x814);
             MS2Ptr<CMsgBoxData> spTop = FUN_14151f820();
-            if (spTop.get() != 0 && spTop->FUN_141a02ce0() == strText)
+            if (spTop.get() != 0 && spTop->GetExtra() == strText)
                 return;
             if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, strText, 0, strText))
                 FUN_140d73c60(spBox);

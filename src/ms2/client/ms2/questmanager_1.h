@@ -85,7 +85,7 @@ public:
     void RequestTrackingState(int state);
     void SetTrackedValue(int value);
     int HasMultiUserRoom(int field);
-    int FUN_1407476d0() const;
+    int GetState() const;
     int FUN_140bfc580();
     void SetState(int state) { m_state = state; }   // COMDAT 0x1416dee60
     void SetStartTime(__int64 time) { m_startTime = time; }         // COMDAT 0x1416ded20

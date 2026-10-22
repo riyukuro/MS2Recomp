@@ -585,7 +585,7 @@ int UIMessageBox::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         if (pListener)
         {
             Unk_MessageBoxMsg msg(2002);
-            msg.FUN_1422b8310(m_data->FUN_141a02ce0());
+            msg.FUN_1422b8310(m_data->GetExtra());
             pListener->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
             return 1;
         }
@@ -595,7 +595,7 @@ int UIMessageBox::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     {
         if (m_data == 0)
             return 0;
-        CString strLink = m_data->FUN_141a02dc0();
+        CString strLink = m_data->GetLinkUrl();
         if (!strLink.IsEmpty())
             FUN_1418fe1c0(strLink);
         return 1;
@@ -611,7 +611,7 @@ void UIMessageBox::vfunc_47(int bBlock)
     {
         if (!FUN_14151f8b0() || !m_data->FUN_141a03050())
             FUN_141901390(bBlock, vfunc_48());
-        if (!FUN_14151f9c0() || !m_data->FUN_141a03070())
+        if (!FUN_14151f9c0() || !m_data->IsModaless())
             FUN_1419013c0(bBlock, vfunc_48());
     }
     else
@@ -688,7 +688,7 @@ void UIMessageBox::FUN_1419f8370(const CStringW& strText)
     if (m_30.get())
     {
         if (m_data.get())
-            m_data->FUN_141a01570(strText);
+            m_data->SetMsg(strText);
         m_30->Invoke("onProcessFunction", "updateMsg", strText);
     }
 }
@@ -707,8 +707,8 @@ int UIMessageBox::FUN_1419f84c0(MS2Ptr<CMsgBoxData> spData)
 {
     if (!spData.IsNull() && !m_data.IsNull())
     {
-        CStringW strCur = m_data.get() ? m_data->FUN_141a02ce0() : CStringW(L"");
-        CStringW strNew = spData.get() ? spData->FUN_141a02ce0() : CStringW(L"");
+        CStringW strCur = m_data.get() ? m_data->GetExtra() : CStringW(L"");
+        CStringW strNew = spData.get() ? spData->GetExtra() : CStringW(L"");
         if (!strNew.IsEmpty() && !strCur.IsEmpty() && strCur.Compare(strNew) == 0)
             return 1;
         if (!spData->FUN_141a02da0().IsNull() && !m_data->FUN_141a02da0().IsNull() &&
@@ -790,7 +790,7 @@ void UIMessageBox::FUN_1419f8e10(MS2Ptr<CMsgBoxData> spData)
 {
     if (spData.get())
     {
-        CString strSound = spData->FUN_141a02be0();
+        CString strSound = spData->GetSound();
         if (!strSound.IsEmpty())
             FUN_141276180(strSound, "");
     }
@@ -809,7 +809,7 @@ void UIMessageBox::FUN_1419f8ec0(MS2Ptr<CMsgBoxData> spData)
     FUN_1419f8e10(spData);
     if (m_data.get())
     {
-        if (m_data->FUN_141a02ce0() == s_143af3ba8)
+        if (m_data->GetExtra() == s_143af3ba8)
         {
             UIBannerAdvertisingDialog* pBanner = FUN_141876420(0x4eca);
             if (pBanner)
@@ -837,7 +837,7 @@ void UIMessageBox::FUN_1419f9110()
     }
     if (m_data.get() ? true : false)
     {
-        if (m_data->FUN_141a02ce0() == s_143af3ba8)
+        if (m_data->GetExtra() == s_143af3ba8)
         {
             UIBannerAdvertisingDialog* pBanner = FUN_141876420(0x4eca);
             if (pBanner)
@@ -858,7 +858,7 @@ void UIMessageBox::FUN_1419f9250(int nResult)
     {
         m_data->FUN_141a03470();
         Scaleform::GFx::Value ret = m_30->Invoke("closeCurrent", (long)m_data->FUN_141a02ca0(), nResult);
-        if (m_data->FUN_141a03070())
+        if (m_data->IsModaless())
         {
             MS2Ptr<ASDialog> spBox = FUN_140e43fe0(m_28, ret);
             if (spBox.get())
@@ -961,7 +961,7 @@ int UIMessageBox::FUN_1419f97a0(int nButton, int nBoxId, CStringW strTag, Scalef
             groups.GetNext(pos);
         }
     }
-    if (spData->FUN_141a02c40())
+    if (spData->GetType())
         return 0;
     return 1;
 }

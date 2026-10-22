@@ -310,10 +310,10 @@ void UIItemExchangeScrollDialog::FUN_140f514c0(const Unk_ExchangeItemRef* pRef, 
                     if (spItem->FUN_1405278a0() != 0)
                     {
                         CItemStatus* pStatus = reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0());
-                        if (pStatus->FUN_140630d60() != 0)
+                        if (pStatus->GetEnchant() != 0)
                         {
                             if (spCur->FUN_140527030() != 0)
-                                reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0())->FUN_140630d60()->FUN_14058c870();
+                                reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0())->GetEnchant()->FUN_14058c870();
                         }
                     }
                     CItemStatus* pSrc = reinterpret_cast<CItemStatus*>(spCur->FUN_1405278a0());

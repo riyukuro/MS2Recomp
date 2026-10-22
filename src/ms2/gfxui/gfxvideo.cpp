@@ -92,11 +92,11 @@ bool GFxVideo::FUN_1422ec700(HWND hWnd)
 MS2_REPLACE_METHOD(0x1422EC700, GFxVideo, FUN_1422ec700, 294, 0x00BAD35A);
 
 // @0x1422ec830
-Video* GFxVideo::FUN_1422ec830()
+Video* GFxVideo::GetVideo()
 {
     return m_spVideo;
 }
-MS2_REPLACE_METHOD(0x1422EC830, GFxVideo, FUN_1422ec830, 31, 0xBE0AC345);
+MS2_REPLACE_METHOD(0x1422EC830, GFxVideo, GetVideo, 31, 0xBE0AC345);
 
 // @0x1422ec860
 VideoDecoder* GFxVideo::FUN_1422ec860()

@@ -1066,7 +1066,7 @@ void UILapenshardShieldBar::FUN_140c5f8f0(MS2Ptr<Unk_LsBuff> spBuff)
 }
 
 // @0x140c5f990
-MS2Ptr<Unk_LsBuff> UILapenshardShieldBar::FUN_140c5f990()
+MS2Ptr<Unk_LsBuff> UILapenshardShieldBar::GetBuff()
 {
     return m_spBuff;
 }
@@ -1316,7 +1316,7 @@ void LapenshardIngredientItemSlotBagPanel::vfunc_3()
     if (m_pTab == 0)
         return;
     vfunc_4();
-    MS2Ptr<CItem> spSource = m_pTab->FUN_140c68da0();
+    MS2Ptr<CItem> spSource = m_pTab->GetSource();
     if (spSource == 0)
         return;
     MS2Ptr<Unk_LsRecord> spRec = FUN_1409c4b30()->FUN_1405b56a0(spSource->FUN_1405276c0());
@@ -1414,7 +1414,7 @@ void LapenshardIngredientItemSlotBagPanel::FUN_140c64390(int nIndex)
 {
     if (m_pTab == 0 || nIndex <= -1 || nIndex >= (int)m_items.GetCount())
         return;
-    MS2Ptr<CItem> spSource = m_pTab->FUN_140c68da0();
+    MS2Ptr<CItem> spSource = m_pTab->GetSource();
     if (spSource == 0)
         return;
     MS2Ptr<Unk_LsRecord> spSrcRec = FUN_1409c4b30()->FUN_1405b56a0(spSource->FUN_1405276c0());
@@ -1593,7 +1593,7 @@ void LapenshardUpgradeSlotPanel::vfunc_3()
     if (m_body == 0)
         return;
     FUN_140c67ce0();
-    m_spSource = m_pTab->FUN_140c68da0();
+    m_spSource = m_pTab->GetSource();
     int nState = m_pTab->FUN_140c68e20();
     switch (nState)
     {
@@ -1944,7 +1944,7 @@ void UILapenshardUpgradeTab::SendLapenshardMode3(MS2Ptr<CItem> spItem)
 }
 
 // @0x140c68da0
-MS2Ptr<CItem> UILapenshardUpgradeTab::FUN_140c68da0()
+MS2Ptr<CItem> UILapenshardUpgradeTab::GetSource()
 {
     return m_spSource;
 }
@@ -2011,7 +2011,7 @@ int UILapenshardShieldBar::FUN_140c5fbb0()
 }
 
 // @0x140c68e40
-int UILapenshardUpgradeTab::FUN_140c68e40()
+int UILapenshardUpgradeTab::GetN_bc()
 {
     return m_n_bc;
 }
@@ -2050,7 +2050,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c65e00()
 {
     if (m_body == 0)
         return;
-    float fProb = (float)m_pTab->FUN_140c68e40() / 100.0f;
+    float fProb = (float)m_pTab->GetN_bc() / 100.0f;
     m_ui->Invoke("setSuccessProb", FUN_14042cb90(CStringW(L"s_lapenshard_tabname_upgrade_success_prob"), fProb));
 }
 
@@ -2698,7 +2698,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c67440(bool bSuccess)
 MS2_EMIT_CRT_MEMMOVE_S_COPY(3);
 
 // @0x140c62440
-MS2Ptr<LapenshardSystemTabContents> UILapenshardSystemDialog::FUN_140c62440()
+MS2Ptr<LapenshardSystemTabContents> UILapenshardSystemDialog::GetPage()
 {
     return m_spPage;
 }

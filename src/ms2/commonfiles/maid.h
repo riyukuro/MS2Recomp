@@ -64,7 +64,7 @@ public:
     void ResetLevel();                          // 0x14067dd50
     void AddLevel(int nDelta, int bIgnoreLimit);   // 0x14067dd80
     int AddMood(int nDelta);                    // 0x14067de50 clamps to 0..100; true when changed
-    void FUN_14067def0(int nMode);              // 0x14067def0 sets the maid's mode
+    void SetMode(int nMode);              // 0x14067def0 sets the maid's mode
     CStringW FUN_1409eeda0() { return m_profile.name; }   // inline COMDAT 0x1409eeda0 (astooltip.cpp): the maid's name
 
     MS2_LAYOUT_FRIEND;

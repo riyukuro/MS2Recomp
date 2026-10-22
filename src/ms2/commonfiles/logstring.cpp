@@ -231,16 +231,16 @@ void CLogString::FUN_140653800(int level) { m_debugLevel=level; }
 MS2_REPLACE_METHOD(0x140653800, CLogString, FUN_140653800, 25, 0x09284B7F);
 
 // @0x140653820
-int CLogString::FUN_140653820() { return m_errors; }
-MS2_REPLACE_METHOD(0x140653820, CLogString, FUN_140653820, 17, 0x38E3250F);
+int CLogString::GetErrors() { return m_errors; }
+MS2_REPLACE_METHOD(0x140653820, CLogString, GetErrors, 17, 0x38E3250F);
 
 // @0x140653840
-int CLogString::FUN_140653840() { return m_warnings; }
-MS2_REPLACE_METHOD(0x140653840, CLogString, FUN_140653840, 17, 0xD382A09B);
+int CLogString::GetWarnings() { return m_warnings; }
+MS2_REPLACE_METHOD(0x140653840, CLogString, GetWarnings, 17, 0xD382A09B);
 
 // @0x140653860
-int CLogString::FUN_140653860() { return m_fileLevel; }
-MS2_REPLACE_METHOD(0x140653860, CLogString, FUN_140653860, 17, 0x03AA79F7);
+int CLogString::GetFileLevel() { return m_fileLevel; }
+MS2_REPLACE_METHOD(0x140653860, CLogString, GetFileLevel, 17, 0x03AA79F7);
 
 // @0x140653880
 CStringW CLogString::FUN_140653880(int fullPath)
@@ -258,8 +258,8 @@ CStringW CLogString::FUN_140653880(int fullPath)
 MS2_REPLACE_METHOD(0x140653880, CLogString, FUN_140653880, 672, 0x448DA939);
 
 // @0x140653b30
-CStringW CLogString::FUN_140653b30() { return m_root; }
-MS2_REPLACE_METHOD(0x140653b30, CLogString, FUN_140653b30, 68, 0x44C95B86);
+CStringW CLogString::GetRoot() { return m_root; }
+MS2_REPLACE_METHOD(0x140653b30, CLogString, GetRoot, 68, 0x44C95B86);
 
 // @0x140653b80
 void CLogString::FUN_140653b80(Callback callback) { Unk_1401b4ec0 guard(m_callbackLock,1); m_callbacks.push_back(callback); }

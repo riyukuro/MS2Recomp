@@ -79,7 +79,7 @@ bool CPvPInfo::FUN_1407436d0()
 }
 
 // @0x140743710
-int CPvPInfo::FUN_140743710()
+int CPvPInfo::GetPoint()
 {
     return m_nPoint;
 }

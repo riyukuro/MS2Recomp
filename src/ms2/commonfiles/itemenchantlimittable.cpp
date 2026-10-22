@@ -108,7 +108,7 @@ CString Unk_EnchantStatSet::FUN_14058d890()
         Unk_EnchantPtr<BaseOption> spOption = m_stats.GetValueAt(pos);
         if (str.GetLength() != 0)
             str += ",";
-        str += Unk_SocketFormat("{0}", spOption->FUN_140266e30());
+        str += Unk_SocketFormat("{0}", spOption->GetValue());
     }
     return str;
 }
@@ -199,7 +199,7 @@ int CItemEnchantLimitTable::FUN_14058df90(CItem* pItem)
     if (pItem->FUN_140527710() > spLimit->m_nMaxLv)
         return 0;
 
-    Unk_EnchantPtr<CItemEnchantInfo> spInfo(reinterpret_cast<CItemStatus*>(pItem->FUN_1405278a0())->FUN_140630d60());
+    Unk_EnchantPtr<CItemEnchantInfo> spInfo(reinterpret_cast<CItemStatus*>(pItem->FUN_1405278a0())->GetEnchant());
     if (!spInfo)
         return 0;
     if (spInfo->GetLevel() >= spLimit->m_nMaxGrade)

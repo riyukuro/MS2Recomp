@@ -194,7 +194,7 @@ void GemStoneSlot::FUN_140cfddf0(MS2Ptr<CItem> spGemItem)
     if (m_spGem->m_equipment == 0)
         return;
     MS2Ptr<CItem> spEquip = m_spGem->m_equipment;
-    FUN_14062a3d0(spEquip, FUN_1422cc410(), spGemItem,
+    FUN_14062a3d0(spEquip, GetIndex(), spGemItem,
                   Delegate<bool(int, const CMsgBoxData&)>(this, &GemStoneSlot::FUN_140cfdfe0));
 }
 

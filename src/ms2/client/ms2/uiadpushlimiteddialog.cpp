@@ -120,7 +120,7 @@ public:
 
 Unk_LpWorld* FUN_140939a00();
 UIAdPushDialog* FUN_140d61c00(int nClass);
-CAdBannerManagerCli* FUN_1409fb930();
+CAdBannerManagerCli* GetAdBannerManagerCli();
 __int64 FUN_1406a4500(Unk_AdMarketItem* pItem);                             // a record's free-offer value
 void FUN_1409bc4f0(ASMeratMarketProductBase* pProduct, MS2Ptr<ShopBannerInfo> spBanner);   // set the banner (the banner is the Unk_MeratBanner of the AS side)
 void FUN_1409e3190(ASTooltip* pTooltip, Unk_AdItemInfo* pInfo, int n);      // fill the tooltip from an item info
@@ -409,7 +409,7 @@ void UIAdPushLimitedDialog::FUN_140e03440(MS2Ptr<AdPushEntityLimitedBundle> spOw
         if (pInfo->FUN_1406a0fe0())
         {
             CStringW strName((const char*)*reinterpret_cast<CStringA*>((char*)pInfo + 0xa0));
-            Unk_AdBannerPtr spBanner = FUN_1409fb930()->FUN_14096b5b0(2, strName);
+            Unk_AdBannerPtr spBanner = GetAdBannerManagerCli()->FUN_14096b5b0(2, strName);
             if (spBanner.get() != 0)
             {
                 m_spBanner.AssignRaw(new ShopBannerInfo());

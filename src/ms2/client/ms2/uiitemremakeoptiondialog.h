@@ -50,8 +50,8 @@ public:
     void FUN_1412a1600(MS2Ptr<CItem> item);                     // 0x1412a1600 re-select the item
     void FUN_1412a1650(MS2Ptr<CItem> item);                     // 0x1412a1650 swap the remade item in
     void FUN_1412a1790(MS2Ptr<CItem> cur, MS2Ptr<CItem> next);  // 0x1412a1790 show the remake result
-    void FUN_1412a1c40(int nState);                             // 0x1412a1c40
-    int FUN_1412a1c60();                                        // 0x1412a1c60
+    void SetState(int nState);                             // 0x1412a1c40
+    int GetState();                                        // 0x1412a1c60
     int FUN_1412a1c80(MS2Ptr<CItem> item);                      // 0x1412a1c80 how many of the item the player owns
     void FUN_1412a1d40(unsigned __int64 uid, int nOption, bool bConfirm);   // 0x1412a1d40 start a remake (asks for high SA items)
     void FUN_1412a2380(unsigned __int64 uid, int nOption, bool bConfirm);   // 0x1412a2380 send the remake request

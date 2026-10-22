@@ -19,15 +19,15 @@ public:
     bool FUN_1406af030();
     bool FUN_1406af040();
     bool FUN_1406af050();
-    bool FUN_1406af060();
-    bool FUN_1406af080();
+    bool IsDisableValidate();
+    bool IsPreloadNoThread();
     bool FUN_1406af0a0();
     bool FUN_1406af0c0();
     void FUN_1406af0e0(bool b);
     bool FUN_1406af100();
     void FUN_1406af130(bool b);
     void FUN_1406af150();
-    bool FUN_1406af170();
+    bool IsSkipNpcLoading();
     bool FUN_1406af190();
 
     bool m_bDisableValidate;                                // +0 -disableValidate
@@ -99,13 +99,13 @@ bool Unk_LaunchOptions::FUN_1406af050()
 }
 
 // @0x1406af060
-bool Unk_LaunchOptions::FUN_1406af060()
+bool Unk_LaunchOptions::IsDisableValidate()
 {
     return m_bDisableValidate;
 }
 
 // @0x1406af080
-bool Unk_LaunchOptions::FUN_1406af080()
+bool Unk_LaunchOptions::IsPreloadNoThread()
 {
     return m_bPreloadNoThread;
 }
@@ -149,7 +149,7 @@ void Unk_LaunchOptions::FUN_1406af150()
 }
 
 // @0x1406af170
-bool Unk_LaunchOptions::FUN_1406af170()
+bool Unk_LaunchOptions::IsSkipNpcLoading()
 {
     return m_bSkipNpcLoading;
 }

@@ -162,7 +162,7 @@ bool SetItemTable::FUN_1407c5160(int nSetId)
     SetItemInfoPtr spInfo;
     if (m_map.Lookup(nSetId, spInfo) == 0)
         return false;
-    return spInfo->FUN_1407ad600();
+    return spInfo->IsShowEffect();
 }
 
 // @0x1407c51f0

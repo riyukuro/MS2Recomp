@@ -65,9 +65,9 @@ void UIBottomCenterAlignManager::FUN_140bc1730()
     if (pMenu && pMenu->IsActive())
         nOffset -= 60;
     UIRecallScrollNotifyDialog* pRecall = FUN_140bc1870(0x4edd);
-    if (pRecall && pRecall->FUN_14129c900())
+    if (pRecall && pRecall->IsActive())
     {
-        pRecall->FUN_14129c8e0(nOffset);
+        pRecall->SetOffset(nOffset);
         pRecall->vfunc_43();
         nOffset -= 60;
     }

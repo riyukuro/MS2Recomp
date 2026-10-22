@@ -317,7 +317,7 @@ void CPet::vfunc_125(int n)
 void CPet::vfunc_52(double fTime)
 {
     float fScale = m_unk_748.FUN_1409705d0();
-    if (FUN_140b109f0() != 0)
+    if (GetKind() != 0)
         fScale = fScale * 2.0f;
     FUN_14123c330(fScale);
     float fRatio = FUN_14123c260() / GetScaleAC();
@@ -380,13 +380,13 @@ void CPet::FUN_140b10210(int nPetId)
 }
 
 // @0x140b10290
-int CPet::FUN_140b10290()
+int CPet::GetPetId()
 {
     return m_nPetId;
 }
 
 // @0x140b102b0
-MS2Ptr<Unk_PetRow> CPet::FUN_140b102b0()
+MS2Ptr<Unk_PetRow> CPet::GetRow()
 {
     return m_spRow;
 }
@@ -462,7 +462,7 @@ void CPet::FUN_140b10510()
         void* pLocal = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pLocal != 0)
         {
-            if (static_cast<PCBase*>(pLocal)->FUN_14123c580() == FUN_140b109f0())
+            if (static_cast<PCBase*>(pLocal)->FUN_14123c580() == GetKind())
             {
                 Unk_EffectTarget kTarget;
                 kTarget.m_strName = *FUN_140298f80(&Client::Constants::GetInstance()->PetTamingMaxPointEffect);
@@ -472,7 +472,7 @@ void CPet::FUN_140b10510()
             }
         }
     }
-    if (FUN_141094f40() == 0 && FUN_140b109f0() != 0)
+    if (GetOwnerId() == 0 && GetKind() != 0)
     {
         if (m_nFxOther == 0)
         {
@@ -480,7 +480,7 @@ void CPet::FUN_140b10510()
             if (pLocal != 0)
             {
                 Unk_EffectTarget kTarget;
-                if (FUN_140b109f0() == static_cast<PCBase*>(pLocal)->FUN_14123c580())
+                if (GetKind() == static_cast<PCBase*>(pLocal)->FUN_14123c580())
                     kTarget.m_strName = FUN_140291c10(m_nGradeFx);
                 else
                     kTarget.m_strName = *FUN_140298f80(&Client::Constants::GetInstance()->PetTrapAreaEffectOtherUser);
@@ -510,14 +510,14 @@ void CPet::FUN_140b107f0(int nKind)
             if (bShow)
             {
                 vfunc_129()->FUN_140e97ca0(1);
-                vfunc_129()->FUN_140e97ce0(FUN_140b10c00());
+                vfunc_129()->FUN_140e97ce0(GetTamingPoint());
             }
         }
     }
 }
 
 // @0x140b109f0
-int CPet::FUN_140b109f0()
+int CPet::GetKind()
 {
     return m_nKind;
 }
@@ -531,7 +531,7 @@ void CPet::FUN_140b10a10(unsigned __int64 nPoint)
         if (nPoint == *Client::Constants::GetInstance()->TamingPetMaxPoint.Get())
         {
             void* pLocal = FUN_1403ed2d0()->FUN_141bd0cc0();
-            if (pLocal != 0 && static_cast<PCBase*>(pLocal)->FUN_14123c580() == FUN_140b109f0())
+            if (pLocal != 0 && static_cast<PCBase*>(pLocal)->FUN_14123c580() == GetKind())
                 FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_pet_msg_taming_max_point")), 1, 1);
             bRename = true;
             goto Store;
@@ -551,7 +551,7 @@ Store:
 }
 
 // @0x140b10c00
-unsigned __int64 CPet::FUN_140b10c00()
+unsigned __int64 CPet::GetTamingPoint()
 {
     return m_nTamingPoint;
 }
@@ -559,7 +559,7 @@ unsigned __int64 CPet::FUN_140b10c00()
 // @0x140b10c20
 int CPet::FUN_140b10c20()
 {
-    return *Client::Constants::GetInstance()->TamingPetMaxPoint.Get() == FUN_140b10c00();
+    return *Client::Constants::GetInstance()->TamingPetMaxPoint.Get() == GetTamingPoint();
 }
 
 // @0x140b10c80
@@ -573,7 +573,7 @@ void CPet::FUN_140b10c80(CStringW str)
     {
         if (FUN_140a7c8d0(m_spNpcData.get()) != 0)
         {
-            if (FUN_141094f40() == 0)
+            if (GetOwnerId() == 0)
             {
                 CStringW strPrefix;
                 if (FUN_140b10c20() == 0)
@@ -595,13 +595,13 @@ void CPet::FUN_140b10f90(unsigned short nGrade)
 }
 
 // @0x140b10fe0
-unsigned short CPet::FUN_140b10fe0()
+unsigned short CPet::GetGrade()
 {
     return m_nGrade;
 }
 
 // @0x140b11000
-int CPet::FUN_140b11000()
+int CPet::GetGradeFx()
 {
     return m_nGradeFx;
 }

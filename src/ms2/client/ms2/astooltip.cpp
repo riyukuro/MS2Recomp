@@ -707,13 +707,13 @@ bool FUN_1409c5210(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind
         return true;
     }
     std::pair<int, int> range = FUN_140166430()->FUN_1405f64e0(spItem->FUN_1405276c0(), spItem->FUN_140526bd0(), nIndex);
-    bool bBest = range.second == spOption->FUN_140266e30();
+    bool bBest = range.second == spOption->GetValue();
     if (bBest)
     {
         CStringW strBest = StringFormat(s_wsText0x48d, strValue);
         strOut = StringFormat(s_wsStatRowBest, strBest);
     }
-    else if (FUN_140166430()->FUN_1405f67e0(spItem, nIndex, nKind, spOption->FUN_140266e30()) == true)
+    else if (FUN_140166430()->FUN_1405f67e0(spItem, nIndex, nKind, spOption->GetValue()) == true)
     {
         strOut = StringFormat(s_wsStatRowBest, strValue);
     }
@@ -745,13 +745,13 @@ bool FUN_1409c56f0(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind
         return true;
     }
     std::pair<int, int> range = FUN_140166430()->FUN_1405f6650(spItem->FUN_1405276c0(), spItem->FUN_140526bd0(), nIndex);
-    bool bBest = range.second == spOption->FUN_140266e30();
+    bool bBest = range.second == spOption->GetValue();
     if (bBest)
     {
         CStringW strBest = StringFormat(s_wsText0x48d, strValue);
         strOut = StringFormat(s_wsStatRowBest, strBest);
     }
-    else if (FUN_140166430()->FUN_1405f6a90(spItem, nIndex, nKind, spOption->FUN_140266e30()) == true)
+    else if (FUN_140166430()->FUN_1405f6a90(spItem, nIndex, nKind, spOption->GetValue()) == true)
     {
         strOut = StringFormat(s_wsStatRowBest, strValue);
     }
@@ -1043,7 +1043,7 @@ void ASTooltip::FUN_1409c8020(CItem* pItem)
                 strOptions.Append(StringFormat(strStatFormat, nColor, FUN_140631600(v.first, v.second.get())));
             });
             spPart->FUN_1407bcdb0([&strOptions, &strStatFormat, &nColor, &pItem](const std::pair<SetItemOptionPart::SpecialKey, Unk_EnchantPtr<BaseOption> >& v) {
-                strOptions.Append(StringFormat(strStatFormat, nColor, FUN_140631830(v.first, v.second->FUN_140266e30(), pItem->FUN_140527840())));
+                strOptions.Append(StringFormat(strStatFormat, nColor, FUN_140631830(v.first, v.second->GetValue(), pItem->FUN_140527840())));
             });
             const ATL::CAtlArray<int>& arrSkills = spPart->FUN_1407bc9d0();
             const ATL::CAtlArray<unsigned short>& arrLevels = spPart->FUN_1407bc9f0();
@@ -1183,15 +1183,15 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
                     CStringW strBase;
                     CStringW strMax;
                     CStringW strRate;
-                    if (spBase->FUN_140266ce0())
+                    if (spBase->HasValue())
                     {
-                        int nValue = spBase->FUN_140266e30();
+                        int nValue = spBase->GetValue();
                         float fRate = (float)floor(FUN_1406198a0(nValue, spPet->m_fConstantOptionFactor));
                         float fBase = (float)nValue;
                         float fMax = fBase + fRate * (float)(int)(*FUN_1401d3200()->PetMaxLevel.Get() - 1);
                         nValue = (int)((float)nValue + fRate * (float)(pItem->FUN_140528c20() - 1));
                         strValue = FUN_140631830(eSpecial, nValue, pItem->FUN_140527840());
-                        int nRaw = spBase->FUN_140266e30();
+                        int nRaw = spBase->GetValue();
                         strBase = StringFormat(L"{0:0.1f}", nRaw);
                         strMax = StringFormat(L"{0:0.1f}", fMax);
                         strRate = StringFormat(L"{0:0.1f}", fRate);
@@ -1204,7 +1204,7 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
                 }
                 else
                 {
-                    strValue = FUN_140631830(eSpecial, spBase->FUN_140266e30(), pItem->FUN_140527840());
+                    strValue = FUN_140631830(eSpecial, spBase->GetValue(), pItem->FUN_140527840());
                     if (FUN_1409c56f0(strRow, MS2Ptr<CItem>(pItem), eSpecial, nKind, spBase, strValue))
                         strKind.Append(strRow);
                 }
@@ -1230,15 +1230,15 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
                     CStringW strBase;
                     CStringW strMax;
                     CStringW strRate;
-                    if (spBase->FUN_140266ce0())
+                    if (spBase->HasValue())
                     {
-                        __int64 nValue = spBase->FUN_140266e30();
+                        __int64 nValue = spBase->GetValue();
                         float fRate = (float)floor(FUN_140632990(nValue, spPet->m_fConstantOptionFactor));
                         float fBase = (float)nValue;
                         __int64 nMax = (__int64)(fBase + fRate * (float)(int)(*FUN_1401d3200()->PetMaxLevel.Get() - 1));
                         nValue = (__int64)((float)nValue + fRate * (float)(pItem->FUN_140528c20() - 1));
                         strValue = FUN_140631720(nStat, (int)nValue, false);
-                        strBase = FUN_1409e0900(spBase->FUN_140266e30());
+                        strBase = FUN_1409e0900(spBase->GetValue());
                         strMax = FUN_1409e0900((int)nMax);
                         strRate = FUN_1409e0900((int)fRate);
                     }
@@ -1297,7 +1297,7 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
             strText.Append(strSeparator);
         strText.Append(StringFormat(FUN_1409e6010((int)k, pItem), strKind));
     }
-    Unk_EnchantPtr<CItemEnchantInfo> spEnchant(pStatus->FUN_140630d60());
+    Unk_EnchantPtr<CItemEnchantInfo> spEnchant(pStatus->GetEnchant());
     if (spEnchant != 0)
     {
         if (spEnchant->FUN_14058c8a0() == 0)
@@ -1350,7 +1350,7 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
     MS2Ptr<UnlimitedEnchantInfo> spUnlimited(reinterpret_cast<UnlimitedEnchantInfo*>(pStatus->FUN_140630d90()));
     if (spUnlimited != 0)
     {
-        if (spUnlimited->FUN_1408bbc50() > 0)
+        if (spUnlimited->GetLevel() > 0)
         {
             CStringW strRows;
             UnlimitedEnchantInfo::OptionMap& mapOptions = spUnlimited->FUN_1408bc2d0();
@@ -1375,14 +1375,14 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
                 {
                     int nSpecial = it->first;
                     Unk_EnchantPtr<BaseOption> spBase(it->second);
-                    strRows.Append(StringFormat(strRowFormat, FUN_140631830(nSpecial, spBase->FUN_140266e30(), pItem->FUN_140527840())));
+                    strRows.Append(StringFormat(strRowFormat, FUN_140631830(nSpecial, spBase->GetValue(), pItem->FUN_140527840())));
                 }
             }
             if (!strRows.IsEmpty())
             {
                 if (!strText.IsEmpty())
                     strText.Append(strSeparator);
-                int nLevel = spUnlimited->FUN_1408bbc50();
+                int nLevel = spUnlimited->GetLevel();
                 strText.Append(StringFormat(s_wsUnlimited, nLevel, strRows));
             }
         }
@@ -1589,7 +1589,7 @@ void ASTooltip::FUN_1409cc800(CItem* pItem)
     unsigned nFlags = FUN_1409c6560();
     if ((nFlags & 0x800) == 0)
     {
-        if (pSocket->FUN_140620a50() == 0)
+        if (pSocket->GetMaxSlot() == 0)
             return;
         FUN_1409e5480();
         const CStringW& strRowEmpty = s_wsSocketRowEmpty;
@@ -1674,7 +1674,7 @@ void ASTooltip::FUN_1409cc800(CItem* pItem)
         {
             const CStringW& strRowEmpty = s_wsSocketRowEmpty;
             CStringW strRows;
-            if (pSocket->FUN_140620a50() == 0)
+            if (pSocket->GetMaxSlot() == 0)
             {
                 unsigned nMax = FUN_14052d200()->FUN_14062d4b0(pItem->FUN_140527840()->property.socketDataId, pItem->FUN_140526bd0(),
                                                               MS2Ptr<CItemData>(pItem->FUN_140527840()));
@@ -1815,7 +1815,7 @@ void ASTooltip::FUN_1409cd9c0(CItem* pItem)
         int nBindable = 0;
         int nBindOnGet = 0;
         FUN_1409dfa50(pItem, nBindable, nBindOnGet, strBindName);
-        int nCount = spTransfer->FUN_140635630() != 0 ? spTransfer->FUN_140634fa0() : 0;
+        int nCount = spTransfer->FUN_140635630() != 0 ? spTransfer->GetCount() : 0;
         strText = FUN_1409e6120(pItem, nTradeable, nPersonal, nBindable, nBindOnGet, L"\n", nCount, strBindName, FUN_1409dfae0(pItem));
         FUN_1409d98a0(pItem, strText);
         if (FUN_140166410()->FUN_14036d570(0xa7) && spData->FUN_14053cf90() && spTransfer->FUN_140635900() == 0)
@@ -4494,7 +4494,7 @@ int ASTooltip::FUN_1409dfae0(CItem* pItem)
         return 0;
     if (pItem->FUN_1405279c0() != 0 && pItem->FUN_1405279c0()->FUN_140622790() == 0)
         return 0;
-    if ((pItem->FUN_140525640() != 0 || pItem->FUN_140526bd0() >= 4) && pTransfer->FUN_140634fa0() > 0)
+    if ((pItem->FUN_140525640() != 0 || pItem->FUN_140526bd0() >= 4) && pTransfer->GetCount() > 0)
         return 1;
     return 0;
 }
@@ -5214,15 +5214,15 @@ CStringW FUN_1409e34e0(MS2Ptr<CItem> spItem)
                     CStringW strBase;
                     CStringW strMax;
                     CStringW strRate;
-                    if (spBase->FUN_140266ce0())
+                    if (spBase->HasValue())
                     {
-                        int nValue = spBase->FUN_140266e30();
+                        int nValue = spBase->GetValue();
                         float fRate = (float)floor(FUN_1406198a0(nValue, spPet->m_fConstantOptionFactor));
                         float fBase = (float)nValue;
                         float fMax = fBase + fRate * (float)(int)(*FUN_1401d3200()->PetMaxLevel.Get() - 1);
                         nValue = (int)((float)nValue + fRate * (float)(spItem->FUN_140528c20() - 1));
                         strValue = FUN_140631830(eSpecial, nValue, spItem->FUN_140527840());
-                        int nRaw = spBase->FUN_140266e30();
+                        int nRaw = spBase->GetValue();
                         strBase = StringFormat(L"{0:0.1f}", nRaw);
                         strMax = StringFormat(L"{0:0.1f}", fMax);
                         strRate = StringFormat(L"{0:0.1f}", fRate);
@@ -5235,7 +5235,7 @@ CStringW FUN_1409e34e0(MS2Ptr<CItem> spItem)
                 }
                 else
                 {
-                    strValue = FUN_140631830(eSpecial, spBase->FUN_140266e30(), spItem->FUN_140527840());
+                    strValue = FUN_140631830(eSpecial, spBase->GetValue(), spItem->FUN_140527840());
                     if (FUN_1409c56f0(strRow, spItem, eSpecial, nKind, spBase, strValue))
                         strKind.Append(strRow);
                 }
@@ -5257,15 +5257,15 @@ CStringW FUN_1409e34e0(MS2Ptr<CItem> spItem)
                     CStringW strBase;
                     CStringW strMax;
                     CStringW strRate;
-                    if (spBase->FUN_140266ce0())
+                    if (spBase->HasValue())
                     {
-                        __int64 nValue = spBase->FUN_140266e30();
+                        __int64 nValue = spBase->GetValue();
                         float fRate = (float)floor(FUN_140632990(nValue, spPet->m_fConstantOptionFactor));
                         float fBase = (float)nValue;
                         __int64 nMax = (__int64)(fBase + fRate * (float)(int)(*FUN_1401d3200()->PetMaxLevel.Get() - 1));
                         nValue = (__int64)((float)nValue + fRate * (float)(spItem->FUN_140528c20() - 1));
                         strValue = FUN_140631720(nStat, (int)nValue, false);
-                        strBase = FUN_1409e0900(spBase->FUN_140266e30());
+                        strBase = FUN_1409e0900(spBase->GetValue());
                         strMax = FUN_1409e0900((int)nMax);
                         strRate = FUN_1409e0900((int)fRate);
                     }
@@ -5360,9 +5360,9 @@ void FUN_1409e4950(MS2Ptr<CItem> spItem, CStringW& strOut, bool* pBest)
                 Unk_EnchantPtr<BaseOption> spBase(pPair->m_value);
                 if (!spBase)
                     continue;
-                if (FUN_140166430()->FUN_1405f6a90(spItem, pPair->m_key, 2, spBase->FUN_140266e30()) == true)
+                if (FUN_140166430()->FUN_1405f6a90(spItem, pPair->m_key, 2, spBase->GetValue()) == true)
                     *pBest = true;
-                CStringW strValue = FUN_140631830(eSpecial, spBase->FUN_140266e30(), spItem->FUN_140527840());
+                CStringW strValue = FUN_140631830(eSpecial, spBase->GetValue(), spItem->FUN_140527840());
                 CStringW strRow;
                 if (FUN_1409c56f0(strRow, spItem, eSpecial, 2, spBase, strValue))
                     strText.Append(strRow);
@@ -5376,7 +5376,7 @@ void FUN_1409e4950(MS2Ptr<CItem> spItem, CStringW& strOut, bool* pBest)
                 Unk_EnchantPtr<BaseOption> spBase(pPair->m_value);
                 if (!spBase)
                     continue;
-                if (FUN_140166430()->FUN_1405f67e0(spItem, nStat, 2, spBase->FUN_140266e30()) == true)
+                if (FUN_140166430()->FUN_1405f67e0(spItem, nStat, 2, spBase->GetValue()) == true)
                     *pBest = true;
                 CStringW strValue = FUN_140631600(nStat, spBase.get());
                 CStringW strRow;

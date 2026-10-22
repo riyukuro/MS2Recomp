@@ -29,9 +29,9 @@ public:
     CItemStatus(unsigned, unsigned, unsigned);   // 0x14062fa00
     CItemStatus(CItemOption* pOption, CItemEnchantInfo* pEnchant, UnlimitedEnchantInfo* pUnlimited);   // 0x140631ce0
     virtual ~CItemStatus();                      // 0x140633280 (??_G 0x140633450)
-    CItemEnchantInfo* FUN_140630d60();           // the enchant record (null when absent)
+    CItemEnchantInfo* GetEnchant();           // the enchant record (null when absent)
     Unk_ItemPlusInfo* FUN_140630d90();           // the unlimited-enchant record
-    CItemOption* FUN_140630d30();                // the option record
+    CItemOption* GetOption();                // the option record
     void FUN_1406306f0(int, int, int);
     void FUN_14062fda0(COutputStream&);
     MS2Ptr<CItemStatus> FUN_14062fbc0();

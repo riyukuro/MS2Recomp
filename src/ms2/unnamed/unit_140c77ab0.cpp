@@ -253,7 +253,7 @@ void CClientPlatformNexonKorea::vfunc_26(void* a1)
             FUN_140710590(packet);
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, strMessage, 0, g_strMaintenanceExit);
             if (spBox) {
-                spBox->FUN_141a015d0(FUN_14028de60(0x219));
+                spBox->SetTitle(FUN_14028de60(0x219));
                 FUN_140d73c60(spBox);
             }
         }
@@ -269,7 +269,7 @@ void CClientPlatformNexonKorea::vfunc_26(void* a1)
             FUN_140710590(packet);
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, strMessage, 0, g_strMaintenanceExit);
             if (spBox) {
-                spBox->FUN_141a015d0(FUN_14028de60(0x8c6));
+                spBox->SetTitle(FUN_14028de60(0x8c6));
                 FUN_140d73c60(spBox);
             }
         } else {

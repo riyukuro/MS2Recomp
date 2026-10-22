@@ -52,10 +52,10 @@ private:
 class BaseOption {
 public:
     BaseOption();
-    bool FUN_140266ce0() const;             // 0x140266ce0 (uiitemenchantdialog.cpp)
+    bool HasValue() const;             // 0x140266ce0 (uiitemenchantdialog.cpp)
     float FUN_140266e10() const;            // 0x140266e10 (float)[+0x18] / divisor
-    int FUN_140266e30() const;              // 0x140266e30 the value [+0x18] (itemsocketsystemutil.cpp)
-    void FUN_140266e90(int nValue);         // 0x140266e90 sets the value [+0x18] (itemsocket.cpp)
+    int GetValue() const;              // 0x140266e30 the value [+0x18] (itemsocketsystemutil.cpp)
+    void SetValue(int nValue);         // 0x140266e90 sets the value [+0x18] (itemsocket.cpp)
     void FUN_140266d20(Unk_EnchantWrite&) const;
     void FUN_140266d60(Unk_EnchantRead&);
     void FUN_140266da0(const BaseOption* pSource);   // copy

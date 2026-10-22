@@ -270,7 +270,7 @@ int UIItemPetStudyDialog::FUN_140e55a40(MS2Ptr<CItem> spPet, int bMessage)
     {
         if (spRow->m_n18 == 1)
         {
-            if (spPet->FUN_1405279c0()->FUN_140620a50() == 0)
+            if (spPet->FUN_1405279c0()->GetMaxSlot() == 0)
             {
                 if (bMessage != 0)
                     FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_pet_study_dialog_invalid_item")), 1, 0);

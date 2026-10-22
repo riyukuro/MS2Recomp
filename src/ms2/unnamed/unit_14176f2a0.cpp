@@ -53,8 +53,8 @@ bool CMeshUpdateGate::FUN_14176f410(egf::Entity* pEntity, float fInterval)
 {
     if (pEntity)
     {
-    bool bShown = FUN_14176fa60();
-    if (FUN_14176f740(fInterval) && bShown != FUN_14176fa60())
+    bool bShown = IsActive();
+    if (FUN_14176f740(fInterval) && bShown != IsActive())
     {
         bShown = bShown ^ 1;
         efd::SmartPointer<ecr::SceneGraphService> spService(FUN_1410a68f0(&DAT_143b059e8));
@@ -74,10 +74,10 @@ bool CMeshUpdateGate::FUN_14176f500(egf::Entity* pEntity, float fInterval, float
 {
     if (pEntity)
     {
-    bool bShown = FUN_14176fa60();
-    if (fTime >= FUN_14176fa50())
+    bool bShown = IsActive();
+    if (fTime >= GetDuration())
     {
-        if (FUN_14176f740(fInterval) && bShown != FUN_14176fa60())
+        if (FUN_14176f740(fInterval) && bShown != IsActive())
         {
             bShown = bShown ^ 1;
             if (pEntity)
@@ -107,7 +107,7 @@ MS2_REPLACE_METHOD(0x14176f500, CMeshUpdateGate, FUN_14176f500, 364, 0x2CFC64F7)
 // @0x14176f680
 void CMeshUpdateGate::FUN_14176f680(egf::Entity* pEntity)
 {
-    if (pEntity && FUN_14176fa60())
+    if (pEntity && IsActive())
     {
         efd::SmartPointer<ecr::SceneGraphService> spService(FUN_1410a68f0(&DAT_143b059e8));
         FUN_1414f11d0(spService, pEntity);
@@ -148,16 +148,16 @@ bool CMeshUpdateGate::FUN_14176f740(float)
 MS2_REPLACE_METHOD(0x14176f740, CMeshUpdateGate, FUN_14176f740, 219, 0x4AF8C9A0);
 
 // @0x14176fa50
-float CMeshUpdateGate::FUN_14176fa50() const { return m_fDuration; }
-MS2_REPLACE_METHOD(0x14176fa50, CMeshUpdateGate, FUN_14176fa50, 16, 0x5C30854E);
+float CMeshUpdateGate::GetDuration() const { return m_fDuration; }
+MS2_REPLACE_METHOD(0x14176fa50, CMeshUpdateGate, GetDuration, 16, 0x5C30854E);
 
 // @0x14176fa60
-bool CMeshUpdateGate::FUN_14176fa60() const { return m_bActive; }
-MS2_REPLACE_METHOD(0x14176fa60, CMeshUpdateGate, FUN_14176fa60, 15, 0x5B0DC671);
+bool CMeshUpdateGate::IsActive() const { return m_bActive; }
+MS2_REPLACE_METHOD(0x14176fa60, CMeshUpdateGate, IsActive, 15, 0x5B0DC671);
 
 // @0x14176fa70
-void CMeshUpdateGate::FUN_14176fa70(NiMeshUpdateProcess* pProcess) { m_pProcess = pProcess; }
-MS2_REPLACE_METHOD(0x14176fa70, CMeshUpdateGate, FUN_14176fa70, 25, 0x7B768AB3);
+void CMeshUpdateGate::SetProcess(NiMeshUpdateProcess* pProcess) { m_pProcess = pProcess; }
+MS2_REPLACE_METHOD(0x14176fa70, CMeshUpdateGate, SetProcess, 25, 0x7B768AB3);
 
 // @0x14176fa90
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);

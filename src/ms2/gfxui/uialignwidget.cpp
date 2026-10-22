@@ -57,11 +57,11 @@ void UIAlignWidget::FUN_1422e6550(int nOffsetX, int nOffsetY)
 MS2_REPLACE_METHOD(0x1422E6550, UIAlignWidget, FUN_1422e6550, 39, 0x3919B85D);
 
 // @0x1422e6580
-void UIAlignWidget::FUN_1422e6580(int nAlignType)
+void UIAlignWidget::SetAlignType(int nAlignType)
 {
     m_nAlignType = nAlignType;
 }
-MS2_REPLACE_METHOD(0x1422E6580, UIAlignWidget, FUN_1422e6580, 22, 0xF6E32213);
+MS2_REPLACE_METHOD(0x1422E6580, UIAlignWidget, SetAlignType, 22, 0xF6E32213);
 
 // @0x1422e65a0
 int UIAlignWidget::FUN_1422e65a0(const CString& strName, int bAny)
@@ -162,7 +162,7 @@ void UIAlignWidgetManager::FUN_1422e6960()
                 int nAlignType;
                 FUN_1408731e0(pWidget, "alignType", nAlignType);
                 MS2Ptr<UIAlignWidget> spWidget(new UIAlignWidget);
-                spWidget->FUN_1422e6580(nAlignType);
+                spWidget->SetAlignType(nAlignType);
                 spWidget->FUN_1422e6550(nOffsetX, nOffsetY);
                 for (Unk_140165cf0* pEntity = FUN_140165cf0(pWidget, "entity"); pEntity != NULL;
                      pEntity = FUN_140168650(pEntity, "entity"))

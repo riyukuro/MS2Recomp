@@ -80,25 +80,25 @@ void CMsgBoxData::FUN_141a01540(const CStringW& strTag)
 MS2_REPLACE_METHOD(0x141A01540, CMsgBoxData, FUN_141a01540, 42, 0x9069D985);
 
 // @0x141a01570
-void CMsgBoxData::FUN_141a01570(const CStringW& strMsg)
+void CMsgBoxData::SetMsg(const CStringW& strMsg)
 {
     m_strMsg = strMsg;
 }
-MS2_REPLACE_METHOD(0x141A01570, CMsgBoxData, FUN_141a01570, 42, 0xB0C8C505);
+MS2_REPLACE_METHOD(0x141A01570, CMsgBoxData, SetMsg, 42, 0xB0C8C505);
 
 // @0x141a015a0
-void CMsgBoxData::FUN_141a015a0(const CStringW& str)
+void CMsgBoxData::SetMsg2(const CStringW& str)
 {
     m_strMsg2 = str;
 }
-MS2_REPLACE_METHOD(0x141A015A0, CMsgBoxData, FUN_141a015a0, 42, 0x83F2430D);
+MS2_REPLACE_METHOD(0x141A015A0, CMsgBoxData, SetMsg2, 42, 0x83F2430D);
 
 // @0x141a015d0
-void CMsgBoxData::FUN_141a015d0(const CStringW& str)
+void CMsgBoxData::SetTitle(const CStringW& str)
 {
     m_strTitle = str;
 }
-MS2_REPLACE_METHOD(0x141A015D0, CMsgBoxData, FUN_141a015d0, 42, 0x90927BED);
+MS2_REPLACE_METHOD(0x141A015D0, CMsgBoxData, SetTitle, 42, 0x90927BED);
 
 // @0x141a01600
 void CMsgBoxData::FUN_141a01600(__int64 n)
@@ -115,18 +115,18 @@ void CMsgBoxData::FUN_141a01620(int n)
 MS2_REPLACE_METHOD(0x141A01620, CMsgBoxData, FUN_141a01620, 22, 0x5ED7A56F);
 
 // @0x141a01640
-void CMsgBoxData::FUN_141a01640(int nAlign)
+void CMsgBoxData::SetAlign(int nAlign)
 {
     m_nAlign = nAlign;
 }
-MS2_REPLACE_METHOD(0x141A01640, CMsgBoxData, FUN_141a01640, 25, 0xE2AA40B1);
+MS2_REPLACE_METHOD(0x141A01640, CMsgBoxData, SetAlign, 25, 0xE2AA40B1);
 
 // @0x141a01660
-void CMsgBoxData::FUN_141a01660(const CStringW& strTag)
+void CMsgBoxData::SetExtra(const CStringW& strTag)
 {
     m_strExtra = strTag;
 }
-MS2_REPLACE_METHOD(0x141A01660, CMsgBoxData, FUN_141a01660, 42, 0x0C3F20DC);
+MS2_REPLACE_METHOD(0x141A01660, CMsgBoxData, SetExtra, 42, 0x0C3F20DC);
 
 // @0x141a01690
 void CMsgBoxData::FUN_141a01690(const CStringW& strBtn0, const CStringW& strBtn1, const CStringW& strBtn2)
@@ -189,18 +189,18 @@ void CMsgBoxData::FUN_141a01bc0(int nSound)
 MS2_REPLACE_METHOD(0x141A01BC0, CMsgBoxData, FUN_141a01bc0, 93, 0x9FD7ABA2);
 
 // @0x141a01c30
-void CMsgBoxData::FUN_141a01c30(const CString& strSound)
+void CMsgBoxData::SetSound(const CString& strSound)
 {
     m_strSound = strSound;
 }
-MS2_REPLACE_METHOD(0x141A01C30, CMsgBoxData, FUN_141a01c30, 44, 0xB3DF27B1);
+MS2_REPLACE_METHOD(0x141A01C30, CMsgBoxData, SetSound, 44, 0xB3DF27B1);
 
 // @0x141a01c70
-void CMsgBoxData::FUN_141a01c70(const CStringW& str)
+void CMsgBoxData::SetStrike(const CStringW& str)
 {
     m_strStrike = str;
 }
-MS2_REPLACE_METHOD(0x141A01C70, CMsgBoxData, FUN_141a01c70, 42, 0x96759442);
+MS2_REPLACE_METHOD(0x141A01C70, CMsgBoxData, SetStrike, 42, 0x96759442);
 
 // @0x141a01ca0
 void CMsgBoxData::FUN_141a01ca0(int nSec, int nShowFormat, const CStringW& strFormat)
@@ -358,18 +358,18 @@ void CMsgBoxData::FUN_141a026f0(bool b)
 MS2_REPLACE_METHOD(0x141A026F0, CMsgBoxData, FUN_141a026f0, 51, 0x68E00F0A);
 
 // @0x141a02730
-void CMsgBoxData::FUN_141a02730(bool b)
+void CMsgBoxData::SetAgreement(bool b)
 {
     m_bAgreement = b;
 }
-MS2_REPLACE_METHOD(0x141A02730, CMsgBoxData, FUN_141a02730, 26, 0x83983DAB);
+MS2_REPLACE_METHOD(0x141A02730, CMsgBoxData, SetAgreement, 26, 0x83983DAB);
 
 // @0x141a02750
-void CMsgBoxData::FUN_141a02750(int n)
+void CMsgBoxData::SetRetraction(int n)
 {
     m_nRetraction = n;
 }
-MS2_REPLACE_METHOD(0x141A02750, CMsgBoxData, FUN_141a02750, 25, 0xBF2FCB8D);
+MS2_REPLACE_METHOD(0x141A02750, CMsgBoxData, SetRetraction, 25, 0xBF2FCB8D);
 
 // @0x141a02770
 void CMsgBoxData::FUN_141a02770(int nWidth, int nHeight)
@@ -454,11 +454,11 @@ CStringW CMsgBoxData::FUN_141a02b90() const
 MS2_REPLACE_METHOD(0x141A02B90, CMsgBoxData, FUN_141a02b90, 66, 0xC4B09B74);
 
 // @0x141a02be0
-const CString& CMsgBoxData::FUN_141a02be0() const
+const CString& CMsgBoxData::GetSound() const
 {
     return m_strSound;
 }
-MS2_REPLACE_METHOD(0x141A02BE0, CMsgBoxData, FUN_141a02be0, 17, 0x827BAE3D);
+MS2_REPLACE_METHOD(0x141A02BE0, CMsgBoxData, GetSound, 17, 0x827BAE3D);
 
 // @0x141a02c00
 __int64 CMsgBoxData::FUN_141a02c00() const
@@ -475,11 +475,11 @@ __int64 CMsgBoxData::FUN_141a02c20() const
 MS2_REPLACE_METHOD(0x141A02C20, CMsgBoxData, FUN_141a02c20, 15, 0xAC153A31);
 
 // @0x141a02c40
-int CMsgBoxData::FUN_141a02c40() const
+int CMsgBoxData::GetType() const
 {
     return m_nType;
 }
-MS2_REPLACE_METHOD(0x141A02C40, CMsgBoxData, FUN_141a02c40, 14, 0xA25B27BF);
+MS2_REPLACE_METHOD(0x141A02C40, CMsgBoxData, GetType, 14, 0xA25B27BF);
 
 // @0x141a02c60
 int CMsgBoxData::FUN_141a02c60() const
@@ -510,11 +510,11 @@ IMessageListener* CMsgBoxData::FUN_141a02cc0() const
 MS2_REPLACE_METHOD(0x141A02CC0, CMsgBoxData, FUN_141a02cc0, 15, 0xBBB219C9);
 
 // @0x141a02ce0
-const CStringW& CMsgBoxData::FUN_141a02ce0() const
+const CStringW& CMsgBoxData::GetExtra() const
 {
     return m_strExtra;
 }
-MS2_REPLACE_METHOD(0x141A02CE0, CMsgBoxData, FUN_141a02ce0, 15, 0x27BBF311);
+MS2_REPLACE_METHOD(0x141A02CE0, CMsgBoxData, GetExtra, 15, 0x27BBF311);
 
 // @0x141a02d00
 CStringW CMsgBoxData::FUN_141a02d00() const
@@ -538,11 +538,11 @@ const Delegate<bool(int, const CMsgBoxData&)>& CMsgBoxData::FUN_141a02da0() cons
 MS2_REPLACE_METHOD(0x141A02DA0, CMsgBoxData, FUN_141a02da0, 17, 0x1807320D);
 
 // @0x141a02dc0
-CString CMsgBoxData::FUN_141a02dc0() const
+CString CMsgBoxData::GetLinkUrl() const
 {
     return m_strLinkUrl;
 }
-MS2_REPLACE_METHOD(0x141A02DC0, CMsgBoxData, FUN_141a02dc0, 68, 0xD8467B00);
+MS2_REPLACE_METHOD(0x141A02DC0, CMsgBoxData, GetLinkUrl, 68, 0xD8467B00);
 
 // @0x141a02e10
 bool CMsgBoxData::FUN_141a02e10(int nIndex, bool bDefault) const
@@ -608,11 +608,11 @@ bool CMsgBoxData::FUN_141a03050() const
 MS2_REPLACE_METHOD(0x141A03050, CMsgBoxData, FUN_141a03050, 18, 0x2FB94A37);
 
 // @0x141a03070
-bool CMsgBoxData::FUN_141a03070() const
+bool CMsgBoxData::IsModaless() const
 {
     return m_bModaless;
 }
-MS2_REPLACE_METHOD(0x141A03070, CMsgBoxData, FUN_141a03070, 18, 0xB3B05C10);
+MS2_REPLACE_METHOD(0x141A03070, CMsgBoxData, IsModaless, 18, 0xB3B05C10);
 
 // @0x141a03090
 bool CMsgBoxData::FUN_141a03090() const

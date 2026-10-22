@@ -2484,7 +2484,7 @@ void FUN_140ef2fb0()
                     spBox->FUN_141a024e0(FUN_14028de60(0x29f), 0);
                     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(pDlg, &UIUGCCubePaletteDialog::FUN_140eec410));
                     if (nPrice < nOrigin)
-                        spBox->FUN_141a01c70(strOrigin);
+                        spBox->SetStrike(strOrigin);
                     FUN_140d73c60(spBox);
                 }
             }

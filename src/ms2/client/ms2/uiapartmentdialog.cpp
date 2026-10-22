@@ -253,7 +253,7 @@ bool UIApartmentDialog::FUN_1418b6ab0(int nMode)
     MS2Ptr<CMsgBoxData> spBox = pBox->FUN_1419f8470();
     if (!(spBox == 0))
     {
-        if (!FUN_140e45240(spBox->FUN_141a02ce0(), "roomNumber"))
+        if (!FUN_140e45240(spBox->GetExtra(), "roomNumber"))
         {
             if (nMode == 1)
             {

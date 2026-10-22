@@ -258,7 +258,7 @@ void CStoryQuest::FUN_140d73960()
             {
                 spBox->FUN_140534050(FUN_14074b030(m_data.operator->()));
                 spBox->FUN_140533ff0(m_7c);
-                spBox->FUN_141a015d0(FUN_1403ed2d0()->FUN_141bd0d30());
+                spBox->SetTitle(FUN_1403ed2d0()->FUN_141bd0d30());
                 spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(FUN_140764020(), &CQuestManager::SendQuestMode20));
                 spBox->FUN_141a01690(FUN_14028b8e0(CStringW(L"s_quest_dispatch_yes")), FUN_14028b8e0(CStringW(L"s_quest_dispatch_no")), CStringW(L""));
                 FUN_140d73c60(spBox);
@@ -323,7 +323,7 @@ int CStoryQuest::FUN_14180fc80()
         return 0;
     if (m_data->m_32c.m_0 == 0)
         return 0;
-    if (FUN_1407476d0() != 1)
+    if (GetState() != 1)
         return 0;
     if (IsComplete() == 0)
         return 0;

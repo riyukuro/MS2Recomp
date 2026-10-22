@@ -1610,10 +1610,10 @@ void MyPC::FUN_141531470(ATL::CAtlArray<MS2Ptr<CItem> >& aItems, int* pStats, in
                         Unk_EnchantPtr<BaseOption> spOption = kStats.GetValueAt(pos);
                         if (spOption == 0)
                             continue;
-                        if (spOption->FUN_140266ce0())
+                        if (spOption->HasValue())
                         {
                             int nStat = kStats.GetKeyAt(pos);
-                            pStats[nStat] += spOption->FUN_140266e30();
+                            pStats[nStat] += spOption->GetValue();
                         }
                     }
                 }
@@ -1626,10 +1626,10 @@ void MyPC::FUN_141531470(ATL::CAtlArray<MS2Ptr<CItem> >& aItems, int* pStats, in
                         Unk_EnchantPtr<BaseOption> spOption = kSpecials.GetValueAt(pos);
                         if (spOption == 0)
                             continue;
-                        if (spOption->FUN_140266ce0())
+                        if (spOption->HasValue())
                         {
                             int nStat = kSpecials.GetKeyAt(pos);
-                            pSpecials[nStat] += spOption->FUN_140266e30();
+                            pSpecials[nStat] += spOption->GetValue();
                         }
                     }
                 }

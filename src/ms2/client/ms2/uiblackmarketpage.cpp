@@ -1025,7 +1025,7 @@ void BlackMarketPageItemSearch::FUN_140f108e0(MS2Ptr<CBlackMarketProduct> spEntr
         __int64 nProductId = spEntry->m_qw18;
         MS2Ptr<CItem> spItem = spEntry->m_item;
         int nUnitCount = 1;
-        spBox->FUN_141a015d0(FUN_14028de60(0x45f));
+        spBox->SetTitle(FUN_14028de60(0x45f));
         spBox->FUN_141a01700(0x47d, 0x476, 0);
         MS2Ptr<CMsgBoxDataItem> spData = new CMsgBoxDataItem();
         int nRank = spItem->FUN_140526bd0();
@@ -1077,7 +1077,7 @@ void BlackMarketPageItemSearch::FUN_140f10d90(MS2Ptr<CBlackMarketProduct> spEntr
     }
     MS2Ptr<CMsgBoxData> spBox = new CMsgBoxData(0x11);
     spBox->FUN_141a01ee0(spShow, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
-    spBox->FUN_141a01570(strMsg);
+    spBox->SetMsg(strMsg);
     spBox->FUN_141a01700(0x477, 0x478, 0);
     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageItemSearch::FUN_140f115b0));
     spBox->FUN_1405340b0(nProductId);
@@ -1329,7 +1329,7 @@ int BlackMarketPageItemRegister::vfunc_4(const char* szMethod, const Scaleform::
                     strMsg = FUN_14028dfa0(CStringW(L"s_msg_blackmarket_ask_stopsale"), FUN_1409404f0(nPrice));
                 MS2Ptr<CMsgBoxData> spBox = new CMsgBoxData(0x11);
                 spBox->FUN_141a01ee0(spEntry->m_item, spEntry->m_item->FUN_140527b10(), 1, 0, -1, -1, 1);
-                spBox->FUN_141a01570(strMsg);
+                spBox->SetMsg(strMsg);
                 spBox->FUN_141a01700(0x477, 0x478, 0);
                 spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageItemRegister::FUN_140f13950));
                 FUN_140d73c60(spBox);

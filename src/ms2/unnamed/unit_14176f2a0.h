@@ -16,9 +16,9 @@ public:
     void FUN_14176f680(egf::Entity* pEntity);                   // end an active pass
     void FUN_14176f710();                                       // m_fLast = now
     bool FUN_14176f740(float fInterval);                        // is the next pass due?
-    float FUN_14176fa50() const;                                // m_fDuration
-    bool FUN_14176fa60() const;                                 // m_bActive
-    void FUN_14176fa70(NiMeshUpdateProcess* pProcess);          // set the process
+    float GetDuration() const;                                // m_fDuration
+    bool IsActive() const;                                 // m_bActive
+    void SetProcess(NiMeshUpdateProcess* pProcess);          // set the process
     // @0x14123ef30 (COMDAT in client\ms2\gameobject.cpp)
     void FUN_14123ef30(float fDuration) { m_fDuration = fDuration; }
     // @0x14108c240 (COMDAT in client\ms2\clonepc.cpp)

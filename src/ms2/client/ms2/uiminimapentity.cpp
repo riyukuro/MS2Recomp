@@ -3225,9 +3225,9 @@ void UIMinimapDialog::FUN_141a41560(ProxyPtr spProxy, EntityPtr spEntity)
                 } else if (spPvP->FUN_140743610()) {
                     PC* pOther = FUN_1403ed2d0()->FUN_141bd1530(spProxy->FUN_1416c22f0());
                     if (pOther != 0) {
-                        bVisible = reinterpret_cast<Unk_MmPvPPlayer*>(pOther)->FUN_140967420()->FUN_140743710() == reinterpret_cast<Unk_MmPvPPlayer*>(pPC)->FUN_140967420()->FUN_140743710();
+                        bVisible = reinterpret_cast<Unk_MmPvPPlayer*>(pOther)->FUN_140967420()->GetPoint() == reinterpret_cast<Unk_MmPvPPlayer*>(pPC)->FUN_140967420()->GetPoint();
                         if (bVisible) {
-                            const CString& strTeam = spPvP->FUN_140743710() == 0xc9 ? s_strLayerRedTeam : s_strLayerBlueTeam;
+                            const CString& strTeam = spPvP->GetPoint() == 0xc9 ? s_strLayerRedTeam : s_strLayerBlueTeam;
                             spClip->vfunc_15(strTeam);
                         }
                     }

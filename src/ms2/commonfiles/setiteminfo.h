@@ -21,7 +21,7 @@ public:
     bool Load(Unk_140165cf0* pNode);   // read a <set> element; false when it is invalid
     int FUN_1407ad550();                        // the set id
     int HasItem(unsigned nItemId) const;        // 0x1407ad570 the item is one of the pieces
-    bool FUN_1407ad600();                       // showEffectIfItsSetItemMotion (+0x80)
+    bool IsShowEffect();                       // showEffectIfItsSetItemMotion (+0x80)
     bool IsDisableTooltip();                    // 0x1407ad620 isDisableTooltip (+0x81)
     size_t GetItemCount() const;                // 0x1407ad640 the number of pieces
     void FUN_1407ad670(ATL::CAtlArray<unsigned>* pOut);     // appends the piece item ids to an array

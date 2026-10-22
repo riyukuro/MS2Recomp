@@ -952,7 +952,7 @@ int CQuestManager::FUN_1416cae20(int id)
 {
     Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(id);
     if (quest.IsNull()) return 0;
-    return quest->FUN_1407476d0();
+    return quest->GetState();
 }
 MS2_REPLACE_METHOD(0x1416cae20, CQuestManager, FUN_1416cae20, 149, 0x7D595639);
 
@@ -1002,7 +1002,7 @@ void CQuestManager::FUN_1416cb260(ATL::CAtlArray<unsigned>& ids, int state, int 
 {
     for (POSITION pos = m_quests20.GetHeadPosition(); pos != 0; m_quests20.GetNext(pos)) {
         Unk_PayloadPtr<CQuest> quest = m_quests20.GetValueAt(pos);
-        if (state != 4 && state != quest->FUN_1407476d0()) continue;
+        if (state != 4 && state != quest->GetState()) continue;
         if (type != 11 && type != quest->GetData()->m_type) continue;
         if (group != -1 && group != quest->GetData()->m_28) continue;
         ids.Add(quest->FUN_140bfc580());
@@ -1020,7 +1020,7 @@ void CQuestManager::FUN_1416cb4d0(std::vector<unsigned>& ids, std::vector<Unk_Qm
     for (POSITION pos = m_quests20.GetHeadPosition(); pos != 0; m_quests20.GetNext(pos)) {
         Unk_PayloadPtr<CQuest> quest = m_quests20.GetValueAt(pos);
         if (!all) {
-            int state = quest->FUN_1407476d0();
+            int state = quest->GetState();
             if (std::find(states.begin(), states.end(), state) == states.end()) continue;
         }
         if (type != 11 && FUN_14074b050(quest->GetData().operator->()) != type) continue;
@@ -1035,7 +1035,7 @@ void CQuestManager::FUN_1416cb8b0(ATL::CAtlArray<Unk_PayloadPtr<CQuest>>& out, i
 {
     for (POSITION pos = m_quests20.GetHeadPosition(); pos != 0; m_quests20.GetNext(pos)) {
         Unk_PayloadPtr<CQuest> quest = m_quests20.GetValueAt(pos);
-        if (state != 4 && state != quest->FUN_1407476d0()) continue;
+        if (state != 4 && state != quest->GetState()) continue;
         if (type != 11 && FUN_14074b050(quest->GetData().operator->()) != type) continue;
         if (group != -1 && quest->GetData()->m_28 != group) continue;
         out.Add(quest);
@@ -1048,7 +1048,7 @@ void CQuestManager::FUN_1416cbb20(std::vector<Unk_PayloadPtr<CQuest>>& out, int 
 {
     for (POSITION pos = m_quests20.GetHeadPosition(); pos != 0; m_quests20.GetNext(pos)) {
         Unk_PayloadPtr<CQuest> quest = m_quests20.GetValueAt(pos);
-        if (state != 4 && state != quest->FUN_1407476d0()) continue;
+        if (state != 4 && state != quest->GetState()) continue;
         if (type != 11 && FUN_14074b050(quest->GetData().operator->()) != type) continue;
         if (group != -1 && quest->GetData()->m_28 != group) continue;
         out.push_back(quest);
@@ -1379,7 +1379,7 @@ int CQuestManager::FUN_1416ce3d0(int group)
         if (data->m_2f != 0) continue;
         Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(ids[i]);
         if (quest.IsNull()) return 0;
-        if (quest->FUN_1407476d0() != 2) return 0;
+        if (quest->GetState() != 2) return 0;
     }
     return 1;
 }
@@ -1391,7 +1391,7 @@ int CQuestManager::FUN_1416ce5a0()
     int count = 0;
     for (POSITION pos = m_quests20.GetHeadPosition(); pos != 0; m_quests20.GetNext(pos)) {
         Unk_PayloadPtr<CQuest> quest = m_quests20.GetValueAt(pos);
-        if (quest->FUN_1407476d0() != 1) continue;
+        if (quest->GetState() != 1) continue;
         if (quest->GetTrackingState() == 0) continue;
         count++;
     }
@@ -1450,9 +1450,9 @@ void CQuestManager::FUN_1416ce860(MS2Ptr<CItem> item, ATL::CAtlArray<Unk_QuestIt
             Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
             if (quest.IsNull()) {
                 link.m_state = 0;
-            } else if (quest->FUN_1407476d0() == 2) {
+            } else if (quest->GetState() == 2) {
                 if (FUN_14074b070(data.operator->()) != 0) link.m_state = 0;
-            } else if (quest->FUN_1407476d0() == 1) {
+            } else if (quest->GetState() == 1) {
                 link.m_state = 1;
             }
             if (link.m_state != 4) out.Add(link);
@@ -1504,7 +1504,7 @@ void CQuestManager::FUN_1416cef90(int silent)
     if (FUN_1422b9e00(FUN_1408e57f0()) == 0x620001b) return;
     for (POSITION pos = m_quests140.GetHeadPosition(); pos != 0; m_quests140.GetNext(pos)) {
         Unk_PayloadPtr<CQuest> quest = m_quests140.GetValueAt(pos);
-        if (quest->FUN_1407476d0() != 1) continue;
+        if (quest->GetState() != 1) continue;
         MS2Ptr<CQuestData> data = quest->GetData();
         for (size_t i = 0; i < data->m_conditions.GetCount(); i++) {
             MS2Ptr<CConditionCommonData> cond = data->m_conditions[i];
@@ -1659,7 +1659,7 @@ void CQuestManager::FUN_1416cfc70(ATL::CAtlArray<Unk_PayloadPtr<CQuest>>& out, i
 {
     for (POSITION pos = m_quests50.GetHeadPosition(); pos != 0; m_quests50.GetNext(pos)) {
         Unk_PayloadPtr<CQuest> quest = m_quests50.GetValueAt(pos);
-        if (state != 4 && state != quest->FUN_1407476d0()) continue;
+        if (state != 4 && state != quest->GetState()) continue;
         if (grade != 0 && quest->GetData()->m_338.m_value != grade) continue;
         out.Add(quest);
     }
@@ -1723,7 +1723,7 @@ int CQuestManager::FUN_1416d0150()
     int count = 0;
     for (POSITION pos = m_quests80.GetHeadPosition(); pos != 0; m_quests80.GetNext(pos)) {
         Unk_PayloadPtr<CQuest> quest = m_quests80.GetValueAt(pos);
-        if (quest->FUN_1407476d0() == 2) {
+        if (quest->GetState() == 2) {
             count = count + 1;
         }
     }
@@ -2292,7 +2292,7 @@ void CQuestManager::FUN_1416d3010()
         POSITION pos = m_quests140.GetHeadPosition();
         while (pos != 0) {
             Unk_PayloadPtr<CQuest> quest = m_quests140.GetValueAt(pos);
-            if (quest->FUN_1407476d0() == 1) {
+            if (quest->GetState() == 1) {
                 CQuestCommon* common = quest.operator->();
                 int tracked = common->FUN_1407447c0();
                 if (tracked != 0) {

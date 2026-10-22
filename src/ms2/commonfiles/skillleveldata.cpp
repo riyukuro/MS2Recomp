@@ -703,13 +703,13 @@ unsigned SkillLevelData::FUN_140803dc0()
 }
 
 // @0x140803df0
-unsigned short SkillLevelData::FUN_140803df0()
+unsigned short SkillLevelData::GetLevel()
 {
     return m_nLevel;
 }
 
 // @0x140803e10
-SkillData* SkillLevelData::FUN_140803e10()
+SkillData* SkillLevelData::GetSkill()
 {
     return m_pSkill;
 }
@@ -806,7 +806,7 @@ __int64 SkillLevelData::FUN_1408041d0(int nMotion, int nAttack)
 }
 
 // @0x140804250
-int SkillLevelData::FUN_140804250()
+int SkillLevelData::GetStanceDamageRate()
 {
     return m_nStanceDamageRate;
 }

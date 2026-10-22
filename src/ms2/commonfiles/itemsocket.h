@@ -64,9 +64,9 @@ public:
     void FUN_14061ff90(COutputStream& kOut);        // 0x14061ff90 write
     void FUN_140620080(CInputStream& kIn);          // 0x140620080 read
     CStringW FUN_1406201d0();                       // 0x1406201d0 the bound character name
-    int FUN_140620260();                            // 0x140620260 the gemstone id
-    MS2Ptr<TSocketGemStoneLock> FUN_140620280();    // 0x140620280
-    MS2Ptr<TSocketGemStoneBind> FUN_1406202d0();    // 0x1406202d0
+    int GetGemId();                            // 0x140620260 the gemstone id
+    MS2Ptr<TSocketGemStoneLock> GetLock();    // 0x140620280
+    MS2Ptr<TSocketGemStoneBind> GetBind();    // 0x1406202d0
 
     int m_nGemId;                                   // +0x18 gemstone item id
     MS2Ptr<TSocketGemStoneBind> m_spBind;           // +0x20
@@ -91,7 +91,7 @@ public:
     void FUN_140620840(unsigned nMaxSlot, unsigned nCount);   // 0x140620840 reset to empty sockets
     int FUN_140620940();                            // 0x140620940 the filled socket count
     unsigned FUN_140620a20();                       // 0x140620a20 the open socket count
-    unsigned FUN_140620a50();                       // 0x140620a50 the max socket count
+    unsigned GetMaxSlot();                       // 0x140620a50 the max socket count
     int FUN_140620a70();                            // 0x140620a70 the sockets left to open
     int FUN_140620ac0(unsigned nIndex);             // 0x140620ac0 the gemstone id in a socket
     MS2Ptr<TSocketGemStoneInfo> FUN_140620b70(unsigned nIndex);   // 0x140620b70

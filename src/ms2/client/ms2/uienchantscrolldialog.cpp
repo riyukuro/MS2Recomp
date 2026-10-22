@@ -139,7 +139,7 @@ static __forceinline void ReadOptions(CInPacket& packet, Unk_EsOptionMap& rMap)
     for (unsigned i = 0; i < nCount; i++) {
         Unk_EnchantPtr<BaseOption> spOpt(new BaseOption());
         unsigned nKey = (unsigned short)packet.vfunc_o8_2();
-        spOpt->FUN_140266e90(packet.vfunc_o8_3());
+        spOpt->SetValue(packet.vfunc_o8_3());
         rMap.SetAt(nKey, spOpt);
     }
 }
@@ -420,7 +420,7 @@ void UIEnchantScrollDialog::FUN_140f3d5b0(MS2Ptr<CItem> spItem, ASObj& rData, CI
         unsigned nKey = map.GetKeyAt(pos);
         Unk_EnchantPtr<BaseOption> spOpt = map.GetValueAt(pos);
         if (!(!spOpt)) {
-            if (spOpt->FUN_140266ce0()) {
+            if (spOpt->HasValue()) {
                 ASObj obj(2);
                 Unk_EsEnchantData* pData = reinterpret_cast<Unk_EsEnchantData*>(spItem->FUN_1405278a0());
                 __int64 nBase = pData->FUN_14062ffb0(nKey, 0, 0);
@@ -453,7 +453,7 @@ void UIEnchantScrollDialog::FUN_140f3db20(MS2Ptr<CItem> spItem, ASObj& rData, CI
     for (unsigned i = 0; i < nLow; i++) {
         Unk_EnchantPtr<BaseOption> spOpt(new BaseOption());
         unsigned nKey = (unsigned short)packet.vfunc_o8_2();
-        spOpt->FUN_140266e90(packet.vfunc_o8_3());
+        spOpt->SetValue(packet.vfunc_o8_3());
         mapLow.SetAt(nKey, spOpt);
         if (FUN_140f3e920(keys, nKey) == -1)
             keys.Add(nKey);
@@ -463,7 +463,7 @@ void UIEnchantScrollDialog::FUN_140f3db20(MS2Ptr<CItem> spItem, ASObj& rData, CI
     for (unsigned i = 0; i < nHigh; i++) {
         Unk_EnchantPtr<BaseOption> spOpt(new BaseOption());
         unsigned nKey = (unsigned short)packet.vfunc_o8_2();
-        spOpt->FUN_140266e90(packet.vfunc_o8_3());
+        spOpt->SetValue(packet.vfunc_o8_3());
         mapHigh.SetAt(nKey, spOpt);
         if (FUN_140f3e920(keys, nKey) == -1)
             keys.Add(nKey);
@@ -477,8 +477,8 @@ void UIEnchantScrollDialog::FUN_140f3db20(MS2Ptr<CItem> spItem, ASObj& rData, CI
             continue;
         if (!mapHigh.Lookup(nKey, spHigh))
             continue;
-        if (spLow->FUN_140266ce0()) {
-            if (spHigh->FUN_140266ce0()) {
+        if (spLow->HasValue()) {
+            if (spHigh->HasValue()) {
                 ASObj obj(2);
                 Unk_EsEnchantData* pData = reinterpret_cast<Unk_EsEnchantData*>(spItem->FUN_1405278a0());
                 __int64 nBase = pData->FUN_14062ffb0(nKey, 0, 0);

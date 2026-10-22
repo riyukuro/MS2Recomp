@@ -22,7 +22,7 @@ public:
     bool FUN_140743650();                                               // mode 4
     bool FUN_140743690();                                               // mode 10
     bool FUN_1407436d0();                                               // mode 5 (one punch)
-    int FUN_140743710();                                                // m_nPoint
+    int GetPoint();                                                // m_nPoint
     void FUN_140743730();                                               // reset
     void FUN_1407437b0(int nDelta);                                     // m_nKill += nDelta (never below 0)
     void FUN_140743810(__int64 nDelta);                                   // m_nUnk34 += nDelta

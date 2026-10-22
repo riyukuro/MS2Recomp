@@ -26,7 +26,7 @@ DragSlot::~DragSlot()
 }
 
 // @0x1422cc410
-int DragSlot::FUN_1422cc410()
+int DragSlot::GetIndex()
 {
     return m_nIndex;
 }

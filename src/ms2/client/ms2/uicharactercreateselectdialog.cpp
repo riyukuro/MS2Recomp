@@ -399,7 +399,7 @@ void UICharacterCreateSelectDialog::FUN_140f2fa00(int nJobCode)
             Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterCreateSelectDialog::FUN_140f301d0));
         if (box.get() != 0)
         {
-            box.operator->()->FUN_141a015d0(CStringW(L"$s_msgbox_ugc_turms_title"));
+            box.operator->()->SetTitle(CStringW(L"$s_msgbox_ugc_turms_title"));
             box.operator->()->FUN_140533ff0(nJobCode);
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(box));
         }

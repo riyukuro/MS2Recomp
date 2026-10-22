@@ -266,11 +266,11 @@ void GFxService::FUN_1422ea210(int nCaptureBlock)
 MS2_REPLACE(0x1422EA210, GFxService::FUN_1422ea210, 15, 0x2808E696);
 
 // @0x1422ea230
-void GFxService::FUN_1422ea230(CString strFont)
+void GFxService::SetFont(CString strFont)
 {
     m_strFont = strFont;
 }
-MS2_REPLACE_METHOD(0x1422EA230, GFxService, FUN_1422ea230, 63, 0xB0476F43);
+MS2_REPLACE_METHOD(0x1422EA230, GFxService, SetFont, 63, 0xB0476F43);
 
 // @0x1422ea280
 void GFxService::FUN_1422ea280(bool b)

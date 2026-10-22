@@ -336,7 +336,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51680(MS2Ptr<CItem> item)
             return;
         }
         CItemSocket* socket = item->FUN_1405279c0();
-        if (socket != 0 && socket->FUN_140620a50() != 0) {
+        if (socket != 0 && socket->GetMaxSlot() != 0) {
             FUN_141276180(s_strSelectSound, CString(""));
             socket->FUN_140620a70();
             m_source = item;
@@ -360,7 +360,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51a60(MS2Ptr<CItem> item)
     if (m_root == 0 || m_source == 0)
         return;
     CItemSocket* socket = m_source->FUN_1405279c0();
-    if (socket == 0 || socket->FUN_140620a50() == 0)
+    if (socket == 0 || socket->GetMaxSlot() == 0)
         return;
     if (!(item == 0) && item->FUN_140527840() != 0) {
         if (m_state != 1 && m_state != 2) {
@@ -378,7 +378,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51a60(MS2Ptr<CItem> item)
             return;
         }
         CItemSocket* targetSocket = item->FUN_1405279c0();
-        if (targetSocket == 0 || targetSocket->FUN_140620a50() == 0)
+        if (targetSocket == 0 || targetSocket->GetMaxSlot() == 0)
             return;
         if (FUN_141bd0cc0(FUN_1403ed2d0()) == 0)
             return;
@@ -405,7 +405,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51fa0()
             return;
         }
         CItemSocket* sourceSocket = m_source->FUN_1405279c0();
-        if (sourceSocket != 0 && sourceSocket->FUN_140620a50() != 0) {
+        if (sourceSocket != 0 && sourceSocket->GetMaxSlot() != 0) {
             __int64 targetUid = 0;
             if (m_target == 0) {
                 FUN_1412752d0(CStringW(L"s_itemsocketsystem_error_invalid_target_transfer_null"), 1);
@@ -555,7 +555,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c52f10(MS2Ptr<CItem> item, ASObj
         CItemSocket* socket = item->FUN_1405279c0();
         if (socket == 0)
             return;
-        if (socket->FUN_140620a50() == 0)
+        if (socket->GetMaxSlot() == 0)
             return;
         ASArray rows(2);
         unsigned open = socket->FUN_140620a20();
@@ -565,7 +565,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c52f10(MS2Ptr<CItem> item, ASObj
             CStringW text;
             MS2Ptr<TSocketGemStoneInfo> info = socket->FUN_140620b70(i);
             if (!(info == 0) && !info->FUN_14061fab0()) {
-                int gemId = info->FUN_140620260();
+                int gemId = info->GetGemId();
                 text = FUN_1406564a0(rowStat, FUN_140627390(gemId), FUN_14062ae60(gemId), FUN_14062b310(MS2Ptr<TSocketGemStoneInfo>(info)));
             } else {
                 if (emptyText.IsEmpty())
@@ -649,7 +649,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c53a70(const Scaleform::GFx::Fun
                 return;
             }
             CItemSocket* socket = m_source->FUN_1405279c0();
-            if (socket != 0 && socket->FUN_140620a50() != 0) {
+            if (socket != 0 && socket->GetMaxSlot() != 0) {
                 if (m_target == 0) {
                     FUN_1412752d0(CStringW(L"s_itemsocketsystem_error_invalid_target_transfer_null"), 1);
                     return;

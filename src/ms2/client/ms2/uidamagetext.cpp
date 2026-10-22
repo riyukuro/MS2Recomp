@@ -365,7 +365,7 @@ void UIDamageText::FUN_141911e90(PCBase* pTarget, __int64 nValue, int nGrade, in
             bool bMySummon = false;
             CNpc* pSummon = static_cast<CNpc*>(static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd13a0(nCasterId)));
             if (pSummon != 0)
-                bMySummon = pSummon->FUN_141094f40() == pPlayer->FUN_14123c580();
+                bMySummon = pSummon->GetOwnerId() == pPlayer->FUN_14123c580();
             efd::Point3 kScreen;
             if (Unk_DtCamera::FUN_1409478c0()->FUN_140af0700(kPos, kScreen))
             {
@@ -656,7 +656,7 @@ int UIDamageText::FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId)
     int nPlayerId = pPlayer->FUN_14123c580();
     CNpc* pSummon = static_cast<CNpc*>(static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd13a0(nCasterId)));
     if (pSummon != 0)
-        nCasterId = pSummon->FUN_141094f40();
+        nCasterId = pSummon->GetOwnerId();
     if (nTargetId == nPlayerId)
         nTargetMask = 1;
     else
@@ -682,7 +682,7 @@ int UIDamageText::FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId)
                 Unk_DtNpc* pNpc = FUN_14096e110(pCaster);
                 if (pNpc != 0 && pNpc->vfunc_116() > 0)
                 {
-                    if (pNpc->FUN_141094f40() == nPlayerId)
+                    if (pNpc->GetOwnerId() == nPlayerId)
                         bShow = true;
                     else if (pNpc->FUN_141093270().get())
                         bShow = pNpc->FUN_141093270()->m_bAttackDamage ? true : false;

@@ -868,8 +868,8 @@ void SkillData::Load(Unk_140165cf0* pElem)
         MS2Ptr<SkillLevelData> spLevel(new SkillLevelData(this));
         if (spLevel->Load(pLevel) == 0)
             return;
-        m_levels.SetAt(spLevel->FUN_140803df0(), spLevel);
-        m_nMaxLevel = max(m_nMaxLevel, spLevel->FUN_140803df0());
+        m_levels.SetAt(spLevel->GetLevel(), spLevel);
+        m_nMaxLevel = max(m_nMaxLevel, spLevel->GetLevel());
     }
 }
 MS2_REPLACE_METHOD(0x1407e9130, SkillData, Load, 2310, 0xB331D5B6);
@@ -913,11 +913,11 @@ unsigned short SkillData::FUN_1407e9ac0()
 MS2_REPLACE_METHOD(0x1407e9ac0, SkillData, FUN_1407e9ac0, 63, 0x90BEE070);
 
 // @0x1407e9b10
-unsigned short SkillData::FUN_1407e9b10()
+unsigned short SkillData::GetMaxLevel()
 {
     return m_nMaxLevel;
 }
-MS2_REPLACE_METHOD(0x1407e9b10, SkillData, FUN_1407e9b10, 18, 0x31A30D1C);
+MS2_REPLACE_METHOD(0x1407e9b10, SkillData, GetMaxLevel, 18, 0x31A30D1C);
 
 // @0x1407e9b30
 unsigned SkillData::GetRechargeMaxCount()

@@ -287,7 +287,7 @@ int FUN_140ee3290()
         MS2Ptr<TimeRunEventContext::QuestContext> spQuest = spContext->m_quests.GetValueAt(pos);
         Unk_PayloadPtr<CQuest> quest = FUN_140764020()->vfunc_o10_3(spQuest->m_questId);
         if (quest.IsNull()) return 0;
-        if (quest->FUN_1407476d0() == 3) return 0;
+        if (quest->GetState() == 3) return 0;
     }
     int nDefault = 0;
     int nReceived = g_trCounters.FUN_1409617d0(0x5dc, spContext->m_eventId, &nDefault);

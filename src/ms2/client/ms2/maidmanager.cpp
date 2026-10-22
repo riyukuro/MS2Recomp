@@ -63,7 +63,7 @@ void CFieldMaidManager::OnPacket(CInPacket* pPacket)
     if (cMode == 0)
     {
         MS2Ptr<CMaid> spMaid(new CMaid);
-        spMaid->FUN_14067def0(pPacket->vfunc_o8_1());
+        spMaid->SetMode(pPacket->vfunc_o8_1());
         spMaid->FUN_14067d730(pPacket);
         m_mapMaid.SetAt(spMaid->m_nId, spMaid);
     }
@@ -108,7 +108,7 @@ void CUserMaidManager::OnPacket(CInPacket* pPacket)
         for (unsigned int i = 0; i < nCount; i++)
         {
             MS2Ptr<CMaid> spMaid(new CMaid);
-            spMaid->FUN_14067def0(pPacket->vfunc_o8_1());
+            spMaid->SetMode(pPacket->vfunc_o8_1());
             spMaid->FUN_14067d730(pPacket);
             m_mapMaid.SetAt(spMaid->m_nId, spMaid);
         }
@@ -116,14 +116,14 @@ void CUserMaidManager::OnPacket(CInPacket* pPacket)
     else if (cMode == 1)
     {
         MS2Ptr<CMaid> spMaid(new CMaid);
-        spMaid->FUN_14067def0(pPacket->vfunc_o8_1());
+        spMaid->SetMode(pPacket->vfunc_o8_1());
         spMaid->FUN_14067d730(pPacket);
         m_mapMaid.SetAt(spMaid->m_nId, spMaid);
     }
     else if (cMode == 3)
     {
         MS2Ptr<CMaid> spMaid(new CMaid);
-        spMaid->FUN_14067def0(pPacket->vfunc_o8_1());
+        spMaid->SetMode(pPacket->vfunc_o8_1());
         spMaid->FUN_14067d730(pPacket);
         int bNewer = 0;
         {

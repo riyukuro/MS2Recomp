@@ -258,7 +258,7 @@ int CDropItem::FUN_14118cb90(int nObjectId, int nItemId, int nAmount, int nRarit
     Unk_WsC_GameObj* pOwner = WorldService::GetInstance()->FUN_141bd1320(m_nOwnerObjId);
     if (pOwner)
     {
-        MS2Ptr<CNpcData> spNpc = static_cast<CNpc*>(static_cast<GameObject*>(pOwner))->FUN_141093270();
+        MS2Ptr<CNpcData> spNpc = static_cast<CNpc*>(static_cast<GameObject*>(pOwner))->GetNpcData();
         m_nNpcType = spNpc->GetId();
     }
     m_str88 = "DropItemNIF";
@@ -648,7 +648,7 @@ void CDropItem::FUN_14118d9a0(int nState)
                     bool bBox = false;
                     if (pAttach)
                     {
-                        MS2Ptr<CNpcData> spNpc = static_cast<CNpc*>(static_cast<GameObject*>(pNpcObj))->FUN_141093270();
+                        MS2Ptr<CNpcData> spNpc = static_cast<CNpc*>(static_cast<GameObject*>(pNpcObj))->GetNpcData();
                         if (FUN_140184310(spNpc->m_collision.m_strShape, "box") && pOwnerPc)
                             bBox = true;
                     }

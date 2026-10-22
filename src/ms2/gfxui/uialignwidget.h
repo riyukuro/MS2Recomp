@@ -25,7 +25,7 @@ public:
     virtual ~UIAlignWidget();                                           // 0 0x1422e6510 (??_G 0x1422e70f0)
 
     void FUN_1422e6550(int nOffsetX, int nOffsetY);                     // set the offset
-    void FUN_1422e6580(int nAlignType);                                 // set the align type
+    void SetAlignType(int nAlignType);                                 // set the align type
     // The movie strName belongs to the widget and is loaded (bAny != 0) or loaded and hidden (slot 6 returns 0).
     int FUN_1422e65a0(const CString& strName, int bAny);
     void FUN_1422e6640(const CString& strName);                         // add a movie name (once)

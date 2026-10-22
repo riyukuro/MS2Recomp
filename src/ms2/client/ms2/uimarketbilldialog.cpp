@@ -1052,7 +1052,7 @@ bool UIMarketBillDialog::FUN_140eaad30(bool* pbClose)
                 {
                     spBox->FUN_141a01800(2);
                     spBox->FUN_141a024e0(FUN_14028de60(0x9d1), 0);
-                    spBox->FUN_141a02730(false);
+                    spBox->SetAgreement(false);
                     spBox->FUN_141a02770(0x1c0, 400);
                     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMarketBillDialog::FUN_140eab6b0));
                     FUN_140d73c60(spBox);
@@ -1069,7 +1069,7 @@ bool UIMarketBillDialog::FUN_140eaad30(bool* pbClose)
                 {
                     spBox->FUN_141a01800(2);
                     spBox->FUN_141a024e0(FUN_14028de60(0x9d1), 0);
-                    spBox->FUN_141a02730(false);
+                    spBox->SetAgreement(false);
                     spBox->FUN_141a02770(0x1c0, 400);
                     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMarketBillDialog::FUN_140eab6b0));
                     FUN_140d73c60(spBox);

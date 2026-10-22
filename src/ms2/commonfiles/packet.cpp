@@ -38,7 +38,7 @@ unsigned __int64 FUN_140282020(const Unk_OSNumber&);
 int FUN_1406c3660(const ATL::CAtlArray<char>&);                       // element count
 const unsigned char* FUN_1406c3630(const ATL::CAtlArray<char>&);      // data pointer (null when empty)
 extern CBufferCryptManager* DAT_143aac528;
-CBufferCryptManager* FUN_140714f80();
+CBufferCryptManager* GetBufferCryptManager();
 CNetworkService* FUN_140714f90();
 CPacketBuffer* FUN_1407138b0(unsigned, const Unk_SocketNew&);
 
@@ -121,8 +121,8 @@ COutputStream& FUN_14070fc40(COutputStream& out, const Unk_PktSerializable& item
 // @0x14070fc80
 COutputStream& FUN_14070fc80(COutputStream& out, CByteBuffer& value)
 {
-    out.vfunc_o10_3(value.FUN_140205190());
-    out.vfunc_o10_9(value.FUN_140204eb0(), value.FUN_140205190());
+    out.vfunc_o10_3(value.GetLength());
+    out.vfunc_o10_9(value.FUN_140204eb0(), value.GetLength());
     return out;
 }
 
@@ -153,7 +153,7 @@ int CInPacket::FUN_14070ff00(Unk_SocketPtr<CPacketBuffer>* buffer, int* stateBef
 {
     if (stateBefore != NULL) *stateBefore = m_nState;
     char* data = (*buffer).get()->FUN_140713530();
-    int remaining = (**buffer).FUN_140714fa0();
+    int remaining = (**buffer).GetSize();
     if (m_nState == RS_HEADER) {
         unsigned headerLen = 6;
         if (hasSequence != 0) headerLen = 10;
@@ -187,7 +187,7 @@ int CInPacket::FUN_14070ff00(Unk_SocketPtr<CPacketBuffer>* buffer, int* stateBef
         rest = 0;
     } else {
         Unk_SocketNew unused(0);
-        int offset = (**buffer).FUN_140714fa0();
+        int offset = (**buffer).GetSize();
         offset -= remaining;
         rest = (**buffer).FUN_140715390(offset, remaining, unused);
     }
@@ -197,7 +197,7 @@ int CInPacket::FUN_14070ff00(Unk_SocketPtr<CPacketBuffer>* buffer, int* stateBef
 // @0x140710280
 void CInPacket::FUN_140710280(int connectionState, unsigned* key)
 {
-    FUN_1401cde60(FUN_140714f80(), &m_data[0] + m_offset, m_length - m_offset, connectionState, key);
+    FUN_1401cde60(GetBufferCryptManager(), &m_data[0] + m_offset, m_length - m_offset, connectionState, key);
 }
 // @0x140710300
 CString CInPacket::FUN_140710300() const
@@ -217,7 +217,7 @@ void FUN_1407103f0(CInPacket* packet)
 {
     Unk_CompressedStream stream(true, 0x28);
     CByteBuffer& decoded = stream.Decode(*static_cast<CInputStream*>(packet));
-    unsigned length = decoded.FUN_140205190();
+    unsigned length = decoded.GetLength();
     packet->m_data.SetCount(length + 8, -1);
     memcpy(&packet->m_data[0] + 8, decoded.FUN_140204eb0(), length);
     packet->m_length = length + 8;
@@ -327,7 +327,7 @@ COutPacket* FUN_140710b90(COutPacket* packet, int state, unsigned* key)
 {
     if (packet->m_n14 != state) {
         if (packet->m_n14 == 0 || packet->m_n14 == state) {
-            FUN_1401cddd0(FUN_140714f80(), (unsigned char*)&packet->m_aBuffer[0], packet->m_nLength, state, key);
+            FUN_1401cddd0(GetBufferCryptManager(), (unsigned char*)&packet->m_aBuffer[0], packet->m_nLength, state, key);
             packet->m_n14 = state;
         } else {
             MS2_ASSERT_AT(0x1a5, FALSE);
@@ -373,7 +373,7 @@ CPacketBuffer::~CPacketBuffer()
 // @0x140713530
 char* CPacketBuffer::FUN_140713530() { return m_data; }
 // @0x140714fa0
-int CPacketBuffer::FUN_140714fa0() const { return m_size; }
+int CPacketBuffer::GetSize() const { return m_size; }
 // @0x140715000
 CPacketBuffer* CPacketBuffer::FUN_140715000(int size, char* data, CPacketBuffer* parent)
 {
@@ -400,7 +400,7 @@ CPacketBuffer* FUN_1407138b0(unsigned size, const Unk_SocketNew&)
     return buffer;
 }
 // @0x140714f80
-CBufferCryptManager* FUN_140714f80() { return DAT_143aac528; }
+CBufferCryptManager* GetBufferCryptManager() { return DAT_143aac528; }
 // @0x140714f90
 CNetworkService* FUN_140714f90() { return TSingleton<CNetworkService>::s_instance; }
 
@@ -672,11 +672,11 @@ MS2_REPLACE(0x140710870, FUN_140710870, 790, 0xF5FD8FA4);
 MS2_REPLACE(0x140710b90, FUN_140710b90, 181, 0xA1C676CB);
 MS2_REPLACE(0x140710d40, FUN_140710d40, 246, 0x9461C257);
 MS2_REPLACE_METHOD(0x140713530, CPacketBuffer, FUN_140713530, 15, 0xCBEE5D21);
-MS2_REPLACE_METHOD(0x140714fa0, CPacketBuffer, FUN_140714fa0, 14, 0x72E52537);
+MS2_REPLACE_METHOD(0x140714fa0, CPacketBuffer, GetSize, 14, 0x72E52537);
 MS2_REPLACE_METHOD(0x140715000, CPacketBuffer, FUN_140715000, 81, 0x3433AD85);
 MS2_REPLACE_METHOD(0x140715360, CPacketBuffer, FUN_140715360, 37, 0xC8F82C49);
 MS2_REPLACE_METHOD(0x140715db0, CPacketBuffer, FUN_140715db0, 15, 0x770B1889);
-MS2_REPLACE(0x140714f80, FUN_140714f80, 8, 0xF2EA183E);
+MS2_REPLACE(0x140714f80, GetBufferCryptManager, 8, 0xF2EA183E);
 MS2_REPLACE(0x140714f90, FUN_140714f90, 8, 0x0D8AB200);
 MS2_REPLACE_METHOD(0x140714de0, Unk_CompressedStream, FUN_140714de0, 11, 0x3BE09B6E);
 MS2_REPLACE_METHOD(0x140715230, CByteBuffer, FUN_140715230, 32, 0xD1D53A76);

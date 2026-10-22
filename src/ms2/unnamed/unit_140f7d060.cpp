@@ -399,7 +399,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f7e8d0()
         for (size_t i = 0; i < count; ++i) {
             MS2Ptr<CItem> item(items.GetAt(i));
             if (!(item == 0) && item->FUN_1405279c0() != 0 && item->FUN_140529560() != 0
-                && item->FUN_1405279c0()->FUN_140620a50() != 0)
+                && item->FUN_1405279c0()->GetMaxSlot() != 0)
                 m_sourceItems.Add(item);
         }
     }
@@ -412,7 +412,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f7e8d0()
         MS2Ptr<CEquipItem> equip(equipped.GetAt(pos));
         if (!(equip == 0)) {
             MS2Ptr<CItem> item = equip->GetItem();
-            if (!(item == 0) && item->FUN_1405279c0() != 0 && item->FUN_1405279c0()->FUN_140620a50() != 0)
+            if (!(item == 0) && item->FUN_1405279c0() != 0 && item->FUN_1405279c0()->GetMaxSlot() != 0)
                 m_sourceItems.Add(item);
         }
         equipped.GetNext(pos);
@@ -472,7 +472,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f7ef70(MS2Ptr<CItem> item)
         return;
     }
     CItemSocket* socket = item->FUN_1405279c0();
-    if (socket == 0 || socket->FUN_140620a50() == 0)
+    if (socket == 0 || socket->GetMaxSlot() == 0)
         return;
     FUN_141276180(s_strSelectSound, CString(""));
     if (socket->FUN_140620a70() == 0) {
@@ -513,7 +513,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f7f420(MS2Ptr<CItem> item)
     if (m_root == 0 || m_selected == 0)
         return;
     CItemSocket* socket = m_selected->FUN_1405279c0();
-    if (socket == 0 || socket->FUN_140620a50() == 0)
+    if (socket == 0 || socket->GetMaxSlot() == 0)
         return;
     if (item == 0 || item->FUN_140527840() == 0)
         return;
@@ -554,7 +554,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f7fa20(MS2Ptr<CItem> item)
     if (m_root == 0 || m_selected == 0)
         return;
     CItemSocket* socket = m_selected->FUN_1405279c0();
-    if (socket == 0 || socket->FUN_140620a50() == 0)
+    if (socket == 0 || socket->GetMaxSlot() == 0)
         return;
     if (item == 0 || item->FUN_140527840() == 0)
         return;
@@ -577,7 +577,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f7fa20(MS2Ptr<CItem> item)
         return;
     }
     CItemSocket* itemSocket = item->FUN_1405279c0();
-    if (itemSocket == 0 || itemSocket->FUN_140620a50() == 0)
+    if (itemSocket == 0 || itemSocket->GetMaxSlot() == 0)
         return;
     Unk_TrPlayer* player = FUN_141bd0cc0(FUN_1403ed2d0());
     if (player == 0)
@@ -628,7 +628,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f80160()
         return;
     }
     CItemSocket* socket = m_selected->FUN_1405279c0();
-    if (socket == 0 || socket->FUN_140620a50() == 0)
+    if (socket == 0 || socket->GetMaxSlot() == 0)
         return;
     if (socket->FUN_140620a70() == 0) {
         FUN_1412752d0(CStringW(L"s_itemsocketsystem_error_socket_unlock_all"), 1);
@@ -847,7 +847,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f81a40(ASObj& data, int unlockInde
     if (m_selected == 0 || m_selected->FUN_140527840() == 0)
         return;
     CItemSocket* socket = m_selected->FUN_1405279c0();
-    if (socket == 0 || socket->FUN_140620a50() == 0)
+    if (socket == 0 || socket->GetMaxSlot() == 0)
         return;
     ASArray rows(2);
     unsigned open = socket->FUN_140620a20();
@@ -857,7 +857,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f81a40(ASObj& data, int unlockInde
         CStringW text;
         MS2Ptr<TSocketGemStoneInfo> info = socket->FUN_140620b70(i);
         if (!(info == 0) && !info->FUN_14061fab0()) {
-            int gemId = info->FUN_140620260();
+            int gemId = info->GetGemId();
             text = FUN_1406564a0(rowStat, FUN_140627390(gemId), FUN_14062ae60(gemId), FUN_14062b310(MS2Ptr<TSocketGemStoneInfo>(info)));
         } else {
             if (emptyText.IsEmpty())
@@ -992,7 +992,7 @@ void ItemSocketSystemPageSocketUnlock::SendItemSocketSystemMode16(const Scalefor
     if (m_state != 1)
         return;
     CItemSocket* socket = m_selected->FUN_1405279c0();
-    if (socket->FUN_140620a50() == 0)
+    if (socket->GetMaxSlot() == 0)
         return;
     CCItemSocketSystemPacket::ForceFillIngredient fill;
     fill.m_nType = 0;

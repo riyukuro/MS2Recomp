@@ -717,7 +717,7 @@ void Unk_ActionKeyManager::FUN_140953310()
     if (pPlayer->FUN_14165f100())
         return;
     spAction->vfunc_2();
-    if (TSingleton<CMouseController>::GetInstance()->FUN_140ad21b0())
+    if (TSingleton<CMouseController>::GetInstance()->HasMode())
         TSingleton<CMouseController>::GetInstance()->FUN_140ad22d0();
 }
 MS2_REPLACE_METHOD(0x140953310, Unk_ActionKeyManager, FUN_140953310, 248, 0x47B4C32E);

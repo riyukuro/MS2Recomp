@@ -84,9 +84,9 @@ public:
     void FUN_1406536f0(unsigned __int64,unsigned __int64,int,const wchar_t*,const fmt::ArgList&);
     void FUN_140653750(unsigned __int64,unsigned __int64,int,const wchar_t*,const fmt::ArgList&);
     void FUN_1406537e0(int); void FUN_140653800(int);
-    int FUN_140653820(); int FUN_140653840(); int FUN_140653860();
+    int GetErrors(); int GetWarnings(); int GetFileLevel();
     CStringW FUN_140653880(int fullPath);
-    CStringW FUN_140653b30();
+    CStringW GetRoot();
     void FUN_140653b80(Callback);
     void FUN_140653bf0(Callback);
     void FUN_140653d40(const CStringW&);

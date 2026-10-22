@@ -32,11 +32,11 @@ public:
     void FUN_140ad1f30(int nOldAction, int nNewAction);     // the player's action changed
     void FUN_140ad2070();                                   // forget the click vectors
     int FUN_140ad20f0(int bEnable);                         // switch the controller on / off (false when the option is missing)
-    int FUN_140ad21b0();                                   // is the controller on
+    int HasMode();                                   // is the controller on
     int FUN_140ad21f0();                                    // does the move vector differ from zero
     int FUN_140ad2220();                                   // move vector y > 0
     int FUN_140ad2260();                                   // move vector y < 0
-    Unk_StreamPoint FUN_140ad22a0();                        // the move vector
+    Unk_StreamPoint GetMove();                        // the move vector
     void FUN_140ad22d0();                                   // reset and go idle
     void FUN_140ad2300(Unk_StreamPoint pt);                 // spawn the click effect at pt
     void FUN_140ad23f0(int nX, int nY);                     // button released

@@ -536,7 +536,7 @@ int UIDailyMissionDialog::FUN_140c012d0(ASObj& rRow, unsigned nQuestId)
     Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(nQuestId);
     if (spQuest.IsNull())
         return 0;
-    if (spQuest->FUN_1407476d0() == 3)
+    if (spQuest->GetState() == 3)
         return 0;
     CString strState;
     if (spQuest.get() != 0 && spQuest->IsComplete() != 0)

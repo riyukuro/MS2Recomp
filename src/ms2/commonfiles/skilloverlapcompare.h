@@ -255,8 +255,8 @@ public:
     SkillLevelData(SkillData* pSkill);                      // 0x140803a30
     bool FUN_140803b30(const SkillLevelData& o);            // is different
     unsigned FUN_140803dc0();                               // the skill id
-    unsigned short FUN_140803df0();                         // the level
-    SkillData* FUN_140803e10();                             // the skill
+    unsigned short GetLevel();                         // the level
+    SkillData* GetSkill();                             // the skill
     SkillMotionData* FUN_140803e30(CString strSequence);    // one motion by its sequence name
     SkillMotionData* FUN_140803f00(int nMotion);            // one motion (0 if out of range)
     SkillAttackData* FUN_140803f60(int nMotion, int nAttack);   // one attack of a motion (0 if out of range)
@@ -266,7 +266,7 @@ public:
     Unk_RangeShape* FUN_140804120();                        // the detect shape (0 without one)
     float FUN_140804150(int nMotion, int nAttack);          // the damage rate of an attack
     __int64 FUN_1408041d0(int nMotion, int nAttack);        // the damage value of an attack
-    int FUN_140804250();                                    // the stance damage rate
+    int GetStanceDamageRate();                                    // the stance damage rate
     int FUN_140804270();                                    // the motion count
     float FUN_1408042a0(int nMotion, int nAttack);          // the range value of an attack
     float FUN_140804310();                                  // the largest range value
@@ -346,7 +346,7 @@ public:
     SkillRangeType GetRangeType();                          // 0x1407e9a80
     ElementType GetElement();                               // 0x1407e9aa0
     unsigned short FUN_1407e9ac0();                         // the level cap a sub skill follows its parent skill up to
-    unsigned short FUN_1407e9b10();                         // the max level
+    unsigned short GetMaxLevel();                         // the max level
     unsigned GetRechargeMaxCount();                         // 0x1407e9b30
     unsigned GetOriginId();                                 // 0x1407e9b50 (own id when there is no origin)
     unsigned GetRechargeId();                               // 0x1407e9b90

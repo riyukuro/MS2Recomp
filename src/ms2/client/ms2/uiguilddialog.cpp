@@ -1110,7 +1110,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                 spBox->FUN_140533ff0(nSkillId);
                 spBox->FUN_141a01800(2);
                 spBox->FUN_141a024e0(FUN_14028b8e0(CStringW(L"s_guild_ui_skill_use_skill_term_agree")), 0);
-                spBox->FUN_141a02730(false);
+                spBox->SetAgreement(false);
                 FUN_140d73c60(spBox);
             }
         }
@@ -2907,7 +2907,7 @@ void UIGuildDialog::FUN_141974930()
     {
         spBox->FUN_141a01800(2);
         spBox->FUN_141a024e0(FUN_14028de60(0x9d0), 1);
-        spBox->FUN_141a02730(false);
+        spBox->SetAgreement(false);
         FUN_140d73c60(spBox);
     }
 }
@@ -3279,7 +3279,7 @@ UINT UIGuildDialog::RequestHistoryGuildMarkToWeb(LPVOID pParam)
             FUN_141b722b0(&scope);
             return 0;
         }
-        std::wstring strBody = client.FUN_140922860();
+        std::wstring strBody = client.GetResponseContent();
         CString strXml = FUN_1401d4330(strBody.c_str(), 0);
         UIGuildDialog* pDialog;
         if (CUIService::GetInstance() != 0 && (pDialog = FUN_14136f480(0x4e4f)) != 0)

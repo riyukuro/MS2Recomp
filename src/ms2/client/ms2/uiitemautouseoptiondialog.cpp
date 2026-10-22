@@ -376,7 +376,7 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_18(void* p)
         int nOld = pFrom->FUN_140f4e180();
         pFrom->FUN_140f4e1a0(m_nItemId);
         FUN_140f4e1a0(nOld);
-        FUN_140f4f030(pFrom->FUN_1422cc410());
+        FUN_140f4f030(pFrom->GetIndex());
         vfunc_10();
     }
     return pDrag->vfunc_10();

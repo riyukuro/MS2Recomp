@@ -194,14 +194,14 @@ int CUgcHttpClient::RequestPost(const char* pszUrl)
 {
     bool bOk = true;
 
-    if (m_buffer.FUN_140205190() == 0) {
+    if (m_buffer.GetLength() == 0) {
         m_nStatus = 0;
         m_strError = "RequestPost : UgcDataEmpty";
         bOk = false;
     } else {
         const char* pszContentType = "Content-Type: application/octet-stream\r\n";
         const char* pszConnection = "Connection: close\r\n";
-        CString strLength = FUN_140513200("Content-Length: {0}\r\n", m_buffer.FUN_140205190());
+        CString strLength = FUN_140513200("Content-Length: {0}\r\n", m_buffer.GetLength());
         CString strHeaders = Unk_SocketFormat("{0}{1}{2}", pszContentType, strLength, pszConnection);
         const char* aszAccept[2] = {"*/*", 0};
 
@@ -214,7 +214,7 @@ int CUgcHttpClient::RequestPost(const char* pszUrl)
             CString strError("RequestPost : HttpAddRequestHeaders");
             throw Exception(strError, GetLastError());
         }
-        unsigned nLength = m_buffer.FUN_140205190();
+        unsigned nLength = m_buffer.GetLength();
         unsigned char* pData = m_buffer.FUN_140204eb0();
         LPCSTR pszHeaderBlock = strHeaders;
         DWORD dwHeaderLength = (DWORD)strlen(pszHeaderBlock);
@@ -247,7 +247,7 @@ int CUgcHttpClient::ResponseOfBytes(void* pData, unsigned nSize)
 // @0x140dfb420
 void CUgcHttpClient::Append(CByteBuffer& buffer)
 {
-    unsigned nSize = buffer.FUN_140205190();
+    unsigned nSize = buffer.GetLength();
     unsigned char* pData = buffer.FUN_140204eb0();
     static_cast<COutputStream&>(m_buffer).vfunc_o10_9(pData, nSize);
 }

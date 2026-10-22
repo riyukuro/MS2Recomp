@@ -27,7 +27,7 @@ public:
     void FUN_140867220();                                   // clear the second list
     void FUN_140867260(unsigned long long nLimit);                // set the byte limit
     void FUN_140867330(__int64 nLen);                       // account a line against the budget
-    const CStringW& FUN_140867310() const;                  // the file name
+    const CStringW& GetName() const;                  // the file name
 
 private:
     MS2_LAYOUT_FRIEND;

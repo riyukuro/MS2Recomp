@@ -1702,8 +1702,8 @@ unsigned short UISkillBookTreeDialog::GetLevelValue(MS2Ptr<JobSkill> spSkill)
         return 0;
     unsigned short nBonus = pPlayer->FUN_1409eee00()->FUN_14080baf0(spSkill->GetID());
     unsigned nOwned = spSkill->m_bLearned ? spSkill->m_nLevel : 0;
-    if (spData->FUN_1407e9b10() < nOwned + nBonus)
-        return spData->FUN_1407e9b10();
+    if (spData->GetMaxLevel() < nOwned + nBonus)
+        return spData->GetMaxLevel();
     return (unsigned short)(nOwned + nBonus);
 }
 

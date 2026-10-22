@@ -496,7 +496,7 @@ void CSmartPushAutoFishing::vfunc_3()
                 FUN_1409e97f0(0xc66, *Client::Constants::GetInstance()->extendAutoFishMaxCount.Get()));
             spBox->FUN_141a024a0(0);
             spBox->FUN_141a024e0(FUN_14028de60(0xc68), 0);
-            spBox->FUN_141a01c70(strTitle);
+            spBox->SetStrike(strTitle);
             int nCount = CSmartPushTable::GetInstance()->GetPackageCount(CGameRule::GetInstance()->FUN_140479970());
             for (int i = 0; i < nCount; i++)
             {
@@ -747,7 +747,7 @@ void CSmartPushAutoPlayInstrument::vfunc_3()
             spBox->FUN_141a024a0(0);
             CStringW strKey(L"s_system_auto_play_instrument_extend");
             spBox->FUN_141a024e0(FUN_14028b8e0(strKey), 0);
-            spBox->FUN_141a01c70(strTitle);
+            spBox->SetStrike(strTitle);
             int nCount = CSmartPushTable::GetInstance()->GetPackageCount(CGameRule::GetInstance()->FUN_140479a90());
             for (int i = 0; i < nCount; i++)
             {

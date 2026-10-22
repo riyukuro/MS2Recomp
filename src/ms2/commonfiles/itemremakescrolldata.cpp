@@ -246,11 +246,11 @@ void FUN_140615ca0(MS2Ptr<CItem> item, int nGroup, ATL::CAtlArray<MS2Ptr<CItemRe
                 {
                     std::pair<int, int> range =
                         FUN_140166430()->FUN_1405f64e0(item->FUN_1405276c0(), item->FUN_140526bd0(), nStat);
-                    if (range.second == spBase->FUN_140266e30())
+                    if (range.second == spBase->GetValue())
                     {
                         MS2Ptr<CItemRemakeOptionUtil::TStatInfo> spInfo(new CItemRemakeOptionUtil::TStatInfo);
                         spInfo->m_nKind = 0;
-                        spInfo->m_nValue = spBase->FUN_140266e30();
+                        spInfo->m_nValue = spBase->GetValue();
                         spInfo->m_nId = nStat;
                         out.Add(spInfo);
                     }
@@ -270,11 +270,11 @@ void FUN_140615ca0(MS2Ptr<CItem> item, int nGroup, ATL::CAtlArray<MS2Ptr<CItemRe
                 {
                     std::pair<int, int> range =
                         FUN_140166430()->FUN_1405f6650(item->FUN_1405276c0(), item->FUN_140526bd0(), nSpecial);
-                    if (range.second == spBase->FUN_140266e30())
+                    if (range.second == spBase->GetValue())
                     {
                         MS2Ptr<CItemRemakeOptionUtil::TStatInfo> spInfo(new CItemRemakeOptionUtil::TStatInfo);
                         spInfo->m_nKind = 1;
-                        spInfo->m_nValue = spBase->FUN_140266e30();
+                        spInfo->m_nValue = spBase->GetValue();
                         spInfo->m_nId = nSpecial;
                         out.Add(spInfo);
                     }
@@ -768,10 +768,10 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
                 Unk_EnchantPtr<BaseOption> spBase(pPair->m_value);
                 if (!(spBase == 0))
                 {
-                    CStringW strName = FUN_140631830(nSpecial, spBase->FUN_140266e30(), item->FUN_140527840());
+                    CStringW strName = FUN_140631830(nSpecial, spBase->GetValue(), item->FUN_140527840());
                     std::pair<int, int> range =
                         FUN_140166430()->FUN_1405f6650(item->FUN_1405276c0(), item->FUN_140526bd0(), nSpecial);
-                    bool bBest = range.second == spBase->FUN_140266e30();
+                    bool bBest = range.second == spBase->GetValue();
                     if (bBest)
                         strName = FUN_1401e8510(strBest, strName);
                     CStringW strValue;
@@ -785,7 +785,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
                         float fMax = (float)range.second / 10.0f;
                         strValue = StringFormat(strRangeR, strName, fMin, fMax);
                     }
-                    if (bBest || FUN_140166430()->FUN_1405f6a90(item, nSpecial, nGroup, spBase->FUN_140266e30()))
+                    if (bBest || FUN_140166430()->FUN_1405f6a90(item, nSpecial, nGroup, spBase->GetValue()))
                         strText.Append(FUN_1401e8510(strRowBest, strValue));
                     else
                         strText.Append(FUN_1401e8510(strRow, strValue));
@@ -804,7 +804,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
                     CStringW strName = FUN_140631600(nStat, spBase.get());
                     std::pair<int, int> range =
                         FUN_140166430()->FUN_1405f64e0(item->FUN_1405276c0(), item->FUN_140526bd0(), nStat);
-                    bool bBest = range.second == spBase->FUN_140266e30();
+                    bool bBest = range.second == spBase->GetValue();
                     if (bBest)
                         strName = FUN_1401e8510(strBest, strName);
                     CStringW strValue;
@@ -818,7 +818,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
                         float fMax = (float)range.second / 10.0f;
                         strValue = StringFormat(strRangeR, strName, fMin, fMax);
                     }
-                    if (bBest || FUN_140166430()->FUN_1405f67e0(item, nStat, nGroup, spBase->FUN_140266e30()))
+                    if (bBest || FUN_140166430()->FUN_1405f67e0(item, nStat, nGroup, spBase->GetValue()))
                         strText.Append(FUN_1401e8510(strRowBest, strValue));
                     else
                         strText.Append(FUN_1401e8510(strRow, strValue));

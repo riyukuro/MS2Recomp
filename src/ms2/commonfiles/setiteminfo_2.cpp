@@ -253,7 +253,7 @@ void CSetItemManager::Refresh()
             if (bActive)
             {
                 spPart->FUN_1407bccf0([this](const std::pair<SetItemOptionPart::StatKey, Unk_EnchantPtr<BaseOption> >& entry) {
-                    if (entry.second->FUN_140266ce0())
+                    if (entry.second->HasValue())
                     {
                         Unk_EnchantPtr<BaseOption> spOption;
                         if (!m_options.Lookup(reinterpret_cast<const int&>(entry.first), spOption))
@@ -263,8 +263,8 @@ void CSetItemManager::Refresh()
                     }
                 });
                 spPart->FUN_1407bcdb0([this](const std::pair<SetItemOptionPart::SpecialKey, Unk_EnchantPtr<BaseOption> >& entry) {
-                    if (entry.second->FUN_140266ce0())
-                        m_specials[(const SAType&)entry.first] += entry.second->FUN_140266e30();
+                    if (entry.second->HasValue())
+                        m_specials[(const SAType&)entry.first] += entry.second->GetValue();
                 });
             }
             ATL::CAtlArray<int>& effectIds = spPart->FUN_1407bc9d0();
