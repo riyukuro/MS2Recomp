@@ -922,7 +922,7 @@ int UIBeautyShopStyleDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     }
     if (_stricmp("OnClickReset", szMethod) == 0)
     {
-        FUN_140f08470();
+        OnClickReset();
         return 1;
     }
     if (_stricmp("OnClickSave", szMethod) == 0)
@@ -1648,7 +1648,7 @@ void UIBeautyShopStyleDialog::FUN_140f082d0()
 
 // "OnClickReset".
 // @0x140f08470
-void UIBeautyShopStyleDialog::FUN_140f08470()
+void UIBeautyShopStyleDialog::OnClickReset()
 {
     if (m_30 == 0 || m_items == 0)
         return;
@@ -2062,7 +2062,7 @@ MS2_REPLACE_METHOD(0x140f07e20, UIBeautyShopStyleDialog, FUN_140f07e20, 825, 0xE
 MS2_REPLACE_METHOD(0x140f08160, UIBeautyShopStyleDialog, FUN_140f08160, 41, 0xBAEA161B);
 MS2_REPLACE_METHOD(0x140f08190, UIBeautyShopStyleDialog, FUN_140f08190, 132, 0xF13C26B8);
 MS2_REPLACE_METHOD(0x140f08220, UIBeautyShopStyleDialog, FUN_140f08220, 166, 0x583C8BBF);
-MS2_REPLACE_METHOD(0x140f08470, UIBeautyShopStyleDialog, FUN_140f08470, 92, 0x47771337);
+MS2_REPLACE_METHOD(0x140f08470, UIBeautyShopStyleDialog, OnClickReset, 92, 0x47771337);
 MS2_REPLACE_METHOD(0x140f084e0, UIBeautyShopStyleDialog, FUN_140f084e0, 1119, 0xB28E6AA2);
 MS2_REPLACE_METHOD(0x140f08950, UIBeautyShopStyleDialog, FUN_140f08950, 216, 0x7B531712);
 MS2_REPLACE_METHOD(0x140f08a30, UIBeautyShopStyleDialog, FUN_140f08a30, 92, 0x844DDB0F);

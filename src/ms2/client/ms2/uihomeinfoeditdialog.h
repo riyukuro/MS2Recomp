@@ -20,6 +20,6 @@ public:
     CStringW FUN_140c26850();                                   // the notice text (the home info dialog's, or string 0x574)
     CStringW FUN_140c268d0();                                   // the owner name
     int FUN_140c26920();                                        // max chars of the home name (8 / 0x10)
-    void FUN_140c26970();                                       // confirm: send the home name / notice, then close
+    void OnConfirm();                                       // confirm: send the home name / notice, then close
 };
 MS2_CHECK_SIZE(UIHomeInfoEditDialog, 0x180);

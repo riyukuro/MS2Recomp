@@ -78,8 +78,8 @@ public:
     void FUN_141981060();                               // refresh the transform inputs (unused copy of FUN_141983f50)
     void FUN_1419821d0(int nDebug);                     // "eventPhysDebug": PhysX debug render
     void FUN_141982350(int nOnly);                      // "eventOnlyPonytail"
-    void FUN_1419823c0();                               // "eventSelectModel"
-    void FUN_141982410();                               // "eventSelectTransform"
+    void EventSelectModel();                               // "eventSelectModel"
+    void EventSelectTransform();                               // "eventSelectTransform"
     void FUN_141982440(const CString& strJoint);        // "eventJointsList"
     void FUN_141982480(float fSoft);                    // "eventJointsSoft"
     void FUN_141982590(float fX, float fY, float fZ);   // "eventJointsAxis"

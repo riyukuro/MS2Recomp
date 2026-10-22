@@ -68,12 +68,12 @@ int UIOxQuizDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     UIDialog::vfunc_28(szMethod, pArgs, nArgs);
     if (_stricmp("OnQuizPromote", szMethod) == 0)
     {
-        FUN_140e6e8d0();
+        OnQuizPromote();
         return 1;
     }
     else if (_stricmp("OnQuizCreate", szMethod) == 0)
     {
-        FUN_140e6e8f0();
+        OnQuizCreate();
         return 1;
     }
     return 0;
@@ -116,13 +116,13 @@ void UIOxQuizDialog::FUN_140e6e8b0(bool bEnable)
 }
 
 // @0x140e6e8d0
-void UIOxQuizDialog::FUN_140e6e8d0()
+void UIOxQuizDialog::OnQuizPromote()
 {
     FUN_140dff2b0();
 }
 
 // @0x140e6e8f0
-void UIOxQuizDialog::FUN_140e6e8f0()
+void UIOxQuizDialog::OnQuizCreate()
 {
     FUN_140dfeeb0();
 }

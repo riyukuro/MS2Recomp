@@ -22,7 +22,7 @@ public:
 
     void FUN_140f4b4c0(__int64 nItemUid);                       // remember the item and open the dialog
     void FUN_140f4b7d0();                                       // setData: the package texts
-    void FUN_140f4bc40();                                       // OnUseItem: check the home and send the answer
+    void OnUseItem();                                       // OnUseItem: check the home and send the answer
 
 private:
     __int64 m_178;                                              // +0x178 the used item uid

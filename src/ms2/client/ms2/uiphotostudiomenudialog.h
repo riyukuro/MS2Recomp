@@ -16,8 +16,8 @@ public:
     virtual int vfunc_48();                                                // 48 0x140e76330
     virtual void vfunc_67();                                               // 67 0x140e75fd0
 
-    void FUN_140e76130();                                                  // "OnScreenshot"
-    void FUN_140e76170();                                                  // "OnFreeCamera": toggle the free camera
+    void OnScreenshot();                                                  // "OnScreenshot"
+    void OnFreeCamera();                                                  // "OnFreeCamera": toggle the free camera
     void FUN_140e761b0();                                                  // sync the free-camera check box
     void FUN_140e76270(bool bFreeCamera);                                  // switch the free camera
 

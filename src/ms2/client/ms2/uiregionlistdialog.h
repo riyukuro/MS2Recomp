@@ -47,7 +47,7 @@ public:
     bool FUN_140e80f10(CStringW strRegion);                     // choose a region; false when it is unknown
     Unk_RlPtr FUN_140e810d0(CStringW strRegion);                // find a region by id
     void FUN_140e811d0();                                       // a region was selected in the movie
-    void FUN_140e81270();                                       // the pop-down ended
+    void OnEndPopdown();                                       // the pop-down ended
     void FUN_140e812e0(const CStringW& strRegion);              // pick the region (or the first one) as the setting
 
 private:

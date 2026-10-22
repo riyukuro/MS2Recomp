@@ -879,7 +879,7 @@ int TabContentsPetRemakeOption::vfunc_6(const char* szEvent, const Scaleform::GF
     }
     else if (_stricmp("OnClickRetry", szEvent) == 0)
     {
-        FUN_140b979c0();
+        OnClickRetry();
     }
     else if (_stricmp("OnDebug", szEvent) == 0)
     {
@@ -1437,7 +1437,7 @@ void TabContentsPetRemakeOption::FUN_140b97870(ASData* pData)
 
 // @0x140b979c0
 // MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
-void TabContentsPetRemakeOption::FUN_140b979c0()
+void TabContentsPetRemakeOption::OnClickRetry()
 {
     MS2Ptr<ASUIComponent> card = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_remakeOptionCard"));
     if (card.get() != 0)

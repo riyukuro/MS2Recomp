@@ -1334,7 +1334,7 @@ int UIUGCCubePaletteDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
     }
     else if (_stricmp("OnDestroyCubeItem", szMethod) == 0)
     {
-        FUN_140eef140();
+        OnDestroyCubeItem();
     }
     else if (_stricmp("OnClickPreview", szMethod) == 0)
     {
@@ -1993,7 +1993,7 @@ void UIUGCCubePaletteDialog::FUN_140eeea80(int nRow)
 #endif
 
 // @0x140eef140 (the destroy-cube message box of the selected cube)
-void UIUGCCubePaletteDialog::FUN_140eef140()
+void UIUGCCubePaletteDialog::OnDestroyCubeItem()
 {
     MS2Ptr<CubeItemInfo> spSel = FUN_140ef0b20()->FUN_1410b55b0();
     if (spSel.get() == 0)

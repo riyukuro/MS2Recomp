@@ -235,7 +235,7 @@ int UIWeddingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         }
         if (_stricmp(szMethod, "onDivorce") == 0)
         {
-            FUN_140fc8240();
+            OnDivorce();
             return 1;
         }
         if (_stricmp(szMethod, "onInfo") == 0)
@@ -330,7 +330,7 @@ MS2_REPLACE_METHOD(0x140fc81a0, UIWeddingDialog, FUN_140fc81a0, 141, 0x2DF7C8D8)
 
 // @0x140fc8240
 // MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
-void UIWeddingDialog::FUN_140fc8240()
+void UIWeddingDialog::OnDivorce()
 {
     WeddingProxy* pProxy = WeddingManager::GetInstance()->FUN_140d295d0();
     Unk_WeddingPartner* pPartner = FUN_1408ff3b0(pProxy, DAT_143ab2828);
@@ -340,7 +340,7 @@ void UIWeddingDialog::FUN_140fc8240()
         FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWeddingDialog::SendWedding), CStringW(strMessage));
     }
 }
-MS2_REPLACE_METHOD(0x140fc8240, UIWeddingDialog, FUN_140fc8240, 381, 0x2704CE65);
+MS2_REPLACE_METHOD(0x140fc8240, UIWeddingDialog, OnDivorce, 381, 0x2704CE65);
 
 // @0x140fc83d0
 void UIWeddingDialog::FUN_140fc83d0(PagePtr spPage)

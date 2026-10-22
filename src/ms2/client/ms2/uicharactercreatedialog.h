@@ -71,8 +71,8 @@ public:
     void FUN_1418e4f50();                                       // buildCurrentItems
     void FUN_1418e5580(MS2Ptr<CItemData> spData);               // buildColors
     void FUN_1418e5a10(MS2Ptr<CItemData> spData);               // buildCustom
-    void FUN_1418e61d0();                                       // OnSceneLobbySelect
-    void FUN_1418e6210();                                       // OnCreate: ask for the name
+    void OnSceneLobbySelect();                                       // OnSceneLobbySelect
+    void OnCreate();                                       // OnCreate: ask for the name
     bool FUN_1418e6430(const CStringW& strName);                // validate the name and create
     void FUN_1418e6680(int nRandom);                            // OnRandom
     void FUN_1418e6730(int nGender);                            // OnChangeGender

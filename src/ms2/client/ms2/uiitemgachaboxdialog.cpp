@@ -278,7 +278,7 @@ int UIItemGachaBoxDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
                 FUN_140c41900(r);
         }
     } else if (_stricmp(szMethod, "onOpenCoinShop") == 0) {
-        FUN_140c41f20();
+        OnOpenCoinShop();
     } else if (_stricmp(szMethod, "onOpenProbability") != 0 && _stricmp(szMethod, "onChangeState") == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
@@ -448,7 +448,7 @@ void UIItemGachaBoxDialog::FUN_140c41e10()
 
 // MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140c41f20
-void UIItemGachaBoxDialog::FUN_140c41f20()
+void UIItemGachaBoxDialog::OnOpenCoinShop()
 {
     MS2Ptr<CItemData> data = FUN_14053f870(m_boxItemId);
     if (data == 0)
@@ -668,7 +668,7 @@ MS2_REPLACE_METHOD(0x140C41700, UIItemGachaBoxDialog, FUN_140c41700, 491, 0x2B15
 MS2_REPLACE_METHOD(0x140C41900, UIItemGachaBoxDialog, FUN_140c41900, 796, 0xBD8F1A72);
 MS2_REPLACE_METHOD(0x140C41C30, UIItemGachaBoxDialog, FUN_140c41c30, 469, 0x919B3A71);
 MS2_REPLACE_METHOD(0x140C41E10, UIItemGachaBoxDialog, FUN_140c41e10, 259, 0x8858CC7A);
-MS2_REPLACE_METHOD(0x140C41F20, UIItemGachaBoxDialog, FUN_140c41f20, 285, 0xFBE5F236);
+MS2_REPLACE_METHOD(0x140C41F20, UIItemGachaBoxDialog, OnOpenCoinShop, 285, 0xFBE5F236);
 MS2_REPLACE_METHOD(0x140C420E0, UIItemGachaBoxDialog, FUN_140c420e0, 113, 0x429CA43E);
 MS2_REPLACE_METHOD(0x140C42160, UIItemGachaBoxDialog, FUN_140c42160, 3327, 0x9A375141);
 MS2_REPLACE_METHOD(0x140C42E70, UIItemGachaBoxDialog, FUN_140c42e70, 104, 0xB7B692F7);

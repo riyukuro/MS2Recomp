@@ -26,8 +26,8 @@ public:
     virtual int vfunc_48() { return 0x4eb1; }                                                       // 48 (COMDAT 0x141293c90)
 
     void FUN_141292ca0(const CString& strName, const CStringW& strText);    // set the text of a child text field
-    void FUN_141292d10();               // "onClickReloadNpcExtent": resize every npc to its data record extent
-    void FUN_141292f20();               // "onClickClearDebugInfo"
+    void OnClickReloadNpcExtent();               // "onClickReloadNpcExtent": resize every npc to its data record extent
+    void OnClickClearDebugInfo();               // "onClickClearDebugInfo"
     void FUN_141292f50(ASData& data);   // "onClickResetGameSpeed": the AS side's defaultSpeed = 1
     void FUN_141293010(bool bOn);       // "OnCheckPhysXDebugRender": both PhysX scenes
     void FUN_141293150(bool bOn);       // "OnCheckEnableEffect"

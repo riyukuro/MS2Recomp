@@ -1702,7 +1702,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     }
     if (_stricmp("onSelectRadioMotionBlurCharacter", szMethod) == 0)
     {
-        FUN_14135d3a0();
+        OnSelectRadioMotionBlurCharacter();
         return 1;
     }
     if (_stricmp("onChangeSliderMotionBlur", szMethod) == 0)
@@ -1872,13 +1872,13 @@ void UIVisualEffectDialog::FUN_14135d310(bool bOn)
 }
 
 // @0x14135d380
-void UIVisualEffectDialog::FUN_14135d380()
+void UIVisualEffectDialog::OnSelectRadioMotionBlurAll()
 {
     FUN_14135d9d0(0);
 }
 
 // @0x14135d3a0
-void UIVisualEffectDialog::FUN_14135d3a0()
+void UIVisualEffectDialog::OnSelectRadioMotionBlurCharacter()
 {
     FUN_14135d9d0(1);
     bool bEnabled = FUN_1409a8b20()->FUN_1416a3a00(10);

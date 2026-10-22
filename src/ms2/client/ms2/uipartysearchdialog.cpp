@@ -539,12 +539,12 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     if (_stricmp("onClickRegisterMemeberSearch", szMethod) == 0)
     {
-        FUN_140f8eab0();
+        OnClickRegisterMemeberSearch();
         return 1;
     }
     if (_stricmp("onClickRegisterMemeberSearchModify", szMethod) == 0)
     {
-        FUN_140f8ec40();
+        OnClickRegisterMemeberSearchModify();
         return 1;
     }
     if (_stricmp("onClickRefresh", szMethod) == 0)
@@ -844,7 +844,7 @@ void UIPartySearchDialog::FUN_140f8e790(float x, float y, unsigned __int64 nAcco
 }
 
 // @0x140f8eab0
-void UIPartySearchDialog::FUN_140f8eab0()
+void UIPartySearchDialog::OnClickRegisterMemeberSearch()
 {
     PCBase* pPlayer = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPlayer != 0)
@@ -874,7 +874,7 @@ void UIPartySearchDialog::FUN_140f8eab0()
 }
 
 // @0x140f8ec40
-void UIPartySearchDialog::FUN_140f8ec40()
+void UIPartySearchDialog::OnClickRegisterMemeberSearchModify()
 {
     PCBase* pPlayer = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPlayer != 0)
@@ -952,8 +952,8 @@ MS2_REPLACE_METHOD(0x140F8E480, UIPartySearchDialog, FUN_140f8e480, 385, 0xF6665
 MS2_REPLACE_METHOD(0x140F8E610, UIPartySearchDialog, FUN_140f8e610, 83, 0xDB1043DC);
 MS2_REPLACE_METHOD(0x140F8E670, UIPartySearchDialog, FUN_140f8e670, 276, 0x3DADEC31);
 MS2_REPLACE_METHOD(0x140F8E790, UIPartySearchDialog, FUN_140f8e790, 786, 0xD9F88A0F);
-MS2_REPLACE_METHOD(0x140F8EAB0, UIPartySearchDialog, FUN_140f8eab0, 386, 0x2E525509);
-MS2_REPLACE_METHOD(0x140F8EC40, UIPartySearchDialog, FUN_140f8ec40, 235, 0x12C1094E);
+MS2_REPLACE_METHOD(0x140F8EAB0, UIPartySearchDialog, OnClickRegisterMemeberSearch, 386, 0x2E525509);
+MS2_REPLACE_METHOD(0x140F8EC40, UIPartySearchDialog, OnClickRegisterMemeberSearchModify, 235, 0x12C1094E);
 MS2_REPLACE_METHOD(0x140F8ED40, UIPartySearchDialog, FUN_140f8ed40, 92, 0x2085E5ED);
 MS2_REPLACE_METHOD(0x140F8EDB0, UIPartySearchDialog, FUN_140f8edb0, 73, 0xEA81D959);
 MS2_REPLACE_METHOD(0x140F8EE00, UIPartySearchDialog, FUN_140f8ee00, 70, 0x0B20ECD3);

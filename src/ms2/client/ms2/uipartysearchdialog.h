@@ -40,8 +40,8 @@ public:
     void FUN_140f8e610();                                       // "forceClickRefresh"
     void FUN_140f8e670();                                       // make sure the condition exists (page 1)
     void FUN_140f8e790(float x, float y, unsigned __int64 nAccount, __int64 nChar, CStringW* pName, int nFlag);   // right click menu
-    void FUN_140f8eab0();                                       // register the member search
-    void FUN_140f8ec40();                                       // modify the member search registration
+    void OnClickRegisterMemeberSearch();                                       // register the member search
+    void OnClickRegisterMemeberSearchModify();                                       // modify the member search registration
     void FUN_140f8ed40(ATL::CAtlArray<MS2Ptr<CMatchPartyRecruit>>& list, int nStart);   // show a received page
     void FUN_140f8edb0();                                       // refresh the member search state
     void FUN_140f8ee00(CMatchPartyRecruit* pRecruit);           // refresh and force the refresh click

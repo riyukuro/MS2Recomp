@@ -905,7 +905,7 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     }
     if (_stricmp("onClickItemEnchant", szMethod) == 0)
     {
-        FUN_14199aaa0();
+        OnClickItemEnchant();
         return 1;
     }
     if (_stricmp("onClickItemEnchantTransform", szMethod) == 0)
@@ -990,7 +990,7 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         return 1;
     }
     if (_stricmp("onClickOpenBank", szMethod) == 0)
-        FUN_14199a910();
+        OnClickOpenBank();
     return 0;
 }
 MS2_REPLACE_METHOD(0x141998680, UIInventoryDialog, vfunc_28, 3611, 0);
@@ -1251,7 +1251,7 @@ void UIInventoryDialog::FUN_14199a620(const Scaleform::GFx::FunctionHandler::Par
 MS2_REPLACE_METHOD(0x14199A620, UIInventoryDialog, FUN_14199a620, 743, 0);
 
 // @0x14199a910
-void UIInventoryDialog::FUN_14199a910()
+void UIInventoryDialog::OnClickOpenBank()
 {
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == 0)
@@ -1275,14 +1275,14 @@ void UIInventoryDialog::FUN_14199a910()
         pPc->FUN_1415283c0(2);
     }
 }
-MS2_REPLACE_METHOD(0x14199A910, UIInventoryDialog, FUN_14199a910, 390, 0);
+MS2_REPLACE_METHOD(0x14199A910, UIInventoryDialog, OnClickOpenBank, 390, 0);
 
 // @0x14199aaa0
-void UIInventoryDialog::FUN_14199aaa0()
+void UIInventoryDialog::OnClickItemEnchant()
 {
     FUN_1403ed2b0()->FUN_141adc750(0x4e91);
 }
-MS2_REPLACE_METHOD(0x14199AAA0, UIInventoryDialog, FUN_14199aaa0, 32, 0);
+MS2_REPLACE_METHOD(0x14199AAA0, UIInventoryDialog, OnClickItemEnchant, 32, 0);
 
 // @0x14199aad0
 MS2Ptr<ASButtonBar> UIInventoryDialog::FUN_14199aad0()

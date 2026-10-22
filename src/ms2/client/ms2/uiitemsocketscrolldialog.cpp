@@ -260,7 +260,7 @@ int UIItemSocketScrollDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         return 1;
     if (_stricmp(szMethod, "onClickAction") == 0)
     {
-        FUN_140f66870();
+        OnClickAction();
         return 1;
     }
     return 0;
@@ -469,7 +469,7 @@ bool UIItemSocketScrollDialog::FUN_140f66680(MS2Ptr<CItem> spItem, CItemSocketSc
 
 // @0x140f66870
 // MS2-FUNCTIONAL: written from the decompile; temporaries / frame slots not tuned
-void UIItemSocketScrollDialog::FUN_140f66870()
+void UIItemSocketScrollDialog::OnClickAction()
 {
     bool bHasItem = false;
     ItemScrollSlot* pSlot = FUN_140f65ab0(CString(m_strSlot));

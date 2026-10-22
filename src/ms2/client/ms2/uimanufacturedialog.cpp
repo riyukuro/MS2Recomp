@@ -433,25 +433,25 @@ int UIManufactureDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     if (_stricmp("onRecieve", szMethod) == 0)
     {
-        FUN_1412e6250();
+        OnRecieve();
         return 1;
     }
     if (_stricmp("onRecieveOrCancel", szMethod) == 0)
     {
         if (m_nState == 2)
-            FUN_1412e6250();
+            OnRecieve();
         else if (m_nState == 1)
             FUN_140d73bc0(0x7b7, 1, static_cast<IMessageListener*>(this), CStringW(L"OnCancel"));
         return 0;
     }
     if (_stricmp("onRecieveByMerat", szMethod) == 0)
     {
-        FUN_1412e63b0();
+        OnRecieveByMerat();
         return 1;
     }
     if (_stricmp("onRecieveJackpot", szMethod) == 0)
     {
-        FUN_1412e66f0();
+        OnRecieveJackpot();
         return 1;
     }
     return 0;
@@ -930,7 +930,7 @@ void UIManufactureDialog::FUN_1412e6110(int nResult)
 }
 
 // @0x1412e6250
-void UIManufactureDialog::FUN_1412e6250()
+void UIManufactureDialog::OnRecieve()
 {
     Unk_MfNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(m_nNpcId);
     if (pNpc == 0)
@@ -951,7 +951,7 @@ void UIManufactureDialog::FUN_1412e6250()
 
 // @0x1412e63b0
 // MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
-void UIManufactureDialog::FUN_1412e63b0()
+void UIManufactureDialog::OnRecieveByMerat()
 {
     MS2Ptr<Unk_UmMfItem> spMf(0);
     if (FUN_1409eed40()->FUN_140d51370(m_nManufactureId, spMf) == 0)
@@ -998,7 +998,7 @@ void UIManufactureDialog::FUN_1412e63b0()
 }
 
 // @0x1412e66f0
-void UIManufactureDialog::FUN_1412e66f0()
+void UIManufactureDialog::OnRecieveJackpot()
 {
     Unk_MfNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(m_nNpcId);
     if (pNpc == 0)

@@ -163,14 +163,14 @@ int UITextPreviewDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         }
     }
     else if (_stricmp("OnDescriptionCheck", szMethod) == 0) {
-        FUN_141351340();
+        OnDescriptionCheck();
     }
     return 0;
 }
 
 // MS2-FUNCTIONAL: the exe has an extra EH state/nop around the id vector setup (6 states vs 5)
 // @0x141351340
-void UITextPreviewDialog::FUN_141351340()
+void UITextPreviewDialog::OnDescriptionCheck()
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0) {
@@ -222,5 +222,5 @@ MS2_REPLACE_METHOD(0x141351050, UITextPreviewDialog, FUN_141351050, 140, 0xC648E
 MS2_REPLACE_METHOD(0x1413510F0, UITextPreviewDialog, FUN_1413510f0, 140, 0xC7B7B9BD);
 MS2_REPLACE_METHOD(0x141351190, UITextPreviewDialog, vfunc_67, 24, 0x76B18167);
 MS2_REPLACE_METHOD(0x1413511B0, UITextPreviewDialog, vfunc_28, 381, 0xE82608D9);
-MS2_REPLACE_METHOD(0x141351340, UITextPreviewDialog, FUN_141351340, 661, 0xDDEA0E88);
+MS2_REPLACE_METHOD(0x141351340, UITextPreviewDialog, OnDescriptionCheck, 661, 0xDDEA0E88);
 MS2_REPLACE_METHOD(0x141351890, UITextPreviewDialog, vfunc_48, 11, 0xE2D70D38);

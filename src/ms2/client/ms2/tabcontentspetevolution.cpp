@@ -932,7 +932,7 @@ int TabContentsPetEvolution::vfunc_6(const char* szEvent, const Scaleform::GFx::
     }
     if (_stricmp("OnPetEnchant", szEvent) == 0)
     {
-        FUN_140acaf50(0);
+        OnPetEnchant(0);
         return 1;
     }
     if (_stricmp("OnPetEnchantDebug", szEvent) == 0)
@@ -977,7 +977,7 @@ void TabContentsPetEvolution::FUN_140acaf20(ATL::CAtlArray<IdCount>& out)
 
 // @0x140acaf50
 // MS2-FUNCTIONAL: frame layout of the message box and packet branches differs
-void TabContentsPetEvolution::FUN_140acaf50(int bUsePoint)
+void TabContentsPetEvolution::OnPetEnchant(int bUsePoint)
 {
     ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_uidPet);
     if (pet == 0)

@@ -179,7 +179,7 @@ public:
     void FUN_14193df10(Scaleform::GFx::Value* pOut);
     void FUN_14193e0e0(Scaleform::GFx::Value* pOut);
     void FUN_14193e2e0(int nMapType);
-    void FUN_14193e8b0();
+    void OnPetAttack();
     int FUN_14193e940(int nField);
 
     // The menu strip is a movie clip child ("m_menus"); 0x140ba7930 binds it by name.

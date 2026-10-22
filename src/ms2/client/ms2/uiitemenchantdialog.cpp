@@ -557,11 +557,11 @@ int UIItemEnchantDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         return 1;
     }
     if (_stricmp(szMethod, "onRetry") == 0) {
-        FUN_1419c11e0();
+        OnRetry();
         return 1;
     }
     if (_stricmp(szMethod, "onComplete") == 0) {
-        FUN_1419c10e0();
+        OnComplete();
         return 1;
     }
     if (_stricmp(szMethod, "onForceEnchant") == 0) {
@@ -577,9 +577,9 @@ int UIItemEnchantDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         return 1;
     }
     if (_stricmp(szMethod, "onClickFailStackUp") == 0)
-        FUN_1419c15c0();
+        OnClickFailStackUp();
     else if (_stricmp(szMethod, "onClickFailStackDown") == 0)
-        FUN_1419c1630();
+        OnClickFailStackDown();
     return 0;
 }
 
@@ -805,7 +805,7 @@ void UIItemEnchantDialog::FUN_1419c0d40(ASData* pData)
 
 #ifndef MS2_HOOK_DLL
 // @0x1419c10e0
-void UIItemEnchantDialog::FUN_1419c10e0()
+void UIItemEnchantDialog::OnComplete()
 {
     vfunc_85(3);
     FUN_1419c4050();
@@ -823,7 +823,7 @@ void UIItemEnchantDialog::FUN_1419c10e0()
 #endif
 
 // @0x1419c11e0
-void UIItemEnchantDialog::FUN_1419c11e0()
+void UIItemEnchantDialog::OnRetry()
 {
     FUN_1419c77a0();
     vfunc_85(4);
@@ -855,7 +855,7 @@ void UIItemEnchantDialog::FUN_1419c1220(ASData* pData)
 }
 
 // @0x1419c15c0
-void UIItemEnchantDialog::FUN_1419c15c0()
+void UIItemEnchantDialog::OnClickFailStackUp()
 {
     COutPacket pkt(0x5e, 0);
     pkt.Encode1(3);
@@ -864,7 +864,7 @@ void UIItemEnchantDialog::FUN_1419c15c0()
 }
 
 // @0x1419c1630
-void UIItemEnchantDialog::FUN_1419c1630()
+void UIItemEnchantDialog::OnClickFailStackDown()
 {
     COutPacket pkt(0x5e, 0);
     pkt.Encode1(3);
@@ -2504,9 +2504,9 @@ MS2_REPLACE_METHOD(0x1419C02E0, UIItemEnchantDialog, FUN_1419c02e0, 116, 0x837D9
 MS2_REPLACE_METHOD(0x1419C0360, UIItemEnchantDialog, SendRequestItemEnchantMode15, 91, 0xCB4750E9);
 MS2_REPLACE_METHOD(0x1419C03D0, UIItemEnchantDialog, SendRequestItemEnchantMode19, 91, 0xD29906B8);
 MS2_REPLACE_METHOD(0x1419C0C70, UIItemEnchantDialog, SendRequestItemEnchantMode6, 197, 0x173AAD5F);
-MS2_REPLACE_METHOD(0x1419C11E0, UIItemEnchantDialog, FUN_1419c11e0, 48, 0x9599EC04);
-MS2_REPLACE_METHOD(0x1419C15C0, UIItemEnchantDialog, FUN_1419c15c0, 100, 0x3ADF4CC0);
-MS2_REPLACE_METHOD(0x1419C1630, UIItemEnchantDialog, FUN_1419c1630, 100, 0xA08A2C70);
+MS2_REPLACE_METHOD(0x1419C11E0, UIItemEnchantDialog, OnRetry, 48, 0x9599EC04);
+MS2_REPLACE_METHOD(0x1419C15C0, UIItemEnchantDialog, OnClickFailStackUp, 100, 0x3ADF4CC0);
+MS2_REPLACE_METHOD(0x1419C1630, UIItemEnchantDialog, OnClickFailStackDown, 100, 0xA08A2C70);
 MS2_REPLACE_METHOD(0x1419C16A0, UIItemEnchantDialog, FUN_1419c16a0, 18, 0x232FCD10);
 MS2_REPLACE_METHOD(0x1419C19D0, UIItemEnchantDialog, FUN_1419c19d0, 91, 0x012443E8);
 MS2_REPLACE_METHOD(0x1419C1A40, UIItemEnchantDialog, FUN_1419c1a40, 783, 0xA75C2F26);

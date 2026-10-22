@@ -126,7 +126,7 @@ bool UIChaosDPSDialog::FUN_140e055b0(ASObj& obj, CPartyMember* pMember, unsigned
 }
 
 // @0x140e057d0
-void UIChaosDPSDialog::FUN_140e057d0()
+void UIChaosDPSDialog::OnTextToggle()
 {
     if (m_30.IsNull())
         return;
@@ -209,7 +209,7 @@ void UIChaosDPSDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     m_tick.FUN_140268840();
     CBattleRecordManager::GetInstance()->FUN_140a03f60(m_nGroup);
-    FUN_140e057d0();
+    OnTextToggle();
     FUN_140e05950();
 }
 
@@ -261,7 +261,7 @@ int UIChaosDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         m_nMode = m_nMode + 1;
         if (6 < m_nMode)
             m_nMode = 0;
-        FUN_140e057d0();
+        OnTextToggle();
         return 1;
     }
     return 0;
@@ -331,7 +331,7 @@ Unk_ChaosOpt* Unk_ChaosSettings::FUN_140e09150()
 MS2_EMIT_CRT_MEMMOVE_S();
 
 MS2_REPLACE_METHOD(0x140E055B0, UIChaosDPSDialog, FUN_140e055b0, 538, 0x93474119);
-MS2_REPLACE_METHOD(0x140E057D0, UIChaosDPSDialog, FUN_140e057d0, 374, 0xD3E773C1);
+MS2_REPLACE_METHOD(0x140E057D0, UIChaosDPSDialog, OnTextToggle, 374, 0xD3E773C1);
 MS2_REPLACE_METHOD(0x140E05F80, UIChaosDPSDialog, FUN_140e05f80, 111, 0x0AD55661);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca6210-0x142ca62f0 .text$yd

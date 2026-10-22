@@ -752,7 +752,7 @@ CString UILapenshardSystemDialog::vfunc_1()
 void UILapenshardSystemDialog::vfunc_67()
 {
     FUN_1419caeb0(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
-    FUN_140c62740();
+    OnLeaveTab();
     for (unsigned i = 0; i < m_tabs.GetCount(); ++i)
     {
         TabInfoPtr spTab = m_tabs[i];
@@ -812,7 +812,7 @@ int UILapenshardSystemDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     ASData data;
     if (_stricmp("OnLeaveTab", szMethod) == 0)
     {
-        FUN_140c62740();
+        OnLeaveTab();
         return 1;
     }
     else if (_stricmp("OnChangeTab", szMethod) == 0 && data.FUN_1422b9620(pArgs, nArgs) != 0)
@@ -888,7 +888,7 @@ void UILapenshardSystemDialog::FUN_140c624d0()
 }
 
 // @0x140c62740
-void UILapenshardSystemDialog::FUN_140c62740()
+void UILapenshardSystemDialog::OnLeaveTab()
 {
     if (m_spPage.get() != 0)
         m_spPage->vfunc_4();

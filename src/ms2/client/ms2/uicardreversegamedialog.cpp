@@ -128,7 +128,7 @@ CString UICardReverseGameDialog::vfunc_1()
 // Refresh the "N cards left" info text.
 // @0x140f26af0
 // MS2-FUNCTIONAL: code generation differs (branch layout / temporaries)
-void UICardReverseGameDialog::FUN_140f26af0()
+void UICardReverseGameDialog::OnCardTweenComplete()
 {
     if (FUN_140ba28d0(&m_30, 0) == 0)
     {
@@ -371,7 +371,7 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                     obj.FUN_1407cb9c0("itemCount", m_1f8->m_nCount);
                     obj.FUN_1407cbb20("itemName", FUN_1401a9d70()->FUN_141811980(1, m_1f8->m_nItemId));
                     static_cast<Unk_CRAS*>(m_30.operator->())->FUN_1409b13b0("updateItem", FUN_1406146a0(obj.FUN_1422bb870()));
-                    FUN_140f26af0();
+                    OnCardTweenComplete();
                     m_1f0 = -1;
                     m_1f8 = 0;
                 }
@@ -381,7 +381,7 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     }
     if (_stricmp(szMethod, "onCardTweenComplete") == 0)
     {
-        FUN_140f26af0();
+        OnCardTweenComplete();
         return 1;
     }
     if (_stricmp(szMethod, "OnCloseDialog") == 0)

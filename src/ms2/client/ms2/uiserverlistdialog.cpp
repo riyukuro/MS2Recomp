@@ -310,7 +310,7 @@ void UIServerListDialog::vfunc_79(void* pPacket)
     } else if (nOpcode == 12 && pIn->vfunc_o8_1() == 3) {
         m_nSceneId = 0x620001b;
         m_nConnecting = 0;
-        FUN_141ad3310();
+        OnSceneLogin();
     }
 }
 
@@ -421,7 +421,7 @@ int UIServerListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         return 1;
     if (_stricmp("OnSceneLogin", szMethod) == 0) {
         m_nSceneId = 0x6200009;
-        FUN_141ad3310();
+        OnSceneLogin();
         return 1;
     }
     if (_stricmp("OnSelectServer", szMethod) == 0) {
@@ -438,7 +438,7 @@ int UIServerListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             return 1;
         }
     } else if (_stricmp("OnEndPopdown", szMethod) == 0) {
-        FUN_141ad31d0();
+        OnEndPopdown();
         return 1;
     }
     return 0;
@@ -708,7 +708,7 @@ int UIServerListDialog::FUN_141ad31b0()
 }
 
 // @0x141ad31d0
-void UIServerListDialog::FUN_141ad31d0()
+void UIServerListDialog::OnEndPopdown()
 {
     if (m_nSceneId == 0x6200009) {
         FUN_140714f90()->FUN_1415388a0();
@@ -737,7 +737,7 @@ bool UIServerListDialog::FUN_141ad3260(int nButton, const CMsgBoxData& data)
 }
 
 // @0x141ad3310
-void UIServerListDialog::FUN_141ad3310()
+void UIServerListDialog::OnSceneLogin()
 {
     FUN_141adc5d0(FUN_1403ed2b0(), 0x4ef3);
     m_30->Invoke("popdown");

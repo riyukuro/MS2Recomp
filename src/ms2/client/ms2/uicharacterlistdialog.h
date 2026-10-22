@@ -121,7 +121,7 @@ public:
     MS2Ptr<Unk_ClButton> FUN_140bb4b10(const CString& strName);   // 0x140bb4b10 bind a button child
     void FUN_1418ef700();                                   // 0x1418ef700 the burning level-up icons
     void FUN_1418ef980(unsigned __int64 nId);               // 0x1418ef980 the burning level-up popup of a character
-    void FUN_1418f0140();                                   // 0x1418f0140 the burning level-up description
+    void OnClickBurningLevelupDescBtn();                                   // 0x1418f0140 the burning level-up description
     void FUN_1418f0400();                                   // 0x1418f0400 attach the burning level-up description button
     void AttachHealthGame();                                // 0x1418f0550
     CStringW FUN_1418f05b0(unsigned __int64 nId);           // 0x1418f05b0 the name of a character, empty when unknown
@@ -129,7 +129,7 @@ public:
     void CharacterRemoved(unsigned __int64 nId, int nIndex);   // 0x1418f0e20
     void OpenSelectedCharacter();                           // 0x1418f1060
     void FUN_1418f11c0();                                   // 0x1418f11c0 the server list
-    void FUN_1418f1260();                                   // 0x1418f1260 a character was created
+    void OnCreatePC();                                   // 0x1418f1260 a character was created
     void FUN_1418f13d0();                                   // 0x1418f13d0
     void FUN_1418f1790();                                   // 0x1418f1790
     void SendCharacterManagementMode2();                                   // 0x1418f1880 request the delete of the selected character
@@ -154,7 +154,7 @@ public:
     void CheckDelete(unsigned __int64 nId);                 // 0x1418f1a00
     void ShowPopup();                                       // 0x1418f1af0
     void FUN_1418f1d00();                                   // 0x1418f1d00
-    void FUN_1418f1d80();                                   // 0x1418f1d80
+    void OnEndPopdown();                                   // 0x1418f1d80
     void CheckDeleteAccount();                              // 0x1418f2120
     void FUN_1418f2620(void* pPacket);                      // 0x1418f2620 packet 0x132
     void FUN_1418f2820(void* pPacket);                      // 0x1418f2820 packet 0x133

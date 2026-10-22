@@ -285,7 +285,7 @@ int UISystemMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             }
             if (_stricmp("OnSelectCharacter", szMethod) == 0)
             {
-                FUN_141b14600();
+                OnSelectCharacter();
                 return 1;
             }
             if (_stricmp("onGraphic", szMethod) == 0)
@@ -506,7 +506,7 @@ void UISystemMenuDialog::FUN_141b145c0()
 }
 
 // @0x141b14600
-void UISystemMenuDialog::FUN_141b14600()
+void UISystemMenuDialog::OnSelectCharacter()
 {
     FUN_140714f90()->FUN_141538820();
 }

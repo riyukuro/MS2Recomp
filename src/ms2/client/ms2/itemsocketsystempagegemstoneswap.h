@@ -27,7 +27,7 @@ public:
     void FUN_140c49110();                               // clear everything
     void FUN_140c49250(int);                            // a source slot was picked
     void FUN_140c49580(int);                            // a target slot was picked
-    void FUN_140c49850();                               // back to the start
+    void OnRetry();                               // back to the start
     void FUN_140c49990(MS2Ptr<CItem>, CString, ASArray*);   // the gemstone slots of an item
     void FUN_140c49fc0();                               // fill the source bag
     void FUN_140c4a2b0(MS2Ptr<CItem>);                  // fill the target bag for a source

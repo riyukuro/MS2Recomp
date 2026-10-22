@@ -292,7 +292,7 @@ int UIHairPhysxDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         ASData data;
         if (_stricmp("eventSelectModel", szMethod) == 0)
         {
-            FUN_1419823c0();
+            EventSelectModel();
             return 1;
         }
         if (_stricmp("eventJointsList", szMethod) == 0)
@@ -332,7 +332,7 @@ int UIHairPhysxDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         }
         if (_stricmp("eventSelectTransform", szMethod) == 0)
         {
-            FUN_141982410();
+            EventSelectTransform();
             return 1;
         }
         if (_stricmp("eventTransformValue", szMethod) == 0)
@@ -411,7 +411,7 @@ void UIHairPhysxDialog::FUN_141982350(int nOnly)
 MS2_REPLACE_METHOD(0x141982350, UIHairPhysxDialog, FUN_141982350, 98, 0xDC50BC62);
 
 // @0x1419823c0
-void UIHairPhysxDialog::FUN_1419823c0()
+void UIHairPhysxDialog::EventSelectModel()
 {
     FUN_141983f50();
     FUN_141983730();
@@ -419,15 +419,15 @@ void UIHairPhysxDialog::FUN_1419823c0()
     FUN_141983af0();
     FUN_141984360();
 }
-MS2_REPLACE_METHOD(0x1419823C0, UIHairPhysxDialog, FUN_1419823c0, 64, 0x4014818E);
+MS2_REPLACE_METHOD(0x1419823C0, UIHairPhysxDialog, EventSelectModel, 64, 0x4014818E);
 
 // @0x141982410
-void UIHairPhysxDialog::FUN_141982410()
+void UIHairPhysxDialog::EventSelectTransform()
 {
     FUN_141983f50();
     FUN_141984360();
 }
-MS2_REPLACE_METHOD(0x141982410, UIHairPhysxDialog, FUN_141982410, 34, 0xF0C7D14D);
+MS2_REPLACE_METHOD(0x141982410, UIHairPhysxDialog, EventSelectTransform, 34, 0xF0C7D14D);
 
 // @0x141982440
 void UIHairPhysxDialog::FUN_141982440(const CString& strJoint)

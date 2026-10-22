@@ -52,7 +52,7 @@ void FUN_1412751f0(const CStringW& strMsg, int a, int b);           // show a no
 extern template class MS2Ptr<CBanTextChecker>;
 #endif
 
-// The child getters are defined below (0x140fafed0 / 0x140faff90); declared first so FUN_140fafbd0 does not instantiate.
+// The child getters are defined below (0x140fafed0 / 0x140faff90); declared first so OnApply does not instantiate.
 template <> MS2Ptr<Unk_HudSlider> AScript::FUN_140accef0<Unk_HudSlider>(const CString& strName);
 template <> MS2Ptr<Unk_HudSlider> UISwfEntity::GetChild<Unk_HudSlider>(const CString& strName);
 
@@ -100,7 +100,7 @@ int UIUGCCubeNoticeDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         return 1;
     if (_stricmp("OnApply", szMethod) == 0)
     {
-        FUN_140fafbd0();
+        OnApply();
         return 1;
     }
     return 0;
@@ -109,7 +109,7 @@ MS2_REPLACE_METHOD(0x140FAFB60, UIUGCCubeNoticeDialog, vfunc_28, 105, 0xA27700CA
 
 // @0x140fafbd0
 // MS2-FUNCTIONAL: the exe keeps extra pointer temps around each GetChild result (stack frame +0x10), as in uihomeinfoeditdialog.cpp
-void UIUGCCubeNoticeDialog::FUN_140fafbd0()
+void UIUGCCubeNoticeDialog::OnApply()
 {
     Unk_NcInputRef spText = FUN_140e35bd0(CString("m_textMessage"));
     if (FUN_140bc0500(&spText) != 0)
@@ -139,7 +139,7 @@ void UIUGCCubeNoticeDialog::FUN_140fafbd0()
     FUN_140710590(packet);
     vfunc_67();
 }
-MS2_REPLACE_METHOD(0x140FAFBD0, UIUGCCubeNoticeDialog, FUN_140fafbd0, 760, 0x571ABD56);
+MS2_REPLACE_METHOD(0x140FAFBD0, UIUGCCubeNoticeDialog, OnApply, 760, 0x571ABD56);
 
 // @0x140fafed0
 template <> MS2Ptr<Unk_HudSlider> AScript::FUN_140accef0<Unk_HudSlider>(const CString& strName)

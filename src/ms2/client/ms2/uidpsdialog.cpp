@@ -195,7 +195,7 @@ int UIDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
     }
     else if (_stricmp("OnStop", szMethod) == 0)
     {
-        FUN_141929b00();
+        OnStop();
         return 1;
     }
     else if (_stricmp("OnResetHistory", szMethod) == 0)
@@ -289,7 +289,7 @@ void UIDPSDialog::FUN_141929a60(int nDelay, int nDuration)
 }
 
 // @0x141929b00
-void UIDPSDialog::FUN_141929b00()
+void UIDPSDialog::OnStop()
 {
     if (FUN_14192a2c0() != 0)
         FUN_1411789e0(FUN_14192a2c0(), FUN_140869420());

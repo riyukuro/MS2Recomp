@@ -216,7 +216,7 @@ int UIUGCPortalDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     {
         if (_stricmp("OnApply", szMethod) == 0)
         {
-            FUN_140fb0a70();
+            OnApply();
             return 1;
         }
         else
@@ -293,7 +293,7 @@ static void FUN_140fb19c0(Unk_UgcpCombo* pCombo, const CString& strName, CString
 
 // @0x140fb0a70
 // MS2-FUNCTIONAL: the exe keeps extra call-result temporaries (frame / EH layout differs); source form unknown
-void UIUGCPortalDialog::FUN_140fb0a70()
+void UIUGCPortalDialog::OnApply()
 {
     MS2Ptr<Unk_UgcpText> spName;
     FUN_140e48d80<Unk_UgcpText>("m_textName", &spName);

@@ -936,7 +936,7 @@ int UIGameMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         return 1;
     }
     if (_stricmp("OnPetAttack", szMethod) == 0) {
-        FUN_14193e8b0();
+        OnPetAttack();
         return 1;
     }
     if (_stricmp("OnQuest", szMethod) == 0) {
@@ -2505,7 +2505,7 @@ void FUN_14193e790()
 }
 
 // @0x14193e8b0
-void UIGameMenuDialog::FUN_14193e8b0()
+void UIGameMenuDialog::OnPetAttack()
 {
     int nState = FUN_140c8b340(FUN_140535320());
     ASDialog* dialog = dynamic_cast<ASDialog*>((AScript*)m_30);
@@ -2759,7 +2759,7 @@ MS2_REPLACE_METHOD(0x14193E0E0, UIGameMenuDialog, FUN_14193e0e0, 505, 0x78F5CCDC
 MS2_REPLACE_METHOD(0x14193E2E0, UIGameMenuDialog, FUN_14193e2e0, 1137, 0x6849F1A4);
 MS2_REPLACE(0x14193E760, FUN_14193e760, 32, 0x4F1FAE19);
 MS2_REPLACE(0x14193E790, FUN_14193e790, 267, 0x001BE172);
-MS2_REPLACE_METHOD(0x14193E8B0, UIGameMenuDialog, FUN_14193e8b0, 130, 0x7C97C2FA);
+MS2_REPLACE_METHOD(0x14193E8B0, UIGameMenuDialog, OnPetAttack, 130, 0x7C97C2FA);
 MS2_REPLACE_METHOD(0x14193E940, UIGameMenuDialog, FUN_14193e940, 122, 0x12716BE9);
 MS2_REPLACE(0x14193E9C0, FUN_14193e9c0, 563, 0x5F8D2F57);
 MS2_REPLACE(0x14193F170, FUN_14193f170, 147, 0xD0F97E1E);

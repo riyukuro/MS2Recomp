@@ -122,7 +122,7 @@ public:
     void FUN_1410360c0();                                           // 0x1410360c0 fill the sale list
     void FUN_141036ca0();                                           // 0x141036ca0 fill the basket list
     void FUN_141037360();                                           // 0x141037360 gift prompts of the cash inventory
-    void FUN_141037880();                                           // 0x141037880 open the charge page
+    void OnChargeCash();                                           // 0x141037880 open the charge page
     CString FUN_1410378d0();                                        // 0x1410378d0 the charge url
     CString FUN_141037b70();                                        // 0x141037b70 the browser path
     bool FUN_141037cd0(int nItemId, int* pnReason, int* pnTab);     // 0x141037cd0 can the item be received?

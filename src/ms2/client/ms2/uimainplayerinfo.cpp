@@ -688,17 +688,17 @@ int UIMainPlayerInfo::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     }
     else if (_stricmp("onRideOff", szMethod) == 0)
     {
-        FUN_1419f3370();
+        OnRideOff();
         return 1;
     }
     else if (_stricmp("onPrevPage", szMethod) == 0)
     {
-        FUN_1419f3630();
+        OnPrevPage();
         return 1;
     }
     else if (_stricmp("onNextPage", szMethod) == 0)
     {
-        FUN_1419f36c0();
+        OnNextPage();
         return 1;
     }
     return 0;
@@ -1448,7 +1448,7 @@ int UIMainPlayerInfo::FUN_1419f2b60()
     }
     else if (FUN_14025e7c0()->FUN_14116dd30(0x49411, 0, 0))
     {
-        FUN_1419f36c0();
+        OnNextPage();
         return 1;
     }
     return 0;
@@ -1545,7 +1545,7 @@ void UIMainPlayerInfo::FUN_1419f32f0()
 }
 
 // @0x1419f3370
-void UIMainPlayerInfo::FUN_1419f3370()
+void UIMainPlayerInfo::OnRideOff()
 {
     Unk_MpPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == 0)
@@ -1585,7 +1585,7 @@ void UIMainPlayerInfo::FUN_1419f3590()
 }
 
 // @0x1419f3630
-bool UIMainPlayerInfo::FUN_1419f3630()
+bool UIMainPlayerInfo::OnPrevPage()
 {
     if (FUN_140930d70())
         return false;
@@ -1601,7 +1601,7 @@ bool UIMainPlayerInfo::FUN_1419f3630()
 }
 
 // @0x1419f36c0
-bool UIMainPlayerInfo::FUN_1419f36c0()
+bool UIMainPlayerInfo::OnNextPage()
 {
     if (FUN_140930d70())
         return false;
@@ -1730,12 +1730,12 @@ MS2_REPLACE_METHOD(0x1419F2EB0, UIMainPlayerInfo, FUN_1419f2eb0, 821, 0xA5BAA5BC
 MS2_REPLACE_METHOD(0x1419F31F0, UIMainPlayerInfo, FUN_1419f31f0, 135, 0x5DB83B85);
 MS2_REPLACE_METHOD(0x1419F3280, UIMainPlayerInfo, FUN_1419f3280, 93, 0x7BA66163);
 MS2_REPLACE_METHOD(0x1419F32F0, UIMainPlayerInfo, FUN_1419f32f0, 114, 0x5EB8B805);
-MS2_REPLACE_METHOD(0x1419F3370, UIMainPlayerInfo, FUN_1419f3370, 127, 0x36031C45);
+MS2_REPLACE_METHOD(0x1419F3370, UIMainPlayerInfo, OnRideOff, 127, 0x36031C45);
 MS2_REPLACE_METHOD(0x1419F3400, UIMainPlayerInfo, FUN_1419f3400, 19, 0x06877B61);
 MS2_REPLACE_METHOD(0x1419F3420, UIMainPlayerInfo, FUN_1419f3420, 356, 0x96096A55);
 MS2_REPLACE_METHOD(0x1419F3590, UIMainPlayerInfo, FUN_1419f3590, 142, 0xCC7D34E8);
-MS2_REPLACE_METHOD(0x1419F3630, UIMainPlayerInfo, FUN_1419f3630, 130, 0x0A1506CF);
-MS2_REPLACE_METHOD(0x1419F36C0, UIMainPlayerInfo, FUN_1419f36c0, 114, 0x49D79FEE);
+MS2_REPLACE_METHOD(0x1419F3630, UIMainPlayerInfo, OnPrevPage, 130, 0x0A1506CF);
+MS2_REPLACE_METHOD(0x1419F36C0, UIMainPlayerInfo, OnNextPage, 114, 0x49D79FEE);
 MS2_REPLACE_METHOD(0x1419F3740, UIMainPlayerInfo, FUN_1419f3740, 156, 0xD5EE2B40);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cbf3f0-0x142cbf550 .text$yd

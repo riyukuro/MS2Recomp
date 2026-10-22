@@ -101,7 +101,7 @@ public:
     void FUN_140acaec0(ATL::CAtlArray<unsigned __int64>& out);   // copy of m_petCards
     void FUN_140acaef0(ATL::CAtlArray<IdCount>& out);   // copy of m_pool
     void FUN_140acaf20(ATL::CAtlArray<IdCount>& out);   // copy of m_selected
-    void FUN_140acaf50(int bUsePoint);                  // send the evolution request
+    void OnPetEnchant(int bUsePoint);                  // send the evolution request
     void FUN_140acb560(unsigned nPoint);                // debug: /petevolutionpoint
     int FUN_140acb6f0();                                // number of selected ingredients (an empty count is 1)
     void FUN_140acb810(int nState);

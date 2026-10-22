@@ -188,7 +188,7 @@ CString UILoginDialog::vfunc_1()
 }
 
 // @0x1419e1040
-void UILoginDialog::FUN_1419e1040(char bFromPopdown)
+void UILoginDialog::OnEndPopdown(char bFromPopdown)
 {
     if (FUN_1422b9dc0(FUN_1408e57f0()) == 0x6200009)
     {
@@ -274,7 +274,7 @@ void UILoginDialog::OnLoadComplete()
     static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_1419e2c30("initData", strId, !bEmpty, true, FUN_1406521f0(FUN_1406516b0()));
     if (!s_pendingId.IsEmpty())
     {
-        FUN_1419e2920();
+        OnConnect();
         s_pendingId = L"";
     }
 }
@@ -337,7 +337,7 @@ int UILoginDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     ASData data;
     if (_stricmp("OnConnect", szMethod) == 0)
     {
-        FUN_1419e2920();
+        OnConnect();
         return 1;
     }
     if (_stricmp("OnSaveID", szMethod) == 0)
@@ -354,7 +354,7 @@ int UILoginDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     {
         if (_stricmp("OnEndPopdown", szMethod) == 0)
         {
-            FUN_1419e1040(1);
+            OnEndPopdown(1);
             return 1;
         }
         if (_stricmp("OnChkLocaleName", szMethod) == 0)
@@ -424,7 +424,7 @@ bool UILoginDialog::FUN_1419e2310(int nResult)
     if (nResult == 0)
     {
         DAT_143ab285c = 1;
-        FUN_1419e1040(0);
+        OnEndPopdown(0);
     }
     else
     {
@@ -512,7 +512,7 @@ int UILoginDialog::FUN_1419e2900()
 }
 
 // @0x1419e2920
-void UILoginDialog::FUN_1419e2920()
+void UILoginDialog::OnConnect()
 {
     if (FUN_1422b9dc0(FUN_1408e57f0()) == 0x6200009)
     {
@@ -555,7 +555,7 @@ Unk_LoginRequest::~Unk_LoginRequest()
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
-MS2_REPLACE_METHOD(0x1419e1040, UILoginDialog, FUN_1419e1040, 267, 0xF502B3E3);
+MS2_REPLACE_METHOD(0x1419e1040, UILoginDialog, OnEndPopdown, 267, 0xF502B3E3);
 MS2_REPLACE_METHOD(0x1419e1160, UILoginDialog, FUN_1419e1160, 1031, 0x1C1ACD5D);
 MS2_REPLACE_METHOD(0x1419e1570, UILoginDialog, FUN_1419e1570, 245, 0xA57FD4A9);
 MS2_REPLACE_METHOD(0x1419e1670, UILoginDialog, vfunc_67, 24, 0x2021848A);
@@ -569,5 +569,5 @@ MS2_REPLACE_METHOD(0x1419e2730, UILoginDialog, FUN_1419e2730, 154, 0x085FA634);
 MS2_REPLACE_METHOD(0x1419e27d0, UILoginDialog, FUN_1419e27d0, 193, 0xD82DE7AD);
 MS2_REPLACE_METHOD(0x1419e28a0, UILoginDialog, FUN_1419e28a0, 83, 0xE3486D90);
 MS2_REPLACE_METHOD(0x1419e2900, UILoginDialog, FUN_1419e2900, 19, 0x012679F4);
-MS2_REPLACE_METHOD(0x1419e2920, UILoginDialog, FUN_1419e2920, 142, 0xAEE14BC1);
+MS2_REPLACE_METHOD(0x1419e2920, UILoginDialog, OnConnect, 142, 0xAEE14BC1);
 

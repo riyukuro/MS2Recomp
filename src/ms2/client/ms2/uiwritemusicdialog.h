@@ -77,13 +77,13 @@ public:
     void FUN_140ff0090(int nResult);                                        // 0x140ff0090 the make request failed / ended
     void FUN_140ff0260(unsigned __int64 nItemUid, const CString& strMml);            // 0x140ff0260 the score text arrived
     void FUN_140ff03b0(ASData* pArgs);                                      // 0x140ff03b0 "onClickMake"
-    void FUN_140ff12a0();                                                   // 0x140ff12a0 rewind and pause
+    void OnClickPlayGoFirstAndPause();                                                   // 0x140ff12a0 rewind and pause
     void FUN_140ff12d0(ASData* pArgs);                                      // 0x140ff12d0 "onClickPlayStart"
     void FUN_140ff1a20();                                                   // 0x140ff1a20 stop
     void FUN_140ff1aa0();                                                   // 0x140ff1aa0 pause
     void FUN_140ff1b10(int nPage);                                          // 0x140ff1b10 rebuild the piano roll
-    void FUN_140ff1e40();                                                   // 0x140ff1e40 save to a file
-    void FUN_140ff2060();                                                   // 0x140ff2060 load from a file (ask while dirty)
+    void OnClickSaveFile();                                                   // 0x140ff1e40 save to a file
+    void OnClickLoadFile();                                                   // 0x140ff2060 load from a file (ask while dirty)
     void FUN_140ff21a0(ASData* pArgs);                                      // 0x140ff21a0 the play bar moved
     void FUN_140ff23b0(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x140ff23b0 the play bar tooltip
     void FUN_140ff2500(unsigned __int64 nItemUid);                                // 0x140ff2500 the score text (cache or request)

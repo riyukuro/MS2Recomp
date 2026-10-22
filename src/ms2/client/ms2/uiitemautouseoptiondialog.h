@@ -87,7 +87,7 @@ public:
     void FUN_140f50090(int nState, int nIndex);                     // 0x140f50090 enable / disable / reset a row's drop-down
     void FUN_140f50190();                                           // 0x140f50190 rebuild the bag, tell the movie
     void FUN_140f50230(void* pCombo, int nIndex);                   // 0x140f50230 fill a row's drop-down
-    void FUN_140f50480();                                           // 0x140f50480 OnClickOk: validate and send
+    void OnClickOk();                                           // 0x140f50480 OnClickOk: validate and send
 
 private:
     MS2_LAYOUT_FRIEND;

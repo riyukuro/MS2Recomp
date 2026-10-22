@@ -44,9 +44,9 @@ public:
     void FUN_1412e5dd0(int nRow);                                           // 0x1412e5dd0 craft the recipe of a row
     void FUN_1412e5f70(int nRow);                                           // 0x1412e5f70 craft the recipe of a row (admin)
     void FUN_1412e6110(int nResult);                                        // 0x1412e6110 result of the craft request
-    void FUN_1412e6250();                                                   // 0x1412e6250 receive the product
-    void FUN_1412e63b0();                                                   // 0x1412e63b0 receive the product with merat
-    void FUN_1412e66f0();                                                   // 0x1412e66f0 receive the jackpot
+    void OnRecieve();                                                   // 0x1412e6250 receive the product
+    void OnRecieveByMerat();                                                   // 0x1412e63b0 receive the product with merat
+    void OnRecieveJackpot();                                                   // 0x1412e66f0 receive the jackpot
     void FUN_1412e6850(int nResult);                                        // 0x1412e6850 result of the receive request
     void FUN_1412e69a0();                                                   // 0x1412e69a0 cancel the craft
     void FUN_1412e6af0(int nResult);                                        // 0x1412e6af0 result of the cancel request

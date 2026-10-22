@@ -41,8 +41,8 @@ public:
     bool FUN_1419bd710();
     bool FUN_1419bd7a0();                                         // the worn costume is editable
     bool FUN_1419bd860();                                         // leave the page (restore the worn item)
-    void FUN_1419bd920();                                         // save
-    void FUN_1419bd990();                                         // reset
+    void OnSave();                                         // save
+    void OnReset();                                         // reset
     void FUN_1419bd9f0();                                         // close: ask first when changed
     void FUN_1419bdb50(int bEnable);                              // enable both buttons
     int FUN_1419bdb90();                                          // the save button is enabled

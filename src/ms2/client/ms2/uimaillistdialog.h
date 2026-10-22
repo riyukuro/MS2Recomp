@@ -146,7 +146,7 @@ public:
     void FUN_1419ecbb0(CMailInfo* pReplyTo);                        // answer this mail
     void FUN_1419ecbf0();                                           // "setData": the reply prefill
     void FUN_1419ed010();                                           // fill "m_buddys" with the buddy names
-    void FUN_1419ed1c0();                                           // "OnSend": check and send (packet 0x2d / 1)
+    void OnSend();                                           // "OnSend": check and send (packet 0x2d / 1)
     void FUN_1419ed410(CStringW& strReceiver);                      // the receiver text
     void FUN_1419ed4e0(CStringW& strTitle);                         // the title text (reserved words filtered)
     void FUN_1419ed6b0(CStringW& strContent);                       // the content text (reserved words filtered)

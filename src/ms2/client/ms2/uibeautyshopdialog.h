@@ -93,7 +93,7 @@ public:
     int FUN_1418ca240(void* p);
     void FUN_1418ca380();
     void FUN_1418ca400();
-    void FUN_1418ca420();
+    void OnClickReset();
     int FUN_1418ca510(ASObj& out, unsigned* pPrice);
     void FUN_1418cae60();
     void FUN_1418caec0();

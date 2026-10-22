@@ -40,7 +40,7 @@ public:
     CItemSocketScrollDataPtr FUN_140f65b30(MS2Ptr<CItemData> spData);   // 0x140f65b30 the table row of a scroll
     bool FUN_140f65c10(CItemSocketScrollDataPtr spRow, CStringW& strNotice);    // 0x140f65c10 the limit text
     bool FUN_140f66680(MS2Ptr<CItem> spItem, CItemSocketScrollDataPtr spRow, CStringW& strDesc);   // 0x140f66680 the description
-    void FUN_140f66870();                                       // 0x140f66870 onClickAction
+    void OnClickAction();                                       // 0x140f66870 onClickAction
     void FUN_140f66f70(int nError);                             // 0x140f66f70 notice for a check error
     void SendItemSocketScroll(__int64 nTargetUid);                     // 0x140f670e0 send packet 0x8b
     void FUN_140f67170(CInPacket& packet);                      // 0x140f67170 packet type 0: a scroll was opened

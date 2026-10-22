@@ -166,7 +166,7 @@ static UIMeratMarketDialog* FUN_140bd2c00()
 MS2_REPLACE(0x140BD2C00, FUN_140bd2c00, 172, 0x93706875);
 
 // @0x140bd2990
-void UIChatEmoticonDialog::FUN_140bd2990()
+void UIChatEmoticonDialog::OnClickShopButton()
 {
     UIMeratMarketDialog* pMerat = FUN_140bd2c00();
     if (pMerat != 0)
@@ -177,7 +177,7 @@ void UIChatEmoticonDialog::FUN_140bd2990()
         pMerat->FUN_1419235d0();
     }
 }
-MS2_REPLACE_METHOD(0x140BD2990, UIChatEmoticonDialog, FUN_140bd2990, 78, 0x28A8C0DF);
+MS2_REPLACE_METHOD(0x140BD2990, UIChatEmoticonDialog, OnClickShopButton, 78, 0x28A8C0DF);
 
 // @0x140bd0e90
 UIChatEmoticonDialog::UIChatEmoticonDialog()
@@ -319,7 +319,7 @@ int UIChatEmoticonDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     }
     else if (_stricmp(szMethod, "onClickShopButton") == 0)
     {
-        FUN_140bd2990();
+        OnClickShopButton();
     }
     return 0;
 }
@@ -527,7 +527,7 @@ void UIChatEmoticonDialog::FUN_140bd27e0(int nTab)
 {
     if (nTab == -2)
     {
-        FUN_140bd2990();
+        OnClickShopButton();
         ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
         if (pDialog != 0)
             pDialog->Invoke("selectTab", m_nSelTab);

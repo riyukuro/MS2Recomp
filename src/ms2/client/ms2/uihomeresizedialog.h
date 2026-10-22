@@ -26,10 +26,10 @@ public:
 
     void FUN_140c2bf40();                                       // 0x140c2bf40 refresh the movie
     void FUN_140c2bf70();                                       // 0x140c2bf70 same body
-    void FUN_140c2bfa0();                                       // 0x140c2bfa0 "OnShrinkArea"
-    void FUN_140c2c2f0();                                       // 0x140c2c2f0 "OnShrinkHeight"
-    void FUN_140c2c640();                                       // 0x140c2c640 "OnExtensionArea"
-    void FUN_140c2cac0();                                       // 0x140c2cac0 "OnExtensionHeight"
+    void OnShrinkArea();                                       // 0x140c2bfa0 "OnShrinkArea"
+    void OnShrinkHeight();                                       // 0x140c2c2f0 "OnShrinkHeight"
+    void OnExtensionArea();                                       // 0x140c2c640 "OnExtensionArea"
+    void OnExtensionHeight();                                       // 0x140c2cac0 "OnExtensionHeight"
     bool SendRequestCubeMode38(int nResult, const CMsgBoxData& data);   // 0x140c2cd90 shrink area box result
     bool SendRequestCubeMode45(int nResult, const CMsgBoxData& data);   // 0x140c2ce00 shrink height box result
     bool SendRequestCubeMode37(int nResult, const CMsgBoxData& data);   // 0x140c2ce70 extend area box result

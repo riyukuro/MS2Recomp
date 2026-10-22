@@ -44,7 +44,7 @@ public:
     virtual void vfunc_79(void* p);
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);
 
-    void FUN_140f26af0();                               // refresh the "select" info text
+    void OnCardTweenComplete();                               // refresh the "select" info text
 
 private:
     MS2_LAYOUT_FRIEND;

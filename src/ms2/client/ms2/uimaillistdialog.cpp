@@ -1498,7 +1498,7 @@ int UIMailSendDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         return 1;
     if (_stricmp("OnSend", szMethod) == 0)
     {
-        FUN_1419ed1c0();
+        OnSend();
         return 1;
     }
     if (_stricmp("onLimitInput", szMethod) == 0)
@@ -1618,7 +1618,7 @@ MS2_REPLACE_METHOD(0x1419ed010, UIMailSendDialog, FUN_1419ed010, 411, 0x080B07AD
 
 // MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419ed1c0
-void UIMailSendDialog::FUN_1419ed1c0()
+void UIMailSendDialog::OnSend()
 {
     Unk_MailSendInfo info;
     FUN_1419ed410(info.m_strReceiver);
@@ -1660,7 +1660,7 @@ void UIMailSendDialog::FUN_1419ed1c0()
     }
     FUN_141275260(0x244, 1, 1);
 }
-MS2_REPLACE_METHOD(0x1419ed1c0, UIMailSendDialog, FUN_1419ed1c0, 577, 0x7046C796); // FUN_1419ed1c0
+MS2_REPLACE_METHOD(0x1419ed1c0, UIMailSendDialog, OnSend, 577, 0x7046C796); // OnSend
 
 // @0x1419ed410
 void UIMailSendDialog::FUN_1419ed410(CStringW& strReceiver)

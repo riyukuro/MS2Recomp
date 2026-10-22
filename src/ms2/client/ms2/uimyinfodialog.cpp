@@ -409,12 +409,12 @@ int UIMyInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     ASData kData;
     if (_stricmp("OnChangeProfile", szMethod) == 0)
     {
-        FUN_141a5a720();
+        OnChangeProfile();
         return 1;
     }
     if (_stricmp("OnChangeTodayMemo", szMethod) == 0)
     {
-        FUN_141a5a750();
+        OnChangeTodayMemo();
         return 1;
     }
     if (_stricmp("OnConfig", szMethod) == 0)
@@ -708,13 +708,13 @@ void UIMyInfoDialog::FUN_141a5a640(NotifyObject* pNotify)
 }
 
 // @0x141a5a720
-void UIMyInfoDialog::FUN_141a5a720()
+void UIMyInfoDialog::OnChangeProfile()
 {
     FUN_14187fb30(FUN_14052d220());
 }
 
 // @0x141a5a750
-void UIMyInfoDialog::FUN_141a5a750()
+void UIMyInfoDialog::OnChangeTodayMemo()
 {
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == 0)

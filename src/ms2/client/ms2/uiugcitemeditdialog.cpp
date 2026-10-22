@@ -407,7 +407,7 @@ int UIUGCItemEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     if (_stricmp("onClickInitialize", szMethod) == 0)
     {
-        FUN_141b44990();
+        OnClickInitialize();
         return 1;
     }
     if (_stricmp("onClickCancle", szMethod) == 0)
@@ -417,7 +417,7 @@ int UIUGCItemEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     if (_stricmp("onClickNewDraw", szMethod) == 0)
     {
-        FUN_141b44a20();
+        OnClickNewDraw();
         return 1;
     }
     if (_stricmp("onStartCapture", szMethod) == 0)
@@ -429,7 +429,7 @@ int UIUGCItemEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     if (_stricmp("onClickAddImage", szMethod) == 0)
     {
-        FUN_141b44910();
+        OnClickAddImage();
         return 1;
     }
     if (_stricmp("onChangeIndexDropDownCategory", szMethod) == 0)
@@ -1836,17 +1836,17 @@ bool UIUGCItemEditDialog::FUN_141b43c60(int nImage)
 }
 
 // @0x141b44910
-void UIUGCItemEditDialog::FUN_141b44910()
+void UIUGCItemEditDialog::OnClickAddImage()
 {
     int nRet = FUN_14052d220()->FUN_1418810c0(L"./", L"Image Files (*.dds, *.png, *.jpg)");
     if (nRet == 0)
         return;
     FUN_141b40ab0(m_nKind, 0);
 }
-MS2_REPLACE_METHOD(0x141B44910, UIUGCItemEditDialog, FUN_141b44910, 115, 0x34A6A13A);
+MS2_REPLACE_METHOD(0x141B44910, UIUGCItemEditDialog, OnClickAddImage, 115, 0x34A6A13A);
 
 // @0x141b44990
-void UIUGCItemEditDialog::FUN_141b44990()
+void UIUGCItemEditDialog::OnClickInitialize()
 {
     UIAvatarBase* pAvatar = FUN_141b43490();
     if (pAvatar != 0)
@@ -1858,16 +1858,16 @@ void UIUGCItemEditDialog::FUN_141b44990()
     FUN_141b417e0();
     FUN_141b41700(-1);
 }
-MS2_REPLACE_METHOD(0x141B44990, UIUGCItemEditDialog, FUN_141b44990, 131, 0x56878B34);
+MS2_REPLACE_METHOD(0x141B44990, UIUGCItemEditDialog, OnClickInitialize, 131, 0x56878B34);
 
 // @0x141b44a20
-void UIUGCItemEditDialog::FUN_141b44a20()
+void UIUGCItemEditDialog::OnClickNewDraw()
 {
     if (FUN_14052d220()->FUN_141880fc0() == 0)
         return;
     FUN_141b40ab0(m_nKind, 0);
 }
-MS2_REPLACE_METHOD(0x141B44A20, UIUGCItemEditDialog, FUN_141b44a20, 57, 0x77671059);
+MS2_REPLACE_METHOD(0x141B44A20, UIUGCItemEditDialog, OnClickNewDraw, 57, 0x77671059);
 
 // @0x141b44a60
 void UIUGCItemEditDialog::FUN_141b44a60(ASData& args)

@@ -74,7 +74,7 @@ public:
 
     void FUN_141acf420();                                       // show the login dialog / region list
     void FUN_141acf470();                                       // the connection failed
-    void FUN_141acf5a0();                                       // start the title animation
+    void ShowTitle();                                       // start the title animation
     void FUN_141acf700(unsigned int nBits);                     // add progress bits (under the lock)
     void FUN_141acf7c0();                                       // the title is done
     void FUN_141acf860(int nBits);                              // the preload progress callback
@@ -85,7 +85,7 @@ public:
     bool FUN_141acfb40();                                       // the region list is used
     void FUN_141acfba0(ASObj* pObj);                            // fill the button flags
     void FUN_141acfc70();                                       // leave the pending state
-    void FUN_141acfcc0();                                       // the end of the pop-down
+    void OnEndPopdown();                                       // the end of the pop-down
 
     int m_nTitleDone;                                           // +0xa8
     int m_nShown;                                               // +0xac

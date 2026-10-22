@@ -35,7 +35,7 @@ public:
 
     void FUN_141943480();                                           // pick the simple (reduced) mode, enable the pages, setTabComponent
     void FUN_1419436e0(int nTab);                                   // open a tab: page vfunc_3(1)
-    void FUN_141943790(int nTab);                                   // close a tab: page vfunc_4(1)
+    void OnCloseTab(int nTab);                                   // close a tab: page vfunc_4(1)
     void FUN_141943820(int n);                                      // "m_apply" button enabled state
     void FUN_1419438b0();                                           // re-open the current tab
     void FUN_141943900(bool b);                                     // m_bF1d0, update the red circle
@@ -43,10 +43,10 @@ public:
     void FUN_141943a00();                                           // RemoveAll
     void FUN_141943a30();                                           // the "init to default" confirm box
     void FUN_141943d80();                                           // every page vfunc_9
-    void FUN_141943e30();                                           // save (confirm box when not all agreed)
+    void OnSave();                                           // save (confirm box when not all agreed)
     void FUN_141943ec0();                                           // apply every page, then the option settings
     void FUN_141944030(int n);                                      // m_nF1cc = n; page vfunc_12 (all pages when 0)
-    void FUN_141944150();                                           // check and save
+    void OnCloseDialog();                                           // check and save
     int FUN_141944250();                                            // 1 when nothing is pending
     int FUN_141944330();                                            // 1 when no page differs
     MS2Ptr<class Unk_GoButton> FUN_140bb4b10(const CString& strName);   // 0x140bb4b10 bind a button child

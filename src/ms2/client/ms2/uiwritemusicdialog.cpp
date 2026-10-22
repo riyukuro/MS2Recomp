@@ -525,7 +525,7 @@ int UIWriteMusicDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     }
     if (_stricmp("onClickPlayGoFirstAndPause", szMethod) == 0)
     {
-        FUN_140ff12a0();
+        OnClickPlayGoFirstAndPause();
         return 1;
     }
     if (_stricmp("onClickPlayStart", szMethod) == 0)
@@ -580,12 +580,12 @@ int UIWriteMusicDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     }
     if (_stricmp("onClickSaveFile", szMethod) == 0)
     {
-        FUN_140ff1e40();
+        OnClickSaveFile();
         return 1;
     }
     if (_stricmp("onClickLoadFile", szMethod) == 0)
     {
-        FUN_140ff2060();
+        OnClickLoadFile();
         return 1;
     }
     if (_stricmp("onChangeInstrument", szMethod) == 0)
@@ -954,7 +954,7 @@ void UIWriteMusicDialog::FUN_140ff03b0(ASData* pArgs)
 }
 
 // @0x140ff12a0
-void UIWriteMusicDialog::FUN_140ff12a0()
+void UIWriteMusicDialog::OnClickPlayGoFirstAndPause()
 {
     FUN_140ff3610(0);
     FUN_140ff1aa0();
@@ -1096,7 +1096,7 @@ void UIWriteMusicDialog::FUN_140ff1b10(int nPage)
 
 // @0x140ff1e40
 // MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 594 bytes, exe 529): temporaries, stack slots and branch layout
-void UIWriteMusicDialog::FUN_140ff1e40()
+void UIWriteMusicDialog::OnClickSaveFile()
 {
     if (FUN_140a467d0(&m_30))
         return;
@@ -1119,7 +1119,7 @@ void UIWriteMusicDialog::FUN_140ff1e40()
 
 // @0x140ff2060
 // MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 327 bytes, exe 311): temporaries, stack slots and branch layout
-void UIWriteMusicDialog::FUN_140ff2060()
+void UIWriteMusicDialog::OnClickLoadFile()
 {
     if (FUN_140a467d0(&m_30))
         return;

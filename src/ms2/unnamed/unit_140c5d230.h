@@ -327,7 +327,7 @@ public:
     void FUN_140c62490(int nSlot);                                  // select a slot, notify 10
     void FUN_140c624d0();                                           // notify 11
     int FUN_140c62500() const { return m_nSlot; }                   // the selected equip slot
-    void FUN_140c62740();                                           // the shown page: close
+    void OnLeaveTab();                                           // the shown page: close
     void FUN_140c627a0(unsigned nTab, const Scaleform::GFx::Value& root);   // show the page of tab nTab
 
     MS2Ptr<Unk_LsTabBar> FUN_140c02870(const CString& strName);     // bind the tab strip

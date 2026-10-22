@@ -68,9 +68,9 @@ public:
     void FUN_141920770();                               // clear the item lists
     void FUN_1419207c0(int nTab);                       // select the worn item of the tab
     void FUN_141920aa0(int nItemId);                    // preview an item id
-    void FUN_141920b80();                               // "OnClickNew"
-    void FUN_141920ca0();                               // "OnClickAdd": store the cap transform of the hat
-    void FUN_141921080();                               // "OnClickDelete"
+    void OnClickNew();                               // "OnClickNew"
+    void OnClickAdd();                               // "OnClickAdd": store the cap transform of the hat
+    void OnClickDelete();                               // "OnClickDelete"
     void FUN_141921190(int nItemId);                    // enable "m_new" / "m_add" / "m_delete"
     void FUN_1419213f0(NotifyObject* pNotify);          // NotifyChangeActiveMyCodiTab
     bool FUN_141921460();                               // the previewed item has colours

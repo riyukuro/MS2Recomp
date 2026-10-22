@@ -43,7 +43,7 @@ public:
     void FUN_141a53100();                                           // 0x141a53100 load the <minimap> node of the map xml into m_spMinimap and the camera
     void FUN_141a53750();                                           // 0x141a53750 store the camera/image area into m_spMinimap and save the xml
     void FUN_141a540f0(int bShow);                                  // 0x141a540f0 hide (1) / restore (0) the world objects for the capture
-    void FUN_141a545a0();                                           // 0x141a545a0 save the minimap area as a png screenshot
+    void OnScreenShot();                                           // 0x141a545a0 save the minimap area as a png screenshot
     CString FUN_141a54940(CString strXBlock);                       // 0x141a54940 "./data/xml/MapXblock/{0}.xml"
     CString FUN_141a549c0();                                        // 0x141a549c0 "./Data/Resource/Image/Map/Minimap/%08d.dds" of the current map
     NiRect<unsigned int> FUN_141a54a50();                                           // 0x141a54a50 the rounded screen rectangle of the record

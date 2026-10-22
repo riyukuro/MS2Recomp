@@ -334,7 +334,7 @@ int UIItemExtractionScrollDialog::vfunc_28(const char* szMethod, const Scaleform
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
     if (_stricmp(szMethod, "onOk") == 0)
-        FUN_140e4b380();
+        OnOk();
     return 0;
 }
 
@@ -415,7 +415,7 @@ void UIItemExtractionScrollDialog::FUN_140e4b340()
 
 // @0x140e4b380
 // MS2-FUNCTIONAL: written from the decompile; temporaries / frame slots not tuned
-void UIItemExtractionScrollDialog::FUN_140e4b380()
+void UIItemExtractionScrollDialog::OnOk()
 {
     MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nTargetUid);
     if (spItem.IsNull())

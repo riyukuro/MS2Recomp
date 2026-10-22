@@ -25,7 +25,7 @@ public:
     int FUN_1419299e0();                                        // m_178: the measurement runs
     void FUN_141929a00(__int64 nDamage, int nType);             // add damage
     void FUN_141929a60(int nDelay, int nDuration);              // OnStart: arm the measurement (seconds)
-    void FUN_141929b00();                                       // OnStop
+    void OnStop();                                       // OnStop
     void FUN_141929b70(int bStart);                             // tell the movie "onStart" / "onStop"
 
 private:

@@ -71,11 +71,11 @@ public:
     void FUN_1419c0440(ASData* pData);                                 // 0x1419c0440
     void SendRequestItemEnchantMode6(unsigned __int64 uid);                                 // 0x1419c0c70
     void FUN_1419c0d40(ASData* pData);                                 // 0x1419c0d40
-    void FUN_1419c10e0();                                 // 0x1419c10e0
-    void FUN_1419c11e0();                                 // 0x1419c11e0
+    void OnComplete();                                 // 0x1419c10e0
+    void OnRetry();                                 // 0x1419c11e0
     void FUN_1419c1220(ASData* pData);                                 // 0x1419c1220
-    void FUN_1419c15c0();                                 // 0x1419c15c0
-    void FUN_1419c1630();                                 // 0x1419c1630
+    void OnClickFailStackUp();                                 // 0x1419c15c0
+    void OnClickFailStackDown();                                 // 0x1419c1630
     unsigned __int64 FUN_1419c16a0();                                 // 0x1419c16a0
     void FUN_1419c16c0(unsigned __int64 uid, int flag);                                 // 0x1419c16c0
     void FUN_1419c19d0();                                 // 0x1419c19d0

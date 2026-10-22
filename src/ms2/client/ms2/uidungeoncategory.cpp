@@ -452,7 +452,7 @@ int UIDungeonControlCenter::vfunc_28(const char* szMethod, const Scaleform::GFx:
         }
         return 1;
     } else if (_stricmp("onPartySearch", szMethod) == 0) {
-        FUN_140c0cc00();
+        OnPartySearch();
         return 1;
     } else if (_stricmp("onPartyMatch", szMethod) == 0) {
         SendPartyMode32();
@@ -461,12 +461,12 @@ int UIDungeonControlCenter::vfunc_28(const char* szMethod, const Scaleform::GFx:
         SendPartyMode34();
         return 1;
     } else if (_stricmp("onSetting", szMethod) == 0) {
-        FUN_140c0ca80();
+        OnSetting();
         return 1;
     } else if (_stricmp("onPopupDetail", szMethod) == 0) {
-        FUN_140c0cd80();    // no return: falls through to 0
+        OnPopupDetail();    // no return: falls through to 0
     } else if (_stricmp("onBookmark", szMethod) == 0) {
-        FUN_140c0cd20();
+        OnBookmark();
         return 1;
     } else if (_stricmp("onEnterLobby", szMethod) == 0) {
         ASData args;
@@ -670,7 +670,7 @@ UIDungeonSearchSettingDialog* FUN_140c0dea0(int nUiId)
 }
 
 // @0x140c0ca80
-void UIDungeonControlCenter::FUN_140c0ca80()
+void UIDungeonControlCenter::OnSetting()
 {
     if (m_bookmarks.empty()) {
         RoomVec rooms;
@@ -687,11 +687,11 @@ void UIDungeonControlCenter::FUN_140c0ca80()
 }
 
 // @0x140c0cc00
-void UIDungeonControlCenter::FUN_140c0cc00()
+void UIDungeonControlCenter::OnPartySearch()
 {
     FUN_1403ed2b0()->FUN_141adc750(0x4eda);
 }
-MS2_REPLACE_METHOD(0x140C0CC00, UIDungeonControlCenter, FUN_140c0cc00, 32, 0x23FD8E49);
+MS2_REPLACE_METHOD(0x140C0CC00, UIDungeonControlCenter, OnPartySearch, 32, 0x23FD8E49);
 
 // @0x140c0dd90
 COutputStream& FUN_140c0dd90(COutputStream& out, const std::set<unsigned int>& ids)
@@ -725,7 +725,7 @@ void UIDungeonControlCenter::SendPartyMode34()
 MS2_REPLACE_METHOD(0x140C0CCC0, UIDungeonControlCenter, SendPartyMode34, 87, 0xD11E8DC1);
 
 // @0x140c0cd20
-void UIDungeonControlCenter::FUN_140c0cd20()
+void UIDungeonControlCenter::OnBookmark()
 {
     Unk_DcBookmarkDlg* pDialog = FUN_140961550(0x4ebd);
     if (pDialog != 0) {
@@ -734,14 +734,14 @@ void UIDungeonControlCenter::FUN_140c0cd20()
         FUN_1403ed2b0()->FUN_141adc530(0x4ebd);
     }
 }
-MS2_REPLACE_METHOD(0x140C0CD20, UIDungeonControlCenter, FUN_140c0cd20, 83, 0xF817E2BE);
+MS2_REPLACE_METHOD(0x140C0CD20, UIDungeonControlCenter, OnBookmark, 83, 0xF817E2BE);
 
 // @0x140c0cd80
-void UIDungeonControlCenter::FUN_140c0cd80()
+void UIDungeonControlCenter::OnPopupDetail()
 {
     FUN_1403ed2b0()->FUN_141adc750(0x4f85);
 }
-MS2_REPLACE_METHOD(0x140C0CD80, UIDungeonControlCenter, FUN_140c0cd80, 32, 0xE11816BE);
+MS2_REPLACE_METHOD(0x140C0CD80, UIDungeonControlCenter, OnPopupDetail, 32, 0xE11816BE);
 
 // @0x140c0cdb0
 void UIDungeonControlCenter::FUN_140c0cdb0(int nId)

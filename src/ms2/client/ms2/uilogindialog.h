@@ -30,7 +30,7 @@ public:
     virtual void vfunc_67();                                    // 67 0x1419e1670
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x1419e1860
 
-    void FUN_1419e1040(char bFromPopdown);                      // 0x1419e1040 open the web page (not while the login scene shows a region list)
+    void OnEndPopdown(char bFromPopdown);                      // 0x1419e1040 open the web page (not while the login scene shows a region list)
     void FUN_1419e1160(CInPacket& iPacket);                     // 0x1419e1160 packet 9: send the login request
     void FUN_1419e1570(CInPacket& iPacket);                     // 0x1419e1570 packet 0x134: the answer to "delete account"
     CString FUN_1419e2370();                                    // 0x1419e2370 the typed account id
@@ -43,7 +43,7 @@ public:
     void FUN_1419e27d0();                                       // 0x1419e27d0 enter the failure state
     void FUN_1419e28a0();                                       // 0x1419e28a0 leave it
     int FUN_1419e2900();                                        // 0x1419e2900 the input has the focus
-    void FUN_1419e2920();                                       // 0x1419e2920 connect: hide the dialog through the scene
+    void OnConnect();                                       // 0x1419e2920 connect: hide the dialog through the scene
     bool FUN_1419e21e0(CStringW strMessage);                    // 0x1419e21e0 show the message box (callback FUN_1419e22e0)
     bool FUN_1419e22e0(int nResult, const CMsgBoxData& box);    // 0x1419e22e0 its answer
     bool FUN_1419e2310(int nResult);                            // 0x1419e2310

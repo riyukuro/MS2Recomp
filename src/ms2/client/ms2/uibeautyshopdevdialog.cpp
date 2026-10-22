@@ -505,15 +505,15 @@ int UIBeautyShopDevDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     }
     if (_stricmp("OnClickNew", szMethod) == 0)
     {
-        FUN_141920b80();
+        OnClickNew();
     }
     else if (_stricmp("OnClickAdd", szMethod) == 0)
     {
-        FUN_141920ca0();
+        OnClickAdd();
     }
     else if (_stricmp("OnClickDelete", szMethod) == 0)
     {
-        FUN_141921080();
+        OnClickDelete();
     }
     else
     {
@@ -1116,7 +1116,7 @@ void UIBeautyShopDevDialog::FUN_141920aa0(int nItemId)
 
 // "OnClickNew" (a hat is worn).
 // @0x141920b80
-void UIBeautyShopDevDialog::FUN_141920b80()
+void UIBeautyShopDevDialog::OnClickNew()
 {
     PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (!pPc)
@@ -1127,13 +1127,13 @@ void UIBeautyShopDevDialog::FUN_141920b80()
     MS2Ptr<CItemData> spData(spItem->FUN_1411dc7a0()->FUN_140527840());
     if (spData == 0)
         return;
-    FUN_141920ca0();
+    OnClickAdd();
 }
 
 // "OnClickAdd": store the hat's cap attach point as the item model's cap transform.
 // @0x141920ca0
 // MS2-FUNCTIONAL: argument register shuffle of the model table refresh differs
-void UIBeautyShopDevDialog::FUN_141920ca0()
+void UIBeautyShopDevDialog::OnClickAdd()
 {
     PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (!pPc)
@@ -1171,7 +1171,7 @@ void UIBeautyShopDevDialog::FUN_141920ca0()
 
 // "OnClickDelete" (no action in this build).
 // @0x141921080
-void UIBeautyShopDevDialog::FUN_141921080()
+void UIBeautyShopDevDialog::OnClickDelete()
 {
     PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (!pPc)

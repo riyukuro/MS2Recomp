@@ -116,7 +116,7 @@ int UIRangePreviewDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         return 1;
     }
     if (_stricmp("onClickNpcExtentReload", szMethod) == 0) {
-        FUN_141346e40();
+        OnClickNpcExtentReload();
         return 1;
     }
     return 0;
@@ -138,7 +138,7 @@ void FUN_141346e00(UIRangePreviewDialog* pDialog, ASData* pArgs)
 }
 
 // @0x141346e40
-void UIRangePreviewDialog::FUN_141346e40()
+void UIRangePreviewDialog::OnClickNpcExtentReload()
 {
     FUN_140a7cbe0(FUN_1406d6e90());
     void* pMap = FUN_1403ed2d0()->FUN_141bd36d0();

@@ -385,7 +385,7 @@ int UIMinimapEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     else if (_stricmp("OnScreenShot", szMethod) == 0)
     {
-        FUN_141a545a0();
+        OnScreenShot();
     }
     return 0;
 }
@@ -575,7 +575,7 @@ void UIMinimapEditDialog::FUN_141a540f0(int bShow)
 
 // @0x141a545a0
 // MS2-FUNCTIONAL: temporaries/frame layout differ from the exe
-void UIMinimapEditDialog::FUN_141a545a0()
+void UIMinimapEditDialog::OnScreenShot()
 {
     MS2Ptr<ASMovieClip> spArea = FUN_140ba7930("m_rectarea");
     if (spArea.get() == NULL)

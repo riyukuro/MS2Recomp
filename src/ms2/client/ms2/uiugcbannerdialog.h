@@ -61,11 +61,11 @@ public:
     void FUN_141b358d0();                                       // rebuild the file list
     void FUN_141b359b0();                                       // rebuild the 24 hour rows of the day
     void FUN_141b35b80();                                       // tell the movie the upload directory
-    void FUN_141b35cd0();                                       // open the upload directory
+    void OnOpenFolder();                                       // open the upload directory
     int FUN_141b35d00(int nIndex);                             // preview a file
     int FUN_141b35e10(int nIndex);                             // upload a file
-    int FUN_141b36080();                                       // OnNewDraw: clear the upload
-    int FUN_141b360c0();                                       // OnAddImage: pick an image file
+    int OnNewDraw();                                       // OnNewDraw: clear the upload
+    int OnAddImage();                                       // OnAddImage: pick an image file
     int FUN_141b36140(int nIndex);                              // scroll the list
     int FUN_141b36230(int nHour, bool bPicked);                // pick / drop an hour
     int FUN_141b362b0(int nOffset);                            // move the day

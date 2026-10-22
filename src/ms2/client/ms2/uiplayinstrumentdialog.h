@@ -51,7 +51,7 @@ public:
     void FUN_14100c1e0();                                                   // 0x14100c1e0 UIDialog::vfunc_67
     void FUN_14100c200(int nPage);                                          // 0x14100c200 the play page / score page tab
     void FUN_14100c2c0();                                                   // 0x14100c2c0 the mastery bar
-    int FUN_14100c750();                                                    // 0x14100c750 start the first score
+    int OnPlayNote();                                                    // 0x14100c750 start the first score
     int FUN_14100c890();                                                    // 0x14100c890 the selected tab
     bool FUN_14100c8f0();                                                   // 0x14100c8f0 the score page is shown
     void FUN_14100c910(MS2Ptr<CItem> spItem);                               // 0x14100c910 put a score into a free slot

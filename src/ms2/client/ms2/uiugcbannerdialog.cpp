@@ -363,7 +363,7 @@ int UIUGCBannerDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         return 1;
     if (_stricmp("OnOpenFolder", szMethod) == 0)
     {
-        FUN_141b35cd0();
+        OnOpenFolder();
         return 1;
     }
     if (_stricmp("OnPreview", szMethod) == 0)
@@ -382,12 +382,12 @@ int UIUGCBannerDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     }
     if (_stricmp("OnNewDraw", szMethod) == 0)
     {
-        FUN_141b36080();
+        OnNewDraw();
         return 1;
     }
     if (_stricmp("OnAddImage", szMethod) == 0)
     {
-        FUN_141b360c0();
+        OnAddImage();
         return 1;
     }
     if (_stricmp("onScrollPosition", szMethod) == 0)
@@ -592,7 +592,7 @@ void UIUGCBannerDialog::FUN_141b35b80()
 }
 
 // @0x141b35cd0
-void UIUGCBannerDialog::FUN_141b35cd0()
+void UIUGCBannerDialog::OnOpenFolder()
 {
     FUN_14052d220()->FUN_1418829b0(3);
 }
@@ -653,7 +653,7 @@ int UIUGCBannerDialog::FUN_141b35e10(int nIndex)
 }
 
 // @0x141b36080
-int UIUGCBannerDialog::FUN_141b36080()
+int UIUGCBannerDialog::OnNewDraw()
 {
     if (FUN_14052d220()->FUN_141880fc0() == 0)
         return 0;
@@ -662,7 +662,7 @@ int UIUGCBannerDialog::FUN_141b36080()
 }
 
 // @0x141b360c0
-int UIUGCBannerDialog::FUN_141b360c0()
+int UIUGCBannerDialog::OnAddImage()
 {
     CStringW strDir(L"./");
     int nResult = FUN_14052d220()->FUN_1418810c0(strDir, L"Image Files (*.dds, *.png, *.jpg)");

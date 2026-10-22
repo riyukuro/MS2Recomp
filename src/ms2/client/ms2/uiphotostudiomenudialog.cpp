@@ -93,25 +93,25 @@ int UIPhotoStudioMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         return 1;
     if (_stricmp("OnScreenshot", szMethod) == 0)
     {
-        FUN_140e76130();
+        OnScreenshot();
         return 1;
     }
     else if (_stricmp("OnFreeCamera", szMethod) == 0)
     {
-        FUN_140e76170();
+        OnFreeCamera();
         return 1;
     }
     return 1;
 }
 
 // @0x140e76130
-void UIPhotoStudioMenuDialog::FUN_140e76130()
+void UIPhotoStudioMenuDialog::OnScreenshot()
 {
     CStringW strUrl = FUN_141850100_2(0, 1);
 }
 
 // @0x140e76170
-void UIPhotoStudioMenuDialog::FUN_140e76170()
+void UIPhotoStudioMenuDialog::OnFreeCamera()
 {
     FUN_140e76270(m_bFreeCamera == 0);
 }

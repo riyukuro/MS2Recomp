@@ -1480,7 +1480,7 @@ void UICharacterListDialog::FUN_1418f11c0()
 
 // @0x1418f1260
 // MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
-void UICharacterListDialog::FUN_1418f1260()
+void UICharacterListDialog::OnCreatePC()
 {
     int nCount = FUN_1418f1c20();
     if (nCount < DAT_1439f4a84)
@@ -1634,14 +1634,14 @@ void UICharacterListDialog::FUN_1418f1d00()
             FUN_1418f11c0();
             break;
         case 0x620001c:
-            FUN_1418f1260();
+            OnCreatePC();
             break;
         }
     }
 }
 
 // @0x1418f1d80
-void UICharacterListDialog::FUN_1418f1d80()
+void UICharacterListDialog::OnEndPopdown()
 {
     if (m_1d4 > 0)
     {
@@ -2129,7 +2129,7 @@ bool UICharacterListDialog::SendEventReward(int nResult, const CMsgBoxData& box)
 
 // @0x1418f0140
 // MS2-FUNCTIONAL: iterator / temp shape of the event list loop differs
-void UICharacterListDialog::FUN_1418f0140()
+void UICharacterListDialog::OnClickBurningLevelupDescBtn()
 {
     BurnEvents events;
     FUN_140302b00()->FUN_1403ed080()->FUN_140428300(&events);
@@ -2258,7 +2258,7 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     }
     if (_stricmp("OnCreatePC", szMethod) == 0)
     {
-        FUN_1418f1260();
+        OnCreatePC();
         return 1;
     }
     if (_stricmp("OnDeletePC", szMethod) == 0)
@@ -2430,7 +2430,7 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         }
         if (_stricmp("OnEndPopdown", szMethod) == 0)
         {
-            FUN_1418f1d80();
+            OnEndPopdown();
             return 1;
         }
         if (_stricmp("onClickRegionList", szMethod) == 0)
@@ -2440,7 +2440,7 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         }
         if (_stricmp("onClickBurningLevelupDescBtn", szMethod) == 0)
         {
-            FUN_1418f0140();
+            OnClickBurningLevelupDescBtn();
             return 1;
         }
         if (_stricmp("onClickDeleteAccount", szMethod) == 0)

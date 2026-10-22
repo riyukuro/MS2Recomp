@@ -159,7 +159,7 @@ public:
     void FUN_140eee160(int nCubeType, unsigned int nMainCategory);
     int FUN_140eee630();
     void FUN_140eeea80(int n);
-    void FUN_140eef140();
+    void OnDestroyCubeItem();
     void FUN_140eef510(const CStringW& str);
     void FUN_140eef560(int n);
     void FUN_140eef670(int n);

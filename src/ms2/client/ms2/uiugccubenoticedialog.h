@@ -28,7 +28,7 @@ public:
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140fafb60 "OnApply"
     virtual int vfunc_48();                                         // 48 0x140fb0060 UI type id
     void FUN_140faf900(CInPacket& packet);                          // 0x140faf900 open with the cube's data
-    void FUN_140fafbd0();                                           // 0x140fafbd0 apply: check the message, send it, close
+    void OnApply();                                           // 0x140fafbd0 apply: check the message, send it, close
     Unk_NcInputRef FUN_140e35bd0(const CString& strName);           // 0x140e35bd0 the child input by name (a shared GetChild instance)
 private:
     MS2_LAYOUT_FRIEND;

@@ -287,33 +287,33 @@ int UIHomeMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) == 0)
     {
         if (_stricmp("ToggleCraftMode", szMethod) == 0)
-            FUN_140c29b90();
+            ToggleCraftMode();
         else if (_stricmp("ToggleDesignMode", szMethod) == 0)
             FUN_140c29710();
         else if (_stricmp("ToggleBlueprintMode", szMethod) == 0)
             FUN_140c29980();
         else if (_stricmp("OnScreenshot", szMethod) == 0)
-            FUN_140c29c70();
+            OnScreenshot();
         else if (_stricmp("OnFreeCamera", szMethod) == 0)
-            FUN_140c29eb0();
+            OnFreeCamera();
         else if (_stricmp("OnDesignSave", szMethod) == 0)
-            FUN_140c29ef0();
+            OnDesignSave();
         else if (_stricmp("OnDesignLoad", szMethod) == 0)
-            FUN_140c2a0e0();
+            OnDesignLoad();
         else if (_stricmp("OnBlueprintSave", szMethod) == 0)
-            FUN_140c2a120();
+            OnBlueprintSave();
         else if (_stricmp("OnHomePriority", szMethod) == 0)
-            FUN_140c2a370();
+            OnHomePriority();
         else if (_stricmp("OnHomeAttribute", szMethod) == 0)
-            FUN_140c2a410();
+            OnHomeAttribute();
         else if (_stricmp("OnHomeDemolish", szMethod) == 0)
-            FUN_140c2a4b0();
+            OnHomeDemolish();
         else if (_stricmp("OnBlueprintImport", szMethod) == 0)
-            FUN_140c2a320();
+            OnBlueprintImport();
         else if (_stricmp("OnBlueprintExport", szMethod) == 0)
-            FUN_140c2a6a0();
+            OnBlueprintExport();
         else if (_stricmp("OnBlueprintShop", szMethod) == 0)
-            FUN_140c2a720();
+            OnBlueprintShop();
     }
     return 1;
 }
@@ -398,11 +398,11 @@ void UIHomeMenuDialog::FUN_140c29980()
 // @0x140c29b70
 void UIHomeMenuDialog::FUN_140c29b70()
 {
-    FUN_140c2a370();
+    OnHomePriority();
 }
 
 // @0x140c29b90
-void UIHomeMenuDialog::FUN_140c29b90()
+void UIHomeMenuDialog::ToggleCraftMode()
 {
     Unk_HmPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPc == 0)
@@ -423,7 +423,7 @@ void UIHomeMenuDialog::FUN_140c29b90()
 
 // @0x140c29c70
 // MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
-void UIHomeMenuDialog::FUN_140c29c70()
+void UIHomeMenuDialog::OnScreenshot()
 {
     if (FUN_140d86260()->vfunc_2() == 1)
     {
@@ -442,14 +442,14 @@ void UIHomeMenuDialog::FUN_140c29c70()
 }
 
 // @0x140c29eb0
-void UIHomeMenuDialog::FUN_140c29eb0()
+void UIHomeMenuDialog::OnFreeCamera()
 {
     FUN_140c2afd0(m_bFreeCamera == 0);
 }
 
 // @0x140c29ef0
 // MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
-void UIHomeMenuDialog::FUN_140c29ef0()
+void UIHomeMenuDialog::OnDesignSave()
 {
     UIHomeSaveSlotDialog* pDialog = FUN_140c2b5c0(0x4f27);
     if (pDialog != 0)
@@ -470,7 +470,7 @@ void UIHomeMenuDialog::FUN_140c29ef0()
 }
 
 // @0x140c2a0e0
-void UIHomeMenuDialog::FUN_140c2a0e0()
+void UIHomeMenuDialog::OnDesignLoad()
 {
     UIHomeSaveSlotDialog* pDialog = FUN_140c2b5c0(0x4f27);
     if (pDialog != 0)
@@ -479,7 +479,7 @@ void UIHomeMenuDialog::FUN_140c2a0e0()
 
 // @0x140c2a120
 // MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
-void UIHomeMenuDialog::FUN_140c2a120()
+void UIHomeMenuDialog::OnBlueprintSave()
 {
     UIHomeSaveSlotDialog* pDialog;
     if (FUN_141902580(1) && (pDialog = FUN_140c2b5c0(0x4f27)) != 0)
@@ -500,7 +500,7 @@ void UIHomeMenuDialog::FUN_140c2a120()
 }
 
 // @0x140c2a320
-void UIHomeMenuDialog::FUN_140c2a320()
+void UIHomeMenuDialog::OnBlueprintImport()
 {
     if (!FUN_141902580(1))
         return;
@@ -510,7 +510,7 @@ void UIHomeMenuDialog::FUN_140c2a320()
 }
 
 // @0x140c2a370
-void UIHomeMenuDialog::FUN_140c2a370()
+void UIHomeMenuDialog::OnHomePriority()
 {
     int nOwner = FUN_1409670e0()->FUN_1410d5640();
     int nDesign = FUN_1409670e0()->FUN_1410c3600(1);
@@ -522,7 +522,7 @@ void UIHomeMenuDialog::FUN_140c2a370()
 }
 
 // @0x140c2a410
-void UIHomeMenuDialog::FUN_140c2a410()
+void UIHomeMenuDialog::OnHomeAttribute()
 {
     int nOwner = FUN_1409670e0()->FUN_1410d5640();
     int nDesign = FUN_1409670e0()->FUN_1410c3600(1);
@@ -534,7 +534,7 @@ void UIHomeMenuDialog::FUN_140c2a410()
 }
 
 // @0x140c2a4b0
-void UIHomeMenuDialog::FUN_140c2a4b0()
+void UIHomeMenuDialog::OnHomeDemolish()
 {
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0x1f, 0x6e2, 0, CStringW(L""));
     if (spBox.get() != 0)
@@ -549,7 +549,7 @@ void UIHomeMenuDialog::FUN_140c2a4b0()
 }
 
 // @0x140c2a6a0
-void UIHomeMenuDialog::FUN_140c2a6a0()
+void UIHomeMenuDialog::OnBlueprintExport()
 {
     if (!FUN_141902580(1))
         return;
@@ -560,7 +560,7 @@ void UIHomeMenuDialog::FUN_140c2a6a0()
 }
 
 // @0x140c2a720
-void UIHomeMenuDialog::FUN_140c2a720()
+void UIHomeMenuDialog::OnBlueprintShop()
 {
     if (!FUN_1419025f0(1))
         return;
@@ -830,18 +830,18 @@ MS2_REPLACE_METHOD(0x140C296E0, UIHomeMenuDialog, FUN_140c296e0, 33, 0xE4BD1406)
 MS2_REPLACE_METHOD(0x140C29710, UIHomeMenuDialog, FUN_140c29710, 618, 0x8B85C660);
 MS2_REPLACE_METHOD(0x140C29980, UIHomeMenuDialog, FUN_140c29980, 488, 0x5ECA9653);
 MS2_REPLACE_METHOD(0x140C29B70, UIHomeMenuDialog, FUN_140c29b70, 24, 0x413B21C4);
-MS2_REPLACE_METHOD(0x140C29B90, UIHomeMenuDialog, FUN_140c29b90, 218, 0xA1886146);
-MS2_REPLACE_METHOD(0x140C29C70, UIHomeMenuDialog, FUN_140c29c70, 556, 0x193700AE);
-MS2_REPLACE_METHOD(0x140C29EB0, UIHomeMenuDialog, FUN_140c29eb0, 57, 0x420FC186);
-MS2_REPLACE_METHOD(0x140C29EF0, UIHomeMenuDialog, FUN_140c29ef0, 483, 0x703B3C0F);
-MS2_REPLACE_METHOD(0x140C2A0E0, UIHomeMenuDialog, FUN_140c2a0e0, 47, 0x7B159DEE);
-MS2_REPLACE_METHOD(0x140C2A120, UIHomeMenuDialog, FUN_140c2a120, 502, 0x096C4D7E);
-MS2_REPLACE_METHOD(0x140C2A320, UIHomeMenuDialog, FUN_140c2a320, 63, 0x0E56A387);
-MS2_REPLACE_METHOD(0x140C2A370, UIHomeMenuDialog, FUN_140c2a370, 146, 0xC79F8E23);
-MS2_REPLACE_METHOD(0x140C2A410, UIHomeMenuDialog, FUN_140c2a410, 146, 0x470E4BF0);
-MS2_REPLACE_METHOD(0x140C2A4B0, UIHomeMenuDialog, FUN_140c2a4b0, 483, 0xA3344874);
-MS2_REPLACE_METHOD(0x140C2A6A0, UIHomeMenuDialog, FUN_140c2a6a0, 120, 0x5611FBB3);
-MS2_REPLACE_METHOD(0x140C2A720, UIHomeMenuDialog, FUN_140c2a720, 84, 0x8248B6DD);
+MS2_REPLACE_METHOD(0x140C29B90, UIHomeMenuDialog, ToggleCraftMode, 218, 0xA1886146);
+MS2_REPLACE_METHOD(0x140C29C70, UIHomeMenuDialog, OnScreenshot, 556, 0x193700AE);
+MS2_REPLACE_METHOD(0x140C29EB0, UIHomeMenuDialog, OnFreeCamera, 57, 0x420FC186);
+MS2_REPLACE_METHOD(0x140C29EF0, UIHomeMenuDialog, OnDesignSave, 483, 0x703B3C0F);
+MS2_REPLACE_METHOD(0x140C2A0E0, UIHomeMenuDialog, OnDesignLoad, 47, 0x7B159DEE);
+MS2_REPLACE_METHOD(0x140C2A120, UIHomeMenuDialog, OnBlueprintSave, 502, 0x096C4D7E);
+MS2_REPLACE_METHOD(0x140C2A320, UIHomeMenuDialog, OnBlueprintImport, 63, 0x0E56A387);
+MS2_REPLACE_METHOD(0x140C2A370, UIHomeMenuDialog, OnHomePriority, 146, 0xC79F8E23);
+MS2_REPLACE_METHOD(0x140C2A410, UIHomeMenuDialog, OnHomeAttribute, 146, 0x470E4BF0);
+MS2_REPLACE_METHOD(0x140C2A4B0, UIHomeMenuDialog, OnHomeDemolish, 483, 0xA3344874);
+MS2_REPLACE_METHOD(0x140C2A6A0, UIHomeMenuDialog, OnBlueprintExport, 120, 0x5611FBB3);
+MS2_REPLACE_METHOD(0x140C2A720, UIHomeMenuDialog, OnBlueprintShop, 84, 0x8248B6DD);
 MS2_REPLACE_METHOD(0x140C2A780, UIHomeMenuDialog, FUN_140c2a780, 1536, 0xE9239341);
 MS2_REPLACE_METHOD(0x140C2AD90, UIHomeMenuDialog, FUN_140c2ad90, 463, 0x80C9D8EE);
 MS2_REPLACE_METHOD(0x140C2AF70, UIHomeMenuDialog, FUN_140c2af70, 75, 0xBA03C06A);

@@ -926,7 +926,7 @@ int UIMicroGameRps::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
         return 1;
     }
     if (_stricmp(szMethod, "onRandChat") == 0) {
-        FUN_140e666a0();
+        OnRandChat();
         return 1;
     }
     return 0;
@@ -999,7 +999,7 @@ void UIMicroGameRps::SendMicrogame()
 MS2_REPLACE_METHOD(0x140E66600, UIMicroGameRps, SendMicrogame, 154, 0xD9F68C75);
 
 // @0x140e666a0
-void UIMicroGameRps::FUN_140e666a0()
+void UIMicroGameRps::OnRandChat()
 {
     Unk_141bd0cc0* pState = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pState == NULL)
@@ -1012,7 +1012,7 @@ void UIMicroGameRps::FUN_140e666a0()
     p->FUN_140b877c0();
 }
 
-MS2_REPLACE_METHOD(0x140E666A0, UIMicroGameRps, FUN_140e666a0, 94, 0x948CB5A7);
+MS2_REPLACE_METHOD(0x140E666A0, UIMicroGameRps, OnRandChat, 94, 0x948CB5A7);
 
 // @0x140e66710
 int UIMicroGameRps::FUN_140e66710()

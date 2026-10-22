@@ -255,7 +255,7 @@ void UISceneLogin::vfunc_61(MS2Ptr<AScript> spBackground, const Scaleform::GFx::
     {
         CString strEvent = kData.FUN_1422b8d30();
         if (_stricmp("showTitle", strEvent) == 0)
-            FUN_141acf5a0();
+            ShowTitle();
         else if (_stricmp("endShowTitle", strEvent) == 0)
             FUN_141acf700(0x4000);
     }
@@ -304,7 +304,7 @@ int UISceneLogin::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     }
     else if (_stricmp("OnEndPopdown", szMethod) == 0)
     {
-        FUN_141acfcc0();
+        OnEndPopdown();
         return 1;
     }
     else
@@ -349,7 +349,7 @@ void UISceneLogin::FUN_141acf470()
 }
 
 // @0x141acf5a0
-void UISceneLogin::FUN_141acf5a0()
+void UISceneLogin::ShowTitle()
 {
     if (FUN_140ba28d0(&m_30, 0) != 0)
         return;
@@ -382,7 +382,7 @@ void UISceneLogin::FUN_141acf700(unsigned int nBits)
 // MS2-FUNCTIONAL: the exe passes the label string through a text-conversion temp with a different EH layout
 void UISceneLogin::FUN_141acf7c0()
 {
-    FUN_141acf5a0();
+    ShowTitle();
     GFxMovieBackground* pBg = FUN_140e85550(&DAT_143ad6328, FUN_1422b01a0(FUN_14025e7a0(), 4));
     if (pBg != 0)
     {
@@ -490,7 +490,7 @@ void UISceneLogin::FUN_141acfc70()
 }
 
 // @0x141acfcc0
-void UISceneLogin::FUN_141acfcc0()
+void UISceneLogin::OnEndPopdown()
 {
     if (FUN_141acfb40() == 0)
         FUN_140714f90()->FUN_1415382c0();
@@ -563,7 +563,7 @@ MS2_REPLACE_METHOD(0x141acf2f0, UISceneLogin, vfunc_28, 251, 0x35779963);
 MS2_REPLACE_METHOD(0x141acf400, UISceneLogin, vfunc_64, 24, 0x4DF0349F);
 MS2_REPLACE_METHOD(0x141acf420, UISceneLogin, FUN_141acf420, 61, 0xB3C47B1E);
 MS2_REPLACE_METHOD(0x141acf470, UISceneLogin, FUN_141acf470, 286, 0xFBEC704E);
-MS2_REPLACE_METHOD(0x141acf5a0, UISceneLogin, FUN_141acf5a0, 335, 0xFCF5BEF1);
+MS2_REPLACE_METHOD(0x141acf5a0, UISceneLogin, ShowTitle, 335, 0xFCF5BEF1);
 MS2_REPLACE_METHOD(0x141acf700, UISceneLogin, FUN_141acf700, 171, 0x5178BD1F);
 MS2_REPLACE_METHOD(0x141acf7c0, UISceneLogin, FUN_141acf7c0, 154, 0x9E2EF492);
 MS2_REPLACE_METHOD(0x141acf860, UISceneLogin, FUN_141acf860, 32, 0x178088C3);
@@ -574,7 +574,7 @@ MS2_REPLACE_METHOD(0x141acfad0, UISceneLogin, FUN_141acfad0, 102, 0x147671D1);
 MS2_REPLACE_METHOD(0x141acfb40, UISceneLogin, FUN_141acfb40, 76, 0x17418F40);
 MS2_REPLACE_METHOD(0x141acfba0, UISceneLogin, FUN_141acfba0, 201, 0xAAD5CC77);
 MS2_REPLACE_METHOD(0x141acfc70, UISceneLogin, FUN_141acfc70, 70, 0x59DCB110);
-MS2_REPLACE_METHOD(0x141acfcc0, UISceneLogin, FUN_141acfcc0, 44, 0x52EDAD54);
+MS2_REPLACE_METHOD(0x141acfcc0, UISceneLogin, OnEndPopdown, 44, 0x52EDAD54);
 MS2_REPLACE(0x141acfd00, FUN_141acfd00, 82, 0x4582EE3C);
 MS2_REPLACE(0x141acfe40, FUN_141acfe40, 172, 0x3D194A28);
 MS2_REPLACE(0x141acfef0, FUN_141acfef0, 172, 0xB1B9987A);

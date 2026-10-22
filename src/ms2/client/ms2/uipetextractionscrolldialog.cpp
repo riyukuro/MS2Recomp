@@ -329,7 +329,7 @@ int UIPetExtractionScrollDialog::vfunc_28(const char* szMethod, const Scaleform:
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
     if (_stricmp(szMethod, "onOk") == 0)
-        FUN_140e72920();
+        OnOk();
     return 0;
 }
 
@@ -423,7 +423,7 @@ void UIPetExtractionScrollDialog::FUN_140e728e0()
 }
 
 // @0x140e72920
-void UIPetExtractionScrollDialog::FUN_140e72920()
+void UIPetExtractionScrollDialog::OnOk()
 {
     MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nTargetUid);
     if (spItem == 0)

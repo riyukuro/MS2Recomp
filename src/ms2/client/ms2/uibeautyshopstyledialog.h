@@ -214,7 +214,7 @@ public:
     Unk_BSFee* FUN_140f08190(unsigned* pPrice);
     int FUN_140f08220();
     void FUN_140f082d0();
-    void FUN_140f08470();
+    void OnClickReset();
     int FUN_140f084e0(AScript& out, unsigned* pPrice);
     void FUN_140f08950(int bPreview);
     void FUN_140f08a30(int bPreview);

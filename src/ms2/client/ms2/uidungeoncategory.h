@@ -87,12 +87,12 @@ public:
     void FUN_140c0c600(int nTab);                               // show a main tab
     void FUN_140c0c660(int bUpdate);                            // main tab 0: build or update the sub tab
     void FUN_140c0c8e0();                                       // main tab 1
-    void FUN_140c0ca80();                                       // open the search setting dialog
-    void FUN_140c0cc00();                                       // toggle the party search dialog
+    void OnSetting();                                       // open the search setting dialog
+    void OnPartySearch();                                       // toggle the party search dialog
     void SendPartyMode32();                                       // request a party match
     void SendPartyMode34();                                       // cancel the party match
-    void FUN_140c0cd20();                                       // bookmark list
-    void FUN_140c0cd80();                                       // toggle the detail popup
+    void OnBookmark();                                       // bookmark list
+    void OnPopupDetail();                                       // toggle the detail popup
     void FUN_140c0cdb0(int nId);                                // bookmark a dungeon
     void SendRoomDungeon(int nGroupType);                         // enter a lobby
     void FUN_140c0cea0(CInPacket& packet);                      // packet 0x53 (party match)

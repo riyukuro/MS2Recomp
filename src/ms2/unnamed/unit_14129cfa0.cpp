@@ -296,7 +296,7 @@ int UIItemRemakeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         return 1;
     }
     if (_stricmp("onEndRemakeAni", szMethod) == 0) {
-        FUN_14129f6f0();
+        OnEndRemakeAni();
         return 1;
     }
     if (_stricmp("onClickApply", szMethod) == 0) {
@@ -608,7 +608,7 @@ void UIItemRemakeOptionDialog::FUN_14129f360(ASData* pData)
 }
 
 // @0x14129f6f0
-void UIItemRemakeOptionDialog::FUN_14129f6f0()
+void UIItemRemakeOptionDialog::OnEndRemakeAni()
 {
     if (m_enchantAni == 0)
         return;

@@ -37,7 +37,7 @@ public:
     bool FUN_141b14510(int nResult, const CMsgBoxData& data);   // answer of the leave box
     void FUN_141b14560(int nPage);                      // open the option dialog at a page
     void FUN_141b145c0();
-    void FUN_141b14600();                               // back to the character select
+    void OnSelectCharacter();                               // back to the character select
     void FUN_141b14630();                               // select the current channel in the list
     CStringW FUN_141b146a0(int nMapType);               // the leave button text
     CStringW FUN_141b149d0(int nMapType);               // the leave box text

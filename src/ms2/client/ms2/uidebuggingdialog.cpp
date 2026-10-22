@@ -205,7 +205,7 @@ int UIDebuggingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         return 1;
     if (_stricmp("onClickChooseNPC", szMethod) == 0)
     {
-        FUN_141286130();
+        OnClickChooseNPC();
         return 1;
     }
     return 0;
@@ -379,7 +379,7 @@ void UIDebuggingDialog::FUN_1412860c0()
 }
 
 // @0x141286130
-void UIDebuggingDialog::FUN_141286130()
+void UIDebuggingDialog::OnClickChooseNPC()
 {
     m_bPicking = 1;
     m_timer.FUN_140868750(500);

@@ -26,7 +26,7 @@ public:
                                                                 // 28 0x141346c40
     virtual int vfunc_48();                                     // 48 0x1413470d0
 
-    void FUN_141346e40();                                       // re-apply every npc's extent from its data record
+    void OnClickNpcExtentReload();                                       // re-apply every npc's extent from its data record
 };
 MS2_CHECK_SIZE(UIRangePreviewDialog, 0x178);
 

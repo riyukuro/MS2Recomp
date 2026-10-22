@@ -210,8 +210,8 @@ public:
 
     void FUN_14135d2d0(const NiFixedString& kName, float fValue);
     void FUN_14135d310(bool bOn);
-    void FUN_14135d380();
-    void FUN_14135d3a0();
+    void OnSelectRadioMotionBlurAll();
+    void OnSelectRadioMotionBlurCharacter();
     void FUN_14135d410(bool bOn);
     void FUN_14135d440(bool bOn);
     void FUN_14135d490(bool bOn);

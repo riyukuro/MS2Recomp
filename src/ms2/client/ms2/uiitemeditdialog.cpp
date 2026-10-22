@@ -312,7 +312,7 @@ void UIItemEditDialog::vfunc_79(void* p)
             {
                 FUN_140d73aa0(FUN_140f09f90(0x272, nResult), 0, static_cast<IMessageListener*>(this),
                               CStringW(L"errorEdit"));
-                FUN_1419bd990();
+                OnReset();
             }
         }
     }
@@ -325,12 +325,12 @@ int UIItemEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     {
         if (_stricmp("OnSave", szMethod) == 0)
         {
-            FUN_1419bd920();
+            OnSave();
             return 1;
         }
         if (_stricmp("OnReset", szMethod) == 0)
         {
-            FUN_1419bd990();
+            OnReset();
             return 1;
         }
         if (_stricmp("OnClickClose", szMethod) == 0)
@@ -493,7 +493,7 @@ bool UIItemEditDialog::FUN_1419bd860()
 }
 
 // @0x1419bd920
-void UIItemEditDialog::FUN_1419bd920()
+void UIItemEditDialog::OnSave()
 {
     if (m_198.get())
         m_198->FUN_140cd2280(6);
@@ -502,7 +502,7 @@ void UIItemEditDialog::FUN_1419bd920()
 }
 
 // @0x1419bd990
-void UIItemEditDialog::FUN_1419bd990()
+void UIItemEditDialog::OnReset()
 {
     if (m_198.get())
         m_198->FUN_140cd22f0(6);

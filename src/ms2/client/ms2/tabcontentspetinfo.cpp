@@ -668,7 +668,7 @@ int PetInfoBasic::vfunc_6(const char* szEvent, const Scaleform::GFx::Value* pArg
     ASData data;
     if (_stricmp("OnChangeName", szEvent) == 0)
     {
-        FUN_140cb9900();
+        OnChangeName();
         return 1;
     }
     return 0;
@@ -677,7 +677,7 @@ MS2_REPLACE_METHOD(0x140cb9870, PetInfoBasic, vfunc_6, 138, 0x1274197A);
 
 // @0x140cb9900
 // MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
-void PetInfoBasic::FUN_140cb9900()
+void PetInfoBasic::OnChangeName()
 {
     UIItemAutoUseOptionDialog* pAuto = FUN_140cbe1c0(0x4ef4);
     if (pAuto == 0 || pAuto->vfunc_55() != 0)
@@ -696,7 +696,7 @@ void PetInfoBasic::FUN_140cb9900()
         FUN_140d86260()->vfunc_43(2, 0, 1000);
     }
 }
-MS2_REPLACE_METHOD(0x140cb9900, PetInfoBasic, FUN_140cb9900, 651, 0x675FFFB5);
+MS2_REPLACE_METHOD(0x140cb9900, PetInfoBasic, OnChangeName, 651, 0x675FFFB5);
 
 // @0x140cb9ba0
 // MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
@@ -946,12 +946,12 @@ int PetInfoSkill::vfunc_6(const char* szEvent, const Scaleform::GFx::Value* pArg
 {
     if (_stricmp("OnAutoItemUse", szEvent) == 0)
     {
-        FUN_140cbb720();
+        OnAutoItemUse();
         return 1;
     }
     else if (_stricmp("OnAutoItemPick", szEvent) == 0)
     {
-        FUN_140cbb750();
+        OnAutoItemPick();
         return 1;
     }
     return 0;
@@ -1019,14 +1019,14 @@ void PetInfoSkill::FUN_140cbb060(MS2Ptr<Unk_StatList> list)
 }
 
 // @0x140cbb720
-void PetInfoSkill::FUN_140cbb720()
+void PetInfoSkill::OnAutoItemUse()
 {
     FUN_1403ed2b0()->FUN_141adc530(0x4ef4);
 }
-MS2_REPLACE_METHOD(0x140cbb720, PetInfoSkill, FUN_140cbb720, 32, 0x17AA8321);
+MS2_REPLACE_METHOD(0x140cbb720, PetInfoSkill, OnAutoItemUse, 32, 0x17AA8321);
 
 // @0x140cbb750
-void PetInfoSkill::FUN_140cbb750()
+void PetInfoSkill::OnAutoItemPick()
 {
     UIItemAutoUseOptionDialog* pAuto = FUN_140cbe1c0(0x4ef4);
     if (pAuto != 0 && pAuto->vfunc_55() == 0)
@@ -1038,7 +1038,7 @@ void PetInfoSkill::FUN_140cbb750()
         FUN_1403ed2b0()->FUN_141adc530(0x4e6c);
     }
 }
-MS2_REPLACE_METHOD(0x140cbb750, PetInfoSkill, FUN_140cbb750, 115, 0xF0ADC00D);
+MS2_REPLACE_METHOD(0x140cbb750, PetInfoSkill, OnAutoItemPick, 115, 0xF0ADC00D);
 
 // ---- PetInfoStat ----
 

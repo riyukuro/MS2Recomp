@@ -30,7 +30,7 @@ public:
     MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);  // 0x140bb4cf0 text field child lookup (a UIDialog member)
     void FUN_141286050(const CString& strName, const CStringW& strText);   // 0x141286050 set a text field
     void FUN_1412860c0();                                       // 0x1412860c0 forget the target and drop its marker effect
-    void FUN_141286130();                                       // 0x141286130 arm the pick timer (500 ms)
+    void OnClickChooseNPC();                                       // 0x141286130 arm the pick timer (500 ms)
 private:
     MS2_LAYOUT_FRIEND;
     int m_bPicking;                                             // +0x178 waiting for a click on an npc

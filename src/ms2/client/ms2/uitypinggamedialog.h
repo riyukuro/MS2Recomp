@@ -34,12 +34,12 @@ public:
 
     void FUN_140ee57b0(int nCount, int nLimitMs);                   // set the sequence length and the time limit
     void FUN_140ee5a20();                                           // draw a new sequence and show it ("setData")
-    void FUN_140ee5ba0();                                           // "OnShowNumberComplete": start the countdown
+    void OnShowNumberComplete();                                           // "OnShowNumberComplete": start the countdown
     void FUN_140ee5c10();                                           // check the key presses of this frame
     void FUN_140ee5fc0(bool bOn);                                   // the key hook modifier
     bool FUN_140ee5ff0(unsigned nDigit);                            // one of the two keys of the digit is pressed
-    void FUN_140ee6090();                                           // report success to the server, close
-    void FUN_140ee6110();                                           // report failure to the server, close
+    void SuccessGameProgress();                                           // report success to the server, close
+    void FailGameProgress();                                           // report failure to the server, close
     void FUN_140ee6190(unsigned nLimitMs);                               // start / stop the countdown dialog
     void FUN_140ee6240();                                           // close the countdown dialog
 

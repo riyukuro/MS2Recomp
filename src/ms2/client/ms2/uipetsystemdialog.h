@@ -53,7 +53,7 @@ public:
     void FUN_140e74640(int nEvent);                             // forward an event to the page (while open)
     MS2Ptr<PetSystemTabContents> FUN_140e746c0();               // the shown page
     int FUN_140e74790();                                        // the index of the collect tab (forwarding m_180)
-    void FUN_140e74910();                                       // leave the shown page
+    void OnRemoveTab();                                       // leave the shown page
     void FUN_140e74970(CString strName, const Scaleform::GFx::Value& root);    // show a tab by frame name
 
 protected:

@@ -67,8 +67,8 @@ public:
     void FUN_14199a3f0(__int64 nItemUid);                       // refresh the slot of an item
     void FUN_14199a4b0(const Scaleform::GFx::FunctionHandler::Params& params);   // tab changed
     void FUN_14199a620(const Scaleform::GFx::FunctionHandler::Params& params);   // search text changed: the candidates
-    void FUN_14199a910();                                       // open the bank
-    void FUN_14199aaa0();                                       // toggle the enchant dialog
+    void OnClickOpenBank();                                       // open the bank
+    void OnClickItemEnchant();                                       // toggle the enchant dialog
     MS2Ptr<ASButtonBar> FUN_14199aad0();                        // the tab bar
     int FUN_14199ab20(CString strName);                         // the index of a tab name (-1: none)
     CStringW FUN_14199abe0();                                   // the search text

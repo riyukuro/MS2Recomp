@@ -119,7 +119,7 @@ public:
     virtual void vfunc_72();                                    // 72 0x141a7c210
 
     int FUN_141a7b1a0(ASObj& obj, CPartyMember* pMember, unsigned int nRank);    // fill one meter row
-    void FUN_141a7b3c0();                                       // title bar and sort direction
+    void OnTextToggle();                                       // title bar and sort direction
     void FUN_141a7b540();                                       // rebuild the ranking
     void FUN_141a7bb70();                                       // "RemoveMember"
 

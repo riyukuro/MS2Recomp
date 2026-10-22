@@ -243,11 +243,11 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs))
         return 1;
     if (_stricmp("onClickReloadNpcExtent", szMethod) == 0) {
-        FUN_141292d10();
+        OnClickReloadNpcExtent();
         return 1;
     }
     else if (_stricmp("onClickClearDebugInfo", szMethod) == 0) {
-        FUN_141292f20();
+        OnClickClearDebugInfo();
         return 1;
     }
     else if (_stricmp("onClickResetGameSpeed", szMethod) == 0) {
@@ -353,7 +353,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
 }
 
 // @0x141292d10
-void UIDevelopDialog::FUN_141292d10()
+void UIDevelopDialog::OnClickReloadNpcExtent()
 {
     FUN_140a7cbe0(FUN_1406d6e90());
     void* pMap = FUN_1403ed2d0()->FUN_141bd36d0();
@@ -384,7 +384,7 @@ Unk_DevDebugInfo* FUN_141293c30()
 }
 
 // @0x141292f20
-void UIDevelopDialog::FUN_141292f20()
+void UIDevelopDialog::OnClickClearDebugInfo()
 {
     FUN_14116cd50(FUN_141293c30());
 }
@@ -535,8 +535,8 @@ MS2_REPLACE_METHOD(0x141292190, UIDevelopDialog, vfunc_1, 61, 0x4FD270B2);
 MS2_REPLACE_METHOD(0x141292CA0, UIDevelopDialog, FUN_141292ca0, 103, 0xBC29E5C6);
 MS2_REPLACE_METHOD(0x1412921E0, UIDevelopDialog, OnLoadComplete, 766, 0xD1127567);
 MS2_REPLACE_METHOD(0x1412924F0, UIDevelopDialog, vfunc_28, 1880, 0x9BE36AD3);
-MS2_REPLACE_METHOD(0x141292D10, UIDevelopDialog, FUN_141292d10, 516, 0x628568E3);
-MS2_REPLACE_METHOD(0x141292F20, UIDevelopDialog, FUN_141292f20, 27, 0x392AD279);
+MS2_REPLACE_METHOD(0x141292D10, UIDevelopDialog, OnClickReloadNpcExtent, 516, 0x628568E3);
+MS2_REPLACE_METHOD(0x141292F20, UIDevelopDialog, OnClickClearDebugInfo, 27, 0x392AD279);
 MS2_REPLACE_METHOD(0x141292F50, UIDevelopDialog, FUN_141292f50, 177, 0xB6B56AC3);
 MS2_REPLACE_METHOD(0x141293010, UIDevelopDialog, FUN_141293010, 308, 0x29055F34);
 MS2_REPLACE_METHOD(0x141293150, UIDevelopDialog, FUN_141293150, 36, 0x43D1CDB9);

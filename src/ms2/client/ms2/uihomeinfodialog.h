@@ -40,12 +40,12 @@ public:
     CStringW FUN_1412c7140();                                   // the address text
     int FUN_1412c72d0();                                        // fill the whole panel; 1 = shown
     void FUN_1412c7600();                                       // leave the home
-    void FUN_1412c7630();                                       // toggle the minimize state
-    void FUN_1412c76e0();                                       // open the notice editor
-    void FUN_1412c7710();                                       // construct mode
-    void FUN_1412c7770();                                       // bank
-    void FUN_1412c77c0();                                       // doctor
-    void FUN_1412c7810();                                       // balance: ask for the amount to move
+    void OnTogglePanel();                                       // toggle the minimize state
+    void OnNoticeModify();                                       // open the notice editor
+    void OnConstruct();                                       // construct mode
+    void OnBank();                                       // bank
+    void OnDoctor();                                       // doctor
+    void OnBalance();                                       // balance: ask for the amount to move
     void SendRequestCubeMode58(CStringW strName);                       // send the "remove user" request
     bool FUN_1412c7aa0(int nResult, const CMsgBoxData& data);
     bool FUN_1412c7af0(int nSlot);                              // save slot action (0 save, 1 load, 2 demolish)

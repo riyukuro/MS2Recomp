@@ -243,10 +243,10 @@ int UIItemEnchantTransformDialog::vfunc_28(const char* szMethod, const Scaleform
         }
         return 1;
     } else if (_stricmp("OnSubmitTransform", szMethod) == 0) {
-        FUN_140c3e820();
+        OnSubmitTransform();
         return 1;
     } else if (_stricmp("OnSubmitRetry", szMethod) == 0) {
-        FUN_140c3ecb0();
+        OnSubmitRetry();
         return 1;
     }
     return 0;
@@ -398,7 +398,7 @@ void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
 
 // MS2-FUNCTIONAL: MS2Ptr temp / copy order and frame size differ
 // @0x140c3e820
-void UIItemEnchantTransformDialog::FUN_140c3e820()
+void UIItemEnchantTransformDialog::OnSubmitTransform()
 {
     if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x54) != 0)
         FUN_141275260(0x2f7, 1, 1);
@@ -442,7 +442,7 @@ void UIItemEnchantTransformDialog::FUN_140c3ead0()
 }
 
 // @0x140c3ecb0
-void UIItemEnchantTransformDialog::FUN_140c3ecb0()
+void UIItemEnchantTransformDialog::OnSubmitRetry()
 {
     m_state = 0;
     m_selected = 0;
@@ -462,7 +462,7 @@ bool UIItemEnchantTransformDialog::FUN_140c3eda0(int nButton, const CMsgBoxData&
         FUN_140c3de50(nSlot);
     }
     else
-        FUN_140c3ecb0();
+        OnSubmitRetry();
     return true;
 }
 // Atexit thunks of this unit's statics (gap2 yd sweep, yd2).

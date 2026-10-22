@@ -84,9 +84,9 @@ public:
     void FUN_141ad2f60(ASArray& array, int* pnSelected, int nSelectedChannel);   // channel list of the chosen server
     void FUN_141ad3030(const ATL::CAtlArray<int>& channels);    // replace the channel set of the chosen server
     int FUN_141ad31b0();                                        // m_nChannel
-    void FUN_141ad31d0();                                       // the pop-down ended
+    void OnEndPopdown();                                       // the pop-down ended
     bool FUN_141ad3260(int nButton, const CMsgBoxData& data);   // message box answer: cancel the login (packet 0x6d)
-    void FUN_141ad3310();                                       // "popdown"
+    void OnSceneLogin();                                       // "popdown"
     void FUN_141ad3370(ASArray& array, int* pnSelected, int nSelectedChannel, MS2Ptr<CMultiServer> server);   // channels
 
 private:

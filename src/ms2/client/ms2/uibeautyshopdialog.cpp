@@ -809,7 +809,7 @@ int UIBeautyShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     }
     if (_stricmp("OnClickReset", szMethod) == 0)
     {
-        FUN_1418ca420();
+        OnClickReset();
         return 1;
     }
     if (_stricmp("OnClickSave", szMethod) == 0)
@@ -1949,7 +1949,7 @@ void UIBeautyShopDialog::FUN_1418ca400()
 // Reset the preview.
 // @0x1418ca420
 // MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
-void UIBeautyShopDialog::FUN_1418ca420()
+void UIBeautyShopDialog::OnClickReset()
 {
     if (!(m_30 == 0))
     {

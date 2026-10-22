@@ -188,7 +188,7 @@ int UICharacterCreateSelectDialog::vfunc_28(const char* szMethod, const Scalefor
             {
                 if (_stricmp("OnEndPopdown", szMethod) == 0)
                 {
-                    FUN_140f2fdb0();
+                    OnEndPopdown();
                     return 1;
                 }
             }
@@ -439,7 +439,7 @@ void UICharacterCreateSelectDialog::FUN_140f2fd50()
 MS2_REPLACE_METHOD(0x140F2FD50, UICharacterCreateSelectDialog, FUN_140f2fd50, 83, 0x77B6ED2A);
 
 // @0x140f2fdb0
-void UICharacterCreateSelectDialog::FUN_140f2fdb0()
+void UICharacterCreateSelectDialog::OnEndPopdown()
 {
     if (0 < m_nPopupMsg)
     {
@@ -450,7 +450,7 @@ void UICharacterCreateSelectDialog::FUN_140f2fdb0()
     m_nPopupMsg = 0;
     vfunc_67();
 }
-MS2_REPLACE_METHOD(0x140F2FDB0, UICharacterCreateSelectDialog, FUN_140f2fdb0, 118, 0x691E40AA);
+MS2_REPLACE_METHOD(0x140F2FDB0, UICharacterCreateSelectDialog, OnEndPopdown, 118, 0x691E40AA);
 
 // @0x140f2fe30
 UICharacterCreateSelectDialog::JobPtr UICharacterCreateSelectDialog::FUN_140f2fe30(int nJobCode, int* pnIndex)

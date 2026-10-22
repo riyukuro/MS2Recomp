@@ -196,7 +196,7 @@ int UIRegionListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         return 1;
     }
     if (_stricmp("OnEndPopdown", szMethod) == 0) {
-        FUN_140e81270();
+        OnEndPopdown();
         return 1;
     }
     return 0;
@@ -355,7 +355,7 @@ void UIRegionListDialog::FUN_140e811d0()
 }
 
 // @0x140e81270
-void UIRegionListDialog::FUN_140e81270()
+void UIRegionListDialog::OnEndPopdown()
 {
     if (FUN_1406c34c0() == 0) {
         CStringW strRegion = *FUN_140cfd260(FUN_1409a8b10());

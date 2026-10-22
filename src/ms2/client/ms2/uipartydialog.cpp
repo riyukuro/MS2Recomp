@@ -1205,7 +1205,7 @@ int UIPartyDPSDialog::FUN_141a7b1a0(ASObj& obj, CPartyMember* pMember, unsigned 
 }
 
 // @0x141a7b3c0
-void UIPartyDPSDialog::FUN_141a7b3c0()
+void UIPartyDPSDialog::OnTextToggle()
 {
     if (m_30.IsNull())
         return;
@@ -1288,7 +1288,7 @@ void UIPartyDPSDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     m_tick.Init();
     CBattleRecordManager::GetInstance()->FUN_140a03f60(m_nGroup);
-    FUN_141a7b3c0();
+    OnTextToggle();
     FUN_141a7b540();
 }
 
@@ -1340,7 +1340,7 @@ int UIPartyDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         m_nMode = m_nMode + 1;
         if (6 < m_nMode)
             m_nMode = 0;
-        FUN_141a7b3c0();
+        OnTextToggle();
         return 1;
     }
     return 0;

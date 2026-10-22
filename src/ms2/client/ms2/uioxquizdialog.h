@@ -23,8 +23,8 @@ public:
     void FUN_140e6e640();                                       // show the remaining cool time
     void FUN_140e6e6c0(float fRemain, float fTotal);            // set the cool time ("setQuizPromoteCooltime")
     static void FUN_140e6e8b0(bool bEnable);                    // s_bEnable = bEnable
-    void FUN_140e6e8d0();                                       // "OnQuizPromote"
-    void FUN_140e6e8f0();                                       // "OnQuizCreate"
+    void OnQuizPromote();                                       // "OnQuizPromote"
+    void OnQuizCreate();                                       // "OnQuizCreate"
 
     static bool s_bEnable;                                      // 0x143ac6ee0 set by the OX quiz manager
 

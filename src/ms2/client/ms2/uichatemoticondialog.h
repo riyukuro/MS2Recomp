@@ -84,7 +84,7 @@ public:
     CStringW FUN_140bd2720(int nEmoticonId);                        // the chat command of an emoticon (":name:")
     void FUN_140bd27e0(int nTab);                                   // swf onSelectTab
     void FUN_140bd28b0(int nEmoticonId);                            // swf onSelectEmoticon: post the notice
-    void FUN_140bd2990();                                           // open the Merat market on the emoticon page
+    void OnClickShopButton();                                           // open the Merat market on the emoticon page
 
     std::set<unsigned> m_setNewGroups;                              // +0x178 packs received since the dialog was last opened
     std::list<UIChatEmoticonTab> m_tabs;                                          // +0x188 the category ids of the tabs, in order

@@ -27,8 +27,8 @@ public:
 
     int FUN_1422f1020();                                            // destroy every open tooltip; 0 if none was open
     // "createTooltip"(id, a, b): remember the id, call the TooltipManager clip
-    void FUN_1422f1150(const Scaleform::GFx::Value& vId, const Scaleform::GFx::Value& vA, const Scaleform::GFx::Value& vB);
-    void FUN_1422f12b0(const Scaleform::GFx::Value& vId);           // "destroyTooltip"(id)
+    void CreateTooltip(const Scaleform::GFx::Value& vId, const Scaleform::GFx::Value& vA, const Scaleform::GFx::Value& vB);
+    void DestroyTooltip(const Scaleform::GFx::Value& vId);           // "destroyTooltip"(id)
 
 private:
     MS2_LAYOUT_FRIEND;

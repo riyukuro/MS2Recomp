@@ -33,7 +33,7 @@ public:
     void FUN_141350fc0(unsigned int nIndex);                    // select button nIndex of the bar
     void FUN_141351050(CStringW strText);                       // set the text of input 1
     void FUN_1413510f0(CStringW strText);                       // set the text of input 2
-    void FUN_141351340();                                       // "OnDescriptionCheck"
+    void OnDescriptionCheck();                                       // "OnDescriptionCheck"
 
     MS2Ptr<Unk_TpInput> FUN_140c26f60(const CString& strName);  // 0x140c26f60 input child lookup (a UIDialog member)
     MS2Ptr<Unk_TpBar> FUN_140c02870(const CString& strName);    // 0x140c02870 button bar child lookup

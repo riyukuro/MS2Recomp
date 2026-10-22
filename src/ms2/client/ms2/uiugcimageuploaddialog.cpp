@@ -214,7 +214,7 @@ int UIUGCImageUploadDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         return 1;
     if (_stricmp("OnOpenFolder", szMethod) == 0)
     {
-        FUN_141b3ac80();
+        OnOpenFolder();
         return 1;
     }
     if (_stricmp("OnPreview", szMethod) == 0)
@@ -233,12 +233,12 @@ int UIUGCImageUploadDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
     }
     if (_stricmp("OnNewTemplate", szMethod) == 0)
     {
-        FUN_141b3b020();
+        OnNewTemplate();
         return 1;
     }
     if (_stricmp("OnAddImage", szMethod) == 0)
     {
-        FUN_141b3b060();
+        OnAddImage();
         return 1;
     }
     if (_stricmp("onScrollPosition", szMethod) == 0)
@@ -388,7 +388,7 @@ void UIUGCImageUploadDialog::FUN_141b3ab90()
 }
 
 // @0x141b3ac80
-void UIUGCImageUploadDialog::FUN_141b3ac80()
+void UIUGCImageUploadDialog::OnOpenFolder()
 {
     FUN_14052d220()->FUN_1418829b0(m_188);
 }
@@ -457,7 +457,7 @@ int UIUGCImageUploadDialog::FUN_141b3adc0(int nIndex)
 }
 
 // @0x141b3b020
-int UIUGCImageUploadDialog::FUN_141b3b020()
+int UIUGCImageUploadDialog::OnNewTemplate()
 {
     if (FUN_14052d220()->FUN_141880fc0() == 0)
         return 0;
@@ -466,7 +466,7 @@ int UIUGCImageUploadDialog::FUN_141b3b020()
 }
 
 // @0x141b3b060
-int UIUGCImageUploadDialog::FUN_141b3b060()
+int UIUGCImageUploadDialog::OnAddImage()
 {
     int nResult = FUN_14052d220()->FUN_1418810c0(CStringW(L"./"), L"Image Files (*.dds, *.png, *.jpg)");
     if (nResult == 0)

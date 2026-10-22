@@ -207,7 +207,7 @@ int UIGameOptionDialog::vfunc_13()
     }
     if (FUN_14116d840(FUN_14025e7c0()))
     {
-        FUN_141944150();
+        OnCloseDialog();
         return 1;
     }
     return 0;
@@ -233,7 +233,7 @@ int UIGameOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
 {
     if (_stricmp("OnCloseDialog", szMethod) == 0)
     {
-        FUN_141944150();
+        OnCloseDialog();
         return 1;
     }
     else if (_stricmp("OnOpenTab", szMethod) == 0)
@@ -243,7 +243,7 @@ int UIGameOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             FUN_1419436e0(kArgs.FUN_1422b8b10());
     }
     else if (_stricmp("OnCloseTab", szMethod) == 0)
-        FUN_141943790(m_nTab);
+        OnCloseTab(m_nTab);
     else if (_stricmp("OnUndo", szMethod) == 0)
         return 1;
     else if (_stricmp("OnInit", szMethod) == 0)
@@ -253,7 +253,7 @@ int UIGameOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     }
     else if (_stricmp("OnSave", szMethod) == 0)
     {
-        FUN_141943e30();
+        OnSave();
         return 1;
     }
     else if (_stricmp("OnTabInit", szMethod) == 0)
@@ -394,7 +394,7 @@ void UIGameOptionDialog::FUN_1419436e0(int nTab)
 }
 
 // @0x141943790
-void UIGameOptionDialog::FUN_141943790(int nTab)
+void UIGameOptionDialog::OnCloseTab(int nTab)
 {
     if (vfunc_55() == 0)
     {
@@ -474,7 +474,7 @@ void UIGameOptionDialog::FUN_141943d80()
 }
 
 // @0x141943e30
-void UIGameOptionDialog::FUN_141943e30()
+void UIGameOptionDialog::OnSave()
 {
     if (FUN_141944250() == 0)
         FUN_140d73bc0(0x84a, 1, this, CStringW(L"OnSave"));
@@ -520,7 +520,7 @@ void UIGameOptionDialog::FUN_141944030(int n)
 }
 
 // @0x141944150
-void UIGameOptionDialog::FUN_141944150()
+void UIGameOptionDialog::OnCloseDialog()
 {
     if (FUN_141944330() == 0)
         FUN_140d73bc0(0x84b, 1, this, CStringW(L"OnSaveAndCheck"));

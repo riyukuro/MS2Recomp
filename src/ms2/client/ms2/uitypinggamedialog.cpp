@@ -188,17 +188,17 @@ int UITypingGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         return 1;
     if (_stricmp("OnShowNumberComplete", szMethod) == 0)
     {
-        FUN_140ee5ba0();
+        OnShowNumberComplete();
         return 1;
     }
     else if (_stricmp("SuccessGameProgress", szMethod) == 0)
     {
-        FUN_140ee6090();
+        SuccessGameProgress();
         return 1;
     }
     else if (_stricmp("FailGameProgress", szMethod) == 0)
     {
-        FUN_140ee6110();
+        FailGameProgress();
         return 1;
     }
     return 0;
@@ -222,7 +222,7 @@ void UITypingGameDialog::FUN_140ee5a20()
 }
 
 // @0x140ee5ba0
-void UITypingGameDialog::FUN_140ee5ba0()
+void UITypingGameDialog::OnShowNumberComplete()
 {
     if (FUN_140ba28d0(&m_30, 0))
         return;
@@ -309,7 +309,7 @@ bool UITypingGameDialog::FUN_140ee5ff0(unsigned nDigit)
 }
 
 // @0x140ee6090
-void UITypingGameDialog::FUN_140ee6090()
+void UITypingGameDialog::SuccessGameProgress()
 {
     COutPacket packet(0x2f, 0);
     packet.vfunc_o10_1(9);
@@ -320,7 +320,7 @@ void UITypingGameDialog::FUN_140ee6090()
 }
 
 // @0x140ee6110
-void UITypingGameDialog::FUN_140ee6110()
+void UITypingGameDialog::FailGameProgress()
 {
     COutPacket packet(0x2f, 0);
     packet.vfunc_o10_1(9);

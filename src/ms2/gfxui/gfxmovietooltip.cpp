@@ -64,14 +64,14 @@ void GFxMovieTooltip::vfunc_3(const char* szEvent, const Scaleform::GFx::Value* 
         vA.VisitMembers(&adapterA);
         GFxObjectAdapter adapterB(m_60);
         vB.VisitMembers(&adapterB);
-        FUN_1422f1150(vId, adapterA.m_value, adapterB.m_value);
+        CreateTooltip(vId, adapterA.m_value, adapterB.m_value);
     }
     else if (_stricmp("destroyTooltip", szEvent) == 0)
     {
         if (nArgs < 1)
             return;
         Scaleform::GFx::Value vId(pArgs[0]);
-        FUN_1422f12b0(vId);
+        DestroyTooltip(vId);
     }
 }
 MS2_REPLACE_METHOD(0x1422F0A90, GFxMovieTooltip, vfunc_3, 605, 0x3CF05D7D);
@@ -95,7 +95,7 @@ void GFxMovieTooltip::vfunc_4(void* pMovie, const char* szEvent, const Scaleform
         if (_stricmp("destroyTooltip", szName) == 0)
         {
             Scaleform::GFx::Value vId(pArgs[1]);
-            FUN_1422f12b0(vId);
+            DestroyTooltip(vId);
         }
     }
 }
@@ -155,17 +155,17 @@ int GFxMovieTooltip::FUN_1422f1020()
 MS2_REPLACE_METHOD(0x1422F1020, GFxMovieTooltip, FUN_1422f1020, 293, 0x6731A213);
 
 // @0x1422f1150
-void GFxMovieTooltip::FUN_1422f1150(const Scaleform::GFx::Value& vId, const Scaleform::GFx::Value& vA, const Scaleform::GFx::Value& vB)
+void GFxMovieTooltip::CreateTooltip(const Scaleform::GFx::Value& vId, const Scaleform::GFx::Value& vA, const Scaleform::GFx::Value& vB)
 {
     POSITION pos = m_a0.Find(vId);
     if (pos == NULL)
         m_a0.AddTail(vId);
     m_90->Invoke("createTooltip", vId, vA, vB);
 }
-MS2_REPLACE_METHOD(0x1422F1150, GFxMovieTooltip, FUN_1422f1150, 345, 0x341697FE);
+MS2_REPLACE_METHOD(0x1422F1150, GFxMovieTooltip, CreateTooltip, 345, 0x341697FE);
 
 // @0x1422f12b0
-void GFxMovieTooltip::FUN_1422f12b0(const Scaleform::GFx::Value& vId)
+void GFxMovieTooltip::DestroyTooltip(const Scaleform::GFx::Value& vId)
 {
     POSITION pos = m_a0.Find(vId);
     if (pos != NULL)
@@ -173,7 +173,7 @@ void GFxMovieTooltip::FUN_1422f12b0(const Scaleform::GFx::Value& vId)
     if (m_90.get())
         m_90->Invoke("destroyTooltip", vId);
 }
-MS2_REPLACE_METHOD(0x1422F12B0, GFxMovieTooltip, FUN_1422f12b0, 235, 0x33C6F17D);
+MS2_REPLACE_METHOD(0x1422F12B0, GFxMovieTooltip, DestroyTooltip, 235, 0x33C6F17D);
 
 // @0x1422f13b0
 void GFxObjectAdapter::Visit(const char* name, const Scaleform::GFx::Value& val)

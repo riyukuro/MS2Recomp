@@ -34,7 +34,7 @@ public:
     void FUN_140c41900(int);
     void FUN_140c41c30(int);
     void FUN_140c41e10();
-    void FUN_140c41f20();
+    void OnOpenCoinShop();
     int FUN_140c420e0();
     void FUN_140c42160();
     bool FUN_140c42e70(const ItemEntity&);

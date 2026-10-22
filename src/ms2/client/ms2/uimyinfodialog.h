@@ -96,8 +96,8 @@ public:
     void FUN_141a5a560();                                       // mark the window dirty (refresh in 100 ms)
     void FUN_141a5a5c0();                                       // mark dirty and the second refresh flag
     void FUN_141a5a640(NotifyObject* pNotify);                  // NotifyChangeBuff
-    void FUN_141a5a720();                                       // OnChangeProfile
-    void FUN_141a5a750();                                       // OnChangeTodayMemo
+    void OnChangeProfile();                                       // OnChangeProfile
+    void OnChangeTodayMemo();                                       // OnChangeTodayMemo
     void FUN_141a5a8d0(int nTitle);                             // OnTitleChange
     void FUN_141a5a9f0(int nConfig);                            // OnConfig
     void FUN_141a5aab0(int a, int b, int c, int d);             // OnScreenshot

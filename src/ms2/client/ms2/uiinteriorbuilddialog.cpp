@@ -128,7 +128,7 @@ int UIInteriorBuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         return 1;
     if (_stricmp("OnUseItem", szMethod) == 0)
     {
-        FUN_140f4bc40();
+        OnUseItem();
         return 1;
     }
     return 0;
@@ -187,9 +187,9 @@ void UIInteriorBuildDialog::FUN_140f4b7d0()
     }
 }
 
-// MS2-FUNCTIONAL: FUN_140f4bc40: the exe's cleanup of the package / map / array handles is repeated before every exit (frame size)
+// MS2-FUNCTIONAL: OnUseItem: the exe's cleanup of the package / map / array handles is repeated before every exit (frame size)
 // @0x140f4bc40
-void UIInteriorBuildDialog::FUN_140f4bc40()
+void UIInteriorBuildDialog::OnUseItem()
 {
     MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_178);
     if (spItem == 0)

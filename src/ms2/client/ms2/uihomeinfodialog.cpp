@@ -293,12 +293,12 @@ int UIHomeInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     UIDialog::vfunc_28(szMethod, pArgs, nArgs);
     if (_stricmp("OnTogglePanel", szMethod) == 0)
     {
-        FUN_1412c7630();
+        OnTogglePanel();
         return 1;
     }
     if (_stricmp("OnNoticeModify", szMethod) == 0)
     {
-        FUN_1412c76e0();
+        OnNoticeModify();
         return 1;
     }
     if (_stricmp("OnVisitorsBook", szMethod) == 0)
@@ -317,22 +317,22 @@ int UIHomeInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         return FUN_1418fcee0();
     if (_stricmp("OnConstruct", szMethod) == 0)
     {
-        FUN_1412c7710();
+        OnConstruct();
         return 1;
     }
     if (_stricmp("OnBank", szMethod) == 0)
     {
-        FUN_1412c7770();
+        OnBank();
         return 1;
     }
     if (_stricmp("OnDoctor", szMethod) == 0)
     {
-        FUN_1412c77c0();
+        OnDoctor();
         return 1;
     }
     if (_stricmp("OnBalance", szMethod) == 0)
     {
-        FUN_1412c7810();
+        OnBalance();
         return 1;
     }
     if (_stricmp("OnRemoveUser", szMethod) == 0)
@@ -703,7 +703,7 @@ void UIHomeInfoDialog::FUN_1412c7600()
 }
 
 // @0x1412c7630
-void UIHomeInfoDialog::FUN_1412c7630()
+void UIHomeInfoDialog::OnTogglePanel()
 {
     m_178 = m_178 == 0;
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
@@ -712,13 +712,13 @@ void UIHomeInfoDialog::FUN_1412c7630()
 }
 
 // @0x1412c76e0
-void UIHomeInfoDialog::FUN_1412c76e0()
+void UIHomeInfoDialog::OnNoticeModify()
 {
     FUN_1403ed2b0()->FUN_141adc530(0x4f79);
 }
 
 // @0x1412c7710
-void UIHomeInfoDialog::FUN_1412c7710()
+void UIHomeInfoDialog::OnConstruct()
 {
     Unk_HiPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPc == 0)
@@ -730,7 +730,7 @@ void UIHomeInfoDialog::FUN_1412c7710()
 }
 
 // @0x1412c7770
-void UIHomeInfoDialog::FUN_1412c7770()
+void UIHomeInfoDialog::OnBank()
 {
     Unk_HiPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPc == 0)
@@ -741,7 +741,7 @@ void UIHomeInfoDialog::FUN_1412c7770()
 }
 
 // @0x1412c77c0
-void UIHomeInfoDialog::FUN_1412c77c0()
+void UIHomeInfoDialog::OnDoctor()
 {
     Unk_HiPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPc == 0)
@@ -753,7 +753,7 @@ void UIHomeInfoDialog::FUN_1412c77c0()
 
 // @0x1412c7810
 // MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
-void UIHomeInfoDialog::FUN_1412c7810()
+void UIHomeInfoDialog::OnBalance()
 {
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(8, 0xbb9, 0, CStringW(L""));
     if (spBox.get() != 0)
@@ -979,12 +979,12 @@ MS2_REPLACE_METHOD(0x1412C7090, UIHomeInfoDialog, FUN_1412c7090, 160, 0x81FF7CA8
 MS2_REPLACE_METHOD(0x1412C7140, UIHomeInfoDialog, FUN_1412c7140, 390, 0x1D9E1367);
 MS2_REPLACE_METHOD(0x1412C72D0, UIHomeInfoDialog, FUN_1412c72d0, 806, 0xB76F0C61);
 MS2_REPLACE_METHOD(0x1412C7600, UIHomeInfoDialog, FUN_1412c7600, 42, 0x5E244372);
-MS2_REPLACE_METHOD(0x1412C7630, UIHomeInfoDialog, FUN_1412c7630, 167, 0x80DDFABF);
-MS2_REPLACE_METHOD(0x1412C76E0, UIHomeInfoDialog, FUN_1412c76e0, 32, 0x87E480A0);
-MS2_REPLACE_METHOD(0x1412C7710, UIHomeInfoDialog, FUN_1412c7710, 86, 0xF80D1B0D);
-MS2_REPLACE_METHOD(0x1412C7770, UIHomeInfoDialog, FUN_1412c7770, 73, 0x23D732DD);
-MS2_REPLACE_METHOD(0x1412C77C0, UIHomeInfoDialog, FUN_1412c77c0, 68, 0x6D992898);
-MS2_REPLACE_METHOD(0x1412C7810, UIHomeInfoDialog, FUN_1412c7810, 444, 0xF76ACB35);
+MS2_REPLACE_METHOD(0x1412C7630, UIHomeInfoDialog, OnTogglePanel, 167, 0x80DDFABF);
+MS2_REPLACE_METHOD(0x1412C76E0, UIHomeInfoDialog, OnNoticeModify, 32, 0x87E480A0);
+MS2_REPLACE_METHOD(0x1412C7710, UIHomeInfoDialog, OnConstruct, 86, 0xF80D1B0D);
+MS2_REPLACE_METHOD(0x1412C7770, UIHomeInfoDialog, OnBank, 73, 0x23D732DD);
+MS2_REPLACE_METHOD(0x1412C77C0, UIHomeInfoDialog, OnDoctor, 68, 0x6D992898);
+MS2_REPLACE_METHOD(0x1412C7810, UIHomeInfoDialog, OnBalance, 444, 0xF76ACB35);
 MS2_REPLACE_METHOD(0x1412C79E0, UIHomeInfoDialog, SendRequestCubeMode58, 173, 0xBF680A66);
 MS2_REPLACE_METHOD(0x1412C7AA0, UIHomeInfoDialog, FUN_1412c7aa0, 72, 0xA734365C);
 MS2_REPLACE_METHOD(0x1412C7AF0, UIHomeInfoDialog, FUN_1412c7af0, 1011, 0x70EEF58B);

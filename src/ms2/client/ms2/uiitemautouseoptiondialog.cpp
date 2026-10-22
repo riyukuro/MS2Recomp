@@ -590,7 +590,7 @@ int UIItemAutoUseOptionDialog::vfunc_28(const char* szMethod, const Scaleform::G
         return 1;
     if (_stricmp("OnClickOk", szMethod) == 0)
     {
-        FUN_140f50480();
+        OnClickOk();
         return 1;
     }
     return 0;
@@ -766,7 +766,7 @@ void UIItemAutoUseOptionDialog::FUN_140f50230(void* pCombo, int nIndex)
 
 // @0x140f50480
 // MS2-FUNCTIONAL: the exe's frame / temporaries differ
-void UIItemAutoUseOptionDialog::FUN_140f50480()
+void UIItemAutoUseOptionDialog::OnClickOk()
 {
     Unk_AuPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0 || FUN_141676a10(pPlayer) == 0)

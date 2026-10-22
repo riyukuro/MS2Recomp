@@ -95,7 +95,7 @@ public:
     void FUN_14194bc70(CStringW strName);                                   // renames the chat
     void FUN_14194bcc0(CStringW strText);                                   // appends to the input
     void FUN_14194bde0();                                                   // refreshes the window
-    void FUN_14194c060();                                                   // refreshes the member list
+    void OnBuildScrollingList();                                                   // refreshes the member list
     int FUN_14194c6d0();                                                    // has the key focus
     int FUN_14194c830();                                                    // sends the input
     int FUN_14194cbb0();                                                    // enter: focus the input or send

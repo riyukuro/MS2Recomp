@@ -192,16 +192,16 @@ int UIHomeInfoEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     UIDialog::vfunc_28(szMethod, pArgs, nArgs);
     if (_stricmp("OnConfirm", szMethod) == 0)
     {
-        FUN_140c26970();
+        OnConfirm();
         return 1;
     }
     return 0;
 }
 MS2_REPLACE_METHOD(0x140C267E0, UIHomeInfoEditDialog, vfunc_28, 94, 0xE55289F9);
 
-// MS2-FUNCTIONAL: FUN_140c26970: the exe keeps extra pointer temps around each GetChild result (stack frame +0x50)
+// MS2-FUNCTIONAL: OnConfirm: the exe keeps extra pointer temps around each GetChild result (stack frame +0x50)
 // @0x140c26970
-void UIHomeInfoEditDialog::FUN_140c26970()
+void UIHomeInfoEditDialog::OnConfirm()
 {
     if (FUN_140bbea00(0x4ed8) != 0)
     {
@@ -242,6 +242,6 @@ void UIHomeInfoEditDialog::FUN_140c26970()
     }
     vfunc_67();
 }
-MS2_REPLACE_METHOD(0x140C26970, UIHomeInfoEditDialog, FUN_140c26970, 1102, 0x88F80B42);
+MS2_REPLACE_METHOD(0x140C26970, UIHomeInfoEditDialog, OnConfirm, 1102, 0x88F80B42);
 
 MS2_EMIT_CRT_MEMMOVE_S();

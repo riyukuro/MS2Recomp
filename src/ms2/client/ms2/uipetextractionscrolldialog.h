@@ -76,7 +76,7 @@ public:
     void FUN_140e71d40(__int64 nItemUid);                           // 0x140e71d40 a pet was dropped: show it and the result
     void FUN_140e72860(__int64 nScrollUid);                         // 0x140e72860 remember the scroll if the player owns it
     void FUN_140e728e0();                                           // 0x140e728e0 refresh the inventory dialog
-    void FUN_140e72920();                                           // 0x140e72920 ask for the confirmation
+    void OnOk();                                           // 0x140e72920 ask for the confirmation
     void FUN_140e72b40(MS2Ptr<CItem> spTarget, MS2Ptr<CItem> spResult);   // 0x140e72b40 rebuild the bag
 
 private:

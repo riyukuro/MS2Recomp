@@ -697,7 +697,7 @@ int UIPlayInstrumentDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         return 1;
     if (_stricmp("onPlayNote", szMethod) == 0)
     {
-        if (FUN_14100c750() != 0)
+        if (OnPlayNote() != 0)
             m_nAutoPlay = 1;
         return 1;
     }
@@ -886,7 +886,7 @@ void UIPlayInstrumentDialog::FUN_14100c2c0()
 
 // @0x14100c750
 // MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
-int UIPlayInstrumentDialog::FUN_14100c750()
+int UIPlayInstrumentDialog::OnPlayNote()
 {
     bool bEmpty = true;
     m_nCurrent = 0;
@@ -1094,7 +1094,7 @@ void UIPlayInstrumentDialog::FUN_14100d920()
         return;
     if (FUN_140c8dac0()->FUN_140d071b0() == 0)
         return;
-    m_nAutoPlay = FUN_14100c750();
+    m_nAutoPlay = OnPlayNote();
 }
 
 // @0x14100d9f0

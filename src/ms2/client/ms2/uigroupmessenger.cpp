@@ -730,7 +730,7 @@ int UIGroupMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     }
     else if (_stricmp("OnBuildScrollingList", szMethod) == 0)
     {
-        FUN_14194c060();
+        OnBuildScrollingList();
     }
     else if (_stricmp("OnPopupMenu", szMethod) == 0)
     {
@@ -1175,7 +1175,7 @@ MS2_REPLACE_METHOD(0x14194BDE0, UIGroupMessenger, FUN_14194bde0, 627, 0xFCF12C7A
 
 // MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194c060
-void UIGroupMessenger::FUN_14194c060()
+void UIGroupMessenger::OnBuildScrollingList()
 {
     if (m_6c != 0 || m_bUserList == 0)
         return;

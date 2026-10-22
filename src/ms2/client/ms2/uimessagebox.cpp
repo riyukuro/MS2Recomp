@@ -1817,7 +1817,7 @@ int UIMessageBox::FUN_1419fd4a0(int nButton)
             MS2Ptr<TabContentsPetEvolution> spEvolution(dynamic_cast<TabContentsPetEvolution*>((PetSystemTabContents*)spTab));
             if (spEvolution == 0)
                 return 0;
-            spEvolution->FUN_140acaf50(1);
+            spEvolution->OnPetEnchant(1);
         }
     }
     return 1;

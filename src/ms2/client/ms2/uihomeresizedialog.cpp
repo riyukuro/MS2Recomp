@@ -106,16 +106,16 @@ int UIHomeResizeDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
     if (_stricmp("OnShrinkArea", szMethod) == 0) {
-        FUN_140c2bfa0();
+        OnShrinkArea();
         return 1;
     } else if (_stricmp("OnShrinkHeight", szMethod) == 0) {
-        FUN_140c2c2f0();
+        OnShrinkHeight();
         return 1;
     } else if (_stricmp("OnExtensionArea", szMethod) == 0) {
-        FUN_140c2c640();
+        OnExtensionArea();
         return 1;
     } else if (_stricmp("OnExtensionHeight", szMethod) == 0) {
-        FUN_140c2cac0();
+        OnExtensionHeight();
         return 1;
     }
     return 0;
@@ -129,7 +129,7 @@ void UIHomeResizeDialog::FUN_140c2bf70() { vfunc_84(); }
 
 // @0x140c2bfa0
 // MS2-FUNCTIONAL: frame slot order of the MS2Ptr/CStringW temporaries differs from the exe
-void UIHomeResizeDialog::FUN_140c2bfa0()
+void UIHomeResizeDialog::OnShrinkArea()
 {
     if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(99) != 0) {
         FUN_141275260(0x2f7, 1, 1);
@@ -155,7 +155,7 @@ void UIHomeResizeDialog::FUN_140c2bfa0()
 
 // @0x140c2c2f0
 // MS2-FUNCTIONAL: frame slot order of the MS2Ptr/CStringW temporaries differs from the exe
-void UIHomeResizeDialog::FUN_140c2c2f0()
+void UIHomeResizeDialog::OnShrinkHeight()
 {
     if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(99) != 0) {
         FUN_141275260(0x2f7, 1, 1);
@@ -180,7 +180,7 @@ void UIHomeResizeDialog::FUN_140c2c2f0()
 }
 
 // @0x140c2c640
-void UIHomeResizeDialog::FUN_140c2c640()
+void UIHomeResizeDialog::OnExtensionArea()
 {
     int nArea = FUN_1409670e0()->FUN_1410c3470();
     MS2Ptr<ExtendAreaInfo> spNext = FUN_140933200()->GetNextArea(nArea);
@@ -202,7 +202,7 @@ void UIHomeResizeDialog::FUN_140c2c640()
 }
 
 // @0x140c2cac0
-void UIHomeResizeDialog::FUN_140c2cac0()
+void UIHomeResizeDialog::OnExtensionHeight()
 {
     int nHeight = FUN_1409670e0()->FUN_1410c34b0();
     MS2Ptr<ExtendHeightInfo> spNext = FUN_140933200()->GetNextHeight(nHeight);

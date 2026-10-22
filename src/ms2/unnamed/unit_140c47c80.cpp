@@ -295,7 +295,7 @@ int ItemSocketSystemPageGemstoneSwap::vfunc_3(const char* event, const Scaleform
         }
         return 1;
     } else if (_stricmp("onRetry", event) == 0) {
-        FUN_140c49850();
+        OnRetry();
         return 1;
     }
     return 1;
@@ -456,7 +456,7 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c49580(int index)
 }
 
 // @0x140c49850
-void ItemSocketSystemPageGemstoneSwap::FUN_140c49850()
+void ItemSocketSystemPageGemstoneSwap::OnRetry()
 {
     FUN_140c49fc0();
     m_binder.FUN_140d43990();

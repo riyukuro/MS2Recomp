@@ -35,8 +35,8 @@ public:
     int FUN_1418dfc40();                                            // 0x1418dfc40 m_nBookId
     void FUN_1418dfc60(CInPacket& packet);                          // 0x1418dfc60 packet 0x88: show the book
     void FUN_1418dfd50();                                           // 0x1418dfd50 send the current pages to the movie
-    void FUN_1418dffc0();                                           // 0x1418dffc0 next pages
-    void FUN_1418e0010();                                           // 0x1418e0010 previous pages
+    void OnNext();                                           // 0x1418dffc0 next pages
+    void OnPrev();                                           // 0x1418e0010 previous pages
     int FUN_1418e0070(int nPage, ASObj* pPage);                     // 0x1418e0070 fill an AS page object (img/str/valign)
     void FUN_1418e0230();                                           // 0x1418e0230 enable the prev/next buttons
     int FUN_1418e0480();                                            // 0x1418e0480 pages shown at once

@@ -66,7 +66,7 @@ public:
     void FUN_1418e18a0(const CStringW& strText);                    // 0x1418e18a0 stopCasting + reset
     void FUN_1418e18e0(const CStringW& strText);                    // 0x1418e18e0 movie "stopCasting"
     void FUN_1418e19c0(const CStringW& strText);                    // 0x1418e19c0 stopCasting + completed callback
-    void FUN_1418e1a00();                                           // 0x1418e1a00 completed callback + reset
+    void OnCastingComplete();                                           // 0x1418e1a00 completed callback + reset
     void FUN_1418e1a50();                                           // 0x1418e1a50 reset
     void FUN_1418e1ab0();                                           // 0x1418e1ab0 drop the text fields
     void FUN_1418e1b20(bool bShowTime);                             // 0x1418e1b20 bind the text fields

@@ -288,7 +288,7 @@ int UITalkPanelSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     }
     if (_stricmp("eventInitialize", szMethod) == 0)
     {
-        FUN_141b23650();
+        EventInitialize();
         return 1;
     }
     if (_stricmp("eventApply", szMethod) == 0)
@@ -361,7 +361,7 @@ CStringW UITalkPanelSettingDialog::FUN_141b23550()
 }
 
 // @0x141b23650
-int UITalkPanelSettingDialog::FUN_141b23650()
+int UITalkPanelSettingDialog::EventInitialize()
 {
     MessengerData::PanelSetting panel;
     DAT_1439f7cbc = 1;

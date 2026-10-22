@@ -659,7 +659,7 @@ int UICashShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         }
     }
     else if (_stricmp("onChargeCash", szMethod) == 0) {
-        FUN_141037880();
+        OnChargeCash();
     }
     else if (_stricmp("onPrevPage", szMethod) == 0) {
         if (m_nCategory > 1)
@@ -1045,7 +1045,7 @@ void UICashShopDialog::FUN_141037360()
 }
 
 // @0x141037880
-void UICashShopDialog::FUN_141037880()
+void UICashShopDialog::OnChargeCash()
 {
     FUN_1403ed2d0()->FUN_141bd9990(FUN_140c84fc0(DAT_143ab2840));
 }
@@ -1409,7 +1409,7 @@ bool UICashShopDialog::FUN_141039e80(int nButton, const CMsgBoxData& rData)
 bool UICashShopDialog::FUN_14103a040(int nButton, const CMsgBoxData& rData)
 {
     if (nButton != 1)
-        FUN_141037880();
+        OnChargeCash();
     return true;
 }
 

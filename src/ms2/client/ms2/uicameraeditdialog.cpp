@@ -674,13 +674,13 @@ int UICartoonDialog::vfunc_13()
         return 0;
     if (FUN_14025e7c0()->FUN_14116d9c0(0x7a, 0, 0))
     {
-        FUN_1418e0010();
+        OnPrev();
         m_30->Invoke("handleKeyDown", 1);
         return 1;
     }
     if (FUN_14025e7c0()->FUN_14116d9c0(0x7f, 0, 0))
     {
-        FUN_1418dffc0();
+        OnNext();
         m_30->Invoke("handleKeyDown", 0);
         return 1;
     }
@@ -702,12 +702,12 @@ int UICartoonDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         return 1;
     if (_stricmp(szMethod, "onPrev") == 0)
     {
-        FUN_1418e0010();
+        OnPrev();
         return 1;
     }
     if (_stricmp(szMethod, "onNext") == 0)
     {
-        FUN_1418dffc0();
+        OnNext();
         return 1;
     }
     return 0;
@@ -794,7 +794,7 @@ void UICartoonDialog::FUN_1418dfd50()
 }
 
 // @0x1418dffc0
-void UICartoonDialog::FUN_1418dffc0()
+void UICartoonDialog::OnNext()
 {
     int nMaxPage = CStoryBookTable::GetInstance()->GetMaxPage(m_nBookId);
     if (m_nPage < nMaxPage)
@@ -802,7 +802,7 @@ void UICartoonDialog::FUN_1418dffc0()
 }
 
 // @0x1418e0010
-void UICartoonDialog::FUN_1418e0010()
+void UICartoonDialog::OnPrev()
 {
     m_nPage -= FUN_1418e0480();
     if (m_nPage < 0)
@@ -973,7 +973,7 @@ int UICastingBar::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         return 1;
     if (_stricmp("OnCastingComplete", szMethod) == 0)
     {
-        FUN_1418e1a00();
+        OnCastingComplete();
         return 1;
     }
     return 0;
@@ -1080,11 +1080,11 @@ void UICastingBar::FUN_1418e18e0(const CStringW& strText)
 void UICastingBar::FUN_1418e19c0(const CStringW& strText)
 {
     FUN_1418e18e0(strText);
-    FUN_1418e1a00();
+    OnCastingComplete();
 }
 
 // @0x1418e1a00
-void UICastingBar::FUN_1418e1a00()
+void UICastingBar::OnCastingComplete()
 {
     if (m_pListener != 0)
         m_pListener->vfunc_0();
@@ -1368,12 +1368,12 @@ int UICharacterCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         return 1;
     if (_stricmp("OnSceneLobbySelect", szMethod) == 0)
     {
-        FUN_1418e61d0();
+        OnSceneLobbySelect();
         return 1;
     }
     if (_stricmp("OnCreate", szMethod) == 0)
     {
-        FUN_1418e6210();
+        OnCreate();
         return 1;
     }
     if (_stricmp("OnChangeGender", szMethod) == 0)
@@ -2174,7 +2174,7 @@ void UICharacterCreateDialog::FUN_1418e5a10(MS2Ptr<CItemData> spData)
 }
 
 // @0x1418e61d0
-void UICharacterCreateDialog::FUN_1418e61d0()
+void UICharacterCreateDialog::OnSceneLobbySelect()
 {
     if (!(m_nState == 1))
         return;
@@ -2184,7 +2184,7 @@ void UICharacterCreateDialog::FUN_1418e61d0()
 
 // OnCreate: ask for the name.
 // @0x1418e6210
-void UICharacterCreateDialog::FUN_1418e6210()
+void UICharacterCreateDialog::OnCreate()
 {
     if (!(!(m_30 == 0) && m_nState == 1))
         return;
@@ -2592,8 +2592,8 @@ MS2_REPLACE_METHOD(0x1418dfb30, UICartoonDialog, FUN_1418dfb30, 261, 0xB013CD5A)
 MS2_REPLACE_METHOD(0x1418dfc40, UICartoonDialog, FUN_1418dfc40, 17, 0x24676F72);
 MS2_REPLACE_METHOD(0x1418dfc60, UICartoonDialog, FUN_1418dfc60, 231, 0x4D91903C);
 MS2_REPLACE_METHOD(0x1418dfd50, UICartoonDialog, FUN_1418dfd50, 608, 0x1AA40152);
-MS2_REPLACE_METHOD(0x1418dffc0, UICartoonDialog, FUN_1418dffc0, 69, 0x2F6F3AAF);
-MS2_REPLACE_METHOD(0x1418e0010, UICartoonDialog, FUN_1418e0010, 89, 0x79C2E6D3);
+MS2_REPLACE_METHOD(0x1418dffc0, UICartoonDialog, OnNext, 69, 0x2F6F3AAF);
+MS2_REPLACE_METHOD(0x1418e0010, UICartoonDialog, OnPrev, 89, 0x79C2E6D3);
 MS2_REPLACE_METHOD(0x1418e0070, UICartoonDialog, FUN_1418e0070, 429, 0x3BE69BFF);
 MS2_REPLACE_METHOD(0x1418e0230, UICartoonDialog, FUN_1418e0230, 584, 0x5438FE7B);
 MS2_REPLACE_METHOD(0x1418e0480, UICartoonDialog, FUN_1418e0480, 173, 0xE2EA3866);
@@ -2613,7 +2613,7 @@ MS2_REPLACE_METHOD(0x1418e15d0, UICastingBar, FUN_1418e15d0, 703, 0x64907F5D);
 MS2_REPLACE_METHOD(0x1418e18a0, UICastingBar, FUN_1418e18a0, 44, 0xD6F2152A);
 MS2_REPLACE_METHOD(0x1418e18e0, UICastingBar, FUN_1418e18e0, 216, 0x8752FB66);
 MS2_REPLACE_METHOD(0x1418e19c0, UICastingBar, FUN_1418e19c0, 44, 0x94CAE6E6);
-MS2_REPLACE_METHOD(0x1418e1a00, UICastingBar, FUN_1418e1a00, 59, 0xA6E0FCFA);
+MS2_REPLACE_METHOD(0x1418e1a00, UICastingBar, OnCastingComplete, 59, 0xA6E0FCFA);
 MS2_REPLACE_METHOD(0x1418e1a50, UICastingBar, FUN_1418e1a50, 80, 0x9C7CD020);
 MS2_REPLACE_METHOD(0x1418e1ab0, UICastingBar, FUN_1418e1ab0, 96, 0x580C63F1);
 MS2_REPLACE_METHOD(0x1418e1b20, UICastingBar, FUN_1418e1b20, 502, 0x1AF5CAEE);
@@ -2633,7 +2633,7 @@ MS2_REPLACE_METHOD(0x1418e46c0, UICharacterCreateDialog, FUN_1418e46c0, 98, 0xDC
 MS2_REPLACE_METHOD(0x1418e4750, UICharacterCreateDialog, FUN_1418e4750, 134, 0x73A66011);
 MS2_REPLACE_METHOD(0x1418e4a80, UICharacterCreateDialog, FUN_1418e4a80, 1225, 0x05A15FDC);
 MS2_REPLACE_METHOD(0x1418e4f50, UICharacterCreateDialog, FUN_1418e4f50, 1571, 0xC09949AC);
-MS2_REPLACE_METHOD(0x1418e61d0, UICharacterCreateDialog, FUN_1418e61d0, 50, 0x155FAA65);
+MS2_REPLACE_METHOD(0x1418e61d0, UICharacterCreateDialog, OnSceneLobbySelect, 50, 0x155FAA65);
 MS2_REPLACE_METHOD(0x1418e6430, UICharacterCreateDialog, FUN_1418e6430, 573, 0x02E33525);
 MS2_REPLACE_METHOD(0x1418e6680, UICharacterCreateDialog, FUN_1418e6680, 166, 0xB2D2F9C2);
 MS2_REPLACE_METHOD(0x1418e6950, UICharacterCreateDialog, FUN_1418e6950, 332, 0x14FC0B8D);

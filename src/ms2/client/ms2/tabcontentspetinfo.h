@@ -59,8 +59,8 @@ public:
     virtual int vfunc_6(const char* szEvent, const Scaleform::GFx::Value* pArgs, unsigned nArgs);   // 6 0x140cbafe0
 
     void FUN_140cbb060(MS2Ptr<Unk_StatList> list);     // fill the scrolling list with the pet's skills
-    void FUN_140cbb720();                               // open the auto use option dialog
-    void FUN_140cbb750();                               // open the auto pick option dialog
+    void OnAutoItemUse();                               // open the auto use option dialog
+    void OnAutoItemPick();                               // open the auto pick option dialog
 };
 MS2_CHECK_SIZE(PetInfoSkill, 0x30);
 
@@ -75,7 +75,7 @@ public:
     virtual void vfunc_5(int nTab);                     //  5 0x140cb9790
     virtual int vfunc_6(const char* szEvent, const Scaleform::GFx::Value* pArgs, unsigned nArgs);   // 6 0x140cb9870
 
-    void FUN_140cb9900();                               // the rename button was clicked
+    void OnChangeName();                               // the rename button was clicked
     bool FUN_140cb9ba0(int nResult, const CMsgBoxData& box);   // the new name was entered
     bool SendRequestPet(int nResult, const CMsgBoxData& box);   // the rename was confirmed: send it
     int FUN_140cba1f0();                                // the slot background frame (1 when the pet is not out)

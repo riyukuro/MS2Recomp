@@ -152,12 +152,12 @@ public:
     CString FUN_1419f31f0();
     void FUN_1419f3280();
     void FUN_1419f32f0();
-    void FUN_1419f3370();
+    void OnRideOff();
     int FUN_1419f3400(int nId);
     CStringW FUN_1419f3420();
     void FUN_1419f3590();
-    bool FUN_1419f3630();
-    bool FUN_1419f36c0();
+    bool OnPrevPage();
+    bool OnNextPage();
     void FUN_1419f3740();
 
 private:

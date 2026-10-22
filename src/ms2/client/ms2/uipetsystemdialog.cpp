@@ -108,7 +108,7 @@ int UIPetSystemDialog::vfunc_65()
 void UIPetSystemDialog::vfunc_67()
 {
     FUN_1419caeb0(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
-    FUN_140e74910();
+    OnRemoveTab();
     for (POSITION pos = m_198.GetStartPosition(); pos != NULL; m_198.GetNext(pos))
     {
         MS2Ptr<TabInfo> spTab = m_198.GetValueAt(pos);
@@ -176,7 +176,7 @@ int UIPetSystemDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     ASData data;
     if (_stricmp("OnRemoveTab", szMethod) == 0)
     {
-        FUN_140e74910();
+        OnRemoveTab();
         return 1;
     }
     if (_stricmp("OnChangeTab", szMethod) == 0 && data.FUN_1422b9620(pArgs, nArgs) != 0)
@@ -290,7 +290,7 @@ int UIPetSystemDialog::FUN_140e74790()
 }
 
 // @0x140e74910
-void UIPetSystemDialog::FUN_140e74910()
+void UIPetSystemDialog::OnRemoveTab()
 {
     if (m_188)
         m_188->vfunc_4();
