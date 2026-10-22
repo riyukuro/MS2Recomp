@@ -97,7 +97,7 @@ public:
     MS2Ptr<SkillLevelData> FUN_141764c80(int nSkillId);     // the learned level of a skill
     bool FUN_141765b80(int nSkillId);                       // the skill may be cast (by a row of the table)
     int FUN_141765d70();                                    // m_88
-    bool FUN_141765d90();                                   // the cooldown table is not empty
+    int FUN_141765d90();                                    // the cooldown table is not empty
     void FUN_141765de0();                                   // end every cooldown
     void FUN_141765e70(int nSkillId);                       // clear the cooldown of a skill
     void FUN_141765f60(unsigned __int64 nKey);              // clear the cooldown of a key

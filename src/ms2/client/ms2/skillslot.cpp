@@ -1949,7 +1949,7 @@ int CSkillSystem::FUN_141765d70()
 }
 
 // @0x141765d90
-bool CSkillSystem::FUN_141765d90()
+int CSkillSystem::FUN_141765d90()
 {
     return !m_mapCooltime.IsEmpty();
 }
