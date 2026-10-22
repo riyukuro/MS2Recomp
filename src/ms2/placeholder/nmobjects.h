@@ -142,6 +142,7 @@ MS2_CHECK_SIZE(CNMCustomNotifyFunc, 0x200);
 class CNMGameListData : public CNMSerializable
 {
 public:
+    CNMGameListData();                                                // 0x141579eb0
     virtual ~CNMGameListData() = default;
 
     std::vector<CNMGameInfo> m_games;
@@ -1892,7 +1893,15 @@ MS2_CHECK_SIZE(CNMGetFriendListFunc, 0x68);
 class CNMGetGameListFunc : public CNMFunc
 {
 public:
+    CNMGetGameListFunc();
     virtual ~CNMGetGameListFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMGameListData m_30; // +0x30
 };
