@@ -18,6 +18,9 @@
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/placeholder/asbuttonbar.h"
+#include "ms2/placeholder/asbutton.h"
+#include "ms2/placeholder/effectquery.h"
 #include "ms2/client/ms2/uimessagebox.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -28,10 +31,7 @@ static CString s_stun("stun");
 class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
 static Unk_1401cd100 s_pointer(NULL);
 static ATL::CAtlMap<unsigned int,CString> s_conditions(17,.75f,.25f,2.25f,10);
-struct Unk_GuideCeRequest { CString m_strName; int m_nOwnerId; int m_pad_0c; char m_pad_10[0x68]; };
-void FUN_140a52ef0(Unk_GuideCeRequest*);
-void FUN_1405a89e0(Unk_GuideCeRequest*);
-class Unk_1403ed280 { public: void FUN_1411a6060(int); int FUN_1411a49c0(Unk_GuideCeRequest*); void FUN_1411a4f40(CString,const Unk_StreamPoint&); };
+class Unk_1403ed280 { public: void FUN_1411a6060(int); int FUN_1411a49c0(NoticeMessage*); void FUN_1411a4f40(CString,const Unk_StreamPoint&); };
 Unk_1403ed280* FUN_1403ed280();
 int FUN_1412755a0();
 void FUN_141276180(const CString&,const CString&);
@@ -114,11 +114,11 @@ void UIGuideEvent::FUN_14195a1d0(CStringW& input,CStringW& out,int& special) {
     out=input.Mid(2,i-2); input=input.Mid(i+2);special=1;
 }
 // @0x14195b330
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 void UIGuideEvent::FUN_14195b330(unsigned int id,unsigned int stringid) {
     if(m_30==NULL) return;
     if(FUN_14195b8c0()) {
-        m_tips.AddTail(std::pair<unsigned int,unsigned int>(std::make_pair(id,stringid)));
+        std::pair<unsigned int,unsigned int> tip(std::make_pair((int&)id,stringid));
+        m_tips.AddTail(tip);
     } else {
         reinterpret_cast<Unk_1422baa20*>(m_30.operator->())->FUN_140acd130("showTextTip",FUN_14195c010(stringid));
         m_tip=id; FUN_141276180(s_guideSound,"");
@@ -175,6 +175,7 @@ int FUN_141389500(const CStringW&,int);                             // wide stri
 bool FUN_140184310(const CString&,const char*);
 bool FUN_1401c0090(const CString&,const CString&);
 double FUN_140f17ed0(const GfxValue*);                              // Value::GetNumber
+double FUN_140f17ed0(const GfxValue&);                              // Value::GetNumber
 void FUN_14025a680(const CStringW&,ATL::CAtlArray<CStringW>&,const wchar_t*);
 CString FUN_14016a600(const wchar_t*,int);
 CString FUN_14071ae20(const CString&);
@@ -229,7 +230,7 @@ static Unk_1422baa20* GuideAS(const MS2Ptr<AScript>& p) { return reinterpret_cas
 class Unk_GuideInventory : public UISwfEntity {
 public:
     int FUN_141999de0(); int FUN_141999f10();
-    MS2Ptr<ASDisplayObject> FUN_14199aad0();                         // tab strip
+    MS2Ptr<ASButtonBar> FUN_14199aad0();                             // tab strip
     int FUN_14199ab20(CString);                               // tab index by name
 };
 class Unk_GuideItem { public: bool FUN_140525f10(); bool FUN_140525f60(); void* FUN_140527840(); bool FUN_140528980(); };
@@ -237,7 +238,7 @@ class Unk_GuideItemInfo { public: int FUN_14053c5c0(); int FUN_14053c600(); };
 class Unk_GuideInvMgr { public: void FUN_140a60880(int,ATL::CAtlArray<MS2Ptr<CItem> >&); };
 extern Unk_GuideInvMgr DAT_143ab2a90;
 Unk_GuideInventory* FUN_1405344f0(int);
-class Unk_GuideMarker : public CPtred { public: MS2Ptr<AScript> m_18; };
+class Unk_GuideMarker : public CPtred { public: MS2Ptr<ASMovieClip> m_18; };
 class Unk_GuideMinimap : public UISwfEntity { public: MS2Ptr<Unk_GuideMarker> FUN_141a3b510(MS2Ptr<CPtred>); };
 Unk_GuideMinimap* FUN_140c9b540(int);
 class Unk_GuideWorld { public: MS2Ptr<CPtred> FUN_141bc9be0(unsigned); void* FUN_141bd0cc0(); };
@@ -313,12 +314,11 @@ void UIGuideEvent::FUN_14195bc50(CStringW tag, CStringW& name, CStringW& value)
 }
 
 // @0x14195b970  stringGuide.xml: <ms2><key id name voiceID/>...</ms2>
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 void UIGuideEvent::FUN_14195b970()
 {
     m_strings.RemoveAll();
     m_voices.RemoveAll();
-    CString path = FUN_14071ae20(CString("stringGuide.xml"));
+    CString path = FUN_14071ae20("stringGuide.xml");
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(doc, path, 0, true, false) == 0)
         return;
@@ -347,29 +347,26 @@ void UIGuideEvent::FUN_14195b970()
 }
 
 // @0x14195be30  the voice/sound loop is on while the arrow flag is
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 void UIGuideEvent::FUN_14195be30()
 {
-    if (m_30 == NULL || m_timer.FUN_140268870(300) == 0)
+    if (m_30 == NULL)
+        return;
+    if (m_timer.FUN_140268870(300) == 0)
         return;
     bool bPlaying = m_sound != 0;
-    char bWanted = 0;
-    if (FUN_1422b9ea0(FUN_1408e57f0()) == 0) {
-        GfxValue v = GuideAS(m_hasArrow)->FUN_1422bb3c0();
-        bWanted = FUN_1409c1720(v);
-    }
-    if (bPlaying != (bWanted != 0)) {
-        if (bPlaying) {
-            FUN_1403ed280()->FUN_1411a6060(m_sound);
-            m_sound = 0;
-        } else {
-            Unk_GuideCeRequest request;
-            FUN_140a52ef0(&request);
-            request.m_strName = *reinterpret_cast<CString*>((char*)FUN_1401d31f0() + 0x2f8);
-            request.m_nOwnerId = 0;
-            m_sound = FUN_1403ed280()->FUN_1411a49c0(&request);
-            FUN_1405a89e0(&request);
-        }
+    bool bWanted = false;
+    if (FUN_1422b9ea0(FUN_1408e57f0()) == 0)
+        bWanted = FUN_1409c1720(reinterpret_cast<Unk_1422baa20*>(m_hasArrow.operator->())->FUN_1422bb3c0());
+    if (bPlaying == bWanted)
+        return;
+    if (bPlaying) {
+        FUN_1403ed280()->FUN_1411a6060(m_sound);
+        m_sound = 0;
+    } else {
+        NoticeMessage request;
+        request.m_strName = *reinterpret_cast<CString*>((char*)FUN_1401d31f0() + 0x2f8);
+        request.m_nObject = 0;
+        m_sound = FUN_1403ed280()->FUN_1411a49c0(&request);
     }
 }
 
@@ -537,19 +534,18 @@ UIGuideEventArrow::UIGuideEventArrow() : m_pos(), m_direction(0), m_align(0), m_
 // MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 UIGuideEventArrow::~UIGuideEventArrow() {}
 // @0x14195dd90
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 void UIGuideEventArrow::vfunc_1(MS2Ptr<AScript> movie)
 {
     Unk_StreamPoint pos;
     if (vfunc_2(&pos) == 0) {
         GuideAS(movie)->FUN_140ba26d0("hideArrow", m_id);
-    } else {
-        ASObj info(2);
-        info.FUN_1409c0d20("id", m_id);
-        info.FUN_1409c4a30("x", pos.x);
-        info.FUN_1409c4a30("y", pos.y);
-        movie->Invoke("updateArrow", info);
+        return;
     }
+    ASObj info(2);
+    info.FUN_1409c0d20("id", m_id);
+    info.FUN_1409c4a30("x", pos.x);
+    info.FUN_1409c4a30("y", pos.y);
+    movie->Invoke("updateArrow", info);
 }
 // @0x14195dee0
 // MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
@@ -619,22 +615,34 @@ static int GuideKindOf(const CString& name);
 void UIGuideEventArrowDialog::FUN_14195e2d0(CString name) { m_kind = GuideKindOf(name); }
 
 // @0x141960620  the kind of a <ms2> arrow from its classifier name
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 static int GuideKindOf(const CString& name)
 {
-    if (FUN_140184310(name, "myInfoSkillID")) return 1;
-    if (FUN_140184310(name, "inventoryDesignItem")) return 2;
-    if (FUN_140184310(name, "inventoryItemType")) return 3;
-    if (FUN_140184310(name, "inventoryIconType")) return 4;
-    if (FUN_140184310(name, "inventoryItemID")) return 5;
-    if (FUN_140184310(name, "inventoryTab")) return 6;
-    if (FUN_140184310(name, "minimapMyPc")) return 7;
-    if (FUN_140184310(name, "minimapPortalID")) return 8;
-    if (FUN_140184310(name, "houseMark")) return 9;
-    if (FUN_140184310(name, "partyCamera")) return 10;
-    if (FUN_140184310(name, "messenger")) return 11;
-    if (FUN_140184310(name, "cubeType")) return 12;
-    return 0;
+    if (FUN_140184310(name, "myInfoSkillID"))
+        return 1;
+    else if (FUN_140184310(name, "inventoryDesignItem"))
+        return 2;
+    else if (FUN_140184310(name, "inventoryItemType"))
+        return 3;
+    else if (FUN_140184310(name, "inventoryIconType"))
+        return 4;
+    else if (FUN_140184310(name, "inventoryItemID"))
+        return 5;
+    else if (FUN_140184310(name, "inventoryTab"))
+        return 6;
+    else if (FUN_140184310(name, "minimapMyPc"))
+        return 7;
+    else if (FUN_140184310(name, "minimapPortalID"))
+        return 8;
+    else if (FUN_140184310(name, "houseMark"))
+        return 9;
+    else if (FUN_140184310(name, "partyCamera"))
+        return 10;
+    else if (FUN_140184310(name, "messenger"))
+        return 11;
+    else if (FUN_140184310(name, "cubeType"))
+        return 12;
+    else
+        return 0;
 }
 
 // @0x1419607f0  UI by type id
@@ -673,11 +681,9 @@ static UIObject* GuideUIByName2(const CString& name)
 }
 
 // @0x14195e320
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 int UIGuideEventArrowDialog::FUN_14195e320(void* out)
 {
-    Unk_StreamPoint* pos = (Unk_StreamPoint*)out;
-    *pos = DAT_143b01a60;
+    *(Unk_StreamPoint*)out = DAT_143b01a60;
     UIObject* ui = 0;
     if (m_38 != 0)
         ui = GuideUIById(m_38);
@@ -691,58 +697,58 @@ int UIGuideEventArrowDialog::FUN_14195e320(void* out)
 }
 
 // @0x14195e3f0  skill slot of MainPlayerInfo
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 int UIGuideEventArrowDialog::FUN_14195e3f0(void* out)
 {
-    Unk_StreamPoint* pos = (Unk_StreamPoint*)out;
-    UISwfEntity* ui = GuideUIByName2(CString("MainPlayerInfo"));
+    UISwfEntity* ui = GuideUIByName2("MainPlayerInfo");
     if (ui == 0)
         return 0;
-    MS2Ptr<ASDisplayObject> root = GuideRoot(ui);
-    if (root.IsNull())
+    MS2Ptr<ASDisplayObject> root(dynamic_cast<ASDisplayObject*>((AScript*)ui->FUN_1422dba00()));
+    if (root == 0)
         return 0;
-    *pos = GuideDOPoint(root.operator->());
+    *(Unk_StreamPoint*)out = Unk_StreamPoint(reinterpret_cast<Unk_GuideDO*>(root.operator->())->FUN_1422c10a0(),
+        reinterpret_cast<Unk_GuideDO*>(root.operator->())->FUN_1422c1110(), reinterpret_cast<Unk_GuideDO*>(root.operator->())->FUN_1422c1180());
     int slot = FUN_1409331f0()->FUN_14142e090(m_param, 0);
     if (slot == -1)
         return 0;
-    float baseX, baseY;
+    float baseX = 0.0f;
+    float baseY = 0.0f;
     if (slot >= 0 && slot <= 3) { baseX = -88.0f; baseY = -68.0f; }
-    else if (slot >= 4 && slot <= 7) { baseX = -68.0f; baseY = 0.0f; }
-    else if (slot >= 8 && slot <= 11) { baseX = 380.0f; baseY = -68.0f; }
+    else if (slot > 3 && slot <= 7) { baseX = -68.0f; baseY = 0.0f; }
+    else if (slot > 7 && slot <= 11) { baseX = 380.0f; baseY = -68.0f; }
     else { baseX = 400.0f; baseY = 0.0f; }
-    pos->FUN_140a4e560(Unk_StreamPoint(baseX + (float)((slot % 4) * 0x44 + 0x20) + 57.0f, baseY + 103.0f, 0.0f));
+    slot %= 4;
+    baseX += (float)(slot * 0x44 + 0x20);
+    ((Unk_StreamPoint*)out)->FUN_140a4e560(Unk_StreamPoint(baseX + 57.0f, baseY + 103.0f, 0.0f));
     return 1;
 }
 
 // @0x14195f600  does the inventory item match the arrow's kind / parameter
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 int UIGuideEventArrowDialog::FUN_14195f600(MS2Ptr<CItem> item, int kind)
 {
-    if (kind == 2) {
-        Unk_GuideItem* it = reinterpret_cast<Unk_GuideItem*>(item.operator->());
-        return it->FUN_140525f10() != 0 && it->FUN_140525f60() == 0;
-    }
-    if (kind == 3)
+    if (kind == 2)
+        return item->FUN_140525f10() != 0 && item->FUN_140525f60() == 0;
+    else if (kind == 3)
         return reinterpret_cast<Unk_GuideItemInfo*>(reinterpret_cast<Unk_GuideItem*>(item.operator->())->FUN_140527840())->FUN_14053c5c0() == m_param;
-    if (kind == 4)
+    else if (kind == 4)
         return reinterpret_cast<Unk_GuideItemInfo*>(reinterpret_cast<Unk_GuideItem*>(item.operator->())->FUN_140527840())->FUN_14053c600() == m_param;
-    if (kind == 5)
+    else if (kind == 5)
         return item->FUN_1405276c0() == m_param;
     return 0;
 }
 
 // @0x14195e6e0  inventory item
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 int UIGuideEventArrowDialog::FUN_14195e6e0(void* out)
 {
-    Unk_StreamPoint* pos = (Unk_StreamPoint*)out;
     Unk_GuideInventory* inv = FUN_1405344f0(0x4e2d);
     if (inv == 0)
         return 0;
-    MS2Ptr<ASDisplayObject> root = GuideRoot(inv);
-    if (root.IsNull())
+    MS2Ptr<ASDisplayObject> root(dynamic_cast<ASDisplayObject*>((AScript*)inv->FUN_1422dba00()));
+    if (root == 0)
         return 0;
-    *pos = GuideDOPoint(root.operator->());
+    const int nCols = 6;
+    const int nRows = 6;
+    *(Unk_StreamPoint*)out = Unk_StreamPoint(reinterpret_cast<Unk_GuideDO*>(root.operator->())->FUN_1422c10a0(),
+        reinterpret_cast<Unk_GuideDO*>(root.operator->())->FUN_1422c1110(), reinterpret_cast<Unk_GuideDO*>(root.operator->())->FUN_1422c1180());
     ATL::CAtlArray<MS2Ptr<CItem> > items;
     DAT_143ab2a90.FUN_140a60880(inv->FUN_141999de0(), items);
     for (size_t i = 0; i < items.GetCount(); i++) {
@@ -752,43 +758,45 @@ int UIGuideEventArrowDialog::FUN_14195e6e0(void* out)
             continue;
         int slot = items[i]->FUN_140526b50();
         int page = inv->FUN_141999f10();
-        if (page * 6 <= slot && slot < (page + 6) * 6) {
-            int rel = slot - page * 6;
-            int col = rel % 6 + 1;
-            int row = rel / 6;
-            pos->FUN_140a4e560(Unk_StreamPoint((float)(col * 0x3f) + 17.0f, (float)(row * 0x3e) + 99.0f, 0.0f));
+        int start = page * nCols;
+        int end = (page + nRows) * nCols;
+        if (start <= slot && slot < end) {
+            int col = (slot - start) % nCols + 1;
+            int row = (slot - start) / nCols;
+            float fx = (float)(col * 0x3f);
+            float fy = (float)(row * 0x3e);
+            ((Unk_StreamPoint*)out)->FUN_140a4e560(Unk_StreamPoint(fx + 17.0f, fy + 99.0f, 0.0f));
             return 1;
+        } else {
+            return 0;
         }
-        return 0;
     }
     return 0;
 }
 
 // @0x14195ead0  inventory tab
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 int UIGuideEventArrowDialog::FUN_14195ead0(void* out)
 {
-    Unk_StreamPoint* pos = (Unk_StreamPoint*)out;
     Unk_GuideInventory* inv = FUN_1405344f0(0x4e2d);
     if (inv == 0)
         return 0;
-    MS2Ptr<ASDisplayObject> tabs = inv->FUN_14199aad0();
-    if (tabs.IsNull())
+    MS2Ptr<ASButtonBar> tabs = inv->FUN_14199aad0();
+    if (tabs == 0)
         return 0;
-    MS2Ptr<ASDisplayObject> root = GuideRoot(inv);
-    if (root.IsNull())
+    MS2Ptr<ASDisplayObject> root(dynamic_cast<ASDisplayObject*>((AScript*)inv->FUN_1422dba00()));
+    if (root == 0)
         return 0;
     if (m_path.IsEmpty())
         return 0;
-    int index = inv->FUN_14199ab20(CString(m_path[0]));
+    int index = inv->FUN_14199ab20(m_path[0]);
     if (index == -1)
         return 0;
-    *pos = GuideDOPoint(root.operator->());
-    pos->FUN_140a4e560(GuideDOPoint(tabs.operator->()));
-    MS2Ptr<ASDisplayObject> tab = GuideDO(tabs.operator->())->FUN_1422e32b0(index);
-    if (tab.IsNull())
+    *(Unk_StreamPoint*)out = Unk_StreamPoint(root->FUN_1422c10a0(), root->FUN_1422c1110(), root->FUN_1422c1180());
+    ((Unk_StreamPoint*)out)->FUN_140a4e560(Unk_StreamPoint(tabs->FUN_1422c10a0(), tabs->FUN_1422c1110(), tabs->FUN_1422c1180()));
+    MS2Ptr<ASButton> tab = tabs->FUN_1422e32b0(index);
+    if (tab == 0)
         return 0;
-    pos->FUN_140a4e560(GuideDOPoint(tab.operator->()));
+    ((Unk_StreamPoint*)out)->FUN_140a4e560(Unk_StreamPoint(tab->FUN_1422c10a0(), tab->FUN_1422c1110(), tab->FUN_1422c1180()));
     return 1;
 }
 
@@ -808,10 +816,8 @@ unsigned UIGuideEventArrowDialog::FUN_14195f7b0(int kind)
 }
 
 // @0x14195eee0  minimap marker
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 int UIGuideEventArrowDialog::FUN_14195eee0(void* out)
 {
-    Unk_StreamPoint* pos = (Unk_StreamPoint*)out;
     Unk_GuideMinimap* minimap = FUN_140c9b540(0x4e29);
     if (minimap == 0)
         return 0;
@@ -824,14 +830,12 @@ int UIGuideEventArrowDialog::FUN_14195eee0(void* out)
     MS2Ptr<Unk_GuideMarker> marker = minimap->FUN_141a3b510(MS2Ptr<CPtred>(object));
     if (marker.IsNull())
         return 0;
-    GfxValue gx = marker->m_18->FUN_1422bb870();
-    GfxValue rx = minimap->FUN_1422dba00()->Invoke("getGlobalX", gx);
-    pos->x = (float)FUN_140f17ed0(&rx);
-    GfxValue gy = marker->m_18->FUN_1422bb870();
-    GfxValue ry = minimap->FUN_1422dba00()->Invoke("getGlobalY", gy);
-    pos->y = (float)FUN_140f17ed0(&ry);
-    pos->z = 0.0f;
-    return !(pos->x == 0.0f || pos->y == 0.0f);
+    ((Unk_StreamPoint*)out)->x = (float)FUN_140f17ed0(minimap->FUN_1422dba00()->Invoke("getGlobalX", marker->m_18->FUN_1422bb870()));
+    ((Unk_StreamPoint*)out)->y = (float)FUN_140f17ed0(minimap->FUN_1422dba00()->Invoke("getGlobalY", marker->m_18->FUN_1422bb870()));
+    ((Unk_StreamPoint*)out)->z = 0.0f;
+    if (((Unk_StreamPoint*)out)->x == 0.0f || ((Unk_StreamPoint*)out)->y == 0.0f)
+        return 0;
+    return 1;
 }
 
 // @0x14195f270  house mark
@@ -853,16 +857,16 @@ int UIGuideEventArrowDialog::FUN_14195f270(void* out)
 }
 
 // @0x14195f3a0  party camera button
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 int UIGuideEventArrowDialog::FUN_14195f3a0(void* out)
 {
-    Unk_GuideParty* party = FUN_1413b1c60(CString("PartyDialog"));
+    Unk_GuideParty* party = FUN_1413b1c60("PartyDialog");
     if (party == 0)
         return 0;
-    MS2Ptr<ASDisplayObject> root = GuideRoot(party);
-    if (root.IsNull())
+    MS2Ptr<ASDisplayObject> root(dynamic_cast<ASDisplayObject*>((AScript*)party->FUN_1422dba00()));
+    if (root == 0)
         return 0;
-    *(Unk_StreamPoint*)out = GuideDOPoint(root.operator->());
+    *(Unk_StreamPoint*)out = Unk_StreamPoint(reinterpret_cast<Unk_GuideDO*>(root.operator->())->FUN_1422c10a0(),
+        reinterpret_cast<Unk_GuideDO*>(root.operator->())->FUN_1422c1110(), reinterpret_cast<Unk_GuideDO*>(root.operator->())->FUN_1422c1180());
     return party->FUN_141a75680(out);
 }
 
@@ -890,29 +894,27 @@ int UIGuideEventArrowDialog::FUN_14195f5a0(void* out)
 }
 
 // @0x14195f870  position of the element reached through the child path m_path
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 int UIGuideEventArrowDialog::FUN_14195f870(UISwfEntity* ui, void* out)
 {
-    Unk_StreamPoint* pos = (Unk_StreamPoint*)out;
-    MS2Ptr<ASDisplayObject> root = GuideRoot(ui);
-    if (root.IsNull())
+    MS2Ptr<ASDisplayObject> root(dynamic_cast<ASDisplayObject*>((AScript*)ui->FUN_1422dba00()));
+    if (root == 0)
         return 0;
-    *pos = GuideDOPoint(root.operator->());
+    *(Unk_StreamPoint*)out = Unk_StreamPoint(root->FUN_1422c10a0(), root->FUN_1422c1110(), root->FUN_1422c1180());
     MS2Ptr<ASDisplayObject> last(0);
     if (m_path.GetCount() != 0) {
         MS2Ptr<ASDisplayObject> cur = ui->FUN_1422dba50();
         for (size_t i = 0; i < m_path.GetCount(); i++) {
-            cur = GuideDO(cur.operator->())->FUN_1413b19d0(m_path[i]);
-            if (cur.IsNull())
+            cur = reinterpret_cast<Unk_GuideDO*>(cur.operator->())->FUN_1413b19d0(m_path[i]);
+            if (cur == 0)
                 return 0;
             if (!cur->FUN_1422bfca0())
                 return 0;
-            pos->FUN_140a4e560(GuideDOPoint(cur.operator->()));
+            ((Unk_StreamPoint*)out)->FUN_140a4e560(Unk_StreamPoint(cur->FUN_1422c10a0(), cur->FUN_1422c1110(), cur->FUN_1422c1180()));
             last = cur;
         }
     }
     if (last.get() != 0)
-        pos->x += (float)(last->FUN_1422c1340() / 2);
+        ((Unk_StreamPoint*)out)->x += (float)(last->FUN_1422c1340() / 2);
     return 1;
 }
 
@@ -974,7 +976,6 @@ int UIGuideEventArrowDialog::FUN_14195fc40(UISwfEntity* ui, void* out)
 }
 
 // @0x141960510
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 int UIGuideEventArrowDialog::FUN_141960510()
 {
     if (m_scenes.IsEmpty())
@@ -983,8 +984,7 @@ int UIGuideEventArrowDialog::FUN_141960510()
     if (scene == 0)
         return 0;
     for (unsigned i = 0; i < m_scenes.GetCount(); i++) {
-        CString current = scene->vfunc_1();
-        if (FUN_1401c0090(current, m_scenes[i]))
+        if (scene->vfunc_1() == m_scenes[i])
             return 1;
     }
     return 0;
