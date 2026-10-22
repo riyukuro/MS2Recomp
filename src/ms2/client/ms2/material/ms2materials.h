@@ -549,15 +549,31 @@ public:
 };
 
 //--------------------------------------------------------------------------------------------------
-#define MS2_DECLARE_STANDARD_MATERIAL(classname)                                                    \
-    class classname : public MS2StandardMaterial                                                    \
-    {                                                                                               \
-    public:                                                                                         \
-        classname(bool bAutoCreateCaches);                                                          \
-    }
+class MS2ForceColorMaterial : public MS2StandardMaterial
+{
+    NiDeclareRTTI;
 
-MS2_DECLARE_STANDARD_MATERIAL(MS2ForceColorMaterial);
-MS2_DECLARE_STANDARD_MATERIAL(MS2UIMaterial);
+public:
+    MS2ForceColorMaterial(bool bAutoCreateCaches);
+
+    // protected in the original; public here so the hook can bind it
+    virtual bool HandleMS2FinalPixelOutputs(Context& kContext, NiStandardPixelProgramDescriptor* pkPixDesc,
+        NiMaterialResource* pkWorldNormal, NiMaterialResource* pkViewVector, NiMaterialResource* pkDiffuseAccum,
+        NiMaterialResource* pkSpecularAccum, NiMaterialResource* pkOpacityAccum);
+};
+
+//--------------------------------------------------------------------------------------------------
+class MS2UIMaterial : public MS2StandardMaterial
+{
+    NiDeclareRTTI;
+
+public:
+    MS2UIMaterial(bool bAutoCreateCaches);
+
+    // protected in the original; public here so the hook can bind it
+    virtual bool HandleApplyFog(Context& kContext, NiStandardPixelProgramDescriptor* pkPixDesc,
+        NiMaterialResource* pkUnfoggedColor, NiMaterialResource*& pkFogOutput);
+};
 
 //--------------------------------------------------------------------------------------------------
 class MS2CharacterDepthMaterial : public MS2DepthMaterial
