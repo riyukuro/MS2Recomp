@@ -218,7 +218,7 @@ CCharacterAbilityManager::~CCharacterAbilityManager()
 }
 
 // @0x140f29ad0
-void CCharacterAbilityManager::FUN_140f29ad0(CInPacket& packet)
+void CCharacterAbilityManager::OnCharacterAbility(CInPacket& packet)
 {
     int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
     switch (nMode)

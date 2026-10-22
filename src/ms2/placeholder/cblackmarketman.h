@@ -26,7 +26,7 @@ public:
     CBlackMarketMan();                                      // 0x140a20460
     virtual ~CBlackMarketMan();                             // 0x140a20590
 
-    void FUN_140a20650(CInPacket& packet);                  // packet 0x5f dispatcher by the sub code
+    void OnBlackMarket(CInPacket& packet);                  // packet 0x5f dispatcher by the sub code
     void FUN_140a20940();                                   // send 0x5f/1
     void FUN_140a209a0();                                   // send 0x5f/6
     void FUN_140a20a00(unsigned __int64 qwA, unsigned __int64 qwB, int nCount);   // send 0x5f/2

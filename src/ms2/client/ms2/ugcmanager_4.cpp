@@ -2764,7 +2764,7 @@ NiTexturePtr CUgcManager::FUN_1418897a0()
 MS2_REPLACE_METHOD(0x1418897a0, CUgcManager, FUN_1418897a0, 67, 0x94B9AF46);
 
 // @0x1418897f0
-void CUgcManager::FUN_1418897f0(CInPacket& packet)
+void CUgcManager::OnUgc(CInPacket& packet)
 {
     int nType = packet.vfunc_o8_1();
     if (nType == 2)
@@ -2841,7 +2841,7 @@ void CUgcManager::FUN_1418897f0(CInPacket& packet)
         FUN_14188f450(packet);
     }
 }
-MS2_REPLACE_METHOD(0x1418897f0, CUgcManager, FUN_1418897f0, 1246, 0x53436E6E);
+MS2_REPLACE_METHOD(0x1418897f0, CUgcManager, OnUgc, 1246, 0x53436E6E);
 
 // @0x141889ce0
 // Re-read the local files of an upload kind (warns when the directory holds too many); a changed list replaces the cached

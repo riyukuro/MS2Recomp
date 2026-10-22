@@ -226,7 +226,7 @@ public:
     void FUN_1418894d0();                                   // drop the images of the banner objects
     void FUN_1418895d0(int nObjectId, efd::SmartPointer<NiTexture> spTexture);
     void FUN_141889670(int nObjectId);
-    void FUN_1418897f0(CInPacket& packet);                  // the UGC packet (opcode byte first)
+    void OnUgc(CInPacket& packet);                  // the UGC packet (opcode byte first)
     int FUN_14188da70(CInPacket& packet);                   // a banner reservation answer
     int FUN_14188dd70(CInPacket& packet);                   // the upload was accepted: send the file
     int FUN_14188e0d0(CInPacket& packet);                   // the upload was registered

@@ -115,7 +115,7 @@ CBlackMarketMan::~CBlackMarketMan()
 }
 
 // @0x140a20650
-void CBlackMarketMan::FUN_140a20650(CInPacket& packet)
+void CBlackMarketMan::OnBlackMarket(CInPacket& packet)
 {
     char cSub = packet.vfunc_o8_1();
     if (cSub == 6)

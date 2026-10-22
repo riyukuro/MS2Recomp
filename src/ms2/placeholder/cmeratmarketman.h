@@ -64,7 +64,7 @@ public:
     CMeratMarketMan();                                      // 0x140d53ad0
     virtual ~CMeratMarketMan();                             // 0x140d53da0
 
-    void FUN_140d53fb0(CInPacket& packet);
+    void OnMeretMarket(CInPacket& packet);
     void FUN_140d542c0(int nTab, int nSort);
     void FUN_140d54360();
     void FUN_140d543c0(int nFlag);
@@ -165,7 +165,7 @@ public:
     bool FUN_140d5b710();
     bool FUN_140d5b880(unsigned int nCategory, int nTab);
     bool FUN_140d5ba70();                                   // push the ad products to the ad dialog (0x4f34)
-    // The server answers (sub-opcodes of the market packet, see FUN_140d53fb0).
+    // The server answers (sub-opcodes of the market packet, see OnMeretMarket).
     void FUN_140d5bc30(CInPacket& packet);
     void FUN_140d5bd10(CInPacket& packet);
     void FUN_140d5bf40(CInPacket& packet);

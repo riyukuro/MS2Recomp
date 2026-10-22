@@ -628,7 +628,7 @@ void CNetworkService::FUN_1415397d0(CInPacket& packet) {
     case 0x6: FUN_14153b220(packet); break;
     case 0x7: FUN_14153b2d0(packet); break;
     case 0x8: FUN_14153b310(packet); break;
-    case 0xa: FUN_14153c670(packet); break;
+    case 0xa: OnLoginResult(packet); break;
     case 0xd: FUN_14153b440(packet); break;
     case 0xe: FUN_14153b570(packet); break;
     case 0xf: FUN_14153bc00(packet); break;
@@ -642,7 +642,7 @@ void CNetworkService::FUN_1415397d0(CInPacket& packet) {
     case 0x5e: FUN_140936a50(FUN_1406c7600(),packet); break;
     case 0x6b: FUN_1418897f0(FUN_14052d220(),packet); break;
     case 0x6c: FUN_140d53fb0(FUN_140939a00(),packet); break;
-    case 0x6d: FUN_14153a8f0(packet); break;
+    case 0x6d: OnGvg(packet); break;
     case 0x6f: FUN_141428bb0(FUN_1409331f0(),packet); break;
     case 0x72: FUN_14153c0c0(packet); break;
     case 0x82: FUN_14185bd20(FUN_14140ea30(),packet); break;
@@ -657,7 +657,7 @@ void CNetworkService::FUN_1415397d0(CInPacket& packet) {
     case 0xad: FUN_140b06020(FUN_140b05bf0(),packet); break;
     case 0xaf: FUN_140d86260()->vfunc_26(packet); break;
     case 0xb3: FUN_14096b3a0(FUN_1409fb930(),packet); break;
-    case 0xb8: FUN_14153e050(packet); break;
+    case 0xb8: OnCharMaxCount(packet); break;
     case 0xbb: FUN_1416310d0(FUN_1409670d0(),packet); break;
     case 0xc6: FUN_14153e0d0(packet); break;
     case 0xcc: FUN_140c895e0(FUN_140535320(),packet); break;
@@ -665,7 +665,7 @@ void CNetworkService::FUN_1415397d0(CInPacket& packet) {
     case 0xd2: FUN_140d86260()->vfunc_38(packet); break;
     case 0xd5: FUN_140d86260()->vfunc_25(packet); break;
     case 0xdf: FUN_140f29ad0(FUN_140f2d240(),packet); break;
-    case 0xe6: FUN_14153b3b0(packet); break;
+    case 0xe6: OnBypassKey(packet); break;
     case 0xed: FUN_140d86260()->vfunc_42(packet); break;
     case 0xee: FUN_140b2ab70(FUN_140b2e980(),packet); break;
     case 0xf6: FUN_140b158c0(FUN_140e0d900(),packet); break;
@@ -766,7 +766,7 @@ void CNetworkService::FUN_14153a8a0(CInPacket& input) {
     FUN_1403ed2d0()->FUN_141bca170(value);
 }
 // @0x14153a8f0
-void CNetworkService::FUN_14153a8f0(CInPacket& input) {
+void CNetworkService::OnGvg(CInPacket& input) {
     unsigned count=static_cast<CInputStream&>(input).vfunc_o8_3();
     for(unsigned i=0;i<count;++i) {
         int kind=static_cast<CInputStream&>(input).vfunc_o8_3();
@@ -842,7 +842,7 @@ void CNetworkService::FUN_14153b310(CInPacket& input) {
     FUN_140208ab0(m_socket.m_out.operator->(),&m_socket,sequence);
 }
 // @0x14153b3b0
-void CNetworkService::FUN_14153b3b0(CInPacket& input) {
+void CNetworkService::OnBypassKey(CInPacket& input) {
     DAT_143ab2858=static_cast<CInputStream&>(input).vfunc_o8_3();
     __int64 value=static_cast<CInputStream&>(input).vfunc_o8_4();
     FUN_140d86260()->vfunc_21(value);
@@ -947,7 +947,7 @@ void CNetworkService::FUN_14153c4b0(CInPacket& input) {
 }
 // @0x14153c670
 // MS2-FUNCTIONAL: equivalent authentication branches; shared dialog helpers and explicit locals change temporary placement.
-void CNetworkService::FUN_14153c670(CInPacket& input) {
+void CNetworkService::OnLoginResult(CInPacket& input) {
     Unk_NetworkLoginResult reply;reply.FUN_1407a4740(input);int error=reply.error;
     if(reply.result==0) { FUN_140d86260()->vfunc_11();DAT_143ab2860=reply.value;return; }
     if(reply.result==7) {
@@ -1024,7 +1024,7 @@ void CNetworkService::FUN_14153c670(CInPacket& input) {
     }
 }
 // @0x14153e050
-void CNetworkService::FUN_14153e050(CInPacket& input) {
+void CNetworkService::OnCharMaxCount(CInPacket& input) {
     int value=static_cast<CInputStream&>(input).vfunc_o8_3();
     int value2=static_cast<CInputStream&>(input).vfunc_o8_3();
     DAT_1439f4a84=value;DAT_1439f4a88=value2;
@@ -1279,7 +1279,7 @@ MS2_REPLACE_METHOD(0x14153a380, CNetworkService, FUN_14153a380, 1013, 0xDB706029
 MS2_REPLACE_METHOD(0x14153a780, CNetworkService, FUN_14153a780, 146, 0x4F946680);
 MS2_REPLACE_METHOD(0x14153a820, CNetworkService, FUN_14153a820, 112, 0x47B12CA5);
 MS2_REPLACE_METHOD(0x14153a8a0, CNetworkService, FUN_14153a8a0, 74, 0xE509573C);
-MS2_REPLACE_METHOD(0x14153a8f0, CNetworkService, FUN_14153a8f0, 976, 0xD3771DB2);
+MS2_REPLACE_METHOD(0x14153a8f0, CNetworkService, OnGvg, 976, 0xD3771DB2);
 MS2_REPLACE_METHOD(0x14153af40, CNetworkService, FUN_14153af40, 37, 0x99EE58A4);
 MS2_REPLACE_METHOD(0x14153af70, CNetworkService, FUN_14153af70, 148, 0x5F5528A0);
 MS2_REPLACE_METHOD(0x14153b010, CNetworkService, FUN_14153b010, 418, 0x3BD65C09);
@@ -1287,14 +1287,14 @@ MS2_REPLACE_METHOD(0x14153b1c0, CNetworkService, FUN_14153b1c0, 83, 0xC22689FF);
 MS2_REPLACE_METHOD(0x14153b220, CNetworkService, FUN_14153b220, 170, 0x75AAFF94);
 MS2_REPLACE_METHOD(0x14153b2d0, CNetworkService, FUN_14153b2d0, 57, 0x05F01684);
 MS2_REPLACE_METHOD(0x14153b310, CNetworkService, FUN_14153b310, 149, 0x886C3728);
-MS2_REPLACE_METHOD(0x14153b3b0, CNetworkService, FUN_14153b3b0, 132, 0xEB03DF6D);
+MS2_REPLACE_METHOD(0x14153b3b0, CNetworkService, OnBypassKey, 132, 0xEB03DF6D);
 MS2_REPLACE_METHOD(0x14153b440, CNetworkService, FUN_14153b440, 285, 0x9743D61F);
 MS2_REPLACE_METHOD(0x14153b570, CNetworkService, FUN_14153b570, 1661, 0x39584B2A);
 MS2_REPLACE_METHOD(0x14153bc00, CNetworkService, FUN_14153bc00, 539, 0x04306B6A);
 MS2_REPLACE_METHOD(0x14153be30, CNetworkService, FUN_14153be30, 644, 0xF6FD9462);
 MS2_REPLACE_METHOD(0x14153c0c0, CNetworkService, FUN_14153c0c0, 999, 0x451BCF7F);
 MS2_REPLACE_METHOD(0x14153c4b0, CNetworkService, FUN_14153c4b0, 440, 0x69C4D12D);
-MS2_REPLACE_METHOD(0x14153e050, CNetworkService, FUN_14153e050, 115, 0x90C08582);
+MS2_REPLACE_METHOD(0x14153e050, CNetworkService, OnCharMaxCount, 115, 0x90C08582);
 MS2_REPLACE_METHOD(0x14153e0d0, CNetworkService, FUN_14153e0d0, 108, 0x3A7C5312);
 MS2_REPLACE_METHOD(0x14153e150, CNetworkService, FUN_14153e150, 40, 0x13B95164);
 MS2_REPLACE_METHOD(0x14153e180, CNetworkService, FUN_14153e180, 250, 0x41E986E3);

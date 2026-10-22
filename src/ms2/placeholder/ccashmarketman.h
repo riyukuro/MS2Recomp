@@ -27,7 +27,7 @@ public:
 
     ATL::CAtlArray<MS2Ptr<CCashInventoryProduct> >& FUN_140b05c00() { return m_aInv; }   // 0x140b05c00
     bool GetFlag() const;                                   // 0x140b06000 m_bFlag
-    void FUN_140b06020(CInPacket& packet);                  // packet 0x6a dispatcher by the sub code
+    void OnCash(CInPacket& packet);                  // packet 0x6a dispatcher by the sub code
     void FUN_140b06180();                                   // send 0x6a/0
     void FUN_140b061e0();                                   // send 0x6a/1
     void FUN_140b06240(int a, int b);                       // send 0x6a/2

@@ -120,7 +120,7 @@ public:
     void Invite(unsigned oid, CStringW name);
     void FUN_14137efa0(unsigned oid, int flag);
     void FUN_14137f080(unsigned oid, CStringW text);
-    void FUN_14137f2f0(CInPacket* packet);           // packet dispatcher
+    void OnGroupChat(CInPacket* packet);           // packet dispatcher
     void FUN_14137f490(CInPacket* packet);
     void FUN_14137f590(CInPacket* packet);
     void FUN_14137f640(CInPacket* packet);

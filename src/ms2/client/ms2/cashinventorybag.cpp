@@ -310,7 +310,7 @@ bool CCashMarketMan::GetFlag() const
 }
 
 // @0x140b06020
-void CCashMarketMan::FUN_140b06020(CInPacket& packet)
+void CCashMarketMan::OnCash(CInPacket& packet)
 {
     char cSub = packet.vfunc_o8_1();
     if (cSub == 0)

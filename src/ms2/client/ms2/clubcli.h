@@ -74,7 +74,7 @@ public:
     MS2Ptr<Club::PacketInvite> FUN_140b156b0(__int64 nInviteId);    // an invitation by id
     MS2Ptr<CClubMember> FUN_140b15770(__int64 nClubId, __int64 nCharacterId);   // a club member by character id
     int FUN_140b15830(__int64 nClubId);                             // number of members of a club that are online
-    void FUN_140b158c0(CInPacket& packet);                          // dispatch a club packet (opcode 0x56 sub-opcode)
+    void OnClub(CInPacket& packet);                          // dispatch a club packet (opcode 0x56 sub-opcode)
 
     bool FUN_140b15c10(CStringW strName);                           // request: create a club
     void FUN_140b15f40(__int64 nClubId, int nCode);                 // request: answer a club invitation to join
@@ -86,7 +86,7 @@ public:
     void FUN_140b163c0(__int64 nClubId, int nBuffId, int nLevel);   // request: set the buff
     void FUN_140b16450(__int64 nClubId, CStringW strName);          // request: rename the club
 
-    // Packet handlers by sub-opcode (FUN_140b158c0).
+    // Packet handlers by sub-opcode (OnClub).
     void FUN_140b16520(CInPacket& packet);                          // 0 a club (own record)
     void FUN_140b16650(CInPacket& packet);                          // 1
     void FUN_140b166d0(CInPacket& packet);                          // 2 a club to join

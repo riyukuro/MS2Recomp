@@ -142,7 +142,7 @@ public:
     void FUN_14153b220(CInPacket&);
     void FUN_14153b2d0(CInPacket&);
     void FUN_14153b310(CInPacket&);
-    void FUN_14153c670(CInPacket&);
+    void OnLoginResult(CInPacket&);
     void FUN_14153b440(CInPacket&);
     void FUN_14153b570(CInPacket&);
     void FUN_14153bc00(CInPacket&);
@@ -151,13 +151,13 @@ public:
     void FUN_14153a2e0(CInPacket&);
     void FUN_14153a780(CInPacket&);
     void FUN_14153a820(CInPacket&);
-    void FUN_14153a8f0(CInPacket&);
+    void OnGvg(CInPacket&);
     void FUN_14153c0c0(CInPacket&);
     void FUN_14153c4b0(CInPacket&);
-    void FUN_14153e050(CInPacket&);
+    void OnCharMaxCount(CInPacket&);
     void FUN_14153e0d0(CInPacket&);
     void FUN_14153e150(CInPacket&);
-    void FUN_14153b3b0(CInPacket&);
+    void OnBypassKey(CInPacket&);
     void FUN_14153e180(CInPacket&);
     void FUN_14153e280(CInPacket&);
     void FUN_14153f6c0(CInPacket&);

@@ -1060,7 +1060,7 @@ MS2_REPLACE_METHOD(0x1416cbb20, CQuestManager, FUN_1416cbb20, 603, 0x95FC889F);
 // MS2-FUNCTIONAL: WorldService::FUN_141bc2800 returns the field handle by value in the exe (out-param in
 // worldservice.h).
 // @0x1416cbd90
-void CQuestManager::FUN_1416cbd90(CInPacket& packet)
+void CQuestManager::OnQuest(CInPacket& packet)
 {
     int refresh = 0;
     int mode = packet.vfunc_o8_1();
@@ -1304,7 +1304,7 @@ void CQuestManager::FUN_1416cbd90(CInPacket& packet)
     }
     if (refresh != 0) FUN_1403ed2d0()->FUN_141bd3860();
 }
-MS2_REPLACE_METHOD(0x1416cbd90, CQuestManager, FUN_1416cbd90, 8375, 0xAF27A1D5);
+MS2_REPLACE_METHOD(0x1416cbd90, CQuestManager, OnQuest, 8375, 0xAF27A1D5);
 
 // @0x1416cde50
 void CQuestManager::FUN_1416cde50(int error)

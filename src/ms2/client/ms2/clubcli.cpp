@@ -865,7 +865,7 @@ int CClubClientManager::FUN_140b15830(__int64 nClubId)
 }
 
 // @0x140b158c0
-void CClubClientManager::FUN_140b158c0(CInPacket& packet)
+void CClubClientManager::OnClub(CInPacket& packet)
 {
     if (!FUN_140166410()->FUN_14036d570(0x56))
         return;

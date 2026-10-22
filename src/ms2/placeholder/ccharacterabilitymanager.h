@@ -19,7 +19,7 @@ class CCharacterAbilityManager : public TSingleton<CCharacterAbilityManager>
 public:
     CCharacterAbilityManager();                             // 0x140f29a20
     virtual ~CCharacterAbilityManager();                    //  0 0x140f29a90
-    void FUN_140f29ad0(CInPacket& packet);                  // packet 0xdf: 0 all abilities, 1 nothing, 2 one learned
+    void OnCharacterAbility(CInPacket& packet);                  // packet 0xdf: 0 all abilities, 1 nothing, 2 one learned
     void FUN_140f29b70(CInPacket& packet);                  // mode 0: the learned ids, the reset time, the points
     void FUN_140f29cc0(CInPacket& packet);                  // mode 2: one ability learned
     void FUN_140f29de0(CInPacket& packet);                  // mode 1: empty

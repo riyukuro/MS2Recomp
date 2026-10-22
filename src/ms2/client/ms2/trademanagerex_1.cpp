@@ -338,7 +338,7 @@ void CTradeManagerEx::FUN_14185bcb0(__int64 uid)
 }
 
 // @0x14185bd20
-void CTradeManagerEx::FUN_14185bd20(CInPacket& packet)
+void CTradeManagerEx::OnTrade(CInPacket& packet)
 {
     switch (packet.vfunc_o8_1())
     {

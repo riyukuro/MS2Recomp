@@ -44,8 +44,8 @@ public:
     void FUN_14185bc40(__int64 uid);                // 2
     void FUN_14185bcb0(__int64 uid);                // 14
 
-    // Incoming packet (opcode 0x82): FUN_14185bd20 switches on the sub-code.
-    void FUN_14185bd20(CInPacket& packet);
+    // Incoming packet (opcode 0x82): OnTrade switches on the sub-code.
+    void OnTrade(CInPacket& packet);
     void FUN_14185bec0(CInPacket& packet);          // 0  trade request from a player
     void FUN_14185c230();                           // 2  request sent
     void FUN_14185c2a0(CInPacket& packet);          // 1  request failed (reason code)

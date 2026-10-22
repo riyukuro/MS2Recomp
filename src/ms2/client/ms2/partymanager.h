@@ -23,7 +23,7 @@ public:
     void FUN_14162a340();
     void FUN_14162a370();
     void FUN_14162a480();
-    void FUN_14162a4b0(CInPacket&);
+    void OnParty(CInPacket&);
     void FUN_14162a840(TPtr<PCBase>);
     void FUN_14162a910(TPtr<PCBase>);
     void FUN_14162aa10(TPtr<PCBase>);
@@ -112,7 +112,7 @@ public:
     void FUN_141630fd0();
     void FUN_141631030();
     void FUN_141631060();
-    void FUN_1416310d0(CInPacket&);
+    void OnMatchParty(CInPacket&);
     void FUN_141631200();
     void FUN_1416312f0(int);
     int FUN_141631330();

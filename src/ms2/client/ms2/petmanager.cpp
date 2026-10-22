@@ -694,7 +694,7 @@ CPetManager::~CPetManager()
 {
 }
 // @0x140c895e0
-void CPetManager::FUN_140c895e0(CInPacket& in)
+void CPetManager::OnResponsePet(CInPacket& in)
 {
     int nMode = in.vfunc_o8_1();
     switch (nMode)

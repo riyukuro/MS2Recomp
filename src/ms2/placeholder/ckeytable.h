@@ -50,7 +50,7 @@ public:
     CKeyTable();                                            // 0x141428830
     virtual ~CKeyTable();                                   // 0x141428a70
 
-    void FUN_141428bb0(CInPacket& packet);                  // the key table packet
+    void OnKeyTable(CInPacket& packet);                  // the key table packet
     void FUN_1414294e0(int nKey);                           // send one binding
     void FUN_141429600();                                   // apply / save the edited bindings
     int FUN_1414297e0(const CString& strPath, int n);       // load the default key file

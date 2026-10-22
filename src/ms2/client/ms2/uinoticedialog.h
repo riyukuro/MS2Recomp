@@ -36,7 +36,7 @@ public:
     virtual void vfunc_87(SIZE* pSize);                             // 87 0x1410093f0
     virtual bool vfunc_90(POINT* pPos);                             // 90 0x141009470
 
-    void FUN_141009680(NotifyObject* pNotify);                      // 0x141009680 notice handler: restart the open time and show
+    void OnNoticeDialog(NotifyObject* pNotify);                      // 0x141009680 notice handler: restart the open time and show
     void FUN_141009710(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141009710 mouse over the hit area: vfunc_84(1)
     void FUN_141009740(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141009740 mouse out of the hit area: vfunc_84(0)
     void FUN_141009770(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141009770 "show" button

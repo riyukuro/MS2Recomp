@@ -3,7 +3,7 @@
 // Delegate<bool(int,const CMsgBoxData&)>::DelegateImpl<std::pair<CPetInventory*, bool (CPetInventory::*)(int,const CMsgBoxData&)>>).
 // NOT an original header. Both live in ?\petmanager.cpp.
 // A TSingleton that CGameApp::InitInstance (?\ms2.cpp) creates; ctor 0x140c894b0, dtor 0x140c89570, deleting dtor 0x140c8da70.
-// CPetManager::FUN_140c895e0 handles the pet packet (opcode 0x79 family; sub-mode = first byte).
+// CPetManager::OnResponsePet handles the pet packet (opcode 0x79 family; sub-mode = first byte).
 // CPetInventory (ctor 0x140c86860, dtor 0x140c8d680) is Unk_Inventory's shape (client\ms2\inventory.h) with one bag:
 //   +0x00 lock, +0x30 uid -> item map, +0x60 slot array, +0x80 int (reset to 0).
 #pragma once
@@ -88,7 +88,7 @@ public:
     virtual ~CPetManager();                                 // 0x140c89570
 
     // dispatch and handlers of the pet packet (sub-mode = the first byte)
-    void FUN_140c895e0(CInPacket& in);
+    void OnResponsePet(CInPacket& in);
     void FUN_140c89810(CInPacket& in);                      // mode 7: counts of all pets
     void FUN_140c898f0(CInPacket& in);                      // mode 8: count of one pet
     void FUN_140c89980(CInPacket& in);                      // mode 9: info

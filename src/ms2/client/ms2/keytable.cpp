@@ -305,7 +305,7 @@ CKeyTable::~CKeyTable()
 }
 
 // @0x141428bb0
-void CKeyTable::FUN_141428bb0(CInPacket& packet)
+void CKeyTable::OnKeyTable(CInPacket& packet)
 {
     int nMode = packet.vfunc_o8_1();
     if (nMode == 0)

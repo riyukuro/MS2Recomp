@@ -393,7 +393,7 @@ CMeratMarketMan::~CMeratMarketMan()
 
 // The market packet (0x6c) of the server: dispatch on the sub-opcode.
 // @0x140d53fb0
-void CMeratMarketMan::FUN_140d53fb0(CInPacket& packet)
+void CMeratMarketMan::OnMeretMarket(CInPacket& packet)
 {
     unsigned char nOp = packet.vfunc_o8_1();
     if (nOp == 0x65)

@@ -521,13 +521,13 @@ void CSceneStateMulti::OnPacket(CInPacket& packet)
         FUN_140ceab50(FUN_14015a050(), packet);
         break;
     case 0xb4:
-        FUN_14174f8d0(packet);
+        OnWaitingTicketUpdate(packet);
         break;
     case 0xcb:
         FUN_140930fe0(packet);
         break;
     case 0xf7:
-        FUN_141750050(packet);
+        OnEventReward(packet);
         break;
     case 0x10f:
         FUN_14174fcc0(packet);
@@ -825,7 +825,7 @@ void CSceneStateMulti::FUN_14174f4c0(CInPacket& packet)
 
 // @0x14174f8d0
 // MS2-FUNCTIONAL: temporary placement differs
-void CSceneStateMulti::FUN_14174f8d0(CInPacket& packet)
+void CSceneStateMulti::OnWaitingTicketUpdate(CInPacket& packet)
 {
     if (FUN_1406516b0() == 3)
     {
@@ -944,7 +944,7 @@ void CSceneStateMulti::FUN_14174ffb0(NotifyObject* pNotify)
 }
 
 // @0x141750050
-void CSceneStateMulti::FUN_141750050(CInPacket& packet)
+void CSceneStateMulti::OnEventReward(CInPacket& packet)
 {
     unsigned char cKind = packet.vfunc_o8_1();
     if (cKind == 0x10)

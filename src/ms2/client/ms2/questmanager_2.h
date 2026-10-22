@@ -156,7 +156,7 @@ public:
     unsigned FUN_1416d2600(int questId, int checkAccept);   // first available follow-up quest
     int FUN_1416d26c0(int questId, std::list<unsigned>& out, int checkAccept);
     int FUN_1416d2910(unsigned toQuestId, std::list<std::list<unsigned>>& paths, int verbose);
-    void FUN_1416cbd90(CInPacket& packet);                 // the quest packet
+    void OnQuest(CInPacket& packet);                 // the quest packet
     int FUN_1416d2f30(int chapter, std::list<std::list<unsigned>>& paths, int verbose);
     void FUN_1416d37c0();                                   // refresh the quest guide, close the quest/world map dialogs
     void FUN_1416d38a0(int type, int state, int skipGrouped);   // drop the matching quests from the active map

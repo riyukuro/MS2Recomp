@@ -15,7 +15,7 @@ public:
     CAdBannerManagerCli();                                  // 0x14096b300
     virtual ~CAdBannerManagerCli();                         // 0x14096b350
     void FUN_14096b390();                                   // empty
-    void FUN_14096b3a0(CInPacket& packet);                 // reads the banner list from the packet
+    void OnBannerList(CInPacket& packet);                 // reads the banner list from the packet
     Unk_AdBannerPtr FUN_14096b3e0(int nType);                 // the running banner of the type (own slot, else any slot)
     int FUN_14096b540(int nType, Unk_AdBannerArray& out);    // all running banners of the type; true if any
     Unk_AdBannerPtr FUN_14096b5b0(int nType, const CStringW& strName);   // the running banner of the type with the name

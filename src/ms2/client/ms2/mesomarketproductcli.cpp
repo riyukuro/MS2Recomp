@@ -229,7 +229,7 @@ void CMesoMarketMan::FUN_140d6e400()
 }
 
 // @0x140d6e490
-void CMesoMarketMan::FUN_140d6e490(CInPacket& packet)
+void CMesoMarketMan::OnMesoMarket(CInPacket& packet)
 {
     int nSub = packet.vfunc_o8_1();
     switch (nSub)

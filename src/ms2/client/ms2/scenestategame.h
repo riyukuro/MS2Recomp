@@ -35,58 +35,58 @@ public:
 
     // packet handlers (opcode)
     void FUN_14170dc90(CInPacket& packet);                  // 0x9
-    void FUN_14170dd60(CInPacket& packet);                  // 0x15
-    void FUN_14170e800(CInPacket& packet);                  // 0x7d
+    void OnServerEnter(CInPacket& packet);                  // 0x15
+    void OnLoadUgcMap(CInPacket& packet);                  // 0x7d
     void FUN_14170f930(CInPacket& packet);                  // 0x16
     void FUN_14170fc70(CInPacket& packet);                  // 0x19
     void OnAddUser(CInPacket& packet);                  // 0x17
     void FUN_141711dc0(CInPacket& packet);                  // 0x18
-    void FUN_141711e70(CInPacket& packet);                  // 0x2b
+    void OnFieldAddItem(CInPacket& packet);                  // 0x2b
     void FUN_141712340(CInPacket& packet);                  // 0x2c
-    void FUN_141712420(CInPacket& packet);                  // 0x2d
-    void FUN_141712690(CInPacket& packet);                  // 0x1c
-    void FUN_141712710(CInPacket& packet);                  // 0x7a
+    void OnFieldPickupItem(CInPacket& packet);                  // 0x2d
+    void OnUserSync(CInPacket& packet);                  // 0x1c
+    void OnRideSync(CInPacket& packet);                  // 0x7a
     void FUN_141712a90(CInPacket& packet);                  // 0x1f
-    void FUN_141712fb0(CInPacket& packet);                  // 0x20
+    void OnItemPutOnOrOff(CInPacket& packet);                  // 0x20
     void FUN_1417132b0(CInPacket& packet);                  // 0xce
-    void FUN_141713fb0(CInPacket& packet);                  // 0x21
+    void OnItemInventory(CInPacket& packet);                  // 0x21
     void FUN_141715bd0(CInPacket& packet);                  // 0x23
-    void FUN_141716200(CInPacket& packet);                  // 0x24
-    void FUN_141716680(CInPacket& packet);                  // 0x25
-    void FUN_141716b60(CInPacket& packet);                  // 0x26
+    void OnFurnishingInventory(CInPacket& packet);                  // 0x24
+    void OnItemPutOn(CInPacket& packet);                  // 0x25
+    void OnItemPutOff(CInPacket& packet);                  // 0x26
     void FUN_141716d10(CInPacket& packet);                  // 0x27
-    void FUN_141717000(CInPacket& packet);                  // 0x28
-    void FUN_141717140(CInPacket& packet);                  // 0x2a
-    void FUN_141717340(CInPacket& packet);                  // 0x30
+    void OnItemSkinPutOff(CInPacket& packet);                  // 0x28
+    void OnItemUpdate(CInPacket& packet);                  // 0x2a
+    void OnUserSkinColor(CInPacket& packet);                  // 0x30
     void FUN_141717560(CInPacket& packet);                  // 0x29
-    void FUN_141717580(CInPacket& packet);                  // 0x2f
-    void FUN_1417176b0(CInPacket& packet);                  // 0x2e
-    void FUN_141717b40(CInPacket& packet);                  // 0x3c
+    void OnUserBattle(CInPacket& packet);                  // 0x2f
+    void OnStat(CInPacket& packet);                  // 0x2e
+    void OnSkillUse(CInPacket& packet);                  // 0x3c
     void FUN_141718150(CInPacket& packet);                  // 0x3e
-    void FUN_141718680(CInPacket& packet);                  // 0x3f
-    void FUN_1417187b0(CInPacket& packet);                  // 0x40
+    void OnSkillCancel(CInPacket& packet);                  // 0x3f
+    void OnSkillUseFailed(CInPacket& packet);                  // 0x40
     void FUN_141718b80(CInPacket& packet);                  // 0x41
-    void FUN_141718cf0(CInPacket& packet);                  // 0x55
+    void OnFieldAddNpc(CInPacket& packet);                  // 0x55
     void FUN_1417195f0(CInPacket& packet);                  // 0x56
     void FUN_1417197c0(CInPacket& packet);                  // 0x57
     void FUN_141719840(CInPacket& packet);                  // 0x58
-    void FUN_141719990(CInPacket& packet);                  // 0x59
+    void OnInteractNpc(CInPacket& packet);                  // 0x59
     void FUN_141719a30(CInPacket& packet);                  // 0x4b
-    void FUN_141719a60(CInPacket& packet);                  // 0x5a
+    void OnFieldAddPet(CInPacket& packet);                  // 0x5a
     void FUN_14171a2e0(CInPacket& packet);                  // 0x5b
-    void FUN_14171a5f0(CInPacket& packet);                  // 0x5c
+    void OnSyncPetTamingPoint(CInPacket& packet);                  // 0x5c
     void FUN_14171a6c0(CInPacket& packet);                  // 0x32
-    void FUN_14171a730(CInPacket& packet);                  // 0x33
-    void FUN_14171a900(CInPacket& packet);                  // 0x34
+    void OnRevivalConfirm(CInPacket& packet);                  // 0x33
+    void OnRevival(CInPacket& packet);                  // 0x34
     void FUN_14171aa90(CInPacket& packet);                  // 0x35
     void FUN_14171ab00(CInPacket& packet);                  // 0x37
-    void FUN_14171aec0(CInPacket& packet);                  // 0x38
-    void FUN_14171b380(CInPacket& packet);                  // 0xae
-    void FUN_14171b630(CInPacket& packet);                  // 0x39
-    void FUN_14171b750(CInPacket& packet);                  // 0x3a
+    void OnLevelUp(CInPacket& packet);                  // 0x38
+    void OnMyInfo(CInPacket& packet);                  // 0xae
+    void OnMeso(CInPacket& packet);                  // 0x39
+    void OnMeret(CInPacket& packet);                  // 0x3a
     void FUN_14171bad0(CInPacket& packet);                  // 0x117
-    void FUN_14171bd90(CInPacket& packet);                  // 0x3b
-    void FUN_14171c0b0(CInPacket& packet);                  // 0x3d
+    void OnCurrencyToken(CInPacket& packet);                  // 0x3b
+    void OnSkillDamage(CInPacket& packet);                  // 0x3d
     void FUN_14171c1d0(CInPacket& packet);                  // 0x3d mode 0
     void FUN_14171cdf0(CInPacket& packet);                  // 0x3d mode 1
     void FUN_14171d610(CInPacket& packet);                  // 0x3d mode 3
@@ -95,40 +95,40 @@ public:
     void FUN_14171e440(CInPacket& packet);                  // 0x3d mode 6
     void FUN_14171e860(CInPacket& packet);                  // 0x3d mode 7
     void FUN_14171e9a0(CInPacket& packet);                  // 0x3d mode 8
-    void FUN_14171ee80(CInPacket& packet);                  // 0x48
-    void FUN_14171f8a0(CInPacket& packet);                  // 0x49
-    void FUN_141720480(CInPacket& packet);                  // 0x47
+    void OnFieldPortal(CInPacket& packet);                  // 0x48
+    void OnJob(CInPacket& packet);                  // 0x49
+    void OnBuff(CInPacket& packet);                  // 0x47
     void FUN_141720c60(CInPacket& packet);                  // 0x130
-    void FUN_141720e50(CInPacket& packet);                  // 0x4c
+    void OnRegionSkill(CInPacket& packet);                  // 0x4c
     void FUN_141721270(CInPacket& packet);                  // 0x4e
     void FUN_1417212a0(CInPacket& packet);                  // 0x4d
     void FUN_1417212d0(CInPacket& packet);                  // 0x4f
-    void FUN_1417215a0(CInPacket& packet);                  // 0x5d
-    void FUN_141721940(CInPacket& packet);                  // 0x36
-    void FUN_141721a30(CInPacket& packet);                  // 0x5f
+    void OnTombstone(CInPacket& packet);                  // 0x5d
+    void OnUserState(CInPacket& packet);                  // 0x36
+    void OnUserMoveByPortal(CInPacket& packet);                  // 0x5f
     void FUN_141721c50(CInPacket& packet);                  // 0x61
     void FUN_141721c90(CInPacket& packet);                  // 0x62
     void FUN_141721cd0(CInPacket& packet);                  // 0x54
-    void FUN_141722f70(CInPacket& packet);                  // 0x60
+    void OnMassiveEvent(CInPacket& packet);                  // 0x60
     void FUN_141722fb0(CInPacket& packet);                  // 0x64
-    void FUN_141723050(CInPacket& packet);                  // 0x65
-    void FUN_141723260(CInPacket& packet);                  // 0x66
+    void OnStateFallDamage(CInPacket& packet);                  // 0x65
+    void OnCinematic(CInPacket& packet);                  // 0x66
     void FUN_1417232a0(CInPacket& packet);                  // 0x67
     void FUN_141723330(CInPacket& packet);                  // 0x70
     void FUN_1417235a0(CInPacket& packet);                  // (cube item placed by an actor)
-    void FUN_141723410(CInPacket& packet);                  // 0x68
-    void FUN_141723670(CInPacket& packet);                  // 0x69
-    void FUN_141728110(CInPacket& packet);                  // 0x6a
+    void OnSetCraftMode(CInPacket& packet);                  // 0x68
+    void OnResponseCube(CInPacket& packet);                  // 0x69
+    void OnLoadCubes(CInPacket& packet);                  // 0x6a
     void FUN_141728c20(CInPacket& packet);                  // 0x71
-    void FUN_141729250(CInPacket& packet);                  // 0x73
-    void FUN_141729ce0(CInPacket& packet);                  // 0x74
+    void OnLiftable(CInPacket& packet);                  // 0x73
+    void OnItemFusion(CInPacket& packet);                  // 0x74
     void FUN_14172a1c0(CInPacket& packet);                  // 0x75
     void FUN_14172a7b0(CInPacket& packet);                  // 0x76
     void FUN_14172a850(CInPacket& packet);                  // 0x77
-    void FUN_14172a8f0(CInPacket& packet);                  // 0x79
+    void OnResponseRide(CInPacket& packet);                  // 0x79
     void FUN_14172b350(CInPacket& packet);                  // 0x7b
     void FUN_14172c170(CInPacket& packet);                  // 0x6e
-    void FUN_14172d0f0(CInPacket& packet);                  // 0x63
+    void OnInteractObject(CInPacket& packet);                  // 0x63
     void FUN_14172f030(CInPacket& packet);                  // 0x42
     void FUN_14172f1c0(CInPacket& packet);                  // 0x43
     void FUN_14172f210(CInPacket& packet);                  // 0x44
@@ -146,35 +146,35 @@ public:
     void FUN_141731af0(CInPacket& packet);                  // 0xdb
     void FUN_141731b20(CInPacket& packet);                  // 0xc
     void FUN_141731c10(CInPacket& packet);                  // 0x8c
-    void FUN_141732350(CInPacket& packet);                  // 0xb6
+    void OnPvp(CInPacket& packet);                  // 0xb6
     void FUN_141732ac0(CInPacket& packet);                  // 0x9d
     void FUN_141732af0(CInPacket& packet);                  // 0x9e
-    void FUN_141732b20(CInPacket& packet);                  // 0x97
-    void FUN_141733140(CInPacket& packet);                  // 0x9b
+    void OnItemEnchant(CInPacket& packet);                  // 0x97
+    void OnWebOpen(CInPacket& packet);                  // 0x9b
     void FUN_141733440(CInPacket& packet);                  // 0x9f
-    void FUN_141733660(CInPacket& packet);                  // 0xa1
-    void FUN_1417337c0(CInPacket& packet);                  // 0xa2
-    void FUN_141733850(CInPacket& packet);                  // 0xa3
+    void OnSystemShop(CInPacket& packet);                  // 0xa1
+    void OnAutoRevive(CInPacket& packet);                  // 0xa2
+    void OnPlayerKillNotice(CInPacket& packet);                  // 0xa3
     void FUN_141733b30(CInPacket& packet);                  // 0xb0
-    void FUN_141733e40(CInPacket& packet);                  // 0xb1
-    void FUN_141733f50(CInPacket& packet);                  // 0xb5
+    void OnNametag(CInPacket& packet);                  // 0xb1
+    void OnSetPcbang(CInPacket& packet);                  // 0xb5
     void FUN_1417340f0(CInPacket& packet);                  // 0xb7
     void FUN_1417343c0(CInPacket& packet);                  // 0xb9
-    void FUN_1417343f0(CInPacket& packet);                  // 0xba
-    void FUN_141734530(CInPacket& packet);                  // 0xbc
+    void OnItemDropNotice(CInPacket& packet);                  // 0xba
+    void OnRecallScroll(CInPacket& packet);                  // 0xbc
     void FUN_141734930(CInPacket& packet);                  // 0xbe
-    void FUN_141734950(CInPacket& packet);                  // 0xbf
-    void FUN_141734b20(CInPacket& packet);                  // 0xc1
-    void FUN_141734b70(CInPacket& packet);                  // 0xc2
+    void OnEnchantScroll(CInPacket& packet);                  // 0xbf
+    void OnGlobalPortal(CInPacket& packet);                  // 0xc1
+    void OnQuizEvent(CInPacket& packet);                  // 0xc2
     void FUN_141734bc0(CInPacket& packet);                  // 0xc3
     void FUN_141734c70(CInPacket& packet);                  // 0xc4
-    void FUN_141734ca0(CInPacket& packet);                  // 0xc5
-    void FUN_141734e00(CInPacket& packet);                  // 0xd8
+    void OnDarkStream(CInPacket& packet);                  // 0xc5
+    void OnPlayArcade(CInPacket& packet);                  // 0xd8
     void FUN_1417353b0(CInPacket& packet);                  // 0xc7
     void FUN_1417353e0(CInPacket& packet);                  // 0xca
     void FUN_141735410(CInPacket& packet);                  // 0xcb
-    void FUN_141735440(CInPacket& packet);                  // 0xcd
-    void FUN_141735dd0(CInPacket& packet);                  // 0xf7
+    void OnMastery(CInPacket& packet);                  // 0xcd
+    void OnEventReward(CInPacket& packet);                  // 0xf7
     void FUN_141736240(CInPacket& packet);                  // 0xf9
     void FUN_141736880(CInPacket& packet);                  // 0xa6
     void FUN_141736940(CInPacket& packet);                  // 0xa8
@@ -191,15 +191,15 @@ public:
     void FUN_141738b40(CInPacket& packet);                  // 0xea
     void FUN_141739910(CInPacket& packet);                  // 0xab
     void FUN_141739e40(CInPacket& packet);                  // 0xac
-    void FUN_141739f90(CInPacket& packet);                  // 0xeb
+    void OnPremiumClub(CInPacket& packet);                  // 0xeb
     void FUN_14173a0d0(CInPacket& packet);                  // 0xec
     void FUN_14173a0f0(CInPacket& packet);                  // 0x101
-    void FUN_14173a370(CInPacket& packet);                  // 0xe9
-    void FUN_14173a420(CInPacket& packet);                  // 0xf1
+    void OnLocalCamera(CInPacket& packet);                  // 0xe9
+    void OnOneTimeEffect(CInPacket& packet);                  // 0xf1
     void FUN_14173a5b0(CInPacket& packet);                  // 0xf2
-    void FUN_14173a5e0(CInPacket& packet);                  // 0xf3
+    void OnTimeScale(CInPacket& packet);                  // 0xf3
     void FUN_14173a720(CInPacket& packet);                  // 0xf4
-    void FUN_14173a990(CInPacket& packet);                  // 0xf8
+    void OnHomeInvite(CInPacket& packet);                  // 0xf8
     void FUN_14173aa10(CInPacket& packet);                  // mode 2
     void FUN_14173ad60(CInPacket& packet);                  // mode 0
     void FUN_14173b080(CInPacket& packet);                  // 0xfa
@@ -214,11 +214,11 @@ public:
     void FUN_141715860(CInPacket& packet);  // 0x141713fb0 sub-handler (mode 8, item list)
     void FUN_14173c630(CInPacket& packet);                  // 0x141739910 sub-handler (beauty shop open)
     void FUN_14173c7a0(CInPacket& packet);                  // 0x111
-    void FUN_14173c870(CInPacket& packet);                  // 0x115
+    void OnReactor(CInPacket& packet);                  // 0x115
     void FUN_14173ce30(CInPacket& packet);                  // 0x118
     void FUN_14173d180(CInPacket& packet);                  // 0x11a
-    void FUN_14173d2e0(CInPacket& packet);                  // 0x11b
-    void FUN_14173d4d0(CInPacket& packet);                  // 0x11c
+    void OnLapenshard(CInPacket& packet);                  // 0x11b
+    void OnPrestige(CInPacket& packet);                  // 0x11c
     void FUN_14173ddf0(CInPacket& packet);                  // 0x120
     void FUN_14173de10(CInPacket& packet);                  // 0x121
     void FUN_14173def0(CInPacket& packet);                  // 0x91
@@ -226,11 +226,11 @@ public:
     void FUN_14173e440(CInPacket& packet);                  // 0x126
     void FUN_14173e4b0(CInPacket& packet);                  // 0xef
     void FUN_14173e510(CInPacket& packet);                  // 0xf5
-    void FUN_14173e5b0(CInPacket& packet);                  // 0x12b
+    void OnHideAndSeek(CInPacket& packet);                  // 0x12b
     void FUN_14173f0c0(CInPacket& packet);                  // 0x12c
-    void FUN_14173f1a0(CInPacket& packet);                  // 0x12e
+    void OnLimitBreak(CInPacket& packet);                  // 0x12e
     void FUN_14173f280(CInPacket& packet);                  // 0x12f
-    void FUN_14173f550(CInPacket& packet);                  // 0xde
+    void OnItemSocketSystem(CInPacket& packet);                  // 0xde
     void FUN_14173f7c0(CInPacket& packet);                  // 0x131
     void FUN_14173f810(CInPacket& packet);                  // 0x135
     void FUN_14173f860(CInPacket& packet);                  // 0x136

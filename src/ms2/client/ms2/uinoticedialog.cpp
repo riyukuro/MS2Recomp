@@ -249,7 +249,7 @@ bool UINoticeDialog::vfunc_90(POINT* pPos)
 
 // @0x141009680
 // MS2-FUNCTIONAL: flag sub-object access and bool compare layout differ
-void UINoticeDialog::FUN_141009680(NotifyObject* pNotify)
+void UINoticeDialog::OnNoticeDialog(NotifyObject* pNotify)
 {
     Unk_NdFlag* pFlag = &pNotify->m_8;
     if (pFlag->vfunc_1() == 0 && FUN_141924630())

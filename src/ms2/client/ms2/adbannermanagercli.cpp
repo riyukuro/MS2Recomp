@@ -36,7 +36,7 @@ void CAdBannerManagerCli::FUN_14096b390()
 }
 
 // @0x14096b3a0
-void CAdBannerManagerCli::FUN_14096b3a0(CInPacket& packet)
+void CAdBannerManagerCli::OnBannerList(CInPacket& packet)
 {
     FUN_14016e060(*this, packet);
 }

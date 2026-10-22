@@ -88,7 +88,7 @@ public:
     void FUN_14174f470();                                   // 0x14174f470
     void FUN_14174f4a0();                                   // 0x14174f4a0
     void FUN_14174f4c0(CInPacket& packet);                  // 0x14174f4c0 opcode 0x71
-    void FUN_14174f8d0(CInPacket& packet);                  // 0x14174f8d0 opcode 0xb4
+    void OnWaitingTicketUpdate(CInPacket& packet);                  // 0x14174f8d0 opcode 0xb4
     void FUN_14174fcc0(CInPacket& packet);                  // 0x14174fcc0 opcode 0x10f
     void FUN_14174fd00();                                   // 0x14174fd00 drop the preview pc
     int FUN_14174fd70();                                   // 0x14174fd70
@@ -98,7 +98,7 @@ public:
     void FUN_14174ff00();                                   // 0x14174ff00
     unsigned int FUN_14174ff70();                           // 0x14174ff70
     void FUN_14174ffb0(NotifyObject* pNotify);              // 0x14174ffb0 NotifyGameEventChanged handler
-    void FUN_141750050(CInPacket& packet);                  // 0x141750050 opcode 0xf7
+    void OnEventReward(CInPacket& packet);                  // 0x141750050 opcode 0xf7
 
 private:
     unsigned long long m_hPreviewPC;                        // +0x20 handle of the lobby preview actor

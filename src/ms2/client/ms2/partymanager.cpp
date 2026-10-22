@@ -457,7 +457,7 @@ MS2_REPLACE_METHOD(0x14162A480, CPartyManager, FUN_14162a480, 34, 0xDCF04E52);
 // Not hooked: dispatches handlers that construct local RTTI objects.
 // MS2-FUNCTIONAL: typed packet dispatch preserves every opcode branch.
 // @0x14162a4b0
-void CPartyManager::FUN_14162a4b0(CInPacket& packet)
+void CPartyManager::OnParty(CInPacket& packet)
 {
     switch (static_cast<CInputStream&>(packet).vfunc_o8_1()) {
     case 0: FUN_14162f030(packet); break;
@@ -1637,7 +1637,7 @@ void CPartyManager::FUN_141631060()
 MS2_REPLACE_METHOD(0x141631060, CPartyManager, FUN_141631060, 91, 0x2A2536B7);
 
 // @0x1416310d0
-void CPartyManager::FUN_1416310d0(CInPacket& packet)
+void CPartyManager::OnMatchParty(CInPacket& packet)
 {
     int type = static_cast<CInputStream&>(packet).vfunc_o8_1();
     switch (type) {
@@ -1647,7 +1647,7 @@ void CPartyManager::FUN_1416310d0(CInPacket& packet)
     case 4: FUN_141631700(packet); break;
     }
 }
-MS2_REPLACE_METHOD(0x1416310D0, CPartyManager, FUN_1416310d0, 164, 0x4143B2A2);
+MS2_REPLACE_METHOD(0x1416310D0, CPartyManager, OnMatchParty, 164, 0x4143B2A2);
 
 // @0x141631180
 void CPartyManager::FUN_141631180(const Unk_PartyRecruitRequest& request)

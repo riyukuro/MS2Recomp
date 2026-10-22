@@ -606,7 +606,7 @@ void CGroupChatManager::FUN_14137f080(unsigned oid, CStringW text) {
 MS2_REPLACE_METHOD(0x14137F080, CGroupChatManager, FUN_14137f080, 615, 0x230F9B6B);
 // @0x14137f2f0
 // MS2-FUNCTIONAL: dispatcher stack layout differs by a few bytes
-void CGroupChatManager::FUN_14137f2f0(CInPacket* packet) {
+void CGroupChatManager::OnGroupChat(CInPacket* packet) {
     switch (packet->vfunc_o8_1()) {
     case 0:    FUN_14137f490(packet); break;
     case 1:    FUN_14137f590(packet); break;
@@ -623,7 +623,7 @@ void CGroupChatManager::FUN_14137f2f0(CInPacket* packet) {
     case 0xd:  FUN_141380900(packet); break;
     }
 }
-MS2_REPLACE_METHOD(0x14137F2F0, CGroupChatManager, FUN_14137f2f0, 337, 0x4FE25F86);
+MS2_REPLACE_METHOD(0x14137F2F0, CGroupChatManager, OnGroupChat, 337, 0x4FE25F86);
 // @0x14137f490
 void CGroupChatManager::FUN_14137f490(CInPacket* packet) {
     Unk_ChatPtrChat chat(new CGroupChat);
