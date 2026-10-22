@@ -8274,3 +8274,7 @@ compress2	142724100	func
 ?StackOverflowErrorCI@fl_errors@AS3@GFx@Scaleform@@3UClassInfo@234@B	14314ef20	data
 ?Clear@DrawingContext@GFx@Scaleform@@QEAAXXZ	1425feb50	func
 ?Convert2String@Value@AS3@GFx@Scaleform@@QEBA?AVCheckResult@234@AEAVStringBuffer@4@@Z	1424f17a0	func
+?Set@?$VectorBase@J@AS3@GFx@Scaleform@@QEAA?AVCheckResult@234@KAEBVValue@234@AEBVTraits@ClassTraits@234@@Z	142563720	func
+?Set@?$VectorBase@K@AS3@GFx@Scaleform@@QEAA?AVCheckResult@234@KAEBVValue@234@AEBVTraits@ClassTraits@234@@Z	142446540	func
+?Set@?$VectorBase@N@AS3@GFx@Scaleform@@QEAA?AVCheckResult@234@KAEBVValue@234@AEBVTraits@ClassTraits@234@@Z	1424864c0	func
+?Set@?$VectorBase@V?$Ptr@UASStringNode@GFx@Scaleform@@@Scaleform@@@AS3@GFx@Scaleform@@QEAA?AVCheckResult@234@KAEBVValue@234@AEBVTraits@ClassTraits@234@@Z	1425638c0	func
