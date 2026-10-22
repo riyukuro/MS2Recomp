@@ -194307,7 +194307,7 @@ FUN_141485590	141485590	func
 ?DetachEffect@NiNode@@QEAA_NPEAVNiDynamicEffect@@@Z	141d1a7b0	func
 ?GetObjectByName@NiNode@@UEAAPEAVNiAVObject@@AEBVNiFixedString@@@Z	141d1a8e0	func
 ?vfunc_20@NiNode@@UEAAXXZ	141d1a8e0	func
-?GetObjectByNameExcluding@NiNode@@UEAAPEAVNiAVObject@@AEBVNiFixedString@@G@Z	141d1a960	func
+?GetObjectByNameExcluding@NiNode@@UEAAPEAVNiAVObject@@AEBVNiFixedString@@I@Z	141d1a960	func
 ?vfunc_21@NiNode@@UEAAXXZ	141d1a960	func
 ?GetObjectsByType@NiNode@@UEAAXPEBVNiRTTI@@AEAV?$NiTPointerList@PEAVNiAVObject@@@@@Z	141d1aa00	func
 ?vfunc_22@NiNode@@UEAAXXZ	141d1aa00	func
@@ -194589,7 +194589,7 @@ FUN_141485590	141485590	func
 ??9@YA_NAEBVNiString@@PEBD@Z	141d5c570	func
 ??BNiString@@QEBAPEBDXZ	141d5c630	func
 ??M@YA_NAEBVNiString@@0@Z	141d5c9a0	func
-?Compare@NiString@@QEBAHPEBD@Z	141d5d390	func
+?Compare@NiString@@QEBAHPEBD@Z	141d5d350	func
 ?Format@NiString@@QEAAXPEBDZZ	141d5db00	func
 ?FormatPrintf@NiString@@QEAAXPEBDZZ	141d5db00	func
 ?IsEmpty@NiString@@QEBA_NXZ	141d5f0e0	func
