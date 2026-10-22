@@ -8341,3 +8341,5 @@ compress2	142724100	func
 ?vfunc_o10_11@COutPacket@@UEAAXAEBUUnk_StreamPoint@@@Z	14020b2f0	func
 ?ToLocaleStringInternal@Array@fl@Instances@AS3@GFx@Scaleform@@QEBA?AVASString@56@XZ	142425540	func
 ?ToStringInternal@Array@fl@Instances@AS3@GFx@Scaleform@@QEBA?AVASString@56@AEBV756@@Z	142425b50	func
+?AS3hasOwnProperty@Object@fl@InstanceTraits@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@456@AEAVVM@456@AEBVValue@456@AEAV9456@IPEBV9456@@Z	1423fa9e0	func
+?AS3propertyIsEnumerable@Object@fl@InstanceTraits@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@456@AEAVVM@456@AEBVValue@456@AEAV9456@IPEBV9456@@Z	1423fd170	func
