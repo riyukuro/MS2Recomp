@@ -257,6 +257,20 @@ public:
 };
 
 //--------------------------------------------------------------------------------------------------
+// Vtable 0x1431d1c30: an MS2CharacterMaterial variant (version offset 4) whose shade trees keep only the transform,
+// the UV sets and the pre-light texture stage; no lighting.
+class CustomizedTextureGeneratorMaterial : public MS2StandardMaterial
+{
+    NiDeclareRTTI;
+public:
+    CustomizedTextureGeneratorMaterial(bool bAutoCreateCaches);
+
+    // protected in the original; public here so the hooks can bind them
+    virtual bool GenerateVertexShadeTree(Context& kContext, NiGPUProgramDescriptor* pkDesc);
+    virtual bool GeneratePixelShadeTree(Context& kContext, NiGPUProgramDescriptor* pkDesc);
+};
+
+//--------------------------------------------------------------------------------------------------
 #define MS2_DECLARE_STANDARD_MATERIAL(classname)                                                    \
     class classname : public MS2StandardMaterial                                                    \
     {                                                                                               \
@@ -264,7 +278,6 @@ public:
         classname(bool bAutoCreateCaches);                                                          \
     }
 
-MS2_DECLARE_STANDARD_MATERIAL(CustomizedTextureGeneratorMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(TexCoordWriteMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MRTShaderPickerMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2MotionBlurMaterial);
