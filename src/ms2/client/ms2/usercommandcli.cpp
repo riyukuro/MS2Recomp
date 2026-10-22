@@ -72,6 +72,10 @@
 #include <vector>
 #include <algorithm>
 #include "ms2/placeholder/commandchat.h"
+#include "ms2/commonfiles/ugcmapdata.h"
+#include "ms2/placeholder/effectquery.h"
+#include "ms2/placeholder/ckeytable.h"
+#include "ms2/placeholder/ckeysettingparam.h"
 
 // Header-local objects in original initializer order. Unknown original names.
 struct Unk_CommandStatics {
@@ -107,6 +111,7 @@ CStringW FUN_1401d0080(const CStringW&,const CStringW&);
 CStringW FUN_1408f71a0(CStringW,const CStringW&,const CStringW&);
 CStringW FUN_1405c2690(CStringW,const CStringW&);
 CString FUN_14071a5b0(const CString&,const CString&);
+CString FUN_1402bad60(const char*,const int*);   // StringFormat<int> (a second copy)
 struct Unk_CommandFiles { int FUN_1403974b0(TiXmlDocument&,const char*,int,bool,bool); };
 Unk_CommandFiles* FUN_140166420();
 struct Unk_CommandLog { void FUN_14015eb90(int,int,const wchar_t*,const CString&); };
@@ -130,7 +135,7 @@ void* FUN_140ad4b90(); void FUN_141863340(void*,const ATL::CAtlArray<int>&,unsig
 void* FUN_1403ed2d0(); void* FUN_141bd0cc0(void*); void* FUN_1409478c0();
 int FUN_14123c580(void*); void FUN_140aecbb0(void*,int,int,bool);
 void* FUN_140af2520(void*); void* FUN_140947880(void*);
-void FUN_140aed580(void*,void*,int,float); void FUN_140aed720(void*,void*); void FUN_140aed750(void*,int,bool);
+void FUN_140aed580(void*,void*,int,float); void FUN_140aed720(void*,void*); void FUN_140aed750(void*,int,int);
 void FUN_1412751f0(const CStringW&,int,int); void FUN_1412751b0(const CStringW&,int);
 void FUN_140710590(COutPacket&);
 struct Unk_CommandToggle { void* m_00; bool enabled; };
@@ -168,7 +173,7 @@ extern int DAT_143ab5b00;
 extern void* DAT_143ad8960;
 extern void* DAT_143ad8968;
 void FUN_141bd3c00(void*,bool);
-void FUN_14166ef10(void*,const CString&,bool,int,int);
+void FUN_14166ef10(void*,const CString&,int,int,bool);
 void* FUN_141371b30(); void FUN_141021140(void*);
 class Unk_CommandItemData;
 class Unk_CommandItemPtr {
@@ -190,7 +195,7 @@ public:
 private: void* unknown; UIObject* object;
 };
 MS2_CHECK_SIZE(Unk_CommandUIRef,0x10);
-Unk_CommandUIRef FUN_141adcf50(void*,const CString&);
+struct Unk_CommandUIMgr { Unk_CommandUIRef FUN_141adcf50(const CString&); };
 void* FUN_1409a8b10(); void* FUN_140a58500(void*); void FUN_14125f670(void*,bool,bool);
 void FUN_1406537e0(Unk_CommandLog*,int);
 CStringW FUN_1402a61e0(const wchar_t*);
@@ -215,7 +220,7 @@ class Unk_CommandActor { public:
     virtual void vfunc_16();
     virtual void vfunc_17();
     virtual void vfunc_18();
-    virtual void vfunc_19();
+    virtual void vfunc_19(Unk_StreamPoint);
     virtual void vfunc_20();
     virtual void vfunc_21();
     virtual void vfunc_22();
@@ -277,21 +282,19 @@ class Unk_CommandItemData { public:
 MS2_CHECK_OFFSET(Unk_CommandItemData,transferType,0x190);
 
 // ---- g1 declarations ----
-struct Unk_g1_TiXmlElement { void* m_00; void* m_08; void* m_10; void* m_18; void* m_20; void* m_28; void* m_30; void* m_38; void* m_40; void* m_48; void* m_50; void* m_58; void* m_60; void* m_68; void* m_70; void* m_78; void* m_80; void* m_88; };
-MS2_CHECK_SIZE(Unk_g1_TiXmlElement,0x90);
 struct Unk_g1_Iter16 { void* m_00; void* m_08; };
 struct Unk_g1_List24 { void* m_00; void* m_08; void* m_10; };
 struct Unk_g1_List48 { void* m_00; void* m_08; void* m_10; void* m_18; void* m_20; void* m_28; };
 MS2_CHECK_SIZE(Unk_g1_List48,0x30);
 struct Unk_g1_EffectReq { void* m_name; int m_value; int m_pad; };
-void* FUN_14086f2f0(void*,const char*);          // TiXmlElement::TiXmlElement(const char*)
-void FUN_14086f450(void*);                        // TiXmlElement::~TiXmlElement
-void* FUN_1408704d0(void*,const char*,const char*,const char*); // TiXmlDeclaration::TiXmlDeclaration
+// The game TinyXML element (ctor 0x14086f2f0, dtor 0x14086f450, 0x90 bytes).
+class TiXmlElement { public: TiXmlElement(const char*); ~TiXmlElement(); private: void* m_pad[0x90/sizeof(void*)]; };
+// The game TinyXML declaration node (ctor 0x1408704d0, 0x68 bytes).
+class TiXmlDeclaration { public: TiXmlDeclaration(const char*,const char*,const char*); private: void* m_pad[0x68/sizeof(void*)]; };
 void* FUN_14086e090(void*,void*);                 // LinkEndChild
 void* FUN_14086e000(void*,void*);                 // InsertEndChild
 void FUN_14086f920(void*,const char*,int);        // SetAttribute
 bool FUN_1408710c0(void*,const char*);            // SaveFile
-void* FUN_1409331f0();
 void FUN_141430710(void*,Unk_g1_Iter16*,int);
 __int64 FUN_141254080(void*);
 void* FUN_1412540a0(void*);
@@ -330,8 +333,16 @@ void* FUN_140953f20();
 // @0x141371ac0
 inline void* FUN_141371ac0(void* p) { return (char*)p+0x160; }
 void FUN_140cd8f10(void*);
-void* FUN_140963ae0(void*,int);
-void FUN_1409647c0(void*);
+// ATL::CAtlList of world objects (same shape as uidevelopdialog's Unk_DevList)
+class Unk_ShList { public:
+    Unk_ShList(int nBlock);             // 0x140963ae0
+    ~Unk_ShList();                      // 0x1409647c0
+    __int64 FUN_140967000();            // head position
+    void* FUN_140a01110(__int64 pos);
+    void FUN_1409671f0(__int64* pPos);  // next
+private:
+    void* m_raw[6];
+};
 void FUN_141274b10(void*);
 void FUN_141bd2db0(void*,void*,void*);
 __int64 FUN_140967000(void*);
@@ -425,7 +436,7 @@ void* FUN_140b624b0(int);
 // Damage-test settings object (object id 0x4e32): flag byte at +0x2c0, loop count at +0x2c4.
 struct Unk_DamageTest {
     char m_0[0x2c0];
-    char m_2c0;
+    bool m_2c0;
     char m_2c1[3];
     int m_2c4;
 };
@@ -452,10 +463,8 @@ void FUN_1413b71c0(void*,CStringW);
 void* FUN_14136f480(int);
 CStringW FUN_1409eec40(int);
 void FUN_140d73aa0(CStringW,int,void*,CStringW);   // the exe callee destroys both strings
-void FUN_141664200(void*,Unk_g3_Ref16*);
-void* FUN_140c207b0(Unk_g3_Ref16*);
-int FUN_14050a6a0(void*);
-void FUN_140c20600(Unk_g3_Ref16*);
+class Unk_HsInfo : public CPtred { public: int FUN_14050a6a0(); };
+struct Unk_HsPC { MS2Ptr<Unk_HsInfo> FUN_141664200(); };
 void* FUN_1409670d0();
 void FUN_14162ba50(void*,CStringW);
 void FUN_14162be10(void*);
@@ -490,10 +499,7 @@ class UIGameMenuDialog : public UIObject {};
 class UIGuildDialog : public UIObject {};
 class UIServerListDialog : public UIObject {};
 class UISmartRecommendNotifyDialog : public UIObject {};
-struct Unk_g4_Salable { void* m[25]; };
-void FUN_1408ad110(Unk_g4_Salable*);
-int FUN_1408a0d30(int,Unk_g4_Salable*,int);
-void FUN_14050de70(Unk_g4_Salable*);
+int FUN_1408a0d30(int,Unk_UGCGroup&,int);
 void* FUN_140961690(int);
 void FUN_141ab4000(void*,int,int);
 CStringW FUN_141b720b0(int,int);
@@ -787,18 +793,20 @@ int CUserCommandCli::FUN_141365350(Unk_CommandArgs& args) {
 // @0x141365420
 int CUserCommandCli::FUN_141365420(Unk_CommandArgs& args) {
     if(!FUN_1409478c0()) return 0;
-    int kind=args.FUN_1408d1f60(0,0);
-    bool enabled=args.FUN_1408d20b0(1,0)!=0;
+    int nKind=args.FUN_1408d1f60(0,0);
+    bool enabled=args.FUN_1408d20b0(1,0) ? true : false;
+    int kind=nKind;
     switch(kind) {
-    case 2:case 12:case 13:case 14:case 16:case 18:case 19: {
-        void* state=FUN_140947880(FUN_140af2520(FUN_1409478c0()));
-        FUN_140aed580(FUN_1409478c0(),0,0,0);
-        FUN_140aed720(FUN_1409478c0(),state);
-        FUN_140aed750(FUN_1409478c0(),kind,enabled);
-        return 1;
+    case 2:case 12:case 13:case 14:case 16:case 18:case 19:
+        break;
+    default:
+        return 0;
     }
-    default:return 0;
-    }
+    void* state=FUN_140947880(FUN_140af2520(FUN_1409478c0()));
+    FUN_140aed580(FUN_1409478c0(),0,0,0);
+    FUN_140aed720(FUN_1409478c0(),state);
+    FUN_140aed750(FUN_1409478c0(),kind,enabled);
+    return 1;
 }
 // @0x141365560
 int CUserCommandCli::FUN_141365560(Unk_CommandArgs&) {
@@ -921,17 +929,15 @@ int CUserCommandCli::FUN_1413662a0(Unk_CommandArgs& args) {
     int mode=args.FUN_1408d1f60(0,0);
     if(mode<0||mode>1) return 0;
     if(mode==1&&args.FUN_1408d2380()<2) return 0;
-    {
-        CStringW name=args.FUN_1408d21c0(1,L"");
-        unsigned char flag=0;
-        if(args.FUN_1408d2380()>2) flag=(unsigned char)args.FUN_1408d1f60(2,0);
-        void* actor=FUN_141bd0cc0(FUN_1403ed2d0());
-        if(actor) {
-            Unk_CommandActorPtr ref(FUN_141523c50(actor));
-            if(ref.FUN_140fa9d30()) {
-                COutPacket packet(0x37,0); packet.vfunc_o10_1(0x18); packet.vfunc_o10_1((unsigned char)mode);
-                packet.vfunc_o10_8(name); packet.vfunc_o10_1(flag); FUN_140710590(packet);
-            }
+    CStringW name=args.FUN_1408d21c0(1,L"");
+    int flag=0;
+    if(args.FUN_1408d2380()>2) flag=args.FUN_1408d1f60(2,0);
+    void* actor=FUN_141bd0cc0(FUN_1403ed2d0());
+    if(actor) {
+        Unk_CommandActorPtr ref(FUN_141523c50(actor));
+        if(ref.FUN_140fa9d30()) {
+            COutPacket packet(0x37,0); packet.vfunc_o10_1(0x18); packet.vfunc_o10_1((unsigned char)mode);
+            packet.vfunc_o10_8(name); packet.vfunc_o10_1((unsigned char)flag); FUN_140710590(packet);
         }
     }
     return 1;
@@ -953,15 +959,13 @@ int CUserCommandCli::FUN_141366500(Unk_CommandArgs& args) {
 }
 // @0x141366600
 int CUserCommandCli::FUN_141366600(Unk_CommandArgs& args) {
-    {
-        CStringW name=L"";
-        if(args.FUN_1408d2380()!=0) name=args.FUN_1408d21c0(0,L"");
-        void* actor=FUN_141bd0cc0(FUN_1403ed2d0());
-        if(actor) {
-            Unk_CommandActorPtr ref(FUN_141523c50(actor));
-            if(ref.FUN_140fa9d30()) {
-                COutPacket packet(0x37,0); packet.vfunc_o10_1(0x1d); packet.vfunc_o10_8(name); FUN_140710590(packet);
-            }
+    CStringW name=L"";
+    if(args.FUN_1408d2380()>0) name=args.FUN_1408d21c0(0,L"");
+    void* actor=FUN_141bd0cc0(FUN_1403ed2d0());
+    if(actor) {
+        Unk_CommandActorPtr ref(FUN_141523c50(actor));
+        if(ref.FUN_140fa9d30()) {
+            COutPacket packet(0x37,0); packet.vfunc_o10_1(0x1d); packet.vfunc_o10_8(name); FUN_140710590(packet);
         }
     }
     return 1;
@@ -969,8 +973,8 @@ int CUserCommandCli::FUN_141366600(Unk_CommandArgs& args) {
 // @0x141366770
 int CUserCommandCli::FUN_141366770(Unk_CommandArgs& args) {
     CString name="";
-    if(args.FUN_1408d2380()==0) name.Format("%08d",FUN_141bd3060(FUN_1403ed2d0()));
-    else name=FUN_14016a600(args.FUN_1408d21c0(0,L""),0);
+    if(args.FUN_1408d2380()>0) name=FUN_14016a600(args.FUN_1408d21c0(0,L""),0);
+    else name.Format("%08d",FUN_141bd3060(FUN_1403ed2d0()));
     int result=FUN_1410d3450(FUN_1409670e0(),name);
     if(result) FUN_1412751b0(StringFormat(L"UGCMap exported to Data/Xml/ExportedUGCMap/{0}.xml",name),20);
     else FUN_1412751b0(StringFormat(L"UGCMap export failed",name),20);
@@ -1033,7 +1037,7 @@ int CUserCommandCli::FUN_141367050(Unk_CommandArgs& args) {
 // @0x1413670c0
 int CUserCommandCli::FUN_1413670c0(Unk_CommandArgs& args) {
     void* actor=FUN_141bd0cc0(FUN_1403ed2d0());
-    if(actor) FUN_14166ef10(actor,FUN_14016a600(args.FUN_1408d21c0(0,L""),0),true,0,0);
+    if(actor) FUN_14166ef10(actor,FUN_14016a600(args.FUN_1408d21c0(0,L""),0),1,0,false);
     return 1;
 }
 // @0x1413671c0
@@ -1047,13 +1051,14 @@ int CUserCommandCli::FUN_141367240(Unk_CommandArgs& args) {
     int id=args.FUN_1408d1f60(0,0),kind=args.FUN_1408d1f60(1,0);
     Unk_CommandItemPtr item=FUN_14053f870(id);
     if(item.FUN_1402ffd90()) { FUN_1412751b0(StringFormat(L"Wrong itemID! {0}",id),20); return 0; }
-    if(kind<0||kind>3) { FUN_1412751b0(StringFormat(L"Wrong transferType! {0}",kind),20); return 0; }
+    if(kind<0||kind>=4) { FUN_1412751b0(StringFormat(L"Wrong transferType! {0}",kind),20); return 0; }
     int old=item.FUN_1401b52a0()->transferType;
     item.FUN_1401b52a0()->transferType=kind;
-    unsigned changed=old!=kind;
+    bool changed=old!=kind;
     int prev=old;
-    const wchar_t* result=changed?L"Done!":L"Oops!";
-    FUN_1412751b0(StringFormat(L"Client {0} itemID:{1}, trasferType[now:{2}, prev:{3}]",result,id,kind,prev),20); return 1;
+    CStringW msg=StringFormat(L"Client {0} itemID:{1}, trasferType[now:{2}, prev:{3}]",changed?L"Done!":L"Oops!",id,kind,prev);
+    FUN_1412751b0(msg,20);
+    return 1;
 }
 // @0x1413674f0
 int CUserCommandCli::FUN_1413674f0(Unk_CommandArgs& args) {
@@ -1076,9 +1081,9 @@ int CUserCommandCli::FUN_1413675e0(Unk_CommandArgs& args) {
 }
 // @0x141367710
 int CUserCommandCli::FUN_141367710(Unk_CommandArgs& args) {
+    CString name=FUN_14016a600(args.FUN_1408d21c0(0,L""),0);
     {
-        CString name=FUN_14016a600(args.FUN_1408d21c0(0,L""),0);
-        Unk_CommandUIRef object=FUN_141adcf50(FUN_1403ed2b0(),name);
+        Unk_CommandUIRef object=((Unk_CommandUIMgr*)FUN_1403ed2b0())->FUN_141adcf50(name);
         if(object.FUN_1403e8a70()) { object.FUN_141371280()->vfunc_3(); object.FUN_141371280()->vfunc_8(0); }
     }
     return 1;
@@ -1115,60 +1120,44 @@ int CUserCommandCli::FUN_141367a40(Unk_CommandArgs& args) {
 int CUserCommandCli::FUN_141367ae0(Unk_CommandArgs& args) {
     int priority=args.FUN_1408d1f60(0,0);
     TiXmlDocument doc;
-    void* declaration=operator new(0x68);
-    void* decl;
-    if(declaration==0) decl=0; else decl=FUN_1408704d0(declaration,"1.0","utf-8","");
+    TiXmlDeclaration* decl=new TiXmlDeclaration("1.0","utf-8","");
     FUN_14086e090(&doc,decl);
-    void* rootMem=operator new(0x90);
-    void* root;
-    if(rootMem==0) root=0; else root=FUN_14086f2f0(rootMem,"ms2");
+    TiXmlElement* root=new TiXmlElement("ms2");
     FUN_14086e090(&doc,root);
-    void* keyMem=operator new(0x90);
-    void* keyConfig;
-    if(keyMem==0) keyConfig=0; else keyConfig=FUN_14086f2f0(keyMem,"KeyConfig");
+    TiXmlElement* keyConfig=new TiXmlElement("KeyConfig");
     FUN_14086e090(root,keyConfig);
-    for(int set=9;set<14;set++) {
-        Unk_g1_Iter16 table;
-        FUN_141430710(FUN_1409331f0(),&table,set);
-        if(FUN_141254080(&table)!=0) {
-            __int64 pos=FUN_1412545c0(FUN_1412540a0(&table));
-            while(pos!=0) {
-                Unk_g1_Iter16 item;
-                FUN_141253d00(&item,FUN_141254510(FUN_1412540a0(&table),pos));
-                if(FUN_141254090(&item)!=0) {
-                    Unk_g1_KeyBinding* data=(Unk_g1_KeyBinding*)FUN_1412540c0(&item);
-                    int keyCode=FUN_14142c940(FUN_1409331f0(),data->m_18,priority);
+    for(int set=9;set<=13;set++) {
+        CKeyTable::SettingList table=FUN_1409331f0()->FUN_141430710(set);
+        if(table.get()) {
+            for(POSITION pos=table->GetHeadPosition();pos!=0;table->GetNext(pos)) {
+                MS2Ptr<CKeySettingParam> item=table->GetAt(pos);
+                if(item.get()) {
+                    int keyCode=FUN_1409331f0()->FUN_14142c940(item->m_nAction,priority);
                     if(keyCode!=0) {
-                        Unk_g1_TiXmlElement key;
-                        FUN_14086f2f0(&key,"key");
+                        TiXmlElement key("key");
                         FUN_14086f920(&key,"priority",priority);
-                        FUN_14086f920(&key,"code",((Unk_g1_KeyBinding*)FUN_1412540c0(&item))->code);
-                        FUN_14086f920(&key,"type",((Unk_g1_KeyBinding*)FUN_1412540c0(&item))->m_20);
+                        FUN_14086f920(&key,"code",(int)item->m_nAction);
+                        FUN_14086f920(&key,"type",item->m_nType);
                         FUN_14086f920(&key,"keyCode",keyCode);
                         FUN_14086e000(keyConfig,&key);
-                        FUN_14086f450(&key);
                     }
                 }
-                FUN_141253f40(&item);
-                FUN_141254640(FUN_1412540a0(&table),&pos);
             }
         }
-        FUN_141253ee0(&table);
     }
-    CString fileName=StringFormat("DefaultKey_{0}.xml",priority);
-    CString path=FUN_14071a5b0(CString("Table/Default"),fileName);
-    FUN_1408710c0(&doc,(const char*)path);
+    CString fileName=FUN_1402bad60("DefaultKey_{0}.xml",&priority);
+    FUN_1408710c0(&doc,FUN_14071a5b0("Table/Default",fileName));
     return 1;
 }
 // @0x141367f20
 int CUserCommandCli::FUN_141367f20(Unk_CommandArgs& args) {
-    int first=args.FUN_1408d1f60(0,0);
-    int second=args.FUN_1408d1f60(1,0);
+    Unk_CommandKeyCode first=(Unk_CommandKeyCode)args.FUN_1408d1f60(0,0);
+    Unk_CommandKeyCode second=(Unk_CommandKeyCode)args.FUN_1408d1f60(1,0);
     void* keys=FUN_1409331f0();
     if(keys!=0) {
         unsigned combined;
         FUN_141430e70(keys,&combined,first,second,0xf0);
-        FUN_1412751b0(StringFormat(L"CombinKey : {0} + {1} = {2}",(Unk_CommandKeyCode)first,(Unk_CommandKeyCode)second,combined),20);
+        FUN_1412751b0(StringFormat(L"CombinKey : {0} + {1} = {2}",first,second,combined),20);
     }
     return 1;
 }
@@ -1238,23 +1227,16 @@ int CUserCommandCli::FUN_141368730(Unk_CommandArgs&) {
 }
 // @0x1413687d0
 int CUserCommandCli::FUN_1413687d0(Unk_CommandArgs&) {
-    Unk_g1_List48 list;
-    FUN_140963ae0(&list,10);
+    Unk_ShList list(10);
     FUN_141bd2db0(FUN_1403ed2d0(),&list,(void*)FUN_141274b10);
-    __int64 pos=FUN_140967000(&list);
-    while(pos!=0) {
-        void* entry=FUN_140965780(FUN_140a01110(&list,pos));
-        Unk_g1_EffectReq request;
-        FUN_140a52ef0(&request);
-        reinterpret_cast<CString&>(request.m_name)="Eff_AfterImage.xml";
-        request.m_value=FUN_141bd1a10(FUN_1403ed2d0(),entry);
-        int value=FUN_14123c580(entry);
-        FUN_140a53190(&request,value);
+    for(__int64 pos=list.FUN_140967000(); pos!=0; list.FUN_1409671f0(&pos)) {
+        void* entry=FUN_140965780(list.FUN_140a01110(pos));
+        NoticeMessage request;
+        request.m_strName="Eff_AfterImage.xml";
+        request.m_nObject=FUN_141bd1a10(FUN_1403ed2d0(),entry);
+        request.SetActor(FUN_14123c580(entry));
         FUN_1411a4a00(FUN_1403ed280(),&request);
-        FUN_1405a89e0(&request);
-        FUN_1409671f0(&list,&pos);
     }
-    FUN_1409647c0(&list);
     return 1;
 }
 // @0x1413688f0
@@ -1310,29 +1292,19 @@ int CUserCommandCli::FUN_141368c20(Unk_CommandArgs&) {
 int CUserCommandCli::FUN_141368ce0(Unk_CommandArgs& args) {
     CStringW mode=args.FUN_1408d21c0(0,L"");
     int value=args.FUN_1408d1f60(1,0);
-    if(!FUN_1403b3c40(mode,L"debug")) {
-        if(!FUN_1403b3c40(mode,L"skin_merge")) {
-            if(!FUN_1403b3c40(mode,L"item_merge")) {
-                if(FUN_1403b3c40(mode,L"hide")) {
-                    FUN_140d86260()->vfunc_64(value);
-                }
-            } else {
-                unsigned enable=(value==1);
-                DAT_143ae2b54=enable;
-                const wchar_t* text;
-                if(enable==0) text=L"disable"; else text=L"enable";
-                FUN_1412751b0(StringFormat(L"optimizer merge item {0}",text),20);
-            }
-        } else {
-            unsigned enable=(value==1);
-            DAT_143ae2b50=enable;
-            const wchar_t* text;
-            if(enable==0) text=L"disable"; else text=L"enable";
-            FUN_1412751b0(StringFormat(L"optimizer merge skin {0}",text),20);
-        }
-    } else {
+    if(FUN_1403b3c40(mode,L"debug")) {
         DAT_143ae2b58=value;
         FUN_1412751b0(StringFormat(L"optimizer debug level: {0}",DAT_143ae2b58),20);
+    } else if(FUN_1403b3c40(mode,L"skin_merge")) {
+        DAT_143ae2b50=value==1 ? 1 : 0;
+        const wchar_t* text=DAT_143ae2b50 ? L"enable" : L"disable";
+        FUN_1412751b0(StringFormat(L"optimizer merge skin {0}",text),20);
+    } else if(FUN_1403b3c40(mode,L"item_merge")) {
+        DAT_143ae2b54=value==1 ? 1 : 0;
+        const wchar_t* text=DAT_143ae2b54 ? L"enable" : L"disable";
+        FUN_1412751b0(StringFormat(L"optimizer merge item {0}",text),20);
+    } else if(FUN_1403b3c40(mode,L"hide")) {
+        FUN_140d86260()->vfunc_64(value);
     }
     return 1;
 }
@@ -1361,18 +1333,14 @@ int CUserCommandCli::FUN_141369020(Unk_CommandArgs& args) {
 // @0x1413691f0
 int CUserCommandCli::FUN_1413691f0(Unk_CommandArgs& args) {
     int id=args.FUN_1408d1f60(0,0);
-    if(id<0) {
-        if(id<0x80) {
-            FUN_1413747d0((unsigned char*)FUN_140c8dac0()+0x6b8);
-            CStringW text=FUN_1402a61e0(L"reset ForceGM ID");
-            FUN_1412751b0(text,20);
-        } else {
-            CStringW text=FUN_1402a61e0(L"Invalid Range GM ID");
-            FUN_1412751b0(text,20);
-        }
-    } else {
+    if(id>=0) {
         FUN_141374920((unsigned char*)FUN_140c8dac0()+0x6b8,id);
         FUN_1412751b0(StringFormat(L"Set ForceGM ID : {0}",id),20);
+    } else if(id>0x7f) {
+        FUN_1412751b0(FUN_1402a61e0(L"Invalid Range GM ID"),20);
+    } else {
+        FUN_1413747d0((unsigned char*)FUN_140c8dac0()+0x6b8);
+        FUN_1412751b0(FUN_1402a61e0(L"reset ForceGM ID"),20);
     }
     return 1;
 }
@@ -1424,10 +1392,7 @@ int CUserCommandCli::FUN_141369620(Unk_CommandArgs&) {
 int CUserCommandCli::FUN_141369650(Unk_CommandArgs& args) {
     void* dialog=FUN_140e01890(0x4e4c);
     if(dialog!=0) {
-        int fourth=args.FUN_1408d1f60(3,0);
-        int third=args.FUN_1408d1f60(2,0);
-        int second=args.FUN_1408d1f60(1,0);
-        FUN_1419f6bc0(dialog,args.FUN_1408d21c0(0,L""),second,third,fourth);
+        FUN_1419f6bc0(dialog,args.FUN_1408d21c0(0,L""),args.FUN_1408d1f60(1,0),args.FUN_1408d1f60(2,0),args.FUN_1408d1f60(3,0));
     }
     return 1;
 }
@@ -1541,14 +1506,16 @@ int CUserCommandCli::FUN_141369bd0(Unk_CommandArgs&) {
 }
 // @0x14136a4c0
 int CUserCommandCli::FUN_14136a4c0(Unk_CommandArgs& args) {
-    int n = args.FUN_1408d2380();
-    if (n == 1) {
-        CStringW id = args.FUN_1408d21c0(0,L"");
-        FUN_140761f00(id,2);
-    } else {
-        FUN_1412751b0(CStringW(L"/CompleteQuest [QuestID]"),20);
+    if (args.FUN_1408d2380() != 1) {
+        {
+            CStringW usage(L"/CompleteQuest [QuestID]");
+            FUN_1412751b0(usage,20);
+        }
+        return 0;
     }
-    return n == 1;
+    CStringW id = args.FUN_1408d21c0(0,L"");
+    FUN_140761f00(id,2);
+    return 1;
 }
 // @0x14136a590
 int CUserCommandCli::FUN_14136a590(Unk_CommandArgs& args) {
@@ -1701,7 +1668,10 @@ int CUserCommandCli::FUN_14136b290(Unk_CommandArgs& args) {
 // @0x14136b6d0
 int CUserCommandCli::FUN_14136b6d0(Unk_CommandArgs& args) {
     if (args.FUN_1408d2380() != 2) {
-        FUN_1412751b0(CStringW(L"/SetEpicQuestStatus [QuestID] [Status]"),20);
+        {
+            CStringW usage(L"/SetEpicQuestStatus [QuestID] [Status]");
+            FUN_1412751b0(usage,20);
+        }
         return 0;
     }
     CStringW a0 = args.FUN_1408d21c0(0,L"");
@@ -1709,11 +1679,16 @@ int CUserCommandCli::FUN_14136b6d0(Unk_CommandArgs& args) {
     CStringW a1 = args.FUN_1408d21c0(1,L"");
     int status = _wtoi(a1);
     if (status < 0 || 4 < status) {
-        FUN_1412751b0(CStringW(L"/SetEpicQuestStatus [QuestID] [Status]"),20);
+        {
+            CStringW usage(L"/SetEpicQuestStatus [QuestID] [Status]");
+            FUN_1412751b0(usage,20);
+        }
         return 0;
     }
-    Unk_g2_Vec24 one{(DWORD)quest};
-    FUN_140761f60(&one,status);
+    {
+        Unk_g2_Vec24 one{(DWORD)quest};
+        FUN_140761f60(&one,status);
+    }
     return 1;
 }
 // @0x14136b910
@@ -1723,13 +1698,8 @@ void FUN_14136b910(void*,Unk_g2_Vec24* src,int status) {
     Unk_g2_Vec24 batch;
     batch.reserve(200);
     while (i < size) {
-        for (;;) {
-            unsigned __int64 lim = i + 200;
-            const unsigned __int64& m = (std::min)(lim, size);
-            if (m <= i) break;
+        for (; i < (std::min)(i + 200, size); ++i)
             batch.push_back((*src)[i]);
-            i = i + 1;
-        }
         FUN_140761f60(&batch,status);
         batch.clear();
     }
@@ -1747,7 +1717,7 @@ int CUserCommandCli::FUN_14136bac0(Unk_CommandArgs& args) {
     CStringW packetText=args.FUN_1408d21c0(0,L"");
     ATL::CAtlArray<CStringW> items;
     FUN_14025a680(packetText,items,L",");
-    if(FUN_14015a000(items)==0) return 0;
+    if(FUN_14015a000(items)<=0) return 0;
     COutPacket packet(0x7fffffff,0);
     for(size_t i=0;i<FUN_14015a000(items);i++) {
         ATL::CAtlArray<CStringW> parts;
@@ -1757,9 +1727,9 @@ int CUserCommandCli::FUN_14136bac0(Unk_CommandArgs& args) {
         if(type.CompareNoCase(L"p")==0) {
             packet.FUN_140710740(_wtoi(value),0,true);
         } else if(type.CompareNoCase(L"1")==0) {
-            packet.vfunc_o10_1((unsigned char)(_wtoi(value)&0xff));
+            packet.vfunc_o10_1((unsigned char)_wtoi(value));
         } else if(type.CompareNoCase(L"2")==0) {
-            packet.vfunc_o10_2((short)(_wtoi(value)&0xffff));
+            packet.vfunc_o10_2((short)_wtoi(value));
         } else if(type.CompareNoCase(L"4")==0) {
             packet.vfunc_o10_3(_wtoi(value));
         } else if(type.CompareNoCase(L"f")==0) {
@@ -1779,10 +1749,9 @@ int CUserCommandCli::FUN_14136be40(Unk_CommandArgs& args) {
     pos.x=args.FUN_1408d2280(0,0);
     pos.y=args.FUN_1408d2280(1,0);
     pos.z=args.FUN_1408d2280(2,0);
-    void* player=FUN_1403ed2d0();
-    char* actor=(char*)FUN_141bd0cc0(player);
+    Unk_CommandActor* actor=(Unk_CommandActor*)FUN_141bd0cc0(FUN_1403ed2d0());
     if(actor==0) return 0;
-    ((void(*)(void*,Unk_StreamPoint))(*(void***)actor)[0x98/8])(actor,pos);
+    actor->vfunc_19(pos);
     return 1;
 }
 // @0x14136bf10
@@ -1802,7 +1771,7 @@ int CUserCommandCli::FUN_14136bf50(Unk_CommandArgs&) {
 int CUserCommandCli::FUN_14136bfe0(Unk_CommandArgs&) {
     Unk_DamageTest* obj=(Unk_DamageTest*)FUN_140b624b0(0x4e32);
     if(obj) {
-        FUN_141913990(obj,obj->m_2c0==0);
+        bool bOld=!obj->m_2c0; FUN_141913990(obj,bOld);
         const wchar_t* label;
         if(obj->m_2c0==1) label=L"On"; else label=L"Off";
         CStringW state(label);
@@ -1901,12 +1870,9 @@ int CUserCommandCli::FUN_14136c660(Unk_CommandArgs& args) {
 int CUserCommandCli::FUN_14136c6f0(Unk_CommandArgs& args) {
     CStringW url=StringFormat(L"maview:/Main/Search?tk={0}",args.FUN_1408d2330());
     void* browser=FUN_140c43790(0x4e6a);
-    bool ok=browser!=0;
-    if(ok) {
-        CString narrow=FUN_140391100(url);
-        FUN_14135ec00(browser,narrow,true);
-    }
-    return ok;
+    if(!browser) return 0;
+    FUN_14135ec00(browser,FUN_140391100(url),true);
+    return 1;
 }
 // @0x14136c7f0
 int CUserCommandCli::FUN_14136c7f0(Unk_CommandArgs& args) {
@@ -1927,40 +1893,21 @@ int CUserCommandCli::FUN_14136c880(Unk_CommandArgs&) {
 // @0x14136c940
 int CUserCommandCli::FUN_14136c940(Unk_CommandArgs& args) {
     void* actor=FUN_141bd0cc0(FUN_1403ed2d0());
-    if(actor) {
-        Unk_g3_Ref16 ref;
-        FUN_141664200(actor,&ref);
-        if(ref.FUN_141371260()) {
-            void* inner=FUN_140c207b0(&ref);
-            if(FUN_14050a6a0(inner)!=0) {
-                FUN_140c20600(&ref);
-                return 1;
-            }
-        }
-        if(args.FUN_1408d2380()==1) {
-            CStringW text=args.FUN_1408d21c0(0,L"");
-            FUN_14162ba50(FUN_1409670d0(),text);
-        }
-        FUN_140c20600(&ref);
+    if(!actor) return 1;
+    MS2Ptr<Unk_HsInfo> spInfo=((Unk_HsPC*)actor)->FUN_141664200();
+    if((bool)spInfo.get() && spInfo->FUN_14050a6a0()) return 1;
+    if(args.FUN_1408d2380()==1) {
+        FUN_14162ba50(FUN_1409670d0(),args.FUN_1408d21c0(0,L""));
     }
     return 1;
 }
 // @0x14136ca90
 int CUserCommandCli::FUN_14136ca90(Unk_CommandArgs&) {
     void* actor=FUN_141bd0cc0(FUN_1403ed2d0());
-    if(actor) {
-        Unk_g3_Ref16 ref;
-        FUN_141664200(actor,&ref);
-        if(ref.FUN_141371260()) {
-            void* inner=FUN_140c207b0(&ref);
-            if(FUN_14050a6a0(inner)!=0) {
-                FUN_140c20600(&ref);
-                return 1;
-            }
-        }
-        FUN_14162be10(FUN_1409670d0());
-        FUN_140c20600(&ref);
-    }
+    if(!actor) return 1;
+    MS2Ptr<Unk_HsInfo> spInfo=((Unk_HsPC*)actor)->FUN_141664200();
+    if((bool)spInfo.get() && spInfo->FUN_14050a6a0()) return 1;
+    FUN_14162be10(FUN_1409670d0());
     return 1;
 }
 // @0x14136cb60
@@ -1978,19 +1925,20 @@ int CUserCommandCli::FUN_14136cc10(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()==1) {
         COutPacket packet(0x51,0);
         packet.vfunc_o10_1(1);
-        CStringW text=args.FUN_1408d21c0(0,L"");
-        packet.vfunc_o10_8(text);
+        packet.vfunc_o10_8(args.FUN_1408d21c0(0,L""));
         FUN_140710590(packet);
     }
     return 1;
 }
 // @0x14136ccf0
 int CUserCommandCli::FUN_14136ccf0(Unk_CommandArgs&) {
-    if(DAT_143ab2914<0x32) {
-        text.IsEmpty();
+    if(DAT_143ab2914>=0x32) return 0;
+    bool bRebuild=text.IsEmpty();
+    bRebuild=true;
+    if(bRebuild) {
         text=L"";
-        CStringW key=L"s_usercommand_fmt";
-        CStringW format=FUN_14061ad70(key,L"_{0}");
+        const CStringW& key=L"s_usercommand_fmt";
+        const CStringW& format=FUN_14061ad70(key,L"_{0}");
         for(POSITION p=ordered.GetHeadPosition();p;ordered.GetNext(p)) {
             MS2Ptr<TUserCommandInfo> info=ordered.GetValueAt(p);
             if(info==0 || info->suffix.IsEmpty()) continue;
@@ -2000,10 +1948,9 @@ int CUserCommandCli::FUN_14136ccf0(Unk_CommandArgs&) {
             text.Append(FUN_1408f71a0(suffix,names,info->firstAlias));
         }
         text=FUN_1405c2690(key,text);
-        FUN_1412751b0(text,20);
-        return 1;
     }
-    return 0;
+    FUN_1412751b0(text,20);
+    return 1;
 }
 // @0x14136d0a0
 int CUserCommandCli::FUN_14136d0a0(Unk_CommandArgs& args) {
@@ -2051,9 +1998,7 @@ int CUserCommandCli::FUN_14136d230(Unk_CommandArgs&) {
 int CUserCommandCli::FUN_14136d300(Unk_CommandArgs& args) {
     void* target=FUN_14136f1f0(0x4f5c);
     if(target) {
-        CStringW second=args.FUN_1408d21c0(1,L"");
-        CString tag=FUN_14016a600(second,0);
-        FUN_140bea390(target,args.FUN_1408d21c0(0,L""),tag);
+        FUN_140bea390(target,args.FUN_1408d21c0(0,L""),FUN_14016a600(args.FUN_1408d21c0(1,L""),0));
     }
     return 1;
 }
@@ -2075,11 +2020,12 @@ int CUserCommandCli::FUN_14136d4e0(Unk_CommandArgs& args) {
 // @0x14136d520
 int CUserCommandCli::FUN_14136d520(Unk_CommandArgs&) {
     CString path=static_cast<Unk_UcLogView*>(FUN_140a44830())->FUN_1401ce8d0();
-    CStringW message=FUN_14016a730(path,0);
-    FUN_1412751b0(message,20);
+    FUN_1412751b0(FUN_14016a730(path,0),20);
     FUN_14083d890(FUN_14016a730(path,0));
-    CStringW done(L"Path Copied to Clipboard");
-    FUN_1412751b0(done,20);
+    {
+        CStringW done(L"Path Copied to Clipboard");
+        FUN_1412751b0(done,20);
+    }
     return 1;
 }
 // @0x14136d620
@@ -2092,20 +2038,17 @@ int CUserCommandCli::FUN_14136d620(Unk_CommandArgs& args) {
 // @0x14136d6a0
 int CUserCommandCli::FUN_14136d6a0(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()==2) {
-        int field=args.FUN_1408d1fd0(0,0);
+        unsigned field=args.FUN_1408d1fd0(0,0);
         int group=args.FUN_1408d1f60(1,0);
-        Unk_g4_Salable salable;
-        FUN_1408ad110(&salable);
-        if(FUN_1408a0d30(group,&salable,field)==0) {
+        Unk_UGCGroup salable;
+        if(FUN_1408a0d30(group,salable,field)==0) {
             FUN_1412751b0(StringFormat(L"Cannot Found SalableGroup in Field {0} {1}",field,group),20);
-            FUN_14050de70(&salable);
             return 1;
         }
         FUN_141adc750(FUN_1403ed2b0(),0x4e76);
         void* dialog=FUN_140961690(0x4e76);
         if(dialog) FUN_141ab4000(dialog,group,field);
         FUN_1412751b0(StringFormat(L"OpenContract {0} {1}",field,group),20);
-        FUN_14050de70(&salable);
     } else {
         FUN_1412751b0(FUN_1402a61e0(L"OpenContract Arguments error"),20);
     }
@@ -2114,12 +2057,12 @@ int CUserCommandCli::FUN_14136d6a0(Unk_CommandArgs& args) {
 // @0x14136d870
 int CUserCommandCli::FUN_14136d870(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()==1) {
-        int id=args.FUN_1408d1fd0(0,0);
+        unsigned id=args.FUN_1408d1fd0(0,0);
         CStringW title=FUN_141b720b0(id,0);
-        if(title.GetLength()==0) {
-            FUN_1412751b0(StringFormat(L"invalid title id:{0}",id),20);
-        } else {
+        if(title.GetLength()!=0) {
             SendCommand(StringFormat(L"Title {0}",id));
+        } else {
+            FUN_1412751b0(StringFormat(L"invalid title id:{0}",id),20);
         }
     }
     return 1;
@@ -2147,7 +2090,7 @@ int CUserCommandCli::FUN_14136da20(Unk_CommandArgs&) {
 int CUserCommandCli::FUN_14136dab0(Unk_CommandArgs& args) {
     unsigned enabled=args.FUN_1408d20b0(0,1);
     CStringW mode(args.FUN_1408d21c0(1,CStringW(L"all")).MakeLower());
-    DAT_143aac548=enabled!=0;
+    DAT_143aac548=enabled ? true : false;
     return 1;
 }
 // @0x14136db90
