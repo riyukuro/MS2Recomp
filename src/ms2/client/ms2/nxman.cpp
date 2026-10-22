@@ -324,7 +324,7 @@ CString CNXMan::FUN_14160e5a0()
 }
 
 // @0x14160e5f0
-bool CNXMan::FUN_14160e5f0()
+int CNXMan::FUN_14160e5f0()
 {
     return FUN_14160eb40(this) == m_nGameCode;
 }

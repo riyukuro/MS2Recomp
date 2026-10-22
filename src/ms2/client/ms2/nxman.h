@@ -48,7 +48,7 @@ public:
     CString FUN_14160e500();                            // 0x14160e500
     CString FUN_14160e550();                            // 0x14160e550
     CString FUN_14160e5a0();                            // 0x14160e5a0
-    bool FUN_14160e5f0();                               // 0x14160e5f0
+    int FUN_14160e5f0();                                // 0x14160e5f0
     int  FUN_14160e630();                               // 0x14160e630
     void FUN_14160e870();                               // 0x14160e870
     void FUN_14160e9b0();                               // 0x14160e9b0
