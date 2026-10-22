@@ -194307,7 +194307,7 @@ FUN_141485590	141485590	func
 ?DetachEffect@NiNode@@QEAA_NPEAVNiDynamicEffect@@@Z	141d1a7b0	func
 ?GetObjectByName@NiNode@@UEAAPEAVNiAVObject@@AEBVNiFixedString@@@Z	141d1a8e0	func
 ?vfunc_20@NiNode@@UEAAXXZ	141d1a8e0	func
-?GetObjectByNameExcluding@NiNode@@UEAAPEAVNiAVObject@@AEBVNiFixedString@@G@Z	141d1a960	func
+?GetObjectByNameExcluding@NiNode@@UEAAPEAVNiAVObject@@AEBVNiFixedString@@I@Z	141d1a960	func
 ?vfunc_21@NiNode@@UEAAXXZ	141d1a960	func
 ?GetObjectsByType@NiNode@@UEAAXPEBVNiRTTI@@AEAV?$NiTPointerList@PEAVNiAVObject@@@@@Z	141d1aa00	func
 ?vfunc_22@NiNode@@UEAAXXZ	141d1aa00	func
