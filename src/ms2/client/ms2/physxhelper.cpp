@@ -175,7 +175,7 @@ Unk_PhysXSceneHandle* CPhysXHelper::FUN_1416892a0(int nScene)
 }
 // @0x1416892f0
 // MS2-FUNCTIONAL: call-order/spill shape differs from exe
-bool CPhysXHelper::FUN_1416892f0(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask)
+bool CPhysXHelper::CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask)
 {
     NxScene* pScene = FUN_14168a1c0();
     if (pScene == 0)
@@ -431,7 +431,7 @@ bool CPhysXHelper::FUN_14168a230(Unk_StreamPoint ptFrom, Unk_StreamPoint& ptHit,
     kInfo.m_groups = nMask != 0 ? nMask : nDefaultGroups;
     kInfo.m_20 = 0;
     kInfo.m_28 = 0;
-    bool bHit = FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0);
+    bool bHit = FUN_1409f7ca0()->CastRay(&kInfo, 0);
     if (bHit)
         ptHit = kInfo.m_hitPoint;
     return bHit;
@@ -449,7 +449,7 @@ int CPhysXHelper::FUN_14168a310(const Unk_StreamPoint& ptFrom, Unk_StreamPoint& 
     kInfo.m_groups = nMask != 0 ? nMask : nDefaultGroups;
     kInfo.m_20 = 0;
     kInfo.m_28 = 0;
-    if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+    if (FUN_1409f7ca0()->CastRay(&kInfo, 0))
     {
         if (pInfo != 0)
             *pInfo = kInfo;
@@ -471,7 +471,7 @@ int CPhysXHelper::FUN_14168a450(Unk_StreamPoint ptFrom, float* pDist, float fLen
     kInfo.m_groups = 0x389;
     kInfo.m_20 = 0;
     kInfo.m_28 = 0;
-    if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0) && pDist != 0)
+    if (FUN_1409f7ca0()->CastRay(&kInfo, 0) && pDist != 0)
     {
         *pDist = FUN_140a38cd0(kInfo.m_hitPoint.z - ptFrom.z);
         return 1;

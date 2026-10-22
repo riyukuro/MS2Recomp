@@ -2534,7 +2534,7 @@ bool UIMessenger::FUN_141a17c90(int nButton, const CMsgBoxData& box)
 // @0x141a184c0
 UIMessenger* FUN_141a184c0(CString strName)
 {
-    return dynamic_cast<UIMessenger*>(FUN_140b632f0()->FUN_1422d41b0(strName).get());
+    return dynamic_cast<UIMessenger*>(FUN_140b632f0()->GetUISwfEntity(strName).get());
 }
 
 // @0x141a17a60

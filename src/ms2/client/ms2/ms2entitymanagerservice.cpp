@@ -163,7 +163,7 @@ MS2_CHECK_SIZE(egf::EntityFactoryRequest,0x80);
         data.m_category=callback;data.m_pCreationArgs=creationArgs;data.m_pInitialPropertyValues=initialProps;
         data.m_spFactoryResponse=EE_NEW egf::EntityFactoryResponse(efd::utf8string(efd::Formatted,"urn:emergent-flat-model:%s",model.c_str()),callback,efd::AssetLoadResponse::ALR_Success,id);
         m_entityIdToPendingDataMap[id]=data;
-        egf::EntityPtr entity=FUN_1409670f0()->FUN_1411cec80(model,id,isMaster);
+        egf::EntityPtr entity=FUN_1409670f0()->FactoryEntity(model,id,isMaster);
         if(initialProps)entity->ApplyProperties(initialProps);
         FUN_140de8bd0(entity,0x770e5fc6,&asset);
         efd::SmartPointer<HardwareInstancingService> instancing(FUN_14098c5b0(&DAT_143b059e8));

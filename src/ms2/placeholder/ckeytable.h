@@ -135,7 +135,7 @@ public:
     int FUN_141430cb0(int nKey);
     void FUN_141430d30(__int64 nAction, int nKey, int nPriority, int nOldKey);
     unsigned* FUN_141430e70(unsigned* pOut, int nFirst, int nSecond, int nMode);
-    CStringW FUN_141430ee0(int nFirst, int nSecond);
+    CStringW CreateCombineKeyString(int nFirst, int nSecond);
     void FUN_1414310a0(unsigned nKey, int* pFirst, int* pSecond);
     void FUN_1414310f0(int nKey, int nOtherKey, __int64 nAction, __int64 nOtherAction);   // swap the modifier combos
     void FUN_1414316e0(int nKey, __int64 nAction);          // unbind the modifier combos of a key

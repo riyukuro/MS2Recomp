@@ -712,7 +712,7 @@ bool StateFishingFloat::FUN_140ddc4b0(Unk_StreamPoint kDir)
     kRay.m_maxDist = 0;
     kRay.m_groups = 0x301;
     Unk_FsCell kCellA = FUN_140ddc3c0(FsPoint(m_pOwner->vfunc_18()).FUN_14097fd50(Unk_StreamPoint(0.0f, 0.0f, 5.0f)));
-    if (!FUN_1409f7ca0()->FUN_1416892f0(&kRay, 0))
+    if (!FUN_1409f7ca0()->CastRay(&kRay, 0))
         return false;
     if (kRay.m_hitEntity != 0)
     {

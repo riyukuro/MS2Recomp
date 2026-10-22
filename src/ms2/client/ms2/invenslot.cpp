@@ -1699,7 +1699,7 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
     kInfo.m_dir = DAT_143a08cf8.FUN_1409f7960();
     kInfo.m_maxDist = 0.0f;
     kInfo.m_groups = 0x389;
-    if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, &kMask) == false)
+    if (FUN_1409f7ca0()->CastRay(&kInfo, &kMask) == false)
         return 0;
     return 1;
 }

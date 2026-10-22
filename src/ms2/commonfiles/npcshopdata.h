@@ -116,7 +116,7 @@ public:
     int FUN_1406df190();                             // three server-side checks (always TRUE here)
     int FUN_1406df1b0();
     int FUN_1406df1d0();
-    int FUN_1406e2600(CString& strError, Unk_140165cf0* pElem);   // validate after reading
+    int Read(CString& strError, Unk_140165cf0* pElem);   // validate after reading
     void FUN_1406e2bc0(MS2Ptr<CNpcShopItemNew> spItem);           // add a "new" item
 
     unsigned m_nShopId;                              // +0x18 shopID
@@ -298,7 +298,7 @@ class CBeautyShopData : public CBeautyShopDataCommon
 {
 public:
     CBeautyShopData();                               // 0x1406e4500
-    int FUN_1406e45b0(CString& strError);            // validate the coupons
+    int Read(CString& strError);            // validate the coupons
     void FUN_1406e4770(COutputStream& out);
     MS2Ptr<CBeautyShopItem> FUN_1406e4860(int nItemId, unsigned nGender);
     void AddShopItemGroup(MS2Ptr<CBeautyShopItemGroup> spGroup);  // 0x1406e4a70 (name from its log text)

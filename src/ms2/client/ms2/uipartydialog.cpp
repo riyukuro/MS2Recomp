@@ -765,7 +765,7 @@ void UIPartyDialog::FUN_141a77760(float x, float y, __int64 nCharId)
             if (pMenu != 0)
             {
                 Unk_PopupMenuInfo info(x, y, 3, 0x63fe, 1, "partySlot", 0);
-                pMenu->FUN_141a7e280(info, pMe, 2);
+                pMenu->PopUpMenu(info, pMe, 2);
             }
         }
         else
@@ -775,7 +775,7 @@ void UIPartyDialog::FUN_141a77760(float x, float y, __int64 nCharId)
             if (spMember.get() != 0 && (pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39)) != 0)
             {
                 Unk_PopupMenuInfo info(x, y, 3, 0x63fe, 1, "partySlot", 0);
-                pMenu->FUN_141a7f190(info, spMember);
+                pMenu->PopUpMenuFromPartyMember(info, spMember);
             }
         }
     }
@@ -2005,7 +2005,7 @@ void UIPopUpMenu::vfunc_ugc_1(void* pId, CString strImage)
 }
 
 // @0x141a7e280
-void UIPopUpMenu::FUN_141a7e280(const Unk_PopupMenuInfo& info, PCBase* pTarget, int nType)
+void UIPopUpMenu::PopUpMenu(const Unk_PopupMenuInfo& info, PCBase* pTarget, int nType)
 {
     if (info.m_a == m_80 && pTarget->FUN_14123c500() == m_98)
         return;
@@ -2050,7 +2050,7 @@ void UIPopUpMenu::FUN_141a7e280(const Unk_PopupMenuInfo& info, PCBase* pTarget, 
     HomeBlockManager::HomePtr spHome = FUN_1414a5830()->FUN_140a47580(m_a8);
     if (spHome.get() != 0)
         m_d8 = spHome->m_18;
-    if (FUN_141a82140(target, info.m_b, nKind) == 0)
+    if (Open(target, info.m_b, nKind) == 0)
         FUN_141a82dd0();
 }
 
@@ -2090,7 +2090,7 @@ void UIPopUpMenu::FUN_141a7e870(const Unk_PopupMenuInfo& info, PCBase* pTarget, 
     target.m_strName = strName;
     target.m_b38 = true;
     target.m_bOnline = 1;
-    if (FUN_141a82140(target, info.m_b, nKind) == 0)
+    if (Open(target, info.m_b, nKind) == 0)
         FUN_141a82dd0();
 }
 
@@ -2127,7 +2127,7 @@ void UIPopUpMenu::FUN_141a7eb60(const Unk_PopupMenuInfo& info, MS2Ptr<CProxyGame
     if (spHome.get() != 0)
         m_d8 = spHome->m_18;
     int nKind = spProxy->FUN_1416c1ff0() != 0 ? 1 : 2;
-    if (FUN_141a82140(target, info.m_b, nKind) == 0)
+    if (Open(target, info.m_b, nKind) == 0)
         FUN_141a82dd0();
 }
 
@@ -2143,12 +2143,12 @@ void UIPopUpMenu::FUN_141a7f090(const Unk_PopupMenuInfo& info, const CStringW& s
     m_a0 = (__int64)pAccount;
     m_a8 = nCharId;
     m_b0 = strName;
-    if (FUN_141a828a0(strName, info, 2, nDir) == 0)
+    if (OpenFromCharName(strName, info, 2, nDir) == 0)
         FUN_141a82dd0();
 }
 
 // @0x141a7f190
-void UIPopUpMenu::FUN_141a7f190(const Unk_PopupMenuInfo& info, CPartyMember* pMember)
+void UIPopUpMenu::PopUpMenuFromPartyMember(const Unk_PopupMenuInfo& info, CPartyMember* pMember)
 {
     FUN_141a80770();
     CStringW strName = pMember->user.FUN_1408f19e0();
@@ -2175,12 +2175,12 @@ void UIPopUpMenu::FUN_141a7f190(const Unk_PopupMenuInfo& info, CPartyMember* pMe
     m_a8 = pUser->m_8;
     m_b0 = pUser->FUN_1408f19e0();
     int nKind = 2;
-    if (FUN_141a82140(target, info.m_b, nKind) == 0)
+    if (Open(target, info.m_b, nKind) == 0)
         FUN_141a82dd0();
 }
 
 // @0x141a7f510
-void UIPopUpMenu::FUN_141a7f510(const Unk_PopupMenuInfo& info, CGuildMember* pMember)
+void UIPopUpMenu::PopUpMenuFromGuildMember(const Unk_PopupMenuInfo& info, CGuildMember* pMember)
 {
     FUN_141a80770();
     CStringW strName = pMember->data.FUN_1404ca890();
@@ -2209,7 +2209,7 @@ void UIPopUpMenu::FUN_141a7f510(const Unk_PopupMenuInfo& info, CGuildMember* pMe
     int nKind = 2;
     if (pData->f08 != 0 && pData->f08 == DAT_143ab2828)
         nKind = 1;
-    if (FUN_141a82140(target, info.m_b, nKind) == 0)
+    if (Open(target, info.m_b, nKind) == 0)
         FUN_141a82dd0();
 }
 
@@ -2247,7 +2247,7 @@ void UIPopUpMenu::FUN_141a7f950(const Unk_PopupMenuInfo& info, __int64 nBuddyId)
     target.m_nTrophy = reinterpret_cast<Unk_GuildTriple*>(pBuddy->FUN_1401cc330())->FUN_140267c10();
     target.m_n20 = pBuddy->FUN_1401cc290();
     target.m_nJobCode = pBuddy->FUN_1401cc2b0();
-    if (FUN_141a82140(target, info.m_b, 2) == 0)
+    if (Open(target, info.m_b, 2) == 0)
         FUN_141a82dd0();
 }
 
@@ -2278,7 +2278,7 @@ void UIPopUpMenu::FUN_141a7fc50(const Unk_PopupMenuInfo& info, __int64 nHomeId)
     target.m_nTrophy = 0;
     target.m_n20 = spHome->m_3c;
     target.m_nJobCode = spHome->m_40;
-    if (FUN_141a82140(target, info.m_b, 2) == 0)
+    if (Open(target, info.m_b, 2) == 0)
         FUN_141a82dd0();
 }
 
@@ -2303,12 +2303,12 @@ void UIPopUpMenu::FUN_141a7ff60(const Unk_PopupMenuInfo& info, int nIndex, MS2Pt
     m_c0 = spBanner->m_upload.m_strName;
     m_c8 = nIndex;
     m_158 = spBanner->m_strUrl;
-    if (FUN_141a828a0(strName, info, 4, 1) == 0)
+    if (OpenFromCharName(strName, info, 4, 1) == 0)
         FUN_141a82dd0();
 }
 
 // @0x141a80210
-void UIPopUpMenu::FUN_141a80210(const Unk_PopupMenuInfo& info, CClubMember* pMember)
+void UIPopUpMenu::PopUpMenuFromClubMember(const Unk_PopupMenuInfo& info, CClubMember* pMember)
 {
     FUN_141a80770();
     CStringW strName = pMember->m_info.FUN_14020e5d0();
@@ -2339,7 +2339,7 @@ void UIPopUpMenu::FUN_141a80210(const Unk_PopupMenuInfo& info, CClubMember* pMem
     m_138 = 0;
     m_140 = L"";
     m_148 = "";
-    if (FUN_141a82140(target, info.m_b, nKind) == 0)
+    if (Open(target, info.m_b, nKind) == 0)
         FUN_141a82dd0();
 }
 
@@ -2360,7 +2360,7 @@ void UIPopUpMenu::FUN_141a80670(const Unk_PopupMenuInfo& info)
     target.m_pos = efd::Point3(info.m_x, info.m_y, 0);
     target.m_nCharId = info.m_infoB.m_18;
     target.m_strName = info.m_infoB.m_20;
-    FUN_141a82140(target, info.m_b, 0);
+    Open(target, info.m_b, 0);
 }
 
 // @0x141a80770
@@ -2480,7 +2480,7 @@ void UIPopUpMenu::FUN_141a80c40()
 }
 
 // @0x141a82140
-int UIPopUpMenu::FUN_141a82140(const Unk_PmTarget& target, int nFlags, int nType)
+int UIPopUpMenu::Open(const Unk_PmTarget& target, int nFlags, int nType)
 {
     if (m_30 == 0)
         return 0;
@@ -2566,7 +2566,7 @@ int UIPopUpMenu::FUN_141a82140(const Unk_PmTarget& target, int nFlags, int nType
 }
 
 // @0x141a828a0
-int UIPopUpMenu::FUN_141a828a0(CStringW strName, const Unk_PopupMenuInfo& info, int nMode, int nDir)
+int UIPopUpMenu::OpenFromCharName(CStringW strName, const Unk_PopupMenuInfo& info, int nMode, int nDir)
 {
     if (m_30 == 0)
         return 0;
@@ -2792,13 +2792,13 @@ int UIPopUpMenu::FUN_141a83810(unsigned nFlags, int nType, const Unk_PmTarget& t
         {
             if (!target.m_b38)
             {
-                FUN_141a844a0((Unk_PmMenuId)0x259);
-                FUN_141a844a0((Unk_PmMenuId)0x25a);
+                AddPopupMenu((Unk_PmMenuId)0x259);
+                AddPopupMenu((Unk_PmMenuId)0x25a);
             }
             else
             {
-                FUN_141a844a0((Unk_PmMenuId)600);
-                FUN_141a844a0((Unk_PmMenuId)0x25a);
+                AddPopupMenu((Unk_PmMenuId)600);
+                AddPopupMenu((Unk_PmMenuId)0x25a);
             }
         }
     }
@@ -2903,7 +2903,7 @@ void UIPopUpMenu::FUN_141a84320(ASArray& menu)
 }
 
 // @0x141a844a0
-void UIPopUpMenu::FUN_141a844a0(Unk_PmMenuId nMenuId)
+void UIPopUpMenu::AddPopupMenu(Unk_PmMenuId nMenuId)
 {
     if (m_160.Lookup(nMenuId) == 0)
         Unk_PmLog(FUN_140166440(), 2, 0x13, L"UIPopUpMenu::AddPopupMenu NotFound MenuID:{0}", nMenuId);
@@ -2916,14 +2916,14 @@ void UIPopUpMenu::FUN_141a84520(int nType, int bOnline, __int64 nCharId)
 {
     if (nType == 1)
     {
-        FUN_141a844a0((Unk_PmMenuId)100);
+        AddPopupMenu((Unk_PmMenuId)100);
     }
     else
     {
         if (nCharId != 0)
-            FUN_141a844a0((Unk_PmMenuId)0x66);
+            AddPopupMenu((Unk_PmMenuId)0x66);
         if (bOnline != 0)
-            FUN_141a844a0((Unk_PmMenuId)0x65);
+            AddPopupMenu((Unk_PmMenuId)0x65);
     }
 }
 
@@ -2936,9 +2936,9 @@ void UIPopUpMenu::FUN_141a84590(int nType, MyPC* pMe, const CStringW& strName, i
     {
         if (pMe->FUN_141527280())
         {
-            FUN_141a844a0((Unk_PmMenuId)200);
+            AddPopupMenu((Unk_PmMenuId)200);
             if (FUN_14162ab60(FUN_1409670d0()))
-                FUN_141a844a0((Unk_PmMenuId)0xcd);
+                AddPopupMenu((Unk_PmMenuId)0xcd);
         }
         return;
     }
@@ -2950,28 +2950,28 @@ void UIPopUpMenu::FUN_141a84590(int nType, MyPC* pMe, const CStringW& strName, i
         {
             if (FUN_14162ad50(FUN_1409670d0(), strName) != 0)
             {
-                FUN_141a844a0((Unk_PmMenuId)0xca);
+                AddPopupMenu((Unk_PmMenuId)0xca);
                 if (bOnline != 0)
-                    FUN_141a844a0((Unk_PmMenuId)0xcb);
+                    AddPopupMenu((Unk_PmMenuId)0xcb);
                 if (FUN_140166410()->FUN_14036d570(0xe0))
-                    FUN_141a844a0((Unk_PmMenuId)0xcc);
+                    AddPopupMenu((Unk_PmMenuId)0xcc);
             }
             else
             {
                 if (bOnline != 0)
-                    FUN_141a844a0((Unk_PmMenuId)0xc9);
+                    AddPopupMenu((Unk_PmMenuId)0xc9);
             }
         }
         else
         {
             if (FUN_14162ad50(FUN_1409670d0(), strName) != 0 && FUN_140166410()->FUN_14036d570(0xe0))
-                FUN_141a844a0((Unk_PmMenuId)0xcc);
+                AddPopupMenu((Unk_PmMenuId)0xcc);
         }
     }
     else
     {
         if (bOnline != 0)
-            FUN_141a844a0((Unk_PmMenuId)0xc9);
+            AddPopupMenu((Unk_PmMenuId)0xc9);
     }
 }
 
@@ -2982,16 +2982,16 @@ void UIPopUpMenu::FUN_141a847c0(int nType, MyPC* pMe, CBuddy* pBuddy)
         return;
     if (pBuddy == 0)
     {
-        FUN_141a844a0((Unk_PmMenuId)0x12d);
+        AddPopupMenu((Unk_PmMenuId)0x12d);
     }
     else if (pBuddy->FUN_1401cc5f0() == 0)
     {
         if (pBuddy->FUN_1401cc5b0() == 0 && pBuddy->FUN_1401cc660() == 0)
-            FUN_141a844a0((Unk_PmMenuId)0x12d);
+            AddPopupMenu((Unk_PmMenuId)0x12d);
     }
     else
     {
-        FUN_141a844a0((Unk_PmMenuId)300);
+        AddPopupMenu((Unk_PmMenuId)300);
     }
 }
 
@@ -3000,32 +3000,32 @@ void UIPopUpMenu::FUN_141a84860(int nType, MyPC* pMe, CBuddy* pBuddy)
 {
     if (pBuddy == 0 || pBuddy->FUN_1401cc5b0() == 0)
     {
-        FUN_141a844a0((Unk_PmMenuId)400);
+        AddPopupMenu((Unk_PmMenuId)400);
         return;
     }
-    FUN_141a844a0((Unk_PmMenuId)0x191);
-    FUN_141a844a0((Unk_PmMenuId)0x192);
+    AddPopupMenu((Unk_PmMenuId)0x191);
+    AddPopupMenu((Unk_PmMenuId)0x192);
 }
 
 // @0x141a848d0
 void UIPopUpMenu::FUN_141a848d0(int nType, int bOnline, __int64 nCharId)
 {
     if (nType != 1 && bOnline != 0 && nCharId != 0 && FUN_1403ed2d0()->FUN_141bd1530(nCharId) != 0)
-        FUN_141a844a0((Unk_PmMenuId)500);
+        AddPopupMenu((Unk_PmMenuId)500);
 }
 
 // @0x141a84940
 void UIPopUpMenu::FUN_141a84940(int nType, int bOnline)
 {
     if (nType != 1 && bOnline != 0)
-        FUN_141a844a0((Unk_PmMenuId)0x1f5);
+        AddPopupMenu((Unk_PmMenuId)0x1f5);
 }
 
 // @0x141a84980
 void UIPopUpMenu::FUN_141a84980(int nType, int bOnline)
 {
     if (nType == 2 && bOnline != 0)
-        FUN_141a844a0((Unk_PmMenuId)0x1f6);
+        AddPopupMenu((Unk_PmMenuId)0x1f6);
 }
 
 // @0x141a849c0
@@ -3034,7 +3034,7 @@ void UIPopUpMenu::FUN_141a849c0(int nType, __int64 nCharId)
     if (nType != 2)
         return;
     if (FUN_1418fd530(nCharId) != 0)
-        FUN_141a844a0((Unk_PmMenuId)0x1f7);
+        AddPopupMenu((Unk_PmMenuId)0x1f7);
 }
 
 // @0x141a84a10
@@ -3043,21 +3043,21 @@ void UIPopUpMenu::FUN_141a84a10(int nType, __int64 nCharId)
     if (nType != 2)
         return;
     if (FUN_1418fd5d0(nCharId) != 0)
-        FUN_141a844a0((Unk_PmMenuId)0x1f8);
+        AddPopupMenu((Unk_PmMenuId)0x1f8);
 }
 
 // @0x141a84a60
 void UIPopUpMenu::FUN_141a84a60(int nType)
 {
     if (nType == 5)
-        FUN_141a844a0((Unk_PmMenuId)0x1f9);
+        AddPopupMenu((Unk_PmMenuId)0x1f9);
 }
 
 // @0x141a84a90
 void UIPopUpMenu::FUN_141a84a90(int nType)
 {
     if (nType == 5)
-        FUN_141a844a0((Unk_PmMenuId)0x1fa);
+        AddPopupMenu((Unk_PmMenuId)0x1fa);
 }
 
 // @0x141a84ac0
@@ -3066,7 +3066,7 @@ void UIPopUpMenu::FUN_141a84ac0(int nType, __int64 nCharId)
     if (nType != 2)
         return;
     if (FUN_1418fd670(nCharId) != 0)
-        FUN_141a844a0((Unk_PmMenuId)0x1fb);
+        AddPopupMenu((Unk_PmMenuId)0x1fb);
 }
 
 // @0x141a84b10
@@ -3074,7 +3074,7 @@ void UIPopUpMenu::FUN_141a84b10(int nType)
 {
     if (nType == 1)
         return;
-    FUN_141a844a0((Unk_PmMenuId)0x1fc);
+    AddPopupMenu((Unk_PmMenuId)0x1fc);
 }
 
 // @0x141a84b40
@@ -3090,7 +3090,7 @@ void UIPopUpMenu::FUN_141a84b40(int nType, MyPC* pMe, const CStringW& strName)
         return;
     if (FUN_1403ed290()->m_info.FUN_1404cf9f0(strName).get() != 0)
         return;
-    FUN_141a844a0((Unk_PmMenuId)0x2bd);
+    AddPopupMenu((Unk_PmMenuId)0x2bd);
 }
 
 // @0x141a84c60
@@ -3100,7 +3100,7 @@ void UIPopUpMenu::FUN_141a84c60(int nType, MyPC* pMe, __int64 nCharId)
         return;
     if (nType != 2)
         return;
-    FUN_141a844a0((Unk_PmMenuId)0x321);
+    AddPopupMenu((Unk_PmMenuId)0x321);
 }
 
 // @0x141a84cb0
@@ -3109,12 +3109,12 @@ void UIPopUpMenu::FUN_141a84cb0(int nType, MyPC* pMe, HomeBlockManager::HomePtr 
     if (spHome.get() == 0)
     {
         if (FUN_1409670e0()->FUN_1410c3180() == DAT_143ab2820)
-            FUN_141a844a0((Unk_PmMenuId)0x385);
+            AddPopupMenu((Unk_PmMenuId)0x385);
     }
     else
     {
-        FUN_141a844a0((Unk_PmMenuId)0x386);
-        FUN_141a844a0((Unk_PmMenuId)0x387);
+        AddPopupMenu((Unk_PmMenuId)0x386);
+        AddPopupMenu((Unk_PmMenuId)0x387);
     }
 }
 
@@ -3800,7 +3800,7 @@ bool FUN_141a8ab90(GameObject* pObject, float x, float y)
     if (pPC != 0)
     {
         Unk_PopupMenuInfo info(x, y, 1, 0x3f3fe, 1, CString(""), 0);
-        pMenu->FUN_141a7e280(info, pPC, 10);
+        pMenu->PopUpMenu(info, pPC, 10);
         return true;
     }
     CPet* pPet = efd::DynamicCast<CPet>(pObject);

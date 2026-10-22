@@ -833,7 +833,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             if (spMember.get() != 0 && (pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39)) != 0)
             {
                 Unk_PopupMenuInfo info(x, y, 3, 0x63de, 1, CString(""), 0);
-                pMenu->FUN_141a7f510(info, spMember);
+                pMenu->PopUpMenuFromGuildMember(info, spMember);
             }
         }
         return 1;

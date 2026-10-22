@@ -39,7 +39,7 @@ public:
     void FUN_14170e800(CInPacket& packet);                  // 0x7d
     void FUN_14170f930(CInPacket& packet);                  // 0x16
     void FUN_14170fc70(CInPacket& packet);                  // 0x19
-    void FUN_14170fda0(CInPacket& packet);                  // 0x17
+    void OnAddUser(CInPacket& packet);                  // 0x17
     void FUN_141711dc0(CInPacket& packet);                  // 0x18
     void FUN_141711e70(CInPacket& packet);                  // 0x2b
     void FUN_141712340(CInPacket& packet);                  // 0x2c

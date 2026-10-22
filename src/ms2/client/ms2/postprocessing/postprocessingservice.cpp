@@ -1428,7 +1428,7 @@ bool PostProcessingService::FUN_1416a37a0(int nStep, bool bRelink)
         it->second->vfunc_19();
     }
     if (bRelink)
-        FUN_1416aaef0();
+        LinkEffects();
     if (it != m_kSteps.end())
         it->second->vfunc_20();
     return bActive;
@@ -1785,7 +1785,7 @@ efd::AsyncResult PostProcessingService::OnInit()
     FUN_1416a37a0(0xc, false);
     FUN_1416a3920(0x11, true);
     FUN_1416a37a0(0x12, false);
-    FUN_1416aaef0();
+    LinkEffects();
 
     NiDX9Renderer* pkRenderer = NiDynamicCast(NiDX9Renderer, NiRenderer::GetRenderer());
     if (pkRenderer != 0)
@@ -2198,7 +2198,7 @@ void PostProcessingService::FUN_1416aa6a0(Unk_PPTexture nClick, bool bActive)
             m_aspClicks[nClick]->SetActive(true);
             FUN_1416a7570();
             FUN_1416ab960();
-            FUN_1416aaef0();
+            LinkEffects();
         }
     }
     else
@@ -2210,7 +2210,7 @@ void PostProcessingService::FUN_1416aa6a0(Unk_PPTexture nClick, bool bActive)
                 m_aspClicks[nClick]->SetActive(false);
                 FUN_1416a7570();
                 FUN_1416ab960();
-                FUN_1416aaef0();
+                LinkEffects();
             }
         }
     }
@@ -2285,7 +2285,7 @@ bool PostProcessingService::FUN_1416ac2e0(NiRenderClick* pkClick, void* pvData)
 // PostProcessingService::LinkEffects (name from its log strings): takes the steps out of the active render frame, then
 // inserts the active ones after the main scene step (fade steps at the tail), chaining each step's output into the next
 // one; the UI steps render into the first fade step's input and the last step into the default target.
-void PostProcessingService::FUN_1416aaef0()
+void PostProcessingService::LinkEffects()
 {
     ecr::RenderService* pkRenderService = m_pServiceManager->GetSystemServiceAs<ecr::RenderService>();
     if (pkRenderService == 0)
@@ -2399,7 +2399,7 @@ void PostProcessingService::FUN_1416aaef0()
         spFirst->SetPreProcessingCallbackFunc(FUN_1416abac0, this);
     }
 }
-MS2_REPLACE_METHOD(0x1416aaef0, PostProcessingService, FUN_1416aaef0, 2660, 0x8ED2747E);
+MS2_REPLACE_METHOD(0x1416aaef0, PostProcessingService, LinkEffects, 2660, 0x8ED2747E);
 
 // @0x1416ab960
 void PostProcessingService::FUN_1416ab960()
@@ -2968,7 +2968,7 @@ bool PostProcessingService::FUN_1416abd20(bool bBeforeReset)
         if (FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1416b0b20())
             FUN_1416aa450(7, true);
         FUN_1416ab960();
-        FUN_1416aaef0();
+        LinkEffects();
     }
     else if (m_spTarget190)
     {

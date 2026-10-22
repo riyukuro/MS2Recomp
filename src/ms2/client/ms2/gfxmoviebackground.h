@@ -78,12 +78,12 @@ public:
     void FUN_14127aea0(int bShow);                                          // 0x14127aea0 showBackgroundColor
     void FUN_14127af40(unsigned long nColor);                               // 0x14127af40 setBackgroundColor
 
-    int FUN_14127b100();                                                   // AppendScene
+    int AppendScene();                                                   // AppendScene
     int FUN_14127b290();                                                   // RemoveScene
-    int FUN_14127b3d0();                                                   // CreateRenderView
-    int FUN_14127b9e0();                                                   // CreateRenderTarget
-    int FUN_14127bb50();                                                   // CreateRenderTexture
-    int FUN_14127bcb0(NiRenderedTexture* pTexture);                        // SetBaseTexture
+    int CreateRenderView();                                                   // CreateRenderView
+    int CreateRenderTarget();                                                   // CreateRenderTarget
+    int CreateRenderTexture();                                                   // CreateRenderTexture
+    int SetBaseTexture(NiRenderedTexture* pTexture);                        // SetBaseTexture
     CString FUN_14127be10();                                                // the background name handed to "loadBG"
 
 public:

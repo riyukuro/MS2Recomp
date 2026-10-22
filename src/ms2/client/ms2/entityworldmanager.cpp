@@ -242,7 +242,7 @@ egf::EntityID EntityWorldManager::FUN_1411ce760(const efd::utf8string& name, efd
 egf::EntityPtr EntityWorldManager::FUN_1411ce7c0(efd::utf8string modelName, efd::utf8string assetName,
     efd::Point3 position, efd::Point3 rotation, float scale, int enabled, int visible) {
     egf::EntityID id = egf::EntityIDFactory::GetNextID();
-    egf::EntityPtr entity = FUN_1411cec80(modelName, id, true);
+    egf::EntityPtr entity = FactoryEntity(modelName, id, true);
     if (entity.data() == nullptr) return egf::EntityPtr(0);
     if (!FUN_140a33ff0(&position)) position = efd::Point3::ZERO;
     if (!FUN_140a33ff0(&rotation)) rotation = efd::Point3::ZERO;
@@ -267,7 +267,7 @@ egf::EntityPtr EntityWorldManager::FUN_1411ce7c0(efd::utf8string modelName, efd:
     return entity;
 }
 // @0x1411cec80
-egf::EntityPtr EntityWorldManager::FUN_1411cec80(const efd::utf8string& modelName, egf::EntityID id, bool master) {
+egf::EntityPtr EntityWorldManager::FactoryEntity(const efd::utf8string& modelName, egf::EntityID id, bool master) {
     if (models->FindModel(modelName) == nullptr) {
         auto result = models->LoadModel(modelName);
         if (result != 0 && result != 1) {
@@ -302,7 +302,7 @@ egf::EntityID EntityWorldManager::FUN_1411cef50(const efd::utf8string& name, con
 bool EntityWorldManager::FUN_1411cf0b0(efd::utf8string modelName, efd::AssetID& asset, bool& actor) {
     actor = false;
     egf::EntityID id = egf::EntityIDFactory::GetNextID();
-    egf::EntityPtr entity = FUN_1411cec80(modelName, id, true);
+    egf::EntityPtr entity = FactoryEntity(modelName, id, true);
     if (entity.data() == nullptr) return false;
     if (entity->GetModel()->ContainsModel(efd::utf8string("Mesh"))) {
         actor = false;

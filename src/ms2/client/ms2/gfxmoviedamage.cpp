@@ -178,7 +178,7 @@ void GFxMovieDamage::vfunc_4(void* pMovie, const char* szEvent, const Scaleform:
                 MS2Ptr<AScript> spRoot = m_128->FUN_1422dba00();
                 if (spRoot.get() && szEvent != m_120)
                 {
-                    MS2Ptr<UIDamageFont> spFont(dynamic_cast<UIDamageFont*>(FUN_140b632f0()->FUN_1422d41b0(szEvent).get()));
+                    MS2Ptr<UIDamageFont> spFont(dynamic_cast<UIDamageFont*>(FUN_140b632f0()->GetUISwfEntity(szEvent).get()));
                     if (spFont.get())
                         m_128->FUN_1419134a0(spFont->m_strName);
                     else

@@ -239,7 +239,7 @@ void UIBlackMarketDialog::OnLoadComplete()
         BlackMarketPage* pPage = m_pages[i];
         pPage->FUN_140f0c150(m_30);
         pPage->FUN_140f0c1a0(m_28);
-        pPage->vfunc_1();
+        pPage->OnInit();
     }
     m_30->Invoke("initData");
 }

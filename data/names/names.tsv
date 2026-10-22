@@ -1,0 +1,25 @@
+#va	old	new	kind	evidence	agent	date
+1405b3930	ItemGift::vfunc_3	ItemGift::ValidateItem	certain	certain: string self-name 'ItemGift::ValidateItem' in log string(s) of 0x1405b3930	nam1	2026-10-22
+1406e2600	CNpcShopData::FUN_1406e2600	CNpcShopData::Read	certain	certain: string self-name 'CNpcShopData::Read' in log string(s) of 0x1406e2600	nam1	2026-10-22
+1406e45b0	CBeautyShopData::FUN_1406e45b0	CBeautyShopData::Read	certain	certain: string self-name 'CBeautyShopData::Read' in log string(s) of 0x1406e45b0	nam1	2026-10-22
+140f1afd0	BlackMarketPageMesoRegister::vfunc_1	BlackMarketPageMesoRegister::OnInit	certain	certain: string self-name 'BlackMarketPageMesoRegister::OnInit' in log string(s) of 0x140f1afd0	nam1	2026-10-22
+1411cec80	EntityWorldManager::FUN_1411cec80	EntityWorldManager::FactoryEntity	certain	certain: string self-name 'EntityWorldManager::FactoryEntity' in log string(s) of 0x1411cec80	nam1	2026-10-22
+1412651a0	CGameSocket::vfunc_5	CGameSocket::OnClose	certain	certain: string self-name 'CGameSocket::OnClose' in log string(s) of 0x1412651a0	nam1	2026-10-22
+14127b100	GFxMovieBackground::FUN_14127b100	GFxMovieBackground::AppendScene	certain	certain: string self-name 'GFxMovieBackground::AppendScene' in log string(s) of 0x14127b100	nam1	2026-10-22
+14127b3d0	GFxMovieBackground::FUN_14127b3d0	GFxMovieBackground::CreateRenderView	certain	certain: string self-name 'GFxMovieBackground::CreateRenderView' in log string(s) of 0x14127b3d0	nam1	2026-10-22
+14127b9e0	GFxMovieBackground::FUN_14127b9e0	GFxMovieBackground::CreateRenderTarget	certain	certain: string self-name 'GFxMovieBackground::CreateRenderTarget' in log string(s) of 0x14127b9e0	nam1	2026-10-22
+14127bb50	GFxMovieBackground::FUN_14127bb50	GFxMovieBackground::CreateRenderTexture	certain	certain: string self-name 'GFxMovieBackground::CreateRenderTexture' in log string(s) of 0x14127bb50	nam1	2026-10-22
+14127bcb0	GFxMovieBackground::FUN_14127bcb0	GFxMovieBackground::SetBaseTexture	certain	certain: string self-name 'GFxMovieBackground::SetBaseTexture' in log string(s) of 0x14127bcb0	nam1	2026-10-22
+141430ee0	CKeyTable::FUN_141430ee0	CKeyTable::CreateCombineKeyString	certain	certain: string self-name 'CKeyTable::CreateCombineKeyString' in log string(s) of 0x141430ee0	nam1	2026-10-22
+1416892f0	CPhysXHelper::FUN_1416892f0	CPhysXHelper::CastRay	certain	certain: string self-name 'CPhysXHelper::CastRay' in log string(s) of 0x1416892f0	nam1	2026-10-22
+1416aaef0	PostProcessingService::FUN_1416aaef0	PostProcessingService::LinkEffects	certain	certain: string self-name 'PostProcessingService::LinkEffects' in log string(s) of 0x1416aaef0	nam1	2026-10-22
+14170fda0	CSceneStateGame::FUN_14170fda0	CSceneStateGame::OnAddUser	certain	certain: string self-name 'CSceneStateGame::OnAddUser' in log string(s) of 0x14170fda0	nam1	2026-10-22
+141a7e280	UIPopUpMenu::FUN_141a7e280	UIPopUpMenu::PopUpMenu	certain	certain: string self-name 'UIPopUpMenu::PopUpMenu' in log string(s) of 0x141a7e280	nam1	2026-10-22
+141a7f190	UIPopUpMenu::FUN_141a7f190	UIPopUpMenu::PopUpMenuFromPartyMember	certain	certain: string self-name 'UIPopUpMenu::PopUpMenuFromPartyMember' in log string(s) of 0x141a7f190	nam1	2026-10-22
+141a7f510	UIPopUpMenu::FUN_141a7f510	UIPopUpMenu::PopUpMenuFromGuildMember	certain	certain: string self-name 'UIPopUpMenu::PopUpMenuFromGuildMember' in log string(s) of 0x141a7f510	nam1	2026-10-22
+141a80210	UIPopUpMenu::FUN_141a80210	UIPopUpMenu::PopUpMenuFromClubMember	certain	certain: string self-name 'UIPopUpMenu::PopUpMenuFromClubMember' in log string(s) of 0x141a80210	nam1	2026-10-22
+141a82140	UIPopUpMenu::FUN_141a82140	UIPopUpMenu::Open	certain	certain: string self-name 'UIPopUpMenu::Open' in log string(s) of 0x141a82140	nam1	2026-10-22
+141a828a0	UIPopUpMenu::FUN_141a828a0	UIPopUpMenu::OpenFromCharName	certain	certain: string self-name 'UIPopUpMenu::OpenFromCharName' in log string(s) of 0x141a828a0	nam1	2026-10-22
+141a844a0	UIPopUpMenu::FUN_141a844a0	UIPopUpMenu::AddPopupMenu	certain	certain: string self-name 'UIPopUpMenu::AddPopupMenu' in log string(s) of 0x141a844a0	nam1	2026-10-22
+1422adf90	GFxManager::FUN_1422adf90	GFxManager::Render	certain	certain: string self-name 'GFxManager::Render' in log string(s) of 0x1422adf90	nam1	2026-10-22
+1422d41b0	UISwfEntityManager::FUN_1422d41b0	UISwfEntityManager::GetUISwfEntity	certain	certain: string self-name 'UISwfEntityManager::GetUISwfEntity' in log string(s) of 0x1422d41b0	nam1	2026-10-22

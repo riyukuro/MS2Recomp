@@ -138,7 +138,7 @@ public:
     efd::SmartPointer<NiViewRenderClick> FUN_1416a97b0();
     efd::SmartPointer<NiViewRenderClick> FUN_1416a9a90();
     efd::SmartPointer<NiViewRenderClick> FUN_1416a9e20();
-    void FUN_1416aaef0();                           // link the active effects into the post-process render step
+    void LinkEffects();                           // link the active effects into the post-process render step
     bool FUN_1416ac060(PostProcessEffect* pkEffect);   // (re)create the effect's output over the shared textures
     void FUN_1416abb30(NiTexture* pkTexture);       // copy the m_spTarget190 colour buffer into a texture
     static bool FUN_1416abac0(NiRenderStep* pkStep, void* pvData);   // post-processing callback: copy into the step's texture

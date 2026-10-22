@@ -1427,7 +1427,7 @@ MS2Ptr<CNpcShopData> FUN_1406e2550(unsigned nShopId)
 // Checks a shop after reading (FALSE: strError says why).
 // MS2-FUNCTIONAL: written from the decompile and v2525; the exe's temporaries differ.
 // @0x1406e2600
-int CNpcShopData::FUN_1406e2600(CString& strError, Unk_140165cf0* pElem)
+int CNpcShopData::Read(CString& strError, Unk_140165cf0* pElem)
 {
     if (m_nResetEnable == 0)
     {
@@ -1959,7 +1959,7 @@ CBeautyShopData::CBeautyShopData()
 
 // Checks the coupons after reading (FALSE: strError says why).
 // @0x1406e45b0
-int CBeautyShopData::FUN_1406e45b0(CString& strError)
+int CBeautyShopData::Read(CString& strError)
 {
     if (m_nDisplayCouponId != 0)
     {
@@ -2421,7 +2421,7 @@ unsigned CNpcShopMeratItemSvr::vfunc_3()
 MS2_REPLACE(0x1406df180, FUN_1406df180, 6, 0xFFA3AE7F);
 MS2_REPLACE(0x1406df690, FUN_1406df690, 3315, 0xAEF0974A);
 MS2_REPLACE(0x1406e21b0, FUN_1406e21b0, 908, 0xB569CF72);
-MS2_REPLACE_METHOD(0x1406e2600, CNpcShopData, FUN_1406e2600, 1454, 0x4E5603C8);
+MS2_REPLACE_METHOD(0x1406e2600, CNpcShopData, Read, 1454, 0x4E5603C8);
 MS2_REPLACE(0x1406e2c10, FUN_1406e2c10, 260, 0x78C2A73E);
 MS2_REPLACE(0x1406e2d20, FUN_1406e2d20, 431, 0x33D51D3C);
 MS2_REPLACE(0x1406e2ee0, FUN_1406e2ee0, 190, 0x15DF81BD);
@@ -2429,7 +2429,7 @@ MS2_REPLACE(0x1406e3460, FUN_1406e3460, 323, 0x4ED278B7);
 MS2_REPLACE_METHOD(0x1406e3900, CBeautyShopItem, FUN_1406e3900, 682, 0x34FCDCE9);
 MS2_REPLACE_METHOD(0x1406e4260, CBeautyShopItemGroups, FUN_1406e4260, 232, 0xED5A6CB2);
 MS2_REPLACE(0x1406e4420, FUN_1406e4420, 207, 0xD8B8393F);
-MS2_REPLACE_METHOD(0x1406e45b0, CBeautyShopData, FUN_1406e45b0, 432, 0x08A4BE3E);
+MS2_REPLACE_METHOD(0x1406e45b0, CBeautyShopData, Read, 432, 0x08A4BE3E);
 MS2_REPLACE_METHOD(0x1406e4ce0, CBeautyShopData, GetShopItemGroupList, 172, 0xF6135C20);
 MS2_REPLACE(0x1406e4db0, FUN_1406e4db0, 11, 0x30025ED0);
 MS2_REPLACE(0x1406e4dd0, FUN_1406e4dd0, 278, 0xBF47013A);

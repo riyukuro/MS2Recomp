@@ -22,7 +22,7 @@ public:
     static CPhysXHelper* s_instance;                // 0x143ab50b8
 };
 
-// Ray cast request/result block of CPhysXHelper::FUN_1416892f0 (0x64 bytes of data, padded to 0x68). The ctor (0x140ad4440) default-constructs
+// Ray cast request/result block of CPhysXHelper::CastRay (0x64 bytes of data, padded to 0x68). The ctor (0x140ad4440) default-constructs
 // the two points; the assignment (0x14168ad40) is the implicit member-wise one.
 struct Unk_RayCastInfo {
     Unk_RayCastInfo();              // 0x140ad4440 (inline in another obj)
@@ -65,7 +65,7 @@ public:
     CPhysXHelper();                                                                         // 0x141689180
     virtual ~CPhysXHelper();                                                                // 0x141689240 (scalar deleting 0x14168b030)
     Unk_PhysXSceneHandle* FUN_1416892a0(int nScene);
-    bool FUN_1416892f0(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask);                  // closest ray cast
+    bool CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask);                  // closest ray cast
     NxActor* FUN_1416897d0(void* pObj);                                                      // the actor of a game object
     egf::Entity* FUN_141689970(NxActor* pActor);
     bool FUN_141689a10(egf::Entity* pEntity);

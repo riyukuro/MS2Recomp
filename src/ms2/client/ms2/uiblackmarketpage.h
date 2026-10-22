@@ -43,7 +43,7 @@ class BlackMarketPage : public CPtred
 public:
     explicit BlackMarketPage(const CString& strName);               // 0x140f0bfe0
     virtual ~BlackMarketPage();                                     //  0 0x140f0c090 (??_G 0x140f0c680)
-    virtual void vfunc_1();                                         //  1 0x140f0c1c0 OnInit: bind the page root and its "m_itemList"
+    virtual void OnInit();                                         //  1 0x140f0c1c0 OnInit: bind the page root and its "m_itemList"
     virtual void vfunc_2();                                         //  2 0x140f0c340 reset
     virtual void vfunc_3() = 0;                                     //  3 the page was selected
     virtual int vfunc_4(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs) = 0;   //  4 AS -> C++ call
@@ -87,7 +87,7 @@ class BlackMarketPageItemSearch : public BlackMarketPage
 public:
     BlackMarketPageItemSearch();                                    // 0x140f0c7e0
     virtual ~BlackMarketPageItemSearch() = default;                 //  0 0x140f17860 (??_G 0x140f17b90; implicit: no vptr store)
-    virtual void vfunc_1();                                         //  1 0x140f0c900 "initData"
+    virtual void OnInit();                                         //  1 0x140f0c900 "initData"
     virtual void vfunc_2();                                         //  2 0x140f0caa0
     virtual void vfunc_3();                                         //  3 0x140f0cb50
     virtual int vfunc_4(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 4 0x140f0cb90
@@ -154,7 +154,7 @@ class BlackMarketPageItemRegister : public BlackMarketPage
 public:
     BlackMarketPageItemRegister();                                  // 0x140f11850
     virtual ~BlackMarketPageItemRegister() = default;               //  0 0x140f177f0 (??_G 0x140f17b50; implicit: no vptr store)
-    virtual void vfunc_1();                                         //  1 0x140f11910 "initData"
+    virtual void OnInit();                                         //  1 0x140f11910 "initData"
     virtual void vfunc_2();                                         //  2 0x140f12090
     virtual void vfunc_3();                                         //  3 0x140f12120
     virtual int vfunc_4(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 4 0x140f12170
@@ -200,7 +200,7 @@ class BlackMarketPageMesoSearch : public BlackMarketPage, public UIStatusEventLi
 public:
     explicit BlackMarketPageMesoSearch(const CString& strName);     // 0x140f18620 ("m_mesoSearchPage" / "...SingleRange")
     // implicit virtual dtor 0x140f20860 (no vptr store; ??_G 0x140f20b50)
-    virtual void vfunc_1();                                         //  1 0x140f18720 bind the controls, listen
+    virtual void OnInit();                                         //  1 0x140f18720 bind the controls, listen
     virtual void vfunc_2();                                         //  2 0x140f19320 stop listening, drop the controls
     virtual void vfunc_3();                                         //  3 0x140f19550 the page was selected
     virtual int vfunc_4(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 4 0x140f195d0
@@ -241,7 +241,7 @@ class BlackMarketPageMesoRegister : public BlackMarketPage, public UIStatusEvent
 public:
     BlackMarketPageMesoRegister();                                  // 0x140f1add0 ("m_mesoRegisterPage")
     virtual ~BlackMarketPageMesoRegister();                         //  0 0x140f1af00 (??_G 0x140f20b10)
-    virtual void vfunc_1();                                         //  1 0x140f1afd0 bind the controls, listen
+    virtual void OnInit();                                         //  1 0x140f1afd0 bind the controls, listen
     virtual void vfunc_2();                                         //  2 0x140f1bdc0
     virtual void vfunc_3();                                         //  3 0x140f1bf80
     virtual int vfunc_4(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 4 0x140f1bfa0

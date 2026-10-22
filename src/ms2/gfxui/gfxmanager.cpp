@@ -228,7 +228,7 @@ int GFxManager::FUN_1422adf30()
 MS2_REPLACE_METHOD(0x1422ADF30, GFxManager, FUN_1422adf30, 89, 0xC7B94EDD);
 
 // @0x1422adf90
-void GFxManager::FUN_1422adf90()
+void GFxManager::Render()
 {
     if (!m_spRenderer)
         return;
@@ -252,7 +252,7 @@ void GFxManager::FUN_1422adf90()
         m_spRenderer->vfunc_5();
     }
 }
-MS2_REPLACE_METHOD(0x1422ADF90, GFxManager, FUN_1422adf90, 488, 0xB6C46403);
+MS2_REPLACE_METHOD(0x1422ADF90, GFxManager, Render, 488, 0xB6C46403);
 
 // @0x1422ae180
 void GFxManager::FUN_1422ae180()

@@ -24,7 +24,7 @@ void FUN_1408731e0(void*,const char*,int&);
 // @0x1405b38e0
 ItemGift::ItemGift() {}
 // @0x1405b3930
-int ItemGift::vfunc_3(CString& error) {
+int ItemGift::ValidateItem(CString& error) {
     Unk_GiftItemPtr item=FUN_14053f870(m_itemId);
     if(item.FUN_1402ffd90()) { error=(const wchar_t*)FUN_140292a70(L"ItemGift::ValidateItem no item:{0}",m_itemId);return 0; }
     if(m_count>1) {
@@ -32,7 +32,7 @@ int ItemGift::vfunc_3(CString& error) {
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1405B3930, ItemGift, vfunc_3, 363, 0x5ABDEF96);
+MS2_REPLACE_METHOD(0x1405B3930, ItemGift, ValidateItem, 363, 0x5ABDEF96);
 // @0x1405b3ab0
 int ItemGift::vfunc_o18_1() {
     int itemRank=FUN_14053feb0(vfunc_o18_0());

@@ -439,7 +439,7 @@ class NxGroupsMask;
 class CPhysXHelper
 {
 public:
-    bool FUN_1416892f0(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask);   // cast the ray
+    bool CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask);   // cast the ray
 };
 CPhysXHelper* FUN_1409f7ca0();
 extern float DAT_1439f8220;                                         // the climb reach (3)
@@ -3072,7 +3072,7 @@ int PC::FUN_14165c090(efd::Point3 kPos)
     kInfo.m_dir = FUN_14123cc20();
     kInfo.m_maxDist = 50.0f;
     kInfo.m_groups = 0x201;
-    if (!FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+    if (!FUN_1409f7ca0()->CastRay(&kInfo, 0))
         return false;
     return !FUN_14166d220()->FUN_1412410c0(kPos, m_unk_620.y * 0.5f);
 }
@@ -3859,7 +3859,7 @@ int PC::FUN_14165a540()
                 kInfo.m_groups = 0x28b;
                 kInfo.m_20 = 0;
                 kInfo.m_28 = 0;
-                if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+                if (FUN_1409f7ca0()->CastRay(&kInfo, 0))
                     return 0;
                 kInfo.m_origin = kEntPos;
                 kInfo.m_origin.z = kPos.z + 20.0f;
@@ -3884,19 +3884,19 @@ int PC::FUN_14165a540()
                 kCornerD.z += 20.0f;
                 kInfo.m_dir = kCornerA - kInfo.m_origin;
                 kInfo.m_maxDist = kInfo.m_dir.Unitize();
-                if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+                if (FUN_1409f7ca0()->CastRay(&kInfo, 0))
                     return 0;
                 kInfo.m_dir = kCornerB - kInfo.m_origin;
                 kInfo.m_maxDist = kInfo.m_dir.Unitize();
-                if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+                if (FUN_1409f7ca0()->CastRay(&kInfo, 0))
                     return 0;
                 kInfo.m_dir = kCornerC - kInfo.m_origin;
                 kInfo.m_maxDist = kInfo.m_dir.Unitize();
-                if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+                if (FUN_1409f7ca0()->CastRay(&kInfo, 0))
                     return 0;
                 kInfo.m_dir = kCornerD - kInfo.m_origin;
                 kInfo.m_maxDist = kInfo.m_dir.Unitize();
-                if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+                if (FUN_1409f7ca0()->CastRay(&kInfo, 0))
                     return 0;
                 vfunc_19(kPos);
                 vfunc_21(kRot);
@@ -3935,14 +3935,14 @@ int PC::FUN_14165b500(int nKind)
             kInfo.m_dir = kDir;
             kInfo.m_maxDist = 25.0f + DAT_1439f8220 + DAT_1439f8224;
             kInfo.m_groups = StateClimb::FUN_1417bc010();
-            if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+            if (FUN_1409f7ca0()->CastRay(&kInfo, 0))
             {
                 kDir = -kInfo.m_hitNormal;
                 kInfo.m_origin = vfunc_18() + efd::Point3(0.0f, 0.0f, 90.0f);
                 kInfo.m_dir = kDir;
                 kInfo.m_maxDist = 25.0f + DAT_1439f8220 + DAT_1439f8224;
                 kInfo.m_groups = StateClimb::FUN_1417bc010();
-                if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+                if (FUN_1409f7ca0()->CastRay(&kInfo, 0))
                 {
                     if (spSvc.FUN_1401cd1a0()->FUN_1410b8e60(kInfo.m_hitEntity) != 0)
                     {
@@ -4006,7 +4006,7 @@ int PC::FUN_14165b500(int nKind)
                     kInfo.m_dir = kDir;
                     kInfo.m_maxDist = 50.0f;
                     kInfo.m_groups = StateClimb::FUN_1417bc010();
-                    if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0) && kInfo.m_hitEntity != 0
+                    if (FUN_1409f7ca0()->CastRay(&kInfo, 0) && kInfo.m_hitEntity != 0
                         && kInfo.m_hitEntity == (egf::Entity*)pCube->entity)
                     {
                         efd::Point3 kAbove = kMy;
@@ -4016,7 +4016,7 @@ int PC::FUN_14165b500(int nKind)
                         kDown.m_dir = -efd::Point3::UNIT_Z;
                         kDown.m_maxDist = 90.0f;
                         kDown.m_groups = StateClimb::FUN_1417bc010() | 0x100;
-                        if (!FUN_1409f7ca0()->FUN_1416892f0(&kDown, 0))
+                        if (!FUN_1409f7ca0()->CastRay(&kDown, 0))
                         {
                             efd::Point3 kTarget = kInfo.m_hitPoint + kInfo.m_hitNormal * (25.0f + DAT_1439f8220);
                             kTarget += efd::Point3(0.0f, 0.0f, 105.0f);

@@ -53,7 +53,7 @@ public:
     int FUN_1422addb0();                                            // remove it
     int FUN_1422ade10(GFxMovie* pMovie);                           // load and add the damage text movie (id 1)
     int FUN_1422adf30();                                            // remove it
-    void FUN_1422adf90();                                           // render the movies (NiGFxOverlayClick)
+    void Render();                                           // render the movies (NiGFxOverlayClick)
     void FUN_1422ae180();                                           // per tick (GFxService::OnTick)
     void FUN_1422ae360();                                           // shutdown (GFxService::OnShutdown)
     void FUN_1422ae590();                                           // render device lost

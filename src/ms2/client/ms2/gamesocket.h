@@ -30,7 +30,7 @@ public:
     virtual void vfunc_2(CSimpleSocket*,int) {}
     virtual void vfunc_3(CSimpleSocket*,int) {}
     virtual void vfunc_4(CSimpleSocket*,int) {}
-    virtual void vfunc_5(CSimpleSocket*,int) {}
+    virtual void OnClose(CSimpleSocket*,int) {}
 };
 MS2_CHECK_SIZE(ISocketCallBack,8);
 class CSocketBase {
@@ -102,7 +102,7 @@ public:
     void vfunc_2(CSimpleSocket*,int) override;
     void vfunc_3(CSimpleSocket*,int) override;
     void vfunc_4(CSimpleSocket*,int) override {}
-    void vfunc_5(CSimpleSocket*,int) override;
+    void OnClose(CSimpleSocket*,int) override;
     int FUN_141265420(CString,int,int,int);
     void FUN_1412657e0(); void FUN_141265850(); void FUN_141265960();
     void FUN_141265990(COutPacket&); void FUN_141265ae0(); void FUN_141266480(unsigned,unsigned);

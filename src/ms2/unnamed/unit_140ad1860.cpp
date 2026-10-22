@@ -650,7 +650,7 @@ void CMouseController::FUN_140ad2830()
     info.m_dir = pPc->FUN_14123cc20();
     info.m_maxDist = 50.0f;
     info.m_groups = 0x201;
-    if (!FUN_1409f7ca0()->FUN_1416892f0(&info, 0))
+    if (!FUN_1409f7ca0()->CastRay(&info, 0))
         return;
     Unk_McPhysSvcPtr spPhys(FUN_1401cd040(&DAT_143b059e8));
     void* pHit = spPhys.FUN_1401cd1a0()->FUN_1410b8e60(info.m_hitEntity);

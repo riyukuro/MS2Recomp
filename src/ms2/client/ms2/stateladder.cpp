@@ -55,7 +55,7 @@ class NxGroupsMask;
 class CPhysXHelper
 {
 public:
-    bool FUN_1416892f0(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask);
+    bool CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask);
     int FUN_14168a450(efd::Point3 kPos, float* pfDist, float fMaxDist);     // ground below kPos
 };
 CPhysXHelper* FUN_1409f7ca0();
@@ -625,7 +625,7 @@ efd::Point3 StateLadder::FUN_1417d99e0()
     kInfo.m_groups = 0x201;
     kInfo.m_20 = m_pOwner->FUN_14123c410();
     kInfo.m_28 = 0;
-    if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0) == 0)
+    if (FUN_1409f7ca0()->CastRay(&kInfo, 0) == 0)
         return efd::Point3::ZERO;
     return kInfo.m_hitPoint;
 }

@@ -700,7 +700,7 @@ void CDropItem::FUN_14118d9a0(int nState)
             kInfo.m_dir = DAT_143a08cf8.FUN_1409f7960();
             kInfo.m_maxDist = 0.0f;
             kInfo.m_groups = 0x389;
-            if (!FUN_1409f7ca0()->FUN_1416892f0(&kInfo, &kMask))
+            if (!FUN_1409f7ca0()->CastRay(&kInfo, &kMask))
             {
                 int nFound = 0;
                 float aSideX[4] = { 1.0f, -1.0f, -1.0f, 1.0f };
@@ -723,7 +723,7 @@ void CDropItem::FUN_14118d9a0(int nState)
                     kInfoSide.m_dir = DAT_143a08cf8.FUN_1409f7960();
                     kInfoSide.m_maxDist = 0.0f;
                     kInfoSide.m_groups = 0x389;
-                    if (!FUN_1409f7ca0()->FUN_1416892f0(&kInfoSide, &kMaskSide))
+                    if (!FUN_1409f7ca0()->CastRay(&kInfoSide, &kMaskSide))
                         continue;
                     reinterpret_cast<Unk_StreamPoint&>(kHit) = kInfoSide.m_hitPoint;
                     kHit.z += m_spEffect->unknown1c;

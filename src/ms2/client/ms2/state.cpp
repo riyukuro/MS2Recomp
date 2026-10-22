@@ -289,7 +289,7 @@ class NxGroupsMask;
 class CPhysXHelper
 {
 public:
-    bool FUN_1416892f0(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask);
+    bool CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask);
     int FUN_14168a450(efd::Point3 kPos, float* pfDist, float fMaxDist);     // ground below kPos
 };
 CPhysXHelper* FUN_1409f7ca0();
@@ -1232,7 +1232,7 @@ int StateClimb::FUN_1417bcc80()
     kInfo.m_dir = m_pOwner->FUN_14123cc20();
     kInfo.m_maxDist = 50.0f;
     kInfo.m_groups = FUN_1417bc010();
-    if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0)) {
+    if (FUN_1409f7ca0()->CastRay(&kInfo, 0)) {
         Unk_StPhysObj* pWall = kSvc.FUN_1401cd1a0()->FUN_1410b8e60(kInfo.m_hitEntity);
         if (pWall != 0 && kSvc.FUN_1401cd1a0()->FUN_1410b9080(pWall, 0x10000) == 0) {
             efd::Point3 kTop;
@@ -1258,7 +1258,7 @@ int StateClimb::FUN_1417bcf20()
     kInfo.m_dir = m_pOwner->FUN_14123cc20();
     kInfo.m_maxDist = 50.0f;
     kInfo.m_groups = FUN_1417bc010();
-    if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+    if (FUN_1409f7ca0()->CastRay(&kInfo, 0))
         return 1;
     return 0;
 }
@@ -1280,7 +1280,7 @@ int StateClimb::FUN_1417bd030(int bLeft)
     kInfo.m_dir = kRight;
     kInfo.m_maxDist = 50.0f;
     kInfo.m_groups = FUN_1417bc010();
-    if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0)) {
+    if (FUN_1409f7ca0()->CastRay(&kInfo, 0)) {
         Unk_StPhysObj* pObj = kSvc.FUN_1401cd1a0()->FUN_1410b8e60(kInfo.m_hitEntity);
         if (pObj != 0)
             return 1;
@@ -1297,7 +1297,7 @@ int StateClimb::FUN_1417bd310(efd::Point3 kPos)
     kInfo.m_dir = m_pOwner->FUN_14123cc20();
     kInfo.m_maxDist = 50.0f;
     kInfo.m_groups = FUN_1417bc010();
-    if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0)) {
+    if (FUN_1409f7ca0()->CastRay(&kInfo, 0)) {
         FUN_14166d430(m_pOwner, -kInfo.m_hitNormal, 1, 0);
         return 1;
     }
@@ -1348,7 +1348,7 @@ int StateClimb::FUN_1417bd6c0()
     kDown.m_dir = -efd::Point3::UNIT_Z;
     kDown.m_maxDist = 50.0f;
     kDown.m_groups = FUN_1417bc010();
-    if (FUN_1409f7ca0()->FUN_1416892f0(&kDown, 0) && kDown.m_hitEntity != 0) {
+    if (FUN_1409f7ca0()->CastRay(&kDown, 0) && kDown.m_hitEntity != 0) {
         egf::EntityID kSelf = FUN_14166d220(m_pOwner)->FUN_141240f20()->GetEntityID();
         if (kDown.m_hitEntity->GetEntityID() != kSelf) {
             MS2Ptr<Unk_RideeFieldObj> spObj = FUN_1403ed2d0()->FUN_141bc4f10(kDown.m_hitEntity);
@@ -1364,7 +1364,7 @@ int StateClimb::FUN_1417bd6c0()
     kUp.m_dir = efd::Point3::UNIT_Z;
     kUp.m_maxDist = 50.0f;
     kUp.m_groups = FUN_1417bc010();
-    if (FUN_1409f7ca0()->FUN_1416892f0(&kUp, 0) && kUp.m_hitEntity != 0) {
+    if (FUN_1409f7ca0()->CastRay(&kUp, 0) && kUp.m_hitEntity != 0) {
         egf::EntityID kSelf = FUN_14166d220(m_pOwner)->FUN_141240f20()->GetEntityID();
         if (kUp.m_hitEntity->GetEntityID() != kSelf) {
             MS2Ptr<Unk_RideeFieldObj> spObj = FUN_1403ed2d0()->FUN_141bc4f10(kUp.m_hitEntity);
@@ -1398,13 +1398,13 @@ bool StateClimb::FUN_1417bda60()
             kInfo.m_maxDist = 50.0f;
             kInfo.m_groups = 1;
             kInfo.m_origin = m_pOwner->vfunc_18() + efd::Point3(0.0f, 0.0f, 99.0f);
-            if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+            if (FUN_1409f7ca0()->CastRay(&kInfo, 0))
                 return true;
             kInfo.m_origin = m_pOwner->vfunc_18() + efd::Point3(5.0f, 0.0f, 99.0f);
-            if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+            if (FUN_1409f7ca0()->CastRay(&kInfo, 0))
                 return true;
             kInfo.m_origin = m_pOwner->vfunc_18() + efd::Point3(-5.0f, 0.0f, 99.0f);
-            if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+            if (FUN_1409f7ca0()->CastRay(&kInfo, 0))
                 return true;
             m_n10 = 0x5f;
             return true;

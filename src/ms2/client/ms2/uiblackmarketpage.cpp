@@ -39,9 +39,9 @@
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVBlackMarketPageItemRegister@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAAPEAXI@Z 0x140f17ad0 ; order
 // MS2-PIN: ?GetNext@?$CAtlMap@_KV?$MS2Ptr@VCBlackMarketProduct@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBlackMarketProduct@@@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x140f17e40 ; unique
 // MS2-PIN: ?GetValueAt@?$CAtlMap@_KV?$MS2Ptr@VCBlackMarketProduct@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBlackMarketProduct@@@@@3@@ATL@@QEAAAEAV?$MS2Ptr@VCBlackMarketProduct@@@@PEAU__POSITION@@@Z 0x140f17ee0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVBlackMarketPageItemRegister@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f18180 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVBlackMarketPageItemRegister@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f181e0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVBlackMarketPageItemSearch@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f18240 ; unique
+// MS2-PIN: ?OnInit@?$DelegateImpl@U?$pair@PEAVBlackMarketPageItemRegister@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f18180 ; unique
+// MS2-PIN: ?OnInit@?$DelegateImpl@U?$pair@PEAVBlackMarketPageItemRegister@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f181e0 ; unique
+// MS2-PIN: ?OnInit@?$DelegateImpl@U?$pair@PEAVBlackMarketPageItemSearch@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f18240 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVBlackMarketPageItemRegister@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x140f182d0 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVBlackMarketPageItemSearch@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x140f18310 ; unique
 // MS2-PIN: ??$Call@VBlackMarketPageItemRegister@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAVBlackMarketPageItemRegister@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAVBlackMarketPageItemRegister@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@HAEBVCMsgBoxData@@@Z 0x140f18380 ; prop
@@ -291,7 +291,7 @@ void BlackMarketPage::FUN_140f0c1a0(int nMovieId)
 MS2_REPLACE_METHOD(0x140F0C1A0, BlackMarketPage, FUN_140f0c1a0, 22, 0x55CC0123);
 
 // @0x140f0c1c0
-void BlackMarketPage::vfunc_1()
+void BlackMarketPage::OnInit()
 {
     if (m_20 == 0)
         return;
@@ -304,7 +304,7 @@ void BlackMarketPage::vfunc_1()
     m_30->FUN_140c57d70<ASTileList>("m_itemList", m_itemList);
     MS2_ASSERT_AT(MS2_LINE(84), m_itemList);
 }
-MS2_REPLACE_METHOD(0x140F0C1C0, BlackMarketPage, vfunc_1, 374, 0x0815C70C);
+MS2_REPLACE_METHOD(0x140F0C1C0, BlackMarketPage, OnInit, 374, 0x0815C70C);
 
 // @0x140f0c340
 void BlackMarketPage::vfunc_2()
@@ -352,9 +352,9 @@ BlackMarketPageItemSearch::BlackMarketPageItemSearch()
 }
 
 // @0x140f0c900
-void BlackMarketPageItemSearch::vfunc_1()
+void BlackMarketPageItemSearch::OnInit()
 {
-    BlackMarketPage::vfunc_1();
+    BlackMarketPage::OnInit();
     if (m_30 == 0)
         return;
     m_30->FUN_140bbe940<ASTextInput>("m_inputName", m_spInputName);
@@ -1191,9 +1191,9 @@ BlackMarketPageItemRegister::BlackMarketPageItemRegister()
 }
 
 // @0x140f11910
-void BlackMarketPageItemRegister::vfunc_1()
+void BlackMarketPageItemRegister::OnInit()
 {
-    BlackMarketPage::vfunc_1();
+    BlackMarketPage::OnInit();
     ASObj data(2);
     {
         __int64 nMin = TSingleton<Client::Constants>::GetInstance()->BlackMarketSellMinPrice.Read();

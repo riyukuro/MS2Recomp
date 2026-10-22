@@ -84,7 +84,7 @@ public:
     Unk_WorldEntityMap::iterator FUN_1411ce680();
     bool FUN_1411ce6d0(Unk_WorldEntityMap::iterator&, egf::Entity*&);
     egf::EntityID FUN_1411ce760(const efd::utf8string&, efd::AssetID&, bool);
-    egf::EntityPtr FUN_1411cec80(const efd::utf8string&, egf::EntityID, bool);
+    egf::EntityPtr FactoryEntity(const efd::utf8string&, egf::EntityID, bool);
     egf::EntityPtr FUN_1411cedd0(egf::FlatModelID, egf::EntityID, bool);
     egf::EntityID FUN_1411cef50(const efd::utf8string&, const efd::Category&,
         efd::ParameterList*, efd::ParameterList*, egf::EntityID, bool);

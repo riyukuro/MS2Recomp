@@ -204,7 +204,7 @@ public:
 };
 MS2_CHECK_SIZE(Unk_PopupMenuInfo, 0x80);
 
-// The target of a menu (a stack value built by the PopUpMenu* entry points, passed to FUN_141a82140). Ctor/dtor are inline
+// The target of a menu (a stack value built by the PopUpMenu* entry points, passed to Open). Ctor/dtor are inline
 // COMDATs (0x141a882d0 / 0x141a884d0).
 struct Unk_PmTarget
 {
@@ -257,17 +257,17 @@ public:
     bool FUN_141a7e020(int nButton, const CMsgBoxData& data);   // report confirm
     bool FUN_141a7e0a0(int nButton, const CMsgBoxData& data);   // party vote kick confirm
     bool FUN_141a7e100(int nButton, const CMsgBoxData& data);   // wedding propose confirm
-    void FUN_141a7e280(const Unk_PopupMenuInfo& info, PCBase* pTarget, int nType);     // PopUpMenu
+    void PopUpMenu(const Unk_PopupMenuInfo& info, PCBase* pTarget, int nType);     // PopUpMenu
     void FUN_141a7e870(const Unk_PopupMenuInfo& info, PCBase* pTarget, int nType);     // PopUpMenu (fitting / npc)
     void FUN_141a7eb60(const Unk_PopupMenuInfo& info, MS2Ptr<CProxyGameObject> spProxy, int nType);
     void FUN_141a7f090(const Unk_PopupMenuInfo& info, const CStringW& strName, unsigned __int64 nCharId, void* pAccount, int nType, int nDir);
-    void FUN_141a7f190(const Unk_PopupMenuInfo& info, CPartyMember* pMember);         // PopUpMenuFromPartyMember
-    void FUN_141a7f510(const Unk_PopupMenuInfo& info, CGuildMember* pMember);         // PopUpMenuFromGuildMember
+    void PopUpMenuFromPartyMember(const Unk_PopupMenuInfo& info, CPartyMember* pMember);         // PopUpMenuFromPartyMember
+    void PopUpMenuFromGuildMember(const Unk_PopupMenuInfo& info, CGuildMember* pMember);         // PopUpMenuFromGuildMember
     void FUN_141a7f890(const Unk_PopupMenuInfo& info, Unk_PmUserEntry* pEntry, const CStringW& strText, int nType);
     void FUN_141a7f950(const Unk_PopupMenuInfo& info, __int64 nBuddyId);
     void FUN_141a7fc50(const Unk_PopupMenuInfo& info, __int64 nHomeId);
     void FUN_141a7ff60(const Unk_PopupMenuInfo& info, int nIndex, MS2Ptr<CUgcRegistBanner> spBanner);
-    void FUN_141a80210(const Unk_PopupMenuInfo& info, CClubMember* pMember);          // PopUpMenuFromClubMember
+    void PopUpMenuFromClubMember(const Unk_PopupMenuInfo& info, CClubMember* pMember);          // PopUpMenuFromClubMember
     void FUN_141a805f0(const Unk_PopupMenuInfo& info, void* pAccount, unsigned __int64 nCharId, const CStringW& strName, const CStringW& strText, int nType);
     void FUN_141a80670(const Unk_PopupMenuInfo& info);
     void FUN_141a80770();                                       // close
@@ -279,8 +279,8 @@ public:
     void FUN_141a80a50(CInPacket& packet);                      // packet 0x53
     void FUN_141a80af0(const Unk_PopupMenuInfo& info);          // take the request
     void FUN_141a80c40();                                       // register the menu handlers
-    int FUN_141a82140(const Unk_PmTarget& target, int nFlags, int nType);   // Open
-    int FUN_141a828a0(CStringW strName, const Unk_PopupMenuInfo& info, int nMode, int nDir);   // OpenFromCharName
+    int Open(const Unk_PmTarget& target, int nFlags, int nType);   // Open
+    int OpenFromCharName(CStringW strName, const Unk_PopupMenuInfo& info, int nMode, int nDir);   // OpenFromCharName
     void FUN_141a82dd0();                                       // reset
     int FUN_141a82ed0(GameObject* pObject, NiPoint3& out, float fDir);
     int FUN_141a82f30(const NiPoint3& pos, NiPoint3& out, float fDir);
@@ -294,7 +294,7 @@ public:
     void FUN_141a84130(int nQuery, int nKind);
     void FUN_141a842f0();
     void FUN_141a84320(ASArray& menu);
-    void FUN_141a844a0(Unk_PmMenuId nMenuId);                   // AddPopupMenu (the id is an enum: custom-formatted in its log)
+    void AddPopupMenu(Unk_PmMenuId nMenuId);                   // AddPopupMenu (the id is an enum: custom-formatted in its log)
     void FUN_141a84520(int nType, int bOnline, __int64 nCharId);
     void FUN_141a84590(int nType, MyPC* pMe, const CStringW& strName, int bOnline);
     void FUN_141a847c0(int nType, MyPC* pMe, CBuddy* pBuddy);

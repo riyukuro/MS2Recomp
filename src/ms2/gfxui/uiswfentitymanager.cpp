@@ -513,7 +513,7 @@ MS2_REPLACE_METHOD(0x1422D27D0, UISwfEntityManager, vfunc_6, 146, 0xFAFF5059);
 // @0x1422d2870
 void UISwfEntityManager::vfunc_7(CString strKey, Scaleform::GFx::Value vRoot)
 {
-    MS2Ptr<UISwfEntity> sp = FUN_1422d41b0(strKey);
+    MS2Ptr<UISwfEntity> sp = GetUISwfEntity(strKey);
     if (sp)
     {
         sp->vfunc_41(vRoot);
@@ -529,7 +529,7 @@ MS2_REPLACE_METHOD(0x1422D2870, UISwfEntityManager, vfunc_7, 289, 0xED1031FA);
 // @0x1422d29a0
 void UISwfEntityManager::vfunc_8(CString strKey, Scaleform::GFx::Value vRoot)
 {
-    MS2Ptr<UISwfEntity> sp = FUN_1422d41b0(strKey);
+    MS2Ptr<UISwfEntity> sp = GetUISwfEntity(strKey);
     if (sp)
         sp->vfunc_21();
 }
@@ -538,7 +538,7 @@ MS2_REPLACE_METHOD(0x1422D29A0, UISwfEntityManager, vfunc_8, 137, 0x67E86BE0);
 // @0x1422d2a30
 void UISwfEntityManager::vfunc_9(CString strKey, Scaleform::GFx::Value vRoot, float fTime)
 {
-    MS2Ptr<UISwfEntity> sp = FUN_1422d41b0(strKey);
+    MS2Ptr<UISwfEntity> sp = GetUISwfEntity(strKey);
     if (sp)
     {
         if (sp->FUN_1422dc410())
@@ -566,7 +566,7 @@ MS2_REPLACE_METHOD(0x1422D2A30, UISwfEntityManager, vfunc_9, 486, 0xC7F642AC);
 // @0x1422d2c20
 void UISwfEntityManager::vfunc_10(CString strKey, Scaleform::GFx::Value vRoot, void* p)
 {
-    MS2Ptr<UISwfEntity> sp = FUN_1422d41b0(strKey);
+    MS2Ptr<UISwfEntity> sp = GetUISwfEntity(strKey);
     if (sp)
         sp->vfunc_23(p);
 }
@@ -575,7 +575,7 @@ MS2_REPLACE_METHOD(0x1422D2C20, UISwfEntityManager, vfunc_10, 147, 0xCB883843);
 // @0x1422d2cc0
 void UISwfEntityManager::vfunc_11(CString strKey, Scaleform::GFx::Value vRoot, float x, float y)
 {
-    MS2Ptr<UISwfEntity> sp = FUN_1422d41b0(strKey);
+    MS2Ptr<UISwfEntity> sp = GetUISwfEntity(strKey);
     if (sp)
         sp->vfunc_24(x, y);
 }
@@ -689,7 +689,7 @@ UISwfEntity* UISwfEntityManager::FUN_1422d40b0(int nId)
 MS2_REPLACE_METHOD(0x1422D40B0, UISwfEntityManager, FUN_1422d40b0, 244, 0xEE65AF86);
 
 // @0x1422d41b0
-MS2Ptr<UISwfEntity> UISwfEntityManager::FUN_1422d41b0(const CString& strName)
+MS2Ptr<UISwfEntity> UISwfEntityManager::GetUISwfEntity(const CString& strName)
 {
     if (strName.GetLength() < 1)
         return MS2Ptr<UISwfEntity>(0);
@@ -706,7 +706,7 @@ MS2Ptr<UISwfEntity> UISwfEntityManager::FUN_1422d41b0(const CString& strName)
     }
     return sp;
 }
-MS2_REPLACE_METHOD(0x1422D41B0, UISwfEntityManager, FUN_1422d41b0, 448, 0xF66E4EDE);
+MS2_REPLACE_METHOD(0x1422D41B0, UISwfEntityManager, GetUISwfEntity, 448, 0xF66E4EDE);
 
 // @0x1422d4380
 UISwfEntity* UISwfEntityManager::FUN_1422d4380(const CString& strName)

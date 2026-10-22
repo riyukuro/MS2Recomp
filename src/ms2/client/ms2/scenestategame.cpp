@@ -1531,7 +1531,7 @@ void CSceneStateGame::OnPacket(CInPacket& packet)
         FUN_14170fc70(packet);
         break;
     case 0x17:
-        FUN_14170fda0(packet);
+        OnAddUser(packet);
         break;
     case 0x18:
         FUN_141711dc0(packet);
@@ -6504,7 +6504,7 @@ void CSceneStateGame::FUN_14172d0f0(CInPacket& packet)
                 if (strModel == "MS2InteractMesh")
                 {
                     egf::EntityID id = egf::EntityIDFactory::GetNextID();
-                    spEntity = FUN_1409670f0()->FUN_1411cec80("MS2InteractMesh", id, true);
+                    spEntity = FUN_1409670f0()->FactoryEntity("MS2InteractMesh", id, true);
                     if (spEntity != 0)
                     {
                         efd::AssetID assetA;
@@ -6523,7 +6523,7 @@ void CSceneStateGame::FUN_14172d0f0(CInPacket& packet)
                 else if (strModel == "MS2InteractActor")
                 {
                     egf::EntityID id = egf::EntityIDFactory::GetNextID();
-                    spEntity = FUN_1409670f0()->FUN_1411cec80("MS2InteractActor", id, true);
+                    spEntity = FUN_1409670f0()->FactoryEntity("MS2InteractActor", id, true);
                     if (spEntity)
                     {
                         efd::AssetID asset;
@@ -11308,7 +11308,7 @@ void CSceneStateGame::FUN_141730920(CInPacket& packet)
 MS2_REPLACE_METHOD(0x141730920, CSceneStateGame, FUN_141730920, 2066, 0x0E9ABD5A);
 
 // @0x14170fda0
-void CSceneStateGame::FUN_14170fda0(CInPacket& packet)
+void CSceneStateGame::OnAddUser(CInPacket& packet)
 {
     int nObjId = static_cast<CInputStream&>(packet).vfunc_o8_3();
     Unk_SSGWorld* pWorld = FUN_1403ed2d0();
@@ -11533,7 +11533,7 @@ void CSceneStateGame::FUN_14170fda0(CInPacket& packet)
     spPC->vfunc_140(proxy.m_1a8);
     spPC->FUN_141663550();
 }
-MS2_REPLACE_METHOD(0x14170FDA0, CSceneStateGame, FUN_14170fda0, 8209, 0xDFA14B88);
+MS2_REPLACE_METHOD(0x14170FDA0, CSceneStateGame, OnAddUser, 8209, 0xDFA14B88);
 
 // ---- 0x7e: field object proxies (mode 3..5 players, 6..8 template objects, 9..11 spawn points) -----------------
 class Unk_Svc6d6e90 { public: Unk_ProxyHandle28 FUN_140a7cab0(int id); };

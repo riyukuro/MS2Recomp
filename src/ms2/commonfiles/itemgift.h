@@ -38,7 +38,7 @@ struct ItemEntity : CPtred, ItemAble {
 struct ItemGift : ItemEntity {
     ItemGift();
     virtual ~ItemGift(); // Existing shared destructor, outside this unit's function map.
-    virtual int vfunc_3(CString&);
+    virtual int ValidateItem(CString&);
     virtual int vfunc_o18_1();
 };
 struct ItemGiftPcBang : ItemGift {

@@ -307,7 +307,7 @@ template <class T> T* Unk_UgcGetDialog(int nId)
 // A UI entity by name.
 template <class T> T* Unk_UgcGetEntity(CString strName)
 {
-    return dynamic_cast<T*>(FUN_140b632f0()->FUN_1422d41b0(strName).get());
+    return dynamic_cast<T*>(FUN_140b632f0()->GetUISwfEntity(strName).get());
 }
 
 // ---- CUgcDownloadParam --------------------------------------------------------------------------------------------

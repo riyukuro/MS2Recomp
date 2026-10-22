@@ -90,9 +90,9 @@ BlackMarketPageMesoSearch::BlackMarketPageMesoSearch(const CString& strName)
 }
 
 // @0x140f18720
-void BlackMarketPageMesoSearch::vfunc_1()
+void BlackMarketPageMesoSearch::OnInit()
 {
-    BlackMarketPage::vfunc_1();
+    BlackMarketPage::OnInit();
     m_bSearched = false;
     m_30->FUN_140bbe7c0("m_searchBegin", m_spSearchBegin);
     m_30->FUN_140bbe7c0("m_searchEnd", m_spSearchEnd);
@@ -129,7 +129,7 @@ void BlackMarketPageMesoSearch::vfunc_1()
     UIStatusEventDispatcher::GetInstance()->FUN_141b0cd00(this);
     NotifySystem::GetInstance()->RegisterNotify(L"NotifyChangedTokenMoney", Delegate<void(NotifyObject*)>(this, &BlackMarketPageMesoSearch::vfunc_7));
 }
-MS2_REPLACE_METHOD(0x140F18720, BlackMarketPageMesoSearch, vfunc_1, 3063, 0x486679E1);
+MS2_REPLACE_METHOD(0x140F18720, BlackMarketPageMesoSearch, OnInit, 3063, 0x486679E1);
 
 // @0x140f19320
 void BlackMarketPageMesoSearch::vfunc_2()
@@ -427,9 +427,9 @@ BlackMarketPageMesoRegister::~BlackMarketPageMesoRegister()
 }
 
 // @0x140f1afd0
-void BlackMarketPageMesoRegister::vfunc_1()
+void BlackMarketPageMesoRegister::OnInit()
 {
-    BlackMarketPage::vfunc_1();
+    BlackMarketPage::OnInit();
     do { m_30->FUN_140bbe940("m_afterTaxMerat", m_spAfterTaxMerat); if (m_spAfterTaxMerat == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(381), __FUNCTION__)); } while (0);
     if (m_30->FUN_140bbe7c0("m_mesoDropdown", m_spMesoDropdown))
         m_spMesoDropdown->FUN_1422df9a0(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoRegister::FUN_140f1c900), 0);
@@ -465,7 +465,7 @@ void BlackMarketPageMesoRegister::vfunc_1()
     FUN_140cff1b0(m_30->FUN_1422bb870(), "m_unitPriceTitle", FUN_14028dfa0(CStringW(L"s_mesoMarket_sale_per_price"), strBase));
     FUN_140f1cc00();
 }
-MS2_REPLACE_METHOD(0x140F1AFD0, BlackMarketPageMesoRegister, vfunc_1, 3520, 0x454F273C);
+MS2_REPLACE_METHOD(0x140F1AFD0, BlackMarketPageMesoRegister, OnInit, 3520, 0x454F273C);
 
 // @0x140f1bdc0
 void BlackMarketPageMesoRegister::vfunc_2()

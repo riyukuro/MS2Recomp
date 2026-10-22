@@ -1866,7 +1866,7 @@ void CameraMgr::FUN_140aec4c0()
         FUN_140aed260();
         FUN_140aebb30(FUN_141bd3060(FUN_1403ed2d0()));
         egf::EntityID id = egf::EntityIDFactory::GetNextID();
-        egf::EntityPtr spEntity = FUN_1409670f0()->FUN_1411cec80((const char*)FUN_140af80c0(), id, true);
+        egf::EntityPtr spEntity = FUN_1409670f0()->FactoryEntity((const char*)FUN_140af80c0(), id, true);
         if (FUN_1408a9090(&spEntity) != 0)
         {
             float fDistance = m_spMapCameraData->m_distance;

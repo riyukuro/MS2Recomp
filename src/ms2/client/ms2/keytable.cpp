@@ -660,7 +660,7 @@ void CKeyTable::FUN_14142a910()
                 continue;
             unsigned nCombo;
             FUN_141430e70(&nCombo, nFirst, nSecond, 0xf0);
-            CStringW strName = FUN_141430ee0(nFirst, nSecond);
+            CStringW strName = CreateCombineKeyString(nFirst, nSecond);
             m_keys.SetAt(nCombo, new stKeyData(strName));
             nCount++;
         }
@@ -668,7 +668,7 @@ void CKeyTable::FUN_14142a910()
         {
             unsigned nCombo;
             FUN_141430e70(&nCombo, nFirst, nSecond, 0xf1);
-            CStringW strName = FUN_141430ee0(nFirst, nSecond);
+            CStringW strName = CreateCombineKeyString(nFirst, nSecond);
             m_keys.SetAt(nCombo, new stKeyData(strName));
             nCount++;
         }
@@ -2372,7 +2372,7 @@ unsigned* CKeyTable::FUN_141430e70(unsigned* pOut, int nFirst, int nSecond, int 
 MS2_REPLACE_METHOD(0x141430E70, CKeyTable, FUN_141430e70, 93, 0x06A76195);
 
 // @0x141430ee0
-CStringW CKeyTable::FUN_141430ee0(int nFirst, int nSecond)
+CStringW CKeyTable::CreateCombineKeyString(int nFirst, int nSecond)
 {
     CStringW strKey;
     MS2Ptr<stKeyData> spFirst(0);
@@ -2388,7 +2388,7 @@ CStringW CKeyTable::FUN_141430ee0(int nFirst, int nSecond)
     strKey.Format(L"%s,%s", (const wchar_t*)spFirst->m_strName, (const wchar_t*)spSecond->m_strName);
     return strKey;
 }
-MS2_REPLACE_METHOD(0x141430EE0, CKeyTable, FUN_141430ee0, 431, 0xF8C5E308);
+MS2_REPLACE_METHOD(0x141430EE0, CKeyTable, CreateCombineKeyString, 431, 0xF8C5E308);
 
 // @0x1414310a0
 void CKeyTable::FUN_1414310a0(unsigned nKey, int* pFirst, int* pSecond)

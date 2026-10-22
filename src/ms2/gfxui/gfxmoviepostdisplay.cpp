@@ -93,7 +93,7 @@ void GFxMoviePostDisplay::vfunc_4(void* pMovie, const char* szEvent, const Scale
         }
         else if (_stricmp("playSound", szName) == 0)
         {
-            MS2Ptr<UISwfEntity> spEntity = FUN_140b632f0()->FUN_1422d41b0(szEvent);
+            MS2Ptr<UISwfEntity> spEntity = FUN_140b632f0()->GetUISwfEntity(szEvent);
             if ((spEntity.get() ? true : false) && spEntity->FUN_1422dc390() != 0)
             {
                 CString strSound(FUN_140b63540(pArgs[1]));
@@ -102,7 +102,7 @@ void GFxMoviePostDisplay::vfunc_4(void* pMovie, const char* szEvent, const Scale
         }
         else
         {
-            MS2Ptr<UISwfEntity> spEntity = FUN_140b632f0()->FUN_1422d41b0(szEvent);
+            MS2Ptr<UISwfEntity> spEntity = FUN_140b632f0()->GetUISwfEntity(szEvent);
             if (spEntity.get())
             {
                 if (_stricmp("OnTopMostLayer", szName) == 0)

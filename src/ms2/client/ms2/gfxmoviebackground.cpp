@@ -453,15 +453,15 @@ int GFxMovieBackground::vfunc_6(MS2_GFX_LOADER* pLoader, CString strPath, int nL
 {
     if (GFxMovie::vfunc_6(pLoader, strPath, nLoadFlags) == 0)
         return 0;
-    if (FUN_14127b3d0() == 0)
+    if (CreateRenderView() == 0)
         return 0;
-    if (FUN_14127bb50() == 0)
+    if (CreateRenderTexture() == 0)
         return 0;
-    if (FUN_14127b9e0() == 0)
+    if (CreateRenderTarget() == 0)
         return 0;
-    if (FUN_14127b100() == 0)
+    if (AppendScene() == 0)
         return 0;
-    if (FUN_14127bcb0(m_spRenderTexture) == 0)
+    if (SetBaseTexture(m_spRenderTexture) == 0)
         return 0;
     return 1;
 }
@@ -585,15 +585,15 @@ bool GFxMovieBackground::vfunc_13()
 {
     if (!GFxMovie::vfunc_13())
         return false;
-    if (FUN_14127b3d0() == 0)
+    if (CreateRenderView() == 0)
         return false;
-    if (FUN_14127bb50() == 0)
+    if (CreateRenderTexture() == 0)
         return false;
-    if (FUN_14127b9e0() == 0)
+    if (CreateRenderTarget() == 0)
         return false;
-    if (FUN_14127b100() == 0)
+    if (AppendScene() == 0)
         return false;
-    if (FUN_14127bcb0(m_spRenderTexture) == 0)
+    if (SetBaseTexture(m_spRenderTexture) == 0)
         return false;
     vfunc_16();
     return true;
@@ -721,7 +721,7 @@ void GFxMovieBackground::vfunc_39(int a, int b, int c, bool d, bool e)
 }
 // MS2-FUNCTIONAL: click list iteration temporaries differ
 // @0x14127b100
-int GFxMovieBackground::FUN_14127b100()
+int GFxMovieBackground::AppendScene()
 {
     if (m_spRenderView == 0)
     {
@@ -789,7 +789,7 @@ int GFxMovieBackground::FUN_14127b290()
 }
 // MS2-FUNCTIONAL: property creation temporaries and smart-pointer sequences differ (1.5 KB)
 // @0x14127b3d0
-int GFxMovieBackground::FUN_14127b3d0()
+int GFxMovieBackground::CreateRenderView()
 {
     m_spRenderView = NiDynamicCast(NiScreenFillingRenderView, NiScreenFillingRenderView::Create());
     NiMeshScreenElements* pQuad = NiDynamicCast(NiMeshScreenElements, &m_spRenderView->GetScreenFillingQuad());
@@ -851,7 +851,7 @@ int GFxMovieBackground::FUN_14127b3d0()
 }
 // MS2-FUNCTIONAL: COM surface temporaries differ
 // @0x14127b9e0
-int GFxMovieBackground::FUN_14127b9e0()
+int GFxMovieBackground::CreateRenderTarget()
 {
     if (m_spRenderTexture == 0)
     {
@@ -882,7 +882,7 @@ int GFxMovieBackground::FUN_14127b9e0()
 }
 // MS2-FUNCTIONAL: FormatPrefs/render texture temporaries differ
 // @0x14127bb50
-int GFxMovieBackground::FUN_14127bb50()
+int GFxMovieBackground::CreateRenderTexture()
 {
     ecr::RenderService* pRender = Unk_GetRenderService(&DAT_143b059e8);
     if (pRender == 0)
@@ -906,7 +906,7 @@ int GFxMovieBackground::FUN_14127bb50()
 }
 // MS2-FUNCTIONAL: property list iteration temporaries differ
 // @0x14127bcb0
-int GFxMovieBackground::FUN_14127bcb0(NiRenderedTexture* pTexture)
+int GFxMovieBackground::SetBaseTexture(NiRenderedTexture* pTexture)
 {
     if (m_spRenderView == 0)
     {
@@ -967,10 +967,10 @@ MS2_REPLACE_METHOD(0x14127aea0, GFxMovieBackground, FUN_14127aea0, 151, 0xDE7E98
 MS2_REPLACE_METHOD(0x14127af40, GFxMovieBackground, FUN_14127af40, 131, 0x58558EDF);
 MS2_REPLACE_METHOD(0x14127afd0, GFxMovieBackground, vfunc_16, 97, 0xEC527B97);
 MS2_REPLACE_METHOD(0x14127b040, GFxMovieBackground, vfunc_39, 177, 0xEF74DFFF);
-MS2_REPLACE_METHOD(0x14127b100, GFxMovieBackground, FUN_14127b100, 386, 0x54963695);
+MS2_REPLACE_METHOD(0x14127b100, GFxMovieBackground, AppendScene, 386, 0x54963695);
 MS2_REPLACE_METHOD(0x14127b290, GFxMovieBackground, FUN_14127b290, 306, 0x7DBF2654);
-MS2_REPLACE_METHOD(0x14127b3d0, GFxMovieBackground, FUN_14127b3d0, 1535, 0xFDE6D0CF);
-MS2_REPLACE_METHOD(0x14127b9e0, GFxMovieBackground, FUN_14127b9e0, 349, 0xC4EC9E42);
-MS2_REPLACE_METHOD(0x14127bb50, GFxMovieBackground, FUN_14127bb50, 330, 0x31F3B57A);
-MS2_REPLACE_METHOD(0x14127bcb0, GFxMovieBackground, FUN_14127bcb0, 336, 0x893CF012);
+MS2_REPLACE_METHOD(0x14127b3d0, GFxMovieBackground, CreateRenderView, 1535, 0xFDE6D0CF);
+MS2_REPLACE_METHOD(0x14127b9e0, GFxMovieBackground, CreateRenderTarget, 349, 0xC4EC9E42);
+MS2_REPLACE_METHOD(0x14127bb50, GFxMovieBackground, CreateRenderTexture, 330, 0x31F3B57A);
+MS2_REPLACE_METHOD(0x14127bcb0, GFxMovieBackground, SetBaseTexture, 336, 0x893CF012);
 MS2_REPLACE_METHOD(0x14127be10, GFxMovieBackground, FUN_14127be10, 360, 0xFCB863E7);

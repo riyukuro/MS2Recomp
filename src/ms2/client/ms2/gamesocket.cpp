@@ -182,7 +182,7 @@ void CGameSocket::vfunc_3(CSimpleSocket*,int error) { if(error) throw Exception(
 MS2_REPLACE_METHOD(0x141265140, CGameSocket, vfunc_3, 84, 0x5F016FFD);
 // MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
 // @0x1412651a0
-void CGameSocket::vfunc_5(CSimpleSocket*,int error)
+void CGameSocket::OnClose(CSimpleSocket*,int error)
 {
     CString text=Unk_SocketFormat("[D] CGameSocket::OnClose : nError = {0}",error);
     FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730(text,0));
@@ -199,7 +199,7 @@ void CGameSocket::vfunc_5(CSimpleSocket*,int error)
         m_state=2;
     }
 }
-MS2_REPLACE_METHOD(0x1412651a0, CGameSocket, vfunc_5, 626, 0x1E61A941);
+MS2_REPLACE_METHOD(0x1412651a0, CGameSocket, OnClose, 626, 0x1E61A941);
 // MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
 // @0x141265420
 int CGameSocket::FUN_141265420(CString host,int port,int showError,int special)
@@ -488,7 +488,7 @@ inline int CSocketThread::FUN_141269b30(HANDLE event)
         if(events.lNetworkEvents&FD_OOB) callback->vfunc_4(socket,events.iErrorCode[FD_OOB_BIT]);
         if(events.lNetworkEvents&FD_READ) callback->vfunc_2(socket,events.iErrorCode[FD_READ_BIT]);
         if(events.lNetworkEvents&FD_WRITE) callback->vfunc_3(socket,events.iErrorCode[FD_WRITE_BIT]);
-        if(events.lNetworkEvents&FD_CLOSE) callback->vfunc_5(socket,events.iErrorCode[FD_CLOSE_BIT]);
+        if(events.lNetworkEvents&FD_CLOSE) callback->OnClose(socket,events.iErrorCode[FD_CLOSE_BIT]);
     }
     return m_commands.IsEmpty();
 }
@@ -511,7 +511,7 @@ inline void CSocketThread::FUN_141269dc0()
 // @0x14126a000
 inline void CSocketThread::FUN_14126a000(CSimpleSocket* socket,int error)
 {
-    ISocketCallBack* callback=socket->FUN_14126a3c0(); if(callback) callback->vfunc_5(socket,error);
+    ISocketCallBack* callback=socket->FUN_14126a3c0(); if(callback) callback->OnClose(socket,error);
     FUN_14126b250(socket); socket->FUN_141269780();
 }
 // @0x14126a990
@@ -661,7 +661,7 @@ inline void Unk_SocketAddress::FUN_14126ced0(unsigned short port,unsigned long a
 // MS2-PIN: ?NewNode@?$CAtlList@V?$Unk_SocketPtr@VCInPacket@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCInPacket@@@@@ATL@@@ATL@@AEAAPEAVCNode@12@AEBV?$Unk_SocketPtr@VCInPacket@@@@PEAV312@1@Z 0x14126ad80
 // MS2-PIN: ?vfunc_0@CGameSocket@@UEAAXPEAVCSimpleSocket@@H@Z 0x14126b050
 // MS2-PIN: ?vfunc_0@ISocketCallBack@@UEAAXPEAVCSimpleSocket@@H@Z 0x14126b060
-// MS2-PIN: ?vfunc_5@ISocketCallBack@@UEAAXPEAVCSimpleSocket@@H@Z 0x14126b070
+// MS2-PIN: ?OnClose@ISocketCallBack@@UEAAXPEAVCSimpleSocket@@H@Z 0x14126b070
 // MS2-PIN: ?vfunc_1@ISocketCallBack@@UEAAXPEAVCSimpleSocket@@H@Z 0x14126b080
 // MS2-PIN: ?vfunc_4@CGameSocket@@UEAAXPEAVCSimpleSocket@@H@Z 0x14126b090
 // MS2-PIN: ?vfunc_4@ISocketCallBack@@UEAAXPEAVCSimpleSocket@@H@Z 0x14126b0a0

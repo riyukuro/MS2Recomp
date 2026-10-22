@@ -95,7 +95,7 @@ int FUN_14147a500(Unk_StreamPoint* pOut, const Unk_StreamPoint* pStart, const Un
     kInfo.m_dir = FUN_14147af10(reinterpret_cast<const Unk_StreamPoint&>(kDelta));
     kInfo.m_groups = 0x389;
     float fDist = FUN_141403f20(*pStart, *pEnd);
-    if (!FUN_1409f7ca0()->FUN_1416892f0(&kInfo, pMask))
+    if (!FUN_1409f7ca0()->CastRay(&kInfo, pMask))
     {
         kInfo.m_origin = pStart->FUN_14097fd50(kInfo.m_dir.FUN_14097fc90(fDist));
     }
@@ -122,7 +122,7 @@ int FUN_14147a500(Unk_StreamPoint* pOut, const Unk_StreamPoint* pStart, const Un
     {
         kInfo.m_dir = DAT_143a08cf8.FUN_1409f7960();
         kInfo.m_maxDist = fProbeLen;
-        if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, pMask))
+        if (FUN_1409f7ca0()->CastRay(&kInfo, pMask))
         {
             Unk_NiPoint3 kPoint(kInfo.m_hitPoint);
             kPoint.z = kPoint.z + 5.0f;

@@ -357,7 +357,7 @@ bool CLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget
 
     egf::EntityID id = egf::EntityIDFactory::GetNextID();
     efd::utf8string strModel("EffectPointLight");
-    egf::EntityPtr spEntity = FUN_1409670f0()->FUN_1411cec80(strModel, id, true);
+    egf::EntityPtr spEntity = FUN_1409670f0()->FactoryEntity(strModel, id, true);
     m_entity.FUN_1408b6ec0(reinterpret_cast<Unk_Entity*>(static_cast<egf::Entity*>(spEntity)));
     if (m_entity.FUN_1408b70b0(0))
         return false;

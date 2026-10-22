@@ -66,7 +66,7 @@ public:
     void FUN_1422d21b0();                                                                       // all entities: slot 19
     void FUN_1422d2250();                                                                       // drop the pending unloads
     UISwfEntity* FUN_1422d40b0(int nId);                                                        // the scene of a scene id
-    MS2Ptr<UISwfEntity> FUN_1422d41b0(const CString& strName);                                 // a movie by key (else by class name)
+    MS2Ptr<UISwfEntity> GetUISwfEntity(const CString& strName);                                 // a movie by key (else by class name)
     UISwfEntity* FUN_1422d4380(const CString& strName);                                         // an entity by class name (trimmed, no case)
     MS2Ptr<UISwfEntity> FUN_1422d4580(const CString& strName);                                 // an entity by key (trimmed, no case)
     void FUN_1422d4780(UISwfEntity* p, int nLayer);                                             // add to a layer
