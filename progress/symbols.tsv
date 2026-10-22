@@ -199006,7 +199006,7 @@ DirectSoundCreate8	1423915b0	func
 ?AS3setUTCMonth@Date@fl@Instances@AS3@GFx@Scaleform@@QEAAXAEAVValue@456@IPEBV7456@@Z	1423ff0e0	func
 ?AS3setUTCSeconds@Date@fl@Instances@AS3@GFx@Scaleform@@QEAAXAEAVValue@456@IPEBV7456@@Z	1423ff100	func
 ?AS3settings@XML@fl@Classes@AS3@GFx@Scaleform@@QEAAXAEAV?$SPtr@VObject@fl@Instances@AS3@GFx@Scaleform@@@456@@Z	1423ff120	func
-?settings@XML@fl@Classes@AS3@GFx@Scaleform@@QEAAXAEAV?$SPtr@VObject@fl@Instances@AS3@GFx@Scaleform@@@456@@Z	1423ff120	func
+?settings@XML@fl@Classes@AS3@GFx@Scaleform@@QEAAXAEAV?$SPtr@VObject@fl@Instances@AS3@GFx@Scaleform@@@456@@Z	14242afb0	func
 ?AS3shift@Array@fl@Instances@AS3@GFx@Scaleform@@QEAAXAEAVValue@456@@Z	1423ff400	func
 ?AS3slice@Array@fl@Instances@AS3@GFx@Scaleform@@QEAAXAEAV?$SPtr@VArray@fl@Instances@AS3@GFx@Scaleform@@@456@JJ@Z	1423ff4d0	func
 ?AS3some@Array@fl@Instances@AS3@GFx@Scaleform@@QEAAXAEA_NAEBVValue@456@1@Z	1423ff800	func
@@ -207339,7 +207339,7 @@ cef_string_ascii_to_utf16	142778544	func
 ?MapConstantArray@NiD3DShaderConstantMap@@IEAAPEBXPEAVNiShaderConstantMapEntry@@PEBM@Z	1427ec810	func
 ?SetData@NiShaderConstantMapEntry@@QEAAXIIPEAX_N@Z	1427eda50	func
 ?SetupDefinedConstantValue@NiD3DShaderConstantMap@@IEAAIAEBVNiRenderCallContext@@IPEAVNiShaderConstantMapEntry@@@Z	1427f02b0	func
-?GetViewerStrings@NiD3D10PersistentSrcTextureRendererData@@UEAAXPEAV?$NiTPrimitiveArray@PEAD@@@Z	142801460	func
+?GetViewerStrings@NiD3D10PersistentSrcTextureRendererData@@UEAAXPEAV?$NiTPrimitiveArray@PEAD@@@Z	14285c960	func
 ?DecRefCount@Unk_CMISAnchorSvc@@UEBAXXZ	14280ef52	func
 ?DeleteThis@Unk_CMISAnchorSvc@@MEBAXXZ	14280ef52	func
 ?GetAdvance@Font@Render@Scaleform@@UEBAMI@Z	14280ef52	func
@@ -207472,8 +207472,8 @@ fmod	14280f462	func
 log	14280f468	func
 sin	14280f474	func
 tan	14280f480	func
-?GetViewerStrings@NiDX9PersistentSrcTextureRendererData@@UEAAXPEAV?$NiTPrimitiveArray@PEAD@@@Z	1428292b0	func
-?GetViewerStrings@D3D11PersistentSrcTextureRendererData@ecr@@UEAAXPEAV?$NiTPrimitiveArray@PEAD@@@Z	14285c960	func
+?GetViewerStrings@NiDX9PersistentSrcTextureRendererData@@UEAAXPEAV?$NiTPrimitiveArray@PEAD@@@Z	142801460	func
+?GetViewerStrings@D3D11PersistentSrcTextureRendererData@ecr@@UEAAXPEAV?$NiTPrimitiveArray@PEAD@@@Z	1428292b0	func
 ?HasMixin@BehaviorAPI@@YA?AW4EntityCheck@1@VEntityID@egf@@AEBVutf8string@efd@@@Z	1428d1670	func
 ImmIsUIMessageA	1428d8dca	func
 ?ToString@MatrixProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z	1428ed580	func
