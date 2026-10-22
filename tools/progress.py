@@ -59,6 +59,7 @@ import bytematch as bm  # noqa: E402
 import ms2paths  # noqa: E402
 import gbprogress  # noqa: E402
 import ms2flags  # noqa: E402  (`// MS2-FLAGS: <profile>` per-unit flags, cmake/ms2-unit-profiles.cmake)
+import sf_sdk_guard  # noqa: E402  (MS2-FLAGS: scaleform units must not include SDK headers)
 import mergekey  # noqa: E402
 
 SRC = os.path.join(ROOT, "src")
@@ -335,15 +336,24 @@ def compile_unit(u):
     cmd = ms2paths.cl_cmdline([CL] + flags + pch + ["/showIncludes", "/Fo" + u.obj, u.path])
     t0 = time.time()
     r = subprocess.run(cmd, capture_output=True, text=True, env=env, encoding="latin1")
-    deps, msgs = [], []
+    deps, msgs, included = [], [], []
     for line in (r.stdout + r.stderr).splitlines():
         if line.startswith("Note: including file:"):
             f = unixpath(line.split(":", 2)[2])
+            included.append(f)
             if ms2paths.under(f, SRC) or ms2paths.under(f, ms2paths.ENGINE_DIR):
                 deps.append(f)
         elif line.strip() and line.strip() != os.path.basename(u.path) and "_WIN32_WINNT not defined" not in line:
             msgs.append(line)
     ok = r.returncode == 0 and os.path.exists(u.obj)
+    if ok and u.profile == "scaleform":
+        # the recovered Scaleform builds without the SDK (tools/sf_sdk_guard.py, docs/RECOVERY.md section 2)
+        bad = ["%s: opens SDK header %s" % (u.rel, f) for f in sf_sdk_guard.sdk_includes(included)]
+        for f in [u.path] + [d for d in deps if ms2paths.under(d, sf_sdk_guard.SF_SRC)]:
+            bad += ["%s:%d: SDK include %s" % (os.path.relpath(f, ROOT), n, name) for n, name in sf_sdk_guard.scan_file(f)]
+        if bad:
+            msgs += ["sf_sdk_guard: " + b for b in sorted(set(bad))]
+            ok = False
     if ok and pch:
         deps.append(os.path.join(SRC, ms2pch.HDR))
     if ok:
