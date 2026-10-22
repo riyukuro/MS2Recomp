@@ -146,7 +146,7 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 bool FUN_14053f8c0(unsigned nItemId);
 bool FUN_14053f900(unsigned nItemId);
 bool FUN_14053f940(unsigned nItemId);
-bool FUN_14053f990(int nId);
+int FUN_14053f990(int nId);
 bool FUN_14053f9c0(int nItemId);
 bool FUN_14053fa40(int nItemId);
 int FUN_14053fac0(int nItemId);
@@ -1984,9 +1984,11 @@ bool FUN_14053f940(unsigned nItemId)
 }
 
 // @0x14053f990
-bool FUN_14053f990(int nId)
+int FUN_14053f990(int nId)
 {
-    return FUN_1403ba790(nId) != 0;
+    if (FUN_1403ba790(nId) != 0)
+        return 1;
+    return 0;
 }
 
 // @0x14053f9c0
