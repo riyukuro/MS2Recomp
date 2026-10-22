@@ -8347,3 +8347,5 @@ compress2	142724100	func
 ?AS3toString@String@fl@InstanceTraits@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@456@AEAVVM@456@AEBVValue@456@AEAV9456@IPEBV9456@@Z	142402a90	func
 ?AS3valueOf@String@fl@InstanceTraits@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@456@AEAVVM@456@AEBVValue@456@AEAV9456@IPEBV9456@@Z	142403880	func
 ?GetClassString@VM@AS3@GFx@Scaleform@@QEBAAEAVString@fl@Classes@234@XZ	142507ef0	func
+?CheckCoerce@ArrayBase@AS3@GFx@Scaleform@@QEBA?AVCheckResult@234@AEBVTraits@ClassTraits@234@AEBVValue@234@AEAV8234@@Z	14255afd0	func
+?GetClassVectorNumber@VM@AS3@GFx@Scaleform@@QEBAAEAVClass@234@XZ	142508230	func
