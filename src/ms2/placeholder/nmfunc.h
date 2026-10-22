@@ -1008,6 +1008,8 @@ public:
     class ServerAddress
     {
     public:
+        ServerAddress();
+        ServerAddress(const ServerAddress& r);
         CNMStr<0x20> m_host;                                    // +0x00
         unsigned short m_port;                                  // +0x08
     };
@@ -1015,6 +1017,8 @@ public:
     class RequestInfo
     {
     public:
+        RequestInfo();
+        RequestInfo(const RequestInfo& r);
         unsigned int m_kind;                                    // +0x00
         unsigned int m_flags;                                   // +0x04
         ServerAddress m_address;                                // +0x08
