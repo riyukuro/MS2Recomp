@@ -3606,6 +3606,7 @@ __imp_NxGetUtilLib	142cced28	data
 ?DecodeFramed@CNMFindUserRequestInfo@@UEAAIPEAVCNMStream@@@Z	141574290	func
 ?DecodeDispatch@CNMFindUserRequestInfo@@UEAAIPEAVCNMSerializableDecoder@@PEAVCNMStream@@@Z	141574320	func
 ??0CNMFindUserInfo@@QEAA@XZ	141574480	func
+??0CNMNoteInfoEx@@QEAA@XZ	141571190	func
 ??0CNMGameCode@@QEAA@AEBV0@@Z	1415e9910	func
 ??4CNMGameCode@@QEAAAEAV0@AEBV0@@Z	1415f0db0	func
 ??0CNMGameServerCode@@QEAA@AEBV0@@Z	1415e9cd0	func
