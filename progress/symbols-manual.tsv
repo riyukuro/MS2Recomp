@@ -7896,3 +7896,17 @@ sfr_atan2f_thunk	14280f28e	func
 ?SetMember@NetStream@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@AEBVValue@234@AEBVPropFlags@234@@Z	140008250	func
 ?SetSoundSpatial@NetStreamProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z	1400085c0	func
 ?SetSwfSync@VideoProviderNetStream@AS2@GFx@Scaleform@@QEAAX_NPEAVSprite@34@@Z	1400064f0	func
+?At@SparseArray@AS3@GFx@Scaleform@@QEBAAEBVValue@234@_K@Z	142405480	func
+?BevelFilterCI@fl_filters@AS3@GFx@Scaleform@@3UClassInfo@234@B	1431595d0	data
+?BitmapFilterCI@fl_filters@AS3@GFx@Scaleform@@3UClassInfo@234@B	143159620	data
+?BitmapFilterQualityCI@fl_filters@AS3@GFx@Scaleform@@3UClassInfo@234@B	143159670	data
+?BitmapFilterTypeCI@fl_filters@AS3@GFx@Scaleform@@3UClassInfo@234@B	1431596c0	data
+?BlurFilterCI@fl_filters@AS3@GFx@Scaleform@@3UClassInfo@234@B	143159710	data
+?ColorMatrixFilterCI@fl_filters@AS3@GFx@Scaleform@@3UClassInfo@234@B	143159760	data
+?ConvolutionFilterCI@fl_filters@AS3@GFx@Scaleform@@3UClassInfo@234@B	1431597b0	data
+?DisplacementMapFilterCI@fl_filters@AS3@GFx@Scaleform@@3UClassInfo@234@B	143159800	data
+?DisplacementMapFilterModeCI@fl_filters@AS3@GFx@Scaleform@@3UClassInfo@234@B	143159850	data
+?DropShadowFilterCI@fl_filters@AS3@GFx@Scaleform@@3UClassInfo@234@B	1431598a0	data
+?GlowFilterCI@fl_filters@AS3@GFx@Scaleform@@3UClassInfo@234@B	1431598f0	data
+?GradientBevelFilterCI@fl_filters@AS3@GFx@Scaleform@@3UClassInfo@234@B	143159940	data
+?GradientGlowFilterCI@fl_filters@AS3@GFx@Scaleform@@3UClassInfo@234@B	143159990	data
