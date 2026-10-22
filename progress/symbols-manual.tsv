@@ -8377,3 +8377,5 @@ compress2	142724100	func
 ?calcMaskBounds@TreeCacheNode@Render@Scaleform@@QEAA?AW4MaskEffectState@23@PEAV?$Rect@M@23@PEAV?$Matrix2x4@M@23@AEBV?$Matrix3x4@M@23@AEBV?$Matrix4x4@M@23@W4423@I@Z	142684500	func
 ?CalcViewMatrix@TreeCacheNode@Render@Scaleform@@QEBAXPEAV?$Matrix3x4@M@23@PEAV?$Matrix4x4@M@23@@Z	142680d30	func
 ?GetMatrixPool@TreeCacheNode@Render@Scaleform@@QEBAAEAVMatrixPool@MatrixPoolImpl@23@XZ	1426815d0	func
+?Compare@DrawableImage@Render@Scaleform@@QEAAXPEAVImageBase@23@0@Z	1425eb390	func
+?CopyPixels@DrawableImage@Render@Scaleform@@QEAAXPEAVImageBase@23@AEBV?$Rect@J@23@AEBV?$Point@J@23@0PEBV623@_N@Z	1425eb700	func
