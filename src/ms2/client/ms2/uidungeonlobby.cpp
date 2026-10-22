@@ -70,11 +70,11 @@ UIDungeonLobby::~UIDungeonLobby()
 }
 
 // @0x140e178e0
-CString UIDungeonLobby::vfunc_1()
+CString UIDungeonLobby::GetTypeName()
 {
     return "DungeonLobby";
 }
-MS2_REPLACE_METHOD(0x140E178E0, UIDungeonLobby, vfunc_1, 61, 0x141A279F);
+MS2_REPLACE_METHOD(0x140E178E0, UIDungeonLobby, GetTypeName, 61, 0x141A279F);
 
 // @0x140e17930
 void UIDungeonLobby::FUN_140e17930(CInPacket& packet)

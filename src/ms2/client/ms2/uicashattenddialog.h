@@ -45,7 +45,7 @@ class UICashAttendDialog : public UIDialog {
 public:
     UICashAttendDialog();
     virtual ~UICashAttendDialog();
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual void OnLoadComplete();
     virtual void vfunc_26();
     // @0x140bccd60

@@ -72,7 +72,7 @@ public:
 
     UIItemAutoUseOptionDialog();                                    // 0x140f4f460
     virtual ~UIItemAutoUseOptionDialog();                           //  0 0x140f4f560 (??_G 0x140f50960)
-    virtual CString vfunc_1();                                      //  1 0x140f4f5f0 "ItemAutoUseOptionDialog"
+    virtual CString GetTypeName();                                      //  1 0x140f4f5f0 "ItemAutoUseOptionDialog"
     virtual void OnLoadComplete();                                  // 22 0x140f4f710
     virtual void vfunc_15();                                        // 15 0x140f4f990
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140f4f9c0 OnClickOk

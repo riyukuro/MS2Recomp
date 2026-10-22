@@ -43,7 +43,7 @@ class UIChaosLightDialog : public UIDialog
 public:
     UIChaosLightDialog();                                                                           // 0x141040a30
     virtual ~UIChaosLightDialog();                                                                  //  0 0x141040af0
-    virtual CString vfunc_1();                                                                      //  1 0x141040b40
+    virtual CString GetTypeName();                                                                      //  1 0x141040b40
     virtual void OnLoadComplete();                                                                  // 22 0x141040b90
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                                                     // 28 0x141040d20

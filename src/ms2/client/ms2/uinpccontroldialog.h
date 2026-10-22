@@ -37,7 +37,7 @@ class UINpcControlDialog : public UIDialog
 public:
     UINpcControlDialog();                               // 0x141a623e0
     virtual ~UINpcControlDialog();                      //  0 0x141a68340 (??_G 0x141a68800)
-    virtual CString vfunc_1();                          //  1 0x141a624b0 "NpcControlDialog"
+    virtual CString GetTypeName();                          //  1 0x141a624b0 "NpcControlDialog"
     virtual int vfunc_13();                             // 13 0x141a63390 enter / tab / escape keys
     virtual void OnLoadInit();                          // 20 0x141a63280
     virtual void OnLoadComplete();                      // 22 0x141a632b0 "initData"

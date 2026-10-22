@@ -37,7 +37,7 @@ UIItemDropSimulatorDialog::UIItemDropSimulatorDialog()
 }
 
 // @0x14192a330
-CString UIItemDropSimulatorDialog::vfunc_1()
+CString UIItemDropSimulatorDialog::GetTypeName()
 {
     return "ItemDropSimulatorDialog";
 }

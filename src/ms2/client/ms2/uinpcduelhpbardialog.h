@@ -14,7 +14,7 @@ class UINpcDuelHPBarDialog : public UIDialog
 public:
     UINpcDuelHPBarDialog();                             // 0x140e6b7b0
     virtual ~UINpcDuelHPBarDialog();                    //  0 0x140e6b850 (??_G 0x140e6d260)
-    virtual CString vfunc_1();                          //  1 0x140e6b8a0 "NpcDuelHPBarDialog"
+    virtual CString GetTypeName();                          //  1 0x140e6b8a0 "NpcDuelHPBarDialog"
     virtual void vfunc_43();                            // 43 0x140e6c6c0 entity bar placement (1, 0, 50) + visible
     virtual void vfunc_67();                            // 67 0x140e6b8f0 close: reset the duel
     virtual void vfunc_72();                            // 72 0x140e6b950 per-tick refresh

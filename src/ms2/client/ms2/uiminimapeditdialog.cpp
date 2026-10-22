@@ -212,7 +212,7 @@ UIMinimapEditDialog::~UIMinimapEditDialog()
 }
 
 // @0x141a52020
-CString UIMinimapEditDialog::vfunc_1()
+CString UIMinimapEditDialog::GetTypeName()
 {
     return CString("MinimapEditDialog");
 }

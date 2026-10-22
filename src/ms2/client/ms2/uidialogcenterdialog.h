@@ -24,7 +24,7 @@ class UIDialogCenterDialog : public UIDialog
 public:
     UIDialogCenterDialog();                             // 0x141294100
     virtual ~UIDialogCenterDialog();                    //  0 0x141294200 (??_G 0x1412972d0)
-    virtual CString vfunc_1();                          //  1 0x141294290 "DialogCenterDialog"
+    virtual CString GetTypeName();                          //  1 0x141294290 "DialogCenterDialog"
     virtual void OnLoadComplete();                      // 22 0x1412942e0
     virtual void vfunc_26();                            // 26 0x141295730 release the buttons
     virtual int vfunc_48() { return 0x4ea9; }           // 48 0x1412976f0 UI type id

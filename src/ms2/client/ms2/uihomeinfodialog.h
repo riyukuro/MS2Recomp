@@ -19,7 +19,7 @@ class UIHomeInfoDialog : public UIDialog
 public:
     UIHomeInfoDialog();                                         // 0x1412c4cd0
     // the dtor (0x1412c88b0, ??_G 0x1412c8910) is implicit: the exe's calls UIDialog::~UIDialog only
-    virtual CString vfunc_1();                                  //  1 0x1412c4d70 "HomeInfoDialog"
+    virtual CString GetTypeName();                                  //  1 0x1412c4d70 "HomeInfoDialog"
     virtual void OnLoadComplete();                              // 22 0x1412c4dc0 title of the channel label, then FUN_1412c72d0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x1412c5030
     virtual void vfunc_43();                                    // 43 0x1412c4fc0 ASDialog slot 4 (6, 0, 0)

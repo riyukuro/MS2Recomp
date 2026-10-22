@@ -13,7 +13,7 @@ class UIBootyPopup : public UIObject
 public:
     UIBootyPopup();                                                 // 0x141031430
     virtual ~UIBootyPopup();                                        //  0 0x141031510 (??_G 0x141031f30)
-    virtual CString vfunc_1();                                      //  1 0x141031550 "BootyPopup"
+    virtual CString GetTypeName();                                      //  1 0x141031550 "BootyPopup"
     virtual void vfunc_15();                                        // 15 0x1410317a0 per-frame update
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141031840
     virtual void vfunc_41(const Scaleform::GFx::Value& root);       // 41 0x141031ec0 movie loaded: m_30 = new ASGameEntity

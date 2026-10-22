@@ -54,7 +54,7 @@ UIGameModeSelectDialog::~UIGameModeSelectDialog()
 }
 
 // @0x140c1a000
-CString UIGameModeSelectDialog::vfunc_1()
+CString UIGameModeSelectDialog::GetTypeName()
 {
     return "GameModeSelectDialog";
 }
@@ -138,7 +138,7 @@ void UIGameModeSelectDialog::FUN_140c1a510(const Scaleform::GFx::FunctionHandler
 }
 
 // ---- hooks ----
-MS2_REPLACE_METHOD(0x140C1A000, UIGameModeSelectDialog, vfunc_1, 61, 0x5110BE61);
+MS2_REPLACE_METHOD(0x140C1A000, UIGameModeSelectDialog, GetTypeName, 61, 0x5110BE61);
 MS2_REPLACE_METHOD(0x140C1A050, UIGameModeSelectDialog, vfunc_67, 24, 0x27474BAA);
 MS2_REPLACE_METHOD(0x140C1A070, UIGameModeSelectDialog, OnLoadComplete, 786, 0x43F8AF26);
 MS2_REPLACE_METHOD(0x140C1A3E0, UIGameModeSelectDialog, vfunc_13, 37, 0xA76943DB);

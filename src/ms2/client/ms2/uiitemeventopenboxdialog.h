@@ -22,7 +22,7 @@ class UIItemEventOpenBoxDialog : public UIDialog
 public:
     UIItemEventOpenBoxDialog();                                 // 0x140e47540
     virtual ~UIItemEventOpenBoxDialog();                        //  0 0x140e477f0 (??_G 0x140e492d0)
-    virtual CString vfunc_1();                                  //  1 0x140e47a50 "ItemEventOpenBoxDialog"
+    virtual CString GetTypeName();                                  //  1 0x140e47a50 "ItemEventOpenBoxDialog"
     virtual void OnLoadComplete();                              // 22 0x140e47b40 bind the children and the request button
     virtual int vfunc_48() { return 0x4f42; }                   // 48 0x140e49310
     virtual void vfunc_67();                                    // 67 0x140e47aa0 Close: drop the bound item and the children

@@ -819,7 +819,7 @@ UIBeautyShopStyleDialog::~UIBeautyShopStyleDialog()
 }
 
 // @0x140f034d0
-CString UIBeautyShopStyleDialog::vfunc_1()
+CString UIBeautyShopStyleDialog::GetTypeName()
 {
     return "BeautyShopStyleDialog";
 }
@@ -2040,7 +2040,7 @@ template MS2Ptr<CItem>& std::vector<MS2Ptr<CItem> >::at(size_t);
 MS2_EMIT_CRT_MEMMOVE_S();  // memmove_s 0x140f02f70
 
 // ---- hooks ----
-MS2_REPLACE_METHOD(0x140f034d0, UIBeautyShopStyleDialog, vfunc_1, 61, 0xC0C64D99);
+MS2_REPLACE_METHOD(0x140f034d0, UIBeautyShopStyleDialog, GetTypeName, 61, 0xC0C64D99);
 MS2_REPLACE_METHOD(0x140f03520, UIBeautyShopStyleDialog, vfunc_84, 46, 0xB677C877);
 MS2_REPLACE_METHOD(0x140f039c0, UIBeautyShopStyleDialog, vfunc_13, 74, 0x7553428A);
 MS2_REPLACE_METHOD(0x140f03a10, UIBeautyShopStyleDialog, vfunc_15, 125, 0x26EE34D7);

@@ -26,7 +26,7 @@ public:
 
     UIInventoryDialog();                                        // 0x141996ec0
     virtual ~UIInventoryDialog();                               //  0 0x141997080 (??_G 0x14199f390)
-    virtual CString vfunc_1();                                  //  1 0x141997190 "InventoryDialog"
+    virtual CString GetTypeName();                                  //  1 0x141997190 "InventoryDialog"
     virtual int vfunc_13();                                     // 13 0x141999a80 Enter key: apply the search text
     virtual void vfunc_15();                                    // 15 0x141997580 per-frame: the pending refreshes
     virtual void vfunc_18();                                    // 18 0x141999c70 follow the dialog it is placed next to
@@ -103,7 +103,7 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    CString m_188;                                              // +0x188 the bag name (vfunc_1())
+    CString m_188;                                              // +0x188 the bag name (GetTypeName())
     int m_190;                                                  // +0x190 the dialog placed next to ("openWindowPos")
     int m_194;                                                  // +0x194 the tab
     int m_198;                                                  // +0x198

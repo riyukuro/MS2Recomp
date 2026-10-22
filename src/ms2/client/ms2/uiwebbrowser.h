@@ -16,7 +16,7 @@ class UIWebBrowser : public UIWebBrowserBase
 public:
     UIWebBrowser();                                             // 0x141b4f220
     virtual ~UIWebBrowser();                                    //  0 0x141b4f470 (??_G 0x141b513a0, ??_E thunk 0x141b51290)
-    virtual CString vfunc_1();                                  //  1 0x141b4f620 "WebBrowser"
+    virtual CString GetTypeName();                                  //  1 0x141b4f620 "WebBrowser"
     virtual void OnLoadInit();                                  // 20 0x141b4f690 read the sizes from the constants
     virtual void OnLoadComplete();                              // 22 0x141b4f820 bind the buttons
     virtual void vfunc_26();                                    // 26 0x141b50250

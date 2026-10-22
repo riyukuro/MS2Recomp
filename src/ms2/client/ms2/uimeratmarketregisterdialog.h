@@ -24,7 +24,7 @@ public:
 
     UIMeratMarketRegisterDialog();                                      // 0x141317690
     virtual ~UIMeratMarketRegisterDialog();                             //  0 0x1413177f0 (??_G 0x14131d2f0)
-    virtual CString vfunc_1();                                          //  1 0x1413178e0 "MeratMarketRegisterDialog"
+    virtual CString GetTypeName();                                          //  1 0x1413178e0 "MeratMarketRegisterDialog"
     virtual int vfunc_13();                                             // 13 0x1413187d0 tab key
     virtual void vfunc_15();                                            // 15 0x141318970 per-frame: refresh the fee
     virtual void OnLoadComplete();                                      // 22 0x141317d60 initData

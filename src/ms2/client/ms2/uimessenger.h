@@ -67,7 +67,7 @@ class UIMessenger : public UIDialog
 public:
     UIMessenger(UIMessengerBrowser* pBrowser, const TiXmlDocument& doc, CStringW strName, int bFirst);   // 0x141a08af0
     virtual ~UIMessenger();                                                 //  0 0x141a08d60 (??_G 0x141a1c6d0)
-    virtual CString vfunc_1();                                              //  1 0x141a08eb0 "MessengerDialog"
+    virtual CString GetTypeName();                                              //  1 0x141a08eb0 "MessengerDialog"
     virtual int vfunc_4();                                                  //  4 0x141a09320 save the window settings
     virtual int vfunc_5();                                                  //  5 0x141a095d0 load the window settings
     virtual int vfunc_13();                                                 // 13 0x141a0a4a0 key input
@@ -235,7 +235,7 @@ class UIMessengerBrowser : public UIDialog, public UIItemEventListener
 public:
     UIMessengerBrowser();                                                   // 0x141a20f90
     virtual ~UIMessengerBrowser();                                          //  0 0x141a215a0
-    virtual CString vfunc_1();                                              //  1 0x141a21a60 "MessengerBrowser"
+    virtual CString GetTypeName();                                              //  1 0x141a21a60 "MessengerBrowser"
     virtual void vfunc_8(int nVisible);                                     //  8 0x141a21ce0 every window
     virtual int vfunc_9();                                                  //  9 0x141a21c50 any window
     virtual void vfunc_15();                                                // 15 0x141a23b30 flushes the pending lines

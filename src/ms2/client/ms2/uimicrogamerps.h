@@ -16,7 +16,7 @@ class UIMicroGameRps : public UIHeadUpDisplay
 public:
     UIMicroGameRps();
 
-    virtual CString vfunc_1();                                                  //  1 "MicroGameRps"
+    virtual CString GetTypeName();                                                  //  1 "MicroGameRps"
     virtual void vfunc_2();                                                     //  2
     virtual void vfunc_3();                                                     //  3
     virtual void vfunc_15();                                                    // 15 per-frame: centre the entity / hide

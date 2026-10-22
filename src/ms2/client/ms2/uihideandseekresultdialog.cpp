@@ -108,11 +108,11 @@ UIHideAndSeekResultDialog::~UIHideAndSeekResultDialog()
 }
 
 // @0x140c1e840
-CString UIHideAndSeekResultDialog::vfunc_1()
+CString UIHideAndSeekResultDialog::GetTypeName()
 {
     return CString("HideAndSeekResultDialog");
 }
-MS2_REPLACE_METHOD(0x140C1E840, UIHideAndSeekResultDialog, vfunc_1, 61, 0xF8DFF252);
+MS2_REPLACE_METHOD(0x140C1E840, UIHideAndSeekResultDialog, GetTypeName, 61, 0xF8DFF252);
 
 // @0x140c1e890
 void UIHideAndSeekResultDialog::vfunc_67()
@@ -238,7 +238,7 @@ void UIHideAndSeekResultDialog::FUN_140c1f120(ASArray& rows, MS2Ptr<Unk_HsInfo> 
 CString UIHideAndSeekResultDialog::FUN_140c1f300(unsigned int nItemId, int nCount)
 {
     CString strKey;
-    strKey.Format("%s_%d", (const char*)vfunc_1(), nItemId);
+    strKey.Format("%s_%d", (const char*)GetTypeName(), nItemId);
     if (m_boundIcons.find(strKey) == m_boundIcons.end())
     {
         MS2Ptr<CItem> spItem(new CItem);

@@ -34,7 +34,7 @@ UIMyHouseAuthDialog::~UIMyHouseAuthDialog()
 }
 
 // @0x141a57ba0
-CString UIMyHouseAuthDialog::vfunc_1()
+CString UIMyHouseAuthDialog::GetTypeName()
 {
     return "MyHouseAuthDialog";
 }

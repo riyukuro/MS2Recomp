@@ -81,8 +81,8 @@ int UIIntroMovie::vfunc_53()
 MS2_REPLACE_METHOD(0x141995200, UIIntroMovie, vfunc_53, 66, 0xBCE73D48);
 
 // @0x141995250
-CString UIIntroMovie::vfunc_1() { return "IntroMovie"; }
-MS2_REPLACE_METHOD(0x141995250, UIIntroMovie, vfunc_1, 61, 0xBABA033B);
+CString UIIntroMovie::GetTypeName() { return "IntroMovie"; }
+MS2_REPLACE_METHOD(0x141995250, UIIntroMovie, GetTypeName, 61, 0xBABA033B);
 
 // @0x1419952a0
 void UIIntroMovie::OnLoadInit()

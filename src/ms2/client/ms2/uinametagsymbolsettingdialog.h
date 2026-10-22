@@ -23,7 +23,7 @@ class UINameTagSymbolSettingDialog : public UIDialog
 public:
     UINameTagSymbolSettingDialog();                             // 0x14131d910
     virtual ~UINameTagSymbolSettingDialog();                    //  0 0x14131d980 (??_G 0x14131e0e0)
-    virtual CString vfunc_1();                                  //  1 0x14131d9c0 "NameTagSymbolSettingDialog"
+    virtual CString GetTypeName();                                  //  1 0x14131d9c0 "NameTagSymbolSettingDialog"
     virtual void OnLoadComplete();                              // 22 0x14131da30 fill the symbol list
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                 // 28 0x14131df40 "onOk" / "onCancel"

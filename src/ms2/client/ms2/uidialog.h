@@ -32,7 +32,7 @@ class UIDialog : public UIObject
 public:
     UIDialog();                                                             // 0x1419231f0
     virtual ~UIDialog();                                                    //  0 0x141923420 (??_G 0x141927340)
-    virtual CString vfunc_1();                                              //  1 0x1419234e0
+    virtual CString GetTypeName();                                              //  1 0x1419234e0
     virtual int vfunc_4();                                                  //  4 0x1419237c0
     virtual int vfunc_5();                                                  //  5 0x141923a70
     virtual int vfunc_6();                                                  //  6 0x1419237a0 returns m_74
@@ -109,7 +109,7 @@ public:
     void FUN_141926620(int* pnAlign, float* pX, float* pY); // the screen quadrant of the dialog (5..8) and its anchor
     void FUN_141926880();                                   // empty (OnLoadComplete)
     void FUN_141926890();                                   // empty (close)
-    CString FUN_1419268a0(int n);                           // vfunc_1() + n ("{0}{1}"), vfunc_1() for 0
+    CString FUN_1419268a0(int n);                           // GetTypeName() + n ("{0}{1}"), GetTypeName() for 0
     bool FUN_141926960();                                   // m_168
     void FUN_141926980(bool b);                             // m_168 = b
     template <class T> MS2Ptr<T> FUN_141926e30(const CString& strName);    // child by name through the container (uiswfentity.inl)

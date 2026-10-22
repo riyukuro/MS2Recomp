@@ -80,7 +80,7 @@ UIQuizDialog::~UIQuizDialog()
 }
 
 // @0x14129a590
-CString UIQuizDialog::vfunc_1()
+CString UIQuizDialog::GetTypeName()
 {
     return "QuizDialog";
 }

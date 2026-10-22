@@ -48,7 +48,7 @@ CBaseOption::~CBaseOption()
 }
 
 // @0x140a02b70
-CString CBaseOption::vfunc_1()
+CString CBaseOption::GetTypeName()
 {
     return CString("");
 }

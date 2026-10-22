@@ -29,11 +29,11 @@ UILoginNotice::~UILoginNotice()
 }
 
 // @0x140ea6180
-CString UILoginNotice::vfunc_1()
+CString UILoginNotice::GetTypeName()
 {
     return "LoginNotice";
 }
-MS2_REPLACE_METHOD(0x140EA6180, UILoginNotice, vfunc_1, 61, 0xEBD8DB21);
+MS2_REPLACE_METHOD(0x140EA6180, UILoginNotice, GetTypeName, 61, 0xEBD8DB21);
 
 // @0x140ea61d0
 void UILoginNotice::OnLoadComplete()

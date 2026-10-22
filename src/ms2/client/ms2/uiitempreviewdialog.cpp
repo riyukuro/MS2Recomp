@@ -84,8 +84,8 @@ UIItemPreviewDialog::~UIItemPreviewDialog()
 }
 
 // @0x1412d5990
-CString UIItemPreviewDialog::vfunc_1() { return "ItemPreviewDialog"; }
-MS2_REPLACE_METHOD(0x1412D5990, UIItemPreviewDialog, vfunc_1, 61, 0xB27CF424);
+CString UIItemPreviewDialog::GetTypeName() { return "ItemPreviewDialog"; }
+MS2_REPLACE_METHOD(0x1412D5990, UIItemPreviewDialog, GetTypeName, 61, 0xB27CF424);
 
 // @0x1412d59e0
 void UIItemPreviewDialog::vfunc_26()

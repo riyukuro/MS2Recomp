@@ -58,11 +58,11 @@ UISwfEntity::~UISwfEntity()
 }
 
 // @0x1422db670
-CString UISwfEntity::vfunc_1()
+CString UISwfEntity::GetTypeName()
 {
     return "SwfEntity";
 }
-MS2_REPLACE_METHOD(0x1422DB670, UISwfEntity, vfunc_1, 61, 0xE8BD2BD9);
+MS2_REPLACE_METHOD(0x1422DB670, UISwfEntity, GetTypeName, 61, 0xE8BD2BD9);
 
 // @0x1422db6c0
 void UISwfEntity::vfunc_2()
@@ -167,7 +167,7 @@ MS2_REPLACE_METHOD(0x1422DBAE0, UISwfEntity, vfunc_6, 8, 0x7F371472);
 // @0x1422dbaf0
 CString UISwfEntity::vfunc_7()
 {
-    return vfunc_1();
+    return GetTypeName();
 }
 MS2_REPLACE_METHOD(0x1422DBAF0, UISwfEntity, vfunc_7, 64, 0xA54AF9CB);
 

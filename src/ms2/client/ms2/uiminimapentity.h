@@ -244,7 +244,7 @@ public:
 
     UIMinimapDialog();                                          // 0x141a35220
     virtual ~UIMinimapDialog();                                 //  0 0x141a358a0 (??_G 0x141a490f0)
-    virtual CString vfunc_1();                                  //  1 0x141a35ba0 "MinimapDialog"
+    virtual CString GetTypeName();                                  //  1 0x141a35ba0 "MinimapDialog"
     virtual int vfunc_13();                                     // 13 0x141a36f10
     virtual void vfunc_15();                                    // 15 0x141a362b0
     virtual bool vfunc_17();                                    // 17 0x141a36e50

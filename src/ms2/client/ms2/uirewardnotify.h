@@ -15,7 +15,7 @@ class UIRewardNotify : public UIHeadUpDisplay {
 public:
     UIRewardNotify();                                                                   // 0x141abe1d0
     virtual ~UIRewardNotify();                                                          // 0 0x141ac3930
-    virtual CString vfunc_1();                                                          // 1 0x141abe240
+    virtual CString GetTypeName();                                                          // 1 0x141abe240
     virtual void vfunc_2();                                                             // 2 0x141abe290
     virtual void vfunc_3();                                                             // 3 0x141abe2d0
     virtual void vfunc_15();                                                            // 15 0x141abe740
@@ -69,7 +69,7 @@ class UIFameContentsNotify : public UIHeadUpDisplay {
 public:
     UIFameContentsNotify();                                                             // 0x141ac2190
     virtual ~UIFameContentsNotify();                                                    // 0 0x141ac22d0
-    virtual CString vfunc_1();                                                          // 1 0x141ac23e0
+    virtual CString GetTypeName();                                                          // 1 0x141ac23e0
     virtual void vfunc_2();                                                             // 2 0x141ac2430
     virtual void vfunc_3();                                                             // 3 0x141ac2450
     virtual void vfunc_18();                                                            // 18 0x141ac24b0
@@ -103,7 +103,7 @@ class UIRouletteDialog : public UIDialog {
 public:
     UIRouletteDialog();                                                                 // 0x141ac4920
     virtual ~UIRouletteDialog();                                                        // 0 0x141ac4a90
-    virtual CString vfunc_1();                                                          // 1 0x141ac4bd0
+    virtual CString GetTypeName();                                                          // 1 0x141ac4bd0
     virtual int vfunc_13();                                                             // 13 0x141ac4eb0
     virtual void vfunc_15();                                                            // 15 0x141ac4e90 (returns this)
     virtual void OnLoadInit();                                                          // 20 0x141ac4d40

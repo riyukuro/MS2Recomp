@@ -63,7 +63,7 @@ class UIItemBreakDialog : public UIItemBreakBase
 public:
     UIItemBreakDialog();                                        // 0x1419a21c0
     virtual ~UIItemBreakDialog();                               //  0 0x1419a22a0 (??_G 0x1419a9440)
-    virtual CString vfunc_1();                                  //  1 0x1419a2330 "ItemBreakDialog"
+    virtual CString GetTypeName();                                  //  1 0x1419a2330 "ItemBreakDialog"
     virtual void OnLoadInit();                                  // 20 0x1419a2380
     virtual void OnLoadComplete();                              // 22 0x1419a2400 the bundle dropdowns
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x1419a3a80
@@ -101,7 +101,7 @@ class UIItemBreakDonationDialog : public UIItemBreakBase
 public:
     UIItemBreakDonationDialog();                                // 0x1419a4d30
     virtual ~UIItemBreakDonationDialog();                       //  0 0x1419a4db0 (??_G 0x1419a9480)
-    virtual CString vfunc_1();                                  //  1 0x1419a4e20 "ItemBreakDonationDialog"
+    virtual CString GetTypeName();                                  //  1 0x1419a4e20 "ItemBreakDonationDialog"
     virtual void OnLoadInit();                                  // 20 0x1419a4e70
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x1419a51b0
     virtual int vfunc_46();                                     // 46 0x1419a5050

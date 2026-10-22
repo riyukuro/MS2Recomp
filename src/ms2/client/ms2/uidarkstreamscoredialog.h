@@ -29,7 +29,7 @@ class UIDarkStreamScoreDialog : public UIScoreDialog
 public:
     UIDarkStreamScoreDialog();                                      // 0x140f35340
     virtual ~UIDarkStreamScoreDialog();                             //  0 0x140f353f0 (??_G 0x140f35800)
-    virtual CString vfunc_1();                                      //  1 0x140f35430 "DarkStreamScoreDialog"
+    virtual CString GetTypeName();                                      //  1 0x140f35430 "DarkStreamScoreDialog"
     virtual void OnLoadComplete();                                  // 22 0x140f35550
     virtual void vfunc_43();                                        // 43 0x140f35480 (movie root position)
     virtual int vfunc_48();                                         // 48 0x140f35880 UI type id

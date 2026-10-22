@@ -434,7 +434,7 @@ public:
     {
         m_uid = 0;
     }
-    virtual CStringW vfunc_1();                             // 0x140db4250 L"NotifyUgcDownloadComplete" (unit_140da50e0)
+    virtual CStringW GetTypeName();                             // 0x140db4250 L"NotifyUgcDownloadComplete" (unit_140da50e0)
     int m_nType;                                            // +0x18
     CString m_strUrl;                                       // +0x20
     CString m_strPath;                                      // +0x28

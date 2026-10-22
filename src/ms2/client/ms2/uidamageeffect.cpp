@@ -84,7 +84,7 @@ UIDamageEffect::~UIDamageEffect()
 }
 
 // @0x1419105b0
-CString UIDamageEffect::vfunc_1()
+CString UIDamageEffect::GetTypeName()
 {
     return "DamageEffect";
 }
@@ -174,7 +174,7 @@ void UIDamageEffect::FUN_141910b30(float fAlpha)
 }
 
 // ---- hooks ----
-MS2_REPLACE_METHOD(0x1419105B0, UIDamageEffect, vfunc_1, 61, 0xCFA2E7B1);
+MS2_REPLACE_METHOD(0x1419105B0, UIDamageEffect, GetTypeName, 61, 0xCFA2E7B1);
 MS2_REPLACE_METHOD(0x141910600, UIDamageEffect, vfunc_3, 87, 0x02DD1D34);
 MS2_REPLACE_METHOD(0x141910660, UIDamageEffect, FUN_141910660, 150, 0x8989260B);
 MS2_REPLACE_METHOD(0x141910700, UIDamageEffect, FUN_141910700, 193, 0xC2DF0EFB);

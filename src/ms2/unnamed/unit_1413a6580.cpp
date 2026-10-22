@@ -70,11 +70,11 @@ ClassObject* CGuideConditionInput::CreateObject()
 }
 
 // @0x1413a65e0
-CStringW CGuideConditionInput::vfunc_1()
+CStringW CGuideConditionInput::GetTypeName()
 {
     return L"CGuideConditionInput";
 }
-MS2_REPLACE_METHOD(0x1413A65E0, CGuideConditionInput, vfunc_1, 61, 0x1A5E73B2);
+MS2_REPLACE_METHOD(0x1413A65E0, CGuideConditionInput, GetTypeName, 61, 0x1A5E73B2);
 
 // @0x1413a6630
 CGuideConditionInput::CGuideConditionInput()
@@ -135,11 +135,11 @@ ClassObject* CGuideConditionActionInput::CreateObject()
 }
 
 // @0x1413a6910
-CStringW CGuideConditionActionInput::vfunc_1()
+CStringW CGuideConditionActionInput::GetTypeName()
 {
     return L"CGuideConditionActionInput";
 }
-MS2_REPLACE_METHOD(0x1413A6910, CGuideConditionActionInput, vfunc_1, 61, 0x9F425B26);
+MS2_REPLACE_METHOD(0x1413A6910, CGuideConditionActionInput, GetTypeName, 61, 0x9F425B26);
 
 // @0x1413a6960
 // MS2-FUNCTIONAL: the exe passes the 64-bit action id through rcx (mov rdx,rcx) before each FUN_14142c940 call
@@ -190,11 +190,11 @@ ClassObject* CGuideConditionReturnPortal::CreateObject()
 }
 
 // @0x1413a6c20
-CStringW CGuideConditionReturnPortal::vfunc_1()
+CStringW CGuideConditionReturnPortal::GetTypeName()
 {
     return L"CGuideConditionReturnPortal";
 }
-MS2_REPLACE_METHOD(0x1413A6C20, CGuideConditionReturnPortal, vfunc_1, 61, 0x52A2D98D);
+MS2_REPLACE_METHOD(0x1413A6C20, CGuideConditionReturnPortal, GetTypeName, 61, 0x52A2D98D);
 
 // @0x1413a6c70
 int CGuideConditionReturnPortal::vfunc_3()
@@ -212,11 +212,11 @@ ClassObject* CGuideConditionPortalEnable::CreateObject()
 }
 
 // @0x1413a6d00
-CStringW CGuideConditionPortalEnable::vfunc_1()
+CStringW CGuideConditionPortalEnable::GetTypeName()
 {
     return L"CGuideConditionPortalEnable";
 }
-MS2_REPLACE_METHOD(0x1413A6D00, CGuideConditionPortalEnable, vfunc_1, 61, 0x4519D41B);
+MS2_REPLACE_METHOD(0x1413A6D00, CGuideConditionPortalEnable, GetTypeName, 61, 0x4519D41B);
 
 // @0x1413a6d50
 // MS2-FUNCTIONAL: local slot order differs (the exe keeps an extra 8-byte slot below the copied position)

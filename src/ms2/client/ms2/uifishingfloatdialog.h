@@ -20,7 +20,7 @@ class UIFishingFloatDialog : public UIDialog
 public:
     UIFishingFloatDialog();                                         // 0x140f43df0
     virtual ~UIFishingFloatDialog() = default;                      //  0 0x140f44760 (??_G 0x140f44780)
-    virtual CString vfunc_1();                                      //  1 0x140f43ea0 "FishingFloatDialog"
+    virtual CString GetTypeName();                                      //  1 0x140f43ea0 "FishingFloatDialog"
     virtual int vfunc_13();                                         // 13 0x140f44180 fish-up key handling
     virtual void vfunc_15();                                        // 15 0x140f43ef0 (empty)
     virtual void OnLoadComplete();                                  // 22 0x140f43f20 push the texts, start the first sound

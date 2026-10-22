@@ -196,7 +196,7 @@ void NotifySystem::UnregisterNotify(CStringW strName, Delegate<void(NotifyObject
 // @0x140da4fe0
 void NotifySystem::Post(MS2Ptr<NotifyObject> spNotify)
 {
-    std::vector<Delegate<void(NotifyObject*)> >& list = m_handlers[spNotify->vfunc_1()];
+    std::vector<Delegate<void(NotifyObject*)> >& list = m_handlers[spNotify->GetTypeName()];
     for (unsigned i = 0; i < list.size(); ++i)
         list[i](spNotify.get());
 }
@@ -284,115 +284,115 @@ void GameEventUserValueManager::Dispatch(unsigned nEvent, GameEventVariable* pVa
         list[i](pVariable);
 }
 
-// ---- Notify* names (the inline vfunc_1 COMDATs of the notice classes, emitted here) -----------------------------------------
+// ---- Notify* names (the inline GetTypeName COMDATs of the notice classes, emitted here) -----------------------------------------
 // The classes are declared by their users; only the name virtual is defined here, so these stand-ins carry no members.
-class NotifyCompleteMyPC : public NotifyObject { public: virtual CStringW vfunc_1(); };
-class NotifyUseSKill : public NotifyObject { public: virtual CStringW vfunc_1(); };
-class NotifyUgcDownloadComplete : public NotifyObject { public: virtual CStringW vfunc_1(); };
-class NotifyLearnEmotion : public NotifyObject { public: virtual CStringW vfunc_1(); };
-class NotifyPcBang : public NotifyObject { public: virtual CStringW vfunc_1(); };
-class NotifyGameStart : public NotifyObject { public: virtual CStringW vfunc_1(); };
-class NotifyChangeServer : public NotifyObject { public: virtual CStringW vfunc_1(); };
-class NotifyChangeMyJob : public NotifyObject { public: virtual CStringW vfunc_1(); };
-class NotifyChangeMyLevel : public NotifyObject { public: virtual CStringW vfunc_1(); };
-class NotifyRemoveGameObject : public NotifyObject { public: virtual CStringW vfunc_1(); };
-class NotifyCutSceneCinematicSkip : public NotifyObject { public: virtual CStringW vfunc_1(); };
-class NotifyCreateMyPC : public NotifyObject { public: virtual CStringW vfunc_1(); };
-class NotifyChangeMyPC : public NotifyObject { public: virtual CStringW vfunc_1(); };
-class NotifyChangedTokenMoney : public NotifyObject { public: virtual CStringW vfunc_1(); };
+class NotifyCompleteMyPC : public NotifyObject { public: virtual CStringW GetTypeName(); };
+class NotifyUseSKill : public NotifyObject { public: virtual CStringW GetTypeName(); };
+class NotifyUgcDownloadComplete : public NotifyObject { public: virtual CStringW GetTypeName(); };
+class NotifyLearnEmotion : public NotifyObject { public: virtual CStringW GetTypeName(); };
+class NotifyPcBang : public NotifyObject { public: virtual CStringW GetTypeName(); };
+class NotifyGameStart : public NotifyObject { public: virtual CStringW GetTypeName(); };
+class NotifyChangeServer : public NotifyObject { public: virtual CStringW GetTypeName(); };
+class NotifyChangeMyJob : public NotifyObject { public: virtual CStringW GetTypeName(); };
+class NotifyChangeMyLevel : public NotifyObject { public: virtual CStringW GetTypeName(); };
+class NotifyRemoveGameObject : public NotifyObject { public: virtual CStringW GetTypeName(); };
+class NotifyCutSceneCinematicSkip : public NotifyObject { public: virtual CStringW GetTypeName(); };
+class NotifyCreateMyPC : public NotifyObject { public: virtual CStringW GetTypeName(); };
+class NotifyChangeMyPC : public NotifyObject { public: virtual CStringW GetTypeName(); };
+class NotifyChangedTokenMoney : public NotifyObject { public: virtual CStringW GetTypeName(); };
 
 // @0x140db40d0
-CStringW NotifyObject::vfunc_1()
+CStringW NotifyObject::GetTypeName()
 {
     return L"NotifyObject";
 }
 
 // @0x140db4130
-CStringW NotifyGameEventChanged::vfunc_1()
+CStringW NotifyGameEventChanged::GetTypeName()
 {
     return L"NotifyGameEventChanged";
 }
 
 // @0x140db4190
-CStringW NotifyLearnEmotion::vfunc_1()
+CStringW NotifyLearnEmotion::GetTypeName()
 {
     return L"NotifyLearnEmotion";
 }
 
 // @0x140db41f0
-CStringW NotifyPcBang::vfunc_1()
+CStringW NotifyPcBang::GetTypeName()
 {
     return L"NotifyPcBang";
 }
 
 // @0x140db4250
-CStringW NotifyUgcDownloadComplete::vfunc_1()
+CStringW NotifyUgcDownloadComplete::GetTypeName()
 {
     return L"NotifyUgcDownloadComplete";
 }
 
 // @0x140db42b0
-CStringW NotifyGameStart::vfunc_1()
+CStringW NotifyGameStart::GetTypeName()
 {
     return L"NotifyGameStart";
 }
 
 // @0x140db4310
-CStringW NotifyChangeServer::vfunc_1()
+CStringW NotifyChangeServer::GetTypeName()
 {
     return L"NotifyChangeServer";
 }
 
 // @0x140db4370
-CStringW NotifyChangeMyJob::vfunc_1()
+CStringW NotifyChangeMyJob::GetTypeName()
 {
     return L"NotifyChangeMyJob";
 }
 
 // @0x140db43d0
-CStringW NotifyChangeMyLevel::vfunc_1()
+CStringW NotifyChangeMyLevel::GetTypeName()
 {
     return L"NotifyChangeMyLevel";
 }
 
 // @0x140db4430
-CStringW NotifyRemoveGameObject::vfunc_1()
+CStringW NotifyRemoveGameObject::GetTypeName()
 {
     return L"NotifyRemoveGameObject";
 }
 
 // @0x140db4490
-CStringW NotifyCutSceneCinematicSkip::vfunc_1()
+CStringW NotifyCutSceneCinematicSkip::GetTypeName()
 {
     return L"NotifyCutSceneCinematicSkip";
 }
 
 // @0x140db44f0
-CStringW NotifyCreateMyPC::vfunc_1()
+CStringW NotifyCreateMyPC::GetTypeName()
 {
     return L"NotifyCreateMyPC";
 }
 
 // @0x140db4550
-CStringW NotifyCompleteMyPC::vfunc_1()
+CStringW NotifyCompleteMyPC::GetTypeName()
 {
     return L"NotifyCompleteMyPC";
 }
 
 // @0x140db45b0
-CStringW NotifyChangeMyPC::vfunc_1()
+CStringW NotifyChangeMyPC::GetTypeName()
 {
     return L"NotifyChangeMyPC";
 }
 
 // @0x140db4610
-CStringW NotifyChangedTokenMoney::vfunc_1()
+CStringW NotifyChangedTokenMoney::GetTypeName()
 {
     return L"NotifyChangedTokenMoney";
 }
 
 // @0x140db4670
-CStringW NotifyUseSKill::vfunc_1()
+CStringW NotifyUseSKill::GetTypeName()
 {
     return L"NotifyUseSKill";
 }

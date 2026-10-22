@@ -13,7 +13,7 @@ class UIItemPreviewDialog : public UIDialog, public IUIAvatarEventListener
 public:
     UIItemPreviewDialog();                                          // 0x1412d5890
     virtual ~UIItemPreviewDialog();                                 //  0 0x1412d5920 (??_G 0x1412d6c00)
-    virtual CString vfunc_1();                                      //  1 0x1412d5990
+    virtual CString GetTypeName();                                      //  1 0x1412d5990
     virtual void vfunc_26();                                        // 26 0x1412d59e0
     virtual void vfunc_67();                                        // 67 0x1412d5a20
     virtual int vfunc_65();                                         // 65 0x1412d5a50

@@ -54,8 +54,8 @@ UIMentoringDialog::UIMentoringDialog():m_page(0),m_pages(17,0.75f,0.25f,2.25f,10
 // @0x140e5e190
 UIMentoringDialog::~UIMentoringDialog(){FUN_140bccd50()->FUN_140da51e0(0x10a,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnPacket));FUN_140bccd50()->FUN_140da51e0(0x10b,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnUpdate));}
 // @0x140e5e330
-CString UIMentoringDialog::vfunc_1(){return "MentoringDialog";}
-MS2_REPLACE_METHOD(0x140E5E330, UIMentoringDialog, vfunc_1, 61, 0x24A44C72);
+CString UIMentoringDialog::GetTypeName(){return "MentoringDialog";}
+MS2_REPLACE_METHOD(0x140E5E330, UIMentoringDialog, GetTypeName, 61, 0x24A44C72);
 // @0x140e5e380
 void UIMentoringDialog::vfunc_67(){UIDialog::vfunc_67();FUN_1403ed2b0()->FUN_141adc5d0(0x4f4c);}
 MS2_REPLACE_METHOD(0x140E5E380, UIMentoringDialog, vfunc_67, 42, 0x2187958A);

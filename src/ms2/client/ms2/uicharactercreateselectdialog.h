@@ -45,7 +45,7 @@ public:
 
     UICharacterCreateSelectDialog();                            // 0x140f2e4d0
     virtual ~UICharacterCreateSelectDialog();                   //  0 0x140f2e5d0 (??_G 0x140f30b50)
-    virtual CString vfunc_1();                                  //  1 0x140f2e650 "CharacterCreateSelectDialog"
+    virtual CString GetTypeName();                                  //  1 0x140f2e650 "CharacterCreateSelectDialog"
     virtual void OnLoadComplete();                              // 22 0x140f2e6a0 send the tabs to the movie
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                 // 28 0x140f2eac0 onChangeTab / onClickCreate / onClickPrev / OnEndPopdown

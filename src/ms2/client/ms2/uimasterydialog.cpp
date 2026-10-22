@@ -302,7 +302,7 @@ class NotifyDamagedMyPC : public NotifyObject
 public:
     NotifyDamagedMyPC();
     virtual ~NotifyDamagedMyPC();
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     Unk_MDamage* m_pDamage;                                 // +0x18
 };
 bool FUN_140841300(const CStringW& str, const char* sz);   // equal to a char literal
@@ -514,7 +514,7 @@ UIMasteryDialog::~UIMasteryDialog()
 }
 
 // @0x140eae470
-CString UIMasteryDialog::vfunc_1()
+CString UIMasteryDialog::GetTypeName()
 {
     return CString("MasteryDialog");
 }
@@ -2437,7 +2437,7 @@ bool FUN_140ebb1e0(const Scaleform::GFx::Value* v)
 
 
 // ---- hooks ----
-MS2_REPLACE_METHOD(0x140EAE470, UIMasteryDialog, vfunc_1, 61, 0xA6827744);
+MS2_REPLACE_METHOD(0x140EAE470, UIMasteryDialog, GetTypeName, 61, 0xA6827744);
 MS2_REPLACE_METHOD(0x140EAE4C0, UIMasteryDialog, vfunc_65, 77, 0x453D55F6);
 MS2_REPLACE_METHOD(0x140EAE520, UIMasteryDialog, vfunc_67, 877, 0x92A97E57);
 MS2_REPLACE_METHOD(0x140EAE8A0, UIMasteryDialog, OnLoadComplete, 1128, 0xDFE59100);

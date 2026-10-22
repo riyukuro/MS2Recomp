@@ -20,7 +20,7 @@ class UIVisualTrackerListDialog : public UIDialog
 public:
     UIVisualTrackerListDialog();                                                // 0x141b72f60
     virtual ~UIVisualTrackerListDialog();                                       //  0 0x141b72fb0 (??_G 0x141b73270)
-    virtual CString vfunc_1();                                                  //  1 0x141b72ff0
+    virtual CString GetTypeName();                                                  //  1 0x141b72ff0
     virtual void OnLoadComplete();                                              // 22 0x141b73040
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                                 // 28 0x141b73100
@@ -43,11 +43,11 @@ UIVisualTrackerListDialog::~UIVisualTrackerListDialog()
 }
 
 // @0x141b72ff0
-CString UIVisualTrackerListDialog::vfunc_1()
+CString UIVisualTrackerListDialog::GetTypeName()
 {
     return "VisualTrackerListDialog";
 }
-MS2_REPLACE_METHOD(0x141B72FF0, UIVisualTrackerListDialog, vfunc_1, 61, 0x989F1624);
+MS2_REPLACE_METHOD(0x141B72FF0, UIVisualTrackerListDialog, GetTypeName, 61, 0x989F1624);
 
 // @0x141b73040
 void UIVisualTrackerListDialog::OnLoadComplete()

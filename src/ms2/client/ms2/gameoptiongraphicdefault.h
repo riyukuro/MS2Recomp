@@ -49,7 +49,7 @@ class CGameOptionGraphicDefault : public CBaseOption
 public:
     CGameOptionGraphicDefault(int nId, int nType);                // 0x14124ab30
     virtual ~CGameOptionGraphicDefault();                     // 0x14124abb0
-    virtual CString vfunc_1();                                     // 0x14124d840
+    virtual CString GetTypeName();                                     // 0x14124d840
     virtual void vfunc_3(int n);                                   // 0x14124abe0
     virtual void vfunc_4(int n);                                   // 0x14124ac60
     virtual int vfunc_5(const char* pszName, void* pArg, int nArg);// 0x14124ac90

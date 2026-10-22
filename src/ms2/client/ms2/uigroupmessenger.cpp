@@ -336,11 +336,11 @@ UIGroupMessenger::~UIGroupMessenger()
 }
 
 // @0x141947c60
-CString UIGroupMessenger::vfunc_1()
+CString UIGroupMessenger::GetTypeName()
 {
     return "GroupMessenger";
 }
-MS2_REPLACE_METHOD(0x141947C60, UIGroupMessenger, vfunc_1, 61, 0xEA0A8AA4);
+MS2_REPLACE_METHOD(0x141947C60, UIGroupMessenger, GetTypeName, 61, 0xEA0A8AA4);
 
 // @0x141947cb0
 int UIGroupMessenger::vfunc_65()
@@ -421,7 +421,7 @@ int UIGroupMessenger::vfunc_4()
         return 1;
     TiXmlDocument doc;
     if (!FUN_14081b310(&doc))
-        FUN_14086e090(&doc, new TiXmlElement(vfunc_1()));
+        FUN_14086e090(&doc, new TiXmlElement(GetTypeName()));
     void* pRoot = FUN_14081b310(&doc);
     if (!pRoot)
         return 0;
@@ -437,13 +437,13 @@ int UIGroupMessenger::vfunc_5()
     if (!m_80)
         return 0;
     m_78 = 0;
-    void* pNode = FUN_140165cf0(&m_e8, vfunc_1());
+    void* pNode = FUN_140165cf0(&m_e8, GetTypeName());
     if (pNode == 0)
     {
         TiXmlDocument doc;
         if (doc.FUN_140870fc0(FUN_140cc2a00(FUN_1412755f0(), FUN_14194b8a0()), 0))
         {
-            void* pLoaded = FUN_140165cf0(&doc, vfunc_1());
+            void* pLoaded = FUN_140165cf0(&doc, GetTypeName());
             if (pLoaded == 0)
                 return 0;
             m_78 = vfunc_54(pLoaded);
@@ -1081,7 +1081,7 @@ MS2_REPLACE_METHOD(0x14194B880, UIGroupMessenger, IsUserList, 17, 0x874475EA);
 CString UIGroupMessenger::FUN_14194b8a0()
 {
     CString strFile;
-    strFile.Format("%s%d.xml", (const char*)vfunc_1(), m_nIndex);
+    strFile.Format("%s%d.xml", (const char*)GetTypeName(), m_nIndex);
     return strFile;
 }
 MS2_REPLACE_METHOD(0x14194B8A0, UIGroupMessenger, FUN_14194b8a0, 183, 0xCC64DC7C);
@@ -1517,11 +1517,11 @@ UIGroupMessengerBrowser::~UIGroupMessengerBrowser()
 }
 
 // @0x1419509c0
-CString UIGroupMessengerBrowser::vfunc_1()
+CString UIGroupMessengerBrowser::GetTypeName()
 {
     return "GroupMessengerBrowser";
 }
-MS2_REPLACE_METHOD(0x1419509C0, UIGroupMessengerBrowser, vfunc_1, 61, 0xA7FDB2D8);
+MS2_REPLACE_METHOD(0x1419509C0, UIGroupMessengerBrowser, GetTypeName, 61, 0xA7FDB2D8);
 
 // MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x141950a10

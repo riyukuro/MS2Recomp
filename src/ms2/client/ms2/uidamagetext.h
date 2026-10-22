@@ -81,7 +81,7 @@ public:
 
     UIDamageText();                                                         // 0x141911060
     virtual ~UIDamageText();                                                //  0 0x141911370 (??_G 0x141918760)
-    virtual CString vfunc_1();                                              //  1 0x1419114d0 "DamageText"
+    virtual CString GetTypeName();                                              //  1 0x1419114d0 "DamageText"
     virtual void vfunc_3();                                                 //  3 0x141911520 clear, hide
     virtual void vfunc_15();                                                // 15 0x141911a70 update
     virtual void vfunc_16();                                                // 16 0x141917a90 clear

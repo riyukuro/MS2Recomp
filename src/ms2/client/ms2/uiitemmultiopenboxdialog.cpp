@@ -58,17 +58,17 @@ UIItemMultiOpenBoxDialog::~UIItemMultiOpenBoxDialog()
 }
 
 // @0x140c3f470
-CString UIItemMultiOpenBoxDialog::vfunc_1()
+CString UIItemMultiOpenBoxDialog::GetTypeName()
 {
     return "ItemMultiOpenBoxDialog";
 }
-MS2_REPLACE_METHOD(0x140C3F470, UIItemMultiOpenBoxDialog, vfunc_1, 61, 0x54C11ABA);
+MS2_REPLACE_METHOD(0x140C3F470, UIItemMultiOpenBoxDialog, GetTypeName, 61, 0x54C11ABA);
 
 // @0x140c3f4c0
 void UIItemMultiOpenBoxDialog::vfunc_67()
 {
     UIModalDialog::vfunc_67();
-    FUN_141415600(vfunc_1());
+    FUN_141415600(GetTypeName());
     Unk_McInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
     if (pInventory != 0)
         pInventory->FUN_140c3fe30(2);
@@ -105,10 +105,10 @@ void UIItemMultiOpenBoxDialog::OnLoadComplete()
     MS2Ptr<CItem> item = g_attendItems.FUN_140a5e2e0(m_180);
     if (item.get() != 0)
     {
-        FUN_141415600(vfunc_1());
-        FUN_141415450(vfunc_1(), item, 0, 1, 0);
+        FUN_141415600(GetTypeName());
+        FUN_141415450(GetTypeName(), item, 0, 1, 0);
         if (m_30.get() != 0)
-            m_30->Invoke("setItem", vfunc_1());
+            m_30->Invoke("setItem", GetTypeName());
         m_198 = FUN_140869420() + 500;
     }
 }

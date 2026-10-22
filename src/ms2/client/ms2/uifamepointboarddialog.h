@@ -17,7 +17,7 @@ class UIFamePointBoardDialog : public UIDialog
 public:
     UIFamePointBoardDialog();                                   // 0x140c15460
     virtual ~UIFamePointBoardDialog();                          //  0 0x140c154d0 (??_G 0x140c16210)
-    virtual CString vfunc_1();                                  //  1 0x140c15510 "FamePointBoardDialog"
+    virtual CString GetTypeName();                                  //  1 0x140c15510 "FamePointBoardDialog"
     virtual void OnLoadComplete();                              // 22 0x140c15580 build the tabs
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                 // 28 0x140c155b0 onChangeTab

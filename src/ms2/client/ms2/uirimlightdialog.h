@@ -18,7 +18,7 @@ class UIRimLightDialog : public UIDialog
 public:
     UIRimLightDialog();                                                                             // 0x141709320
     virtual ~UIRimLightDialog();                                                                    //  0 0x141709370
-    virtual CString vfunc_1();                                                                      //  1 0x1417093b0
+    virtual CString GetTypeName();                                                                      //  1 0x1417093b0
     virtual void OnLoadComplete();                                                                  // 22 0x141709400
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                                                     // 28 0x1417095d0

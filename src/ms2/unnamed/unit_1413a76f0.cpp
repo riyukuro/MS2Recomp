@@ -64,11 +64,11 @@ ClassObject* CGuideConditionMovement::CreateObject()
 }
 
 // @0x1413a7750
-CStringW CGuideConditionMovement::vfunc_1()
+CStringW CGuideConditionMovement::GetTypeName()
 {
     return L"CGuideConditionMovement";
 }
-MS2_REPLACE_METHOD(0x1413A7750, CGuideConditionMovement, vfunc_1, 61, 0x03B2B466);
+MS2_REPLACE_METHOD(0x1413A7750, CGuideConditionMovement, GetTypeName, 61, 0x03B2B466);
 
 // @0x1413a77a0
 CGuideConditionMovement::CGuideConditionMovement()
@@ -114,11 +114,11 @@ ClassObject* CGuideConditionInventoryTab::CreateObject()
 }
 
 // @0x1413a7a00
-CStringW CGuideConditionInventoryTab::vfunc_1()
+CStringW CGuideConditionInventoryTab::GetTypeName()
 {
     return L"CGuideConditionInventoryTab";
 }
-MS2_REPLACE_METHOD(0x1413A7A00, CGuideConditionInventoryTab, vfunc_1, 61, 0x68191F36);
+MS2_REPLACE_METHOD(0x1413A7A00, CGuideConditionInventoryTab, GetTypeName, 61, 0x68191F36);
 
 // @0x1413a7a50
 int CGuideConditionInventoryTab::vfunc_3()
@@ -139,11 +139,11 @@ ClassObject* CGuideConditionGameScene::CreateObject()
 }
 
 // @0x1413a7b30
-CStringW CGuideConditionGameScene::vfunc_1()
+CStringW CGuideConditionGameScene::GetTypeName()
 {
     return L"CGuideConditionGameScene";
 }
-MS2_REPLACE_METHOD(0x1413A7B30, CGuideConditionGameScene, vfunc_1, 61, 0xCE0AB459);
+MS2_REPLACE_METHOD(0x1413A7B30, CGuideConditionGameScene, GetTypeName, 61, 0xCE0AB459);
 
 // @0x1413a7b80
 int CGuideConditionGameScene::vfunc_3()

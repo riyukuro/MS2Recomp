@@ -16,7 +16,7 @@ class UIObserveDialog : public UIDialog
 public:
     UIObserveDialog();                                               // 0x141a732e0
     virtual ~UIObserveDialog() = default;                                   //  0 0x141a73750 (??_G 0x141a73780)
-    virtual CString vfunc_1();                                       //  1 0x141a73360: "ObserveDialog"
+    virtual CString GetTypeName();                                       //  1 0x141a73360: "ObserveDialog"
     virtual int vfunc_13();                                          // 13 0x141a734d0
     virtual void OnLoadInit();                                       // 20 0x141a733b0
     virtual void OnLoadComplete();                                   // 22 0x141a733e0

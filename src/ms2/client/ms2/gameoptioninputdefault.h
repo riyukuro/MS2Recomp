@@ -22,7 +22,7 @@ class CGameOptionInputDefault : public CBaseOption, public IMessageListener
 public:
     CGameOptionInputDefault(int nId, int nType);                    // 0x141250a80
     virtual ~CGameOptionInputDefault();                             // 0x141250b90
-    virtual CString vfunc_1();                                     // 0x1412521b0
+    virtual CString GetTypeName();                                     // 0x1412521b0
     virtual void vfunc_3(int n);                                   // 0x141250c10
     virtual void vfunc_4(int n);                                   // 0x141250c80
     virtual int vfunc_5(const char* pszName, void* pArg, int nArg);// 0x141251a30

@@ -33,7 +33,7 @@ public:
 
     UIGameDictionaryDialog();                               // 0x140f447d0
     virtual ~UIGameDictionaryDialog();                      // 0x140f44890
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual int vfunc_13();
     virtual void OnLoadComplete();
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

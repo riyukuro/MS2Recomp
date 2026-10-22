@@ -62,7 +62,7 @@ private: int m_0; int m_4;
 class UIGuideEvent : public UIObject {
 public:
     UIGuideEvent();
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual void OnLoadComplete();
     virtual void vfunc_26();
     virtual void vfunc_43();

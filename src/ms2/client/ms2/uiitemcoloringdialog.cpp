@@ -302,11 +302,11 @@ UIItemColoringDialog::~UIItemColoringDialog()
 }
 
 // @0x1419ac1d0
-CString UIItemColoringDialog::vfunc_1()
+CString UIItemColoringDialog::GetTypeName()
 {
     return "ItemColoringDialog";
 }
-MS2_REPLACE_METHOD(0x1419ac1d0, UIItemColoringDialog, vfunc_1, 61, 0x40CB051C);
+MS2_REPLACE_METHOD(0x1419ac1d0, UIItemColoringDialog, GetTypeName, 61, 0x40CB051C);
 
 // @0x1419ac220
 void UIItemColoringDialog::vfunc_67()

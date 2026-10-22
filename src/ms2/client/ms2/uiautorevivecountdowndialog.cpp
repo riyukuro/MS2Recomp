@@ -61,7 +61,7 @@ void UIAutoReviveCountDownDialog::vfunc_43()
 }
 
 // @0x141284d00
-CString UIAutoReviveCountDownDialog::vfunc_1()
+CString UIAutoReviveCountDownDialog::GetTypeName()
 {
     return "AutoReviveCountDownDialog";
 }

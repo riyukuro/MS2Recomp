@@ -94,7 +94,7 @@ UIApartmentDialog::~UIApartmentDialog()
 }
 
 // @0x1418b5a10
-CString UIApartmentDialog::vfunc_1()
+CString UIApartmentDialog::GetTypeName()
 {
     return "ApartmentDialog";
 }

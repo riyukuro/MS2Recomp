@@ -39,7 +39,7 @@ class UIAttendGiftDialog : public UIDialog {
 public:
     UIAttendGiftDialog();
     virtual ~UIAttendGiftDialog();
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual void OnLoadComplete();
     virtual void vfunc_26();
     virtual int vfunc_28(const char*,const Scaleform::GFx::Value*,unsigned int);
@@ -99,7 +99,7 @@ class UIBannerAdvertisingDialog : public UIDialog {
 public:
     UIBannerAdvertisingDialog();
     virtual ~UIBannerAdvertisingDialog();
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual void vfunc_67();
     virtual void vfunc_43();
     virtual void OnLoadInit();

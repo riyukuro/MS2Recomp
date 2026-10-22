@@ -26,10 +26,10 @@
 // MS2-PIN: ??1?$MS2SvrPtr@VCSmartPushAutoPlayInstrument@@@@QEAA@XZ 0x140fa7ce0 ; prop
 // MS2-PIN: ?AddRef@?$MS2SvrPtr@VCSmartPushAutoFishing@@@@AEBAXXZ 0x140fa7f40 ; prop
 // MS2-PIN: ?AddRefImpl@?$MS2SvrPtr@VCSmartPushAutoPlayInstrument@@@@AEBAXPEAX@Z 0x140fa8010 ; prop
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUISystemShopDialog@@P81@EAAXAEAVItemScrollSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140fa8160 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUISystemShopDialog@@P81@EAAXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140fa81c0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUISystemShopDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140fa8220 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUISystemShopDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140fa8280 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUISystemShopDialog@@P81@EAAXAEAVItemScrollSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140fa8160 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUISystemShopDialog@@P81@EAAXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140fa81c0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUISystemShopDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140fa8220 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUISystemShopDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140fa8280 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUISystemShopDialog@@P81@EAAXAEAVItemScrollSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@@Z@@UEAAXAEAVItemScrollSlot@@@Z 0x140fa82e0 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUISystemShopDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAXPEAVNotifyObject@@@Z 0x140fa8350 ; unique
 // MS2-PIN: ??$Call@VUISystemShopDialog@@P81@EAAXAEAVItemScrollSlot@@@Z@?$DelegateImpl@U?$pair@PEAVUISystemShopDialog@@P81@EAAXAEAVItemScrollSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@@Z@@CAXAEAU?$pair@PEAVUISystemShopDialog@@P81@EAAXAEAVItemScrollSlot@@@Z@std@@AEAVItemScrollSlot@@@Z 0x140fa83c0 ; prop
@@ -216,11 +216,11 @@ UISystemShopDialog::~UISystemShopDialog()
 }
 
 // @0x140fa4250
-CString UISystemShopDialog::vfunc_1()
+CString UISystemShopDialog::GetTypeName()
 {
     return "SystemShopDialog";
 }
-MS2_REPLACE_METHOD(0x140FA4250, UISystemShopDialog, vfunc_1, 61, 0x949FFF87);
+MS2_REPLACE_METHOD(0x140FA4250, UISystemShopDialog, GetTypeName, 61, 0x949FFF87);
 
 // MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140fa42a0
@@ -240,7 +240,7 @@ MS2_REPLACE_METHOD(0x140FA42A0, UISystemShopDialog, OnLoadComplete, 282, 0x1A19D
 // @0x140fa43c0
 void UISystemShopDialog::vfunc_67()
 {
-    FUN_140d42630(vfunc_1());
+    FUN_140d42630(GetTypeName());
     NotifySystem::GetInstance()->UnregisterNotify(L"NotifyChangeBuff",
         Delegate<void(NotifyObject*)>(this, &UISystemShopDialog::FUN_140fa69b0));
     UIDialog::vfunc_67();
@@ -420,9 +420,9 @@ void UISystemShopDialog::FUN_140fa5bc0()
     MS2Ptr<CItem> spBait(0);
     if (CFishingManager::GetInstance()->GetBaitId() != 0)
         spBait = DAT_143ab2a90.FUN_140a5e2e0(CFishingManager::GetInstance()->GetBaitId());
-    FUN_140d42630(vfunc_1());
-    FUN_140d42540(vfunc_1(), 0, spBait);
-    ItemScrollSlot* pSlot = FUN_140d42c30(FUN_1422c8e90(vfunc_1()));
+    FUN_140d42630(GetTypeName());
+    FUN_140d42540(GetTypeName(), 0, spBait);
+    ItemScrollSlot* pSlot = FUN_140d42c30(FUN_1422c8e90(GetTypeName()));
     if (pSlot != 0)
     {
         FUN_140d42bc0(pSlot, SsRemoveFn(this, &UISystemShopDialog::FUN_140fa6ab0));
@@ -441,7 +441,7 @@ void UISystemShopDialog::FUN_140fa5bc0()
         else
             strExtend = FUN_14028b8e0(CStringW(L"s_system_shop_title_extend_autofishing_cancel"));
     }
-    m_30->FUN_140fa7540("setShop", strDesc, strTitle, strExtend, vfunc_1());
+    m_30->FUN_140fa7540("setShop", strDesc, strTitle, strExtend, GetTypeName());
     m_30->FUN_1409ba0d0("setIcon", 1, bCancel);
 }
 MS2_REPLACE_METHOD(0x140FA5BC0, UISystemShopDialog, FUN_140fa5bc0, 1797, 0x454354B4);

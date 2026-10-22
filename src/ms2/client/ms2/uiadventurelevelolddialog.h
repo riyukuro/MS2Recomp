@@ -25,7 +25,7 @@ class UIAdventureLevelOldDialog : public UIDialog, public UIStatusEventListener
 public:
     UIAdventureLevelOldDialog();                                                                    // 0x140ba53b0
     virtual ~UIAdventureLevelOldDialog();                                                           //  0 0x140ba5460 (??_G 0x140ba6ad0)
-    virtual CString vfunc_1();                                                                      //  1 0x140ba54f0
+    virtual CString GetTypeName();                                                                      //  1 0x140ba54f0
     virtual void OnLoadComplete();                                                                  // 22 0x140ba5650
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                                                     // 28 0x140ba56b0

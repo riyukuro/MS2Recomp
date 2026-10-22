@@ -71,7 +71,7 @@ UIMoveFieldDialog::UIMoveFieldDialog()
 }
 
 // @0x141a557b0
-CString UIMoveFieldDialog::vfunc_1()
+CString UIMoveFieldDialog::GetTypeName()
 {
     return "MoveFieldDialog";
 }

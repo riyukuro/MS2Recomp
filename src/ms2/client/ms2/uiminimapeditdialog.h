@@ -28,7 +28,7 @@ public:
     UIMinimapEditDialog();                                          // 0x141a51f00
     virtual ~UIMinimapEditDialog();                                 //  0 0x141a54c20 (??_G 0x141a54ce0)
 
-    virtual CString vfunc_1();                                      //  1 0x141a52020 "MinimapEditDialog"
+    virtual CString GetTypeName();                                      //  1 0x141a52020 "MinimapEditDialog"
     virtual void OnLoadComplete();                                  // 22 0x141a522a0 bind the sliders, labels and the image area
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141a52d60 swf callbacks
     virtual int vfunc_48() { return 0x4e2b; }                       // 48 0x141a54ff0 UI type

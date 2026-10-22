@@ -39,7 +39,7 @@ class CGuideActionMinimapMaximize : public CGuideAction
 {
 public:
     static ClassObject* CreateObject();                     // 0x141382df0
-    virtual CStringW vfunc_1();                             // 1 0x141382e50
+    virtual CStringW GetTypeName();                             // 1 0x141382e50
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x141382ea0
     virtual void vfunc_3();                                 // 3 0x141382ef0
 
@@ -52,7 +52,7 @@ class CGuideActionOpenDialog : public CGuideAction
 {
 public:
     static ClassObject* CreateObject();                     // 0x141382f50
-    virtual CStringW vfunc_1();                             // 1 0x141382fb0
+    virtual CStringW GetTypeName();                             // 1 0x141382fb0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x141383000
     virtual void vfunc_3();                                 // 3 0x141383070
 
@@ -75,7 +75,7 @@ public:
     };
 
     static ClassObject* CreateObject();                     // 0x141383100
-    virtual CStringW vfunc_1();                             // 1 0x141383160
+    virtual CStringW GetTypeName();                             // 1 0x141383160
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413831b0
     virtual void vfunc_3();                                 // 3 0x1413832d0
     virtual void vfunc_4();                                 // 4 0x141383490
@@ -91,7 +91,7 @@ class CGuideActionLimit : public CGuideAction
 {
 public:
     static ClassObject* CreateObject();                     // 0x141383550
-    virtual CStringW vfunc_1();                             // 1 0x1413835b0
+    virtual CStringW GetTypeName();                             // 1 0x1413835b0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x141383600
     virtual void vfunc_3();                                 // 3 0x141383700
     virtual void vfunc_4();                                 // 4 0x141383730
@@ -109,7 +109,7 @@ class CGuideActionLimitDialog : public CGuideAction
 {
 public:
     static ClassObject* CreateObject();                     // 0x141383860
-    virtual CStringW vfunc_1();                             // 1 0x1413838c0
+    virtual CStringW GetTypeName();                             // 1 0x1413838c0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x141383910
     virtual void vfunc_3();                                 // 3 0x1413839d0
     virtual void vfunc_4();                                 // 4 0x141383a20
@@ -133,7 +133,7 @@ public:
     };
 
     static ClassObject* CreateObject();                     // 0x141383c00
-    virtual CStringW vfunc_1();                             // 1 0x141383c60
+    virtual CStringW GetTypeName();                             // 1 0x141383c60
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x141383cb0
     virtual void vfunc_3();                                 // 3 0x141383d90
     virtual void vfunc_4();                                 // 4 0x141383e40
@@ -161,7 +161,7 @@ class CGuideActionUITextBase : public CGuideAction
 {
 public:
     static ClassObject* CreateObject();                     // 0x141384080
-    virtual CStringW vfunc_1();                             // 1 0x1413840e0
+    virtual CStringW GetTypeName();                             // 1 0x1413840e0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x141384130
     bool FUN_141384200();                                   // 0x141384200 the controller type matches the gamepad option
 
@@ -177,7 +177,7 @@ class CGuideActionUISummary : public CGuideActionUITextBase
 {
 public:
     static ClassObject* CreateObject();                     // 0x1413842a0
-    virtual CStringW vfunc_1();                             // 1 0x141384300
+    virtual CStringW GetTypeName();                             // 1 0x141384300
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x141384350
     virtual void vfunc_3();                                 // 3 0x141384390
     virtual void vfunc_4();                                 // 4 0x1413843f0
@@ -190,7 +190,7 @@ class CGuideActionUIArrow : public CGuideActionUITextBase
 {
 public:
     static ClassObject* CreateObject();                     // 0x1413844b0
-    virtual CStringW vfunc_1();                             // 1 0x141384510
+    virtual CStringW GetTypeName();                             // 1 0x141384510
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x141384560
     virtual void vfunc_3();                                 // 3 0x141384680
     virtual void vfunc_4();                                 // 4 0x1413847f0
@@ -206,7 +206,7 @@ class CGuideActionUITextTip : public CGuideActionUITextBase
 {
 public:
     static ClassObject* CreateObject();                     // 0x141384850
-    virtual CStringW vfunc_1();                             // 1 0x1413848b0
+    virtual CStringW GetTypeName();                             // 1 0x1413848b0
     virtual void vfunc_3();                                 // 3 0x141384900
     virtual void vfunc_4();                                 // 4 0x141384960
 };
@@ -217,7 +217,7 @@ class CGuideActionUIArrowDialog : public CGuideActionUIArrow
 {
 public:
     static ClassObject* CreateObject();                     // 0x1413849c0
-    virtual CStringW vfunc_1();                             // 1 0x141384a20
+    virtual CStringW GetTypeName();                             // 1 0x141384a20
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x141384a70
     virtual void vfunc_3();                                 // 3 0x141384bd0
 
@@ -236,7 +236,7 @@ class CGuideActionUIArrowClose : public CGuideAction
 {
 public:
     static ClassObject* CreateObject();                     // 0x141384dd0
-    virtual CStringW vfunc_1();                             // 1 0x141384e30
+    virtual CStringW GetTypeName();                             // 1 0x141384e30
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x141384e80
     virtual void vfunc_3();                                 // 3 0x141384f00
     virtual void vfunc_4();                                 // 4 0x141384f50
@@ -253,7 +253,7 @@ class CGuideActionConditionAction : public CGuideAction
 {
 public:
     static ClassObject* CreateObject();                     // 0x141384fa0
-    virtual CStringW vfunc_1();                             // 1 0x141385000
+    virtual CStringW GetTypeName();                             // 1 0x141385000
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x141385050
     virtual void vfunc_3();                                 // 3 0x1413851b0
     virtual int vfunc_5();                                  // 5 0x1413852b0
@@ -269,7 +269,7 @@ class CGuideActionEquipWeaponTutorial : public CGuideAction
 {
 public:
     static ClassObject* CreateObject();                     // 0x141385350
-    virtual CStringW vfunc_1();                             // 1 0x1413853b0
+    virtual CStringW GetTypeName();                             // 1 0x1413853b0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x141385400
     virtual void vfunc_3();                                 // 3 0x141385460
     virtual void vfunc_4();                                 // 4 0x141385490
@@ -283,7 +283,7 @@ class CGuideActionForceClear : public CGuideAction
 {
 public:
     static ClassObject* CreateObject();                     // 0x1413854c0
-    virtual CStringW vfunc_1();                             // 1 0x141385520
+    virtual CStringW GetTypeName();                             // 1 0x141385520
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x141385570
     virtual void vfunc_3();                                 // 3 0x1413855f0
 
@@ -296,7 +296,7 @@ class CGuideActionSequenceCamera : public CGuideAction
 {
 public:
     static ClassObject* CreateObject();                     // 0x141385620
-    virtual CStringW vfunc_1();                             // 1 0x141385680
+    virtual CStringW GetTypeName();                             // 1 0x141385680
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413856d0
     virtual void vfunc_3();                                 // 3 0x141385770
     virtual void vfunc_4();                                 // 4 0x141385a40
@@ -315,7 +315,7 @@ class CGuideActionSmartRecommend : public CGuideAction
 {
 public:
     static ClassObject* CreateObject();                     // 0x141385bc0
-    virtual CStringW vfunc_1();                             // 1 0x141385c20
+    virtual CStringW GetTypeName();                             // 1 0x141385c20
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x141385c70
     virtual void vfunc_3();                                 // 3 0x141385cd0
 
@@ -328,7 +328,7 @@ class CGuideActionServerTriggerEvent : public CGuideAction
 {
 public:
     static ClassObject* CreateObject();                     // 0x141385d50
-    virtual CStringW vfunc_1();                             // 1 0x141385db0
+    virtual CStringW GetTypeName();                             // 1 0x141385db0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x141385e00
     virtual void vfunc_3();                                 // 3 0x141385e60
 
@@ -341,7 +341,7 @@ class CGuideActionGameMenuLimit : public CGuideAction
 {
 public:
     static ClassObject* CreateObject();                     // 0x141385ed0
-    virtual CStringW vfunc_1();                             // 1 0x141385f30
+    virtual CStringW GetTypeName();                             // 1 0x141385f30
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x141385f80
     virtual void vfunc_3();                                 // 3 0x141385ff0
 
@@ -355,7 +355,7 @@ class CGuideActionRequestTutorialItem : public CGuideAction
 {
 public:
     static ClassObject* CreateObject();                     // 0x141386070
-    virtual CStringW vfunc_1();                             // 1 0x1413860d0
+    virtual CStringW GetTypeName();                             // 1 0x1413860d0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x141386120
     virtual void vfunc_3();                                 // 3 0x141386150
 };
@@ -366,7 +366,7 @@ class CGuideActionSideNpcTalk : public CGuideAction
 {
 public:
     static ClassObject* CreateObject();                     // 0x1413861a0
-    virtual CStringW vfunc_1();                             // 1 0x141386200
+    virtual CStringW GetTypeName();                             // 1 0x141386200
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x141386250
     virtual void vfunc_3();                                 // 3 0x141386360
 
@@ -385,7 +385,7 @@ class CGuideActionClearTutorial : public CGuideAction
 {
 public:
     static ClassObject* CreateObject();                     // 0x141386550
-    virtual CStringW vfunc_1();                             // 1 0x1413865b0
+    virtual CStringW GetTypeName();                             // 1 0x1413865b0
     virtual void vfunc_3();                                 // 3 0x141386600
 };
 MS2_CHECK_SIZE(CGuideActionClearTutorial, 0x18);

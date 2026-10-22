@@ -105,8 +105,8 @@ UIItemTreasureMapDialog::UIItemTreasureMapDialog()
     : m_nState(0), m_nCost(-1), m_spTarget(0)
 {
     m_2c = 0xc;
-    m_strBag = FUN_140540050("{0}.Target", vfunc_1());
-    m_strBind = FUN_140540050("{0}.Select", vfunc_1());
+    m_strBag = FUN_140540050("{0}.Target", GetTypeName());
+    m_strBind = FUN_140540050("{0}.Select", GetTypeName());
     m_nTargetUid = 0;
     m_bFree = false;
     FUN_140c57b50();
@@ -118,7 +118,7 @@ UIItemTreasureMapDialog::~UIItemTreasureMapDialog()
 }
 
 // @0x140c55210
-CString UIItemTreasureMapDialog::vfunc_1()
+CString UIItemTreasureMapDialog::GetTypeName()
 {
     return "ItemTreasureMapDialog";
 }

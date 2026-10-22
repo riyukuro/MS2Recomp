@@ -159,7 +159,7 @@ UIItemExchangeScrollDialog::UIItemExchangeScrollDialog()
 }
 
 // @0x140f50eb0
-CString UIItemExchangeScrollDialog::vfunc_1()
+CString UIItemExchangeScrollDialog::GetTypeName()
 {
     return "ItemExchangeScrollDialog";
 }
@@ -342,14 +342,14 @@ void UIItemExchangeScrollDialog::FUN_140f514c0(const Unk_ExchangeItemRef* pRef, 
             if (!(nFlags & 8))
             {
                 unsigned __int64 n = m_infoKeys.GetCount();
-                strBind.Format("%s_info_%d", (const char*)vfunc_1(), n);
+                strBind.Format("%s_info_%d", (const char*)GetTypeName(), n);
                 FUN_141415560(strBind, &param);
                 FUN_140165270(m_infoKeys, strBind);
             }
             else
             {
                 unsigned __int64 n = m_dragKeys.GetCount();
-                strBind.Format("%s_drag_%d", (const char*)vfunc_1(), n);
+                strBind.Format("%s_drag_%d", (const char*)GetTypeName(), n);
                 FUN_140b6c7a0(strBind, m_uidScroll, MS2Ptr<CItem>(spCur));
                 FUN_140165270(m_dragKeys, strBind);
             }
@@ -419,7 +419,7 @@ void UIItemExchangeScrollDialog::FUN_140f51e90(CIngredientInfo* pIng, CString st
         }
         CString strBind;
         unsigned __int64 n = m_infoKeys.GetCount();
-        strBind.Format("%s_info_%d", (const char*)vfunc_1(), n);
+        strBind.Format("%s_info_%d", (const char*)GetTypeName(), n);
         FUN_141415560(strBind, &param);
         FUN_140165270(m_infoKeys, strBind);
         slot.FUN_1407cba60("binding", CString(strBind));

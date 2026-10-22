@@ -87,7 +87,7 @@ UIActionTooltip::UIActionTooltip()
 }
 
 // @0x1418b15e0
-CString UIActionTooltip::vfunc_1()
+CString UIActionTooltip::GetTypeName()
 {
     return "ActionTooltip";
 }

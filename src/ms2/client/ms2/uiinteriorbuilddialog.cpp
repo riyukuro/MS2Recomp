@@ -92,11 +92,11 @@ UIInteriorBuildDialog::~UIInteriorBuildDialog()
 }
 
 // @0x140f4b470
-CString UIInteriorBuildDialog::vfunc_1()
+CString UIInteriorBuildDialog::GetTypeName()
 {
     return "InteriorBuildDialog";
 }
-MS2_REPLACE_METHOD(0x140F4B470, UIInteriorBuildDialog, vfunc_1, 61, 0x1FA4570D);
+MS2_REPLACE_METHOD(0x140F4B470, UIInteriorBuildDialog, GetTypeName, 61, 0x1FA4570D);
 
 // @0x140f4b4c0
 void UIInteriorBuildDialog::FUN_140f4b4c0(__int64 nItemUid)

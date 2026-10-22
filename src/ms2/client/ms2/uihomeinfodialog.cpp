@@ -250,7 +250,7 @@ UIHomeInfoDialog::UIHomeInfoDialog()
 }
 
 // @0x1412c4d70
-CString UIHomeInfoDialog::vfunc_1()
+CString UIHomeInfoDialog::GetTypeName()
 {
     return CString("HomeInfoDialog");
 }
@@ -963,7 +963,7 @@ int UIHomeInfoDialog::vfunc_48()
 }
 
 // ---- hooks ----
-MS2_REPLACE_METHOD(0x1412C4D70, UIHomeInfoDialog, vfunc_1, 61, 0xDB750399);
+MS2_REPLACE_METHOD(0x1412C4D70, UIHomeInfoDialog, GetTypeName, 61, 0xDB750399);
 MS2_REPLACE_METHOD(0x1412C4DC0, UIHomeInfoDialog, OnLoadComplete, 491, 0xE377F024);
 MS2_REPLACE_METHOD(0x1412C4FC0, UIHomeInfoDialog, vfunc_43, 103, 0xD19FE84D);
 MS2_REPLACE_METHOD(0x1412C5030, UIHomeInfoDialog, vfunc_28, 702, 0xAD2CA2DB);

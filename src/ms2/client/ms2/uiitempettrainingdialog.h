@@ -19,7 +19,7 @@ class UIItemPetTrainingDialog : public UIDialog
 public:
     UIItemPetTrainingDialog();                                  // 0x140e56eb0
     virtual ~UIItemPetTrainingDialog();                         //  0 0x140e57030 (??_G 0x140e59610)
-    virtual CString vfunc_1();                                  //  1 0x140e57150 "ItemPetTrainingDialog"
+    virtual CString GetTypeName();                                  //  1 0x140e57150 "ItemPetTrainingDialog"
     virtual void OnLoadComplete();                              // 22 0x140e571a0 bind the slot, show the training item
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                 // 28 0x140e577c0 onClickConfirm

@@ -23,7 +23,7 @@ class UIItemSocketScrollDialog : public UIDialog
 public:
     UIItemSocketScrollDialog();                                 // 0x140f64630
     virtual ~UIItemSocketScrollDialog();                        //  0 0x140f64840 (??_G 0x140f68860)
-    virtual CString vfunc_1();                                  //  1 0x140f64940 "ItemSocketScrollDialog"
+    virtual CString GetTypeName();                                  //  1 0x140f64940 "ItemSocketScrollDialog"
     virtual void OnLoadComplete();                              // 22 0x140f64ac0 bind the slot, show the scroll
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                 // 28 0x140f65030 onClickAction

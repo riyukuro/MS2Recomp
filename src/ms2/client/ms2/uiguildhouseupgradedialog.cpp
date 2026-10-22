@@ -10,8 +10,8 @@
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIGuildHouseUpgradeDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBV01@@Z 0x140e3d1f0 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIGuildHouseUpgradeDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBV01@@Z 0x140e3d290 ; prop
 // MS2-PIN: ??A?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QEAAAEAU?$pair@HH@1@_K@Z 0x140e3d6b0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIGuildHouseUpgradeDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140e3e950 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIGuildHouseUpgradeDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140e3e9b0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIGuildHouseUpgradeDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140e3e950 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIGuildHouseUpgradeDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140e3e9b0 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIGuildHouseUpgradeDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x140e3ed50 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIGuildHouseUpgradeDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x140e3ed80 ; unique
 // MS2-PIN: ??$Call@VUIGuildHouseUpgradeDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@?$DelegateImpl@U?$pair@PEAVUIGuildHouseUpgradeDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@CAXAEAU?$pair@PEAVUIGuildHouseUpgradeDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@AEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x140e3edc0 ; unique
@@ -137,7 +137,7 @@ void UIGuildHouseUpgradeDialog::OnLoadComplete()
 }
 
 // @0x140e39d50
-CString UIGuildHouseUpgradeDialog::vfunc_1()
+CString UIGuildHouseUpgradeDialog::GetTypeName()
 {
     return "GuildHouseUpgradeDialog";
 }

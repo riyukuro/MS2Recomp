@@ -35,7 +35,7 @@ class UISkillBookAutoDistributeDialog : public UIModalDialog
 public:
     UISkillBookAutoDistributeDialog();                          // 0x140ec41e0
     virtual ~UISkillBookAutoDistributeDialog();                 //  0 0x140ec4290 (??_G 0x140ec4ce0)
-    virtual CString vfunc_1();                                  //  1 0x140ec4300 "SkillBookAutoDistributeDialog"
+    virtual CString GetTypeName();                                  //  1 0x140ec4300 "SkillBookAutoDistributeDialog"
     virtual void OnLoadComplete();                              // 22 0x140ec43d0 (fills the three buttons)
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140ec4400
     virtual int vfunc_48() { return 0x4f20; }                   // 48 0x140ec4d20
@@ -74,7 +74,7 @@ public:
 
     UISkillBookTreeDialog();                                    // 0x140ec4e50
     virtual ~UISkillBookTreeDialog();                           //  0 0x140ec50b0 (??_G 0x140ed3fb0)
-    virtual CString vfunc_1();                                  //  1 0x140ec51c0 "SkillBookTreeDialog[_jobchange01]"
+    virtual CString GetTypeName();                                  //  1 0x140ec51c0 "SkillBookTreeDialog[_jobchange01]"
     virtual void OnLoadInit();                                  // 20 0x140ec5480
     virtual void OnLoadComplete();                              // 22 0x140ec5570
     virtual void vfunc_26();                                    // 26 0x140ec5520

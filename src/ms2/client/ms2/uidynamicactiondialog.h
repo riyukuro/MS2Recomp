@@ -36,7 +36,7 @@ class UIDynamicActionDialog : public UIDialog
 public:
     UIDynamicActionDialog();                                // 0x14192ac30
     // virtual dtor 0x14192e500: implicit (pinned)
-    virtual CString vfunc_1();                              //  1 0x14192ad20 "DynamicAction"
+    virtual CString GetTypeName();                              //  1 0x14192ad20 "DynamicAction"
     virtual int vfunc_13();                                 // 13 0x14192b520 enter key: take the search text / bind the pressed key
     virtual void OnLoadInit();                              // 20 0x14192aff0 refresh, listen to NotifyLearnEmotion / NotifyClearAchieve
     virtual void OnLoadComplete();                          // 22 0x14192b1c0 bind the search input

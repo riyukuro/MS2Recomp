@@ -200,7 +200,7 @@ UIUGCBannerDialog::~UIUGCBannerDialog()
 }
 
 // @0x141b34320
-CString UIUGCBannerDialog::vfunc_1()
+CString UIUGCBannerDialog::GetTypeName()
 {
     return CString("UGCBannerDialog");
 }
@@ -839,7 +839,7 @@ UIUGCCameraDialog::~UIUGCCameraDialog()
 }
 
 // @0x141b38130
-CString UIUGCCameraDialog::vfunc_1()
+CString UIUGCCameraDialog::GetTypeName()
 {
     return CString("UGCCameraDialog");
 }

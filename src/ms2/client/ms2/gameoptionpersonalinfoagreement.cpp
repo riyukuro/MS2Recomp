@@ -199,7 +199,7 @@ void CGameOptionPersonalInfoAgreement::vfunc_12()   // @0x140a462f0
     vfunc_6();
 }
 
-CString CGameOptionPersonalInfoAgreement::vfunc_1()   // @0x140a46340
+CString CGameOptionPersonalInfoAgreement::GetTypeName()   // @0x140a46340
 {
     return CString("GameOptionPersonalInfoAgreement");
 }

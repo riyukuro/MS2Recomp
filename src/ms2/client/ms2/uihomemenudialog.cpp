@@ -255,7 +255,7 @@ UIHomeMenuDialog::~UIHomeMenuDialog()
 }
 
 // @0x140c29280
-CString UIHomeMenuDialog::vfunc_1()
+CString UIHomeMenuDialog::GetTypeName()
 {
     return CString("HomeMenuDialog");
 }
@@ -821,7 +821,7 @@ UIHomeSaveSlotDialog* FUN_140c2b5c0(int nUiId)
     return 0;
 }
 
-MS2_REPLACE_METHOD(0x140C29280, UIHomeMenuDialog, vfunc_1, 61, 0x70D7F679);
+MS2_REPLACE_METHOD(0x140C29280, UIHomeMenuDialog, GetTypeName, 61, 0x70D7F679);
 MS2_REPLACE_METHOD(0x140C292D0, UIHomeMenuDialog, vfunc_67, 36, 0x14D88D62);
 MS2_REPLACE_METHOD(0x140C29300, UIHomeMenuDialog, OnLoadComplete, 47, 0xBCD25300);
 MS2_REPLACE_METHOD(0x140C29340, UIHomeMenuDialog, vfunc_28, 635, 0xD5372608);

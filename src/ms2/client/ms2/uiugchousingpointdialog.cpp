@@ -153,11 +153,11 @@ UIUGCHousingPointDialog::~UIUGCHousingPointDialog()
 }
 
 // @0x140fadc30
-CString UIUGCHousingPointDialog::vfunc_1()
+CString UIUGCHousingPointDialog::GetTypeName()
 {
     return "UGCHousingPointDialog";
 }
-MS2_REPLACE_METHOD(0x140FADC30, UIUGCHousingPointDialog, vfunc_1, 61, 0x870774B7);
+MS2_REPLACE_METHOD(0x140FADC30, UIUGCHousingPointDialog, GetTypeName, 61, 0x870774B7);
 
 // @0x140fadc80
 int UIUGCHousingPointDialog::vfunc_il1()

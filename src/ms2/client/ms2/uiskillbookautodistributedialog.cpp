@@ -42,8 +42,8 @@
 // MS2-PIN: ?Lookup@?$CAtlMap@_JV?$MS2Ptr@VCSkillPointSimulator@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSkillPointSimulator@@@@@3@@ATL@@QEBA_N_JAEAV?$MS2Ptr@VCSkillPointSimulator@@@@@Z 0x140ed5250 ; unique
 // MS2-PIN: ?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@HV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@@2@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@PEAX@2@@Z 0x140ed6c20 ; unique
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHJ@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHJ@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@H@2@XZ 0x140ed6ce0 ; prop
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUISkillBookTreeDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140ed7020 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUISkillBookTreeDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140ed7080 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUISkillBookTreeDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140ed7020 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUISkillBookTreeDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140ed7080 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUISkillBookTreeDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x140ed70e0 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUISkillBookTreeDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x140ed7110 ; unique
 // MS2-PIN: ??$Call@VUISkillBookTreeDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@?$DelegateImpl@U?$pair@PEAVUISkillBookTreeDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@CAXAEAU?$pair@PEAVUISkillBookTreeDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@AEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x140ed7150 ; unique
@@ -169,7 +169,7 @@ UISkillBookAutoDistributeDialog::~UISkillBookAutoDistributeDialog()
 }
 
 // @0x140ec4300
-CString UISkillBookAutoDistributeDialog::vfunc_1()
+CString UISkillBookAutoDistributeDialog::GetTypeName()
 {
     return "SkillBookAutoDistributeDialog";
 }
@@ -535,7 +535,7 @@ UISkillBookTreeDialog::~UISkillBookTreeDialog()
 }
 
 // @0x140ec51c0
-CString UISkillBookTreeDialog::vfunc_1()
+CString UISkillBookTreeDialog::GetTypeName()
 {
     if (FUN_140166410()->FUN_14036d570(0xca))
         return "SkillBookTreeDialog_jobchange01";

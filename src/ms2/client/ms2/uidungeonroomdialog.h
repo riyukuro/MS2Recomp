@@ -193,7 +193,7 @@ class UIDungeonRoomDialog : public UIDialog
 public:
     UIDungeonRoomDialog();                                          // 0x1412b6c90
     virtual ~UIDungeonRoomDialog();                                 //  0 0x1412b6f60 (??_G 0x1412c0550)
-    virtual CString vfunc_1();                                      //  1 0x1412b71d0 "DungeonRoomDialog"
+    virtual CString GetTypeName();                                      //  1 0x1412b71d0 "DungeonRoomDialog"
     virtual void OnLoadComplete();                                  // 22 0x1412b7220
     virtual void vfunc_26();                                        // 26 0x1412b82f0
     virtual void vfunc_43();                                        // 43 0x1412b8cc0

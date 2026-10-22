@@ -19,7 +19,7 @@ class UIDamageEffect : public UIHeadUpDisplay, public UIStatusEventListener
 public:
     UIDamageEffect();                                               // 0x141910480 (m_2c = 1)
     virtual ~UIDamageEffect();                                      //  0 0x141910550 (??_G 0x141910ba0)
-    virtual CString vfunc_1();                                      //  1 0x1419105b0 "DamageEffect"
+    virtual CString GetTypeName();                                      //  1 0x1419105b0 "DamageEffect"
     virtual void vfunc_3();                                         //  3 0x141910600 hide and leave the status listeners
     virtual void OnLoadComplete();                                  // 22 0x141910980 read the options, "init", first HP push
     virtual void vfunc_43();                                        // 43 0x1419108e0 validate the movie's root now

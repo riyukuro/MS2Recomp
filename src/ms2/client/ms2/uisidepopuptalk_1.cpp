@@ -78,7 +78,7 @@ UISidePopupTalk::~UISidePopupTalk()
 }
 
 // @0x140e87260
-CString UISidePopupTalk::vfunc_1()
+CString UISidePopupTalk::GetTypeName()
 {
     return "SidePopupTalk";
 }

@@ -125,7 +125,7 @@ UISmartRecommendBillingDialog::UISmartRecommendBillingDialog()
 }
 
 // @0x14134ca70
-CString UISmartRecommendBillingDialog::vfunc_1()
+CString UISmartRecommendBillingDialog::GetTypeName()
 {
     return "SmartRecommendBillingDialog";
 }
@@ -252,7 +252,7 @@ void UISmartRecommendBillingDialog::FUN_14134cfa0()
             if (spItem->FUN_140523c40(m_item->m_nItemId, m_item->m_nRarity, 0))
             {
                 spItem->FUN_140526c70(m_item->m_nAmount);
-                m_strBagKey = vfunc_1();
+                m_strBagKey = GetTypeName();
                 FUN_141415450(m_strBagKey, spItem, 0, 0x415, 0);
                 int nMode;
                 if (m_item->m_nPrice == 0)
@@ -298,7 +298,7 @@ UISmartRecommendNotifyDialog::UISmartRecommendNotifyDialog()
 }
 
 // @0x14134d830
-CString UISmartRecommendNotifyDialog::vfunc_1()
+CString UISmartRecommendNotifyDialog::GetTypeName()
 {
     return "SmartRecommendNotifyDialog";
 }
@@ -420,7 +420,7 @@ void UISmartRecommendNotifyDialog::FUN_14134dcc0()
             if (spItem->FUN_140523c40(m_item->m_nItemId, m_item->m_nRarity, 0))
             {
                 spItem->FUN_140526c70(m_item->m_nAmount);
-                m_strBagKey = vfunc_1();
+                m_strBagKey = GetTypeName();
                 FUN_141415450(m_strBagKey, spItem, 0, 0x415, 0);
                 pDialog->FUN_14134e200("Open", m_strBagKey, m_item->m_strDesc, m_item->m_strTitle, m_item->m_nTime);
                 FUN_141276180(s_strOpenSound, CString(""));

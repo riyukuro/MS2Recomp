@@ -296,7 +296,7 @@ UIAchieveDialog::~UIAchieveDialog()
 }
 
 // @0x1418a7530
-CString UIAchieveDialog::vfunc_1()
+CString UIAchieveDialog::GetTypeName()
 {
     return "AchieveDialog";
 }

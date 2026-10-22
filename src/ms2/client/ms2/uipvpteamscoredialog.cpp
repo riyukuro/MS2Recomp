@@ -45,11 +45,11 @@ UIPvPTeamScoreDialog::~UIPvPTeamScoreDialog()
 }
 
 // @0x141346760
-CString UIPvPTeamScoreDialog::vfunc_1()
+CString UIPvPTeamScoreDialog::GetTypeName()
 {
     return "PvPTeamScoreDialog";
 }
-MS2_REPLACE_METHOD(0x141346760, UIPvPTeamScoreDialog, vfunc_1, 61, 0xB946B4CD);
+MS2_REPLACE_METHOD(0x141346760, UIPvPTeamScoreDialog, GetTypeName, 61, 0xB946B4CD);
 
 // @0x1413467b0
 void UIPvPTeamScoreDialog::OnLoadComplete()

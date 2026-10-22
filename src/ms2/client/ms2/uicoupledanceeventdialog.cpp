@@ -238,7 +238,7 @@ void FUN_140178270(const CString& str, std::vector<int>& out, const char* szDeli
 
 // @0x140bfcb00
 UICoupleDanceEventDialog::UICoupleDanceEventDialog()
-    : m_178(false), m_180(vfunc_1()), m_1c0(0)
+    : m_178(false), m_180(GetTypeName()), m_1c0(0)
 {
     FUN_141924170(1);
 }
@@ -249,11 +249,11 @@ UICoupleDanceEventDialog::~UICoupleDanceEventDialog()
 }
 
 // @0x140bfcc00
-CString UICoupleDanceEventDialog::vfunc_1()
+CString UICoupleDanceEventDialog::GetTypeName()
 {
     return "CoupleDanceEventDialog";
 }
-MS2_REPLACE_METHOD(0x140BFCC00, UICoupleDanceEventDialog, vfunc_1, 61, 0x3514F86F);
+MS2_REPLACE_METHOD(0x140BFCC00, UICoupleDanceEventDialog, GetTypeName, 61, 0x3514F86F);
 
 // @0x140bfcc50
 void UICoupleDanceEventDialog::vfunc_72()

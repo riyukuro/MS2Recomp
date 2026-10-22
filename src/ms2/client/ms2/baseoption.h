@@ -15,7 +15,7 @@ public:
     CBaseOption(int nId, int nType);                                // 0x140a02ac0
     virtual ~CBaseOption();                                         // 0x140a02b40 (deleting dtor 0x140a02f00)
 
-    virtual CString vfunc_1();                                      // display name (empty here)
+    virtual CString GetTypeName();                                      // display name (empty here)
     virtual void vfunc_2();                                         // mark active, flush a pending change through vfunc_6
     virtual void vfunc_3(int n);                                    // value changed: pend it or apply it
     virtual void vfunc_4(int n);                                    // n == 0 deactivates, otherwise vfunc_7

@@ -63,7 +63,7 @@ UIUGCCubeNoticePopup::~UIUGCCubeNoticePopup()
 }
 
 // @0x140fb4b10
-CString UIUGCCubeNoticePopup::vfunc_1()
+CString UIUGCCubeNoticePopup::GetTypeName()
 {
     return "UGCCubeNoticePopup";
 }

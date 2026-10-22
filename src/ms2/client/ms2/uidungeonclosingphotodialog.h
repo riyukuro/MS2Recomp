@@ -31,7 +31,7 @@ class UIDungeonClosingPhotoDialog : public UIDialog, public IUIAvatarEventListen
 public:
     UIDungeonClosingPhotoDialog();
     virtual ~UIDungeonClosingPhotoDialog();
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual void vfunc_26();
     virtual void vfunc_67();
     virtual void vfunc_72();

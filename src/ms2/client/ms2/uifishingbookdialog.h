@@ -19,7 +19,7 @@ class UIFishingBookDialog : public UIDialog
 public:
     UIFishingBookDialog();                                      // 0x140f41250
     virtual ~UIFishingBookDialog() = default;                      //  0 0x140f43c90 (??_G 0x140f43d30)
-    virtual CString vfunc_1();                                  //  1 0x140f412e0 "FishingBookDialog"
+    virtual CString GetTypeName();                                  //  1 0x140f412e0 "FishingBookDialog"
     virtual void OnLoadComplete();                              // 22 0x140f41330 tab 0, page 0, "m_bag" scroll top
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                 // 28 0x140f41440 onChangeFish / onTabChange / onPrevPage / onNextPage

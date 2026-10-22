@@ -19,7 +19,7 @@ class UIWorldChampionRewardDialog : public UIDialog {
 public:
     UIWorldChampionRewardDialog();
     virtual ~UIWorldChampionRewardDialog();
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual void OnLoadComplete();
     virtual void vfunc_26();
     virtual int vfunc_48() { return 0x4f68; }

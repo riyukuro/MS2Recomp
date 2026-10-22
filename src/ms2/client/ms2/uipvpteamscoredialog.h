@@ -19,7 +19,7 @@ class UIPvPTeamScoreDialog : public UIDialog
 public:
     UIPvPTeamScoreDialog();                                     // 0x1413466b0
     virtual ~UIPvPTeamScoreDialog();                            //  0 0x141346720 (??_G 0x1413469f0)
-    virtual CString vfunc_1();                                  //  1 0x141346760
+    virtual CString GetTypeName();                                  //  1 0x141346760
     virtual void OnLoadComplete();                              // 22 0x1413467b0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                 // 28 0x1413467e0

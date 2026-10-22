@@ -30,7 +30,7 @@ public:
 
     UIWeddingBillboardDialog();                                         // 0x140fc2c50 (open tween 1)
     virtual ~UIWeddingBillboardDialog();                                //  0 0x140fc2cf0 (??_G 0x140fc6400)
-    virtual CString vfunc_1();                                          //  1 0x140fc2d40 "WeddingBillboardDialog"
+    virtual CString GetTypeName();                                          //  1 0x140fc2d40 "WeddingBillboardDialog"
     virtual void OnLoadComplete();                                      // 22 0x140fc2e70 listen to the list packet, ask for it
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                         // 28 0x140fc2f70

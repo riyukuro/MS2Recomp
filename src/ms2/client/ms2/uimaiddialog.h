@@ -35,7 +35,7 @@ class UIMaidDialog : public UIDialog
 public:
     UIMaidDialog();                                                         // 0x1412d7040
     virtual ~UIMaidDialog();                                                //  0 0x1412d7100 (??_G 0x1412da8d0)
-    virtual CString vfunc_1();                                              //  1 0x1412d7170 "MaidDialog"
+    virtual CString GetTypeName();                                              //  1 0x1412d7170 "MaidDialog"
     virtual int vfunc_13();                                                 // 13 0x1412d7250 Tab key -> "onTabKey"
     virtual void OnLoadInit();                                              // 20 0x1412d74e0
     virtual void OnLoadComplete();                                          // 22 0x1412d7450

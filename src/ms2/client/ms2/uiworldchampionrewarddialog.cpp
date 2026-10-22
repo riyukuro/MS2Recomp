@@ -258,8 +258,8 @@ UIWorldChampionRewardDialog::~UIWorldChampionRewardDialog() {
     FUN_140bccd50()->FUN_140da51e0(0x11e, Delegate<void(CInPacket&)>(this, &UIWorldChampionRewardDialog::FUN_140feb1b0));
 }
 // @0x140fea0f0
-CString UIWorldChampionRewardDialog::vfunc_1() { return "WorldChampionRewardDialog"; }
-MS2_REPLACE_METHOD(0x140fea0f0, UIWorldChampionRewardDialog, vfunc_1, 61, 0x197B604A);
+CString UIWorldChampionRewardDialog::GetTypeName() { return "WorldChampionRewardDialog"; }
+MS2_REPLACE_METHOD(0x140fea0f0, UIWorldChampionRewardDialog, GetTypeName, 61, 0x197B604A);
 // @0x140fea140
 void UIWorldChampionRewardDialog::OnLoadComplete() {
     UIDialog::OnLoadComplete();

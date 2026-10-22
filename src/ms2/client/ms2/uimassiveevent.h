@@ -22,7 +22,7 @@ class UIMassiveEvent : public UIHeadUpDisplay, public UIStatusEventListener
 public:
     UIMassiveEvent();                                               // 0x1419f55d0 (m_2c = 0x1e)
     virtual ~UIMassiveEvent();                                      //  0 0x1419f56b0 (??_G 0x1419f6f20)
-    virtual CString vfunc_1();                                      //  1 0x1419f5740 "MassiveEvent"
+    virtual CString GetTypeName();                                      //  1 0x1419f5740 "MassiveEvent"
     virtual void vfunc_2();                                         //  2 0x1419f5790 show unless the cinematic gate is on
     virtual void vfunc_3();                                         //  3 0x1419f57d0 hide
     virtual void vfunc_15();                                        // 15 0x1419f5a30 tick the count-down

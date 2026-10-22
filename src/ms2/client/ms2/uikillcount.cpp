@@ -69,7 +69,7 @@ UIKillCount::~UIKillCount()
 }
 
 // @0x1419df180
-CString UIKillCount::vfunc_1()
+CString UIKillCount::GetTypeName()
 {
     return "KillCount";
 }
@@ -198,7 +198,7 @@ Scaleform::GFx::Value Unk_KcScript::FUN_1419df740(const char* szMethod, int a1, 
 }
 
 // ---- hooks ----
-MS2_REPLACE_METHOD(0x1419DF180, UIKillCount, vfunc_1, 61, 0xDD8FB31B);
+MS2_REPLACE_METHOD(0x1419DF180, UIKillCount, GetTypeName, 61, 0xDD8FB31B);
 MS2_REPLACE_METHOD(0x1419DF1D0, UIKillCount, vfunc_2, 24, 0xB52C074C);
 MS2_REPLACE_METHOD(0x1419DF1F0, UIKillCount, vfunc_3, 39, 0x061EB3D3);
 MS2_REPLACE_METHOD(0x1419DF220, UIKillCount, FUN_1419df220, 114, 0xF6132C6B);

@@ -28,7 +28,7 @@ class UIItemTreasureMapDialog : public UIDialog
 public:
     UIItemTreasureMapDialog();                                       // 0x140c54ee0
     virtual ~UIItemTreasureMapDialog();                              //  0 0x140c55140 (??_G 0x140c58020)
-    virtual CString vfunc_1();                                       //  1 0x140c55210: "ItemTreasureMapDialog"
+    virtual CString GetTypeName();                                       //  1 0x140c55210: "ItemTreasureMapDialog"
     virtual int vfunc_13();                                          // 13 0x140c55950: 0
     virtual void OnLoadComplete();                                   // 22 0x140c553a0 bind the children
     virtual void vfunc_43();                                         // 43 0x140c55260 placed beside the maid dialog's reference

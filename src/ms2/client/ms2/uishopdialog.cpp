@@ -45,13 +45,13 @@
 // MS2-PIN: ?vfunc_48@UIShopDialog@@UEAAHXZ 0x141b0a2a0 ; unique
 // MS2-PIN: ?IsSellOnly@UIShopDialog@@QEAAEXZ 0x141b0a2b0 ; unique
 // MS2-PIN: ?FUN_141b0a2d0@@YAXPEAVASMeratMarketBuyBillData@@V?$MS2Ptr@VCMeratMarketPremiumProduct@@@@@Z 0x141b0a2d0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIShopDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b0bab0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIShopDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b0bb10 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIShopDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b0bb70 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIShopDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b0bbd0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIShopDialog@@P81@EAA_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@std@@@?$Delegate@$$A6A_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b0bc30 ; prop
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIShopDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b0bc90 ; prop
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIShopDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@4@2@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@3@2@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b0bcf0 ; prop
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIShopDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b0bab0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIShopDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b0bb10 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIShopDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b0bb70 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIShopDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b0bbd0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIShopDialog@@P81@EAA_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@std@@@?$Delegate@$$A6A_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b0bc30 ; prop
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIShopDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b0bc90 ; prop
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIShopDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@4@2@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@3@2@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b0bcf0 ; prop
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIShopDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAXAEAVCInPacket@@@Z 0x141b0c160 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIShopDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x141b0c190 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIShopDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAXPEAVNotifyObject@@@Z 0x141b0c1c0 ; unique
@@ -153,7 +153,7 @@ class NotifyChangedTokenMoney : public NotifyObject
 {
 public:
     virtual ~NotifyChangedTokenMoney();
-    virtual CStringW vfunc_1();                             // 0x140db4610
+    virtual CStringW GetTypeName();                             // 0x140db4610
     int m_nType;                                            // +0x18
     __int64 m_nValue;                                       // +0x20
     __int64 m_nDelta;                                       // +0x28
@@ -665,11 +665,11 @@ UIShopDialog::~UIShopDialog()
 }
 
 // @0x141af2be0
-CString UIShopDialog::vfunc_1()
+CString UIShopDialog::GetTypeName()
 {
     return "ShopDialog";
 }
-MS2_REPLACE_METHOD(0x141AF2BE0, UIShopDialog, vfunc_1, 61, 0x14B4119C);
+MS2_REPLACE_METHOD(0x141AF2BE0, UIShopDialog, GetTypeName, 61, 0x14B4119C);
 
 // @0x141af2c30
 int UIShopDialog::vfunc_65()
@@ -2544,7 +2544,7 @@ void UIShopDialog::BuyMeratItem(int nSerial, unsigned nQuantity, AScript& source
     if (spParam == 0)
         return;
     spParam->m_nDialogId = vfunc_48();
-    spParam->m_strMovie = vfunc_1();
+    spParam->m_strMovie = GetTypeName();
     spParam->m_nCurrency = spProduct->FUN_1406a0230();
     spParam->m_nShopId = m_nShopId;
     spParam->SetSourceKind(4);

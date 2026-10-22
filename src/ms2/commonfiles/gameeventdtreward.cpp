@@ -38,8 +38,8 @@ void FUN_1408d7cd0(CUserEventManager* pManager, Unk_DTCtxArg<DTRewardEventContex
 GameEvent* FUN_14041b140() { return new GameEventDTReward; }
 
 // @0x14041b1a0
-CStringW GameEventDTReward::vfunc_1() { return CStringW(L"GameEventDTReward"); }
-MS2_REPLACE_METHOD(0x14041B1A0, GameEventDTReward, vfunc_1, 61, 0xD464C57C);
+CStringW GameEventDTReward::GetTypeName() { return CStringW(L"GameEventDTReward"); }
+MS2_REPLACE_METHOD(0x14041B1A0, GameEventDTReward, GetTypeName, 61, 0xD464C57C);
 
 // @0x14041b1f0
 GameEventDTReward::GameEventDTReward() : m_bShown(false)

@@ -52,7 +52,7 @@ Unk_140a94350* FUN_140a94350();
 UIGuideEvent::UIGuideEvent() : m_sound(0),m_guide(0),m_tip(0),m_lastTip(0),m_tips(10),
     m_strings(17,.75f,.25f,2.25f,10),m_voices(17,.75f,.25f,2.25f,10),m_expiry(0),m_arrows(17,.75f,.25f,2.25f,10) { FUN_14195b970(); }
 // @0x1419594f0
-CString UIGuideEvent::vfunc_1() { return "GuideEvent"; }
+CString UIGuideEvent::GetTypeName() { return "GuideEvent"; }
 // @0x141959540
 void UIGuideEvent::OnLoadComplete() {
     UIObject::OnLoadComplete();
@@ -993,7 +993,7 @@ int UIGuideEventArrowDialog::FUN_141960510()
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // Guarded replacements for the byte-matched ordinary methods.
-MS2_REPLACE_METHOD(0x1419594F0, UIGuideEvent, vfunc_1, 61, 0x83DCB50B);
+MS2_REPLACE_METHOD(0x1419594F0, UIGuideEvent, GetTypeName, 61, 0x83DCB50B);
 MS2_REPLACE_METHOD(0x141959540, UIGuideEvent, OnLoadComplete, 408, 0xAD280B30);
 MS2_REPLACE_METHOD(0x1419596E0, UIGuideEvent, vfunc_26, 106, 0xC1AA5402);
 MS2_REPLACE_METHOD(0x141959750, UIGuideEvent, vfunc_43, 83, 0xBD27DA7E);

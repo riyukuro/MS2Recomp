@@ -59,7 +59,7 @@ public:
     struct PopupText { CStringW text; CString url; };
     UICommunityPopup();
     virtual ~UICommunityPopup();
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual void OnLoadComplete();
     virtual void vfunc_26();
     virtual void vfunc_15();

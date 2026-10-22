@@ -31,7 +31,7 @@ UISwfTool::~UISwfTool()
 }
 
 // @0x141b12880
-CString UISwfTool::vfunc_1()
+CString UISwfTool::GetTypeName()
 {
     return "SwfTool";
 }

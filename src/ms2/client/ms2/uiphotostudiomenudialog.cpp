@@ -64,7 +64,7 @@ UIPhotoStudioMenuDialog::~UIPhotoStudioMenuDialog()
 }
 
 // @0x140e75f80
-CString UIPhotoStudioMenuDialog::vfunc_1()
+CString UIPhotoStudioMenuDialog::GetTypeName()
 {
     return CString("HomeMenuDialog");
 }

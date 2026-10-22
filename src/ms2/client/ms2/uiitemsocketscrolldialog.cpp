@@ -25,10 +25,10 @@
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIItemSocketScrollDialog@@P81@EAAXAEAVItemScrollSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@@Z@@UEAAPEAXI@Z 0x140f687a0 ; prop
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIItemSocketScrollDialog@@P81@EAAXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@@UEAAPEAXI@Z 0x140f687e0 ; prop
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIItemSocketScrollDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAAPEAXI@Z 0x140f68820 ; prop
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIItemSocketScrollDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f688c0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIItemSocketScrollDialog@@P81@EAAXAEAVItemScrollSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f68920 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIItemSocketScrollDialog@@P81@EAAXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f68980 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIItemSocketScrollDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f689e0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIItemSocketScrollDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f688c0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIItemSocketScrollDialog@@P81@EAAXAEAVItemScrollSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f68920 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIItemSocketScrollDialog@@P81@EAAXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f68980 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIItemSocketScrollDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f689e0 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIItemSocketScrollDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAXAEAVCInPacket@@@Z 0x140f68a40 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIItemSocketScrollDialog@@P81@EAAXAEAVItemScrollSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@@Z@@UEAAXAEAVItemScrollSlot@@@Z 0x140f68a70 ; unique
 // MS2-PIN: ??$Call@VUIItemSocketScrollDialog@@P81@EAAXAEAVCInPacket@@@Z@?$DelegateImpl@U?$pair@PEAVUIItemSocketScrollDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@CAXAEAU?$pair@PEAVUIItemSocketScrollDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@AEAVCInPacket@@@Z 0x140f68b20 ; prop
@@ -174,7 +174,7 @@ UIItemSocketScrollDialog::UIItemSocketScrollDialog()
 {
     FUN_141924170(1);
     m_164 = 1;
-    m_strSlot = FUN_140540050("{0}.slot", vfunc_1());
+    m_strSlot = FUN_140540050("{0}.slot", GetTypeName());
     FUN_140bccd50()->FUN_140da5180(0xe3, Delegate<void(CInPacket&)>(this, &UIItemSocketScrollDialog::FUN_140f64a20));
 }
 
@@ -185,7 +185,7 @@ UIItemSocketScrollDialog::~UIItemSocketScrollDialog()
 }
 
 // @0x140f64940
-CString UIItemSocketScrollDialog::vfunc_1()
+CString UIItemSocketScrollDialog::GetTypeName()
 {
     return "ItemSocketScrollDialog";
 }

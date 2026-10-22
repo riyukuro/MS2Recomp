@@ -3,8 +3,8 @@
 // MS2-RANGE: 0x1400cce70-0x1400ccf60 .text$di
 // MS2-RANGE: 0x140c35890-0x140c39fd0 .text$mn
 // MS2-RANGE: 0x142ca2a90-0x142ca2ad5 .text$yd
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIItemBlueprintCreateDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140c39c40
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIItemBlueprintCreateDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140c39ca0
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIItemBlueprintCreateDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140c39c40
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIItemBlueprintCreateDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140c39ca0
 // MS2-PIN: ?AddRefImpl@?$Unk_BpPtr@VCUgcUploadCtrl@@@@AEBAXPEAX@Z 0x140c39970
 // MS2-PIN: ?AddRefImpl@?$Unk_BpPtr@VCUgcViewerBlueprintImage@@@@AEBAXPEAX@Z 0x140c399a0
 // MS2-PIN: ?AddRefImpl@?$Unk_BpPtr@VUnk_BpImage@@@@AEBAXPEAX@Z 0x140c399d0
@@ -5359,8 +5359,8 @@ UIItemBlueprintCreateDialog::UIItemBlueprintCreateDialog() : m_type(0), m_fee(Un
 // @0x140c35a00
 UIItemBlueprintCreateDialog::~UIItemBlueprintCreateDialog() {}
 // @0x140c35ae0
-CString UIItemBlueprintCreateDialog::vfunc_1() { return "ItemBlueprintCreateDialog"; }
-MS2_REPLACE_METHOD(0x140C35AE0, UIItemBlueprintCreateDialog, vfunc_1, 61, 0x65F62A1F);
+CString UIItemBlueprintCreateDialog::GetTypeName() { return "ItemBlueprintCreateDialog"; }
+MS2_REPLACE_METHOD(0x140C35AE0, UIItemBlueprintCreateDialog, GetTypeName, 61, 0x65F62A1F);
 // @0x140c35b30
 void UIItemBlueprintCreateDialog::OnLoadComplete() {
     UIDialog::OnLoadComplete();

@@ -20,7 +20,7 @@ class UIVIPDialog : public UIDialog
 public:
     UIVIPDialog();                                                  // 0x140fb7dc0
     virtual ~UIVIPDialog();                                         //  0 0x140fb7e70 (??_G 0x140fb98d0)
-    virtual CString vfunc_1();                                      //  1 0x140fb7ee0 "VIPDialog"
+    virtual CString GetTypeName();                                      //  1 0x140fb7ee0 "VIPDialog"
     virtual void OnLoadComplete();                                  // 22 0x140fb8040 asks the claimed benefit ids
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140fb80f0 OnClickGetItem / onClickBuyGoods
     virtual int vfunc_48();                                         // 48 0x140fb9990 0x4f1b

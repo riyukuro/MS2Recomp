@@ -24,7 +24,7 @@ public:
 
     UIWeddingHallReservationDialog();                           // 0x140fdb090
     virtual ~UIWeddingHallReservationDialog();                  //  0 0x140fdb460 (??_G 0x140fe0530)
-    virtual CString vfunc_1();                                  //  1 0x140fdb4f0 "WeddingHallReservationDialog"
+    virtual CString GetTypeName();                                  //  1 0x140fdb4f0 "WeddingHallReservationDialog"
     virtual void OnLoadComplete();                              // 22 0x140fdb620 the tabs of the mode
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                 // 28 0x140fdb990 onAddPage / onRemovePage / ...

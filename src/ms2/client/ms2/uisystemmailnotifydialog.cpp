@@ -10,8 +10,8 @@
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUISystemMailNotifyDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAPEAXI@Z 0x1412a6f90 ; prop
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUISystemMailNotifyDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAPEAXI@Z 0x1412a6fd0 ; prop
 // MS2-PIN: ??_GUISystemMailNotifyDialog@@UEAAPEAXI@Z 0x1412a7010 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUISystemMailNotifyDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1412a7120 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUISystemMailNotifyDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1412a7180 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUISystemMailNotifyDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1412a7120 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUISystemMailNotifyDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1412a7180 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUISystemMailNotifyDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x1412a71e0 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUISystemMailNotifyDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAXPEAVNotifyObject@@@Z 0x1412a7210 ; unique
 // MS2-PIN: ??$Call@VUISystemMailNotifyDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@?$DelegateImpl@U?$pair@PEAVUISystemMailNotifyDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@CAXAEAU?$pair@PEAVUISystemMailNotifyDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@AEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x1412a7240 ; prop
@@ -229,7 +229,7 @@ UISystemMailNotifyDialog::~UISystemMailNotifyDialog()
 }
 
 // @0x1412a49b0
-CString UISystemMailNotifyDialog::vfunc_1()
+CString UISystemMailNotifyDialog::GetTypeName()
 {
     return "SystemMailNotifyDialog";
 }
@@ -442,7 +442,7 @@ void UISystemMailNotifyDialog::FUN_1412a5e60(NotifyObject*)
 void UISystemMailNotifyDialog::FUN_1412a5eb0(const Unk_SmReward* pReward)
 {
     FUN_1412a6080();
-    CString strName = StringFormat("{0}_{1}", vfunc_1(), pReward->m_nItemId);
+    CString strName = StringFormat("{0}_{1}", GetTypeName(), pReward->m_nItemId);
     MS2Ptr<CItem> spItem(new CItem);
     if (spItem->FUN_140523c40(pReward->m_nItemId, pReward->m_nCount, 0) == 0)
         return;

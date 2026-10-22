@@ -47,11 +47,11 @@ UIChangeJobEffect::~UIChangeJobEffect()
 }
 
 // @0x140bd0ab0
-CString UIChangeJobEffect::vfunc_1()
+CString UIChangeJobEffect::GetTypeName()
 {
     return "ChangeJobEffect";
 }
-MS2_REPLACE_METHOD(0x140BD0AB0, UIChangeJobEffect, vfunc_1, 61, 0x30B69F4A);
+MS2_REPLACE_METHOD(0x140BD0AB0, UIChangeJobEffect, GetTypeName, 61, 0x30B69F4A);
 
 // @0x140bd0b00
 void UIChangeJobEffect::OnLoadComplete()

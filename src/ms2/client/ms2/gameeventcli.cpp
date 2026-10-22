@@ -22,11 +22,11 @@
 // MS2-PIN: ?Reference@?$MS2Ptr@VEventIconInfo@@@@CAXPEAVEventIconInfo@@@Z 0x140cea200 ; unique
 // MS2-PIN: ?Release@?$MS2Ptr@VDungeonExtraRewardCountCtx@@@@AEAAXXZ 0x140cea2c0 ; prop
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VSnowmanContext@@@@AEAAXPEAX@Z 0x140cea300 ; prop
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVGameEventBurningLevelupCli@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140cea3a0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVGameEventBurningLevelupCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140cea400 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVGameEventDTRewardCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140cea460 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVGameEventItemBuffCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140cea4c0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVGameEventSnowmanCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140cea520 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVGameEventBurningLevelupCli@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140cea3a0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVGameEventBurningLevelupCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140cea400 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVGameEventDTRewardCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140cea460 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVGameEventItemBuffCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140cea4c0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVGameEventSnowmanCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140cea520 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVGameEventBurningLevelupCli@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAXAEAVCInPacket@@@Z 0x140cea5e0 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVGameEventBurningLevelupCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAXPEAVNotifyObject@@@Z 0x140cea610 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVGameEventDTRewardCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAXPEAVNotifyObject@@@Z 0x140cea640 ; unique
@@ -284,7 +284,7 @@ public:
 GameEvent* FUN_140ce27f0() { return new GameEventOntimeCli; }
 
 // @0x140ce2850
-CStringW GameEventOntimeCli::vfunc_1() { return CStringW(L"GameEventOntimeCli"); }
+CStringW GameEventOntimeCli::GetTypeName() { return CStringW(L"GameEventOntimeCli"); }
 
 // @0x140ce28a0
 void GameEventOntimeCli::OnStart()
@@ -323,7 +323,7 @@ void GameEventOntimeCli::vfunc_6()
 GameEvent* FUN_140ce29f0() { return new GameEventGameMenuPopupCli; }
 
 // @0x140ce2a50
-CStringW GameEventGameMenuPopupCli::vfunc_1() { return CStringW(L"GameEventGameMenuPopupCli"); }
+CStringW GameEventGameMenuPopupCli::GetTypeName() { return CStringW(L"GameEventGameMenuPopupCli"); }
 
 // @0x140ce2aa0
 void GameEventGameMenuPopupCli::OnStart()
@@ -358,7 +358,7 @@ void GameEventGameMenuPopupCli::vfunc_6()
 GameEvent* FUN_140ce2ba0() { return new GameEventEventFieldPopupCli; }
 
 // @0x140ce2c00
-CStringW GameEventEventFieldPopupCli::vfunc_1() { return CStringW(L"GameEventEventFieldPopupCli"); }
+CStringW GameEventEventFieldPopupCli::GetTypeName() { return CStringW(L"GameEventEventFieldPopupCli"); }
 
 // @0x140ce2c50
 void GameEventEventFieldPopupCli::OnStart()
@@ -390,7 +390,7 @@ void GameEventEventFieldPopupCli::vfunc_6()
 GameEvent* FUN_140ce2d30() { return new GameEventDTRewardCli; }
 
 // @0x140ce2d90
-CStringW GameEventDTRewardCli::vfunc_1() { return CStringW(L"GameEventDTRewardCli"); }
+CStringW GameEventDTRewardCli::GetTypeName() { return CStringW(L"GameEventDTRewardCli"); }
 
 // @0x140ce2de0
 void GameEventDTRewardCli::OnStart()
@@ -442,7 +442,7 @@ void GameEventDTRewardCli::OnNotifyGameStart(NotifyObject*)
 GameEvent* FUN_140ce3030() { return new GameEventSaleAutoFishingCli; }
 
 // @0x140ce3090
-CStringW GameEventSaleAutoFishingCli::vfunc_1() { return CStringW(L"GameEventSaleAutoFishingCli"); }
+CStringW GameEventSaleAutoFishingCli::GetTypeName() { return CStringW(L"GameEventSaleAutoFishingCli"); }
 
 // @0x140cea070
 Unk_SingletonObj* FUN_140cea070() { return DAT_143ac0d40; }
@@ -465,7 +465,7 @@ void GameEventSaleAutoFishingCli::vfunc_6()
 GameEvent* FUN_140ce3140() { return new GameEventSaleAutoPlayInstrumentCli; }
 
 // @0x140ce31a0
-CStringW GameEventSaleAutoPlayInstrumentCli::vfunc_1() { return CStringW(L"GameEventSaleAutoPlayInstrumentCli"); }
+CStringW GameEventSaleAutoPlayInstrumentCli::GetTypeName() { return CStringW(L"GameEventSaleAutoPlayInstrumentCli"); }
 
 // @0x140ce31f0
 void GameEventSaleAutoPlayInstrumentCli::OnStart()
@@ -487,7 +487,7 @@ void GameEventSaleAutoPlayInstrumentCli::vfunc_6()
 GameEvent* FUN_140ce3250() { return new GameEventAttendGiftCli; }
 
 // @0x140ce32b0
-CStringW GameEventAttendGiftCli::vfunc_1() { return CStringW(L"GameEventAttendGiftCli"); }
+CStringW GameEventAttendGiftCli::GetTypeName() { return CStringW(L"GameEventAttendGiftCli"); }
 
 // @0x140ce3300
 void GameEventAttendGiftCli::OnStart()
@@ -664,7 +664,7 @@ CMsTime GameEventAttendGiftCli::FUN_140ce3ae0()
 GameEvent* FUN_140ce3b70() { return new GameEventCashAttendCli; }
 
 // @0x140ce3bd0
-CStringW GameEventCashAttendCli::vfunc_1() { return CStringW(L"GameEventCashAttendCli"); }
+CStringW GameEventCashAttendCli::GetTypeName() { return CStringW(L"GameEventCashAttendCli"); }
 
 // @0x140ce3c20
 void GameEventCashAttendCli::OnStart()
@@ -760,7 +760,7 @@ CMsTime GameEventCashAttendCli::FUN_140ce4090() { return m_38; }
 GameEvent* FUN_140ce40d0() { return new GameEventTrafficOptimizerCli; }
 
 // @0x140ce4130
-CStringW GameEventTrafficOptimizerCli::vfunc_1() { return CStringW(L"GameEventTrafficOptimizerCli"); }
+CStringW GameEventTrafficOptimizerCli::GetTypeName() { return CStringW(L"GameEventTrafficOptimizerCli"); }
 
 // @0x140ce41d0
 void GameEventTrafficOptimizerCli::OnStart()
@@ -792,7 +792,7 @@ void GameEventTrafficOptimizerCli::vfunc_4(Unk_GEIn* in)
 GameEvent* FUN_140ce4330() { return new GameEventItemBuffCli; }
 
 // @0x140ce4390
-CStringW GameEventItemBuffCli::vfunc_1() { return CStringW(L"GameEventItemBuffCli"); }
+CStringW GameEventItemBuffCli::GetTypeName() { return CStringW(L"GameEventItemBuffCli"); }
 
 // @0x140ce4420
 void GameEventItemBuffCli::OnStart()
@@ -824,7 +824,7 @@ void GameEventItemBuffCli::FUN_140ce4580(NotifyObject*)
 GameEvent* FUN_140ce4640() { return new GameEventDungeonExtraRewardCli; }
 
 // @0x140ce46a0
-CStringW GameEventDungeonExtraRewardCli::vfunc_1() { return CStringW(L"GameEventDungeonExtraRewardCli"); }
+CStringW GameEventDungeonExtraRewardCli::GetTypeName() { return CStringW(L"GameEventDungeonExtraRewardCli"); }
 
 // @0x140ce46f0
 void GameEventDungeonExtraRewardCli::OnStart()
@@ -850,7 +850,7 @@ void GameEventDungeonExtraRewardCli::vfunc_6()
 GameEvent* FUN_140ce4770() { return new GameEventMeratMarketNoticeCli; }
 
 // @0x140ce47d0
-CStringW GameEventMeratMarketNoticeCli::vfunc_1() { return CStringW(L"GameEventMeratMarketNoticeCli"); }
+CStringW GameEventMeratMarketNoticeCli::GetTypeName() { return CStringW(L"GameEventMeratMarketNoticeCli"); }
 
 // MS2-FUNCTIONAL: 3 bytes longer (the member reference argument is reloaded through rcx)
 // @0x140ce4820
@@ -885,7 +885,7 @@ void GameEventMeratMarketNoticeCli::vfunc_6()
 GameEvent* FUN_140ce4970() { return new GameEventUpdateStringCli; }
 
 // @0x140ce49d0
-CStringW GameEventUpdateStringCli::vfunc_1() { return CStringW(L"GameEventUpdateStringCli"); }
+CStringW GameEventUpdateStringCli::GetTypeName() { return CStringW(L"GameEventUpdateStringCli"); }
 
 // @0x140ce4a20
 void GameEventUpdateStringCli::OnStart()
@@ -946,7 +946,7 @@ void GameEventUpdateStringCli::FUN_140ce4d20(Unk_140165cf0* pElem) { FUN_140851c
 GameEvent* FUN_140ce4d50() { return new GameEventWorldmapIconCli; }
 
 // @0x140ce4db0
-CStringW GameEventWorldmapIconCli::vfunc_1() { return CStringW(L"GameEventWorldmapIconCli"); }
+CStringW GameEventWorldmapIconCli::GetTypeName() { return CStringW(L"GameEventWorldmapIconCli"); }
 
 // MS2-FUNCTIONAL: the exe lays the icon pointer temps out in other stack slots (frame and unwind map differ)
 // @0x140ce4e00
@@ -1002,7 +1002,7 @@ void GameEventWorldmapIconCli::vfunc_6()
 GameEvent* FUN_140ce51e0() { return new GameEventStringBoardCli; }
 
 // @0x140ce5240
-CStringW GameEventStringBoardCli::vfunc_1() { return CStringW(L"GameEventStringBoardCli"); }
+CStringW GameEventStringBoardCli::GetTypeName() { return CStringW(L"GameEventStringBoardCli"); }
 
 // @0x140ce5290
 void GameEventStringBoardCli::OnStart()
@@ -1025,7 +1025,7 @@ void GameEventStringBoardCli::vfunc_6() { FUN_1401c0d90()->FUN_14047d900(FUN_140
 GameEvent* FUN_140ce53c0() { return new GameEventSnowmanCli; }
 
 // @0x140ce5420
-CStringW GameEventSnowmanCli::vfunc_1() { return CStringW(L"GameEventSnowmanCli"); }
+CStringW GameEventSnowmanCli::GetTypeName() { return CStringW(L"GameEventSnowmanCli"); }
 
 // @0x140ce5470
 void GameEventSnowmanCli::OnStart()
@@ -1071,7 +1071,7 @@ void GameEventSnowmanCli::FUN_140ce56a0(NotifyObject*)
 GameEvent* FUN_140ce56e0() { return new GameEventRpsCli; }
 
 // @0x140ce5740
-CStringW GameEventRpsCli::vfunc_1() { return CStringW(L"GameEventRpsCli"); }
+CStringW GameEventRpsCli::GetTypeName() { return CStringW(L"GameEventRpsCli"); }
 
 // MS2-FUNCTIONAL: the exe lays the RpsGameData handle, document and xml pointer out in other stack slots (frame and unwind map differ)
 // @0x140ce5790
@@ -1126,7 +1126,7 @@ void GameEventRpsCli::vfunc_6()
 GameEvent* FUN_140ce5aa0() { return new GameEventCoupleDanceCli; }
 
 // @0x140ce5b00
-CStringW GameEventCoupleDanceCli::vfunc_1() { return CStringW(L"GameEventCoupleDanceCli"); }
+CStringW GameEventCoupleDanceCli::GetTypeName() { return CStringW(L"GameEventCoupleDanceCli"); }
 
 // MS2-FUNCTIONAL: the dialog's member pointer is 16 bytes in the exe (the real dialog has a second base the header lacks)
 // @0x140ce5b50
@@ -1177,7 +1177,7 @@ void GameEventCoupleDanceCli::vfunc_6()
 GameEvent* FUN_140ce5ed0() { return new GameEventCustomTriggerStringCli; }
 
 // @0x140ce5f30
-CStringW GameEventCustomTriggerStringCli::vfunc_1() { return CStringW(L"GameEventCustomTriggerStringCli"); }
+CStringW GameEventCustomTriggerStringCli::GetTypeName() { return CStringW(L"GameEventCustomTriggerStringCli"); }
 
 // MS2-FUNCTIONAL: the exe passes the map entry through a reloaded pointer (argument shuffle differs by 6 bytes)
 // @0x140ce5f80
@@ -1232,7 +1232,7 @@ struct Unk_CliPkt : Unk_CliPktHead, Unk_CliPktBody {};
 GameEvent* FUN_140ce6120() { return new GameEventBurningLevelupCli; }
 
 // @0x140ce6180
-CStringW GameEventBurningLevelupCli::vfunc_1() { return CStringW(L"GameEventBurningLevelupCli"); }
+CStringW GameEventBurningLevelupCli::GetTypeName() { return CStringW(L"GameEventBurningLevelupCli"); }
 
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
@@ -1242,7 +1242,7 @@ class NotifyChangeMyLevel : public NotifyObject
 {
 public:
     virtual ~NotifyChangeMyLevel() = default;
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     unsigned short m_nLevel;
     unsigned short m_nOldLevel;
 };
@@ -1308,7 +1308,7 @@ bool GameEventBurningLevelupCli::FUN_140ce64e0(short nLevel)
 GameEvent* FUN_140ce7870() { return new GameEventLongTermAttendGiftCli; }
 
 // @0x140ce78d0
-CStringW GameEventLongTermAttendGiftCli::vfunc_1() { return CStringW(L"GameEventLongTermAttendGiftCli"); }
+CStringW GameEventLongTermAttendGiftCli::GetTypeName() { return CStringW(L"GameEventLongTermAttendGiftCli"); }
 
 // @0x140ce7920
 void GameEventLongTermAttendGiftCli::OnStart()

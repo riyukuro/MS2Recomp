@@ -33,7 +33,7 @@ class UIDamageFont : public UIObject
 public:
     UIDamageFont(const CString& strName, MS2Ptr<TDamageFontAttr> spAttr);   // 0x140e0dab0
     virtual ~UIDamageFont() = default;                                      //  0 0x140e0dd20 (no vptr store)
-    virtual CString vfunc_1();                                              //  1 0x140e0db60
+    virtual CString GetTypeName();                                              //  1 0x140e0db60
     virtual void OnLoadComplete();                                          // 22 0x140e0dbb0
     virtual int vfunc_48() { return 0x4f39; }                               // 48 (COMDAT 0x140e0de30)
 
@@ -66,7 +66,7 @@ UIDamageFont::UIDamageFont(const CString& strName, MS2Ptr<TDamageFontAttr> spAtt
 }
 
 // @0x140e0db60
-CString UIDamageFont::vfunc_1()
+CString UIDamageFont::GetTypeName()
 {
     return FUN_140540050("DamageFont_{0}", m_strName);
 }

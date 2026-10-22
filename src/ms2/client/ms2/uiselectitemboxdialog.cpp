@@ -127,7 +127,7 @@ UISelectItemBoxDialog::~UISelectItemBoxDialog()
 }
 
 // @0x140f99500
-CString UISelectItemBoxDialog::vfunc_1()
+CString UISelectItemBoxDialog::GetTypeName()
 {
     return "SelectItemBoxDialog";
 }

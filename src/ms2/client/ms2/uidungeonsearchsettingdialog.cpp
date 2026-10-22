@@ -92,11 +92,11 @@ UIDungeonSearchSettingDialog::~UIDungeonSearchSettingDialog()
 }
 
 // @0x140c0ffd0
-CString UIDungeonSearchSettingDialog::vfunc_1()
+CString UIDungeonSearchSettingDialog::GetTypeName()
 {
     return "DungeonSearchSettingDialog";
 }
-MS2_REPLACE_METHOD(0x140C0FFD0, UIDungeonSearchSettingDialog, vfunc_1, 61, 0x5109F1D4);
+MS2_REPLACE_METHOD(0x140C0FFD0, UIDungeonSearchSettingDialog, GetTypeName, 61, 0x5109F1D4);
 
 // MS2-FUNCTIONAL: frame/slot order of the AS bind temporaries (0x10 bytes larger frame, the CString argument temps of the
 // drag bar / close button calls are built differently); calls and logic identical

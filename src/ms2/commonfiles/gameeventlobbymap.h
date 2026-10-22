@@ -5,7 +5,7 @@
 class GameEventLobbyMap : public GameEvent {
 public:
     GameEventLobbyMap();
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void vfunc_2();
     virtual void vfunc_3(Unk_GEOut* out);
     virtual void vfunc_4(Unk_GEIn* in);
@@ -21,7 +21,7 @@ MS2_CHECK_SIZE(GameEventLobbyMap, 0xd8);
 class GameEventLoginNotice : public GameEvent {
 public:
     GameEventLoginNotice();
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void vfunc_2();
     virtual void OnStart();
     virtual void vfunc_6();
@@ -31,7 +31,7 @@ MS2_CHECK_SIZE(GameEventLoginNotice, 0xd0);
 class GameEventCharacterCountRestricted : public GameEvent {
 public:
     GameEventCharacterCountRestricted();
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void vfunc_2();
     virtual void vfunc_3(Unk_GEOut* out);
     virtual void vfunc_4(Unk_GEIn* in);
@@ -46,7 +46,7 @@ MS2_CHECK_SIZE(GameEventCharacterCountRestricted, 0xd8);
 class GameEventOnlinePatch : public GameEvent {
 public:
     GameEventOnlinePatch();
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void vfunc_2();
     virtual void vfunc_3(Unk_GEOut* out);
     virtual void vfunc_4(Unk_GEIn* in);

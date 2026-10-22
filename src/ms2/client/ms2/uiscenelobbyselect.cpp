@@ -220,11 +220,11 @@ UISceneLobby::~UISceneLobby()
 }
 
 // @0x141acdaa0
-CString UISceneLobby::vfunc_1()
+CString UISceneLobby::GetTypeName()
 {
     return "SceneLobby";
 }
-MS2_REPLACE_METHOD(0x141ACDAA0, UISceneLobby, vfunc_1, 61, 0xA1D151FD);
+MS2_REPLACE_METHOD(0x141ACDAA0, UISceneLobby, GetTypeName, 61, 0xA1D151FD);
 
 // @0x141acdaf0
 void UISceneLobby::vfunc_48(int n)
@@ -328,11 +328,11 @@ UISceneLobbyCreate::~UISceneLobbyCreate()
 }
 
 // @0x141acdfe0
-CString UISceneLobbyCreate::vfunc_1()
+CString UISceneLobbyCreate::GetTypeName()
 {
     return "SceneLobbyCreate";
 }
-MS2_REPLACE_METHOD(0x141ACDFE0, UISceneLobbyCreate, vfunc_1, 61, 0x8A27D619);
+MS2_REPLACE_METHOD(0x141ACDFE0, UISceneLobbyCreate, GetTypeName, 61, 0x8A27D619);
 
 // @0x141ace030
 void UISceneLobbyCreate::OnLoadComplete()
@@ -397,11 +397,11 @@ UISceneLobbySelect::~UISceneLobbySelect()
 }
 
 // @0x141ace2f0
-CString UISceneLobbySelect::vfunc_1()
+CString UISceneLobbySelect::GetTypeName()
 {
     return "SceneLobbySelect";
 }
-MS2_REPLACE_METHOD(0x141ACE2F0, UISceneLobbySelect, vfunc_1, 61, 0x90748085);
+MS2_REPLACE_METHOD(0x141ACE2F0, UISceneLobbySelect, GetTypeName, 61, 0x90748085);
 
 // @0x141ace340
 void UISceneLobbySelect::vfunc_48(int n)
@@ -510,11 +510,11 @@ UISceneLobbyServer::~UISceneLobbyServer()
 }
 
 // @0x141ace7c0
-CString UISceneLobbyServer::vfunc_1()
+CString UISceneLobbyServer::GetTypeName()
 {
     return "SceneLobbyServer";
 }
-MS2_REPLACE_METHOD(0x141ACE7C0, UISceneLobbyServer, vfunc_1, 61, 0x87DB86F3);
+MS2_REPLACE_METHOD(0x141ACE7C0, UISceneLobbyServer, GetTypeName, 61, 0x87DB86F3);
 
 // @0x141ace810
 void UISceneLobbyServer::vfunc_48(int n)

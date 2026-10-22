@@ -174,7 +174,7 @@ UIInviteMentoringDialog::UIInviteMentoringDialog() : UIDialog()
 UIInviteMentoringDialog::~UIInviteMentoringDialog() {}
 
 // @0x140c2df90
-CString UIInviteMentoringDialog::vfunc_1() { return "InviteMentoringDialog"; }
+CString UIInviteMentoringDialog::GetTypeName() { return "InviteMentoringDialog"; }
 
 // @0x140c2dfe0
 void UIInviteMentoringDialog::vfunc_67()

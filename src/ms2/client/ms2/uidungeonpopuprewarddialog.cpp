@@ -59,11 +59,11 @@ UIDungeonPopupRewardDialog::~UIDungeonPopupRewardDialog()
 }
 
 // @0x140c0ed60
-CString UIDungeonPopupRewardDialog::vfunc_1()
+CString UIDungeonPopupRewardDialog::GetTypeName()
 {
     return "DungeonPopupRewardDialog";
 }
-MS2_REPLACE_METHOD(0x140C0ED60, UIDungeonPopupRewardDialog, vfunc_1, 61, 0x3A527D89);
+MS2_REPLACE_METHOD(0x140C0ED60, UIDungeonPopupRewardDialog, GetTypeName, 61, 0x3A527D89);
 
 // @0x140c0edb0
 void UIDungeonPopupRewardDialog::OnLoadComplete()

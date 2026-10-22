@@ -64,7 +64,7 @@ UIRimLightDialog::~UIRimLightDialog()
 }
 
 // @0x1417093b0
-CString UIRimLightDialog::vfunc_1()
+CString UIRimLightDialog::GetTypeName()
 {
     return "RimLightDialog";
 }

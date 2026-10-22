@@ -89,7 +89,7 @@ public:
 
     UICashShopDialog();                                             // 0x141033360
     virtual ~UICashShopDialog();                                    //  0 0x1410334e0 (??_G 0x14103c460)
-    virtual CString vfunc_1();                                      //  1 0x141033660 "CashShopDialog"
+    virtual CString GetTypeName();                                      //  1 0x141033660 "CashShopDialog"
     virtual int vfunc_13();                                         // 13 0x141033a50
     virtual void vfunc_15();                                        // 15 0x141033a80 runs the pending refreshes
     virtual void OnLoadComplete();                                  // 22 0x141033970 banners, categories, basket

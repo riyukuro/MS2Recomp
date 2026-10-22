@@ -22,7 +22,7 @@ class UIAdditionalControlDialog : public UIDialog
 public:
     UIAdditionalControlDialog();                                        // 0x1418b25f0 (open tween 1)
     virtual ~UIAdditionalControlDialog();                               //  0 0x1418b50b0 (??_G 0x1418b5260)
-    virtual CString vfunc_1();                                          //  1 0x1418b2670 "AdditionalEffectControlDialog"
+    virtual CString GetTypeName();                                          //  1 0x1418b2670 "AdditionalEffectControlDialog"
     virtual void OnLoadInit();                                          // 20 0x1418b26c0 build the context menu
     virtual void vfunc_26();                                            // 26 0x1418b26f0 drop the list handle
     virtual int vfunc_13();                                             // 13 0x1418b2720 enter / tab / escape keys

@@ -690,7 +690,7 @@ UINameTag::~UINameTag()
 }
 
 // @0x141a60cb0
-CString UINameTag::vfunc_1()
+CString UINameTag::GetTypeName()
 {
     return CString("NameTag");
 }

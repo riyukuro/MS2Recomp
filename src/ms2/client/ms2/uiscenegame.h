@@ -89,7 +89,7 @@ class UISceneGame : public UISceneEntity
 public:
     UISceneGame();                                              // 0x141ac6fa0 (m_6c = 0x620000c)
     virtual ~UISceneGame();                                     //  0 0x141ac7310 (??_G 0x141ac7a30)
-    virtual CString vfunc_1();                                  //  1 0x141ac7350 "SceneGame"
+    virtual CString GetTypeName();                                  //  1 0x141ac7350 "SceneGame"
     virtual int vfunc_13();                                     // 13 0x141ac7650
     virtual int vfunc_14();                                     // 14 0x141ac7830
     virtual void vfunc_15();                                    // 15 0x141ac7620
@@ -105,7 +105,7 @@ class UISceneGameBeautyShop : public UISceneEntity
 public:
     UISceneGameBeautyShop();                                    // 0x141ac7ec0 (m_6c = 0x620001f)
     virtual ~UISceneGameBeautyShop();                           //  0 0x141ac7f60 (??_G 0x141ac92d0)
-    virtual CString vfunc_1();                                  //  1 0x141ac7fc0 "SceneGameBeautyShop"
+    virtual CString GetTypeName();                                  //  1 0x141ac7fc0 "SceneGameBeautyShop"
     virtual int vfunc_13();                                     // 13 0x141ac8340
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141ac8370
     virtual void vfunc_48(int n);                               // 48 0x141ac8010
@@ -139,7 +139,7 @@ class UISceneGameCinematicCutScene : public UISceneEntity
 public:
     UISceneGameCinematicCutScene();                             // 0x141ac9430 (m_6c = 0x6200041)
     virtual ~UISceneGameCinematicCutScene();                    //  0 0x141ac9480 (??_G 0x141ac9770)
-    virtual CString vfunc_1();                                  //  1 0x141ac94c0 "SceneGameCinematicCutScene"
+    virtual CString GetTypeName();                                  //  1 0x141ac94c0 "SceneGameCinematicCutScene"
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141ac9720
     virtual bool vfunc_47();                                    // 47 0x141ac9510
     virtual void vfunc_48(int n);                               // 48 0x141ac9520
@@ -155,7 +155,7 @@ class UISceneGameCinematicTalk : public UISceneEntity
 public:
     UISceneGameCinematicTalk();                                 // 0x141ac97c0 (m_6c = 0x6200031)
     virtual ~UISceneGameCinematicTalk();                        //  0 0x141ac9810
-    virtual CString vfunc_1();                                  //  1 0x141ac9850 "SceneGameCinematicTalk"
+    virtual CString GetTypeName();                                  //  1 0x141ac9850 "SceneGameCinematicTalk"
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141ac9ab0
     virtual void vfunc_48(int n);                               // 48 0x141ac98a0
     virtual void vfunc_49(int n);                               // 49 0x141ac99b0
@@ -178,7 +178,7 @@ class UISceneGamePlay : public UISceneEntity
 public:
     UISceneGamePlay();                                          // 0x141ac9d30 (m_6c = 0x620001d)
     virtual ~UISceneGamePlay();                                 //  0 0x141ac9e80 (??_G 0x141accb10)
-    virtual CString vfunc_1();                                  //  1 0x141ac9ed0 "SceneGamePlay"
+    virtual CString GetTypeName();                                  //  1 0x141ac9ed0 "SceneGamePlay"
     virtual void vfunc_11();                                    // 11 0x141aca1a0
     virtual int vfunc_13();                                     // 13 0x141aca270 the debug hotkeys
     virtual int vfunc_14();                                     // 14 0x141aca2b0
@@ -207,7 +207,7 @@ class UISceneGameScreenShot : public UISceneEntity
 public:
     UISceneGameScreenShot();                                    // 0x141acd1c0 (m_6c = 0x6200020)
     virtual ~UISceneGameScreenShot();                           //  0 0x141acd820 (??_G 0x141acd850)
-    virtual CString vfunc_1();                                  //  1 0x141acd230 ""
+    virtual CString GetTypeName();                                  //  1 0x141acd230 ""
     virtual int vfunc_13();                                     // 13 0x141acd750
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141acd7d0
     virtual bool vfunc_47();                                    // 47 0x141acd280

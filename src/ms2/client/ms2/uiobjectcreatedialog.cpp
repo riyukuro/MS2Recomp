@@ -123,7 +123,7 @@ UIObjectCreateDialog::UIObjectCreateDialog()
 }
 
 // @0x14131f700
-CString UIObjectCreateDialog::vfunc_1()
+CString UIObjectCreateDialog::GetTypeName()
 {
     return "ObjectCreateDialog";
 }

@@ -47,11 +47,11 @@ UIDebugTooltip::~UIDebugTooltip()
 }
 
 // @0x14191a9a0
-CString UIDebugTooltip::vfunc_1()
+CString UIDebugTooltip::GetTypeName()
 {
     return "CubeUGCHead";
 }
-MS2_REPLACE_METHOD(0x14191A9A0, UIDebugTooltip, vfunc_1, 61, 0xDCE84F5B);
+MS2_REPLACE_METHOD(0x14191A9A0, UIDebugTooltip, GetTypeName, 61, 0xDCE84F5B);
 
 // @0x14191a9f0
 int UIDebugTooltip::FUN_14191a9f0()

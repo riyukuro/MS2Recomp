@@ -236,7 +236,7 @@ UIFishingBookDialog::UIFishingBookDialog()
 }
 
 // @0x140f412e0
-CString UIFishingBookDialog::vfunc_1()
+CString UIFishingBookDialog::GetTypeName()
 {
     return "FishingBookDialog";
 }

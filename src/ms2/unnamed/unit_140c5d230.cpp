@@ -743,7 +743,7 @@ UILapenshardSystemDialog::~UILapenshardSystemDialog()
 }
 
 // @0x140c612a0
-CString UILapenshardSystemDialog::vfunc_1()
+CString UILapenshardSystemDialog::GetTypeName()
 {
     return "LapenshardSystemDialog";
 }
@@ -949,7 +949,7 @@ UILapenshardShieldBar::~UILapenshardShieldBar()
 }
 
 // @0x140c5f120
-CString UILapenshardShieldBar::vfunc_1()
+CString UILapenshardShieldBar::GetTypeName()
 {
     return "LapenshardShieldBar";
 }

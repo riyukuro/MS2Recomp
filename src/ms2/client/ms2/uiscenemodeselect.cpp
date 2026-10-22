@@ -64,7 +64,7 @@ UISceneModeSelect::~UISceneModeSelect()
 }
 
 // @0x140e85030
-CString UISceneModeSelect::vfunc_1()
+CString UISceneModeSelect::GetTypeName()
 {
     return "SceneModeSelect";
 }

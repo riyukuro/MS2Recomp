@@ -192,7 +192,7 @@ UIPartySearchRegisterDialog::~UIPartySearchRegisterDialog()
 }
 
 // @0x1413208b0
-CString UIPartySearchRegisterDialog::vfunc_1()
+CString UIPartySearchRegisterDialog::GetTypeName()
 {
     return "PartySearchRegisterDialog";
 }

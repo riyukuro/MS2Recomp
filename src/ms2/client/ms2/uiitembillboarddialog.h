@@ -40,7 +40,7 @@ public:
     UIItemBillBoardDialog();                                                // 0x140c308c0
     virtual ~UIItemBillBoardDialog();                                       //  0 0x140c30a70 (??_G 0x140c354a0)
 
-    virtual CString vfunc_1();                                              //  1 0x140c30bd0 "ItemBillBoardDialog"
+    virtual CString GetTypeName();                                              //  1 0x140c30bd0 "ItemBillBoardDialog"
     virtual void OnLoadComplete();                                          // 22 0x140c30c20
     virtual int vfunc_48() { return 0x4f4f; }                               // 48 UI type id (COMDAT 0x140c354e0)
     virtual int vfunc_65();                                                 // 65 0x140c31fa0

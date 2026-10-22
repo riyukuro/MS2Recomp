@@ -171,7 +171,7 @@ UISystemMenuDialog::UISystemMenuDialog()
 }
 
 // @0x141b12c20
-CString UISystemMenuDialog::vfunc_1()
+CString UISystemMenuDialog::GetTypeName()
 {
     return "SystemMenuDialog";
 }

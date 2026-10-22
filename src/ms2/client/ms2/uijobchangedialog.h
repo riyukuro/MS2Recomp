@@ -50,7 +50,7 @@ public:
 
     UIJobChangeDialog();                                // 0x1419db000
     virtual ~UIJobChangeDialog();                       //  0 0x1419db120 (??_G 0x1419dcf40)
-    virtual CString vfunc_1();                          //  1 0x1419db1b0 "JobChangeDialog"
+    virtual CString GetTypeName();                          //  1 0x1419db1b0 "JobChangeDialog"
     virtual void OnLoadComplete();                      // 22 0x1419db200 show the chosen job
     virtual void vfunc_26();                            // 26 0x1419db250
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

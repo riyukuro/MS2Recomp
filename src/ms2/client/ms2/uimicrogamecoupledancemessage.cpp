@@ -38,7 +38,7 @@ UIMicroGameCoupleDanceMessage::~UIMicroGameCoupleDanceMessage()
 }
 
 // @0x140e65a30
-CString UIMicroGameCoupleDanceMessage::vfunc_1()
+CString UIMicroGameCoupleDanceMessage::GetTypeName()
 {
     return "MicroGameCoupleDanceMessage";
 }

@@ -249,11 +249,11 @@ UIDamageText::~UIDamageText()
 }
 
 // @0x1419114d0
-CString UIDamageText::vfunc_1()
+CString UIDamageText::GetTypeName()
 {
     return "DamageText";
 }
-MS2_REPLACE_METHOD(0x1419114D0, UIDamageText, vfunc_1, 61, 0x693D82EF);
+MS2_REPLACE_METHOD(0x1419114D0, UIDamageText, GetTypeName, 61, 0x693D82EF);
 
 // @0x141911520
 void UIDamageText::vfunc_3()

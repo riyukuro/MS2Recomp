@@ -892,8 +892,8 @@ UIMicroGameCoupleDance::UIMicroGameCoupleDance() : m_selected(-1), m_dances(3, -
     m_28 = FUN_141277f40();
 }
 // @0x140e63f20
-CString UIMicroGameCoupleDance::vfunc_1() { return "MicroGameCoupleDance"; }
-MS2_REPLACE_METHOD(0x140E63F20, UIMicroGameCoupleDance, vfunc_1, 61, 0xBF427CC0);
+CString UIMicroGameCoupleDance::GetTypeName() { return "MicroGameCoupleDance"; }
+MS2_REPLACE_METHOD(0x140E63F20, UIMicroGameCoupleDance, GetTypeName, 61, 0xBF427CC0);
 // @0x140e63f70
 void UIMicroGameCoupleDance::vfunc_15() {
     if (FUN_140e64e80()) FUN_140e646e0();

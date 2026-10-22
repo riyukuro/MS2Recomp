@@ -115,7 +115,7 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString a1, CStringW
 
 // @0x141a72480
 UIObjectStoreDialog::UIObjectStoreDialog()
-    : m_180(vfunc_1())
+    : m_180(GetTypeName())
     , m_188(0)
 {
     FUN_141924170(1);
@@ -128,7 +128,7 @@ UIObjectStoreDialog::~UIObjectStoreDialog()
 }
 
 // @0x141a725e0
-CString UIObjectStoreDialog::vfunc_1()
+CString UIObjectStoreDialog::GetTypeName()
 {
     return "ObjectStoreDialog";
 }
@@ -288,7 +288,7 @@ void UIObjectStoreDialog::FUN_141a72f80(int bBind)
             spBag->FUN_1407cba60("bagId", m_180);
     }
 }
-MS2_REPLACE_METHOD(0x141A725E0, UIObjectStoreDialog, vfunc_1, 61, 0x2433FD6F);
+MS2_REPLACE_METHOD(0x141A725E0, UIObjectStoreDialog, GetTypeName, 61, 0x2433FD6F);
 MS2_REPLACE_METHOD(0x141A72630, UIObjectStoreDialog, vfunc_84, 87, 0x3C22E54B);
 MS2_REPLACE_METHOD(0x141A72690, UIObjectStoreDialog, vfunc_65, 70, 0x508246C9);
 MS2_REPLACE_METHOD(0x141A726E0, UIObjectStoreDialog, vfunc_66, 370, 0x4CEE281C);

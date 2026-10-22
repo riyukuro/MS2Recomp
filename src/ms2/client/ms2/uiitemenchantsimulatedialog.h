@@ -20,7 +20,7 @@ class UIItemEnchantSimulateDialog : public UIDialog
 {
 public:
     UIItemEnchantSimulateDialog();                              // 0x1412d1400
-    virtual CString vfunc_1();                                  //  1 0x1412d1450
+    virtual CString GetTypeName();                                  //  1 0x1412d1450
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                 // 28 0x1412d14a0
     virtual void vfunc_79(void* p);                             // 79 0x1412d19a0 (CInPacket*)

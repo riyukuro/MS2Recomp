@@ -17,7 +17,7 @@ class UIScreenMask : public UIHeadUpDisplay
 public:
     UIScreenMask();                                                 // 0x141ad0650 (m_58 = 0, m_2c = 10)
     virtual ~UIScreenMask();                                        //  0 0x141ad06b0 (??_G 0x141ad0b10)
-    virtual CString vfunc_1();                                      //  1 0x141ad06f0 "ScreenMask"
+    virtual CString GetTypeName();                                      //  1 0x141ad06f0 "ScreenMask"
     virtual void vfunc_2();                                         //  2 0x141ad0740 show (m_2c = 10)
     virtual void vfunc_3();                                         //  3 0x141ad0770 hide
     virtual void OnLoadInit();                                      // 20 0x141ad0790 the movie's "load" method with the effect name

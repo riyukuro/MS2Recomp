@@ -82,7 +82,7 @@ class UIPvPGuildTeamDialog : public UIDialog
 public:
     UIPvPGuildTeamDialog();                                                                         // 0x141339640
     virtual ~UIPvPGuildTeamDialog();                                                                //  0 0x141339780
-    virtual CString vfunc_1();                                                                      //  1 0x141339880
+    virtual CString GetTypeName();                                                                      //  1 0x141339880
     virtual void OnLoadComplete();                                                                  // 22 0x1413399a0
     virtual void vfunc_26();                                                                        // 26 0x141339c50
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

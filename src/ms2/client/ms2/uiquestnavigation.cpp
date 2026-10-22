@@ -508,7 +508,7 @@ UIQuestNavigation::~UIQuestNavigation()
 }
 
 // @0x140e7aa40
-CString UIQuestNavigation::vfunc_1()
+CString UIQuestNavigation::GetTypeName()
 {
     return "QuestNavigation";
 }

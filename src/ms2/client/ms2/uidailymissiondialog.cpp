@@ -163,7 +163,7 @@ UIDailyMissionDialog::~UIDailyMissionDialog()
 }
 
 // @0x140bff660
-CString UIDailyMissionDialog::vfunc_1() { return "DailyMissionDialog"; }
+CString UIDailyMissionDialog::GetTypeName() { return "DailyMissionDialog"; }
 
 // @0x140bff6b0
 int UIDailyMissionDialog::vfunc_65()
@@ -587,7 +587,7 @@ void UIDailyMissionDialog::FUN_140c01790(ASObj& rRow, unsigned nQuestId, int bNa
     spItem->FUN_140526c70(pReward->m_job);
     int nFlags = 0x415;
     CString strBind;
-    strBind.Format("%s.%d", (LPCSTR)vfunc_1(), m_188.GetCount() + 1);
+    strBind.Format("%s.%d", (LPCSTR)GetTypeName(), m_188.GetCount() + 1);
     FUN_141415450(strBind, spItem, 0, nFlags, 0x800);
     rRow.FUN_1407cba60("binding", strBind);
     if (bName != 0)

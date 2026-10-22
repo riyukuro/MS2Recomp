@@ -20,7 +20,7 @@ class UIDungeonSearchSettingDialog : public UIModalDialog
 public:
     UIDungeonSearchSettingDialog();                             // 0x140c0fdc0
     virtual ~UIDungeonSearchSettingDialog();                    //  0 0x140c0fee0 (??_G 0x140c14230)
-    virtual CString vfunc_1();                                  //  1 0x140c0ffd0 "DungeonSearchSettingDialog"
+    virtual CString GetTypeName();                                  //  1 0x140c0ffd0 "DungeonSearchSettingDialog"
     virtual void OnLoadComplete();                              // 22 0x140c10020
     virtual void vfunc_26();                                    // 26 0x140c110b0
     virtual int vfunc_48() { return 0x4f86; }                   // 48 0x140c14270

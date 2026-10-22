@@ -14,7 +14,7 @@ class UIBuiltInDialog : public UIDialog
 public:
     UIBuiltInDialog();                                              // 0x1418dcf70 (m_2c = 14, m_80 = 0, m_88 = 1)
     virtual ~UIBuiltInDialog();                                     //  0 0x1418dd000 (??_G 0x1418dd180)
-    virtual CString vfunc_1();                                      //  1 0x1418dd040 "BuiltInDialog"
+    virtual CString GetTypeName();                                      //  1 0x1418dd040 "BuiltInDialog"
     virtual void OnLoadInit();                                      // 20 0x1418dd150
     virtual void vfunc_67();                                        // 67 0x1418dd090 UIDialog::vfunc_67()
 };

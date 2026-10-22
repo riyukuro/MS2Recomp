@@ -12,10 +12,10 @@
 // MS2-PIN: ??$forward@AEBQ8UIItemRemakeScrollDialog@@EAAXAEAVItemScrollSlot@@@Z@std@@YAAEBQ8UIItemRemakeScrollDialog@@EAAXAEAVItemScrollSlot@@@ZAEBQ81@EAAX0@Z@Z 0x140f601c0 ; unique
 // MS2-PIN: ??$forward@AEBQ8UIItemRemakeScrollDialog@@EAAXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@std@@YAAEBQ8UIItemRemakeScrollDialog@@EAAXAEAVItemScrollSlot@@PEAVDragSlot@@@ZAEBQ81@EAAX01@Z@Z 0x140f601d0 ; unique
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@QEAA@AEBV01@@Z 0x140f60370 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f60800 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVItemScrollSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f60860 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f608c0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f60920 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f60800 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVItemScrollSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f60860 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f608c0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f60920 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAXAEAVCInPacket@@@Z 0x140f60980 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVItemScrollSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@@Z@@UEAAXAEAVItemScrollSlot@@@Z 0x140f609b0 ; unique
 // MS2-PIN: ??$Call@VUIItemRemakeScrollDialog@@P81@EAAXAEAVCInPacket@@@Z@?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@CAXAEAU?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@AEAVCInPacket@@@Z 0x140f60a60 ; prop
@@ -316,7 +316,7 @@ UIItemRemakeScrollDialog::~UIItemRemakeScrollDialog()
 }
 
 // @0x140f583e0
-CString UIItemRemakeScrollDialog::vfunc_1()
+CString UIItemRemakeScrollDialog::GetTypeName()
 {
     return "ItemRemakeScrollDialog";
 }
@@ -327,8 +327,8 @@ void UIItemRemakeScrollDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     SetState(1);
-    m_strSlot = FUN_140540050("{0}.slot", vfunc_1());
-    m_strIngredientSlot = FUN_140540050("targetIngredient.slot", vfunc_1());
+    m_strSlot = FUN_140540050("{0}.slot", GetTypeName());
+    m_strIngredientSlot = FUN_140540050("targetIngredient.slot", GetTypeName());
     FUN_140d42540(m_strSlot, m_nScrollUid, m_spTarget);
     FUN_140d42540(m_strIngredientSlot, m_nIngredientUid, m_spIngredient);
     ItemScrollSlot* pSlot = FUN_140f5d0c0(CString(m_strSlot));

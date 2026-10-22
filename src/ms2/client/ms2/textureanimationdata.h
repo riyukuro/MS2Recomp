@@ -106,7 +106,7 @@ class UITextureDensityDialog : public UIDialog
 public:
     UITextureDensityDialog();                                   // 0x14184ac20
     virtual ~UITextureDensityDialog();                          //  0 0x14184aca0 (??_G 0x14184aff0)
-    virtual CString vfunc_1();                                  //  1 0x14184ad50
+    virtual CString GetTypeName();                                  //  1 0x14184ad50
     virtual void OnLoadComplete();                              // 22 0x14184ace0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x14184ada0
     virtual int vfunc_48() { return 0x4eaa; }                   // 48 (COMDAT 0x14184b030)

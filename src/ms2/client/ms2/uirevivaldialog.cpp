@@ -406,7 +406,7 @@ UIRevivalDialog::~UIRevivalDialog()
 }
 
 // @0x141aba800
-CString UIRevivalDialog::vfunc_1()
+CString UIRevivalDialog::GetTypeName()
 {
     return "RevivalDialog";
 }

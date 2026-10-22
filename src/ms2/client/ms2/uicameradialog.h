@@ -24,7 +24,7 @@ class UICameraDialog : public UIDialog
 public:
     UICameraDialog();                                           // 0x141031f80
     virtual ~UICameraDialog();                                  //  0 0x141031fd0 (??_G 0x141032d00)
-    virtual CString vfunc_1();                                  //  1 0x141032010
+    virtual CString GetTypeName();                                  //  1 0x141032010
     virtual void OnLoadComplete();                              // 22 0x141032060 initData from the camera
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                 // 28 0x141032120

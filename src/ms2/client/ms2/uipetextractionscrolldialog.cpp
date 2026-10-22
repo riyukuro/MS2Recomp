@@ -209,14 +209,14 @@ DragSlot* UIPetExtractionScrollDialog::SlotBag::vfunc_16(int nIndex)
 
 // @0x140e71190
 UIPetExtractionScrollDialog::UIPetExtractionScrollDialog()
-    : m_strBag(vfunc_1()), m_nScrollUid(0), m_nTargetUid(0)
+    : m_strBag(GetTypeName()), m_nScrollUid(0), m_nTargetUid(0)
 {
     FUN_141924170(1);
     m_164 = 1;
 }
 
 // @0x140e71240
-CString UIPetExtractionScrollDialog::vfunc_1()
+CString UIPetExtractionScrollDialog::GetTypeName()
 {
     return "PetExtractionScrollDialog";
 }

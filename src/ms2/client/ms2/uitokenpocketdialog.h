@@ -17,7 +17,7 @@ class UITokenPocketDialog : public UIDialog
 public:
     UITokenPocketDialog();                                      // 0x1413518a0
     virtual ~UITokenPocketDialog();                             //  0 0x1413519b0 (??_G 0x1413532a0)
-    virtual CString vfunc_1();                                  //  1 0x141351aa0 "TokenPocketDialog"
+    virtual CString GetTypeName();                                  //  1 0x141351aa0 "TokenPocketDialog"
     virtual void OnLoadComplete();                              // 22 0x141351af0 build the token slots
     virtual void vfunc_26();                                    // 26 0x1413522f0 drop the slots, stop listening
     virtual void vfunc_43();                                    // 43 0x1413524b0 place the movie

@@ -18,7 +18,7 @@ class UIMusicConcertDialog : public UIDialog
 public:
     UIMusicConcertDialog();                                     // 0x140e694a0
     virtual ~UIMusicConcertDialog();                            //  0 0x140e695a0 (??_G 0x140e6b4f0)
-    virtual CString vfunc_1();                                  //  1 0x140e6a000 "MusicConcertDialog"
+    virtual CString GetTypeName();                                  //  1 0x140e6a000 "MusicConcertDialog"
     virtual void OnLoadComplete();                              // 22 0x140e69760 bind the six action buttons, the fold button, the top text
     virtual void vfunc_26();                                    // 26 0x140e69660
     virtual void vfunc_43();                                    // 43 0x140e6a050

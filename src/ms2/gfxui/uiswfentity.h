@@ -35,13 +35,13 @@ class UISwfEntity : public CPtred, public IMessageListener
 public:
     UISwfEntity();                                                                                      // 0x1422db480
     virtual ~UISwfEntity();                                                                             //  0 0x1422db5d0 (??_G 0x1422dcb70)
-    virtual CString vfunc_1();                                                                          //  1 class name ("SwfEntity"; UI{0}.swf base name)
+    virtual CString GetTypeName();                                                                          //  1 class name ("SwfEntity"; UI{0}.swf base name)
     virtual void vfunc_2();                                                                             //  2
     virtual void vfunc_3();                                                                             //  3
     virtual int vfunc_4();                                                                              //  4 returns 0
     virtual int vfunc_5();                                                                              //  5 returns 0 (OnLoadComplete calls it)
     virtual int vfunc_6();                                                                              //  6 returns 0
-    virtual CString vfunc_7();                                                                          //  7 swf name; default vfunc_1()
+    virtual CString vfunc_7();                                                                          //  7 swf name; default GetTypeName()
     virtual void vfunc_8(int nVisible);                                                                 //  8 root movie clip SetVisible
     virtual int vfunc_9();                                                                              //  9 root movie clip IsVisible
     virtual void vfunc_10();                                                                            // 10

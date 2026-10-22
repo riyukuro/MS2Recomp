@@ -11,8 +11,8 @@
 // MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVUIItemMergeRevertDialog@@P81@EAAXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@@UEAA@XZ 0x140e4da10 ; order
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIItemMergeRevertDialog@@P81@EAAXAEAVItemScrollSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@@Z@@UEAAPEAXI@Z 0x140e4da90 ; order
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIItemMergeRevertDialog@@P81@EAAXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@@UEAAPEAXI@Z 0x140e4dad0 ; order
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIItemMergeRevertDialog@@P81@EAAXAEAVItemScrollSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140e4dbe0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIItemMergeRevertDialog@@P81@EAAXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140e4dc40 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIItemMergeRevertDialog@@P81@EAAXAEAVItemScrollSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140e4dbe0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIItemMergeRevertDialog@@P81@EAAXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140e4dc40 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIItemMergeRevertDialog@@P81@EAAXAEAVItemScrollSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x140e4dd90 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIItemMergeRevertDialog@@P81@EAAXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x140e4ddf0 ; unique
 // MS2-PIN: ??__Fs_strSortTypeNames2@@YAXXZ 0x142ca6a90 ; probe
@@ -100,7 +100,7 @@ UIItemMergeRevertDialog::UIItemMergeRevertDialog()
 }
 
 // @0x140e4c0d0
-CString UIItemMergeRevertDialog::vfunc_1()
+CString UIItemMergeRevertDialog::GetTypeName()
 {
     return "ItemMergeRevertDialog";
 }
@@ -117,7 +117,7 @@ int UIItemMergeRevertDialog::vfunc_65()
 void UIItemMergeRevertDialog::vfunc_67()
 {
     m_nItemUid = 0;
-    FUN_140d42630(vfunc_1());
+    FUN_140d42630(GetTypeName());
     UIDialog::vfunc_67();
 }
 
@@ -163,16 +163,16 @@ int UIItemMergeRevertDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
 // @0x140e4c440
 void UIItemMergeRevertDialog::FUN_140e4c440()
 {
-    FUN_140d42630(vfunc_1());
-    FUN_140d42540(vfunc_1(), m_nItemUid, MS2Ptr<CItem>(0));
-    if (ItemScrollSlot* pSlot = FUN_140d42c30(FUN_1422c8e90(vfunc_1())))
+    FUN_140d42630(GetTypeName());
+    FUN_140d42540(GetTypeName(), m_nItemUid, MS2Ptr<CItem>(0));
+    if (ItemScrollSlot* pSlot = FUN_140d42c30(FUN_1422c8e90(GetTypeName())))
     {
         FUN_140d42bc0(pSlot, Unk_MrRemoveFn(this, &UIItemMergeRevertDialog::FUN_140e4ce70));
         FUN_140d42b70(pSlot, Unk_MrDropFn(this, &UIItemMergeRevertDialog::FUN_140e4cea0));
     }
     ASObj obj(2);
     obj.FUN_1407cb9c0("isReady", 1);
-    obj.FUN_1407cba60("binding", vfunc_1());
+    obj.FUN_1407cba60("binding", GetTypeName());
     obj.FUN_1407cb9c0("price", 0);
     m_30->Invoke("setData", obj);
 }
@@ -187,9 +187,9 @@ void UIItemMergeRevertDialog::FUN_140e4c7a0(CItem* pItem)
 // MS2-FUNCTIONAL: call-result temporaries / frame-slot order differ (source form not found)
 void UIItemMergeRevertDialog::FUN_140e4c7d0(CItem* pItem)
 {
-    FUN_140d42630(vfunc_1());
-    FUN_140d42540(vfunc_1(), m_nItemUid, MS2Ptr<CItem>(pItem));
-    if (ItemScrollSlot* pSlot = FUN_140d42c30(FUN_1422c8e90(vfunc_1())))
+    FUN_140d42630(GetTypeName());
+    FUN_140d42540(GetTypeName(), m_nItemUid, MS2Ptr<CItem>(pItem));
+    if (ItemScrollSlot* pSlot = FUN_140d42c30(FUN_1422c8e90(GetTypeName())))
     {
         FUN_140d42bc0(pSlot, Unk_MrRemoveFn(this, &UIItemMergeRevertDialog::FUN_140e4ce70));
         FUN_140d42b70(pSlot, Unk_MrDropFn(this, &UIItemMergeRevertDialog::FUN_140e4cea0));
@@ -201,7 +201,7 @@ void UIItemMergeRevertDialog::FUN_140e4c7d0(CItem* pItem)
     FUN_14083d2b0(strText);
     ASObj obj(2);
     obj.FUN_1407cb9c0("isReady", 0);
-    obj.FUN_1407cba60("binding", vfunc_1());
+    obj.FUN_1407cba60("binding", GetTypeName());
     obj.FUN_1407cbb20("name", pItem->FUN_140528160());
     obj.FUN_1407cbb20("optionStr", CStringW(strText));
     obj.FUN_1407cbbe0("enabled", FUN_140e4d330(pItem) == 0);

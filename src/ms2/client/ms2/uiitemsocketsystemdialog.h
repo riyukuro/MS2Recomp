@@ -17,7 +17,7 @@ class UIItemSocketSystemDialog : public UIModalDialog
 public:
     UIItemSocketSystemDialog();                                 // 0x140f68da0
     virtual ~UIItemSocketSystemDialog();                        //  0 0x140f68ed0 (??_G 0x140f6b270)
-    virtual CString vfunc_1();                                  //  1 0x140f68fc0 "ItemSocketSystemDialog"
+    virtual CString GetTypeName();                                  //  1 0x140f68fc0 "ItemSocketSystemDialog"
     virtual void OnLoadComplete();                              // 22 0x140f69010 fill the tab strip
     virtual void vfunc_26();                                    // 26 0x140f69920 release the pages
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

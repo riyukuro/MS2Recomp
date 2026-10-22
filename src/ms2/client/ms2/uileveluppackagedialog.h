@@ -27,7 +27,7 @@ class UILevelUpPackageDialog : public UIDialog, public UIQuestEventListener, pub
 public:
     UILevelUpPackageDialog();                                                                   // 0x140ea44b0
     virtual ~UILevelUpPackageDialog();                                                          //  0 0x140ea45b0 (??_G 0x140ea5f30)
-    virtual CString vfunc_1();                                                                  //  1 0x140ea4660
+    virtual CString GetTypeName();                                                                  //  1 0x140ea4660
     virtual int vfunc_65();                                                                     // 65 0x140ea46b0
     virtual void vfunc_67();                                                                    // 67 0x140ea4750
     virtual void OnLoadComplete();                                                              // 22 0x140ea4830

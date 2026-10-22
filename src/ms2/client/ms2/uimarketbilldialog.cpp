@@ -330,7 +330,7 @@ UIMarketBillDialog::~UIMarketBillDialog()
 }
 
 // @0x140ea7100
-CString UIMarketBillDialog::vfunc_1()
+CString UIMarketBillDialog::GetTypeName()
 {
     return CString("MarketBillDialog");
 }

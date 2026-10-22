@@ -18,7 +18,7 @@ class UIEpProgress : public UIPopupEntity, public UIStatusEventListener
 public:
     UIEpProgress(Unk_PopupOwner* pOwner);                           // 0x141931550
     virtual ~UIEpProgress();                                        //  0 0x141931640 (??_G 0x141931e60)
-    virtual CString vfunc_1();                                      //  1 0x1419316f0 "EpProgress"
+    virtual CString GetTypeName();                                      //  1 0x1419316f0 "EpProgress"
     virtual void vfunc_41(const Scaleform::GFx::Value& root);       // 41 0x141931d10 m_30 = new ASGameEntity
     virtual int vfunc_48() { return 0x4e66; }                       // 48 0x141931ea0 UI type id
     virtual void vfunc_52();                                        // 52 0x141931790

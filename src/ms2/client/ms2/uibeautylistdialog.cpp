@@ -53,7 +53,7 @@ UIBeautyListDialog::~UIBeautyListDialog()
 }
 
 // @0x140f00550
-CString UIBeautyListDialog::vfunc_1()
+CString UIBeautyListDialog::GetTypeName()
 {
     return "BeautyListDialog";
 }
@@ -158,7 +158,7 @@ int UIBeautyListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
 }
 
 // ---- hooks ----
-MS2_REPLACE_METHOD(0x140F00550, UIBeautyListDialog, vfunc_1, 61, 0x39CDE7B6);
+MS2_REPLACE_METHOD(0x140F00550, UIBeautyListDialog, GetTypeName, 61, 0x39CDE7B6);
 MS2_REPLACE_METHOD(0x140F005A0, UIBeautyListDialog, vfunc_65, 37, 0x08DECE9B);
 MS2_REPLACE_METHOD(0x140F005D0, UIBeautyListDialog, vfunc_67, 24, 0xCDB64A16);
 MS2_REPLACE_METHOD(0x140F005F0, UIBeautyListDialog, OnLoadComplete, 24, 0xF14792AA);

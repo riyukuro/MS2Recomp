@@ -455,7 +455,7 @@ UIHpBar::~UIHpBar()
 }
 
 // @0x1419928a0
-CString UIHpBar::vfunc_1()
+CString UIHpBar::GetTypeName()
 {
     return CString("HpBar");
 }
@@ -603,7 +603,7 @@ UITombStoneBar::~UITombStoneBar()
 }
 
 // @0x141993080
-CString UITombStoneBar::vfunc_1()
+CString UITombStoneBar::GetTypeName()
 {
     return CString("TombGaugeBar");
 }
@@ -709,7 +709,7 @@ UISlimeEventBar::~UISlimeEventBar()
 }
 
 // @0x141993650
-CString UISlimeEventBar::vfunc_1()
+CString UISlimeEventBar::GetTypeName()
 {
     return CString("SlimeEventBar");
 }

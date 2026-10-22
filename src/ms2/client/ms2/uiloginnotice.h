@@ -14,7 +14,7 @@ class UILoginNotice : public UIDialog
 public:
     UILoginNotice();
     virtual ~UILoginNotice();
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual void OnLoadComplete();
     virtual void vfunc_26();
     void SendNoticeDialog();

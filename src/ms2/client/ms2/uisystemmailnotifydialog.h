@@ -36,7 +36,7 @@ class UISystemMailNotifyDialog : public UIDialog
 public:
     UISystemMailNotifyDialog();                                 // 0x1412a4590
     virtual ~UISystemMailNotifyDialog();                        //  0 0x1412a47f0 (??_G 0x1412a7010)
-    virtual CString vfunc_1();                                  //  1 0x1412a49b0 "SystemMailNotifyDialog"
+    virtual CString GetTypeName();                                  //  1 0x1412a49b0 "SystemMailNotifyDialog"
     virtual void OnLoadComplete();                              // 22 0x1412a4a00 bind the two panels, buttons and slot
     virtual void vfunc_26();                                    // 26 0x1412a52b0 reset
     virtual int vfunc_48() { return 0x4edc; }                   // 48 0x1412a7110 UI type id

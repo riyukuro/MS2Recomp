@@ -78,7 +78,7 @@ public:
 
     UIShopDialog();                                                 // 0x141af2420
     virtual ~UIShopDialog();                                        //  0 0x141af2990 (??_G 0x141b0a130)
-    virtual CString vfunc_1();                                      //  1 0x141af2be0 the movie name of the shop type
+    virtual CString GetTypeName();                                      //  1 0x141af2be0 the movie name of the shop type
     virtual int vfunc_13();                                         // 13 0x141af7b00 Enter in the search box
     virtual void vfunc_16();                                        // 16 0x141af8000
     virtual bool vfunc_17();                                        // 17 0x141af8030

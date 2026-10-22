@@ -106,7 +106,7 @@ UIPopupNpcTalkDialog::~UIPopupNpcTalkDialog()
 }
 
 // @0x140e769d0
-CString UIPopupNpcTalkDialog::vfunc_1() { return "PopupNpcTalkDialog"; }
+CString UIPopupNpcTalkDialog::GetTypeName() { return "PopupNpcTalkDialog"; }
 
 // @0x140e76a20
 int UIPopupNpcTalkDialog::vfunc_65() { if (!UIDialog::vfunc_65()) return 0; return 1; }

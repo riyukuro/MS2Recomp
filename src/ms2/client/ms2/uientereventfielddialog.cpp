@@ -5,8 +5,8 @@
 // MS2-PIN: ??$?8PEAVUIEnterEventFieldDialog@@P80@EAAXPEAVNotifyObject@@@Z@std@@YA_NAEBU?$pair@PEAVUIEnterEventFieldDialog@@P81@EAAXPEAVNotifyObject@@@Z@0@0@Z 0x140f40670 ; prop
 // MS2-PIN: ??$?8PEAVUIEnterEventFieldDialog@@P80@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA_NAEBU?$pair@PEAVUIEnterEventFieldDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@0@Z 0x140f406e0 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIEnterEventFieldDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBV01@@Z 0x140f40820 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIEnterEventFieldDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f40a70 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIEnterEventFieldDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f40ad0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIEnterEventFieldDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f40a70 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIEnterEventFieldDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f40ad0 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIEnterEventFieldDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAXPEAVNotifyObject@@@Z 0x140f40b30 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIEnterEventFieldDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x140f40b60 ; unique
 // MS2-PIN: ??$Call@VUIEnterEventFieldDialog@@P81@EAAXPEAVNotifyObject@@@Z@?$DelegateImpl@U?$pair@PEAVUIEnterEventFieldDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@CAXAEAU?$pair@PEAVUIEnterEventFieldDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@PEAVNotifyObject@@@Z 0x140f40ba0 ; unique
@@ -88,11 +88,11 @@ UIEnterEventFieldDialog::~UIEnterEventFieldDialog()
 }
 
 // @0x140f3fbe0
-CString UIEnterEventFieldDialog::vfunc_1()
+CString UIEnterEventFieldDialog::GetTypeName()
 {
     return "EnterEventFieldDialog";
 }
-MS2_REPLACE_METHOD(0x140F3FBE0, UIEnterEventFieldDialog, vfunc_1, 61, 0x33340729);
+MS2_REPLACE_METHOD(0x140F3FBE0, UIEnterEventFieldDialog, GetTypeName, 61, 0x33340729);
 
 // @0x140f3fc30
 void UIEnterEventFieldDialog::vfunc_67()

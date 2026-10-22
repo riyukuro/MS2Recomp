@@ -51,7 +51,7 @@ public:
 
     UILevelUpGuideDialog();                                                                     // 0x140f84310
     virtual ~UILevelUpGuideDialog();                                                            //  0 0x140f84450 (??_G 0x140f8a980)
-    virtual CString vfunc_1();                                                                  //  1 0x140f84520
+    virtual CString GetTypeName();                                                                  //  1 0x140f84520
     virtual int vfunc_65();                                                                     // 65 0x140f84570
     virtual void vfunc_67();                                                                    // 67 0x140f84610
     virtual void OnLoadComplete();                                                              // 22 0x140f84900

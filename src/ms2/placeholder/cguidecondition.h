@@ -47,7 +47,7 @@ class CGuideConditionFieldId : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a9bc0
     CGuideConditionFieldId();                               // 0x1413b2cf0
-    virtual CStringW vfunc_1();                             // 1 0x1413a9c20
+    virtual CStringW GetTypeName();                             // 1 0x1413a9c20
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a9c70
     virtual int vfunc_3();                                  // 3 0x1413a9d40
     virtual CStringW vfunc_7();                             // 7 0x1413a9df0
@@ -64,7 +64,7 @@ class CGuideConditionCountItem : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a9610
     CGuideConditionCountItem();                             // 0x1413b2b60
-    virtual CStringW vfunc_1();                             // 1 0x1413a9670
+    virtual CStringW GetTypeName();                             // 1 0x1413a9670
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a96c0: itemType / minValue / maxValue
     virtual int vfunc_3();                                  // 3 0x1413a9770
     virtual CStringW vfunc_7();                             // 7 0x1413a9820
@@ -83,7 +83,7 @@ class CGuideConditionCountInDoorInstallItem : public CGuideConditionCountItem
 public:
     static ClassObject* CreateObject();                     // 0x1413a9900
     CGuideConditionCountInDoorInstallItem();                // 0x1413b2b30
-    virtual CStringW vfunc_1();                             // 1 0x1413a9960
+    virtual CStringW GetTypeName();                             // 1 0x1413a9960
     virtual int vfunc_3();                                  // 3 0x1413a99b0
     virtual void vfunc_5();                                 // 5 0x1413a9a50
 
@@ -97,7 +97,7 @@ class CGuideConditionInput : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a6580
     CGuideConditionInput();                                 // 0x1413a6630
-    virtual CStringW vfunc_1();                             // 1 0x1413a65e0
+    virtual CStringW GetTypeName();                             // 1 0x1413a65e0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a6670
     virtual int vfunc_3();                                  // 3 0x1413a66c0
     virtual void vfunc_4();                                 // 4 0x1413a67d0
@@ -114,7 +114,7 @@ class CGuideConditionActionInput : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a68b0
     CGuideConditionActionInput();
-    virtual CStringW vfunc_1();                             // 1 0x1413a6910
+    virtual CStringW GetTypeName();                             // 1 0x1413a6910
     virtual int vfunc_3();                                  // 3 0x1413a6960
 };
 MS2_CHECK_SIZE(CGuideConditionActionInput, 0x28);
@@ -125,7 +125,7 @@ class CGuideConditionReturnPortal : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a6bc0
     CGuideConditionReturnPortal();
-    virtual CStringW vfunc_1();                             // 1 0x1413a6c20
+    virtual CStringW GetTypeName();                             // 1 0x1413a6c20
     virtual int vfunc_3();                                  // 3 0x1413a6c70
 };
 MS2_CHECK_SIZE(CGuideConditionReturnPortal, 0x28);
@@ -136,7 +136,7 @@ class CGuideConditionPortalEnable : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a6ca0
     CGuideConditionPortalEnable();
-    virtual CStringW vfunc_1();                             // 1 0x1413a6d00
+    virtual CStringW GetTypeName();                             // 1 0x1413a6d00
     virtual int vfunc_3();                                  // 3 0x1413a6d50
 };
 MS2_CHECK_SIZE(CGuideConditionPortalEnable, 0x28);
@@ -147,7 +147,7 @@ class CGuideConditionMovement : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a76f0
     CGuideConditionMovement();                              // 0x1413a77a0
-    virtual CStringW vfunc_1();                             // 1 0x1413a7750
+    virtual CStringW GetTypeName();                             // 1 0x1413a7750
     virtual int vfunc_3();                                  // 3 0x1413a7820
     virtual void vfunc_4();                                 // 4 0x1413a7950
 
@@ -162,7 +162,7 @@ class CGuideConditionInventoryTab : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a79a0
     CGuideConditionInventoryTab();
-    virtual CStringW vfunc_1();                             // 1 0x1413a7a00
+    virtual CStringW GetTypeName();                             // 1 0x1413a7a00
     virtual int vfunc_3();                                  // 3 0x1413a7a50
 };
 MS2_CHECK_SIZE(CGuideConditionInventoryTab, 0x28);
@@ -173,7 +173,7 @@ class CGuideConditionGameScene : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a7ad0
     CGuideConditionGameScene();
-    virtual CStringW vfunc_1();                             // 1 0x1413a7b30
+    virtual CStringW GetTypeName();                             // 1 0x1413a7b30
     virtual int vfunc_3();                                  // 3 0x1413a7b80
 };
 MS2_CHECK_SIZE(CGuideConditionGameScene, 0x28);
@@ -184,7 +184,7 @@ class CGuideConditionNext : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a7bc0
     CGuideConditionNext();                                  // 0x1413a7c70
-    virtual CStringW vfunc_1();                             // 1 0x1413a7c20
+    virtual CStringW GetTypeName();                             // 1 0x1413a7c20
     virtual int vfunc_3();                                  // 3 0x1413a7cb0
     virtual void vfunc_4();                                 // 4 0x1413a7d40
 
@@ -199,7 +199,7 @@ class CGuideConditionQuestSatisfied : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a7d70
     CGuideConditionQuestSatisfied();                        // 0x1413b3310
-    virtual CStringW vfunc_1();                             // 1 0x1413a7dd0
+    virtual CStringW GetTypeName();                             // 1 0x1413a7dd0
     virtual int vfunc_3();                                  // 3 0x1413a7e20
 };
 MS2_CHECK_SIZE(CGuideConditionQuestSatisfied, 0x28);
@@ -210,7 +210,7 @@ class CGuideConditionQuestComplete : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a7e60
     CGuideConditionQuestComplete();                         // 0x1413b32b0
-    virtual CStringW vfunc_1();                             // 1 0x1413a7ec0
+    virtual CStringW GetTypeName();                             // 1 0x1413a7ec0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a7f10
     virtual int vfunc_3();                                  // 3 0x1413a7f50
     virtual int vfunc_8();                                  // 8 0x1413a7f90
@@ -223,7 +223,7 @@ class CGuideConditionQuestProgress : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a7fc0
     CGuideConditionQuestProgress();                         // 0x1413b32e0
-    virtual CStringW vfunc_1();                             // 1 0x1413a8020
+    virtual CStringW GetTypeName();                             // 1 0x1413a8020
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a8070
     virtual int vfunc_3();                                  // 3 0x1413a80b0
     virtual int vfunc_8();                                  // 8 0x1413a80f0
@@ -236,7 +236,7 @@ class CGuideConditionDead : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a8120
     CGuideConditionDead();                                  // 0x1413b2bc0
-    virtual CStringW vfunc_1();                             // 1 0x1413a8180
+    virtual CStringW GetTypeName();                             // 1 0x1413a8180
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a81d0
     virtual int vfunc_3();                                  // 3 0x1413a8210
     virtual int vfunc_8();                                  // 8 0x1413a8260
@@ -249,7 +249,7 @@ class CGuideConditionConstructMode : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a8270
     CGuideConditionConstructMode();                         // 0x1413b2a70
-    virtual CStringW vfunc_1();                             // 1 0x1413a82d0
+    virtual CStringW GetTypeName();                             // 1 0x1413a82d0
     virtual int vfunc_3();                                  // 3 0x1413a8320
 };
 MS2_CHECK_SIZE(CGuideConditionConstructMode, 0x28);
@@ -262,7 +262,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413a6010
     CGuideConditionDialog();                                // 0x1413a60c0
     virtual ~CGuideConditionDialog();                       // 0 0x1413b4700
-    virtual CStringW vfunc_1();                             // 1 0x1413a6070
+    virtual CStringW GetTypeName();                             // 1 0x1413a6070
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a6480: dialogName / dialogID / isOpen / subIndex / control
     virtual int vfunc_3();                                  // 3 0x1413a6140
     virtual CStringW vfunc_7();                             // 7 0x1413a6300
@@ -291,7 +291,7 @@ class CGuideConditionPosition : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a6e30
     CGuideConditionPosition();                              // 0x1413a6ee0
-    virtual CStringW vfunc_1();                             // 1 0x1413a6e90
+    virtual CStringW GetTypeName();                             // 1 0x1413a6e90
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a6f30: the "cube" children (pos="x,y,z" range=75)
     virtual int vfunc_3();                                  // 3 0x1413a70e0
     virtual CStringW vfunc_7();                             // 7 0x1413a7220
@@ -306,7 +306,7 @@ class CGuideConditionState : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a73a0
     CGuideConditionState();
-    virtual CStringW vfunc_1();                             // 1 0x1413a7400
+    virtual CStringW GetTypeName();                             // 1 0x1413a7400
     virtual int vfunc_3();                                  // 3 0x1413a7450
 };
 MS2_CHECK_SIZE(CGuideConditionState, 0x28);
@@ -317,7 +317,7 @@ class CGuideConditionInteractable : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a74c0
     CGuideConditionInteractable();
-    virtual CStringW vfunc_1();                             // 1 0x1413a7520
+    virtual CStringW GetTypeName();                             // 1 0x1413a7520
     virtual int vfunc_3();                                  // 3 0x1413a7570
 };
 MS2_CHECK_SIZE(CGuideConditionInteractable, 0x28);
@@ -328,7 +328,7 @@ class CGuideConditionEquipSkill : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a8370
     CGuideConditionEquipSkill();                            // 0x1413a8420
-    virtual CStringW vfunc_1();                             // 1 0x1413a83d0
+    virtual CStringW GetTypeName();                             // 1 0x1413a83d0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a8460: "isEquip"
     virtual int vfunc_3();                                  // 3 0x1413a84b0
     virtual CStringW vfunc_7();                             // 7 0x1413a8530
@@ -344,7 +344,7 @@ class CGuideConditionConstructable : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a85f0
     CGuideConditionConstructable();                         // 0x1413b2ad0
-    virtual CStringW vfunc_1();                             // 1 0x1413a8650
+    virtual CStringW GetTypeName();                             // 1 0x1413a8650
     virtual int vfunc_3();                                  // 3 0x1413a86a0
 };
 MS2_CHECK_SIZE(CGuideConditionConstructable, 0x28);
@@ -355,7 +355,7 @@ class CGuideConditionIsMyHome : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a86f0
     CGuideConditionIsMyHome();                              // 0x1413b2f00
-    virtual CStringW vfunc_1();                             // 1 0x1413a8750
+    virtual CStringW GetTypeName();                             // 1 0x1413a8750
     virtual int vfunc_3();                                  // 3 0x1413a87a0
 };
 MS2_CHECK_SIZE(CGuideConditionIsMyHome, 0x28);
@@ -366,7 +366,7 @@ class CGuideConditionAchieveTab : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a87d0
     CGuideConditionAchieveTab();                            // 0x1413b2930
-    virtual CStringW vfunc_1();                             // 1 0x1413a8830
+    virtual CStringW GetTypeName();                             // 1 0x1413a8830
     virtual int vfunc_3();                                  // 3 0x1413a8880
 };
 MS2_CHECK_SIZE(CGuideConditionAchieveTab, 0x28);
@@ -378,7 +378,7 @@ class CGuideConditionEquipItem : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a8900
     CGuideConditionEquipItem();                             // 0x1413b2c20
-    virtual CStringW vfunc_1();                             // 1 0x1413a8960
+    virtual CStringW GetTypeName();                             // 1 0x1413a8960
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a89b0: slotType / slotName / itemID / itemRangeBeginID / itemRangeLastID
     virtual int vfunc_3();                                  // 3 0x1413a8aa0
     virtual CStringW vfunc_7();                             // 7 0x1413a8da0
@@ -399,7 +399,7 @@ class CGuideConditionUgcManagementTab : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a8eb0
     CGuideConditionUgcManagementTab();                      // 0x1413b3520
-    virtual CStringW vfunc_1();                             // 1 0x1413a8f10
+    virtual CStringW GetTypeName();                             // 1 0x1413a8f10
     virtual int vfunc_3();                                  // 3 0x1413a8f60
 };
 MS2_CHECK_SIZE(CGuideConditionUgcManagementTab, 0x28);
@@ -410,7 +410,7 @@ class CGuideConditionDesignItem : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a8fc0
     CGuideConditionDesignItem();                            // 0x1413b2bf0
-    virtual CStringW vfunc_1();                             // 1 0x1413a9020
+    virtual CStringW GetTypeName();                             // 1 0x1413a9020
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a9070: "itemType"
     virtual int vfunc_3();                                  // 3 0x1413a90d0
     virtual CStringW vfunc_7();                             // 7 0x1413a9260
@@ -427,7 +427,7 @@ class CGuideConditionExistItem : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a9320
     CGuideConditionExistItem();                             // 0x1413b2c60
-    virtual CStringW vfunc_1();                             // 1 0x1413a9380
+    virtual CStringW GetTypeName();                             // 1 0x1413a9380
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a93d0: itemId / itemType / iconType
     virtual int vfunc_3();                                  // 3 0x1413a9480
     virtual CStringW vfunc_7();                             // 7 0x1413a9540
@@ -519,7 +519,7 @@ class CGuideConditionContinentCode : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a9f10
     CGuideConditionContinentCode();                         // ctor (out of range)
-    virtual CStringW vfunc_1();                             // 1 0x1413a9f70
+    virtual CStringW GetTypeName();                             // 1 0x1413a9f70
     virtual int vfunc_3();                                  // 3 0x1413a9fc0
 };
 MS2_CHECK_SIZE(CGuideConditionContinentCode, 0x28);
@@ -530,7 +530,7 @@ class CGuideConditionAnyOne : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413aa070
     CGuideConditionAnyOne();
-    virtual CStringW vfunc_1();                             // 1 0x1413aa0d0
+    virtual CStringW GetTypeName();                             // 1 0x1413aa0d0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413aa120: the nested conditions
     virtual int vfunc_3();                                  // 3 0x1413aa1d0
     virtual void vfunc_4();                                 // 4 0x1413aa250
@@ -545,7 +545,7 @@ class CGuideConditionAllOf : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413aa2e0
     CGuideConditionAllOf();
-    virtual CStringW vfunc_1();                             // 1 0x1413aa340
+    virtual CStringW GetTypeName();                             // 1 0x1413aa340
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413aa390
     virtual int vfunc_3();                                  // 3 0x1413aa500
     virtual bool vfunc_6(Unk_GcCondList* pFailed);          // 6 0x1413aa440: true; appends the failing conditions
@@ -560,7 +560,7 @@ class CGuideConditionAchieveExistTrophy : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413aa580
     CGuideConditionAchieveExistTrophy();
-    virtual CStringW vfunc_1();                             // 1 0x1413aa5e0
+    virtual CStringW GetTypeName();                             // 1 0x1413aa5e0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413aa630: achieveType
     virtual int vfunc_3();                                  // 3 0x1413aa680
     virtual CStringW vfunc_7();                             // 7 0x1413aa6c0
@@ -575,7 +575,7 @@ class CGuideConditionGuideOpen : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413aa7e0
     CGuideConditionGuideOpen();
-    virtual CStringW vfunc_1();                             // 1 0x1413aa840
+    virtual CStringW GetTypeName();                             // 1 0x1413aa840
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413aa890: id (kind 13)
     virtual int vfunc_3();                                  // 3 0x1413aa8f0
     virtual CStringW vfunc_7();                             // 7 0x1413aa990
@@ -591,7 +591,7 @@ class CGuideConditionGuideClear : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413aaa50
     CGuideConditionGuideClear();
-    virtual CStringW vfunc_1();                             // 1 0x1413aaab0
+    virtual CStringW GetTypeName();                             // 1 0x1413aaab0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413aab00: id (kind 2)
     virtual int vfunc_3();                                  // 3 0x1413aab60
     virtual CStringW vfunc_7();                             // 7 0x1413aaba0
@@ -607,7 +607,7 @@ class CGuideConditionExistShortcut : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413aac80
     CGuideConditionExistShortcut();
-    virtual CStringW vfunc_1();                             // 1 0x1413aace0
+    virtual CStringW GetTypeName();                             // 1 0x1413aace0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413aad30: slotIndex / skillID
     virtual int vfunc_3();                                  // 3 0x1413aadb0
     virtual CStringW vfunc_7();                             // 7 0x1413aae10
@@ -623,7 +623,7 @@ class CGuideConditionUgcCollectMoney : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413aaed0
     CGuideConditionUgcCollectMoney();
-    virtual CStringW vfunc_1();                             // 1 0x1413aaf30
+    virtual CStringW GetTypeName();                             // 1 0x1413aaf30
     virtual int vfunc_3();                                  // 3 0x1413aaf80
 };
 MS2_CHECK_SIZE(CGuideConditionUgcCollectMoney, 0x28);
@@ -634,7 +634,7 @@ class CGuideConditionCanObserveMode : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413aafc0
     CGuideConditionCanObserveMode();
-    virtual CStringW vfunc_1();                             // 1 0x1413ab020
+    virtual CStringW GetTypeName();                             // 1 0x1413ab020
     virtual int vfunc_3();                                  // 3 0x1413ab070
 };
 MS2_CHECK_SIZE(CGuideConditionCanObserveMode, 0x28);
@@ -645,7 +645,7 @@ class CGuideConditionMyPlayerLevel : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413ab0e0
     CGuideConditionMyPlayerLevel();
-    virtual CStringW vfunc_1();                             // 1 0x1413ab140
+    virtual CStringW GetTypeName();                             // 1 0x1413ab140
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413ab190: kind 4
     virtual int vfunc_3();                                  // 3 0x1413ab1d0
     virtual int vfunc_8();                                  // 8 0x1413ab240: 0
@@ -658,7 +658,7 @@ class CGuideConditionMoney : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413ab250
     CGuideConditionMoney();
-    virtual CStringW vfunc_1();                             // 1 0x1413ab2b0
+    virtual CStringW GetTypeName();                             // 1 0x1413ab2b0
     virtual int vfunc_3();                                  // 3 0x1413ab300
 };
 MS2_CHECK_SIZE(CGuideConditionMoney, 0x28);
@@ -669,7 +669,7 @@ class CGuideConditionPlaceUgcCube : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413ab350
     CGuideConditionPlaceUgcCube();
-    virtual CStringW vfunc_1();                             // 1 0x1413ab3b0
+    virtual CStringW GetTypeName();                             // 1 0x1413ab3b0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413ab400: itemId / minCount / maxCount
     virtual int vfunc_3();                                  // 3 0x1413ab490
     virtual CStringW vfunc_7();                             // 7 0x1413ab5b0
@@ -686,7 +686,7 @@ class CGuideConditionPlaceUgcCubeItem : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413ab750
     CGuideConditionPlaceUgcCubeItem();
-    virtual CStringW vfunc_1();                             // 1 0x1413ab7b0
+    virtual CStringW GetTypeName();                             // 1 0x1413ab7b0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413ab800: pos / isAttachable
     virtual int vfunc_3();                                  // 3 0x1413ab870
     virtual CStringW vfunc_7();                             // 7 0x1413ab9e0
@@ -702,7 +702,7 @@ class CGuideConditionPlaceUgcCubeByIconType : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413abb80
     CGuideConditionPlaceUgcCubeByIconType();
-    virtual CStringW vfunc_1();                             // 1 0x1413abbe0
+    virtual CStringW GetTypeName();                             // 1 0x1413abbe0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413abc30: iconType
     virtual int vfunc_3();                                  // 3 0x1413abc90
     virtual CStringW vfunc_7();                             // 7 0x1413abce0
@@ -717,7 +717,7 @@ class CGuideConditionInteractObject : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413abd90
     CGuideConditionInteractObject();
-    virtual CStringW vfunc_1();                             // 1 0x1413abdf0
+    virtual CStringW GetTypeName();                             // 1 0x1413abdf0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413abe40: interactId / distance / state
     virtual int vfunc_3();                                  // 3 0x1413abec0
     virtual CStringW vfunc_7();                             // 7 0x1413ac050
@@ -734,7 +734,7 @@ class CGuideConditionLastClosedTextTip : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413ac120
     CGuideConditionLastClosedTextTip();
-    virtual CStringW vfunc_1();                             // 1 0x1413ac180
+    virtual CStringW GetTypeName();                             // 1 0x1413ac180
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413ac1d0: entityId (throws on 0)
     virtual int vfunc_3();                                  // 3 0x1413ac290
     virtual CStringW vfunc_7();                             // 7 0x1413ac2f0
@@ -749,7 +749,7 @@ class CGuideConditionConstructSlot : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413ac3a0
     CGuideConditionConstructSlot();
-    virtual CStringW vfunc_1();                             // 1 0x1413ac400
+    virtual CStringW GetTypeName();                             // 1 0x1413ac400
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413ac450: slotIdx / isIndoor / isOutdoor
     virtual int vfunc_3();                                  // 3 0x1413ac4f0: 1
     virtual void vfunc_5();                                 // 5 0x1413ac510
@@ -767,7 +767,7 @@ class CGuideConditionTitle : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413ac5f0
     CGuideConditionTitle();
-    virtual CStringW vfunc_1();                             // 1 0x1413ac650
+    virtual CStringW GetTypeName();                             // 1 0x1413ac650
     virtual int vfunc_3();                                  // 3 0x1413ac6a0
     virtual void vfunc_5();                                 // 5 0x1413ac700: logs the title count
 };
@@ -779,7 +779,7 @@ class CGuideConditionServerTime : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413ac790
     CGuideConditionServerTime();
-    virtual CStringW vfunc_1();                             // 1 0x1413ac7f0
+    virtual CStringW GetTypeName();                             // 1 0x1413ac7f0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413ac840: dateTime
     virtual int vfunc_3();                                  // 3 0x1413ac890
     virtual void vfunc_5();                                 // 5 0x1413ac8e0: logs the times
@@ -795,7 +795,7 @@ class CGuideConditionHasManufacture : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413acd60
     CGuideConditionHasManufacture();
-    virtual CStringW vfunc_1();                             // 1 0x1413acdc0
+    virtual CStringW GetTypeName();                             // 1 0x1413acdc0
     virtual int vfunc_3();                                  // 3 0x1413ace10
 };
 MS2_CHECK_SIZE(CGuideConditionHasManufacture, 0x28);
@@ -807,7 +807,7 @@ class CGuideConditionHasMoney : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413ace40
     CGuideConditionHasMoney();
-    virtual CStringW vfunc_1();                             // 1 0x1413acea0
+    virtual CStringW GetTypeName();                             // 1 0x1413acea0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413acef0: moneyType
     virtual int vfunc_3();                                  // 3 0x1413ad020
     virtual CStringW vfunc_7();                             // 7 0x1413ad250
@@ -825,7 +825,7 @@ class CGuideConditionBattleState : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413adb00
     CGuideConditionBattleState();// 0x1413b2a10
-    virtual CStringW vfunc_1();                             // 1 0x1413adb60
+    virtual CStringW GetTypeName();                             // 1 0x1413adb60
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413adbb0
     virtual int vfunc_3();                                  // 3 0x1413adbf0
     virtual int vfunc_8();                                  // 8 0x1413adc50
@@ -838,7 +838,7 @@ class CGuideConditionCubeHolderSelectItem : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413ae730
     CGuideConditionCubeHolderSelectItem();// 0x1413b2b90
-    virtual CStringW vfunc_1();                             // 1 0x1413ae790
+    virtual CStringW GetTypeName();                             // 1 0x1413ae790
     virtual int vfunc_3();                                  // 3 0x1413ae7e0
 };
 MS2_CHECK_SIZE(CGuideConditionCubeHolderSelectItem, 0x28);
@@ -849,7 +849,7 @@ class CGuideConditionFalse : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a58e0
     CGuideConditionFalse();// 0x1413b2cc0
-    virtual CStringW vfunc_1();                             // 1 0x1413a5940
+    virtual CStringW GetTypeName();                             // 1 0x1413a5940
     virtual int vfunc_3();                                  // 3 0x1413a5990
 };
 MS2_CHECK_SIZE(CGuideConditionFalse, 0x28);
@@ -860,7 +860,7 @@ class CGuideConditionGuildPvpPeriod : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413ad3b0
     CGuideConditionGuildPvpPeriod();// 0x1413b2db0
-    virtual CStringW vfunc_1();                             // 1 0x1413ad410
+    virtual CStringW GetTypeName();                             // 1 0x1413ad410
     virtual int vfunc_3();                                  // 3 0x1413ad460
 };
 MS2_CHECK_SIZE(CGuideConditionGuildPvpPeriod, 0x28);
@@ -871,7 +871,7 @@ class CGuideConditionHasStatPoint : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413ae840
     CGuideConditionHasStatPoint();// 0x1413b2e40
-    virtual CStringW vfunc_1();                             // 1 0x1413ae8a0
+    virtual CStringW GetTypeName();                             // 1 0x1413ae8a0
     virtual int vfunc_3();                                  // 3 0x1413ae8f0
 };
 MS2_CHECK_SIZE(CGuideConditionHasStatPoint, 0x28);
@@ -882,7 +882,7 @@ class CGuideConditionJobCode : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413ad7e0
     CGuideConditionJobCode();// 0x1413b2f30
-    virtual CStringW vfunc_1();                             // 1 0x1413ad840
+    virtual CStringW GetTypeName();                             // 1 0x1413ad840
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413ad890
     virtual int vfunc_3();                                  // 3 0x1413ad8d0
     virtual int vfunc_8();                                  // 8 0x1413ad940
@@ -895,7 +895,7 @@ class CGuideConditionJoinGuild : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413add70
     CGuideConditionJoinGuild();// 0x1413b2f60
-    virtual CStringW vfunc_1();                             // 1 0x1413addd0
+    virtual CStringW GetTypeName();                             // 1 0x1413addd0
     virtual int vfunc_3();                                  // 3 0x1413ade20
 };
 MS2_CHECK_SIZE(CGuideConditionJoinGuild, 0x28);
@@ -906,7 +906,7 @@ class CGuideConditionMasteryMainTabIndex : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413ae1d0
     CGuideConditionMasteryMainTabIndex();// 0x1413b2fc0
-    virtual CStringW vfunc_1();                             // 1 0x1413ae230
+    virtual CStringW GetTypeName();                             // 1 0x1413ae230
     virtual int vfunc_3();                                  // 3 0x1413ae280
 };
 MS2_CHECK_SIZE(CGuideConditionMasteryMainTabIndex, 0x28);
@@ -917,7 +917,7 @@ class CGuideConditionMasterySubTabIndex : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413ae2e0
     CGuideConditionMasterySubTabIndex();// 0x1413b2ff0
-    virtual CStringW vfunc_1();                             // 1 0x1413ae340
+    virtual CStringW GetTypeName();                             // 1 0x1413ae340
     virtual int vfunc_3();                                  // 3 0x1413ae390
 };
 MS2_CHECK_SIZE(CGuideConditionMasterySubTabIndex, 0x28);
@@ -927,7 +927,7 @@ class CGuideConditionMentoringPage : public CGuideCondition
 {
 public:
     CGuideConditionMentoringPage();// 0x1413b3020
-    virtual CStringW vfunc_1();                             // 1 0x1413ae9f0
+    virtual CStringW GetTypeName();                             // 1 0x1413ae9f0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413aea40
     virtual int vfunc_3();                                  // 3 0x1413aea80
     virtual CStringW vfunc_7();                             // 7 0x1413aebb0
@@ -941,7 +941,7 @@ class CGuideConditionMenuExpand : public CGuideCondition
 {
 public:
     CGuideConditionMenuExpand();// 0x1413b3060
-    virtual CStringW vfunc_1();                             // 1 0x1413adeb0
+    virtual CStringW GetTypeName();                             // 1 0x1413adeb0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413adf00
     virtual int vfunc_3();                                  // 3 0x1413adf50
     virtual CStringW vfunc_7();                             // 7 0x1413adfd0
@@ -956,7 +956,7 @@ class CGuideConditionPlayingInstrument : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413ae600
     CGuideConditionPlayingInstrument();// 0x1413b3250
-    virtual CStringW vfunc_1();                             // 1 0x1413ae660
+    virtual CStringW GetTypeName();                             // 1 0x1413ae660
     virtual int vfunc_3();                                  // 3 0x1413ae6b0
 };
 MS2_CHECK_SIZE(CGuideConditionPlayingInstrument, 0x28);
@@ -967,7 +967,7 @@ class CGuideConditionPlayInstrumentHasSelectItem : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413ae500
     CGuideConditionPlayInstrumentHasSelectItem();// 0x1413b31f0
-    virtual CStringW vfunc_1();                             // 1 0x1413ae560
+    virtual CStringW GetTypeName();                             // 1 0x1413ae560
     virtual int vfunc_3();                                  // 3 0x1413ae5b0
 };
 MS2_CHECK_SIZE(CGuideConditionPlayInstrumentHasSelectItem, 0x28);
@@ -978,7 +978,7 @@ class CGuideConditionPlayInstrumentTabIndex : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413ae3f0
     CGuideConditionPlayInstrumentTabIndex();// 0x1413b3220
-    virtual CStringW vfunc_1();                             // 1 0x1413ae450
+    virtual CStringW GetTypeName();                             // 1 0x1413ae450
     virtual int vfunc_3();                                  // 3 0x1413ae4a0
 };
 MS2_CHECK_SIZE(CGuideConditionPlayInstrumentTabIndex, 0x28);
@@ -989,7 +989,7 @@ class CGuideConditionRealEstateExpireDays : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413ad4c0
     CGuideConditionRealEstateExpireDays();// 0x1413b3340
-    virtual CStringW vfunc_1();                             // 1 0x1413ad520
+    virtual CStringW GetTypeName();                             // 1 0x1413ad520
     virtual int vfunc_3();                                  // 3 0x1413ad570
 };
 MS2_CHECK_SIZE(CGuideConditionRealEstateExpireDays, 0x28);
@@ -1000,7 +1000,7 @@ class CGuideConditionSelectItemEnchant : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413ae0c0
     CGuideConditionSelectItemEnchant();// 0x1413b33a0
-    virtual CStringW vfunc_1();                             // 1 0x1413ae120
+    virtual CStringW GetTypeName();                             // 1 0x1413ae120
     virtual int vfunc_3();                                  // 3 0x1413ae170
 };
 MS2_CHECK_SIZE(CGuideConditionSelectItemEnchant, 0x28);
@@ -1010,7 +1010,7 @@ class CGuideConditionSubJobCode : public CGuideCondition
 {
 public:
     CGuideConditionSubJobCode();// 0x1413b3450
-    virtual CStringW vfunc_1();                             // 1 0x1413ad9b0
+    virtual CStringW GetTypeName();                             // 1 0x1413ad9b0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413ada00
     virtual int vfunc_3();                                  // 3 0x1413ada50
 
@@ -1024,7 +1024,7 @@ class CGuideConditionSummonPet : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413adc60
     CGuideConditionSummonPet();// 0x1413b3490
-    virtual CStringW vfunc_1();                             // 1 0x1413adcc0
+    virtual CStringW GetTypeName();                             // 1 0x1413adcc0
     virtual int vfunc_3();                                  // 3 0x1413add10
 };
 MS2_CHECK_SIZE(CGuideConditionSummonPet, 0x28);
@@ -1035,7 +1035,7 @@ class CGuideConditionUgcProductExpireDays : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413ad660
     CGuideConditionUgcProductExpireDays();// 0x1413b3550
-    virtual CStringW vfunc_1();                             // 1 0x1413ad6c0
+    virtual CStringW GetTypeName();                             // 1 0x1413ad6c0
     virtual int vfunc_3();                                  // 3 0x1413ad710
 };
 MS2_CHECK_SIZE(CGuideConditionUgcProductExpireDays, 0x28);
@@ -1047,7 +1047,7 @@ class CGuideConditionButtonSelected : public CGuideCondition
 {
 public:
     CGuideConditionButtonSelected();                        // 0x1413aed50
-    virtual CStringW vfunc_1();                             // 1 0x1413aed00
+    virtual CStringW GetTypeName();                             // 1 0x1413aed00
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413af0c0: dialogName / childName (rejects "not")
     virtual int vfunc_3();                                  // 3 0x1413aedb0
     virtual CStringW vfunc_7();                             // 7 0x1413af190
@@ -1062,7 +1062,7 @@ class CGuideConditionContract : public CGuideCondition
 {
 public:
     CGuideConditionContract();                              // 0x1413af330
-    virtual CStringW vfunc_1();                             // 1 0x1413af2e0
+    virtual CStringW GetTypeName();                             // 1 0x1413af2e0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413af560: dialogID / childName / dialogName
     virtual int vfunc_3();                                  // 3 0x1413af3b0
     virtual CStringW vfunc_7();                             // 7 0x1413af5e0
@@ -1079,7 +1079,7 @@ class CGuideConditionHomeMode : public CGuideCondition
 {
 public:
     CGuideConditionHomeMode();                              // 0x1413af7f0
-    virtual CStringW vfunc_1();                             // 1 0x1413af7a0
+    virtual CStringW GetTypeName();                             // 1 0x1413af7a0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413af880
     virtual int vfunc_3();                                  // 3 0x1413af830
     virtual CStringW vfunc_7();                             // 7 0x1413af8d0
@@ -1095,7 +1095,7 @@ class CGuideConditionEnterDungeon : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413af980
     CGuideConditionEnterDungeon();                          // 0x1413afa30
-    virtual CStringW vfunc_1();                             // 1 0x1413af9e0
+    virtual CStringW GetTypeName();                             // 1 0x1413af9e0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413afa70
     virtual int vfunc_3();                                  // 3 0x1413afab0
     virtual int vfunc_8();                                  // 8 0x1413afb10
@@ -1108,7 +1108,7 @@ class CGuideConditionChatEmoticon : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413afb20
     CGuideConditionChatEmoticon();                          // 0x1413afbd0
-    virtual CStringW vfunc_1();                             // 1 0x1413afb80
+    virtual CStringW GetTypeName();                             // 1 0x1413afb80
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413afc10
     virtual int vfunc_3();                                  // 3 0x1413afc50
     virtual int vfunc_8();                                  // 8 0x1413afca0
@@ -1121,7 +1121,7 @@ class CGuideConditionTrigger : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a59a0
     CGuideConditionTrigger();                               // 0x1413a5a50
-    virtual CStringW vfunc_1();                             // 1 0x1413a5a00
+    virtual CStringW GetTypeName();                             // 1 0x1413a5a00
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a5ad0
     virtual int vfunc_3();                                  // 3 0x1413a5bb0
     virtual CStringW vfunc_7();                             // 7 0x1413a5c80
@@ -1141,7 +1141,7 @@ class CGuideConditionTimeout : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a5e90
     CGuideConditionTimeout();                               // 0x1413a5f40
-    virtual CStringW vfunc_1();                             // 1 0x1413a5ef0
+    virtual CStringW GetTypeName();                             // 1 0x1413a5ef0
     virtual int vfunc_3();                                  // 3 0x1413a5f80
     virtual void vfunc_4();                                 // 4 0x1413a5fe0
 

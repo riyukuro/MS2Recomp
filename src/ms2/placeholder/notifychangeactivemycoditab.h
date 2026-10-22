@@ -1,5 +1,5 @@
 // notifychangeactivemycoditab.h - NotifyChangeActiveMyCodiTab (RTTI, 0x20, vftable 0x142ec0418). Split out of
-// notifychangebuff.h (which owns vfunc_1 / CreateObject) so equipment.cpp can construct it without that header's
+// notifychangebuff.h (which owns GetTypeName / CreateObject) so equipment.cpp can construct it without that header's
 // AdditionalCli view. NOT an original header.
 #pragma once
 #include <afx.h>
@@ -11,7 +11,7 @@ class NotifyChangeActiveMyCodiTab : public NotifyObject
 {
 public:
     NotifyChangeActiveMyCodiTab(unsigned char nActive) : m_nActive(nActive) {}
-    virtual CStringW vfunc_1();                     // 0x140db4d30
+    virtual CStringW GetTypeName();                     // 0x140db4d30
     static ClassObject* CreateObject();             // 0x140db4d20
     unsigned char m_nActive;                        // +0x18
 };

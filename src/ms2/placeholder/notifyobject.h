@@ -7,6 +7,6 @@ class NotifyObject : public ClassObject {
 public:
     NotifyObject();
     virtual ~NotifyObject();
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
 };
 MS2_CHECK_SIZE(NotifyObject, 0x18);

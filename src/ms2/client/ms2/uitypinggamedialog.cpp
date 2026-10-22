@@ -116,7 +116,7 @@ UITypingGameDialog::~UITypingGameDialog()
 }
 
 // @0x140ee5730
-CString UITypingGameDialog::vfunc_1()
+CString UITypingGameDialog::GetTypeName()
 {
     return "TypingGameDialog";
 }

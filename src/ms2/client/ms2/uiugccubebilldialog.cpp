@@ -71,7 +71,7 @@ UIUGCCubeBillDialog::~UIUGCCubeBillDialog()
 }
 
 // @0x140ee76e0
-CString UIUGCCubeBillDialog::vfunc_1()
+CString UIUGCCubeBillDialog::GetTypeName()
 {
     return "UGCCubeBillDialog";
 }

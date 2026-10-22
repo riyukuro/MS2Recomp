@@ -20,7 +20,7 @@ class UIGameModeSelectDialog : public UIDialog
 public:
     UIGameModeSelectDialog();                                   // 0x140c19f20 (m_80 = 0, FUN_141925e70(0, 1))
     virtual ~UIGameModeSelectDialog();                          //  0 0x140c19fb0 (??_G 0x140c1a850)
-    virtual CString vfunc_1();                                  //  1 0x140c1a000 "GameModeSelectDialog"
+    virtual CString GetTypeName();                                  //  1 0x140c1a000 "GameModeSelectDialog"
     virtual int vfunc_13();                                     // 13 0x140c1a3e0 (UIDialog::vfunc_13() != 0)
     virtual void OnLoadComplete();                              // 22 0x140c1a070 bind "m_start", push "initData"
     virtual void vfunc_26();                                    // 26 0x140c1a4b0 release the button

@@ -10,7 +10,7 @@ class UIBirdHead : public UIObject
 public:
     UIBirdHead();                                                   // 0x1418ce5e0
     virtual ~UIBirdHead();                                          //  0 0x1418ce710 (??_G 0x1418cf030)
-    virtual CString vfunc_1();                                      //  1 0x1418ce790 "BirdHead"
+    virtual CString GetTypeName();                                      //  1 0x1418ce790 "BirdHead"
     virtual void vfunc_15();                                        // 15 0x1418ced90 per-frame update
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x1418cee20
     virtual void vfunc_41(const Scaleform::GFx::Value& root);       // 41 0x1418cefc0 movie loaded: m_30 = new ASGameEntity

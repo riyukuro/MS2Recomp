@@ -176,7 +176,7 @@ UIPopupProfileImage::~UIPopupProfileImage()
 }
 
 // @0x141a8fad0
-CString UIPopupProfileImage::vfunc_1()
+CString UIPopupProfileImage::GetTypeName()
 {
     return CString("PopupProfileImage");
 }
@@ -307,7 +307,7 @@ MS2_REPLACE_METHOD(0x141a8f540, UIPopupProfileImage::Entity, vfunc_5, 573, 0x017
 MS2_REPLACE_METHOD(0x141a8f790, UIPopupProfileImage::Entity, vfunc_6, 222, 0x799310FB);
 MS2_REPLACE_METHOD(0x141a8f880, UIPopupProfileImage::Entity, vfunc_7, 150, 0x5B169D16);
 MS2_REPLACE_METHOD(0x141a8f920, UIPopupProfileImage::Entity, vfunc_8, 237, 0x9E45985A);
-MS2_REPLACE_METHOD(0x141a8fad0, UIPopupProfileImage, vfunc_1, 61, 0x1BDBEEAF);
+MS2_REPLACE_METHOD(0x141a8fad0, UIPopupProfileImage, GetTypeName, 61, 0x1BDBEEAF);
 MS2_REPLACE_METHOD(0x141a8fb20, UIPopupProfileImage, OnLoadComplete, 42, 0x847DFC92);
 MS2_REPLACE(0x141a8fbd0, FUN_141a8fbd0, 50, 0xAAA7E206);
 MS2_REPLACE_METHOD(0x141a8fc30, UIPopupProfileImage, FUN_141a8fc30, 465, 0x4AFBC44B);

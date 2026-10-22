@@ -17,8 +17,8 @@
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUICollectItemGroupEventDialog@@P81@EAAXPEAVGameEventVariable@@@Z@std@@@?$Delegate@$$A6AXPEAVGameEventVariable@@@Z@@QEAA@AEBV01@@Z 0x140be9200 ; prop
 // MS2-PIN: ??A?$vector@UItemEntity@@V?$allocator@UItemEntity@@@std@@@std@@QEAAAEAUItemEntity@@_K@Z 0x140be9400 ; unique
 // MS2-PIN: ?vfunc_48@UICollectItemGroupEventDialog@@UEAAHXZ 0x140be95d0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUICollectItemGroupEventDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140be9740 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUICollectItemGroupEventDialog@@P81@EAAXPEAVGameEventVariable@@@Z@std@@@?$Delegate@$$A6AXPEAVGameEventVariable@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140be97a0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUICollectItemGroupEventDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140be9740 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUICollectItemGroupEventDialog@@P81@EAAXPEAVGameEventVariable@@@Z@std@@@?$Delegate@$$A6AXPEAVGameEventVariable@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140be97a0 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUICollectItemGroupEventDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x140be9800 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUICollectItemGroupEventDialog@@P81@EAAXPEAVGameEventVariable@@@Z@std@@@?$Delegate@$$A6AXPEAVGameEventVariable@@@Z@@UEAAXPEAVGameEventVariable@@@Z 0x140be9830 ; unique
 // MS2-PIN: ??$Call@VUICollectItemGroupEventDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@?$DelegateImpl@U?$pair@PEAVUICollectItemGroupEventDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@CAXAEAU?$pair@PEAVUICollectItemGroupEventDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@AEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x140be9860 ; prop
@@ -129,11 +129,11 @@ UICollectItemGroupEventDialog::~UICollectItemGroupEventDialog()
 }
 
 // @0x140be70e0
-CString UICollectItemGroupEventDialog::vfunc_1()
+CString UICollectItemGroupEventDialog::GetTypeName()
 {
     return "CollectItemGroupEventDialog";
 }
-MS2_REPLACE_METHOD(0x140BE70E0, UICollectItemGroupEventDialog, vfunc_1, 61, 0x8B9212AF);
+MS2_REPLACE_METHOD(0x140BE70E0, UICollectItemGroupEventDialog, GetTypeName, 61, 0x8B9212AF);
 
 // @0x140be7130
 void UICollectItemGroupEventDialog::OnLoadComplete()

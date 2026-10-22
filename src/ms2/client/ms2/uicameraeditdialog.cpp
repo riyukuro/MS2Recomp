@@ -235,7 +235,7 @@ UICameraEditDialog::~UICameraEditDialog()
 }
 
 // @0x1418dd810
-CString UICameraEditDialog::vfunc_1()
+CString UICameraEditDialog::GetTypeName()
 {
     return "CameraEditDialog";
 }
@@ -639,7 +639,7 @@ UICartoonDialog::~UICartoonDialog()
 }
 
 // @0x1418df6c0
-CString UICartoonDialog::vfunc_1()
+CString UICartoonDialog::GetTypeName()
 {
     return "CartoonDialog";
 }
@@ -943,7 +943,7 @@ UICastingBar::~UICastingBar()
 }
 
 // @0x1418e1100
-CString UICastingBar::vfunc_1()
+CString UICastingBar::GetTypeName()
 {
     return "CastingBar";
 }
@@ -1326,7 +1326,7 @@ UICharacterCreateDialog::~UICharacterCreateDialog()
 }
 
 // @0x1418e23e0
-CString UICharacterCreateDialog::vfunc_1()
+CString UICharacterCreateDialog::GetTypeName()
 {
     return "CharacterCreateDialog";
 }

@@ -21,7 +21,7 @@ class UIReportDialog : public UIDialog
 public:
     UIReportDialog();                                                // 0x141ab8920
     virtual ~UIReportDialog();                                       //  0 0x141ab8a70 (??_G 0x141aba530)
-    virtual CString vfunc_1();                                       //  1 0x141ab8b40: "ReportDialog"
+    virtual CString GetTypeName();                                       //  1 0x141ab8b40: "ReportDialog"
     virtual int vfunc_13();                                          // 13 0x141ab8e90
     virtual void OnLoadInit();                                       // 20 0x141ab8b90 tell the swf the report kind
     virtual void OnLoadComplete();                                   // 22 0x141ab8e50

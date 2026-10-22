@@ -97,7 +97,7 @@ class UIBingoEventDialog : public UIDialog
 public:
     UIBingoEventDialog();
     virtual ~UIBingoEventDialog();
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual int vfunc_65();
     virtual void vfunc_26();
     virtual void vfunc_43();

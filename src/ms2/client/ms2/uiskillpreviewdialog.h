@@ -36,7 +36,7 @@ class UISkillPreviewDialog : public UIDialog, public IUIAvatarEventListener
 public:
     UISkillPreviewDialog();
     virtual ~UISkillPreviewDialog();
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual void vfunc_26();
     virtual void vfunc_67();
     virtual int vfunc_65();

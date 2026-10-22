@@ -14,7 +14,7 @@ class UIHomeSaveSlotDialog : public UIDialog {
 public:
     UIHomeSaveSlotDialog();                                                             // 0x140fa9eb0
     virtual ~UIHomeSaveSlotDialog();                                                    // 0 0x140fa9f20 (??_G 0x140fac750)
-    virtual CString vfunc_1();                                                          // 1 "HomeSaveSlotDialog"
+    virtual CString GetTypeName();                                                          // 1 "HomeSaveSlotDialog"
     virtual void OnLoadComplete();                                                      // 22 0x140fa9fb0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140faa070 "OnSaveSlot" / "OnLoadSlot"
     virtual int vfunc_48();                                                             // 48 0x140fac7b0 UI type id

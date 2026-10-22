@@ -8,7 +8,7 @@ class UIMicroGameCoupleDanceMessage : public UIHeadUpDisplay {
 public:
     UIMicroGameCoupleDanceMessage();                                                                        // @0x140e65990
     virtual ~UIMicroGameCoupleDanceMessage();                                                               // @0x140e659f0
-    virtual CString vfunc_1();                                                                              // @0x140e65a30 "MicroGameCoupleDanceMessage"
+    virtual CString GetTypeName();                                                                              // @0x140e65a30 "MicroGameCoupleDanceMessage"
     virtual void vfunc_2();                                                                                 // @0x140e65a80 show
     virtual void vfunc_3();                                                                                 // @0x140e65ac0 hide
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);      // @0x140e65bb0

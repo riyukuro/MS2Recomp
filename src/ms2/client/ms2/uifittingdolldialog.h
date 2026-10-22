@@ -19,7 +19,7 @@ class UIFittingDollDialog : public UIDialog, public UIDialogEventListener, publi
 public:
     UIFittingDollDialog();                                      // 0x141933270
     virtual ~UIFittingDollDialog();                             //  0 0x141934eb0 (??_G 0x141934f50)
-    virtual CString vfunc_1();                                  //  1 0x141933340 "FittingDollDialog"
+    virtual CString GetTypeName();                                  //  1 0x141933340 "FittingDollDialog"
     virtual void vfunc_15();                                    // 15 0x141933a90
     virtual void OnLoadComplete();                              // 22 0x141933910
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x1419339d0
@@ -35,7 +35,7 @@ public:
     void SendFittingDoll();                                       // ask the server to transform the doll
     void FUN_141933b00();                                       // show the doll's name / description / frames
     void FUN_141934070();                                       // tell the bag id / ownership to the movie
-    void FUN_1419342e0();                                       // FUN_14121e760(vfunc_1())
+    void FUN_1419342e0();                                       // FUN_14121e760(GetTypeName())
     void FUN_141934340();                                       // enable the "m_transform" button again
     int FUN_141934430();                                        // can the doll wear the equipment (0 yes, else error code)
     bool FUN_141934c10(int nResult, const CMsgBoxData& box);    // confirm box callback: 0 sends the request

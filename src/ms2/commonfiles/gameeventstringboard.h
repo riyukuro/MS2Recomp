@@ -16,7 +16,7 @@ public:
     // Implicit dtor only (the exe's 0x14041edf0 has no vptable store, so an empty user body does not match).
     virtual ~GameEventStringBoard() = default;  // 0x14041edf0
 
-    virtual CStringW vfunc_1();                 // 0x14041e990: "GameEventStringBoard"
+    virtual CStringW GetTypeName();                 // 0x14041e990: "GameEventStringBoard"
     virtual void vfunc_2();                     // 0x14041ea50: m_nId = the string id of m_68
     virtual void vfunc_3(Unk_GEOut* out);       // 0x14041eaa0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x14041eb00
@@ -35,7 +35,7 @@ public:
     GameEventStringBoardLink();                 // 0x14041ec30
     virtual ~GameEventStringBoardLink() = default;   // 0x14041ee10 (implicit: the exe body has no vptable store)
 
-    virtual CStringW vfunc_1();                 // 0x14041ebe0: "GameEventStringBoardLink"
+    virtual CStringW GetTypeName();                 // 0x14041ebe0: "GameEventStringBoardLink"
     virtual void vfunc_2();                     // 0x14041ec90 (empty)
     virtual void vfunc_3(Unk_GEOut* out);       // 0x14041eca0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x14041ece0

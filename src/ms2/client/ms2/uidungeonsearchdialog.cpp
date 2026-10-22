@@ -542,11 +542,11 @@ UIDungeonSearchDialog::~UIDungeonSearchDialog()
 }
 
 // @0x140e19f60
-CString UIDungeonSearchDialog::vfunc_1()
+CString UIDungeonSearchDialog::GetTypeName()
 {
     return "DungeonSearchDialog";
 }
-MS2_REPLACE_METHOD(0x140e19f60, UIDungeonSearchDialog, vfunc_1, 61, 0x76694243);
+MS2_REPLACE_METHOD(0x140e19f60, UIDungeonSearchDialog, GetTypeName, 61, 0x76694243);
 
 // MS2-FUNCTIONAL: behaviour-equivalent; 5 KB binder body, the exe spills the GetChild temporaries at different slots (frame 0x658 vs 0x668)
 // @0x140e19fb0

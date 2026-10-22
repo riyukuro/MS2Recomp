@@ -21,7 +21,7 @@ class UIMoveFieldDialog : public UIDialog
 public:
     UIMoveFieldDialog();                                                // 0x141a55740 (open tween 1)
     virtual ~UIMoveFieldDialog() = default;                                   //  0 0x141a57940 (??_G 0x141a579e0)
-    virtual CString vfunc_1();                                          //  1 0x141a557b0 "MoveFieldDialog"
+    virtual CString GetTypeName();                                          //  1 0x141a557b0 "MoveFieldDialog"
     virtual void OnLoadInit();                                          // 20 0x141a55800 show the whole list
     virtual int vfunc_13();                                             // 13 0x141a55830 enter / escape keys
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

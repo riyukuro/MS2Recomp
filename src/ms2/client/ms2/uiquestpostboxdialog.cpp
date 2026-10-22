@@ -84,8 +84,8 @@ UIQuestPostBoxDialog::UIQuestPostBoxDialog()
 UIQuestPostBoxDialog::~UIQuestPostBoxDialog() {}
 
 // @0x140e7f400
-CString UIQuestPostBoxDialog::vfunc_1() { return "QuestPostBoxDialog"; }
-MS2_REPLACE_METHOD(0x140E7F400, UIQuestPostBoxDialog, vfunc_1, 61, 0x56EF1E4C);
+CString UIQuestPostBoxDialog::GetTypeName() { return "QuestPostBoxDialog"; }
+MS2_REPLACE_METHOD(0x140E7F400, UIQuestPostBoxDialog, GetTypeName, 61, 0x56EF1E4C);
 
 // @0x140e7f450
 int UIQuestPostBoxDialog::vfunc_65() { if (!UIDialog::vfunc_65()) return 0; return 1; }

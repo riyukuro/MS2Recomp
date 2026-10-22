@@ -103,7 +103,7 @@ UIHomeInsideOptionDialog::~UIHomeInsideOptionDialog()
 }
 
 // @0x140c273f0
-CString UIHomeInsideOptionDialog::vfunc_1()
+CString UIHomeInsideOptionDialog::GetTypeName()
 {
     return "HomeInsideOptionDialog";
 }

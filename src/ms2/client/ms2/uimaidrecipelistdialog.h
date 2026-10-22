@@ -20,7 +20,7 @@ class UIMaidRecipeListDialog : public UIDialog
 public:
     UIMaidRecipeListDialog();                               // 0x1412daa40
     virtual ~UIMaidRecipeListDialog();                      // 0x1412daae0
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual void OnLoadInit();
     virtual void OnLoadComplete();
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
@@ -55,7 +55,7 @@ class UIManufactureStatus : public UIDialog
 public:
     UIManufactureStatus();                                  // 0x1412dba80
     virtual ~UIManufactureStatus();                         // 0x1412dbb10
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual void OnLoadComplete();
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
     virtual void vfunc_43();
@@ -98,7 +98,7 @@ class UIMDEditDialog : public UIModalDialog
 public:
     UIMDEditDialog();                                       // 0x1412dd900
     virtual ~UIMDEditDialog();                              // 0x1412dd9b0
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual int vfunc_13();
     virtual void OnLoadComplete();
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

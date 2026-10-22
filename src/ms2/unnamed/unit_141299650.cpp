@@ -3,7 +3,7 @@
 // MS2-RANGE: 0x141299650-0x14129a3c0 .text$mn
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIHomeSummonDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBV01@@Z 0x14129a140 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIHomeSummonDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x14129a290 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIHomeSummonDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x14129a290 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIHomeSummonDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x14129a2f0 ; unique
 // MS2-PIN: ??$Call@VUIHomeSummonDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@?$DelegateImpl@U?$pair@PEAVUIHomeSummonDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@CAXAEAU?$pair@PEAVUIHomeSummonDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@AEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x14129a320 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIHomeSummonDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x14129a360 ; unique
@@ -70,11 +70,11 @@ UIHomeSummonDialog::~UIHomeSummonDialog()
 }
 
 // @0x141299780
-CString UIHomeSummonDialog::vfunc_1()
+CString UIHomeSummonDialog::GetTypeName()
 {
     return "HomeSummonDialog";
 }
-MS2_REPLACE_METHOD(0x141299780, UIHomeSummonDialog, vfunc_1, 61, 0x33952058);
+MS2_REPLACE_METHOD(0x141299780, UIHomeSummonDialog, GetTypeName, 61, 0x33952058);
 
 // @0x1412997d0
 void UIHomeSummonDialog::vfunc_43()

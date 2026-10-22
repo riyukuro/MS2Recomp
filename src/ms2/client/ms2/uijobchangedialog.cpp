@@ -129,7 +129,7 @@ UIJobChangeDialog::~UIJobChangeDialog()
 }
 
 // @0x1419db1b0
-CString UIJobChangeDialog::vfunc_1()
+CString UIJobChangeDialog::GetTypeName()
 {
     return CString("JobChangeDialog");
 }

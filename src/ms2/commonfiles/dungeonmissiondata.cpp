@@ -74,11 +74,11 @@ ClassObject* DungeonMissionData::CreateObject()
 MS2_REPLACE(0x140314830, DungeonMissionData::CreateObject, 82, 0xE38F2F6A);
 
 // @0x140314890
-CStringW DungeonMissionData::vfunc_1()
+CStringW DungeonMissionData::GetTypeName()
 {
     return L"DungeonMissionData";
 }
-MS2_REPLACE_METHOD(0x140314890, DungeonMissionData, vfunc_1, 61, 0x21FE0D43);
+MS2_REPLACE_METHOD(0x140314890, DungeonMissionData, GetTypeName, 61, 0x21FE0D43);
 
 // @0x1403148e0
 DungeonMissionData::DungeonMissionData()
@@ -174,11 +174,11 @@ ClassObject* DungeonMissionDataPlayTime::CreateObject()
 MS2_REPLACE(0x140314F20, DungeonMissionDataPlayTime::CreateObject, 82, 0xA4C5B0CC);
 
 // @0x140314f80
-CStringW DungeonMissionDataPlayTime::vfunc_1()
+CStringW DungeonMissionDataPlayTime::GetTypeName()
 {
     return L"DungeonMissionDataPlayTime";
 }
-MS2_REPLACE_METHOD(0x140314F80, DungeonMissionDataPlayTime, vfunc_1, 61, 0xFDA50BA5);
+MS2_REPLACE_METHOD(0x140314F80, DungeonMissionDataPlayTime, GetTypeName, 61, 0xFDA50BA5);
 
 // @0x140314fd0
 bool DungeonMissionDataPlayTime::Load(Unk_140165cf0* pElem)
@@ -209,11 +209,11 @@ ClassObject* DungeonMissionDataLimitUserCount::CreateObject()
 MS2_REPLACE(0x140315060, DungeonMissionDataLimitUserCount::CreateObject, 82, 0x856FB269);
 
 // @0x1403150c0
-CStringW DungeonMissionDataLimitUserCount::vfunc_1()
+CStringW DungeonMissionDataLimitUserCount::GetTypeName()
 {
     return L"DungeonMissionDataLimitUserCount";
 }
-MS2_REPLACE_METHOD(0x1403150C0, DungeonMissionDataLimitUserCount, vfunc_1, 61, 0x66DC0398);
+MS2_REPLACE_METHOD(0x1403150C0, DungeonMissionDataLimitUserCount, GetTypeName, 61, 0x66DC0398);
 
 // @0x140315110
 bool DungeonMissionDataLimitUserCount::Load(Unk_140165cf0* pElem)
@@ -235,11 +235,11 @@ ClassObject* DungeonMissionDataKillNpc::CreateObject()
 MS2_REPLACE(0x140315170, DungeonMissionDataKillNpc::CreateObject, 82, 0x4F7AFDD2);
 
 // @0x1403151d0
-CStringW DungeonMissionDataKillNpc::vfunc_1()
+CStringW DungeonMissionDataKillNpc::GetTypeName()
 {
     return L"DungeonMissionDataKillNpc";
 }
-MS2_REPLACE_METHOD(0x1403151D0, DungeonMissionDataKillNpc, vfunc_1, 61, 0xA964FE77);
+MS2_REPLACE_METHOD(0x1403151D0, DungeonMissionDataKillNpc, GetTypeName, 61, 0xA964FE77);
 
 // @0x140315220
 bool DungeonMissionDataKillNpc::Load(Unk_140165cf0* pElem)
@@ -267,11 +267,11 @@ ClassObject* DungeonMissionDataDamageBySkill::CreateObject()
 MS2_REPLACE(0x140315310, DungeonMissionDataDamageBySkill::CreateObject, 82, 0x2560158E);
 
 // @0x140315370
-CStringW DungeonMissionDataDamageBySkill::vfunc_1()
+CStringW DungeonMissionDataDamageBySkill::GetTypeName()
 {
     return L"DungeonMissionDataDamageBySkill";
 }
-MS2_REPLACE_METHOD(0x140315370, DungeonMissionDataDamageBySkill, vfunc_1, 61, 0x103E837A);
+MS2_REPLACE_METHOD(0x140315370, DungeonMissionDataDamageBySkill, GetTypeName, 61, 0x103E837A);
 
 // @0x1403153c0
 bool DungeonMissionDataDamageBySkill::Load(Unk_140165cf0* pElem)
@@ -293,11 +293,11 @@ ClassObject* DungeonMissionDataUseSkill::CreateObject()
 MS2_REPLACE(0x140315430, DungeonMissionDataUseSkill::CreateObject, 82, 0x8D444821);
 
 // @0x140315490
-CStringW DungeonMissionDataUseSkill::vfunc_1()
+CStringW DungeonMissionDataUseSkill::GetTypeName()
 {
     return L"DungeonMissionDataUseSkill";
 }
-MS2_REPLACE_METHOD(0x140315490, DungeonMissionDataUseSkill, vfunc_1, 61, 0x7C1546C6);
+MS2_REPLACE_METHOD(0x140315490, DungeonMissionDataUseSkill, GetTypeName, 61, 0x7C1546C6);
 
 // @0x1403154e0
 bool DungeonMissionDataUseSkill::Load(Unk_140165cf0* pElem)
@@ -319,11 +319,11 @@ ClassObject* DungeonMissionDataGainBuff::CreateObject()
 MS2_REPLACE(0x140315540, DungeonMissionDataGainBuff::CreateObject, 82, 0x598AD50F);
 
 // @0x1403155a0
-CStringW DungeonMissionDataGainBuff::vfunc_1()
+CStringW DungeonMissionDataGainBuff::GetTypeName()
 {
     return L"DungeonMissionDataGainBuff";
 }
-MS2_REPLACE_METHOD(0x1403155A0, DungeonMissionDataGainBuff, vfunc_1, 61, 0xD0D4E531);
+MS2_REPLACE_METHOD(0x1403155A0, DungeonMissionDataGainBuff, GetTypeName, 61, 0xD0D4E531);
 
 // @0x1403155f0
 bool DungeonMissionDataGainBuff::Load(Unk_140165cf0* pElem)
@@ -344,11 +344,11 @@ ClassObject* DungeonMissionDataLastHitNpc::CreateObject()
 MS2_REPLACE(0x140315640, DungeonMissionDataLastHitNpc::CreateObject, 82, 0xE875F467);
 
 // @0x1403156a0
-CStringW DungeonMissionDataLastHitNpc::vfunc_1()
+CStringW DungeonMissionDataLastHitNpc::GetTypeName()
 {
     return L"DungeonMissionDataLastHitNpc";
 }
-MS2_REPLACE_METHOD(0x1403156A0, DungeonMissionDataLastHitNpc, vfunc_1, 61, 0xED4B6883);
+MS2_REPLACE_METHOD(0x1403156A0, DungeonMissionDataLastHitNpc, GetTypeName, 61, 0xED4B6883);
 
 // @0x1403156f0
 bool DungeonMissionDataLastHitNpc::Load(Unk_140165cf0* pElem)
@@ -369,11 +369,11 @@ ClassObject* DungeonMissionDataUseInteractObject::CreateObject()
 MS2_REPLACE(0x140315740, DungeonMissionDataUseInteractObject::CreateObject, 82, 0x306434CC);
 
 // @0x1403157a0
-CStringW DungeonMissionDataUseInteractObject::vfunc_1()
+CStringW DungeonMissionDataUseInteractObject::GetTypeName()
 {
     return L"DungeonMissionDataUseInteractObject";
 }
-MS2_REPLACE_METHOD(0x1403157A0, DungeonMissionDataUseInteractObject, vfunc_1, 61, 0x4FA969F8);
+MS2_REPLACE_METHOD(0x1403157A0, DungeonMissionDataUseInteractObject, GetTypeName, 61, 0x4FA969F8);
 
 // @0x1403157f0
 bool DungeonMissionDataUseInteractObject::Load(Unk_140165cf0* pElem)
@@ -395,11 +395,11 @@ ClassObject* DungeonMissionDataDamageToNpc::CreateObject()
 MS2_REPLACE(0x140315850, DungeonMissionDataDamageToNpc::CreateObject, 82, 0x48B9CFF4);
 
 // @0x1403158b0
-CStringW DungeonMissionDataDamageToNpc::vfunc_1()
+CStringW DungeonMissionDataDamageToNpc::GetTypeName()
 {
     return L"DungeonMissionDataDamageToNpc";
 }
-MS2_REPLACE_METHOD(0x1403158B0, DungeonMissionDataDamageToNpc, vfunc_1, 61, 0x97C62EB4);
+MS2_REPLACE_METHOD(0x1403158B0, DungeonMissionDataDamageToNpc, GetTypeName, 61, 0x97C62EB4);
 
 // @0x140315900
 bool DungeonMissionDataDamageToNpc::Load(Unk_140165cf0* pElem)
@@ -431,11 +431,11 @@ ClassObject* DungeonMissionDataTrigger::CreateObject()
 MS2_REPLACE(0x140315A10, DungeonMissionDataTrigger::CreateObject, 82, 0xE21F081A);
 
 // @0x140315a70
-CStringW DungeonMissionDataTrigger::vfunc_1()
+CStringW DungeonMissionDataTrigger::GetTypeName()
 {
     return L"DungeonMissionDataTrigger";
 }
-MS2_REPLACE_METHOD(0x140315A70, DungeonMissionDataTrigger, vfunc_1, 61, 0xAA071FE5);
+MS2_REPLACE_METHOD(0x140315A70, DungeonMissionDataTrigger, GetTypeName, 61, 0xAA071FE5);
 
 // @0x140315ac0
 bool DungeonMissionDataTrigger::Load(Unk_140165cf0* pElem)

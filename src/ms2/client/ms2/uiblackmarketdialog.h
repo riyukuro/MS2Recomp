@@ -23,7 +23,7 @@ class UIBlackMarketDialog : public UIDialog
 public:
     UIBlackMarketDialog();                                          // 0x1418cf080
     virtual ~UIBlackMarketDialog();                                 //  0 0x1418cf500 (??_G 0x1418d21d0)
-    virtual CString vfunc_1();                                      //  1 0x1418cf5d0 "BlackMarketDialog"
+    virtual CString GetTypeName();                                      //  1 0x1418cf5d0 "BlackMarketDialog"
     virtual int vfunc_13();                                         // 13 0x1418d00a0 enter / tab key -> "onProcessKey"
     virtual void vfunc_15();                                        // 15 0x1418d0010 per frame: the page's slot 5
     virtual void OnLoadInit();                                      // 20 0x1418cfb10

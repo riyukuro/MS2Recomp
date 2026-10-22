@@ -47,7 +47,7 @@ class UIGameMenuDialog : public UIBuiltInDialog,
 public:
     UIGameMenuDialog();                                                                             // 0x141935f20
     virtual ~UIGameMenuDialog();                                                                    //  0 0x141936310 (??_G 0x14193fe60)
-    virtual CString vfunc_1();                                                                      //  1 0x141936630 "GameMenuDialog"
+    virtual CString GetTypeName();                                                                      //  1 0x141936630 "GameMenuDialog"
     virtual void OnLoadComplete();                                                                  // 22 0x141936a20
     virtual int vfunc_13();                                                                        // 13 0x141936e00
     virtual void vfunc_15();                                                                        // 15 0x141937980

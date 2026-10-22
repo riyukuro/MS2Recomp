@@ -3,7 +3,7 @@
 // MS2-RANGE: 0x1400d8940-0x1400d8a30 .text$di
 // MS2-RANGE: 0x140e56eb0-0x140e59a00 .text$mn
 // MS2-GUESS-LOOKALIKES
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIItemPetTrainingDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140e59660
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIItemPetTrainingDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140e59660
 // MS2-PIN: ??$FUN_14028dfa0@GV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V12@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBGAEBV01@2@Z 0x140e58e50
 // MS2-PIN: ??_GUIItemPetTrainingDialog@@UEAAPEAXI@Z 0x140e59610
 //
@@ -106,7 +106,7 @@ UIItemPetTrainingDialog::~UIItemPetTrainingDialog()
 }
 
 // @0x140e57150
-CString UIItemPetTrainingDialog::vfunc_1()
+CString UIItemPetTrainingDialog::GetTypeName()
 {
     return "ItemPetTrainingDialog";
 }
@@ -116,7 +116,7 @@ CString UIItemPetTrainingDialog::vfunc_1()
 void UIItemPetTrainingDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    m_strSlot = FUN_140540050("{0}.slot", vfunc_1());
+    m_strSlot = FUN_140540050("{0}.slot", GetTypeName());
     FUN_140d42540(m_strSlot, m_nOwner, m_spPet);
     ItemScrollSlot* pSlot = FUN_140e57e50(m_strSlot);
     if (pSlot != 0)

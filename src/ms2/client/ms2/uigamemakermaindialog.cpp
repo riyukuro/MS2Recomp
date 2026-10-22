@@ -25,7 +25,7 @@ class UIGameMakerMainDialog : public UIDialog
 public:
     UIGameMakerMainDialog();                                                // 0x140c193f0
     virtual ~UIGameMakerMainDialog();                                       //  0 0x140c19450
-    virtual CString vfunc_1();                                              //  1 0x140c194b0
+    virtual CString GetTypeName();                                              //  1 0x140c194b0
     virtual void OnLoadComplete();                                          // 22 0x140c19500
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                             // 28 0x140c19520
@@ -47,11 +47,11 @@ UIGameMakerMainDialog::~UIGameMakerMainDialog()
 }
 
 // @0x140c194b0
-CString UIGameMakerMainDialog::vfunc_1()
+CString UIGameMakerMainDialog::GetTypeName()
 {
     return "GameMakerMainDialog";
 }
-MS2_REPLACE_METHOD(0x140C194B0, UIGameMakerMainDialog, vfunc_1, 61, 0xAABBDD2A);
+MS2_REPLACE_METHOD(0x140C194B0, UIGameMakerMainDialog, GetTypeName, 61, 0xAABBDD2A);
 
 // @0x140c19500
 void UIGameMakerMainDialog::OnLoadComplete()

@@ -11,7 +11,7 @@
 // MS2-PIN: ?CallDestructors@?$CAtlArray@U?$pair@HH@std@@V?$CElementTraits@U?$pair@HH@std@@@ATL@@@ATL@@CAXPEAU?$pair@HH@std@@_K@Z 0x1412cec60 ; unique
 // MS2-PIN: ??A?$CAtlArray@U?$pair@HH@std@@V?$CElementTraits@U?$pair@HH@std@@@ATL@@@ATL@@QEAAAEAU?$pair@HH@std@@_K@Z 0x1412cf2b0 ; unique
 // MS2-PIN: ?vfunc_48@UIIndividualPvPDialog@@UEAAHXZ 0x1412cf410 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIIndividualPvPDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1412d0d60 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIIndividualPvPDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1412d0d60 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIIndividualPvPDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x1412d1140 ; unique
 // MS2-PIN: ??$Call@VUIIndividualPvPDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@?$DelegateImpl@U?$pair@PEAVUIIndividualPvPDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@CAXAEAU?$pair@PEAVUIIndividualPvPDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@AEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x1412d1170 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIIndividualPvPDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x1412d11b0 ; unique
@@ -137,7 +137,7 @@ UIIndividualPvPDialog::~UIIndividualPvPDialog()
 }
 
 // @0x1412ca080
-CString UIIndividualPvPDialog::vfunc_1()
+CString UIIndividualPvPDialog::GetTypeName()
 {
     return CString("IndividualPvPDialog");
 }
@@ -421,7 +421,7 @@ void UIIndividualPvPDialog::FUN_1412cb8d0(bool bPlay)
 CString UIIndividualPvPDialog::FUN_1412cbc20(unsigned int nItemId)
 {
     CString strKey;
-    strKey.Format("%s_%d", (const char*)vfunc_1(), nItemId);
+    strKey.Format("%s_%d", (const char*)GetTypeName(), nItemId);
     if (m_icons.find(strKey) == m_icons.end())
     {
         MS2Ptr<CItem> spItem(new CItem);

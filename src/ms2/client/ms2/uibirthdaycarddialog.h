@@ -18,7 +18,7 @@ class UIBirthdayCardDialog : public UIDialog
 public:
     UIBirthdayCardDialog();                                     // 0x140bb9770
     virtual ~UIBirthdayCardDialog();                            //  0 0x140bb97d0 (??_G 0x140bb9b60)
-    virtual CString vfunc_1();                                  //  1 0x140bb9810
+    virtual CString GetTypeName();                                  //  1 0x140bb9810
     virtual int vfunc_65();                                    // 65 0x140bb9860
     virtual void vfunc_67();                                    // 67 0x140bb9890
     virtual void OnLoadComplete();                              // 22 0x140bb98c0

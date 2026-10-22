@@ -144,7 +144,7 @@ class UIAdPushDialog : public UIDialog, public UIDialogEventDispatcher {
 public:
     UIAdPushDialog();                                           // 0x140e3efd0
     virtual ~UIAdPushDialog();                                  // 0x140e3f140
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual int vfunc_4();
     virtual int vfunc_5();
     virtual int vfunc_48() { return 0x4f34; }

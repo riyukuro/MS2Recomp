@@ -24,7 +24,7 @@ class UIPCInfoDialog : public UIDialog, public UIUGCEventListener, public IUIAva
 public:
     UIPCInfoDialog();                                                   // 0x14132bc00
     virtual ~UIPCInfoDialog();                                          //  0 0x14132bea0 (??_G 0x141339150)
-    virtual CString vfunc_1();                                          //  1 0x14132c030 "MyInfoDialog"
+    virtual CString GetTypeName();                                          //  1 0x14132c030 "MyInfoDialog"
     virtual int vfunc_65();                                             // 65 0x14132d500
     virtual void vfunc_67();                                            // 67 0x14132d530 close: unregister, clear
     virtual void vfunc_26();                                            // 26 0x14132d600

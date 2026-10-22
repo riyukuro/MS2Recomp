@@ -262,8 +262,8 @@ UIRpsEventDialog::~UIRpsEventDialog() {
     FUN_140bccd50()->FUN_140da51e0(0x10b, Delegate<void(CInPacket&)>(this, &UIRpsEventDialog::FUN_140e84380));
 }
 // @0x140e82520
-CString UIRpsEventDialog::vfunc_1() { return "RpsEventDialog"; }
-MS2_REPLACE_METHOD(0x140e82520, UIRpsEventDialog, vfunc_1, 61, 0x51A22B9E);
+CString UIRpsEventDialog::GetTypeName() { return "RpsEventDialog"; }
+MS2_REPLACE_METHOD(0x140e82520, UIRpsEventDialog, GetTypeName, 61, 0x51A22B9E);
 // @0x140e82570
 void UIRpsEventDialog::vfunc_72() {
     UIDialog::vfunc_72();

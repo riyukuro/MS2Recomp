@@ -41,7 +41,7 @@ UIEventIntroduce::~UIEventIntroduce()
 }
 
 // @0x140f40d70
-CString UIEventIntroduce::vfunc_1()
+CString UIEventIntroduce::GetTypeName()
 {
     return "EventIntroduce";
 }

@@ -192,7 +192,7 @@ UINpcControlDialog::UINpcControlDialog()
 }
 
 // @0x141a624b0
-CString UINpcControlDialog::vfunc_1()
+CString UINpcControlDialog::GetTypeName()
 {
     return "NpcControlDialog";
 }

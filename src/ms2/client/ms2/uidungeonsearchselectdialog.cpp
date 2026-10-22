@@ -145,7 +145,7 @@ UIDungeonSearchSelectDialog::~UIDungeonSearchSelectDialog()
 }
 
 // @0x140e26e60
-CString UIDungeonSearchSelectDialog::vfunc_1()
+CString UIDungeonSearchSelectDialog::GetTypeName()
 {
     return "DungeonSearchSelectDialog";
 }

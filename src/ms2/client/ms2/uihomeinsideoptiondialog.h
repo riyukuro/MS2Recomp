@@ -15,7 +15,7 @@ class UIHomeInsideOptionDialog : public UIDialog
 public:
     UIHomeInsideOptionDialog();                                 // 0x140c27340
     virtual ~UIHomeInsideOptionDialog();                        //  0 0x140c273b0 (??_G 0x140c28820)
-    virtual CString vfunc_1();                                  //  1 0x140c273f0 "HomeInsideOptionDialog"
+    virtual CString GetTypeName();                                  //  1 0x140c273f0 "HomeInsideOptionDialog"
     virtual void OnLoadComplete();                              // 22 0x140c27440
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140c27af0
     virtual int vfunc_48() { return 0x4f7a; }                   // 48 0x140c28980

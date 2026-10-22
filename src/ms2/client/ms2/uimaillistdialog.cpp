@@ -366,11 +366,11 @@ UIMailListDialog::~UIMailListDialog()
 }
 
 // @0x1419e3630
-CString UIMailListDialog::vfunc_1()
+CString UIMailListDialog::GetTypeName()
 {
     return "MailListDialog";
 }
-MS2_REPLACE_METHOD(0x1419E3630, UIMailListDialog, vfunc_1, 61, 0xDC6C2DCB); // UIMailListDialog::vfunc_1
+MS2_REPLACE_METHOD(0x1419E3630, UIMailListDialog, GetTypeName, 61, 0xDC6C2DCB); // UIMailListDialog::vfunc_1
 
 // MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e3680
@@ -644,7 +644,7 @@ unsigned UIMailListDialog::FUN_1419e67a0(CMailInfo* pMail)
                 {
                     pItem->FUN_140526c70(spAd->m_n1c);
                     CStringA strKey;
-                    strKey.Format("%s.%d", (const char*)vfunc_1(), nCount);
+                    strKey.Format("%s.%d", (const char*)GetTypeName(), nCount);
                     FUN_1414727e0(strKey, MS2Ptr<CItem>(pItem), spAd->m_n24, i);
                     nCount++;
                 }
@@ -659,7 +659,7 @@ unsigned UIMailListDialog::FUN_1419e67a0(CMailInfo* pMail)
             if (spAttach.get() != 0 && spAttach->m_nTime == 0)
             {
                 CStringA strKey;
-                strKey.Format("%s.%d", (const char*)vfunc_1(), nCount);
+                strKey.Format("%s.%d", (const char*)GetTypeName(), nCount);
                 FUN_1414727e0(strKey, spAttach->m_item, spAttach->m_n20, i);
                 nCount++;
             }
@@ -675,7 +675,7 @@ void UIMailListDialog::FUN_1419e6b70()
     for (int i = 0; i < 5; i++)
     {
         CStringA strKey;
-        strKey.Format("%s.%d", (const char*)vfunc_1(), i);
+        strKey.Format("%s.%d", (const char*)GetTypeName(), i);
         FUN_1414728e0(strKey);
     }
 }
@@ -1409,11 +1409,11 @@ UIMailSendDialog::~UIMailSendDialog()
 }
 
 // @0x1419ec2b0
-CString UIMailSendDialog::vfunc_1()
+CString UIMailSendDialog::GetTypeName()
 {
     return "MailSendDialog";
 }
-MS2_REPLACE_METHOD(0x1419ec2b0, UIMailSendDialog, vfunc_1, 61, 0x58655699); // UIMailSendDialog::vfunc_1
+MS2_REPLACE_METHOD(0x1419ec2b0, UIMailSendDialog, GetTypeName, 61, 0x58655699); // UIMailSendDialog::vfunc_1
 
 // @0x1419ec300
 int UIMailSendDialog::vfunc_65()

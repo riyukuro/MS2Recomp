@@ -30,7 +30,7 @@ class UIRegionListDialog : public UIDialog
 public:
     UIRegionListDialog();                                       // 0x140e80220
     virtual ~UIRegionListDialog();                              //  0 0x140e80330 (??_G 0x140e81730)
-    virtual CString vfunc_1();                                  //  1 0x140e803a0 "RegionListDialog"
+    virtual CString GetTypeName();                                  //  1 0x140e803a0 "RegionListDialog"
     virtual void OnLoadComplete();                              // 22 0x140e803f0
     virtual int vfunc_13();                                     // 13 0x140e80430 the enter key
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140e804b0

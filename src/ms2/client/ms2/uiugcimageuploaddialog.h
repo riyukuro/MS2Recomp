@@ -29,7 +29,7 @@ class UIUGCImageUploadDialog : public UIDialog, public UIStatusEventListener, pu
 public:
     UIUGCImageUploadDialog();                                   // 0x141b39900
     virtual ~UIUGCImageUploadDialog();                          //  0 0x141b399c0 (??_G 0x141b3b6c0)
-    virtual CString vfunc_1();                                  //  1 0x141b39a50 "UGCImageUploadDialog"
+    virtual CString GetTypeName();                                  //  1 0x141b39a50 "UGCImageUploadDialog"
     virtual void OnLoadInit();                                  // 20 0x141b39c50
     virtual void OnLoadComplete();                              // 22 0x141b39c70 show the running upload
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141b3a020

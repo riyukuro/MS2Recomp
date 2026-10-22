@@ -25,7 +25,7 @@ class CSmartPush : public ClassObject
 public:
     CSmartPush();                                               // 0x140dcf0c0
     virtual ~CSmartPush();                                      //  0 0x140dcf140 (??_G 0x140dd7450)
-    // slot 1: ClassObject::vfunc_1 (the class name)
+    // slot 1: ClassObject::GetTypeName (the class name)
     virtual void vfunc_2();                                     //  2 0x140dd7930 per-poll update (empty)
     virtual void vfunc_3();                                     //  3 0x140dcf1a0 button click: the buy message box
     virtual void vfunc_4(int nValue);                           //  4 0x140dcf440 server result: "s_smartpush_active" notice
@@ -55,7 +55,7 @@ class CSmartPushAutoFishing : public CSmartPush
 {
 public:
     static ClassObject* CreateObject();                         // 0x140dcf840
-    virtual CStringW vfunc_1();                                 // 0x140dcf8a0
+    virtual CStringW GetTypeName();                                 // 0x140dcf8a0
     CSmartPushAutoFishing();                                    // 0x140dcf8f0
     virtual ~CSmartPushAutoFishing();                           // 0x140dcf930
     virtual void vfunc_2();                                     // 0x140dcf960 renew the auto fishing when it ran out
@@ -78,7 +78,7 @@ class CSmartPushAutoPlayInstrument : public CSmartPush
 {
 public:
     static ClassObject* CreateObject();                         // 0x140dd0c30
-    virtual CStringW vfunc_1();                                 // 0x140dd0c90
+    virtual CStringW GetTypeName();                                 // 0x140dd0c90
     CSmartPushAutoPlayInstrument();                             // 0x140dd0ce0
     virtual ~CSmartPushAutoPlayInstrument();                    // 0x140dd0d20
     virtual void vfunc_2();                                     // 0x140dd0d50
@@ -101,7 +101,7 @@ class CSmartPushSafeRiding : public CSmartPush
 {
 public:
     static ClassObject* CreateObject();                         // 0x140dd2020
-    virtual CStringW vfunc_1();                                 // 0x140dd2080
+    virtual CStringW GetTypeName();                                 // 0x140dd2080
     CSmartPushSafeRiding();                                     // 0x140dd20d0
     virtual ~CSmartPushSafeRiding();                            // 0x140dd2110
     virtual int vfunc_6();                                      // 0x140dd2140
@@ -116,7 +116,7 @@ class CSmartPushSafeWaterRiding : public CSmartPush
 {
 public:
     static ClassObject* CreateObject();                         // 0x140dd24e0
-    virtual CStringW vfunc_1();                                 // 0x140dd2540
+    virtual CStringW GetTypeName();                                 // 0x140dd2540
     CSmartPushSafeWaterRiding();                                // 0x140dd2590
     virtual ~CSmartPushSafeWaterRiding();                       // 0x140dd25d0
     virtual int vfunc_6();                                      // 0x140dd2600
@@ -130,7 +130,7 @@ class CSmartPushSafeWaterRidingToggle : public CSmartPush
 {
 public:
     static ClassObject* CreateObject();                         // 0x140dd2960
-    virtual CStringW vfunc_1();                                 // 0x140dd29c0
+    virtual CStringW GetTypeName();                                 // 0x140dd29c0
     CSmartPushSafeWaterRidingToggle();                          // 0x140dd2a10
     virtual ~CSmartPushSafeWaterRidingToggle();                 // 0x140dd2a50
     virtual void vfunc_3();                                     // 0x140dd2a80 send packet 0x83 directly
@@ -185,28 +185,28 @@ class CSmartPushAutoGathering : public CSmartPushAutoInteractObject
 public:
     virtual ~CSmartPushAutoGathering() {}
     static ClassObject* CreateObject();                         // 0x140dd44c0
-    virtual CStringW vfunc_1();                                 // 0x140dd4520
+    virtual CStringW GetTypeName();                                 // 0x140dd4520
 };
 class CSmartPushAutoMining : public CSmartPushAutoInteractObject
 {
 public:
     virtual ~CSmartPushAutoMining() {}
     static ClassObject* CreateObject();                         // 0x140dd4570
-    virtual CStringW vfunc_1();                                 // 0x140dd45d0
+    virtual CStringW GetTypeName();                                 // 0x140dd45d0
 };
 class CSmartPushAutoBreeding : public CSmartPushAutoFunctionCubeObject
 {
 public:
     virtual ~CSmartPushAutoBreeding() {}
     static ClassObject* CreateObject();                         // 0x140dd4620
-    virtual CStringW vfunc_1();                                 // 0x140dd4680
+    virtual CStringW GetTypeName();                                 // 0x140dd4680
 };
 class CSmartPushAutoFarming : public CSmartPushAutoFunctionCubeObject
 {
 public:
     virtual ~CSmartPushAutoFarming() {}
     static ClassObject* CreateObject();                         // 0x140dd46d0
-    virtual CStringW vfunc_1();                                 // 0x140dd4730
+    virtual CStringW GetTypeName();                                 // 0x140dd4730
 };
 
 // The "use a buff item" forms (vftables 0x142e3b278 / 0x142e3b2f8, 0x40 bytes): the button uses the best buff item of
@@ -241,7 +241,7 @@ public:
     virtual ~CSmartPushAutoGatheringBuff() {}
     CSmartPushAutoGatheringBuff() { m_nAbility = 0x47; }        // 0x140dd6cd0
     static ClassObject* CreateObject();                         // 0x140dd5080
-    virtual CStringW vfunc_1();                                 // 0x140dd50e0
+    virtual CStringW GetTypeName();                                 // 0x140dd50e0
 };
 class CSmartPushAutoMiningBuff : public CSmartPushAutoInteractObjectBuffItem
 {
@@ -249,7 +249,7 @@ public:
     virtual ~CSmartPushAutoMiningBuff() {}
     CSmartPushAutoMiningBuff() { m_nAbility = 0x43; }           // 0x140dd6dd0
     static ClassObject* CreateObject();                         // 0x140dd5130
-    virtual CStringW vfunc_1();                                 // 0x140dd5190
+    virtual CStringW GetTypeName();                                 // 0x140dd5190
 };
 class CSmartPushAutoBreedingBuff : public CSmartPushAutoFunctionCubeObjectBuffItem
 {
@@ -257,7 +257,7 @@ public:
     virtual ~CSmartPushAutoBreedingBuff() {}
     CSmartPushAutoBreedingBuff() { m_nAbility = 0x44; }         // 0x140dd6b90
     static ClassObject* CreateObject();                         // 0x140dd51e0
-    virtual CStringW vfunc_1();                                 // 0x140dd5240
+    virtual CStringW GetTypeName();                                 // 0x140dd5240
 };
 class CSmartPushAutoFarmingBuff : public CSmartPushAutoFunctionCubeObjectBuffItem
 {
@@ -265,7 +265,7 @@ public:
     virtual ~CSmartPushAutoFarmingBuff() {}
     CSmartPushAutoFarmingBuff() { m_nAbility = 0x48; }          // 0x140dd6c00
     static ClassObject* CreateObject();                         // 0x140dd5290
-    virtual CStringW vfunc_1();                                 // 0x140dd52f0
+    virtual CStringW GetTypeName();                                 // 0x140dd52f0
 };
 
 // The id of the best (highest special ability value) buff item of the bag with special ability nAbility (0: none).

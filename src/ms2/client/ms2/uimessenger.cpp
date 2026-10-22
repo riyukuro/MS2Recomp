@@ -161,9 +161,9 @@
 // MS2-PIN: ?capacity@?$vector@HV?$allocator@H@std@@@std@@QEBA_KXZ 0x141a1fd50 ; prop
 // MS2-PIN: ?clear@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAAXXZ 0x141a1fd90 ; unique
 // MS2-PIN: ?clear@?$vector@HV?$allocator@H@std@@@std@@QEAAXXZ 0x141a1ff50 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIMessenger@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a1ffd0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIMessenger@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a20030 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIMessenger@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a20090 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIMessenger@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a1ffd0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIMessenger@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a20030 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIMessenger@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a20090 ; unique
 // MS2-PIN: ?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@2@QEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@2@_K@Z 0x141a200f0 ; prop
 // MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@2@_K@Z 0x141a20150 ; prop
 // MS2-PIN: ?deallocate@?$allocator@H@std@@QEAAXQEAH_K@Z 0x141a201e0 ; unique
@@ -288,7 +288,7 @@
 // MS2-PIN: ?allocate@?$allocator@U?$_List_node@V?$MS2Ptr@VChatEmoticonData@@@@PEAX@std@@@std@@QEAAPEAU?$_List_node@V?$MS2Ptr@VChatEmoticonData@@@@PEAX@2@_K@Z 0x141a2fc70 ; prop
 // MS2-PIN: ?begin@?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@2@XZ 0x141a2fd80 ; prop
 // MS2-PIN: ?clear@?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@QEAAXXZ 0x141a2fef0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIMessengerBrowser@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a2ffc0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIMessengerBrowser@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a2ffc0 ; unique
 // MS2-PIN: ?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@HPEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@HPEAX@std@@@2@QEAU?$_Tree_node@HPEAX@2@_K@Z 0x141a30050 ; prop
 // MS2-PIN: ?end@?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@2@XZ 0x141a301e0 ; unique
 // MS2-PIN: ?equal_range@?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@std@@V12@@2@AEBH@Z 0x141a30240 ; unique
@@ -605,7 +605,7 @@ UIMessenger::~UIMessenger()
 }
 
 // @0x141a08eb0
-CString UIMessenger::vfunc_1()
+CString UIMessenger::GetTypeName()
 {
     return "MessengerDialog";
 }
@@ -647,7 +647,7 @@ int UIMessenger::vfunc_4()
         return 1;
     TiXmlDocument doc;
     if (!FUN_14081b310(&doc))
-        FUN_14086e090(&doc, new TiXmlElement(vfunc_1()));
+        FUN_14086e090(&doc, new TiXmlElement(GetTypeName()));
     void* pRoot = FUN_14081b310(&doc);
     if (!pRoot)
         return 0;
@@ -664,13 +664,13 @@ int UIMessenger::vfunc_5()
     if (!m_80)
         return 0;
     m_78 = 0;
-    void* pNode = FUN_140165cf0(&m_doc, vfunc_1());
+    void* pNode = FUN_140165cf0(&m_doc, GetTypeName());
     if (pNode == 0)
     {
         TiXmlDocument doc;
         if (doc.FUN_140870fc0(FUN_140cc2a00(FUN_1412755f0(), FUN_14016a600(m_strName, 0)), 0))
         {
-            void* pLoaded = FUN_140165cf0(&doc, vfunc_1());
+            void* pLoaded = FUN_140165cf0(&doc, GetTypeName());
             if (pLoaded == 0)
                 return 0;
             m_78 = vfunc_54(pLoaded);
@@ -2772,7 +2772,7 @@ UIMessengerBrowser::~UIMessengerBrowser()
 }
 
 // @0x141a21a60
-CString UIMessengerBrowser::vfunc_1()
+CString UIMessengerBrowser::GetTypeName()
 {
     return "MessengerBrowser";
 }

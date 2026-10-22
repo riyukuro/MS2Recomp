@@ -17,7 +17,7 @@ class UIPvPTeamResultDialog : public UIDialog
 public:
     UIPvPTeamResultDialog();                                    // 0x1413450d0
     virtual ~UIPvPTeamResultDialog();                           //  0 0x141345160 (??_G 0x141346590)
-    virtual CString vfunc_1();                                  //  1 0x1413451b0 "PvPTeamResultDialog"
+    virtual CString GetTypeName();                                  //  1 0x1413451b0 "PvPTeamResultDialog"
     virtual void OnLoadComplete();                              // 22 0x141345290
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x1413461d0 "OnClose"
     virtual void vfunc_43();                                    // 43 0x141346270

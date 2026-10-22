@@ -65,11 +65,11 @@ UIGuildFlagTooltip::UIGuildFlagTooltip()
 }
 
 // @0x1412c3ee0
-CString UIGuildFlagTooltip::vfunc_1()
+CString UIGuildFlagTooltip::GetTypeName()
 {
     return "GuildFlagTooltip";
 }
-MS2_REPLACE_METHOD(0x1412C3EE0, UIGuildFlagTooltip, vfunc_1, 61, 0x9FD37AF0);
+MS2_REPLACE_METHOD(0x1412C3EE0, UIGuildFlagTooltip, GetTypeName, 61, 0x9FD37AF0);
 
 // @0x1412c3f30
 void UIGuildFlagTooltip::vfunc_3()

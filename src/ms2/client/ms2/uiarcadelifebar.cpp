@@ -32,11 +32,11 @@ UIArcadeLifeBar::~UIArcadeLifeBar()
 }
 
 // @0x140ef5030
-CString UIArcadeLifeBar::vfunc_1()
+CString UIArcadeLifeBar::GetTypeName()
 {
     return "ArcadeLifeBar";
 }
-MS2_REPLACE_METHOD(0x140EF5030, UIArcadeLifeBar, vfunc_1, 61, 0xDCF7423F);
+MS2_REPLACE_METHOD(0x140EF5030, UIArcadeLifeBar, GetTypeName, 61, 0xDCF7423F);
 
 // @0x140ef5080
 void UIArcadeLifeBar::vfunc_43()

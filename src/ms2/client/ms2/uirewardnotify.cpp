@@ -14,8 +14,8 @@
 // MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@VAScript@@@@V?$CElementTraits@V?$MS2Ptr@VAScript@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VAScript@@@@_K@Z 0x141ac3960 ; prop
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIFameContentsNotify@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAPEAXI@Z 0x141ac39a0 ; order
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIRewardNotify@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAPEAXI@Z 0x141ac39e0 ; order
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIFameContentsNotify@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141ac45a0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIRewardNotify@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141ac4600 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIFameContentsNotify@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141ac45a0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIRewardNotify@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141ac4600 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIFameContentsNotify@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAXPEAVNotifyObject@@@Z 0x141ac4660 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIRewardNotify@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAXPEAVNotifyObject@@@Z 0x141ac4690 ; unique
 // MS2-PIN: ??$Call@VUIFameContentsNotify@@P81@EAAXPEAVNotifyObject@@@Z@?$DelegateImpl@U?$pair@PEAVUIFameContentsNotify@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@CAXAEAU?$pair@PEAVUIFameContentsNotify@@P81@EAAXPEAVNotifyObject@@@Z@std@@PEAVNotifyObject@@@Z 0x141ac46c0 ; prop
@@ -36,7 +36,7 @@
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIRouletteDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAPEAXI@Z 0x141ac68e0 ; prop
 // MS2-PIN: ??_GUIRouletteDialog@@UEAAPEAXI@Z 0x141ac6920 ; unique
 // MS2-PIN: ?Add@?$CAtlArray@UUnk_RouletteSpin@@V?$CElementTraits@UUnk_RouletteSpin@@@ATL@@@ATL@@QEAA_KAEBUUnk_RouletteSpin@@@Z 0x141ac6960 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIRouletteDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141ac6e70 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIRouletteDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141ac6e70 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIRouletteDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAXAEAVCInPacket@@@Z 0x141ac6ed0 ; unique
 // MS2-PIN: ??$Call@VUIRouletteDialog@@P81@EAAXAEAVCInPacket@@@Z@?$DelegateImpl@U?$pair@PEAVUIRouletteDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@CAXAEAU?$pair@PEAVUIRouletteDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@AEAVCInPacket@@@Z 0x141ac6f00 ; prop
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIRouletteDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141ac6f40 ; unique
@@ -178,8 +178,8 @@ static CString s_strTrophyHero = "system_Trophy_Hero";
 UIRewardNotify::UIRewardNotify() { m_2c = 0x1f; m_block = 0; }
 
 // @0x141abe240
-CString UIRewardNotify::vfunc_1() { return "RewardNotify"; }
-MS2_REPLACE_METHOD(0x141abe240, UIRewardNotify, vfunc_1, 61, 0x6D329B98);
+CString UIRewardNotify::GetTypeName() { return "RewardNotify"; }
+MS2_REPLACE_METHOD(0x141abe240, UIRewardNotify, GetTypeName, 61, 0x6D329B98);
 
 // Every toast is an AS object built member by member (the setters are ASObj members; the pointer is kept as a
 // MS2Ptr<AScript>, the instantiation the exe shares).
@@ -753,8 +753,8 @@ UIFameContentsNotify::~UIFameContentsNotify()
 }
 
 // @0x141ac23e0
-CString UIFameContentsNotify::vfunc_1() { return "FameContentsNotify"; }
-MS2_REPLACE_METHOD(0x141ac23e0, UIFameContentsNotify, vfunc_1, 61, 0x5B6B5C7B);
+CString UIFameContentsNotify::GetTypeName() { return "FameContentsNotify"; }
+MS2_REPLACE_METHOD(0x141ac23e0, UIFameContentsNotify, GetTypeName, 61, 0x5B6B5C7B);
 
 // @0x141ac2430
 void UIFameContentsNotify::vfunc_2() { UIHeadUpDisplay::vfunc_2(); }
@@ -933,8 +933,8 @@ UIRouletteDialog::~UIRouletteDialog()
 }
 
 // @0x141ac4bd0
-CString UIRouletteDialog::vfunc_1() { return "RouletteDialog"; }
-MS2_REPLACE_METHOD(0x141ac4bd0, UIRouletteDialog, vfunc_1, 61, 0x67513A0F);
+CString UIRouletteDialog::GetTypeName() { return "RouletteDialog"; }
+MS2_REPLACE_METHOD(0x141ac4bd0, UIRouletteDialog, GetTypeName, 61, 0x67513A0F);
 
 // @0x141ac4c20
 int UIRouletteDialog::vfunc_65() { return UIDialog::vfunc_65() != 0; }
@@ -1098,7 +1098,7 @@ void UIRouletteDialog::FUN_141ac5a30()
         if (item->FUN_140523c40(nItemId, nRarity, 0)) {
             item->FUN_140526c70(nCount);
             CString strBind;
-            strBind.Format("%s_%d", (const char*)vfunc_1(), i + 1);
+            strBind.Format("%s_%d", (const char*)GetTypeName(), i + 1);
             FUN_141415450(strBind, item, i, 0x415, 0);
             pDlg->FUN_141ac65b0("bind", strBind, i + 1, item->FUN_140528590(), nCount);
             m_binds.Add(strBind);

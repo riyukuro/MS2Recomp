@@ -52,7 +52,7 @@ class UIMasteryDialog : public UIDialog, public ICastingEventListener, public UI
 public:
     UIMasteryDialog();                                                                              // 0x140eadeb0
     virtual ~UIMasteryDialog();                                                                     //  0 0x140eae2d0
-    virtual CString vfunc_1();                                                                      //  1 0x140eae470
+    virtual CString GetTypeName();                                                                      //  1 0x140eae470
     virtual void OnLoadComplete();                                                                  // 22 0x140eae8a0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                                                     // 28 0x140eaf090

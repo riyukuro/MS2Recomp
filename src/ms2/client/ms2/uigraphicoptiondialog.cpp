@@ -89,7 +89,7 @@ class UIGraphicOptionDialog : public UIDialog
 public:
     UIGraphicOptionDialog();                                                        // 0x141946c10
     virtual ~UIGraphicOptionDialog();                                               //  0 0x141946c60 (??_G 0x1419477b0)
-    virtual CString vfunc_1();                                                      //  1 0x141946ca0
+    virtual CString GetTypeName();                                                      //  1 0x141946ca0
     virtual int vfunc_5();                                                          //  5 0x141946d20
     virtual void OnLoadInit();                                                      // 20 0x141947000
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
@@ -117,11 +117,11 @@ UIGraphicOptionDialog::~UIGraphicOptionDialog()
 }
 
 // @0x141946ca0
-CString UIGraphicOptionDialog::vfunc_1()
+CString UIGraphicOptionDialog::GetTypeName()
 {
     return "GraphicOptionDialog";
 }
-MS2_REPLACE_METHOD(0x141946ca0, UIGraphicOptionDialog, vfunc_1, 61, 0x49ADDABE);
+MS2_REPLACE_METHOD(0x141946ca0, UIGraphicOptionDialog, GetTypeName, 61, 0x49ADDABE);
 
 // @0x141946cf0
 int UIGraphicOptionDialog::vfunc_65()

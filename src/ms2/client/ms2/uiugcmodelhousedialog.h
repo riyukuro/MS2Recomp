@@ -18,7 +18,7 @@ class UIUGCModelHouseDialog : public UIDialog
 public:
     UIUGCModelHouseDialog();                                    // 0x140faf390
     // The destructor is implicit (0x140faf410: just ~UIDialog), ??_G 0x140faf6d0.
-    virtual CString vfunc_1();                                  //  1 0x140faf450
+    virtual CString GetTypeName();                                  //  1 0x140faf450
     virtual void vfunc_67();                                    // 67 0x140faf4a0 (Close: also forgets the plot)
     virtual void OnLoadComplete();                              // 22 0x140faf4d0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

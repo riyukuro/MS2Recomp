@@ -119,7 +119,7 @@ UIExpBar::~UIExpBar()
 }
 
 // @0x141931f90
-CString UIExpBar::vfunc_1()
+CString UIExpBar::GetTypeName()
 {
     return "ExpBar";
 }
@@ -306,7 +306,7 @@ Scaleform::GFx::Value Unk_ExpEntity::FUN_141932fd0(const char* szMethod, float a
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- hooks ----
-MS2_REPLACE_METHOD(0x141931F90, UIExpBar, vfunc_1, 61, 0x38CC8AA4);
+MS2_REPLACE_METHOD(0x141931F90, UIExpBar, GetTypeName, 61, 0x38CC8AA4);
 MS2_REPLACE_METHOD(0x141931FE0, UIExpBar, vfunc_2, 46, 0xA490E680);
 MS2_REPLACE_METHOD(0x141932020, UIExpBar, vfunc_3, 86, 0x1EC264F5);
 MS2_REPLACE_METHOD(0x141932080, UIExpBar, FUN_141932080, 535, 0xDDCE3C5D);

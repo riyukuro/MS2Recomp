@@ -18,7 +18,7 @@ public:
 
     UIInviteGroupDialog();                                      // 0x14199f740
     virtual ~UIInviteGroupDialog();                             //  0 0x14199f7e0 (??_G 0x1419a0dc0)
-    virtual CString vfunc_1();                                  //  1 0x14199f820 "InviteGroupDialog"
+    virtual CString GetTypeName();                                  //  1 0x14199f820 "InviteGroupDialog"
     virtual int vfunc_13();                                     // 13 0x14199f9a0 Enter: invite the typed name
     virtual void OnLoadInit();                                  // 20 0x14199f8a0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x14199fae0

@@ -99,7 +99,7 @@ UIRandomCoupon::~UIRandomCoupon()
 }
 
 // @0x140bfe600
-CString UIRandomCoupon::vfunc_1()
+CString UIRandomCoupon::GetTypeName()
 {
     return "RandomCoupon";
 }

@@ -17,7 +17,7 @@ class UIPortalEmoticon : public UIObject
 public:
     UIPortalEmoticon();                                             // 0x140f9b9c0 (loads the swf at depth 4)
     virtual ~UIPortalEmoticon();                                    //  0 0x140f9baa0 (??_G 0x140f9c130)
-    virtual CString vfunc_1();                                      //  1 0x140f9bb00 "PortalEmoticon"
+    virtual CString GetTypeName();                                      //  1 0x140f9bb00 "PortalEmoticon"
     virtual void vfunc_2();                                         //  2 0x140f9bce0 show: load the movie and start showing
     virtual void vfunc_3();                                         //  3 0x140f9bd30 hide: unload and stop showing
     virtual void vfunc_15();                                        // 15 0x140f9bee0 per-frame: follow the portal's point

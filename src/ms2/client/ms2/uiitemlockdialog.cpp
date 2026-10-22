@@ -133,7 +133,7 @@ UIItemLockDialog::~UIItemLockDialog()
 }
 
 // @0x140f56c30
-CString UIItemLockDialog::vfunc_1()
+CString UIItemLockDialog::GetTypeName()
 {
     return "ItemLockDialog";
 }
@@ -141,10 +141,10 @@ CString UIItemLockDialog::vfunc_1()
 // @0x140f56c80
 void UIItemLockDialog::FUN_140f56c80()
 {
-    FUN_140d42100(vfunc_1());
-    FUN_140d42050(vfunc_1());
+    FUN_140d42100(GetTypeName());
+    FUN_140d42050(GetTypeName());
     if (MS2Ptr<Unk_LdItemBag> spBag = GetChild<Unk_LdItemBag>("m_itemBag"))
-        spBag->FUN_1407cba60("bagId", vfunc_1());
+        spBag->FUN_1407cba60("bagId", GetTypeName());
     FUN_140f56e00();
 }
 
@@ -204,7 +204,7 @@ void UIItemLockDialog::vfunc_26()
         pInv->FUN_141999f60();
         pInv->FUN_141999e00();
     }
-    FUN_140d42100(vfunc_1());
+    FUN_140d42100(GetTypeName());
 }
 
 // @0x140f571f0
@@ -371,7 +371,7 @@ CString UIItemLockDialog::FUN_140f57c60(unsigned nItemId, int nRarity)
     if (pItem->FUN_140523c40(nItemId, nRarity, 0))
     {
         CString strName;
-        strName.Format("%s_%d", (const char*)vfunc_1(), nItemId);
+        strName.Format("%s_%d", (const char*)GetTypeName(), nItemId);
         FUN_141415450(strName, MS2Ptr<CItem>(pItem), 0, 0x401, 0);
         m_lstSlots.AddTail(strName);
         return strName;

@@ -241,11 +241,11 @@ void UITencentUserReportDialog::vfunc_26()
 MS2_REPLACE_METHOD(0x140EDB910, UITencentUserReportDialog, vfunc_26, 64, 0x7F2C392F);
 
 // @0x140edb960
-CString UITencentUserReportDialog::vfunc_1()
+CString UITencentUserReportDialog::GetTypeName()
 {
     return "TencentUserReportDialog";
 }
-MS2_REPLACE_METHOD(0x140EDB960, UITencentUserReportDialog, vfunc_1, 61, 0x7C9C1947);
+MS2_REPLACE_METHOD(0x140EDB960, UITencentUserReportDialog, GetTypeName, 61, 0x7C9C1947);
 
 // @0x140edb9b0
 int UITencentUserReportDialog::vfunc_28(const char* method, const Scaleform::GFx::Value* args, unsigned int count)

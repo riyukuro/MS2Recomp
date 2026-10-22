@@ -500,7 +500,7 @@ UIMainPlayerInfo::~UIMainPlayerInfo()
 }
 
 // @0x1419eea30
-CString UIMainPlayerInfo::vfunc_1()
+CString UIMainPlayerInfo::GetTypeName()
 {
     return "MainPlayerInfo";
 }
@@ -1658,7 +1658,7 @@ Unk_MpRideePtr& Unk_MpRideePtr::AssignRaw(UIAvatarRidee* p)
 }
 
 // ---- hooks ----
-MS2_REPLACE_METHOD(0x1419EEA30, UIMainPlayerInfo, vfunc_1, 61, 0x5EF64259);
+MS2_REPLACE_METHOD(0x1419EEA30, UIMainPlayerInfo, GetTypeName, 61, 0x5EF64259);
 MS2_REPLACE_METHOD_VIA(0x1419EEA80, UIMainPlayerInfo, UIItemEventListener, vfunc_il1, 69, 0x830FFD61);
 MS2_REPLACE_METHOD_VIA(0x1419EEAD0, UIMainPlayerInfo, UIStatusEventListener, vfunc_oa0_1, 69, 0x93DD6E81);
 MS2_REPLACE_METHOD(0x1419EEB20, UIMainPlayerInfo, vfunc_53, 82, 0x25F910F7);

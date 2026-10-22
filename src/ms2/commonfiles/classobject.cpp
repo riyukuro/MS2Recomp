@@ -38,11 +38,11 @@ ClassObjectFactoryMap* FUN_1401f7fe0()
 MS2_REPLACE(0x1401F7FE0, FUN_1401f7fe0, 153, 0x2E87AF23);
 
 // @0x1401f8450
-CStringW ClassObject::vfunc_1()
+CStringW ClassObject::GetTypeName()
 {
     return CStringW(L"ClassObject");
 }
-MS2_REPLACE_METHOD(0x1401F8450, ClassObject, vfunc_1, 61, 0xC95ED7E5);
+MS2_REPLACE_METHOD(0x1401F8450, ClassObject, GetTypeName, 61, 0xC95ED7E5);
 
 // The UCRT header-inline memmove_s (corecrt_memcpy_s.h) closes the CAtlMap instantiations.
 #pragma function(memmove)

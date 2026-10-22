@@ -85,7 +85,7 @@ UIStatControlDialog::~UIStatControlDialog()
 }
 
 // @0x14134e510
-CString UIStatControlDialog::vfunc_1()
+CString UIStatControlDialog::GetTypeName()
 {
     return "StatControlDialog";
 }

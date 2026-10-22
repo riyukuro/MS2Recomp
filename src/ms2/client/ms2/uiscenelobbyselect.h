@@ -81,7 +81,7 @@ class UISceneLobby : public UISceneEntity
 public:
     UISceneLobby();                                             // 0x141acd890 (m_6c = 0x620000d)
     virtual ~UISceneLobby();                                    //  0 0x141acda60 (??_G 0x141acdf10)
-    virtual CString vfunc_1();                                  //  1 0x141acdaa0 "SceneLobby"
+    virtual CString GetTypeName();                                  //  1 0x141acdaa0 "SceneLobby"
     virtual int vfunc_13();                                     // 13 0x141acdc70
     virtual int vfunc_14();                                     // 14 0x141acde00
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141acde60
@@ -95,7 +95,7 @@ class UISceneLobbyCreate : public UISceneEntity
 public:
     UISceneLobbyCreate();                                       // 0x141acdf50 (m_6c = 0x620001c)
     virtual ~UISceneLobbyCreate();                              //  0 0x141acdfa0 (??_G 0x141ace210)
-    virtual CString vfunc_1();                                  //  1 0x141acdfe0 "SceneLobbyCreate"
+    virtual CString GetTypeName();                                  //  1 0x141acdfe0 "SceneLobbyCreate"
     virtual void vfunc_12();                                    // 12 0x141ace1b0
     virtual void OnLoadComplete();                              // 22 0x141ace030
     virtual void vfunc_48(int n);                               // 48 0x141ace0b0
@@ -109,7 +109,7 @@ class UISceneLobbySelect : public UISceneEntity
 public:
     UISceneLobbySelect();                                       // 0x141ace250 (m_6c = 0x620001b)
     virtual ~UISceneLobbySelect();                              //  0 0x141ace2b0 (??_G 0x141ace6f0)
-    virtual CString vfunc_1();                                  //  1 0x141ace2f0 "SceneLobbySelect"
+    virtual CString GetTypeName();                                  //  1 0x141ace2f0 "SceneLobbySelect"
     virtual void vfunc_12();                                    // 12 0x141ace4d0
     virtual void OnLoadInit();                                  // 20 0x141ace520
     virtual void vfunc_48(int n);                               // 48 0x141ace340
@@ -131,7 +131,7 @@ class UISceneLobbyServer : public UISceneEntity
 public:
     UISceneLobbyServer();                                       // 0x141ace730 (m_6c = 0x620001a)
     virtual ~UISceneLobbyServer();                              //  0 0x141ace780 (??_G 0x141acea70)
-    virtual CString vfunc_1();                                  //  1 0x141ace7c0 "SceneLobbyServer"
+    virtual CString GetTypeName();                                  //  1 0x141ace7c0 "SceneLobbyServer"
     virtual void OnLoadInit();                                  // 20 0x141ace8b0
     virtual void vfunc_48(int n);                               // 48 0x141ace810
     virtual void vfunc_49(int n);                               // 49 0x141ace840

@@ -25,13 +25,13 @@ class ASObj;
 class ASTextField;
 class CInPacket;
 
-// The notice posted when the PC bang state or the claimable bonus count changes (the name virtual vfunc_1 0x140db41f0
+// The notice posted when the PC bang state or the claimable bonus count changes (the name virtual GetTypeName 0x140db41f0
 // lives with the other Notify* names in unnamed\unit_140da50e0.cpp). Ctor/dtor are inline COMDATs of this unit.
 class NotifyPcBang : public NotifyObject
 {
 public:
     NotifyPcBang() {}                                       // 0x141328cf0
-    virtual CStringW vfunc_1();                             // 1 0x140db41f0 "NotifyPcBang"
+    virtual CStringW GetTypeName();                             // 1 0x140db41f0 "NotifyPcBang"
 };
 MS2_CHECK_SIZE(NotifyPcBang, 0x18);
 
@@ -66,7 +66,7 @@ class UIPcBangDialog : public UIDialog
 public:
     UIPcBangDialog();                                                       // 0x141322c00
     virtual ~UIPcBangDialog();                                              //  0 0x1413230d0 (??_G 0x141329500)
-    virtual CString vfunc_1();                                              //  1 0x141323490 "PcBangDialog"
+    virtual CString GetTypeName();                                              //  1 0x141323490 "PcBangDialog"
     virtual void OnLoadInit();                                              // 20 0x1413234e0
     virtual void vfunc_26();                                                // 26 0x141323910
     virtual void vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs);   // 49 0x1413239a0 "getTooltip"

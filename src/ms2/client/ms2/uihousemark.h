@@ -102,7 +102,7 @@ class UIHouseMark : public UIHeadUpDisplay
 public:
     UIHouseMark();                                                  // 0x14198c750
     virtual ~UIHouseMark();                                         // 0 0x14198c7f0
-    virtual CString vfunc_1();                                      // 1 "HouseMark"
+    virtual CString GetTypeName();                                      // 1 "HouseMark"
     virtual void vfunc_3();                                         // 3 hide: drop every mark
     virtual void vfunc_15();                                        // 15 update the marks, add one pending
     virtual void OnLoadComplete();                                  // 22

@@ -51,7 +51,7 @@ public:
 
     UIEmoticon();                                           // 0x14192fc10
     virtual ~UIEmoticon();                                  //  0 0x14192fc80 (??_G 0x141930570)
-    virtual CString vfunc_1();                              //  1 0x14192fcc0 "Emoticon"
+    virtual CString GetTypeName();                              //  1 0x14192fcc0 "Emoticon"
     virtual void OnLoadComplete();                          // 22 0x14192fd10 UIObject::OnLoadComplete(); FUN_14192fe20(m_68)
     virtual int vfunc_48() { return 0x4e2f; }               // 48 0x1419305b0
 

@@ -388,11 +388,11 @@ void CGameOptionInterface::vfunc_12()
 MS2_REPLACE_METHOD(0x141256BB0, CGameOptionInterface, vfunc_12, 147, 0x6286211F);
 
 // @0x141256c50
-CString CGameOptionInterface::vfunc_1()
+CString CGameOptionInterface::GetTypeName()
 {
     return CString("GameOptionInterface");
 }
-MS2_REPLACE_METHOD(0x141256C50, CGameOptionInterface, vfunc_1, 61, 0x01A065A6);
+MS2_REPLACE_METHOD(0x141256C50, CGameOptionInterface, GetTypeName, 61, 0x01A065A6);
 
 // @0x141256ca0
 int CGameOptionInterface::vfunc_14()
@@ -643,11 +643,11 @@ void CGameOptionSoundDefault::vfunc_12()
 MS2_REPLACE_METHOD(0x141258650, CGameOptionSoundDefault, vfunc_12, 134, 0xA4359286);
 
 // @0x1412586e0
-CString CGameOptionSoundDefault::vfunc_1()
+CString CGameOptionSoundDefault::GetTypeName()
 {
     return CString("GameOptionSound");
 }
-MS2_REPLACE_METHOD(0x1412586E0, CGameOptionSoundDefault, vfunc_1, 61, 0xC94FE1B4);
+MS2_REPLACE_METHOD(0x1412586E0, CGameOptionSoundDefault, GetTypeName, 61, 0xC94FE1B4);
 
 // Differs only when both blocks differ (as the exe has it).
 // @0x141258730
@@ -1013,11 +1013,11 @@ void CGameOptionStatus::vfunc_12()
 MS2_REPLACE_METHOD(0x14125AFE0, CGameOptionStatus, vfunc_12, 107, 0xA053E36E);
 
 // @0x14125b060
-CString CGameOptionStatus::vfunc_1()
+CString CGameOptionStatus::GetTypeName()
 {
     return CString("GameOptionStatus");
 }
-MS2_REPLACE_METHOD(0x14125B060, CGameOptionStatus, vfunc_1, 61, 0x02CA1024);
+MS2_REPLACE_METHOD(0x14125B060, CGameOptionStatus, GetTypeName, 61, 0x02CA1024);
 
 // @0x14125b0b0
 int CGameOptionStatus::vfunc_14()

@@ -31,7 +31,7 @@ public:
 
     UITriggerEditorDialog();                                            // 0x141b29f20
     // implicit virtual destructor                                   //  0 0x141b32140 (??_G 0x141b32420; no vptr re-store)
-    virtual CString vfunc_1();                                          //  1 0x141b2a0a0 "TriggerEditorDialog"
+    virtual CString GetTypeName();                                          //  1 0x141b2a0a0 "TriggerEditorDialog"
     virtual int vfunc_13();                                             // 13 0x141b2b3d0 per-frame keys (escape asks to close, Tab folds)
     virtual void OnLoadComplete();                                      // 22 0x141b2aa10
     virtual void vfunc_26();                                            // 26 0x141b2a180 unload: drop the buttons

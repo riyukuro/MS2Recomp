@@ -18,7 +18,7 @@ class UIExpBar : public UIHeadUpDisplay, public UIStatusEventListener
 public:
     UIExpBar();                                                     // 0x141931eb0 (m_2c = 0xf)
     virtual ~UIExpBar();                                            //  0 0x141931f30 (??_G 0x141933100)
-    virtual CString vfunc_1();                                      //  1 0x141931f90 "ExpBar"
+    virtual CString GetTypeName();                                      //  1 0x141931f90 "ExpBar"
     virtual void vfunc_2();                                         //  2 0x141931fe0 show unless the cinematic gate is on
     virtual void vfunc_3();                                         //  3 0x141932020 hide and leave the status listeners
     virtual void OnLoadComplete();                                  // 22 0x1419326a0

@@ -65,7 +65,7 @@ public:
 
     UIBossRewardPreviewDialog();                                    // 0x140f255e0
     virtual ~UIBossRewardPreviewDialog();                           //  0 0x140f264b0 (??_G 0x140f265f0)
-    virtual CString vfunc_1();                                      //  1 0x140f256b0 "BossRewardPreviewDialog"
+    virtual CString GetTypeName();                                      //  1 0x140f256b0 "BossRewardPreviewDialog"
     virtual void OnLoadComplete();                                  // 22 0x140f257a0 bind the title / exp / meso rows
     virtual int vfunc_48() { return 0x4efb; }                       // 48 0x140f26660
     virtual void vfunc_67();                                        // 67 0x140f25700 close: drop the bag

@@ -53,7 +53,7 @@ class UISnowmanEventDialog : public UIDialog
 public:
     UISnowmanEventDialog();
     virtual ~UISnowmanEventDialog();
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual int vfunc_65();
     virtual void vfunc_67();
     virtual void OnLoadComplete();

@@ -20,7 +20,7 @@ class UIBeautyListDialog : public UIDialog
 public:
     UIBeautyListDialog();                                       // 0x140f004b0 (FUN_141924170(1))
     virtual ~UIBeautyListDialog();                              //  0 0x140f00510 (??_G 0x140f00dc0)
-    virtual CString vfunc_1();                                  //  1 0x140f00550 "BeautyListDialog"
+    virtual CString GetTypeName();                                  //  1 0x140f00550 "BeautyListDialog"
     virtual void OnLoadComplete();                              // 22 0x140f005f0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140f00730
     virtual int vfunc_48() { return 0x4efe; }                   // 48 0x140f00e00

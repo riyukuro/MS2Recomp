@@ -54,7 +54,7 @@ class UIShadowExpeditionBossBar : public UIScoreDialog
 public:
     UIShadowExpeditionBossBar();                                    // 0x140f9cc60
     virtual ~UIShadowExpeditionBossBar();                           //  0 0x140f9cd30 (??_G 0x140f9de60)
-    virtual CString vfunc_1();                                      //  1 0x140f9cdb0 "ShadowExpeditionBossBar"
+    virtual CString GetTypeName();                                      //  1 0x140f9cdb0 "ShadowExpeditionBossBar"
     virtual void OnLoadComplete();                                  // 22 0x140f9ceb0
     virtual void vfunc_26();                                        // 26 0x140f9d0f0
     virtual void vfunc_43();                                        // 43 0x140f9ce00

@@ -886,7 +886,7 @@ class NotifyKillPlayer : public NotifyObject
 public:
     NotifyKillPlayer(const CStringW& strKiller, const CStringW& strVictim) : m_strKiller(strKiller), m_strVictim(strVictim) {}
     virtual ~NotifyKillPlayer() = default;
-    virtual CStringW vfunc_1();                             // 0x140db5220
+    virtual CStringW GetTypeName();                             // 0x140db5220
     CStringW m_strKiller;                                   // +0x18
     CStringW m_strVictim;                                   // +0x20
 };
@@ -899,7 +899,7 @@ class NotifyChangedTokenMoney : public NotifyObject
 public:
     NotifyChangedTokenMoney(int nType, __int64 nValue, __int64 nDelta) : m_nType(nType), m_nValue(nValue), m_nDelta(nDelta) {}
     virtual ~NotifyChangedTokenMoney() = default;
-    virtual CStringW vfunc_1();                             // 0x140db4610
+    virtual CStringW GetTypeName();                             // 0x140db4610
     int m_nType;                                            // +0x18
     __int64 m_nValue;                                       // +0x20
     __int64 m_nDelta;                                       // +0x28
@@ -2656,7 +2656,7 @@ class NotifyLearnEmotion : public NotifyObject
 public:
     NotifyLearnEmotion(int nId) : m_nId(nId) {}
     virtual ~NotifyLearnEmotion() = default;
-    virtual CStringW vfunc_1();                             // 0x140db4190
+    virtual CStringW GetTypeName();                             // 0x140db4190
     int m_nId;                                              // +0x18
 };
 MS2_CHECK_SIZE(NotifyLearnEmotion, 0x20);
@@ -7622,7 +7622,7 @@ class NotifyChangeMyJob : public NotifyObject
 public:
     NotifyChangeMyJob(MyPC* pMyPC) : m_pMyPC(pMyPC) {}
     virtual ~NotifyChangeMyJob() = default;
-    virtual CStringW vfunc_1();                             // 0x140db4370
+    virtual CStringW GetTypeName();                             // 0x140db4370
     MyPC* m_pMyPC;                                          // +0x18
 };
 MS2_CHECK_SIZE(NotifyChangeMyJob, 0x20);
@@ -8806,7 +8806,7 @@ class NotifyActiveMyCodiTab : public NotifyObject
 public:
     NotifyActiveMyCodiTab(const __int64& nStart, const __int64& nEnd) : m_nStart(nStart), m_nEnd(nEnd) {}
     virtual ~NotifyActiveMyCodiTab() = default;
-    virtual CStringW vfunc_1();                             // 0x140db4cd0
+    virtual CStringW GetTypeName();                             // 0x140db4cd0
     __int64 m_nStart;                                       // +0x18
     __int64 m_nEnd;                                         // +0x20
 };
@@ -9716,7 +9716,7 @@ class NotifyChangeMyLevel : public NotifyObject
 public:
     NotifyChangeMyLevel(unsigned short nLevel, unsigned short nOldLevel) : m_nLevel(nLevel), m_nOldLevel(nOldLevel) {}
     virtual ~NotifyChangeMyLevel() = default;
-    virtual CStringW vfunc_1();                             // 0x140db43d0
+    virtual CStringW GetTypeName();                             // 0x140db43d0
     unsigned short m_nLevel;                                // +0x18
     unsigned short m_nOldLevel;                             // +0x1a
 };

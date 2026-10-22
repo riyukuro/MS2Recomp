@@ -177,7 +177,7 @@ bool FUN_1413b57d0(void* pDialog);
 
 
 // @0x1413acea0
-CStringW CGuideConditionHasMoney::vfunc_1()
+CStringW CGuideConditionHasMoney::GetTypeName()
 {
     return L"CGuideConditionHasMoney";
 }
@@ -262,7 +262,7 @@ ClassObject* CGuideConditionGuildPvpPeriod::CreateObject()
 }
 
 // @0x1413ad410
-CStringW CGuideConditionGuildPvpPeriod::vfunc_1()
+CStringW CGuideConditionGuildPvpPeriod::GetTypeName()
 {
     return L"CGuideConditionGuildPvpPeriod";
 }
@@ -280,7 +280,7 @@ ClassObject* CGuideConditionRealEstateExpireDays::CreateObject()
 }
 
 // @0x1413ad520
-CStringW CGuideConditionRealEstateExpireDays::vfunc_1()
+CStringW CGuideConditionRealEstateExpireDays::GetTypeName()
 {
     return L"CGuideConditionRealEstateExpireDays";
 }
@@ -310,7 +310,7 @@ ClassObject* CGuideConditionUgcProductExpireDays::CreateObject()
 }
 
 // @0x1413ad6c0
-CStringW CGuideConditionUgcProductExpireDays::vfunc_1()
+CStringW CGuideConditionUgcProductExpireDays::GetTypeName()
 {
     return L"CGuideConditionUgcProductExpireDays";
 }
@@ -339,7 +339,7 @@ ClassObject* CGuideConditionJobCode::CreateObject()
 }
 
 // @0x1413ad840
-CStringW CGuideConditionJobCode::vfunc_1()
+CStringW CGuideConditionJobCode::GetTypeName()
 {
     return L"CGuideConditionJobCode";
 }
@@ -373,7 +373,7 @@ ClassObject* FUN_1413ad950()
 }
 
 // @0x1413ad9b0
-CStringW CGuideConditionSubJobCode::vfunc_1()
+CStringW CGuideConditionSubJobCode::GetTypeName()
 {
     return L"CGuideConditionSubJobCode";
 }
@@ -406,7 +406,7 @@ ClassObject* CGuideConditionBattleState::CreateObject()
 }
 
 // @0x1413adb60
-CStringW CGuideConditionBattleState::vfunc_1()
+CStringW CGuideConditionBattleState::GetTypeName()
 {
     return L"CGuideConditionBattleState";
 }
@@ -440,7 +440,7 @@ ClassObject* CGuideConditionSummonPet::CreateObject()
 }
 
 // @0x1413adcc0
-CStringW CGuideConditionSummonPet::vfunc_1()
+CStringW CGuideConditionSummonPet::GetTypeName()
 {
     return L"CGuideConditionSummonPet";
 }
@@ -461,7 +461,7 @@ ClassObject* CGuideConditionJoinGuild::CreateObject()
 }
 
 // @0x1413addd0
-CStringW CGuideConditionJoinGuild::vfunc_1()
+CStringW CGuideConditionJoinGuild::GetTypeName()
 {
     return L"CGuideConditionJoinGuild";
 }
@@ -479,7 +479,7 @@ ClassObject* FUN_1413ade50()
 }
 
 // @0x1413adeb0
-CStringW CGuideConditionMenuExpand::vfunc_1()
+CStringW CGuideConditionMenuExpand::GetTypeName()
 {
     return L"CGuideConditionMenuExpand";
 }
@@ -518,7 +518,7 @@ ClassObject* CGuideConditionSelectItemEnchant::CreateObject()
 }
 
 // @0x1413ae120
-CStringW CGuideConditionSelectItemEnchant::vfunc_1()
+CStringW CGuideConditionSelectItemEnchant::GetTypeName()
 {
     return L"CGuideConditionSelectItemEnchant";
 }
@@ -539,7 +539,7 @@ ClassObject* CGuideConditionMasteryMainTabIndex::CreateObject()
 }
 
 // @0x1413ae230
-CStringW CGuideConditionMasteryMainTabIndex::vfunc_1()
+CStringW CGuideConditionMasteryMainTabIndex::GetTypeName()
 {
     return L"CGuideConditionMasteryMainTabIndex";
 }
@@ -560,7 +560,7 @@ ClassObject* CGuideConditionMasterySubTabIndex::CreateObject()
 }
 
 // @0x1413ae340
-CStringW CGuideConditionMasterySubTabIndex::vfunc_1()
+CStringW CGuideConditionMasterySubTabIndex::GetTypeName()
 {
     return L"CGuideConditionMasterySubTabIndex";
 }
@@ -581,7 +581,7 @@ ClassObject* CGuideConditionPlayInstrumentTabIndex::CreateObject()
 }
 
 // @0x1413ae450
-CStringW CGuideConditionPlayInstrumentTabIndex::vfunc_1()
+CStringW CGuideConditionPlayInstrumentTabIndex::GetTypeName()
 {
     return L"CGuideConditionPlayInstrumentTabIndex";
 }
@@ -602,7 +602,7 @@ ClassObject* CGuideConditionPlayInstrumentHasSelectItem::CreateObject()
 }
 
 // @0x1413ae560
-CStringW CGuideConditionPlayInstrumentHasSelectItem::vfunc_1()
+CStringW CGuideConditionPlayInstrumentHasSelectItem::GetTypeName()
 {
     return L"CGuideConditionPlayInstrumentHasSelectItem";
 }
@@ -623,7 +623,7 @@ ClassObject* CGuideConditionPlayingInstrument::CreateObject()
 }
 
 // @0x1413ae660
-CStringW CGuideConditionPlayingInstrument::vfunc_1()
+CStringW CGuideConditionPlayingInstrument::GetTypeName()
 {
     return L"CGuideConditionPlayingInstrument";
 }
@@ -646,7 +646,7 @@ ClassObject* CGuideConditionCubeHolderSelectItem::CreateObject()
 }
 
 // @0x1413ae790
-CStringW CGuideConditionCubeHolderSelectItem::vfunc_1()
+CStringW CGuideConditionCubeHolderSelectItem::GetTypeName()
 {
     return L"CGuideConditionCubeHolderSelectItem";
 }
@@ -666,7 +666,7 @@ ClassObject* CGuideConditionHasStatPoint::CreateObject()
 }
 
 // @0x1413ae8a0
-CStringW CGuideConditionHasStatPoint::vfunc_1()
+CStringW CGuideConditionHasStatPoint::GetTypeName()
 {
     return L"CGuideConditionHasStatPoint";
 }
@@ -687,7 +687,7 @@ ClassObject* FUN_1413ae990()
 }
 
 // @0x1413ae9f0
-CStringW CGuideConditionMentoringPage::vfunc_1()
+CStringW CGuideConditionMentoringPage::GetTypeName()
 {
     return L"CGuideConditionMentoringPage";
 }
@@ -733,7 +733,7 @@ ClassObject* FUN_1413aeca0()
 }
 
 // @0x1413aed00
-CStringW CGuideConditionButtonSelected::vfunc_1()
+CStringW CGuideConditionButtonSelected::GetTypeName()
 {
     return L"CGuideConditionButtonSelected";
 }
@@ -817,7 +817,7 @@ ClassObject* FUN_1413af280()
 }
 
 // @0x1413af2e0
-CStringW CGuideConditionContract::vfunc_1()
+CStringW CGuideConditionContract::GetTypeName()
 {
     return L"CGuideConditionContract";
 }
@@ -889,7 +889,7 @@ ClassObject* FUN_1413af740()
 }
 
 // @0x1413af7a0
-CStringW CGuideConditionHomeMode::vfunc_1()
+CStringW CGuideConditionHomeMode::GetTypeName()
 {
     return L"CGuideConditionHomeMode";
 }
@@ -928,7 +928,7 @@ ClassObject* CGuideConditionEnterDungeon::CreateObject()
 }
 
 // @0x1413af9e0
-CStringW CGuideConditionEnterDungeon::vfunc_1()
+CStringW CGuideConditionEnterDungeon::GetTypeName()
 {
     return L"CGuideConditionEnterDungeon";
 }
@@ -965,7 +965,7 @@ ClassObject* CGuideConditionChatEmoticon::CreateObject()
 }
 
 // @0x1413afb80
-CStringW CGuideConditionChatEmoticon::vfunc_1()
+CStringW CGuideConditionChatEmoticon::GetTypeName()
 {
     return L"CGuideConditionChatEmoticon";
 }

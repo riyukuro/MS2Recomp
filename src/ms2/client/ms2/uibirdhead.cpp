@@ -46,11 +46,11 @@ UIBirdHead::~UIBirdHead()
 }
 
 // @0x1418ce790
-CString UIBirdHead::vfunc_1()
+CString UIBirdHead::GetTypeName()
 {
     return "BirdHead";
 }
-MS2_REPLACE_METHOD(0x1418CE790, UIBirdHead, vfunc_1, 61, 0xF8542D70);
+MS2_REPLACE_METHOD(0x1418CE790, UIBirdHead, GetTypeName, 61, 0xF8542D70);
 
 // @0x1418ce7e0
 int UIBirdHead::FUN_1418ce7e0()

@@ -11,7 +11,7 @@ class UIHomePasswordDialog : public UIDialog
 public:
     UIHomePasswordDialog();                                     // 0x1412c8bd0
     virtual ~UIHomePasswordDialog();                            //  0 0x1412c8c50 (??_G 0x1412c9810)
-    virtual CString vfunc_1();                                  //  1 0x1412c8cb0 "HomePasswordDialog"
+    virtual CString GetTypeName();                                  //  1 0x1412c8cb0 "HomePasswordDialog"
     virtual void OnLoadComplete();                              // 22 0x1412c8db0 show the lock state (setState)
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x1412c9090
     virtual void vfunc_43();                                    // 43 0x1412c94d0

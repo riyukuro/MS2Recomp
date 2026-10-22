@@ -63,7 +63,7 @@ public:
 
     UIPetExtractionScrollDialog();                                  // 0x140e71190
     virtual ~UIPetExtractionScrollDialog() = default;               //  0 0x140e72ec0 (??_G 0x140e72ff0)
-    virtual CString vfunc_1();                                      //  1 0x140e71240 "PetExtractionScrollDialog"
+    virtual CString GetTypeName();                                      //  1 0x140e71240 "PetExtractionScrollDialog"
     virtual void OnLoadComplete();                                  // 22 0x140e719a0
     virtual void vfunc_26();                                        // 26 0x140e71970
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

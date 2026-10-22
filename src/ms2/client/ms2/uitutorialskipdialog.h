@@ -13,7 +13,7 @@ class UITutorialSkipDialog : public UIDialog
 public:
     UITutorialSkipDialog();                                     // 0x141b33740
     virtual ~UITutorialSkipDialog();                            //  0 0x141b337c0 (??_G 0x141b33f70)
-    virtual CString vfunc_1();                                  //  1 0x141b33800 "TutorialSkipDialog"
+    virtual CString GetTypeName();                                  //  1 0x141b33800 "TutorialSkipDialog"
     virtual void OnLoadComplete();                              // 22 0x141b33850 job texts, showOnDelay
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141b33ad0
     virtual int vfunc_48() { return 0x4ea5; }                   // 48 0x141b33fb0

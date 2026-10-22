@@ -18,7 +18,7 @@ class UITopLayerNotify : public UIHeadUpDisplay
 public:
     UITopLayerNotify();                                         // 0x140fa8640
     virtual ~UITopLayerNotify();                                //  0 0x140fa86c0 (??_G 0x140fa8b50)
-    virtual CString vfunc_1();                                  //  1 0x140fa8710
+    virtual CString GetTypeName();                                  //  1 0x140fa8710
     virtual void vfunc_2();                                     //  2 0x140fa8760
     virtual void vfunc_3();                                     //  3 0x140fa8780 (hide: forgets the pending text)
     virtual void OnLoadComplete();                              // 22 0x140fa87c0

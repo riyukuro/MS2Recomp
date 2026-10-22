@@ -13,7 +13,7 @@ class UIInteriorBuildDialog : public UIDialog
 public:
     UIInteriorBuildDialog();                                    // 0x140f4b3d0
     virtual ~UIInteriorBuildDialog();                           //  0 0x140f4b430 (??_G 0x140f4cae0)
-    virtual CString vfunc_1();                                  //  1 0x140f4b470 "InteriorBuildDialog"
+    virtual CString GetTypeName();                                  //  1 0x140f4b470 "InteriorBuildDialog"
     virtual void OnLoadComplete();                              // 22 0x140f4b550 fill the package texts
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140f4b580 "OnUseItem"
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x140f4b5f0 confirm answers

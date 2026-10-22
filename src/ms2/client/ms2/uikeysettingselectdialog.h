@@ -15,7 +15,7 @@ class UIKeySettingSelectDialog : public UIDialog
 public:
     UIKeySettingSelectDialog();                                 // 0x140c581a0
     virtual ~UIKeySettingSelectDialog();                        //  0 0x140c58240 (??_G 0x140c58a80)
-    virtual CString vfunc_1();                                  //  1 0x140c582e0 "KeySettingSelectDialog"
+    virtual CString GetTypeName();                                  //  1 0x140c582e0 "KeySettingSelectDialog"
     virtual void OnLoadComplete();                              // 22 0x140c58380 hook the two buttons
     virtual int vfunc_48() { return 0x4f65; }                   // 48 0x140c58cd0
     virtual void vfunc_67();                                    // 67 0x140c58330

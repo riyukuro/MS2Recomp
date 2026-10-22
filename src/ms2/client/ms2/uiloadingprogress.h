@@ -15,7 +15,7 @@ class UILoadingProgress : public UIObject, public IWorldServiceCallback
 public:
     UILoadingProgress();                                            // 0x1419df870
     virtual ~UILoadingProgress();                                   //  0 0x1419df960 (??_G 0x1419e0ad0)
-    virtual CString vfunc_1();                                      //  1 0x1419dfa10 "LoadingProgress"
+    virtual CString GetTypeName();                                      //  1 0x1419dfa10 "LoadingProgress"
     virtual void vfunc_2();                                         //  2 0x1419e0130 load the swf with this UI's layer
     virtual void vfunc_3();                                         //  3 0x1419e0160
     virtual void vfunc_16();                                        // 16 0x1419e0280 drop the background texture
@@ -55,7 +55,7 @@ class UILoadingProgressLobby : public UILoadingProgress
 public:
     UILoadingProgressLobby();                                       // 0x1419e0920
     virtual ~UILoadingProgressLobby();                              //  0 0x1419e0990 (??_G 0x1419e0b10)
-    virtual CString vfunc_1();                                      //  1 0x1419e09e0 "LoadingProgressLobby"
+    virtual CString GetTypeName();                                      //  1 0x1419e09e0 "LoadingProgressLobby"
     virtual CString vfunc_7();                                      //  7 0x1419e0a30 "LoadingProgress" (the swf name)
     // @0x1419e0b60
     virtual int vfunc_48() { return 0x3ef; }                        // 48

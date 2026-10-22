@@ -445,11 +445,11 @@ UIQuestGuideDialog::~UIQuestGuideDialog()
 }
 
 // @0x141aa9a90
-CString UIQuestGuideDialog::vfunc_1()
+CString UIQuestGuideDialog::GetTypeName()
 {
     return "QuestGuideDialog";
 }
-MS2_REPLACE_METHOD(0x141aa9a90, UIQuestGuideDialog, vfunc_1, 61, 0x457BF7B6);
+MS2_REPLACE_METHOD(0x141aa9a90, UIQuestGuideDialog, GetTypeName, 61, 0x457BF7B6);
 
 // @0x141aa9ae0
 int UIQuestGuideDialog::vfunc_65()

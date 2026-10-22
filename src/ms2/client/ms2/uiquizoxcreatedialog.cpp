@@ -95,11 +95,11 @@ void UIQuizOXCreateDialog::SetFees(std::vector<int>& fees)
 MS2_REPLACE_METHOD(0x140E7E3A0, UIQuizOXCreateDialog, SetFees, 180, 0xDA46093D);
 
 // @0x140e7e460
-CString UIQuizOXCreateDialog::vfunc_1()
+CString UIQuizOXCreateDialog::GetTypeName()
 {
     return "QuizOXCreateDialog";
 }
-MS2_REPLACE_METHOD(0x140E7E460, UIQuizOXCreateDialog, vfunc_1, 61, 0xD38B1E75);
+MS2_REPLACE_METHOD(0x140E7E460, UIQuizOXCreateDialog, GetTypeName, 61, 0xD38B1E75);
 
 // @0x140e7e4b0
 // MS2-FUNCTIONAL: behaviour-equivalent; frame slot order of the control handles / iterators and EH state count differ

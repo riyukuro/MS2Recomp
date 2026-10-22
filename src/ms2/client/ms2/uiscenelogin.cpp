@@ -148,7 +148,7 @@ UISceneLogin::~UISceneLogin()
 }
 
 // @0x141acec90
-CString UISceneLogin::vfunc_1()
+CString UISceneLogin::GetTypeName()
 {
     return "SceneLogin";
 }

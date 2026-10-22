@@ -49,7 +49,7 @@ public:
 
     UIMasteryObjectMark();                                          // 0x140e59a00
     virtual ~UIMasteryObjectMark();                                 //  0 0x140e59af0 (??_G 0x140e5c700)
-    virtual CString vfunc_1();                                      //  1 0x140e59b60 "MasteryObjectMark"
+    virtual CString GetTypeName();                                      //  1 0x140e59b60 "MasteryObjectMark"
     virtual void vfunc_2();                                         //  2 0x140e5a190 load the swf
     virtual void vfunc_3();                                         //  3 0x140e5a1c0 clear the marks, unload
     virtual void vfunc_15();                                        // 15 0x140e5a560 per-frame update

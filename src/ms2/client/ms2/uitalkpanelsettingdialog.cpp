@@ -176,7 +176,7 @@ UITalkPanelSettingDialog::~UITalkPanelSettingDialog()
 }
 
 // @0x141b225d0
-CString UITalkPanelSettingDialog::vfunc_1()
+CString UITalkPanelSettingDialog::GetTypeName()
 {
     return "TalkPanelSettingDialog";
 }

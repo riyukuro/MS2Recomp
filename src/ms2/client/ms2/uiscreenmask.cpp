@@ -57,7 +57,7 @@ UIScreenMask::~UIScreenMask()
 }
 
 // @0x141ad06f0
-CString UIScreenMask::vfunc_1()
+CString UIScreenMask::GetTypeName()
 {
     return "ScreenMask";
 }

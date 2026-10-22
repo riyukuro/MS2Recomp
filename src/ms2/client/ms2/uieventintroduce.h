@@ -18,7 +18,7 @@ class UIEventIntroduce : public UIHeadUpDisplay
 public:
     UIEventIntroduce();                                             // 0x140f40ce0 (m_2c = 0x1e)
     virtual ~UIEventIntroduce();                                    //  0 0x140f40d30 (??_G 0x140f41200)
-    virtual CString vfunc_1();                                      //  1 0x140f40d70 "EventIntroduce"
+    virtual CString GetTypeName();                                      //  1 0x140f40d70 "EventIntroduce"
     virtual void vfunc_2();                                         //  2 0x140f40dc0 show: load the movie (depth m_2c)
     virtual void vfunc_3();                                         //  3 0x140f40e00 hide: unload it
     virtual void OnLoadInit();                                      // 20 0x140f40e30 the base's

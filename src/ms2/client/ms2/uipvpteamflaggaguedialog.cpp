@@ -33,11 +33,11 @@ UIPvPTeamFlagGagueDialog::~UIPvPTeamFlagGagueDialog()
 }
 
 // @0x141344b90
-CString UIPvPTeamFlagGagueDialog::vfunc_1()
+CString UIPvPTeamFlagGagueDialog::GetTypeName()
 {
     return "PvPTeamFlagGagueDialog";
 }
-MS2_REPLACE_METHOD(0x141344B90, UIPvPTeamFlagGagueDialog, vfunc_1, 61, 0x0DF3FB13);
+MS2_REPLACE_METHOD(0x141344B90, UIPvPTeamFlagGagueDialog, GetTypeName, 61, 0x0DF3FB13);
 
 // @0x141344be0
 void UIPvPTeamFlagGagueDialog::OnLoadComplete()

@@ -19,7 +19,7 @@ class UISmartPush : public UIHeadUpDisplay
 public:
     UISmartPush();                                              // 0x140fa3b10 (m_2c = 0xd)
     virtual ~UISmartPush();                                     //  0 0x140fa3b60 (??_G 0x140fa4130)
-    virtual CString vfunc_1();                                  //  1 0x140fa3ba0 "SmartPush"
+    virtual CString GetTypeName();                                  //  1 0x140fa3ba0 "SmartPush"
     virtual void vfunc_2();                                     //  2 0x140fa3dd0 show (the base's)
     virtual void vfunc_3();                                     //  3 0x140fa3df0 hide, tell the manager
     virtual void OnLoadComplete();                              // 22 0x140fa3bf0

@@ -218,11 +218,11 @@ UIAdPushDialog::~UIAdPushDialog()
 }
 
 // @0x140e3f2f0
-CString UIAdPushDialog::vfunc_1()
+CString UIAdPushDialog::GetTypeName()
 {
     return "AdPushDialog";
 }
-MS2_REPLACE_METHOD(0x140E3F2F0, UIAdPushDialog, vfunc_1, 61, 0xE7B3DBF2);
+MS2_REPLACE_METHOD(0x140E3F2F0, UIAdPushDialog, GetTypeName, 61, 0xE7B3DBF2);
 
 // @0x140e3f340
 int UIAdPushDialog::vfunc_65()
@@ -314,7 +314,7 @@ int UIAdPushDialog::vfunc_5()
     m_78 = 0;
     if (FUN_140870fc0(&m_xmlLoaded, GetStatePath(), 0))
     {
-        Unk_AdXmlNode* pNode = FUN_140165cf0(&m_xmlLoaded, CStringA(vfunc_1()));
+        Unk_AdXmlNode* pNode = FUN_140165cf0(&m_xmlLoaded, CStringA(GetTypeName()));
         if (!pNode)
             return 0;
         MS2Ptr<ASDialog> dlg(m_limitedBundle);
@@ -332,7 +332,7 @@ int UIAdPushDialog::vfunc_5()
     }
     if (FUN_14081b310(&m_xmlSave))
         FUN_14086ddc0(&m_xmlSave);
-    TiXmlElement* pElem = new TiXmlElement(vfunc_1());
+    TiXmlElement* pElem = new TiXmlElement(GetTypeName());
     FUN_14086e090(&m_xmlSave, pElem);
     FUN_140870fc0(&m_xmlAccountLoaded, GetAccountStatePath(), 0);
     if (FUN_14081b310(&m_xmlAccountSave))
@@ -341,7 +341,7 @@ int UIAdPushDialog::vfunc_5()
         FUN_140870cf0(&m_xmlAccountSave, &m_xmlAccountLoaded);
     else
     {
-        TiXmlElement* pAccountElem = new TiXmlElement(vfunc_1());
+        TiXmlElement* pAccountElem = new TiXmlElement(GetTypeName());
         FUN_14086e090(&m_xmlAccountSave, pAccountElem);
     }
     return 1;
@@ -646,7 +646,7 @@ Unk_AdXmlNode* UIAdPushDialog::FindByName(Unk_AdXmlNode* pRoot, const CStringA& 
 // @0x140e41520
 CStringA UIAdPushDialog::GetStatePath()
 {
-    return FUN_140cc2a00(FUN_1412755f0(), FUN_14038f6d0(vfunc_1(), ".xml"));
+    return FUN_140cc2a00(FUN_1412755f0(), FUN_14038f6d0(GetTypeName(), ".xml"));
 }
 
 // @0x140e41610
@@ -654,7 +654,7 @@ CStringA UIAdPushDialog::GetStatePath()
 CStringA UIAdPushDialog::GetAccountStatePath()
 {
     CStringA strFile;
-    StringFormat(strFile, "{0}{1}", vfunc_1(), "Account.xml");
+    StringFormat(strFile, "{0}{1}", GetTypeName(), "Account.xml");
     return FUN_140cc2a00(FUN_141275640(), strFile);
 }
 

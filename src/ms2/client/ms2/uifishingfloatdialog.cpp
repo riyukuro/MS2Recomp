@@ -113,11 +113,11 @@ UIFishingFloatDialog::UIFishingFloatDialog()
 }
 
 // @0x140f43ea0
-CString UIFishingFloatDialog::vfunc_1()
+CString UIFishingFloatDialog::GetTypeName()
 {
     return "FishingFloatDialog";
 }
-MS2_REPLACE_METHOD(0x140F43EA0, UIFishingFloatDialog, vfunc_1, 61, 0xDDB30DA7);
+MS2_REPLACE_METHOD(0x140F43EA0, UIFishingFloatDialog, GetTypeName, 61, 0xDDB30DA7);
 
 // @0x140f43ef0
 void UIFishingFloatDialog::vfunc_15()

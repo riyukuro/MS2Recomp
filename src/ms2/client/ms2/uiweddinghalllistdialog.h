@@ -21,7 +21,7 @@ class UIWeddingHallListDialog : public UIDialog
 public:
     UIWeddingHallListDialog();                                  // 0x140fd8df0
     virtual ~UIWeddingHallListDialog();                         //  0 0x140fd8e80 (??_G 0x140fd9c50)
-    virtual CString vfunc_1();                                  //  1 0x140fd8ec0 "WeddingHallListDialog"
+    virtual CString GetTypeName();                                  //  1 0x140fd8ec0 "WeddingHallListDialog"
     virtual void OnLoadComplete();                              // 22 0x140fd8fa0 refresh the lists
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                 // 28 0x140fd8fd0 onEnter

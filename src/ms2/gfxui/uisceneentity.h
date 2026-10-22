@@ -19,7 +19,7 @@ class UISceneEntity : public UISwfEntity
 public:
     UISceneEntity();                                                // 0x1422e7770 (registers with UISwfEntityManager)
     virtual ~UISceneEntity();                                       //  0 0x1422e7850 (scalar deleting 0x1422e87a0)
-    virtual CString vfunc_1();                                      //  1 0x1422e78d0 "SceneEntity"
+    virtual CString GetTypeName();                                      //  1 0x1422e78d0 "SceneEntity"
     virtual void OnLoadInit();                                      // 20 0x1422e7d90 base, then vfunc_50 (enter)
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x1422e8470
     virtual void vfunc_41(const Scaleform::GFx::Value& root);       // 41 0x1422e85b0 m_30 = a new ASScene of the root

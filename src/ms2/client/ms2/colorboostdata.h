@@ -56,7 +56,7 @@ class UIColorBoostDialog : public UIDialog
 public:
     UIColorBoostDialog();                                                       // 0x14109b900
     virtual ~UIColorBoostDialog();                                              // 0x14109b950
-    virtual CString vfunc_1();                                                  //  1 0x14109b990
+    virtual CString GetTypeName();                                                  //  1 0x14109b990
     virtual void OnLoadComplete();                                              // 22 0x14109b9e0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                                 // 28 0x14109bb20

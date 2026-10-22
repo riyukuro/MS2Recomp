@@ -58,7 +58,7 @@ MS2_CHECK_OFFSET(UpperHpBarEntity,m_pending,0x40);
 MS2_CHECK_OFFSET(UpperHpBarEntity,m_buffs,0x88);
 class UIUpperHpBar : public UIHeadUpDisplay,public UIEntityEventListener {
 public:
- UIUpperHpBar();virtual ~UIUpperHpBar();virtual CString vfunc_1();virtual void OnLoadComplete();virtual void vfunc_26();
+ UIUpperHpBar();virtual ~UIUpperHpBar();virtual CString GetTypeName();virtual void OnLoadComplete();virtual void vfunc_26();
  virtual void vfunc_41(const Scaleform::GFx::Value&);virtual void vfunc_43();virtual void vfunc_15();virtual void vfunc_3();
  virtual void vfunc_o70_2(const Unk_UpperEvt&); // UIEntityEventListener slot 2 (Ghidra vfunc_o70_2)
  virtual int vfunc_28(const char*,const Scaleform::GFx::Value*,unsigned int);

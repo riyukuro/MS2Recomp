@@ -37,7 +37,7 @@ class UICharacterCreateDialog : public UIDialog, public UIItemEventListener, pub
 public:
     UICharacterCreateDialog();                                  // 0x1418e20a0
     virtual ~UICharacterCreateDialog();                         //  0 0x1418e22b0 (??_G 0x1418e80d0)
-    virtual CString vfunc_1();                                  //  1 0x1418e23e0 "CharacterCreateDialog"
+    virtual CString GetTypeName();                                  //  1 0x1418e23e0 "CharacterCreateDialog"
     virtual void vfunc_12();                                    // 12 0x1418e3160 reload the customize controller
     virtual int vfunc_13();                                     // 13 0x1418e3050 enter key
     virtual void vfunc_15();                                    // 15 0x1418e2e90 per-frame

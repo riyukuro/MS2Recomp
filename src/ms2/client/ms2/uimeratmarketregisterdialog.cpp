@@ -292,7 +292,7 @@ UIMeratMarketRegisterDialog::~UIMeratMarketRegisterDialog()
 }
 
 // @0x1413178e0
-CString UIMeratMarketRegisterDialog::vfunc_1()
+CString UIMeratMarketRegisterDialog::GetTypeName()
 {
     return CString("MeratMarketRegisterDialog");
 }
@@ -372,7 +372,7 @@ void UIMeratMarketRegisterDialog::OnLoadComplete()
     if (FUN_140ba28d0(&m_30, 0) == 0)
     {
         if (m_strKey.IsEmpty())
-            m_strKey = vfunc_1();
+            m_strKey = GetTypeName();
         if (m_nMode == 0)
             m_spRequest.AssignRaw(new CMeratMarketPacket::UgcAddProduct());
         else

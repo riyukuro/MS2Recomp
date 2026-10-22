@@ -176,7 +176,7 @@ UIDebuggingDialog::~UIDebuggingDialog()
 }
 
 // @0x141284f30
-CString UIDebuggingDialog::vfunc_1()
+CString UIDebuggingDialog::GetTypeName()
 {
     return CString("DebuggingDialog");
 }

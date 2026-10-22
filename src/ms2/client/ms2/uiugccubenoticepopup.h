@@ -20,7 +20,7 @@ class UIUGCCubeNoticePopup : public UIObject
 public:
     UIUGCCubeNoticePopup();                                         // 0x140fb49b0 (loads the swf at depth 7)
     virtual ~UIUGCCubeNoticePopup();                                //  0 0x140fb4aa0 (??_G 0x140fb5260)
-    virtual CString vfunc_1();                                      //  1 0x140fb4b10 "UGCCubeNoticePopup"
+    virtual CString GetTypeName();                                      //  1 0x140fb4b10 "UGCCubeNoticePopup"
     virtual void OnLoadComplete();                                  // 22 0x140fb4b60 base, then show the text
     virtual void vfunc_15();                                        // 15 0x140fb4dc0 per-frame: follow the cube's point
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140fb4e60

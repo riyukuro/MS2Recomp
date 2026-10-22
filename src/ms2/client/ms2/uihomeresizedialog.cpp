@@ -79,7 +79,7 @@ UIHomeResizeDialog::UIHomeResizeDialog()
 UIHomeResizeDialog::~UIHomeResizeDialog() {}
 
 // @0x140c2bd20
-CString UIHomeResizeDialog::vfunc_1() { return "HomeResizeDialog"; }
+CString UIHomeResizeDialog::GetTypeName() { return "HomeResizeDialog"; }
 
 // @0x140c2bd70
 void UIHomeResizeDialog::OnLoadComplete()

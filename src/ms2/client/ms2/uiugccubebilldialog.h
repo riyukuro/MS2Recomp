@@ -51,7 +51,7 @@ public:
 
     UIUGCCubeBillDialog();                              // 0x140ee7610
     virtual ~UIUGCCubeBillDialog();                     //  0 0x140ee76a0 (??_G 0x140ee8b20)
-    virtual CString vfunc_1();                          //  1 0x140ee76e0 "UGCCubeBillDialog"
+    virtual CString GetTypeName();                          //  1 0x140ee76e0 "UGCCubeBillDialog"
     virtual void OnLoadComplete();                      // 22 0x140ee7760
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140ee7f40 "OnBuy"
     virtual int vfunc_48();                             // 48 0x140ee8e20 UI type id

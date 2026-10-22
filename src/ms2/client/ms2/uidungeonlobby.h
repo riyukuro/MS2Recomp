@@ -42,7 +42,7 @@ public:
     UIDungeonLobby();
     virtual ~UIDungeonLobby();                                      //  0
 
-    virtual CString vfunc_1();                                      //  1 "DungeonLobby"
+    virtual CString GetTypeName();                                      //  1 "DungeonLobby"
     virtual void OnLoadComplete();                                  // 22
     virtual void vfunc_26();                                        // 26
     virtual int vfunc_48() { return 0x4f21; }                       // 48 UI type id (COMDAT 0x140e18480)

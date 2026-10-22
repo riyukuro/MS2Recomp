@@ -13,7 +13,7 @@ class UIHomeOptionDialog : public UIDialog
 public:
     UIHomeOptionDialog();                                       // 0x140fa8cc0
     virtual ~UIHomeOptionDialog();                              //  0 0x140fa8d20 (??_G 0x140fa9d40)
-    virtual CString vfunc_1();                                  //  1 0x140fa8d60 "HomeOptionDialog"
+    virtual CString GetTypeName();                                  //  1 0x140fa8d60 "HomeOptionDialog"
     virtual void OnLoadComplete();                              // 22 0x140fa8db0 fill the dialog
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140fa8de0
     virtual int vfunc_48() { return 0x4f26; }                   // 48 0x140fa9d80

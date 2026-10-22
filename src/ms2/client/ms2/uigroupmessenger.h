@@ -47,7 +47,7 @@ class UIGroupMessenger : public UIDialog, public UIUGCEventListener
 public:
     UIGroupMessenger(int nGroupId, int nIndex, int bDeleteSave);           // 0x141947920
     virtual ~UIGroupMessenger();                                            //  0 0x141947bc0 (??_G 0x14194e7d0)
-    virtual CString vfunc_1();                                              //  1 0x141947c60 "GroupMessenger"
+    virtual CString GetTypeName();                                              //  1 0x141947c60 "GroupMessenger"
     virtual int vfunc_4();                                                  //  4 0x1419482c0 save the window settings
     virtual int vfunc_5();                                                  //  5 0x141948520 load the window settings
     virtual int vfunc_13();                                                 // 13 0x141949020 key input (enter / escape)
@@ -132,7 +132,7 @@ class UIGroupMessengerBrowser : public UIDialog
 public:
     UIGroupMessengerBrowser();                                              // 0x141950770
     virtual ~UIGroupMessengerBrowser();                                     //  0 0x141950910 (??_G 0x141955710)
-    virtual CString vfunc_1();                                              //  1 0x1419509c0 "GroupMessengerBrowser"
+    virtual CString GetTypeName();                                              //  1 0x1419509c0 "GroupMessengerBrowser"
     virtual void vfunc_15();                                                // 15 0x141951470 flushes the pending lines
     virtual void OnLoadInit();                                              // 20 0x141950d20
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

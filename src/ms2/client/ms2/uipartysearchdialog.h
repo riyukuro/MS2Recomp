@@ -16,7 +16,7 @@ class UIPartySearchDialog : public UIDialog
 public:
     UIPartySearchDialog();                                      // 0x140f8c480
     virtual ~UIPartySearchDialog();                             //  0 0x140f8c530 (??_G 0x140f8fda0)
-    virtual CString vfunc_1();                                  //  1 0x140f8c580 "PartySearchDialog"
+    virtual CString GetTypeName();                                  //  1 0x140f8c580 "PartySearchDialog"
     virtual int vfunc_13();                                     // 13 0x140f8ca80 enter key: "onProcessKey"
     virtual void vfunc_15();                                    // 15 0x140f8c9c0 re-send the pending search (throttled)
     virtual void OnLoadComplete();                              // 22 0x140f8c740 bind the controls, send the sort lists

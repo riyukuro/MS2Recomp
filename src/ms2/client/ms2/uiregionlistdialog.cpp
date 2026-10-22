@@ -154,7 +154,7 @@ UIRegionListDialog::~UIRegionListDialog()
 }
 
 // @0x140e803a0
-CString UIRegionListDialog::vfunc_1()
+CString UIRegionListDialog::GetTypeName()
 {
     return "RegionListDialog";
 }

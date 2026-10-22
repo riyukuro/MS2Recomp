@@ -20,7 +20,7 @@ class UIRealEstateSell : public UIDialog
 public:
     UIRealEstateSell();                                             // 0x141ab5d50
     virtual ~UIRealEstateSell();                                    //  0 0x141ab5db0 (??_G 0x141ab6e30)
-    virtual CString vfunc_1();                                      //  1 0x141ab5df0 "RealEstateSell"
+    virtual CString GetTypeName();                                      //  1 0x141ab5df0 "RealEstateSell"
     virtual void OnLoadInit();                                      // 20 0x141ab5f70
     virtual void OnLoadComplete();                                  // 22 0x141ab5ee0 fill the dialog
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141ab5fb0

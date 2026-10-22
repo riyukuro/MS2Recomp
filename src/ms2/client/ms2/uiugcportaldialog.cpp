@@ -193,7 +193,7 @@ void UIUGCPortalDialog::FUN_140fb0290(CInPacket& packet)
 }
 
 // @0x140fb05e0
-CString UIUGCPortalDialog::vfunc_1()
+CString UIUGCPortalDialog::GetTypeName()
 {
     return "UGCPortalDialog";
 }

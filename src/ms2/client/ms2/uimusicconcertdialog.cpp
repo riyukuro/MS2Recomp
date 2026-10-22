@@ -152,7 +152,7 @@ void UIMusicConcertDialog::OnLoadComplete()
 }
 
 // @0x140e6a000
-CString UIMusicConcertDialog::vfunc_1()
+CString UIMusicConcertDialog::GetTypeName()
 {
     return "MusicConcertDialog";
 }

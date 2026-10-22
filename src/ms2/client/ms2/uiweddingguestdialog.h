@@ -103,7 +103,7 @@ public:
 
     UIWeddingGuestDialog();                                                 // 0x140fcc860
     virtual ~UIWeddingGuestDialog();                                        //  0 0x140fccab0 (??_G 0x140fd3a30)
-    virtual CString vfunc_1();                                              //  1 0x140fccb30 "WeddingGuestDialog"
+    virtual CString GetTypeName();                                              //  1 0x140fccb30 "WeddingGuestDialog"
     virtual void OnLoadComplete();                                          // 22 0x140fccc00 tabs and the counter
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                             // 28 0x140fcce80 onAddPage / onRemovePage / onAdd / CanAdd

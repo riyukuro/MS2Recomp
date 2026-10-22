@@ -12,7 +12,7 @@ class UICubeUGCHead : public UIObject
 public:
     UICubeUGCHead(Unk_UgcCell cell, CStringW strName, int nType);   // 0x141906490
     virtual ~UICubeUGCHead();                                       //  0 0x141906d90 (??_G 0x141906dc0)
-    virtual CString vfunc_1();                                      //  1 0x1419065a0 "CubeUGCHead"
+    virtual CString GetTypeName();                                      //  1 0x1419065a0 "CubeUGCHead"
     virtual void vfunc_2();                                         //  2 0x141906730 show
     virtual void vfunc_3();                                         //  3 0x141906790 hide
     virtual void vfunc_15();                                        // 15 0x141906a80 per-frame update

@@ -152,7 +152,7 @@ public:
 
     UIBillDialog();                             // 0x1418cd0c0 (uibeautyshopdialog.cpp)
     virtual ~UIBillDialog();                    // 0x1418cd170
-    virtual CString vfunc_1();                  // "BillDialog"
+    virtual CString GetTypeName();                  // "BillDialog"
     virtual int vfunc_13();
     virtual void OnLoadComplete();
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
@@ -181,7 +181,7 @@ class UIBeautyShopStyleDialog : public UIDialog, public UIItemEventListener, pub
 public:
     UIBeautyShopStyleDialog();
     virtual ~UIBeautyShopStyleDialog();
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual int vfunc_13();
     virtual void vfunc_15();
     virtual void OnLoadComplete();

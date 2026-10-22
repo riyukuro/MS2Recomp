@@ -112,7 +112,7 @@ class UISelectItemBoxDialog : public UIDialog
 public:
     UISelectItemBoxDialog();                                            // 0x140f99280
     virtual ~UISelectItemBoxDialog();                                   //  0 0x140f99420 (??_G 0x140f9b740)
-    virtual CString vfunc_1();                                          //  1 0x140f99500 "SelectItemBoxDialog"
+    virtual CString GetTypeName();                                          //  1 0x140f99500 "SelectItemBoxDialog"
     virtual void OnLoadComplete();                                      // 22 0x140f99550
     virtual void vfunc_26();                                            // 26 0x140f9a140 reset
     virtual int vfunc_48() { return 0x4eff; }                           // 48 0x140f9b780 UI type id

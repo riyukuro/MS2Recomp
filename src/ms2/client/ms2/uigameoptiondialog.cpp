@@ -161,7 +161,7 @@ UIGameOptionDialog::~UIGameOptionDialog()
 }
 
 // @0x141942880
-CString UIGameOptionDialog::vfunc_1()
+CString UIGameOptionDialog::GetTypeName()
 {
     return CString("GameOptionDialog");
 }

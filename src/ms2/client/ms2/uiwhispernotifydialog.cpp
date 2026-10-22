@@ -189,7 +189,7 @@ UIWhisperNotifyDialog::UIWhisperNotifyDialog()
 }
 
 // @0x141b518b0
-CString UIWhisperNotifyDialog::vfunc_1()
+CString UIWhisperNotifyDialog::GetTypeName()
 {
     return "WhisperNotifyDialog";
 }

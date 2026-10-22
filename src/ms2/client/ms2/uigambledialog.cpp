@@ -72,7 +72,7 @@ UIGambleDialog::UIGambleDialog()
 }
 
 // @0x1419352b0
-CString UIGambleDialog::vfunc_1()
+CString UIGambleDialog::GetTypeName()
 {
     return CString("GambleDialog");
 }
@@ -166,7 +166,7 @@ int UIGambleDialog::FUN_141935710()
         if (spItem.IsNull())
             continue;
         CString strBind;
-        strBind.Format("%s_%d", (const char*)vfunc_1(), i + 1);
+        strBind.Format("%s_%d", (const char*)GetTypeName(), i + 1);
         unsigned nCount = spItem->FUN_140526c50();
         CStringW strName = FUN_1402758a0(L"{0} X {1}", spItem->FUN_140527b10(), nCount);
         FUN_141415450(strBind, spItem, i, 0x415, 0);

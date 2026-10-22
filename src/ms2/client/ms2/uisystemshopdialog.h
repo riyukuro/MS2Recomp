@@ -20,7 +20,7 @@ class UISystemShopDialog : public UIDialog
 public:
     UISystemShopDialog();                                           // 0x140fa4180
     virtual ~UISystemShopDialog();                                  //  0 0x140fa4210 (??_G 0x140fa7ef0)
-    virtual CString vfunc_1();                                      //  1 0x140fa4250 "SystemShopDialog"
+    virtual CString GetTypeName();                                      //  1 0x140fa4250 "SystemShopDialog"
     virtual void OnLoadComplete();                                  // 22 0x140fa42a0 listen to "NotifyChangeBuff", set up the mode
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                     // 28 0x140fa44f0 "OnShop"

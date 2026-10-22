@@ -94,11 +94,11 @@ UIHideSettingDialog::~UIHideSettingDialog()
 }
 
 // @0x141986fa0
-CString UIHideSettingDialog::vfunc_1()
+CString UIHideSettingDialog::GetTypeName()
 {
     return "HideSettingDialog";
 }
-MS2_REPLACE_METHOD(0x141986FA0, UIHideSettingDialog, vfunc_1, 61, 0x2D4C293C);
+MS2_REPLACE_METHOD(0x141986FA0, UIHideSettingDialog, GetTypeName, 61, 0x2D4C293C);
 
 // @0x141986ff0
 void UIHideSettingDialog::vfunc_10()
@@ -259,12 +259,12 @@ void UIHideSettingDialog::FUN_141987f50(int nId, const CStringW& strLabel)
         return;
     info->m_nId = nId;
     if (strLabel.IsEmpty())
-        info->m_strName = (const char*)pEntity->vfunc_1();
+        info->m_strName = (const char*)pEntity->GetTypeName();
     else
         info->m_strName = strLabel;
     if (UIDialog* pDialog = dynamic_cast<UIDialog*>(pEntity))
         info->m_nType = 1;
     else if (UIHeadUpDisplay* pHud = dynamic_cast<UIHeadUpDisplay*>(pEntity))
         info->m_nType = 0;
-    m_178.SetAt((const char*)pEntity->vfunc_1(), info);
+    m_178.SetAt((const char*)pEntity->GetTypeName(), info);
 }

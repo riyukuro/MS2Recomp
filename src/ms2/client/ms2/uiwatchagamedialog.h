@@ -17,7 +17,7 @@ class UIWatchAGameDialog : public UIDialog
 public:
     UIWatchAGameDialog();                                       // 0x140fc07a0
     virtual ~UIWatchAGameDialog();                              //  0 0x140fc0930 (??_G 0x140fc1ca0)
-    virtual CString vfunc_1();                                  //  1 0x140fc09f0 "WatchAGameDialog"
+    virtual CString GetTypeName();                                  //  1 0x140fc09f0 "WatchAGameDialog"
     virtual void OnLoadComplete();                              // 22 0x140fc0bf0 bind the buttons
     virtual void vfunc_43();                                    // 43 0x140fc1300
     virtual int vfunc_48() { return 0x4f91; }                   // 48 0x140fc1ce0

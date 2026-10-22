@@ -95,7 +95,7 @@ MS2_CHECK_SIZE(Unk_RewardBits,4);
 class UIDungeonRewardDialog : public UIDialog, public IUIAvatarEventListener {
 public:
  UIDungeonRewardDialog(); virtual ~UIDungeonRewardDialog();
- virtual CString vfunc_1(); virtual void vfunc_26(); virtual void OnLoadComplete();
+ virtual CString GetTypeName(); virtual void vfunc_26(); virtual void OnLoadComplete();
  virtual void vfunc_67(); virtual void vfunc_72();
  virtual void vfunc_45(Scaleform::GFx::Value*,const CString&,ASData*);
  virtual void vfunc_25(void*,TPtr<Unk_UISwfEntity_25>,void*,void*);

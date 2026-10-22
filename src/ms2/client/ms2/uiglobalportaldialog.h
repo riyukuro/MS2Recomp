@@ -18,7 +18,7 @@ class UIGlobalPortalDialog : public UIDialog
 public:
     UIGlobalPortalDialog();                                     // 0x1412c2020
     virtual ~UIGlobalPortalDialog();                            //  0 0x1412c2180 (??_G 0x1412c3940)
-    virtual CString vfunc_1();                                  //  1 0x1412c22b0 "GlobalPortalDialog"
+    virtual CString GetTypeName();                                  //  1 0x1412c22b0 "GlobalPortalDialog"
     virtual void OnLoadComplete();                              // 22 0x1412c2300 hook the buttons
     virtual void vfunc_43();                                    // 43 0x1412c2730 anchor the swf window
     virtual int vfunc_48() { return 0x4ed7; }                   // 48 0x1412c3980

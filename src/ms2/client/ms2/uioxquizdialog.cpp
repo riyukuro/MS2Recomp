@@ -42,7 +42,7 @@ UIOxQuizDialog::~UIOxQuizDialog()
 }
 
 // @0x140e6e4d0
-CString UIOxQuizDialog::vfunc_1()
+CString UIOxQuizDialog::GetTypeName()
 {
     return "OxQuizDialog";
 }

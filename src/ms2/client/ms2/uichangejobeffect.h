@@ -16,7 +16,7 @@ class UIChangeJobEffect : public UIHeadUpDisplay, public UIStatusEventListener
 public:
     UIChangeJobEffect();                                            // 0x140bd09e0
     virtual ~UIChangeJobEffect();                                   //  0 0x140bd0a50 (??_G 0x140bd0e40)
-    virtual CString vfunc_1();                                      //  1 0x140bd0ab0 "ChangeJobEffect"
+    virtual CString GetTypeName();                                      //  1 0x140bd0ab0 "ChangeJobEffect"
     virtual void OnLoadComplete();                                  // 22 0x140bd0b00
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140bd0b30 "onHide"
     virtual int vfunc_48();                                         // 48 0x140bd0e80 UI type id

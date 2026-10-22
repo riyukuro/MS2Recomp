@@ -29,7 +29,7 @@ class UIChangeJobDialog : public UIDialog
 public:
     UIChangeJobDialog();                                                    // 0x140bd7e10
     virtual ~UIChangeJobDialog();                                           //  0 0x140bd7eb0 (??_G 0x140bd8b20)
-    virtual CString vfunc_1();                                              //  1 0x140bd7f00 "ChangeJobDialog"
+    virtual CString GetTypeName();                                              //  1 0x140bd7f00 "ChangeJobDialog"
     virtual void OnLoadComplete();                                          // 22 0x140bd7f50
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140bd7fa0
     virtual int vfunc_48();                                                 // 48 0x140bd8b70: 0x4f6b

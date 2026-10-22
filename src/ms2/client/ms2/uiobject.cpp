@@ -121,11 +121,11 @@ UIObject::~UIObject()
 }
 
 // @0x14131e1e0
-CString UIObject::vfunc_1()
+CString UIObject::GetTypeName()
 {
     return "Object";
 }
-MS2_REPLACE_METHOD(0x14131E1E0, UIObject, vfunc_1, 61, 0x1D384CF7);
+MS2_REPLACE_METHOD(0x14131E1E0, UIObject, GetTypeName, 61, 0x1D384CF7);
 
 // @0x14131e230
 void UIObject::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)

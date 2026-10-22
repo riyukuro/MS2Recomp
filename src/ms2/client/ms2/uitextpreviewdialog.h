@@ -22,7 +22,7 @@ class UITextPreviewDialog : public UIDialog
 public:
     UITextPreviewDialog();                                      // 0x141350cf0
     virtual ~UITextPreviewDialog();                             //  0 0x141351740 (??_G 0x141351850)
-    virtual CString vfunc_1();                                  //  1 0x141350d90
+    virtual CString GetTypeName();                                  //  1 0x141350d90
     virtual void OnLoadComplete();                              // 22 0x141350de0 bind the controls
     virtual void vfunc_26();                                    // 26 0x141350f60 release the controls
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

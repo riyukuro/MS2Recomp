@@ -19,7 +19,7 @@ class UILongTermAttendGiftDialog : public UIDialog
 public:
     UILongTermAttendGiftDialog();                                          // 0x140c6b300
     virtual ~UILongTermAttendGiftDialog();                                 //  0 0x140c6b450
-    virtual CString vfunc_1();                                             //  1 0x140c6b4a0
+    virtual CString GetTypeName();                                             //  1 0x140c6b4a0
     virtual int vfunc_13();                                                // 13 0x140c6b5b0
     virtual void OnLoadComplete();                                         // 22 0x140c6b560
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140c6b8b0

@@ -35,7 +35,7 @@ class UIItemMergeOptionDialog : public UIDialog, public UIStatusEventListener, p
 public:
     UIItemMergeOptionDialog();                                  // 0x1419ccd00
     virtual ~UIItemMergeOptionDialog();                         //  0 0x1419ce3d0 (??_G 0x1419d74f0)
-    virtual CString vfunc_1();                                  //  1 0x1419ce4a0 "ItemMergeOptionDialog"
+    virtual CString GetTypeName();                                  //  1 0x1419ce4a0 "ItemMergeOptionDialog"
     virtual int vfunc_13();                                     // 13 0x1419ce8f0 may the dialog be closed (not while a merge is pending)
     virtual void vfunc_15();                                    // 15 0x1419cf520 empty
     virtual void OnLoadComplete();                              // 22 0x1419ce650 register for the item events, build the bags

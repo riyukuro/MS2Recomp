@@ -27,7 +27,7 @@ class UIItemColoringDialog : public UIDialog, public UIItemEventListener, public
 public:
     UIItemColoringDialog();                                     // 0x1419abdd0
     virtual ~UIItemColoringDialog();                            // 0x1419ac060 (??_G 0x1419b34a0)
-    virtual CString vfunc_1();                                  //  1 "ItemColoringDialog"
+    virtual CString GetTypeName();                                  //  1 "ItemColoringDialog"
     virtual int vfunc_13();                                     // 13 close on Escape
     virtual void vfunc_15();                                    // 15 tick
     virtual void OnLoadInit();                                  // 20

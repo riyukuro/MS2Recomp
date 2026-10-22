@@ -67,11 +67,11 @@ UIKeySettingSelectDialog::~UIKeySettingSelectDialog()
 }
 
 // @0x140c582e0
-CString UIKeySettingSelectDialog::vfunc_1()
+CString UIKeySettingSelectDialog::GetTypeName()
 {
     return "KeySettingSelectDialog";
 }
-MS2_REPLACE_METHOD(0x140C582E0, UIKeySettingSelectDialog, vfunc_1, 61, 0x1E8AD39C);
+MS2_REPLACE_METHOD(0x140C582E0, UIKeySettingSelectDialog, GetTypeName, 61, 0x1E8AD39C);
 
 // @0x140c58330
 void UIKeySettingSelectDialog::vfunc_67()

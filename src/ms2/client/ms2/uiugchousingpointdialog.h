@@ -16,7 +16,7 @@ class UIUGCHousingPointDialog : public UIHomeResizeDialog, public UIItemEventLis
 public:
     UIUGCHousingPointDialog();                                  // 0x140fadb00
     virtual ~UIUGCHousingPointDialog();                         //  0 0x140fadb80 (??_G 0x140faf220)
-    virtual CString vfunc_1();                                  //  1 0x140fadc30 "UGCHousingPointDialog"
+    virtual CString GetTypeName();                                  //  1 0x140fadc30 "UGCHousingPointDialog"
     virtual void OnLoadComplete();                              // 22 0x140fadea0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140fadfd0
     virtual int vfunc_48() { return 0x4f28; }                   // 48 0x140faf260

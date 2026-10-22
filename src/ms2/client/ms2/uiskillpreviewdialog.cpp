@@ -195,8 +195,8 @@ UISkillPreviewDialog::UISkillPreviewDialog() : m_skill(0), m_level(0) {}
 UISkillPreviewDialog::~UISkillPreviewDialog() {}
 
 // @0x140e937b0
-CString UISkillPreviewDialog::vfunc_1() { return "SkillPreviewDialog"; }
-MS2_REPLACE_METHOD(0x140E937B0, UISkillPreviewDialog, vfunc_1, 61, 0xFF814432);
+CString UISkillPreviewDialog::GetTypeName() { return "SkillPreviewDialog"; }
+MS2_REPLACE_METHOD(0x140E937B0, UISkillPreviewDialog, GetTypeName, 61, 0xFF814432);
 
 // @0x140e93800
 void UISkillPreviewDialog::vfunc_26()

@@ -401,11 +401,11 @@ UIDungeonControlCenter::~UIDungeonControlCenter()
 }
 
 // @0x140c0afd0
-CString UIDungeonControlCenter::vfunc_1()
+CString UIDungeonControlCenter::GetTypeName()
 {
     return "DungeonControlCenter";
 }
-MS2_REPLACE_METHOD(0x140C0AFD0, UIDungeonControlCenter, vfunc_1, 61, 0x134E9AB7);
+MS2_REPLACE_METHOD(0x140C0AFD0, UIDungeonControlCenter, GetTypeName, 61, 0x134E9AB7);
 
 // @0x140c0b020
 void UIDungeonControlCenter::vfunc_67()

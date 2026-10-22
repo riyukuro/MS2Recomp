@@ -36,7 +36,7 @@ class UIPvPRankDuelResultDialog : public UIDialog
 public:
     UIPvPRankDuelResultDialog();                                // 0x140f90780
     virtual ~UIPvPRankDuelResultDialog();                       //  0 0x140f90820 (??_G 0x140f91c20)
-    virtual CString vfunc_1();                                  //  1 0x140f90870 "PvPRankDuelResultDialog"
+    virtual CString GetTypeName();                                  //  1 0x140f90870 "PvPRankDuelResultDialog"
     virtual void OnLoadComplete();                              // 22 0x140f90950
     virtual void vfunc_26();                                    // 26 0x140f909a0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140f909c0 "OnClose"

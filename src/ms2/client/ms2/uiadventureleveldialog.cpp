@@ -278,7 +278,7 @@ UIAdventureLevelDialog::~UIAdventureLevelDialog()
 }
 
 // @0x140ba2ba0
-CString UIAdventureLevelDialog::vfunc_1()
+CString UIAdventureLevelDialog::GetTypeName()
 {
     return "AdventureLevelDialog";
 }
@@ -561,7 +561,7 @@ int UIAdventureLevelDialog::FUN_140ba3f80(ASObj& obj, unsigned int nLevel)
     spItem->FUN_140526c70(pReward->m_c);
     int nIconType = 0x415;
     CString strBindID;
-    strBindID.Format("%s.%d", (LPCSTR)vfunc_1(), m_binds.GetCount() + 1);
+    strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
     FUN_141415450(strBindID, spItem, 0, nIconType, 0x800);
     obj.FUN_1407cba60("binding", strBindID);
     m_binds.Add(strBindID);
@@ -592,7 +592,7 @@ int UIAdventureLevelDialog::FUN_140ba4250(ASObj& obj, unsigned int nLevel)
     param.m_nTipArg = 4;
     param.m_strCount = FUN_1402bad60("{0}", &pReward->m_c);
     CString strBindID;
-    strBindID.Format("%s.%d", (LPCSTR)vfunc_1(), m_binds.GetCount() + 1);
+    strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
     FUN_141415560(strBindID, &param);
     obj.FUN_1407cba60("binding", strBindID);
     m_binds.Add(strBindID);
@@ -617,7 +617,7 @@ int UIAdventureLevelDialog::FUN_140ba45c0(ASObj& obj, unsigned int nMissionId)
     spItem->FUN_140526c70(pMission->m_10);
     int nIconType = 0x415;
     CString strBindID;
-    strBindID.Format("%s.%d", (LPCSTR)vfunc_1(), m_binds.GetCount() + 1);
+    strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
     FUN_141415450(strBindID, spItem, 0, nIconType, 0x800);
     obj.FUN_1407cba60("binding", strBindID);
     int nRarity = spItem->FUN_140526bd0();
@@ -719,7 +719,7 @@ Unk_ALCurrent* FUN_140ba4fa0()
     return (Unk_ALCurrent*)DAT_143aac280;
 }
 
-MS2_REPLACE_METHOD(0x140BA2BA0, UIAdventureLevelDialog, vfunc_1, 61, 0x3BFF09FB);
+MS2_REPLACE_METHOD(0x140BA2BA0, UIAdventureLevelDialog, GetTypeName, 61, 0x3BFF09FB);
 MS2_REPLACE_METHOD(0x140BA2BF0, UIAdventureLevelDialog, vfunc_65, 90, 0xD7F49833);
 MS2_REPLACE_METHOD(0x140BA2C50, UIAdventureLevelDialog, vfunc_67, 161, 0x5762322E);
 MS2_REPLACE_METHOD(0x140BA2D00, UIAdventureLevelDialog, OnLoadComplete, 92, 0x20934D66);

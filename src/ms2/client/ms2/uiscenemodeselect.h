@@ -55,7 +55,7 @@ class UISceneModeSelect : public UISceneEntity
 public:
     UISceneModeSelect();                                        // 0x140e84fa0 (m_6c = 0x6200085)
     virtual ~UISceneModeSelect();                               //  0 0x140e84ff0 (??_G 0x140e854c0)
-    virtual CString vfunc_1();                                  //  1 0x140e85030 "SceneModeSelect"
+    virtual CString GetTypeName();                                  //  1 0x140e85030 "SceneModeSelect"
     virtual CString vfunc_7();                                  //  7 0x140e85080 "SceneEmpty"
     virtual int vfunc_13();                                     // 13 0x140e851e0
     virtual void vfunc_15();                                    // 15 0x140e851c0

@@ -11,7 +11,7 @@ class UIIGuideMovieDialog : public UIModalDialog
 public:
     UIIGuideMovieDialog();                                      // 0x1412c3ac0
     virtual ~UIIGuideMovieDialog();                             //  0 0x1412c3b50 (??_G 0x1412c3e10)
-    virtual CString vfunc_1();                                  //  1 0x1412c3b90 "GuideMovieDialog"
+    virtual CString GetTypeName();                                  //  1 0x1412c3b90 "GuideMovieDialog"
     virtual int vfunc_13();                                     // 13 0x1412c3d60 UIDialog::vfunc_13() || key 0x1c
     virtual void OnLoadComplete();                              // 22 0x1412c3c80 send the movie path ("initData")
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x1412c3dc0

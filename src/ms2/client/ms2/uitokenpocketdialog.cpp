@@ -52,7 +52,7 @@ UITokenPocketDialog::~UITokenPocketDialog()
 }
 
 // @0x141351aa0
-CString UITokenPocketDialog::vfunc_1()
+CString UITokenPocketDialog::GetTypeName()
 {
     return "TokenPocketDialog";
 }

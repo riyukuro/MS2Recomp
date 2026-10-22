@@ -23,7 +23,7 @@ UIKeyboardGuideDialog::~UIKeyboardGuideDialog()
 }
 
 // @0x140f84090
-CString UIKeyboardGuideDialog::vfunc_1()
+CString UIKeyboardGuideDialog::GetTypeName()
 {
     return "KeyboardGuideDialog";
 }

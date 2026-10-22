@@ -76,7 +76,7 @@ UIFamePointBoardDialog::~UIFamePointBoardDialog()
 }
 
 // @0x140c15510
-CString UIFamePointBoardDialog::vfunc_1()
+CString UIFamePointBoardDialog::GetTypeName()
 {
     return "FamePointBoardDialog";
 }

@@ -23,7 +23,7 @@ class UIObjectCreateDialog : public UIDialog
 public:
     UIObjectCreateDialog();                                             // 0x14131f690 (open tween 1)
     virtual ~UIObjectCreateDialog() = default;                          //  0 0x1413203e0 (??_G 0x141320480)
-    virtual CString vfunc_1();                                          //  1 0x14131f700 "ObjectCreateDialog"
+    virtual CString GetTypeName();                                          //  1 0x14131f700 "ObjectCreateDialog"
     virtual int vfunc_13();                                             // 13 0x14131f7a0 enter key refills the list
     virtual void OnLoadInit();                                          // 20 0x14131f750 fill the list
     virtual void vfunc_26();                                            // 26 0x14131f780

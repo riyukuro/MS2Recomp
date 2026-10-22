@@ -281,11 +281,11 @@ ClassObject* CGuideActionMinimapMaximize::CreateObject()
 }
 
 // @0x141382e50
-CStringW CGuideActionMinimapMaximize::vfunc_1()
+CStringW CGuideActionMinimapMaximize::GetTypeName()
 {
     return L"CGuideActionMinimapMaximize";
 }
-MS2_REPLACE_METHOD(0x141382E50, CGuideActionMinimapMaximize, vfunc_1, 61, 0x88C3452E);
+MS2_REPLACE_METHOD(0x141382E50, CGuideActionMinimapMaximize, GetTypeName, 61, 0x88C3452E);
 
 // @0x141382ea0
 void CGuideActionMinimapMaximize::vfunc_2(Unk_140165cf0* pElem)
@@ -323,11 +323,11 @@ ClassObject* CGuideActionOpenDialog::CreateObject()
 }
 
 // @0x141382fb0
-CStringW CGuideActionOpenDialog::vfunc_1()
+CStringW CGuideActionOpenDialog::GetTypeName()
 {
     return L"CGuideActionOpenDialog";
 }
-MS2_REPLACE_METHOD(0x141382FB0, CGuideActionOpenDialog, vfunc_1, 61, 0x37402A72);
+MS2_REPLACE_METHOD(0x141382FB0, CGuideActionOpenDialog, GetTypeName, 61, 0x37402A72);
 
 // @0x141383000
 void CGuideActionOpenDialog::vfunc_2(Unk_140165cf0* pElem)
@@ -367,11 +367,11 @@ ClassObject* CGuideActionEffect::CreateObject()
 }
 
 // @0x141383160
-CStringW CGuideActionEffect::vfunc_1()
+CStringW CGuideActionEffect::GetTypeName()
 {
     return L"CGuideActionEffect";
 }
-MS2_REPLACE_METHOD(0x141383160, CGuideActionEffect, vfunc_1, 61, 0x579BAC8D);
+MS2_REPLACE_METHOD(0x141383160, CGuideActionEffect, GetTypeName, 61, 0x579BAC8D);
 
 extern const Unk_StreamPoint DAT_143b01a60;                 // efd::Point3::ZERO
 
@@ -439,11 +439,11 @@ ClassObject* CGuideActionLimit::CreateObject()
 }
 
 // @0x1413835b0
-CStringW CGuideActionLimit::vfunc_1()
+CStringW CGuideActionLimit::GetTypeName()
 {
     return L"CGuideActionLimit";
 }
-MS2_REPLACE_METHOD(0x1413835B0, CGuideActionLimit, vfunc_1, 61, 0xB20FF195);
+MS2_REPLACE_METHOD(0x1413835B0, CGuideActionLimit, GetTypeName, 61, 0xB20FF195);
 
 // @0x141383600
 void CGuideActionLimit::vfunc_2(Unk_140165cf0* pElem)
@@ -508,11 +508,11 @@ ClassObject* CGuideActionLimitDialog::CreateObject()
 }
 
 // @0x1413838c0
-CStringW CGuideActionLimitDialog::vfunc_1()
+CStringW CGuideActionLimitDialog::GetTypeName()
 {
     return L"CGuideActionLimitDialog";
 }
-MS2_REPLACE_METHOD(0x1413838C0, CGuideActionLimitDialog, vfunc_1, 61, 0xD709FCEC);
+MS2_REPLACE_METHOD(0x1413838C0, CGuideActionLimitDialog, GetTypeName, 61, 0xD709FCEC);
 
 // @0x141383910
 void CGuideActionLimitDialog::vfunc_2(Unk_140165cf0* pElem)
@@ -572,11 +572,11 @@ ClassObject* CGuideActionUITutorial::CreateObject()
 }
 
 // @0x141383c60
-CStringW CGuideActionUITutorial::vfunc_1()
+CStringW CGuideActionUITutorial::GetTypeName()
 {
     return L"CGuideActionUITutorial";
 }
-MS2_REPLACE_METHOD(0x141383C60, CGuideActionUITutorial, vfunc_1, 61, 0x53FC09F5);
+MS2_REPLACE_METHOD(0x141383C60, CGuideActionUITutorial, GetTypeName, 61, 0x53FC09F5);
 
 // @0x141383cb0
 void CGuideActionUITutorial::vfunc_2(Unk_140165cf0* pElem)
@@ -655,11 +655,11 @@ ClassObject* CGuideActionUITextBase::CreateObject()
 }
 
 // @0x1413840e0
-CStringW CGuideActionUITextBase::vfunc_1()
+CStringW CGuideActionUITextBase::GetTypeName()
 {
     return L"CGuideActionUITextBase";
 }
-MS2_REPLACE_METHOD(0x1413840E0, CGuideActionUITextBase, vfunc_1, 61, 0x48C1E305);
+MS2_REPLACE_METHOD(0x1413840E0, CGuideActionUITextBase, GetTypeName, 61, 0x48C1E305);
 
 // @0x141384130
 void CGuideActionUITextBase::vfunc_2(Unk_140165cf0* pElem)
@@ -701,11 +701,11 @@ ClassObject* CGuideActionUISummary::CreateObject()
 }
 
 // @0x141384300
-CStringW CGuideActionUISummary::vfunc_1()
+CStringW CGuideActionUISummary::GetTypeName()
 {
     return L"CGuideActionUISummary";
 }
-MS2_REPLACE_METHOD(0x141384300, CGuideActionUISummary, vfunc_1, 61, 0x4F917D31);
+MS2_REPLACE_METHOD(0x141384300, CGuideActionUISummary, GetTypeName, 61, 0x4F917D31);
 
 // @0x141384350
 void CGuideActionUISummary::vfunc_2(Unk_140165cf0* pElem)
@@ -756,11 +756,11 @@ ClassObject* CGuideActionUIArrow::CreateObject()
 }
 
 // @0x141384510
-CStringW CGuideActionUIArrow::vfunc_1()
+CStringW CGuideActionUIArrow::GetTypeName()
 {
     return L"CGuideActionUIArrow";
 }
-MS2_REPLACE_METHOD(0x141384510, CGuideActionUIArrow, vfunc_1, 61, 0xFC2D0672);
+MS2_REPLACE_METHOD(0x141384510, CGuideActionUIArrow, GetTypeName, 61, 0xFC2D0672);
 
 // @0x141384560
 void CGuideActionUIArrow::vfunc_2(Unk_140165cf0* pElem)
@@ -814,11 +814,11 @@ ClassObject* CGuideActionUITextTip::CreateObject()
 }
 
 // @0x1413848b0
-CStringW CGuideActionUITextTip::vfunc_1()
+CStringW CGuideActionUITextTip::GetTypeName()
 {
     return L"CGuideActionUITextTip";
 }
-MS2_REPLACE_METHOD(0x1413848B0, CGuideActionUITextTip, vfunc_1, 61, 0xD930FB3B);
+MS2_REPLACE_METHOD(0x1413848B0, CGuideActionUITextTip, GetTypeName, 61, 0xD930FB3B);
 
 // @0x141384900
 void CGuideActionUITextTip::vfunc_3()
@@ -851,11 +851,11 @@ ClassObject* CGuideActionUIArrowDialog::CreateObject()
 }
 
 // @0x141384a20
-CStringW CGuideActionUIArrowDialog::vfunc_1()
+CStringW CGuideActionUIArrowDialog::GetTypeName()
 {
     return L"CGuideActionUIArrowDialog";
 }
-MS2_REPLACE_METHOD(0x141384A20, CGuideActionUIArrowDialog, vfunc_1, 61, 0x24292D51);
+MS2_REPLACE_METHOD(0x141384A20, CGuideActionUIArrowDialog, GetTypeName, 61, 0x24292D51);
 
 // @0x141384a70
 void CGuideActionUIArrowDialog::vfunc_2(Unk_140165cf0* pElem)
@@ -908,11 +908,11 @@ ClassObject* CGuideActionUIArrowClose::CreateObject()
 }
 
 // @0x141384e30
-CStringW CGuideActionUIArrowClose::vfunc_1()
+CStringW CGuideActionUIArrowClose::GetTypeName()
 {
     return L"CGuideActionUIArrowClose";
 }
-MS2_REPLACE_METHOD(0x141384E30, CGuideActionUIArrowClose, vfunc_1, 61, 0xC25880EC);
+MS2_REPLACE_METHOD(0x141384E30, CGuideActionUIArrowClose, GetTypeName, 61, 0xC25880EC);
 
 // @0x141384e80
 void CGuideActionUIArrowClose::vfunc_2(Unk_140165cf0* pElem)
@@ -956,11 +956,11 @@ ClassObject* CGuideActionConditionAction::CreateObject()
 }
 
 // @0x141385000
-CStringW CGuideActionConditionAction::vfunc_1()
+CStringW CGuideActionConditionAction::GetTypeName()
 {
     return L"CGuideActionConditionAction";
 }
-MS2_REPLACE_METHOD(0x141385000, CGuideActionConditionAction, vfunc_1, 61, 0x5646FED4);
+MS2_REPLACE_METHOD(0x141385000, CGuideActionConditionAction, GetTypeName, 61, 0x5646FED4);
 
 // The exe builds every nested condition / action from the list element, not from the child it iterates.
 // @0x141385050
@@ -1026,11 +1026,11 @@ ClassObject* CGuideActionEquipWeaponTutorial::CreateObject()
 }
 
 // @0x1413853b0
-CStringW CGuideActionEquipWeaponTutorial::vfunc_1()
+CStringW CGuideActionEquipWeaponTutorial::GetTypeName()
 {
     return L"CGuideActionEquipWeaponTutorial";
 }
-MS2_REPLACE_METHOD(0x1413853B0, CGuideActionEquipWeaponTutorial, vfunc_1, 61, 0x0CFC6CFB);
+MS2_REPLACE_METHOD(0x1413853B0, CGuideActionEquipWeaponTutorial, GetTypeName, 61, 0x0CFC6CFB);
 
 // @0x141385400
 void CGuideActionEquipWeaponTutorial::vfunc_2(Unk_140165cf0* pElem)
@@ -1066,11 +1066,11 @@ ClassObject* CGuideActionForceClear::CreateObject()
 }
 
 // @0x141385520
-CStringW CGuideActionForceClear::vfunc_1()
+CStringW CGuideActionForceClear::GetTypeName()
 {
     return L"CGuideActionForceClear";
 }
-MS2_REPLACE_METHOD(0x141385520, CGuideActionForceClear, vfunc_1, 61, 0x801B2F21);
+MS2_REPLACE_METHOD(0x141385520, CGuideActionForceClear, GetTypeName, 61, 0x801B2F21);
 
 // @0x141385570
 void CGuideActionForceClear::vfunc_2(Unk_140165cf0* pElem)
@@ -1099,11 +1099,11 @@ ClassObject* CGuideActionSequenceCamera::CreateObject()
 }
 
 // @0x141385680
-CStringW CGuideActionSequenceCamera::vfunc_1()
+CStringW CGuideActionSequenceCamera::GetTypeName()
 {
     return L"CGuideActionSequenceCamera";
 }
-MS2_REPLACE_METHOD(0x141385680, CGuideActionSequenceCamera, vfunc_1, 61, 0x67A88BE6);
+MS2_REPLACE_METHOD(0x141385680, CGuideActionSequenceCamera, GetTypeName, 61, 0x67A88BE6);
 
 // @0x1413856d0
 void CGuideActionSequenceCamera::vfunc_2(Unk_140165cf0* pElem)
@@ -1185,11 +1185,11 @@ ClassObject* CGuideActionSmartRecommend::CreateObject()
 }
 
 // @0x141385c20
-CStringW CGuideActionSmartRecommend::vfunc_1()
+CStringW CGuideActionSmartRecommend::GetTypeName()
 {
     return L"CGuideActionSmartRecommend";
 }
-MS2_REPLACE_METHOD(0x141385C20, CGuideActionSmartRecommend, vfunc_1, 61, 0x1649ED31);
+MS2_REPLACE_METHOD(0x141385C20, CGuideActionSmartRecommend, GetTypeName, 61, 0x1649ED31);
 
 // @0x141385c70
 void CGuideActionSmartRecommend::vfunc_2(Unk_140165cf0* pElem)
@@ -1220,11 +1220,11 @@ ClassObject* CGuideActionServerTriggerEvent::CreateObject()
 }
 
 // @0x141385db0
-CStringW CGuideActionServerTriggerEvent::vfunc_1()
+CStringW CGuideActionServerTriggerEvent::GetTypeName()
 {
     return L"CGuideActionServerTriggerEvent";
 }
-MS2_REPLACE_METHOD(0x141385DB0, CGuideActionServerTriggerEvent, vfunc_1, 61, 0xA07207F4);
+MS2_REPLACE_METHOD(0x141385DB0, CGuideActionServerTriggerEvent, GetTypeName, 61, 0xA07207F4);
 
 // @0x141385e00
 void CGuideActionServerTriggerEvent::vfunc_2(Unk_140165cf0* pElem)
@@ -1255,11 +1255,11 @@ ClassObject* CGuideActionGameMenuLimit::CreateObject()
 }
 
 // @0x141385f30
-CStringW CGuideActionGameMenuLimit::vfunc_1()
+CStringW CGuideActionGameMenuLimit::GetTypeName()
 {
     return L"CGuideActionGameMenuLimit";
 }
-MS2_REPLACE_METHOD(0x141385F30, CGuideActionGameMenuLimit, vfunc_1, 61, 0x0F931D7F);
+MS2_REPLACE_METHOD(0x141385F30, CGuideActionGameMenuLimit, GetTypeName, 61, 0x0F931D7F);
 
 // @0x141385f80
 void CGuideActionGameMenuLimit::vfunc_2(Unk_140165cf0* pElem)
@@ -1290,11 +1290,11 @@ ClassObject* CGuideActionRequestTutorialItem::CreateObject()
 }
 
 // @0x1413860d0
-CStringW CGuideActionRequestTutorialItem::vfunc_1()
+CStringW CGuideActionRequestTutorialItem::GetTypeName()
 {
     return L"CGuideActionRequestTutorialItem";
 }
-MS2_REPLACE_METHOD(0x1413860D0, CGuideActionRequestTutorialItem, vfunc_1, 61, 0x9503A9F5);
+MS2_REPLACE_METHOD(0x1413860D0, CGuideActionRequestTutorialItem, GetTypeName, 61, 0x9503A9F5);
 
 // @0x141386120
 void CGuideActionRequestTutorialItem::vfunc_2(Unk_140165cf0* pElem)
@@ -1320,11 +1320,11 @@ ClassObject* CGuideActionSideNpcTalk::CreateObject()
 }
 
 // @0x141386200
-CStringW CGuideActionSideNpcTalk::vfunc_1()
+CStringW CGuideActionSideNpcTalk::GetTypeName()
 {
     return L"CGuideActionSideNpcTalk";
 }
-MS2_REPLACE_METHOD(0x141386200, CGuideActionSideNpcTalk, vfunc_1, 61, 0xA366769F);
+MS2_REPLACE_METHOD(0x141386200, CGuideActionSideNpcTalk, GetTypeName, 61, 0xA366769F);
 
 // @0x141386250
 void CGuideActionSideNpcTalk::vfunc_2(Unk_140165cf0* pElem)
@@ -1369,11 +1369,11 @@ ClassObject* CGuideActionClearTutorial::CreateObject()
 }
 
 // @0x1413865b0
-CStringW CGuideActionClearTutorial::vfunc_1()
+CStringW CGuideActionClearTutorial::GetTypeName()
 {
     return L"CGuideActionClearTutorial";
 }
-MS2_REPLACE_METHOD(0x1413865B0, CGuideActionClearTutorial, vfunc_1, 61, 0x90D80BF6);
+MS2_REPLACE_METHOD(0x1413865B0, CGuideActionClearTutorial, GetTypeName, 61, 0x90D80BF6);
 
 // @0x141386600
 void CGuideActionClearTutorial::vfunc_3()

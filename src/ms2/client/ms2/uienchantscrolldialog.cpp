@@ -152,7 +152,7 @@ UIEnchantScrollDialog::UIEnchantScrollDialog()
 }
 
 // @0x140f3b530
-CString UIEnchantScrollDialog::vfunc_1()
+CString UIEnchantScrollDialog::GetTypeName()
 {
     return CString("EnchantScrollDialog");
 }
@@ -169,7 +169,7 @@ int UIEnchantScrollDialog::vfunc_65()
 void UIEnchantScrollDialog::vfunc_67()
 {
     FUN_140f3d210();
-    FUN_140cd74a0(vfunc_1());
+    FUN_140cd74a0(GetTypeName());
     UIDialog::vfunc_67();
 }
 
@@ -268,12 +268,12 @@ void UIEnchantScrollDialog::FUN_140f3bd10(CInPacket& packet)
     MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (FUN_14052cd70(&spItem) == 0 || FUN_14052cd70(&spScroll) == 0)
         return;
-    FUN_140cd74a0(vfunc_1());
-    FUN_140cd73b0(vfunc_1(), m_nScrollUid, spItem);
+    FUN_140cd74a0(GetTypeName());
+    FUN_140cd73b0(GetTypeName(), m_nScrollUid, spItem);
     ASObj data(2);
     data.FUN_140f3f020("scrollType", m_nType);
     data.FUN_1407cbb20("itemGUID", FUN_141b71910(spItem->FUN_140526a50()));
-    data.FUN_1407cba60("bindID", vfunc_1());
+    data.FUN_1407cba60("bindID", GetTypeName());
     data.FUN_1407cb9c0("ready", 1);
     data.FUN_1407cbb20("itemName", FUN_140f3d320(spItem->FUN_140527030(), spItem, 0, 0));
     data.FUN_1407cbb20("desc", FUN_140f3e550(spItem));
@@ -342,8 +342,8 @@ void UIEnchantScrollDialog::FUN_140f3c6c0(CInPacket& packet)
 // MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIEnchantScrollDialog::FUN_140f3cb10()
 {
-    FUN_140cd74a0(vfunc_1());
-    FUN_140cd73b0(vfunc_1(), m_nScrollUid, MS2Ptr<CItem>(0));
+    FUN_140cd74a0(GetTypeName());
+    FUN_140cd73b0(GetTypeName(), m_nScrollUid, MS2Ptr<CItem>(0));
     MS2Ptr<CItem> spScroll = DAT_143ab2a90.FUN_140a5d680(m_nScrollUid);
     if (FUN_1409ee240(&m_30) != 0 && FUN_14052cd70(&spScroll) != 0) {
         CStringW strLevel;
@@ -364,7 +364,7 @@ void UIEnchantScrollDialog::FUN_140f3cb10()
         ASObj data(2);
         data.FUN_1407cbb20("itemGUID", FUN_141b71910(0));
         data.FUN_140f3f020("scrollType", m_nType);
-        data.FUN_1407cba60("bindID", vfunc_1());
+        data.FUN_1407cba60("bindID", GetTypeName());
         data.FUN_1407cb9c0("ready", 0);
         data.FUN_1407cbb20("itemName", FUN_140f3e550(spScroll));
         data.FUN_1407cbb20("limit", FUN_1409eadb0(0xb6d, strLevel, strRanks, strTypes));

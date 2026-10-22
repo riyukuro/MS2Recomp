@@ -539,7 +539,7 @@ UIHighlightGameMenu::~UIHighlightGameMenu()
 }
 
 // @0x140c22690
-CString UIHighlightGameMenu::vfunc_1()
+CString UIHighlightGameMenu::GetTypeName()
 {
     return "HighlightGameMenu";
 }

@@ -46,7 +46,7 @@ public:
 
     UIHpBar();                                          // 0x1419927f0
     virtual ~UIHpBar();                                 //  0 0x141992860 (??_G 0x141994e80)
-    virtual CString vfunc_1();                          //  1 0x1419928a0 "HpBar"
+    virtual CString GetTypeName();                          //  1 0x1419928a0 "HpBar"
     virtual void OnLoadComplete();                      // 22 0x1419928f0 UIObject::OnLoadComplete(); FUN_141993790(m_68)
     virtual int vfunc_48() { return 0x4e36; }           // 48 0x141994f40
 
@@ -81,7 +81,7 @@ public:
 
     UITombStoneBar();                                   // 0x141992fd0
     virtual ~UITombStoneBar();                          //  0 0x141993040 (??_G 0x141994f00)
-    virtual CString vfunc_1();                          //  1 0x141993080 "TombGaugeBar"
+    virtual CString GetTypeName();                          //  1 0x141993080 "TombGaugeBar"
     virtual void OnLoadComplete();                      // 22 0x1419930d0 UIHpBar::OnLoadComplete(); FUN_141993b50(m_68)
     virtual int vfunc_48() { return 0x4e64; }           // 48 0x141994f60
 
@@ -115,7 +115,7 @@ public:
 
     UISlimeEventBar();                                  // 0x1419935a0
     virtual ~UISlimeEventBar();                         //  0 0x141993610 (??_G 0x141994ec0)
-    virtual CString vfunc_1();                          //  1 0x141993650 "SlimeEventBar"
+    virtual CString GetTypeName();                          //  1 0x141993650 "SlimeEventBar"
     virtual void OnLoadComplete();                      // 22 0x1419936a0 UIHpBar::OnLoadComplete(); FUN_141993970(m_68)
     virtual int vfunc_48() { return 0x4e65; }           // 48 0x141994f50
 

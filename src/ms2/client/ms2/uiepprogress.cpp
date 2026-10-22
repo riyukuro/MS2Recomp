@@ -62,7 +62,7 @@ UIEpProgress::~UIEpProgress()
 }
 
 // @0x1419316f0
-CString UIEpProgress::vfunc_1()
+CString UIEpProgress::GetTypeName()
 {
     return "EpProgress";
 }
@@ -181,7 +181,7 @@ Scaleform::GFx::Value Unk_EpEntity::FUN_141931d80(const char* szMethod, int a1, 
 }
 
 // ---- hooks ----
-MS2_REPLACE_METHOD(0x1419316F0, UIEpProgress, vfunc_1, 61, 0x3AEDFE10);
+MS2_REPLACE_METHOD(0x1419316F0, UIEpProgress, GetTypeName, 61, 0x3AEDFE10);
 MS2_REPLACE_METHOD(0x141931740, UIEpProgress, vfunc_54, 32, 0xC5E4F3FF);
 MS2_REPLACE_METHOD(0x141931770, UIEpProgress, vfunc_55, 24, 0x6CDCD363);
 MS2_REPLACE_METHOD(0x141931790, UIEpProgress, vfunc_52, 24, 0xF5EBB716);

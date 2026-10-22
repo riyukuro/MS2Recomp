@@ -40,7 +40,7 @@ public:
 
     UIArcadeMainDialog();                                           // 0x140ef5640
     virtual ~UIArcadeMainDialog();                                  //  0 0x140ef58d0 (??_G 0x140efd300)
-    virtual CString vfunc_1();                                      //  1 0x140ef5af0 "ArcadeMainDialog"
+    virtual CString GetTypeName();                                      //  1 0x140ef5af0 "ArcadeMainDialog"
     virtual void OnLoadInit();                                      // 20 0x140ef5b40
     virtual void OnLoadComplete();                                  // 22 0x140ef5b60
     virtual void vfunc_26();                                        // 26 0x140ef6750

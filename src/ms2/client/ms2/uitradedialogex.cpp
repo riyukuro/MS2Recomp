@@ -143,7 +143,7 @@ UITradeDialogEx::UITradeDialogEx()
 {
     FUN_141924170(1);
     m_164 = 1;
-    CString strName = vfunc_1();
+    CString strName = GetTypeName();
     m_strMyBagId = FUN_14038f6d0(strName, "_my");
     m_strTargetBagId = FUN_14038f6d0(strName, "_target");
 }
@@ -154,7 +154,7 @@ UITradeDialogEx::~UITradeDialogEx()
 }
 
 // @0x141b271d0
-CString UITradeDialogEx::vfunc_1()
+CString UITradeDialogEx::GetTypeName()
 {
     return "TradeDialogEx";
 }

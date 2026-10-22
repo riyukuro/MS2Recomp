@@ -19,7 +19,7 @@ class UISystemText : public UIHeadUpDisplay
 public:
     UISystemText();                                                 // 0x141b15900 (m_28 = 3, m_2c = 0x24)
     virtual ~UISystemText();                                        //  0 0x141b159b0 (??_G 0x141b189f0)
-    virtual CString vfunc_1();                                      //  1 0x141b15a20 "SystemText"
+    virtual CString GetTypeName();                                      //  1 0x141b15a20 "SystemText"
     virtual void vfunc_2();                                         //  2 0x141b15e60 show (the base's)
     virtual void vfunc_3();                                         //  3 0x141b15e80 hide, forget the parked message
     virtual void OnLoadComplete();                                  // 22 0x141b15a70 replay the parked message

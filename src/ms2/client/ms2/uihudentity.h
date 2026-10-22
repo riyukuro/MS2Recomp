@@ -93,7 +93,7 @@ public:
 
     UIHudEntity();                                                  // 0x140f49590
     virtual ~UIHudEntity();                                         //  0 0x140f49670 (??_G 0x140f4a1b0)
-    virtual CString vfunc_1();                                      //  1 0x140f496f0 "HudEntity"
+    virtual CString GetTypeName();                                      //  1 0x140f496f0 "HudEntity"
     virtual void vfunc_10();                                        // 10 0x140f49930 FUN_140f49740()
     virtual void vfunc_15();                                        // 15 0x140f49950
     virtual void vfunc_26();                                        // 26 0x140f49900 FUN_140f49740(); UIObject::vfunc_26()

@@ -23,7 +23,7 @@ class UIItemOptionCreateDialog : public UIDialog
 public:
     UIItemOptionCreateDialog();                                 // 0x1412d2660
     // implicit virtual dtor: 0x1412d5060 (no vptr store; ??_G 0x1412d5510)
-    virtual CString vfunc_1();                                  //  1 0x1412d2700 "ItemOptionCreateDialog"
+    virtual CString GetTypeName();                                  //  1 0x1412d2700 "ItemOptionCreateDialog"
     virtual void OnLoadInit();                                  // 20 0x1412d2750 fill the item list once
     virtual int vfunc_13();                                     // 13 0x1412d27d0 Enter in the search box runs the search
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

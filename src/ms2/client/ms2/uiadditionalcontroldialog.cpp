@@ -117,7 +117,7 @@ UIAdditionalControlDialog::UIAdditionalControlDialog()
 }
 
 // @0x1418b2670
-CString UIAdditionalControlDialog::vfunc_1()
+CString UIAdditionalControlDialog::GetTypeName()
 {
     return "AdditionalEffectControlDialog";
 }

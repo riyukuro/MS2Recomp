@@ -389,8 +389,8 @@ UIDungeonRewardDialog::~UIDungeonRewardDialog() {
  FUN_140bccd50()->FUN_140da51e0(0x1b,Delegate<void(CInPacket&)>(this,&UIDungeonRewardDialog::FUN_140e22130));
 }
 // @0x140e21000
-CString UIDungeonRewardDialog::vfunc_1() { return "DungeonRewardDialog"; }
-MS2_REPLACE_METHOD(0x140E21000, UIDungeonRewardDialog, vfunc_1, 61, 0x76DD8AEE);
+CString UIDungeonRewardDialog::GetTypeName() { return "DungeonRewardDialog"; }
+MS2_REPLACE_METHOD(0x140E21000, UIDungeonRewardDialog, GetTypeName, 61, 0x76DD8AEE);
 
 // @0x140e21050
 void UIDungeonRewardDialog::vfunc_26() { UIDialog::vfunc_26(); m_labels.FUN_140bcfb70(); FUN_140e25610(); }

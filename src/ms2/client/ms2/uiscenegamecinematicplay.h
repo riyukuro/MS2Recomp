@@ -58,7 +58,7 @@ class UISceneGameCinematicPlay : public UISceneEntity
 public:
     UISceneGameCinematicPlay();                                 // 0x140e84cd0 (m_6c = 0x620007f)
     virtual ~UISceneGameCinematicPlay();                        //  0 0x140e84d20 (??_G 0x140e84f40)
-    virtual CString vfunc_1();                                  //  1 0x140e84d60 "SceneGameCinematicPlay"
+    virtual CString GetTypeName();                                  //  1 0x140e84d60 "SceneGameCinematicPlay"
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140e84ef0
     virtual bool vfunc_47();                                    // 47 0x140e84db0 returns false
     virtual void vfunc_48(int n);                               // 48 0x140e84dc0 show: cinematic presentation on

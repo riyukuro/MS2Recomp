@@ -232,11 +232,11 @@ void UICutSceneMovie::RemoveTween()
 MS2_REPLACE_METHOD(0x14190F350, UICutSceneMovie, RemoveTween, 83, 0x765F020D);
 
 // @0x14190f3b0
-CString UICutSceneMovie::vfunc_1()
+CString UICutSceneMovie::GetTypeName()
 {
     return "CutSceneMovie";
 }
-MS2_REPLACE_METHOD(0x14190F3B0, UICutSceneMovie, vfunc_1, 61, 0x09248588);
+MS2_REPLACE_METHOD(0x14190F3B0, UICutSceneMovie, GetTypeName, 61, 0x09248588);
 
 // @0x14190f400
 void UICutSceneMovie::OnLoadInit()

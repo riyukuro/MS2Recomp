@@ -17,7 +17,7 @@ class UIUGCExtraCNDialog : public UIDialog
 public:
     UIUGCExtraCNDialog();                                       // 0x140facb20
     virtual ~UIUGCExtraCNDialog();                              //  0 0x140facba0 (??_G 0x140fad850)
-    virtual CString vfunc_1();                                  //  1 0x140facc10 "UGCExtraCNDialog"
+    virtual CString GetTypeName();                                  //  1 0x140facc10 "UGCExtraCNDialog"
     virtual void OnLoadComplete();                              // 22 0x140facbe0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140faccb0
     virtual int vfunc_48() { return 0x4f30; }                   // 48 0x140fad890

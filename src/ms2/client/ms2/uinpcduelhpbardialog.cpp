@@ -145,7 +145,7 @@ UINpcDuelHPBarDialog::~UINpcDuelHPBarDialog()
 }
 
 // @0x140e6b8a0
-CString UINpcDuelHPBarDialog::vfunc_1()
+CString UINpcDuelHPBarDialog::GetTypeName()
 {
     return "NpcDuelHPBarDialog";
 }
@@ -388,7 +388,7 @@ Scaleform::GFx::Value Unk_NdScript::FUN_140e6cfe0(const char* szMethod, __int64 
     return FUN_1422bb8f0(szMethod, args);
 }
 
-MS2_REPLACE_METHOD(0x140E6B8A0, UINpcDuelHPBarDialog, vfunc_1, 61, 0x01524E8D);
+MS2_REPLACE_METHOD(0x140E6B8A0, UINpcDuelHPBarDialog, GetTypeName, 61, 0x01524E8D);
 MS2_REPLACE_METHOD(0x140E6B8F0, UINpcDuelHPBarDialog, vfunc_67, 90, 0x54B3777A);
 MS2_REPLACE_METHOD(0x140E6B950, UINpcDuelHPBarDialog, vfunc_72, 123, 0x2C3B24B1);
 MS2_REPLACE_METHOD(0x140E6B9E0, UINpcDuelHPBarDialog, OnLoadComplete, 387, 0x3FEED2D8);

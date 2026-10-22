@@ -178,11 +178,11 @@ UIItemCreateDialog::UIItemCreateDialog()
 }
 
 // @0x1419b3d10
-CString UIItemCreateDialog::vfunc_1()
+CString UIItemCreateDialog::GetTypeName()
 {
     return "ItemCreateDialog";
 }
-MS2_REPLACE_METHOD(0x1419b3d10, UIItemCreateDialog, vfunc_1, 61, 0xB554FE81);
+MS2_REPLACE_METHOD(0x1419b3d10, UIItemCreateDialog, GetTypeName, 61, 0xB554FE81);
 
 // @0x1419b3d60
 void UIItemCreateDialog::OnLoadComplete()

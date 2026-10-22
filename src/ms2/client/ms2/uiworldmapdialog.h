@@ -38,7 +38,7 @@ public:
 
     UIWorldMapDialog();                                                     // 0x141b53fc0
     virtual ~UIWorldMapDialog();                                            //  0 0x141b54250 (??_G 0x141b69030)
-    virtual CString vfunc_1();                                              //  1 0x141b54350 "WorldMapDialog"
+    virtual CString GetTypeName();                                              //  1 0x141b54350 "WorldMapDialog"
     virtual int vfunc_13();                                                 // 13 0x141b54650 the Enter key in the search box
     virtual void OnLoadComplete();                                          // 22 0x141b54920
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141b55300

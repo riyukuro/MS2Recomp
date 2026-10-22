@@ -21,7 +21,7 @@ public:
     virtual ~UIMessageBox();                                        // 0x1419f72a0 (??_G 0x141a008e0)
     virtual void vfunc_2();
     virtual void vfunc_3();
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual void vfunc_8(int bVisible);
     virtual void vfunc_43();
     virtual void OnLoadComplete();

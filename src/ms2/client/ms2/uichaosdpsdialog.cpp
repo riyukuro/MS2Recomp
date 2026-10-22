@@ -103,7 +103,7 @@ UIChaosDPSDialog::~UIChaosDPSDialog()
 }
 
 // @0x140e05560
-CString UIChaosDPSDialog::vfunc_1()
+CString UIChaosDPSDialog::GetTypeName()
 {
     return "ChaosDPSDialog";
 }

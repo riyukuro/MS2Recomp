@@ -68,11 +68,11 @@ UIDungeonExpenseRewardDialog::~UIDungeonExpenseRewardDialog()
 }
 
 // @0x140f3a940
-CString UIDungeonExpenseRewardDialog::vfunc_1()
+CString UIDungeonExpenseRewardDialog::GetTypeName()
 {
     return "DungeonExpenseRewardDialog";
 }
-MS2_REPLACE_METHOD(0x140F3A940, UIDungeonExpenseRewardDialog, vfunc_1, 61, 0xF8A33BFF);
+MS2_REPLACE_METHOD(0x140F3A940, UIDungeonExpenseRewardDialog, GetTypeName, 61, 0xF8A33BFF);
 
 // MS2-FUNCTIONAL: OnLoadComplete: the exe keeps the MS2Ptr temps and delegate copies of each button hook (larger frame)
 // @0x140f3a990

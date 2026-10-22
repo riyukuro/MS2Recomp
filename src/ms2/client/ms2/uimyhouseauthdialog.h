@@ -17,7 +17,7 @@ class UIMyHouseAuthDialog : public UIDialog
 public:
     UIMyHouseAuthDialog();                                          // 0x141a57b00 (open tween 1)
     virtual ~UIMyHouseAuthDialog();                                 //  0 0x141a57b60 (??_G 0x141a57ed0)
-    virtual CString vfunc_1();                                      //  1 0x141a57ba0 "MyHouseAuthDialog"
+    virtual CString GetTypeName();                                      //  1 0x141a57ba0 "MyHouseAuthDialog"
     virtual void OnLoadComplete();                                  // 22 0x141a57c40 the base's
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141a57cc0
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);       // IMessageListener 0 0x141a57e10 the confirm box's answer

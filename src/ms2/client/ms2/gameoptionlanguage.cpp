@@ -446,7 +446,7 @@ void CGameOptionLanguage::vfunc_12()
 }
 
 // @0x140cfce60
-CString CGameOptionLanguage::vfunc_1()
+CString CGameOptionLanguage::GetTypeName()
 {
     return CString("GameOptionLanguage");
 }

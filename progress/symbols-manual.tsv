@@ -8177,6 +8177,15 @@ compress2	142724100	func
 ??0TimeHolder@Date@fl@Instances@AS3@GFx@Scaleform@@QEAA@NN@Z	1423ef290	func
 ?DateWeekDayNames@fl@Instances@AS3@GFx@Scaleform@@3PAPEBDA	143a2a810	data
 ?DateMonthNames@fl@Instances@AS3@GFx@Scaleform@@3PAPEBDA	143a2a850	data
+?GetTypeName@UIHudEntity@@UEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	140f496f0	func
+?GetTypeName@UIItemModifyDialogBase@@UEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	1419234e0	func
+?GetTypeName@UIDialog@@UEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	1419234e0	func
+?GetTypeName@NotifyKillPlayer@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db5220	func
+?GetTypeName@NotifyChangedTokenMoney@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db4610	func
+?GetTypeName@NotifyActiveMyCodiTab@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db4cd0	func
+?GetTypeName@NotifyOpenDialogByScene@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db51c0	func
+?GetTypeName@NotifyUseSKill@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db4670	func
+?GetTypeName@NotifyUgcDownloadComplete@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db4250	func
 ?vfunc_1@UIHudEntity@@UEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	140f496f0	func
 ?vfunc_1@UIItemModifyDialogBase@@UEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	1419234e0	func
 ?vfunc_1@UIDialog@@UEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	1419234e0	func

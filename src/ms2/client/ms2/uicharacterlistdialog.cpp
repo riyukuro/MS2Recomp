@@ -605,7 +605,7 @@ UICharacterListDialog::~UICharacterListDialog()
 }
 
 // @0x1418ea740
-CString UICharacterListDialog::vfunc_1()
+CString UICharacterListDialog::GetTypeName()
 {
     return "CharacterListDialog";
 }

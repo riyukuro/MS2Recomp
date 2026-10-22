@@ -17,7 +17,7 @@ class UIItemEditDialog : public UIDialog, public UIItemEventListener, public IIt
 public:
     UIItemEditDialog();                                 // 0x1419bc730
     virtual ~UIItemEditDialog() = default;              // 0x1419be250 (??_G 0x1419be320)
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual int vfunc_13();
     virtual void vfunc_15();
     virtual void OnLoadComplete();

@@ -47,7 +47,7 @@ class UIBlueprintMarketDialog : public UIDialog, public UIUGCEventListener
 public:
     UIBlueprintMarketDialog();                                      // 0x140bb9cf0
     virtual ~UIBlueprintMarketDialog();                             //  0 0x140bb9e30 (??_G 0x140bc08c0)
-    virtual CString vfunc_1();                                      //  1 0x140bb9f00 "BlueprintMarketDialog"
+    virtual CString GetTypeName();                                      //  1 0x140bb9f00 "BlueprintMarketDialog"
     virtual int vfunc_13();                                         // 13 0x140bbad70 Enter in the search box searches
     virtual void OnLoadComplete();                                  // 22 0x140bb9f50 bind the controls, send initData
     virtual void vfunc_26();                                        // 26 0x140bbab60 unbind and reset

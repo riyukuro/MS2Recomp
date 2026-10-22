@@ -261,7 +261,7 @@ MS2Ptr<CMsgBoxData> FUN_140bfab20(CStringW strText, int nType, AqAnswerDelegate 
 // ---- UIAllianceQuestDialog ----
 
 // @0x140bf60f0
-UIAllianceQuestDialog::UIAllianceQuestDialog() : m_180(vfunc_1())
+UIAllianceQuestDialog::UIAllianceQuestDialog() : m_180(GetTypeName())
 {
     m_80 = 0;
     m_88 = 1;
@@ -272,7 +272,7 @@ UIAllianceQuestDialog::UIAllianceQuestDialog() : m_180(vfunc_1())
 UIAllianceQuestDialog::~UIAllianceQuestDialog() {}
 
 // @0x140bf6290
-CString UIAllianceQuestDialog::vfunc_1() { return "AllianceQuestDialog"; }
+CString UIAllianceQuestDialog::GetTypeName() { return "AllianceQuestDialog"; }
 
 // @0x140bf62e0
 void UIAllianceQuestDialog::vfunc_67()

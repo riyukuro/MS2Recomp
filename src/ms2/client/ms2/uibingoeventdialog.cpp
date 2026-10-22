@@ -71,8 +71,8 @@
 // MS2-PIN: ?AddRefImpl@Unk_BingoSlots@@AEBAXPEAX@Z 0x140bb82d0 ; unique
 // MS2-PIN: ?Make@Unk_BingoSlots@@AEAAXXZ 0x140bb8330 ; unique
 // MS2-PIN: ?Create@Unk_BingoSlots@@CAPEAV?$CAtlArray@V?$MS2Ptr@VASItemSlot@@@@V?$CElementTraits@V?$MS2Ptr@VASItemSlot@@@@@ATL@@@ATL@@PEAX@Z 0x140bb8360 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIBingoEventDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140bb8e30 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIBingoEventDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140bb8e90 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIBingoEventDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140bb8e30 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIBingoEventDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140bb8e90 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIBingoEventDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x140bb9030 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIBingoEventDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x140bb9060 ; unique
 // MS2-PIN: ??$Call@VUIBingoEventDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@?$DelegateImpl@U?$pair@PEAVUIBingoEventDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@CAXAEAU?$pair@PEAVUIBingoEventDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@AEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x140bb90a0 ; unique
@@ -304,7 +304,7 @@ UIBingoEventDialog::~UIBingoEventDialog()
 }
 
 // @0x140bad410
-CString UIBingoEventDialog::vfunc_1()
+CString UIBingoEventDialog::GetTypeName()
 {
     return CString("BingoEventDialog");
 }
@@ -1352,7 +1352,7 @@ void Unk_BingoPanel::FUN_140bb8100()
 }
 
 // ---- hooks ----
-MS2_REPLACE_METHOD(0x140BAD410, UIBingoEventDialog, vfunc_1, 61, 0xF19E5FDD);
+MS2_REPLACE_METHOD(0x140BAD410, UIBingoEventDialog, GetTypeName, 61, 0xF19E5FDD);
 MS2_REPLACE_METHOD(0x140BAD460, UIBingoEventDialog, vfunc_65, 194, 0xB8401979);
 MS2_REPLACE_METHOD(0x140BAD530, UIBingoEventDialog, OnLoadComplete, 7777, 0xDEF42ED3);
 MS2_REPLACE_METHOD(0x140BAF3A0, UIBingoEventDialog, vfunc_79, 921, 0xD440CE58);

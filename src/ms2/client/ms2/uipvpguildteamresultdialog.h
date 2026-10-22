@@ -34,7 +34,7 @@ class UIPvPGuildTeamResultDialog : public UIDialog
 public:
     UIPvPGuildTeamResultDialog();                               // 0x1413409a0
     virtual ~UIPvPGuildTeamResultDialog();                      //  0 0x141340aa0 (??_G 0x141342520)
-    virtual CString vfunc_1();                                  //  1 0x141340b30 "PvPGuildTeamResultDialog"
+    virtual CString GetTypeName();                                  //  1 0x141340b30 "PvPGuildTeamResultDialog"
     virtual void OnLoadComplete();                              // 22 0x141340b80
     virtual void vfunc_26();                                    // 26 0x141340bb0 tell the server the result was seen
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141340c20 "OnClose"

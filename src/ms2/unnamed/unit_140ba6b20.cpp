@@ -131,7 +131,7 @@ UIAdventureLevelExpBar::~UIAdventureLevelExpBar()
 }
 
 // @0x140ba6c00
-CString UIAdventureLevelExpBar::vfunc_1()
+CString UIAdventureLevelExpBar::GetTypeName()
 {
     return "AdventureLevelExpBar";
 }
@@ -343,7 +343,7 @@ bool Unk_AdvHolderRef::operator!=(Unk_AdvHolder* p) const
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- hooks ----
-MS2_REPLACE_METHOD(0x140BA6C00, UIAdventureLevelExpBar, vfunc_1, 61, 0x03DBAB78);
+MS2_REPLACE_METHOD(0x140BA6C00, UIAdventureLevelExpBar, GetTypeName, 61, 0x03DBAB78);
 MS2_REPLACE_METHOD(0x140BA6C50, UIAdventureLevelExpBar, vfunc_2, 46, 0x50B56EF6);
 MS2_REPLACE_METHOD(0x140BA6C90, UIAdventureLevelExpBar, vfunc_3, 86, 0x5CC41CD8);
 MS2_REPLACE_METHOD(0x140BA6CF0, UIAdventureLevelExpBar, FUN_140ba6cf0, 667, 0x4F7A655A);

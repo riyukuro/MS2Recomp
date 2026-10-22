@@ -18,7 +18,7 @@ class UIGuildFlagTooltip : public UIHeadUpDisplay
 {
 public:
     UIGuildFlagTooltip();                                       // 0x1412c3e60
-    virtual CString vfunc_1();                                  //  1 0x1412c3ee0
+    virtual CString GetTypeName();                                  //  1 0x1412c3ee0
     virtual void vfunc_3();                                     //  3 0x1412c3f30 (hide: forgets the object)
     virtual void vfunc_15();                                    // 15 0x1412c3f70 per-frame update
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

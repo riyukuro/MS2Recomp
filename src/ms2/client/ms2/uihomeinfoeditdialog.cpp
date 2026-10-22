@@ -148,11 +148,11 @@ UIHomeInfoEditDialog::~UIHomeInfoEditDialog()
 }
 
 // @0x140c264f0
-CString UIHomeInfoEditDialog::vfunc_1()
+CString UIHomeInfoEditDialog::GetTypeName()
 {
     return "HomeInfoEditDialog";
 }
-MS2_REPLACE_METHOD(0x140C264F0, UIHomeInfoEditDialog, vfunc_1, 61, 0x94107E3F);
+MS2_REPLACE_METHOD(0x140C264F0, UIHomeInfoEditDialog, GetTypeName, 61, 0x94107E3F);
 
 // MS2-FUNCTIONAL: OnLoadComplete: the exe keeps extra pointer temps around each GetChild result (stack frame +0x30, extra stores)
 // @0x140c26540

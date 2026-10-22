@@ -20,7 +20,7 @@
 // MS2-PIN: ?SetAt@?$CAtlMap@H_JV?$CElementTraits@H@ATL@@V?$CElementTraits@_J@2@@ATL@@QEAAPEAU__POSITION@@H_J@Z 0x140da3390 ; unique
 // MS2-PIN: ?SetOptimalLoad@?$CAtlMap@H_JV?$CElementTraits@H@ATL@@V?$CElementTraits@_J@2@@ATL@@QEAAXMMM_N@Z 0x140da3430 ; unique
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@K@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBKI@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKI@std@@@std@@@2@$00@2@$00@std@@QEAAAEAU?$less@K@2@XZ 0x140da41e0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVCMyCharacter@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140da4870 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVCMyCharacter@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140da4870 ; unique
 // MS2-PINS-END tplpin
 // MS2-GUESS-LOOKALIKES
 // MS2-PIN: ??0CChatEmoticonCli@@QEAA@XZ 0x140da1df0
@@ -41,12 +41,12 @@
 #include "ms2/client/ms2/chatemoticoncli.h"
 #include "ms2/client/ms2/uimainplayerinfo.h"
 
-// The notices CMyCharacter posts (the name virtual vfunc_1 is defined in unit_140db46d0).
+// The notices CMyCharacter posts (the name virtual GetTypeName is defined in unit_140db46d0).
 class NotifyDebugState : public NotifyObject
 {
 public:
     NotifyDebugState();                         // 0x140da1ec0
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
 };
 MS2_CHECK_SIZE(NotifyDebugState, 0x18);
 
@@ -54,7 +54,7 @@ class NotifyDungeonEnterState : public NotifyObject
 {
 public:
     NotifyDungeonEnterState();                  // 0x140da1ef0
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
 };
 MS2_CHECK_SIZE(NotifyDungeonEnterState, 0x18);
 

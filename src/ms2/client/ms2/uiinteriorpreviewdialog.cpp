@@ -73,7 +73,7 @@ UIInteriorPreviewDialog::~UIInteriorPreviewDialog()
 }
 
 // @0x140f4cd40
-CString UIInteriorPreviewDialog::vfunc_1()
+CString UIInteriorPreviewDialog::GetTypeName()
 {
     return "InteriorPreviewDialog";
 }
@@ -193,7 +193,7 @@ void UIInteriorPreviewDialog::FUN_140f4d110()
             spItem->FUN_140526c70(nCount);
             CString strKey;
             ++nBound;
-            strKey.Format("%s.%d", (const char*)vfunc_1(), (unsigned __int64)nBound);
+            strKey.Format("%s.%d", (const char*)GetTypeName(), (unsigned __int64)nBound);
             ASObj objItem(m_28);
             objItem.FUN_1407cbb20((const char*)s_strItemName, spItem->FUN_140527b10());
             objItem.FUN_1407cba60((const char*)s_strBinding, strKey);

@@ -95,8 +95,8 @@
 // MS2-PIN: ?begin@?$_Tree@V?$_Tset_traits@V?$MS2Ptr@VUnk_Emotion@@@@UUnk_EmotionLess@@V?$allocator@V?$MS2Ptr@VUnk_Emotion@@@@@std@@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$MS2Ptr@VUnk_Emotion@@@@@std@@@std@@@2@XZ 0x140bf4f60 ; prop
 // MS2-PIN: ?clear@?$_Tree@V?$_Tset_traits@V?$MS2Ptr@VUnk_Emotion@@@@UUnk_EmotionGreater@@V?$allocator@V?$MS2Ptr@VUnk_Emotion@@@@@std@@$0A@@std@@@std@@QEAAXXZ 0x140bf5130 ; prop
 // MS2-PIN: ?clear@?$_Tree@V?$_Tset_traits@V?$MS2Ptr@VUnk_Emotion@@@@UUnk_EmotionLess@@V?$allocator@V?$MS2Ptr@VUnk_Emotion@@@@@std@@$0A@@std@@@std@@QEAAXXZ 0x140bf51d0 ; prop
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUICoupleActionDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140bf5270 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUICoupleActionDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140bf52d0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUICoupleActionDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140bf5270 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUICoupleActionDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140bf52d0 ; unique
 // MS2-PIN: ?end@?$_Tree@V?$_Tset_traits@V?$MS2Ptr@VUnk_Emotion@@@@UUnk_EmotionGreater@@V?$allocator@V?$MS2Ptr@VUnk_Emotion@@@@@std@@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$MS2Ptr@VUnk_Emotion@@@@@std@@@std@@@2@XZ 0x140bf5510 ; prop
 // MS2-PIN: ?end@?$_Tree@V?$_Tset_traits@V?$MS2Ptr@VUnk_Emotion@@@@UUnk_EmotionLess@@V?$allocator@V?$MS2Ptr@VUnk_Emotion@@@@@std@@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$MS2Ptr@VUnk_Emotion@@@@@std@@@std@@@2@XZ 0x140bf5570 ; prop
 // MS2-PIN: ?erase@?$_Tree@V?$_Tset_traits@V?$MS2Ptr@VUnk_Emotion@@@@UUnk_EmotionGreater@@V?$allocator@V?$MS2Ptr@VUnk_Emotion@@@@@std@@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$MS2Ptr@VUnk_Emotion@@@@@std@@@std@@@2@V32@0@Z 0x140bf5910 ; prop
@@ -203,11 +203,11 @@ UICoupleActionDialog::UICoupleActionDialog()
 }
 
 // @0x140bec070
-CString UICoupleActionDialog::vfunc_1()
+CString UICoupleActionDialog::GetTypeName()
 {
     return CString("CoupleAction");
 }
-MS2_REPLACE_METHOD(0x140BEC070, UICoupleActionDialog, vfunc_1, 61, 0x469BC45E);
+MS2_REPLACE_METHOD(0x140BEC070, UICoupleActionDialog, GetTypeName, 61, 0x469BC45E);
 
 // @0x140bec0c0
 int UICoupleActionDialog::vfunc_65()

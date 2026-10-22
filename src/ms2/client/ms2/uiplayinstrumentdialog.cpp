@@ -448,7 +448,7 @@ UIPlayInstrumentDialog::~UIPlayInstrumentDialog()
 }
 
 // @0x14100a420
-CString UIPlayInstrumentDialog::vfunc_1()
+CString UIPlayInstrumentDialog::GetTypeName()
 {
     return "PlayInstrumentDialog";
 }

@@ -26,8 +26,8 @@ UIModalDialog::~UIModalDialog() {
     DAT_143af4400 = 0;
 }
 // @0x141a55330
-CString UIModalDialog::vfunc_1() { return "ModalDialog"; }
-MS2_REPLACE_METHOD(0x141a55330, UIModalDialog, vfunc_1, 61, 0xCF736B5E);
+CString UIModalDialog::GetTypeName() { return "ModalDialog"; }
+MS2_REPLACE_METHOD(0x141a55330, UIModalDialog, GetTypeName, 61, 0xCF736B5E);
 // @0x141a55380
 void UIModalDialog::vfunc_8(int nVisible) {
     ASDialog* dialog = dynamic_cast<ASDialog*>((AScript*)m_30);

@@ -125,7 +125,7 @@ public:
 
     UIDTEventDialog();                                                                              // 0x140f359b0
     virtual ~UIDTEventDialog();                                                                     //  0 0x140f35b20 (??_G 0x140f39330)
-    virtual CString vfunc_1();                                                                      //  1 0x140f35bb0
+    virtual CString GetTypeName();                                                                      //  1 0x140f35bb0
     virtual void OnLoadComplete();                                                                  // 22 0x140f35cc0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                                                     // 28 0x140f35de0

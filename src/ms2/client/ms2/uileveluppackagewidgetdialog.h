@@ -31,7 +31,7 @@ class UIEventWidgetDialog : public UIDialog
 public:
     UIEventWidgetDialog();                                                      // 0x140c58d30
     virtual ~UIEventWidgetDialog();                                             //  0 0x140c58de0
-    virtual CString vfunc_1();                                                  //  1 0x140c58e60
+    virtual CString GetTypeName();                                                  //  1 0x140c58e60
     virtual CString vfunc_7();                                                  //  7 0x140c58eb0
     virtual int vfunc_65();                                                     // 65 0x140c58f00
     virtual void vfunc_67();                                                    // 67 0x140c58f30
@@ -60,7 +60,7 @@ class UILevelUpPackageWidgetDialog : public UIEventWidgetDialog, public UIQuestE
 public:
     UILevelUpPackageWidgetDialog();                                             // 0x140c593d0
     virtual ~UILevelUpPackageWidgetDialog();                                    //  0 0x140c59500
-    virtual CString vfunc_1();                                                  //  1 0x140c59590 "LevelUpPackageWidget"
+    virtual CString GetTypeName();                                                  //  1 0x140c59590 "LevelUpPackageWidget"
     virtual int vfunc_65();                                                     // 65 0x140c595e0
     virtual void vfunc_67();                                                    // 67 0x140c59680
     virtual int vfunc_84();                                                     // 84 0x140c597f0
@@ -85,7 +85,7 @@ class UIBurningEventWidgetDialog : public UIEventWidgetDialog, public UIStatusEv
 public:
     UIBurningEventWidgetDialog();                                               // 0x140c59f10
     virtual ~UIBurningEventWidgetDialog();                                      //  0 0x140c5a030
-    virtual CString vfunc_1();                                                  //  1 0x140c5a0b0 "BurningEventWidget"
+    virtual CString GetTypeName();                                                  //  1 0x140c5a0b0 "BurningEventWidget"
     virtual int vfunc_65();                                                     // 65 0x140c5a130
     virtual void vfunc_67();                                                    // 67 0x140c5a190
     virtual int vfunc_84();                                                     // 84 0x140c5a220

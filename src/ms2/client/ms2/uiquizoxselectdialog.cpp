@@ -34,7 +34,7 @@ UIQuizOXSelectDialog::~UIQuizOXSelectDialog()
 }
 
 // @0x140e7eb80
-CString UIQuizOXSelectDialog::vfunc_1()
+CString UIQuizOXSelectDialog::GetTypeName()
 {
     return "QuizOXSelectDialog";
 }

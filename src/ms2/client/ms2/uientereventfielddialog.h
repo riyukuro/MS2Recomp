@@ -31,7 +31,7 @@ class UIEnterEventFieldDialog : public UIDialog
 public:
     UIEnterEventFieldDialog();                                  // 0x140f3fb10
     virtual ~UIEnterEventFieldDialog();                         //  0 0x140f3fba0 (??_G 0x140f40a20)
-    virtual CString vfunc_1();                                  //  1 0x140f3fbe0 "EnterEventFieldDialog"
+    virtual CString GetTypeName();                                  //  1 0x140f3fbe0 "EnterEventFieldDialog"
     virtual void OnLoadComplete();                              // 22 0x140f3fc80
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140f3fd90
     virtual void vfunc_43();                                    // 43 0x140f3ffb0 keep the button next to the HUD minimap

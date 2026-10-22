@@ -80,7 +80,7 @@ MS2Ptr<ASMovieClip>* FUN_14129cca0(MS2Ptr<ASMovieClip>* pDst, MS2Ptr<ASMovieClip
 }
 
 // @0x14129bc10
-CString UIRecallScrollNotifyDialog::vfunc_1() { return "RecallScrollNotifyDialog"; }
+CString UIRecallScrollNotifyDialog::GetTypeName() { return "RecallScrollNotifyDialog"; }
 
 // @0x14129bc60
 int UIRecallScrollNotifyDialog::vfunc_65()

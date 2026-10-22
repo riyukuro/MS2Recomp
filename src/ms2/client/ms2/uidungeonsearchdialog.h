@@ -66,7 +66,7 @@ public:
     UIDungeonSearchDialog();                                                    // 0x140e19b60
     virtual ~UIDungeonSearchDialog();                                           // 0x140e19dd0
 
-    virtual CString vfunc_1();                                                  //  1 "DungeonSearchDialog"
+    virtual CString GetTypeName();                                                  //  1 "DungeonSearchDialog"
     virtual void OnLoadComplete();                                              // 22
     virtual void vfunc_26();                                                    // 26
     virtual int vfunc_48() { return 0x4f1c; }                                   // 48 UI type id (COMDAT 0x140e1f110)

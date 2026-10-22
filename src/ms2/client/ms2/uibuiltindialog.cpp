@@ -30,7 +30,7 @@ UIBuiltInDialog::~UIBuiltInDialog()
 }
 
 // @0x1418dd040
-CString UIBuiltInDialog::vfunc_1()
+CString UIBuiltInDialog::GetTypeName()
 {
     return "BuiltInDialog";
 }

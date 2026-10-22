@@ -14,7 +14,7 @@ class UIPvPKillLogDialog : public UIDialog
 public:
     UIPvPKillLogDialog();                                       // 0x141342570
     virtual ~UIPvPKillLogDialog();                              //  0 0x141342600 (??_G 0x141342ec0)
-    virtual CString vfunc_1();                                  //  1 0x141342670 "PvPKillLogDialog"
+    virtual CString GetTypeName();                                  //  1 0x141342670 "PvPKillLogDialog"
     virtual void OnLoadComplete();                              // 22 0x141342710 replay the kept kill
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                 // 28 0x141342dc0

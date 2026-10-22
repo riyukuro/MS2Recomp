@@ -54,11 +54,11 @@ ClassObject* CGuideConditionNext::CreateObject()
 }
 
 // @0x1413a7c20
-CStringW CGuideConditionNext::vfunc_1()
+CStringW CGuideConditionNext::GetTypeName()
 {
     return L"CGuideConditionNext";
 }
-MS2_REPLACE_METHOD(0x1413A7C20, CGuideConditionNext, vfunc_1, 61, 0x43EBC646);
+MS2_REPLACE_METHOD(0x1413A7C20, CGuideConditionNext, GetTypeName, 61, 0x43EBC646);
 
 // @0x1413a7c70
 CGuideConditionNext::CGuideConditionNext()
@@ -98,11 +98,11 @@ ClassObject* CGuideConditionQuestSatisfied::CreateObject()
 }
 
 // @0x1413a7dd0
-CStringW CGuideConditionQuestSatisfied::vfunc_1()
+CStringW CGuideConditionQuestSatisfied::GetTypeName()
 {
     return L"CGuideConditionQuestSatisfied";
 }
-MS2_REPLACE_METHOD(0x1413A7DD0, CGuideConditionQuestSatisfied, vfunc_1, 61, 0x0393C4ED);
+MS2_REPLACE_METHOD(0x1413A7DD0, CGuideConditionQuestSatisfied, GetTypeName, 61, 0x0393C4ED);
 
 // @0x1413a7e20
 int CGuideConditionQuestSatisfied::vfunc_3()
@@ -120,11 +120,11 @@ ClassObject* CGuideConditionQuestComplete::CreateObject()
 }
 
 // @0x1413a7ec0
-CStringW CGuideConditionQuestComplete::vfunc_1()
+CStringW CGuideConditionQuestComplete::GetTypeName()
 {
     return L"CGuideConditionQuestComplete";
 }
-MS2_REPLACE_METHOD(0x1413A7EC0, CGuideConditionQuestComplete, vfunc_1, 61, 0x4D8EFF74);
+MS2_REPLACE_METHOD(0x1413A7EC0, CGuideConditionQuestComplete, GetTypeName, 61, 0x4D8EFF74);
 
 // @0x1413a7f10
 void CGuideConditionQuestComplete::vfunc_2(Unk_140165cf0* pElem)
@@ -159,11 +159,11 @@ ClassObject* CGuideConditionQuestProgress::CreateObject()
 }
 
 // @0x1413a8020
-CStringW CGuideConditionQuestProgress::vfunc_1()
+CStringW CGuideConditionQuestProgress::GetTypeName()
 {
     return L"CGuideConditionQuestProgress";
 }
-MS2_REPLACE_METHOD(0x1413A8020, CGuideConditionQuestProgress, vfunc_1, 61, 0xE4F4DB14);
+MS2_REPLACE_METHOD(0x1413A8020, CGuideConditionQuestProgress, GetTypeName, 61, 0xE4F4DB14);
 
 // @0x1413a8070
 void CGuideConditionQuestProgress::vfunc_2(Unk_140165cf0* pElem)
@@ -198,11 +198,11 @@ ClassObject* CGuideConditionDead::CreateObject()
 }
 
 // @0x1413a8180
-CStringW CGuideConditionDead::vfunc_1()
+CStringW CGuideConditionDead::GetTypeName()
 {
     return L"CGuideConditionDead";
 }
-MS2_REPLACE_METHOD(0x1413A8180, CGuideConditionDead, vfunc_1, 61, 0x117DC4A7);
+MS2_REPLACE_METHOD(0x1413A8180, CGuideConditionDead, GetTypeName, 61, 0x117DC4A7);
 
 // @0x1413a81d0
 void CGuideConditionDead::vfunc_2(Unk_140165cf0* pElem)
@@ -238,11 +238,11 @@ ClassObject* CGuideConditionConstructMode::CreateObject()
 }
 
 // @0x1413a82d0
-CStringW CGuideConditionConstructMode::vfunc_1()
+CStringW CGuideConditionConstructMode::GetTypeName()
 {
     return L"CGuideConditionConstructMode";
 }
-MS2_REPLACE_METHOD(0x1413A82D0, CGuideConditionConstructMode, vfunc_1, 61, 0x8FDBE4D1);
+MS2_REPLACE_METHOD(0x1413A82D0, CGuideConditionConstructMode, GetTypeName, 61, 0x8FDBE4D1);
 
 // @0x1413a8320
 int CGuideConditionConstructMode::vfunc_3()

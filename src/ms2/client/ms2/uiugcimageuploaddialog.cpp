@@ -105,7 +105,7 @@ UIUGCImageUploadDialog::~UIUGCImageUploadDialog()
 }
 
 // @0x141b39a50
-CString UIUGCImageUploadDialog::vfunc_1()
+CString UIUGCImageUploadDialog::GetTypeName()
 {
     return CString("UGCImageUploadDialog");
 }

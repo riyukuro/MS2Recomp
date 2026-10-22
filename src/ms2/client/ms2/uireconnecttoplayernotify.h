@@ -6,7 +6,7 @@ class UIReconnectTopLayerNotify : public UIHeadUpDisplay {
 public:
     UIReconnectTopLayerNotify();                                                        // 0x140e7fd50
     virtual ~UIReconnectTopLayerNotify();                                               // 0 0x140e7fdc0 (??_G 0x140e800a0)
-    virtual CString vfunc_1();                                                          // 1 0x140e7fe00 "ReconnectTopLayerNotify"
+    virtual CString GetTypeName();                                                          // 1 0x140e7fe00 "ReconnectTopLayerNotify"
     virtual void vfunc_2();                                                             // 2 0x140e7fe50
     virtual void vfunc_3();                                                             // 3 0x140e7fe70
     virtual void OnLoadComplete();                                                      // 22 0x140e7fe90

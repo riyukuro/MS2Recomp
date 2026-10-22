@@ -65,7 +65,7 @@ class UIItemGetOptionDialog : public UIModalDialog
 public:
     UIItemGetOptionDialog();                                    // 0x1419d95c0
     virtual ~UIItemGetOptionDialog();                           //  0 0x1419d9640 (??_G 0x1419dadf0)
-    virtual CString vfunc_1();                                  //  1 0x1419d9680 "ItemGetOptionDialog"
+    virtual CString GetTypeName();                                  //  1 0x1419d9680 "ItemGetOptionDialog"
     virtual void OnLoadInit();                                  // 20 0x1419d96d0 load the options
     virtual void OnLoadComplete();                              // 22 0x1419d9720 fill the controls
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x1419d9f30

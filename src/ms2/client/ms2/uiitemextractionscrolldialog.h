@@ -62,7 +62,7 @@ public:
 
     UIItemExtractionScrollDialog();                                 // 0x140e49ec0
     virtual ~UIItemExtractionScrollDialog() = default;              //  0 0x140e4b9c0 (the exe's dtor writes no vptr; ??_G 0x140e4bb30)
-    virtual CString vfunc_1();                                      //  1 0x140e49f70 "ItemExtractionScrollDialog"
+    virtual CString GetTypeName();                                      //  1 0x140e49f70 "ItemExtractionScrollDialog"
     virtual void OnLoadComplete();                                  // 22 0x140e4a580
     virtual void vfunc_26();                                        // 26 0x140e4a550
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

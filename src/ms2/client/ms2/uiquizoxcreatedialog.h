@@ -21,7 +21,7 @@ class UIQuizOXCreateDialog : public UIDialog
 public:
     UIQuizOXCreateDialog();                                     // 0x140e7e2f0
     virtual ~UIQuizOXCreateDialog();                            //  0 0x140e7e350 (??_G 0x140e7e960)
-    virtual CString vfunc_1();                                  //  1 0x140e7e460
+    virtual CString GetTypeName();                                  //  1 0x140e7e460
     virtual void OnLoadComplete();                              // 22 0x140e7e4b0
     virtual void vfunc_43();                                    // 43 0x140e7e760
     virtual void vfunc_72();                                    // 72 0x140e7e7e0 (empty)

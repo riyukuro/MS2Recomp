@@ -209,7 +209,7 @@ UIGamePadMenuDialog::~UIGamePadMenuDialog()
 }
 
 // @0x140c1ae70
-CString UIGamePadMenuDialog::vfunc_1()
+CString UIGamePadMenuDialog::GetTypeName()
 {
     return "GamePadMenuDialog";
 }

@@ -45,7 +45,7 @@ UIPvPKillLogDialog::~UIPvPKillLogDialog()
 }
 
 // @0x141342670
-CString UIPvPKillLogDialog::vfunc_1()
+CString UIPvPKillLogDialog::GetTypeName()
 {
     return "PvPKillLogDialog";
 }

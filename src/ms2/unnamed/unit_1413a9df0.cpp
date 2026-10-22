@@ -64,7 +64,7 @@ ClassObject* CGuideConditionContinentCode::CreateObject()
 }
 
 // @0x1413a9f70
-CStringW CGuideConditionContinentCode::vfunc_1()
+CStringW CGuideConditionContinentCode::GetTypeName()
 {
     return L"CGuideConditionContinentCode";
 }
@@ -91,7 +91,7 @@ ClassObject* CGuideConditionAnyOne::CreateObject()
 }
 
 // @0x1413aa0d0
-CStringW CGuideConditionAnyOne::vfunc_1()
+CStringW CGuideConditionAnyOne::GetTypeName()
 {
     return L"CGuideConditionAnyOne";
 }
@@ -135,7 +135,7 @@ ClassObject* CGuideConditionAllOf::CreateObject()
 }
 
 // @0x1413aa340
-CStringW CGuideConditionAllOf::vfunc_1()
+CStringW CGuideConditionAllOf::GetTypeName()
 {
     return L"CGuideConditionAllOf";
 }
@@ -181,7 +181,7 @@ ClassObject* CGuideConditionAchieveExistTrophy::CreateObject()
 }
 
 // @0x1413aa5e0
-CStringW CGuideConditionAchieveExistTrophy::vfunc_1()
+CStringW CGuideConditionAchieveExistTrophy::GetTypeName()
 {
     return L"CGuideConditionAchieveExistTrophy";
 }
@@ -218,7 +218,7 @@ ClassObject* CGuideConditionGuideOpen::CreateObject()
 }
 
 // @0x1413aa840
-CStringW CGuideConditionGuideOpen::vfunc_1()
+CStringW CGuideConditionGuideOpen::GetTypeName()
 {
     return L"CGuideConditionGuideOpen";
 }
@@ -267,7 +267,7 @@ ClassObject* CGuideConditionGuideClear::CreateObject()
 }
 
 // @0x1413aaab0
-CStringW CGuideConditionGuideClear::vfunc_1()
+CStringW CGuideConditionGuideClear::GetTypeName()
 {
     return L"CGuideConditionGuideClear";
 }
@@ -310,7 +310,7 @@ ClassObject* CGuideConditionExistShortcut::CreateObject()
 }
 
 // @0x1413aace0
-CStringW CGuideConditionExistShortcut::vfunc_1()
+CStringW CGuideConditionExistShortcut::GetTypeName()
 {
     return L"CGuideConditionExistShortcut";
 }
@@ -347,7 +347,7 @@ ClassObject* CGuideConditionUgcCollectMoney::CreateObject()
 }
 
 // @0x1413aaf30
-CStringW CGuideConditionUgcCollectMoney::vfunc_1()
+CStringW CGuideConditionUgcCollectMoney::GetTypeName()
 {
     return L"CGuideConditionUgcCollectMoney";
 }
@@ -365,7 +365,7 @@ ClassObject* CGuideConditionCanObserveMode::CreateObject()
 }
 
 // @0x1413ab020
-CStringW CGuideConditionCanObserveMode::vfunc_1()
+CStringW CGuideConditionCanObserveMode::GetTypeName()
 {
     return L"CGuideConditionCanObserveMode";
 }
@@ -386,7 +386,7 @@ ClassObject* CGuideConditionMyPlayerLevel::CreateObject()
 }
 
 // @0x1413ab140
-CStringW CGuideConditionMyPlayerLevel::vfunc_1()
+CStringW CGuideConditionMyPlayerLevel::GetTypeName()
 {
     return L"CGuideConditionMyPlayerLevel";
 }
@@ -420,7 +420,7 @@ ClassObject* CGuideConditionMoney::CreateObject()
 }
 
 // @0x1413ab2b0
-CStringW CGuideConditionMoney::vfunc_1()
+CStringW CGuideConditionMoney::GetTypeName()
 {
     return L"CGuideConditionMoney";
 }
@@ -438,7 +438,7 @@ ClassObject* CGuideConditionPlaceUgcCube::CreateObject()
 }
 
 // @0x1413ab3b0
-CStringW CGuideConditionPlaceUgcCube::vfunc_1()
+CStringW CGuideConditionPlaceUgcCube::GetTypeName()
 {
     return L"CGuideConditionPlaceUgcCube";
 }
@@ -489,7 +489,7 @@ ClassObject* CGuideConditionPlaceUgcCubeItem::CreateObject()
 }
 
 // @0x1413ab7b0
-CStringW CGuideConditionPlaceUgcCubeItem::vfunc_1()
+CStringW CGuideConditionPlaceUgcCubeItem::GetTypeName()
 {
     return L"CGuideConditionPlaceUgcCubeItem";
 }
@@ -544,7 +544,7 @@ ClassObject* CGuideConditionPlaceUgcCubeByIconType::CreateObject()
 }
 
 // @0x1413abbe0
-CStringW CGuideConditionPlaceUgcCubeByIconType::vfunc_1()
+CStringW CGuideConditionPlaceUgcCubeByIconType::GetTypeName()
 {
     return L"CGuideConditionPlaceUgcCubeByIconType";
 }
@@ -580,7 +580,7 @@ ClassObject* CGuideConditionInteractObject::CreateObject()
 }
 
 // @0x1413abdf0
-CStringW CGuideConditionInteractObject::vfunc_1()
+CStringW CGuideConditionInteractObject::GetTypeName()
 {
     return L"CGuideConditionInteractObject";
 }
@@ -629,7 +629,7 @@ ClassObject* CGuideConditionLastClosedTextTip::CreateObject()
 }
 
 // @0x1413ac180
-CStringW CGuideConditionLastClosedTextTip::vfunc_1()
+CStringW CGuideConditionLastClosedTextTip::GetTypeName()
 {
     return L"CGuideConditionLastClosedTextTip";
 }
@@ -668,7 +668,7 @@ ClassObject* CGuideConditionConstructSlot::CreateObject()
 }
 
 // @0x1413ac400
-CStringW CGuideConditionConstructSlot::vfunc_1()
+CStringW CGuideConditionConstructSlot::GetTypeName()
 {
     return L"CGuideConditionConstructSlot";
 }
@@ -712,7 +712,7 @@ ClassObject* CGuideConditionTitle::CreateObject()
 }
 
 // @0x1413ac650
-CStringW CGuideConditionTitle::vfunc_1()
+CStringW CGuideConditionTitle::GetTypeName()
 {
     return L"CGuideConditionTitle";
 }
@@ -743,7 +743,7 @@ ClassObject* CGuideConditionServerTime::CreateObject()
 }
 
 // @0x1413ac7f0
-CStringW CGuideConditionServerTime::vfunc_1()
+CStringW CGuideConditionServerTime::GetTypeName()
 {
     return L"CGuideConditionServerTime";
 }
@@ -800,7 +800,7 @@ ClassObject* CGuideConditionHasManufacture::CreateObject()
 }
 
 // @0x1413acdc0
-CStringW CGuideConditionHasManufacture::vfunc_1()
+CStringW CGuideConditionHasManufacture::GetTypeName()
 {
     return L"CGuideConditionHasManufacture";
 }

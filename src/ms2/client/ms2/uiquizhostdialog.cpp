@@ -64,11 +64,11 @@ UIQuizHostDialog::UIQuizHostDialog()
 }
 
 // @0x140e7dcd0
-CString UIQuizHostDialog::vfunc_1()
+CString UIQuizHostDialog::GetTypeName()
 {
     return "QuizHostDialog";
 }
-MS2_REPLACE_METHOD(0x140E7DCD0, UIQuizHostDialog, vfunc_1, 61, 0x3BE68A74);
+MS2_REPLACE_METHOD(0x140E7DCD0, UIQuizHostDialog, GetTypeName, 61, 0x3BE68A74);
 
 // @0x140e7dd20
 void UIQuizHostDialog::OnLoadComplete()

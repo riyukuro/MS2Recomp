@@ -110,7 +110,7 @@ public:
     // Implicit dtor (0x14041bc90 has no vptable store).
     virtual ~GameEventDTReward() = default;
 
-    virtual CStringW vfunc_1();                 // 0x14041b1a0: "GameEventDTReward"
+    virtual CStringW GetTypeName();                 // 0x14041b1a0: "GameEventDTReward"
     virtual void vfunc_2();                     // 0x14041b280: parse the four xml strings
     virtual void vfunc_3(Unk_GEOut* out);       // 0x14041b3c0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x14041b490

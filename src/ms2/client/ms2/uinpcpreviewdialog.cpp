@@ -193,7 +193,7 @@ UINpcPreviewDialog::~UINpcPreviewDialog()
 }
 
 // @0x141a6e100
-CString UINpcPreviewDialog::vfunc_1()
+CString UINpcPreviewDialog::GetTypeName()
 {
     return "NpcPreviewDialog";
 }

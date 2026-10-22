@@ -183,7 +183,7 @@ UIChaosLightDialog::~UIChaosLightDialog()
 }
 
 // @0x141040b40
-CString UIChaosLightDialog::vfunc_1()
+CString UIChaosLightDialog::GetTypeName()
 {
     return "ChaosLightDialog";
 }
@@ -577,7 +577,7 @@ void ChaosLightEffect::FUN_1410423d0(NiAVObjectPtr spObject)
 // @0x141041490
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 
-MS2_REPLACE_METHOD(0x141040B40, UIChaosLightDialog, vfunc_1, 61, 0x55C7BAFE);
+MS2_REPLACE_METHOD(0x141040B40, UIChaosLightDialog, GetTypeName, 61, 0x55C7BAFE);
 MS2_REPLACE_METHOD(0x141040B90, UIChaosLightDialog, OnLoadComplete, 389, 0xC4F956FC);
 MS2_REPLACE_METHOD(0x141040D20, UIChaosLightDialog, vfunc_28, 1166, 0xB0797E63);
 MS2_REPLACE_METHOD(0x1410411E0, UIChaosLightDialog, FUN_1410411e0, 64, 0x8A3224F6);

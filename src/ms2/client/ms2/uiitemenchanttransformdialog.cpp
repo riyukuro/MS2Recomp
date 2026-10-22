@@ -157,9 +157,9 @@ UIItemEnchantTransformDialog::UIItemEnchantTransformDialog()
     , m_selected(0)
 {
     m_2c = 0xc;
-    m_strTargetBag = FUN_140540050("{0}.Target", vfunc_1());
-    m_strSelectBag = FUN_140540050("{0}.Select", vfunc_1());
-    m_strOutputBag = FUN_140540050("{0}.Output", vfunc_1());
+    m_strTargetBag = FUN_140540050("{0}.Target", GetTypeName());
+    m_strSelectBag = FUN_140540050("{0}.Select", GetTypeName());
+    m_strOutputBag = FUN_140540050("{0}.Output", GetTypeName());
 }
 
 // @0x140c3ced0
@@ -168,7 +168,7 @@ UIItemEnchantTransformDialog::~UIItemEnchantTransformDialog()
 }
 
 // @0x140c3cfa0
-CString UIItemEnchantTransformDialog::vfunc_1()
+CString UIItemEnchantTransformDialog::GetTypeName()
 {
     return "ItemEnchantTransformDialog";
 }

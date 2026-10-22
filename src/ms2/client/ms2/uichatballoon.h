@@ -37,7 +37,7 @@ public:
 
     UIChatBalloon();                                    // 0x1418fbc80
     virtual ~UIChatBalloon();                           //  0 0x1418fbcf0 (??_G 0x1418fc5f0)
-    virtual CString vfunc_1();                          //  1 0x1418fbd30 "PopupImageBalloon"
+    virtual CString GetTypeName();                          //  1 0x1418fbd30 "PopupImageBalloon"
     virtual void OnLoadComplete();                      // 22 0x1418fbd80 UIObject::OnLoadComplete(); FUN_1418fbe70(m_68)
     virtual int vfunc_48() { return 0x4e2e; }           // 48 0x1418fc630
 

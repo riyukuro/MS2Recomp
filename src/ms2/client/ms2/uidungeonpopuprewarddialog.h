@@ -42,7 +42,7 @@ class UIDungeonPopupRewardDialog : public UIDialog
 public:
     UIDungeonPopupRewardDialog();
     virtual ~UIDungeonPopupRewardDialog();
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual void OnLoadComplete();
     virtual void vfunc_26();
     void FUN_140c0f210(CInPacket& packet);

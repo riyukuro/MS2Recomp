@@ -148,7 +148,7 @@ class UIQuestNavigation : public UIObject
 public:
     UIQuestNavigation();                                            // 0x140e79f20
     virtual ~UIQuestNavigation();                                   //  0 0x140e7a530 (??_G 0x140e7c470)
-    virtual CString vfunc_1();                                      //  1 0x140e7aa40 "QuestNavigation"
+    virtual CString GetTypeName();                                      //  1 0x140e7aa40 "QuestNavigation"
     virtual void vfunc_2();                                         //  2 0x140e7aa90 load the swf
     virtual void vfunc_3();                                         //  3 0x140e7aac0 clear the markers, unload
     virtual void vfunc_15();                                        // 15 0x140e7ac40 per-frame update

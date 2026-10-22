@@ -56,7 +56,7 @@ class UIMailListDialog : public UIDialog
 public:
     UIMailListDialog();                                             // 0x1419e3510
     virtual ~UIMailListDialog();                                    //  0 0x1419e35e0 (??_G 0x1419ea750)
-    virtual CString vfunc_1();                                      //  1 0x1419e3630 "MailListDialog"
+    virtual CString GetTypeName();                                      //  1 0x1419e3630 "MailListDialog"
     virtual void vfunc_15();                                        // 15 0x1419e4de0 per-frame: apply the pending refreshes
     virtual void OnLoadComplete();                                  // 22 0x1419e36f0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x1419e37d0
@@ -130,7 +130,7 @@ class UIMailSendDialog : public UIDialog, public UIStatusEventListener
 public:
     UIMailSendDialog();                                             // 0x1419ec180
     virtual ~UIMailSendDialog();                                    //  0 0x1419ec230 (??_G 0x1419eded0)
-    virtual CString vfunc_1();                                      //  1 0x1419ec2b0 "MailSendDialog"
+    virtual CString GetTypeName();                                      //  1 0x1419ec2b0 "MailSendDialog"
     virtual int vfunc_13();                                         // 13 0x1419ec440 enter / tab keys
     virtual void vfunc_15();                                        // 15 0x1419ecb70 empty
     virtual void OnLoadComplete();                                  // 22 0x1419ec570

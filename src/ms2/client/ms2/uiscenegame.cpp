@@ -180,11 +180,11 @@ UISceneGame::~UISceneGame()
 }
 
 // @0x141ac7350
-CString UISceneGame::vfunc_1()
+CString UISceneGame::GetTypeName()
 {
     return "SceneGame";
 }
-MS2_REPLACE_METHOD(0x141ac7350, UISceneGame, vfunc_1, 61, 0x12E28071);
+MS2_REPLACE_METHOD(0x141ac7350, UISceneGame, GetTypeName, 61, 0x12E28071);
 
 // @0x141ac73a0
 // MS2-FUNCTIONAL: not byte-exact yet (stack frame / branch layout differ)
@@ -454,11 +454,11 @@ UISceneGameBeautyShop::~UISceneGameBeautyShop()
 }
 
 // @0x141ac7fc0
-CString UISceneGameBeautyShop::vfunc_1()
+CString UISceneGameBeautyShop::GetTypeName()
 {
     return "SceneGameBeautyShop";
 }
-MS2_REPLACE_METHOD(0x141ac7fc0, UISceneGameBeautyShop, vfunc_1, 61, 0xBAE50A9C);
+MS2_REPLACE_METHOD(0x141ac7fc0, UISceneGameBeautyShop, GetTypeName, 61, 0xBAE50A9C);
 
 // @0x141ac8010
 // MS2-FUNCTIONAL: not byte-exact yet (stack frame / branch layout differ)
@@ -819,11 +819,11 @@ UISceneGameCinematicCutScene::~UISceneGameCinematicCutScene()
 }
 
 // @0x141ac94c0
-CString UISceneGameCinematicCutScene::vfunc_1()
+CString UISceneGameCinematicCutScene::GetTypeName()
 {
     return "SceneGameCinematicCutScene";
 }
-MS2_REPLACE_METHOD(0x141ac94c0, UISceneGameCinematicCutScene, vfunc_1, 61, 0x85846A94);
+MS2_REPLACE_METHOD(0x141ac94c0, UISceneGameCinematicCutScene, GetTypeName, 61, 0x85846A94);
 
 // @0x141ac9510
 bool UISceneGameCinematicCutScene::vfunc_47()
@@ -901,11 +901,11 @@ UISceneGameCinematicTalk::~UISceneGameCinematicTalk()
 }
 
 // @0x141ac9850
-CString UISceneGameCinematicTalk::vfunc_1()
+CString UISceneGameCinematicTalk::GetTypeName()
 {
     return "SceneGameCinematicTalk";
 }
-MS2_REPLACE_METHOD(0x141ac9850, UISceneGameCinematicTalk, vfunc_1, 61, 0x17D40321);
+MS2_REPLACE_METHOD(0x141ac9850, UISceneGameCinematicTalk, GetTypeName, 61, 0x17D40321);
 
 // @0x141ac98a0
 // MS2-FUNCTIONAL: not byte-exact yet (stack frame / branch layout differ)
@@ -1099,11 +1099,11 @@ UISceneGamePlay::~UISceneGamePlay()
 }
 
 // @0x141ac9ed0
-CString UISceneGamePlay::vfunc_1()
+CString UISceneGamePlay::GetTypeName()
 {
     return "SceneGamePlay";
 }
-MS2_REPLACE_METHOD(0x141ac9ed0, UISceneGamePlay, vfunc_1, 61, 0x893C87BE);
+MS2_REPLACE_METHOD(0x141ac9ed0, UISceneGamePlay, GetTypeName, 61, 0x893C87BE);
 
 // @0x141ac9f20
 // MS2-FUNCTIONAL: not byte-exact yet (stack frame / branch layout differ)
@@ -1760,11 +1760,11 @@ UISceneGameScreenShot::UISceneGameScreenShot() : m_a8(10)
 }
 
 // @0x141acd230
-CString UISceneGameScreenShot::vfunc_1()
+CString UISceneGameScreenShot::GetTypeName()
 {
     return "";
 }
-MS2_REPLACE_METHOD(0x141acd230, UISceneGameScreenShot, vfunc_1, 61, 0x17DAEDA3);
+MS2_REPLACE_METHOD(0x141acd230, UISceneGameScreenShot, GetTypeName, 61, 0x17DAEDA3);
 
 // @0x141acd280
 bool UISceneGameScreenShot::vfunc_47()

@@ -28,7 +28,7 @@ class UICharacterAbilityDialog : public UIDialog
 public:
     UICharacterAbilityDialog();                         // 0x140f2a260
     virtual ~UICharacterAbilityDialog();                //  0 0x140f2a2f0 (??_G 0x140f2ce70)
-    virtual CString vfunc_1();                          //  1 0x140f2a330 "CharacterAbilityDialog"
+    virtual CString GetTypeName();                          //  1 0x140f2a330 "CharacterAbilityDialog"
     virtual void OnLoadComplete();                      // 22 0x140f2a510
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                         // 28 0x140f2a620 onAddButton / onResetButton

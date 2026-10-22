@@ -1,5 +1,5 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). Banner HUD (world-anchored, UIHudEntity family) and its
-// click listeners (RPS game, couple dance); the listeners' vfunc_1 bodies are in uibannereventlistener.cpp.
+// click listeners (RPS game, couple dance); the listeners' GetTypeName bodies are in uibannereventlistener.cpp.
 // MS2-UNIT: client\ms2\uibanner.cpp
 // MS2-RANGE: 0x140ba8280-0x140bac2f0 .text$mn
 // MS2-RANGE: 0x1400c9ba0-0x1400c9d30 .text$di
@@ -205,11 +205,11 @@ UIBanner::~UIBanner()
 }
 
 // @0x140ba89e0
-CString UIBanner::vfunc_1()
+CString UIBanner::GetTypeName()
 {
     return "Banner";
 }
-MS2_REPLACE_METHOD(0x140ba89e0, UIBanner, vfunc_1, 61, 0x7A49F62A);
+MS2_REPLACE_METHOD(0x140ba89e0, UIBanner, GetTypeName, 61, 0x7A49F62A);
 
 // @0x140ba8a30
 void UIBanner::OnLoadComplete()

@@ -337,7 +337,7 @@ UIPartySearchDialog::~UIPartySearchDialog()
 }
 
 // @0x140f8c580
-CString UIPartySearchDialog::vfunc_1()
+CString UIPartySearchDialog::GetTypeName()
 {
     return "PartySearchDialog";
 }
@@ -931,7 +931,7 @@ void UIPartySearchDialog::FUN_140f8ee50(CMatchPartyRecruit* pRecruit)
 }
 
 // ---- hooks ----
-MS2_REPLACE_METHOD(0x140F8C580, UIPartySearchDialog, vfunc_1, 61, 0x470601A1);
+MS2_REPLACE_METHOD(0x140F8C580, UIPartySearchDialog, GetTypeName, 61, 0x470601A1);
 MS2_REPLACE_METHOD(0x140F8C5D0, UIPartySearchDialog, vfunc_65, 116, 0xF47905F5);
 MS2_REPLACE_METHOD(0x140F8C650, UIPartySearchDialog, vfunc_73, 75, 0x0898C429);
 MS2_REPLACE_METHOD(0x140F8C6B0, UIPartySearchDialog, vfunc_79, 133, 0x5A89C5DA);

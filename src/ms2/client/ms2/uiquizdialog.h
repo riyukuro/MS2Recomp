@@ -32,7 +32,7 @@ class UIQuizDialog : public UIDialog
 public:
     UIQuizDialog();                                             // 0x14129a3c0
     virtual ~UIQuizDialog();                                    //  0 0x14129a4d0 (??_G 0x14129b7e0)
-    virtual CString vfunc_1();                                  //  1 0x14129a590 "QuizDialog"
+    virtual CString GetTypeName();                                  //  1 0x14129a590 "QuizDialog"
     virtual void OnLoadComplete();                              // 22 0x14129a5e0
     virtual void vfunc_43();                                    // 43 0x14129a730
     virtual int vfunc_48() { return 0x4ee1; }                   // 48 0x14129b820

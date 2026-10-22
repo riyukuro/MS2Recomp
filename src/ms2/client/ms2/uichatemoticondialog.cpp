@@ -188,11 +188,11 @@ UIChatEmoticonDialog::UIChatEmoticonDialog()
 }
 
 // @0x140bd0f60
-CString UIChatEmoticonDialog::vfunc_1()
+CString UIChatEmoticonDialog::GetTypeName()
 {
     return "ChatEmoticonDialog";
 }
-MS2_REPLACE_METHOD(0x140BD0F60, UIChatEmoticonDialog, vfunc_1, 61, 0x683BF745);
+MS2_REPLACE_METHOD(0x140BD0F60, UIChatEmoticonDialog, GetTypeName, 61, 0x683BF745);
 
 // @0x140bd0fb0
 int UIChatEmoticonDialog::vfunc_65()

@@ -20,7 +20,7 @@ class UIPaybackDialog : public UIDialog, public UIStatusEventListener
 public:
     UIPaybackDialog();                                          // 0x140e6ec50 registers the 0x10b packet handler
     virtual ~UIPaybackDialog();                                 //  0 0x140e6ed70
-    virtual CString vfunc_1();                                  //  1 0x140e6ee70 "PaybackDialog"
+    virtual CString GetTypeName();                                  //  1 0x140e6ee70 "PaybackDialog"
     virtual void OnLoadComplete();                              // 22 0x140e6ef20
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140e6efe0 "OnBuy"
     virtual int vfunc_48() { return 0x4f93; }                   // 48 0x140e70550

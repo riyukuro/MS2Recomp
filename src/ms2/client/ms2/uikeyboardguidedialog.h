@@ -14,7 +14,7 @@ class UIKeyboardGuideDialog : public UIDialog
 public:
     UIKeyboardGuideDialog();                    // 0x140f83ff0
     virtual ~UIKeyboardGuideDialog();           //  0 0x140f84050 (scalar deleting 0x140f841a0)
-    virtual CString vfunc_1();                  //  1 0x140f84090
+    virtual CString GetTypeName();                  //  1 0x140f84090
     virtual void OnLoadComplete();              // 22 0x140f840e0
     virtual void vfunc_67();                    // 67 0x140f84180
     virtual int vfunc_48() { return 0x4f0f; }   // 48 (COMDAT 0x140f841e0)

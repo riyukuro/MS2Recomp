@@ -30,7 +30,7 @@ class UIUGCPVPControlDialog : public UIDialog
 public:
     UIUGCPVPControlDialog();                                                        // 0x140fb53d0
     virtual ~UIUGCPVPControlDialog();                                               //  0 0x140fb5460
-    virtual CString vfunc_1();                                                      //  1 0x140fb54a0
+    virtual CString GetTypeName();                                                      //  1 0x140fb54a0
     virtual void OnLoadComplete();                                                  // 22 0x140fb54f0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                                     // 28 0x140fb5790
@@ -62,11 +62,11 @@ UIUGCPVPControlDialog::~UIUGCPVPControlDialog()
 }
 
 // @0x140fb54a0
-CString UIUGCPVPControlDialog::vfunc_1()
+CString UIUGCPVPControlDialog::GetTypeName()
 {
     return "UGCPVPControlDialog";
 }
-MS2_REPLACE_METHOD(0x140FB54A0, UIUGCPVPControlDialog, vfunc_1, 61, 0xC3897830);
+MS2_REPLACE_METHOD(0x140FB54A0, UIUGCPVPControlDialog, GetTypeName, 61, 0xC3897830);
 
 // @0x140fb54f0
 void UIUGCPVPControlDialog::OnLoadComplete()

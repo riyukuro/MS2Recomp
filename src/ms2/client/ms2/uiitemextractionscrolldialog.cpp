@@ -220,14 +220,14 @@ DragSlot* UIItemExtractionScrollDialog::SlotBag::vfunc_16(int nIndex)
 
 // @0x140e49ec0
 UIItemExtractionScrollDialog::UIItemExtractionScrollDialog()
-    : m_strBag(vfunc_1()), m_nScrollUid(0), m_nTargetUid(0)
+    : m_strBag(GetTypeName()), m_nScrollUid(0), m_nTargetUid(0)
 {
     FUN_141924170(1);
     m_164 = 1;
 }
 
 // @0x140e49f70
-CString UIItemExtractionScrollDialog::vfunc_1()
+CString UIItemExtractionScrollDialog::GetTypeName()
 {
     return "ItemExtractionScrollDialog";
 }

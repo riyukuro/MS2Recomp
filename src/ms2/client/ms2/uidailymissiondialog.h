@@ -28,7 +28,7 @@ class UIDailyMissionDialog : public UIDialog, public UIQuestEventListener, publi
 public:
     UIDailyMissionDialog();                                     // 0x140bff060
     virtual ~UIDailyMissionDialog();                            //  0 0x140bff390 (??_G 0x140c02e60)
-    virtual CString vfunc_1();                                  //  1 0x140bff660 "DailyMissionDialog"
+    virtual CString GetTypeName();                                  //  1 0x140bff660 "DailyMissionDialog"
     virtual void OnLoadComplete();                              // 22 0x140bff950 build the tabs, list and guide
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140bff990 "onReceiveItem" / "onChangeIndex"
     virtual int vfunc_48();                                     // 48 0x140c02f10 0x4f53

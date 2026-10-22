@@ -20,7 +20,7 @@ class UIItemDropSimulatorDialog : public UIDialog
 {
 public:
     UIItemDropSimulatorDialog();                                // 0x14192a2e0
-    virtual CString vfunc_1();                                  //  1 0x14192a330
+    virtual CString GetTypeName();                                  //  1 0x14192a330
     virtual void OnLoadInit();                                  // 20 0x14192a380
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                 // 28 0x14192a3b0

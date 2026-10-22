@@ -112,11 +112,11 @@ UIWeddingHallReservationDialog::~UIWeddingHallReservationDialog()
 }
 
 // @0x140fdb4f0
-CString UIWeddingHallReservationDialog::vfunc_1()
+CString UIWeddingHallReservationDialog::GetTypeName()
 {
     return "WeddingHallReservationDialog";
 }
-MS2_REPLACE_METHOD(0x140fdb4f0, UIWeddingHallReservationDialog, vfunc_1, 61, 0x39A4E0B9);
+MS2_REPLACE_METHOD(0x140fdb4f0, UIWeddingHallReservationDialog, GetTypeName, 61, 0x39A4E0B9);
 
 // @0x140fdb540
 int UIWeddingHallReservationDialog::vfunc_65()

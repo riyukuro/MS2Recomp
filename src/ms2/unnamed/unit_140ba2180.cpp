@@ -32,11 +32,11 @@ UIStanceBar::~UIStanceBar()
 }
 
 // @0x140ba2290
-CString UIStanceBar::vfunc_1()
+CString UIStanceBar::GetTypeName()
 {
     return "StanceBar";
 }
-MS2_REPLACE_METHOD(0x140BA2290, UIStanceBar, vfunc_1, 61, 0xA79D7FB8);
+MS2_REPLACE_METHOD(0x140BA2290, UIStanceBar, GetTypeName, 61, 0xA79D7FB8);
 
 // @0x140ba22e0
 void UIStanceBar::vfunc_3()

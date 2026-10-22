@@ -16,7 +16,7 @@ class UICameraModeHelpDialog : public UIDialog
 public:
     UICameraModeHelpDialog();                                       // 0x140e05260
     virtual ~UICameraModeHelpDialog();                              //  0 0x140e052d0 (??_G 0x140e05410)
-    virtual CString vfunc_1();                                      //  1 0x140e05310
+    virtual CString GetTypeName();                                      //  1 0x140e05310
     virtual void vfunc_43();                                        // 43 0x140e05360
     virtual int vfunc_48();                                         // 48 0x140e05450
 };

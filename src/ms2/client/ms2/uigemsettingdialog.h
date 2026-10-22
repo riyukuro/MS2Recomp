@@ -11,7 +11,7 @@ class UIGemSettingDialog : public UIModalDialog
 public:
     UIGemSettingDialog();                                       // 0x141946030
     virtual ~UIGemSettingDialog();                              //  0 0x141946090 (??_G 0x141946bc0)
-    virtual CString vfunc_1();                                  //  1 0x1419460d0 "GemSettingDialog"
+    virtual CString GetTypeName();                                  //  1 0x1419460d0 "GemSettingDialog"
     virtual void vfunc_67();                                    // 67 0x141946120 UIModalDialog::vfunc_67
     virtual void OnLoadComplete();                              // 22 0x141946140 fill the check boxes from the worn gem
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x141946510

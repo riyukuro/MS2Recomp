@@ -29,7 +29,7 @@ UIReconnectTopLayerNotify::~UIReconnectTopLayerNotify()
 }
 
 // @0x140e7fe00
-CString UIReconnectTopLayerNotify::vfunc_1() { return "ReconnectTopLayerNotify"; }
+CString UIReconnectTopLayerNotify::GetTypeName() { return "ReconnectTopLayerNotify"; }
 
 // @0x140e7fe50
 void UIReconnectTopLayerNotify::vfunc_2() { UIHeadUpDisplay::vfunc_2(); }

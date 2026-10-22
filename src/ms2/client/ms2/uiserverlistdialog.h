@@ -58,7 +58,7 @@ class UIServerListDialog : public UIDialog
 public:
     UIServerListDialog();                                       // 0x141ad0c80
     virtual ~UIServerListDialog();                              //  0 0x141ad0e30 (??_G 0x141ad6030)
-    virtual CString vfunc_1();                                  //  1 0x141ad0f30 "ServerListDialog"
+    virtual CString GetTypeName();                                  //  1 0x141ad0f30 "ServerListDialog"
     virtual int vfunc_13();                                     // 13 0x141ad19b0 the enter key
     virtual void OnLoadComplete();                              // 22 0x141ad16b0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141ad1a30

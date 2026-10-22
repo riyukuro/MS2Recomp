@@ -19,7 +19,7 @@ class UIConstructHelpDialog : public UIDialog
 public:
     UIConstructHelpDialog();                                    // 0x141905eb0
     virtual ~UIConstructHelpDialog();                           //  0 0x141905f20 (??_G 0x141906440)
-    virtual CString vfunc_1();                                  //  1 0x141905f60
+    virtual CString GetTypeName();                                  //  1 0x141905f60
     virtual void OnLoadComplete();                              // 22 0x141906000
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                 // 28 0x141906140

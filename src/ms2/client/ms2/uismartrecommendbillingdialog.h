@@ -70,7 +70,7 @@ class UISmartRecommendBillingDialog : public UIDialog
 public:
     UISmartRecommendBillingDialog();                            // 0x14134c9d0
     // dtor 0x14134d680 (??_G 0x14134d720) is implicit: the exe copy stores no vptr
-    virtual CString vfunc_1();                                  //  1 0x14134ca70 "SmartRecommendBillingDialog"
+    virtual CString GetTypeName();                                  //  1 0x14134ca70 "SmartRecommendBillingDialog"
     virtual void OnLoadInit();                                  // 20 0x14134cb30
     virtual int vfunc_13();                                     // 13 0x14134ccd0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x14134cd00
@@ -97,7 +97,7 @@ class UISmartRecommendNotifyDialog : public UIDialog
 public:
     UISmartRecommendNotifyDialog();                             // 0x14134d770
     // dtor 0x14134e3a0 (??_G 0x14134e3f0) is implicit: the exe copy stores no vptr
-    virtual CString vfunc_1();                                  //  1 0x14134d830 "SmartRecommendNotifyDialog"
+    virtual CString GetTypeName();                                  //  1 0x14134d830 "SmartRecommendNotifyDialog"
     virtual void OnLoadInit();                                  // 20 0x14134d8f0
     virtual int vfunc_13();                                     // 13 0x14134d9a0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x14134d9d0

@@ -47,11 +47,11 @@ UITriggerTimerDialog::UITriggerTimerDialog()
 }
 
 // @0x141b33180
-CString UITriggerTimerDialog::vfunc_1()
+CString UITriggerTimerDialog::GetTypeName()
 {
     return "TriggerTimerDialog";
 }
-MS2_REPLACE_METHOD(0x141B33180, UITriggerTimerDialog, vfunc_1, 61, 0xF2CFB665);
+MS2_REPLACE_METHOD(0x141B33180, UITriggerTimerDialog, GetTypeName, 61, 0xF2CFB665);
 
 // @0x141b331d0
 int UITriggerTimerDialog::vfunc_65()

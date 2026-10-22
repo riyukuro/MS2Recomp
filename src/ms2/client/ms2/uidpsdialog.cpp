@@ -83,7 +83,7 @@ UIDPSDialog::UIDPSDialog()
 }
 
 // @0x141928d50
-CString UIDPSDialog::vfunc_1()
+CString UIDPSDialog::GetTypeName()
 {
     return "DPSDialog";
 }

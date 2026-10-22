@@ -153,11 +153,11 @@ UIHairPhysxDialog::UIHairPhysxDialog()
 }
 
 // @0x141981010
-CString UIHairPhysxDialog::vfunc_1()
+CString UIHairPhysxDialog::GetTypeName()
 {
     return CString("HairPhysxDialog");
 }
-MS2_REPLACE_METHOD(0x141981010, UIHairPhysxDialog, vfunc_1, 61, 0x89D6505E);
+MS2_REPLACE_METHOD(0x141981010, UIHairPhysxDialog, GetTypeName, 61, 0x89D6505E);
 
 // @0x141981060
 void UIHairPhysxDialog::FUN_141981060()

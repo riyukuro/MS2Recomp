@@ -21,7 +21,7 @@ class UICollectItemGroupEventDialog : public UIDialog, public UIItemEventListene
 public:
     UICollectItemGroupEventDialog();                            // 0x140be6eb0
     virtual ~UICollectItemGroupEventDialog();                   // 0x140be6fe0 (??_G 0x140be9570)
-    virtual CString vfunc_1();                                  //  1 0x140be70e0 "CollectItemGroupEventDialog"
+    virtual CString GetTypeName();                                  //  1 0x140be70e0 "CollectItemGroupEventDialog"
     virtual void OnLoadComplete();                              // 22 0x140be7130
     virtual void vfunc_26();                                    // 26 0x140be76c0
     virtual int vfunc_48() { return 0x4f81; }                   // 48 0x140be95d0

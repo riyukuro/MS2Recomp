@@ -235,8 +235,8 @@ UIAttendGiftDialog::~UIAttendGiftDialog()
     FUN_140933220()->FUN_140da5490(0x66,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d610));
 }
 // @0x14102bab0
-CString UIAttendGiftDialog::vfunc_1() { return "AttendGiftDialog"; }
-MS2_REPLACE_METHOD(0x14102BAB0, UIAttendGiftDialog, vfunc_1, 61, 0x430C1D72);
+CString UIAttendGiftDialog::GetTypeName() { return "AttendGiftDialog"; }
+MS2_REPLACE_METHOD(0x14102BAB0, UIAttendGiftDialog, GetTypeName, 61, 0x430C1D72);
 // @0x14102c610
 void UIAttendGiftDialog::vfunc_26()
 {
@@ -664,8 +664,8 @@ UIBannerAdvertisingDialog::UIBannerAdvertisingDialog() { m_refs=0; m_2c=0x22; FU
 // @0x141030ee0
 UIBannerAdvertisingDialog::~UIBannerAdvertisingDialog() {}
 // @0x141030f60
-CString UIBannerAdvertisingDialog::vfunc_1() { return "BannerAdvertisingDialog"; }
-MS2_REPLACE_METHOD(0x141030F60, UIBannerAdvertisingDialog, vfunc_1, 61, 0x929F0E7F);
+CString UIBannerAdvertisingDialog::GetTypeName() { return "BannerAdvertisingDialog"; }
+MS2_REPLACE_METHOD(0x141030F60, UIBannerAdvertisingDialog, GetTypeName, 61, 0x929F0E7F);
 // @0x141030fb0
 void UIBannerAdvertisingDialog::vfunc_67() { UIDialog::vfunc_67(); m_refs=0; }
 MS2_REPLACE_METHOD(0x141030FB0, UIBannerAdvertisingDialog, vfunc_67, 39, 0x2A5529BC);

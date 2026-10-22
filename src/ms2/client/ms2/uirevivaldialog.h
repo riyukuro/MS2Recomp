@@ -35,7 +35,7 @@ class UIRevivalDialog : public UIDialog
 public:
     UIRevivalDialog();                                              // 0x141aba6a0
     virtual ~UIRevivalDialog();                                     //  0 0x141aba7b0 (??_G 0x141abdf20)
-    virtual CString vfunc_1();                                      //  1 0x141aba800
+    virtual CString GetTypeName();                                      //  1 0x141aba800
     virtual int vfunc_13();                                         // 13 0x141ababd0
     virtual void OnLoadComplete();                                  // 22 0x141aba850
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141abac00

@@ -15,9 +15,9 @@
 // MS2-PIN: ??$?8PEAVUIUpperHudDialog@@P80@EAAXPEAVNotifyObject@@@Z@std@@YA_NAEBU?$pair@PEAVUIUpperHudDialog@@P81@EAAXPEAVNotifyObject@@@Z@0@0@Z 0x1413599f0 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIUpperHudDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@QEAA@AEBV01@@Z 0x14135a010 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIUpperHudDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBV01@@Z 0x14135a150 ; prop
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIUpperHudDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x14135a690 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIUpperHudDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x14135a6f0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIUpperHudDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x14135a750 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIUpperHudDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x14135a690 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIUpperHudDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x14135a6f0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIUpperHudDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x14135a750 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIUpperHudDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAXAEAVCInPacket@@@Z 0x14135a7b0 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIUpperHudDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x14135a7e0 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIUpperHudDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAXPEAVNotifyObject@@@Z 0x14135a810 ; unique
@@ -341,11 +341,11 @@ UIUpperHudDialog::~UIUpperHudDialog()
 }
 
 // @0x141353e80
-CString UIUpperHudDialog::vfunc_1()
+CString UIUpperHudDialog::GetTypeName()
 {
     return "UpperHudDialog";
 }
-MS2_REPLACE_METHOD(0x141353E80, UIUpperHudDialog, vfunc_1, 61, 0xF83C7D54);
+MS2_REPLACE_METHOD(0x141353E80, UIUpperHudDialog, GetTypeName, 61, 0xF83C7D54);
 
 // @0x141353ed0
 void UIUpperHudDialog::OnLoadComplete()
@@ -1153,7 +1153,7 @@ UIVideoContents::~UIVideoContents()
 }
 
 // @0x14135aaf0
-CString UIVideoContents::vfunc_1()
+CString UIVideoContents::GetTypeName()
 {
     return "VideoContents";
 }
@@ -1337,7 +1337,7 @@ UIVisitorsBookDialog::UIVisitorsBookDialog()
 }
 
 // @0x14135b5c0
-CString UIVisitorsBookDialog::vfunc_1()
+CString UIVisitorsBookDialog::GetTypeName()
 {
     return "VisitorsBookDialog";
 }
@@ -1583,7 +1583,7 @@ UIVisualEffectDialog::~UIVisualEffectDialog()
 }
 
 // @0x14135bcb0
-CString UIVisualEffectDialog::vfunc_1()
+CString UIVisualEffectDialog::GetTypeName()
 {
     return "VisualEffectDialog";
 }
@@ -2225,7 +2225,7 @@ UIWeaponDummyDialog::~UIWeaponDummyDialog()
 }
 
 // @0x14135e290
-CString UIWeaponDummyDialog::vfunc_1()
+CString UIWeaponDummyDialog::GetTypeName()
 {
     return "WeaponDummyDialog";
 }

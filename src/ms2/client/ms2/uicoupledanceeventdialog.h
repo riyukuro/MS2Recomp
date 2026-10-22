@@ -19,7 +19,7 @@ class UICoupleDanceEventDialog : public UIDialog
 public:
     UICoupleDanceEventDialog();                                                                     // 0x140bfcb00
     virtual ~UICoupleDanceEventDialog();                                                            //  0 0x140bfcbb0
-    virtual CString vfunc_1();                                                                      //  1 0x140bfcc00
+    virtual CString GetTypeName();                                                                      //  1 0x140bfcc00
     virtual void OnLoadComplete();                                                                  // 22 0x140bfccf0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                                                     // 28 0x140bfcd30
@@ -39,7 +39,7 @@ public:
 private:
     MS2_LAYOUT_FRIEND;
     bool m_178;                             // +0x178 banner is open ("isOpenBanner")
-    ItemSlotBinder m_180;                   // +0x180 binds the reward items to slots (named after vfunc_1())
+    ItemSlotBinder m_180;                   // +0x180 binds the reward items to slots (named after GetTypeName())
     int m_1c0;                              // +0x1c0 number of completed reward steps
 };
 MS2_CHECK_SIZE(UICoupleDanceEventDialog, 0x1c8);

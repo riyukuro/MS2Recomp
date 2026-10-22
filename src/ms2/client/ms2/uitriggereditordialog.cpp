@@ -40,8 +40,8 @@
 // MS2-PIN: ??0Message@UITriggerEditorDialog@@QEAA@AEBU01@@Z 0x141b31f30
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUITriggerEditorDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBV01@@Z 0x141b31ba0
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUITriggerEditorDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAPEAXI@Z 0x141b32360
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUITriggerEditorDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b32c90
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUITriggerEditorDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b32cf0
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUITriggerEditorDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b32c90
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUITriggerEditorDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b32cf0
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUITriggerEditorDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141b32f20
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUITriggerEditorDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141b32f80
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUITriggerEditorDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBV01@@Z 0x141b31b00
@@ -198,11 +198,11 @@ UITriggerEditorDialog::UITriggerEditorDialog()
 }
 
 // @0x141b2a0a0
-CString UITriggerEditorDialog::vfunc_1()
+CString UITriggerEditorDialog::GetTypeName()
 {
     return "TriggerEditorDialog";
 }
-MS2_REPLACE_METHOD(0x141B2A0A0, UITriggerEditorDialog, vfunc_1, 61, 0x0CFDB8C2);
+MS2_REPLACE_METHOD(0x141B2A0A0, UITriggerEditorDialog, GetTypeName, 61, 0x0CFDB8C2);
 
 // @0x141b2a0f0
 void UITriggerEditorDialog::vfunc_67()

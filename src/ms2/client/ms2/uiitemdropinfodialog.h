@@ -54,7 +54,7 @@ private:
 class UIItemDropInfoDialog : public UIDialog {
 public:
     UIItemDropInfoDialog();
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual void OnLoadComplete();
     virtual void vfunc_26();
     virtual void vfunc_49(Scaleform::GFx::Value*, ASData*);

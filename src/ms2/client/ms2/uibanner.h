@@ -40,7 +40,7 @@ public:
 
     UIBanner();                                         // 0x140ba87d0
     virtual ~UIBanner();                                //  0 0x140ba8990 (??_G 0x140ba9ef0)
-    virtual CString vfunc_1();                          //  1 0x140ba89e0 "Banner"
+    virtual CString GetTypeName();                          //  1 0x140ba89e0 "Banner"
     virtual void OnLoadComplete();                      // 22 0x140ba8a30 UIObject::OnLoadComplete(); FUN_140ba8db0(m_68)
     virtual int vfunc_28(const char* szName, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140ba8a60 "onClick"
     virtual int vfunc_48();                             // 48 0x140baa6b0 0x4e30

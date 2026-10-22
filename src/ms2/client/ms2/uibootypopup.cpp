@@ -83,11 +83,11 @@ UIBootyPopup::~UIBootyPopup()
 }
 
 // @0x141031550
-CString UIBootyPopup::vfunc_1()
+CString UIBootyPopup::GetTypeName()
 {
     return "BootyPopup";
 }
-MS2_REPLACE_METHOD(0x141031550, UIBootyPopup, vfunc_1, 61, 0x709A4D26);
+MS2_REPLACE_METHOD(0x141031550, UIBootyPopup, GetTypeName, 61, 0x709A4D26);
 
 // @0x1410315a0
 int UIBootyPopup::FUN_1410315a0()

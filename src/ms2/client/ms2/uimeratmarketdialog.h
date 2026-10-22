@@ -155,7 +155,7 @@ public:
 
     UIMeratMarketDialog();                                          // 0x1412e84b0
     virtual ~UIMeratMarketDialog();                                 //  0 0x1412e8be0 (??_G 0x141315370)
-    virtual CString vfunc_1();                                      //  1 0x1412e9150 "MeratMarketDialog"
+    virtual CString GetTypeName();                                      //  1 0x1412e9150 "MeratMarketDialog"
     virtual void OnLoadInit();                                      // 20 0x1412e91a0 read the merat banners
     virtual void OnLoadComplete();                                  // 22 0x1412e9210 bind the movie children and pages
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x1412ea0e0 the AS commands

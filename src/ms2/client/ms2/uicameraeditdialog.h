@@ -54,7 +54,7 @@ public:
 
     UICameraEditDialog();                                           // 0x1418dd5e0
     virtual ~UICameraEditDialog();                                  //  0 0x1418dd7c0 (??_G 0x1418dedb0)
-    virtual CString vfunc_1();                                      //  1 0x1418dd810 "CameraEditDialog"
+    virtual CString GetTypeName();                                      //  1 0x1418dd810 "CameraEditDialog"
     virtual void OnLoadComplete();                                  // 22 0x1418dda70
     virtual void vfunc_15();                                        // 15 0x1418dda90 per-frame: keep the camera on the target
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

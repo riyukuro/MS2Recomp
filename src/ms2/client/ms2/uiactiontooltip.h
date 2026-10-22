@@ -19,7 +19,7 @@ class UIActionTooltip : public UIHeadUpDisplay
 public:
     UIActionTooltip();                                              // 0x1418b1520 (m_2c = 9, m_28 = next UI layer)
     virtual ~UIActionTooltip();                                     //  0 0x1418b23f0 (??_G 0x1418b2480)
-    virtual CString vfunc_1();                                      //  1 0x1418b15e0 "ActionTooltip"
+    virtual CString GetTypeName();                                      //  1 0x1418b15e0 "ActionTooltip"
     virtual void vfunc_2();                                         //  2 0x1418b16a0 show (the base's)
     virtual void vfunc_3();                                         //  3 0x1418b16c0 hide, then the base's hide
     virtual void vfunc_15();                                        // 15 0x1418b1630 per-frame: show / move / hide

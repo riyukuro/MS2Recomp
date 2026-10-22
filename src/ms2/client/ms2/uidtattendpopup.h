@@ -28,7 +28,7 @@ class Unk_DTIcon:public ASDisplayObject {public:void FUN_1409ba630(const Unk_DTI
 class Unk_DTTick {public:Unk_DTTick();int FUN_140268870(unsigned);private:unsigned __int64 m_tick;};
 class UIDTAttendPopup:public UIDialog {
 public:
- UIDTAttendPopup();virtual ~UIDTAttendPopup();virtual CString vfunc_1();virtual int vfunc_65();virtual void OnLoadComplete();virtual void vfunc_26();virtual void vfunc_72();
+ UIDTAttendPopup();virtual ~UIDTAttendPopup();virtual CString GetTypeName();virtual int vfunc_65();virtual void OnLoadComplete();virtual void vfunc_26();virtual void vfunc_72();
  // @0x140c07060
  virtual int vfunc_48(){return 0x4eba;}
  void AddEntry(Unk_DTPtr<Unk_DTEntry>);void RemoveEntry(Unk_DTPtr<Unk_DTEntry>);void RefreshVisibility();void UpdateIcon();void SetTime(unsigned);void Request();bool CanShow();

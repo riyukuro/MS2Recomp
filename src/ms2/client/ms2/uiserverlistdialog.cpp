@@ -215,7 +215,7 @@ class NotifyChangeMyPC : public NotifyObject
 {
 public:
     NotifyChangeMyPC();                                         // 0x141ad5990
-    virtual CStringW vfunc_1();                                 // 0x140db45b0 (unit_140da50e0.cpp)
+    virtual CStringW GetTypeName();                                 // 0x140db45b0 (unit_140da50e0.cpp)
 };
 MS2_CHECK_SIZE(NotifyChangeMyPC, 0x18);
 
@@ -271,7 +271,7 @@ UIServerListDialog::~UIServerListDialog()
 }
 
 // @0x141ad0f30
-CString UIServerListDialog::vfunc_1()
+CString UIServerListDialog::GetTypeName()
 {
     return "ServerListDialog";
 }

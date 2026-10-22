@@ -232,7 +232,7 @@ void UIBossRewardPreviewDialog::SlotBag::FUN_140f25400()
 
 // @0x140f255e0
 UIBossRewardPreviewDialog::UIBossRewardPreviewDialog()
-    : m_spExp(0), m_spMeso(0), m_spTitle(0), m_spMesoIcon(0), m_nNpcId(0), m_strBag(vfunc_1())
+    : m_spExp(0), m_spMeso(0), m_spTitle(0), m_spMesoIcon(0), m_nNpcId(0), m_strBag(GetTypeName())
 {
 }
 
@@ -242,7 +242,7 @@ UIBossRewardPreviewDialog::~UIBossRewardPreviewDialog()
 }
 
 // @0x140f256b0
-CString UIBossRewardPreviewDialog::vfunc_1()
+CString UIBossRewardPreviewDialog::GetTypeName()
 {
     return "BossRewardPreviewDialog";
 }
@@ -336,7 +336,7 @@ void UIBossRewardPreviewDialog::FUN_140f25bf0()
         {
             FUN_140f25170(m_strBag);
             FUN_140f250b0(m_strBag, 0x12, m_nNpcId);
-            static_cast<Unk_BrmAS*>(m_30.operator->())->FUN_1407cba60("rewardId", vfunc_1());
+            static_cast<Unk_BrmAS*>(m_30.operator->())->FUN_1407cba60("rewardId", GetTypeName());
         }
     }
 }

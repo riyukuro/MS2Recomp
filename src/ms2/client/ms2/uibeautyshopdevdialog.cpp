@@ -240,7 +240,7 @@ UIBeautyShopDevDialog::~UIBeautyShopDevDialog()
 }
 
 // @0x14191ca70
-CString UIBeautyShopDevDialog::vfunc_1()
+CString UIBeautyShopDevDialog::GetTypeName()
 {
     return "BeautyShopDevDialog";
 }

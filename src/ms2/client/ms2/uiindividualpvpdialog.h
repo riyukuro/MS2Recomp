@@ -19,7 +19,7 @@ class UIIndividualPvPDialog : public UIDialog
 public:
     UIIndividualPvPDialog();                                    // 0x1412c9e70
     virtual ~UIIndividualPvPDialog();                           //  0 0x1412c9fa0 (??_G 0x1412cf440)
-    virtual CString vfunc_1();                                  //  1 0x1412ca080 "IndividualPvPDialog"
+    virtual CString GetTypeName();                                  //  1 0x1412ca080 "IndividualPvPDialog"
     virtual void OnLoadInit();                                  // 20 0x1412ca0d0
     virtual void OnLoadComplete();                              // 22 0x1412ca0f0 bind the buttons, select an arena
     virtual void vfunc_26();                                    // 26 0x1412cab00 release the buttons and the bound icons

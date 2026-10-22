@@ -24,7 +24,7 @@ class UIManufactureDialog : public UIDialog, public UIDialogEventListener
 public:
     UIManufactureDialog();                                                  // 0x1412e24f0
     virtual ~UIManufactureDialog();                                         //  0 0x1412e2660 (??_G 0x1412e8340)
-    virtual CString vfunc_1();                                              //  1 0x1412e2730 "ManufactureDialog"
+    virtual CString GetTypeName();                                              //  1 0x1412e2730 "ManufactureDialog"
     virtual int vfunc_13();                                                 // 13 0x1412e2cf0
     virtual void OnLoadInit();                                              // 20 0x1412e28f0
     virtual void OnLoadComplete();                                          // 22 0x1412e2fc0

@@ -17,7 +17,7 @@ class UIPrizeMoneyDialog : public UIDialog
 public:
     UIPrizeMoneyDialog();                                       // 0x140e78150
     virtual ~UIPrizeMoneyDialog();                              //  0 0x140e781e0 (??_G 0x140e78570)
-    virtual CString vfunc_1();                                  //  1 0x140e78220
+    virtual CString GetTypeName();                                  //  1 0x140e78220
     virtual void OnLoadComplete();                              // 22 0x140e78270
     virtual void vfunc_43();                                    // 43 0x140e782a0
     virtual void vfunc_72();                                    // 72 0x140e78320 (empty)

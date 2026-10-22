@@ -50,7 +50,7 @@ class UIPartyDialog : public UIDialog
 public:
     UIPartyDialog();                                            // 0x141a74b40
     virtual ~UIPartyDialog();                                   //  0 0x141a74c50 (??_G 0x141a7aa30)
-    virtual CString vfunc_1();                                  //  1 0x141a74d00 "PartyDialog"
+    virtual CString GetTypeName();                                  //  1 0x141a74d00 "PartyDialog"
     virtual void vfunc_15();                                    // 15 0x141a769d0 once a second: vote refresh, deadline
     virtual void OnLoadComplete();                              // 22 0x141a75a80
     virtual void vfunc_26();                                    // 26 0x141a767d0 unbind
@@ -111,7 +111,7 @@ class UIPartyDPSDialog : public UIDialog
 public:
     UIPartyDPSDialog();                                         // 0x141a7b050
     virtual ~UIPartyDPSDialog();                                //  0 0x141a7b100 (??_G 0x141a7c470)
-    virtual CString vfunc_1();                                  //  1 0x141a7b150 "PartyDPSDialog"
+    virtual CString GetTypeName();                                  //  1 0x141a7b150 "PartyDPSDialog"
     virtual void OnLoadComplete();                              // 22 0x141a7bc10
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141a7bc70
     virtual int vfunc_48();                                     // 48 0x141a7c4b0
@@ -140,7 +140,7 @@ class UIPerformanceDialog : public UIDialog
 public:
     UIPerformanceDialog();                                      // 0x141a7c4c0
     virtual ~UIPerformanceDialog();                             //  0 0x141a7c560 (??_G 0x141a7caa0)
-    virtual CString vfunc_1();                                  //  1 0x141a7c5b0 "PerformanceDialog"
+    virtual CString GetTypeName();                                  //  1 0x141a7c5b0 "PerformanceDialog"
     virtual void OnLoadComplete();                              // 22 0x141a7c600
     virtual void vfunc_26();                                    // 26 0x141a7c6a0
     virtual int vfunc_48();                                     // 48 0x141a7cae0
@@ -242,7 +242,7 @@ class UIPopUpMenu : public UIHeadUpDisplay, public UIEntityEventListener, public
 {
 public:
     UIPopUpMenu();                                              // 0x141a7d580 (the dtor is implicit: 0x141a88510, ??_G 0x141a888d0)
-    virtual CString vfunc_1();                                  //  1 0x141a7d850 "PopUpMenu"
+    virtual CString GetTypeName();                                  //  1 0x141a7d850 "PopUpMenu"
     virtual void vfunc_2();                                     //  2 0x141a7d8a0
     virtual void vfunc_3();                                     //  3 0x141a7d960
     virtual int vfunc_13();                                     // 13 0x141a7dc90

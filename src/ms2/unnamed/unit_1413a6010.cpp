@@ -39,7 +39,7 @@ ClassObject* CGuideConditionDialog::CreateObject()
 }
 
 // @0x1413a6070
-CStringW CGuideConditionDialog::vfunc_1()
+CStringW CGuideConditionDialog::GetTypeName()
 {
     return L"CGuideConditionDialog";
 }

@@ -31,7 +31,7 @@ class UIPartySearchRegisterDialog : public UIModalDialog
 public:
     UIPartySearchRegisterDialog();                              // 0x141320660
     virtual ~UIPartySearchRegisterDialog();                     //  0 0x1413207b0 (??_G 0x141322930)
-    virtual CString vfunc_1();                                  //  1 0x1413208b0 "PartySearchRegisterDialog"
+    virtual CString GetTypeName();                                  //  1 0x1413208b0 "PartySearchRegisterDialog"
     virtual int vfunc_13();                                     // 13 0x141321960 enter / tab key: "onProcessKey"
     virtual void OnLoadInit();                                  // 20 0x1413209d0 UIObject::OnLoadInit(); vfunc_47(0)
     virtual void OnLoadComplete();                              // 22 0x141320a10 bind the controls, fill the combo

@@ -35,7 +35,7 @@ UIBuildBtnGuide::~UIBuildBtnGuide()
 }
 
 // @0x1418dcc40
-CString UIBuildBtnGuide::vfunc_1()
+CString UIBuildBtnGuide::GetTypeName()
 {
     return "BuildBtnGuideAni";
 }

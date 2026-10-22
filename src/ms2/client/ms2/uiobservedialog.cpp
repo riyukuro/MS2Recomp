@@ -32,11 +32,11 @@ UIObserveDialog::UIObserveDialog()
 }
 
 // @0x141a73360
-CString UIObserveDialog::vfunc_1()
+CString UIObserveDialog::GetTypeName()
 {
     return "ObserveDialog";
 }
-MS2_REPLACE_METHOD(0x141A73360, UIObserveDialog, vfunc_1, 61, 0x20B5146C);
+MS2_REPLACE_METHOD(0x141A73360, UIObserveDialog, GetTypeName, 61, 0x20B5146C);
 
 // @0x141a733b0
 void UIObserveDialog::OnLoadInit()

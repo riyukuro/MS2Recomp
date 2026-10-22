@@ -14,7 +14,7 @@
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIInventoryDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAPEAXI@Z 0x14199f350 ; prop
 // MS2-PIN: ?vfunc_48@UIInventoryDialog@@UEAAHXZ 0x14199f450 ; unique
 // MS2-PIN: ?SetCount@?$CAtlArray@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@V?$CElementTraits@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@ATL@@@ATL@@QEAA_N_KH@Z 0x14199f480 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIInventoryDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x14199f610 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIInventoryDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x14199f610 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIInventoryDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x14199f670 ; unique
 // MS2-PIN: ??$Call@VUIInventoryDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@?$DelegateImpl@U?$pair@PEAVUIInventoryDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@CAXAEAU?$pair@PEAVUIInventoryDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@AEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x14199f6a0 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIInventoryDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x14199f6e0 ; unique
@@ -165,7 +165,7 @@
 // MS2-PIN: ?allocate@?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@2@_K@Z 0x1419ab0c0 ; unique
 // MS2-PIN: ?begin@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@2@XZ 0x1419ab160 ; unique
 // MS2-PIN: ?clear@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAAXXZ 0x1419ab270 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIItemBreakDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1419ab310 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIItemBreakDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1419ab310 ; unique
 // MS2-PIN: ?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@2@QEAU?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@2@_K@Z 0x1419ab3d0 ; unique
 // MS2-PIN: ?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@2@QEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@2@_K@Z 0x1419ab400 ; prop
 // MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@2@_K@Z 0x1419ab430 ; prop
@@ -508,7 +508,7 @@ int UIInventoryDialog::s_nAlignMode;
 
 // @0x141996ec0
 UIInventoryDialog::UIInventoryDialog()
-    : m_188(vfunc_1()), m_190(0), m_194(0), m_198(0), m_19c(0), m_1a0(-1), m_1a4(0)
+    : m_188(GetTypeName()), m_190(0), m_194(0), m_198(0), m_19c(0), m_1a0(-1), m_1a4(0)
 {
     m_88 = 1;
     m_5c = 1;
@@ -521,11 +521,11 @@ UIInventoryDialog::~UIInventoryDialog()
 }
 
 // @0x141997190
-CString UIInventoryDialog::vfunc_1()
+CString UIInventoryDialog::GetTypeName()
 {
     return "InventoryDialog";
 }
-MS2_REPLACE_METHOD(0x141997190, UIInventoryDialog, vfunc_1, 61, 0);
+MS2_REPLACE_METHOD(0x141997190, UIInventoryDialog, GetTypeName, 61, 0);
 
 // @0x1419971e0
 int UIInventoryDialog::vfunc_il1()
@@ -1931,11 +1931,11 @@ UIInviteGroupDialog::~UIInviteGroupDialog()
 }
 
 // @0x14199f820
-CString UIInviteGroupDialog::vfunc_1()
+CString UIInviteGroupDialog::GetTypeName()
 {
     return "InviteGroupDialog";
 }
-MS2_REPLACE_METHOD(0x14199F820, UIInviteGroupDialog, vfunc_1, 61, 0);
+MS2_REPLACE_METHOD(0x14199F820, UIInviteGroupDialog, GetTypeName, 61, 0);
 
 // @0x14199f870
 void UIInviteGroupDialog::vfunc_67()
@@ -2290,12 +2290,12 @@ MS2_REPLACE_METHOD(0x1419A1400, UIItemBreakBase, vfunc_46, 37, 0);
 // @0x1419a1430
 void UIItemBreakBase::FUN_1419a1430()
 {
-    FUN_141410780(vfunc_1());
-    FUN_1414106d0(vfunc_1());
+    FUN_141410780(GetTypeName());
+    FUN_1414106d0(GetTypeName());
     if (MS2Ptr<ASMovieClip> spBag = GetChild<ASMovieClip>("m_itemBag"))
     {
         if (MS2Ptr<Unk_IbSlotBag> spSlots = spBag->FUN_140accef0<Unk_IbSlotBag>("instance"))
-            spSlots->FUN_1407cba60("bagId", vfunc_1());
+            spSlots->FUN_1407cba60("bagId", GetTypeName());
     }
     vfunc_85(true, 0);
 }
@@ -2344,7 +2344,7 @@ void UIItemBreakBase::vfunc_26()
         pInventory->FUN_141999f60();
         pInventory->FUN_141999e00();
     }
-    FUN_141410780(vfunc_1());
+    FUN_141410780(GetTypeName());
 }
 #ifndef MS2_STANDALONE
 namespace {
@@ -2360,7 +2360,7 @@ MS2_REPLACE_IMPL(0x1419A1830, ::ms2::hook::detail::MemberToVoid(&Unk_IbDropContr
 void UIItemBreakBase::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_141410780(vfunc_1());
+    FUN_141410780(GetTypeName());
     FUN_1419a1fb0();
     FUN_140a6a840()->FUN_1419caeb0(this);
     FUN_1409c4b20()->FUN_140531cc0();
@@ -2450,7 +2450,7 @@ MS2_REPLACE_METHOD(0x1419A1BB0, UIItemBreakBase, vfunc_43, 361, 0);
 // @0x1419a1d20
 void UIItemBreakBase::FUN_1419a1d20(int nIndex)
 {
-    Unk_IbBreakBag* pBag = FUN_1414109f0(FUN_1422c8e90(vfunc_1()));
+    Unk_IbBreakBag* pBag = FUN_1414109f0(FUN_1422c8e90(GetTypeName()));
     if (pBag != 0)
         FUN_1414109a0(pBag, nIndex);
     vfunc_85(false, nIndex);
@@ -2465,7 +2465,7 @@ CString UIItemBreakBase::FUN_1419a1dc0(int nItemId, int nRarity, int nCount)
     {
         pItem->FUN_140526c70(nCount);
         CString strName;
-        strName.Format("%s_%d", (const char*)vfunc_1(), nItemId);
+        strName.Format("%s_%d", (const char*)GetTypeName(), nItemId);
         FUN_141415450(strName, MS2Ptr<CItem>(pItem), 0, 0x401, 0);
         m_190.AddTail(strName);
         return strName;
@@ -2523,11 +2523,11 @@ UIItemBreakDialog::~UIItemBreakDialog()
 }
 
 // @0x1419a2330
-CString UIItemBreakDialog::vfunc_1()
+CString UIItemBreakDialog::GetTypeName()
 {
     return "ItemBreakDialog";
 }
-MS2_REPLACE_METHOD(0x1419A2330, UIItemBreakDialog, vfunc_1, 61, 0);
+MS2_REPLACE_METHOD(0x1419A2330, UIItemBreakDialog, GetTypeName, 61, 0);
 
 // @0x1419a2380
 void UIItemBreakDialog::OnLoadInit()
@@ -2872,7 +2872,7 @@ CString UIItemBreakDialog::FUN_1419a4aa0(int nItemId)
     if (pItem->FUN_140523c40(nItemId, FUN_14053feb0(nItemId), 0))
     {
         CString strName;
-        strName.Format("%s_preview_%d", (const char*)vfunc_1(), nItemId);
+        strName.Format("%s_preview_%d", (const char*)GetTypeName(), nItemId);
         FUN_141415450(strName, MS2Ptr<CItem>(pItem), 0, 0x401, 0);
         m_1c8.AddTail(strName);
         return strName;
@@ -2902,11 +2902,11 @@ UIItemBreakDonationDialog::~UIItemBreakDonationDialog()
 }
 
 // @0x1419a4e20
-CString UIItemBreakDonationDialog::vfunc_1()
+CString UIItemBreakDonationDialog::GetTypeName()
 {
     return "ItemBreakDonationDialog";
 }
-MS2_REPLACE_METHOD(0x1419A4E20, UIItemBreakDonationDialog, vfunc_1, 61, 0);
+MS2_REPLACE_METHOD(0x1419A4E20, UIItemBreakDonationDialog, GetTypeName, 61, 0);
 
 // @0x1419a4e70
 void UIItemBreakDonationDialog::OnLoadInit()

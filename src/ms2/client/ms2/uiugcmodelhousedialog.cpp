@@ -34,11 +34,11 @@ UIUGCModelHouseDialog::UIUGCModelHouseDialog()
 }
 
 // @0x140faf450
-CString UIUGCModelHouseDialog::vfunc_1()
+CString UIUGCModelHouseDialog::GetTypeName()
 {
     return "UGCModelHouseDialog";
 }
-MS2_REPLACE_METHOD(0x140FAF450, UIUGCModelHouseDialog, vfunc_1, 61, 0xBC81B70C);
+MS2_REPLACE_METHOD(0x140FAF450, UIUGCModelHouseDialog, GetTypeName, 61, 0xBC81B70C);
 
 // @0x140faf4a0
 void UIUGCModelHouseDialog::vfunc_67()

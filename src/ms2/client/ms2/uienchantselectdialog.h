@@ -16,7 +16,7 @@ class UIEnchantSelectDialog : public UIDialog
 public:
     UIEnchantSelectDialog();                                    // 0x140e291e0
     virtual ~UIEnchantSelectDialog();                           //  0 0x140e29270 (??_G 0x140e29de0)
-    virtual CString vfunc_1();                                  //  1 0x140e29310 "EnchantSelectDialog"
+    virtual CString GetTypeName();                                  //  1 0x140e29310 "EnchantSelectDialog"
     virtual void OnLoadComplete();                              // 22 0x140e29410 hook the two buttons
     virtual int vfunc_48() { return 0x4e91; }                                  // 48 0x140e29e20
     virtual void vfunc_67();                                    // 67 0x140e29360

@@ -95,11 +95,11 @@ UIHomeOptionDialog::~UIHomeOptionDialog()
 }
 
 // @0x140fa8d60
-CString UIHomeOptionDialog::vfunc_1()
+CString UIHomeOptionDialog::GetTypeName()
 {
     return "HomeOptionDialog";
 }
-MS2_REPLACE_METHOD(0x140FA8D60, UIHomeOptionDialog, vfunc_1, 61, 0xC0186EEC);
+MS2_REPLACE_METHOD(0x140FA8D60, UIHomeOptionDialog, GetTypeName, 61, 0xC0186EEC);
 
 // @0x140fa8db0
 void UIHomeOptionDialog::OnLoadComplete()

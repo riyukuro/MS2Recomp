@@ -20,7 +20,7 @@ class UIInviteMentoringDialog : public UIDialog
 public:
     UIInviteMentoringDialog();                                      // 0x140c2dea0
     virtual ~UIInviteMentoringDialog();                             //  0 0x140c2df20 (??_G 0x140c305d0)
-    virtual CString vfunc_1();                                      //  1 0x140c2df90 "InviteMentoringDialog"
+    virtual CString GetTypeName();                                      //  1 0x140c2df90 "InviteMentoringDialog"
     virtual void OnLoadComplete();                                  // 22 0x140c2e020 picks the page and asks for its list
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140c2e340 the movie's buttons
     virtual int vfunc_48();                                         // 48 0x140c30610 0x4f4c

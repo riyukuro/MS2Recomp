@@ -217,7 +217,7 @@ UISkillCompactControlDialog::~UISkillCompactControlDialog()
 }
 
 // @0x140f9e330
-CString UISkillCompactControlDialog::vfunc_1()
+CString UISkillCompactControlDialog::GetTypeName()
 {
     return CString("SkillCompactControl");
 }

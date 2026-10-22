@@ -51,8 +51,8 @@ UITimerGaugeDialog::UITimerGaugeDialog(){m_2c=19;m_80=0;FUN_141925e70(0,1);}
 // @0x140eded00
 UITimerGaugeDialog::~UITimerGaugeDialog(){}
 // @0x140eded70
-CString UITimerGaugeDialog::vfunc_1(){return "TimerGaugeDialog";}
-MS2_REPLACE_METHOD(0x140EDED70, UITimerGaugeDialog, vfunc_1, 61, 0x19138386);
+CString UITimerGaugeDialog::GetTypeName(){return "TimerGaugeDialog";}
+MS2_REPLACE_METHOD(0x140EDED70, UITimerGaugeDialog, GetTypeName, 61, 0x19138386);
 
 // @0x140ededc0
 void UITimerGaugeDialog::vfunc_72(){UIDialog::vfunc_72();if(!Unk_TimerPlayer::Get())return;if(m_tick1.FUN_140268870(500))FUN_140edf200();if(m_tick2.FUN_140268870(1000))FUN_140edf2b0();}

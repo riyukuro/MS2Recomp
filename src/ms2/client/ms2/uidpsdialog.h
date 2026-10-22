@@ -12,7 +12,7 @@ class UIDPSDialog : public UIDialog
 {
 public:
     UIDPSDialog();                                              // 0x141928c80
-    virtual CString vfunc_1();                                  //  1 0x141928d50 "DPSDialog"
+    virtual CString GetTypeName();                                  //  1 0x141928d50 "DPSDialog"
     virtual int vfunc_13();                                     // 13 0x141929640 the start / stop hotkey
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141929490
     virtual int vfunc_48() { return 0x4e44; }                   // 48 0x14192a2d0

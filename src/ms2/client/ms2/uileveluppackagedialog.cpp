@@ -104,7 +104,7 @@ bool FUN_140a467d0(const MS2Ptr<AScript>* pAS);
 // ---- UILevelUpPackageDialog ----
 
 // @0x140ea44b0
-UILevelUpPackageDialog::UILevelUpPackageDialog() : m_1a8(vfunc_1())
+UILevelUpPackageDialog::UILevelUpPackageDialog() : m_1a8(GetTypeName())
 {
     FUN_141924170(1);
 }
@@ -113,7 +113,7 @@ UILevelUpPackageDialog::UILevelUpPackageDialog() : m_1a8(vfunc_1())
 UILevelUpPackageDialog::~UILevelUpPackageDialog() {}
 
 // @0x140ea4660
-CString UILevelUpPackageDialog::vfunc_1() { return "LevelUpPackageDialog"; }
+CString UILevelUpPackageDialog::GetTypeName() { return "LevelUpPackageDialog"; }
 
 // @0x140ea46b0
 int UILevelUpPackageDialog::vfunc_65()
@@ -331,7 +331,7 @@ void UILevelUpPackageDialog::FUN_140ea57d0(ASObj& rObj, int nQuest)
         return;
     spItem->FUN_140526c70(pReward->m_job);
     CString strBindID;
-    strBindID.Format("%s.%d", (LPCSTR)vfunc_1(), m_188.GetCount() + 1);
+    strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_188.GetCount() + 1);
     FUN_141415450(strBindID, spItem, 0, 0x415, 0x800);
     rObj.FUN_1407cba60("binding", strBindID);
     m_188.Add(strBindID);

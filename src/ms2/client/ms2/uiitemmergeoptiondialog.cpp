@@ -108,7 +108,7 @@
 // MS2-PIN: ?allocate@?$allocator@U?$pair@HH@std@@@std@@QEAAPEAU?$pair@HH@2@_K@Z 0x1419d8bc0 ; unique
 // MS2-PIN: ?begin@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@U?$pair@HH@std@@@std@@@std@@@2@XZ 0x1419d8c60 ; unique
 // MS2-PIN: ?capacity@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QEBA_KXZ 0x1419d8cc0 ; prop
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIItemMergeOptionDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1419d8da0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIItemMergeOptionDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1419d8da0 ; unique
 // MS2-PIN: ?deallocate@?$allocator@U?$pair@HH@std@@@std@@QEAAXQEAU?$pair@HH@2@_K@Z 0x1419d8e60 ; unique
 // MS2-PIN: ?end@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@U?$pair@HH@std@@@std@@@std@@@2@XZ 0x1419d8ef0 ; unique
 // MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@U?$pair@HH@std@@HU?$less@U?$pair@HH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HH@std@@H@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@H@std@@@std@@@std@@@2@AEBU?$pair@HH@2@@Z 0x1419d90f0 ; unique
@@ -394,7 +394,7 @@ UIItemMergeOptionDialog::~UIItemMergeOptionDialog()
 }
 
 // @0x1419ce4a0
-CString UIItemMergeOptionDialog::vfunc_1()
+CString UIItemMergeOptionDialog::GetTypeName()
 {
     return "ItemMergeOptionDialog";
 }
@@ -437,8 +437,8 @@ void UIItemMergeOptionDialog::OnLoadComplete()
 // @0x1419ce750
 void UIItemMergeOptionDialog::vfunc_67()
 {
-    FUN_14123a190(FUN_14038f6d0(vfunc_1(), "_MergeSlotBag"));
-    FUN_14123a190(FUN_14038f6d0(vfunc_1(), "_MaterialSlotBag"));
+    FUN_14123a190(FUN_14038f6d0(GetTypeName(), "_MergeSlotBag"));
+    FUN_14123a190(FUN_14038f6d0(GetTypeName(), "_MaterialSlotBag"));
     UIDialog::vfunc_67();
     m_nItemUid = 0;
     m_nMaterialUid = 0;
@@ -660,7 +660,7 @@ void UIItemMergeOptionDialog::ResetMergeItems()
     }
     size_t nCount = guids.GetCount();
     qsort(guids.GetData(), nCount, 8, FUN_1419d2fa0);
-    CString strBag = FUN_14038f6d0(vfunc_1(), "_MergeSlotBag");
+    CString strBag = FUN_14038f6d0(GetTypeName(), "_MergeSlotBag");
     FUN_14123a190(strBag);
     FUN_14123a080(strBag, guids);
     MS2Ptr<ASMovieClip> spClip = FUN_140ba7930("m_itemBag");
@@ -814,7 +814,7 @@ void UIItemMergeOptionDialog::ShowOptionPreview(MS2Ptr<CItem> spItem)
 // @0x1419d0ba0
 void UIItemMergeOptionDialog::RefreshMaterialBag()
 {
-    CString strBag = FUN_14038f6d0(vfunc_1(), "_MaterialSlotBag");
+    CString strBag = FUN_14038f6d0(GetTypeName(), "_MaterialSlotBag");
     FUN_14123a190(strBag);
     FUN_14123a080(strBag, m_items190);
     MS2Ptr<ASMovieClip> spClip = FUN_140ba7930("m_ingredientBag");

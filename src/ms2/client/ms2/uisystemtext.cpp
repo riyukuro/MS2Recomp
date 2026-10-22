@@ -144,7 +144,7 @@ UISystemText::~UISystemText()
 }
 
 // @0x141b15a20
-CString UISystemText::vfunc_1()
+CString UISystemText::GetTypeName()
 {
     return "SystemText";
 }

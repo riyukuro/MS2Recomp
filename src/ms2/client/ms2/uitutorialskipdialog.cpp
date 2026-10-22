@@ -40,7 +40,7 @@ UITutorialSkipDialog::~UITutorialSkipDialog()
 }
 
 // @0x141b33800
-CString UITutorialSkipDialog::vfunc_1()
+CString UITutorialSkipDialog::GetTypeName()
 {
     return CString("TutorialSkipDialog");
 }

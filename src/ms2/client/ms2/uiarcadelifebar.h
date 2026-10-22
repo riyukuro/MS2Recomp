@@ -22,7 +22,7 @@ class UIArcadeLifeBar : public UIDialog
 public:
     UIArcadeLifeBar();                                               // 0x140ef4f10
     virtual ~UIArcadeLifeBar();                                      //  0 0x140ef4ff0 (??_G 0x140ef54d0)
-    virtual CString vfunc_1();                                       //  1 0x140ef5030: "ArcadeLifeBar"
+    virtual CString GetTypeName();                                       //  1 0x140ef5030: "ArcadeLifeBar"
     virtual void OnLoadComplete();                                   // 22 0x140ef5160
     virtual void vfunc_43();                                         // 43 0x140ef5080 (position the movie root)
     virtual int vfunc_48();                                          // 48 0x140ef5510: 0x4efc

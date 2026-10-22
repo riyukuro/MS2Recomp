@@ -25,7 +25,7 @@ public:
     UIHideAndSeekResultDialog();                                    // 0x140c1e730
     virtual ~UIHideAndSeekResultDialog();                           //  0 0x140c1e7f0 (??_G 0x140c209d0)
 
-    virtual CString vfunc_1();                                      //  1 "HideAndSeekResultDialog"
+    virtual CString GetTypeName();                                      //  1 "HideAndSeekResultDialog"
     virtual void OnLoadComplete();                                  // 22 fills the lists, plays the result sound
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 "OnClose"
     virtual void vfunc_43();                                        // 43 opens the swf entity animation

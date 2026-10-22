@@ -14,8 +14,8 @@
 // MS2-PIN: ?vfunc_ugc_7@UIUGCEventListener@@UEAAXH@Z 0x140bc0b00 ; unique
 // MS2-PIN: ?Release@?$MS2Ptr@VTMarketBillDataParam@@@@AEAAXXZ 0x140bc0db0 ; prop
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VASButton@@@@AEAAXPEAX@Z 0x140bc0df0 ; prop
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIBlueprintMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140bc1000 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIBlueprintMarketDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140bc1060 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIBlueprintMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140bc1000 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIBlueprintMarketDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140bc1060 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@P6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@@UEAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z 0x140bc1140 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIBlueprintMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x140bc1240 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIBlueprintMarketDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAXPEAVNotifyObject@@@Z 0x140bc1270 ; unique
@@ -198,11 +198,11 @@ UIBlueprintMarketDialog::~UIBlueprintMarketDialog()
 }
 
 // @0x140bb9f00
-CString UIBlueprintMarketDialog::vfunc_1()
+CString UIBlueprintMarketDialog::GetTypeName()
 {
     return "BlueprintMarketDialog";
 }
-MS2_REPLACE_METHOD(0x140bb9f00, UIBlueprintMarketDialog, vfunc_1, 0, 0);
+MS2_REPLACE_METHOD(0x140bb9f00, UIBlueprintMarketDialog, GetTypeName, 0, 0);
 
 // @0x140bb9f50
 void UIBlueprintMarketDialog::OnLoadComplete()

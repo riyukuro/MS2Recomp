@@ -16,7 +16,7 @@ class UIAdventureLevelExpBar : public UIHeadUpDisplay, public UIStatusEventListe
 public:
     UIAdventureLevelExpBar();                                       // 0x140ba6b20 (m_2c = 0x10)
     virtual ~UIAdventureLevelExpBar();                              //  0 0x140ba6ba0 (??_G 0x140ba7c20)
-    virtual CString vfunc_1();                                      //  1 0x140ba6c00 "AdventureLevelExpBar"
+    virtual CString GetTypeName();                                      //  1 0x140ba6c00 "AdventureLevelExpBar"
     virtual void vfunc_2();                                         //  2 0x140ba6c50 show unless the cinematic gate is on
     virtual void vfunc_3();                                         //  3 0x140ba6c90 hide and leave the status listeners
     virtual void OnLoadComplete();                                  // 22 0x140ba72b0

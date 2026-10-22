@@ -674,7 +674,7 @@ class NotifyOpenDialogByScene : public NotifyObject
 public:
     NotifyOpenDialogByScene(int nScene);                // 0x141aee0f0
     virtual ~NotifyOpenDialogByScene();                 // 0x141aee390
-    virtual CStringW vfunc_1();                         // 0x140db51c0
+    virtual CStringW GetTypeName();                         // 0x140db51c0
     int m_nScene;                                       // +0x18
 };
 MS2_CHECK_SIZE(NotifyOpenDialogByScene, 0x20);
@@ -1683,7 +1683,7 @@ MS2_REPLACE_METHOD(0x141add120, CUIService, FUN_141add120, 128, 0xF5072EA2);
 void CUIService::FUN_141aebfa0(MS2Ptr<UIObject> spObj)
 {
     m_mapA.SetAt(static_cast<eUIClassID>(spObj->vfunc_48()), spObj);
-    m_mapC.SetAt(spObj->vfunc_1(), spObj);
+    m_mapC.SetAt(spObj->GetTypeName(), spObj);
 }
 MS2_REPLACE_METHOD(0x141aebfa0, CUIService, FUN_141aebfa0, 203, 0x9C64F89F);
 
@@ -4405,7 +4405,7 @@ MS2_REPLACE_METHOD(0x141aec8c0, CUIService, FUN_141aec8c0, 35, 0x66E851B8);
 // @0x141aecf60
 int CUIService::FUN_141aecf60(MS2Ptr<UIDialog> spDlg)
 {
-    FUN_140a44830()->FUN_1401ce2f0("*Lost \xbf\xad\xb7\xc1\xc0\xd6\xb4\xc2 dlg [%s]", (const char*)spDlg->vfunc_1());
+    FUN_140a44830()->FUN_1401ce2f0("*Lost \xbf\xad\xb7\xc1\xc0\xd6\xb4\xc2 dlg [%s]", (const char*)spDlg->GetTypeName());
     return 0;
 }
 MS2_REPLACE(0x141aecf60, CUIService::FUN_141aecf60, 152, 0x2A7C9D69);
@@ -4413,7 +4413,7 @@ MS2_REPLACE(0x141aecf60, CUIService::FUN_141aecf60, 152, 0x2A7C9D69);
 // @0x141aed000
 int CUIService::FUN_141aed000(MS2Ptr<UIDialog> spDlg)
 {
-    FUN_140a44830()->FUN_1401ce2f0("*Reset \xbf\xad\xb7\xc1\xc0\xd6\xb4\xc2 dlg [%s]", (const char*)spDlg->vfunc_1());
+    FUN_140a44830()->FUN_1401ce2f0("*Reset \xbf\xad\xb7\xc1\xc0\xd6\xb4\xc2 dlg [%s]", (const char*)spDlg->GetTypeName());
     return 0;
 }
 MS2_REPLACE(0x141aed000, CUIService::FUN_141aed000, 152, 0x11E968B0);
@@ -4692,7 +4692,7 @@ void CUIService::FUN_141aece70()
 // MS2-FUNCTIONAL: the dialog reference is read through the unit's MS2Ptr accessor glue
 int CUIService::FUN_141aed0a0(MS2Ptr<UIDialog> spDlg)
 {
-    CString strName = spDlg->vfunc_1();
+    CString strName = spDlg->GetTypeName();
     FUN_140a44830()->FUN_1401ce2f0("*Dialog [%s] closed %d AniState %d LoadComplete %d", (const char*)strName, static_cast<Unk_UisDlgPeek*>(spDlg.get())->Get68(), static_cast<Unk_UisDlgPeek*>(spDlg.get())->GetC0(), FUN_1422dc430(spDlg.get()));
     return 0;
 }

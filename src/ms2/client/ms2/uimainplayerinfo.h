@@ -72,7 +72,7 @@ class UIMainPlayerInfo : public UIBuiltInDialog,
 public:
     UIMainPlayerInfo();                                                                             // 0x1419ee140
     virtual ~UIMainPlayerInfo();                                                                    //  0 0x1419ee5d0 (??_G 0x1419f4300)
-    virtual CString vfunc_1();                                                                      //  1 0x1419eea30 "MainPlayerInfo"
+    virtual CString GetTypeName();                                                                      //  1 0x1419eea30 "MainPlayerInfo"
     virtual int vfunc_13();                                                                         // 13 0x1419ef930 shortkey page keys
     virtual void vfunc_15();                                                                        // 15 0x1419ef820 per-frame update
     virtual void vfunc_16();                                                                        // 16 0x1419efcb0

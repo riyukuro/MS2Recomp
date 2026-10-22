@@ -198,8 +198,8 @@ UIItemDropInfoDialog::UIItemDropInfoDialog() {
     m_slot = "UIItemDropInfoDialog_slot";
 }
 // @0x140c3a0f0
-CString UIItemDropInfoDialog::vfunc_1() { return "ItemDropInfoDialog"; }
-MS2_REPLACE_METHOD(0x140C3A0F0, UIItemDropInfoDialog, vfunc_1, 61, 0x3F9626B1);
+CString UIItemDropInfoDialog::GetTypeName() { return "ItemDropInfoDialog"; }
+MS2_REPLACE_METHOD(0x140C3A0F0, UIItemDropInfoDialog, GetTypeName, 61, 0x3F9626B1);
 // @0x140c3a140
 void UIItemDropInfoDialog::OnLoadComplete() {
     UIDialog::OnLoadComplete();

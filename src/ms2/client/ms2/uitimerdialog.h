@@ -5,7 +5,7 @@
 class UITimerDialog : public UITimerBase {
 public:UITimerDialog();
  virtual ~UITimerDialog();
- virtual CString vfunc_1();
+ virtual CString GetTypeName();
  virtual void vfunc_72();
  virtual void OnLoadComplete();
  virtual void vfunc_26();

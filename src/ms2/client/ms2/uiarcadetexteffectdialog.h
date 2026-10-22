@@ -21,7 +21,7 @@ class UIArcadeTextEffectDialog : public UIDialog
 public:
     UIArcadeTextEffectDialog();                                      // 0x140ba7d90
     virtual ~UIArcadeTextEffectDialog();                             //  0 0x140ba7e20 (??_G 0x140ba8230)
-    virtual CString vfunc_1();                                       //  1 0x140ba7e80: "ArcadeTextEffectDialog"
+    virtual CString GetTypeName();                                       //  1 0x140ba7e80: "ArcadeTextEffectDialog"
     virtual void OnLoadComplete();                                   // 22 0x140ba7fa0 (show a pending text)
     virtual void vfunc_43();                                         // 43 0x140ba7ed0 (centre the movie root)
     virtual int vfunc_48();                                          // 48 0x140ba8270: 0x4f82

@@ -85,7 +85,7 @@ UIDecoEditDialog::UIDecoEditDialog()
 }
 
 // @0x14191b3d0
-CString UIDecoEditDialog::vfunc_1()
+CString UIDecoEditDialog::GetTypeName()
 {
     return "DecoEditDialog";
 }

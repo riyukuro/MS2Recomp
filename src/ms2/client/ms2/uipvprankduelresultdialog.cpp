@@ -101,7 +101,7 @@ UIPvPRankDuelResultDialog::~UIPvPRankDuelResultDialog()
 }
 
 // @0x140f90870
-CString UIPvPRankDuelResultDialog::vfunc_1()
+CString UIPvPRankDuelResultDialog::GetTypeName()
 {
     return "PvPRankDuelResultDialog";
 }

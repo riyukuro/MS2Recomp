@@ -38,7 +38,7 @@ Unk_RuManager* FUN_140302b00();
 GameEvent* FUN_14041cb50() { return new GameEventReturnUser; }
 
 // @0x14041cbb0
-CStringW GameEventReturnUser::vfunc_1() { return CStringW(L"GameEventReturnUser"); }
+CStringW GameEventReturnUser::GetTypeName() { return CStringW(L"GameEventReturnUser"); }
 
 // @0x14041cc00
 GameEventReturnUser::GameEventReturnUser()
@@ -88,7 +88,7 @@ MentoringContext::MentoringContext() : m_18(0), m_20(0), m_28(0)
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- hooks ----
-MS2_REPLACE_METHOD(0x14041CBB0, GameEventReturnUser, vfunc_1, 61, 0xE36CC2D1);
+MS2_REPLACE_METHOD(0x14041CBB0, GameEventReturnUser, GetTypeName, 61, 0xE36CC2D1);
 MS2_REPLACE_METHOD(0x14041CD00, GameEventReturnUser, vfunc_3, 66, 0x10EC5821);
 MS2_REPLACE_METHOD(0x14041CD50, GameEventReturnUser, vfunc_4, 66, 0xBAB6C5C6);
 MS2_REPLACE_METHOD(0x14041CDA0, GameEventReturnUser, OnStart, 124, 0x2CA4961C);

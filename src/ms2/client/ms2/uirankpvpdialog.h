@@ -18,7 +18,7 @@ class UIRankPvPDialog : public UIDialog
 public:
     UIRankPvPDialog();                                          // 0x140f91d90
     virtual ~UIRankPvPDialog();                                 //  0 0x140f91f40 (??_G 0x140f97eb0)
-    virtual CString vfunc_1();                                  //  1 0x140f920b0 "RankPvPDialog"
+    virtual CString GetTypeName();                                  //  1 0x140f920b0 "RankPvPDialog"
     virtual void OnLoadInit();                                  // 20 0x140f92100
     virtual void OnLoadComplete();                              // 22 0x140f92120
     virtual void vfunc_26();                                    // 26 0x140f93d50 drop the children

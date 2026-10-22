@@ -89,11 +89,11 @@ ClassObject* CGuideConditionEquipSkill::CreateObject()
 }
 
 // @0x1413a83d0
-CStringW CGuideConditionEquipSkill::vfunc_1()
+CStringW CGuideConditionEquipSkill::GetTypeName()
 {
     return L"CGuideConditionEquipSkill";
 }
-MS2_REPLACE_METHOD(0x1413A83D0, CGuideConditionEquipSkill, vfunc_1, 61, 0x2B5A5407);
+MS2_REPLACE_METHOD(0x1413A83D0, CGuideConditionEquipSkill, GetTypeName, 61, 0x2B5A5407);
 
 // @0x1413a8420
 CGuideConditionEquipSkill::CGuideConditionEquipSkill()
@@ -135,11 +135,11 @@ ClassObject* CGuideConditionConstructable::CreateObject()
 }
 
 // @0x1413a8650
-CStringW CGuideConditionConstructable::vfunc_1()
+CStringW CGuideConditionConstructable::GetTypeName()
 {
     return L"CGuideConditionConstructable";
 }
-MS2_REPLACE_METHOD(0x1413A8650, CGuideConditionConstructable, vfunc_1, 61, 0x849E3953);
+MS2_REPLACE_METHOD(0x1413A8650, CGuideConditionConstructable, GetTypeName, 61, 0x849E3953);
 
 // @0x1413a86a0
 int CGuideConditionConstructable::vfunc_3()
@@ -160,11 +160,11 @@ ClassObject* CGuideConditionIsMyHome::CreateObject()
 }
 
 // @0x1413a8750
-CStringW CGuideConditionIsMyHome::vfunc_1()
+CStringW CGuideConditionIsMyHome::GetTypeName()
 {
     return L"CGuideConditionIsMyHome";
 }
-MS2_REPLACE_METHOD(0x1413A8750, CGuideConditionIsMyHome, vfunc_1, 61, 0x3B53949D);
+MS2_REPLACE_METHOD(0x1413A8750, CGuideConditionIsMyHome, GetTypeName, 61, 0x3B53949D);
 
 // @0x1413a87a0
 int CGuideConditionIsMyHome::vfunc_3()
@@ -182,11 +182,11 @@ ClassObject* CGuideConditionAchieveTab::CreateObject()
 }
 
 // @0x1413a8830
-CStringW CGuideConditionAchieveTab::vfunc_1()
+CStringW CGuideConditionAchieveTab::GetTypeName()
 {
     return L"CGuideConditionAchieveTab";
 }
-MS2_REPLACE_METHOD(0x1413A8830, CGuideConditionAchieveTab, vfunc_1, 61, 0xAB9433D3);
+MS2_REPLACE_METHOD(0x1413A8830, CGuideConditionAchieveTab, GetTypeName, 61, 0xAB9433D3);
 
 // @0x1413a8880
 int CGuideConditionAchieveTab::vfunc_3()
@@ -207,11 +207,11 @@ ClassObject* CGuideConditionEquipItem::CreateObject()
 }
 
 // @0x1413a8960
-CStringW CGuideConditionEquipItem::vfunc_1()
+CStringW CGuideConditionEquipItem::GetTypeName()
 {
     return L"CGuideConditionEquipItem";
 }
-MS2_REPLACE_METHOD(0x1413A8960, CGuideConditionEquipItem, vfunc_1, 61, 0x769C1354);
+MS2_REPLACE_METHOD(0x1413A8960, CGuideConditionEquipItem, GetTypeName, 61, 0x769C1354);
 
 // @0x1413a89b0
 void CGuideConditionEquipItem::vfunc_2(Unk_140165cf0* pElem)
@@ -270,11 +270,11 @@ ClassObject* CGuideConditionUgcManagementTab::CreateObject()
 }
 
 // @0x1413a8f10
-CStringW CGuideConditionUgcManagementTab::vfunc_1()
+CStringW CGuideConditionUgcManagementTab::GetTypeName()
 {
     return L"CGuideConditionUgcManagementTab";
 }
-MS2_REPLACE_METHOD(0x1413A8F10, CGuideConditionUgcManagementTab, vfunc_1, 61, 0xA7946A55);
+MS2_REPLACE_METHOD(0x1413A8F10, CGuideConditionUgcManagementTab, GetTypeName, 61, 0xA7946A55);
 
 // @0x1413a8f60
 int CGuideConditionUgcManagementTab::vfunc_3()
@@ -297,11 +297,11 @@ ClassObject* CGuideConditionDesignItem::CreateObject()
 }
 
 // @0x1413a9020
-CStringW CGuideConditionDesignItem::vfunc_1()
+CStringW CGuideConditionDesignItem::GetTypeName()
 {
     return L"CGuideConditionDesignItem";
 }
-MS2_REPLACE_METHOD(0x1413A9020, CGuideConditionDesignItem, vfunc_1, 61, 0x192C9BF3);
+MS2_REPLACE_METHOD(0x1413A9020, CGuideConditionDesignItem, GetTypeName, 61, 0x192C9BF3);
 
 // @0x1413a9070
 void CGuideConditionDesignItem::vfunc_2(Unk_140165cf0* pElem)
@@ -360,11 +360,11 @@ ClassObject* CGuideConditionExistItem::CreateObject()
 }
 
 // @0x1413a9380
-CStringW CGuideConditionExistItem::vfunc_1()
+CStringW CGuideConditionExistItem::GetTypeName()
 {
     return L"CGuideConditionExistItem";
 }
-MS2_REPLACE_METHOD(0x1413A9380, CGuideConditionExistItem, vfunc_1, 61, 0x322D3F81);
+MS2_REPLACE_METHOD(0x1413A9380, CGuideConditionExistItem, GetTypeName, 61, 0x322D3F81);
 
 // @0x1413a93d0
 void CGuideConditionExistItem::vfunc_2(Unk_140165cf0* pElem)
@@ -410,11 +410,11 @@ ClassObject* CGuideConditionCountItem::CreateObject()
 }
 
 // @0x1413a9670
-CStringW CGuideConditionCountItem::vfunc_1()
+CStringW CGuideConditionCountItem::GetTypeName()
 {
     return L"CGuideConditionCountItem";
 }
-MS2_REPLACE_METHOD(0x1413A9670, CGuideConditionCountItem, vfunc_1, 61, 0x10E998EE);
+MS2_REPLACE_METHOD(0x1413A9670, CGuideConditionCountItem, GetTypeName, 61, 0x10E998EE);
 
 // @0x1413a96c0
 void CGuideConditionCountItem::vfunc_2(Unk_140165cf0* pElem)
@@ -470,11 +470,11 @@ ClassObject* CGuideConditionCountInDoorInstallItem::CreateObject()
 }
 
 // @0x1413a9960
-CStringW CGuideConditionCountInDoorInstallItem::vfunc_1()
+CStringW CGuideConditionCountInDoorInstallItem::GetTypeName()
 {
     return L"CGuideConditionCountInDoorInstallItem";
 }
-MS2_REPLACE_METHOD(0x1413A9960, CGuideConditionCountInDoorInstallItem, vfunc_1, 61, 0x73F62C34);
+MS2_REPLACE_METHOD(0x1413A9960, CGuideConditionCountInDoorInstallItem, GetTypeName, 61, 0x73F62C34);
 
 // @0x1413a99b0
 int CGuideConditionCountInDoorInstallItem::vfunc_3()

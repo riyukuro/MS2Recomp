@@ -192,7 +192,7 @@ UIFittingDollDialog::~UIFittingDollDialog()
 }
 
 // @0x141933340
-CString UIFittingDollDialog::vfunc_1()
+CString UIFittingDollDialog::GetTypeName()
 {
     return "FittingDollDialog";
 }
@@ -228,7 +228,7 @@ int UIFittingDollDialog::vfunc_65()
 void UIFittingDollDialog::vfunc_67()
 {
     DAT_143af25f0 = 0;
-    FUN_14121e760(vfunc_1());
+    FUN_14121e760(GetTypeName());
     FUN_1419caeb0(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
     FUN_1419280e0(FUN_14140ea40(), static_cast<UIDialogEventListener*>(this));
     UIDialog::vfunc_67();
@@ -404,11 +404,11 @@ void UIFittingDollDialog::FUN_141934070()
     if (pPlot != 0)
         bOwner = FUN_1410c8030(pMgr, pPlot->m_nKeyA, pPlot->m_nKeyB) == FUN_141656ad0(pMe);
     int nType = pDoll->FUN_14121c710();
-    FUN_14121e670(vfunc_1(), FUN_14123c580(pMe), DAT_143af25f0, nType == 1);
+    FUN_14121e670(GetTypeName(), FUN_14123c580(pMe), DAT_143af25f0, nType == 1);
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0)
     {
-        pDlg->FUN_1407cba60("bagID", vfunc_1());
+        pDlg->FUN_1407cba60("bagID", GetTypeName());
         pDlg->FUN_1407cb9c0("owner", bOwner);
     }
 }
@@ -416,7 +416,7 @@ void UIFittingDollDialog::FUN_141934070()
 // @0x1419342e0
 void UIFittingDollDialog::FUN_1419342e0()
 {
-    FUN_14121e760(vfunc_1());
+    FUN_14121e760(GetTypeName());
 }
 
 // @0x141934340

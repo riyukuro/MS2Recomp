@@ -15,7 +15,7 @@ class UIPvPResultDialog : public UIDialog
 public:
     UIPvPResultDialog();                                        // 0x1413439a0
     virtual ~UIPvPResultDialog();                               //  0 0x141343a30 (??_G 0x141344a40)
-    virtual CString vfunc_1();                                  //  1 0x141343a70 "PvPResultDialog"
+    virtual CString GetTypeName();                                  //  1 0x141343a70 "PvPResultDialog"
     virtual void OnLoadComplete();                              // 22 0x141343b70
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x1413448f0 "OnClose"
     virtual void vfunc_43();                                    // 43 0x141344990

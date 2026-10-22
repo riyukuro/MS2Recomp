@@ -79,7 +79,7 @@ class NotifyClearAchieve : public NotifyObject
 public:
     NotifyClearAchieve(int nId);                                    // 0x140939030
     virtual ~NotifyClearAchieve();                                  // 0x140939240
-    virtual CStringW vfunc_1();                                     // 0x140db50b0 (notifychangebuff.cpp)
+    virtual CStringW GetTypeName();                                     // 0x140db50b0 (notifychangebuff.cpp)
 
     int m_nId;                                                      // +0x18
 };

@@ -21,7 +21,7 @@ class UIRandomCoupon : public UIHeadUpDisplay
 public:
     UIRandomCoupon();                                               // 0x140bfe4b0 (m_2c = 0x23)
     virtual ~UIRandomCoupon();                                      //  0 0x140bfe590 (??_G 0x140bfeef0)
-    virtual CString vfunc_1();                                      //  1 0x140bfe600 "RandomCoupon"
+    virtual CString GetTypeName();                                      //  1 0x140bfe600 "RandomCoupon"
     virtual void vfunc_2();                                         //  2 0x140bfea40 show: the sound, the layer
     virtual void vfunc_3();                                         //  3 0x140bfea90 hide and reset
     virtual int vfunc_13();                                         // 13 0x140bfe930 close key: play the close

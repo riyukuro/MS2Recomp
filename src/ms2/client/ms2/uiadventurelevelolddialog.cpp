@@ -265,7 +265,7 @@ UIAdventureLevelOldDialog::~UIAdventureLevelOldDialog()
 }
 
 // @0x140ba54f0
-CString UIAdventureLevelOldDialog::vfunc_1()
+CString UIAdventureLevelOldDialog::GetTypeName()
 {
     return "AdventureLevelOldDialog";
 }
@@ -480,7 +480,7 @@ int UIAdventureLevelOldDialog::FUN_140ba63d0(ASObj& obj, unsigned int nLevel)
     spItem->FUN_140526c70(pReward->m_c);
     int nIconType = 0x415;
     CString strBindID;
-    strBindID.Format("%s.%d", (LPCSTR)vfunc_1(), m_binds.GetCount() + 1);
+    strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
     FUN_141415450(strBindID, spItem, 0, nIconType, 0x800);
     obj.FUN_1407cba60("binding", strBindID);
     m_binds.Add(strBindID);
@@ -511,7 +511,7 @@ int UIAdventureLevelOldDialog::FUN_140ba66a0(ASObj& obj, unsigned int nLevel)
     param.m_nTipArg = 4;
     param.m_strCount = FUN_1402bad60("{0}", &pReward->m_c);
     CString strBindID;
-    strBindID.Format("%s.%d", (LPCSTR)vfunc_1(), m_binds.GetCount() + 1);
+    strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
     FUN_141415560(strBindID, &param);
     obj.FUN_1407cba60("binding", strBindID);
     m_binds.Add(strBindID);

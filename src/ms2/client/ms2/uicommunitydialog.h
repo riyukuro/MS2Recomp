@@ -26,7 +26,7 @@ class UICommunityDialog : public UIDialog, public UIUGCEventListener, public UIB
 public:
     UICommunityDialog();                                        // 0x1418d3190
     virtual ~UICommunityDialog();                               //  0 0x1418d32c0 (??_G 0x1418d8f10)
-    virtual CString vfunc_1();                                  //  1 0x1418d3bf0 "CommunityDialog"
+    virtual CString GetTypeName();                                  //  1 0x1418d3bf0 "CommunityDialog"
     virtual int vfunc_13();                                     // 13 0x1418d3c40 Esc / Enter ends the memo edit
     virtual void OnLoadComplete();                              // 22 0x1418d3650
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x1418d3d70
@@ -97,7 +97,7 @@ class UICommunityQueryDialog : public UIModalDialog
 public:
     UICommunityQueryDialog();                                   // 0x1418da510
     virtual ~UICommunityQueryDialog();                          //  0 0x1418da5e0 (??_G 0x1418dcb30)
-    virtual CString vfunc_1();                                  //  1 0x1418da870 "CommunityQueryDialog"
+    virtual CString GetTypeName();                                  //  1 0x1418da870 "CommunityQueryDialog"
     virtual int vfunc_13();                                     // 13 0x1418db5b0 Enter / Tab keys
     virtual void OnLoadComplete();                              // 22 0x1418da6b0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x1418da8c0

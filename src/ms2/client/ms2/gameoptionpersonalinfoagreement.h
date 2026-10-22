@@ -17,7 +17,7 @@ public:
     CGameOptionPersonalInfoAgreement(int nId, int nType);        // 0x140a45d40
     virtual ~CGameOptionPersonalInfoAgreement();                 // 0x140a45da0
 
-    virtual CString vfunc_1();                                   // 0x140a46340
+    virtual CString GetTypeName();                                   // 0x140a46340
     virtual void vfunc_3(int n);                                 // 0x140a45dd0
     virtual void vfunc_4(int n);                                 // 0x140a45e20
     virtual int vfunc_5(const char* pszName, void* pArg, int nArg); // 0x140a45e50

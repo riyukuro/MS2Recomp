@@ -53,7 +53,7 @@ class UIVideoContents : public UIObject
 public:
     UIVideoContents();
     virtual ~UIVideoContents();                                             //  0 0x14135b3e0 (??_G)
-    virtual CString vfunc_1();                                              //  1 0x14135aaf0
+    virtual CString GetTypeName();                                              //  1 0x14135aaf0
     virtual int vfunc_13();                                                 // 13 0x14135af90
     virtual void OnLoadComplete();                                          // 22 0x14135af20
     virtual void vfunc_41(const Scaleform::GFx::Value& root);              // 41 0x14135b0a0

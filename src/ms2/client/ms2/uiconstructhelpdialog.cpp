@@ -77,7 +77,7 @@ UIConstructHelpDialog::~UIConstructHelpDialog()
 }
 
 // @0x141905f60
-CString UIConstructHelpDialog::vfunc_1()
+CString UIConstructHelpDialog::GetTypeName()
 {
     return "ConstructHelpDialog";
 }

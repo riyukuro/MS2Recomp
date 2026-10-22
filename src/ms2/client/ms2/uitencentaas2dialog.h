@@ -38,7 +38,7 @@ public:
     UITencentAas2Dialog();                                          // 0x140e988a0
     virtual ~UITencentAas2Dialog();                                 // 0x140e989c0 (??_G 0x140e99aa0, ??_E thunk 0x140e99a90)
 
-    virtual CString vfunc_1();                                      //  1 0x140e98b20
+    virtual CString GetTypeName();                                      //  1 0x140e98b20
     virtual void vfunc_8(int nVisible);                             //  8 0x140e98b70
     virtual void vfunc_16();                                        // 16 0x140e99320
     virtual void OnLoadComplete();                                  // 22 0x140e98cd0

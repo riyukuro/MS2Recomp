@@ -19,7 +19,7 @@ class UIEnchantScrollDialog : public UIDialog
 public:
     UIEnchantScrollDialog();                                    // 0x140f3b490
     virtual ~UIEnchantScrollDialog() = default;                        //  0 0x140f3f140 (??_G 0x140f3f280)
-    virtual CString vfunc_1();                                      //  1 0x140f3b530 "EnchantScrollDialog"
+    virtual CString GetTypeName();                                      //  1 0x140f3b530 "EnchantScrollDialog"
     virtual void vfunc_15();                                        // 15 0x140f3b810 (empty)
     virtual void OnLoadComplete();                                  // 22 0x140f3b650 shows the scroll
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140f3b680 onEnchant

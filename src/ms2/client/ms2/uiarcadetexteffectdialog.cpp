@@ -34,7 +34,7 @@ UIArcadeTextEffectDialog::~UIArcadeTextEffectDialog()
 }
 
 // @0x140ba7e80
-CString UIArcadeTextEffectDialog::vfunc_1()
+CString UIArcadeTextEffectDialog::GetTypeName()
 {
     return "ArcadeTextEffectDialog";
 }

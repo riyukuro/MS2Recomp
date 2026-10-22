@@ -84,11 +84,11 @@ UISmartPush::~UISmartPush()
 }
 
 // @0x140fa3ba0
-CString UISmartPush::vfunc_1()
+CString UISmartPush::GetTypeName()
 {
     return "SmartPush";
 }
-MS2_REPLACE_METHOD(0x140FA3BA0, UISmartPush, vfunc_1, 61, 0x3DDD7BA2);
+MS2_REPLACE_METHOD(0x140FA3BA0, UISmartPush, GetTypeName, 61, 0x3DDD7BA2);
 
 // @0x140fa3bf0
 void UISmartPush::OnLoadComplete()

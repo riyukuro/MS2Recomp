@@ -52,7 +52,7 @@ class UIUpperHudDialog : public UIHeadUpDisplay, public UIStatusEventListener
 public:
     UIUpperHudDialog();
     virtual ~UIUpperHudDialog();
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual int vfunc_13();
     virtual void vfunc_15();
     virtual void OnLoadComplete();
@@ -189,7 +189,7 @@ class UIVisitorsBookDialog : public UIWebBrowserBase
 {
 public:
     UIVisitorsBookDialog();                                                 // 0x14135b540
-    virtual CString vfunc_1();                                              //  1 0x14135b5c0
+    virtual CString GetTypeName();                                              //  1 0x14135b5c0
     virtual void OnLoadComplete();                                          // 22 0x14135b610
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x14135b8d0
     virtual int vfunc_48();                                                 // 48 0x14135bc10
@@ -203,7 +203,7 @@ class UIVisualEffectDialog : public UIDialog
 public:
     UIVisualEffectDialog();                                                 // 0x14135bc20
     virtual ~UIVisualEffectDialog();                                        //  0 0x14135bc70
-    virtual CString vfunc_1();                                              //  1 0x14135bcb0
+    virtual CString GetTypeName();                                              //  1 0x14135bcb0
     virtual void OnLoadComplete();                                          // 22 0x14135bd00
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x14135c5f0
     virtual int vfunc_48();                                                 // 48 0x14135dea0
@@ -232,7 +232,7 @@ class UIWeaponDummyDialog : public UIDialog
 public:
     UIWeaponDummyDialog();                                                  // 0x14135e1c0
     virtual ~UIWeaponDummyDialog();                                         //  0 0x14135e250
-    virtual CString vfunc_1();                                              //  1 0x14135e290
+    virtual CString GetTypeName();                                              //  1 0x14135e290
     virtual void OnLoadComplete();                                          // 22 0x14135e2e0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x14135e3f0
     virtual void vfunc_67();                                                // 67 0x14135e540

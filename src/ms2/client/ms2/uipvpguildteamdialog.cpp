@@ -159,11 +159,11 @@ UIPvPGuildTeamDialog::~UIPvPGuildTeamDialog()
 }
 
 // @0x141339880
-CString UIPvPGuildTeamDialog::vfunc_1()
+CString UIPvPGuildTeamDialog::GetTypeName()
 {
     return "PvPGuildTeamDialog";
 }
-MS2_REPLACE_METHOD(0x141339880, UIPvPGuildTeamDialog, vfunc_1, 61, 0x9135AD1C);
+MS2_REPLACE_METHOD(0x141339880, UIPvPGuildTeamDialog, GetTypeName, 61, 0x9135AD1C);
 
 // @0x1413398d0
 int UIPvPGuildTeamDialog::vfunc_65()

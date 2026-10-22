@@ -34,7 +34,7 @@ public:
     };
 
     UIPetSystemDialog();                                        // 0x140e73440
-    virtual CString vfunc_1();                                  //  1 0x140e73540 "PetSystemDialog"
+    virtual CString GetTypeName();                                  //  1 0x140e73540 "PetSystemDialog"
     virtual void OnLoadComplete();                              // 22 0x140e73db0 fill "m_buttonBar"
     virtual void vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, void* p4);     // 25 0x140e74360
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140e74120

@@ -73,7 +73,7 @@ public:
 
     UIDungeonControlCenter();                                   // 0x140c0aea0
     virtual ~UIDungeonControlCenter();                          // 0x140c0af60
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual void vfunc_67();
     virtual void OnLoadComplete();
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

@@ -12,7 +12,7 @@
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIHomeSaveSlotDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x140faca40 ; unique
 // MS2-PIN: ??$Call@VUIHomeSaveSlotDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAVUIHomeSaveSlotDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAVUIHomeSaveSlotDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@HAEBVCMsgBoxData@@@Z 0x140faca80 ; unique
 // MS2-PINS-END tplpin
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIHomeSaveSlotDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140fac9e0
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIHomeSaveSlotDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140fac9e0
 // MS2-PIN: ?GetCount@?$CAtlArray@V?$MS2Ptr@VUnk_HomeSlot@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_HomeSlot@@@@@ATL@@@ATL@@QEBA_KXZ 0x140fac790
 // MS2-PIN: ?GetCount@?$CAtlArray@V?$MS2Ptr@VUnk_BlueprintSlot@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_BlueprintSlot@@@@@ATL@@@ATL@@QEBA_KXZ 0x140fac7a0
 // MS2-PIN: ?Release@?$MS2Ptr@VUnk_HomeSlot@@@@AEAAXXZ 0x140fac8c0
@@ -142,11 +142,11 @@ UIHomeSaveSlotDialog::~UIHomeSaveSlotDialog()
 }
 
 // @0x140fa9f60
-CString UIHomeSaveSlotDialog::vfunc_1()
+CString UIHomeSaveSlotDialog::GetTypeName()
 {
     return CString("HomeSaveSlotDialog");
 }
-MS2_REPLACE_METHOD(0x140FA9F60, UIHomeSaveSlotDialog, vfunc_1, 61, 0xE5D59A4F);
+MS2_REPLACE_METHOD(0x140FA9F60, UIHomeSaveSlotDialog, GetTypeName, 61, 0xE5D59A4F);
 
 // @0x140fa9fb0
 void UIHomeSaveSlotDialog::OnLoadComplete()

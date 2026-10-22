@@ -49,7 +49,7 @@ class CSidePopupCondition : public ClassObject
 public:
     static ClassObject* CreateObject();                     // 0x140e8d770
     CSidePopupCondition();                                  // 0x140e8d820
-    virtual CStringW vfunc_1();                             // 1 0x140e8d7d0 class name
+    virtual CStringW GetTypeName();                             // 1 0x140e8d7d0 class name
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x140e8d860 Load: "key"
     // @0x140e91ba0
     virtual int vfunc_3() { return 1; }                     // 3 the popup may show (Find)
@@ -65,7 +65,7 @@ class CSidePopupConditionQuestAccept : public CSidePopupCondition
 {
 public:
     static ClassObject* CreateObject();                     // 0x140e8d8a0
-    virtual CStringW vfunc_1();                             // 1 0x140e8d900
+    virtual CStringW GetTypeName();                             // 1 0x140e8d900
     CSidePopupConditionQuestAccept();                       // 0x140e8d950
 };
 
@@ -73,7 +73,7 @@ class CSidePopupConditionQuestSatisfied : public CSidePopupCondition
 {
 public:
     static ClassObject* CreateObject();                     // 0x140e8d990
-    virtual CStringW vfunc_1();                             // 1 0x140e8d9f0
+    virtual CStringW GetTypeName();                             // 1 0x140e8d9f0
     CSidePopupConditionQuestSatisfied();                    // 0x140e8da40
     virtual int vfunc_4();                                  // 4 0x140e8da80 the quest is complete
 };
@@ -82,7 +82,7 @@ class CSidePopupConditionQuestComplete : public CSidePopupCondition
 {
 public:
     static ClassObject* CreateObject();                     // 0x140e8db30
-    virtual CStringW vfunc_1();                             // 1 0x140e8db90
+    virtual CStringW GetTypeName();                             // 1 0x140e8db90
     CSidePopupConditionQuestComplete();                     // 0x140e8dbe0
 };
 
@@ -90,7 +90,7 @@ class CSidePopupConditionBossRegen : public CSidePopupCondition
 {
 public:
     static ClassObject* CreateObject();                     // 0x140e8dc20
-    virtual CStringW vfunc_1();                             // 1 0x140e8dc80
+    virtual CStringW GetTypeName();                             // 1 0x140e8dc80
     CSidePopupConditionBossRegen();                         // 0x140e8dcd0
 };
 
@@ -99,7 +99,7 @@ class CSidePopupConditionQuestProgress : public CSidePopupCondition
 {
 public:
     static ClassObject* CreateObject();                     // 0x140e8dd10
-    virtual CStringW vfunc_1();                             // 1 0x140e8dd70
+    virtual CStringW GetTypeName();                             // 1 0x140e8dd70
     CSidePopupConditionQuestProgress();                     // 0x140e8ddc0
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x140e8de10 + "args"
     virtual int vfunc_3();                                  // 3 0x140e8de60
@@ -152,7 +152,7 @@ class UISidePopupTalk : public UIHeadUpDisplay, public UIQuestEventListener, pub
 public:
     UISidePopupTalk();                                                      // 0x140e86d80 (m_2c = 0x1a)
     virtual ~UISidePopupTalk();                                             //  0 0x140e87040 (??_G 0x140e890f0)
-    virtual CString vfunc_1();                                              //  1 0x140e87260 "SidePopupTalk"
+    virtual CString GetTypeName();                                              //  1 0x140e87260 "SidePopupTalk"
     virtual void vfunc_2();                                                 //  2 0x140e878d0 show
     virtual void vfunc_3();                                                 //  3 0x140e878f0 hide: stop the voices
     virtual void OnLoadComplete();                                          // 22 0x140e872b0 push the pending popups
@@ -202,7 +202,7 @@ class UISelectSuperWorldChatDialog : public UIDialog
 public:
     UISelectSuperWorldChatDialog();                                         // 0x140e8bcb0
     virtual ~UISelectSuperWorldChatDialog();                                //  0 0x140e8bde0 (??_G 0x140e8d3c0)
-    virtual CString vfunc_1();                                              //  1 0x140e8be80 "SelectSuperWorldChatDialog"
+    virtual CString GetTypeName();                                              //  1 0x140e8be80 "SelectSuperWorldChatDialog"
     virtual void OnLoadComplete();                                          // 22 0x140e8bf40 list the chat items
     virtual void vfunc_26();                                                // 26 0x140e8bed0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

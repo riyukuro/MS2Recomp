@@ -406,7 +406,7 @@ void UICommunityDialog::vfunc_79(void* p)
 }
 
 // @0x1418d3bf0
-CString UICommunityDialog::vfunc_1()
+CString UICommunityDialog::GetTypeName()
 {
     return CString("CommunityDialog");
 }
@@ -1630,7 +1630,7 @@ void UICommunityQueryDialog::vfunc_79(void* p)
 }
 
 // @0x1418da870
-CString UICommunityQueryDialog::vfunc_1()
+CString UICommunityQueryDialog::GetTypeName()
 {
     return CString("CommunityQueryDialog");
 }

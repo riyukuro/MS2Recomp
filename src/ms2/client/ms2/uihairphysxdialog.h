@@ -63,7 +63,7 @@ class UIHairPhysxDialog : public UIDialog, public IItemCustomizeEventListener
 public:
     UIHairPhysxDialog();                                // 0x141980ed0
     virtual ~UIHairPhysxDialog() = default;             // 0x141985920 (??_G 0x141985a10)
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual void vfunc_15();
     virtual void OnLoadComplete();
     virtual void vfunc_26();

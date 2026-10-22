@@ -456,11 +456,11 @@ void CGameOptionInputDefault::vfunc_12()
 MS2_REPLACE_METHOD(0x141251E90, CGameOptionInputDefault, vfunc_12, 792, 0xC9B934FA);
 
 // @0x1412521b0
-CString CGameOptionInputDefault::vfunc_1()
+CString CGameOptionInputDefault::GetTypeName()
 {
     return CString("GameOptionInput");
 }
-MS2_REPLACE_METHOD(0x1412521B0, CGameOptionInputDefault, vfunc_1, 61, 0x6290AFE9);
+MS2_REPLACE_METHOD(0x1412521B0, CGameOptionInputDefault, GetTypeName, 61, 0x6290AFE9);
 
 // @0x141252200
 void CGameOptionInputDefault::FUN_141252200(int nPadKind)

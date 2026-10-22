@@ -22,7 +22,7 @@ class UITypingGameDialog : public UIDialog
 public:
     UITypingGameDialog();                                           // 0x140ee52f0
     virtual ~UITypingGameDialog();                                  //  0 0x140ee56b0 (??_G 0x140ee6c70)
-    virtual CString vfunc_1();                                      //  1 0x140ee5730 "TypingGameDialog"
+    virtual CString GetTypeName();                                      //  1 0x140ee5730 "TypingGameDialog"
     virtual int vfunc_13();                                         // 13 0x140ee5780
     virtual void OnLoadComplete();                                  // 22 0x140ee58b0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140ee5960

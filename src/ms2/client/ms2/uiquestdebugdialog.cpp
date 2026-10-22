@@ -348,8 +348,8 @@ UIQuestDebugDialog::~UIQuestDebugDialog()
     FUN_140bfc4b0()->FUN_141aa8850(this);
 }
 // @0x141a930a0
-CString UIQuestDebugDialog::vfunc_1() { return "QuestDebugDialog"; }
-MS2_REPLACE_METHOD(0x141A930A0, UIQuestDebugDialog, vfunc_1, 61, 0x98C8DB38);
+CString UIQuestDebugDialog::GetTypeName() { return "QuestDebugDialog"; }
+MS2_REPLACE_METHOD(0x141A930A0, UIQuestDebugDialog, GetTypeName, 61, 0x98C8DB38);
 
 // @0x141a930f0
 void UIQuestDebugDialog::OnLoadComplete()

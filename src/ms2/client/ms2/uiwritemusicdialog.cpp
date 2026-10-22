@@ -389,7 +389,7 @@ UIWriteMusicDialog::~UIWriteMusicDialog()
 }
 
 // @0x140fedd90
-CString UIWriteMusicDialog::vfunc_1()
+CString UIWriteMusicDialog::GetTypeName()
 {
     return "WriteMusicDialog";
 }

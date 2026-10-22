@@ -116,7 +116,7 @@ template <> Unk_UeBag* MS2Ptr<Unk_UeBag>::operator->() const;       // 0x140acd9
 
 // @0x140fb5ca0
 UIUnlimitedEnchantDialog::UIUnlimitedEnchantDialog()
-    : m_binder(vfunc_1())
+    : m_binder(GetTypeName())
 {
     m_2c = 0x1b;
     FUN_1422dc3b0(1);
@@ -129,11 +129,11 @@ UIUnlimitedEnchantDialog::~UIUnlimitedEnchantDialog()
 }
 
 // @0x140fb5de0
-CString UIUnlimitedEnchantDialog::vfunc_1()
+CString UIUnlimitedEnchantDialog::GetTypeName()
 {
     return "UnlimitedEnchantDialog";
 }
-MS2_REPLACE_METHOD(0x140FB5DE0, UIUnlimitedEnchantDialog, vfunc_1, 61, 0x717F4FF3);
+MS2_REPLACE_METHOD(0x140FB5DE0, UIUnlimitedEnchantDialog, GetTypeName, 61, 0x717F4FF3);
 
 // @0x140fb5e30
 int UIUnlimitedEnchantDialog::vfunc_65()
@@ -144,7 +144,7 @@ int UIUnlimitedEnchantDialog::vfunc_65()
 // @0x140fb5e50
 void UIUnlimitedEnchantDialog::vfunc_67()
 {
-    FUN_14141f970(vfunc_1());
+    FUN_14141f970(GetTypeName());
     UIDialog::vfunc_67();
     FUN_141b1feb0(FUN_140967100());
 }
@@ -344,15 +344,15 @@ void UIUnlimitedEnchantDialog::FUN_140fb6ed0()
             }
             equips.GetNext(pos);
         }
-        FUN_14141f970(vfunc_1());
+        FUN_14141f970(GetTypeName());
         MS2Ptr<CItem> (*pfnGetItem)(const ATL::CAtlArray<MS2Ptr<CItem> >&, int) = FUN_141420330;
-        FUN_14141f770(vfunc_1(), (unsigned)m_items.GetCount(), m_items, pfnGetItem, 0x535, 8);
+        FUN_14141f770(GetTypeName(), (unsigned)m_items.GetCount(), m_items, pfnGetItem, 0x535, 8);
         MS2Ptr<Unk_UeBag> spBag = FUN_140ba4b70("m_itemBag");
         if (spBag.get() != 0)
         {
             spBag->FUN_1422dcca0(-1);
             spBag->FUN_1422dd1d0();
-            spBag->FUN_1407cba60("bagId", vfunc_1());
+            spBag->FUN_1407cba60("bagId", GetTypeName());
             spBag->vfunc_24(true);
         }
     }

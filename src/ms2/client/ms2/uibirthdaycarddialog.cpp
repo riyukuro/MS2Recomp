@@ -59,11 +59,11 @@ UIBirthdayCardDialog::~UIBirthdayCardDialog()
 }
 
 // @0x140bb9810
-CString UIBirthdayCardDialog::vfunc_1()
+CString UIBirthdayCardDialog::GetTypeName()
 {
     return "BirthdayCardDialog";
 }
-MS2_REPLACE_METHOD(0x140BB9810, UIBirthdayCardDialog, vfunc_1, 61, 0x1B4B8DDF);
+MS2_REPLACE_METHOD(0x140BB9810, UIBirthdayCardDialog, GetTypeName, 61, 0x1B4B8DDF);
 
 // @0x140bb9860
 int UIBirthdayCardDialog::vfunc_65()

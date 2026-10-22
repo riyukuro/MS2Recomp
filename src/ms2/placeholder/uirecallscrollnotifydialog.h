@@ -20,7 +20,7 @@ class UIRecallScrollNotifyDialog : public UIBuiltInDialog
 public:
     UIRecallScrollNotifyDialog();                           // 0x14129ba60
     virtual ~UIRecallScrollNotifyDialog();                  //  0 0x14129cdc0 (??_G 0x14129ce30)
-    virtual CString vfunc_1();                              //  1 0x14129bc10
+    virtual CString GetTypeName();                              //  1 0x14129bc10
     virtual void OnLoadInit();                              // 20 0x14129bd50
     virtual void OnLoadComplete();                          // 22 0x14129bdd0
     virtual void vfunc_26();                                // 26 0x14129bd70 forget the clips

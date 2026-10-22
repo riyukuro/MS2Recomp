@@ -11,7 +11,7 @@ class UIDebugTooltip : public UIObject
 public:
     UIDebugTooltip(CString strName);                                // 0x14191a7e0
     virtual ~UIDebugTooltip();                                      //  0 0x14191a920 (??_G 0x14191b330)
-    virtual CString vfunc_1();                                      //  1 0x14191a9a0 "CubeUGCHead"
+    virtual CString GetTypeName();                                      //  1 0x14191a9a0 "CubeUGCHead"
     virtual void vfunc_2();                                         //  2 0x14191ad10 show
     virtual void vfunc_3();                                         //  3 0x14191ad60 hide
     virtual void vfunc_15();                                        // 15 0x14191b060 per-frame update

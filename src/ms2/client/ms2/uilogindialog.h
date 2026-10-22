@@ -21,7 +21,7 @@ class UILoginDialog : public UIDialog
 public:
     UILoginDialog();                                            // 0x1419e0cb0
     virtual ~UILoginDialog();                                   //  0 0x1419e0e80 (??_G 0x1419e3130)
-    virtual CString vfunc_1();                                  //  1 0x1419e0ff0 "LoginDialog"
+    virtual CString GetTypeName();                                  //  1 0x1419e0ff0 "LoginDialog"
     virtual int vfunc_13();                                     // 13 0x1419e19e0 enter / tab key
     virtual void OnLoadComplete();                              // 22 0x1419e1690 initData
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x1419e1ad0

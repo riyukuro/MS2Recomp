@@ -39,11 +39,11 @@ UISceneEntity::~UISceneEntity()
 }
 
 // @0x1422e78d0
-CString UISceneEntity::vfunc_1()
+CString UISceneEntity::GetTypeName()
 {
     return "SceneEntity";
 }
-MS2_REPLACE_METHOD(0x1422e78d0, UISceneEntity, vfunc_1, 61, 0xDB1893F8);
+MS2_REPLACE_METHOD(0x1422e78d0, UISceneEntity, GetTypeName, 61, 0xDB1893F8);
 
 // @0x1422e7920
 bool UISceneEntity::vfunc_47()

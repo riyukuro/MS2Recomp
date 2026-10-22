@@ -39,7 +39,7 @@ class UIQuestDebugDialog : public UIDialog, public UIQuestEventListener
 public:
     UIQuestDebugDialog();
     virtual ~UIQuestDebugDialog();
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual void OnLoadComplete();
     virtual void vfunc_26();
     virtual int vfunc_28(const char*, const Scaleform::GFx::Value*, unsigned int);

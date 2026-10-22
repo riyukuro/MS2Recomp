@@ -21,11 +21,11 @@ CGameOptionAccount::~CGameOptionAccount()
 }
 
 // @0x140cfb280
-CString CGameOptionAccount::vfunc_1()
+CString CGameOptionAccount::GetTypeName()
 {
     return "GameOptionAccount";
 }
-MS2_REPLACE_METHOD(0x140CFB280, CGameOptionAccount, vfunc_1, 61, 0x7B28F3AC);
+MS2_REPLACE_METHOD(0x140CFB280, CGameOptionAccount, GetTypeName, 61, 0x7B28F3AC);
 
 // @0x140cfb2d0
 int CGameOptionAccount::vfunc_5(const char* pszName, void* pArg, int nArg)

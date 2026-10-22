@@ -17,7 +17,7 @@ class UISystemMenuDialog : public UIDialog, public UIServerEventListener
 public:
     UISystemMenuDialog();                               // 0x141b12ad0
     virtual ~UISystemMenuDialog() {}                     // 0x141b12ba0 (??_G 0x141b15620)
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual int vfunc_65();
     virtual void vfunc_67();
     virtual void OnLoadInit();

@@ -112,7 +112,7 @@ UIWeddingInvitationDialog::~UIWeddingInvitationDialog()
 }
 
 // @0x140fe5860
-CString UIWeddingInvitationDialog::vfunc_1()
+CString UIWeddingInvitationDialog::GetTypeName()
 {
     return "WeddingInvitationDialog";
 }

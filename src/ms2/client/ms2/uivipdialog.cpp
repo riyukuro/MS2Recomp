@@ -122,7 +122,7 @@ UIVIPDialog::~UIVIPDialog()
 }
 
 // @0x140fb7ee0
-CString UIVIPDialog::vfunc_1()
+CString UIVIPDialog::GetTypeName()
 {
     return CString("VIPDialog");
 }

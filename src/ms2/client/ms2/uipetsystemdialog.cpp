@@ -78,7 +78,7 @@ UIPetSystemDialog::UIPetSystemDialog()
 }
 
 // @0x140e73540
-CString UIPetSystemDialog::vfunc_1()
+CString UIPetSystemDialog::GetTypeName()
 {
     return "PetSystemDialog";
 }

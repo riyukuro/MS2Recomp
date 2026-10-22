@@ -49,7 +49,7 @@ class UIItemBlueprintCreateDialog : public UIDialog {
 public:
     UIItemBlueprintCreateDialog();
     virtual ~UIItemBlueprintCreateDialog();
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual void OnLoadComplete();
     virtual void vfunc_26();
     virtual void vfunc_72();

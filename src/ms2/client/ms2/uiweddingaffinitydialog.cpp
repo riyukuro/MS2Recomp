@@ -69,7 +69,7 @@ UIWeddingAffinityDialog::~UIWeddingAffinityDialog()
 }
 
 // @0x140fc2150
-CString UIWeddingAffinityDialog::vfunc_1()
+CString UIWeddingAffinityDialog::GetTypeName()
 {
     return "WeddingAffinityDialog";
 }

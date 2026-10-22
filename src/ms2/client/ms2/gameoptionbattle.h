@@ -30,7 +30,7 @@ class CGameOptionBattle : public CBaseOption
 public:
     CGameOptionBattle(int nId, int nType);                             // 0x141246d40
     virtual ~CGameOptionBattle();                                       // 0x141246da0
-    virtual CString vfunc_1();                                      // 0x1412481f0
+    virtual CString GetTypeName();                                      // 0x1412481f0
     virtual void vfunc_3(int n);                                    // 0x141246dd0
     virtual void vfunc_4(int n);                                    // 0x141246e20
     virtual int vfunc_5(const char* pszName, void* pArg, int nArg); // 0x141246e50

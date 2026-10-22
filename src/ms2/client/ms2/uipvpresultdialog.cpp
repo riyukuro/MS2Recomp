@@ -118,7 +118,7 @@ UIPvPResultDialog::~UIPvPResultDialog()
 }
 
 // @0x141343a70
-CString UIPvPResultDialog::vfunc_1()
+CString UIPvPResultDialog::GetTypeName()
 {
     return "PvPResultDialog";
 }

@@ -35,7 +35,7 @@ public:
 
     UIStoreDialog();                                            // 0x141b0ebd0
     virtual ~UIStoreDialog();                                   //  0 0x141b0ed50 (??_G 0x141b12530)
-    virtual CString vfunc_1();                                  //  1 0x141b0ee20 "StoreDialog"
+    virtual CString GetTypeName();                                  //  1 0x141b0ee20 "StoreDialog"
     virtual int vfunc_13();                                     // 13 0x141b10290 Enter key: apply the search text
     virtual void vfunc_15();                                    // 15 0x141b10210 per-frame: refresh the bag / the expand text
     virtual void OnLoadInit();                                  // 20 0x141b0f430 register the listeners

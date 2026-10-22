@@ -359,7 +359,7 @@ UICashAttendDialog::~UICashAttendDialog()
     FUN_140933220()->FUN_140da5490(0x66,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc4390));
 }
 // @0x140bc3250
-CString UICashAttendDialog::vfunc_1() { return "CashAttendGiftDialog"; }
+CString UICashAttendDialog::GetTypeName() { return "CashAttendGiftDialog"; }
 
 // @0x140bc32a0
 // MS2-FUNCTIONAL: bind and row-construction temporaries laid out differently (23 bytes); calls and logic identical.

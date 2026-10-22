@@ -89,7 +89,7 @@ public:
     virtual void OnLoadInit();
     virtual void OnLoadComplete();
     virtual void vfunc_26();
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual int vfunc_28(const char*, const Scaleform::GFx::Value*, unsigned int);
     bool FUN_140edbc00(int result, const CMsgBoxData& data);
     void FUN_140edbc60();

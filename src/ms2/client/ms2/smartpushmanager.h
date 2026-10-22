@@ -19,7 +19,7 @@
 class CSmartPush : public CPtred
 {
 public:
-    virtual void vfunc_1() = 0;                                 //  1 0x08 (not called by the manager)
+    virtual void GetTypeName() = 0;                                 //  1 0x08 (not called by the manager)
     virtual void vfunc_2() = 0;                                 //  2 0x10 after-update hook
     virtual void vfunc_3() = 0;                                 //  3 0x18 (event: no argument)
     virtual void vfunc_4(int nValue) = 0;                       //  4 0x20 (event: one argument)

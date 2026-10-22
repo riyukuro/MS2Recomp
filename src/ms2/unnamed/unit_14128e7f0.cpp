@@ -183,7 +183,7 @@ UIBuffBalloon::~UIBuffBalloon()
 }
 
 // @0x14128eef0
-CString UIBuffBalloon::vfunc_1()
+CString UIBuffBalloon::GetTypeName()
 {
     return CString("BuffBalloon");
 }
@@ -310,7 +310,7 @@ MS2_REPLACE_METHOD(0x14128ec60, UIBuffBalloon::Entity, vfunc_8, 70, 0xB6BB7C5F);
 MS2_REPLACE_METHOD(0x14128ecb0, UIBuffBalloon::Entity, vfunc_9, 52, 0x04D723C6);
 MS2_REPLACE_METHOD(0x14128ecf0, UIBuffBalloon::Entity, FUN_14128ecf0, 178, 0xD3B5E15B);
 MS2_REPLACE_METHOD(0x14128edb0, UIBuffBalloon::Entity, FUN_14128edb0, 51, 0xBB112FB0);
-MS2_REPLACE_METHOD(0x14128eef0, UIBuffBalloon, vfunc_1, 61, 0x66ADCDFE);
+MS2_REPLACE_METHOD(0x14128eef0, UIBuffBalloon, GetTypeName, 61, 0x66ADCDFE);
 MS2_REPLACE_METHOD(0x14128ef40, UIBuffBalloon, OnLoadComplete, 42, 0x70E8ED61);
 MS2_REPLACE(0x14128eff0, FUN_14128eff0, 50, 0x15407F24);
 MS2_REPLACE_METHOD(0x14128f030, UIBuffBalloon, FUN_14128f030, 465, 0x0B5FAD34);

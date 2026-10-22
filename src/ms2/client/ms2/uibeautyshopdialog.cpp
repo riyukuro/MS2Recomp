@@ -562,7 +562,7 @@ UIBeautyShopDialog::~UIBeautyShopDialog()
 }
 
 // @0x1418c3b00
-CString UIBeautyShopDialog::vfunc_1()
+CString UIBeautyShopDialog::GetTypeName()
 {
     return "BeautyShopDialog";
 }
@@ -2375,7 +2375,7 @@ UIBillDialog::~UIBillDialog()
 }
 
 // @0x1418cd200
-CString UIBillDialog::vfunc_1()
+CString UIBillDialog::GetTypeName()
 {
     return CString("BillDialog");
 }

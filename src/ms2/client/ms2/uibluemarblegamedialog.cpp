@@ -147,7 +147,7 @@ UIBlueMarbleGameDialog::UIBlueMarbleGameDialog()
 }
 
 // @0x140f21680
-CString UIBlueMarbleGameDialog::vfunc_1()
+CString UIBlueMarbleGameDialog::GetTypeName()
 {
     return "BlueMarbleGameDialog";
 }
@@ -522,7 +522,7 @@ void UIBlueMarbleGameDialog::FUN_140f23da0()
 CString UIBlueMarbleGameDialog::FUN_140f23f10(int nItemId, int nRarity, int nCount)
 {
     size_t nIndex = m_boundIds.GetCount();
-    CString strId = Unk_SocketFormat("{0}_{1}", vfunc_1(), nIndex);
+    CString strId = Unk_SocketFormat("{0}_{1}", GetTypeName(), nIndex);
     MS2Ptr<CItem> spItem(new CItem);
     if (!spItem->FUN_140523c40(nItemId, nRarity, 0))
         return "";

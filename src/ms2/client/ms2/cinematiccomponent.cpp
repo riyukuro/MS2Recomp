@@ -446,7 +446,7 @@ void CCinematicComponent::FUN_14107d4b0(const ATL::CAtlArray<CQuestData::QuestRe
         if (spItem->FUN_14052b130(nItemId, nRarity, 0) != 0) {
             spItem->FUN_140526c70(nCount);
             CString key;
-            key.Format("%s_%d", (const char*)m_pOwner->vfunc_1(), i);
+            key.Format("%s_%d", (const char*)m_pOwner->GetTypeName(), i);
             FUN_141415450(key, spItem, 0, 0x11, 0x800);
             CString attr;
             attr.Format("reward%d", i + 1);
@@ -511,7 +511,7 @@ unsigned CCinematicComponent::FUN_14107d760(ASObj& obj)
             bAny = 1;
             MS2Ptr<CItem> spItem = pReward->m_items.FUN_140a69ee0(i);
             CString key;
-            key.Format("%s_%d", (const char*)m_pOwner->vfunc_1(), i + 1);
+            key.Format("%s_%d", (const char*)m_pOwner->GetTypeName(), i + 1);
             FUN_141415450(key, spItem, 0, 0x11, 0x800);
             CString attr;
             attr.Format("reward%d", i + 1);

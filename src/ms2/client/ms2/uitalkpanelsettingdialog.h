@@ -24,7 +24,7 @@ class UITalkPanelSettingDialog : public UIDialog
 public:
     UITalkPanelSettingDialog();                                         // 0x141b224f0
     virtual ~UITalkPanelSettingDialog();                                //  0 0x141b22580 (??_G 0x141b265a0)
-    virtual CString vfunc_1();                                          //  1 0x141b225d0 "TalkPanelSettingDialog"
+    virtual CString GetTypeName();                                          //  1 0x141b225d0 "TalkPanelSettingDialog"
     virtual int vfunc_13();                                             // 13 0x141b22970 the key handler (Enter applies)
     virtual void OnLoadComplete();                                      // 22 0x141b22730 bind the movie, show the current tab
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

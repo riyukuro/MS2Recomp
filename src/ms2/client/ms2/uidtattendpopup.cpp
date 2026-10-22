@@ -46,8 +46,8 @@ UIDTAttendPopup::~UIDTAttendPopup(){
  FUN_140939a10()->FUN_140da4eb0(L"NotifyOpenDialogByScene",Delegate<void(NotifyObject*)>(this,&UIDTAttendPopup::OnNotify));
 }
 // @0x140c03850
-CString UIDTAttendPopup::vfunc_1(){return "DTAttendPopup";}
-MS2_REPLACE_METHOD(0x140C03850, UIDTAttendPopup, vfunc_1, 61, 0xD5D76746);
+CString UIDTAttendPopup::GetTypeName(){return "DTAttendPopup";}
+MS2_REPLACE_METHOD(0x140C03850, UIDTAttendPopup, GetTypeName, 61, 0xD5D76746);
 // @0x140c038a0
 int UIDTAttendPopup::vfunc_65(){if(!UIDialog::vfunc_65())return 0;return 1;}
 MS2_REPLACE_METHOD(0x140C038A0, UIDTAttendPopup, vfunc_65, 37, 0x630C43C0);

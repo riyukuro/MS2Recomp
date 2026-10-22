@@ -42,11 +42,11 @@ UITimerDialog::~UITimerDialog()
 }
 
 // @0x141b26730
-CString UITimerDialog::vfunc_1()
+CString UITimerDialog::GetTypeName()
 {
     return "TimerDialog";
 }
-MS2_REPLACE_METHOD(0x141B26730, UITimerDialog, vfunc_1, 61, 0x9C98EE2E);
+MS2_REPLACE_METHOD(0x141B26730, UITimerDialog, GetTypeName, 61, 0x9C98EE2E);
 
 // @0x141b26780
 void UITimerDialog::vfunc_72()

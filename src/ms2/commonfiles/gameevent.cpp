@@ -1,5 +1,5 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). The GameEvent subclasses of commonfiles\gameevent.cpp:
-// per class a factory (registered by name in the dynamic initializers), the name (vfunc_1), the ctor, the parser of the
+// per class a factory (registered by name in the dynamic initializers), the name (GetTypeName), the ctor, the parser of the
 // event's string fields (vfunc_2), the packet write / read (vfunc_3 / vfunc_4) and the start / end handlers (OnStart /
 // vfunc_6, mostly forwarding to CGameRule). The ctors of the *Context element types and the template glue follow at
 // the end of the range; the vftables, ??_G and the implicit dtors are COMDATs of unit_1403e9650.
@@ -496,8 +496,8 @@ static Unk_GEFactoryRegistry s_regSaleChat(L"GameEventSaleChat", FUN_1403bb510);
 GameEvent* FUN_1403bb510() { return new GameEventSaleChat; }
 
 // @0x1403bb570
-CStringW GameEventSaleChat::vfunc_1() { return CStringW(L"GameEventSaleChat"); }
-MS2_REPLACE_METHOD(0x1403BB570, GameEventSaleChat, vfunc_1, 61, 0xDAB9D4B6);
+CStringW GameEventSaleChat::GetTypeName() { return CStringW(L"GameEventSaleChat"); }
+MS2_REPLACE_METHOD(0x1403BB570, GameEventSaleChat, GetTypeName, 61, 0xDAB9D4B6);
 
 // @0x1403bb5c0
 GameEventSaleChat::GameEventSaleChat()
@@ -570,8 +570,8 @@ static Unk_GEFactoryRegistry s_regSAHotTime(L"GameEventSAHotTime", FUN_1403bb900
 GameEvent* FUN_1403bb900() { return new GameEventSAHotTime; }
 
 // @0x1403bb960
-CStringW GameEventSAHotTime::vfunc_1() { return CStringW(L"GameEventSAHotTime"); }
-MS2_REPLACE_METHOD(0x1403BB960, GameEventSAHotTime, vfunc_1, 61, 0xDFFD3206);
+CStringW GameEventSAHotTime::GetTypeName() { return CStringW(L"GameEventSAHotTime"); }
+MS2_REPLACE_METHOD(0x1403BB960, GameEventSAHotTime, GetTypeName, 61, 0xDFFD3206);
 
 // @0x1403bb9b0
 GameEventSAHotTime::GameEventSAHotTime() : m_e8(0)
@@ -652,8 +652,8 @@ static Unk_GEFactoryRegistry s_regPCBangSAHotTime(L"GameEventPCBangSAHotTime", F
 GameEvent* FUN_1403bc120() { return new GameEventPCBangSAHotTime; }
 
 // @0x1403bc180
-CStringW GameEventPCBangSAHotTime::vfunc_1() { return CStringW(L"GameEventPCBangSAHotTime"); }
-MS2_REPLACE_METHOD(0x1403BC180, GameEventPCBangSAHotTime, vfunc_1, 61, 0xD5AE5269);
+CStringW GameEventPCBangSAHotTime::GetTypeName() { return CStringW(L"GameEventPCBangSAHotTime"); }
+MS2_REPLACE_METHOD(0x1403BC180, GameEventPCBangSAHotTime, GetTypeName, 61, 0xD5AE5269);
 
 // @0x1403bc1d0
 GameEventPCBangSAHotTime::GameEventPCBangSAHotTime() { m_e8 = 1; }
@@ -666,8 +666,8 @@ static Unk_GEFactoryRegistry s_regSaleBeautyShop(L"GameEventSaleBeautyShop", FUN
 GameEvent* FUN_1403bc220() { return new GameEventSaleBeautyShop; }
 
 // @0x1403bc280
-CStringW GameEventSaleBeautyShop::vfunc_1() { return CStringW(L"GameEventSaleBeautyShop"); }
-MS2_REPLACE_METHOD(0x1403BC280, GameEventSaleBeautyShop, vfunc_1, 61, 0xB261509F);
+CStringW GameEventSaleBeautyShop::GetTypeName() { return CStringW(L"GameEventSaleBeautyShop"); }
+MS2_REPLACE_METHOD(0x1403BC280, GameEventSaleBeautyShop, GetTypeName, 61, 0xB261509F);
 
 // @0x1403bc2d0
 GameEventSaleBeautyShop::GameEventSaleBeautyShop() : m_d4(0)
@@ -729,8 +729,8 @@ static Unk_GEFactoryRegistry s_regUserCondition(L"GameEventUserCondition", FUN_1
 GameEvent* FUN_1403bc5c0() { return new GameEventUserCondition; }
 
 // @0x1403bc620
-CStringW GameEventUserCondition::vfunc_1() { return CStringW(L"GameEventUserCondition"); }
-MS2_REPLACE_METHOD(0x1403BC620, GameEventUserCondition, vfunc_1, 61, 0x1E4F1C4B);
+CStringW GameEventUserCondition::GetTypeName() { return CStringW(L"GameEventUserCondition"); }
+MS2_REPLACE_METHOD(0x1403BC620, GameEventUserCondition, GetTypeName, 61, 0x1E4F1C4B);
 
 // @0x1403bc670
 GameEventUserCondition::GameEventUserCondition() : m_d0(0)
@@ -786,8 +786,8 @@ static Unk_GEFactoryRegistry s_regMesoRevival(L"GameEventMesoRevival", FUN_1403b
 GameEvent* FUN_1403bc920() { return new GameEventMesoRevival; }
 
 // @0x1403bc980
-CStringW GameEventMesoRevival::vfunc_1() { return CStringW(L"GameEventMesoRevival"); }
-MS2_REPLACE_METHOD(0x1403BC980, GameEventMesoRevival, vfunc_1, 61, 0xED673EBF);
+CStringW GameEventMesoRevival::GetTypeName() { return CStringW(L"GameEventMesoRevival"); }
+MS2_REPLACE_METHOD(0x1403BC980, GameEventMesoRevival, GetTypeName, 61, 0xED673EBF);
 
 // @0x1403bc9d0
 GameEventMesoRevival::GameEventMesoRevival() : m_d0(false)
@@ -837,8 +837,8 @@ static Unk_GEFactoryRegistry s_regItemBuff(L"GameEventItemBuff", FUN_1403bcc50);
 GameEvent* FUN_1403bcc50() { return new GameEventItemBuff; }
 
 // @0x1403bccb0
-CStringW GameEventItemBuff::vfunc_1() { return CStringW(L"GameEventItemBuff"); }
-MS2_REPLACE_METHOD(0x1403BCCB0, GameEventItemBuff, vfunc_1, 61, 0xC4330E28);
+CStringW GameEventItemBuff::GetTypeName() { return CStringW(L"GameEventItemBuff"); }
+MS2_REPLACE_METHOD(0x1403BCCB0, GameEventItemBuff, GetTypeName, 61, 0xC4330E28);
 
 // @0x1403bcd00
 GameEventItemBuff::GameEventItemBuff() : m_d0(0)
@@ -893,8 +893,8 @@ static Unk_GEFactoryRegistry s_regDungeonBonusReward(L"GameEventDungeonBonusRewa
 GameEvent* FUN_1403bcfa0() { return new GameEventDungeonBonusReward; }
 
 // @0x1403bd000
-CStringW GameEventDungeonBonusReward::vfunc_1() { return CStringW(L"GameEventDungeonBonusReward"); }
-MS2_REPLACE_METHOD(0x1403BD000, GameEventDungeonBonusReward, vfunc_1, 61, 0x00D72C52);
+CStringW GameEventDungeonBonusReward::GetTypeName() { return CStringW(L"GameEventDungeonBonusReward"); }
+MS2_REPLACE_METHOD(0x1403BD000, GameEventDungeonBonusReward, GetTypeName, 61, 0x00D72C52);
 
 // @0x1403bd050
 GameEventDungeonBonusReward::GameEventDungeonBonusReward()
@@ -951,8 +951,8 @@ static Unk_GEFactoryRegistry s_regFreeAirTaxi(L"GameEventFreeAirTaxi", FUN_1403b
 GameEvent* FUN_1403bd3a0() { return new GameEventFreeAirTaxi; }
 
 // @0x1403bd400
-CStringW GameEventFreeAirTaxi::vfunc_1() { return CStringW(L"GameEventFreeAirTaxi"); }
-MS2_REPLACE_METHOD(0x1403BD400, GameEventFreeAirTaxi, vfunc_1, 61, 0x691F423F);
+CStringW GameEventFreeAirTaxi::GetTypeName() { return CStringW(L"GameEventFreeAirTaxi"); }
+MS2_REPLACE_METHOD(0x1403BD400, GameEventFreeAirTaxi, GetTypeName, 61, 0x691F423F);
 
 // @0x1403bd450
 GameEventFreeAirTaxi::GameEventFreeAirTaxi()
@@ -989,8 +989,8 @@ static Unk_GEFactoryRegistry s_regOntime(L"GameEventOntime", FUN_1403bd5a0);
 GameEvent* FUN_1403bd5a0() { return new GameEventOntime; }
 
 // @0x1403bd600
-CStringW GameEventOntime::vfunc_1() { return CStringW(L"GameEventOntime"); }
-MS2_REPLACE_METHOD(0x1403BD600, GameEventOntime, vfunc_1, 61, 0xB2D5BB00);
+CStringW GameEventOntime::GetTypeName() { return CStringW(L"GameEventOntime"); }
+MS2_REPLACE_METHOD(0x1403BD600, GameEventOntime, GetTypeName, 61, 0xB2D5BB00);
 
 // @0x1403bd650
 GameEventOntime::GameEventOntime()
@@ -1069,8 +1069,8 @@ static Unk_GEFactoryRegistry s_regSaleEnchant(L"GameEventSaleEnchant", FUN_1403b
 GameEvent* FUN_1403bdd40() { return new GameEventSaleEnchant; }
 
 // @0x1403bdda0
-CStringW GameEventSaleEnchant::vfunc_1() { return CStringW(L"GameEventSaleEnchant"); }
-MS2_REPLACE_METHOD(0x1403BDDA0, GameEventSaleEnchant, vfunc_1, 61, 0x97A44702);
+CStringW GameEventSaleEnchant::GetTypeName() { return CStringW(L"GameEventSaleEnchant"); }
+MS2_REPLACE_METHOD(0x1403BDDA0, GameEventSaleEnchant, GetTypeName, 61, 0x97A44702);
 
 // @0x1403bddf0
 GameEventSaleEnchant::GameEventSaleEnchant() : m_d0(0)
@@ -1115,8 +1115,8 @@ static Unk_GEFactoryRegistry s_regQuestTag(L"GameEventQuestTag", FUN_1403bdfb0);
 GameEvent* FUN_1403bdfb0() { return new GameEventQuestTag; }
 
 // @0x1403be010
-CStringW GameEventQuestTag::vfunc_1() { return CStringW(L"GameEventQuestTag"); }
-MS2_REPLACE_METHOD(0x1403BE010, GameEventQuestTag, vfunc_1, 61, 0x4C810B65);
+CStringW GameEventQuestTag::GetTypeName() { return CStringW(L"GameEventQuestTag"); }
+MS2_REPLACE_METHOD(0x1403BE010, GameEventQuestTag, GetTypeName, 61, 0x4C810B65);
 
 // @0x1403be060
 GameEventQuestTag::GameEventQuestTag()
@@ -1188,8 +1188,8 @@ static Unk_GEFactoryRegistry s_regBlackMarketFeeDiscount(L"GameEventBlackMarketF
 GameEvent* FUN_1403be630() { return new GameEventBlackMarketFeeDiscount; }
 
 // @0x1403be690
-CStringW GameEventBlackMarketFeeDiscount::vfunc_1() { return CStringW(L"GameEventBlackMarketFeeDiscount"); }
-MS2_REPLACE_METHOD(0x1403BE690, GameEventBlackMarketFeeDiscount, vfunc_1, 61, 0x46CBC4E5);
+CStringW GameEventBlackMarketFeeDiscount::GetTypeName() { return CStringW(L"GameEventBlackMarketFeeDiscount"); }
+MS2_REPLACE_METHOD(0x1403BE690, GameEventBlackMarketFeeDiscount, GetTypeName, 61, 0x46CBC4E5);
 
 // @0x1403be6e0
 GameEventBlackMarketFeeDiscount::GameEventBlackMarketFeeDiscount() : m_d0(-1)
@@ -1245,8 +1245,8 @@ static Unk_GEFactoryRegistry s_regUGCMapSaleCoupon(L"GameEventUGCMapSaleCoupon",
 GameEvent* FUN_1403be9c0() { return new GameEventUGCMapSaleCoupon; }
 
 // @0x1403bea20
-CStringW GameEventUGCMapSaleCoupon::vfunc_1() { return CStringW(L"GameEventUGCMapSaleCoupon"); }
-MS2_REPLACE_METHOD(0x1403BEA20, GameEventUGCMapSaleCoupon, vfunc_1, 61, 0x3CB71A57);
+CStringW GameEventUGCMapSaleCoupon::GetTypeName() { return CStringW(L"GameEventUGCMapSaleCoupon"); }
+MS2_REPLACE_METHOD(0x1403BEA20, GameEventUGCMapSaleCoupon, GetTypeName, 61, 0x3CB71A57);
 
 // @0x1403bea70
 GameEventUGCMapSaleCoupon::GameEventUGCMapSaleCoupon() : m_d0(0)
@@ -1291,8 +1291,8 @@ static Unk_GEFactoryRegistry s_regPremiumMarketSale(L"GameEventPremiumMarketSale
 GameEvent* FUN_1403bec20() { return new GameEventPremiumMarketSale; }
 
 // @0x1403bec80
-CStringW GameEventPremiumMarketSale::vfunc_1() { return CStringW(L"GameEventPremiumMarketSale"); }
-MS2_REPLACE_METHOD(0x1403BEC80, GameEventPremiumMarketSale, vfunc_1, 61, 0x7CD92CF0);
+CStringW GameEventPremiumMarketSale::GetTypeName() { return CStringW(L"GameEventPremiumMarketSale"); }
+MS2_REPLACE_METHOD(0x1403BEC80, GameEventPremiumMarketSale, GetTypeName, 61, 0x7CD92CF0);
 
 // @0x1403becd0
 GameEventPremiumMarketSale::GameEventPremiumMarketSale() : m_d0(0), m_e8(0)
@@ -1363,8 +1363,8 @@ static Unk_GEFactoryRegistry s_regGameMenuPopup(L"GameEventGameMenuPopup", FUN_1
 GameEvent* FUN_1403bf1e0() { return new GameEventGameMenuPopup; }
 
 // @0x1403bf240
-CStringW GameEventGameMenuPopup::vfunc_1() { return CStringW(L"GameEventGameMenuPopup"); }
-MS2_REPLACE_METHOD(0x1403BF240, GameEventGameMenuPopup, vfunc_1, 61, 0x0033437C);
+CStringW GameEventGameMenuPopup::GetTypeName() { return CStringW(L"GameEventGameMenuPopup"); }
+MS2_REPLACE_METHOD(0x1403BF240, GameEventGameMenuPopup, GetTypeName, 61, 0x0033437C);
 
 // @0x1403bf290
 GameEventGameMenuPopup::GameEventGameMenuPopup()
@@ -1415,8 +1415,8 @@ static Unk_GEFactoryRegistry s_regEventFieldPopup(L"GameEventEventFieldPopup", F
 GameEvent* FUN_1403bf4a0() { return new GameEventEventFieldPopup; }
 
 // @0x1403bf500
-CStringW GameEventEventFieldPopup::vfunc_1() { return CStringW(L"GameEventEventFieldPopup"); }
-MS2_REPLACE_METHOD(0x1403BF500, GameEventEventFieldPopup, vfunc_1, 61, 0x2C61EBA3);
+CStringW GameEventEventFieldPopup::GetTypeName() { return CStringW(L"GameEventEventFieldPopup"); }
+MS2_REPLACE_METHOD(0x1403BF500, GameEventEventFieldPopup, GetTypeName, 61, 0x2C61EBA3);
 
 // @0x1403bf550
 GameEventEventFieldPopup::GameEventEventFieldPopup()
@@ -1461,8 +1461,8 @@ static Unk_GEFactoryRegistry s_regSaleAutoFishing(L"GameEventSaleAutoFishing", F
 GameEvent* FUN_1403bf6f0() { return new GameEventSaleAutoFishing; }
 
 // @0x1403bf750
-CStringW GameEventSaleAutoFishing::vfunc_1() { return CStringW(L"GameEventSaleAutoFishing"); }
-MS2_REPLACE_METHOD(0x1403BF750, GameEventSaleAutoFishing, vfunc_1, 61, 0xEA4EBEEE);
+CStringW GameEventSaleAutoFishing::GetTypeName() { return CStringW(L"GameEventSaleAutoFishing"); }
+MS2_REPLACE_METHOD(0x1403BF750, GameEventSaleAutoFishing, GetTypeName, 61, 0xEA4EBEEE);
 
 // @0x1403bf7a0
 GameEventSaleAutoFishing::GameEventSaleAutoFishing()
@@ -1520,8 +1520,8 @@ static Unk_GEFactoryRegistry s_regSaleAutoPlayInstrument(L"GameEventSaleAutoPlay
 GameEvent* FUN_1403bfa80() { return new GameEventSaleAutoPlayInstrument; }
 
 // @0x1403bfae0
-CStringW GameEventSaleAutoPlayInstrument::vfunc_1() { return CStringW(L"GameEventSaleAutoPlayInstrument"); }
-MS2_REPLACE_METHOD(0x1403BFAE0, GameEventSaleAutoPlayInstrument, vfunc_1, 61, 0xFC4F68B4);
+CStringW GameEventSaleAutoPlayInstrument::GetTypeName() { return CStringW(L"GameEventSaleAutoPlayInstrument"); }
+MS2_REPLACE_METHOD(0x1403BFAE0, GameEventSaleAutoPlayInstrument, GetTypeName, 61, 0xFC4F68B4);
 
 // @0x1403bfb30
 GameEventSaleAutoPlayInstrument::GameEventSaleAutoPlayInstrument()
@@ -1580,8 +1580,8 @@ static Unk_GEFactoryRegistry s_regTrafficOptimizer(L"GameEventTrafficOptimizer",
 GameEvent* FUN_1403bfe10() { return new GameEventTrafficOptimizer; }
 
 // @0x1403bfe70
-CStringW GameEventTrafficOptimizer::vfunc_1() { return CStringW(L"GameEventTrafficOptimizer"); }
-MS2_REPLACE_METHOD(0x1403BFE70, GameEventTrafficOptimizer, vfunc_1, 61, 0x73597DA3);
+CStringW GameEventTrafficOptimizer::GetTypeName() { return CStringW(L"GameEventTrafficOptimizer"); }
+MS2_REPLACE_METHOD(0x1403BFE70, GameEventTrafficOptimizer, GetTypeName, 61, 0x73597DA3);
 
 // @0x1403bfec0
 GameEventTrafficOptimizer::GameEventTrafficOptimizer()
@@ -1614,8 +1614,8 @@ static Unk_GEFactoryRegistry s_regDungeonRoomShutdown(L"GameEventDungeonRoomShut
 GameEvent* FUN_1403bff70() { return new GameEventDungeonRoomShutdown; }
 
 // @0x1403bffd0
-CStringW GameEventDungeonRoomShutdown::vfunc_1() { return CStringW(L"GameEventDungeonRoomShutdown"); }
-MS2_REPLACE_METHOD(0x1403BFFD0, GameEventDungeonRoomShutdown, vfunc_1, 61, 0x58ADE904);
+CStringW GameEventDungeonRoomShutdown::GetTypeName() { return CStringW(L"GameEventDungeonRoomShutdown"); }
+MS2_REPLACE_METHOD(0x1403BFFD0, GameEventDungeonRoomShutdown, GetTypeName, 61, 0x58ADE904);
 
 // @0x1403c0020
 GameEventDungeonRoomShutdown::GameEventDungeonRoomShutdown()
@@ -1655,8 +1655,8 @@ static Unk_GEFactoryRegistry s_regDungeonOpenPeriod(L"GameEventDungeonOpenPeriod
 GameEvent* FUN_1403c0290() { return new GameEventDungeonOpenPeriod; }
 
 // @0x1403c02f0
-CStringW GameEventDungeonOpenPeriod::vfunc_1() { return CStringW(L"GameEventDungeonOpenPeriod"); }
-MS2_REPLACE_METHOD(0x1403C02F0, GameEventDungeonOpenPeriod, vfunc_1, 61, 0xB2E4B68E);
+CStringW GameEventDungeonOpenPeriod::GetTypeName() { return CStringW(L"GameEventDungeonOpenPeriod"); }
+MS2_REPLACE_METHOD(0x1403C02F0, GameEventDungeonOpenPeriod, GetTypeName, 61, 0xB2E4B68E);
 
 // @0x1403c0340
 GameEventDungeonOpenPeriod::GameEventDungeonOpenPeriod()
@@ -1719,8 +1719,8 @@ static Unk_GEFactoryRegistry s_regFieldShutdown(L"GameEventFieldShutdown", FUN_1
 GameEvent* FUN_1403c0690() { return new GameEventFieldShutdown; }
 
 // @0x1403c06f0
-CStringW GameEventFieldShutdown::vfunc_1() { return CStringW(L"GameEventFieldShutdown"); }
-MS2_REPLACE_METHOD(0x1403C06F0, GameEventFieldShutdown, vfunc_1, 61, 0xCE8D8D4D);
+CStringW GameEventFieldShutdown::GetTypeName() { return CStringW(L"GameEventFieldShutdown"); }
+MS2_REPLACE_METHOD(0x1403C06F0, GameEventFieldShutdown, GetTypeName, 61, 0xCE8D8D4D);
 
 // @0x1403c0740
 GameEventFieldShutdown::GameEventFieldShutdown()
@@ -1769,8 +1769,8 @@ static Unk_GEFactoryRegistry s_regDungeonExtraReward(L"GameEventDungeonExtraRewa
 GameEvent* FUN_1403c0990() { return new GameEventDungeonExtraReward; }
 
 // @0x1403c09f0
-CStringW GameEventDungeonExtraReward::vfunc_1() { return CStringW(L"GameEventDungeonExtraReward"); }
-MS2_REPLACE_METHOD(0x1403C09F0, GameEventDungeonExtraReward, vfunc_1, 61, 0x8E36E21E);
+CStringW GameEventDungeonExtraReward::GetTypeName() { return CStringW(L"GameEventDungeonExtraReward"); }
+MS2_REPLACE_METHOD(0x1403C09F0, GameEventDungeonExtraReward, GetTypeName, 61, 0x8E36E21E);
 
 // @0x1403c0a40
 GameEventDungeonExtraReward::GameEventDungeonExtraReward()
@@ -1876,8 +1876,8 @@ static Unk_GEFactoryRegistry s_regSaleRemake(L"GameEventSaleRemake", FUN_1403c10
 GameEvent* FUN_1403c10e0() { return new GameEventSaleRemake; }
 
 // @0x1403c1140
-CStringW GameEventSaleRemake::vfunc_1() { return CStringW(L"GameEventSaleRemake"); }
-MS2_REPLACE_METHOD(0x1403C1140, GameEventSaleRemake, vfunc_1, 61, 0xB6BF899D);
+CStringW GameEventSaleRemake::GetTypeName() { return CStringW(L"GameEventSaleRemake"); }
+MS2_REPLACE_METHOD(0x1403C1140, GameEventSaleRemake, GetTypeName, 61, 0xB6BF899D);
 
 // @0x1403c1190
 GameEventSaleRemake::GameEventSaleRemake() : m_d0(0), m_d4(0)
@@ -1928,8 +1928,8 @@ static Unk_GEFactoryRegistry s_regSaleGemStoneUpgrade(L"GameEventSaleGemStoneUpg
 GameEvent* FUN_1403c13e0() { return new GameEventSaleGemStoneUpgrade; }
 
 // @0x1403c1440
-CStringW GameEventSaleGemStoneUpgrade::vfunc_1() { return CStringW(L"GameEventSaleGemStoneUpgrade"); }
-MS2_REPLACE_METHOD(0x1403C1440, GameEventSaleGemStoneUpgrade, vfunc_1, 61, 0x9E6F808F);
+CStringW GameEventSaleGemStoneUpgrade::GetTypeName() { return CStringW(L"GameEventSaleGemStoneUpgrade"); }
+MS2_REPLACE_METHOD(0x1403C1440, GameEventSaleGemStoneUpgrade, GetTypeName, 61, 0x9E6F808F);
 
 // @0x1403c1490
 GameEventSaleGemStoneUpgrade::GameEventSaleGemStoneUpgrade()
@@ -1954,8 +1954,8 @@ static Unk_GEFactoryRegistry s_regSaleSkillUpgrade(L"GameEventSaleSkillUpgrade",
 GameEvent* FUN_1403c1560() { return new GameEventSaleSkillUpgrade; }
 
 // @0x1403c15c0
-CStringW GameEventSaleSkillUpgrade::vfunc_1() { return CStringW(L"GameEventSaleSkillUpgrade"); }
-MS2_REPLACE_METHOD(0x1403C15C0, GameEventSaleSkillUpgrade, vfunc_1, 61, 0x1F5BEC15);
+CStringW GameEventSaleSkillUpgrade::GetTypeName() { return CStringW(L"GameEventSaleSkillUpgrade"); }
+MS2_REPLACE_METHOD(0x1403C15C0, GameEventSaleSkillUpgrade, GetTypeName, 61, 0x1F5BEC15);
 
 // @0x1403c1610
 GameEventSaleSkillUpgrade::GameEventSaleSkillUpgrade()
@@ -2039,8 +2039,8 @@ static Unk_GEFactoryRegistry s_regNpcEventDrop(L"GameEventNpcEventDrop", FUN_140
 GameEvent* FUN_1403c1e00() { return new GameEventNpcEventDrop; }
 
 // @0x1403c1e60
-CStringW GameEventNpcEventDrop::vfunc_1() { return CStringW(L"GameEventNpcEventDrop"); }
-MS2_REPLACE_METHOD(0x1403C1E60, GameEventNpcEventDrop, vfunc_1, 61, 0xA2C14318);
+CStringW GameEventNpcEventDrop::GetTypeName() { return CStringW(L"GameEventNpcEventDrop"); }
+MS2_REPLACE_METHOD(0x1403C1E60, GameEventNpcEventDrop, GetTypeName, 61, 0xA2C14318);
 
 // @0x1403c1eb0
 GameEventNpcEventDrop::GameEventNpcEventDrop() : m_d0(0)
@@ -2095,8 +2095,8 @@ static Unk_GEFactoryRegistry s_regBlueMarble(L"GameEventBlueMarble", FUN_1403c22
 GameEvent* FUN_1403c2260() { return new GameEventBlueMarble; }
 
 // @0x1403c22c0
-CStringW GameEventBlueMarble::vfunc_1() { return CStringW(L"GameEventBlueMarble"); }
-MS2_REPLACE_METHOD(0x1403C22C0, GameEventBlueMarble, vfunc_1, 61, 0x49E74EC9);
+CStringW GameEventBlueMarble::GetTypeName() { return CStringW(L"GameEventBlueMarble"); }
+MS2_REPLACE_METHOD(0x1403C22C0, GameEventBlueMarble, GetTypeName, 61, 0x49E74EC9);
 
 // @0x1403c2310
 GameEventBlueMarble::GameEventBlueMarble()
@@ -2176,8 +2176,8 @@ static Unk_GEFactoryRegistry s_regSaleUGCDesign(L"GameEventSaleUGCDesign", FUN_1
 GameEvent* FUN_1403c2b80() { return new GameEventSaleUGCDesign; }
 
 // @0x1403c2be0
-CStringW GameEventSaleUGCDesign::vfunc_1() { return CStringW(L"GameEventSaleUGCDesign"); }
-MS2_REPLACE_METHOD(0x1403C2BE0, GameEventSaleUGCDesign, vfunc_1, 61, 0xFCF94496);
+CStringW GameEventSaleUGCDesign::GetTypeName() { return CStringW(L"GameEventSaleUGCDesign"); }
+MS2_REPLACE_METHOD(0x1403C2BE0, GameEventSaleUGCDesign, GetTypeName, 61, 0xFCF94496);
 
 // @0x1403c2c30
 GameEventSaleUGCDesign::GameEventSaleUGCDesign()
@@ -2202,8 +2202,8 @@ static Unk_GEFactoryRegistry s_regMeratMarketNotice(L"GameEventMeratMarketNotice
 GameEvent* FUN_1403c2d00() { return new GameEventMeratMarketNotice; }
 
 // @0x1403c2d60
-CStringW GameEventMeratMarketNotice::vfunc_1() { return CStringW(L"GameEventMeratMarketNotice"); }
-MS2_REPLACE_METHOD(0x1403C2D60, GameEventMeratMarketNotice, vfunc_1, 61, 0xC9F95959);
+CStringW GameEventMeratMarketNotice::GetTypeName() { return CStringW(L"GameEventMeratMarketNotice"); }
+MS2_REPLACE_METHOD(0x1403C2D60, GameEventMeratMarketNotice, GetTypeName, 61, 0xC9F95959);
 
 // @0x1403c2db0
 GameEventMeratMarketNotice::GameEventMeratMarketNotice() : m_d0(L"")
@@ -2240,8 +2240,8 @@ static Unk_GEFactoryRegistry s_regDungeonEnterTimeLimit(L"GameEventDungeonEnterT
 GameEvent* FUN_1403c2f60() { return new GameEventDungeonEnterTimeLimit; }
 
 // @0x1403c2fc0
-CStringW GameEventDungeonEnterTimeLimit::vfunc_1() { return CStringW(L"GameEventDungeonEnterTimeLimit"); }
-MS2_REPLACE_METHOD(0x1403C2FC0, GameEventDungeonEnterTimeLimit, vfunc_1, 61, 0xDA704B95);
+CStringW GameEventDungeonEnterTimeLimit::GetTypeName() { return CStringW(L"GameEventDungeonEnterTimeLimit"); }
+MS2_REPLACE_METHOD(0x1403C2FC0, GameEventDungeonEnterTimeLimit, GetTypeName, 61, 0xDA704B95);
 
 // @0x1403c3010
 GameEventDungeonEnterTimeLimit::GameEventDungeonEnterTimeLimit()
@@ -2312,8 +2312,8 @@ static Unk_GEFactoryRegistry s_regSaleHousing(L"GameEventSaleHousing", FUN_1403c
 GameEvent* FUN_1403c33f0() { return new GameEventSaleHousing; }
 
 // @0x1403c3450
-CStringW GameEventSaleHousing::vfunc_1() { return CStringW(L"GameEventSaleHousing"); }
-MS2_REPLACE_METHOD(0x1403C3450, GameEventSaleHousing, vfunc_1, 61, 0xED0BCDC7);
+CStringW GameEventSaleHousing::GetTypeName() { return CStringW(L"GameEventSaleHousing"); }
+MS2_REPLACE_METHOD(0x1403C3450, GameEventSaleHousing, GetTypeName, 61, 0xED0BCDC7);
 
 // @0x1403c34a0
 GameEventSaleHousing::GameEventSaleHousing() : m_d0(10)
@@ -2393,8 +2393,8 @@ static Unk_GEFactoryRegistry s_regEpicRestart(L"GameEventEpicRestart", FUN_1403c
 GameEvent* FUN_1403c3ba0() { return new GameEventEpicRestart; }
 
 // @0x1403c3c00
-CStringW GameEventEpicRestart::vfunc_1() { return CStringW(L"GameEventEpicRestart"); }
-MS2_REPLACE_METHOD(0x1403C3C00, GameEventEpicRestart, vfunc_1, 61, 0x0985CFB1);
+CStringW GameEventEpicRestart::GetTypeName() { return CStringW(L"GameEventEpicRestart"); }
+MS2_REPLACE_METHOD(0x1403C3C00, GameEventEpicRestart, GetTypeName, 61, 0x0985CFB1);
 
 // @0x1403c3c50
 GameEventEpicRestart::GameEventEpicRestart()
@@ -2450,8 +2450,8 @@ static Unk_GEFactoryRegistry s_regLevelUpPackage(L"GameEventLevelUpPackage", FUN
 GameEvent* FUN_1403c40f0() { return new GameEventLevelUpPackage; }
 
 // @0x1403c4150
-CStringW GameEventLevelUpPackage::vfunc_1() { return CStringW(L"GameEventLevelUpPackage"); }
-MS2_REPLACE_METHOD(0x1403C4150, GameEventLevelUpPackage, vfunc_1, 61, 0xB78A86F4);
+CStringW GameEventLevelUpPackage::GetTypeName() { return CStringW(L"GameEventLevelUpPackage"); }
+MS2_REPLACE_METHOD(0x1403C4150, GameEventLevelUpPackage, GetTypeName, 61, 0xB78A86F4);
 
 // @0x1403c41a0
 GameEventLevelUpPackage::GameEventLevelUpPackage()
@@ -2502,8 +2502,8 @@ static Unk_GEFactoryRegistry s_regUpdateString(L"GameEventUpdateString", FUN_140
 GameEvent* FUN_1403c4410() { return new GameEventUpdateString; }
 
 // @0x1403c4470
-CStringW GameEventUpdateString::vfunc_1() { return CStringW(L"GameEventUpdateString"); }
-MS2_REPLACE_METHOD(0x1403C4470, GameEventUpdateString, vfunc_1, 61, 0xFF2F4C8C);
+CStringW GameEventUpdateString::GetTypeName() { return CStringW(L"GameEventUpdateString"); }
+MS2_REPLACE_METHOD(0x1403C4470, GameEventUpdateString, GetTypeName, 61, 0xFF2F4C8C);
 
 // @0x1403c44c0
 GameEventUpdateString::GameEventUpdateString()
@@ -2549,8 +2549,8 @@ static Unk_GEFactoryRegistry s_regStampEvent(L"GameEventStampEvent", FUN_1403c46
 GameEvent* FUN_1403c4680() { return new GameEventStampEvent; }
 
 // @0x1403c46e0
-CStringW GameEventStampEvent::vfunc_1() { return CStringW(L"GameEventStampEvent"); }
-MS2_REPLACE_METHOD(0x1403C46E0, GameEventStampEvent, vfunc_1, 61, 0xA9C46086);
+CStringW GameEventStampEvent::GetTypeName() { return CStringW(L"GameEventStampEvent"); }
+MS2_REPLACE_METHOD(0x1403C46E0, GameEventStampEvent, GetTypeName, 61, 0xA9C46086);
 
 // @0x1403c4730
 GameEventStampEvent::GameEventStampEvent()
@@ -2658,8 +2658,8 @@ static Unk_GEFactoryRegistry s_regStampEventChar(L"GameEventStampEventChar", FUN
 GameEvent* FUN_1403c50c0() { return new GameEventStampEventChar; }
 
 // @0x1403c5120
-CStringW GameEventStampEventChar::vfunc_1() { return CStringW(L"GameEventStampEventChar"); }
-MS2_REPLACE_METHOD(0x1403C5120, GameEventStampEventChar, vfunc_1, 61, 0x93AF1272);
+CStringW GameEventStampEventChar::GetTypeName() { return CStringW(L"GameEventStampEventChar"); }
+MS2_REPLACE_METHOD(0x1403C5120, GameEventStampEventChar, GetTypeName, 61, 0x93AF1272);
 
 // @0x1403c5170
 GameEventStampEventChar::GameEventStampEventChar() { m_d0 = false; }
@@ -2672,8 +2672,8 @@ static Unk_GEFactoryRegistry s_regTimeRunEvent(L"GameEventTimeRunEvent", FUN_140
 GameEvent* FUN_1403c51b0() { return new GameEventTimeRunEvent; }
 
 // @0x1403c5210
-CStringW GameEventTimeRunEvent::vfunc_1() { return CStringW(L"GameEventTimeRunEvent"); }
-MS2_REPLACE_METHOD(0x1403C5210, GameEventTimeRunEvent, vfunc_1, 61, 0x48F43C7E);
+CStringW GameEventTimeRunEvent::GetTypeName() { return CStringW(L"GameEventTimeRunEvent"); }
+MS2_REPLACE_METHOD(0x1403C5210, GameEventTimeRunEvent, GetTypeName, 61, 0x48F43C7E);
 
 // @0x1403c5260
 GameEventTimeRunEvent::GameEventTimeRunEvent()
@@ -2796,8 +2796,8 @@ static Unk_GEFactoryRegistry s_regMassiveConstructionEvent(L"GameEventMassiveCon
 GameEvent* FUN_1403c5b40() { return new GameEventMassiveConstructionEvent; }
 
 // @0x1403c5ba0
-CStringW GameEventMassiveConstructionEvent::vfunc_1() { return CStringW(L"GameEventMassiveConstructionEvent"); }
-MS2_REPLACE_METHOD(0x1403C5BA0, GameEventMassiveConstructionEvent, vfunc_1, 61, 0x76A01F5C);
+CStringW GameEventMassiveConstructionEvent::GetTypeName() { return CStringW(L"GameEventMassiveConstructionEvent"); }
+MS2_REPLACE_METHOD(0x1403C5BA0, GameEventMassiveConstructionEvent, GetTypeName, 61, 0x76A01F5C);
 
 // @0x1403c5bf0
 GameEventMassiveConstructionEvent::GameEventMassiveConstructionEvent()
@@ -2886,8 +2886,8 @@ static Unk_GEFactoryRegistry s_regEnchantRate(L"GameEventEnchantRate", FUN_1403c
 GameEvent* FUN_1403c6110() { return new GameEventEnchantRate; }
 
 // @0x1403c6170
-CStringW GameEventEnchantRate::vfunc_1() { return CStringW(L"GameEventEnchantRate"); }
-MS2_REPLACE_METHOD(0x1403C6170, GameEventEnchantRate, vfunc_1, 61, 0x5D3710E8);
+CStringW GameEventEnchantRate::GetTypeName() { return CStringW(L"GameEventEnchantRate"); }
+MS2_REPLACE_METHOD(0x1403C6170, GameEventEnchantRate, GetTypeName, 61, 0x5D3710E8);
 
 // @0x1403c61c0
 GameEventEnchantRate::GameEventEnchantRate()
@@ -2948,8 +2948,8 @@ static Unk_GEFactoryRegistry s_regRankDuel(L"GameEventRankDuel", FUN_1403c65c0);
 GameEvent* FUN_1403c65c0() { return new GameEventRankDuel; }
 
 // @0x1403c6620
-CStringW GameEventRankDuel::vfunc_1() { return CStringW(L"GameEventRankDuel"); }
-MS2_REPLACE_METHOD(0x1403C6620, GameEventRankDuel, vfunc_1, 61, 0xD0C386DB);
+CStringW GameEventRankDuel::GetTypeName() { return CStringW(L"GameEventRankDuel"); }
+MS2_REPLACE_METHOD(0x1403C6620, GameEventRankDuel, GetTypeName, 61, 0xD0C386DB);
 
 // @0x1403c6670
 GameEventRankDuel::GameEventRankDuel() : m_d8(0)
@@ -2999,8 +2999,8 @@ static Unk_GEFactoryRegistry s_regGuildChampionship(L"GameEventGuildChampionship
 GameEvent* FUN_1403c68a0() { return new GameEventGuildChampionship; }
 
 // @0x1403c6900
-CStringW GameEventGuildChampionship::vfunc_1() { return CStringW(L"GameEventGuildChampionship"); }
-MS2_REPLACE_METHOD(0x1403C6900, GameEventGuildChampionship, vfunc_1, 61, 0x275F1859);
+CStringW GameEventGuildChampionship::GetTypeName() { return CStringW(L"GameEventGuildChampionship"); }
+MS2_REPLACE_METHOD(0x1403C6900, GameEventGuildChampionship, GetTypeName, 61, 0x275F1859);
 
 // @0x1403c6950
 GameEventGuildChampionship::GameEventGuildChampionship() : m_d0(0)
@@ -3038,8 +3038,8 @@ static Unk_GEFactoryRegistry s_regQuestAdditionalReward(L"GameEventQuestAddition
 GameEvent* FUN_1403c6a80() { return new GameEventQuestAdditionalReward; }
 
 // @0x1403c6ae0
-CStringW GameEventQuestAdditionalReward::vfunc_1() { return CStringW(L"GameEventQuestAdditionalReward"); }
-MS2_REPLACE_METHOD(0x1403C6AE0, GameEventQuestAdditionalReward, vfunc_1, 61, 0xFA4D8A7E);
+CStringW GameEventQuestAdditionalReward::GetTypeName() { return CStringW(L"GameEventQuestAdditionalReward"); }
+MS2_REPLACE_METHOD(0x1403C6AE0, GameEventQuestAdditionalReward, GetTypeName, 61, 0xFA4D8A7E);
 
 // @0x1403c6b30
 GameEventQuestAdditionalReward::GameEventQuestAdditionalReward()
@@ -3096,8 +3096,8 @@ static Unk_GEFactoryRegistry s_regGuildSkillSale(L"GameEventGuildSkillSale", FUN
 GameEvent* FUN_1403c6e80() { return new GameEventGuildSkillSale; }
 
 // @0x1403c6ee0
-CStringW GameEventGuildSkillSale::vfunc_1() { return CStringW(L"GameEventGuildSkillSale"); }
-MS2_REPLACE_METHOD(0x1403C6EE0, GameEventGuildSkillSale, vfunc_1, 61, 0x353F259E);
+CStringW GameEventGuildSkillSale::GetTypeName() { return CStringW(L"GameEventGuildSkillSale"); }
+MS2_REPLACE_METHOD(0x1403C6EE0, GameEventGuildSkillSale, GetTypeName, 61, 0x353F259E);
 
 // @0x1403c6f30
 GameEventGuildSkillSale::GameEventGuildSkillSale() : m_d0(0)
@@ -3142,8 +3142,8 @@ static Unk_GEFactoryRegistry s_regGuildPersonalSkillSale(L"GameEventGuildPersona
 GameEvent* FUN_1403c70f0() { return new GameEventGuildPersonalSkillSale; }
 
 // @0x1403c7150
-CStringW GameEventGuildPersonalSkillSale::vfunc_1() { return CStringW(L"GameEventGuildPersonalSkillSale"); }
-MS2_REPLACE_METHOD(0x1403C7150, GameEventGuildPersonalSkillSale, vfunc_1, 61, 0x4C2BD31D);
+CStringW GameEventGuildPersonalSkillSale::GetTypeName() { return CStringW(L"GameEventGuildPersonalSkillSale"); }
+MS2_REPLACE_METHOD(0x1403C7150, GameEventGuildPersonalSkillSale, GetTypeName, 61, 0x4C2BD31D);
 
 // @0x1403c71a0
 GameEventGuildPersonalSkillSale::GameEventGuildPersonalSkillSale() : m_d0(0)
@@ -3188,8 +3188,8 @@ static Unk_GEFactoryRegistry s_regGuildExp(L"GameEventGuildExp", FUN_1403c7360);
 GameEvent* FUN_1403c7360() { return new GameEventGuildExp; }
 
 // @0x1403c73c0
-CStringW GameEventGuildExp::vfunc_1() { return CStringW(L"GameEventGuildExp"); }
-MS2_REPLACE_METHOD(0x1403C73C0, GameEventGuildExp, vfunc_1, 61, 0x872D1709);
+CStringW GameEventGuildExp::GetTypeName() { return CStringW(L"GameEventGuildExp"); }
+MS2_REPLACE_METHOD(0x1403C73C0, GameEventGuildExp, GetTypeName, 61, 0x872D1709);
 
 // @0x1403c7410
 GameEventGuildExp::GameEventGuildExp() : m_d0(0)
@@ -3242,8 +3242,8 @@ static Unk_GEFactoryRegistry s_regGuildFund(L"GameEventGuildFund", FUN_1403c7640
 GameEvent* FUN_1403c7640() { return new GameEventGuildFund; }
 
 // @0x1403c76a0
-CStringW GameEventGuildFund::vfunc_1() { return CStringW(L"GameEventGuildFund"); }
-MS2_REPLACE_METHOD(0x1403C76A0, GameEventGuildFund, vfunc_1, 61, 0x6B63AA40);
+CStringW GameEventGuildFund::GetTypeName() { return CStringW(L"GameEventGuildFund"); }
+MS2_REPLACE_METHOD(0x1403C76A0, GameEventGuildFund, GetTypeName, 61, 0x6B63AA40);
 
 // @0x1403c76f0
 GameEventGuildFund::GameEventGuildFund() : m_d0(0)
@@ -3288,8 +3288,8 @@ static Unk_GEFactoryRegistry s_regGuildCoin(L"GameEventGuildCoin", FUN_1403c78b0
 GameEvent* FUN_1403c78b0() { return new GameEventGuildCoin; }
 
 // @0x1403c7910
-CStringW GameEventGuildCoin::vfunc_1() { return CStringW(L"GameEventGuildCoin"); }
-MS2_REPLACE_METHOD(0x1403C7910, GameEventGuildCoin, vfunc_1, 61, 0x362C4297);
+CStringW GameEventGuildCoin::GetTypeName() { return CStringW(L"GameEventGuildCoin"); }
+MS2_REPLACE_METHOD(0x1403C7910, GameEventGuildCoin, GetTypeName, 61, 0x362C4297);
 
 // @0x1403c7960
 GameEventGuildCoin::GameEventGuildCoin() : m_d0(0)
@@ -3334,8 +3334,8 @@ static Unk_GEFactoryRegistry s_regMasteryReward(L"GameEventMasteryReward", FUN_1
 GameEvent* FUN_1403c7b20() { return new GameEventMasteryReward; }
 
 // @0x1403c7b80
-CStringW GameEventMasteryReward::vfunc_1() { return CStringW(L"GameEventMasteryReward"); }
-MS2_REPLACE_METHOD(0x1403C7B80, GameEventMasteryReward, vfunc_1, 61, 0xD35040E8);
+CStringW GameEventMasteryReward::GetTypeName() { return CStringW(L"GameEventMasteryReward"); }
+MS2_REPLACE_METHOD(0x1403C7B80, GameEventMasteryReward, GetTypeName, 61, 0xD35040E8);
 
 // @0x1403c7bd0
 GameEventMasteryReward::GameEventMasteryReward()
@@ -3392,8 +3392,8 @@ static Unk_GEFactoryRegistry s_regMeratMarketOpenTab(L"GameEventMeratMarketOpenT
 GameEvent* FUN_1403c7e80() { return new GameEventMeratMarketOpenTab; }
 
 // @0x1403c7ee0
-CStringW GameEventMeratMarketOpenTab::vfunc_1() { return CStringW(L"GameEventMeratMarketOpenTab"); }
-MS2_REPLACE_METHOD(0x1403C7EE0, GameEventMeratMarketOpenTab, vfunc_1, 61, 0x4E8C3DA0);
+CStringW GameEventMeratMarketOpenTab::GetTypeName() { return CStringW(L"GameEventMeratMarketOpenTab"); }
+MS2_REPLACE_METHOD(0x1403C7EE0, GameEventMeratMarketOpenTab, GetTypeName, 61, 0x4E8C3DA0);
 
 // @0x1403c7f30
 GameEventMeratMarketOpenTab::GameEventMeratMarketOpenTab()
@@ -3442,8 +3442,8 @@ static Unk_GEFactoryRegistry s_regWorldmapIcon(L"GameEventWorldmapIcon", FUN_140
 GameEvent* FUN_1403c81a0() { return new GameEventWorldmapIcon; }
 
 // @0x1403c8200
-CStringW GameEventWorldmapIcon::vfunc_1() { return CStringW(L"GameEventWorldmapIcon"); }
-MS2_REPLACE_METHOD(0x1403C8200, GameEventWorldmapIcon, vfunc_1, 61, 0x9F63268F);
+CStringW GameEventWorldmapIcon::GetTypeName() { return CStringW(L"GameEventWorldmapIcon"); }
+MS2_REPLACE_METHOD(0x1403C8200, GameEventWorldmapIcon, GetTypeName, 61, 0x9F63268F);
 
 // @0x1403c8250
 GameEventWorldmapIcon::GameEventWorldmapIcon()
@@ -3488,8 +3488,8 @@ static Unk_GEFactoryRegistry s_regMasteryReduce(L"GameEventMasteryReduce", FUN_1
 GameEvent* FUN_1403c8400() { return new GameEventMasteryReduce; }
 
 // @0x1403c8460
-CStringW GameEventMasteryReduce::vfunc_1() { return CStringW(L"GameEventMasteryReduce"); }
-MS2_REPLACE_METHOD(0x1403C8460, GameEventMasteryReduce, vfunc_1, 61, 0x6E5ADEFA);
+CStringW GameEventMasteryReduce::GetTypeName() { return CStringW(L"GameEventMasteryReduce"); }
+MS2_REPLACE_METHOD(0x1403C8460, GameEventMasteryReduce, GetTypeName, 61, 0x6E5ADEFA);
 
 // @0x1403c84b0
 GameEventMasteryReduce::GameEventMasteryReduce()
@@ -3534,8 +3534,8 @@ static Unk_GEFactoryRegistry s_regUGCMapContractSale(L"GameEventUGCMapContractSa
 GameEvent* FUN_1403c8660() { return new GameEventUGCMapContractSale; }
 
 // @0x1403c86c0
-CStringW GameEventUGCMapContractSale::vfunc_1() { return CStringW(L"GameEventUGCMapContractSale"); }
-MS2_REPLACE_METHOD(0x1403C86C0, GameEventUGCMapContractSale, vfunc_1, 61, 0x1AF8ADCA);
+CStringW GameEventUGCMapContractSale::GetTypeName() { return CStringW(L"GameEventUGCMapContractSale"); }
+MS2_REPLACE_METHOD(0x1403C86C0, GameEventUGCMapContractSale, GetTypeName, 61, 0x1AF8ADCA);
 
 // @0x1403c8710
 GameEventUGCMapContractSale::GameEventUGCMapContractSale() : m_d0(0)
@@ -3580,8 +3580,8 @@ static Unk_GEFactoryRegistry s_regUGCMapExtensionSale(L"GameEventUGCMapExtension
 GameEvent* FUN_1403c88d0() { return new GameEventUGCMapExtensionSale; }
 
 // @0x1403c8930
-CStringW GameEventUGCMapExtensionSale::vfunc_1() { return CStringW(L"GameEventUGCMapExtensionSale"); }
-MS2_REPLACE_METHOD(0x1403C8930, GameEventUGCMapExtensionSale, vfunc_1, 61, 0x164B8C71);
+CStringW GameEventUGCMapExtensionSale::GetTypeName() { return CStringW(L"GameEventUGCMapExtensionSale"); }
+MS2_REPLACE_METHOD(0x1403C8930, GameEventUGCMapExtensionSale, GetTypeName, 61, 0x164B8C71);
 
 // @0x1403c8980
 GameEventUGCMapExtensionSale::GameEventUGCMapExtensionSale() : m_d0(0)
@@ -3626,8 +3626,8 @@ static Unk_GEFactoryRegistry s_regConstructShowItem(L"GameEventConstructShowItem
 GameEvent* FUN_1403c8b40() { return new GameEventConstructShowItem; }
 
 // @0x1403c8ba0
-CStringW GameEventConstructShowItem::vfunc_1() { return CStringW(L"GameEventConstructShowItem"); }
-MS2_REPLACE_METHOD(0x1403C8BA0, GameEventConstructShowItem, vfunc_1, 61, 0x16234975);
+CStringW GameEventConstructShowItem::GetTypeName() { return CStringW(L"GameEventConstructShowItem"); }
+MS2_REPLACE_METHOD(0x1403C8BA0, GameEventConstructShowItem, GetTypeName, 61, 0x16234975);
 
 // @0x1403c8bf0
 GameEventConstructShowItem::GameEventConstructShowItem() : m_d0(0), m_d8(L""), m_e0(0), m_108(0)
@@ -3705,8 +3705,8 @@ static Unk_GEFactoryRegistry s_regTransferItemBound(L"GameEventTransferItemBound
 GameEvent* FUN_1403c9190() { return new GameEventTransferItemBound; }
 
 // @0x1403c91f0
-CStringW GameEventTransferItemBound::vfunc_1() { return CStringW(L"GameEventTransferItemBound"); }
-MS2_REPLACE_METHOD(0x1403C91F0, GameEventTransferItemBound, vfunc_1, 61, 0x055A17FE);
+CStringW GameEventTransferItemBound::GetTypeName() { return CStringW(L"GameEventTransferItemBound"); }
+MS2_REPLACE_METHOD(0x1403C91F0, GameEventTransferItemBound, GetTypeName, 61, 0x055A17FE);
 
 // @0x1403c9240
 GameEventTransferItemBound::GameEventTransferItemBound() : m_d0(true)
@@ -3755,8 +3755,8 @@ static Unk_GEFactoryRegistry s_regSaleItemsRestricted(L"GameEventSaleItemsRestri
 GameEvent* FUN_1403c9430() { return new GameEventSaleItemsRestricted; }
 
 // @0x1403c9490
-CStringW GameEventSaleItemsRestricted::vfunc_1() { return CStringW(L"GameEventSaleItemsRestricted"); }
-MS2_REPLACE_METHOD(0x1403C9490, GameEventSaleItemsRestricted, vfunc_1, 61, 0x5751C17B);
+CStringW GameEventSaleItemsRestricted::GetTypeName() { return CStringW(L"GameEventSaleItemsRestricted"); }
+MS2_REPLACE_METHOD(0x1403C9490, GameEventSaleItemsRestricted, GetTypeName, 61, 0x5751C17B);
 
 // @0x1403c94e0
 GameEventSaleItemsRestricted::GameEventSaleItemsRestricted()
@@ -3811,8 +3811,8 @@ static Unk_GEFactoryRegistry s_regUgcMapCommendationGM(L"GameEventUgcMapCommenda
 GameEvent* FUN_1403c9720() { return new GameEventUgcMapCommendationGM; }
 
 // @0x1403c9780
-CStringW GameEventUgcMapCommendationGM::vfunc_1() { return CStringW(L"GameEventUgcMapCommendationGM"); }
-MS2_REPLACE_METHOD(0x1403C9780, GameEventUgcMapCommendationGM, vfunc_1, 61, 0x37F13374);
+CStringW GameEventUgcMapCommendationGM::GetTypeName() { return CStringW(L"GameEventUgcMapCommendationGM"); }
+MS2_REPLACE_METHOD(0x1403C9780, GameEventUgcMapCommendationGM, GetTypeName, 61, 0x37F13374);
 
 // @0x1403c97d0
 GameEventUgcMapCommendationGM::GameEventUgcMapCommendationGM()
@@ -3869,8 +3869,8 @@ static Unk_GEFactoryRegistry s_regDeleteUrlCache(L"GameEventDeleteUrlCache", FUN
 GameEvent* FUN_1403c9b20() { return new GameEventDeleteUrlCache; }
 
 // @0x1403c9b80
-CStringW GameEventDeleteUrlCache::vfunc_1() { return CStringW(L"GameEventDeleteUrlCache"); }
-MS2_REPLACE_METHOD(0x1403C9B80, GameEventDeleteUrlCache, vfunc_1, 61, 0x52EC09CC);
+CStringW GameEventDeleteUrlCache::GetTypeName() { return CStringW(L"GameEventDeleteUrlCache"); }
+MS2_REPLACE_METHOD(0x1403C9B80, GameEventDeleteUrlCache, GetTypeName, 61, 0x52EC09CC);
 
 // @0x1403c9bd0
 GameEventDeleteUrlCache::GameEventDeleteUrlCache() : m_d0(0)
@@ -3916,8 +3916,8 @@ static Unk_GEFactoryRegistry s_regPetMastery(L"GameEventPetMastery", FUN_1403c9d
 GameEvent* FUN_1403c9d90() { return new GameEventPetMastery; }
 
 // @0x1403c9df0
-CStringW GameEventPetMastery::vfunc_1() { return CStringW(L"GameEventPetMastery"); }
-MS2_REPLACE_METHOD(0x1403C9DF0, GameEventPetMastery, vfunc_1, 61, 0x1A3DF688);
+CStringW GameEventPetMastery::GetTypeName() { return CStringW(L"GameEventPetMastery"); }
+MS2_REPLACE_METHOD(0x1403C9DF0, GameEventPetMastery, GetTypeName, 61, 0x1A3DF688);
 
 // @0x1403c9e40
 GameEventPetMastery::GameEventPetMastery() : m_d0(0), m_d4(0)
@@ -3989,8 +3989,8 @@ static Unk_GEFactoryRegistry s_regPetBattleExp(L"GameEventPetBattleExp", FUN_140
 GameEvent* FUN_1403ca200() { return new GameEventPetBattleExp; }
 
 // @0x1403ca260
-CStringW GameEventPetBattleExp::vfunc_1() { return CStringW(L"GameEventPetBattleExp"); }
-MS2_REPLACE_METHOD(0x1403CA260, GameEventPetBattleExp, vfunc_1, 61, 0x5999CF35);
+CStringW GameEventPetBattleExp::GetTypeName() { return CStringW(L"GameEventPetBattleExp"); }
+MS2_REPLACE_METHOD(0x1403CA260, GameEventPetBattleExp, GetTypeName, 61, 0x5999CF35);
 
 // @0x1403ca2b0
 GameEventPetBattleExp::GameEventPetBattleExp() : m_d0(0)
@@ -4035,8 +4035,8 @@ static Unk_GEFactoryRegistry s_regPetComposeSale(L"GameEventPetComposeSale", FUN
 GameEvent* FUN_1403ca470() { return new GameEventPetComposeSale; }
 
 // @0x1403ca4d0
-CStringW GameEventPetComposeSale::vfunc_1() { return CStringW(L"GameEventPetComposeSale"); }
-MS2_REPLACE_METHOD(0x1403CA4D0, GameEventPetComposeSale, vfunc_1, 61, 0xA9C55261);
+CStringW GameEventPetComposeSale::GetTypeName() { return CStringW(L"GameEventPetComposeSale"); }
+MS2_REPLACE_METHOD(0x1403CA4D0, GameEventPetComposeSale, GetTypeName, 61, 0xA9C55261);
 
 // @0x1403ca520
 GameEventPetComposeSale::GameEventPetComposeSale() : m_d0(0)
@@ -4081,8 +4081,8 @@ static Unk_GEFactoryRegistry s_regItemBox(L"GameEventItemBox", FUN_1403ca6e0);
 GameEvent* FUN_1403ca6e0() { return new GameEventItemBox; }
 
 // @0x1403ca740
-CStringW GameEventItemBox::vfunc_1() { return CStringW(L"GameEventItemBox"); }
-MS2_REPLACE_METHOD(0x1403CA740, GameEventItemBox, vfunc_1, 61, 0x0AF964E2);
+CStringW GameEventItemBox::GetTypeName() { return CStringW(L"GameEventItemBox"); }
+MS2_REPLACE_METHOD(0x1403CA740, GameEventItemBox, GetTypeName, 61, 0x0AF964E2);
 
 // @0x1403ca790
 GameEventItemBox::GameEventItemBox() : m_d0(0), m_e0(false)
@@ -4171,8 +4171,8 @@ static Unk_GEFactoryRegistry s_regShutdownInteractObjectId(L"GameEventShutdownIn
 GameEvent* FUN_1403cabf0() { return new GameEventShutdownInteractObjectId; }
 
 // @0x1403cac50
-CStringW GameEventShutdownInteractObjectId::vfunc_1() { return CStringW(L"GameEventShutdownInteractObjectId"); }
-MS2_REPLACE_METHOD(0x1403CAC50, GameEventShutdownInteractObjectId, vfunc_1, 61, 0x2CDB7EE0);
+CStringW GameEventShutdownInteractObjectId::GetTypeName() { return CStringW(L"GameEventShutdownInteractObjectId"); }
+MS2_REPLACE_METHOD(0x1403CAC50, GameEventShutdownInteractObjectId, GetTypeName, 61, 0x2CDB7EE0);
 
 // @0x1403caca0
 GameEventShutdownInteractObjectId::GameEventShutdownInteractObjectId()
@@ -4254,8 +4254,8 @@ static Unk_GEFactoryRegistry s_regShutdownFunctionItem(L"GameEventShutdownFuncti
 GameEvent* FUN_1403cb1c0() { return new GameEventShutdownFunctionItem; }
 
 // @0x1403cb220
-CStringW GameEventShutdownFunctionItem::vfunc_1() { return CStringW(L"GameEventShutdownFunctionItem"); }
-MS2_REPLACE_METHOD(0x1403CB220, GameEventShutdownFunctionItem, vfunc_1, 61, 0xF8577A8A);
+CStringW GameEventShutdownFunctionItem::GetTypeName() { return CStringW(L"GameEventShutdownFunctionItem"); }
+MS2_REPLACE_METHOD(0x1403CB220, GameEventShutdownFunctionItem, GetTypeName, 61, 0xF8577A8A);
 
 // @0x1403cb270
 GameEventShutdownFunctionItem::GameEventShutdownFunctionItem()
@@ -4331,8 +4331,8 @@ static Unk_GEFactoryRegistry s_regShutdownSkillItem(L"GameEventShutdownSkillItem
 GameEvent* FUN_1403cb6f0() { return new GameEventShutdownSkillItem; }
 
 // @0x1403cb750
-CStringW GameEventShutdownSkillItem::vfunc_1() { return CStringW(L"GameEventShutdownSkillItem"); }
-MS2_REPLACE_METHOD(0x1403CB750, GameEventShutdownSkillItem, vfunc_1, 61, 0x3F87668B);
+CStringW GameEventShutdownSkillItem::GetTypeName() { return CStringW(L"GameEventShutdownSkillItem"); }
+MS2_REPLACE_METHOD(0x1403CB750, GameEventShutdownSkillItem, GetTypeName, 61, 0x3F87668B);
 
 // @0x1403cb7a0
 GameEventShutdownSkillItem::GameEventShutdownSkillItem()
@@ -4420,8 +4420,8 @@ static Unk_GEFactoryRegistry s_regShutdownUGCUpload(L"GameEventShutdownUGCUpload
 GameEvent* FUN_1403cbbf0() { return new GameEventShutdownUGCUpload; }
 
 // @0x1403cbc50
-CStringW GameEventShutdownUGCUpload::vfunc_1() { return CStringW(L"GameEventShutdownUGCUpload"); }
-MS2_REPLACE_METHOD(0x1403CBC50, GameEventShutdownUGCUpload, vfunc_1, 61, 0xFFEA9B7E);
+CStringW GameEventShutdownUGCUpload::GetTypeName() { return CStringW(L"GameEventShutdownUGCUpload"); }
+MS2_REPLACE_METHOD(0x1403CBC50, GameEventShutdownUGCUpload, GetTypeName, 61, 0xFFEA9B7E);
 
 // @0x1403cbca0
 GameEventShutdownUGCUpload::GameEventShutdownUGCUpload() : m_f0(0)
@@ -4477,8 +4477,8 @@ static Unk_GEFactoryRegistry s_regFindDungeonHelperBonus(L"GameEventFindDungeonH
 GameEvent* FUN_1403cbed0() { return new GameEventFindDungeonHelperBonus; }
 
 // @0x1403cbf30
-CStringW GameEventFindDungeonHelperBonus::vfunc_1() { return CStringW(L"GameEventFindDungeonHelperBonus"); }
-MS2_REPLACE_METHOD(0x1403CBF30, GameEventFindDungeonHelperBonus, vfunc_1, 61, 0x217288B8);
+CStringW GameEventFindDungeonHelperBonus::GetTypeName() { return CStringW(L"GameEventFindDungeonHelperBonus"); }
+MS2_REPLACE_METHOD(0x1403CBF30, GameEventFindDungeonHelperBonus, GetTypeName, 61, 0x217288B8);
 
 // @0x1403cbf80
 GameEventFindDungeonHelperBonus::GameEventFindDungeonHelperBonus() : m_d0(0)
@@ -4523,8 +4523,8 @@ static Unk_GEFactoryRegistry s_regGuildVsGameOpen(L"GameEventGuildVsGameOpen", F
 GameEvent* FUN_1403cc130() { return new GameEventGuildVsGameOpen; }
 
 // @0x1403cc190
-CStringW GameEventGuildVsGameOpen::vfunc_1() { return CStringW(L"GameEventGuildVsGameOpen"); }
-MS2_REPLACE_METHOD(0x1403CC190, GameEventGuildVsGameOpen, vfunc_1, 61, 0xDBD49CBD);
+CStringW GameEventGuildVsGameOpen::GetTypeName() { return CStringW(L"GameEventGuildVsGameOpen"); }
+MS2_REPLACE_METHOD(0x1403CC190, GameEventGuildVsGameOpen, GetTypeName, 61, 0xDBD49CBD);
 
 // @0x1403cc1e0
 GameEventGuildVsGameOpen::GameEventGuildVsGameOpen()
@@ -4557,8 +4557,8 @@ static Unk_GEFactoryRegistry s_regChatFiltering(L"GameEventChatFiltering", FUN_1
 GameEvent* FUN_1403cc2b0() { return new GameEventChatFiltering; }
 
 // @0x1403cc310
-CStringW GameEventChatFiltering::vfunc_1() { return CStringW(L"GameEventChatFiltering"); }
-MS2_REPLACE_METHOD(0x1403CC310, GameEventChatFiltering, vfunc_1, 61, 0xA54067BE);
+CStringW GameEventChatFiltering::GetTypeName() { return CStringW(L"GameEventChatFiltering"); }
+MS2_REPLACE_METHOD(0x1403CC310, GameEventChatFiltering, GetTypeName, 61, 0xA54067BE);
 
 // @0x1403cc360
 GameEventChatFiltering::GameEventChatFiltering()
@@ -4620,8 +4620,8 @@ static Unk_GEFactoryRegistry s_regBattlePetSpawn(L"GameEventBattlePetSpawn", FUN
 GameEvent* FUN_1403cc6c0() { return new GameEventBattlePetSpawn; }
 
 // @0x1403cc720
-CStringW GameEventBattlePetSpawn::vfunc_1() { return CStringW(L"GameEventBattlePetSpawn"); }
-MS2_REPLACE_METHOD(0x1403CC720, GameEventBattlePetSpawn, vfunc_1, 61, 0xCD360C59);
+CStringW GameEventBattlePetSpawn::GetTypeName() { return CStringW(L"GameEventBattlePetSpawn"); }
+MS2_REPLACE_METHOD(0x1403CC720, GameEventBattlePetSpawn, GetTypeName, 61, 0xCD360C59);
 
 // @0x1403cc770
 GameEventBattlePetSpawn::GameEventBattlePetSpawn() : m_d0(0)
@@ -4684,8 +4684,8 @@ static Unk_GEFactoryRegistry s_regGallery(L"GameEventGallery", FUN_1403ccaf0);
 GameEvent* FUN_1403ccaf0() { return new GameEventGallery; }
 
 // @0x1403ccb50
-CStringW GameEventGallery::vfunc_1() { return CStringW(L"GameEventGallery"); }
-MS2_REPLACE_METHOD(0x1403CCB50, GameEventGallery, vfunc_1, 61, 0xAD44891E);
+CStringW GameEventGallery::GetTypeName() { return CStringW(L"GameEventGallery"); }
+MS2_REPLACE_METHOD(0x1403CCB50, GameEventGallery, GetTypeName, 61, 0xAD44891E);
 
 // @0x1403ccba0
 GameEventGallery::GameEventGallery()
@@ -4821,8 +4821,8 @@ static Unk_GEFactoryRegistry s_regIgnoreConstructionLockEvent(L"GameEventIgnoreC
 GameEvent* FUN_1403cd5e0() { return new GameEventIgnoreConstructionLockEvent; }
 
 // @0x1403cd640
-CStringW GameEventIgnoreConstructionLockEvent::vfunc_1() { return CStringW(L"GameEventIgnoreConstructionLockEvent"); }
-MS2_REPLACE_METHOD(0x1403CD640, GameEventIgnoreConstructionLockEvent, vfunc_1, 61, 0xA97987F0);
+CStringW GameEventIgnoreConstructionLockEvent::GetTypeName() { return CStringW(L"GameEventIgnoreConstructionLockEvent"); }
+MS2_REPLACE_METHOD(0x1403CD640, GameEventIgnoreConstructionLockEvent, GetTypeName, 61, 0xA97987F0);
 
 // @0x1403cd690
 GameEventIgnoreConstructionLockEvent::GameEventIgnoreConstructionLockEvent()
@@ -4883,8 +4883,8 @@ static Unk_GEFactoryRegistry s_regStarShop(L"GameEventStarShop", FUN_1403cd970);
 GameEvent* FUN_1403cd970() { return new GameEventStarShop; }
 
 // @0x1403cd9d0
-CStringW GameEventStarShop::vfunc_1() { return CStringW(L"GameEventStarShop"); }
-MS2_REPLACE_METHOD(0x1403CD9D0, GameEventStarShop, vfunc_1, 61, 0x331EB3E6);
+CStringW GameEventStarShop::GetTypeName() { return CStringW(L"GameEventStarShop"); }
+MS2_REPLACE_METHOD(0x1403CD9D0, GameEventStarShop, GetTypeName, 61, 0x331EB3E6);
 
 // @0x1403cda20
 GameEventStarShop::GameEventStarShop() : m_d0(0)
@@ -4929,8 +4929,8 @@ static Unk_GEFactoryRegistry s_regSnowman(L"GameEventSnowman", FUN_1403cdbe0);
 GameEvent* FUN_1403cdbe0() { return new GameEventSnowman; }
 
 // @0x1403cdc40
-CStringW GameEventSnowman::vfunc_1() { return CStringW(L"GameEventSnowman"); }
-MS2_REPLACE_METHOD(0x1403CDC40, GameEventSnowman, vfunc_1, 61, 0xCB05291C);
+CStringW GameEventSnowman::GetTypeName() { return CStringW(L"GameEventSnowman"); }
+MS2_REPLACE_METHOD(0x1403CDC40, GameEventSnowman, GetTypeName, 61, 0xCB05291C);
 
 // @0x1403cdc90
 GameEventSnowman::GameEventSnowman()
@@ -5072,8 +5072,8 @@ static Unk_GEFactoryRegistry s_regRps(L"GameEventRps", FUN_1403ce7c0);
 GameEvent* FUN_1403ce7c0() { return new GameEventRps; }
 
 // @0x1403ce820
-CStringW GameEventRps::vfunc_1() { return CStringW(L"GameEventRps"); }
-MS2_REPLACE_METHOD(0x1403CE820, GameEventRps, vfunc_1, 61, 0xC89FAB34);
+CStringW GameEventRps::GetTypeName() { return CStringW(L"GameEventRps"); }
+MS2_REPLACE_METHOD(0x1403CE820, GameEventRps, GetTypeName, 61, 0xC89FAB34);
 
 // @0x1403ce870
 GameEventRps::GameEventRps()
@@ -5194,8 +5194,8 @@ static Unk_GEFactoryRegistry s_regNpcShopTalk(L"GameEventNpcShopTalk", FUN_1403c
 GameEvent* FUN_1403cf130() { return new GameEventNpcShopTalk; }
 
 // @0x1403cf190
-CStringW GameEventNpcShopTalk::vfunc_1() { return CStringW(L"GameEventNpcShopTalk"); }
-MS2_REPLACE_METHOD(0x1403CF190, GameEventNpcShopTalk, vfunc_1, 61, 0x218FD688);
+CStringW GameEventNpcShopTalk::GetTypeName() { return CStringW(L"GameEventNpcShopTalk"); }
+MS2_REPLACE_METHOD(0x1403CF190, GameEventNpcShopTalk, GetTypeName, 61, 0x218FD688);
 
 // @0x1403cf1e0
 GameEventNpcShopTalk::GameEventNpcShopTalk()
@@ -5246,8 +5246,8 @@ static Unk_GEFactoryRegistry s_regNpcShopGivePoint(L"GameEventNpcShopGivePoint",
 GameEvent* FUN_1403cf400() { return new GameEventNpcShopGivePoint; }
 
 // @0x1403cf460
-CStringW GameEventNpcShopGivePoint::vfunc_1() { return CStringW(L"GameEventNpcShopGivePoint"); }
-MS2_REPLACE_METHOD(0x1403CF460, GameEventNpcShopGivePoint, vfunc_1, 61, 0x215A644C);
+CStringW GameEventNpcShopGivePoint::GetTypeName() { return CStringW(L"GameEventNpcShopGivePoint"); }
+MS2_REPLACE_METHOD(0x1403CF460, GameEventNpcShopGivePoint, GetTypeName, 61, 0x215A644C);
 
 // @0x1403cf4b0
 GameEventNpcShopGivePoint::GameEventNpcShopGivePoint() : m_d0(0), m_d4(0)
@@ -5306,8 +5306,8 @@ static Unk_GEFactoryRegistry s_regNpcShopResetPriceSale(L"GameEventNpcShopResetP
 GameEvent* FUN_1403cf820() { return new GameEventNpcShopResetPriceSale; }
 
 // @0x1403cf880
-CStringW GameEventNpcShopResetPriceSale::vfunc_1() { return CStringW(L"GameEventNpcShopResetPriceSale"); }
-MS2_REPLACE_METHOD(0x1403CF880, GameEventNpcShopResetPriceSale, vfunc_1, 61, 0x7D90DEC1);
+CStringW GameEventNpcShopResetPriceSale::GetTypeName() { return CStringW(L"GameEventNpcShopResetPriceSale"); }
+MS2_REPLACE_METHOD(0x1403CF880, GameEventNpcShopResetPriceSale, GetTypeName, 61, 0x7D90DEC1);
 
 // @0x1403cf8d0
 GameEventNpcShopResetPriceSale::GameEventNpcShopResetPriceSale() : m_d0(0), m_d4(0)
@@ -5358,8 +5358,8 @@ static Unk_GEFactoryRegistry s_regReactor(L"GameEventReactor", FUN_1403cfb10);
 GameEvent* FUN_1403cfb10() { return new GameEventReactor; }
 
 // @0x1403cfb70
-CStringW GameEventReactor::vfunc_1() { return CStringW(L"GameEventReactor"); }
-MS2_REPLACE_METHOD(0x1403CFB70, GameEventReactor, vfunc_1, 61, 0x50BD97D2);
+CStringW GameEventReactor::GetTypeName() { return CStringW(L"GameEventReactor"); }
+MS2_REPLACE_METHOD(0x1403CFB70, GameEventReactor, GetTypeName, 61, 0x50BD97D2);
 
 // @0x1403cfbc0
 GameEventReactor::GameEventReactor()
@@ -5437,8 +5437,8 @@ static Unk_GEFactoryRegistry s_regCustomTriggerString(L"GameEventCustomTriggerSt
 GameEvent* FUN_1403d0090() { return new GameEventCustomTriggerString; }
 
 // @0x1403d00f0
-CStringW GameEventCustomTriggerString::vfunc_1() { return CStringW(L"GameEventCustomTriggerString"); }
-MS2_REPLACE_METHOD(0x1403D00F0, GameEventCustomTriggerString, vfunc_1, 61, 0x26A68B16);
+CStringW GameEventCustomTriggerString::GetTypeName() { return CStringW(L"GameEventCustomTriggerString"); }
+MS2_REPLACE_METHOD(0x1403D00F0, GameEventCustomTriggerString, GetTypeName, 61, 0x26A68B16);
 
 // @0x1403d0140
 GameEventCustomTriggerString::GameEventCustomTriggerString()
@@ -5501,8 +5501,8 @@ static Unk_GEFactoryRegistry s_regTreeWatering(L"GameEventTreeWatering", FUN_140
 GameEvent* FUN_1403d03f0() { return new GameEventTreeWatering; }
 
 // @0x1403d0450
-CStringW GameEventTreeWatering::vfunc_1() { return CStringW(L"GameEventTreeWatering"); }
-MS2_REPLACE_METHOD(0x1403D0450, GameEventTreeWatering, vfunc_1, 61, 0x95D2CAA5);
+CStringW GameEventTreeWatering::GetTypeName() { return CStringW(L"GameEventTreeWatering"); }
+MS2_REPLACE_METHOD(0x1403D0450, GameEventTreeWatering, GetTypeName, 61, 0x95D2CAA5);
 
 // @0x1403d04a0
 GameEventTreeWatering::GameEventTreeWatering()
@@ -5671,8 +5671,8 @@ static Unk_GEFactoryRegistry s_regShutdownBillboard(L"GameEventShutdownBillboard
 GameEvent* FUN_1403d1240() { return new GameEventShutdownBillboard; }
 
 // @0x1403d12a0
-CStringW GameEventShutdownBillboard::vfunc_1() { return CStringW(L"GameEventShutdownBillboard"); }
-MS2_REPLACE_METHOD(0x1403D12A0, GameEventShutdownBillboard, vfunc_1, 61, 0x1CEDC64C);
+CStringW GameEventShutdownBillboard::GetTypeName() { return CStringW(L"GameEventShutdownBillboard"); }
+MS2_REPLACE_METHOD(0x1403D12A0, GameEventShutdownBillboard, GetTypeName, 61, 0x1CEDC64C);
 
 // @0x1403d12f0
 GameEventShutdownBillboard::GameEventShutdownBillboard()
@@ -5701,8 +5701,8 @@ static Unk_GEFactoryRegistry s_regShutdownUGCBanner(L"GameEventShutdownUGCBanner
 GameEvent* FUN_1403d13e0() { return new GameEventShutdownUGCBanner; }
 
 // @0x1403d1440
-CStringW GameEventShutdownUGCBanner::vfunc_1() { return CStringW(L"GameEventShutdownUGCBanner"); }
-MS2_REPLACE_METHOD(0x1403D1440, GameEventShutdownUGCBanner, vfunc_1, 61, 0x75239B35);
+CStringW GameEventShutdownUGCBanner::GetTypeName() { return CStringW(L"GameEventShutdownUGCBanner"); }
+MS2_REPLACE_METHOD(0x1403D1440, GameEventShutdownUGCBanner, GetTypeName, 61, 0x75239B35);
 
 // @0x1403d1490
 GameEventShutdownUGCBanner::GameEventShutdownUGCBanner()
@@ -5731,8 +5731,8 @@ static Unk_GEFactoryRegistry s_regPublicTest(L"GameEventPublicTest", FUN_1403d15
 GameEvent* FUN_1403d1580() { return new GameEventPublicTest; }
 
 // @0x1403d15e0
-CStringW GameEventPublicTest::vfunc_1() { return CStringW(L"GameEventPublicTest"); }
-MS2_REPLACE_METHOD(0x1403D15E0, GameEventPublicTest, vfunc_1, 61, 0x03DA0F8B);
+CStringW GameEventPublicTest::GetTypeName() { return CStringW(L"GameEventPublicTest"); }
+MS2_REPLACE_METHOD(0x1403D15E0, GameEventPublicTest, GetTypeName, 61, 0x03DA0F8B);
 
 // @0x1403d1630
 GameEventPublicTest::GameEventPublicTest()
@@ -5762,8 +5762,8 @@ static Unk_GEFactoryRegistry s_regAdventureLevelBonusExpRate(L"GameEventAdventur
 GameEvent* FUN_1403d16f0() { return new GameEventAdventureLevelBonusExpRate; }
 
 // @0x1403d1750
-CStringW GameEventAdventureLevelBonusExpRate::vfunc_1() { return CStringW(L"GameEventAdventureLevelBonusExpRate"); }
-MS2_REPLACE_METHOD(0x1403D1750, GameEventAdventureLevelBonusExpRate, vfunc_1, 61, 0x3D816E6A);
+CStringW GameEventAdventureLevelBonusExpRate::GetTypeName() { return CStringW(L"GameEventAdventureLevelBonusExpRate"); }
+MS2_REPLACE_METHOD(0x1403D1750, GameEventAdventureLevelBonusExpRate, GetTypeName, 61, 0x3D816E6A);
 
 // @0x1403d17a0
 GameEventAdventureLevelBonusExpRate::GameEventAdventureLevelBonusExpRate() : m_d0(0)
@@ -5821,8 +5821,8 @@ static Unk_GEFactoryRegistry s_regBurningLevelup(L"GameEventBurningLevelup", FUN
 GameEvent* FUN_1403d1960() { return new GameEventBurningLevelup; }
 
 // @0x1403d19c0
-CStringW GameEventBurningLevelup::vfunc_1() { return CStringW(L"GameEventBurningLevelup"); }
-MS2_REPLACE_METHOD(0x1403D19C0, GameEventBurningLevelup, vfunc_1, 61, 0xB1A8D55A);
+CStringW GameEventBurningLevelup::GetTypeName() { return CStringW(L"GameEventBurningLevelup"); }
+MS2_REPLACE_METHOD(0x1403D19C0, GameEventBurningLevelup, GetTypeName, 61, 0xB1A8D55A);
 
 // @0x1403d1a10
 GameEventBurningLevelup::GameEventBurningLevelup() : m_d0(new BurningLevelupContext)
@@ -5974,8 +5974,8 @@ static Unk_GEFactoryRegistry s_regFestival(L"GameEventFestival", FUN_1403d2930);
 GameEvent* FUN_1403d2930() { return new GameEventFestival; }
 
 // @0x1403d2990
-CStringW GameEventFestival::vfunc_1() { return CStringW(L"GameEventFestival"); }
-MS2_REPLACE_METHOD(0x1403D2990, GameEventFestival, vfunc_1, 61, 0x027A9636);
+CStringW GameEventFestival::GetTypeName() { return CStringW(L"GameEventFestival"); }
+MS2_REPLACE_METHOD(0x1403D2990, GameEventFestival, GetTypeName, 61, 0x027A9636);
 
 // @0x1403d29e0
 GameEventFestival::GameEventFestival() : m_d0(new FestivalContext)
@@ -6064,8 +6064,8 @@ static Unk_GEFactoryRegistry s_regCoupleDance(L"GameEventCoupleDance", FUN_1403d
 GameEvent* FUN_1403d3010() { return new GameEventCoupleDance; }
 
 // @0x1403d3070
-CStringW GameEventCoupleDance::vfunc_1() { return CStringW(L"GameEventCoupleDance"); }
-MS2_REPLACE_METHOD(0x1403D3070, GameEventCoupleDance, vfunc_1, 61, 0x0F6CCC20);
+CStringW GameEventCoupleDance::GetTypeName() { return CStringW(L"GameEventCoupleDance"); }
+MS2_REPLACE_METHOD(0x1403D3070, GameEventCoupleDance, GetTypeName, 61, 0x0F6CCC20);
 
 // @0x1403d30c0
 GameEventCoupleDance::GameEventCoupleDance() : m_d0(new CoupleDanceContext)
@@ -6148,8 +6148,8 @@ static Unk_GEFactoryRegistry s_regFieldEffect(L"GameEventFieldEffect", FUN_1403d
 GameEvent* FUN_1403d3570() { return new GameEventFieldEffect; }
 
 // @0x1403d35d0
-CStringW GameEventFieldEffect::vfunc_1() { return CStringW(L"GameEventFieldEffect"); }
-MS2_REPLACE_METHOD(0x1403D35D0, GameEventFieldEffect, vfunc_1, 61, 0x000C59E1);
+CStringW GameEventFieldEffect::GetTypeName() { return CStringW(L"GameEventFieldEffect"); }
+MS2_REPLACE_METHOD(0x1403D35D0, GameEventFieldEffect, GetTypeName, 61, 0x000C59E1);
 
 // @0x1403d3620
 GameEventFieldEffect::GameEventFieldEffect() : m_d0(new FieldEffectContext)
@@ -6218,8 +6218,8 @@ static Unk_GEFactoryRegistry s_regExchangeScrollSale(L"GameEventExchangeScrollSa
 GameEvent* FUN_1403d3ae0() { return new GameEventExchangeScrollSale; }
 
 // @0x1403d3b40
-CStringW GameEventExchangeScrollSale::vfunc_1() { return CStringW(L"GameEventExchangeScrollSale"); }
-MS2_REPLACE_METHOD(0x1403D3B40, GameEventExchangeScrollSale, vfunc_1, 61, 0x74CCA507);
+CStringW GameEventExchangeScrollSale::GetTypeName() { return CStringW(L"GameEventExchangeScrollSale"); }
+MS2_REPLACE_METHOD(0x1403D3B40, GameEventExchangeScrollSale, GetTypeName, 61, 0x74CCA507);
 
 // @0x1403d3c00
 void GameEventExchangeScrollSale::vfunc_2()
@@ -6277,8 +6277,8 @@ static Unk_GEFactoryRegistry s_regItemTradeRestriction(L"GameEventItemTradeRestr
 GameEvent* FUN_1403d3f50() { return new GameEventItemTradeRestriction; }
 
 // @0x1403d3fb0
-CStringW GameEventItemTradeRestriction::vfunc_1() { return CStringW(L"GameEventItemTradeRestriction"); }
-MS2_REPLACE_METHOD(0x1403D3FB0, GameEventItemTradeRestriction, vfunc_1, 61, 0x7F5D7FAE);
+CStringW GameEventItemTradeRestriction::GetTypeName() { return CStringW(L"GameEventItemTradeRestriction"); }
+MS2_REPLACE_METHOD(0x1403D3FB0, GameEventItemTradeRestriction, GetTypeName, 61, 0x7F5D7FAE);
 
 // @0x1403d40a0
 void GameEventItemTradeRestriction::vfunc_2()
@@ -6371,8 +6371,8 @@ static Unk_GEFactoryRegistry s_regCollectItemGroup(L"GameEventCollectItemGroup",
 GameEvent* FUN_1403d47f0() { return new GameEventCollectItemGroup; }
 
 // @0x1403d4850
-CStringW GameEventCollectItemGroup::vfunc_1() { return CStringW(L"GameEventCollectItemGroup"); }
-MS2_REPLACE_METHOD(0x1403D4850, GameEventCollectItemGroup, vfunc_1, 61, 0x32A21825);
+CStringW GameEventCollectItemGroup::GetTypeName() { return CStringW(L"GameEventCollectItemGroup"); }
+MS2_REPLACE_METHOD(0x1403D4850, GameEventCollectItemGroup, GetTypeName, 61, 0x32A21825);
 
 // @0x1403d48a0
 GameEventCollectItemGroup::GameEventCollectItemGroup()
@@ -6448,8 +6448,8 @@ static Unk_GEFactoryRegistry s_regShutdownDummy(L"GameEventShutdownDummy", FUN_1
 GameEvent* FUN_1403d4e30() { return new GameEventShutdownDummy; }
 
 // @0x1403d4e90
-CStringW GameEventShutdownDummy::vfunc_1() { return CStringW(L"GameEventShutdownDummy"); }
-MS2_REPLACE_METHOD(0x1403D4E90, GameEventShutdownDummy, vfunc_1, 61, 0x541F71D7);
+CStringW GameEventShutdownDummy::GetTypeName() { return CStringW(L"GameEventShutdownDummy"); }
+MS2_REPLACE_METHOD(0x1403D4E90, GameEventShutdownDummy, GetTypeName, 61, 0x541F71D7);
 
 // @0x1403d4ee0
 GameEventShutdownDummy::GameEventShutdownDummy() : m_d0(0)
@@ -6507,8 +6507,8 @@ static Unk_GEFactoryRegistry s_regSalePetCrystal(L"GameEventSalePetCrystal", FUN
 GameEvent* FUN_1403d50e0() { return new GameEventSalePetCrystal; }
 
 // @0x1403d5140
-CStringW GameEventSalePetCrystal::vfunc_1() { return CStringW(L"GameEventSalePetCrystal"); }
-MS2_REPLACE_METHOD(0x1403D5140, GameEventSalePetCrystal, vfunc_1, 61, 0x0BE93E08);
+CStringW GameEventSalePetCrystal::GetTypeName() { return CStringW(L"GameEventSalePetCrystal"); }
+MS2_REPLACE_METHOD(0x1403D5140, GameEventSalePetCrystal, GetTypeName, 61, 0x0BE93E08);
 
 // @0x1403d5190
 GameEventSalePetCrystal::GameEventSalePetCrystal() : m_d0(0)
@@ -6553,8 +6553,8 @@ static Unk_GEFactoryRegistry s_regArcadeOpen(L"GameEventArcadeOpen", FUN_1403d53
 GameEvent* FUN_1403d5350() { return new GameEventArcadeOpen; }
 
 // @0x1403d53b0
-CStringW GameEventArcadeOpen::vfunc_1() { return CStringW(L"GameEventArcadeOpen"); }
-MS2_REPLACE_METHOD(0x1403D53B0, GameEventArcadeOpen, vfunc_1, 61, 0xE362445C);
+CStringW GameEventArcadeOpen::GetTypeName() { return CStringW(L"GameEventArcadeOpen"); }
+MS2_REPLACE_METHOD(0x1403D53B0, GameEventArcadeOpen, GetTypeName, 61, 0xE362445C);
 
 // @0x1403d5400
 GameEventArcadeOpen::GameEventArcadeOpen()
@@ -6630,8 +6630,8 @@ static Unk_GEFactoryRegistry s_regBingoEvent(L"GameEventBingoEvent", FUN_1403d59
 GameEvent* FUN_1403d5900() { return new GameEventBingoEvent; }
 
 // @0x1403d5960
-CStringW GameEventBingoEvent::vfunc_1() { return CStringW(L"GameEventBingoEvent"); }
-MS2_REPLACE_METHOD(0x1403D5960, GameEventBingoEvent, vfunc_1, 61, 0xEC17028F);
+CStringW GameEventBingoEvent::GetTypeName() { return CStringW(L"GameEventBingoEvent"); }
+MS2_REPLACE_METHOD(0x1403D5960, GameEventBingoEvent, GetTypeName, 61, 0xEC17028F);
 
 // @0x1403d59b0
 GameEventBingoEvent::GameEventBingoEvent()
@@ -6693,8 +6693,8 @@ static Unk_GEFactoryRegistry s_regFinishPayback(L"GameEventFinishPayback", FUN_1
 GameEvent* FUN_1403d5f10() { return new GameEventFinishPayback; }
 
 // @0x1403d5f70
-CStringW GameEventFinishPayback::vfunc_1() { return CStringW(L"GameEventFinishPayback"); }
-MS2_REPLACE_METHOD(0x1403D5F70, GameEventFinishPayback, vfunc_1, 61, 0xF28598AE);
+CStringW GameEventFinishPayback::GetTypeName() { return CStringW(L"GameEventFinishPayback"); }
+MS2_REPLACE_METHOD(0x1403D5F70, GameEventFinishPayback, GetTypeName, 61, 0xF28598AE);
 
 // @0x1403d5fc0
 GameEventFinishPayback::GameEventFinishPayback()
@@ -6723,8 +6723,8 @@ static Unk_GEFactoryRegistry s_regLongTermAttendGift(L"GameEventLongTermAttendGi
 GameEvent* FUN_1403d6050() { return new GameEventLongTermAttendGift; }
 
 // @0x1403d60b0
-CStringW GameEventLongTermAttendGift::vfunc_1() { return CStringW(L"GameEventLongTermAttendGift"); }
-MS2_REPLACE_METHOD(0x1403D60B0, GameEventLongTermAttendGift, vfunc_1, 61, 0xAE01EFBA);
+CStringW GameEventLongTermAttendGift::GetTypeName() { return CStringW(L"GameEventLongTermAttendGift"); }
+MS2_REPLACE_METHOD(0x1403D60B0, GameEventLongTermAttendGift, GetTypeName, 61, 0xAE01EFBA);
 
 // @0x1403d6100
 GameEventLongTermAttendGift::GameEventLongTermAttendGift()
@@ -6823,8 +6823,8 @@ static Unk_GEFactoryRegistry s_regSaleLapenshardUpgradeRGB(L"GameEventSaleLapens
 GameEvent* FUN_1403d6980() { return new GameEventSaleLapenshardUpgradeRGB; }
 
 // @0x1403d69e0
-CStringW GameEventSaleLapenshardUpgradeRGB::vfunc_1() { return CStringW(L"GameEventSaleLapenshardUpgradeRGB"); }
-MS2_REPLACE_METHOD(0x1403D69E0, GameEventSaleLapenshardUpgradeRGB, vfunc_1, 61, 0x9B2877AB);
+CStringW GameEventSaleLapenshardUpgradeRGB::GetTypeName() { return CStringW(L"GameEventSaleLapenshardUpgradeRGB"); }
+MS2_REPLACE_METHOD(0x1403D69E0, GameEventSaleLapenshardUpgradeRGB, GetTypeName, 61, 0x9B2877AB);
 
 // @0x1403d6a30
 GameEventSaleLapenshardUpgradeRGB::GameEventSaleLapenshardUpgradeRGB() {}
@@ -6845,8 +6845,8 @@ static Unk_GEFactoryRegistry s_regGuildEventFund(L"GameEventGuildEventFund", FUN
 GameEvent* FUN_1403d6ae0() { return new GameEventGuildEventFund; }
 
 // @0x1403d6b40
-CStringW GameEventGuildEventFund::vfunc_1() { return CStringW(L"GameEventGuildEventFund"); }
-MS2_REPLACE_METHOD(0x1403D6B40, GameEventGuildEventFund, vfunc_1, 61, 0xC4FDA0BA);
+CStringW GameEventGuildEventFund::GetTypeName() { return CStringW(L"GameEventGuildEventFund"); }
+MS2_REPLACE_METHOD(0x1403D6B40, GameEventGuildEventFund, GetTypeName, 61, 0xC4FDA0BA);
 
 // @0x1403d6b90
 GameEventGuildEventFund::GameEventGuildEventFund()

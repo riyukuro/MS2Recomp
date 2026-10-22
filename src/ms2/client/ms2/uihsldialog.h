@@ -10,7 +10,7 @@ class UIHSLDialog : public UIDialog
 public:
     UIHSLDialog();                                                              // 0x1412c9860
     virtual ~UIHSLDialog();                                                     // 0x1412c98e0, ??_G 0x1412c9d00
-    virtual CString vfunc_1();                                                  //  1 0x1412c9920
+    virtual CString GetTypeName();                                                  //  1 0x1412c9920
     virtual void OnLoadComplete();                                              // 22 0x1412c9970
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                                 // 28 0x1412c9a40

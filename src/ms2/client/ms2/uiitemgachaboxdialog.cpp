@@ -176,7 +176,7 @@ UIItemGachaBoxDialog::~UIItemGachaBoxDialog()
 }
 
 // @0x140c40150
-CString UIItemGachaBoxDialog::vfunc_1() { return "ItemGachaBoxDialog"; }
+CString UIItemGachaBoxDialog::GetTypeName() { return "ItemGachaBoxDialog"; }
 
 // @0x140c401a0
 int UIItemGachaBoxDialog::vfunc_65()
@@ -614,7 +614,7 @@ void UIItemGachaBoxDialog::FUN_140c42160()
         item->FUN_140526c70(e.vfunc_o18_2());
         static_cast<Unk_GachaItem*>(item.operator->())->FUN_140529660(gachaId);
         CString bagKey;
-        bagKey.Format("ItemGacha_%s_%d", (const char*)vfunc_1(), 1);
+        bagKey.Format("ItemGacha_%s_%d", (const char*)GetTypeName(), 1);
         int count = item->FUN_140526c50();
         CStringW txt = StringFormat(L"{0} X {1}", item->FUN_140527b10(), count);
         FUN_141415450(bagKey, MS2Ptr<CItem>(item), 0, 0x415, 0x800);
@@ -639,7 +639,7 @@ void UIItemGachaBoxDialog::FUN_140c42160()
                     continue;
                 item->FUN_140526c70(e.vfunc_o18_2());
                 static_cast<Unk_GachaItem*>(item.operator->())->FUN_140529660(gachaId);
-                bagKey.Format("ItemGacha_%s_%d", (const char*)vfunc_1(), (int)(i + 1));
+                bagKey.Format("ItemGacha_%s_%d", (const char*)GetTypeName(), (int)(i + 1));
                 FUN_141415450(bagKey, MS2Ptr<CItem>(item), (int)i, 0x415, 0x800);
                 GACHA_BINDS.FUN_1403b0310(bagKey);
                 MS2Ptr<ASMovieClip> unc = multi->FUN_1409b4560("m_uncommonEffect");
@@ -657,7 +657,7 @@ void UIItemGachaBoxDialog::FUN_140c42160()
 }
 
 // ---- hooks ----
-MS2_REPLACE_METHOD(0x140C40150, UIItemGachaBoxDialog, vfunc_1, 61, 0xF96FC20C);
+MS2_REPLACE_METHOD(0x140C40150, UIItemGachaBoxDialog, GetTypeName, 61, 0xF96FC20C);
 MS2_REPLACE_METHOD(0x140C401A0, UIItemGachaBoxDialog, vfunc_65, 37, 0xBB3E7FC3);
 MS2_REPLACE_METHOD(0x140C401D0, UIItemGachaBoxDialog, vfunc_67, 97, 0xC9D6AEF7);
 MS2_REPLACE_METHOD(0x140C40240, UIItemGachaBoxDialog, OnLoadComplete, 339, 0xFA8D0668);

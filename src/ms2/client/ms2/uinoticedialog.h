@@ -23,7 +23,7 @@ public:
     UINoticeDialog();                                               // 0x1410084b0
     virtual ~UINoticeDialog();                                      //  0 0x1410085c0 (??_G 0x141009eb0, ??_E thunk 0x141009e58)
 
-    virtual CString vfunc_1();                                      //  1 0x141008690 "NoticeDialog"
+    virtual CString GetTypeName();                                      //  1 0x141008690 "NoticeDialog"
     virtual void OnLoadComplete();                                  // 22 0x141008700 bind the children
     virtual void vfunc_26();                                        // 26 0x141008e10 release the children
     virtual void vfunc_43();                                        // 43 0x141008ec0

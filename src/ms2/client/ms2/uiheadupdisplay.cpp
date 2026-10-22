@@ -39,11 +39,11 @@ UIHeadUpDisplay::~UIHeadUpDisplay()
 }
 
 // @0x141986c00
-CString UIHeadUpDisplay::vfunc_1()
+CString UIHeadUpDisplay::GetTypeName()
 {
     return "HeadUpDisplay";
 }
-MS2_REPLACE_METHOD(0x141986C00, UIHeadUpDisplay, vfunc_1, 61, 0x0B1F24FC);
+MS2_REPLACE_METHOD(0x141986C00, UIHeadUpDisplay, GetTypeName, 61, 0x0B1F24FC);
 
 // @0x141986c50
 void UIHeadUpDisplay::vfunc_41(const Scaleform::GFx::Value& root)

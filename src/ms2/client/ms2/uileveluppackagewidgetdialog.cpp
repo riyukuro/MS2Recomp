@@ -176,11 +176,11 @@ UIEventWidgetDialog::~UIEventWidgetDialog()
 }
 
 // @0x140c58e60
-CString UIEventWidgetDialog::vfunc_1()
+CString UIEventWidgetDialog::GetTypeName()
 {
     return "EventWidgetDialog";
 }
-MS2_REPLACE_METHOD(0x140C58E60, UIEventWidgetDialog, vfunc_1, 61, 0xD4D6FE06);
+MS2_REPLACE_METHOD(0x140C58E60, UIEventWidgetDialog, GetTypeName, 61, 0xD4D6FE06);
 
 // @0x140c58eb0
 CString UIEventWidgetDialog::vfunc_7()
@@ -301,11 +301,11 @@ UILevelUpPackageWidgetDialog::~UILevelUpPackageWidgetDialog()
 }
 
 // @0x140c59590
-CString UILevelUpPackageWidgetDialog::vfunc_1()
+CString UILevelUpPackageWidgetDialog::GetTypeName()
 {
     return "LevelUpPackageWidget";
 }
-MS2_REPLACE_METHOD(0x140C59590, UILevelUpPackageWidgetDialog, vfunc_1, 61, 0x8CCC10F8);
+MS2_REPLACE_METHOD(0x140C59590, UILevelUpPackageWidgetDialog, GetTypeName, 61, 0x8CCC10F8);
 
 // @0x140c595e0
 int UILevelUpPackageWidgetDialog::vfunc_65()
@@ -457,11 +457,11 @@ UIBurningEventWidgetDialog::~UIBurningEventWidgetDialog()
 }
 
 // @0x140c5a0b0
-CString UIBurningEventWidgetDialog::vfunc_1()
+CString UIBurningEventWidgetDialog::GetTypeName()
 {
     return "BurningEventWidget";
 }
-MS2_REPLACE_METHOD(0x140C5A0B0, UIBurningEventWidgetDialog, vfunc_1, 61, 0x284A95D7);
+MS2_REPLACE_METHOD(0x140C5A0B0, UIBurningEventWidgetDialog, GetTypeName, 61, 0x284A95D7);
 
 // @0x140c5a100
 void UIBurningEventWidgetDialog::FUN_140c5a100(void* pEvent)

@@ -25,7 +25,7 @@ class UIBeautyShopDialog : public UIDialog, public UIItemEventListener, public I
 public:
     UIBeautyShopDialog();                               // 0x1418c3630
     virtual ~UIBeautyShopDialog();                      // 0x1418c3950
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual int vfunc_13();
     virtual void vfunc_15();
     virtual void OnLoadInit();

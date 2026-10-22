@@ -56,11 +56,11 @@ UISelectSuperWorldChatDialog::~UISelectSuperWorldChatDialog()
 }
 
 // @0x140e8be80
-CString UISelectSuperWorldChatDialog::vfunc_1()
+CString UISelectSuperWorldChatDialog::GetTypeName()
 {
     return "SelectSuperWorldChatDialog";
 }
-MS2_REPLACE_METHOD(0x140E8BE80, UISelectSuperWorldChatDialog, vfunc_1, 61, 0xBE9BE37B);
+MS2_REPLACE_METHOD(0x140E8BE80, UISelectSuperWorldChatDialog, GetTypeName, 61, 0xBE9BE37B);
 
 // @0x140e8bed0
 void UISelectSuperWorldChatDialog::vfunc_26()

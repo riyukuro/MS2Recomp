@@ -9,7 +9,7 @@ class UIBuildBtnGuide : public UIHeadUpDisplay
 public:
     UIBuildBtnGuide();                                                          // 0x1418dcba0
     virtual ~UIBuildBtnGuide();                                                 // 0x1418dcc00, ??_G 0x1418dcf20
-    virtual CString vfunc_1();                                                  //  1 0x1418dcc40
+    virtual CString GetTypeName();                                                  //  1 0x1418dcc40
     virtual void vfunc_8(int nVisible);                                         //  8 0x1418dcdb0
     virtual void OnLoadComplete();                                              // 22 0x1418dcc90
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

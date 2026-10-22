@@ -26,7 +26,7 @@ class UIBlueMarbleGameDialog : public UIDialog
 public:
     UIBlueMarbleGameDialog();                                           // 0x140f21590 (open tween 1)
     virtual ~UIBlueMarbleGameDialog() = default;                        //  0 0x140f24ac0 (??_G 0x140f24b40)
-    virtual CString vfunc_1();                                          //  1 0x140f21680 "BlueMarbleGameDialog"
+    virtual CString GetTypeName();                                          //  1 0x140f21680 "BlueMarbleGameDialog"
     virtual void OnLoadInit();                                          // 20 0x140f217f0 ask the server for the board
     virtual void OnLoadComplete();                                      // 22 0x140f216d0
     virtual void vfunc_26();                                            // 26 0x140f216f0 release the bound reward items

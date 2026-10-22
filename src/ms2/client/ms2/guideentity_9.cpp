@@ -394,7 +394,7 @@ int CGuideCondition::vfunc_8()
 // @0x1413a5820
 CStringW CGuideCondition::FUN_1413a5820()
 {
-    CStringW str = StringFormat(L"{0}:", vfunc_1());
+    CStringW str = StringFormat(L"{0}:", GetTypeName());
     if (m_b1c)
         str.Append(L"not ");
     return str;
@@ -409,7 +409,7 @@ ClassObject* CGuideConditionFalse::CreateObject()
 }
 
 // @0x1413a5940
-CStringW CGuideConditionFalse::vfunc_1()
+CStringW CGuideConditionFalse::GetTypeName()
 {
     return L"CGuideConditionFalse";
 }
@@ -429,7 +429,7 @@ ClassObject* CGuideConditionTrigger::CreateObject()
 }
 
 // @0x1413a5a00
-CStringW CGuideConditionTrigger::vfunc_1()
+CStringW CGuideConditionTrigger::GetTypeName()
 {
     return L"CGuideConditionTrigger";
 }
@@ -483,7 +483,7 @@ ClassObject* CGuideConditionTimeout::CreateObject()
 }
 
 // @0x1413a5ef0
-CStringW CGuideConditionTimeout::vfunc_1()
+CStringW CGuideConditionTimeout::GetTypeName()
 {
     return L"CGuideConditionTimeout";
 }

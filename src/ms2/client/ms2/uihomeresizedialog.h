@@ -17,7 +17,7 @@ class UIHomeResizeDialog : public UIDialog
 public:
     UIHomeResizeDialog();                                       // 0x140c2bc50
     virtual ~UIHomeResizeDialog();                              //  0 0x140c2bce0 (??_G 0x140c2dbf0)
-    virtual CString vfunc_1();                                  //  1 0x140c2bd20
+    virtual CString GetTypeName();                                  //  1 0x140c2bd20
     virtual void OnLoadComplete();                              // 22 0x140c2bd70
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140c2be50
     virtual void vfunc_43();                                    // 43 0x140c2bdb0 center the movie

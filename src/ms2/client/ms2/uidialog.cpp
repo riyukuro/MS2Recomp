@@ -224,11 +224,11 @@ UIDialog::~UIDialog()
 }
 
 // @0x1419234e0
-CString UIDialog::vfunc_1()
+CString UIDialog::GetTypeName()
 {
     return "Dialog";
 }
-MS2_REPLACE_METHOD(0x1419234e0, UIDialog, vfunc_1, 61, 0xEB719311);
+MS2_REPLACE_METHOD(0x1419234e0, UIDialog, GetTypeName, 61, 0xEB719311);
 
 // @0x141923530
 int UIDialog::vfunc_52()
@@ -280,12 +280,12 @@ int UIDialog::vfunc_4()
         return 1;
     FUN_14086ddc0(&m_e8);
     if (!FUN_14081b310(&m_e8))
-        FUN_14086e090(&m_e8, new TiXmlElement(vfunc_1()));
+        FUN_14086e090(&m_e8, new TiXmlElement(GetTypeName()));
     void* pRoot = FUN_14081b310(&m_e8);
     if (!pRoot)
         return 0;
     vfunc_53(pRoot);
-    return FUN_1408710c0(&m_e8, FUN_140cc2a00(FUN_1412755f0(), FUN_14038f6d0(vfunc_1(), ".xml")));
+    return FUN_1408710c0(&m_e8, FUN_140cc2a00(FUN_1412755f0(), FUN_14038f6d0(GetTypeName(), ".xml")));
 }
 MS2_REPLACE_METHOD(0x1419237c0, UIDialog, vfunc_4, 673, 0x49894032);
 
@@ -297,9 +297,9 @@ int UIDialog::vfunc_5()
         return 0;
     FUN_14086ddc0(&m_e8);
     vfunc_83();
-    if (!m_e8.FUN_140870fc0(FUN_140cc2a00(FUN_1412755f0(), FUN_14038f6d0(vfunc_1(), ".xml")), 0))
+    if (!m_e8.FUN_140870fc0(FUN_140cc2a00(FUN_1412755f0(), FUN_14038f6d0(GetTypeName(), ".xml")), 0))
         return 0;
-    void* pNode = FUN_140165cf0(&m_e8, vfunc_1());
+    void* pNode = FUN_140165cf0(&m_e8, GetTypeName());
     if (!pNode)
         return 0;
     return m_78 = vfunc_54(pNode);
@@ -646,7 +646,7 @@ void UIDialog::vfunc_68()
         m_c4 = nTween;
     }
     if (FUN_140166440())
-        FUN_140166440()->FUN_14015eb90(0xb, 0x131, L"Close Dialog [{0}]", vfunc_1());
+        FUN_140166440()->FUN_14015eb90(0xb, 0x131, L"Close Dialog [{0}]", GetTypeName());
 }
 MS2_REPLACE_METHOD(0x141924df0, UIDialog, vfunc_68, 425, 0x36D99C6E);
 
@@ -682,7 +682,7 @@ MS2_REPLACE_METHOD(0x141925030, UIDialog, vfunc_72, 6, 0xA9AF6E37);
 // @0x141925040
 int UIDialog::vfunc_73()
 {
-    if (FUN_141383a70(vfunc_1()) || (FUN_1403ed2d0()->FUN_141bcb0a0() && !FUN_141926960())) {
+    if (FUN_141383a70(GetTypeName()) || (FUN_1403ed2d0()->FUN_141bcb0a0() && !FUN_141926960())) {
         FUN_141275260(0x88b, 1, 1);
         return 0;
     }
@@ -1127,8 +1127,8 @@ MS2_REPLACE_METHOD(0x141926890, UIDialog, FUN_141926890, 6, 0xA9AF6E37);
 CString UIDialog::FUN_1419268a0(int n)
 {
     if (n == 0)
-        return vfunc_1();
-    return StringFormat("{0}{1}", vfunc_1(), n);
+        return GetTypeName();
+    return StringFormat("{0}{1}", GetTypeName(), n);
 }
 MS2_REPLACE_METHOD(0x1419268a0, UIDialog, FUN_1419268a0, 177, 0x6DE46A52);
 

@@ -14,7 +14,7 @@ class UIItemMultiOpenBoxDialog : public UIModalDialog
 public:
     UIItemMultiOpenBoxDialog();                                 // 0x140c3f350
     virtual ~UIItemMultiOpenBoxDialog();                        //  0 0x140c3f410 (??_G 0x140c3fde0)
-    virtual CString vfunc_1();                                  //  1 0x140c3f470 "ItemMultiOpenBoxDialog"
+    virtual CString GetTypeName();                                  //  1 0x140c3f470 "ItemMultiOpenBoxDialog"
     virtual void vfunc_15();                                    // 15 0x140c3f8a0 send the open request once the timer ran out
     virtual void OnLoadComplete();                              // 22 0x140c3f600 show the item
     virtual void vfunc_26();                                    // 26 0x140c3f5e0

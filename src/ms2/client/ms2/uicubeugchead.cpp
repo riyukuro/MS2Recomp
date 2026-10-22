@@ -48,7 +48,7 @@ UICubeUGCHead::UICubeUGCHead(Unk_UgcCell cell, CStringW strName, int nType)
 }
 
 // @0x1419065a0
-CString UICubeUGCHead::vfunc_1()
+CString UICubeUGCHead::GetTypeName()
 {
     return "CubeUGCHead";
 }

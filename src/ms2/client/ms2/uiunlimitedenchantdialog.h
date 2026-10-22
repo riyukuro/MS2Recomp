@@ -36,7 +36,7 @@ class UIUnlimitedEnchantDialog : public UIDialog
 public:
     UIUnlimitedEnchantDialog();                                      // 0x140fb5ca0
     virtual ~UIUnlimitedEnchantDialog();                             //  0 0x140fb5d70 (??_G 0x140fb7c50)
-    virtual CString vfunc_1();                                       //  1 0x140fb5de0: "UnlimitedEnchantDialog"
+    virtual CString GetTypeName();                                       //  1 0x140fb5de0: "UnlimitedEnchantDialog"
     virtual void OnLoadComplete();                                   // 22 0x140fb5ee0 list the items
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                      // 28 0x140fb5f10 "OnEnchant" / "OnSelect" / "OnRetry"

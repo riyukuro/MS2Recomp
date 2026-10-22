@@ -12,7 +12,7 @@
 // MS2-PIN: ??C?$MS2Ptr@VAScript@@@@QEBAPEAVAScript@@XZ 0x1418d2140 ; probe
 // MS2-PIN: ?get@?$MS2Ptr@VBlackMarketPageMesoRegister@@@@QEBAPEAVBlackMarketPageMesoRegister@@XZ 0x1418d2160 ; unique
 // MS2-PIN: ??C?$MS2Ptr@VBlackMarketPageItemSearch@@@@QEBAPEAVBlackMarketPageItemSearch@@XZ 0x1418d2180 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIBlackMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1418d2d00 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIBlackMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1418d2d00 ; unique
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiblackmarketdialog.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
@@ -115,7 +115,7 @@ UIBlackMarketDialog::~UIBlackMarketDialog()
 }
 
 // @0x1418cf5d0
-CString UIBlackMarketDialog::vfunc_1()
+CString UIBlackMarketDialog::GetTypeName()
 {
     return "BlackMarketDialog";
 }

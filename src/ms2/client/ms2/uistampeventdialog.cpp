@@ -110,8 +110,8 @@ UIStampEventDialog::UIStampEventDialog()
 UIStampEventDialog::~UIStampEventDialog() {}
 
 // @0x140ed7680
-CString UIStampEventDialog::vfunc_1() { return "StampEventDialog"; }
-MS2_REPLACE_METHOD(0x140ED7680, UIStampEventDialog, vfunc_1, 61, 0x64489ED9);
+CString UIStampEventDialog::GetTypeName() { return "StampEventDialog"; }
+MS2_REPLACE_METHOD(0x140ED7680, UIStampEventDialog, GetTypeName, 61, 0x64489ED9);
 
 // @0x140ed76d0
 int UIStampEventDialog::vfunc_65()

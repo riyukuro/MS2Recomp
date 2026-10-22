@@ -104,11 +104,11 @@ UICharacterCreateSelectDialog::~UICharacterCreateSelectDialog()
 }
 
 // @0x140f2e650
-CString UICharacterCreateSelectDialog::vfunc_1()
+CString UICharacterCreateSelectDialog::GetTypeName()
 {
     return "CharacterCreateSelectDialog";
 }
-MS2_REPLACE_METHOD(0x140F2E650, UICharacterCreateSelectDialog, vfunc_1, 61, 0x23041F47);
+MS2_REPLACE_METHOD(0x140F2E650, UICharacterCreateSelectDialog, GetTypeName, 61, 0x23041F47);
 
 // @0x140f2e6a0
 void UICharacterCreateSelectDialog::OnLoadComplete()

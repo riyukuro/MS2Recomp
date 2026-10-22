@@ -246,7 +246,7 @@ void UISwfEntityManager::FUN_1422d19d0(const CString& strClass)
         UISwfEntity* p = m_listEntities.GetAt(pos);
         if (p)
         {
-            if (p->vfunc_1() == strClass)
+            if (p->GetTypeName() == strClass)
                 bFound = 1;
             if (bFound)
             {
@@ -719,7 +719,7 @@ UISwfEntity* UISwfEntityManager::FUN_1422d4380(const CString& strName)
         POSITION posCur = pos;
         m_listEntities.GetNext(pos);
         MS2Ptr<UISwfEntity> sp(m_listEntities.GetAt(posCur));
-        if (sp && sp->vfunc_1().CompareNoCase(strTrim) == 0)
+        if (sp && sp->GetTypeName().CompareNoCase(strTrim) == 0)
             return sp;
     }
     return 0;

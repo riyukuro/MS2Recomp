@@ -68,7 +68,7 @@ UIMassiveEvent::~UIMassiveEvent()
 }
 
 // @0x1419f5740
-CString UIMassiveEvent::vfunc_1()
+CString UIMassiveEvent::GetTypeName()
 {
     return "MassiveEvent";
 }
@@ -419,7 +419,7 @@ __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpySCopy1)(void*, 
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 
 // ---- hooks ----
-MS2_REPLACE_METHOD(0x1419F5740, UIMassiveEvent, vfunc_1, 61, 0x6859AE45);
+MS2_REPLACE_METHOD(0x1419F5740, UIMassiveEvent, GetTypeName, 61, 0x6859AE45);
 MS2_REPLACE_METHOD(0x1419F5790, UIMassiveEvent, vfunc_2, 46, 0x1E96C254);
 MS2_REPLACE_METHOD(0x1419F57D0, UIMassiveEvent, vfunc_3, 35, 0x30C8CD21);
 MS2_REPLACE_METHOD(0x1419F5800, UIMassiveEvent, OnLoadComplete, 273, 0x3A530998);

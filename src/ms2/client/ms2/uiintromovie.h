@@ -25,7 +25,7 @@ public:
 
     UIIntroMovie();                                                 // 0x1419950d0
     virtual ~UIIntroMovie();                                        //  0 0x141995140 (??_G 0x1419962f0)
-    virtual CString vfunc_1();                                      //  1 0x141995250
+    virtual CString GetTypeName();                                      //  1 0x141995250
     virtual void OnLoadInit();                                      // 20 0x1419952a0
     virtual void OnLoadComplete();                                  // 22 0x1419953e0
     virtual void vfunc_23(void* p);                                 // 23 0x141995410

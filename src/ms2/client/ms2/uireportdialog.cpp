@@ -85,11 +85,11 @@ UIReportDialog::~UIReportDialog()
 }
 
 // @0x141ab8b40
-CString UIReportDialog::vfunc_1()
+CString UIReportDialog::GetTypeName()
 {
     return "ReportDialog";
 }
-MS2_REPLACE_METHOD(0x141AB8B40, UIReportDialog, vfunc_1, 61, 0x659308F6);
+MS2_REPLACE_METHOD(0x141AB8B40, UIReportDialog, GetTypeName, 61, 0x659308F6);
 
 // Tells the swf which kind of target is reported ("OnSelectCharacter", ...) and the names to show.
 // @0x141ab8b90

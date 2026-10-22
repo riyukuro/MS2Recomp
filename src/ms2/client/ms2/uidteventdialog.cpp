@@ -312,11 +312,11 @@ UIDTEventDialog::~UIDTEventDialog()
 }
 
 // @0x140f35bb0
-CString UIDTEventDialog::vfunc_1()
+CString UIDTEventDialog::GetTypeName()
 {
     return "DTEventDialog";
 }
-MS2_REPLACE_METHOD(0x140F35BB0, UIDTEventDialog, vfunc_1, 61, 0x85A1FB0B);
+MS2_REPLACE_METHOD(0x140F35BB0, UIDTEventDialog, GetTypeName, 61, 0x85A1FB0B);
 
 // @0x140f35c00
 void UIDTEventDialog::vfunc_67()
@@ -480,7 +480,7 @@ int UIDTEventDialog::vfunc_84(Unk_DTPtr<RewardItem> pReward)
     MS2Ptr<CItem> item(new CItem);
     if (item->FUN_140523c40(pStep->m_24, pStep->m_2c, 0)) {
         item->FUN_140526c70(pStep->m_28);
-        strBindID.Format("%s_%d", (LPCSTR)vfunc_1(), m_binds.GetCount() + 1);
+        strBindID.Format("%s_%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
         FUN_141415450(strBindID, item, 0, 0x415, 0);
         m_binds.AddTail(strBindID);
     }
@@ -599,7 +599,7 @@ int UIDTEventDialog::vfunc_87(Unk_DTPtr<RewardItem> pReward, unsigned int nStep)
     MS2Ptr<CItem> item(new CItem);
     if (item->FUN_140523c40(pStep->m_24, pStep->m_2c, 0)) {
         item->FUN_140526c70(pStep->m_28);
-        strBindID.Format("%s_%d", (LPCSTR)vfunc_1(), m_binds.GetCount() + 1);
+        strBindID.Format("%s_%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
         FUN_141415450(strBindID, item, 0, 0x415, 0);
         m_binds.AddTail(strBindID);
     }

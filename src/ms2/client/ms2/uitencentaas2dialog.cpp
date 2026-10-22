@@ -157,11 +157,11 @@ void UITencentAas2Dialog::vfunc_47(int n)
 MS2_REPLACE_METHOD(0x140E98AE0, UITencentAas2Dialog, vfunc_47, 48, 0xF0165C7B);
 
 // @0x140e98b20
-CString UITencentAas2Dialog::vfunc_1()
+CString UITencentAas2Dialog::GetTypeName()
 {
     return CString("TencentAas2Dialog");
 }
-MS2_REPLACE_METHOD(0x140E98B20, UITencentAas2Dialog, vfunc_1, 61, 0x15733BAA);
+MS2_REPLACE_METHOD(0x140E98B20, UITencentAas2Dialog, GetTypeName, 61, 0x15733BAA);
 
 // @0x140e98b70
 void UITencentAas2Dialog::vfunc_8(int nVisible)

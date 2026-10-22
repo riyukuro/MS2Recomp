@@ -79,11 +79,11 @@ UIRangePreviewDialog::UIRangePreviewDialog()
 }
 
 // @0x141346ad0
-CString UIRangePreviewDialog::vfunc_1()
+CString UIRangePreviewDialog::GetTypeName()
 {
     return "RangePreviewDialog";
 }
-MS2_REPLACE_METHOD(0x141346AD0, UIRangePreviewDialog, vfunc_1, 61, 0xE3FB3AF4);
+MS2_REPLACE_METHOD(0x141346AD0, UIRangePreviewDialog, GetTypeName, 61, 0xE3FB3AF4);
 
 // @0x141346b20
 void UIRangePreviewDialog::OnLoadComplete()

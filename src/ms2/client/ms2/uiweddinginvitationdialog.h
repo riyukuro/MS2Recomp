@@ -19,7 +19,7 @@ public:
 
     UIWeddingInvitationDialog();                                // 0x140fe5780
     virtual ~UIWeddingInvitationDialog();                       //  0 0x140fe5810 (??_G 0x140fe6f40)
-    virtual CString vfunc_1();                                  //  1 0x140fe5860 "WeddingInvitationDialog"
+    virtual CString GetTypeName();                                  //  1 0x140fe5860 "WeddingInvitationDialog"
     virtual void OnLoadComplete();                              // 22 0x140fe5a70 "setData": couple, hall, date
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                 // 28 0x140fe5ce0 onClickPopup / onClickSend

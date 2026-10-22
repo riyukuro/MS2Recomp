@@ -21,7 +21,7 @@ public:
     CGameOptionLanguage(int nId, int nType);                        // 0x140cfb450
     virtual ~CGameOptionLanguage();                                 // 0x140cfb4b0 (deleting dtor 0x140cfd220)
 
-    virtual CString vfunc_1();                                      // 0x140cfce60 "GameOptionLanguage"
+    virtual CString GetTypeName();                                      // 0x140cfce60 "GameOptionLanguage"
     virtual void vfunc_3(int n);                                    // 0x140cfb4e0
     virtual void vfunc_4(int n);                                    // 0x140cfb540
     virtual int vfunc_5(const char* pszName, void* pArg, int nArg); // 0x140cfb570 (not handled)

@@ -41,7 +41,7 @@ class DungeonMissionPlayTime : public DungeonMissionCli
 public:
     static ClassObject* CreateObject();                     // 0x140b1e1e0
     DungeonMissionPlayTime();                               // 0x140b1e290
-    virtual CStringW vfunc_1();                             // 0x140b1e240
+    virtual CStringW GetTypeName();                             // 0x140b1e240
     virtual void vfunc_2(CInputStream& in);                 // 0x140b1e2e0
 
 protected:
@@ -57,18 +57,18 @@ class DungeonMissionLimitUserCount : public DungeonMissionCli
 public:
     static ClassObject* CreateObject();                     // 0x140b1e340
     DungeonMissionLimitUserCount();                         // 0x140b1e3f0
-    virtual CStringW vfunc_1();                             // 0x140b1e3a0
+    virtual CStringW GetTypeName();                             // 0x140b1e3a0
 };
 MS2_CHECK_SIZE(DungeonMissionLimitUserCount, 0x28);
 
 // The counted missions: m_count of the data's applyCount steps are done. The subclasses below only add their name
-// (vfunc_1) and the factory; addresses are on the function tags in the cpp.
+// (GetTypeName) and the factory; addresses are on the function tags in the cpp.
 class DungeonMissionEvent : public DungeonMissionCli
 {
 public:
     static ClassObject* CreateObject();                     // 0x140b1e430
     DungeonMissionEvent();                                  // 0x140b1e4e0
-    virtual CStringW vfunc_1();                             // 0x140b1e490
+    virtual CStringW GetTypeName();                             // 0x140b1e490
     virtual void vfunc_2(CInputStream& in);                 // 0x140b1e520
     virtual CStringW vfunc_4();                             // 0x140b1e560 "<name> (count/total)"
 
@@ -85,7 +85,7 @@ class DungeonMission##Name : public DungeonMissionEvent \
 public: \
     static ClassObject* CreateObject(); \
     DungeonMission##Name(); \
-    virtual CStringW vfunc_1(); \
+    virtual CStringW GetTypeName(); \
 }; \
 MS2_CHECK_SIZE(DungeonMission##Name, 0x30);
 

@@ -25,7 +25,7 @@ class UIGuildHouseUpgradeDialog : public UIDialog
 public:
     UIGuildHouseUpgradeDialog();                                    // 0x140e39790
     virtual ~UIGuildHouseUpgradeDialog();                           //  0 0x140e39830 (??_G 0x140e3da10)
-    virtual CString vfunc_1();                                      //  1 0x140e39d50 "GuildHouseUpgradeDialog"
+    virtual CString GetTypeName();                                      //  1 0x140e39d50 "GuildHouseUpgradeDialog"
     virtual void vfunc_26();                                        // 26 0x140e398c0 drops the theme map
     virtual void vfunc_67();                                        // 67 0x140e39900 close: forget the controls
     virtual void OnLoadComplete();                                  // 22 0x140e39960

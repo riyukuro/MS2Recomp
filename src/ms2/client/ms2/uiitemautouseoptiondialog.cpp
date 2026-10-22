@@ -521,7 +521,7 @@ DragSlot* UIItemAutoUseOptionDialog::SlotBag::vfunc_16(int nIndex)
 
 // @0x140f4f460
 UIItemAutoUseOptionDialog::UIItemAutoUseOptionDialog()
-    : m_strBag(vfunc_1())
+    : m_strBag(GetTypeName())
 {
     m_164 = 1;
     FUN_141924170(1);
@@ -535,7 +535,7 @@ UIItemAutoUseOptionDialog::~UIItemAutoUseOptionDialog()
 }
 
 // @0x140f4f5f0
-CString UIItemAutoUseOptionDialog::vfunc_1()
+CString UIItemAutoUseOptionDialog::GetTypeName()
 {
     return "ItemAutoUseOptionDialog";
 }

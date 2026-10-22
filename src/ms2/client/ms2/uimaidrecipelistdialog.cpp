@@ -213,7 +213,7 @@ UIMaidRecipeListDialog::~UIMaidRecipeListDialog()
 }
 
 // @0x1412dab30
-CString UIMaidRecipeListDialog::vfunc_1()
+CString UIMaidRecipeListDialog::GetTypeName()
 {
     return CString("MaidRecipeListDialog");
 }
@@ -277,7 +277,7 @@ void UIMaidRecipeListDialog::FUN_1412dac40()
             {
                 spItem->FUN_140526c70(nAmount);
                 CString strKey;
-                strKey.Format("%s.%d", (const char*)vfunc_1(), (int)(i + 1));
+                strKey.Format("%s.%d", (const char*)GetTypeName(), (int)(i + 1));
                 FUN_141415450(strKey, spItem, (int)i, 0x415, 0x800);
                 m_30->Invoke("bind", CString(strKey), i + 1, spItem->FUN_140528590());
                 m_188.Add(strKey);
@@ -479,7 +479,7 @@ UIManufactureStatus::~UIManufactureStatus()
 }
 
 // @0x1412dbb60
-CString UIManufactureStatus::vfunc_1()
+CString UIManufactureStatus::GetTypeName()
 {
     return CString("ManufactureStatus");
 }
@@ -928,7 +928,7 @@ UIMDEditDialog::~UIMDEditDialog()
 }
 
 // @0x1412dd9f0
-CString UIMDEditDialog::vfunc_1()
+CString UIMDEditDialog::GetTypeName()
 {
     return CString("MDEditDialog");
 }

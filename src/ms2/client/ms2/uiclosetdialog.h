@@ -106,7 +106,7 @@ class UIClosetDialog : public UIDialog, public UIItemEventListener
 public:
     UIClosetDialog();                                           // 0x140bd9290
     virtual ~UIClosetDialog();                                  // 0x140bd9530 (??_G 0x140be4020)
-    virtual CString vfunc_1();                                  //  1 0x140bd9770 "ClosetDialog"
+    virtual CString GetTypeName();                                  //  1 0x140bd9770 "ClosetDialog"
     virtual int vfunc_13();                                     // 13 0x140bdb4e0 hot key capture
     virtual void OnLoadComplete();                              // 22 0x140bd9c00
     virtual void vfunc_26();                                    // 26 0x140bdb360

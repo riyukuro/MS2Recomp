@@ -94,7 +94,7 @@ UICameraDialog::~UICameraDialog()
 }
 
 // @0x141032010
-CString UICameraDialog::vfunc_1()
+CString UICameraDialog::GetTypeName()
 {
     return "CameraDialog";
 }
@@ -381,7 +381,7 @@ __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnCdMemcpyS)(void*, siz
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
-MS2_REPLACE_METHOD(0x141032010, UICameraDialog, vfunc_1, 61, 0x4CF0D4E6);
+MS2_REPLACE_METHOD(0x141032010, UICameraDialog, GetTypeName, 61, 0x4CF0D4E6);
 MS2_REPLACE_METHOD(0x141032060, UICameraDialog, OnLoadComplete, 186, 0x7D704146);
 MS2_REPLACE_METHOD(0x141032120, UICameraDialog, vfunc_28, 689, 0x5F6A272A);
 MS2_REPLACE_METHOD(0x1410323F0, UICameraDialog, vfunc_72, 351, 0x34E2F5B0);

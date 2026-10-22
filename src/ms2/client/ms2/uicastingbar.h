@@ -46,7 +46,7 @@ class UICastingBar : public UIHeadUpDisplay
 public:
     UICastingBar();                                                 // 0x1418e0f10
     virtual ~UICastingBar();                                        //  0 0x1418e1030 (??_G 0x1418e1f30)
-    virtual CString vfunc_1();                                      //  1 0x1418e1100 "CastingBar"
+    virtual CString GetTypeName();                                      //  1 0x1418e1100 "CastingBar"
     virtual void vfunc_3();                                         //  3 0x1418e1150 hide: drop the cast
     virtual void vfunc_15();                                        // 15 0x1418e1260 per-frame: timer expired -> stop
     virtual void OnLoadComplete();                                  // 22 0x1418e11d0

@@ -27,7 +27,7 @@ class UILearningQuestDialog : public UIDialog, public UIQuestEventListener, publ
 public:
     UILearningQuestDialog();                                    // 0x140ea0850
     virtual ~UILearningQuestDialog();                           //  0 0x140ea0da0 (??_G 0x140ea3ee0)
-    virtual CString vfunc_1();                                  //  1 0x140ea11b0 "LearningQuestDialog"
+    virtual CString GetTypeName();                                  //  1 0x140ea11b0 "LearningQuestDialog"
     virtual void vfunc_12();                                    // 12 0x140ea1e00 mark the list dirty
     virtual void OnLoadComplete();                              // 22 0x140ea1270 fill the movie
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140ea12a0 "onOk" / "onSelectQuest"

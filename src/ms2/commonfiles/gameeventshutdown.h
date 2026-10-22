@@ -19,7 +19,7 @@ public:
     GameEventShutdown(int nId);                 // 0x14041d4c0
     virtual ~GameEventShutdown();               // 0x14041e430
 
-    virtual CStringW vfunc_1();                 // 0x14041d470: "GameEventShutdown"
+    virtual CStringW GetTypeName();                 // 0x14041d470: "GameEventShutdown"
     virtual void vfunc_2();                     // 0x14041d540: parse m_items out of m_68
     virtual void OnStart();                     // 0x14041d580
     virtual void vfunc_6();                     // 0x14041d610
@@ -37,7 +37,7 @@ public:
     GameEventShutdownNoParam(int nId);          // 0x14041d700
     virtual ~GameEventShutdownNoParam();        // 0x14041e560
 
-    virtual CStringW vfunc_1();                 // 0x14041d6b0: "GameEventShutdownNoParam"
+    virtual CStringW GetTypeName();                 // 0x14041d6b0: "GameEventShutdownNoParam"
     virtual void vfunc_2();                     // 0x14041d780 (empty)
     virtual void OnStart();                     // 0x14041d790
     virtual void vfunc_6();                     // 0x14041d7d0
@@ -52,7 +52,7 @@ MS2_CHECK_SIZE(GameEventShutdownNoParam, 0xf8);
     {                                           \
     public:                                     \
         name();                                 \
-        virtual CStringW vfunc_1();             \
+        virtual CStringW GetTypeName();         \
     }
 
 MS2_DECL_SHUTDOWN_CLASS(GameEventShutdownShop, GameEventShutdown);                          // 0x14041d8c0: kind 1
@@ -63,7 +63,7 @@ class GameEventShutdownDungeonMatch : public GameEventShutdown
 public:
     GameEventShutdownDungeonMatch();            // 0x14041d9b0: kind 2
 
-    virtual CStringW vfunc_1();                 // 0x14041d960: "GameEventShutdownDungeonMatch"
+    virtual CStringW GetTypeName();                 // 0x14041d960: "GameEventShutdownDungeonMatch"
     virtual void vfunc_2();                     // 0x14041d9f0
 };
 
@@ -84,7 +84,7 @@ class GameEventShutdownUGCDownload : public GameEventShutdown
 public:
     GameEventShutdownUGCDownload();             // 0x14041e2e0: kind 11
 
-    virtual CStringW vfunc_1();                 // 0x14041e290: "GameEventShutdownUGCDownload"
+    virtual CStringW GetTypeName();                 // 0x14041e290: "GameEventShutdownUGCDownload"
     virtual void vfunc_3(Unk_GEOut* out);       // 0x14041e340
     virtual void vfunc_4(Unk_GEIn* in);         // 0x14041e390
 };

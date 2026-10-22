@@ -5,7 +5,7 @@
 class UIMicroGameCoupleDance : public UIHeadUpDisplay {
 public:
     UIMicroGameCoupleDance();
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual void vfunc_2();
     virtual void vfunc_3();
     virtual void vfunc_15();

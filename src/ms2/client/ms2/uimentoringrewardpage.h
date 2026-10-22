@@ -71,7 +71,7 @@ MS2_CHECK_SIZE(UIMentoringMissionPage,0x38);
 class Unk_MentorMission:public UIMentoringPage {public:Unk_MentorMission(UIMentoringDialog*);CString vfunc_6();private:void* p30;};
 class UIMentoringDialog:public UIDialog {
 public:
- UIMentoringDialog();virtual ~UIMentoringDialog();virtual CString vfunc_1();virtual void vfunc_67();virtual void OnLoadComplete();
+ UIMentoringDialog();virtual ~UIMentoringDialog();virtual CString GetTypeName();virtual void vfunc_67();virtual void OnLoadComplete();
  virtual void vfunc_45(Scaleform::GFx::Value*,const CString&,ASData*);virtual void vfunc_49(Scaleform::GFx::Value*,ASData*);
  virtual void vfunc_79(void*);virtual int vfunc_28(const char*,const Scaleform::GFx::Value*,unsigned);virtual int vfunc_48(){return 0x4f4b;}
  Unk_MentorPtr<UIMentoringPage> GetPage();void Refresh();int Count();void RefreshPage();void Notify();void UpdateCounts();int IsAvailable();

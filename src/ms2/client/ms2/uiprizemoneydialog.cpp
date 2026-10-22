@@ -45,11 +45,11 @@ UIPrizeMoneyDialog::~UIPrizeMoneyDialog()
 }
 
 // @0x140e78220
-CString UIPrizeMoneyDialog::vfunc_1()
+CString UIPrizeMoneyDialog::GetTypeName()
 {
     return "PrizeMoneyDialog";
 }
-MS2_REPLACE_METHOD(0x140E78220, UIPrizeMoneyDialog, vfunc_1, 61, 0xFDED4435);
+MS2_REPLACE_METHOD(0x140E78220, UIPrizeMoneyDialog, GetTypeName, 61, 0xFDED4435);
 
 // @0x140e78270
 void UIPrizeMoneyDialog::OnLoadComplete()

@@ -30,11 +30,11 @@ UICameraModeHelpDialog::~UICameraModeHelpDialog()
 }
 
 // @0x140e05310
-CString UICameraModeHelpDialog::vfunc_1()
+CString UICameraModeHelpDialog::GetTypeName()
 {
     return "CameraModeHelpDialog";
 }
-MS2_REPLACE_METHOD(0x140E05310, UICameraModeHelpDialog, vfunc_1, 61, 0xDCBE5949);
+MS2_REPLACE_METHOD(0x140E05310, UICameraModeHelpDialog, GetTypeName, 61, 0xDCBE5949);
 
 // @0x140e05360
 void UICameraModeHelpDialog::vfunc_43()

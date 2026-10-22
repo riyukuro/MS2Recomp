@@ -84,8 +84,8 @@ UICommunityPopup::UICommunityPopup() : m_pending(false),m_speed(50.0f),m_x(0.0f)
 // @0x140be9af0
 UICommunityPopup::~UICommunityPopup() {}
 // @0x140be9b90
-CString UICommunityPopup::vfunc_1() { return "CommunityPopup"; }
-MS2_REPLACE_METHOD(0x140BE9B90, UICommunityPopup, vfunc_1, 61, 0x2E1C0B56);
+CString UICommunityPopup::GetTypeName() { return "CommunityPopup"; }
+MS2_REPLACE_METHOD(0x140BE9B90, UICommunityPopup, GetTypeName, 61, 0x2E1C0B56);
 // @0x140be9be0
 void UICommunityPopup::OnLoadComplete() {
     UIObject::OnLoadComplete();

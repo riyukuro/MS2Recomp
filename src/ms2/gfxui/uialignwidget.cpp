@@ -104,7 +104,7 @@ void UIAlignWidget::FUN_1422e66a0(int bAny)
             continue;
         int nWidth = 0;
         int nHeight = 0;
-        int bAlign = FUN_1422e65a0(pEntity->vfunc_1(), bAny);
+        int bAlign = FUN_1422e65a0(pEntity->GetTypeName(), bAny);
         if (bAlign != 0)
         {
             pEntity->vfunc_44(m_nAlignType, nX, nY, &nWidth, &nHeight);
@@ -191,7 +191,7 @@ int UIAlignWidgetManager::FUN_1422e6bf0(UISwfEntity* pEntity, int bAny)
         MS2Ptr<UIAlignWidget> spWidget = m_listWidgets.GetNext(pos);
         if (spWidget.get() != NULL)
         {
-            int bHolds = spWidget->FUN_1422e65a0(pEntity->vfunc_1(), bAny);
+            int bHolds = spWidget->FUN_1422e65a0(pEntity->GetTypeName(), bAny);
             if (bHolds != 0)
                 return 1;
         }

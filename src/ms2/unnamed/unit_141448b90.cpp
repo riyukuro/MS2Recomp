@@ -84,7 +84,7 @@ class UILightDialog : public UIDialog
 public:
     UILightDialog();                                                                // 0x141448b90
     virtual ~UILightDialog();                                                       //  0 0x141448be0
-    virtual CString vfunc_1();                                                      //  1 0x141448c20
+    virtual CString GetTypeName();                                                      //  1 0x141448c20
     virtual void OnLoadComplete();                                                  // 22 0x141448c90
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                                     // 28 0x141448ce0
@@ -108,7 +108,7 @@ UILightDialog::~UILightDialog()
 }
 
 // @0x141448c20
-CString UILightDialog::vfunc_1()
+CString UILightDialog::GetTypeName()
 {
     return "LightDialog";
 }

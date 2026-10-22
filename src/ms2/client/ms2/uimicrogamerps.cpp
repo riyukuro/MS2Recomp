@@ -869,11 +869,11 @@ UIMicroGameRps::UIMicroGameRps()
 }
 
 // @0x140e660c0
-CString UIMicroGameRps::vfunc_1()
+CString UIMicroGameRps::GetTypeName()
 {
     return "MicroGameRps";
 }
-MS2_REPLACE_METHOD(0x140E660C0, UIMicroGameRps, vfunc_1, 61, 0xE98C0E76);
+MS2_REPLACE_METHOD(0x140E660C0, UIMicroGameRps, GetTypeName, 61, 0xE98C0E76);
 
 // @0x140e66110
 void UIMicroGameRps::vfunc_15()

@@ -36,7 +36,7 @@ public:
 
     UIVIPGoodsShopDialog();                                         // 0x140fb9ac0
     virtual ~UIVIPGoodsShopDialog();                                //  0 0x140fb9bc0 (??_G 0x140fbfaa0)
-    virtual CString vfunc_1();                                      //  1 0x140fb9c30 "VIPGoodsShopDialog"
+    virtual CString GetTypeName();                                      //  1 0x140fb9c30 "VIPGoodsShopDialog"
     virtual void OnLoadComplete();                                  // 22 0x140fb9e10 asks the server for the bought goods
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140fb9e90 onClickBuyGoods
     virtual int vfunc_48();                                         // 48 0x140fbfaf0 0x4f1d

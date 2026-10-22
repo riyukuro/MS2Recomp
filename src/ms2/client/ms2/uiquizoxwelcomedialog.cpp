@@ -43,11 +43,11 @@ UIQuizOXWelcomeDialog::~UIQuizOXWelcomeDialog()
 }
 
 // @0x140e7eff0
-CString UIQuizOXWelcomeDialog::vfunc_1()
+CString UIQuizOXWelcomeDialog::GetTypeName()
 {
     return "QuizOXWelcomeDialog";
 }
-MS2_REPLACE_METHOD(0x140E7EFF0, UIQuizOXWelcomeDialog, vfunc_1, 61, 0x747A9478);
+MS2_REPLACE_METHOD(0x140E7EFF0, UIQuizOXWelcomeDialog, GetTypeName, 61, 0x747A9478);
 
 // @0x140e7f040
 void UIQuizOXWelcomeDialog::OnLoadComplete()

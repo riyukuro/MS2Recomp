@@ -36,7 +36,7 @@ class UIItemCreateDialog : public UIDialog
 public:
     UIItemCreateDialog();                                       // 0x1419b3c50
     // implicit virtual dtor: 0x1419ba080 (no vptr store; ??_G 0x1419ba2c0)
-    virtual CString vfunc_1();                                  //  1 0x1419b3d10 "ItemCreateDialog"
+    virtual CString GetTypeName();                                  //  1 0x1419b3d10 "ItemCreateDialog"
     virtual int vfunc_13();                                     // 13 0x1419b3f60 Enter / Tab; Ctrl+C copies the item id
     virtual void OnLoadComplete();                              // 22 0x1419b3d60
     virtual void vfunc_26();                                    // 26 0x1419b3f10 drop the bound children

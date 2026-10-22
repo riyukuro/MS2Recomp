@@ -269,8 +269,8 @@ UIUpperHpBar::UIUpperHpBar():m_current(0){m_58=0;m_2c=18;FUN_141b4c4c0("m_accumD
 // @0x141b4bf00
 UIUpperHpBar::~UIUpperHpBar(){}
 // @0x141b4bf90
-CString UIUpperHpBar::vfunc_1(){return "UpperHpBar";}
-MS2_REPLACE_METHOD(0x141B4BF90, UIUpperHpBar, vfunc_1, 61, 0x046B9C17);
+CString UIUpperHpBar::GetTypeName(){return "UpperHpBar";}
+MS2_REPLACE_METHOD(0x141B4BF90, UIUpperHpBar, GetTypeName, 61, 0x046B9C17);
 
 // @0x141b4bfe0
 void UIUpperHpBar::OnLoadComplete(){UIObject::OnLoadComplete();FUN_140c607b0()->FUN_1419308c0(this);Unk_UpperAS data(2);bool showHp=FUN_1409a8b10()->FUN_140b123b0()->m_hp;data.FUN_1407cbbe0("displayHpValue",showHp);m_30->Invoke("initData",data.FUN_1422bb870());m_current=0;FUN_141b4ceb0(FUN_1409a8b10()->FUN_140b123b0()->m_buff);}

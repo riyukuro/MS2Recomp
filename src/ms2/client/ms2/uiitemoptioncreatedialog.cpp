@@ -153,7 +153,7 @@ UIItemOptionCreateDialog::UIItemOptionCreateDialog()
 }
 
 // @0x1412d2700
-CString UIItemOptionCreateDialog::vfunc_1()
+CString UIItemOptionCreateDialog::GetTypeName()
 {
     return "ItemOptionCreateDialog";
 }

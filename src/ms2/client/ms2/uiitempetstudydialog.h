@@ -19,7 +19,7 @@ class UIItemPetStudyDialog : public UIDialog
 public:
     UIItemPetStudyDialog();                                     // 0x140e54b60
     virtual ~UIItemPetStudyDialog();                            //  0 0x140e54cd0 (??_G 0x140e56ac0)
-    virtual CString vfunc_1();                                  //  1 0x140e54df0 "ItemPetStudyDialog"
+    virtual CString GetTypeName();                                  //  1 0x140e54df0 "ItemPetStudyDialog"
     virtual void OnLoadComplete();                              // 22 0x140e54e40 bind the slot, show the scroll
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                 // 28 0x140e55340 onClickConfirm

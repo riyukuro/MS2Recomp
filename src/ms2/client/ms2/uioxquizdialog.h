@@ -13,7 +13,7 @@ class UIOxQuizDialog : public UIDialog
 public:
     UIOxQuizDialog();                                           // 0x140e6e400
     virtual ~UIOxQuizDialog();                                  //  0 0x140e6e490 (??_G 0x140e6eae0)
-    virtual CString vfunc_1();                                  //  1 0x140e6e4d0 "OxQuizDialog"
+    virtual CString GetTypeName();                                  //  1 0x140e6e4d0 "OxQuizDialog"
     virtual void OnLoadComplete();                              // 22 0x140e6e550
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140e6e580
     virtual int vfunc_48() { return 0x4f7d; }                   // 48 0x140e6eb20

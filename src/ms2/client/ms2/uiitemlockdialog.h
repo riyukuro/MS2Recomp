@@ -16,7 +16,7 @@ class UIItemLockDialog : public UIDialog, public UIStatusEventListener, public U
 public:
     UIItemLockDialog();                                         // 0x140f56ab0
     virtual ~UIItemLockDialog();                                //  0 0x140f56b90 (??_G 0x140f57ef0)
-    virtual CString vfunc_1();                                  //  1 0x140f56c30 "ItemLockDialog"
+    virtual CString GetTypeName();                                  //  1 0x140f56c30 "ItemLockDialog"
     virtual void OnLoadInit();                                  // 20 0x140f57030 play the dialog_open sound
     virtual void OnLoadComplete();                              // 22 0x140f570b0
     virtual void vfunc_26();                                    // 26 0x140f57160

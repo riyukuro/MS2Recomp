@@ -17,7 +17,7 @@ class UIKillCount : public UIHeadUpDisplay
 public:
     UIKillCount();                                                  // 0x1419df070 (m_2c = 0x14)
     virtual ~UIKillCount();                                         //  0 0x1419df130 (??_G 0x1419df820)
-    virtual CString vfunc_1();                                      //  1 0x1419df180 "KillCount"
+    virtual CString GetTypeName();                                      //  1 0x1419df180 "KillCount"
     virtual void vfunc_2();                                         //  2 0x1419df1d0 show (the base's)
     virtual void vfunc_3();                                         //  3 0x1419df1f0 hide, forget the shown count
     virtual void vfunc_15();                                        // 15 0x1419df490 hide the count when the combo timed out

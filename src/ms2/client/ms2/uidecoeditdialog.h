@@ -18,7 +18,7 @@ class UIDecoEditDialog : public UIDialog
 public:
     UIDecoEditDialog();                                         // 0x14191b380
     virtual ~UIDecoEditDialog() = default;                      //  0 0x14191c4f0 (??_G 0x14191c5f0)
-    virtual CString vfunc_1();                                  //  1 0x14191b3d0 "DecoEditDialog"
+    virtual CString GetTypeName();                                  //  1 0x14191b3d0 "DecoEditDialog"
     virtual void OnLoadInit();                                  // 20 0x14191b490 fill the layer and brush lists
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                 // 28 0x14191b860 the movie's edit events

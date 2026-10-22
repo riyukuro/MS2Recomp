@@ -12,8 +12,8 @@
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIHouseMarkEntity@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBV01@@Z 0x14198e6f0 ; unique
 // MS2-PIN: ??1?$_Deque_const_iterator@V?$_Deque_val@U?$_Deque_simple_types@V?$MS2Ptr@VUIHouseMarkEntity@@@@@std@@@std@@@std@@QEAA@XZ 0x14198ec50 ; prop
 // MS2-PIN: ?vfunc_48@UIHouseMark@@UEAAHXZ 0x14198f260 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIHouseMarkEntity@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141990b70 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIHouseMarkEntity@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141990bd0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIHouseMarkEntity@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141990b70 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIHouseMarkEntity@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141990bd0 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIHouseMarkEntity@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x1419910b0 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIHouseMarkEntity@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x1419910e0 ; unique
 // MS2-PIN: ??$Call@VUIHouseMarkEntity@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@?$DelegateImpl@U?$pair@PEAVUIHouseMarkEntity@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@CAXAEAU?$pair@PEAVUIHouseMarkEntity@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@AEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x141991120 ; unique
@@ -603,11 +603,11 @@ UIHouseMark::~UIHouseMark()
 }
 
 // @0x14198c860
-CString UIHouseMark::vfunc_1()
+CString UIHouseMark::GetTypeName()
 {
     return "HouseMark";
 }
-MS2_REPLACE_METHOD(0x14198C860, UIHouseMark, vfunc_1, 61, 0xFBD625A5);
+MS2_REPLACE_METHOD(0x14198C860, UIHouseMark, GetTypeName, 61, 0xFBD625A5);
 
 // @0x14198c8b0
 void UIHouseMark::vfunc_3()

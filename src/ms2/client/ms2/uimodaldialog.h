@@ -7,7 +7,7 @@ class UIModalDialog : public UIDialog {
 public:
     UIModalDialog();                    // 0x141a55270
     virtual ~UIModalDialog();           // 0x141a552e0
-    virtual CString vfunc_1();          // "ModalDialog"
+    virtual CString GetTypeName();          // "ModalDialog"
     virtual void vfunc_8(int nVisible);
     virtual void vfunc_47(int n);       // FUN_141901470(n, vfunc_48())
     virtual void vfunc_67();

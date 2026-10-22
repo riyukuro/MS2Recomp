@@ -44,11 +44,11 @@ UIDarkStreamScoreDialog::~UIDarkStreamScoreDialog()
 }
 
 // @0x140f35430
-CString UIDarkStreamScoreDialog::vfunc_1()
+CString UIDarkStreamScoreDialog::GetTypeName()
 {
     return "DarkStreamScoreDialog";
 }
-MS2_REPLACE_METHOD(0x140F35430, UIDarkStreamScoreDialog, vfunc_1, 61, 0x8F0A72B3);
+MS2_REPLACE_METHOD(0x140F35430, UIDarkStreamScoreDialog, GetTypeName, 61, 0x8F0A72B3);
 
 // @0x140f35480
 void UIDarkStreamScoreDialog::vfunc_43()

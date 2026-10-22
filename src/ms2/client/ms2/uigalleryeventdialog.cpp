@@ -308,8 +308,8 @@ UIGalleryEventDialog::UIGalleryEventDialog() : m_binder("UIGalleryEvent_QuestRew
 // @0x140c166c0
 UIGalleryEventDialog::~UIGalleryEventDialog() {}
 // @0x140c16740
-CString UIGalleryEventDialog::vfunc_1() { return "GalleryEventDialog"; }
-MS2_REPLACE_METHOD(0x140C16740, UIGalleryEventDialog, vfunc_1, 61, 0x68C7FDA7);
+CString UIGalleryEventDialog::GetTypeName() { return "GalleryEventDialog"; }
+MS2_REPLACE_METHOD(0x140C16740, UIGalleryEventDialog, GetTypeName, 61, 0x68C7FDA7);
 
 // @0x140c16790
 int UIGalleryEventDialog::vfunc_65()

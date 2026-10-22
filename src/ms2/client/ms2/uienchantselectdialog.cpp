@@ -79,11 +79,11 @@ UIEnchantSelectDialog::~UIEnchantSelectDialog()
 }
 
 // @0x140e29310
-CString UIEnchantSelectDialog::vfunc_1()
+CString UIEnchantSelectDialog::GetTypeName()
 {
     return "EnchantSelectDialog";
 }
-MS2_REPLACE_METHOD(0x140E29310, UIEnchantSelectDialog, vfunc_1, 61, 0x9DBF64A1);
+MS2_REPLACE_METHOD(0x140E29310, UIEnchantSelectDialog, GetTypeName, 61, 0x9DBF64A1);
 
 // @0x140e29360
 void UIEnchantSelectDialog::vfunc_67()

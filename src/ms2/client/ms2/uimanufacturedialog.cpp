@@ -363,7 +363,7 @@ UIManufactureDialog::~UIManufactureDialog()
 }
 
 // @0x1412e2730
-CString UIManufactureDialog::vfunc_1()
+CString UIManufactureDialog::GetTypeName()
 {
     return CString("ManufactureDialog");
 }
@@ -646,7 +646,7 @@ void UIManufactureDialog::FUN_1412e3990(int bSelect)
             else
                 nFlags = 0x2415;
             CString strKey;
-            strKey.Format("%s.%d", (const char*)vfunc_1(), i + 1);
+            strKey.Format("%s.%d", (const char*)GetTypeName(), i + 1);
             FUN_141415450(strKey, spItem, (int)i, nFlags, 0x800);
             m_30->Invoke("bind", CString(strKey), i + 1, spItem->FUN_140528590());
             m_aRowKeys.Add(strKey);
@@ -685,7 +685,7 @@ void UIManufactureDialog::FUN_1412e4240()
             if (spItem->FUN_14052b130(nItemId, nRarity, 0))
             {
                 spItem->FUN_140526c70(nAmount);
-                m_strProgressKey.Format("%s_prgress", (const char*)vfunc_1());
+                m_strProgressKey.Format("%s_prgress", (const char*)GetTypeName());
                 FUN_141415600(m_strProgressKey);
                 FUN_141415450(m_strProgressKey, spItem, 0, 0x415, 0x800);
                 m_30->FUN_140c38f00("bindProgress", CString(m_strProgressKey), CStringW(strName));
@@ -753,7 +753,7 @@ void UIManufactureDialog::FUN_1412e48a0()
     if (spProduct->FUN_14052b130(nItemId, nRarity, 0))
     {
         spProduct->FUN_140526c70(nAmount);
-        m_strProductKey.Format("%s_product", (const char*)vfunc_1());
+        m_strProductKey.Format("%s_product", (const char*)GetTypeName());
         FUN_141415450(m_strProductKey, spProduct, 0, 0x415, 0x800);
         m_30->Invoke("bindProduct", CString(m_strProductKey));
     }
@@ -782,7 +782,7 @@ void UIManufactureDialog::FUN_1412e48a0()
         {
             spIngItem->FUN_140526c70(nNeeded);
             CString strKey;
-            strKey.Format("%s_Ingredient.%d", (const char*)vfunc_1(), k + 1);
+            strKey.Format("%s_Ingredient.%d", (const char*)GetTypeName(), k + 1);
             FUN_141415450(strKey, spIngItem, (int)k, 0x415, 0x800);
             m_aIngredientKeys.Add(strKey);
             unsigned nHave = 0;

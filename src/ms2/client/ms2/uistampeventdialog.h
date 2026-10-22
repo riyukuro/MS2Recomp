@@ -15,7 +15,7 @@ class UIStampEventDialog : public UIDialog, public UIQuestEventListener
 public:
     UIStampEventDialog();                                           // 0x140ed74c0
     virtual ~UIStampEventDialog();                                  //  0 0x140ed7610 (??_G 0x140ed98e0)
-    virtual CString vfunc_1();                                      //  1 0x140ed7680
+    virtual CString GetTypeName();                                      //  1 0x140ed7680
     virtual int vfunc_65();                                         // 65 0x140ed76d0
     virtual void vfunc_67();                                        // 67 0x140ed7730
     virtual void OnLoadComplete();                                  // 22 0x140ed7790

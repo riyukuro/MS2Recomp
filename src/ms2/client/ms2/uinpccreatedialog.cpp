@@ -177,7 +177,7 @@ UINpcCreateDialog::~UINpcCreateDialog()
 }
 
 // @0x141a6a680
-CString UINpcCreateDialog::vfunc_1()
+CString UINpcCreateDialog::GetTypeName()
 {
     return "NpcCreateDialog";
 }

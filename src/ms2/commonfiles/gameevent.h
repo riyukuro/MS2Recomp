@@ -114,7 +114,7 @@ public:
         m_98.Copy(o.m_98);
     }
     virtual ~GameEvent();                       // slot 0 (body 0x1402e4cf0)
-    virtual CStringW vfunc_1();                 // event name (0x1401f8450: GameEventSale inherits it)
+    virtual CStringW GetTypeName();                 // event name (0x1401f8450: GameEventSale inherits it)
     virtual void vfunc_2() = 0;                 // parse the CString at +0x68
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1402e2190: out->WriteInt(m_id)
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1402e21d0
@@ -302,7 +302,7 @@ public:
 MS2_CHECK_SIZE(GalleryContext, 0x78);
 class GameEventAdventureLevelBonusExpRate : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403d1750
+    virtual CStringW GetTypeName();                 // 0x1403d1750
     virtual void vfunc_2();                     // 0x1403d1810
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403d1840
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403d1890
@@ -315,7 +315,7 @@ public:
 MS2_CHECK_SIZE(GameEventAdventureLevelBonusExpRate, 0xd8);
 class GameEventArcadeOpen : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403d53b0
+    virtual CStringW GetTypeName();                 // 0x1403d53b0
     virtual void vfunc_2();                     // 0x1403d5490
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403d56e0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403d5740
@@ -329,7 +329,7 @@ public:
 MS2_CHECK_SIZE(GameEventArcadeOpen, 0xe8);
 class GameEventBattlePetSpawn : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403cc720
+    virtual CStringW GetTypeName();                 // 0x1403cc720
     virtual void vfunc_2();                     // 0x1403cc7f0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403cc9c0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403cca30
@@ -343,7 +343,7 @@ public:
 MS2_CHECK_SIZE(GameEventBattlePetSpawn, 0xe0);
 class GameEventBingoEvent : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403d5960
+    virtual CStringW GetTypeName();                 // 0x1403d5960
     virtual void vfunc_2();                     // 0x1403d5a20
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403d5d10
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403d5d80
@@ -355,7 +355,7 @@ public:
 MS2_CHECK_SIZE(GameEventBingoEvent, 0xe0);
 class GameEventBlackMarketFeeDiscount : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403be690
+    virtual CStringW GetTypeName();                 // 0x1403be690
     virtual void vfunc_2();                     // 0x1403be750
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403be780
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403be7f0
@@ -368,7 +368,7 @@ public:
 MS2_CHECK_SIZE(GameEventBlackMarketFeeDiscount, 0xd8);
 class GameEventBlueMarble : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c22c0
+    virtual CStringW GetTypeName();                 // 0x1403c22c0
     virtual void vfunc_2();                     // 0x1403c23a0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c25b0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c27c0
@@ -380,7 +380,7 @@ public:
 MS2_CHECK_SIZE(GameEventBlueMarble, 0xe0);
 class GameEventBurningLevelup : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403d19c0
+    virtual CStringW GetTypeName();                 // 0x1403d19c0
     virtual void vfunc_2();                     // 0x1403d1ad0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403d27b0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403d2800
@@ -392,7 +392,7 @@ public:
 MS2_CHECK_SIZE(GameEventBurningLevelup, 0xe0);
 class GameEventChatFiltering : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403cc310
+    virtual CStringW GetTypeName();                 // 0x1403cc310
     virtual void vfunc_2();                     // 0x1403cc3f0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403cc430
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403cc4e0
@@ -405,7 +405,7 @@ public:
 MS2_CHECK_SIZE(GameEventChatFiltering, 0xf0);
 class GameEventCollectItemGroup : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403d4850
+    virtual CStringW GetTypeName();                 // 0x1403d4850
     virtual void vfunc_2();                     // 0x1403d4930
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403d4c40
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403d4ca0
@@ -417,7 +417,7 @@ public:
 MS2_CHECK_SIZE(GameEventCollectItemGroup, 0xe0);
 class GameEventConstructShowItem : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c8ba0
+    virtual CStringW GetTypeName();                 // 0x1403c8ba0
     virtual void vfunc_2();                     // 0x1403c8cb0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c8d80
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c8ea0
@@ -437,7 +437,7 @@ public:
 MS2_CHECK_SIZE(GameEventConstructShowItem, 0x110);
 class GameEventCoupleDance : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403d3070
+    virtual CStringW GetTypeName();                 // 0x1403d3070
     virtual void vfunc_2();                     // 0x1403d3170
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403d34d0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403d3520
@@ -449,7 +449,7 @@ public:
 MS2_CHECK_SIZE(GameEventCoupleDance, 0xe0);
 class GameEventCustomTriggerString : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403d00f0
+    virtual CStringW GetTypeName();                 // 0x1403d00f0
     virtual void vfunc_2();                     // 0x1403d01c0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403d0360
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403d03a0
@@ -462,7 +462,7 @@ public:
 MS2_CHECK_SIZE(GameEventCustomTriggerString, 0x100);
 class GameEventDeleteUrlCache : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c9b80
+    virtual CStringW GetTypeName();                 // 0x1403c9b80
     virtual void vfunc_2();                     // 0x1403c9c50
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c9c80
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c9cd0
@@ -475,7 +475,7 @@ public:
 MS2_CHECK_SIZE(GameEventDeleteUrlCache, 0xd8);
 class GameEventDungeonBonusReward : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403bd000
+    virtual CStringW GetTypeName();                 // 0x1403bd000
     virtual void vfunc_2();                     // 0x1403bd120
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403bd230
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403bd270
@@ -487,7 +487,7 @@ public:
 MS2_CHECK_SIZE(GameEventDungeonBonusReward, 0xe0);
 class GameEventDungeonEnterTimeLimit : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c2fc0
+    virtual CStringW GetTypeName();                 // 0x1403c2fc0
     virtual void vfunc_2();                     // 0x1403c3080
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c3130
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c3170
@@ -500,7 +500,7 @@ public:
 MS2_CHECK_SIZE(GameEventDungeonEnterTimeLimit, 0xe8);
 class GameEventDungeonExtraReward : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c09f0
+    virtual CStringW GetTypeName();                 // 0x1403c09f0
     virtual void vfunc_2();                     // 0x1403c0ae0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c0ca0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c0ce0
@@ -514,7 +514,7 @@ public:
 MS2_CHECK_SIZE(GameEventDungeonExtraReward, 0x118);
 class GameEventDungeonOpenPeriod : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c02f0
+    virtual CStringW GetTypeName();                 // 0x1403c02f0
     virtual void vfunc_2();                     // 0x1403c03b0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c03f0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c0460
@@ -526,7 +526,7 @@ public:
 MS2_CHECK_SIZE(GameEventDungeonOpenPeriod, 0xd8);
 class GameEventDungeonRoomShutdown : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403bffd0
+    virtual CStringW GetTypeName();                 // 0x1403bffd0
     virtual void vfunc_2();                     // 0x1403c0090
     virtual void OnStart();                     // 0x1403c01a0
     virtual void vfunc_6();                     // 0x1403c0210
@@ -537,7 +537,7 @@ public:
 MS2_CHECK_SIZE(GameEventDungeonRoomShutdown, 0xe0);
 class GameEventEnchantRate : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c6170
+    virtual CStringW GetTypeName();                 // 0x1403c6170
     virtual void vfunc_2();                     // 0x1403c6230
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c6410
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c64a0
@@ -549,7 +549,7 @@ public:
 MS2_CHECK_SIZE(GameEventEnchantRate, 0xe0);
 class GameEventEpicRestart : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c3c00
+    virtual CStringW GetTypeName();                 // 0x1403c3c00
     virtual void vfunc_2();                     // 0x1403c3cf0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c3e60
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c3f30
@@ -563,7 +563,7 @@ public:
 MS2_CHECK_SIZE(GameEventEpicRestart, 0xe8);
 class GameEventEventFieldPopup : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403bf500
+    virtual CStringW GetTypeName();                 // 0x1403bf500
     virtual void vfunc_2();                     // 0x1403bf5b0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403bf5e0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403bf630
@@ -576,7 +576,7 @@ public:
 MS2_CHECK_SIZE(GameEventEventFieldPopup, 0xd8);
 class GameEventExchangeScrollSale : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403d3b40
+    virtual CStringW GetTypeName();                 // 0x1403d3b40
     virtual void vfunc_2();                     // 0x1403d3c00
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403d3d80
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403d3e60
@@ -595,7 +595,7 @@ public:
 MS2_CHECK_SIZE(GameEventExchangeScrollSale, 0xf8);
 class GameEventFestival : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403d2990
+    virtual CStringW GetTypeName();                 // 0x1403d2990
     virtual void vfunc_2();                     // 0x1403d2a90
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403d2cd0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403d2d40
@@ -610,7 +610,7 @@ public:
 MS2_CHECK_SIZE(GameEventFestival, 0xe0);
 class GameEventFieldEffect : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403d35d0
+    virtual CStringW GetTypeName();                 // 0x1403d35d0
     virtual void vfunc_2();                     // 0x1403d36d0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403d39b0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403d3a20
@@ -622,7 +622,7 @@ public:
 MS2_CHECK_SIZE(GameEventFieldEffect, 0xe0);
 class GameEventFieldShutdown : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c06f0
+    virtual CStringW GetTypeName();                 // 0x1403c06f0
     virtual void vfunc_2();                     // 0x1403c07b0
     virtual void OnStart();                     // 0x1403c08d0
     virtual void vfunc_6();                     // 0x1403c0940
@@ -633,7 +633,7 @@ public:
 MS2_CHECK_SIZE(GameEventFieldShutdown, 0xe0);
 class GameEventFindDungeonHelperBonus : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403cbf30
+    virtual CStringW GetTypeName();                 // 0x1403cbf30
     virtual void vfunc_2();                     // 0x1403cbff0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403cc0a0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403cc0e0
@@ -646,7 +646,7 @@ public:
 MS2_CHECK_SIZE(GameEventFindDungeonHelperBonus, 0xd8);
 class GameEventFinishPayback : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403d5f70
+    virtual CStringW GetTypeName();                 // 0x1403d5f70
     virtual void vfunc_2();                     // 0x1403d6020
     virtual void OnStart();                     // 0x1403d6030
     virtual void vfunc_6();                     // 0x1403d6040
@@ -655,7 +655,7 @@ public:
 MS2_CHECK_SIZE(GameEventFinishPayback, 0xd0);
 class GameEventFreeAirTaxi : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403bd400
+    virtual CStringW GetTypeName();                 // 0x1403bd400
     virtual void vfunc_2();                     // 0x1403bd4b0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403bd4c0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403bd4f0
@@ -666,7 +666,7 @@ public:
 MS2_CHECK_SIZE(GameEventFreeAirTaxi, 0xd0);
 class GameEventGallery : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403ccb50
+    virtual CStringW GetTypeName();                 // 0x1403ccb50
     virtual void vfunc_2();                     // 0x1403ccc30
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403ccfa0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403cd010
@@ -680,7 +680,7 @@ public:
 MS2_CHECK_SIZE(GameEventGallery, 0xe0);
 class GameEventGameMenuPopup : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403bf240
+    virtual CStringW GetTypeName();                 // 0x1403bf240
     virtual void vfunc_2();                     // 0x1403bf300
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403bf350
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403bf3c0
@@ -694,7 +694,7 @@ public:
 MS2_CHECK_SIZE(GameEventGameMenuPopup, 0xe0);
 class GameEventGuildChampionship : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c6900
+    virtual CStringW GetTypeName();                 // 0x1403c6900
     virtual void vfunc_2();                     // 0x1403c69c0
     virtual void OnStart();                     // 0x1403c6a10
     virtual void vfunc_6();                     // 0x1403c6a50
@@ -705,7 +705,7 @@ public:
 MS2_CHECK_SIZE(GameEventGuildChampionship, 0xd8);
 class GameEventGuildCoin : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c7910
+    virtual CStringW GetTypeName();                 // 0x1403c7910
     virtual void vfunc_2();                     // 0x1403c79d0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c7a70
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c7ac0
@@ -718,7 +718,7 @@ public:
 MS2_CHECK_SIZE(GameEventGuildCoin, 0xd8);
 class GameEventGuildEventFund : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403d6b40
+    virtual CStringW GetTypeName();                 // 0x1403d6b40
     virtual void vfunc_2();                     // 0x1403d6c00
     virtual void OnStart();                     // 0x1403d6c10
     virtual void vfunc_6();                     // 0x1403d6c20
@@ -727,7 +727,7 @@ public:
 MS2_CHECK_SIZE(GameEventGuildEventFund, 0xd0);
 class GameEventGuildExp : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c73c0
+    virtual CStringW GetTypeName();                 // 0x1403c73c0
     virtual void vfunc_2();                     // 0x1403c7480
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c7590
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c75e0
@@ -740,7 +740,7 @@ public:
 MS2_CHECK_SIZE(GameEventGuildExp, 0xd8);
 class GameEventGuildFund : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c76a0
+    virtual CStringW GetTypeName();                 // 0x1403c76a0
     virtual void vfunc_2();                     // 0x1403c7760
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c7800
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c7850
@@ -753,7 +753,7 @@ public:
 MS2_CHECK_SIZE(GameEventGuildFund, 0xd8);
 class GameEventGuildPersonalSkillSale : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c7150
+    virtual CStringW GetTypeName();                 // 0x1403c7150
     virtual void vfunc_2();                     // 0x1403c7210
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c72b0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c7300
@@ -766,7 +766,7 @@ public:
 MS2_CHECK_SIZE(GameEventGuildPersonalSkillSale, 0xd8);
 class GameEventGuildSkillSale : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c6ee0
+    virtual CStringW GetTypeName();                 // 0x1403c6ee0
     virtual void vfunc_2();                     // 0x1403c6fa0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c7040
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c7090
@@ -779,7 +779,7 @@ public:
 MS2_CHECK_SIZE(GameEventGuildSkillSale, 0xd8);
 class GameEventGuildVsGameOpen : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403cc190
+    virtual CStringW GetTypeName();                 // 0x1403cc190
     virtual void vfunc_2();                     // 0x1403cc240
     virtual void OnStart();                     // 0x1403cc250
     virtual void vfunc_6();                     // 0x1403cc280
@@ -788,7 +788,7 @@ public:
 MS2_CHECK_SIZE(GameEventGuildVsGameOpen, 0xd0);
 class GameEventIgnoreConstructionLockEvent : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403cd640
+    virtual CStringW GetTypeName();                 // 0x1403cd640
     virtual void vfunc_2();                     // 0x1403cd720
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403cd760
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403cd810
@@ -801,7 +801,7 @@ public:
 MS2_CHECK_SIZE(GameEventIgnoreConstructionLockEvent, 0xf0);
 class GameEventItemBox : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403ca740
+    virtual CStringW GetTypeName();                 // 0x1403ca740
     virtual void vfunc_2();                     // 0x1403ca810
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403ca960
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403caa20
@@ -815,7 +815,7 @@ public:
 MS2_CHECK_SIZE(GameEventItemBox, 0xe8);
 class GameEventItemBuff : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403bccb0
+    virtual CStringW GetTypeName();                 // 0x1403bccb0
     virtual void vfunc_2();                     // 0x1403bcd70
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403bce90
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403bcee0
@@ -837,7 +837,7 @@ enum Unk_ItemTradeRestrictionType : int {
 };
 class GameEventItemTradeRestriction : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403d3fb0
+    virtual CStringW GetTypeName();                 // 0x1403d3fb0
     virtual void vfunc_2();                     // 0x1403d40a0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403d44c0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403d4620
@@ -857,7 +857,7 @@ public:
 MS2_CHECK_SIZE(GameEventItemTradeRestriction, 0x118);
 class GameEventLevelUpPackage : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c4150
+    virtual CStringW GetTypeName();                 // 0x1403c4150
     virtual void vfunc_2();                     // 0x1403c4210
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c42e0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c4350
@@ -871,7 +871,7 @@ public:
 MS2_CHECK_SIZE(GameEventLevelUpPackage, 0xe0);
 class GameEventLongTermAttendGift : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403d60b0
+    virtual CStringW GetTypeName();                 // 0x1403d60b0
     virtual void vfunc_2();                     // 0x1403d6190
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403d6860
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403d68d0
@@ -885,7 +885,7 @@ public:
 MS2_CHECK_SIZE(GameEventLongTermAttendGift, 0xe8);
 class GameEventMassiveConstructionEvent : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c5ba0
+    virtual CStringW GetTypeName();                 // 0x1403c5ba0
     virtual void vfunc_2();                     // 0x1403c5cb0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c5d30
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c5e80
@@ -900,7 +900,7 @@ public:
 MS2_CHECK_SIZE(GameEventMassiveConstructionEvent, 0x118);
 class GameEventMasteryReduce : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c8460
+    virtual CStringW GetTypeName();                 // 0x1403c8460
     virtual void vfunc_2();                     // 0x1403c8510
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c85b0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c8600
@@ -913,7 +913,7 @@ public:
 MS2_CHECK_SIZE(GameEventMasteryReduce, 0xd8);
 class GameEventMasteryReward : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c7b80
+    virtual CStringW GetTypeName();                 // 0x1403c7b80
     virtual void vfunc_2();                     // 0x1403c7c50
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c7d50
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c7dc0
@@ -927,7 +927,7 @@ public:
 MS2_CHECK_SIZE(GameEventMasteryReward, 0xe0);
 class GameEventMeratMarketNotice : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c2d60
+    virtual CStringW GetTypeName();                 // 0x1403c2d60
     virtual void vfunc_2();                     // 0x1403c2e30
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c2e70
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c2ec0
@@ -939,7 +939,7 @@ public:
 MS2_CHECK_SIZE(GameEventMeratMarketNotice, 0xd8);
 class GameEventMeratMarketOpenTab : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c7ee0
+    virtual CStringW GetTypeName();                 // 0x1403c7ee0
     virtual void vfunc_2();                     // 0x1403c7fa0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c8010
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c8060
@@ -951,7 +951,7 @@ public:
 MS2_CHECK_SIZE(GameEventMeratMarketOpenTab, 0xd8);
 class GameEventMesoRevival : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403bc980
+    virtual CStringW GetTypeName();                 // 0x1403bc980
     virtual void vfunc_2();                     // 0x1403bca40
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403bca70
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403bcac0
@@ -964,7 +964,7 @@ public:
 MS2_CHECK_SIZE(GameEventMesoRevival, 0xd8);
 class GameEventNpcEventDrop : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c1e60
+    virtual CStringW GetTypeName();                 // 0x1403c1e60
     virtual void vfunc_2();                     // 0x1403c1f30
     virtual void OnStart();                     // 0x1403c2190
     virtual void vfunc_6();                     // 0x1403c2220
@@ -974,7 +974,7 @@ public:
 MS2_CHECK_SIZE(GameEventNpcEventDrop, 0xe0);
 class GameEventNpcShopGivePoint : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403cf460
+    virtual CStringW GetTypeName();                 // 0x1403cf460
     virtual void vfunc_2();                     // 0x1403cf540
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403cf6a0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403cf730
@@ -988,7 +988,7 @@ public:
 MS2_CHECK_SIZE(GameEventNpcShopGivePoint, 0xe0);
 class GameEventNpcShopResetPriceSale : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403cf880
+    virtual CStringW GetTypeName();                 // 0x1403cf880
     virtual void vfunc_2();                     // 0x1403cf950
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403cf9a0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403cfa00
@@ -1001,7 +1001,7 @@ public:
 MS2_CHECK_SIZE(GameEventNpcShopResetPriceSale, 0xd8);
 class GameEventNpcShopTalk : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403cf190
+    virtual CStringW GetTypeName();                 // 0x1403cf190
     virtual void vfunc_2();                     // 0x1403cf240
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403cf310
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403cf370
@@ -1014,7 +1014,7 @@ public:
 MS2_CHECK_SIZE(GameEventNpcShopTalk, 0xd8);
 class GameEventOntime : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403bd600
+    virtual CStringW GetTypeName();                 // 0x1403bd600
     virtual void vfunc_2();                     // 0x1403bd6c0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403bdb80
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403bdbe0
@@ -1026,7 +1026,7 @@ public:
 MS2_CHECK_SIZE(GameEventOntime, 0xe0);
 class GameEventSAHotTime : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403bb960
+    virtual CStringW GetTypeName();                 // 0x1403bb960
     virtual void vfunc_2();                     // 0x1403bba50
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403bbc60
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403bbd30
@@ -1041,13 +1041,13 @@ public:
 MS2_CHECK_SIZE(GameEventSAHotTime, 0xf0);
 class GameEventPCBangSAHotTime : public GameEventSAHotTime {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403bc180
+    virtual CStringW GetTypeName();                 // 0x1403bc180
     GameEventPCBangSAHotTime();                 // 0x1403bc1d0
 };  // vftable 0x142d3f1c0, ??_G 0x1403ea8d0, dtor 0x1403e65b0
 MS2_CHECK_SIZE(GameEventPCBangSAHotTime, 0xf0);
 class GameEventPetBattleExp : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403ca260
+    virtual CStringW GetTypeName();                 // 0x1403ca260
     virtual void vfunc_2();                     // 0x1403ca320
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403ca350
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403ca3a0
@@ -1060,7 +1060,7 @@ public:
 MS2_CHECK_SIZE(GameEventPetBattleExp, 0xd8);
 class GameEventPetComposeSale : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403ca4d0
+    virtual CStringW GetTypeName();                 // 0x1403ca4d0
     virtual void vfunc_2();                     // 0x1403ca590
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403ca5c0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403ca610
@@ -1073,7 +1073,7 @@ public:
 MS2_CHECK_SIZE(GameEventPetComposeSale, 0xd8);
 class GameEventPetMastery : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c9df0
+    virtual CStringW GetTypeName();                 // 0x1403c9df0
     virtual void vfunc_2();                     // 0x1403c9ec0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403ca070
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403ca0d0
@@ -1086,7 +1086,7 @@ public:
 MS2_CHECK_SIZE(GameEventPetMastery, 0xd8);
 class GameEventPremiumMarketSale : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403bec80
+    virtual CStringW GetTypeName();                 // 0x1403bec80
     virtual void vfunc_2();                     // 0x1403bed60
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403bedd0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403beee0
@@ -1102,7 +1102,7 @@ public:
 MS2_CHECK_SIZE(GameEventPremiumMarketSale, 0xf0);
 class GameEventPublicTest : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403d15e0
+    virtual CStringW GetTypeName();                 // 0x1403d15e0
     virtual void vfunc_2();                     // 0x1403d16a0
     virtual void OnStart();                     // 0x1403d16b0
     virtual void vfunc_6();                     // 0x1403d16e0
@@ -1111,7 +1111,7 @@ public:
 MS2_CHECK_SIZE(GameEventPublicTest, 0xd0);
 class GameEventQuestAdditionalReward : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c6ae0
+    virtual CStringW GetTypeName();                 // 0x1403c6ae0
     virtual void vfunc_2();                     // 0x1403c6c10
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c6d50
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c6dd0
@@ -1125,7 +1125,7 @@ public:
 MS2_CHECK_SIZE(GameEventQuestAdditionalReward, 0xe8);
 class GameEventQuestTag : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403be010
+    virtual CStringW GetTypeName();                 // 0x1403be010
     virtual void vfunc_2();                     // 0x1403be0e0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403be200
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403be2b0
@@ -1139,7 +1139,7 @@ public:
 MS2_CHECK_SIZE(GameEventQuestTag, 0xe0);
 class GameEventRankDuel : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c6620
+    virtual CStringW GetTypeName();                 // 0x1403c6620
     virtual void vfunc_2();                     // 0x1403c66f0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c67c0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c6810
@@ -1153,7 +1153,7 @@ public:
 MS2_CHECK_SIZE(GameEventRankDuel, 0xe0);
 class GameEventReactor : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403cfb70
+    virtual CStringW GetTypeName();                 // 0x1403cfb70
     virtual void vfunc_2();                     // 0x1403cfc50
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403cfea0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403cff10
@@ -1166,7 +1166,7 @@ public:
 MS2_CHECK_SIZE(GameEventReactor, 0xe0);
 class GameEventRps : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403ce820
+    virtual CStringW GetTypeName();                 // 0x1403ce820
     virtual void vfunc_2();                     // 0x1403ce900
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403ceb70
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403cebe0
@@ -1189,7 +1189,7 @@ public:
 MS2_CHECK_SIZE(GameEventSale, 0xd8);
 class GameEventSaleAutoFishing : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403bf750
+    virtual CStringW GetTypeName();                 // 0x1403bf750
     virtual void vfunc_2();                     // 0x1403bf810
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403bf860
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403bf8d0
@@ -1203,7 +1203,7 @@ public:
 MS2_CHECK_SIZE(GameEventSaleAutoFishing, 0xe0);
 class GameEventSaleAutoPlayInstrument : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403bfae0
+    virtual CStringW GetTypeName();                 // 0x1403bfae0
     virtual void vfunc_2();                     // 0x1403bfba0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403bfbf0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403bfc60
@@ -1217,7 +1217,7 @@ public:
 MS2_CHECK_SIZE(GameEventSaleAutoPlayInstrument, 0xe0);
 class GameEventSaleBeautyShop : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403bc280
+    virtual CStringW GetTypeName();                 // 0x1403bc280
     virtual void vfunc_2();                     // 0x1403bc340
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403bc3b0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403bc430
@@ -1232,7 +1232,7 @@ public:
 MS2_CHECK_SIZE(GameEventSaleBeautyShop, 0xe0);
 class GameEventSaleChat : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403bb570
+    virtual CStringW GetTypeName();                 // 0x1403bb570
     virtual void vfunc_2();                     // 0x1403bb650
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403bb6a0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403bb700
@@ -1247,7 +1247,7 @@ public:
 MS2_CHECK_SIZE(GameEventSaleChat, 0xe0);
 class GameEventSaleEnchant : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403bdda0
+    virtual CStringW GetTypeName();                 // 0x1403bdda0
     virtual void vfunc_2();                     // 0x1403bde60
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403bde90
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403bdee0
@@ -1260,7 +1260,7 @@ public:
 MS2_CHECK_SIZE(GameEventSaleEnchant, 0xd8);
 class GameEventSaleGemStoneUpgrade : public GameEventSale {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c1440
+    virtual CStringW GetTypeName();                 // 0x1403c1440
     virtual void OnStart();                     // 0x1403c14f0
     virtual void vfunc_6();                     // 0x1403c1530
     GameEventSaleGemStoneUpgrade();
@@ -1268,7 +1268,7 @@ public:
 MS2_CHECK_SIZE(GameEventSaleGemStoneUpgrade, 0xd8);
 class GameEventSaleHousing : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c3450
+    virtual CStringW GetTypeName();                 // 0x1403c3450
     virtual void vfunc_2();                     // 0x1403c3520
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c3880
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c39d0
@@ -1282,7 +1282,7 @@ public:
 MS2_CHECK_SIZE(GameEventSaleHousing, 0x100);
 class GameEventSaleItemsRestricted : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c9490
+    virtual CStringW GetTypeName();                 // 0x1403c9490
     virtual void vfunc_2();                     // 0x1403c9550
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c95f0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c9630
@@ -1295,7 +1295,7 @@ public:
 MS2_CHECK_SIZE(GameEventSaleItemsRestricted, 0xf0);
 class GameEventSaleLapenshardUpgradeRGB : public GameEventSale {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403d69e0
+    virtual CStringW GetTypeName();                 // 0x1403d69e0
     virtual void OnStart();                     // 0x1403d6a70
     virtual void vfunc_6();                     // 0x1403d6ab0
     GameEventSaleLapenshardUpgradeRGB();
@@ -1303,7 +1303,7 @@ public:
 MS2_CHECK_SIZE(GameEventSaleLapenshardUpgradeRGB, 0xd8);
 class GameEventSalePetCrystal : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403d5140
+    virtual CStringW GetTypeName();                 // 0x1403d5140
     virtual void vfunc_2();                     // 0x1403d5200
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403d5230
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403d5280
@@ -1316,7 +1316,7 @@ public:
 MS2_CHECK_SIZE(GameEventSalePetCrystal, 0xd8);
 class GameEventSaleRemake : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c1140
+    virtual CStringW GetTypeName();                 // 0x1403c1140
     virtual void vfunc_2();                     // 0x1403c1210
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c1260
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c12c0
@@ -1329,7 +1329,7 @@ public:
 MS2_CHECK_SIZE(GameEventSaleRemake, 0xd8);
 class GameEventSaleSkillUpgrade : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c15c0
+    virtual CStringW GetTypeName();                 // 0x1403c15c0
     virtual void vfunc_2();                     // 0x1403c16c0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c1770
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c1840
@@ -1344,7 +1344,7 @@ public:
 MS2_CHECK_SIZE(GameEventSaleSkillUpgrade, 0xf0);
 class GameEventSaleUGCDesign : public GameEventSale {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c2be0
+    virtual CStringW GetTypeName();                 // 0x1403c2be0
     virtual void OnStart();                     // 0x1403c2c90
     virtual void vfunc_6();                     // 0x1403c2cd0
     GameEventSaleUGCDesign();
@@ -1352,7 +1352,7 @@ public:
 MS2_CHECK_SIZE(GameEventSaleUGCDesign, 0xd8);
 class GameEventShutdownBillboard : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403d12a0
+    virtual CStringW GetTypeName();                 // 0x1403d12a0
     virtual void vfunc_2();                     // 0x1403d1350
     virtual void OnStart();                     // 0x1403d1360
     virtual void vfunc_6();                     // 0x1403d13a0
@@ -1361,7 +1361,7 @@ public:
 MS2_CHECK_SIZE(GameEventShutdownBillboard, 0xd0);
 class GameEventShutdownDummy : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403d4e90
+    virtual CStringW GetTypeName();                 // 0x1403d4e90
     virtual void vfunc_2();                     // 0x1403d4f60
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403d4f90
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403d4fe0
@@ -1376,7 +1376,7 @@ public:
 MS2_CHECK_SIZE(GameEventShutdownDummy, 0xd8);
 class GameEventShutdownFunctionItem : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403cb220
+    virtual CStringW GetTypeName();                 // 0x1403cb220
     virtual void vfunc_2();                     // 0x1403cb2e0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403cb400
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403cb4e0
@@ -1388,7 +1388,7 @@ public:
 MS2_CHECK_SIZE(GameEventShutdownFunctionItem, 0xe0);
 class GameEventShutdownInteractObjectId : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403cac50
+    virtual CStringW GetTypeName();                 // 0x1403cac50
     virtual void vfunc_2();                     // 0x1403cad10
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403cae60
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403caf60
@@ -1400,7 +1400,7 @@ public:
 MS2_CHECK_SIZE(GameEventShutdownInteractObjectId, 0xe0);
 class GameEventShutdownSkillItem : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403cb750
+    virtual CStringW GetTypeName();                 // 0x1403cb750
     virtual void vfunc_2();                     // 0x1403cb810
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403cb930
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403cba00
@@ -1412,7 +1412,7 @@ public:
 MS2_CHECK_SIZE(GameEventShutdownSkillItem, 0xe0);
 class GameEventShutdownUGCBanner : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403d1440
+    virtual CStringW GetTypeName();                 // 0x1403d1440
     virtual void vfunc_2();                     // 0x1403d14f0
     virtual void OnStart();                     // 0x1403d1500
     virtual void vfunc_6();                     // 0x1403d1540
@@ -1421,7 +1421,7 @@ public:
 MS2_CHECK_SIZE(GameEventShutdownUGCBanner, 0xd0);
 class GameEventShutdownUGCUpload : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403cbc50
+    virtual CStringW GetTypeName();                 // 0x1403cbc50
     virtual void vfunc_2();                     // 0x1403cbd20
     virtual void OnStart();                     // 0x1403cbdb0
     virtual void vfunc_6();                     // 0x1403cbe90
@@ -1434,7 +1434,7 @@ public:
 MS2_CHECK_SIZE(GameEventShutdownUGCUpload, 0xf8);
 class GameEventSnowman : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403cdc40
+    virtual CStringW GetTypeName();                 // 0x1403cdc40
     virtual void vfunc_2();                     // 0x1403cdd50
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403cdfe0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403ce070
@@ -1449,7 +1449,7 @@ public:
 MS2_CHECK_SIZE(GameEventSnowman, 0xe8);
 class GameEventStampEvent : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c46e0
+    virtual CStringW GetTypeName();                 // 0x1403c46e0
     virtual void vfunc_2();                     // 0x1403c47c0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c4fa0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c5010
@@ -1463,13 +1463,13 @@ public:
 MS2_CHECK_SIZE(GameEventStampEvent, 0xe8);
 class GameEventStampEventChar : public GameEventStampEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c5120
+    virtual CStringW GetTypeName();                 // 0x1403c5120
     GameEventStampEventChar();
 };  // vftable 0x142d3fe20, ??_G 0x1403eb190, dtor 0x1403e6b90
 MS2_CHECK_SIZE(GameEventStampEventChar, 0xe8);
 class GameEventStarShop : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403cd9d0
+    virtual CStringW GetTypeName();                 // 0x1403cd9d0
     virtual void vfunc_2();                     // 0x1403cda90
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403cdac0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403cdb10
@@ -1482,7 +1482,7 @@ public:
 MS2_CHECK_SIZE(GameEventStarShop, 0xd8);
 class GameEventTimeRunEvent : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c5210
+    virtual CStringW GetTypeName();                 // 0x1403c5210
     virtual void vfunc_2();                     // 0x1403c52f0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c5550
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c55c0
@@ -1496,7 +1496,7 @@ public:
 MS2_CHECK_SIZE(GameEventTimeRunEvent, 0xe0);
 class GameEventTrafficOptimizer : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403bfe70
+    virtual CStringW GetTypeName();                 // 0x1403bfe70
     virtual void vfunc_2();                     // 0x1403bff20
     virtual void OnStart();                     // 0x1403bff30
     virtual void vfunc_6();                     // 0x1403bff40
@@ -1506,7 +1506,7 @@ public:
 MS2_CHECK_SIZE(GameEventTrafficOptimizer, 0xd0);
 class GameEventTransferItemBound : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c91f0
+    virtual CStringW GetTypeName();                 // 0x1403c91f0
     virtual void vfunc_2();                     // 0x1403c92b0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c9300
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c9350
@@ -1519,7 +1519,7 @@ public:
 MS2_CHECK_SIZE(GameEventTransferItemBound, 0xd8);
 class GameEventTreeWatering : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403d0450
+    virtual CStringW GetTypeName();                 // 0x1403d0450
     virtual void vfunc_2();                     // 0x1403d0550
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403d07a0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403d0810
@@ -1536,7 +1536,7 @@ public:
 MS2_CHECK_SIZE(GameEventTreeWatering, 0xf8);
 class GameEventUGCMapContractSale : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c86c0
+    virtual CStringW GetTypeName();                 // 0x1403c86c0
     virtual void vfunc_2();                     // 0x1403c8780
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c87b0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c8800
@@ -1549,7 +1549,7 @@ public:
 MS2_CHECK_SIZE(GameEventUGCMapContractSale, 0xd8);
 class GameEventUGCMapExtensionSale : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c8930
+    virtual CStringW GetTypeName();                 // 0x1403c8930
     virtual void vfunc_2();                     // 0x1403c89f0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c8a20
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c8a70
@@ -1562,7 +1562,7 @@ public:
 MS2_CHECK_SIZE(GameEventUGCMapExtensionSale, 0xd8);
 class GameEventUGCMapSaleCoupon : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403bea20
+    virtual CStringW GetTypeName();                 // 0x1403bea20
     virtual void vfunc_2();                     // 0x1403beae0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403beb10
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403beb60
@@ -1575,7 +1575,7 @@ public:
 MS2_CHECK_SIZE(GameEventUGCMapSaleCoupon, 0xd8);
 class GameEventUgcMapCommendationGM : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c9780
+    virtual CStringW GetTypeName();                 // 0x1403c9780
     virtual void vfunc_2();                     // 0x1403c9880
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c98f0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c9980
@@ -1590,7 +1590,7 @@ public:
 MS2_CHECK_SIZE(GameEventUgcMapCommendationGM, 0xe8);
 class GameEventUpdateString : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c4470
+    virtual CStringW GetTypeName();                 // 0x1403c4470
     virtual void vfunc_2();                     // 0x1403c4540
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c45a0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c45f0
@@ -1602,7 +1602,7 @@ public:
 MS2_CHECK_SIZE(GameEventUpdateString, 0xd8);
 class GameEventUserCondition : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403bc620
+    virtual CStringW GetTypeName();                 // 0x1403bc620
     virtual void vfunc_2();                     // 0x1403bc6f0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403bc740
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403bc7b0
@@ -1616,7 +1616,7 @@ public:
 MS2_CHECK_SIZE(GameEventUserCondition, 0xe0);
 class GameEventWorldmapIcon : public GameEvent {
 public:
-    virtual CStringW vfunc_1();                 // 0x1403c8200
+    virtual CStringW GetTypeName();                 // 0x1403c8200
     virtual void vfunc_2();                     // 0x1403c82c0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1403c8320
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1403c8370
@@ -1866,7 +1866,7 @@ public:
 };  // vftable 0x142d415c0, ??_G 0x1403eba10, dtor 0x1403e7240
 MS2_CHECK_SIZE(TreeWatering_TreeStep, 0x40);
 // Members proven by the dtor 0x1403e7150 (CString dtors at +0x118/+0x110/+0x108/+0xf8, then the CAtlMap/CAtlArray
-// members at +0xa8, +0x68, +0x20), by TreeWateringAction::vfunc_1/2/6 (0x1409602c0 / 0x1409606a0 / 0x140960a10) and
+// members at +0xa8, +0x68, +0x20), by TreeWateringAction::GetTypeName/2/6 (0x1409602c0 / 0x1409606a0 / 0x140960a10) and
 // by gameeventcontext.cpp (stream Write 0x140402770 / Read 0x140402d20). The ctor is in gameevent.cpp.
 class TreeWateringContext : public CPtred {
 public:

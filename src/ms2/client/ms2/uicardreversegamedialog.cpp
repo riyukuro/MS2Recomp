@@ -120,7 +120,7 @@ UICardReverseGameDialog::UICardReverseGameDialog()
 }
 
 // @0x140f26aa0
-CString UICardReverseGameDialog::vfunc_1()
+CString UICardReverseGameDialog::GetTypeName()
 {
     return CString("CardReverseGameDialog");
 }
@@ -220,7 +220,7 @@ void UICardReverseGameDialog::vfunc_79(void* p)
                     {
                         spItem->FUN_140526c70(spCard->m_nCount);
                         int nSeq = m_1a0++;
-                        strBind.Format("%s_%d", (const char*)vfunc_1(), nSeq);
+                        strBind.Format("%s_%d", (const char*)GetTypeName(), nSeq);
                         FUN_141415450(strBind, MS2Ptr<CItem>(spItem), 0, 0x415, 0);
                         FUN_140165270(m_180, strBind);
                     }
@@ -338,7 +338,7 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                         {
                             spItem->FUN_140526c70(spCard->m_nCount);
                             int nSeq = m_1a0++;
-                            strBind.Format("%s_%d", (const char*)vfunc_1(), nSeq);
+                            strBind.Format("%s_%d", (const char*)GetTypeName(), nSeq);
                             FUN_141415450(strBind, MS2Ptr<CItem>(spItem), 0, 0x415, 0);
                             FUN_140165270(m_180, strBind);
                             spCard->m_strBindId = strBind;
@@ -360,7 +360,7 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                     {
                         spItem->FUN_140526c70(m_1f8->m_nCount);
                         int nSeq = m_1a0++;
-                        strBind.Format("%s_%d", (const char*)vfunc_1(), nSeq);
+                        strBind.Format("%s_%d", (const char*)GetTypeName(), nSeq);
                         FUN_141415450(strBind, MS2Ptr<CItem>(spItem), 0, 0x415, 0);
                         FUN_140165270(m_180, strBind);
                         m_1f8->m_strBindId = strBind;

@@ -340,7 +340,7 @@ UIQuestDialog::~UIQuestDialog()
 }
 
 // @0x141a997b0
-CString UIQuestDialog::vfunc_1() { return "QuestDialog"; }
+CString UIQuestDialog::GetTypeName() { return "QuestDialog"; }
 
 // @0x141a99800
 void UIQuestDialog::OnLoadInit()
@@ -1030,7 +1030,7 @@ CString UIQuestDialog::RewardIconName(int nItemId, int nRarity, int nCount, CStr
         return "";
     pItem->FUN_140526c70(nCount);
     CString strIcon;
-    strIcon.Format("%s_%s", (const char*)vfunc_1(), (const char*)FUN_14016a5c0((const char*)strBindName, 0));
+    strIcon.Format("%s_%s", (const char*)GetTypeName(), (const char*)FUN_14016a5c0((const char*)strBindName, 0));
     FUN_141415450(strIcon, MS2Ptr<CItem>(pItem), 0, 0x11, 0x800);
     return strIcon;
 }

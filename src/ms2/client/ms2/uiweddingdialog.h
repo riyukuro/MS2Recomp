@@ -25,7 +25,7 @@ public:
 
     UIWeddingDialog();                                          // 0x140fc6fa0
     virtual ~UIWeddingDialog();                                 //  0 0x140fc72a0 (??_G 0x140fcb190)
-    virtual CString vfunc_1();                                  //  1 0x140fc73a0 "WeddingDialog"
+    virtual CString GetTypeName();                                  //  1 0x140fc73a0 "WeddingDialog"
     virtual void OnLoadComplete();                              // 22 0x140fc7480 setData
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                 // 28 0x140fc78e0 onAddPage / onRemovePage / ...

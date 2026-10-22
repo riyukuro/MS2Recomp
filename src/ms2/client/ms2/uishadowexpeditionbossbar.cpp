@@ -4,7 +4,7 @@
 // MS2-RANGE: 0x140f9c1e0-0x140f9e200 .text$mn
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVFieldGameScoreBoardCli@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@QEAA@AEBV01@@Z 0x140f9db60 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVFieldGameScoreBoardCli@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f9dfc0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVFieldGameScoreBoardCli@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140f9dfc0 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVFieldGameScoreBoardCli@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAXAEAVCInPacket@@@Z 0x140f9e020 ; unique
 // MS2-PIN: ??$Call@VFieldGameScoreBoardCli@@P81@EAAXAEAVCInPacket@@@Z@?$DelegateImpl@U?$pair@PEAVFieldGameScoreBoardCli@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@CAXAEAU?$pair@PEAVFieldGameScoreBoardCli@@P81@EAAXAEAVCInPacket@@@Z@std@@AEAVCInPacket@@@Z 0x140f9e050 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVFieldGameScoreBoardCli@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x140f9e080 ; unique
@@ -252,11 +252,11 @@ UIShadowExpeditionBossBar::~UIShadowExpeditionBossBar()
 }
 
 // @0x140f9cdb0
-CString UIShadowExpeditionBossBar::vfunc_1()
+CString UIShadowExpeditionBossBar::GetTypeName()
 {
     return "ShadowExpeditionBossBar";
 }
-MS2_REPLACE_METHOD(0x140F9CDB0, UIShadowExpeditionBossBar, vfunc_1, 61, 0x93704178);
+MS2_REPLACE_METHOD(0x140F9CDB0, UIShadowExpeditionBossBar, GetTypeName, 61, 0x93704178);
 
 // @0x140f9ce00
 void UIShadowExpeditionBossBar::vfunc_43()

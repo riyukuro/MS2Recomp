@@ -382,8 +382,8 @@ GameEvent* FUN_1403fb400() { return new GameEventAttendGift; }
 MS2_REPLACE(0x1403fb400, FUN_1403fb400, 82, 0xE4859B6C);
 
 // @0x1403fb460
-CStringW GameEventAttendGift::vfunc_1() { return CStringW(L"GameEventAttendGift"); }
-MS2_REPLACE_METHOD(0x1403fb460, GameEventAttendGift, vfunc_1, 61, 0x6936B364);
+CStringW GameEventAttendGift::GetTypeName() { return CStringW(L"GameEventAttendGift"); }
+MS2_REPLACE_METHOD(0x1403fb460, GameEventAttendGift, GetTypeName, 61, 0x6936B364);
 
 // @0x1403fb4b0
 GameEventAttendGift::GameEventAttendGift()
@@ -461,8 +461,8 @@ GameEvent* FUN_1403fb9a0() { return new GameEventCashAttend; }
 MS2_REPLACE(0x1403fb9a0, FUN_1403fb9a0, 82, 0xF5361299);
 
 // @0x1403fba00
-CStringW GameEventCashAttend::vfunc_1() { return CStringW(L"GameEventCashAttend"); }
-MS2_REPLACE_METHOD(0x1403fba00, GameEventCashAttend, vfunc_1, 61, 0xB5B435BC);
+CStringW GameEventCashAttend::GetTypeName() { return CStringW(L"GameEventCashAttend"); }
+MS2_REPLACE_METHOD(0x1403fba00, GameEventCashAttend, GetTypeName, 61, 0xB5B435BC);
 
 // @0x1403fba50
 GameEventCashAttend::GameEventCashAttend() : m_i0(0), m_i4(0)

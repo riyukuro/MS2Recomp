@@ -1,7 +1,7 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). The client side of the dungeon missions: DungeonMissionCli (the
 // score earned so far plus a pointer to its DungeonMissionData), DungeonMissionPlayTime / DungeonMissionLimitUserCount /
 // DungeonMissionEvent and the 13 counted subclasses of the Event mission. Per class a factory registered by name in the
-// dynamic initializers (the registry is the one of commonfiles\dungeonmissiondata.cpp), the name (vfunc_1) and the ctor;
+// dynamic initializers (the registry is the one of commonfiles\dungeonmissiondata.cpp), the name (GetTypeName) and the ctor;
 // the implicit dtors and ??_G are COMDATs. The unit name is a guess (queue row ?\dungeonmissioncli.cpp).
 // MS2-UNIT: ?\dungeonmissioncli.cpp
 // MS2-RANGE: 0x1400c7840-0x1400c7d40 .text$di
@@ -179,7 +179,7 @@ ClassObject* DungeonMissionPlayTime::CreateObject()
 }
 
 // @0x140b1e240
-CStringW DungeonMissionPlayTime::vfunc_1()
+CStringW DungeonMissionPlayTime::GetTypeName()
 {
     return L"DungeonMissionPlayTime";
 }
@@ -206,7 +206,7 @@ ClassObject* DungeonMissionLimitUserCount::CreateObject()
 }
 
 // @0x140b1e3a0
-CStringW DungeonMissionLimitUserCount::vfunc_1()
+CStringW DungeonMissionLimitUserCount::GetTypeName()
 {
     return L"DungeonMissionLimitUserCount";
 }
@@ -223,7 +223,7 @@ ClassObject* DungeonMissionEvent::CreateObject()
 }
 
 // @0x140b1e490
-CStringW DungeonMissionEvent::vfunc_1()
+CStringW DungeonMissionEvent::GetTypeName()
 {
     return L"DungeonMissionEvent";
 }
@@ -270,7 +270,7 @@ ClassObject* DungeonMissionDeathCount::CreateObject()
 }
 
 // @0x140b1e950
-CStringW DungeonMissionDeathCount::vfunc_1()
+CStringW DungeonMissionDeathCount::GetTypeName()
 {
     return L"DungeonMissionDeathCount";
 }
@@ -282,7 +282,7 @@ ClassObject* DungeonMissionKillNpc::CreateObject()
 }
 
 // @0x140b1ea00
-CStringW DungeonMissionKillNpc::vfunc_1()
+CStringW DungeonMissionKillNpc::GetTypeName()
 {
     return L"DungeonMissionKillNpc";
 }
@@ -294,7 +294,7 @@ ClassObject* DungeonMissionHealingPotion::CreateObject()
 }
 
 // @0x140b1eab0
-CStringW DungeonMissionHealingPotion::vfunc_1()
+CStringW DungeonMissionHealingPotion::GetTypeName()
 {
     return L"DungeonMissionHealingPotion";
 }
@@ -306,7 +306,7 @@ ClassObject* DungeonMissionDamageBySkill::CreateObject()
 }
 
 // @0x140b1eb60
-CStringW DungeonMissionDamageBySkill::vfunc_1()
+CStringW DungeonMissionDamageBySkill::GetTypeName()
 {
     return L"DungeonMissionDamageBySkill";
 }
@@ -318,7 +318,7 @@ ClassObject* DungeonMissionUseEp::CreateObject()
 }
 
 // @0x140b1ec10
-CStringW DungeonMissionUseEp::vfunc_1()
+CStringW DungeonMissionUseEp::GetTypeName()
 {
     return L"DungeonMissionUseEp";
 }
@@ -330,7 +330,7 @@ ClassObject* DungeonMissionUseSp::CreateObject()
 }
 
 // @0x140b1ecc0
-CStringW DungeonMissionUseSp::vfunc_1()
+CStringW DungeonMissionUseSp::GetTypeName()
 {
     return L"DungeonMissionUseSp";
 }
@@ -342,7 +342,7 @@ ClassObject* DungeonMissionUseSkill::CreateObject()
 }
 
 // @0x140b1ed70
-CStringW DungeonMissionUseSkill::vfunc_1()
+CStringW DungeonMissionUseSkill::GetTypeName()
 {
     return L"DungeonMissionUseSkill";
 }
@@ -354,7 +354,7 @@ ClassObject* DungeonMissionGainBuff::CreateObject()
 }
 
 // @0x140b1ee20
-CStringW DungeonMissionGainBuff::vfunc_1()
+CStringW DungeonMissionGainBuff::GetTypeName()
 {
     return L"DungeonMissionGainBuff";
 }
@@ -366,7 +366,7 @@ ClassObject* DungeonMissionLastHitNpc::CreateObject()
 }
 
 // @0x140b1eed0
-CStringW DungeonMissionLastHitNpc::vfunc_1()
+CStringW DungeonMissionLastHitNpc::GetTypeName()
 {
     return L"DungeonMissionLastHitNpc";
 }
@@ -378,7 +378,7 @@ ClassObject* DungeonMissionUseInteractObject::CreateObject()
 }
 
 // @0x140b1ef80
-CStringW DungeonMissionUseInteractObject::vfunc_1()
+CStringW DungeonMissionUseInteractObject::GetTypeName()
 {
     return L"DungeonMissionUseInteractObject";
 }
@@ -390,7 +390,7 @@ ClassObject* DungeonMissionDamageCount::CreateObject()
 }
 
 // @0x140b1f030
-CStringW DungeonMissionDamageCount::vfunc_1()
+CStringW DungeonMissionDamageCount::GetTypeName()
 {
     return L"DungeonMissionDamageCount";
 }
@@ -402,7 +402,7 @@ ClassObject* DungeonMissionDamageToNpc::CreateObject()
 }
 
 // @0x140b1f0e0
-CStringW DungeonMissionDamageToNpc::vfunc_1()
+CStringW DungeonMissionDamageToNpc::GetTypeName()
 {
     return L"DungeonMissionDamageToNpc";
 }
@@ -414,7 +414,7 @@ ClassObject* DungeonMissionTrigger::CreateObject()
 }
 
 // @0x140b1f190
-CStringW DungeonMissionTrigger::vfunc_1()
+CStringW DungeonMissionTrigger::GetTypeName()
 {
     return L"DungeonMissionTrigger";
 }

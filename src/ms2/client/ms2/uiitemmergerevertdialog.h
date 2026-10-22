@@ -18,7 +18,7 @@ class UIItemMergeRevertDialog : public UIDialog
 public:
     UIItemMergeRevertDialog();                                  // 0x140e4c050
     virtual ~UIItemMergeRevertDialog() = default;               //  0 0x140e4da70 (the exe's dtor writes no vptr; ??_G 0x140e4db90)
-    virtual CString vfunc_1();                                  //  1 0x140e4c0d0 "ItemMergeRevertDialog"
+    virtual CString GetTypeName();                                  //  1 0x140e4c0d0 "ItemMergeRevertDialog"
     virtual void OnLoadComplete();                              // 22 0x140e4c200 show the empty slot
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                 // 28 0x140e4c230 onOk: send the revert request

@@ -18,7 +18,7 @@ class UIApartmentDialog : public UIDialog, public UIUGCEventListener
 public:
     UIApartmentDialog();                                        // 0x1418b57f0
     virtual ~UIApartmentDialog();                               //  0 0x1418b5930 (??_G 0x1418b7770)
-    virtual CString vfunc_1();                                  //  1 0x1418b5a10 "ApartmentDialog"
+    virtual CString GetTypeName();                                  //  1 0x1418b5a10 "ApartmentDialog"
     virtual void OnLoadComplete();                              // 22 0x1418b5a60
     virtual int vfunc_13();                                     // 13 0x1418b63d0
     virtual void vfunc_26();                                    // 26 0x1418b62f0

@@ -23,7 +23,7 @@ class UIGameOptionDialog : public UIDialog
 public:
     UIGameOptionDialog();                                           // 0x141941b80
     virtual ~UIGameOptionDialog();                                  //  0 0x141942810 (??_G 0x141944be0)
-    virtual CString vfunc_1();                                      //  1 0x141942880 "GameOptionDialog"
+    virtual CString GetTypeName();                                      //  1 0x141942880 "GameOptionDialog"
     virtual void OnLoadComplete();                                  // 22 0x1419428d0 send initData, build the tabs
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141942cc0
     virtual void vfunc_67();                                        // 67 0x141942a10 Close: deactivate every page

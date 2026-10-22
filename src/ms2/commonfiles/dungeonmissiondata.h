@@ -19,7 +19,7 @@ class DungeonMissionData : public ClassObject
 public:
     static ClassObject* CreateObject();                     // 0x140314830
     DungeonMissionData();                                   // 0x1403148e0
-    virtual CStringW vfunc_1();                             // 0x140314890 L"DungeonMissionData"
+    virtual CStringW GetTypeName();                             // 0x140314890 L"DungeonMissionData"
     virtual bool Load(Unk_140165cf0* pElem);                // 0x140314960 id/type/maxScore/applyCount/isPenaltyType
     virtual bool vfunc_3();                                 // 0x140314bf0 false (PlayTime: true)
     unsigned GetId();                                       // 0x140314c00
@@ -49,7 +49,7 @@ class DungeonMissionDataPlayTime : public DungeonMissionData
 {
 public:
     static ClassObject* CreateObject();                     // 0x140314f20
-    virtual CStringW vfunc_1();                             // 0x140314f80
+    virtual CStringW GetTypeName();                             // 0x140314f80
     virtual bool Load(Unk_140165cf0* pElem);                // 0x140314fd0
     virtual bool vfunc_3();                                 // 0x140315050 true
 
@@ -63,7 +63,7 @@ class DungeonMissionDataLimitUserCount : public DungeonMissionData
 {
 public:
     static ClassObject* CreateObject();                     // 0x140315060
-    virtual CStringW vfunc_1();                             // 0x1403150c0
+    virtual CStringW GetTypeName();                             // 0x1403150c0
     virtual bool Load(Unk_140165cf0* pElem);                // 0x140315110
 
 protected:
@@ -75,7 +75,7 @@ class DungeonMissionDataKillNpc : public DungeonMissionData
 {
 public:
     static ClassObject* CreateObject();                     // 0x140315170
-    virtual CStringW vfunc_1();                             // 0x1403151d0
+    virtual CStringW GetTypeName();                             // 0x1403151d0
     virtual bool Load(Unk_140165cf0* pElem);                // 0x140315220 fails if value2 is 0
 
 protected:
@@ -90,7 +90,7 @@ class DungeonMissionDataDamageBySkill : public DungeonMissionData
 {
 public:
     static ClassObject* CreateObject();                     // 0x140315310
-    virtual CStringW vfunc_1();                             // 0x140315370
+    virtual CStringW GetTypeName();                             // 0x140315370
     virtual bool Load(Unk_140165cf0* pElem);                // 0x1403153c0
 
 protected:
@@ -105,7 +105,7 @@ class DungeonMissionDataUseSkill : public DungeonMissionData
 {
 public:
     static ClassObject* CreateObject();                     // 0x140315430
-    virtual CStringW vfunc_1();                             // 0x140315490
+    virtual CStringW GetTypeName();                             // 0x140315490
     virtual bool Load(Unk_140165cf0* pElem);                // 0x1403154e0
 
 protected:
@@ -117,7 +117,7 @@ class DungeonMissionDataGainBuff : public DungeonMissionData
 {
 public:
     static ClassObject* CreateObject();                     // 0x140315540
-    virtual CStringW vfunc_1();                             // 0x1403155a0
+    virtual CStringW GetTypeName();                             // 0x1403155a0
     virtual bool Load(Unk_140165cf0* pElem);                // 0x1403155f0
 
 protected:
@@ -129,7 +129,7 @@ class DungeonMissionDataLastHitNpc : public DungeonMissionData
 {
 public:
     static ClassObject* CreateObject();                     // 0x140315640
-    virtual CStringW vfunc_1();                             // 0x1403156a0
+    virtual CStringW GetTypeName();                             // 0x1403156a0
     virtual bool Load(Unk_140165cf0* pElem);                // 0x1403156f0
 
 protected:
@@ -141,7 +141,7 @@ class DungeonMissionDataUseInteractObject : public DungeonMissionData
 {
 public:
     static ClassObject* CreateObject();                     // 0x140315740
-    virtual CStringW vfunc_1();                             // 0x1403157a0
+    virtual CStringW GetTypeName();                             // 0x1403157a0
     virtual bool Load(Unk_140165cf0* pElem);                // 0x1403157f0
 
 protected:
@@ -153,7 +153,7 @@ class DungeonMissionDataDamageToNpc : public DungeonMissionData
 {
 public:
     static ClassObject* CreateObject();                     // 0x140315850
-    virtual CStringW vfunc_1();                             // 0x1403158b0
+    virtual CStringW GetTypeName();                             // 0x1403158b0
     virtual bool Load(Unk_140165cf0* pElem);                // 0x140315900
     bool IsTargetNpc(unsigned nNpcId);                      // 0x140315990 (an empty list matches every npc)
 
@@ -170,7 +170,7 @@ class DungeonMissionDataTrigger : public DungeonMissionData
 {
 public:
     static ClassObject* CreateObject();                     // 0x140315a10
-    virtual CStringW vfunc_1();                             // 0x140315a70
+    virtual CStringW GetTypeName();                             // 0x140315a70
     virtual bool Load(Unk_140165cf0* pElem);                // 0x140315ac0
 };
 MS2_CHECK_SIZE(DungeonMissionDataTrigger, 0x30);

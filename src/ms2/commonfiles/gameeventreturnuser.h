@@ -10,7 +10,7 @@ class Unk_RuAux;
 class GameEventReturnUser : public GameEvent {
 public:
     GameEventReturnUser();                      // 0x14041cc00
-    virtual CStringW vfunc_1();                 // 0x14041cbb0
+    virtual CStringW GetTypeName();                 // 0x14041cbb0
     virtual void vfunc_2();                     // 0x14041ccf0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x14041cd00
     virtual void vfunc_4(Unk_GEIn* in);         // 0x14041cd50

@@ -39,7 +39,7 @@ UISceneGameCinematicPlay::~UISceneGameCinematicPlay()
 }
 
 // @0x140e84d60
-CString UISceneGameCinematicPlay::vfunc_1()
+CString UISceneGameCinematicPlay::GetTypeName()
 {
     return "SceneGameCinematicPlay";
 }

@@ -246,11 +246,11 @@ void CGameOptionGamePad::vfunc_12()
 MS2_REPLACE_METHOD(0x140A57D00, CGameOptionGamePad, vfunc_12, 87, 0x743F787E);
 
 // @0x140a57d60
-CString CGameOptionGamePad::vfunc_1()
+CString CGameOptionGamePad::GetTypeName()
 {
     return CString("GameOptionLanguage");
 }
-MS2_REPLACE_METHOD(0x140A57D60, CGameOptionGamePad, vfunc_1, 61, 0xECB38628);
+MS2_REPLACE_METHOD(0x140A57D60, CGameOptionGamePad, GetTypeName, 61, 0xECB38628);
 
 // MS2-FUNCTIONAL: the exe returns the raw memcmp int from a bool-declared slot (no setne)
 // @0x140a57db0

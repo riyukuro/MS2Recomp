@@ -130,7 +130,7 @@ class UIPopupEntity : public UIObject
 public:
     UIPopupEntity(Unk_PopupOwner* pOwner);                          // 0x141a7caf0
     virtual ~UIPopupEntity();                                       //  0 0x141a7cc10 (??_G 0x141a7d410)
-    virtual CString vfunc_1();                                      //  1 0x141a7cca0
+    virtual CString GetTypeName();                                      //  1 0x141a7cca0
     virtual void vfunc_15();                                        // 15 0x141a7cdf0
     virtual void OnLoadInit();                                      // 20 0x141a7cd90 m_d0 = vfunc_48()
     virtual void OnLoadComplete();                                  // 22 0x141a7cdd0

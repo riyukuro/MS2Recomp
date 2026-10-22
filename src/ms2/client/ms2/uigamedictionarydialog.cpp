@@ -213,7 +213,7 @@ UIGameDictionaryDialog::~UIGameDictionaryDialog()
 }
 
 // @0x140f44900
-CString UIGameDictionaryDialog::vfunc_1()
+CString UIGameDictionaryDialog::GetTypeName()
 {
     return CString("GameDictionaryDialog");
 }

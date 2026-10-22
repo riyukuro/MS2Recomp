@@ -219,7 +219,7 @@ UIDebugGuideDialog::~UIDebugGuideDialog()
 }
 
 // @0x141286ba0
-CString UIDebugGuideDialog::vfunc_1()
+CString UIDebugGuideDialog::GetTypeName()
 {
     return "DebugGuideDialog";
 }
@@ -525,7 +525,7 @@ MS2_REPLACE_METHOD(0x1412864C0, Unk_DebugGuideArg, Read, 82, 0x3EB8FB22);
 MS2_REPLACE_METHOD(0x141286520, Unk_DebugGuideCommand, Read, 430, 0xBCACC3BB);
 MS2_REPLACE_METHOD(0x1412866E0, Unk_DebugGuideCommand, AddArg, 41, 0xF69EC827);
 MS2_REPLACE_METHOD(0x141286780, Unk_DebugGuideGroup, Read, 197, 0x7154E43F);
-MS2_REPLACE_METHOD(0x141286BA0, UIDebugGuideDialog, vfunc_1, 61, 0x68749244);
+MS2_REPLACE_METHOD(0x141286BA0, UIDebugGuideDialog, GetTypeName, 61, 0x68749244);
 MS2_REPLACE_METHOD(0x141287B50, UIDebugGuideDialog, vfunc_26, 150, 0x5640E0C4);
 MS2_REPLACE_METHOD(0x141287BF0, UIDebugGuideDialog, vfunc_13, 135, 0xBA54EFC5);
 MS2_REPLACE_METHOD(0x141287C80, UIDebugGuideDialog, OnPacket, 579, 0x32B73FF0);

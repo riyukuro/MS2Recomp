@@ -173,7 +173,7 @@ UITalkCinematic::~UITalkCinematic()
 }
 
 // @0x141b1a030
-CString UITalkCinematic::vfunc_1() { return "TalkCinematic"; }
+CString UITalkCinematic::GetTypeName() { return "TalkCinematic"; }
 
 // @0x141b1a080
 void UITalkCinematic::vfunc_2()
@@ -372,7 +372,7 @@ void UITalkCinematic::FUN_141b1ac40(Unk_TalkItemList& rItems, const CStringW& st
             {
                 MS2Ptr<CItem> spItem = rItems.FUN_140a69ee0(i);
                 CString strImage;
-                strImage.Format("%s_%d", (const char*)vfunc_1(), (int)i);
+                strImage.Format("%s_%d", (const char*)GetTypeName(), (int)i);
                 FUN_141415450(strImage, MS2Ptr<CItem>(spItem), 0, 0x11, 0x800);
                 CString strKey;
                 strKey.Format("reward%d", (int)i + 1);
@@ -402,7 +402,7 @@ void UITalkCinematic::FUN_141b1b000(Unk_TalkItemList& rItems, const CStringW& st
             {
                 MS2Ptr<CItem> spItem = rItems.FUN_140a69ee0(i);
                 CString strImage;
-                strImage.Format("%s_%d", (const char*)vfunc_1(), (int)i);
+                strImage.Format("%s_%d", (const char*)GetTypeName(), (int)i);
                 FUN_141415450(strImage, MS2Ptr<CItem>(spItem), 0, 0x11, 0x800);
                 CString strKey;
                 strKey.Format("reward%d", (int)i + 1);

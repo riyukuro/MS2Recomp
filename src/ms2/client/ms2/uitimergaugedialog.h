@@ -22,7 +22,7 @@ public:Unk_TimerPtr();Unk_TimerPtr(int);Unk_TimerPtr(T*);Unk_TimerPtr(const Unk_
 private:void* m_0;T* m_p;
 };
 class UITimerGaugeDialog : public UITimerBase {
-public:UITimerGaugeDialog();virtual ~UITimerGaugeDialog();virtual CString vfunc_1();virtual void vfunc_72();virtual void OnLoadComplete();virtual void vfunc_26();virtual void vfunc_87(unsigned long,unsigned int);
+public:UITimerGaugeDialog();virtual ~UITimerGaugeDialog();virtual CString GetTypeName();virtual void vfunc_72();virtual void OnLoadComplete();virtual void vfunc_26();virtual void vfunc_87(unsigned long,unsigned int);
  virtual int vfunc_48();
  void FUN_140edf1f0();void FUN_140edf200();void FUN_140edf2b0();void FUN_140edf480(Unk_TimerPtr<Unk_TimerClip>,unsigned int);void FUN_140edf530();
 private:MS2_LAYOUT_FRIEND;

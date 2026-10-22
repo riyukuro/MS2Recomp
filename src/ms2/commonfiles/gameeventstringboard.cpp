@@ -47,7 +47,7 @@ static Unk_GEFactoryRegistry s_regStringBoardLink(L"GameEventStringBoardLink", F
 GameEvent* FUN_14041e930() { return new GameEventStringBoard; }
 
 // @0x14041e990
-CStringW GameEventStringBoard::vfunc_1() { return CStringW(L"GameEventStringBoard"); }
+CStringW GameEventStringBoard::GetTypeName() { return CStringW(L"GameEventStringBoard"); }
 
 // @0x14041e9e0
 GameEventStringBoard::GameEventStringBoard() : m_nId(0)
@@ -92,7 +92,7 @@ void GameEventStringBoard::vfunc_6() {}
 GameEvent* FUN_14041eb80() { return new GameEventStringBoardLink; }
 
 // @0x14041ebe0
-CStringW GameEventStringBoardLink::vfunc_1() { return CStringW(L"GameEventStringBoardLink"); }
+CStringW GameEventStringBoardLink::GetTypeName() { return CStringW(L"GameEventStringBoardLink"); }
 
 // @0x14041ec30
 GameEventStringBoardLink::GameEventStringBoardLink()

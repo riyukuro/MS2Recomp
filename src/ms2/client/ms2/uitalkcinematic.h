@@ -47,7 +47,7 @@ class UITalkCinematic : public UIHeadUpDisplay
 public:
     UITalkCinematic();                                              // 0x141b19ea0
     virtual ~UITalkCinematic();                                     //  0 0x141b19f90 (??_G 0x141b1d7d0)
-    virtual CString vfunc_1();                                      //  1 0x141b1a030 "TalkCinematic"
+    virtual CString GetTypeName();                                      //  1 0x141b1a030 "TalkCinematic"
     virtual void vfunc_2();                                         //  2 0x141b1a080 show: register for key input, TalkCinematic mode 2
     virtual void vfunc_3();                                         //  3 0x141b1a0e0 hide
     virtual int vfunc_13();                                         // 13 0x141b1a3b0 key handling: confirm / skip

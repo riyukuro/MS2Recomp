@@ -24,7 +24,7 @@ class UIItemEnchantTransformDialog : public UIDialog
 public:
     UIItemEnchantTransformDialog();                                     // 0x140c3cc10
     virtual ~UIItemEnchantTransformDialog();                            //  0 0x140c3ced0 (??_G 0x140c3f0a0)
-    virtual CString vfunc_1();                                          //  1 0x140c3cfa0 "ItemEnchantTransformDialog"
+    virtual CString GetTypeName();                                          //  1 0x140c3cfa0 "ItemEnchantTransformDialog"
     virtual int vfunc_13();                                             // 13 0x140c3d280 0
     virtual void OnLoadComplete();                                      // 22 0x140c3d150
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

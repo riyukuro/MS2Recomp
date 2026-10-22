@@ -29,7 +29,7 @@ class UIItemModifyDialogBase : public UIDialog {
 public:
     UIItemModifyDialogBase();                                   // 0x1419be860
     virtual ~UIItemModifyDialogBase();                          // 0x1412a3ed0 (unit_14129cfa0)
-    virtual CString vfunc_1();                                  // 0x1419234e0 inherited UIDialog body (redeclared: the symbol table maps UIDialog::vfunc_1 to _purecall)
+    virtual CString GetTypeName();                                  // 0x1419234e0 inherited UIDialog body (redeclared: the symbol table maps UIDialog::vfunc_1 to _purecall)
     virtual void vfunc_43();                                    // 0x1419be8e0 place beside the inventory (0x4e40)
     virtual void OnLoadComplete();                              // 0x1419bea10
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 0x1419bed80
@@ -53,7 +53,7 @@ class UIItemEnchantDialog : public UIItemModifyDialogBase, public UIStatusEventL
 public:
     UIItemEnchantDialog();                                      // 0x1419befc0
     virtual ~UIItemEnchantDialog();                             // 0x1419bf160
-    virtual CString vfunc_1();                                  // 0x1419bf2c0 "ItemEnchantDialog"
+    virtual CString GetTypeName();                                  // 0x1419bf2c0 "ItemEnchantDialog"
     virtual void OnLoadInit();                                  // 0x1419bf310
     virtual void OnLoadComplete();                              // 0x1419bf410
     virtual int vfunc_13();                                     // 0x1419bfc40

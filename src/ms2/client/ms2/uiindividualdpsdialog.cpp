@@ -61,7 +61,7 @@ UIIndividualDPSDialog::~UIIndividualDPSDialog()
 }
 
 // @0x140f4ac70
-CString UIIndividualDPSDialog::vfunc_1()
+CString UIIndividualDPSDialog::GetTypeName()
 {
     return "IndividualDPSDialog";
 }

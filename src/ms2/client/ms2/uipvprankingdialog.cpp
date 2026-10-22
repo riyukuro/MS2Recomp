@@ -93,11 +93,11 @@ UIPvPRankingDialog::~UIPvPRankingDialog()
 }
 
 // @0x141342fc0
-CString UIPvPRankingDialog::vfunc_1()
+CString UIPvPRankingDialog::GetTypeName()
 {
     return "PvPRankingDialog";
 }
-MS2_REPLACE_METHOD(0x141342FC0, UIPvPRankingDialog, vfunc_1, 61, 0xF3499979);
+MS2_REPLACE_METHOD(0x141342FC0, UIPvPRankingDialog, GetTypeName, 61, 0xF3499979);
 
 // @0x141343010
 int UIPvPRankingDialog::vfunc_65()

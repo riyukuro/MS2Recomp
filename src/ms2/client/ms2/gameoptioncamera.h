@@ -19,7 +19,7 @@ class CGameOptionCamera : public CBaseOption
 public:
     CGameOptionCamera(int nId, int nType);                             // 0x141248830
     virtual ~CGameOptionCamera();                                       // 0x141248890
-    virtual CString vfunc_1();                                      // 0x141249220
+    virtual CString GetTypeName();                                      // 0x141249220
     virtual void vfunc_3(int n);                                    // 0x1412488c0
     virtual void vfunc_4(int n);                                    // 0x141248910
     virtual int vfunc_5(const char* pszName, void* pArg, int nArg); // 0x141248940

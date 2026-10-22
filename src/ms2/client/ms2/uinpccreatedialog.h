@@ -49,7 +49,7 @@ class UINpcCreateDialog : public UIDialog, public UIEntityEventListener
 public:
     UINpcCreateDialog();                                // 0x141a6a470
     virtual ~UINpcCreateDialog();                       //  0 0x141a6a590 (??_G 0x141a6d600)
-    virtual CString vfunc_1();                          //  1 0x141a6a680 "NpcCreateDialog"
+    virtual CString GetTypeName();                          //  1 0x141a6a680 "NpcCreateDialog"
     virtual int vfunc_13();                             // 13 0x141a6a730 enter / tab / escape keys
     virtual void OnLoadComplete();                      // 22 0x141a6a6d0 read the npc files, then fill the list
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

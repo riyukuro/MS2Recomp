@@ -120,7 +120,7 @@ UIMasteryObjectMark::~UIMasteryObjectMark()
 }
 
 // @0x140e59b60
-CString UIMasteryObjectMark::vfunc_1()
+CString UIMasteryObjectMark::GetTypeName()
 {
     return "MasteryObjectMark";
 }

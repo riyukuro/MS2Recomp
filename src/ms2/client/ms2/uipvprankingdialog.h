@@ -21,7 +21,7 @@ class UIPvPRankingDialog : public UIDialog
 public:
     UIPvPRankingDialog();                                                                           // 0x141342f10
     virtual ~UIPvPRankingDialog();                                                                  //  0 0x141342f80 (??_G 0x1413437a0)
-    virtual CString vfunc_1();                                                                      //  1 0x141342fc0
+    virtual CString GetTypeName();                                                                      //  1 0x141342fc0
     virtual void OnLoadComplete();                                                                  // 22 0x141343060
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                                                     // 28 0x141343530

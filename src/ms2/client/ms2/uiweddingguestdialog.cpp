@@ -159,7 +159,7 @@ UIWeddingGuestDialog::~UIWeddingGuestDialog()
 }
 
 // @0x140fccb30
-CString UIWeddingGuestDialog::vfunc_1()
+CString UIWeddingGuestDialog::GetTypeName()
 {
     return "WeddingGuestDialog";
 }

@@ -25,7 +25,7 @@ public:
     CGameOptionGamePad(int nId, int nType);                         // 0x140a571b0
     virtual ~CGameOptionGamePad();                                  // 0x140a57210 (deleting dtor 0x140a584c0)
 
-    virtual CString vfunc_1();                                      // 0x140a57d60 (returns "GameOptionLanguage": copy-paste in the original)
+    virtual CString GetTypeName();                                      // 0x140a57d60 (returns "GameOptionLanguage": copy-paste in the original)
     virtual void vfunc_3(int n);                                    // 0x140a57240
     virtual void vfunc_4(int n);                                    // 0x140a57290
     virtual int vfunc_5(const char* pszName, void* pArg, int nArg); // 0x140a572c0 (not handled)

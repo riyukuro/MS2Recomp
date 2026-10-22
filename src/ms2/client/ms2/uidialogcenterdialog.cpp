@@ -218,7 +218,7 @@ UIDialogCenterDialog::~UIDialogCenterDialog()
 }
 
 // @0x141294290
-CString UIDialogCenterDialog::vfunc_1()
+CString UIDialogCenterDialog::GetTypeName()
 {
     return CString("DialogCenterDialog");
 }

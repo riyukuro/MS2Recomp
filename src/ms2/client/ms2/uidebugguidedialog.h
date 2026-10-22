@@ -72,7 +72,7 @@ class UIDebugGuideDialog : public UIDialog
 public:
     UIDebugGuideDialog();                                       // 0x141286850
     virtual ~UIDebugGuideDialog();                              //  0 0x141286a10 (??_G 0x14128c9d0)
-    virtual CString vfunc_1();                                  //  1 0x141286ba0
+    virtual CString GetTypeName();                                  //  1 0x141286ba0
     virtual void OnLoadInit();                                  // 20 0x141286bf0
     virtual void vfunc_26();                                    // 26 0x141287b50
     virtual int vfunc_13();                                     // 13 0x141287bf0 function keys

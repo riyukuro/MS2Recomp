@@ -14,7 +14,7 @@ class UIChapterBook : public UIHeadUpDisplay
 public:
     UIChapterBook();                                            // 0x140e09a90
     virtual ~UIChapterBook();                                   //  0 0x140e09b00 (??_G 0x140e0a9b0)
-    virtual CString vfunc_1();                                  //  1 0x140e09b40 "ChapterBook"
+    virtual CString GetTypeName();                                  //  1 0x140e09b40 "ChapterBook"
     virtual void vfunc_2();                                     //  2 0x140e0a7d0 show
     virtual void vfunc_3();                                     //  3 0x140e0a800 hide: forget the chapters
     virtual void OnLoadComplete();                              // 22 0x140e09b90 "setPrologue" / "setEpilogue"

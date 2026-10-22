@@ -23,7 +23,7 @@ class UIUGCCubeNoticeDialog : public UIDialog
 public:
     UIUGCCubeNoticeDialog();                                        // 0x140faf840
     virtual ~UIUGCCubeNoticeDialog();                               //  0 0x140faf8a0 (??_G 0x140fb0020)
-    virtual CString vfunc_1();                                      //  1 0x140faf9f0 "UGCCubeNoticeDialog"
+    virtual CString GetTypeName();                                      //  1 0x140faf9f0 "UGCCubeNoticeDialog"
     virtual void OnLoadComplete();                                  // 22 0x140fafa40
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140fafb60 "OnApply"
     virtual int vfunc_48();                                         // 48 0x140fb0060 UI type id

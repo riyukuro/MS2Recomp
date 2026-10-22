@@ -19,7 +19,7 @@ class UIDevelopDialog : public UIDialog
 public:
     UIDevelopDialog();                                                                              // 0x1412920b0
     virtual ~UIDevelopDialog();                                                                     //  0 0x141292150
-    virtual CString vfunc_1();                                                                      //  1 0x141292190
+    virtual CString GetTypeName();                                                                      //  1 0x141292190
     virtual void OnLoadComplete();                                                                  // 22 0x1412921e0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                                                     // 28 0x1412924f0

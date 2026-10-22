@@ -15,7 +15,7 @@ class UIDungeonExpenseRewardDialog : public UIDialog
 public:
     UIDungeonExpenseRewardDialog();                             // 0x140f3a810
     virtual ~UIDungeonExpenseRewardDialog();                    //  0 0x140f3a8c0 (??_G 0x140f3b1f0)
-    virtual CString vfunc_1();                                  //  1 0x140f3a940 "DungeonExpenseRewardDialog"
+    virtual CString GetTypeName();                                  //  1 0x140f3a940 "DungeonExpenseRewardDialog"
     virtual void OnLoadComplete();                              // 22 0x140f3a990 hook the buttons, set the text
     virtual void vfunc_43();                                    // 43 0x140f3ac60 anchor the swf window
     virtual int vfunc_48() { return 0x4ef8; }                   // 48 0x140f3b230

@@ -65,11 +65,11 @@ ClassObject* CGuideConditionFieldId::CreateObject()
 }
 
 // @0x1413a9c20
-CStringW CGuideConditionFieldId::vfunc_1()
+CStringW CGuideConditionFieldId::GetTypeName()
 {
     return L"CGuideConditionFieldId";
 }
-MS2_REPLACE_METHOD(0x1413A9C20, CGuideConditionFieldId, vfunc_1, 61, 0x959B8408);
+MS2_REPLACE_METHOD(0x1413A9C20, CGuideConditionFieldId, GetTypeName, 61, 0x959B8408);
 
 // @0x1413a9c70
 void CGuideConditionFieldId::vfunc_2(Unk_140165cf0* pElem)

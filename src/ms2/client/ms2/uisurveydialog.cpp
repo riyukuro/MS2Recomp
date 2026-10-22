@@ -49,7 +49,7 @@ UISurveyDialog::~UISurveyDialog()
 }
 
 // @0x140ed9c80
-CString UISurveyDialog::vfunc_1()
+CString UISurveyDialog::GetTypeName()
 {
     return "SurveyDialog";
 }

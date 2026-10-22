@@ -36,7 +36,7 @@ class UIDebugPacketDialog : public UIDialog
 public:
     UIDebugPacketDialog();                                      // 0x14128f8f0
     virtual ~UIDebugPacketDialog();                             //  0 0x141291cd0 (??_G 0x141291ee0)
-    virtual CString vfunc_1();                                  //  1 0x14128fb80
+    virtual CString GetTypeName();                                  //  1 0x14128fb80
     virtual void OnLoadInit();                                  // 20 0x14128fbd0
     virtual void vfunc_26();                                    // 26 0x141290c90
     virtual void OnLoadComplete();                              // 22 0x141290d80

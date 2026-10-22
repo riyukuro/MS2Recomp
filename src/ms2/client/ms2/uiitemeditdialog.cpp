@@ -197,7 +197,7 @@ UIItemEditDialog::UIItemEditDialog()
 }
 
 // @0x1419bc850
-CString UIItemEditDialog::vfunc_1()
+CString UIItemEditDialog::GetTypeName()
 {
     return "ItemEditDialog";
 }

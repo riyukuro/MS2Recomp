@@ -144,7 +144,7 @@ UIPvPTeamResultDialog::~UIPvPTeamResultDialog()
 }
 
 // @0x1413451b0
-CString UIPvPTeamResultDialog::vfunc_1()
+CString UIPvPTeamResultDialog::GetTypeName()
 {
     return "PvPTeamResultDialog";
 }
@@ -328,7 +328,7 @@ void UIPvPTeamResultDialog::FUN_141345e40()
 CString UIPvPTeamResultDialog::FUN_141345eb0(unsigned int nItemId, int nAmount)
 {
     CString strBind;
-    strBind.Format("%s_%d", (LPCSTR)vfunc_1(), (unsigned __int64)nItemId);
+    strBind.Format("%s_%d", (LPCSTR)GetTypeName(), (unsigned __int64)nItemId);
     std::set<CString>::iterator itEnd = m_slots.end();
     if (m_slots.find(strBind) == itEnd)
     {

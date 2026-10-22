@@ -129,7 +129,7 @@ static int s_dat_143ac4e80_init = (FUN_1401cd100(&s_dat_143ac4e80, 0), 0);
 // ---- TriggerActionCli ----
 
 // @0x140de4d10
-CStringW TriggerActionCli::vfunc_1()
+CStringW TriggerActionCli::GetTypeName()
 {
     return CStringW(L"TriggerActionCli");
 }
@@ -221,7 +221,7 @@ ClassObject* FUN_140de5570()
 }
 
 // @0x140de55d0
-CStringW TriggerConditionCli::vfunc_1()
+CStringW TriggerConditionCli::GetTypeName()
 {
     return CStringW(L"TriggerConditionCli");
 }

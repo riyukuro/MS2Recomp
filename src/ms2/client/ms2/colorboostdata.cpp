@@ -119,11 +119,11 @@ UIColorBoostDialog::~UIColorBoostDialog()
 }
 
 // @0x14109b990
-CString UIColorBoostDialog::vfunc_1()
+CString UIColorBoostDialog::GetTypeName()
 {
     return "ColorBoostDialog";
 }
-MS2_REPLACE_METHOD(0x14109b990, UIColorBoostDialog, vfunc_1, 61, 0x7A8C8FC9);
+MS2_REPLACE_METHOD(0x14109b990, UIColorBoostDialog, GetTypeName, 61, 0x7A8C8FC9);
 
 // @0x14109b9e0
 void UIColorBoostDialog::OnLoadComplete()

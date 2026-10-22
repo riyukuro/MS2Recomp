@@ -10,7 +10,7 @@ public:
     CGameOptionAccount(int nId, int nType);                         // 0x140cfb200
     virtual ~CGameOptionAccount();                                  // 0x140cfb250 (deleting dtor 0x140cfb2f0)
 
-    virtual CString vfunc_1();                                      // 0x140cfb280
+    virtual CString GetTypeName();                                      // 0x140cfb280
     virtual int vfunc_5(const char* pszName, void* pArg, int nArg); // 0x140cfb2d0 (not handled)
 };
 MS2_CHECK_SIZE(CGameOptionAccount, 0x30);

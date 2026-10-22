@@ -95,7 +95,7 @@ UIItemGetOptionDialog::~UIItemGetOptionDialog()
 }
 
 // @0x1419d9680
-CString UIItemGetOptionDialog::vfunc_1()
+CString UIItemGetOptionDialog::GetTypeName()
 {
     return CString("ItemGetOptionDialog");
 }

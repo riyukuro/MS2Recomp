@@ -154,11 +154,11 @@ UICutSceneCinematic::~UICutSceneCinematic()
 }
 
 // @0x141907520
-CString UICutSceneCinematic::vfunc_1()
+CString UICutSceneCinematic::GetTypeName()
 {
     return "CutSceneCinematic";
 }
-MS2_REPLACE_METHOD(0x141907520, UICutSceneCinematic, vfunc_1, 61, 0x75C8B586);
+MS2_REPLACE_METHOD(0x141907520, UICutSceneCinematic, GetTypeName, 61, 0x75C8B586);
 
 // @0x141907570
 UICutSceneCinematic::BalloonGroup::BalloonGroup()

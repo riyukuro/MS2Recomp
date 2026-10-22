@@ -32,7 +32,7 @@ class UIHomeMenuDialog : public UIDialog
 public:
     UIHomeMenuDialog();                                                    // 0x140c29160
     virtual ~UIHomeMenuDialog();                                           //  0 0x140c29230 (??_G 0x140c2b850)
-    virtual CString vfunc_1();                                             //  1 0x140c29280
+    virtual CString GetTypeName();                                             //  1 0x140c29280
     virtual void OnLoadComplete();                                         // 22 0x140c29300
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140c29340
     virtual int vfunc_48();                                                // 48 0x140c2b8e0

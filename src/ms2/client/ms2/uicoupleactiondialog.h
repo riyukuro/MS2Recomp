@@ -39,7 +39,7 @@ class UICoupleActionDialog : public UIDialog
 public:
     UICoupleActionDialog();                                 // 0x140bebfb0
     // virtual dtor 0x140bf1790: implicit (the exe stores no vptr; pinned)
-    virtual CString vfunc_1();                              //  1 0x140bec070 "CoupleAction"
+    virtual CString GetTypeName();                              //  1 0x140bec070 "CoupleAction"
     virtual int vfunc_13();                                 // 13 0x140bec570 enter key: take the search text
     virtual void OnLoadInit();                              // 20 0x140bec200 refresh, listen to NotifyLearnEmotion
     virtual void OnLoadComplete();                          // 22 0x140bec2f0 bind the search input

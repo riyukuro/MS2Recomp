@@ -209,7 +209,7 @@ UILevelUpGuideDialog::UILevelUpGuideDialog() : m_1e0(10)
 UILevelUpGuideDialog::~UILevelUpGuideDialog() {}
 
 // @0x140f84520
-CString UILevelUpGuideDialog::vfunc_1() { return "LevelUpGuideDialog"; }
+CString UILevelUpGuideDialog::GetTypeName() { return "LevelUpGuideDialog"; }
 
 // @0x140f84570
 int UILevelUpGuideDialog::vfunc_65()
@@ -664,7 +664,7 @@ void UILevelUpGuideDialog::FUN_140f87270(ASObj& rObj, int nQuest, int bName)
     spItem->FUN_140526c70(pItem->m_job);
     int nSlot = 0x415;
     CString strBindID;
-    strBindID.Format("%s.%d", (LPCSTR)vfunc_1(), m_1a8.GetCount() + 1);
+    strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_1a8.GetCount() + 1);
     FUN_141415450(strBindID, spItem, 0, nSlot, 0x800);
     rObj.FUN_1407cba60("binding", strBindID);
     if (bName != 0)

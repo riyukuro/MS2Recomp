@@ -30,7 +30,7 @@ class UIGuildDialog : public UIDialog, public UIStatusEventListener
 public:
     UIGuildDialog();                                            // 0x141960ce0
     virtual ~UIGuildDialog();                                   //  0 0x1419610c0 (??_G 0x14197de60)
-    virtual CString vfunc_1();                                  //  1 0x1419625d0 "GuildDialog"
+    virtual CString GetTypeName();                                  //  1 0x1419625d0 "GuildDialog"
     virtual int vfunc_13();                                     // 13 0x141962620
     virtual void OnLoadComplete();                              // 22 0x141961ab0
     virtual void vfunc_26();                                    // 26 0x1419617e0

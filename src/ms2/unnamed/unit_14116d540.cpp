@@ -20,13 +20,13 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-// The notice posted when the debug mode toggles (the name virtual vfunc_1 lives in another unit).
+// The notice posted when the debug mode toggles (the name virtual GetTypeName lives in another unit).
 class NotifyDebugMode : public NotifyObject
 {
 public:
     NotifyDebugMode(bool bOn);                              // 0x14116ded0
     virtual ~NotifyDebugMode() = default;                   // 0x14116df30
-    virtual CStringW vfunc_1();                             // 0x140db4c70
+    virtual CStringW GetTypeName();                             // 0x140db4c70
     bool m_bOn;                                             // +0x18
 };
 MS2_CHECK_SIZE(NotifyDebugMode, 0x20);

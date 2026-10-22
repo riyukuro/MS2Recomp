@@ -201,7 +201,7 @@ UIItemLulluBoxDialog::~UIItemLulluBoxDialog()
 }
 
 // @0x140e9ac70
-CString UIItemLulluBoxDialog::vfunc_1() { return "ItemLulluBoxDialog"; }
+CString UIItemLulluBoxDialog::GetTypeName() { return "ItemLulluBoxDialog"; }
 
 // @0x140e9acc0
 int UIItemLulluBoxDialog::vfunc_65()
@@ -621,7 +621,7 @@ void UIItemLulluBoxDialog::FUN_140e9dc30()
         }
         item->FUN_140526c70(e.vfunc_o18_2());
         CString bagKey;
-        bagKey.Format("ItemLullu_%s_%d", (const char*)vfunc_1(), 1);
+        bagKey.Format("ItemLullu_%s_%d", (const char*)GetTypeName(), 1);
         int count = item->FUN_140526c50();
         CStringW txt = StringFormat(L"{0} X {1}", item->FUN_140527b10(), count);
         FUN_141415450(bagKey, MS2Ptr<CItem>(item), 0, 0x415, 0x800);
@@ -646,7 +646,7 @@ void UIItemLulluBoxDialog::FUN_140e9dc30()
                 if (item->FUN_14052b130(e.vfunc_o18_0(), e.vfunc_o18_1(), 0) == 0)
                     continue;
                 item->FUN_140526c70(e.vfunc_o18_2());
-                bagKey.Format("ItemLullu_%s_%d", (const char*)vfunc_1(), (int)(i + 1));
+                bagKey.Format("ItemLullu_%s_%d", (const char*)GetTypeName(), (int)(i + 1));
                 FUN_141415450(bagKey, MS2Ptr<CItem>(item), (int)i, 0x415, 0x800);
                 LULLUBOX_BINDS.FUN_1403b0310(bagKey);
                 MS2Ptr<ASMovieClip> unc = multi->FUN_1409b4560("m_uncommonEffect");
@@ -816,7 +816,7 @@ void UIItemLulluBoxDialog::FUN_140e9f870(const CStringW& kind, int itemId)
 }
 
 // ---- hooks ----
-MS2_REPLACE_METHOD(0x140E9AC70, UIItemLulluBoxDialog, vfunc_1, 61, 0x9BE24D89);
+MS2_REPLACE_METHOD(0x140E9AC70, UIItemLulluBoxDialog, GetTypeName, 61, 0x9BE24D89);
 MS2_REPLACE_METHOD(0x140E9ACC0, UIItemLulluBoxDialog, vfunc_65, 37, 0x0E9E53BA);
 MS2_REPLACE_METHOD(0x140E9ACF0, UIItemLulluBoxDialog, vfunc_67, 242, 0xD7CAD91F);
 MS2_REPLACE_METHOD(0x140E9ADF0, UIItemLulluBoxDialog, OnLoadComplete, 2157, 0xEE8BD560);

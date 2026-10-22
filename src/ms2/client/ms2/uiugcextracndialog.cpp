@@ -138,7 +138,7 @@ void UIUGCExtraCNDialog::OnLoadComplete()
 }
 
 // @0x140facc10
-CString UIUGCExtraCNDialog::vfunc_1()
+CString UIUGCExtraCNDialog::GetTypeName()
 {
     return "UGCExtraCNDialog";
 }

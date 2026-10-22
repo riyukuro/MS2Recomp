@@ -41,7 +41,7 @@ class UIUGCBannerDialog : public UIDialog, public UIStatusEventListener, public 
 public:
     UIUGCBannerDialog();                                        // 0x141b34100
     virtual ~UIUGCBannerDialog();                               //  0 0x141b34270 (??_G 0x141b36e40)
-    virtual CString vfunc_1();                                  //  1 0x141b34320 "UGCBannerDialog"
+    virtual CString GetTypeName();                                  //  1 0x141b34320 "UGCBannerDialog"
     virtual void OnLoadInit();                                  // 20 0x141b346a0
     virtual void OnLoadComplete();                              // 22 0x141b34850
     virtual void vfunc_26();                                    // 26 0x141b348d0
@@ -104,7 +104,7 @@ class UIUGCCameraDialog : public UIDialog
 public:
     UIUGCCameraDialog();                                        // 0x141b37fb0
     virtual ~UIUGCCameraDialog();                               //  0 0x141b380c0 (??_G 0x141b38990)
-    virtual CString vfunc_1();                                  //  1 0x141b38130 "UGCCameraDialog"
+    virtual CString GetTypeName();                                  //  1 0x141b38130 "UGCCameraDialog"
     virtual void OnLoadInit();                                  // 20 0x141b38320
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141b384b0
     virtual int vfunc_48() { return 0x4e5b; }                   // 48 0x141b389d0

@@ -22,7 +22,7 @@ class UITradeDialogEx : public UIDialog, public UIDialogEventListener, public UI
 public:
     UITradeDialogEx();                                                  // 0x141b26de0
     virtual ~UITradeDialogEx();                                         //  0 0x141b27070 (??_G 0x141b29bd0)
-    virtual CString vfunc_1();                                          //  1 0x141b271d0 "TradeDialogEx"
+    virtual CString GetTypeName();                                          //  1 0x141b271d0 "TradeDialogEx"
     virtual void OnLoadInit();                                          // 20 0x141b27a60
     virtual void OnLoadComplete();                                      // 22 0x141b274f0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141b27aa0

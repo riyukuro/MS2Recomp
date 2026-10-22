@@ -168,7 +168,7 @@ UIDevelopDialog::~UIDevelopDialog()
 }
 
 // @0x141292190
-CString UIDevelopDialog::vfunc_1()
+CString UIDevelopDialog::GetTypeName()
 {
     return "DevelopDialog";
 }
@@ -531,7 +531,7 @@ void UIDevelopDialog::FUN_141293730(float fPeriod)
 // memmove_s is emitted only when referenced; the unit's original caller is not recovered.
 extern "C" errno_t Unk_DevMoveUser(void* d, size_t n, const void* s, size_t c) { return memmove_s(d, n, s, c); }
 
-MS2_REPLACE_METHOD(0x141292190, UIDevelopDialog, vfunc_1, 61, 0x4FD270B2);
+MS2_REPLACE_METHOD(0x141292190, UIDevelopDialog, GetTypeName, 61, 0x4FD270B2);
 MS2_REPLACE_METHOD(0x141292CA0, UIDevelopDialog, FUN_141292ca0, 103, 0xBC29E5C6);
 MS2_REPLACE_METHOD(0x1412921E0, UIDevelopDialog, OnLoadComplete, 766, 0xD1127567);
 MS2_REPLACE_METHOD(0x1412924F0, UIDevelopDialog, vfunc_28, 1880, 0x9BE36AD3);

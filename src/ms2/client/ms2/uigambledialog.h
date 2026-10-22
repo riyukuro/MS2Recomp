@@ -16,7 +16,7 @@ class UIGambleDialog : public UIDialog
 public:
     UIGambleDialog();                                                      // 0x141935200
     virtual ~UIGambleDialog() = default;                                         //  0 0x141935d40 (??_G 0x141935db0)
-    virtual CString vfunc_1();                                             //  1 0x1419352b0
+    virtual CString GetTypeName();                                             //  1 0x1419352b0
     virtual int vfunc_13();                                                // 13 0x141935660
     virtual void vfunc_15();                                               // 15 0x1419354d0 (returns this)
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141935670

@@ -455,11 +455,11 @@ void UIMessageBox::vfunc_3()
 MS2_REPLACE_METHOD(0x1419F7340, UIMessageBox, vfunc_3, 57, 0x7379E71C);
 
 // @0x1419f7380
-CString UIMessageBox::vfunc_1()
+CString UIMessageBox::GetTypeName()
 {
     return "MessageBox";
 }
-MS2_REPLACE_METHOD(0x1419F7380, UIMessageBox, vfunc_1, 61, 0xEE6CD44A);
+MS2_REPLACE_METHOD(0x1419F7380, UIMessageBox, GetTypeName, 61, 0xEE6CD44A);
 
 // @0x1419f73d0
 void UIMessageBox::vfunc_8(int bVisible)

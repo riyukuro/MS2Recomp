@@ -36,8 +36,8 @@
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@@std@@@2@$00@std@@QEBAAEBV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@PEAX@std@@@2@XZ 0x141b6b710 ; unique
 // MS2-PIN: ?_Unwrapped@?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@QEBAPEAV?$MS2Ptr@VMapTile@UIWorldMap@@@@XZ 0x141b6c8a0 ; unique
 // MS2-PIN: ?begin@?$vector@UTooltipEntry@UIWorldMap@@V?$allocator@UTooltipEntry@UIWorldMap@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@UTooltipEntry@UIWorldMap@@@std@@@std@@@2@XZ 0x141b6caf0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIWorldMapDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b6ce80 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIWorldMapDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b6cee0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIWorldMapDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b6ce80 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIWorldMapDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b6cee0 ; unique
 // MS2-PIN: ?end@?$list@V?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@V?$allocator@V?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@2@@std@@QEAA?AV?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@@std@@@2@XZ 0x141b6d130 ; prop
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIWorldMapDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x141b6d430 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIWorldMapDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x141b6d460 ; unique
@@ -296,11 +296,11 @@ UIWorldMapDialog::~UIWorldMapDialog()
 }
 
 // @0x141b54350
-CString UIWorldMapDialog::vfunc_1()
+CString UIWorldMapDialog::GetTypeName()
 {
     return "WorldMapDialog";
 }
-MS2_REPLACE_METHOD(0x141B54350, UIWorldMapDialog, vfunc_1, 61, 0x85A1F562);
+MS2_REPLACE_METHOD(0x141B54350, UIWorldMapDialog, GetTypeName, 61, 0x85A1F562);
 
 // @0x141b543a0
 int UIWorldMapDialog::vfunc_65()
@@ -323,7 +323,7 @@ void UIWorldMapDialog::vfunc_67()
         for (size_t i = 0; i < 2; i++)
             m_islandIndex[i] = FUN_1409c1750(m_30->FUN_140c1c8c0("getCachedIslandIndex", i));
     }
-    FUN_141415600(vfunc_1());
+    FUN_141415600(GetTypeName());
     UIDialog::vfunc_67();
     m_tiles.clear();
     m_194 = 0;
@@ -1727,9 +1727,9 @@ void UIWorldMapDialog::FUN_141b5c2b0(int nRound, ASObj* pObj)
         if (spItem->FUN_140523c40(spReward->m_item.m_itemId, nRarity, 0))
         {
             spItem->FUN_140526c70(spReward->m_item.m_count);
-            FUN_141415600(vfunc_1());
-            FUN_141415450(vfunc_1(), MS2Ptr<CItem>(spItem), 0, 0, 0);
-            pObj->FUN_1407cba60("binding", vfunc_1());
+            FUN_141415600(GetTypeName());
+            FUN_141415450(GetTypeName(), MS2Ptr<CItem>(spItem), 0, 0, 0);
+            pObj->FUN_1407cba60("binding", GetTypeName());
             pObj->FUN_1407cbb20("reward", FUN_14028b8e0(CStringW(L"s_fieldmission_reward")));
         }
     }
@@ -1741,9 +1741,9 @@ void UIWorldMapDialog::FUN_141b5c2b0(int nRound, ASObj* pObj)
         param.m_nFlags = 1;
         param.m_nTipArg = 4;
         param.m_strCount = FUN_1402bad60("{0}", &spReward->m_nValue);
-        FUN_141415600(vfunc_1());
-        FUN_141415560(vfunc_1(), &param);
-        pObj->FUN_1407cba60("binding", vfunc_1());
+        FUN_141415600(GetTypeName());
+        FUN_141415560(GetTypeName(), &param);
+        pObj->FUN_1407cba60("binding", GetTypeName());
         pObj->FUN_1407cbb20("reward", FUN_14028b8e0(CStringW(L"s_fieldmission_point_reward")));
     }
     else if (spReward->m_nType == 2)
@@ -1754,9 +1754,9 @@ void UIWorldMapDialog::FUN_141b5c2b0(int nRound, ASObj* pObj)
         param.m_nFlags = 1;
         param.m_nTipArg = 4;
         param.m_strCount = FUN_1402bad60("{0}", &spReward->m_nValue);
-        FUN_141415600(vfunc_1());
-        FUN_141415560(vfunc_1(), &param);
-        pObj->FUN_1407cba60("binding", vfunc_1());
+        FUN_141415600(GetTypeName());
+        FUN_141415560(GetTypeName(), &param);
+        pObj->FUN_1407cba60("binding", GetTypeName());
         pObj->FUN_1407cbb20("reward", FUN_14028b8e0(CStringW(L"s_fieldmission_point_reward")));
     }
 }

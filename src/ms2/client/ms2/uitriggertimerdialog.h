@@ -21,7 +21,7 @@ class UITriggerTimerDialog : public UIDialog
 public:
     UITriggerTimerDialog();                                         // 0x141b330c0 (m_2c = 0x13)
     virtual ~UITriggerTimerDialog() = default;                             //  0 0x141b33680 (??_G 0x141b336e0)
-    virtual CString vfunc_1();                                      //  1 0x141b33180 "TriggerTimerDialog"
+    virtual CString GetTypeName();                                      //  1 0x141b33180 "TriggerTimerDialog"
     virtual void OnLoadInit();                                      // 20 0x141b333f0 (the effect is not running)
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                     // 28 0x141b33480

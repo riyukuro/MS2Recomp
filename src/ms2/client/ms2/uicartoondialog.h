@@ -23,7 +23,7 @@ class UICartoonDialog : public UIDialog
 public:
     UICartoonDialog();                                              // 0x1418df4e0
     virtual ~UICartoonDialog();                                     //  0 0x1418df5f0 (??_G 0x1418e08e0)
-    virtual CString vfunc_1();                                      //  1 0x1418df6c0 "CartoonDialog"
+    virtual CString GetTypeName();                                      //  1 0x1418df6c0 "CartoonDialog"
     virtual int vfunc_13();                                         // 13 0x1418df7e0 page keys
     virtual void OnLoadComplete();                                  // 22 0x1418df790
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

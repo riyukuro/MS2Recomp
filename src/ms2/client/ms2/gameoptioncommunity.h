@@ -47,7 +47,7 @@ class CGameOptionCommunity : public CBaseOption
 public:
     CGameOptionCommunity(int nId, int nType);                          // 0x1412492f0
     virtual ~CGameOptionCommunity();                                    // 0x141249370
-    virtual CString vfunc_1();                                      // 0x14124aa20
+    virtual CString GetTypeName();                                      // 0x14124aa20
     virtual void vfunc_3(int n);                                    // 0x1412493a0
     virtual void vfunc_4(int n);                                    // 0x141249410
     virtual int vfunc_5(const char* pszName, void* pArg, int nArg); // 0x141249440

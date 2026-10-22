@@ -43,11 +43,11 @@ UIIGuideMovieDialog::~UIIGuideMovieDialog()
 }
 
 // @0x1412c3b90
-CString UIIGuideMovieDialog::vfunc_1()
+CString UIIGuideMovieDialog::GetTypeName()
 {
     return "GuideMovieDialog";
 }
-MS2_REPLACE_METHOD(0x1412C3B90, UIIGuideMovieDialog, vfunc_1, 61, 0xAE290DE9);
+MS2_REPLACE_METHOD(0x1412C3B90, UIIGuideMovieDialog, GetTypeName, 61, 0xAE290DE9);
 
 // @0x1412c3be0
 int UIIGuideMovieDialog::vfunc_65()

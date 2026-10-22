@@ -60,7 +60,7 @@ public:
 
     UIWriteMusicDialog();                                                   // 0x140fed9c0
     virtual ~UIWriteMusicDialog();                                          //  0 0x140fedbb0 (??_G 0x141001a40)
-    virtual CString vfunc_1();                                              //  1 0x140fedd90 "WriteMusicDialog"
+    virtual CString GetTypeName();                                              //  1 0x140fedd90 "WriteMusicDialog"
     virtual void OnLoadComplete();                                          // 22 0x140fedde0
     virtual void vfunc_26();                                                // 26 0x140fee700
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140fee900

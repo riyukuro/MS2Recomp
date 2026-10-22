@@ -45,11 +45,11 @@ UITopLayerNotify::~UITopLayerNotify()
 }
 
 // @0x140fa8710
-CString UITopLayerNotify::vfunc_1()
+CString UITopLayerNotify::GetTypeName()
 {
     return "TopLayerNotify";
 }
-MS2_REPLACE_METHOD(0x140FA8710, UITopLayerNotify, vfunc_1, 61, 0x634A659E);
+MS2_REPLACE_METHOD(0x140FA8710, UITopLayerNotify, GetTypeName, 61, 0x634A659E);
 
 // @0x140fa8760
 void UITopLayerNotify::vfunc_2()

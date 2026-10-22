@@ -19,7 +19,7 @@ class UIDebuggingDialog : public UIDialog
 public:
     UIDebuggingDialog();                                        // 0x141284e00
     virtual ~UIDebuggingDialog();                               //  0 0x141284ea0 (??_G 0x1412862a0)
-    virtual CString vfunc_1();                                  //  1 0x141284f30 "DebuggingDialog"
+    virtual CString GetTypeName();                                  //  1 0x141284f30 "DebuggingDialog"
     virtual void OnLoadComplete();                              // 22 0x141284f80
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x1412850c0
     virtual void vfunc_33(void* p, float fX, float fY);         // 33 0x141285130 mouse move: pick the npc under the cursor

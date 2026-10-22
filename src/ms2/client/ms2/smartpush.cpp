@@ -44,12 +44,12 @@
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCFunctionCubeObject@@@@AEBAXPEAX@Z 0x140dd79c0 ; prop
 // MS2-PIN: ?Release@?$MS2Ptr@VRideOffActionAutoInteraction@@@@AEAAXXZ 0x140dd7a20 ; prop
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VRideOffActionAutoInteraction@@@@AEAAXPEAX@Z 0x140dd7a60 ; prop
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVCSmartPush@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140dd7ab0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVCSmartPushAutoFishing@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140dd7b10 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVCSmartPushAutoFunctionCubeObjectBuffItem@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140dd7b70 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVCSmartPushAutoInteractObjectBuffItem@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140dd7bd0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVCSmartPushAutoInteraction@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140dd7c30 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVCSmartPushAutoPlayInstrument@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140dd7c90 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVCSmartPush@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140dd7ab0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVCSmartPushAutoFishing@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140dd7b10 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVCSmartPushAutoFunctionCubeObjectBuffItem@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140dd7b70 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVCSmartPushAutoInteractObjectBuffItem@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140dd7bd0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVCSmartPushAutoInteraction@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140dd7c30 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVCSmartPushAutoPlayInstrument@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140dd7c90 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVCSmartPush@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x140dd7cf0 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVCSmartPushAutoFishing@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x140dd7d30 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVCSmartPushAutoFunctionCubeObjectBuffItem@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x140dd7d70 ; unique
@@ -417,7 +417,7 @@ ClassObject* CSmartPushAutoFishing::CreateObject()
 }
 
 // @0x140dcf8a0
-CStringW CSmartPushAutoFishing::vfunc_1()
+CStringW CSmartPushAutoFishing::GetTypeName()
 {
     return CStringW(L"CSmartPushAutoFishing");
 }
@@ -652,7 +652,7 @@ ClassObject* CSmartPushAutoPlayInstrument::CreateObject()
 }
 
 // @0x140dd0c90
-CStringW CSmartPushAutoPlayInstrument::vfunc_1()
+CStringW CSmartPushAutoPlayInstrument::GetTypeName()
 {
     return CStringW(L"CSmartPushAutoPlayInstrument");
 }
@@ -902,7 +902,7 @@ ClassObject* CSmartPushSafeRiding::CreateObject()
 }
 
 // @0x140dd2080
-CStringW CSmartPushSafeRiding::vfunc_1()
+CStringW CSmartPushSafeRiding::GetTypeName()
 {
     return CStringW(L"CSmartPushSafeRiding");
 }
@@ -974,7 +974,7 @@ ClassObject* CSmartPushSafeWaterRiding::CreateObject()
 }
 
 // @0x140dd2540
-CStringW CSmartPushSafeWaterRiding::vfunc_1()
+CStringW CSmartPushSafeWaterRiding::GetTypeName()
 {
     return CStringW(L"CSmartPushSafeWaterRiding");
 }
@@ -1037,7 +1037,7 @@ ClassObject* CSmartPushSafeWaterRidingToggle::CreateObject()
 }
 
 // @0x140dd29c0
-CStringW CSmartPushSafeWaterRidingToggle::vfunc_1()
+CStringW CSmartPushSafeWaterRidingToggle::GetTypeName()
 {
     return CStringW(L"CSmartPushSafeWaterRidingToggle");
 }
@@ -1374,7 +1374,7 @@ ClassObject* CSmartPushAutoGathering::CreateObject()
 }
 
 // @0x140dd4520
-CStringW CSmartPushAutoGathering::vfunc_1()
+CStringW CSmartPushAutoGathering::GetTypeName()
 {
     return CStringW(L"CSmartPushAutoGathering");
 }
@@ -1386,7 +1386,7 @@ ClassObject* CSmartPushAutoMining::CreateObject()
 }
 
 // @0x140dd45d0
-CStringW CSmartPushAutoMining::vfunc_1()
+CStringW CSmartPushAutoMining::GetTypeName()
 {
     return CStringW(L"CSmartPushAutoMining");
 }
@@ -1398,7 +1398,7 @@ ClassObject* CSmartPushAutoBreeding::CreateObject()
 }
 
 // @0x140dd4680
-CStringW CSmartPushAutoBreeding::vfunc_1()
+CStringW CSmartPushAutoBreeding::GetTypeName()
 {
     return CStringW(L"CSmartPushAutoBreeding");
 }
@@ -1410,7 +1410,7 @@ ClassObject* CSmartPushAutoFarming::CreateObject()
 }
 
 // @0x140dd4730
-CStringW CSmartPushAutoFarming::vfunc_1()
+CStringW CSmartPushAutoFarming::GetTypeName()
 {
     return CStringW(L"CSmartPushAutoFarming");
 }
@@ -1508,7 +1508,7 @@ ClassObject* CSmartPushAutoGatheringBuff::CreateObject()
 }
 
 // @0x140dd50e0
-CStringW CSmartPushAutoGatheringBuff::vfunc_1()
+CStringW CSmartPushAutoGatheringBuff::GetTypeName()
 {
     return CStringW(L"CSmartPushAutoGatheringBuff");
 }
@@ -1520,7 +1520,7 @@ ClassObject* CSmartPushAutoMiningBuff::CreateObject()
 }
 
 // @0x140dd5190
-CStringW CSmartPushAutoMiningBuff::vfunc_1()
+CStringW CSmartPushAutoMiningBuff::GetTypeName()
 {
     return CStringW(L"CSmartPushAutoMiningBuff");
 }
@@ -1532,7 +1532,7 @@ ClassObject* CSmartPushAutoBreedingBuff::CreateObject()
 }
 
 // @0x140dd5240
-CStringW CSmartPushAutoBreedingBuff::vfunc_1()
+CStringW CSmartPushAutoBreedingBuff::GetTypeName()
 {
     return CStringW(L"CSmartPushAutoBreedingBuff");
 }
@@ -1544,7 +1544,7 @@ ClassObject* CSmartPushAutoFarmingBuff::CreateObject()
 }
 
 // @0x140dd52f0
-CStringW CSmartPushAutoFarmingBuff::vfunc_1()
+CStringW CSmartPushAutoFarmingBuff::GetTypeName()
 {
     return CStringW(L"CSmartPushAutoFarmingBuff");
 }

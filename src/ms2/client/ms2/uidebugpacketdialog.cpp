@@ -94,7 +94,7 @@ UIDebugPacketDialog::~UIDebugPacketDialog()
 }
 
 // @0x14128fb80
-CString UIDebugPacketDialog::vfunc_1()
+CString UIDebugPacketDialog::GetTypeName()
 {
     return "DebugPacketDialog";
 }

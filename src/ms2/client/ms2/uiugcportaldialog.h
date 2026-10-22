@@ -22,7 +22,7 @@ class UIUGCPortalDialog : public UIDialog
 public:
     UIUGCPortalDialog();                                        // 0x140fb0190
     virtual ~UIUGCPortalDialog();                               //  0 0x140fb0210 (??_G 0x140fb4360)
-    virtual CString vfunc_1();                                  //  1 0x140fb05e0 "UGCPortalDialog"
+    virtual CString GetTypeName();                                  //  1 0x140fb05e0 "UGCPortalDialog"
     virtual void OnLoadComplete();                              // 22 0x140fb0630
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140fb07d0
     virtual int vfunc_48() { return 0x4f1f; }                   // 48 0x140fb4410

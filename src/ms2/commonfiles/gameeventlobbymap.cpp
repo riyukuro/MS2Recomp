@@ -60,7 +60,7 @@ static Unk_GEFactoryRegistry s_regReturnUser(L"GameEventReturnUser", FUN_14041cb
 GameEvent* FUN_14041c1a0() { return new GameEventLobbyMap; }
 
 // @0x14041c200
-CStringW GameEventLobbyMap::vfunc_1() { return CStringW(L"GameEventLobbyMap"); }
+CStringW GameEventLobbyMap::GetTypeName() { return CStringW(L"GameEventLobbyMap"); }
 
 // @0x14041c250
 GameEventLobbyMap::GameEventLobbyMap() : m_mapId(0)
@@ -96,7 +96,7 @@ void GameEventLobbyMap::vfunc_6() { FUN_14047b990(FUN_1401c0d90(), 0); }
 GameEvent* FUN_14041c400() { return new GameEventLoginNotice; }
 
 // @0x14041c460
-CStringW GameEventLoginNotice::vfunc_1() { return CStringW(L"GameEventLoginNotice"); }
+CStringW GameEventLoginNotice::GetTypeName() { return CStringW(L"GameEventLoginNotice"); }
 
 // @0x14041c4b0
 GameEventLoginNotice::GameEventLoginNotice()
@@ -118,7 +118,7 @@ void GameEventLoginNotice::vfunc_6() { FUN_14047bb20(FUN_1401c0d90(), false, &m_
 GameEvent* FUN_14041c5a0() { return new GameEventCharacterCountRestricted; }
 
 // @0x14041c600
-CStringW GameEventCharacterCountRestricted::vfunc_1() { return CStringW(L"GameEventCharacterCountRestricted"); }
+CStringW GameEventCharacterCountRestricted::GetTypeName() { return CStringW(L"GameEventCharacterCountRestricted"); }
 
 // @0x14041c650
 GameEventCharacterCountRestricted::GameEventCharacterCountRestricted() : m_limit(1)
@@ -163,7 +163,7 @@ void GameEventCharacterCountRestricted::vfunc_6() { FUN_140424bf0(FUN_140302b00(
 GameEvent* FUN_14041c820() { return new GameEventOnlinePatch; }
 
 // @0x14041c880
-CStringW GameEventOnlinePatch::vfunc_1() { return CStringW(L"GameEventOnlinePatch"); }
+CStringW GameEventOnlinePatch::GetTypeName() { return CStringW(L"GameEventOnlinePatch"); }
 
 // @0x14041c8d0
 GameEventOnlinePatch::GameEventOnlinePatch()

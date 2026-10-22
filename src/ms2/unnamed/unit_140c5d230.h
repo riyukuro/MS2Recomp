@@ -306,7 +306,7 @@ public:
 
     UILapenshardSystemDialog();                                     // 0x140c611d0
     virtual ~UILapenshardSystemDialog();                            //  0 0x140c62ba0 (??_G 0x140c62e10)
-    virtual CString vfunc_1();                                      //  1 0x140c612a0 "LapenshardSystemDialog"
+    virtual CString GetTypeName();                                      //  1 0x140c612a0 "LapenshardSystemDialog"
     virtual void vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, void* p4);   // 25 0x140c61de0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140c61be0
     virtual void vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs);   // 45 0x140c61b50
@@ -388,7 +388,7 @@ class UILapenshardShieldBar : public UIHeadUpDisplay, public UIEntityEventListen
 public:
     UILapenshardShieldBar();                                        // 0x140c5efa0
     virtual ~UILapenshardShieldBar();                               //  0 0x140c5f090 (??_G 0x140c60770)
-    virtual CString vfunc_1();                                      //  1 0x140c5f120 "LapenshardShieldBar"
+    virtual CString GetTypeName();                                      //  1 0x140c5f120 "LapenshardShieldBar"
     virtual void vfunc_3();                                         //  3 0x140c5f5b0
     virtual void vfunc_15();                                        // 15 0x140c5f610
     virtual void OnLoadInit();                                      // 20 0x140c5f170

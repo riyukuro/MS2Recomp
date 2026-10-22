@@ -10,7 +10,7 @@ class UIPhotoStudioMenuDialog : public UIDialog
 public:
     UIPhotoStudioMenuDialog();                                             // 0x140e75ea0
     virtual ~UIPhotoStudioMenuDialog();                                    //  0 0x140e75f40 (??_G 0x140e762f0)
-    virtual CString vfunc_1();                                             //  1 0x140e75f80
+    virtual CString GetTypeName();                                             //  1 0x140e75f80
     virtual void OnLoadComplete();                                         // 22 0x140e76000
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140e76090
     virtual int vfunc_48();                                                // 48 0x140e76330

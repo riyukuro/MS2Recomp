@@ -40,11 +40,11 @@ UIItemEnchantSimulateDialog::UIItemEnchantSimulateDialog()
 }
 
 // @0x1412d1450
-CString UIItemEnchantSimulateDialog::vfunc_1()
+CString UIItemEnchantSimulateDialog::GetTypeName()
 {
     return "ItemEnchantSimulateDialog";
 }
-MS2_REPLACE_METHOD(0x1412D1450, UIItemEnchantSimulateDialog, vfunc_1, 61, 0x33EFD67E);
+MS2_REPLACE_METHOD(0x1412D1450, UIItemEnchantSimulateDialog, GetTypeName, 61, 0x33EFD67E);
 
 // @0x1412d14a0
 // MS2-FUNCTIONAL: behaviour-equivalent; the exe keeps each ASData string / packet read in its own temp slot, branch layout and EH unwind map differ

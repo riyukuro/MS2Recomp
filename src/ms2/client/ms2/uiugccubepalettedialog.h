@@ -120,7 +120,7 @@ class UIUGCCubePaletteDialog : public UIDialog, public UIItemEventListener
 public:
     UIUGCCubePaletteDialog();                                                                       // 0x140ee9f50
     virtual ~UIUGCCubePaletteDialog();                                                              //  0 0x140eea200 (??_G 0x140ef0770)
-    virtual CString vfunc_1();                                                                      //  1 0x140eea300
+    virtual CString GetTypeName();                                                                      //  1 0x140eea300
     virtual int vfunc_13();                                                                         // 13 0x140eea8a0 key input
     virtual void vfunc_15();                                                                        // 15 0x140eea7c0 per-frame
     virtual void OnLoadComplete();                                                                  // 22 0x140eea620

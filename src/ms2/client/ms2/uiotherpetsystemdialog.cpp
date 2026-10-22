@@ -52,7 +52,7 @@ UIOtherPetSystemDialog::UIOtherPetSystemDialog()
 }
 
 // @0x140e6d450
-CString UIOtherPetSystemDialog::vfunc_1()
+CString UIOtherPetSystemDialog::GetTypeName()
 {
     return "OtherPetSystemDialog";
 }

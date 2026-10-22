@@ -63,7 +63,7 @@ class UIPvPObserverDialog : public UIDialog
 public:
     UIPvPObserverDialog();                                      // 0x141a911b0
     virtual ~UIPvPObserverDialog();                             //  0 0x141a91260 (??_G 0x141a92d60)
-    virtual CString vfunc_1();                                  //  1 0x141a912a0
+    virtual CString GetTypeName();                                  //  1 0x141a912a0
     virtual void OnLoadComplete();                              // 22 0x141a91640
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                 // 28 0x141a916d0

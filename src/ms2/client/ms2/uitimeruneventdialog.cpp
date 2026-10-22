@@ -102,7 +102,7 @@ CString FUN_14038f6d0(const CString& strLeft, const char* szRight);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // @0x140ee2190
-UITimeRunEventDialog::UITimeRunEventDialog() : m_missionBinder(TR_CAT(vfunc_1(), "_mission")), m_mapBinder(TR_CAT(vfunc_1(), "_map"))
+UITimeRunEventDialog::UITimeRunEventDialog() : m_missionBinder(TR_CAT(GetTypeName(), "_mission")), m_mapBinder(TR_CAT(GetTypeName(), "_map"))
 {
     FUN_141924170(1);
 }
@@ -111,7 +111,7 @@ UITimeRunEventDialog::UITimeRunEventDialog() : m_missionBinder(TR_CAT(vfunc_1(),
 UITimeRunEventDialog::~UITimeRunEventDialog() {}
 
 // @0x140ee23c0
-CString UITimeRunEventDialog::vfunc_1() { return "TimeRunEventDialog"; }
+CString UITimeRunEventDialog::GetTypeName() { return "TimeRunEventDialog"; }
 
 // @0x140ee2410
 int UITimeRunEventDialog::vfunc_65()

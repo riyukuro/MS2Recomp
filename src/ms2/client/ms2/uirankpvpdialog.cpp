@@ -96,11 +96,11 @@ UIRankPvPDialog::~UIRankPvPDialog()
 }
 
 // @0x140f920b0
-CString UIRankPvPDialog::vfunc_1()
+CString UIRankPvPDialog::GetTypeName()
 {
     return "RankPvPDialog";
 }
-MS2_REPLACE_METHOD(0x140F920B0, UIRankPvPDialog, vfunc_1, 61, 0x29FDC615);
+MS2_REPLACE_METHOD(0x140F920B0, UIRankPvPDialog, GetTypeName, 61, 0x29FDC615);
 
 // @0x140f92100
 void UIRankPvPDialog::OnLoadInit()

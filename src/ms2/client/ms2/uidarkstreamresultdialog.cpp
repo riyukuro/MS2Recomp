@@ -65,11 +65,11 @@ UIDarkStreamResultDialog::~UIDarkStreamResultDialog()
 }
 
 // @0x140f34760
-CString UIDarkStreamResultDialog::vfunc_1()
+CString UIDarkStreamResultDialog::GetTypeName()
 {
     return "DarkStreamResultDialog";
 }
-MS2_REPLACE_METHOD(0x140F34760, UIDarkStreamResultDialog, vfunc_1, 61, 0xDAEA3118);
+MS2_REPLACE_METHOD(0x140F34760, UIDarkStreamResultDialog, GetTypeName, 61, 0xDAEA3118);
 
 // @0x140f347b0
 void UIDarkStreamResultDialog::OnLoadComplete()

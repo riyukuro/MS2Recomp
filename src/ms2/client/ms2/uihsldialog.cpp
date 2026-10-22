@@ -35,7 +35,7 @@ UIHSLDialog::~UIHSLDialog()
 }
 
 // @0x1412c9920
-CString UIHSLDialog::vfunc_1()
+CString UIHSLDialog::GetTypeName()
 {
     return "HSLDialog";
 }

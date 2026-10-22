@@ -15,7 +15,7 @@ class UISurveyDialog : public UIDialog
 public:
     UISurveyDialog();                                           // 0x140ed9b80
     virtual ~UISurveyDialog();                                  //  0 0x140ed9c10 (??_G 0x140edb200)
-    virtual CString vfunc_1();                                  //  1 0x140ed9c80 "SurveyDialog"
+    virtual CString GetTypeName();                                  //  1 0x140ed9c80 "SurveyDialog"
     virtual void OnLoadComplete();                              // 22 0x140ed9cd0 title and answers
     virtual void vfunc_26();                                    // 26 0x140ed9fe0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140eda000 "OnVote" / "OnClose"

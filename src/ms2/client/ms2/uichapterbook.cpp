@@ -74,7 +74,7 @@ UIChapterBook::~UIChapterBook()
 }
 
 // @0x140e09b40
-CString UIChapterBook::vfunc_1()
+CString UIChapterBook::GetTypeName()
 {
     return "ChapterBook";
 }

@@ -22,7 +22,7 @@ class UIBeautyShopDevDialog : public UIDialog, public UIItemEventListener, publi
 public:
     UIBeautyShopDevDialog();                            // 0x14191c7d0
     virtual ~UIBeautyShopDevDialog();                   // 0x14191c980
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual int vfunc_13();
     virtual void vfunc_15();
     virtual void OnLoadComplete();

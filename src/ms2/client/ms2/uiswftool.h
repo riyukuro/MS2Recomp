@@ -18,7 +18,7 @@ class UISwfTool : public UIObject
 public:
     UISwfTool();                                        // @0x141b127f0
     virtual ~UISwfTool();                               // 0  @0x141b12840 (??_G 0x141b12960)
-    virtual CString vfunc_1();                          // 1  @0x141b12880: "SwfTool"
+    virtual CString GetTypeName();                          // 1  @0x141b12880: "SwfTool"
     virtual void vfunc_43();                            // 43 @0x141b128d0 (the swf tool's debug arrangement)
     virtual int vfunc_48();                             // 48 @0x141b129a0: the UI type id, 0x4e54
 };

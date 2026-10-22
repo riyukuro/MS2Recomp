@@ -123,7 +123,7 @@ class NotifyChangeMyLevel : public NotifyObject
 public:
     NotifyChangeMyLevel(unsigned short nLevel, unsigned short nOldLevel) : m_nLevel(nLevel), m_nOldLevel(nOldLevel) {}
     virtual ~NotifyChangeMyLevel() = default;
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     unsigned short m_nLevel;                                // +0x18
     unsigned short m_nOldLevel;                             // +0x1a
 };
@@ -358,7 +358,7 @@ UICharacterAbilityDialog::~UICharacterAbilityDialog()
 }
 
 // @0x140f2a330
-CString UICharacterAbilityDialog::vfunc_1()
+CString UICharacterAbilityDialog::GetTypeName()
 {
     return CString("CharacterAbilityDialog");
 }

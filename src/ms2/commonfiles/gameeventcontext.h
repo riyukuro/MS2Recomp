@@ -33,7 +33,7 @@ public:
 class GameEventAttendGift : public GameEvent {
 public:
     GameEventAttendGift();
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void vfunc_2();
     virtual void vfunc_3(Unk_GEOut* out);
     virtual void vfunc_4(Unk_GEIn* in);
@@ -66,7 +66,7 @@ MS2_CHECK_OFFSET(GameEventAttendGift, m_b125, 0x125);
 class GameEventCashAttend : public GameEvent {
 public:
     GameEventCashAttend();
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void vfunc_2();
     virtual void vfunc_3(Unk_GEOut* out);
     virtual void vfunc_4(Unk_GEIn* in);

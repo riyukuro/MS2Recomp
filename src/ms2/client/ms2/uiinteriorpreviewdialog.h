@@ -16,7 +16,7 @@ class UIInteriorPreviewDialog : public UIDialog
 public:
     UIInteriorPreviewDialog();                                  // 0x140f4cc50
     virtual ~UIInteriorPreviewDialog();                         //  0 0x140f4ccf0
-    virtual CString vfunc_1();                                  //  1 0x140f4cd40 "InteriorPreviewDialog"
+    virtual CString GetTypeName();                                  //  1 0x140f4cd40 "InteriorPreviewDialog"
     virtual void OnLoadComplete();                              // 22 0x140f4cf60 apply the pending position and fill the lists
     virtual void vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs);   // 45 0x140f4d010 "getTooltipFromItemID"
     virtual int vfunc_48() { return 0x4ee3; }                   // 48 0x140f4dea0

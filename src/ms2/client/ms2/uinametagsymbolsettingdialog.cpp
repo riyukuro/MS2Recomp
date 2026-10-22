@@ -118,11 +118,11 @@ UINameTagSymbolSettingDialog::~UINameTagSymbolSettingDialog()
 }
 
 // @0x14131d9c0
-CString UINameTagSymbolSettingDialog::vfunc_1()
+CString UINameTagSymbolSettingDialog::GetTypeName()
 {
     return "NameTagSymbolSettingDialog";
 }
-MS2_REPLACE_METHOD(0x14131D9C0, UINameTagSymbolSettingDialog, vfunc_1, 61, 0xCDA77D77);
+MS2_REPLACE_METHOD(0x14131D9C0, UINameTagSymbolSettingDialog, GetTypeName, 61, 0xCDA77D77);
 
 // @0x14131da10
 void UINameTagSymbolSettingDialog::vfunc_67()

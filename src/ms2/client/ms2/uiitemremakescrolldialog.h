@@ -26,7 +26,7 @@ class UIItemRemakeScrollDialog : public UIDialog
 public:
     UIItemRemakeScrollDialog();                                 // 0x140f58080
     virtual ~UIItemRemakeScrollDialog();                        //  0 0x140f58290 (??_G 0x140f607b0)
-    virtual CString vfunc_1();                                  //  1 0x140f583e0 "ItemRemakeScrollDialog"
+    virtual CString GetTypeName();                                  //  1 0x140f583e0 "ItemRemakeScrollDialog"
     virtual void OnLoadComplete();                              // 22 0x140f58430 bind the slots, show the scroll
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                 // 28 0x140f58dd0 onClickConfirm / GetEnableLockOption

@@ -74,7 +74,7 @@ UIWatchAGameDialog::~UIWatchAGameDialog()
 }
 
 // @0x140fc09f0
-CString UIWatchAGameDialog::vfunc_1()
+CString UIWatchAGameDialog::GetTypeName()
 {
     return "WatchAGameDialog";
 }

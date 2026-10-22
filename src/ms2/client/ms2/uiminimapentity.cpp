@@ -1124,11 +1124,11 @@ UIMinimapDialog::~UIMinimapDialog()
 }
 
 // @0x141a35ba0
-CString UIMinimapDialog::vfunc_1()
+CString UIMinimapDialog::GetTypeName()
 {
     return "MinimapDialog";
 }
-MS2_REPLACE_METHOD(0x141a35ba0, UIMinimapDialog, vfunc_1, 61, 0xE2400997);
+MS2_REPLACE_METHOD(0x141a35ba0, UIMinimapDialog, GetTypeName, 61, 0xE2400997);
 
 // @0x141a35bf0
 void UIMinimapDialog::OnLoadComplete()

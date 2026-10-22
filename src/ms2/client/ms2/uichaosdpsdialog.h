@@ -24,7 +24,7 @@ class UIChaosDPSDialog : public UIDialog
 public:
     UIChaosDPSDialog();                                                     // 0x140e05460
     virtual ~UIChaosDPSDialog();                                            //  0 0x140e05510
-    virtual CString vfunc_1();                                              //  1 0x140e05560
+    virtual CString GetTypeName();                                              //  1 0x140e05560
     virtual void OnLoadComplete();                                          // 22 0x140e06020
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                             // 28 0x140e06080

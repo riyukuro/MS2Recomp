@@ -28,7 +28,7 @@ class UIGamePadMenuDialog : public UIDialog
 public:
     UIGamePadMenuDialog();                              // 0x140c1aaf0
     virtual ~UIGamePadMenuDialog();                     //  0 0x140c1ad10 (??_G 0x140c1ce70)
-    virtual CString vfunc_1();                          //  1 0x140c1ae70 "GamePadMenuDialog"
+    virtual CString GetTypeName();                          //  1 0x140c1ae70 "GamePadMenuDialog"
     virtual void vfunc_67();                            // 67 0x140c1aec0 close: reset the cursor and the menus
     virtual void OnLoadInit();                          // 20 0x140c1af20
     virtual void OnLoadComplete();                      // 22 0x140c1af40 build the menus

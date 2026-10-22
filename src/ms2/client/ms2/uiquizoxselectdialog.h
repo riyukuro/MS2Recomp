@@ -13,7 +13,7 @@ class UIQuizOXSelectDialog : public UIDialog
 public:
     UIQuizOXSelectDialog();                                     // 0x140e7ead0
     virtual ~UIQuizOXSelectDialog();                            //  0 0x140e7eb40 (??_G 0x140e7edd0)
-    virtual CString vfunc_1();                                  //  1 0x140e7eb80
+    virtual CString GetTypeName();                                  //  1 0x140e7eb80
     virtual void OnLoadComplete();                              // 22 0x140e7ebd0
     virtual void vfunc_43();                                    // 43 0x140e7ebf0
     virtual void vfunc_72();                                    // 72 0x140e7ec70 (empty)

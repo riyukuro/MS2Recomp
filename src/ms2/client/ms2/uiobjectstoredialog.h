@@ -15,7 +15,7 @@ class UIObjectStoreDialog : public UIDialog, public UIStatusEventListener
 public:
     UIObjectStoreDialog();                                      // 0x141a72480
     virtual ~UIObjectStoreDialog();                             //  0 0x141a72550 (??_G 0x141a73290)
-    virtual CString vfunc_1();                                  //  1 0x141a725e0 "ObjectStoreDialog"
+    virtual CString GetTypeName();                                  //  1 0x141a725e0 "ObjectStoreDialog"
     virtual void OnLoadInit();                                  // 20 0x141a729d0 register the status listener
     virtual void OnLoadComplete();                              // 22 0x141a72a60 initData: bag id, name, count, description
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141a72dd0 "OnSort"

@@ -164,7 +164,7 @@ UIVIPGoodsShopDialog::~UIVIPGoodsShopDialog()
 }
 
 // @0x140fb9c30
-CString UIVIPGoodsShopDialog::vfunc_1()
+CString UIVIPGoodsShopDialog::GetTypeName()
 {
     return CString("VIPGoodsShopDialog");
 }
@@ -378,7 +378,7 @@ void UIVIPGoodsShopDialog::FUN_140fbaca0()
             MS2Ptr<CItem> spItem(new CItem());
             if (spItem->FUN_14052b130(spGoods->m_bonusItemIds[j], spGoods->m_bonusItemRanks[j], 0) != 0) {
                 spItem->FUN_140526c70(spGoods->m_bonusItemCounts[j]);
-                strBindId.Format("%s_%d", (LPCSTR)vfunc_1(), (int)m_bindIds.GetCount() + 1);
+                strBindId.Format("%s_%d", (LPCSTR)GetTypeName(), (int)m_bindIds.GetCount() + 1);
                 FUN_141415450(strBindId, spItem, 0, 0x415, 0);
                 m_bindIds.Add(strBindId);
                 unsigned nNumber = j + 1;
@@ -470,7 +470,7 @@ void UIVIPGoodsShopDialog::FUN_140fbbe40(MS2Ptr<CVIPGoods> spGoods)
         return;
     int nPayType = FUN_140fbbe00(spGoods->m_nPriceType);
     spParam->m_nDialogId = vfunc_48();
-    spParam->m_strMovie = vfunc_1();
+    spParam->m_strMovie = GetTypeName();
     spParam->m_nCurrency = nPayType;
     spParam->m_nType = 3;
     spParam->m_nGoodsId = spGoods->m_nId;

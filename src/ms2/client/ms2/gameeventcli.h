@@ -34,7 +34,7 @@ class GameEventOntimeCli : public GameEventOntime
 {
 public:
     GameEventOntimeCli();
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();
 };
@@ -43,7 +43,7 @@ class GameEventGameMenuPopupCli : public GameEventGameMenuPopup
 {
 public:
     GameEventGameMenuPopupCli();
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();
 };
@@ -52,7 +52,7 @@ class GameEventEventFieldPopupCli : public GameEventEventFieldPopup
 {
 public:
     GameEventEventFieldPopupCli();
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();
 };
@@ -62,7 +62,7 @@ class GameEventDTRewardCli : public GameEventDTReward
 public:
     GameEventDTRewardCli();
     void OnNotifyGameStart(NotifyObject* pNotify);   // 0x140ce2ff0
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();
 };
@@ -71,7 +71,7 @@ class GameEventSaleAutoFishingCli : public GameEventSaleAutoFishing
 {
 public:
     GameEventSaleAutoFishingCli();
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();
 };
@@ -80,7 +80,7 @@ class GameEventSaleAutoPlayInstrumentCli : public GameEventSaleAutoPlayInstrumen
 {
 public:
     GameEventSaleAutoPlayInstrumentCli();
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();
 };
@@ -110,7 +110,7 @@ public:
     bool FUN_140ce3a80();
     CMsTime FUN_140ce3aa0();
     CMsTime FUN_140ce3ae0();
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();
     virtual void vfunc_10();
@@ -130,7 +130,7 @@ public:
     AttendGiftDataGroupPtr FUN_140ce3fc0(unsigned nDay);
     CMsTime FUN_140ce4050();
     CMsTime FUN_140ce4090();
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();
     virtual void vfunc_10();
@@ -141,7 +141,7 @@ class GameEventTrafficOptimizerCli : public GameEventTrafficOptimizer
 public:
     GameEventTrafficOptimizerCli();
     ATL::CAtlArray<unsigned> m_values;      // +0xd0 the 7 traffic limits
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();
     virtual void vfunc_4(Unk_GEIn* in);
@@ -152,7 +152,7 @@ class GameEventItemBuffCli : public GameEventItemBuff
 public:
     GameEventItemBuffCli();
     void FUN_140ce4580(NotifyObject* pNotify);   // the return-user buff notice
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();
 };
@@ -161,7 +161,7 @@ class GameEventDungeonExtraRewardCli : public GameEventDungeonExtraReward
 {
 public:
     GameEventDungeonExtraRewardCli();
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();
 };
@@ -170,7 +170,7 @@ class GameEventMeratMarketNoticeCli : public GameEventMeratMarketNotice
 {
 public:
     GameEventMeratMarketNoticeCli();
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();
 };
@@ -184,7 +184,7 @@ public:
     void FUN_140ce4cc0(Unk_140165cf0* pElem);
     void FUN_140ce4cf0(Unk_140165cf0* pElem);
     void FUN_140ce4d20(Unk_140165cf0* pElem);
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();
 };
@@ -193,7 +193,7 @@ class GameEventWorldmapIconCli : public GameEventWorldmapIcon
 {
 public:
     GameEventWorldmapIconCli();
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();
 };
@@ -202,7 +202,7 @@ class GameEventStringBoardCli : public GameEventStringBoard
 {
 public:
     GameEventStringBoardCli();
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();
 };
@@ -212,7 +212,7 @@ class GameEventSnowmanCli : public GameEventSnowman
 public:
     GameEventSnowmanCli();
     void FUN_140ce56a0(NotifyObject* pNotify);   // the game started
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();
 };
@@ -221,7 +221,7 @@ class GameEventRpsCli : public GameEventRps
 {
 public:
     GameEventRpsCli();
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();
 };
@@ -230,7 +230,7 @@ class GameEventCoupleDanceCli : public GameEventCoupleDance
 {
 public:
     GameEventCoupleDanceCli();
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();
 };
@@ -239,7 +239,7 @@ class GameEventCustomTriggerStringCli : public GameEventCustomTriggerString
 {
 public:
     GameEventCustomTriggerStringCli();
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();
 };
@@ -250,7 +250,7 @@ class GameEventBurningLevelupCli : public GameEventBurningLevelup
 {
 public:
     GameEventBurningLevelupCli();
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();
     virtual void vfunc_10(NotifyObject*);   // 0x140ce65f0 NotifyChangeMyLevel handler
@@ -262,7 +262,7 @@ class GameEventLongTermAttendGiftCli : public GameEventLongTermAttendGift
 {
 public:
     GameEventLongTermAttendGiftCli();
-    virtual CStringW vfunc_1();
+    virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();
 };

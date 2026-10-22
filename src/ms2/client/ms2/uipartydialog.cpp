@@ -17,10 +17,10 @@
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBV01@@Z 0x141a7a680 ; prop
 // MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAA@XZ 0x141a7a7b0 ; prop
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAPEAXI@Z 0x141a7a970 ; prop
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVASPartyVotePage@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a7ab90 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a7abf0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a7ac50 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a7acb0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVASPartyVotePage@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a7ab90 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a7abf0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a7ac50 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a7acb0 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVASPartyVotePage@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x141a7ad10 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAXAEAVCInPacket@@@Z 0x141a7ad40 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x141a7ad70 ; unique
@@ -51,9 +51,9 @@
 // MS2-PIN: ??_GUIPopUpMenu@@UEAAPEAXI@Z 0x141a888d0 ; unique
 // MS2-PIN: ?GetNode@?$CAtlMap@HV?$Delegate@$$A6AXXZ@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Delegate@$$A6AXXZ@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x141a88c50 ; unique
 // MS2-PIN: ?vfunc_48@UIPopUpMenu@@UEAAHXZ 0x141a88d40 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a89c90 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAAXXZ@std@@@?$Delegate@$$A6AXXZ@@UEBAPEAVDelegateImplBase@2@XZ 0x141a89cf0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a89d50 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a89c90 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAAXXZ@std@@@?$Delegate@$$A6AXXZ@@UEBAPEAVDelegateImplBase@2@XZ 0x141a89cf0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a89d50 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAXAEAVCInPacket@@@Z 0x141a89db0 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x141a89e00 ; unique
 // MS2-PIN: ??$Call@VUIPopUpMenu@@P81@EAAXAEAVCInPacket@@@Z@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@CAXAEAU?$pair@PEAVUIPopUpMenu@@P81@EAAXAEAVCInPacket@@@Z@std@@AEAVCInPacket@@@Z 0x141a89e40 ; prop
@@ -385,7 +385,7 @@ UIPartyDialog::~UIPartyDialog()
 }
 
 // @0x141a74d00
-CString UIPartyDialog::vfunc_1()
+CString UIPartyDialog::GetTypeName()
 {
     return "PartyDialog";
 }
@@ -1180,7 +1180,7 @@ UIPartyDPSDialog::~UIPartyDPSDialog()
 }
 
 // @0x141a7b150
-CString UIPartyDPSDialog::vfunc_1()
+CString UIPartyDPSDialog::GetTypeName()
 {
     return "PartyDPSDialog";
 }
@@ -1401,7 +1401,7 @@ UIPerformanceDialog::~UIPerformanceDialog()
 }
 
 // @0x141a7c5b0
-CString UIPerformanceDialog::vfunc_1()
+CString UIPerformanceDialog::GetTypeName()
 {
     return "PerformanceDialog";
 }
@@ -1486,7 +1486,7 @@ UIPopupEntity::~UIPopupEntity()
 }
 
 // @0x141a7cca0
-CString UIPopupEntity::vfunc_1()
+CString UIPopupEntity::GetTypeName()
 {
     return "PopupEntity";
 }
@@ -1840,7 +1840,7 @@ UIPopUpMenu::UIPopUpMenu()
 }
 
 // @0x141a7d850
-CString UIPopUpMenu::vfunc_1()
+CString UIPopUpMenu::GetTypeName()
 {
     return "PopUpMenu";
 }
@@ -3735,7 +3735,7 @@ int FUN_141a8a760()
 // @0x141a8a7b0
 void FUN_141a8a7b0(UIDialog* pDialog, float x, float y)
 {
-    Unk_PpLog(GetLogString(), 0xc, 0x13, L"OnPopup UIDialog name[{0}] mouseX[{1}] mouseY[{2}]", (const char*)pDialog->vfunc_1(), x, y);
+    Unk_PpLog(GetLogString(), 0xc, 0x13, L"OnPopup UIDialog name[{0}] mouseX[{1}] mouseY[{2}]", (const char*)pDialog->GetTypeName(), x, y);
 }
 
 // @0x141a8a870
@@ -3748,7 +3748,7 @@ void FUN_141a8a870(UISwfEntity* pEntity, float x, float y)
     }
     else if (pEntity != 0)
     {
-        Unk_PpLog(GetLogString(), 0xc, 0x13, L"OnPopup UIEntity name[{0}] mouseX[{1}] mouseY[{2}]", (const char*)pEntity->vfunc_1(), x, y);
+        Unk_PpLog(GetLogString(), 0xc, 0x13, L"OnPopup UIEntity name[{0}] mouseX[{1}] mouseY[{2}]", (const char*)pEntity->GetTypeName(), x, y);
     }
 }
 

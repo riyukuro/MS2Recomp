@@ -116,7 +116,7 @@ UIPaybackDialog::~UIPaybackDialog()
 }
 
 // @0x140e6ee70
-CString UIPaybackDialog::vfunc_1()
+CString UIPaybackDialog::GetTypeName()
 {
     return "PaybackDialog";
 }
@@ -177,7 +177,7 @@ int UIPaybackDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         if (spParam == 0)
             return 0;
         spParam->m_nDialogId = vfunc_48();
-        spParam->m_strMovie = vfunc_1();
+        spParam->m_strMovie = GetTypeName();
         int nPay = spProduct->GetPayCurrency();
         int nCurrency = FUN_14069c3e0(nPay);
         spParam->m_nCurrency = nCurrency;

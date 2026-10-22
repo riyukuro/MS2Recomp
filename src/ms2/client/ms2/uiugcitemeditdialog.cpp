@@ -23,9 +23,9 @@
 // MS2-PIN: ?GetValueAt@?$CAtlMap@IV?$MS2Ptr@VCUGCDesignData@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCUGCDesignData@@@@@3@@ATL@@QEAAAEAV?$MS2Ptr@VCUGCDesignData@@@@PEAU__POSITION@@@Z 0x141b47870 ; unique
 // MS2-PIN: ?GrowBuffer@?$CAtlArray@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@V?$CElementTraits@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@ATL@@@ATL@@AEAA_N_K@Z 0x141b478e0 ; prop
 // MS2-PIN: ?RelocateElements@?$CElementTraitsBase@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@ATL@@SAXPEAU?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@0_K@Z 0x141b47c50 ; prop
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIUGCItemEditDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b47f70 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIUGCItemEditDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b47fd0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIUGCItemEditDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b48030 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIUGCItemEditDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b47f70 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIUGCItemEditDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b47fd0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIUGCItemEditDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b48030 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIUGCItemEditDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x141b48090 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIUGCItemEditDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAXPEAVNotifyObject@@@Z 0x141b480c0 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIUGCItemEditDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x141b480f0 ; unique
@@ -271,7 +271,7 @@ UIUGCItemEditDialog::UIUGCItemEditDialog()
 {
     FUN_141924170(1);
     FUN_1422dc3b0(1);
-    m_strSlotBindId.Format("%s.%d", (const char*)vfunc_1(), 0);
+    m_strSlotBindId.Format("%s.%d", (const char*)GetTypeName(), 0);
 }
 
 // @0x141b3bad0
@@ -282,11 +282,11 @@ UIUGCItemEditDialog::~UIUGCItemEditDialog()
 }
 
 // @0x141b3bc50
-CString UIUGCItemEditDialog::vfunc_1()
+CString UIUGCItemEditDialog::GetTypeName()
 {
     return CString("UGCItemEditDialog");
 }
-MS2_REPLACE_METHOD(0x141B3BC50, UIUGCItemEditDialog, vfunc_1, 61, 0xA930735B);
+MS2_REPLACE_METHOD(0x141B3BC50, UIUGCItemEditDialog, GetTypeName, 61, 0xA930735B);
 
 // @0x141b3bca0
 int UIUGCItemEditDialog::vfunc_73()

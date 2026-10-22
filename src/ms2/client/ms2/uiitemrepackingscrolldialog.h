@@ -23,7 +23,7 @@ class UIItemRePackingScrollDialog : public UIDialog
 public:
     UIItemRePackingScrollDialog();                              // 0x140f60e00
     virtual ~UIItemRePackingScrollDialog();                     //  0 0x140f60f50 (??_G 0x140f64110)
-    virtual CString vfunc_1();                                  //  1 0x140f61050 "ItemRePackingScrollDialog"
+    virtual CString GetTypeName();                                  //  1 0x140f61050 "ItemRePackingScrollDialog"
     virtual void OnLoadComplete();                              // 22 0x140f610a0 bind the slot, show the scroll
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                 // 28 0x140f61b60 onRePacking

@@ -100,11 +100,11 @@ UIHouseDemolishDialog::~UIHouseDemolishDialog()
 }
 
 // @0x14134fd80
-CString UIHouseDemolishDialog::vfunc_1()
+CString UIHouseDemolishDialog::GetTypeName()
 {
     return "HouseDemolishDialog";
 }
-MS2_REPLACE_METHOD(0x14134FD80, UIHouseDemolishDialog, vfunc_1, 61, 0xA24B2187);
+MS2_REPLACE_METHOD(0x14134FD80, UIHouseDemolishDialog, GetTypeName, 61, 0xA24B2187);
 
 // @0x14134fdd0
 int UIHouseDemolishDialog::vfunc_84()

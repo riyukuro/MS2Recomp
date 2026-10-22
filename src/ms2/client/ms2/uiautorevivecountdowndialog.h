@@ -19,7 +19,7 @@ class UIAutoReviveCountDownDialog : public UIDialog
 public:
     UIAutoReviveCountDownDialog();                                  // 0x141284ac0
     virtual ~UIAutoReviveCountDownDialog();                         //  0 0x141284b30 (??_G 0x141284db0)
-    virtual CString vfunc_1();                                      //  1 0x141284d00: "AutoReviveCountDownDialog"
+    virtual CString GetTypeName();                                      //  1 0x141284d00: "AutoReviveCountDownDialog"
     virtual void vfunc_43();                                        // 43 0x141284c50 (resize the movie root)
     virtual int vfunc_48();                                         // 48 0x141284df0: 0x4ea2
     virtual void vfunc_67();                                        // 67 0x141284d50 forwards to UIDialog

@@ -135,7 +135,7 @@ UIWeddingBillboardDialog::~UIWeddingBillboardDialog()
 }
 
 // @0x140fc2d40
-CString UIWeddingBillboardDialog::vfunc_1()
+CString UIWeddingBillboardDialog::GetTypeName()
 {
     return "WeddingBillboardDialog";
 }

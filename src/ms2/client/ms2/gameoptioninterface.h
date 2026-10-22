@@ -30,7 +30,7 @@ class CGameOptionInterface : public CBaseOption, public IMessageListener
 public:
     CGameOptionInterface(int nId, int nType);                          // 0x1412558c0
     virtual ~CGameOptionInterface();                                    // 0x141255960
-    virtual CString vfunc_1();                                      // 0x141256c50
+    virtual CString GetTypeName();                                      // 0x141256c50
     virtual void vfunc_3(int n);                                    // 0x1412559a0
     virtual void vfunc_4(int n);                                    // 0x141255a10
     virtual int vfunc_5(const char* pszName, void* pArg, int nArg); // 0x141255a40

@@ -22,10 +22,10 @@
 // MS2-PIN: ?vfunc_48@UIGuildDialog@@UEAAHXZ 0x14197e030 ; unique
 // MS2-PIN: ?_Myoff@?$_Deque_alloc@U?$_Deque_base_types@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@V?$allocator@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@@std@@QEAAAEA_KXZ 0x14197f790 ; unique
 // MS2-PIN: ?begin@?$deque@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@V?$allocator@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@QEAA?AV?$_Deque_iterator@V?$_Deque_val@U?$_Deque_simple_types@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@@2@XZ 0x14197fd50 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIGuildDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x14197ff90 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIGuildDialog@@P81@EAAXAEAVItemInfoSlot@@AEAVASSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x14197fff0 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIGuildDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141980050 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIGuildDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1419800b0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIGuildDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x14197ff90 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIGuildDialog@@P81@EAAXAEAVItemInfoSlot@@AEAVASSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x14197fff0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIGuildDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141980050 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIGuildDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1419800b0 ; unique
 // MS2-PIN: ?end@?$deque@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@V?$allocator@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@QEAA?AV?$_Deque_iterator@V?$_Deque_val@U?$_Deque_simple_types@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@@2@XZ 0x141980300 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIGuildDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAXAEAVCInPacket@@@Z 0x141980720 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIGuildDialog@@P81@EAAXAEAVItemInfoSlot@@AEAVASSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@UEAAXAEAVItemInfoSlot@@AEAVASSlot@@@Z 0x141980750 ; unique
@@ -645,11 +645,11 @@ int UIGuildDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 }
 
 // @0x1419625d0
-CString UIGuildDialog::vfunc_1()
+CString UIGuildDialog::GetTypeName()
 {
     return "GuildDialog";
 }
-MS2_REPLACE_METHOD(0x1419625d0, UIGuildDialog, vfunc_1, 61, 0x471B1AD8);
+MS2_REPLACE_METHOD(0x1419625d0, UIGuildDialog, GetTypeName, 61, 0x471B1AD8);
 
 // @0x141962620
 int UIGuildDialog::vfunc_13()

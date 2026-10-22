@@ -19,7 +19,7 @@ class UIHomeSummonDialog : public UIDialog
 public:
     UIHomeSummonDialog();                                       // 0x141299650
     virtual ~UIHomeSummonDialog();                              //  0 0x141299700 (??_G 0x14129a240)
-    virtual CString vfunc_1();                                  //  1 0x141299780 "HomeSummonDialog"
+    virtual CString GetTypeName();                                  //  1 0x141299780 "HomeSummonDialog"
     virtual int vfunc_13();                                     // 13 0x141299af0 enter key: send, escape key: close
     virtual void OnLoadComplete();                              // 22 0x141299880 bind the buttons and the text input
     virtual void vfunc_26();                                    // 26 0x141299ab0

@@ -43,7 +43,7 @@ class UIGalleryEventDialog : public UIDialog, public UIQuestEventListener
 public:
     UIGalleryEventDialog();
     virtual ~UIGalleryEventDialog();
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual int vfunc_65();
     virtual void vfunc_67();
     virtual void OnLoadComplete();

@@ -234,7 +234,7 @@ class UIGameRankingDialog : public UIDialog
 public:
     UIGameRankingDialog();                                                                          // 0x140e2cc90
     virtual ~UIGameRankingDialog();                                                                 //  0 0x140e2cdc0 (??_G 0x140e37120)
-    virtual CString vfunc_1();                                                                      //  1 0x140e2cec0
+    virtual CString GetTypeName();                                                                      //  1 0x140e2cec0
     virtual int vfunc_13();                                                                         // 13 0x140e2da50 search input shortcut
     virtual void OnLoadComplete();                                                                  // 22 0x140e2cfa0
     virtual void vfunc_26();                                                                        // 26 0x140e2cf60

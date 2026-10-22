@@ -18,7 +18,7 @@ class UITimeRunEventDialog : public UIDialog, public UIQuestEventListener
 public:
     UITimeRunEventDialog();                                                 // 0x140ee2190
     virtual ~UITimeRunEventDialog();                                        //  0 0x140ee2330 (??_G 0x140ee5170)
-    virtual CString vfunc_1();                                              //  1 0x140ee23c0
+    virtual CString GetTypeName();                                              //  1 0x140ee23c0
     virtual int vfunc_65();                                                 // 65 0x140ee2410
     virtual void vfunc_67();                                                // 67 0x140ee2470
     virtual void OnLoadComplete();                                          // 22 0x140ee24d0

@@ -40,7 +40,7 @@ class CGameOptionSoundDefault : public CBaseOption
 public:
     CGameOptionSoundDefault(int nId, int nType);                  // 0x141256d20
     virtual ~CGameOptionSoundDefault();                       // 0x141256da0
-    virtual CString vfunc_1();                                     // 0x1412586e0
+    virtual CString GetTypeName();                                     // 0x1412586e0
     virtual void vfunc_3(int n);                                   // 0x141256dd0
     virtual void vfunc_4(int n);                                   // 0x141256e40
     virtual int vfunc_5(const char* pszName, void* pArg, int nArg);// 0x141256e70

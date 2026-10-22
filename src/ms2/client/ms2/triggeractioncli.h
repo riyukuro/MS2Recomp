@@ -31,7 +31,7 @@ class TriggerActionCli : public ClassObject
 public:
     TriggerActionCli();                                         // 0x140de5190
     virtual ~TriggerActionCli();                                // 0x140de5210 (slot 0: ??_G 0x140de5260)
-    virtual CStringW vfunc_1();                                 // 0x140de4d10 L"TriggerActionCli"
+    virtual CStringW GetTypeName();                                 // 0x140de4d10 L"TriggerActionCli"
     virtual void vfunc_2(void* pNode);                          // 0x140de5010 loads name and arg1..arg6
 
     static MS2Ptr<TriggerActionCli> Create(void* pNode);        // 0x140de4d60
@@ -56,7 +56,7 @@ class TriggerConditionCli : public ClassObject
 public:
     TriggerConditionCli();                                      // 0x140de5620
     virtual ~TriggerConditionCli();                             // 0x140de5c30 (slot 0: ??_G 0x140de5c80)
-    virtual CStringW vfunc_1();                                 // 0x140de55d0 L"TriggerConditionCli"
+    virtual CStringW GetTypeName();                                 // 0x140de55d0 L"TriggerConditionCli"
     virtual void vfunc_2(void* pNode);                          // 0x140de5aa0 loads arg1..arg6
 
     static MS2Ptr<TriggerConditionCli> Create(void* pNode);     // 0x140de5690

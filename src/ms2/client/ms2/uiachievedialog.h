@@ -45,7 +45,7 @@ public:
 
     UIAchieveDialog();                                                                  // 0x1418a7310
     virtual ~UIAchieveDialog();                                                         //  0 0x1418a74b0 (??_G 0x1418b0020...)
-    virtual CString vfunc_1();                                                          //  1 0x1418a7530 "AchieveDialog"
+    virtual CString GetTypeName();                                                          //  1 0x1418a7530 "AchieveDialog"
     virtual int vfunc_13();                                                             // 13 0x1418a8430 key (close the popup / search)
     virtual void vfunc_15();                                                            // 15 0x1418a8390 per frame: refresh the updated trophies
     virtual void OnLoadComplete();                                                      // 22 0x1418a7580

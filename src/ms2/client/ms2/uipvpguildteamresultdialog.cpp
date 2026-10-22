@@ -140,7 +140,7 @@ UIPvPGuildTeamResultDialog::~UIPvPGuildTeamResultDialog()
 }
 
 // @0x141340b30
-CString UIPvPGuildTeamResultDialog::vfunc_1()
+CString UIPvPGuildTeamResultDialog::GetTypeName()
 {
     return "PvPGuildTeamResultDialog";
 }

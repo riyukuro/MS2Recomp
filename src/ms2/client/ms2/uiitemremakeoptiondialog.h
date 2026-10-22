@@ -19,7 +19,7 @@ class UIItemRemakeOptionDialog : public UIItemModifyDialogBase, public UIItemEve
 public:
     UIItemRemakeOptionDialog();                                 // 0x14129cfa0
     virtual ~UIItemRemakeOptionDialog();                        // 0x14129d100
-    virtual CString vfunc_1();                                  // 0x14129d220 "ItemRemakeOptionDialog"
+    virtual CString GetTypeName();                                  // 0x14129d220 "ItemRemakeOptionDialog"
     virtual CString vfunc_7();                                  // 0x14129d270 "ItemEnchantDialog"
     virtual void OnLoadComplete();                              // 0x14129d2c0
     virtual int vfunc_13();                                     // 0x14129dbe0

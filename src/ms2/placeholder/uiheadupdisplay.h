@@ -18,7 +18,7 @@ class UIHeadUpDisplay : public UIObject
 public:
     UIHeadUpDisplay();                                                      // 0x141986b50 (m_2c = 8)
     virtual ~UIHeadUpDisplay();                                             //  0 0x141986bc0 (??_G 0x141986d40)
-    virtual CString vfunc_1();                                              //  1 0x141986c00 "HeadUpDisplay"
+    virtual CString GetTypeName();                                              //  1 0x141986c00 "HeadUpDisplay"
     virtual void vfunc_2();                                                 //  2 0x141986cc0 show: m_68 = 1; FUN_1422dbf00(m_2c, m_44, 0)
     virtual void vfunc_3();                                                 //  3 0x141986d00 hide: m_68 = 0; FUN_1422dc080()
     virtual void vfunc_41(const Scaleform::GFx::Value& root);               // 41 0x141986c50 m_30 = AS object of root (type m_28)

@@ -25,7 +25,7 @@ class UIStanceBar : public UIHeadUpDisplay
 public:
     UIStanceBar();                                                  // 0x140ba2180
     virtual ~UIStanceBar();                                         //  0 0x140ba2220 (??_G 0x140ba2910)
-    virtual CString vfunc_1();                                      //  1 0x140ba2290 "StanceBar"
+    virtual CString GetTypeName();                                      //  1 0x140ba2290 "StanceBar"
     virtual void vfunc_3();                                         //  3 0x140ba22e0 hide: reset the step
     virtual void vfunc_15();                                        // 15 0x140ba2380 empty
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140ba2330

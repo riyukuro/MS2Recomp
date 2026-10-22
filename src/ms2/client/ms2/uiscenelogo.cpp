@@ -58,11 +58,11 @@ UISceneLogo::~UISceneLogo()
 }
 
 // @0x141ad0480
-CString UISceneLogo::vfunc_1()
+CString UISceneLogo::GetTypeName()
 {
     return "SceneLogo";
 }
-MS2_REPLACE_METHOD(0x141AD0480, UISceneLogo, vfunc_1, 61, 0x8DD3FAEE);
+MS2_REPLACE_METHOD(0x141AD0480, UISceneLogo, GetTypeName, 61, 0x8DD3FAEE);
 
 // @0x141ad04d0
 void UISceneLogo::vfunc_48(int n)

@@ -90,7 +90,7 @@ static CString s_strSortTypeNames8[] = {"None", "Buy", "PriceLow", "PriceHigh", 
 ClassObject* NotifyChangeBuff::CreateObject() { return 0; }
 
 // @0x140db46d0
-CStringW NotifyChangeBuff::vfunc_1() { return L"NotifyChangeBuff"; }
+CStringW NotifyChangeBuff::GetTypeName() { return L"NotifyChangeBuff"; }
 
 // @0x140db4720
 NotifyChangeBuff::NotifyChangeBuff(unsigned nId, unsigned short nSubId) : m_nId(nId), m_nSubId(nSubId), m_bAdded(1)
@@ -101,13 +101,13 @@ NotifyChangeBuff::NotifyChangeBuff(unsigned nId, unsigned short nSubId) : m_nId(
 ClassObject* NotifyFadeInComplete::CreateObject() { return 0; }
 
 // @0x140db47b0
-CStringW NotifyFadeInComplete::vfunc_1() { return L"NotifyFadeInComplete"; }
+CStringW NotifyFadeInComplete::GetTypeName() { return L"NotifyFadeInComplete"; }
 
 // @0x140db4800
 ClassObject* NotifyAddNpc::CreateObject() { return 0; }
 
 // @0x140db4810
-CStringW NotifyAddNpc::vfunc_1() { return L"NotifyAddNpc"; }
+CStringW NotifyAddNpc::GetTypeName() { return L"NotifyAddNpc"; }
 
 // @0x140db4860
 NotifyAddNpc::NotifyAddNpc(efd::SmartPointer<Unk_SSGNpc> spNpc) : m_spNpc(spNpc)
@@ -118,7 +118,7 @@ NotifyAddNpc::NotifyAddNpc(efd::SmartPointer<Unk_SSGNpc> spNpc) : m_spNpc(spNpc)
 ClassObject* NotifyRemoveNpc::CreateObject() { return 0; }
 
 // @0x140db48e0
-CStringW NotifyRemoveNpc::vfunc_1() { return L"NotifyRemoveNpc"; }
+CStringW NotifyRemoveNpc::GetTypeName() { return L"NotifyRemoveNpc"; }
 
 // @0x140db4930
 NotifyRemoveNpc::NotifyRemoveNpc(efd::SmartPointer<Unk_SSGNpc> spNpc) : m_spNpc(spNpc)
@@ -129,7 +129,7 @@ NotifyRemoveNpc::NotifyRemoveNpc(efd::SmartPointer<Unk_SSGNpc> spNpc) : m_spNpc(
 ClassObject* NotifyAddInteract::CreateObject() { return 0; }
 
 // @0x140db49b0
-CStringW NotifyAddInteract::vfunc_1() { return L"NotifyAddInteract"; }
+CStringW NotifyAddInteract::GetTypeName() { return L"NotifyAddInteract"; }
 
 // @0x140db4a00
 NotifyAddInteract::NotifyAddInteract(void* pObj) : m_pObj(pObj)
@@ -140,7 +140,7 @@ NotifyAddInteract::NotifyAddInteract(void* pObj) : m_pObj(pObj)
 ClassObject* NotifyAddLiftable::CreateObject() { return 0; }
 
 // @0x140db4a60
-CStringW NotifyAddLiftable::vfunc_1() { return L"NotifyAddLiftable"; }
+CStringW NotifyAddLiftable::GetTypeName() { return L"NotifyAddLiftable"; }
 
 // @0x140db4ab0
 NotifyAddLiftable::NotifyAddLiftable(void* pObj) : m_pObj(pObj)
@@ -151,7 +151,7 @@ NotifyAddLiftable::NotifyAddLiftable(void* pObj) : m_pObj(pObj)
 ClassObject* NotifyAddPortal::CreateObject() { return 0; }
 
 // @0x140db4b10
-CStringW NotifyAddPortal::vfunc_1() { return L"NotifyAddPortal"; }
+CStringW NotifyAddPortal::GetTypeName() { return L"NotifyAddPortal"; }
 
 // @0x140db4b60
 NotifyAddPortal::NotifyAddPortal(void* pObj) : m_pObj(pObj)
@@ -162,7 +162,7 @@ NotifyAddPortal::NotifyAddPortal(void* pObj) : m_pObj(pObj)
 ClassObject* NotifyDamagedMyPC::CreateObject() { return 0; }
 
 // @0x140db4bc0
-CStringW NotifyDamagedMyPC::vfunc_1() { return L"NotifyDamagedMyPC"; }
+CStringW NotifyDamagedMyPC::GetTypeName() { return L"NotifyDamagedMyPC"; }
 
 // @0x140db4c10
 NotifyDamagedMyPC::NotifyDamagedMyPC(Unk_MDamage* pDamage) : m_pDamage(pDamage)
@@ -173,31 +173,31 @@ NotifyDamagedMyPC::NotifyDamagedMyPC(Unk_MDamage* pDamage) : m_pDamage(pDamage)
 ClassObject* NotifyDebugMode::CreateObject() { return 0; }
 
 // @0x140db4c70
-CStringW NotifyDebugMode::vfunc_1() { return L"NotifyDebugMode"; }
+CStringW NotifyDebugMode::GetTypeName() { return L"NotifyDebugMode"; }
 
 // @0x140db4cc0
 ClassObject* NotifyActiveMyCodiTab::CreateObject() { return 0; }
 
 // @0x140db4cd0
-CStringW NotifyActiveMyCodiTab::vfunc_1() { return L"NotifyActiveMyCodiTab"; }
+CStringW NotifyActiveMyCodiTab::GetTypeName() { return L"NotifyActiveMyCodiTab"; }
 
 // @0x140db4d20
 ClassObject* NotifyChangeActiveMyCodiTab::CreateObject() { return 0; }
 
 // @0x140db4d30
-CStringW NotifyChangeActiveMyCodiTab::vfunc_1() { return L"NotifyChangeActiveMyCodiTab"; }
+CStringW NotifyChangeActiveMyCodiTab::GetTypeName() { return L"NotifyChangeActiveMyCodiTab"; }
 
 // @0x140db4d80
 ClassObject* NotifyDebugState::CreateObject() { return 0; }
 
 // @0x140db4d90
-CStringW NotifyDebugState::vfunc_1() { return L"NotifyDebugState"; }
+CStringW NotifyDebugState::GetTypeName() { return L"NotifyDebugState"; }
 
 // @0x140db4de0
 ClassObject* NotifyChangeJob::CreateObject() { return 0; }
 
 // @0x140db4df0
-CStringW NotifyChangeJob::vfunc_1() { return L"NotifyChangeJob"; }
+CStringW NotifyChangeJob::GetTypeName() { return L"NotifyChangeJob"; }
 
 // @0x140db4e40
 NotifyChangeJob::NotifyChangeJob(PCBase* pPc) : m_pc(pPc)
@@ -208,7 +208,7 @@ NotifyChangeJob::NotifyChangeJob(PCBase* pPc) : m_pc(pPc)
 ClassObject* NotifyChangeEquipment::CreateObject() { return 0; }
 
 // @0x140db4ea0
-CStringW NotifyChangeEquipment::vfunc_1() { return L"NotifyChangeEquipment"; }
+CStringW NotifyChangeEquipment::GetTypeName() { return L"NotifyChangeEquipment"; }
 
 // @0x140db4ef0
 NotifyChangeEquipment::NotifyChangeEquipment(PCBase* pPc) : m_pc(pPc)
@@ -219,7 +219,7 @@ NotifyChangeEquipment::NotifyChangeEquipment(PCBase* pPc) : m_pc(pPc)
 ClassObject* NotifyChangeLevel::CreateObject() { return 0; }
 
 // @0x140db4f50
-CStringW NotifyChangeLevel::vfunc_1() { return L"NotifyChangeLevel"; }
+CStringW NotifyChangeLevel::GetTypeName() { return L"NotifyChangeLevel"; }
 
 // @0x140db4fa0
 NotifyChangeLevel::NotifyChangeLevel(PCBase* pPc) : m_pc(pPc)
@@ -230,7 +230,7 @@ NotifyChangeLevel::NotifyChangeLevel(PCBase* pPc) : m_pc(pPc)
 ClassObject* NotifyChangeTitle::CreateObject() { return 0; }
 
 // @0x140db5000
-CStringW NotifyChangeTitle::vfunc_1() { return L"NotifyChangeTitle"; }
+CStringW NotifyChangeTitle::GetTypeName() { return L"NotifyChangeTitle"; }
 
 // @0x140db5050
 NotifyChangeTitle::NotifyChangeTitle(PCBase* pPc) : m_pc(pPc)
@@ -241,13 +241,13 @@ NotifyChangeTitle::NotifyChangeTitle(PCBase* pPc) : m_pc(pPc)
 ClassObject* NotifyClearAchieve::CreateObject() { return 0; }
 
 // @0x140db50b0
-CStringW NotifyClearAchieve::vfunc_1() { return L"NotifyClearAchieve"; }
+CStringW NotifyClearAchieve::GetTypeName() { return L"NotifyClearAchieve"; }
 
 // @0x140db5100
 ClassObject* NotifyChangePcRidee::CreateObject() { return 0; }
 
 // @0x140db5110
-CStringW NotifyChangePcRidee::vfunc_1() { return L"NotifyChangePcRidee"; }
+CStringW NotifyChangePcRidee::GetTypeName() { return L"NotifyChangePcRidee"; }
 
 // @0x140db5160
 NotifyChangePcRidee::NotifyChangePcRidee(PCBase* pPc) : m_pc(pPc)
@@ -258,111 +258,111 @@ NotifyChangePcRidee::NotifyChangePcRidee(PCBase* pPc) : m_pc(pPc)
 ClassObject* NotifyOpenDialogByScene::CreateObject() { return 0; }
 
 // @0x140db51c0
-CStringW NotifyOpenDialogByScene::vfunc_1() { return L"NotifyOpenDialogByScene"; }
+CStringW NotifyOpenDialogByScene::GetTypeName() { return L"NotifyOpenDialogByScene"; }
 
 // @0x140db5210
 ClassObject* NotifyKillPlayer::CreateObject() { return 0; }
 
 // @0x140db5220
-CStringW NotifyKillPlayer::vfunc_1() { return L"NotifyKillPlayer"; }
+CStringW NotifyKillPlayer::GetTypeName() { return L"NotifyKillPlayer"; }
 
 // @0x140db5270
 ClassObject* NotifySurvivalState::CreateObject() { return 0; }
 
 // @0x140db5280
-CStringW NotifySurvivalState::vfunc_1() { return L"NotifySurvivalState"; }
+CStringW NotifySurvivalState::GetTypeName() { return L"NotifySurvivalState"; }
 
 // @0x140db52d0
 ClassObject* NotifySurvivalGameStart::CreateObject() { return 0; }
 
 // @0x140db52e0
-CStringW NotifySurvivalGameStart::vfunc_1() { return L"NotifySurvivalGameStart"; }
+CStringW NotifySurvivalGameStart::GetTypeName() { return L"NotifySurvivalGameStart"; }
 
 // @0x140db5330
 ClassObject* NotifySurvivalGameFinish::CreateObject() { return 0; }
 
 // @0x140db5340
-CStringW NotifySurvivalGameFinish::vfunc_1() { return L"NotifySurvivalGameFinish"; }
+CStringW NotifySurvivalGameFinish::GetTypeName() { return L"NotifySurvivalGameFinish"; }
 
 // @0x140db5390
 ClassObject* NotifyDungeonEnterState::CreateObject() { return 0; }
 
 // @0x140db53a0
-CStringW NotifyDungeonEnterState::vfunc_1() { return L"NotifyDungeonEnterState"; }
+CStringW NotifyDungeonEnterState::GetTypeName() { return L"NotifyDungeonEnterState"; }
 
 // @0x140db53f0
 ClassObject* NotifySkillSetMode::CreateObject() { return 0; }
 
 // @0x140db5400
-CStringW NotifySkillSetMode::vfunc_1() { return L"NotifySkillSetMode"; }
+CStringW NotifySkillSetMode::GetTypeName() { return L"NotifySkillSetMode"; }
 
 // @0x140db5450
 ClassObject* NotifyShortkeyPage::CreateObject() { return 0; }
 
 // @0x140db5460
-CStringW NotifyShortkeyPage::vfunc_1() { return L"NotifyShortkeyPage"; }
+CStringW NotifyShortkeyPage::GetTypeName() { return L"NotifyShortkeyPage"; }
 
 // @0x140db54b0
 ClassObject* NotifyBlindTarget::CreateObject() { return 0; }
 
 // @0x140db54c0
-CStringW NotifyBlindTarget::vfunc_1() { return L"NotifyBlindTarget"; }
+CStringW NotifyBlindTarget::GetTypeName() { return L"NotifyBlindTarget"; }
 
 // @0x140db5510
 ClassObject* NotifyChatEmoticonSelected::CreateObject() { return 0; }
 
 // @0x140db5520
-CStringW NotifyChatEmoticonSelected::vfunc_1() { return L"NotifyChatEmoticonSelected"; }
+CStringW NotifyChatEmoticonSelected::GetTypeName() { return L"NotifyChatEmoticonSelected"; }
 
 // @0x140db5570
 ClassObject* NotifyChangeGameOptionInput::CreateObject() { return 0; }
 
 // @0x140db5580
-CStringW NotifyChangeGameOptionInput::vfunc_1() { return L"NotifyChangeGameOptionInput"; }
+CStringW NotifyChangeGameOptionInput::GetTypeName() { return L"NotifyChangeGameOptionInput"; }
 
 // @0x140db55d0
 ClassObject* NotifyChangeUIBuildingCount::CreateObject() { return 0; }
 
 // @0x140db55e0
-CStringW NotifyChangeUIBuildingCount::vfunc_1() { return L"NotifyChangeUIBuildingCount"; }
+CStringW NotifyChangeUIBuildingCount::GetTypeName() { return L"NotifyChangeUIBuildingCount"; }
 
 // @0x140db5630
 ClassObject* NotifyChangeEnableFeature::CreateObject() { return 0; }
 
 // @0x140db5640
-CStringW NotifyChangeEnableFeature::vfunc_1() { return L"NotifyChangeEnableFeature"; }
+CStringW NotifyChangeEnableFeature::GetTypeName() { return L"NotifyChangeEnableFeature"; }
 
 // ---- hooks ----
-MS2_REPLACE_METHOD(0x140DB46D0, NotifyChangeBuff, vfunc_1, 61, 0x4682417E);
-MS2_REPLACE_METHOD(0x140DB47B0, NotifyFadeInComplete, vfunc_1, 61, 0x7F7FA8AC);
-MS2_REPLACE_METHOD(0x140DB4810, NotifyAddNpc, vfunc_1, 61, 0x4757803C);
-MS2_REPLACE_METHOD(0x140DB48E0, NotifyRemoveNpc, vfunc_1, 61, 0x4D91E3DD);
-MS2_REPLACE_METHOD(0x140DB49B0, NotifyAddInteract, vfunc_1, 61, 0xD121D589);
-MS2_REPLACE_METHOD(0x140DB4A60, NotifyAddLiftable, vfunc_1, 61, 0xC5749678);
-MS2_REPLACE_METHOD(0x140DB4B10, NotifyAddPortal, vfunc_1, 61, 0x6857211D);
-MS2_REPLACE_METHOD(0x140DB4BC0, NotifyDamagedMyPC, vfunc_1, 61, 0xB5065172);
-MS2_REPLACE_METHOD(0x140DB4C70, NotifyDebugMode, vfunc_1, 61, 0x2A62EAF0);
-MS2_REPLACE_METHOD(0x140DB4CD0, NotifyActiveMyCodiTab, vfunc_1, 61, 0xFF1DF340);
-MS2_REPLACE_METHOD(0x140DB4D30, NotifyChangeActiveMyCodiTab, vfunc_1, 61, 0x7E51A983);
-MS2_REPLACE_METHOD(0x140DB4D90, NotifyDebugState, vfunc_1, 61, 0xBA16B023);
-MS2_REPLACE_METHOD(0x140DB4DF0, NotifyChangeJob, vfunc_1, 61, 0xB032B1FB);
-MS2_REPLACE_METHOD(0x140DB4EA0, NotifyChangeEquipment, vfunc_1, 61, 0x3CA4E76A);
-MS2_REPLACE_METHOD(0x140DB4F50, NotifyChangeLevel, vfunc_1, 61, 0x888D82CD);
-MS2_REPLACE_METHOD(0x140DB5000, NotifyChangeTitle, vfunc_1, 61, 0x1595E910);
-MS2_REPLACE_METHOD(0x140DB50B0, NotifyClearAchieve, vfunc_1, 61, 0x41C4F781);
-MS2_REPLACE_METHOD(0x140DB5110, NotifyChangePcRidee, vfunc_1, 61, 0x1A9218D1);
-MS2_REPLACE_METHOD(0x140DB51C0, NotifyOpenDialogByScene, vfunc_1, 61, 0x73F34BED);
-MS2_REPLACE_METHOD(0x140DB5220, NotifyKillPlayer, vfunc_1, 61, 0x36944AB5);
-MS2_REPLACE_METHOD(0x140DB5280, NotifySurvivalState, vfunc_1, 61, 0xF29D59E4);
-MS2_REPLACE_METHOD(0x140DB52E0, NotifySurvivalGameStart, vfunc_1, 61, 0x41F6FFAC);
-MS2_REPLACE_METHOD(0x140DB5340, NotifySurvivalGameFinish, vfunc_1, 61, 0x2C4465A3);
-MS2_REPLACE_METHOD(0x140DB53A0, NotifyDungeonEnterState, vfunc_1, 61, 0x2911F6EB);
-MS2_REPLACE_METHOD(0x140DB5400, NotifySkillSetMode, vfunc_1, 61, 0xC0B034E3);
-MS2_REPLACE_METHOD(0x140DB5460, NotifyShortkeyPage, vfunc_1, 61, 0xBC269732);
-MS2_REPLACE_METHOD(0x140DB54C0, NotifyBlindTarget, vfunc_1, 61, 0xFD92EE42);
-MS2_REPLACE_METHOD(0x140DB5520, NotifyChatEmoticonSelected, vfunc_1, 61, 0x543D2122);
-MS2_REPLACE_METHOD(0x140DB5580, NotifyChangeGameOptionInput, vfunc_1, 61, 0xB3705849);
-MS2_REPLACE_METHOD(0x140DB55E0, NotifyChangeUIBuildingCount, vfunc_1, 61, 0x13599739);
-MS2_REPLACE_METHOD(0x140DB5640, NotifyChangeEnableFeature, vfunc_1, 61, 0x75EC97C8);
+MS2_REPLACE_METHOD(0x140DB46D0, NotifyChangeBuff, GetTypeName, 61, 0x4682417E);
+MS2_REPLACE_METHOD(0x140DB47B0, NotifyFadeInComplete, GetTypeName, 61, 0x7F7FA8AC);
+MS2_REPLACE_METHOD(0x140DB4810, NotifyAddNpc, GetTypeName, 61, 0x4757803C);
+MS2_REPLACE_METHOD(0x140DB48E0, NotifyRemoveNpc, GetTypeName, 61, 0x4D91E3DD);
+MS2_REPLACE_METHOD(0x140DB49B0, NotifyAddInteract, GetTypeName, 61, 0xD121D589);
+MS2_REPLACE_METHOD(0x140DB4A60, NotifyAddLiftable, GetTypeName, 61, 0xC5749678);
+MS2_REPLACE_METHOD(0x140DB4B10, NotifyAddPortal, GetTypeName, 61, 0x6857211D);
+MS2_REPLACE_METHOD(0x140DB4BC0, NotifyDamagedMyPC, GetTypeName, 61, 0xB5065172);
+MS2_REPLACE_METHOD(0x140DB4C70, NotifyDebugMode, GetTypeName, 61, 0x2A62EAF0);
+MS2_REPLACE_METHOD(0x140DB4CD0, NotifyActiveMyCodiTab, GetTypeName, 61, 0xFF1DF340);
+MS2_REPLACE_METHOD(0x140DB4D30, NotifyChangeActiveMyCodiTab, GetTypeName, 61, 0x7E51A983);
+MS2_REPLACE_METHOD(0x140DB4D90, NotifyDebugState, GetTypeName, 61, 0xBA16B023);
+MS2_REPLACE_METHOD(0x140DB4DF0, NotifyChangeJob, GetTypeName, 61, 0xB032B1FB);
+MS2_REPLACE_METHOD(0x140DB4EA0, NotifyChangeEquipment, GetTypeName, 61, 0x3CA4E76A);
+MS2_REPLACE_METHOD(0x140DB4F50, NotifyChangeLevel, GetTypeName, 61, 0x888D82CD);
+MS2_REPLACE_METHOD(0x140DB5000, NotifyChangeTitle, GetTypeName, 61, 0x1595E910);
+MS2_REPLACE_METHOD(0x140DB50B0, NotifyClearAchieve, GetTypeName, 61, 0x41C4F781);
+MS2_REPLACE_METHOD(0x140DB5110, NotifyChangePcRidee, GetTypeName, 61, 0x1A9218D1);
+MS2_REPLACE_METHOD(0x140DB51C0, NotifyOpenDialogByScene, GetTypeName, 61, 0x73F34BED);
+MS2_REPLACE_METHOD(0x140DB5220, NotifyKillPlayer, GetTypeName, 61, 0x36944AB5);
+MS2_REPLACE_METHOD(0x140DB5280, NotifySurvivalState, GetTypeName, 61, 0xF29D59E4);
+MS2_REPLACE_METHOD(0x140DB52E0, NotifySurvivalGameStart, GetTypeName, 61, 0x41F6FFAC);
+MS2_REPLACE_METHOD(0x140DB5340, NotifySurvivalGameFinish, GetTypeName, 61, 0x2C4465A3);
+MS2_REPLACE_METHOD(0x140DB53A0, NotifyDungeonEnterState, GetTypeName, 61, 0x2911F6EB);
+MS2_REPLACE_METHOD(0x140DB5400, NotifySkillSetMode, GetTypeName, 61, 0xC0B034E3);
+MS2_REPLACE_METHOD(0x140DB5460, NotifyShortkeyPage, GetTypeName, 61, 0xBC269732);
+MS2_REPLACE_METHOD(0x140DB54C0, NotifyBlindTarget, GetTypeName, 61, 0xFD92EE42);
+MS2_REPLACE_METHOD(0x140DB5520, NotifyChatEmoticonSelected, GetTypeName, 61, 0x543D2122);
+MS2_REPLACE_METHOD(0x140DB5580, NotifyChangeGameOptionInput, GetTypeName, 61, 0xB3705849);
+MS2_REPLACE_METHOD(0x140DB55E0, NotifyChangeUIBuildingCount, GetTypeName, 61, 0x13599739);
+MS2_REPLACE_METHOD(0x140DB5640, NotifyChangeEnableFeature, GetTypeName, 61, 0x75EC97C8);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca55d0-0x142ca5690 .text$yd

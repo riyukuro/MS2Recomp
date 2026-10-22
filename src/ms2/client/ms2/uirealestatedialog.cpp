@@ -202,7 +202,7 @@ UIRealEstateDialog::~UIRealEstateDialog()
 }
 
 // @0x141ab2220
-CString UIRealEstateDialog::vfunc_1()
+CString UIRealEstateDialog::GetTypeName()
 {
     return "RealEstateDialog";
 }

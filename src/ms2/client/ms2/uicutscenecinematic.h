@@ -63,7 +63,7 @@ public:
 
     UICutSceneCinematic();                                          // 0x141906f30
     virtual ~UICutSceneCinematic();                                 //  0 0x1419072a0 (??_G 0x14190c5d0)
-    virtual CString vfunc_1();                                      //  1 0x141907520 "CutSceneCinematic"
+    virtual CString GetTypeName();                                      //  1 0x141907520 "CutSceneCinematic"
     virtual void vfunc_2();                                         //  2 0x1419075c0 show
     virtual void vfunc_3();                                         //  3 0x141907630 hide
     virtual int vfunc_13();                                         // 13 0x141907c80 keys: debug skip / skip prompt
@@ -145,6 +145,6 @@ class NotifyCutSceneCinematicSkip : public NotifyObject
 {
 public:
     // implicit ctor 0x14190be80, dtor 0x14190c150 (??_G 0x14190c590): inline COMDATs
-    virtual CStringW vfunc_1();                                     // 0x140db4490
+    virtual CStringW GetTypeName();                                     // 0x140db4490
 };
 MS2_CHECK_SIZE(NotifyCutSceneCinematicSkip, 0x18);

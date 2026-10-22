@@ -66,7 +66,7 @@ UIHomePasswordDialog::~UIHomePasswordDialog()
 }
 
 // @0x1412c8cb0
-CString UIHomePasswordDialog::vfunc_1()
+CString UIHomePasswordDialog::GetTypeName()
 {
     return "HomePasswordDialog";
 }

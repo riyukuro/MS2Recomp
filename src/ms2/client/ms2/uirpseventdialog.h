@@ -10,7 +10,7 @@ class UIRpsEventDialog : public UIDialog {
 public:
     UIRpsEventDialog();
     virtual ~UIRpsEventDialog();
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual void vfunc_72();
     virtual void vfunc_67();
     virtual void OnLoadComplete();

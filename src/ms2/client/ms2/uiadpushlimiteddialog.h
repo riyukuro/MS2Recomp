@@ -1,7 +1,7 @@
 // uiadpushlimiteddialog.h - UIAdPushLimitedDialog (RTTI .?AVUIAdPushLimitedDialog@@, base UIDialog; 0x1c8 bytes): the
 // floating (maximized) window of a limited-time merat market bundle offer shown by the advertisement push dialog. Recovered
 // from MapleStory2.exe KMS2_DEV x64 (2022-04-13); header name assumed, member names invented. Ctor 0x140e01f50 (operator new
-// 0x1c8 in AdPushEntityLimitedBundle::vfunc_1, unit_140e3efd0.cpp), dtor 0x140e02060 (deleting dtor 0x140e04d80). The
+// 0x1c8 in AdPushEntityLimitedBundle::GetTypeName, unit_140e3efd0.cpp), dtor 0x140e02060 (deleting dtor 0x140e04d80). The
 // definitions belong to unit `?\uiadpushlimiteddialog.cpp`; only the layout is declared here so other units can use the type.
 //
 // The dialog is created and owned by an AdPushEntityLimitedBundle (m_owner is the back pointer). Its movie holds a product
@@ -29,7 +29,7 @@ class UIAdPushLimitedDialog : public UIDialog
 public:
     UIAdPushLimitedDialog();                                        // 0x140e01f50
     virtual ~UIAdPushLimitedDialog();                               //  0 0x140e02060 (??_G 0x140e04d80)
-    virtual CString vfunc_1();                                      //  1 0x140e020f0 "AdPushLimitedDialog"
+    virtual CString GetTypeName();                                      //  1 0x140e020f0 "AdPushLimitedDialog"
     virtual int vfunc_5();                                          //  5 0x140e02ce0 restore the saved window position
     virtual void OnLoadComplete();                                  // 22 0x140e02140 send initData (the offer product row)
     virtual void vfunc_26();                                        // 26 0x140e02590 drop the members

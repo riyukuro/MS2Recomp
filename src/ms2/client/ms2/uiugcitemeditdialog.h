@@ -45,7 +45,7 @@ class UIUGCItemEditDialog : public UIDialog,
 public:
     UIUGCItemEditDialog();                                      // 0x141b3b830
     virtual ~UIUGCItemEditDialog();                             //  0 0x141b3bad0 (??_G 0x141b473c0)
-    virtual CString vfunc_1();                                  //  1 0x141b3bc50 "UGCItemEditDialog"
+    virtual CString GetTypeName();                                  //  1 0x141b3bc50 "UGCItemEditDialog"
     virtual void vfunc_16();                                    // 16 0x141b3cca0 unload the render target
     virtual bool vfunc_17();                                    // 17 0x141b3ccd0 load the render target
     virtual void OnLoadComplete();                              // 22 0x141b3bd60

@@ -14,7 +14,7 @@ class UIPvPTeamFlagGagueDialog : public UIDialog
 public:
     UIPvPTeamFlagGagueDialog();                                             // 0x141344ab0
     virtual ~UIPvPTeamFlagGagueDialog();                                    //  0 0x141344b50
-    virtual CString vfunc_1();                                              //  1 0x141344b90
+    virtual CString GetTypeName();                                              //  1 0x141344b90
     virtual void OnLoadComplete();                                          // 22 0x141344be0
     virtual void vfunc_43();                                                // 43 0x141344c30
     virtual int vfunc_48() { return 0x4ed4; }                               // 48 (COMDAT 0x141344fa0)

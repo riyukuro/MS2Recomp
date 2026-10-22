@@ -50,7 +50,7 @@ class CGameOptionStatus : public CBaseOption
 public:
     CGameOptionStatus(int nId, int nType);                        // 0x1412589a0
     virtual ~CGameOptionStatus();                             // 0x141258a20
-    virtual CString vfunc_1();                                     // 0x14125b060
+    virtual CString GetTypeName();                                     // 0x14125b060
     virtual void vfunc_3(int n);                                   // 0x141258a50
     virtual void vfunc_4(int n);                                   // 0x141258ac0
     virtual int vfunc_5(const char* pszName, void* pArg, int nArg);// 0x141258af0

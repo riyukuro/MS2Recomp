@@ -318,7 +318,7 @@ UILongTermAttendGiftDialog::~UILongTermAttendGiftDialog()
 }
 
 // @0x140c6b4a0
-CString UILongTermAttendGiftDialog::vfunc_1()
+CString UILongTermAttendGiftDialog::GetTypeName()
 {
     return "LongTermAttendGiftDialog";
 }
@@ -710,7 +710,7 @@ CStringW UILongTermAttendGiftDialog::FUN_140c6d5c0()
     return g_ltaTable.FUN_140c6d980(0xa8c, m_178->m_id, CStringW((const wchar_t*)0));
 }
 
-MS2_REPLACE_METHOD(0x140C6B4A0, UILongTermAttendGiftDialog, vfunc_1, 61, 0xE157B792);
+MS2_REPLACE_METHOD(0x140C6B4A0, UILongTermAttendGiftDialog, GetTypeName, 61, 0xE157B792);
 MS2_REPLACE_METHOD(0x140C6B4F0, UILongTermAttendGiftDialog, vfunc_65, 37, 0x0FF8B225);
 MS2_REPLACE_METHOD(0x140C6B520, UILongTermAttendGiftDialog, vfunc_67, 45, 0xA4E5533B);
 MS2_REPLACE_METHOD(0x140C6B560, UILongTermAttendGiftDialog, OnLoadComplete, 72, 0xA71A4DA1);

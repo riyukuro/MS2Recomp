@@ -127,11 +127,11 @@ ClassObject* CGuideConditionPosition::CreateObject()
 }
 
 // @0x1413a6e90
-CStringW CGuideConditionPosition::vfunc_1()
+CStringW CGuideConditionPosition::GetTypeName()
 {
     return L"CGuideConditionPosition";
 }
-MS2_REPLACE_METHOD(0x1413A6E90, CGuideConditionPosition, vfunc_1, 61, 0x7DC5F128);
+MS2_REPLACE_METHOD(0x1413A6E90, CGuideConditionPosition, GetTypeName, 61, 0x7DC5F128);
 
 // @0x1413a6ee0
 CGuideConditionPosition::CGuideConditionPosition()
@@ -206,11 +206,11 @@ ClassObject* CGuideConditionState::CreateObject()
 }
 
 // @0x1413a7400
-CStringW CGuideConditionState::vfunc_1()
+CStringW CGuideConditionState::GetTypeName()
 {
     return L"CGuideConditionState";
 }
-MS2_REPLACE_METHOD(0x1413A7400, CGuideConditionState, vfunc_1, 61, 0xCF290588);
+MS2_REPLACE_METHOD(0x1413A7400, CGuideConditionState, GetTypeName, 61, 0xCF290588);
 
 // @0x1413a7450
 int CGuideConditionState::vfunc_3()
@@ -231,11 +231,11 @@ ClassObject* CGuideConditionInteractable::CreateObject()
 }
 
 // @0x1413a7520
-CStringW CGuideConditionInteractable::vfunc_1()
+CStringW CGuideConditionInteractable::GetTypeName()
 {
     return L"CGuideConditionInteractable";
 }
-MS2_REPLACE_METHOD(0x1413A7520, CGuideConditionInteractable, vfunc_1, 61, 0x4EF3F619);
+MS2_REPLACE_METHOD(0x1413A7520, CGuideConditionInteractable, GetTypeName, 61, 0x4EF3F619);
 
 // @0x1413a7570
 int CGuideConditionInteractable::vfunc_3()

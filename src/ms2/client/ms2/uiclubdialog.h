@@ -25,7 +25,7 @@ public:
     UIClubDialog();                                                 // 0x140e0aa10
     virtual ~UIClubDialog();                                        //  0 0x140e0aa80 (??_G 0x140e0d8c0)
 
-    virtual CString vfunc_1();                                      //  1 "ClubDialog"
+    virtual CString GetTypeName();                                      //  1 "ClubDialog"
     virtual void OnLoadComplete();                                  // 22 hides the web guide button, fills the lists
     virtual void vfunc_26();                                        // 26
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 swf callbacks

@@ -237,7 +237,7 @@ UIMaidDialog::~UIMaidDialog()
 }
 
 // @0x1412d7170
-CString UIMaidDialog::vfunc_1()
+CString UIMaidDialog::GetTypeName()
 {
     return "MaidDialog";
 }

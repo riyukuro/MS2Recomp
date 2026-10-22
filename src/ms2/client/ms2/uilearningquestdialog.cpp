@@ -96,7 +96,7 @@ int FUN_1402bacf0(ATL::CAtlArray<int>& rArr, const int& n);                 // i
 static int FUN_140ea3980(const void* pA, const void* pB);
 
 // @0x140ea0850
-UILearningQuestDialog::UILearningQuestDialog() : m_1a8(vfunc_1())
+UILearningQuestDialog::UILearningQuestDialog() : m_1a8(GetTypeName())
 {
     m_7c = 1;
     m_80 = 0;
@@ -121,7 +121,7 @@ UILearningQuestDialog::~UILearningQuestDialog()
 }
 
 // @0x140ea11b0
-CString UILearningQuestDialog::vfunc_1() { return "LearningQuestDialog"; }
+CString UILearningQuestDialog::GetTypeName() { return "LearningQuestDialog"; }
 
 // @0x140ea1200
 int UILearningQuestDialog::vfunc_65()
@@ -591,7 +591,7 @@ static int FUN_140ea3980(const void* pA, const void* pB)
 }
 
 // ---- hooks (functions that call CLearningQuestTable::GetInstance / build delegates are not hooked: see RECOVERY section 9) ----
-MS2_REPLACE_METHOD(0x140EA11B0, UILearningQuestDialog, vfunc_1, 61, 0x440B3F21);
+MS2_REPLACE_METHOD(0x140EA11B0, UILearningQuestDialog, GetTypeName, 61, 0x440B3F21);
 MS2_REPLACE_METHOD(0x140EA1200, UILearningQuestDialog, vfunc_65, 24, 0xD85237DC);
 MS2_REPLACE_METHOD(0x140EA1220, UILearningQuestDialog, vfunc_67, 63, 0x5082B5DD);
 MS2_REPLACE_METHOD(0x140EA1E00, UILearningQuestDialog, vfunc_12, 24, 0xBB2FC109);

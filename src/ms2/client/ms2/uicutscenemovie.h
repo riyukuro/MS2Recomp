@@ -51,7 +51,7 @@ public:
     int HasSceneVideo(int nScene);                                  // 0x14190f1d0
     void SetSoundFade(bool bFade);                                  // 0x14190f270
     void RemoveTween();                                             // 0x14190f350
-    virtual CString vfunc_1();                                      //  1
+    virtual CString GetTypeName();                                      //  1
     virtual void OnLoadInit();                                      // 20
     virtual int vfunc_13();                                         // 13
     virtual void vfunc_15();                                        // 15

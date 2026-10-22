@@ -10,9 +10,9 @@
 // MS2-PIN: ??$?8PEAVUIItemEventOpenBoxDialog@@P80@EAAXPEAVNotifyObject@@@Z@std@@YA_NAEBU?$pair@PEAVUIItemEventOpenBoxDialog@@P81@EAAXPEAVNotifyObject@@@Z@0@0@Z 0x140e48d10 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIItemEventOpenBoxDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@QEAA@AEBV01@@Z 0x140e48fd0 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIItemEventOpenBoxDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBV01@@Z 0x140e49110 ; prop
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIItemEventOpenBoxDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140e49320 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIItemEventOpenBoxDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140e49380 ; unique
-// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIItemEventOpenBoxDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140e493e0 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIItemEventOpenBoxDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140e49320 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIItemEventOpenBoxDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140e49380 ; unique
+// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIItemEventOpenBoxDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140e493e0 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIItemEventOpenBoxDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAXAEAVCInPacket@@@Z 0x140e49440 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIItemEventOpenBoxDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x140e49470 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIItemEventOpenBoxDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAXPEAVNotifyObject@@@Z 0x140e494a0 ; unique
@@ -110,8 +110,8 @@ UIItemEventOpenBoxDialog::~UIItemEventOpenBoxDialog()
 }
 
 // @0x140e47a50
-CString UIItemEventOpenBoxDialog::vfunc_1() { return "ItemEventOpenBoxDialog"; }
-MS2_REPLACE_METHOD(0x140E47A50, UIItemEventOpenBoxDialog, vfunc_1, 61, 0xFB0AD2CB);
+CString UIItemEventOpenBoxDialog::GetTypeName() { return "ItemEventOpenBoxDialog"; }
+MS2_REPLACE_METHOD(0x140E47A50, UIItemEventOpenBoxDialog, GetTypeName, 61, 0xFB0AD2CB);
 
 // @0x140e47aa0
 void UIItemEventOpenBoxDialog::vfunc_67()
@@ -250,7 +250,7 @@ CString UIItemEventOpenBoxDialog::FUN_140e48770(unsigned nItemId)
 {
     FUN_140e48990();
     CString strKey;
-    strKey.Format("%s_%d", (const char*)vfunc_1(), nItemId);
+    strKey.Format("%s_%d", (const char*)GetTypeName(), nItemId);
     MS2Ptr<CItem> spItem(new CItem);
     int nRank = FUN_14053feb0(nItemId);
     if (spItem->FUN_140523c40(nItemId, nRank, 0) == 0)

@@ -521,11 +521,11 @@ void UITextureDensityDialog::OnLoadComplete()
 MS2_REPLACE_METHOD(0x14184ACE0, UITextureDensityDialog, OnLoadComplete, 99, 0xFE0249C9);
 
 // @0x14184ad50
-CString UITextureDensityDialog::vfunc_1()
+CString UITextureDensityDialog::GetTypeName()
 {
     return "TextureDensityDialog";
 }
-MS2_REPLACE_METHOD(0x14184AD50, UITextureDensityDialog, vfunc_1, 61, 0x08D58A85);
+MS2_REPLACE_METHOD(0x14184AD50, UITextureDensityDialog, GetTypeName, 61, 0x08D58A85);
 
 // @0x14184ada0
 int UITextureDensityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)

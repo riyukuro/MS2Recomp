@@ -11,7 +11,7 @@ class UIHomeInfoEditDialog : public UIModalDialog
 public:
     UIHomeInfoEditDialog();                                     // 0x140c26440
     virtual ~UIHomeInfoEditDialog();                            //  0 0x140c264b0 (??_G 0x140c270c0)
-    virtual CString vfunc_1();                                  //  1 0x140c264f0 "HomeInfoEditDialog"
+    virtual CString GetTypeName();                                  //  1 0x140c264f0 "HomeInfoEditDialog"
     virtual void OnLoadComplete();                              // 22 0x140c26540 fill the two inputs
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140c267e0 "OnConfirm"
     virtual void vfunc_43();                                    // 43 0x140c26770 ASDialog slot 4 (0, 0, 0)

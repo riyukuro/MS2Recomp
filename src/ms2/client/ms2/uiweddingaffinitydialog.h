@@ -12,7 +12,7 @@ class UIWeddingAffinityDialog : public UIDialog
 public:
     UIWeddingAffinityDialog();                                  // 0x140fc2090
     virtual ~UIWeddingAffinityDialog();                         //  0 0x140fc2110 (??_G 0x140fc2ae0)
-    virtual CString vfunc_1();                                  //  1 0x140fc2150 "WeddingAffinityDialog"
+    virtual CString GetTypeName();                                  //  1 0x140fc2150 "WeddingAffinityDialog"
     virtual void OnLoadComplete();                              // 22 0x140fc21e0 build the history text
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140fc2510
     virtual int vfunc_48() { return 0x4f95; }                   // 48 0x140fc2b20

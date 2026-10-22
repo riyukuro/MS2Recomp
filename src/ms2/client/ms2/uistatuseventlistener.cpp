@@ -580,11 +580,11 @@ UIStoreDialog::~UIStoreDialog()
 }
 
 // @0x141b0ee20
-CString UIStoreDialog::vfunc_1()
+CString UIStoreDialog::GetTypeName()
 {
     return "StoreDialog";
 }
-MS2_REPLACE_METHOD(0x141B0EE20, UIStoreDialog, vfunc_1, 61, 0xCD7E5793);
+MS2_REPLACE_METHOD(0x141B0EE20, UIStoreDialog, GetTypeName, 61, 0xCD7E5793);
 
 // @0x141b0ee70
 int UIStoreDialog::vfunc_oa0_1()
@@ -598,7 +598,7 @@ int UIStoreDialog::vfunc_65()
 {
     if (UIDialog::vfunc_65() == 0)
         return 0;
-    m_188 = vfunc_1();
+    m_188 = GetTypeName();
     return 1;
 }
 MS2_REPLACE_METHOD(0x141B0EEC0, UIStoreDialog, vfunc_65, 119, 0x19826C4E);

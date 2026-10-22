@@ -459,7 +459,7 @@ UICashShopDialog::~UICashShopDialog()
 }
 
 // @0x141033660
-CString UICashShopDialog::vfunc_1()
+CString UICashShopDialog::GetTypeName()
 {
     return CString("CashShopDialog");
 }
@@ -479,7 +479,7 @@ void UICashShopDialog::vfunc_67()
     UIDialog::vfunc_67();
     m_filter.FUN_141033200();
     m_nDirty = 0;
-    FUN_140b05680(vfunc_1());
+    FUN_140b05680(GetTypeName());
 }
 
 // @0x1410337a0
@@ -552,9 +552,9 @@ void UICashShopDialog::vfunc_15()
         MS2Ptr<Unk_CashBag> spBag = FUN_140ba4b70(CString("m_inven"));
         if (spBag.get() != 0) {
             FUN_1418ffef0(&m_nDirty, 2);
-            FUN_140b05680(vfunc_1());
-            FUN_140b055c0(vfunc_1(), m_nCategory);
-            spBag->FUN_1407cba60("bagId", vfunc_1());
+            FUN_140b05680(GetTypeName());
+            FUN_140b055c0(GetTypeName(), m_nCategory);
+            spBag->FUN_1407cba60("bagId", GetTypeName());
             m_filter.FUN_141033240(m_nCategory);
             FUN_141037360();
         }

@@ -18,7 +18,7 @@ class UIQuizOXWelcomeDialog : public UIDialog
 public:
     UIQuizOXWelcomeDialog();                                    // 0x140e7ef40
     virtual ~UIQuizOXWelcomeDialog();                           //  0 0x140e7efb0 (??_G 0x140e7f290)
-    virtual CString vfunc_1();                                  //  1 0x140e7eff0
+    virtual CString GetTypeName();                                  //  1 0x140e7eff0
     virtual void OnLoadComplete();                              // 22 0x140e7f040
     virtual void vfunc_43();                                    // 43 0x140e7f080
     virtual void vfunc_72();                                    // 72 0x140e7f100 (empty)

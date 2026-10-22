@@ -92,7 +92,7 @@ UIPvPObserverDialog::~UIPvPObserverDialog()
 }
 
 // @0x141a912a0
-CString UIPvPObserverDialog::vfunc_1()
+CString UIPvPObserverDialog::GetTypeName()
 {
     return "PvPObserverDialog";
 }
@@ -380,7 +380,7 @@ int UIPvPObserverDialog::FUN_141a92ce0()
     return m_1c8;
 }
 
-MS2_REPLACE_METHOD(0x141A912A0, UIPvPObserverDialog, vfunc_1, 61, 0x608284E6);
+MS2_REPLACE_METHOD(0x141A912A0, UIPvPObserverDialog, GetTypeName, 61, 0x608284E6);
 MS2_REPLACE_METHOD(0x141A912F0, UIPvPObserverDialog, vfunc_65, 52, 0x37F5FFE4);
 MS2_REPLACE_METHOD(0x141A91330, UIPvPObserverDialog, vfunc_67, 190, 0xE956ECE4);
 MS2_REPLACE_METHOD(0x141A91400, UIPvPObserverDialog, vfunc_72, 570, 0x4751A3AB);

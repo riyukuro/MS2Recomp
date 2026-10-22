@@ -65,7 +65,7 @@ class UIQuestGuideDialog : public UIDialog, public UIQuestEventListener
 public:
     UIQuestGuideDialog();                                                                   // 0x141aa97d0
     virtual ~UIQuestGuideDialog();                                                          //  0 0x141aa99c0
-    virtual CString vfunc_1();                                                              //  1 0x141aa9a90
+    virtual CString GetTypeName();                                                              //  1 0x141aa9a90
     virtual void vfunc_15();                                                                // 15 0x141aaa450
     virtual void vfunc_18();                                                                // 18 0x141aab350
     virtual void OnLoadComplete();                                                          // 22 0x141aa9f60

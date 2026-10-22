@@ -72,7 +72,7 @@ public:
     UITencentCashChargeDialog();                                    // 0x140e99b90
     virtual ~UITencentCashChargeDialog();                           // 0x140e99c70 (deleting dtor 0x140e9a800)
 
-    virtual CString vfunc_1();                                      //  1 0x140e99d30
+    virtual CString GetTypeName();                                      //  1 0x140e99d30
     virtual void vfunc_8(int nVisible);                             //  8 0x140e99d80
     virtual void vfunc_16();                                        // 16 0x140e9a510
     virtual void OnLoadComplete();                                  // 22 0x140e99ec0
@@ -126,7 +126,7 @@ void UITencentCashChargeDialog::vfunc_47(int n)
 }
 
 // @0x140e99d30
-CString UITencentCashChargeDialog::vfunc_1()
+CString UITencentCashChargeDialog::GetTypeName()
 {
     return CString("TencentCashChargeDialog");
 }

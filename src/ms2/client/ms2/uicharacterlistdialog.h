@@ -103,7 +103,7 @@ public:
 
     UICharacterListDialog();                                // 0x1418ea2b0
     virtual ~UICharacterListDialog();                       //  0 0x1418ea5d0
-    virtual CString vfunc_1();                              //  1 0x1418ea740 "CharacterListDialog"
+    virtual CString GetTypeName();                              //  1 0x1418ea740 "CharacterListDialog"
     virtual int vfunc_4();                                  //  4 0x1418ed190
     virtual int vfunc_5();                                  //  5 0x1418ed2d0
     virtual int vfunc_13();                                 // 13 0x1418eb930

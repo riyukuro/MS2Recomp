@@ -379,7 +379,7 @@ void CGameOptionBattle::vfunc_12()
 }
 
 // @0x1412481f0
-CString CGameOptionBattle::vfunc_1()
+CString CGameOptionBattle::GetTypeName()
 {
     return CString("GameOptionBattle");
 }
@@ -549,7 +549,7 @@ void CGameOptionCamera::vfunc_12()
 }
 
 // @0x141249220
-CString CGameOptionCamera::vfunc_1()
+CString CGameOptionCamera::GetTypeName()
 {
     return CString("GameOptionCamera");
 }
@@ -773,7 +773,7 @@ void CGameOptionCommunity::vfunc_12()
 }
 
 // @0x14124aa20
-CString CGameOptionCommunity::vfunc_1()
+CString CGameOptionCommunity::GetTypeName()
 {
     return CString("GameOptionCommunity");
 }
@@ -1490,7 +1490,7 @@ void CGameOptionGraphicDefault::vfunc_12()
 }
 
 // @0x14124d840
-CString CGameOptionGraphicDefault::vfunc_1()
+CString CGameOptionGraphicDefault::GetTypeName()
 {
     return CString("GameOptionGraphic");
 }

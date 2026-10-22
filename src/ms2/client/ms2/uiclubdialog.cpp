@@ -205,11 +205,11 @@ UIClubDialog::~UIClubDialog()
 }
 
 // @0x140e0aac0
-CString UIClubDialog::vfunc_1()
+CString UIClubDialog::GetTypeName()
 {
     return "ClubDialog";
 }
-MS2_REPLACE_METHOD(0x140E0AAC0, UIClubDialog, vfunc_1, 61, 0x32B5C262);
+MS2_REPLACE_METHOD(0x140E0AAC0, UIClubDialog, GetTypeName, 61, 0x32B5C262);
 
 // @0x140e0ab10
 int UIClubDialog::vfunc_65()

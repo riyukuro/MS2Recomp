@@ -22,7 +22,7 @@ struct SwfInfo : public CPtred
     SwfInfo();                                                              // 0x141986d90
     void FUN_141986df0(ASObj& obj, bool bSelected);                         // fills a list row: name, label, selected
 
-    CStringW m_strName;                 // +0x18 label (the UI's vfunc_1() unless given)
+    CStringW m_strName;                 // +0x18 label (the UI's GetTypeName() unless given)
     int m_nId;                          // +0x20 UI type id (vfunc_48)
     int m_nType;                        // +0x24 0 HUD, 1 dialog, 2 other (the index of the list group)
 };
@@ -34,7 +34,7 @@ class UIHideSettingDialog : public UIDialog
 public:
     UIHideSettingDialog();                                                  // 0x141986ea0
     virtual ~UIHideSettingDialog();                                         //  0 0x141986f30 (??_G 0x141989300)
-    virtual CString vfunc_1();                                              //  1 0x141986fa0 "HideSettingDialog"
+    virtual CString GetTypeName();                                              //  1 0x141986fa0 "HideSettingDialog"
     virtual void vfunc_10();                                                // 10 0x141986ff0 clears the list
     virtual int vfunc_13();                                                 // 13 0x141987450 Enter: onEnterKey
     virtual void OnLoadComplete();                                          // 22 0x141987020 registers the UIs, builds the list

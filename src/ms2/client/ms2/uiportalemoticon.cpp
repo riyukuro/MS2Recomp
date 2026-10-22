@@ -65,7 +65,7 @@ UIPortalEmoticon::~UIPortalEmoticon()
 }
 
 // @0x140f9bb00
-CString UIPortalEmoticon::vfunc_1()
+CString UIPortalEmoticon::GetTypeName()
 {
     return "PortalEmoticon";
 }

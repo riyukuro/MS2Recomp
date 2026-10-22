@@ -30,7 +30,7 @@ class UIHouseDemolishDialog : public UIDialog
 public:
     UIHouseDemolishDialog();                                    // 0x14134fc90
     virtual ~UIHouseDemolishDialog();                           //  0 0x14134fd40 (??_G 0x141350b70)
-    virtual CString vfunc_1();                                  //  1 0x14134fd80 "HouseDemolishDialog"
+    virtual CString GetTypeName();                                  //  1 0x14134fd80 "HouseDemolishDialog"
     virtual void vfunc_15();                                    // 15 0x141350320 refresh after 300 ms when dirty
     virtual void OnLoadComplete();                              // 22 0x1413500a0
     virtual void vfunc_26();                                    // 26 0x14134fe70

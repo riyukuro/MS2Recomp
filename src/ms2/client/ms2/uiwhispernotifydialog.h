@@ -24,7 +24,7 @@ class UIWhisperNotifyDialog : public UIDialog, public UIUGCEventListener
 public:
     UIWhisperNotifyDialog();                                                // 0x141b51780 (open tween 0)
     virtual ~UIWhisperNotifyDialog() = default;                                   //  0 0x141b52f30 (??_G 0x141b52f90)
-    virtual CString vfunc_1();                                              //  1 0x141b518b0 "WhisperNotifyDialog"
+    virtual CString GetTypeName();                                              //  1 0x141b518b0 "WhisperNotifyDialog"
     virtual void OnLoadInit();                                              // 20 0x141b519d0 sets the popup's slide ("init")
     virtual int vfunc_13();                                                 // 13 0x141b51b00
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

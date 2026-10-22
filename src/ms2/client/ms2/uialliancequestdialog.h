@@ -19,7 +19,7 @@ class UIAllianceQuestDialog : public UIDialog, public UIQuestEventListener
 public:
     UIAllianceQuestDialog();                                    // 0x140bf60f0
     virtual ~UIAllianceQuestDialog();                           //  0 0x140bf61f0 (??_G 0x140bfc3b0)
-    virtual CString vfunc_1();                                  //  1 0x140bf6290 "AllianceQuestDialog"
+    virtual CString GetTypeName();                                  //  1 0x140bf6290 "AllianceQuestDialog"
     virtual void vfunc_67();                                    // 67 0x140bf62e0 Close
     virtual void OnLoadComplete();                              // 22 0x140bf6360 fill the movie
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140bf6520

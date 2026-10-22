@@ -44,7 +44,7 @@ class UINpcPreviewDialog : public UIDialog
 public:
     UINpcPreviewDialog();                               // 0x141a6e060
     virtual ~UINpcPreviewDialog();                      //  0 0x141a71a40 (??_G 0x141a71b00)
-    virtual CString vfunc_1();                          //  1 0x141a6e100 "NpcPreviewDialog"
+    virtual CString GetTypeName();                          //  1 0x141a6e100 "NpcPreviewDialog"
     virtual void vfunc_15();                            // 15 0x141a6e510 fill the animation names once the preview npc is ready
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                         // 28 0x141a6e190

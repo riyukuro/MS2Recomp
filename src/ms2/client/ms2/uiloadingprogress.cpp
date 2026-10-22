@@ -82,11 +82,11 @@ UILoadingProgress::~UILoadingProgress()
 }
 
 // @0x1419dfa10
-CString UILoadingProgress::vfunc_1()
+CString UILoadingProgress::GetTypeName()
 {
     return "LoadingProgress";
 }
-MS2_REPLACE_METHOD(0x1419DFA10, UILoadingProgress, vfunc_1, 61, 0xD91F5B27);
+MS2_REPLACE_METHOD(0x1419DFA10, UILoadingProgress, GetTypeName, 61, 0xD91F5B27);
 
 // MS2-FUNCTIONAL: AS object setter order / temporaries of the string getters differ
 // @0x1419dfa60
@@ -354,11 +354,11 @@ UILoadingProgressLobby::~UILoadingProgressLobby()
 }
 
 // @0x1419e09e0
-CString UILoadingProgressLobby::vfunc_1()
+CString UILoadingProgressLobby::GetTypeName()
 {
     return "LoadingProgressLobby";
 }
-MS2_REPLACE_METHOD(0x1419E09E0, UILoadingProgressLobby, vfunc_1, 61, 0xD8B8332F);
+MS2_REPLACE_METHOD(0x1419E09E0, UILoadingProgressLobby, GetTypeName, 61, 0xD8B8332F);
 
 // @0x1419e0a30
 CString UILoadingProgressLobby::vfunc_7()

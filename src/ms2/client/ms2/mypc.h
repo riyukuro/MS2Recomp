@@ -82,7 +82,7 @@ public:
     // @0x141532780
     NotifyCompleteMyPC() {}
     // implicit virtual dtor 0x141532ce0 (no vptr store; pinned)
-    virtual CStringW vfunc_1();                             // 0x140db4550 (notify name, other unit)
+    virtual CStringW GetTypeName();                             // 0x140db4550 (notify name, other unit)
 };
 
 // The notify of a used skill (0x20).
@@ -92,7 +92,7 @@ public:
     // @0x1415327b0
     NotifyUseSKill(int nSkillId, short nLevel) : m_nSkillId(nSkillId), m_nLevel(nLevel) {}
     // implicit virtual dtor 0x141532d00 (pinned)
-    virtual CStringW vfunc_1();                             // 0x140db4670 (notify name, other unit)
+    virtual CStringW GetTypeName();                             // 0x140db4670 (notify name, other unit)
     int m_nSkillId;                                         // +0x18
     short m_nLevel;                                         // +0x1c
 };

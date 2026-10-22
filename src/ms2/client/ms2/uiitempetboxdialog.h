@@ -38,7 +38,7 @@ class UIItemPetBoxDialog : public UIDialog, public IUIAvatarEventListener
 public:
     UIItemPetBoxDialog();
     virtual ~UIItemPetBoxDialog();
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual int vfunc_65();
     virtual void vfunc_26();
     virtual void vfunc_67();

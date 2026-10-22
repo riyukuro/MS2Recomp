@@ -58,7 +58,7 @@ public:
 
     UIHighlightGameMenu();                              // 0x140c220d0
     virtual ~UIHighlightGameMenu();                     //  0 0x140c22550 (??_G 0x140c24b90)
-    virtual CString vfunc_1();                          //  1 0x140c22690 "HighlightGameMenu"
+    virtual CString GetTypeName();                          //  1 0x140c22690 "HighlightGameMenu"
     virtual void vfunc_67();                            // 67 0x140c226e0
     virtual void OnLoadComplete();                      // 22 0x140c22700 register the item listener, then refresh
     virtual void vfunc_43();                            // 43 0x140c22760 move the movie below the inventory

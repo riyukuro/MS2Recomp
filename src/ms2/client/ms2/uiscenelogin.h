@@ -60,7 +60,7 @@ class UISceneLogin : public UISceneEntity
 public:
     UISceneLogin();                                             // 0x141aceab0 (m_6c = 0x6200009)
     virtual ~UISceneLogin();                                    //  0 0x141acec20 (??_G 0x141ad02e0)
-    virtual CString vfunc_1();                                  //  1 0x141acec90 "SceneLogin"
+    virtual CString GetTypeName();                                  //  1 0x141acec90 "SceneLogin"
     virtual int vfunc_13();                                     // 13 0x141acf000
     virtual void vfunc_15();                                    // 15 0x141aceef0 per-frame
     virtual void OnLoadComplete();                              // 22 0x141acf1f0

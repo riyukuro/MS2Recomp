@@ -229,7 +229,7 @@ UIDungeonClosingPhotoDialog::UIDungeonClosingPhotoDialog() : m_1b0(0), m_1b4(0),
 UIDungeonClosingPhotoDialog::~UIDungeonClosingPhotoDialog() {}
 
 // @0x140e0dfa0
-CString UIDungeonClosingPhotoDialog::vfunc_1() { return "DungeonClosingPhotoDialog"; }
+CString UIDungeonClosingPhotoDialog::GetTypeName() { return "DungeonClosingPhotoDialog"; }
 
 // @0x140e0dff0
 void UIDungeonClosingPhotoDialog::vfunc_26()
@@ -671,7 +671,7 @@ errno_t FUN_140e12610(void* const dst, rsize_t const dstSize, void const* const 
 }
 
 // ---- hooks ----
-MS2_REPLACE_METHOD(0x140E0DFA0, UIDungeonClosingPhotoDialog, vfunc_1, 61, 0xCD36F508);
+MS2_REPLACE_METHOD(0x140E0DFA0, UIDungeonClosingPhotoDialog, GetTypeName, 61, 0xCD36F508);
 MS2_REPLACE_METHOD(0x140E0DFF0, UIDungeonClosingPhotoDialog, vfunc_26, 34, 0xA4E5FC6E);
 MS2_REPLACE_METHOD(0x140E0E020, UIDungeonClosingPhotoDialog, vfunc_67, 98, 0xC53D4AD8);
 MS2_REPLACE_METHOD(0x140E0E090, UIDungeonClosingPhotoDialog, vfunc_72, 175, 0xF7816ACA);

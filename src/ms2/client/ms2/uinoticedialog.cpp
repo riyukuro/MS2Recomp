@@ -116,7 +116,7 @@ UINoticeDialog::~UINoticeDialog()
 }
 
 // @0x141008690
-CString UINoticeDialog::vfunc_1()
+CString UINoticeDialog::GetTypeName()
 {
     return CString("NoticeDialog");
 }

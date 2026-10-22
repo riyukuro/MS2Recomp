@@ -18,7 +18,7 @@ class UIQuizHostDialog : public UIDialog
 public:
     UIQuizHostDialog();                                         // 0x140e7dc10
     // The destructor is implicit (0x140e7dc90: just ~UIDialog), ??_G 0x140e7e2a0.
-    virtual CString vfunc_1();                                  //  1 0x140e7dcd0
+    virtual CString GetTypeName();                                  //  1 0x140e7dcd0
     virtual void OnLoadComplete();                              // 22 0x140e7dd20
     virtual void vfunc_43();                                    // 43 0x140e7dd60
     virtual void vfunc_72();                                    // 72 0x140e7dde0 (empty)

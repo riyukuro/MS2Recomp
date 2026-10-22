@@ -164,11 +164,11 @@ UISnowmanEventDialog::~UISnowmanEventDialog()
 }
 
 // @0x140e94560
-CString UISnowmanEventDialog::vfunc_1()
+CString UISnowmanEventDialog::GetTypeName()
 {
     return "SnowmanEventDialog";
 }
-MS2_REPLACE_METHOD(0x140E94560, UISnowmanEventDialog, vfunc_1, 61, 0x753AD780);
+MS2_REPLACE_METHOD(0x140E94560, UISnowmanEventDialog, GetTypeName, 61, 0x753AD780);
 
 // @0x140e945b0
 int UISnowmanEventDialog::vfunc_65()

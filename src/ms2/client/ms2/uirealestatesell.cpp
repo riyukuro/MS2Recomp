@@ -102,11 +102,11 @@ UIRealEstateSell::~UIRealEstateSell()
 }
 
 // @0x141ab5df0
-CString UIRealEstateSell::vfunc_1()
+CString UIRealEstateSell::GetTypeName()
 {
     return "RealEstateSell";
 }
-MS2_REPLACE_METHOD(0x141AB5DF0, UIRealEstateSell, vfunc_1, 61, 0xA6C5C1A5);
+MS2_REPLACE_METHOD(0x141AB5DF0, UIRealEstateSell, GetTypeName, 61, 0xA6C5C1A5);
 
 // @0x141ab5e40
 int UIRealEstateSell::vfunc_65()

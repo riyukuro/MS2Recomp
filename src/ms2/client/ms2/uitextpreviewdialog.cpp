@@ -74,7 +74,7 @@ UITextPreviewDialog::UITextPreviewDialog()
 }
 
 // @0x141350d90
-CString UITextPreviewDialog::vfunc_1()
+CString UITextPreviewDialog::GetTypeName()
 {
     return "TextPreviewDialog";
 }
@@ -214,7 +214,7 @@ int UITextPreviewDialog::vfunc_48()
     return 0x4eb7;
 }
 
-MS2_REPLACE_METHOD(0x141350D90, UITextPreviewDialog, vfunc_1, 61, 0x808E73E2);
+MS2_REPLACE_METHOD(0x141350D90, UITextPreviewDialog, GetTypeName, 61, 0x808E73E2);
 MS2_REPLACE_METHOD(0x141350DE0, UITextPreviewDialog, OnLoadComplete, 375, 0xB00AB583);
 MS2_REPLACE_METHOD(0x141350F60, UITextPreviewDialog, vfunc_26, 87, 0x892F17C9);
 MS2_REPLACE_METHOD(0x141350FC0, UITextPreviewDialog, FUN_141350fc0, 130, 0xB8523302);

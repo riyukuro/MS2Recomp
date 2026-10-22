@@ -45,7 +45,7 @@ public:
 
     UINameTag();                                        // 0x141a60c00
     virtual ~UINameTag();                               //  0 0x141a60c70 (??_G 0x141a62270)
-    virtual CString vfunc_1();                          //  1 0x141a60cb0 "NameTag"
+    virtual CString GetTypeName();                          //  1 0x141a60cb0 "NameTag"
     virtual void OnLoadComplete();                      // 22 0x141a60d00 UIObject::OnLoadComplete(); FUN_141a60f70(m_68)
     virtual int vfunc_48() { return 0x4e5a; }           // 48 0x141a622b0
 

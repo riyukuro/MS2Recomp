@@ -18,7 +18,7 @@ class UIObject : public UISwfEntity
 public:
     UIObject();                                                             // 0x14131e150
     virtual ~UIObject();                                                    //  0 0x14131e1a0 (??_G 0x14131f400)
-    virtual CString vfunc_1();                                              //  1 0x14131e1e0 "Object"
+    virtual CString GetTypeName();                                              //  1 0x14131e1e0 "Object"
     virtual void OnLoadInit();                                              // 20 0x14131eae0 debug: "Swf Name : %s" system message
     virtual void OnLoadComplete();                                          // 22 0x14131ec00 bind vfunc_51 as the ASUIComponent tooltip callback
     virtual void vfunc_26();                                                // 26 0x14131ed10 unbind it (FUN_1422c63f0)

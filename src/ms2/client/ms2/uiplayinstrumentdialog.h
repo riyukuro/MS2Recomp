@@ -35,7 +35,7 @@ public:
 
     UIPlayInstrumentDialog();                                               // 0x14100a030
     virtual ~UIPlayInstrumentDialog();                                      //  0 0x14100a280 (??_G 0x141014af0)
-    virtual CString vfunc_1();                                              //  1 0x14100a420 "PlayInstrumentDialog"
+    virtual CString GetTypeName();                                              //  1 0x14100a420 "PlayInstrumentDialog"
     virtual void OnLoadComplete();                                          // 22 0x14100a470
     virtual void vfunc_26();                                                // 26 0x14100ac50
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x14100b8d0

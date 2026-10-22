@@ -15,7 +15,7 @@ class UIOtherPetSystemDialog : public UIPetSystemDialog
 public:
     UIOtherPetSystemDialog();                                   // 0x140e6d3c0
                                                                 //  0 dtor 0x140e6d980 implicit (??_G 0x140e6da50)
-    virtual CString vfunc_1();                                  //  1 0x140e6d450 "OtherPetSystemDialog"
+    virtual CString GetTypeName();                                  //  1 0x140e6d450 "OtherPetSystemDialog"
     virtual void OnLoadComplete();                              // 22 0x140e6d580
     virtual int vfunc_48() { return 0x4f41; }                   // 48 0x140e6dc30
     virtual void vfunc_67();                                    // 67 0x140e6d540

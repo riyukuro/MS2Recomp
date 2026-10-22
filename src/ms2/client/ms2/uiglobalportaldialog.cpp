@@ -78,7 +78,7 @@ UIGlobalPortalDialog::~UIGlobalPortalDialog()
 }
 
 // @0x1412c22b0
-CString UIGlobalPortalDialog::vfunc_1()
+CString UIGlobalPortalDialog::GetTypeName()
 {
     return "GlobalPortalDialog";
 }

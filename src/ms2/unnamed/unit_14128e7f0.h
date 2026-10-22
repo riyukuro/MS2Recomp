@@ -32,7 +32,7 @@ public:
 
     UIBuffBalloon();                                    // 0x14128ee40
     virtual ~UIBuffBalloon();                           //  0 0x14128eeb0 (??_G 0x14128f780)
-    virtual CString vfunc_1();                          //  1 0x14128eef0 "BuffBalloon"
+    virtual CString GetTypeName();                          //  1 0x14128eef0 "BuffBalloon"
     virtual void OnLoadComplete();                      // 22 0x14128ef40 UIObject::OnLoadComplete(); FUN_14128f030(m_68)
     virtual int vfunc_48() { return 0x4ea4; }           // 48 0x14128f7c0
 

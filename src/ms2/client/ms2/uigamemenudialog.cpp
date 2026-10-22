@@ -843,7 +843,7 @@ UIGameMenuDialog::~UIGameMenuDialog()
 }
 
 // @0x141936630
-CString UIGameMenuDialog::vfunc_1()
+CString UIGameMenuDialog::GetTypeName()
 {
     return "GameMenuDialog";
 }
@@ -2633,7 +2633,7 @@ bool FUN_14193fc00(Unk_GmMenuRef* p, void* pOther)
     return p->m_8 == pOther;
 }
 
-MS2_REPLACE_METHOD(0x141936630, UIGameMenuDialog, vfunc_1, 61, 0x7CDA45B8);
+MS2_REPLACE_METHOD(0x141936630, UIGameMenuDialog, GetTypeName, 61, 0x7CDA45B8);
 MS2_REPLACE_METHOD(0x141936680, UIGameMenuDialog, vfunc_65, 37, 0xB2A9BF63);
 MS2_REPLACE_METHOD(0x1419366B0, UIGameMenuDialog, vfunc_67, 808, 0xE7A5F1CB);
 MS2_REPLACE_METHOD(0x1419369E0, UIGameMenuDialog, vfunc_26, 46, 0x9A7B88FF);

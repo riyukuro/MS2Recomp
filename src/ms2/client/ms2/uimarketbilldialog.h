@@ -23,7 +23,7 @@ public:
 
     UIMarketBillDialog();                                           // 0x140ea6ee0
     virtual ~UIMarketBillDialog();                                  //  0 0x140ea7050 (??_G 0x140eac700)
-    virtual CString vfunc_1();                                      //  1 0x140ea7100 "MarketBillDialog"
+    virtual CString GetTypeName();                                      //  1 0x140ea7100 "MarketBillDialog"
     virtual int vfunc_13();                                         // 13 0x140ea7270 the Tab key sends "onTabKey" to the movie
     virtual void OnLoadComplete();                                  // 22 0x140ea7310 takes the mode of the parameter, fills the movie
     virtual void vfunc_26();                                        // 26 0x140ea7210

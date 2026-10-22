@@ -77,11 +77,11 @@ void UIUGCCubeNoticeDialog::FUN_140faf900(CInPacket& packet)
 MS2_REPLACE_METHOD(0x140FAF900, UIUGCCubeNoticeDialog, FUN_140faf900, 222, 0x604A204E);
 
 // @0x140faf9f0
-CString UIUGCCubeNoticeDialog::vfunc_1()
+CString UIUGCCubeNoticeDialog::GetTypeName()
 {
     return "UGCCubeNoticeDialog";
 }
-MS2_REPLACE_METHOD(0x140FAF9F0, UIUGCCubeNoticeDialog, vfunc_1, 61, 0x169FEFBC);
+MS2_REPLACE_METHOD(0x140FAF9F0, UIUGCCubeNoticeDialog, GetTypeName, 61, 0x169FEFBC);
 
 // @0x140fafa40
 void UIUGCCubeNoticeDialog::OnLoadComplete()

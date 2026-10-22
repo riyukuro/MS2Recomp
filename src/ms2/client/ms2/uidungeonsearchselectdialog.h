@@ -25,7 +25,7 @@ class UIDungeonSearchSelectDialog : public UIModalDialog
 public:
     UIDungeonSearchSelectDialog();                              // 0x140e26c20
     virtual ~UIDungeonSearchSelectDialog();                     //  0 0x140e26d60 (??_G 0x140e29060)
-    virtual CString vfunc_1();                                  //  1 0x140e26e60 "DungeonSearchSelectDialog"
+    virtual CString GetTypeName();                                  //  1 0x140e26e60 "DungeonSearchSelectDialog"
     virtual void OnLoadComplete();                              // 22 0x140e26eb0
     virtual void vfunc_26();                                    // 26 0x140e27df0
     virtual int vfunc_48() { return 0x4f22; }                   // 48 0x140e290a0

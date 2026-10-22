@@ -31,7 +31,7 @@ public:
 
     UICardReverseGameDialog();                          // 0x140f26990
     virtual ~UICardReverseGameDialog() = default;        // 0x140f28e80 (??_G 0x140f29080)
-    virtual CString vfunc_1();
+    virtual CString GetTypeName();
     virtual int vfunc_13();
     virtual void OnLoadInit();
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

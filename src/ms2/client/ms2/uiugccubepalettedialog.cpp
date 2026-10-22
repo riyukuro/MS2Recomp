@@ -884,7 +884,7 @@ UIUGCCubePaletteDialog::~UIUGCCubePaletteDialog()
 }
 
 // @0x140eea300
-CString UIUGCCubePaletteDialog::vfunc_1()
+CString UIUGCCubePaletteDialog::GetTypeName()
 {
     return "UGCCubePaletteDialog";
 }
@@ -2925,7 +2925,7 @@ MS2_REPLACE_METHOD(0x140EE9CD0, Unk_CubeFocus, IsActive, 14, 0xDA496095);
 MS2_REPLACE_METHOD(0x140EE9D50, Unk_CubeFocus, FUN_140ee9d50, 14, 0x322C4B62);
 MS2_REPLACE_METHOD(0x140EE9F00, Unk_CubeTimer, FUN_140ee9f00, 27, 0x6AA3A4C7);
 MS2_REPLACE_METHOD(0x140EE9F30, Unk_CubeTimer, GetValue, 14, 0xB2976B17);
-MS2_REPLACE_METHOD(0x140EEA300, UIUGCCubePaletteDialog, vfunc_1, 61, 0x31979C2E);
+MS2_REPLACE_METHOD(0x140EEA300, UIUGCCubePaletteDialog, GetTypeName, 61, 0x31979C2E);
 MS2_REPLACE_METHOD(0x140EEA420, UIUGCCubePaletteDialog, vfunc_54, 135, 0xD6F6CE30);
 MS2_REPLACE_METHOD(0x140EEAEE0, UIUGCCubePaletteDialog, vfunc_38, 87, 0xA2B2B2A4);
 MS2_REPLACE_METHOD(0x140EEAF40, UIUGCCubePaletteDialog, vfunc_32, 87, 0x415D381C);

@@ -76,11 +76,11 @@ UIWeddingHallListDialog::~UIWeddingHallListDialog()
 }
 
 // @0x140fd8ec0
-CString UIWeddingHallListDialog::vfunc_1()
+CString UIWeddingHallListDialog::GetTypeName()
 {
     return "WeddingHallListDialog";
 }
-MS2_REPLACE_METHOD(0x140FD8EC0, UIWeddingHallListDialog, vfunc_1, 61, 0x36C88FDF);
+MS2_REPLACE_METHOD(0x140FD8EC0, UIWeddingHallListDialog, GetTypeName, 61, 0x36C88FDF);
 
 // @0x140fd8f10
 int UIWeddingHallListDialog::vfunc_65()
