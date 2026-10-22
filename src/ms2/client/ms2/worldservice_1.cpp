@@ -168,7 +168,6 @@ WorldService::WorldService()
 }
 #endif
 
-// MS2-FUNCTIONAL: members destroyed by their C++ types (container element types unproven)
 // @0x141bba870
 WorldService::~WorldService()
 {
@@ -4483,18 +4482,19 @@ MS2_REPLACE_METHOD(0x141BC5D60, WorldService, FUN_141bc5d60, 179, 0x75E6CC43);
 
 void* FUN_141bfebf0(void* map);                                                             // m_678.GetHeadPosition
 void* FUN_141c009e0(void* map, void* pos);                                                  // m_678.GetValueAt (MS2Ptr<Prop>*)
+int FUN_140967110(void* obj);                                                                  // Prop kind getter
 inline MS2Ptr<Unk_WsB_Prop>& Unk_WsB_PropAt(void* map, void* pos) { return *static_cast<MS2Ptr<Unk_WsB_Prop>*>(FUN_141c009e0(map, pos)); }
 void FUN_141bff230(void* map, void** pos);                                                  // m_678.GetNext
 void FUN_1413fe500(Unk_WsB_Prop* prop);
-// MS2-FUNCTIONAL: MS2Ptr/container COMDATs called by VA; not byte-identical to the exe
 // @0x141bc5e20
 void WorldService::FUN_141bc5e20(int category)
 {
     for (void* pos = FUN_141bfebf0(&m_678); pos; FUN_141bff230(&m_678, &pos))
     {
-        MS2Ptr<Unk_WsB_Prop> prop = Unk_WsB_PropAt(&m_678, pos);
-        if (category == 0 || prop->vfunc_5() == category)
-            FUN_1413fe500(prop.operator->());
+        MS2Ptr<Unk_WsB_Prop> prop = *static_cast<MS2Ptr<Unk_WsB_Prop>*>(FUN_141c009e0(&m_678, pos));
+        if (category != 0 && prop->vfunc_5() != category)
+            continue;
+        FUN_1413fe500(prop.operator->());
     }
 }
 MS2_REPLACE_METHOD(0x141BC5E20, WorldService, FUN_141bc5e20, 220, 0xFDAAF638);
@@ -4507,7 +4507,7 @@ void WorldService::FUN_141bc5fb0(void* out, int category)
 {
     for (void* pos = FUN_141bfebf0(&m_678); pos; FUN_141bff230(&m_678, &pos))
     {
-        MS2Ptr<Unk_WsB_Prop> prop = Unk_WsB_PropAt(&m_678, pos);
+        MS2Ptr<Unk_WsB_Prop> prop = *static_cast<MS2Ptr<Unk_WsB_Prop>*>(FUN_141c009e0(&m_678, pos));
         if (prop->vfunc_5() == category)
             FUN_141bfabe0(out, &prop);
     }
@@ -4523,7 +4523,7 @@ MS2Ptr<Unk_WsB_Prop> WorldService::FUN_141bc6090(const Unk_StreamPoint& pos, int
     MS2Ptr<Unk_WsB_Prop> found(0);
     for (void* p = FUN_141bfebf0(&m_678); p; FUN_141bff230(&m_678, &p))
     {
-        MS2Ptr<Unk_WsB_Prop> prop = Unk_WsB_PropAt(&m_678, p);
+        MS2Ptr<Unk_WsB_Prop> prop = *static_cast<MS2Ptr<Unk_WsB_Prop>*>(FUN_141c009e0(&m_678, p));
         if (prop->vfunc_7() == 0 && skipDisabled != 0)
             continue;
         MS2Ptr<Unk_WsB_PropRec> rec = prop->m_rec;
@@ -4549,7 +4549,7 @@ MS2Ptr<Unk_WsB_Prop> WorldService::FUN_141bc62b0(const Unk_StreamPoint& pos, int
     MS2Ptr<Unk_WsB_Prop> found(0);
     for (void* p = FUN_141bfebf0(&m_678); p; FUN_141bff230(&m_678, &p))
     {
-        MS2Ptr<Unk_WsB_Prop> prop = Unk_WsB_PropAt(&m_678, p);
+        MS2Ptr<Unk_WsB_Prop> prop = *static_cast<MS2Ptr<Unk_WsB_Prop>*>(FUN_141c009e0(&m_678, p));
         if (prop->vfunc_5() == category)
         {
             if (prop->vfunc_7() == 0 && skipDisabled != 0)
@@ -4578,7 +4578,7 @@ MS2Ptr<Unk_WsB_Prop> WorldService::FUN_141bc6510(const Unk_StreamPoint& pos, int
     MS2Ptr<Unk_WsB_Prop> found(0);
     for (void* p = FUN_141bfebf0(&m_678); p; FUN_141bff230(&m_678, &p))
     {
-        MS2Ptr<Unk_WsB_Prop> prop = Unk_WsB_PropAt(&m_678, p);
+        MS2Ptr<Unk_WsB_Prop> prop = *static_cast<MS2Ptr<Unk_WsB_Prop>*>(FUN_141c009e0(&m_678, p));
         if (prop->m_kind == kind)
         {
             float dist = pos.FUN_140965c40(prop->m_pos).FUN_140967ac0();
@@ -4606,19 +4606,17 @@ MS2Ptr<Unk_WsB_Prop> WorldService::FUN_141bc66b0(const CString& name)
 }
 MS2_REPLACE_METHOD(0x141BC66B0, WorldService, FUN_141bc66b0, 169, 0xF589D3D2);
 
-// MS2-FUNCTIONAL: MS2Ptr/container COMDATs called by VA; not byte-identical to the exe
 // @0x141bc6760
 void WorldService::FUN_141bc6760(const CString& name, int arg3, int category, int arg5)
 {
     MS2Ptr<Unk_WsB_Prop> prop = FUN_141bc66b0(name);
-    if (prop.get() == 0)
+    if (!prop)
         return;
-    if (prop->vfunc_5() == category)
-    {
-        prop->vfunc_3(arg3);
-        prop->vfunc_14(arg5);
-        FUN_141bc6af0(reinterpret_cast<Unk_WsP16&>(prop));
-    }
+    if (prop->vfunc_5() != category)
+        return;
+    prop->vfunc_3(arg3);
+    prop->vfunc_14(arg5);
+    FUN_141bc6af0(reinterpret_cast<Unk_WsP16&>(prop));
 }
 MS2_REPLACE_METHOD(0x141BC6760, WorldService, FUN_141bc6760, 239, 0xAA57FA2D);
 
@@ -4637,18 +4635,16 @@ void WorldService::FUN_141bc6860(const CString& name, int arg3, int category)
 }
 MS2_REPLACE_METHOD(0x141BC6860, WorldService, FUN_141bc6860, 198, 0x7568C646);
 
-// MS2-FUNCTIONAL: MS2Ptr/container COMDATs called by VA; not byte-identical to the exe
 // @0x141bc6930
 void WorldService::FUN_141bc6930(int kind, int arg)
 {
     for (void* p = FUN_141bfebf0(&m_678); p; FUN_141bff230(&m_678, &p))
     {
-        MS2Ptr<Unk_WsB_Prop> prop = Unk_WsB_PropAt(&m_678, p);
-        if (prop->m_kind == kind)
-        {
-            prop->vfunc_3(arg);
-            FUN_141bc6af0(reinterpret_cast<Unk_WsP16&>(prop));
-        }
+        MS2Ptr<Unk_WsB_Prop> prop = *static_cast<MS2Ptr<Unk_WsB_Prop>*>(FUN_141c009e0(&m_678, p));
+        if (FUN_140967110(prop.operator->()) != kind)
+            continue;
+        prop->vfunc_3(arg);
+        FUN_141bc6af0(reinterpret_cast<Unk_WsP16&>(prop));
     }
 }
 MS2_REPLACE_METHOD(0x141BC6930, WorldService, FUN_141bc6930, 234, 0xC61F8A8F);
@@ -4911,7 +4907,6 @@ void WorldService::FUN_141bc7ec0(const unsigned __int64& key)
 }
 MS2_REPLACE_METHOD(0x141BC7EC0, WorldService, FUN_141bc7ec0, 72, 0xAE733939);
 
-// MS2-FUNCTIONAL: map COMDATs inlined
 // @0x141bc7f10
 void WorldService::FUN_141bc7f10(const unsigned __int64& key)
 {
@@ -4949,7 +4944,6 @@ int* FUN_1401fcbe0(int* p);
 void FUN_1401fcc00(int* value, COutPacket* packet);
 void FUN_140710590(COutPacket* packet);                                                     // sends the packet
 // Requests a channel change (opcode 0x3b); false when refused locally.
-// MS2-FUNCTIONAL: packet/message helpers by VA
 // @0x141bc80c0
 int WorldService::FUN_141bc80c0(int channel)
 {
@@ -4958,7 +4952,12 @@ int WorldService::FUN_141bc80c0(int channel)
         return 0;
     if (FUN_14092f640() == channel)
         return 0;
-    if (FUN_14092f660() || FUN_140930b10())
+    if (FUN_14092f660())
+    {
+        FUN_141275260(0x62a, 1, 1);
+        return 0;
+    }
+    if (FUN_140930b10())
     {
         FUN_141275260(0x62a, 1, 1);
         return 0;
@@ -5025,7 +5024,6 @@ MS2_REPLACE_METHOD(0x141BC8EF0, WorldService, FUN_141bc8ef0, 104, 0xDDF1DA8F);
 
 bool FUN_141c06ed0(void* map, const unsigned __int64& key, MS2Ptr<Unk_WsB_Vibrator>* out);    // m_468.Lookup
 // Vibrator registered for an entity (null when none).
-// MS2-FUNCTIONAL: MS2Ptr COMDATs
 // @0x141bc8f60
 MS2Ptr<Unk_WsB_Vibrator> WorldService::FUN_141bc8f60(const unsigned __int64& key)
 {
@@ -5188,7 +5186,6 @@ MS2_REPLACE_METHOD(0x141BC9830, WorldService, FUN_141bc9830, 583, 0x93E0E94A);
 bool FUN_141c1afc0(void* map, unsigned key, MS2Ptr<Unk_WsB_Notice>& value);                 // m_930.SetAt
 Unk_WsB_NoticeMgr* FUN_140c607b0_B();
 // Registers a notice by its id and shows it.
-// MS2-FUNCTIONAL: MS2Ptr COMDATs
 // @0x141bc9aa0
 void WorldService::FUN_141bc9aa0(MS2Ptr<Unk_WsB_Notice> notice)
 {
@@ -5211,7 +5208,6 @@ void WorldService::FUN_141bc9b30(unsigned id)
 MS2_REPLACE_METHOD(0x141BC9B30, WorldService, FUN_141bc9b30, 158, 0xC7D79BDD);
 
 bool FUN_141c06bf0(void* map, unsigned key, MS2Ptr<Unk_WsB_Notice>* out);                   // m_930.Lookup
-// MS2-FUNCTIONAL: MS2Ptr COMDATs
 // @0x141bc9be0
 MS2Ptr<Unk_WsB_Notice> WorldService::FUN_141bc9be0(unsigned id)
 {
@@ -5225,7 +5221,6 @@ void* FUN_140ac5e20(void* map);                                                 
 MS2Ptr<Unk_WsB_Notice>* FUN_140ac5ed0_B(void* map, void* pos);                                // m_930.GetValueAt
 void FUN_140ac5dd0(void* map, void** pos);                                                  // m_930.GetNext
 // The notice owned by this object (null when none).
-// MS2-FUNCTIONAL: container COMDATs by VA
 // @0x141bc9c60
 MS2Ptr<Unk_WsB_Notice> WorldService::FUN_141bc9c60(void* owner)
 {
@@ -5235,12 +5230,11 @@ MS2Ptr<Unk_WsB_Notice> WorldService::FUN_141bc9c60(void* owner)
         if (notice->m_owner == owner)
             return notice;
     }
-    return MS2Ptr<Unk_WsB_Notice>();
+    return 0;
 }
 MS2_REPLACE_METHOD(0x141BC9C60, WorldService, FUN_141bc9c60, 244, 0x07C22AA2);
 
 // The notice with this text (null when none).
-// MS2-FUNCTIONAL: container COMDATs by VA
 // @0x141bc9d60
 MS2Ptr<Unk_WsB_Notice> WorldService::FUN_141bc9d60(const CStringW& text)
 {
@@ -5250,24 +5244,27 @@ MS2Ptr<Unk_WsB_Notice> WorldService::FUN_141bc9d60(const CStringW& text)
         if (notice->m_text == text)
             return notice;
     }
-    return MS2Ptr<Unk_WsB_Notice>();
+    return 0;
 }
 MS2_REPLACE_METHOD(0x141BC9D60, WorldService, FUN_141bc9d60, 261, 0x1D2D092B);
 
 bool FUN_140ac5aa0(MS2Ptr<Unk_WsB_Notice>* n);                                              // pointer is null
 int FUN_1416c2090(Unk_WsB_Notice* n);                                                       // still active
 // The active notice of this kind (null when none).
-// MS2-FUNCTIONAL: container COMDATs by VA
 // @0x141bc9e70
 MS2Ptr<Unk_WsB_Notice> WorldService::FUN_141bc9e70(int kind)
 {
     for (void* pos = FUN_140ac5e20(&m_930); pos != 0; FUN_140ac5dd0(&m_930, &pos))
     {
         MS2Ptr<Unk_WsB_Notice> notice = *FUN_140ac5ed0_B(&m_930, pos);
-        if (!FUN_140ac5aa0(&notice) && FUN_1416c2090(notice.operator->()) != 0 && notice->m_kind == kind)
+        if (FUN_140ac5aa0(&notice))
+            continue;
+        if (FUN_1416c2090(notice.operator->()) == 0)
+            continue;
+        if (notice->m_kind == kind)
             return notice;
     }
-    return MS2Ptr<Unk_WsB_Notice>();
+    return 0;
 }
 MS2_REPLACE_METHOD(0x141BC9E70, WorldService, FUN_141bc9e70, 312, 0xEE99DCB3);
 
@@ -5396,15 +5393,15 @@ MS2Ptr<FieldProperty>* FUN_141c00530(void* map, void* pos);                     
 void FUN_141bfef40(void* map, void** pos);                                                  // m_780.GetNext
 void FUN_141c16890(void* map);                                                              // m_780.RemoveAll
 // Unapplies every registered field property and clears the registry.
-// MS2-FUNCTIONAL: container COMDATs by VA
 // @0x141bcaa80
 void WorldService::FUN_141bcaa80()
 {
     for (void* pos = FUN_141c00110(&m_780); pos != 0; FUN_141bfef40(&m_780, &pos))
     {
         MS2Ptr<FieldProperty> prop = *FUN_141c00530(&m_780, pos);
-        if (prop.get() != 0)
-            prop->vfunc_5();
+        if (prop == 0)
+            continue;
+        prop->vfunc_5();
     }
     FUN_141c16890(&m_780);
 }
@@ -5469,7 +5466,6 @@ void FUN_140ae1f60(void* model, efd::utf8string* out);
 void FUN_1401d3700(CString& s);                                                             // lower-cases
 void* FUN_141c07190(void* map, CString& key);                                               // m_5e8.Lookup(key) -> pair or null
 // Whether the entity's model name is registered in m_5e8.
-// MS2-FUNCTIONAL: string COMDATs
 // @0x141bcafa0
 int WorldService::FUN_141bcafa0(egf::Entity* entity)
 {
@@ -5479,7 +5475,9 @@ int WorldService::FUN_141bcafa0(egf::Entity* entity)
     FUN_140ae1f60(FUN_140ae1be0(entity), &modelName);
     CString key(modelName.c_str());
     FUN_1401d3700(key);
-    return FUN_141c07190(&m_5e8, key) != 0 ? 1 : 0;
+    if (FUN_141c07190(&m_5e8, key))
+        return 1;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x141BCAFA0, WorldService, FUN_141bcafa0, 239, 0xD461CE2F);
 
@@ -5757,7 +5755,7 @@ bool FUN_14116de30(void* mgr, int key);
 char FUN_14116de70(void* mgr, int key);
 void* FUN_1412787a0();
 void FUN_1409f1cb0(void* mgr);
-// MS2-FUNCTIONAL: codegen differs (call/temporary ordering of out-of-line COMDATs)
+bool FUN_141c18bb0(void* map, const int& key);                  // m_9d0.RemoveKey (the tail shard's CRBMap<Unk_WsKindKey, int>)
 // @0x141bcd960
 void WorldService::FUN_141bcd960()
 {
@@ -5768,14 +5766,14 @@ void WorldService::FUN_141bcd960()
         if (pair->m_value != 0)
         {
             FUN_14116de70(FUN_14025e7c0(), pair->m_key);
-            m_9d0.RemoveAt((POSITION)pair);
+            FUN_141c18bb0(&m_9d0, pair->m_key);
         }
         else
         {
             pair->m_value = 1;
             int busy = FUN_14142ce10(FUN_1409331f0(), pair->m_key);
             if (FUN_14116d950(FUN_14025e7c0(), pair->m_key, 0, 0) && pair->m_key != 0x75 && !busy)
-                m_9d0.RemoveAt((POSITION)pair);
+                FUN_141c18bb0(&m_9d0, pair->m_key);
             else
                 FUN_14116de30(FUN_14025e7c0(), pair->m_key);
         }
@@ -5784,7 +5782,6 @@ void WorldService::FUN_141bcd960()
 }
 MS2_REPLACE_METHOD(0x141BCD960, WorldService, FUN_141bcd960, 291, 0x883DE2ED);
 
-// MS2-FUNCTIONAL: std::set iteration instead of the exe's iterator COMDATs
 // @0x141bcf800
 void WorldService::FUN_141bcf800(CString name)
 {
@@ -5796,7 +5793,6 @@ MS2_REPLACE_METHOD(0x141BCF800, WorldService, FUN_141bcf800, 201, 0x4068CD82);
 bool FUN_141bbc1d0(WorldService* self, const char* name, int flag);
 void* FUN_1408e57f0();
 void FUN_1422ba210(void* p);
-// MS2-FUNCTIONAL: std::set iteration instead of the exe's iterator COMDATs
 // @0x141bcf8d0
 void WorldService::FUN_141bcf8d0()
 {
@@ -5935,7 +5931,6 @@ egf::Entity* WorldService::FUN_141bcfd30(unsigned key, const Unk_StreamPoint& po
 }
 MS2_REPLACE_METHOD(0x141BCFD30, WorldService, FUN_141bcfd30, 697, 0xBE5998E0);
 
-// MS2-FUNCTIONAL: ATL list/pointer COMDATs inlined; entity property getters by VA
 // @0x141bcfff0
 int WorldService::FUN_141bcfff0(int id, Unk_WsC_NpcAnim* out)
 {
@@ -5970,7 +5965,6 @@ MS2_REPLACE_METHOD(0x141BCFFF0, WorldService, FUN_141bcfff0, 539, 0x9545BFC9);
 void* FUN_141bfeb50(void* map);                         // m_708.GetHeadPosition
 Unk_WsC_ActorRef* FUN_141c00800(void* map, void* pos);  // m_708.GetValueAt
 void FUN_141bff0f0(void* map, void** pos);              // m_708.GetNext
-// MS2-FUNCTIONAL: codegen differs (call/temporary ordering of out-of-line COMDATs)
 // @0x141bd0220
 egf::Entity* WorldService::FUN_141bd0220(const Unk_StreamPoint& pos, float maxDist)
 {
@@ -5983,12 +5977,12 @@ egf::Entity* WorldService::FUN_141bd0220(const Unk_StreamPoint& pos, float maxDi
             continue;
         Unk_WsC_EntityPtr ent(actor->FUN_140b9c810());
         Unk_StreamPoint entPos = DAT_143b01a60;
-        FUN_1409618c0(ent, 0xfd95ca52, &entPos);
+        FUN_1409618c0(ent.operator->(), 0xfd95ca52, &entPos);
         float d = FUN_140966f00(pos, entPos);
         if (d < maxDist && d < bestDist)
         {
-            best = ent;
             bestDist = d;
+            best = ent;
         }
     }
     return best;
@@ -6152,7 +6146,6 @@ CStringW WorldService::FUN_141bd0d30()
 MS2_REPLACE_METHOD(0x141BD0D30, WorldService, FUN_141bd0d30, 148, 0x366491AF);
 
 bool FUN_141c07410(void* map, unsigned __int64 key, Unk_WsC_GameObjPtr* out);   // m_0b8.Lookup
-// MS2-FUNCTIONAL: codegen differs (call/temporary ordering of out-of-line COMDATs)
 // @0x141bd0dd0
 int WorldService::FUN_141bd0dd0(Unk_StreamPoint* pos, Unk_StreamPoint* dir)
 {
@@ -6164,8 +6157,8 @@ int WorldService::FUN_141bd0dd0(Unk_StreamPoint* pos, Unk_StreamPoint* dir)
     Unk_WsC_EntityPtr ent = tags->GetAt(tags->GetHeadPosition());
     if (!ent)
         return 0;
-    FUN_1409618c0(ent, 0xfd95ca52, pos);
-    FUN_1409618c0(ent, 0x68c7c29d, dir);
+    FUN_1409618c0(ent.operator->(), 0xfd95ca52, pos);
+    FUN_1409618c0(ent.operator->(), 0x68c7c29d, dir);
     return 1;
 }
 MS2_REPLACE_METHOD(0x141BD0DD0, WorldService, FUN_141bd0dd0, 364, 0xAADB4A97);
@@ -6298,30 +6291,42 @@ Unk_WsC_GameObj* WorldService::FUN_141bd1420(CStringW name)
 }
 MS2_REPLACE_METHOD(0x141BD1420, WorldService, FUN_141bd1420, 253, 0xA250D293);
 
-// MS2-FUNCTIONAL: opaque ATL map walk (COMDATs by VA)
 // @0x141bd1530
 Unk_WsC_GameObj* WorldService::FUN_141bd1530(__int64 id)
 {
     for (void* p = FUN_140c20a10(&m_118); p; FUN_140c20a30(&m_118, &p))
     {
         Unk_WsC_GameObj* obj = *static_cast<Unk_WsC_GameObjPtr*>(FUN_140c20a80(&m_118, p));
-        if (obj->GetClassId() != 0x6200044 && obj->GetClassId() != 0x6200047 && obj->GetClassId() != 0x620005e &&
-            obj->GetClassId() != 0x6200016 && obj->FUN_141656a80() == id)
+        if (obj->GetClassId() == 0x6200044)
+            continue;
+        if (obj->GetClassId() == 0x6200047)
+            continue;
+        if (obj->GetClassId() == 0x620005e)
+            continue;
+        if (obj->GetClassId() == 0x6200016)
+            continue;
+        if (obj->FUN_141656a80() == id)
             return obj;
     }
     return 0;
 }
 MS2_REPLACE_METHOD(0x141BD1530, WorldService, FUN_141bd1530, 255, 0xE258FB95);
 
-// MS2-FUNCTIONAL: opaque ATL map walk (COMDATs by VA)
 // @0x141bd1640
 Unk_WsC_GameObj* WorldService::FUN_141bd1640(__int64 id)
 {
     for (void* p = FUN_140c20a10(&m_118); p; FUN_140c20a30(&m_118, &p))
     {
         Unk_WsC_GameObj* obj = *static_cast<Unk_WsC_GameObjPtr*>(FUN_140c20a80(&m_118, p));
-        if (obj->GetClassId() != 0x6200044 && obj->GetClassId() != 0x6200047 && obj->GetClassId() != 0x620005e &&
-            obj->GetClassId() != 0x6200016 && obj->FUN_141656ad0() == id)
+        if (obj->GetClassId() == 0x6200044)
+            continue;
+        if (obj->GetClassId() == 0x6200047)
+            continue;
+        if (obj->GetClassId() == 0x620005e)
+            continue;
+        if (obj->GetClassId() == 0x6200016)
+            continue;
+        if (obj->FUN_141656ad0() == id)
             return obj;
     }
     return 0;
@@ -6659,27 +6664,29 @@ efd::SmartPointer<egf::Entity> WorldService::FUN_141bd2cd0(CString name)
 MS2_REPLACE_METHOD(0x141BD2CD0, WorldService, FUN_141bd2cd0, 205, 0x699F6407);
 
 Unk_WsC_GameObj* FUN_140965780(Unk_WsC_GameObjPtr* sp);
-// MS2-FUNCTIONAL: opaque ATL map walk (COMDATs by VA)
 // @0x141bd2db0
 void WorldService::FUN_141bd2db0(ATL::CAtlList<Unk_WsC_GameObjPtr>* out, int (*filter)(Unk_WsC_GameObj*))
 {
     for (void* pos = FUN_141bfeb30(&m_0e8); pos; FUN_141bff0b0(&m_0e8, &pos))
     {
         Unk_WsC_GameObj* obj = FUN_140965780(FUN_141c007a0(&m_0e8, pos));
-        if (obj->GetClassId() != 0x6200016 && (filter == 0 || filter(obj) == 1))
+        if (obj->GetClassId() == 0x6200016)
+            continue;
+        if (filter == 0 || filter(obj) == 1)
             out->AddTail(obj);
     }
 }
 MS2_REPLACE_METHOD(0x141BD2DB0, WorldService, FUN_141bd2db0, 226, 0x6077FC6A);
 
-// MS2-FUNCTIONAL: opaque ATL map walk (COMDATs by VA)
 // @0x141bd2ea0
 void WorldService::FUN_141bd2ea0(void* ctx, ATL::CAtlList<Unk_WsC_GameObjPtr>* out, int a, int b, int (*filter)(void*, Unk_WsC_GameObj*, int, int))
 {
     for (void* pos = FUN_141bfeb30(&m_0e8); pos; FUN_141bff0b0(&m_0e8, &pos))
     {
         Unk_WsC_GameObj* obj = FUN_140965780(FUN_141c007a0(&m_0e8, pos));
-        if (obj->GetClassId() != 0x6200016 && filter(ctx, obj, a, b) == 1)
+        if (obj->GetClassId() == 0x6200016)
+            continue;
+        if (filter(ctx, obj, a, b) == 1)
             out->AddTail(obj);
     }
 }
