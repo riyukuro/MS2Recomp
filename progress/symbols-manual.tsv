@@ -8364,3 +8364,6 @@ compress2	142724100	func
 ?Resize@?$VectorBase@J@AS3@GFx@Scaleform@@QEAA?AVCheckResult@234@K@Z	142562e70	func
 ?Resize@?$VectorBase@K@AS3@GFx@Scaleform@@QEAA?AVCheckResult@234@K@Z	142562f30	func
 ?MakeObject@VM@AS3@GFx@Scaleform@@QEBA?AV?$Pickable@VObject@fl@Instances@AS3@GFx@Scaleform@@@4@XZ	142516600	func
+?CreateEventObject@EventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@QEAA?AV?$SPtr@VEvent@fl_events@Instances@AS3@GFx@Scaleform@@@456@AEBVASString@56@_N1@Z	142466cd0	func
+?CreateIOErrorEventObject@EventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@QEAA?AV?$SPtr@VEvent@fl_events@Instances@AS3@GFx@Scaleform@@@456@PEBD@Z	142467190	func
+?CreateProgressEventObject@EventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@QEAA?AV?$SPtr@VEvent@fl_events@Instances@AS3@GFx@Scaleform@@@456@AEBVASString@56@@Z	142467dc0	func
