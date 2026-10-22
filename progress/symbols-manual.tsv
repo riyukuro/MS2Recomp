@@ -8279,3 +8279,4 @@ compress2	142724100	func
 ?Set@?$VectorBase@N@AS3@GFx@Scaleform@@QEAA?AVCheckResult@234@KAEBVValue@234@AEBVTraits@ClassTraits@234@@Z	1424864c0	func
 ?Set@?$VectorBase@V?$Ptr@UASStringNode@GFx@Scaleform@@@Scaleform@@@AS3@GFx@Scaleform@@QEAA?AVCheckResult@234@KAEBVValue@234@AEBVTraits@ClassTraits@234@@Z	1425638c0	func
 ??0Error@VM@AS3@GFx@Scaleform@@QEAA@W4ErrorID@1234@AEAV1234@HH@Z	1424d74d0	func
+?ToString@RegExp@fl@Instances@AS3@GFx@Scaleform@@QEAA?AVASString@56@XZ	142425890	func
