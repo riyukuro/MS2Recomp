@@ -434,14 +434,12 @@ void CNifModel::vfunc_29(void* pPos, void* pRotDeg, float fScale)
 // @0x141566aa0
 void CNifModel::vfunc_28(void* pPos, void* pMatrix3, float fScale)
 {
-    float x, y, z;
-    FUN_1402bd040(&x);
-    ((efd::Matrix3*)pMatrix3)->ToEulerAnglesXYZ(x, y, z);
-    x = (x * 180.0f) / 3.1415927f;
-    y = (y * 180.0f) / 3.1415927f;
-    z = (z * 180.0f) / 3.1415927f;
-    float a[3] = { x, y, z };
-    vfunc_29(pPos, a, fScale);
+    efd::Point3 v;
+    ((efd::Matrix3*)pMatrix3)->ToEulerAnglesXYZ(v.x, v.y, v.z);
+    v.x = (v.x * 180.0f) / 3.1415927f;
+    v.y = (v.y * 180.0f) / 3.1415927f;
+    v.z = (v.z * 180.0f) / 3.1415927f;
+    vfunc_29(pPos, &v, fScale);
 }
 
 // @0x141566b60
