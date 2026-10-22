@@ -185,22 +185,46 @@ public:
 };
 
 //--------------------------------------------------------------------------------------------------
+// Vtable 0x1431d1200 (sizeof 0x548, no new members): the stock shadow writer plus MS2MaterialNodeLibrary, skinning
+// with the 60-bone fragment.
 class MS2DirectionalShadowWriteMaterial : public NiDirectionalShadowWriteMaterial
 {
+    NiDeclareRTTI;
+
 public:
     MS2DirectionalShadowWriteMaterial(bool bAutoCreateCaches);
+
+    // protected in the original; public here so the hook can bind it
+    virtual bool HandlePositionFragment(Context& kContext, TransformType eTransType,
+        NiMaterialResource*& pkVertWorldPos, NiMaterialResource*& pkWorldMatrix);
 };
 
+// Vtable 0x1431d1558 (sizeof 0x548, no new members): the stock shadow writer plus MS2MaterialNodeLibrary, skinning
+// with the 60-bone fragment.
 class MS2PointShadowWriteMaterial : public NiPointShadowWriteMaterial
 {
+    NiDeclareRTTI;
+
 public:
     MS2PointShadowWriteMaterial(bool bAutoCreateCaches);
+
+    // protected in the original; public here so the hook can bind it
+    virtual bool HandlePositionFragment(Context& kContext, TransformType eTransType,
+        NiMaterialResource*& pkVertWorldPos, NiMaterialResource*& pkWorldMatrix);
 };
 
+// Vtable 0x1431d18b0 (sizeof 0x548, no new members): the stock shadow writer plus MS2MaterialNodeLibrary, skinning
+// with the 60-bone fragment.
 class MS2SpotShadowWriteMaterial : public NiSpotShadowWriteMaterial
 {
+    NiDeclareRTTI;
+
 public:
     MS2SpotShadowWriteMaterial(bool bAutoCreateCaches);
+
+    // protected in the original; public here so the hook can bind it
+    virtual bool HandlePositionFragment(Context& kContext, TransformType eTransType,
+        NiMaterialResource*& pkVertWorldPos, NiMaterialResource*& pkWorldMatrix);
 };
 
 //--------------------------------------------------------------------------------------------------
