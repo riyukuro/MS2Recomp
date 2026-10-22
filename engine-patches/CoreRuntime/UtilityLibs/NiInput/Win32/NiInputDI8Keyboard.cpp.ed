@@ -1,0 +1,6 @@
+154c
+        } if (g_143afa350) { ResetKeyStates(); g_143afa350 = 0; } // MS2: one line, keeps __LINE__
+.
+16c
+extern int g_143afa350; // MS2: set by the window service, see UpdateDevice (replaces a blank line: keeps __LINE__)
+.

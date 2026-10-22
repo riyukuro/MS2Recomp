@@ -1,0 +1,3 @@
+433c
+        pkMacros, pkInclude, uiCreationFlags | D3DXFX_LARGEADDRESSAWARE, NULL, &pkEffect, &pkErrors); // MS2: large-address-aware handles
+.

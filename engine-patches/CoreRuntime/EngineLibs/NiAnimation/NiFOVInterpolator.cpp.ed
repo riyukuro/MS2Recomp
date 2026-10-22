@@ -9,6 +9,20 @@
 NiImplementRTTI(NiFOVInterpolator, NiFloatInterpolator);
 
 //--------------------------------------------------------------------------------------------------
+// game 0x141c2efb0
+NiFOVInterpolator::NiFOVInterpolator(float fPoseValue) :
+    NiFloatInterpolator(fPoseValue)
+{
+}
+
+//--------------------------------------------------------------------------------------------------
+// game 0x141c2efe0
+NiFOVInterpolator::NiFOVInterpolator(NiFloatData* pkFloatData) :
+    NiFloatInterpolator(pkFloatData)
+{
+}
+
+//--------------------------------------------------------------------------------------------------
 NiFOVInterpolator::NiFOVInterpolator()
 {
 }
@@ -58,9 +72,12 @@ void NiFOVInterpolator::LinkObject(NiStream& kStream)
 }
 
 //--------------------------------------------------------------------------------------------------
+// game 0x141c2f2d0: the exe tests the result instead of tail-calling
 bool NiFOVInterpolator::RegisterStreamables(NiStream& kStream)
 {
-    return NiFloatInterpolator::RegisterStreamables(kStream);
+    if (!NiFloatInterpolator::RegisterStreamables(kStream))
+        return false;
+    return true;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -70,9 +87,12 @@ void NiFOVInterpolator::SaveBinary(NiStream& kStream)
 }
 
 //--------------------------------------------------------------------------------------------------
+// game 0x141c2f280: the exe tests the result instead of tail-calling
 bool NiFOVInterpolator::IsEqual(NiObject* pkObject)
 {
-    return NiFloatInterpolator::IsEqual(pkObject);
+    if (!NiFloatInterpolator::IsEqual(pkObject))
+        return false;
+    return true;
 }
 
 //--------------------------------------------------------------------------------------------------

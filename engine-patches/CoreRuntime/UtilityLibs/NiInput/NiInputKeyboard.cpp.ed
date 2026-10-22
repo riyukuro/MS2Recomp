@@ -1,0 +1,10 @@
+183a
+// MS2: NiInputDI8Keyboard::UpdateDevice calls this when the window service raises g_143afa350
+void NiInputKeyboard::ResetKeyStates()
+{
+    memset(m_aucKeystate, 0, sizeof(m_aucKeystate));
+    memset(m_aucKeystateLastUpdate, 0, sizeof(m_aucKeystateLastUpdate));
+    m_uiModifiers = 0;
+}
+//--------------------------------------------------------------------------------------------------
+.

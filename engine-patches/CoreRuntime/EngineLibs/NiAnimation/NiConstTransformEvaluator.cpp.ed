@@ -1,0 +1,3 @@
+37c
+    if (m_kTransformValue.IsTranslateValid()) m_aiEvalChannelTypes[POSITION] = EVALPOINT3CHANNEL | EVALPOSEDFLAG; else m_aiEvalChannelTypes[POSITION] = EVALINVALIDCHANNEL; if (m_kTransformValue.IsRotateValid()) m_aiEvalChannelTypes[ROTATION] = EVALROTCHANNEL | EVALPOSEDFLAG; else m_aiEvalChannelTypes[ROTATION] = EVALINVALIDCHANNEL; if (m_kTransformValue.IsScaleValid()) m_aiEvalChannelTypes[SCALE] = EVALFLOATCHANNEL | EVALPOSEDFLAG; else m_aiEvalChannelTypes[SCALE] = EVALINVALIDCHANNEL; // MS2: the exe inlines SetEvalChannelTypes() here (one line: keeps __LINE__)
+.

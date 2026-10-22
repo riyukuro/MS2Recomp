@@ -6,6 +6,9 @@
     NiStreamLoadEnum(kStream, m_kFormatPrefs.m_eAlphaFmt);
 
 .
+107c
+        spTexture = 0; // MS2: release instead of NiDelete (the smart pointer still held a reference)
+.
 99c
     if (!spTexture) return 0;  // MS2
 .

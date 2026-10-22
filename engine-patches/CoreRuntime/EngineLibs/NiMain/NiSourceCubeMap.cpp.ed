@@ -1,0 +1,8 @@
+384,386c
+        // MS2: m_kFormatPrefs moved above the LoadFromFiles call
+
+
+.
+367c
+        NiStreamLoadEnum(kStream, m_kFormatPrefs.m_ePixelLayout); NiStreamLoadEnum(kStream, m_kFormatPrefs.m_eMipMapped); NiStreamLoadEnum(kStream, m_kFormatPrefs.m_eAlphaFmt); // MS2: format prefs read before LoadFromFiles
+.

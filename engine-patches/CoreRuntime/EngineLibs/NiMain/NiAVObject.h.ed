@@ -20,7 +20,7 @@
     // intersect usExcludeFlags (and, for nodes, their whole subtree) are
     // skipped. Real name unknown.
     virtual NiAVObject* GetObjectByNameExcluding(const NiFixedString& kName,
-        unsigned short usExcludeFlags);
+        unsigned int usExcludeFlags); // MS2: 32-bit in the game (mov r8d at the callers)
     // MS2: v2525 (studio, names inferred): flag 0x400 marks NiPSParticleSystem objects
     inline void SetParticleSystemFlag(bool bSet) { SetBit(bSet, IS_PARTICLE_SYSTEM); }
     inline bool GetParticleSystemFlag() const { return GetBit(IS_PARTICLE_SYSTEM); }

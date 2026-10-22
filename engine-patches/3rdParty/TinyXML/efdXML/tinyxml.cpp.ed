@@ -1,0 +1,4 @@
+1090,1091c
+    char* p = (char *)EE_MALLOC((size + 1) * sizeof(char)); // MS2: room for a terminator
+	file->Read(p, size); p[size] = 0; // MS2: NUL-terminate the buffer
+.

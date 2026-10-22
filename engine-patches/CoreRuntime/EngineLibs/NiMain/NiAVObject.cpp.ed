@@ -7,7 +7,7 @@
 441a
 // MS2: Nexon addition (game 0x141d14ed0).
 NiAVObject* NiAVObject::GetObjectByNameExcluding(const NiFixedString& kName,
-    unsigned short usExcludeFlags)
+    unsigned int usExcludeFlags)
 {
     if (MS2HasAnyFlag(usExcludeFlags))
         return 0;

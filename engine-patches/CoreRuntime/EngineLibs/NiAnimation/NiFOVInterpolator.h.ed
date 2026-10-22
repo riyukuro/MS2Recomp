@@ -19,6 +19,8 @@ class NIANIMATION_ENTRY NiFOVInterpolator : public NiFloatInterpolator
     NiDeclareViewerStrings;
 
 public:
+    NiFOVInterpolator(float fPoseValue);
+    NiFOVInterpolator(NiFloatData* pkFloatData);
     NiFOVInterpolator();
 
     virtual bool Update(float fTime, NiObjectNET* pkInterpTarget,

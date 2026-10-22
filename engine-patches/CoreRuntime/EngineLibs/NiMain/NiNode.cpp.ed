@@ -10,7 +10,7 @@
 //--------------------------------------------------------------------------------------------------
 // MS2: Nexon addition (game 0x141d1a960). An excluded node hides its subtree.
 NiAVObject* NiNode::GetObjectByNameExcluding(const NiFixedString& kName,
-    unsigned short usExcludeFlags)
+    unsigned int usExcludeFlags)
 {
     if (MS2HasAnyFlag(usExcludeFlags))
         return 0;
