@@ -299,6 +299,42 @@ public:
 };
 
 //--------------------------------------------------------------------------------------------------
+class MRTShaderPickerMaterial : public MS2StandardMaterial
+{
+    NiDeclareRTTI;
+public:
+    MRTShaderPickerMaterial(bool bAutoCreateCaches);
+
+    // protected in the original; public here so the hooks can bind them
+    virtual bool GenerateVertexShadeTree(Context& kContext, NiGPUProgramDescriptor* pkDesc);
+    virtual bool GeneratePixelShadeTree(Context& kContext, NiGPUProgramDescriptor* pkDesc);
+    virtual bool SetupTransformPipeline(Context& kContext, NiMaterialResource* pkOutProjPos,
+        NiStandardVertexProgramDescriptor* pkVertexDesc, bool bForceWorldView, bool bForceViewPos,
+        NiMaterialResource*& pkWorldPos, NiMaterialResource*& pkViewPos, NiMaterialResource*& pkProjectedPos,
+        NiMaterialResource*& pkWorldNormal, NiMaterialResource*& pkWorldView);
+    virtual bool HandleVertexUVSets(Context& kContext, NiStandardVertexProgramDescriptor* pkVertDesc,
+        NiMaterialResource* pkWorldPos, NiMaterialResource* pkWorldNormal, NiMaterialResource* pkWorldReflect);
+    virtual bool HandlePixelInputs(Context& kContext, NiStandardPixelProgramDescriptor* pkPixelDesc,
+        NiMaterialResource*& pkPixelWorldPos, NiMaterialResource*& pkPixelWorldNorm,
+        NiMaterialResource*& pkPixelWorldBinormal, NiMaterialResource*& pkPixelWorldTangent,
+        NiMaterialResource*& pkPixelWorldViewVector, NiMaterialResource*& pkPixelTangentViewVector);
+
+    // ---- new virtuals ----
+    // +0x398 the three MRT colour outputs: world position, world normal and the base-map UV colour
+    virtual bool HandleMRTOutputs(Context& kContext, NiStandardPixelProgramDescriptor* pkPixDesc,
+        NiMaterialResource** apkUVSets);
+    // +0x3a0 binds pkInput through a UVColorToFloat4 node sampling custom map 00
+    virtual bool ConvertUVColorToFloat4(Context& kContext, NiMaterialResource* pkInput,
+        NiMaterialResource*& pkOutput);
+    // +0x3a8 binds pkInput through a Float2ToFloat4 node
+    virtual bool ConvertFloat2ToFloat4(Context& kContext, NiMaterialResource* pkInput,
+        NiMaterialResource*& pkOutput);
+    // +0x3b0 binds pkInput through a Float3ToFloat4 node
+    virtual bool ConvertFloat3ToFloat4(Context& kContext, NiMaterialResource* pkInput,
+        NiMaterialResource*& pkOutput);
+};
+
+//--------------------------------------------------------------------------------------------------
 #define MS2_DECLARE_STANDARD_MATERIAL(classname)                                                    \
     class classname : public MS2StandardMaterial                                                    \
     {                                                                                               \
@@ -306,7 +342,6 @@ public:
         classname(bool bAutoCreateCaches);                                                          \
     }
 
-MS2_DECLARE_STANDARD_MATERIAL(MRTShaderPickerMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2MotionBlurMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2OuterGlowCharacterMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2DepthMaterial);

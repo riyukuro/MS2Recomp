@@ -1,8 +1,7 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). TexCoordWriteMaterial: an MS2StandardMaterial variant
 // whose pixel shader outputs the base map's texture coordinates as the colour (float2 widened through the
 // Float2ToFloat4 fragment). The vertex side keeps only the position transform and the plain texture UV sets; the ctor
-// sets the character-lighting flag. No
-// __FILE__ strings; file name guessed from the class name.
+// sets the character-lighting flag. No __FILE__ strings; file name guessed from the class name.
 // MS2-UNIT: ?\texcoordwritematerial.cpp
 // MS2-RANGE: 0x14276ca50-0x14276d340 .text$mn
 // MS2-FLAGS: gamebryo
