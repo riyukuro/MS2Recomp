@@ -8272,3 +8272,4 @@ compress2	142724100	func
 ?MemoryErrorCI@fl_errors@AS3@GFx@Scaleform@@3UClassInfo@234@B	14314ee80	data
 ?ScriptTimeoutErrorCI@fl_errors@AS3@GFx@Scaleform@@3UClassInfo@234@B	14314eed0	data
 ?StackOverflowErrorCI@fl_errors@AS3@GFx@Scaleform@@3UClassInfo@234@B	14314ef20	data
+?Clear@DrawingContext@GFx@Scaleform@@QEAAXXZ	1425feb50	func
