@@ -8367,3 +8367,13 @@ compress2	142724100	func
 ?CopyChannel@DrawableImage@Render@Scaleform@@QEAAXPEAVImageBase@23@AEBV?$Rect@J@23@AEBV?$Point@J@23@KK@Z	1425eb570	func
 ?HitTest@DrawableImage@Render@Scaleform@@QEAA_NAEBV?$Point@J@23@AEBV?$Rect@J@23@K@Z	1425ed5e0	func
 ?HitTest@DrawableImage@Render@Scaleform@@QEAA_NPEAVImageBase@23@AEBV?$Point@J@23@1KK@Z	1425ed800	func
+??0SortKey@Render@Scaleform@@QEAA@W4SortKeyMaskType@12@@Z	1426bc910	func
+??0SortKey@Render@Scaleform@@QEAA@W4SortKeyType@12@PEBV?$Matrix3x4Ref@M@12@@Z	1426bc940	func
+??0SortKey@Render@Scaleform@@QEAA@W4SortKeyType@12@PEBV?$Matrix4x4Ref@M@12@@Z	1426bc9a0	func
+??0SortKey@Render@Scaleform@@QEAA@W4SortKeyType@12@PEBVFilterSet@12@@Z	1426bca00	func
+??0SortKey@Render@Scaleform@@QEAA@W4SortKeyType@12@W4BlendMode@12@@Z	1426bca60	func
+?calcFilterBounds@TreeCacheNode@Render@Scaleform@@QEAA_NPEAV?$Rect@M@23@PEAV?$Matrix2x4@M@23@AEBV?$Matrix3x4@M@23@AEBV?$Matrix4x4@M@23@0@Z	142683f80	func
+?CalcFilterFlag@TreeCacheNode@Render@Scaleform@@QEBA_NXZ	142680bd0	func
+?calcMaskBounds@TreeCacheNode@Render@Scaleform@@QEAA?AW4MaskEffectState@23@PEAV?$Rect@M@23@PEAV?$Matrix2x4@M@23@AEBV?$Matrix3x4@M@23@AEBV?$Matrix4x4@M@23@W4423@I@Z	142684500	func
+?CalcViewMatrix@TreeCacheNode@Render@Scaleform@@QEBAXPEAV?$Matrix3x4@M@23@PEAV?$Matrix4x4@M@23@@Z	142680d30	func
+?GetMatrixPool@TreeCacheNode@Render@Scaleform@@QEBAAEAVMatrixPool@MatrixPoolImpl@23@XZ	1426815d0	func
