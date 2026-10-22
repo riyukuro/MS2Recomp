@@ -30,6 +30,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/client/ms2/ugcbannerobject.h"     // UgcBannerObject (m_708 values)
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/coutpacket.h"
@@ -3895,24 +3896,20 @@ Unk_WsP16* WorldService::FUN_141bc2800(Unk_WsP16* out, int id)
 }
 MS2_REPLACE_METHOD(0x141BC2800, WorldService, FUN_141bc2800, 121, 0x9F34EC5D);
 
+class CPortal : public CPtred {};                       // m_350 value (same definition as worldservice.cpp#4)
 void* FUN_141bffee0(void* map);                             // m_350.GetStartPosition
 void FUN_141bfedb0(void* map, void** pos);                  // m_350.GetNext
-int FUN_14169d280(Unk_WsA_FieldObj* o);                     // map type of the field object (entity prop 0xa162d321)
-void FUN_140964110(Unk_WsP16* p, int nNull);
+int FUN_14169d280(CPortal* o);                              // map type of the portal (entity prop 0xa162d321)
 // @0x141bc2880
-Unk_WsP16* WorldService::FUN_141bc2880(Unk_WsP16* out, int mapType)
+MS2Ptr<CPortal> WorldService::FUN_141bc2880(int mapType)
 {
     for (void* pos = FUN_141bffee0(&m_350); pos != 0; FUN_141bfedb0(&m_350, &pos))
     {
-        Unk_WsA_FieldRef cur(*static_cast<Unk_WsA_FieldRef*>(FUN_141c00300(&m_350, pos)));
+        MS2Ptr<CPortal> cur(*static_cast<MS2Ptr<CPortal>*>(FUN_141c00300(&m_350, pos)));
         if (FUN_14169d280(cur.operator->()) == mapType)
-        {
-            FUN_140a7b450(out, &cur);
-            return out;
-        }
+            return cur;
     }
-    FUN_140964110(out, 0);
-    return out;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x141BC2880, WorldService, FUN_141bc2880, 247, 0x49D3C3C4);
 
@@ -4718,37 +4715,34 @@ efd::SmartPointer<Unk_WsB_Spawn> WorldService::FUN_141bc6eb0(const CString& name
 }
 MS2_REPLACE_METHOD(0x141BC6EB0, WorldService, FUN_141bc6eb0, 169, 0xA2147DD0);
 
-unsigned FUN_14086d260_B();                                                                   // game clock object
-unsigned FUN_141473390(unsigned clock);                                                     // elapsed seconds
+unsigned FUN_141473390(void* clock);                                                        // elapsed seconds
 void FUN_141b706a0(int seconds, int* a, int* b, int* c);                                    // splits a duration
-// Remaining time of the running countdown split into three fields; false when none runs.
-// MS2-FUNCTIONAL: MS2Ptr/container COMDATs called by VA; not byte-identical to the exe
+// Remaining time of the running countdown split into three fields; 0 when none runs.
 // @0x141bc6fb0
-bool WorldService::FUN_141bc6fb0(int* a, int* b, int* c, int* flag) const
+int WorldService::FUN_141bc6fb0(int* a, int* b, int* c, int* flag) const
 {
     *c = 0;
     *b = 0;
     *a = 0;
     *flag = m_808;
     if (m_800 == 0)
-        return false;
-    unsigned now = FUN_141473390(FUN_14086d260_B());
+        return 0;
+    unsigned now = FUN_141473390(FUN_14086d260());
     if (now == 0)
-        return false;
-    if (now < (unsigned)m_804)
+        return 0;
+    if ((unsigned)m_804 > now)
     {
         FUN_141b706a0(m_800, a, b, c);
-        return true;
+        return 1;
     }
     unsigned elapsed = now - m_804;
-    if (elapsed < (unsigned)m_800)
-    {
-        int remaining = m_800 - elapsed;
-        FUN_141b706a0(remaining, a, b, c);
-        if (remaining != 0)
-            *flag = 0;
-    }
-    return true;
+    if (elapsed >= (unsigned)m_800)
+        return 1;
+    unsigned remaining = m_800 - elapsed;
+    FUN_141b706a0(remaining, a, b, c);
+    if (remaining > 0)
+        *flag = 0;
+    return 1;
 }
 MS2_REPLACE_METHOD(0x141BC6FB0, WorldService, FUN_141bc6fb0, 302, 0x1F0CE558);
 
@@ -9120,6 +9114,7 @@ Unk_WsOptional<float>* WorldService::FUN_141bd9c00()
 MS2_REPLACE_METHOD(0x141BD9C00, WorldService, FUN_141bd9c00, 17, 0xB039C545);
 
 
+class Unk_WsRec708 : public CPtred {};                  // m_708 value (same definition as worldservice.cpp#4)
 void* FUN_141bf7cc0(Unk_WsP16* p);                      // get
 void* FUN_141bf7dc0(Unk_WsP16* p);                      // ->
 void FUN_140b9c770(void* obj, char flag);
@@ -9134,11 +9129,9 @@ void WorldService::FUN_141bd9ca0(Unk_WsD_Msg* msg)
     {
         unsigned id = (&msg->m_body)->ReadInt();
         char flag = (&msg->m_body)->ReadBool();
-        Unk_WsP16 holder;
-        FUN_141bda6d0(&holder, id);
-        if (FUN_141bf7cc0(&holder))
-            FUN_140b9c770(FUN_141bf7dc0(&holder), flag);
-        FUN_141bf5690(&holder);
+        MS2Ptr<Unk_WsRec708> holder = FUN_141bda6d0(id);
+        if (holder.get())
+            FUN_140b9c770(holder.operator->(), flag);
     }
 }
 MS2_REPLACE_METHOD(0x141BD9CA0, WorldService, FUN_141bd9ca0, 250, 0x59CBAEC2);
@@ -9149,11 +9142,9 @@ void WorldService::FUN_141bd9da0(Unk_WsD_Msg* msg)
 {
     unsigned id = (&msg->m_body)->ReadInt();
     char flag = (&msg->m_body)->ReadBool();
-    Unk_WsP16 holder;
-    FUN_141bda6d0(&holder, id);
-    if (FUN_141bf7cc0(&holder))
-        FUN_140b9c770(FUN_141bf7dc0(&holder), flag);
-    FUN_141bf5690(&holder);
+    MS2Ptr<Unk_WsRec708> holder = FUN_141bda6d0(id);
+    if (holder.get())
+        FUN_140b9c770(holder.operator->(), flag);
 }
 MS2_REPLACE_METHOD(0x141BD9DA0, WorldService, FUN_141bd9da0, 173, 0x270BEE45);
 
@@ -9163,10 +9154,15 @@ MS2_REPLACE_METHOD(0x141BD9DA0, WorldService, FUN_141bd9da0, 173, 0x270BEE45);
 void WorldService::FUN_141bd9c20(Unk_WsD_Msg* msg)
 {
     char kind = (&msg->m_body)->GetKind();
-    if (kind == 0)
+    switch (kind)
+    {
+    case 0:
         FUN_141bd9ca0(msg);
-    else if (kind == 1)
+        break;
+    case 1:
         FUN_141bd9da0(msg);
+        break;
+    }
 }
 MS2_REPLACE_METHOD(0x141BD9C20, WorldService, FUN_141bd9c20, 114, 0xC8407C06);
 
@@ -9305,60 +9301,35 @@ void WorldService::FUN_141bda490(unsigned key, void* pOutList)
 }
 MS2_REPLACE_METHOD(0x141BDA490, WorldService, FUN_141bda490, 232, 0x3DE57349);
 
-class Unk_WsD_Banner;                                   // UgcBannerObject (0x28 bytes)
 void FUN_141c170e0(void* map);                          // m_708 clear
-void FUN_1408a84d0(void* vec);                          // vector ctor
-void FUN_1408a88a0(void* vec);                          // vector dtor
-unsigned __int64 FUN_1408ad0d0(void* vec);              // vector size
-void* FUN_1408a9050(void* vec, unsigned __int64 i);
-Unk_WsD_Banner* FUN_140b9c680(void* mem, Unk_WsP8* ref);   // UgcBannerObject ctor
-void FUN_141bf1960(Unk_WsP16* self, Unk_WsD_Banner* obj);   // holder ctor
-unsigned FUN_140b9c750(void* obj);                      // banner id
-void FUN_141c1b650(void* map, unsigned key, Unk_WsP16* v);  // m_708.SetAt
+void FUN_141c1b650(void* map, unsigned key, MS2Ptr<Unk_WsRec708>* v);  // m_708.SetAt
 // rebuild the banner table m_708 from the entities of model 0xc7f9dd65
-// MS2-FUNCTIONAL: opaque COMDATs by VA, EH sentinel
 // @0x141bda580
 void WorldService::FUN_141bda580()
 {
     FUN_141c170e0(&m_708);
-    char entities[24];
-    FUN_1408a84d0(entities);
-    FUN_141bda490(0xc7f9dd65, entities);
-    for (unsigned __int64 i = 0; i < FUN_1408ad0d0(entities); ++i)
+    std::vector<efd::SmartPointer<egf::Entity> > entities;
+    FUN_141bda490(0xc7f9dd65, &entities);
+    for (unsigned __int64 i = 0; i < entities.size(); ++i)
     {
-        void* mem = ::operator new(0x28);
-        Unk_WsD_Banner* banner = 0;
-        if (mem)
-        {
-            Unk_WsP8 ref;
-            FUN_1408a7ed0(&ref, (Unk_WsP8*)FUN_1408a9050(entities, i));
-            banner = FUN_140b9c680(mem, &ref);
-        }
-        Unk_WsP16 holder;
-        FUN_141bf1960(&holder, banner);
-        FUN_141c1b650(&m_708, FUN_140b9c750(FUN_141bf7dc0(&holder)), &holder);
-        FUN_141bf5690(&holder);
+        MS2Ptr<Unk_WsRec708> holder((Unk_WsRec708*)new UgcBannerObject(*(Unk_EntRef*)&entities[i]));
+        FUN_141c1b650(&m_708, ((UgcBannerObject*)holder.operator->())->GetBannerId(), &holder);
     }
-    FUN_1408a88a0(entities);
 }
 MS2_REPLACE_METHOD(0x141BDA580, WorldService, FUN_141bda580, 327, 0xAD4AA1B1);
 
-bool FUN_141c07010(void* map, unsigned key, Unk_WsP16* out);   // m_708.Lookup
+bool FUN_141c07010(void* map, unsigned key, MS2Ptr<Unk_WsRec708>* out);   // m_708.Lookup
 void FUN_141bf1990(Unk_WsP16* self);                    // null ctor
 void FUN_141bf1940(Unk_WsP16* self, int zero);
 void FUN_141bf18d0(Unk_WsP16* self, const Unk_WsP16* src);
 // MS2-FUNCTIONAL: not byte-identical (EH/unwind shape or opaque COMDAT callees)
 // @0x141bda6d0
-Unk_WsP16* WorldService::FUN_141bda6d0(Unk_WsP16* out, unsigned key)
+MS2Ptr<Unk_WsRec708> WorldService::FUN_141bda6d0(unsigned key)
 {
-    Unk_WsP16 found;
-    FUN_141bf1990(&found);
-    if (!FUN_141c07010(&m_708, key, &found))
-        FUN_141bf1940(out, 0);
-    else
-        FUN_141bf18d0(out, &found);
-    FUN_141bf5690(&found);
-    return out;
+    MS2Ptr<Unk_WsRec708> found;
+    if (FUN_141c07010(&m_708, key, &found))
+        return found;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x141BDA6D0, WorldService, FUN_141bda6d0, 168, 0x4EC3E32F);
 

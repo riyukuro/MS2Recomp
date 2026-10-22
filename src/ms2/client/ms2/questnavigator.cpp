@@ -405,8 +405,7 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
                 int nNextMap = pMap->FUN_140c912d0(nCurrentMap, nTargetMap);
                 if (nNextMap != 0)
                 {
-                    MS2Ptr<CPortal> spNext;
-                    FUN_1403ed2d0()->FUN_141bc2880(reinterpret_cast<Unk_WsP16*>(&spNext), nNextMap);
+                    MS2Ptr<CPortal> spNext = FUN_1403ed2d0()->FUN_141bc2880(nNextMap);
                     if (spNext.get() != 0)
                     {
                         if (spNext->FUN_14169d160() == 1)

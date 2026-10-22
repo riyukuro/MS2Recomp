@@ -186,6 +186,8 @@ struct Unk_WsVac0 { void* p; };
 struct Unk_WsVad0 { void* p0; void* p1; };
 // Target of the MS2Ptr members (some CPtred subclass; TYPE? per member).
 class Unk_WsPtred : public CPtred {};
+class CPortal;                                           // m_350 value (FUN_141bc2880)
+class Unk_WsRec708;                                      // m_708 value (defined in worldservice.cpp#1 / #4)
 class Unk_WsPtred298 : public CPtred       // one class per MS2Ptr member (distinct ctor/dtor COMDATs in the exe)
 {
 public:                                        // the local player (fields as accessed by WorldService; helper C)
@@ -306,7 +308,7 @@ public:
     void FUN_141bc12b0();                                                              // take extra refs on the parts of every object of the active class filter
     void FUN_141bc2730();                                                              // clear the field-object registry (m_350) and destroy the entities in m_838
     Unk_WsP16* FUN_141bc2800(Unk_WsP16* out, int id);                                  // m_350.Lookup(field object id) -> *out (null when absent)
-    Unk_WsP16* FUN_141bc2880(Unk_WsP16* out, int mapType);                             // first m_350 field object with this map type
+    MS2Ptr<CPortal> FUN_141bc2880(int mapType);                                        // first m_350 portal with this map type (by value)
     void FUN_141bc2980(void* outIds);                                                  // append every field object id to the CAtlArray<int>
     void FUN_141bc2a70(int type, void* outRefs);                                       // collect the field objects of this type into the CAtlArray of refs
     void FUN_141bc24e0(int id);                                                        // unregister field object id (entity lists, m_838, m_350, proxy)
@@ -349,7 +351,7 @@ public:
     void FUN_141bc6930(int kind, int arg); // 0x141bc6930
     efd::SmartPointer<class Unk_WsB_Spawn> FUN_141bc6c60(const Unk_StreamPoint& pos, int skipUnusable); // 0x141bc6c60
     efd::SmartPointer<class Unk_WsB_Spawn> FUN_141bc6eb0(const CString& name); // 0x141bc6eb0
-    bool FUN_141bc6fb0(int* a, int* b, int* c, int* flag) const; // 0x141bc6fb0
+    int FUN_141bc6fb0(int* a, int* b, int* c, int* flag) const;  // 0x141bc6fb0 (returns 0/1 in eax)
     class FieldProperty* FUN_141bcab60(unsigned type); // 0x141bcab60
     bool FUN_141bc7920(std::set<void*>& visible); // 0x141bc7920
     bool FUN_141bc7aa0(int id, std::set<unsigned __int64>& out); // 0x141bc7aa0
@@ -526,7 +528,7 @@ public:
     void FUN_141bda460();                               // m_ac0.clear()
     void FUN_141bda490(unsigned key, void* pOutList);   // copy the m_208[key] list into *pOutList
     void FUN_141bda580();                               // rebuild m_708 from the ugc banner objects
-    Unk_WsP16* FUN_141bda6d0(Unk_WsP16* out, unsigned key);   // m_708 lookup
+    MS2Ptr<Unk_WsRec708> FUN_141bda6d0(unsigned key);   // m_708 lookup (by value: the callers keep it in an EH-tracked holder)
     void FUN_141bda780();                               // expire the timed entries of m_ab0
     void FUN_141bda9c0(int v);                          // m_890 operation
     void FUN_141bda9f0();                               // m_890 operation
