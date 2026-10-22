@@ -40,6 +40,12 @@ class CNMFunc : public CNMSerializable
 public:
     CNMFunc(int nFuncId, int nDirection, int n18, int n1c);       // 0x14157d4c0
     virtual ~CNMFunc() = default;                                         // 0x1415ed640
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x14157d630
+    unsigned int EncodeFramed(CNMStream* pStream) override;                // 0x14157d570
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x14157d5d0
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override; // 0x14157d790
+    unsigned int DecodeFramed(CNMStream* pStream) override;                // 0x14157d6a0
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override; // 0x14157d730
 
     int m_nFuncId;                                              // +0x10
     int m_nDirection;                                           // +0x14 (0 = reply)

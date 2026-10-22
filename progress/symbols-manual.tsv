@@ -3592,6 +3592,12 @@ __imp_NxGetUtilLib	142cced28	data
 ?CallNMFunc@CNMManager@@QEAAHPEAVCNMFunc@@@Z	1415cb440	func
 ??0CNMFunc@@QEAA@HHHH@Z	14157d4c0	func
 ??0CNMGameListData@@QEAA@XZ	141579eb0	func
+?Encode@CNMFunc@@UEAAIPEAVCNMEncoder@@PEAVCNMStream@@@Z	14157d630	func
+?EncodeFramed@CNMFunc@@UEAAIPEAVCNMStream@@@Z	14157d570	func
+?EncodeDispatch@CNMFunc@@UEAAIPEAVCNMEncoder@@PEAVCNMStream@@@Z	14157d5d0	func
+?Decode@CNMFunc@@UEAAIPEAVCNMSerializableDecoder@@PEAVCNMStream@@@Z	14157d790	func
+?DecodeFramed@CNMFunc@@UEAAIPEAVCNMStream@@@Z	14157d6a0	func
+?DecodeDispatch@CNMFunc@@UEAAIPEAVCNMSerializableDecoder@@PEAVCNMStream@@@Z	14157d730	func
 ??0CNMGameCode@@QEAA@AEBV0@@Z	1415e9910	func
 ??4CNMGameCode@@QEAAAEAV0@AEBV0@@Z	1415f0db0	func
 ??0CNMGameServerCode@@QEAA@AEBV0@@Z	1415e9cd0	func
