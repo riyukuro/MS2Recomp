@@ -13,8 +13,8 @@ public:
     inline explicit CInPacket(int flags=0);
     CInPacket(CInPacket& iPacket);                                 // 0x14070fd00: takes over a completed packet
     inline ~CInPacket();
-    unsigned vfunc_0() override;
-    short vfunc_1() override;
+    unsigned GetOffset() override;
+    short GetType() override;
 
     bool ReadBool() override;
     unsigned char ReadUInt8() override;

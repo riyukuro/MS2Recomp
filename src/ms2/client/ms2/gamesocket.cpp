@@ -289,7 +289,7 @@ void CGameSocket::FUN_141265ae0()
     if(stopped) PostMessageA(FUN_14209c720(FUN_140aadf80()),0x469,0,0);
     else for(POSITION pos=ready.GetHeadPosition();pos;ready.GetNext(pos)) {
         Unk_InPtr packet(ready.GetAt(pos)); FUN_1415396b0(FUN_140714f90(),packet);
-        unsigned op=(unsigned short)packet->vfunc_1();
+        unsigned op=(unsigned short)packet->GetType();
         m_logger->LogReceive(op,*reinterpret_cast<Unk_LogInPacket*>(packet.get()));
     }
 }

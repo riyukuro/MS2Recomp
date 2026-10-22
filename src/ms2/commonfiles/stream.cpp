@@ -147,31 +147,31 @@ MS2_REPLACE_METHOD_VIA(0x14083A520, CByteBuffer, COutputStream, WriteShortDivSca
 bool CByteBuffer::ReadBool() { return ReadUInt8()?true:false; }
 MS2_REPLACE_METHOD_VIA(0x14083A580, CByteBuffer, CInputStream, ReadBool, 67, 0xE061F660);
 // @0x14083a5d0
-unsigned char CByteBuffer::ReadUInt8() { unsigned char value;m_uOffset+=FUN_140713970(value,&m_aByteBuff[0]+m_uOffset,m_uLength-m_uOffset);return value; }
+unsigned char CByteBuffer::ReadUInt8() { unsigned char value;m_uOffset+=Decode1(value,&m_aByteBuff[0]+m_uOffset,m_uLength-m_uOffset);return value; }
 MS2_REPLACE_METHOD_VIA(0x14083A5D0, CByteBuffer, CInputStream, ReadUInt8, 113, 0x561BE4EF);
 // @0x14083a650
-short CByteBuffer::ReadInt16() { short value;m_uOffset+=FUN_140713ae0(value,&m_aByteBuff[0]+m_uOffset,m_uLength-m_uOffset);return value; }
+short CByteBuffer::ReadInt16() { short value;m_uOffset+=Decode2(value,&m_aByteBuff[0]+m_uOffset,m_uLength-m_uOffset);return value; }
 MS2_REPLACE_METHOD_VIA(0x14083A650, CByteBuffer, CInputStream, ReadInt16, 113, 0xA5C7A791);
 // @0x14083a6d0
-int CByteBuffer::ReadInt32() { int value;m_uOffset+=FUN_140713c50(value,&m_aByteBuff[0]+m_uOffset,m_uLength-m_uOffset);return value; }
+int CByteBuffer::ReadInt32() { int value;m_uOffset+=Decode4(value,&m_aByteBuff[0]+m_uOffset,m_uLength-m_uOffset);return value; }
 MS2_REPLACE_METHOD_VIA(0x14083A6D0, CByteBuffer, CInputStream, ReadInt32, 112, 0x9F2B20EC);
 // @0x14083a750
-__int64 CByteBuffer::ReadInt64() { __int64 value;m_uOffset+=FUN_140713db0(value,&m_aByteBuff[0]+m_uOffset,m_uLength-m_uOffset);return value; }
+__int64 CByteBuffer::ReadInt64() { __int64 value;m_uOffset+=Decode8(value,&m_aByteBuff[0]+m_uOffset,m_uLength-m_uOffset);return value; }
 MS2_REPLACE_METHOD_VIA(0x14083A750, CByteBuffer, CInputStream, ReadInt64, 113, 0x014FB177);
 // @0x14083a7d0
-float CByteBuffer::ReadFloat() { float value;m_uOffset+=FUN_140714ab0(value,&m_aByteBuff[0]+m_uOffset,m_uLength-m_uOffset);return value; }
+float CByteBuffer::ReadFloat() { float value;m_uOffset+=Decodef(value,&m_aByteBuff[0]+m_uOffset,m_uLength-m_uOffset);return value; }
 MS2_REPLACE_METHOD_VIA(0x14083A7D0, CByteBuffer, CInputStream, ReadFloat, 114, 0x77CCFCAF);
 // @0x14083a850
-CString CByteBuffer::ReadUnicodeStringA() { CStringW value;m_uOffset+=FUN_1407145e0(value,&m_aByteBuff[0]+m_uOffset,m_uLength-m_uOffset);return FUN_1401d4330(value,0); }
+CString CByteBuffer::ReadUnicodeStringA() { CStringW value;m_uOffset+=DecodeStr(value,&m_aByteBuff[0]+m_uOffset,m_uLength-m_uOffset);return FUN_1401d4330(value,0); }
 MS2_REPLACE_METHOD_VIA(0x14083A850, CByteBuffer, CInputStream, ReadUnicodeStringA, 196, 0x89F4B84D);
 // @0x14083a920
-CString CByteBuffer::ReadString() { CString value;m_uOffset+=FUN_140714210(value,&m_aByteBuff[0]+m_uOffset,m_uLength-m_uOffset);return value; }
+CString CByteBuffer::ReadString() { CString value;m_uOffset+=DecodeStrA(value,&m_aByteBuff[0]+m_uOffset,m_uLength-m_uOffset);return value; }
 MS2_REPLACE_METHOD_VIA(0x14083A920, CByteBuffer, CInputStream, ReadString, 185, 0x269EF53D);
 // @0x14083a9e0
-CStringW CByteBuffer::ReadUnicodeString() { CStringW value;m_uOffset+=FUN_1407145e0(value,&m_aByteBuff[0]+m_uOffset,m_uLength-m_uOffset);return value; }
+CStringW CByteBuffer::ReadUnicodeString() { CStringW value;m_uOffset+=DecodeStr(value,&m_aByteBuff[0]+m_uOffset,m_uLength-m_uOffset);return value; }
 MS2_REPLACE_METHOD_VIA(0x14083A9E0, CByteBuffer, CInputStream, ReadUnicodeString, 185, 0x4D56ACDF);
 // @0x14083aaa0
-void CByteBuffer::ReadBytes(void* data,int count) { m_uOffset+=FUN_140713f20(data,count,&m_aByteBuff[0]+m_uOffset,m_uLength-m_uOffset); }
+void CByteBuffer::ReadBytes(void* data,int count) { m_uOffset+=DecodeBuffer(data,count,&m_aByteBuff[0]+m_uOffset,m_uLength-m_uOffset); }
 MS2_REPLACE_METHOD_VIA(0x14083AAA0, CByteBuffer, CInputStream, ReadBytes, 124, 0xA2775042);
 // @0x14083ab30
 Unk_StreamPoint CByteBuffer::ReadVector3() { Unk_StreamPoint value;value.x=ReadFloat();value.y=ReadFloat();value.z=ReadFloat();return value; }

@@ -9026,7 +9026,7 @@ void FUN_141b16580(int nLevel);                             // system text 0xd22
 // deleting dtor; it calls the real dtor 0x140195700, which the exe calls here)
 void CSceneStateGame::OnPrestige(CInPacket& packet)
 {
-    unsigned int nOffset = packet.vfunc_0();
+    unsigned int nOffset = packet.GetOffset();
     Unk_1407a8820 kPayload;
     FUN_1407a8b20(kPayload, packet);
     __int64 nGain = 0;

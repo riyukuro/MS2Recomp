@@ -389,13 +389,13 @@ void CByteBuffer::FUN_140518490()
 }
 
 // @0x140518920
-unsigned CByteBuffer::vfunc_0()
+unsigned CByteBuffer::GetOffset()
 {
     return m_uOffset;
 }
 
 // @0x140518a50
-short CByteBuffer::vfunc_1()
+short CByteBuffer::GetType()
 {
     return *reinterpret_cast<const short*>(&static_cast<const ATL::CAtlArray<unsigned char>&>(m_aByteBuff)[0]);
 }

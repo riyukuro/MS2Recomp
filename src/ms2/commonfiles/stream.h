@@ -7,20 +7,20 @@
 #include "ms2/placeholder/nipoint3.h"   // Unk_StreamPoint
 class CIOBuffer {
 public:
-    virtual unsigned vfunc_0() = 0;
-    virtual short vfunc_1() = 0;
+    virtual unsigned GetOffset() = 0;
+    virtual short GetType() = 0;
     // Bounds-checked decoders shared by CByteBuffer and CInPacket (defined in commonfiles\packet.cpp, inline in the
     // exe's packet.h): store the value read from `data` (`size` bytes remain) and return the bytes consumed; they throw
     // Exception(0x26) with a "[type=..][offset=..][hint=..]" text when too little remains.
-    void FUN_140714df0(CString& text,CString hint);
-    int FUN_140713970(unsigned char&,const unsigned char*,unsigned);
-    int FUN_140713ae0(short&,const unsigned char*,unsigned);
-    int FUN_140713c50(int&,const unsigned char*,unsigned);
-    int FUN_140713db0(__int64&,const unsigned char*,unsigned);
-    int FUN_140714ab0(float&,const unsigned char*,unsigned);
-    int FUN_140714210(CString&,const unsigned char*,unsigned);
-    int FUN_1407145e0(CStringW&,const unsigned char*,unsigned);
-    int FUN_140713f20(void*,int,const unsigned char*,unsigned);
+    void FormatDecodeError(CString& text,CString hint);
+    int Decode1(unsigned char&,const unsigned char*,unsigned);
+    int Decode2(short&,const unsigned char*,unsigned);
+    int Decode4(int&,const unsigned char*,unsigned);
+    int Decode8(__int64&,const unsigned char*,unsigned);
+    int Decodef(float&,const unsigned char*,unsigned);
+    int DecodeStrA(CString&,const unsigned char*,unsigned);
+    int DecodeStr(CStringW&,const unsigned char*,unsigned);
+    int DecodeBuffer(void*,int,const unsigned char*,unsigned);
 };
 class CInputStream { public:
     virtual bool ReadBool() = 0;
@@ -63,8 +63,8 @@ class COutputStream { public:
 class CByteBuffer : public CIOBuffer, public CInputStream, public COutputStream { public:
     CByteBuffer();
     ~CByteBuffer();
-    unsigned vfunc_0() override;
-    short vfunc_1() override;
+    unsigned GetOffset() override;
+    short GetType() override;
     virtual void vfunc_2(int n,unsigned uOffset);
     bool ReadBool() override;
     unsigned char ReadUInt8() override;

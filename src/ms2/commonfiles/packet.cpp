@@ -417,49 +417,49 @@ void CByteBuffer::FUN_140715230(int count) { FUN_140204670(count); }
 
 // ---- CIOBuffer bounds-checked decoders ------------------------------------------------------------------------------------
 #define MS2_PK_DECODE_FAIL(hint, code) \
-    { CString text; FUN_140714df0(text, CString(hint)); throw Exception(text, code); }
+    { CString text; FormatDecodeError(text, CString(hint)); throw Exception(text, code); }
 // @0x140714df0
-void CIOBuffer::FUN_140714df0(CString& text, CString hint)
+void CIOBuffer::FormatDecodeError(CString& text, CString hint)
 {
-    text.Format("[type=%u][offset=%u][hint=%s]", (unsigned short)vfunc_1(), vfunc_0(), (const char*)hint);
+    text.Format("[type=%u][offset=%u][hint=%s]", (unsigned short)GetType(), GetOffset(), (const char*)hint);
 }
 // @0x140713970
-int CIOBuffer::FUN_140713970(unsigned char& value, const unsigned char* data, unsigned size)
+int CIOBuffer::Decode1(unsigned char& value, const unsigned char* data, unsigned size)
 {
     if (size < sizeof(unsigned char)) MS2_PK_DECODE_FAIL("Decode1", 0x26);
     value = *data;
     return 1;
 }
 // @0x140713ae0
-int CIOBuffer::FUN_140713ae0(short& value, const unsigned char* data, unsigned size)
+int CIOBuffer::Decode2(short& value, const unsigned char* data, unsigned size)
 {
     if (size < sizeof(short)) MS2_PK_DECODE_FAIL("Decode2", 0x26);
     value = *(const short*)data;
     return 2;
 }
 // @0x140713c50
-int CIOBuffer::FUN_140713c50(int& value, const unsigned char* data, unsigned size)
+int CIOBuffer::Decode4(int& value, const unsigned char* data, unsigned size)
 {
     if (size < sizeof(int)) MS2_PK_DECODE_FAIL("Decode4", 0x26);
     value = *(const int*)data;
     return 4;
 }
 // @0x140713db0
-int CIOBuffer::FUN_140713db0(__int64& value, const unsigned char* data, unsigned size)
+int CIOBuffer::Decode8(__int64& value, const unsigned char* data, unsigned size)
 {
     if (size < sizeof(__int64)) MS2_PK_DECODE_FAIL("Decode8", 0x26);
     value = *(const __int64*)data;
     return 8;
 }
 // @0x140713f20
-int CIOBuffer::FUN_140713f20(void* dest, int count, const unsigned char* data, unsigned size)
+int CIOBuffer::DecodeBuffer(void* dest, int count, const unsigned char* data, unsigned size)
 {
     if (size < (unsigned)count) MS2_PK_DECODE_FAIL("DecodeBuffer", 0x26);
     memcpy(dest, data, (unsigned)count);
     return count;
 }
 // @0x140714ab0
-int CIOBuffer::FUN_140714ab0(float& value, const unsigned char* data, unsigned size)
+int CIOBuffer::Decodef(float& value, const unsigned char* data, unsigned size)
 {
     if (size < sizeof(float)) MS2_PK_DECODE_FAIL("Decodef", 0x26);
     value = *(const float*)data;
@@ -467,7 +467,7 @@ int CIOBuffer::FUN_140714ab0(float& value, const unsigned char* data, unsigned s
 }
 // MS2-FUNCTIONAL: throw path: 0x10 more stack than the exe
 // @0x140714210
-int CIOBuffer::FUN_140714210(CString& value, const unsigned char* data, unsigned size)
+int CIOBuffer::DecodeStrA(CString& value, const unsigned char* data, unsigned size)
 {
     if (size < 2) MS2_PK_DECODE_FAIL("DecodeStrA", 0x26);
     unsigned short length = *(const unsigned short*)data;
@@ -478,7 +478,7 @@ int CIOBuffer::FUN_140714210(CString& value, const unsigned char* data, unsigned
 }
 // MS2-FUNCTIONAL: throw path: 0x10 more stack than the exe
 // @0x1407145e0
-int CIOBuffer::FUN_1407145e0(CStringW& value, const unsigned char* data, unsigned size)
+int CIOBuffer::DecodeStr(CStringW& value, const unsigned char* data, unsigned size)
 {
     if (size < 2) MS2_PK_DECODE_FAIL("DecodeStr", 0x26);
     unsigned short length = *(const unsigned short*)data;
@@ -492,43 +492,43 @@ int CIOBuffer::FUN_1407145e0(CStringW& value, const unsigned char* data, unsigne
 // @0x140713940
 void CInPacket::FUN_140713940() { m_nState = RS_HEADER; m_length = 0; m_offset = 0; }
 // @0x140714fb0
-unsigned CInPacket::vfunc_0() { return m_offset; }
+unsigned CInPacket::GetOffset() { return m_offset; }
 // @0x140714fd0
-short CInPacket::vfunc_1() {
+short CInPacket::GetType() {
     return *(const short*)(&m_data[0] + 6);
 }
 // @0x140713a60
 unsigned char CInPacket::ReadUInt8()
 {
     unsigned char value;
-    m_offset += FUN_140713970(value, &m_data[0] + m_offset, m_length - m_offset);
+    m_offset += Decode1(value, &m_data[0] + m_offset, m_length - m_offset);
     return value;
 }
 // @0x140713bd0
 short CInPacket::ReadInt16()
 {
     short value;
-    m_offset += FUN_140713ae0(value, &m_data[0] + m_offset, m_length - m_offset);
+    m_offset += Decode2(value, &m_data[0] + m_offset, m_length - m_offset);
     return value;
 }
 // @0x140713d40
 int CInPacket::ReadInt32()
 {
     int value;
-    m_offset += FUN_140713c50(value, &m_data[0] + m_offset, m_length - m_offset);
+    m_offset += Decode4(value, &m_data[0] + m_offset, m_length - m_offset);
     return value;
 }
 // @0x140713ea0
 __int64 CInPacket::ReadInt64()
 {
     __int64 value;
-    m_offset += FUN_140713db0(value, &m_data[0] + m_offset, m_length - m_offset);
+    m_offset += Decode8(value, &m_data[0] + m_offset, m_length - m_offset);
     return value;
 }
 // @0x140714020
 void CInPacket::ReadBytes(void* data, int count)
 {
-    m_offset += FUN_140713f20(data, count, &m_data[0] + m_offset, m_length - m_offset);
+    m_offset += DecodeBuffer(data, count, &m_data[0] + m_offset, m_length - m_offset);
 }
 // @0x1407140a0
 short CInPacket::FUN_1407140a0() { return ReadInt16(); }
@@ -551,14 +551,14 @@ CString CInPacket::ReadUnicodeStringA()
 CString CInPacket::ReadString()
 {
     CString value;
-    m_offset += FUN_140714210(value, &m_data[0] + m_offset, m_length - m_offset);
+    m_offset += DecodeStrA(value, &m_data[0] + m_offset, m_length - m_offset);
     return value;
 }
 // @0x140714900
 CStringW CInPacket::ReadUnicodeString()
 {
     CStringW value;
-    m_offset += FUN_1407145e0(value, &m_data[0] + m_offset, m_length - m_offset);
+    m_offset += DecodeStr(value, &m_data[0] + m_offset, m_length - m_offset);
     return value;
 }
 // @0x1407149c0
@@ -576,7 +576,7 @@ Unk_StreamPoint CInPacket::ReadVector3Short()
 float CInPacket::ReadFloat()
 {
     float value;
-    m_offset += FUN_140714ab0(value, &m_data[0] + m_offset, m_length - m_offset);
+    m_offset += Decodef(value, &m_data[0] + m_offset, m_length - m_offset);
     return value;
 }
 // @0x140714c20
@@ -680,17 +680,17 @@ MS2_REPLACE(0x140714f80, GetBufferCryptManager, 8, 0xF2EA183E);
 MS2_REPLACE(0x140714f90, FUN_140714f90, 8, 0x0D8AB200);
 MS2_REPLACE_METHOD(0x140714de0, Unk_CompressedStream, FUN_140714de0, 11, 0x3BE09B6E);
 MS2_REPLACE_METHOD(0x140715230, CByteBuffer, FUN_140715230, 32, 0xD1D53A76);
-MS2_REPLACE_METHOD(0x140713970, CIOBuffer, FUN_140713970, 218, 0xC179EE8E);
-MS2_REPLACE_METHOD(0x140713ae0, CIOBuffer, FUN_140713ae0, 219, 0xA9CED8D6);
-MS2_REPLACE_METHOD(0x140713c50, CIOBuffer, FUN_140713c50, 217, 0xDB975035);
-MS2_REPLACE_METHOD(0x140713db0, CIOBuffer, FUN_140713db0, 219, 0x722AB4A9);
-MS2_REPLACE_METHOD(0x140713f20, CIOBuffer, FUN_140713f20, 233, 0x7D7D786A);
-MS2_REPLACE_METHOD(0x140714ab0, CIOBuffer, FUN_140714ab0, 221, 0xA8F68AC2);
-MS2_REPLACE_METHOD(0x140714210, CIOBuffer, FUN_140714210, 745, 0x6A5F9DFD);
-MS2_REPLACE_METHOD(0x1407145e0, CIOBuffer, FUN_1407145e0, 747, 0x9D146BE9);
+MS2_REPLACE_METHOD(0x140713970, CIOBuffer, Decode1, 218, 0xC179EE8E);
+MS2_REPLACE_METHOD(0x140713ae0, CIOBuffer, Decode2, 219, 0xA9CED8D6);
+MS2_REPLACE_METHOD(0x140713c50, CIOBuffer, Decode4, 217, 0xDB975035);
+MS2_REPLACE_METHOD(0x140713db0, CIOBuffer, Decode8, 219, 0x722AB4A9);
+MS2_REPLACE_METHOD(0x140713f20, CIOBuffer, DecodeBuffer, 233, 0x7D7D786A);
+MS2_REPLACE_METHOD(0x140714ab0, CIOBuffer, Decodef, 221, 0xA8F68AC2);
+MS2_REPLACE_METHOD(0x140714210, CIOBuffer, DecodeStrA, 745, 0x6A5F9DFD);
+MS2_REPLACE_METHOD(0x1407145e0, CIOBuffer, DecodeStr, 747, 0x9D146BE9);
 MS2_REPLACE_METHOD(0x140713940, CInPacket, FUN_140713940, 42, 0x52DF3817);
-MS2_REPLACE_METHOD(0x140714fb0, CInPacket, vfunc_0, 14, 0x921EE467);
-MS2_REPLACE_METHOD(0x140714fd0, CInPacket, vfunc_1, 37, 0x9128F8DB);
+MS2_REPLACE_METHOD(0x140714fb0, CInPacket, GetOffset, 14, 0x921EE467);
+MS2_REPLACE_METHOD(0x140714fd0, CInPacket, GetType, 37, 0x9128F8DB);
 MS2_REPLACE_METHOD_VIA(0x140713a60, CInPacket, CInputStream, ReadUInt8, 113, 0xFD8B0C01);
 MS2_REPLACE_METHOD_VIA(0x140713bd0, CInPacket, CInputStream, ReadInt16, 113, 0xD23ADBAD);
 MS2_REPLACE_METHOD_VIA(0x140713d40, CInPacket, CInputStream, ReadInt32, 112, 0x198BE64D);

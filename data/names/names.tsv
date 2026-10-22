@@ -2129,3 +2129,14 @@
 14083a460	CByteBuffer::vfunc_o10_14	CByteBuffer::WriteShortScaled	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 14); width-explicit name per user	nam2	2026-10-22
 14083a4c0	CByteBuffer::vfunc_o10_15	CByteBuffer::WriteShortDiv10	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 15); width-explicit name per user	nam2	2026-10-22
 14083a520	CByteBuffer::vfunc_o10_16	CByteBuffer::WriteShortDivScaled	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 16); width-explicit name per user	nam2	2026-10-22
+140518920	CByteBuffer::vfunc_0	CByteBuffer::GetOffset	descriptive	body returns read offset; FUN_140714df0 formats it as [offset=%u]	nam2	2026-10-22
+140518a50	CByteBuffer::vfunc_1	CByteBuffer::GetType	descriptive	body returns packet opcode short; FUN_140714df0 formats it as [type=%u]	nam2	2026-10-22
+140714df0	CIOBuffer::FUN_140714df0	CIOBuffer::FormatDecodeError	descriptive	builds "[type=%u][offset=%u][hint=%s]" text for decode exceptions	nam2	2026-10-22
+140713970	CIOBuffer::FUN_140713970	CIOBuffer::Decode1	certain	exe hint string "Decode1"	nam2	2026-10-22
+140713ae0	CIOBuffer::FUN_140713ae0	CIOBuffer::Decode2	certain	exe hint string "Decode2"	nam2	2026-10-22
+140713c50	CIOBuffer::FUN_140713c50	CIOBuffer::Decode4	certain	exe hint string "Decode4"	nam2	2026-10-22
+140713db0	CIOBuffer::FUN_140713db0	CIOBuffer::Decode8	certain	exe hint string "Decode8"	nam2	2026-10-22
+140714ab0	CIOBuffer::FUN_140714ab0	CIOBuffer::Decodef	certain	exe hint string "Decodef"	nam2	2026-10-22
+140714210	CIOBuffer::FUN_140714210	CIOBuffer::DecodeStrA	certain	exe hint string "DecodeStrA"	nam2	2026-10-22
+1407145e0	CIOBuffer::FUN_1407145e0	CIOBuffer::DecodeStr	certain	exe hint string "DecodeStr"	nam2	2026-10-22
+140713f20	CIOBuffer::FUN_140713f20	CIOBuffer::DecodeBuffer	certain	exe hint string "DecodeBuffer"	nam2	2026-10-22

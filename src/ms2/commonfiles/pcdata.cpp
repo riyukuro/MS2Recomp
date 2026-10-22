@@ -361,6 +361,6 @@ void CByteBuffer::FUN_140720e90(unsigned uOffset)
         return;
     }
     CString text;
-    FUN_140714df0(text, CString("SetOffset"));
+    FormatDecodeError(text, CString("SetOffset"));
     throw Exception(text, 0x26);
 }
