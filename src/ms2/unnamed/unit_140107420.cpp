@@ -48,10 +48,8 @@ class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
 class Unk_1418036e0 { public: Unk_1418036e0(void*); private: void* m_p; };
 class Unk_1418036b0 { public: Unk_1418036b0(); private: void* m_p; int m_n; };
 
-// efdPhysX/PhysXSDKManager.h's SDM object (0x143aedddd; ctor 0x1421177a0, the engine copy whose Init/Shutdown are
-// 0x142117800/0x142117860). The header's own copy is compiled out (MS2_NO_ENGINE_STATIC_INIT); defined here as in
-// unit_140105110.cpp (which also defines the constructor for the hook DLL).
-static efdPhysX::efdPhysXSDM efdPhysXSDMObject;
+// efdPhysX/PhysXSDKManager.h's own efdPhysX::efdPhysXSDMObject (0x143aedddd, ctor 0x1421177a0) is this TU's
+// initializer 0x140107700; the include above emits it (the hook DLL compiles it out, MS2_NO_ENGINE_STATIC_INIT).
 
 static std::pair<const char*, int> s_gosNames[] = {
     {"gosNone", 0},
