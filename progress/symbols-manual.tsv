@@ -8257,3 +8257,7 @@ compress2	142724100	func
 ?SoundMixerCI@fl_media@AS3@GFx@Scaleform@@3UClassInfo@234@B	143177a70	data
 ?SoundTransformCI@fl_media@AS3@GFx@Scaleform@@3UClassInfo@234@B	143177ac0	data
 ?ExecuteOnSoundComplete@SoundObject@AS3@GFx@Scaleform@@UEAAXXZ	142565310	func
+?XMLDocumentCI@fl_xml@AS3@GFx@Scaleform@@3UClassInfo@234@B	1431765d0	data
+?XMLNodeCI@fl_xml@AS3@GFx@Scaleform@@3UClassInfo@234@B	143176620	data
+?XMLNodeTypeCI@fl_xml@AS3@GFx@Scaleform@@3UClassInfo@234@B	143176670	data
+?XMLSignatureValidatorCI@fl_security@AS3@GFx@Scaleform@@3UClassInfo@234@B	143175fb0	data
