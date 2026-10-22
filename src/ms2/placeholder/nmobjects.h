@@ -1524,6 +1524,13 @@ class CNMSessionInfo : public CNMSerializable
 public:
     virtual ~CNMSessionInfo() = default;
 
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+
     int m_10; // +0x10
     NMKey64 m_14; // +0x14
     int m_1c; // +0x1c
