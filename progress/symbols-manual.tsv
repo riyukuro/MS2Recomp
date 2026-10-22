@@ -8362,3 +8362,5 @@ compress2	142724100	func
 ?GetAS3ChildAt@AvmDisplayObjContainer@AS3@GFx@Scaleform@@QEAA?AV?$SPtr@VDisplayObject@fl_display@Instances@AS3@GFx@Scaleform@@@234@I@Z	142505cc0	func
 ?GetAS3ChildByName@AvmDisplayObjContainer@AS3@GFx@Scaleform@@QEAA?AV?$SPtr@VDisplayObject@fl_display@Instances@AS3@GFx@Scaleform@@@234@AEBVASString@34@@Z	142505d40	func
 ?RemoveChildAt@AvmDisplayObjContainer@AS3@GFx@Scaleform@@QEAAXI@Z	1425226a0	func
+?GetTopMostEntity@MovieImpl@GFx@Scaleform@@QEAAPEAVInteractiveObject@23@AEBV?$Point@M@Render@3@I_NPEBV423@@Z	14256fde0	func
+?InitCenterDelta@DragState@MovieImpl@GFx@Scaleform@@QEAAX_N@Z	142570c80	func
