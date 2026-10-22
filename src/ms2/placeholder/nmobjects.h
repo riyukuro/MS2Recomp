@@ -1271,6 +1271,13 @@ class CNMMessageData : public CNMSerializable
 public:
     virtual ~CNMMessageData() = default;
 
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+
     int m_10; // +0x10
     char m_14[0x1004]; // +0x14
 };
@@ -2315,7 +2322,14 @@ MS2_CHECK_SIZE(CNMNoteInstantMsgEvent, 0xef0);
 class CNMOpenGameSummaryFunc : public CNMFunc
 {
 public:
+    CNMOpenGameSummaryFunc();
     virtual ~CNMOpenGameSummaryFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 };
 MS2_CHECK_SIZE(CNMOpenGameSummaryFunc, 0x30);
 
