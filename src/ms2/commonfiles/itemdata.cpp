@@ -147,7 +147,7 @@ bool FUN_14053f8c0(unsigned nItemId);
 bool FUN_14053f900(unsigned nItemId);
 bool FUN_14053f940(unsigned nItemId);
 int FUN_14053f990(int nId);
-bool FUN_14053f9c0(int nItemId);
+int FUN_14053f9c0(int nItemId);
 bool FUN_14053fa40(int nItemId);
 int FUN_14053fac0(int nItemId);
 bool FUN_14053fb40(int nItemId);
@@ -1992,7 +1992,7 @@ int FUN_14053f990(int nId)
 }
 
 // @0x14053f9c0
-bool FUN_14053f9c0(int nItemId)
+int FUN_14053f9c0(int nItemId)
 {
     MS2Ptr<CItemData> pItem = FUN_14053f870(nItemId);
     if (pItem.IsNull())
