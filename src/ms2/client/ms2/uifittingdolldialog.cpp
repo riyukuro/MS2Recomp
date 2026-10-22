@@ -202,7 +202,7 @@ void UIFittingDollDialog::SendFittingDoll()
 {
     if (FUN_1403ed2d0()->FUN_141bd0cc0() != 0)
     {
-        COutPacket packet(0x42, 0);
+        COutPacket packet(static_cast<int>(SendOp::FittingDoll), 0);
         packet.vfunc_o10_1(3);
         packet.vfunc_o10_4(DAT_143af25f0);
         FUN_140710590(packet);

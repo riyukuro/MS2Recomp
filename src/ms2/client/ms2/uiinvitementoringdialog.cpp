@@ -208,7 +208,7 @@ void UIInviteMentoringDialog::OnLoadComplete()
             m_spPage = FUN_140ba7930(strPage);
         }
         FUN_141925fa0(CString("m_menteeDragBar"));
-        COutPacket pkt(0xa1, 0);
+        COutPacket pkt(static_cast<int>(SendOp::Mentor), 0);
         Unk_MMListPacket2 req;
         req.FUN_14069a010(pkt);
         FUN_140710590(pkt);
@@ -322,7 +322,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
             unsigned __int64 nSerial = FUN_140718350(data.FUN_1422b8d30());
-            COutPacket pkt(0xa1, 0);
+            COutPacket pkt(static_cast<int>(SendOp::Mentor), 0);
             Unk_MMIdPacket7 req;
             req.id = nSerial;
             req.FUN_14069a6c0(pkt);
@@ -484,7 +484,7 @@ void UIInviteMentoringDialog::FUN_140c2f860(__int64 nMentor, const CStringW& str
                 }
             }
         }
-        COutPacket pkt(0xa1, 0);
+        COutPacket pkt(static_cast<int>(SendOp::Mentor), 0);
         Unk_MMNamePacket5 req;
         req.name = strName;
         req.id = nMentor;
@@ -516,7 +516,7 @@ bool UIInviteMentoringDialog::FUN_140c2fae0(int nResult, const CMsgBoxData& data
     if (nResult != 0)
         return true;
     __int64 nSerial = data.FUN_141a02f10(0, 0);
-    COutPacket pkt(0xa1, 0);
+    COutPacket pkt(static_cast<int>(SendOp::Mentor), 0);
     Unk_MMIdPacket6 req;
     req.id = nSerial;
     req.FUN_14069a630(pkt);

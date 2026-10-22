@@ -160,7 +160,7 @@ void UIWeddingBillboardDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_140bccd50()->FUN_140da5180(0x12a, Delegate<void(CInPacket&)>(this, &UIWeddingBillboardDialog::FUN_140fc3300));
-    COutPacket packet(0xbb, 0);
+    COutPacket packet(static_cast<int>(SendOp::WeddingBillboard), 0);
     packet.Encode1(4);
     packet.Encode4(0);
     FUN_140710590(packet);
@@ -201,7 +201,7 @@ int UIWeddingBillboardDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     }
     else if (_stricmp(szMethod, "onRefresh") == 0)
     {
-        COutPacket packet(0xbb, 0);
+        COutPacket packet(static_cast<int>(SendOp::WeddingBillboard), 0);
         packet.Encode1(4);
         packet.Encode4(0);
         FUN_140710590(packet);

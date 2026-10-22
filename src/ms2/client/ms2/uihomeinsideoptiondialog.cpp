@@ -256,7 +256,7 @@ void UIHomeInsideOptionDialog::FUN_140c280d0()
     if (spBg.get() != 0)
     {
         unsigned char nSelected = spBg.operator->()->FUN_1422df6c0();
-        COutPacket packet(0x37, 0);
+        COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
         packet.vfunc_o10_1(0x33);
         packet.vfunc_o10_1(nSelected);
         FUN_140710590(packet);
@@ -265,7 +265,7 @@ void UIHomeInsideOptionDialog::FUN_140c280d0()
     if (spLight.get() != 0)
     {
         unsigned char nSelected = spLight.operator->()->FUN_1422df6c0();
-        COutPacket packet(0x37, 0);
+        COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
         packet.vfunc_o10_1(0x34);
         packet.vfunc_o10_1(nSelected);
         FUN_140710590(packet);
@@ -274,7 +274,7 @@ void UIHomeInsideOptionDialog::FUN_140c280d0()
     if (spCamera.get() != 0)
     {
         unsigned char nSelected = spCamera.operator->()->FUN_1422df6c0();
-        COutPacket packet(0x37, 0);
+        COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
         packet.vfunc_o10_1(0x36);
         packet.vfunc_o10_1(nSelected);
         FUN_140710590(packet);

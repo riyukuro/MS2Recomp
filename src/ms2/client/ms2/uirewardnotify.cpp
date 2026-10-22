@@ -1026,7 +1026,7 @@ int UIRouletteDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
                 pUI->FUN_141b1a8e0(strResult, "", "");
             }
         } else {
-            COutPacket packet(0x43, 0);
+            COutPacket packet(static_cast<int>(SendOp::BonusGame), 0);
             packet.vfunc_o10_1(3);
             FUN_140710590(packet);
             vfunc_67();

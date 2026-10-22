@@ -489,7 +489,7 @@ bool UIDebugGuideDialog::SendCommand(int nIndex)
         {
             Unk_DebugGuideCommand& rCommand = m_groups[nGroup].m_commands[nCommand];
             unsigned __int64 nCount = rCommand.m_args.size();
-            COutPacket pkt(0x50, 0);
+            COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
             pkt.vfunc_o10_1(7);
             pkt.vfunc_o10_3((int)nCount);
             for (unsigned __int64 i = 0; i < nCount; i++)

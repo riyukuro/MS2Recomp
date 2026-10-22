@@ -94,7 +94,7 @@ MS2_REPLACE_METHOD(0x140BB98C0, UIBirthdayCardDialog, OnLoadComplete, 44, 0xD6EB
 // @0x140bb9900
 void UIBirthdayCardDialog::SendBirthdayCard()
 {
-    COutPacket packet(0xa6, 0);
+    COutPacket packet(static_cast<int>(SendOp::BirthdayCard), 0);
     packet.vfunc_o10_1(0);
     FUN_140710590(packet);
 }

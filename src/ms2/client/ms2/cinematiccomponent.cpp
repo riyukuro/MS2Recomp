@@ -690,14 +690,14 @@ void CQuestAcceptCinematicComponent::FUN_14107ecc0(int nQuestId, bool bRedirect)
 {
     MyPC* pc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pc != 0) {
-        COutPacket pkt(0x29, 0);
+        COutPacket pkt(static_cast<int>(SendOp::Quest), 0);
         pkt.Encode1(2);
         pkt.Encode4(nQuestId);
         pkt.Encode4(FUN_140967100()->FUN_141b212c0());
         FUN_140710590(pkt);
     }
     if (bRedirect && FUN_14074b840(nQuestId) != 0) {
-        COutPacket pkt(0x22, 0);
+        COutPacket pkt(static_cast<int>(SendOp::NpcTalk), 0);
         pkt.Encode1(7);
         pkt.Encode4(nQuestId);
         pkt.Encode2(2);
@@ -720,7 +720,7 @@ int CQuestProgressCinematicComponent::vfunc_2(int nMsg)
     if (nMsg == 0x493e2) {
         MS2Ptr<CQuestData> spQuest = FUN_14074bc40(m_spContent->m_questId);
         if (bool(spQuest.get() != 0) && spQuest->m_318.m_0 != 0) {
-            COutPacket pkt(0x29, 0);
+            COutPacket pkt(static_cast<int>(SendOp::Quest), 0);
             pkt.Encode1(0x12);
             pkt.Encode4(m_spContent->m_questId);
             FUN_140710590(pkt);
@@ -751,14 +751,14 @@ int CQuestCompleteCinematicComponent::vfunc_2(int nMsg)
         if (FUN_140764020()->m_state.FUN_140745590(m_spContent->m_questId) != 0)
             return 1;
         int nChoice = 0;
-        COutPacket pktComplete(0x29, 0);
+        COutPacket pktComplete(static_cast<int>(SendOp::Quest), 0);
         pktComplete.Encode1(4);
         pktComplete.Encode4(nQuestId);
         pktComplete.Encode4(FUN_140967100()->FUN_141b212c0());
         pktComplete.Encode4(nChoice);
         FUN_140710590(pktComplete);
         if (m_spContent->m_redirect != 0 && FUN_14074b950(nQuestId) != 0) {
-            COutPacket pktNext(0x22, 0);
+            COutPacket pktNext(static_cast<int>(SendOp::NpcTalk), 0);
             pktNext.Encode1(7);
             pktNext.Encode4(spQuest->m_require.m_followingQuests[0]);
             pktNext.Encode2(0);
@@ -863,7 +863,7 @@ CCustomSelectableDistractorCinematicComponent::~CCustomSelectableDistractorCinem
 // @0x14107fb30
 void CCustomSelectableDistractorCinematicComponent::vfunc_1(int nSelect)
 {
-    COutPacket pkt(0x22, 0);
+    COutPacket pkt(static_cast<int>(SendOp::NpcTalk), 0);
     pkt.Encode1(0xb);
     pkt.Encode4(FUN_140967100()->FUN_141b212c0());
     pkt.Encode4(nSelect);
@@ -1103,7 +1103,7 @@ int CChangeJobComponent::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             if (nButton == 0) {
                 Unk_CinNpcId npc;
                 npc.m_n = FUN_140967100()->FUN_141b212c0();
-                COutPacket pkt(0x25, 0);
+                COutPacket pkt(static_cast<int>(SendOp::Job), 0);
                 pkt.Encode1(2);
                 FUN_1401fdad0(&npc.m_n, pkt);
                 FUN_140710590(pkt);
@@ -1148,13 +1148,13 @@ int CUgcSignCinematicComponent::vfunc_2(int nMsg)
         int nPcId3 = FUN_141529620(pc);
         __int64 nOwner = spSvc2.FUN_1401cd1a0()->FUN_1410c8030(nPcId3, 0);
         if (nOwner == FUN_141656ad0(pc)) {
-            COutPacket pkt(0x37, 0);
+            COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
             pkt.Encode1(5);
             pkt.Encode4(FUN_141529620(pc));
             pkt.Encode4(0);
             FUN_140710590(pkt);
         } else {
-            COutPacket pkt(0x37, 0);
+            COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
             pkt.Encode1(2);
             pkt.Encode4(FUN_141529620(pc));
             int nRand = 0;
@@ -1198,7 +1198,7 @@ int CPaneltyResolveCinematicComponent::vfunc_2(int nMsg)
             if (bTooRich) {
                 FUN_141275260(0x34, 1, 1);
             } else {
-                COutPacket pkt(0x44, 0);
+                COutPacket pkt(static_cast<int>(SendOp::ResolvePenalty), 0);
                 pkt.Encode4(FUN_140967100()->FUN_141b212c0());
                 FUN_140710590(pkt);
                 FUN_141276180(s_deadPanelty, "");
@@ -1239,7 +1239,7 @@ int CHomeDoctorCinematicComponent::vfunc_2(int nMsg)
             if (bTooRich) {
                 FUN_141275260(0x34, 1, 1);
             } else {
-                COutPacket pkt(0x4e, 0);
+                COutPacket pkt(static_cast<int>(SendOp::RequestHomeDoctor), 0);
                 FUN_140710590(pkt);
                 FUN_141276180(s_deadPanelty, "");
             }
@@ -1275,7 +1275,7 @@ int CTakeBoatCinematicComponent::vfunc_2(int nMsg)
     if (nMsg == 0x493e2) {
         FUN_1408e57f0()->FUN_1422b9fd0(0x620001d);
         FUN_140967100()->FUN_141b20db0(0);
-        COutPacket pkt(0x45, 0);
+        COutPacket pkt(static_cast<int>(SendOp::TakeBoat), 0);
         pkt.Encode4(FUN_140967100()->FUN_141b212c0());
         FUN_140710590(pkt);
     }
@@ -1331,7 +1331,7 @@ int CRouletteCinematicComponent::vfunc_2(int nMsg)
 {
     if (nMsg == 0x493e2 && m_nSent == 0) {
         if (FUN_1403ed2b0()->FUN_141adc9e0(0x4e6d) != 0) {
-            COutPacket pkt(0x43, 0);
+            COutPacket pkt(static_cast<int>(SendOp::BonusGame), 0);
             pkt.Encode1(2);
             FUN_140710590(pkt);
             FUN_140967100()->FUN_141b20db0(0);

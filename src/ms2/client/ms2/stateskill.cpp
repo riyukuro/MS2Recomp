@@ -1289,7 +1289,7 @@ void StateSkill::FUN_1417ec2f0()
     m_ptSentPos = m_pOwner->FUN_14123c360();
     m_bSentCharging = m_bCharging;
     m_bSentLoop = m_bLoop;
-    COutPacket packet(0x20, 0);
+    COutPacket packet(static_cast<int>(SendOp::Skill), 0);
     packet.vfunc_o10_1(2);
     packet.vfunc_o10_4(m_spRecord->m_nCastId);
     packet.vfunc_o10_3(m_spRecord->GetSkillId());
@@ -1376,7 +1376,7 @@ void StateSkill::FUN_1417ecce0(unsigned nTick, MS2Ptr<CSkillRecord> spRecord, in
         } while (pTag != NULL);
     }
     FUN_1417f2b50(spRecord);
-    COutPacket packet(0x20, 0);
+    COutPacket packet(static_cast<int>(SendOp::Skill), 0);
     packet.Encode1(1);
     packet.Encode1(0);
     packet.Encode8(spRecord->m_nCastId);
@@ -1701,7 +1701,7 @@ void StateSkill::SendSkillMode4()
 {
     if (m_spRecord == NULL)
         return;
-    COutPacket packet(0x20, 0);
+    COutPacket packet(static_cast<int>(SendOp::Skill), 0);
     packet.vfunc_o10_1(4);
     packet.vfunc_o10_4(m_spRecord->m_nCastId);
     FUN_140710590(packet);
@@ -1911,7 +1911,7 @@ int StateSkill::FUN_1417eaa50(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int
         pOwner->FUN_14166ed70(spRecord->GetSkillId());
         if (spRecord->GetSkillId())
         {
-            COutPacket packet(0x13, 0);
+            COutPacket packet(static_cast<int>(SendOp::Emote), 0);
             packet.Encode1(2);
             packet.Encode4(spRecord->GetSkillId());
             packet.vfunc_o10_6(spRecord->m_spSkill->GetParamStr());
@@ -1988,7 +1988,7 @@ int StateSkill::FUN_1417eaa50(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int
         spData->m_posStart = pPeer->vfunc_18();
         spData->m_posEnd = pPeer->vfunc_20();
         pMyPC->vfunc_59(0x3a, spData.get(), 0x93, 1);
-        COutPacket packet(0xa3, 0);
+        COutPacket packet(static_cast<int>(SendOp::BuddyEmote), 0);
         packet.Encode1(0);
         packet.Encode4(spRecord->GetSkillId());
         packet.Encode8(pPeer->FUN_141656a80());
@@ -2048,7 +2048,7 @@ int StateSkill::FUN_1417eb3a0(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int
         spData->m_nLevel = spRecord->GetLevel();
         spData->m_n20 = SS_ITEMDATA(spItem)->FUN_14053dde0();
         pMy->vfunc_59(nState, spData.get(), 0, 1);
-        COutPacket packet(0x21, 0);
+        COutPacket packet(static_cast<int>(SendOp::StateSkill), 0);
         packet.Encode1(0);
         packet.Encode8(spRecord->m_nCastId);
         packet.Encode4(spRecord->m_nTick);
@@ -2065,7 +2065,7 @@ int StateSkill::FUN_1417eb3a0(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int
         spData->m_nSkill = spRecord->GetSkillId();
         spData->m_nLevel = spRecord->GetLevel();
         pMy->vfunc_59(nState, spData.get(), 0, 1);
-        COutPacket packet(0x21, 0);
+        COutPacket packet(static_cast<int>(SendOp::StateSkill), 0);
         packet.Encode1(0);
         packet.Encode8(spRecord->m_nCastId);
         packet.Encode4(spRecord->m_nTick);
@@ -2115,7 +2115,7 @@ int StateSkill::FUN_1417ebc00(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int
             kPayload.m_nAttachId = spRecord->m_nB0;
             kPayload.m_strAttachNode = spRecord->m_strB8;
         }
-        COutPacket packet(0x20, 0);
+        COutPacket packet(static_cast<int>(SendOp::Skill), 0);
         packet.vfunc_o10_1(0);
         FUN_1401fd510(reinterpret_cast<unsigned char*>(&kPayload), packet);
         FUN_140710590(packet);

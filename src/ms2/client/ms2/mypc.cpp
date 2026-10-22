@@ -990,7 +990,7 @@ int MyPC::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 FUN_14151f200();
                 if (nResult == 0)
                 {
-                    COutPacket packet(0x6c, 0);
+                    COutPacket packet(static_cast<int>(SendOp::RequestMoveField), 0);
                     packet.Encode1(1);
                     FUN_140710590(packet);
                     return 1;
@@ -2887,7 +2887,7 @@ void MyPC::SendFunctionCube()
             Unk_MyPCFurnitureUse kUse;
             kUse.m_strKey = pState->FUN_141284620();
             kUse.m_nFlag = 1;
-            COutPacket packet(0x2e, 0);
+            COutPacket packet(static_cast<int>(SendOp::FunctionCube), 0);
             packet.Encode1(5);
             packet.Encode4(1);
             FUN_1401fc610(kUse, packet);
@@ -3124,7 +3124,7 @@ void MyPC::SendRequestMoveFieldMode2(int nPortalId, int nA, int nB, __int64 nC, 
 {
     if (FUN_141529ae0(nPortalId, nA, nB, nC) == 0)
         return;
-    COutPacket packet(0x6c, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestMoveField), 0);
     packet.Encode1(2);
     packet.Encode4(nPortalId);
     packet.Encode4(nA);
@@ -3145,7 +3145,7 @@ void MyPC::SendRequestMoveFieldMode4()
     }
     if (FUN_141529ae0(0, 0, 0, 0) == 0)
         return;
-    COutPacket packet(0x6c, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestMoveField), 0);
     packet.Encode1(4);
     FUN_140710590(packet);
 }
@@ -3163,7 +3163,7 @@ void MyPC::SendRequestMoveFieldMode5()
     }
     if (FUN_141529ae0(0, 0, 0, 0) == 0)
         return;
-    COutPacket packet(0x6c, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestMoveField), 0);
     packet.Encode1(5);
     FUN_140710590(packet);
 }
@@ -3174,7 +3174,7 @@ void MyPC::SendRequestMoveFieldMode3()
 {
     if (FUN_141529ae0(0, 0, 0, 0) == 0)
         return;
-    COutPacket packet(0x6c, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestMoveField), 0);
     packet.Encode1(3);
     FUN_140710590(packet);
 }
@@ -3193,7 +3193,7 @@ void MyPC::SendRequestMoveFieldMode0(int nPortalId, int nD, int nA, int nB, CStr
     kMove.d = nB;
     kMove.name = strPwd;
     kMove.other = strA;
-    COutPacket packet(0x6c, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestMoveField), 0);
     packet.Encode1(0);
     FUN_1401fa9a0(reinterpret_cast<unsigned char*>(&kMove), packet);
     FUN_140710590(packet);
@@ -3203,7 +3203,7 @@ MS2_REPLACE_METHOD(0x14152a0c0, MyPC, SendRequestMoveFieldMode0, 363, 0x00CCBEA9
 // @0x14152a240
 void MyPC::FUN_14152a240(int nId)
 {
-    COutPacket packet(0x51, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestHome), 0);
     packet.Encode1(3);
     packet.Encode4(nId);
     FUN_140710590(packet);
@@ -3245,7 +3245,7 @@ void MyPC::SendRequestPet(__int64 nItemUid)
         return;
     efd::UniversalID kUid;
     reinterpret_cast<__int64&>(kUid) = nItemUid;
-    COutPacket packet(0x78, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestPet), 0);
     packet.Encode1(1);
     ::FUN_1401feb20(&kUid, packet);
     FUN_140710590(packet);
@@ -3626,7 +3626,7 @@ int MyPC::SendRequestRideMode1(RideOffAction* pAction)
     }
     if (pAction->m_nType == 0xf && spData->m_n64 == 0)
         return 0;
-    COutPacket packet(0x40, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestRide), 0);
     packet.Encode1(1);
     pAction->vfunc_1(&packet);
     FUN_140710590(packet);
@@ -3656,7 +3656,7 @@ void MyPC::SendRequestRideMode3(int nId)
     }
     else
     {
-        COutPacket packet(0x40, 0);
+        COutPacket packet(static_cast<int>(SendOp::RequestRide), 0);
         packet.Encode1(3);
         packet.Encode4(nId);
         FUN_140710590(packet);
@@ -3668,7 +3668,7 @@ MS2_REPLACE_METHOD(0x14152dee0, MyPC, SendRequestRideMode3, 143, 0x264E7D90);
 void MyPC::SendRequestRideMode4()
 {
     FUN_1409478c0()->FUN_140aeaf40(this, 1);
-    COutPacket packet(0x40, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestRide), 0);
     packet.Encode1(4);
     FUN_140710590(packet);
 }
@@ -3677,7 +3677,7 @@ MS2_REPLACE_METHOD(0x14152df80, MyPC, SendRequestRideMode4, 99, 0x34257BF8);
 // @0x14152dff0
 void MyPC::SendRequestRideMode6(unsigned char n)
 {
-    COutPacket packet(0x40, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestRide), 0);
     packet.Encode1(6);
     packet.Encode1(n);
     FUN_140710590(packet);
@@ -3702,7 +3702,7 @@ MS2_REPLACE_METHOD(0x14152E0C0, MyPC, FUN_14152e0c0, 166, 0x0ECA53F5);
 void MyPC::FUN_14152e170(int nMode, int nArg)
 {
     FUN_14152e0c0();
-    COutPacket packet(0x80, 0);
+    COutPacket packet(static_cast<int>(SendOp::State), 0);
     packet.Encode1(nMode);
     packet.Encode1(nArg);
     packet.Encode4(FUN_14086d260()->FUN_141473390());
@@ -4162,7 +4162,7 @@ void MyPC::FUN_14152f140(__int64 nOwnerId)
         if (DAT_143ab2a90.FUN_140a66200(pItem, &nReason, strName) == 0 && (nReason == 4 || nReason == 5))
             FUN_140714f90()->SendFittingDoll(nOwnerId, pItem->FUN_140526a50());
     }
-    COutPacket packet(0x42, 0);
+    COutPacket packet(static_cast<int>(SendOp::FittingDoll), 0);
     packet.Encode1(10);
     packet.Encode8(nOwnerId);
     FUN_140710590(packet);
@@ -4219,7 +4219,7 @@ int MyPC::FUN_14152feb0(int nMode, bool bPalette)
         return 0;
     if (FUN_141527960() != 0)
         return 0;
-    COutPacket packet(0x36, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestSetCraftMode), 0);
     packet.Encode1((unsigned char)nMode);
     MS2Ptr<CubeItemInfo> spInfo;
     if (bPalette)
@@ -4370,7 +4370,7 @@ void MyPC::SendNametag()
         int nChannel = FUN_14131e120()->FUN_1406c5d60(FUN_141661e00());
         if (nChannel != FUN_141661e20())
         {
-            COutPacket packet(0x6b, 0);
+            COutPacket packet(static_cast<int>(SendOp::Insignia), 0);
             packet.Encode2(FUN_141661e00());
             FUN_140710590(packet);
         }
@@ -4423,7 +4423,7 @@ void MyPC::FUN_141530720(Unk_MyPCHouseSetting nKind, CStringW strValue, unsigned
 {
     if (FUN_141523c50() == 0)
         return;
-    COutPacket packet(0x37, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
     packet.Encode1(0x18);
     packet.Encode1((unsigned char)nKind);
     packet.vfunc_o10_8(strValue);
@@ -4552,7 +4552,7 @@ void MyPC::FUN_141530200()
         return;
     if (FUN_141530290()->FUN_1410aa1f0() == 0)
         return;
-    COutPacket packet(0x36, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestSetCraftMode), 0);
     packet.Encode1(0);
     packet.Encode1(0);
     FUN_140710590(packet);
@@ -4669,7 +4669,7 @@ void MyPC::FUN_14152dbc0()
                 spAction->m_n1c = nRideeId;
                 spAction->m_n38 = spItem->FUN_140526a50();
                 spAction->m_b28 = FUN_1409a8b10()->FUN_14124ab20()->m_b2;
-                COutPacket packet(0x40, 0);
+                COutPacket packet(static_cast<int>(SendOp::RequestRide), 0);
                 packet.COutPacket::vfunc_o10_1(0);
                 spAction->vfunc_1(&packet);
                 FUN_140710590(packet);
@@ -4756,7 +4756,7 @@ void MyPC::FUN_14152ba80(MS2Ptr<CItem> spItem)
                     Unk_MyPCRideAlongReq kReq;
                     kReq.m_nRideeId = nRideeId;
                     kReq.m_nItemUid = spItem->FUN_140526a50();
-                    COutPacket packet(0x40, 0);
+                    COutPacket packet(static_cast<int>(SendOp::RequestRide), 0);
                     packet.COutPacket::vfunc_o10_1(2);
                     kReq.FUN_1401fcc90(packet);
                     FUN_140710590(packet);
@@ -4881,7 +4881,7 @@ void MyPC::FUN_1415310e0(std::list<Unk_MyPCDropItem*>& lstDrops)
             return;
         }
     }
-    COutPacket packet(0x1d, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestMesoPickup), 0);
     unsigned char nCountPos = packet.FUN_14020b9f0();
     packet.COutPacket::vfunc_o10_1(0);
     int nCount = 0;
@@ -5038,7 +5038,7 @@ void MyPC::SendRequestMoveFieldMode6()
         return;
     if (FUN_141529ae0(0, 0, 0, 0) == 0)
         return;
-    COutPacket packet(0x6c, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestMoveField), 0);
     packet.Encode1(6);
     FUN_140710590(packet);
 }

@@ -217,14 +217,14 @@ void UIUGCCubeBillDialog::SendRequestCube()
     {
         if (s_cost.m_nKind == 1)
         {
-            COutPacket packet(0x37, 0);
+            COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
             packet.vfunc_o10_1(0x30);
             packet.vfunc_o10_3(s_cost.m_nCubeId);
             FUN_140710590(packet);
         }
         else if (s_cost.m_nKind == 3)
         {
-            COutPacket packet(0x37, 0);
+            COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
             packet.vfunc_o10_1(0x46);
             packet.vfunc_o10_4(s_cost.m_nBlueprintUid);
             FUN_140710590(packet);
@@ -257,7 +257,7 @@ void FUN_140ee8190(CInPacket& packet)
     }
     else
     {
-        COutPacket out(0x37, 0);
+        COutPacket out(static_cast<int>(SendOp::RequestCube), 0);
         out.vfunc_o10_1(0x30);
         out.vfunc_o10_3(UIUGCCubeBillDialog::s_cost.m_nCubeId);
         FUN_140710590(out);
@@ -272,7 +272,7 @@ void SendRequestCubeMode35(int nCubeId)
     UIUGCCubeBillDialog::s_pending.PendingCost::Reset();
     UIUGCCubeBillDialog::s_pending.m_nKind = 1;
     UIUGCCubeBillDialog::s_pending.m_nCubeId = nCubeId;
-    COutPacket packet(0x37, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
     packet.vfunc_o10_1(0x23);
     packet.vfunc_o10_3(nCubeId);
     FUN_140710590(packet);
@@ -304,7 +304,7 @@ void FUN_140ee83f0(CInPacket& packet)
     }
     else if (bPreview == 0)
     {
-        COutPacket out(0x37, 0);
+        COutPacket out(static_cast<int>(SendOp::RequestCube), 0);
         out.vfunc_o10_1(0x46);
         out.vfunc_o10_4(UIUGCCubeBillDialog::s_cost.m_nBlueprintUid);
         FUN_140710590(out);
@@ -317,7 +317,7 @@ void SendRequestCubeMode66(void* pBlueprintUid)
 {
     FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4f29);
     UIUGCCubeBillDialog::s_pending.PendingCost::Reset();
-    COutPacket packet(0x37, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
     packet.vfunc_o10_1(0x42);
     packet.vfunc_o10_4(*(__int64*)pBlueprintUid);
     packet.vfunc_o10_0(true);

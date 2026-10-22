@@ -181,7 +181,7 @@ void UIBlueMarbleGameDialog::vfunc_67()
 void UIBlueMarbleGameDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    COutPacket packet(0x8d, 0);
+    COutPacket packet(static_cast<int>(SendOp::Mapleopoly), 0);
     packet.vfunc_o10_1(0);
     FUN_140710590(packet);
 }
@@ -227,7 +227,7 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
                 m_bIdle = 1;
             }
             m_30->Invoke("playQueue");
-            COutPacket packet(0x8d, 0);
+            COutPacket packet(static_cast<int>(SendOp::Mapleopoly), 0);
             packet.vfunc_o10_1(3);
             FUN_140710590(packet);
         } else if (nKind == 4) {
@@ -253,7 +253,7 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
             m_30->Invoke("playQueue");
             FUN_140f23940();
             if (!bReset) {
-                COutPacket packet(0x8d, 0);
+                COutPacket packet(static_cast<int>(SendOp::Mapleopoly), 0);
                 packet.vfunc_o10_1(3);
                 FUN_140710590(packet);
             }
@@ -280,7 +280,7 @@ int UIBlueMarbleGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs))
         return 1;
     if (_stricmp(szMethod, "onDice") == 0) {
-        COutPacket packet(0x8d, 0);
+        COutPacket packet(static_cast<int>(SendOp::Mapleopoly), 0);
         packet.vfunc_o10_1(1);
         FUN_140710590(packet);
         FUN_140f24140(0);
@@ -301,7 +301,7 @@ int UIBlueMarbleGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
                 return 1;
             if (nDice2 < 1 || 6 < nDice2)
                 return 1;
-            COutPacket packet(0x8d, 0);
+            COutPacket packet(static_cast<int>(SendOp::Mapleopoly), 0);
             packet.vfunc_o10_1(5);
             packet.vfunc_o10_3(nDice1);
             packet.vfunc_o10_3(nDice2);

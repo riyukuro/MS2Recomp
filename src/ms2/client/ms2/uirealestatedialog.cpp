@@ -379,7 +379,7 @@ int UIRealEstateDialog::FUN_141ab3250(const CStringW& strName)
                     FUN_1419f82b0(pBox, strError);
                 return 0;
             }
-            COutPacket packet(0x37, 0);
+            COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
             packet.vfunc_o10_1(0x15);
             packet.vfunc_o10_8(strName);
             FUN_140710590(packet);
@@ -454,7 +454,7 @@ void UIRealEstateDialog::SendRequestCubeMode2()
         return;
     if (pPC->FUN_141527e00() == 0)
     {
-        COutPacket packet(0x37, 0);
+        COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
         packet.vfunc_o10_1(2);
         packet.vfunc_o10_3(m_nGroup);
         packet.vfunc_o10_3(0);
@@ -533,7 +533,7 @@ int UIRealEstateDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     FUN_140d73aa0(spSvc.FUN_1401cd1a0()->FUN_1410d5d80(0x43), 0, 0, CStringW(L""));
                     return 1;
                 }
-                COutPacket packet(0x37, 0);
+                COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
                 packet.vfunc_o10_1(9);
                 FUN_140710590(packet);
             }

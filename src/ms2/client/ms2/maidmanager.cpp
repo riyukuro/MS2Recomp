@@ -201,7 +201,7 @@ void CUserMaidManager::SendRequest5(unsigned __int64 nId)
 {
     if (FUN_14116d720(FUN_14025e7c0()) == 0)
         return;
-    COutPacket packet(0x62, 0);
+    COutPacket packet(static_cast<int>(SendOp::Maid), 0);
     packet.vfunc_o10_1(5);
     packet.vfunc_o10_4(nId);
     FUN_140710590(packet);
@@ -212,7 +212,7 @@ void CUserMaidManager::SendRequest6(unsigned __int64 nId)
 {
     if (FUN_14116d720(FUN_14025e7c0()) == 0)
         return;
-    COutPacket packet(0x62, 0);
+    COutPacket packet(static_cast<int>(SendOp::Maid), 0);
     packet.vfunc_o10_1(6);
     packet.vfunc_o10_4(nId);
     FUN_140710590(packet);
@@ -223,7 +223,7 @@ void CUserMaidManager::SendRequest7(unsigned __int64 nId)
 {
     if (FUN_14116d720(FUN_14025e7c0()) == 0)
         return;
-    COutPacket packet(0x62, 0);
+    COutPacket packet(static_cast<int>(SendOp::Maid), 0);
     packet.vfunc_o10_1(7);
     packet.vfunc_o10_4(nId);
     FUN_140710590(packet);
@@ -234,7 +234,7 @@ void CUserMaidManager::SendRequest8(unsigned __int64 nId)
 {
     if (FUN_14116d720(FUN_14025e7c0()) == 0)
         return;
-    COutPacket packet(0x62, 0);
+    COutPacket packet(static_cast<int>(SendOp::Maid), 0);
     packet.vfunc_o10_1(8);
     packet.vfunc_o10_4(nId);
     FUN_140710590(packet);
@@ -245,7 +245,7 @@ void CUserMaidManager::SendRequest9(unsigned __int64 nId)
 {
     if (FUN_14116d720(FUN_14025e7c0()) == 0)
         return;
-    COutPacket packet(0x62, 0);
+    COutPacket packet(static_cast<int>(SendOp::Maid), 0);
     packet.vfunc_o10_1(9);
     packet.vfunc_o10_4(nId);
     FUN_140710590(packet);
@@ -256,7 +256,7 @@ void CUserMaidManager::SendRequest10(unsigned __int64 nId, unsigned __int64 nVal
 {
     if (FUN_14116d720(FUN_14025e7c0()) == 0)
         return;
-    COutPacket packet(0x62, 0);
+    COutPacket packet(static_cast<int>(SendOp::Maid), 0);
     packet.vfunc_o10_1(10);
     packet.vfunc_o10_4(nId);
     packet.vfunc_o10_1(cFlag);

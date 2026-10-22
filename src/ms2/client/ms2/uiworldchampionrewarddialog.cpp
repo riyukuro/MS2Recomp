@@ -332,7 +332,7 @@ MS2_REPLACE_METHOD(0x140feb440, UIWorldChampionRewardDialog, FUN_140feb440, 360,
 // @0x140feb5b0
 void UIWorldChampionRewardDialog::SendWorldChampionMode8() {
     if (FUN_141924630()) { vfunc_67(); return; }
-    COutPacket packet(0xaf, 0);
+    COutPacket packet(static_cast<int>(SendOp::WorldChampion), 0);
     packet.Encode1(8);
     FUN_140710590(packet);
 }
@@ -436,7 +436,7 @@ MS2_REPLACE_METHOD(0x140fec310, UIWorldChampionRewardDialog, FUN_140fec310, 422,
 // @0x140fec4c0
 bool UIWorldChampionRewardDialog::SendWorldChampionMode9(int result, const CMsgBoxData&) {
     if (result != 0) return true;
-    COutPacket packet(0xaf, 0);
+    COutPacket packet(static_cast<int>(SendOp::WorldChampion), 0);
     packet.Encode1(9);
     FUN_140710590(packet);
     return true;

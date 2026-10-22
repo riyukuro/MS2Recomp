@@ -610,7 +610,7 @@ int UIGuildDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 }
                 else if (strTag.Find(L"unregistPvP") == 0)
                 {
-                    COutPacket packet(0x61, 0);
+                    COutPacket packet(static_cast<int>(SendOp::Pvp), 0);
                     packet.vfunc_o10_1(2);
                     FUN_140710590(packet);
                 }
@@ -1010,7 +1010,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     {
         if (CInputKeyHandler::GetInstance()->IsDebugMode() == true)
         {
-            COutPacket packet(0x61, 0);
+            COutPacket packet(static_cast<int>(SendOp::Pvp), 0);
             packet.vfunc_o10_1(1);
             FUN_140710590(packet);
             return 1;
@@ -1049,7 +1049,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             if (nLevel < (int)CFeatureManager::GetInstance()->FUN_14036dc60())
                 continue;   // the exe tests the online members' levels but does nothing with the result
         }
-        COutPacket packet(0x61, 0);
+        COutPacket packet(static_cast<int>(SendOp::Pvp), 0);
         packet.vfunc_o10_1(1);
         FUN_140710590(packet);
         return 1;

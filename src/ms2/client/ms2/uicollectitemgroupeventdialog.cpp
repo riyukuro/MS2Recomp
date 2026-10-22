@@ -413,7 +413,7 @@ void UICollectItemGroupEventDialog::OnReceive(const Scaleform::GFx::FunctionHand
         return;
     if (!IsComplete(m_selected))
         return;
-    COutPacket packet(0x97, 0);
+    COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
     packet.Encode1(0x13);
     packet.Encode4(spContext->m_eventId);
     FUN_1407105c0(&packet, 0x13, 1000);

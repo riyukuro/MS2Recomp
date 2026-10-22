@@ -157,7 +157,7 @@ void CBlackMarketMan::OnBlackMarket(CInPacket& packet)
 // @0x140a20940
 void CBlackMarketMan::SendBlackMarketMode1()
 {
-    COutPacket packet(0x5f, 0);
+    COutPacket packet(static_cast<int>(SendOp::BlackMarket), 0);
     packet.vfunc_o10_1(1);
     FUN_140710590(packet);
 }
@@ -165,7 +165,7 @@ void CBlackMarketMan::SendBlackMarketMode1()
 // @0x140a209a0
 void CBlackMarketMan::SendBlackMarketMode6()
 {
-    COutPacket packet(0x5f, 0);
+    COutPacket packet(static_cast<int>(SendOp::BlackMarket), 0);
     packet.vfunc_o10_1(6);
     FUN_140710590(packet);
 }
@@ -173,7 +173,7 @@ void CBlackMarketMan::SendBlackMarketMode6()
 // @0x140a20a00
 void CBlackMarketMan::SendBlackMarketMode2(unsigned __int64 qwA, unsigned __int64 qwB, int nCount)
 {
-    COutPacket packet(0x5f, 0);
+    COutPacket packet(static_cast<int>(SendOp::BlackMarket), 0);
     packet.vfunc_o10_1(2);
     packet.vfunc_o10_4(qwA);
     packet.vfunc_o10_4(qwB);
@@ -184,7 +184,7 @@ void CBlackMarketMan::SendBlackMarketMode2(unsigned __int64 qwA, unsigned __int6
 // @0x140a20aa0
 void CBlackMarketMan::SendBlackMarketMode3(unsigned __int64 qwId)
 {
-    COutPacket packet(0x5f, 0);
+    COutPacket packet(static_cast<int>(SendOp::BlackMarket), 0);
     packet.vfunc_o10_1(3);
     packet.vfunc_o10_4(qwId);
     FUN_140710590(packet);
@@ -199,7 +199,7 @@ void CBlackMarketMan::SendBlackMarketMode4(MS2Ptr<CBlackMarketSchCond> spCond)
         return;
     if (spCond->m_dw48 == 1)
         m_nReload = 1;
-    COutPacket packet(0x5f, 0);
+    COutPacket packet(static_cast<int>(SendOp::BlackMarket), 0);
     packet.vfunc_o10_1(4);
     spCond->Write(&packet);
     FUN_140710590(packet);
@@ -208,7 +208,7 @@ void CBlackMarketMan::SendBlackMarketMode4(MS2Ptr<CBlackMarketSchCond> spCond)
 // @0x140a20bf0
 void CBlackMarketMan::SendBlackMarketMode5(unsigned __int64 qwId, int nCount)
 {
-    COutPacket packet(0x5f, 0);
+    COutPacket packet(static_cast<int>(SendOp::BlackMarket), 0);
     packet.vfunc_o10_1(5);
     packet.vfunc_o10_4(qwId);
     packet.vfunc_o10_3(nCount);
@@ -218,7 +218,7 @@ void CBlackMarketMan::SendBlackMarketMode5(unsigned __int64 qwId, int nCount)
 // @0x140a20c70
 void CBlackMarketMan::SendBlackMarketMode8(int nA, int nB)
 {
-    COutPacket packet(0x5f, 0);
+    COutPacket packet(static_cast<int>(SendOp::BlackMarket), 0);
     packet.vfunc_o10_1(8);
     packet.vfunc_o10_3(nA);
     packet.vfunc_o10_3(nB);

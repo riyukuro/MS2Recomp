@@ -150,7 +150,7 @@ int UIItemMergeRevertDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                 return 1;
             if (FUN_140e4d330(spItem.get()) != 0)
                 return 1;
-            COutPacket packet(0x3f, 0);
+            COutPacket packet(static_cast<int>(SendOp::ItemMerge), 0);
             packet.vfunc_o10_1(6);
             packet.vfunc_o10_4(m_nItemUid);
             packet.vfunc_o10_4(spItem->FUN_140526a50());

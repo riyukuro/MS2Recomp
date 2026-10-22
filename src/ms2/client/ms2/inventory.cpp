@@ -1275,7 +1275,7 @@ int Unk_Inventory::FUN_140a61db0(__int64 id, const CStringW& argument) {
     Unk_InventoryUsePacket payload;
     payload.id = item->FUN_140526a50();
     payload.argument = argument;
-    COutPacket packet(25, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestItemUse), 0);
     payload.FUN_1401fbc40(packet);
     FUN_140710590(packet);
     {
@@ -1325,7 +1325,7 @@ int Unk_Inventory::FUN_140a62270(CItem* item, int slot, int mode, int skipBindin
     payload.id = item->FUN_140526a50();
     payload.slot = selected;
     payload.FUN_1401fb870(mode);
-    COutPacket packet(22, 0);
+    COutPacket packet(static_cast<int>(SendOp::ItemEquip), 0);
     packet.Encode1(0);
     payload.FUN_1401fb760(packet);
     FUN_140710590(packet);
@@ -1347,7 +1347,7 @@ int Unk_Inventory::FUN_140a62920(__int64 id) {
     if (FUN_140a655b0(item.get()) == 0) return 0;
     Unk_InventoryUnequipPacket payload;
     payload.id = id;
-    COutPacket packet(22, 0);
+    COutPacket packet(static_cast<int>(SendOp::ItemEquip), 0);
     packet.Encode1(1);
     payload.FUN_1401fb910(packet);
     FUN_140710590(packet);
@@ -1362,7 +1362,7 @@ MS2_REPLACE_METHOD(0x140a62920, Unk_Inventory, FUN_140a62920, 908, 0x22CFDA56);
 // MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a62cc0
 void Unk_Inventory::SendRequestItemInventory(unsigned char category) {
-    COutPacket packet(23, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestItemInventory), 0);
     packet.Encode1(9);
     packet.Encode1(category);
     FUN_140710590(packet);
@@ -1636,7 +1636,7 @@ int Unk_Inventory::SendEmotion(CItem* item) {
     unsigned short level = FUN_14053dc40(FUN_140527840(item));
     int skill = FUN_14053dc20(FUN_140527840(item));
     if (player->FUN_141523bc0()->FUN_141768fb0(skill, level) != 0) { FUN_140d73bc0(2136, 0, nullptr, L""); return 0; }
-    COutPacket packet(19, 0);
+    COutPacket packet(static_cast<int>(SendOp::Emote), 0);
     packet.Encode1(1);
     packet.Encode8(item->FUN_140526a50());
     FUN_140710590(packet);

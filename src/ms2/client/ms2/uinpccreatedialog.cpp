@@ -225,7 +225,7 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
                 return 1;
             int nNpc = data.FUN_1422b8a10();
             int nCount = data.FUN_1422b8a10();
-            COutPacket pkt(0x24, 0);
+            COutPacket pkt(static_cast<int>(SendOp::RequestNpcCreate), 0);
             pkt.vfunc_o10_3(nNpc);
             pkt.vfunc_o10_10(pPlayer->vfunc_18());
             pkt.vfunc_o10_10(pPlayer->vfunc_20());
@@ -243,7 +243,7 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             int nNpc = data.FUN_1422b8a10();
             float fValue = data.FUN_1422b8c10();
             int nCount = data.FUN_1422b8a10();
-            COutPacket pkt(0x24, 0);
+            COutPacket pkt(static_cast<int>(SendOp::RequestNpcCreate), 0);
             pkt.vfunc_o10_3(nNpc);
             pkt.vfunc_o10_10(pPlayer->vfunc_18());
             pkt.vfunc_o10_10(pPlayer->vfunc_20());
@@ -275,7 +275,7 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             } else if (FUN_1403ed2d0()->FUN_141bd3060() == nField) {
                 MS2Ptr<CProxyGameObject> spObj = FUN_1403ed2d0()->FUN_141bc9e70(nNpc);
                 if (spObj.get() != 0) {
-                    COutPacket pkt(0x50, 0);
+                    COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
                     pkt.vfunc_o10_1(2);
                     pkt.vfunc_o10_11(spObj->FUN_1416c2270());
                     FUN_140710590(pkt);
@@ -308,7 +308,7 @@ void UINpcCreateDialog::vfunc_1(void* pEvt)
         if (FUN_14087ddc0(pKind, 0x6200004) && m_nPendingNpc != 0) {
             MS2Ptr<CProxyGameObject> spObj = FUN_1403ed2d0()->FUN_141bc9e70(m_nPendingNpc);
             if (spObj.get() != 0) {
-                COutPacket pkt(0x50, 0);
+                COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
                 pkt.vfunc_o10_1(2);
                 pkt.vfunc_o10_11(spObj->FUN_1416c2270());
                 FUN_140710590(pkt);
@@ -335,7 +335,7 @@ void UINpcCreateDialog::vfunc_3(void* pActor)
         return;
     }
     if (spActor->FUN_1416c2350() == m_nPendingNpc) {
-        COutPacket pkt(0x50, 0);
+        COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
         pkt.vfunc_o10_1(2);
         pkt.vfunc_o10_11(spActor->FUN_1416c2270());
         FUN_140710590(pkt);

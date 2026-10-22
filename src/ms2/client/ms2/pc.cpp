@@ -2020,7 +2020,7 @@ void PC::SendRequestCube()
     if (FUN_14165f100() == 0)
         return;
     FUN_14165f1f0(0, 0);
-    COutPacket packet(0x37, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
     packet.Encode1(0x12);
     FUN_140710590(packet);
 }

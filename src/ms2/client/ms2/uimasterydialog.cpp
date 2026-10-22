@@ -651,20 +651,20 @@ int UIMasteryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         if (data.FUN_1422b9620(pArgs, nArgs) && (nTab = FUN_140eb5040(), -1 < nTab)) {
             if (nTab < 2) {
                 int nId = data.FUN_1422b8b10();
-                COutPacket pkt(0x92, 0);
+                COutPacket pkt(static_cast<int>(SendOp::Mastery), 0);
                 pkt.Encode1(1);
                 pkt.Encode4(nId);
                 FUN_140710590(pkt);
             } else if (nTab == 2) {
                 if (FUN_140eb86b0() == 8) {
                     int nId = data.FUN_1422b8a10();
-                    COutPacket pkt(0x37, 0);
+                    COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
                     pkt.Encode1(0x29);
                     pkt.Encode1((unsigned char)nId);
                     FUN_140710590(pkt);
                 } else if (FUN_140eb86b0() == 9) {
                     int nId = data.FUN_1422b8b10();
-                    COutPacket pkt(0x92, 0);
+                    COutPacket pkt(static_cast<int>(SendOp::Mastery), 0);
                     pkt.Encode1(1);
                     pkt.Encode4(nId);
                     FUN_140710590(pkt);
@@ -727,12 +727,12 @@ int UIMasteryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
 void UIMasteryDialog::OnCastingFinished()
 {
     if (m_craft.FUN_140eaddf0()) {
-        COutPacket pkt(0x92, 0);
+        COutPacket pkt(static_cast<int>(SendOp::Mastery), 0);
         pkt.Encode1(2);
         pkt.Encode4(m_craft.m_nId);
         FUN_140710590(pkt);
     } else if (m_craft.FUN_140eade30()) {
-        COutPacket pkt(0x71, 0);
+        COutPacket pkt(static_cast<int>(SendOp::EnchantScroll), 0);
         pkt.Encode1(4);
         pkt.Encode4(m_craft.m_nId);
         FUN_140710590(pkt);

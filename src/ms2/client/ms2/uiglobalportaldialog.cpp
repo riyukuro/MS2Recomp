@@ -223,7 +223,7 @@ void UIGlobalPortalDialog::FUN_1412c3020(CInPacket& packet)
 void UIGlobalPortalDialog::SendGlobalPortal(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     int nButton = FUN_140bd09c0(((Unk_GpParams*)&params)->m_pButton);
-    COutPacket packet(0x72, 0);
+    COutPacket packet(static_cast<int>(SendOp::GlobalPortal), 0);
     packet.vfunc_o10_1(2);
     packet.vfunc_o10_3(m_nEventId);
     packet.vfunc_o10_3(nButton);

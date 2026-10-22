@@ -145,7 +145,7 @@ void UISelectSuperWorldChatDialog::FUN_140e8c790(const Scaleform::GFx::FunctionH
         unsigned nItemId = 0;
         if (m_slotItems.Lookup(aSelected[0], nItemId))
         {
-            COutPacket packet(0xa7);
+            COutPacket packet(static_cast<int>(SendOp::SuperWorldChat));
             packet.Encode1(0);
             packet.Encode4(nItemId);
             FUN_140710590(packet);
@@ -153,7 +153,7 @@ void UISelectSuperWorldChatDialog::FUN_140e8c790(const Scaleform::GFx::FunctionH
     }
     else
     {
-        COutPacket packet(0xa7);
+        COutPacket packet(static_cast<int>(SendOp::SuperWorldChat));
         packet.Encode1(1);
         FUN_140710590(packet);
     }
@@ -171,7 +171,7 @@ void UISelectSuperWorldChatDialog::FUN_140e8c8e0(const Scaleform::GFx::FunctionH
         unsigned nItemId = 0;
         if (m_slotItems.Lookup(aSelected[0], nItemId))
         {
-            COutPacket packet(0xa7);
+            COutPacket packet(static_cast<int>(SendOp::SuperWorldChat));
             packet.Encode1(0);
             packet.Encode4(nItemId);
             FUN_140710590(packet);
@@ -179,7 +179,7 @@ void UISelectSuperWorldChatDialog::FUN_140e8c8e0(const Scaleform::GFx::FunctionH
     }
     else
     {
-        COutPacket packet(0xa7);
+        COutPacket packet(static_cast<int>(SendOp::SuperWorldChat));
         packet.Encode1(1);
         FUN_140710590(packet);
     }

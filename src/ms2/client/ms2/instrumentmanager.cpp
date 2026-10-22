@@ -573,7 +573,7 @@ void CInstrumentManager::SetEnsemble(bool bEnsemble)
     {
         m_ensemble = false;
         m_playing = false;
-        COutPacket packet(0x74, 0);
+        COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
         packet.Encode1(2);
         FUN_140710590(packet);
         SetPcState(0x7d);
@@ -625,7 +625,7 @@ void CInstrumentManager::NoteOn(int nNote)
     if (!m_playing)
     {
         m_playing = true;
-        COutPacket packet(0x74, 0);
+        COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
         packet.Encode1(0);
         packet.Encode8(spItem->FUN_140526a50());
         FUN_140710590(packet);
@@ -639,7 +639,7 @@ void CInstrumentManager::NoteOn(int nNote)
     CMidiMessage msg;
     msg.NoteOn(nSlot, nNote, 100);
     m_midi.SendMessage(nSlot, msg.m_msg);
-    COutPacket packet(0x74, 0);
+    COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
     packet.Encode1(1);
     packet.Encode4(msg.m_msg);
     FUN_140710590(packet);
@@ -656,7 +656,7 @@ void CInstrumentManager::NoteOff(int nNote)
     CMidiMessage msg;
     msg.NoteOff(0, nNote, 0);
     m_midi.SendMessage(0, msg.m_msg);
-    COutPacket packet(0x74, 0);
+    COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
     packet.Encode1(1);
     packet.Encode4(msg.m_msg);
     FUN_140710590(packet);
@@ -688,7 +688,7 @@ bool CInstrumentManager::PlayScore(__int64 nScoreUid)
         return false;
     }
     m_scoreUid = nScoreUid;
-    COutPacket packet(0x74, 0);
+    COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
     packet.Encode1(3);
     packet.Encode8(spInstrument->FUN_140526a50());
     packet.Encode8(nScoreUid);
@@ -730,7 +730,7 @@ bool CInstrumentManager::PlayEnsemble(__int64 nScoreUid)
         return false;
     }
     m_scoreUid = nScoreUid;
-    COutPacket packet(0x74, 0);
+    COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
     packet.Encode1(5);
     packet.Encode8(spInstrument->FUN_140526a50());
     packet.Encode8(nScoreUid);
@@ -742,7 +742,7 @@ bool CInstrumentManager::PlayEnsemble(__int64 nScoreUid)
 // @0x140d085a0
 bool CInstrumentManager::StopEnsemble()
 {
-    COutPacket packet(0x74, 0);
+    COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
     packet.Encode1(6);
     FUN_140710590(packet);
     return true;
@@ -753,7 +753,7 @@ void CInstrumentManager::StopPerform()
 {
     if (!m_performing)
         return;
-    COutPacket packet(0x74, 0);
+    COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
     packet.Encode1(4);
     FUN_140710590(packet);
 }
@@ -1041,7 +1041,7 @@ void CInstrumentManager::StopPreview()
 // @0x140d09c10
 void CInstrumentManager::SendCompose(void* pScore)
 {
-    COutPacket packet(0x74, 0);
+    COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
     packet.Encode1(8);
     FUN_1401ffdc0(pScore, &packet);
     FUN_140710590(packet);
@@ -1052,7 +1052,7 @@ bool FUN_1407105c0(COutPacket& packet, int nCount, int nMs);                // t
 // @0x140d09c80
 void CInstrumentManager::SendScoreText(__int64 nItemUid)
 {
-    COutPacket packet(0x74, 0);
+    COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
     packet.Encode1(10);
     packet.Encode8(nItemUid);
     FUN_1407105c0(packet, 10, 3000);

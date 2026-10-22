@@ -332,7 +332,7 @@ void LapenshardSlot::SendLapenshard(int nSlot, __int64 nItemUid)
 {
     if (FUN_140c62520() == 0)
         return;
-    COutPacket packet(0xad, 0);
+    COutPacket packet(static_cast<int>(SendOp::Lapenshard), 0);
     packet.Encode1(1);
     Unk_LsEquipRequest request;
     request.m_nSlot = nSlot;

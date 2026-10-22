@@ -310,7 +310,7 @@ void StateSummon::vfunc_8(double fTime)
                     *reinterpret_cast<__int64*>(reinterpret_cast<char*>(spAction.operator->()) + 0x38) = nUid;
                     char* pCfg = static_cast<char*>(FUN_14124ab20(FUN_1409a8b10()));
                     *(reinterpret_cast<char*>(spAction.operator->()) + 0x28) = pCfg[2];
-                    COutPacket packet(0x40, 0);
+                    COutPacket packet(static_cast<int>(SendOp::RequestRide), 0);
                     packet.Encode1(0);
                     spAction->vfunc_1(reinterpret_cast<COutputStream*>(&packet));
                     FUN_140710590(packet);
@@ -325,7 +325,7 @@ void StateSummon::vfunc_8(double fTime)
                     {
                         Unk_SummonUid0 uid;
                         uid.m_nUid = pItem->FUN_140526a50();
-                        COutPacket packet(0x78, 0);
+                        COutPacket packet(static_cast<int>(SendOp::RequestPet), 0);
                         packet.Encode1(0);
                         packet.vfunc_o10_9(&uid, 8);
                         FUN_140710590(packet);
@@ -334,7 +334,7 @@ void StateSummon::vfunc_8(double fTime)
                     {
                         Unk_SummonUid3 uid;
                         uid.m_nUid = pItem->FUN_140526a50();
-                        COutPacket packet(0x78, 0);
+                        COutPacket packet(static_cast<int>(SendOp::RequestPet), 0);
                         packet.Encode1(3);
                         packet.vfunc_o10_9(&uid, 8);
                         FUN_140710590(packet);
@@ -513,7 +513,7 @@ void StateRecall::vfunc_8(double fTime)
             StateRecallData* pRecall = m_spData;
             if (pRecall->m_p18 == reinterpret_cast<void*>(-1))
             {
-                COutPacket packet(0x2c, 0);
+                COutPacket packet(static_cast<int>(SendOp::Party), 0);
                 packet.Encode1(0x1d);
                 FUN_140710590(packet);
             }
@@ -771,7 +771,7 @@ void StateSummonRevive::vfunc_3(double fTime)
         m_timer.FUN_1408687f0();
         if (pPet->FUN_14166ce30() != 0 && FUN_141661970(pPet) == 0)
         {
-            COutPacket packet(0x1f, 0);
+            COutPacket packet(static_cast<int>(SendOp::Revival), 0);
             packet.Encode1(3);
             packet.Encode4(FUN_14123c580(m_pOwner));
             FUN_140710590(packet);

@@ -399,7 +399,7 @@ MS2_REPLACE_METHOD(0x14102ECC0, UIAttendGiftDialog, FUN_14102ecc0, 188, 0x88E37E
 // @0x14102f080
 void UIAttendGiftDialog::FUN_14102f080()
 {
-    COutPacket packet(0x66,0); packet.Encode1(3); FUN_140710590(packet);
+    COutPacket packet(static_cast<int>(SendOp::Attendance),0); packet.Encode1(3); FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x14102F080, UIAttendGiftDialog, FUN_14102f080, 75, 0x1496D6EA);
 // @0x14102f0e0
@@ -407,7 +407,7 @@ void UIAttendGiftDialog::FUN_14102f0e0()
 {
     if(m_selected==NULL) return;
     {
-        COutPacket packet(0x66,0); packet.Encode1(8); packet.Encode4(m_selected->FUN_1402e1d00()); FUN_140710590(packet);
+        COutPacket packet(static_cast<int>(SendOp::Attendance),0); packet.Encode1(8); packet.Encode4(m_selected->FUN_1402e1d00()); FUN_140710590(packet);
     }
 }
 MS2_REPLACE_METHOD(0x14102F0E0, UIAttendGiftDialog, FUN_14102f0e0, 144, 0x6F4A4D63);
@@ -441,7 +441,7 @@ void UIAttendGiftDialog::OnLoadComplete()
     m_usePoint->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIAttendGiftDialog::FUN_14102d4b0),0);
     bool nDefault=false;
     if(g_attendTable.FUN_140482280(100,nDefault)) {
-        COutPacket packet(0x66,0); packet.Encode1(2); FUN_140710590(packet);
+        COutPacket packet(static_cast<int>(SendOp::Attendance),0); packet.Encode1(2); FUN_140710590(packet);
     }
     FUN_14102d690();
     FUN_140d86260()->vfunc_43(2,0,1000);
@@ -504,7 +504,7 @@ bool UIAttendGiftDialog::FUN_14102d4e0(int result,const CMsgBoxData& data)
     if(result==0) {
         __int64 id=0;
         if(data.FUN_141a04aa0()) id=data.FUN_141a02f10(0,0);
-        COutPacket packet(0x66,0);
+        COutPacket packet(static_cast<int>(SendOp::Attendance),0);
         packet.Encode1(4);
         packet.Encode4(m_selected->FUN_1402e1d00());
         packet.Encode8(id);

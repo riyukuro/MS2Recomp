@@ -84,7 +84,7 @@ bool UIBeautyListDialog::SendBeautyMode10(int nResult, const CMsgBoxData& box)
     if (nResult != 0)
         return true;
     int nType = box.FUN_141a02e50(0, 0);
-    COutPacket packet(0x23, 0);
+    COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
     packet.vfunc_o10_1(10);
     packet.vfunc_o10_2(nType);
     FUN_140710590(packet);
@@ -145,7 +145,7 @@ int UIBeautyListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             }
             else
             {
-                COutPacket packet(0x23, 0);
+                COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
                 packet.vfunc_o10_1(10);
                 packet.vfunc_o10_2(nType);
                 FUN_140710590(packet);

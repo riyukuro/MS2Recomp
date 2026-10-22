@@ -423,7 +423,7 @@ void UILongTermAttendGiftDialog::SendEventRewardMode27(NotifyObject*)
         return;
     if (vfunc_55())
         FUN_141924680();
-    COutPacket packet(0x97, 0);
+    COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
     packet.Encode1(0x1b);
     FUN_140710590(packet);
 }
@@ -458,7 +458,7 @@ bool UILongTermAttendGiftDialog::SendEventRewardMode26(int nResult, const CMsgBo
         if (!wallet->vfunc_40(m_178->m_meratCost)) {
             FUN_140d74390(GetStringCommonByKey(CStringW(L"s_err_lack_merat_ask")), 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UILongTermAttendGiftDialog::FUN_140c6bd40));
         } else {
-            COutPacket packet(0x97, 0);
+            COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
             packet.Encode1(0x1a);
             packet.Encode1(1);
             FUN_140710590(packet);
@@ -586,7 +586,7 @@ bool UILongTermAttendGiftDialog::FUN_140c6cbf0()
 void UILongTermAttendGiftDialog::SendEventRewardMode25(int nDay)
 {
     if (FUN_140c6d040(nDay) == 1) {
-        COutPacket packet(0x97, 0);
+        COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
         packet.Encode1(0x19);
         packet.Encode4(nDay);
         FUN_140710590(packet);
@@ -609,7 +609,7 @@ void UILongTermAttendGiftDialog::FUN_140c6cd00()
     } else if (nCatchUp == 0) {
         FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_longtermattendgift_dialog_err_msg_attendance_full")), 0, 0, CStringW(L""));
     } else {
-        COutPacket packet(0x97, 0);
+        COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
         packet.Encode1(0x1a);
         packet.Encode1(0);
         FUN_140710590(packet);

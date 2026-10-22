@@ -252,7 +252,7 @@ void UIDebugPacketDialog::OnExecuteRandom(const Scaleform::GFx::FunctionHandler:
 // @0x141291240
 void UIDebugPacketDialog::OnPacketCount(const Scaleform::GFx::FunctionHandler::Params& rParams)
 {
-    COutPacket packet(0x11, 0);
+    COutPacket packet(static_cast<int>(SendOp::UserChat), 0);
     Unk_CommandChat chat;
     chat.kind = 0;
     chat.message = L"/PacketCounter 0";
@@ -270,7 +270,7 @@ void UIDebugPacketDialog::OnPacketCount(const Scaleform::GFx::FunctionHandler::P
 // @0x141291340
 void UIDebugPacketDialog::OnCloseFromPacket(const Scaleform::GFx::FunctionHandler::Params& rParams)
 {
-    COutPacket packet(0x11, 0);
+    COutPacket packet(static_cast<int>(SendOp::UserChat), 0);
     Unk_CommandChat chat;
     chat.kind = 0;
     chat.message = L"/CloseFromPacket 0";

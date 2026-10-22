@@ -482,7 +482,7 @@ void FUN_14070f820(COutPacket* packet, bool value);      // COutputStream bool e
 // @0x141bca110
 void WorldService::FUN_141bca110(bool b)
 {
-    COutPacket packet(0xa5);
+    COutPacket packet(static_cast<int>(SendOp::SyncWorld));
     FUN_14070f820(&packet, b);
     FUN_140710590(packet);
 }
@@ -4970,7 +4970,7 @@ int WorldService::FUN_141bc80c0(int channel)
     int value;
     FUN_1401fcbe0(&value);
     value = channel;
-    COutPacket packet(0x3b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Channel), 0);
     FUN_1401fcc00(&value, &packet);
     FUN_140710590(&packet);
     return 1;
@@ -5819,7 +5819,7 @@ void WorldService::FUN_141bcf9f0()
     Unk_WsC_NotifyObj* ev = p ? FUN_141bf47f0(p) : 0;
     Unk_WsC_EventRef ref;
     FUN_140da4fe0(FUN_140939a10(), FUN_140938f40(&ref, ev));
-    COutPacket packet(0x66, 0);
+    COutPacket packet(static_cast<int>(SendOp::Attendance), 0);
     packet.vfunc_o10_1(1);
     FUN_140710590(packet);
     FUN_141bca010();
@@ -9967,7 +9967,7 @@ void WorldService::FUN_141bc3560()
             Unk_WsF_GameObj* player = static_cast<Unk_WsF_GameObj*>(FUN_141bd0cc0());
             info.pos = FUN_1417f5940(FUN_141b6dff0(player->GetPosition()));
 
-            COutPacket packet(0x26, 0);
+            COutPacket packet(static_cast<int>(SendOp::Vibrate), 0);
             FUN_1401fddd0(&info, &packet);
             FUN_140710590(packet);
 
@@ -10023,7 +10023,7 @@ void WorldService::FUN_141bc3560()
         info.f58 = FUN_141235260(&tag)->f58;
         info.f5c = FUN_141235260(&tag)->f5c;
 
-        COutPacket packet(0x27);
+        COutPacket packet(static_cast<int>(SendOp::Breakable));
         FUN_1401fe0d0(&info, &packet);
         FUN_140710590(packet);
 
@@ -10055,7 +10055,7 @@ void WorldService::FUN_141bc3560()
         int level = Unk_WsF_RangeLevel(found, defaultLevel);
         FUN_140ade030(sensor, 1, level);
 
-        COutPacket packet(0x2a);
+        COutPacket packet(static_cast<int>(SendOp::Tombstone));
         packet.vfunc_o10_3(FUN_14123c580(obj));
         packet.vfunc_o10_3(1);
         FUN_140710590(packet);
@@ -11573,7 +11573,7 @@ int WorldService::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 int channelNo = _wtoi(*(CStringW*)FUN_140159a00(tokens, 1));
                 FUN_1401fcbe0(&channel);
                 channel = channelNo;
-                COutPacket packet(0x3b, 0);
+                COutPacket packet(static_cast<int>(SendOp::Channel), 0);
                 FUN_1401fcc00(&channel, &packet);
                 FUN_140710590(&packet);
             }

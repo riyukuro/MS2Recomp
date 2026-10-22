@@ -894,7 +894,7 @@ int TaxiStationAction::vfunc_1()
             if (DAT_143ab3098.FUN_140408410(&DAT_143ab2870) >= 0)
                 return 0;
             DAT_143ab3098.FUN_1401855a0(DAT_143ab2870);
-            COutPacket packet(0x48);
+            COutPacket packet(static_cast<int>(SendOp::RequestTaxi));
             packet.Encode1(0);
             FUN_140710590(packet);
             return 0;
@@ -1187,7 +1187,7 @@ MS2_REPLACE_METHOD(0x140956290, PortalAction, FUN_140956290, 119, 0x70B8578D);
 // @0x140956310
 void PortalAction::SendRoomDungeon()
 {
-    COutPacket packet(0x2b);
+    COutPacket packet(static_cast<int>(SendOp::RoomDungeon));
     packet.Encode1(9);
     FUN_140710590(packet);
 }
@@ -1403,7 +1403,7 @@ void LiftCubeAction::vfunc_2()
     if (pPlayer->FUN_1416764a0() && !pPlayer->SendRequestRideMode1(0))
         return;
     pLift->FUN_141447d50(0);
-    COutPacket packet(0x3c);
+    COutPacket packet(static_cast<int>(SendOp::Liftable));
     packet.Encode1(1);
     packet.COutPacket::vfunc_o10_7(pLift->FUN_1414472a0());
     FUN_140710590(packet);
@@ -2030,7 +2030,7 @@ void PullObjectWeaponAction::vfunc_2()
         {
             if (pPlayer->FUN_1416764a0() && !pPlayer->SendRequestRideMode1(0))
                 return;
-            COutPacket packet(0x37);
+            COutPacket packet(static_cast<int>(SendOp::RequestCube));
             packet.Encode1(0x11);
             packet.Encode4(FUN_1408a03c0(m_spCube->position));
             FUN_140710590(packet);
@@ -3127,7 +3127,7 @@ void QuestUserFindAction::vfunc_2()
     PCBase* pTarget = reinterpret_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd1530(m_n18));
     if (!pTarget)
         return;
-    COutPacket packet(0x29);
+    COutPacket packet(static_cast<int>(SendOp::Quest));
     packet.Encode1(0x1c);
     packet.Encode4(m_n20);
     packet.Encode8(pTarget->FUN_141656a80());

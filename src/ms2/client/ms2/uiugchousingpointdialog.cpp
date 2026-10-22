@@ -370,7 +370,7 @@ MS2_REPLACE_METHOD(0x140FAE9E0, UIUGCHousingPointDialog, vfunc_84, 1519, 0x598EB
 void UIUGCHousingPointDialog::OnRewardItem()
 {
     if (FUN_1409301c0() == false) {
-        COutPacket pkt(0x37, 0);
+        COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
         pkt.Encode1(0x28);
         FUN_140710590(pkt);
         FUN_1409331e0()->AddTrigger(static_cast<CGuideManager::TriggerType>(0x1b), 2, 0);

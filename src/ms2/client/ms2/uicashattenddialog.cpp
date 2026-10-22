@@ -459,7 +459,7 @@ bool UICashAttendDialog::FUN_140bc4260(int nButton,const CMsgBoxData& data)
     if(nButton==0) {
         __int64 nItemUid=0;
         if(data.FUN_141a04aa0()) nItemUid=data.FUN_141a02f10(0,0);
-        COutPacket packet(0x66,0);
+        COutPacket packet(static_cast<int>(SendOp::Attendance),0);
         packet.Encode1(4);
         packet.Encode4(m_selected->FUN_1402e1d00());
         packet.Encode8(nItemUid);
@@ -609,7 +609,7 @@ void UICashAttendDialog::FUN_140bc5350(CInPacket& packet)
 // @0x140bc5640
 void UICashAttendDialog::FUN_140bc5640()
 {
-    COutPacket packet(0x66,0); packet.Encode1(3); FUN_140710590(packet);
+    COutPacket packet(static_cast<int>(SendOp::Attendance),0); packet.Encode1(3); FUN_140710590(packet);
 }
 
 // @0x140bc56a0
@@ -617,7 +617,7 @@ void UICashAttendDialog::FUN_140bc56a0()
 {
     if(m_selected==NULL) return;
     {
-        COutPacket packet(0x66,0); packet.Encode1(8); packet.Encode4(m_selected->FUN_1402e1d00()); FUN_140710590(packet);
+        COutPacket packet(static_cast<int>(SendOp::Attendance),0); packet.Encode1(8); packet.Encode4(m_selected->FUN_1402e1d00()); FUN_140710590(packet);
     }
 }
 

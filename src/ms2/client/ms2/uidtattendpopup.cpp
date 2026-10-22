@@ -83,7 +83,7 @@ MS2_REPLACE_METHOD(0x140C04290, UIDTAttendPopup, UpdateIcon, 275, 0xA850FFEE);
 void UIDTAttendPopup::SetTime(unsigned sec){if(m_time==0)return;m_time->FUN_1422c4cd0(StringFormat(L"{0:02}:{1:02}",sec/60,sec%60));}
 MS2_REPLACE_METHOD(0x140C043B0, UIDTAttendPopup, SetTime, 179, 0xFC1A1CC5);
 // @0x140c04470
-void UIDTAttendPopup::Request(){if(!m_requestTick.FUN_140268870(5000))return;if(m_entries.size()==0)return;Unk_DTPtr<Unk_DTEntry> e=GetCurrent();if(e->FUN_140ce35c0())return;COutPacket packet(0x66,0);packet.Encode1(0);FUN_140710590(packet);}
+void UIDTAttendPopup::Request(){if(!m_requestTick.FUN_140268870(5000))return;if(m_entries.size()==0)return;Unk_DTPtr<Unk_DTEntry> e=GetCurrent();if(e->FUN_140ce35c0())return;COutPacket packet(static_cast<int>(SendOp::Attendance),0);packet.Encode1(0);FUN_140710590(packet);}
 MS2_REPLACE_METHOD(0x140C04470, UIDTAttendPopup, Request, 207, 0xFE00C17A);
 // @0x140c04550
 bool UIDTAttendPopup::CanShow(){Unk_DTPtr<Unk_DTEntry> e=GetCurrent();if(e==0)return false;if(e->FUN_140ce3690()>=e->FUN_140ce3660())return false;return !e->FUN_140ce35c0();}

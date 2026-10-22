@@ -107,7 +107,7 @@ int UIUGCPVPControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             int b3 = FUN_1409c1750(pArgs[3]);
             int b4 = FUN_1409c1750(pArgs[4]);
             int b5 = FUN_1409c1750(pArgs[5]);
-            COutPacket packet(0x90, 0);
+            COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
             packet.vfunc_o10_1(0xe);
             packet.vfunc_o10_1(1);
             packet.vfunc_o10_1(b0);

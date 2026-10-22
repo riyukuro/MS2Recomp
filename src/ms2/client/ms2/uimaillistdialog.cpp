@@ -589,7 +589,7 @@ void UIMailListDialog::SendMailMode2(__int64 nMailId)
         return;
     if (pMail->FUN_140691110() == 0)
     {
-        COutPacket packet(0x2d, 0);
+        COutPacket packet(static_cast<int>(SendOp::Mail), 0);
         packet.Encode1(2);
         packet.Encode8(pMail->FUN_140690350());
         FUN_140710590(packet);
@@ -605,7 +605,7 @@ void UIMailListDialog::SendMailMode11(__int64 nMailId)
         return;
     if (pMail->FUN_140690b80() == 0)
         return;
-    COutPacket packet(0x2d, 0);
+    COutPacket packet(static_cast<int>(SendOp::Mail), 0);
     packet.Encode1(0xb);
     packet.Encode8(pMail->FUN_140690350());
     FUN_140710590(packet);
@@ -837,7 +837,7 @@ void UIMailListDialog::SendMailMode0()
         return;
     if (FUN_1422dc430() != 0)
     {
-        COutPacket packet(0x2d, 0);
+        COutPacket packet(static_cast<int>(SendOp::Mail), 0);
         packet.Encode1(0);
         FUN_140710590(packet);
         m_bRefresh = false;
@@ -1058,7 +1058,7 @@ void UIMailListDialog::FUN_1419e6410(__int64 nMailId)
     {
         if (spMail->FUN_140692630() != 0)
         {
-            COutPacket packet(0x2d, 0);
+            COutPacket packet(static_cast<int>(SendOp::Mail), 0);
             packet.Encode1(0xd);
             packet.Encode4(1);
             packet.Encode8(spMail->FUN_140690350());
@@ -1130,7 +1130,7 @@ bool UIMailListDialog::SendMailMode18(int nButton, const CMsgBoxData& data)
         CStringW strIds = data.FUN_141a02fd0(0, CStringW());
         ATL::CAtlArray<__int64> aIds;
         FUN_1419e7ea0(CStringW(strIds), aIds, 0);
-        COutPacket packet(0x2d, 0);
+        COutPacket packet(static_cast<int>(SendOp::Mail), 0);
         packet.Encode1(0x12);
         packet.Encode4((int)aIds.GetCount());
         for (size_t i = 0; i < aIds.GetCount(); i++)
@@ -1150,7 +1150,7 @@ bool UIMailListDialog::SendMailMode19(int nButton, const CMsgBoxData& data)
         CStringW strIds = data.FUN_141a02fd0(0, CStringW());
         ATL::CAtlArray<__int64> aIds;
         FUN_1419e7ea0(CStringW(strIds), aIds, 0);
-        COutPacket packet(0x2d, 0);
+        COutPacket packet(static_cast<int>(SendOp::Mail), 0);
         packet.Encode1(0x13);
         packet.Encode4((int)aIds.GetCount());
         for (size_t i = 0; i < aIds.GetCount(); i++)
@@ -1181,7 +1181,7 @@ bool UIMailListDialog::FUN_1419e7940(int nButton, const CMsgBoxData& data)
                 return true;
             }
         }
-        COutPacket packet(0x2d, 0);
+        COutPacket packet(static_cast<int>(SendOp::Mail), 0);
         packet.Encode1(0xd);
         packet.Encode4((int)aIds.GetCount());
         for (size_t i = 0; i < aIds.GetCount(); i++)
@@ -1204,7 +1204,7 @@ bool UIMailListDialog::SendMailMode13(int nButton, const CMsgBoxData& data)
             CMailInfo* pMail = g_143ab2ee0.FUN_1408e3720(nMailId).get();
             if (pMail != 0)
             {
-                COutPacket packet(0x2d, 0);
+                COutPacket packet(static_cast<int>(SendOp::Mail), 0);
                 packet.Encode1(0xd);
                 packet.Encode4(1);
                 packet.Encode8(pMail->FUN_140690350());
@@ -1387,7 +1387,7 @@ bool UIMailListDialog::FUN_1419e88b0(MS2Ptr<TMarketBillDataParam> spParam, const
         CUIService::GetInstance()->FUN_141add1f0();
         return false;
     }
-    COutPacket packet(0x2d, 0);
+    COutPacket packet(static_cast<int>(SendOp::Mail), 0);
     packet.Encode1(0xc);
     packet.Encode8(pMail->FUN_140690350());
     FUN_140710590(packet);
@@ -1652,7 +1652,7 @@ void UIMailSendDialog::OnSend()
                 return;
             }
         }
-        COutPacket packet(0x2d, 0);
+        COutPacket packet(static_cast<int>(SendOp::Mail), 0);
         packet.Encode1(1);
         info.FUN_1401fc2a0(packet);
         FUN_140710590(packet);

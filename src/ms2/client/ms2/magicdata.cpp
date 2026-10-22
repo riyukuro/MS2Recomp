@@ -1174,7 +1174,7 @@ void CMagic::FUN_14145f570(unsigned nNow)
         nExplosion = 1;
     if (FUN_141464410()) {
         if (m_spSkill->FUN_141759050()->m_n34 != 0 && nExplosion != 0) {
-            COutPacket packet(0x20, 0);
+            COutPacket packet(static_cast<int>(SendOp::Skill), 0);
             packet.Encode1(1);
             packet.Encode1(2);
             packet.Encode8(m_spSkill->m_nTagId);
@@ -1884,7 +1884,7 @@ void CMagic::FUN_141464d00(unsigned nNow, const Unk_MagicSkillRow* pRow)
     void* pPC = FUN_14096e160(pReporter);
     if (pPC != NULL)
         FUN_14152e0c0(pPC);
-    COutPacket packet(0x20, 0);
+    COutPacket packet(static_cast<int>(SendOp::Skill), 0);
     packet.Encode1(1);
     packet.Encode1(1);
     packet.Encode8(m_spSkill->m_nTagId);
@@ -1993,7 +1993,7 @@ void CMagic::FUN_141465b30(unsigned nNow, const Unk_MagicSkillRow* pRow)
     }
     if (FUN_141464410()) {
         FUN_141464790(&spCtx->m_arr30, nHits);
-        COutPacket packet(0x20, 0);
+        COutPacket packet(static_cast<int>(SendOp::Skill), 0);
         packet.Encode1(1);
         packet.Encode1(1);
         packet.Encode8(m_spSkill->m_nTagId);
@@ -2421,7 +2421,7 @@ void CMagic::FUN_141466da0(unsigned nNow, const Unk_MagicSkillRow* pRow)
         FUN_1403ed280()->FUN_1411a4a00(&kReq);
     }
     if (m_spSkill->FUN_141759050()->m_n34 != 0) {
-        COutPacket packet(0x20, 0);
+        COutPacket packet(static_cast<int>(SendOp::Skill), 0);
         packet.Encode1(1);
         packet.Encode1(2);
         packet.Encode8(m_spSkill->m_nTagId);

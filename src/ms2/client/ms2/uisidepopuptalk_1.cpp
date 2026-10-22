@@ -158,7 +158,7 @@ int UISidePopupTalk::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     }
     else if (_stricmp(szMethod, "onEnterFieldWar") == 0)
     {
-        COutPacket packet(0xb6);
+        COutPacket packet(static_cast<int>(SendOp::SidePopup));
         packet.Encode1(1);
         FUN_140710590(packet);
     }

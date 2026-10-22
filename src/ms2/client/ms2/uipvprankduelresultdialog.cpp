@@ -117,7 +117,7 @@ int UIPvPRankDuelResultDialog::vfunc_65()
 // @0x140f908f0
 void UIPvPRankDuelResultDialog::vfunc_67()
 {
-    COutPacket packet(0x61, 0);
+    COutPacket packet(static_cast<int>(SendOp::Pvp), 0);
     packet.vfunc_o10_1(0x68);
     FUN_140710590(packet);
     UIDialog::vfunc_67();

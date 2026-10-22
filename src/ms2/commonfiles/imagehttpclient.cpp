@@ -173,7 +173,7 @@ unsigned CImageHttpClient::SendWebScreenshot()
         if (request->FUN_140922f20() != 0)
             return 0;
         std::string strKey = ParseTemporaryKey(request->GetResponseContent());
-        COutPacket packet(0xb8, 0);
+        COutPacket packet(static_cast<int>(SendOp::WebScreenshot), 0);
         packet.vfunc_o10_1((unsigned char)m_nMode);
         packet.vfunc_o10_7(CString(strKey.c_str()));
         FUN_140710590(packet);

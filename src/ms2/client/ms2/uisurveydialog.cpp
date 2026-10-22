@@ -126,7 +126,7 @@ void UISurveyDialog::FUN_140eda1b0(CInPacket& packet)
 // @0x140eda2b0
 void UISurveyDialog::FUN_140eda2b0(int nAnswer)
 {
-    COutPacket packet(0x90, 0);
+    COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
     packet.vfunc_o10_1(5);
     packet.vfunc_o10_1(5);
     packet.vfunc_o10_4(m_178);

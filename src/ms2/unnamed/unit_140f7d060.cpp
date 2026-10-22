@@ -481,7 +481,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f7ef70(MS2Ptr<CItem> item)
     }
     CCItemSocketSystemPacket::SelectItem msg;
     msg.m_nGemUid = uid;
-    COutPacket out(0x88, 0);
+    COutPacket out(static_cast<int>(SendOp::ItemSocketSystem), 0);
     out.Encode1(2);
     FUN_140629c50(msg, out);
     FUN_140710590(out);
@@ -975,7 +975,7 @@ void ItemSocketSystemPageSocketUnlock::SendItemSocketSystemMode14(const Scalefor
     Unk_SockUidList request;
     __int64 uid = m_selected->FUN_140526a50();
     FUN_140628f60(request, uid, uids);
-    COutPacket out(0x88, 0);
+    COutPacket out(static_cast<int>(SendOp::ItemSocketSystem), 0);
     out.Encode1(0xe);
     FUN_140628c80(request, out);
     FUN_140710590(out);
@@ -997,7 +997,7 @@ void ItemSocketSystemPageSocketUnlock::SendItemSocketSystemMode16(const Scalefor
     CCItemSocketSystemPacket::ForceFillIngredient fill;
     fill.m_nType = 0;
     fill.m_nUid = m_selected->FUN_140526a50();
-    COutPacket out(0x88, 0);
+    COutPacket out(static_cast<int>(SendOp::ItemSocketSystem), 0);
     out.Encode1(0x10);
     FUN_140629de0(fill, out);
     FUN_140710590(out);
@@ -1060,7 +1060,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f82ed0(CAtlArray<MS2Ptr<CItem>>& o
 // @0x140f82f20
 void ItemSocketSystemPageSocketUnlock::SendItemSocketSystemMode0(Unk_SockUidList& request)
 {
-    COutPacket out(0x88, 0);
+    COutPacket out(static_cast<int>(SendOp::ItemSocketSystem), 0);
     out.Encode1(0);
     FUN_140628c80(request, out);
     FUN_140710590(out);

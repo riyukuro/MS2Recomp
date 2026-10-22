@@ -366,7 +366,7 @@ void CClientPlatformTencent::vfunc_73(int) {}
 // @0x140c7e3d0 sends the push notice setting (kind, on) to the server
 bool FUN_140c7e3d0(CClientPlatformTencent*, unsigned char nKind, bool bOn, int nParam)
 {
-    COutPacket packet(0x96, 0);
+    COutPacket packet(static_cast<int>(SendOp::NexonArena), 0);
     packet.vfunc_o10_1(nKind);
     packet.vfunc_o10_0(bOn);
     return FUN_1407105c0(packet, nKind, nParam);

@@ -82,7 +82,7 @@ int UIHomePasswordDialog::vfunc_65()
 // @0x1412c8d30
 void UIHomePasswordDialog::vfunc_67()
 {
-    COutPacket packet(0x2e, 0);
+    COutPacket packet(static_cast<int>(SendOp::FunctionCube), 0);
     packet.vfunc_o10_1(7);
     packet.vfunc_o10_6(m_178);
     FUN_140710590(packet);
@@ -216,7 +216,7 @@ void UIHomePasswordDialog::SendRequestCube(int nMode, CStringW strPassword, int 
         Unk_HpActorPtr ref(FUN_141523c50(pActor));
         if (ref.FUN_140fa9d30() != 0)
         {
-            COutPacket packet(0x37, 0);
+            COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
             packet.vfunc_o10_1(0x18);
             packet.vfunc_o10_1(nMode);
             packet.vfunc_o10_8(strPassword);

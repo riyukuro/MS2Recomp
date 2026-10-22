@@ -315,7 +315,7 @@ int UIRpsEventDialog::vfunc_28(const char* method, const Scaleform::GFx::Value* 
         if (!FUN_140b883c0()) { FUN_141275260(0xcfd, 1, 1); return 1; }
         if (!avatar->FUN_140b7f400()) { FUN_141275260(0xcff, 1, 1); return 1; }
         if (avatar->FUN_140a7b810()->FUN_140953530() != 0x1e) { FUN_141275260(0xcfe, 1, 1); return 1; }
-        COutPacket packet(0xa8, 0);
+        COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
         packet.Encode2(0);
         FUN_140710590(packet);
         return 1;
@@ -480,7 +480,7 @@ void UIRpsEventDialog::FUN_140e83fa0(int index) {
     if (reward == NULL) { MS2_ASSERT_AT(464, 0); return; }
     int count = FUN_140e832d0();
     if (reward->playCount > count) return;
-    COutPacket packet(0xa8, 0);
+    COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
     packet.Encode2(10);
     packet.Encode4(index);
     FUN_140710590(packet);

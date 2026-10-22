@@ -528,7 +528,7 @@ bool CGuildManager::FUN_1413b6d10(CStringW name)
         FUN_1413c66f0(1, 0x13, 0);
         return false;
     }
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(1);
     packet.vfunc_o10_8(name);
     FUN_140710590(packet);
@@ -547,7 +547,7 @@ bool CGuildManager::SendGuildMode2()
         return false;
     }
     if (!FUN_1404d01b0(myName)) return false;
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(2);
     FUN_140710590(packet);
     return true;
@@ -576,7 +576,7 @@ bool CGuildManager::FUN_1413b71c0(CStringW name)
         return false;
     }
     FUN_141276180(s_strPcInviteSuccess, "");
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(3);
     packet.vfunc_o10_8(name);
     FUN_140710590(packet);
@@ -589,7 +589,7 @@ void CGuildManager::SendGuildMode5(int accept)
 {
     if (FUN_1413b6160() == 1) return;
     if (!FUN_1413b61a0()) return;
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(5);
     m_invite->FUN_1404c9160(packet);
     packet.vfunc_o10_1((unsigned char)accept);
@@ -607,7 +607,7 @@ void CGuildManager::SendGuildMode7()
         FUN_141275260(0x396, 1, 1);
         return;
     }
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(7);
     FUN_140710590(packet);
 }
@@ -622,7 +622,7 @@ void CGuildManager::SendGuildMode8(CStringW name)
     if (!FUN_1413b6160()) return;
     if (!FUN_1404d0600(myName, 4)) return;
     if (FUN_1404d01b0(name)) return;
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(8);
     packet.vfunc_o10_8(name);
     FUN_140710590(packet);
@@ -642,7 +642,7 @@ void CGuildManager::SendGuildMode10(CStringW name, int grade)
     if (!FUN_1413b6160()) return;
     if (grade <= 0 || grade > FUN_1404d0580()) return;
     if (!FUN_1404d0600(myName, 0x20)) return;
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(10);
     packet.vfunc_o10_8(name);
     packet.vfunc_o10_1((unsigned char)grade);
@@ -658,7 +658,7 @@ void CGuildManager::SendGuildMode63(CStringW name)
     if (myName.CompareNoCase(name) == 0) return;
     if (!FUN_1413b6160()) return;
     if (!FUN_1404d01b0(myName)) return;
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x3f);
     packet.vfunc_o10_8(name);
     FUN_140710590(packet);
@@ -689,7 +689,7 @@ bool CGuildManager::FUN_1413b7c70(int kind, CStringW text)
             return false;
         }
     }
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x40);
     packet.vfunc_o10_1((unsigned char)kind);
     packet.vfunc_o10_8(text);
@@ -710,7 +710,7 @@ bool CGuildManager::SendGuildMode13(const CStringW& text)
             return false;
         }
     }
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0xd);
     packet.vfunc_o10_8(text);
     FUN_140710590(packet);
@@ -732,7 +732,7 @@ bool CGuildManager::SendGuildMode15()
         FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_attend_already"), 1, 1);
         return false;
     }
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0xf);
     FUN_1407105c0(&packet, 0xf, 1000);
     return true;
@@ -781,7 +781,7 @@ bool CGuildManager::FUN_1413b8540(int amount)
         FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_no_money"), 1, 1);
         return false;
     }
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x71);
     packet.vfunc_o10_3(amount);
     FUN_1407105c0(&packet, 0x71, 200);
@@ -803,7 +803,7 @@ void CGuildManager::SendGuildMode65(CString text)
         FUN_141275260(0x415, 1, 1);
         return;
     }
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x41);
     packet.vfunc_o10_6(text);
     FUN_140710590(packet);
@@ -821,7 +821,7 @@ void CGuildManager::SendGuildMode67(int index, CGuildGrade grade)
     if (!FUN_1404d01b0(myName)) return;
     if (index < 0 || index >= 6) return;
     if (index > FUN_1404d0580() + 1) return;
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x43);
     packet.vfunc_o10_1((unsigned char)index);
     grade.FUN_1404c7160(packet);
@@ -837,7 +837,7 @@ void CGuildManager::SendGuildMode68(int focus, int value)
     if (!FUN_1413b6160()) return;
     if (f154 == focus && f158 == value) return;
     if (!FUN_1404d0600(myName, 2)) return;
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x44);
     packet.vfunc_o10_1((unsigned char)focus);
     packet.vfunc_o10_3(value);
@@ -884,7 +884,7 @@ void CGuildManager::FUN_1413b8fe0(int skillId)
         }
         if (FUN_140d294c0()->FUN_140b040a0(count) == 0) return;
     }
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x5a);
     packet.vfunc_o10_3(skillId);
     FUN_140710590(packet);
@@ -915,7 +915,7 @@ void CGuildManager::FUN_1413b96e0(int skillId)
         FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_cannot_use_skill"), 1, 1);
         return;
     }
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x5b);
     packet.vfunc_o10_3(skillId);
     FUN_140710590(packet);
@@ -950,7 +950,7 @@ void CGuildManager::FUN_1413b9ac0(int skillId)
         FUN_1412751f0(fundError, 1, 1);
         return;
     }
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x5c);
     packet.vfunc_o10_3(skillId);
     FUN_1407105c0(&packet, 0x5c, 1000);
@@ -975,7 +975,7 @@ void CGuildManager::FUN_1413ba080(int eventId)
     MS2Ptr<CGuildCustomEvent> customEvent = FUN_1404d27b0(eventId);
     if (customEvent == 0) return;
     if (customEvent->FUN_1404cbee0() == true) return;
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(99);
     packet.vfunc_o10_3(eventId);
     FUN_140710590(packet);
@@ -995,7 +995,7 @@ void CGuildManager::SendGuildMode100(int eventId)
         FUN_141275260(0x27b, 1, 1);
         return;
     }
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(100);
     packet.vfunc_o10_3(eventId);
     FUN_140710590(packet);
@@ -1032,7 +1032,7 @@ void CGuildManager::FUN_1413ba4b0()
             return;
         }
     }
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x67);
     FUN_140710590(packet);
 }
@@ -1062,7 +1062,7 @@ void CGuildManager::FUN_1413ba820(int level, int theme)
         FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_not_enough_guild_fund"), 1, 1);
         return;
     }
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x65);
     packet.vfunc_o10_3(theme);
     FUN_1407105c0(&packet, 0x65, 1000);
@@ -1090,7 +1090,7 @@ void CGuildManager::FUN_1413babf0(int theme)
         FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_not_enough_guild_fund"), 1, 1);
         return;
     }
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x66);
     packet.vfunc_o10_3(theme);
     FUN_1407105c0(&packet, 0x66, 1000);
@@ -1139,7 +1139,7 @@ void CGuildManager::FUN_1413bb000(Unk_GuildNpcKind kind)
         FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_not_enough_guild_fund"), 1, 1);
         return;
     }
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x72);
     packet.vfunc_o10_3(kind);
     FUN_1407105c0(&packet, 0x72, 1000);
@@ -1186,7 +1186,7 @@ bool CGuildManager::FUN_1413bb490(ItemEntity& item, const CStringW& receiver)
             return false;
         }
     }
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x6d);
     item.FUN_14026b030(reinterpret_cast<Unk_GiftOutput&>(static_cast<COutputStream&>(packet)));   // itemgift.h types the stream as Unk_GiftOutput
     packet.vfunc_o10_8(receiver);
@@ -1199,7 +1199,7 @@ MS2_REPLACE_METHOD(0x1413BB490, CGuildManager, FUN_1413bb490, 1766, 0x29FDE838);
 void CGuildManager::SendGuildMode112()
 {
     if (!m_400) {
-        COutPacket packet(0x4b, 0);
+        COutPacket packet(static_cast<int>(SendOp::Guild), 0);
         packet.vfunc_o10_1(0x70);
         FUN_140710590(packet);
     } else {
@@ -1235,7 +1235,7 @@ bool CGuildManager::FUN_1413bbc10(const CStringW& title, const CStringW& body)
         FUN_141275260(0x415, 1, 1);
         return false;
     }
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x47);
     packet.vfunc_o10_8(title);
     packet.vfunc_o10_8(body);
@@ -1247,12 +1247,12 @@ MS2_REPLACE_METHOD(0x1413BBC10, CGuildManager, FUN_1413bbc10, 609, 0xBC0EAAEE);
 // @0x1413bbe80
 void CGuildManager::FUN_1413bbe80()
 {
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x4a);
     packet.vfunc_o10_4(m_lastPvpHistoryId);
     FUN_140710590(packet);
     if (!m_3e0) {
-        COutPacket seasonPacket(0x4b, 0);
+        COutPacket seasonPacket(static_cast<int>(SendOp::Guild), 0);
         seasonPacket.vfunc_o10_1(0x4b);
         FUN_140710590(seasonPacket);
         m_3e0 = true;
@@ -1298,7 +1298,7 @@ void CGuildManager::SendPVPMode3()
         FUN_141275260(0x279, 1, 1);
         return;
     }
-    COutPacket packet(0x61, 0);
+    COutPacket packet(static_cast<int>(SendOp::Pvp), 0);
     packet.vfunc_o10_1(3);
     FUN_140710590(packet);
 }
@@ -1307,7 +1307,7 @@ MS2_REPLACE_METHOD(0x1413BC050, CGuildManager, SendPVPMode3, 314, 0x235DE993);
 // @0x1413bc190
 void CGuildManager::SendPVPMode4()
 {
-    COutPacket packet(0x61, 0);
+    COutPacket packet(static_cast<int>(SendOp::Pvp), 0);
     packet.vfunc_o10_1(4);
     FUN_140710590(packet);
 }
@@ -1356,7 +1356,7 @@ void CGuildManager::SendGuildMode82(__int64 guildId)
         FUN_1413c66f0(0x52, 0x25, 0);
         return;
     }
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x52);
     packet.vfunc_o10_4(guildId);
     FUN_140710590(packet);
@@ -1366,7 +1366,7 @@ MS2_REPLACE_METHOD(0x1413BC4A0, CGuildManager, SendGuildMode82, 146, 0x3573EDB9)
 // @0x1413bc540
 void CGuildManager::SendGuildMode83(__int64 guildId)
 {
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x53);
     packet.vfunc_o10_4(guildId);
     FUN_140710590(packet);
@@ -1376,7 +1376,7 @@ MS2_REPLACE_METHOD(0x1413BC540, CGuildManager, SendGuildMode83, 95, 0x24398D36);
 // @0x1413bc5b0
 void CGuildManager::SendGuildMode84(__int64 characterId, int accept)
 {
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x54);
     packet.vfunc_o10_4(characterId);
     packet.vfunc_o10_1((unsigned char)accept);
@@ -1389,7 +1389,7 @@ void CGuildManager::SendGuildMode85()
 {
     if (!FUN_1413b6160())
         return;
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x55);
     FUN_140710590(packet);
 }
@@ -1400,7 +1400,7 @@ void CGuildManager::SendGuildMode86()
 {
     if (FUN_1413b6160())
         return;
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x56);
     FUN_140710590(packet);
 }
@@ -1422,7 +1422,7 @@ void CGuildManager::SendGuildMode87(bool anyFocus)
     CGuildJoinRequestSchCond cond;
     cond.f18 = focus;
     cond.f1c = 1;
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x57);
     cond.FUN_1404c84e0(&packet);
     FUN_140710590(packet);
@@ -1448,7 +1448,7 @@ bool CGuildManager::SendGuildMode88(CStringW name)
             return false;
         }
     }
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x58);
     packet.vfunc_o10_8(name);
     FUN_140710590(packet);
@@ -1538,7 +1538,7 @@ void CGuildManager::SendGuildMode115()
         FUN_141275260(0x415, 1, 1);
         return;
     }
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x73);
     FUN_140710590(packet);
 }
@@ -1553,7 +1553,7 @@ void CGuildManager::SendGuildMode116()
         FUN_141275260(0x415, 1, 1);
         return;
     }
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x74);
     FUN_140710590(packet);
 }
@@ -3520,7 +3520,7 @@ bool CGuildManager::SendGuildMode120(int result, const CMsgBoxData& box)
         return true;
     if (box.GetTimer().m_nButton != 0)
         return true;
-    COutPacket packet(0x4b, 0);
+    COutPacket packet(static_cast<int>(SendOp::Guild), 0);
     packet.vfunc_o10_1(0x78);
     FUN_140710590(packet);
     return true;

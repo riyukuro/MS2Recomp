@@ -412,7 +412,7 @@ bool CReactor::FUN_140b79490(CInPacket* pPacket)
 // @0x140b799a0
 void CReactor::SendStateReact()
 {
-    COutPacket pkt(0xa9, 0);
+    COutPacket pkt(static_cast<int>(SendOp::StateReact), 0);
     pkt.vfunc_o10_1(2);
     pkt.vfunc_o10_3(FUN_14123c580());
     FUN_140710590(pkt);

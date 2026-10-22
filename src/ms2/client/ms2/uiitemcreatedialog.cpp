@@ -470,7 +470,7 @@ MS2_REPLACE_METHOD(0x1419b5280, UIItemCreateDialog, FUN_1419b5280, 226, 0x663C0A
 // @0x1419b5370
 void UIItemCreateDialog::SendRequestItemCreate(CCCreateItemPacket& packet)
 {
-    COutPacket out(0x15, 0);
+    COutPacket out(static_cast<int>(SendOp::RequestItemCreate), 0);
     packet.vfunc_0(out);
     FUN_140710590(out);
 }
@@ -495,7 +495,7 @@ void UIItemCreateDialog::FUN_1419b54a0(CCCompareItemPacket& packet)
 {
     if ((CItemData*)FUN_14053f870(packet.a)) {
         packet.b = 1;
-        COutPacket out(0x9a, 0);
+        COutPacket out(static_cast<int>(SendOp::ItemRepeat), 0);
         packet.vfunc_0(out);
         FUN_140710590(out);
     }

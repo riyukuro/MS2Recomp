@@ -769,7 +769,7 @@ void UIHomeInfoDialog::OnBalance()
 // MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::SendRequestCubeMode58(CStringW strName)
 {
-    COutPacket packet(0x37, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
     packet.vfunc_o10_1(0x3a);
     packet.vfunc_o10_6(FUN_14016a600(strName.GetString(), 0));
     FUN_140710590(packet);
@@ -844,7 +844,7 @@ bool UIHomeInfoDialog::SendRequestCubeMode31(int nResult, const CMsgBoxData& dat
             if (pPc != 0)
                 pPc->FUN_14152f3c0();
         }
-        COutPacket packet(0x37, 0);
+        COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
         packet.vfunc_o10_1(0x1f);
         FUN_140710590(packet);
     }
@@ -866,7 +866,7 @@ bool UIHomeInfoDialog::FUN_1412c7ff0(int nResult, const CMsgBoxData& data)
         __int64 nMerat = _wtoi64(parts[1]);
         if (nMeso <= DAT_143ab2898 && nMerat <= FUN_140930240() + FUN_140930ae0())
         {
-            COutPacket packet(0x37, 0);
+            COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
             packet.vfunc_o10_1(0x38);
             packet.vfunc_o10_4(nMeso);
             packet.vfunc_o10_4(nMerat);

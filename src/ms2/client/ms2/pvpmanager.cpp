@@ -117,7 +117,7 @@ void CPVPManager::SendCancelRequest()
             FUN_140d73aa0(GetStringCommon(0x42f), 0, 0, CStringW(L""));
             return;
         }
-        COutPacket packet(0x61, 0);
+        COutPacket packet(static_cast<int>(SendOp::Pvp), 0);
         packet.vfunc_o10_1(0xb);
         FUN_140710590(packet);
     }

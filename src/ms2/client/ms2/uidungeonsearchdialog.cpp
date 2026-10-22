@@ -419,7 +419,7 @@ MS2_REPLACE_METHOD(0x140e192d0, UIDungeonSearchPage, FUN_140e192d0, 48, 0x9DDC21
 // @0x140e19310
 void UIDungeonSearchPage::SendPartyMode34(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    COutPacket packet(0x2c, 0);
+    COutPacket packet(static_cast<int>(SendOp::Party), 0);
     packet.Encode1(0x22);
     packet.Encode1(1);
     FUN_140710590(packet);
@@ -465,7 +465,7 @@ MS2_REPLACE_METHOD(0x140e194f0, UIDungeonSearchPage, FUN_140e194f0, 476, 0x8448D
 // @0x140e196e0
 void UIDungeonSearchPage::SendPartyMode32(bool bStart)
 {
-    COutPacket packet(0x2c, 0);
+    COutPacket packet(static_cast<int>(SendOp::Party), 0);
     packet.Encode1(0x20);
     packet.Encode1(1);
     FUN_140c0dd90(packet, m_rooms);
@@ -671,7 +671,7 @@ MS2_REPLACE_METHOD(0x140e1b850, UIDungeonSearchDialog, FUN_140e1b850, 117, 0xBFA
 // @0x140e1b8d0
 void UIDungeonSearchDialog::SendRoomDungeonMode4(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    COutPacket packet(0x2b, 0);
+    COutPacket packet(static_cast<int>(SendOp::RoomDungeon), 0);
     packet.Encode1(4);
     FUN_140710590(packet);
 }
@@ -680,7 +680,7 @@ MS2_REPLACE_METHOD(0x140e1b8d0, UIDungeonSearchDialog, SendRoomDungeonMode4, 80,
 // @0x140e1b930
 void UIDungeonSearchDialog::SendRoomDungeonMode12(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    COutPacket packet(0x2b, 0);
+    COutPacket packet(static_cast<int>(SendOp::RoomDungeon), 0);
     packet.Encode1(0xc);
     FUN_140710590(packet);
 }
@@ -689,7 +689,7 @@ MS2_REPLACE_METHOD(0x140e1b930, UIDungeonSearchDialog, SendRoomDungeonMode12, 80
 // @0x140e1b990
 void UIDungeonSearchDialog::SendRoomDungeonMode13(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    COutPacket packet(0x2b, 0);
+    COutPacket packet(static_cast<int>(SendOp::RoomDungeon), 0);
     packet.Encode1(0xd);
     FUN_140710590(packet);
 }
@@ -698,7 +698,7 @@ MS2_REPLACE_METHOD(0x140e1b990, UIDungeonSearchDialog, SendRoomDungeonMode13, 80
 // @0x140e1b9f0
 void UIDungeonSearchDialog::SendRoomDungeonMode14(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    COutPacket packet(0x2b, 0);
+    COutPacket packet(static_cast<int>(SendOp::RoomDungeon), 0);
     packet.Encode1(0xe);
     FUN_140710590(packet);
 }

@@ -247,7 +247,7 @@ void CClientPlatformNexonKorea::vfunc_26(void* a1)
             CStringW strMessage = static_cast<CInputStream&>(*(CInPacket*)a1).vfunc_o8_8();
             g_socketClosing = 1;
             DAT_143ab2d78 = strMessage;
-            COutPacket packet(0xd, 0);
+            COutPacket packet(static_cast<int>(SendOp::RequestQuit), 0);
             packet.Encode1(2);
             packet.Encode1(2);
             FUN_140710590(packet);
@@ -263,7 +263,7 @@ void CClientPlatformNexonKorea::vfunc_26(void* a1)
         if (nKind == 1) {
             g_socketClosing = 1;
             DAT_143ab2d78 = strMessage;
-            COutPacket packet(0xd, 0);
+            COutPacket packet(static_cast<int>(SendOp::RequestQuit), 0);
             packet.Encode1(2);
             packet.Encode1(2);
             FUN_140710590(packet);
@@ -342,7 +342,7 @@ void CClientPlatformNexonKorea::vfunc_20(int a1, int a2)
     request.m_id.FUN_14067c080(TSingleton<CMachineIDManager>::GetInstance()->GetID());
     request.m_n30 = TSingleton<CMachineIDManager>::GetInstance()->GetValue();
     request.m_n34 = DAT_143ab2858;
-    COutPacket packet(3, 0);
+    COutPacket packet(static_cast<int>(SendOp::ResponseLogin), 0);
     request.FUN_1401f9370(&packet);
     FUN_140710590(packet);
 }

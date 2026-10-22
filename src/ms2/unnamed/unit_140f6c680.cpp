@@ -1347,7 +1347,7 @@ void ItemSocketSystemPageGemStoneManage::SendItemSocketSystemMode16(const Scalef
     msg.m_nB8 = 10;
     msg.m_nC = gemId;
     msg.m_n10 = m_selected->FUN_140526a50();
-    COutPacket out(0x88, 0);
+    COutPacket out(static_cast<int>(SendOp::ItemSocketSystem), 0);
     out.Encode1(0x10);
     FUN_140629de0(msg, out);
     FUN_140710590(out);
@@ -1385,7 +1385,7 @@ bool ItemSocketSystemPageGemStoneManage::FUN_140f72c80(int button, const CMsgBox
         Unk_SSGGemUnequip msg;
         msg.m_nItemUid = uid;
         msg.m_nSlot = slot;
-        COutPacket out(0x88, 0);
+        COutPacket out(static_cast<int>(SendOp::ItemSocketSystem), 0);
         out.Encode1(10);
         FUN_140628b70(msg, out);
         FUN_140710590(out);
@@ -1748,7 +1748,7 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f764b0(MS2Ptr<CItem> item)
                         msg.m_nUid = owner->FUN_140526a50();
                         msg.m_nSlot = record->m_slot;
                     }
-                    COutPacket out(0x88, 0);
+                    COutPacket out(static_cast<int>(SendOp::ItemSocketSystem), 0);
                     out.Encode1(6);
                     FUN_140629c50(msg, out);
                     FUN_140710590(out);
@@ -1817,7 +1817,7 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f76970()
             msg.m_nUid = owner->FUN_140526a50();
             msg.m_nSlot = record->m_slot;
         }
-        COutPacket out(0x88, 0);
+        COutPacket out(static_cast<int>(SendOp::ItemSocketSystem), 0);
         out.Encode1(4);
         FUN_1406298b0(msg, out);
         FUN_140710590(out);
@@ -2163,7 +2163,7 @@ void ItemSocketSystemPageGemStoneUpgrade::SendItemSocketSystemMode15(const Scale
         msg.m_nUid = record->m_equipment->FUN_140526a50();
         msg.m_nSlot = record->m_slot;
     }
-    COutPacket out(0x88, 0);
+    COutPacket out(static_cast<int>(SendOp::ItemSocketSystem), 0);
     out.Encode1(0xf);
     FUN_1406298b0(msg, out);
     FUN_140710590(out);
@@ -2181,7 +2181,7 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f798e0(const Scaleform::GFx::Fu
     Unk_SockMsgIIL msg;
     msg.m_nB8 = 4;
     msg.m_nC = m_selected->FUN_1405276c0();
-    COutPacket out(0x88, 0);
+    COutPacket out(static_cast<int>(SendOp::ItemSocketSystem), 0);
     out.Encode1(0x10);
     FUN_140629de0(msg, out);
     FUN_140710590(out);
@@ -2200,7 +2200,7 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f799d0(const Scaleform::GFx::Fu
     msg.m_nB8 = 4;
     msg.m_nC = m_selected->FUN_1405276c0();
     msg.m_n18 = 10;
-    COutPacket out(0x88, 0);
+    COutPacket out(static_cast<int>(SendOp::ItemSocketSystem), 0);
     out.Encode1(0x10);
     FUN_140629de0(msg, out);
     FUN_140710590(out);

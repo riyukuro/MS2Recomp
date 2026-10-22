@@ -179,7 +179,7 @@ void CBuddyManager::FUN_140ae2e90(Unk_BuddyInput& input) {
 }
 
 // @0x140ae4820
-void CBuddyManager::FUN_140ae4820(Unk_BuddyRequest& request) { COutPacket packet(0x30,0); request.FUN_1401fc790(packet); FUN_140710590(packet); }
+void CBuddyManager::FUN_140ae4820(Unk_BuddyRequest& request) { COutPacket packet(static_cast<int>(SendOp::Buddy),0); request.FUN_1401fc790(packet); FUN_140710590(packet); }
 MS2_REPLACE_METHOD(0x140AE4820, CBuddyManager, FUN_140ae4820, 83, 0x6E66E430);
 // @0x140ae4880
 CBuddyManager::Ptr CBuddyManager::FUN_140ae4880(__int64 key) {{ if(Unk_BuddyGuard guard=lock) {} else { Ptr p; accounts.Lookup(key,p); return p; } }}
@@ -231,7 +231,7 @@ MS2_REPLACE_METHOD(0x140AE52D0, CBuddyManager, FUN_140ae52d0, 310, 0x55F6200B);
 int CBuddyManager::FUN_140ae5410(CStringW name) { { if(Unk_BuddyGuard guard=lock) {} else { Ptr p; for(POSITION pos=list.GetHeadPosition();pos;list.GetNext(pos)) { p=list.GetAt(pos); if(!p) continue; if(p->FUN_1401cc350()==name) return 1; } } } return 0; }
 MS2_REPLACE_METHOD(0x140AE5410, CBuddyManager, FUN_140ae5410, 379, 0xD246D2B4);
 // @0x140ae55a0
-void CBuddyManager::SendBuddyMode20() { COutPacket packet(0x30,0); packet.Encode1(20); int reject=FUN_1409a8b10()->GetSettings().autoReject?1:0; packet.Encode4(reject); FUN_140710590(packet); }
+void CBuddyManager::SendBuddyMode20() { COutPacket packet(static_cast<int>(SendOp::Buddy),0); packet.Encode1(20); int reject=FUN_1409a8b10()->GetSettings().autoReject?1:0; packet.Encode4(reject); FUN_140710590(packet); }
 MS2_REPLACE_METHOD(0x140AE55A0, CBuddyManager, SendBuddyMode20, 136, 0x33CF1841);
 // @0x140ae5630
 void CBuddyManager::FUN_140ae5630(Ptr p) { if(Unk_BuddyGuard guard=lock) {} else { if(ids.Lookup(p->id)) return; POSITION pos=list.AddTail(p); p->position=pos; ids.SetAt(p->id,p); accounts.SetAt(p->account,p); } }

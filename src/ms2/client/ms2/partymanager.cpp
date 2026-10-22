@@ -735,7 +735,7 @@ void CPartyManager::SendPartyMode4(CStringW name)
 {
     MS2Ptr<CPartyMember> p = FUN_14162b0c0(name);
     if (p.get() != NULL) {
-        COutPacket packet(0x2c, 0);
+        COutPacket packet(static_cast<int>(SendOp::Party), 0);
         packet.Encode1(4);
         packet.Encode8(p->FUN_141637bb0());
         FUN_140710590(packet);
@@ -748,7 +748,7 @@ void CPartyManager::SendPartyMode45(__int64 id)
 {
     MS2Ptr<CPartyMember> p = FUN_14162afc0(id);
     if (p.get() != NULL) {
-        COutPacket packet(0x2c, 0);
+        COutPacket packet(static_cast<int>(SendOp::Party), 0);
         packet.Encode1(0x2d);
         packet.Encode8(id);
         FUN_140710590(packet);
@@ -763,7 +763,7 @@ void CPartyManager::SendPartyMode2(int value)
     request.name = FUN_14162b4f0();
     request.value = value;
     request.kind = FUN_14162b540();
-    COutPacket packet(0x2c, 0);
+    COutPacket packet(static_cast<int>(SendOp::Party), 0);
     packet.Encode1(2);
     FUN_1401fc0b0(&request, packet);
     FUN_140710590(packet);
@@ -781,7 +781,7 @@ void CPartyManager::SendPartyMode1(CStringW name)
     if (name.IsEmpty()) return;
     Unk_PartyInviteName request;
     request.name = name;
-    COutPacket packet(0x2c, 0);
+    COutPacket packet(static_cast<int>(SendOp::Party), 0);
     packet.Encode1(1);
     FUN_1401fbd30(&request, packet);
     FUN_140710590(packet);
@@ -796,7 +796,7 @@ void CPartyManager::SendPartyMode23(const Unk_PartyRecruitInvite& request)
     CStringW name(request.ownerName);
     if (name.IsEmpty()) return;
     if (!(name == static_cast<WorldService*>(FUN_1403ed2d0())->FUN_141bd0d30())) {
-        COutPacket packet(0x2c, 0);
+        COutPacket packet(static_cast<int>(SendOp::Party), 0);
         packet.Encode1(0x17);
         FUN_1401fbf70(&request, packet);
         FUN_140710590(packet);
@@ -816,7 +816,7 @@ MS2_REPLACE_METHOD(0x14162BCC0, CPartyManager, FUN_14162bcc0, 111, 0xDEFC1332);
 // @0x14162bd40
 void CPartyManager::SendRoomDungeon(int value)
 {
-    COutPacket packet(0x2b, 0);
+    COutPacket packet(static_cast<int>(SendOp::RoomDungeon), 0);
     packet.Encode1(3);
     packet.Encode4(value);
     FUN_140710590(packet);
@@ -826,7 +826,7 @@ MS2_REPLACE_METHOD(0x14162BD40, CPartyManager, SendRoomDungeon, 93, 0xB715FDC7);
 // @0x14162bdb0
 void CPartyManager::SendPartyMode46()
 {
-    COutPacket packet(0x2c, 0);
+    COutPacket packet(static_cast<int>(SendOp::Party), 0);
     packet.Encode1(0x2e);
     FUN_140710590(packet);
 }
@@ -835,7 +835,7 @@ MS2_REPLACE_METHOD(0x14162BDB0, CPartyManager, SendPartyMode46, 75, 0x02273E69);
 // @0x14162be10
 void CPartyManager::SendPartyMode3()
 {
-    COutPacket packet(0x2c, 0);
+    COutPacket packet(static_cast<int>(SendOp::Party), 0);
     packet.Encode1(3);
     FUN_140710590(packet);
 }
@@ -1652,7 +1652,7 @@ MS2_REPLACE_METHOD(0x1416310D0, CPartyManager, OnMatchParty, 164, 0x4143B2A2);
 // @0x141631180
 void CPartyManager::SendMatchPartyMode0(const Unk_PartyRecruitRequest& request)
 {
-    COutPacket packet(0x6e, 0);
+    COutPacket packet(static_cast<int>(SendOp::PartySearch), 0);
     packet.Encode1(0);
     FUN_140694280(&request, packet);
     FUN_140710590(packet);
@@ -1665,7 +1665,7 @@ void CPartyManager::SendMatchPartyMode1()
 {
     if (recruitment.recruitId == 0)
         return;
-    COutPacket packet(0x6e, 0);
+    COutPacket packet(static_cast<int>(SendOp::PartySearch), 0);
     packet.Encode1(1);
     FUN_140710590(packet);
 }
@@ -1674,7 +1674,7 @@ MS2_REPLACE_METHOD(0x141631200, CPartyManager, SendMatchPartyMode1, 92, 0xF01C98
 // @0x141631270
 void CPartyManager::SendMatchPartyMode2(const CMatchPartyRecruitSchCond& condition)
 {
-    COutPacket packet(0x6e, 0);
+    COutPacket packet(static_cast<int>(SendOp::PartySearch), 0);
     packet.Encode1(2);
     FUN_140694630(&condition, packet);
     FUN_140710590(packet);

@@ -178,7 +178,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                     {
                         if (FUN_140b768a0(s_strRpsRequest) == 1)
                         {
-                            COutPacket kPacket(0xa8, 0);
+                            COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                             kPacket.Encode2(6);
                             kPacket.Encode8(nTargetId);
                             kPacket.Encode1(0);
@@ -186,7 +186,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                         }
                         else if (FUN_140ae51b0(FUN_14097a780(), nTargetId) != 0)
                         {
-                            COutPacket kPacket(0xa8, 0);
+                            COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                             kPacket.Encode2(6);
                             kPacket.Encode8(nTargetId);
                             kPacket.Encode1(0);
@@ -195,7 +195,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                         }
                         else if (FUN_1416595d0(pMyPC) == 1)
                         {
-                            COutPacket kPacket(0xa8, 0);
+                            COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                             kPacket.Encode2(6);
                             kPacket.Encode8(nTargetId);
                             kPacket.Encode1(0);
@@ -203,7 +203,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                         }
                         else if (FUN_1422b9e00(FUN_1408e57f0()) == 0x620001f)
                         {
-                            COutPacket kPacket(0xa8, 0);
+                            COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                             kPacket.Encode2(6);
                             kPacket.Encode8(nTargetId);
                             kPacket.Encode1(0);
@@ -211,7 +211,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                         }
                         else
                         {
-                            COutPacket kPacket(0xa8, 0);
+                            COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                             kPacket.Encode2(0xc);
                             kPacket.Encode8(nTargetId);
                             FUN_140710590(kPacket);
@@ -233,7 +233,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                     }
                     else
                     {
-                        COutPacket kPacket(0xa8, 0);
+                        COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                         kPacket.Encode2(6);
                         kPacket.Encode8(nTargetId);
                         kPacket.Encode1(0);
@@ -242,7 +242,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                 }
                 else
                 {
-                    COutPacket kPacket(0xa8, 0);
+                    COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                     kPacket.Encode2(6);
                     kPacket.Encode8(nTargetId);
                     kPacket.Encode1(0);
@@ -474,7 +474,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                     {
                         if (FUN_140b768a0(s_strCoupleDanceRequest) == 1)
                         {
-                            COutPacket kPacket(0xa8, 0);
+                            COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                             kPacket.Encode2(0x14);
                             kPacket.Encode4(nValue);
                             kPacket.Encode8(nTargetId);
@@ -483,7 +483,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                         }
                         else if (FUN_140ae51b0(FUN_14097a780(), nTargetId) != 0)
                         {
-                            COutPacket kPacket(0xa8, 0);
+                            COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                             kPacket.Encode2(0x14);
                             kPacket.Encode4(nValue);
                             kPacket.Encode8(nTargetId);
@@ -493,7 +493,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                         }
                         else if (FUN_1416595d0(pMyPC) == 1)
                         {
-                            COutPacket kPacket(0xa8, 0);
+                            COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                             kPacket.Encode2(0x14);
                             kPacket.Encode4(nValue);
                             kPacket.Encode8(nTargetId);
@@ -502,7 +502,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                         }
                         else if (FUN_1422b9e00(FUN_1408e57f0()) == 0x620001f)
                         {
-                            COutPacket kPacket(0xa8, 0);
+                            COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                             kPacket.Encode2(0x14);
                             kPacket.Encode4(nValue);
                             kPacket.Encode8(nTargetId);
@@ -511,7 +511,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                         }
                         else
                         {
-                            COutPacket kPacket(0xa8, 0);
+                            COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                             kPacket.Encode2(0x10);
                             kPacket.Encode4(nValue);
                             kPacket.Encode8(nTargetId);
@@ -535,7 +535,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                     }
                     else
                     {
-                        COutPacket kPacket(0xa8, 0);
+                        COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                         kPacket.Encode2(0x14);
                         kPacket.Encode4(nValue);
                         kPacket.Encode8(nTargetId);
@@ -545,7 +545,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                 }
                 else
                 {
-                    COutPacket kPacket(0xa8, 0);
+                    COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                     kPacket.Encode2(0x14);
                     kPacket.Encode4(nValue);
                     kPacket.Encode8(nTargetId);

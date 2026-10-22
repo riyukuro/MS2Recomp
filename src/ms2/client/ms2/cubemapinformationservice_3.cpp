@@ -1436,7 +1436,7 @@ CStringW CubeMapInformationService::FUN_1410c7f60(int nA, int nB)
 void CubeMapInformationService::SendRequestCubeMode68(__int64 nId)
 {
     if (FUN_141151760(&f78)) {
-        COutPacket packet(0x37, 0);
+        COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
         packet.vfunc_o10_1(0x44);
         packet.vfunc_o10_4(nId);
         FUN_140710590(packet);
@@ -2075,7 +2075,7 @@ void CubeMapInformationService::SendRequestCubeMode31()
         if (spCube.get() != 0) {
             Unk_Int3 pos = spCube->position;
             if (pos.x < p300.x || pos.x > p30c.x || pos.y < p300.y || pos.y > p30c.y || pos.z < p300.z || pos.z > f2fc) {
-                COutPacket packet(0x37, 0);
+                COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
                 packet.vfunc_o10_1(0x1f);
                 FUN_140710590(packet);
                 return;
@@ -6212,7 +6212,7 @@ void CubeMapInformationService::FUN_1410cf5c0(egf::Entity* pEntity)
             FUN_1410be6e0(spCube);
             if (!FUN_1410cb900() && FUN_14115ad10(&f78) == 0) {
                 FUN_1410cb8b0(true);
-                COutPacket packet(0x10, 0);
+                COutPacket packet(static_cast<int>(SendOp::ResponseFieldEnter), 0);
                 packet.vfunc_o10_3(FUN_1403ed2d0()->FUN_141bd98d0());
                 FUN_140710590(packet);
                 FUN_1403ed2d0()->FUN_141bdb690();
@@ -6227,7 +6227,7 @@ void CubeMapInformationService::FUN_1410cf5c0(egf::Entity* pEntity)
             FUN_141156cf0(&f68, &itErasedPending, itPending);
         }
         if (f478 != 0 && FUN_141151760(&f78)) {
-            COutPacket packet(0x37, 0);
+            COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
             packet.vfunc_o10_1(0x44);
             packet.vfunc_o10_4(f478);
             FUN_140710590(packet);

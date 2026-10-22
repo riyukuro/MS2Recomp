@@ -1157,7 +1157,7 @@ void FUN_141425fc0(__int64 nUid, int nCount, void* pCallback)
         FUN_1412751b0(GetStringCommonByKey(strKey), 0x14);
         return;
     }
-    COutPacket kPacket(0x28, 0);
+    COutPacket kPacket(static_cast<int>(SendOp::Shop), 0);
     kPacket.vfunc_o10_1(5);
     kPacket.vfunc_o10_4(nUid);
     kPacket.vfunc_o10_3(nCount);

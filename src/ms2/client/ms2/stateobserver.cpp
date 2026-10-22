@@ -537,7 +537,7 @@ void StateObserver::FUN_140ac4c90(__int64 nTarget)
         if (nNow - m_nSwitchTick > 299)
         {
             FUN_14152e0c0(pPC);
-            COutPacket packet(0xab, 0);
+            COutPacket packet(static_cast<int>(SendOp::SpectateMushtopia), 0);
             packet.vfunc_o10_1(2);
             packet.vfunc_o10_4(nTarget);
             FUN_140710590(packet);

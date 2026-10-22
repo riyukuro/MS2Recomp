@@ -251,7 +251,7 @@ int UISystemMenuDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         {
             if (pMsg->FUN_1422e4520() == 0x7d2)
             {
-                COutPacket packet(0x6c, 0);
+                COutPacket packet(static_cast<int>(SendOp::RequestMoveField), 0);
                 packet.vfunc_o10_1(1);
                 FUN_140710590(packet);
             }
@@ -408,7 +408,7 @@ void UISystemMenuDialog::FUN_141b13b30()
                     {
                         if (nResult == 0)
                         {
-                            COutPacket packet(0x6c, 0);
+                            COutPacket packet(static_cast<int>(SendOp::RequestMoveField), 0);
                             packet.vfunc_o10_1(1);
                             FUN_140710590(packet);
                         }

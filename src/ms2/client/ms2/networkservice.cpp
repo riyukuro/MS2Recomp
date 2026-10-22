@@ -464,50 +464,50 @@ bool CNetworkService::FUN_141538600(CItem* item) {
     int type=FUN_14053fd90(FUN_140527840(item));
     int slot=FUN_140a612b0(&DAT_143ab2a90,type,Unk_SocketPtr<CItem>(item),FUN_140526c50(item));
     if(slot==-1) { FUN_140961010(0x44,1,1,FUN_1401a9d70()->FUN_141813300(type));FUN_141276180(s_warningBag,CString("")); }
-    else { FUN_141276180(s_storeItemOut,CString(""));COutPacket packet(0x53,0);packet.vfunc_o10_1(4);packet.vfunc_o10_4(item->FUN_140526a50());packet.vfunc_o10_2((short)slot);packet.vfunc_o10_3(FUN_140526c50(item));FUN_140710590(packet); }
+    else { FUN_141276180(s_storeItemOut,CString(""));COutPacket packet(static_cast<int>(SendOp::FurnishingStorage),0);packet.vfunc_o10_1(4);packet.vfunc_o10_4(item->FUN_140526a50());packet.vfunc_o10_2((short)slot);packet.vfunc_o10_3(FUN_140526c50(item));FUN_140710590(packet); }
     return slot!=-1;
 }
 // @0x141538820
 void CNetworkService::FUN_141538820() {
     Unk_NetworkPlayer* player=FUN_1403ed2d0()->FUN_141bd0cc0();
     if(player) player->FUN_1415293b0();
-    COutPacket packet(0xd,0); packet.vfunc_o10_1(0); FUN_140710590(packet);
+    COutPacket packet(static_cast<int>(SendOp::RequestQuit),0); packet.vfunc_o10_1(0); FUN_140710590(packet);
 }
 // @0x1415388a0
 void CNetworkService::FUN_1415388a0() {
     Unk_NetworkPlayer* player=FUN_1403ed2d0()->FUN_141bd0cc0();
     if(player) player->FUN_1415293b0();
     m_socket.FUN_141267000(1);
-    COutPacket packet(0xd,0); packet.vfunc_o10_1(1); FUN_140710590(packet);
+    COutPacket packet(static_cast<int>(SendOp::RequestQuit),0); packet.vfunc_o10_1(1); FUN_140710590(packet);
 }
 // @0x141538930
-void CNetworkService::SendRequestItemInventoryMode4(__int64 id,int value) { COutPacket packet(0x17,0); packet.vfunc_o10_1(4);packet.vfunc_o10_4(id);packet.vfunc_o10_3(value);FUN_140710590(packet); }
+void CNetworkService::SendRequestItemInventoryMode4(__int64 id,int value) { COutPacket packet(static_cast<int>(SendOp::RequestItemInventory),0); packet.vfunc_o10_1(4);packet.vfunc_o10_4(id);packet.vfunc_o10_3(value);FUN_140710590(packet); }
 // @0x1415389b0
-void CNetworkService::SendRequestItemInventoryMode5(__int64 id) { COutPacket packet(0x17,0); packet.vfunc_o10_1(5);packet.vfunc_o10_4(id);FUN_140710590(packet); }
+void CNetworkService::SendRequestItemInventoryMode5(__int64 id) { COutPacket packet(static_cast<int>(SendOp::RequestItemInventory),0); packet.vfunc_o10_1(5);packet.vfunc_o10_4(id);FUN_140710590(packet); }
 // @0x141538a20
-void CNetworkService::SendRequestItemStorage(__int64 id) { COutPacket packet(0x18,0); packet.vfunc_o10_1(10);packet.vfunc_o10_4(id);FUN_140710590(packet); }
+void CNetworkService::SendRequestItemStorage(__int64 id) { COutPacket packet(static_cast<int>(SendOp::RequestItemStorage),0); packet.vfunc_o10_1(10);packet.vfunc_o10_4(id);FUN_140710590(packet); }
 // @0x141538a90
-void CNetworkService::SendFittingDoll(__int64 first,__int64 second) { COutPacket packet(0x42,0);packet.vfunc_o10_1(9);packet.vfunc_o10_4(first);packet.vfunc_o10_4(second);FUN_140710590(packet); }
+void CNetworkService::SendFittingDoll(__int64 first,__int64 second) { COutPacket packet(static_cast<int>(SendOp::FittingDoll),0);packet.vfunc_o10_1(9);packet.vfunc_o10_4(first);packet.vfunc_o10_4(second);FUN_140710590(packet); }
 // @0x141538b10
 void CNetworkService::FUN_141538b10(int flag) {
     if(DAT_143ab2904==0) return;
     int value=DAT_143ab2904;
-    DAT_143ab2904=0;COutPacket packet(0x5d,0);packet.vfunc_o10_1(4);packet.vfunc_o10_3(value);packet.vfunc_o10_1(flag);FUN_140710590(packet);
+    DAT_143ab2904=0;COutPacket packet(static_cast<int>(SendOp::RecallUser),0);packet.vfunc_o10_1(4);packet.vfunc_o10_3(value);packet.vfunc_o10_1(flag);FUN_140710590(packet);
 }
 // @0x141538bb0
-void CNetworkService::FUN_141538bb0(CStringW text,int flag) { COutPacket packet(0x5d,0);packet.vfunc_o10_1(7);packet.vfunc_o10_8(text);packet.vfunc_o10_1(flag);FUN_140710590(packet); }
+void CNetworkService::FUN_141538bb0(CStringW text,int flag) { COutPacket packet(static_cast<int>(SendOp::RecallUser),0);packet.vfunc_o10_1(7);packet.vfunc_o10_8(text);packet.vfunc_o10_1(flag);FUN_140710590(packet); }
 // @0x141538c40
-void CNetworkService::FUN_141538c40(int first,int second) { COutPacket packet(0x65,0);packet.vfunc_o10_1(first);packet.vfunc_o10_1(second);FUN_140710590(packet); }
+void CNetworkService::FUN_141538c40(int first,int second) { COutPacket packet(static_cast<int>(SendOp::SystemShop),0);packet.vfunc_o10_1(first);packet.vfunc_o10_1(second);FUN_140710590(packet); }
 // @0x141538cb0
 void CNetworkService::FUN_141538cb0() {
     FUN_141543190(FUN_1414a5730(),1);
     Unk_NetworkHello hello;
     hello.version=0x9dd;hello.locale=FUN_14036d8b0(FUN_140166410());hello.build=FUN_1406516b0();
-    COutPacket packet(1,0);hello.FUN_1401f8f10(packet);FUN_140710590(packet);
+    COutPacket packet(static_cast<int>(SendOp::ResponseVersion),0);hello.FUN_1401f8f10(packet);FUN_140710590(packet);
 }
 // @0x141538d50
 bool CNetworkService::FUN_141538d50() {
-    COutPacket packet(2,0);packet.vfunc_o10_1(0);
+    COutPacket packet(static_cast<int>(SendOp::Patch),0);packet.vfunc_o10_1(0);
     std::list<CString> names;FUN_14038bb30("./DataPatch/","",names);packet.vfunc_o10_3((int)names.size());
     for(auto it=names.begin();it!=names.end();++it) {
         COnlinePatchFileBuffer* info=FUN_14038bf20("./DataPatch/",*it);
@@ -556,7 +556,7 @@ int CNetworkService::GetConnectionCount() { return m_connectionCount; }
 // @0x141539230
 void CNetworkService::FUN_141539230() { ++m_connectionCount; }
 // @0x141539260
-void CNetworkService::FUN_141539260() { COutPacket packet(0xb0,0);packet.vfunc_o10_3(DAT_143ab0240);FUN_140710590(packet); }
+void CNetworkService::FUN_141539260() { COutPacket packet(static_cast<int>(SendOp::ServerEnter),0);packet.vfunc_o10_3(DAT_143ab0240);FUN_140710590(packet); }
 // @0x1415392c0
 CGameSocket& CNetworkService::FUN_1415392c0() { return m_socket; }
 // @0x1415392e0
@@ -620,64 +620,64 @@ void CNetworkService::FUN_1415396b0(Unk_InPtr packet) {
 void CNetworkService::FUN_1415397d0(CInPacket& packet) {
     int opcode=packet.FUN_14070fe80();
     switch(opcode) {
-    case 0x1: FUN_14153ad10(packet); break;
-    case 0x2: FUN_14153af70(packet); break;
-    case 0x3: FUN_14153af40(packet); break;
-    case 0x4: FUN_14153b010(packet); break;
-    case 0x5: FUN_14153b1c0(packet); break;
-    case 0x6: FUN_14153b220(packet); break;
-    case 0x7: FUN_14153b2d0(packet); break;
-    case 0x8: FUN_14153b310(packet); break;
-    case 0xa: OnLoginResult(packet); break;
-    case 0xd: FUN_14153b440(packet); break;
-    case 0xe: FUN_14153b570(packet); break;
-    case 0xf: FUN_14153bc00(packet); break;
-    case 0x10: FUN_14153be30(packet); break;
-    case 0x11: FUN_14153a380(packet); break;
-    case 0x12: FUN_14153a2e0(packet); break;
-    case 0x13: FUN_14153a780(packet); break;
-    case 0x14: FUN_14153a820(packet); break;
-    case 0x52: FUN_1416cbd90(FUN_140764020(),packet); break;
-    case 0x53: FUN_14162a4b0(FUN_1409670d0(),packet); break;
-    case 0x5e: FUN_140936a50(FUN_1406c7600(),packet); break;
-    case 0x6b: FUN_1418897f0(FUN_14052d220(),packet); break;
-    case 0x6c: FUN_140d53fb0(FUN_140939a00(),packet); break;
-    case 0x6d: OnGvg(packet); break;
-    case 0x6f: FUN_141428bb0(FUN_1409331f0(),packet); break;
-    case 0x72: FUN_14153c0c0(packet); break;
-    case 0x82: FUN_14185bd20(FUN_14140ea30(),packet); break;
-    case 0x8a: FUN_1413b6370(FUN_1403ed290(),packet); break;
-    case 0x8b: FUN_14137f2f0(FUN_141484720(),packet); break;
-    case 0x8d: FUN_140769780(FUN_1414a5780(),packet); break;
-    case 0x93: FUN_140d86260()->vfunc_32(packet); break;
-    case 0x98: FUN_140a20650(FUN_140f17d40(),packet); break;
-    case 0x99: FUN_140d6e490(FUN_140f17d50(),packet); break;
-    case 0xa7: FUN_14153c4b0(packet); break;
-    case 0xa9: FUN_140d500b0(FUN_1409eed40(),packet); break;
-    case 0xad: FUN_140b06020(FUN_140b05bf0(),packet); break;
+    case static_cast<int>(RecvOp::RequestVersion): FUN_14153ad10(packet); break;
+    case static_cast<int>(RecvOp::VersionResult): FUN_14153af70(packet); break;
+    case static_cast<int>(RecvOp::DataPatch): FUN_14153af40(packet); break;
+    case static_cast<int>(RecvOp::RequestKey): FUN_14153b010(packet); break;
+    case static_cast<int>(RecvOp::Reconnect): FUN_14153b1c0(packet); break;
+    case static_cast<int>(RecvOp::Ping): FUN_14153b220(packet); break;
+    case static_cast<int>(RecvOp::ReconnectUnk): FUN_14153b2d0(packet); break;
+    case static_cast<int>(RecvOp::FinalizeReconnect): FUN_14153b310(packet); break;
+    case static_cast<int>(RecvOp::LoginResult): OnLoginResult(packet); break;
+    case static_cast<int>(RecvOp::MoveResult): FUN_14153b440(packet); break;
+    case static_cast<int>(RecvOp::LoginToGame): FUN_14153b570(packet); break;
+    case static_cast<int>(RecvOp::GameToLogin): FUN_14153bc00(packet); break;
+    case static_cast<int>(RecvOp::GameToGame): FUN_14153be30(packet); break;
+    case static_cast<int>(RecvOp::ResponseTimeSync): FUN_14153a380(packet); break;
+    case static_cast<int>(RecvOp::RequestHeartbeat): FUN_14153a2e0(packet); break;
+    case static_cast<int>(RecvOp::RequestClientTickSync): FUN_14153a780(packet); break;
+    case static_cast<int>(RecvOp::SyncNumber): FUN_14153a820(packet); break;
+    case static_cast<int>(RecvOp::Quest): FUN_1416cbd90(FUN_140764020(),packet); break;
+    case static_cast<int>(RecvOp::Party): FUN_14162a4b0(FUN_1409670d0(),packet); break;
+    case static_cast<int>(RecvOp::Achieve): FUN_140936a50(FUN_1406c7600(),packet); break;
+    case static_cast<int>(RecvOp::Ugc): FUN_1418897f0(FUN_14052d220(),packet); break;
+    case static_cast<int>(RecvOp::MeretMarket): FUN_140d53fb0(FUN_140939a00(),packet); break;
+    case static_cast<int>(RecvOp::Gvg): OnGvg(packet); break;
+    case static_cast<int>(RecvOp::KeyTable): FUN_141428bb0(FUN_1409331f0(),packet); break;
+    case static_cast<int>(RecvOp::RelocateWorld): FUN_14153c0c0(packet); break;
+    case static_cast<int>(RecvOp::Trade): FUN_14185bd20(FUN_14140ea30(),packet); break;
+    case static_cast<int>(RecvOp::Guild): FUN_1413b6370(FUN_1403ed290(),packet); break;
+    case static_cast<int>(RecvOp::GroupChat): FUN_14137f2f0(FUN_141484720(),packet); break;
+    case static_cast<int>(RecvOp::Rank): FUN_140769780(FUN_1414a5780(),packet); break;
+    case static_cast<int>(RecvOp::Ah): FUN_140d86260()->vfunc_32(packet); break;
+    case static_cast<int>(RecvOp::BlackMarket): FUN_140a20650(FUN_140f17d40(),packet); break;
+    case static_cast<int>(RecvOp::MesoMarket): FUN_140d6e490(FUN_140f17d50(),packet); break;
+    case static_cast<int>(RecvOp::DynamicChannel): FUN_14153c4b0(packet); break;
+    case static_cast<int>(RecvOp::MaidCraftItem): FUN_140d500b0(FUN_1409eed40(),packet); break;
+    case static_cast<int>(RecvOp::Cash): FUN_140b06020(FUN_140b05bf0(),packet); break;
     case 0xaf: FUN_140d86260()->vfunc_26(packet); break;
-    case 0xb3: FUN_14096b3a0(FUN_1409fb930(),packet); break;
-    case 0xb8: OnCharMaxCount(packet); break;
-    case 0xbb: FUN_1416310d0(FUN_1409670d0(),packet); break;
-    case 0xc6: FUN_14153e0d0(packet); break;
-    case 0xcc: FUN_140c895e0(FUN_140535320(),packet); break;
-    case 0xd0: FUN_14153e150(packet); break;
+    case static_cast<int>(RecvOp::BannerList): FUN_14096b3a0(FUN_1409fb930(),packet); break;
+    case static_cast<int>(RecvOp::CharMaxCount): OnCharMaxCount(packet); break;
+    case static_cast<int>(RecvOp::PartySearch): FUN_1416310d0(FUN_1409670d0(),packet); break;
+    case static_cast<int>(RecvOp::NpsInfo): FUN_14153e0d0(packet); break;
+    case static_cast<int>(RecvOp::ResponsePet): FUN_140c895e0(FUN_140535320(),packet); break;
+    case static_cast<int>(RecvOp::AaErr): FUN_14153e150(packet); break;
     case 0xd2: FUN_140d86260()->vfunc_38(packet); break;
     case 0xd5: FUN_140d86260()->vfunc_25(packet); break;
-    case 0xdf: FUN_140f29ad0(FUN_140f2d240(),packet); break;
-    case 0xe6: OnBypassKey(packet); break;
-    case 0xed: FUN_140d86260()->vfunc_42(packet); break;
-    case 0xee: FUN_140b2ab70(FUN_140b2e980(),packet); break;
-    case 0xf6: FUN_140b158c0(FUN_140e0d900(),packet); break;
-    case 0xff: FUN_14153e180(packet); break;
-    case 0x10a: FUN_140b719e0(FUN_140c70240(),packet); break;
-    case 0x10d: FUN_14153e280(packet); break;
-    case 0x10e: FUN_14153f6c0(packet); break;
+    case static_cast<int>(RecvOp::CharacterAbility): FUN_140f29ad0(FUN_140f2d240(),packet); break;
+    case static_cast<int>(RecvOp::BypassKey): OnBypassKey(packet); break;
+    case static_cast<int>(RecvOp::SteamCashShop): FUN_140d86260()->vfunc_42(packet); break;
+    case static_cast<int>(RecvOp::InGameRank): FUN_140b2ab70(FUN_140b2e980(),packet); break;
+    case static_cast<int>(RecvOp::Club): FUN_140b158c0(FUN_140e0d900(),packet); break;
+    case static_cast<int>(RecvOp::RoomStageDungeon): FUN_14153e180(packet); break;
+    case static_cast<int>(RecvOp::Mentor): FUN_140b719e0(FUN_140c70240(),packet); break;
+    case static_cast<int>(RecvOp::BuddyEmote): FUN_14153e280(packet); break;
+    case static_cast<int>(RecvOp::BuddyBadge): FUN_14153f6c0(packet); break;
     case 0x110: FUN_14153a8a0(packet); break;
-    case 0x112: FUN_14153f8c0(packet); break;
-    case 0x114: FUN_140b73cc0(FUN_1414a5710(),packet); break;
-    case 0x124: FUN_14153f9d0(packet); break;
-    case 0x125: FUN_14153fa20(packet); break;
+    case static_cast<int>(RecvOp::SuperWorldChat): FUN_14153f8c0(packet); break;
+    case static_cast<int>(RecvOp::Microgame): FUN_140b73cc0(FUN_1414a5710(),packet); break;
+    case static_cast<int>(RecvOp::DynamicBanword): FUN_14153f9d0(packet); break;
+    case static_cast<int>(RecvOp::RequestSystemInfo): FUN_14153fa20(packet); break;
     case 0x127: FUN_14153fae0(packet); break;
     case 0x12d: FUN_140a8afb0(FUN_1409c1740(),packet); break;
     }
@@ -708,14 +708,14 @@ int CNetworkService::GetConnectionState() { return m_connectionState; }
 void CNetworkService::FUN_14153a250() {
     unsigned sequence=CPtred::InterlockedInc(&m_pingSequence);
     m_latency.Sent(sequence);
-    COutPacket packet(0xb,0);packet.vfunc_o10_3(sequence);FUN_140710590(packet);
+    COutPacket packet(static_cast<int>(SendOp::RequestTimeSync),0);packet.vfunc_o10_3(sequence);FUN_140710590(packet);
 }
 // @0x14153a2e0
 void CNetworkService::FUN_14153a2e0(CInPacket& input) {
     Unk_NetworkPong reply;
     reply.sequence=static_cast<CInputStream&>(input).vfunc_o8_3();
     reply.value=FUN_14086d260()->FUN_141473610();
-    COutPacket packet(10,0);reply.FUN_1401fa640(packet);FUN_140710590(packet);
+    COutPacket packet(static_cast<int>(SendOp::ResponseHeartbeat),0);reply.FUN_1401fa640(packet);FUN_140710590(packet);
 }
 // @0x14153a380
 void CNetworkService::FUN_14153a380(CInPacket& input) {
@@ -751,7 +751,7 @@ void CNetworkService::FUN_14153a780(CInPacket& input) {
     Unk_NetworkSyncRequest request;request.FUN_1407a4dc0(input);
     Unk_NetworkSyncReply reply;
     reply.value=FUN_14086d260()->FUN_141473610();reply.sequence=request.sequence;
-    COutPacket packet(12,0);reply.FUN_1401fa580(packet);FUN_140710590(packet);
+    COutPacket packet(static_cast<int>(SendOp::ResponseClientTickSync),0);reply.FUN_1401fa580(packet);FUN_140710590(packet);
 }
 // @0x14153a820
 void CNetworkService::FUN_14153a820(CInPacket& input) {
@@ -800,7 +800,7 @@ void CNetworkService::FUN_14153ad10(CInPacket& input) {
     } else if(handshake.patch!=2&&handshake.patch==0) FUN_140a85080(FUN_1414a5730(),"./DataPatch/");
     FUN_141543190(FUN_1414a5730(),1);
     Unk_NetworkHello hello;hello.version=0x9dd;hello.locale=FUN_14036d8b0(FUN_140166410());hello.build=FUN_1406516b0();
-    COutPacket packet(1,0);hello.FUN_1401f8f10(packet);FUN_140710590(packet);
+    COutPacket packet(static_cast<int>(SendOp::ResponseVersion),0);hello.FUN_1401f8f10(packet);FUN_140710590(packet);
 }
 // @0x14153af40
 void CNetworkService::FUN_14153af40(CInPacket& input) { FUN_140a84960(FUN_1414a5730(),input); }
@@ -816,9 +816,9 @@ void CNetworkService::FUN_14153b010(CInPacket&) {
     if(count==0) {
         Unk_NetworkAuth auth;auth.account=DAT_143ab2820;auth.token1=DAT_143ab284c;auth.token2=DAT_143ab2850;
         FUN_14067c080(&auth.key0,FUN_140d4fdf0(FUN_140aadf70()));
-        COutPacket packet(4,0);auth.FUN_1401f9d20(packet);FUN_140710590(packet);m_socket.FUN_1412672d0();
+        COutPacket packet(static_cast<int>(SendOp::ResponseKey),0);auth.FUN_1401f9d20(packet);FUN_140710590(packet);m_socket.FUN_1412672d0();
     } else {
-        COutPacket packet(0x3e,0);packet.vfunc_o10_1(5);packet.vfunc_o10_3(count);packet.vfunc_o10_9(&DAT_143ab2a58[0],count);FUN_140710590(packet);DAT_143ab2a58.RemoveAll();
+        COutPacket packet(static_cast<int>(SendOp::RelocateWorld),0);packet.vfunc_o10_1(5);packet.vfunc_o10_3(count);packet.vfunc_o10_9(&DAT_143ab2a58[0],count);FUN_140710590(packet);DAT_143ab2a58.RemoveAll();
     }
 }
 // @0x14153b1c0
@@ -830,7 +830,7 @@ void CNetworkService::FUN_14153b1c0(CInPacket& input) {
 void CNetworkService::FUN_14153b220(CInPacket& input) {
     unsigned sequence=static_cast<CInputStream&>(input).vfunc_o8_3();
     FUN_140209050(m_socket.m_out.operator->(),sequence);
-    COutPacket packet(6,0);packet.vfunc_o10_3(m_socket.m_sequence);FUN_140710590(packet);
+    COutPacket packet(static_cast<int>(SendOp::Pong),0);packet.vfunc_o10_3(m_socket.m_sequence);FUN_140710590(packet);
 }
 // @0x14153b2d0
 void CNetworkService::FUN_14153b2d0(CInPacket& input) { int nUnused=static_cast<CInputStream&>(input).vfunc_o8_3(); }
@@ -1056,25 +1056,25 @@ void CNetworkService::FUN_14153e280(CInPacket& input) {
         __int64 targetId=static_cast<CInputStream&>(input).vfunc_o8_4();
         CStringW targetName=static_cast<CInputStream&>(input).vfunc_o8_8();
         if(*reinterpret_cast<unsigned char*>(reinterpret_cast<char*>(FUN_140ae6540(FUN_1409a8b10()))+10)!=0) {
-            COutPacket packet(0xa3,0);packet.vfunc_o10_1(2);packet.vfunc_o10_4(targetId);packet.vfunc_o10_1(3);FUN_140710590(packet);return;
+            COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.vfunc_o10_1(2);packet.vfunc_o10_4(targetId);packet.vfunc_o10_1(3);FUN_140710590(packet);return;
         }
         Unk_NetworkPlayer* player=FUN_1403ed2d0()->FUN_141bd0cc0();
         if(!player) { MS2_ASSERT_AT(0x625,"pMyPC" && 0);return; }
         if(FUN_14166c930(player)==0x3a) {
-            COutPacket packet(0xa3,0);packet.vfunc_o10_1(2);packet.vfunc_o10_4(targetId);packet.vfunc_o10_1(2);FUN_140710590(packet);FUN_141275260(0xceb,1,1);return;
+            COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.vfunc_o10_1(2);packet.vfunc_o10_4(targetId);packet.vfunc_o10_1(2);FUN_140710590(packet);FUN_141275260(0xceb,1,1);return;
         }
         if(!FUN_140b83ec0()) {
-            COutPacket packet(0xa3,0);packet.vfunc_o10_1(2);packet.vfunc_o10_4(targetId);packet.vfunc_o10_1(1);FUN_140710590(packet);FUN_141275260(0xceb,1,1);return;
+            COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.vfunc_o10_1(2);packet.vfunc_o10_4(targetId);packet.vfunc_o10_1(1);FUN_140710590(packet);FUN_141275260(0xceb,1,1);return;
         }
         if(FUN_140ae51b0(FUN_14097a780(),targetId)!=0||FUN_1416595d0(player)==1||FUN_1422b9e00(FUN_1408e57f0())==0x620001f) {
-            COutPacket packet(0xa3,0);packet.vfunc_o10_1(2);packet.vfunc_o10_4(targetId);packet.vfunc_o10_1(5);FUN_140710590(packet);FUN_141275260(0xcfa,1,1);return;
+            COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.vfunc_o10_1(2);packet.vfunc_o10_4(targetId);packet.vfunc_o10_1(5);FUN_140710590(packet);FUN_141275260(0xcfa,1,1);return;
         }
         Unk_MessageBoxPtr data=FUN_140d73d20(1,FUN_140632a60(0xce5,targetName,FUN_1401a9d70()->FUN_141811980(4,emotion)),0,s_coupleEmotion);
         if(FUN_140bb6060(data)) { MS2_ASSERT_AT(0x665,"pData" && 0);return; }
         FUN_140534050(FUN_140534fe0(data),emotion);FUN_1405340b0(FUN_140534fe0(data),targetId);FUN_140b76940(FUN_140534fe0(data),targetName);
         CStringW countdown=GetStringCommon(0x2b8);int duration=FUN_14025a620(reinterpret_cast<char*>(FUN_1401d3200())+0x3838);
         FUN_141a01ca0(FUN_140534fe0(data),duration,1,countdown);FUN_141a02460(FUN_140534fe0(data),1);FUN_141a02480(FUN_140534fe0(data),1);FUN_141a024a0(FUN_140534fe0(data),0);FUN_140d73c60(data);
-        COutPacket packet(0xa3,0);packet.vfunc_o10_1(1);packet.vfunc_o10_4(targetId);FUN_140710590(packet);break;
+        COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.vfunc_o10_1(1);packet.vfunc_o10_4(targetId);FUN_140710590(packet);break;
     }
     case 1: {
         __int64 id=static_cast<CInputStream&>(input).vfunc_o8_4();Unk_NetworkPlayer* target=FUN_141bd1530(FUN_1403ed2d0(),id);
@@ -1159,7 +1159,7 @@ void CNetworkService::FUN_14153f9d0(CInPacket& input) { if(FUN_1414a56d0()!=0) F
 // @0x14153fa20
 void CNetworkService::FUN_14153fa20(CInPacket&) {
     CClientHardwareInfo info; info.Set(FUN_14086d260()->FUN_141473990());
-    COutPacket packet(0xb5,0);info.Write(packet);FUN_140710590(packet);
+    COutPacket packet(static_cast<int>(SendOp::SystemInfo),0);info.Write(packet);FUN_140710590(packet);
 }
 // @0x14153fae0
 void CNetworkService::FUN_14153fae0(CInPacket&) {}

@@ -996,7 +996,7 @@ void TabContentsPetEvolution::OnPetEnchant(int bUsePoint)
     SetState(0);
     if (nNeed <= nPoint)
     {
-        COutPacket pkt(0x78, 0);
+        COutPacket pkt(static_cast<int>(SendOp::RequestPet), 0);
         pkt.Encode1(0x11);
         pkt.Encode8(m_uidPet);
         FUN_140710590(pkt);
@@ -1020,7 +1020,7 @@ void TabContentsPetEvolution::OnPetEnchant(int bUsePoint)
             }
         }
     }
-    COutPacket pkt(0x78, 0);
+    COutPacket pkt(static_cast<int>(SendOp::RequestPet), 0);
     pkt.Encode1(0x12);
     pkt.Encode8(m_uidPet);
     pkt.Encode2((short)m_selected.GetCount());

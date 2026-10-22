@@ -261,7 +261,7 @@ int UIRealEstateSell::SendRequestCube(CStringW strName)
     if (m_30.IsNull())
         return 0;
     m_30->Invoke("onSell");
-    COutPacket packet(0x37, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
     packet.vfunc_o10_1(6);
     FUN_140710590(packet);
     m_178 = 1;

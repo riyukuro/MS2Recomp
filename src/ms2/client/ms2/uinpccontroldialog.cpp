@@ -349,7 +349,7 @@ int UINpcControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         return 1;
     }
     if (_stricmp("OnStopSkill", szMethod) == 0) {
-        COutPacket pkt(0x50, 0);
+        COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
         pkt.vfunc_o10_1(4);
         pkt.vfunc_o10_3(m_nNpcId);
         pkt.vfunc_o10_1(9);
@@ -391,7 +391,7 @@ int UINpcControlDialog::FUN_141a638e0()
 void UINpcControlDialog::FUN_141a63970(unsigned char nCmd, __int64 nValue)
 {
     if (m_nNpcId != 0) {
-        COutPacket pkt(0x50, 0);
+        COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
         pkt.vfunc_o10_1(4);
         pkt.vfunc_o10_3(m_nNpcId);
         pkt.vfunc_o10_1(nCmd);
@@ -428,7 +428,7 @@ void UINpcControlDialog::FUN_141a63a10(int nCmd, const CStringW& strArgs)
         int nSkills = (int)skills.size();
         if (nSkills < 1)
             return;
-        COutPacket pkt(0x50, 0);
+        COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
         pkt.vfunc_o10_1(4);
         pkt.vfunc_o10_3(m_nNpcId);
         pkt.vfunc_o10_1(8);
@@ -583,7 +583,7 @@ void UINpcControlDialog::FUN_141a64ba0(int nCommand, const CStringW& strArg)
                     nExtra = FUN_1407182c0(parts.FUN_1405e99b0(2));
                 if (nAdditional == 0)
                     return;
-                COutPacket pkt(0x50, 0);
+                COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
                 pkt.vfunc_o10_1(4);
                 pkt.vfunc_o10_3(m_nNpcId);
                 pkt.vfunc_o10_1(0xe);
@@ -616,7 +616,7 @@ void UINpcControlDialog::FUN_141a65000()
         return;
     if (m_nNpcId == 0)
         return;
-    COutPacket pkt(0x50, 0);
+    COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
     pkt.vfunc_o10_1(4);
     pkt.vfunc_o10_3(m_nNpcId);
     pkt.vfunc_o10_1(0xd);

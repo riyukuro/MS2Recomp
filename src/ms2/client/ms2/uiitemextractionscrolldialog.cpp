@@ -290,7 +290,7 @@ bool UIItemExtractionScrollDialog::SendItemExtractionScroll(int nResult, const C
 {
     if (nResult == 0)
     {
-        COutPacket packet(0xa0, 0);
+        COutPacket packet(static_cast<int>(SendOp::ItemExtractionScroll), 0);
         packet.vfunc_o10_4(m_nScrollUid);
         packet.vfunc_o10_4(m_nTargetUid);
         FUN_140710590(packet);

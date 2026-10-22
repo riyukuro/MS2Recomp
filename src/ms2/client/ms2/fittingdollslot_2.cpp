@@ -346,7 +346,7 @@ int FittingDollSlot::FUN_14121ddc0()
     int nResult = pDoll->FUN_14121c9d0(spItem.get());
     if (nResult == 0)
     {
-        COutPacket packet(0x42, 0);
+        COutPacket packet(static_cast<int>(SendOp::FittingDoll), 0);
         packet.vfunc_o10_1(7);
         packet.vfunc_o10_4(m_nDollId);
         packet.vfunc_o10_1((char)m_nSlot);

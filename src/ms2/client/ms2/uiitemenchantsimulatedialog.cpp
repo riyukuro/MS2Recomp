@@ -59,7 +59,7 @@ int UIItemEnchantSimulateDialog::vfunc_28(const char* szMethod, const Scaleform:
             int n2 = atoi(args.FUN_1422b8d30());
             int n3 = atoi(args.FUN_1422b8d30());
             if (n1 != 0 && n2 != 0 && n3 != 0) {
-                COutPacket packet(0x5e, 0);
+                COutPacket packet(static_cast<int>(SendOp::RequestItemEnchant), 0);
                 packet.vfunc_o10_1(0xd);
                 packet.vfunc_o10_3(n1);
                 packet.vfunc_o10_3(n2);
@@ -81,11 +81,11 @@ int UIItemEnchantSimulateDialog::vfunc_28(const char* szMethod, const Scaleform:
             int n6 = atoi(args.FUN_1422b8d30());
             if (n1 != 0 && n2 != 0 && n3 != 0) {
                 {
-                    COutPacket packet(0x5e, 0);
+                    COutPacket packet(static_cast<int>(SendOp::RequestItemEnchant), 0);
                     packet.vfunc_o10_1(0);
                     FUN_140710590(packet);
                 }
-                COutPacket packet(0x5e, 0);
+                COutPacket packet(static_cast<int>(SendOp::RequestItemEnchant), 0);
                 packet.vfunc_o10_1(0xe);
                 packet.vfunc_o10_3(n1);
                 packet.vfunc_o10_3(n2);

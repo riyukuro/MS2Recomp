@@ -84,7 +84,7 @@ void COutPacketBuffer::RetransmitClientPackets(CGameSocket* pSocket, unsigned la
     if (Unk_LockGuard guard = m_lock) { __assume(0); } else {
         m_resending = 1;
         unsigned newSequence = lastSequence;
-        COutPacket ack(7, 0);
+        COutPacket ack(static_cast<int>(SendOp::ReconnectUnk), 0);
         ack.vfunc_o10_3(lastSequence);
         FUN_141267410(pSocket, ack);
         for (POSITION pos = m_captured.GetHeadPosition(); pos != NULL; m_captured.GetNext(pos)) {
@@ -96,7 +96,7 @@ void COutPacketBuffer::RetransmitClientPackets(CGameSocket* pSocket, unsigned la
             captured->FUN_14020c070(newSequence);
             FUN_141267410(pSocket, *captured);
         }
-        COutPacket done(8, 0);
+        COutPacket done(static_cast<int>(SendOp::FinalizeReconnect), 0);
         done.vfunc_o10_3(m_sequence);
         FUN_141267410(pSocket, done);
         m_resending = 0;

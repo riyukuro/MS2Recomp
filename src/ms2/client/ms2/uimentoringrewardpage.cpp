@@ -145,7 +145,7 @@ void ASMentoringRewardPage::Refresh(){
 }
 MS2_REPLACE_METHOD(0x140E62CC0, ASMentoringRewardPage, Refresh, 822, 0x5E175E0C);
 // @0x140e63000
-void ASMentoringRewardPage::OnReward(const Scaleform::GFx::FunctionHandler::Params&){COutPacket packet(0xa1,0);packet.Encode1(0);FUN_140710590(packet);}
+void ASMentoringRewardPage::OnReward(const Scaleform::GFx::FunctionHandler::Params&){COutPacket packet(static_cast<int>(SendOp::Mentor),0);packet.Encode1(0);FUN_140710590(packet);}
 MS2_REPLACE_METHOD(0x140E63000, ASMentoringRewardPage, OnReward, 80, 0xFF9C26BC);
 // @0x140e63060
 UIMentoringRewardPage::UIMentoringRewardPage(UIMentoringDialog* p):UIMentoringPage(p){}

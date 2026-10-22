@@ -705,7 +705,7 @@ void CInteractObject::vfunc_8()
 {
     if (vfunc_4() != 0)
     {
-        COutPacket packet(0x31, 0);
+        COutPacket packet(static_cast<int>(SendOp::InteractObject), 0);
         packet.vfunc_o10_1(0xb);
         packet.vfunc_o10_3(1);
         packet.vfunc_o10_7(GetName());
@@ -723,7 +723,7 @@ void CInteractObject::vfunc_10()
 {
     if (vfunc_4() != 0)
     {
-        COutPacket packet(0x31, 0);
+        COutPacket packet(static_cast<int>(SendOp::InteractObject), 0);
         packet.vfunc_o10_1(0xc);
         packet.vfunc_o10_3(1);
         packet.vfunc_o10_7(GetName());

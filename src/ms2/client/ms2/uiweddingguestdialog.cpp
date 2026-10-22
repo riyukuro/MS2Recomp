@@ -735,7 +735,7 @@ bool UIWeddingGuestPageStranger::vfunc_4(const char* szMethod, const Scaleform::
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             CStringW strName = data.FUN_1422b8f40();
-            COutPacket packet(0xba, 0);
+            COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
             packet.vfunc_o10_1(0x1b);
             packet.vfunc_o10_8(strName);
             FUN_140710590(packet);

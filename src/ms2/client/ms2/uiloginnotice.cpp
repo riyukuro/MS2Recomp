@@ -62,7 +62,7 @@ MS2_REPLACE_METHOD(0x140EA64C0, UILoginNotice, vfunc_26, 24, 0x7B77F63F);
 // @0x140ea64e0
 void UILoginNotice::SendNoticeDialog()
 {
-    COutPacket packet(0x7a, 0);
+    COutPacket packet(static_cast<int>(SendOp::NoticeDialog), 0);
     packet.Encode1(1);
     FUN_140710590(packet);
 }

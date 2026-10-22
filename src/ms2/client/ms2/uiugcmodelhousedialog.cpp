@@ -68,7 +68,7 @@ int UIUGCModelHouseDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         if (m_nPlot == 0) {
             FUN_14152a240(pPlayer, nConcept);
         } else {
-            COutPacket packet(0x37, 0);
+            COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
             packet.vfunc_o10_1(2);
             packet.vfunc_o10_3(m_nPlot);
             packet.vfunc_o10_3(nConcept);

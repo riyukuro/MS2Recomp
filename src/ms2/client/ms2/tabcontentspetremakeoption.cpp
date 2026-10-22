@@ -521,7 +521,7 @@ void PetRemakeOptionBoard::vfunc_7(int nSelect)
     ItemPtr picked = (nSelect != 0) ? m_pOwner->GetPetNext() : m_pOwner->GetPet();
     if (!(picked == m_pOwner->GetPetNext().get()))
     {
-        COutPacket pkt(0x75, 0);
+        COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
         pkt.Encode1(3);
         pkt.Encode1(2);
         FUN_140710590(pkt);
@@ -530,7 +530,7 @@ void PetRemakeOptionBoard::vfunc_7(int nSelect)
     {
         CCItemRemakeOptionPacket::ApplyOptionClient apply;
         apply.m_uid = picked->FUN_140526a50();
-        COutPacket pkt(0x75, 0);
+        COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
         pkt.Encode1(2);
         apply.vfunc_1(pkt);
         FUN_140710590(pkt);
@@ -836,7 +836,7 @@ void TabContentsPetRemakeOption::vfunc_3(MS2Ptr<ASUIComponent> ui)
     }
     FUN_140b96520(0);
     FUN_140b967c0(0);
-    COutPacket pkt(0x75, 0);
+    COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
     pkt.Encode1(6);
     pkt.Encode1(2);
     FUN_140710590(pkt);
@@ -1065,7 +1065,7 @@ void TabContentsPetRemakeOption::SendChangeAttributesMode7()
     FUN_140b96520(4);
     CCItemRemakeOptionPacket::RemakeOptionDebug debug;
     debug.m_18 = m_uidPet;
-    COutPacket pkt(0x75, 0);
+    COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
     pkt.Encode1(7);
     debug.vfunc_1(pkt);
     FUN_140710590(pkt);
@@ -1097,7 +1097,7 @@ void TabContentsPetRemakeOption::FUN_140b95db0(ASData* pData)
         debug.m_value = 100000;
     debug.m_18 = m_uidPet;
     debug.m_kind = 2;
-    COutPacket pkt(0x75, 0);
+    COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
     pkt.Encode1(7);
     debug.vfunc_1(pkt);
     FUN_140710590(pkt);
@@ -1146,7 +1146,7 @@ void TabContentsPetRemakeOption::FUN_140b95f90()
                 reinterpret_cast<Unk_RemakeLockOptList&>(remake.m_options).push_back(lockOpt);
         }
     }
-    COutPacket pkt(0x75, 0);
+    COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
     pkt.Encode1(0);
     remake.vfunc_1(pkt);
     FUN_140710590(pkt);

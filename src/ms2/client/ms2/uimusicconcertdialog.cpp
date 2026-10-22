@@ -292,7 +292,7 @@ void UIMusicConcertDialog::SendPlayInstrumentMode13()
     PC* pPC = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPC != 0)
     {
-        COutPacket packet(0x74, 0);
+        COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
         packet.vfunc_o10_1(0xd);
         FUN_1407105c0(&packet, 0xd, 1000);
     }
@@ -322,7 +322,7 @@ void UIMusicConcertDialog::SendPlayInstrumentMode14()
     PC* pPC = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPC != 0)
     {
-        COutPacket packet(0x74, 0);
+        COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
         packet.vfunc_o10_1(0xe);
         FUN_1407105c0(&packet, 0xe, 2000);
     }
@@ -341,7 +341,7 @@ void UIMusicConcertDialog::SendPlayInstrumentMode15(int nEmotion)
     if (!(nState == 1 || nState == 0xb || nState == 0xf))
         return;
     pPC->FUN_14166ed70(nEmotion);
-    COutPacket packet(0x74, 0);
+    COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
     packet.vfunc_o10_1(0xf);
     packet.vfunc_o10_3(nEmotion);
     FUN_1407105c0(&packet, 0xf, 2000);
@@ -352,7 +352,7 @@ bool UIMusicConcertDialog::SendPlayInstrumentMode11(int nResult, const CMsgBoxDa
 {
     if (nResult == 0)
     {
-        COutPacket packet(0x74, 0);
+        COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
         packet.vfunc_o10_1(0xb);
         FUN_140710590(packet);
     }
@@ -364,7 +364,7 @@ bool UIMusicConcertDialog::SendPlayInstrumentMode12(int nResult, const CMsgBoxDa
 {
     if (nResult == 0)
     {
-        COutPacket packet(0x74, 0);
+        COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
         packet.vfunc_o10_1(0xc);
         FUN_140710590(packet);
     }

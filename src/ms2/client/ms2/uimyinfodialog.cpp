@@ -735,7 +735,7 @@ void UIMyInfoDialog::FUN_141a5a8d0(int nTitle)
         return;
     if (nTitle == 0)
     {
-        COutPacket pkt(0x69, 0);
+        COutPacket pkt(static_cast<int>(SendOp::RequestUserEnv), 0);
         pkt.Encode1(1);
         pkt.Encode4(0);
         FUN_140710590(pkt);
@@ -745,7 +745,7 @@ void UIMyInfoDialog::FUN_141a5a8d0(int nTitle)
         Unk_MiIdList* pTitles = reinterpret_cast<Unk_MiIdList*>(&m_spInfo->m_aIds);
         if (pTitles->FUN_140408410(nTitle) != -1)
         {
-            COutPacket pkt(0x69, 0);
+            COutPacket pkt(static_cast<int>(SendOp::RequestUserEnv), 0);
             pkt.Encode1(1);
             pkt.Encode4(nTitle);
             FUN_140710590(pkt);

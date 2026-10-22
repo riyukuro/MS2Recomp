@@ -344,7 +344,7 @@ void StateUseFurniture::vfunc_5(int n)
                 Unk_UfUseInfo kUse;
                 kUse.m_strId = m_spCube->FUN_141226bd0();
                 kUse.m_nCount = 1;
-                COutPacket packet(0x2e, 0);
+                COutPacket packet(static_cast<int>(SendOp::FunctionCube), 0);
                 packet.Encode1(5);
                 packet.Encode4(1);
                 FUN_1401fc610(&kUse, &packet);

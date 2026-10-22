@@ -248,7 +248,7 @@ void UIItemTreasureMapDialog::SendTreasureMapMode2(const Scaleform::GFx::Functio
             if (!(spItem == 0))
             {
                 __int64 nUid = spItem->FUN_140526a50();
-                COutPacket pkt(0x9f, 0);
+                COutPacket pkt(static_cast<int>(SendOp::TreasureMap), 0);
                 pkt.vfunc_o10_1(2);
                 pkt.vfunc_o10_4(nUid);
                 pkt.vfunc_o10_0(m_bFree);
@@ -277,7 +277,7 @@ void UIItemTreasureMapDialog::FUN_140c55d20(const Scaleform::GFx::FunctionHandle
                 {
                     if (spItem->vfunc_4() != 0)
                     {
-                        COutPacket pkt(0x9f, 0);
+                        COutPacket pkt(static_cast<int>(SendOp::TreasureMap), 0);
                         pkt.vfunc_o10_1(2);
                         pkt.vfunc_o10_4(m_nTargetUid);
                         pkt.vfunc_o10_0(m_bFree);

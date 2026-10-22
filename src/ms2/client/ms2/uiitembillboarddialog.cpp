@@ -602,7 +602,7 @@ void UIItemBillBoardDialog::SendItemBillboard(const Scaleform::GFx::FunctionHand
 {
     if (DAT_143ab2914 < 0x32)
         return;
-    COutPacket packet(0x9e, 0);
+    COutPacket packet(static_cast<int>(SendOp::ItemBillboard), 0);
     packet.vfunc_o10_1(8);
     packet.vfunc_o10_4(m_info.owner);
     FUN_140710590(packet);

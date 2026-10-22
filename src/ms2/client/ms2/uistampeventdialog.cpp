@@ -350,7 +350,7 @@ void UIStampEventDialog::SendEventRewardMode0(int nCount, int nSpecial)
     MS2Ptr<StampEventContext> spContext = FUN_1401c0d90()->FUN_14047ca40(g_attendTable);
     if (spContext.IsNull()) return;
     if (FUN_140ed9180(nCount, nSpecial) != 1) return;
-    COutPacket packet(0x97, 0);
+    COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
     packet.Encode1(0);
     packet.Encode4(nCount);
     packet.Encode1((unsigned char)nSpecial);
@@ -362,7 +362,7 @@ MS2_REPLACE_METHOD(0x140ED8E60, UIStampEventDialog, SendEventRewardMode0, 233, 0
 void UIStampEventDialog::SendEventRewardMode1()
 {
     if (FUN_140ed8fc0() == 0) return;
-    COutPacket packet(0x97, 0);
+    COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
     packet.Encode1(1);
     FUN_140710590(packet);
 }

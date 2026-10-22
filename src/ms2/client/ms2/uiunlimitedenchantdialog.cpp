@@ -371,7 +371,7 @@ void UIUnlimitedEnchantDialog::SendLimitBreakMode0(unsigned __int64 nUid)
         FUN_140fb6c30(nError);
         return;
     }
-    COutPacket packet(0xbc, 0);
+    COutPacket packet(static_cast<int>(SendOp::LimitBreak), 0);
     packet.vfunc_o10_1(0);
     packet.vfunc_o10_4(spItem->FUN_140526a50());
     FUN_140710590(packet);
@@ -391,7 +391,7 @@ void UIUnlimitedEnchantDialog::SendLimitBreakMode1(unsigned __int64 nUid)
         FUN_140fb6c30(nError);
         return;
     }
-    COutPacket packet(0xbc, 0);
+    COutPacket packet(static_cast<int>(SendOp::LimitBreak), 0);
     packet.vfunc_o10_1(1);
     packet.vfunc_o10_4(spItem->FUN_140526a50());
     FUN_140710590(packet);

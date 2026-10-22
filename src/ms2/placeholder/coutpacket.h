@@ -14,6 +14,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/commonfiles/stream.h"
 #include "ms2/placeholder/podarray.h"
+#include "ms2/commonfiles/opcodes.h"
 
 class COutPacket : public COutputStream
 {

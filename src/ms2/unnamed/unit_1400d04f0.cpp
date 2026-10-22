@@ -103,7 +103,7 @@ int EnchantScrollSlot::vfunc_18(void* p)
         {
             if (FUN_141902660(spItem) != 0)
                 return static_cast<DragSlot*>(p)->vfunc_10();
-            COutPacket packet(0x71, 0);
+            COutPacket packet(static_cast<int>(SendOp::EnchantScroll), 0);
             packet.vfunc_o10_1(1);
             packet.vfunc_o10_4(m_nOwner);
             packet.vfunc_o10_4(((CItem*)spItem)->FUN_140526a50());

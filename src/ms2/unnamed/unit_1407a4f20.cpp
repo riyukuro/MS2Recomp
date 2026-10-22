@@ -724,7 +724,7 @@ public:
 void FUN_1407a9940(COutPacket& packet, StringIdInterfaceBase& body) { FUN_14084f270(body, packet); }
 // @0x1407a7a50
 COutSendNoticePacket::COutSendNoticePacket(unsigned char kind, int flags, CString text, unsigned short extra)
-    : COutPacket(0x71, 0)
+    : COutPacket(static_cast<int>(SendOp::EnchantScroll), 0)
 {
     Encode1(kind);
     Encode2(flags);
@@ -734,7 +734,7 @@ COutSendNoticePacket::COutSendNoticePacket(unsigned char kind, int flags, CStrin
 }
 // @0x1407a7b80
 COutSendNoticePacket::COutSendNoticePacket(unsigned char kind, int flags, unsigned int stringId, unsigned short extra)
-    : COutPacket(0x71, 0)
+    : COutPacket(static_cast<int>(SendOp::EnchantScroll), 0)
 {
     Encode1(kind);
     Encode2(flags);
@@ -744,7 +744,7 @@ COutSendNoticePacket::COutSendNoticePacket(unsigned char kind, int flags, unsign
 }
 // @0x1407a7c80
 COutSendNoticePacket::COutSendNoticePacket(unsigned char kind, int flags, StringIdInterfaceBase& body, unsigned short extra)
-    : COutPacket(0x71, 0)
+    : COutPacket(static_cast<int>(SendOp::EnchantScroll), 0)
 {
     Encode1(kind);
     Encode2(flags);

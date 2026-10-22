@@ -353,7 +353,7 @@ void ItemSocketSystemPageGemstoneSwap::SendItemSocketSystemMode8(CInPacket* pack
             request.m_nCount = result.m_nGemUid;
             request.m_nUid = m_targetUid;
             request.m_nSlot = result.m_nSlot;
-            COutPacket out(0x88, 0);
+            COutPacket out(static_cast<int>(SendOp::ItemSocketSystem), 0);
             out.Encode1(8);
             FUN_140628840(request, out);
             FUN_140710590(out);
@@ -377,7 +377,7 @@ bool ItemSocketSystemPageGemstoneSwap::FUN_140c48df0(int result, const CMsgBoxDa
         Unk_SSGGemUnequip request;
         request.m_nItemUid = static_cast<CItem*>(source)->FUN_140526a50();
         request.m_nSlot = i;
-        COutPacket out(0x88, 0);
+        COutPacket out(static_cast<int>(SendOp::ItemSocketSystem), 0);
         out.Encode1(0xa);
         FUN_140628b70(request, out);
         FUN_140710590(out);

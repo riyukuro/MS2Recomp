@@ -405,7 +405,7 @@ void CKeyTable::SendKeyTableMode1(int nKey)
     MS2Ptr<stKeyData> spKey = FUN_14142c890(nKey);
     if (spKey.get() != 0)
     {
-        COutPacket packet(0x3a, 0);
+        COutPacket packet(static_cast<int>(SendOp::KeyTable), 0);
         packet.Encode1(1);
         packet.Encode4(1);
         packet.Encode4(nKey);
@@ -427,7 +427,7 @@ void CKeyTable::FUN_141429600()
         return;
     if (m_nLocked != 0)
         return;
-    COutPacket packet(0x3a, 0);
+    COutPacket packet(static_cast<int>(SendOp::KeyTable), 0);
     packet.Encode1(2);
     packet.Encode4((int)m_keys.GetCount());
     for (POSITION pos = m_keys.GetHeadPosition(); pos != 0; m_keys.GetNext(pos))
@@ -798,7 +798,7 @@ int CKeyTable::FUN_14142b340(int nAction)
     }
     case 300014:
     {
-        COutPacket packet(0x2f, 0);
+        COutPacket packet(static_cast<int>(SendOp::Trigger), 0);
         packet.Encode1(4);
         FUN_140710590(packet);
         break;
@@ -2051,7 +2051,7 @@ void CKeyTable::SendKeyTableMode7()
     m_nLocked = 0;
     FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifySkillSetMode(false)));
     FUN_141429600();
-    COutPacket packet(0x3a, 0);
+    COutPacket packet(static_cast<int>(SendOp::KeyTable), 0);
     packet.Encode1(7);
     FUN_140710590(packet);
 }

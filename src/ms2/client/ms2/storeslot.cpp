@@ -369,7 +369,7 @@ int StoreSlot::vfunc_18(void* p)
         {
             if (pFrom->GetIndex() == m_nIndex)
                 return pDrag->vfunc_10();
-            COutPacket packet(0x18, 0);
+            COutPacket packet(static_cast<int>(SendOp::RequestItemStorage), 0);
             packet.vfunc_o10_1(2);
             packet.vfunc_o10_4(MS2_STORE_TABLE.Id());
             packet.vfunc_o10_4(pFrom->GetStoreItemId());

@@ -1431,7 +1431,7 @@ int UIMessenger::FUN_141a0fe20(int nEmoticonId)
     }
     if (!spCli->FUN_140a39dd0(spEmo->m_nId))
         return 0;
-    COutPacket packet(0xb7, 0);
+    COutPacket packet(static_cast<int>(SendOp::ChatSticker), 0);
     packet.vfunc_o10_1(3);
     packet.vfunc_o10_3(nEmoticonId);
     packet.vfunc_o10_8(GetName());
@@ -1494,7 +1494,7 @@ int UIMessenger::FUN_141a10490(int nEmoticonId, bool bFavorite)
     if (!spCli->FUN_140a39dd0(spEmo->m_nId))
         return 0;
     int nOp = bFavorite ? 5 : 6;
-    COutPacket packet(0xb7, 0);
+    COutPacket packet(static_cast<int>(SendOp::ChatSticker), 0);
     packet.vfunc_o10_1(nOp);
     packet.vfunc_o10_3(nEmoticonId);
     FUN_140710590(packet);
@@ -2504,7 +2504,7 @@ bool UIMessenger::FUN_141a17bc0(int nButton, const CMsgBoxData& box)
         unsigned nRoomId = box.FUN_141a02e90(1, 0);
         if (nPartyId == 0 || nRoomId == 0)
             return true;
-        COutPacket packet(0x2c, 0);
+        COutPacket packet(static_cast<int>(SendOp::Party), 0);
         packet.vfunc_o10_1(0x27);
         packet.vfunc_o10_3(nPartyId);
         packet.vfunc_o10_3(nRoomId);
@@ -2522,7 +2522,7 @@ bool UIMessenger::FUN_141a17c90(int nButton, const CMsgBoxData& box)
         unsigned nRoomId = box.FUN_141a02e90(1, 0);
         if (nPartyId == 0 || nRoomId == 0)
             return true;
-        COutPacket packet(0x2c, 0);
+        COutPacket packet(static_cast<int>(SendOp::Party), 0);
         packet.vfunc_o10_1(0x2b);
         packet.vfunc_o10_3(nPartyId);
         packet.vfunc_o10_3(nRoomId);
@@ -4831,7 +4831,7 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
         if (args.GetCount() < 3)
             return;
         int nId = FUN_1407181a0(args[2]);
-        COutPacket packet(0x9e, 0);
+        COutPacket packet(static_cast<int>(SendOp::ItemBillboard), 0);
         packet.Encode1(1);
         packet.Encode4(nId);
         FUN_140710590(packet);

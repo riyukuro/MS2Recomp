@@ -405,7 +405,7 @@ void UISnowmanEventDialog::SendEventRewardMode12(int index)
         MS2_ASSERT_AT(353, "snowman" && 0);
         return;
     }
-    COutPacket packet(0x97, 0);
+    COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
     packet.Encode1(0xc);
     packet.Encode1((unsigned char)index);
     FUN_140710590(packet);
@@ -427,7 +427,7 @@ void UISnowmanEventDialog::SendEventRewardMode13(int index)
         MS2_ASSERT_AT(370, "snowman" && 0);
         return;
     }
-    COutPacket packet(0x97, 0);
+    COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
     packet.Encode1(0xd);
     packet.Encode1((unsigned char)index);
     FUN_140710590(packet);

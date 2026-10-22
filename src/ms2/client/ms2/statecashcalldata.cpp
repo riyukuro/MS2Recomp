@@ -396,14 +396,14 @@ void StateCashCall::SendRequest()
         {
             if (m_spCash->m_nCallType == 2 || m_spCash->m_nCallType == 1)
             {
-                COutPacket kPacket(0x48, 0);
+                COutPacket kPacket(static_cast<int>(SendOp::RequestTaxi), 0);
                 kPacket.vfunc_o10_1(3);
                 kPacket.vfunc_o10_3(m_spCash->m_nPrice);
                 FUN_140710590(kPacket);
             }
             else if (m_spCash->m_nCallType == 3)
             {
-                COutPacket kPacket(0x48, 0);
+                COutPacket kPacket(static_cast<int>(SendOp::RequestTaxi), 0);
                 kPacket.vfunc_o10_1(4);
                 kPacket.vfunc_o10_3(m_spCash->m_nPrice);
                 FUN_140710590(kPacket);

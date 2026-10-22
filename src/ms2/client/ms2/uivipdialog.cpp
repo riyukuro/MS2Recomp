@@ -182,7 +182,7 @@ int UIVIPDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
             int nBenefitId = data.FUN_1422b8b10();
-            COutPacket packet(0x8e, 0);
+            COutPacket packet(static_cast<int>(SendOp::PremiumClub), 0);
             packet.Encode1(2);
             packet.Encode4(nBenefitId);
             FUN_140710590(packet);
@@ -235,7 +235,7 @@ void UIVIPDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 // @0x140fb8620
 void UIVIPDialog::SendPremiumClubMode1()
 {
-    COutPacket packet(0x8e, 0);
+    COutPacket packet(static_cast<int>(SendOp::PremiumClub), 0);
     packet.Encode1(1);
     FUN_140710590(packet);
 }

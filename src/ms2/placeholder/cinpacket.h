@@ -5,6 +5,7 @@
 #include <afx.h>
 #include "ms2/commonfiles/stream.h"
 #include "ms2/placeholder/socketptr.h"
+#include "ms2/commonfiles/opcodes.h"
 class CPacketBuffer;
 class CInPacket : public CIOBuffer, public CInputStream {
 public:

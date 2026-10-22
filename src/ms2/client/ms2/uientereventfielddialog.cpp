@@ -225,7 +225,7 @@ bool UIEnterEventFieldDialog::OnEnterConfirm(int nResult, const CMsgBoxData& dat
 {
     if (nResult == 0)
     {
-        COutPacket packet(0x85, 0);
+        COutPacket packet(static_cast<int>(SendOp::EnterEventField), 0);
         FUN_140710590(packet);
     }
     return true;

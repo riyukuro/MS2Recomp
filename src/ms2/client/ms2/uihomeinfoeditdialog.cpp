@@ -223,7 +223,7 @@ void UIHomeInfoEditDialog::OnConfirm()
                         FUN_140bbfdd0(&spName);
                         return;
                     }
-                    COutPacket packet(0x37, 0);
+                    COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
                     packet.vfunc_o10_1(0x15);
                     packet.vfunc_o10_8(strName);
                     FUN_140710590(packet);
@@ -234,7 +234,7 @@ void UIHomeInfoEditDialog::OnConfirm()
         MS2Ptr<Unk_HmInput> spNotice = GetChild<Unk_HmInput>("m_homeNotice");
         if (spNotice.get() != 0)
         {
-            COutPacket packet(0x37, 0);
+            COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
             packet.vfunc_o10_1(0x1d);
             packet.vfunc_o10_8(spNotice.operator->()->FUN_1422e0b00());
             FUN_140710590(packet);

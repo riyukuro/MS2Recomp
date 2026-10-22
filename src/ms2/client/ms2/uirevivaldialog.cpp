@@ -449,7 +449,7 @@ int UIRevivalDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     {
         if (pMsg->FUN_1422e4520() == 0x7d2)
         {
-            COutPacket packet(0x6c, 0);
+            COutPacket packet(static_cast<int>(SendOp::RequestMoveField), 0);
             packet.vfunc_o10_1(1);
             FUN_140710590(packet);
         }
@@ -468,7 +468,7 @@ bool UIRevivalDialog::SendRevivalMode1(int nResult, const CMsgBoxData& box)
             return false;
         if (pPc->FUN_14166ce30() != 0)
         {
-            COutPacket packet(0x1f, 0);
+            COutPacket packet(static_cast<int>(SendOp::Revival), 0);
             packet.vfunc_o10_1(1);
             packet.vfunc_o10_1(nCoupon);
             FUN_140710590(packet);
@@ -546,7 +546,7 @@ bool UIRevivalDialog::SendRevivalMode0(int nResult, const CMsgBoxData& box)
 {
     if (nResult == 0)
     {
-        COutPacket packet(0x1f, 0);
+        COutPacket packet(static_cast<int>(SendOp::Revival), 0);
         packet.vfunc_o10_1(0);
         FUN_140710590(packet);
         FUN_14151f200();
@@ -656,7 +656,7 @@ void UIRevivalDialog::FUN_141abb600()
             nTo = spField.FUN_140885340()->m_38;
         if (nFieldId == nTo)
         {
-            COutPacket packet(0x1f, 0);
+            COutPacket packet(static_cast<int>(SendOp::Revival), 0);
             packet.vfunc_o10_1(0);
             FUN_140710590(packet);
         }
@@ -715,7 +715,7 @@ void UIRevivalDialog::FUN_141abbb20()
         }
         else
         {
-            COutPacket packet(0x1f, 0);
+            COutPacket packet(static_cast<int>(SendOp::Revival), 0);
             packet.vfunc_o10_1(1);
             packet.vfunc_o10_1(nCoupon);
             FUN_140710590(packet);
@@ -784,7 +784,7 @@ void UIRevivalDialog::FUN_141abc080()
                 return;
             }
         }
-        COutPacket packet(0x1f, 0);
+        COutPacket packet(static_cast<int>(SendOp::Revival), 0);
         packet.vfunc_o10_1(2);
         packet.vfunc_o10_1(nCoupon);
         FUN_140710590(packet);

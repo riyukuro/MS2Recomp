@@ -452,7 +452,7 @@ bool CPetInventory::FUN_140c88050(int nItemId)
 // @0x140c88100
 void CPetInventory::SendRequestPetInventoryMode7()
 {
-    COutPacket packet(0x79, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestPetInventory), 0);
     packet.Encode1(7);
     FUN_140710590(packet);
 }
@@ -461,7 +461,7 @@ void CPetInventory::SendRequestPetInventoryMode3(__int64 nUid, int nSlot)
 {
     if (FUN_140535320()->GetSummonUid() == nUid)
         return;
-    COutPacket packet(0x79, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestPetInventory), 0);
     packet.Encode1(3);
     packet.Encode8(nUid);
     packet.Encode2(nSlot);
@@ -500,7 +500,7 @@ void CPetInventory::FUN_140c88200(__int64 nUid, int nSlot, int nCount)
                     ItemPtr spPet = DAT_143ab2a90.FUN_140a5d680(FUN_140535320()->GetSummonUid());
                     if (spPet.get() != 0 && !spPet->FUN_140528930())
                     {
-                        COutPacket packet(0x79, 0);
+                        COutPacket packet(static_cast<int>(SendOp::RequestPetInventory), 0);
                         packet.Encode1(0);
                         packet.Encode8(nUid);
                         packet.Encode2((short)nTarget);
@@ -521,7 +521,7 @@ void CPetInventory::SendRequestPetInventoryMode1(__int64 nUid, int nSlot, int nC
         return;
     if (FUN_140535320()->GetSummonUid() == nUid)
         return;
-    COutPacket packet(0x79, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestPetInventory), 0);
     packet.Encode1(1);
     packet.Encode8(nUid);
     packet.Encode2(nSlot);
@@ -1089,7 +1089,7 @@ int CPetManager::GetAuto()
 int CPetManager::SendRequestPet()
 {
     m_nAuto = (m_nAuto == 0);
-    COutPacket packet(0x78, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestPet), 0);
     packet.Encode1(0xf);
     packet.vfunc_o10_0(m_nAuto == 1);
     FUN_140710590(packet);

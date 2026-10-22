@@ -524,7 +524,7 @@ void CStore::RequestLoad()
 {
     LoadRequest request;
     request.m_id = Id();
-    COutPacket packet(0x18, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestItemStorage), 0);
     packet.vfunc_o10_1(0xc);
     FUN_1401fba60(reinterpret_cast<unsigned char*>(&request), packet);
     FUN_140710590(packet);
@@ -533,7 +533,7 @@ void CStore::RequestLoad()
 // @0x140de2bd0
 void CStore::RequestClose()
 {
-    COutPacket packet(0x18, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestItemStorage), 0);
     packet.vfunc_o10_1(8);
     packet.vfunc_o10_4(Id());
     FUN_140710590(packet);
@@ -542,7 +542,7 @@ void CStore::RequestClose()
 // @0x140de2c40
 void CStore::RequestAction(int nAction, __int64 nId)
 {
-    COutPacket packet(0x18, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestItemStorage), 0);
     packet.vfunc_o10_1(3);
     packet.vfunc_o10_4(Id());
     packet.vfunc_o10_1(nAction);
@@ -555,7 +555,7 @@ void CStore::RequestExtend()
 {
     __int64 nId = Id();
     if (nId == 0) {
-        COutPacket packet(0x18, 0);
+        COutPacket packet(static_cast<int>(SendOp::RequestItemStorage), 0);
         packet.vfunc_o10_1(6);
         packet.vfunc_o10_4(nId);
         FUN_140710590(packet);
@@ -565,7 +565,7 @@ void CStore::RequestExtend()
 // @0x140de2d60
 void CStore::RequestSort()
 {
-    COutPacket packet(0x18, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestItemStorage), 0);
     packet.vfunc_o10_1(0xf);
     FUN_140710590(packet);
 }
@@ -599,7 +599,7 @@ void FUN_140de2dc0(void*, __int64 nId, int nSlot, int nCount, MS2Ptr<CItemData> 
     request.m_item = nId;
     request.m_slot = nSlot;
     request.m_count = nCount;
-    COutPacket packet(0x18, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestItemStorage), 0);
     packet.vfunc_o10_1(0);
     FUN_1401fbaf0(reinterpret_cast<unsigned char*>(&request), packet);
     FUN_140710590(packet);
@@ -623,7 +623,7 @@ void FUN_140de31f0(CStore* pStore, __int64 nId, int nSlot, int nCount, MS2Ptr<CI
             }
         }
     }
-    COutPacket packet(0x18, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestItemStorage), 0);
     packet.vfunc_o10_1(1);
     packet.vfunc_o10_4(pStore->Id());
     packet.vfunc_o10_4(nId);

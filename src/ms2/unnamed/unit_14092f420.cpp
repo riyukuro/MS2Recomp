@@ -417,7 +417,7 @@ int FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, int nK
     FUN_141276180(s_143ab2ed8, CString(""));
     if (!FUN_140930d70())
     {
-        COutPacket packet(0x3a, 0);
+        COutPacket packet(static_cast<int>(SendOp::KeyTable), 0);
         packet.vfunc_o10_1(3);
         packet.vfunc_o10_2((short)nSlot);
         packet.vfunc_o10_3(nSkillId);
@@ -478,7 +478,7 @@ int FUN_14092fac0(int nSkillId, int nItemId, __int64 nItemUid, int nSlot)
         FUN_141276180(s_143ab2ed8, CString(""));
         if (!FUN_140930d70())
         {
-            COutPacket packet(0x3a, 0);
+            COutPacket packet(static_cast<int>(SendOp::KeyTable), 0);
             packet.vfunc_o10_1(4);
             packet.vfunc_o10_2((short)nSlot);
             packet.vfunc_o10_3(nSkillId);
@@ -503,7 +503,7 @@ int SendKeyTableMode5(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, in
         FUN_141276180(s_143ab3008, CString(""));
         if (!FUN_140930d70())
         {
-            COutPacket packet(0x3a, 0);
+            COutPacket packet(static_cast<int>(SendOp::KeyTable), 0);
             packet.vfunc_o10_1(5);
             packet.vfunc_o10_2((short)nSlot);
             packet.vfunc_o10_3(nSkillId);
@@ -520,7 +520,7 @@ int SendKeyTableMode5(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, in
 // @0x140930040
 int SendKeyTableMode6()
 {
-    COutPacket packet(0x3a, 0);
+    COutPacket packet(static_cast<int>(SendOp::KeyTable), 0);
     packet.vfunc_o10_1(6);
     FUN_140710590(packet);
     return 1;
@@ -529,7 +529,7 @@ int SendKeyTableMode6()
 // @0x1409300a0
 int SendKeyTableMode8(int nSlot)
 {
-    COutPacket packet(0x3a, 0);
+    COutPacket packet(static_cast<int>(SendOp::KeyTable), 0);
     packet.vfunc_o10_1(8);
     packet.vfunc_o10_2((short)nSlot);
     FUN_140710590(packet);

@@ -312,7 +312,7 @@ void UIUGCPortalDialog::OnApply()
     {
         FUN_140fb19c0(spCombo.operator->(), CString("id"), strId);
     }
-    COutPacket packet(0x90, 0);
+    COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
     packet.vfunc_o10_1(6);
     packet.vfunc_o10_1(0);
     packet.vfunc_o10_3(m_178);

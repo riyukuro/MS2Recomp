@@ -197,7 +197,7 @@ int UIEnchantScrollDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             unsigned __int64 nItemUid = FUN_140718370(data.FUN_1422b8f40());
             MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nItemUid);
             if (FUN_14052cd70(&spItem) != 0) {
-                COutPacket packet(0x71, 0);
+                COutPacket packet(static_cast<int>(SendOp::EnchantScroll), 0);
                 packet.Encode1(2);
                 packet.Encode8(m_nScrollUid);
                 packet.Encode8(nItemUid);

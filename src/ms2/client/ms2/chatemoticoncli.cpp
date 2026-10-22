@@ -456,7 +456,7 @@ void CChatEmoticonCli::SendMessenger()
         if (now > expire)
             expired.push_back(spGroup->m_nId);
     }
-    COutPacket packet(0xb7, 0);
+    COutPacket packet(static_cast<int>(SendOp::ChatSticker), 0);
     packet.vfunc_o10_1(1);
     packet.vfunc_o10_3((int)expired.size());
     MS2_FOR_EACH(unsigned nId, expired)

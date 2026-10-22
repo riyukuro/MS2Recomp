@@ -269,7 +269,7 @@ void UIItemRemakeOptionDialog::OnLoadComplete()
             pane->vfunc_67();
     }
     FUN_1412761e0(MS2Ptr<AScript>(m_30), 0);
-    COutPacket pkt(0x75, 0);
+    COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
     pkt.vfunc_o10_1(6);
     pkt.vfunc_o10_1(1);
     FUN_140710590(pkt);
@@ -451,7 +451,7 @@ void UIItemRemakeOptionDialog::FUN_14129e190(ASData* pData)
                     if (stat.FUN_140619290(option, lockOpt, lockValue))
                         dbg.m_options.FUN_140b9b410(lockOpt);
                 }
-                COutPacket pkt(0x75, 0);
+                COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
                 pkt.Encode1(7);
                 dbg.vfunc_1(pkt);
                 FUN_140710590(pkt);
@@ -493,7 +493,7 @@ void UIItemRemakeOptionDialog::FUN_14129e530(ASData* pData)
                     if (stat.FUN_140619290(option, lockOpt, lockValue))
                         dbg.m_options.FUN_140b9b410(lockOpt);
                 }
-                COutPacket pkt(0x75, 0);
+                COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
                 pkt.Encode1(7);
                 dbg.vfunc_1(pkt);
                 FUN_140710590(pkt);
@@ -549,14 +549,14 @@ void UIItemRemakeOptionDialog::FUN_14129ed90(ASData* pData)
             MS2Ptr<CItem> picked = source;
             bool bApplied = (picked == m_new.get());
             if (!bApplied) {
-                COutPacket pkt(0x75, 0);
+                COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
                 pkt.Encode1(3);
                 pkt.Encode1(1);
                 FUN_140710590(pkt);
             } else {
                 CCItemRemakeOptionPacket::ApplyOptionClient apply;
                 apply.m_uid = picked->FUN_140526a50();
-                COutPacket pkt(0x75, 0);
+                COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
                 pkt.Encode1(2);
                 apply.vfunc_1(pkt);
                 FUN_140710590(pkt);
@@ -626,7 +626,7 @@ void UIItemRemakeOptionDialog::SendChangeAttributesMode4(unsigned __int64 uid)
                 FUN_1412a0800();
                 m_enchantAni->Invoke("initEnchantSlot");
             } else {
-                COutPacket pkt(0x75, 0);
+                COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
                 pkt.Encode1(4);
                 pkt.Encode8(item->FUN_140526a50());
                 FUN_140710590(pkt);
@@ -708,7 +708,7 @@ void UIItemRemakeOptionDialog::FUN_1412a0460(const Scaleform::GFx::FunctionHandl
         return;
     CCItemRemakeOptionPacket::ForceFillIngredient fill;
     fill.m_uid = m_cur->FUN_140526a50();
-    COutPacket pkt(0x75, 0);
+    COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
     pkt.Encode1(8);
     fill.vfunc_1(pkt);
     FUN_140710590(pkt);
@@ -726,7 +726,7 @@ void UIItemRemakeOptionDialog::FUN_1412a0550(const Scaleform::GFx::FunctionHandl
     CCItemRemakeOptionPacket::ForceFillIngredient fill;
     fill.m_uid = m_cur->FUN_140526a50();
     fill.m_count = 10;
-    COutPacket pkt(0x75, 0);
+    COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
     pkt.Encode1(8);
     fill.vfunc_1(pkt);
     FUN_140710590(pkt);
@@ -1031,7 +1031,7 @@ void UIItemRemakeOptionDialog::FUN_1412a2380(unsigned __int64 uid, int nOption, 
             if (stat.FUN_140619290(nOption, lockOpt, lockValue))
                 option.m_options.FUN_140b9b410(lockOpt);
         }
-        COutPacket pkt(0x75, 0);
+        COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
         pkt.Encode1(0);
         option.vfunc_1(pkt);
         FUN_140710590(pkt);

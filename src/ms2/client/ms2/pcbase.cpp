@@ -4496,7 +4496,7 @@ void PCBase::FUN_141676140()
         if (fHeight > 0.0f) {
             Unk_PCBaseFallDamage kFall;
             kFall.m_fHeight = fHeight;
-            COutPacket kPacket(0x34, 0);
+            COutPacket kPacket(static_cast<int>(SendOp::StateFallDamage), 0);
             kFall.FUN_1401fc710(kPacket);
             FUN_140710590(kPacket);
         }

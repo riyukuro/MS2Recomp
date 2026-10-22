@@ -661,7 +661,7 @@ void UICharacterListDialog::vfunc_79(void* p)
         info.FUN_1407a4c60(pPacket);
         if (info.m_bEmpty == 0)
         {
-            COutPacket packet(0x14, 0);
+            COutPacket packet(static_cast<int>(SendOp::RequestServerList), 0);
             FUN_140710590(packet);
         }
         else
@@ -1535,7 +1535,7 @@ void UICharacterListDialog::SendCharacterManagementMode2()
         return;
     Unk_ClReqSelect req;
     req.m_nId = FUN_141656a80(pPC);
-    COutPacket packet(9, 0);
+    COutPacket packet(static_cast<int>(SendOp::CharacterManagement), 0);
     packet.Encode1(2);
     FUN_1401fa3d0(req, packet);
     FUN_140710590(packet);
@@ -1550,7 +1550,7 @@ void UICharacterListDialog::CancelDelete(CharPtr spCharacter)
         spCharacter->FUN_1418e9ed0(0);
         Unk_ClReqCancel req;
         req.m_nId = spCharacter->FUN_1418e9cb0();
-        COutPacket packet(9, 0);
+        COutPacket packet(static_cast<int>(SendOp::CharacterManagement), 0);
         packet.Encode1(3);
         FUN_1401fa460(req, packet);
         FUN_140710590(packet);
@@ -1568,7 +1568,7 @@ void UICharacterListDialog::CheckDelete(unsigned __int64 nId)
     {
         Unk_ClReqDelete req;
         req.m_nId = nId;
-        COutPacket packet(9, 0);
+        COutPacket packet(static_cast<int>(SendOp::CharacterManagement), 0);
         packet.Encode1(4);
         FUN_1401fa4f0(req, packet);
         FUN_140710590(packet);
@@ -1652,7 +1652,7 @@ void UICharacterListDialog::OnEndPopdown()
             {
             case 0x620001a:
                 {
-                    COutPacket packet(0x14, 0);
+                    COutPacket packet(static_cast<int>(SendOp::RequestServerList), 0);
                     FUN_140710590(packet);
                     pScene->FUN_14174eb30();
                     break;
@@ -1723,7 +1723,7 @@ void UICharacterListDialog::SendCharacterManagementMode5(unsigned __int64 nId, c
     Unk_ClReqRename req;
     req.m_nId = nId;
     req.m_strName = str;
-    COutPacket packet(9, 0);
+    COutPacket packet(static_cast<int>(SendOp::CharacterManagement), 0);
     packet.Encode1(5);
     FUN_1401fa2c0(req, packet);
     FUN_140710590(packet);
@@ -2120,7 +2120,7 @@ bool UICharacterListDialog::SendEventReward(int nResult, const CMsgBoxData& box)
 {
     if (nResult != 0)
         return true;
-    COutPacket packet(0x97, 0);
+    COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
     packet.Encode1(0x10);
     packet.Encode8(static_cast<Unk_ClBox*>(const_cast<CMsgBoxData*>(&box))->FUN_141a02f10(0, 0));
     FUN_140710590(packet);

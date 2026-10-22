@@ -356,7 +356,7 @@ void UITencentUserReportDialog::SendRequestReport()
         m_data.reportId = 0;
         break;
     }
-    COutPacket packet(0x52, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestReport), 0);
     m_data.FUN_140201180(packet);
     FUN_140710590(packet);
 }

@@ -1907,7 +1907,7 @@ void UIQuestDialog::GiveUpQuest(int nQuestId)
     }
     else
     {
-        COutPacket packet(0x29, 0);
+        COutPacket packet(static_cast<int>(SendOp::Quest), 0);
         packet.Encode1(6);
         packet.Encode4(nQuestId);
         FUN_140710590(packet);
@@ -1921,7 +1921,7 @@ bool UIQuestDialog::OnGiveUpConfirm(int nButton, const CMsgBoxData& rData)
     if (nButton != 0)
         return true;
     int nQuestId = rData.FUN_141a02e90(0, 0);
-    COutPacket packet(0x29, 0);
+    COutPacket packet(static_cast<int>(SendOp::Quest), 0);
     packet.Encode1(6);
     packet.Encode4(nQuestId);
     FUN_140710590(packet);

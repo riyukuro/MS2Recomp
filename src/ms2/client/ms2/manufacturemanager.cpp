@@ -336,7 +336,7 @@ int CManufactureManager::SendRequest4(unsigned __int64 nId, int nRecipeId, int* 
             }
         }
     }
-    COutPacket packet(0x68, 0);
+    COutPacket packet(static_cast<int>(SendOp::MaidCraftItem), 0);
     packet.vfunc_o10_1(4);
     packet.vfunc_o10_3(nRecipeId);
     packet.vfunc_o10_4(nId);
@@ -348,7 +348,7 @@ int CManufactureManager::SendRequest4(unsigned __int64 nId, int nRecipeId, int* 
 // @0x140d50dd0
 int CManufactureManager::SendRequest5(unsigned __int64 nId, int nRecipeId, int* pnResult)
 {
-    COutPacket packet(0x68, 0);
+    COutPacket packet(static_cast<int>(SendOp::MaidCraftItem), 0);
     packet.vfunc_o10_1(5);
     packet.vfunc_o10_3(nRecipeId);
     packet.vfunc_o10_4(nId);
@@ -373,7 +373,7 @@ int CManufactureManager::SendRequest6(unsigned __int64 nId, int* pnResult)
         *pnResult = 0xd;
         return 0;
     }
-    COutPacket packet(0x68, 0);
+    COutPacket packet(static_cast<int>(SendOp::MaidCraftItem), 0);
     packet.vfunc_o10_1(6);
     packet.vfunc_o10_4(nId);
     FUN_140710590(packet);
@@ -390,7 +390,7 @@ int CManufactureManager::SendRequest7(unsigned __int64 nId, int* pnResult)
         *pnResult = 7;
         return 0;
     }
-    COutPacket packet(0x68, 0);
+    COutPacket packet(static_cast<int>(SendOp::MaidCraftItem), 0);
     packet.vfunc_o10_1(7);
     packet.vfunc_o10_4(nId);
     FUN_140710590(packet);
@@ -407,7 +407,7 @@ int CManufactureManager::SendRequest8(unsigned __int64 nId, int* pnResult)
         *pnResult = 7;
         return 0;
     }
-    COutPacket packet(0x68, 0);
+    COutPacket packet(static_cast<int>(SendOp::MaidCraftItem), 0);
     packet.vfunc_o10_1(8);
     packet.vfunc_o10_4(nId);
     FUN_140710590(packet);
@@ -424,7 +424,7 @@ int CManufactureManager::SendRequest9(unsigned __int64 nId, int* pnResult)
         *pnResult = 7;
         return 0;
     }
-    COutPacket packet(0x68, 0);
+    COutPacket packet(static_cast<int>(SendOp::MaidCraftItem), 0);
     packet.vfunc_o10_1(9);
     packet.vfunc_o10_4(nId);
     FUN_140710590(packet);
@@ -441,7 +441,7 @@ int CManufactureManager::SendRequest10(unsigned __int64 nId, int* pnResult)
         *pnResult = 7;
         return 0;
     }
-    COutPacket packet(0x68, 0);
+    COutPacket packet(static_cast<int>(SendOp::MaidCraftItem), 0);
     packet.vfunc_o10_1(10);
     packet.vfunc_o10_4(nId);
     FUN_140710590(packet);

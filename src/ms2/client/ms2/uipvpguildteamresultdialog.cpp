@@ -158,7 +158,7 @@ void UIPvPGuildTeamResultDialog::vfunc_26()
     UIDialog::vfunc_26();
     if (m_nMode == 0)
     {
-        COutPacket packet(0x61, 0);
+        COutPacket packet(static_cast<int>(SendOp::Pvp), 0);
         packet.vfunc_o10_1(0x68);
         FUN_140710590(packet);
     }

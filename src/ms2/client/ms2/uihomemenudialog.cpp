@@ -802,7 +802,7 @@ bool UIHomeMenuDialog::SendRequestCube(int nResult, const CMsgBoxData& data)
             if (pPc != 0)
                 pPc->FUN_14152f3c0();
         }
-        COutPacket packet(0x37, 0);
+        COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
         packet.vfunc_o10_1(0x1f);
         FUN_140710590(packet);
     }

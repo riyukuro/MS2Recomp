@@ -114,7 +114,7 @@ void CGodModeInfo::SendRequestCube()
             strText.Format(L"%d", m_n18);
             m_spTooltip->FUN_14191ab10(strText);
         }
-        COutPacket packet(0x37, 0);
+        COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
         packet.vfunc_o10_1(0x13);
         packet.vfunc_o10_3(m_n18);
         FUN_140710590(packet);

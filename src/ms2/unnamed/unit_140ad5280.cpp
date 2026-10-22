@@ -171,13 +171,13 @@ void StateTreeWatering::vfunc_8(double fTime)
     {
         if (m_n10 == 0xa0)
         {
-            COutPacket kPacket(0xaa, 0);
+            COutPacket kPacket(static_cast<int>(SendOp::TreeWatering), 0);
             kPacket.vfunc_o10_1(0);
             FUN_140710590(kPacket);
         }
         if (m_n10 == 0xa1)
         {
-            COutPacket kPacket(0xaa, 0);
+            COutPacket kPacket(static_cast<int>(SendOp::TreeWatering), 0);
             kPacket.vfunc_o10_1(1);
             FUN_140710590(kPacket);
         }

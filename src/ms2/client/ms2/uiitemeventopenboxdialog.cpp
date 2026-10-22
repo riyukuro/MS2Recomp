@@ -238,7 +238,7 @@ void UIItemEventOpenBoxDialog::SendEventReward(const Scaleform::GFx::FunctionHan
         vfunc_67();
         return;
     }
-    COutPacket packet(0x97, 0);
+    COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
     packet.vfunc_o10_1(2);
     FUN_1407105c0(&packet, 100, 1000);
 }

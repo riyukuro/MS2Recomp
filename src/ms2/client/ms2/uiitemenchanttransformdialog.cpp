@@ -411,7 +411,7 @@ void UIItemEnchantTransformDialog::OnSubmitTransform()
         FUN_141275260(0x34, 1, 1);
         return;
     }
-    COutPacket pkt(0x77, 0);
+    COutPacket pkt(static_cast<int>(SendOp::TransferEnchant), 0);
     pkt.Encode8(m_selected->FUN_140526a50());
     FUN_140710590(pkt);
     MS2Ptr<Unk_TfBoard> board = FUN_140c02990("m_board");

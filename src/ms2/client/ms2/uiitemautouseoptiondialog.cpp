@@ -806,7 +806,7 @@ void UIItemAutoUseOptionDialog::OnClickOk()
         FUN_140d73bc0(0xc1f, 0, 0, CStringW(L""));
     else
     {
-        COutPacket packet(0x78, 0);
+        COutPacket packet(static_cast<int>(SendOp::RequestPet), 0);
         packet.vfunc_o10_1(5);
         kOptions.FUN_1401ff3f0(packet);
         FUN_140710590(packet);

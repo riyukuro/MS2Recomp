@@ -695,7 +695,7 @@ int UIPCInfoDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                         return 1;
                     }
                 }
-                COutPacket packet(0x3d, 0);
+                COutPacket packet(static_cast<int>(SendOp::MyInfo), 0);
                 packet.vfunc_o10_1(0);
                 packet.vfunc_o10_8(strMemo);
                 FUN_140710590(packet);

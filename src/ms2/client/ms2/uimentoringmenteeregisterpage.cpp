@@ -163,7 +163,7 @@ CStringW UIMentoringMenteeRegisterPage::vfunc_7() { return GetStringCommonByKey(
 bool UIMentoringMenteeRegisterPage::SendMentor(int nResult, const CMsgBoxData& data)
 {
     if (nResult != 0) return true;
-    COutPacket pkt(0xa1, 0);
+    COutPacket pkt(static_cast<int>(SendOp::Mentor), 0);
     Unk_MenteeRole role;
     role.FUN_14069a480(pkt);
     FUN_140710590(pkt);

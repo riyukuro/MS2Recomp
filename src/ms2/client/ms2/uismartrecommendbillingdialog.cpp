@@ -218,7 +218,7 @@ int UISmartRecommendBillingDialog::vfunc_28(const char* szMethod, const Scalefor
                 }
             }
         }
-        COutPacket packet(100, 0);
+        COutPacket packet(static_cast<int>(SendOp::SmartRecommendBilling), 0);
         packet.vfunc_o10_1(0);
         packet.vfunc_o10_3(m_item->m_nId);
         FUN_140710590(packet);

@@ -360,7 +360,7 @@ MS2_REPLACE_METHOD(0x141B78AF0, CWebBrowserService, FUN_141b78af0, 64, 0x9014824
 // @0x141b78b40
 void CWebBrowserService::FUN_141b78b40(bool bUnk, int nUnk)
 {
-    COutPacket packet(99, 0);
+    COutPacket packet(static_cast<int>(SendOp::NewsNotification), 0);
     packet.vfunc_o10_1(0);
     packet.vfunc_o10_1(bUnk ? 1 : 0);
     packet.vfunc_o10_3(nUnk);
@@ -375,7 +375,7 @@ void CWebBrowserService::FUN_141b78be0(CefRefPtr<CefV8Context> context, CefRefPt
     } else {
         m_tokenContext = context;
         m_tokenCallback = callback;
-        COutPacket packet(99, 0);
+        COutPacket packet(static_cast<int>(SendOp::NewsNotification), 0);
         packet.vfunc_o10_1(0);
         packet.vfunc_o10_1(0);
         packet.vfunc_o10_1(0);

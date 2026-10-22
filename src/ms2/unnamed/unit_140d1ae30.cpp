@@ -1090,7 +1090,7 @@ int ChatEmoticonAdd(MS2Ptr<CItem> spItem, PC* pPlayer)
 int SuperWorldChat(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
     int nItemId = spItem->FUN_1405276c0();
-    COutPacket packet(0xa7, 0);
+    COutPacket packet(static_cast<int>(SendOp::SuperWorldChat), 0);
     packet.vfunc_o10_1(0);
     packet.vfunc_o10_3(nItemId);
     FUN_140710590(packet);
@@ -1946,7 +1946,7 @@ int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
     pPlayer->vfunc_59(0x2f, pData, 0x7d, 0);
     Unk_InventoryUsePacket use;
     use.id = nItemUid;
-    COutPacket packet(0x19, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestItemUse), 0);
     use.FUN_1401fbc40(packet);
     FUN_140710590(packet);
     return 1;

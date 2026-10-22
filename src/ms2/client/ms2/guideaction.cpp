@@ -1238,7 +1238,7 @@ MS2_REPLACE_METHOD(0x141385E00, CGuideActionServerTriggerEvent, vfunc_2, 75, 0xC
 // @0x141385e60
 void CGuideActionServerTriggerEvent::vfunc_3()
 {
-    COutPacket packet(0x2f, 0);
+    COutPacket packet(static_cast<int>(SendOp::Trigger), 0);
     packet.vfunc_o10_1(9);
     packet.vfunc_o10_1(1);
     packet.vfunc_o10_3(m_eventID);
@@ -1306,7 +1306,7 @@ MS2_REPLACE_METHOD(0x141386120, CGuideActionRequestTutorialItem, vfunc_2, 34, 0x
 // @0x141386150
 void CGuideActionRequestTutorialItem::vfunc_3()
 {
-    COutPacket packet(0x9c, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestTutorialItem), 0);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x141386150, CGuideActionRequestTutorialItem, vfunc_3, 63, 0x01AEACBA);
@@ -1378,7 +1378,7 @@ MS2_REPLACE_METHOD(0x1413865B0, CGuideActionClearTutorial, GetTypeName, 61, 0x90
 // @0x141386600
 void CGuideActionClearTutorial::vfunc_3()
 {
-    COutPacket packet(0x8a, 0);
+    COutPacket packet(static_cast<int>(SendOp::Tutorial), 0);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x141386600, CGuideActionClearTutorial, vfunc_3, 63, 0x1975E45B);

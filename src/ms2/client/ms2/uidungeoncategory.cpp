@@ -705,7 +705,7 @@ COutputStream& FUN_140c0dd90(COutputStream& out, const std::set<unsigned int>& i
 // @0x140c0cc30
 void UIDungeonControlCenter::SendPartyMode32()
 {
-    COutPacket packet(0x2c, 0);
+    COutPacket packet(static_cast<int>(SendOp::Party), 0);
     packet.Encode1(0x20);
     packet.Encode1(1);
     FUN_140c0dd90(packet, m_bookmarks);
@@ -717,7 +717,7 @@ MS2_REPLACE_METHOD(0x140C0CC30, UIDungeonControlCenter, SendPartyMode32, 123, 0x
 // @0x140c0ccc0
 void UIDungeonControlCenter::SendPartyMode34()
 {
-    COutPacket packet(0x2c, 0);
+    COutPacket packet(static_cast<int>(SendOp::Party), 0);
     packet.Encode1(0x22);
     packet.Encode1(1);
     FUN_140710590(packet);
@@ -760,7 +760,7 @@ void UIDungeonControlCenter::SendRoomDungeon(int nGroupType)
 {
     int nLobby = FUN_140c0dc60(nGroupType);
     if (nLobby != -1) {
-        COutPacket packet(0x2b, 0);
+        COutPacket packet(static_cast<int>(SendOp::RoomDungeon), 0);
         packet.Encode1((unsigned char)nLobby);
         FUN_140710590(packet);
     }

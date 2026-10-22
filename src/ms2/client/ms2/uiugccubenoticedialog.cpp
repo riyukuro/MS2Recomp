@@ -130,7 +130,7 @@ void UIUGCCubeNoticeDialog::OnApply()
             return;
         }
     }
-    COutPacket packet(0x90, 0);
+    COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
     packet.vfunc_o10_1(0xc);
     packet.vfunc_o10_1(1);
     packet.vfunc_o10_3(m_nCubeId);

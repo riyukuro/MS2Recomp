@@ -1515,475 +1515,475 @@ void CSceneStateGame::OnPacket(CInPacket& packet)
     m_nOpcode = packet.FUN_14070fe80();
     switch (m_nOpcode)
     {
-    case 0x9:
+    case static_cast<int>(RecvOp::RequestLogin):
         FUN_14170dc90(packet);
         break;
-    case 0x15:
+    case static_cast<int>(RecvOp::ServerEnter):
         OnServerEnter(packet);
         break;
-    case 0x7d:
+    case static_cast<int>(RecvOp::LoadUgcMap):
         OnLoadUgcMap(packet);
         break;
-    case 0x16:
+    case static_cast<int>(RecvOp::RequestFieldEnter):
         FUN_14170f930(packet);
         break;
-    case 0x19:
+    case static_cast<int>(RecvOp::FieldEntrance):
         FUN_14170fc70(packet);
         break;
-    case 0x17:
+    case static_cast<int>(RecvOp::FieldAddUser):
         OnAddUser(packet);
         break;
-    case 0x18:
+    case static_cast<int>(RecvOp::FieldRemoveUser):
         FUN_141711dc0(packet);
         break;
-    case 0x1c:
+    case static_cast<int>(RecvOp::UserSync):
         OnUserSync(packet);
         break;
-    case 0x7a:
+    case static_cast<int>(RecvOp::RideSync):
         OnRideSync(packet);
         break;
-    case 0x1f:
+    case static_cast<int>(RecvOp::Emote):
         FUN_141712a90(packet);
         break;
-    case 0x20:
+    case static_cast<int>(RecvOp::ItemPutOnOrOff):
         OnItemPutOnOrOff(packet);
         break;
-    case 0xce:
+    case static_cast<int>(RecvOp::PetInventory):
         FUN_1417132b0(packet);
         break;
-    case 0x21:
+    case static_cast<int>(RecvOp::ItemInventory):
         OnItemInventory(packet);
         break;
-    case 0x22:
+    case static_cast<int>(RecvOp::StorageInventory):
         DAT_143ab2d80.FUN_140de3480(packet);
         break;
-    case 0x23:
+    case static_cast<int>(RecvOp::FurnishingStorage):
         FUN_141715bd0(packet);
         break;
-    case 0x24:
+    case static_cast<int>(RecvOp::FurnishingInventory):
         OnFurnishingInventory(packet);
         break;
-    case 0x25:
+    case static_cast<int>(RecvOp::ItemPutOn):
         OnItemPutOn(packet);
         break;
-    case 0x26:
+    case static_cast<int>(RecvOp::ItemPutOff):
         OnItemPutOff(packet);
         break;
-    case 0x27:
+    case static_cast<int>(RecvOp::ItemSkinPutOn):
         FUN_141716d10(packet);
         break;
-    case 0x28:
+    case static_cast<int>(RecvOp::ItemSkinPutOff):
         OnItemSkinPutOff(packet);
         break;
-    case 0x29:
+    case static_cast<int>(RecvOp::ItemDrop):
         FUN_141717560(packet);
         break;
-    case 0x2a:
+    case static_cast<int>(RecvOp::ItemUpdate):
         OnItemUpdate(packet);
         break;
-    case 0x30:
+    case static_cast<int>(RecvOp::UserSkinColor):
         OnUserSkinColor(packet);
         break;
-    case 0x2b:
+    case static_cast<int>(RecvOp::FieldAddItem):
         OnFieldAddItem(packet);
         break;
-    case 0x2c:
+    case static_cast<int>(RecvOp::FieldRemoveItem):
         FUN_141712340(packet);
         break;
-    case 0x2d:
+    case static_cast<int>(RecvOp::FieldPickupItem):
         OnFieldPickupItem(packet);
         break;
-    case 0x3c:
+    case static_cast<int>(RecvOp::SkillUse):
         OnSkillUse(packet);
         break;
-    case 0x40:
+    case static_cast<int>(RecvOp::SkillUseFailed):
         OnSkillUseFailed(packet);
         break;
-    case 0x41:
+    case static_cast<int>(RecvOp::StateSkill):
         FUN_141718b80(packet);
         break;
-    case 0x2e:
+    case static_cast<int>(RecvOp::Stat):
         OnStat(packet);
         break;
-    case 0x2f:
+    case static_cast<int>(RecvOp::UserBattle):
         OnUserBattle(packet);
         break;
-    case 0x34:
+    case static_cast<int>(RecvOp::Revival):
         OnRevival(packet);
         break;
-    case 0x33:
+    case static_cast<int>(RecvOp::RevivalConfirm):
         OnRevivalConfirm(packet);
         break;
-    case 0x35:
+    case static_cast<int>(RecvOp::RevivalCount):
         FUN_14171aa90(packet);
         break;
-    case 0x38:
+    case static_cast<int>(RecvOp::LevelUp):
         OnLevelUp(packet);
         break;
-    case 0xae:
+    case static_cast<int>(RecvOp::MyInfo):
         OnMyInfo(packet);
         break;
-    case 0x37:
+    case static_cast<int>(RecvOp::ExpUp):
         FUN_14171ab00(packet);
         break;
-    case 0x39:
+    case static_cast<int>(RecvOp::Meso):
         OnMeso(packet);
         break;
-    case 0x3a:
+    case static_cast<int>(RecvOp::Meret):
         OnMeret(packet);
         break;
-    case 0x117:
+    case static_cast<int>(RecvOp::MeretUse):
         FUN_14171bad0(packet);
         break;
-    case 0x3b:
+    case static_cast<int>(RecvOp::CurrencyToken):
         OnCurrencyToken(packet);
         break;
-    case 0x32:
+    case static_cast<int>(RecvOp::AdventurerBar):
         FUN_14171a6c0(packet);
         break;
-    case 0x4b:
+    case static_cast<int>(RecvOp::NpcTalk):
         FUN_141719a30(packet);
         break;
-    case 0x48:
+    case static_cast<int>(RecvOp::FieldPortal):
         OnFieldPortal(packet);
         break;
-    case 0x49:
+    case static_cast<int>(RecvOp::Job):
         OnJob(packet);
         break;
-    case 0x3d:
+    case static_cast<int>(RecvOp::SkillDamage):
         OnSkillDamage(packet);
         break;
-    case 0x47:
+    case static_cast<int>(RecvOp::Buff):
         OnBuff(packet);
         break;
     case 0x130:
         FUN_141720c60(packet);
         break;
-    case 0x4c:
+    case static_cast<int>(RecvOp::RegionSkill):
         OnRegionSkill(packet);
         break;
-    case 0x4e:
+    case static_cast<int>(RecvOp::Trigger):
         FUN_141721270(packet);
         break;
-    case 0x4d:
+    case static_cast<int>(RecvOp::FunctionCube):
         FUN_1417212a0(packet);
         break;
-    case 0x55:
+    case static_cast<int>(RecvOp::FieldAddNpc):
         OnFieldAddNpc(packet);
         break;
-    case 0x56:
+    case static_cast<int>(RecvOp::FieldRemoveNpc):
         FUN_1417195f0(packet);
         break;
-    case 0x57:
+    case static_cast<int>(RecvOp::FieldDeadNpc):
         FUN_1417197c0(packet);
         break;
-    case 0x5a:
+    case static_cast<int>(RecvOp::FieldAddPet):
         OnFieldAddPet(packet);
         break;
-    case 0x5b:
+    case static_cast<int>(RecvOp::FieldRemovePet):
         FUN_14171a2e0(packet);
         break;
-    case 0x58:
+    case static_cast<int>(RecvOp::NpcControl):
         FUN_141719840(packet);
         break;
-    case 0x5c:
+    case static_cast<int>(RecvOp::SyncPetTamingPoint):
         OnSyncPetTamingPoint(packet);
         break;
-    case 0x59:
+    case static_cast<int>(RecvOp::InteractNpc):
         OnInteractNpc(packet);
         break;
-    case 0x4f:
+    case static_cast<int>(RecvOp::Breakable):
         FUN_1417212d0(packet);
         break;
-    case 0x50:
+    case static_cast<int>(RecvOp::RoomTimer):
         if (FUN_140ee0d10() != 0)
             FUN_140ee0d10()->FUN_140b8c260(packet);
         break;
-    case 0x5d:
+    case static_cast<int>(RecvOp::Tombstone):
         OnTombstone(packet);
         break;
-    case 0x36:
+    case static_cast<int>(RecvOp::UserState):
         OnUserState(packet);
         break;
-    case 0xfa:
+    case static_cast<int>(RecvOp::StateFishingData):
         FUN_14173b080(packet);
         break;
-    case 0x3e:
+    case static_cast<int>(RecvOp::SkillSync):
         FUN_141718150(packet);
         break;
-    case 0x3f:
+    case static_cast<int>(RecvOp::SkillCancel):
         OnSkillCancel(packet);
         break;
-    case 0x5f:
+    case static_cast<int>(RecvOp::UserMoveByPortal):
         OnUserMoveByPortal(packet);
         break;
-    case 0x54:
+    case static_cast<int>(RecvOp::Mail):
         FUN_141721cd0(packet);
         break;
-    case 0x60:
+    case static_cast<int>(RecvOp::MassiveEvent):
         OnMassiveEvent(packet);
         break;
-    case 0x61:
+    case static_cast<int>(RecvOp::Buddy):
         FUN_141721c50(packet);
         break;
-    case 0x62:
+    case static_cast<int>(RecvOp::AdminBlock):
         FUN_141721c90(packet);
         break;
-    case 0x64:
+    case static_cast<int>(RecvOp::StateConsumeEp):
         FUN_141722fb0(packet);
         break;
-    case 0x65:
+    case static_cast<int>(RecvOp::StateFallDamage):
         OnStateFallDamage(packet);
         break;
-    case 0x66:
+    case static_cast<int>(RecvOp::Cinematic):
         OnCinematic(packet);
         break;
-    case 0x68:
+    case static_cast<int>(RecvOp::SetCraftMode):
         OnSetCraftMode(packet);
         break;
-    case 0x69:
+    case static_cast<int>(RecvOp::ResponseCube):
         OnResponseCube(packet);
         break;
-    case 0x6a:
+    case static_cast<int>(RecvOp::LoadCubes):
         OnLoadCubes(packet);
         break;
-    case 0x67:
+    case static_cast<int>(RecvOp::Admin):
         FUN_1417232a0(packet);
         break;
-    case 0x70:
+    case static_cast<int>(RecvOp::FollowNpc):
         FUN_141723330(packet);
         break;
-    case 0x71:
+    case static_cast<int>(RecvOp::Notice):
         FUN_141728c20(packet);
         break;
-    case 0x73:
+    case static_cast<int>(RecvOp::Liftable):
         OnLiftable(packet);
         break;
-    case 0x74:
+    case static_cast<int>(RecvOp::ItemMerge):
         OnItemFusion(packet);
         break;
-    case 0x75:
+    case static_cast<int>(RecvOp::Vibrate):
         FUN_14172a1c0(packet);
         break;
-    case 0x76:
+    case static_cast<int>(RecvOp::HideVibrate):
         FUN_14172a7b0(packet);
         break;
-    case 0x77:
+    case static_cast<int>(RecvOp::ShowVibrate):
         FUN_14172a850(packet);
         break;
-    case 0x79:
+    case static_cast<int>(RecvOp::ResponseRide):
         OnResponseRide(packet);
         break;
-    case 0x7b:
+    case static_cast<int>(RecvOp::FittingDoll):
         FUN_14172b350(packet);
         break;
-    case 0x6e:
+    case static_cast<int>(RecvOp::GuideObject):
         FUN_14172c170(packet);
         break;
-    case 0x63:
+    case static_cast<int>(RecvOp::InteractObject):
         OnInteractObject(packet);
         break;
-    case 0x42:
+    case static_cast<int>(RecvOp::SkillCooldown):
         FUN_14172f030(packet);
         break;
-    case 0x43:
+    case static_cast<int>(RecvOp::SkillResetCooldown):
         FUN_14172f1c0(packet);
         break;
-    case 0x44:
+    case static_cast<int>(RecvOp::SkillPoint):
         FUN_14172f210(packet);
         break;
-    case 0x45:
+    case static_cast<int>(RecvOp::AttributePoint):
         FUN_14172f480(packet);
         break;
-    case 0x7e:
+    case static_cast<int>(RecvOp::ProxyGameObj):
         FUN_14172f500(packet);
         break;
-    case 0x7f:
+    case static_cast<int>(RecvOp::BadgeEquip):
         FUN_141730920(packet);
         break;
-    case 0x80:
+    case static_cast<int>(RecvOp::Taxi):
         FUN_141731470(packet);
         break;
-    case 0x81:
+    case static_cast<int>(RecvOp::FindFields):
         FUN_141731610(packet);
         break;
-    case 0x83:
+    case static_cast<int>(RecvOp::InvincibleEffect):
         FUN_1417316d0(packet);
         break;
-    case 0x86:
+    case static_cast<int>(RecvOp::DpsStat):
         FUN_141731730(packet);
         break;
-    case 0x89:
+    case static_cast<int>(RecvOp::GuideRecord):
         FUN_141731160(packet);
         break;
-    case 0x94:
+    case static_cast<int>(RecvOp::UiText):
         FUN_141731190(packet);
         break;
-    case 0x95:
+    case static_cast<int>(RecvOp::PlayNpcSound):
         FUN_141731350(packet);
         break;
-    case 0x96:
+    case static_cast<int>(RecvOp::ItemDismantle):
         FUN_141731ac0(packet);
         break;
-    case 0xdb:
+    case static_cast<int>(RecvOp::ItemLock):
         FUN_141731af0(packet);
         break;
-    case 0xc:
+    case static_cast<int>(RecvOp::CharacterList):
         FUN_141731b20(packet);
         break;
-    case 0x8c:
+    case static_cast<int>(RecvOp::RecallUser):
         FUN_141731c10(packet);
         break;
-    case 0xb6:
+    case static_cast<int>(RecvOp::Pvp):
         OnPvp(packet);
         break;
-    case 0x9d:
+    case static_cast<int>(RecvOp::FieldMaid):
         FUN_141732ac0(packet);
         break;
-    case 0x9e:
+    case static_cast<int>(RecvOp::UserMaid):
         FUN_141732af0(packet);
         break;
-    case 0x97:
+    case static_cast<int>(RecvOp::ItemEnchant):
         OnItemEnchant(packet);
         break;
-    case 0x9b:
+    case static_cast<int>(RecvOp::WebOpen):
         OnWebOpen(packet);
         break;
-    case 0x9f:
+    case static_cast<int>(RecvOp::NewsNotification):
         FUN_141733440(packet);
         break;
-    case 0xa1:
+    case static_cast<int>(RecvOp::SystemShop):
         OnSystemShop(packet);
         break;
-    case 0xa2:
+    case static_cast<int>(RecvOp::AutoRevive):
         OnAutoRevive(packet);
         break;
-    case 0xa3:
+    case static_cast<int>(RecvOp::PlayerKillNotice):
         OnPlayerKillNotice(packet);
         break;
-    case 0xa6:
+    case static_cast<int>(RecvOp::DeadUser):
         FUN_141736880(packet);
         break;
-    case 0xa8:
+    case static_cast<int>(RecvOp::UserEnv):
         FUN_141736940(packet);
         break;
-    case 0x1a:
+    case static_cast<int>(RecvOp::RoomDungeon):
         FUN_141737360(packet);
         break;
-    case 0xaa:
+    case static_cast<int>(RecvOp::EnterUgcMap):
         FUN_1417373d0(packet);
         break;
-    case 0xab:
+    case static_cast<int>(RecvOp::ItemUse):
         FUN_141739910(packet);
         break;
-    case 0xac:
+    case static_cast<int>(RecvOp::ItemBox):
         FUN_141739e40(packet);
         break;
-    case 0xb0:
+    case static_cast<int>(RecvOp::WorldShareInfo):
         FUN_141733b30(packet);
         break;
-    case 0xb1:
+    case static_cast<int>(RecvOp::Insignia):
         OnNametag(packet);
         break;
-    case 0xb2:
+    case static_cast<int>(RecvOp::GameEvent):
         FUN_140ceab50(FUN_14015a050(), packet);
         break;
     case 0x137:
         FUN_140ad5f00(FUN_1409eed70(), packet);
         break;
-    case 0xb5:
+    case static_cast<int>(RecvOp::SetPcBang):
         OnSetPcbang(packet);
         break;
-    case 0xb7:
+    case static_cast<int>(RecvOp::HomeCommand):
         FUN_1417340f0(packet);
         break;
-    case 0xb9:
+    case static_cast<int>(RecvOp::World):
         FUN_1417343c0(packet);
         break;
-    case 0xba:
+    case static_cast<int>(RecvOp::ItemDropNotice):
         OnItemDropNotice(packet);
         break;
-    case 0xbc:
+    case static_cast<int>(RecvOp::RecallScroll):
         OnRecallScroll(packet);
         break;
-    case 0xbd:
+    case static_cast<int>(RecvOp::UserConditionEvent):
         {
             Unk_SSGDialog4edc* pDlg = FUN_140ce84f0(0x4edc);
             if (pDlg != 0)
                 pDlg->FUN_1412a53e0(packet);
         }
         break;
-    case 0xbe:
+    case static_cast<int>(RecvOp::PotentialAbility):
         FUN_141734930(packet);
         break;
-    case 0xbf:
+    case static_cast<int>(RecvOp::EnchantScroll):
         OnEnchantScroll(packet);
         break;
-    case 0xc1:
+    case static_cast<int>(RecvOp::GlobalPortal):
         OnGlobalPortal(packet);
         break;
-    case 0xc2:
+    case static_cast<int>(RecvOp::QuizEvent):
         OnQuizEvent(packet);
         break;
-    case 0xc3:
+    case static_cast<int>(RecvOp::PlaySystemSound):
         FUN_141734bc0(packet);
         break;
-    case 0xc4:
+    case static_cast<int>(RecvOp::Fishing):
         FUN_141734c70(packet);
         break;
-    case 0xc5:
+    case static_cast<int>(RecvOp::DarkStream):
         OnDarkStream(packet);
         break;
-    case 0xd8:
+    case static_cast<int>(RecvOp::PlayArcade):
         OnPlayArcade(packet);
         break;
-    case 0xc7:
+    case static_cast<int>(RecvOp::PlayInstrument):
         FUN_1417353b0(packet);
         break;
-    case 0xca:
+    case static_cast<int>(RecvOp::FieldProperty):
         FUN_1417353e0(packet);
         break;
-    case 0xcb:
+    case static_cast<int>(RecvOp::GameEventUserValue):
         FUN_141735410(packet);
         break;
-    case 0xcd:
+    case static_cast<int>(RecvOp::Mastery):
         OnMastery(packet);
         break;
-    case 0xd1:
+    case static_cast<int>(RecvOp::SkillMacro):
         FUN_141737d60(packet);
         break;
-    case 0xcf:
+    case static_cast<int>(RecvOp::NoticeDialog):
         {
             UINoticeDialog* pDlg = Unk_SSGGetDialog<UINoticeDialog>(0x4ee9);
             if (pDlg != 0)
                 pDlg->FUN_141009680(packet);
         }
         break;
-    case 0xd3:
+    case static_cast<int>(RecvOp::CheckCharNameResult):
         FUN_141737db0(packet);
         break;
-    case 0xd6:
+    case static_cast<int>(RecvOp::GlobalFactor):
         FUN_1417380c0(packet);
         break;
-    case 0xd7:
+    case static_cast<int>(RecvOp::SmartPush):
         FUN_141738120(packet);
         break;
-    case 0xdc:
+    case static_cast<int>(RecvOp::HomeBank):
         FUN_141738290(packet);
         break;
-    case 0xdd:
+    case static_cast<int>(RecvOp::HomeDoctor):
         FUN_141738380(packet);
         break;
-    case 0xe8:
+    case static_cast<int>(RecvOp::NpcNotice):
         FUN_141738430(packet);
         break;
-    case 0xe7:
+    case static_cast<int>(RecvOp::NpcRide):
         FUN_141738ad0(packet);
         break;
-    case 0xea:
+    case static_cast<int>(RecvOp::HomeAction):
         FUN_141738b40(packet);
         break;
-    case 0xeb:
+    case static_cast<int>(RecvOp::PremiumClub):
         OnPremiumClub(packet);
         break;
     case 0xec:
@@ -1992,107 +1992,107 @@ void CSceneStateGame::OnPacket(CInPacket& packet)
     case 0x101:
         FUN_14173a0f0(packet);
         break;
-    case 0xe9:
+    case static_cast<int>(RecvOp::LocalCamera):
         OnLocalCamera(packet);
         break;
-    case 0xf1:
+    case static_cast<int>(RecvOp::OneTimeEffect):
         OnOneTimeEffect(packet);
         break;
-    case 0xf2:
+    case static_cast<int>(RecvOp::CameraInterpolation):
         FUN_14173a5b0(packet);
         break;
-    case 0xf3:
+    case static_cast<int>(RecvOp::TimeScale):
         OnTimeScale(packet);
         break;
-    case 0xf4:
+    case static_cast<int>(RecvOp::LegionBattle):
         FUN_14173a720(packet);
         break;
-    case 0xf8:
+    case static_cast<int>(RecvOp::HomeInvite):
         OnHomeInvite(packet);
         break;
-    case 0xf7:
+    case static_cast<int>(RecvOp::EventReward):
         OnEventReward(packet);
         break;
-    case 0xf9:
+    case static_cast<int>(RecvOp::TaskEvent):
         FUN_141736240(packet);
         break;
-    case 0xfb:
+    case static_cast<int>(RecvOp::DungeonReviveCount):
         FUN_14173b1d0(packet);
         break;
     case 0xfd:
         FUN_14173b220(packet);
         break;
-    case 0xfe:
+    case static_cast<int>(RecvOp::ChangeBackground):
         FUN_14173b380(packet);
         break;
-    case 0x103:
+    case static_cast<int>(RecvOp::BindItem):
         FUN_14173b420(packet);
         break;
-    case 0x105:
+    case static_cast<int>(RecvOp::PlayerHost):
         FUN_14173b5a0(packet);
         break;
-    case 0x106:
+    case static_cast<int>(RecvOp::GmCommand):
         FUN_14173c090(packet);
         break;
     case 0x113:
         FUN_1403ed2d0()->FUN_141bd9c20(packet);
         break;
-    case 0x111:
+    case static_cast<int>(RecvOp::BirthdayCard):
         FUN_14173c7a0(packet);
         break;
-    case 0x115:
+    case static_cast<int>(RecvOp::Reactor):
         OnReactor(packet);
         break;
-    case 0x118:
+    case static_cast<int>(RecvOp::TreeWatering):
         FUN_14173ce30(packet);
         break;
-    case 0x11a:
+    case static_cast<int>(RecvOp::SpectateMushtopia):
         FUN_14173d180(packet);
         break;
-    case 0x11b:
+    case static_cast<int>(RecvOp::Lapenshard):
         OnLapenshard(packet);
         break;
-    case 0x11c:
+    case static_cast<int>(RecvOp::Prestige):
         OnPrestige(packet);
         break;
         break;  // the exe keeps a dead jmp here (a removed case's leftover break)
-    case 0x120:
+    case static_cast<int>(RecvOp::SyncValue):
         FUN_14173ddf0(packet);
         break;
-    case 0x121:
+    case static_cast<int>(RecvOp::MinimapPing):
         FUN_14173de10(packet);
         break;
-    case 0x91:
+    case static_cast<int>(RecvOp::AppendClientLog):
         FUN_14173def0(packet);
         break;
-    case 0x11f:
+    case static_cast<int>(RecvOp::WorldChampion):
         FUN_14173dfd0(packet);
         break;
-    case 0x126:
+    case static_cast<int>(RecvOp::ChatStamp):
         FUN_14173e440(packet);
         break;
-    case 0xef:
+    case static_cast<int>(RecvOp::DungeonMatch):
         FUN_14173e4b0(packet);
         break;
-    case 0xf5:
+    case static_cast<int>(RecvOp::ItemScript):
         FUN_14173e510(packet);
         break;
-    case 0x128:
+    case static_cast<int>(RecvOp::Wedding):
         FUN_1409eed90()->FUN_141b83750(packet);
         break;
-    case 0x12b:
+    case static_cast<int>(RecvOp::HideAndSeek):
         OnHideAndSeek(packet);
         break;
-    case 0x12c:
+    case static_cast<int>(RecvOp::MessengerBrowserStamp):
         FUN_14173f0c0(packet);
         break;
-    case 0x12e:
+    case static_cast<int>(RecvOp::LimitBreak):
         OnLimitBreak(packet);
         break;
     case 0x12f:
         FUN_14173f280(packet);
         break;
-    case 0xde:
+    case static_cast<int>(RecvOp::ItemSocketSystem):
         OnItemSocketSystem(packet);
         break;
     case 0x131:
@@ -2118,13 +2118,13 @@ MS2_REPLACE_METHOD(0x14170c5b0, CSceneStateGame, OnPacket, 4075, 0x85D9EB98);
 void CSceneStateGame::vfunc_1(int nParam)
 {
     {
-        COutPacket out(0xf, 0);
+        COutPacket out(static_cast<int>(SendOp::RequestLoadUgcMap), 0);
         out.COutPacket::vfunc_o10_3(FUN_1403ed2d0()->FUN_141bd98d0());
         FUN_140710590(out);
     }
     FUN_14052d220()->FUN_141889150();
     {
-        COutPacket out(0x38, 0);
+        COutPacket out(static_cast<int>(SendOp::Ugc), 0);
         out.COutPacket::vfunc_o10_1(0x12);
         out.COutPacket::vfunc_o10_3(nParam);
         FUN_140710590(out);
@@ -2184,7 +2184,7 @@ void CSceneStateGame::FUN_14170dc90(CInPacket& packet)
     req.m_n8 = DAT_143ab284c;
     req.m_nC = DAT_143ab2850;
     req.m_machineId.FUN_14067c080(FUN_140aadf70()->FUN_140d4fdf0());
-    COutPacket out(4, 0);
+    COutPacket out(static_cast<int>(SendOp::ResponseKey), 0);
     req.FUN_1401f9d20(out);
     FUN_140710590(out);
 }
@@ -2267,13 +2267,13 @@ void CSceneStateGame::OnServerEnter(CInPacket& packet)
     FUN_1403ed2a0()->FUN_1407ce240();
     if (DAT_143ab2918 == 0)
     {
-        COutPacket out(0x82, 0);
+        COutPacket out(static_cast<int>(SendOp::GlobalFactor), 0);
         FUN_140710590(out);
     }
     FUN_140714f90()->FUN_141539260();
     if (FUN_1414a56d0() != 0)
     {
-        COutPacket out(0xe, 0);
+        COutPacket out(static_cast<int>(SendOp::DynamicBanword), 0);
         out.COutPacket::vfunc_o10_4(FUN_1414a56d0()->FUN_14034a1b0());
         FUN_140710590(out);
     }
@@ -2410,7 +2410,7 @@ void CSceneStateGame::OnLoadUgcMap(CInPacket& packet)
                 spService->FUN_1410c3f10(nKey, nValue);
             }
         }
-        COutPacket out(0x10, 0);
+        COutPacket out(static_cast<int>(SendOp::ResponseFieldEnter), 0);
         out.COutPacket::vfunc_o10_3(FUN_1403ed2d0()->FUN_141bd98d0());
         FUN_140710590(out);
         FUN_1403ed2d0()->FUN_141bdb690();
@@ -7172,7 +7172,7 @@ MS2_REPLACE_METHOD(0x14173FEB0, CSceneStateGame, FUN_14173feb0, 830, 0xE21C6DBD)
 // @0x141740200
 void CSceneStateGame::FUN_141740200(const CStringW& strName, int nType)
 {
-    COutPacket out(0x51, 0);
+    COutPacket out(static_cast<int>(SendOp::RequestHome), 0);
     out.COutPacket::vfunc_o10_1(0);
     out.COutPacket::vfunc_o10_8(strName);
     out.COutPacket::vfunc_o10_1(nType);
@@ -8920,7 +8920,7 @@ void CSceneStateGame::SendBeauty(CInPacket& packet)
         msg.FUN_1422b7f70(0x4eee);
         pEntity->OnMessage(0, &msg);
     }
-    COutPacket out(0x23, 0);
+    COutPacket out(static_cast<int>(SendOp::Beauty), 0);
     out.COutPacket::vfunc_o10_1(0x17);
     out.COutPacket::vfunc_o10_4(req.m_nUid);
     FUN_140710590(out);
@@ -10140,7 +10140,7 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
             spService->FUN_1410c4240(nA, nB, strName, nC, nCharId);
             if (nCharId == DAT_143ab2820)
             {
-                COutPacket out(0x37, 0);
+                COutPacket out(static_cast<int>(SendOp::RequestCube), 0);
                 out.COutPacket::vfunc_o10_1(0x15);
                 out.COutPacket::vfunc_o10_8(strName);
                 FUN_140710590(out);

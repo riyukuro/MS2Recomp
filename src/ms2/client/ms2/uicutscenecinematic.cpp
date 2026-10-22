@@ -515,7 +515,7 @@ void UICutSceneCinematic::SendTrigger()
 {
     if (m_nSkipState == 2 || m_nSkipState == 1)
     {
-        COutPacket packet(0x2f, 0);
+        COutPacket packet(static_cast<int>(SendOp::Trigger), 0);
         packet.Encode1(8);
         FUN_140710590(packet);
     }

@@ -590,7 +590,7 @@ void UIItemRemakeScrollDialog::FUN_140f59ad0(unsigned __int64 nOptionUid, int nU
             }
         }
     }
-    COutPacket pkt(0x76, 0);
+    COutPacket pkt(static_cast<int>(SendOp::ChangeAttributesScroll), 0);
     pkt.Encode1(1);
     option.vfunc_1(pkt);
     FUN_140710590(pkt);
@@ -781,7 +781,7 @@ void UIItemRemakeScrollDialog::FUN_140f5b670(ASData& data)
         {
             CCItemRemakeOptionPacket::ApplyOptionClient apply;
             apply.m_uid = spChosen->FUN_140526a50();
-            COutPacket pkt(0x76, 0);
+            COutPacket pkt(static_cast<int>(SendOp::ChangeAttributesScroll), 0);
             pkt.Encode1(3);
             apply.vfunc_1(pkt);
             FUN_140710590(pkt);

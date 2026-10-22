@@ -370,7 +370,7 @@ Unk_PCCubeCraft::~Unk_PCCubeCraft()
 // @0x1410a8a20
 void Unk_PCCubeCraft::SendRequestCubeMode0(int nValue)
 {
-    COutPacket packet(0x37, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
     packet.Encode1(0);
     packet.Encode4(nValue);
     FUN_140710590(packet);
@@ -669,14 +669,14 @@ void Unk_PCCubeCraft::FUN_1410aa0c0(CubeItemInfo* pInfo)
     m_bPending = true;
     if (GetMode() == 1)
     {
-        COutPacket packet(0x37, 0);
+        COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
         packet.Encode1(0);
         packet.Encode4(0);
         FUN_140710590(packet);
     }
     if (pInfo == 0)
         pInfo = new CubeItemInfo();
-    COutPacket packet(0x37, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
     packet.Encode1(1);
     FUN_1408b39c0(pInfo, packet);
     FUN_140710590(packet);
@@ -1090,7 +1090,7 @@ void Unk_PCCubeCraft::FUN_1410aad50()
             kEuler.z = (float)(int)(kEuler.z / 90.0f) * 90.0f;
             Unk_Int3 kGrid = FUN_1408a1430((const NiPoint3&)m_ptCell);
             CubeItemInfo kInfo(*m_spItem.get());
-            COutPacket packet(0x37, 0);
+            COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
             packet.Encode1(0xf);
             packet.Encode4(FUN_1408a03c0(kGrid));
             FUN_1408b39c0(&kInfo, packet);
@@ -1119,7 +1119,7 @@ void Unk_PCCubeCraft::FUN_1410aad50()
             kEuler.z = (float)(int)(kEuler.z / 90.0f) * 90.0f;
             FUN_140291b70(&kEuler.z);
             CubeItemInfo kInfo(*m_spItem.get());
-            COutPacket packet(0x37, 0);
+            COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
             packet.Encode1(10);
             packet.Encode4(FUN_1408a13d0((const efd::Point3&)m_ptCell));
             FUN_1408b39c0(&kInfo, packet);
@@ -1186,7 +1186,7 @@ void Unk_PCCubeCraft::FUN_1410ab5c0(unsigned char bNotice)
                 if (!GetCubeMotionManager()->FUN_14115b500(kId, kRot))
                 {
                     Unk_Int3 kGrid = FUN_1408a1430((const NiPoint3&)kCell);
-                    COutPacket packet(0x37, 0);
+                    COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
                     packet.Encode1(0xe);
                     packet.Encode4(FUN_1408a03c0(kGrid));
                     packet.vfunc_o10_0(bNotice != 0);
@@ -1243,7 +1243,7 @@ void Unk_PCCubeCraft::FUN_1410abb40()
         }
         else
         {
-            COutPacket packet(0x37, 0);
+            COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
             packet.Encode1(0xc);
             packet.Encode4(FUN_1408a03c0(kGrid));
             FUN_140710590(packet);
@@ -1362,7 +1362,7 @@ void Unk_PCCubeCraft::FUN_1410ac540()
     kRow.FUN_140708b20();
     if (pRow == 0)
         return;
-    COutPacket packet(0x90, 0);
+    COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
     packet.Encode1(0xd);
     packet.Encode4(FUN_1408a13d0((const efd::Point3&)kCell));
     FUN_140710590(packet);
@@ -1408,7 +1408,7 @@ void Unk_PCCubeCraft::FUN_1410aded0()
             }
             return;
         }
-        COutPacket packet(0x37, 0);
+        COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
         packet.Encode1(0x10);
         packet.Encode4(FUN_1408a03c0(kGrid));
         FUN_1408b39c0(&kInfo, packet);
@@ -1418,7 +1418,7 @@ void Unk_PCCubeCraft::FUN_1410aded0()
     }
     else
     {
-        COutPacket packet(0x37, 0);
+        COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
         packet.Encode1(0xb);
         packet.Encode4(FUN_1408a03c0(kGrid));
         FUN_1408b39c0(&kInfo, packet);

@@ -396,7 +396,7 @@ int CItemBreakManager::FUN_140531b70() {
 }
 MS2_REPLACE_METHOD(0x140531B70, CItemBreakManager, FUN_140531b70, 165, 0xC7E57465);
 // @0x140531c20
-void CItemBreakManager::SendItemDismantleMode0(int value) { type=value; pending.RemoveAll(); ItemBreakCommon::FUN_140530b00(items,100); COutPacket packet(0x5a,0); packet.Encode1(0); packet.Encode1((unsigned char)type); FUN_140710590(packet); }
+void CItemBreakManager::SendItemDismantleMode0(int value) { type=value; pending.RemoveAll(); ItemBreakCommon::FUN_140530b00(items,100); COutPacket packet(static_cast<int>(SendOp::ItemDismantle),0); packet.Encode1(0); packet.Encode1((unsigned char)type); FUN_140710590(packet); }
 MS2_REPLACE_METHOD(0x140531C20, CItemBreakManager, SendItemDismantleMode0, 149, 0xDC547EA6);
 // @0x140531cc0
 void CItemBreakManager::FUN_140531cc0() { SendItemDismantleMode0(0); }
@@ -413,7 +413,7 @@ CItemBreakManager::ItemPtr CItemBreakManager::FUN_140531ce0(int index) {
 void CItemBreakManager::FUN_140531ed0() {
     for(size_t i=0;i<items.GetCount();++i) { ItemBreakCommon::Ptr p=items[i]; if(p==0 || p->FUN_140530750()) continue;
         unsigned __int64 id=p->id; ItemPtr item=DAT_143ab2a90.FUN_140a5d680(id); if(item==0) { if(Unk_BreakFind(pending,id)==-1) {
-            COutPacket packet(0x5a,0); packet.Encode1(2); packet.FUN_14020ae50(id); FUN_140710590(packet); pending.Add(id);
+            COutPacket packet(static_cast<int>(SendOp::ItemDismantle),0); packet.Encode1(2); packet.FUN_14020ae50(id); FUN_140710590(packet); pending.Add(id);
         } }
     }
 }
@@ -503,7 +503,7 @@ int CItemBreakManager::FUN_140532c30() {
 }
 MS2_REPLACE_METHOD(0x140532C30, CItemBreakManager, FUN_140532c30, 329, 0x048AC1F8);
 // @0x140532d80
-int CItemBreakManager::SendItemDismantleMode3() { COutPacket packet(0x5a,0); packet.Encode1(3); FUN_140710590(packet); return 1; }
+int CItemBreakManager::SendItemDismantleMode3() { COutPacket packet(static_cast<int>(SendOp::ItemDismantle),0); packet.Encode1(3); FUN_140710590(packet); return 1; }
 MS2_REPLACE_METHOD(0x140532D80, CItemBreakManager, SendItemDismantleMode3, 86, 0xCDB63F78);
 // MS2-FUNCTIONAL: 300 unmasked bytes differ; temp ordering, not hooked
 // @0x140532de0
@@ -518,14 +518,14 @@ int CItemBreakManager::FUN_140532de0(ItemPtr item,int arg) {
     FUN_140533440(item,arg); return 1;
 }
 // @0x140533210
-void CItemBreakManager::SendItemDismantleMode1(__int64 id,int count,int arg) { COutPacket packet(0x5a,0); packet.Encode1(1); packet.Encode4(arg); packet.FUN_14020ae50(id); packet.Encode4(count); FUN_140710590(packet); }
+void CItemBreakManager::SendItemDismantleMode1(__int64 id,int count,int arg) { COutPacket packet(static_cast<int>(SendOp::ItemDismantle),0); packet.Encode1(1); packet.Encode4(arg); packet.FUN_14020ae50(id); packet.Encode4(count); FUN_140710590(packet); }
 MS2_REPLACE_METHOD(0x140533210, CItemBreakManager, SendItemDismantleMode1, 139, 0x0CBD71F0);
 // @0x1405332b0
-void CItemBreakManager::SendItemDismantleMode6(int a,int b) { if(!FUN_140532ab0()) return; { COutPacket packet(0x5a,0); packet.Encode1(6); packet.Encode1((unsigned char)a); packet.Encode1((unsigned char)b); FUN_140710590(packet); } }
+void CItemBreakManager::SendItemDismantleMode6(int a,int b) { if(!FUN_140532ab0()) return; { COutPacket packet(static_cast<int>(SendOp::ItemDismantle),0); packet.Encode1(6); packet.Encode1((unsigned char)a); packet.Encode1((unsigned char)b); FUN_140710590(packet); } }
 MS2_REPLACE_METHOD(0x1405332B0, CItemBreakManager, SendItemDismantleMode6, 133, 0xB5BB3AAC);
 // @0x140533340
 int CItemBreakManager::FUN_140533340(ItemPtr item) {
-    if(!FUN_140531270(item)) { FUN_141275260(0x8f6,1,1); return 0; } COutPacket packet(0x5a,0); packet.Encode1(2); packet.FUN_14020ae50(item->FUN_140526a50()); FUN_140710590(packet); return 1;
+    if(!FUN_140531270(item)) { FUN_141275260(0x8f6,1,1); return 0; } COutPacket packet(static_cast<int>(SendOp::ItemDismantle),0); packet.Encode1(2); packet.FUN_14020ae50(item->FUN_140526a50()); FUN_140710590(packet); return 1;
 }
 MS2_REPLACE_METHOD(0x140533340, CItemBreakManager, FUN_140533340, 248, 0x31B0FB01);
 // MS2-FUNCTIONAL: 1203 unmasked bytes differ; CMsgBoxData temps/frame slots, not hooked

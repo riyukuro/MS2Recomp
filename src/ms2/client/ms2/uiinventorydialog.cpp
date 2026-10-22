@@ -1402,7 +1402,7 @@ bool UIInventoryDialog::FUN_14199b4e0(int nResult, const CMsgBoxData& box)
     {
         if (FUN_140164830(strOld, strName))
         {
-            COutPacket packet(0x98, 0);
+            COutPacket packet(static_cast<int>(SendOp::NameChange), 0);
             packet.vfunc_o10_4(nItemUid);
             packet.vfunc_o10_8(strName);
             FUN_140710590(packet);
@@ -1567,7 +1567,7 @@ MS2_REPLACE_METHOD(0x14199C0D0, UIInventoryDialog, FUN_14199c0d0, 337, 0);
 // @0x14199c230
 void UIInventoryDialog::SendRequestItemInventory(int nTab, bool bStack)
 {
-    COutPacket packet(0x17, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestItemInventory), 0);
     packet.vfunc_o10_1(8);
     packet.vfunc_o10_1((unsigned char)nTab);
     packet.vfunc_o10_0(bStack);

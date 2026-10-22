@@ -206,7 +206,7 @@ void UIBannerEventListenerRpsGame::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
         FUN_141275260(0xd03, 1, 1);
         return;
     }
-    COutPacket packet(0xa8, 0);
+    COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
     packet.Encode2(1);
     packet.Encode8(pTarget->FUN_141656a80());
     FUN_140710590(packet);
@@ -234,7 +234,7 @@ bool FUN_140bac700(int nResult, const Unk_CMsgBoxData& box)
     Unk_141bd0cc0* pTarget = FUN_140b879d0(pState);
     if (!pTarget)
         return true;
-    COutPacket packet(0xa8, 0);
+    COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
     packet.Encode2(5);
     packet.Encode8(pTarget->FUN_141656a80());
     FUN_140710590(packet);
@@ -299,7 +299,7 @@ void UIBannerEventListenerCoupleDance::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
         FUN_1412752d0(CStringW(L"s_microgame_couple_dance_request_failed_wrong_state"), 1);
         return;
     }
-    COutPacket packet(0xa8, 0);
+    COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
     packet.Encode2(0xe);
     packet.Encode4(pEvent->m_id);
     packet.Encode8(pTarget->FUN_141656a80());
@@ -332,7 +332,7 @@ bool FUN_140bacda0(int nResult, const Unk_CMsgBoxData& box)
     MS2Ptr<Unk_CoupleDanceEvent> pEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
     if (pEvent.get())
         nEventId = pEvent->m_id;
-    COutPacket packet(0xa8, 0);
+    COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
     packet.Encode2(0x13);
     packet.Encode4(nEventId);
     packet.Encode8(pTarget->FUN_141656a80());

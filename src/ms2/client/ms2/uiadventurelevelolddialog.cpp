@@ -529,7 +529,7 @@ void UIAdventureLevelOldDialog::SendPrestige(unsigned int nLevel)
     Unk_ALClaimLevel claim;
     claim.m_op = 3;
     claim.m_id = nLevel;
-    COutPacket packet(0xac, 0);
+    COutPacket packet(static_cast<int>(SendOp::Prestige), 0);
     claim.FUN_140202290(packet);
     FUN_140710590(packet);
 }

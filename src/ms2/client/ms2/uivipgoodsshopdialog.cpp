@@ -202,7 +202,7 @@ void UIVIPGoodsShopDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     PCBase* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPlayer != 0) {
-        COutPacket packet(0x8e, 0);
+        COutPacket packet(static_cast<int>(SendOp::PremiumClub), 0);
         packet.Encode1(3);
         FUN_140710590(packet);
     }
@@ -534,7 +534,7 @@ bool UIVIPGoodsShopDialog::SendPremiumClubMode4(MS2Ptr<TMarketBillDataParam> spP
         return false;
     if (FUN_140ebc590(mapPay) == 0)
         return false;
-    COutPacket packet(0x8e, 0);
+    COutPacket packet(static_cast<int>(SendOp::PremiumClub), 0);
     packet.Encode1(4);
     packet.Encode4(spVip->m_nGoodsId);
     FUN_140710590(packet);

@@ -604,7 +604,7 @@ void UIServerListDialog::FUN_141ad28f0(void* pPacket)
         request.m_strRegion = FUN_140652030(FUN_1406516a0());
         if (FUN_1409a8b10()->FUN_140cfd260()->m_bLocaledName == 1)
             request.m_strId = FUN_1401d2b10(DAT_143ab29d8, FUN_1406521f0(FUN_1406516b0()));
-        COutPacket packet(3, 0);
+        COutPacket packet(static_cast<int>(SendOp::ResponseLogin), 0);
         FUN_1401f9020(&request, &packet);
         FUN_140710590(packet);
     } else {
@@ -643,7 +643,7 @@ int UIServerListDialog::FUN_141ad2c50(__int64 nCharId, __int64 n3)
     Unk_SlEnterRequest request;
     request.m_nCharId = nCharId;
     request.m_nChannel = nChannel;
-    COutPacket packet(9, 0);
+    COutPacket packet(static_cast<int>(SendOp::CharacterManagement), 0);
     packet.vfunc_o10_1(0);
     FUN_1401f9e60(&request, &packet);
     FUN_140710590(packet);
@@ -723,7 +723,7 @@ void UIServerListDialog::OnEndPopdown()
 bool UIServerListDialog::FUN_141ad3260(int nButton, const CMsgBoxData& data)
 {
     if (nButton == 0) {
-        COutPacket packet(0x6d, 0);
+        COutPacket packet(static_cast<int>(SendOp::WaitingTicket), 0);
         packet.vfunc_o10_1(1);
         FUN_140710590(packet);
         UIServerListDialog* pDialog = FUN_14136f520(0x4ef0);

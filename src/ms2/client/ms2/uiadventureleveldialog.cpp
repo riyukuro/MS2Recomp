@@ -638,7 +638,7 @@ void UIAdventureLevelDialog::FUN_140ba4960(unsigned int nLevel)
     Unk_ALClaimLevel claim;
     claim.m_op = 3;
     claim.m_id = nLevel;
-    COutPacket packet(0xac, 0);
+    COutPacket packet(static_cast<int>(SendOp::Prestige), 0);
     claim.FUN_140202290(packet);
     FUN_140710590(packet);
 }
@@ -660,7 +660,7 @@ void UIAdventureLevelDialog::FUN_140ba4a10(unsigned int nMissionId)
     Unk_ALClaimMission claim;
     claim.m_op = 5;
     claim.m_id = nMissionId;
-    COutPacket packet(0xac, 0);
+    COutPacket packet(static_cast<int>(SendOp::Prestige), 0);
     claim.FUN_140202380(packet);
     FUN_140710590(packet);
 }

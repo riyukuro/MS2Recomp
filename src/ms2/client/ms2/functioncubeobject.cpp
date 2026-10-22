@@ -632,7 +632,7 @@ void CFunctionCubeObject::vfunc_8(CString str)
         FUN_140ac2e80(&kInfo);
         kInfo.m_strId = m_strId;
         kInfo.m_nCount = 1;
-        COutPacket kPacket(0x2e, 0);
+        COutPacket kPacket(static_cast<int>(SendOp::FunctionCube), 0);
         kPacket.vfunc_o10_1(5);
         kPacket.vfunc_o10_3(1);
         FUN_1401fc610(&kInfo, &kPacket);
@@ -2977,7 +2977,7 @@ void CFunctionCubeService::FUN_141231730()
             FUN_140ac2e80(&kInfo);
             kInfo.m_strId = strKey;
             kInfo.m_nCount = 2;
-            COutPacket kPacket(0x2e, 0);
+            COutPacket kPacket(static_cast<int>(SendOp::FunctionCube), 0);
             kPacket.vfunc_o10_1(5);
             kPacket.vfunc_o10_3(1);
             FUN_1401fc610(&kInfo, &kPacket);

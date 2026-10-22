@@ -1500,7 +1500,7 @@ void CUgcManager::SendUGCMode1()
         return;
     if (spCtrl->m_spViewer == 0)
         return;
-    COutPacket packet(0x38, 0);
+    COutPacket packet(static_cast<int>(SendOp::Ugc), 0);
     packet.Encode1(1);
     packet.Encode8(spCtrl->m_itemUid);
     spCtrl->Write(packet);
@@ -1517,7 +1517,7 @@ void CUgcManager::SendUGCMode3()
         return;
     if (spCtrl->m_spViewer == 0)
         return;
-    COutPacket packet(0x38, 0);
+    COutPacket packet(static_cast<int>(SendOp::Ugc), 0);
     packet.Encode1(3);
     spCtrl->Write(packet);
     FUN_140710590(packet);
@@ -1527,7 +1527,7 @@ MS2_REPLACE_METHOD(0x1418832a0, CUgcManager, SendUGCMode3, 207, 0x1CDD710B);
 // @0x141883380
 void CUgcManager::SendUGCMode11(CString strPath)
 {
-    COutPacket packet(0x38, 0);
+    COutPacket packet(static_cast<int>(SendOp::Ugc), 0);
     packet.Encode1(0xb);
     packet.vfunc_o10_6(strPath);
     FUN_140710590(packet);
@@ -1565,7 +1565,7 @@ void CUgcManager::FUN_141883400(CRBMap<int, int>& hours, const Unk_BannerDay& da
         spHour->m_nHour = nHour;
         spReserve->m_reserves.SetAt(spHour->GetKey(), spHour);
     }
-    COutPacket packet(0x38, 0);
+    COutPacket packet(static_cast<int>(SendOp::Ugc), 0);
     packet.Encode1(0x13);
     spReserve->Write(packet);
     FUN_140710590(packet);
@@ -1575,7 +1575,7 @@ MS2_REPLACE_METHOD(0x141883400, CUgcManager, FUN_141883400, 876, 0x8060E659);
 // @0x141883780
 void CUgcManager::SendUGCMode12(CString strPath)
 {
-    COutPacket packet(0x38, 0);
+    COutPacket packet(static_cast<int>(SendOp::Ugc), 0);
     packet.Encode1(0xc);
     packet.vfunc_o10_6(strPath);
     FUN_140710590(packet);
@@ -1585,7 +1585,7 @@ MS2_REPLACE_METHOD(0x141883780, CUgcManager, SendUGCMode12, 107, 0x41562117);
 // @0x141883800
 void CUgcManager::SendUGCMode0()
 {
-    COutPacket packet(0x38, 0);
+    COutPacket packet(static_cast<int>(SendOp::Ugc), 0);
     packet.Encode1(0);
     FUN_140710590(packet);
 }
@@ -3984,7 +3984,7 @@ MS2_REPLACE_METHOD(0x14188fdb0, CUgcManager, FUN_14188fdb0, 249, 0xC11F5A8F);
 // Asks the server for the blueprint upload (opcode 0x37, 0x3f).
 void CUgcManager::SendRequestCube()
 {
-    COutPacket packet(0x37, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
     packet.Encode1(0x3f);
     FUN_140710590(packet);
 }

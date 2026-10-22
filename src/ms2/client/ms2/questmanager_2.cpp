@@ -1559,7 +1559,7 @@ void CQuestManager::SendQuestMode12(int questId)
     Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
     if (!quest.IsNull()) {
         if (quest->FUN_1407441f0(FUN_1403ed2d0()->FUN_141bd3060()) != 0) {
-            COutPacket packet(0x29, 0);
+            COutPacket packet(static_cast<int>(SendOp::Quest), 0);
             packet.vfunc_o10_1(0xc);
             packet.vfunc_o10_3(questId);
             FUN_140710590(packet);
@@ -1575,7 +1575,7 @@ void CQuestManager::SendQuestMode13(int questId)
     Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
     if (!quest.IsNull()) {
         if (quest->FUN_1407443e0(FUN_1403ed2d0()->FUN_141bd3060()) != 0) {
-            COutPacket packet(0x29, 0);
+            COutPacket packet(static_cast<int>(SendOp::Quest), 0);
             packet.vfunc_o10_1(0xd);
             packet.vfunc_o10_3(questId);
             FUN_140710590(packet);
@@ -1591,7 +1591,7 @@ void CQuestManager::SendQuestMode19(int questId)
     Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
     if (!quest.IsNull()) {
         if (quest->FUN_140744670(FUN_1403ed2d0()->FUN_141bd3060()) != 0) {
-            COutPacket packet(0x29, 0);
+            COutPacket packet(static_cast<int>(SendOp::Quest), 0);
             packet.vfunc_o10_1(0x13);
             packet.vfunc_o10_3(questId);
             FUN_140710590(packet);
@@ -1625,12 +1625,12 @@ void CQuestManager::FUN_1416cf980(int questId, int leave)
     Unk_QmRoomPtr room = FUN_14031c2a0()->FUN_1403206b0(data->m_30c.m_roomId);
     if (!room) return;
     if (leave != 0) {
-        COutPacket packet(0x2c, 0);
+        COutPacket packet(static_cast<int>(SendOp::Party), 0);
         packet.vfunc_o10_1(0x22);
         packet.vfunc_o10_1(FUN_1402178b0(room->m_1c));
         FUN_140710590(packet);
     } else {
-        COutPacket packet(0x2c, 0);
+        COutPacket packet(static_cast<int>(SendOp::Party), 0);
         packet.vfunc_o10_1(0x20);
         packet.vfunc_o10_1(FUN_1402178b0(room->m_1c));
         packet.vfunc_o10_3(1);
@@ -1887,7 +1887,7 @@ MS2_REPLACE_METHOD(0x1416d09d0, CQuestManager, FUN_1416d09d0, 570, 0xAE4283FA);
 void CQuestManager::SendQuestMode14()
 {
     if (FUN_1416d09d0(*FUN_1401d3200()->FameContentsSkyFortressGotoMapID.Get(), 1) != 0) {
-        COutPacket packet(0x29, 0);
+        COutPacket packet(static_cast<int>(SendOp::Quest), 0);
         packet.vfunc_o10_1(0xe);
         FUN_140710590(packet);
     }
@@ -1916,7 +1916,7 @@ void CQuestManager::SendQuestMode15(int id)
         return;
     }
     m_refreshCount++;
-    COutPacket packet(0x29, 0);
+    COutPacket packet(static_cast<int>(SendOp::Quest), 0);
     packet.vfunc_o10_1(0xf);
     packet.vfunc_o10_3(id);
     FUN_140710590(packet);
@@ -1936,7 +1936,7 @@ bool CQuestManager::SendQuestMode20(int result, const CMsgBoxData& message)
     if (result != 0) return true;
     unsigned id = FUN_141a02e90(&message, 0, 0);
     int count = FUN_141a02e50(&message, 1, 0);
-    COutPacket packet(0x29, 0);
+    COutPacket packet(static_cast<int>(SendOp::Quest), 0);
     packet.vfunc_o10_1(0x14);
     packet.vfunc_o10_3(id);
     packet.vfunc_o10_2(static_cast<short>(count));
@@ -2305,7 +2305,7 @@ void CQuestManager::FUN_1416d3010()
             m_quests140.GetNext(pos);
         }
         if (changed.GetCount() != 0) {
-            COutPacket packet(0x29, 0);
+            COutPacket packet(static_cast<int>(SendOp::Quest), 0);
             packet.vfunc_o10_1(7);
             packet.vfunc_o10_3(static_cast<int>(changed.GetCount()));
             for (size_t i = 0; i < changed.GetCount(); i = i + 1) {
@@ -2339,7 +2339,7 @@ void CQuestManager::FUN_1416d3250()
             }
         }
         if (available.GetCount() != 0) {
-            COutPacket packet(0x29, 0);
+            COutPacket packet(static_cast<int>(SendOp::Quest), 0);
             packet.vfunc_o10_1(8);
             packet.vfunc_o10_3(static_cast<int>(available.GetCount()));
             for (size_t i = 0; i < available.GetCount(); i = i + 1) {

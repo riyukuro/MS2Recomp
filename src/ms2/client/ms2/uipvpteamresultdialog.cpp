@@ -154,7 +154,7 @@ void UIPvPTeamResultDialog::vfunc_67()
 {
     if (m_nCount >= 0)
     {
-        COutPacket packet(0x61, 0);
+        COutPacket packet(static_cast<int>(SendOp::Pvp), 0);
         packet.vfunc_o10_1(0x6e);
         FUN_140710590(packet);
         m_nCount = -1;

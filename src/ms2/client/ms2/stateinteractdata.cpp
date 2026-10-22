@@ -459,7 +459,7 @@ bool StateInteraction::vfunc_25(int, void*) { return false; }
 // @0x1417d1ed0
 void StateInteraction::SendInteractObjectMode11()
 {
-    COutPacket kPacket(0x31, 0);
+    COutPacket kPacket(static_cast<int>(SendOp::InteractObject), 0);
     kPacket.vfunc_o10_1(0xb);
     kPacket.vfunc_o10_3(static_cast<int>(m_aObjects.size()));
     for (size_t i = 0; i < m_aObjects.size(); i++)
@@ -483,7 +483,7 @@ void StateInteraction::SendInteractObjectMode12()
         if (m_aObjects[i]->vfunc_4() != 0)
             aUsable.push_back(m_aObjects[i]);
     }
-    COutPacket kPacket(0x31, 0);
+    COutPacket kPacket(static_cast<int>(SendOp::InteractObject), 0);
     kPacket.vfunc_o10_1(0xc);
     kPacket.vfunc_o10_3(static_cast<int>(aUsable.size()));
     for (size_t i = 0; i < aUsable.size(); i++)
@@ -769,7 +769,7 @@ void StateAutoInteraction::vfunc_3(double fTime)
                 pBar->FUN_1418e1390();
             if (m_spAuto.get())
             {
-                COutPacket kPacket(0x83, 0);
+                COutPacket kPacket(static_cast<int>(SendOp::SmartPush), 0);
                 kPacket.vfunc_o10_3(m_spAuto->m_n18);
                 kPacket.vfunc_o10_3(m_spAuto->m_n1c);
                 kPacket.vfunc_o10_3(m_spAuto->m_n20);

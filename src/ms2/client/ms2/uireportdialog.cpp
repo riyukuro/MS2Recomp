@@ -366,7 +366,7 @@ bool UIReportDialog::FUN_141ab9d70(CString strMethod, unsigned int nFlags, CStri
     {
         if (FUN_141aba4b0(strMethod) == false)
             return false;
-        COutPacket packet(0x52, 0);
+        COutPacket packet(static_cast<int>(SendOp::RequestReport), 0);
         packet.vfunc_o10_8(m_strTarget);
         packet.vfunc_o10_8(strText);
         if (strMethod.CompareNoCase("OnSelectCharacter") == 0)

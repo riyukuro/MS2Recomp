@@ -293,7 +293,7 @@ bool UIWeddingDialog::SendWedding(int nResult, const CMsgBoxData& box)
     Unk_WeddingPartner* pPartner = FUN_1408ff3b0(pProxy, DAT_143ab2828);
     if (nResult == 0)
     {
-        COutPacket packet(0xba, 0);
+        COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
         packet.vfunc_o10_1(7);
         FUN_140710590(packet);
     }

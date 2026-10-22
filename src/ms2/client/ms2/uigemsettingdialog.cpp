@@ -151,7 +151,7 @@ int UIGemSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     setting.m_aHidden[7] = FUN_141946a70("m_gl");
     setting.m_aHidden[8] = FUN_141946a70("m_ri");
     setting.m_aHidden[9] = FUN_141946a70("m_sh");
-    COutPacket packet(0x47, 0);
+    COutPacket packet(static_cast<int>(SendOp::BadgeEquip), 0);
     packet.vfunc_o10_1(3);
     FUN_1401fd2e0(setting, packet);
     FUN_140710590(packet);

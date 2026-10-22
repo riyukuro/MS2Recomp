@@ -440,7 +440,7 @@ bool CPvpRankDuelComponent::RequestCancelMatch()
         FUN_141275260(0x279, 1, 1);
         return false;
     }
-    COutPacket packet(0x61, 0);
+    COutPacket packet(static_cast<int>(SendOp::Pvp), 0);
     packet.vfunc_o10_1(0x10);
     FUN_1407105c0(&packet, 0x10, 1000);
     return true;

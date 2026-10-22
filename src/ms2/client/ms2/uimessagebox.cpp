@@ -1559,7 +1559,7 @@ int UIMessageBox::SendRequestCube(int nButton)
     FUN_14151f200();
     if (nButton == 0)
     {
-        COutPacket packet(0x37, 0);
+        COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
         packet.Encode1(0x19);
         FUN_140710590(packet);
         return 1;
@@ -1720,7 +1720,7 @@ int UIMessageBox::FUN_1419fcf60(int nButton)
         return 1;
     if (nButton == 0)
     {
-        COutPacket packet(0x6f, 0);
+        COutPacket packet(static_cast<int>(SendOp::RecallScroll), 0);
         packet.Encode1(m_data->FUN_141a02e50(0, 0));
         packet.COutPacket::vfunc_o10_8(m_data->FUN_141a02fd0(1, CStringW()));
         packet.Encode4(m_data->FUN_141a02e90(2, 0));
@@ -2187,7 +2187,7 @@ int UIMessageBox::FUN_1419feae0(int nButton, const CStringW& strName)
                 pBox->FUN_1419f82b0(strError);
             return 0;
         }
-        COutPacket packet(0x7d, 0);
+        COutPacket packet(static_cast<int>(SendOp::CheckCharName), 0);
         packet.COutPacket::vfunc_o10_8(strName);
         packet.Encode8(spData->FUN_141a02c00());
         FUN_140710590(packet);
@@ -2375,7 +2375,7 @@ int UIMessageBox::FUN_1419ff870(int nButton)
     }
     else
     {
-        COutPacket packet(0xa3, 0);
+        COutPacket packet(static_cast<int>(SendOp::BuddyEmote), 0);
         packet.Encode1(4);
         packet.Encode4(nEmotion);
         packet.Encode8(nId);
@@ -2401,7 +2401,7 @@ int UIMessageBox::FUN_1419ffb20(int nButton)
     }
     if (bAccept == 0)
     {
-        COutPacket packet(0xa8, 0);
+        COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
         packet.Encode2(3);
         packet.Encode8(pTarget->FUN_141656a80());
         FUN_140710590(packet);
@@ -2409,7 +2409,7 @@ int UIMessageBox::FUN_1419ffb20(int nButton)
     }
     else
     {
-        COutPacket packet(0xa8, 0);
+        COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
         packet.Encode2(2);
         packet.Encode8(pTarget->FUN_141656a80());
         FUN_140710590(packet);
@@ -2452,7 +2452,7 @@ int UIMessageBox::FUN_1419fff10(int nButton)
     }
     if (nButton == 0)
     {
-        COutPacket packet(0xa8, 0);
+        COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
         packet.Encode2(0xf);
         packet.Encode4(nRound);
         packet.Encode8(pTarget->FUN_141656a80());
@@ -2461,7 +2461,7 @@ int UIMessageBox::FUN_1419fff10(int nButton)
     }
     else
     {
-        COutPacket packet(0xa8, 0);
+        COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
         packet.Encode2(0x11);
         packet.Encode4(nRound);
         packet.Encode8(pTarget->FUN_141656a80());

@@ -1032,7 +1032,7 @@ bool UISkillBookTreeDialog::OnResetConfirm(int nResult, const CMsgBoxData& box)
         }
         else
         {
-            COutPacket packet(0x25, 0);
+            COutPacket packet(static_cast<int>(SendOp::Job), 0);
             packet.Encode1(10);
             packet.Encode4(nRank);
             FUN_140710590(packet);
@@ -1107,7 +1107,7 @@ bool UISkillBookTreeDialog::OnRenameConfirm(int nResult, const CMsgBoxData& box)
                 return false;
             }
         }
-        COutPacket packet(0xa2, 0);
+        COutPacket packet(static_cast<int>(SendOp::RequestSkillBookTree), 0);
         packet.Encode1(2);
         packet.Encode8(nTabId);
         packet.vfunc_o10_8(strName);
@@ -1163,7 +1163,7 @@ bool UISkillBookTreeDialog::OnAddTabPayConfirm(int nResult, const CMsgBoxData& b
             FUN_141add1f0(FUN_1403ed2b0());
             return true;
         }
-        COutPacket packet(0xa2, 0);
+        COutPacket packet(static_cast<int>(SendOp::RequestSkillBookTree), 0);
         packet.Encode1(4);
         packet.Encode4(0x4f2d);
         packet.vfunc_o10_0(bCoupon);
@@ -1200,7 +1200,7 @@ void UISkillBookTreeDialog::RequestTree(__int64 nTabId, int bKeep, int nRank)
             }
         }
     }
-    COutPacket packet(0xa2, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestSkillBookTree), 0);
     packet.Encode1(1);
     packet.Encode8(m_nTabId);
     packet.Encode8(nTabId);
@@ -1252,7 +1252,7 @@ void UISkillBookTreeDialog::RequestJob(int bConfirm, int bAll, int nRank)
         m_spSimulator->GetMerged(skills, nRank);
     else
         m_spSimulator->GetSnapshot(skills, 0);
-    COutPacket packet(0x25, 0);
+    COutPacket packet(static_cast<int>(SendOp::Job), 0);
     packet.Encode1(bConfirm == 0 ? 9 : 0xb);
     packet.Encode4(skills.size());
     for (std::vector<JobSkillPtr>::iterator it = skills.begin(); it != skills.end(); ++it)
@@ -1986,7 +1986,7 @@ void UISkillBookTreeDialog::OnLoadComplete()
             m_nJobLevel = FUN_1401d7a50()->FUN_140644b80(FUN_141654730(pPlayer));
     }
     vfunc_8(0);
-    COutPacket packet(0xa2, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestSkillBookTree), 0);
     packet.Encode1(0);
     FUN_140710590(packet);
     FUN_140d86260()->Notify(0xe, 0, 1000);

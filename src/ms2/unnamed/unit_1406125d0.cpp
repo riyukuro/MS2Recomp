@@ -33,7 +33,7 @@ void CItemLockManager::SendRequestItemLockMode0()
     m_pending.RemoveAll();
     m_locked.RemoveAll();
     m_locked.SetCount(0x12, -1);
-    COutPacket packet(0x87, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestItemLock), 0);
     packet.vfunc_o10_1(0);
     FUN_140710590(packet);
 }
@@ -168,7 +168,7 @@ MS2_REPLACE_METHOD(0x140612DA0, CItemLockManager, FUN_140612da0, 101, 0x68CEC8C8
 // @0x140612e10
 int CItemLockManager::SendRequestItemLockMode3()
 {
-    COutPacket packet(0x87, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestItemLock), 0);
     packet.vfunc_o10_1(3);
     packet.vfunc_o10_1(m_mode);
     FUN_140710590(packet);
@@ -206,7 +206,7 @@ int CItemLockManager::FUN_140612e90(MS2Ptr<CItem> item)
             return 0;
         }
     }
-    COutPacket packet(0x87, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestItemLock), 0);
     packet.vfunc_o10_1(1);
     packet.vfunc_o10_1(m_mode);
     packet.vfunc_o10_4(item->FUN_140526a50());
@@ -218,7 +218,7 @@ MS2_REPLACE_METHOD(0x140612E90, CItemLockManager, FUN_140612e90, 585, 0xB6F104AC
 // @0x1406130e0
 int CItemLockManager::FUN_1406130e0(__int64 nItemUid)
 {
-    COutPacket packet(0x87, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestItemLock), 0);
     packet.vfunc_o10_1(2);
     packet.vfunc_o10_4(nItemUid);
     FUN_140710590(packet);
@@ -258,7 +258,7 @@ void CItemLockManager::FUN_1406132f0()
         MS2Ptr<CItem> item = DAT_143ab2a90.FUN_140a5d680(nItemUid);
         if (item.IsNull() && FUN_140534480(m_pending, nItemUid) == -1)
         {
-            COutPacket packet(0x87, 0);
+            COutPacket packet(static_cast<int>(SendOp::RequestItemLock), 0);
             packet.vfunc_o10_1(2);
             packet.vfunc_o10_4(nItemUid);
             FUN_140710590(packet);

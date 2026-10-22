@@ -347,7 +347,7 @@ void CSmartPush::vfunc_5(bool bAccept)
 {
     if (m_data == 0)
         return;
-    COutPacket packet(0x83, 0);
+    COutPacket packet(static_cast<int>(SendOp::SmartPush), 0);
     packet.vfunc_o10_3(m_nId);
     packet.vfunc_o10_3(m_n1c);
     packet.vfunc_o10_3(0);
@@ -1057,7 +1057,7 @@ void CSmartPushSafeWaterRidingToggle::vfunc_3()
 {
     if (m_data == 0)
         return;
-    COutPacket packet(0x83, 0);
+    COutPacket packet(static_cast<int>(SendOp::SmartPush), 0);
     packet.vfunc_o10_3(m_nId);
     packet.vfunc_o10_3(m_n1c);
     packet.vfunc_o10_3(0);

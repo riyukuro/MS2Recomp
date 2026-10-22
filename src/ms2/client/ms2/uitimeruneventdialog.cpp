@@ -201,7 +201,7 @@ int UITimeRunEventDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             int nItem = data.FUN_1422b8b10();
-            COutPacket packet(0x29, 0);
+            COutPacket packet(static_cast<int>(SendOp::Quest), 0);
             packet.Encode1(0x1b);
             packet.Encode4(nItem);
             FUN_140710590(packet);
@@ -213,7 +213,7 @@ int UITimeRunEventDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             int nDefault = 0;
             int nReceived = g_trCounters.FUN_1409617d0(0x5dc, spContext->m_eventId, &nDefault);
             if (nReceived == 0) {
-                COutPacket packet(0x97, 0);
+                COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
                 packet.Encode1(3);
                 FUN_140710590(packet);
             }
@@ -229,7 +229,7 @@ int UITimeRunEventDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
                 int nTaken = g_trCounters.FUN_1409617d0(0x5dd, spContext->m_eventId, &nDefault);
                 int nNext = spContext->GetNextRewardKey(nTaken);
                 if (nKey == nNext) {
-                    COutPacket packet(0x97, 0);
+                    COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
                     packet.Encode1(4);
                     packet.Encode4(nKey);
                     FUN_140710590(packet);

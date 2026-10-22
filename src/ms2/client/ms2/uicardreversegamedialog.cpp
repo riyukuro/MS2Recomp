@@ -174,7 +174,7 @@ void UICardReverseGameDialog::OnLoadInit()
     m_1f4 = 0;
     m_1f0 = -1;
     FUN_141901470(0, 0x4f02);
-    COutPacket packet(0x86, 0);
+    COutPacket packet(static_cast<int>(SendOp::CardReverseGame), 0);
     packet.vfunc_o10_1(0);
     FUN_140710590(packet);
 }
@@ -295,7 +295,7 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
 {
     if (_stricmp(szMethod, "onShuffleButton") == 0)
     {
-        COutPacket packet(0x86, 0);
+        COutPacket packet(static_cast<int>(SendOp::CardReverseGame), 0);
         packet.vfunc_o10_1(1);
         FUN_140710590(packet);
         return 1;
@@ -307,7 +307,7 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
             ASData data;
             if (data.FUN_1422b9620(pArgs, nArgs) != 0)
             {
-                COutPacket packet(0x86, 0);
+                COutPacket packet(static_cast<int>(SendOp::CardReverseGame), 0);
                 packet.vfunc_o10_1(2);
                 FUN_140710590(packet);
                 m_1f0 = data.FUN_1422b8b10();

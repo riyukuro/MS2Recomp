@@ -313,7 +313,7 @@ int UIAllianceQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             int nQuest = data.FUN_1422b8b10();
             if (FUN_140764020()->FUN_1407456d0(nQuest) != 0)
             {
-                COutPacket packet(0x22, 0);
+                COutPacket packet(static_cast<int>(SendOp::NpcTalk), 0);
                 packet.vfunc_o10_1(8);
                 packet.vfunc_o10_3(nQuest);
                 packet.vfunc_o10_2(2);
@@ -321,7 +321,7 @@ int UIAllianceQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             }
             else if (FUN_140764020()->vfunc_1(nQuest, 0) != 0)
             {
-                COutPacket packet(0x22, 0);
+                COutPacket packet(static_cast<int>(SendOp::NpcTalk), 0);
                 packet.vfunc_o10_1(8);
                 packet.vfunc_o10_3(nQuest);
                 packet.vfunc_o10_2(0);
@@ -346,7 +346,7 @@ int UIAllianceQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     }
     else if (_stricmp("onTalk", szMethod) == 0)
     {
-        COutPacket packet(0x22, 0);
+        COutPacket packet(static_cast<int>(SendOp::NpcTalk), 0);
         packet.vfunc_o10_1(9);
         FUN_140710590(packet);
     }
@@ -711,7 +711,7 @@ bool UIAllianceQuestDialog::SendQuestMode34(int nResult, const CMsgBoxData&)
 {
     if (nResult == 0)
     {
-        COutPacket packet(0x29, 0);
+        COutPacket packet(static_cast<int>(SendOp::Quest), 0);
         packet.vfunc_o10_1(0x22);
         FUN_140710590(packet);
         FUN_140bf91b0();
@@ -724,7 +724,7 @@ bool UIAllianceQuestDialog::SendQuestMode35(int nResult, const CMsgBoxData&)
 {
     if (nResult == 0)
     {
-        COutPacket packet(0x29, 0);
+        COutPacket packet(static_cast<int>(SendOp::Quest), 0);
         packet.vfunc_o10_1(0x23);
         FUN_140710590(packet);
         FUN_140bf9360();
@@ -738,7 +738,7 @@ bool UIAllianceQuestDialog::SendQuestMode33(int nResult, const CMsgBoxData& rBox
     if (nResult == 0)
     {
         unsigned nQuest = rBox.FUN_141a02e90(0, 0);
-        COutPacket packet(0x29, 0);
+        COutPacket packet(static_cast<int>(SendOp::Quest), 0);
         packet.vfunc_o10_1(0x21);
         packet.vfunc_o10_3(nQuest);
         FUN_140710590(packet);

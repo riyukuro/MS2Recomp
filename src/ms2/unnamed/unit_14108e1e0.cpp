@@ -1502,7 +1502,7 @@ int CNpc::vfunc_69()
 // @0x141094730
 void CNpc::SendInteractNpc()
 {
-    COutPacket packet(0x32, 0);
+    COutPacket packet(static_cast<int>(SendOp::InteractNpc), 0);
     packet.vfunc_o10_3(FUN_14123c580());
     FUN_140710590(packet);
 }

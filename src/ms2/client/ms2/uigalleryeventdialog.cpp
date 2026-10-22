@@ -589,7 +589,7 @@ void UIGalleryEventDialog::SendEventRewardMode7(int index)
     if (context == 0) return;
     auto card = context->FUN_1403ff3e0(index);
     if (!card) { MS2_ASSERT_AT(398, "pCard" && 0); return; }
-    COutPacket packet(151, 0);
+    COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
     packet.Encode1(7);
     packet.Encode1((unsigned char)index);
     FUN_140710590(packet);
@@ -604,7 +604,7 @@ void UIGalleryEventDialog::SendEventRewardMode8(int index)
     if (context == 0) return;
     auto card = context->FUN_1403ff3e0(index);
     if (!card) { MS2_ASSERT_AT(416, "pCard" && 0); return; }
-    COutPacket packet(151, 0);
+    COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
     packet.Encode1(8);
     packet.Encode1((unsigned char)index);
     FUN_140710590(packet);
@@ -616,7 +616,7 @@ void UIGalleryEventDialog::SendEventRewardMode9()
 {
     if (!FUN_140c18f10()) return;
     if (!FUN_140c187e0()) return;
-    COutPacket packet(151, 0);
+    COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
     packet.Encode1(9);
     FUN_140710590(packet);
 }

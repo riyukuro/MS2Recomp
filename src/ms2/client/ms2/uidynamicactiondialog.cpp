@@ -410,7 +410,7 @@ int UIDynamicActionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         unsigned short nLevel = it->second->m_level;
         bool bFavorite = data.FUN_1422b8a90();
         it->second->m_favorite = bFavorite;
-        COutPacket packet(0x13, 0);
+        COutPacket packet(static_cast<int>(SendOp::Emote), 0);
         packet.vfunc_o10_1(4);
         packet.vfunc_o10_3(nAction);
         packet.vfunc_o10_3(nLevel);

@@ -584,7 +584,7 @@ void UIBlueprintMarketDialog::Preview(const Unk_MeratProductKey& key)
     UIHomeInfoDialog* pInfo = FUN_140bbea00(0x4ed8);
     if (pInfo != 0 && pInfo->vfunc_55() == 0)
         pInfo->FUN_1412c6e70(spProduct->GetName(), spProduct->m_ugc.GetStr210());
-    COutPacket packet(0x37, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
     packet.Encode1(0x44);
     packet.Encode8(nBlueprint);
     FUN_140710590(packet);

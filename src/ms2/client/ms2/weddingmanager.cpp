@@ -382,7 +382,7 @@ void WeddingManager::SendReservationCancel()
     if (error != 0) {
         ShowError(error);
     } else {
-        COutPacket packet(0xba, 0);
+        COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
         packet.Encode1(0x10);
         FUN_140710590(packet);
     }
@@ -394,7 +394,7 @@ void WeddingManager::SendInvitation(unsigned __int64 id)
     if (!FUN_140900550()) {
         ShowError(0x12);
     } else {
-        COutPacket packet(0xba, 0);
+        COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
         packet.Encode1(0x1a);
         packet.Encode8(id);
         FUN_140710590(packet);
@@ -452,7 +452,7 @@ void WeddingManager::ApplyPartner()
 // @0x141b89d00
 bool WeddingManager::OnReservationAnswer(int result, const CMsgBoxData& box)
 {
-    COutPacket packet(0xba, 0);
+    COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
     packet.Encode1(0xe);
     int answer;
     if (result == 0)
@@ -467,7 +467,7 @@ bool WeddingManager::OnReservationAnswer(int result, const CMsgBoxData& box)
 // @0x141b89d90
 bool WeddingManager::OnReservationCancelAnswer(int result, const CMsgBoxData& box)
 {
-    COutPacket packet(0xba, 0);
+    COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
     packet.Encode1(0x12);
     int answer;
     if (result == 0)
@@ -482,7 +482,7 @@ bool WeddingManager::OnReservationCancelAnswer(int result, const CMsgBoxData& bo
 // @0x141b89f40
 bool WeddingManager::OnDivorceAnswer(int result, const CMsgBoxData& box)
 {
-    COutPacket packet(0xba, 0);
+    COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
     packet.Encode1(9);
     int answer;
     if (result == 0)
@@ -729,7 +729,7 @@ bool WeddingManager::OnProposeSentAnswer(int result, const CMsgBoxData& box)
     if (box.GetTimer().m_nButton != 0)
         return true;
     unsigned __int64 id = FUN_140718370(box.FUN_141a02fd0(0, CStringW()));
-    COutPacket packet(0xba, 0);
+    COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
     packet.Encode1(5);
     packet.Encode8(id);
     FUN_140710590(packet);
@@ -743,7 +743,7 @@ bool WeddingManager::OnProposeAnswer(int result, const CMsgBoxData& box)
     int answer = result == 0 ? 1 : 2;
     if (box.GetTimer().m_nButton != 0)
         answer = 6;
-    COutPacket packet(0xba, 0);
+    COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
     packet.Encode1(4);
     packet.Encode2(answer);
     packet.Encode8(id);
@@ -754,7 +754,7 @@ bool WeddingManager::OnProposeAnswer(int result, const CMsgBoxData& box)
 // @0x141b89e20
 bool WeddingManager::OnNoRefundAnswer(int result, const CMsgBoxData& box)
 {
-    COutPacket packet(0xba, 0);
+    COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
     packet.Encode1(0x11);
     int answer;
     if (result == 0)
@@ -769,7 +769,7 @@ bool WeddingManager::OnNoRefundAnswer(int result, const CMsgBoxData& box)
 // @0x141b89eb0
 bool WeddingManager::OnReservationChangeAnswer(int result, const CMsgBoxData& box)
 {
-    COutPacket packet(0xba, 0);
+    COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
     packet.Encode1(0x15);
     int answer;
     if (result == 0)
@@ -793,7 +793,7 @@ bool WeddingManager::OnNicknameAnswer(int result, const CMsgBoxData& box)
     CStringW text = box.FUN_141a02d50();
     text.Trim(L',');
     if (text.Compare(name) == 0) {
-        COutPacket packet(0xba, 0);
+        COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
         packet.Encode1(0x1e);
         packet.Encode1(3);
         packet.vfunc_o10_0(true);
@@ -814,7 +814,7 @@ bool WeddingManager::OnNicknameAnswer(int result, const CMsgBoxData& box)
 // @0x141b8a360
 bool WeddingManager::OnLastStepAnswer(int result, const CMsgBoxData& box)
 {
-    COutPacket packet(0xba, 0);
+    COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
     packet.Encode1(0x1e);
     packet.Encode1(3);
     packet.vfunc_o10_0(true);
@@ -828,7 +828,7 @@ bool WeddingManager::OnActingAnswer(int result, const CMsgBoxData& box)
     void* user = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (!user)
         return false;
-    COutPacket packet(0xba, 0);
+    COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
     int type = box.FUN_141a02e50(0, 0);
     bool accept = result == 0 ? true : false;
     packet.Encode1(0x1e);
@@ -1008,7 +1008,7 @@ void WeddingManager::SendPropose(const CStringW& name)
             if (error != 0) {
                 ShowError(error);
             } else {
-                COutPacket packet(0xba, 0);
+                COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
                 packet.Encode1(3);
                 packet.vfunc_o10_8(name);
                 FUN_140710590(packet);
@@ -1025,7 +1025,7 @@ void WeddingManager::SendReservation(int packageId, int hallId, __int64 time, un
     ticket.m_nHallId = hallId;
     ticket.m_nTime = time;
     ticket.m_bPublic = night != 0;
-    COutPacket packet(0xba, 0);
+    COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
     packet.Encode1(0xd);
     ticket.Write(packet);
     packet.vfunc_o10_0(agree);
@@ -1050,7 +1050,7 @@ void WeddingManager::SendReservationChange(int packageId, int hallId, __int64 ti
             ShowError(error);
             return;
         }
-        COutPacket packet(0xba, 0);
+        COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
         packet.Encode1(0x14);
         ticket.Write(packet);
         FUN_140710590(packet);

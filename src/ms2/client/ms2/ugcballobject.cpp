@@ -111,7 +111,7 @@ int CUGCBallObject::FUN_140ded420(Unk_UbTag* pTag, void* pShape)
                 Unk_StreamPoint kForce = pTag->m_ptPos;
                 kForce.z = kForce.z + 0.75f;
                 kForce.FUN_140ad0c10(1500.0f);
-                COutPacket packet(0x90, 0);
+                COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
                 packet.Encode1(7);
                 packet.Encode1(3);
                 packet.Encode4(FUN_14123c580());
@@ -247,7 +247,7 @@ void CUGCBallObject::vfunc_53(float f)
         unsigned int nTick;
         if (m_nOwner == DAT_143ab2828 && (nTick = FUN_140869420(), nTick - m_nLastSend > 100))
         {
-            COutPacket packet(0x90, 0);
+            COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
             packet.Encode1(7);
             packet.Encode1(2);
             packet.Encode4(FUN_14123c580());

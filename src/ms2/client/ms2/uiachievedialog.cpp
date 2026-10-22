@@ -308,7 +308,7 @@ void UIAchieveDialog::OnLoadComplete()
     m_1e0.RemoveAll();
     DAT_143af0f30.RemoveAll();
     FUN_1418aaee0(m_188);
-    COutPacket packet(0x69, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestUserEnv), 0);
     packet.vfunc_o10_1(3);
     FUN_140710590(packet);
     FUN_1418ac5f0(m_180);
@@ -345,7 +345,7 @@ int UIAchieveDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
                 return 0;
             }
             unsigned nId = data.FUN_1422b8b10();
-            COutPacket packet(0x46, 0);
+            COutPacket packet(static_cast<int>(SendOp::Achieve), 0);
             packet.vfunc_o10_1(3);
             packet.vfunc_o10_3(nId);
             FUN_140710590(packet);
@@ -369,7 +369,7 @@ int UIAchieveDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             unsigned nId = data.FUN_1422b8b10();
             if (FUN_1418acd10(nId) != 0) {
-                COutPacket packet(0x46, 0);
+                COutPacket packet(static_cast<int>(SendOp::Achieve), 0);
                 packet.vfunc_o10_1(5);
                 packet.vfunc_o10_3(nId);
                 packet.vfunc_o10_1(0);
@@ -383,7 +383,7 @@ int UIAchieveDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             unsigned nId = data.FUN_1422b8b10();
-            COutPacket packet(0x46, 0);
+            COutPacket packet(static_cast<int>(SendOp::Achieve), 0);
             packet.vfunc_o10_1(5);
             packet.vfunc_o10_3(nId);
             packet.vfunc_o10_1(1);
@@ -397,7 +397,7 @@ int UIAchieveDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             unsigned nId = data.FUN_1422b8b10();
             if (FUN_1418acd10(nId) != 0) {
-                COutPacket packet(0x46, 0);
+                COutPacket packet(static_cast<int>(SendOp::Achieve), 0);
                 packet.vfunc_o10_1(5);
                 packet.vfunc_o10_3(nId);
                 packet.vfunc_o10_1(2);
@@ -412,7 +412,7 @@ int UIAchieveDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             unsigned nId = data.FUN_1422b8b10();
             if (FUN_1418acd10(nId) != 0) {
-                COutPacket packet(0x46, 0);
+                COutPacket packet(static_cast<int>(SendOp::Achieve), 0);
                 packet.vfunc_o10_1(5);
                 packet.vfunc_o10_3(nId);
                 packet.vfunc_o10_1(3);
@@ -440,7 +440,7 @@ int UIAchieveDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
             MS2Ptr<CAchieve> spAchieve = FUN_1406c7600()->Find(nId);
             if (spAchieve.get() != 0) {
                 spAchieve->SetBookmark(bBookmark);
-                COutPacket packet(0x46, 0);
+                COutPacket packet(static_cast<int>(SendOp::Achieve), 0);
                 packet.vfunc_o10_1(4);
                 packet.vfunc_o10_3(spAchieve->GetId());
                 packet.vfunc_o10_1(bBookmark);

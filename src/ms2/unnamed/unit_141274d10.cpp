@@ -972,7 +972,7 @@ int FUN_141276f80(Unk_CommandChat* pChat)
             return 0;
         }
     }
-    COutPacket packet(0x11, 0);
+    COutPacket packet(static_cast<int>(SendOp::UserChat), 0);
     pChat->FUN_1401fa700(packet);
     FUN_140710590(packet);
     return 1;

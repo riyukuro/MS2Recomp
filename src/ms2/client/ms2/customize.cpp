@@ -1419,7 +1419,7 @@ void Customize::Equipment::SendColors()
     int anColor[3];
     FUN_1414239e0(&anColor[0], 0, pPc);
     FUN_1414239e0(&anColor[1], 1, pPc);
-    COutPacket packet(0x23, 0);
+    COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
     packet.vfunc_o10_1(6);
     packet.vfunc_o10_1(m_pListener->GetShopId());
     packet.vfunc_o10_3(anColor[0]);
@@ -1444,7 +1444,7 @@ void Customize::Equipment::SendAdded(MS2Ptr<CItem> spItem)
         if (spContext.get())
             nContext = spContext->m_20;
     }
-    COutPacket packet(0x23, 0);
+    COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
     packet.vfunc_o10_1(3);
     packet.vfunc_o10_1(m_pListener->GetShopId());
     packet.vfunc_o10_1(m_pListener->UseFreeTry());
@@ -1465,7 +1465,7 @@ void Customize::Equipment::SendModified(MS2Ptr<CItem> spItem)
         return;
     if (spItem == 0)
         return;
-    COutPacket packet(0x23, 0);
+    COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
     packet.vfunc_o10_1(5);
     packet.vfunc_o10_1(m_pListener->GetShopId());
     packet.vfunc_o10_1(m_pListener->UseFreeTry());
@@ -1484,7 +1484,7 @@ void Customize::Equipment::SendRemoved(MS2Ptr<CItem> spItem)
         return;
     if (spItem == 0)
         return;
-    COutPacket packet(0x23, 0);
+    COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
     packet.vfunc_o10_1(4);
     packet.vfunc_o10_4(spItem->FUN_140526a50());
     FUN_140710590(packet);

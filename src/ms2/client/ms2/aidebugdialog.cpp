@@ -113,7 +113,7 @@ void AiDebugDialog::AddLine(int nId, int nLine)
 // @0x140987fe0
 void AiDebugDialog::RequestTrace()
 {
-    COutPacket packet(0x50, 0);
+    COutPacket packet(static_cast<int>(SendOp::SetDebugMode), 0);
     packet.vfunc_o10_1(4);
     packet.vfunc_o10_3(m_nId);
     packet.vfunc_o10_1(7);

@@ -101,10 +101,10 @@ void CSceneStateLogin::OnPacket(CInPacket& packet)
     CSceneStateBase::OnPacket(packet);
     switch (packet.FUN_14070fe80())
     {
-    case 0x67:
+    case static_cast<int>(RecvOp::Admin):
         FUN_14174c520(this, packet);
         break;
-    case 0xb:
+    case static_cast<int>(RecvOp::ServerList):
     {
         packet.vfunc_o8_7();
         int result = packet.vfunc_o8_1();
@@ -120,7 +120,7 @@ void CSceneStateLogin::OnPacket(CInPacket& packet)
         }
         break;
     }
-    case 0x71:
+    case static_cast<int>(RecvOp::Notice):
     {
         Unk_1407a7d20 info(packet);
         FUN_140d73aa0(CStringW(info.m_text), 0, 0, CStringW(L""));

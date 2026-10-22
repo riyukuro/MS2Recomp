@@ -642,7 +642,7 @@ void UIDungeonRewardDialog::FUN_140e25790() { if((m_room.get()?true:false)&&m_ro
 MS2_REPLACE_METHOD(0x140E25790, UIDungeonRewardDialog, FUN_140e25790, 155, 0xBA656490);
 
 // @0x140e25ff0
-void UIDungeonRewardDialog::SendDungeonReward() { COutPacket packet(0x9d,0);packet.Encode1(6);FUN_140710590(packet); }
+void UIDungeonRewardDialog::SendDungeonReward() { COutPacket packet(static_cast<int>(SendOp::DungeonReward),0);packet.Encode1(6);FUN_140710590(packet); }
 MS2_REPLACE_METHOD(0x140E25FF0, UIDungeonRewardDialog, SendDungeonReward, 75, 0x31064D84);
 
 // @0x140e22210

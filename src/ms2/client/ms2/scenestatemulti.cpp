@@ -514,19 +514,19 @@ void CSceneStateMulti::OnPacket(CInPacket& packet)
     CSceneStateBase::OnPacket(packet);
     switch (packet.FUN_14070fe80())
     {
-    case 0x71:
+    case static_cast<int>(RecvOp::Notice):
         FUN_14174f4c0(packet);
         break;
-    case 0xb2:
+    case static_cast<int>(RecvOp::GameEvent):
         FUN_140ceab50(FUN_14015a050(), packet);
         break;
-    case 0xb4:
+    case static_cast<int>(RecvOp::WaitingTicketUpdate):
         OnWaitingTicketUpdate(packet);
         break;
-    case 0xcb:
+    case static_cast<int>(RecvOp::GameEventUserValue):
         FUN_140930fe0(packet);
         break;
-    case 0xf7:
+    case static_cast<int>(RecvOp::EventReward):
         OnEventReward(packet);
         break;
     case 0x10f:

@@ -666,7 +666,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c53a70(const Scaleform::GFx::Fun
                 Unk_SockUidPair request;
                 request.m_nFirst = sourceUid;
                 request.m_nSecond = targetUid;
-                COutPacket out(0x88, 0);
+                COutPacket out(static_cast<int>(SendOp::ItemSocketSystem), 0);
                 out.Encode1(0x11);
                 FUN_140629340(request, out);
                 FUN_140710590(out);
@@ -689,7 +689,7 @@ void ItemSocketSystemPageSocketTransfer::SendItemSocketSystemMode16(const Scalef
     CCItemSocketSystemPacket::ForceFillIngredient fill;
     fill.m_nType = 0xc;
     fill.m_nUid = m_source->FUN_140526a50();
-    COutPacket out(0x88, 0);
+    COutPacket out(static_cast<int>(SendOp::ItemSocketSystem), 0);
     out.Encode1(0x10);
     FUN_140629de0(fill, out);
     FUN_140710590(out);
@@ -704,7 +704,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c53f90(CAtlArray<MS2Ptr<CItem>>&
 // @0x140c53fc0
 void ItemSocketSystemPageSocketTransfer::SendItemSocketSystemMode12(Unk_SockUidPair& request)
 {
-    COutPacket out(0x88, 0);
+    COutPacket out(static_cast<int>(SendOp::ItemSocketSystem), 0);
     out.Encode1(0xc);
     FUN_140629340(request, out);
     FUN_140710590(out);

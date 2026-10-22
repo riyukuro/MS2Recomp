@@ -573,7 +573,7 @@ bool FUN_140ebded0(MS2Ptr<TMarketBillDataParam> spBase, const TMarketBillDataPar
         __int64 nRemain = 0;
         if (prem.m_time188 > tNow)
             nRemain = (prem.m_time188 - tNow).GetTotalSeconds();
-        COutPacket pkt(0x39, 0);
+        COutPacket pkt(static_cast<int>(SendOp::MeretMarket), 0);
         pkt.vfunc_o10_1(0x70);
         pkt.vfunc_o10_3(prem.m_n2c);
         pkt.vfunc_o10_1((char)prem.m_n16c);
@@ -592,7 +592,7 @@ bool FUN_140ebded0(MS2Ptr<TMarketBillDataParam> spBase, const TMarketBillDataPar
             FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_meratmarket_error_random_expired")), 1, 1);
             return false;
         }
-        COutPacket pkt(0x39, 0);
+        COutPacket pkt(static_cast<int>(SendOp::MeretMarket), 0);
         pkt.vfunc_o10_1(0x74);
         pkt.vfunc_o10_3(prem.m_nId);
         pkt.vfunc_o10_3(prem.m_n1b0);

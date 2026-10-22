@@ -98,7 +98,7 @@ int UIDPSDialog::vfunc_65()
     FUN_14192a1e0();
     CToolBaseDialog* pTool = GetToolBaseDialog();
     pTool->Create(0x91, CWnd::FromHandle(FUN_140aadf80()->FUN_14209c720()));
-    COutPacket packet(0x56, 0);
+    COutPacket packet(static_cast<int>(SendOp::DpsMode), 0);
     packet.vfunc_o10_1(1);
     FUN_140710590(packet);
     return 1;
@@ -110,7 +110,7 @@ void UIDPSDialog::vfunc_67()
     FUN_14109a6f0()->FUN_14117c7c0(FUN_140869420());
     if (GetToolBaseDialog() != 0)
         FUN_14192a260();
-    COutPacket packet(0x56, 0);
+    COutPacket packet(static_cast<int>(SendOp::DpsMode), 0);
     packet.vfunc_o10_1(0);
     FUN_140710590(packet);
     FUN_141929700();

@@ -633,7 +633,7 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             void* pBrowser = FUN_140c43790(0x4e6a);
             if (pBrowser != 0)
                 FUN_14135ec00(pBrowser, CString(*FUN_140298f80(reinterpret_cast<char*>(FUN_1401d3200()) + 0x8838)), true);
-            COutPacket packet(0x97, 0);
+            COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
             packet.vfunc_o10_1(5);
             packet.vfunc_o10_1(1);
             FUN_140710590(packet);

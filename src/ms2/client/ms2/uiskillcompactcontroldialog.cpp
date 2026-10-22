@@ -647,7 +647,7 @@ void UISkillCompactControlDialog::OnLoadComplete()
         m_spButtonBar = static_cast<Unk_SkillScriptView*>(m_30.operator->())->FUN_140be23c0("m_buttonBar");
         m_spAddButton = static_cast<Unk_ScButtonView*>(m_30.operator->())->FUN_140acce30("m_addButton");
     }
-    COutPacket packet(0x7b, 0);
+    COutPacket packet(static_cast<int>(SendOp::SkillMacro), 0);
     packet.Encode1(0);
     FUN_140710590(packet);
 }
@@ -744,7 +744,7 @@ bool UISkillCompactControlDialog::FUN_140fa0fa0(CStringW strName)
 // @0x140fa1240
 void UISkillCompactControlDialog::SendSkillMacroMode1()
 {
-    COutPacket packet(0x7b, 0);
+    COutPacket packet(static_cast<int>(SendOp::SkillMacro), 0);
     packet.Encode1(1);
     packet.Encode4(m_lstConfig.GetCount());
     for (POSITION pos = m_lstConfig.GetHeadPosition(); pos != 0; m_lstConfig.GetNext(pos))

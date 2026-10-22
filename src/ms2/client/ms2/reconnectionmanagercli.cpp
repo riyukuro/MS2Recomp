@@ -245,7 +245,7 @@ MS2_REPLACE_METHOD(0x140AAD6E0, CReconnectionManagerCli, FUN_140aad6e0, 251, 0xC
 // @0x140aad7f0
 void CReconnectionManagerCli::FUN_140aad7f0() {
     CStringW name = FUN_140d4fdf0(FUN_140aadf70())->FUN_14067c400();
-    COutPacket packet(5, 0);
+    COutPacket packet(static_cast<int>(SendOp::Reconnect), 0);
     packet.vfunc_o10_1(1);
     packet.vfunc_o10_4(DAT_143ab2820);
     packet.vfunc_o10_4(DAT_143ab2828);

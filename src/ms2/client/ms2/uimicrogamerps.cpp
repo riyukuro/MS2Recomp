@@ -991,7 +991,7 @@ void UIMicroGameRps::SendMicrogame()
         return;
     if (m_nCard == -1)
         m_nCard = FUN_140768010(3, 0);
-    COutPacket packet(0xa8, 0);
+    COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
     packet.Encode2(7);
     packet.Encode4(m_nCard);
     FUN_140710590(packet);

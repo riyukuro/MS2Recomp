@@ -225,7 +225,7 @@ bool PartyVoteCli::FUN_140a895c0()
 // @0x140a89680
 void PartyVoteCli::SendParty(bool vote)
 {
-    COutPacket packet(0x2c, 0);
+    COutPacket packet(static_cast<int>(SendOp::Party), 0);
     packet.vfunc_o10_1(0x30);
     packet.vfunc_o10_3(id);
     packet.vfunc_o10_0(vote);

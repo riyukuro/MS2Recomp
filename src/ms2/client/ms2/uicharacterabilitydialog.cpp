@@ -435,7 +435,7 @@ int UICharacterAbilityDialog::vfunc_28(const char* szMethod, const Scaleform::GF
             MS2Ptr<Unk_CaAbilityRow> ref = FUN_140f2d250()->FUN_1401e0670(nId);
             if ((unsigned short)pPc->vfunc_78() < ref->m_nRequireLevel)
                 return 1;
-            COutPacket packet(0x89, 0);
+            COutPacket packet(static_cast<int>(SendOp::CharacterAbility), 0);
             packet.vfunc_o10_1(2);
             packet.vfunc_o10_3(nId);
             FUN_140710590(packet);
@@ -517,7 +517,7 @@ int UICharacterAbilityDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 FUN_141275260(0xc58, 1, 1);
                 return 1;
             }
-            COutPacket packet(0x89, 0);
+            COutPacket packet(static_cast<int>(SendOp::CharacterAbility), 0);
             packet.vfunc_o10_1(1);
             FUN_140710590(packet);
         }

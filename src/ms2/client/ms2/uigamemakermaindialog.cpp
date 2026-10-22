@@ -84,7 +84,7 @@ int UIGameMakerMainDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         buffer.resize(nLength + 1);
         file.Read(&buffer[0], (UINT)nLength);
         buffer[nLength] = 0;
-        COutPacket packet(0xae, 0);
+        COutPacket packet(static_cast<int>(SendOp::Ugd), 0);
         packet.vfunc_o10_2(0x1e);
         packet.vfunc_o10_7(CString(&buffer[0]));
         FUN_140710590(packet);
@@ -99,7 +99,7 @@ int UIGameMakerMainDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             CString strCommand = data.FUN_1422b8d30();
             if (strCommand.GetLength() == 0)
                 return 1;
-            COutPacket packet(0xae, 0);
+            COutPacket packet(static_cast<int>(SendOp::Ugd), 0);
             packet.vfunc_o10_2(0x1e);
             packet.vfunc_o10_7(strCommand);
             FUN_140710590(packet);

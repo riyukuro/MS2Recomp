@@ -596,7 +596,7 @@ void UIUpperHudDialog::SendPcBangBonus(const Scaleform::GFx::FunctionHandler::Pa
     }
     else
     {
-        COutPacket packet(0x67, 0);
+        COutPacket packet(static_cast<int>(SendOp::PcBangBonus), 0);
         packet.Encode1(0);
         packet.Encode1(1);
         FUN_140710590(packet);

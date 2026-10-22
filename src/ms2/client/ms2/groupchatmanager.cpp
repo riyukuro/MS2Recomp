@@ -524,7 +524,7 @@ void CGroupChatManager::Create(CStringW name) {
             MS2_ASSERT_AT(0x9a, FALSE);
             FUN_140166440()->Log(1, 0x13, L"{0}. strTargetName={1}", "CGroupChatManager::Create", name);
         } else {
-            COutPacket packet(0x4c, 0);
+            COutPacket packet(static_cast<int>(SendOp::GroupChat), 0);
             packet.vfunc_o10_1(1);
             packet.vfunc_o10_8(name);
             FUN_140710590(packet);
@@ -555,7 +555,7 @@ void CGroupChatManager::Invite(unsigned oid, CStringW name) {
             MS2_ASSERT_AT(0xc9, FALSE);
             FUN_140166440()->Log(1, 0x13, L"{0}. strTargetName={1}", "CGroupChatManager::Invite", name);
         } else {
-            COutPacket packet(0x4c, 0);
+            COutPacket packet(static_cast<int>(SendOp::GroupChat), 0);
             packet.vfunc_o10_1(2);
             packet.vfunc_o10_8(name);
             packet.vfunc_o10_3(oid);
@@ -572,7 +572,7 @@ MS2_REPLACE_METHOD(0x14137EB00, CGroupChatManager, Invite, 1173, 0xCDB2E8FE);
 void CGroupChatManager::SendGroupChatMode4(unsigned oid, int flag) {
     if (FUN_14137e630(oid) == 0)
         return;
-    COutPacket packet(0x4c, 0);
+    COutPacket packet(static_cast<int>(SendOp::GroupChat), 0);
     packet.vfunc_o10_1(4);
     packet.vfunc_o10_3(oid);
     packet.vfunc_o10_1(flag);
@@ -596,7 +596,7 @@ void CGroupChatManager::SendGroupChatMode10(unsigned oid, CStringW text) {
         }
     }
     if (FUN_1403ed2d0()->FUN_141bd30a0().FUN_140885340()->FUN_140375660(0x100) == 0) {
-        COutPacket packet(0x4c, 0);
+        COutPacket packet(static_cast<int>(SendOp::GroupChat), 0);
         packet.vfunc_o10_1(10);
         packet.vfunc_o10_8(text);
         packet.vfunc_o10_3(oid);

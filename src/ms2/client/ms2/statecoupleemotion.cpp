@@ -934,7 +934,7 @@ void StateCoupleEmotion::Stop(int bNotify)
     PCBase* pPeer = GetPartner();
     if (pPeer == 0)
         return;
-    COutPacket kPacket(0xa3, 0);
+    COutPacket kPacket(static_cast<int>(SendOp::BuddyEmote), 0);
     kPacket.Encode1(6);
     kPacket.Encode4(m_spCoupleData.get()->m_nEmotion);
     kPacket.Encode8(pPeer->FUN_141656a80());
@@ -1351,7 +1351,7 @@ bool RequestCoupleEmotion(int nTargetId, int nEmotionId)
     NiPoint3 kTargetPos(pTarget->vfunc_18());
     if (!FUN_140b83fa0(NiPoint3(pMyPC->vfunc_18()), kTargetPos))
     {
-        COutPacket kPacket(0xa3, 0);
+        COutPacket kPacket(static_cast<int>(SendOp::BuddyEmote), 0);
         kPacket.Encode1(2);
         kPacket.Encode8(nTargetId);
         kPacket.Encode1(8);
@@ -1361,7 +1361,7 @@ bool RequestCoupleEmotion(int nTargetId, int nEmotionId)
     }
     if (pMyPC->FUN_141675ed0() != 0 || !FUN_140b83f60(pMyPC->FUN_14166c930()))
     {
-        COutPacket kPacket(0xa3, 0);
+        COutPacket kPacket(static_cast<int>(SendOp::BuddyEmote), 0);
         kPacket.Encode1(2);
         kPacket.Encode8(nTargetId);
         kPacket.Encode1(5);
@@ -1391,7 +1391,7 @@ bool RequestCoupleEmotion(int nTargetId, int nEmotionId)
     float fYaw;
     if (!pState->FindPlacement(posA, posB, &fYaw))
     {
-        COutPacket kPacket(0xa3, 0);
+        COutPacket kPacket(static_cast<int>(SendOp::BuddyEmote), 0);
         kPacket.Encode1(2);
         kPacket.Encode8(nTargetId);
         kPacket.Encode1(7);
@@ -1400,7 +1400,7 @@ bool RequestCoupleEmotion(int nTargetId, int nEmotionId)
         pMyPC->vfunc_59(1, 0, 0, 0);
         return false;
     }
-    COutPacket kPacket(0xa3, 0);
+    COutPacket kPacket(static_cast<int>(SendOp::BuddyEmote), 0);
     kPacket.Encode1(3);
     kPacket.Encode4(nEmotionId);
     kPacket.Encode8(nTargetId);

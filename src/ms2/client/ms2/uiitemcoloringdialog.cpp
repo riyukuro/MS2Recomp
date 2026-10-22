@@ -1057,7 +1057,7 @@ MS2_REPLACE_METHOD(0x1419b0620, UIItemColoringDialog, FUN_1419b0620, 217, 0x07FE
 void UIItemColoringDialog::FUN_1419b0700()
 {
     CCItemColoringPacket::ChangeColors request;
-    COutPacket packet(0x23, 0);
+    COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
     packet.Encode1(0x16);
     int nCount = 0;
     for (POSITION pos = m_2a8.GetHeadPosition(); pos != NULL; m_2a8.GetNext(pos)) {

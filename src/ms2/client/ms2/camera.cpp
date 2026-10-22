@@ -1096,7 +1096,7 @@ void CameraMgr::FUN_140aeb1a0()
                 FUN_1403ed2b0()->FUN_141adc5d0(0x4e81);
                 pDialog->SetNpcId(pNpc->FUN_14123c580());
                 FUN_1403ed2b0()->FUN_141adc530(0x4e81);
-                COutPacket packet(0x50, 0);
+                COutPacket packet(static_cast<int>(SendOp::SetDebugMode), 0);
                 packet.vfunc_o10_1(4);
                 packet.vfunc_o10_3(pNpc->FUN_14123c580());
                 packet.vfunc_o10_1(0);

@@ -227,7 +227,7 @@ int COnlinePatchManagerCli::RequestFile(COnlinePatchFileContext* pFile)
     if (pFile->m_nSize <= pFile->m_nReceived) {
         return 0;
     }
-    COutPacket packet(2, 0);
+    COutPacket packet(static_cast<int>(SendOp::Patch), 0);
     packet.Encode1(4);
     packet.vfunc_o10_6(pFile->m_strPath);
     packet.Encode8(pFile->m_nReceived);

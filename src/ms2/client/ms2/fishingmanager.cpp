@@ -783,7 +783,7 @@ void CFishingManager::FUN_140cd9840(CInPacket* pPacket)
 // @0x140cdaaa0
 void CFishingManager::SendFishingMode10()
 {
-    COutPacket pkt(0x73, 0);
+    COutPacket pkt(static_cast<int>(SendOp::Fishing), 0);
     pkt.Encode1(10);
     FUN_140710590(pkt);
     FUN_140cdc9d0(0x76, 0x7a);
@@ -803,7 +803,7 @@ void CFishingManager::OnCastingFinished()
     if (pFloat != 0)
     {
         unsigned char nResult = pFloat->FUN_140f44490();
-        COutPacket pkt(0x73, 0);
+        COutPacket pkt(static_cast<int>(SendOp::Fishing), 0);
         pkt.Encode1(8);
         pkt.Encode1(nResult);
         FUN_140710590(pkt);
@@ -892,7 +892,7 @@ void CFishingManager::FUN_140cdae30(MS2Ptr<CItem> rod)
         FUN_141275260(0xbe4, 1, 1);
         return;
     }
-    COutPacket pkt(0x73, 0);
+    COutPacket pkt(static_cast<int>(SendOp::Fishing), 0);
     pkt.Encode1(0);
     pkt.Encode8(rod->FUN_140526a50());
     FUN_140710590(pkt);
@@ -905,7 +905,7 @@ void CFishingManager::SendFishingMode1()
 {
     if (FUN_140954150() == 0)
         return;
-    COutPacket pkt(0x73, 0);
+    COutPacket pkt(static_cast<int>(SendOp::Fishing), 0);
     pkt.Encode1(1);
     FUN_140710590(pkt);
 }
@@ -925,7 +925,7 @@ int CFishingManager::FUN_140cdb110(const efd::Point3& kPos)
 // @0x140cdb1e0
 void CFishingManager::SendFishingMode9()
 {
-    COutPacket pkt(0x73, 0);
+    COutPacket pkt(static_cast<int>(SendOp::Fishing), 0);
     pkt.Encode1(9);
     pkt.Encode4(FUN_140cdc950());
     FUN_140710590(pkt);
@@ -1009,7 +1009,7 @@ void CFishingManager::FUN_140cdb450()
             Unk_FmCastingBar* pBar = FUN_140ac2270(0x4e72);
             if (pBar != 0)
                 pBar->FUN_1418e1390();
-            COutPacket pkt(0x73, 0);
+            COutPacket pkt(static_cast<int>(SendOp::Fishing), 0);
             pkt.Encode1(8);
             pkt.Encode1(1);
             FUN_140710590(pkt);

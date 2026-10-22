@@ -1239,7 +1239,7 @@ bool SendItemSocketSystem(MS2Ptr<CItem> spItem, const CMsgBoxData& box)
     kMsg.m_nCount = nCount;
     kMsg.m_nUid = nUid;
     kMsg.m_nSlot = nSlot;
-    COutPacket packet(0x88, 0);
+    COutPacket packet(static_cast<int>(SendOp::ItemSocketSystem), 0);
     packet.Encode1(8);
     FUN_140628840(kMsg, packet);
     FUN_140710590(packet);

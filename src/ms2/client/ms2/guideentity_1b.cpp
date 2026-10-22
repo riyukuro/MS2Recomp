@@ -202,7 +202,7 @@ void CGuideManager::StopAndUpdate()
 // @0x14138b170
 int CGuideManager::SendStates()
 {
-    COutPacket packet(0x57, 0);
+    COutPacket packet(static_cast<int>(SendOp::GuideRecord), 0);
     int nCount = (int)m_map60.GetCount();
     packet.Encode4(nCount);
     for (POSITION pos = m_map60.GetHeadPosition(); pos != 0; m_map60.GetNext(pos))

@@ -346,7 +346,7 @@ void UIIndividualPvPDialog::FUN_1412cb4e0(const Scaleform::GFx::FunctionHandler:
     if (m_nSelected == 2)
         return;
     {
-        COutPacket packet(0x61, 0);
+        COutPacket packet(static_cast<int>(SendOp::Pvp), 0);
         packet.Encode1(9);
         packet.Encode4(m_nSelected);
         FUN_140710590(packet);
@@ -359,7 +359,7 @@ void UIIndividualPvPDialog::SendPVPMode10(const Scaleform::GFx::FunctionHandler:
     int nState = FUN_140f97ef0()->FUN_1412818a0();
     if (nState != 1)
         return;
-    COutPacket packet(0x61, 0);
+    COutPacket packet(static_cast<int>(SendOp::Pvp), 0);
     packet.Encode1(10);
     FUN_140710590(packet);
 }

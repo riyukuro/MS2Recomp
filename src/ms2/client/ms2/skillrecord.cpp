@@ -463,7 +463,7 @@ int CSkillRecord::HasTarget(unsigned nKey, unsigned nTarget)
 void CSkillRecord::SendSkill()
 {
     m_nSendTick = FUN_141472bc0();
-    COutPacket packet(0x20);
+    COutPacket packet(static_cast<int>(SendOp::Skill));
     packet.Encode1(3);
     packet.Encode8(m_nCastId);
     packet.Encode4(m_nSendTick);

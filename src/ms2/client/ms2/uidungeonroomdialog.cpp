@@ -1343,14 +1343,14 @@ void UIDungeonRoomInfo::OnPartySearch(const ASParams& params)
         return;
     if (!m_partySearchButton->FUN_1422ce0e0())
     {
-        COutPacket packet(0x2c);
+        COutPacket packet(static_cast<int>(SendOp::Party));
         packet.Encode1(0x21);
         FUN_14070f9a0(packet, m_spRoom->GetDungeonRoomID());
         FUN_140710590(packet);
     }
     else
     {
-        COutPacket packet(0x2c);
+        COutPacket packet(static_cast<int>(SendOp::Party));
         packet.Encode1(0x22);
         packet.Encode1(FUN_1402178b0(m_spRoom->m_groupType));
         FUN_140710590(packet);
@@ -1498,7 +1498,7 @@ void UIDungeonRoomInfo::OnFavoriteMark(const ASParams& params)
         return;
     if (m_favoriteMark == 0)
         return;
-    COutPacket packet(0x2b);
+    COutPacket packet(static_cast<int>(SendOp::RoomDungeon));
     packet.Encode1(0x18);
     packet.Encode4(m_spRoom->GetDungeonRoomID());
     packet.COutPacket::vfunc_o10_0(m_favoriteMark->FUN_1422ce0e0());
@@ -1511,7 +1511,7 @@ bool UIDungeonRoomInfo::OnUseExtraRewardItem(int nButton, const CMsgBoxData& box
 {
     if (nButton == 0)
     {
-        COutPacket packet(0x2b);
+        COutPacket packet(static_cast<int>(SendOp::RoomDungeon));
         packet.Encode1(8);
         packet.Encode4(box.FUN_141a02e90(0, 0));
         FUN_140710590(packet);
@@ -1568,7 +1568,7 @@ MS2_REPLACE_METHOD(0x1412B55C0, UIDungeonRoomInfo, OnChangeExpertConfirm, 59, 0x
 // @0x1412b5610
 void UIDungeonRoomInfo::RequestFindHelper(unsigned nRoomId)
 {
-    COutPacket packet(0x2b);
+    COutPacket packet(static_cast<int>(SendOp::RoomDungeon));
     packet.Encode1(0xf);
     packet.Encode4(nRoomId);
     FUN_140710590(packet);
@@ -1578,7 +1578,7 @@ MS2_REPLACE_METHOD(0x1412B5610, UIDungeonRoomInfo, RequestFindHelper, 93, 0xA787
 // @0x1412b5680
 void UIDungeonRoomInfo::RequestFindMember(unsigned nRoomId)
 {
-    COutPacket packet(0x2b);
+    COutPacket packet(static_cast<int>(SendOp::RoomDungeon));
     packet.Encode1(0x10);
     packet.Encode4(nRoomId);
     FUN_140710590(packet);
@@ -1588,7 +1588,7 @@ MS2_REPLACE_METHOD(0x1412B5680, UIDungeonRoomInfo, RequestFindMember, 93, 0x6272
 // @0x1412b56f0
 void UIDungeonRoomInfo::RequestChangeExpert(unsigned nRoomId)
 {
-    COutPacket packet(0x2b);
+    COutPacket packet(static_cast<int>(SendOp::RoomDungeon));
     packet.Encode1(0x11);
     packet.Encode4(nRoomId);
     FUN_140710590(packet);
@@ -1598,7 +1598,7 @@ MS2_REPLACE_METHOD(0x1412B56F0, UIDungeonRoomInfo, RequestChangeExpert, 93, 0x11
 // @0x1412b5760
 void UIDungeonRoomInfo::RequestLeaveDungeon()
 {
-    COutPacket packet(0x2b);
+    COutPacket packet(static_cast<int>(SendOp::RoomDungeon));
     packet.Encode1(1);
     FUN_140710590(packet);
 }
@@ -1715,7 +1715,7 @@ void UIDungeonRoomInfo::RequestEntry(bool bParty, bool bUseTicket)
         return;
     if (m_spRoom == 0)
         return;
-    COutPacket packet(0x2b);
+    COutPacket packet(static_cast<int>(SendOp::RoomDungeon));
     packet.Encode1(2);
     packet.Encode4(m_spRoom->GetDungeonRoomID());
     packet.COutPacket::vfunc_o10_0(bParty);

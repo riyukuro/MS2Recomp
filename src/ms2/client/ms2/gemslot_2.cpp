@@ -505,7 +505,7 @@ bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int nFlag)
             Unk_GemEquipReq kReq;
             kReq.m_nItemUid = spItem->FUN_140526a50();
             kReq.m_nSlot = (unsigned char)nSlot;
-            COutPacket kPacket(0x47, 0);
+            COutPacket kPacket(static_cast<int>(SendOp::BadgeEquip), 0);
             kPacket.vfunc_o10_1(0);
             FUN_1401fd190((unsigned char*)&kReq, kPacket);
             FUN_140710590(kPacket);
@@ -533,7 +533,7 @@ bool FUN_141271f90(MS2Ptr<CItem> spItem)
         {
             Unk_GemUnequipReq kReq;
             kReq.m_nSlot = (unsigned char)spItem->FUN_140526b50();
-            COutPacket kPacket(0x47, 0);
+            COutPacket kPacket(static_cast<int>(SendOp::BadgeEquip), 0);
             kPacket.vfunc_o10_1(1);
             FUN_1401fd250((unsigned char*)&kReq, kPacket);
             FUN_140710590(kPacket);

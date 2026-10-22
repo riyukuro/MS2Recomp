@@ -1521,7 +1521,7 @@ void UIBeautyShopDialog::SendBeautyMode12(int nSlot)
             m_1b8->FUN_140cd22f0(FUN_140f01070(FUN_1418cbbe0()));
             if (m_290 == 2)
             {
-                COutPacket packet(0x23, 0);
+                COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
                 packet.vfunc_o10_1(0xc);
                 packet.vfunc_o10_1((unsigned char)nSlot);
                 FUN_140710590(packet);
@@ -1895,7 +1895,7 @@ int UIBeautyShopDialog::FUN_1418c9f20()
                 MS2Ptr<Unk_InventoryEquipment> spEquip = pPc->FUN_141655e10(FUN_140f01070(FUN_1418cbbe0()));
                 m_2b8 = spEquip->FUN_1411dc7a0();
             }
-            COutPacket packet(0x23, 0);
+            COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
             packet.vfunc_o10_1(7);
             packet.vfunc_o10_3(nEvent);
             packet.vfunc_o10_1(IItemCustomizeEventListener::m_10 != 0);

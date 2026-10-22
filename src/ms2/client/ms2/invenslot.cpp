@@ -868,7 +868,7 @@ bool InvenSlot::FUN_141405a60(CItem* pItem, int nSlot)
             int nError = pDoll->FUN_14121c910(pItem);
             if (nError == 0)
             {
-                COutPacket packet(0x42, 0);
+                COutPacket packet(static_cast<int>(SendOp::FittingDoll), 0);
                 packet.vfunc_o10_1(2);
                 packet.vfunc_o10_4((__int64)pDoll->FUN_14121c6c0());
                 packet.vfunc_o10_4(pItem->FUN_140526a50());
@@ -989,7 +989,7 @@ int InvenSlot::vfunc_13()
                             if (FUN_1403ed2b0()->FUN_141adc7f0((eUIClassID)0x4e3b) == 0)
                                 return 0;
                             FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4e3b);
-                            COutPacket packet(0x65, 0);
+                            COutPacket packet(static_cast<int>(SendOp::SystemShop), 0);
                             packet.vfunc_o10_1(10);
                             packet.vfunc_o10_1(1);
                             packet.vfunc_o10_3(spItem->FUN_1405276c0());
@@ -1335,7 +1335,7 @@ int InvenSlot::vfunc_18(void* p)
     InvenSlot* pInven = FUN_140a50b50(pDrag);
     if (pInven != 0)
     {
-        COutPacket packet(0x17, 0);
+        COutPacket packet(static_cast<int>(SendOp::RequestItemInventory), 0);
         packet.vfunc_o10_1(3);
         packet.vfunc_o10_4(pInven->GetItemUid());
         packet.vfunc_o10_2((short)m_nIndex);

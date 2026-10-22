@@ -357,7 +357,7 @@ bool UILevelUpGuideDialog::SendQuestMode24(int nResult, const CMsgBoxData& rBox)
 {
     if (nResult == 0) {
         unsigned nQuest = rBox.FUN_141a02e90(0, 0);
-        COutPacket packet(0x29, 0);
+        COutPacket packet(static_cast<int>(SendOp::Quest), 0);
         packet.vfunc_o10_1(0x18);
         packet.vfunc_o10_3(nQuest);
         FUN_140710590(packet);
@@ -447,7 +447,7 @@ void UILevelUpGuideDialog::FUN_140f857e0(int nQuest)
         }
     }
     else {
-        COutPacket packet(0x29, 0);
+        COutPacket packet(static_cast<int>(SendOp::Quest), 0);
         packet.vfunc_o10_1(0x18);
         packet.vfunc_o10_3(nQuest);
         FUN_140710590(packet);

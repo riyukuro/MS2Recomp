@@ -522,7 +522,7 @@ void StateLocalController::vfunc_0()
     static_cast<View*>(this)->FUN_1417b7720();
     if (static_cast<View*>(this)->m_records.IsEmpty())
         return;
-    COutPacket packet(0x12, 0);
+    COutPacket packet(static_cast<int>(SendOp::UserSync), 0);
     packet.vfunc_o10_1(DAT_143ab2856);
     packet.vfunc_o10_3(FUN_141472bc0());
     packet.vfunc_o10_3(FUN_14086d260()->FUN_141473610());
@@ -549,7 +549,7 @@ void StatePcGuideObjectController::vfunc_0()
     FUN_1417b7720();
     if (m_records.IsEmpty())
         return;
-    COutPacket packet(0x35, 0);
+    COutPacket packet(static_cast<int>(SendOp::GuideObjectSync), 0);
     packet.vfunc_o10_2((short)m_nKind);
     packet.vfunc_o10_1((unsigned char)m_records.GetCount());
     for (POSITION pos = m_records.GetHeadPosition(); pos; m_records.GetNext(pos)) {
@@ -578,7 +578,7 @@ void StateRideeController::vfunc_0()
     void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    COutPacket packet(0x41, 0);
+    COutPacket packet(static_cast<int>(SendOp::RideSync), 0);
     packet.vfunc_o10_1(DAT_143ab2856);
     packet.vfunc_o10_3(FUN_141472bc0());
     packet.vfunc_o10_3(FUN_14086d260()->FUN_141473610());

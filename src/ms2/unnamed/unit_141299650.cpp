@@ -157,7 +157,7 @@ void UIHomeSummonDialog::Summon()
     }
     else
     {
-        COutPacket packet(0x37, 0);
+        COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
         packet.vfunc_o10_1(0x1e);
         packet.vfunc_o10_8(FUN_14016a730(m_178, 0));
         packet.vfunc_o10_8(strText);

@@ -1758,7 +1758,7 @@ int UICharacterCreateDialog::FUN_1418e3f50(const CStringW& strName)
         aEquips.GetNext(pos);
     }
     kCreate.m_nElapsed = (int)m_dElapsed;
-    COutPacket kPacket(9, 0);
+    COutPacket kPacket(static_cast<int>(SendOp::CharacterManagement), 0);
     kPacket.vfunc_o10_1(1);
     kCreate.FUN_1401f9f20(kPacket);
     FUN_140710590(kPacket);

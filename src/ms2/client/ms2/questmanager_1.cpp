@@ -244,7 +244,7 @@ MS2_REPLACE_METHOD(0x1416C6BB0, CQuest, GetTrackedValue, 14, 0x81E2A10F);
 void CQuest::RequestTrackingState(int state)
 {
     if (FUN_14074b790(FUN_140bfc580()) == 0 && GetTrackingState() != state) {
-        COutPacket packet(0x29, 0);
+        COutPacket packet(static_cast<int>(SendOp::Quest), 0);
         packet.COutPacket::vfunc_o10_1(9);
         packet.COutPacket::vfunc_o10_3(FUN_140bfc580());
         unsigned char value = (unsigned char)state;

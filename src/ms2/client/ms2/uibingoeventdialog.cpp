@@ -312,7 +312,7 @@ CString UIBingoEventDialog::GetTypeName()
 // @0x140bad460
 int UIBingoEventDialog::vfunc_65()
 {
-    COutPacket pkt(0x97, 0);
+    COutPacket pkt(static_cast<int>(SendOp::EventReward), 0);
     pkt.vfunc_o10_1(0x14);
     FUN_140710590(pkt);
     m_state = 0;
@@ -565,7 +565,7 @@ int UIBingoEventDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     Unk_BingoRef ref = FUN_1403ed060(FUN_140302b00())->FUN_140429c80();
     if (ref.FUN_1403e8340())
         return 0;
-    COutPacket pkt(0x97, 0);
+    COutPacket pkt(static_cast<int>(SendOp::EventReward), 0);
     pkt.vfunc_o10_1(0x16);
     if (m_state == 1)
         pkt.vfunc_o10_3(ref.FUN_1403e8b90()->m_freeItemId);
@@ -734,7 +734,7 @@ void UIBingoEventDialog::FUN_140bb06e0(const Scaleform::GFx::FunctionHandler::Pa
 void UIBingoEventDialog::SendEventRewardMode23(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     int nIndex = FUN_140bb9640(params.pUserData);
-    COutPacket pkt(0x97, 0);
+    COutPacket pkt(static_cast<int>(SendOp::EventReward), 0);
     pkt.vfunc_o10_1(0x17);
     pkt.vfunc_o10_3(nIndex);
     FUN_140710590(pkt);

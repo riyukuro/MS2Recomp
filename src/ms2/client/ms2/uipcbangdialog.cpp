@@ -254,7 +254,7 @@ int UIPcBangDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
             int nIndex = data.FUN_1422b8b10();
-            COutPacket packet(0x67, 0);
+            COutPacket packet(static_cast<int>(SendOp::PcBangBonus), 0);
             packet.vfunc_o10_1(2);
             packet.vfunc_o10_3(nIndex);
             FUN_140710590(packet);
@@ -386,7 +386,7 @@ void UIPcBangDialog::OnResetBonus(CInPacket& packet)
     FUN_1412751f0(GetStringCommonByKey(L"s_pcbang_msg_reset_bonus"), 1, 1);
     if (FUN_141924630())
     {
-        COutPacket packet(0x67, 0);
+        COutPacket packet(static_cast<int>(SendOp::PcBangBonus), 0);
         packet.vfunc_o10_1(0);
         packet.vfunc_o10_1(0);
         FUN_140710590(packet);
@@ -578,7 +578,7 @@ void UIPcBangDialog::FUN_141325d60() {}
 // @0x141325d70
 void UIPcBangDialog::OnClickItemGet(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    COutPacket packet(0x67, 0);
+    COutPacket packet(static_cast<int>(SendOp::PcBangBonus), 0);
     packet.vfunc_o10_1(1);
     packet.vfunc_o10_1((unsigned char)(unsigned __int64)params.pUserData);
     FUN_140710590(packet);
@@ -696,7 +696,7 @@ MS2_REPLACE_METHOD(0x141326040, UIPcBangDialog, RebuildGiftOrder, 1274, 0x7DAA87
 // @0x141326540
 void UIPcBangDialog::RequestInfo()
 {
-    COutPacket packet(0x67, 0);
+    COutPacket packet(static_cast<int>(SendOp::PcBangBonus), 0);
     packet.vfunc_o10_1(3);
     FUN_140710590(packet);
 }

@@ -390,7 +390,7 @@ MS2_REPLACE_METHOD(0x140C59830, UILevelUpPackageWidgetDialog, vfunc_85, 750, 0x2
 // @0x140c59b30
 void UILevelUpPackageWidgetDialog::vfunc_86()
 {
-    COutPacket packet(0x29, 0);
+    COutPacket packet(static_cast<int>(SendOp::Quest), 0);
     packet.Encode1(0x18);
     packet.Encode4(m_198);
     FUN_140710590(packet);
@@ -582,7 +582,7 @@ void UIBurningEventWidgetDialog::vfunc_86()
     nDefault = 0;
     if (g_attendTableDT.FUN_140be8f80(0x7d2, spContext->m_eventId, nDefault) != 0)
         return;
-    COutPacket packet(0x97, 0);
+    COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
     packet.Encode1(0xf);
     packet.Encode4(spContext->m_eventId);
     FUN_140710590(packet);

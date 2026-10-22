@@ -1314,7 +1314,7 @@ CStringW GameEventLongTermAttendGiftCli::GetTypeName() { return CStringW(L"GameE
 void GameEventLongTermAttendGiftCli::OnStart()
 {
     GameEventLongTermAttendGift::OnStart();
-    COutPacket packet(0x97, 0);
+    COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
     packet.vfunc_o10_1(0x1b);
     FUN_140710590(packet);
 }

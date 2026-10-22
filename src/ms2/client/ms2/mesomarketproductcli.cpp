@@ -223,7 +223,7 @@ void CMesoMarketMan::SendMesoMarket()
     m_arrMarket.RemoveAll();
     m_mapMarket.RemoveAll();
     m_mapOwn.RemoveAll();
-    COutPacket packet(0x81, 0);
+    COutPacket packet(static_cast<int>(SendOp::MesoMarket), 0);
     packet.vfunc_o10_1(3);
     FUN_140710590(packet);
 }

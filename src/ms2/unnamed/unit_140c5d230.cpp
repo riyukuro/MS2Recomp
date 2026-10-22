@@ -649,7 +649,7 @@ int UILapenshardEquipTab::vfunc_6(const char* szMethod, const Scaleform::GFx::Va
             int bMounted = pPlayer->FUN_14152f770((Unk_MyPCLapenSlot)nSlot);
             if (bMounted != 0)
             {
-                COutPacket pkt(0xad, 0);
+                COutPacket pkt(static_cast<int>(SendOp::Lapenshard), 0);
                 pkt.vfunc_o10_1(2);
                 Unk_LsSlotArg arg;
                 arg.m_n = nSlot;
@@ -1820,7 +1820,7 @@ int UILapenshardUpgradeTab::vfunc_6(const char* szMethod, const Scaleform::GFx::
             return 0;
         if (m_spSource == 0)
             return 0;
-        COutPacket pkt(0xad, 0);
+        COutPacket pkt(static_cast<int>(SendOp::Lapenshard), 0);
         pkt.vfunc_o10_1(6);
         pkt.vfunc_o10_3(m_spSource->FUN_1405276c0());
         pkt.vfunc_o10_3(m_n_c0);
@@ -1898,7 +1898,7 @@ void UILapenshardUpgradeTab::SendLapenshardMode4()
     MyPC* pPlayer = vfunc_11();
     if (pPlayer == 0)
         return;
-    COutPacket pkt(0xad, 0);
+    COutPacket pkt(static_cast<int>(SendOp::Lapenshard), 0);
     pkt.vfunc_o10_1(4);
     Unk_LsPktA rec;
     rec.m_nItemId = m_spSource->FUN_1405276c0();
@@ -1927,7 +1927,7 @@ void UILapenshardUpgradeTab::SendLapenshardMode3(MS2Ptr<CItem> spItem)
     m_spSource = spItem;
     FUN_140c68f90();
     m_nState = 1;
-    COutPacket pkt(0xad, 0);
+    COutPacket pkt(static_cast<int>(SendOp::Lapenshard), 0);
     pkt.vfunc_o10_1(3);
     Unk_LsRecHead rec;
     rec.m_nItemId = spItem->FUN_1405276c0();
@@ -2297,7 +2297,7 @@ void UILapenshardUpgradeTab::SendLapenshardMode5()
     MyPC* pPlayer = vfunc_11();
     if (pPlayer == 0)
         return;
-    COutPacket pkt(0xad, 0);
+    COutPacket pkt(static_cast<int>(SendOp::Lapenshard), 0);
     pkt.vfunc_o10_1(5);
     Unk_LsPktB rec;
     rec.m_nItemId = m_spSource->FUN_1405276c0();

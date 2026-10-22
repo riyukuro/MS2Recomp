@@ -198,7 +198,7 @@ bool FUN_140dff210(int nResult, const CMsgBoxData& box)
 {
     if (nResult != 0)
         return true;
-    COutPacket packet(0x90, 0);
+    COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
     packet.vfunc_o10_1(10);
     packet.vfunc_o10_1(3);
     FUN_140710590(packet);
@@ -220,7 +220,7 @@ void FUN_140dff2b0()
         MyPC* pMyPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
         if (pMyPC == 0)
             return;
-        COutPacket packet(0x90, 0);
+        COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
         packet.vfunc_o10_1(10);
         packet.vfunc_o10_1(1);
         FUN_140710590(packet);
@@ -246,7 +246,7 @@ void FUN_140dff3a0(__int64 nId, const CStringW& strName, __int64 nFee, int nMax,
 // @0x140dff580
 void FUN_140dff580(int nA, int nB)
 {
-    COutPacket packet(0x90, 0);
+    COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
     packet.vfunc_o10_1(10);
     packet.vfunc_o10_1(5);
     packet.vfunc_o10_3(nA);
@@ -345,7 +345,7 @@ bool FUN_140dffad0(int nResult, const CMsgBoxData& box)
 {
     if (nResult != 0)
         return true;
-    COutPacket packet(0x90, 0);
+    COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
     packet.vfunc_o10_1(10);
     packet.vfunc_o10_1(8);
     FUN_140710590(packet);
@@ -381,12 +381,12 @@ bool FUN_140dffdf0(int nResult, const CMsgBoxData& box)
         return true;
     if (s_bHost)
     {
-        COutPacket packet(0x90, 0);
+        COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
         packet.vfunc_o10_1(10);
         packet.vfunc_o10_1(9);
         FUN_140710590(packet);
     }
-    COutPacket packet(0x6c, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestMoveField), 0);
     packet.vfunc_o10_1(1);
     FUN_140710590(packet);
     return true;
@@ -417,7 +417,7 @@ int FUN_140dffeb0(Unk_OxArgs* pArgs)
     }
     else if (FUN_1403b3c40(strCmd, L"next"))
     {
-        COutPacket packet(0x90, 0);
+        COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
         packet.vfunc_o10_1(10);
         packet.vfunc_o10_1(0x10);
         FUN_140710590(packet);
@@ -427,7 +427,7 @@ int FUN_140dffeb0(Unk_OxArgs* pArgs)
         CStringW strAnswer = pArgs->FUN_1408d21c0(2, L"");
         if (FUN_1403b3c40(strAnswer, L"o"))
         {
-            COutPacket packet(0x90, 0);
+            COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
             packet.vfunc_o10_1(10);
             packet.vfunc_o10_1(0xb);
             packet.vfunc_o10_1(1);
@@ -435,7 +435,7 @@ int FUN_140dffeb0(Unk_OxArgs* pArgs)
         }
         else if (FUN_1403b3c40(strAnswer, L"x"))
         {
-            COutPacket packet(0x90, 0);
+            COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
             packet.vfunc_o10_1(10);
             packet.vfunc_o10_1(0xb);
             packet.vfunc_o10_1(0);
@@ -444,14 +444,14 @@ int FUN_140dffeb0(Unk_OxArgs* pArgs)
     }
     else if (FUN_1403b3c40(strCmd, L"remove_wall"))
     {
-        COutPacket packet(0x90, 0);
+        COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
         packet.vfunc_o10_1(10);
         packet.vfunc_o10_1(0x11);
         FUN_140710590(packet);
     }
     else if (FUN_1403b3c40(strCmd, L"resurrect"))
     {
-        COutPacket packet(0x90, 0);
+        COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
         packet.vfunc_o10_1(10);
         packet.vfunc_o10_1(0x12);
         FUN_140710590(packet);
@@ -898,7 +898,7 @@ bool FUN_140e01f10(Unk_140165cf0* pElem)
 // @0x140dfee10
 void FUN_140dfee10(__int64 quizId, int first, int second)
 {
-    COutPacket packet(0x90, 0);
+    COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
     packet.vfunc_o10_1(10);
     packet.vfunc_o10_1(0);
     packet.vfunc_o10_4(quizId);
@@ -913,7 +913,7 @@ void FUN_140dfeeb0()
     MyPC* player = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (player == 0)
         return;
-    COutPacket packet(0x90, 0);
+    COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
     packet.vfunc_o10_1(10);
     packet.vfunc_o10_1(2);
     FUN_140710590(packet);

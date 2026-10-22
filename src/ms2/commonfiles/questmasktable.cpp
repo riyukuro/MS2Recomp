@@ -791,7 +791,7 @@ void FUN_140761f60(const std::vector<unsigned>& ids, int nState)
         nAction = 0;
         break;
     }
-    COutPacket packet(0x29, 0);
+    COutPacket packet(static_cast<int>(SendOp::Quest), 0);
     packet.Encode1(5);
     packet.Encode4(nAction);
     packet.Encode4((int)ids.size());

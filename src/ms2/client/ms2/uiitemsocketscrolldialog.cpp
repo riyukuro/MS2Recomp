@@ -544,7 +544,7 @@ void UIItemSocketScrollDialog::SendItemSocketScroll(__int64 nTargetUid)
     Unk_SsdUidPair pair;
     pair.m_nSecond = m_nScrollUid;
     pair.m_nFirst = nTargetUid;
-    COutPacket packet(0x8b, 0);
+    COutPacket packet(static_cast<int>(SendOp::ItemSocketScroll), 0);
     packet.vfunc_o10_1(1);
     FUN_14062a040(pair, packet);
     FUN_140710590(packet);

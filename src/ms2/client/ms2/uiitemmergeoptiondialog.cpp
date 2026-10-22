@@ -1019,7 +1019,7 @@ bool UIItemMergeOptionDialog::ConfirmMerge(int nButton, const CMsgBoxData& box)
 // @0x1419d2180
 void UIItemMergeOptionDialog::RequestInfo()
 {
-    COutPacket packet(0x3f, 0);
+    COutPacket packet(static_cast<int>(SendOp::ItemMerge), 0);
     packet.vfunc_o10_1(0);
     FUN_140710590(packet);
 }
@@ -1027,7 +1027,7 @@ void UIItemMergeOptionDialog::RequestInfo()
 // @0x1419d21e0
 void UIItemMergeOptionDialog::RequestPreview()
 {
-    COutPacket packet(0x3f, 0);
+    COutPacket packet(static_cast<int>(SendOp::ItemMerge), 0);
     packet.vfunc_o10_1(2);
     packet.vfunc_o10_4(m_nItemUid);
     packet.vfunc_o10_4(m_nMaterialUid);
@@ -1037,7 +1037,7 @@ void UIItemMergeOptionDialog::RequestPreview()
 // @0x1419d2260
 void UIItemMergeOptionDialog::RequestSelection()
 {
-    COutPacket packet(0x3f, 0);
+    COutPacket packet(static_cast<int>(SendOp::ItemMerge), 0);
     packet.vfunc_o10_1(1);
     packet.vfunc_o10_4(m_nItemUid);
     FUN_140710590(packet);
@@ -1046,7 +1046,7 @@ void UIItemMergeOptionDialog::RequestSelection()
 // @0x1419d22d0
 void UIItemMergeOptionDialog::RequestMerge()
 {
-    COutPacket packet(0x3f, 0);
+    COutPacket packet(static_cast<int>(SendOp::ItemMerge), 0);
     packet.vfunc_o10_1(3);
     packet.vfunc_o10_4(m_nItemUid);
     packet.vfunc_o10_4(m_nMaterialUid);
@@ -1056,7 +1056,7 @@ void UIItemMergeOptionDialog::RequestMerge()
 // @0x1419d2350
 void UIItemMergeOptionDialog::RequestChoice(unsigned char nChoice)
 {
-    COutPacket packet(0x3f, 0);
+    COutPacket packet(static_cast<int>(SendOp::ItemMerge), 0);
     packet.vfunc_o10_1(4);
     packet.vfunc_o10_1(nChoice);
     FUN_140710590(packet);
@@ -1065,7 +1065,7 @@ void UIItemMergeOptionDialog::RequestChoice(unsigned char nChoice)
 // @0x1419d23c0
 void UIItemMergeOptionDialog::RequestMaterial()
 {
-    COutPacket packet(0x3f, 0);
+    COutPacket packet(static_cast<int>(SendOp::ItemMerge), 0);
     packet.vfunc_o10_1(7);
     packet.vfunc_o10_4(m_nItemUid);
     packet.vfunc_o10_4(m_nMaterialUid);
@@ -1075,7 +1075,7 @@ void UIItemMergeOptionDialog::RequestMaterial()
 // @0x1419d2440
 void UIItemMergeOptionDialog::RequestResultTalk()
 {
-    COutPacket packet(0x22, 0);
+    COutPacket packet(static_cast<int>(SendOp::NpcTalk), 0);
     if (FUN_140967100()->FUN_141b213c0() == 0)
     {
         packet.vfunc_o10_1(4);

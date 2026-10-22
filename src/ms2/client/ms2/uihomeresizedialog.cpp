@@ -224,7 +224,7 @@ void UIHomeResizeDialog::OnExtensionHeight()
 bool UIHomeResizeDialog::SendRequestCubeMode38(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0) {
-        COutPacket pkt(0x37, 0);
+        COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
         pkt.Encode1(0x26);
         FUN_140710590(pkt);
     }
@@ -235,7 +235,7 @@ bool UIHomeResizeDialog::SendRequestCubeMode38(int nResult, const CMsgBoxData& d
 bool UIHomeResizeDialog::SendRequestCubeMode45(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0) {
-        COutPacket pkt(0x37, 0);
+        COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
         pkt.Encode1(0x2d);
         FUN_140710590(pkt);
     }
@@ -246,7 +246,7 @@ bool UIHomeResizeDialog::SendRequestCubeMode45(int nResult, const CMsgBoxData& d
 bool UIHomeResizeDialog::SendRequestCubeMode37(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0) {
-        COutPacket pkt(0x37, 0);
+        COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
         pkt.Encode1(0x25);
         FUN_140710590(pkt);
     }
@@ -257,7 +257,7 @@ bool UIHomeResizeDialog::SendRequestCubeMode37(int nResult, const CMsgBoxData& d
 bool UIHomeResizeDialog::SendRequestCubeMode44(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0) {
-        COutPacket pkt(0x37, 0);
+        COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
         pkt.Encode1(0x2c);
         FUN_140710590(pkt);
     }

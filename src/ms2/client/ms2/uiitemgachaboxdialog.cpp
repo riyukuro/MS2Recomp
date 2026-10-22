@@ -456,7 +456,7 @@ void UIItemGachaBoxDialog::OnOpenCoinShop()
     GachaBoxDataPtr gacha = FUN_14052d230()->FUN_14059e340(static_cast<Unk_GachaData*>(data.operator->())->FUN_14053dec0());
     if (gacha == 0)
         return;
-    COutPacket pkt(0x65, 0);
+    COutPacket pkt(static_cast<int>(SendOp::SystemShop), 0);
     pkt.Encode1(10);
     pkt.Encode1(1);
     pkt.Encode4(gacha->m_nCoinItemID);

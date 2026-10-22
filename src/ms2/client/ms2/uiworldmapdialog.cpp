@@ -1158,7 +1158,7 @@ MS2_REPLACE_METHOD(0x141B58830, UIWorldMapDialog, FUN_141b58830, 1554, 0xD7B92CE
 // @0x141b58e80
 void UIWorldMapDialog::SendRequestWorldmapMode0()
 {
-    COutPacket packet(0x4a);
+    COutPacket packet(static_cast<int>(SendOp::RequestWorldmap));
     packet.Encode1(0);
     packet.Encode1((char)m_nMode);
     packet.Encode4(FUN_141b69340());
@@ -1539,7 +1539,7 @@ bool UIWorldMapDialog::FUN_141b5afe0(int nFieldId)
             return true;
         }
         FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)0x4e42);
-        COutPacket packet(0x54);
+        COutPacket packet(static_cast<int>(SendOp::RequestMoveEventField));
         packet.Encode4(nFieldId);
         FUN_140710590(packet);
     }
@@ -1797,7 +1797,7 @@ void UIWorldMapDialog::SendQuest()
 {
     if (FUN_140764020()->FUN_1416d0100() != 0)
     {
-        COutPacket packet(0x29);
+        COutPacket packet(static_cast<int>(SendOp::Quest));
         packet.Encode1(0x1a);
         packet.Encode4(FUN_140764020()->FUN_1416d00c0());
         FUN_140710590(packet);
@@ -1859,7 +1859,7 @@ void UIWorldMapDialog::SendRequestWorldmapMode1()
     {
     case 1:
     {
-        COutPacket packet(0x4a);
+        COutPacket packet(static_cast<int>(SendOp::RequestWorldmap));
         packet.Encode1(1);
         packet.Encode4(FUN_141b69340());
         FUN_140710590(packet);

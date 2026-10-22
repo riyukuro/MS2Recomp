@@ -302,7 +302,7 @@ bool UIHomeSaveSlotDialog::FUN_140faa7d0(int nResult, const CMsgBoxData& data)
                     }
                 }
             }
-            COutPacket pkt(0x37, 0);
+            COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
             pkt.vfunc_o10_1(0x2e);
             pkt.vfunc_o10_3(nSlot);
             pkt.vfunc_o10_8(strName);
@@ -336,7 +336,7 @@ bool UIHomeSaveSlotDialog::FUN_140faac30(int nResult, const CMsgBoxData& data)
             }
             else
             {
-                COutPacket pkt(0x37, 0);
+                COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
                 pkt.vfunc_o10_1(0x2f);
                 pkt.vfunc_o10_3(nSlot);
                 FUN_140710590(pkt);
@@ -354,7 +354,7 @@ bool UIHomeSaveSlotDialog::SendRequestCubeMode46(int nResult, const CMsgBoxData&
     {
         int nSlot = data.FUN_141a02e50(0, 0);
         CStringW strName = data.FUN_141a02fd0(1, CStringW());
-        COutPacket pkt(0x37, 0);
+        COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
         pkt.vfunc_o10_1(0x2e);
         pkt.vfunc_o10_3(nSlot);
         pkt.vfunc_o10_8(strName);
@@ -392,7 +392,7 @@ bool UIHomeSaveSlotDialog::FUN_140faaeb0(int nResult, const CMsgBoxData& data)
                     }
                 }
             }
-            COutPacket pkt(0x37, 0);
+            COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
             pkt.vfunc_o10_1(0x40);
             pkt.vfunc_o10_3(nSlot);
             pkt.vfunc_o10_8(strName);
@@ -413,7 +413,7 @@ bool UIHomeSaveSlotDialog::SendRequestCubeMode65(int nResult, const CMsgBoxData&
             int nSlot = data.FUN_141a02e50(0, 0);
             if (spService->FUN_1410c3600(3))
             {
-                COutPacket pkt(0x37, 0);
+                COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
                 pkt.vfunc_o10_1(0x41);
                 pkt.vfunc_o10_3(nSlot);
                 FUN_140710590(pkt);
@@ -431,7 +431,7 @@ bool UIHomeSaveSlotDialog::SendRequestCubeMode64(int nResult, const CMsgBoxData&
     {
         int nSlot = data.FUN_141a02e50(0, 0);
         CStringW strName = data.FUN_141a02fd0(1, CStringW());
-        COutPacket pkt(0x37, 0);
+        COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
         pkt.vfunc_o10_1(0x40);
         pkt.vfunc_o10_3(nSlot);
         pkt.vfunc_o10_8(strName);

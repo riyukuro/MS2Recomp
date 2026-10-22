@@ -98,7 +98,7 @@ MS2_REPLACE_METHOD(0x140F34810, UIDarkStreamResultDialog, vfunc_43, 161, 0x6FE03
 // @0x140f348c0
 void UIDarkStreamResultDialog::vfunc_67()
 {
-    COutPacket packet(0x6c, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestMoveField), 0);
     packet.vfunc_o10_1(1);
     FUN_140710590(packet);
     UIDialog::vfunc_67();

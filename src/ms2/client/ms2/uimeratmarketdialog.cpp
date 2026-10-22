@@ -2885,7 +2885,7 @@ void UIMeratMarketDialog::SendRandomSaleRequest(MS2Ptr<CMeratMarketProduct> spPr
         if (nRemain < 0)
             nRemain = 0;
         int nCount = spProduct->m_premium.GetRemainCount();
-        COutPacket pkt(0x39, 0);
+        COutPacket pkt(static_cast<int>(SendOp::MeretMarket), 0);
         pkt.vfunc_o10_1(0x6f);
         pkt.vfunc_o10_3(spProduct->m_premium.m_n2c);
         pkt.vfunc_o10_1(spProduct->m_premium.m_n16c);
@@ -2897,7 +2897,7 @@ void UIMeratMarketDialog::SendRandomSaleRequest(MS2Ptr<CMeratMarketProduct> spPr
     }
     else if (nType == 7)
     {
-        COutPacket pkt(0x39, 0);
+        COutPacket pkt(static_cast<int>(SendOp::MeretMarket), 0);
         pkt.vfunc_o10_1(0x73);
         pkt.vfunc_o10_3(spProduct->m_premium.m_nId);
         pkt.vfunc_o10_3(spProduct->m_premium.m_n1b0);
@@ -2906,7 +2906,7 @@ void UIMeratMarketDialog::SendRandomSaleRequest(MS2Ptr<CMeratMarketProduct> spPr
     }
     else if (nType == 8)
     {
-        COutPacket pkt(0x39, 0);
+        COutPacket pkt(static_cast<int>(SendOp::MeretMarket), 0);
         pkt.vfunc_o10_1(0x73);
         pkt.vfunc_o10_3(spProduct->m_premium.m_nId);
         pkt.vfunc_o10_3(spProduct->m_premium.m_n1b0);
@@ -2915,7 +2915,7 @@ void UIMeratMarketDialog::SendRandomSaleRequest(MS2Ptr<CMeratMarketProduct> spPr
     }
     else
     {
-        COutPacket pkt(0x39, 0);
+        COutPacket pkt(static_cast<int>(SendOp::MeretMarket), 0);
         pkt.vfunc_o10_1(0x76);
         pkt.vfunc_o10_3(spProduct->m_premium.m_nId);
         pkt.vfunc_o10_3(spProduct->m_premium.m_n2c);
@@ -3964,7 +3964,7 @@ void UIMeratMarketDialog::OnClickRandomSalePick(const CStringA& strName, ASData&
             }
             else
             {
-                COutPacket pkt(0x39, 0);
+                COutPacket pkt(static_cast<int>(SendOp::MeretMarket), 0);
                 pkt.vfunc_o10_1(0x72);
                 pkt.vfunc_o10_3(spProduct->m_premium.m_nId);
                 pkt.vfunc_o10_1(spProduct->m_premium.m_nType);
@@ -4257,7 +4257,7 @@ void UIMeratMarketDialog::OnClickExtraButton(ASData& data)
         if (FUN_1403ed2b0()->FUN_141adc7f0((eUIClassID)0x4e3b) == 0)
             return;
         FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4e3b);
-        COutPacket packet(0x65, 0);
+        COutPacket packet(static_cast<int>(SendOp::SystemShop), 0);
         packet.Encode1(10);
         packet.Encode1(1);
         packet.Encode4(nCoinItem);
@@ -4651,7 +4651,7 @@ void UIMeratMarketDialog::OnClickSaleCommand(ASData& data)
     MS2Ptr<CMeratMarketProduct> spProduct = FUN_140939a00()->FUN_140d55800(key);
     if (spProduct == 0)
         return;
-    COutPacket packet(0x11, 0);
+    COutPacket packet(static_cast<int>(SendOp::UserChat), 0);
     Unk_CommandChat chat;
     chat.kind = 0;
     chat.message = StringFormat(L"/UgcProductSale {0} {1}", reinterpret_cast<const unsigned __int64&>(spProduct->m_ugc.m_n20), nCount);  // uid formatted unsigned (ArgType 0x140408130)

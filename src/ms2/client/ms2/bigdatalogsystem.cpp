@@ -161,7 +161,7 @@ MS2_REPLACE_METHOD(0x140A1F8A0, CBigDataLogSystem, Update, 199, 0x15B837EF);
 // @0x140a1f970
 void CBigDataLogSystem::SendLog(const CString& strKey, const CString& strValue)
 {
-    COutPacket packet(0x55, 0);
+    COutPacket packet(static_cast<int>(SendOp::LogSend), 0);
     packet.vfunc_o10_1(0);
     packet.vfunc_o10_1(0);
     packet.vfunc_o10_6(strKey);
@@ -174,7 +174,7 @@ MS2_REPLACE_METHOD(0x140A1F970, CBigDataLogSystem, SendLog, 130, 0x1648C8A5);
 // MS2-FUNCTIONAL: the name string scope / temporaries differ (7 bytes)
 void CBigDataLogSystem::SendStatistics()
 {
-    COutPacket packet(0x55, 0);
+    COutPacket packet(static_cast<int>(SendOp::LogSend), 0);
     packet.vfunc_o10_1(0);
     packet.vfunc_o10_1(1);
     packet.vfunc_o10_1(3);

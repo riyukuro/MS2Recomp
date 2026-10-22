@@ -463,7 +463,7 @@ bool SendBeautyMode16(__int64 nItemUid)
 {
     if (nItemUid == 0)
         return false;
-    COutPacket packet(0x23, 0);
+    COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
     packet.vfunc_o10_1(0x10);
     packet.vfunc_o10_4(nItemUid);
     FUN_140710590(packet);
@@ -476,7 +476,7 @@ bool SendBeautyMode17(__int64 nItemUid)
 {
     if (nItemUid == 0)
         return false;
-    COutPacket packet(0x23, 0);
+    COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
     packet.vfunc_o10_1(0x11);
     packet.vfunc_o10_4(nItemUid);
     FUN_140710590(packet);
@@ -1158,7 +1158,7 @@ bool UIBeautyShopStyleDialog::SendBeautyMode19(int nResult, const CMsgBoxData&)
 {
     if (nResult == 0)
     {
-        COutPacket packet(0x23, 0);
+        COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
         packet.vfunc_o10_1(0x13);
         FUN_140710590(packet);
         FUN_1412761e0(MS2Ptr<AScript>(m_30), 0);
@@ -1177,7 +1177,7 @@ bool UIBeautyShopStyleDialog::SendBeautyMode18(int nResult, const CMsgBoxData& d
         MS2Ptr<CItem> spItem = FUN_140f09020(nIndex);
         if (!(spItem == 0))
         {
-            COutPacket packet(0x23, 0);
+            COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
             packet.vfunc_o10_1(0x12);
             packet.vfunc_o10_4(spItem->FUN_140526a50());
             packet.vfunc_o10_1((unsigned char)nIndex);
@@ -1767,7 +1767,7 @@ int UIBeautyShopStyleDialog::FUN_140f08be0()
         return 0;
     }
     m_198->FUN_140cd22f0(FUN_140f01070(FUN_140f07980()));
-    COutPacket packet(0x23, 0);
+    COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
     packet.vfunc_o10_1(0x15);
     packet.vfunc_o10_4(spItem->FUN_140526a50());
     packet.vfunc_o10_1((unsigned char)spItem->FUN_140526b50());

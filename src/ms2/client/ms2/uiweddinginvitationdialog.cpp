@@ -235,7 +235,7 @@ bool UIWeddingInvitationDialog::FUN_140fe60d0(int nResult, const CMsgBoxData& bo
         __int64 nNow = FUN_140869440();
         if (nNow < FUN_140282020(kLimit))
         {
-            COutPacket packet(0xba, 0);
+            COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
             packet.vfunc_o10_1(0x1c);
             packet.vfunc_o10_3((int)m_guests.size());
             for (size_t i = 0; i < m_guests.size(); i++)

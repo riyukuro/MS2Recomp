@@ -262,7 +262,7 @@ void CAutoFindTaxiStation::SendRequestTaxiMode5()
     if (m_nActive == 0)
         return;
     FUN_1401855a0(&DAT_143ab3098, DAT_143ab2870);
-    COutPacket packet(0x48, 0);
+    COutPacket packet(static_cast<int>(SendOp::RequestTaxi), 0);
     packet.vfunc_o10_1(5);
     FUN_140710590(&packet);
     FUN_140ca7230(FUN_1409f24b0(), 5000, Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1a00));
@@ -351,7 +351,7 @@ int CAutoFindTaxiStation::FUN_1409f1cb0()
                     if (!FUN_14085f730(FUN_1409f24a0(), DAT_143ab2870))
                     {
                         FUN_1401855a0(&DAT_143ab3098, DAT_143ab2870);
-                        COutPacket packet(0x48, 0);
+                        COutPacket packet(static_cast<int>(SendOp::RequestTaxi), 0);
                         packet.vfunc_o10_1(5);
                         FUN_140710590(&packet);
                     }

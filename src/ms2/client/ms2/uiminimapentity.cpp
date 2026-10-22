@@ -554,7 +554,7 @@ void UIMinimapEntity::SendSetDebugMode()
 {
     vfunc_3();
     if (FUN_14025e7c0()->IsDebugMode() && m_position != efd::Point3::ZERO) {
-        COutPacket packet(0x50, 0);
+        COutPacket packet(static_cast<int>(SendOp::SetDebugMode), 0);
         packet.Encode1(2);
         packet.vfunc_o10_11(reinterpret_cast<const Unk_StreamPoint&>(m_position));
         FUN_140710590(packet);
@@ -2610,7 +2610,7 @@ void UIMinimapDialog::SendMinimapPing(int nKind, float x, float y)
     NiPoint3 kPos(efd::Point3::ZERO);
     Scaleform::GFx::Value contains = m_30->Invoke("mouseContains");
     if (contains.IsBool() && FUN_1409c1720(contains) && FUN_141a451b0(true, x, y, kPos)) {
-        COutPacket packet(0xb1, 0);
+        COutPacket packet(static_cast<int>(SendOp::MinimapPing), 0);
         packet.Encode8(pPC->FUN_141656a80());
         packet.Encode1((unsigned char)nKind);
         FUN_14020af60(&packet, reinterpret_cast<const Unk_StreamPoint*>(&kPos));

@@ -285,7 +285,7 @@ void UIItemOptionCreateDialog::FUN_1412d2e50(unsigned nItemId, unsigned nCount, 
             }
         }
     }
-    COutPacket out(0x15, 0);
+    COutPacket out(static_cast<int>(SendOp::RequestItemCreate), 0);
     packet.vfunc_0(out);
     FUN_140710590(out);
 }

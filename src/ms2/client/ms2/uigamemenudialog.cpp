@@ -2146,7 +2146,7 @@ void UIGameMenuDialog::FUN_14193c930()
             }
         }
         if (FUN_1403ed2b0()->FUN_141adc890(0x4f4b) == 0) {
-            COutPacket packet(0xa1, 0);
+            COutPacket packet(static_cast<int>(SendOp::Mentor), 0);
             packet.vfunc_o10_1(9);
             FUN_140710590(packet);
         } else {
@@ -2337,7 +2337,7 @@ bool UIGameMenuDialog::SendBeauty(int nResult, const CMsgBoxData& box)
     PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc != NULL && FUN_141529ae0(pPc, 0, 0, 0, 0) != 0) {
         int nIndex = box.FUN_141a02e50(0, 0);
-        COutPacket packet(0x23, 0);
+        COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
         packet.vfunc_o10_1(10);
         packet.vfunc_o10_2((short)nIndex);
         FUN_140710590(packet);
@@ -2361,7 +2361,7 @@ bool UIGameMenuDialog::SendQuest(int nResult, const CMsgBoxData&)
 {
     if (nResult != 0)
         return true;
-    COutPacket packet(0x29, 0);
+    COutPacket packet(static_cast<int>(SendOp::Quest), 0);
     packet.vfunc_o10_1(0x11);
     FUN_140710590(packet);
     return true;

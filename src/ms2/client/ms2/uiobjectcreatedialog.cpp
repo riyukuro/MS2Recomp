@@ -170,7 +170,7 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             CString str3 = data.FUN_1422b8d30();
             CString str4 = data.FUN_1422b8d30();
             int nCount = FUN_1407181d0(data.FUN_1422b8d30());
-            COutPacket packet(0x31, 0);
+            COutPacket packet(static_cast<int>(SendOp::InteractObject), 0);
             packet.Encode1(9);
             packet.Encode4(nKind);
             packet.vfunc_o10_6(str1);
@@ -228,7 +228,7 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             kPoint.x = data.FUN_1422b8c10();
             kPoint.y = data.FUN_1422b8c10();
             kPoint.z = data.FUN_1422b8c10();
-            COutPacket packet(0x50, 0);
+            COutPacket packet(static_cast<int>(SendOp::SetDebugMode), 0);
             packet.Encode1(2);
             packet.vfunc_o10_11(kPoint);
             FUN_140710590(packet);

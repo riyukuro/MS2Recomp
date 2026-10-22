@@ -387,7 +387,7 @@ int UIItemRePackingScrollDialog::vfunc_28(const char* szMethod, const Scaleform:
                 FUN_140f62710(0xd);
                 return 1;
             }
-            COutPacket packet(0x8c, 0);
+            COutPacket packet(static_cast<int>(SendOp::ItemRepack), 0);
             packet.vfunc_o10_1(1);
             packet.vfunc_o10_4(m_nOwner);
             packet.vfunc_o10_4(nTarget);

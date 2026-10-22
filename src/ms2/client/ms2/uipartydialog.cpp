@@ -747,7 +747,7 @@ bool UIPartyDialog::SendDungeonReward(int nResult, const CMsgBoxData& box)
 {
     if (nResult != 0)
         return true;
-    COutPacket packet(0x9d, 0);
+    COutPacket packet(static_cast<int>(SendOp::DungeonReward), 0);
     packet.Encode1(5);
     FUN_140710590(packet);
     return true;
@@ -1934,7 +1934,7 @@ int UIPopUpMenu::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             {
                 if (FUN_140841300(args[0], "changeChief"))
                 {
-                    COutPacket packet(0x2c, 0);
+                    COutPacket packet(static_cast<int>(SendOp::Party), 0);
                     packet.Encode1(0x11);
                     packet.COutPacket::vfunc_o10_8(args[1]);
                     FUN_140710590(packet);
@@ -3155,7 +3155,7 @@ void UIPopUpMenu::SendCharacterInfo()
             if (nState == 2)
                 return;
             FUN_1403ed2b0()->FUN_141adc690(0x4ec8);
-            COutPacket packet(0x1e, 0);
+            COutPacket packet(static_cast<int>(SendOp::CharacterInfo), 0);
             packet.Encode8(m_a8);
             FUN_140710590(packet);
         }
@@ -3393,7 +3393,7 @@ void UIPopUpMenu::FUN_141a86a50()
 {
     if (FUN_1418fd580(m_a8) != 0)
     {
-        COutPacket packet(0x51, 0);
+        COutPacket packet(static_cast<int>(SendOp::RequestHome), 0);
         packet.Encode1(1);
         packet.COutPacket::vfunc_o10_8(m_90);
         FUN_140710590(packet);
@@ -3409,7 +3409,7 @@ void UIPopUpMenu::SendRequestPet()
     }
     else
     {
-        COutPacket packet(0x78, 0);
+        COutPacket packet(static_cast<int>(SendOp::RequestPet), 0);
         packet.Encode1(0x10);
         packet.Encode8(m_1a8.m_08);
         packet.Encode8(m_1a8.m_20);
@@ -3431,7 +3431,7 @@ void UIPopUpMenu::SendRequestCube()
 {
     if (FUN_140166410()->FUN_14036d570(0x100))
     {
-        COutPacket packet(0x37, 0);
+        COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
         packet.Encode1(0x39);
         packet.COutPacket::vfunc_o10_6(FUN_14016a600(m_90, 0));
         FUN_140710590(packet);
@@ -3454,7 +3454,7 @@ void UIPopUpMenu::FUN_141a86d20()
 {
     if (!m_90.IsEmpty())
     {
-        COutPacket packet(0x90, 0);
+        COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
         packet.Encode1(1);
         packet.COutPacket::vfunc_o10_8(m_90);
         FUN_140710590(packet);
@@ -3466,7 +3466,7 @@ void UIPopUpMenu::FUN_141a86db0()
 {
     if (!m_90.IsEmpty())
     {
-        COutPacket packet(0x90, 0);
+        COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
         packet.Encode1(3);
         packet.COutPacket::vfunc_o10_8(m_90);
         FUN_140710590(packet);
@@ -3478,7 +3478,7 @@ void UIPopUpMenu::FUN_141a86e40()
 {
     if (!m_90.IsEmpty())
     {
-        COutPacket packet(0x90, 0);
+        COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
         packet.Encode1(2);
         packet.COutPacket::vfunc_o10_8(m_90);
         FUN_140710590(packet);

@@ -1180,7 +1180,7 @@ void UITalkManager::FUN_141b1eb90(CString strDialog, CString strArg)
     {
         Unk_TcInt kValue;
         kValue.m_n = atoi(strArg);
-        COutPacket packet(0x43, 0);
+        COutPacket packet(static_cast<int>(SendOp::BonusGame), 0);
         packet.vfunc_o10_1(0);
         kValue.FUN_1401fcd50(packet);
         FUN_140710590(packet);
@@ -1191,7 +1191,7 @@ void UITalkManager::FUN_141b1eb90(CString strDialog, CString strArg)
     }
     else if (strDialog.CompareNoCase("StartGambleDialog") == 0)
     {
-        COutPacket packet(0x60, 0);
+        COutPacket packet(static_cast<int>(SendOp::Gamble), 0);
         packet.vfunc_o10_1(0);
         FUN_140710590(packet);
     }
@@ -1442,7 +1442,7 @@ void UITalkManager::FUN_141b1faa0(int nMode, int nDialogId)
         }
         if (nMode != 0)
         {
-            COutPacket packet(0x23, 0);
+            COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
             packet.vfunc_o10_1(0);
             packet.vfunc_o10_3(nNpc);
             packet.vfunc_o10_1((unsigned char)nMode);
@@ -1483,7 +1483,7 @@ void UITalkManager::FUN_141b1fcf0(unsigned nNpcId)
             {
                 if (FUN_140953f30()->FUN_140ad21b0() != 0)
                     FUN_140953f30()->FUN_140ad22d0();
-                COutPacket packet(0x22, 0);
+                COutPacket packet(static_cast<int>(SendOp::NpcTalk), 0);
                 packet.vfunc_o10_1(1);
                 packet.vfunc_o10_3(nNpcId);
                 FUN_140710590(packet);
@@ -1501,7 +1501,7 @@ void UITalkManager::SendNpcTalkMode0()
     m_nPending = 0;
     if (FUN_141b213c0() == 0)
     {
-        COutPacket packet(0x22, 0);
+        COutPacket packet(static_cast<int>(SendOp::NpcTalk), 0);
         packet.vfunc_o10_1(0);
         FUN_140710590(packet);
     }
@@ -1736,7 +1736,7 @@ void UITalkManager::SendNpcTalkMode2(unsigned nNpcId)
     {
         m_nPending = 1;
         m_nSubMode = 0;
-        COutPacket packet(0x22, 0);
+        COutPacket packet(static_cast<int>(SendOp::NpcTalk), 0);
         packet.vfunc_o10_1(2);
         packet.vfunc_o10_3(nNpcId);
         FUN_140710590(packet);

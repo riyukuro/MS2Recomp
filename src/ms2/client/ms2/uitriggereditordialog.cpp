@@ -208,7 +208,7 @@ MS2_REPLACE_METHOD(0x141B2A0A0, UITriggerEditorDialog, GetTypeName, 61, 0x0CFDB8
 void UITriggerEditorDialog::vfunc_67()
 {
     m_bFolded = 0;
-    COutPacket packet(0x2e, 0);
+    COutPacket packet(static_cast<int>(SendOp::FunctionCube), 0);
     packet.vfunc_o10_1(7);
     packet.vfunc_o10_6(m_strCube);
     FUN_140710590(packet);
@@ -317,7 +317,7 @@ void UITriggerEditorDialog::OnLoadComplete()
     m_30->Invoke("initScrollBar");
     if (m_nCubeId != 0)
     {
-        COutPacket packet(0x2f, 0);
+        COutPacket packet(static_cast<int>(SendOp::Trigger), 0);
         packet.vfunc_o10_1(0xb);
         packet.vfunc_o10_3(m_nCubeId);
         FUN_140710590(packet);
@@ -367,7 +367,7 @@ bool UITriggerEditorDialog::SendTriggerMode22(int nResult, const CMsgBoxData& da
 {
     if (nResult == 0)
     {
-        COutPacket packet(0x2f, 0);
+        COutPacket packet(static_cast<int>(SendOp::Trigger), 0);
         packet.vfunc_o10_1(0x16);
         packet.vfunc_o10_3(m_nCubeId);
         FUN_140710590(packet);
@@ -709,7 +709,7 @@ void UITriggerEditorDialog::SendTriggerMode13()
     CStringW strXml = FUN_1408767c0(printer.CStr());
     if (strXml.GetAllocLength() < 10000)
     {
-        COutPacket packet(0x2f, 0);
+        COutPacket packet(static_cast<int>(SendOp::Trigger), 0);
         packet.vfunc_o10_1(0xd);
         packet.vfunc_o10_3(m_nCubeId);
         packet.vfunc_o10_7(FUN_140390ea0((const wchar_t*)strXml, 0));

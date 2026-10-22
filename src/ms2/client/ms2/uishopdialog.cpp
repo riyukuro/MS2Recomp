@@ -808,7 +808,7 @@ void UIShopDialog::vfunc_72()
             {
                 m_spShop->Invoke("endTime");
                 ResetProducts(0);
-                COutPacket packet(0x28, 0);
+                COutPacket packet(static_cast<int>(SendOp::Shop), 0);
                 packet.Encode1(10);
                 FUN_140710590(packet);
                 Unk_ShopLog(GetLogString(), 0xc, 0x13, L"PROTOCOL_SHOP::ITEM_LIST_TIMEOUT next:{0}, server:{1}", m_tReset, tNow);
@@ -820,7 +820,7 @@ void UIShopDialog::vfunc_72()
                 {
                     m_1a0 = tNow;
                     ResetProducts(0);
-                    COutPacket packet(0x28, 0);
+                    COutPacket packet(static_cast<int>(SendOp::Shop), 0);
                     packet.Encode1(10);
                     FUN_140710590(packet);
                 }
@@ -2312,7 +2312,7 @@ void UIShopDialog::FillNewProducts(ASDataProvider& list, const CStringW& strSear
         return;
     if (!m_bNewComplete) {
         FUN_1412761e0(m_spShop, 0);
-        COutPacket packet(0x28, 0);
+        COutPacket packet(static_cast<int>(SendOp::Shop), 0);
         packet.Encode1(13);
         FUN_140710590(packet);
         return;
@@ -2589,7 +2589,7 @@ MS2_REPLACE_METHOD(0x141afe7f0, UIShopDialog, SellItem, 181, 0xCA289CA7);
 // @0x141afe8b0
 void UIShopDialog::ResetList()
 {
-    COutPacket packet(0x28, 0);
+    COutPacket packet(static_cast<int>(SendOp::Shop), 0);
     packet.Encode1(9);
     packet.Encode4((int)m_nResetPrice);
     FUN_140710590(packet);
@@ -2862,7 +2862,7 @@ int UIShopDialog::RequestRepurchase(int nSerial)
         FUN_141275260(0x34, 1, 1);
         return 0;
     }
-    COutPacket packet(0x28, 0);
+    COutPacket packet(static_cast<int>(SendOp::Shop), 0);
     packet.Encode1(3);
     packet.Encode4(nSerial);
     FUN_140710590(packet);
@@ -2882,7 +2882,7 @@ int UIShopDialog::SendPurchase(int nSerial, int nQuantity)
         return 0;
     if (!spProduct->FUN_140db8580(nQuantity))
         return 0;
-    COutPacket packet(0x28, 0);
+    COutPacket packet(static_cast<int>(SendOp::Shop), 0);
     packet.Encode1(4);
     packet.Encode4(nSerial);
     packet.Encode4(nQuantity);

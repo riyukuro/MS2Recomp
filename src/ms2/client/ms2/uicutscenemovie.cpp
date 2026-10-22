@@ -432,7 +432,7 @@ void UICutSceneMovie::Exit()
     if (m_nCutSceneId == 0) {
         vfunc_53();
     } else {
-        COutPacket packet(0x2f, 0);
+        COutPacket packet(static_cast<int>(SendOp::Trigger), 0);
         packet.Encode1(9);
         packet.Encode1(5);
         packet.Encode4(m_nCutSceneId);

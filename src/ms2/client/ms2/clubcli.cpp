@@ -518,7 +518,7 @@ bool CClubCli::FUN_140b14230(CStringW strName)
         int nCount = FUN_140210df0();
         if (nCount < (int)FUN_14020f380())
         {
-            COutPacket pkt(0x95, 0);
+            COutPacket pkt(static_cast<int>(SendOp::Club), 0);
             pkt.vfunc_o10_1(6);
             pkt.vfunc_o10_4(FUN_14020f0c0());
             pkt.vfunc_o10_8(strName);
@@ -542,7 +542,7 @@ void CClubCli::SendClubMode10()
     CStringW strMe = FUN_140b18ef0();
     if (strMe.IsEmpty())
         return;
-    COutPacket pkt(0x95, 0);
+    COutPacket pkt(static_cast<int>(SendOp::Club), 0);
     pkt.vfunc_o10_1(10);
     pkt.vfunc_o10_4(FUN_14020f0c0());
     FUN_140710590(pkt);
@@ -561,7 +561,7 @@ void CClubCli::SendClubMode12(CStringW strName)
         FUN_1412751f0(FUN_1409eec40(0x37b), 1, 1);
         return;
     }
-    COutPacket pkt(0x95, 0);
+    COutPacket pkt(static_cast<int>(SendOp::Club), 0);
     pkt.vfunc_o10_1(0xc);
     pkt.vfunc_o10_4(FUN_14020f0c0());
     pkt.vfunc_o10_8(strName);
@@ -588,7 +588,7 @@ void CClubCli::FUN_140b146e0(int nBuffId, int nBuffLevel)
     MS2Ptr<Unk_ClubBuffData> spBuff = FUN_140b1a4e0()->FUN_140211760(nBuffId, nBuffLevel);
     if (!(spBuff == 0) || bClear != 0)
     {
-        COutPacket pkt(0x95, 0);
+        COutPacket pkt(static_cast<int>(SendOp::Club), 0);
         pkt.vfunc_o10_1(0xd);
         pkt.vfunc_o10_4(FUN_14020f0c0());
         pkt.vfunc_o10_3(nBuffId);
@@ -620,7 +620,7 @@ void CClubCli::SendClubMode14(CStringW strNewName)
         FUN_1412751f0(FUN_1409eec40(0x385), 1, 1);
         return;
     }
-    COutPacket pkt(0x95, 0);
+    COutPacket pkt(static_cast<int>(SendOp::Club), 0);
     pkt.vfunc_o10_1(0xe);
     pkt.vfunc_o10_4(FUN_14020f0c0());
     pkt.vfunc_o10_8(strNewName);
@@ -1000,7 +1000,7 @@ bool CClubClientManager::FUN_140b15c10(CStringW strName)
             return false;
         }
     }
-    COutPacket pkt(0x95, 0);
+    COutPacket pkt(static_cast<int>(SendOp::Club), 0);
     pkt.vfunc_o10_1(1);
     pkt.vfunc_o10_8(strName);
     FUN_140710590(pkt);
@@ -1015,7 +1015,7 @@ void CClubClientManager::SendClubMode3(__int64 nClubId, int nCode)
         return;
     if (spClub->FUN_14020f540() != 1)
         return;
-    COutPacket pkt(0x95, 0);
+    COutPacket pkt(static_cast<int>(SendOp::Club), 0);
     pkt.vfunc_o10_1(3);
     pkt.vfunc_o10_4(nClubId);
     pkt.vfunc_o10_3(nCode);
@@ -1046,7 +1046,7 @@ void CClubClientManager::SendClubMode8(__int64 nInviteId, int bAccept)
     MS2Ptr<Club::PacketInvite> spInvite = FUN_140b156b0(nInviteId);
     if (spInvite == 0)
         return;
-    COutPacket pkt(0x95, 0);
+    COutPacket pkt(static_cast<int>(SendOp::Club), 0);
     pkt.vfunc_o10_1(8);
     spInvite->FUN_14020c670(pkt);
     pkt.vfunc_o10_1(bAccept);

@@ -1014,7 +1014,7 @@ void UIMicroGameCoupleDance::SendPlayArcade(int dance) {
     if (selected == 0) code = 2;
     else if (selected == 1) code = 1;
     else if (selected == 2) code = 3;
-    COutPacket packet(0x84,0);
+    COutPacket packet(static_cast<int>(SendOp::PlayArcade),0);
     packet.Encode1(0xb);
     packet.Encode4(code);
     FUN_140710590(packet);
@@ -1034,7 +1034,7 @@ void UIMicroGameCoupleDance::FUN_140e64c00() {
     if (state->FUN_14166c930() != 0x45) return;
     StateMicroGameCoupleDance* dance = dynamic_cast<StateMicroGameCoupleDance*>(state->FUN_14166ccb0());
     if (!dance) { MS2_ASSERT_AT(0x12d, 0); return; }
-    COutPacket packet(0xa8,0);
+    COutPacket packet(static_cast<int>(SendOp::Microgame),0);
     packet.Encode2(0x15);
     packet.Encode4(event->m_id);
     packet.Encode1((unsigned char)dance->FUN_140e65850());

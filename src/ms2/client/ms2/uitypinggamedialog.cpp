@@ -311,7 +311,7 @@ bool UITypingGameDialog::FUN_140ee5ff0(unsigned nDigit)
 // @0x140ee6090
 void UITypingGameDialog::SuccessGameProgress()
 {
-    COutPacket packet(0x2f, 0);
+    COutPacket packet(static_cast<int>(SendOp::Trigger), 0);
     packet.vfunc_o10_1(9);
     packet.vfunc_o10_1(0xc);
     packet.vfunc_o10_3(1);
@@ -322,7 +322,7 @@ void UITypingGameDialog::SuccessGameProgress()
 // @0x140ee6110
 void UITypingGameDialog::FailGameProgress()
 {
-    COutPacket packet(0x2f, 0);
+    COutPacket packet(static_cast<int>(SendOp::Trigger), 0);
     packet.vfunc_o10_1(9);
     packet.vfunc_o10_1(0xc);
     packet.vfunc_o10_3(0);

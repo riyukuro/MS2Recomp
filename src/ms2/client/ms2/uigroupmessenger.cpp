@@ -953,7 +953,7 @@ int UIGroupMessenger::SendMessengerMode4(int nEmoticonId)
         }
         if (!spCli->FUN_140a39dd0(spEmo->m_nId))
             return 0;
-        COutPacket packet(0xb7, 0);
+        COutPacket packet(static_cast<int>(SendOp::ChatSticker), 0);
         packet.vfunc_o10_1(4);
         packet.vfunc_o10_3(nEmoticonId);
         packet.vfunc_o10_8(GetName());
@@ -994,7 +994,7 @@ int UIGroupMessenger::FUN_14194b190(int nEmoticonId, bool bFavorite)
         }
         if (!spCli->FUN_140a39dd0(spEmo->m_nId))
             return 0;
-        COutPacket packet(0xb7, 0);
+        COutPacket packet(static_cast<int>(SendOp::ChatSticker), 0);
         packet.vfunc_o10_1(bFavorite ? 5 : 6);
         packet.vfunc_o10_3(nEmoticonId);
         FUN_140710590(packet);

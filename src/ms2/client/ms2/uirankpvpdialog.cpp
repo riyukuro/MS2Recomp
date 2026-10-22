@@ -464,7 +464,7 @@ void UIRankPvPDialog::SendPVPMode15(const Scaleform::GFx::FunctionHandler::Param
     }
     else
     {
-        COutPacket packet(0x61, 0);
+        COutPacket packet(static_cast<int>(SendOp::Pvp), 0);
         packet.vfunc_o10_1(0xf);
         FUN_1407105c0(&packet, 0xf, 1000);
     }
@@ -528,7 +528,7 @@ bool UIRankPvPDialog::FUN_140f95750()
         FUN_140d73aa0(GetStringCommon(0x42a), 0, 0, CStringW(L""));
         return false;
     }
-    COutPacket packet(0x61, 0);
+    COutPacket packet(static_cast<int>(SendOp::Pvp), 0);
     packet.vfunc_o10_1(0xe);
     FUN_1407105c0(&packet, 0xe, 1000);
     return true;

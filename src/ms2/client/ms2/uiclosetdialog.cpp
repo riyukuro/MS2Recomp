@@ -1192,7 +1192,7 @@ bool UIClosetDialog::OnRenameConfirmed(int nResult, const CMsgBoxData& box)
         blockList.SetEnabled(true);
         if (FUN_140d86260()->vfunc_37(&blockList) == 0)
             return true;
-        COutPacket packet(0xb4, 0);
+        COutPacket packet(static_cast<int>(SendOp::Wardrobe), 0);
         packet.vfunc_o10_1(6);
         Unk_ClRenameRec rec;
         rec.m_nIndex = sp->GetIndex();
@@ -1302,7 +1302,7 @@ bool UIClosetDialog::AssignKey(const unsigned& nKey, const __int64& nId)
             return false;
         if (nId != sp->GetId())
         {
-            COutPacket packet(0xb4, 0);
+            COutPacket packet(static_cast<int>(SendOp::Wardrobe), 0);
             packet.vfunc_o10_1(4);
             Unk_ClKeyRec rec;
             rec.m_nIndex = sp->GetIndex();
@@ -1452,7 +1452,7 @@ bool UIClosetDialog::SendApply(MS2Ptr<UICloset::CTab> spTab)
     MS2Ptr<ItemCloset::TabInfo> spInfo = spTab->GetInfo();
     if (spInfo->m_slots.IsEmpty())
         return false;
-    COutPacket packet(0xb4, 0);
+    COutPacket packet(static_cast<int>(SendOp::Wardrobe), 0);
     packet.vfunc_o10_1(1);
     Unk_ClApplyRec rec;
     rec.m_nLayer = spInfo->m_1c;
@@ -1467,7 +1467,7 @@ bool UIClosetDialog::SendSave(int nLayer, MS2Ptr<UICloset::CTab> spTab)
 {
     if (spTab == 0 || spTab->IsEmpty() == true)
         return false;
-    COutPacket packet(0xb4, 0);
+    COutPacket packet(static_cast<int>(SendOp::Wardrobe), 0);
     packet.vfunc_o10_1(0);
     Unk_ClSaveRec rec;
     rec.m_nLayer = nLayer;
@@ -1482,7 +1482,7 @@ bool UIClosetDialog::SendRename(MS2Ptr<UICloset::CTab> spTab)
 {
     if (spTab == 0 || spTab->IsEmpty() == true)
         return false;
-    COutPacket packet(0xb4, 0);
+    COutPacket packet(static_cast<int>(SendOp::Wardrobe), 0);
     packet.vfunc_o10_1(6);
     Unk_ClRenameRec rec;
     rec.m_nIndex = spTab->GetIndex();
@@ -1497,7 +1497,7 @@ bool UIClosetDialog::SendClear(MS2Ptr<UICloset::CTab> spTab)
 {
     if (spTab == 0 || spTab->IsEmpty() == true)
         return false;
-    COutPacket packet(0xb4, 0);
+    COutPacket packet(static_cast<int>(SendOp::Wardrobe), 0);
     packet.vfunc_o10_1(2);
     Unk_ClTabIndexRec rec;
     rec.m_nIndex = spTab->GetIndex();

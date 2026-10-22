@@ -340,7 +340,7 @@ void CCashMarketMan::OnCash(CInPacket& packet)
 // @0x140b06180
 void CCashMarketMan::SendCashMode0()
 {
-    COutPacket packet(0x6a, 0);
+    COutPacket packet(static_cast<int>(SendOp::Cash), 0);
     packet.vfunc_o10_1(0);
     FUN_140710590(packet);
 }
@@ -348,7 +348,7 @@ void CCashMarketMan::SendCashMode0()
 // @0x140b061e0
 void CCashMarketMan::SendCashMode1()
 {
-    COutPacket packet(0x6a, 0);
+    COutPacket packet(static_cast<int>(SendOp::Cash), 0);
     packet.vfunc_o10_1(1);
     FUN_140710590(packet);
 }
@@ -356,7 +356,7 @@ void CCashMarketMan::SendCashMode1()
 // @0x140b06240
 void CCashMarketMan::SendCashMode2(int a, int b)
 {
-    COutPacket packet(0x6a, 0);
+    COutPacket packet(static_cast<int>(SendOp::Cash), 0);
     packet.vfunc_o10_1(2);
     packet.vfunc_o10_3(a);
     packet.vfunc_o10_3(b);
@@ -368,7 +368,7 @@ void CCashMarketMan::SendCashMode3(int a, int b, CString s1, CString s2)
 {
     if (FUN_1401d5a60() != 0)
     {
-        COutPacket packet(0x6a, 0);
+        COutPacket packet(static_cast<int>(SendOp::Cash), 0);
         packet.vfunc_o10_1(3);
         packet.vfunc_o10_3(a);
         packet.vfunc_o10_3(b);
@@ -383,7 +383,7 @@ void CCashMarketMan::SendCashMode4(int a, int b, int c)
 {
     if (FUN_1401d5ab0() != 0)
     {
-        COutPacket packet(0x6a, 0);
+        COutPacket packet(static_cast<int>(SendOp::Cash), 0);
         packet.vfunc_o10_1(4);
         packet.vfunc_o10_3(a);
         packet.vfunc_o10_3(b);
@@ -395,7 +395,7 @@ void CCashMarketMan::SendCashMode4(int a, int b, int c)
 // @0x140b06450
 void CCashMarketMan::SendCashMode5(int a)
 {
-    COutPacket packet(0x6a, 0);
+    COutPacket packet(static_cast<int>(SendOp::Cash), 0);
     packet.vfunc_o10_1(5);
     packet.vfunc_o10_3(a);
     FUN_140710590(packet);
@@ -406,7 +406,7 @@ void CCashMarketMan::SendCashMode7(int a, int b, int c, int nFlag)
 {
     if (nFlag != 1 || FUN_1401d5b00() != 0)
     {
-        COutPacket packet(0x6a, 0);
+        COutPacket packet(static_cast<int>(SendOp::Cash), 0);
         packet.vfunc_o10_1(7);
         packet.vfunc_o10_3(a);
         packet.vfunc_o10_3(b);
@@ -419,7 +419,7 @@ void CCashMarketMan::SendCashMode7(int a, int b, int c, int nFlag)
 // @0x140b06580
 void CCashMarketMan::SendCashMode6(int a, int b)
 {
-    COutPacket packet(0x6a, 0);
+    COutPacket packet(static_cast<int>(SendOp::Cash), 0);
     packet.vfunc_o10_1(6);
     packet.vfunc_o10_3(a);
     packet.vfunc_o10_3(b);

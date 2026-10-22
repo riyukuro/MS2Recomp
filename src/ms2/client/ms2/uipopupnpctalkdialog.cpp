@@ -143,7 +143,7 @@ int UIPopupNpcTalkDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             {
                 if (FUN_140764020()->FUN_1407456d0(m_184) != 0)
                 {
-                    COutPacket packet(0x29, 0);
+                    COutPacket packet(static_cast<int>(SendOp::Quest), 0);
                     packet.Encode1(4);
                     packet.Encode4(m_184);
                     packet.Encode4(0);
@@ -224,7 +224,7 @@ int UIPopupNpcTalkDialog::vfunc_13()
         {
             if (FUN_140764020()->FUN_1407456d0(m_184) != 0)
             {
-                COutPacket packet(0x29, 0);
+                COutPacket packet(static_cast<int>(SendOp::Quest), 0);
                 packet.Encode1(4);
                 packet.Encode4(m_184);
                 packet.Encode4(0);

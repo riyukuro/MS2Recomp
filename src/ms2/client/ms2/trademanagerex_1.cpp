@@ -247,7 +247,7 @@ CTradeManagerEx::~CTradeManagerEx()
 // @0x14185b870
 void CTradeManagerEx::SendTradeMode0(__int64 uid)
 {
-    COutPacket packet(0x49, 0);
+    COutPacket packet(static_cast<int>(SendOp::Trade), 0);
     packet.vfunc_o10_1(0);
     packet.vfunc_o10_4(uid);
     FUN_140710590(packet);
@@ -256,7 +256,7 @@ void CTradeManagerEx::SendTradeMode0(__int64 uid)
 // @0x14185b8e0
 void CTradeManagerEx::FUN_14185b8e0(__int64 uid, int bAccept)
 {
-    COutPacket packet(0x49, 0);
+    COutPacket packet(static_cast<int>(SendOp::Trade), 0);
     packet.vfunc_o10_1(bAccept ? 3 : 4);
     packet.vfunc_o10_4(uid);
     FUN_140710590(packet);
@@ -265,7 +265,7 @@ void CTradeManagerEx::FUN_14185b8e0(__int64 uid, int bAccept)
 // @0x14185b970
 void CTradeManagerEx::SendTradeMode7()
 {
-    COutPacket packet(0x49, 0);
+    COutPacket packet(static_cast<int>(SendOp::Trade), 0);
     packet.vfunc_o10_1(7);
     FUN_140710590(packet);
 }
@@ -273,7 +273,7 @@ void CTradeManagerEx::SendTradeMode7()
 // @0x14185b9d0
 void CTradeManagerEx::SendTradeMode8(__int64 uid, int a, int b)
 {
-    COutPacket packet(0x49, 0);
+    COutPacket packet(static_cast<int>(SendOp::Trade), 0);
     packet.vfunc_o10_1(8);
     packet.vfunc_o10_4(uid);
     packet.vfunc_o10_3(a);
@@ -284,7 +284,7 @@ void CTradeManagerEx::SendTradeMode8(__int64 uid, int a, int b)
 // @0x14185ba70
 void CTradeManagerEx::SendTradeMode9(__int64 uid, int nSlot)
 {
-    COutPacket packet(0x49, 0);
+    COutPacket packet(static_cast<int>(SendOp::Trade), 0);
     packet.vfunc_o10_1(9);
     packet.vfunc_o10_4(uid);
     packet.vfunc_o10_3(nSlot);
@@ -296,7 +296,7 @@ void CTradeManagerEx::SendTradeMode10(__int64 uid)
 {
     if (uid == m_uidLastSent)
         return;
-    COutPacket packet(0x49, 0);
+    COutPacket packet(static_cast<int>(SendOp::Trade), 0);
     packet.vfunc_o10_1(10);
     packet.vfunc_o10_4(uid);
     FUN_140710590(packet);
@@ -306,7 +306,7 @@ void CTradeManagerEx::SendTradeMode10(__int64 uid)
 // @0x14185bb80
 void CTradeManagerEx::SendTradeMode11()
 {
-    COutPacket packet(0x49, 0);
+    COutPacket packet(static_cast<int>(SendOp::Trade), 0);
     packet.vfunc_o10_1(0xb);
     FUN_140710590(packet);
 }
@@ -314,7 +314,7 @@ void CTradeManagerEx::SendTradeMode11()
 // @0x14185bbe0
 void CTradeManagerEx::SendTradeMode13()
 {
-    COutPacket packet(0x49, 0);
+    COutPacket packet(static_cast<int>(SendOp::Trade), 0);
     packet.vfunc_o10_1(0xd);
     FUN_140710590(packet);
 }
@@ -322,7 +322,7 @@ void CTradeManagerEx::SendTradeMode13()
 // @0x14185bc40
 void CTradeManagerEx::SendTradeMode2(__int64 uid)
 {
-    COutPacket packet(0x49, 0);
+    COutPacket packet(static_cast<int>(SendOp::Trade), 0);
     packet.vfunc_o10_1(2);
     packet.vfunc_o10_4(uid);
     FUN_140710590(packet);
@@ -331,7 +331,7 @@ void CTradeManagerEx::SendTradeMode2(__int64 uid)
 // @0x14185bcb0
 void CTradeManagerEx::SendTradeMode14(__int64 uid)
 {
-    COutPacket packet(0x49, 0);
+    COutPacket packet(static_cast<int>(SendOp::Trade), 0);
     packet.vfunc_o10_1(0xe);
     packet.vfunc_o10_4(uid);
     FUN_140710590(packet);

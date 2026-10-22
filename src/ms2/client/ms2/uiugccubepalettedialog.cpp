@@ -1433,7 +1433,7 @@ bool UIUGCCubePaletteDialog::FUN_140eec330(int nBtn, const CMsgBoxData& data)
         UGCCubePalette::CubePtr spCube = GetUGCCubePalette()->FUN_1410b57a0();
         if (!(spCube == (UGCCubePalette::UGCCube*)0))
         {
-            COutPacket pkt(0x53, 0);
+            COutPacket pkt(static_cast<int>(SendOp::FurnishingStorage), 0);
             pkt.Encode1(6);
             pkt.Encode8(spCube->FUN_140def5f0());
             FUN_140710590(&pkt);

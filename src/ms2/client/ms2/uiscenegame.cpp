@@ -497,7 +497,7 @@ void UISceneGameBeautyShop::vfunc_49(int n)
     FUN_14151f200();
     FUN_141ac8e70(0);
     if (!m_b8.IsEmpty()) {
-        COutPacket pkt(0x2e, 0);
+        COutPacket pkt(static_cast<int>(SendOp::FunctionCube), 0);
         pkt.vfunc_o10_1(7);
         pkt.vfunc_o10_6(m_b8);
         FUN_140710590(pkt);
@@ -1291,7 +1291,7 @@ int UISceneGamePlay::FUN_141aca870()
             if (DAT_143ab0248 == 2 && DAT_143ab2914 < 0x34) return 0;
             unsigned char nMode = (unsigned char)((unsigned char)DAT_143ae0fb0 + 1U) % 3;
             DAT_143ae0fb0 = nMode;
-            COutPacket packet(0x50, 0);
+            COutPacket packet(static_cast<int>(SendOp::SetDebugMode), 0);
             packet.vfunc_o10_1(0);
             packet.vfunc_o10_1(nMode);
             FUN_140710590(packet);

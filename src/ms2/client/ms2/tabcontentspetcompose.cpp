@@ -864,7 +864,7 @@ void TabContentsPetCompose::FUN_140cb48a0(int bUsePoint)
         nSum += nCount;
         counts.SetAt(id, nSum);
     }
-    COutPacket pkt(0x78, 0);
+    COutPacket pkt(static_cast<int>(SendOp::RequestPet), 0);
     pkt.Encode1(0xc);
     pkt.Encode8(m_uidPet);
     pkt.Encode2((short)counts.GetCount());

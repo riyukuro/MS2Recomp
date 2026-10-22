@@ -402,7 +402,7 @@ void UIDialogCenterDialog::FUN_141295cb0(const Scaleform::GFx::FunctionHandler::
         spDlg.get()->FUN_140b9b820(CString(strPath));
         spDlg.get()->Create(0xa7, CWnd::FromHandle(FUN_14209c720(FUN_140aadf80())));
         m_triggers.SetAt(strPath, spDlg);
-        COutPacket pkt(0x50, 0);
+        COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
         pkt.vfunc_o10_1(9);
         pkt.vfunc_o10_6(strPath);
         pkt.vfunc_o10_0(true);
@@ -415,7 +415,7 @@ void UIDialogCenterDialog::SendSetDebugModeMode9(CString strPath)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
     m_triggers.RemoveKey(strPath);
-    COutPacket pkt(0x50, 0);
+    COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
     pkt.vfunc_o10_1(9);
     pkt.vfunc_o10_6(strPath);
     pkt.vfunc_o10_0(false);

@@ -383,7 +383,7 @@ CStringW UIMentoringMentorRegisterPage::vfunc_7() { return GetStringCommonByKey(
 bool UIMentoringMentorRegisterPage::SendMentor(int nResult, const CMsgBoxData& data)
 {
     if (nResult != 0) return true;
-    COutPacket pkt(0xa1, 0);
+    COutPacket pkt(static_cast<int>(SendOp::Mentor), 0);
     Unk_MentorRole role;
     role.FUN_14069a4e0(pkt);
     FUN_140710590(pkt);
@@ -644,7 +644,7 @@ int UIMentoringMissionPage::vfunc_5(const char* szMethod, const Scaleform::GFx::
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
             int nQuest = data.FUN_1422b8b10();
-            COutPacket pkt(0x29, 0);
+            COutPacket pkt(static_cast<int>(SendOp::Quest), 0);
             pkt.Encode1(0x1d);
             pkt.Encode4(nQuest);
             FUN_140710590(pkt);

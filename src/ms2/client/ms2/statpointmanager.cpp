@@ -133,7 +133,7 @@ void CStatPointManager::RequestAdd(int nStat, int nAmount)
     }
     else
     {
-        COutPacket packet(0x99, 0);
+        COutPacket packet(static_cast<int>(SendOp::AttributePoint), 0);
         packet.vfunc_o10_1(2);
         packet.vfunc_o10_1((unsigned char)nStat);
         packet.vfunc_o10_3(nAmount);
@@ -147,7 +147,7 @@ void CStatPointManager::RequestReset()
 {
     if (m_nUsed == 0)
         return;
-    COutPacket packet(0x99, 0);
+    COutPacket packet(static_cast<int>(SendOp::AttributePoint), 0);
     packet.vfunc_o10_1(3);
     FUN_140710590(packet);
 }

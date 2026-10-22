@@ -447,7 +447,7 @@ void UIItemModifyDialogBase::vfunc_84()
 // @0x1419bee80
 void UIItemModifyDialogBase::vfunc_85(int nType)
 {
-    COutPacket pkt(0x22, 0);
+    COutPacket pkt(static_cast<int>(SendOp::NpcTalk), 0);
     pkt.Encode1(4);
     pkt.Encode2((short)nType);
     FUN_140710590(pkt);
@@ -506,7 +506,7 @@ void UIItemEnchantDialog::OnLoadInit()
 void UIItemEnchantDialog::OnLoadComplete()
 {
     UIItemModifyDialogBase::OnLoadComplete();
-    COutPacket pkt(0x5e, 0);
+    COutPacket pkt(static_cast<int>(SendOp::RequestItemEnchant), 0);
     pkt.Encode1(0);
     FUN_140710590(pkt);
     FUN_1419bfd70();
@@ -606,7 +606,7 @@ void UIItemEnchantDialog::vfunc_85(int nType)
 {
     if (FUN_140967100()->FUN_141b213c0() != 0) {
         int id = FUN_140967100()->FUN_141b212f0();
-        COutPacket pkt(0x22, 0);
+        COutPacket pkt(static_cast<int>(SendOp::NpcTalk), 0);
         pkt.Encode1(6);
         pkt.Encode4(id);
         pkt.Encode4(*FUN_1401d3200()->m_69a0.FUN_1402056b0());
@@ -675,7 +675,7 @@ void UIItemEnchantDialog::FUN_1419c02e0(CString name)
 void UIItemEnchantDialog::SendRequestItemEnchantMode15(ASData*)
 {
     if (0x31 < DAT_143ab2914) {
-        COutPacket pkt(0x5e, 0);
+        COutPacket pkt(static_cast<int>(SendOp::RequestItemEnchant), 0);
         pkt.Encode1(0xf);
         FUN_140710590(pkt);
     }
@@ -685,7 +685,7 @@ void UIItemEnchantDialog::SendRequestItemEnchantMode15(ASData*)
 void UIItemEnchantDialog::SendRequestItemEnchantMode19(ASData*)
 {
     if (0x31 < DAT_143ab2914) {
-        COutPacket pkt(0x5e, 0);
+        COutPacket pkt(static_cast<int>(SendOp::RequestItemEnchant), 0);
         pkt.Encode1(0x13);
         FUN_140710590(pkt);
     }
@@ -755,7 +755,7 @@ void UIItemEnchantDialog::SendRequestItemEnchantMode6(unsigned __int64 uid)
     MS2Ptr<CItem> item = FUN_1419bef70(uid);
     if (item == 0)
         return;
-    COutPacket pkt(0x5e, 0);
+    COutPacket pkt(static_cast<int>(SendOp::RequestItemEnchant), 0);
     pkt.Encode1(6);
     pkt.Encode8(uid);
     FUN_140710590(pkt);
@@ -782,13 +782,13 @@ void UIItemEnchantDialog::FUN_1419c0d40(ASData* pData)
         FUN_1419c77a0();
         m_enchantAni->Invoke("initEnchantSlot");
     } else {
-        COutPacket pkt(0x5e, 0);
+        COutPacket pkt(static_cast<int>(SendOp::RequestItemEnchant), 0);
         pkt.Encode1(1);
         pkt.Encode1((unsigned char)m_expMode);
         pkt.Encode8(item->FUN_140526a50());
         FUN_140710590(pkt);
     }
-    COutPacket pkt(0x22, 0);
+    COutPacket pkt(static_cast<int>(SendOp::NpcTalk), 0);
     if (FUN_140967100()->FUN_141b213c0() == 0) {
         pkt.Encode1(4);
         pkt.Encode2(1);
@@ -857,7 +857,7 @@ void UIItemEnchantDialog::FUN_1419c1220(ASData* pData)
 // @0x1419c15c0
 void UIItemEnchantDialog::OnClickFailStackUp()
 {
-    COutPacket pkt(0x5e, 0);
+    COutPacket pkt(static_cast<int>(SendOp::RequestItemEnchant), 0);
     pkt.Encode1(3);
     pkt.Encode4(m_failStack + 1);
     FUN_140710590(pkt);
@@ -866,7 +866,7 @@ void UIItemEnchantDialog::OnClickFailStackUp()
 // @0x1419c1630
 void UIItemEnchantDialog::OnClickFailStackDown()
 {
-    COutPacket pkt(0x5e, 0);
+    COutPacket pkt(static_cast<int>(SendOp::RequestItemEnchant), 0);
     pkt.Encode1(3);
     pkt.Encode4(m_failStack - 1);
     FUN_140710590(pkt);
@@ -895,7 +895,7 @@ void UIItemEnchantDialog::FUN_1419c16c0(unsigned __int64 uid, int flag)
             return;
         }
     }
-    COutPacket pkt(0x5e, 0);
+    COutPacket pkt(static_cast<int>(SendOp::RequestItemEnchant), 0);
     pkt.Encode1(2);
     pkt.Encode8(uid);
     pkt.Encode1((unsigned char)flag);
@@ -1199,7 +1199,7 @@ void UIItemEnchantDialog::FUN_1419c3e70(CInPacket& pkt)
 // @0x1419c3fd0
 void UIItemEnchantDialog::SendRequestItemEnchantMode1(void*, void*, void*)
 {
-    COutPacket pkt(0x5e, 0);
+    COutPacket pkt(static_cast<int>(SendOp::RequestItemEnchant), 0);
     pkt.Encode1(1);
     pkt.Encode1((unsigned char)m_expMode);
     pkt.Encode8(m_selectedUid);
@@ -1434,7 +1434,7 @@ bool UIItemEnchantDialog::SendRequestItemEnchantMode2(int result, const CMsgBoxD
 {
     if (result == 0) {
         __int64 uid = box.FUN_141a02f10(0, 0);
-        COutPacket pkt(0x5e, 0);
+        COutPacket pkt(static_cast<int>(SendOp::RequestItemEnchant), 0);
         pkt.Encode1(2);
         pkt.Encode8(uid);
         pkt.Encode1(1);
@@ -1476,7 +1476,7 @@ void UIItemEnchantDialog::SendRequestItemEnchantMode17(const Scaleform::GFx::Fun
     unsigned __int64 uid = FUN_140718350(guid);
     if (uid == 0)
         return;
-    COutPacket pkt(0x5e, 0);
+    COutPacket pkt(static_cast<int>(SendOp::RequestItemEnchant), 0);
     pkt.Encode1(0x11);
     pkt.Encode8(uid);
     FUN_140710590(pkt);
@@ -1494,7 +1494,7 @@ void UIItemEnchantDialog::SendRequestItemEnchantMode18(const Scaleform::GFx::Fun
     unsigned __int64 uid = FUN_140718350(guid);
     if (uid == 0)
         return;
-    COutPacket pkt(0x5e, 0);
+    COutPacket pkt(static_cast<int>(SendOp::RequestItemEnchant), 0);
     pkt.Encode1(0x12);
     pkt.Encode8(uid);
     FUN_140710590(pkt);
@@ -1512,7 +1512,7 @@ void UIItemEnchantDialog::FUN_1419c6160(const Scaleform::GFx::FunctionHandler::P
     unsigned __int64 uid = FUN_140718350(guid);
     if (uid == 0)
         return;
-    COutPacket pkt(0x5e, 0);
+    COutPacket pkt(static_cast<int>(SendOp::RequestItemEnchant), 0);
     pkt.Encode1(0x10);
     pkt.Encode8(uid);
     pkt.Encode4(0);
@@ -1531,7 +1531,7 @@ void UIItemEnchantDialog::FUN_1419c6270(const Scaleform::GFx::FunctionHandler::P
     unsigned __int64 uid = FUN_140718350(guid);
     if (uid == 0)
         return;
-    COutPacket pkt(0x5e, 0);
+    COutPacket pkt(static_cast<int>(SendOp::RequestItemEnchant), 0);
     pkt.Encode1(0x10);
     pkt.Encode8(uid);
     pkt.Encode4(10);
@@ -1789,7 +1789,7 @@ void UIItemEnchantDialog::SendRequestItemEnchantMode4(unsigned __int64 uid, int 
     else if (mode == 2)
         other = m_220;
     if (item.get() != 0) {
-        COutPacket pkt(0x5e, 0);
+        COutPacket pkt(static_cast<int>(SendOp::RequestItemEnchant), 0);
         pkt.Encode1(4);
         pkt.Encode8(uid);
         pkt.Encode8(other);

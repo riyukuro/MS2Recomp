@@ -676,7 +676,7 @@ void UIItemExchangeScrollDialog::SendItemExchangeScrollMode1(ASData* pData)
             req.m_uidScroll = m_uidScroll;
             req.m_uidTarget = m_uidTarget;
             req.m_nMakeCount = nCount;
-            COutPacket packet(0x9b, 0);
+            COutPacket packet(static_cast<int>(SendOp::ItemExchangeScroll), 0);
             packet.vfunc_o10_1(1);
             FUN_140202470(reinterpret_cast<unsigned char*>(&req), packet);
             FUN_140710590(packet);
@@ -998,7 +998,7 @@ void UIItemExchangeScrollDialog::FUN_140f55b90(const Scaleform::GFx::FunctionHan
         fill.m_uidScroll = m_uidScroll;
         fill.m_uidTarget = m_uidTarget;
         fill.m_nCount = 0;
-        COutPacket packet(0x9b, 0);
+        COutPacket packet(static_cast<int>(SendOp::ItemExchangeScroll), 0);
         packet.vfunc_o10_1(3);
         FUN_140202580(reinterpret_cast<unsigned char*>(&fill), packet);
         FUN_140710590(packet);
@@ -1015,7 +1015,7 @@ void UIItemExchangeScrollDialog::FUN_140f55c50(const Scaleform::GFx::FunctionHan
         fill.m_uidScroll = m_uidScroll;
         fill.m_uidTarget = m_uidTarget;
         fill.m_nCount = 10;
-        COutPacket packet(0x9b, 0);
+        COutPacket packet(static_cast<int>(SendOp::ItemExchangeScroll), 0);
         packet.vfunc_o10_1(3);
         FUN_140202580(reinterpret_cast<unsigned char*>(&fill), packet);
         FUN_140710590(packet);

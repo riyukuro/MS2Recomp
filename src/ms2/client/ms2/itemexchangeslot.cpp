@@ -113,7 +113,7 @@ int ItemExchangeSlot::vfunc_18(void* p)
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(pInven->FUN_141405a10());
         if (spItem.get() != 0)
         {
-            COutPacket packet(0x9b, 0);
+            COutPacket packet(static_cast<int>(SendOp::ItemExchangeScroll), 0);
             packet.vfunc_o10_1(0);
             packet.vfunc_o10_4(m_nTarget);
             packet.vfunc_o10_4(spItem->FUN_140526a50());

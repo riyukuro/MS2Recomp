@@ -311,7 +311,7 @@ int UICoupleDanceEventDialog::vfunc_28(const char* szMethod, const Scaleform::GF
             FUN_1412752d0(L"s_microgame_couple_dance_request_failed_wrong_position", 1);
             return 1;
         }
-        COutPacket packet(0xa8, 0);
+        COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
         packet.Encode2(0xd);
         packet.Encode4(pEvent->m_18);
         FUN_140710590(packet);
@@ -507,7 +507,7 @@ void UICoupleDanceEventDialog::FUN_140bfdf60(int nStep)
         return;
     if (states[nStep] != 1 && states[nStep] != 2)
         return;
-    COutPacket packet(0xa8, 0);
+    COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
     packet.Encode2(0x19);
     packet.Encode4(pEvent->m_18);
     packet.Encode4(nStep);

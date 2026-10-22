@@ -303,7 +303,7 @@ void UIArcadeMainDialog::OnLoadComplete()
     }
     if (FUN_1404f4540()->FUN_140791f50(4) != m_nRegion)
     {
-        COutPacket packet(0x84, 0);
+        COutPacket packet(static_cast<int>(SendOp::PlayArcade), 0);
         packet.Encode4(9);
         FUN_140710590(packet);
     }
@@ -554,7 +554,7 @@ bool UIArcadeMainDialog::FUN_140ef7b00(int nArcadeId)
         FUN_141275260(0x27b, 1, 1);
         return false;
     }
-    COutPacket packet(0x84, 0);
+    COutPacket packet(static_cast<int>(SendOp::PlayArcade), 0);
     packet.Encode1(10);
     packet.Encode4(nArcadeId);
     FUN_1407105c0(packet, 10, 1000);

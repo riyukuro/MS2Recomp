@@ -377,7 +377,7 @@ MS2_REPLACE_METHOD(0x140E14400, UIDungeonSearchUnitedReward, FUN_140e14400, 167,
 bool UIDungeonSearchUnitedReward::SendRoomDungeon(int nResult, const CMsgBoxData&)
 {
     if (nResult == 0) {
-        COutPacket packet(0x2b, 0);
+        COutPacket packet(static_cast<int>(SendOp::RoomDungeon), 0);
         packet.Encode1(0x15);
         FUN_140710590(packet);
     }

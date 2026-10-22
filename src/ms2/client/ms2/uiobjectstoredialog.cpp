@@ -177,7 +177,7 @@ void UIObjectStoreDialog::vfunc_66()
 // @0x141a72860
 void UIObjectStoreDialog::vfunc_67()
 {
-    COutPacket packet(0x2e, 0);
+    COutPacket packet(static_cast<int>(SendOp::FunctionCube), 0);
     packet.vfunc_o10_1(7);
     packet.vfunc_o10_6(m_190);
     FUN_140710590(packet);
