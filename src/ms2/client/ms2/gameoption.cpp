@@ -880,8 +880,8 @@ class Unk_GoDeviceInfo
 {
 public:
     CStringW FUN_141245ab0();                                   // copy of the adapter name
-    int FUN_141245b00();                                        // the vendor kind
-    unsigned __int64 FUN_141245aa0();                           // the memory bandwidth
+    int GetVendor();                                        // the vendor kind
+    unsigned __int64 GetBandwidth();                           // the memory bandwidth
     char m_pad0[8];
     int m_nVendor;                                              // +0x08
     char m_pad1[0xc];
@@ -917,7 +917,7 @@ struct Unk_GoModeArray
     short m_s10;
     unsigned short m_nCount;                                    // +0x12
     Unk_GoRawMode** FUN_14124fec0(unsigned int nIndex);         // slot of the nIndex-th mode
-    unsigned short FUN_14124ff40();                             // count
+    unsigned short GetCount();                             // count
 };
 struct Unk_GoModeSource
 {
@@ -929,14 +929,14 @@ struct Unk_GoModeSource
 class Unk_GoGfxDevice
 {
 public:
-    Unk_GoModeSource* FUN_14124fea0();                          // +0x728 the display mode source
+    Unk_GoModeSource* GetModes();                          // +0x728 the display mode source
     char m_pad[0x728];
     Unk_GoModeSource* m_pModes;                                 // +0x728
 };
 Unk_GoGfxDevice* FUN_140994450();
 
 // @0x14124fea0
-Unk_GoModeSource* Unk_GoGfxDevice::FUN_14124fea0()
+Unk_GoModeSource* Unk_GoGfxDevice::GetModes()
 {
     return m_pModes;
 }
@@ -956,11 +956,11 @@ Unk_GoRawMode* Unk_GoModeSource::FUN_14124fee0(unsigned int nIndex)
 // @0x14124ff10
 unsigned short Unk_GoModeSource::FUN_14124ff10()
 {
-    return m_modes.FUN_14124ff40();
+    return m_modes.GetCount();
 }
 
 // @0x14124ff40
-unsigned short Unk_GoModeArray::FUN_14124ff40()
+unsigned short Unk_GoModeArray::GetCount()
 {
     return m_nCount;
 }
@@ -1392,7 +1392,7 @@ void CGameOptionGraphicDefault::FUN_14124d080()
         Unk_GoGfxDevice* pDevice = FUN_140994450();
         if (pDevice != 0)
         {
-            Unk_GoModeSource* pSource = pDevice->FUN_14124fea0();
+            Unk_GoModeSource* pSource = pDevice->GetModes();
             if (pSource != 0)
             {
                 std::vector<Unk_GoResMode> modes;
@@ -1444,7 +1444,7 @@ void CGameOptionGraphicDefault::FUN_14124d5f0(int nIndex, int* pnWidth, int* pnH
     Unk_GoGfxDevice* pDevice = FUN_140994450();
     if (pDevice != 0)
     {
-        Unk_GoModeSource* pSource = pDevice->FUN_14124fea0();
+        Unk_GoModeSource* pSource = pDevice->GetModes();
         if (pSource != 0)
         {
             Unk_GoRawMode* pRaw = pSource->FUN_14124fee0(nIndex);
@@ -1631,7 +1631,7 @@ CString FUN_1409a23d0(const char* pszUtf8, int nCodePage);
 class Unk_GoGpuMgr
 {
 public:
-    unsigned __int64 FUN_141245b10();                           // +0x28 the video memory
+    unsigned __int64 GetVideoMem();                           // +0x28 the video memory
     char m_pad[0x28];
     unsigned __int64 m_nVideoMem;                               // +0x28
 };
@@ -1975,9 +1975,9 @@ int CGameOption::FUN_1412438f0()
     if (m_nBenchmark == -1)
     {
         m_nBenchmark = 0;
-        if (FUN_1409f7c90()->FUN_141245b10() < 0x801)
+        if (FUN_1409f7c90()->GetVideoMem() < 0x801)
             m_nBenchmark = 0;
-        else if (FUN_141245b20()->FUN_141245b00() == 2)
+        else if (FUN_141245b20()->GetVendor() == 2)
         {
             TiXmlDocument doc;
             if (FUN_140166420()->FUN_1403974b0(&doc, "./Data/Xml/Table/benchmarkOption.xml", 0, true, false) != 0)
@@ -1999,7 +1999,7 @@ int CGameOption::FUN_1412438f0()
                 while (it != levels.end())
                 {
                     m_nBenchmark = it->first;
-                    if (FUN_141245b20()->FUN_141245aa0() <= it->second)
+                    if (FUN_141245b20()->GetBandwidth() <= it->second)
                         break;
                     ++it;
                 }
@@ -2152,19 +2152,19 @@ Unk_BattleState* CGameOption::FUN_141248630()
 }
 
 // @0x141245b10
-unsigned __int64 Unk_GoGpuMgr::FUN_141245b10()
+unsigned __int64 Unk_GoGpuMgr::GetVideoMem()
 {
     return m_nVideoMem;
 }
 
 // @0x141245b00
-int Unk_GoDeviceInfo::FUN_141245b00()
+int Unk_GoDeviceInfo::GetVendor()
 {
     return m_nVendor;
 }
 
 // @0x141245aa0
-unsigned __int64 Unk_GoDeviceInfo::FUN_141245aa0()
+unsigned __int64 Unk_GoDeviceInfo::GetBandwidth()
 {
     return m_nBandwidth;
 }

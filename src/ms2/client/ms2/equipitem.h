@@ -42,7 +42,7 @@ public:
     int FUN_1411dc560();                                            // 0x1411dc560 drop the models (unload slot 7) and re-apply the look
     int FUN_1411dc670();                                            // 0x1411dc670 CanEquip: a model is ready (slot 20)
     int FUN_1411dc710();                                            // 0x1411dc710 a model's part folds the ears
-    MS2Ptr<CItem> FUN_1411dc7a0();                                  // 0x1411dc7a0 the item the slot shows
+    MS2Ptr<CItem> GetItem();                                  // 0x1411dc7a0 the item the slot shows
     struct Unk_EquipItemData* FUN_1411dc7f0();                      // 0x1411dc7f0 the item's table data (mypc)
     int FUN_1411dc820();                                            // 0x1411dc820 the item id (mypc)
     __int64 FUN_1411dc870();                                        // 0x1411dc870 the item uid
@@ -74,7 +74,7 @@ public:
     void FUN_1411dd6d0(CItem* pItem);                               // 0x1411dd6d0
     efd::SmartPointer<NiNode> FUN_1411dd700();                      // 0x1411dd700 the first model's "Point01"
     efd::SmartPointer<NiTexture> FUN_1411dd820();                   // 0x1411dd820 the UGC texture
-    MS2Ptr<CItemUgcMeshContainer> FUN_1411dd950();                  // 0x1411dd950 the UGC meshes of the item (ugcmanager.cpp#4)
+    MS2Ptr<CItemUgcMeshContainer> GetUgcMeshes();                  // 0x1411dd950 the UGC meshes of the item (ugcmanager.cpp#4)
     void FUN_1411dd9a0();                                           // 0x1411dd9a0 request the UGC download
     void FUN_1411ddae0();                                           // 0x1411ddae0 the UGC download finished
     int FUN_1411ddcb0();                                            // 0x1411ddcb0 the UGC file is here (1)

@@ -173,7 +173,7 @@ CBreakableObject::~CBreakableObject()
             FUN_14098b3e0(pRoot, 1.0f, false);
     }
     FUN_140ae0720();
-    if (FUN_140adf330() != 0)
+    if (IsTombStone() != 0)
     {
         if (m_spEntity)
             FUN_1414737d0(m_spEntity);
@@ -191,25 +191,25 @@ CBreakableObject::~CBreakableObject()
 }
 
 // @0x140adde00
-void CBreakableObject::FUN_140adde00(CString strName)
+void CBreakableObject::SetName(CString strName)
 {
     m_strName = strName;
 }
-MS2_REPLACE_METHOD(0x140adde00, CBreakableObject, FUN_140adde00, 0, 0);
+MS2_REPLACE_METHOD(0x140adde00, CBreakableObject, SetName, 0, 0);
 
 // @0x140adde50
-CString CBreakableObject::FUN_140adde50()
+CString CBreakableObject::GetName()
 {
     return m_strName;
 }
-MS2_REPLACE_METHOD(0x140adde50, CBreakableObject, FUN_140adde50, 0, 0);
+MS2_REPLACE_METHOD(0x140adde50, CBreakableObject, GetName, 0, 0);
 
 // @0x140addea0
 int CBreakableObject::FUN_140addea0()
 {
     if (!m_bHittable)
         return 0;
-    if (FUN_140adf330() == 0 && m_kHitTimer.FUN_140868ba0() != 0)
+    if (IsTombStone() == 0 && m_kHitTimer.FUN_140868ba0() != 0)
         return 0;
     return m_nState == 2;
 }
@@ -246,7 +246,7 @@ int CBreakableObject::vfunc_1(egf::Entity* pEntity, int nState)
     FUN_140adf9d0(pEntity);
     efd::utf8string strId;
     efd::ParseHelper<efd::ID128>::ToString(pEntity->GetDataFileID(), strId);
-    if (FUN_140adf330() != 0)
+    if (IsTombStone() != 0)
     {
         m_spEntity->GetPropertyValue(0x85b708e6, m_nTombId);
         m_strName.Format("%d", m_nTombId);
@@ -336,11 +336,11 @@ void CBreakableObject::FUN_140ade420(int nState, unsigned int nDelay)
 MS2_REPLACE_METHOD(0x140ade420, CBreakableObject, FUN_140ade420, 0, 0);
 
 // @0x140adea80
-int CBreakableObject::FUN_140adea80()
+int CBreakableObject::GetState()
 {
     return m_nState;
 }
-MS2_REPLACE_METHOD(0x140adea80, CBreakableObject, FUN_140adea80, 0, 0);
+MS2_REPLACE_METHOD(0x140adea80, CBreakableObject, GetState, 0, 0);
 
 // @0x140adeaa0
 void CBreakableObject::FUN_140adeaa0(int nSyncA, int nSyncB, int nSyncC)
@@ -422,10 +422,10 @@ void CBreakableObject::FUN_140adeaf0(int nNow)
             if (m_nPhase != 1)
                 FUN_140ae06a0(1, nNow);
         }
-        efd::Point3 ptOld = FUN_140adf8e0();
+        efd::Point3 ptOld = GetPtPos();
         float fTime = FUN_14028d280(nPos);
         FUN_140adf770(m_ptPosBase + m_ptMoveDir * m_fSpeed * fTime);
-        m_ptVelocity = FUN_140adf8e0() - ptOld;
+        m_ptVelocity = GetPtPos() - ptOld;
         m_ptVelocity.Unitize();
     }
     if (m_kFadeTimer.FUN_140868c00())
@@ -454,11 +454,11 @@ bool CBreakableObject::FUN_140adf310()
 MS2_REPLACE_METHOD(0x140adf310, CBreakableObject, FUN_140adf310, 0, 0);
 
 // @0x140adf330
-int CBreakableObject::FUN_140adf330()
+int CBreakableObject::IsTombStone()
 {
     return m_bTombStone;
 }
-MS2_REPLACE_METHOD(0x140adf330, CBreakableObject, FUN_140adf330, 0, 0);
+MS2_REPLACE_METHOD(0x140adf330, CBreakableObject, IsTombStone, 0, 0);
 
 // @0x140adf350
 int CBreakableObject::FUN_140adf350()
@@ -519,7 +519,7 @@ void CBreakableObject::FUN_140adf370(egf::Entity* pEntity, int nArg, MS2Ptr<CGem
 void CBreakableObject::FUN_140adf6e0()
 {
     m_kStateTimer.FUN_1408687f0();
-    if (FUN_140adf330() != 0)
+    if (IsTombStone() != 0)
     {
         switch (m_nState)
         {
@@ -563,11 +563,11 @@ void CBreakableObject::FUN_140adf830(efd::Point3 ptRot)
 }
 
 // @0x140adf8e0
-efd::Point3 CBreakableObject::FUN_140adf8e0()
+efd::Point3 CBreakableObject::GetPtPos()
 {
     return m_ptPos;
 }
-MS2_REPLACE_METHOD(0x140adf8e0, CBreakableObject, FUN_140adf8e0, 0, 0);
+MS2_REPLACE_METHOD(0x140adf8e0, CBreakableObject, GetPtPos, 0, 0);
 
 // @0x140adf920
 void CBreakableObject::EndOfSequence(NiActorManager* pkManager, NiActorManager::SequenceID eSequenceID,
@@ -578,7 +578,7 @@ void CBreakableObject::EndOfSequence(NiActorManager* pkManager, NiActorManager::
 }
 
 // @0x140adf980
-egf::EntityPtr CBreakableObject::FUN_140adf980()
+egf::EntityPtr CBreakableObject::GetEntity()
 {
     return m_spEntity;
 }
@@ -592,7 +592,7 @@ void CBreakableObject::FUN_140adf9d0(egf::Entity* pEntity)
     pEntity->GetPropertyValue(0xada5c5d2, m_nGroup);
     if (m_ptSize == efd::Point3::ZERO)
         m_bHittable = false;
-    if (FUN_140adf330() == 0)
+    if (IsTombStone() == 0)
         pEntity->GetPropertyValue(0x3ff293c8, m_strIdleAnim);
     pEntity->GetPropertyValue(0xd89e9b12, m_bShadow);
     pEntity->GetPropertyValue(0x54adb2fd, m_bC1);
@@ -613,7 +613,7 @@ void CBreakableObject::FUN_140adf9d0(egf::Entity* pEntity)
     str = strRevive.c_str();
     m_aReviveAnims.RemoveAll();
     FUN_14015f050(str, m_aReviveAnims, ",");
-    if (FUN_140adf330() == 0 || !m_bTombEffects)
+    if (IsTombStone() == 0 || !m_bTombEffects)
     {
         efd::utf8string strEffect;
         pEntity->GetPropertyValue(0xf509dc4a, strEffect);
@@ -639,11 +639,11 @@ void CBreakableObject::FUN_140adf9d0(egf::Entity* pEntity)
 }
 
 // @0x140ae0150
-efd::Point3 CBreakableObject::FUN_140ae0150()
+efd::Point3 CBreakableObject::GetPtVelocity()
 {
     return m_ptVelocity;
 }
-MS2_REPLACE_METHOD(0x140ae0150, CBreakableObject, FUN_140ae0150, 0, 0);
+MS2_REPLACE_METHOD(0x140ae0150, CBreakableObject, GetPtVelocity, 0, 0);
 
 // @0x140ae0190
 void CBreakableObject::FUN_140ae0190()
@@ -712,11 +712,11 @@ void CBreakableObject::MakeNxBoxController()
 }
 
 // @0x140ae0660
-efd::Point3 CBreakableObject::FUN_140ae0660()
+efd::Point3 CBreakableObject::GetPtSize()
 {
     return m_ptSize;
 }
-MS2_REPLACE_METHOD(0x140ae0660, CBreakableObject, FUN_140ae0660, 0, 0);
+MS2_REPLACE_METHOD(0x140ae0660, CBreakableObject, GetPtSize, 0, 0);
 
 // @0x140ae06a0
 void CBreakableObject::FUN_140ae06a0(int nPhase, int nNow)
@@ -785,7 +785,7 @@ void CBreakableObject::FUN_140ae0990(int bShow)
     if (bShow != 0)
     {
         NiAVObject* pRoot = FUN_141b6efc0(m_spEntity);
-        if (pRoot != 0 && m_bShadow && (FUN_140adf330() == 0 || m_nState != 5))
+        if (pRoot != 0 && m_bShadow && (IsTombStone() == 0 || m_nState != 5))
         {
             int nQuality = FUN_140ae1c10();
             FUN_141567330(pRoot, nQuality >= TSingleton<CGraphicOptionTable>::GetInstance()->GetShadowOption(5) ? true : false);

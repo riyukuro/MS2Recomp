@@ -4737,7 +4737,7 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
         __int64 nUid = _atoi64(pArgs->FUN_1422b8d30());
         if (m_pBrowser->m_linkedItems.Lookup(nUid, spItem))
         {
-            if (ItemPreviewMgr::GetInstance()->FUN_140d40670())
+            if (ItemPreviewMgr::GetInstance()->IsHudOn())
                 ItemPreviewMgr::GetInstance()->FUN_140d40120(spItem, 0);
         }
     }

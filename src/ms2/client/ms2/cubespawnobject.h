@@ -48,7 +48,7 @@ public:
     // new slot 124: binds the npc row and the cube entity (ent is by value: the callee destroys it).
     virtual int vfunc_124(int nNpcId, Unk_EntRef ent, int nGaugeA, int nGaugeB, const CStringW& strOwner);  // 0x140a4ed00
 
-    MS2Ptr<Unk_NpcData> FUN_140a4f1b0();                    // 0x140a4f1b0 copy of m_spNpc
+    MS2Ptr<Unk_NpcData> GetNpc();                    // 0x140a4f1b0 copy of m_spNpc
     void FUN_140a4f200(void* p);                            // 0x140a4f200
     void FUN_140a4f230(int a, int b);                       // 0x140a4f230 gauge update
     void FUN_140a4f2b0(unsigned int nState);                // 0x140a4f2b0 play the state's animation

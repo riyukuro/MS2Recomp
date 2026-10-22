@@ -274,7 +274,7 @@ void StateInteraction::vfunc_4(StateData* pData)
         m_spInteract.AssignRaw(new StateInteractData);
         MS2Ptr<CInteractObject> spObject = FUN_1403ed2d0()->FUN_141bc6090(reinterpret_cast<Unk_SiPos*>(m_pOwner)->vfunc_18(), 0);
         if (spObject.get())
-            m_spInteract->m_nObjectId = spObject->FUN_140967110();
+            m_spInteract->m_nObjectId = spObject->GetRowId();
     }
     MS2Ptr<CInteractObjectData> spRow = FUN_14051f670(m_spInteract->m_nObjectId);
     if (m_n10 == 0x8a)
@@ -302,7 +302,7 @@ void StateInteraction::vfunc_4(StateData* pData)
                 {
                     if (aObjects[i]->vfunc_4() != 0)
                     {
-                        float fDist = aObjects[i]->FUN_1409673c0().FUN_140965c40(reinterpret_cast<Unk_SiPos*>(pPC)->vfunc_18()).FUN_140967ac0();
+                        float fDist = aObjects[i]->GetPos().FUN_140965c40(reinterpret_cast<Unk_SiPos*>(pPC)->vfunc_18()).FUN_140967ac0();
                         if (fDist <= *static_cast<Client::Constants*>(FUN_1401d3200())->MasteryObjectInteractionDistance.Get())
                             m_aObjects.push_back(aObjects[i]);
                     }
@@ -388,8 +388,8 @@ void StateInteraction::vfunc_8(double fTime)
                 if (spObject->vfunc_4() != 0)
                 {
                     MS2Ptr<StateInteractData> spNew(new StateInteractData);
-                    spNew->m_nObjectId = spObject->FUN_140967110();
-                    spNew->m_strObjectId = spObject->FUN_140967060();
+                    spNew->m_nObjectId = spObject->GetRowId();
+                    spNew->m_strObjectId = spObject->GetName();
                     pPC->vfunc_59(0x19, spNew.get(), 0x8a, 0);
                 }
             }
@@ -401,8 +401,8 @@ void StateInteraction::vfunc_8(double fTime)
             {
                 if (m_n48 == 0)
                 {
-                    float fRange = spObject->FUN_140966e00()->m_validate.m_fInteractionDistance;
-                    float fDist = spObject->FUN_1409673c0().FUN_140965c40(reinterpret_cast<Unk_SiPos*>(pPC)->vfunc_18()).FUN_140967ac0();
+                    float fRange = spObject->GetRow()->m_validate.m_fInteractionDistance;
+                    float fDist = spObject->GetPos().FUN_140965c40(reinterpret_cast<Unk_SiPos*>(pPC)->vfunc_18()).FUN_140967ac0();
                     if (fRange < fDist)
                     {
                         pPC->vfunc_59(1, 0, 0, 0);
@@ -463,7 +463,7 @@ void StateInteraction::SendInteractObjectMode11()
     kPacket.vfunc_o10_1(0xb);
     kPacket.vfunc_o10_3(static_cast<int>(m_aObjects.size()));
     for (size_t i = 0; i < m_aObjects.size(); i++)
-        kPacket.vfunc_o10_7(m_aObjects[i]->FUN_140967060());
+        kPacket.vfunc_o10_7(m_aObjects[i]->GetName());
     FUN_140710590(kPacket);
     for (size_t i = 0; i < m_aObjects.size(); i++)
     {
@@ -487,7 +487,7 @@ void StateInteraction::SendInteractObjectMode12()
     kPacket.vfunc_o10_1(0xc);
     kPacket.vfunc_o10_3(static_cast<int>(aUsable.size()));
     for (size_t i = 0; i < aUsable.size(); i++)
-        kPacket.vfunc_o10_7(aUsable[i]->FUN_140967060());
+        kPacket.vfunc_o10_7(aUsable[i]->GetName());
     FUN_140710590(kPacket);
 }
 
@@ -509,7 +509,7 @@ void StateInteraction::FUN_1417d2230(CInteractObject* pObject)
     }
     else
         pObject->vfunc_10();
-    FUN_14138bf00(FUN_1409331e0(), 9, pObject->FUN_140967110(), 0);
+    FUN_14138bf00(FUN_1409331e0(), 9, pObject->GetRowId(), 0);
 }
 
 // MS2-FUNCTIONAL: branch layout / stack-slot placement differs from the exe; calls and semantics are equivalent
@@ -529,7 +529,7 @@ void StateInteraction::FUN_1417d22f0(MS2Ptr<CInteractObjectData> spRow)
                 Unk_SiXform kXform;
                 FUN_140a332d0(&kXform);
                 Unk_StreamPoint kUp(0.0f, 0.0f, 1.0f);
-                Unk_StreamPoint kPos = spObject->FUN_1409673c0().FUN_14097fd50(kUp);
+                Unk_StreamPoint kPos = spObject->GetPos().FUN_14097fd50(kUp);
                 Unk_NiPoint3 kNiPos(kPos);
                 FUN_14097faa0(kXform.m_afTranslate, &kNiPos);
                 kXform.m_rotate.FUN_142083d40((kRot.x * 3.1415927f) / 180.0f, (kRot.y * 3.1415927f) / 180.0f,

@@ -469,7 +469,7 @@ int Ridee::FUN_1417043a0(int nRideeId, int nObjectId, PCBase* pRider)
     m_unk_180.m_z = spData->m_f7c;
     m_unk_180.m_w = spData->m_f84;
     FUN_141671960(spData->m_f7c);
-    FUN_14123c300(spData->m_fScale);
+    SetScaleAC(spData->m_fScale);
     if (strAnim.IsEmpty())
     {
         m_str88 = "MS2PropCollide";

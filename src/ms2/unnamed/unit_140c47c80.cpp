@@ -609,7 +609,7 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c4a9a0(CAtlArray<MS2Ptr<CItem>>& o
     FUN_1411e1ce0(inventory, equipped, 1);
     for (POSITION pos = equipped.GetHeadPosition(); pos != 0; equipped.GetNext(pos)) {
         MS2Ptr<CEquipItem> equip(equipped.GetAt(pos));
-        MS2Ptr<CItem> item = equip->FUN_1411dc7a0();
+        MS2Ptr<CItem> item = equip->GetItem();
         if (item == 0)
             continue;
         out.Add(item);

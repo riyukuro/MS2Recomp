@@ -64,8 +64,8 @@ public:
     int FUN_14142b250(int nKey, int nType, __int64 nAction, int nSlot, int nPriority);
     int FUN_14142b300(int nKey);
     int FUN_14142b340(int nAction);                         // run a key action
-    void FUN_14142bad0(int nMode);
-    int FUN_14142baf0();
+    void SetMode(int nMode);
+    int GetMode();
     void FUN_14142bb10();                                   // use the quick slots of the pressed keys
     int FUN_14142c0c0(int nSkillId);                        // the skill's key is held
     int FUN_14142c270(int nAction);                         // the action's key is held
@@ -112,7 +112,7 @@ public:
     int FUN_14142e6f0(int nKey);
     void FUN_14142e730(int nKey);
     void FUN_14142e770(int nKey);
-    int FUN_14142e7a0();
+    int GetLocked();
     void FUN_14142e8c0(MS2Ptr<CSkillSet> spSet);            // enter the skill set mode: the set fills the quick slots
     void FUN_14142ece0(const ATL::CAtlArray<unsigned>& aItemIds);   // enter the skill set mode with these items in the quick slots
     int FUN_14142e7c0(int nSkillId, int nItemId, __int64 nItemUid, unsigned nCount);   // a quick slot of the set holds it

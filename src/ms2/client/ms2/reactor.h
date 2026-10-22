@@ -44,7 +44,7 @@ public:
     int FUN_140b79ee0(PCBase* pPc);                           // 1 = the player lacks the required items
     // Accessors defined in the unit that follows the animation-queue helpers (actionkeyobject.cpp); both copy a member.
     MS2Ptr<ReactorStateData> FUN_140966db0();               // state of m_nStateIdx
-    MS2Ptr<ReactorData> FUN_140966e50();                    // copy of m_spData
+    MS2Ptr<ReactorData> GetData();                    // copy of m_spData
 
 public:
     MS2_LAYOUT_FRIEND;

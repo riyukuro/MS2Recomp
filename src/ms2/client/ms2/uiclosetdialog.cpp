@@ -1517,7 +1517,7 @@ MS2Ptr<CItem> UIClosetDialog::FindItem(const __int64& nUid)
             return MS2Ptr<CItem>(0);
         MS2Ptr<CEquipItem> spEquip = pPlayer->FUN_1416561a0()->FUN_1411e1580(nUid);
         if (spEquip.get() != 0)
-            return spEquip->FUN_1411dc7a0();
+            return spEquip->GetItem();
     }
     return spItem;
 }

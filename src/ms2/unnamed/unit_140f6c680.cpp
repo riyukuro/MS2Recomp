@@ -1057,7 +1057,7 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f70770()
         while (pos != 0) {
             MS2Ptr<CEquipItem> equip(equipped.GetAt(pos));
             if (!!equip) {
-                MS2Ptr<CItem> item = equip->FUN_1411dc7a0();
+                MS2Ptr<CItem> item = equip->GetItem();
                 if (!!item && item->FUN_1405279c0() != 0 && item->FUN_1405279c0()->FUN_140620a50() != 0)
                     m_equipment.Add(item);
             }
@@ -1670,7 +1670,7 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f75c50()
         while (pos != 0) {
             MS2Ptr<CEquipItem> equip(equipped.GetAt(pos));
             if (!!equip) {
-                MS2Ptr<CItem> item = equip->FUN_1411dc7a0();
+                MS2Ptr<CItem> item = equip->GetItem();
                 if (!!item && item->FUN_140529560() != 0) {
                     CItemSocket* socket = item->FUN_1405279c0();
                     if (socket->FUN_140620a20() != 0 && !socket->FUN_140621310())

@@ -365,7 +365,7 @@ void CDropItem::vfunc_9(void* p)
     GameObject::vfunc_9(p);
     vfunc_21(efd::Point3(0.0f, 0.0f, 0.0f));
     if (m_spEffect.get())
-        FUN_14123c300(m_spEffect->scale);
+        SetScaleAC(m_spEffect->scale);
 }
 
 // @0x14118d4e0
@@ -572,13 +572,13 @@ void CDropItem::FUN_14118d9a0(int nState)
                 Unk_WsB_Prop* pProp = spProp.get();
                 bool bProp = false;
                 if (pProp)
-                    bProp = pProp->FUN_140966e00().get() != 0;
+                    bProp = pProp->GetRow().get() != 0;
                 if (bProp)
                 {
-                    if (pProp->FUN_140966e00()->m_drop.m_nDropHeight != 0)
-                        fDropHeight = (float)pProp->FUN_140966e00()->m_drop.m_nDropHeight;
-                    if (pProp->FUN_140966e00()->m_drop.m_nDropDistance != 0)
-                        fDropBase = (float)pProp->FUN_140966e00()->m_drop.m_nDropDistance;
+                    if (pProp->GetRow()->m_drop.m_nDropHeight != 0)
+                        fDropHeight = (float)pProp->GetRow()->m_drop.m_nDropHeight;
+                    if (pProp->GetRow()->m_drop.m_nDropDistance != 0)
+                        fDropBase = (float)pProp->GetRow()->m_drop.m_nDropDistance;
                 }
             }
         }
@@ -1120,10 +1120,10 @@ bool CDropItem::FUN_141191060()
 }
 
 // @0x1411910a0
-int CDropItem::FUN_1411910a0() { return m_nOwnerObjId; }
+int CDropItem::GetOwnerObjId() { return m_nOwnerObjId; }
 
 // @0x1411910c0
-int CDropItem::FUN_1411910c0() { return m_nDropKind; }
+int CDropItem::GetDropKind() { return m_nDropKind; }
 
 // @0x1411910e0
 unsigned __int64 CDropItem::FUN_1411910e0()

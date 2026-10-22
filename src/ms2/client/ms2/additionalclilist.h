@@ -56,23 +56,23 @@ public:
     void FUN_140970420(double dTime);                       // per-frame update
     void FUN_140970490();                                   // clear
     float FUN_1409705d0();                                  // scale
-    float FUN_140970700();                                  // the applied alpha
+    float GetAlpha();                                  // the applied alpha
     float FUN_140970720();                                  // the alpha the records ask for
     __int64 FUN_1409708a0();                                // shield total
     int FUN_140970990();                                    // hide
     unsigned FUN_1409709b0();                               // stun kind
     int FUN_1409709d0();                                    // stunned
     int FUN_140970a00();                                    // no fly
-    bool FUN_140970a20();                                   // pvp on
+    bool IsPvpOnOff();                                   // pvp on
     int FUN_140970a40();                                    // confusion move
     int FUN_140970a60(unsigned nSkillId);                   // the skill is disabled
-    bool FUN_140970ad0();                                   // revival disabled here
-    int FUN_140970af0();                                    // invincible
-    int FUN_140970b10();                                    // force apply target
+    bool IsDisableRevivalHere();                                   // revival disabled here
+    int GetInvincible();                                    // invincible
+    int GetForceApplyTarget();                                    // force apply target
     unsigned FUN_140970b30();                               // super armor (the skill's when higher)
     unsigned FUN_140970bf0();                               // skill use disable mask
     int FUN_140970c10(SkillAttackData* pAttack, int nPush); // the super armor resists the attack
-    bool FUN_140970d70();                                   // infinity sp
+    bool IsInfinitySP();                                   // infinity sp
     unsigned FUN_140970d90(unsigned nId, unsigned short nLevel);   // overlap count of a record
     int FUN_140970eb0(float& fOut);                         // fixed z rotation
     __int64 FUN_140970f00(int nType, __int64 nValue);       // consume value scaled by the rates
@@ -90,7 +90,7 @@ public:
     void FUN_140972380(CSpecialEffectCtx* pCtx);            // run the special effects of a kind
     void FUN_1409725d0();                                   // dirty
     void FUN_1409725f0(ATL::CAtlList<MS2Ptr<AdditionalCli> >& list);   // all records
-    MS2Ptr<AdditionalCli> FUN_140972690();                  // the shield record
+    MS2Ptr<AdditionalCli> GetShield();                  // the shield record
     static int FUN_1409726e0(unsigned nSuperArmor, ApplyFieldType eField);
     void FUN_140972770();                                   // alpha
     void FUN_1409728b0();                                   // update the records, drop the finished ones

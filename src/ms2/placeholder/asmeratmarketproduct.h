@@ -42,16 +42,16 @@ public:
     static MS2Ptr<ASMeratMarketProductBase> FUN_1409bbc30(Scaleform::GFx::Value& v, const int& nMovieId);
     static MS2Ptr<ASMeratMarketProductBase> FUN_1409bbf30(const int& nType, const int& nMovieId);
 
-    void FUN_1409bc480(int nIndex);                                         // m_nIndex = nIndex
+    void SetIndex(int nIndex);                                         // m_nIndex = nIndex
     void FUN_1409bc4a0(const CString& strBg);                               // "bgPath"
-    void FUN_1409bc4f0(MS2Ptr<Unk_MeratBanner> spBanner);                   // m_spBanner = spBanner
+    void SetBanner(MS2Ptr<Unk_MeratBanner> spBanner);                   // m_spBanner = spBanner
     void FUN_1409bc540(const int& nIndex);                                  // "index"
     void FUN_1409bc580(MS2Ptr<Unk_MeratEquipEntry> spEntry);                // "productOID" of a record
     void FUN_1409bc630(const Unk_MeratOid& oid);                            // "productOID"
-    int FUN_1409bc680();                                                    // m_nIndex
+    int GetIndex();                                                    // m_nIndex
     void FUN_1409bc6a0(Unk_MeratOid* pOid);                                 // parses "productOID"
     unsigned int FUN_1409bc720();                                           // "index"
-    int FUN_1409bc780();                                                    // m_nProductType
+    int GetProductType();                                                    // m_nProductType
 
     // Member setters (one COMDAT per enum type of the original).
     void FUN_1409c0f00(const char* szName, int n);                          // product type

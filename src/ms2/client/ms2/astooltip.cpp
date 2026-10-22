@@ -909,9 +909,9 @@ struct Unk_SetPieceEquipped
     Unk_SetPieceEquipped(unsigned nPieceId) : m_nPieceId(nPieceId) {}
     bool operator()(MS2Ptr<CEquipItem> spEquip) const
     {
-        if (spEquip == 0 || spEquip->FUN_1411dc7a0() == 0)
+        if (spEquip == 0 || spEquip->GetItem() == 0)
             return false;
-        if (!spEquip->FUN_1411dc7a0()->FUN_140528980())
+        if (!spEquip->GetItem()->FUN_140528980())
             return false;
         if (spEquip->FUN_1411dc7f0()->FUN_14053c560() == m_nPieceId)
             return true;

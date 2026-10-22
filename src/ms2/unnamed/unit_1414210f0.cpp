@@ -28,7 +28,7 @@ __int64 FUN_1414210f0(int nSlot, AvatarPC* pAvatar)
     {
         MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(nSlot, pAvatar);
         if (spEquip.get())
-            return spEquip->FUN_1411dc7a0()->FUN_140526a50();
+            return spEquip->GetItem()->FUN_140526a50();
     }
     return 0;
 }

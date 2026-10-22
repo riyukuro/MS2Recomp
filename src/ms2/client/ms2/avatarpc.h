@@ -109,7 +109,7 @@ public:
 
     void FUN_1409f9ea0(Unk_RideePtr spRow);                 // 0x1409f9ea0 applies a ridee row (model path, scale)
     void FUN_1409fa120(PCBase* pRider);                     // 0x1409fa120 sets the rider (+ its ride animation)
-    Unk_RideePtr FUN_1409fa170();                           // 0x1409fa170 copy of m_spRow
+    Unk_RideePtr GetRow();                           // 0x1409fa170 copy of m_spRow
     void FUN_1409fa7c0();                                   // 0x1409fa7c0 starts the rider's ride animation
     void FUN_1409fa940();                                   // 0x1409fa940 attaches the rider to the ridee
     bool FUN_1409faac0();                                   // 0x1409faac0 places the ridee in the preview (free id)
@@ -189,21 +189,21 @@ public:
     void FUN_1409f4cf0(unsigned a, unsigned b);             // 0x1409f4cf0 resets the state and calls 0x141663e20
     void FUN_1409f4d80(MS2Ptr<CItem> spItem);               // 0x1409f4d80 equips an item, per item kind
     bool FUN_1409f4f20();                                   // 0x1409f4f20 riding and the ridee model is loaded
-    void FUN_1409f5040(IAvatarObjectEventListener* p);      // 0x1409f5040 m_pListener = p
-    IAvatarObjectEventListener* FUN_1409f5070();            // 0x1409f5070
+    void SetListener(IAvatarObjectEventListener* p);      // 0x1409f5040 m_pListener = p
+    IAvatarObjectEventListener* GetListener();            // 0x1409f5070
     void FUN_1409f5560(NiNodePtr spNode);                   // 0x1409f5560 adds a node under "UI External Root"
     void FUN_1409f5750(NiNodePtr spNode);                   // 0x1409f5750 removes it
     void FUN_1409f5830();                                   // 0x1409f5830 culls the external root
     void FUN_1409f5d20();                                   // 0x1409f5d20 hands the nodes of this avatar to the model view
-    void FUN_1409f6280(int n);                              // 0x1409f6280 m_nType = n
-    int FUN_1409f62a0();                                    // 0x1409f62a0
+    void SetType(int n);                              // 0x1409f6280 m_nType = n
+    int GetType();                                    // 0x1409f62a0
     NiNode* FUN_1409f62c0();                                // 0x1409f62c0 the "UI Effect Root" (created on demand)
     int FUN_1409f6450();                                    // 0x1409f6450 object id of the ridee, or 0
     void FUN_1409f64a0();                                   // 0x1409f64a0 m_bDirty = true
     void FUN_1409f64c0(MS2Ptr<CItem> spItem);               // 0x1409f64c0 marks dirty when the item has a model
-    void FUN_1409f6540(bool b);                             // 0x1409f6540 m_bEnabled = b
-    bool FUN_1409f6560();                                   // 0x1409f6560
-    bool FUN_1409f65a0();                                   // 0x1409f65a0
+    void SetEnabled(bool b);                             // 0x1409f6540 m_bEnabled = b
+    bool IsEnabled();                                   // 0x1409f6560
+    bool IsFishing();                                   // 0x1409f65a0
     bool FUN_1409f67a0(NiNodePtr spNode);                   // 0x1409f67a0 attaches a UI node to the model root
     void FUN_1409f68e0(MS2Ptr<CItem> spItem);               // 0x1409f68e0 equip (kind 5)
     void FUN_1409f6950(MS2Ptr<CItem> spItem);               // 0x1409f6950 equip (kind 8: fishing rod)

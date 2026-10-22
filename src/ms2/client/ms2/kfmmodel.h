@@ -103,7 +103,7 @@ public:
         NiControllerSequence* pkSeq, float fEventTime);                                   // 0x1414408c0
 
     // non-virtual members
-    egf::EntityPtr FUN_14143ff20();                         // 0x14143ff20 copy of the entity pointer
+    egf::EntityPtr GetEntity();                         // 0x14143ff20 copy of the entity pointer
     egf::EntityID FUN_14143ff70();                          // 0x14143ff70 id of the model entity (0 when none)
     efd::AssetID FUN_14143fff0();                           // 0x14143fff0 asset id property of the entity
     NiActorManager* FUN_1414400d0();                        // 0x1414400d0 actor manager of the entity

@@ -445,7 +445,7 @@ void CSmartPushAutoFishing::vfunc_2()
     MS2Ptr<AdditionalCli> spBuff = FUN_14096fd30(pMy->FUN_1416749a0(), 1);
     if (m_bActive != 0 && !spBuff)
     {
-        int nCount = CFishingManager::GetInstance()->FUN_140cdbdd0();
+        int nCount = CFishingManager::GetInstance()->GetAutoCount();
         if (nCount > 0)
         {
             CSmartPushTable::PackagePtr pkg =
@@ -1251,7 +1251,7 @@ int CSmartPushAutoInteractObject::vfunc_14()
     CInteractGatheringObject* pObj = FUN_140dd3dd0();
     if (pObj == 0)
         return 0;
-    return pObj->FUN_140966e00()->m_gathering.m_nReceipeId;
+    return pObj->GetRow()->m_gathering.m_nReceipeId;
 }
 
 // MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
@@ -1267,13 +1267,13 @@ CInteractGatheringObject* CSmartPushAutoInteractObject::FUN_140dd3dd0()
     for (size_t i = 0; i < objects.GetCount(); i++)
     {
         CInteractObject* pObj = objects[i].get();
-        MS2Ptr<Unk_SpRecipe> spRecipe = FUN_1409670c0()->FUN_14066aa00(pObj->FUN_140966e00()->m_gathering.m_nReceipeId);
+        MS2Ptr<Unk_SpRecipe> spRecipe = FUN_1409670c0()->FUN_14066aa00(pObj->GetRow()->m_gathering.m_nReceipeId);
         if (!spRecipe)
             continue;
         if (spRecipe->m_nMastery != nKind)
             continue;
-        float fRange = pObj->FUN_140966e00()->m_validate.m_fInteractionDistance;
-        Unk_StreamPoint ptObj = pObj->FUN_1409673c0();
+        float fRange = pObj->GetRow()->m_validate.m_fInteractionDistance;
+        Unk_StreamPoint ptObj = pObj->GetPos();
         NiPoint3 pt = pMy->vfunc_18();
         Unk_StreamPoint ptMy(pt.x, pt.y, pt.z);
         if (ptMy.FUN_140965c40(ptObj).FUN_140967ac0() <= fRange)

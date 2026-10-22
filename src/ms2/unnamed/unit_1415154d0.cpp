@@ -29,7 +29,7 @@ extern Unk_MaterialTable DAT_143d69198;
 unsigned FUN_140d89680(const NiVisibleArray* pkInput);                          // NiVisibleArray count
 NiRenderObject* FUN_1414d1830(const NiVisibleArray* pkInput, unsigned uiIndex); // NiVisibleArray::GetAt
 void FUN_140d9d620(NiVisibleArray* pkOutput, NiRenderObject* pkObject);         // NiVisibleArray::Add
-NiRenderer* FUN_140994450();                                // NiRenderer::GetRenderer
+NiRenderer* GetNiRenderer();                                // NiRenderer::GetRenderer
 bool FUN_141568c90(NiRenderObject* pObject);
 NiMaterial* FUN_140a17cd0(NiRenderObject* pObject);         // the object's active material
 Unk_MaterialEntry* FUN_140a17af0(Unk_MaterialTable* pTable, const NiMaterial* pMaterial);   // table lookup, NULL-safe
@@ -69,7 +69,7 @@ void MS2VelocityMaterialSwapProcessor::PreRenderProcessList(const NiVisibleArray
     }
     else
     {
-        NiRenderer* pkRenderer = FUN_140994450();
+        NiRenderer* pkRenderer = GetNiRenderer();
         for (unsigned int ui = 0; ui < uiCount; ui++)
         {
             NiRenderObject* pkObject = FUN_1414d1830(pkInput, ui);

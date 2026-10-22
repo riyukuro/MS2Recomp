@@ -421,7 +421,7 @@ void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCapt
     else
         spEquip = static_cast<PC*>(pPlayer)->FUN_1416561a0()->FUN_1411e1780(4, bAlt);
     if (spEquip.get())
-        spEquipped = spEquip->FUN_1411dc7a0();
+        spEquipped = spEquip->GetItem();
     if (!FUN_1403b3c40(reinterpret_cast<CItemData*>(spItem->FUN_140527840())->function.name, L"ItemExchangeScroll"))
     {
         ASTooltip tip(pPlayer, pLhs->FUN_1409c6560(), 2);

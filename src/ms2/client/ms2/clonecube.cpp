@@ -98,7 +98,7 @@ bool CloneCube::vfunc_57()
 MS2_REPLACE_METHOD(0x141084BE0, CloneCube, vfunc_57, 189, 0x1293EEE2);
 
 // @0x141084cb0
-void CloneCube::FUN_141084cb0(MS2Ptr<CItem> spItem)
+void CloneCube::SetItem(MS2Ptr<CItem> spItem)
 {
     m_spItem = spItem;
 }
@@ -113,11 +113,11 @@ void CloneCube::FUN_141084d00(UIModelView* pView)
 MS2_REPLACE_METHOD(0x141084D00, CloneCube, FUN_141084d00, 77, 0xB230D7AC);
 
 // @0x141084d60
-UIModelView* CloneCube::FUN_141084d60()
+UIModelView* CloneCube::GetModelView()
 {
     return m_pModelView;
 }
-MS2_REPLACE_METHOD(0x141084D60, CloneCube, FUN_141084d60, 18, 0x2475AD70);
+MS2_REPLACE_METHOD(0x141084D60, CloneCube, GetModelView, 18, 0x2475AD70);
 
 // @0x141084d80
 bool CloneCube::vfunc_58(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
@@ -208,11 +208,11 @@ void CloneCube::FUN_1410853e0(bool bVisible)
 MS2_REPLACE_METHOD(0x1410853E0, CloneCube, FUN_1410853e0, 58, 0x924FA43B);
 
 // @0x141085420
-bool CloneCube::FUN_141085420()
+bool CloneCube::IsVisible()
 {
     return m_bVisible;
 }
-MS2_REPLACE_METHOD(0x141085420, CloneCube, FUN_141085420, 18, 0x76A63993);
+MS2_REPLACE_METHOD(0x141085420, CloneCube, IsVisible, 18, 0x76A63993);
 
 static void FUN_1410865e0(NiObjectNET* pObj, const NiFixedString& kKey, bool bValue);
 
@@ -266,13 +266,13 @@ NiTexturePtr CloneCube::FUN_141085700()
 MS2_REPLACE_METHOD(0x141085700, CloneCube, FUN_141085700, 284, 0x9CED1E0E);
 
 // @0x141085830
-MS2Ptr<CItemUgcMeshContainer> CloneCube::FUN_141085830()
+MS2Ptr<CItemUgcMeshContainer> CloneCube::GetUgcMesh()
 {
     return m_spUgcMesh;
 }
 
 // @0x141085880
-MS2Ptr<CItemData> CloneCube::FUN_141085880()
+MS2Ptr<CItemData> CloneCube::GetItemData()
 {
     return m_spItemData;
 }
@@ -322,18 +322,18 @@ void CloneCube::vfunc_13(void* a, efd::Category cat)
 }
 
 // @0x141085ab0
-void CloneCube::FUN_141085ab0(IAvatarObjectEventListener* p)
+void CloneCube::SetListener(IAvatarObjectEventListener* p)
 {
     m_pListener = p;
 }
-MS2_REPLACE_METHOD(0x141085AB0, CloneCube, FUN_141085ab0, 28, 0x329EF226);
+MS2_REPLACE_METHOD(0x141085AB0, CloneCube, SetListener, 28, 0x329EF226);
 
 // @0x141085ae0
-IAvatarObjectEventListener* CloneCube::FUN_141085ae0()
+IAvatarObjectEventListener* CloneCube::GetListener()
 {
     return m_pListener;
 }
-MS2_REPLACE_METHOD(0x141085AE0, CloneCube, FUN_141085ae0, 18, 0x8EEA29A0);
+MS2_REPLACE_METHOD(0x141085AE0, CloneCube, GetListener, 18, 0x8EEA29A0);
 
 // @0x141085b00
 CloneCube::CloneCube(MS2Ptr<CItemData> spData, const CString& strModel)

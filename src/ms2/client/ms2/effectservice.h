@@ -126,7 +126,7 @@ public:
 
     void FUN_1411a3cb0(const CEffectDummy& kDummy);             // transform and attach flags from a dummy
     void FUN_1411a3db0(INodeMovement* pMovement);               // set the movement
-    void FUN_1411a3fa0(int bOnGround);                          // snap to the ground
+    void SetOnGround(int bOnGround);                          // snap to the ground
     void FUN_1411a3fd0(NiAVObject* pTarget);                    // rotation target (ignored if this)
     void FUN_1411a4000(const NiMatrix3& kRot);                  // local + own rotation
     void FUN_1411a4040(const NiPoint3& kPos);                   // local + own translation
@@ -185,7 +185,7 @@ struct Unk_EsEffectGroup
     // @0x1410443f0
     std::list<CEffectPtr>::iterator FUN_1410443f0() { return m_listEffects.end(); }
     std::list<CEffectPtr>::iterator FUN_1411b2df0(std::list<CEffectPtr>::iterator it);   // erase one effect
-    void FUN_1411b3070(const char* pszName);                    // m_strName = pszName
+    void SetName(const char* pszName);                    // m_strName = pszName
     const std::string& FUN_1411b1e40();                         // m_strName
     void FUN_1411b15b0(CEffectPtr spEffect);                    // add an effect (counted)
     bool FUN_1411b2720();                                       // no effects left
@@ -279,8 +279,8 @@ public:
     void FUN_1411a74a0(egf::EntityID id, egf::Entity* pEntity);  // attach the light of a light entity
     void FUN_1411a76d0();                                       // UpdateEffects on the roots
     void FUN_1411a7760(unsigned nId, ATL::CAtlArray<CEffectPtr>& aOut); // the effects of an id
-    bool FUN_1411a7830();                                       // enabled
-    void FUN_1411a7850(bool bEnabled);
+    bool IsEnabled();                                       // enabled
+    void SetEnabled(bool bEnabled);
     void FUN_1411a7870(int nIndex);                             // re-show the sky object (0 = the first)
     void FUN_1411a7960(unsigned nIndex);                        // show preloaded sky object nIndex on the root
     void FUN_1411a7ce0(bool bRain);                             // create / drop the rain
@@ -301,8 +301,8 @@ public:
     unsigned FUN_1411b1bd0() { return s_nLastId; }              // the newest effect id
     void FUN_1411a8cb0(const CString& strName);                 // play strName on the camera target, keep the id
     void FUN_1411a8dc0();                                       // stop every id of m_list140
-    void FUN_1411a8e50(unsigned nTick);
-    unsigned FUN_1411a8e70();
+    void SetTick(unsigned nTick);
+    unsigned GetTick();
     bool FUN_1411a91d0(int nType);                              // false when the option hides that effect type
     static unsigned FUN_1411a9230();                            // next effect id (never 0)
     static unsigned s_nLastId;                                  // 0x1439f7038

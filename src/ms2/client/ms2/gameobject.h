@@ -137,13 +137,13 @@ public:
     void FUN_14123c280(float f);                            // 0x14123c280 m_fScaleA4 = f (+ entity scale prop)
     int FUN_14123c580();                                    // 0x14123c580 return m_unk_70 (object id)
     int FUN_14123dbd0();                                    // 0x14123dbd0 return m_unk_c8
-    void FUN_14123c300(float f);                            // scale B (+0xa8)
+    void SetScaleAC(float f);                            // scale B (+0xa8)
     int FUN_14123c660();                                    // visibility (+0xb0)
     void FUN_14123c5a0(int nId);                            // 0x14123c5a0 m_unk_70 = nId (w17)
     Unk_GoModelKey& FUN_14123c460(Unk_GoModelKey& kOut);    // 0x14123c460 fills kOut, returns it (w17)
     egf::EntityID FUN_14123c460();                          // 0x14123c460 (definition; same ABI as the two out-param views)
     egf::EntityID& FUN_14123c460(egf::EntityID& kOut);      // same function: the key is the entity id (w18, animationmanager)
-    MS2Ptr<CAnimationManager> FUN_14123c6f0();              // 0x14123c6f0 copy of m_spAnimMgr (w17)
+    MS2Ptr<CAnimationManager> GetAnimMgr();              // 0x14123c6f0 copy of m_spAnimMgr (w17)
     CString FUN_14123bbd0();                                // 0x14123bbd0 copy of m_str90 (model path; sb4)
     void FUN_14123bc20(CString str);                        // 0x14123bc20 reload the model from str (by value; sb4)
     int FUN_14123bea0();                                    // 0x14123bea0 return m_unk_b4 (model loaded; sb4)
@@ -151,10 +151,10 @@ public:
     void FUN_14123bb30(float f);                            // 0x14123bb30 if loaded: vfunc_53(f)
     CString FUN_14123be50();                                // 0x14123be50 copy of m_str88
     float FUN_14123c260();                                  // 0x14123c260 m_fScaleA4
-    float FUN_14123c2e0();                                  // 0x14123c2e0 m_fScaleAC
+    float GetScaleAC();                                  // 0x14123c2e0 m_fScaleAC
     void FUN_14123c330(float f);                            // 0x14123c330 m_fScaleA8 = f
     NiPoint3 FUN_14123c360();                               // 0x14123c360 m_pos98
-    void FUN_14123c3e0(const egf::EntityID& kId);           // 0x14123c3e0 m_kEntityID = kId
+    void SetKEntityID(const egf::EntityID& kId);           // 0x14123c3e0 m_kEntityID = kId
     void FUN_14123c430(void* pEntity);                      // 0x14123c430 m_unk_80 = pEntity
     unsigned __int64 FUN_14123c500();                       // 0x14123c500 entity id value
     void FUN_14123c680(bool b);                             // 0x14123c680 join/leave the update list

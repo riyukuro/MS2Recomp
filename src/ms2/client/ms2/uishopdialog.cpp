@@ -1099,7 +1099,7 @@ int UIShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
                 else
                     BuyProduct(nSerial, nQuantity);
             }
-            else if (FUN_1409bb9e0()->FUN_140d40670() == 0) {
+            else if (FUN_1409bb9e0()->IsHudOn() == 0) {
                 if (nType == 1)
                     BuyMeratItem(nSerial, nQuantity, obj);
                 else
@@ -1113,7 +1113,7 @@ int UIShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     else if (_stricmp("OnRightClick", szMethod) == 0) {
         ASData args;
         if (args.FUN_1422b9620(pArgs, nArgs) != 0) {
-            if (FUN_1409bb9e0()->FUN_140d40670() != 0) {
+            if (FUN_1409bb9e0()->IsHudOn() != 0) {
                 Scaleform::GFx::Value value = args.FUN_1422b9260();
                 AScript obj(value, 2);
                 int nSerial = FUN_1409c1750(obj.FUN_1422baa20("serialID"));
@@ -2638,7 +2638,7 @@ void UIShopDialog::PreviewNormalItem(int nSerial, int bForce)
         MS2Ptr<CItem> spItem = spProduct->FUN_140db5e90();
         if (spItem == 0)
             return;
-        if (FUN_1409bb9e0()->FUN_140d40670() || bForce) {
+        if (FUN_1409bb9e0()->IsHudOn() || bForce) {
             Unk_UserProxyItemData* pProxy = spItem->FUN_140527870();
             if (pProxy)
                 FUN_140599ab0(pProxy, spItem->FUN_140527840());
@@ -2658,7 +2658,7 @@ void UIShopDialog::PreviewMeratItem(int nSerial)
         if (spProduct == 0)
             return;
         MS2Ptr<CItem> spPreview = FUN_141b05180(spItem);
-        if (spPreview.get() && FUN_1409bb9e0()->FUN_140d40670()) {
+        if (spPreview.get() && FUN_1409bb9e0()->IsHudOn()) {
             Unk_UserProxyItemData* pProxy = spPreview->FUN_140527870();
             if (pProxy)
                 FUN_140599ab0(pProxy, spPreview->FUN_140527840());

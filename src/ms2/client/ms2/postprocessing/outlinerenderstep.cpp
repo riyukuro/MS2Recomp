@@ -27,7 +27,7 @@ bool OutlineRenderStep::vfunc_15(unsigned int a, void* b)
 {
     if (!PostProcessEffect::vfunc_15(a, b))
         return false;
-    NiRenderer* p = FUN_140994450();
+    NiRenderer* p = GetNiRenderer();
     NiRenderTargetGroup* q = p->GetDefaultRenderTargetGroup();
     unsigned int w = q->GetWidth(0);
     unsigned int h = q->GetHeight(0);

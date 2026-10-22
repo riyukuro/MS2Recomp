@@ -375,7 +375,7 @@ void CKeyTable::OnKeyTable(CInPacket& packet)
     }
     else if (nMode == 7)
     {
-        if (FUN_14142e7a0())
+        if (GetLocked())
             return;
         int nPage = (unsigned short)packet.vfunc_o8_2();
         m_quickSlots.RemoveAll();
@@ -923,18 +923,18 @@ int CKeyTable::FUN_14142b340(int nAction)
 MS2_REPLACE_METHOD(0x14142B340, CKeyTable, FUN_14142b340, 1757, 0x7F357C0C);
 
 // @0x14142bad0
-void CKeyTable::FUN_14142bad0(int nMode)
+void CKeyTable::SetMode(int nMode)
 {
     m_nMode = nMode;
 }
-MS2_REPLACE_METHOD(0x14142BAD0, CKeyTable, FUN_14142bad0, 22, 0x566B64E3);
+MS2_REPLACE_METHOD(0x14142BAD0, CKeyTable, SetMode, 22, 0x566B64E3);
 
 // @0x14142baf0
-int CKeyTable::FUN_14142baf0()
+int CKeyTable::GetMode()
 {
     return m_nMode;
 }
-MS2_REPLACE_METHOD(0x14142BAF0, CKeyTable, FUN_14142baf0, 14, 0xC2D0886F);
+MS2_REPLACE_METHOD(0x14142BAF0, CKeyTable, GetMode, 14, 0xC2D0886F);
 
 // @0x14142bb10
 void CKeyTable::FUN_14142bb10()
@@ -1768,11 +1768,11 @@ void CKeyTable::FUN_14142e770(int nKey)
 MS2_REPLACE_METHOD(0x14142E770, CKeyTable, FUN_14142e770, 42, 0x359C743D);
 
 // @0x14142e7a0
-int CKeyTable::FUN_14142e7a0()
+int CKeyTable::GetLocked()
 {
     return m_nLocked;
 }
-MS2_REPLACE_METHOD(0x14142E7A0, CKeyTable, FUN_14142e7a0, 14, 0x5ADC0513);
+MS2_REPLACE_METHOD(0x14142E7A0, CKeyTable, GetLocked, 14, 0x5ADC0513);
 
 // @0x14142e7c0
 int CKeyTable::FUN_14142e7c0(int nSkillId, int nItemId, __int64 nItemUid, unsigned nCount)

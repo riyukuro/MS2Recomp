@@ -2176,7 +2176,7 @@ int CUgcManager::FUN_141886a90(CUgcItemPC* pItem, NiTexture* pTexture)
     MS2Ptr<CEquipItem> spEquip = pWearer->FUN_141655c30(pItem->m_itemUid);
     if (spEquip == 0)
         return 0;
-    MS2Ptr<CItemUgcMeshContainer> spMeshes = spEquip->FUN_1411dd950();
+    MS2Ptr<CItemUgcMeshContainer> spMeshes = spEquip->GetUgcMeshes();
     if (spMeshes == 0)
         return 0;
     spMeshes->FUN_141426810(pTexture);

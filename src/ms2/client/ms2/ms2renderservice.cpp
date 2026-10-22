@@ -85,7 +85,7 @@ extern void (*DAT_143d6eb48)();
 extern void (*DAT_143d6eb50)(bool);
 extern int DAT_143afa750;                                                    // last renderer creation failure code
 extern int DAT_143af7d58;                                                    // "keep window hidden" switch
-NiRenderer* FUN_140994450();                                                 // the current NiRenderer
+NiRenderer* GetNiRenderer();                                                 // the current NiRenderer
 NiDX9Renderer* FUN_140d89bc0();                                              // the DX9 renderer, or 0
 
 // Debug log (console) of the game.
@@ -595,7 +595,7 @@ static unsigned int Unk_RsShaderError(const char* pcMsg, NiShaderError eErr, boo
 // @0x1414ecec0
 static void Unk_RsLockHook()
 {
-    NiRenderer* pRenderer = FUN_140994450();
+    NiRenderer* pRenderer = GetNiRenderer();
     if (pRenderer != 0) {
         reinterpret_cast<Unk_RsRenderer*>(pRenderer)->LockSimple();
     }
@@ -604,7 +604,7 @@ static void Unk_RsLockHook()
 // @0x1414ecef0
 static void Unk_RsUnlockHook()
 {
-    NiRenderer* pRenderer = FUN_140994450();
+    NiRenderer* pRenderer = GetNiRenderer();
     if (pRenderer != 0) {
         reinterpret_cast<Unk_RsRenderer*>(pRenderer)->UnlockSimple();
     }

@@ -69,10 +69,10 @@ public:
     virtual int vfunc_16();                                     // 16 0x141403f10
 
     // Inline members of the original header (their COMDATs live in other units' ranges).
-    MS2Ptr<CInteractObjectData> FUN_140966e00();                // 0x140966e00 copy of the row pointer
-    CString FUN_140967060();                                    // 0x140967060 copy of the name
-    int FUN_140967110();                                        // 0x140967110 id of the entity's template
-    Unk_StreamPoint FUN_1409673c0();                            // 0x1409673c0 position copy
+    MS2Ptr<CInteractObjectData> GetRow();                // 0x140966e00 copy of the row pointer
+    CString GetName();                                    // 0x140967060 copy of the name
+    int GetRowId();                                        // 0x140967110 id of the entity's template
+    Unk_StreamPoint GetPos();                            // 0x1409673c0 position copy
     Unk_StreamPoint FUN_1417d4940();                            // 0x1417d4940 rotation copy (stateinteractdata.cpp)
     int FUN_1413b5600();                                        // 0x1413b5600 the interact state (0: usable; uiminimapentity.cpp)
     // @0x140967150
@@ -84,7 +84,7 @@ public:
     // @0x141c04fc0
     unsigned char FUN_141c04fc0() { return m_bSpawned; }   // WorldService 0x141bbfb50 (?\worldservice.cpp#6)
 
-    Unk_EntRef FUN_1413fd890();                                 // copy of the entity handle
+    Unk_EntRef GetEnt();                                 // copy of the entity handle
     egf::EntityID FUN_1413fd8e0();                              // id of the entity (0 when unbound)
     unsigned __int64 FUN_1413fd960();                           // 64-bit id of the entity (0 when unbound)
     void FUN_1413fda50();                                       // (re)create the state effect

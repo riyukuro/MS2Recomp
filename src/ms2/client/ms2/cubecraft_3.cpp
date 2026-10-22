@@ -309,7 +309,7 @@ MS2_REPLACE_METHOD(0x1410b0e30, CFittingDollCubeGuide, vfunc_6, 63, 0x47D49A16);
 int CFittingDollCubeGuide::vfunc_7() { return doll->FUN_14123c660(); }
 MS2_REPLACE_METHOD(0x1410b0e80, CFittingDollCubeGuide, vfunc_7, 39, 0xADF60E57);
 // @0x1410b0eb0
-void CFittingDollCubeGuide::vfunc_9(float scale) { doll->FUN_14123c280(scale); doll->FUN_14123c300(scale); }
+void CFittingDollCubeGuide::vfunc_9(float scale) { doll->FUN_14123c280(scale); doll->SetScaleAC(scale); }
 MS2_REPLACE_METHOD(0x1410b0eb0, CFittingDollCubeGuide, vfunc_9, 82, 0x9FE77C47);
 // @0x1410b0f10
 void CFittingDollCubeGuide::vfunc_10(NiNode* parent, int attachName) {

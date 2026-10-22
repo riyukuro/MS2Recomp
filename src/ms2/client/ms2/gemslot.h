@@ -35,7 +35,7 @@ public:
     virtual int vfunc_0(void* p);                       // ITooltip 0x14126d9b0 build the tooltip into p
 
     int FUN_14126d880(CItem* pItem);                    // the item is a gem item the slot's pc can wear
-    int FUN_14126d930();                                // m_nGemType
+    int GetGemType();                                // m_nGemType
     int FUN_14126d950();                                // the pc is set and its flag is nonzero
 
 public:

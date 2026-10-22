@@ -33,7 +33,7 @@ public:
     virtual MS2Ptr<CItem> vfunc_25();                   // 25 0x140a6f610 the item of the slot
     virtual int vfunc_0(void* p);                       // ITooltip 0x140a6f9e0 build the tooltip into p
 
-    int FUN_140a6f860();                                // the lapenshard slot of the player (0: a free slot)
+    int GetSlot();                                // the lapenshard slot of the player (0: a free slot)
     int FUN_140a6f880();                                // the kind (the slot the item is equipped into)
 
 private:

@@ -354,7 +354,7 @@ void FUN_140f33570(MS2Ptr<CItemData> spData, int* pnColor1, int* pnColor2)
         MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(spData->FUN_14053eba0()->FUN_14054b400(), pPc);
         if (spEquip.get() != 0)
         {
-            if (spEquip->FUN_1411dc7a0()->FUN_1405276c0() == spData->FUN_14053c510())
+            if (spEquip->GetItem()->FUN_1405276c0() == spData->FUN_14053c510())
             {
                 FUN_141424580(MS2Ptr<CEquipItem>(spEquip), pnColor1, 0);
                 FUN_141424580(MS2Ptr<CEquipItem>(spEquip), pnColor2, 2);

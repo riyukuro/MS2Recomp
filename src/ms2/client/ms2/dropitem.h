@@ -80,8 +80,8 @@ public:
     void FUN_141190b70(int nPickerId);                                      // picked up by an actor
     void FUN_141191030();                                                   // m_nTick = now
     bool FUN_141191060();                                                   // 1000 ms since m_nTick
-    int FUN_1411910a0();                                                    // m_nOwnerObjId
-    int FUN_1411910c0();                                                    // m_nDropKind
+    int GetOwnerObjId();                                                    // m_nOwnerObjId
+    int GetDropKind();                                                    // m_nDropKind
     unsigned __int64 FUN_1411910e0();                                       // the first owner uid
     int FUN_141191150();                                                    // state is 1 or 6
     void FUN_1411911a0();                                                   // enter state 5

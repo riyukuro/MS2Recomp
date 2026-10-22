@@ -452,7 +452,7 @@ efd::AsyncResult DecoEditService::OnTick()
                     Unk_StreamPoint kHit;
                     if (FUN_1409f7ca0()->FUN_14168a230(Unk_DecoPoint3(kOrigin), kHit, Unk_DecoPoint3(kDir), 10000.0f, 0x201) != 0)
                     {
-                        spBrush->FUN_1411974a0(kHit);
+                        spBrush->SetPtPos(kHit);
                         spBrush->vfunc_2();
                     }
                 }

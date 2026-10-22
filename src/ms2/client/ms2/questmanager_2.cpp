@@ -2453,7 +2453,7 @@ int CQuestManager::FUN_1416d3af0(const ATL::CAtlArray<unsigned>& itemIds)
     int count = 0;
     for (POSITION pos = equips.GetHeadPosition(); pos != 0; equips.GetNext(pos)) {
         MS2Ptr<CEquipItem> equip = equips.GetAt(pos);
-        MS2Ptr<CItem> item = equip->FUN_1411dc7a0();
+        MS2Ptr<CItem> item = equip->GetItem();
         if (item->FUN_140529620()) continue;
         if (FUN_140408410(&itemIds, item->FUN_1405276c0()) == -1) continue;
         if (found.find(item->FUN_1405276c0()) != found.end()) continue;

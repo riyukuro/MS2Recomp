@@ -204,9 +204,9 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
                     for (size_t i = 0; i < aObjects.GetCount(); i++)
                     {
                         MS2Ptr<CInteractObject> obj = aObjects[i];
-                        if (obj->FUN_140967110() == nIndex)
+                        if (obj->GetRowId() == nIndex)
                         {
-                            Unk_StreamPoint kPoint = obj->FUN_1409673c0();
+                            Unk_StreamPoint kPoint = obj->GetPos();
                             ASObj row(2);
                             row.FUN_1409c4a30("xpos", kPoint.x);
                             row.FUN_1409c4a30("ypos", kPoint.y);

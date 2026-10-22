@@ -366,8 +366,8 @@ MS2_REPLACE_METHOD(0x1412672d0, CGameSocket, FUN_1412672d0, 219, 0xB0C1948F);
 void CGameSocket::FUN_1412673c0() { m_out->FUN_140209430(); }
 MS2_REPLACE_METHOD(0x1412673c0, CGameSocket, FUN_1412673c0, 41, 0x0124E8F1);
 // @0x1412673f0
-int CGameSocket::FUN_1412673f0() { return m_sequence; }
-MS2_REPLACE_METHOD(0x1412673f0, CGameSocket, FUN_1412673f0, 17, 0x116875E2);
+int CGameSocket::GetSequence() { return m_sequence; }
+MS2_REPLACE_METHOD(0x1412673f0, CGameSocket, GetSequence, 17, 0x116875E2);
 // MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
 // @0x141267410
 void CGameSocket::FUN_141267410(COutPacket& packet)
@@ -386,17 +386,17 @@ void CGameSocket::FUN_141267410(COutPacket& packet)
 }
 MS2_REPLACE_METHOD(0x141267410, CGameSocket, FUN_141267410, 439, 0x2094E6E2);
 // @0x1412675d0
-int CGameSocket::FUN_1412675d0() { return m_disconnect; }
-MS2_REPLACE_METHOD(0x1412675d0, CGameSocket, FUN_1412675d0, 17, 0xC417BCBA);
+int CGameSocket::GetDisconnect() { return m_disconnect; }
+MS2_REPLACE_METHOD(0x1412675d0, CGameSocket, GetDisconnect, 17, 0xC417BCBA);
 // @0x1412675f0
 int CGameSocket::FUN_1412675f0() { return m_state==1 ? 1 : 0; }
 MS2_REPLACE_METHOD(0x1412675f0, CGameSocket, FUN_1412675f0, 47, 0xE1EE42FC);
 // @0x141267630
-CString CGameSocket::FUN_141267630() { return m_host; }
-MS2_REPLACE_METHOD(0x141267630, CGameSocket, FUN_141267630, 68, 0x2A903A72);
+CString CGameSocket::GetHost() { return m_host; }
+MS2_REPLACE_METHOD(0x141267630, CGameSocket, GetHost, 68, 0x2A903A72);
 // @0x141267680
-int CGameSocket::FUN_141267680() { return m_port; }
-MS2_REPLACE_METHOD(0x141267680, CGameSocket, FUN_141267680, 17, 0x04BB11AA);
+int CGameSocket::GetPort() { return m_port; }
+MS2_REPLACE_METHOD(0x141267680, CGameSocket, GetPort, 17, 0x04BB11AA);
 // @0x1412676a0
 void FUN_1412676a0(int error) { FUN_141adbea0(FUN_1403ed2b0()); FUN_140d73bc0(174,0,0,s_forceLogin); FUN_140d86260()->vfunc_58(174,error); }
 MS2_REPLACE(0x1412676a0, FUN_1412676a0, 118, 0x5BB614FD);
@@ -431,7 +431,7 @@ inline CSimpleSocket::~CSimpleSocket() { FUN_141269750(); }
 inline CSocketThread::~CSocketThread()
 {
     FUN_141269dc0();
-    if(FUN_14126a990()!=0) { m_quit=1; WSASetEvent(m_events[0]); FUN_1401d3510(INFINITE); }
+    if(GetThread()!=0) { m_quit=1; WSASetEvent(m_events[0]); FUN_1401d3510(INFINITE); }
     if(!m_events.IsEmpty()) WSACloseEvent(m_events[0]);
 }
 // MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
@@ -444,14 +444,14 @@ inline void CSimpleSocket::FUN_1412694d0(int events,CSocketThread* worker)
     HANDLE done=WSACreateEvent(); Unk_SocketCommand command={this,events,done};
     { Unk_LockGuard guard(m_worker->m_lock); if(guard!=0) {} else m_worker->m_commands.AddTail(command); }
     WSASetEvent(m_worker->m_events[0]);
-    HANDLE waits[2]={done,m_worker->FUN_14126a990()};
+    HANDLE waits[2]={done,m_worker->GetThread()};
     DWORD result=WaitForMultipleObjectsEx(2,waits,FALSE,INFINITE,FALSE);
     WSACloseEvent(done); if(result==0) return; throw Exception(WSAEINVAL);
 }
 // @0x1412696b0
 inline void CSocketThread::FUN_1412696b0()
 {
-    if(!FUN_14126a990()) {
+    if(!GetThread()) {
         HANDLE event=WSACreateEvent(); m_events.Add(event);
         if(!event || !FUN_141215220(0,0,0,0,0)) throw Exception(GetLastError());
     }
@@ -470,7 +470,7 @@ inline void CSimpleSocket::FUN_141269990()
         HANDLE done=WSACreateEvent(); Unk_SocketCommand command={this,-1,done};
         { Unk_LockGuard guard(m_worker->m_lock); if(guard!=0) {} else m_worker->m_commands.AddTail(command); }
         WSASetEvent(m_worker->m_events[0]);
-        HANDLE waits[2]={done,m_worker->FUN_14126a990()}; WaitForMultipleObjectsEx(2,waits,FALSE,INFINITE,FALSE);
+        HANDLE waits[2]={done,m_worker->GetThread()}; WaitForMultipleObjectsEx(2,waits,FALSE,INFINITE,FALSE);
         WSACloseEvent(done); m_worker=0;
     }
 }
@@ -515,7 +515,7 @@ inline void CSocketThread::FUN_14126a000(CSimpleSocket* socket,int error)
     FUN_14126b250(socket); socket->FUN_141269780();
 }
 // @0x14126a990
-inline HANDLE CThread::FUN_14126a990() const { return m_thread; }
+inline HANDLE CThread::GetThread() const { return m_thread; }
 // @0x14126b1c0
 inline HANDLE CSocketThread::FUN_14126b1c0(CSimpleSocket* socket)
 {
@@ -711,7 +711,7 @@ MS2_REPLACE_METHOD(0x141269820, CSimpleSocket, FUN_141269820, 100, 0x6DEE46BF);
 MS2_REPLACE_METHOD(0x141269990, CSimpleSocket, FUN_141269990, 369, 0x79C79B2C);
 MS2_REPLACE_METHOD(0x141269dc0, CSocketThread, FUN_141269dc0, 344, 0xF2248F24);
 MS2_REPLACE_METHOD(0x14126a000, CSocketThread, FUN_14126a000, 117, 0x3579A715);
-MS2_REPLACE_METHOD(0x14126a990, CThread, FUN_14126a990, 15, 0x6BC6B691);
+MS2_REPLACE_METHOD(0x14126a990, CThread, GetThread, 15, 0x6BC6B691);
 MS2_REPLACE_METHOD(0x14126b1c0, CSocketThread, FUN_14126b1c0, 133, 0x44A07B33);
 MS2_REPLACE_METHOD(0x14126b250, CSocketThread, FUN_14126b250, 336, 0xD719EBD3);
 MS2_REPLACE_METHOD(0x14126c5c0, CSocketBase, FUN_14126c5c0, 69, 0xB3367F3B);

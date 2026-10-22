@@ -108,7 +108,7 @@ public:
     void FUN_141265990(COutPacket&); void FUN_141265ae0(); void FUN_141266480(unsigned,unsigned);
     void FUN_141266500(int); void FUN_141267000(int); void FUN_141267070();
     void FUN_1412672a0(const Unk_SocketOptions&); void FUN_1412672d0();void FUN_1412673c0();
-    int FUN_1412673f0(); void FUN_141267410(COutPacket&); int FUN_1412675d0(); int FUN_1412675f0(); CString FUN_141267630(); int FUN_141267680();
+    int GetSequence(); void FUN_141267410(COutPacket&); int GetDisconnect(); int FUN_1412675f0(); CString GetHost(); int GetPort();
 private:
     MS2_LAYOUT_FRIEND;
     friend class CNetworkService;   // its logger getters test and use m_logger directly

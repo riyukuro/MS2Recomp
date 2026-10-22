@@ -183,7 +183,7 @@ float UICameraEditDialog::CameraData::GetZoomOut() const
 float UICameraEditDialog::CameraData::GetDistance() const
 {
     GameObject* pTarget = GetTarget();
-    if (pTarget != 0 && pTarget->FUN_14123c2e0() == 1.5f)
+    if (pTarget != 0 && pTarget->GetScaleAC() == 1.5f)
         return m_fDistance;
     return m_fDistance / 1.5f;
 }
@@ -1750,7 +1750,7 @@ int UICharacterCreateDialog::FUN_1418e3f50(const CStringW& strName)
     POSITION pos = aEquips.GetHeadPosition();
     while (pos != 0)
     {
-        MS2Ptr<CItem> spItem = aEquips.GetAt(pos)->FUN_1411dc7a0();
+        MS2Ptr<CItem> spItem = aEquips.GetAt(pos)->GetItem();
         kCreate.m_items.vfunc_o10_3(spItem->FUN_1405276c0());
         kCreate.m_items.vfunc_o10_1(FUN_140526c30(spItem));
         Unk_CcProxy* pProxy = reinterpret_cast<Unk_CcProxy*>(spItem->FUN_140527870());
@@ -1931,7 +1931,7 @@ void UICharacterCreateDialog::FUN_1418e4a80(int nTab, int nCategory)
         {
             if (MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(spData->FUN_14053eba0()->FUN_14054b400(), pPc))
             {
-                MS2Ptr<CItem> spWorn = spEquip->FUN_1411dc7a0();
+                MS2Ptr<CItem> spWorn = spEquip->GetItem();
                 bool bSame = spWorn->FUN_1405276c0() == spRow->m_nItemId;
                 if (bSame)
                     nSelect = (int)i;
@@ -1976,7 +1976,7 @@ void UICharacterCreateDialog::FUN_1418e4f50()
             aEquips.GetNext(pos);
             continue;
         }
-        MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+        MS2Ptr<CItem> spItem = spEquip->GetItem();
         if (!spItem)
         {
             aEquips.GetNext(pos);
@@ -2057,7 +2057,7 @@ void UICharacterCreateDialog::FUN_1418e5580(MS2Ptr<CItemData> spData)
             if (spEquip.get() != 0)
             {
                 int nItemId = spData->FUN_14053c510();
-                MS2Ptr<CItem> spWorn = spEquip->FUN_1411dc7a0();
+                MS2Ptr<CItem> spWorn = spEquip->GetItem();
                 bool bSame = spWorn->FUN_1405276c0() == nItemId;
                 if (bSame)
                     FUN_141424580(MS2Ptr<CEquipItem>(spEquip), &nCurColor, 0);
@@ -2462,7 +2462,7 @@ void UICharacterCreateDialog::FUN_1418e7380(int nItemId)
     MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(spData->FUN_14053eba0()->FUN_14054b400(), pPc);
     if (spEquip.get() == 0)
         return;
-    MS2Ptr<CItem> spWorn = spEquip->FUN_1411dc7a0();
+    MS2Ptr<CItem> spWorn = spEquip->GetItem();
     if (spWorn.get() != 0)
         m_items.SetAt(spWorn->FUN_1405276c0(), spWorn->FUN_140524250());
 }

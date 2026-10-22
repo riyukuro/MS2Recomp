@@ -589,7 +589,7 @@ CStringW GameEventAttendGiftCli::FUN_140ce37a0()
 }
 
 // @0x140ce3850
-CStringA GameEventAttendGiftCli::FUN_140ce3850() { return m_strDesc; }
+CStringA GameEventAttendGiftCli::GetDesc() { return m_strDesc; }
 
 // @0x140ce38a0
 int GameEventAttendGiftCli::FUN_140ce38a0() { return m_i100; }
@@ -738,7 +738,7 @@ CStringW GameEventCashAttendCli::FUN_140ce3f10()
 }
 
 // @0x140ce3f70
-CStringW GameEventCashAttendCli::FUN_140ce3f70() { return m_strDesc; }
+CStringW GameEventCashAttendCli::GetDesc() { return m_strDesc; }
 
 // @0x140ce3fc0
 AttendGiftDataGroupPtr GameEventCashAttendCli::FUN_140ce3fc0(unsigned nDay)

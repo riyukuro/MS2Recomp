@@ -33,7 +33,7 @@ Unk_RenderLog* FUN_140166440();
 void FUN_1401859c0(Unk_RenderLog* pLog, int nCategory, int nLevel, const wchar_t* pszMessage);
 Ni2DBuffer* FUN_14184e5d0(int nTarget);                  // back buffer of the default render target group
 NiDX9Renderer* FUN_140d89bc0();                          // the DX9 renderer, or 0 when the renderer is not a DX9 one
-extern NiRenderer* FUN_140994450();                      // NiRenderer::GetRenderer()
+extern NiRenderer* GetNiRenderer();                      // NiRenderer::GetRenderer()
 
 // @0x1414dabb0
 MS2RenderContext::MS2RenderContext(ecr::RenderService* pRenderService, Ni3DRenderView* pRenderView)

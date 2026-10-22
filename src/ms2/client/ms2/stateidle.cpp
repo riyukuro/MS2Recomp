@@ -759,9 +759,9 @@ void StateIdle::vfunc_29(MS2Ptr<Unk_StateArg29> p)
 {
     State::vfunc_29(p);
     CItemGem* pGem = p->FUN_140527900();
-    if (pGem != 0 && pGem->FUN_140d41400().get() != 0 && m_n10 == 7)
+    if (pGem != 0 && pGem->GetGem().get() != 0 && m_n10 == 7)
     {
-        MS2Ptr<CGemSwim> spSwim(dynamic_cast<CGemSwim*>(pGem->FUN_140d41400().get()));
+        MS2Ptr<CGemSwim> spSwim(dynamic_cast<CGemSwim*>(pGem->GetGem().get()));
         if (spSwim.get() != 0)
             FUN_1417cf210();
     }

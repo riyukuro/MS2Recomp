@@ -265,7 +265,7 @@ void FUN_141b71e70(egf::EntityID id, bool bEnable, unsigned uColor, bool bSkipEf
 class Unk_FcAnimSvc
 {
 public:
-    efd::Category FUN_141235eb0();                                  // 0x141235eb0 the animation channel
+    efd::Category GetCatAnim();                                  // 0x141235eb0 the animation channel
     char m_pad[0x120];
     efd::Category m_catAnim;                                        // +0x120
 };
@@ -325,7 +325,7 @@ class UITriggerEditorDialog : public UIDialog
 public:
     void FUN_141b2b9a0(CString str, int n);
     void FUN_141b2b930();
-    CString FUN_141235d60();                                        // the edited cube id
+    CString GetCubeId();                                        // the edited cube id
     char m_pad_178[0x18];
     CString m_strCubeId;                                            // +0x190
 };
@@ -490,7 +490,7 @@ void CFunctionCubeObject::vfunc_13()
 }
 
 // @0x141235d60
-CString UITriggerEditorDialog::FUN_141235d60()
+CString UITriggerEditorDialog::GetCubeId()
 {
     return m_strCubeId;
 }
@@ -784,7 +784,7 @@ void CFunctionCubeObject::EndOfSequence(NiActorManager* pkManager, NiActorManage
 }
 
 // @0x141226e60
-Unk_EntRef CFunctionCubeObject::FUN_141226e60()
+Unk_EntRef CFunctionCubeObject::GetEnt()
 {
     return m_ent;
 }
@@ -1881,12 +1881,12 @@ void CNurturingCubeObject::vfunc_14(MS2Ptr<Unk_FcStateMsg> sp)
     CNurturingCubeObject* pSrc = dynamic_cast<CNurturingCubeObject*>((CFunctionCubeObject*)sp.get());
     if (pSrc == 0)
         return;
-    FUN_14122ce80(pSrc->FUN_14122cb20());
+    FUN_14122ce80(pSrc->GetLevel());
     m_nE0 = pSrc->FUN_14122cb00();
-    m_nTime = pSrc->FUN_14122cba0();
-    m_nMaxLevel = pSrc->FUN_14122cb40();
+    m_nTime = pSrc->GetTime();
+    m_nMaxLevel = pSrc->GetMaxLevel();
     m_nF4 = pSrc->FUN_14122cb60();
-    m_nLevel = pSrc->FUN_14122cb20();
+    m_nLevel = pSrc->GetLevel();
     m_nC0 = pSrc->FUN_14122cb80();
     if (((CubeSpawnObject*)m_spPet) != 0)
     {
@@ -2155,13 +2155,13 @@ __int64 CNurturingCubeObject::FUN_14122cb00()
 }
 
 // @0x14122cb20
-unsigned short CNurturingCubeObject::FUN_14122cb20()
+unsigned short CNurturingCubeObject::GetLevel()
 {
     return m_nLevel;
 }
 
 // @0x14122cb40
-unsigned short CNurturingCubeObject::FUN_14122cb40()
+unsigned short CNurturingCubeObject::GetMaxLevel()
 {
     return m_nMaxLevel;
 }
@@ -2179,7 +2179,7 @@ __int64 CNurturingCubeObject::FUN_14122cb80()
 }
 
 // @0x14122cba0
-__int64 CNurturingCubeObject::FUN_14122cba0()
+__int64 CNurturingCubeObject::GetTime()
 {
     return m_nTime;
 }
@@ -2428,7 +2428,7 @@ efd::SyncResult CFunctionCubeService::OnPreInit(efd::IDependencyRegistrar* pRegi
 }
 
 // @0x141235eb0
-efd::Category Unk_FcAnimSvc::FUN_141235eb0()
+efd::Category Unk_FcAnimSvc::GetCatAnim()
 {
     return m_catAnim;
 }
@@ -2445,7 +2445,7 @@ efd::AsyncResult CFunctionCubeService::OnInit()
     efd::Category catNet = pNet->FUN_142156c20();
     pMessages->Subscribe(this, catNet, 0, false);
     pMessages->Subscribe(this, s_catAnimationChannel, 0, false);
-    efd::Category catAnim = FUN_141b6f910()->FUN_141235eb0();
+    efd::Category catAnim = FUN_141b6f910()->GetCatAnim();
     pMessages->Subscribe(this, catAnim, 0, false);
     return efd::AsyncResult_Complete;
 }
@@ -2470,7 +2470,7 @@ efd::AsyncResult CFunctionCubeService::OnShutdown()
     efd::Category catNet = pNet->FUN_142156c20();
     pMessages->Unsubscribe(this, catNet, 0);
     pMessages->Unsubscribe(this, s_catAnimationChannel, 0);
-    efd::Category catAnim = FUN_141b6f910()->FUN_141235eb0();
+    efd::Category catAnim = FUN_141b6f910()->GetCatAnim();
     pMessages->Unsubscribe(this, catAnim, 0);
     FUN_141231be0();
     return efd::AsyncResult_Complete;
@@ -2488,7 +2488,7 @@ void CFunctionCubeService::FUN_14122f110(const egf::EntityChangeMessage* pMsg, e
     POSITION pos = m_mapCubes.GetHeadPosition();
     while (pos)
     {
-        Unk_EntRef kEnt = m_mapCubes.GetValueAt(pos)->FUN_141226e60();
+        Unk_EntRef kEnt = m_mapCubes.GetValueAt(pos)->GetEnt();
         if (kEnt.FUN_1408b70b0(pEntity))
         {
             m_mapCubes.RemoveAt(pos);
@@ -2805,7 +2805,7 @@ void CFunctionCubeService::FUN_141230df0(CString strId)
     if (m_mapCubes.Lookup(strId, spCube))
     {
         spCube->FUN_141227dd0(1);
-        FUN_1414737d0(spCube->FUN_141226e60().FUN_1408a9090());
+        FUN_1414737d0(spCube->GetEnt().FUN_1408a9090());
         m_mapCubes.RemoveKey(strId);
     }
     if (FUN_1403ed2b0()->FUN_141adc890(0x4e6b))
@@ -2813,7 +2813,7 @@ void CFunctionCubeService::FUN_141230df0(CString strId)
         UITriggerEditorDialog* pDlg = Unk_FcDialog<UITriggerEditorDialog>(0x4e6b);
         if (pDlg != 0)
         {
-            if (!FUN_1401c0090(pDlg->FUN_141235d60(), strId))
+            if (!FUN_1401c0090(pDlg->GetCubeId(), strId))
                 pDlg->FUN_141b2b930();
             else
                 FUN_1403ed2b0()->FUN_141adc5d0(0x4e6b);
@@ -2837,7 +2837,7 @@ MS2Ptr<CFunctionCubeObject> CFunctionCubeService::FUN_141230f60(Unk_StreamPoint 
         {
             if (spCube->vfunc_15() != 0)
             {
-                Unk_EntRef kEnt = spCube->FUN_141226e60();
+                Unk_EntRef kEnt = spCube->GetEnt();
                 Unk_StreamPoint vPos;
                 FUN_1409618c0(kEnt.FUN_1408a9280(), 0xfd95ca52, &vPos);
                 float fDist = pt.FUN_140965c40(vPos).FUN_140967ac0();
@@ -2871,7 +2871,7 @@ MS2Ptr<CFunctionCubeObject> CFunctionCubeService::FUN_141231200(Unk_StreamPoint 
             {
                 if (spCube->vfunc_15() != 0)
                 {
-                    Unk_EntRef kEnt = spCube->FUN_141226e60();
+                    Unk_EntRef kEnt = spCube->GetEnt();
                     Unk_StreamPoint vPos;
                     FUN_1409618c0(kEnt.FUN_1408a9280(), 0xfd95ca52, &vPos);
                     float fDist = pt.FUN_140965c40(vPos).FUN_140967ac0();
@@ -2900,7 +2900,7 @@ void CFunctionCubeService::FUN_1412314e0(Unk_StreamPoint pt, ATL::CAtlArray<MS2P
         CString strKey = m_mapCubes.GetKeyAt(pos);
         if (spCube->FUN_140966fc0() == 0xc)
         {
-            Unk_EntRef kEnt = spCube->FUN_141226e60();
+            Unk_EntRef kEnt = spCube->GetEnt();
             Unk_StreamPoint vPos;
             FUN_1409618c0(kEnt.FUN_1408a9280(), 0xfd95ca52, &vPos);
             if (pt.FUN_140965c40(vPos).FUN_140967ac0() <= 600.0f)
@@ -2932,7 +2932,7 @@ void CFunctionCubeService::FUN_141231730()
     {
         MS2Ptr<CEquipItem> spEquip = FUN_1416561a0(pActor)->FUN_1411e1860(5, 6, 0);
         if (spEquip.get() != 0)
-            nEquipField = FUN_140527840(spEquip->FUN_1411dc7a0().operator->())->m_n10c;
+            nEquipField = FUN_140527840(spEquip->GetItem().operator->())->m_n10c;
     }
     for (POSITION pos = m_mapCubes.GetHeadPosition(); pos; m_mapCubes.GetNext(pos))
     {
@@ -2996,7 +2996,7 @@ void CFunctionCubeService::FUN_141231be0()
     POSITION pos = m_mapCubes.GetHeadPosition();
     while (pos)
     {
-        FUN_1414737d0(m_mapCubes.GetValueAt(pos)->FUN_141226e60().FUN_1408a9090());
+        FUN_1414737d0(m_mapCubes.GetValueAt(pos)->GetEnt().FUN_1408a9090());
         m_mapCubes.GetNext(pos);
     }
     m_mapPending.RemoveAll();
@@ -3197,7 +3197,7 @@ MS2_REPLACE_METHOD(0x141226B80, CFunctionCubeObject, FUN_141226b80, 63, 0xE18B62
 MS2_REPLACE_METHOD(0x141226BD0, CFunctionCubeObject, FUN_141226bd0, 66, 0xBB932E49);
 MS2_REPLACE_METHOD(0x141226CD0, CFunctionCubeObject, FUN_141226cd0, 34, 0x9D097096);
 MS2_REPLACE_METHOD(0x141226D00, CFunctionCubeObject, FUN_141226d00, 93, 0x773D38C8);
-MS2_REPLACE_METHOD(0x141226E60, CFunctionCubeObject, FUN_141226e60, 65, 0x1741F7DD);
+MS2_REPLACE_METHOD(0x141226E60, CFunctionCubeObject, GetEnt, 65, 0x1741F7DD);
 MS2_REPLACE_METHOD(0x141226EB0, CFunctionCubeObject, FUN_141226eb0, 115, 0x9567809B);
 MS2_REPLACE_METHOD(0x141226F30, CFunctionCubeObject, vfunc_15, 78, 0xC045165D);
 MS2_REPLACE_METHOD(0x1412271C0, CFunctionCubeObject, FUN_1412271c0, 31, 0x808A9532);
@@ -3224,11 +3224,11 @@ MS2_REPLACE_METHOD(0x14122BBE0, CNurturingCubeObject, vfunc_7, 61, 0xB75CABA3);
 MS2_REPLACE_METHOD(0x14122C410, CNurturingCubeObject, FUN_14122c410, 62, 0xAC6D2807);
 MS2_REPLACE_METHOD(0x14122CAB0, CNurturingCubeObject, GetValue, 67, 0xA5E0F545);
 MS2_REPLACE_METHOD(0x14122CB00, CNurturingCubeObject, FUN_14122cb00, 18, 0x82D58831);
-MS2_REPLACE_METHOD(0x14122CB20, CNurturingCubeObject, FUN_14122cb20, 18, 0xEE0EE69A);
-MS2_REPLACE_METHOD(0x14122CB40, CNurturingCubeObject, FUN_14122cb40, 18, 0xF75FCC54);
+MS2_REPLACE_METHOD(0x14122CB20, CNurturingCubeObject, GetLevel, 18, 0xEE0EE69A);
+MS2_REPLACE_METHOD(0x14122CB40, CNurturingCubeObject, GetMaxLevel, 18, 0xF75FCC54);
 MS2_REPLACE_METHOD(0x14122CB60, CNurturingCubeObject, FUN_14122cb60, 17, 0xE3FAF62F);
 MS2_REPLACE_METHOD(0x14122CB80, CNurturingCubeObject, FUN_14122cb80, 18, 0xADEC8FD1);
-MS2_REPLACE_METHOD(0x14122CBA0, CNurturingCubeObject, FUN_14122cba0, 18, 0x8E3D0C09);
+MS2_REPLACE_METHOD(0x14122CBA0, CNurturingCubeObject, GetTime, 18, 0x8E3D0C09);
 MS2_REPLACE_METHOD(0x14122D2A0, CNurturingCubeObject, FUN_14122d2a0, 69, 0xF518EAE5);
 MS2_REPLACE_METHOD(0x14122E6D0, CFunctionCubeObject, FUN_14122e6d0, 55, 0x77C2E1A9);
 MS2_REPLACE_METHOD(0x14122E710, CFunctionCubeObject, FUN_14122e710, 34, 0xBA111604);
@@ -3239,7 +3239,7 @@ MS2_REPLACE_METHOD(0x141230670, CFunctionCubeService, OnPreInit, 54, 0xC1765B69)
 MS2_REPLACE_METHOD(0x1412316A0, CFunctionCubeService, FUN_1412316a0, 126, 0x31D444B2);
 MS2_REPLACE_METHOD(0x1412359A0, CFunctionCubeService, DecRefCount, 50, 0xFB01D42A);
 MS2_REPLACE_METHOD(0x141235D50, CFunctionCubeService, GetClassDesc, 13, 0x421533FA);
-MS2_REPLACE_METHOD(0x141235D60, UITriggerEditorDialog, FUN_141235d60, 68, 0x72F60FFC);
+MS2_REPLACE_METHOD(0x141235D60, UITriggerEditorDialog, GetCubeId, 68, 0x72F60FFC);
 MS2_REPLACE_METHOD(0x141235F80, CFunctionCubeService, GetRefCount, 31, 0xCB147065);
 MS2_REPLACE_METHOD(0x1412367E0, CFunctionCubeService, IncRefCount, 31, 0xB50696AD);
 MS2_REPLACE_METHOD(0x141236A60, CFunctionCubeObject, FUN_141236a60, 34, 0x87CCAF30);

@@ -201,9 +201,9 @@ int AdditionalCliList::FUN_14096f070(MS2Ptr<AdditionalCli> sp)
 {
     if (!sp->FUN_14096c6f0())
         return 0;
-    if (m_map.Lookup(sp->FUN_14096d260()))
+    if (m_map.Lookup(sp->GetKey()))
         return 0;
-    m_map.SetAt(sp->FUN_14096d260(), sp);
+    m_map.SetAt(sp->GetKey(), sp);
     if (FUN_1409735c0())
         sp->FUN_14096c3f0();
     sp->FUN_14096c4c0();
@@ -225,7 +225,7 @@ int AdditionalCliList::FUN_14096f070(MS2Ptr<AdditionalCli> sp)
             pMy->FUN_141523bc0()->FUN_141767f80(nSet);
             pMy->FUN_141523bc0()->FUN_1417683d0();
         }
-        CGuildManager::GetInstance()->FUN_1413bce40(sp->FUN_14096d2a0(), sp->FUN_14096d2c0());
+        CGuildManager::GetInstance()->FUN_1413bce40(sp->FUN_14096d2a0(), sp->GetLevel());
         int nEvent = 0xd;
         FUN_1419f37f0(nEvent);
     }
@@ -310,7 +310,7 @@ MS2Ptr<AdditionalCli> AdditionalCliList::FUN_14096f820(const Unk_AdditionalOwner
         }
         if (FUN_1409735c0())
         {
-            CGuildManager::GetInstance()->FUN_1413bce40(sp->FUN_14096d2a0(), sp->FUN_14096d2c0());
+            CGuildManager::GetInstance()->FUN_1413bce40(sp->FUN_14096d2a0(), sp->GetLevel());
             int nEvent = 0xd;
             FUN_1419f37f0(nEvent);
         }
@@ -382,7 +382,7 @@ MS2Ptr<AdditionalCli> AdditionalCliList::FUN_14096fe60(unsigned nId, unsigned sh
             continue;
         if (sp->FUN_14096d2a0() != nId)
             continue;
-        if (nLevel && sp->FUN_14096d2c0() != nLevel)
+        if (nLevel && sp->GetLevel() != nLevel)
             continue;
         if (nCount && FUN_140975ed0(nCompare, nCount, sp->m_nOverlapCount) == 0)
             continue;
@@ -498,7 +498,7 @@ float AdditionalCliList::FUN_1409705d0()
 }
 
 // @0x140970700
-float AdditionalCliList::FUN_140970700()
+float AdditionalCliList::GetAlpha()
 {
     return m_fAlpha;
 }
@@ -572,7 +572,7 @@ int AdditionalCliList::FUN_140970a00()
 }
 
 // @0x140970a20
-bool AdditionalCliList::FUN_140970a20()
+bool AdditionalCliList::IsPvpOnOff()
 {
     return m_bPvpOnOff;
 }
@@ -590,19 +590,19 @@ int AdditionalCliList::FUN_140970a60(unsigned nSkillId)
 }
 
 // @0x140970ad0
-bool AdditionalCliList::FUN_140970ad0()
+bool AdditionalCliList::IsDisableRevivalHere()
 {
     return m_bDisableRevivalHere;
 }
 
 // @0x140970af0
-int AdditionalCliList::FUN_140970af0()
+int AdditionalCliList::GetInvincible()
 {
     return m_nInvincible;
 }
 
 // @0x140970b10
-int AdditionalCliList::FUN_140970b10()
+int AdditionalCliList::GetForceApplyTarget()
 {
     return m_nForceApplyTarget;
 }
@@ -672,7 +672,7 @@ int AdditionalCliList::FUN_140970c10(SkillAttackData* pAttack, int nPush)
 }
 
 // @0x140970d70
-bool AdditionalCliList::FUN_140970d70()
+bool AdditionalCliList::IsInfinitySP()
 {
     return m_bInfinitySP;
 }
@@ -687,7 +687,7 @@ unsigned AdditionalCliList::FUN_140970d90(unsigned nId, unsigned short nLevel)
             continue;
         if (sp->FUN_14096d2a0() != nId)
             continue;
-        if (nLevel && sp->FUN_14096d2c0() != nLevel)
+        if (nLevel && sp->GetLevel() != nLevel)
             continue;
         return sp->m_nOverlapCount;
     }
@@ -1011,7 +1011,7 @@ void AdditionalCliList::FUN_1409725f0(ATL::CAtlList<MS2Ptr<AdditionalCli> >& lis
 }
 
 // @0x140972690
-MS2Ptr<AdditionalCli> AdditionalCliList::FUN_140972690()
+MS2Ptr<AdditionalCli> AdditionalCliList::GetShield()
 {
     return m_spShield;
 }
@@ -1063,7 +1063,7 @@ void AdditionalCliList::FUN_1409728b0()
     for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos))
     {
         MS2Ptr<AdditionalCli> sp = list.GetAt(pos);
-        FUN_14096f500(sp->FUN_14096d260(), sp->m_nCasterId);
+        FUN_14096f500(sp->GetKey(), sp->m_nCasterId);
     }
 }
 
@@ -1258,7 +1258,7 @@ void AdditionalCliList::FUN_140973950(MS2Ptr<AdditionalCli> sp)
         {
             MS2Ptr<Unk_PCBaseComp_a98> spBalloon = m_pOwner->vfunc_84();
             if (spBalloon.get())
-                spBalloon->FUN_14128ecf0(sp->FUN_14096d260(), CString(sp->FUN_14096d810()->m_ui.m_strIcon),
+                spBalloon->FUN_14128ecf0(sp->GetKey(), CString(sp->FUN_14096d810()->m_ui.m_strIcon),
                                          sp->FUN_14096d2e0());
         }
     }
@@ -1273,22 +1273,22 @@ void AdditionalCliList::FUN_140973cc0(MS2Ptr<AdditionalCli> sp)
     {
         UIMainPlayerInfo* pInfo = FUN_140931900(20063);
         if (pInfo)
-            pInfo->FUN_1419f1180(sp->FUN_14096d260());
+            pInfo->FUN_1419f1180(sp->GetKey());
     }
     else if (FUN_140973680(sp))
     {
         UIUpperHpBar* pBar = Unk_AcFindUI<UIUpperHpBar>((eUIClassID)20029);
         if (pBar)
-            static_cast<Unk_AclUpperBar*>(pBar)->FUN_141b4d060(m_pOwner, sp->FUN_14096d260());
+            static_cast<Unk_AclUpperBar*>(pBar)->FUN_141b4d060(m_pOwner, sp->GetKey());
         UINpcDuelHPBarDialog* pDuel = Unk_AcFindUI<UINpcDuelHPBarDialog>((eUIClassID)20322);
         if (pDuel)
-            pDuel->FUN_140e6c640(sp->FUN_14096d260());
+            pDuel->FUN_140e6c640(sp->GetKey());
     }
     if (sp->FUN_14096d810()->m_ui.m_bIconBalloonOnOff)
     {
         MS2Ptr<Unk_PCBaseComp_a98> spBalloon = m_pOwner->vfunc_84();
         if (spBalloon.get())
-            spBalloon->FUN_14128edb0(sp->FUN_14096d260());
+            spBalloon->FUN_14128edb0(sp->GetKey());
     }
     if (sp->FUN_14096d810()->m_shield.m_fHpByTargetMaxHP > 0.0f || sp->FUN_14096d810()->m_shield.m_nHpValue > 0)
     {

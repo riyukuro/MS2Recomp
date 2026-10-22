@@ -158,7 +158,7 @@ void PortraitPC::vfunc_149()
             MS2Ptr<CEquipItem> spEquip = kEquips.GetAt(pos);
             if (spEquip.IsNull())
                 continue;
-            MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+            MS2Ptr<CItem> spItem = spEquip->GetItem();
             if (spItem.get() != 0)
             {
                 MS2Ptr<CItem> spCopy = FUN_140ccac60(spItem);

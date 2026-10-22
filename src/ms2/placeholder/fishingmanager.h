@@ -76,10 +76,10 @@ public:
     MS2Ptr<CFishCube> FUN_140cdbb10(unsigned nCell);        // the fishing cube of a grid cell
     int FUN_140cdbb90();                                    // no catch is pending
     int FUN_140cdbbd0(MS2Ptr<CItem> rod);                   // the player may use the rod
-    int FUN_140cdbdd0();                                    // m_nAutoCount
+    int GetAutoCount();                                    // m_nAutoCount
     void FUN_140cdbdf0(int nCount);                         // set m_nAutoCount, refresh the dialog
-    void FUN_140cdbe40(int nBait);                          // m_nBaitId = nBait
-    int FUN_140cdbe60();                                    // m_nBaitId
+    void SetBaitId(int nBait);                          // m_nBaitId = nBait
+    int GetBaitId();                                    // m_nBaitId
     int FUN_140cdbe80();                                    // the auto-fishing buff of the bait
     CStringW FUN_140cdc000(unsigned nSpotId);               // the spot's habitat / mastery text
     int FUN_140cdc280(unsigned nFishId);                    // the size grade of a caught fish

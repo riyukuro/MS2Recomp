@@ -30,7 +30,7 @@ Unk_WFTarget* FUN_1416a3ec0(unsigned __int64 p);
 char* FUN_1409a8b20();
 void* FUN_140af8310(char* p);
 void* FUN_1411d15b0(void* p);
-NiRenderer* FUN_140994450();   // NiRenderer::GetRenderer()
+NiRenderer* GetNiRenderer();   // NiRenderer::GetRenderer()
 NiRenderer* FUN_1414fd170(void* p);
 void FUN_1409a5770(void* obj, float* value, int n);
 extern char DAT_143ae5320;
@@ -214,7 +214,7 @@ void WorldFadeOutRenderStep::vfunc_19()
         Unk_WFTarget* a = FUN_1416a3ec0(m_70);
         if (a->vfunc_17() != 0) {
             void* h = FUN_1411d15b0(FUN_140af8310(FUN_1409a8b20() + 8));
-            NiRenderer* p = FUN_140994450();
+            NiRenderer* p = GetNiRenderer();
             NiRenderTargetGroup* q = p->GetDefaultRenderTargetGroup();
             int w = q->GetWidth(0);
             int ht = q->GetHeight(0);

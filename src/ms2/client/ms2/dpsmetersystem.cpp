@@ -1477,7 +1477,7 @@ const CStringW& FUN_141181540()
             MS2Ptr<CEquipItem> spEquip = equips.GetAt(pos);
             if (!spEquip.IsNull())
             {
-                MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+                MS2Ptr<CItem> spItem = spEquip->GetItem();
                 if (!spItem.IsNull())
                     s_str.AppendFormat(L"%s\r\n", (const wchar_t*)GetItemText(spItem.get()));
             }
@@ -1493,7 +1493,7 @@ const CStringW& FUN_141181540()
             MS2Ptr<CEquipItem> spEquip = skins.GetAt(posSkin);
             if (!spEquip.IsNull())
             {
-                MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+                MS2Ptr<CItem> spItem = spEquip->GetItem();
                 if (!spItem.IsNull())
                     s_str.AppendFormat(L"%s\r\n", (const wchar_t*)GetItemText(spItem.get()));
             }
@@ -1518,12 +1518,12 @@ __int64 CDPSMeterSystem::GetAverageWeaponAttack()
     MS2Ptr<CEquipItem> spLeft = static_cast<Unk_DpsPC*>(pMe)->FUN_141655c90(5);
     if (spRight.get() != 0 && spLeft.get() != 0)
     {
-        if (spLeft->FUN_1411dc7a0().IsNull())
+        if (spLeft->GetItem().IsNull())
             return 0;
-        if (spLeft->FUN_1411dc7a0()->FUN_1405278a0() == 0)
+        if (spLeft->GetItem()->FUN_1405278a0() == 0)
             return 0;
-        nMin = spLeft->FUN_1411dc7a0()->FUN_1405278a0()->FUN_14062ffb0(0x1b, 3, 5);
-        nMax = spLeft->FUN_1411dc7a0()->FUN_1405278a0()->FUN_14062ffb0(0x1c, 3, 5);
+        nMin = spLeft->GetItem()->FUN_1405278a0()->FUN_14062ffb0(0x1b, 3, 5);
+        nMax = spLeft->GetItem()->FUN_1405278a0()->FUN_14062ffb0(0x1c, 3, 5);
     }
     else
     {

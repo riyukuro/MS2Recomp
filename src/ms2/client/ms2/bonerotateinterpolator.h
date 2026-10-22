@@ -40,13 +40,13 @@ public:
     virtual bool AlwaysUpdate() const;                          // 0x140a32e50
 
     void FUN_140a32e90(bool bActive, unsigned int uiBlendMs);   // switch between animation (false) and look-at (true)
-    void FUN_140a32fb0(efd::Point3 kPos);                       // m_kEye
-    void FUN_140a32fe0(efd::Point3 kPos);                       // m_kBone
-    void FUN_140a33010(efd::Point3 kPos);                       // m_kEuler
-    void FUN_140a33060(float fValue);                           // m_fYawBias
-    void FUN_140a33090(float fValue);                           // m_fPitchBias
-    void FUN_140a330c0(bool bValue);                            // m_bSmooth
-    bool FUN_140a330e0() const;                                 // m_bSmooth
+    void SetKEye(efd::Point3 kPos);                       // m_kEye
+    void SetKBone(efd::Point3 kPos);                       // m_kBone
+    void SetKEuler(efd::Point3 kPos);                       // m_kEuler
+    void SetYawBias(float fValue);                           // m_fYawBias
+    void SetPitchBias(float fValue);                           // m_fPitchBias
+    void SetSmooth(bool bValue);                            // m_bSmooth
+    bool IsSmooth() const;                                 // m_bSmooth
     void FUN_140a33100();                                       // restore the local transform from the target's world one
 
     efd::Point3 m_kEye;                                         // +0x50 look-at start point
@@ -94,12 +94,12 @@ public:
     void FUN_140a35060();                                       // per-frame: switch the interpolator at the end of a look
     void FUN_140a35500(void* pArg);                             // per-frame: pick/advance actions
     int FUN_140a35780();                                        // a look is running
-    Unk_BrMode FUN_140a357c0();                                 // current action mode
+    Unk_BrMode GetCurrent();                                 // current action mode
     void FUN_140a357e0(float fValue);                           // interpolator pitch bias
     void FUN_140a35820(float fValue);                           // interpolator yaw bias
     void FUN_140a35860(bool bValue);                            // interpolator smooth flag
     bool FUN_140a358a0();                                       // interpolator smooth flag (false without one)
-    GameObject* FUN_140a358e0();                                // the owner
+    GameObject* GetOwner();                                // the owner
     void FUN_140a35900();                                       // drop the action pointers
 
     bool m_bEnabled;                                            // +0x18

@@ -261,7 +261,7 @@ public:
     Unk_StreamPoint FUN_141226d00();                                     // 0x141226d00 position property
     // @0x140967140 (inline; COMDAT in actionkeyobject.cpp's range)
     unsigned char FUN_140967140() { return m_bAlt; }
-    Unk_EntRef FUN_141226e60();                                   // 0x141226e60 copy of the entity handle
+    Unk_EntRef GetEnt();                                   // 0x141226e60 copy of the entity handle
     egf::EntityID FUN_141226eb0();                               // 0x141226eb0 the entity id (or 0)
     MS2Ptr<CBoxCollision> FUN_141226f90();                        // 0x141226f90 refresh the box pose, return it
     void FUN_141227100(int nSound);                               // 0x141227100
@@ -417,11 +417,11 @@ public:
     void FUN_14122c7b0(int nError);                               // 0x14122c7b0 error notice
     efd::SmartPointer<CubeSpawnObject> GetValue();                           // 0x14122cab0 (copy of the pet pointer)
     __int64 FUN_14122cb00();                                      // 0x14122cb00
-    unsigned short FUN_14122cb20();                               // 0x14122cb20
-    unsigned short FUN_14122cb40();                               // 0x14122cb40
+    unsigned short GetLevel();                               // 0x14122cb20
+    unsigned short GetMaxLevel();                               // 0x14122cb40
     unsigned FUN_14122cb60();                                     // 0x14122cb60
     __int64 FUN_14122cb80();                                      // 0x14122cb80
-    __int64 FUN_14122cba0();                                      // 0x14122cba0
+    __int64 GetTime();                                      // 0x14122cba0
     void FUN_14122cbc0(unsigned short nLevel, Unk_EntRef ent);    // 0x14122cbc0 spawn the pet
     void FUN_14122ce80(unsigned short nLevel);                    // 0x14122ce80 respawn on a level change
     int FUN_14122d190();                                          // 0x14122d190 is the timer over

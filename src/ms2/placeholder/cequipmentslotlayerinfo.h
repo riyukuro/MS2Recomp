@@ -13,7 +13,7 @@ class CEquipmentSlotLayerInfo : public CPtred
 public:
     CEquipmentSlotLayerInfo(int nKind);                     // 0x1411f6f10
     bool FUN_1411df700();                                   // expired
-    bool FUN_1411df810();                                   // active (m_bActive)
+    bool IsActive();                                   // active (m_bActive)
     int FUN_1411df830();                                    // state: 0 off, 1 active with an end, 2 no end, 3 expired, 4 not started
     unsigned FUN_1411df8e0();                               // the most days the period may span
     bool FUN_1411df7d0();                                   // the codi tab feature (kind 2, feature 0x8e) is on

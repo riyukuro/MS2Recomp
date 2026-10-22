@@ -41,7 +41,7 @@ public:
     virtual int vfunc_0(void* p);                       // ITooltip 0x14120c8c0 build the tooltip into p
 
     MS2Ptr<CItem> FUN_14120ce90(int nKind);             // the item of a set kind (the codi sets fall back to the other slot)
-    int FUN_14120d190();                                // m_nKind
+    int GetKind();                                // m_nKind
     int FUN_14120d1f0();                                // the pc is set and its flag is nonzero
     int FUN_14120d250(CItem* pItem);                    // can the item be put on (notice otherwise)
     int FUN_14120d2e0(CItem* pItem);                    // can the item be put on this slot (notice otherwise)

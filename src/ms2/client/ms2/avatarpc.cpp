@@ -490,9 +490,9 @@ AvatarPC* FUN_1409f3410(PC* pSource)
             FUN_141662d60(pAvatar, FUN_141662e90(pSource));
             AvatarPC* pSourceAvatar = FUN_1405a7e30(pSource);
             if (pSourceAvatar == 0)
-                pAvatar->FUN_1409f6280(0);
+                pAvatar->SetType(0);
             else
-                pAvatar->FUN_1409f6280(pSourceAvatar->FUN_1409f62a0());
+                pAvatar->SetType(pSourceAvatar->GetType());
             if (FUN_14107c5f0(nId, pSource, pAvatar) != 0)
                 return pAvatar;
         }
@@ -509,7 +509,7 @@ AvatarPC* FUN_1409f3570(unsigned nType)
         AvatarPC* pAvatar = new (efd::MemHint(efd::MemHint::NONE)) AvatarPC(0);
         if (pAvatar != 0)
         {
-            pAvatar->FUN_1409f6280(0);
+            pAvatar->SetType(0);
             unsigned nSex = FUN_141654700(pAvatar);
             if (FUN_14107c2d0(nId, nType, nSex, pAvatar) != 0)
                 return pAvatar;
@@ -537,7 +537,7 @@ AvatarPC* FUN_1409f3650(int nGender, int nPreset)
     if (pWorld->FUN_141bd0dd0(&kPos, &kDir) == 0)
         return 0;
     efd::SmartPointer<AvatarPC> spAvatar(new (efd::MemHint(efd::MemHint::NONE)) AvatarPC(0));
-    spAvatar->FUN_1409f6280(1);
+    spAvatar->SetType(1);
     FUN_14166ed30(spAvatar, 0);
     spAvatar->FUN_14123c5a0(FUN_1409f6ee0());
     FUN_141656a50(spAvatar, kUser.m_8);
@@ -614,7 +614,7 @@ AvatarPC* FUN_1409f3fd0(MS2Ptr<Unk_PCArg125> spSrc)
             FUN_141658ed0(pAvatar, 1);
             FUN_141662da0(pAvatar, 1);
         }
-        pAvatar->FUN_1409f6280(0);
+        pAvatar->SetType(0);
         if (FUN_14107c030(nId, MS2Ptr<Unk_PCArg125>(spSrc), pAvatar) != 0)
             return pAvatar;
     }
@@ -694,8 +694,8 @@ void AvatarPC::FUN_1409f4750(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
         return;
     if (m_spRidee)
     {
-        bool bChanged = m_spRidee->FUN_141085880() &&
-                        m_spRidee->FUN_141085880()->FUN_14053c510() != spData->FUN_14053c510();
+        bool bChanged = m_spRidee->GetItemData() &&
+                        m_spRidee->GetItemData()->FUN_14053c510() != spData->FUN_14053c510();
         m_spRidee->vfunc_58(MS2Ptr<CItemData>(spData), MS2Ptr<CItem>(spItem));
         if (!bChanged)
             return;
@@ -708,7 +708,7 @@ void AvatarPC::FUN_1409f4750(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
             pRidee->FUN_1409fa120(this);
             m_spRidee = pRidee;
             if (FUN_1403ed2d0()->FUN_141bbb1e0(pRidee, 0, 1) != 0)
-                pRidee->FUN_141085ab0(this);
+                pRidee->SetListener(this);
         }
     }
     vfunc_59(1, 0, 0, 0);
@@ -772,13 +772,13 @@ void AvatarPC::vfunc_147(UIModelView* pView)
 }
 
 // @0x1409f5040
-void AvatarPC::FUN_1409f5040(IAvatarObjectEventListener* p)
+void AvatarPC::SetListener(IAvatarObjectEventListener* p)
 {
     m_pListener = p;
 }
 
 // @0x1409f5070
-IAvatarObjectEventListener* AvatarPC::FUN_1409f5070()
+IAvatarObjectEventListener* AvatarPC::GetListener()
 {
     return m_pListener;
 }
@@ -943,7 +943,7 @@ void AvatarPC::vfunc_12()
 {
     FUN_1416566d0(1);
     ClonePC::vfunc_12();
-    if (FUN_1409f6560())
+    if (IsEnabled())
         vfunc_149();
     if (FUN_1409f7c90()->FUN_1409f7ea0() != 0)
         FUN_1403ed2d0()->FUN_141bca390(FUN_14123c580());
@@ -978,15 +978,15 @@ void AvatarPC::FUN_1409f5d20()
         return;
     if (FUN_141656750() == 0)
         return;
-    bool bEquip = FUN_1409f6560();
+    bool bEquip = IsEnabled();
     if (m_spRidee != 0)
     {
-        if (m_spRidee->FUN_1409fa170().get() != 0)
+        if (m_spRidee->GetRow().get() != 0)
             bTmp = true;
     }
     if (bTmp)
     {
-        int nNoEquip = m_spRidee->FUN_1409fa170()->m_nHidesEquip;
+        int nNoEquip = m_spRidee->GetRow()->m_nHidesEquip;
         if (nNoEquip != 0)
             bEquip = false;
     }
@@ -1038,13 +1038,13 @@ void AvatarPC::FUN_1409f5d20()
 }
 
 // @0x1409f6280
-void AvatarPC::FUN_1409f6280(int n)
+void AvatarPC::SetType(int n)
 {
     m_nType = n;
 }
 
 // @0x1409f62a0
-int AvatarPC::FUN_1409f62a0()
+int AvatarPC::GetType()
 {
     return m_nType;
 }
@@ -1089,19 +1089,19 @@ void AvatarPC::FUN_1409f64c0(MS2Ptr<CItem> spItem)
 }
 
 // @0x1409f6540
-void AvatarPC::FUN_1409f6540(bool b)
+void AvatarPC::SetEnabled(bool b)
 {
     m_bEnabled = b;
 }
 
 // @0x1409f6560
-bool AvatarPC::FUN_1409f6560()
+bool AvatarPC::IsEnabled()
 {
     return m_bEnabled;
 }
 
 // @0x1409f65a0
-bool AvatarPC::FUN_1409f65a0()
+bool AvatarPC::IsFishing()
 {
     return m_bFishing;
 }
@@ -1165,7 +1165,7 @@ void AvatarPC::FUN_1409f68e0(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return;
-    FUN_1409f6540(false);
+    SetEnabled(false);
     ::FUN_141661ba0(this, 0);
     ::FUN_14165cac0(this);
 }
@@ -1186,9 +1186,9 @@ void AvatarPC::FUN_1409f6950(MS2Ptr<CItem> spItem)
             return;
     }
     vfunc_59(1, 0, 0, 0);
-    FUN_1409f6540(true);
+    SetEnabled(true);
     vfunc_59(0x2d, new StateFishingData(nRod), 0, 0);
-    if (FUN_1409f65a0())
+    if (IsFishing())
     {
         efd::SmartPointer<CFishingGuideObject> spGuide(new (efd::MemHint(efd::MemHint::NONE)) CFishingGuideObject());
         efd::Point3 kStart;
@@ -1417,7 +1417,7 @@ AvatarRidee* FUN_1409f92d0(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
     AvatarRidee* pRidee = new (efd::MemHint(efd::MemHint::NONE)) AvatarRidee(MS2Ptr<CItemData>(spData));
     if (pRidee != 0)
     {
-        pRidee->FUN_141084cb0(MS2Ptr<CItem>(spItem));
+        pRidee->SetItem(MS2Ptr<CItem>(spItem));
         if (pRidee->FUN_1409faac0())
             return pRidee;
     }
@@ -1592,7 +1592,7 @@ void AvatarRidee::FUN_1409fa120(PCBase* pRider)
 }
 
 // @0x1409fa170
-Unk_RideePtr AvatarRidee::FUN_1409fa170()
+Unk_RideePtr AvatarRidee::GetRow()
 {
     return m_spRow;
 }

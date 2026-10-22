@@ -1531,7 +1531,7 @@ class Unk_CMISLog { public: unsigned __int64 FUN_140353fc0(int nLevel, int nCate
 Unk_CMISLog* FUN_140166440();
 struct Unk_CMISEntId { Unk_CMISEntId(const Unk_CMISEntId&); __int64 m_id; };
 void FUN_14115b260(CCubeMotionManager* pMgr, const Unk_CMISEntityRef* pId, float fFrom, float fTo, unsigned nMs);   // AddRotate
-CCubeMotionManager* FUN_1410af790();
+CCubeMotionManager* GetCubeMotionManager();
 struct Unk_CMISSlot;
 class Unk_CMISMagicCube { public: void FUN_141230df0(CString strKey); void FUN_141232330(int nKey, float fRot); Unk_CMISSlot FUN_141230f60(Unk_StreamPoint ptPos, float fRange, int nPc); };
 Unk_CMISMagicCube* FUN_1409670b0();
@@ -1593,7 +1593,7 @@ bool CubeMapInformationService::FUN_1410c2840(Unk_StreamPoint pt, float fDist)
         FUN_1409618c0(FUN_1408a9280(&spCube->entity), 0x68c7c29d, &kRot);
         spCube->fieldD4 = (int)fDist;
         Unk_CMISEntityRef kId(*FUN_1408b76f0(FUN_1408a9280(&spCube->entity)));
-        FUN_14115b260((CCubeMotionManager*)FUN_1410af790(), &kId, kRot.z, fDist, 200);
+        FUN_14115b260((CCubeMotionManager*)GetCubeMotionManager(), &kId, kRot.z, fDist, 200);
         FUN_1409670b0()->FUN_141232330(nKey, fDist);
         return true;
     }
@@ -5190,7 +5190,7 @@ efd::AsyncResult CubeMapInformationService::OnTick()
         FUN_1410ca170();
         t250.FUN_140868750(200);
     }
-    FUN_14115b540(FUN_1410af790());
+    FUN_14115b540(GetCubeMotionManager());
     FUN_1410c9db0();
     Unk_CMISIter<256> itEnt, itEntEnd;
     for (FUN_14114e860(&f30, &itEnt); FUN_140a16b10(&itEnt, FUN_1411524b0(&f30, &itEntEnd)); FUN_140a17010(&itEnt))
@@ -5281,8 +5281,8 @@ void CubeMapInformationService::FUN_1410c9710()
             FUN_1409618c0(pEnt, 0xfd95ca52, &ptEnt);
             float fStart = *FUN_1408b0470(&f218->floors, &f1e0);
             if (!FUN_140de8e30(strKind, "Stair") || ptEnt.z != fStart) {
-                FUN_14115b430(FUN_1410af790(), FUN_1408b76f0(pEnt));
-                FUN_14115b370(FUN_1410af790(), FUN_1408b76f0(pEnt), 1.0f, 0.0f, 200, false);
+                FUN_14115b430(GetCubeMotionManager(), FUN_1408b76f0(pEnt));
+                FUN_14115b370(GetCubeMotionManager(), FUN_1408b76f0(pEnt), 1.0f, 0.0f, 200, false);
             } else {
                 bool bOff = false;
                 FUN_14098c6e0(pEnt, 0xa0b6b179, &bOff);
@@ -5307,8 +5307,8 @@ void CubeMapInformationService::FUN_1410c9710()
             if (!FUN_140de8e30(strKind, "Stair") || ptEnt.z != fStart) {
                 bool bOn = true;
                 FUN_14098c6e0(pEnt, 0xa0b6b179, &bOn);
-                FUN_14115b430(FUN_1410af790(), FUN_1408b76f0(pEnt));
-                FUN_14115b370(FUN_1410af790(), FUN_1408b76f0(pEnt), 0.0f, 1.0f, 200, true);
+                FUN_14115b430(GetCubeMotionManager(), FUN_1408b76f0(pEnt));
+                FUN_14115b370(GetCubeMotionManager(), FUN_1408b76f0(pEnt), 0.0f, 1.0f, 200, true);
             } else {
                 bool bOn = true;
                 FUN_14098c6e0(pEnt, 0xa0b6b179, &bOn);

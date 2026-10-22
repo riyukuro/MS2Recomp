@@ -130,8 +130,8 @@ void UIMasteryObjectMark::FUN_140e59bb0(CInteractObject* pObject)
 {
     if (m_30.get() != 0)
     {
-        Unk_StreamPoint pt = pObject->FUN_1409673c0();
-        Scaleform::GFx::Value v = m_30->FUN_140e5bfe0("create", pObject->FUN_140967060(), pt.x, pt.y);
+        Unk_StreamPoint pt = pObject->GetPos();
+        Scaleform::GFx::Value v = m_30->FUN_140e5bfe0("create", pObject->GetName(), pt.x, pt.y);
         if (!FUN_1409b0390(&v))
         {
             ASGameEntity* pEntity = new ASGameEntity(v, m_28);
@@ -140,14 +140,14 @@ void UIMasteryObjectMark::FUN_140e59bb0(CInteractObject* pObject)
                 pEntity->vfunc_3(0);
                 MS2Ptr<EntityContext> spContext(new EntityContext);
                 spContext->m_spEntity.AssignRaw(pEntity);
-                m_nodes.SetAt(pObject->FUN_140967060(), spContext);
+                m_nodes.SetAt(pObject->GetName(), spContext);
             }
         }
     }
     else
     {
         MS2Ptr<EntityContext> spEmpty(0);
-        m_nodes.SetAt(pObject->FUN_140967060(), spEmpty);
+        m_nodes.SetAt(pObject->GetName(), spEmpty);
     }
 }   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
 
@@ -275,8 +275,8 @@ void UIMasteryObjectMark::FUN_140e5a600()
             continue;
         }
         Unk_StreamPoint ptScreen;
-        Unk_StreamPoint ptWorld = pGather->FUN_1409673c0().FUN_14097fd50(Unk_StreamPoint(0.0f, 0.0f, 200.0f));
-        float fDist = PlayerPos(pPC).FUN_140965c40(pGather->FUN_1409673c0()).FUN_140967ac0();
+        Unk_StreamPoint ptWorld = pGather->GetPos().FUN_14097fd50(Unk_StreamPoint(0.0f, 0.0f, 200.0f));
+        float fDist = PlayerPos(pPC).FUN_140965c40(pGather->GetPos()).FUN_140967ac0();
         if (!FUN_1409478c0()->FUN_140af0700(ptWorld, ptScreen) || 1000.0f < fDist)
         {
             spContext->m_spEntity->vfunc_3(0);
@@ -284,7 +284,7 @@ void UIMasteryObjectMark::FUN_140e5a600()
         else
         {
             ptScreen.FUN_140ad0c10(FUN_1422afec0(FUN_14025e7a0(), m_28));
-            ptScreen.y += FUN_1412762d0(pGather->FUN_1409673c0());
+            ptScreen.y += FUN_1412762d0(pGather->GetPos());
             ptScreen.x += FUN_1401d3200()->m_ddd0.FUN_140298f40();
             ptScreen.y += FUN_1401d3200()->m_de28.FUN_140298f40();
             spContext->m_spEntity->FUN_140e5bf20("setPosition", ptScreen.x, ptScreen.y);
@@ -293,7 +293,7 @@ void UIMasteryObjectMark::FUN_140e5a600()
                 nShow = 0;
             else
                 nShow = 1;
-            Unk_StreamPoint ptObject = pGather->FUN_1409673c0();
+            Unk_StreamPoint ptObject = pGather->GetPos();
             Unk_StreamPoint ptPlayer = PlayerPos(pPC);
             if (FUN_1408a1360(ptPlayer, ptObject) == 0)
                 nShow = 0;
@@ -411,8 +411,8 @@ void UIMasteryObjectMark::FUN_140e5b450(const CStringA& strKey)
 // @0x140e5b520
 int UIMasteryObjectMark::FUN_140e5b520(CInteractObject* pObject, EntityContext* pContext)
 {
-    int nChanged = FUN_140e5b720(pObject->FUN_140966e00()->m_gathering.m_nReceipeId, pContext);
-    CStringW strName = FUN_1401a9d70()->FUN_141811980(0xb, pObject->FUN_140967110());
+    int nChanged = FUN_140e5b720(pObject->GetRow()->m_gathering.m_nReceipeId, pContext);
+    CStringW strName = FUN_1401a9d70()->FUN_141811980(0xb, pObject->GetRowId());
     if (pContext->m_strObjName != strName)
     {
         pContext->m_strObjName = strName;

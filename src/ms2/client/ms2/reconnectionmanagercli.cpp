@@ -61,7 +61,7 @@ CReconnectionManagerCli::~CReconnectionManagerCli() {
 bool CReconnectionManagerCli::FUN_140aacf50(int error) {
     if (!(FUN_140aa6d30() != 0 && FUN_1417e2610(FUN_140aa6d30()) == 0x620000c)) return false;
     if (FUN_140714f90() == 0) return false;
-    if (FUN_140714f90()->FUN_1415392c0().FUN_1412675d0() != 0) return false;
+    if (FUN_140714f90()->FUN_1415392c0().GetDisconnect() != 0) return false;
     if (DAT_143af7d44 == 1) return false;
     if (DAT_143ab2910 == 1) return false;
     if (FUN_140aad0a0(0) == 0) return false;
@@ -301,8 +301,8 @@ void CReconnectionManagerCli::FUN_140aada20(CInPacket* packet) {
         m_context.m_18 = mode;
         m_context.m_20 = host;
         m_context.m_28 = port;
-        m_cli.m_host = FUN_140714f90()->FUN_1415392c0().FUN_141267630();
-        m_cli.m_port = FUN_140714f90()->FUN_1415392c0().FUN_141267680();
+        m_cli.m_host = FUN_140714f90()->FUN_1415392c0().GetHost();
+        m_cli.m_port = FUN_140714f90()->FUN_1415392c0().GetPort();
     }
         break;
     case 2: {

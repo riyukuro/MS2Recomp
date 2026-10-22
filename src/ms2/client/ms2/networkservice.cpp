@@ -456,7 +456,7 @@ void CNetworkService::FUN_141538570() { m_socket.FUN_1412672d0(); }
 // @0x1415385a0
 void CNetworkService::FUN_1415385a0() { m_socket.FUN_1412673c0(); }
 // @0x1415385d0
-int CNetworkService::FUN_1415385d0() { return m_socket.FUN_1412673f0(); }
+int CNetworkService::FUN_1415385d0() { return m_socket.GetSequence(); }
 // @0x141538600
 bool CNetworkService::FUN_141538600(CItem* item) {
     if(item==0) return false;

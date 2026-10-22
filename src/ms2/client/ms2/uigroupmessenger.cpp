@@ -667,7 +667,7 @@ void UIGroupMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& s
             __int64 nUid = _atoi64(pArgs->FUN_1422b8d30());
             if (FUN_141482e80()->m_pBrowser->m_items.Lookup(nUid, spItem))
             {
-                if (ItemPreviewMgr::GetInstance()->FUN_140d40670())
+                if (ItemPreviewMgr::GetInstance()->IsHudOn())
                     ItemPreviewMgr::GetInstance()->FUN_140d40120(spItem, 0);
             }
         }

@@ -165,7 +165,7 @@ public:
     __int64 FUN_140cd1980();                    // the uid of the item being dyed
     Unk_BSPartHandle FUN_140cd1a30();           // the part being edited
     unsigned FUN_140cd1b20();                   // what the item can customize (EditItems::GetFlags)
-    IItemCustomizeEventListener* FUN_140cd1bd0();   // the listener
+    IItemCustomizeEventListener* GetListener();   // the listener
     void FUN_140cd1bf0();                       // per frame
     bool FUN_140cd1c90(CItem* pItem);           // preview an item (false: not wearable)
     bool FUN_140cd1d50(int nItemId);            // preview an item id (false: not wearable)
@@ -199,10 +199,10 @@ public:
     int FUN_140cd33c0(int* pnColor, int nSlot);
     void FUN_140cd3480(int bApply, int nPalette);               // dye every added item with the palette
     void FUN_140cd3750(ItemMap& out);           // the added items
-    bool FUN_140cd3800();                       // m_bPreview
+    bool IsPreview();                       // m_bPreview
     void FUN_140cd3820();                       // forget the kept previews
-    unsigned FUN_140cd38b0();                    // m_nPalette
-    void FUN_140cd38d0(int nPalette);
+    unsigned GetPalette();                    // m_nPalette
+    void SetPalette(int nPalette);
     void FUN_140cd38f0(MS2Ptr<BeautyShopContext> spContext);
     MS2Ptr<BeautyShopContext> FUN_140cd3940();
     void FUN_140cd3990();                       // rebuild the equipment, keep the selection

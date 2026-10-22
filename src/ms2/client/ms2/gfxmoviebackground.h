@@ -69,8 +69,8 @@ public:
     virtual void vfunc_16();                                                // 16 0x14127afd0 onResize
     virtual void vfunc_39(int a, int b, int c, bool d, bool e);             // 39 0x14127b040 char event
 
-    MS2Ptr<AScript> FUN_14127aaf0();                                        // 0x14127aaf0 copy of the AS object
-    int FUN_14127ab40();                                                    // 0x14127ab40 loaded
+    MS2Ptr<AScript> GetScript();                                        // 0x14127aaf0 copy of the AS object
+    int IsLoaded();                                                    // 0x14127ab40 loaded
     bool FUN_14127ab60(CString strLabel);                                   // 0x14127ab60 bgGotoAndPlay
     bool FUN_14127ac70(CString strLabel);                                   // 0x14127ac70 bgGotoAndStop
     bool FUN_14127ad80();                                                   // 0x14127ad80 bgPlay

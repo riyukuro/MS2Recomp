@@ -167,7 +167,7 @@ inline void FUN_140cd3e50(PC* pPc)
         MS2Ptr<CEquipItem> spEquip = lstEquips.GetAt(pos);
         if (spEquip == 0)
             continue;
-        MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+        MS2Ptr<CItem> spItem = spEquip->GetItem();
         if (spItem == 0)
             continue;
         if (FUN_141421690(spItem.get()) == 0)
@@ -186,7 +186,7 @@ inline void FUN_140cd3fe0(PC* pPc, int bRemove)
         MS2Ptr<CEquipItem> spEquip = lstEquips.GetAt(pos);
         if (spEquip == 0)
             continue;
-        MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+        MS2Ptr<CItem> spItem = spEquip->GetItem();
         if (spItem == 0)
             continue;
         if (FUN_141421690(spItem.get()) == 0) {
@@ -211,7 +211,7 @@ inline void FUN_140cd4190(PC* pPc)
         MS2Ptr<CEquipItem> spEquip = lstEquips.GetAt(pos);
         if (spEquip == 0)
             continue;
-        MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+        MS2Ptr<CItem> spItem = spEquip->GetItem();
         if (spItem == 0)
             continue;
         if (FUN_141421690(spItem.get()) == 0)
@@ -262,7 +262,7 @@ Customize::BeautyShopContext::BeautyShopContext(int nEventId, __int64 n) : m_18(
 Customize::EditItems::EditItems(int nObjectId, Customize* pOwner)
     : m_nObjectId(nObjectId), m_spItem(0), m_spData(0), m_spController(0), m_pOwner(pOwner)
 {
-    m_pListener = m_pOwner ? m_pOwner->FUN_140cd1bd0() : 0;
+    m_pListener = m_pOwner ? m_pOwner->GetListener() : 0;
 }
 
 // @0x140ccaea0
@@ -361,8 +361,8 @@ void Customize::EditItems::Select(MS2Ptr<CEquipItem> spEquip)
         m_spController->Close();
         m_spController = 0;
     }
-    if (spEquip.get() && spEquip->FUN_1411dc7a0().get()) {
-        m_spItem = FUN_140cd4650(spEquip->FUN_1411dc7a0());
+    if (spEquip.get() && spEquip->GetItem().get()) {
+        m_spItem = FUN_140cd4650(spEquip->GetItem());
         m_spData = static_cast<CItemData*>(m_spItem->FUN_140527840());
         m_spController = FUN_1414131e0(spEquip, pPc, m_pListener);
     }
@@ -434,8 +434,8 @@ int Customize::EditItems::ApplyColor(int nIndex, int n)
     if (pPc == 0)
         return 0;
     int nPalette = m_spData->FUN_14053e260();
-    if (m_pOwner && m_pOwner->FUN_140cd38b0() > 0)
-        nPalette = m_pOwner->FUN_140cd38b0();
+    if (m_pOwner && m_pOwner->GetPalette() > 0)
+        nPalette = m_pOwner->GetPalette();
     MS2Ptr<ItemColorEx> spColor = FUN_140f022f0(nPalette, nIndex);
     if (spColor == 0)
         return 0;
@@ -454,8 +454,8 @@ int Customize::EditItems::ApplyPalette(int nPalette, int nIndex, int n)
     PC* pPc = GetPC();
     if (pPc == 0)
         return 0;
-    if (m_pOwner && m_pOwner->FUN_140cd38b0() > 0 && nPalette != FUN_140f02bc0())
-        nPalette = m_pOwner->FUN_140cd38b0();
+    if (m_pOwner && m_pOwner->GetPalette() > 0 && nPalette != FUN_140f02bc0())
+        nPalette = m_pOwner->GetPalette();
     MS2Ptr<ItemColorEx> spColor = FUN_140281980()->FUN_1405587f0(nPalette, nIndex);
     if (spColor == 0)
         return 0;
@@ -506,7 +506,7 @@ MS2_REPLACE_METHOD(0x140CCBD90, Customize::EditItems, GetPC, 50, 0x78C562D6);
 // @0x140ccbdd0
 Customize::CloneItems::CloneItems(int nObjectId, Customize* pOwner) : m_nObjectId(nObjectId), m_pOwner(pOwner)
 {
-    m_pListener = m_pOwner ? m_pOwner->FUN_140cd1bd0() : 0;
+    m_pListener = m_pOwner ? m_pOwner->GetListener() : 0;
     Init();
 }
 
@@ -614,8 +614,8 @@ void Customize::CloneItems::RestoreSlot(Unk_InventoryEquipSlot eSlot)
         }
     }
     MS2Ptr<CEquipItem> spEquip = pPc->FUN_141655e10(eSlot);
-    if (spEquip.get() && spEquip->FUN_1411dc7a0().get() && spEquip->FUN_1411dc7a0()->FUN_140527840())
-        pPc->vfunc_128(spEquip->FUN_1411dc7a0().get(), 1);
+    if (spEquip.get() && spEquip->GetItem().get() && spEquip->GetItem()->FUN_140527840())
+        pPc->vfunc_128(spEquip->GetItem().get(), 1);
 }
 
 // @0x140ccc860 previews an item on the slot; the paired slots (8/9 top and bottom, 4/5) follow a two-slot item
@@ -670,11 +670,11 @@ void Customize::CloneItems::Apply(MS2Ptr<CItem> spItem, Unk_InventoryEquipSlot e
             bEquip = bNewTwoSlot;
         if (eOther != 0) {
             MS2Ptr<CEquipItem> spEquip = pPc->FUN_141655e10(eOther);
-            bool bWorn = spEquip.get() && spEquip->FUN_1411dc7a0().get();
+            bool bWorn = spEquip.get() && spEquip->GetItem().get();
             if (bWorn) {
                 MS2Ptr<CItem> spOther(0);
                 if (m_mapSlots.Lookup(eOther, spOther)) {
-                    bEquip = spOther->FUN_140526a50() == spEquip->FUN_1411dc7a0()->FUN_140526a50();
+                    bEquip = spOther->FUN_140526a50() == spEquip->GetItem()->FUN_140526a50();
                 } else {
                     CItemData* pData = static_cast<CItemData*>(spEquip->FUN_1411dc7f0());
                     if (pData)
@@ -840,7 +840,7 @@ int Customize::CloneItems::GetAdded(ItemMap& out)
         MS2Ptr<CEquipItem> spEquip = lstEquips.GetAt(pos);
         if (spEquip == 0)
             continue;
-        MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+        MS2Ptr<CItem> spItem = spEquip->GetItem();
         if (spItem == 0)
             continue;
         MS2Ptr<CItem> spClone(0);
@@ -946,9 +946,9 @@ int Customize::CloneItems::GetAddedSlot(ItemMap& out, Unk_InventoryEquipSlot eSl
         return 0;
     if (IsAddedSlot(eSlot)) {
         MS2Ptr<CEquipItem> spEquip = pPc->FUN_141655e10(eSlot);
-        if (spEquip == 0 || spEquip->FUN_1411dc7a0() == 0)
+        if (spEquip == 0 || spEquip->GetItem() == 0)
             return 0;
-        MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+        MS2Ptr<CItem> spItem = spEquip->GetItem();
         out.SetAt(spItem->FUN_140526a50(), spItem);
         return 1;
     }
@@ -964,9 +964,9 @@ int Customize::CloneItems::GetModifiedSlot(ItemMap& out, Unk_InventoryEquipSlot 
         return 0;
     if (IsModifiedSlot(eSlot)) {
         MS2Ptr<CEquipItem> spEquip = pPc->FUN_141655e10(eSlot);
-        if (spEquip == 0 || spEquip->FUN_1411dc7a0() == 0)
+        if (spEquip == 0 || spEquip->GetItem() == 0)
             return 0;
-        MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+        MS2Ptr<CItem> spItem = spEquip->GetItem();
         out.SetAt(spItem->FUN_140526a50(), spItem);
         return 1;
     }
@@ -1001,7 +1001,7 @@ MS2Ptr<CItem> Customize::CloneItems::CreateItem(int nItemId)
         spItem->FUN_140526a70(FUN_14028d0e0());
         spItem->FUN_140526b30(FUN_14123c580(pPc));
         if (m_pOwner)
-            FUN_140cd46e0(spItem, m_pOwner->FUN_140cd3800());
+            FUN_140cd46e0(spItem, m_pOwner->IsPreview());
     }
     return spItem;
 }
@@ -1085,7 +1085,7 @@ int Customize::CloneItems::Init()
         MS2Ptr<CEquipItem> spEquip = lstEquips.GetAt(pos);
         if (spEquip == 0)
             continue;
-        MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+        MS2Ptr<CItem> spItem = spEquip->GetItem();
         if (spItem == 0)
             continue;
         MS2Ptr<CItem> spClone = FUN_140cd4650(spItem);
@@ -1107,7 +1107,7 @@ MS2_REPLACE_METHOD(0x140CCF010, Customize::CloneItems, Init, 692, 0x6087A53F);
 // @0x140ccf2d0
 Customize::Equipment::Equipment(int nObjectId, Customize* pOwner) : m_nObjectId(nObjectId), m_pOwner(pOwner)
 {
-    m_pListener = m_pOwner ? m_pOwner->FUN_140cd1bd0() : 0;
+    m_pListener = m_pOwner ? m_pOwner->GetListener() : 0;
     m_spEdit.AssignRaw(new EditItems(nObjectId, pOwner));
     m_spClone.AssignRaw(new CloneItems(nObjectId, pOwner));
 }
@@ -1285,7 +1285,7 @@ void Customize::Equipment::Equip(CItem* pItem)
     if (pPc == 0)
         return;
     if (m_pOwner)
-        FUN_140cd46e0(MS2Ptr<CItem>(pItem), m_pOwner->FUN_140cd3800());
+        FUN_140cd46e0(MS2Ptr<CItem>(pItem), m_pOwner->IsPreview());
     pPc->vfunc_127(pItem, 1);
 }
 MS2_REPLACE_METHOD(0x140CD03D0, Customize::Equipment, Equip, 277, 0xAE0BCC66);
@@ -1335,7 +1335,7 @@ void Customize::Equipment::UnequipId(int nItemId)
     MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(FUN_141420f10(spData.get(), pPc), pPc);
     if (spEquip == 0)
         return;
-    MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+    MS2Ptr<CItem> spItem = spEquip->GetItem();
     if (spItem == 0)
         return;
     pPc->vfunc_128(spItem.get(), 1);
@@ -1351,7 +1351,7 @@ void Customize::Equipment::UnequipUid(__int64 nUid)
     MS2Ptr<CEquipItem> spEquip = pPc->FUN_141655c30(nUid);
     if (spEquip == 0)
         return;
-    MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+    MS2Ptr<CItem> spItem = spEquip->GetItem();
     if (spItem == 0)
         return;
     pPc->vfunc_128(spItem.get(), 1);
@@ -1546,12 +1546,12 @@ void Customize::Equipment::ResetCapPosition(MS2Ptr<CItem> spItem)
         return;
     if (!static_cast<Unk_CustomizeItemData*>(pData)->FUN_14053ec70()->FUN_1405471b0())
         return;
-    CCapExtraData* pExtra = static_cast<CCapExtraData*>(static_cast<CPtred*>(spCap->FUN_1411dc7a0()->FUN_140527870()));
+    CCapExtraData* pExtra = static_cast<CCapExtraData*>(static_cast<CPtred*>(spCap->GetItem()->FUN_140527870()));
     if (pExtra == 0)
         return;
     pExtra->m_aPt[3] = DAT_143b01a60;
     pExtra->m_aPt[2] = DAT_143b01a60;
-    SendModified(spCap->FUN_1411dc7a0());
+    SendModified(spCap->GetItem());
 }
 
 // ---- Customize ----
@@ -1636,11 +1636,11 @@ unsigned Customize::FUN_140cd1b20()
 MS2_REPLACE_METHOD(0x140CD1B20, Customize, FUN_140cd1b20, 163, 0xD44E6561);
 
 // @0x140cd1bd0
-IItemCustomizeEventListener* Customize::FUN_140cd1bd0()
+IItemCustomizeEventListener* Customize::GetListener()
 {
     return m_pListener;
 }
-MS2_REPLACE_METHOD(0x140CD1BD0, Customize, FUN_140cd1bd0, 15, 0x7BFFD3E9);
+MS2_REPLACE_METHOD(0x140CD1BD0, Customize, GetListener, 15, 0x7BFFD3E9);
 
 // @0x140cd1bf0
 void Customize::FUN_140cd1bf0()
@@ -2089,11 +2089,11 @@ void Customize::FUN_140cd3750(ItemMap& out)
 MS2_REPLACE_METHOD(0x140CD3750, Customize, FUN_140cd3750, 162, 0x0EACAFFA);
 
 // @0x140cd3800
-bool Customize::FUN_140cd3800()
+bool Customize::IsPreview()
 {
     return m_bPreview;
 }
-MS2_REPLACE_METHOD(0x140CD3800, Customize, FUN_140cd3800, 15, 0x232B835D);
+MS2_REPLACE_METHOD(0x140CD3800, Customize, IsPreview, 15, 0x232B835D);
 
 // @0x140cd3820
 void Customize::FUN_140cd3820()
@@ -2107,18 +2107,18 @@ void Customize::FUN_140cd3820()
 }
 
 // @0x140cd38b0
-unsigned Customize::FUN_140cd38b0()
+unsigned Customize::GetPalette()
 {
     return m_nPalette;
 }
-MS2_REPLACE_METHOD(0x140CD38B0, Customize, FUN_140cd38b0, 14, 0x99EEE733);
+MS2_REPLACE_METHOD(0x140CD38B0, Customize, GetPalette, 14, 0x99EEE733);
 
 // @0x140cd38d0
-void Customize::FUN_140cd38d0(int nPalette)
+void Customize::SetPalette(int nPalette)
 {
     m_nPalette = nPalette;
 }
-MS2_REPLACE_METHOD(0x140CD38D0, Customize, FUN_140cd38d0, 22, 0xFE13C11F);
+MS2_REPLACE_METHOD(0x140CD38D0, Customize, SetPalette, 22, 0xFE13C11F);
 
 // @0x140cd38f0
 void Customize::FUN_140cd38f0(MS2Ptr<BeautyShopContext> spContext)

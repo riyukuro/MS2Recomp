@@ -135,7 +135,7 @@ int CEffectObject::FUN_140a53880(int nOwnerId, CString strModel, float fScale)
 {
     m_nOwnerId = nOwnerId;
     m_str88 = "GameObject";
-    FUN_14123c300(fScale);
+    SetScaleAC(fScale);
     FUN_14123bb80(FUN_140298360("urn:gamebryo-animation:", FUN_141b6ed00(strModel)));
     FUN_14123c5a0(FUN_140a53830());
     PCBase* pOwner = FUN_141bd1290(FUN_1403ed2d0(), m_nOwnerId);
@@ -224,7 +224,7 @@ void CEffectObject::vfunc_53(float f)
                 if (pState)
                     fScale = pState->FUN_1417e9380();
             }
-            FUN_14123c6f0()->FUN_14099e050(pOwner->FUN_14123c6f0()->FUN_140a53f90(), fScale, 0);
+            GetAnimMgr()->FUN_14099e050(pOwner->GetAnimMgr()->FUN_140a53f90(), fScale, 0);
         }
     }
 }

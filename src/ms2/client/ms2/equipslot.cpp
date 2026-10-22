@@ -324,7 +324,7 @@ MS2Ptr<CItem> EquipSlot::FUN_14120ce90(int nKind)
 }
 
 // @0x14120d190
-int EquipSlot::FUN_14120d190()
+int EquipSlot::GetKind()
 {
     return m_nKind;
 }

@@ -261,7 +261,7 @@ void UINpcPreviewDialog::vfunc_15()
     if (pActor == 0)
         return;
     std::vector<CString> names;
-    pActor->FUN_14123c6f0()->FUN_14099e800(&names);
+    pActor->GetAnimMgr()->FUN_14099e800(&names);
     if (names.size() == 0)
         return;
     m_bPending = 0;

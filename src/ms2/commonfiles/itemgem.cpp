@@ -376,7 +376,7 @@ int CGemTransparency::vfunc_7(PC* pPC, MS2Ptr<CItem> spItem)
         Unk_GemSlot nSlot = s_mapGemSlots.GetKeyAt(pos);
         MS2Ptr<CEquipItem> spEquip = FUN_1416561a0(pPC)->FUN_1411e1780(FUN_1405a46d0(nSlot), 3);
         if (spEquip != 0)
-            pPC->vfunc_128(spEquip->FUN_1411dc7a0().get(), 0);
+            pPC->vfunc_128(spEquip->GetItem().get(), 0);
     }
     return 1;
 }

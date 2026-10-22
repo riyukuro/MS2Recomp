@@ -71,7 +71,7 @@ class CEquipItem : public CPtred
 {
 public:
     Unk_PonyItem* FUN_1411dc7f0();                              // the item
-    MS2Ptr<CItem> FUN_1411dc7a0();                              // the item object holding the proxy data
+    MS2Ptr<CItem> GetItem();                              // the item object holding the proxy data
     int FUN_1411dc0d0();                                        // number of customizable parts
     void FUN_1411dcc80(CAtlArray<MS2Ptr<Unk_PickTarget> >& aParts);   // the item's model parts
     void FUN_1411dca30(int nSlot, CAtlArray<CString>& aParts);  // attach part names of an equip slot
@@ -312,7 +312,7 @@ void CPonyTailController::vfunc_5()
 {
     if (m_spEquipItem.get())
     {
-        Unk_UserProxyItemData* pData = ((CItem*)m_spEquipItem->FUN_1411dc7a0())->FUN_140527870();
+        Unk_UserProxyItemData* pData = ((CItem*)m_spEquipItem->GetItem())->FUN_140527870();
         if (pData)
             FUN_14059a1f0(pData, m_nValue);
     }
@@ -434,7 +434,7 @@ void CPonyTailController::vfunc_9(int nIndex)
     FUN_1416955b0(0, 1, &CPonyTailController::FUN_141695120, nIndex);
     m_nValue = nIndex;
     Unk_UserProxyItemData* pData;
-    Unk_UserProxyItemData* pCopy = pData = ((CItem*)m_spEquipItem->FUN_1411dc7a0())->FUN_140527870();
+    Unk_UserProxyItemData* pCopy = pData = ((CItem*)m_spEquipItem->GetItem())->FUN_140527870();
     if (pData)
         FUN_14059a1f0(pData, nIndex);
 }
@@ -667,7 +667,7 @@ void CPonyTailController::vfunc_33()
     if (m_spEquipItem.get())
     {
         Unk_UserProxyItemData* pData;
-        Unk_UserProxyItemData* pCopy = pData = ((CItem*)m_spEquipItem->FUN_1411dc7a0())->FUN_140527870();
+        Unk_UserProxyItemData* pCopy = pData = ((CItem*)m_spEquipItem->GetItem())->FUN_140527870();
         if (pData)
         {
             m_nValue = -1;
@@ -730,7 +730,7 @@ void CPonyTailController::FUN_141694650()
             FUN_1412021a0(m_kSecond.m_spModel.operator->(), &m_kSecond.m_kRest);
         }
     }
-    Unk_UserProxyItemData* pData = ((CItem*)m_spEquipItem->FUN_1411dc7a0())->FUN_140527870();
+    Unk_UserProxyItemData* pData = ((CItem*)m_spEquipItem->GetItem())->FUN_140527870();
     if (pData)
         m_nValue = FUN_14059a210(pData);
 }
@@ -928,7 +928,7 @@ void FUN_141695f10(Unk_PonyPlayer* pPlayer, Unk_PickTarget** ppFirst, Unk_PickTa
     MS2Ptr<CEquipItem> spItem = pPlayer->FUN_141655e10(1);
     if (spItem.IsNull())
         return;
-    if (spItem->FUN_1411dc7a0() == (CItem*)0)
+    if (spItem->GetItem() == (CItem*)0)
         return;
     CString strPart1;
     CString strPart2;

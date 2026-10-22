@@ -1004,7 +1004,7 @@ UIAvatarPC::UIAvatarPC(PC* pSource, bool bFlag)
     AvatarPC* pAvatar = FUN_1409f3410(pSource);
     if (pAvatar)
     {
-        pAvatar->FUN_1409f5040(this);
+        pAvatar->SetListener(this);
         m_nObjectId = pAvatar->FUN_14123c580();
         FUN_1418bd780(pSource, pAvatar);
     }
@@ -1018,7 +1018,7 @@ UIAvatarPC::UIAvatarPC(int nGender, bool bFlag)
     AvatarPC* pAvatar = FUN_1409f3650(nGender, 10000);
     if (pAvatar)
     {
-        pAvatar->FUN_1409f5040(this);
+        pAvatar->SetListener(this);
         m_nObjectId = pAvatar->FUN_14123c580();
         FUN_1418bd780(0, pAvatar);
     }
@@ -1032,7 +1032,7 @@ UIAvatarPC::UIAvatarPC(MS2Ptr<Unk_PCArg125> spSrc, bool bFlag)
     AvatarPC* pAvatar = FUN_1409f3fd0(spSrc);
     if (pAvatar)
     {
-        pAvatar->FUN_1409f5040(this);
+        pAvatar->SetListener(this);
         m_nObjectId = pAvatar->FUN_14123c580();
         FUN_1418bd780(0, pAvatar);
     }
@@ -1501,7 +1501,7 @@ void UIAvatarPC::FUN_1418bc790(int nState, int nParam)
         AvatarPC* pAvatar = FUN_1418bd1d0();
         if (pAvatar)
         {
-            int nMode = pAvatar->FUN_1409f62a0();
+            int nMode = pAvatar->GetType();
             if (nMode == 1)
                 FUN_1418bca60(nState, nParam);
             else
@@ -1797,7 +1797,7 @@ void UIAvatarPC::FUN_1418bd7f0(bool bEnabled)
     AvatarPC* pAvatar = FUN_1418bd1d0();
     if (pAvatar == 0)
         return;
-    pAvatar->FUN_1409f6540(bEnabled);
+    pAvatar->SetEnabled(bEnabled);
 }
 
 // @0x1418bd830
@@ -1846,7 +1846,7 @@ void UIAvatarCube::vfunc_1(IUIAvatarEventListener* pListener)
         if (FUN_1403ed2d0()->FUN_141bbb1e0(pCube, 0, 1))
         {
             m_nObjectId = pCube->FUN_14123c580();
-            pCube->FUN_141085ab0(this);
+            pCube->SetListener(this);
         }
     }
 }
@@ -1966,7 +1966,7 @@ void UIAvatarRidee::vfunc_1(IUIAvatarEventListener* pListener)
             if (FUN_1403ed2d0()->FUN_141bbb1e0(pRidee, 0, 1))
             {
                 m_nObjectId = pRidee->FUN_14123c580();
-                pRidee->FUN_141085ab0(this);
+                pRidee->SetListener(this);
             }
         }
     }
@@ -1980,7 +1980,7 @@ void UIAvatarRidee::vfunc_1(IUIAvatarEventListener* pListener)
                 if (FUN_1403ed2d0()->FUN_141bbb1e0(pRidee, 0, 1))
                 {
                     m_nObjectId = pRidee->FUN_14123c580();
-                    pRidee->FUN_141085ab0(this);
+                    pRidee->SetListener(this);
                 }
             }
         }
@@ -2119,7 +2119,7 @@ void UIAvatarPet::vfunc_1(IUIAvatarEventListener* pListener)
         if (FUN_1403ed2d0()->FUN_141bbb1e0(pPet, 0, 1))
         {
             m_nObjectId = pPet->FUN_14123c580();
-            pPet->FUN_141085ab0(this);
+            pPet->SetListener(this);
         }
     }
 }

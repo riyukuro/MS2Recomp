@@ -208,7 +208,7 @@ public:
         MS2Ptr<Unk_SkillMagicInfo> spInfo);                 // init (the info is by value: the callee destroys it)
     void FUN_1410a6520();                                   // release the control
     bool FUN_1410a65f0(int nSkill);                         // true when the target is out of range
-    bool FUN_1410a6730();                                   // +0xdd0 released
+    bool IsReleased();                                   // +0xdd0 released
     efd::Point3 FUN_1410a6750();                            // 12 bytes at +0xdb8
     float FUN_1410a6790();                                  // +0xdc8 (0 once released)
     float FUN_1410a67d0();                                  // +0xdcc

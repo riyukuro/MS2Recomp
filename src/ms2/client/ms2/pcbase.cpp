@@ -1184,7 +1184,7 @@ void PCBase::vfunc_52(double fTime)
 {
     if (GetClassID() != 0x6200016)
         FUN_14123c330(m_unk_748.FUN_1409705d0());
-    float fScale = FUN_14123c260() / FUN_14123c2e0();
+    float fScale = FUN_14123c260() / GetScaleAC();
     if (fScale != m_fScaleA8) {
         BOOL bDown = m_fScaleA8 - fScale > 0.0f ? FALSE : TRUE;
         float fStep = 3.0f * (float)fTime;
@@ -1198,7 +1198,7 @@ void PCBase::vfunc_52(double fTime)
         else if (fScale > m_fScaleA8) {
             fScale = m_fScaleA8;
         }
-        FUN_14123c280(fScale * FUN_14123c2e0());
+        FUN_14123c280(fScale * GetScaleAC());
     }
 }
 MS2_REPLACE_METHOD(0x14166c640, PCBase, vfunc_52, 392, 0xFE6B5ABE);

@@ -853,7 +853,7 @@ u64 FUN_140c20b50(void* a, u64 b);
 u64 FUN_1410dc0d0();
 u64 FUN_1410dc0e0();
 void FUN_1410dc0f0(void* p);
-CCubeMotionManager* FUN_1410af790();
+CCubeMotionManager* GetCubeMotionManager();
 void* FUN_1410dbe40(void*);
 void* FUN_1410dbee0(void*);
 
@@ -895,7 +895,7 @@ void FUN_14112de80(Unk_CMISVDel8* p) { delete p; }
 void FUN_14112ded0()
 {
     if (DAT_143acf6c8 != 0) {
-        delete FUN_1410af790();
+        delete GetCubeMotionManager();
         DAT_143acf6c8 = 0;
     }
 }
@@ -1062,7 +1062,7 @@ CCubeMotionManager* FUN_14112dd30()
 {
     if (DAT_143acf6c8 == 0)
         return new CCubeMotionManager;
-    return FUN_1410af790();
+    return GetCubeMotionManager();
 }
 
 // the lazily created async send queue: a 0x18-byte object whose implicit ctor runs a base ctor and a member ctor

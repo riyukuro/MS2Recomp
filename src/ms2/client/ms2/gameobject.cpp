@@ -487,18 +487,18 @@ void GameObject::FUN_14123c280(float f)
 MS2_REPLACE_METHOD(0x14123c280, GameObject, FUN_14123c280, 90, 0xCE9E2EE6);
 
 // @0x14123c2e0
-float GameObject::FUN_14123c2e0()
+float GameObject::GetScaleAC()
 {
     return m_fScaleAC;
 }
-MS2_REPLACE_METHOD(0x14123c2e0, GameObject, FUN_14123c2e0, 19, 0x80EB773C);
+MS2_REPLACE_METHOD(0x14123c2e0, GameObject, GetScaleAC, 19, 0x80EB773C);
 
 // @0x14123c300
-void GameObject::FUN_14123c300(float f)
+void GameObject::SetScaleAC(float f)
 {
     m_fScaleAC = f;
 }
-MS2_REPLACE_METHOD(0x14123c300, GameObject, FUN_14123c300, 31, 0x08E280B0);
+MS2_REPLACE_METHOD(0x14123c300, GameObject, SetScaleAC, 31, 0x08E280B0);
 
 // @0x14123c330
 void GameObject::FUN_14123c330(float f)
@@ -522,11 +522,11 @@ void GameObject::vfunc_22(const efd::Point3& kPos)
 MS2_REPLACE_METHOD(0x14123c3a0, GameObject, vfunc_22, 43, 0x831329CD);
 
 // @0x14123c3e0
-void GameObject::FUN_14123c3e0(const egf::EntityID& kId)
+void GameObject::SetKEntityID(const egf::EntityID& kId)
 {
     m_kEntityID = kId;
 }
-MS2_REPLACE_METHOD(0x14123c3e0, GameObject, FUN_14123c3e0, 41, 0x9FCDB103);
+MS2_REPLACE_METHOD(0x14123c3e0, GameObject, SetKEntityID, 41, 0x9FCDB103);
 
 // @0x14123c410
 egf::Entity* GameObject::FUN_14123c410()
@@ -611,7 +611,7 @@ void GameObject::FUN_14123c680(bool b)
 MS2_REPLACE_METHOD(0x14123c680, GameObject, FUN_14123c680, 102, 0x86FCEE12);
 
 // @0x14123c6f0
-MS2Ptr<CAnimationManager> GameObject::FUN_14123c6f0()
+MS2Ptr<CAnimationManager> GameObject::GetAnimMgr()
 {
     return m_spAnimMgr;
 }
@@ -1098,7 +1098,7 @@ MS2_REPLACE_METHOD(0x14123de70, GameObject, vfunc_51, 59, 0xEB312823);
 // @0x14123dec0
 void GameObject::vfunc_52(double fTime)
 {
-    float fScale = FUN_14123c260() / FUN_14123c2e0();
+    float fScale = FUN_14123c260() / GetScaleAC();
     if (fScale != m_fScaleA8)
     {
         int bShrink = m_fScaleA8 - fScale > 0.0f ? 0 : 1;
@@ -1115,7 +1115,7 @@ void GameObject::vfunc_52(double fTime)
         {
             fScale = m_fScaleA8;
         }
-        FUN_14123c280(fScale * FUN_14123c2e0());
+        FUN_14123c280(fScale * GetScaleAC());
     }
 }
 MS2_REPLACE_METHOD(0x14123dec0, GameObject, vfunc_52, 337, 0x99EC682A);

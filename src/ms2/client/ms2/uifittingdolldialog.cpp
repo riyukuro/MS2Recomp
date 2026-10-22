@@ -463,19 +463,19 @@ int UIFittingDollDialog::FUN_141934430()
         MS2Ptr<CEquipItem> spEquip = list.GetAt(pos);
         bool bSkip = false;
         {
-            MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+            MS2Ptr<CItem> spItem = spEquip->GetItem();
             if (spItem.get() != 0)
             {
-                MS2Ptr<CItem> spItemAgain = spEquip->FUN_1411dc7a0();
+                MS2Ptr<CItem> spItemAgain = spEquip->GetItem();
                 bSkip = reinterpret_cast<CItemData*>(spItemAgain->FUN_140527840())->FUN_14053d550();
             }
         }
         if (bSkip)
             continue;
-        int nResult = pDoll->FUN_14121c870(spEquip->FUN_1411dc7a0().get());
+        int nResult = pDoll->FUN_14121c870(spEquip->GetItem().get());
         if (nResult != 0)
             return nResult;
-        MS2Ptr<CItem> spBound = spEquip->FUN_1411dc7a0();
+        MS2Ptr<CItem> spBound = spEquip->GetItem();
         void* pTransfer = spBound->FUN_140527930();
         if (pTransfer != 0 && FUN_140635100(pTransfer) != 0 && FUN_140635120(pTransfer) == 0)
             bBound = true;
@@ -486,7 +486,7 @@ int UIFittingDollDialog::FUN_141934430()
     int nType = pDoll->FUN_14121c710();
     for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos))
     {
-        MS2Ptr<CItem> spItem = list.GetAt(pos)->FUN_1411dc7a0();
+        MS2Ptr<CItem> spItem = list.GetAt(pos)->GetItem();
         CItemData* pData = reinterpret_cast<CItemData*>(spItem->FUN_140527840());
         if (nType == 0)
         {
@@ -500,7 +500,7 @@ int UIFittingDollDialog::FUN_141934430()
         }
         if (spItem->FUN_1405258b0() == nType)
         {
-            int nResult = pDoll->FUN_14121c910(list.GetAt(pos)->FUN_1411dc7a0().get());
+            int nResult = pDoll->FUN_14121c910(list.GetAt(pos)->GetItem().get());
             if (nResult != 0)
                 return nResult;
         }

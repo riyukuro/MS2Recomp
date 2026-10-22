@@ -105,7 +105,7 @@ void StateJumpTo::vfunc_3(double fTime)
     else
     {
         m_spArc->FUN_1409ab3b0((float)fTime);
-        Unk_StreamPoint kPos = m_spArc->FUN_1409ab340();
+        Unk_StreamPoint kPos = m_spArc->GetPosition();
         m_pOwner->vfunc_19(*reinterpret_cast<efd::Point3*>(&kPos));
         if ((m_spJump.get() != 0 ? true : false) && m_spJump->m_n34 != 0)
         {
@@ -122,7 +122,7 @@ void StateJumpTo::vfunc_9(double fTime)
     int nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
     if (m_n10 == 0x28)
     {
-        if (m_spArc->FUN_1409ab320() != 0 && m_n48 == 0)
+        if (m_spArc->IsRising() != 0 && m_n48 == 0)
         {
             if (m_pOwner->FUN_14166de90(m_nRiseAnim, nSeq) == 0)
                 m_pOwner->FUN_14166dda0(m_nRiseAnim);

@@ -75,7 +75,7 @@ Unk_LsItemTable* FUN_1409c4b30();
 class Unk_LsHud
 {
 public:
-    int FUN_140a700b0();                                // the current page
+    int GetPage();                                // the current page
     unsigned char m_pad[0x198];
     int m_nPage;                                        // +0x198
 };
@@ -154,9 +154,9 @@ int LapenshardSlot::vfunc_18(void* p)
     LapenshardSlot* pFromSlot = FUN_140a6fef0(pFrom);
     if (pFromSlot == 0)
         return pFrom->vfunc_10();
-    if (pFromSlot->FUN_140a6f860() != 0)
+    if (pFromSlot->GetSlot() != 0)
         return pFromSlot->vfunc_10();
-    if (FUN_140a6f860() == 0)
+    if (GetSlot() == 0)
         return pFrom->vfunc_10();
     int nKind = FUN_140a6f880();
     if (nKind != pFromSlot->FUN_140a6f880())
@@ -171,7 +171,7 @@ int LapenshardSlot::vfunc_18(void* p)
         if ((unsigned short)pPc->vfunc_78() < nLevel)
             return pFrom->vfunc_10();
         int nItemId = spItem->FUN_1405276c0();
-        int nCurrent = pPc->FUN_14152f770((Unk_MyPCLapenSlot)FUN_140a6f860());
+        int nCurrent = pPc->FUN_14152f770((Unk_MyPCLapenSlot)GetSlot());
         if (pPc->FUN_14152f8b0(nItemId) != 0)
         {
             int nCurrentGroup = FUN_1409c4b30()->FUN_1405b59d0(nCurrent);
@@ -182,7 +182,7 @@ int LapenshardSlot::vfunc_18(void* p)
                 return pFrom->vfunc_10();
             }
         }
-        SendLapenshard(FUN_140a6f860(), spItem->FUN_140526a50());
+        SendLapenshard(GetSlot(), spItem->FUN_140526a50());
         FUN_141404930(spItem->FUN_140526a50());
         return pFrom->vfunc_10();
     }
@@ -198,7 +198,7 @@ int LapenshardSlot::vfunc_14()
     MS2Ptr<CItem> spItem = vfunc_25();
     if (!(spItem == 0))
     {
-        if (FUN_140a6f860() == 0)
+        if (GetSlot() == 0)
         {
             int nSlot = pPc->FUN_14152fd50(FUN_140a6f880());
             if (nSlot == 0)
@@ -226,7 +226,7 @@ int LapenshardSlot::vfunc_14()
             }
             if (pPc->FUN_14152f860(spItem->FUN_1405276c0()) == 0)
                 return 0;
-            int nPage = FUN_1409331f0()->FUN_140a700b0();
+            int nPage = FUN_1409331f0()->GetPage();
             FUN_14092fac0(spItem->FUN_140527840()->FUN_14053dc20(), 0, 0, nPage);
         }
         FUN_141404930(spItem->FUN_140526a50());
@@ -243,7 +243,7 @@ int LapenshardSlot::vfunc_20()
     if (spItem.get() != 0)
         FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"),
             spItem->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
-    if (FUN_140a6f860() == 0)
+    if (GetSlot() == 0)
     {
         int nKind = FUN_140a6f880();
         if (nKind == 0)
@@ -263,7 +263,7 @@ int LapenshardSlot::vfunc_21()
     if (spItem.get() != 0)
         FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"),
             spItem->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
-    if (FUN_140a6f860() == 0)
+    if (GetSlot() == 0)
     {
         int nKind = FUN_140a6f880();
         if (nKind == 0)
@@ -278,7 +278,7 @@ int LapenshardSlot::vfunc_21()
 // @0x140a6f570
 CStringW LapenshardSlot::vfunc_22()
 {
-    if (FUN_140a6f860() != 0)
+    if (GetSlot() != 0)
     {
         if (FUN_140a6f880() == 1)
             return FUN_14028de60(0x75a);
@@ -290,12 +290,12 @@ CStringW LapenshardSlot::vfunc_22()
 // @0x140a6f610
 MS2Ptr<CItem> LapenshardSlot::vfunc_25()
 {
-    if (FUN_140a6f860() != 0)
+    if (GetSlot() != 0)
     {
         MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pPc == 0)
             return MS2Ptr<CItem>(0);
-        int nItemId = pPc->FUN_14152f770((Unk_MyPCLapenSlot)FUN_140a6f860());
+        int nItemId = pPc->FUN_14152f770((Unk_MyPCLapenSlot)GetSlot());
         if (nItemId == 0)
             return MS2Ptr<CItem>(0);
         MS2Ptr<CItem> spItem(new CItem());
@@ -313,7 +313,7 @@ MS2Ptr<CItem> LapenshardSlot::vfunc_25()
 }
 
 // @0x140a6f860
-int LapenshardSlot::FUN_140a6f860()
+int LapenshardSlot::GetSlot()
 {
     return m_nSlot;
 }
@@ -324,7 +324,7 @@ int LapenshardSlot::FUN_140a6f880()
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
         return FUN_1409c4b30()->FUN_1405b5890(spItem->FUN_1405276c0());
-    return FUN_1409c4b30()->FUN_1405b5810(FUN_140a6f860());
+    return FUN_1409c4b30()->FUN_1405b5810(GetSlot());
 }
 
 // @0x140a6f940
@@ -351,7 +351,7 @@ int LapenshardSlot::vfunc_0(void* p)
     if (!(spItem == 0))
     {
         int nGrade = spItem->FUN_140526bd0();
-        if (FUN_140a6f860() != 0)
+        if (GetSlot() != 0)
             spItem->FUN_140526bf0(spItem->FUN_140527840()->FUN_14053c5a0());
         ASTooltip tip(pPc, 0x20, 2);
         int nOk = tip.FUN_1409e0d40(spItem.get());
@@ -375,7 +375,7 @@ int LapenshardSlot::vfunc_8(void* p)
         return 0;
     MS2Ptr<CItem> spItem = vfunc_25();
     unsigned nFlags = 0x49;
-    if (FUN_140a6f860() == 0)
+    if (GetSlot() == 0)
     {
         nFlags = 0x6d;
         if (m_nKind == 0)
@@ -395,7 +395,7 @@ int LapenshardSlot::vfunc_8(void* p)
             int nOk = slot.FUN_1409c3860(vfunc_25().get(), pPc, nFlags);
             if (nOk != 0)
             {
-                if (FUN_140a6f860() == 0)
+                if (GetSlot() == 0)
                 {
                     slot.FUN_1409c0d20(s_strItemCount, spItem->FUN_140526c50());
                     if (spItem->FUN_140526c50() == 0)
@@ -458,7 +458,7 @@ Unk_LsEquipRequest::Unk_LsEquipRequest()
 
 
 // @0x140a700b0
-int Unk_LsHud::FUN_140a700b0()
+int Unk_LsHud::GetPage()
 {
     return m_nPage;
 }

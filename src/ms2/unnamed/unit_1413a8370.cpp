@@ -240,7 +240,7 @@ int CGuideConditionEquipItem::vfunc_3()
         return FUN_1413a55a0(0);
     if (m_nItemID != 0 && spEquip->FUN_1411dc820() != (int)m_nItemID)
         return FUN_1413a55a0(0);
-    bool bNoItem = spEquip->FUN_1411dc7a0() == 0 || !spEquip->FUN_1411dc7a0()->FUN_140528980();
+    bool bNoItem = spEquip->GetItem() == 0 || !spEquip->GetItem()->FUN_140528980();
     if (bNoItem)
         return FUN_1413a55a0(0);
     if (m_nItemRangeBegin != 0 && (unsigned)spEquip->FUN_1411dc820() < m_nItemRangeBegin)

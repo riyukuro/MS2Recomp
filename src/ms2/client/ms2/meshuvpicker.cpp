@@ -38,7 +38,7 @@
 
 // ---- out-of-unit callees and globals (bound to the exe by their FUN_<va> / DAT_<va> names) ----
 
-NiRenderer* FUN_140994450();                                    // NiRenderer::GetRenderer
+NiRenderer* GetNiRenderer();                                    // NiRenderer::GetRenderer
 NiObject* FUN_14098d8d0(const NiRTTI* pRTTI, NiObject* p);      // NiObject::DynamicCast
 IDirect3DDevice9* FUN_140d89690(NiDX9Renderer* p);              // NiDX9Renderer::GetD3DDevice
 unsigned FUN_1411d7c70(NiDX9Renderer* p, bool (*pfnNotify)(bool, void*), void* pvData);   // AddResetNotificationFunc
@@ -182,7 +182,7 @@ void CMeshUVPicker::FUN_14147ec90(NiRenderObject* pMesh, CAtlArray<NiRenderObjec
     NiUInt32 uiGroup = NiSyncArgs::GetTaskGroupID(0x8030, 0x8040);
     spWorkflow->FlushTaskGroup(uiGroup, uiGroup);
 
-    NiRenderer* pRenderer = FUN_140994450();
+    NiRenderer* pRenderer = GetNiRenderer();
     NiRenderTargetGroup* pBackTarget = pRenderer->GetDefaultRenderTargetGroup();
     NiColorA kSavedColor;
     pRenderer->GetBackgroundColor(kSavedColor);
@@ -254,7 +254,7 @@ MS2_REPLACE_METHOD(0x14147EC90, CMeshUVPicker, FUN_14147ec90, 2260, 0x30E905BA);
 // MS2-FUNCTIONAL: stack cookie and the inlined smart pointer / D3D call sequence are laid out differently
 bool CMeshUVPicker::FUN_14147f570()
 {
-    NiRenderer* pRenderer = FUN_140994450();
+    NiRenderer* pRenderer = GetNiRenderer();
     NiDX9Renderer* pDX9 = (NiDX9Renderer*)FUN_14098d8d0(&NiDX9Renderer::ms_RTTI, pRenderer);
     if (pDX9 == NULL)
         return false;
@@ -336,7 +336,7 @@ MS2_REPLACE_METHOD(0x14147FA80, CMeshUVPicker, FUN_14147fa80, 287, 0x53A05DBE);
 // @0x14147fbb0
 void CMeshUVPicker::FUN_14147fbb0()
 {
-    NiDX9Renderer* pDX9 = (NiDX9Renderer*)FUN_14098d8d0(&NiDX9Renderer::ms_RTTI, FUN_140994450());
+    NiDX9Renderer* pDX9 = (NiDX9Renderer*)FUN_14098d8d0(&NiDX9Renderer::ms_RTTI, GetNiRenderer());
     if (m_18 != -1)
     {
         pDX9->RemoveResetNotificationFunc((unsigned)m_18);

@@ -271,7 +271,7 @@ int UIActionTooltip::FUN_1418b2140()
     MyPC* pPlayer = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 1;
-    if (FUN_140a7b810(pPlayer)->FUN_140953690() == 0)
+    if (FUN_140a7b810(pPlayer)->IsEnabled() == 0)
         return 1;
     switch (FUN_1418b23a0())
     {
@@ -312,7 +312,7 @@ int UIActionTooltip::FUN_1418b23a0()
     MyPC* pPlayer = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0x1e;
-    return FUN_140a7b810(pPlayer)->FUN_140953530();
+    return FUN_140a7b810(pPlayer)->GetCur();
 }
 
 // MS2-FUNCTIONAL: the exe dtor does not reset the vftables (source spelling unknown)

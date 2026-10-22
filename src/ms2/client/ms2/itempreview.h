@@ -30,12 +30,12 @@ public:
     int FUN_140d3bc30();                                    // 0x140d3bc30 the avatar's object id
     int FUN_140d3bc90(MS2Ptr<CItem> spItem);                // 0x140d3bc90 preview one item
     int FUN_140d3c3c0(std::vector<MS2Ptr<CItem> > items);   // 0x140d3c3c0 preview the items on the player's avatar
-    MS2Ptr<CItem> FUN_140d3c640();                          // 0x140d3c640 the shown item
+    MS2Ptr<CItem> GetPreview();                          // 0x140d3c640 the shown item
     void FUN_140d3c690(std::vector<MS2Ptr<CItem> >& items); // 0x140d3c690 copy of the shown items
-    MS2Ptr<CItem> FUN_140d3c710();                          // 0x140d3c710 the requested item
+    MS2Ptr<CItem> GetItem();                          // 0x140d3c710 the requested item
     MS2Ptr<CItem> FUN_140d3c760(MS2Ptr<CItem> spItem);      // 0x140d3c760 the item to show for an item
     MS2Ptr<CItemData> FUN_140d3ce10();                      // 0x140d3ce10 the item data shown
-    MS2Ptr<UIAvatarBase> FUN_140d3cf00();                   // 0x140d3cf00 the avatar
+    MS2Ptr<UIAvatarBase> GetAvatar();                   // 0x140d3cf00 the avatar
     void FUN_140d3cf50();                                   // 0x140d3cf50 put the shown item on the cube avatar
     void FUN_140d3d010();                                   // 0x140d3d010 zoom in
     void FUN_140d3d070();                                   // 0x140d3d070 zoom out
@@ -92,13 +92,13 @@ public:
     MS2Ptr<CItem> FUN_140d40470();                          // 0x140d40470 the shown item
     MS2Ptr<CItem> FUN_140d40500();                          // 0x140d40500 the requested item
     MS2Ptr<CItemData> FUN_140d40590();                      // 0x140d40590 the item data shown
-    MS2Ptr<ItemPreview> FUN_140d40620();                    // 0x140d40620 the preview
-    int FUN_140d40670();                                    // 0x140d40670 the HUD is shown
+    MS2Ptr<ItemPreview> GetPreview();                    // 0x140d40620 the preview
+    int IsHudOn();                                    // 0x140d40670 the HUD is shown
     void FUN_140d40690();                                   // 0x140d40690 toggle the HUD
     void FUN_140d406d0(int bOn);                            // 0x140d406d0 show / hide the gamepad HUD
     void FUN_140d407d0();                                   // 0x140d407d0 drop the preview
     void FUN_140d40800();                                   // 0x140d40800 put the shown item on the cube avatar
-    int FUN_140d40850();                                    // 0x140d40850 the argument of the open call
+    int GetArg();                                    // 0x140d40850 the argument of the open call
     void FUN_140d40870();                                   // 0x140d40870 zoom in
     void FUN_140d408c0();                                   // 0x140d408c0 zoom out
     void FUN_140d40910(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg, void* pUnused);  // 0x140d40910

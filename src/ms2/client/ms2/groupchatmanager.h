@@ -78,7 +78,7 @@ class CGroupChat : public CPtred {
 public:
     CGroupChat();
     virtual ~CGroupChat();
-    unsigned FUN_14137b260() const;                  // oid
+    unsigned GetOid() const;                  // oid
     int FUN_14137b280(CInPacket* packet);            // reads oid + members
     int FUN_14137b410(__int64 characterId);          // has a member with this id
     int FUN_14137b510(CStringW name);                // has a member with this name
