@@ -210,7 +210,7 @@ MS2_REPLACE_METHOD(0x140F19A80, BlackMarketPageMesoSearch, vfunc_7, 79, 0x44A78D
 // @0x140f19ae0
 void BlackMarketPageMesoSearch::FUN_140f19ae0(CInPacket& packet)
 {
-    int nType = packet.vfunc_o8_1();
+    int nType = packet.ReadUInt8();
     switch (nType)
     {
     case 7:
@@ -282,8 +282,8 @@ bool BlackMarketPageMesoSearch::SendMesoMarketMode8(int nResult, const CMsgBoxDa
     if (nResult == 0)
     {
         COutPacket packet(static_cast<int>(SendOp::MesoMarket));
-        packet.vfunc_o10_1(8);
-        packet.vfunc_o10_4(box.FUN_141a02ed0(0, 0));
+        packet.WriteUInt8(8);
+        packet.WriteInt64(box.FUN_141a02ed0(0, 0));
         FUN_140710590(packet);
     }
     return true;
@@ -405,9 +405,9 @@ MS2_REPLACE_METHOD(0x140F1AC40, BlackMarketPageMesoSearch, FUN_140f1ac40, 236, 0
 void BlackMarketPageMesoSearch::SendMesoMarketMode7(__int64 nBegin, __int64 nEnd)
 {
     COutPacket packet(static_cast<int>(SendOp::MesoMarket));
-    packet.vfunc_o10_1(7);
-    packet.vfunc_o10_4(nBegin);
-    packet.vfunc_o10_4(nEnd);
+    packet.WriteUInt8(7);
+    packet.WriteInt64(nBegin);
+    packet.WriteInt64(nEnd);
     FUN_140710590(packet);
     m_bSearched = true;
 }
@@ -526,7 +526,7 @@ MS2_REPLACE_METHOD_VIA(0x140F1C2D0, BlackMarketPageMesoRegister, UIStatusEventLi
 // @0x140f1c300
 void BlackMarketPageMesoRegister::FUN_140f1c300(CInPacket& packet)
 {
-    int nType = packet.vfunc_o8_1();
+    int nType = packet.ReadUInt8();
     switch (nType)
     {
     case 5:
@@ -618,9 +618,9 @@ bool BlackMarketPageMesoRegister::SendMesoMarketMode5(int nResult, const CMsgBox
     {
         FUN_140d74e50(7);
         COutPacket packet(static_cast<int>(SendOp::MesoMarket));
-        packet.vfunc_o10_1(5);
-        packet.vfunc_o10_4(box.FUN_141a02ed0(0, 0));
-        packet.vfunc_o10_4(box.FUN_141a02ed0(1, 0));
+        packet.WriteUInt8(5);
+        packet.WriteInt64(box.FUN_141a02ed0(0, 0));
+        packet.WriteInt64(box.FUN_141a02ed0(1, 0));
         FUN_140710590(packet);
     }
     return true;
@@ -633,8 +633,8 @@ bool BlackMarketPageMesoRegister::SendMesoMarketMode6(int nResult, const CMsgBox
     if (nResult == 0)
     {
         COutPacket packet(static_cast<int>(SendOp::MesoMarket));
-        packet.vfunc_o10_1(6);
-        packet.vfunc_o10_4(box.FUN_141a02ed0(0, 0));
+        packet.WriteUInt8(6);
+        packet.WriteInt64(box.FUN_141a02ed0(0, 0));
         FUN_140710590(packet);
     }
     return true;

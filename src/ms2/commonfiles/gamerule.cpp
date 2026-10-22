@@ -880,19 +880,19 @@ void CGameRule::FUN_140477820(COutputStream& out, int key)
     if (Unk_LockGuard guard = m_1e8) {} else
     {
         if (key == 0) {
-            out.vfunc_o10_1((unsigned char)m_218.GetCount());
+            out.WriteUInt8((unsigned char)m_218.GetCount());
             for (POSITION pos = m_218.GetStartPosition(); pos != NULL; m_218.GetNext(pos)) {
                 int k = m_218.GetKeyAt(pos);
                 int v = m_218.GetValueAt(pos);
-                out.vfunc_o10_3(k);
-                out.vfunc_o10_3(v);
+                out.WriteInt32(k);
+                out.WriteInt32(v);
             }
         }
         else {
             int v = FUN_1404776f0(key);
-            out.vfunc_o10_1(1);
-            out.vfunc_o10_3(key);
-            out.vfunc_o10_3(v);
+            out.WriteUInt8(1);
+            out.WriteInt32(key);
+            out.WriteInt32(v);
         }
     }
 }
@@ -903,10 +903,10 @@ void CGameRule::FUN_1404779b0(CInPacket& packet)
 {
     if (Unk_LockGuard guard = m_1e8) {} else
     {
-        int count = packet.vfunc_o8_1();
+        int count = packet.ReadUInt8();
         for (int i = 0; i < count; i++) {
-            int k = packet.vfunc_o8_3();
-            int v = packet.vfunc_o8_3();
+            int k = packet.ReadInt32();
+            int v = packet.ReadInt32();
             FUN_1404777a0(k, v);
         }
     }

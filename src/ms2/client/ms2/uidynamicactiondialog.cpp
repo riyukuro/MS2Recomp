@@ -411,10 +411,10 @@ int UIDynamicActionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         bool bFavorite = data.FUN_1422b8a90();
         it->second->m_favorite = bFavorite;
         COutPacket packet(static_cast<int>(SendOp::Emote), 0);
-        packet.vfunc_o10_1(4);
-        packet.vfunc_o10_3(nAction);
-        packet.vfunc_o10_3(nLevel);
-        packet.vfunc_o10_0(bFavorite);
+        packet.WriteUInt8(4);
+        packet.WriteInt32(nAction);
+        packet.WriteInt32(nLevel);
+        packet.WriteBool(bFavorite);
         FUN_140710590(packet);
         if (m_1b1)
             FUN_14192c6b0();

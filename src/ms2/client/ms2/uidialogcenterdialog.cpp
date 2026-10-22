@@ -282,11 +282,11 @@ void UIDialogCenterDialog::vfunc_79(void* p)
     UIDialog::vfunc_79(p);
     if (pPkt->FUN_14070fe80() == 0x87)
     {
-        unsigned char nKind = pPkt->vfunc_o8_1();
+        unsigned char nKind = pPkt->ReadUInt8();
         if (nKind == 10)
         {
-            CString strPath = pPkt->vfunc_o8_6();
-            int nDialogId = pPkt->vfunc_o8_3();
+            CString strPath = pPkt->ReadUnicodeStringA();
+            int nDialogId = pPkt->ReadInt32();
             strPath = strPath.MakeLower();
             Unk_CriticalSectionLock lock(m_lock, 1);
             MS2Ptr<TriggerDebugDialog> spDlg;
@@ -403,9 +403,9 @@ void UIDialogCenterDialog::FUN_141295cb0(const Scaleform::GFx::FunctionHandler::
         spDlg.get()->Create(0xa7, CWnd::FromHandle(FUN_14209c720(FUN_140aadf80())));
         m_triggers.SetAt(strPath, spDlg);
         COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
-        pkt.vfunc_o10_1(9);
-        pkt.vfunc_o10_6(strPath);
-        pkt.vfunc_o10_0(true);
+        pkt.WriteUInt8(9);
+        pkt.WriteUnicodeStringA(strPath);
+        pkt.WriteBool(true);
         FUN_140710590(pkt);
     }
 }
@@ -416,9 +416,9 @@ void UIDialogCenterDialog::SendSetDebugModeMode9(CString strPath)
     Unk_CriticalSectionLock lock(m_lock, 1);
     m_triggers.RemoveKey(strPath);
     COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
-    pkt.vfunc_o10_1(9);
-    pkt.vfunc_o10_6(strPath);
-    pkt.vfunc_o10_0(false);
+    pkt.WriteUInt8(9);
+    pkt.WriteUnicodeStringA(strPath);
+    pkt.WriteBool(false);
     FUN_140710590(pkt);
 }
 

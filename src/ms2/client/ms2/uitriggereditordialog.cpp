@@ -209,8 +209,8 @@ void UITriggerEditorDialog::vfunc_67()
 {
     m_bFolded = 0;
     COutPacket packet(static_cast<int>(SendOp::FunctionCube), 0);
-    packet.vfunc_o10_1(7);
-    packet.vfunc_o10_6(m_strCube);
+    packet.WriteUInt8(7);
+    packet.WriteUnicodeStringA(m_strCube);
     FUN_140710590(packet);
     UIDialog::vfunc_67();
 }
@@ -318,8 +318,8 @@ void UITriggerEditorDialog::OnLoadComplete()
     if (m_nCubeId != 0)
     {
         COutPacket packet(static_cast<int>(SendOp::Trigger), 0);
-        packet.vfunc_o10_1(0xb);
-        packet.vfunc_o10_3(m_nCubeId);
+        packet.WriteUInt8(0xb);
+        packet.WriteInt32(m_nCubeId);
         FUN_140710590(packet);
     }
     if (FUN_140bc6d10("m_newStateButton", m_spButton1).get())
@@ -368,8 +368,8 @@ bool UITriggerEditorDialog::SendTriggerMode22(int nResult, const CMsgBoxData& da
     if (nResult == 0)
     {
         COutPacket packet(static_cast<int>(SendOp::Trigger), 0);
-        packet.vfunc_o10_1(0x16);
-        packet.vfunc_o10_3(m_nCubeId);
+        packet.WriteUInt8(0x16);
+        packet.WriteInt32(m_nCubeId);
         FUN_140710590(packet);
     }
     return 1;
@@ -710,9 +710,9 @@ void UITriggerEditorDialog::SendTriggerMode13()
     if (strXml.GetAllocLength() < 10000)
     {
         COutPacket packet(static_cast<int>(SendOp::Trigger), 0);
-        packet.vfunc_o10_1(0xd);
-        packet.vfunc_o10_3(m_nCubeId);
-        packet.vfunc_o10_7(FUN_140390ea0((const wchar_t*)strXml, 0));
+        packet.WriteUInt8(0xd);
+        packet.WriteInt32(m_nCubeId);
+        packet.WriteString(FUN_140390ea0((const wchar_t*)strXml, 0));
         FUN_140710590(packet);
     }
     else

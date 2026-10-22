@@ -443,8 +443,8 @@ MS2_REPLACE_METHOD(0x140F6C8D0, ItemSocketSystemPageBase, vfunc_7, 76, 0xBED2B8D
 // MS2-FUNCTIONAL: equivalent packet decoding and localized errors; formatter and temporary layout differ.
 void ItemSocketSystemPageBase::vfunc_8(CInPacket* packet)
 {
-    int operation = packet->vfunc_o8_1();
-    Unk_SocketPageResult result = static_cast<Unk_SocketPageResult>(packet->vfunc_o8_3());
+    int operation = packet->ReadUInt8();
+    Unk_SocketPageResult result = static_cast<Unk_SocketPageResult>(packet->ReadInt32());
     int code = static_cast<int>(result);
     if (code < 5 || code > 12) {
         CStringW key;
@@ -922,7 +922,7 @@ void ItemSocketSystemPageGemStoneManage::vfunc_2()
 void ItemSocketSystemPageGemStoneManage::vfunc_5(CInPacket* packet)
 {
     ItemSocketSystemPageBase::vfunc_5(packet);
-    int operation = packet->vfunc_o8_1();
+    int operation = packet->ReadUInt8();
     FUN_140f6d620(1);
     if (operation == 9)
         FUN_140f72460(packet);
@@ -1562,7 +1562,7 @@ void ItemSocketSystemPageGemStoneUpgrade::vfunc_2()
 void ItemSocketSystemPageGemStoneUpgrade::vfunc_5(CInPacket* packet)
 {
     ItemSocketSystemPageBase::vfunc_5(packet);
-    int operation = packet->vfunc_o8_1();
+    int operation = packet->ReadUInt8();
     FUN_140f6d620(1);
     if (operation == 7)
         FUN_140f78720(packet);

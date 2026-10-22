@@ -45,14 +45,14 @@ bool GameEventVariable::Key::operator==(const Key& other) const
 // @0x14041f050
 void GameEventVariable::Key::Write(COutputStream* stream)
 {
-    stream->vfunc_o10_3(m_type);
-    stream->vfunc_o10_3(m_id);
+    stream->WriteInt32(m_type);
+    stream->WriteInt32(m_id);
 }
 // @0x14041f0a0
 void GameEventVariable::Key::Read(CInPacket& packet)
 {
-    m_type = packet.vfunc_o8_3();
-    m_id = packet.vfunc_o8_3();
+    m_type = packet.ReadInt32();
+    m_id = packet.ReadInt32();
 }
 
 // ---- GameEventVariable ----
@@ -72,15 +72,15 @@ int GameEventVariable::GetType() { return m_key.m_type; }
 void GameEventVariable::Write(COutputStream* stream)
 {
     m_key.Write(stream);
-    stream->vfunc_o10_8(m_value);
-    stream->vfunc_o10_4(m_time.Get());
+    stream->WriteUnicodeString(m_value);
+    stream->WriteInt64(m_time.Get());
 }
 // @0x14041f300
 void GameEventVariable::Read(CInPacket& packet)
 {
     m_key.Read(packet);
-    m_value = packet.vfunc_o8_8();
-    m_time = CMsTime(packet.vfunc_o8_4());
+    m_value = packet.ReadUnicodeString();
+    m_time = CMsTime(packet.ReadInt64());
 }
 // @0x14041f3e0
 void GameEventVariable::SetValue(const CStringW& value)
@@ -134,7 +134,7 @@ void GameEventUserValue::Clear() { m_variables.RemoveAll(); }
 // @0x14041f710
 void GameEventUserValue::Write(COutputStream* stream)
 {
-    stream->vfunc_o10_3((int)m_variables.GetCount());
+    stream->WriteInt32((int)m_variables.GetCount());
     for (POSITION pos = m_variables.GetHeadPosition(); pos != NULL; m_variables.GetNext(pos))
     {
         VariablePtr& variable = m_variables.GetValueAt(pos);
@@ -146,7 +146,7 @@ void GameEventUserValue::Write(COutputStream* stream)
 void GameEventUserValue::Read(CInPacket& packet)
 {
     Clear();
-    unsigned int count = packet.vfunc_o8_3();
+    unsigned int count = packet.ReadInt32();
     for (unsigned int i = 0; i < count; ++i)
         ReadVariable(packet);
 }

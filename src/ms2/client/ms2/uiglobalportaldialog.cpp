@@ -202,7 +202,7 @@ void UIGlobalPortalDialog::FUN_1412c2980()
 // @0x1412c3020
 void UIGlobalPortalDialog::FUN_1412c3020(CInPacket& packet)
 {
-    switch (packet.vfunc_o8_1())
+    switch (packet.ReadUInt8())
     {
     case 0:
         FUN_1412c32a0(packet);
@@ -224,9 +224,9 @@ void UIGlobalPortalDialog::SendGlobalPortal(const Scaleform::GFx::FunctionHandle
 {
     int nButton = FUN_140bd09c0(((Unk_GpParams*)&params)->m_pButton);
     COutPacket packet(static_cast<int>(SendOp::GlobalPortal), 0);
-    packet.vfunc_o10_1(2);
-    packet.vfunc_o10_3(m_nEventId);
-    packet.vfunc_o10_3(nButton);
+    packet.WriteUInt8(2);
+    packet.WriteInt32(m_nEventId);
+    packet.WriteInt32(nButton);
     FUN_140710590(packet);
 }
 
@@ -241,13 +241,13 @@ void UIGlobalPortalDialog::FUN_1412c3240(CInPacket& packet)
 // @0x1412c32a0
 void UIGlobalPortalDialog::FUN_1412c32a0(CInPacket& packet)
 {
-    m_nEventId = packet.vfunc_o8_3();
-    m_nParam = packet.vfunc_o8_3();
-    m_strText = GetStringCommonByKey(packet.vfunc_o8_8());
-    m_strSound = packet.vfunc_o8_8();
-    m_strCaption1 = packet.vfunc_o8_8();
-    m_strCaption2 = packet.vfunc_o8_8();
-    m_strCaption3 = packet.vfunc_o8_8();
+    m_nEventId = packet.ReadInt32();
+    m_nParam = packet.ReadInt32();
+    m_strText = GetStringCommonByKey(packet.ReadUnicodeString());
+    m_strSound = packet.ReadUnicodeString();
+    m_strCaption1 = packet.ReadUnicodeString();
+    m_strCaption2 = packet.ReadUnicodeString();
+    m_strCaption3 = packet.ReadUnicodeString();
     if (m_nEventId == m_nShownEventId && m_nParam == m_nShownParam)
         return;
     m_nShownEventId = 0;

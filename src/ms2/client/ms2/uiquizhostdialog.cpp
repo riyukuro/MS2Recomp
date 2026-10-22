@@ -152,9 +152,9 @@ void FUN_140e7e160(UIQuizHostDialog* pDialog, const CStringW& strQuestion)
     if (strText.GetLength() == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
-    packet.vfunc_o10_1(10);
-    packet.vfunc_o10_1(10);
-    packet.vfunc_o10_8(strText);
+    packet.WriteUInt8(10);
+    packet.WriteUInt8(10);
+    packet.WriteUnicodeString(strText);
     FUN_140710590(packet);
 }
 

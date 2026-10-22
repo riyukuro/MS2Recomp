@@ -205,7 +205,7 @@ void UIItemSocketScrollDialog::vfunc_67()
 // @0x140f64a20
 void UIItemSocketScrollDialog::FUN_140f64a20(CInPacket& packet)
 {
-    switch (packet.vfunc_o8_1())
+    switch (packet.ReadUInt8())
     {
     case 0:
         FUN_140f67170(packet);
@@ -545,7 +545,7 @@ void UIItemSocketScrollDialog::SendItemSocketScroll(__int64 nTargetUid)
     pair.m_nSecond = m_nScrollUid;
     pair.m_nFirst = nTargetUid;
     COutPacket packet(static_cast<int>(SendOp::ItemSocketScroll), 0);
-    packet.vfunc_o10_1(1);
+    packet.WriteUInt8(1);
     FUN_14062a040(pair, packet);
     FUN_140710590(packet);
 }
@@ -592,8 +592,8 @@ void UIItemSocketScrollDialog::FUN_140f672a0(CInPacket& packet)
 // @0x140f67650
 void UIItemSocketScrollDialog::FUN_140f67650(CInPacket& packet)
 {
-    int nType = packet.vfunc_o8_1();
-    int nCode = packet.vfunc_o8_3();
+    int nType = packet.ReadUInt8();
+    int nCode = packet.ReadInt32();
     if (nCode == 0)
         return;
     if (nCode > 0)

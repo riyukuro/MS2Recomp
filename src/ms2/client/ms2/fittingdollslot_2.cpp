@@ -347,9 +347,9 @@ int FittingDollSlot::FUN_14121ddc0()
     if (nResult == 0)
     {
         COutPacket packet(static_cast<int>(SendOp::FittingDoll), 0);
-        packet.vfunc_o10_1(7);
-        packet.vfunc_o10_4(m_nDollId);
-        packet.vfunc_o10_1((char)m_nSlot);
+        packet.WriteUInt8(7);
+        packet.WriteInt64(m_nDollId);
+        packet.WriteUInt8((char)m_nSlot);
         FUN_140710590(packet);
     }
     else

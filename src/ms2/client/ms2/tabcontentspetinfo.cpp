@@ -764,7 +764,7 @@ bool PetInfoBasic::SendRequestPet(int nResult, const CMsgBoxData& box)
         CStringW strName = FUN_1401fedc0();
         strName = box.FUN_141a02fd0(0, CStringW());
         COutPacket packet(static_cast<int>(SendOp::RequestPet), 0);
-        packet.vfunc_o10_1(4);
+        packet.WriteUInt8(4);
         FUN_1401fee50(strName, packet);
         FUN_140710590(packet);
     }

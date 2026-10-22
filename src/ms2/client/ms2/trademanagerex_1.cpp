@@ -248,8 +248,8 @@ CTradeManagerEx::~CTradeManagerEx()
 void CTradeManagerEx::SendTradeMode0(__int64 uid)
 {
     COutPacket packet(static_cast<int>(SendOp::Trade), 0);
-    packet.vfunc_o10_1(0);
-    packet.vfunc_o10_4(uid);
+    packet.WriteUInt8(0);
+    packet.WriteInt64(uid);
     FUN_140710590(packet);
 }
 
@@ -257,8 +257,8 @@ void CTradeManagerEx::SendTradeMode0(__int64 uid)
 void CTradeManagerEx::FUN_14185b8e0(__int64 uid, int bAccept)
 {
     COutPacket packet(static_cast<int>(SendOp::Trade), 0);
-    packet.vfunc_o10_1(bAccept ? 3 : 4);
-    packet.vfunc_o10_4(uid);
+    packet.WriteUInt8(bAccept ? 3 : 4);
+    packet.WriteInt64(uid);
     FUN_140710590(packet);
 }
 
@@ -266,7 +266,7 @@ void CTradeManagerEx::FUN_14185b8e0(__int64 uid, int bAccept)
 void CTradeManagerEx::SendTradeMode7()
 {
     COutPacket packet(static_cast<int>(SendOp::Trade), 0);
-    packet.vfunc_o10_1(7);
+    packet.WriteUInt8(7);
     FUN_140710590(packet);
 }
 
@@ -274,10 +274,10 @@ void CTradeManagerEx::SendTradeMode7()
 void CTradeManagerEx::SendTradeMode8(__int64 uid, int a, int b)
 {
     COutPacket packet(static_cast<int>(SendOp::Trade), 0);
-    packet.vfunc_o10_1(8);
-    packet.vfunc_o10_4(uid);
-    packet.vfunc_o10_3(a);
-    packet.vfunc_o10_3(b);
+    packet.WriteUInt8(8);
+    packet.WriteInt64(uid);
+    packet.WriteInt32(a);
+    packet.WriteInt32(b);
     FUN_140710590(packet);
 }
 
@@ -285,9 +285,9 @@ void CTradeManagerEx::SendTradeMode8(__int64 uid, int a, int b)
 void CTradeManagerEx::SendTradeMode9(__int64 uid, int nSlot)
 {
     COutPacket packet(static_cast<int>(SendOp::Trade), 0);
-    packet.vfunc_o10_1(9);
-    packet.vfunc_o10_4(uid);
-    packet.vfunc_o10_3(nSlot);
+    packet.WriteUInt8(9);
+    packet.WriteInt64(uid);
+    packet.WriteInt32(nSlot);
     FUN_140710590(packet);
 }
 
@@ -297,8 +297,8 @@ void CTradeManagerEx::SendTradeMode10(__int64 uid)
     if (uid == m_uidLastSent)
         return;
     COutPacket packet(static_cast<int>(SendOp::Trade), 0);
-    packet.vfunc_o10_1(10);
-    packet.vfunc_o10_4(uid);
+    packet.WriteUInt8(10);
+    packet.WriteInt64(uid);
     FUN_140710590(packet);
     m_uidLastSent = uid;
 }
@@ -307,7 +307,7 @@ void CTradeManagerEx::SendTradeMode10(__int64 uid)
 void CTradeManagerEx::SendTradeMode11()
 {
     COutPacket packet(static_cast<int>(SendOp::Trade), 0);
-    packet.vfunc_o10_1(0xb);
+    packet.WriteUInt8(0xb);
     FUN_140710590(packet);
 }
 
@@ -315,7 +315,7 @@ void CTradeManagerEx::SendTradeMode11()
 void CTradeManagerEx::SendTradeMode13()
 {
     COutPacket packet(static_cast<int>(SendOp::Trade), 0);
-    packet.vfunc_o10_1(0xd);
+    packet.WriteUInt8(0xd);
     FUN_140710590(packet);
 }
 
@@ -323,8 +323,8 @@ void CTradeManagerEx::SendTradeMode13()
 void CTradeManagerEx::SendTradeMode2(__int64 uid)
 {
     COutPacket packet(static_cast<int>(SendOp::Trade), 0);
-    packet.vfunc_o10_1(2);
-    packet.vfunc_o10_4(uid);
+    packet.WriteUInt8(2);
+    packet.WriteInt64(uid);
     FUN_140710590(packet);
 }
 
@@ -332,15 +332,15 @@ void CTradeManagerEx::SendTradeMode2(__int64 uid)
 void CTradeManagerEx::SendTradeMode14(__int64 uid)
 {
     COutPacket packet(static_cast<int>(SendOp::Trade), 0);
-    packet.vfunc_o10_1(0xe);
-    packet.vfunc_o10_4(uid);
+    packet.WriteUInt8(0xe);
+    packet.WriteInt64(uid);
     FUN_140710590(packet);
 }
 
 // @0x14185bd20
 void CTradeManagerEx::OnTrade(CInPacket& packet)
 {
-    switch (packet.vfunc_o8_1())
+    switch (packet.ReadUInt8())
     {
     case 0:
         FUN_14185bec0(packet);
@@ -387,8 +387,8 @@ void CTradeManagerEx::OnTrade(CInPacket& packet)
 // @0x14185bec0
 void CTradeManagerEx::FUN_14185bec0(CInPacket& packet)
 {
-    CStringW strName = packet.vfunc_o8_8();
-    __int64 uid = packet.vfunc_o8_4();
+    CStringW strName = packet.ReadUnicodeString();
+    __int64 uid = packet.ReadInt64();
     if (FUN_140ae6540(FUN_1409a8b10())->m_bRefuseTrade == 0)
     {
         BlockPtr blocked = FUN_140a6a830()->FindBlockedAction(0x20);
@@ -437,10 +437,10 @@ void CTradeManagerEx::FUN_14185c230()
 // @0x14185c2a0
 void CTradeManagerEx::FUN_14185c2a0(CInPacket& packet)
 {
-    Unk_TradeResult code = (Unk_TradeResult)packet.vfunc_o8_1();
-    CStringW strName = packet.vfunc_o8_8();
-    int nArg = packet.vfunc_o8_3();
-    unsigned short nLevel = (unsigned short)packet.vfunc_o8_3();
+    Unk_TradeResult code = (Unk_TradeResult)packet.ReadUInt8();
+    CStringW strName = packet.ReadUnicodeString();
+    int nArg = packet.ReadInt32();
+    unsigned short nLevel = (unsigned short)packet.ReadInt32();
     CStringW strMsg;
     switch ((int)code)
     {
@@ -523,7 +523,7 @@ void CTradeManagerEx::FUN_14185c2a0(CInPacket& packet)
 // @0x14185cc60
 void CTradeManagerEx::FUN_14185cc60(CInPacket& packet)
 {
-    CStringW strName = packet.vfunc_o8_8();
+    CStringW strName = packet.ReadUnicodeString();
     FUN_1412751b0(FUN_14052bd00(0x824, strName), 0x12);
     FUN_140961010(0x824, 1, 0, strName);
 }
@@ -531,7 +531,7 @@ void CTradeManagerEx::FUN_14185cc60(CInPacket& packet)
 // @0x14185cd10
 void CTradeManagerEx::FUN_14185cd10(CInPacket& packet)
 {
-    __int64 uid = packet.vfunc_o8_4();
+    __int64 uid = packet.ReadInt64();
     PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd1530(uid);
     if (pPlayer != 0)
     {
@@ -548,7 +548,7 @@ void CTradeManagerEx::FUN_14185cd10(CInPacket& packet)
 // @0x14185cee0
 void CTradeManagerEx::FUN_14185cee0(CInPacket& packet)
 {
-    bool bAccepted = packet.vfunc_o8_1() != 0;
+    bool bAccepted = packet.ReadUInt8() != 0;
     Unk_TradeDialog* pDlg = FUN_14140e820(0x4e83);
     if (pDlg != 0)
     {
@@ -568,13 +568,13 @@ void CTradeManagerEx::FUN_14185d020(CInPacket& packet)
     Unk_TradeDialog* pDlg = FUN_14140e820(0x4e83);
     if (pDlg != 0)
     {
-        bool bMine = packet.vfunc_o8_1() != 0;
-        int nTemplate = packet.vfunc_o8_3();
-        __int64 uid = packet.vfunc_o8_4();
-        int nRarity = packet.vfunc_o8_3();
-        int nCount = packet.vfunc_o8_3();
-        int nSlotInItem = packet.vfunc_o8_3();
-        int nSlot = packet.vfunc_o8_3();
+        bool bMine = packet.ReadUInt8() != 0;
+        int nTemplate = packet.ReadInt32();
+        __int64 uid = packet.ReadInt64();
+        int nRarity = packet.ReadInt32();
+        int nCount = packet.ReadInt32();
+        int nSlotInItem = packet.ReadInt32();
+        int nSlot = packet.ReadInt32();
         MS2Ptr<CItem> spItem(new CItem);
         if (spItem->FUN_140523c40(nTemplate, nRarity, 0))
         {
@@ -602,9 +602,9 @@ void CTradeManagerEx::FUN_14185d380(CInPacket& packet)
     Unk_TradeDialog* pDlg = FUN_14140e820(0x4e83);
     if (pDlg != 0)
     {
-        bool bMine = packet.vfunc_o8_1() != 0;
-        int nSlot = packet.vfunc_o8_3();
-        __int64 uid = packet.vfunc_o8_4();
+        bool bMine = packet.ReadUInt8() != 0;
+        int nSlot = packet.ReadInt32();
+        __int64 uid = packet.ReadInt64();
         if (bMine)
         {
             MS2Ptr<CItem> spItem = DAT_143ab2e80.FUN_14185b4a0(uid);
@@ -623,8 +623,8 @@ void CTradeManagerEx::FUN_14185d4f0(CInPacket& packet)
     Unk_TradeDialog* pDlg = FUN_14140e820(0x4e83);
     if (pDlg != 0)
     {
-        unsigned char nSide = packet.vfunc_o8_1();
-        __int64 nValue = packet.vfunc_o8_4();
+        unsigned char nSide = packet.ReadUInt8();
+        __int64 nValue = packet.ReadInt64();
         pDlg->FUN_141b28130(nSide, nValue);
     }
 }
@@ -635,7 +635,7 @@ void CTradeManagerEx::FUN_14185d590(CInPacket& packet)
     Unk_TradeDialog* pDlg = FUN_14140e820(0x4e83);
     if (pDlg != 0)
     {
-        bool bMine = packet.vfunc_o8_1() != 0;
+        bool bMine = packet.ReadUInt8() != 0;
         if (bMine)
             m_bConfirmed = true;
         pDlg->FUN_141b28290(bMine, 1);
@@ -648,7 +648,7 @@ void CTradeManagerEx::FUN_14185d610(CInPacket& packet)
     Unk_TradeDialog* pDlg = FUN_14140e820(0x4e83);
     if (pDlg != 0)
     {
-        bool bMine = packet.vfunc_o8_1() != 0;
+        bool bMine = packet.ReadUInt8() != 0;
         if (!bMine)
         {
             FUN_1412751b0(GetStringCommon(0x845), 0x12);

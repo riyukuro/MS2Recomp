@@ -221,14 +221,14 @@ void UIWeddingBillboardDialog::vfunc_43()
 // @0x140fc3300
 void UIWeddingBillboardDialog::FUN_140fc3300(CInPacket& packet)
 {
-    unsigned char nType = packet.vfunc_o8_1();
+    unsigned char nType = packet.ReadUInt8();
     if (nType == 4)
     {
         m_tickets.clear();
-        int nCount = packet.vfunc_o8_3();
+        int nCount = packet.ReadInt32();
         for (int i = 0; i < nCount; ++i)
         {
-            unsigned __int64 nSN = packet.vfunc_o8_4();
+            unsigned __int64 nSN = packet.ReadInt64();
             WeddingHallTicket ticket;
             ticket.Read(packet);
             m_tickets.push_back(std::make_pair(nSN, ticket));

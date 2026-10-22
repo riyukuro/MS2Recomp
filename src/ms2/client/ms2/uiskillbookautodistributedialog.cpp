@@ -1110,7 +1110,7 @@ bool UISkillBookTreeDialog::OnRenameConfirm(int nResult, const CMsgBoxData& box)
         COutPacket packet(static_cast<int>(SendOp::RequestSkillBookTree), 0);
         packet.Encode1(2);
         packet.Encode8(nTabId);
-        packet.vfunc_o10_8(strName);
+        packet.WriteUnicodeString(strName);
         FUN_140710590(packet);
         FUN_14151f200();
         return true;
@@ -1166,7 +1166,7 @@ bool UISkillBookTreeDialog::OnAddTabPayConfirm(int nResult, const CMsgBoxData& b
         COutPacket packet(static_cast<int>(SendOp::RequestSkillBookTree), 0);
         packet.Encode1(4);
         packet.Encode4(0x4f2d);
-        packet.vfunc_o10_0(bCoupon);
+        packet.WriteBool(bCoupon);
         FUN_140710590(packet);
         m_nWaitServer = 1;
     }
@@ -1259,7 +1259,7 @@ void UISkillBookTreeDialog::RequestJob(int bConfirm, int bAll, int nRank)
     {
         packet.Encode4((*it)->GetID());
         packet.Encode2((*it)->m_nLevel);
-        packet.vfunc_o10_0((*it)->m_bLearned);
+        packet.WriteBool((*it)->m_bLearned);
     }
     FUN_140710590(packet);
     m_nWaitServer = 1;
@@ -1999,14 +1999,14 @@ void UISkillBookTreeDialog::vfunc_79(void* pPacket)
     CInPacket& packet = *static_cast<CInPacket*>(pPacket);
     if (packet.FUN_14070fe80() != 0x10c)
         return;
-    int nMode = packet.vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 0)
     {
         m_tabs.RemoveAll();
         m_simulators.RemoveAll();
-        m_nMaxTabs = packet.vfunc_o8_3();
-        m_nTabId = packet.vfunc_o8_4();
-        unsigned nCount = packet.vfunc_o8_3();
+        m_nMaxTabs = packet.ReadInt32();
+        m_nTabId = packet.ReadInt64();
+        unsigned nCount = packet.ReadInt32();
         for (unsigned i = 0; i < nCount; i++)
         {
             MS2Ptr<CSkillBookTreeTabConfig> spTab(new CSkillBookTreeTabConfig);
@@ -2047,7 +2047,7 @@ void UISkillBookTreeDialog::vfunc_79(void* pPacket)
     }
     else if (nMode == 4)
     {
-        m_nMaxTabs = packet.vfunc_o8_3();
+        m_nMaxTabs = packet.ReadInt32();
         FUN_1412751f0(GetStringCommonByKey(L"s_skillbook_tree_config_payment_sucess"), 1, 1);
         unsigned nNo = m_tabs.GetCount() + 1;
         AddPaidTab(FUN_14028dfa0(CStringW(L"s_skillbook_tree_config_default_tab_name"), nNo));
@@ -2055,9 +2055,9 @@ void UISkillBookTreeDialog::vfunc_79(void* pPacket)
     }
     else if (nMode == 1)
     {
-        m_nTabId = packet.vfunc_o8_4();
-        __int64 nTabId = packet.vfunc_o8_4();
-        int nRank = packet.vfunc_o8_3();
+        m_nTabId = packet.ReadInt64();
+        __int64 nTabId = packet.ReadInt64();
+        int nRank = packet.ReadInt32();
         MS2Ptr<CSkillPointSimulator> spSim(0);
         if (m_simulators.Lookup(nTabId, spSim))
         {
@@ -2067,9 +2067,9 @@ void UISkillBookTreeDialog::vfunc_79(void* pPacket)
     }
     else if (nMode == 2)
     {
-        __int64 nTabId = packet.vfunc_o8_4();
-        CStringW strName = packet.vfunc_o8_8();
-        int nResult = packet.vfunc_o8_1();
+        __int64 nTabId = packet.ReadInt64();
+        CStringW strName = packet.ReadUnicodeString();
+        int nResult = packet.ReadUInt8();
         if (nResult == 0)
             RenameTab(nTabId, CStringW(strName));
         else

@@ -279,18 +279,18 @@ void UIItemLulluBoxDialog::vfunc_79(void* p)
     UIDialog::vfunc_79(p);
     if (LULLUBOX_PKT->FUN_14070fe80() == 0xf5 && m_30 != 0) {
         m_sent = false;
-        unsigned reset = LULLUBOX_PKT->vfunc_o8_1();
+        unsigned reset = LULLUBOX_PKT->ReadUInt8();
         if (reset == 0) {
             LULLUBOX_ITEMS.FUN_14028a590();
             m_special2.clear();
             bool hasSpecial = false;
-            int n = LULLUBOX_PKT->vfunc_o8_3();
+            int n = LULLUBOX_PKT->ReadInt32();
             LULLUBOX_ITEMS.FUN_140c47b00(n);
             for (int i = 0; i < n; ++i) {
-                LULLUBOX_ITEMS.FUN_140be9400(i).m_itemId = LULLUBOX_PKT->vfunc_o8_3();
-                LULLUBOX_ITEMS.FUN_140be9400(i).m_count = LULLUBOX_PKT->vfunc_o8_3();
-                LULLUBOX_ITEMS.FUN_140be9400(i).SetRank(LULLUBOX_PKT->vfunc_o8_3());
-                bool special = LULLUBOX_PKT->vfunc_o8_0();
+                LULLUBOX_ITEMS.FUN_140be9400(i).m_itemId = LULLUBOX_PKT->ReadInt32();
+                LULLUBOX_ITEMS.FUN_140be9400(i).m_count = LULLUBOX_PKT->ReadInt32();
+                LULLUBOX_ITEMS.FUN_140be9400(i).SetRank(LULLUBOX_PKT->ReadInt32());
+                bool special = LULLUBOX_PKT->ReadBool();
                 if (special)
                     m_special2.insert(LULLUBOX_ITEMS.FUN_140be9400(i));
                 if (FUN_140e9d1e0(LULLUBOX_ITEMS.FUN_140be9400(i)) == true)

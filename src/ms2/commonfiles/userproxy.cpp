@@ -131,15 +131,15 @@ MS2_REPLACE_METHOD(0x1408E7140, CPlatformProxy, vfunc_2, 53, 0x464E85E3);
 
 // @0x1408e7180
 void CPlatformProxy::vfunc_3(COutputStream &s) {
-  s.vfunc_o10_3(m_20);
-  s.vfunc_o10_3(m_24);
+  s.WriteInt32(m_20);
+  s.WriteInt32(m_24);
 }
 MS2_REPLACE_METHOD(0x1408E7180, CPlatformProxy, vfunc_3, 67, 0x25E24290);
 
 // @0x1408e71d0
 void CPlatformProxy::vfunc_4(CInputStream &s) {
-  m_20 = s.vfunc_o8_3();
-  m_24 = s.vfunc_o8_3();
+  m_20 = s.ReadInt32();
+  m_24 = s.ReadInt32();
 }
 MS2_REPLACE_METHOD(0x1408E71D0, CPlatformProxy, vfunc_4, 67, 0xA01F94A0);
 
@@ -205,31 +205,31 @@ MS2_REPLACE_METHOD(0x1408E7570, CKRPlatformProxy, vfunc_2, 211, 0x02E2A179);
 // @0x1408e7650
 void CKRPlatformProxy::vfunc_3(COutputStream &s) {
   CPlatformProxy::vfunc_3(s);
-  s.vfunc_o10_4(m_28);
-  s.vfunc_o10_6(vfunc_10());
-  s.vfunc_o10_3(m_30);
-  s.vfunc_o10_3(m_34);
-  s.vfunc_o10_3(m_38);
-  s.vfunc_o10_4(m_40);
+  s.WriteInt64(m_28);
+  s.WriteUnicodeStringA(vfunc_10());
+  s.WriteInt32(m_30);
+  s.WriteInt32(m_34);
+  s.WriteInt32(m_38);
+  s.WriteInt64(m_40);
 }
 MS2_REPLACE_METHOD(0x1408E7650, CKRPlatformProxy, vfunc_3, 234, 0x80EF786A);
 
 // @0x1408e7740
 void CKRPlatformProxy::vfunc_4(CInputStream &s) {
   CPlatformProxy::vfunc_4(s);
-  m_28 = s.vfunc_o8_4();
-  vfunc_11(s.vfunc_o8_6());
-  m_30 = s.vfunc_o8_3();
-  m_34 = s.vfunc_o8_3();
-  m_38 = s.vfunc_o8_3();
-  m_40 = s.vfunc_o8_4();
+  m_28 = s.ReadInt64();
+  vfunc_11(s.ReadUnicodeStringA());
+  m_30 = s.ReadInt32();
+  m_34 = s.ReadInt32();
+  m_38 = s.ReadInt32();
+  m_40 = s.ReadInt64();
 }
 MS2_REPLACE_METHOD(0x1408E7740, CKRPlatformProxy, vfunc_4, 213, 0xAD92B6B5);
 
 // @0x1408e7820
 void CKRPlatformProxy::vfunc_5(COutputStream &s) {
-  s.vfunc_o10_6(vfunc_10());
-  s.vfunc_o10_4(m_28);
+  s.WriteUnicodeStringA(vfunc_10());
+  s.WriteInt64(m_28);
 }
 MS2_REPLACE_METHOD(0x1408E7820, CKRPlatformProxy, vfunc_5, 122, 0x6F516B6C);
 
@@ -289,31 +289,31 @@ MS2_REPLACE_METHOD(0x1408E7AC0, CJPPlatformProxy, vfunc_2, 211, 0xF3B5A00C);
 // @0x1408e7ba0
 void CJPPlatformProxy::vfunc_3(COutputStream &s) {
   CPlatformProxy::vfunc_3(s);
-  s.vfunc_o10_4(m_28);
-  s.vfunc_o10_6(vfunc_10());
-  s.vfunc_o10_3(m_30);
-  s.vfunc_o10_3(m_34);
-  s.vfunc_o10_3(m_38);
-  s.vfunc_o10_4(m_40);
+  s.WriteInt64(m_28);
+  s.WriteUnicodeStringA(vfunc_10());
+  s.WriteInt32(m_30);
+  s.WriteInt32(m_34);
+  s.WriteInt32(m_38);
+  s.WriteInt64(m_40);
 }
 MS2_REPLACE_METHOD(0x1408E7BA0, CJPPlatformProxy, vfunc_3, 234, 0x8AD5D2B1);
 
 // @0x1408e7c90
 void CJPPlatformProxy::vfunc_4(CInputStream &s) {
   CPlatformProxy::vfunc_4(s);
-  m_28 = s.vfunc_o8_4();
-  vfunc_11(s.vfunc_o8_6());
-  m_30 = s.vfunc_o8_3();
-  m_34 = s.vfunc_o8_3();
-  m_38 = s.vfunc_o8_3();
-  m_40 = s.vfunc_o8_4();
+  m_28 = s.ReadInt64();
+  vfunc_11(s.ReadUnicodeStringA());
+  m_30 = s.ReadInt32();
+  m_34 = s.ReadInt32();
+  m_38 = s.ReadInt32();
+  m_40 = s.ReadInt64();
 }
 MS2_REPLACE_METHOD(0x1408E7C90, CJPPlatformProxy, vfunc_4, 213, 0x00F30584);
 
 // @0x1408e7d70
 void CJPPlatformProxy::vfunc_5(COutputStream &s) {
-  s.vfunc_o10_6(vfunc_10());
-  s.vfunc_o10_4(m_28);
+  s.WriteUnicodeStringA(vfunc_10());
+  s.WriteInt64(m_28);
 }
 MS2_REPLACE_METHOD(0x1408E7D70, CJPPlatformProxy, vfunc_5, 122, 0x5D5AF482);
 
@@ -387,45 +387,45 @@ MS2_REPLACE_METHOD(0x1408E8030, CCNPlatformProxy, vfunc_2, 274, 0x754E57DD);
 // @0x1408e8150
 void CCNPlatformProxy::vfunc_3(COutputStream &s) {
   CPlatformProxy::vfunc_3(s);
-  s.vfunc_o10_4(m_28);
-  s.vfunc_o10_4(m_38);
-  s.vfunc_o10_1(m_44);
-  s.vfunc_o10_1(m_48);
-  s.vfunc_o10_5(m_4c);
-  s.vfunc_o10_1(m_50);
-  s.vfunc_o10_4(m_58);
-  s.vfunc_o10_1(m_60);
-  s.vfunc_o10_4(m_68);
-  s.vfunc_o10_3(m_70);
-  s.vfunc_o10_1(m_74);
-  s.vfunc_o10_3(m_78);
+  s.WriteInt64(m_28);
+  s.WriteInt64(m_38);
+  s.WriteUInt8(m_44);
+  s.WriteUInt8(m_48);
+  s.WriteFloat(m_4c);
+  s.WriteUInt8(m_50);
+  s.WriteInt64(m_58);
+  s.WriteUInt8(m_60);
+  s.WriteInt64(m_68);
+  s.WriteInt32(m_70);
+  s.WriteUInt8(m_74);
+  s.WriteInt32(m_78);
 }
 MS2_REPLACE_METHOD(0x1408E8150, CCNPlatformProxy, vfunc_3, 333, 0x6E9A8C02);
 
 // @0x1408e82b0
 void CCNPlatformProxy::vfunc_4(CInputStream &s) {
   CPlatformProxy::vfunc_4(s);
-  m_28 = s.vfunc_o8_4();
-  m_38 = s.vfunc_o8_4();
-  m_44 = s.vfunc_o8_1();
-  m_48 = s.vfunc_o8_1();
-  m_4c = s.vfunc_o8_5();
-  m_50 = s.vfunc_o8_1();
-  m_58 = s.vfunc_o8_4();
-  m_60 = s.vfunc_o8_1();
-  m_68 = s.vfunc_o8_4();
-  m_70 = s.vfunc_o8_3();
-  m_74 = s.vfunc_o8_1();
-  m_78 = s.vfunc_o8_3();
+  m_28 = s.ReadInt64();
+  m_38 = s.ReadInt64();
+  m_44 = s.ReadUInt8();
+  m_48 = s.ReadUInt8();
+  m_4c = s.ReadFloat();
+  m_50 = s.ReadUInt8();
+  m_58 = s.ReadInt64();
+  m_60 = s.ReadUInt8();
+  m_68 = s.ReadInt64();
+  m_70 = s.ReadInt32();
+  m_74 = s.ReadUInt8();
+  m_78 = s.ReadInt32();
 }
 MS2_REPLACE_METHOD(0x1408E82B0, CCNPlatformProxy, vfunc_4, 343, 0xC11FE026);
 
 // @0x1408e8410
 void CCNPlatformProxy::vfunc_5(COutputStream &s) {
-  s.vfunc_o10_3(m_70);
-  s.vfunc_o10_4(m_28);
-  s.vfunc_o10_1(m_74);
-  s.vfunc_o10_3(m_78);
+  s.WriteInt32(m_70);
+  s.WriteInt64(m_28);
+  s.WriteUInt8(m_74);
+  s.WriteInt32(m_78);
 }
 MS2_REPLACE_METHOD(0x1408E8410, CCNPlatformProxy, vfunc_5, 117, 0xEA4DFB02);
 
@@ -539,47 +539,47 @@ MS2_REPLACE_METHOD(0x1408E8A60, CNAPlatformProxy, vfunc_2, 761, 0x59591B6D);
 // @0x1408e8d60
 void CNAPlatformProxy::vfunc_3(COutputStream &s) {
   CPlatformProxy::vfunc_3(s);
-  s.vfunc_o10_4(m_28);
-  s.vfunc_o10_6(vfunc_10());
-  s.vfunc_o10_7(vfunc_40());
-  s.vfunc_o10_3(static_cast<unsigned>(vfunc_42()));
-  s.vfunc_o10_4(vfunc_44());
-  s.vfunc_o10_1(vfunc_46());
-  s.vfunc_o10_7(vfunc_48());
-  s.vfunc_o10_7(vfunc_58());
-  s.vfunc_o10_4(m_78);
-  s.vfunc_o10_4(m_80);
-  s.vfunc_o10_4(m_88);
-  s.vfunc_o10_3(m_90);
-  s.vfunc_o10_4(m_98);
+  s.WriteInt64(m_28);
+  s.WriteUnicodeStringA(vfunc_10());
+  s.WriteString(vfunc_40());
+  s.WriteInt32(static_cast<unsigned>(vfunc_42()));
+  s.WriteInt64(vfunc_44());
+  s.WriteUInt8(vfunc_46());
+  s.WriteString(vfunc_48());
+  s.WriteString(vfunc_58());
+  s.WriteInt64(m_78);
+  s.WriteInt64(m_80);
+  s.WriteInt64(m_88);
+  s.WriteInt32(m_90);
+  s.WriteInt64(m_98);
 }
 MS2_REPLACE_METHOD(0x1408E8D60, CNAPlatformProxy, vfunc_3, 808, 0x02A975D6);
 
 // @0x1408e9090
 void CNAPlatformProxy::vfunc_4(CInputStream &s) {
   CPlatformProxy::vfunc_4(s);
-  m_28 = s.vfunc_o8_4();
-  vfunc_11(s.vfunc_o8_6());
-  vfunc_41(s.vfunc_o8_7());
-  vfunc_43(static_cast<float>(static_cast<unsigned>(s.vfunc_o8_3())));
-  vfunc_45(s.vfunc_o8_4());
-  vfunc_47(s.vfunc_o8_1());
-  vfunc_49(s.vfunc_o8_7());
-  vfunc_59(s.vfunc_o8_7());
-  m_78 = s.vfunc_o8_4();
-  m_80 = s.vfunc_o8_4();
-  m_88 = s.vfunc_o8_4();
-  m_90 = s.vfunc_o8_3();
-  m_98 = s.vfunc_o8_4();
+  m_28 = s.ReadInt64();
+  vfunc_11(s.ReadUnicodeStringA());
+  vfunc_41(s.ReadString());
+  vfunc_43(static_cast<float>(static_cast<unsigned>(s.ReadInt32())));
+  vfunc_45(s.ReadInt64());
+  vfunc_47(s.ReadUInt8());
+  vfunc_49(s.ReadString());
+  vfunc_59(s.ReadString());
+  m_78 = s.ReadInt64();
+  m_80 = s.ReadInt64();
+  m_88 = s.ReadInt64();
+  m_90 = s.ReadInt32();
+  m_98 = s.ReadInt64();
 }
 MS2_REPLACE_METHOD(0x1408E9090, CNAPlatformProxy, vfunc_4, 731, 0xCFCEEF50);
 
 // @0x1408e9380
 void CNAPlatformProxy::vfunc_5(COutputStream &s) {
-  s.vfunc_o10_6(vfunc_10());
-  s.vfunc_o10_4(m_28);
-  s.vfunc_o10_4(m_80);
-  s.vfunc_o10_4(m_88);
+  s.WriteUnicodeStringA(vfunc_10());
+  s.WriteInt64(m_28);
+  s.WriteInt64(m_80);
+  s.WriteInt64(m_88);
 }
 MS2_REPLACE_METHOD(0x1408E9380, CNAPlatformProxy, vfunc_5, 178, 0x9DCFA658);
 
@@ -643,75 +643,75 @@ MS2_REPLACE_METHOD(0x1408E9610, UserPlayCommonInfoData, FUN_1408e9610, 458, 0xAC
 
 // @0x1408e97e0
 void UserPlayCommonInfoData::FUN_1408e97e0(COutputStream &s) {
-  s.vfunc_o10_3(m_18);
-  s.vfunc_o10_2(m_1c);
-  s.vfunc_o10_3(m_20);
-  s.vfunc_o10_3(m_24);
-  s.vfunc_o10_4(m_28);
-  s.vfunc_o10_4(m_30);
-  s.vfunc_o10_4(m_38);
-  s.vfunc_o10_4(m_40);
-  s.vfunc_o10_4(m_48);
-  s.vfunc_o10_4(m_50);
-  s.vfunc_o10_4(m_60);
-  s.vfunc_o10_3(m_68);
-  s.vfunc_o10_3(m_6c);
-  s.vfunc_o10_3(m_70);
-  s.vfunc_o10_3(m_74);
-  s.vfunc_o10_4(m_78);
-  s.vfunc_o10_3(m_80);
-  s.vfunc_o10_3(m_84);
-  s.vfunc_o10_3(m_88);
-  s.vfunc_o10_3(m_8c);
-  s.vfunc_o10_3(m_90);
-  s.vfunc_o10_3(m_94);
-  s.vfunc_o10_3(m_98);
-  s.vfunc_o10_3(m_9c);
-  s.vfunc_o10_3(m_a0);
-  s.vfunc_o10_3(m_a4);
-  s.vfunc_o10_3(m_a8);
-  s.vfunc_o10_3(m_ac);
-  s.vfunc_o10_3(m_b0);
-  s.vfunc_o10_3(m_b4);
-  s.vfunc_o10_3(m_b8);
-  s.vfunc_o10_3(m_bc);
+  s.WriteInt32(m_18);
+  s.WriteInt16(m_1c);
+  s.WriteInt32(m_20);
+  s.WriteInt32(m_24);
+  s.WriteInt64(m_28);
+  s.WriteInt64(m_30);
+  s.WriteInt64(m_38);
+  s.WriteInt64(m_40);
+  s.WriteInt64(m_48);
+  s.WriteInt64(m_50);
+  s.WriteInt64(m_60);
+  s.WriteInt32(m_68);
+  s.WriteInt32(m_6c);
+  s.WriteInt32(m_70);
+  s.WriteInt32(m_74);
+  s.WriteInt64(m_78);
+  s.WriteInt32(m_80);
+  s.WriteInt32(m_84);
+  s.WriteInt32(m_88);
+  s.WriteInt32(m_8c);
+  s.WriteInt32(m_90);
+  s.WriteInt32(m_94);
+  s.WriteInt32(m_98);
+  s.WriteInt32(m_9c);
+  s.WriteInt32(m_a0);
+  s.WriteInt32(m_a4);
+  s.WriteInt32(m_a8);
+  s.WriteInt32(m_ac);
+  s.WriteInt32(m_b0);
+  s.WriteInt32(m_b4);
+  s.WriteInt32(m_b8);
+  s.WriteInt32(m_bc);
 }
 MS2_REPLACE_METHOD(0x1408E97E0, UserPlayCommonInfoData, FUN_1408e97e0, 844, 0xF60073B5);
 
 // @0x1408e9b40
 void UserPlayCommonInfoData::FUN_1408e9b40(CInputStream &s) {
-  m_18 = s.vfunc_o8_3();
-  m_1c = s.vfunc_o8_2();
-  m_20 = s.vfunc_o8_3();
-  m_24 = s.vfunc_o8_3();
-  m_28 = s.vfunc_o8_4();
-  m_30 = s.vfunc_o8_4();
-  m_38 = s.vfunc_o8_4();
-  m_40 = s.vfunc_o8_4();
-  m_48 = s.vfunc_o8_4();
-  m_50 = s.vfunc_o8_4();
-  m_60 = s.vfunc_o8_4();
-  m_68 = s.vfunc_o8_3();
-  m_6c = s.vfunc_o8_3();
-  m_70 = s.vfunc_o8_3();
-  m_74 = s.vfunc_o8_3();
-  m_78 = s.vfunc_o8_4();
-  m_80 = s.vfunc_o8_3();
-  m_84 = s.vfunc_o8_3();
-  m_88 = s.vfunc_o8_3();
-  m_8c = s.vfunc_o8_3();
-  m_90 = s.vfunc_o8_3();
-  m_94 = s.vfunc_o8_3();
-  m_98 = s.vfunc_o8_3();
-  m_9c = s.vfunc_o8_3();
-  m_a0 = s.vfunc_o8_3();
-  m_a4 = s.vfunc_o8_3();
-  m_a8 = s.vfunc_o8_3();
-  m_ac = s.vfunc_o8_3();
-  m_b0 = s.vfunc_o8_3();
-  m_b4 = s.vfunc_o8_3();
-  m_b8 = s.vfunc_o8_3();
-  m_bc = s.vfunc_o8_3();
+  m_18 = s.ReadInt32();
+  m_1c = s.ReadInt16();
+  m_20 = s.ReadInt32();
+  m_24 = s.ReadInt32();
+  m_28 = s.ReadInt64();
+  m_30 = s.ReadInt64();
+  m_38 = s.ReadInt64();
+  m_40 = s.ReadInt64();
+  m_48 = s.ReadInt64();
+  m_50 = s.ReadInt64();
+  m_60 = s.ReadInt64();
+  m_68 = s.ReadInt32();
+  m_6c = s.ReadInt32();
+  m_70 = s.ReadInt32();
+  m_74 = s.ReadInt32();
+  m_78 = s.ReadInt64();
+  m_80 = s.ReadInt32();
+  m_84 = s.ReadInt32();
+  m_88 = s.ReadInt32();
+  m_8c = s.ReadInt32();
+  m_90 = s.ReadInt32();
+  m_94 = s.ReadInt32();
+  m_98 = s.ReadInt32();
+  m_9c = s.ReadInt32();
+  m_a0 = s.ReadInt32();
+  m_a4 = s.ReadInt32();
+  m_a8 = s.ReadInt32();
+  m_ac = s.ReadInt32();
+  m_b0 = s.ReadInt32();
+  m_b4 = s.ReadInt32();
+  m_b8 = s.ReadInt32();
+  m_bc = s.ReadInt32();
 }
 MS2_REPLACE_METHOD(0x1408E9B40, UserPlayCommonInfoData, FUN_1408e9b40, 844, 0x315EC51A);
 
@@ -785,19 +785,19 @@ MS2_REPLACE_METHOD(0x1408EA3B0, Unk_UserProxyFlagsPacket, CopyFrom, 77, 0x84FB5D
 
 // @0x1408ea410
 void Unk_UserProxyFlagsPacket::Encode(COutputStream &s) {
-  s.vfunc_o10_4(m_0);
-  s.vfunc_o10_3(m_8);
-  s.vfunc_o10_3(m_c);
-  s.vfunc_o10_2(m_10);
+  s.WriteInt64(m_0);
+  s.WriteInt32(m_8);
+  s.WriteInt32(m_c);
+  s.WriteInt16(m_10);
 }
 MS2_REPLACE_METHOD(0x1408EA410, Unk_UserProxyFlagsPacket, Encode, 116, 0x421C9A5D);
 
 // @0x1408ea490
 void Unk_UserProxyFlagsPacket::Decode(CInPacket &p) {
-  m_0 = PROXY_STREAM(&p)->vfunc_o8_4();
-  m_8 = PROXY_STREAM(&p)->vfunc_o8_3();
-  m_c = PROXY_STREAM(&p)->vfunc_o8_3();
-  m_10 = PROXY_STREAM(&p)->vfunc_o8_2();
+  m_0 = PROXY_STREAM(&p)->ReadInt64();
+  m_8 = PROXY_STREAM(&p)->ReadInt32();
+  m_c = PROXY_STREAM(&p)->ReadInt32();
+  m_10 = PROXY_STREAM(&p)->ReadInt16();
 }
 MS2_REPLACE_METHOD(0x1408EA490, Unk_UserProxyFlagsPacket, Decode, 188, 0x3F191422);
 
@@ -825,20 +825,20 @@ MS2_REPLACE_METHOD(0x1408EA600, Unk_UserProxyClubPacket, CopyFrom, 328, 0x4B1F59
 
 // @0x1408ea750
 void Unk_UserProxyClubPacket::Encode(COutputStream &s) {
-  s.vfunc_o10_4(m_0);
-  s.vfunc_o10_4(m_8);
-  s.vfunc_o10_8(m_10);
-  s.vfunc_o10_4(m_18);
+  s.WriteInt64(m_0);
+  s.WriteInt64(m_8);
+  s.WriteUnicodeString(m_10);
+  s.WriteInt64(m_18);
   m_20.FUN_14020ce50(s);
 }
 MS2_REPLACE_METHOD(0x1408EA750, Unk_UserProxyClubPacket, Encode, 153, 0xC49C542A);
 
 // @0x1408ea7f0
 void Unk_UserProxyClubPacket::Decode(CInPacket &p) {
-  m_0 = PROXY_STREAM(&p)->vfunc_o8_4();
-  m_8 = PROXY_STREAM(&p)->vfunc_o8_4();
-  m_10 = PROXY_STREAM(&p)->vfunc_o8_8();
-  m_18 = PROXY_STREAM(&p)->vfunc_o8_4();
+  m_0 = PROXY_STREAM(&p)->ReadInt64();
+  m_8 = PROXY_STREAM(&p)->ReadInt64();
+  m_10 = PROXY_STREAM(&p)->ReadUnicodeString();
+  m_18 = PROXY_STREAM(&p)->ReadInt64();
   m_20.FUN_14020cfc0(*PROXY_STREAM(&p));
 }
 MS2_REPLACE_METHOD(0x1408EA7F0, Unk_UserProxyClubPacket, Decode, 271, 0x90EB5F0A);
@@ -868,19 +868,19 @@ MS2_REPLACE_METHOD(0x1408EA990, Unk_UserProxyStatsPacket, CopyFrom, 75, 0x36C08A
 
 // @0x1408ea9f0
 void Unk_UserProxyStatsPacket::Encode(COutputStream &s) {
-  s.vfunc_o10_4(m_0);
-  s.vfunc_o10_3(m_8);
-  s.vfunc_o10_3(m_c);
-  s.vfunc_o10_3(m_10);
+  s.WriteInt64(m_0);
+  s.WriteInt32(m_8);
+  s.WriteInt32(m_c);
+  s.WriteInt32(m_10);
 }
 MS2_REPLACE_METHOD(0x1408EA9F0, Unk_UserProxyStatsPacket, Encode, 115, 0x690D8CE0);
 
 // @0x1408eaa70
 void Unk_UserProxyStatsPacket::Decode(CInPacket &p) {
-  m_0 = PROXY_STREAM(&p)->vfunc_o8_4();
-  m_8 = PROXY_STREAM(&p)->vfunc_o8_3();
-  m_c = PROXY_STREAM(&p)->vfunc_o8_3();
-  m_10 = PROXY_STREAM(&p)->vfunc_o8_3();
+  m_0 = PROXY_STREAM(&p)->ReadInt64();
+  m_8 = PROXY_STREAM(&p)->ReadInt32();
+  m_c = PROXY_STREAM(&p)->ReadInt32();
+  m_10 = PROXY_STREAM(&p)->ReadInt32();
 }
 MS2_REPLACE_METHOD(0x1408EAA70, Unk_UserProxyStatsPacket, Decode, 187, 0x42E6C1A0);
 
@@ -924,43 +924,43 @@ MS2_REPLACE_METHOD(0x1408EACB0, Unk_UserProxySummaryPacket, CopyFrom, 798, 0xA73
 
 // @0x1408eafe0
 void Unk_UserProxySummaryPacket::Encode(COutputStream &s) {
-  s.vfunc_o10_4(m_0);
-  s.vfunc_o10_8(m_8);
-  s.vfunc_o10_1(m_10);
-  s.vfunc_o10_3(m_14);
-  s.vfunc_o10_2(m_18);
-  s.vfunc_o10_3(m_1c);
-  s.vfunc_o10_3(m_20);
-  s.vfunc_o10_1(m_24);
-  s.vfunc_o10_4(m_28);
-  s.vfunc_o10_8(m_30);
-  s.vfunc_o10_6(m_38);
+  s.WriteInt64(m_0);
+  s.WriteUnicodeString(m_8);
+  s.WriteUInt8(m_10);
+  s.WriteInt32(m_14);
+  s.WriteInt16(m_18);
+  s.WriteInt32(m_1c);
+  s.WriteInt32(m_20);
+  s.WriteUInt8(m_24);
+  s.WriteInt64(m_28);
+  s.WriteUnicodeString(m_30);
+  s.WriteUnicodeStringA(m_38);
   m_40.FUN_14020ce50(s);
   if (m_88.get())
     m_88->vfunc_3(s);
-  s.vfunc_o10_7(m_98);
-  s.vfunc_o10_4(m_a0);
+  s.WriteString(m_98);
+  s.WriteInt64(m_a0);
 }
 MS2_REPLACE_METHOD(0x1408EAFE0, Unk_UserProxySummaryPacket, Encode, 488, 0x5B3A756C);
 
 // @0x1408eb1d0
 void Unk_UserProxySummaryPacket::Decode(CInPacket *p) {
-  m_0 = PROXY_STREAM(p)->vfunc_o8_4();
-  m_8 = PROXY_STREAM(p)->vfunc_o8_8();
-  m_10 = PROXY_STREAM(p)->vfunc_o8_1();
-  m_14 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_18 = PROXY_STREAM(p)->vfunc_o8_2();
-  m_1c = PROXY_STREAM(p)->vfunc_o8_3();
-  m_20 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_24 = PROXY_STREAM(p)->vfunc_o8_1();
-  m_28 = PROXY_STREAM(p)->vfunc_o8_4();
-  m_30 = PROXY_STREAM(p)->vfunc_o8_8();
-  m_38 = PROXY_STREAM(p)->vfunc_o8_6();
+  m_0 = PROXY_STREAM(p)->ReadInt64();
+  m_8 = PROXY_STREAM(p)->ReadUnicodeString();
+  m_10 = PROXY_STREAM(p)->ReadUInt8();
+  m_14 = PROXY_STREAM(p)->ReadInt32();
+  m_18 = PROXY_STREAM(p)->ReadInt16();
+  m_1c = PROXY_STREAM(p)->ReadInt32();
+  m_20 = PROXY_STREAM(p)->ReadInt32();
+  m_24 = PROXY_STREAM(p)->ReadUInt8();
+  m_28 = PROXY_STREAM(p)->ReadInt64();
+  m_30 = PROXY_STREAM(p)->ReadUnicodeString();
+  m_38 = PROXY_STREAM(p)->ReadUnicodeStringA();
   m_40.FUN_14020cfc0(*PROXY_STREAM(p));
   if (m_88.get())
     m_88->vfunc_4(*(p ? PROXY_STREAM(p) : nullptr));
-  m_98 = PROXY_STREAM(p)->vfunc_o8_7();
-  m_a0 = PROXY_STREAM(p)->vfunc_o8_4();
+  m_98 = PROXY_STREAM(p)->ReadString();
+  m_a0 = PROXY_STREAM(p)->ReadInt64();
 }
 MS2_REPLACE_METHOD(0x1408EB1D0, Unk_UserProxySummaryPacket, Decode, 1132, 0x1B2A32D9);
 
@@ -1115,287 +1115,287 @@ void Unk_UserProxy::FUN_1408ec570(CInPacket &s) {
 
 // @0x1408ec5e0
 void Unk_UserProxy::FUN_1408ec5e0(COutputStream &s) {
-  s.vfunc_o10_4(m_0);
-  s.vfunc_o10_4(m_8);
-  s.vfunc_o10_8(FUN_1408f19e0());
-  s.vfunc_o10_3(m_10);
-  s.vfunc_o10_1(m_14);
-  s.vfunc_o10_1(m_24);
-  s.vfunc_o10_4(m_18);
-  s.vfunc_o10_3(m_20);
-  s.vfunc_o10_6(m_218);
-  s.vfunc_o10_3(m_28);
-  s.vfunc_o10_3(m_2c);
-  s.vfunc_o10_3(m_30);
-  s.vfunc_o10_2(m_34);
-  s.vfunc_o10_2(m_38);
-  s.vfunc_o10_3(m_3c);
-  s.vfunc_o10_3(m_40);
-  s.vfunc_o10_3(m_44);
-  s.vfunc_o10_3(m_48);
-  s.vfunc_o10_2(m_4c);
-  s.vfunc_o10_4(m_50);
+  s.WriteInt64(m_0);
+  s.WriteInt64(m_8);
+  s.WriteUnicodeString(FUN_1408f19e0());
+  s.WriteInt32(m_10);
+  s.WriteUInt8(m_14);
+  s.WriteUInt8(m_24);
+  s.WriteInt64(m_18);
+  s.WriteInt32(m_20);
+  s.WriteUnicodeStringA(m_218);
+  s.WriteInt32(m_28);
+  s.WriteInt32(m_2c);
+  s.WriteInt32(m_30);
+  s.WriteInt16(m_34);
+  s.WriteInt16(m_38);
+  s.WriteInt32(m_3c);
+  s.WriteInt32(m_40);
+  s.WriteInt32(m_44);
+  s.WriteInt32(m_48);
+  s.WriteInt16(m_4c);
+  s.WriteInt64(m_50);
   for (int i = 0; i < 2; ++i)
-    s.vfunc_o10_3(m_58[i]);
-  s.vfunc_o10_4(m_60);
-  s.vfunc_o10_4(m_70);
-  s.vfunc_o10_1(m_78);
-  s.vfunc_o10_4(m_80);
-  s.vfunc_o10_8(FUN_1408f1b60());
+    s.WriteInt32(m_58[i]);
+  s.WriteInt64(m_60);
+  s.WriteInt64(m_70);
+  s.WriteUInt8(m_78);
+  s.WriteInt64(m_80);
+  s.WriteUnicodeString(FUN_1408f1b60());
   FUN_1408f1900(s);
-  s.vfunc_o10_1(m_90);
+  s.WriteUInt8(m_90);
   m_94.Encode(s);
-  s.vfunc_o10_3(m_98);
-  s.vfunc_o10_3(m_9c);
-  s.vfunc_o10_3(m_a0);
-  s.vfunc_o10_4(m_a8);
-  s.vfunc_o10_4(m_b0);
-  s.vfunc_o10_4(m_b8);
-  s.vfunc_o10_3(m_c0);
-  s.vfunc_o10_10(m_c4);
-  s.vfunc_o10_3(m_d0);
+  s.WriteInt32(m_98);
+  s.WriteInt32(m_9c);
+  s.WriteInt32(m_a0);
+  s.WriteInt64(m_a8);
+  s.WriteInt64(m_b0);
+  s.WriteInt64(m_b8);
+  s.WriteInt32(m_c0);
+  s.WriteVector3(m_c4);
+  s.WriteInt32(m_d0);
   m_d4.FUN_140267e40(s);
-  s.vfunc_o10_6(FUN_1408f1a60());
-  s.vfunc_o10_8(FUN_1408f1ae0());
-  s.vfunc_o10_8(FUN_1408f1be0());
+  s.WriteUnicodeStringA(FUN_1408f1a60());
+  s.WriteUnicodeString(FUN_1408f1ae0());
+  s.WriteUnicodeString(FUN_1408f1be0());
   FUN_1408f0e90(s);
   if (m_330.get())
     m_330->vfunc_3(s);
   ATL::CAtlArray<unsigned __int64> values;
   FUN_1408f1270(values);
-  s.vfunc_o10_3(static_cast<int>(values.GetCount()));
+  s.WriteInt32(static_cast<int>(values.GetCount()));
   for (unsigned i = 0; i < values.GetCount(); ++i)
-    s.vfunc_o10_4(values[i]);
-  s.vfunc_o10_1(m_180);
-  s.vfunc_o10_0(m_184);
-  s.vfunc_o10_4(m_188);
-  s.vfunc_o10_3(m_190);
-  s.vfunc_o10_3(m_194);
-  s.vfunc_o10_4(m_198);
-  s.vfunc_o10_7(FUN_1408f1c60());
-  s.vfunc_o10_3(m_1a8);
-  s.vfunc_o10_4(m_1b0);
-  s.vfunc_o10_3(static_cast<int>(m_1b8.GetCount()));
+    s.WriteInt64(values[i]);
+  s.WriteUInt8(m_180);
+  s.WriteBool(m_184);
+  s.WriteInt64(m_188);
+  s.WriteInt32(m_190);
+  s.WriteInt32(m_194);
+  s.WriteInt64(m_198);
+  s.WriteString(FUN_1408f1c60());
+  s.WriteInt32(m_1a8);
+  s.WriteInt64(m_1b0);
+  s.WriteInt32(static_cast<int>(m_1b8.GetCount()));
   for (POSITION pos = m_1b8.GetHeadPosition(); pos != 0; m_1b8.GetNext(pos))
-    s.vfunc_o10_4(m_1b8.GetAt(pos));
-  s.vfunc_o10_3(static_cast<int>(m_1e8.GetCount()));
+    s.WriteInt64(m_1b8.GetAt(pos));
+  s.WriteInt32(static_cast<int>(m_1e8.GetCount()));
   for (POSITION pos = m_1e8.GetHeadPosition(); pos != 0; m_1e8.GetNext(pos))
-    s.vfunc_o10_4(m_1e8.GetAt(pos));
-  s.vfunc_o10_2(m_1ac);
-  s.vfunc_o10_4(m_88);
+    s.WriteInt64(m_1e8.GetAt(pos));
+  s.WriteInt16(m_1ac);
+  s.WriteInt64(m_88);
 }
 MS2_REPLACE_METHOD(0x1408EC5E0, Unk_UserProxy, FUN_1408ec5e0, 2952, 0x9BCC4DC2);
 
 // @0x1408ed170
 void Unk_UserProxy::FUN_1408ed170(CInPacket *p) {
-  m_0 = PROXY_STREAM(p)->vfunc_o8_4();
-  m_8 = PROXY_STREAM(p)->vfunc_o8_4();
-  FUN_1408f07e0(PROXY_STREAM(p)->vfunc_o8_8());
-  m_10 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_14 = PROXY_STREAM(p)->vfunc_o8_1();
-  m_24 = PROXY_STREAM(p)->vfunc_o8_1();
-  m_18 = PROXY_STREAM(p)->vfunc_o8_4();
-  m_20 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_218 = PROXY_STREAM(p)->vfunc_o8_6();
-  m_28 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_2c = PROXY_STREAM(p)->vfunc_o8_3();
-  m_30 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_34 = PROXY_STREAM(p)->vfunc_o8_2();
-  m_38 = static_cast<unsigned short>(PROXY_STREAM(p)->vfunc_o8_2());
-  m_3c = PROXY_STREAM(p)->vfunc_o8_3();
-  m_40 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_44 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_48 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_4c = PROXY_STREAM(p)->vfunc_o8_2();
-  m_50 = PROXY_STREAM(p)->vfunc_o8_4();
+  m_0 = PROXY_STREAM(p)->ReadInt64();
+  m_8 = PROXY_STREAM(p)->ReadInt64();
+  FUN_1408f07e0(PROXY_STREAM(p)->ReadUnicodeString());
+  m_10 = PROXY_STREAM(p)->ReadInt32();
+  m_14 = PROXY_STREAM(p)->ReadUInt8();
+  m_24 = PROXY_STREAM(p)->ReadUInt8();
+  m_18 = PROXY_STREAM(p)->ReadInt64();
+  m_20 = PROXY_STREAM(p)->ReadInt32();
+  m_218 = PROXY_STREAM(p)->ReadUnicodeStringA();
+  m_28 = PROXY_STREAM(p)->ReadInt32();
+  m_2c = PROXY_STREAM(p)->ReadInt32();
+  m_30 = PROXY_STREAM(p)->ReadInt32();
+  m_34 = PROXY_STREAM(p)->ReadInt16();
+  m_38 = static_cast<unsigned short>(PROXY_STREAM(p)->ReadInt16());
+  m_3c = PROXY_STREAM(p)->ReadInt32();
+  m_40 = PROXY_STREAM(p)->ReadInt32();
+  m_44 = PROXY_STREAM(p)->ReadInt32();
+  m_48 = PROXY_STREAM(p)->ReadInt32();
+  m_4c = PROXY_STREAM(p)->ReadInt16();
+  m_50 = PROXY_STREAM(p)->ReadInt64();
   for (int i = 0; i < 2; ++i)
-    m_58[i] = PROXY_STREAM(p)->vfunc_o8_3();
-  m_60 = PROXY_STREAM(p)->vfunc_o8_4();
-  m_70 = PROXY_STREAM(p)->vfunc_o8_4();
-  m_78 = PROXY_STREAM(p)->vfunc_o8_1();
-  m_80 = PROXY_STREAM(p)->vfunc_o8_4();
-  FUN_1408f0950(PROXY_STREAM(p)->vfunc_o8_8());
+    m_58[i] = PROXY_STREAM(p)->ReadInt32();
+  m_60 = PROXY_STREAM(p)->ReadInt64();
+  m_70 = PROXY_STREAM(p)->ReadInt64();
+  m_78 = PROXY_STREAM(p)->ReadUInt8();
+  m_80 = PROXY_STREAM(p)->ReadInt64();
+  FUN_1408f0950(PROXY_STREAM(p)->ReadUnicodeString());
   FUN_1408f1970(*p);
-  m_90 = PROXY_STREAM(p)->vfunc_o8_1();
+  m_90 = PROXY_STREAM(p)->ReadUInt8();
   m_94.Decode(*PROXY_STREAM(p));
-  m_98 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_9c = PROXY_STREAM(p)->vfunc_o8_3();
-  m_a0 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_a8 = PROXY_STREAM(p)->vfunc_o8_4();
-  m_b0 = PROXY_STREAM(p)->vfunc_o8_4();
-  m_b8 = PROXY_STREAM(p)->vfunc_o8_4();
-  m_c0 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_c4 = PROXY_STREAM(p)->vfunc_o8_10();
-  m_d0 = PROXY_STREAM(p)->vfunc_o8_3();
+  m_98 = PROXY_STREAM(p)->ReadInt32();
+  m_9c = PROXY_STREAM(p)->ReadInt32();
+  m_a0 = PROXY_STREAM(p)->ReadInt32();
+  m_a8 = PROXY_STREAM(p)->ReadInt64();
+  m_b0 = PROXY_STREAM(p)->ReadInt64();
+  m_b8 = PROXY_STREAM(p)->ReadInt64();
+  m_c0 = PROXY_STREAM(p)->ReadInt32();
+  m_c4 = PROXY_STREAM(p)->ReadVector3();
+  m_d0 = PROXY_STREAM(p)->ReadInt32();
   m_d4.FUN_140267e70(*PROXY_STREAM(p));
-  FUN_1408f0850(PROXY_STREAM(p)->vfunc_o8_6());
-  FUN_1408f08c0(PROXY_STREAM(p)->vfunc_o8_8());
-  FUN_1408f09c0(PROXY_STREAM(p)->vfunc_o8_8());
+  FUN_1408f0850(PROXY_STREAM(p)->ReadUnicodeStringA());
+  FUN_1408f08c0(PROXY_STREAM(p)->ReadUnicodeString());
+  FUN_1408f09c0(PROXY_STREAM(p)->ReadUnicodeString());
   FUN_1408f0f20(*PROXY_STREAM(p));
   if (m_330.get())
     m_330->vfunc_4(*(p ? PROXY_STREAM(p) : nullptr));
-  unsigned setCount = PROXY_STREAM(p)->vfunc_o8_3();
+  unsigned setCount = PROXY_STREAM(p)->ReadInt32();
   for (unsigned i = 0; i < setCount; ++i)
-    FUN_1408f1110(PROXY_STREAM(p)->vfunc_o8_4());
-  m_180 = PROXY_STREAM(p)->vfunc_o8_1();
-  m_184 = PROXY_STREAM(p)->vfunc_o8_0();
-  m_188 = PROXY_STREAM(p)->vfunc_o8_4();
-  m_190 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_194 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_198 = PROXY_STREAM(p)->vfunc_o8_4();
-  FUN_1408f0a30(PROXY_STREAM(p)->vfunc_o8_7());
-  m_1a8 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_1b0 = PROXY_STREAM(p)->vfunc_o8_4();
+    FUN_1408f1110(PROXY_STREAM(p)->ReadInt64());
+  m_180 = PROXY_STREAM(p)->ReadUInt8();
+  m_184 = PROXY_STREAM(p)->ReadBool();
+  m_188 = PROXY_STREAM(p)->ReadInt64();
+  m_190 = PROXY_STREAM(p)->ReadInt32();
+  m_194 = PROXY_STREAM(p)->ReadInt32();
+  m_198 = PROXY_STREAM(p)->ReadInt64();
+  FUN_1408f0a30(PROXY_STREAM(p)->ReadString());
+  m_1a8 = PROXY_STREAM(p)->ReadInt32();
+  m_1b0 = PROXY_STREAM(p)->ReadInt64();
   m_1b8.RemoveAll();
-  unsigned count_1b8 = PROXY_STREAM(p)->vfunc_o8_3();
+  unsigned count_1b8 = PROXY_STREAM(p)->ReadInt32();
   for (unsigned i = 0; i < count_1b8; ++i)
-    m_1b8.AddTail(PROXY_STREAM(p)->vfunc_o8_4());
+    m_1b8.AddTail(PROXY_STREAM(p)->ReadInt64());
   m_1e8.RemoveAll();
-  unsigned count_1e8 = PROXY_STREAM(p)->vfunc_o8_3();
+  unsigned count_1e8 = PROXY_STREAM(p)->ReadInt32();
   for (unsigned i = 0; i < count_1e8; ++i)
-    m_1e8.AddTail(PROXY_STREAM(p)->vfunc_o8_4());
-  m_1ac = PROXY_STREAM(p)->vfunc_o8_2();
-  m_88 = PROXY_STREAM(p)->vfunc_o8_4();
+    m_1e8.AddTail(PROXY_STREAM(p)->ReadInt64());
+  m_1ac = PROXY_STREAM(p)->ReadInt16();
+  m_88 = PROXY_STREAM(p)->ReadInt64();
 }
 MS2_REPLACE_METHOD(0x1408ED170, Unk_UserProxy, FUN_1408ed170, 4122, 0x30A08577);
 
 // @0x1408ee190
 void Unk_UserProxy::FUN_1408ee190(COutputStream &s) {
-  s.vfunc_o10_4(m_0);
-  s.vfunc_o10_4(m_8);
-  s.vfunc_o10_8(FUN_1408f19e0());
-  s.vfunc_o10_1(m_14);
-  s.vfunc_o10_1(m_78);
-  s.vfunc_o10_4(m_18);
-  s.vfunc_o10_3(m_20);
-  s.vfunc_o10_3(m_28);
-  s.vfunc_o10_3(m_2c);
-  s.vfunc_o10_3(m_30);
-  s.vfunc_o10_2(m_34);
-  s.vfunc_o10_2(m_38);
-  s.vfunc_o10_3(m_3c);
-  s.vfunc_o10_3(m_40);
-  s.vfunc_o10_3(m_44);
-  s.vfunc_o10_3(m_48);
-  s.vfunc_o10_2(m_4c);
-  s.vfunc_o10_4(m_50);
-  s.vfunc_o10_4(m_b0);
-  s.vfunc_o10_4(m_b8);
-  s.vfunc_o10_3(m_c0);
-  s.vfunc_o10_10(m_c4);
-  s.vfunc_o10_3(m_d0);
+  s.WriteInt64(m_0);
+  s.WriteInt64(m_8);
+  s.WriteUnicodeString(FUN_1408f19e0());
+  s.WriteUInt8(m_14);
+  s.WriteUInt8(m_78);
+  s.WriteInt64(m_18);
+  s.WriteInt32(m_20);
+  s.WriteInt32(m_28);
+  s.WriteInt32(m_2c);
+  s.WriteInt32(m_30);
+  s.WriteInt16(m_34);
+  s.WriteInt16(m_38);
+  s.WriteInt32(m_3c);
+  s.WriteInt32(m_40);
+  s.WriteInt32(m_44);
+  s.WriteInt32(m_48);
+  s.WriteInt16(m_4c);
+  s.WriteInt64(m_50);
+  s.WriteInt64(m_b0);
+  s.WriteInt64(m_b8);
+  s.WriteInt32(m_c0);
+  s.WriteVector3(m_c4);
+  s.WriteInt32(m_d0);
   for (int i = 0; i < 2; ++i)
-    s.vfunc_o10_3(m_58[i]);
-  s.vfunc_o10_4(m_70);
+    s.WriteInt32(m_58[i]);
+  s.WriteInt64(m_70);
   m_d4.FUN_140267e40(s);
-  s.vfunc_o10_4(m_80);
-  s.vfunc_o10_8(FUN_1408f1b60());
-  s.vfunc_o10_8(FUN_1408f1ae0());
-  s.vfunc_o10_6(FUN_1408f1a60());
+  s.WriteInt64(m_80);
+  s.WriteUnicodeString(FUN_1408f1b60());
+  s.WriteUnicodeString(FUN_1408f1ae0());
+  s.WriteUnicodeStringA(FUN_1408f1a60());
   FUN_1408f1900(s);
-  s.vfunc_o10_1(m_24);
+  s.WriteUInt8(m_24);
   for (size_t i = 0; i < 12; ++i)
-    s.vfunc_o10_3(m_140[i]);
+    s.WriteInt32(m_140[i]);
   if (m_330.get())
     m_330->vfunc_5(s);
   ATL::CAtlArray<unsigned __int64> values;
   FUN_1408f1270(values);
-  s.vfunc_o10_3(static_cast<int>(values.GetCount()));
+  s.WriteInt32(static_cast<int>(values.GetCount()));
   for (unsigned i = 0; i < values.GetCount(); ++i)
-    s.vfunc_o10_4(values[i]);
-  s.vfunc_o10_1(m_180);
-  s.vfunc_o10_0(m_184);
-  s.vfunc_o10_4(m_188);
-  s.vfunc_o10_3(m_190);
-  s.vfunc_o10_3(m_194);
-  s.vfunc_o10_4(m_198);
-  s.vfunc_o10_3(m_1a8);
-  s.vfunc_o10_4(m_1b0);
-  s.vfunc_o10_3(static_cast<int>(m_1b8.GetCount()));
+    s.WriteInt64(values[i]);
+  s.WriteUInt8(m_180);
+  s.WriteBool(m_184);
+  s.WriteInt64(m_188);
+  s.WriteInt32(m_190);
+  s.WriteInt32(m_194);
+  s.WriteInt64(m_198);
+  s.WriteInt32(m_1a8);
+  s.WriteInt64(m_1b0);
+  s.WriteInt32(static_cast<int>(m_1b8.GetCount()));
   for (POSITION pos = m_1b8.GetHeadPosition(); pos != 0; m_1b8.GetNext(pos))
-    s.vfunc_o10_4(m_1b8.GetAt(pos));
-  s.vfunc_o10_3(static_cast<int>(m_1e8.GetCount()));
+    s.WriteInt64(m_1b8.GetAt(pos));
+  s.WriteInt32(static_cast<int>(m_1e8.GetCount()));
   for (POSITION pos = m_1e8.GetHeadPosition(); pos != 0; m_1e8.GetNext(pos))
-    s.vfunc_o10_4(m_1e8.GetAt(pos));
-  s.vfunc_o10_2(m_1ac);
-  s.vfunc_o10_4(m_88);
+    s.WriteInt64(m_1e8.GetAt(pos));
+  s.WriteInt16(m_1ac);
+  s.WriteInt64(m_88);
 }
 MS2_REPLACE_METHOD(0x1408EE190, Unk_UserProxy, FUN_1408ee190, 2499, 0x0995AAE0);
 
 // @0x1408eeb60
 void Unk_UserProxy::FUN_1408eeb60(CInPacket *p) {
-  m_0 = PROXY_STREAM(p)->vfunc_o8_4();
-  m_8 = PROXY_STREAM(p)->vfunc_o8_4();
-  FUN_1408f07e0(PROXY_STREAM(p)->vfunc_o8_8());
-  m_14 = PROXY_STREAM(p)->vfunc_o8_1();
-  m_78 = PROXY_STREAM(p)->vfunc_o8_1();
-  m_18 = PROXY_STREAM(p)->vfunc_o8_4();
-  m_20 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_28 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_2c = PROXY_STREAM(p)->vfunc_o8_3();
-  m_30 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_34 = PROXY_STREAM(p)->vfunc_o8_2();
-  m_38 = static_cast<unsigned short>(PROXY_STREAM(p)->vfunc_o8_2());
-  m_3c = PROXY_STREAM(p)->vfunc_o8_3();
-  m_40 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_44 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_48 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_4c = PROXY_STREAM(p)->vfunc_o8_2();
-  m_50 = PROXY_STREAM(p)->vfunc_o8_4();
-  m_b0 = PROXY_STREAM(p)->vfunc_o8_4();
-  m_b8 = PROXY_STREAM(p)->vfunc_o8_4();
-  m_c0 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_c4 = PROXY_STREAM(p)->vfunc_o8_10();
-  m_d0 = PROXY_STREAM(p)->vfunc_o8_3();
+  m_0 = PROXY_STREAM(p)->ReadInt64();
+  m_8 = PROXY_STREAM(p)->ReadInt64();
+  FUN_1408f07e0(PROXY_STREAM(p)->ReadUnicodeString());
+  m_14 = PROXY_STREAM(p)->ReadUInt8();
+  m_78 = PROXY_STREAM(p)->ReadUInt8();
+  m_18 = PROXY_STREAM(p)->ReadInt64();
+  m_20 = PROXY_STREAM(p)->ReadInt32();
+  m_28 = PROXY_STREAM(p)->ReadInt32();
+  m_2c = PROXY_STREAM(p)->ReadInt32();
+  m_30 = PROXY_STREAM(p)->ReadInt32();
+  m_34 = PROXY_STREAM(p)->ReadInt16();
+  m_38 = static_cast<unsigned short>(PROXY_STREAM(p)->ReadInt16());
+  m_3c = PROXY_STREAM(p)->ReadInt32();
+  m_40 = PROXY_STREAM(p)->ReadInt32();
+  m_44 = PROXY_STREAM(p)->ReadInt32();
+  m_48 = PROXY_STREAM(p)->ReadInt32();
+  m_4c = PROXY_STREAM(p)->ReadInt16();
+  m_50 = PROXY_STREAM(p)->ReadInt64();
+  m_b0 = PROXY_STREAM(p)->ReadInt64();
+  m_b8 = PROXY_STREAM(p)->ReadInt64();
+  m_c0 = PROXY_STREAM(p)->ReadInt32();
+  m_c4 = PROXY_STREAM(p)->ReadVector3();
+  m_d0 = PROXY_STREAM(p)->ReadInt32();
   for (int i = 0; i < 2; ++i)
-    m_58[i] = PROXY_STREAM(p)->vfunc_o8_3();
-  m_70 = PROXY_STREAM(p)->vfunc_o8_4();
+    m_58[i] = PROXY_STREAM(p)->ReadInt32();
+  m_70 = PROXY_STREAM(p)->ReadInt64();
   m_d4.FUN_140267e70(*PROXY_STREAM(p));
-  m_80 = PROXY_STREAM(p)->vfunc_o8_4();
-  FUN_1408f0950(PROXY_STREAM(p)->vfunc_o8_8());
-  FUN_1408f08c0(PROXY_STREAM(p)->vfunc_o8_8());
-  FUN_1408f0850(PROXY_STREAM(p)->vfunc_o8_6());
+  m_80 = PROXY_STREAM(p)->ReadInt64();
+  FUN_1408f0950(PROXY_STREAM(p)->ReadUnicodeString());
+  FUN_1408f08c0(PROXY_STREAM(p)->ReadUnicodeString());
+  FUN_1408f0850(PROXY_STREAM(p)->ReadUnicodeStringA());
   FUN_1408f1970(*p);
-  m_24 = PROXY_STREAM(p)->vfunc_o8_1();
+  m_24 = PROXY_STREAM(p)->ReadUInt8();
   for (size_t i = 0; i < 12; ++i)
-    m_140[i] = PROXY_STREAM(p)->vfunc_o8_3();
+    m_140[i] = PROXY_STREAM(p)->ReadInt32();
   if (m_330.get())
     m_330->vfunc_6(*p);
-  unsigned setCount = PROXY_STREAM(p)->vfunc_o8_3();
+  unsigned setCount = PROXY_STREAM(p)->ReadInt32();
   for (unsigned i = 0; i < setCount; ++i)
-    FUN_1408f1110(PROXY_STREAM(p)->vfunc_o8_4());
-  m_180 = PROXY_STREAM(p)->vfunc_o8_1();
-  m_184 = PROXY_STREAM(p)->vfunc_o8_0();
-  m_188 = PROXY_STREAM(p)->vfunc_o8_4();
-  m_190 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_194 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_198 = PROXY_STREAM(p)->vfunc_o8_4();
-  m_1a8 = PROXY_STREAM(p)->vfunc_o8_3();
-  m_1b0 = PROXY_STREAM(p)->vfunc_o8_4();
+    FUN_1408f1110(PROXY_STREAM(p)->ReadInt64());
+  m_180 = PROXY_STREAM(p)->ReadUInt8();
+  m_184 = PROXY_STREAM(p)->ReadBool();
+  m_188 = PROXY_STREAM(p)->ReadInt64();
+  m_190 = PROXY_STREAM(p)->ReadInt32();
+  m_194 = PROXY_STREAM(p)->ReadInt32();
+  m_198 = PROXY_STREAM(p)->ReadInt64();
+  m_1a8 = PROXY_STREAM(p)->ReadInt32();
+  m_1b0 = PROXY_STREAM(p)->ReadInt64();
   m_1b8.RemoveAll();
-  unsigned count_1b8 = PROXY_STREAM(p)->vfunc_o8_3();
+  unsigned count_1b8 = PROXY_STREAM(p)->ReadInt32();
   for (unsigned i = 0; i < count_1b8; ++i)
-    m_1b8.AddTail(PROXY_STREAM(p)->vfunc_o8_4());
+    m_1b8.AddTail(PROXY_STREAM(p)->ReadInt64());
   m_1e8.RemoveAll();
-  unsigned count_1e8 = PROXY_STREAM(p)->vfunc_o8_3();
+  unsigned count_1e8 = PROXY_STREAM(p)->ReadInt32();
   for (unsigned i = 0; i < count_1e8; ++i)
-    m_1e8.AddTail(PROXY_STREAM(p)->vfunc_o8_4());
-  m_1ac = PROXY_STREAM(p)->vfunc_o8_2();
-  m_88 = PROXY_STREAM(p)->vfunc_o8_4();
+    m_1e8.AddTail(PROXY_STREAM(p)->ReadInt64());
+  m_1ac = PROXY_STREAM(p)->ReadInt16();
+  m_88 = PROXY_STREAM(p)->ReadInt64();
 }
 MS2_REPLACE_METHOD(0x1408EEB60, Unk_UserProxy, FUN_1408eeb60, 3352, 0x1D7DF205);
 
 // @0x1408ef880
 void Unk_UserProxy::FUN_1408ef880(COutputStream &s) {
   m_340->m_18.FUN_1408e97e0(s);
-  s.vfunc_o10_4(m_340->m_198);
+  s.WriteInt64(m_340->m_198);
 }
 MS2_REPLACE_METHOD(0x1408EF880, Unk_UserProxy, FUN_1408ef880, 107, 0x7288E7FB);
 
 // @0x1408ef900
 void Unk_UserProxy::FUN_1408ef900(CInPacket &p) {
   m_340->m_18.FUN_1408e9b40(*PROXY_STREAM(&p));
-  m_340->m_198 = PROXY_STREAM(&p)->vfunc_o8_4();
+  m_340->m_198 = PROXY_STREAM(&p)->ReadInt64();
 }
 MS2_REPLACE_METHOD(0x1408EF900, Unk_UserProxy, FUN_1408ef900, 138, 0x6A87F2EE);
 
@@ -1967,16 +1967,16 @@ void Unk_UserProxyLabel::CopyFrom(const Unk_UserProxyLabel &p) {
 // @0x1408f2d20
 void Unk_UserProxyBits::Decode(CInputStream &s) {
   for (int i = 0; i < 1; ++i)
-    m_bits[i] = s.vfunc_o8_1();
+    m_bits[i] = s.ReadUInt8();
 }
 
 // @0x1408f2d70
 void Unk_UserProxyLabel::Decode(CInputStream &s) {
-  m_0 = s.vfunc_o8_8();
-  m_8 = s.vfunc_o8_3();
-  m_c = s.vfunc_o8_3();
-  m_10 = s.vfunc_o8_3();
-  m_18 = s.vfunc_o8_4();
+  m_0 = s.ReadUnicodeString();
+  m_8 = s.ReadInt32();
+  m_c = s.ReadInt32();
+  m_10 = s.ReadInt32();
+  m_18 = s.ReadInt64();
 }
 
 // @0x1408f2e30
@@ -1985,16 +1985,16 @@ void CPlatformProxy::vfunc_6(CInPacket &p) {}
 // @0x1408f2e40
 void Unk_UserProxyBits::Encode(COutputStream &s) {
   for (int i = 0; i < 1; ++i)
-    s.vfunc_o10_1(m_bits[i]);
+    s.WriteUInt8(m_bits[i]);
 }
 
 // @0x1408f2ea0
 void Unk_UserProxyLabel::Encode(COutputStream &s) {
-  s.vfunc_o10_8(m_0);
-  s.vfunc_o10_3(m_8);
-  s.vfunc_o10_3(m_c);
-  s.vfunc_o10_3(m_10);
-  s.vfunc_o10_4(m_18);
+  s.WriteUnicodeString(m_0);
+  s.WriteInt32(m_8);
+  s.WriteInt32(m_c);
+  s.WriteInt32(m_10);
+  s.WriteInt64(m_18);
 }
 
 // @0x1408f2f40

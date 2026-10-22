@@ -459,7 +459,7 @@ MS2_REPLACE_METHOD(0x14162A480, CPartyManager, FUN_14162a480, 34, 0xDCF04E52);
 // @0x14162a4b0
 void CPartyManager::OnParty(CInPacket& packet)
 {
-    switch (static_cast<CInputStream&>(packet).vfunc_o8_1()) {
+    switch (packet.ReadUInt8()) {
     case 0: FUN_14162f030(packet); break;
     case 2: FUN_14162cc40(packet); break;
     case 3: FUN_14162cea0(packet); break;
@@ -991,8 +991,8 @@ MS2_REPLACE_METHOD(0x14162C670, CPartyManager, FUN_14162c670, 569, 0xC47B4580);
 void CPartyManager::FUN_14162c8b0(CInPacket& packet)
 {
     CInputStream& stream = packet;
-    partyName = stream.vfunc_o8_8();
-    partyKind = stream.vfunc_o8_3();
+    partyName = stream.ReadUnicodeString();
+    partyKind = stream.ReadInt32();
     Unk_PartyPlayer* player = static_cast<Unk_PartyPlayer*>(
         static_cast<WorldService*>(FUN_1403ed2d0())->FUN_141bd0cc0());
     if (FUN_140ae6540(FUN_1409a8b10())->refuseParty) {
@@ -1045,8 +1045,8 @@ MS2_REPLACE_METHOD(0x14162CC40, CPartyManager, FUN_14162cc40, 593, 0x3F7FDB2A);
 void CPartyManager::FUN_14162cea0(CInPacket& packet)
 {
     CInputStream& stream = packet;
-    __int64 id = stream.vfunc_o8_4();
-    bool disband = stream.vfunc_o8_0();
+    __int64 id = stream.ReadInt64();
+    bool disband = stream.ReadBool();
     MS2Ptr<CPartyMember> p = FUN_14162afc0(id);
     if (p.get() != NULL) {
         if (!disband) {
@@ -1068,7 +1068,7 @@ MS2_REPLACE_METHOD(0x14162CEA0, CPartyManager, FUN_14162cea0, 458, 0xBE002F26);
 // @0x14162d070
 void CPartyManager::FUN_14162d070(CInPacket& packet)
 {
-    __int64 id = static_cast<CInputStream&>(packet).vfunc_o8_4();
+    __int64 id = packet.ReadInt64();
     MS2Ptr<CPartyMember> p = FUN_14162afc0(id);
     if (p.get() != NULL) {
         if (DAT_143ab2828 == p->FUN_141637bb0()) {
@@ -1102,7 +1102,7 @@ MS2_REPLACE_METHOD(0x14162D220, CPartyManager, FUN_14162d220, 123, 0x0016246B);
 // @0x14162d2b0
 void CPartyManager::FUN_14162d2b0(CInPacket& packet)
 {
-    __int64 id = static_cast<CInputStream&>(packet).vfunc_o8_4();
+    __int64 id = packet.ReadInt64();
     CStringW name;
     if (id != 0 && id != leaderId) {
         __int64 oldId = leaderId;
@@ -1137,14 +1137,14 @@ void CPartyManager::FUN_14162d5b0(CInPacket& packet)
         FUN_141630fd0();
         FUN_141adc5d0(FUN_1403ed2b0(), 0x4e45);
     }
-    bool announce = stream.vfunc_o8_0();
-    partyId = stream.vfunc_o8_3();
-    leaderId = stream.vfunc_o8_4();
-    unsigned count = stream.vfunc_o8_1();
+    bool announce = stream.ReadBool();
+    partyId = stream.ReadInt32();
+    leaderId = stream.ReadInt64();
+    unsigned count = stream.ReadUInt8();
     members.RemoveAll();
     for (int i = 0; i < static_cast<int>(count) && i < 10; ++i) {
         MS2Ptr<CPartyMember> p(new CPartyMember(i));
-        p->offline = stream.vfunc_o8_0();
+        p->offline = stream.ReadBool();
         p->user.FUN_1408eeb60(&packet);
         FUN_140268210(&p->counters, stream);
         if (FUN_141630c30(p->user.m_8)) p->FUN_141637af0(1);
@@ -1157,7 +1157,7 @@ void CPartyManager::FUN_14162d5b0(CInPacket& packet)
     FUN_14031bf10(stream, permissions);
     FUN_14070f300(stream, flag29);
     __int64 previousRecruit = recruitment.recruitId;
-    unsigned hasRecruit = stream.vfunc_o8_1();
+    unsigned hasRecruit = stream.ReadUInt8();
     if (hasRecruit != 0) recruitment.FUN_140694c10(packet);
     bool changed = previousRecruit != recruitment.recruitId;
     if (FUN_14162af00() > 1) {
@@ -1207,7 +1207,7 @@ MS2_REPLACE_METHOD(0x14162DB10, CPartyManager, FUN_14162db10, 808, 0x4F26012C);
 // @0x14162de40
 void CPartyManager::FUN_14162de40(CInPacket& packet)
 {
-    __int64 id = static_cast<CInputStream&>(packet).vfunc_o8_4();
+    __int64 id = packet.ReadInt64();
     MS2Ptr<CPartyMember> p = FUN_14162afc0(id);
     if (p.get() != NULL) {
         p->FUN_141637a40(true);
@@ -1224,7 +1224,7 @@ MS2_REPLACE_METHOD(0x14162DE40, CPartyManager, FUN_14162de40, 377, 0xDA2CA186);
 // @0x14162dfc0
 void CPartyManager::FUN_14162dfc0(CInPacket& packet)
 {
-    __int64 id = static_cast<CInputStream&>(packet).vfunc_o8_4();
+    __int64 id = packet.ReadInt64();
     MS2Ptr<CPartyMember> p = FUN_14162afc0(id);
     if (p.get() != NULL) {
         CString oldName = p->user.FUN_1408f1a60();
@@ -1243,7 +1243,7 @@ MS2_REPLACE_METHOD(0x14162DFC0, CPartyManager, FUN_14162dfc0, 312, 0xF779CB13);
 // @0x14162e100
 void CPartyManager::FUN_14162e100(CInPacket& packet)
 {
-    __int64 id = static_cast<CInputStream&>(packet).vfunc_o8_4();
+    __int64 id = packet.ReadInt64();
     MS2Ptr<CPartyMember> p = FUN_14162afc0(id);
     if (p.get() != NULL) {
         CString oldName = p->user.FUN_1408f1a60();
@@ -1263,7 +1263,7 @@ MS2_REPLACE_METHOD(0x14162E100, CPartyManager, FUN_14162e100, 312, 0x52858474);
 void CPartyManager::FUN_14162e240(CInPacket& packet)
 {
     CInputStream& stream = packet;
-    __int64 id = stream.vfunc_o8_4();
+    __int64 id = stream.ReadInt64();
     Unk_PartyCounters counters;
     FUN_140268210(&counters, stream);
     MS2Ptr<CPartyMember> member = FUN_14162afc0(id);
@@ -1276,8 +1276,8 @@ MS2_REPLACE_METHOD(0x14162E240, CPartyManager, FUN_14162e240, 199, 0xF491A26D);
 void CPartyManager::FUN_14162e310(CInPacket& packet)
 {
     CInputStream& stream = packet;
-    __int64 id = stream.vfunc_o8_4();
-    int value = stream.vfunc_o8_3();
+    __int64 id = stream.ReadInt64();
+    int value = stream.ReadInt32();
     MS2Ptr<CPartyMember> p = FUN_14162afc0(id);
     if (p.get() != NULL) p->user.m_d0 = value;
 }
@@ -1288,8 +1288,8 @@ MS2_REPLACE_METHOD(0x14162E310, CPartyManager, FUN_14162e310, 171, 0x3FCCCFBD);
 void CPartyManager::FUN_14162e3d0(CInPacket& packet)
 {
     CInputStream& stream = packet;
-    __int64 id = stream.vfunc_o8_4();
-    unsigned char result = stream.vfunc_o8_1();
+    __int64 id = stream.ReadInt64();
+    unsigned char result = stream.ReadUInt8();
     MS2Ptr<CPartyMember> p = FUN_14162afc0(id);
     if (p.get() != NULL) {
         if (p->FUN_141637bb0() == DAT_143ab2828) return;
@@ -1304,9 +1304,9 @@ MS2_REPLACE_METHOD(0x14162E3D0, CPartyManager, FUN_14162e3d0, 497, 0x49BC7140);
 void CPartyManager::FUN_14162e5d0(CInPacket& packet)
 {
     CInputStream& stream = packet;
-    CStringW key = stream.vfunc_o8_8();
-    CStringW sound = stream.vfunc_o8_8();
-    CStringW argument = stream.vfunc_o8_8();
+    CStringW key = stream.ReadUnicodeString();
+    CStringW sound = stream.ReadUnicodeString();
+    CStringW argument = stream.ReadUnicodeString();
     CStringW text = FUN_1405c2690(key, argument);
     FUN_1412751b0(text, 2);
     FUN_1412760f0(sound, CString(""));
@@ -1318,7 +1318,7 @@ MS2_REPLACE_METHOD(0x14162E5D0, CPartyManager, FUN_14162e5d0, 333, 0xD8F6A23F);
 void CPartyManager::FUN_14162e730(CInPacket& packet)
 {
     CStringW text = StringIdInterface(packet).FUN_141024e60();
-    CStringW sound = static_cast<CInputStream&>(packet).vfunc_o8_8();
+    CStringW sound = packet.ReadUnicodeString();
     FUN_1412751b0(text, 2);
     FUN_1412760f0(sound, CString(""));
 }
@@ -1330,8 +1330,8 @@ void CPartyManager::FUN_14162e820(CInPacket& packet)
 {
     CInputStream& stream = packet;
     int previousDungeon = dungeonId;
-    matchmaking = stream.vfunc_o8_0();
-    dungeonId = stream.vfunc_o8_3();
+    matchmaking = stream.ReadBool();
+    dungeonId = stream.ReadInt32();
     if (!matchmaking) {
         if (FUN_14162ab20() && previousDungeon != 0 && dungeonId != 0 && previousDungeon != dungeonId) {
             CStringW name = FUN_1401a9d70()->FUN_141811980(0x14, dungeonId);
@@ -1346,7 +1346,7 @@ MS2_REPLACE_METHOD(0x14162E820, CPartyManager, FUN_14162e820, 411, 0x58877D82);
 void CPartyManager::FUN_14162e9d0(CInPacket& packet)
 {
     CMatchPartyRecruit updated;
-    if (static_cast<CInputStream&>(packet).vfunc_o8_1() != 0) updated.FUN_140694c10(packet);
+    if (packet.ReadUInt8() != 0) updated.FUN_140694c10(packet);
     FUN_141631f30(recruitment, updated);
     recruitment.FUN_140694f70(updated);
 }
@@ -1357,9 +1357,9 @@ MS2_REPLACE_METHOD(0x14162E9D0, CPartyManager, FUN_14162e9d0, 178, 0x25C43414);
 void CPartyManager::FUN_14162ea90(CInPacket& packet)
 {
     CInputStream& stream = packet;
-    unsigned char kind = stream.vfunc_o8_1();
-    bool registered = stream.vfunc_o8_0();
-    bool announce = stream.vfunc_o8_0();
+    unsigned char kind = stream.ReadUInt8();
+    bool registered = stream.ReadBool();
+    bool announce = stream.ReadBool();
     FUN_14031bf10(stream, permissions);
     if (announce) {
         CStringW name = FUN_140cbf840(FUN_140217850(kind));
@@ -1389,7 +1389,7 @@ void CPartyManager::FUN_14162ed60()
 // @0x14162ee10
 void CPartyManager::FUN_14162ee10(CInPacket& packet)
 {
-    __int64 value = static_cast<CInputStream&>(packet).vfunc_o8_4();
+    __int64 value = packet.ReadInt64();
     FUN_140d9f310(FUN_140931510(), value);
 }
 MS2_REPLACE_METHOD(0x14162EE10, CPartyManager, FUN_14162ee10, 76, 0x8AE4F91C);
@@ -1399,8 +1399,8 @@ MS2_REPLACE_METHOD(0x14162EE10, CPartyManager, FUN_14162ee10, 76, 0x8AE4F91C);
 void CPartyManager::FUN_14162ee70(CInPacket& packet)
 {
     CInputStream& stream = packet;
-    __int64 id = stream.vfunc_o8_4();
-    CStringW name = stream.vfunc_o8_8();
+    __int64 id = stream.ReadInt64();
+    CStringW name = stream.ReadUnicodeString();
     CStringW text = StringIdInterface(packet).FUN_141024e60();
     if (!FUN_140a25840(FUN_1409c1730(), 0, name)) {
         if (FUN_140ae5240(FUN_14097a780(), name) == 0) {
@@ -1416,8 +1416,8 @@ MS2_REPLACE_METHOD(0x14162EE70, CPartyManager, FUN_14162ee70, 428, 0x5978F40A);
 void CPartyManager::FUN_14162f030(CInPacket& packet)
 {
     CInputStream& stream = packet;
-    unsigned result = stream.vfunc_o8_1();
-    CStringW name = stream.vfunc_o8_8();
+    unsigned result = stream.ReadUInt8();
+    CStringW name = stream.ReadUnicodeString();
     switch (result - 2) {
     case 0: FUN_1412751b0(FUN_14052bd00(0x32d, name), 0x14); break;
     default: FUN_1412751b0(FUN_14052bd00(0x979, name), 0x14); break;
@@ -1471,7 +1471,7 @@ MS2_REPLACE_METHOD(0x14162F030, CPartyManager, FUN_14162f030, 4585, 0x989DDB69);
 // @0x1416302f0
 void CPartyManager::FUN_1416302f0(CInPacket& packet)
 {
-    unsigned milliseconds = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    unsigned milliseconds = packet.ReadInt32();
     unsigned seconds = milliseconds / 1000 + 1;
     FUN_1412751b0(FUN_140938ae0(L"s_party_find_dungeon_helper_cooldown", seconds), 0x14);
 }
@@ -1481,7 +1481,7 @@ MS2_REPLACE_METHOD(0x1416302F0, CPartyManager, FUN_1416302f0, 186, 0x6CE86D98);
 // @0x1416303b0
 void CPartyManager::FUN_1416303b0(CInPacket& packet)
 {
-    CStringW name = static_cast<CInputStream&>(packet).vfunc_o8_8();
+    CStringW name = packet.ReadUnicodeString();
     FUN_141630cb0();
     if (invitations.find(name) == invitations.end()) {
         void* ui = FUN_140a3ab70(0x4e61);
@@ -1499,7 +1499,7 @@ MS2_REPLACE_METHOD(0x1416303B0, CPartyManager, FUN_1416303b0, 398, 0xE942D0CD);
 // @0x141630550
 void CPartyManager::FUN_141630550(CInPacket& packet)
 {
-    vote = FUN_140a89240(static_cast<CInputStream&>(packet).vfunc_o8_1());
+    vote = FUN_140a89240(packet.ReadUInt8());
     if (!(vote == NULL)) {
         vote->vfunc_1(packet);
         vote->vfunc_2();
@@ -1512,8 +1512,8 @@ MS2_REPLACE_METHOD(0x141630550, CPartyManager, FUN_141630550, 269, 0x645860E9);
 void CPartyManager::FUN_141630670(CInPacket& packet)
 {
     CInputStream& stream = packet;
-    __int64 id = stream.vfunc_o8_4();
-    bool yes = stream.vfunc_o8_0();
+    __int64 id = stream.ReadInt64();
+    bool yes = stream.ReadBool();
     if (!(vote == NULL)) vote->FUN_140a894e0(id, yes);
 }
 MS2_REPLACE_METHOD(0x141630670, CPartyManager, FUN_141630670, 163, 0x94778140);
@@ -1534,8 +1534,8 @@ MS2_REPLACE_METHOD(0x141630720, CPartyManager, FUN_141630720, 93, 0xB83564F9);
 void CPartyManager::FUN_141630790(CInPacket& packet)
 {
     CInputStream& stream = packet;
-    flag29 = stream.vfunc_o8_0();
-    bool notify = stream.vfunc_o8_0();
+    flag29 = stream.ReadBool();
+    bool notify = stream.ReadBool();
     if (notify) {
         int channel = 0xe;
         if (FUN_14162ab20() == true) channel = 2;
@@ -1559,7 +1559,7 @@ void CPartyManager::FUN_141630790(CInPacket& packet)
 // @0x141630a60
 void CPartyManager::FUN_141630a60(CInPacket& packet)
 {
-    int dungeon = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int dungeon = packet.ReadInt32();
     if (!FUN_14162ab60()) {
         CStringW name = FUN_1401a9d70()->FUN_141811980(0x14, dungeon);
         FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &CPartyManager::FUN_141630c70),
@@ -1639,7 +1639,7 @@ MS2_REPLACE_METHOD(0x141631060, CPartyManager, FUN_141631060, 91, 0x2A2536B7);
 // @0x1416310d0
 void CPartyManager::OnMatchParty(CInPacket& packet)
 {
-    int type = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int type = packet.ReadUInt8();
     switch (type) {
     case 0: FUN_141631370(packet); break;
     case 1: FUN_141631410(packet); break;
@@ -1712,7 +1712,7 @@ MS2_REPLACE_METHOD(0x141631370, CPartyManager, FUN_141631370, 142, 0x718E9365);
 // @0x141631410
 void CPartyManager::FUN_141631410(CInPacket& packet)
 {
-    __int64 id = static_cast<CInputStream&>(packet).vfunc_o8_4();
+    __int64 id = packet.ReadInt64();
     if (recruitment.recruitId == id) {
         CMatchPartyRecruit empty;
         FUN_141631f30(recruitment, empty);
@@ -1726,7 +1726,7 @@ MS2_REPLACE_METHOD(0x141631410, CPartyManager, FUN_141631410, 168, 0xF4FB48FA);
 void CPartyManager::FUN_1416314c0(CInPacket& packet)
 {
     CInputStream& stream = packet;
-    unsigned count = stream.vfunc_o8_3();
+    unsigned count = stream.ReadInt32();
     if (searchPending != 0) {
         results.RemoveAll();
         recruits.RemoveAll();
@@ -1736,7 +1736,7 @@ void CPartyManager::FUN_1416314c0(CInPacket& packet)
     if (static_cast<int>(results.GetCount()) - 1 < 0) last = 0;
     else last = static_cast<int>(results.GetCount()) - 1;
     for (unsigned i = 0; i < count; ++i) {
-        if (stream.vfunc_o8_1() != 0) {
+        if (stream.ReadUInt8() != 0) {
             MS2Ptr<CMatchPartyRecruit> p(new CMatchPartyRecruit);
             p->FUN_140694c10(packet);
             results.Add(p);
@@ -1753,8 +1753,8 @@ MS2_REPLACE_METHOD(0x1416314C0, CPartyManager, FUN_1416314c0, 561, 0x09B1B047);
 void CPartyManager::FUN_141631700(CInPacket& packet)
 {
     CInputStream& stream = packet;
-    int type = stream.vfunc_o8_1();
-    Unk_PartyRecruitError result = static_cast<Unk_PartyRecruitError>(stream.vfunc_o8_3());
+    int type = stream.ReadUInt8();
+    Unk_PartyRecruitError result = static_cast<Unk_PartyRecruitError>(stream.ReadInt32());
     if (type == 0) recruitPending = 0;
     if (result == 99) FUN_140f8ff40(0xb46, 1, 1);
     else if (result == 0x65) FUN_140d73bc0(0xb47, 0, 0, L"");

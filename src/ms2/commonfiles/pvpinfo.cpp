@@ -145,91 +145,91 @@ int CPvPInfo::FUN_140743940()
 // @0x1407439a0
 void CPvPInfo::FUN_1407439a0(COutputStream* pOut)
 {
-    pOut->vfunc_o10_3(m_nPoint);
-    pOut->vfunc_o10_1((unsigned char)m_nTeam);
-    pOut->vfunc_o10_1((unsigned char)m_nMode);
+    pOut->WriteInt32(m_nPoint);
+    pOut->WriteUInt8((unsigned char)m_nTeam);
+    pOut->WriteUInt8((unsigned char)m_nMode);
 }
 
 // @0x140743a10
 void CPvPInfo::FUN_140743a10(CInPacket& packet)
 {
-    m_nPoint = packet.vfunc_o8_3();
-    m_nTeam = packet.vfunc_o8_1();
-    m_nMode = packet.vfunc_o8_1();
+    m_nPoint = packet.ReadInt32();
+    m_nTeam = packet.ReadUInt8();
+    m_nMode = packet.ReadUInt8();
 }
 
 // @0x140743ab0
 void CPvPInfo::FUN_140743ab0(COutputStream* pOut)
 {
-    pOut->vfunc_o10_3(m_nWin);
-    pOut->vfunc_o10_3(m_nLose);
-    pOut->vfunc_o10_3(m_nKill);
+    pOut->WriteInt32(m_nWin);
+    pOut->WriteInt32(m_nLose);
+    pOut->WriteInt32(m_nKill);
 }
 
 // @0x140743b20
 void CPvPInfo::FUN_140743b20(CInPacket& packet)
 {
-    m_nWin = packet.vfunc_o8_3();
-    m_nLose = packet.vfunc_o8_3();
-    m_nKill = packet.vfunc_o8_3();
+    m_nWin = packet.ReadInt32();
+    m_nLose = packet.ReadInt32();
+    m_nKill = packet.ReadInt32();
 }
 
 // @0x140743bc0
 void FUN_140743bc0(Unk_TrigPvpA* pBlock, COutputStream* pOut)
 {
-    pOut->vfunc_o10_4(pBlock->m_0);
-    pOut->vfunc_o10_3((int)pBlock->m_8);
-    pOut->vfunc_o10_3((int)pBlock->m_10);
-    pOut->vfunc_o10_1((unsigned char)pBlock->m_18);
-    pOut->vfunc_o10_4(pBlock->m_20);
-    pOut->vfunc_o10_3((int)pBlock->m_28);
-    pOut->vfunc_o10_3((int)pBlock->m_30);
-    pOut->vfunc_o10_1((unsigned char)pBlock->m_38);
+    pOut->WriteInt64(pBlock->m_0);
+    pOut->WriteInt32((int)pBlock->m_8);
+    pOut->WriteInt32((int)pBlock->m_10);
+    pOut->WriteUInt8((unsigned char)pBlock->m_18);
+    pOut->WriteInt64(pBlock->m_20);
+    pOut->WriteInt32((int)pBlock->m_28);
+    pOut->WriteInt32((int)pBlock->m_30);
+    pOut->WriteUInt8((unsigned char)pBlock->m_38);
 }
 
 // @0x140743ca0
 void FUN_140743ca0(Unk_TrigPvpA* pBlock, CInPacket* pPacket)
 {
-    pBlock->m_0 = pPacket->vfunc_o8_4();
-    pBlock->m_8 = (unsigned)pPacket->vfunc_o8_3();
-    pBlock->m_10 = (unsigned)pPacket->vfunc_o8_3();
-    pBlock->m_18 = pPacket->vfunc_o8_1();
-    pBlock->m_20 = pPacket->vfunc_o8_4();
-    pBlock->m_28 = (unsigned)pPacket->vfunc_o8_3();
-    pBlock->m_30 = (unsigned)pPacket->vfunc_o8_3();
-    pBlock->m_38 = pPacket->vfunc_o8_1();
+    pBlock->m_0 = pPacket->ReadInt64();
+    pBlock->m_8 = (unsigned)pPacket->ReadInt32();
+    pBlock->m_10 = (unsigned)pPacket->ReadInt32();
+    pBlock->m_18 = pPacket->ReadUInt8();
+    pBlock->m_20 = pPacket->ReadInt64();
+    pBlock->m_28 = (unsigned)pPacket->ReadInt32();
+    pBlock->m_30 = (unsigned)pPacket->ReadInt32();
+    pBlock->m_38 = pPacket->ReadUInt8();
 }
 
 // @0x140743e20
 void FUN_140743e20(Unk_TrigPvpB* pBlock, COutputStream* pOut)
 {
-    pOut->vfunc_o10_4(pBlock->m_0);
-    pOut->vfunc_o10_3((int)pBlock->m_8);
-    pOut->vfunc_o10_3((int)pBlock->m_10);
-    pOut->vfunc_o10_1((unsigned char)pBlock->m_18);
-    pOut->vfunc_o10_3(pBlock->m_1c);
-    pOut->vfunc_o10_4(pBlock->m_20);
-    pOut->vfunc_o10_3((int)pBlock->m_28);
-    pOut->vfunc_o10_3((int)pBlock->m_30);
-    pOut->vfunc_o10_1((unsigned char)pBlock->m_38);
-    pOut->vfunc_o10_3(pBlock->m_3c);
-    pOut->vfunc_o10_3(pBlock->m_40);
+    pOut->WriteInt64(pBlock->m_0);
+    pOut->WriteInt32((int)pBlock->m_8);
+    pOut->WriteInt32((int)pBlock->m_10);
+    pOut->WriteUInt8((unsigned char)pBlock->m_18);
+    pOut->WriteInt32(pBlock->m_1c);
+    pOut->WriteInt64(pBlock->m_20);
+    pOut->WriteInt32((int)pBlock->m_28);
+    pOut->WriteInt32((int)pBlock->m_30);
+    pOut->WriteUInt8((unsigned char)pBlock->m_38);
+    pOut->WriteInt32(pBlock->m_3c);
+    pOut->WriteInt32(pBlock->m_40);
 }
 
 // @0x140743f50
 void FUN_140743f50(Unk_TrigPvpB* pBlock, CInPacket* pPacket)
 {
-    pBlock->m_0 = pPacket->vfunc_o8_4();
-    pBlock->m_8 = (unsigned)pPacket->vfunc_o8_3();
-    pBlock->m_10 = (unsigned)pPacket->vfunc_o8_3();
-    pBlock->m_18 = pPacket->vfunc_o8_1();
-    pBlock->m_1c = pPacket->vfunc_o8_3();
-    pBlock->m_20 = pPacket->vfunc_o8_4();
-    pBlock->m_28 = (unsigned)pPacket->vfunc_o8_3();
-    pBlock->m_30 = (unsigned)pPacket->vfunc_o8_3();
-    pBlock->m_38 = pPacket->vfunc_o8_1();
-    pBlock->m_3c = pPacket->vfunc_o8_3();
-    pBlock->m_40 = pPacket->vfunc_o8_3();
+    pBlock->m_0 = pPacket->ReadInt64();
+    pBlock->m_8 = (unsigned)pPacket->ReadInt32();
+    pBlock->m_10 = (unsigned)pPacket->ReadInt32();
+    pBlock->m_18 = pPacket->ReadUInt8();
+    pBlock->m_1c = pPacket->ReadInt32();
+    pBlock->m_20 = pPacket->ReadInt64();
+    pBlock->m_28 = (unsigned)pPacket->ReadInt32();
+    pBlock->m_30 = (unsigned)pPacket->ReadInt32();
+    pBlock->m_38 = pPacket->ReadUInt8();
+    pBlock->m_3c = pPacket->ReadInt32();
+    pBlock->m_40 = pPacket->ReadInt32();
 }
 
 // @0x1407441f0

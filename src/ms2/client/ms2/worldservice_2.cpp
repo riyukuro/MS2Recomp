@@ -225,7 +225,7 @@ template <class T> CInputStream& operator>>(CInputStream& in, MS2Ptr<T>& sp)
 template <class K, class V, class KTraits, class VTraits>
 CInputStream& operator>>(CInputStream& in, ATL::CAtlMap<K, V, KTraits, VTraits>& map)
 {
-    unsigned nCount = in.vfunc_o8_3();
+    unsigned nCount = in.ReadInt32();
     for (unsigned i = 0; i < nCount; ++i)
     {
         V value;

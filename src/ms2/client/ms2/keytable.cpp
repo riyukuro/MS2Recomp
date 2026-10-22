@@ -307,10 +307,10 @@ CKeyTable::~CKeyTable()
 // @0x141428bb0
 void CKeyTable::OnKeyTable(CInPacket& packet)
 {
-    int nMode = packet.vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 0)
     {
-        int nDefault = packet.vfunc_o8_1();
+        int nDefault = packet.ReadUInt8();
         FUN_14142a800();
         if (nDefault == 1)
         {
@@ -325,7 +325,7 @@ void CKeyTable::OnKeyTable(CInPacket& packet)
         }
         else
         {
-            int nCount = packet.vfunc_o8_3();
+            int nCount = packet.ReadInt32();
             if (nCount == 0)
             {
                 FUN_1414297e0("./Data/Xml/Table/default/DefaultKey.xml", 0);
@@ -341,29 +341,29 @@ void CKeyTable::OnKeyTable(CInPacket& packet)
             {
                 for (int i = 0; i < nCount; i++)
                 {
-                    int nKey = packet.vfunc_o8_3();
-                    int nType = packet.vfunc_o8_3();
-                    __int64 nCode = packet.vfunc_o8_4();
-                    int nSlot = packet.vfunc_o8_3();
-                    int nPriority = packet.vfunc_o8_1();
+                    int nKey = packet.ReadInt32();
+                    int nType = packet.ReadInt32();
+                    __int64 nCode = packet.ReadInt64();
+                    int nSlot = packet.ReadInt32();
+                    int nPriority = packet.ReadUInt8();
                     FUN_141431c80(nKey, nType, nCode, nSlot, nPriority, 0);
                     if (nCode != 0)
                         FUN_141432360((int)nCode);
                 }
             }
-            int nPage = (unsigned short)packet.vfunc_o8_2();
+            int nPage = (unsigned short)packet.ReadInt16();
             m_quickSlots.RemoveAll();
-            int nPages = (unsigned short)packet.vfunc_o8_2();
+            int nPages = (unsigned short)packet.ReadInt16();
             m_quickSlots.SetCount(nPages, -1);
             for (int i = 0; i < nPages; i++)
             {
-                int nSlots = packet.vfunc_o8_3();
+                int nSlots = packet.ReadInt32();
                 for (int j = 0; j < nSlots; j++)
                 {
-                    int nSlot = packet.vfunc_o8_3();
-                    int nSkillId = packet.vfunc_o8_3();
-                    int nItemId = packet.vfunc_o8_3();
-                    __int64 nItemUid = packet.vfunc_o8_4();
+                    int nSlot = packet.ReadInt32();
+                    int nSkillId = packet.ReadInt32();
+                    int nItemId = packet.ReadInt32();
+                    __int64 nItemUid = packet.ReadInt64();
                     FUN_1414323f0(i, nSlot, nSkillId, nItemId, nItemUid);
                 }
             }
@@ -377,19 +377,19 @@ void CKeyTable::OnKeyTable(CInPacket& packet)
     {
         if (GetLocked())
             return;
-        int nPage = (unsigned short)packet.vfunc_o8_2();
+        int nPage = (unsigned short)packet.ReadInt16();
         m_quickSlots.RemoveAll();
-        int nPages = (unsigned short)packet.vfunc_o8_2();
+        int nPages = (unsigned short)packet.ReadInt16();
         m_quickSlots.SetCount(nPages, -1);
         for (int i = 0; i < nPages; i++)
         {
-            int nSlots = packet.vfunc_o8_3();
+            int nSlots = packet.ReadInt32();
             for (int j = 0; j < nSlots; j++)
             {
-                int nSlot = packet.vfunc_o8_3();
-                int nSkillId = packet.vfunc_o8_3();
-                int nItemId = packet.vfunc_o8_3();
-                __int64 nItemUid = packet.vfunc_o8_4();
+                int nSlot = packet.ReadInt32();
+                int nSkillId = packet.ReadInt32();
+                int nItemId = packet.ReadInt32();
+                __int64 nItemUid = packet.ReadInt64();
                 FUN_1414323f0(i, nSlot, nSkillId, nItemId, nItemUid);
             }
         }

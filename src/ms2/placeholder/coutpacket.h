@@ -21,29 +21,29 @@ class COutPacket : public COutputStream
 public:
     COutPacket(int nType = 0x7fffffff, int nUnk = 0);       // 0x140710500 (packet.cpp)
     ~COutPacket();                                          // 0x14020a630, inline in the exe (commonfiles/packet.h)
-    void vfunc_o10_0(bool value) override;
-    void vfunc_o10_1(unsigned char value) override;
-    void vfunc_o10_2(short value) override;
-    void vfunc_o10_3(int value) override;
-    void vfunc_o10_4(__int64 value) override;
-    void vfunc_o10_5(float value) override;
-    void vfunc_o10_6(const CString& value) override;
-    void vfunc_o10_7(const CString& value) override;
-    void vfunc_o10_8(const CStringW& value) override;
-    void vfunc_o10_9(const void* data, int count) override;
-    void vfunc_o10_10(const Unk_StreamPoint& value) override;
-    void vfunc_o10_11(const Unk_StreamPoint& value) override;
-    void vfunc_o10_12(float value) override;
-    void vfunc_o10_13(float value) override;
-    void vfunc_o10_14(float value, int scale) override;
-    void vfunc_o10_15(float value) override;
-    void vfunc_o10_16(float value, int scale) override;
+    void WriteBool(bool value) override;
+    void WriteUInt8(unsigned char value) override;
+    void WriteInt16(short value) override;
+    void WriteInt32(int value) override;
+    void WriteInt64(__int64 value) override;
+    void WriteFloat(float value) override;
+    void WriteUnicodeStringA(const CString& value) override;
+    void WriteString(const CString& value) override;
+    void WriteUnicodeString(const CStringW& value) override;
+    void WriteBytes(const void* data, int count) override;
+    void WriteVector3(const Unk_StreamPoint& value) override;
+    void WriteVector3Short(const Unk_StreamPoint& value) override;
+    void WriteShortX10(float value) override;
+    void WriteShortX100(float value) override;
+    void WriteShortScaled(float value, int scale) override;
+    void WriteShortDiv10(float value) override;
+    void WriteShortDivScaled(float value, int scale) override;
 
-    __forceinline void Encode1(unsigned char n) { COutPacket::vfunc_o10_1(n); }
-    __forceinline void Encode2(short n)         { COutPacket::vfunc_o10_2(n); }
-    __forceinline void Encode4(int n)           { COutPacket::vfunc_o10_3(n); }
-    __forceinline void Encode8(__int64 n)       { COutPacket::vfunc_o10_4(n); }
-    __forceinline void FUN_14020ae50(__int64 n) { COutPacket::vfunc_o10_4(n); }
+    __forceinline void Encode1(unsigned char n) { COutPacket::WriteUInt8(n); }
+    __forceinline void Encode2(short n)         { COutPacket::WriteInt16(n); }
+    __forceinline void Encode4(int n)           { COutPacket::WriteInt32(n); }
+    __forceinline void Encode8(__int64 n)       { COutPacket::WriteInt64(n); }
+    __forceinline void FUN_14020ae50(__int64 n) { COutPacket::WriteInt64(n); }
 
     // 0x140710740: sets the flag/length/cursor fields; when bEncodeType and nType != 0x7fffffff writes the u16 type.
     void FUN_140710740(int nType, int nUnk, int bEncodeType);

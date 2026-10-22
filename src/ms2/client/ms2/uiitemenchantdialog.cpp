@@ -998,28 +998,28 @@ void UIItemEnchantDialog::FUN_1419c1f20(CInPacket& pkt)
     MyPC* pc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pc == 0)
         return;
-    if (m_expMode != pkt.vfunc_o8_2()) {
+    if (m_expMode != pkt.ReadInt16()) {
         vfunc_67();
         FUN_140967100()->FUN_141b1feb0();
         return;
     }
-    m_selectedUid = pkt.vfunc_o8_4();
+    m_selectedUid = pkt.ReadInt64();
     m_ingredients.FUN_14026c0b0(pkt);
-    m_2b0 = pkt.vfunc_o8_2();
+    m_2b0 = pkt.ReadInt16();
     m_option.AssignRaw(new CEnchantOption);
     m_option->FUN_14058d5c0(pkt);
     if (m_expMode == 1) {
-        m_228 = pkt.vfunc_o8_5();
-        m_22c = pkt.vfunc_o8_5();
-        m_230 = pkt.vfunc_o8_5();
-        m_234 = pkt.vfunc_o8_5();
-        m_238 = pkt.vfunc_o8_5();
-        __int64 id0 = pkt.vfunc_o8_4();
-        __int64 id1 = pkt.vfunc_o8_4();
-        m_2b8 = pkt.vfunc_o8_1();
-        m_result.m_itemId = pkt.vfunc_o8_3();
-        m_result.SetRank(pkt.vfunc_o8_2());
-        m_result.m_count = pkt.vfunc_o8_3();
+        m_228 = pkt.ReadFloat();
+        m_22c = pkt.ReadFloat();
+        m_230 = pkt.ReadFloat();
+        m_234 = pkt.ReadFloat();
+        m_238 = pkt.ReadFloat();
+        __int64 id0 = pkt.ReadInt64();
+        __int64 id1 = pkt.ReadInt64();
+        m_2b8 = pkt.ReadUInt8();
+        m_result.m_itemId = pkt.ReadInt32();
+        m_result.SetRank(pkt.ReadInt16());
+        m_result.m_count = pkt.ReadInt32();
         MS2Ptr<CItem> first = DAT_143ab2a90.FUN_140a5d680(id0);
         if (first.get() != 0) {
             m_208 = first->FUN_1405276c0();
@@ -1035,9 +1035,9 @@ void UIItemEnchantDialog::FUN_1419c1f20(CInPacket& pkt)
     } else if (m_expMode == 2) {
         m_228 = 100.0f;
         m_23c = 100.0f;
-        m_result.m_itemId = pkt.vfunc_o8_3();
-        m_result.SetRank(pkt.vfunc_o8_2());
-        m_result.m_count = pkt.vfunc_o8_3();
+        m_result.m_itemId = pkt.ReadInt32();
+        m_result.SetRank(pkt.ReadInt16());
+        m_result.m_count = pkt.ReadInt32();
         m_2b4 = (float)FUN_140478b60(FUN_1401c0d90()) / 10000.0f;
         m_2b4 = m_2b4 + FUN_1411e1110(FUN_1416561a0(pc), 0x41);
     }
@@ -1082,10 +1082,10 @@ void UIItemEnchantDialog::FUN_1419c2e30(CItem* item, int prevLevel, CInPacket& p
 {
     if ((m_item == 0) || (m_enchantAni == 0))
         return;
-    int a = pkt.vfunc_o8_3();
-    int b = pkt.vfunc_o8_3();
-    __int64 c = pkt.vfunc_o8_4();
-    int failType = pkt.vfunc_o8_3();
+    int a = pkt.ReadInt32();
+    int b = pkt.ReadInt32();
+    __int64 c = pkt.ReadInt64();
+    int failType = pkt.ReadInt32();
     ASObj obj(2);
     obj.FUN_1407cb9c0("success", 0);
     obj.FUN_1407cbb20("itemName", FUN_1419c7e20(item));
@@ -1138,8 +1138,8 @@ void UIItemEnchantDialog::FUN_1419c37f0(unsigned __int64 uid, Unk_EnSlotArgs* sl
 // @0x1419c3950
 void UIItemEnchantDialog::FUN_1419c3950(CInPacket& pkt)
 {
-    unsigned __int64 uid = pkt.vfunc_o8_4();
-    int level = pkt.vfunc_o8_3();
+    unsigned __int64 uid = pkt.ReadInt64();
+    int level = pkt.ReadInt32();
     MS2Ptr<CItem> item = FUN_1419be700(uid);
     if (!item)
         return;
@@ -1167,16 +1167,16 @@ void UIItemEnchantDialog::FUN_1419c3b90(CInPacket& pkt)
     if (!item)
         return;
     m_failStackUids.RemoveAll();
-    m_failStack = pkt.vfunc_o8_3();
-    m_2bc = pkt.vfunc_o8_3();
-    int n = pkt.vfunc_o8_3();
+    m_failStack = pkt.ReadInt32();
+    m_2bc = pkt.ReadInt32();
+    int n = pkt.ReadInt32();
     for (int i = 0; i < n; i++)
-        m_failStackUids.Add(pkt.vfunc_o8_4());
-    m_228 = pkt.vfunc_o8_5();
-    m_22c = pkt.vfunc_o8_5();
-    m_230 = pkt.vfunc_o8_5();
-    m_234 = pkt.vfunc_o8_5();
-    m_238 = pkt.vfunc_o8_5();
+        m_failStackUids.Add(pkt.ReadInt64());
+    m_228 = pkt.ReadFloat();
+    m_22c = pkt.ReadFloat();
+    m_230 = pkt.ReadFloat();
+    m_234 = pkt.ReadFloat();
+    m_238 = pkt.ReadFloat();
     FUN_1419c8070(item.get());
 }
 
@@ -1189,10 +1189,10 @@ void UIItemEnchantDialog::FUN_1419c3e70(CInPacket& pkt)
     if (!item)
         return;
     m_failStackUids.RemoveAll();
-    m_2bc = pkt.vfunc_o8_3();
-    int n = pkt.vfunc_o8_3();
+    m_2bc = pkt.ReadInt32();
+    int n = pkt.ReadInt32();
     for (int i = 0; i < n; i++)
-        m_failStackUids.Add(pkt.vfunc_o8_4());
+        m_failStackUids.Add(pkt.ReadInt64());
     FUN_1419c8070(item.get());
 }
 

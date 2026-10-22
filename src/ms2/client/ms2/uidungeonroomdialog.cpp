@@ -1501,7 +1501,7 @@ void UIDungeonRoomInfo::OnFavoriteMark(const ASParams& params)
     COutPacket packet(static_cast<int>(SendOp::RoomDungeon));
     packet.Encode1(0x18);
     packet.Encode4(m_spRoom->GetDungeonRoomID());
-    packet.COutPacket::vfunc_o10_0(m_favoriteMark->FUN_1422ce0e0());
+    packet.COutPacket::WriteBool(m_favoriteMark->FUN_1422ce0e0());
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x1412B5320, UIDungeonRoomInfo, OnFavoriteMark, 225, 0x27A70454);
@@ -1718,9 +1718,9 @@ void UIDungeonRoomInfo::RequestEntry(bool bParty, bool bUseTicket)
     COutPacket packet(static_cast<int>(SendOp::RoomDungeon));
     packet.Encode1(2);
     packet.Encode4(m_spRoom->GetDungeonRoomID());
-    packet.COutPacket::vfunc_o10_0(bParty);
+    packet.COutPacket::WriteBool(bParty);
     packet.Encode4(m_pOwner->FUN_1412b9850());
-    packet.COutPacket::vfunc_o10_0(bUseTicket);
+    packet.COutPacket::WriteBool(bUseTicket);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x1412B6250, UIDungeonRoomInfo, RequestEntry, 258, 0xDE037DFC);
@@ -2003,7 +2003,7 @@ MS2_REPLACE_METHOD(0x1412B8CC0, UIDungeonRoomDialog, vfunc_43, 24, 0x3D64AD4B);
 // @0x1412b8ce0
 void UIDungeonRoomDialog::OnPartyPacket(CInPacket& packet)
 {
-    int nCmd = packet.vfunc_o8_1();
+    int nCmd = packet.ReadUInt8();
     switch (nCmd)
     {
     case 2:
@@ -2019,7 +2019,7 @@ MS2_REPLACE_METHOD(0x1412B8CE0, UIDungeonRoomDialog, OnPartyPacket, 108, 0x3014D
 // @0x1412b8d60
 void UIDungeonRoomDialog::OnRoomPacket(CInPacket& packet)
 {
-    int nCmd = packet.vfunc_o8_1();
+    int nCmd = packet.ReadUInt8();
     switch (nCmd)
     {
     case 6:
@@ -2029,7 +2029,7 @@ void UIDungeonRoomDialog::OnRoomPacket(CInPacket& packet)
         break;
     case 7:
         {
-            int nType = packet.vfunc_o8_1();
+            int nType = packet.ReadUInt8();
             if (nType == 5 && m_180 == 0)
                 ShowGroup(0, 0);
         }
@@ -2043,7 +2043,7 @@ void UIDungeonRoomDialog::OnRoomPacket53(CInPacket& packet)
 {
     if (!FUN_141924630())
         return;
-    int nCmd = packet.vfunc_o8_1();
+    int nCmd = packet.ReadUInt8();
     switch (nCmd)
     {
     case 2:

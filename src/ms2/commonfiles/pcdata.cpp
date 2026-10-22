@@ -53,98 +53,98 @@ CPCData::CPCData()
 // @0x14071e570
 void CPCData::FUN_14071e570(COutputStream& out)
 {
-    out.vfunc_o10_4(m_n18);
-    out.vfunc_o10_4(m_n20);
-    out.vfunc_o10_8(m_str28);
-    out.vfunc_o10_2(m_n30);
-    out.vfunc_o10_3(m_n34);
-    out.vfunc_o10_3(m_n38);
-    out.vfunc_o10_3(m_n3c);
-    out.vfunc_o10_3(m_n40);
-    out.vfunc_o10_1(m_n44);
-    out.vfunc_o10_9(m_a48, 0x118);
-    out.vfunc_o10_9(m_a160, 0x118);
-    out.vfunc_o10_9(m_a278, 0x118);
-    out.vfunc_o10_3((int)m_map390.size());
+    out.WriteInt64(m_n18);
+    out.WriteInt64(m_n20);
+    out.WriteUnicodeString(m_str28);
+    out.WriteInt16(m_n30);
+    out.WriteInt32(m_n34);
+    out.WriteInt32(m_n38);
+    out.WriteInt32(m_n3c);
+    out.WriteInt32(m_n40);
+    out.WriteUInt8(m_n44);
+    out.WriteBytes(m_a48, 0x118);
+    out.WriteBytes(m_a160, 0x118);
+    out.WriteBytes(m_a278, 0x118);
+    out.WriteInt32((int)m_map390.size());
     for (std::pair<const Unk_PcMapKey, int> entry : m_map390) {
-        out.vfunc_o10_2((short)entry.first);
-        out.vfunc_o10_3(entry.second);
+        out.WriteInt16((short)entry.first);
+        out.WriteInt32(entry.second);
     }
-    out.vfunc_o10_6(m_str3a0);
-    out.vfunc_o10_8(m_str3a8);
-    out.vfunc_o10_8(m_str3b0);
-    out.vfunc_o10_8(m_str3b8);
-    out.vfunc_o10_8(m_str3c0);
-    out.vfunc_o10_3(m_n3c8);
-    out.vfunc_o10_3(m_n3cc);
-    out.vfunc_o10_3(m_n3d0);
-    out.vfunc_o10_3(m_n3d4);
+    out.WriteUnicodeStringA(m_str3a0);
+    out.WriteUnicodeString(m_str3a8);
+    out.WriteUnicodeString(m_str3b0);
+    out.WriteUnicodeString(m_str3b8);
+    out.WriteUnicodeString(m_str3c0);
+    out.WriteInt32(m_n3c8);
+    out.WriteInt32(m_n3cc);
+    out.WriteInt32(m_n3d0);
+    out.WriteInt32(m_n3d4);
     int nCount = (int)m_arr3d8.GetCount();
-    out.vfunc_o10_3(nCount);
+    out.WriteInt32(nCount);
     for (int i = 0; i < nCount; i++) {
-        out.vfunc_o10_3(m_arr3d8[i]);
+        out.WriteInt32(m_arr3d8[i]);
     }
-    out.vfunc_o10_3(m_n3f8);
-    out.vfunc_o10_3(m_n3fc);
-    out.vfunc_o10_4(m_n400);
-    out.vfunc_o10_3(m_n408);
-    out.vfunc_o10_3(m_n40c);
-    out.vfunc_o10_3(m_an410[0]);
-    out.vfunc_o10_3(m_an410[1]);
-    out.vfunc_o10_2(m_n418);
-    out.vfunc_o10_8(m_str420);
-    out.vfunc_o10_8(m_str428);
-    out.vfunc_o10_4(m_n430);
-    out.vfunc_o10_4(m_n438);
+    out.WriteInt32(m_n3f8);
+    out.WriteInt32(m_n3fc);
+    out.WriteInt64(m_n400);
+    out.WriteInt32(m_n408);
+    out.WriteInt32(m_n40c);
+    out.WriteInt32(m_an410[0]);
+    out.WriteInt32(m_an410[1]);
+    out.WriteInt16(m_n418);
+    out.WriteUnicodeString(m_str420);
+    out.WriteUnicodeString(m_str428);
+    out.WriteInt64(m_n430);
+    out.WriteInt64(m_n438);
 }
 
 // @0x14071ec80
 void CPCData::FUN_14071ec80(CInputStream& in)
 {
-    m_n18 = in.vfunc_o8_4();
-    m_n20 = in.vfunc_o8_4();
-    m_str28 = in.vfunc_o8_8();
-    m_n30 = in.vfunc_o8_2();
-    m_n34 = in.vfunc_o8_3();
-    m_n38 = in.vfunc_o8_3();
-    m_n3c = in.vfunc_o8_3();
-    m_n40 = in.vfunc_o8_3();
-    m_n44 = in.vfunc_o8_1();
-    in.vfunc_o8_9(m_a48, 0x118);
-    in.vfunc_o8_9(m_a160, 0x118);
-    in.vfunc_o8_9(m_a278, 0x118);
-    int nPairs = in.vfunc_o8_3();
+    m_n18 = in.ReadInt64();
+    m_n20 = in.ReadInt64();
+    m_str28 = in.ReadUnicodeString();
+    m_n30 = in.ReadInt16();
+    m_n34 = in.ReadInt32();
+    m_n38 = in.ReadInt32();
+    m_n3c = in.ReadInt32();
+    m_n40 = in.ReadInt32();
+    m_n44 = in.ReadUInt8();
+    in.ReadBytes(m_a48, 0x118);
+    in.ReadBytes(m_a160, 0x118);
+    in.ReadBytes(m_a278, 0x118);
+    int nPairs = in.ReadInt32();
     for (int i = 0; i < nPairs; i++) {
-        Unk_PcMapKey nKey = (Unk_PcMapKey)(unsigned short)in.vfunc_o8_2();
-        int nValue = in.vfunc_o8_3();
+        Unk_PcMapKey nKey = (Unk_PcMapKey)(unsigned short)in.ReadInt16();
+        int nValue = in.ReadInt32();
         m_map390[nKey] = nValue;
     }
-    m_str3a0 = in.vfunc_o8_6();
-    m_str3a8 = in.vfunc_o8_8();
-    m_str3b0 = in.vfunc_o8_8();
-    m_str3b8 = in.vfunc_o8_8();
-    m_str3c0 = in.vfunc_o8_8();
-    m_n3c8 = in.vfunc_o8_3();
-    m_n3cc = in.vfunc_o8_3();
-    m_n3d0 = in.vfunc_o8_3();
-    m_n3d4 = in.vfunc_o8_3();
+    m_str3a0 = in.ReadUnicodeStringA();
+    m_str3a8 = in.ReadUnicodeString();
+    m_str3b0 = in.ReadUnicodeString();
+    m_str3b8 = in.ReadUnicodeString();
+    m_str3c0 = in.ReadUnicodeString();
+    m_n3c8 = in.ReadInt32();
+    m_n3cc = in.ReadInt32();
+    m_n3d0 = in.ReadInt32();
+    m_n3d4 = in.ReadInt32();
     m_arr3d8.RemoveAll();
-    int nCount = in.vfunc_o8_3();
+    int nCount = in.ReadInt32();
     for (int j = 0; j < nCount; j++) {
-        m_arr3d8.Add(in.vfunc_o8_3());
+        m_arr3d8.Add(in.ReadInt32());
     }
-    m_n3f8 = in.vfunc_o8_3();
-    m_n3fc = in.vfunc_o8_3();
-    m_n400 = in.vfunc_o8_4();
-    m_n408 = in.vfunc_o8_3();
-    m_n40c = in.vfunc_o8_3();
-    m_an410[0] = in.vfunc_o8_3();
-    m_an410[1] = in.vfunc_o8_3();
-    m_n418 = (unsigned short)in.vfunc_o8_2();
-    m_str420 = in.vfunc_o8_8();
-    m_str428 = in.vfunc_o8_8();
-    m_n430 = in.vfunc_o8_4();
-    m_n438 = in.vfunc_o8_4();
+    m_n3f8 = in.ReadInt32();
+    m_n3fc = in.ReadInt32();
+    m_n400 = in.ReadInt64();
+    m_n408 = in.ReadInt32();
+    m_n40c = in.ReadInt32();
+    m_an410[0] = in.ReadInt32();
+    m_an410[1] = in.ReadInt32();
+    m_n418 = (unsigned short)in.ReadInt16();
+    m_str420 = in.ReadUnicodeString();
+    m_str428 = in.ReadUnicodeString();
+    m_n430 = in.ReadInt64();
+    m_n438 = in.ReadInt64();
 }
 
 // ---- CPCDataPack -----------------------------------------------------------------------------------------------------------
@@ -163,37 +163,37 @@ CPCDataPack::~CPCDataPack()
 // @0x14071f580
 void CPCDataPack::FUN_14071f580(COutputStream& out)
 {
-    out.vfunc_o10_4(m_n18);
-    out.vfunc_o10_4(m_n20);
-    out.vfunc_o10_4(m_n28);
+    out.WriteInt64(m_n18);
+    out.WriteInt64(m_n20);
+    out.WriteInt64(m_n28);
     unsigned nSize = 0;
     nSize = m_bufRecord.GetLength();
-    out.vfunc_o10_3(nSize);
-    out.vfunc_o10_9(m_bufRecord.FUN_14067c4c0(), nSize);
+    out.WriteInt32(nSize);
+    out.WriteBytes(m_bufRecord.FUN_14067c4c0(), nSize);
     nSize = m_bufItems.GetLength();
-    out.vfunc_o10_3(nSize);
-    out.vfunc_o10_9(m_bufItems.FUN_14067c4c0(), nSize);
+    out.WriteInt32(nSize);
+    out.WriteBytes(m_bufItems.FUN_14067c4c0(), nSize);
     nSize = m_bufExtra.GetLength();
-    out.vfunc_o10_3(nSize);
-    out.vfunc_o10_9(m_bufExtra.FUN_14067c4c0(), nSize);
+    out.WriteInt32(nSize);
+    out.WriteBytes(m_bufExtra.FUN_14067c4c0(), nSize);
 }
 
 // @0x14071f710
 void CPCDataPack::FUN_14071f710(CInputStream& in)
 {
-    m_n18 = in.vfunc_o8_4();
-    m_n20 = in.vfunc_o8_4();
-    m_n28 = in.vfunc_o8_4();
+    m_n18 = in.ReadInt64();
+    m_n20 = in.ReadInt64();
+    m_n28 = in.ReadInt64();
     int nSize = 0;
-    nSize = in.vfunc_o8_3();
+    nSize = in.ReadInt32();
     m_bufRecord.FUN_140204670(nSize);
-    in.vfunc_o8_9(m_bufRecord.FUN_140204eb0(), nSize);
-    nSize = in.vfunc_o8_3();
+    in.ReadBytes(m_bufRecord.FUN_140204eb0(), nSize);
+    nSize = in.ReadInt32();
     m_bufItems.FUN_140204670(nSize);
-    in.vfunc_o8_9(m_bufItems.FUN_140204eb0(), nSize);
-    nSize = in.vfunc_o8_3();
+    in.ReadBytes(m_bufItems.FUN_140204eb0(), nSize);
+    nSize = in.ReadInt32();
     m_bufExtra.FUN_140204670(nSize);
-    in.vfunc_o8_9(m_bufExtra.FUN_140204eb0(), nSize);
+    in.ReadBytes(m_bufExtra.FUN_140204eb0(), nSize);
 }
 
 // @0x14071f8a0
@@ -216,13 +216,13 @@ void CPCDataPack::FUN_14071f950(const ItemArray& aEquip, const ItemArray& aExtra
                                 const ItemArray& aMore)
 {
     int nEquip = (int)aEquip.GetCount();
-    static_cast<COutputStream&>(m_bufItems).vfunc_o10_1((unsigned char)nEquip);
+    m_bufItems.WriteUInt8((unsigned char)nEquip);
     for (int i = 0; i < nEquip; i++) {
         const MS2Ptr<CItem>& spItem = aEquip.GetAt(i);
-        static_cast<COutputStream&>(m_bufItems).vfunc_o10_3(spItem->FUN_1405276c0());
-        static_cast<COutputStream&>(m_bufItems).vfunc_o10_4(spItem->FUN_140526a50());
-        static_cast<COutputStream&>(m_bufItems).vfunc_o10_1(spItem->FUN_140526c30());
-        static_cast<COutputStream&>(m_bufItems).vfunc_o10_3(spItem->FUN_140526bd0());
+        m_bufItems.WriteInt32(spItem->FUN_1405276c0());
+        m_bufItems.WriteInt64(spItem->FUN_140526a50());
+        m_bufItems.WriteUInt8(spItem->FUN_140526c30());
+        m_bufItems.WriteInt32(spItem->FUN_140526bd0());
         spItem->FUN_140524ad0(m_bufItems);
     }
     bool bTimed = false;
@@ -231,27 +231,27 @@ void CPCDataPack::FUN_14071f950(const ItemArray& aEquip, const ItemArray& aExtra
         CMsTime tmNull2(0);
         bTimed = tmEnd == tmNull2 || FUN_140869440() < tmEnd.Get();
     }
-    static_cast<COutputStream&>(m_bufItems).vfunc_o10_0(bTimed);
-    static_cast<COutputStream&>(m_bufItems).vfunc_o10_4(tmBegin.Get());
-    static_cast<COutputStream&>(m_bufItems).vfunc_o10_4(tmEnd.Get());
+    m_bufItems.WriteBool(bTimed);
+    m_bufItems.WriteInt64(tmBegin.Get());
+    m_bufItems.WriteInt64(tmEnd.Get());
     int nMore = (int)aMore.GetCount();
-    static_cast<COutputStream&>(m_bufItems).vfunc_o10_1((unsigned char)nMore);
+    m_bufItems.WriteUInt8((unsigned char)nMore);
     for (int j = 0; j < nMore; j++) {
         const MS2Ptr<CItem>& spItem = aMore.GetAt(j);
-        static_cast<COutputStream&>(m_bufItems).vfunc_o10_3(spItem->FUN_1405276c0());
-        static_cast<COutputStream&>(m_bufItems).vfunc_o10_4(spItem->FUN_140526a50());
-        static_cast<COutputStream&>(m_bufItems).vfunc_o10_1(spItem->FUN_140526c30());
-        static_cast<COutputStream&>(m_bufItems).vfunc_o10_3(spItem->FUN_140526bd0());
+        m_bufItems.WriteInt32(spItem->FUN_1405276c0());
+        m_bufItems.WriteInt64(spItem->FUN_140526a50());
+        m_bufItems.WriteUInt8(spItem->FUN_140526c30());
+        m_bufItems.WriteInt32(spItem->FUN_140526bd0());
         spItem->FUN_140524ad0(m_bufItems);
     }
     int nExtra = (int)aExtra.GetCount();
-    static_cast<COutputStream&>(m_bufExtra).vfunc_o10_1((unsigned char)nExtra);
+    m_bufExtra.WriteUInt8((unsigned char)nExtra);
     for (int k = 0; k < nExtra; k++) {
         const MS2Ptr<CItem>& spItem = aExtra.GetAt(k);
-        static_cast<COutputStream&>(m_bufExtra).vfunc_o10_1(spItem->FUN_140526b50());
-        static_cast<COutputStream&>(m_bufExtra).vfunc_o10_3(spItem->FUN_1405276c0());
-        static_cast<COutputStream&>(m_bufExtra).vfunc_o10_4(spItem->FUN_140526a50());
-        static_cast<COutputStream&>(m_bufExtra).vfunc_o10_3(spItem->FUN_140526bd0());
+        m_bufExtra.WriteUInt8(spItem->FUN_140526b50());
+        m_bufExtra.WriteInt32(spItem->FUN_1405276c0());
+        m_bufExtra.WriteInt64(spItem->FUN_140526a50());
+        m_bufExtra.WriteInt32(spItem->FUN_140526bd0());
         spItem->FUN_140524ad0(m_bufExtra);
     }
 }
@@ -260,12 +260,12 @@ void CPCDataPack::FUN_14071f950(const ItemArray& aEquip, const ItemArray& aExtra
 void CPCDataPack::FUN_140720030(ItemArray& aEquip, ItemArray& aExtra, bool& bTimed, CMsTime& tmBegin, CMsTime& tmEnd,
                                 ItemArray& aMore)
 {
-    unsigned nEquip = static_cast<CInputStream&>(m_bufItems).vfunc_o8_1();
+    unsigned nEquip = m_bufItems.ReadUInt8();
     for (int i = 0; i < (int)nEquip; i++) {
-        int nId = static_cast<CInputStream&>(m_bufItems).vfunc_o8_3();
-        __int64 nUid = static_cast<CInputStream&>(m_bufItems).vfunc_o8_4();
-        unsigned nRarity = static_cast<CInputStream&>(m_bufItems).vfunc_o8_1();
-        int nAmount = static_cast<CInputStream&>(m_bufItems).vfunc_o8_3();
+        int nId = m_bufItems.ReadInt32();
+        __int64 nUid = m_bufItems.ReadInt64();
+        unsigned nRarity = m_bufItems.ReadUInt8();
+        int nAmount = m_bufItems.ReadInt32();
         MS2Ptr<CItem> spItem(new CItem);
         if (!spItem->FUN_140523c40(nId, nAmount, 0)) {
             break;
@@ -276,15 +276,15 @@ void CPCDataPack::FUN_140720030(ItemArray& aEquip, ItemArray& aExtra, bool& bTim
         spItem->FUN_140526b30(0);
         aEquip.Add(spItem);
     }
-    bTimed = static_cast<CInputStream&>(m_bufItems).vfunc_o8_0();
-    tmBegin = static_cast<CInputStream&>(m_bufItems).vfunc_o8_4();
-    tmEnd = static_cast<CInputStream&>(m_bufItems).vfunc_o8_4();
-    unsigned nMore = static_cast<CInputStream&>(m_bufItems).vfunc_o8_1();
+    bTimed = m_bufItems.ReadBool();
+    tmBegin = m_bufItems.ReadInt64();
+    tmEnd = m_bufItems.ReadInt64();
+    unsigned nMore = m_bufItems.ReadUInt8();
     for (int j = 0; j < (int)nMore; j++) {
-        int nId = static_cast<CInputStream&>(m_bufItems).vfunc_o8_3();
-        __int64 nUid = static_cast<CInputStream&>(m_bufItems).vfunc_o8_4();
-        unsigned nRarity = static_cast<CInputStream&>(m_bufItems).vfunc_o8_1();
-        int nAmount = static_cast<CInputStream&>(m_bufItems).vfunc_o8_3();
+        int nId = m_bufItems.ReadInt32();
+        __int64 nUid = m_bufItems.ReadInt64();
+        unsigned nRarity = m_bufItems.ReadUInt8();
+        int nAmount = m_bufItems.ReadInt32();
         MS2Ptr<CItem> spItem(new CItem);
         if (!spItem->FUN_140523c40(nId, nAmount, 0)) {
             break;
@@ -296,12 +296,12 @@ void CPCDataPack::FUN_140720030(ItemArray& aEquip, ItemArray& aExtra, bool& bTim
         spItem->FUN_14052a130(2);
         aMore.Add(spItem);
     }
-    unsigned nExtra = static_cast<CInputStream&>(m_bufExtra).vfunc_o8_1();
+    unsigned nExtra = m_bufExtra.ReadUInt8();
     for (int k = 0; k < (int)nExtra; k++) {
-        unsigned char nUnused = static_cast<CInputStream&>(m_bufExtra).vfunc_o8_1();
-        int nId = static_cast<CInputStream&>(m_bufExtra).vfunc_o8_3();
-        __int64 nUid = static_cast<CInputStream&>(m_bufExtra).vfunc_o8_4();
-        int nAmount = static_cast<CInputStream&>(m_bufExtra).vfunc_o8_3();
+        unsigned char nUnused = m_bufExtra.ReadUInt8();
+        int nId = m_bufExtra.ReadInt32();
+        __int64 nUid = m_bufExtra.ReadInt64();
+        int nAmount = m_bufExtra.ReadInt32();
         MS2Ptr<CItem> spItem(new CItem);
         if (!spItem->FUN_140523c40(nId, nAmount, 0)) {
             return;
@@ -350,7 +350,7 @@ void Unk_Crc32::FUN_140720aa0()
 void CByteBuffer::FUN_140720c30(CByteBuffer& dest)
 {
     unsigned nCount = m_uLength - m_uOffset;
-    static_cast<COutputStream&>(dest).vfunc_o10_9(&m_aByteBuff.GetAt(0) + m_uOffset, nCount);
+    dest.WriteBytes(&m_aByteBuff.GetAt(0) + m_uOffset, nCount);
 }
 
 // @0x140720e90

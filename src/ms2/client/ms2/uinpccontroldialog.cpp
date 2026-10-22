@@ -203,34 +203,34 @@ void UINpcControlDialog::vfunc_79(void* p)
     CInPacket* pPkt = static_cast<CInPacket*>(p);
     UIDialog::vfunc_79(p);
     if (pPkt->FUN_14070fe80() == 0x87) {
-        char nKind = pPkt->vfunc_o8_1();
+        char nKind = pPkt->ReadUInt8();
         if (nKind == 6) {
             m_skills.clear();
-            int nCount = pPkt->vfunc_o8_3();
+            int nCount = pPkt->ReadInt32();
             for (int i = 0; i < nCount; i++) {
                 Unk_CtlSkill skill;
-                skill.nId = pPkt->vfunc_o8_3();
-                skill.nLevel = pPkt->vfunc_o8_3();
+                skill.nId = pPkt->ReadInt32();
+                skill.nLevel = pPkt->ReadInt32();
                 int nKey = (int)m_skills.size();
                 nKey = nKey + 1000;
                 m_skills.insert(std::make_pair(nKey, skill));
             }
         } else if (nKind == 5) {
             if (m_30.IsNull() == 0) {
-                int nId = pPkt->vfunc_o8_3();
+                int nId = pPkt->ReadInt32();
                 if (nId == m_nNpcId) {
                     PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1320(nId);
                     if (pActor != 0) {
-                        CString strNode = pPkt->vfunc_o8_6();
-                        CString strAction = pPkt->vfunc_o8_6();
-                        int nTarget = (int)pPkt->vfunc_o8_4();
+                        CString strNode = pPkt->ReadUnicodeStringA();
+                        CString strAction = pPkt->ReadUnicodeStringA();
+                        int nTarget = (int)pPkt->ReadInt64();
                         CStringW strExtra(L"ExtraData");
-                        if (pPkt->vfunc_o8_0())
+                        if (pPkt->ReadBool())
                             strExtra += "(Tracking)";
-                        int nExtra = pPkt->vfunc_o8_3();
+                        int nExtra = pPkt->ReadInt32();
                         for (int i = 0; i < nExtra; i++) {
-                            CString strKey = pPkt->vfunc_o8_6();
-                            int nValue = pPkt->vfunc_o8_3();
+                            CString strKey = pPkt->ReadUnicodeStringA();
+                            int nValue = pPkt->ReadInt32();
                             strExtra += FUN_14136e740(L"\n{0} : {1}", strKey, nValue);
                         }
                         CStringW strTarget(L"");
@@ -245,12 +245,12 @@ void UINpcControlDialog::vfunc_79(void* p)
                                 strTarget = pPc->vfunc_77();
                             }
                         }
-                        __int64 nPap = pPkt->vfunc_o8_4();
-                        __int64 nMap = pPkt->vfunc_o8_4();
-                        __int64 nNdd = pPkt->vfunc_o8_4();
-                        __int64 nCap = pPkt->vfunc_o8_4();
-                        __int64 nHp = pPkt->vfunc_o8_4();
-                        __int64 nMhp = pPkt->vfunc_o8_4();
+                        __int64 nPap = pPkt->ReadInt64();
+                        __int64 nMap = pPkt->ReadInt64();
+                        __int64 nNdd = pPkt->ReadInt64();
+                        __int64 nCap = pPkt->ReadInt64();
+                        __int64 nHp = pPkt->ReadInt64();
+                        __int64 nMhp = pPkt->ReadInt64();
                         if (FUN_1401647e0(m_strCurrent, strNode))
                             m_strPrev = m_strCurrent;
                         m_strCurrent = strNode;
@@ -269,16 +269,16 @@ void UINpcControlDialog::vfunc_79(void* p)
                 }
             }
         } else if (nKind == 7) {
-            CString strFile = pPkt->vfunc_o8_6();
-            int nId = pPkt->vfunc_o8_3();
+            CString strFile = pPkt->ReadUnicodeStringA();
+            int nId = pPkt->ReadInt32();
             AiDebugDialog* pDlg = new AiDebugDialog(0);
             m_spAi.AssignRaw(pDlg);
             m_spAi->SetTarget(strFile, nId);
             AiDebugDialog* pAi = m_spAi.operator->();
             pAi->Create(0xa5, CWnd::FromHandle(FUN_14209c720(FUN_140aadf80())));
         } else if (nKind == 8) {
-            int nId = pPkt->vfunc_o8_3();
-            int nLine = pPkt->vfunc_o8_3();
+            int nId = pPkt->ReadInt32();
+            int nLine = pPkt->ReadInt32();
             if (FUN_1403ed2d0()->FUN_141bd1320(nId) != 0 && !(m_spAi == 0))
                 m_spAi->AddLine(nId, nLine);
         }
@@ -350,9 +350,9 @@ int UINpcControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     }
     if (_stricmp("OnStopSkill", szMethod) == 0) {
         COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
-        pkt.vfunc_o10_1(4);
-        pkt.vfunc_o10_3(m_nNpcId);
-        pkt.vfunc_o10_1(9);
+        pkt.WriteUInt8(4);
+        pkt.WriteInt32(m_nNpcId);
+        pkt.WriteUInt8(9);
         FUN_140710590(pkt);
         return 1;
     }
@@ -392,10 +392,10 @@ void UINpcControlDialog::FUN_141a63970(unsigned char nCmd, __int64 nValue)
 {
     if (m_nNpcId != 0) {
         COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
-        pkt.vfunc_o10_1(4);
-        pkt.vfunc_o10_3(m_nNpcId);
-        pkt.vfunc_o10_1(nCmd);
-        pkt.vfunc_o10_4(nValue);
+        pkt.WriteUInt8(4);
+        pkt.WriteInt32(m_nNpcId);
+        pkt.WriteUInt8(nCmd);
+        pkt.WriteInt64(nValue);
         FUN_140710590(pkt);
     }
 }
@@ -429,16 +429,16 @@ void UINpcControlDialog::FUN_141a63a10(int nCmd, const CStringW& strArgs)
         if (nSkills < 1)
             return;
         COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
-        pkt.vfunc_o10_1(4);
-        pkt.vfunc_o10_3(m_nNpcId);
-        pkt.vfunc_o10_1(8);
+        pkt.WriteUInt8(4);
+        pkt.WriteInt32(m_nNpcId);
+        pkt.WriteUInt8(8);
         short nLoopShort = (short)nLoop;
-        pkt.vfunc_o10_2(nLoopShort);
+        pkt.WriteInt16(nLoopShort);
         short nCountShort = (short)nSkills;
-        pkt.vfunc_o10_2(nCountShort);
+        pkt.WriteInt16(nCountShort);
         for (int j = 0; j < nSkills; j++) {
-            pkt.vfunc_o10_3(skills[j].nId);
-            pkt.vfunc_o10_3(skills[j].nLevel);
+            pkt.WriteInt32(skills[j].nId);
+            pkt.WriteInt32(skills[j].nLevel);
         }
         FUN_140710590(pkt);
     }
@@ -584,12 +584,12 @@ void UINpcControlDialog::FUN_141a64ba0(int nCommand, const CStringW& strArg)
                 if (nAdditional == 0)
                     return;
                 COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
-                pkt.vfunc_o10_1(4);
-                pkt.vfunc_o10_3(m_nNpcId);
-                pkt.vfunc_o10_1(0xe);
-                pkt.vfunc_o10_3(nAdditional);
-                pkt.vfunc_o10_3(nLevel);
-                pkt.vfunc_o10_3(nExtra);
+                pkt.WriteUInt8(4);
+                pkt.WriteInt32(m_nNpcId);
+                pkt.WriteUInt8(0xe);
+                pkt.WriteInt32(nAdditional);
+                pkt.WriteInt32(nLevel);
+                pkt.WriteInt32(nExtra);
                 FUN_140710590(pkt);
             }
         } else if (nCommand == 0xd) {
@@ -617,9 +617,9 @@ void UINpcControlDialog::FUN_141a65000()
     if (m_nNpcId == 0)
         return;
     COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
-    pkt.vfunc_o10_1(4);
-    pkt.vfunc_o10_3(m_nNpcId);
-    pkt.vfunc_o10_1(0xd);
-    pkt.vfunc_o10_8(strFile);
+    pkt.WriteUInt8(4);
+    pkt.WriteInt32(m_nNpcId);
+    pkt.WriteUInt8(0xd);
+    pkt.WriteUnicodeString(strFile);
     FUN_140710590(pkt);
 }

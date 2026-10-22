@@ -182,7 +182,7 @@ void UIBlueMarbleGameDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
     COutPacket packet(static_cast<int>(SendOp::Mapleopoly), 0);
-    packet.vfunc_o10_1(0);
+    packet.WriteUInt8(0);
     FUN_140710590(packet);
 }
 
@@ -192,16 +192,16 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
     CInPacket* pPacket = static_cast<CInPacket*>(p);
     UIDialog::vfunc_79(p);
     if (pPacket->FUN_14070fe80() == 0xe5) {
-        char nKind = pPacket->vfunc_o8_1();
+        char nKind = pPacket->ReadUInt8();
         if (nKind == 0) {
             FUN_1422b9fd0(FUN_1408e57f0(), 0x6200022);
             FUN_141ad9e50(FUN_1403ed2b0(), 0x6200022);
             FUN_141ada6f0(FUN_1403ed2b0(), 0x6200022);
             FUN_141901470(0, 0x4f15);
-            m_nPosition = pPacket->vfunc_o8_3();
-            m_nFreeDice = pPacket->vfunc_o8_3();
-            m_nConsumeItemId = pPacket->vfunc_o8_3();
-            m_nConsumeItemCount = pPacket->vfunc_o8_3();
+            m_nPosition = pPacket->ReadInt32();
+            m_nFreeDice = pPacket->ReadInt32();
+            m_nConsumeItemId = pPacket->ReadInt32();
+            m_nConsumeItemCount = pPacket->ReadInt32();
             FUN_140cfee80((*m_30).FUN_1422bb890(), "m_warning",
                           FUN_140f24320("$s_bluemarble_warning", GetStringTable()->FUN_141811980(1, m_nConsumeItemId),
                                         m_nConsumeItemCount));
@@ -215,11 +215,11 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
             vfunc_8(1);
             m_bIdle = 1;
         } else if (nKind == 2) {
-            char nAction = pPacket->vfunc_o8_1();
-            m_nPosition = pPacket->vfunc_o8_3();
-            int nDice1 = pPacket->vfunc_o8_3();
-            int nDice2 = pPacket->vfunc_o8_3();
-            m_nFreeDice = pPacket->vfunc_o8_3();
+            char nAction = pPacket->ReadUInt8();
+            m_nPosition = pPacket->ReadInt32();
+            int nDice1 = pPacket->ReadInt32();
+            int nDice2 = pPacket->ReadInt32();
+            m_nFreeDice = pPacket->ReadInt32();
             FUN_140f22fe0(nDice1, nDice2, nAction);
             FUN_140f237e0(m_nPosition - (nDice1 + nDice2), m_nPosition);
             if (nAction == 2) {
@@ -228,15 +228,15 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
             }
             m_30->Invoke("playQueue");
             COutPacket packet(static_cast<int>(SendOp::Mapleopoly), 0);
-            packet.vfunc_o10_1(3);
+            packet.WriteUInt8(3);
             FUN_140710590(packet);
         } else if (nKind == 4) {
             int nPrevPosition = m_nPosition;
-            short nAction = pPacket->vfunc_o8_2();
-            m_nPosition = pPacket->vfunc_o8_3();
-            m_nFreeDice = pPacket->vfunc_o8_3();
-            int nArg = pPacket->vfunc_o8_3();
-            int nArg2 = pPacket->vfunc_o8_3();
+            short nAction = pPacket->ReadInt16();
+            m_nPosition = pPacket->ReadInt32();
+            m_nFreeDice = pPacket->ReadInt32();
+            int nArg = pPacket->ReadInt32();
+            int nArg2 = pPacket->ReadInt32();
             bool bReset;
             if (nAction == 2 || nAction == 3)
                 bReset = false;
@@ -254,11 +254,11 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
             FUN_140f23940();
             if (!bReset) {
                 COutPacket packet(static_cast<int>(SendOp::Mapleopoly), 0);
-                packet.vfunc_o10_1(3);
+                packet.WriteUInt8(3);
                 FUN_140710590(packet);
             }
         } else if (nKind == 6) {
-            char nResult = pPacket->vfunc_o8_1();
+            char nResult = pPacket->ReadUInt8();
             if (nResult == 1) {
                 CStringW strText = FUN_140938ae0(CStringW(L"s_bluemarble_result_consume_fail"), m_nConsumeItemId);
                 FUN_1403b4750()->FUN_1416fb300(strText);
@@ -281,7 +281,7 @@ int UIBlueMarbleGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         return 1;
     if (_stricmp(szMethod, "onDice") == 0) {
         COutPacket packet(static_cast<int>(SendOp::Mapleopoly), 0);
-        packet.vfunc_o10_1(1);
+        packet.WriteUInt8(1);
         FUN_140710590(packet);
         FUN_140f24140(0);
         m_bIdle = 0;
@@ -302,9 +302,9 @@ int UIBlueMarbleGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
             if (nDice2 < 1 || 6 < nDice2)
                 return 1;
             COutPacket packet(static_cast<int>(SendOp::Mapleopoly), 0);
-            packet.vfunc_o10_1(5);
-            packet.vfunc_o10_3(nDice1);
-            packet.vfunc_o10_3(nDice2);
+            packet.WriteUInt8(5);
+            packet.WriteInt32(nDice1);
+            packet.WriteInt32(nDice2);
             FUN_140710590(packet);
         }
         return 1;
@@ -334,11 +334,11 @@ bool UIBlueMarbleGameDialog::FUN_140f22760(int nResult, const CMsgBoxData& box)
 // @0x140f227a0
 void UIBlueMarbleGameDialog::FUN_140f227a0(CInPacket& packet)
 {
-    unsigned int nCells = packet.vfunc_o8_3();
+    unsigned int nCells = packet.ReadInt32();
     for (unsigned int i = 0; i < nCells; i++) {
-        short nKind = packet.vfunc_o8_2();
-        int nArg = packet.vfunc_o8_3();
-        int nCount = packet.vfunc_o8_3();
+        short nKind = packet.ReadInt16();
+        int nArg = packet.ReadInt32();
+        int nCount = packet.ReadInt32();
         ASObj row(2);
         row.FUN_1409c0d20("idx", i);
         if (nKind == 10) {

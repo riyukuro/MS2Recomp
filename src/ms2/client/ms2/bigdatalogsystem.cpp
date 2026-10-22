@@ -162,10 +162,10 @@ MS2_REPLACE_METHOD(0x140A1F8A0, CBigDataLogSystem, Update, 199, 0x15B837EF);
 void CBigDataLogSystem::SendLog(const CString& strKey, const CString& strValue)
 {
     COutPacket packet(static_cast<int>(SendOp::LogSend), 0);
-    packet.vfunc_o10_1(0);
-    packet.vfunc_o10_1(0);
-    packet.vfunc_o10_6(strKey);
-    packet.vfunc_o10_6(strValue);
+    packet.WriteUInt8(0);
+    packet.WriteUInt8(0);
+    packet.WriteUnicodeStringA(strKey);
+    packet.WriteUnicodeStringA(strValue);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x140A1F970, CBigDataLogSystem, SendLog, 130, 0x1648C8A5);
@@ -175,9 +175,9 @@ MS2_REPLACE_METHOD(0x140A1F970, CBigDataLogSystem, SendLog, 130, 0x1648C8A5);
 void CBigDataLogSystem::SendStatistics()
 {
     COutPacket packet(static_cast<int>(SendOp::LogSend), 0);
-    packet.vfunc_o10_1(0);
-    packet.vfunc_o10_1(1);
-    packet.vfunc_o10_1(3);
+    packet.WriteUInt8(0);
+    packet.WriteUInt8(1);
+    packet.WriteUInt8(3);
     for (int i = 0; i < SAMPLE_MAX; i = i + 1)
     {
         float fMax;
@@ -190,13 +190,13 @@ void CBigDataLogSystem::SendStatistics()
         {
             const char* pszName = GetSampleName(i);
             CString strName(pszName);
-            packet.vfunc_o10_7(strName);
+            packet.WriteString(strName);
         }
-        packet.vfunc_o10_5(fAverage);
-        packet.vfunc_o10_5(fDeviation);
-        packet.vfunc_o10_3(nCount);
-        packet.vfunc_o10_5(fMin);
-        packet.vfunc_o10_5(fMax);
+        packet.WriteFloat(fAverage);
+        packet.WriteFloat(fDeviation);
+        packet.WriteInt32(nCount);
+        packet.WriteFloat(fMin);
+        packet.WriteFloat(fMax);
     }
     FUN_140710590(packet);
     m_dwLastSendTick = timeGetTime();

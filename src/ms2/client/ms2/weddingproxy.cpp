@@ -67,19 +67,19 @@ void Unk_WeddingPartner::Assign(Unk_WeddingPartner& other)
 void Unk_WeddingPartner::Write(COutputStream& out)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
-    out.vfunc_o10_4(m_nCharacterId);
-    out.vfunc_o10_4(m_nAccountId);
-    out.vfunc_o10_8(m_strName);
-    out.vfunc_o10_0(m_bOnline);
+    out.WriteInt64(m_nCharacterId);
+    out.WriteInt64(m_nAccountId);
+    out.WriteUnicodeString(m_strName);
+    out.WriteBool(m_bOnline);
 }
 // @0x1408fe390
 void Unk_WeddingPartner::Read(CInPacket& in)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
-    m_nCharacterId = in.vfunc_o8_4();
-    m_nAccountId = in.vfunc_o8_4();
-    m_strName = in.vfunc_o8_8();
-    m_bOnline = in.vfunc_o8_0();
+    m_nCharacterId = in.ReadInt64();
+    m_nAccountId = in.ReadInt64();
+    m_strName = in.ReadUnicodeString();
+    m_bOnline = in.ReadBool();
 }
 // @0x1408fe4e0
 void Unk_WeddingPartner::SetName(const CStringW& strName)
@@ -134,23 +134,23 @@ void Unk_WeddingLogList::Assign(Unk_WeddingLogList& other)
 // @0x1408fe770
 void Unk_WeddingLogList::Write(COutputStream& out)
 {
-    out.vfunc_o10_3((int)m_list.size());
+    out.WriteInt32((int)m_list.size());
     for (std::list<Unk_WeddingLog>::iterator it = m_list.begin(); it != m_list.end(); ++it) {
-        out.vfunc_o10_2((short)it->m_nType);
-        out.vfunc_o10_4(it->m_nAmount);
-        out.vfunc_o10_4(it->m_nTime);
+        out.WriteInt16((short)it->m_nType);
+        out.WriteInt64(it->m_nAmount);
+        out.WriteInt64(it->m_nTime);
     }
 }
 // @0x1408fe860
 void Unk_WeddingLogList::Read(CInPacket& in)
 {
     m_list.clear();
-    unsigned int nCount = in.vfunc_o8_3();
+    unsigned int nCount = in.ReadInt32();
     for (unsigned int i = 0; i < nCount; i = i + 1) {
         Unk_WeddingLog log;
-        log.m_nType = (unsigned short)in.vfunc_o8_2();
-        log.m_nAmount = in.vfunc_o8_4();
-        log.m_nTime = in.vfunc_o8_4();
+        log.m_nType = (unsigned short)in.ReadInt16();
+        log.m_nAmount = in.ReadInt64();
+        log.m_nTime = in.ReadInt64();
         m_list.push_back(log);
     }
 }
@@ -207,35 +207,35 @@ void WeddingProxy::Assign(WeddingProxy& other)
 // @0x1408feda0
 void WeddingProxy::Write(COutputStream& out)
 {
-    out.vfunc_o10_4(m_n18);
-    out.vfunc_o10_1((unsigned char)m_nState);
-    out.vfunc_o10_4(m_n28);
-    out.vfunc_o10_4(m_n30);
+    out.WriteInt64(m_n18);
+    out.WriteUInt8((unsigned char)m_nState);
+    out.WriteInt64(m_n28);
+    out.WriteInt64(m_n30);
     m_groom.Write(out);
     m_bride.Write(out);
     __int64 nMeso = GetMeso();
-    out.vfunc_o10_4(nMeso);
-    out.vfunc_o10_8(GetMessageW(true));
-    out.vfunc_o10_8(GetMessageW(false));
-    out.vfunc_o10_6(GetMessageA(true));
-    out.vfunc_o10_6(GetMessageA(false));
+    out.WriteInt64(nMeso);
+    out.WriteUnicodeString(GetMessageW(true));
+    out.WriteUnicodeString(GetMessageW(false));
+    out.WriteUnicodeStringA(GetMessageA(true));
+    out.WriteUnicodeStringA(GetMessageA(false));
     Unk_CriticalSectionLock lock(m_lock, 1);
     m_log.Write(out);
 }
 // @0x1408ff040
 void WeddingProxy::Read(CInPacket& in)
 {
-    m_n18 = in.vfunc_o8_4();
-    m_nState = in.vfunc_o8_1();
-    m_n28 = in.vfunc_o8_4();
-    m_n30 = in.vfunc_o8_4();
+    m_n18 = in.ReadInt64();
+    m_nState = in.ReadUInt8();
+    m_n28 = in.ReadInt64();
+    m_n30 = in.ReadInt64();
     m_groom.Read(in);
     m_bride.Read(in);
-    SetMeso(in.vfunc_o8_4());
-    SetMessageW(in.vfunc_o8_8(), true);
-    SetMessageW(in.vfunc_o8_8(), false);
-    SetMessageA(in.vfunc_o8_6(), true);
-    SetMessageA(in.vfunc_o8_6(), false);
+    SetMeso(in.ReadInt64());
+    SetMessageW(in.ReadUnicodeString(), true);
+    SetMessageW(in.ReadUnicodeString(), false);
+    SetMessageA(in.ReadUnicodeStringA(), true);
+    SetMessageA(in.ReadUnicodeStringA(), false);
     Unk_CriticalSectionLock lock(m_lock, 1);
     m_log.Read(in);
 }
@@ -370,32 +370,32 @@ void WeddingHallTicket::Assign(const WeddingHallTicket& other)
 // @0x1408ffc30
 void WeddingHallTicket::Write(COutputStream& out)
 {
-    out.vfunc_o10_4(m_nWeddingHallSN);
-    out.vfunc_o10_3(m_nPackageId);
-    out.vfunc_o10_3(m_nHallId);
-    out.vfunc_o10_4(m_nTime);
-    out.vfunc_o10_0(m_bPublic);
-    out.vfunc_o10_4(m_nBookingAccSN);
-    out.vfunc_o10_4(m_nBookingCharSN);
-    out.vfunc_o10_8(m_strGroom);
-    out.vfunc_o10_8(m_strBride);
+    out.WriteInt64(m_nWeddingHallSN);
+    out.WriteInt32(m_nPackageId);
+    out.WriteInt32(m_nHallId);
+    out.WriteInt64(m_nTime);
+    out.WriteBool(m_bPublic);
+    out.WriteInt64(m_nBookingAccSN);
+    out.WriteInt64(m_nBookingCharSN);
+    out.WriteUnicodeString(m_strGroom);
+    out.WriteUnicodeString(m_strBride);
     m_fee.FUN_14026e8c0(out);
-    out.vfunc_o10_3(m_nReservationCouponId);
+    out.WriteInt32(m_nReservationCouponId);
 }
 // @0x1408ffd80
 void WeddingHallTicket::Read(CInPacket& in)
 {
-    m_nWeddingHallSN = in.vfunc_o8_4();
-    m_nPackageId = in.vfunc_o8_3();
-    m_nHallId = in.vfunc_o8_3();
-    m_nTime = in.vfunc_o8_4();
-    m_bPublic = in.vfunc_o8_0();
-    m_nBookingAccSN = in.vfunc_o8_4();
-    m_nBookingCharSN = in.vfunc_o8_4();
-    m_strGroom = in.vfunc_o8_8();
-    m_strBride = in.vfunc_o8_8();
+    m_nWeddingHallSN = in.ReadInt64();
+    m_nPackageId = in.ReadInt32();
+    m_nHallId = in.ReadInt32();
+    m_nTime = in.ReadInt64();
+    m_bPublic = in.ReadBool();
+    m_nBookingAccSN = in.ReadInt64();
+    m_nBookingCharSN = in.ReadInt64();
+    m_strGroom = in.ReadUnicodeString();
+    m_strBride = in.ReadUnicodeString();
     m_fee.FUN_14026e940(in);
-    m_nReservationCouponId = in.vfunc_o8_3();
+    m_nReservationCouponId = in.ReadInt32();
 }
 // @0x140900050
 CStringW WeddingHallTicket::ToString()
@@ -454,19 +454,19 @@ void WeddingGuest::Assign(const WeddingGuest& other)
 // @0x1409003c0
 void WeddingGuest::Write(COutputStream& out)
 {
-    out.vfunc_o10_2((short)m_nKind);
-    out.vfunc_o10_4(m_n20);
-    out.vfunc_o10_4(m_n28);
-    out.vfunc_o10_8(m_strName);
+    out.WriteInt16((short)m_nKind);
+    out.WriteInt64(m_n20);
+    out.WriteInt64(m_n28);
+    out.WriteUnicodeString(m_strName);
 }
 // @0x140900450
 void WeddingGuest::Read(CInPacket& in)
 {
-    unsigned short nKind = in.vfunc_o8_2();
+    unsigned short nKind = in.ReadInt16();
     m_nKind = nKind;
-    m_n20 = in.vfunc_o8_4();
-    m_n28 = in.vfunc_o8_4();
-    m_strName = in.vfunc_o8_8();
+    m_n20 = in.ReadInt64();
+    m_n28 = in.ReadInt64();
+    m_strName = in.ReadUnicodeString();
 }
 
 // ---- wedding rules -------------------------------------------------------------------------------------------------

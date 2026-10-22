@@ -803,7 +803,7 @@ bool UIHomeMenuDialog::SendRequestCube(int nResult, const CMsgBoxData& data)
                 pPc->FUN_14152f3c0();
         }
         COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
-        packet.vfunc_o10_1(0x1f);
+        packet.WriteUInt8(0x1f);
         FUN_140710590(packet);
     }
     return 1;

@@ -696,7 +696,7 @@ MS2_REPLACE_METHOD(0x140C0CC00, UIDungeonControlCenter, OnPartySearch, 32, 0x23F
 // @0x140c0dd90
 COutputStream& FUN_140c0dd90(COutputStream& out, const std::set<unsigned int>& ids)
 {
-    out.vfunc_o10_3(ids.size());
+    out.WriteInt32(ids.size());
     for (std::set<unsigned int>::const_iterator it = ids.begin(); it != ids.end(); it++)
         FUN_14070f9a0(out, *it);
     return out;
@@ -770,7 +770,7 @@ MS2_REPLACE_METHOD(0x140C0CE20, UIDungeonControlCenter, SendRoomDungeon, 113, 0x
 // @0x140c0cea0
 void UIDungeonControlCenter::FUN_140c0cea0(CInPacket& packet)
 {
-    int nCommand = packet.vfunc_o8_1();
+    int nCommand = packet.ReadUInt8();
     switch (nCommand) {
     case 2:
     case 3:
@@ -787,7 +787,7 @@ MS2_REPLACE_METHOD(0x140C0CEA0, UIDungeonControlCenter, FUN_140c0cea0, 115, 0x2E
 // @0x140c0cf20
 void UIDungeonControlCenter::FUN_140c0cf20(CInPacket& packet)
 {
-    int nCommand = packet.vfunc_o8_1();
+    int nCommand = packet.ReadUInt8();
     switch (nCommand) {
     case 0x17:
         FUN_140c0bab0();

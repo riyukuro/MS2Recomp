@@ -46,13 +46,13 @@ MS2_REPLACE_METHOD(0x140C86060, Unk_PCItemCooldowns, FUN_140c86060, 73, 0xCCA14F
 void Unk_PCItemCooldowns::FUN_140c860b0(CInputStream& stream, int nObjId)
 {
     FUN_140c86060();
-    unsigned nCount = stream.vfunc_o8_1();
+    unsigned nCount = stream.ReadUInt8();
     for (int i = 0; i < (int)nCount; i++)
     {
-        int nItemId = stream.vfunc_o8_3();
-        __int64 nItemUid = stream.vfunc_o8_4();
-        short nSlot = stream.vfunc_o8_2();
-        int nRarity = stream.vfunc_o8_3();
+        int nItemId = stream.ReadInt32();
+        __int64 nItemUid = stream.ReadInt64();
+        short nSlot = stream.ReadInt16();
+        int nRarity = stream.ReadInt32();
         if (nSlot >= 4)
             break;
         MS2Ptr<CItem> spItem(new CItem);

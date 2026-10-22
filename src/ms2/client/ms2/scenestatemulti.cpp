@@ -792,7 +792,7 @@ void CSceneStateMulti::FUN_14174f4c0(CInPacket& packet)
                 if ((info.m_flags & 0x10) == 0)
                 {
                     if ((info.m_flags & 0x200) != 0)
-                        FUN_141275400(text, packet.vfunc_o8_3());
+                        FUN_141275400(text, packet.ReadInt32());
                 }
                 else
                 {
@@ -833,7 +833,7 @@ void CSceneStateMulti::OnWaitingTicketUpdate(CInPacket& packet)
         if (pList != 0)
             pList->vfunc_8(1);
     }
-    int nWaiting = packet.vfunc_o8_3();
+    int nWaiting = packet.ReadInt32();
     CStringW text = FUN_1401ceea0(GetStringCommon(0xac0), nWaiting);
     UIMessageBox* pBox = FUN_14151f890();
     if (pBox != 0)
@@ -946,7 +946,7 @@ void CSceneStateMulti::FUN_14174ffb0(NotifyObject* pNotify)
 // @0x141750050
 void CSceneStateMulti::OnEventReward(CInPacket& packet)
 {
-    unsigned char cKind = packet.vfunc_o8_1();
+    unsigned char cKind = packet.ReadUInt8();
     if (cKind == 0x10)
     {
         Unk_CharSelectDialog* pSelect = FUN_140b72de0(0x4ef1);

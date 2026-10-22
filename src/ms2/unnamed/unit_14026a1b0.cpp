@@ -47,14 +47,14 @@ bool Unk_CommonPriceRecord::MarkUsed()
 void Unk_CommonPriceRecord::Write(COutputStream* pOut)
 {
     m_price.Write(pOut);
-    pOut->vfunc_o10_4(m_usedTime);
+    pOut->WriteInt64(m_usedTime);
 }
 
 // @0x14026a2b0
 void Unk_CommonPriceRecord::Read(CInputStream* pIn)
 {
     m_price.Read(pIn);
-    m_usedTime = pIn->vfunc_o8_4();
+    m_usedTime = pIn->ReadInt64();
 }
 
 // @0x14026a300
@@ -72,7 +72,7 @@ Unk_CommonPriceRecordList& Unk_CommonPriceRecordList::operator=(const Unk_Common
 void Unk_CommonPriceRecordList::Write(COutputStream* pOut)
 {
     unsigned char nCount = (unsigned char)m_records.GetCount();
-    pOut->vfunc_o10_1(nCount);
+    pOut->WriteUInt8(nCount);
     for (int i = 0; i < (int)nCount; i++)
         m_records.GetAt(i).Write(pOut);
 }
@@ -80,7 +80,7 @@ void Unk_CommonPriceRecordList::Write(COutputStream* pOut)
 // @0x14026a3d0
 void Unk_CommonPriceRecordList::Read(CInputStream* pIn)
 {
-    unsigned char nCount = pIn->vfunc_o8_1();
+    unsigned char nCount = pIn->ReadUInt8();
     for (int i = 0; i < (int)nCount; i++)
     {
         Unk_CommonPriceRecord record;
@@ -136,17 +136,17 @@ CSkillBookTreeTabConfig::CSkillBookTreeTabConfig() : m_nId(FUN_14028d0e0()), m_s
 // @0x14026a6e0
 void CSkillBookTreeTabConfig::Write(COutputStream* pOut)
 {
-    pOut->vfunc_o10_4(m_nId);
+    pOut->WriteInt64(m_nId);
     m_strName = m_strName.Left(10);
-    pOut->vfunc_o10_8(m_strName);
-    pOut->vfunc_o10_3((int)m_slots.GetCount());
+    pOut->WriteUnicodeString(m_strName);
+    pOut->WriteInt32((int)m_slots.GetCount());
     POSITION pos = m_slots.GetStartPosition();
     while (pos != NULL)
     {
         unsigned nKey = m_slots.GetKeyAt(pos);
         unsigned nValue = m_slots.GetValueAt(pos);
-        pOut->vfunc_o10_3(nKey);
-        pOut->vfunc_o10_3(nValue);
+        pOut->WriteInt32(nKey);
+        pOut->WriteInt32(nValue);
         m_slots.GetNext(pos);
     }
 }
@@ -154,14 +154,14 @@ void CSkillBookTreeTabConfig::Write(COutputStream* pOut)
 // @0x14026a860
 void CSkillBookTreeTabConfig::Read(CInputStream* pIn)
 {
-    m_nId = pIn->vfunc_o8_4();
-    m_strName = pIn->vfunc_o8_8();
+    m_nId = pIn->ReadInt64();
+    m_strName = pIn->ReadUnicodeString();
     m_strName = m_strName.Left(10);
-    unsigned nCount = pIn->vfunc_o8_3();
+    unsigned nCount = pIn->ReadInt32();
     for (unsigned i = 0; i < nCount; i++)
     {
-        unsigned nKey = pIn->vfunc_o8_3();
-        unsigned nValue = pIn->vfunc_o8_3();
+        unsigned nKey = pIn->ReadInt32();
+        unsigned nValue = pIn->ReadInt32();
         m_slots.SetAt(nKey, nValue);
     }
 }

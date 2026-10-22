@@ -751,7 +751,7 @@ int UICartoonDialog::GetBookId()
 void UICartoonDialog::FUN_1418dfc60(CInPacket& packet)
 {
     m_nPage = 0;
-    m_nBookId = packet.vfunc_o8_3();
+    m_nBookId = packet.ReadInt32();
     CStoryBookDataPtr spBook = CStoryBookTable::GetInstance()->GetData(m_nBookId);
     if (spBook.IsNull())
         return;
@@ -1496,7 +1496,7 @@ void UICharacterCreateDialog::vfunc_79(void* p)
         int nOpcode = pPacket->FUN_14070fe80();
         if (nOpcode == 0xc)
         {
-            if (pPacket->vfunc_o8_1() == 1)
+            if (pPacket->ReadUInt8() == 1)
             {
                 FUN_14151f200();
                 m_nState = 4;
@@ -1746,20 +1746,20 @@ int UICharacterCreateDialog::FUN_1418e3f50(const CStringW& strName)
     kCreate.m_nColor1 = FUN_141b6df90(pPc->FUN_141659220(1));
     ATL::CAtlList<MS2Ptr<CEquipItem> > aEquips(10);
     FUN_1411e1b80(pPc->FUN_1416561a0(), aEquips);
-    kCreate.m_items.vfunc_o10_1((unsigned char)aEquips.GetCount());
+    kCreate.m_items.WriteUInt8((unsigned char)aEquips.GetCount());
     POSITION pos = aEquips.GetHeadPosition();
     while (pos != 0)
     {
         MS2Ptr<CItem> spItem = aEquips.GetAt(pos)->GetItem();
-        kCreate.m_items.vfunc_o10_3(spItem->FUN_1405276c0());
-        kCreate.m_items.vfunc_o10_1(FUN_140526c30(spItem));
+        kCreate.m_items.WriteInt32(spItem->FUN_1405276c0());
+        kCreate.m_items.WriteUInt8(FUN_140526c30(spItem));
         Unk_CcProxy* pProxy = reinterpret_cast<Unk_CcProxy*>(spItem->FUN_140527870());
         pProxy->vfunc_5(&kCreate.m_items);
         aEquips.GetNext(pos);
     }
     kCreate.m_nElapsed = (int)m_dElapsed;
     COutPacket kPacket(static_cast<int>(SendOp::CharacterManagement), 0);
-    kPacket.vfunc_o10_1(1);
+    kPacket.WriteUInt8(1);
     kCreate.FUN_1401f9f20(kPacket);
     FUN_140710590(kPacket);
     void* pPlatform = FUN_140d86260();

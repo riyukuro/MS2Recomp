@@ -464,8 +464,8 @@ bool SendBeautyMode16(__int64 nItemUid)
     if (nItemUid == 0)
         return false;
     COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
-    packet.vfunc_o10_1(0x10);
-    packet.vfunc_o10_4(nItemUid);
+    packet.WriteUInt8(0x10);
+    packet.WriteInt64(nItemUid);
     FUN_140710590(packet);
     return true;
 }
@@ -477,8 +477,8 @@ bool SendBeautyMode17(__int64 nItemUid)
     if (nItemUid == 0)
         return false;
     COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
-    packet.vfunc_o10_1(0x11);
-    packet.vfunc_o10_4(nItemUid);
+    packet.WriteUInt8(0x11);
+    packet.WriteInt64(nItemUid);
     FUN_140710590(packet);
     return true;
 }
@@ -1159,7 +1159,7 @@ bool UIBeautyShopStyleDialog::SendBeautyMode19(int nResult, const CMsgBoxData&)
     if (nResult == 0)
     {
         COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
-        packet.vfunc_o10_1(0x13);
+        packet.WriteUInt8(0x13);
         FUN_140710590(packet);
         FUN_1412761e0(MS2Ptr<AScript>(m_30), 0);
     }
@@ -1178,9 +1178,9 @@ bool UIBeautyShopStyleDialog::SendBeautyMode18(int nResult, const CMsgBoxData& d
         if (!(spItem == 0))
         {
             COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
-            packet.vfunc_o10_1(0x12);
-            packet.vfunc_o10_4(spItem->FUN_140526a50());
-            packet.vfunc_o10_1((unsigned char)nIndex);
+            packet.WriteUInt8(0x12);
+            packet.WriteInt64(spItem->FUN_140526a50());
+            packet.WriteUInt8((unsigned char)nIndex);
             FUN_140710590(packet);
             FUN_1412761e0(MS2Ptr<AScript>(m_30), 0);
         }
@@ -1228,17 +1228,17 @@ bool UIBeautyShopStyleDialog::FUN_140f05880(int nResult, const CMsgBoxData&)
 // MS2-FUNCTIONAL: large EH frame; temporaries and branch order differ
 void UIBeautyShopStyleDialog::FUN_140f05a80(CInPacket& packet)
 {
-    unsigned char nOp = packet.vfunc_o8_1();
+    unsigned char nOp = packet.ReadUInt8();
     if (nOp == 2)
     {
-        m_26c = packet.vfunc_o8_1();
+        m_26c = packet.ReadUInt8();
         m_1b8.FUN_1406e5420(packet);
     }
     else if (nOp == 0xd)
         m_298.clear();
     else if (nOp == 0xe)
     {
-        m_294 = (unsigned short)packet.vfunc_o8_2();
+        m_294 = (unsigned short)packet.ReadInt16();
         m_298.reserve(FUN_140f011b0());
         m_260 = 1;
         if (FUN_1422dc430())
@@ -1246,8 +1246,8 @@ void UIBeautyShopStyleDialog::FUN_140f05a80(CInPacket& packet)
     }
     if (nOp == 0x14)
     {
-        packet.vfunc_o8_1();
-        unsigned nExtended = (unsigned short)packet.vfunc_o8_2();
+        packet.ReadUInt8();
+        unsigned nExtended = (unsigned short)packet.ReadInt16();
         int nOld = m_290;
         FUN_140f08f20(nExtended + FUN_140f011f0());
         if (m_30.get() && m_260)
@@ -1272,16 +1272,16 @@ void UIBeautyShopStyleDialog::FUN_140f05a80(CInPacket& packet)
     }
     else if (nOp == 0xf)
     {
-        unsigned nCount = (unsigned short)packet.vfunc_o8_2();
+        unsigned nCount = (unsigned short)packet.ReadInt16();
         for (unsigned i = 0; i < nCount; i++)
         {
             MS2Ptr<CItem> spItem(new CItem);
             if (!(spItem == 0))
             {
-                int nItemId = packet.vfunc_o8_3();
-                __int64 nUid = packet.vfunc_o8_4();
-                int nSlot = packet.vfunc_o8_3();
-                __int64 nTime = packet.vfunc_o8_4();
+                int nItemId = packet.ReadInt32();
+                __int64 nUid = packet.ReadInt64();
+                int nSlot = packet.ReadInt32();
+                __int64 nTime = packet.ReadInt64();
                 spItem->FUN_140523c40(nItemId, 1, 0);
                 spItem->FUN_140526b70(nSlot);
                 spItem->FUN_140526a70(nUid);
@@ -1299,10 +1299,10 @@ void UIBeautyShopStyleDialog::FUN_140f05a80(CInPacket& packet)
     m_2b0 = 0;
     if (nOp == 0x10 || nOp == 0x11)
     {
-        __int64 nUid = packet.vfunc_o8_4();
-        __int64 nNewUid = packet.vfunc_o8_4();
-        int nSlot = packet.vfunc_o8_1();
-        __int64 nTime = packet.vfunc_o8_4();
+        __int64 nUid = packet.ReadInt64();
+        __int64 nNewUid = packet.ReadInt64();
+        int nSlot = packet.ReadUInt8();
+        __int64 nTime = packet.ReadInt64();
         Unk_BSPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pPc)
         {
@@ -1329,7 +1329,7 @@ void UIBeautyShopStyleDialog::FUN_140f05a80(CInPacket& packet)
     }
     else if (nOp == 0x12)
     {
-        __int64 nUid = packet.vfunc_o8_4();
+        __int64 nUid = packet.ReadInt64();
         int nIndex = 0;
         for (std::vector<MS2Ptr<CItem> >::iterator it = m_298.begin(); it != m_298.end(); ++it)
         {
@@ -1358,7 +1358,7 @@ void UIBeautyShopStyleDialog::FUN_140f05a80(CInPacket& packet)
     }
     else if (nOp == 8)
     {
-        Unk_BSResult nCode = (Unk_BSResult)packet.vfunc_o8_3();
+        Unk_BSResult nCode = (Unk_BSResult)packet.ReadInt32();
         unsigned nFee = 0;
         Unk_BSFee* pFee = FUN_140f08190(&nFee);
         switch (nCode)
@@ -1768,9 +1768,9 @@ int UIBeautyShopStyleDialog::FUN_140f08be0()
     }
     m_198->FUN_140cd22f0(FUN_140f01070(FUN_140f07980()));
     COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
-    packet.vfunc_o10_1(0x15);
-    packet.vfunc_o10_4(spItem->FUN_140526a50());
-    packet.vfunc_o10_1((unsigned char)spItem->FUN_140526b50());
+    packet.WriteUInt8(0x15);
+    packet.WriteInt64(spItem->FUN_140526a50());
+    packet.WriteUInt8((unsigned char)spItem->FUN_140526b50());
     FUN_140710590(packet);
     FUN_1412761e0(MS2Ptr<AScript>(m_30), 0);
     m_2b0 = 1;

@@ -633,8 +633,8 @@ void CFunctionCubeObject::vfunc_8(CString str)
         kInfo.m_strId = m_strId;
         kInfo.m_nCount = 1;
         COutPacket kPacket(static_cast<int>(SendOp::FunctionCube), 0);
-        kPacket.vfunc_o10_1(5);
-        kPacket.vfunc_o10_3(1);
+        kPacket.WriteUInt8(5);
+        kPacket.WriteInt32(1);
         FUN_1401fc610(&kInfo, &kPacket);
         FUN_140710590(kPacket);
         FUN_140ac3050(&kInfo);
@@ -2523,12 +2523,12 @@ static int FUN_141239e40(int nState)
 // @0x14122f270
 void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
 {
-    unsigned char nType = pPacket->vfunc_o8_1();
+    unsigned char nType = pPacket->ReadUInt8();
     switch (nType)
     {
     case 2:
     {
-        int nCount = pPacket->vfunc_o8_3();
+        int nCount = pPacket->ReadInt32();
         for (int i = 0; i < nCount; i++)
             FUN_141230310(pPacket);
         break;
@@ -2541,9 +2541,9 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
         Unk_FcActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
         if (pActor == 0)
             break;
-        __int64 nOwner = pPacket->vfunc_o8_4();
-        CString strId = pPacket->vfunc_o8_6();
-        bool bFlag = pPacket->vfunc_o8_1() != 0;
+        __int64 nOwner = pPacket->ReadInt64();
+        CString strId = pPacket->ReadUnicodeStringA();
+        bool bFlag = pPacket->ReadUInt8() != 0;
         bool bMine = FUN_141656a80(pActor) == nOwner;
         MS2Ptr<CFunctionCubeObject> spCube(0);
         if (m_mapCubes.Lookup(strId, spCube))
@@ -2612,10 +2612,10 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
         Unk_FcActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
         if (pActor == 0)
             break;
-        __int64 nOwner = pPacket->vfunc_o8_4();
-        CString strId = pPacket->vfunc_o8_6();
-        __int64 nArg = pPacket->vfunc_o8_4();
-        int nCount = pPacket->vfunc_o8_3();
+        __int64 nOwner = pPacket->ReadInt64();
+        CString strId = pPacket->ReadUnicodeStringA();
+        __int64 nArg = pPacket->ReadInt64();
+        int nCount = pPacket->ReadInt32();
         if (FUN_141656a80(pActor) != nOwner)
             break;
         MS2Ptr<CFunctionCubeObject> spCube(0);
@@ -2655,9 +2655,9 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
         Unk_FcActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
         if (pActor == 0)
             break;
-        __int64 nOwner = pPacket->vfunc_o8_4();
-        CString strId = pPacket->vfunc_o8_6();
-        __int64 nArg = pPacket->vfunc_o8_4();
+        __int64 nOwner = pPacket->ReadInt64();
+        CString strId = pPacket->ReadUnicodeStringA();
+        __int64 nArg = pPacket->ReadInt64();
         if (FUN_141656a80(pActor) != nOwner)
             break;
         MS2Ptr<CFunctionCubeObject> spCube(0);
@@ -2680,8 +2680,8 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
         Unk_FcActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
         if (pActor == 0)
             break;
-        __int64 nOwner = pPacket->vfunc_o8_4();
-        CString strId = pPacket->vfunc_o8_6();
+        __int64 nOwner = pPacket->ReadInt64();
+        CString strId = pPacket->ReadUnicodeStringA();
         if (FUN_141656a80(pActor) != nOwner)
             break;
         MS2Ptr<CFunctionCubeObject> spCube(0);
@@ -2704,9 +2704,9 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
         Unk_FcActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
         if (pActor == 0)
             break;
-        __int64 nOwner = pPacket->vfunc_o8_4();
-        CString strId = pPacket->vfunc_o8_6();
-        int nError = pPacket->vfunc_o8_3();
+        __int64 nOwner = pPacket->ReadInt64();
+        CString strId = pPacket->ReadUnicodeStringA();
+        int nError = pPacket->ReadInt32();
         if (FUN_141656a80(pActor) != nOwner)
             break;
         MS2Ptr<CFunctionCubeObject> spCube(0);
@@ -2726,7 +2726,7 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
 // @0x141230310
 void CFunctionCubeService::FUN_141230310(CInPacket* pPacket)
 {
-    CString strId = pPacket->vfunc_o8_6();
+    CString strId = pPacket->ReadUnicodeStringA();
     bool bPending = false;
     MS2Ptr<CFunctionCubeObject> spCube(0);
     if (!m_mapCubes.Lookup(strId, spCube))
@@ -2738,7 +2738,7 @@ void CFunctionCubeService::FUN_141230310(CInPacket* pPacket)
     {
         spCube->vfunc_1(reinterpret_cast<Unk_FcMsg*>(pPacket));
         int nState = spCube->m_nState;
-        bool bFlag = pPacket->vfunc_o8_1() != 0;
+        bool bFlag = pPacket->ReadUInt8() != 0;
         if (bFlag)
             nState = FUN_141239e40(nState);
         if (bPending)
@@ -2978,8 +2978,8 @@ void CFunctionCubeService::FUN_141231730()
             kInfo.m_strId = strKey;
             kInfo.m_nCount = 2;
             COutPacket kPacket(static_cast<int>(SendOp::FunctionCube), 0);
-            kPacket.vfunc_o10_1(5);
-            kPacket.vfunc_o10_3(1);
+            kPacket.WriteUInt8(5);
+            kPacket.WriteInt32(1);
             FUN_1401fc610(&kInfo, &kPacket);
             FUN_140710590(kPacket);
             FUN_140ac3050(&kInfo);

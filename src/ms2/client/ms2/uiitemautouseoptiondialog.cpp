@@ -807,7 +807,7 @@ void UIItemAutoUseOptionDialog::OnClickOk()
     else
     {
         COutPacket packet(static_cast<int>(SendOp::RequestPet), 0);
-        packet.vfunc_o10_1(5);
+        packet.WriteUInt8(5);
         kOptions.FUN_1401ff3f0(packet);
         FUN_140710590(packet);
         vfunc_67();

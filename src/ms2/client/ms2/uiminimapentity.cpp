@@ -556,7 +556,7 @@ void UIMinimapEntity::SendSetDebugMode()
     if (FUN_14025e7c0()->IsDebugMode() && m_position != efd::Point3::ZERO) {
         COutPacket packet(static_cast<int>(SendOp::SetDebugMode), 0);
         packet.Encode1(2);
-        packet.vfunc_o10_11(reinterpret_cast<const Unk_StreamPoint&>(m_position));
+        packet.WriteVector3Short(reinterpret_cast<const Unk_StreamPoint&>(m_position));
         FUN_140710590(packet);
     }
 }
@@ -1418,7 +1418,7 @@ void UIMinimapDialog::vfunc_79(void* p)
     case 0x10:
         if (m_30.IsNull())
             return;
-        switch (static_cast<CInPacket*>(p)->vfunc_o8_1()) {
+        switch (static_cast<CInPacket*>(p)->ReadUInt8()) {
         case 0:
             break;
         default:

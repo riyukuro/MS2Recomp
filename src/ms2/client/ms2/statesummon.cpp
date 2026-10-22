@@ -327,7 +327,7 @@ void StateSummon::vfunc_8(double fTime)
                         uid.m_nUid = pItem->FUN_140526a50();
                         COutPacket packet(static_cast<int>(SendOp::RequestPet), 0);
                         packet.Encode1(0);
-                        packet.vfunc_o10_9(&uid, 8);
+                        packet.WriteBytes(&uid, 8);
                         FUN_140710590(packet);
                     }
                     else
@@ -336,7 +336,7 @@ void StateSummon::vfunc_8(double fTime)
                         uid.m_nUid = pItem->FUN_140526a50();
                         COutPacket packet(static_cast<int>(SendOp::RequestPet), 0);
                         packet.Encode1(3);
-                        packet.vfunc_o10_9(&uid, 8);
+                        packet.WriteBytes(&uid, 8);
                         FUN_140710590(packet);
                     }
                 }

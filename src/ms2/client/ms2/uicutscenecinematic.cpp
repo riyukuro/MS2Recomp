@@ -320,7 +320,7 @@ MS2_REPLACE_METHOD(0x1419080B0, UICutSceneCinematic, FUN_1419080b0, 460, 0xB4DFB
 // @0x141908290
 void UICutSceneCinematic::FUN_141908290(CInPacket& packet)
 {
-    int nType = packet.vfunc_o8_1();
+    int nType = packet.ReadUInt8();
     switch (nType)
     {
     case 1: FUN_141909700(packet); break;
@@ -601,7 +601,7 @@ MS2_REPLACE_METHOD(0x1419096C0, UICutSceneCinematic, FUN_1419096c0, 57, 0x1B8A4E
 // @0x141909700
 void UICutSceneCinematic::FUN_141909700(CInPacket& packet)
 {
-    bool bOn = packet.vfunc_o8_0();
+    bool bOn = packet.ReadBool();
     FUN_141908040(bOn);
 }
 MS2_REPLACE_METHOD(0x141909700, UICutSceneCinematic, FUN_141909700, 71, 0x9EF82459);
@@ -616,9 +616,9 @@ MS2_REPLACE_METHOD(0x141909750, UICutSceneCinematic, FUN_141909750, 29, 0x72FB99
 // @0x141909780
 void UICutSceneCinematic::FUN_141909780(CInPacket& packet)
 {
-    int nId = packet.vfunc_o8_3();
-    CStringW strText = packet.vfunc_o8_8();
-    CStringW strUnused = packet.vfunc_o8_8();
+    int nId = packet.ReadInt32();
+    CStringW strText = packet.ReadUnicodeString();
+    CStringW strUnused = packet.ReadUnicodeString();
     FUN_141907f80(nId, CStringW(strText));
 }
 MS2_REPLACE_METHOD(0x141909780, UICutSceneCinematic, FUN_141909780, 241, 0x184D9336);
@@ -627,11 +627,11 @@ MS2_REPLACE_METHOD(0x141909780, UICutSceneCinematic, FUN_141909780, 241, 0x184D9
 // @0x141909880
 void UICutSceneCinematic::FUN_141909880(CInPacket& packet)
 {
-    int nNpcId = packet.vfunc_o8_3();
-    CString strIllust = packet.vfunc_o8_7();
-    CStringW strText = packet.vfunc_o8_8();
-    unsigned nDuration = packet.vfunc_o8_3();
-    unsigned nFlag = packet.vfunc_o8_1();
+    int nNpcId = packet.ReadInt32();
+    CString strIllust = packet.ReadString();
+    CStringW strText = packet.ReadUnicodeString();
+    unsigned nDuration = packet.ReadInt32();
+    unsigned nFlag = packet.ReadUInt8();
     CString strSound = FUN_14016a600(strText, 0);
     if (strSound.Left(1) == "$" && strSound.Right(1) == "$")
         strSound.Remove('$');
@@ -678,11 +678,11 @@ MS2_REPLACE_METHOD(0x141909E80, UICutSceneCinematic, FUN_141909e80, 29, 0xE78F1D
 // @0x141909eb0
 void UICutSceneCinematic::FUN_141909eb0(CInPacket& packet)
 {
-    unsigned bRaw = packet.vfunc_o8_1();
-    int nId = packet.vfunc_o8_3();
-    CStringW strText = packet.vfunc_o8_8();
-    unsigned nDuration = packet.vfunc_o8_3();
-    unsigned nDelay = packet.vfunc_o8_3();
+    unsigned bRaw = packet.ReadUInt8();
+    int nId = packet.ReadInt32();
+    CStringW strText = packet.ReadUnicodeString();
+    unsigned nDuration = packet.ReadInt32();
+    unsigned nDelay = packet.ReadInt32();
     CString strSound("");
     if (bRaw == 0)
     {
@@ -716,7 +716,7 @@ void UICutSceneCinematic::FUN_141909eb0(CInPacket& packet)
 // @0x14190a400
 void UICutSceneCinematic::FUN_14190a400(CInPacket& packet)
 {
-    int nId = packet.vfunc_o8_3();
+    int nId = packet.ReadInt32();
     MS2Ptr<BalloonGroup> spGroup;
     if (m_groups.Lookup(nId, spGroup))
     {
@@ -730,14 +730,14 @@ MS2_REPLACE_METHOD(0x14190A400, UICutSceneCinematic, FUN_14190a400, 177, 0xE46A5
 // @0x14190a4c0
 void UICutSceneCinematic::FUN_14190a4c0(CInPacket& packet)
 {
-    int nType = packet.vfunc_o8_1();
+    int nType = packet.ReadUInt8();
     CStringW strLabel;
     switch (nType)
     {
     case 2: strLabel = "$s_cutscene_skip_state"; break;
     case 1: strLabel = "$s_cutscene_skip_scene"; break;
     }
-    m_strSkipMsg = packet.vfunc_o8_7();
+    m_strSkipMsg = packet.ReadString();
     CStringW strKey(L"$s_cutscene_skip_key");
     if (*FUN_1409a8b10()->FUN_140a58500())
         strKey = FUN_1409331f0()->FUN_14142d760(0x49409, 2);
@@ -750,14 +750,14 @@ void UICutSceneCinematic::FUN_14190a6e0(CInPacket& packet)
 {
     if (!m_30)
         return;
-    CStringW strType = packet.vfunc_o8_8();
-    CStringW strText1 = packet.vfunc_o8_8();
-    CStringW strText2 = packet.vfunc_o8_8();
-    CStringW strAlign = packet.vfunc_o8_8();
-    int nDuration = packet.vfunc_o8_3();
-    float fX = packet.vfunc_o8_5();
-    float fY = packet.vfunc_o8_5();
-    float fScale = packet.vfunc_o8_5();
+    CStringW strType = packet.ReadUnicodeString();
+    CStringW strText1 = packet.ReadUnicodeString();
+    CStringW strText2 = packet.ReadUnicodeString();
+    CStringW strAlign = packet.ReadUnicodeString();
+    int nDuration = packet.ReadInt32();
+    float fX = packet.ReadFloat();
+    float fY = packet.ReadFloat();
+    float fScale = packet.ReadFloat();
     FUN_1419092a0(strText1);
     CString strSound = FUN_14016a600(strText2, 0);
     if (strSound.Left(1) == "$" && strSound.Right(1) == "$")
@@ -782,8 +782,8 @@ MS2_REPLACE_METHOD(0x14190A6E0, UICutSceneCinematic, FUN_14190a6e0, 1408, 0x2065
 // @0x14190ac70
 void UICutSceneCinematic::FUN_14190ac70(CInPacket& packet)
 {
-    m_strText = packet.vfunc_o8_8();
-    m_bOpening = packet.vfunc_o8_0();
+    m_strText = packet.ReadUnicodeString();
+    m_bOpening = packet.ReadBool();
     m_nMode = 2;
     CString strSound = FUN_14016a600(m_strText, 0);
     if (strSound.Left(1) == "$" && strSound.Right(1) == "$")
@@ -800,7 +800,7 @@ MS2_REPLACE_METHOD(0x14190AC70, UICutSceneCinematic, FUN_14190ac70, 617, 0xE5FDE
 // @0x14190aee0
 void UICutSceneCinematic::FUN_14190aee0(CInPacket& packet)
 {
-    m_strText = packet.vfunc_o8_8();
+    m_strText = packet.ReadUnicodeString();
     m_nMode = 3;
     FUN_1419092a0(m_strText);
     FUN_141909610();

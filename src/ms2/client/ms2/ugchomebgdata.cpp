@@ -294,9 +294,9 @@ void Unk_UhSetting::Reset()
 // @0x140b68ec0
 void Unk_UhSetting::Read(CInPacket& packet)
 {
-    m_nBg = packet.vfunc_o8_1();
-    m_nLight = packet.vfunc_o8_1();
-    m_nCamera = packet.vfunc_o8_1();
+    m_nBg = packet.ReadUInt8();
+    m_nLight = packet.ReadUInt8();
+    m_nCamera = packet.ReadUInt8();
 }
 
 // @0x140b68f60

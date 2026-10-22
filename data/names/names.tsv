@@ -2095,3 +2095,37 @@
 14028de60	FUN_14028de60	GetStringCommon	descriptive	descriptive body: string-common table lookup by numeric id (callers pass s_* ids); free helper, stand-ins in ~300 files	nam1	2026-10-22
 14028b8e0	FUN_14028b8e0	GetStringCommonByKey	descriptive	descriptive body: string-common lookup by key (callers pass L"s_..."); free helper, stand-ins in ~300 files	nam1	2026-10-22
 1401a9d70	FUN_1401a9d70	GetStringTable	descriptive	descriptive body: inline accessor returning the CStringTable singleton DAT_143aac298 (v2525: CStringTable::GetInstance); Unk_* stand-ins keep FUN_1401a9d70 as alias	nam1	2026-10-22
+14083a580	CByteBuffer::vfunc_o8_0	CByteBuffer::ReadBool	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 0); width-explicit name per user	nam2	2026-10-22
+14083a5d0	CByteBuffer::vfunc_o8_1	CByteBuffer::ReadUInt8	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 1); width-explicit name per user	nam2	2026-10-22
+14083a650	CByteBuffer::vfunc_o8_2	CByteBuffer::ReadInt16	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 2); width-explicit name per user	nam2	2026-10-22
+14083a6d0	CByteBuffer::vfunc_o8_3	CByteBuffer::ReadInt32	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 3); width-explicit name per user	nam2	2026-10-22
+14083a750	CByteBuffer::vfunc_o8_4	CByteBuffer::ReadInt64	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 4); width-explicit name per user	nam2	2026-10-22
+14083a7d0	CByteBuffer::vfunc_o8_5	CByteBuffer::ReadFloat	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 5); width-explicit name per user	nam2	2026-10-22
+14083a850	CByteBuffer::vfunc_o8_6	CByteBuffer::ReadUnicodeStringA	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 6); width-explicit name per user	nam2	2026-10-22
+14083a920	CByteBuffer::vfunc_o8_7	CByteBuffer::ReadString	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 7); width-explicit name per user	nam2	2026-10-22
+14083a9e0	CByteBuffer::vfunc_o8_8	CByteBuffer::ReadUnicodeString	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 8); width-explicit name per user	nam2	2026-10-22
+14083aaa0	CByteBuffer::vfunc_o8_9	CByteBuffer::ReadBytes	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 9); width-explicit name per user	nam2	2026-10-22
+14083ab30	CByteBuffer::vfunc_o8_10	CByteBuffer::ReadVector3	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 10); width-explicit name per user	nam2	2026-10-22
+14083abe0	CByteBuffer::vfunc_o8_11	CByteBuffer::ReadVector3Short	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 11); width-explicit name per user	nam2	2026-10-22
+14083aca0	CByteBuffer::vfunc_o8_12	CByteBuffer::ReadShortX10	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 12); width-explicit name per user	nam2	2026-10-22
+14083acf0	CByteBuffer::vfunc_o8_13	CByteBuffer::ReadShortX100	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 13); width-explicit name per user	nam2	2026-10-22
+14083ad40	CByteBuffer::vfunc_o8_14	CByteBuffer::ReadShortScaled	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 14); width-explicit name per user	nam2	2026-10-22
+14083ad90	CByteBuffer::vfunc_o8_15	CByteBuffer::ReadShortDiv10	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 15); width-explicit name per user	nam2	2026-10-22
+14083ade0	CByteBuffer::vfunc_o8_16	CByteBuffer::ReadShortDivScaled	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 16); width-explicit name per user	nam2	2026-10-22
+140839bd0	CByteBuffer::vfunc_o10_0	CByteBuffer::WriteBool	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 0); width-explicit name per user	nam2	2026-10-22
+140839c30	CByteBuffer::vfunc_o10_1	CByteBuffer::WriteUInt8	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 1); width-explicit name per user	nam2	2026-10-22
+140839ca0	CByteBuffer::vfunc_o10_2	CByteBuffer::WriteInt16	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 2); width-explicit name per user	nam2	2026-10-22
+140839d10	CByteBuffer::vfunc_o10_3	CByteBuffer::WriteInt32	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 3); width-explicit name per user	nam2	2026-10-22
+140839d80	CByteBuffer::vfunc_o10_4	CByteBuffer::WriteInt64	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 4); width-explicit name per user	nam2	2026-10-22
+140839df0	CByteBuffer::vfunc_o10_5	CByteBuffer::WriteFloat	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 5); width-explicit name per user	nam2	2026-10-22
+140839e70	CByteBuffer::vfunc_o10_6	CByteBuffer::WriteUnicodeStringA	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 6); width-explicit name per user	nam2	2026-10-22
+140839f70	CByteBuffer::vfunc_o10_7	CByteBuffer::WriteString	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 7); width-explicit name per user	nam2	2026-10-22
+14083a060	CByteBuffer::vfunc_o10_8	CByteBuffer::WriteUnicodeString	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 8); width-explicit name per user	nam2	2026-10-22
+14083a150	CByteBuffer::vfunc_o10_9	CByteBuffer::WriteBytes	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 9); width-explicit name per user	nam2	2026-10-22
+14083a1d0	CByteBuffer::vfunc_o10_10	CByteBuffer::WriteVector3	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 10); width-explicit name per user	nam2	2026-10-22
+14083a260	CByteBuffer::vfunc_o10_11	CByteBuffer::WriteVector3Short	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 11); width-explicit name per user	nam2	2026-10-22
+14083a3a0	CByteBuffer::vfunc_o10_12	CByteBuffer::WriteShortX10	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 12); width-explicit name per user	nam2	2026-10-22
+14083a400	CByteBuffer::vfunc_o10_13	CByteBuffer::WriteShortX100	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 13); width-explicit name per user	nam2	2026-10-22
+14083a460	CByteBuffer::vfunc_o10_14	CByteBuffer::WriteShortScaled	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 14); width-explicit name per user	nam2	2026-10-22
+14083a4c0	CByteBuffer::vfunc_o10_15	CByteBuffer::WriteShortDiv10	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 15); width-explicit name per user	nam2	2026-10-22
+14083a520	CByteBuffer::vfunc_o10_16	CByteBuffer::WriteShortDivScaled	descriptive	body in commonfiles/stream.cpp (CByteBuffer slot 16); width-explicit name per user	nam2	2026-10-22

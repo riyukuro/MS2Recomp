@@ -237,14 +237,14 @@ void CClientPlatformNexonKorea::vfunc_16()
 // @0x140c78260
 void CClientPlatformNexonKorea::vfunc_26(void* a1)
 {
-    int nMode = static_cast<CInputStream&>(*(CInPacket*)a1).vfunc_o8_1();
+    int nMode = (*(CInPacket*)a1).ReadUInt8();
     if (nMode == 0) {
-        int nKind = static_cast<CInputStream&>(*(CInPacket*)a1).vfunc_o8_1();
+        int nKind = (*(CInPacket*)a1).ReadUInt8();
         if (nKind == 0) {
-            __int64 nTime = static_cast<CInputStream&>(*(CInPacket*)a1).vfunc_o8_4();
+            __int64 nTime = (*(CInPacket*)a1).ReadInt64();
             g_nShutdownTime = nTime;
         } else if (nKind == 1) {
-            CStringW strMessage = static_cast<CInputStream&>(*(CInPacket*)a1).vfunc_o8_8();
+            CStringW strMessage = (*(CInPacket*)a1).ReadUnicodeString();
             g_socketClosing = 1;
             DAT_143ab2d78 = strMessage;
             COutPacket packet(static_cast<int>(SendOp::RequestQuit), 0);
@@ -258,8 +258,8 @@ void CClientPlatformNexonKorea::vfunc_26(void* a1)
             }
         }
     } else if (nMode == 1) {
-        int nKind = static_cast<CInputStream&>(*(CInPacket*)a1).vfunc_o8_1();
-        CStringW strMessage = static_cast<CInputStream&>(*(CInPacket*)a1).vfunc_o8_8();
+        int nKind = (*(CInPacket*)a1).ReadUInt8();
+        CStringW strMessage = (*(CInPacket*)a1).ReadUnicodeString();
         if (nKind == 1) {
             g_socketClosing = 1;
             DAT_143ab2d78 = strMessage;

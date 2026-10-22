@@ -313,7 +313,7 @@ CString UIBingoEventDialog::GetTypeName()
 int UIBingoEventDialog::vfunc_65()
 {
     COutPacket pkt(static_cast<int>(SendOp::EventReward), 0);
-    pkt.vfunc_o10_1(0x14);
+    pkt.WriteUInt8(0x14);
     FUN_140710590(pkt);
     m_state = 0;
     m_time = CMsTime(FUN_140869440());
@@ -484,30 +484,30 @@ void UIBingoEventDialog::vfunc_79(void* pData)
 {
     if (((CInPacket*)pData)->FUN_14070fe80() != 0xf7)
         return;
-    unsigned char cmd = ((CInPacket*)pData)->vfunc_o8_1();
+    unsigned char cmd = ((CInPacket*)pData)->ReadUInt8();
     if (cmd == 0x14)
     {
         m_time = CMsTime(FUN_140869440());
-        m_stage = ((CInPacket*)pData)->vfunc_o8_3();
-        CStringW strChecked = ((CInPacket*)pData)->vfunc_o8_8();
+        m_stage = ((CInPacket*)pData)->ReadInt32();
+        CStringW strChecked = ((CInPacket*)pData)->ReadUnicodeString();
         m_checked.RemoveAll();
         FUN_1401d9a30(strChecked, m_checked, L",");
-        CStringW strReceived = ((CInPacket*)pData)->vfunc_o8_8();
+        CStringW strReceived = ((CInPacket*)pData)->ReadUnicodeString();
         m_received.RemoveAll();
         FUN_1401d9a30(strReceived, m_received, L",");
-        unsigned count = ((CInPacket*)pData)->vfunc_o8_3();
+        unsigned count = ((CInPacket*)pData)->ReadInt32();
         m_called.RemoveAll();
         for (unsigned i = 0; i < count; i++)
-            m_called.Add(((CInPacket*)pData)->vfunc_o8_3());
+            m_called.Add(((CInPacket*)pData)->ReadInt32());
         if (FUN_1422dc430() != 0)
             FUN_140bb14d0();
     }
     else if (cmd == 0x15)
     {
-        CStringW strChecked = ((CInPacket*)pData)->vfunc_o8_8();
+        CStringW strChecked = ((CInPacket*)pData)->ReadUnicodeString();
         m_checked.RemoveAll();
         FUN_1401d9a30(strChecked, m_checked, L",");
-        CStringW strReceived = ((CInPacket*)pData)->vfunc_o8_8();
+        CStringW strReceived = ((CInPacket*)pData)->ReadUnicodeString();
         m_received.RemoveAll();
         FUN_1401d9a30(strReceived, m_received, L",");
         FUN_140bb1d60();
@@ -566,12 +566,12 @@ int UIBingoEventDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     if (ref.FUN_1403e8340())
         return 0;
     COutPacket pkt(static_cast<int>(SendOp::EventReward), 0);
-    pkt.vfunc_o10_1(0x16);
+    pkt.WriteUInt8(0x16);
     if (m_state == 1)
-        pkt.vfunc_o10_3(ref.FUN_1403e8b90()->m_freeItemId);
+        pkt.WriteInt32(ref.FUN_1403e8b90()->m_freeItemId);
     else
-        pkt.vfunc_o10_3(ref.FUN_1403e8b90()->m_cashItemId);
-    pkt.vfunc_o10_3(m_board[nIndex]);
+        pkt.WriteInt32(ref.FUN_1403e8b90()->m_cashItemId);
+    pkt.WriteInt32(m_board[nIndex]);
     FUN_140710590(pkt);
     BINGO_CLIP(m_cells[nIndex])->FUN_1422c1fe0(0);
     FUN_140bb3050(nIndex);
@@ -735,8 +735,8 @@ void UIBingoEventDialog::SendEventRewardMode23(const Scaleform::GFx::FunctionHan
 {
     int nIndex = FUN_140bb9640(params.pUserData);
     COutPacket pkt(static_cast<int>(SendOp::EventReward), 0);
-    pkt.vfunc_o10_1(0x17);
-    pkt.vfunc_o10_3(nIndex);
+    pkt.WriteUInt8(0x17);
+    pkt.WriteInt32(nIndex);
     FUN_140710590(pkt);
 }
 

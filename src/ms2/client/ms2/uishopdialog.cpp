@@ -1579,7 +1579,7 @@ MS2_REPLACE_METHOD(0x141AF8660, UIShopDialog, ConfirmUgcPurchase, 155, 0xE98EB6E
 // @0x141af8710
 void UIShopDialog::OnShopPacket(CInPacket& packet)
 {
-    int nCmd = packet.vfunc_o8_1();
+    int nCmd = packet.ReadUInt8();
     switch (nCmd)
     {
     case 0:
@@ -1632,34 +1632,34 @@ MS2_REPLACE_METHOD(0x141AF8710, UIShopDialog, OnShopPacket, 370, 0x75D06B23);
 void UIShopDialog::ReadShopInfo(CInPacket& packet)
 {
     ResetProducts(0);
-    m_nNpcId = packet.vfunc_o8_3();
-    m_nShopId = packet.vfunc_o8_3();
-    m_tReset = packet.vfunc_o8_4();
-    m_280 = packet.vfunc_o8_3();
-    m_2c4 = packet.vfunc_o8_2();
-    m_284 = packet.vfunc_o8_3();
-    int bOpenInventory = packet.vfunc_o8_1();
-    m_bSellOnly = packet.vfunc_o8_0();
-    m_bResetEnable = packet.vfunc_o8_0();
-    m_295 = packet.vfunc_o8_0();
-    m_nShopType = packet.vfunc_o8_1();
-    m_290 = packet.vfunc_o8_0();
-    m_291 = packet.vfunc_o8_0();
-    m_bProbInfo = packet.vfunc_o8_0();
-    m_2c2 = packet.vfunc_o8_0();
-    m_strIcon = packet.vfunc_o8_7();
+    m_nNpcId = packet.ReadInt32();
+    m_nShopId = packet.ReadInt32();
+    m_tReset = packet.ReadInt64();
+    m_280 = packet.ReadInt32();
+    m_2c4 = packet.ReadInt16();
+    m_284 = packet.ReadInt32();
+    int bOpenInventory = packet.ReadUInt8();
+    m_bSellOnly = packet.ReadBool();
+    m_bResetEnable = packet.ReadBool();
+    m_295 = packet.ReadBool();
+    m_nShopType = packet.ReadUInt8();
+    m_290 = packet.ReadBool();
+    m_291 = packet.ReadBool();
+    m_bProbInfo = packet.ReadBool();
+    m_2c2 = packet.ReadBool();
+    m_strIcon = packet.ReadString();
     m_bHideReset = m_bResetEnable == 0;
     if (m_bResetEnable)
     {
-        m_29c = packet.vfunc_o8_1();
-        m_2a0 = packet.vfunc_o8_1();
-        m_2a4 = packet.vfunc_o8_3();
-        m_nResetPriceOrg = packet.vfunc_o8_3();
-        m_bResetLimited = packet.vfunc_o8_0();
-        m_nResetCount = packet.vfunc_o8_3();
-        m_nResetType = packet.vfunc_o8_1();
-        m_bHideReset = packet.vfunc_o8_0();
-        m_bResetByAccount = packet.vfunc_o8_0();
+        m_29c = packet.ReadUInt8();
+        m_2a0 = packet.ReadUInt8();
+        m_2a4 = packet.ReadInt32();
+        m_nResetPriceOrg = packet.ReadInt32();
+        m_bResetLimited = packet.ReadBool();
+        m_nResetCount = packet.ReadInt32();
+        m_nResetType = packet.ReadUInt8();
+        m_bHideReset = packet.ReadBool();
+        m_bResetByAccount = packet.ReadBool();
         m_nResetPrice = m_nResetPriceOrg;
     }
     if (!m_188)
@@ -1691,7 +1691,7 @@ void UIShopDialog::ReadProducts(CInPacket& packet)
 {
     if (!HasShop())
         return;
-    int nCount = packet.vfunc_o8_1();
+    int nCount = packet.ReadUInt8();
     for (int i = 0; i < nCount; i++)
     {
         MS2Ptr<CNpcShopProductCli> spProduct(new CNpcShopProductCli);
@@ -1721,14 +1721,14 @@ void UIShopDialog::ReadNewStart(CInPacket& packet)
 {
     if (!HasShop())
         return;
-    int nNpcId = packet.vfunc_o8_3();
-    int nShopId = packet.vfunc_o8_3();
+    int nNpcId = packet.ReadInt32();
+    int nShopId = packet.ReadInt32();
     if (nNpcId != m_nNpcId || nShopId != m_nShopId)
         return;
     ResetProducts(2);
     m_bNewComplete = 0;
-    m_288 = packet.vfunc_o8_3();
-    m_nNewTotal = packet.vfunc_o8_2();
+    m_288 = packet.ReadInt32();
+    m_nNewTotal = packet.ReadInt16();
     m_products[2].clear();
 }
 MS2_REPLACE_METHOD(0x141AF9390, UIShopDialog, ReadNewStart, 321, 0x2D5D8D9A);
@@ -1739,7 +1739,7 @@ void UIShopDialog::ReadNewProducts(CInPacket& packet)
     if (!HasShop())
         return;
     std::map<int, MS2Ptr<CNpcShopProductBase> >& products = m_products[2];
-    int nCount = packet.vfunc_o8_1();
+    int nCount = packet.ReadUInt8();
     int nFirst = (int)products.size();
     for (int i = 0; i < nCount; i++)
     {
@@ -1766,7 +1766,7 @@ void UIShopDialog::ReadMeratStart(CInPacket& packet)
     if (!HasShop())
         return;
     m_meratItems.clear();
-    int nCount = packet.vfunc_o8_2();
+    int nCount = packet.ReadInt16();
     if (nCount > 0)
         m_meratItems.reserve(nCount);
 }
@@ -1777,7 +1777,7 @@ void UIShopDialog::ReadMeratItems(CInPacket& packet)
 {
     if (!HasShop())
         return;
-    int nCount = packet.vfunc_o8_1();
+    int nCount = packet.ReadUInt8();
     for (int i = 0; i < nCount; i++)
     {
         MS2Ptr<CNpcShopMeratItemCli> spItem(new CNpcShopMeratItemCli);
@@ -1794,8 +1794,8 @@ MS2_REPLACE_METHOD(0x141AF9790, UIShopDialog, ReadMeratItems, 306, 0x2C7AF15E);
 void UIShopDialog::ReadProductUpdate(CInPacket& packet)
 {
     FUN_1412761e0(m_spShop, 1);
-    int nSerial = packet.vfunc_o8_3();
-    int nBuyCount = packet.vfunc_o8_3();
+    int nSerial = packet.ReadInt32();
+    int nBuyCount = packet.ReadInt32();
     if (MS2Ptr<CNpcShopProductCli> spProduct = dynamic_cast<CNpcShopProductCli*>(FindProduct(0, nSerial).get()))
     {
         spProduct->FUN_140db6e30(nBuyCount);
@@ -1809,11 +1809,11 @@ MS2_REPLACE_METHOD(0x141AF98D0, UIShopDialog, ReadProductUpdate, 493, 0x4ED3B394
 // @0x141af9ad0
 void UIShopDialog::ReadResetResult(CInPacket& packet)
 {
-    bool bSuccess = packet.vfunc_o8_0();
+    bool bSuccess = packet.ReadBool();
     if (bSuccess)
     {
-        unsigned nItemId = packet.vfunc_o8_3();
-        unsigned nCount = packet.vfunc_o8_3();
+        unsigned nItemId = packet.ReadInt32();
+        unsigned nCount = packet.ReadInt32();
         if (nItemId > 0 && nCount > 0)
         {
             CStringW strText = FUN_140b99450(CStringW(L"s_shop_reset_refund_item"), GetStringTable()->FUN_141811980(1, nItemId), (int&)nCount);
@@ -1832,7 +1832,7 @@ MS2_REPLACE_METHOD(0x141AF9AD0, UIShopDialog, ReadResetResult, 519, 0xF719E837);
 void UIShopDialog::ReadRepurchaseStart(CInPacket& packet)
 {
     ResetProducts(1);
-    m_2c8 = packet.vfunc_o8_2();
+    m_2c8 = packet.ReadInt16();
     m_bRepurchaseEmpty = m_2c8 == 0;
 }
 MS2_REPLACE_METHOD(0x141AF9CE0, UIShopDialog, ReadRepurchaseStart, 138, 0xDDAAB002);
@@ -1840,7 +1840,7 @@ MS2_REPLACE_METHOD(0x141AF9CE0, UIShopDialog, ReadRepurchaseStart, 138, 0xDDAAB0
 // @0x141af9d70
 void UIShopDialog::ReadRepurchaseAdd(CInPacket& packet)
 {
-    unsigned nCount = packet.vfunc_o8_2();
+    unsigned nCount = packet.ReadInt16();
     for (unsigned i = 0; i < nCount; i++)
     {
         MS2Ptr<CNpcShopProductCli> spProduct(new CNpcShopProductCli);
@@ -1872,7 +1872,7 @@ MS2_REPLACE_METHOD(0x141AF9D70, UIShopDialog, ReadRepurchaseAdd, 940, 0xC0913AB0
 void UIShopDialog::ReadRepurchaseRemoval(CInPacket& packet)
 {
     FUN_1412761e0(m_spShop, 1);
-    int nSerial = packet.vfunc_o8_3();
+    int nSerial = packet.ReadInt32();
     MS2Ptr<CNpcShopProductCli> spProduct(dynamic_cast<CNpcShopProductCli*>(FindProduct(1, nSerial).get()));
     if (spProduct == 0)
         return;
@@ -1887,11 +1887,11 @@ MS2_REPLACE_METHOD(0x141AFA130, UIShopDialog, ReadRepurchaseRemoval, 432, 0x58D7
 void UIShopDialog::ReadPurchaseResult(CInPacket& packet)
 {
     FUN_1412761e0(m_spShop, 1);
-    int nItemId = packet.vfunc_o8_3();
-    int nCount = packet.vfunc_o8_3();
-    unsigned __int64 nPrice = (unsigned)packet.vfunc_o8_3();
-    int nRank = packet.vfunc_o8_1();
-    bool bGuildStorage = packet.vfunc_o8_0();
+    int nItemId = packet.ReadInt32();
+    int nCount = packet.ReadInt32();
+    unsigned __int64 nPrice = (unsigned)packet.ReadInt32();
+    int nRank = packet.ReadUInt8();
+    bool bGuildStorage = packet.ReadBool();
     if (bGuildStorage)
     {
         CStringW strText;
@@ -1911,9 +1911,9 @@ MS2_REPLACE_METHOD(0x141AFA2F0, UIShopDialog, ReadPurchaseResult, 836, 0x826C961
 void UIShopDialog::ReadShopError(CInPacket& packet)
 {
     FUN_1412761e0(m_spShop, 1);
-    int nError = packet.vfunc_o8_3();
-    int nCmd = packet.vfunc_o8_1();
-    int nValue = packet.vfunc_o8_3();
+    int nError = packet.ReadInt32();
+    int nCmd = packet.ReadUInt8();
+    int nValue = packet.ReadInt32();
     switch (nError)
     {
     case 8:

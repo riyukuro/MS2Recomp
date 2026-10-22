@@ -361,9 +361,9 @@ MS2_REPLACE_METHOD(0x141B78AF0, CWebBrowserService, FUN_141b78af0, 64, 0x9014824
 void CWebBrowserService::FUN_141b78b40(bool bUnk, int nUnk)
 {
     COutPacket packet(static_cast<int>(SendOp::NewsNotification), 0);
-    packet.vfunc_o10_1(0);
-    packet.vfunc_o10_1(bUnk ? 1 : 0);
-    packet.vfunc_o10_3(nUnk);
+    packet.WriteUInt8(0);
+    packet.WriteUInt8(bUnk ? 1 : 0);
+    packet.WriteInt32(nUnk);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x141B78B40, CWebBrowserService, FUN_141b78b40, 146, 0xF1A79B50);
@@ -376,9 +376,9 @@ void CWebBrowserService::FUN_141b78be0(CefRefPtr<CefV8Context> context, CefRefPt
         m_tokenContext = context;
         m_tokenCallback = callback;
         COutPacket packet(static_cast<int>(SendOp::NewsNotification), 0);
-        packet.vfunc_o10_1(0);
-        packet.vfunc_o10_1(0);
-        packet.vfunc_o10_1(0);
+        packet.WriteUInt8(0);
+        packet.WriteUInt8(0);
+        packet.WriteUInt8(0);
         FUN_140710590(packet);
     }
 }

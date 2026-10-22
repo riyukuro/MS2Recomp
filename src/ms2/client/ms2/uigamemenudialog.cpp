@@ -1245,7 +1245,7 @@ void UIGameMenuDialog::FUN_1419381c0()
 // @0x1419381f0
 void UIGameMenuDialog::FUN_1419381f0(CInPacket& packet)
 {
-    unsigned char nType = packet.vfunc_o8_1();
+    unsigned char nType = packet.ReadUInt8();
     if (nType > 1 && (nType < 5 || (nType > 6 && nType < 10)))
         FUN_14193a120();
 }
@@ -2147,7 +2147,7 @@ void UIGameMenuDialog::FUN_14193c930()
         }
         if (FUN_1403ed2b0()->FUN_141adc890(0x4f4b) == 0) {
             COutPacket packet(static_cast<int>(SendOp::Mentor), 0);
-            packet.vfunc_o10_1(9);
+            packet.WriteUInt8(9);
             FUN_140710590(packet);
         } else {
             FUN_1403ed2b0()->FUN_141adc5d0(0x4f4b);
@@ -2338,8 +2338,8 @@ bool UIGameMenuDialog::SendBeauty(int nResult, const CMsgBoxData& box)
     if (pPc != NULL && FUN_141529ae0(pPc, 0, 0, 0, 0) != 0) {
         int nIndex = box.FUN_141a02e50(0, 0);
         COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
-        packet.vfunc_o10_1(10);
-        packet.vfunc_o10_2((short)nIndex);
+        packet.WriteUInt8(10);
+        packet.WriteInt16((short)nIndex);
         FUN_140710590(packet);
     }
     return true;
@@ -2362,7 +2362,7 @@ bool UIGameMenuDialog::SendQuest(int nResult, const CMsgBoxData&)
     if (nResult != 0)
         return true;
     COutPacket packet(static_cast<int>(SendOp::Quest), 0);
-    packet.vfunc_o10_1(0x11);
+    packet.WriteUInt8(0x11);
     FUN_140710590(packet);
     return true;
 }

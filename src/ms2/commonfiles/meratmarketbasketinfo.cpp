@@ -231,32 +231,32 @@ CMeratMarketBasketInfo::~CMeratMarketBasketInfo()
 // @0x14069c540
 void CMeratMarketBasketInfo::Write(COutputStream* pStream)
 {
-    pStream->vfunc_o10_1((unsigned char)m_nKind);
+    pStream->WriteUInt8((unsigned char)m_nKind);
     m_key.Write(*pStream);
-    pStream->vfunc_o10_4(m_n30);
-    pStream->vfunc_o10_1((unsigned char)m_n38);
-    pStream->vfunc_o10_3(m_n3c);
-    pStream->vfunc_o10_3(m_n40);
-    pStream->vfunc_o10_1((unsigned char)m_n44);
-    pStream->vfunc_o10_3(m_n48);
-    pStream->vfunc_o10_4(m_n50);
-    pStream->vfunc_o10_4(m_n58);
+    pStream->WriteInt64(m_n30);
+    pStream->WriteUInt8((unsigned char)m_n38);
+    pStream->WriteInt32(m_n3c);
+    pStream->WriteInt32(m_n40);
+    pStream->WriteUInt8((unsigned char)m_n44);
+    pStream->WriteInt32(m_n48);
+    pStream->WriteInt64(m_n50);
+    pStream->WriteInt64(m_n58);
 }
 MS2_REPLACE_METHOD(0x14069C540, CMeratMarketBasketInfo, Write, 263, 0x23EDB9E2);
 
 // @0x14069c650
 void CMeratMarketBasketInfo::Read(CInPacket& packet)
 {
-    m_nKind = packet.vfunc_o8_1();
+    m_nKind = packet.ReadUInt8();
     m_key.Read(packet);
-    m_n30 = packet.vfunc_o8_4();
-    m_n38 = packet.vfunc_o8_1();
-    m_n3c = packet.vfunc_o8_3();
-    m_n40 = packet.vfunc_o8_3();
-    m_n44 = packet.vfunc_o8_1();
-    m_n48 = packet.vfunc_o8_3();
-    m_n50 = packet.vfunc_o8_4();
-    m_n58 = packet.vfunc_o8_4();
+    m_n30 = packet.ReadInt64();
+    m_n38 = packet.ReadUInt8();
+    m_n3c = packet.ReadInt32();
+    m_n40 = packet.ReadInt32();
+    m_n44 = packet.ReadUInt8();
+    m_n48 = packet.ReadInt32();
+    m_n50 = packet.ReadInt64();
+    m_n58 = packet.ReadInt64();
 }
 MS2_REPLACE_METHOD(0x14069C650, CMeratMarketBasketInfo, Read, 518, 0x5F2177E5);
 
@@ -415,80 +415,80 @@ void CDBPremiumProduct::CopyFrom(const CDBPremiumProduct* pOther)
 // @0x14069d460
 void CDBPremiumProduct::Write(COutputStream& stream)
 {
-    stream.vfunc_o10_3(m_nId);
-    stream.vfunc_o10_1((unsigned char)m_n1c);
-    stream.vfunc_o10_8(m_strName);
-    stream.vfunc_o10_1((unsigned char)m_nType);
-    stream.vfunc_o10_3(m_n2c);
-    stream.vfunc_o10_3(m_nChartOrder);
-    stream.vfunc_o10_3(m_nCouponFlags);
-    stream.vfunc_o10_1((unsigned char)m_bVisible);
-    stream.vfunc_o10_1((unsigned char)m_nSaleTag);
-    stream.vfunc_o10_1((unsigned char)m_nCurrency);
-    stream.vfunc_o10_4(m_nPrice);
-    stream.vfunc_o10_4(m_nSalePrice);
-    stream.vfunc_o10_1((unsigned char)m_n58);
-    stream.vfunc_o10_4(m_startDate.Get());
-    stream.vfunc_o10_4(m_endDate.Get());
-    stream.vfunc_o10_3(m_n80);
-    stream.vfunc_o10_3(m_n84);
-    stream.vfunc_o10_1((unsigned char)m_nBuyLimit);
-    stream.vfunc_o10_3(m_nBuyLimitMax);
-    stream.vfunc_o10_1((unsigned char)m_n90);
-    stream.vfunc_o10_2(m_n94);
-    stream.vfunc_o10_2(m_n96);
-    stream.vfunc_o10_3(m_n98);
-    stream.vfunc_o10_3(m_nItemId);
-    stream.vfunc_o10_1((unsigned char)m_nGrade);
-    stream.vfunc_o10_3(m_nb0);
-    stream.vfunc_o10_3(m_nb4);
-    stream.vfunc_o10_3(m_nb8);
-    stream.vfunc_o10_3(m_nCategoryId);
-    stream.vfunc_o10_3(m_nLimitCount);
-    stream.vfunc_o10_1((unsigned char)m_nc4);
-    stream.vfunc_o10_3(m_n9c);
-    stream.vfunc_o10_7(m_strCategory);
-    stream.vfunc_o10_7(m_strIcon);
-    stream.vfunc_o10_0(m_bf0);
-    stream.vfunc_o10_1((unsigned char)m_nf4);
-    stream.vfunc_o10_3(m_n104);
-    stream.vfunc_o10_0(m_b108);
-    stream.vfunc_o10_3(m_nf8);
-    stream.vfunc_o10_3(m_nfc);
-    stream.vfunc_o10_3(m_n100);
-    stream.vfunc_o10_1((unsigned char)m_n10c);
-    stream.vfunc_o10_0(m_bPoint);
-    stream.vfunc_o10_3((int)m_nPoint);
+    stream.WriteInt32(m_nId);
+    stream.WriteUInt8((unsigned char)m_n1c);
+    stream.WriteUnicodeString(m_strName);
+    stream.WriteUInt8((unsigned char)m_nType);
+    stream.WriteInt32(m_n2c);
+    stream.WriteInt32(m_nChartOrder);
+    stream.WriteInt32(m_nCouponFlags);
+    stream.WriteUInt8((unsigned char)m_bVisible);
+    stream.WriteUInt8((unsigned char)m_nSaleTag);
+    stream.WriteUInt8((unsigned char)m_nCurrency);
+    stream.WriteInt64(m_nPrice);
+    stream.WriteInt64(m_nSalePrice);
+    stream.WriteUInt8((unsigned char)m_n58);
+    stream.WriteInt64(m_startDate.Get());
+    stream.WriteInt64(m_endDate.Get());
+    stream.WriteInt32(m_n80);
+    stream.WriteInt32(m_n84);
+    stream.WriteUInt8((unsigned char)m_nBuyLimit);
+    stream.WriteInt32(m_nBuyLimitMax);
+    stream.WriteUInt8((unsigned char)m_n90);
+    stream.WriteInt16(m_n94);
+    stream.WriteInt16(m_n96);
+    stream.WriteInt32(m_n98);
+    stream.WriteInt32(m_nItemId);
+    stream.WriteUInt8((unsigned char)m_nGrade);
+    stream.WriteInt32(m_nb0);
+    stream.WriteInt32(m_nb4);
+    stream.WriteInt32(m_nb8);
+    stream.WriteInt32(m_nCategoryId);
+    stream.WriteInt32(m_nLimitCount);
+    stream.WriteUInt8((unsigned char)m_nc4);
+    stream.WriteInt32(m_n9c);
+    stream.WriteString(m_strCategory);
+    stream.WriteString(m_strIcon);
+    stream.WriteBool(m_bf0);
+    stream.WriteUInt8((unsigned char)m_nf4);
+    stream.WriteInt32(m_n104);
+    stream.WriteBool(m_b108);
+    stream.WriteInt32(m_nf8);
+    stream.WriteInt32(m_nfc);
+    stream.WriteInt32(m_n100);
+    stream.WriteUInt8((unsigned char)m_n10c);
+    stream.WriteBool(m_bPoint);
+    stream.WriteInt32((int)m_nPoint);
     if (!m_eventStart.IsNull())
     {
-        stream.vfunc_o10_0(true);
-        stream.vfunc_o10_7(m_strEventCategory);
-        stream.vfunc_o10_4(m_eventStart.Get());
-        stream.vfunc_o10_4(m_eventEnd.Get());
+        stream.WriteBool(true);
+        stream.WriteString(m_strEventCategory);
+        stream.WriteInt64(m_eventStart.Get());
+        stream.WriteInt64(m_eventEnd.Get());
     }
     else
     {
-        stream.vfunc_o10_0(false);
+        stream.WriteBool(false);
     }
-    stream.vfunc_o10_1((unsigned char)m_n158);
-    stream.vfunc_o10_6(m_str160);
-    stream.vfunc_o10_0(m_b168);
+    stream.WriteUInt8((unsigned char)m_n158);
+    stream.WriteUnicodeStringA(m_str160);
+    stream.WriteBool(m_b168);
     if (m_nType == 6)
     {
-        stream.vfunc_o10_1((unsigned char)m_n16c);
-        stream.vfunc_o10_1((unsigned char)m_n170);
-        stream.vfunc_o10_3(m_n174);
-        stream.vfunc_o10_4(m_time178.Get());
-        stream.vfunc_o10_4(m_time188.Get());
-        stream.vfunc_o10_4(m_time198.Get());
-        stream.vfunc_o10_3(m_n1a8);
+        stream.WriteUInt8((unsigned char)m_n16c);
+        stream.WriteUInt8((unsigned char)m_n170);
+        stream.WriteInt32(m_n174);
+        stream.WriteInt64(m_time178.Get());
+        stream.WriteInt64(m_time188.Get());
+        stream.WriteInt64(m_time198.Get());
+        stream.WriteInt32(m_n1a8);
     }
     if (m_nType == 7 || m_nType == 8)
     {
-        stream.vfunc_o10_3(m_n1ac);
-        stream.vfunc_o10_3(m_n1b0);
-        stream.vfunc_o10_3(m_n1b4);
-        stream.vfunc_o10_4(m_randomSaleDay.Get());
+        stream.WriteInt32(m_n1ac);
+        stream.WriteInt32(m_n1b0);
+        stream.WriteInt32(m_n1b4);
+        stream.WriteInt64(m_randomSaleDay.Get());
     }
 }
 
@@ -496,148 +496,148 @@ void CDBPremiumProduct::Write(COutputStream& stream)
 // MS2-FUNCTIONAL: the exe frame is 0x10 larger; the CString read temporaries are laid out differently
 void CDBPremiumProduct::Read(CInPacket& packet)
 {
-    m_nId = packet.vfunc_o8_3();
-    m_n1c = packet.vfunc_o8_1();
-    m_strName = packet.vfunc_o8_8();
-    m_nType = packet.vfunc_o8_1();
-    m_n2c = packet.vfunc_o8_3();
-    m_nChartOrder = packet.vfunc_o8_3();
-    m_nCouponFlags = packet.vfunc_o8_3();
-    m_bVisible = packet.vfunc_o8_1();
-    m_nSaleTag = packet.vfunc_o8_1();
-    m_nCurrency = packet.vfunc_o8_1();
-    m_nPrice = packet.vfunc_o8_4();
-    m_nSalePrice = packet.vfunc_o8_4();
-    m_n58 = packet.vfunc_o8_1();
-    m_startDate = packet.vfunc_o8_4();
-    m_endDate = packet.vfunc_o8_4();
-    m_n80 = packet.vfunc_o8_3();
-    m_n84 = packet.vfunc_o8_3();
-    m_nBuyLimit = packet.vfunc_o8_1();
-    m_nBuyLimitMax = packet.vfunc_o8_3();
-    m_n90 = packet.vfunc_o8_1();
-    m_n94 = packet.vfunc_o8_2();
-    m_n96 = packet.vfunc_o8_2();
-    m_n98 = packet.vfunc_o8_3();
-    m_nItemId = packet.vfunc_o8_3();
-    m_nGrade = packet.vfunc_o8_1();
-    m_nb0 = packet.vfunc_o8_3();
-    m_nb4 = packet.vfunc_o8_3();
-    m_nb8 = packet.vfunc_o8_3();
-    m_nCategoryId = packet.vfunc_o8_3();
-    m_nLimitCount = packet.vfunc_o8_3();
-    m_nc4 = packet.vfunc_o8_1();
-    m_n9c = packet.vfunc_o8_3();
-    m_strCategory = packet.vfunc_o8_7();
-    m_strIcon = packet.vfunc_o8_7();
-    m_bf0 = packet.vfunc_o8_0();
-    m_nf4 = packet.vfunc_o8_1();
-    m_n104 = packet.vfunc_o8_3();
-    m_b108 = packet.vfunc_o8_0();
-    m_nf8 = packet.vfunc_o8_3();
-    m_nfc = packet.vfunc_o8_3();
-    m_n100 = packet.vfunc_o8_3();
-    m_n10c = packet.vfunc_o8_1();
-    m_bPoint = packet.vfunc_o8_0();
-    m_nPoint = (unsigned)packet.vfunc_o8_3();
-    if (packet.vfunc_o8_0())
+    m_nId = packet.ReadInt32();
+    m_n1c = packet.ReadUInt8();
+    m_strName = packet.ReadUnicodeString();
+    m_nType = packet.ReadUInt8();
+    m_n2c = packet.ReadInt32();
+    m_nChartOrder = packet.ReadInt32();
+    m_nCouponFlags = packet.ReadInt32();
+    m_bVisible = packet.ReadUInt8();
+    m_nSaleTag = packet.ReadUInt8();
+    m_nCurrency = packet.ReadUInt8();
+    m_nPrice = packet.ReadInt64();
+    m_nSalePrice = packet.ReadInt64();
+    m_n58 = packet.ReadUInt8();
+    m_startDate = packet.ReadInt64();
+    m_endDate = packet.ReadInt64();
+    m_n80 = packet.ReadInt32();
+    m_n84 = packet.ReadInt32();
+    m_nBuyLimit = packet.ReadUInt8();
+    m_nBuyLimitMax = packet.ReadInt32();
+    m_n90 = packet.ReadUInt8();
+    m_n94 = packet.ReadInt16();
+    m_n96 = packet.ReadInt16();
+    m_n98 = packet.ReadInt32();
+    m_nItemId = packet.ReadInt32();
+    m_nGrade = packet.ReadUInt8();
+    m_nb0 = packet.ReadInt32();
+    m_nb4 = packet.ReadInt32();
+    m_nb8 = packet.ReadInt32();
+    m_nCategoryId = packet.ReadInt32();
+    m_nLimitCount = packet.ReadInt32();
+    m_nc4 = packet.ReadUInt8();
+    m_n9c = packet.ReadInt32();
+    m_strCategory = packet.ReadString();
+    m_strIcon = packet.ReadString();
+    m_bf0 = packet.ReadBool();
+    m_nf4 = packet.ReadUInt8();
+    m_n104 = packet.ReadInt32();
+    m_b108 = packet.ReadBool();
+    m_nf8 = packet.ReadInt32();
+    m_nfc = packet.ReadInt32();
+    m_n100 = packet.ReadInt32();
+    m_n10c = packet.ReadUInt8();
+    m_bPoint = packet.ReadBool();
+    m_nPoint = (unsigned)packet.ReadInt32();
+    if (packet.ReadBool())
     {
-        m_strEventCategory = packet.vfunc_o8_7();
-        m_eventStart = packet.vfunc_o8_4();
-        m_eventEnd = packet.vfunc_o8_4();
+        m_strEventCategory = packet.ReadString();
+        m_eventStart = packet.ReadInt64();
+        m_eventEnd = packet.ReadInt64();
     }
-    m_n158 = packet.vfunc_o8_1();
-    m_str160 = packet.vfunc_o8_6();
-    m_b168 = packet.vfunc_o8_0();
+    m_n158 = packet.ReadUInt8();
+    m_str160 = packet.ReadUnicodeStringA();
+    m_b168 = packet.ReadBool();
     if (m_nType == 6)
     {
-        m_n16c = packet.vfunc_o8_1();
-        m_n170 = packet.vfunc_o8_1();
-        m_n174 = packet.vfunc_o8_3();
-        m_time178 = packet.vfunc_o8_4();
-        m_time188 = packet.vfunc_o8_4();
-        m_time198 = packet.vfunc_o8_4();
-        m_n1a8 = packet.vfunc_o8_3();
+        m_n16c = packet.ReadUInt8();
+        m_n170 = packet.ReadUInt8();
+        m_n174 = packet.ReadInt32();
+        m_time178 = packet.ReadInt64();
+        m_time188 = packet.ReadInt64();
+        m_time198 = packet.ReadInt64();
+        m_n1a8 = packet.ReadInt32();
     }
     if (m_nType == 7 || m_nType == 8)
     {
-        m_n1ac = packet.vfunc_o8_3();
-        m_n1b0 = packet.vfunc_o8_3();
-        m_n1b4 = packet.vfunc_o8_3();
-        m_randomSaleDay = packet.vfunc_o8_4();
+        m_n1ac = packet.ReadInt32();
+        m_n1b0 = packet.ReadInt32();
+        m_n1b4 = packet.ReadInt32();
+        m_randomSaleDay = packet.ReadInt64();
     }
 }
 
 // @0x14069eeb0
 void CDBPremiumProduct::WriteBrief(COutputStream& stream)
 {
-    stream.vfunc_o10_3(m_nId);
-    stream.vfunc_o10_1((unsigned char)m_n1c);
-    stream.vfunc_o10_8(m_strName);
-    stream.vfunc_o10_1((unsigned char)m_nType);
-    stream.vfunc_o10_3(m_n2c);
-    stream.vfunc_o10_3(m_nCouponFlags);
-    stream.vfunc_o10_1((unsigned char)m_bVisible);
-    stream.vfunc_o10_1((unsigned char)m_nSaleTag);
-    stream.vfunc_o10_1((unsigned char)m_nCurrency);
-    stream.vfunc_o10_4(m_nPrice);
-    stream.vfunc_o10_4(m_nSalePrice);
-    stream.vfunc_o10_1((unsigned char)m_n58);
-    stream.vfunc_o10_3(m_n80);
-    stream.vfunc_o10_3(m_n84);
-    stream.vfunc_o10_1((unsigned char)m_nBuyLimit);
-    stream.vfunc_o10_3(m_nBuyLimitMax);
-    stream.vfunc_o10_1((unsigned char)m_n90);
-    stream.vfunc_o10_2(m_n94);
-    stream.vfunc_o10_2(m_n96);
-    stream.vfunc_o10_3(m_n98);
-    stream.vfunc_o10_3(m_nItemId);
-    stream.vfunc_o10_1((unsigned char)m_nGrade);
-    stream.vfunc_o10_3(m_nb0);
-    stream.vfunc_o10_3(m_nb4);
-    stream.vfunc_o10_3(m_nb8);
-    stream.vfunc_o10_3(m_nCategoryId);
-    stream.vfunc_o10_3(m_nf8);
-    stream.vfunc_o10_3(m_nfc);
-    stream.vfunc_o10_1((unsigned char)m_n10c);
-    stream.vfunc_o10_0(m_bPoint);
-    stream.vfunc_o10_3((int)m_nPoint);
+    stream.WriteInt32(m_nId);
+    stream.WriteUInt8((unsigned char)m_n1c);
+    stream.WriteUnicodeString(m_strName);
+    stream.WriteUInt8((unsigned char)m_nType);
+    stream.WriteInt32(m_n2c);
+    stream.WriteInt32(m_nCouponFlags);
+    stream.WriteUInt8((unsigned char)m_bVisible);
+    stream.WriteUInt8((unsigned char)m_nSaleTag);
+    stream.WriteUInt8((unsigned char)m_nCurrency);
+    stream.WriteInt64(m_nPrice);
+    stream.WriteInt64(m_nSalePrice);
+    stream.WriteUInt8((unsigned char)m_n58);
+    stream.WriteInt32(m_n80);
+    stream.WriteInt32(m_n84);
+    stream.WriteUInt8((unsigned char)m_nBuyLimit);
+    stream.WriteInt32(m_nBuyLimitMax);
+    stream.WriteUInt8((unsigned char)m_n90);
+    stream.WriteInt16(m_n94);
+    stream.WriteInt16(m_n96);
+    stream.WriteInt32(m_n98);
+    stream.WriteInt32(m_nItemId);
+    stream.WriteUInt8((unsigned char)m_nGrade);
+    stream.WriteInt32(m_nb0);
+    stream.WriteInt32(m_nb4);
+    stream.WriteInt32(m_nb8);
+    stream.WriteInt32(m_nCategoryId);
+    stream.WriteInt32(m_nf8);
+    stream.WriteInt32(m_nfc);
+    stream.WriteUInt8((unsigned char)m_n10c);
+    stream.WriteBool(m_bPoint);
+    stream.WriteInt32((int)m_nPoint);
 }
 
 // @0x14069f210
 void CDBPremiumProduct::ReadBrief(CInPacket& packet)
 {
-    m_nId = packet.vfunc_o8_3();
-    m_n1c = packet.vfunc_o8_1();
-    m_strName = packet.vfunc_o8_8();
-    m_nType = packet.vfunc_o8_1();
-    m_n2c = packet.vfunc_o8_3();
-    m_nCouponFlags = packet.vfunc_o8_3();
-    m_bVisible = packet.vfunc_o8_1();
-    m_nSaleTag = packet.vfunc_o8_1();
-    m_nCurrency = packet.vfunc_o8_1();
-    m_nPrice = packet.vfunc_o8_4();
-    m_nSalePrice = packet.vfunc_o8_4();
-    m_n58 = packet.vfunc_o8_1();
-    m_n80 = packet.vfunc_o8_3();
-    m_n84 = packet.vfunc_o8_3();
-    m_nBuyLimit = packet.vfunc_o8_1();
-    m_nBuyLimitMax = packet.vfunc_o8_3();
-    m_n90 = packet.vfunc_o8_1();
-    m_n94 = packet.vfunc_o8_2();
-    m_n96 = packet.vfunc_o8_2();
-    m_n98 = packet.vfunc_o8_3();
-    m_nItemId = packet.vfunc_o8_3();
-    m_nGrade = packet.vfunc_o8_1();
-    m_nb0 = packet.vfunc_o8_3();
-    m_nb4 = packet.vfunc_o8_3();
-    m_nb8 = packet.vfunc_o8_3();
-    m_nCategoryId = packet.vfunc_o8_3();
-    m_nf8 = packet.vfunc_o8_3();
-    m_nfc = packet.vfunc_o8_3();
-    m_n10c = packet.vfunc_o8_1();
-    m_bPoint = packet.vfunc_o8_0();
-    m_nPoint = (unsigned)packet.vfunc_o8_3();
+    m_nId = packet.ReadInt32();
+    m_n1c = packet.ReadUInt8();
+    m_strName = packet.ReadUnicodeString();
+    m_nType = packet.ReadUInt8();
+    m_n2c = packet.ReadInt32();
+    m_nCouponFlags = packet.ReadInt32();
+    m_bVisible = packet.ReadUInt8();
+    m_nSaleTag = packet.ReadUInt8();
+    m_nCurrency = packet.ReadUInt8();
+    m_nPrice = packet.ReadInt64();
+    m_nSalePrice = packet.ReadInt64();
+    m_n58 = packet.ReadUInt8();
+    m_n80 = packet.ReadInt32();
+    m_n84 = packet.ReadInt32();
+    m_nBuyLimit = packet.ReadUInt8();
+    m_nBuyLimitMax = packet.ReadInt32();
+    m_n90 = packet.ReadUInt8();
+    m_n94 = packet.ReadInt16();
+    m_n96 = packet.ReadInt16();
+    m_n98 = packet.ReadInt32();
+    m_nItemId = packet.ReadInt32();
+    m_nGrade = packet.ReadUInt8();
+    m_nb0 = packet.ReadInt32();
+    m_nb4 = packet.ReadInt32();
+    m_nb8 = packet.ReadInt32();
+    m_nCategoryId = packet.ReadInt32();
+    m_nf8 = packet.ReadInt32();
+    m_nfc = packet.ReadInt32();
+    m_n10c = packet.ReadUInt8();
+    m_bPoint = packet.ReadBool();
+    m_nPoint = (unsigned)packet.ReadInt32();
 }
 
 // @0x14069f980
@@ -1084,19 +1084,19 @@ MS2_REPLACE_METHOD(0x1406A0FE0, CMeratMarketPremiumProduct, FUN_1406a0fe0, 48, 0
 void CMeratMarketPremiumProduct::Write(COutputStream& stream)
 {
     CDBPremiumProduct::Write(stream);
-    stream.vfunc_o10_3(m_nBuyCount);
+    stream.WriteInt32(m_nBuyCount);
     if (m_nType == 1)
     {
         WriteSubProducts(stream);
     }
     else if (m_nType == 3)
     {
-        stream.vfunc_o10_3(m_nSoldCount);
+        stream.WriteInt32(m_nSoldCount);
         WriteLimitProducts(stream);
     }
     else if (m_nType == 6)
     {
-        stream.vfunc_o10_3(m_nHomeSoldCount);
+        stream.WriteInt32(m_nHomeSoldCount);
     }
 }
 MS2_REPLACE_METHOD(0x1406A1020, CMeratMarketPremiumProduct, Write, 182, 0x55B666E1);
@@ -1105,19 +1105,19 @@ MS2_REPLACE_METHOD(0x1406A1020, CMeratMarketPremiumProduct, Write, 182, 0x55B666
 void CMeratMarketPremiumProduct::Read(CInPacket& packet)
 {
     CDBPremiumProduct::Read(packet);
-    m_nBuyCount = packet.vfunc_o8_3();
+    m_nBuyCount = packet.ReadInt32();
     if (m_nType == 1)
     {
         ReadSubProducts(packet);
     }
     else if (m_nType == 3)
     {
-        m_nSoldCount = packet.vfunc_o8_3();
+        m_nSoldCount = packet.ReadInt32();
         ReadLimitProducts(packet);
     }
     else if (m_nType == 6)
     {
-        m_nHomeSoldCount = packet.vfunc_o8_3();
+        m_nHomeSoldCount = packet.ReadInt32();
     }
 }
 MS2_REPLACE_METHOD(0x1406A10E0, CMeratMarketPremiumProduct, Read, 239, 0xF64B2730);
@@ -1441,17 +1441,17 @@ MS2_REPLACE_METHOD(0x1406A1F50, CMeratMarketPremiumProduct, FUN_1406a1f50, 18, 0
 void CMeratMarketPremiumProduct::WriteSubProducts(COutputStream& stream)
 {
     int nCount = (int)m_mapSub.GetCount();
-    stream.vfunc_o10_1((unsigned char)nCount);
+    stream.WriteUInt8((unsigned char)nCount);
     for (POSITION pos = m_mapSub.GetHeadPosition(); pos; m_mapSub.GetNext(pos))
     {
         MS2Ptr<CDBPremiumProduct> spSub = m_mapSub.GetValueAt(pos);
         if (spSub == 0)
         {
-            stream.vfunc_o10_1(0);
+            stream.WriteUInt8(0);
         }
         else
         {
-            stream.vfunc_o10_1(1);
+            stream.WriteUInt8(1);
             spSub->Write(stream);
         }
     }
@@ -1461,10 +1461,10 @@ MS2_REPLACE_METHOD(0x1406A1F70, CMeratMarketPremiumProduct, WriteSubProducts, 28
 // @0x1406a2090
 void CMeratMarketPremiumProduct::ReadSubProducts(CInPacket& packet)
 {
-    int nCount = packet.vfunc_o8_1();
+    int nCount = packet.ReadUInt8();
     for (int i = 0; i < nCount; i++)
     {
-        int nExists = packet.vfunc_o8_1();
+        int nExists = packet.ReadUInt8();
         if (nExists == 1)
         {
             MS2Ptr<CDBPremiumProduct> spSub(new CDBPremiumProduct);
@@ -1479,17 +1479,17 @@ MS2_REPLACE_METHOD(0x1406A2090, CMeratMarketPremiumProduct, ReadSubProducts, 341
 void CMeratMarketPremiumProduct::WriteLimitProducts(COutputStream& stream)
 {
     int nCount = (int)m_mapLimit.GetCount();
-    stream.vfunc_o10_1((unsigned char)nCount);
+    stream.WriteUInt8((unsigned char)nCount);
     for (POSITION pos = m_mapLimit.GetHeadPosition(); pos; m_mapLimit.GetNext(pos))
     {
         MS2Ptr<CDBPremiumProduct> spSub = m_mapLimit.GetValueAt(pos);
         if (spSub == 0)
         {
-            stream.vfunc_o10_1(0);
+            stream.WriteUInt8(0);
         }
         else
         {
-            stream.vfunc_o10_1(1);
+            stream.WriteUInt8(1);
             spSub->Write(stream);
         }
     }
@@ -1499,10 +1499,10 @@ MS2_REPLACE_METHOD(0x1406A21F0, CMeratMarketPremiumProduct, WriteLimitProducts, 
 // @0x1406a2310
 void CMeratMarketPremiumProduct::ReadLimitProducts(CInPacket& packet)
 {
-    int nCount = packet.vfunc_o8_1();
+    int nCount = packet.ReadUInt8();
     for (int i = 0; i < nCount; i++)
     {
-        int nExists = packet.vfunc_o8_1();
+        int nExists = packet.ReadUInt8();
         if (nExists == 1)
         {
             MS2Ptr<CDBPremiumProduct> spSub(new CDBPremiumProduct);
@@ -1798,16 +1798,16 @@ MS2_REPLACE_METHOD(0x1406A3720, CMeratMarketSchCond, FUN_1406a3720, 54, 0x2C2EE7
 // @0x1406a3760
 void CMeratMarketSchCond::Write(COutputStream* pStream)
 {
-    pStream->vfunc_o10_3(m_18);
-    pStream->vfunc_o10_1((unsigned char)m_1c);
-    pStream->vfunc_o10_3(m_20);
-    pStream->vfunc_o10_1((unsigned char)m_24);
-    pStream->vfunc_o10_8(m_str);
-    pStream->vfunc_o10_3(m_30);
-    pStream->vfunc_o10_3(m_34);
-    pStream->vfunc_o10_1((unsigned char)m_38);
-    pStream->vfunc_o10_1((unsigned char)m_3c);
-    pStream->vfunc_o10_1((unsigned char)m_40);
+    pStream->WriteInt32(m_18);
+    pStream->WriteUInt8((unsigned char)m_1c);
+    pStream->WriteInt32(m_20);
+    pStream->WriteUInt8((unsigned char)m_24);
+    pStream->WriteUnicodeString(m_str);
+    pStream->WriteInt32(m_30);
+    pStream->WriteInt32(m_34);
+    pStream->WriteUInt8((unsigned char)m_38);
+    pStream->WriteUInt8((unsigned char)m_3c);
+    pStream->WriteUInt8((unsigned char)m_40);
 }
 MS2_REPLACE_METHOD(0x1406A3760, CMeratMarketSchCond, Write, 278, 0xE90DE073);
 
@@ -1815,31 +1815,31 @@ MS2_REPLACE_METHOD(0x1406A3760, CMeratMarketSchCond, Write, 278, 0xE90DE073);
 void CMeratMarketSchCond::Read(CInPacket& packet)
 {
     Clear();
-    m_18 = packet.vfunc_o8_3();
-    m_1c = packet.vfunc_o8_1();
-    m_20 = packet.vfunc_o8_3();
-    m_24 = packet.vfunc_o8_1();
-    m_str = packet.vfunc_o8_8();
-    m_30 = packet.vfunc_o8_3();
-    m_34 = packet.vfunc_o8_3();
-    m_38 = packet.vfunc_o8_1();
-    m_3c = packet.vfunc_o8_1();
-    m_40 = packet.vfunc_o8_1();
+    m_18 = packet.ReadInt32();
+    m_1c = packet.ReadUInt8();
+    m_20 = packet.ReadInt32();
+    m_24 = packet.ReadUInt8();
+    m_str = packet.ReadUnicodeString();
+    m_30 = packet.ReadInt32();
+    m_34 = packet.ReadInt32();
+    m_38 = packet.ReadUInt8();
+    m_3c = packet.ReadUInt8();
+    m_40 = packet.ReadUInt8();
 }
 MS2_REPLACE_METHOD(0x1406A3880, CMeratMarketSchCond, Read, 628, 0x5DFF5C54);
 
 // @0x1406a3b00
 void CMeratMarketSchCond::WriteBrief(COutputStream* pStream)
 {
-    pStream->vfunc_o10_3(m_18);
-    pStream->vfunc_o10_1((unsigned char)m_1c);
-    pStream->vfunc_o10_3(m_20);
-    pStream->vfunc_o10_1((unsigned char)m_24);
-    pStream->vfunc_o10_8(m_str);
-    pStream->vfunc_o10_3(m_30);
-    pStream->vfunc_o10_3(m_34);
-    pStream->vfunc_o10_1((unsigned char)m_38);
-    pStream->vfunc_o10_1((unsigned char)m_40);
+    pStream->WriteInt32(m_18);
+    pStream->WriteUInt8((unsigned char)m_1c);
+    pStream->WriteInt32(m_20);
+    pStream->WriteUInt8((unsigned char)m_24);
+    pStream->WriteUnicodeString(m_str);
+    pStream->WriteInt32(m_30);
+    pStream->WriteInt32(m_34);
+    pStream->WriteUInt8((unsigned char)m_38);
+    pStream->WriteUInt8((unsigned char)m_40);
 }
 MS2_REPLACE_METHOD(0x1406A3B00, CMeratMarketSchCond, WriteBrief, 253, 0xB09B7120);
 
@@ -1847,15 +1847,15 @@ MS2_REPLACE_METHOD(0x1406A3B00, CMeratMarketSchCond, WriteBrief, 253, 0xB09B7120
 void CMeratMarketSchCond::ReadBrief(CInputStream* pStream)
 {
     Clear();
-    m_18 = pStream->vfunc_o8_3();
-    m_1c = pStream->vfunc_o8_1();
-    m_20 = pStream->vfunc_o8_3();
-    m_24 = pStream->vfunc_o8_1();
-    m_str = pStream->vfunc_o8_8();
-    m_30 = pStream->vfunc_o8_3();
-    m_34 = pStream->vfunc_o8_3();
-    m_38 = pStream->vfunc_o8_1();
-    m_40 = pStream->vfunc_o8_1();
+    m_18 = pStream->ReadInt32();
+    m_1c = pStream->ReadUInt8();
+    m_20 = pStream->ReadInt32();
+    m_24 = pStream->ReadUInt8();
+    m_str = pStream->ReadUnicodeString();
+    m_30 = pStream->ReadInt32();
+    m_34 = pStream->ReadInt32();
+    m_38 = pStream->ReadUInt8();
+    m_40 = pStream->ReadUInt8();
 }
 MS2_REPLACE_METHOD(0x1406A3C10, CMeratMarketSchCond, ReadBrief, 313, 0x30427471);
 
@@ -2046,7 +2046,7 @@ MS2_REPLACE_METHOD(0x1406A4370, CMeratMarketProduct, HasLimit, 46, 0x100EE29E);
 // @0x1406a43b0
 void CMeratMarketProduct::Write(COutputStream& stream)
 {
-    stream.vfunc_o10_1((unsigned char)m_nKind);
+    stream.WriteUInt8((unsigned char)m_nKind);
     m_key.Write(stream);
     if (m_nKind == 0)
         (&m_premium)->Write(stream);
@@ -2058,7 +2058,7 @@ MS2_REPLACE_METHOD(0x1406A43B0, CMeratMarketProduct, Write, 142, 0x240DFE2C);
 // @0x1406a4450
 void CMeratMarketProduct::Read(CInPacket& packet)
 {
-    m_nKind = packet.vfunc_o8_1();
+    m_nKind = packet.ReadUInt8();
     m_key.Read(packet);
     if (m_nKind == 0)
         (&m_premium)->Read(packet);
@@ -2718,48 +2718,48 @@ MS2_REPLACE_METHOD(0x1406A63C0, CMeratMarketPacket::BuyPacket, CopyFrom, 34, 0x5
 // @0x1406a63f0
 void CMeratMarketPacket::BuyPacket::Write(COutputStream& stream)
 {
-    stream.vfunc_o10_1((unsigned char)m_nKind);
+    stream.WriteUInt8((unsigned char)m_nKind);
     m_key.Write(stream);
-    stream.vfunc_o10_3(m_n34);
-    stream.vfunc_o10_3(m_n30);
-    stream.vfunc_o10_4(m_n38);
-    stream.vfunc_o10_3(m_n40);
-    stream.vfunc_o10_3(m_n44);
-    stream.vfunc_o10_3(m_n48);
-    stream.vfunc_o10_1((unsigned char)m_n4c);
-    stream.vfunc_o10_8(m_str50);
-    stream.vfunc_o10_8(m_str58);
-    stream.vfunc_o10_4(m_n60);
-    stream.vfunc_o10_0(m_b68);
-    stream.vfunc_o10_1((unsigned char)m_n6c);
-    stream.vfunc_o10_3(m_n70);
-    stream.vfunc_o10_3(m_n74);
-    stream.vfunc_o10_3(m_n78);
-    stream.vfunc_o10_3(m_n88);
+    stream.WriteInt32(m_n34);
+    stream.WriteInt32(m_n30);
+    stream.WriteInt64(m_n38);
+    stream.WriteInt32(m_n40);
+    stream.WriteInt32(m_n44);
+    stream.WriteInt32(m_n48);
+    stream.WriteUInt8((unsigned char)m_n4c);
+    stream.WriteUnicodeString(m_str50);
+    stream.WriteUnicodeString(m_str58);
+    stream.WriteInt64(m_n60);
+    stream.WriteBool(m_b68);
+    stream.WriteUInt8((unsigned char)m_n6c);
+    stream.WriteInt32(m_n70);
+    stream.WriteInt32(m_n74);
+    stream.WriteInt32(m_n78);
+    stream.WriteInt32(m_n88);
 }
 MS2_REPLACE_METHOD(0x1406A63F0, CMeratMarketPacket::BuyPacket, Write, 485, 0xEEF87292);
 
 // @0x1406a65e0
 void CMeratMarketPacket::BuyPacket::Read(CInPacket& packet)
 {
-    m_nKind = packet.vfunc_o8_1();
+    m_nKind = packet.ReadUInt8();
     m_key.Read(packet);
-    m_n34 = packet.vfunc_o8_3();
-    m_n30 = packet.vfunc_o8_3();
-    m_n38 = packet.vfunc_o8_4();
-    m_n40 = packet.vfunc_o8_3();
-    m_n44 = packet.vfunc_o8_3();
-    m_n48 = packet.vfunc_o8_3();
-    m_n4c = packet.vfunc_o8_1();
-    m_str50 = packet.vfunc_o8_8();
-    m_str58 = packet.vfunc_o8_8();
-    m_n60 = packet.vfunc_o8_4();
-    m_b68 = packet.vfunc_o8_0();
-    m_n6c = packet.vfunc_o8_1();
-    m_n70 = packet.vfunc_o8_3();
-    m_n74 = packet.vfunc_o8_3();
-    m_n78 = packet.vfunc_o8_3();
-    m_n88 = packet.vfunc_o8_3();
+    m_n34 = packet.ReadInt32();
+    m_n30 = packet.ReadInt32();
+    m_n38 = packet.ReadInt64();
+    m_n40 = packet.ReadInt32();
+    m_n44 = packet.ReadInt32();
+    m_n48 = packet.ReadInt32();
+    m_n4c = packet.ReadUInt8();
+    m_str50 = packet.ReadUnicodeString();
+    m_str58 = packet.ReadUnicodeString();
+    m_n60 = packet.ReadInt64();
+    m_b68 = packet.ReadBool();
+    m_n6c = packet.ReadUInt8();
+    m_n70 = packet.ReadInt32();
+    m_n74 = packet.ReadInt32();
+    m_n78 = packet.ReadInt32();
+    m_n88 = packet.ReadInt32();
 }
 MS2_REPLACE_METHOD(0x1406A65E0, CMeratMarketPacket::BuyPacket, Read, 1105, 0xAA1E76E3);
 
@@ -2779,22 +2779,22 @@ CMeratMarketPacket::ErrorPacket::ErrorPacket(int nKind, int nError, const Unk_Me
 // @0x1406a6b60
 void CMeratMarketPacket::ErrorPacket::Write(COutputStream& stream)
 {
-    stream.vfunc_o10_1((unsigned char)m_nKind);
-    stream.vfunc_o10_3(m_nError);
+    stream.WriteUInt8((unsigned char)m_nKind);
+    stream.WriteInt32(m_nError);
     m_key.Write(stream);
-    stream.vfunc_o10_4(m_nValue);
-    stream.vfunc_o10_1((unsigned char)m_n30);
+    stream.WriteInt64(m_nValue);
+    stream.WriteUInt8((unsigned char)m_n30);
 }
 MS2_REPLACE_METHOD(0x1406A6B60, CMeratMarketPacket::ErrorPacket, Write, 140, 0xBC3B2559);
 
 // @0x1406a6c00
 void CMeratMarketPacket::ErrorPacket::Read(CInPacket& packet)
 {
-    m_nKind = packet.vfunc_o8_1();
-    m_nError = packet.vfunc_o8_3();
+    m_nKind = packet.ReadUInt8();
+    m_nError = packet.ReadInt32();
     m_key.Read(packet);
-    m_nValue = packet.vfunc_o8_4();
-    m_n30 = packet.vfunc_o8_1();
+    m_nValue = packet.ReadInt64();
+    m_n30 = packet.ReadUInt8();
 }
 MS2_REPLACE_METHOD(0x1406A6C00, CMeratMarketPacket::ErrorPacket, Read, 216, 0xA5721865);
 

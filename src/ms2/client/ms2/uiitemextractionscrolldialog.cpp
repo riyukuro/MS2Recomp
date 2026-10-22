@@ -251,12 +251,12 @@ void UIItemExtractionScrollDialog::vfunc_79(void* pPacket)
     if (pIn->FUN_14070fe80() != 0x107)
         return;
     CInputStream* pStream = static_cast<CInputStream*>(pIn);
-    unsigned char nResult = pStream->vfunc_o8_1();
+    unsigned char nResult = pStream->ReadUInt8();
     if (nResult == 0)
     {
-        __int64 nUidItem = pStream->vfunc_o8_4();
-        __int64 nUidResult = pStream->vfunc_o8_4();
-        unsigned nCount = (unsigned short)pStream->vfunc_o8_2();
+        __int64 nUidItem = pStream->ReadInt64();
+        __int64 nUidResult = pStream->ReadInt64();
+        unsigned nCount = (unsigned short)pStream->ReadInt16();
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUidItem);
         if (spItem.IsNull())
             return;
@@ -291,8 +291,8 @@ bool UIItemExtractionScrollDialog::SendItemExtractionScroll(int nResult, const C
     if (nResult == 0)
     {
         COutPacket packet(static_cast<int>(SendOp::ItemExtractionScroll), 0);
-        packet.vfunc_o10_4(m_nScrollUid);
-        packet.vfunc_o10_4(m_nTargetUid);
+        packet.WriteInt64(m_nScrollUid);
+        packet.WriteInt64(m_nTargetUid);
         FUN_140710590(packet);
     }
     return true;

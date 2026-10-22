@@ -307,7 +307,7 @@ void UIServerListDialog::vfunc_79(void* pPacket)
         FUN_141ad28f0(pPacket);
     } else if (nOpcode == 10) {
         FUN_141ad2b50(pIn);
-    } else if (nOpcode == 12 && pIn->vfunc_o8_1() == 3) {
+    } else if (nOpcode == 12 && pIn->ReadUInt8() == 3) {
         m_nSceneId = 0x620001b;
         m_nConnecting = 0;
         OnSceneLogin();
@@ -319,27 +319,27 @@ void UIServerListDialog::ReceiveServerList(CInPacket& packet)
 {
     m_servers.RemoveAll();
     FUN_140166410();
-    FUN_14036e640(packet.vfunc_o8_7());
-    unsigned char nCount = packet.vfunc_o8_1();
+    FUN_14036e640(packet.ReadString());
+    unsigned char nCount = packet.ReadUInt8();
     if (nCount != 0) {
         for (int i = 0; i < (int)nCount; i++) {
             MS2Ptr<CMultiServer> server(new CMultiServer);
-            int nId = packet.vfunc_o8_3();
+            int nId = packet.ReadInt32();
             server->m_nId = nId;
-            server->m_strName = packet.vfunc_o8_8();
-            unsigned nCharacters = packet.vfunc_o8_1();
+            server->m_strName = packet.ReadUnicodeString();
+            unsigned nCharacters = packet.ReadUInt8();
             server->m_nCharacterCount = nCharacters;
-            unsigned nAddresses = (unsigned short)packet.vfunc_o8_2();
+            unsigned nAddresses = (unsigned short)packet.ReadInt16();
             for (int j = 0; j < (int)nAddresses; j++) {
-                server->m_addresses.Add(packet.vfunc_o8_6());
-                server->m_ports.Add(packet.vfunc_o8_2());
+                server->m_addresses.Add(packet.ReadUnicodeStringA());
+                server->m_ports.Add(packet.ReadInt16());
             }
-            int nTraffic = packet.vfunc_o8_3();
+            int nTraffic = packet.ReadInt32();
             server->m_nTrafficPercent = nTraffic;
-            unsigned nChannels = (unsigned short)packet.vfunc_o8_2();
+            unsigned nChannels = (unsigned short)packet.ReadInt16();
             for (int j = 0; j < (int)nChannels; j++) {
                 MS2Ptr<CMultiServerChannel> channel(new CMultiServerChannel);
-                unsigned nChannelId = (unsigned short)packet.vfunc_o8_2();
+                unsigned nChannelId = (unsigned short)packet.ReadInt16();
                 channel->m_nId = nChannelId;
                 server->m_channels.SetAt(channel->m_nId, channel);
             }
@@ -644,7 +644,7 @@ int UIServerListDialog::FUN_141ad2c50(__int64 nCharId, __int64 n3)
     request.m_nCharId = nCharId;
     request.m_nChannel = nChannel;
     COutPacket packet(static_cast<int>(SendOp::CharacterManagement), 0);
-    packet.vfunc_o10_1(0);
+    packet.WriteUInt8(0);
     FUN_1401f9e60(&request, &packet);
     FUN_140710590(packet);
     Unk_SlOptions* pOptions = FUN_1409a8b10()->FUN_140cfd260();
@@ -724,7 +724,7 @@ bool UIServerListDialog::FUN_141ad3260(int nButton, const CMsgBoxData& data)
 {
     if (nButton == 0) {
         COutPacket packet(static_cast<int>(SendOp::WaitingTicket), 0);
-        packet.vfunc_o10_1(1);
+        packet.WriteUInt8(1);
         FUN_140710590(packet);
         UIServerListDialog* pDialog = FUN_14136f520(0x4ef0);
         if (pDialog != 0)

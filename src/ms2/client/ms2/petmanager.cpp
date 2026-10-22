@@ -696,7 +696,7 @@ CPetManager::~CPetManager()
 // @0x140c895e0
 void CPetManager::OnResponsePet(CInPacket& in)
 {
-    int nMode = in.vfunc_o8_1();
+    int nMode = in.ReadUInt8();
     switch (nMode)
     {
     case 7: FUN_140c89810(in); break;
@@ -724,25 +724,25 @@ void CPetManager::OnResponsePet(CInPacket& in)
 void CPetManager::FUN_140c89810(CInPacket& in)
 {
     FUN_140c8b1f0();
-    int nCount = in.vfunc_o8_3();
+    int nCount = in.ReadInt32();
     for (int i = 0; i < nCount; ++i)
     {
-        unsigned long nKey = in.vfunc_o8_3();
-        int nValue = (unsigned short)in.vfunc_o8_2();
+        unsigned long nKey = in.ReadInt32();
+        int nValue = (unsigned short)in.ReadInt16();
         m_counts[nKey] = nValue;
     }
 }
 // @0x140c898f0
 void CPetManager::FUN_140c898f0(CInPacket& in)
 {
-    unsigned long nKey = in.vfunc_o8_3();
-    long nValue = (unsigned short)in.vfunc_o8_2();
+    unsigned long nKey = in.ReadInt32();
+    long nValue = (unsigned short)in.ReadInt16();
     m_counts[nKey] = nValue;
 }
 // @0x140c89980
 void CPetManager::FUN_140c89980(CInPacket& in)
 {
-    int nObjectId = in.vfunc_o8_3();
+    int nObjectId = in.ReadInt32();
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd1290(nObjectId);
     if (pPlayer == 0)
         return;
@@ -765,8 +765,8 @@ void CPetManager::FUN_140c89980(CInPacket& in)
 // @0x140c89b20
 void CPetManager::FUN_140c89b20(CInPacket& in)
 {
-    int nObjectId = in.vfunc_o8_3();
-    int nValue = in.vfunc_o8_3();
+    int nObjectId = in.ReadInt32();
+    int nValue = in.ReadInt32();
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd1290(nObjectId);
     if (pPlayer == 0)
         return;
@@ -791,8 +791,8 @@ void CPetManager::FUN_140c89b20(CInPacket& in)
 // @0x140c89d00
 void CPetManager::FUN_140c89d00(CInPacket& in)
 {
-    int nObjectId = in.vfunc_o8_3();
-    __int64 nUid = in.vfunc_o8_4();
+    int nObjectId = in.ReadInt32();
+    __int64 nUid = in.ReadInt64();
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd1290(nObjectId);
     if (pPlayer == 0)
         return;
@@ -817,7 +817,7 @@ void CPetManager::FUN_140c89d00(CInPacket& in)
 // @0x140c89ea0
 void CPetManager::FUN_140c89ea0(CInPacket& in)
 {
-    int nObjectId = in.vfunc_o8_3();
+    int nObjectId = in.ReadInt32();
     CPet* pPet = static_cast<CPet*>(FUN_140c8b5c0(nObjectId));
     if (pPet != 0)
     {
@@ -839,7 +839,7 @@ void CPetManager::FUN_140c89ea0(CInPacket& in)
 // @0x140c8a140
 void CPetManager::FUN_140c8a140(CInPacket& in)
 {
-    int nObjectId = in.vfunc_o8_3();
+    int nObjectId = in.ReadInt32();
     Unk_PetIdentity identity;
     identity.FUN_1401fef40(&in);
     CPet* pPet = static_cast<CPet*>(FUN_140c8b5c0(nObjectId));
@@ -866,7 +866,7 @@ void CPetManager::FUN_140c8a140(CInPacket& in)
 // @0x140c8a390
 void CPetManager::FUN_140c8a390(CInPacket& in)
 {
-    int nObjectId = in.vfunc_o8_3();
+    int nObjectId = in.ReadInt32();
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd1290(nObjectId);
     if (pPlayer == 0)
         return;
@@ -876,7 +876,7 @@ void CPetManager::FUN_140c8a390(CInPacket& in)
 // @0x140c8a420
 void CPetManager::FUN_140c8a420(CInPacket& in)
 {
-    int nObjectId = in.vfunc_o8_3();
+    int nObjectId = in.ReadInt32();
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd1290(nObjectId);
     if (pPlayer == 0)
         return;
@@ -886,9 +886,9 @@ void CPetManager::FUN_140c8a420(CInPacket& in)
 // @0x140c8a4b0
 void CPetManager::FUN_140c8a4b0(CInPacket& in)
 {
-    int nObjectId = in.vfunc_o8_3();
-    __int64 nValue = in.vfunc_o8_4();
-    __int64 nUid = in.vfunc_o8_4();
+    int nObjectId = in.ReadInt32();
+    __int64 nValue = in.ReadInt64();
+    __int64 nUid = in.ReadInt64();
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd1290(nObjectId);
     if (pPlayer == 0)
         return;
@@ -908,9 +908,9 @@ void CPetManager::FUN_140c8a4b0(CInPacket& in)
 // @0x140c8a640
 void CPetManager::FUN_140c8a640(CInPacket& in)
 {
-    int nObjectId = in.vfunc_o8_3();
-    int nLevel = in.vfunc_o8_3();
-    __int64 nUid = in.vfunc_o8_4();
+    int nObjectId = in.ReadInt32();
+    int nLevel = in.ReadInt32();
+    __int64 nUid = in.ReadInt64();
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd1290(nObjectId);
     if (pPlayer == 0)
         return;
@@ -928,9 +928,9 @@ void CPetManager::FUN_140c8a640(CInPacket& in)
 // @0x140c8a7a0
 void CPetManager::FUN_140c8a7a0(CInPacket& in)
 {
-    int nObjectId = in.vfunc_o8_3();
-    __int64 nUid = in.vfunc_o8_4();
-    int nFlag = in.vfunc_o8_1();
+    int nObjectId = in.ReadInt32();
+    __int64 nUid = in.ReadInt64();
+    int nFlag = in.ReadUInt8();
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd1290(nObjectId);
     if (pPlayer == 0)
         return;
@@ -949,9 +949,9 @@ void CPetManager::FUN_140c8a7a0(CInPacket& in)
 // @0x140c8a940
 void CPetManager::FUN_140c8a940(CInPacket& in)
 {
-    int nObjectId = in.vfunc_o8_3();
-    short nLevel = (short)in.vfunc_o8_3();
-    __int64 nUid = in.vfunc_o8_4();
+    int nObjectId = in.ReadInt32();
+    short nLevel = (short)in.ReadInt32();
+    __int64 nUid = in.ReadInt64();
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd1290(nObjectId);
     if (pPlayer == 0)
         return;
@@ -985,7 +985,7 @@ void CPetManager::FUN_140c8a940(CInPacket& in)
 // @0x140c8ab80
 void CPetManager::FUN_140c8ab80(CInPacket& in)
 {
-    int nExp = in.vfunc_o8_3();
+    int nExp = in.ReadInt32();
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
@@ -998,10 +998,10 @@ void CPetManager::FUN_140c8ab80(CInPacket& in)
 // @0x140c8ac50
 void CPetManager::FUN_140c8ac50(CInPacket& in)
 {
-    int nObjectId = in.vfunc_o8_3();
-    int nId = in.vfunc_o8_3();
-    __int64 nUid = in.vfunc_o8_4();
-    int nRarity = in.vfunc_o8_3();
+    int nObjectId = in.ReadInt32();
+    int nId = in.ReadInt32();
+    __int64 nUid = in.ReadInt64();
+    int nRarity = in.ReadInt32();
     MS2Ptr<CItem> spItem(new CItem());
     if (spItem->FUN_140523c40(nId, nRarity, 0))
     {
@@ -1014,7 +1014,7 @@ void CPetManager::FUN_140c8ac50(CInPacket& in)
 // @0x140c8ae50
 void CPetManager::FUN_140c8ae50(CInPacket& in)
 {
-    int nError = in.vfunc_o8_3();
+    int nError = in.ReadInt32();
     switch (nError)
     {
     case 0x1b: FUN_141275260(0x34, 1, 1); break;
@@ -1029,7 +1029,7 @@ void CPetManager::FUN_140c8ae50(CInPacket& in)
 // @0x140c8afa0
 void CPetManager::FUN_140c8afa0(CInPacket& in)
 {
-    int nObjectId = in.vfunc_o8_3();
+    int nObjectId = in.ReadInt32();
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd1290(nObjectId);
     if (pPlayer == 0)
         return;
@@ -1042,12 +1042,12 @@ void CPetManager::FUN_140c8afa0(CInPacket& in)
 // @0x140c8b070
 void CPetManager::FUN_140c8b070(CInPacket& in)
 {
-    m_nAuto = in.vfunc_o8_0();
+    m_nAuto = in.ReadBool();
 }
 // @0x140c8b0c0
 void CPetManager::FUN_140c8b0c0(CInPacket& in)
 {
-    int nSkillId = in.vfunc_o8_3();
+    int nSkillId = in.ReadInt32();
     MS2Ptr<CItemData> spData = FUN_14053f870(nSkillId);
     if (spData == 0)
         return;
@@ -1091,7 +1091,7 @@ int CPetManager::SendRequestPet()
     m_nAuto = (m_nAuto == 0);
     COutPacket packet(static_cast<int>(SendOp::RequestPet), 0);
     packet.Encode1(0xf);
-    packet.vfunc_o10_0(m_nAuto == 1);
+    packet.WriteBool(m_nAuto == 1);
     FUN_140710590(packet);
     return m_nAuto;
 }

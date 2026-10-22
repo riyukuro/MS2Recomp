@@ -199,7 +199,7 @@ int UINameTagSymbolSettingDialog::vfunc_28(const char* szMethod, const Scaleform
             if (FUN_14131e120()->FUN_1406c5a70(nId) != 0)
             {
                 COutPacket packet(static_cast<int>(SendOp::Insignia), 0);
-                packet.vfunc_o10_2(nId);
+                packet.WriteInt16(nId);
                 FUN_140710590(packet);
             }
         }

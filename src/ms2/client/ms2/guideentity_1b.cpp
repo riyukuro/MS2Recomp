@@ -219,17 +219,17 @@ int CGuideManager::SendStates()
 void CGuideManager::ReceiveStates(CInPacket& kPacket)
 {
     ClearEntities();
-    unsigned nCount = kPacket.vfunc_o8_3();
+    unsigned nCount = kPacket.ReadInt32();
     for (unsigned i = 0; i < nCount; i++)
     {
-        int nKey = kPacket.vfunc_o8_3();
-        int nValue = kPacket.vfunc_o8_3();
+        int nKey = kPacket.ReadInt32();
+        int nValue = kPacket.ReadInt32();
         if (nKey == 0)
             continue;
         m_map60.SetAt(nKey, nValue);
     }
     Unk_Bitset8 bits;
-    static_cast<Unk_Bitset8&>(m_bits) = *reinterpret_cast<Unk_Bitset8*>(FUN_141396750(&bits, kPacket.vfunc_o8_1()));
+    static_cast<Unk_Bitset8&>(m_bits) = *reinterpret_cast<Unk_Bitset8*>(FUN_141396750(&bits, kPacket.ReadUInt8()));
 }
 
 // @0x14138b3a0

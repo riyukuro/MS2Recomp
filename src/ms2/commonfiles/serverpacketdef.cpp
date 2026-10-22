@@ -20,22 +20,22 @@ Unk_SPDA::Unk_SPDA(const Unk_SPD0& src) {
 
 // @0x1407a3490
 void Unk_SPDA::FUN_1407a3490(COutputStream* out) {
-    out->vfunc_o10_1(type);
+    out->WriteUInt8(type);
     switch (type) {
     case 2:
-        out->vfunc_o10_8(s1);
-        out->vfunc_o10_8(s2);
+        out->WriteUnicodeString(s1);
+        out->WriteUnicodeString(s2);
         break;
     case 3: case 4: case 6: case 7: case 0x11:
-        out->vfunc_o10_4(value);
+        out->WriteInt64(value);
         break;
     case 5: case 10:
-        out->vfunc_o10_4(value);
-        out->vfunc_o10_8(s1);
-        out->vfunc_o10_8(s2);
+        out->WriteInt64(value);
+        out->WriteUnicodeString(s1);
+        out->WriteUnicodeString(s2);
         break;
     case 0x10:
-        out->vfunc_o10_8(s1);
+        out->WriteUnicodeString(s1);
         break;
     }
 }
@@ -51,10 +51,10 @@ void Unk_SPDA::FUN_1407a3640(Unk_SPDReader& in) {
         s2 = in.FUN_140202f40(Unk_MaxWide(0x32));
         break;
     case 3: case 4: case 6: case 7: case 0x11:
-        value = static_cast<CInputStream&>(in).vfunc_o8_4();
+        value = in.ReadInt64();
         break;
     case 5: case 10:
-        value = static_cast<CInputStream&>(in).vfunc_o8_4();
+        value = in.ReadInt64();
         s1 = in.FUN_140202f40(Unk_MaxWide(0x18));
         s2 = in.FUN_140202f40(Unk_MaxWide(0x32));
         break;
@@ -67,41 +67,41 @@ MS2_REPLACE_METHOD(0x1407A3640, Unk_SPDA, FUN_1407a3640, 756, 0x43C6420F);
 
 // @0x1407a3980
 void Unk_SPDB::FUN_1407a3980(COutputStream* out) {
-    out->vfunc_o10_1(type);
+    out->WriteUInt8(type);
     switch (type) {
     case 2:
-        out->vfunc_o10_1(flag);
-        out->vfunc_o10_8(s1);
-        out->vfunc_o10_8(s2);
+        out->WriteUInt8(flag);
+        out->WriteUnicodeString(s1);
+        out->WriteUnicodeString(s2);
         break;
     case 4: case 6: case 0x11:
-        out->vfunc_o10_1(flag);
-        out->vfunc_o10_4(value);
+        out->WriteUInt8(flag);
+        out->WriteInt64(value);
         break;
     case 3: case 7:
-        out->vfunc_o10_1(flag);
-        out->vfunc_o10_4(value);
-        out->vfunc_o10_4(extra);
-        out->vfunc_o10_4(id);
-        out->vfunc_o10_8(s1);
+        out->WriteUInt8(flag);
+        out->WriteInt64(value);
+        out->WriteInt64(extra);
+        out->WriteInt64(id);
+        out->WriteUnicodeString(s1);
         break;
     case 5: case 10:
-        out->vfunc_o10_1(flag);
-        out->vfunc_o10_4(value);
-        out->vfunc_o10_8(s1);
-        out->vfunc_o10_8(s2);
+        out->WriteUInt8(flag);
+        out->WriteInt64(value);
+        out->WriteUnicodeString(s1);
+        out->WriteUnicodeString(s2);
         // no break: the exe falls through into case 0xe
     case 0xe:
-        out->vfunc_o10_1(kind);
-        out->vfunc_o10_4(value);
-        out->vfunc_o10_8(s1);
+        out->WriteUInt8(kind);
+        out->WriteInt64(value);
+        out->WriteUnicodeString(s1);
         break;
     case 0xb:
-        out->vfunc_o10_4(value);
+        out->WriteInt64(value);
         break;
     case 0xc:
-        out->vfunc_o10_1(flag);
-        out->vfunc_o10_8(s1);
+        out->WriteUInt8(flag);
+        out->WriteUnicodeString(s1);
         break;
     case 0xf:
         break;
@@ -119,37 +119,37 @@ void Unk_SPDB::FUN_1407a3cc0(Unk_SPDReader& in) {
     case 0xf:
         break;
     case 2:
-        flag = static_cast<CInputStream&>(in).vfunc_o8_1();
+        flag = in.ReadUInt8();
         s1 = in.FUN_140202f40(Unk_MaxWide(0x18));
         s2 = in.FUN_140202f40(Unk_MaxWide(0x32));
         break;
     case 4: case 6: case 0x11:
-        flag = static_cast<CInputStream&>(in).vfunc_o8_1();
-        value = static_cast<CInputStream&>(in).vfunc_o8_4();
+        flag = in.ReadUInt8();
+        value = in.ReadInt64();
         break;
     case 3: case 7:
-        flag = static_cast<CInputStream&>(in).vfunc_o8_1();
-        value = static_cast<CInputStream&>(in).vfunc_o8_4();
-        extra = static_cast<CInputStream&>(in).vfunc_o8_4();
-        id = static_cast<CInputStream&>(in).vfunc_o8_4();
-        s1 = static_cast<CInputStream&>(in).vfunc_o8_8();
+        flag = in.ReadUInt8();
+        value = in.ReadInt64();
+        extra = in.ReadInt64();
+        id = in.ReadInt64();
+        s1 = in.ReadUnicodeString();
         break;
     case 5: case 10:
-        flag = static_cast<CInputStream&>(in).vfunc_o8_1();
-        value = static_cast<CInputStream&>(in).vfunc_o8_4();
+        flag = in.ReadUInt8();
+        value = in.ReadInt64();
         s1 = in.FUN_140202f40(Unk_MaxWide(0x18));
         s2 = in.FUN_140202f40(Unk_MaxWide(0x32));
         break;
     case 0xe:
-        kind = static_cast<CInputStream&>(in).vfunc_o8_1();
-        value = static_cast<CInputStream&>(in).vfunc_o8_4();
+        kind = in.ReadUInt8();
+        value = in.ReadInt64();
         s1 = in.FUN_140202f40(Unk_MaxWide(0x18));
         break;
     case 0xb:
-        value = static_cast<CInputStream&>(in).vfunc_o8_4();
+        value = in.ReadInt64();
         break;
     case 0xc:
-        flag = static_cast<CInputStream&>(in).vfunc_o8_1();
+        flag = in.ReadUInt8();
         s1 = in.FUN_140202f40(Unk_MaxWide(0x18));
         break;
     }
@@ -158,174 +158,174 @@ MS2_REPLACE_METHOD(0x1407A3CC0, Unk_SPDB, FUN_1407a3cc0, 1648, 0x14FFD8A2);
 
 // @0x1407a4380
 void Unk_SPDC::FUN_1407a4380(COutputStream* out) {
-    out->vfunc_o10_3(a);
-    out->vfunc_o10_3(b);
-    out->vfunc_o10_3(c);
-    out->vfunc_o10_3(d);
-    out->vfunc_o10_1(e);
+    out->WriteInt32(a);
+    out->WriteInt32(b);
+    out->WriteInt32(c);
+    out->WriteInt32(d);
+    out->WriteUInt8(e);
 }
 MS2_REPLACE_METHOD(0x1407A4380, Unk_SPDC, FUN_1407a4380, 139, 0x3A3B4B05);
 
 // @0x1407a4420
 void Unk_SPDC::FUN_1407a4420(CInputStream* in) {
-    a = in->vfunc_o8_3();
-    b = in->vfunc_o8_3();
-    c = in->vfunc_o8_3();
-    d = in->vfunc_o8_3();
-    e = in->vfunc_o8_1();
+    a = in->ReadInt32();
+    b = in->ReadInt32();
+    c = in->ReadInt32();
+    d = in->ReadInt32();
+    e = in->ReadUInt8();
 }
 MS2_REPLACE_METHOD(0x1407A4420, Unk_SPDC, FUN_1407a4420, 138, 0xE2ECB42C);
 
 // @0x1407a44b0
 void Unk_SPDE::FUN_1407a44b0(COutputStream* out) {
-    out->vfunc_o10_1(kind);
-    out->vfunc_o10_8(name);
+    out->WriteUInt8(kind);
+    out->WriteUnicodeString(name);
 }
 MS2_REPLACE_METHOD(0x1407A44B0, Unk_SPDE, FUN_1407a44b0, 81, 0x55FD50B3);
 
 // @0x1407a4510
 void Unk_SPDE::FUN_1407a4510(CInputStream* in) {
-    kind = in->vfunc_o8_1();
-    name = in->vfunc_o8_8();
+    kind = in->ReadUInt8();
+    name = in->ReadUnicodeString();
 }
 MS2_REPLACE_METHOD(0x1407A4510, Unk_SPDE, FUN_1407a4510, 125, 0xB200A850);
 
 // @0x1407a45a0
 void Unk_SPDF::FUN_1407a45a0(COutputStream* out) {
-    out->vfunc_o10_1(a);
-    out->vfunc_o10_3(b);
-    out->vfunc_o10_8(name);
-    out->vfunc_o10_4(c);
-    out->vfunc_o10_4(d);
-    out->vfunc_o10_3(e);
-    out->vfunc_o10_1(f);
-    out->vfunc_o10_1(g);
-    out->vfunc_o10_3(l);
-    out->vfunc_o10_4(m);
+    out->WriteUInt8(a);
+    out->WriteInt32(b);
+    out->WriteUnicodeString(name);
+    out->WriteInt64(c);
+    out->WriteInt64(d);
+    out->WriteInt32(e);
+    out->WriteUInt8(f);
+    out->WriteUInt8(g);
+    out->WriteInt32(l);
+    out->WriteInt64(m);
     if (g == 1) {
-        out->vfunc_o10_4(h);
+        out->WriteInt64(h);
     } else if (g == 2) {
-        out->vfunc_o10_4(i);
-        out->vfunc_o10_4(j);
+        out->WriteInt64(i);
+        out->WriteInt64(j);
     }
-    out->vfunc_o10_3(k);
+    out->WriteInt32(k);
 }
 MS2_REPLACE_METHOD(0x1407A45A0, Unk_SPDF, FUN_1407a45a0, 407, 0x8F5C5A48);
 
 // @0x1407a4740
 void Unk_SPDF::FUN_1407a4740(CInputStream* in) {
-    a = in->vfunc_o8_1();
-    b = in->vfunc_o8_3();
-    name = in->vfunc_o8_8();
-    c = in->vfunc_o8_4();
-    d = in->vfunc_o8_4();
-    e = in->vfunc_o8_3();
-    f = in->vfunc_o8_1();
-    g = in->vfunc_o8_1();
-    l = in->vfunc_o8_3();
-    m = in->vfunc_o8_4();
+    a = in->ReadUInt8();
+    b = in->ReadInt32();
+    name = in->ReadUnicodeString();
+    c = in->ReadInt64();
+    d = in->ReadInt64();
+    e = in->ReadInt32();
+    f = in->ReadUInt8();
+    g = in->ReadUInt8();
+    l = in->ReadInt32();
+    m = in->ReadInt64();
     if (g == 1) {
-        h = in->vfunc_o8_4();
+        h = in->ReadInt64();
     } else if (g == 2) {
-        i = in->vfunc_o8_4();
-        j = in->vfunc_o8_4();
+        i = in->ReadInt64();
+        j = in->ReadInt64();
     }
-    k = in->vfunc_o8_3();
+    k = in->ReadInt32();
 }
 MS2_REPLACE_METHOD(0x1407A4740, Unk_SPDF, FUN_1407a4740, 452, 0x5B028907);
 
 // @0x1407a4910
 void Unk_SPDG::FUN_1407a4910(COutputStream* out) {
-    out->vfunc_o10_3(a);
-    out->vfunc_o10_4(b);
-    out->vfunc_o10_4(c);
-    out->vfunc_o10_8(d);
+    out->WriteInt32(a);
+    out->WriteInt64(b);
+    out->WriteInt64(c);
+    out->WriteUnicodeString(d);
 }
 MS2_REPLACE_METHOD(0x1407A4910, Unk_SPDG, FUN_1407a4910, 130, 0x4DAF50D7);
 
 // @0x1407a49a0
 void Unk_SPDG::FUN_1407a49a0(CInputStream* in) {
-    a = in->vfunc_o8_3();
-    b = in->vfunc_o8_4();
-    c = in->vfunc_o8_4();
-    d = in->vfunc_o8_8();
+    a = in->ReadInt32();
+    b = in->ReadInt64();
+    c = in->ReadInt64();
+    d = in->ReadUnicodeString();
 }
 MS2_REPLACE_METHOD(0x1407A49A0, Unk_SPDG, FUN_1407a49a0, 172, 0x17B43280);
 
 // @0x1407a4a60
 void Unk_SPDH::FUN_1407a4a60(COutputStream* out) {
-    out->vfunc_o10_4(a);
-    out->vfunc_o10_8(b);
+    out->WriteInt64(a);
+    out->WriteUnicodeString(b);
 }
 MS2_REPLACE_METHOD(0x1407A4A60, Unk_SPDH, FUN_1407a4a60, 81, 0xC84F2203);
 
 // @0x1407a4ac0
 void Unk_SPDH::FUN_1407a4ac0(CInputStream* in) {
-    a = in->vfunc_o8_4();
-    b = in->vfunc_o8_8();
+    a = in->ReadInt64();
+    b = in->ReadUnicodeString();
 }
 MS2_REPLACE_METHOD(0x1407A4AC0, Unk_SPDH, FUN_1407a4ac0, 123, 0x1D80FD34);
 
 // @0x1407a4b50
 void Unk_SPDI::FUN_1407a4b50(COutputStream* out) {
-    out->vfunc_o10_1(kind);
+    out->WriteUInt8(kind);
     if (kind == 0) {
-        out->vfunc_o10_3(a);
-        out->vfunc_o10_2(b);
-        out->vfunc_o10_3(c);
-        out->vfunc_o10_3(d);
-        out->vfunc_o10_3(e);
+        out->WriteInt32(a);
+        out->WriteInt16(b);
+        out->WriteInt32(c);
+        out->WriteInt32(d);
+        out->WriteInt32(e);
     } else {
-        out->vfunc_o10_8(s);
+        out->WriteUnicodeString(s);
     }
     if (kind == '1') {
-        out->vfunc_o10_4(x);
+        out->WriteInt64(x);
     }
 }
 MS2_REPLACE_METHOD(0x1407A4B50, Unk_SPDI, FUN_1407a4b50, 254, 0x578809F0);
 
 // @0x1407a4c60
 void Unk_SPDI::FUN_1407a4c60(CInputStream* in) {
-    kind = in->vfunc_o8_1();
+    kind = in->ReadUInt8();
     if (kind == 0) {
-        a = in->vfunc_o8_3();
-        b = in->vfunc_o8_2();
-        c = in->vfunc_o8_3();
-        d = in->vfunc_o8_3();
-        e = in->vfunc_o8_3();
+        a = in->ReadInt32();
+        b = in->ReadInt16();
+        c = in->ReadInt32();
+        d = in->ReadInt32();
+        e = in->ReadInt32();
     } else {
-        s = in->vfunc_o8_8();
+        s = in->ReadUnicodeString();
     }
     if (kind == '1') {
-        x = in->vfunc_o8_4();
+        x = in->ReadInt64();
     }
 }
 MS2_REPLACE_METHOD(0x1407A4C60, Unk_SPDI, FUN_1407a4c60, 295, 0x1CFF92C3);
 
 // @0x1407a4d90
 void Unk_SPDJ::FUN_1407a4d90(COutputStream* out) {
-    out->vfunc_o10_3(a);
+    out->WriteInt32(a);
 }
 MS2_REPLACE_METHOD(0x1407A4D90, Unk_SPDJ, FUN_1407a4d90, 42, 0x198D3D0B);
 
 // @0x1407a4dc0
 void Unk_SPDJ::FUN_1407a4dc0(Unk_SPDReader& in) {
-    a = static_cast<CInputStream&>(in).vfunc_o8_3();
+    a = in.ReadInt32();
 }
 MS2_REPLACE_METHOD(0x1407A4DC0, Unk_SPDJ, FUN_1407a4dc0, 60, 0x21DC48C6);
 
 // @0x1407a4e10
 void Unk_SPDK::FUN_1407a4e10(COutputStream* out) {
-    out->vfunc_o10_1(b);
-    out->vfunc_o10_4(a);
-    out->vfunc_o10_3(c);
+    out->WriteUInt8(b);
+    out->WriteInt64(a);
+    out->WriteInt32(c);
 }
 MS2_REPLACE_METHOD(0x1407A4E10, Unk_SPDK, FUN_1407a4e10, 92, 0x43E21C6F);
 
 // @0x1407a4e80
 void Unk_SPDK::FUN_1407a4e80(Unk_SPDReader& in) {
-    b = static_cast<CInputStream&>(in).vfunc_o8_1();
-    a = static_cast<CInputStream&>(in).vfunc_o8_4();
-    c = static_cast<CInputStream&>(in).vfunc_o8_3();
+    b = in.ReadUInt8();
+    a = in.ReadInt64();
+    c = in.ReadInt32();
 }
 MS2_REPLACE_METHOD(0x1407A4E80, Unk_SPDK, FUN_1407a4e80, 148, 0xEF4965A1);

@@ -276,40 +276,40 @@ void CGuildPVPSeasonHistoryData::FUN_1404d4490(CInPacket* in){FUN_1404d4680(*sta
 MS2_REPLACE_METHOD(0x1404d4490, CGuildPVPSeasonHistoryData, FUN_1404d4490, 67, 0x8EFD56C8);
 // @0x1404d44e0
 void CGuildPVPSeasonHistoryData::FUN_1404d44e0(COutputStream& out){
-    out.vfunc_o10_3(f18);
-    out.vfunc_o10_4(f20);
-    out.vfunc_o10_4(f28);
-    out.vfunc_o10_8(f30);
-    out.vfunc_o10_3(f38);
-    out.vfunc_o10_3(f3c);
-    out.vfunc_o10_3(f40);
-    out.vfunc_o10_6(f48);
-    out.vfunc_o10_3(f50);
-    out.vfunc_o10_3(f54);
-    out.vfunc_o10_3(f58);
-    out.vfunc_o10_3(f5c);
-    out.vfunc_o10_3(f60);
-    out.vfunc_o10_3(f64);
-    out.vfunc_o10_3(f68);
+    out.WriteInt32(f18);
+    out.WriteInt64(f20);
+    out.WriteInt64(f28);
+    out.WriteUnicodeString(f30);
+    out.WriteInt32(f38);
+    out.WriteInt32(f3c);
+    out.WriteInt32(f40);
+    out.WriteUnicodeStringA(f48);
+    out.WriteInt32(f50);
+    out.WriteInt32(f54);
+    out.WriteInt32(f58);
+    out.WriteInt32(f5c);
+    out.WriteInt32(f60);
+    out.WriteInt32(f64);
+    out.WriteInt32(f68);
 }
 MS2_REPLACE_METHOD(0x1404d44e0, CGuildPVPSeasonHistoryData, FUN_1404d44e0, 409, 0x2B858767);
 // @0x1404d4680
 void CGuildPVPSeasonHistoryData::FUN_1404d4680(CInputStream& in){
-    f18=in.vfunc_o8_3();
-    f20=in.vfunc_o8_4();
-    f28=in.vfunc_o8_4();
-    f30=in.vfunc_o8_8();
-    f38=in.vfunc_o8_3();
-    f3c=in.vfunc_o8_3();
-    f40=in.vfunc_o8_3();
-    f48=in.vfunc_o8_6();
-    f50=in.vfunc_o8_3();
-    f54=in.vfunc_o8_3();
-    f58=in.vfunc_o8_3();
-    f5c=in.vfunc_o8_3();
-    f60=in.vfunc_o8_3();
-    f64=in.vfunc_o8_3();
-    f68=in.vfunc_o8_3();
+    f18=in.ReadInt32();
+    f20=in.ReadInt64();
+    f28=in.ReadInt64();
+    f30=in.ReadUnicodeString();
+    f38=in.ReadInt32();
+    f3c=in.ReadInt32();
+    f40=in.ReadInt32();
+    f48=in.ReadUnicodeStringA();
+    f50=in.ReadInt32();
+    f54=in.ReadInt32();
+    f58=in.ReadInt32();
+    f5c=in.ReadInt32();
+    f60=in.ReadInt32();
+    f64=in.ReadInt32();
+    f68=in.ReadInt32();
 }
 MS2_REPLACE_METHOD(0x1404d4680, CGuildPVPSeasonHistoryData, FUN_1404d4680, 484, 0x3999DF03);
 // @0x1404d4870
@@ -759,19 +759,19 @@ Unk_PayloadPtr<CGuildXmlData::GuildRaidReward> CGuildXmlData::FUN_1404d7e30(int 
 MS2_REPLACE_METHOD(0x1404d7e30, CGuildXmlData, FUN_1404d7e30, 219, 0x2CAA611D);
 // @0x1404d7f20
 void CNpcShopProductProxy::FUN_1404d7f20(COutputStream& out){
-    out.vfunc_o10_3(f18);
-    out.vfunc_o10_1((unsigned char)f1c);
-    out.vfunc_o10_3(f20);
-    out.vfunc_o10_3(f24);
+    out.WriteInt32(f18);
+    out.WriteUInt8((unsigned char)f1c);
+    out.WriteInt32(f20);
+    out.WriteInt32(f24);
 }
 MS2_REPLACE_METHOD(0x1404d7f20, CNpcShopProductProxy, FUN_1404d7f20, 116, 0xAA3F3258);
 // @0x1404d7fa0
 void CNpcShopProductProxy::FUN_1404d7fa0(CInPacket* packet){
     CInputStream& in=*packet;
-    f18=in.vfunc_o8_3();
-    f1c=(unsigned char)in.vfunc_o8_1();
-    f20=in.vfunc_o8_3();
-    f24=in.vfunc_o8_3();
+    f18=in.ReadInt32();
+    f1c=(unsigned char)in.ReadUInt8();
+    f20=in.ReadInt32();
+    f24=in.ReadInt32();
 }
 MS2_REPLACE_METHOD(0x1404d7fa0, CNpcShopProductProxy, FUN_1404d7fa0, 190, 0x1BCD8DA3);
 // @0x1404d8070
@@ -815,13 +815,13 @@ int CGuildNpcShop::FUN_1404d82a0(int itemId,int rank,int price){
 MS2_REPLACE_METHOD(0x1404d82a0, CGuildNpcShop, FUN_1404d82a0, 308, 0x73CBF886);
 // @0x1404d83e0
 void CGuildNpcShop::FUN_1404d83e0(COutputStream& out){
-    out.vfunc_o10_2((unsigned short)f18);
-    out.vfunc_o10_4(f20);
+    out.WriteInt16((unsigned short)f18);
+    out.WriteInt64(f20);
     int n=(int)products.size();
-    out.vfunc_o10_2((unsigned short)n);
+    out.WriteInt16((unsigned short)n);
     for(int i=0;i<n;++i){
         Unk_PayloadPtr<CNpcShopProductProxy> ref=products[i];
-        out.vfunc_o10_0(ref!=0);
+        out.WriteBool(ref!=0);
         if(ref!=0) ref->FUN_1404d7f20(out);
     }
 }
@@ -829,12 +829,12 @@ MS2_REPLACE_METHOD(0x1404d83e0, CGuildNpcShop, FUN_1404d83e0, 300, 0xFCCC2482);
 // @0x1404d8520
 void CGuildNpcShop::FUN_1404d8520(CInPacket* packet){
     CInputStream& in=*packet;
-    f18=in.vfunc_o8_2();
-    f20=in.vfunc_o8_4();
+    f18=in.ReadInt16();
+    f20=in.ReadInt64();
     products.clear();
-    unsigned short n=in.vfunc_o8_2();
+    unsigned short n=in.ReadInt16();
     for(int i=0;i<(int)n;++i){
-        if(in.vfunc_o8_0()){
+        if(in.ReadBool()){
             Unk_PayloadPtr<CNpcShopProductProxy> ref(new CNpcShopProductProxy);
             ref->FUN_1404d7fa0(packet);
             products.push_back(ref);
@@ -906,10 +906,10 @@ int CGuildNpcShopMgr::FUN_1404d89e0(ItemEntity* item,Unk_GuildShopOffer* offer,b
 }
 // @0x1404d8d50
 void CGuildNpcShopMgr::FUN_1404d8d50(COutputStream& out){
-    out.vfunc_o10_2((unsigned short)shops.size());
+    out.WriteInt16((unsigned short)shops.size());
     for(auto i=shops.begin();i!=shops.end();++i){
         Unk_PayloadPtr<CGuildNpcShop> ref=i->second;
-        out.vfunc_o10_0(ref!=0);
+        out.WriteBool(ref!=0);
         if(ref!=0) ref->FUN_1404d83e0(out);
     }
 }
@@ -917,10 +917,10 @@ MS2_REPLACE_METHOD(0x1404d8d50, CGuildNpcShopMgr, FUN_1404d8d50, 288, 0x239EF7BF
 // @0x1404d8e80
 void CGuildNpcShopMgr::FUN_1404d8e80(CInPacket* packet){
     CInputStream& in=*packet;
-    unsigned short n=in.vfunc_o8_2();
+    unsigned short n=in.ReadInt16();
     shops.clear();
     for(int i=0;i<(int)n;++i){
-        if(in.vfunc_o8_0()){
+        if(in.ReadBool()){
             Unk_PayloadPtr<CGuildNpcShop> ref(new CGuildNpcShop);
             ref->FUN_1404d8520(packet);
             shops[ref->f18]=ref;
@@ -945,19 +945,19 @@ void CGuildNpcShopMgr::FUN_1404d9060(unsigned id,CInPacket* packet){
 }
 // @0x1404d91e0
 void Unk_GuildShopOffer::FUN_1404d91e0(COutputStream& out){
-    out.vfunc_o10_3(f18);
-    out.vfunc_o10_3(f1c);
-    out.vfunc_o10_3(f20);
-    out.vfunc_o10_4(f28);
+    out.WriteInt32(f18);
+    out.WriteInt32(f1c);
+    out.WriteInt32(f20);
+    out.WriteInt64(f28);
 }
 MS2_REPLACE_METHOD(0x1404d91e0, Unk_GuildShopOffer, FUN_1404d91e0, 116, 0x2C2A3260);
 // @0x1404d9260
 void Unk_GuildShopOffer::FUN_1404d9260(CInPacket* packet){
     CInputStream& in=*packet;
-    f18=in.vfunc_o8_3();
-    f1c=in.vfunc_o8_3();
-    f20=in.vfunc_o8_3();
-    f28=in.vfunc_o8_4();
+    f18=in.ReadInt32();
+    f1c=in.ReadInt32();
+    f20=in.ReadInt32();
+    f28=in.ReadInt64();
 }
 MS2_REPLACE_METHOD(0x1404d9260, Unk_GuildShopOffer, FUN_1404d9260, 188, 0x151E3504);
 // @0x1404d9330

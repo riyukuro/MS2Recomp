@@ -97,27 +97,27 @@ void HideAndSeek::Info::FUN_14050a1f0()
 // @0x14050a250
 void HideAndSeek::Info::FUN_14050a250(COutputStream& out)
 {
-    out.vfunc_o10_0(m_18);
-    out.vfunc_o10_0(m_19);
-    out.vfunc_o10_0(m_1a);
-    out.vfunc_o10_4(m_20);
-    out.vfunc_o10_3(m_28);
-    out.vfunc_o10_1((unsigned char)m_2c);
+    out.WriteBool(m_18);
+    out.WriteBool(m_19);
+    out.WriteBool(m_1a);
+    out.WriteInt64(m_20);
+    out.WriteInt32(m_28);
+    out.WriteUInt8((unsigned char)m_2c);
     if (m_2c == 1)
-        out.vfunc_o10_3(m_30);
+        out.WriteInt32(m_30);
 }
 
 // @0x14050a320
 void HideAndSeek::Info::FUN_14050a320(CInPacket& in)
 {
-    m_18 = in.vfunc_o8_0();
-    m_19 = in.vfunc_o8_0();
-    m_1a = in.vfunc_o8_0();
-    m_20 = in.vfunc_o8_4();
-    m_28 = in.vfunc_o8_3();
-    m_2c = in.vfunc_o8_1();
+    m_18 = in.ReadBool();
+    m_19 = in.ReadBool();
+    m_1a = in.ReadBool();
+    m_20 = in.ReadInt64();
+    m_28 = in.ReadInt32();
+    m_2c = in.ReadUInt8();
     if (m_2c == 1)
-        m_30 = in.vfunc_o8_3();
+        m_30 = in.ReadInt32();
 }
 
 // @0x14050a490

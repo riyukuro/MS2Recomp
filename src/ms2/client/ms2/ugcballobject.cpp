@@ -266,7 +266,7 @@ void CUGCBallObject::vfunc_53(float f)
 // MS2-FUNCTIONAL: frame layout/temps differ from exe (reloc-order and stack offsets); behaviour-equivalent
 void CUGCBallObject::FUN_140dee050(CInPacket* pPacket)
 {
-    __int64 nSender = static_cast<CInputStream*>(pPacket)->vfunc_o8_4();
+    __int64 nSender = static_cast<CInputStream*>(pPacket)->ReadInt64();
     if ((m_nOwner != nSender || nSender != DAT_143ab2828) && m_pActor != 0)
     {
         NxVec3 kPos = FUN_141b6e0e0(pPacket->FUN_1407140d0()) / 100.0f;
@@ -284,7 +284,7 @@ void CUGCBallObject::FUN_140dee050(CInPacket* pPacket)
 // MS2-FUNCTIONAL: frame layout/temps differ from exe (reloc-order and stack offsets); behaviour-equivalent
 void CUGCBallObject::FUN_140dee220(CInPacket* pPacket)
 {
-    if (static_cast<CInputStream*>(pPacket)->vfunc_o8_4() == DAT_143ab2828 && m_pActor != 0)
+    if (static_cast<CInputStream*>(pPacket)->ReadInt64() == DAT_143ab2828 && m_pActor != 0)
     {
         Unk_StreamPoint kForce = pPacket->FUN_1407140d0();
         Unk_StreamPoint kAt = pPacket->FUN_1407140d0();
@@ -314,32 +314,32 @@ void FUN_140dee4a0(CInPacket& packet)
 {
     WorldService* pWorld = WorldService::GetInstance();
     CInputStream* pStream = &packet;
-    char cMode = pStream->vfunc_o8_1();
+    char cMode = pStream->ReadUInt8();
     if (cMode == 0)
     {
-        int nObjectId = pStream->vfunc_o8_3();
-        __int64 nOwner = pStream->vfunc_o8_4();
+        int nObjectId = pStream->ReadInt32();
+        __int64 nOwner = pStream->ReadInt64();
         Unk_StreamPoint kPos = FUN_140204500(&packet);
-        float fRadius = pStream->vfunc_o8_5();
+        float fRadius = pStream->ReadFloat();
         CUGCBallObject* pBall = new (efd::MemHint(efd::MemHint::NONE)) CUGCBallObject;
         if (pBall->FUN_140decfc0(nOwner, nObjectId, &kPos, fRadius) != 0)
             pWorld->FUN_141bbb1e0(pBall, 0, 1);
     }
     else if (cMode == 1)
     {
-        int nObjectId = pStream->vfunc_o8_3();
+        int nObjectId = pStream->ReadInt32();
         pWorld->FUN_141bbbcf0(nObjectId, 0);
     }
     else if (cMode == 2)
     {
-        int nObjectId = pStream->vfunc_o8_3();
+        int nObjectId = pStream->ReadInt32();
         CUGCBallObject* pBall = FUN_140dee810(reinterpret_cast<GameObject*>(pWorld->FUN_141bd1180(nObjectId)));
         if (pBall != 0)
             pBall->FUN_140dee050(&packet);
     }
     else if (cMode == 3)
     {
-        int nObjectId = pStream->vfunc_o8_3();
+        int nObjectId = pStream->ReadInt32();
         CUGCBallObject* pBall = FUN_140dee810(reinterpret_cast<GameObject*>(pWorld->FUN_141bd1180(nObjectId)));
         if (pBall != 0)
             pBall->FUN_140dee220(&packet);

@@ -54,23 +54,23 @@ bool ItemEntity::FUN_14026aff0() { return m_29; }
 bool ItemEntity::FUN_14026b010() { return m_2b; }
 // @0x14026b030
 void ItemEntity::FUN_14026b030(Unk_GiftOutput& stream) {
-    reinterpret_cast<COutputStream&>(stream).vfunc_o10_3(m_itemId);
-    reinterpret_cast<COutputStream&>(stream).vfunc_o10_2((short)m_rank);
-    reinterpret_cast<COutputStream&>(stream).vfunc_o10_3(m_count);
-    reinterpret_cast<COutputStream&>(stream).vfunc_o10_0(m_28);
-    reinterpret_cast<COutputStream&>(stream).vfunc_o10_0(m_2a);
-    reinterpret_cast<COutputStream&>(stream).vfunc_o10_0(m_29);
-    reinterpret_cast<COutputStream&>(stream).vfunc_o10_0(m_2b);
+    reinterpret_cast<COutputStream&>(stream).WriteInt32(m_itemId);
+    reinterpret_cast<COutputStream&>(stream).WriteInt16((short)m_rank);
+    reinterpret_cast<COutputStream&>(stream).WriteInt32(m_count);
+    reinterpret_cast<COutputStream&>(stream).WriteBool(m_28);
+    reinterpret_cast<COutputStream&>(stream).WriteBool(m_2a);
+    reinterpret_cast<COutputStream&>(stream).WriteBool(m_29);
+    reinterpret_cast<COutputStream&>(stream).WriteBool(m_2b);
 }
 // @0x14026b100
 void ItemEntity::FUN_14026b100(Unk_GiftInput& stream) {
-    m_itemId = reinterpret_cast<CInputStream&>(stream).vfunc_o8_3();
-    m_rank = (unsigned short)reinterpret_cast<CInputStream&>(stream).vfunc_o8_2();
-    m_count = reinterpret_cast<CInputStream&>(stream).vfunc_o8_3();
-    m_28 = reinterpret_cast<CInputStream&>(stream).vfunc_o8_0();
-    m_2a = reinterpret_cast<CInputStream&>(stream).vfunc_o8_0();
-    m_29 = reinterpret_cast<CInputStream&>(stream).vfunc_o8_0();
-    m_2b = reinterpret_cast<CInputStream&>(stream).vfunc_o8_0();
+    m_itemId = reinterpret_cast<CInputStream&>(stream).ReadInt32();
+    m_rank = (unsigned short)reinterpret_cast<CInputStream&>(stream).ReadInt16();
+    m_count = reinterpret_cast<CInputStream&>(stream).ReadInt32();
+    m_28 = reinterpret_cast<CInputStream&>(stream).ReadBool();
+    m_2a = reinterpret_cast<CInputStream&>(stream).ReadBool();
+    m_29 = reinterpret_cast<CInputStream&>(stream).ReadBool();
+    m_2b = reinterpret_cast<CInputStream&>(stream).ReadBool();
 }
 // @0x14026b1c0
 void ItemEntity::SetRank(int rank) { m_rank = rank; }
@@ -78,15 +78,15 @@ void ItemEntity::SetRank(int rank) { m_rank = rank; }
 // ---- CIngredientInfo ------------------------------------------------------------------------------------------
 // @0x14026b1e0
 void CIngredientInfo::FUN_14026b1e0(COutputStream& out) {
-    out.vfunc_o10_3(m_a);
-    out.vfunc_o10_3(m_b);
-    out.vfunc_o10_3(m_c);
+    out.WriteInt32(m_a);
+    out.WriteInt32(m_b);
+    out.WriteInt32(m_c);
 }
 // @0x14026b250
 void CIngredientInfo::FUN_14026b250(CInPacket& in) {
-    m_a = in.vfunc_o8_3();
-    m_b = in.vfunc_o8_3();
-    m_c = in.vfunc_o8_3();
+    m_a = in.ReadInt32();
+    m_b = in.ReadInt32();
+    m_c = in.ReadInt32();
 }
 // @0x14026b2f0
 bool CIngredientInfo::FUN_14026b2f0(CIngredientInfo* other) {
@@ -101,15 +101,15 @@ bool CIngredientInfo::FUN_14026b350() {
 }
 // @0x14026b3a0
 void CIngredientInfo::FUN_14026b3a0(COutputStream& out) {
-    out.vfunc_o10_3(m_a);
-    out.vfunc_o10_3(m_b);
-    out.vfunc_o10_3(m_c);
+    out.WriteInt32(m_a);
+    out.WriteInt32(m_b);
+    out.WriteInt32(m_c);
 }
 // @0x14026b410
 void CIngredientInfo::FUN_14026b410(CInPacket& in) {
-    m_a = in.vfunc_o8_3();
-    m_b = in.vfunc_o8_3();
-    m_c = in.vfunc_o8_3();
+    m_a = in.ReadInt32();
+    m_b = in.ReadInt32();
+    m_c = in.ReadInt32();
 }
 // @0x14026b4b0
 unsigned CIngredientInfo::FUN_14026b4b0() {
@@ -220,7 +220,7 @@ void CIngredientContainer::FUN_14026bfa0(size_t n) { m_items.FUN_14028b3a0(n); }
 // @0x14026bfd0
 void CIngredientContainer::FUN_14026bfd0(COutputStream& out) {
     unsigned char count = (unsigned char)m_items.FUN_14028b500();
-    out.vfunc_o10_1(count);
+    out.WriteUInt8(count);
     for (size_t i = 0; i < count; ++i) {
         Unk_IngRef ref(*m_items.FUN_14028a0b0(i));
         if (ref == 0) continue;
@@ -231,7 +231,7 @@ void CIngredientContainer::FUN_14026bfd0(COutputStream& out) {
 // MS2-FUNCTIONAL: minor codegen diff (logic identical)
 void CIngredientContainer::FUN_14026c0b0(CInPacket& in) {
     m_items.FUN_14028a610();
-    unsigned char count = in.vfunc_o8_1();
+    unsigned char count = in.ReadUInt8();
     m_items.FUN_14028b3a0(count);
     for (size_t i = 0; i < count; ++i) {
         Unk_IngRef ref(new CIngredientInfo());
@@ -298,49 +298,49 @@ DungeonRewardInfo::~DungeonRewardInfo() {}
 // @0x14026c660
 // MS2-FUNCTIONAL: minor codegen diff (logic identical)
 void DungeonRewardInfo::FUN_14026c660(COutputStream& out) {
-    out.vfunc_o10_3((int)m_rewards.FUN_14028b3f0());
+    out.WriteInt32((int)m_rewards.FUN_14028b3f0());
     Unk_It t28, t20, t18, t10;
     Unk_It end = *m_rewards.FUN_14028a910(&t28);
     Unk_It it = *m_rewards.FUN_14028a130(&t20);
     while (FUN_14027ef80(&it, &end)) {
         unsigned char* entry = (unsigned char*)FUN_14027f410(&it);
-        out.vfunc_o10_1(entry[0]);
-        out.vfunc_o10_3(*(int*)(entry + 4));
+        out.WriteUInt8(entry[0]);
+        out.WriteInt32(*(int*)(entry + 4));
         FUN_14027f600(&it);
     }
-    out.vfunc_o10_3((int)m_items.FUN_14028b470());
+    out.WriteInt32((int)m_items.FUN_14028b470());
     Unk_It end2 = *m_items.FUN_14028aa30(&t18);
     Unk_It it2 = *m_items.FUN_14028a200(&t10);
     while (FUN_14027efc0(&it2, &end2)) {
         ItemEntity* item = (ItemEntity*)FUN_14027f450(&it2);
-        out.vfunc_o10_3(item->m_itemId);
-        out.vfunc_o10_3(item->m_count);
-        out.vfunc_o10_3(static_cast<ItemAble*>(item)->vfunc_o18_1());
-        out.vfunc_o10_0(item->m_28);
-        out.vfunc_o10_0(item->m_29);
-        out.vfunc_o10_0(item->m_2b);
+        out.WriteInt32(item->m_itemId);
+        out.WriteInt32(item->m_count);
+        out.WriteInt32(static_cast<ItemAble*>(item)->vfunc_o18_1());
+        out.WriteBool(item->m_28);
+        out.WriteBool(item->m_29);
+        out.WriteBool(item->m_2b);
         FUN_14027f6b0(&it2);
     }
 }
 // @0x14026c900
 void DungeonRewardInfo::FUN_14026c900(CInPacket& in) {
-    int count = in.vfunc_o8_3();
+    int count = in.ReadInt32();
     for (int i = 0; i < count; ++i) {
-        unsigned key = in.vfunc_o8_1();
-        int value = in.vfunc_o8_3();
+        unsigned key = in.ReadUInt8();
+        int value = in.ReadInt32();
         m_rewards.FUN_14027f180(key) = value;
     }
-    int itemCount = in.vfunc_o8_3();
+    int itemCount = in.ReadInt32();
     for (int i = 0; i < itemCount; ++i) {
         m_items.FUN_14028b2a0(ItemEntity());
         Unk_It tmp;
         ItemEntity* item = FUN_14027f4b0(m_items.FUN_14028b360(&tmp));
-        item->m_itemId = in.vfunc_o8_3();
-        item->m_count = in.vfunc_o8_3();
-        item->SetRank(in.vfunc_o8_3());
-        item->m_28 = in.vfunc_o8_0();
-        item->m_29 = in.vfunc_o8_0();
-        item->m_2b = in.vfunc_o8_0();
+        item->m_itemId = in.ReadInt32();
+        item->m_count = in.ReadInt32();
+        item->SetRank(in.ReadInt32());
+        item->m_28 = in.ReadBool();
+        item->m_29 = in.ReadBool();
+        item->m_2b = in.ReadBool();
     }
 }
 // @0x14026cbf0
@@ -418,13 +418,13 @@ void WeddingHallReservationFee::FUN_14026e860(const WeddingHallReservationFee& o
 }
 // @0x14026e8c0
 void WeddingHallReservationFee::FUN_14026e8c0(COutputStream& out) {
-    for (int i = 0; i < 4; i = i + 1) out.vfunc_o10_4(m_values[i]);
-    out.vfunc_o10_4(m_total);
+    for (int i = 0; i < 4; i = i + 1) out.WriteInt64(m_values[i]);
+    out.WriteInt64(m_total);
 }
 // @0x14026e940
 void WeddingHallReservationFee::FUN_14026e940(CInputStream& in) {
-    for (int i = 0; i < 4; i = i + 1) m_values[i] = in.vfunc_o8_4();
-    m_total = in.vfunc_o8_4();
+    for (int i = 0; i < 4; i = i + 1) m_values[i] = in.ReadInt64();
+    m_total = in.ReadInt64();
 }
 
 // ---- NpcShopItemLife ------------------------------------------------------------------------------------------
@@ -481,29 +481,29 @@ bool NpcShopItemLife::FUN_14026ebc0(void* xml) {
 }
 // @0x14026ee70
 void NpcShopItemLife::FUN_14026ee70(COutputStream& out) {
-    out.vfunc_o10_1((unsigned char)m_type);
+    out.WriteUInt8((unsigned char)m_type);
     switch (m_type) {
     case 1:
     case 3:
     case 4:
-        out.vfunc_o10_3(m_value);
+        out.WriteInt32(m_value);
         break;
     case 2:
-        out.vfunc_o10_4(m_time.Get());
+        out.WriteInt64(m_time.Get());
         break;
     }
 }
 // @0x14026ef20
 void NpcShopItemLife::FUN_14026ef20(CInPacket& in) {
-    m_type = in.vfunc_o8_1();
+    m_type = in.ReadUInt8();
     switch (m_type) {
     case 1:
     case 3:
     case 4:
-        m_value = in.vfunc_o8_3();
+        m_value = in.ReadInt32();
         break;
     case 2:
-        m_time = CMsTime(in.vfunc_o8_4());
+        m_time = CMsTime(in.ReadInt64());
         break;
     }
 }
@@ -637,25 +637,25 @@ void CUserChangeableItemHistory::vfunc_1() {
 }
 // @0x14026f770
 void CUserChangeableItemHistory::vfunc_2(COutputStream* out) {
-    out->vfunc_o10_4(m_18);
-    out->vfunc_o10_4(m_20);
-    out->vfunc_o10_4(m_28);
-    out->vfunc_o10_4(m_30);
-    out->vfunc_o10_3(m_38);
-    out->vfunc_o10_3(m_3c);
-    out->vfunc_o10_3(m_40);
-    out->vfunc_o10_4(m_48);
+    out->WriteInt64(m_18);
+    out->WriteInt64(m_20);
+    out->WriteInt64(m_28);
+    out->WriteInt64(m_30);
+    out->WriteInt32(m_38);
+    out->WriteInt32(m_3c);
+    out->WriteInt32(m_40);
+    out->WriteInt64(m_48);
 }
 // @0x14026f850
 void CUserChangeableItemHistory::vfunc_3(CInPacket* in) {
-    m_18 = in->vfunc_o8_4();
-    m_20 = in->vfunc_o8_4();
-    m_28 = in->vfunc_o8_4();
-    m_30 = in->vfunc_o8_4();
-    m_38 = in->vfunc_o8_3();
-    m_3c = in->vfunc_o8_3();
-    m_40 = in->vfunc_o8_3();
-    m_48 = in->vfunc_o8_4();
+    m_18 = in->ReadInt64();
+    m_20 = in->ReadInt64();
+    m_28 = in->ReadInt64();
+    m_30 = in->ReadInt64();
+    m_38 = in->ReadInt32();
+    m_3c = in->ReadInt32();
+    m_40 = in->ReadInt32();
+    m_48 = in->ReadInt64();
 }
 
 // ---- CChangeableHistoryInfo -----------------------------------------------------------------------------------
@@ -803,25 +803,25 @@ void HomeBlockInfo::FUN_140270530() {
 }
 // @0x1402705d0
 void HomeBlockInfo::FUN_1402705d0(COutputStream& out) {
-    out.vfunc_o10_4(m_18);
-    out.vfunc_o10_4(m_20);
-    out.vfunc_o10_4(m_28);
-    out.vfunc_o10_6(m_30);
-    out.vfunc_o10_2(m_38);
-    out.vfunc_o10_3(m_3c);
-    out.vfunc_o10_3(m_40);
-    out.vfunc_o10_6(m_48);
-    out.vfunc_o10_6(m_50);
+    out.WriteInt64(m_18);
+    out.WriteInt64(m_20);
+    out.WriteInt64(m_28);
+    out.WriteUnicodeStringA(m_30);
+    out.WriteInt16(m_38);
+    out.WriteInt32(m_3c);
+    out.WriteInt32(m_40);
+    out.WriteUnicodeStringA(m_48);
+    out.WriteUnicodeStringA(m_50);
 }
 // @0x1402706f0
 void HomeBlockInfo::FUN_1402706f0(CInPacket& in) {
-    m_18 = in.vfunc_o8_4();
-    m_20 = in.vfunc_o8_4();
-    m_28 = in.vfunc_o8_4();
-    m_30 = in.vfunc_o8_6();
-    m_38 = in.vfunc_o8_2();
-    m_3c = in.vfunc_o8_3();
-    m_40 = in.vfunc_o8_3();
-    m_48 = in.vfunc_o8_6();
-    m_50 = in.vfunc_o8_6();
+    m_18 = in.ReadInt64();
+    m_20 = in.ReadInt64();
+    m_28 = in.ReadInt64();
+    m_30 = in.ReadUnicodeStringA();
+    m_38 = in.ReadInt16();
+    m_3c = in.ReadInt32();
+    m_40 = in.ReadInt32();
+    m_48 = in.ReadUnicodeStringA();
+    m_50 = in.ReadUnicodeStringA();
 }

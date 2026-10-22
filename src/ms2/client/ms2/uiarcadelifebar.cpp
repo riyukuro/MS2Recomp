@@ -65,9 +65,9 @@ void UIArcadeLifeBar::FUN_140ef51e0(int nMode, CInPacket& packet)
 {
     if (nMode == 5)
     {
-        m_nInit = packet.vfunc_o8_3();
-        m_nLife = packet.vfunc_o8_3();
-        m_nMaxLife = packet.vfunc_o8_3();
+        m_nInit = packet.ReadInt32();
+        m_nLife = packet.ReadInt32();
+        m_nMaxLife = packet.ReadInt32();
         if (FUN_141924630() == 0)
             FUN_141924680();
         else
@@ -75,8 +75,8 @@ void UIArcadeLifeBar::FUN_140ef51e0(int nMode, CInPacket& packet)
     }
     else if (nMode == 6)
     {
-        m_nLife = packet.vfunc_o8_3();
-        m_nMaxLife = packet.vfunc_o8_3();
+        m_nLife = packet.ReadInt32();
+        m_nMaxLife = packet.ReadInt32();
         FUN_140ef5430();
     }
 }

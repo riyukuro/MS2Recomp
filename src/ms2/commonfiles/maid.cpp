@@ -62,38 +62,38 @@ static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "Pric
 // @0x14067c610
 void MaidProfile::Write(COutputStream* pStream)
 {
-    pStream->vfunc_o10_8(title);
-    pStream->vfunc_o10_8(name);
-    pStream->vfunc_o10_8(birthDay);
-    pStream->vfunc_o10_8(constellation);
-    pStream->vfunc_o10_8(height);
-    pStream->vfunc_o10_8(weight);
-    pStream->vfunc_o10_8(specialty);
-    pStream->vfunc_o10_8(specialDetail);
-    pStream->vfunc_o10_8(like);
-    pStream->vfunc_o10_8(hate);
-    pStream->vfunc_o10_8(hobby);
-    pStream->vfunc_o10_8(ownerName);
-    pStream->vfunc_o10_8(belongTo);
+    pStream->WriteUnicodeString(title);
+    pStream->WriteUnicodeString(name);
+    pStream->WriteUnicodeString(birthDay);
+    pStream->WriteUnicodeString(constellation);
+    pStream->WriteUnicodeString(height);
+    pStream->WriteUnicodeString(weight);
+    pStream->WriteUnicodeString(specialty);
+    pStream->WriteUnicodeString(specialDetail);
+    pStream->WriteUnicodeString(like);
+    pStream->WriteUnicodeString(hate);
+    pStream->WriteUnicodeString(hobby);
+    pStream->WriteUnicodeString(ownerName);
+    pStream->WriteUnicodeString(belongTo);
 }
 MS2_REPLACE_METHOD(0x14067C610, MaidProfile, Write, 638, 0xEC3841F5);
 
 // @0x14067c8a0
 void MaidProfile::Read(CInPacket* pPacket)
 {
-    title = pPacket->vfunc_o8_8();
-    name = pPacket->vfunc_o8_8();
-    birthDay = pPacket->vfunc_o8_8();
-    constellation = pPacket->vfunc_o8_8();
-    height = pPacket->vfunc_o8_8();
-    weight = pPacket->vfunc_o8_8();
-    specialty = pPacket->vfunc_o8_8();
-    specialDetail = pPacket->vfunc_o8_8();
-    like = pPacket->vfunc_o8_8();
-    hate = pPacket->vfunc_o8_8();
-    hobby = pPacket->vfunc_o8_8();
-    ownerName = pPacket->vfunc_o8_8();
-    belongTo = pPacket->vfunc_o8_8();
+    title = pPacket->ReadUnicodeString();
+    name = pPacket->ReadUnicodeString();
+    birthDay = pPacket->ReadUnicodeString();
+    constellation = pPacket->ReadUnicodeString();
+    height = pPacket->ReadUnicodeString();
+    weight = pPacket->ReadUnicodeString();
+    specialty = pPacket->ReadUnicodeString();
+    specialDetail = pPacket->ReadUnicodeString();
+    like = pPacket->ReadUnicodeString();
+    hate = pPacket->ReadUnicodeString();
+    hobby = pPacket->ReadUnicodeString();
+    ownerName = pPacket->ReadUnicodeString();
+    belongTo = pPacket->ReadUnicodeString();
 }
 MS2_REPLACE_METHOD(0x14067C8A0, MaidProfile, Read, 1547, 0x80377201);
 
@@ -179,21 +179,21 @@ MS2_REPLACE_METHOD(0x14067D500, CMaid, SetProfile, 43, 0x8952A75E);
 // @0x14067d540
 void CMaid::Write(COutputStream* pStream)
 {
-    pStream->vfunc_o10_4(m_n18);
-    pStream->vfunc_o10_4(m_nId);
-    pStream->vfunc_o10_4(m_t38);
-    pStream->vfunc_o10_4(m_t40);
-    pStream->vfunc_o10_4(m_n28);
-    pStream->vfunc_o10_3(m_nItemId);
-    pStream->vfunc_o10_3(m_nMaidId);
-    pStream->vfunc_o10_1((unsigned char)m_n4c);
-    pStream->vfunc_o10_3(m_nMood);
-    pStream->vfunc_o10_3(m_nOrder);
-    pStream->vfunc_o10_3(m_nExp);
-    pStream->vfunc_o10_4(m_nExpireTime);
-    pStream->vfunc_o10_3((int)m_list.GetCount());
+    pStream->WriteInt64(m_n18);
+    pStream->WriteInt64(m_nId);
+    pStream->WriteInt64(m_t38);
+    pStream->WriteInt64(m_t40);
+    pStream->WriteInt64(m_n28);
+    pStream->WriteInt32(m_nItemId);
+    pStream->WriteInt32(m_nMaidId);
+    pStream->WriteUInt8((unsigned char)m_n4c);
+    pStream->WriteInt32(m_nMood);
+    pStream->WriteInt32(m_nOrder);
+    pStream->WriteInt32(m_nExp);
+    pStream->WriteInt64(m_nExpireTime);
+    pStream->WriteInt32((int)m_list.GetCount());
     for (size_t i = 0; i < m_list.GetCount(); i++)
-        pStream->vfunc_o10_3(m_list[i]);
+        pStream->WriteInt32(m_list[i]);
     m_profile.Write(pStream);
 }
 MS2_REPLACE_METHOD(0x14067D540, CMaid, Write, 486, 0x80E1C333);
@@ -201,22 +201,22 @@ MS2_REPLACE_METHOD(0x14067D540, CMaid, Write, 486, 0x80E1C333);
 // @0x14067d730
 void CMaid::FUN_14067d730(CInPacket* pPacket)
 {
-    m_n18 = pPacket->vfunc_o8_4();
-    m_nId = pPacket->vfunc_o8_4();
-    m_t38 = pPacket->vfunc_o8_4();
-    m_t40 = pPacket->vfunc_o8_4();
-    m_n28 = pPacket->vfunc_o8_4();
-    m_nItemId = pPacket->vfunc_o8_3();
-    m_nMaidId = pPacket->vfunc_o8_3();
-    m_n4c = pPacket->vfunc_o8_1();
-    m_nMood = pPacket->vfunc_o8_3();
-    m_nOrder = pPacket->vfunc_o8_3();
-    m_nExp = pPacket->vfunc_o8_3();
-    m_nExpireTime = pPacket->vfunc_o8_4();
+    m_n18 = pPacket->ReadInt64();
+    m_nId = pPacket->ReadInt64();
+    m_t38 = pPacket->ReadInt64();
+    m_t40 = pPacket->ReadInt64();
+    m_n28 = pPacket->ReadInt64();
+    m_nItemId = pPacket->ReadInt32();
+    m_nMaidId = pPacket->ReadInt32();
+    m_n4c = pPacket->ReadUInt8();
+    m_nMood = pPacket->ReadInt32();
+    m_nOrder = pPacket->ReadInt32();
+    m_nExp = pPacket->ReadInt32();
+    m_nExpireTime = pPacket->ReadInt64();
     m_list.RemoveAll();
-    size_t nCount = (unsigned)pPacket->vfunc_o8_3();
+    size_t nCount = (unsigned)pPacket->ReadInt32();
     for (size_t i = 0; i < nCount; i++)
-        m_list.Add((int)pPacket->vfunc_o8_4());
+        m_list.Add((int)pPacket->ReadInt64());
     m_profile.Read(pPacket);
 }
 MS2_REPLACE_METHOD(0x14067D730, CMaid, FUN_14067d730, 867, 0x307ABCDA);

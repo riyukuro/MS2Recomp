@@ -29,29 +29,29 @@ Unk_140166430* FUN_140166430();
 // @0x14061f540
 void TSocketGemStoneBind::FUN_14061f540(COutputStream& kOut)
 {
-    kOut.vfunc_o10_4(m_nCharacterId);
-    kOut.vfunc_o10_8(m_strName);
+    kOut.WriteInt64(m_nCharacterId);
+    kOut.WriteUnicodeString(m_strName);
 }
 
 // @0x14061f5a0
 void TSocketGemStoneBind::FUN_14061f5a0(CInputStream& kIn)
 {
-    m_nCharacterId = kIn.vfunc_o8_4();
-    m_strName = kIn.vfunc_o8_8();
+    m_nCharacterId = kIn.ReadInt64();
+    m_strName = kIn.ReadUnicodeString();
 }
 
 // @0x14061f630
 void TSocketGemStoneLock::FUN_14061f630(COutputStream& kOut)
 {
-    kOut.vfunc_o10_1((unsigned char)m_nState);
-    kOut.vfunc_o10_4(m_nExpireTime);
+    kOut.WriteUInt8((unsigned char)m_nState);
+    kOut.WriteInt64(m_nExpireTime);
 }
 
 // @0x14061f680
 void TSocketGemStoneLock::FUN_14061f680(CInputStream& kIn)
 {
-    m_nState = kIn.vfunc_o8_1();
-    m_nExpireTime = kIn.vfunc_o8_4();
+    m_nState = kIn.ReadUInt8();
+    m_nExpireTime = kIn.ReadInt64();
 }
 
 // @0x14061f6d0
@@ -207,34 +207,34 @@ bool TSocketGemStoneInfo::FUN_14061fea0(const int& nState, const __int64& nExpir
 // @0x14061ff90
 void TSocketGemStoneInfo::FUN_14061ff90(COutputStream& kOut)
 {
-    kOut.vfunc_o10_3(m_nGemId);
+    kOut.WriteInt32(m_nGemId);
     if (m_spBind.get() != 0)
     {
-        kOut.vfunc_o10_0(true);
+        kOut.WriteBool(true);
         m_spBind->FUN_14061f540(kOut);
     }
     else
-        kOut.vfunc_o10_0(false);
+        kOut.WriteBool(false);
     if (m_spLock.get() != 0)
     {
-        kOut.vfunc_o10_0(true);
+        kOut.WriteBool(true);
         m_spLock->FUN_14061f630(kOut);
     }
     else
-        kOut.vfunc_o10_0(false);
+        kOut.WriteBool(false);
 }
 
 // @0x140620080
 void TSocketGemStoneInfo::FUN_140620080(CInputStream& kIn)
 {
-    m_nGemId = kIn.vfunc_o8_3();
-    bool bBind = kIn.vfunc_o8_0();
+    m_nGemId = kIn.ReadInt32();
+    bool bBind = kIn.ReadBool();
     if (bBind)
     {
         m_spBind.AssignRaw(new TSocketGemStoneBind);
         m_spBind->FUN_14061f5a0(kIn);
     }
-    bool bLock = kIn.vfunc_o8_0();
+    bool bLock = kIn.ReadBool();
     if (bLock)
     {
         m_spLock.AssignRaw(new TSocketGemStoneLock);
@@ -294,17 +294,17 @@ MS2Ptr<CItemSocket> CItemSocket::FUN_140620490()
 // @0x1406205e0
 void CItemSocket::FUN_1406205e0(COutputStream& kOut)
 {
-    kOut.vfunc_o10_1((unsigned char)m_nMaxSlot);
+    kOut.WriteUInt8((unsigned char)m_nMaxSlot);
     unsigned nCount = (unsigned)m_aGems.GetCount();
-    kOut.vfunc_o10_1((unsigned char)nCount);
+    kOut.WriteUInt8((unsigned char)nCount);
     for (unsigned i = 0; i < nCount; i++)
     {
         MS2Ptr<TSocketGemStoneInfo> spInfo = m_aGems[i];
         if (spInfo == 0 || spInfo->FUN_14061fab0())
-            kOut.vfunc_o10_0(false);
+            kOut.WriteBool(false);
         else
         {
-            kOut.vfunc_o10_0(true);
+            kOut.WriteBool(true);
             spInfo->FUN_14061ff90(kOut);
         }
     }
@@ -313,12 +313,12 @@ void CItemSocket::FUN_1406205e0(COutputStream& kOut)
 // @0x140620700
 void CItemSocket::FUN_140620700(CInputStream& kIn)
 {
-    m_nMaxSlot = kIn.vfunc_o8_1();
-    unsigned nCount = kIn.vfunc_o8_1();
+    m_nMaxSlot = kIn.ReadUInt8();
+    unsigned nCount = kIn.ReadUInt8();
     m_aGems.RemoveAll();
     for (unsigned i = 0; i < nCount; i++)
     {
-        bool bFilled = kIn.vfunc_o8_0();
+        bool bFilled = kIn.ReadBool();
         MS2Ptr<TSocketGemStoneInfo> spInfo(new TSocketGemStoneInfo);
         m_aGems.Add(spInfo);
         if (bFilled)

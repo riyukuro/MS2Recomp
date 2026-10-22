@@ -61,23 +61,23 @@ void CRankUgcMarketBuy::Reset()
 // @0x1407687f0
 void CRankUgcMarketBuy::Write(COutputStream& out)
 {
-    out.vfunc_o10_4(m_nId);
-    out.vfunc_o10_8(m_strName);
-    out.vfunc_o10_6(m_strText);
-    out.vfunc_o10_1((unsigned char)m_nFlag);
-    out.vfunc_o10_4(m_nValue);
-    out.vfunc_o10_3(m_nCount);
+    out.WriteInt64(m_nId);
+    out.WriteUnicodeString(m_strName);
+    out.WriteUnicodeStringA(m_strText);
+    out.WriteUInt8((unsigned char)m_nFlag);
+    out.WriteInt64(m_nValue);
+    out.WriteInt32(m_nCount);
 }
 
 // @0x1407688c0
 void CRankUgcMarketBuy::Read(CInPacket& packet)
 {
-    m_nId = packet.vfunc_o8_4();
-    m_strName = packet.vfunc_o8_8();
-    m_strText = packet.vfunc_o8_6();
-    m_nFlag = packet.vfunc_o8_1();
-    m_nValue = packet.vfunc_o8_4();
-    m_nCount = packet.vfunc_o8_3();
+    m_nId = packet.ReadInt64();
+    m_strName = packet.ReadUnicodeString();
+    m_strText = packet.ReadUnicodeStringA();
+    m_nFlag = packet.ReadUInt8();
+    m_nValue = packet.ReadInt64();
+    m_nCount = packet.ReadInt32();
 }
 
 // ---- RankingArenaData ----
@@ -217,7 +217,7 @@ void CRankViewer::ReadList(CInPacket& packet)
 {
     if (Unk_LockGuard guard = m_lock) {} else
     {
-        int nKind = packet.vfunc_o8_1();
+        int nKind = packet.ReadUInt8();
         ATL::CAtlArray<MS2Ptr<CRankUgcMarketBuy> >* pList = 0;
         if (nKind == 0)
             pList = &m_aKind0;
@@ -226,7 +226,7 @@ void CRankViewer::ReadList(CInPacket& packet)
         if (pList == 0)
             return;
         pList->RemoveAll();
-        int nCount = packet.vfunc_o8_3();
+        int nCount = packet.ReadInt32();
         for (int i = 0; i < nCount; i++)
         {
             MS2Ptr<CRankUgcMarketBuy> spEntry(new CRankUgcMarketBuy);
@@ -251,7 +251,7 @@ ATL::CAtlArray<MS2Ptr<CRankUgcMarketBuy> >* CRankViewer::GetKind1List()
 // @0x140769780
 void CRankViewer::OnPacket(CInPacket& packet)
 {
-    int nKind = packet.vfunc_o8_1();
+    int nKind = packet.ReadUInt8();
     if (nKind == 0)
     {
         ReadList(packet);

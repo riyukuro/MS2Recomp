@@ -275,8 +275,8 @@ void CGameSocket::FUN_141265ae0()
                         if(result==3 || result==2) {
                             int op=packet->FUN_14070fe80();
                             if(op==1) { Unk_ResponseVersion response; response.FUN_1407a4420(*packet); FUN_14153a1d0(FUN_140714f90(),response.version,response.locale); FUN_14153a210(FUN_140714f90(),response.key); }
-                            else if(op==7) m_sequence=packet->vfunc_o8_3();
-                            else if(op==8) { int sequence=packet->vfunc_o8_3(); int framingSequence=packet->vfunc_o8_3(); m_sequence=sequence; framing[1]=framingSequence; }
+                            else if(op==7) m_sequence=packet->ReadInt32();
+                            else if(op==8) { int sequence=packet->ReadInt32(); int framingSequence=packet->ReadInt32(); m_sequence=sequence; framing[1]=framingSequence; }
                             ready.AddTail(packet);
                             if((unsigned short)packet->FUN_141269940(m_receiveKey)!=0x9dd) stopped=true;
                             buffer=m_receiveQueue.IsEmpty() ? Unk_BufferPtr(0) : Unk_BufferPtr(m_receiveQueue.GetHead());

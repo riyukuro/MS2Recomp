@@ -325,15 +325,15 @@ template <class T> T* Unk_ImGetDialog(int nId)
 // MS2-FUNCTIONAL: 3.8 KB packet dispatch, not byte-matched
 void CInstrumentManager::OnPacket(CInPacket& packet)
 {
-    unsigned char nType = packet.vfunc_o8_1();
+    unsigned char nType = packet.ReadUInt8();
     if (nType == 0)
     {
         // a performer's program
-        int nKey = packet.vfunc_o8_3();
-        int nOwner = packet.vfunc_o8_3();
-        Unk_StreamPoint ptPos = packet.vfunc_o8_10();
-        int nProgram = packet.vfunc_o8_3();
-        int nPercussion = packet.vfunc_o8_3();
+        int nKey = packet.ReadInt32();
+        int nOwner = packet.ReadInt32();
+        Unk_StreamPoint ptPos = packet.ReadVector3();
+        int nProgram = packet.ReadInt32();
+        int nPercussion = packet.ReadInt32();
         Voice voice;
         voice.m_channel = nKey;
         voice.m_owner = nOwner;
@@ -355,9 +355,9 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
     else if (nType == 1)
     {
         // a performer's keyboard note
-        int nKey = packet.vfunc_o8_3();
-        int nOwner = packet.vfunc_o8_3();
-        unsigned nMsg = packet.vfunc_o8_3();
+        int nKey = packet.ReadInt32();
+        int nOwner = packet.ReadInt32();
+        unsigned nMsg = packet.ReadInt32();
         Unk_ImActor* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pMe != 0 && pMe->FUN_14123c580() == nOwner)
             nKey = 0;
@@ -371,14 +371,14 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
     else if (nType == 3)
     {
         // a score performance starts
-        unsigned char nKind = packet.vfunc_o8_1();
-        int nKey = packet.vfunc_o8_3();
-        int nOwner = packet.vfunc_o8_3();
-        Unk_StreamPoint ptPos = packet.vfunc_o8_10();
-        int nStart = packet.vfunc_o8_3();
-        int nProgram = packet.vfunc_o8_3();
-        int nPercussion = packet.vfunc_o8_3();
-        bool bRemote = packet.vfunc_o8_0();
+        unsigned char nKind = packet.ReadUInt8();
+        int nKey = packet.ReadInt32();
+        int nOwner = packet.ReadInt32();
+        Unk_StreamPoint ptPos = packet.ReadVector3();
+        int nStart = packet.ReadInt32();
+        int nProgram = packet.ReadInt32();
+        int nPercussion = packet.ReadInt32();
+        bool bRemote = packet.ReadBool();
         Voice voice;
         voice.m_channel = nKey;
         voice.m_owner = nOwner;
@@ -397,12 +397,12 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
             int nEnd = 0;
             if (nKind == 0)
             {
-                CString strName = packet.vfunc_o8_6();
+                CString strName = packet.ReadUnicodeStringA();
                 nEnd = PlayScoreFile(strName, nStart, nProgram, nPercussion, nSlot, nKey, nOwner);
             }
             else if (nKind == 1)
             {
-                CString strText = packet.vfunc_o8_7();
+                CString strText = packet.ReadString();
                 nEnd = PlayScoreText(strText, nStart, nProgram, nPercussion, nSlot, nKey, nOwner);
             }
             PlayEvents();
@@ -420,8 +420,8 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
     else if (nType == 2 || nType == 4)
     {
         // a performer stopped (4: the score performance ended)
-        int nKey = packet.vfunc_o8_3();
-        int nOwner = packet.vfunc_o8_3();
+        int nKey = packet.ReadInt32();
+        int nOwner = packet.ReadInt32();
         Unk_ImActor* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pMe != 0 && pMe->FUN_14123c580() == nOwner)
             nKey = 0;
@@ -437,7 +437,7 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
     else if (nType == 8)
     {
         // a composed score item
-        __int64 nUid = packet.vfunc_o8_4();
+        __int64 nUid = packet.ReadInt64();
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
         if (spItem.get())
         {
@@ -450,8 +450,8 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
     }
     else if (nType == 9)
     {
-        __int64 nUid = packet.vfunc_o8_4();
-        int nValue = packet.vfunc_o8_3();
+        __int64 nUid = packet.ReadInt64();
+        int nValue = packet.ReadInt32();
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
         if (spItem.get())
         {
@@ -462,8 +462,8 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
     else if (nType == 10)
     {
         // the score text of an item
-        __int64 nUid = packet.vfunc_o8_4();
-        CString strScore = packet.vfunc_o8_7();
+        __int64 nUid = packet.ReadInt64();
+        CString strScore = packet.ReadString();
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
         if (spItem.get())
         {
@@ -475,7 +475,7 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
     else if (nType == 14)
     {
         // the ensemble effect over a performer
-        int nId = packet.vfunc_o8_3();
+        int nId = packet.ReadInt32();
         Unk_ImActor* pActor = FUN_1403ed2d0()->FUN_141bd1290(nId);
         if (pActor != 0)
         {
@@ -493,7 +493,7 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
     else if (nType == 17)
     {
         // the compose result
-        unsigned char nResult = packet.vfunc_o8_1();
+        unsigned char nResult = packet.ReadUInt8();
         UIWriteMusicDialog* pWrite = Unk_ImGetDialog<UIWriteMusicDialog>(0x4eed);
         if (pWrite != 0)
             pWrite->FUN_140ff0090(nResult);

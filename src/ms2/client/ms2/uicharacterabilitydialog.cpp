@@ -220,7 +220,7 @@ CCharacterAbilityManager::~CCharacterAbilityManager()
 // @0x140f29ad0
 void CCharacterAbilityManager::OnCharacterAbility(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 0:
@@ -239,14 +239,14 @@ void CCharacterAbilityManager::OnCharacterAbility(CInPacket& packet)
 void CCharacterAbilityManager::FUN_140f29b70(CInPacket& packet)
 {
     m_abilities.RemoveAll();
-    unsigned nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    unsigned nCount = packet.ReadInt32();
     for (unsigned i = 0; i < nCount; i++)
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nId = packet.ReadInt32();
         m_abilities.AddTail(nId);
     }
-    m_nResetTime = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    m_nPoints = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    m_nResetTime = packet.ReadInt64();
+    m_nPoints = packet.ReadInt32();
     if (UICharacterAbilityDialog* pDlg = FUN_140f2c530(0x4f0c))
         pDlg->FUN_140f2b0f0();
     if (UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28))
@@ -256,7 +256,7 @@ void CCharacterAbilityManager::FUN_140f29b70(CInPacket& packet)
 // @0x140f29cc0
 void CCharacterAbilityManager::FUN_140f29cc0(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nId = packet.ReadInt32();
     MS2Ptr<Unk_CaAbilityRow> ref = FUN_140f2d250()->FUN_1401e0670(nId);
     if (ref == NULL)
         return;
@@ -436,8 +436,8 @@ int UICharacterAbilityDialog::vfunc_28(const char* szMethod, const Scaleform::GF
             if ((unsigned short)pPc->vfunc_78() < ref->m_nRequireLevel)
                 return 1;
             COutPacket packet(static_cast<int>(SendOp::CharacterAbility), 0);
-            packet.vfunc_o10_1(2);
-            packet.vfunc_o10_3(nId);
+            packet.WriteUInt8(2);
+            packet.WriteInt32(nId);
             FUN_140710590(packet);
         }
     }
@@ -518,7 +518,7 @@ int UICharacterAbilityDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 return 1;
             }
             COutPacket packet(static_cast<int>(SendOp::CharacterAbility), 0);
-            packet.vfunc_o10_1(1);
+            packet.WriteUInt8(1);
             FUN_140710590(packet);
         }
         FUN_14151f200();

@@ -318,13 +318,13 @@ MS2_REPLACE_METHOD(0x140C31FD0, UIItemBillBoardDialog, vfunc_67, 62, 0x8C691D49)
 // @0x140c32020
 void UIItemBillBoardDialog::FUN_140c32020(CInPacket& packet)
 {
-    int nType = packet.vfunc_o8_1();
+    int nType = packet.ReadUInt8();
     if (nType == 6) {
         m_info.Clear();
         m_info.Read(packet);
         FUN_140c32300();
     } else if (nType == 7) {
-        int nResult = packet.vfunc_o8_3();
+        int nResult = packet.ReadInt32();
         if (nResult == 0) {
             CStringW strKey(L"s_special_item_billboard_install_sucess");
             FUN_1412751b0(GetStringCommonByKey(strKey), 0x11);
@@ -603,8 +603,8 @@ void UIItemBillBoardDialog::SendItemBillboard(const Scaleform::GFx::FunctionHand
     if (DAT_143ab2914 < 0x32)
         return;
     COutPacket packet(static_cast<int>(SendOp::ItemBillboard), 0);
-    packet.vfunc_o10_1(8);
-    packet.vfunc_o10_4(m_info.owner);
+    packet.WriteUInt8(8);
+    packet.WriteInt64(m_info.owner);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x140C33FD0, UIItemBillBoardDialog, SendItemBillboard, 113, 0x96BD63CB);

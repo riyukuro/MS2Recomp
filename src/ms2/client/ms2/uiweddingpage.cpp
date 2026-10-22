@@ -314,8 +314,8 @@ bool UIWeddingPageMessage::SendWedding(int nResult, const CMsgBoxData& box)
     {
         CStringW strMessage = box.FUN_141a02fd0(0, CStringW());
         COutPacket pkt(static_cast<int>(SendOp::Wedding), 0);
-        pkt.vfunc_o10_1(0x22);
-        pkt.vfunc_o10_8(strMessage);
+        pkt.WriteUInt8(0x22);
+        pkt.WriteUnicodeString(strMessage);
         FUN_140710590(pkt);
     }
     return true;
@@ -418,8 +418,8 @@ bool UIWeddingPageSkill::vfunc_3(const char* szMethod, const Scaleform::GFx::Val
             return true;
         }
         COutPacket pkt(static_cast<int>(SendOp::Wedding), 0);
-        pkt.vfunc_o10_1(0x25);
-        pkt.vfunc_o10_3(nId);
+        pkt.WriteUInt8(0x25);
+        pkt.WriteInt32(nId);
         FUN_140710590(pkt);
     }
     return true;
@@ -548,8 +548,8 @@ void UIWeddingPageMission::SendQuest(int nQuestId)
             if (!spData.IsNull())
             {
                 COutPacket pkt(static_cast<int>(SendOp::Quest), 0);
-                pkt.vfunc_o10_1(0x27);
-                pkt.vfunc_o10_3(nQuestId);
+                pkt.WriteUInt8(0x27);
+                pkt.WriteInt32(nQuestId);
                 FUN_140710590(pkt);
             }
         }

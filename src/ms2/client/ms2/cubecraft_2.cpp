@@ -1094,7 +1094,7 @@ void Unk_PCCubeCraft::FUN_1410aad50()
             packet.Encode1(0xf);
             packet.Encode4(FUN_1408a03c0(kGrid));
             FUN_1408b39c0(&kInfo, packet);
-            packet.vfunc_o10_5(kEuler.z);
+            packet.WriteFloat(kEuler.z);
             FUN_140710590(packet);
         }
         else
@@ -1123,7 +1123,7 @@ void Unk_PCCubeCraft::FUN_1410aad50()
             packet.Encode1(10);
             packet.Encode4(FUN_1408a13d0((const efd::Point3&)m_ptCell));
             FUN_1408b39c0(&kInfo, packet);
-            packet.vfunc_o10_5(kEuler.z);
+            packet.WriteFloat(kEuler.z);
             FUN_140710590(packet);
         }
     }
@@ -1189,7 +1189,7 @@ void Unk_PCCubeCraft::FUN_1410ab5c0(unsigned char bNotice)
                     COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
                     packet.Encode1(0xe);
                     packet.Encode4(FUN_1408a03c0(kGrid));
-                    packet.vfunc_o10_0(bNotice != 0);
+                    packet.WriteBool(bNotice != 0);
                     FUN_140710590(packet);
                 }
             }
@@ -1412,7 +1412,7 @@ void Unk_PCCubeCraft::FUN_1410aded0()
         packet.Encode1(0x10);
         packet.Encode4(FUN_1408a03c0(kGrid));
         FUN_1408b39c0(&kInfo, packet);
-        packet.vfunc_o10_5(fHeight);
+        packet.WriteFloat(fHeight);
         packet.Encode1((unsigned char)nCell);
         FUN_140710590(packet);
     }
@@ -1422,7 +1422,7 @@ void Unk_PCCubeCraft::FUN_1410aded0()
         packet.Encode1(0xb);
         packet.Encode4(FUN_1408a03c0(kGrid));
         FUN_1408b39c0(&kInfo, packet);
-        packet.vfunc_o10_5(fHeight);
+        packet.WriteFloat(fHeight);
         packet.Encode1((unsigned char)nCell);
         FUN_140710590(packet);
     }

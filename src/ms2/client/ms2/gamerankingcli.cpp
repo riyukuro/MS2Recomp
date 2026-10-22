@@ -353,10 +353,10 @@ void CGameRankingCli::OnPacket(CByteBuffer& packet)
 {
     if (!FUN_140166410()->FUN_14036d570(0x3f))
         return;
-    int nMode = packet.vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 0x1f) {
-        DAT_1439f4d94 = packet.vfunc_o8_3();
-        DAT_1439f4d98 = packet.vfunc_o8_3();
+        DAT_1439f4d94 = packet.ReadInt32();
+        DAT_1439f4d98 = packet.ReadInt32();
     }
 }
 MS2_REPLACE_METHOD(0x140b2ab70, CGameRankingCli, OnPacket, 177, 0x548BC5EE);
@@ -957,15 +957,15 @@ GameRankingItem::GuildTrophy::GuildTrophy()
 // @0x140b31cf0
 void GameRankingItem::GuildTrophy::Read(CByteBuffer& s)
 {
-    m_rank = s.vfunc_o8_3();
-    m_id = s.vfunc_o8_4();
+    m_rank = s.ReadInt32();
+    m_id = s.ReadInt64();
     m_name = FUN_140b3f4e0(s);
     m_30 = FUN_140b3f4e0(s);
     m_38 = FUN_140b3f4e0(s);
-    m_40 = s.vfunc_o8_3();
-    m_values[1] = s.vfunc_o8_3();
-    m_values[2] = s.vfunc_o8_3();
-    m_values[0] = s.vfunc_o8_3();
+    m_40 = s.ReadInt32();
+    m_values[1] = s.ReadInt32();
+    m_values[2] = s.ReadInt32();
+    m_values[0] = s.ReadInt32();
 }
 
 // @0x140b31f60
@@ -983,14 +983,14 @@ GameRankingItem::UserTrophy::UserTrophy()
 // @0x140b32030
 void GameRankingItem::UserTrophy::Read(CByteBuffer& s)
 {
-    m_rank = s.vfunc_o8_3();
-    m_id = s.vfunc_o8_4();
+    m_rank = s.ReadInt32();
+    m_id = s.ReadInt64();
     m_name = FUN_140b3f4e0(s);
     m_30 = FUN_140b3f4e0(s);
-    m_38 = s.vfunc_o8_3();
-    m_values[1] = s.vfunc_o8_3();
-    m_values[2] = s.vfunc_o8_3();
-    m_values[0] = s.vfunc_o8_3();
+    m_38 = s.ReadInt32();
+    m_values[1] = s.ReadInt32();
+    m_values[2] = s.ReadInt32();
+    m_values[0] = s.ReadInt32();
 }
 
 // @0x140b32240
@@ -1009,13 +1009,13 @@ GameRankingItem::DarkStream::DarkStream()
 // @0x140b32310
 void GameRankingItem::DarkStream::Read(CByteBuffer& s)
 {
-    m_rank = s.vfunc_o8_3();
-    m_id = s.vfunc_o8_4();
+    m_rank = s.ReadInt32();
+    m_id = s.ReadInt64();
     m_name = FUN_140b3f4e0(s);
     m_30 = FUN_140b3f4e0(s);
-    m_38 = s.vfunc_o8_3();
-    m_3c = s.vfunc_o8_3();
-    m_40 = s.vfunc_o8_3();
+    m_38 = s.ReadInt32();
+    m_3c = s.ReadInt32();
+    m_40 = s.ReadInt32();
     m_time = FUN_140b3f610(s);
 }
 
@@ -1034,12 +1034,12 @@ GameRankingItem::UserPvp::UserPvp()
 // @0x140b325a0
 void GameRankingItem::UserPvp::Read(CByteBuffer& s)
 {
-    m_rank = s.vfunc_o8_3();
-    m_id = s.vfunc_o8_4();
+    m_rank = s.ReadInt32();
+    m_id = s.ReadInt64();
     m_name = FUN_140b3f4e0(s);
     m_30 = FUN_140b3f4e0(s);
-    m_38 = s.vfunc_o8_3();
-    m_3c = s.vfunc_o8_3();
+    m_38 = s.ReadInt32();
+    m_3c = s.ReadInt32();
 }
 
 // @0x140b32730
@@ -1058,13 +1058,13 @@ GameRankingItem::GuildPvp::GuildPvp()
 // @0x140b32810
 void GameRankingItem::GuildPvp::Read(CByteBuffer& s)
 {
-    m_rank = s.vfunc_o8_3();
-    m_id = s.vfunc_o8_4();
+    m_rank = s.ReadInt32();
+    m_id = s.ReadInt64();
     m_name = FUN_140b3f4e0(s);
     m_30 = FUN_140b3f4e0(s);
     m_38 = FUN_140b3f4e0(s);
-    m_40 = s.vfunc_o8_3();
-    m_44 = s.vfunc_o8_3();
+    m_40 = s.ReadInt32();
+    m_44 = s.ReadInt32();
 }
 
 // @0x140b329f0
@@ -1083,13 +1083,13 @@ GameRankingItem::UgcMapCommendation::UgcMapCommendation()
 // @0x140b32ad0
 void GameRankingItem::UgcMapCommendation::Read(CByteBuffer& s)
 {
-    m_rank = s.vfunc_o8_3();
-    m_id = s.vfunc_o8_4();
+    m_rank = s.ReadInt32();
+    m_id = s.ReadInt64();
     m_name = FUN_140b3f4e0(s);
     m_30 = FUN_140b3f4e0(s);
-    m_38 = s.vfunc_o8_3();
-    m_3c = s.vfunc_o8_3();
-    m_40 = s.vfunc_o8_4();
+    m_38 = s.ReadInt32();
+    m_3c = s.ReadInt32();
+    m_40 = s.ReadInt64();
     m_48 = FUN_140b3f4e0(s);
 }
 
@@ -1108,13 +1108,13 @@ GameRankingItem::BossKillCount::BossKillCount()
 // @0x140b32da0
 void GameRankingItem::BossKillCount::Read(CByteBuffer& s)
 {
-    m_rank = s.vfunc_o8_3();
-    m_id = s.vfunc_o8_4();
+    m_rank = s.ReadInt32();
+    m_id = s.ReadInt64();
     m_name = FUN_140b3f4e0(s);
     m_30 = FUN_140b3f4e0(s);
-    m_38 = s.vfunc_o8_3();
-    m_3c = s.vfunc_o8_3();
-    m_40 = s.vfunc_o8_3();
+    m_38 = s.ReadInt32();
+    m_3c = s.ReadInt32();
+    m_40 = s.ReadInt32();
 }
 
 // @0x140b32f60
@@ -1150,20 +1150,20 @@ GameRankingItem::BossKillRecord::BossKillRecord()
 // @0x140b33130
 void GameRankingItem::BossKillRecord::Read(CByteBuffer& s)
 {
-    m_rank = s.vfunc_o8_3();
-    m_20 = s.vfunc_o8_4();
-    m_leaderId = s.vfunc_o8_4();
-    m_28 = s.vfunc_o8_3();
-    m_38 = s.vfunc_o8_3();
+    m_rank = s.ReadInt32();
+    m_20 = s.ReadInt64();
+    m_leaderId = s.ReadInt64();
+    m_28 = s.ReadInt32();
+    m_38 = s.ReadInt32();
     m_time = FUN_140b3f610(s);
-    int nCount = s.vfunc_o8_3();
+    int nCount = s.ReadInt32();
     for (int i = 0; i < nCount; i++) {
         BossKillPartyMember member;
-        member.m_id = s.vfunc_o8_4();
+        member.m_id = s.ReadInt64();
         member.m_name = FUN_140b3f4e0(s);
         member.m_image = FUN_140b3f4e0(s);
-        member.m_level = s.vfunc_o8_3();
-        member.m_job = s.vfunc_o8_3();
+        member.m_level = s.ReadInt32();
+        member.m_job = s.ReadInt32();
         if (i < 10)
             m_members[i] = member;
     }
@@ -1200,15 +1200,15 @@ GameRankingItem::Arcade::Arcade()
 // @0x140b33600
 void GameRankingItem::Arcade::Read(CByteBuffer& s)
 {
-    m_rank = s.vfunc_o8_3();
-    m_id = s.vfunc_o8_4();
+    m_rank = s.ReadInt32();
+    m_id = s.ReadInt64();
     m_name = FUN_140b3f4e0(s);
     m_30 = FUN_140b3f4e0(s);
-    m_38 = s.vfunc_o8_3();
-    m_44 = s.vfunc_o8_3();
-    m_3c = s.vfunc_o8_3();
-    m_40 = s.vfunc_o8_3();
-    m_48 = s.vfunc_o8_3();
+    m_38 = s.ReadInt32();
+    m_44 = s.ReadInt32();
+    m_3c = s.ReadInt32();
+    m_40 = s.ReadInt32();
+    m_48 = s.ReadInt32();
     m_time = FUN_140b3f610(s);
 }
 
@@ -1227,13 +1227,13 @@ GameRankingItem::BossDamageCount::BossDamageCount()
 // @0x140b33900
 void GameRankingItem::BossDamageCount::Read(CByteBuffer& s)
 {
-    m_rank = s.vfunc_o8_3();
-    m_id = s.vfunc_o8_4();
+    m_rank = s.ReadInt32();
+    m_id = s.ReadInt64();
     m_name = FUN_140b3f4e0(s);
     m_30 = FUN_140b3f4e0(s);
-    m_38 = s.vfunc_o8_3();
-    m_3c = s.vfunc_o8_3();
-    m_40 = s.vfunc_o8_3();
+    m_38 = s.ReadInt32();
+    m_3c = s.ReadInt32();
+    m_40 = s.ReadInt32();
 }
 
 // @0x140b33ac0
@@ -1252,20 +1252,20 @@ GameRankingItem::BossDamageDate::BossDamageDate()
 // @0x140b33bb0
 void GameRankingItem::BossDamageDate::Read(CByteBuffer& s)
 {
-    m_rank = s.vfunc_o8_3();
-    m_20 = s.vfunc_o8_4();
-    m_leaderId = s.vfunc_o8_4();
-    m_28 = s.vfunc_o8_3();
-    m_38 = s.vfunc_o8_4();
+    m_rank = s.ReadInt32();
+    m_20 = s.ReadInt64();
+    m_leaderId = s.ReadInt64();
+    m_28 = s.ReadInt32();
+    m_38 = s.ReadInt64();
     m_time = FUN_140b3f610(s);
-    int nCount = s.vfunc_o8_3();
+    int nCount = s.ReadInt32();
     for (int i = 0; i < nCount; i++) {
         BossKillPartyMember member;
-        member.m_id = s.vfunc_o8_4();
+        member.m_id = s.ReadInt64();
         member.m_name = FUN_140b3f4e0(s);
         member.m_image = FUN_140b3f4e0(s);
-        member.m_level = s.vfunc_o8_3();
-        member.m_job = s.vfunc_o8_3();
+        member.m_level = s.ReadInt32();
+        member.m_job = s.ReadInt32();
         if (i < 10)
             m_members[i] = member;
     }
@@ -1304,25 +1304,25 @@ GameRankingItem::BossDamageAmount::BossDamageAmount()
 // @0x140b340d0
 void GameRankingItem::BossDamageAmount::Read(CByteBuffer& s)
 {
-    m_rank = s.vfunc_o8_3();
-    m_20 = s.vfunc_o8_4();
-    m_leaderId = s.vfunc_o8_4();
-    m_38 = s.vfunc_o8_4();
-    m_30 = s.vfunc_o8_3();
-    m_40 = s.vfunc_o8_4();
-    m_48 = s.vfunc_o8_4();
-    m_50 = s.vfunc_o8_4();
-    m_58 = s.vfunc_o8_4();
-    m_60 = s.vfunc_o8_3();
+    m_rank = s.ReadInt32();
+    m_20 = s.ReadInt64();
+    m_leaderId = s.ReadInt64();
+    m_38 = s.ReadInt64();
+    m_30 = s.ReadInt32();
+    m_40 = s.ReadInt64();
+    m_48 = s.ReadInt64();
+    m_50 = s.ReadInt64();
+    m_58 = s.ReadInt64();
+    m_60 = s.ReadInt32();
     m_time = FUN_140b3f610(s);
-    int nCount = s.vfunc_o8_3();
+    int nCount = s.ReadInt32();
     for (int i = 0; i < nCount; i++) {
         BossKillPartyMember member;
-        member.m_id = s.vfunc_o8_4();
+        member.m_id = s.ReadInt64();
         member.m_name = FUN_140b3f4e0(s);
         member.m_image = FUN_140b3f4e0(s);
-        member.m_level = s.vfunc_o8_3();
-        member.m_job = s.vfunc_o8_3();
+        member.m_level = s.ReadInt32();
+        member.m_job = s.ReadInt32();
         if (i < 10)
             m_members[i] = member;
     }
@@ -1369,13 +1369,13 @@ GameRankingItem::BossRumbleCount::BossRumbleCount()
 // @0x140b34780
 void GameRankingItem::BossRumbleCount::Read(CByteBuffer& s)
 {
-    m_rank = s.vfunc_o8_3();
-    m_id = s.vfunc_o8_4();
+    m_rank = s.ReadInt32();
+    m_id = s.ReadInt64();
     m_name = FUN_140b3f4e0(s);
     m_30 = FUN_140b3f4e0(s);
-    m_38 = s.vfunc_o8_3();
-    m_3c = s.vfunc_o8_3();
-    m_40 = s.vfunc_o8_3();
+    m_38 = s.ReadInt32();
+    m_3c = s.ReadInt32();
+    m_40 = s.ReadInt32();
 }
 
 // @0x140b34940
@@ -1396,15 +1396,15 @@ GameRankingItem::BossRumbleRecord::BossRumbleRecord()
 // @0x140b34a20
 void GameRankingItem::BossRumbleRecord::Read(CByteBuffer& s)
 {
-    m_rank = s.vfunc_o8_3();
-    m_20 = s.vfunc_o8_4();
-    m_30 = s.vfunc_o8_4();
+    m_rank = s.ReadInt32();
+    m_20 = s.ReadInt64();
+    m_30 = s.ReadInt64();
     m_38 = FUN_140b3f4e0(s);
     m_40 = FUN_140b3f4e0(s);
-    m_4c = s.vfunc_o8_3();
-    m_48 = s.vfunc_o8_3();
-    m_28 = s.vfunc_o8_3();
-    m_50 = s.vfunc_o8_3();
+    m_4c = s.ReadInt32();
+    m_48 = s.ReadInt32();
+    m_28 = s.ReadInt32();
+    m_50 = s.ReadInt32();
     m_time = FUN_140b3f610(s);
 }
 
@@ -1430,18 +1430,18 @@ GameRankingItem::Survival::Survival()
 // @0x140b34d70
 void GameRankingItem::Survival::Read(CByteBuffer& s)
 {
-    m_rank = s.vfunc_o8_3();
-    m_id = s.vfunc_o8_4();
+    m_rank = s.ReadInt32();
+    m_id = s.ReadInt64();
     m_name = FUN_140b3f4e0(s);
     m_30 = FUN_140b3f4e0(s);
-    m_38 = s.vfunc_o8_3();
-    m_40 = s.vfunc_o8_4();
-    m_48 = s.vfunc_o8_3();
-    m_4c = s.vfunc_o8_3();
-    m_50 = s.vfunc_o8_3();
-    m_54 = s.vfunc_o8_3();
-    m_58 = s.vfunc_o8_3();
-    m_60 = s.vfunc_o8_4();
+    m_38 = s.ReadInt32();
+    m_40 = s.ReadInt64();
+    m_48 = s.ReadInt32();
+    m_4c = s.ReadInt32();
+    m_50 = s.ReadInt32();
+    m_54 = s.ReadInt32();
+    m_58 = s.ReadInt32();
+    m_60 = s.ReadInt64();
     m_time = FUN_140b3f610(s);
 }
 
@@ -1463,13 +1463,13 @@ GameRankingItem::WorldChampion::WorldChampion()
 // @0x140b35140
 void GameRankingItem::WorldChampion::Read(CByteBuffer& s)
 {
-    m_rank = s.vfunc_o8_3();
-    m_id = s.vfunc_o8_4();
+    m_rank = s.ReadInt32();
+    m_id = s.ReadInt64();
     m_name = FUN_140b3f4e0(s);
     m_30 = FUN_140b3f4e0(s);
-    m_38 = s.vfunc_o8_3();
-    m_40 = s.vfunc_o8_4();
-    m_48 = s.vfunc_o8_4();
+    m_38 = s.ReadInt32();
+    m_40 = s.ReadInt64();
+    m_48 = s.ReadInt64();
     m_50 = FUN_140b3f610(s);
     m_58 = FUN_140b3f610(s);
 }
@@ -1495,16 +1495,16 @@ GameRankingItem::BossColosseum::BossColosseum()
 // @0x140b35440
 void GameRankingItem::BossColosseum::Read(CByteBuffer& s)
 {
-    m_rank = s.vfunc_o8_3();
-    m_id = s.vfunc_o8_4();
+    m_rank = s.ReadInt32();
+    m_id = s.ReadInt64();
     m_name = FUN_140b3f4e0(s);
     m_30 = FUN_140b3f4e0(s);
-    m_38 = s.vfunc_o8_3();
-    m_3c = s.vfunc_o8_3();
-    m_40 = s.vfunc_o8_4();
-    m_48 = s.vfunc_o8_3();
-    m_4c = s.vfunc_o8_3();
-    m_50 = s.vfunc_o8_3();
+    m_38 = s.ReadInt32();
+    m_3c = s.ReadInt32();
+    m_40 = s.ReadInt64();
+    m_48 = s.ReadInt32();
+    m_4c = s.ReadInt32();
+    m_50 = s.ReadInt32();
     m_58 = FUN_140b3f610(s);
     m_60 = FUN_140b3f610(s);
 }
@@ -1570,10 +1570,10 @@ GameRanking::IResponse::IResponse(unsigned int nType)
 // @0x140b358d0
 int GameRanking::IResponse::Read(CByteBuffer& s)
 {
-    unsigned int nType = s.vfunc_o8_3();
+    unsigned int nType = s.ReadInt32();
     if (nType != m_type)
         return 0;
-    m_result = s.vfunc_o8_3();
+    m_result = s.ReadInt32();
     m_time = FUN_140b3f610(s);
     return 1;
 }
@@ -1672,7 +1672,7 @@ int GameRanking::MyRank::Read(CByteBuffer& s)
     try {
         if (IResponse::Read(s) == 0)
             return 0;
-        m_rank = s.vfunc_o8_3();
+        m_rank = s.ReadInt32();
     }
     catch (...) {
         return 0;
@@ -1694,8 +1694,8 @@ int GameRanking::MyRankPercent::Read(CByteBuffer& s)
     try {
         if (IResponse::Read(s) == 0)
             return 0;
-        m_kind = s.vfunc_o8_3();
-        m_rank = s.vfunc_o8_3();
+        m_kind = s.ReadInt32();
+        m_rank = s.ReadInt32();
     }
     catch (...) {
         return 0;
@@ -1717,7 +1717,7 @@ int GameRanking::GuildTrophy::Read(CByteBuffer& s)
     try {
         if (IResponse::Read(s) == 0)
             return 0;
-        int nCount = s.vfunc_o8_3();
+        int nCount = s.ReadInt32();
         for (int i = 0; i < nCount; i++) {
             MS2Ptr<GameRankingItem::GuildTrophy> spItem(new GameRankingItem::GuildTrophy);
             spItem->Read(s);
@@ -1788,7 +1788,7 @@ int GameRanking::UserTrophy::Read(CByteBuffer& s)
     try {
         if (IResponse::Read(s) == 0)
             return 0;
-        int nCount = s.vfunc_o8_3();
+        int nCount = s.ReadInt32();
         for (int i = 0; i < nCount; i++) {
             MS2Ptr<GameRankingItem::UserTrophy> spItem(new GameRankingItem::UserTrophy);
             spItem->Read(s);
@@ -1859,7 +1859,7 @@ int GameRanking::DarkStream::Read(CByteBuffer& s)
     try {
         if (IResponse::Read(s) == 0)
             return 0;
-        int nCount = s.vfunc_o8_3();
+        int nCount = s.ReadInt32();
         for (int i = 0; i < nCount; i++) {
             MS2Ptr<GameRankingItem::DarkStream> spItem(new GameRankingItem::DarkStream);
             spItem->Read(s);
@@ -1930,7 +1930,7 @@ int GameRanking::UserPvp::Read(CByteBuffer& s)
     try {
         if (IResponse::Read(s) == 0)
             return 0;
-        int nCount = s.vfunc_o8_3();
+        int nCount = s.ReadInt32();
         for (int i = 0; i < nCount; i++) {
             MS2Ptr<GameRankingItem::UserPvp> spItem(new GameRankingItem::UserPvp);
             spItem->Read(s);
@@ -2001,7 +2001,7 @@ int GameRanking::GuildPvp::Read(CByteBuffer& s)
     try {
         if (IResponse::Read(s) == 0)
             return 0;
-        int nCount = s.vfunc_o8_3();
+        int nCount = s.ReadInt32();
         for (int i = 0; i < nCount; i++) {
             MS2Ptr<GameRankingItem::GuildPvp> spItem(new GameRankingItem::GuildPvp);
             spItem->Read(s);
@@ -2072,7 +2072,7 @@ int GameRanking::UgcMapCommendation::Read(CByteBuffer& s)
     try {
         if (IResponse::Read(s) == 0)
             return 0;
-        int nCount = s.vfunc_o8_3();
+        int nCount = s.ReadInt32();
         for (int i = 0; i < nCount; i++) {
             MS2Ptr<GameRankingItem::UgcMapCommendation> spItem(new GameRankingItem::UgcMapCommendation);
             spItem->Read(s);
@@ -2143,7 +2143,7 @@ int GameRanking::BossKillCount::Read(CByteBuffer& s)
     try {
         if (IResponse::Read(s) == 0)
             return 0;
-        int nCount = s.vfunc_o8_3();
+        int nCount = s.ReadInt32();
         for (int i = 0; i < nCount; i++) {
             MS2Ptr<GameRankingItem::BossKillCount> spItem(new GameRankingItem::BossKillCount);
             spItem->Read(s);
@@ -2215,7 +2215,7 @@ int GameRanking::BossKillRecord::Read(CByteBuffer& s)
     try {
         if (IResponse::Read(s) == 0)
             return 0;
-        int nCount = s.vfunc_o8_3();
+        int nCount = s.ReadInt32();
         for (int i = 0; i < nCount; i++) {
             MS2Ptr<GameRankingItem::BossKillRecord> spItem(new GameRankingItem::BossKillRecord);
             spItem->Read(s);
@@ -2254,7 +2254,7 @@ int GameRanking::Arcade::Read(CByteBuffer& s)
     try {
         if (IResponse::Read(s) == 0)
             return 0;
-        int nCount = s.vfunc_o8_3();
+        int nCount = s.ReadInt32();
         for (int i = 0; i < nCount; i++) {
             MS2Ptr<GameRankingItem::Arcade> spItem(new GameRankingItem::Arcade);
             spItem->Read(s);
@@ -2325,7 +2325,7 @@ int GameRanking::BossDamageCount::Read(CByteBuffer& s)
     try {
         if (IResponse::Read(s) == 0)
             return 0;
-        int nCount = s.vfunc_o8_3();
+        int nCount = s.ReadInt32();
         for (int i = 0; i < nCount; i++) {
             MS2Ptr<GameRankingItem::BossDamageCount> spItem(new GameRankingItem::BossDamageCount);
             spItem->Read(s);
@@ -2397,7 +2397,7 @@ int GameRanking::BossDamageDate::Read(CByteBuffer& s)
     try {
         if (IResponse::Read(s) == 0)
             return 0;
-        int nCount = s.vfunc_o8_3();
+        int nCount = s.ReadInt32();
         for (int i = 0; i < nCount; i++) {
             MS2Ptr<GameRankingItem::BossDamageDate> spItem(new GameRankingItem::BossDamageDate);
             spItem->Read(s);
@@ -2437,7 +2437,7 @@ int GameRanking::BossDamageAmount::Read(CByteBuffer& s)
     try {
         if (IResponse::Read(s) == 0)
             return 0;
-        int nCount = s.vfunc_o8_3();
+        int nCount = s.ReadInt32();
         for (int i = 0; i < nCount; i++) {
             MS2Ptr<GameRankingItem::BossDamageAmount> spItem(new GameRankingItem::BossDamageAmount);
             spItem->Read(s);
@@ -2476,7 +2476,7 @@ int GameRanking::BossRumbleCount::Read(CByteBuffer& s)
     try {
         if (IResponse::Read(s) == 0)
             return 0;
-        int nCount = s.vfunc_o8_3();
+        int nCount = s.ReadInt32();
         for (int i = 0; i < nCount; i++) {
             MS2Ptr<GameRankingItem::BossRumbleCount> spItem(new GameRankingItem::BossRumbleCount);
             spItem->Read(s);
@@ -2548,7 +2548,7 @@ int GameRanking::BossRumbleRecord::Read(CByteBuffer& s)
     try {
         if (IResponse::Read(s) == 0)
             return 0;
-        int nCount = s.vfunc_o8_3();
+        int nCount = s.ReadInt32();
         for (int i = 0; i < nCount; i++) {
             MS2Ptr<GameRankingItem::BossRumbleRecord> spItem(new GameRankingItem::BossRumbleRecord);
             spItem->Read(s);
@@ -2587,7 +2587,7 @@ int GameRanking::WorldChampion::Read(CByteBuffer& s)
     try {
         if (IResponse::Read(s) == 0)
             return 0;
-        int nCount = s.vfunc_o8_3();
+        int nCount = s.ReadInt32();
         for (int i = 0; i < nCount; i++) {
             MS2Ptr<GameRankingItem::WorldChampion> spItem(new GameRankingItem::WorldChampion);
             spItem->Read(s);
@@ -2658,7 +2658,7 @@ int GameRanking::BossColosseum::Read(CByteBuffer& s)
     try {
         if (IResponse::Read(s) == 0)
             return 0;
-        int nCount = s.vfunc_o8_3();
+        int nCount = s.ReadInt32();
         for (int i = 0; i < nCount; i++) {
             MS2Ptr<GameRankingItem::BossColosseum> spItem(new GameRankingItem::BossColosseum);
             spItem->Read(s);
@@ -2977,10 +2977,10 @@ int FUN_140b3f460(int nBoard)
 // @0x140b3f4e0
 CStringW FUN_140b3f4e0(CByteBuffer& s)
 {
-    int nLength = s.vfunc_o8_3();
+    int nLength = s.ReadInt32();
     unsigned char* pBuffer = new unsigned char[nLength + 2];
     memset(pBuffer, 0, nLength + 2);
-    s.vfunc_o8_9(pBuffer, nLength);
+    s.ReadBytes(pBuffer, nLength);
     CStringW str(reinterpret_cast<wchar_t*>(pBuffer));
     if (pBuffer != NULL) {
         delete[] pBuffer;

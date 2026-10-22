@@ -60,11 +60,11 @@ int UIItemEnchantSimulateDialog::vfunc_28(const char* szMethod, const Scaleform:
             int n3 = atoi(args.FUN_1422b8d30());
             if (n1 != 0 && n2 != 0 && n3 != 0) {
                 COutPacket packet(static_cast<int>(SendOp::RequestItemEnchant), 0);
-                packet.vfunc_o10_1(0xd);
-                packet.vfunc_o10_3(n1);
-                packet.vfunc_o10_3(n2);
+                packet.WriteUInt8(0xd);
+                packet.WriteInt32(n1);
+                packet.WriteInt32(n2);
                 short s3 = (short)n3;
-                packet.vfunc_o10_2(s3);
+                packet.WriteInt16(s3);
                 FUN_140710590(packet);
             }
         }
@@ -82,16 +82,16 @@ int UIItemEnchantSimulateDialog::vfunc_28(const char* szMethod, const Scaleform:
             if (n1 != 0 && n2 != 0 && n3 != 0) {
                 {
                     COutPacket packet(static_cast<int>(SendOp::RequestItemEnchant), 0);
-                    packet.vfunc_o10_1(0);
+                    packet.WriteUInt8(0);
                     FUN_140710590(packet);
                 }
                 COutPacket packet(static_cast<int>(SendOp::RequestItemEnchant), 0);
-                packet.vfunc_o10_1(0xe);
-                packet.vfunc_o10_3(n1);
-                packet.vfunc_o10_3(n2);
+                packet.WriteUInt8(0xe);
+                packet.WriteInt32(n1);
+                packet.WriteInt32(n2);
                 short s3 = (short)n3;
-                packet.vfunc_o10_2(s3);
-                packet.vfunc_o10_3(n6);
+                packet.WriteInt16(s3);
+                packet.WriteInt32(n6);
                 FUN_140710590(packet);
             }
         }
@@ -108,13 +108,13 @@ void UIItemEnchantSimulateDialog::vfunc_79(void* p)
     UIDialog::vfunc_79(p);
     if (pPacket->FUN_14070fe80() != 0x97)
         return;
-    unsigned char nKind = pPacket->vfunc_o8_1();
+    unsigned char nKind = pPacket->ReadUInt8();
     if (nKind == 0xd) {
-        float fSuccess = pPacket->vfunc_o8_5();
-        float fSkipped = pPacket->vfunc_o8_5();
-        float fReset = pPacket->vfunc_o8_5();
-        CStringW strIngredient = pPacket->vfunc_o8_8();
-        CStringW strReturn = pPacket->vfunc_o8_8();
+        float fSuccess = pPacket->ReadFloat();
+        float fSkipped = pPacket->ReadFloat();
+        float fReset = pPacket->ReadFloat();
+        CStringW strIngredient = pPacket->ReadUnicodeString();
+        CStringW strReturn = pPacket->ReadUnicodeString();
         if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_tfSuccess"))
             spText->FUN_1422c4cd0(FUN_1406329c0(L"{0}", &fSuccess));
         if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_tfReset"))
@@ -124,11 +124,11 @@ void UIItemEnchantSimulateDialog::vfunc_79(void* p)
         if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_tfIngredient"))
             spText->FUN_1422c4cd0(strIngredient);
     } else if (nKind == 0xe) {
-        unsigned int nSuccess = pPacket->vfunc_o8_3();
-        unsigned int nBroken = pPacket->vfunc_o8_3();
-        unsigned int nDown = pPacket->vfunc_o8_3();
-        CStringW strIngredient = pPacket->vfunc_o8_8();
-        CStringW strReturn = pPacket->vfunc_o8_8();
+        unsigned int nSuccess = pPacket->ReadInt32();
+        unsigned int nBroken = pPacket->ReadInt32();
+        unsigned int nDown = pPacket->ReadInt32();
+        CStringW strIngredient = pPacket->ReadUnicodeString();
+        CStringW strReturn = pPacket->ReadUnicodeString();
         CStringW strResult = StringFormat(L"{0}번 성공\n{1}번 손상\n{2}번 하락\n", nSuccess, nBroken, nDown);
         strResult += FUN_1401e8510(L"총 재료 갯수 : {0}\n", strIngredient);
         strResult += FUN_1401e8510(L"총 위로금 갯수 : {0}\n", strReturn);

@@ -525,7 +525,7 @@ void CStore::RequestLoad()
     LoadRequest request;
     request.m_id = Id();
     COutPacket packet(static_cast<int>(SendOp::RequestItemStorage), 0);
-    packet.vfunc_o10_1(0xc);
+    packet.WriteUInt8(0xc);
     FUN_1401fba60(reinterpret_cast<unsigned char*>(&request), packet);
     FUN_140710590(packet);
 }
@@ -534,8 +534,8 @@ void CStore::RequestLoad()
 void CStore::RequestClose()
 {
     COutPacket packet(static_cast<int>(SendOp::RequestItemStorage), 0);
-    packet.vfunc_o10_1(8);
-    packet.vfunc_o10_4(Id());
+    packet.WriteUInt8(8);
+    packet.WriteInt64(Id());
     FUN_140710590(packet);
 }
 
@@ -543,10 +543,10 @@ void CStore::RequestClose()
 void CStore::RequestAction(int nAction, __int64 nId)
 {
     COutPacket packet(static_cast<int>(SendOp::RequestItemStorage), 0);
-    packet.vfunc_o10_1(3);
-    packet.vfunc_o10_4(Id());
-    packet.vfunc_o10_1(nAction);
-    packet.vfunc_o10_4(nId);
+    packet.WriteUInt8(3);
+    packet.WriteInt64(Id());
+    packet.WriteUInt8(nAction);
+    packet.WriteInt64(nId);
     FUN_140710590(packet);
 }
 
@@ -556,8 +556,8 @@ void CStore::RequestExtend()
     __int64 nId = Id();
     if (nId == 0) {
         COutPacket packet(static_cast<int>(SendOp::RequestItemStorage), 0);
-        packet.vfunc_o10_1(6);
-        packet.vfunc_o10_4(nId);
+        packet.WriteUInt8(6);
+        packet.WriteInt64(nId);
         FUN_140710590(packet);
     }
 }
@@ -566,7 +566,7 @@ void CStore::RequestExtend()
 void CStore::RequestSort()
 {
     COutPacket packet(static_cast<int>(SendOp::RequestItemStorage), 0);
-    packet.vfunc_o10_1(0xf);
+    packet.WriteUInt8(0xf);
     FUN_140710590(packet);
 }
 
@@ -600,7 +600,7 @@ void FUN_140de2dc0(void*, __int64 nId, int nSlot, int nCount, MS2Ptr<CItemData> 
     request.m_slot = nSlot;
     request.m_count = nCount;
     COutPacket packet(static_cast<int>(SendOp::RequestItemStorage), 0);
-    packet.vfunc_o10_1(0);
+    packet.WriteUInt8(0);
     FUN_1401fbaf0(reinterpret_cast<unsigned char*>(&request), packet);
     FUN_140710590(packet);
     if (pSound.get() != 0) {
@@ -624,11 +624,11 @@ void FUN_140de31f0(CStore* pStore, __int64 nId, int nSlot, int nCount, MS2Ptr<CI
         }
     }
     COutPacket packet(static_cast<int>(SendOp::RequestItemStorage), 0);
-    packet.vfunc_o10_1(1);
-    packet.vfunc_o10_4(pStore->Id());
-    packet.vfunc_o10_4(nId);
-    packet.vfunc_o10_2(nSlot);
-    packet.vfunc_o10_3(nCount);
+    packet.WriteUInt8(1);
+    packet.WriteInt64(pStore->Id());
+    packet.WriteInt64(nId);
+    packet.WriteInt16(nSlot);
+    packet.WriteInt32(nCount);
     FUN_140710590(packet);
     if (pSound.get() != 0) {
         FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"), pSound->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
@@ -638,7 +638,7 @@ void FUN_140de31f0(CStore* pStore, __int64 nId, int nSlot, int nCount, MS2Ptr<CI
 // @0x140de3480
 void CStore::Dispatch(CInPacket* pPacket)
 {
-    int nType = pPacket->vfunc_o8_1();
+    int nType = pPacket->ReadUInt8();
     if (nType == 0xb) {
         OnClear(pPacket);
     } else if (nType == 4) {
@@ -677,7 +677,7 @@ void CStore::OnClear(CInPacket*)
 // @0x140de3640
 void CStore::OnBegin(CInPacket* pPacket)
 {
-    __int64 nId = pPacket->vfunc_o8_4();
+    __int64 nId = pPacket->ReadInt64();
     if (Id() != nId) {
         MS2_ASSERT_AT(0x2dd, 0);
         return;
@@ -685,7 +685,7 @@ void CStore::OnBegin(CInPacket* pPacket)
     if (nId == 0) {
         FUN_1403ed2b0()->FUN_141adc530(0x4e47);
     }
-    int nCount = (unsigned short)pPacket->vfunc_o8_2();
+    int nCount = (unsigned short)pPacket->ReadInt16();
     SetReceived(nCount);
     if (nCount == 0) {
         SetReady(1);
@@ -696,12 +696,12 @@ void CStore::OnBegin(CInPacket* pPacket)
 // @0x140de3740
 void CStore::OnItems(CInPacket* pPacket)
 {
-    __int64 nId = pPacket->vfunc_o8_4();
+    __int64 nId = pPacket->ReadInt64();
     if (Id() != nId) {
         MS2_ASSERT_AT(0x2f7, 0);
         return;
     }
-    int nCount = (unsigned short)pPacket->vfunc_o8_2();
+    int nCount = (unsigned short)pPacket->ReadInt16();
     for (int i = 0; i < nCount; i++) {
         ReadItem(pPacket);
     }
@@ -715,7 +715,7 @@ void CStore::OnItems(CInPacket* pPacket)
 // @0x140de3870
 void CStore::OnAdd(CInPacket* pPacket)
 {
-    __int64 nId = pPacket->vfunc_o8_4();
+    __int64 nId = pPacket->ReadInt64();
     if (Id() != nId) {
         MS2_ASSERT_AT(0x30f, 0);
         return;
@@ -727,12 +727,12 @@ void CStore::OnAdd(CInPacket* pPacket)
 // @0x140de3910
 void CStore::OnRemove(CInPacket* pPacket)
 {
-    __int64 nId = pPacket->vfunc_o8_4();
+    __int64 nId = pPacket->ReadInt64();
     if (Id() != nId) {
         MS2_ASSERT_AT(0x31d, 0);
         return;
     }
-    __int64 nItemId = pPacket->vfunc_o8_4();
+    __int64 nItemId = pPacket->ReadInt64();
     MS2Ptr<CItem> pItem = Find(nItemId);
     if (!pItem) {
         return;
@@ -744,13 +744,13 @@ void CStore::OnRemove(CInPacket* pPacket)
 // @0x140de3a50
 void CStore::OnCount(CInPacket* pPacket)
 {
-    __int64 nId = pPacket->vfunc_o8_4();
+    __int64 nId = pPacket->ReadInt64();
     if (Id() != nId) {
         MS2_ASSERT_AT(0x331, 0);
         return;
     }
-    __int64 nItemId = pPacket->vfunc_o8_4();
-    int nCount = pPacket->vfunc_o8_3();
+    __int64 nItemId = pPacket->ReadInt64();
+    int nCount = pPacket->ReadInt32();
     MS2Ptr<CItem> pItem = Find(nItemId);
     if (!pItem) {
         return;
@@ -766,7 +766,7 @@ void CStore::OnCurrency(CInPacket* pPacket)
         MS2_ASSERT_AT(0x346, 0);
         return;
     }
-    __int64 nCurrency = pPacket->vfunc_o8_4();
+    __int64 nCurrency = pPacket->ReadInt64();
     DAT_143ab28f8 = nCurrency;
     FUN_140aa6d40()->FUN_141b0ce20(10, 0);
 }
@@ -778,7 +778,7 @@ void CStore::OnExtend(CInPacket* pPacket)
         MS2_ASSERT_AT(0x356, 0);
         return;
     }
-    int nExtended = pPacket->vfunc_o8_3();
+    int nExtended = pPacket->ReadInt32();
     Extend(nExtended);
 }
 
@@ -796,15 +796,15 @@ void CStore::OnClose(CInPacket*)
 // @0x140de3d40
 void CStore::OnSwap(CInPacket* pPacket)
 {
-    __int64 nId = pPacket->vfunc_o8_4();
+    __int64 nId = pPacket->ReadInt64();
     if (Id() != nId) {
         MS2_ASSERT_AT(0x36b, 0);
         return;
     }
     MS2Ptr<CItem> items[2] = { MS2Ptr<CItem>(0), MS2Ptr<CItem>(0) };
     for (int i = 0; i < 2; i++) {
-        __int64 nItemId = pPacket->vfunc_o8_4();
-        short nSlot = pPacket->vfunc_o8_2();
+        __int64 nItemId = pPacket->ReadInt64();
+        short nSlot = pPacket->ReadInt16();
         if (nItemId == 0) {
             continue;
         }
@@ -830,17 +830,17 @@ void CStore::OnSwap(CInPacket* pPacket)
 // @0x140de4030
 void CStore::OnList(CInPacket* pPacket)
 {
-    __int64 nId = pPacket->vfunc_o8_4();
+    __int64 nId = pPacket->ReadInt64();
     if (Id() != nId) {
         MS2_ASSERT_AT(0x395, 0);
         return;
     }
-    int nCount = (unsigned short)pPacket->vfunc_o8_2();
+    int nCount = (unsigned short)pPacket->ReadInt16();
     for (int i = 0; i < nCount; i++) {
-        int nType = pPacket->vfunc_o8_3();
-        __int64 nUid = pPacket->vfunc_o8_4();
-        short nSlot = pPacket->vfunc_o8_2();
-        int nAmount = pPacket->vfunc_o8_3();
+        int nType = pPacket->ReadInt32();
+        __int64 nUid = pPacket->ReadInt64();
+        short nSlot = pPacket->ReadInt16();
+        int nAmount = pPacket->ReadInt32();
         MS2Ptr<CItem> pItem(new CItem());
         if (((CItem*)pItem)->FUN_140523c40(nType, nAmount, 0)) {
             ((CItem*)pItem)->FUN_140526b30(DAT_143ab2864);
@@ -864,7 +864,7 @@ void CStore::OnReset(CInPacket*)
 // @0x140de4360
 void CStore::OnError(CInPacket* pPacket)
 {
-    int nError = pPacket->vfunc_o8_3();
+    int nError = pPacket->ReadInt32();
     switch (nError) {
     case 10:
         FUN_140d73bc0(0xeb, 0, 0, CStringW(L""));
@@ -914,10 +914,10 @@ void CStore::OnError(CInPacket* pPacket)
 // @0x140de4690
 void CStore::ReadItem(CInPacket* pPacket)
 {
-    int nType = pPacket->vfunc_o8_3();
-    __int64 nUid = pPacket->vfunc_o8_4();
-    short nSlot = pPacket->vfunc_o8_2();
-    int nAmount = pPacket->vfunc_o8_3();
+    int nType = pPacket->ReadInt32();
+    __int64 nUid = pPacket->ReadInt64();
+    short nSlot = pPacket->ReadInt16();
+    int nAmount = pPacket->ReadInt32();
     MS2Ptr<CItem> pItem(new CItem());
     if (((CItem*)pItem)->FUN_140523c40(nType, nAmount, 0)) {
         ((CItem*)pItem)->FUN_140526b30(DAT_143ab2864);

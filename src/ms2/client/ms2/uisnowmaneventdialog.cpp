@@ -613,18 +613,18 @@ int UISnowmanEventDialog::FUN_140e96c50(int type, CInPacket& packet)
         Unk_SnowmanPopup* popup = FUN_140938cd0(20061);
         if (popup == 0)
             return 0;
-        int count = packet.vfunc_o8_3();
+        int count = packet.ReadInt32();
         for (int i = 0; i < count; ++i)
-            popup->FUN_141abf6e0(packet.vfunc_o8_3(), packet.vfunc_o8_2());
+            popup->FUN_141abf6e0(packet.ReadInt32(), packet.ReadInt16());
         return count;
     }
     case 0xd: {
         Unk_SnowmanPopup* popup = FUN_140938cd0(20061);
         if (popup == 0)
             return 0;
-        int count = packet.vfunc_o8_3();
+        int count = packet.ReadInt32();
         for (int i = 0; i < count; ++i)
-            popup->FUN_141abf6e0(packet.vfunc_o8_3(), packet.vfunc_o8_2());
+            popup->FUN_141abf6e0(packet.ReadInt32(), packet.ReadInt16());
         return count;
     }
     default:

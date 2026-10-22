@@ -17,11 +17,11 @@ class Unk_BuddyInputBase { public: virtual unsigned vfunc_0(); };
 // The stream sub-object: CInputStream with every slot declared concrete (the reads are virtual calls on the member).
 class Unk_BuddyReadStream : public CInputStream {
 public:
-    virtual bool vfunc_o8_0(); virtual unsigned char vfunc_o8_1(); virtual short vfunc_o8_2(); virtual int vfunc_o8_3();
-    virtual __int64 vfunc_o8_4(); virtual float vfunc_o8_5(); virtual CString vfunc_o8_6(); virtual CString vfunc_o8_7();
-    virtual CStringW vfunc_o8_8(); virtual void vfunc_o8_9(void* data, int count); virtual Unk_StreamPoint vfunc_o8_10();
-    virtual Unk_StreamPoint vfunc_o8_11(); virtual float vfunc_o8_12(); virtual float vfunc_o8_13();
-    virtual float vfunc_o8_14(int scale); virtual float vfunc_o8_15(); virtual float vfunc_o8_16(int scale);
+    virtual bool ReadBool(); virtual unsigned char ReadUInt8(); virtual short ReadInt16(); virtual int ReadInt32();
+    virtual __int64 ReadInt64(); virtual float ReadFloat(); virtual CString ReadUnicodeStringA(); virtual CString ReadString();
+    virtual CStringW ReadUnicodeString(); virtual void ReadBytes(void* data, int count); virtual Unk_StreamPoint ReadVector3();
+    virtual Unk_StreamPoint ReadVector3Short(); virtual float ReadShortX10(); virtual float ReadShortX100();
+    virtual float ReadShortScaled(int scale); virtual float ReadShortDiv10(); virtual float ReadShortDivScaled(int scale);
 };
 class Unk_BuddyInput : public Unk_BuddyInputBase { public: Unk_BuddyReadStream stream; };
 
@@ -183,31 +183,31 @@ void CBuddy::FUN_1401cc740() { f5 = 1; f6 = 1; }
 MS2_REPLACE_METHOD(0x1401CC740, CBuddy, FUN_1401cc740, 56, 0x4CEA9C6F);
 // @0x1401cc7c0
 void CBuddy::FUN_1401cc7c0(Unk_BuddyInput& input) {
-    id = (&input.stream)->vfunc_o8_4();
-    account = (&input.stream)->vfunc_o8_4();
-    m_48 = (&input.stream)->vfunc_o8_4();
-    name = (&input.stream)->vfunc_o8_8();
-    m_30 = (&input.stream)->vfunc_o8_8();
-    m_a8 = (unsigned short)(&input.stream)->vfunc_o8_2();
-    m_9c = (&input.stream)->vfunc_o8_3();
-    m_a0 = (&input.stream)->vfunc_o8_3();
-    m_a4 = (&input.stream)->vfunc_o8_3();
-    m_98 = (&input.stream)->vfunc_o8_2();
-    f0 = (&input.stream)->vfunc_o8_1();
-    f1 = (&input.stream)->vfunc_o8_1();
-    f2 = (&input.stream)->vfunc_o8_1();
-    f5 = (&input.stream)->vfunc_o8_1();
-    f6 = (&input.stream)->vfunc_o8_1();
-    m_50 = (unsigned)(&input.stream)->vfunc_o8_3();
-    m_58 = (unsigned)(&input.stream)->vfunc_o8_3();
-    m_28 = (&input.stream)->vfunc_o8_6();
-    m_60 = (&input.stream)->vfunc_o8_8();
-    memo = (&input.stream)->vfunc_o8_8();
-    m_b8 = (&input.stream)->vfunc_o8_3();
-    m_bc = (&input.stream)->vfunc_o8_3();
-    m_c0 = (&input.stream)->vfunc_o8_3();
-    m_c8 = (&input.stream)->vfunc_o8_8();
-    m_90 = (&input.stream)->vfunc_o8_4();
+    id = (&input.stream)->ReadInt64();
+    account = (&input.stream)->ReadInt64();
+    m_48 = (&input.stream)->ReadInt64();
+    name = (&input.stream)->ReadUnicodeString();
+    m_30 = (&input.stream)->ReadUnicodeString();
+    m_a8 = (unsigned short)(&input.stream)->ReadInt16();
+    m_9c = (&input.stream)->ReadInt32();
+    m_a0 = (&input.stream)->ReadInt32();
+    m_a4 = (&input.stream)->ReadInt32();
+    m_98 = (&input.stream)->ReadInt16();
+    f0 = (&input.stream)->ReadUInt8();
+    f1 = (&input.stream)->ReadUInt8();
+    f2 = (&input.stream)->ReadUInt8();
+    f5 = (&input.stream)->ReadUInt8();
+    f6 = (&input.stream)->ReadUInt8();
+    m_50 = (unsigned)(&input.stream)->ReadInt32();
+    m_58 = (unsigned)(&input.stream)->ReadInt32();
+    m_28 = (&input.stream)->ReadUnicodeStringA();
+    m_60 = (&input.stream)->ReadUnicodeString();
+    memo = (&input.stream)->ReadUnicodeString();
+    m_b8 = (&input.stream)->ReadInt32();
+    m_bc = (&input.stream)->ReadInt32();
+    m_c0 = (&input.stream)->ReadInt32();
+    m_c8 = (&input.stream)->ReadUnicodeString();
+    m_90 = (&input.stream)->ReadInt64();
     m_ac.FUN_140267e70(input.stream);
     flags |= 0x80;
 }

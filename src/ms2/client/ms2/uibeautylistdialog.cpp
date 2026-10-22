@@ -85,8 +85,8 @@ bool UIBeautyListDialog::SendBeautyMode10(int nResult, const CMsgBoxData& box)
         return true;
     int nType = box.FUN_141a02e50(0, 0);
     COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
-    packet.vfunc_o10_1(10);
-    packet.vfunc_o10_2(nType);
+    packet.WriteUInt8(10);
+    packet.WriteInt16(nType);
     FUN_140710590(packet);
     return true;
 }
@@ -146,8 +146,8 @@ int UIBeautyListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             else
             {
                 COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
-                packet.vfunc_o10_1(10);
-                packet.vfunc_o10_2(nType);
+                packet.WriteUInt8(10);
+                packet.WriteInt16(nType);
                 FUN_140710590(packet);
             }
             vfunc_67();

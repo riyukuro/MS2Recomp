@@ -947,21 +947,21 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
         return;
     CInputStream& in = buf;
     CString strAnim;
-    unsigned char nFlags = in.vfunc_o8_1();
+    unsigned char nFlags = in.ReadUInt8();
     int bRotate = (nFlags & 1) == 1;
     int bEmotion = (nFlags & 2) == 2;
-    Unk_StreamPoint ptPos = in.vfunc_o8_11();
+    Unk_StreamPoint ptPos = in.ReadVector3Short();
     efd::Point3 kPos = reinterpret_cast<const efd::Point3&>(ptPos);
-    float fRotZ = in.vfunc_o8_15();
-    Unk_StreamPoint ptVel = in.vfunc_o8_11();
+    float fRotZ = in.ReadShortDiv10();
+    Unk_StreamPoint ptVel = in.ReadVector3Short();
     efd::Point3 kVel = reinterpret_cast<const efd::Point3&>(ptVel);
-    float fSpeed = in.vfunc_o8_16(100);
+    float fSpeed = in.ReadShortDivScaled(100);
     int nOwnerActor = 0;
     if (FUN_141092ff0())
-        nOwnerActor = in.vfunc_o8_3();
-    int nState = in.vfunc_o8_1();
-    m_nDE8 = in.vfunc_o8_2();
-    unsigned nSerial = (unsigned short)in.vfunc_o8_2();
+        nOwnerActor = in.ReadInt32();
+    int nState = in.ReadUInt8();
+    m_nDE8 = in.ReadInt16();
+    unsigned nSerial = (unsigned short)in.ReadInt16();
     if ((short)m_nDE8 == -2) {
         strAnim = "Jump_A";
     } else if ((short)m_nDE8 == -3) {
@@ -980,17 +980,17 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
     bool bPlace = true;
     if (!strAnim.IsEmpty()) {
         if ((short)m_nDE8 == -2 || (short)m_nDE8 == -3) {
-            if (in.vfunc_o8_1() == 0) {
-                Unk_StreamPoint ptTo = in.vfunc_o8_10();
+            if (in.ReadUInt8() == 0) {
+                Unk_StreamPoint ptTo = in.ReadVector3();
                 efd::Point3 kTo = reinterpret_cast<const efd::Point3&>(ptTo);
                 kTo.z = kTo.z + 2.0f;
                 m_unkDB0.Set(kPos, kTo, strAnim);
                 FUN_14166dd20(efd::utf8string((const char*)strAnim), fSpeed, true, false);
             } else {
-                Unk_StreamPoint ptFrom = in.vfunc_o8_10();
-                Unk_StreamPoint ptTo = in.vfunc_o8_10();
-                float fWidth = in.vfunc_o8_5();
-                float fScale = in.vfunc_o8_5();
+                Unk_StreamPoint ptFrom = in.ReadVector3();
+                Unk_StreamPoint ptTo = in.ReadVector3();
+                float fWidth = in.ReadFloat();
+                float fScale = in.ReadFloat();
                 efd::Point3 kTo = reinterpret_cast<const efd::Point3&>(ptTo);
                 kTo.z = kTo.z + 2.0f;
                 m_unkDB0.Set(reinterpret_cast<const efd::Point3&>(ptFrom), kTo, fWidth, fScale, strAnim);
@@ -1042,7 +1042,7 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
         return;
     m_nDAC = nSerial;
     if (nState == 0x11) {
-        int nSpawn = in.vfunc_o8_3();
+        int nSpawn = in.ReadInt32();
         if (nSpawn != 0 && FUN_14166c930() != nState) {
             MS2Ptr<StateSpawnData> spData(new StateSpawnData);
             if (reinterpret_cast<WorldService*>(FUN_1403ed2d0())->FUN_141bcfff0(nSpawn,
@@ -1084,10 +1084,10 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
         }
     } else if (nState == 0xd) {
         MS2Ptr<StateHitData> spData(new StateHitData);
-        spData->m_f1c = in.vfunc_o8_5();
-        spData->m_f24 = in.vfunc_o8_5();
-        spData->m_f28 = in.vfunc_o8_5();
-        spData->m_n2c = in.vfunc_o8_1() != 0;
+        spData->m_f1c = in.ReadFloat();
+        spData->m_f24 = in.ReadFloat();
+        spData->m_f28 = in.ReadFloat();
+        spData->m_n2c = in.ReadUInt8() != 0;
         FUN_14166dd20(efd::utf8string((const char*)strAnim), fSpeed, true, false);
         vfunc_59(nState, spData.get(), 0, 1);
         return;
@@ -1104,11 +1104,11 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
 // @0x141092c50
 void CNpc::FUN_141092c50(CInPacket& packet)
 {
-    unsigned char nMode = packet.vfunc_o8_1();
+    unsigned char nMode = packet.ReadUInt8();
     if (nMode == 0)
-        FUN_141095240(packet.vfunc_o8_4());
+        FUN_141095240(packet.ReadInt64());
     else if (nMode == 1)
-        m_nF20 = packet.vfunc_o8_3();
+        m_nF20 = packet.ReadInt32();
     else if (nMode == 2)
         m_nF20 = 0;
 }
@@ -1503,7 +1503,7 @@ int CNpc::vfunc_69()
 void CNpc::SendInteractNpc()
 {
     COutPacket packet(static_cast<int>(SendOp::InteractNpc), 0);
-    packet.vfunc_o10_3(FUN_14123c580());
+    packet.WriteInt32(FUN_14123c580());
     FUN_140710590(packet);
 }
 
@@ -2361,20 +2361,20 @@ void CNpc::vfunc_49()
 void CNpc::vfunc_90(void* p)
 {
     CInPacket* pPacket = static_cast<CInPacket*>(p);
-    if (pPacket->vfunc_o8_1() == 1) {
-        unsigned char nStat = pPacket->vfunc_o8_1();
+    if (pPacket->ReadUInt8() == 1) {
+        unsigned char nStat = pPacket->ReadUInt8();
         for (int i = 0; i < 3; i++) {
             __int64 nValue;
             if (FUN_14082f1a0(nStat) == 0)
-                nValue = (unsigned int)pPacket->vfunc_o8_3();
+                nValue = (unsigned int)pPacket->ReadInt32();
             else
-                nValue = pPacket->vfunc_o8_4();
+                nValue = pPacket->ReadInt64();
             FUN_141670540(i, nStat, nValue);
         }
     } else {
         for (int i = 0; i < 3; i++) {
-            FUN_141670540(i, 4, pPacket->vfunc_o8_4());
-            FUN_141670540(i, 0xd, pPacket->vfunc_o8_3());
+            FUN_141670540(i, 4, pPacket->ReadInt64());
+            FUN_141670540(i, 0xd, pPacket->ReadInt32());
         }
     }
 }

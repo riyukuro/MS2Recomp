@@ -371,21 +371,21 @@ void CReactor::FUN_140b79330()
 // @0x140b79490
 bool CReactor::FUN_140b79490(CInPacket* pPacket)
 {
-    int nObjId = pPacket->vfunc_o8_3();
-    CString strName = pPacket->vfunc_o8_7();
-    int nReactorId = pPacket->vfunc_o8_3();
-    Unk_StreamPoint pos = pPacket->vfunc_o8_10();
-    Unk_StreamPoint rot = pPacket->vfunc_o8_10();
-    m_nStateIdx = pPacket->vfunc_o8_3();
-    m_n150 = pPacket->vfunc_o8_4();
+    int nObjId = pPacket->ReadInt32();
+    CString strName = pPacket->ReadString();
+    int nReactorId = pPacket->ReadInt32();
+    Unk_StreamPoint pos = pPacket->ReadVector3();
+    Unk_StreamPoint rot = pPacket->ReadVector3();
+    m_nStateIdx = pPacket->ReadInt32();
+    m_n150 = pPacket->ReadInt64();
     m_setPlayers.clear();
-    int nCount = pPacket->vfunc_o8_1();
+    int nCount = pPacket->ReadUInt8();
     for (int i = 0; i < nCount; ++i)
     {
-        unsigned __int64 nPlayer = pPacket->vfunc_o8_4();
+        unsigned __int64 nPlayer = pPacket->ReadInt64();
         m_setPlayers.insert(nPlayer);
     }
-    m_n158 = (unsigned __int64)(unsigned)pPacket->vfunc_o8_3();
+    m_n158 = (unsigned __int64)(unsigned)pPacket->ReadInt32();
     m_spData = CReactorDataTable::GetInstance()->GetReactorData(nReactorId);
     if (!m_spData)
         return false;
@@ -413,24 +413,24 @@ bool CReactor::FUN_140b79490(CInPacket* pPacket)
 void CReactor::SendStateReact()
 {
     COutPacket pkt(static_cast<int>(SendOp::StateReact), 0);
-    pkt.vfunc_o10_1(2);
-    pkt.vfunc_o10_3(FUN_14123c580());
+    pkt.WriteUInt8(2);
+    pkt.WriteInt32(FUN_14123c580());
     FUN_140710590(pkt);
 }
 
 // @0x140b79a10
 void CReactor::FUN_140b79a10(CInPacket* pPacket)
 {
-    m_nStateIdx = pPacket->vfunc_o8_3();
-    m_n150 = pPacket->vfunc_o8_4();
+    m_nStateIdx = pPacket->ReadInt32();
+    m_n150 = pPacket->ReadInt64();
     m_setPlayers.clear();
-    int nCount = pPacket->vfunc_o8_1();
+    int nCount = pPacket->ReadUInt8();
     for (int i = 0; i < nCount; ++i)
     {
-        unsigned __int64 nPlayer = pPacket->vfunc_o8_4();
+        unsigned __int64 nPlayer = pPacket->ReadInt64();
         m_setPlayers.insert(nPlayer);
     }
-    m_n158 = (unsigned __int64)(unsigned)pPacket->vfunc_o8_3();
+    m_n158 = (unsigned __int64)(unsigned)pPacket->ReadInt32();
     MS2Ptr<ReactorStateData> spState = FUN_140b78c00(m_nStateIdx);
     if (spState.IsNull())
         return;

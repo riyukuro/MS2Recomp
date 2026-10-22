@@ -15,7 +15,7 @@
 // @0x140ad5f00
 void TermTagManagerCli::OnPacket(CInPacket& packet)
 {
-    int nMode = packet.vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     switch (nMode) {
     case 0:
         OnLoad(packet);
@@ -33,8 +33,8 @@ MS2_REPLACE_METHOD(0x140AD5F00, TermTagManagerCli, OnPacket, 140, 0x2CD37C08);
 // @0x140ad5fa0
 void TermTagManagerCli::OnLoad(CInPacket& packet)
 {
-    size_t nFinished = (unsigned)packet.vfunc_o8_3();
-    size_t nRunning = (unsigned)packet.vfunc_o8_3();
+    size_t nFinished = (unsigned)packet.ReadInt32();
+    size_t nRunning = (unsigned)packet.ReadInt32();
     for (size_t i = 0; i < nFinished; ++i) {
         MS2Ptr<TermTagContext> spContext(new TermTagContext());
         spContext->FUN_140866900(packet);
@@ -54,7 +54,7 @@ MS2_REPLACE_METHOD(0x140AD5FA0, TermTagManagerCli, OnLoad, 1065, 0x44BD2D9D);
 // @0x140ad63d0
 void TermTagManagerCli::OnStart(CInPacket& packet)
 {
-    size_t nCount = (unsigned)packet.vfunc_o8_3();
+    size_t nCount = (unsigned)packet.ReadInt32();
     for (size_t i = 0; i < nCount; ++i) {
         MS2Ptr<TermTagContext> spContext(new TermTagContext());
         spContext->FUN_140866900(packet);
@@ -68,7 +68,7 @@ MS2_REPLACE_METHOD(0x140AD63D0, TermTagManagerCli, OnStart, 527, 0xE13B2D98);
 // @0x140ad65f0
 void TermTagManagerCli::OnEnd(CInPacket& packet)
 {
-    size_t nCount = (unsigned)packet.vfunc_o8_3();
+    size_t nCount = (unsigned)packet.ReadInt32();
     for (size_t i = 0; i < nCount; ++i) {
         MS2Ptr<TermTagContext> spContext(new TermTagContext());
         spContext->FUN_140866900(packet);

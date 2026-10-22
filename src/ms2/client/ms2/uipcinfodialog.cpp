@@ -551,11 +551,11 @@ void UIPCInfoDialog::vfunc_79(void* pPacket)
     UIDialog::vfunc_79(pPacket);
     if (((CInPacket*)pPacket)->FUN_14070fe80() != 0x78)
         return;
-    __int64 nCharacterId = ((CInPacket*)pPacket)->vfunc_o8_4();
+    __int64 nCharacterId = ((CInPacket*)pPacket)->ReadInt64();
     if (nCharacterId != m_188)
         return;
     m_1d8 = 0;
-    int nResult = ((CInPacket*)pPacket)->vfunc_o8_1();
+    int nResult = ((CInPacket*)pPacket)->ReadUInt8();
     if (nResult == 1)
     {
         if ((PCInfo*)m_spInfo)
@@ -696,8 +696,8 @@ int UIPCInfoDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     }
                 }
                 COutPacket packet(static_cast<int>(SendOp::MyInfo), 0);
-                packet.vfunc_o10_1(0);
-                packet.vfunc_o10_8(strMemo);
+                packet.WriteUInt8(0);
+                packet.WriteUnicodeString(strMemo);
                 FUN_140710590(packet);
                 return 1;
             }

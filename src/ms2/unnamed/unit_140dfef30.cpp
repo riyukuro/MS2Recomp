@@ -178,10 +178,10 @@ void FUN_140dfef30(CInPacket& packet)
     MyPC* pMyPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pMyPC == 0)
         return;
-    CStringW strName = packet.vfunc_o8_8();
-    __int64 nFee = packet.vfunc_o8_4();
-    int nMax = packet.vfunc_o8_3();
-    int nShareRate = packet.vfunc_o8_3();
+    CStringW strName = packet.ReadUnicodeString();
+    __int64 nFee = packet.ReadInt64();
+    int nMax = packet.ReadInt32();
+    int nShareRate = packet.ReadInt32();
     CStringW strMsg;
     FUN_140e011c0(strMsg, strName, nFee, nMax, nShareRate);
     CStringW strTitle = FUN_140298ea0(CStringW(L"s_ugcox_create_confirm"));
@@ -199,8 +199,8 @@ bool FUN_140dff210(int nResult, const CMsgBoxData& box)
     if (nResult != 0)
         return true;
     COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
-    packet.vfunc_o10_1(10);
-    packet.vfunc_o10_1(3);
+    packet.WriteUInt8(10);
+    packet.WriteUInt8(3);
     FUN_140710590(packet);
     FUN_140e6e8b0(false);
     FUN_1403ed2b0()->FUN_141adc5d0(0x4f7d);
@@ -221,8 +221,8 @@ void FUN_140dff2b0()
         if (pMyPC == 0)
             return;
         COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
-        packet.vfunc_o10_1(10);
-        packet.vfunc_o10_1(1);
+        packet.WriteUInt8(10);
+        packet.WriteUInt8(1);
         FUN_140710590(packet);
     }
 }
@@ -247,10 +247,10 @@ void FUN_140dff3a0(__int64 nId, const CStringW& strName, __int64 nFee, int nMax,
 void FUN_140dff580(int nA, int nB)
 {
     COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
-    packet.vfunc_o10_1(10);
-    packet.vfunc_o10_1(5);
-    packet.vfunc_o10_3(nA);
-    packet.vfunc_o10_3(nB);
+    packet.WriteUInt8(10);
+    packet.WriteUInt8(5);
+    packet.WriteInt32(nA);
+    packet.WriteInt32(nB);
     FUN_140710590(packet);
 }
 
@@ -258,7 +258,7 @@ void FUN_140dff580(int nA, int nB)
 // @0x140dff600
 void FUN_140dff600(CInPacket& packet)
 {
-    unsigned char nSub = packet.vfunc_o8_1();
+    unsigned char nSub = packet.ReadUInt8();
     switch (nSub)
     {
     case 0:
@@ -346,8 +346,8 @@ bool FUN_140dffad0(int nResult, const CMsgBoxData& box)
     if (nResult != 0)
         return true;
     COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
-    packet.vfunc_o10_1(10);
-    packet.vfunc_o10_1(8);
+    packet.WriteUInt8(10);
+    packet.WriteUInt8(8);
     FUN_140710590(packet);
     return true;
 }
@@ -382,12 +382,12 @@ bool FUN_140dffdf0(int nResult, const CMsgBoxData& box)
     if (s_bHost)
     {
         COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
-        packet.vfunc_o10_1(10);
-        packet.vfunc_o10_1(9);
+        packet.WriteUInt8(10);
+        packet.WriteUInt8(9);
         FUN_140710590(packet);
     }
     COutPacket packet(static_cast<int>(SendOp::RequestMoveField), 0);
-    packet.vfunc_o10_1(1);
+    packet.WriteUInt8(1);
     FUN_140710590(packet);
     return true;
 }
@@ -418,8 +418,8 @@ int FUN_140dffeb0(Unk_OxArgs* pArgs)
     else if (FUN_1403b3c40(strCmd, L"next"))
     {
         COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
-        packet.vfunc_o10_1(10);
-        packet.vfunc_o10_1(0x10);
+        packet.WriteUInt8(10);
+        packet.WriteUInt8(0x10);
         FUN_140710590(packet);
     }
     else if (FUN_1403b3c40(strCmd, L"answer"))
@@ -428,32 +428,32 @@ int FUN_140dffeb0(Unk_OxArgs* pArgs)
         if (FUN_1403b3c40(strAnswer, L"o"))
         {
             COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
-            packet.vfunc_o10_1(10);
-            packet.vfunc_o10_1(0xb);
-            packet.vfunc_o10_1(1);
+            packet.WriteUInt8(10);
+            packet.WriteUInt8(0xb);
+            packet.WriteUInt8(1);
             FUN_140710590(packet);
         }
         else if (FUN_1403b3c40(strAnswer, L"x"))
         {
             COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
-            packet.vfunc_o10_1(10);
-            packet.vfunc_o10_1(0xb);
-            packet.vfunc_o10_1(0);
+            packet.WriteUInt8(10);
+            packet.WriteUInt8(0xb);
+            packet.WriteUInt8(0);
             FUN_140710590(packet);
         }
     }
     else if (FUN_1403b3c40(strCmd, L"remove_wall"))
     {
         COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
-        packet.vfunc_o10_1(10);
-        packet.vfunc_o10_1(0x11);
+        packet.WriteUInt8(10);
+        packet.WriteUInt8(0x11);
         FUN_140710590(packet);
     }
     else if (FUN_1403b3c40(strCmd, L"resurrect"))
     {
         COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
-        packet.vfunc_o10_1(10);
-        packet.vfunc_o10_1(0x12);
+        packet.WriteUInt8(10);
+        packet.WriteUInt8(0x12);
         FUN_140710590(packet);
     }
     return 1;
@@ -471,10 +471,10 @@ void FUN_140e00250(CInPacket& packet)
     else
     {
         std::vector<int> fees;
-        int nCount = packet.vfunc_o8_1();
+        int nCount = packet.ReadUInt8();
         for (int i = 0; i < nCount; i++)
         {
-            fees.push_back(packet.vfunc_o8_3());
+            fees.push_back(packet.ReadInt32());
         }
         UIQuizOXCreateDialog* pDialog = FUN_140e01b10(0x4f47);
         if (pDialog != 0)
@@ -489,11 +489,11 @@ void FUN_140e003b0(CInPacket& packet)
     FUN_140e6e8b0(true);
     FUN_1403ed2b0()->FUN_141adc530(0x4f7d);
     FUN_1403ed2b0()->FUN_141adc5d0(0x4f47);
-    __int64 nFee = packet.vfunc_o8_4();
-    int nPromoted = packet.vfunc_o8_3();
-    unsigned nCooltime = packet.vfunc_o8_3();
-    int nTotal = packet.vfunc_o8_3();
-    unsigned nCooltime2 = packet.vfunc_o8_3();
+    __int64 nFee = packet.ReadInt64();
+    int nPromoted = packet.ReadInt32();
+    unsigned nCooltime = packet.ReadInt32();
+    int nTotal = packet.ReadInt32();
+    unsigned nCooltime2 = packet.ReadInt32();
     CStringW strMsg = GetStringCommonByKey(L"s_ugcox_create_complete");
     strMsg.Replace(L"{eventFee}", (LPCWSTR)FUN_1409404f0(nFee));
     FUN_1412751f0(strMsg, 3, 1);
@@ -504,11 +504,11 @@ void FUN_140e003b0(CInPacket& packet)
 // @0x140e005a0
 void FUN_140e005a0(CInPacket& packet)
 {
-    int nUnused = packet.vfunc_o8_1();
-    int nPromoted = packet.vfunc_o8_3();
-    unsigned nCooltime = packet.vfunc_o8_3();
-    int nTotal = packet.vfunc_o8_3();
-    unsigned nCooltime2 = packet.vfunc_o8_3();
+    int nUnused = packet.ReadUInt8();
+    int nPromoted = packet.ReadInt32();
+    unsigned nCooltime = packet.ReadInt32();
+    int nTotal = packet.ReadInt32();
+    unsigned nCooltime2 = packet.ReadInt32();
     FUN_140e01480(nPromoted, nCooltime, nTotal, nCooltime2);
 }
 
@@ -516,13 +516,13 @@ void FUN_140e005a0(CInPacket& packet)
 // @0x140e00690
 void FUN_140e00690(CInPacket& packet)
 {
-    int nMapId = packet.vfunc_o8_3();
-    int nPortalId = packet.vfunc_o8_3();
-    __int64 nHostId = packet.vfunc_o8_4();
-    CStringW strName = packet.vfunc_o8_8();
-    __int64 nFee = packet.vfunc_o8_4();
-    int nMax = packet.vfunc_o8_3();
-    int nShareRate = packet.vfunc_o8_3();
+    int nMapId = packet.ReadInt32();
+    int nPortalId = packet.ReadInt32();
+    __int64 nHostId = packet.ReadInt64();
+    CStringW strName = packet.ReadUnicodeString();
+    __int64 nFee = packet.ReadInt64();
+    int nMax = packet.ReadInt32();
+    int nShareRate = packet.ReadInt32();
     if (nHostId == DAT_143ab2820)
     {
         MyPC* pMyPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
@@ -549,11 +549,11 @@ void FUN_140e00690(CInPacket& packet)
 // @0x140e00b40
 void FUN_140e00b40(unsigned char nType, CInPacket& packet)
 {
-    __int64 nHostId = packet.vfunc_o8_4();
-    int nStep = packet.vfunc_o8_1();
-    int nRound = packet.vfunc_o8_1();
-    __int64 nPrize1 = packet.vfunc_o8_4();
-    __int64 nPrize2 = packet.vfunc_o8_4();
+    __int64 nHostId = packet.ReadInt64();
+    int nStep = packet.ReadUInt8();
+    int nRound = packet.ReadUInt8();
+    __int64 nPrize1 = packet.ReadInt64();
+    __int64 nPrize2 = packet.ReadInt64();
     UIPrizeMoneyDialog* pPrize = FUN_140e019d0(0x4f46);
     if (pPrize != 0)
     {
@@ -694,8 +694,8 @@ void FUN_140e00fd0()
 // @0x140e010c0
 void FUN_140e010c0(CInPacket& packet)
 {
-    int nMode = packet.vfunc_o8_1();
-    int nCount = packet.vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
+    int nCount = packet.ReadUInt8();
     UIQuizHostDialog* pHost = FUN_140e01a70(0x4f44);
     if (pHost != 0)
     {
@@ -899,11 +899,11 @@ bool FUN_140e01f10(Unk_140165cf0* pElem)
 void FUN_140dfee10(__int64 quizId, int first, int second)
 {
     COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
-    packet.vfunc_o10_1(10);
-    packet.vfunc_o10_1(0);
-    packet.vfunc_o10_4(quizId);
-    packet.vfunc_o10_3(first);
-    packet.vfunc_o10_3(second);
+    packet.WriteUInt8(10);
+    packet.WriteUInt8(0);
+    packet.WriteInt64(quizId);
+    packet.WriteInt32(first);
+    packet.WriteInt32(second);
     FUN_140710590(packet);
 }
 
@@ -914,8 +914,8 @@ void FUN_140dfeeb0()
     if (player == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
-    packet.vfunc_o10_1(10);
-    packet.vfunc_o10_1(2);
+    packet.WriteUInt8(10);
+    packet.WriteUInt8(2);
     FUN_140710590(packet);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

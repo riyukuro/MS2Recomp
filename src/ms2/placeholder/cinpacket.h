@@ -16,23 +16,23 @@ public:
     unsigned vfunc_0() override;
     short vfunc_1() override;
 
-    bool vfunc_o8_0() override;
-    unsigned char vfunc_o8_1() override;
-    short vfunc_o8_2() override;
-    int vfunc_o8_3() override;
-    __int64 vfunc_o8_4() override;
-    float vfunc_o8_5() override;
-    CString vfunc_o8_6() override;
-    CString vfunc_o8_7() override;
-    CStringW vfunc_o8_8() override;
-    void vfunc_o8_9(void* data,int count) override;
-    Unk_StreamPoint vfunc_o8_10() override;
-    Unk_StreamPoint vfunc_o8_11() override;
-    float vfunc_o8_12() override;
-    float vfunc_o8_13() override;
-    float vfunc_o8_14(int scale) override;
-    float vfunc_o8_15() override;
-    float vfunc_o8_16(int scale) override;
+    bool ReadBool() override;
+    unsigned char ReadUInt8() override;
+    short ReadInt16() override;
+    int ReadInt32() override;
+    __int64 ReadInt64() override;
+    float ReadFloat() override;
+    CString ReadUnicodeStringA() override;
+    CString ReadString() override;
+    CStringW ReadUnicodeString() override;
+    void ReadBytes(void* data,int count) override;
+    Unk_StreamPoint ReadVector3() override;
+    Unk_StreamPoint ReadVector3Short() override;
+    float ReadShortX10() override;
+    float ReadShortX100() override;
+    float ReadShortScaled(int scale) override;
+    float ReadShortDiv10() override;
+    float ReadShortDivScaled(int scale) override;
 
     // Feeds the packet from `buffer` (header first, then payload); returns the new m_nState. If bytes are left over
     // `buffer` is replaced by a slice of them (or cleared). `stateBefore` receives the state on entry.

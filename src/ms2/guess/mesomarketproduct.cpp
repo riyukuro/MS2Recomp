@@ -42,24 +42,24 @@ MS2_REPLACE_METHOD(0x1406AEBE0, CMesoMarketProduct, GetUnitPrice, 81, 0x0EF75E33
 // @0x1406aec40
 void CMesoMarketProduct::Write(COutputStream& out)
 {
-    out.vfunc_o10_4(m_n18);
-    out.vfunc_o10_4(m_n20);
-    out.vfunc_o10_4(m_n28);
-    out.vfunc_o10_4(m_30.Get());
-    out.vfunc_o10_4(m_40.Get());
-    out.vfunc_o10_0(m_b50);
+    out.WriteInt64(m_n18);
+    out.WriteInt64(m_n20);
+    out.WriteInt64(m_n28);
+    out.WriteInt64(m_30.Get());
+    out.WriteInt64(m_40.Get());
+    out.WriteBool(m_b50);
 }
 MS2_REPLACE_METHOD(0x1406AEC40, CMesoMarketProduct, Write, 210, 0x61DBEAD2);
 
 // @0x1406aed20
 void CMesoMarketProduct::Read(CInputStream& in)
 {
-    m_n18 = in.vfunc_o8_4();
-    m_n20 = in.vfunc_o8_4();
-    m_n28 = in.vfunc_o8_4();
-    m_30 = in.vfunc_o8_4();
-    m_40 = in.vfunc_o8_4();
-    m_b50 = in.vfunc_o8_0();
+    m_n18 = in.ReadInt64();
+    m_n20 = in.ReadInt64();
+    m_n28 = in.ReadInt64();
+    m_30 = in.ReadInt64();
+    m_40 = in.ReadInt64();
+    m_b50 = in.ReadBool();
 }
 MS2_REPLACE_METHOD(0x1406AED20, CMesoMarketProduct, Read, 183, 0x4159FE3C);
 

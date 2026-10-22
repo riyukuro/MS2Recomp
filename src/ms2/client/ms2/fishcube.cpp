@@ -21,33 +21,33 @@ CFishCube::CFishCube()
 // @0x1403b0910
 void CFishCube::FUN_1403b0910(COutputStream* pStream)
 {
-    pStream->vfunc_o10_3(m_id);
-    pStream->vfunc_o10_3(10000001);
-    pStream->vfunc_o10_3(25);
-    pStream->vfunc_o10_3(m_c);
-    pStream->vfunc_o10_2(1);
+    pStream->WriteInt32(m_id);
+    pStream->WriteInt32(10000001);
+    pStream->WriteInt32(25);
+    pStream->WriteInt32(m_c);
+    pStream->WriteInt16(1);
 }
 MS2_REPLACE_METHOD(0x1403b0910, CFishCube, FUN_1403b0910, 129, 0x2568022D);
 
 // @0x1403b09a0
 void CFishCube::FUN_1403b09a0(COutputStream* pStream)
 {
-    pStream->vfunc_o10_3(m_id);
-    pStream->vfunc_o10_3(m_a);
-    pStream->vfunc_o10_3(m_b);
-    pStream->vfunc_o10_3(m_c);
-    pStream->vfunc_o10_2((short)m_d);
+    pStream->WriteInt32(m_id);
+    pStream->WriteInt32(m_a);
+    pStream->WriteInt32(m_b);
+    pStream->WriteInt32(m_c);
+    pStream->WriteInt16((short)m_d);
 }
 MS2_REPLACE_METHOD(0x1403b09a0, CFishCube, FUN_1403b09a0, 140, 0x567C591A);
 
 // @0x1403b0a40
 void CFishCube::FUN_1403b0a40(CByteBuffer* pStream)
 {
-    m_id = pStream->vfunc_o8_3();
-    m_a = pStream->vfunc_o8_3();
-    m_b = pStream->vfunc_o8_3();
-    m_c = pStream->vfunc_o8_3();
-    m_d = (unsigned short)pStream->vfunc_o8_2();
+    m_id = pStream->ReadInt32();
+    m_a = pStream->ReadInt32();
+    m_b = pStream->ReadInt32();
+    m_c = pStream->ReadInt32();
+    m_d = (unsigned short)pStream->ReadInt16();
 }
 MS2_REPLACE_METHOD(0x1403b0a40, CFishCube, FUN_1403b0a40, 232, 0xC483254E);
 
@@ -64,20 +64,20 @@ MS2_REPLACE_METHOD(0x1403b0b30, CFishCube, FUN_1403b0b30, 54, 0x8F98AE17);
 // @0x1403b0b70
 void CFishCube::FUN_1403b0b70(COutputStream* pStream)
 {
-    pStream->vfunc_o10_3(m_id);
-    pStream->vfunc_o10_3(m_a);
-    pStream->vfunc_o10_3(m_b);
-    pStream->vfunc_o10_3(m_c);
+    pStream->WriteInt32(m_id);
+    pStream->WriteInt32(m_a);
+    pStream->WriteInt32(m_b);
+    pStream->WriteInt32(m_c);
 }
 MS2_REPLACE_METHOD(0x1403b0b70, CFishCube, FUN_1403b0b70, 115, 0x4007E1D0);
 
 // @0x1403b0bf0
 void CFishCube::FUN_1403b0bf0(CByteBuffer* pStream)
 {
-    m_id = pStream->vfunc_o8_3();
-    m_a = pStream->vfunc_o8_3();
-    m_b = pStream->vfunc_o8_3();
-    m_c = pStream->vfunc_o8_3();
+    m_id = pStream->ReadInt32();
+    m_a = pStream->ReadInt32();
+    m_b = pStream->ReadInt32();
+    m_c = pStream->ReadInt32();
 }
 MS2_REPLACE_METHOD(0x1403b0bf0, CFishCube, FUN_1403b0bf0, 187, 0xD9717130);
 

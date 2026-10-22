@@ -110,23 +110,23 @@ void FUN_140694660(CMatchPartyRecruitSchCond* pThis, CInPacket* pPacket)
 // @0x1406946b0
 void FUN_1406946b0(const CMatchPartyRecruitSchCond* pThis, COutputStream* out)
 {
-    out->vfunc_o10_3(pThis->fieldId);
-    out->vfunc_o10_3(pThis->category);
-    out->vfunc_o10_1(pThis->kind);
-    out->vfunc_o10_8(pThis->text);
-    out->vfunc_o10_3(pThis->page);
-    out->vfunc_o10_3(pThis->pageSize);
+    out->WriteInt32(pThis->fieldId);
+    out->WriteInt32(pThis->category);
+    out->WriteUInt8(pThis->kind);
+    out->WriteUnicodeString(pThis->text);
+    out->WriteInt32(pThis->page);
+    out->WriteInt32(pThis->pageSize);
 }
 
 // @0x140694770
 void FUN_140694770(CMatchPartyRecruitSchCond* pThis, CInputStream* in)
 {
-    pThis->fieldId = in->vfunc_o8_3();
-    pThis->category = in->vfunc_o8_3();
-    KindOf(pThis) = in->vfunc_o8_1();
-    pThis->text = in->vfunc_o8_8();
-    pThis->page = in->vfunc_o8_3();
-    pThis->pageSize = in->vfunc_o8_3();
+    pThis->fieldId = in->ReadInt32();
+    pThis->category = in->ReadInt32();
+    KindOf(pThis) = in->ReadUInt8();
+    pThis->text = in->ReadUnicodeString();
+    pThis->page = in->ReadInt32();
+    pThis->pageSize = in->ReadInt32();
 }
 
 // The page that holds the search condition is never page 0, which is what every band helper tests first. A band holds
@@ -230,35 +230,35 @@ void CMatchPartyRecruit::FUN_140694c10(CInPacket& packet)
 // @0x140694c60
 void FUN_140694c60(const CMatchPartyRecruit* pThis, COutputStream* out)
 {
-    out->vfunc_o10_4(pThis->recruitId);
-    out->vfunc_o10_3(pThis->fieldId);
-    out->vfunc_o10_3(pThis->category);
-    out->vfunc_o10_3(pThis->kind);
-    out->vfunc_o10_8(pThis->title);
-    out->vfunc_o10_1(pThis->minimumLevel);
-    out->vfunc_o10_3(pThis->maximumLevel);
-    out->vfunc_o10_3(pThis->members);
-    out->vfunc_o10_4(pThis->ownerId);
-    out->vfunc_o10_4(pThis->created);
-    out->vfunc_o10_8(pThis->ownerName);
-    out->vfunc_o10_4(pThis->flags);
+    out->WriteInt64(pThis->recruitId);
+    out->WriteInt32(pThis->fieldId);
+    out->WriteInt32(pThis->category);
+    out->WriteInt32(pThis->kind);
+    out->WriteUnicodeString(pThis->title);
+    out->WriteUInt8(pThis->minimumLevel);
+    out->WriteInt32(pThis->maximumLevel);
+    out->WriteInt32(pThis->members);
+    out->WriteInt64(pThis->ownerId);
+    out->WriteInt64(pThis->created);
+    out->WriteUnicodeString(pThis->ownerName);
+    out->WriteInt64(pThis->flags);
 }
 
 // @0x140694dc0
 void FUN_140694dc0(CMatchPartyRecruit* pThis, CInputStream* in)
 {
-    pThis->recruitId = in->vfunc_o8_4();
-    pThis->fieldId = in->vfunc_o8_3();
-    pThis->category = in->vfunc_o8_3();
-    pThis->kind = in->vfunc_o8_3();
-    pThis->title = in->vfunc_o8_8();
-    pThis->minimumLevel = in->vfunc_o8_1();
-    pThis->maximumLevel = in->vfunc_o8_3();
-    pThis->members = in->vfunc_o8_3();
-    pThis->ownerId = in->vfunc_o8_4();
-    pThis->created = in->vfunc_o8_4();
-    pThis->ownerName = in->vfunc_o8_8();
-    pThis->flags = in->vfunc_o8_4();
+    pThis->recruitId = in->ReadInt64();
+    pThis->fieldId = in->ReadInt32();
+    pThis->category = in->ReadInt32();
+    pThis->kind = in->ReadInt32();
+    pThis->title = in->ReadUnicodeString();
+    pThis->minimumLevel = in->ReadUInt8();
+    pThis->maximumLevel = in->ReadInt32();
+    pThis->members = in->ReadInt32();
+    pThis->ownerId = in->ReadInt64();
+    pThis->created = in->ReadInt64();
+    pThis->ownerName = in->ReadUnicodeString();
+    pThis->flags = in->ReadInt64();
 }
 
 // The exe's body returns nothing (its `ret` exposes the last field copy's this pointer), but the caller ignores the

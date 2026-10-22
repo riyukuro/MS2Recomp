@@ -31,25 +31,25 @@ RideOnAction::~RideOnAction()
 // @0x14077ddb0
 void RideOnAction::vfunc_1(COutputStream* pStream)
 {
-    pStream->vfunc_o10_1(m_nType);
-    pStream->vfunc_o10_3(m_n1c);
-    pStream->vfunc_o10_3(m_n20);
-    pStream->vfunc_o10_1(m_b28);
+    pStream->WriteUInt8(m_nType);
+    pStream->WriteInt32(m_n1c);
+    pStream->WriteInt32(m_n20);
+    pStream->WriteUInt8(m_b28);
 }
 MS2_REPLACE_METHOD(0x14077DDB0, RideOnAction, vfunc_1, 117, 0xC83D806E);
 // @0x14077de30
 // MS2-FUNCTIONAL: the exe tests the slot-1 result with `test al,al` (no movzx/movsx) before the byte-bool ternary; no stream return type reproduces it
 void RideOnAction::vfunc_2(CInputStream* pStream)
 {
-    m_n1c = pStream->vfunc_o8_3();
-    m_n20 = pStream->vfunc_o8_3();
-    m_b28 = pStream->vfunc_o8_1() ? true : false;
+    m_n1c = pStream->ReadInt32();
+    m_n20 = pStream->ReadInt32();
+    m_b28 = pStream->ReadUInt8() ? true : false;
 }
 MS2_REPLACE_METHOD(0x14077DE30, RideOnAction, vfunc_2, 112, 0xBBE81F7C);
 // @0x14077deb0
 MS2Ptr<RideOnAction> FUN_14077deb0(CInputStream* pStream)
 {
-    unsigned int nType = pStream->vfunc_o8_1();
+    unsigned int nType = pStream->ReadUInt8();
     MS2Ptr<RideOnAction> pAction(0);
     switch (nType) {
     case 0:
@@ -85,8 +85,8 @@ RideOnActionUseItem::~RideOnActionUseItem()
 void RideOnActionUseItem::vfunc_1(COutputStream* pStream)
 {
     RideOnAction::vfunc_1(pStream);
-    pStream->vfunc_o10_3(m_n30);
-    pStream->vfunc_o10_4(m_n38);
+    pStream->WriteInt32(m_n30);
+    pStream->WriteInt64(m_n38);
     FUN_140893070(&m_look, pStream);
 }
 MS2_REPLACE_METHOD(0x14077E1D0, RideOnActionUseItem, vfunc_1, 105, 0xA6540C5B);
@@ -94,8 +94,8 @@ MS2_REPLACE_METHOD(0x14077E1D0, RideOnActionUseItem, vfunc_1, 105, 0xA6540C5B);
 void RideOnActionUseItem::vfunc_2(CInputStream* pStream)
 {
     RideOnAction::vfunc_2(pStream);
-    m_n30 = pStream->vfunc_o8_3();
-    m_n38 = pStream->vfunc_o8_4();
+    m_n30 = pStream->ReadInt32();
+    m_n38 = pStream->ReadInt64();
     FUN_140892c70(&m_look);
     FUN_140893250(&m_look, pStream);
 }
@@ -114,16 +114,16 @@ RideOnActionAdditionalEffect::~RideOnActionAdditionalEffect()
 void RideOnActionAdditionalEffect::vfunc_1(COutputStream* pStream)
 {
     RideOnAction::vfunc_1(pStream);
-    pStream->vfunc_o10_3(m_n30);
-    pStream->vfunc_o10_2(m_s34);
+    pStream->WriteInt32(m_n30);
+    pStream->WriteInt16(m_s34);
 }
 MS2_REPLACE_METHOD(0x14077E350, RideOnActionAdditionalEffect, vfunc_1, 83, 0x5FF3AEC8);
 // @0x14077e3b0
 void RideOnActionAdditionalEffect::vfunc_2(CInputStream* pStream)
 {
     RideOnAction::vfunc_2(pStream);
-    m_n30 = pStream->vfunc_o8_3();
-    m_s34 = pStream->vfunc_o8_2();
+    m_n30 = pStream->ReadInt32();
+    m_s34 = pStream->ReadInt16();
 }
 MS2_REPLACE_METHOD(0x14077E3B0, RideOnActionAdditionalEffect, vfunc_2, 83, 0xE204C5CF);
 // @0x14077e410
@@ -149,20 +149,20 @@ RideOffAction::~RideOffAction()
 // @0x14077e520
 void RideOffAction::vfunc_1(COutputStream* pStream)
 {
-    pStream->vfunc_o10_1(m_nType);
-    pStream->vfunc_o10_1(m_nArg);
+    pStream->WriteUInt8(m_nType);
+    pStream->WriteUInt8(m_nArg);
 }
 MS2_REPLACE_METHOD(0x14077E520, RideOffAction, vfunc_1, 69, 0x4AA66412);
 // @0x14077e570
 void RideOffAction::vfunc_2(CInputStream* pStream)
 {
-    m_nArg = pStream->vfunc_o8_1();
+    m_nArg = pStream->ReadUInt8();
 }
 MS2_REPLACE_METHOD(0x14077E570, RideOffAction, vfunc_2, 46, 0x84681AAE);
 // @0x14077e5b0
 MS2Ptr<RideOffAction> FUN_14077e5b0(CInputStream* pStream)
 {
-    int nType = pStream->vfunc_o8_1();
+    int nType = pStream->ReadUInt8();
     MS2Ptr<RideOffAction> pAction(0);
     switch (nType) {
     case 0:
@@ -288,18 +288,18 @@ RideOffActionUseSkill::~RideOffActionUseSkill()
 void RideOffActionUseSkill::vfunc_1(COutputStream* pStream)
 {
     RideOffAction::vfunc_1(pStream);
-    pStream->vfunc_o10_3(m_n28);
-    pStream->vfunc_o10_0(m_b2c);
-    pStream->vfunc_o10_3(m_n30);
+    pStream->WriteInt32(m_n28);
+    pStream->WriteBool(m_b2c);
+    pStream->WriteInt32(m_n30);
 }
 MS2_REPLACE_METHOD(0x14077F2F0, RideOffActionUseSkill, vfunc_1, 106, 0xC372793A);
 // @0x14077f360
 void RideOffActionUseSkill::vfunc_2(CInputStream* pStream)
 {
     RideOffAction::vfunc_2(pStream);
-    m_n28 = pStream->vfunc_o8_3();
-    m_b2c = pStream->vfunc_o8_0();
-    m_n30 = pStream->vfunc_o8_3();
+    m_n28 = pStream->ReadInt32();
+    m_b2c = pStream->ReadBool();
+    m_n30 = pStream->ReadInt32();
 }
 MS2_REPLACE_METHOD(0x14077F360, RideOffActionUseSkill, vfunc_2, 105, 0x8410A7B4);
 // @0x14077f3d0
@@ -319,18 +319,18 @@ RideOffActionUseGlideItem::~RideOffActionUseGlideItem()
 void RideOffActionUseGlideItem::vfunc_1(COutputStream* pStream)
 {
     RideOffAction::vfunc_1(pStream);
-    pStream->vfunc_o10_4(m_n28);
-    pStream->vfunc_o10_0(m_b30);
-    pStream->vfunc_o10_3(m_n34);
+    pStream->WriteInt64(m_n28);
+    pStream->WriteBool(m_b30);
+    pStream->WriteInt32(m_n34);
 }
 MS2_REPLACE_METHOD(0x14077F470, RideOffActionUseGlideItem, vfunc_1, 107, 0xAAEF86D8);
 // @0x14077f4f0
 void RideOffActionUseGlideItem::vfunc_2(CInputStream* pStream)
 {
     RideOffAction::vfunc_2(pStream);
-    m_n28 = pStream->vfunc_o8_4();
-    m_b30 = pStream->vfunc_o8_0();
-    m_n34 = pStream->vfunc_o8_3();
+    m_n28 = pStream->ReadInt64();
+    m_b30 = pStream->ReadBool();
+    m_n34 = pStream->ReadInt32();
 }
 MS2_REPLACE_METHOD(0x14077F4F0, RideOffActionUseGlideItem, vfunc_2, 106, 0x536E8B2B);
 // @0x14077f560
@@ -349,16 +349,16 @@ RideOffActionInteract::~RideOffActionInteract()
 void RideOffActionInteract::vfunc_1(COutputStream* pStream)
 {
     RideOffAction::vfunc_1(pStream);
-    pStream->vfunc_o10_3(m_n28);
-    pStream->vfunc_o10_6(m_s30);
+    pStream->WriteInt32(m_n28);
+    pStream->WriteUnicodeStringA(m_s30);
 }
 MS2_REPLACE_METHOD(0x14077F620, RideOffActionInteract, vfunc_1, 96, 0xE3BC6C08);
 // @0x14077f690
 void RideOffActionInteract::vfunc_2(CInputStream* pStream)
 {
     RideOffAction::vfunc_2(pStream);
-    m_n28 = pStream->vfunc_o8_3();
-    m_s30 = pStream->vfunc_o8_6();
+    m_n28 = pStream->ReadInt32();
+    m_s30 = pStream->ReadUnicodeStringA();
 }
 MS2_REPLACE_METHOD(0x14077F690, RideOffActionInteract, vfunc_2, 138, 0x3B776968);
 // @0x14077f720
@@ -376,14 +376,14 @@ RideOffActionTaxi::~RideOffActionTaxi()
 void RideOffActionTaxi::vfunc_1(COutputStream* pStream)
 {
     RideOffAction::vfunc_1(pStream);
-    pStream->vfunc_o10_3(m_n28);
+    pStream->WriteInt32(m_n28);
 }
 MS2_REPLACE_METHOD(0x14077F7B0, RideOffActionTaxi, vfunc_1, 58, 0xF7462841);
 // @0x14077f7f0
 void RideOffActionTaxi::vfunc_2(CInputStream* pStream)
 {
     RideOffAction::vfunc_2(pStream);
-    m_n28 = pStream->vfunc_o8_3();
+    m_n28 = pStream->ReadInt32();
 }
 MS2_REPLACE_METHOD(0x14077F7F0, RideOffActionTaxi, vfunc_2, 58, 0x266FF3FB);
 // @0x14077f830
@@ -403,18 +403,18 @@ RideOffActionCashCall::~RideOffActionCashCall()
 void RideOffActionCashCall::vfunc_1(COutputStream* pStream)
 {
     RideOffAction::vfunc_1(pStream);
-    pStream->vfunc_o10_3(m_n28);
-    pStream->vfunc_o10_1(m_n2c);
-    pStream->vfunc_o10_4(m_n30);
+    pStream->WriteInt32(m_n28);
+    pStream->WriteUInt8(m_n2c);
+    pStream->WriteInt64(m_n30);
 }
 MS2_REPLACE_METHOD(0x14077F8D0, RideOffActionCashCall, vfunc_1, 108, 0x7E215306);
 // @0x14077f950
 void RideOffActionCashCall::vfunc_2(CInputStream* pStream)
 {
     RideOffAction::vfunc_2(pStream);
-    m_n28 = pStream->vfunc_o8_3();
-    m_n2c = pStream->vfunc_o8_1();
-    m_n30 = pStream->vfunc_o8_4();
+    m_n28 = pStream->ReadInt32();
+    m_n2c = pStream->ReadUInt8();
+    m_n30 = pStream->ReadInt64();
 }
 MS2_REPLACE_METHOD(0x14077F950, RideOffActionCashCall, vfunc_2, 110, 0x020A9C99);
 // @0x14077f9d0
@@ -433,16 +433,16 @@ RideOffActionTakeLR::~RideOffActionTakeLR()
 void RideOffActionTakeLR::vfunc_1(COutputStream* pStream)
 {
     RideOffAction::vfunc_1(pStream);
-    pStream->vfunc_o10_1(m_n28);
-    pStream->vfunc_o10_3(m_n2c);
+    pStream->WriteUInt8(m_n28);
+    pStream->WriteInt32(m_n2c);
 }
 MS2_REPLACE_METHOD(0x14077FA60, RideOffActionTakeLR, vfunc_1, 83, 0xF0072FE3);
 // @0x14077fac0
 void RideOffActionTakeLR::vfunc_2(CInputStream* pStream)
 {
     RideOffAction::vfunc_2(pStream);
-    m_n28 = pStream->vfunc_o8_1();
-    m_n2c = pStream->vfunc_o8_3();
+    m_n28 = pStream->ReadUInt8();
+    m_n2c = pStream->ReadInt32();
 }
 MS2_REPLACE_METHOD(0x14077FAC0, RideOffActionTakeLR, vfunc_2, 85, 0x20995F5C);
 // @0x14077fb20
@@ -504,14 +504,14 @@ RideOffActionRecall::~RideOffActionRecall()
 void RideOffActionRecall::vfunc_1(COutputStream* pStream)
 {
     RideOffAction::vfunc_1(pStream);
-    pStream->vfunc_o10_4(m_n28);
+    pStream->WriteInt64(m_n28);
 }
 MS2_REPLACE_METHOD(0x14077FD70, RideOffActionRecall, vfunc_1, 59, 0x758A93B9);
 // @0x14077fdc0
 void RideOffActionRecall::vfunc_2(CInputStream* pStream)
 {
     RideOffAction::vfunc_2(pStream);
-    m_n28 = pStream->vfunc_o8_4();
+    m_n28 = pStream->ReadInt64();
 }
 MS2_REPLACE_METHOD(0x14077FDC0, RideOffActionRecall, vfunc_2, 59, 0xC526C6DB);
 // @0x14077fe10
@@ -530,16 +530,16 @@ RideOffActionSummonPetOn::~RideOffActionSummonPetOn()
 void RideOffActionSummonPetOn::vfunc_1(COutputStream* pStream)
 {
     RideOffAction::vfunc_1(pStream);
-    pStream->vfunc_o10_4(m_n28);
-    pStream->vfunc_o10_1(m_n30);
+    pStream->WriteInt64(m_n28);
+    pStream->WriteUInt8(m_n30);
 }
 MS2_REPLACE_METHOD(0x14077FEA0, RideOffActionSummonPetOn, vfunc_1, 84, 0x3E30D275);
 // @0x14077ff00
 void RideOffActionSummonPetOn::vfunc_2(CInputStream* pStream)
 {
     RideOffAction::vfunc_2(pStream);
-    m_n28 = pStream->vfunc_o8_4();
-    m_n30 = pStream->vfunc_o8_1();
+    m_n28 = pStream->ReadInt64();
+    m_n30 = pStream->ReadUInt8();
 }
 MS2_REPLACE_METHOD(0x14077FF00, RideOffActionSummonPetOn, vfunc_2, 86, 0x1C6D9CCE);
 // @0x14077ff60
@@ -557,14 +557,14 @@ RideOffActionSummonPetTransfer::~RideOffActionSummonPetTransfer()
 void RideOffActionSummonPetTransfer::vfunc_1(COutputStream* pStream)
 {
     RideOffAction::vfunc_1(pStream);
-    pStream->vfunc_o10_4(m_n28);
+    pStream->WriteInt64(m_n28);
 }
 MS2_REPLACE_METHOD(0x14077FFF0, RideOffActionSummonPetTransfer, vfunc_1, 59, 0x658F1DBB);
 // @0x140780040
 void RideOffActionSummonPetTransfer::vfunc_2(CInputStream* pStream)
 {
     RideOffAction::vfunc_2(pStream);
-    m_n28 = pStream->vfunc_o8_4();
+    m_n28 = pStream->ReadInt64();
 }
 MS2_REPLACE_METHOD(0x140780040, RideOffActionSummonPetTransfer, vfunc_2, 59, 0x492B9219);
 // @0x140780090
@@ -581,14 +581,14 @@ RideOffActionHomeConvenient::~RideOffActionHomeConvenient()
 void RideOffActionHomeConvenient::vfunc_1(COutputStream* pStream)
 {
     RideOffAction::vfunc_1(pStream);
-    pStream->vfunc_o10_1(m_n28);
+    pStream->WriteUInt8(m_n28);
 }
 MS2_REPLACE_METHOD(0x140780110, RideOffActionHomeConvenient, vfunc_1, 59, 0x1BFD31B9);
 // @0x140780160
 void RideOffActionHomeConvenient::vfunc_2(CInputStream* pStream)
 {
     RideOffAction::vfunc_2(pStream);
-    m_n28 = pStream->vfunc_o8_1();
+    m_n28 = pStream->ReadUInt8();
 }
 MS2_REPLACE_METHOD(0x140780160, RideOffActionHomeConvenient, vfunc_2, 61, 0xB26EA954);
 // @0x1407801b0
@@ -656,20 +656,20 @@ RideOffActionHomemade::~RideOffActionHomemade()
 void RideOffActionHomemade::vfunc_1(COutputStream* pStream)
 {
     RideOffAction::vfunc_1(pStream);
-    pStream->vfunc_o10_6(m_s28);
-    pStream->vfunc_o10_3(m_n30);
-    pStream->vfunc_o10_2(m_n34);
-    pStream->vfunc_o10_3(m_n38);
+    pStream->WriteUnicodeStringA(m_s28);
+    pStream->WriteInt32(m_n30);
+    pStream->WriteInt16(m_n34);
+    pStream->WriteInt32(m_n38);
 }
 MS2_REPLACE_METHOD(0x1407804C0, RideOffActionHomemade, vfunc_1, 145, 0x4A49CEC5);
 // @0x140780560
 void RideOffActionHomemade::vfunc_2(CInputStream* pStream)
 {
     RideOffAction::vfunc_2(pStream);
-    m_s28 = pStream->vfunc_o8_6();
-    m_n30 = pStream->vfunc_o8_3();
-    m_n34 = (unsigned short)pStream->vfunc_o8_2();
-    m_n38 = pStream->vfunc_o8_3();
+    m_s28 = pStream->ReadUnicodeStringA();
+    m_n30 = pStream->ReadInt32();
+    m_n34 = (unsigned short)pStream->ReadInt16();
+    m_n38 = pStream->ReadInt32();
 }
 MS2_REPLACE_METHOD(0x140780560, RideOffActionHomemade, vfunc_2, 189, 0xE99A5349);
 // @0x140780630
@@ -688,16 +688,16 @@ RideOffActionNurturing::~RideOffActionNurturing()
 void RideOffActionNurturing::vfunc_1(COutputStream* pStream)
 {
     RideOffAction::vfunc_1(pStream);
-    pStream->vfunc_o10_6(m_s28);
-    pStream->vfunc_o10_3(m_n30);
+    pStream->WriteUnicodeStringA(m_s28);
+    pStream->WriteInt32(m_n30);
 }
 MS2_REPLACE_METHOD(0x1407806F0, RideOffActionNurturing, vfunc_1, 96, 0xB2D03658);
 // @0x140780760
 void RideOffActionNurturing::vfunc_2(CInputStream* pStream)
 {
     RideOffAction::vfunc_2(pStream);
-    m_s28 = pStream->vfunc_o8_6();
-    m_n30 = pStream->vfunc_o8_3();
+    m_s28 = pStream->ReadUnicodeStringA();
+    m_n30 = pStream->ReadInt32();
 }
 MS2_REPLACE_METHOD(0x140780760, RideOffActionNurturing, vfunc_2, 138, 0x1F1D9B6B);
 // @0x1407807f0
@@ -717,18 +717,18 @@ RideOffActionAutoInteraction::~RideOffActionAutoInteraction()
 void RideOffActionAutoInteraction::vfunc_1(COutputStream* pStream)
 {
     RideOffAction::vfunc_1(pStream);
-    pStream->vfunc_o10_3(m_n28);
-    pStream->vfunc_o10_2(m_n2c);
-    pStream->vfunc_o10_3(m_n30);
+    pStream->WriteInt32(m_n28);
+    pStream->WriteInt16(m_n2c);
+    pStream->WriteInt32(m_n30);
 }
 MS2_REPLACE_METHOD(0x140780890, RideOffActionAutoInteraction, vfunc_1, 107, 0x65FBFA3F);
 // @0x140780910
 void RideOffActionAutoInteraction::vfunc_2(CInputStream* pStream)
 {
     RideOffAction::vfunc_2(pStream);
-    m_n28 = pStream->vfunc_o8_3();
-    m_n2c = (unsigned short)pStream->vfunc_o8_2();
-    m_n30 = pStream->vfunc_o8_3();
+    m_n28 = pStream->ReadInt32();
+    m_n2c = (unsigned short)pStream->ReadInt16();
+    m_n30 = pStream->ReadInt32();
 }
 MS2_REPLACE_METHOD(0x140780910, RideOffActionAutoInteraction, vfunc_2, 109, 0x27020240);
 // @0x140780990
@@ -747,16 +747,16 @@ RideOffActionCoupleEmotion::~RideOffActionCoupleEmotion()
 void RideOffActionCoupleEmotion::vfunc_1(COutputStream* pStream)
 {
     RideOffAction::vfunc_1(pStream);
-    pStream->vfunc_o10_3(m_n28);
-    pStream->vfunc_o10_4(m_n30);
+    pStream->WriteInt32(m_n28);
+    pStream->WriteInt64(m_n30);
 }
 MS2_REPLACE_METHOD(0x140780A20, RideOffActionCoupleEmotion, vfunc_1, 83, 0x6F3451CD);
 // @0x140780a80
 void RideOffActionCoupleEmotion::vfunc_2(CInputStream* pStream)
 {
     RideOffAction::vfunc_2(pStream);
-    m_n28 = pStream->vfunc_o8_3();
-    m_n30 = pStream->vfunc_o8_4();
+    m_n28 = pStream->ReadInt32();
+    m_n30 = pStream->ReadInt64();
 }
 MS2_REPLACE_METHOD(0x140780A80, RideOffActionCoupleEmotion, vfunc_2, 83, 0xF1B8C75D);
 // @0x140780ae0
@@ -775,16 +775,16 @@ RideOffActionReact::~RideOffActionReact()
 void RideOffActionReact::vfunc_1(COutputStream* pStream)
 {
     RideOffAction::vfunc_1(pStream);
-    pStream->vfunc_o10_3(m_n28);
-    pStream->vfunc_o10_6(m_s30);
+    pStream->WriteInt32(m_n28);
+    pStream->WriteUnicodeStringA(m_s30);
 }
 MS2_REPLACE_METHOD(0x140780BA0, RideOffActionReact, vfunc_1, 96, 0x2862008F);
 // @0x140780c10
 void RideOffActionReact::vfunc_2(CInputStream* pStream)
 {
     RideOffAction::vfunc_2(pStream);
-    m_n28 = pStream->vfunc_o8_3();
-    m_s30 = pStream->vfunc_o8_6();
+    m_n28 = pStream->ReadInt32();
+    m_s30 = pStream->ReadUnicodeStringA();
 }
 MS2_REPLACE_METHOD(0x140780C10, RideOffActionReact, vfunc_2, 138, 0xF063DE0D);
 // @0x140780ca0
@@ -802,16 +802,16 @@ RideOffActionUseFunctionItem::~RideOffActionUseFunctionItem()
 void RideOffActionUseFunctionItem::vfunc_1(COutputStream* pStream)
 {
     RideOffAction::vfunc_1(pStream);
-    pStream->vfunc_o10_4(m_n28);
-    pStream->vfunc_o10_8(m_s30);
+    pStream->WriteInt64(m_n28);
+    pStream->WriteUnicodeString(m_s30);
 }
 MS2_REPLACE_METHOD(0x140780D50, RideOffActionUseFunctionItem, vfunc_1, 97, 0x5ED0FB5B);
 // @0x140780dc0
 void RideOffActionUseFunctionItem::vfunc_2(CInputStream* pStream)
 {
     RideOffAction::vfunc_2(pStream);
-    m_n28 = pStream->vfunc_o8_4();
-    m_s30 = pStream->vfunc_o8_8();
+    m_n28 = pStream->ReadInt64();
+    m_s30 = pStream->ReadUnicodeString();
 }
 MS2_REPLACE_METHOD(0x140780DC0, RideOffActionUseFunctionItem, vfunc_2, 139, 0x36C8EB23);
 // @0x140780e60

@@ -384,17 +384,17 @@ void UICharacterListDialog::CCharacterInfo::Read(CInPacket& packet)
 {
     m_state.FUN_1408eeb60(&packet);
     CInputStream& s = packet;
-    m_text368 = s.vfunc_o8_6();
+    m_text368 = s.ReadUnicodeStringA();
     if (FUN_14052d220()->FUN_14187f3b0() == 1)
         m_text368 = "";
-    FUN_1418e9fa0(s.vfunc_o8_4());
-    int nCount = s.vfunc_o8_1();
+    FUN_1418e9fa0(s.ReadInt64());
+    int nCount = s.ReadUInt8();
     for (int i = 0; i < nCount; ++i)
     {
-        int nId = s.vfunc_o8_3();
-        __int64 nUid = s.vfunc_o8_4();
-        int nRank = s.vfunc_o8_1();
-        int nAmount = s.vfunc_o8_3();
+        int nId = s.ReadInt32();
+        __int64 nUid = s.ReadInt64();
+        int nRank = s.ReadUInt8();
+        int nAmount = s.ReadInt32();
         MS2Ptr<CItem> spItem(new CItem);
         if (!spItem->FUN_140523c40(nId, nAmount, 0))
             break;
@@ -403,7 +403,7 @@ void UICharacterListDialog::CCharacterInfo::Read(CInPacket& packet)
         spItem->FUN_140526a70(nUid);
         m_state.m_220.Add(spItem);
     }
-    nCount = s.vfunc_o8_1();
+    nCount = s.ReadUInt8();
     Unk_ClItemReader reader;
     for (int i = 0; i < nCount; ++i)
     {
@@ -411,21 +411,21 @@ void UICharacterListDialog::CCharacterInfo::Read(CInPacket& packet)
         if (!(spItem == 0))
             m_state.m_240.Add(spItem);
     }
-    if (s.vfunc_o8_0())
+    if (s.ReadBool())
     {
-        __int64 nFirst = s.vfunc_o8_4();
-        __int64 nSecond = s.vfunc_o8_4();
+        __int64 nFirst = s.ReadInt64();
+        __int64 nSecond = s.ReadInt64();
         m_state.m_280 = nFirst;
         m_state.m_288 = nSecond;
-        nCount = s.vfunc_o8_1();
+        nCount = s.ReadUInt8();
         if (nCount != 0)
         {
             for (int i = 0; i < nCount; ++i)
             {
-                int nId = s.vfunc_o8_3();
-                __int64 nUid = s.vfunc_o8_4();
-                int nRank = s.vfunc_o8_1();
-                int nAmount = s.vfunc_o8_3();
+                int nId = s.ReadInt32();
+                __int64 nUid = s.ReadInt64();
+                int nRank = s.ReadUInt8();
+                int nAmount = s.ReadInt32();
                 MS2Ptr<CItem> spItem(new CItem);
                 if (!spItem->FUN_140523c40(nId, nAmount, 0))
                     return;
@@ -632,12 +632,12 @@ void UICharacterListDialog::vfunc_79(void* p)
     int nOpcode = pPacket->FUN_14070fe80();
     if (nOpcode == 0xc)
     {
-        if (pPacket->vfunc_o8_1() == 7)
+        if (pPacket->ReadUInt8() == 7)
         {
             FUN_1412761e0(m_30, 1);
-            int nCode = pPacket->vfunc_o8_3();
-            unsigned __int64 nId = pPacket->vfunc_o8_4();
-            CStringW strText = pPacket->vfunc_o8_8();
+            int nCode = pPacket->ReadInt32();
+            unsigned __int64 nId = pPacket->ReadInt64();
+            CStringW strText = pPacket->ReadUnicodeString();
             if (nCode == 1)
             {
                 unsigned nIndex = 0;
@@ -922,7 +922,7 @@ bool UICharacterListDialog::FUN_1418ed650()
 // MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
 void UICharacterListDialog::FUN_1418ed880(CInPacket& packet)
 {
-    unsigned char nMode = packet.vfunc_o8_1();
+    unsigned char nMode = packet.ReadUInt8();
     if (nMode == 3)
     {
         DAT_143ab2a30.FUN_1403416e0();
@@ -931,7 +931,7 @@ void UICharacterListDialog::FUN_1418ed880(CInPacket& packet)
     }
     else if (nMode == 4)
     {
-        m_220 = packet.vfunc_o8_0();
+        m_220 = packet.ReadBool();
         if (vfunc_55() == 0 && FUN_1422dc430() == 1)
             RefreshLobby();
         else if (FUN_1408e57f0()->FUN_1422b9da0() == 0x620000c)
@@ -939,7 +939,7 @@ void UICharacterListDialog::FUN_1418ed880(CInPacket& packet)
     }
     else if (nMode == 0)
     {
-        int nCount = packet.vfunc_o8_1();
+        int nCount = packet.ReadUInt8();
         ReadCharacters(nCount, packet);
         if (FUN_1408e57f0()->FUN_1422b9da0() == 0x620000d)
             PostMessageA(FUN_140aadf80()->FUN_14209c720(), 0x4c8, 0, 0);
@@ -967,8 +967,8 @@ void UICharacterListDialog::FUN_1418ed880(CInPacket& packet)
     }
     else if (nMode == 2)
     {
-        int nError = packet.vfunc_o8_3();
-        unsigned __int64 nId = packet.vfunc_o8_4();
+        int nError = packet.ReadInt32();
+        unsigned __int64 nId = packet.ReadInt64();
         int nIndex = -1;
         if (nError == 0)
             nIndex = EraseCharacter(nId);
@@ -992,9 +992,9 @@ void UICharacterListDialog::FUN_1418ed880(CInPacket& packet)
     {
         if (vfunc_55() == 0)
         {
-            unsigned __int64 nId = packet.vfunc_o8_4();
-            int nError = packet.vfunc_o8_3();
-            __int64 nDeleteTime = packet.vfunc_o8_4();
+            unsigned __int64 nId = packet.ReadInt64();
+            int nError = packet.ReadInt32();
+            __int64 nDeleteTime = packet.ReadInt64();
             if (nError == 0)
             {
                 unsigned nIndex = 0xffffffff;
@@ -1027,8 +1027,8 @@ void UICharacterListDialog::FUN_1418ed880(CInPacket& packet)
     }
     else if (nMode == 6 && vfunc_55() == 0)
     {
-        unsigned __int64 nId = packet.vfunc_o8_4();
-        int nError = packet.vfunc_o8_3();
+        unsigned __int64 nId = packet.ReadInt64();
+        int nError = packet.ReadInt32();
         if (nError == 0)
         {
             unsigned nIndex = 0xffffffff;
@@ -1758,17 +1758,17 @@ void UICharacterListDialog::FUN_1418f2570(const CStringW& str1, const CStringW& 
     m_221 = 1;
     COutPacket packet(0xbf, 0);
     packet.Encode8(DAT_143ab2820);
-    packet.vfunc_o10_8(str1);
-    packet.vfunc_o10_8(str2);
-    packet.vfunc_o10_8(str3);
+    packet.WriteUnicodeString(str1);
+    packet.WriteUnicodeString(str2);
+    packet.WriteUnicodeString(str3);
     FUN_140710590(packet);
 }
 
 // @0x1418f2620
 void UICharacterListDialog::FUN_1418f2620(void* pPacket)
 {
-    int nResult = ((CInPacket*)pPacket)->vfunc_o8_3();
-    unsigned __int64 nId = ((CInPacket*)pPacket)->vfunc_o8_4();
+    int nResult = ((CInPacket*)pPacket)->ReadInt32();
+    unsigned __int64 nId = ((CInPacket*)pPacket)->ReadInt64();
     if (nResult == 0)
         FUN_1418f2190();
     else
@@ -1789,7 +1789,7 @@ void UICharacterListDialog::HandleDeleteReply(unsigned char nResult, const CStri
 void UICharacterListDialog::FUN_1418f2820(void* pPacket)
 {
     m_221 = 0;
-    int nResult = ((CInPacket*)pPacket)->vfunc_o8_3();
+    int nResult = ((CInPacket*)pPacket)->ReadInt32();
     if (nResult == 0)
     {
         m_224 = 5;
@@ -2011,7 +2011,7 @@ unsigned UICharacterListDialog::FindFreePreviewSlot()
 // MS2-FUNCTIONAL: iterator / temp shape of the event list loop differs
 void UICharacterListDialog::FUN_1418ed6b0(CInPacket& packet)
 {
-    __int64 nId = packet.vfunc_o8_4();
+    __int64 nId = packet.ReadInt64();
     if (m_30 == 0)
         return;
     BurnEvents events;

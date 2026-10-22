@@ -226,9 +226,9 @@ bool PartyVoteCli::FUN_140a895c0()
 void PartyVoteCli::SendParty(bool vote)
 {
     COutPacket packet(static_cast<int>(SendOp::Party), 0);
-    packet.vfunc_o10_1(0x30);
-    packet.vfunc_o10_3(id);
-    packet.vfunc_o10_0(vote);
+    packet.WriteUInt8(0x30);
+    packet.WriteInt32(id);
+    packet.WriteBool(vote);
     FUN_140710590(packet);
 }
 
@@ -372,7 +372,7 @@ void PartyVoteReadyCli::vfunc_7(__int64 member, bool accepted)
 // @0x140a8a230
 CInputStream& FUN_140a8a230(CInputStream& in, std::set<unsigned __int64>& ids)
 {
-    unsigned count = in.vfunc_o8_3();
+    unsigned count = in.ReadInt32();
     for (unsigned i = 0; i < count; ++i)
     {
         unsigned __int64 member;

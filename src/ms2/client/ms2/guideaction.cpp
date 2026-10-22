@@ -1239,9 +1239,9 @@ MS2_REPLACE_METHOD(0x141385E00, CGuideActionServerTriggerEvent, vfunc_2, 75, 0xC
 void CGuideActionServerTriggerEvent::vfunc_3()
 {
     COutPacket packet(static_cast<int>(SendOp::Trigger), 0);
-    packet.vfunc_o10_1(9);
-    packet.vfunc_o10_1(1);
-    packet.vfunc_o10_3(m_eventID);
+    packet.WriteUInt8(9);
+    packet.WriteUInt8(1);
+    packet.WriteInt32(m_eventID);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x141385E60, CGuideActionServerTriggerEvent, vfunc_3, 105, 0xC92DFB3A);

@@ -397,15 +397,15 @@ void StateCashCall::SendRequest()
             if (m_spCash->m_nCallType == 2 || m_spCash->m_nCallType == 1)
             {
                 COutPacket kPacket(static_cast<int>(SendOp::RequestTaxi), 0);
-                kPacket.vfunc_o10_1(3);
-                kPacket.vfunc_o10_3(m_spCash->m_nPrice);
+                kPacket.WriteUInt8(3);
+                kPacket.WriteInt32(m_spCash->m_nPrice);
                 FUN_140710590(kPacket);
             }
             else if (m_spCash->m_nCallType == 3)
             {
                 COutPacket kPacket(static_cast<int>(SendOp::RequestTaxi), 0);
-                kPacket.vfunc_o10_1(4);
-                kPacket.vfunc_o10_3(m_spCash->m_nPrice);
+                kPacket.WriteUInt8(4);
+                kPacket.WriteInt32(m_spCash->m_nPrice);
                 FUN_140710590(kPacket);
             }
         }

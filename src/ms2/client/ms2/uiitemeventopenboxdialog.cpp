@@ -149,10 +149,10 @@ void UIItemEventOpenBoxDialog::OnLoadComplete()
 // @0x140e47f10
 void UIItemEventOpenBoxDialog::FUN_140e47f10(CInPacket& iPacket)
 {
-    int nResult = iPacket.vfunc_o8_1();
+    int nResult = iPacket.ReadUInt8();
     if (nResult == 2)
     {
-        bool bOk = iPacket.vfunc_o8_0();
+        bool bOk = iPacket.ReadBool();
         if (bOk == 0)
         {
             CStringW strFail(L"s_event_open_item_box_ui_fail");
@@ -239,7 +239,7 @@ void UIItemEventOpenBoxDialog::SendEventReward(const Scaleform::GFx::FunctionHan
         return;
     }
     COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
-    packet.vfunc_o10_1(2);
+    packet.WriteUInt8(2);
     FUN_1407105c0(&packet, 100, 1000);
 }
 MS2_REPLACE_METHOD(0x140E48600, UIItemEventOpenBoxDialog, SendEventReward, 348, 0x1E646D04);

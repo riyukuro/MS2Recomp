@@ -17,18 +17,18 @@ bool FUN_140184310(const CString& str, const char* psz);   // str == psz
 // @0x140269c30
 void Unk_CommonPrice::Write(COutputStream* pOut)
 {
-    pOut->vfunc_o10_1((unsigned char)m_type);
-    pOut->vfunc_o10_1((unsigned char)m_subType);
-    pOut->vfunc_o10_4(m_amount);
+    pOut->WriteUInt8((unsigned char)m_type);
+    pOut->WriteUInt8((unsigned char)m_subType);
+    pOut->WriteInt64(m_amount);
 }
 MS2_REPLACE_METHOD(0x140269C30, Unk_CommonPrice, Write, 93, 0x2ED870DB);
 
 // @0x140269ca0
 void Unk_CommonPrice::Read(CInputStream* pIn)
 {
-    m_type = pIn->vfunc_o8_1();
-    m_subType = pIn->vfunc_o8_1();
-    m_amount = pIn->vfunc_o8_4();
+    m_type = pIn->ReadUInt8();
+    m_subType = pIn->ReadUInt8();
+    m_amount = pIn->ReadInt64();
 }
 MS2_REPLACE_METHOD(0x140269CA0, Unk_CommonPrice, Read, 97, 0xE26F4BDD);
 
@@ -106,7 +106,7 @@ MS2_REPLACE_METHOD(0x140269F60, Unk_CommonPriceList, AddAmount, 189, 0x650EFAA4)
 void Unk_CommonPriceList::Write(COutputStream* pOut)
 {
     unsigned char nCount = (unsigned char)m_prices.GetCount();
-    pOut->vfunc_o10_1(nCount);
+    pOut->WriteUInt8(nCount);
     for (int i = 0; i < (int)nCount; i++)
     {
         Unk_CommonPrice* pPrice = &m_prices.GetAt(i);
@@ -118,7 +118,7 @@ MS2_REPLACE_METHOD(0x14026A030, Unk_CommonPriceList, Write, 128, 0x06B8811A);
 // @0x14026a0c0
 void Unk_CommonPriceList::Read(CInputStream* pIn)
 {
-    unsigned char nCount = pIn->vfunc_o8_1();
+    unsigned char nCount = pIn->ReadUInt8();
     for (int i = 0; i < (int)nCount; i++)
     {
         Unk_CommonPrice price;

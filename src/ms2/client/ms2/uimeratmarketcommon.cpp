@@ -574,13 +574,13 @@ bool FUN_140ebded0(MS2Ptr<TMarketBillDataParam> spBase, const TMarketBillDataPar
         if (prem.m_time188 > tNow)
             nRemain = (prem.m_time188 - tNow).GetTotalSeconds();
         COutPacket pkt(static_cast<int>(SendOp::MeretMarket), 0);
-        pkt.vfunc_o10_1(0x70);
-        pkt.vfunc_o10_3(prem.m_n2c);
-        pkt.vfunc_o10_1((char)prem.m_n16c);
-        pkt.vfunc_o10_1((char)prem.m_n170);
-        pkt.vfunc_o10_3(prem.GetRemainCount());
-        pkt.vfunc_o10_4(nRemain);
-        pkt.vfunc_o10_4(prem.m_nSalePrice);
+        pkt.WriteUInt8(0x70);
+        pkt.WriteInt32(prem.m_n2c);
+        pkt.WriteUInt8((char)prem.m_n16c);
+        pkt.WriteUInt8((char)prem.m_n170);
+        pkt.WriteInt32(prem.GetRemainCount());
+        pkt.WriteInt64(nRemain);
+        pkt.WriteInt64(prem.m_nSalePrice);
         FUN_140710590(pkt);
     }
     if (pParam->m_sp108 != 0)
@@ -593,10 +593,10 @@ bool FUN_140ebded0(MS2Ptr<TMarketBillDataParam> spBase, const TMarketBillDataPar
             return false;
         }
         COutPacket pkt(static_cast<int>(SendOp::MeretMarket), 0);
-        pkt.vfunc_o10_1(0x74);
-        pkt.vfunc_o10_3(prem.m_nId);
-        pkt.vfunc_o10_3(prem.m_n1b0);
-        pkt.vfunc_o10_3(prem.m_nType == 7 ? 0xd68 : 0xd72);
+        pkt.WriteUInt8(0x74);
+        pkt.WriteInt32(prem.m_nId);
+        pkt.WriteInt32(prem.m_n1b0);
+        pkt.WriteInt32(prem.m_nType == 7 ? 0xd68 : 0xd72);
         FUN_140710590(pkt);
     }
     if (!FUN_140ebc590(mapPay))

@@ -230,22 +230,22 @@ int CUgcUserProxy::CopyFrom(const IUgcProxy* pOther)
 // @0x14088e540
 void CUgcUserProxy::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_3(m_nType);
-    stream.vfunc_o10_4(m_accountId);
-    stream.vfunc_o10_4(m_characterId);
-    stream.vfunc_o10_6(m_strObjectName);
-    stream.vfunc_o10_8(m_strName);
+    stream.WriteInt32(m_nType);
+    stream.WriteInt64(m_accountId);
+    stream.WriteInt64(m_characterId);
+    stream.WriteUnicodeStringA(m_strObjectName);
+    stream.WriteUnicodeString(m_strName);
 }
 
 // @0x14088e5f0
 void CUgcUserProxy::Read(CInPacket& packet)
 {
     Clear();
-    m_nType = packet.vfunc_o8_3();
-    m_accountId = packet.vfunc_o8_4();
-    m_characterId = packet.vfunc_o8_4();
-    m_strObjectName = packet.vfunc_o8_6();
-    m_strName = packet.vfunc_o8_8();
+    m_nType = packet.ReadInt32();
+    m_accountId = packet.ReadInt64();
+    m_characterId = packet.ReadInt64();
+    m_strObjectName = packet.ReadUnicodeStringA();
+    m_strName = packet.ReadUnicodeString();
 }
 
 // @0x14088e790
@@ -289,22 +289,22 @@ int CUgcUploadProxy::CopyFrom(const IUgcProxy* pOther)
 // @0x14088e990
 void CUgcUploadProxy::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_4(m_uid);
-    stream.vfunc_o10_6(m_strName);
-    stream.vfunc_o10_1(m_nType);
-    stream.vfunc_o10_1(m_nState);
-    stream.vfunc_o10_6(m_strPath);
+    stream.WriteInt64(m_uid);
+    stream.WriteUnicodeStringA(m_strName);
+    stream.WriteUInt8(m_nType);
+    stream.WriteUInt8(m_nState);
+    stream.WriteUnicodeStringA(m_strPath);
 }
 
 // @0x14088ea40
 void CUgcUploadProxy::Read(CInPacket& packet)
 {
     Clear();
-    m_uid = packet.vfunc_o8_4();
-    m_strName = packet.vfunc_o8_6();
-    m_nType = packet.vfunc_o8_1();
-    m_nState = packet.vfunc_o8_1();
-    m_strPath = packet.vfunc_o8_6();
+    m_uid = packet.ReadInt64();
+    m_strName = packet.ReadUnicodeStringA();
+    m_nType = packet.ReadUInt8();
+    m_nState = packet.ReadUInt8();
+    m_strPath = packet.ReadUnicodeStringA();
 }
 
 // @0x14088ebf0
@@ -356,26 +356,26 @@ int CUgcItemProxy::CopyFrom(const IUgcProxy* pOther)
 // @0x14088ee30
 void CUgcItemProxy::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_4(m_itemUid);
-    stream.vfunc_o10_3(m_nItemId);
-    stream.vfunc_o10_3(m_nCount);
-    stream.vfunc_o10_8(m_strName);
-    stream.vfunc_o10_1(m_nRarity);
-    stream.vfunc_o10_4(m_uid);
-    stream.vfunc_o10_0(m_nFlags == 1);
+    stream.WriteInt64(m_itemUid);
+    stream.WriteInt32(m_nItemId);
+    stream.WriteInt32(m_nCount);
+    stream.WriteUnicodeString(m_strName);
+    stream.WriteUInt8(m_nRarity);
+    stream.WriteInt64(m_uid);
+    stream.WriteBool(m_nFlags == 1);
 }
 
 // @0x14088ef20
 void CUgcItemProxy::Read(CInPacket& packet)
 {
     Clear();
-    m_itemUid = packet.vfunc_o8_4();
-    m_nItemId = packet.vfunc_o8_3();
-    m_nCount = packet.vfunc_o8_3();
-    m_strName = packet.vfunc_o8_8();
-    m_nRarity = packet.vfunc_o8_1();
-    m_uid = packet.vfunc_o8_4();
-    m_nFlags = packet.vfunc_o8_0();
+    m_itemUid = packet.ReadInt64();
+    m_nItemId = packet.ReadInt32();
+    m_nCount = packet.ReadInt32();
+    m_strName = packet.ReadUnicodeString();
+    m_nRarity = packet.ReadUInt8();
+    m_uid = packet.ReadInt64();
+    m_nFlags = packet.ReadBool();
 }
 
 // @0x14088f100
@@ -718,14 +718,14 @@ int CUgcBannerProxy::CopyFrom(const IUgcProxy* pOther)
 // @0x140890030
 void CUgcBannerProxy::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_4((unsigned int)m_nBannerId);
+    stream.WriteInt64((unsigned int)m_nBannerId);
 }
 
 // @0x140890070
 void CUgcBannerProxy::Read(CInPacket& packet)
 {
     Clear();
-    m_nBannerId = packet.vfunc_o8_4();
+    m_nBannerId = packet.ReadInt64();
 }
 
 // @0x1408900d0
@@ -758,23 +758,23 @@ int CUgcBannerReserve::FUN_140890180() const
 // @0x1408901e0
 void CUgcBannerReserve::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_4(m_nBannerUid);
-    stream.vfunc_o10_3(m_n20);
-    stream.vfunc_o10_4((unsigned int)m_n24);
-    stream.vfunc_o10_3(m_nDate);
-    stream.vfunc_o10_3(m_nHour);
-    stream.vfunc_o10_4(m_n30);
+    stream.WriteInt64(m_nBannerUid);
+    stream.WriteInt32(m_n20);
+    stream.WriteInt64((unsigned int)m_n24);
+    stream.WriteInt32(m_nDate);
+    stream.WriteInt32(m_nHour);
+    stream.WriteInt64(m_n30);
 }
 
 // @0x1408902a0
 void CUgcBannerReserve::Read(CInPacket& packet)
 {
-    m_nBannerUid = packet.vfunc_o8_4();
-    m_n20 = packet.vfunc_o8_3();
-    m_n24 = packet.vfunc_o8_4();
-    m_nDate = packet.vfunc_o8_3();
-    m_nHour = packet.vfunc_o8_3();
-    m_n30 = packet.vfunc_o8_4();
+    m_nBannerUid = packet.ReadInt64();
+    m_n20 = packet.ReadInt32();
+    m_n24 = packet.ReadInt64();
+    m_nDate = packet.ReadInt32();
+    m_nHour = packet.ReadInt32();
+    m_n30 = packet.ReadInt64();
 }
 
 // @0x1408903c0
@@ -799,9 +799,9 @@ CUgcPreReserve::~CUgcPreReserve()
 // @0x1408904b0
 void CUgcPreReserve::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_4((unsigned int)m_nCount);
+    stream.WriteInt64((unsigned int)m_nCount);
     unsigned int nCount = (unsigned int)m_reserves.GetCount();
-    stream.vfunc_o10_3(nCount);
+    stream.WriteInt32(nCount);
     for (POSITION pos = m_reserves.GetHeadPosition(); pos != NULL; m_reserves.GetNext(pos))
     {
         CUgcBannerReservePtr spReserve = m_reserves.GetValueAt(pos);
@@ -813,8 +813,8 @@ void CUgcPreReserve::Write(COutputStream& stream) const
 // @0x1408905b0
 void CUgcPreReserve::Read(CInPacket& packet)
 {
-    m_nCount = packet.vfunc_o8_4();
-    unsigned int nCount = packet.vfunc_o8_3();
+    m_nCount = packet.ReadInt64();
+    unsigned int nCount = packet.ReadInt32();
     for (unsigned int i = 0; i < nCount; ++i)
     {
         CUgcBannerReservePtr spReserve(new CUgcBannerReserve);
@@ -863,7 +863,7 @@ int CUgcBannerPost::CopyFrom(const IUgcProxy* pOther)
 void CUgcBannerPost::Write(COutputStream& stream) const
 {
     CUgcBannerProxy::Write(stream);
-    stream.vfunc_o10_1((unsigned char)m_reserves.GetCount());
+    stream.WriteUInt8((unsigned char)m_reserves.GetCount());
     for (POSITION pos = m_reserves.GetHeadPosition(); pos != NULL; m_reserves.GetNext(pos))
     {
         CUgcBannerReservePtr pUgcBannerReserve = m_reserves.GetValueAt(pos);
@@ -877,7 +877,7 @@ void CUgcBannerPost::Read(CInPacket& packet)
 {
     Clear();
     CUgcBannerProxy::Read(packet);
-    int nCount = packet.vfunc_o8_1();
+    int nCount = packet.ReadUInt8();
     for (int i = 0; i < nCount; ++i)
     {
         CUgcBannerReservePtr spReserve(new CUgcBannerReserve);
@@ -950,12 +950,12 @@ void CUgcRegistBanner::Clear()
 // @0x140890f30
 void CUgcRegistBanner::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_1((unsigned char)m_nType);
+    stream.WriteUInt8((unsigned char)m_nType);
     static_cast<const IUgcProxy&>(m_user).Write(stream);
     static_cast<const IUgcProxy&>(m_upload).Write(stream);
     static_cast<const IUgcProxy&>(m_post).Write(stream);
     CStringA strUrl(m_strUrl);
-    stream.vfunc_o10_6(strUrl);
+    stream.WriteUnicodeStringA(strUrl);
 }
 
 // @0x140891020
@@ -966,7 +966,7 @@ void CUgcRegistBanner::Read(CInPacket& packet)
     static_cast<IUgcProxy&>(m_user).Read(packet);
     static_cast<IUgcProxy&>(m_upload).Read(packet);
     static_cast<IUgcProxy&>(m_post).Read(packet);
-    m_strUrl = packet.vfunc_o8_6();
+    m_strUrl = packet.ReadUnicodeStringA();
     if (FUN_14052d220()->FUN_14187f3b0() == 1)
     {
         static_cast<IUgcProxy&>(m_upload).Clear();
@@ -1015,15 +1015,15 @@ Unk_BannerSN::Unk_BannerSN()
 // @0x140891330
 void Unk_BannerSN::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_4(m_nBannerSN);
-    stream.vfunc_o10_4(m_nUploadSN);
+    stream.WriteInt64(m_nBannerSN);
+    stream.WriteInt64(m_nUploadSN);
 }
 
 // @0x140891390
 void Unk_BannerSN::Read(CInPacket& packet)
 {
-    m_nBannerSN = packet.vfunc_o8_4();
-    m_nUploadSN = packet.vfunc_o8_4();
+    m_nBannerSN = packet.ReadInt64();
+    m_nUploadSN = packet.ReadInt64();
 }
 
 // @0x140891400
@@ -1055,15 +1055,15 @@ Unk_BannerSN2::Unk_BannerSN2()
 // @0x1408914c0
 void Unk_BannerSN2::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_4(m_nBannerSN);
-    stream.vfunc_o10_4(m_nUploadSN);
+    stream.WriteInt64(m_nBannerSN);
+    stream.WriteInt64(m_nUploadSN);
 }
 
 // @0x140891520
 void Unk_BannerSN2::Read(CInPacket& packet)
 {
-    m_nBannerSN = packet.vfunc_o8_4();
-    m_nUploadSN = packet.vfunc_o8_4();
+    m_nBannerSN = packet.ReadInt64();
+    m_nUploadSN = packet.ReadInt64();
 }
 
 // @0x140891590
@@ -1094,20 +1094,20 @@ Unk_CharUploadSNs::Unk_CharUploadSNs()
 // @0x140891670
 void Unk_CharUploadSNs::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_8(m_strCharName);
+    stream.WriteUnicodeString(m_strCharName);
     int nCount = (int)m_serials.GetCount();
-    stream.vfunc_o10_3(nCount);
+    stream.WriteInt32(nCount);
     for (int i = 0; i < nCount; ++i)
-        stream.vfunc_o10_4(m_serials[i]);
+        stream.WriteInt64(m_serials[i]);
 }
 
 // @0x140891730
 void Unk_CharUploadSNs::Read(CInPacket& packet)
 {
-    m_strCharName = packet.vfunc_o8_8();
-    int nCount = packet.vfunc_o8_3();
+    m_strCharName = packet.ReadUnicodeString();
+    int nCount = packet.ReadInt32();
     for (int i = 0; i < nCount; ++i)
-        m_serials.Add(packet.vfunc_o8_4());
+        m_serials.Add(packet.ReadInt64());
 }
 
 // @0x140891820
@@ -1157,13 +1157,13 @@ int CUgcGuildMarkProxy::CopyFrom(const IUgcProxy* pOther)
 // @0x140891b00
 void CUgcGuildMarkProxy::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_4(m_nGuildId);
+    stream.WriteInt64(m_nGuildId);
 }
 
 // @0x140891b40
 void CUgcGuildMarkProxy::Read(CInPacket& packet)
 {
-    m_nGuildId = packet.vfunc_o8_4();
+    m_nGuildId = packet.ReadInt64();
 }
 
 // @0x140891b90
@@ -1204,15 +1204,15 @@ int CUgcGuildPosterProxy::CopyFrom(const IUgcProxy* pOther)
 // @0x140891d20
 void CUgcGuildPosterProxy::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_4(m_nGuildId);
-    stream.vfunc_o10_3(m_nIndex);
+    stream.WriteInt64(m_nGuildId);
+    stream.WriteInt32(m_nIndex);
 }
 
 // @0x140891d70
 void CUgcGuildPosterProxy::Read(CInPacket& packet)
 {
-    m_nGuildId = packet.vfunc_o8_4();
-    m_nIndex = packet.vfunc_o8_3();
+    m_nGuildId = packet.ReadInt64();
+    m_nIndex = packet.ReadInt32();
 }
 
 // @0x140891de0
@@ -1278,20 +1278,20 @@ int CUgcBannerRollingImageProxy::CopyFrom(const IUgcProxy* pOther)
 // @0x140891ff0
 void CUgcBannerRollingImageProxy::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_2((short)m_images.size());
+    stream.WriteInt16((short)m_images.size());
     for (size_t i = 0; i < m_images.size(); ++i)
-        stream.vfunc_o10_4(m_images[i]);
+        stream.WriteInt64(m_images[i]);
 }
 
 // @0x1408920a0
 void CUgcBannerRollingImageProxy::Read(CInPacket& packet)
 {
-    unsigned int nCount = (unsigned short)packet.vfunc_o8_2();
+    unsigned int nCount = (unsigned short)packet.ReadInt16();
     m_images.clear();
     m_images.reserve(nCount);
     for (size_t i = 0; i < nCount; ++i)
     {
-        unsigned int nImage = packet.vfunc_o8_4();
+        unsigned int nImage = packet.ReadInt64();
         m_images.push_back(nImage);
     }
 }
@@ -1331,13 +1331,13 @@ int CUgcShopBannerProxy::CopyFrom(const IUgcProxy* pOther)
 // @0x140892310
 void CUgcShopBannerProxy::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_6(m_strKey);
+    stream.WriteUnicodeStringA(m_strKey);
 }
 
 // @0x140892350
 void CUgcShopBannerProxy::Read(CInPacket& packet)
 {
-    m_strKey = packet.vfunc_o8_6();
+    m_strKey = packet.ReadUnicodeStringA();
 }
 
 // @0x1408923d0
@@ -1382,29 +1382,29 @@ void CBlueprintItemData::CopyFrom(const CBlueprintItemData& other)
 // @0x1408925d0
 void CBlueprintItemData::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_4(m_n18);
-    stream.vfunc_o10_3(m_n20);
-    stream.vfunc_o10_3(m_n24);
-    stream.vfunc_o10_3(m_n28);
-    stream.vfunc_o10_4(m_n30);
-    stream.vfunc_o10_3(m_n38);
-    stream.vfunc_o10_4(m_n40);
-    stream.vfunc_o10_4(m_n48);
-    stream.vfunc_o10_8(m_strName);
+    stream.WriteInt64(m_n18);
+    stream.WriteInt32(m_n20);
+    stream.WriteInt32(m_n24);
+    stream.WriteInt32(m_n28);
+    stream.WriteInt64(m_n30);
+    stream.WriteInt32(m_n38);
+    stream.WriteInt64(m_n40);
+    stream.WriteInt64(m_n48);
+    stream.WriteUnicodeString(m_strName);
 }
 
 // @0x1408926e0
 void CBlueprintItemData::Read(CInputStream& stream)
 {
-    m_n18 = stream.vfunc_o8_4();
-    m_n20 = stream.vfunc_o8_3();
-    m_n24 = stream.vfunc_o8_3();
-    m_n28 = stream.vfunc_o8_3();
-    m_n30 = stream.vfunc_o8_4();
-    m_n38 = stream.vfunc_o8_3();
-    m_n40 = stream.vfunc_o8_4();
-    m_n48 = stream.vfunc_o8_4();
-    m_strName = stream.vfunc_o8_8();
+    m_n18 = stream.ReadInt64();
+    m_n20 = stream.ReadInt32();
+    m_n24 = stream.ReadInt32();
+    m_n28 = stream.ReadInt32();
+    m_n30 = stream.ReadInt64();
+    m_n38 = stream.ReadInt32();
+    m_n40 = stream.ReadInt64();
+    m_n48 = stream.ReadInt64();
+    m_strName = stream.ReadUnicodeString();
 }
 
 // @0x140892810
@@ -1446,19 +1446,19 @@ int CUgcBlueprintImageProxy::CopyFrom(const IUgcProxy* pOther)
 // @0x1408929c0
 void CUgcBlueprintImageProxy::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_4(m_n18);
-    stream.vfunc_o10_4(m_n20);
-    stream.vfunc_o10_3(m_n28);
-    stream.vfunc_o10_8(m_strName);
+    stream.WriteInt64(m_n18);
+    stream.WriteInt64(m_n20);
+    stream.WriteInt32(m_n28);
+    stream.WriteUnicodeString(m_strName);
 }
 
 // @0x140892a50
 void CUgcBlueprintImageProxy::Read(CInPacket& packet)
 {
-    m_n18 = packet.vfunc_o8_4();
-    m_n20 = packet.vfunc_o8_4();
-    m_n28 = packet.vfunc_o8_3();
-    m_strName = packet.vfunc_o8_8();
+    m_n18 = packet.ReadInt64();
+    m_n20 = packet.ReadInt64();
+    m_n28 = packet.ReadInt32();
+    m_strName = packet.ReadUnicodeString();
 }
 
 // @0x140892b50
@@ -1533,29 +1533,29 @@ CStringA CUgcItemLook::GetLocalPath() const
 // @0x140893070
 void CUgcItemLook::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_4(m_n18);
-    stream.vfunc_o10_6(m_str20);
-    stream.vfunc_o10_8(m_str28);
-    stream.vfunc_o10_1((unsigned char)m_n30);
-    stream.vfunc_o10_3(m_n34);
-    stream.vfunc_o10_4(m_n38);
-    stream.vfunc_o10_4(m_n40);
-    stream.vfunc_o10_8(m_str48);
-    stream.vfunc_o10_4(m_n50);
+    stream.WriteInt64(m_n18);
+    stream.WriteUnicodeStringA(m_str20);
+    stream.WriteUnicodeString(m_str28);
+    stream.WriteUInt8((unsigned char)m_n30);
+    stream.WriteInt32(m_n34);
+    stream.WriteInt64(m_n38);
+    stream.WriteInt64(m_n40);
+    stream.WriteUnicodeString(m_str48);
+    stream.WriteInt64(m_n50);
     if (m_n60 == 1)
     {
         {
             CStringA strEmpty("");
-            stream.vfunc_o10_6(strEmpty);
+            stream.WriteUnicodeStringA(strEmpty);
         }
-        stream.vfunc_o10_1((unsigned char)m_n60);
+        stream.WriteUInt8((unsigned char)m_n60);
     }
     else
     {
         CStringA strUrl(m_strUrl);
         unsigned char nFlag = (unsigned char)m_n60;
-        stream.vfunc_o10_6(strUrl);
-        stream.vfunc_o10_1(nFlag);
+        stream.WriteUnicodeStringA(strUrl);
+        stream.WriteUInt8(nFlag);
     }
 }
 
@@ -1563,17 +1563,17 @@ void CUgcItemLook::Write(COutputStream& stream) const
 void CUgcItemLook::Read(CInputStream& stream)
 {
     Clear();
-    m_n18 = stream.vfunc_o8_4();
-    m_str20 = stream.vfunc_o8_6();
-    m_str28 = stream.vfunc_o8_8();
-    m_n30 = stream.vfunc_o8_1();
-    m_n34 = stream.vfunc_o8_3();
-    m_n38 = stream.vfunc_o8_4();
-    m_n40 = stream.vfunc_o8_4();
-    m_str48 = stream.vfunc_o8_8();
-    m_n50 = stream.vfunc_o8_4();
-    m_strUrl = stream.vfunc_o8_6();
-    m_n60 = stream.vfunc_o8_1();
+    m_n18 = stream.ReadInt64();
+    m_str20 = stream.ReadUnicodeStringA();
+    m_str28 = stream.ReadUnicodeString();
+    m_n30 = stream.ReadUInt8();
+    m_n34 = stream.ReadInt32();
+    m_n38 = stream.ReadInt64();
+    m_n40 = stream.ReadInt64();
+    m_str48 = stream.ReadUnicodeString();
+    m_n50 = stream.ReadInt64();
+    m_strUrl = stream.ReadUnicodeStringA();
+    m_n60 = stream.ReadUInt8();
     if (FUN_14052d220()->FUN_14187f3b0() == 1)
         m_strUrl = "";
 }
@@ -1642,8 +1642,8 @@ int CUgcUpload::CopyFrom(const CUgcUpload* pOther)
 // @0x140893780
 void CUgcUpload::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_1((unsigned char)m_nKind);
-    stream.vfunc_o10_2((short)m_n1c);
+    stream.WriteUInt8((unsigned char)m_nKind);
+    stream.WriteInt16((short)m_n1c);
     static_cast<const IUgcProxy&>(m_user).Write(stream);
     static_cast<const IUgcProxy&>(m_upload).Write(stream);
 }
@@ -1653,7 +1653,7 @@ void CUgcUpload::Read(CInPacket& packet)
 {
     Unk_1402c45d0 checker;
     m_nKind = FUN_140898b80(packet, checker);
-    m_n1c = (unsigned short)packet.vfunc_o8_2();
+    m_n1c = (unsigned short)packet.ReadInt16();
     static_cast<IUgcProxy&>(m_user).Read(packet);
     static_cast<IUgcProxy&>(m_upload).Read(packet);
 }
@@ -1725,32 +1725,32 @@ void CUgcItemMusicNote::FUN_140893bb0(const void* pSource, __int64 nId)
 // @0x140893cc0
 void CUgcItemMusicNote::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_4(m_n18);
-    stream.vfunc_o10_3(m_n20);
-    stream.vfunc_o10_3(m_n24);
-    stream.vfunc_o10_8(m_str28);
-    stream.vfunc_o10_8(m_str30);
-    stream.vfunc_o10_7(m_str38);
-    stream.vfunc_o10_3(m_info.m_n00);
-    stream.vfunc_o10_4(m_info.m_n08);
-    stream.vfunc_o10_4(m_info.m_n10);
-    stream.vfunc_o10_8(m_info.m_str18);
+    stream.WriteInt64(m_n18);
+    stream.WriteInt32(m_n20);
+    stream.WriteInt32(m_n24);
+    stream.WriteUnicodeString(m_str28);
+    stream.WriteUnicodeString(m_str30);
+    stream.WriteString(m_str38);
+    stream.WriteInt32(m_info.m_n00);
+    stream.WriteInt64(m_info.m_n08);
+    stream.WriteInt64(m_info.m_n10);
+    stream.WriteUnicodeString(m_info.m_str18);
 }
 
 // @0x140893e10
 void CUgcItemMusicNote::Read(CInputStream& stream)
 {
     Clear();
-    m_n18 = stream.vfunc_o8_4();
-    m_n20 = stream.vfunc_o8_3();
-    m_n24 = stream.vfunc_o8_3();
-    m_str28 = stream.vfunc_o8_8();
-    m_str30 = stream.vfunc_o8_8();
-    m_str38 = stream.vfunc_o8_7();
-    m_info.m_n00 = stream.vfunc_o8_3();
-    m_info.m_n08 = stream.vfunc_o8_4();
-    m_info.m_n10 = stream.vfunc_o8_4();
-    m_info.m_str18 = stream.vfunc_o8_8();
+    m_n18 = stream.ReadInt64();
+    m_n20 = stream.ReadInt32();
+    m_n24 = stream.ReadInt32();
+    m_str28 = stream.ReadUnicodeString();
+    m_str30 = stream.ReadUnicodeString();
+    m_str38 = stream.ReadString();
+    m_info.m_n00 = stream.ReadInt32();
+    m_info.m_n08 = stream.ReadInt64();
+    m_info.m_n10 = stream.ReadInt64();
+    m_info.m_str18 = stream.ReadUnicodeString();
 }
 
 // @0x140894060
@@ -1810,45 +1810,45 @@ void CUgcMarketSchCond::CopyFrom(const CUgcMarketSchCond* pOther)
 // @0x140894360
 void CUgcMarketSchCond::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_3(m_n18);
-    stream.vfunc_o10_1((unsigned char)m_n1c);
-    stream.vfunc_o10_1((unsigned char)m_n20);
-    stream.vfunc_o10_8(m_str28);
-    stream.vfunc_o10_3(m_n30);
-    stream.vfunc_o10_1((unsigned char)m_n34);
+    stream.WriteInt32(m_n18);
+    stream.WriteUInt8((unsigned char)m_n1c);
+    stream.WriteUInt8((unsigned char)m_n20);
+    stream.WriteUnicodeString(m_str28);
+    stream.WriteInt32(m_n30);
+    stream.WriteUInt8((unsigned char)m_n34);
 }
 
 // @0x140894420
 void CUgcMarketSchCond::Read(CInPacket& packet)
 {
     Clear();
-    m_n18 = packet.vfunc_o8_3();
-    m_n1c = packet.vfunc_o8_1();
-    m_n20 = packet.vfunc_o8_1();
-    m_str28 = packet.vfunc_o8_8();
-    m_n30 = packet.vfunc_o8_3();
-    m_n34 = packet.vfunc_o8_1();
+    m_n18 = packet.ReadInt32();
+    m_n1c = packet.ReadUInt8();
+    m_n20 = packet.ReadUInt8();
+    m_str28 = packet.ReadUnicodeString();
+    m_n30 = packet.ReadInt32();
+    m_n34 = packet.ReadUInt8();
 }
 
 // @0x1408945c0
 void CUgcMarketSchCond::WriteShort(COutputStream& stream) const
 {
-    stream.vfunc_o10_3(m_n18);
-    stream.vfunc_o10_1((unsigned char)m_n1c);
-    stream.vfunc_o10_1((unsigned char)m_n20);
-    stream.vfunc_o10_8(m_str28);
-    stream.vfunc_o10_3(m_n30);
+    stream.WriteInt32(m_n18);
+    stream.WriteUInt8((unsigned char)m_n1c);
+    stream.WriteUInt8((unsigned char)m_n20);
+    stream.WriteUnicodeString(m_str28);
+    stream.WriteInt32(m_n30);
 }
 
 // @0x140894670
 void CUgcMarketSchCond::ReadShort(CInputStream& stream)
 {
     Clear();
-    m_n18 = stream.vfunc_o8_3();
-    m_n1c = stream.vfunc_o8_1();
-    m_n20 = stream.vfunc_o8_1();
-    m_str28 = stream.vfunc_o8_8();
-    m_n30 = stream.vfunc_o8_3();
+    m_n18 = stream.ReadInt32();
+    m_n1c = stream.ReadUInt8();
+    m_n20 = stream.ReadUInt8();
+    m_str28 = stream.ReadUnicodeString();
+    m_n30 = stream.ReadInt32();
 }
 
 // @0x140894750
@@ -2039,69 +2039,69 @@ void CUgcMarketProduct::CopyFrom(const CUgcMarketProduct* pOther)
 // @0x140895230
 void CUgcMarketProduct::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_3(m_n18);
-    stream.vfunc_o10_4(m_n20);
-    stream.vfunc_o10_1((unsigned char)m_n28);
-    stream.vfunc_o10_3(m_n2c);
-    stream.vfunc_o10_3(m_n30);
-    stream.vfunc_o10_1((unsigned char)m_n34);
-    stream.vfunc_o10_3(m_n38);
-    stream.vfunc_o10_4(m_n50);
-    stream.vfunc_o10_3(m_n3c);
-    stream.vfunc_o10_3(m_n40);
-    stream.vfunc_o10_3(m_n44);
-    stream.vfunc_o10_3(m_n48);
-    stream.vfunc_o10_4(m_n58);
-    stream.vfunc_o10_4(m_n60);
-    stream.vfunc_o10_4(m_n68);
-    stream.vfunc_o10_3(m_n70);
-    stream.vfunc_o10_4(m_n80);
-    stream.vfunc_o10_4(m_n88);
-    stream.vfunc_o10_4(m_n78);
+    stream.WriteInt32(m_n18);
+    stream.WriteInt64(m_n20);
+    stream.WriteUInt8((unsigned char)m_n28);
+    stream.WriteInt32(m_n2c);
+    stream.WriteInt32(m_n30);
+    stream.WriteUInt8((unsigned char)m_n34);
+    stream.WriteInt32(m_n38);
+    stream.WriteInt64(m_n50);
+    stream.WriteInt32(m_n3c);
+    stream.WriteInt32(m_n40);
+    stream.WriteInt32(m_n44);
+    stream.WriteInt32(m_n48);
+    stream.WriteInt64(m_n58);
+    stream.WriteInt64(m_n60);
+    stream.WriteInt64(m_n68);
+    stream.WriteInt32(m_n70);
+    stream.WriteInt64(m_n80);
+    stream.WriteInt64(m_n88);
+    stream.WriteInt64(m_n78);
     m_user.Write(stream);
-    stream.vfunc_o10_8(const_cast<CUgcMarketProduct*>(this)->GetStr200());
-    stream.vfunc_o10_8(const_cast<CUgcMarketProduct*>(this)->GetStr208());
-    stream.vfunc_o10_8(const_cast<CUgcMarketProduct*>(this)->GetStr210());
+    stream.WriteUnicodeString(const_cast<CUgcMarketProduct*>(this)->GetStr200());
+    stream.WriteUnicodeString(const_cast<CUgcMarketProduct*>(this)->GetStr208());
+    stream.WriteUnicodeString(const_cast<CUgcMarketProduct*>(this)->GetStr210());
     m_look.Write(stream);
     m_music.Write(stream);
     m_blueprint.Write(stream);
-    stream.vfunc_o10_1((unsigned char)m_n1f4);
+    stream.WriteUInt8((unsigned char)m_n1f4);
 }
 
 // @0x140895670
 void CUgcMarketProduct::Read(CInPacket& packet)
 {
-    m_n18 = packet.vfunc_o8_3();
-    m_n20 = packet.vfunc_o8_4();
-    m_n28 = packet.vfunc_o8_1();
-    m_n2c = packet.vfunc_o8_3();
-    m_n30 = packet.vfunc_o8_3();
-    m_n34 = packet.vfunc_o8_1();
-    m_n38 = packet.vfunc_o8_3();
-    m_n50 = packet.vfunc_o8_4();
-    m_n3c = packet.vfunc_o8_3();
-    m_n40 = packet.vfunc_o8_3();
-    m_n44 = packet.vfunc_o8_3();
-    m_n48 = packet.vfunc_o8_3();
-    m_n58 = packet.vfunc_o8_4();
-    m_n60 = packet.vfunc_o8_4();
-    m_n68 = packet.vfunc_o8_4();
-    m_n70 = packet.vfunc_o8_3();
-    m_n80 = packet.vfunc_o8_4();
-    m_n88 = packet.vfunc_o8_4();
-    m_n78 = packet.vfunc_o8_4();
+    m_n18 = packet.ReadInt32();
+    m_n20 = packet.ReadInt64();
+    m_n28 = packet.ReadUInt8();
+    m_n2c = packet.ReadInt32();
+    m_n30 = packet.ReadInt32();
+    m_n34 = packet.ReadUInt8();
+    m_n38 = packet.ReadInt32();
+    m_n50 = packet.ReadInt64();
+    m_n3c = packet.ReadInt32();
+    m_n40 = packet.ReadInt32();
+    m_n44 = packet.ReadInt32();
+    m_n48 = packet.ReadInt32();
+    m_n58 = packet.ReadInt64();
+    m_n60 = packet.ReadInt64();
+    m_n68 = packet.ReadInt64();
+    m_n70 = packet.ReadInt32();
+    m_n80 = packet.ReadInt64();
+    m_n88 = packet.ReadInt64();
+    m_n78 = packet.ReadInt64();
     m_user.Read(packet);
     CStringW strValue;
-    strValue = packet.vfunc_o8_8();
+    strValue = packet.ReadUnicodeString();
     SetStr200(CStringW(strValue));
-    strValue = packet.vfunc_o8_8();
+    strValue = packet.ReadUnicodeString();
     SetStr208(CStringW(strValue));
-    strValue = packet.vfunc_o8_8();
+    strValue = packet.ReadUnicodeString();
     SetStr210(CStringW(strValue));
     m_look.Read(packet);
     m_music.Read(packet);
     m_blueprint.Read(packet);
-    m_n1f4 = packet.vfunc_o8_1();
+    m_n1f4 = packet.ReadUInt8();
     m_n1f8 = FUN_1406a5390(m_n2c);
 }
 
@@ -2258,29 +2258,29 @@ void CUgcMarketSeller::Clear()
 // @0x1408965f0
 void CUgcMarketSeller::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_4(m_n18);
-    stream.vfunc_o10_4(m_n20);
-    stream.vfunc_o10_8(m_strName);
-    stream.vfunc_o10_3(m_n30);
+    stream.WriteInt64(m_n18);
+    stream.WriteInt64(m_n20);
+    stream.WriteUnicodeString(m_strName);
+    stream.WriteInt32(m_n30);
     m_user.Write(stream);
-    stream.vfunc_o10_3(m_n78);
-    stream.vfunc_o10_4(m_n80);
-    stream.vfunc_o10_4(m_n88);
-    stream.vfunc_o10_4(m_n90);
+    stream.WriteInt32(m_n78);
+    stream.WriteInt64(m_n80);
+    stream.WriteInt64(m_n88);
+    stream.WriteInt64(m_n90);
 }
 
 // @0x140896710
 void CUgcMarketSeller::Read(CInPacket& packet)
 {
-    m_n18 = packet.vfunc_o8_4();
-    m_n20 = packet.vfunc_o8_4();
-    m_strName = packet.vfunc_o8_8();
-    m_n30 = packet.vfunc_o8_3();
+    m_n18 = packet.ReadInt64();
+    m_n20 = packet.ReadInt64();
+    m_strName = packet.ReadUnicodeString();
+    m_n30 = packet.ReadInt32();
     m_user.Read(packet);
-    m_n78 = packet.vfunc_o8_3();
-    m_n80 = packet.vfunc_o8_4();
-    m_n88 = packet.vfunc_o8_4();
-    m_n90 = packet.vfunc_o8_4();
+    m_n78 = packet.ReadInt32();
+    m_n80 = packet.ReadInt64();
+    m_n88 = packet.ReadInt64();
+    m_n90 = packet.ReadInt64();
 }
 
 // @0x140896940
@@ -2300,19 +2300,19 @@ CUgcBookMark::~CUgcBookMark()
 // @0x140896a50
 void CUgcBookMark::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_4(m_n18);
-    stream.vfunc_o10_4(m_n20);
-    stream.vfunc_o10_8(m_strName);
-    stream.vfunc_o10_6(m_strUrl);
+    stream.WriteInt64(m_n18);
+    stream.WriteInt64(m_n20);
+    stream.WriteUnicodeString(m_strName);
+    stream.WriteUnicodeStringA(m_strUrl);
 }
 
 // @0x140896af0
 void CUgcBookMark::Read(CInPacket& packet)
 {
-    m_n18 = packet.vfunc_o8_4();
-    m_n20 = packet.vfunc_o8_4();
-    m_strName = packet.vfunc_o8_8();
-    m_strUrl = packet.vfunc_o8_6();
+    m_n18 = packet.ReadInt64();
+    m_n20 = packet.ReadInt64();
+    m_strName = packet.ReadUnicodeString();
+    m_strUrl = packet.ReadUnicodeStringA();
 }
 
 // @0x140897010
@@ -2404,8 +2404,8 @@ int RideeItemInfo::Equals(const RideeItemInfo* pOther) const
 // @0x1408973e0
 void RideeItemInfo::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_3(m_nId);
-    stream.vfunc_o10_4(m_nUid);
+    stream.WriteInt32(m_nId);
+    stream.WriteInt64(m_nUid);
     m_look.Write(stream);
 }
 
@@ -2413,8 +2413,8 @@ void RideeItemInfo::Write(COutputStream& stream) const
 void RideeItemInfo::Read(CInPacket& packet)
 {
     Clear();
-    m_nId = packet.vfunc_o8_3();
-    m_nUid = packet.vfunc_o8_4();
+    m_nId = packet.ReadInt32();
+    m_nUid = packet.ReadInt64();
     m_look.Read(packet);
 }
 
@@ -2431,15 +2431,15 @@ struct Unk_StrFlag
 // @0x1408974e0
 void Unk_StrFlag::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_8(m_str);
-    stream.vfunc_o10_1((unsigned char)m_nFlag);
+    stream.WriteUnicodeString(m_str);
+    stream.WriteUInt8((unsigned char)m_nFlag);
 }
 
 // @0x140897540
 void Unk_StrFlag::Read(CInputStream& stream)
 {
-    m_str = stream.vfunc_o8_8();
-    m_nFlag = stream.vfunc_o8_1();
+    m_str = stream.ReadUnicodeString();
+    m_nFlag = stream.ReadUInt8();
 }
 
 void FUN_140274fc0(CStringW& str, ATL::CAtlArray<unsigned>& out, const wchar_t* pszSep);
@@ -2493,30 +2493,30 @@ void CUgcBannerRollingImage::Clear()
 // @0x140897940
 void CUgcBannerRollingImage::Write(COutputStream& stream) const
 {
-    stream.vfunc_o10_4(m_n18);
-    stream.vfunc_o10_8(m_strIds);
-    stream.vfunc_o10_1((unsigned char)m_n20);
-    stream.vfunc_o10_3(m_n30);
-    stream.vfunc_o10_4(m_n38);
-    stream.vfunc_o10_4(m_n40);
-    stream.vfunc_o10_6(m_str48);
-    stream.vfunc_o10_8(m_str50);
-    stream.vfunc_o10_8(m_str58);
+    stream.WriteInt64(m_n18);
+    stream.WriteUnicodeString(m_strIds);
+    stream.WriteUInt8((unsigned char)m_n20);
+    stream.WriteInt32(m_n30);
+    stream.WriteInt64(m_n38);
+    stream.WriteInt64(m_n40);
+    stream.WriteUnicodeStringA(m_str48);
+    stream.WriteUnicodeString(m_str50);
+    stream.WriteUnicodeString(m_str58);
 }
 
 // @0x140897a70
 void CUgcBannerRollingImage::Read(CInPacket& packet)
 {
     Clear();
-    m_n18 = packet.vfunc_o8_4();
-    m_strIds = packet.vfunc_o8_8();
-    m_n20 = packet.vfunc_o8_1();
-    m_n30 = packet.vfunc_o8_3();
-    m_n38 = packet.vfunc_o8_4();
-    m_n40 = packet.vfunc_o8_4();
-    m_str48 = packet.vfunc_o8_6();
-    m_str50 = packet.vfunc_o8_8();
-    m_str58 = packet.vfunc_o8_8();
+    m_n18 = packet.ReadInt64();
+    m_strIds = packet.ReadUnicodeString();
+    m_n20 = packet.ReadUInt8();
+    m_n30 = packet.ReadInt32();
+    m_n38 = packet.ReadInt64();
+    m_n40 = packet.ReadInt64();
+    m_str48 = packet.ReadUnicodeStringA();
+    m_str50 = packet.ReadUnicodeString();
+    m_str58 = packet.ReadUnicodeString();
 }
 
 // @0x140897d70
@@ -2600,7 +2600,7 @@ UGCMapBlueprintInfo::UGCMapBlueprintInfo()
 // @0x140898b80
 unsigned char FUN_140898b80(CInPacket& packet, Unk_1402c45d0 checker)
 {
-    unsigned char nValue = packet.vfunc_o8_1();
+    unsigned char nValue = packet.ReadUInt8();
     if (!checker.Check(nValue))
         throw Exception(13);
     return nValue;
@@ -2653,13 +2653,13 @@ void CUgcGetCostTable::Write(COutputStream& stream)
 {
     CostMap table(10);
     GetTable(table);
-    stream.vfunc_o10_3((int)table.GetCount());
+    stream.WriteInt32((int)table.GetCount());
     for (POSITION pos = table.GetHeadPosition(); pos != NULL; table.GetNext(pos))
     {
         __int64 nKey = table.GetKeyAt(pos);
         int nPercent = table.GetValueAt(pos);
-        stream.vfunc_o10_4(nKey);
-        stream.vfunc_o10_3(nPercent);
+        stream.WriteInt64(nKey);
+        stream.WriteInt32(nPercent);
     }
 }
 
@@ -2667,11 +2667,11 @@ void CUgcGetCostTable::Write(COutputStream& stream)
 void CUgcGetCostTable::Read(CInPacket& packet)
 {
     CostMap table(10);
-    unsigned nCount = packet.vfunc_o8_3();
+    unsigned nCount = packet.ReadInt32();
     for (unsigned i = 0; i < nCount; i++)
     {
-        __int64 nKey = packet.vfunc_o8_4();
-        int nPercent = packet.vfunc_o8_3();
+        __int64 nKey = packet.ReadInt64();
+        int nPercent = packet.ReadInt32();
         table.SetAt(nKey, nPercent);
     }
     SetTable(table);

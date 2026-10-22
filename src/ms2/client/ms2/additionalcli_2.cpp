@@ -289,7 +289,7 @@ void AdditionalCliList::FUN_14096f500(int nKey, int nCaster)
 // @0x14096f820
 MS2Ptr<AdditionalCli> AdditionalCliList::FUN_14096f820(const Unk_AdditionalOwner& owner, CInPacket& packet)
 {
-    unsigned nFlags = packet.vfunc_o8_3();
+    unsigned nFlags = packet.ReadInt32();
     MS2Ptr<AdditionalCli> sp(0);
     if (!m_map.Lookup(owner.m_n4, sp) && (nFlags & 1))
         sp.AssignRaw(new AdditionalCli);
@@ -732,7 +732,7 @@ float AdditionalCliList::FUN_140970fd0()
 // @0x140970ff0
 void AdditionalCliList::FUN_140970ff0(CInPacket& packet)
 {
-    int nCount = (unsigned short)packet.vfunc_o8_2();
+    int nCount = (unsigned short)packet.ReadInt16();
     for (int i = 0; i < nCount; i++)
     {
         Unk_AdditionalOwner owner;

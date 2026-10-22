@@ -252,9 +252,9 @@ MS2_REPLACE_METHOD(0x140FA9A50, UIHomeOptionDialog, FUN_140fa9a50, 112, 0x832217
 void UIHomeOptionDialog::SendRequestCubeMode42(int nRow, bool bOn)
 {
     COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
-    packet.vfunc_o10_1(0x2a);
-    packet.vfunc_o10_1(nRow);
-    packet.vfunc_o10_0(bOn);
+    packet.WriteUInt8(0x2a);
+    packet.WriteUInt8(nRow);
+    packet.WriteBool(bOn);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x140FA9AD0, UIHomeOptionDialog, SendRequestCubeMode42, 117, 0x51D3FED8);
@@ -263,9 +263,9 @@ MS2_REPLACE_METHOD(0x140FA9AD0, UIHomeOptionDialog, SendRequestCubeMode42, 117, 
 void UIHomeOptionDialog::SendRequestCubeMode43(int nRow, int nLevel)
 {
     COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
-    packet.vfunc_o10_1(0x2b);
-    packet.vfunc_o10_1(nRow);
-    packet.vfunc_o10_1(nLevel);
+    packet.WriteUInt8(0x2b);
+    packet.WriteUInt8(nRow);
+    packet.WriteUInt8(nLevel);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x140FA9B50, UIHomeOptionDialog, SendRequestCubeMode43, 117, 0xE2DAB25B);
@@ -274,7 +274,7 @@ MS2_REPLACE_METHOD(0x140FA9B50, UIHomeOptionDialog, SendRequestCubeMode43, 117, 
 void UIHomeOptionDialog::SendRequestCubeMode49()
 {
     COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
-    packet.vfunc_o10_1(0x31);
+    packet.WriteUInt8(0x31);
     FUN_140710590(packet);
     if (FUN_1418fd280() == 1)
         FUN_1412751f0(FUN_140298ea0(CStringW(L"s_home_option_msg_kick_user")), 1, 1);

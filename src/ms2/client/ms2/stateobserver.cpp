@@ -538,8 +538,8 @@ void StateObserver::FUN_140ac4c90(__int64 nTarget)
         {
             FUN_14152e0c0(pPC);
             COutPacket packet(static_cast<int>(SendOp::SpectateMushtopia), 0);
-            packet.vfunc_o10_1(2);
-            packet.vfunc_o10_4(nTarget);
+            packet.WriteUInt8(2);
+            packet.WriteInt64(nTarget);
             FUN_140710590(packet);
             m_spObserve->m_nTarget = nTarget;
             m_nSwitchTick = nNow;

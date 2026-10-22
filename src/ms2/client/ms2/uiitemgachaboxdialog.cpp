@@ -228,18 +228,18 @@ void UIItemGachaBoxDialog::vfunc_79(void* p)
     UIDialog::vfunc_79(p);
     if (GACHA_PKT->FUN_14070fe80() == 0xf5 && !(m_30 == 0)) {
         m_sent = false;
-        unsigned char reset = GACHA_PKT->vfunc_o8_1();
+        unsigned char reset = GACHA_PKT->ReadUInt8();
         if (reset == 5) {
             GACHA_ITEMS.FUN_14028a590();
             m_special.clear();
-            int n = GACHA_PKT->vfunc_o8_3();
+            int n = GACHA_PKT->ReadInt32();
             bool hasSpecial = false;
             reinterpret_cast<std::vector<ItemEntity>&>(GACHA_ITEMS).resize(n);
             for (int i = 0; i < n; ++i) {
-                GACHA_ITEMS.FUN_140be9400(i).m_itemId = GACHA_PKT->vfunc_o8_3();
-                GACHA_ITEMS.FUN_140be9400(i).m_count = GACHA_PKT->vfunc_o8_3();
-                GACHA_ITEMS.FUN_140be9400(i).SetRank(GACHA_PKT->vfunc_o8_3());
-                if (GACHA_PKT->vfunc_o8_0()) {
+                GACHA_ITEMS.FUN_140be9400(i).m_itemId = GACHA_PKT->ReadInt32();
+                GACHA_ITEMS.FUN_140be9400(i).m_count = GACHA_PKT->ReadInt32();
+                GACHA_ITEMS.FUN_140be9400(i).SetRank(GACHA_PKT->ReadInt32());
+                if (GACHA_PKT->ReadBool()) {
                     hasSpecial = true;
                     m_special.insert(GACHA_ITEMS.FUN_140be9400(i));
                 }

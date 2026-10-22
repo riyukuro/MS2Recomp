@@ -151,11 +151,11 @@ void Unk_PvpTimer::FUN_141017950(int nMessage, CInPacket& packet)
 {
     if (nMessage == 0x67)
     {
-        __int64 nCharId = packet.vfunc_o8_4();
-        int nScore = packet.vfunc_o8_3();
-        int nKill = packet.vfunc_o8_3();
-        int nDeath = packet.vfunc_o8_3();
-        int n1c = packet.vfunc_o8_3();
+        __int64 nCharId = packet.ReadInt64();
+        int nScore = packet.ReadInt32();
+        int nKill = packet.ReadInt32();
+        int nDeath = packet.ReadInt32();
+        int n1c = packet.ReadInt32();
         int nFrom = FUN_141017f40(nCharId);
         FUN_141018260(nCharId, nScore, nKill, nDeath, n1c);
         int nTo = FUN_141017f40(nCharId);
@@ -176,7 +176,7 @@ void Unk_PvpTimer::FUN_141017950(int nMessage, CInPacket& packet)
         Unk_PvpTimerItem* pFirst = FUN_141017fb0(1);
         if (pFirst != 0)
             FUN_141018260(pFirst->m_nCharId, pFirst->m_nScore, pFirst->m_nKill, pFirst->m_nDeath, pFirst->m_n1c);
-        int nRank = packet.vfunc_o8_3();
+        int nRank = packet.ReadInt32();
         if (FUN_1403ed2b0()->FUN_141adc940(0x4e9b) != 0)
             FUN_1403ed2b0()->FUN_141adc530(0x4e9b);
         UIPvPResultDialog* pResult = FUN_141018a80(0x4e9b);
@@ -185,16 +185,16 @@ void Unk_PvpTimer::FUN_141017950(int nMessage, CInPacket& packet)
     }
     else if (nMessage == 0x69)
     {
-        int nStringId = packet.vfunc_o8_3();
-        CStringW strName = packet.vfunc_o8_8();
+        int nStringId = packet.ReadInt32();
+        CStringW strName = packet.ReadUnicodeString();
         CStringW strText = FUN_14052bd00(nStringId, strName);
         FUN_1412751f0(strText, 4, 1);
         FUN_141276180(s_killSlayer, CString(""));
     }
     else if (nMessage == 0x6a)
     {
-        __int64 nCharId = packet.vfunc_o8_4();
-        unsigned __int64 nDamage = (unsigned)packet.vfunc_o8_3();
+        __int64 nCharId = packet.ReadInt64();
+        unsigned __int64 nDamage = (unsigned)packet.ReadInt32();
         int nFrom = FUN_141017f40(nCharId);
         FUN_141018540(nCharId, nDamage);
         int nTo = FUN_141017f40(nCharId);

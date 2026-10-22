@@ -176,7 +176,7 @@ int EquipSlot::vfunc_18(void* p)
                 req.m_nItemUid = ((CItem*)spFrom)->FUN_140526a50();
                 req.m_nSlot = m_nSlot;
                 COutPacket packet(static_cast<int>(SendOp::ItemEquip), 0);
-                packet.vfunc_o10_1(2);
+                packet.WriteUInt8(2);
                 FUN_1401fb9a0((unsigned char*)&req, packet);
                 FUN_140710590(packet);
             }

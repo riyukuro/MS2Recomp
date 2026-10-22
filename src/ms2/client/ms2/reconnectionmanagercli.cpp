@@ -246,12 +246,12 @@ MS2_REPLACE_METHOD(0x140AAD6E0, CReconnectionManagerCli, FUN_140aad6e0, 251, 0xC
 void CReconnectionManagerCli::FUN_140aad7f0() {
     CStringW name = FUN_140d4fdf0(FUN_140aadf70())->FUN_14067c400();
     COutPacket packet(static_cast<int>(SendOp::Reconnect), 0);
-    packet.vfunc_o10_1(1);
-    packet.vfunc_o10_4(DAT_143ab2820);
-    packet.vfunc_o10_4(DAT_143ab2828);
-    packet.vfunc_o10_3(m_cli.m_attempt);
-    packet.vfunc_o10_3(m_cli.m_session);
-    packet.vfunc_o10_8(name);
+    packet.WriteUInt8(1);
+    packet.WriteInt64(DAT_143ab2820);
+    packet.WriteInt64(DAT_143ab2828);
+    packet.WriteInt32(m_cli.m_attempt);
+    packet.WriteInt32(m_cli.m_session);
+    packet.WriteUnicodeString(name);
     m_context.FUN_140208610(packet);
     FUN_140710590(packet);
 }
@@ -292,12 +292,12 @@ MS2_REPLACE_METHOD(0x140AAD9B0, CReconnectionManagerCli, FUN_140aad9b0, 93, 0x25
 
 // @0x140aada20
 void CReconnectionManagerCli::FUN_140aada20(CInPacket* packet) {
-    int kind = packet->vfunc_o8_1();
+    int kind = packet->ReadUInt8();
     switch (kind) {
     case 0: {
-        int mode = packet->vfunc_o8_3();
-        CString host = packet->vfunc_o8_7();
-        int port = packet->vfunc_o8_3();
+        int mode = packet->ReadInt32();
+        CString host = packet->ReadString();
+        int port = packet->ReadInt32();
         m_context.m_18 = mode;
         m_context.m_20 = host;
         m_context.m_28 = port;
@@ -306,7 +306,7 @@ void CReconnectionManagerCli::FUN_140aada20(CInPacket* packet) {
     }
         break;
     case 2: {
-        int result = packet->vfunc_o8_3();
+        int result = packet->ReadInt32();
         switch (result) {
         case 1:
             if (FUN_140aa6d30() != 0 && FUN_1417e2610(FUN_140aa6d30()) == 0x620000c) {

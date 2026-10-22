@@ -1102,7 +1102,7 @@ MS2_REPLACE_METHOD(0x1415216C0, MyPC, vfunc_66, 147, 0x1430228C);
 void MyPC::vfunc_90(void* p)
 {
     CInPacket* pPacket = static_cast<CInPacket*>(p);
-    unsigned char nCount = pPacket->vfunc_o8_1();
+    unsigned char nCount = pPacket->ReadUInt8();
     if (nCount == 0x23)
     {
         for (int nType = 0; nType < 0x23; nType++)
@@ -1111,9 +1111,9 @@ void MyPC::vfunc_90(void* p)
             {
                 __int64 nValue;
                 if (FUN_14082f1a0(nType) == 0)
-                    nValue = (unsigned)pPacket->vfunc_o8_3();
+                    nValue = (unsigned)pPacket->ReadInt32();
                 else
-                    nValue = pPacket->vfunc_o8_4();
+                    nValue = pPacket->ReadInt64();
                 FUN_141670540(i, nType, nValue);
             }
         }
@@ -1122,14 +1122,14 @@ void MyPC::vfunc_90(void* p)
     {
         for (int n = 0; n < nCount; n++)
         {
-            unsigned char nType = pPacket->vfunc_o8_1();
+            unsigned char nType = pPacket->ReadUInt8();
             for (int i = 0; i < 3; i++)
             {
                 __int64 nValue;
                 if (FUN_14082f1a0(nType) == 0)
-                    nValue = (unsigned)pPacket->vfunc_o8_3();
+                    nValue = (unsigned)pPacket->ReadInt32();
                 else
-                    nValue = pPacket->vfunc_o8_4();
+                    nValue = pPacket->ReadInt64();
                 FUN_141670540(i, nType, nValue);
             }
         }
@@ -2762,7 +2762,7 @@ MS2_REPLACE_METHOD(0x141528970, MyPC, FUN_141528970, 513, 0x2DFCF232);
 // @0x141528c30
 void MyPC::FUN_141528c30(CInPacket& packet)
 {
-    m_pos1790 = packet.vfunc_o8_11();
+    m_pos1790 = packet.ReadVector3Short();
 }
 MS2_REPLACE_METHOD(0x141528C30, MyPC, FUN_141528c30, 78, 0xE53AF5C9);
 
@@ -3130,7 +3130,7 @@ void MyPC::SendRequestMoveFieldMode2(int nPortalId, int nA, int nB, __int64 nC, 
     packet.Encode4(nA);
     packet.Encode4(nB);
     packet.Encode8(nC);
-    packet.vfunc_o10_8(strPwd);
+    packet.WriteUnicodeString(strPwd);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x141529c80, MyPC, SendRequestMoveFieldMode2, 263, 0xD4282BAC);
@@ -3707,7 +3707,7 @@ void MyPC::FUN_14152e170(int nMode, int nArg)
     packet.Encode1(nArg);
     packet.Encode4(FUN_14086d260()->FUN_141473390());
     if (nMode == 0)
-        packet.vfunc_o10_10(reinterpret_cast<const Unk_StreamPoint&>(static_cast<const NiPoint3&>(vfunc_18())));
+        packet.WriteVector3(reinterpret_cast<const Unk_StreamPoint&>(static_cast<const NiPoint3&>(vfunc_18())));
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x14152E170, MyPC, FUN_14152e170, 199, 0xEDEFDAF6);
@@ -4107,13 +4107,13 @@ MS2_REPLACE_METHOD(0x14152ED60, MyPC, FUN_14152ed60, 247, 0xCB824A2C);
 void MyPC::FUN_14152ee60(CInPacket& packet)
 {
     FUN_14152eb80();
-    m_n1648 = packet.vfunc_o8_4();
-    unsigned nCountA = packet.vfunc_o8_3();
+    m_n1648 = packet.ReadInt64();
+    unsigned nCountA = packet.ReadInt32();
     for (unsigned i = 0; i < nCountA; i++)
-        FUN_14152ec40(packet.vfunc_o8_4());
-    unsigned nCountB = packet.vfunc_o8_3();
+        FUN_14152ec40(packet.ReadInt64());
+    unsigned nCountB = packet.ReadInt32();
     for (unsigned i = 0; i < nCountB; i++)
-        FUN_14152ec80(packet.vfunc_o8_4());
+        FUN_14152ec80(packet.ReadInt64());
 }
 MS2_REPLACE_METHOD(0x14152EE60, MyPC, FUN_14152ee60, 309, 0xA4DF11E6);
 
@@ -4426,7 +4426,7 @@ void MyPC::FUN_141530720(Unk_MyPCHouseSetting nKind, CStringW strValue, unsigned
     COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
     packet.Encode1(0x18);
     packet.Encode1((unsigned char)nKind);
-    packet.vfunc_o10_8(strValue);
+    packet.WriteUnicodeString(strValue);
     packet.Encode1(bFlag);
     FUN_140710590(packet);
     if (FUN_140166410()->FUN_14036d570(0x117)) {
@@ -4670,7 +4670,7 @@ void MyPC::FUN_14152dbc0()
                 spAction->m_n38 = spItem->FUN_140526a50();
                 spAction->m_b28 = FUN_1409a8b10()->FUN_14124ab20()->m_b2;
                 COutPacket packet(static_cast<int>(SendOp::RequestRide), 0);
-                packet.COutPacket::vfunc_o10_1(0);
+                packet.COutPacket::WriteUInt8(0);
                 spAction->vfunc_1(&packet);
                 FUN_140710590(packet);
                 FUN_14152a310(MS2Ptr<Unk_PCBaseComp_b18>(0));
@@ -4757,7 +4757,7 @@ void MyPC::FUN_14152ba80(MS2Ptr<CItem> spItem)
                     kReq.m_nRideeId = nRideeId;
                     kReq.m_nItemUid = spItem->FUN_140526a50();
                     COutPacket packet(static_cast<int>(SendOp::RequestRide), 0);
-                    packet.COutPacket::vfunc_o10_1(2);
+                    packet.COutPacket::WriteUInt8(2);
                     kReq.FUN_1401fcc90(packet);
                     FUN_140710590(packet);
                 }
@@ -4883,7 +4883,7 @@ void MyPC::FUN_1415310e0(std::list<Unk_MyPCDropItem*>& lstDrops)
     }
     COutPacket packet(static_cast<int>(SendOp::RequestMesoPickup), 0);
     unsigned char nCountPos = packet.FUN_14020b9f0();
-    packet.COutPacket::vfunc_o10_1(0);
+    packet.COutPacket::WriteUInt8(0);
     int nCount = 0;
     for (std::list<Unk_MyPCDropItem*>::iterator it = lstDrops.begin(); it != lstDrops.end(); ++it)
     {
@@ -4892,7 +4892,7 @@ void MyPC::FUN_1415310e0(std::list<Unk_MyPCDropItem*>& lstDrops)
         {
             pDrop->FUN_141191030();
             int nObjectId = pDrop->FUN_14123c580();
-            packet.COutPacket::vfunc_o10_3(nObjectId);
+            packet.COutPacket::WriteInt32(nObjectId);
             nCount++;
             if (nCount >= 0x80)
                 break;

@@ -98,7 +98,7 @@ int UISurveyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
 // @0x140eda1b0
 void UISurveyDialog::FUN_140eda1b0(CInPacket& packet)
 {
-    switch (static_cast<CInputStream&>(packet).vfunc_o8_1())
+    switch (packet.ReadUInt8())
     {
     case 0:
         FUN_140eda360(packet);
@@ -127,11 +127,11 @@ void UISurveyDialog::FUN_140eda1b0(CInPacket& packet)
 void UISurveyDialog::FUN_140eda2b0(int nAnswer)
 {
     COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
-    packet.vfunc_o10_1(5);
-    packet.vfunc_o10_1(5);
-    packet.vfunc_o10_4(m_178);
-    packet.vfunc_o10_4(m_180);
-    packet.vfunc_o10_1(nAnswer);
+    packet.WriteUInt8(5);
+    packet.WriteUInt8(5);
+    packet.WriteInt64(m_178);
+    packet.WriteInt64(m_180);
+    packet.WriteUInt8(nAnswer);
     FUN_140710590(packet);
     vfunc_67();
 }
@@ -146,8 +146,8 @@ void UISurveyDialog::FUN_140eda360(CInPacket& packet)
 void UISurveyDialog::FUN_140eda3c0(CInPacket& packet)
 {
     CInputStream& in = packet;
-    CStringW strName = in.vfunc_o8_8();
-    CStringW strKind = GetStringCommon(in.vfunc_o8_1() == 1 ? 0xc8d : 0xc8e);
+    CStringW strName = in.ReadUnicodeString();
+    CStringW strKind = GetStringCommon(in.ReadUInt8() == 1 ? 0xc8d : 0xc8e);
     FUN_1412751b0(FUN_140632a60(0xc93, strKind, strName), 0x14);
     FUN_1412751b0(GetStringCommon(0xc92), 0x14);
 }
@@ -156,13 +156,13 @@ void UISurveyDialog::FUN_140eda3c0(CInPacket& packet)
 void UISurveyDialog::FUN_140eda530(CInPacket& packet)
 {
     CInputStream& in = packet;
-    CStringW strName = in.vfunc_o8_8();
-    CStringW strKind = GetStringCommon(in.vfunc_o8_1() == 1 ? 0xc8d : 0xc8e);
+    CStringW strName = in.ReadUnicodeString();
+    CStringW strKind = GetStringCommon(in.ReadUInt8() == 1 ? 0xc8d : 0xc8e);
     FUN_1412751b0(FUN_140632a60(0xc91, strKind, strName), 0x14);
-    unsigned char nCount = in.vfunc_o8_1();
+    unsigned char nCount = in.ReadUInt8();
     for (int i = 0; i < (int)nCount; i++)
     {
-        CStringW strAnswer = in.vfunc_o8_8();
+        CStringW strAnswer = in.ReadUnicodeString();
         FUN_1412751b0(FUN_1401d0160(L"- ", strAnswer), 0x14);
     }
     FUN_1412751b0(GetStringCommon(0xc92), 0x14);
@@ -172,10 +172,10 @@ void UISurveyDialog::FUN_140eda530(CInPacket& packet)
 void UISurveyDialog::FUN_140eda790(CInPacket& packet)
 {
     CInputStream& in = packet;
-    CStringW strA = in.vfunc_o8_8();
-    char cKindA = in.vfunc_o8_1();
-    CStringW strB = in.vfunc_o8_8();
-    char cKindB = in.vfunc_o8_1();
+    CStringW strA = in.ReadUnicodeString();
+    char cKindA = in.ReadUInt8();
+    CStringW strB = in.ReadUnicodeString();
+    char cKindB = in.ReadUInt8();
     CStringW strKind = GetStringCommon(cKindA == 1 ? 0xc8d : 0xc8e);
     FUN_1412751b0(FUN_1409eadb0(cKindB == 1 ? 0xc95 : 0xc96, strKind, strA, strB), 0x14);
 }
@@ -184,14 +184,14 @@ void UISurveyDialog::FUN_140eda790(CInPacket& packet)
 void UISurveyDialog::FUN_140eda980(CInPacket& packet)
 {
     CInputStream& in = packet;
-    m_178 = in.vfunc_o8_4();
-    m_180 = in.vfunc_o8_4();
-    m_188 = in.vfunc_o8_1() == 1;
-    m_190 = in.vfunc_o8_8();
+    m_178 = in.ReadInt64();
+    m_180 = in.ReadInt64();
+    m_188 = in.ReadUInt8() == 1;
+    m_190 = in.ReadUnicodeString();
     m_198.RemoveAll();
-    unsigned char nCount = in.vfunc_o8_1();
+    unsigned char nCount = in.ReadUInt8();
     for (int i = 0; i < (int)nCount; i++)
-        m_198.Add(in.vfunc_o8_8());
+        m_198.Add(in.ReadUnicodeString());
     if (FUN_141924740() != 0)
         vfunc_67();
     FUN_141924680();
@@ -205,7 +205,7 @@ void UISurveyDialog::FUN_140eda980(CInPacket& packet)
 // @0x140edacb0
 void UISurveyDialog::FUN_140edacb0(CInPacket& packet)
 {
-    CStringW strName = static_cast<CInputStream&>(packet).vfunc_o8_8();
+    CStringW strName = packet.ReadUnicodeString();
     FUN_1412751b0(FUN_14052bd00(0xc98, strName), 0x14);
 }
 
@@ -213,25 +213,25 @@ void UISurveyDialog::FUN_140edacb0(CInPacket& packet)
 void UISurveyDialog::FUN_140edad50(CInPacket& packet)
 {
     CInputStream& in = packet;
-    __int64 nId = in.vfunc_o8_4();
-    bool bKind = in.vfunc_o8_1() == 1;
-    CStringW strName = in.vfunc_o8_8();
+    __int64 nId = in.ReadInt64();
+    bool bKind = in.ReadUInt8() == 1;
+    CStringW strName = in.ReadUnicodeString();
     CStringW strKind = GetStringCommon(bKind ? 0xc8d : 0xc8e);
     FUN_1412751b0(FUN_140632a60(0xc99, strKind, strName), 0x14);
-    unsigned nCount = in.vfunc_o8_1();
+    unsigned nCount = in.ReadUInt8();
     for (int i = 0; i <= (int)nCount; i++)
     {
         CStringW strAnswer = GetStringCommon(0xc8f);
         if ((unsigned)i != nCount)
-            strAnswer = in.vfunc_o8_8();
-        unsigned nVotes = in.vfunc_o8_1();
+            strAnswer = in.ReadUnicodeString();
+        unsigned nVotes = in.ReadUInt8();
         if ((unsigned)i == nCount && nVotes == 0)
             continue;
         CStringW strLine = FUN_14093fa20(0xc9a, strAnswer, nVotes);
         if (bKind)
         {
             for (int j = 0; j < (int)nVotes; j++)
-                strLine += FUN_1401d0160(L" ", in.vfunc_o8_8());
+                strLine += FUN_1401d0160(L" ", in.ReadUnicodeString());
         }
         FUN_1412751b0(strLine, 0x14);
     }

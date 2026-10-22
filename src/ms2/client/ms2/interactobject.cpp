@@ -706,9 +706,9 @@ void CInteractObject::vfunc_8()
     if (vfunc_4() != 0)
     {
         COutPacket packet(static_cast<int>(SendOp::InteractObject), 0);
-        packet.vfunc_o10_1(0xb);
-        packet.vfunc_o10_3(1);
-        packet.vfunc_o10_7(GetName());
+        packet.WriteUInt8(0xb);
+        packet.WriteInt32(1);
+        packet.WriteString(GetName());
         FUN_140710590(packet);
     }
 }
@@ -724,9 +724,9 @@ void CInteractObject::vfunc_10()
     if (vfunc_4() != 0)
     {
         COutPacket packet(static_cast<int>(SendOp::InteractObject), 0);
-        packet.vfunc_o10_1(0xc);
-        packet.vfunc_o10_3(1);
-        packet.vfunc_o10_7(GetName());
+        packet.WriteUInt8(0xc);
+        packet.WriteInt32(1);
+        packet.WriteString(GetName());
         FUN_140710590(packet);
     }
 }

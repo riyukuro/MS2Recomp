@@ -240,11 +240,11 @@ void UIPetExtractionScrollDialog::vfunc_79(void* pPacket)
     if (pIn->FUN_14070fe80() != 0x108)
         return;
     CInputStream* pStream = static_cast<CInputStream*>(pIn);
-    unsigned nResult = pStream->vfunc_o8_1();
+    unsigned nResult = pStream->ReadUInt8();
     if (nResult == 0)
     {
-        __int64 nUidPet = pStream->vfunc_o8_4();
-        __int64 nUidResult = pStream->vfunc_o8_4();
+        __int64 nUidPet = pStream->ReadInt64();
+        __int64 nUidResult = pStream->ReadInt64();
         MS2Ptr<CItem> spPet = DAT_143ab2a90.FUN_140a5d680(nUidPet);
         if (spPet.IsNull())
             return;

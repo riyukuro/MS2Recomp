@@ -1481,19 +1481,19 @@ SpecialNPCInfo::SpecialNPCInfo()
 // @0x14092c0f0
 void SpecialNPCInfo::FUN_14092c0f0(COutputStream& out)
 {
-    out.vfunc_o10_3(m_nNpcId);
-    out.vfunc_o10_3(m_nFieldId);
-    out.vfunc_o10_2((short)m_n08);
-    out.vfunc_o10_4(m_n10);
-    out.vfunc_o10_1((unsigned char)m_n18);
+    out.WriteInt32(m_nNpcId);
+    out.WriteInt32(m_nFieldId);
+    out.WriteInt16((short)m_n08);
+    out.WriteInt64(m_n10);
+    out.WriteUInt8((unsigned char)m_n18);
 }
 
 // @0x14092c190
 void SpecialNPCInfo::FUN_14092c190(CInputStream& in)
 {
-    m_nNpcId = in.vfunc_o8_3();
-    m_nFieldId = in.vfunc_o8_3();
-    m_n08 = (unsigned short)in.vfunc_o8_2();
-    m_n10 = in.vfunc_o8_4();
-    m_n18 = in.vfunc_o8_1();
+    m_nNpcId = in.ReadInt32();
+    m_nFieldId = in.ReadInt32();
+    m_n08 = (unsigned short)in.ReadInt16();
+    m_n10 = in.ReadInt64();
+    m_n18 = in.ReadUInt8();
 }

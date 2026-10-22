@@ -157,37 +157,37 @@ MS2_REPLACE_METHOD(0x1401588C0, CAchieve, IsValid, 49, 0xF4BB5101);
 // @0x140158900
 void CAchieve::Encode(COutputStream& s)
 {
-    s.vfunc_o10_1((unsigned char)m_nState);
-    s.vfunc_o10_3(m_80);
-    s.vfunc_o10_3(m_nCurGrade);
-    s.vfunc_o10_3(m_nStartGrade);
-    s.vfunc_o10_1((unsigned char)m_d8);
-    s.vfunc_o10_4(m_cond.m_nCount);
-    s.vfunc_o10_3((int)m_mapValue.GetCount());
+    s.WriteUInt8((unsigned char)m_nState);
+    s.WriteInt32(m_80);
+    s.WriteInt32(m_nCurGrade);
+    s.WriteInt32(m_nStartGrade);
+    s.WriteUInt8((unsigned char)m_d8);
+    s.WriteInt64(m_cond.m_nCount);
+    s.WriteInt32((int)m_mapValue.GetCount());
     for (POSITION pos = m_mapValue.GetStartPosition(); pos != NULL; m_mapValue.GetNext(pos))
     {
         int nKey = m_mapValue.GetKeyAt(pos);
         __int64 nValue = m_mapValue.GetValueAt(pos);
-        s.vfunc_o10_3(nKey);
-        s.vfunc_o10_4(nValue);
+        s.WriteInt32(nKey);
+        s.WriteInt64(nValue);
     }
 }
 MS2_REPLACE_METHOD(0x140158900, CAchieve, Encode, 391, 0x8BF80BE0);
 // @0x140158a90
 void CAchieve::Decode(CByteBuffer& b)
 {
-    m_nState = b.vfunc_o8_1();
-    m_80 = b.vfunc_o8_3();
-    m_nCurGrade = b.vfunc_o8_3();
-    m_nStartGrade = b.vfunc_o8_3();
-    m_d8 = b.vfunc_o8_1();
-    m_cond.m_nCount = b.vfunc_o8_4();
+    m_nState = b.ReadUInt8();
+    m_80 = b.ReadInt32();
+    m_nCurGrade = b.ReadInt32();
+    m_nStartGrade = b.ReadInt32();
+    m_d8 = b.ReadUInt8();
+    m_cond.m_nCount = b.ReadInt64();
     m_mapValue.RemoveAll();
-    size_t nCount = (unsigned int)b.vfunc_o8_3();
+    size_t nCount = (unsigned int)b.ReadInt32();
     for (size_t i = 0; i < nCount; ++i)
     {
-        int nKey = b.vfunc_o8_3();
-        __int64 nValue = b.vfunc_o8_4();
+        int nKey = b.ReadInt32();
+        __int64 nValue = b.ReadInt64();
         m_mapValue.SetAt(nKey, nValue);
     }
 }

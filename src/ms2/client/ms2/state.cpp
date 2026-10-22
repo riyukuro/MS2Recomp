@@ -523,10 +523,10 @@ void StateLocalController::vfunc_0()
     if (static_cast<View*>(this)->m_records.IsEmpty())
         return;
     COutPacket packet(static_cast<int>(SendOp::UserSync), 0);
-    packet.vfunc_o10_1(DAT_143ab2856);
-    packet.vfunc_o10_3(FUN_141472bc0());
-    packet.vfunc_o10_3(FUN_14086d260()->FUN_141473610());
-    packet.vfunc_o10_1((unsigned char)static_cast<View*>(this)->m_records.GetCount());
+    packet.WriteUInt8(DAT_143ab2856);
+    packet.WriteInt32(FUN_141472bc0());
+    packet.WriteInt32(FUN_14086d260()->FUN_141473610());
+    packet.WriteUInt8((unsigned char)static_cast<View*>(this)->m_records.GetCount());
     for (POSITION pos = static_cast<View*>(this)->m_records.GetHeadPosition(); pos;
         static_cast<View*>(this)->m_records.GetNext(pos)) {
         Unk_GuideRecord* pRec = static_cast<View*>(this)->m_records.GetAt(pos).get();
@@ -550,8 +550,8 @@ void StatePcGuideObjectController::vfunc_0()
     if (m_records.IsEmpty())
         return;
     COutPacket packet(static_cast<int>(SendOp::GuideObjectSync), 0);
-    packet.vfunc_o10_2((short)m_nKind);
-    packet.vfunc_o10_1((unsigned char)m_records.GetCount());
+    packet.WriteInt16((short)m_nKind);
+    packet.WriteUInt8((unsigned char)m_records.GetCount());
     for (POSITION pos = m_records.GetHeadPosition(); pos; m_records.GetNext(pos)) {
         Unk_GuideRecord* pRec = m_records.GetAt(pos).get();
         pRec->FUN_1408356c0(packet);
@@ -579,10 +579,10 @@ void StateRideeController::vfunc_0()
     if (pPlayer == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::RideSync), 0);
-    packet.vfunc_o10_1(DAT_143ab2856);
-    packet.vfunc_o10_3(FUN_141472bc0());
-    packet.vfunc_o10_3(FUN_14086d260()->FUN_141473610());
-    packet.vfunc_o10_1((unsigned char)static_cast<View*>(static_cast<StateLocalController*>(this))->m_records.GetCount());
+    packet.WriteUInt8(DAT_143ab2856);
+    packet.WriteInt32(FUN_141472bc0());
+    packet.WriteInt32(FUN_14086d260()->FUN_141473610());
+    packet.WriteUInt8((unsigned char)static_cast<View*>(static_cast<StateLocalController*>(this))->m_records.GetCount());
     for (POSITION pos = static_cast<View*>(static_cast<StateLocalController*>(this))->m_records.GetHeadPosition(); pos;
         static_cast<View*>(static_cast<StateLocalController*>(this))->m_records.GetNext(pos)) {
         Unk_GuideRecord* pRec = static_cast<View*>(static_cast<StateLocalController*>(this))->m_records.GetAt(pos).get();

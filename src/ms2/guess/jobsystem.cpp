@@ -120,19 +120,19 @@ JobSkillData* JobSkill::GetData()
 // @0x140637f90
 void JobSkill::Write(COutputStream& os)
 {
-    os.vfunc_o10_3(m_nLevel);
-    os.vfunc_o10_0(m_bChanged);
-    os.vfunc_o10_0(m_bLearned);
-    os.vfunc_o10_0(m_bExtra);
+    os.WriteInt32(m_nLevel);
+    os.WriteBool(m_bChanged);
+    os.WriteBool(m_bLearned);
+    os.WriteBool(m_bExtra);
 }
 
 // @0x140638020
 void JobSkill::Read(CByteBuffer& buf)
 {
-    m_nLevel = buf.vfunc_o8_3();
-    m_bChanged = buf.vfunc_o8_0();
-    m_bLearned = buf.vfunc_o8_0();
-    m_bExtra = buf.vfunc_o8_0();
+    m_nLevel = buf.ReadInt32();
+    m_bChanged = buf.ReadBool();
+    m_bLearned = buf.ReadBool();
+    m_bExtra = buf.ReadBool();
 }
 
 // @0x1406380e0
@@ -260,15 +260,15 @@ unsigned short JobSystem::vfunc_5(unsigned nSkillId)
 void JobSystem::vfunc_6(COutputStream& os)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
-    os.vfunc_o10_3(m_nRank);
+    os.WriteInt32(m_nRank);
     if (GetJobData().get())
     {
-        os.vfunc_o10_3(GetJobData()->GetJobGroupID());
-        os.vfunc_o10_1((unsigned char)m_skills.size());
+        os.WriteInt32(GetJobData()->GetJobGroupID());
+        os.WriteUInt8((unsigned char)m_skills.size());
         for (auto& kv : m_skills)
         {
             JobSkillPtr spSkill = kv.second;
-            os.vfunc_o10_3(spSkill->GetID());
+            os.WriteInt32(spSkill->GetID());
             spSkill->Write(os);
         }
     }
@@ -279,14 +279,14 @@ void JobSystem::vfunc_6(COutputStream& os)
 void JobSystem::vfunc_7(CByteBuffer& buf)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
-    m_nRank = buf.vfunc_o8_3();
-    int nJobGroup = buf.vfunc_o8_3();
+    m_nRank = buf.ReadInt32();
+    int nJobGroup = buf.ReadInt32();
     m_spJob = FUN_1401d7a50()->GetJobData(nJobGroup);
     m_skills.clear();
-    int nCount = buf.vfunc_o8_1();
+    int nCount = buf.ReadUInt8();
     for (int i = 0; i < nCount; i++)
     {
-        unsigned nSkillId = buf.vfunc_o8_3();
+        unsigned nSkillId = buf.ReadInt32();
         JobSkillPtr spSkill(new JobSkill(nSkillId));
         spSkill->Read(buf);
         if (!spSkill->Init(m_spJob.get()))

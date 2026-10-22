@@ -218,15 +218,15 @@ void UIUGCCubeBillDialog::SendRequestCube()
         if (s_cost.m_nKind == 1)
         {
             COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
-            packet.vfunc_o10_1(0x30);
-            packet.vfunc_o10_3(s_cost.m_nCubeId);
+            packet.WriteUInt8(0x30);
+            packet.WriteInt32(s_cost.m_nCubeId);
             FUN_140710590(packet);
         }
         else if (s_cost.m_nKind == 3)
         {
             COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
-            packet.vfunc_o10_1(0x46);
-            packet.vfunc_o10_4(s_cost.m_nBlueprintUid);
+            packet.WriteUInt8(0x46);
+            packet.WriteInt64(s_cost.m_nBlueprintUid);
             FUN_140710590(packet);
         }
     }
@@ -242,12 +242,12 @@ void FUN_140ee8190(CInPacket& packet)
     UIUGCCubeBillDialog::s_cost.PendingCost::Assign(UIUGCCubeBillDialog::s_pending);
     UIUGCCubeBillDialog::s_cost.m_nKind = 1;
     UIUGCCubeBillDialog::s_cost.m_map.RemoveAll();
-    unsigned char nCount = packet.vfunc_o8_1();
-    UIUGCCubeBillDialog::s_cost.m_nArg = packet.vfunc_o8_3();
+    unsigned char nCount = packet.ReadUInt8();
+    UIUGCCubeBillDialog::s_cost.m_nArg = packet.ReadInt32();
     for (int i = 0; i < (int)nCount; ++i)
     {
-        ePayType eType = (ePayType)packet.vfunc_o8_1();
-        __int64 nAmount = packet.vfunc_o8_4();
+        ePayType eType = (ePayType)packet.ReadUInt8();
+        __int64 nAmount = packet.ReadInt64();
         UIUGCCubeBillDialog::s_cost.m_map.SetAt(eType, nAmount);
     }
     FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)0x4f27);
@@ -258,8 +258,8 @@ void FUN_140ee8190(CInPacket& packet)
     else
     {
         COutPacket out(static_cast<int>(SendOp::RequestCube), 0);
-        out.vfunc_o10_1(0x30);
-        out.vfunc_o10_3(UIUGCCubeBillDialog::s_cost.m_nCubeId);
+        out.WriteUInt8(0x30);
+        out.WriteInt32(UIUGCCubeBillDialog::s_cost.m_nCubeId);
         FUN_140710590(out);
     }
 }
@@ -273,8 +273,8 @@ void SendRequestCubeMode35(int nCubeId)
     UIUGCCubeBillDialog::s_pending.m_nKind = 1;
     UIUGCCubeBillDialog::s_pending.m_nCubeId = nCubeId;
     COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
-    packet.vfunc_o10_1(0x23);
-    packet.vfunc_o10_3(nCubeId);
+    packet.WriteUInt8(0x23);
+    packet.WriteInt32(nCubeId);
     FUN_140710590(packet);
 }
 
@@ -287,15 +287,15 @@ void FUN_140ee83f0(CInPacket& packet)
     UIUGCCubeBillDialog::s_cost.PendingCost::Assign(UIUGCCubeBillDialog::s_pending);
     UIUGCCubeBillDialog::s_cost.m_nKind = 3;
     UIUGCCubeBillDialog::s_cost.m_map.RemoveAll();
-    unsigned char nCount = packet.vfunc_o8_1();
-    UIUGCCubeBillDialog::s_cost.m_nArg = packet.vfunc_o8_3();
+    unsigned char nCount = packet.ReadUInt8();
+    UIUGCCubeBillDialog::s_cost.m_nArg = packet.ReadInt32();
     for (int i = 0; i < (int)nCount; ++i)
     {
-        ePayType eType = (ePayType)packet.vfunc_o8_1();
-        __int64 nAmount = packet.vfunc_o8_4();
+        ePayType eType = (ePayType)packet.ReadUInt8();
+        __int64 nAmount = packet.ReadInt64();
         UIUGCCubeBillDialog::s_cost.m_map.SetAt(eType, nAmount);
     }
-    bool bPreview = packet.vfunc_o8_0();
+    bool bPreview = packet.ReadBool();
     UIUGCCubeBillDialog::s_cost.m_bPreview = bPreview;
     FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)0x4f27);
     if (nCount > 0 || bPreview == 1)
@@ -305,8 +305,8 @@ void FUN_140ee83f0(CInPacket& packet)
     else if (bPreview == 0)
     {
         COutPacket out(static_cast<int>(SendOp::RequestCube), 0);
-        out.vfunc_o10_1(0x46);
-        out.vfunc_o10_4(UIUGCCubeBillDialog::s_cost.m_nBlueprintUid);
+        out.WriteUInt8(0x46);
+        out.WriteInt64(UIUGCCubeBillDialog::s_cost.m_nBlueprintUid);
         FUN_140710590(out);
     }
 }
@@ -318,9 +318,9 @@ void SendRequestCubeMode66(void* pBlueprintUid)
     FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4f29);
     UIUGCCubeBillDialog::s_pending.PendingCost::Reset();
     COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
-    packet.vfunc_o10_1(0x42);
-    packet.vfunc_o10_4(*(__int64*)pBlueprintUid);
-    packet.vfunc_o10_0(true);
+    packet.WriteUInt8(0x42);
+    packet.WriteInt64(*(__int64*)pBlueprintUid);
+    packet.WriteBool(true);
     FUN_140710590(packet);
 }
 

@@ -252,7 +252,7 @@ int UISystemMenuDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             if (pMsg->FUN_1422e4520() == 0x7d2)
             {
                 COutPacket packet(static_cast<int>(SendOp::RequestMoveField), 0);
-                packet.vfunc_o10_1(1);
+                packet.WriteUInt8(1);
                 FUN_140710590(packet);
             }
         }
@@ -317,7 +317,7 @@ void UISystemMenuDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
     CInPacket* pPacket = static_cast<CInPacket*>(p);
-    if (vfunc_55() == 0 && !(m_30 == 0) && pPacket->FUN_14070fe80() == 0x10 && !(m_30 == 0) && pPacket->vfunc_o8_1() != 0)
+    if (vfunc_55() == 0 && !(m_30 == 0) && pPacket->FUN_14070fe80() == 0x10 && !(m_30 == 0) && pPacket->ReadUInt8() != 0)
         FUN_141b14630();
 }
 
@@ -409,7 +409,7 @@ void UISystemMenuDialog::FUN_141b13b30()
                         if (nResult == 0)
                         {
                             COutPacket packet(static_cast<int>(SendOp::RequestMoveField), 0);
-                            packet.vfunc_o10_1(1);
+                            packet.WriteUInt8(1);
                             FUN_140710590(packet);
                         }
                         return true;

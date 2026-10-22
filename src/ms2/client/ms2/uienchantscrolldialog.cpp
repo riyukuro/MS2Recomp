@@ -135,11 +135,11 @@ static int FUN_140f3e920(const ATL::CAtlArray<unsigned>& arr, const unsigned& nV
 // Reads the options of the packet (a short key, an int value) into a map.
 static __forceinline void ReadOptions(CInPacket& packet, Unk_EsOptionMap& rMap)
 {
-    unsigned nCount = packet.vfunc_o8_3();
+    unsigned nCount = packet.ReadInt32();
     for (unsigned i = 0; i < nCount; i++) {
         Unk_EnchantPtr<BaseOption> spOpt(new BaseOption());
-        unsigned nKey = (unsigned short)packet.vfunc_o8_2();
-        spOpt->SetValue(packet.vfunc_o8_3());
+        unsigned nKey = (unsigned short)packet.ReadInt16();
+        spOpt->SetValue(packet.ReadInt32());
         rMap.SetAt(nKey, spOpt);
     }
 }
@@ -233,22 +233,22 @@ int UIEnchantScrollDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 void UIEnchantScrollDialog::FUN_140f3b920(CInPacket& packet)
 {
     FUN_140f3d210();
-    m_nScrollUid = packet.vfunc_o8_4();
-    m_nType = (unsigned short)packet.vfunc_o8_2();
-    m_bDisableBreak = packet.vfunc_o8_1() != 0;
-    m_nTargetLevel = packet.vfunc_o8_3();
-    m_nFailRate = packet.vfunc_o8_3();
-    m_nLevelMin = packet.vfunc_o8_2();
-    m_nLevelMax = packet.vfunc_o8_2();
-    int nTypes = packet.vfunc_o8_3();
+    m_nScrollUid = packet.ReadInt64();
+    m_nType = (unsigned short)packet.ReadInt16();
+    m_bDisableBreak = packet.ReadUInt8() != 0;
+    m_nTargetLevel = packet.ReadInt32();
+    m_nFailRate = packet.ReadInt32();
+    m_nLevelMin = packet.ReadInt16();
+    m_nLevelMax = packet.ReadInt16();
+    int nTypes = packet.ReadInt32();
     for (int i = 0; i < nTypes; i++)
-        m_equipTypes.Add(packet.vfunc_o8_3());
-    int nRanks = packet.vfunc_o8_3();
+        m_equipTypes.Add(packet.ReadInt32());
+    int nRanks = packet.ReadInt32();
     for (int i = 0; i < nRanks; i++)
-        m_ranks.Add((Unk_EsRank)packet.vfunc_o8_3());
+        m_ranks.Add((Unk_EsRank)packet.ReadInt32());
     if (m_nType == 3) {
-        m_nRandomMin = packet.vfunc_o8_3();
-        m_nRandomMax = packet.vfunc_o8_3();
+        m_nRandomMin = packet.ReadInt32();
+        m_nRandomMax = packet.ReadInt32();
     }
     unsigned nFail = m_nFailRate;
     m_nFailRate = nFail / 100;
@@ -262,8 +262,8 @@ void UIEnchantScrollDialog::FUN_140f3b920(CInPacket& packet)
 // MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIEnchantScrollDialog::FUN_140f3bd10(CInPacket& packet)
 {
-    m_nItemUid = packet.vfunc_o8_4();
-    unsigned nType = (unsigned short)packet.vfunc_o8_2();
+    m_nItemUid = packet.ReadInt64();
+    unsigned nType = (unsigned short)packet.ReadInt16();
     MS2Ptr<CItem> spScroll = DAT_143ab2a90.FUN_140a5d680(m_nScrollUid);
     MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (FUN_14052cd70(&spItem) == 0 || FUN_14052cd70(&spScroll) == 0)
@@ -302,9 +302,9 @@ void UIEnchantScrollDialog::FUN_140f3bd10(CInPacket& packet)
 // MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIEnchantScrollDialog::FUN_140f3c6c0(CInPacket& packet)
 {
-    short nResult = packet.vfunc_o8_2();
+    short nResult = packet.ReadInt16();
     if (nResult == 0) {
-        unsigned __int64 nItemUid = packet.vfunc_o8_4();
+        unsigned __int64 nItemUid = packet.ReadInt64();
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nItemUid);
         if (FUN_14052cd70(&spItem) == 0) {
             spItem->FUN_140524eb0(packet);
@@ -449,21 +449,21 @@ void UIEnchantScrollDialog::FUN_140f3db20(MS2Ptr<CItem> spItem, ASObj& rData, CI
 {
     ATL::CAtlArray<unsigned> keys;
     Unk_EsOptionMap mapLow(17, 0.75f, 0.25f, 2.25f, 10);
-    unsigned nLow = packet.vfunc_o8_3();
+    unsigned nLow = packet.ReadInt32();
     for (unsigned i = 0; i < nLow; i++) {
         Unk_EnchantPtr<BaseOption> spOpt(new BaseOption());
-        unsigned nKey = (unsigned short)packet.vfunc_o8_2();
-        spOpt->SetValue(packet.vfunc_o8_3());
+        unsigned nKey = (unsigned short)packet.ReadInt16();
+        spOpt->SetValue(packet.ReadInt32());
         mapLow.SetAt(nKey, spOpt);
         if (FUN_140f3e920(keys, nKey) == -1)
             keys.Add(nKey);
     }
     Unk_EsOptionMap mapHigh(17, 0.75f, 0.25f, 2.25f, 10);
-    unsigned nHigh = packet.vfunc_o8_3();
+    unsigned nHigh = packet.ReadInt32();
     for (unsigned i = 0; i < nHigh; i++) {
         Unk_EnchantPtr<BaseOption> spOpt(new BaseOption());
-        unsigned nKey = (unsigned short)packet.vfunc_o8_2();
-        spOpt->SetValue(packet.vfunc_o8_3());
+        unsigned nKey = (unsigned short)packet.ReadInt16();
+        spOpt->SetValue(packet.ReadInt32());
         mapHigh.SetAt(nKey, spOpt);
         if (FUN_140f3e920(keys, nKey) == -1)
             keys.Add(nKey);

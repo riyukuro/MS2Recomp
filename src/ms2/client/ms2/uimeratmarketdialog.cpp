@@ -2886,39 +2886,39 @@ void UIMeratMarketDialog::SendRandomSaleRequest(MS2Ptr<CMeratMarketProduct> spPr
             nRemain = 0;
         int nCount = spProduct->m_premium.GetRemainCount();
         COutPacket pkt(static_cast<int>(SendOp::MeretMarket), 0);
-        pkt.vfunc_o10_1(0x6f);
-        pkt.vfunc_o10_3(spProduct->m_premium.m_n2c);
-        pkt.vfunc_o10_1(spProduct->m_premium.m_n16c);
-        pkt.vfunc_o10_1(spProduct->m_premium.m_n170);
-        pkt.vfunc_o10_3(nCount);
-        pkt.vfunc_o10_4(nRemain);
-        pkt.vfunc_o10_4(spProduct->m_premium.m_nSalePrice);
+        pkt.WriteUInt8(0x6f);
+        pkt.WriteInt32(spProduct->m_premium.m_n2c);
+        pkt.WriteUInt8(spProduct->m_premium.m_n16c);
+        pkt.WriteUInt8(spProduct->m_premium.m_n170);
+        pkt.WriteInt32(nCount);
+        pkt.WriteInt64(nRemain);
+        pkt.WriteInt64(spProduct->m_premium.m_nSalePrice);
         FUN_140710590(pkt);
     }
     else if (nType == 7)
     {
         COutPacket pkt(static_cast<int>(SendOp::MeretMarket), 0);
-        pkt.vfunc_o10_1(0x73);
-        pkt.vfunc_o10_3(spProduct->m_premium.m_nId);
-        pkt.vfunc_o10_3(spProduct->m_premium.m_n1b0);
-        pkt.vfunc_o10_3(0xd67);
+        pkt.WriteUInt8(0x73);
+        pkt.WriteInt32(spProduct->m_premium.m_nId);
+        pkt.WriteInt32(spProduct->m_premium.m_n1b0);
+        pkt.WriteInt32(0xd67);
         FUN_140710590(pkt);
     }
     else if (nType == 8)
     {
         COutPacket pkt(static_cast<int>(SendOp::MeretMarket), 0);
-        pkt.vfunc_o10_1(0x73);
-        pkt.vfunc_o10_3(spProduct->m_premium.m_nId);
-        pkt.vfunc_o10_3(spProduct->m_premium.m_n1b0);
-        pkt.vfunc_o10_3(0xd71);
+        pkt.WriteUInt8(0x73);
+        pkt.WriteInt32(spProduct->m_premium.m_nId);
+        pkt.WriteInt32(spProduct->m_premium.m_n1b0);
+        pkt.WriteInt32(0xd71);
         FUN_140710590(pkt);
     }
     else
     {
         COutPacket pkt(static_cast<int>(SendOp::MeretMarket), 0);
-        pkt.vfunc_o10_1(0x76);
-        pkt.vfunc_o10_3(spProduct->m_premium.m_nId);
-        pkt.vfunc_o10_3(spProduct->m_premium.m_n2c);
+        pkt.WriteUInt8(0x76);
+        pkt.WriteInt32(spProduct->m_premium.m_nId);
+        pkt.WriteInt32(spProduct->m_premium.m_n2c);
         FUN_140710590(pkt);
     }
 }
@@ -3965,9 +3965,9 @@ void UIMeratMarketDialog::OnClickRandomSalePick(const CStringA& strName, ASData&
             else
             {
                 COutPacket pkt(static_cast<int>(SendOp::MeretMarket), 0);
-                pkt.vfunc_o10_1(0x72);
-                pkt.vfunc_o10_3(spProduct->m_premium.m_nId);
-                pkt.vfunc_o10_1(spProduct->m_premium.m_nType);
+                pkt.WriteUInt8(0x72);
+                pkt.WriteInt32(spProduct->m_premium.m_nId);
+                pkt.WriteUInt8(spProduct->m_premium.m_nType);
                 FUN_140710590(pkt);
             }
         }

@@ -210,7 +210,7 @@ void ItemSocketSystemPageSocketTransfer::vfunc_2()
 void ItemSocketSystemPageSocketTransfer::vfunc_5(CInPacket* packet)
 {
     ItemSocketSystemPageBase::vfunc_5(packet);
-    int operation = packet->vfunc_o8_1();
+    int operation = packet->ReadUInt8();
     FUN_140f6d620(1);
     if (operation == 13)
         FUN_140c533f0(packet);

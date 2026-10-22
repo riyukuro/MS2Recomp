@@ -167,7 +167,7 @@ void UISmartRecommendBillingDialog::vfunc_79(void* p)
     UIDialog::vfunc_79(p);
     if (SRB_PKT->FUN_14070fe80() == 0xa0)
     {
-        unsigned nAccepted = SRB_PKT->vfunc_o8_1();
+        unsigned nAccepted = SRB_PKT->ReadUInt8();
         if (nAccepted == 1)
         {
             UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
@@ -219,8 +219,8 @@ int UISmartRecommendBillingDialog::vfunc_28(const char* szMethod, const Scalefor
             }
         }
         COutPacket packet(static_cast<int>(SendOp::SmartRecommendBilling), 0);
-        packet.vfunc_o10_1(0);
-        packet.vfunc_o10_3(m_item->m_nId);
+        packet.WriteUInt8(0);
+        packet.WriteInt32(m_item->m_nId);
         FUN_140710590(packet);
         return 1;
     }

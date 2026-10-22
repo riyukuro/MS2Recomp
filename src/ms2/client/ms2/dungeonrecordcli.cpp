@@ -233,7 +233,7 @@ void DungeonRecordManagerCli::Clear()
 void DungeonRecordManagerCli::OnPacket(CInPacket& packet)
 {
     CInputStream& in = packet;
-    switch (in.vfunc_o8_1())
+    switch (in.ReadUInt8())
     {
     case 5:
         OnRecords(packet);
@@ -295,8 +295,8 @@ void DungeonRecordManagerCli::OnAddRecord(CInPacket& packet)
 void DungeonRecordManagerCli::OnRewardNotice(CInPacket& packet)
 {
     CInputStream& in = packet;
-    unsigned char nKind = in.vfunc_o8_1();
-    int nValue = in.vfunc_o8_3();
+    unsigned char nKind = in.ReadUInt8();
+    int nValue = in.ReadInt32();
     if (nKind == 1)
         FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_room_dungeon_give_reward")), 1, 1);
     else if (nKind == 2)
@@ -350,8 +350,8 @@ void DungeonRecordManagerCli::OnAddRecordExtra(CInPacket& packet)
 void DungeonRecordManagerCli::OnError(CInPacket& packet)
 {
     CInputStream& in = packet;
-    int nError = in.vfunc_o8_3();
-    int nArg = in.vfunc_o8_3();
+    int nError = in.ReadInt32();
+    int nArg = in.ReadInt32();
     switch (nError)
     {
     case 1:
@@ -718,7 +718,7 @@ void DungeonRecordManagerCli::ShowLackExtraTicket(unsigned nRoomID)
 // @0x140b22ea0
 CInputStream& FUN_140b22ea0(CInputStream& in, ATL::CAtlMap<unsigned, DungeonRankRewardPtr>& map)
 {
-    unsigned nCount = in.vfunc_o8_3();
+    unsigned nCount = in.ReadInt32();
     for (int i = 0; i < nCount; ++i)
     {
         DungeonRankRewardPtr spReward;
@@ -732,7 +732,7 @@ CInputStream& FUN_140b22ea0(CInputStream& in, ATL::CAtlMap<unsigned, DungeonRank
 // @0x140b22f40
 CInputStream& FUN_140b22f40(CInputStream& in, ATL::CRBMap<unsigned, DungeonRecordCliPtr>& map)
 {
-    unsigned nCount = in.vfunc_o8_3();
+    unsigned nCount = in.ReadInt32();
     for (int i = 0; i < nCount; ++i)
     {
         DungeonRecordCliPtr spRecord;

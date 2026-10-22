@@ -202,12 +202,12 @@ CTalkScript::~CTalkScript()
 // MS2-FUNCTIONAL: calls into ATL/TPtr COMDATs owned by other units resolve to different targets and the hand-written control flow differs in the large body; permuter lane
 void CTalkScript::Serialize(COutputStream* out)
 {
-    out->vfunc_o10_3(m_npcId);
-    out->vfunc_o10_1((unsigned char)m_popupState);
-    out->vfunc_o10_3(m_popupProp);
+    out->WriteInt32(m_npcId);
+    out->WriteUInt8((unsigned char)m_popupState);
+    out->WriteInt32(m_popupProp);
     int randomPick = m_randomPick != 0 ? 1 : 0;
-    out->vfunc_o10_1(randomPick);
-    out->vfunc_o10_3((int)m_contents.GetCount());
+    out->WriteUInt8(randomPick);
+    out->WriteInt32((int)m_contents.GetCount());
     for (size_t i = 0; i < m_contents.GetCount(); i++)
         m_contents[i]->vfunc_5(*out);
 }
@@ -218,17 +218,17 @@ void CTalkScript::Deserialize(CInPacket& in)
 {
     m_id = 0;
     m_questId = 0;
-    m_npcId = in.vfunc_o8_3();
-    m_popupState = in.vfunc_o8_1();
-    m_popupProp = in.vfunc_o8_3();
-    m_randomPick = in.vfunc_o8_1() == 1;
+    m_npcId = in.ReadInt32();
+    m_popupState = in.ReadUInt8();
+    m_popupProp = in.ReadInt32();
+    m_randomPick = in.ReadUInt8() == 1;
     m_jobCondition = 0;
     m_88 = true;
-    int count = in.vfunc_o8_3();
+    int count = in.ReadInt32();
     for (int i = 0; i < count; i++)
     {
         Unk_TalkContentPtr<CScriptContent> content(0);
-        unsigned char type = in.vfunc_o8_1();
+        unsigned char type = in.ReadUInt8();
         if (type == 0)
             content = new CCinematicContent();
         else if (type == 1)

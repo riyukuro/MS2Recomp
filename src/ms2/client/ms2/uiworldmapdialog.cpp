@@ -419,7 +419,7 @@ void UIWorldMapDialog::vfunc_79(void* p)
         return;
     if (pPacket->FUN_14070fe80() == 0x84)
     {
-        char nMode = pPacket->vfunc_o8_1();
+        char nMode = pPacket->ReadUInt8();
         if (nMode == 0)
             FUN_141b57580(pPacket);
         else if (nMode == 1)
@@ -427,7 +427,7 @@ void UIWorldMapDialog::vfunc_79(void* p)
     }
     else if (pPacket->FUN_14070fe80() == 0x85)
     {
-        char nMode = pPacket->vfunc_o8_1();
+        char nMode = pPacket->ReadUInt8();
         if (nMode == 0)
             FUN_140d73bc0(0xa1, 0, 0, CStringW(L""));
         else if (nMode == 1)

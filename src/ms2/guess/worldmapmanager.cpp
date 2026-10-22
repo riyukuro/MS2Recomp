@@ -633,9 +633,9 @@ void WorldMapManager::LoadIconPacket(CInPacket* packet)
 {
     ClearIconInfos();
     LoadSpecialNpcs(packet);
-    if (static_cast<CInputStream*>(packet)->vfunc_o8_1())
+    if (static_cast<CInputStream*>(packet)->ReadUInt8())
         LoadSpecialNpcs(packet);
-    if (static_cast<CInputStream*>(packet)->vfunc_o8_1() == 1)
+    if (static_cast<CInputStream*>(packet)->ReadUInt8() == 1)
         LoadAddtionalInfos(packet);
 }
 
@@ -644,13 +644,13 @@ void WorldMapManager::LoadIconPacket(CInPacket* packet)
 void WorldMapManager::LoadSpecialNpcs(CInPacket* packet)
 {
     std::vector<Unk_BmBoxPtr<SpecialNPCInfo> > records;
-    unsigned nType = static_cast<CInputStream*>(packet)->vfunc_o8_1();
+    unsigned nType = static_cast<CInputStream*>(packet)->ReadUInt8();
     if (nType == 1)
     {
-        unsigned nCount = static_cast<CInputStream*>(packet)->vfunc_o8_3();
+        unsigned nCount = static_cast<CInputStream*>(packet)->ReadInt32();
         for (unsigned i = 0; i < nCount; i++)
         {
-            unsigned nInner = static_cast<CInputStream*>(packet)->vfunc_o8_3();
+            unsigned nInner = static_cast<CInputStream*>(packet)->ReadInt32();
             for (unsigned j = 0; j < nInner; j++)
             {
                 Unk_BmBoxPtr<SpecialNPCInfo> spRecord(Unk_BmNewTag(0));
@@ -716,9 +716,9 @@ void WorldMapManager::LoadAddtionalInfos(CInPacket* packet)
 {
     ClearAddtionalInfos();
     std::vector<Unk_BmBoxPtr<SpecialNPCInfo> > unused;
-    if (static_cast<CInputStream*>(packet)->vfunc_o8_1() == 3)
+    if (static_cast<CInputStream*>(packet)->ReadUInt8() == 3)
     {
-        unsigned nCount = static_cast<CInputStream*>(packet)->vfunc_o8_3();
+        unsigned nCount = static_cast<CInputStream*>(packet)->ReadInt32();
         for (unsigned i = 0; i < nCount; i++)
         {
             Unk_WmAddtionalRecord rec;
@@ -1601,9 +1601,9 @@ void FUN_141bb0380(UIWorldMap::MapTile* pThis, MS2Ptr<UIWorldMap::MapTile> spTil
 // @0x141bb0440
 void Unk_WmAddtionalRecord::Read(CInputStream* pStream)
 {
-    m_0 = pStream->vfunc_o8_3();
-    m_4 = pStream->vfunc_o8_3();
-    m_8 = (unsigned short)pStream->vfunc_o8_2();
+    m_0 = pStream->ReadInt32();
+    m_4 = pStream->ReadInt32();
+    m_8 = (unsigned short)pStream->ReadInt16();
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cc3a80-0x142cc3aa0 .text$yd

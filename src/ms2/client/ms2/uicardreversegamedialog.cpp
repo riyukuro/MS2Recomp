@@ -175,7 +175,7 @@ void UICardReverseGameDialog::OnLoadInit()
     m_1f0 = -1;
     FUN_141901470(0, 0x4f02);
     COutPacket packet(static_cast<int>(SendOp::CardReverseGame), 0);
-    packet.vfunc_o10_1(0);
+    packet.WriteUInt8(0);
     FUN_140710590(packet);
 }
 
@@ -194,23 +194,23 @@ void UICardReverseGameDialog::vfunc_79(void* p)
     CInPacket* pPacket = static_cast<CInPacket*>(p);
     if (pPacket->FUN_14070fe80() == 0xda)
     {
-        char cMode = pPacket->vfunc_o8_1();
+        char cMode = pPacket->ReadUInt8();
         if (cMode == 0)
         {
             m_1c8.RemoveAll();  // (the exe clears the pick list through the shared helper)
             for (unsigned i = 0; i < m_180.GetCount(); ++i)
                 FUN_141415600(m_180[i]);
             FUN_1402c2890(m_180);
-            m_1e8 = pPacket->vfunc_o8_3();
-            m_1ec = pPacket->vfunc_o8_3();
-            unsigned nCards = pPacket->vfunc_o8_3();
+            m_1e8 = pPacket->ReadInt32();
+            m_1ec = pPacket->ReadInt32();
+            unsigned nCards = pPacket->ReadInt32();
             for (unsigned nCard = 0; nCard < nCards; ++nCard)
             {
                 MS2Ptr<CardReward> spCard(new CardReward);
                 spCard->m_nIndex = nCard;
-                spCard->m_nItemId = pPacket->vfunc_o8_3();
-                spCard->m_nRank = pPacket->vfunc_o8_1();
-                spCard->m_nCount = pPacket->vfunc_o8_3();
+                spCard->m_nItemId = pPacket->ReadInt32();
+                spCard->m_nRank = pPacket->ReadUInt8();
+                spCard->m_nCount = pPacket->ReadInt32();
                 if (m_30.get() != 0)
                 {
                     ASObj obj(2);
@@ -253,7 +253,7 @@ void UICardReverseGameDialog::vfunc_79(void* p)
         {
             if (!m_1a8.IsEmpty())
             {
-                int nPick = pPacket->vfunc_o8_3();
+                int nPick = pPacket->ReadInt32();
                 m_1f8 = m_1a8[nPick];
                 --m_1f4;
                 for (unsigned i = 0; i < m_1c8.GetCount(); ++i)
@@ -270,7 +270,7 @@ void UICardReverseGameDialog::vfunc_79(void* p)
         }
         else if (cMode == 3)
         {
-            unsigned nResult = pPacket->vfunc_o8_1();
+            unsigned nResult = pPacket->ReadUInt8();
             if (nResult == 0)
             {
                 CStringW strMsg = FUN_1409e97f0(0xc3f, (const unsigned&)m_1e8);
@@ -296,7 +296,7 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     if (_stricmp(szMethod, "onShuffleButton") == 0)
     {
         COutPacket packet(static_cast<int>(SendOp::CardReverseGame), 0);
-        packet.vfunc_o10_1(1);
+        packet.WriteUInt8(1);
         FUN_140710590(packet);
         return 1;
     }
@@ -308,7 +308,7 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
             if (data.FUN_1422b9620(pArgs, nArgs) != 0)
             {
                 COutPacket packet(static_cast<int>(SendOp::CardReverseGame), 0);
-                packet.vfunc_o10_1(2);
+                packet.WriteUInt8(2);
                 FUN_140710590(packet);
                 m_1f0 = data.FUN_1422b8b10();
             }

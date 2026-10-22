@@ -194,7 +194,7 @@ void StateHomeConvenient::Finish(double fTime)
                 if (pBar)
                     pBar->FUN_1418e1390();
                 COutPacket packet(static_cast<int>(SendOp::RequestHomeBank), 0);
-                packet.vfunc_o10_1((unsigned char)GetKind());
+                packet.WriteUInt8((unsigned char)GetKind());
                 FUN_140710590(packet);
                 m_n40 = 1;
             }

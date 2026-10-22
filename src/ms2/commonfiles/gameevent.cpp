@@ -360,7 +360,7 @@ template <class T> CInputStream& operator>>(CInputStream& in, MS2Ptr<T>& sp)
 template <class K, class V, class KTraits, class VTraits>
 COutputStream& operator<<(COutputStream& out, ATL::CAtlMap<K, V, KTraits, VTraits>& map)
 {
-    out.vfunc_o10_3((int)map.GetCount());
+    out.WriteInt32((int)map.GetCount());
     for (POSITION pos = map.GetStartPosition(); pos != NULL; map.GetNext(pos))
     {
         FUN_14070f9a0(out, map.GetKeyAt(pos));
@@ -371,7 +371,7 @@ COutputStream& operator<<(COutputStream& out, ATL::CAtlMap<K, V, KTraits, VTrait
 template <class K, class V, class KTraits, class VTraits>
 CInputStream& operator>>(CInputStream& in, ATL::CAtlMap<K, V, KTraits, VTraits>& map)
 {
-    unsigned nCount = in.vfunc_o8_3();
+    unsigned nCount = in.ReadInt32();
     for (unsigned i = 0; i < nCount; ++i)
     {
         V value;
@@ -386,7 +386,7 @@ CInputStream& operator>>(CInputStream& in, ATL::CAtlMap<K, V, KTraits, VTraits>&
 template <class K, class V, class KTraits, class VTraits>
 COutputStream& operator<<(COutputStream& out, ATL::CRBMap<K, V, KTraits, VTraits>& map)
 {
-    out.vfunc_o10_3((int)map.GetCount());
+    out.WriteInt32((int)map.GetCount());
     for (POSITION pos = map.GetHeadPosition(); pos != NULL; map.GetNext(pos))
     {
         FUN_14070fae0(out, map.GetKeyAt(pos));
@@ -397,7 +397,7 @@ COutputStream& operator<<(COutputStream& out, ATL::CRBMap<K, V, KTraits, VTraits
 template <class K, class V, class KTraits, class VTraits>
 CInputStream& operator>>(CInputStream& in, ATL::CRBMap<K, V, KTraits, VTraits>& map)
 {
-    unsigned nCount = in.vfunc_o8_3();
+    unsigned nCount = in.ReadInt32();
     for (unsigned i = 0; i < nCount; ++i)
     {
         K key;
@@ -412,7 +412,7 @@ CInputStream& operator>>(CInputStream& in, ATL::CRBMap<K, V, KTraits, VTraits>& 
 template <class T>
 COutputStream& operator<<(COutputStream& out, const ATL::CAtlArray<T>& arr)
 {
-    out.vfunc_o10_3((int)arr.GetCount());
+    out.WriteInt32((int)arr.GetCount());
     for (size_t i = 0; i < arr.GetCount(); i++)
         FUN_14070f9a0(out, arr[i]);
     return out;
@@ -420,7 +420,7 @@ COutputStream& operator<<(COutputStream& out, const ATL::CAtlArray<T>& arr)
 template <class T>
 CInputStream& operator>>(CInputStream& in, ATL::CAtlArray<T>& arr)
 {
-    unsigned nCount = in.vfunc_o8_3();
+    unsigned nCount = in.ReadInt32();
     for (unsigned i = 0; i < nCount; i++)
     {
         T value;
@@ -446,7 +446,7 @@ void FUN_1403d8040(CStringW& text, std::set<T>& values, const wchar_t* delims)
 // Count-prefixed streaming of a vector of contexts (their Write / Read members).
 template <class T> void operator<<(COutputStream& out, std::vector<MS2Ptr<T> >& vec)
 {
-    out.vfunc_o10_3((int)vec.size());
+    out.WriteInt32((int)vec.size());
     for (typename std::vector<MS2Ptr<T> >::iterator it = vec.begin(); it != vec.end(); it++)
     {
         MS2Ptr<T>& sp = *it;
@@ -455,7 +455,7 @@ template <class T> void operator<<(COutputStream& out, std::vector<MS2Ptr<T> >& 
 }
 template <class T> void operator>>(CInputStream& in, std::vector<MS2Ptr<T> >& vec)
 {
-    unsigned nCount = in.vfunc_o8_3();
+    unsigned nCount = in.ReadInt32();
     vec.reserve(nCount);
     for (unsigned i = 0; i < nCount; i++)
     {

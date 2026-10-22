@@ -209,55 +209,55 @@ CItemMergeOptionProxy::~CItemMergeOptionProxy() = default;
 // @0x1405bec30
 void CItemMergeOptionProxy::FUN_1405bec30(COutputStream& stream)
 {
-    stream.vfunc_o10_4(m_nMeso);
+    stream.WriteInt64(m_nMeso);
     m_ingredients.FUN_14026bfd0(stream);
-    stream.vfunc_o10_3((unsigned)m_values.GetCount());
+    stream.WriteInt32((unsigned)m_values.GetCount());
     for (size_t i = 0; i < m_values.GetCount(); i++)
-        stream.vfunc_o10_3(m_values[i]);
-    stream.vfunc_o10_3((unsigned)m_normal.GetCount());
+        stream.WriteInt32(m_values[i]);
+    stream.WriteInt32((unsigned)m_normal.GetCount());
     for (POSITION pos = m_normal.GetStartPosition(); pos != 0; m_normal.GetNext(pos))
     {
         MergeNormalOption key = m_normal.GetKeyAt(pos);
         CItemMergeOptionVariation* pRange = &m_normal.GetValueAt(pos);
-        stream.vfunc_o10_2((unsigned short)key);
-        stream.vfunc_o10_3(pRange->m_range.m_nMin);
-        stream.vfunc_o10_3(pRange->m_range.m_nMax);
+        stream.WriteInt16((unsigned short)key);
+        stream.WriteInt32(pRange->m_range.m_nMin);
+        stream.WriteInt32(pRange->m_range.m_nMax);
     }
-    stream.vfunc_o10_3((unsigned)m_special.GetCount());
+    stream.WriteInt32((unsigned)m_special.GetCount());
     for (POSITION pos = m_special.GetStartPosition(); pos != 0; m_special.GetNext(pos))
     {
         MergeSpecialOption key = m_special.GetKeyAt(pos);
         CItemMergeOptionVariation* pRange = &m_special.GetValueAt(pos);
-        stream.vfunc_o10_2((unsigned short)key);
-        stream.vfunc_o10_3(pRange->m_range.m_nMin);
-        stream.vfunc_o10_3(pRange->m_range.m_nMax);
+        stream.WriteInt16((unsigned short)key);
+        stream.WriteInt32(pRange->m_range.m_nMin);
+        stream.WriteInt32(pRange->m_range.m_nMax);
     }
 }
 
 // @0x1405bef60
 void CItemMergeOptionProxy::FUN_1405bef60(CInPacket& packet)
 {
-    m_nMeso = packet.vfunc_o8_4();
+    m_nMeso = packet.ReadInt64();
     m_ingredients.FUN_14026c0b0(packet);
-    unsigned nValues = packet.vfunc_o8_3();
+    unsigned nValues = packet.ReadInt32();
     for (unsigned __int64 i = 0; i < nValues; i++)
-        m_values.Add(packet.vfunc_o8_3());
-    unsigned nNormal = packet.vfunc_o8_3();
+        m_values.Add(packet.ReadInt32());
+    unsigned nNormal = packet.ReadInt32();
     for (unsigned __int64 i = 0; i < nNormal; i++)
     {
         CItemMergeOptionVariation range;
-        MergeNormalOption key = (MergeNormalOption)packet.vfunc_o8_2();
-        range.m_range.m_nMin = packet.vfunc_o8_3();
-        range.m_range.m_nMax = packet.vfunc_o8_3();
+        MergeNormalOption key = (MergeNormalOption)packet.ReadInt16();
+        range.m_range.m_nMin = packet.ReadInt32();
+        range.m_range.m_nMax = packet.ReadInt32();
         m_normal.SetAt(key, range);
     }
-    unsigned nSpecial = packet.vfunc_o8_3();
+    unsigned nSpecial = packet.ReadInt32();
     for (unsigned __int64 i = 0; i < nSpecial; i++)
     {
         CItemMergeOptionVariation range;
-        MergeSpecialOption key = (MergeSpecialOption)packet.vfunc_o8_2();
-        range.m_range.m_nMin = packet.vfunc_o8_3();
-        range.m_range.m_nMax = packet.vfunc_o8_3();
+        MergeSpecialOption key = (MergeSpecialOption)packet.ReadInt16();
+        range.m_range.m_nMin = packet.ReadInt32();
+        range.m_range.m_nMax = packet.ReadInt32();
         m_special.SetAt(key, range);
     }
 }

@@ -1181,10 +1181,10 @@ void CMagic::FUN_14145f570(unsigned nNow)
             packet.Encode1(m_spSkill->m_b5c);
             packet.Encode4(m_spSkill->m_n8c);
             packet.Encode4(m_spSkill->m_n84);
-            packet.vfunc_o10_10(m_ptCurrent);
+            packet.WriteVector3(m_ptCurrent);
             Unk_StreamPoint ptDir = DAT_143a08d08;
             FUN_140a0b1f0(m_matRotation, &ptDir);
-            packet.vfunc_o10_10(ptDir);
+            packet.WriteVector3(ptDir);
             FUN_140710590(packet);
         }
     }
@@ -1889,10 +1889,10 @@ void CMagic::FUN_141464d00(unsigned nNow, const Unk_MagicSkillRow* pRow)
     packet.Encode1(1);
     packet.Encode8(m_spSkill->m_nTagId);
     packet.Encode8(m_spSkill->m_nTagSub);
-    packet.vfunc_o10_10(m_ptStart);
-    packet.vfunc_o10_10(pOwner->vf18_GetPosition());
+    packet.WriteVector3(m_ptStart);
+    packet.WriteVector3(pOwner->vf18_GetPosition());
     Unk_StreamPoint ptFace = pOwner->FUN_14123cc20();
-    packet.vfunc_o10_10(Unk_StreamPoint(0.0f, 0.0f, FUN_14123cd50(ptFace)));
+    packet.WriteVector3(Unk_StreamPoint(0.0f, 0.0f, FUN_14123cd50(ptFace)));
     packet.Encode1(m_spSkill->m_b5c);
     packet.Encode1((unsigned char)nHits);
     packet.Encode4(m_spSkill->m_n8c);
@@ -1998,9 +1998,9 @@ void CMagic::FUN_141465b30(unsigned nNow, const Unk_MagicSkillRow* pRow)
         packet.Encode1(1);
         packet.Encode8(m_spSkill->m_nTagId);
         packet.Encode8(m_spSkill->m_nTagSub);
-        packet.vfunc_o10_10(m_ptLast);
-        packet.vfunc_o10_10(m_ptCurrent);
-        packet.vfunc_o10_10(FUN_141464580());
+        packet.WriteVector3(m_ptLast);
+        packet.WriteVector3(m_ptCurrent);
+        packet.WriteVector3(FUN_141464580());
         packet.Encode1(m_spSkill->m_b5c);
         packet.Encode1((unsigned char)nHits);
         packet.Encode4(m_spSkill->m_n8c);
@@ -2428,10 +2428,10 @@ void CMagic::FUN_141466da0(unsigned nNow, const Unk_MagicSkillRow* pRow)
         packet.Encode1(m_spSkill->m_b5c);
         packet.Encode4(m_spSkill->m_n8c);
         packet.Encode4(m_spSkill->m_n84);
-        packet.vfunc_o10_10(m_ptCurrent);
+        packet.WriteVector3(m_ptCurrent);
         Unk_StreamPoint ptDir = DAT_143a08d08;
         FUN_140a0b1f0(m_matRotation, &ptDir);
-        packet.vfunc_o10_10(ptDir);
+        packet.WriteVector3(ptDir);
         FUN_140710590(packet);
     }
 }

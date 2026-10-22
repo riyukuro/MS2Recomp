@@ -787,7 +787,7 @@ MS2_REPLACE_METHOD_VIA(0x141aab610, UIQuestGuideDialog, UIQuestEventListener, vf
 void UIQuestGuideDialog::FUN_141aab700(CInPacket& packet)
 {
     // MS2-FUNCTIONAL: the exe widens the byte to an int switch temporary; cl folds the cast here
-    switch ((int)packet.vfunc_o8_1()) {
+    switch ((int)packet.ReadUInt8()) {
     case 1:
         FUN_141aadbc0();
         break;
@@ -814,7 +814,7 @@ void UIQuestGuideDialog::FUN_141aab840(CInPacket& packet)
 {
     if (!FUN_141924630())
         return;
-    int nMode = packet.vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     switch (nMode) {
     case 2: case 3: case 7: case 8: case 9: case 0x1e: {
         ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;

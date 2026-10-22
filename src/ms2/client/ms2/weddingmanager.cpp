@@ -205,7 +205,7 @@ void WeddingManager::OnPacket(CInPacket& packet)
 {
     if (!FUN_14036d570(FUN_140166410(), 0x104))
         return;
-    unsigned char mode = packet.vfunc_o8_1();
+    unsigned char mode = packet.ReadUInt8();
     switch (mode) {
     case 0x00: OnProxy(packet); break;
     case 0x01: OnTicketList(packet); break;
@@ -243,10 +243,10 @@ void WeddingManager::OnTicketList(CInPacket& packet)
 {
     m_ticket.Read(packet);
     m_invited.clear();
-    int count = packet.vfunc_o8_3();
+    int count = packet.ReadInt32();
     for (int i = 0; i < count; i++) {
-        unsigned __int64 first = packet.vfunc_o8_4();
-        unsigned __int64 second = packet.vfunc_o8_4();
+        unsigned __int64 first = packet.ReadInt64();
+        unsigned __int64 second = packet.ReadInt64();
         m_invited.insert(std::make_pair(first, second));
     }
 }
@@ -266,7 +266,7 @@ void WeddingManager::OnInvitationTicket(CInPacket& packet)
     if (FUN_1403ed2d0()->FUN_141bd3060() != 62000000 && FUN_14092f660())
         return;
     WeddingHallTicket ticket;
-    unsigned __int64 id = packet.vfunc_o8_4();
+    unsigned __int64 id = packet.ReadInt64();
     ticket.Read(packet);
     if (m_tickets.find(id) != m_tickets.end())
         m_tickets.erase(id);
@@ -277,7 +277,7 @@ void WeddingManager::OnInvitationTicket(CInPacket& packet)
 // @0x141b84ac0
 void WeddingManager::OnInvitationRemove(CInPacket& packet)
 {
-    unsigned __int64 id = packet.vfunc_o8_4();
+    unsigned __int64 id = packet.ReadInt64();
     m_tickets.erase(id);
     UIWeddingHallListDialog* dialog = Unk_WmDialog<UIWeddingHallListDialog>(0x4f96);
     if (dialog && FUN_141924630(dialog))
@@ -336,7 +336,7 @@ void WeddingManager::OnMode23(CInPacket& packet)
 // @0x141b85890
 void WeddingManager::OnMode27(CInPacket& packet)
 {
-    int result = packet.vfunc_o8_1();
+    int result = packet.ReadUInt8();
     bool accepted = result == 2;
     if (accepted)
         OnMode27Accept(packet);
@@ -347,7 +347,7 @@ void WeddingManager::OnMode27(CInPacket& packet)
 // @0x141b85920
 void WeddingManager::OnMode1e(CInPacket& packet)
 {
-    int result = packet.vfunc_o8_1();
+    int result = packet.ReadUInt8();
     switch (result) {
     case 1:
     case 2:
@@ -355,7 +355,7 @@ void WeddingManager::OnMode1e(CInPacket& packet)
         break;
     case 3:
         m_nStep = 0;
-        m_strPartner = packet.vfunc_o8_8();
+        m_strPartner = packet.ReadUnicodeString();
         ShowStep();
         break;
     }
@@ -364,7 +364,7 @@ void WeddingManager::OnMode1e(CInPacket& packet)
 // @0x141b85a20
 void WeddingManager::OnMode1f(CInPacket& packet)
 {
-    int result = packet.vfunc_o8_1();
+    int result = packet.ReadUInt8();
     // 0x141b85a68: an unreachable jmp precedes the first case body (a statement before the first case label).
     switch (result) {
         break;
@@ -575,7 +575,7 @@ void WeddingManager::ShowError(int code)
 // @0x141b83b80
 void WeddingManager::OnResult(CInPacket& packet)
 {
-    int result = packet.vfunc_o8_1();
+    int result = packet.ReadUInt8();
     if (result >= 0x12) {
         ShowError(result);
         return;
@@ -604,8 +604,8 @@ void WeddingManager::OnResult(CInPacket& packet)
 // @0x141b83f90
 void WeddingManager::OnPropose(CInPacket& packet)
 {
-    unsigned __int64 id = packet.vfunc_o8_4();
-    CStringW name = packet.vfunc_o8_8();
+    unsigned __int64 id = packet.ReadInt64();
+    CStringW name = packet.ReadUnicodeString();
     m_strTarget = name;
     CStringW message = FUN_14028dfa0(CStringW(L"s_wedding_msg_box_propose_from"), name);
     MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, message, 0, CStringW(L""));
@@ -622,7 +622,7 @@ void WeddingManager::OnPropose(CInPacket& packet)
 void WeddingManager::OnReservationChangeRequest(CInPacket& packet)
 {
     CStringW message;
-    int reason = packet.vfunc_o8_2();
+    int reason = packet.ReadInt16();
     switch (reason) {
     case 10:
         message = FUN_14028dfa0(CStringW(L"s_wedding_hall_reservation_cancel_no_refund_decline"), GetPartnerName());
@@ -796,7 +796,7 @@ bool WeddingManager::OnNicknameAnswer(int result, const CMsgBoxData& box)
         COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
         packet.Encode1(0x1e);
         packet.Encode1(3);
-        packet.vfunc_o10_0(true);
+        packet.WriteBool(true);
         FUN_140710590(packet);
         return true;
     }
@@ -817,7 +817,7 @@ bool WeddingManager::OnLastStepAnswer(int result, const CMsgBoxData& box)
     COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
     packet.Encode1(0x1e);
     packet.Encode1(3);
-    packet.vfunc_o10_0(true);
+    packet.WriteBool(true);
     FUN_140710590(packet);
     return true;
 }
@@ -833,7 +833,7 @@ bool WeddingManager::OnActingAnswer(int result, const CMsgBoxData& box)
     bool accept = result == 0 ? true : false;
     packet.Encode1(0x1e);
     packet.Encode1(type);
-    packet.vfunc_o10_0(accept);
+    packet.WriteBool(accept);
     FUN_140710590(packet);
     return true;
 }
@@ -897,7 +897,7 @@ void WeddingManager::OnMode14(CInPacket& packet)
 {
     WeddingHallTicket ticket;
     ticket.Read(packet);
-    __int64 cost = packet.vfunc_o8_4();
+    __int64 cost = packet.ReadInt64();
     MS2Ptr<WeddingPackage> package = FUN_1409023c0()->FUN_140908b80(ticket.m_nPackageId);
     if (package.get() == 0)
         return;
@@ -916,7 +916,7 @@ void WeddingManager::OnMode14(CInPacket& packet)
 void WeddingManager::OnMode16(CInPacket& packet)
 {
     m_ticket.Read(packet);
-    __int64 cost = packet.vfunc_o8_4();
+    __int64 cost = packet.ReadInt64();
     MS2Ptr<WeddingPackage> package = FUN_1409023c0()->FUN_140908b80(m_ticket.m_nPackageId);
     if (package.get() == 0)
         return;
@@ -1010,7 +1010,7 @@ void WeddingManager::SendPropose(const CStringW& name)
             } else {
                 COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
                 packet.Encode1(3);
-                packet.vfunc_o10_8(name);
+                packet.WriteUnicodeString(name);
                 FUN_140710590(packet);
             }
         }
@@ -1028,7 +1028,7 @@ void WeddingManager::SendReservation(int packageId, int hallId, __int64 time, un
     COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
     packet.Encode1(0xd);
     ticket.Write(packet);
-    packet.vfunc_o10_0(agree);
+    packet.WriteBool(agree);
     FUN_140710590(packet);
 }
 
@@ -1185,11 +1185,11 @@ void WeddingManager::OnMode27Accept(CInPacket& packet)
     if (user) {
         MS2Ptr<StateWeddingEmotionData> data(new StateWeddingEmotionData);
         data->m_b18 = true;
-        data->m_n28 = packet.vfunc_o8_3();
-        data->m_b2d = packet.vfunc_o8_0();
-        data->m_b2c = packet.vfunc_o8_0();
+        data->m_n28 = packet.ReadInt32();
+        data->m_b2d = packet.ReadBool();
+        data->m_b2c = packet.ReadBool();
         if (data->m_b2c)
-            data->m_n30 = packet.vfunc_o8_3();
+            data->m_n30 = packet.ReadInt32();
         int kind = user->FUN_14166c930();
         if ((kind == 1 || kind == 2 || kind == 0x47) == false)
             return;

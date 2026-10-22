@@ -1620,56 +1620,56 @@ MS2_REPLACE_METHOD(0x1401757f0, AdditionalLevelData, LoadCondition, 1923, 0x4B39
 // @0x140175f80
 void Unk_AdditionalOwner::Encode(COutputStream* pStream)
 {
-    pStream->vfunc_o10_3(m_n0);
-    pStream->vfunc_o10_3(m_n4);
-    pStream->vfunc_o10_3(m_n8);
+    pStream->WriteInt32(m_n0);
+    pStream->WriteInt32(m_n4);
+    pStream->WriteInt32(m_n8);
 }
 MS2_REPLACE_METHOD(0x140175f80, Unk_AdditionalOwner, Encode, 90, 0xD6707553);
 
 // @0x140175fe0
 void Unk_AdditionalOwner::Decode(CInPacket& packet)
 {
-    m_n0 = packet.vfunc_o8_3();
-    m_n4 = packet.vfunc_o8_3();
-    m_n8 = packet.vfunc_o8_3();
+    m_n0 = packet.ReadInt32();
+    m_n4 = packet.ReadInt32();
+    m_n8 = packet.ReadInt32();
 }
 MS2_REPLACE_METHOD(0x140175fe0, Unk_AdditionalOwner, Decode, 144, 0xE7196D86);
 
 // @0x140176080
 void Unk_AdditionalState::Encode(COutputStream* pStream)
 {
-    pStream->vfunc_o10_3(m_n0);
-    pStream->vfunc_o10_3(m_n4);
-    pStream->vfunc_o10_3(m_n8);
-    pStream->vfunc_o10_2(m_nC);
-    pStream->vfunc_o10_3(m_n10);
-    pStream->vfunc_o10_1((unsigned char)m_n14);
+    pStream->WriteInt32(m_n0);
+    pStream->WriteInt32(m_n4);
+    pStream->WriteInt32(m_n8);
+    pStream->WriteInt16(m_nC);
+    pStream->WriteInt32(m_n10);
+    pStream->WriteUInt8((unsigned char)m_n14);
 }
 MS2_REPLACE_METHOD(0x140176080, Unk_AdditionalState, Encode, 164, 0x44223F7D);
 
 // @0x140176130
 void Unk_AdditionalState::Decode(CInPacket& packet)
 {
-    m_n0 = packet.vfunc_o8_3();
-    m_n4 = packet.vfunc_o8_3();
-    m_n8 = packet.vfunc_o8_3();
-    m_nC = packet.vfunc_o8_2();
-    m_n10 = packet.vfunc_o8_3();
-    m_n14 = packet.vfunc_o8_1();
+    m_n0 = packet.ReadInt32();
+    m_n4 = packet.ReadInt32();
+    m_n8 = packet.ReadInt32();
+    m_nC = packet.ReadInt16();
+    m_n10 = packet.ReadInt32();
+    m_n14 = packet.ReadUInt8();
 }
 MS2_REPLACE_METHOD(0x140176130, Unk_AdditionalState, Decode, 274, 0xFAAD7DB9);
 
 // @0x140176250
 void Unk_AdditionalValue::Encode(COutputStream* pStream)
 {
-    pStream->vfunc_o10_4(m_n0);
+    pStream->WriteInt64(m_n0);
 }
 MS2_REPLACE_METHOD(0x140176250, Unk_AdditionalValue, Encode, 43, 0xCCA85769);
 
 // @0x140176290
 void Unk_AdditionalValue::Decode(CInPacket& packet)
 {
-    m_n0 = packet.vfunc_o8_4();
+    m_n0 = packet.ReadInt64();
 }
 MS2_REPLACE_METHOD(0x140176290, Unk_AdditionalValue, Decode, 61, 0xD1979832);
 

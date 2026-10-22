@@ -219,44 +219,44 @@ void CItemOption::FUN_1405cbd70(ATL::CAtlMap<unsigned, unsigned short>& kOut) {
 // @0x1405cbeb0
 void CItemOption::FUN_1405cbeb0(COutputStream& kOut) {
     for (unsigned i=0;i<5;i++) {
-        kOut.vfunc_o10_2((short)m_aStat[i].GetCount());
+        kOut.WriteInt16((short)m_aStat[i].GetCount());
         for (POSITION pos=m_aStat[i].GetStartPosition();pos;m_aStat[i].GetNext(pos)) {
             int nStat=m_aStat[i].GetKeyAt(pos);
             Unk_EnchantPtr<BaseOption> spOption=m_aStat[i].GetValueAt(pos);
-            kOut.vfunc_o10_2((short)nStat);
+            kOut.WriteInt16((short)nStat);
             spOption->FUN_140266d20(reinterpret_cast<Unk_EnchantWrite&>(kOut));
         }
-        kOut.vfunc_o10_2((short)m_aSpecial[i].GetCount());
+        kOut.WriteInt16((short)m_aSpecial[i].GetCount());
         for (POSITION pos=m_aSpecial[i].GetStartPosition();pos;m_aSpecial[i].GetNext(pos)) {
             Unk_SocketSpecialStat eStat=m_aSpecial[i].GetKeyAt(pos);
             Unk_EnchantPtr<BaseOption> spOption=m_aSpecial[i].GetValueAt(pos);
-            kOut.vfunc_o10_2((short)eStat);
+            kOut.WriteInt16((short)eStat);
             spOption->FUN_140266d20(reinterpret_cast<Unk_EnchantWrite&>(kOut));
         }
     }
-    kOut.vfunc_o10_3(m_n2f0);
+    kOut.WriteInt32(m_n2f0);
 }
 
 // @0x1405cc190
 void CItemOption::FUN_1405cc190(CInputStream& kIn) {
     FUN_1405cb110();
     for (unsigned i=0;i<5;i++) {
-        unsigned nCount=(unsigned short)kIn.vfunc_o8_2();
+        unsigned nCount=(unsigned short)kIn.ReadInt16();
         for (unsigned j=0;j<nCount;j++) {
             Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
-            int nStat=(unsigned short)kIn.vfunc_o8_2();
+            int nStat=(unsigned short)kIn.ReadInt16();
             spOption->FUN_140266d60(reinterpret_cast<Unk_EnchantRead&>(kIn));
             m_aStat[i].SetAt(nStat,spOption);
         }
-        unsigned nSpecialCount=(unsigned short)kIn.vfunc_o8_2();
+        unsigned nSpecialCount=(unsigned short)kIn.ReadInt16();
         for (unsigned j=0;j<nSpecialCount;j++) {
             Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
-            Unk_SocketSpecialStat eStat=(Unk_SocketSpecialStat)(unsigned short)kIn.vfunc_o8_2();
+            Unk_SocketSpecialStat eStat=(Unk_SocketSpecialStat)(unsigned short)kIn.ReadInt16();
             spOption->FUN_140266d60(reinterpret_cast<Unk_EnchantRead&>(kIn));
             m_aSpecial[i].SetAt(eStat,spOption);
         }
     }
-    m_n2f0=kIn.vfunc_o8_3();
+    m_n2f0=kIn.ReadInt32();
 }
 
 // @0x1405cc410

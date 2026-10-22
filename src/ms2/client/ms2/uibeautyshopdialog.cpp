@@ -1522,8 +1522,8 @@ void UIBeautyShopDialog::SendBeautyMode12(int nSlot)
             if (m_290 == 2)
             {
                 COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
-                packet.vfunc_o10_1(0xc);
-                packet.vfunc_o10_1((unsigned char)nSlot);
+                packet.WriteUInt8(0xc);
+                packet.WriteUInt8((unsigned char)nSlot);
                 FUN_140710590(packet);
             }
             if (nSlot == 1)
@@ -1548,16 +1548,16 @@ void UIBeautyShopDialog::FUN_1418c7fe0(int nSlot)
 // MS2-FUNCTIONAL: large EH frame; temporaries and branch order differ
 void UIBeautyShopDialog::FUN_1418c80b0(CInPacket& packet)
 {
-    unsigned char nOp = packet.vfunc_o8_1();
+    unsigned char nOp = packet.ReadUInt8();
     if (nOp == 0)
     {
         m_198.RemoveAll();
-        m_290 = packet.vfunc_o8_1();
+        m_290 = packet.ReadUInt8();
         m_1d0.FUN_1406e5420(packet);
-        m_294 = packet.vfunc_o8_1();
-        m_298 = packet.vfunc_o8_1();
-        m_2a0 = packet.vfunc_o8_4();
-        unsigned nCount = (unsigned short)packet.vfunc_o8_2();
+        m_294 = packet.ReadUInt8();
+        m_298 = packet.ReadUInt8();
+        m_2a0 = packet.ReadInt64();
+        unsigned nCount = (unsigned short)packet.ReadInt16();
         if (nCount != 0)
         {
             for (unsigned i = 0; i < nCount; i++)
@@ -1576,8 +1576,8 @@ void UIBeautyShopDialog::FUN_1418c80b0(CInPacket& packet)
     }
     else if (nOp == 9)
     {
-        int nItemId = packet.vfunc_o8_3();
-        int nCount = packet.vfunc_o8_3();
+        int nItemId = packet.ReadInt32();
+        int nCount = packet.ReadInt32();
         if (nItemId != 0 && nCount != 0)
             FUN_140961010(0x996, 1, 1, FUN_1401a9d70()->FUN_141811980(1, nItemId));
     }
@@ -1586,8 +1586,8 @@ void UIBeautyShopDialog::FUN_1418c80b0(CInPacket& packet)
         m_2d8 = 0;
         if (nOp == 0xb)
         {
-            int nOldId = packet.vfunc_o8_3();
-            int nNewId = packet.vfunc_o8_3();
+            int nOldId = packet.ReadInt32();
+            int nNewId = packet.ReadInt32();
             if (m_2b8.get() != 0)
             {
                 if (m_2b8->FUN_1405276c0() == nOldId && m_2c8.get() != 0)
@@ -1599,8 +1599,8 @@ void UIBeautyShopDialog::FUN_1418c80b0(CInPacket& packet)
         }
         else if (nOp == 0xc)
         {
-            int nCoupon = packet.vfunc_o8_3();
-            char bMail = packet.vfunc_o8_1();
+            int nCoupon = packet.ReadInt32();
+            char bMail = packet.ReadUInt8();
             CStringW strMsg;
             if (nCoupon == 0)
                 strMsg = GetStringCommonByKey(CStringW(L"s_beauty_msg_complete_apply_special_hair"));
@@ -1626,7 +1626,7 @@ void UIBeautyShopDialog::FUN_1418c80b0(CInPacket& packet)
         }
         else if (nOp == 8)
         {
-            Unk_BSResult nResult = (Unk_BSResult)packet.vfunc_o8_3();
+            Unk_BSResult nResult = (Unk_BSResult)packet.ReadInt32();
             unsigned nPrice = 0;
             Unk_BSFee* pFee = FUN_1418c74e0(&nPrice);
             switch (nResult)
@@ -1896,10 +1896,10 @@ int UIBeautyShopDialog::FUN_1418c9f20()
                 m_2b8 = spEquip->FUN_1411dc7a0();
             }
             COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
-            packet.vfunc_o10_1(7);
-            packet.vfunc_o10_3(nEvent);
-            packet.vfunc_o10_1(IItemCustomizeEventListener::m_10 != 0);
-            packet.vfunc_o10_4(m_2a0);
+            packet.WriteUInt8(7);
+            packet.WriteInt32(nEvent);
+            packet.WriteUInt8(IItemCustomizeEventListener::m_10 != 0);
+            packet.WriteInt64(m_2a0);
             FUN_140710590(packet);
         }
         else

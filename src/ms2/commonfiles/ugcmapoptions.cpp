@@ -172,10 +172,10 @@ MS2_REPLACE_METHOD(0x1408B38C0, CubeItemInfo, FUN_1408b38c0, 235, 0xC8C20775);
 // @0x1408b39c0
 void CubeItemInfo::FUN_1408b39c0(COutPacket& packet) const
 {
-    packet.vfunc_o10_3(itemId);
-    packet.vfunc_o10_4(instanceId);
-    packet.vfunc_o10_4(count);
-    packet.vfunc_o10_1(look.get() ? 1 : 0);
+    packet.WriteInt32(itemId);
+    packet.WriteInt64(instanceId);
+    packet.WriteInt64(count);
+    packet.WriteUInt8(look.get() ? 1 : 0);
     if (look.get() != 0)
         look->Write(packet);
 }
@@ -185,10 +185,10 @@ MS2_REPLACE_METHOD(0x1408B39C0, CubeItemInfo, FUN_1408b39c0, 206, 0x22D53FE2);
 void CubeItemInfo::FUN_1408b3aa0(CInPacket& packet)
 {
     FUN_1408b3810();
-    itemId = packet.vfunc_o8_3();
-    instanceId = packet.vfunc_o8_4();
-    count = packet.vfunc_o8_4();
-    unsigned char bHasLook = packet.vfunc_o8_1();
+    itemId = packet.ReadInt32();
+    instanceId = packet.ReadInt64();
+    count = packet.ReadInt64();
+    unsigned char bHasLook = packet.ReadUInt8();
     if (bHasLook)
     {
         look.AssignRaw(new CUgcItemLook);
@@ -200,10 +200,10 @@ MS2_REPLACE_METHOD(0x1408B3AA0, CubeItemInfo, FUN_1408b3aa0, 387, 0x52A16DB4);
 // @0x1408b3c30
 void CubeItemInfo::FUN_1408b3c30(COutputStream& stream) const
 {
-    stream.vfunc_o10_3(itemId);
-    stream.vfunc_o10_4(instanceId);
-    stream.vfunc_o10_4(count);
-    stream.vfunc_o10_1(look.get() ? 1 : 0);
+    stream.WriteInt32(itemId);
+    stream.WriteInt64(instanceId);
+    stream.WriteInt64(count);
+    stream.WriteUInt8(look.get() ? 1 : 0);
     if (look.get() != 0)
         look->Write(stream);
 }
@@ -213,10 +213,10 @@ MS2_REPLACE_METHOD(0x1408B3C30, CubeItemInfo, FUN_1408b3c30, 206, 0x262C9B57);
 void CubeItemInfo::FUN_1408b3d10(CInputStream& stream)
 {
     FUN_1408b3810();
-    itemId = stream.vfunc_o8_3();
-    instanceId = stream.vfunc_o8_4();
-    count = stream.vfunc_o8_4();
-    unsigned char bHasLook = stream.vfunc_o8_1();
+    itemId = stream.ReadInt32();
+    instanceId = stream.ReadInt64();
+    count = stream.ReadInt64();
+    unsigned char bHasLook = stream.ReadUInt8();
     if (bHasLook)
     {
         look.AssignRaw(new CUgcItemLook);
@@ -285,7 +285,7 @@ MS2_REPLACE_METHOD(0x1408B40D0, UserUGCMapInfo, FUN_1408b40d0, 222, 0x94FC9250);
 void UserUGCMapInfo::FUN_1408b41c0(COutPacket& packet, int nFlag) const
 {
     packet.FUN_140710740(0x69, 0, 1);
-    packet.vfunc_o10_1(0x14);
+    packet.WriteUInt8(0x14);
     FUN_1408b4450(packet, nFlag);
 }
 MS2_REPLACE_METHOD(0x1408B41C0, UserUGCMapInfo, FUN_1408b41c0, 86, 0x3B8F3AB2);
@@ -293,30 +293,30 @@ MS2_REPLACE_METHOD(0x1408B41C0, UserUGCMapInfo, FUN_1408b41c0, 86, 0x3B8F3AB2);
 // @0x1408b4220
 void UserUGCMapInfo::FUN_1408b4220(CInPacket& packet, int* pResult)
 {
-    m_n18 = packet.vfunc_o8_3();
-    m_n1c = packet.vfunc_o8_3();
-    m_n20 = packet.vfunc_o8_3();
-    m_n24 = packet.vfunc_o8_3();
-    m_str28 = packet.vfunc_o8_8();
-    m_n30 = packet.vfunc_o8_4();
-    m_n38 = packet.vfunc_o8_4();
-    *pResult = packet.vfunc_o8_1();
-    m_n40 = packet.vfunc_o8_1();
+    m_n18 = packet.ReadInt32();
+    m_n1c = packet.ReadInt32();
+    m_n20 = packet.ReadInt32();
+    m_n24 = packet.ReadInt32();
+    m_str28 = packet.ReadUnicodeString();
+    m_n30 = packet.ReadInt64();
+    m_n38 = packet.ReadInt64();
+    *pResult = packet.ReadUInt8();
+    m_n40 = packet.ReadUInt8();
 }
 MS2_REPLACE_METHOD(0x1408B4220, UserUGCMapInfo, FUN_1408b4220, 552, 0x37BCDCDE);
 
 // @0x1408b4450
 void UserUGCMapInfo::FUN_1408b4450(COutputStream& stream, int nFlag) const
 {
-    stream.vfunc_o10_3(m_n18);
-    stream.vfunc_o10_3(m_n1c);
-    stream.vfunc_o10_3(m_n20);
-    stream.vfunc_o10_3(m_n24);
-    stream.vfunc_o10_8(m_str28);
-    stream.vfunc_o10_4(m_n30);
-    stream.vfunc_o10_4(m_n38);
-    stream.vfunc_o10_1(nFlag);
-    stream.vfunc_o10_1(m_n40);
+    stream.WriteInt32(m_n18);
+    stream.WriteInt32(m_n1c);
+    stream.WriteInt32(m_n20);
+    stream.WriteInt32(m_n24);
+    stream.WriteUnicodeString(m_str28);
+    stream.WriteInt64(m_n30);
+    stream.WriteInt64(m_n38);
+    stream.WriteUInt8(nFlag);
+    stream.WriteUInt8(m_n40);
 }
 MS2_REPLACE_METHOD(0x1408B4450, UserUGCMapInfo, FUN_1408b4450, 254, 0x4785F72F);
 

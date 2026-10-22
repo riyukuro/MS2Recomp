@@ -521,16 +521,16 @@ static UIRewardNotify* FUN_140938cd0(int nId)
 // @0x140936a50
 void CAchieveManager::OnPacket(CByteBuffer& rBuf)
 {
-    unsigned char nMode = rBuf.vfunc_o8_1();
+    unsigned char nMode = rBuf.ReadUInt8();
     if (nMode == 0)
         Reload();
     if (nMode == 1)
     {
-        unsigned nCount = rBuf.vfunc_o8_3();
+        unsigned nCount = rBuf.ReadInt32();
         for (size_t i = 0; i < nCount; i++)
         {
-            int nId = rBuf.vfunc_o8_3();
-            int nGrade = rBuf.vfunc_o8_3();
+            int nId = rBuf.ReadInt32();
+            int nGrade = rBuf.ReadInt32();
             MS2Ptr<CAchieve> pAchieve(new CAchieve);
             if (FUN_140158350(pAchieve.operator->(), nId, nGrade, 0) == 0)
             {
@@ -547,7 +547,7 @@ void CAchieveManager::OnPacket(CByteBuffer& rBuf)
     }
     if (nMode != 2)
         return;
-    unsigned nId = rBuf.vfunc_o8_3();
+    unsigned nId = rBuf.ReadInt32();
     MS2Ptr<CAchieve> pAchieve = Find(nId);
     if (pAchieve.get() != 0)
     {

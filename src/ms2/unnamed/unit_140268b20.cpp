@@ -62,17 +62,17 @@ MS2_REPLACE_METHOD(0x140268CA0, CMarketBuyLimitHistory, Merge, 177, 0x19887617);
 // @0x140268d60
 void CMarketBuyLimitHistory::Write(COutputStream* pOut)
 {
-    pOut->vfunc_o10_4(m_n18);
-    pOut->vfunc_o10_4(m_n20);
-    pOut->vfunc_o10_1((unsigned char)m_nType);
-    pOut->vfunc_o10_3(m_n2c);
-    pOut->vfunc_o10_3(m_n30);
+    pOut->WriteInt64(m_n18);
+    pOut->WriteInt64(m_n20);
+    pOut->WriteUInt8((unsigned char)m_nType);
+    pOut->WriteInt32(m_n2c);
+    pOut->WriteInt32(m_n30);
     int nCount = (int)m_itemUids.GetCount();
-    pOut->vfunc_o10_3(nCount);
+    pOut->WriteInt32(nCount);
     for (int i = 0; i < nCount; i++)
     {
         __int64 nUid = m_itemUids[i];
-        pOut->vfunc_o10_4(nUid);
+        pOut->WriteInt64(nUid);
     }
 }
 MS2_REPLACE_METHOD(0x140268D60, CMarketBuyLimitHistory, Write, 266, 0x444F6BB4);
@@ -80,15 +80,15 @@ MS2_REPLACE_METHOD(0x140268D60, CMarketBuyLimitHistory, Write, 266, 0x444F6BB4);
 // @0x140268e70
 void CMarketBuyLimitHistory::Read(CInPacket& packet)
 {
-    m_n18 = packet.vfunc_o8_4();
-    m_n20 = packet.vfunc_o8_4();
-    m_nType = packet.vfunc_o8_1();
-    m_n2c = packet.vfunc_o8_3();
-    m_n30 = packet.vfunc_o8_3();
-    int nCount = packet.vfunc_o8_3();
+    m_n18 = packet.ReadInt64();
+    m_n20 = packet.ReadInt64();
+    m_nType = packet.ReadUInt8();
+    m_n2c = packet.ReadInt32();
+    m_n30 = packet.ReadInt32();
+    int nCount = packet.ReadInt32();
     for (int i = 0; i < nCount; i++)
     {
-        __int64 nUid = packet.vfunc_o8_4();
+        __int64 nUid = packet.ReadInt64();
         m_itemUids.Add(nUid);
     }
 }

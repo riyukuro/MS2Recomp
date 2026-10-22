@@ -1403,8 +1403,8 @@ bool UIInventoryDialog::FUN_14199b4e0(int nResult, const CMsgBoxData& box)
         if (FUN_140164830(strOld, strName))
         {
             COutPacket packet(static_cast<int>(SendOp::NameChange), 0);
-            packet.vfunc_o10_4(nItemUid);
-            packet.vfunc_o10_8(strName);
+            packet.WriteInt64(nItemUid);
+            packet.WriteUnicodeString(strName);
             FUN_140710590(packet);
             return true;
         }
@@ -1568,9 +1568,9 @@ MS2_REPLACE_METHOD(0x14199C0D0, UIInventoryDialog, FUN_14199c0d0, 337, 0);
 void UIInventoryDialog::SendRequestItemInventory(int nTab, bool bStack)
 {
     COutPacket packet(static_cast<int>(SendOp::RequestItemInventory), 0);
-    packet.vfunc_o10_1(8);
-    packet.vfunc_o10_1((unsigned char)nTab);
-    packet.vfunc_o10_0(bStack);
+    packet.WriteUInt8(8);
+    packet.WriteUInt8((unsigned char)nTab);
+    packet.WriteBool(bStack);
     FUN_140710590(packet);
 }
 MS2_REPLACE(0x14199C230, UIInventoryDialog::SendRequestItemInventory, 117, 0);
@@ -2705,11 +2705,11 @@ void UIItemBreakDialog::vfunc_84(CInPacket* pPacket)
     FUN_1419a1fb0();
     ASDataProvider rows(2);
     ASObj data(2);
-    unsigned nCount = pPacket->vfunc_o8_3();
+    unsigned nCount = pPacket->ReadInt32();
     for (unsigned i = 0; i < nCount; i++)
     {
-        int nItemId = pPacket->vfunc_o8_3();
-        int nAmount = pPacket->vfunc_o8_3();
+        int nItemId = pPacket->ReadInt32();
+        int nAmount = pPacket->ReadInt32();
         if (nAmount != 0)
         {
             ASObj row(2);
@@ -2833,11 +2833,11 @@ void UIItemBreakDialog::FUN_1419a44d0(CInPacket* pPacket)
         return;
     FUN_1419a4c80();
     std::map<int, ItemBreakCommon::BreakPreview> previews;
-    unsigned nCount = pPacket->vfunc_o8_3();
+    unsigned nCount = pPacket->ReadInt32();
     for (unsigned i = 0; i < nCount; i++)
     {
         ItemBreakCommon::BreakPreview preview;
-        int nItemId = pPacket->vfunc_o8_3();
+        int nItemId = pPacket->ReadInt32();
         preview.FUN_140530920(*reinterpret_cast<Unk_BreakPacket*>(pPacket));
         previews[nItemId] = preview;
     }

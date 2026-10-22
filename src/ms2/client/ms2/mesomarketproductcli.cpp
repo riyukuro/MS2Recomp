@@ -173,16 +173,16 @@ Unk_MesoLimits::Unk_MesoLimits()
 // @0x140d6dfc0
 void Unk_MesoLimits::Read(CInPacket& packet)
 {
-    m_fRateA = packet.vfunc_o8_5();
-    m_fRateB = packet.vfunc_o8_5();
-    m_nBase = packet.vfunc_o8_4();
-    m_n18 = packet.vfunc_o8_3();
-    m_n1C = packet.vfunc_o8_3();
-    m_n20 = packet.vfunc_o8_3();
-    m_n24 = packet.vfunc_o8_3();
-    m_n28 = packet.vfunc_o8_3();
-    m_nMin = packet.vfunc_o8_3();
-    m_nMax = packet.vfunc_o8_3();
+    m_fRateA = packet.ReadFloat();
+    m_fRateB = packet.ReadFloat();
+    m_nBase = packet.ReadInt64();
+    m_n18 = packet.ReadInt32();
+    m_n1C = packet.ReadInt32();
+    m_n20 = packet.ReadInt32();
+    m_n24 = packet.ReadInt32();
+    m_n28 = packet.ReadInt32();
+    m_nMin = packet.ReadInt32();
+    m_nMax = packet.ReadInt32();
     m_bLoaded = 1;
 }
 
@@ -224,14 +224,14 @@ void CMesoMarketMan::SendMesoMarket()
     m_mapMarket.RemoveAll();
     m_mapOwn.RemoveAll();
     COutPacket packet(static_cast<int>(SendOp::MesoMarket), 0);
-    packet.vfunc_o10_1(3);
+    packet.WriteUInt8(3);
     FUN_140710590(packet);
 }
 
 // @0x140d6e490
 void CMesoMarketMan::OnMesoMarket(CInPacket& packet)
 {
-    int nSub = packet.vfunc_o8_1();
+    int nSub = packet.ReadUInt8();
     switch (nSub)
     {
     case 0:
@@ -373,7 +373,7 @@ int CMesoMarketMan::GetBuy()
 // @0x140d6eb90
 void CMesoMarketMan::FUN_140d6eb90(CInPacket& packet)
 {
-    int nCode = packet.vfunc_o8_3();
+    int nCode = packet.ReadInt32();
     FUN_140d6f130(nCode);
 }
 
@@ -386,8 +386,8 @@ void CMesoMarketMan::FUN_140d6ebe0(CInPacket& packet)
 // @0x140d6ec20
 void CMesoMarketMan::FUN_140d6ec20(CInPacket& packet)
 {
-    m_nOwn = packet.vfunc_o8_3();
-    m_nBuy = packet.vfunc_o8_3();
+    m_nOwn = packet.ReadInt32();
+    m_nBuy = packet.ReadInt32();
 }
 
 // @0x140d6eca0
@@ -403,14 +403,14 @@ void CMesoMarketMan::FUN_140d6ecf0(CInPacket& packet)
     MS2Ptr<CMesoMarketProductCli> sp(new CMesoMarketProductCli);
     sp->Read(packet);
     FUN_140d6f0b0(sp);
-    m_nOwn = packet.vfunc_o8_3();
+    m_nOwn = packet.ReadInt32();
 }
 
 // @0x140d6ee00
 void CMesoMarketMan::FUN_140d6ee00(CInPacket& packet)
 {
-    int nCode = packet.vfunc_o8_3();
-    __int64 qwId = packet.vfunc_o8_4();
+    int nCode = packet.ReadInt32();
+    __int64 qwId = packet.ReadInt64();
     Unk_CriticalSectionLock lock(m_lock, 1);
     m_mapOwn.RemoveKey(qwId);
     FUN_140d6f130(nCode);
@@ -429,9 +429,9 @@ void CMesoMarketMan::FUN_140d6eec0(CInPacket& packet)
 // @0x140d6efb0
 void CMesoMarketMan::FUN_140d6efb0(CInPacket& packet)
 {
-    int nCode = packet.vfunc_o8_3();
-    __int64 qwId = packet.vfunc_o8_4();
-    m_nBuy = packet.vfunc_o8_3();
+    int nCode = packet.ReadInt32();
+    __int64 qwId = packet.ReadInt64();
+    m_nBuy = packet.ReadInt32();
     Unk_CriticalSectionLock lock(m_lock, 1);
     if (nCode == 0 || nCode == 0x11)
         FUN_140d70060(qwId);
@@ -570,7 +570,7 @@ CInputStream& FUN_140d70110(CInputStream& in, MS2Ptr<CMesoMarketProductCli>& sp)
 // @0x140d701a0
 CInputStream& FUN_140d701a0(CInputStream& in, CMesoMarketMan::ProductMap& map)
 {
-    unsigned nCount = in.vfunc_o8_3();
+    unsigned nCount = in.ReadInt32();
     for (unsigned i = 0; i < nCount; ++i)
     {
         MS2Ptr<CMesoMarketProductCli> sp(0);
@@ -584,7 +584,7 @@ CInputStream& FUN_140d701a0(CInputStream& in, CMesoMarketMan::ProductMap& map)
 // @0x140d70240
 void FUN_140d70240(CInputStream& in, CMesoMarketMan::ProductArray& arr)
 {
-    unsigned nCount = in.vfunc_o8_3();
+    unsigned nCount = in.ReadInt32();
     for (unsigned i = 0; i < nCount; ++i)
     {
         MS2Ptr<CMesoMarketProductCli> sp(new CMesoMarketProductCli);

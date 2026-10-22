@@ -162,16 +162,16 @@ MS2Ptr<CGameRankingWebResult> CSoapClient::FUN_141770670(MS2Ptr<CGameRankingPara
         return spResult;
     }
     CByteBuffer buffer;
-    buffer.vfunc_o10_3(spParam->m_key.m_type);
-    buffer.vfunc_o10_3(spParam->m_24);
-    buffer.vfunc_o10_4(spParam->m_28);
-    buffer.vfunc_o10_4(spParam->m_30);
-    buffer.vfunc_o10_4(spParam->m_38);
-    buffer.vfunc_o10_3(spParam->m_key.m_sub);
-    buffer.vfunc_o10_3(spParam->m_key.m_date);
+    buffer.WriteInt32(spParam->m_key.m_type);
+    buffer.WriteInt32(spParam->m_24);
+    buffer.WriteInt64(spParam->m_28);
+    buffer.WriteInt64(spParam->m_30);
+    buffer.WriteInt64(spParam->m_38);
+    buffer.WriteInt32(spParam->m_key.m_sub);
+    buffer.WriteInt32(spParam->m_key.m_date);
     int nLen = spParam->m_search.GetLength() * 2;
-    buffer.vfunc_o10_3(nLen);
-    buffer.vfunc_o10_9(spParam->m_search.GetBuffer(), nLen);
+    buffer.WriteInt32(nLen);
+    buffer.WriteBytes(spParam->m_search.GetBuffer(), nLen);
     int nTry = 0;
     int nError = 1;
     char* pBody = 0;
@@ -204,7 +204,7 @@ MS2Ptr<CGameRankingWebResult> CSoapClient::FUN_141770670(MS2Ptr<CGameRankingPara
             spResult->m_result = 0xc;
             return spResult;
         }
-        spResult->m_buffer.vfunc_o10_9(pData, nOut);
+        spResult->m_buffer.WriteBytes(pData, nOut);
         spResult->m_buffer.FUN_140720e90(0);
         if (pData != 0)
         {
@@ -230,11 +230,11 @@ MS2Ptr<CMenteeSearchWebResult> CSoapClient::FUN_141770be0(MS2Ptr<CMenteeSearchPa
         return spResult;
     }
     CByteBuffer buffer;
-    buffer.vfunc_o10_3(spParam->m_nCharType);
-    buffer.vfunc_o10_4(spParam->m_nAccountId);
-    buffer.vfunc_o10_4(spParam->m_nCharacterId);
-    buffer.vfunc_o10_3(spParam->m_nOption30);
-    buffer.vfunc_o10_3(spParam->m_nOption34);
+    buffer.WriteInt32(spParam->m_nCharType);
+    buffer.WriteInt64(spParam->m_nAccountId);
+    buffer.WriteInt64(spParam->m_nCharacterId);
+    buffer.WriteInt32(spParam->m_nOption30);
+    buffer.WriteInt32(spParam->m_nOption34);
     int nTry = 0;
     int nError = 1;
     char* pBody = 0;
@@ -262,7 +262,7 @@ MS2Ptr<CMenteeSearchWebResult> CSoapClient::FUN_141770be0(MS2Ptr<CMenteeSearchPa
     {
         int nOut = 0;
         unsigned char* pData = FUN_141771b40(pBody, nBodySize, &nOut);
-        spResult->m_buffer.vfunc_o10_9(pData, nOut);
+        spResult->m_buffer.WriteBytes(pData, nOut);
         spResult->m_buffer.FUN_140720e90(0);
         if (pData != 0)
         {
@@ -279,14 +279,14 @@ MS2Ptr<CSoapResult> CSoapClient::FUN_141771040(MS2Ptr<CUgcUploadCtrl> spCtrl, in
     if (spCtrl == 0)
         return MS2Ptr<CSoapResult>(new CSoapResult(0xd, ""));
     CByteBuffer buffer;
-    buffer.vfunc_o10_3(spCtrl->m_user.m_nType);
-    buffer.vfunc_o10_3(spCtrl->m_nKind);
-    buffer.vfunc_o10_4(spCtrl->m_user.m_accountId);
-    buffer.vfunc_o10_4(spCtrl->m_user.m_characterId);
-    buffer.vfunc_o10_4(spCtrl->m_upload.m_uid);
-    buffer.vfunc_o10_4(spCtrl->FUN_1418a41a0());
-    buffer.vfunc_o10_4(nSize);
-    buffer.vfunc_o10_9(pData, nSize);
+    buffer.WriteInt32(spCtrl->m_user.m_nType);
+    buffer.WriteInt32(spCtrl->m_nKind);
+    buffer.WriteInt64(spCtrl->m_user.m_accountId);
+    buffer.WriteInt64(spCtrl->m_user.m_characterId);
+    buffer.WriteInt64(spCtrl->m_upload.m_uid);
+    buffer.WriteInt64(spCtrl->FUN_1418a41a0());
+    buffer.WriteInt64(nSize);
+    buffer.WriteBytes(pData, nSize);
     int nCode = 0;
     CString strText("");
     int nTry = 0;

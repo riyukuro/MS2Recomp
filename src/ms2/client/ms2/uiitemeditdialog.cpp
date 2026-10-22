@@ -304,10 +304,10 @@ void UIItemEditDialog::vfunc_79(void* p)
     if (pPacket->FUN_14070fe80() == 0x31)
     {
         m_1b0 = 0;
-        unsigned nMode = pPacket->vfunc_o8_1();
+        unsigned nMode = pPacket->ReadUInt8();
         if (nMode == 8)
         {
-            int nResult = pPacket->vfunc_o8_3();
+            int nResult = pPacket->ReadInt32();
             if (nResult != 0)
             {
                 FUN_140d73aa0(FUN_140f09f90(0x272, nResult), 0, static_cast<IMessageListener*>(this),

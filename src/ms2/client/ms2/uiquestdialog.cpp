@@ -1962,7 +1962,7 @@ void UIQuestDialog::OnPacketParty(CInPacket& rPacket)
 {
     if (FUN_141924630() == 0)
         return;
-    int nType = rPacket.vfunc_o8_1();
+    int nType = rPacket.ReadUInt8();
     switch (nType)
     {
     case 0x1e:

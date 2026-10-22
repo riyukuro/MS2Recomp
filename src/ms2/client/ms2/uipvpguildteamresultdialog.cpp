@@ -105,21 +105,21 @@ Unk_PgtrGuild::Unk_PgtrGuild()
 // @0x141340650
 void Unk_PgtrGuild::FUN_141340650(CInPacket* pIn)
 {
-    m_strName = pIn->vfunc_o8_8();
-    m_nGuildId = pIn->vfunc_o8_4();
-    m_nScore = pIn->vfunc_o8_3();
-    m_nMin = pIn->vfunc_o8_3();
-    m_nSec = pIn->vfunc_o8_3();
-    m_strMark = pIn->vfunc_o8_8();
+    m_strName = pIn->ReadUnicodeString();
+    m_nGuildId = pIn->ReadInt64();
+    m_nScore = pIn->ReadInt32();
+    m_nMin = pIn->ReadInt32();
+    m_nSec = pIn->ReadInt32();
+    m_strMark = pIn->ReadUnicodeString();
 }
 
 // @0x141340810
 void Unk_PgtrGuild::FUN_141340810(CInPacket* pIn)
 {
-    m_nGuildId = pIn->vfunc_o8_4();
-    m_strName = pIn->vfunc_o8_8();
-    m_strMark = pIn->vfunc_o8_8();
-    m_nScore = pIn->vfunc_o8_3();
+    m_nGuildId = pIn->ReadInt64();
+    m_strName = pIn->ReadUnicodeString();
+    m_strMark = pIn->ReadUnicodeString();
+    m_nScore = pIn->ReadInt32();
     m_nMin = 0;
     m_nSec = 0;
     m_strTime.Empty();
@@ -159,7 +159,7 @@ void UIPvPGuildTeamResultDialog::vfunc_26()
     if (m_nMode == 0)
     {
         COutPacket packet(static_cast<int>(SendOp::Pvp), 0);
-        packet.vfunc_o10_1(0x68);
+        packet.WriteUInt8(0x68);
         FUN_140710590(packet);
     }
 }
@@ -193,7 +193,7 @@ void UIPvPGuildTeamResultDialog::FUN_141340d70(CInPacket* pIn)
 {
     m_guildA.FUN_141340650(pIn);
     m_guildB.FUN_141340650(pIn);
-    int nCount = pIn->vfunc_o8_3();
+    int nCount = pIn->ReadInt32();
     m_nMode = 0;
     m_strTitle = FUN_140298ea0(L"s_PvpGuildResult_title_pvp");
     __int64 nOwnGuild = FUN_1403ed290()->m_info.FUN_1404ccbd0();

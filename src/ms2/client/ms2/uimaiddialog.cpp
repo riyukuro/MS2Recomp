@@ -516,9 +516,9 @@ int UIMaidDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         if (nResult == 0 && FUN_1403b3c40(strTag, L"OnSave") != 0)
         {
             COutPacket packet(static_cast<int>(SendOp::Maid), 0);
-            packet.vfunc_o10_1(4);
-            packet.vfunc_o10_4(m_nMaidUid);
-            packet.vfunc_o10_3(m_nMaidId);
+            packet.WriteUInt8(4);
+            packet.WriteInt64(m_nMaidUid);
+            packet.WriteInt32(m_nMaidId);
             FUN_14067c610(&m_profile, &packet);
             FUN_140710590(packet);
         }

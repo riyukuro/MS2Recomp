@@ -582,20 +582,20 @@ void UISkillCompactControlDialog::vfunc_79(void* pPacket)
     CInPacket& packet = *static_cast<CInPacket*>(pPacket);
     if (packet.FUN_14070fe80() != 0xd1)
         return;
-    if (packet.vfunc_o8_1() != 0)
+    if (packet.ReadUInt8() != 0)
         return;
     m_lstConfig.RemoveAll();
     CStringW strFirst;
-    unsigned nTabs = packet.vfunc_o8_3();
+    unsigned nTabs = packet.ReadInt32();
     for (unsigned i = 0; i < nTabs; i++)
     {
         MS2Ptr<CSkillCompactControlConfig> spConfig(new CSkillCompactControlConfig());
-        spConfig->m_strName = packet.vfunc_o8_8();
-        spConfig->m_30 = packet.vfunc_o8_4();
-        unsigned nSkills = packet.vfunc_o8_3();
+        spConfig->m_strName = packet.ReadUnicodeString();
+        spConfig->m_30 = packet.ReadInt64();
+        unsigned nSkills = packet.ReadInt32();
         for (unsigned j = 0; j < nSkills; j++)
         {
-            unsigned nSkillId = packet.vfunc_o8_3();
+            unsigned nSkillId = packet.ReadInt32();
             spConfig->m_skills.insert(nSkillId);
         }
         m_lstConfig.AddTail(spConfig);
@@ -750,7 +750,7 @@ void UISkillCompactControlDialog::SendSkillMacroMode1()
     for (POSITION pos = m_lstConfig.GetHeadPosition(); pos != 0; m_lstConfig.GetNext(pos))
     {
         MS2Ptr<CSkillCompactControlConfig> spConfig = m_lstConfig.GetAt(pos);
-        packet.vfunc_o10_8(spConfig->m_strName);
+        packet.WriteUnicodeString(spConfig->m_strName);
         packet.Encode8(spConfig->m_30);
         packet.Encode4(spConfig->m_skills.size());
         for (std::set<unsigned>::iterator it = spConfig->m_skills.begin(); it != spConfig->m_skills.end(); ++it)

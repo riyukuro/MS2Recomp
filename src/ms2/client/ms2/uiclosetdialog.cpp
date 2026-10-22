@@ -678,7 +678,7 @@ void UIClosetDialog::vfunc_21(void* pItem)
 // @0x140bdc020
 void UIClosetDialog::OnPacket(CInPacket& packet)
 {
-    if (vfunc_75() && packet.vfunc_o8_1() == 5)
+    if (vfunc_75() && packet.ReadUInt8() == 5)
         ReceiveTab(packet);
 }
 
@@ -1193,7 +1193,7 @@ bool UIClosetDialog::OnRenameConfirmed(int nResult, const CMsgBoxData& box)
         if (FUN_140d86260()->vfunc_37(&blockList) == 0)
             return true;
         COutPacket packet(static_cast<int>(SendOp::Wardrobe), 0);
-        packet.vfunc_o10_1(6);
+        packet.WriteUInt8(6);
         Unk_ClRenameRec rec;
         rec.m_nIndex = sp->GetIndex();
         rec.m_strName = strName;
@@ -1303,7 +1303,7 @@ bool UIClosetDialog::AssignKey(const unsigned& nKey, const __int64& nId)
         if (nId != sp->GetId())
         {
             COutPacket packet(static_cast<int>(SendOp::Wardrobe), 0);
-            packet.vfunc_o10_1(4);
+            packet.WriteUInt8(4);
             Unk_ClKeyRec rec;
             rec.m_nIndex = sp->GetIndex();
             rec.m_nId = static_cast<int>(nId);
@@ -1453,7 +1453,7 @@ bool UIClosetDialog::SendApply(MS2Ptr<UICloset::CTab> spTab)
     if (spInfo->m_slots.IsEmpty())
         return false;
     COutPacket packet(static_cast<int>(SendOp::Wardrobe), 0);
-    packet.vfunc_o10_1(1);
+    packet.WriteUInt8(1);
     Unk_ClApplyRec rec;
     rec.m_nLayer = spInfo->m_1c;
     rec.m_nIndex = spInfo->m_18;
@@ -1468,7 +1468,7 @@ bool UIClosetDialog::SendSave(int nLayer, MS2Ptr<UICloset::CTab> spTab)
     if (spTab == 0 || spTab->IsEmpty() == true)
         return false;
     COutPacket packet(static_cast<int>(SendOp::Wardrobe), 0);
-    packet.vfunc_o10_1(0);
+    packet.WriteUInt8(0);
     Unk_ClSaveRec rec;
     rec.m_nLayer = nLayer;
     rec.m_nIndex = spTab->GetIndex();
@@ -1483,7 +1483,7 @@ bool UIClosetDialog::SendRename(MS2Ptr<UICloset::CTab> spTab)
     if (spTab == 0 || spTab->IsEmpty() == true)
         return false;
     COutPacket packet(static_cast<int>(SendOp::Wardrobe), 0);
-    packet.vfunc_o10_1(6);
+    packet.WriteUInt8(6);
     Unk_ClRenameRec rec;
     rec.m_nIndex = spTab->GetIndex();
     rec.m_strName = spTab->GetName();
@@ -1498,7 +1498,7 @@ bool UIClosetDialog::SendClear(MS2Ptr<UICloset::CTab> spTab)
     if (spTab == 0 || spTab->IsEmpty() == true)
         return false;
     COutPacket packet(static_cast<int>(SendOp::Wardrobe), 0);
-    packet.vfunc_o10_1(2);
+    packet.WriteUInt8(2);
     Unk_ClTabIndexRec rec;
     rec.m_nIndex = spTab->GetIndex();
     FUN_140202050(&rec, packet);

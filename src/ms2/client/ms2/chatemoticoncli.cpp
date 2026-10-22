@@ -181,19 +181,19 @@ UIMessengerBrowser* FUN_140a3ab70(int nUiId)
 void CChatEmoticonCli::FUN_140a38fa0(CInPacket& packet)
 {
     m_ids.clear();
-    unsigned nIds = (unsigned short)packet.vfunc_o8_2();
+    unsigned nIds = (unsigned short)packet.ReadInt16();
     for (int i = 0; i < (int)nIds; i++)
     {
-        unsigned nId = packet.vfunc_o8_3();
+        unsigned nId = packet.ReadInt32();
         m_ids.push_back(nId);
     }
     m_groups.clear();
     m_groupById.clear();
-    unsigned nGroups = (unsigned short)packet.vfunc_o8_2();
+    unsigned nGroups = (unsigned short)packet.ReadInt16();
     for (int i = 0; i < (int)nGroups; i++)
     {
-        unsigned nId = packet.vfunc_o8_3();
-        __int64 nExpire = packet.vfunc_o8_4();
+        unsigned nId = packet.ReadInt32();
+        __int64 nExpire = packet.ReadInt64();
         FUN_140a3a290(nId, nExpire);
     }
     UIChatEmoticonDialog* pDlg = FUN_140a3aa20();
@@ -209,16 +209,16 @@ MS2_REPLACE_METHOD(0x140A38FA0, CChatEmoticonCli, FUN_140a38fa0, 458, 0xDF3657B8
 // @0x140a39170
 void CChatEmoticonCli::FUN_140a39170(CInPacket& packet)
 {
-    int nGroups = packet.vfunc_o8_3();
+    int nGroups = packet.ReadInt32();
     for (int i = 0; i < nGroups; i++)
     {
-        unsigned nId = packet.vfunc_o8_3();
+        unsigned nId = packet.ReadInt32();
         FUN_140a3a380(nId);
     }
-    int nIds = packet.vfunc_o8_3();
+    int nIds = packet.ReadInt32();
     for (int i = 0; i < nIds; i++)
     {
-        unsigned nId = packet.vfunc_o8_3();
+        unsigned nId = packet.ReadInt32();
         m_ids.remove(nId);
     }
     UIChatEmoticonDialog* pDlg = FUN_140a3aa20();
@@ -232,13 +232,13 @@ MS2_REPLACE_METHOD(0x140A39170, CChatEmoticonCli, FUN_140a39170, 489, 0xFCB43972
 // @0x140a39360
 void CChatEmoticonCli::FUN_140a39360(CInPacket& packet)
 {
-    int nItemId = packet.vfunc_o8_3();
-    int nCount = packet.vfunc_o8_3();
+    int nItemId = packet.ReadInt32();
+    int nCount = packet.ReadInt32();
     std::set<unsigned> setAdded;
     for (int i = 0; i < nCount; i++)
     {
-        unsigned nId = packet.vfunc_o8_3();
-        __int64 nExpire = packet.vfunc_o8_4();
+        unsigned nId = packet.ReadInt32();
+        __int64 nExpire = packet.ReadInt64();
         FUN_140a3a290(nId, nExpire);
         setAdded.insert(nId);
     }
@@ -272,7 +272,7 @@ MS2_REPLACE_METHOD(0x140A39360, CChatEmoticonCli, FUN_140a39360, 943, 0xC5A9D741
 // @0x140a39720
 void CChatEmoticonCli::FUN_140a39720(CInPacket& packet)
 {
-    unsigned nId = packet.vfunc_o8_3();
+    unsigned nId = packet.ReadInt32();
     m_ids.remove(nId);
     m_ids.push_back(nId);
     UIChatEmoticonDialog* pDlg = FUN_140a3aa20();
@@ -285,7 +285,7 @@ MS2_REPLACE_METHOD(0x140A39720, CChatEmoticonCli, FUN_140a39720, 129, 0x890960FB
 // @0x140a397b0
 void CChatEmoticonCli::FUN_140a397b0(CInPacket& packet)
 {
-    unsigned nId = packet.vfunc_o8_3();
+    unsigned nId = packet.ReadInt32();
     m_ids.remove(nId);
     UIChatEmoticonDialog* pDlg = FUN_140a3aa20();
     if (pDlg != 0)
@@ -297,9 +297,9 @@ MS2_REPLACE_METHOD(0x140A397B0, CChatEmoticonCli, FUN_140a397b0, 107, 0x3D9C8144
 // @0x140a39830
 void CChatEmoticonCli::FUN_140a39830(CInPacket& packet)
 {
-    unsigned nId = packet.vfunc_o8_3();
-    CStringW strName = packet.vfunc_o8_8();
-    unsigned nFlag = packet.vfunc_o8_1();
+    unsigned nId = packet.ReadInt32();
+    CStringW strName = packet.ReadUnicodeString();
+    unsigned nFlag = packet.ReadUInt8();
     UIMessengerBrowser* pBrowser = FUN_140a3ab70(0x4e61);
     if (pBrowser == 0)
         return;
@@ -314,8 +314,8 @@ MS2_REPLACE_METHOD(0x140A39830, CChatEmoticonCli, FUN_140a39830, 255, 0xCDB8952F
 // @0x140a39940
 void CChatEmoticonCli::FUN_140a39940(CInPacket& packet)
 {
-    unsigned nId = packet.vfunc_o8_3();
-    CStringW strName = packet.vfunc_o8_8();
+    unsigned nId = packet.ReadInt32();
+    CStringW strName = packet.ReadUnicodeString();
     UIGroupMessengerBrowser* pBrowser = FUN_140a3aad0(0x4e93);
     if (pBrowser == 0)
         return;
@@ -330,7 +330,7 @@ MS2_REPLACE_METHOD(0x140A39940, CChatEmoticonCli, FUN_140a39940, 209, 0x3A7FAB09
 // @0x140a39a20
 void CChatEmoticonCli::FUN_140a39a20(CInPacket& packet)
 {
-    int nResult = packet.vfunc_o8_1();
+    int nResult = packet.ReadUInt8();
     switch (nResult)
     {
     case 0:
@@ -457,10 +457,10 @@ void CChatEmoticonCli::SendMessenger()
             expired.push_back(spGroup->m_nId);
     }
     COutPacket packet(static_cast<int>(SendOp::ChatSticker), 0);
-    packet.vfunc_o10_1(1);
-    packet.vfunc_o10_3((int)expired.size());
+    packet.WriteUInt8(1);
+    packet.WriteInt32((int)expired.size());
     MS2_FOR_EACH(unsigned nId, expired)
-        packet.vfunc_o10_3(nId);
+        packet.WriteInt32(nId);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x140A3A410, CChatEmoticonCli, SendMessenger, 550, 0x755D789E);
@@ -478,7 +478,7 @@ MS2_REPLACE_METHOD(0x140A3A640, CChatEmoticonCli, FUN_140a3a640, 174, 0x91849124
 // @0x140a3a700
 void CChatEmoticonCli::FUN_140a3a700(CInPacket& packet)
 {
-    int nType = packet.vfunc_o8_1();
+    int nType = packet.ReadUInt8();
     switch (nType)
     {
     case 0: FUN_140a38fa0(packet); break;

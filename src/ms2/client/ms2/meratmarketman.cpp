@@ -395,7 +395,7 @@ CMeratMarketMan::~CMeratMarketMan()
 // @0x140d53fb0
 void CMeratMarketMan::OnMeretMarket(CInPacket& packet)
 {
-    unsigned char nOp = packet.vfunc_o8_1();
+    unsigned char nOp = packet.ReadUInt8();
     if (nOp == 0x65)
         FUN_140d5bc30(packet);
     else if (nOp == 0x67)
@@ -459,9 +459,9 @@ void CMeratMarketMan::SendMeretMarketMode101(int nTab, int nSort)
     if (nTab == 5 || !FUN_1406a5040(nSort))
         return;
     COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
-    packet.vfunc_o10_1(0x65);
-    packet.vfunc_o10_1((unsigned char)nTab);
-    packet.vfunc_o10_1((unsigned char)nSort);
+    packet.WriteUInt8(0x65);
+    packet.WriteUInt8((unsigned char)nTab);
+    packet.WriteUInt8((unsigned char)nSort);
     FUN_140710590(packet);
 }
 
@@ -469,7 +469,7 @@ void CMeratMarketMan::SendMeretMarketMode101(int nTab, int nSort)
 void CMeratMarketMan::SendMeretMarketMode102()
 {
     COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
-    packet.vfunc_o10_1(0x66);
+    packet.WriteUInt8(0x66);
     FUN_140710590(packet);
 }
 
@@ -478,7 +478,7 @@ void CMeratMarketMan::SendMeretMarketMode102()
 void CMeratMarketMan::SendMeretMarketMode103(int nFlag)
 {
     COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
-    packet.vfunc_o10_1(0x67);
+    packet.WriteUInt8(0x67);
     FUN_140710590(packet);
     FUN_140d59ce0();
     FUN_1418ffec0(m_nFlags, nFlag);
@@ -488,7 +488,7 @@ void CMeratMarketMan::SendMeretMarketMode103(int nFlag)
 void CMeratMarketMan::SendMeretMarketMode107()
 {
     COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
-    packet.vfunc_o10_1(0x6b);
+    packet.WriteUInt8(0x6b);
     FUN_140710590(packet);
 }
 
@@ -496,7 +496,7 @@ void CMeratMarketMan::SendMeretMarketMode107()
 void CMeratMarketMan::SendMeretMarketMode11()
 {
     COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
-    packet.vfunc_o10_1(0x0b);
+    packet.WriteUInt8(0x0b);
     FUN_140710590(packet);
 }
 
@@ -504,7 +504,7 @@ void CMeratMarketMan::SendMeretMarketMode11()
 void CMeratMarketMan::SendMeretMarketMode12()
 {
     COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
-    packet.vfunc_o10_1(0x0c);
+    packet.WriteUInt8(0x0c);
     FUN_140710590(packet);
 }
 
@@ -515,7 +515,7 @@ void CMeratMarketMan::SendMeretMarketMode13(MS2Ptr<CMeratMarketPacket::UgcAddPro
     if (spRequest == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
-    packet.vfunc_o10_1(0x0d);
+    packet.WriteUInt8(0x0d);
     spRequest->vfunc_1(packet);
     FUN_140710590(packet);
 }
@@ -528,9 +528,9 @@ void CMeratMarketMan::SendMeretMarketMode14(Unk_MeratProductKey key)
     if (spProduct == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
-    packet.vfunc_o10_1(0x0e);
+    packet.WriteUInt8(0x0e);
     key.Write(packet);
-    packet.vfunc_o10_4(spProduct->m_ugc.m_n20);
+    packet.WriteInt64(spProduct->m_ugc.m_n20);
     FUN_140710590(packet);
 }
 
@@ -542,9 +542,9 @@ void CMeratMarketMan::SendMeretMarketMode15(Unk_MeratProductKey key)
     if (spProduct == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
-    packet.vfunc_o10_1(0x0f);
+    packet.WriteUInt8(0x0f);
     key.Write(packet);
-    packet.vfunc_o10_4(spProduct->m_ugc.m_n20);
+    packet.WriteInt64(spProduct->m_ugc.m_n20);
     FUN_140710590(packet);
 }
 
@@ -561,7 +561,7 @@ void CMeratMarketMan::SendMeretMarketMode18(MS2Ptr<CMeratMarketPacket::UgcResale
     CMeratMarketProduct* pProduct = spProduct.operator->();
     spRequest->product = pProduct->m_ugc.m_n20;
     COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
-    packet.vfunc_o10_1(0x12);
+    packet.WriteUInt8(0x12);
     spRequest->vfunc_1(packet);
     FUN_140710590(packet);
 }
@@ -576,7 +576,7 @@ void CMeratMarketMan::SendMeretMarketMode19(Unk_MeratProductKey key)
     Unk_MmUid uid;
     uid.m_n = spProduct->m_ugc.m_n20;
     COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
-    packet.vfunc_o10_1(0x13);
+    packet.WriteUInt8(0x13);
     FUN_1401fe790(&uid, packet);
     FUN_140710590(packet);
 }
@@ -586,8 +586,8 @@ void CMeratMarketMan::SendMeretMarketMode19(Unk_MeratProductKey key)
 void CMeratMarketMan::SendMeretMarketMode20(__int64 nSellerId)
 {
     COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
-    packet.vfunc_o10_1(0x14);
-    packet.vfunc_o10_4(nSellerId);
+    packet.WriteUInt8(0x14);
+    packet.WriteInt64(nSellerId);
     FUN_140710590(packet);
 }
 
@@ -613,7 +613,7 @@ void CMeratMarketMan::FUN_140d54ac0()
 void CMeratMarketMan::SendMeretMarketMode22()
 {
     COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
-    packet.vfunc_o10_1(0x16);
+    packet.WriteUInt8(0x16);
     FUN_140710590(packet);
 }
 
@@ -621,8 +621,8 @@ void CMeratMarketMan::SendMeretMarketMode22()
 void CMeratMarketMan::SendMeretMarketMode23(__int64 nId)
 {
     COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
-    packet.vfunc_o10_1(0x17);
-    packet.vfunc_o10_4(nId);
+    packet.WriteUInt8(0x17);
+    packet.WriteInt64(nId);
     FUN_140710590(packet);
 }
 
@@ -630,8 +630,8 @@ void CMeratMarketMan::SendMeretMarketMode23(__int64 nId)
 void CMeratMarketMan::SendMeretMarketMode24(__int64 nId)
 {
     COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
-    packet.vfunc_o10_1(0x18);
-    packet.vfunc_o10_4(nId);
+    packet.WriteUInt8(0x18);
+    packet.WriteInt64(nId);
     FUN_140710590(packet);
 }
 
@@ -639,8 +639,8 @@ void CMeratMarketMan::SendMeretMarketMode24(__int64 nId)
 void CMeratMarketMan::SendMeretMarketMode25(__int64 nId)
 {
     COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
-    packet.vfunc_o10_1(0x19);
-    packet.vfunc_o10_4(nId);
+    packet.WriteUInt8(0x19);
+    packet.WriteInt64(nId);
     FUN_140710590(packet);
 }
 
@@ -655,7 +655,7 @@ void CMeratMarketMan::SendMeretMarketMode27(MS2Ptr<CMeratMarketSchCond> spCond)
     if (spCond->m_44 != 0)
         spCond->m_30 = nPage - 4;
     COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
-    packet.vfunc_o10_1(0x1b);
+    packet.WriteUInt8(0x1b);
     spCond->Write(&packet);
     FUN_140710590(packet);
 }
@@ -672,14 +672,14 @@ void CMeratMarketMan::FUN_140d54e50(MS2Ptr<CMeratMarketSchCond> spCond)
         spCond->m_30 = nPage - 4;
     if (spCond->m_str.IsEmpty() == true) {
         COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
-        packet.vfunc_o10_1(0x1c);
+        packet.WriteUInt8(0x1c);
         spCond->Write(&packet);
         FUN_140710590(packet);
     } else {
         COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
-        packet.vfunc_o10_1(0x69);
+        packet.WriteUInt8(0x69);
         spCond->Write(&packet);
-        packet.vfunc_o10_0(true);
+        packet.WriteBool(true);
         FUN_140710590(packet);
     }
 }
@@ -689,11 +689,11 @@ void CMeratMarketMan::FUN_140d54e50(MS2Ptr<CMeratMarketSchCond> spCond)
 void CMeratMarketMan::SendMeretMarketMode29(bool bLike, const __int64& nUgcId, const int& nUIClassID)
 {
     COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
-    packet.vfunc_o10_1(0x1d);
-    packet.vfunc_o10_1(bLike ? 1 : 0);
-    packet.vfunc_o10_4(nUgcId);
+    packet.WriteUInt8(0x1d);
+    packet.WriteUInt8(bLike ? 1 : 0);
+    packet.WriteInt64(nUgcId);
     bool bRegisterDialog = nUIClassID == 0x4f7f ? 1 : 0;
-    packet.vfunc_o10_0(bRegisterDialog);
+    packet.WriteBool(bRegisterDialog);
     FUN_140710590(packet);
 }
 
@@ -708,9 +708,9 @@ void CMeratMarketMan::SendMeretMarketMode104(MS2Ptr<CMeratMarketSchCond> spCond,
     if (spCond->m_44 != 0)
         spCond->m_30 = nPage - 4;
     COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
-    packet.vfunc_o10_1(0x68);
+    packet.WriteUInt8(0x68);
     spCond->Write(&packet);
-    packet.vfunc_o10_1(nSort);
+    packet.WriteUInt8(nSort);
     FUN_140710590(packet);
 }
 
@@ -721,10 +721,10 @@ void CMeratMarketMan::SendMeretMarketMode32(ATL::CAtlArray<int>& ids)
     if (ids.GetCount() > 0x14)
         return;
     COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
-    packet.vfunc_o10_1(0x20);
-    packet.vfunc_o10_3((int)ids.GetCount());
+    packet.WriteUInt8(0x20);
+    packet.WriteInt32((int)ids.GetCount());
     for (unsigned int i = 0; i < ids.GetCount(); i++)
-        packet.vfunc_o10_3(ids.GetAt(i));
+        packet.WriteInt32(ids.GetAt(i));
     FUN_140710590(packet);
 }
 
@@ -735,10 +735,10 @@ void CMeratMarketMan::SendMeretMarketMode33(ATL::CAtlArray<unsigned __int64>& id
     if (ids.GetCount() > 0x14)
         return;
     COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
-    packet.vfunc_o10_1(0x21);
-    packet.vfunc_o10_3((int)ids.GetCount());
+    packet.WriteUInt8(0x21);
+    packet.WriteInt32((int)ids.GetCount());
     for (unsigned int i = 0; i < ids.GetCount(); i++)
-        packet.vfunc_o10_4(ids[i]);
+        packet.WriteInt64(ids[i]);
     FUN_140710590(packet);
 }
 
@@ -1127,7 +1127,7 @@ void CMeratMarketMan::FUN_140d56eb0(__int64 nId, CInPacket& packet)
     if (spMark == 0)
         return;
     spMark->FUN_140896d90();
-    int nCount = packet.vfunc_o8_3();
+    int nCount = packet.ReadInt32();
     if (Unk_LockGuard lock = m_lock) {} else {
         for (int i = 0; i < nCount; i++) {
             MS2Ptr<CMeratMarketProduct> spProduct(new CMeratMarketProduct(packet));
@@ -1621,7 +1621,7 @@ void CMeratMarketMan::SendMeretMarketMode30(MS2Ptr<CMeratMarketBuy> spBuy)
         return;
     CMeratMarketPacket::BuyPacket* pPacket = spBuy->m_spPacket.get();
     COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
-    packet.vfunc_o10_1(0x1e);
+    packet.WriteUInt8(0x1e);
     pPacket->Write(packet);
     FUN_140710590(packet);
 }
@@ -2085,8 +2085,8 @@ bool CPendingBuyBase::vfunc_5()
 // @0x140d5bc30
 void CMeratMarketMan::FUN_140d5bc30(CInPacket& packet)
 {
-    int nPage = packet.vfunc_o8_1();
-    int nValue = packet.vfunc_o8_1();
+    int nPage = packet.ReadUInt8();
+    int nValue = packet.ReadUInt8();
     switch (nPage)
     {
     case 0:
@@ -2110,10 +2110,10 @@ void CMeratMarketMan::FUN_140d5bd10(CInPacket& packet)
     FUN_140d5bf40(packet);
     FUN_140d5bf40(packet);
     FUN_140d5bf40(packet);
-    unsigned int nUnused = packet.vfunc_o8_1();
-    int nCount = packet.vfunc_o8_1();
+    unsigned int nUnused = packet.ReadUInt8();
+    int nCount = packet.ReadUInt8();
     for (int i = 0; i < nCount; i++) {
-        if (packet.vfunc_o8_1()) {
+        if (packet.ReadUInt8()) {
             MS2Ptr<CMeratMarketProduct> spProduct(new CMeratMarketProduct(packet));
             if (spProduct == 0)
                 continue;
@@ -2129,7 +2129,7 @@ void CMeratMarketMan::FUN_140d5bd10(CInPacket& packet)
 // @0x140d5bf40
 void CMeratMarketMan::FUN_140d5bf40(CInPacket& packet)
 {
-    int nCount = packet.vfunc_o8_1();
+    int nCount = packet.ReadUInt8();
     for (int i = 0; i < nCount; i++) {
         if (Unk_LockGuard lock = m_lock) {} else {
             MS2Ptr<CMeratMarketProduct> spProduct(new CMeratMarketProduct(packet));
@@ -2145,14 +2145,14 @@ void CMeratMarketMan::FUN_140d5bf40(CInPacket& packet)
 // @0x140d5c0c0
 void CMeratMarketMan::FUN_140d5c0c0(CInPacket& packet, int nPage, int nValue)
 {
-    unsigned int nUnused = packet.vfunc_o8_1();
+    unsigned int nUnused = packet.ReadUInt8();
     FUN_140d57e40();
-    int nCount = packet.vfunc_o8_1();
+    int nCount = packet.ReadUInt8();
     Unk_MeratProductArray* pList = &m_228;
     Unk_MeratProductMap* pMap = &m_1f8;
     if (pList != 0 && pMap != 0) {
         for (int i = 0; i < nCount; i++) {
-            if (packet.vfunc_o8_1()) {
+            if (packet.ReadUInt8()) {
                 MS2Ptr<CMeratMarketProduct> spProduct(new CMeratMarketProduct(packet));
                 if (spProduct == 0)
                     continue;
@@ -2170,11 +2170,11 @@ void CMeratMarketMan::FUN_140d5c0c0(CInPacket& packet, int nPage, int nValue)
 void CMeratMarketMan::FUN_140d5c2f0(CInPacket& packet)
 {
     FUN_140d59ce0();
-    unsigned int nCount = packet.vfunc_o8_1();
+    unsigned int nCount = packet.ReadUInt8();
     bool bPush = FUN_1418ffe80(m_nFlags, 1);
     Unk_MeratProductArray aPush;
     for (int i = 0; i < (int)nCount; i++) {
-        unsigned int bHas = packet.vfunc_o8_1();
+        unsigned int bHas = packet.ReadUInt8();
         if (!bHas)
             continue;
         MS2Ptr<CMeratMarketProduct> spProduct(new CMeratMarketProduct(packet));
@@ -2222,9 +2222,9 @@ void CMeratMarketMan::FUN_140d5c2f0(CInPacket& packet)
 void CMeratMarketMan::FUN_140d5c910(CInPacket& packet)
 {
     FUN_140d57e40();
-    int nCount = packet.vfunc_o8_3();
+    int nCount = packet.ReadInt32();
     for (int i = 0; i < nCount; i++) {
-        if (!packet.vfunc_o8_1())
+        if (!packet.ReadUInt8())
             continue;
         MS2Ptr<CMeratMarketProduct> spProduct(new CMeratMarketProduct(packet));
         if (spProduct.get() == 0)
@@ -2250,12 +2250,12 @@ void CMeratMarketMan::FUN_140d5c910(CInPacket& packet)
 void CMeratMarketMan::FUN_140d5cb90(CInPacket& packet)
 {
     m_products.RemoveAll();
-    m_n1b0 = packet.vfunc_o8_4();
+    m_n1b0 = packet.ReadInt64();
     m_n1a8 = 0;
     __int64 nLast = 0;
-    int nCount = packet.vfunc_o8_3();
+    int nCount = packet.ReadInt32();
     for (int i = 0; i < nCount; i++) {
-        if (!packet.vfunc_o8_1())
+        if (!packet.ReadUInt8())
             continue;
         MS2Ptr<CMeratMarketProduct> spProduct(new CMeratMarketProduct(packet));
         if (spProduct.get() ? true : false) {
@@ -2290,7 +2290,7 @@ void CMeratMarketMan::FUN_140d5ce00(CInPacket& packet)
     m_ne8 = 0;
     m_sellers.RemoveAll();
     m_nf0 = FUN_140869440();
-    int nCount = packet.vfunc_o8_3();
+    int nCount = packet.ReadInt32();
     for (int i = 0; i < nCount; i++) {
         MS2Ptr<CUgcMarketSeller> spSeller(new CUgcMarketSeller());
         spSeller->Read(packet);
@@ -2324,7 +2324,7 @@ void CMeratMarketMan::FUN_140d5d140(CInPacket& packet)
 {
     Unk_MeratProductKey key(0, 0);
     key.Read(packet);
-    __int64 nUid = packet.vfunc_o8_4();
+    __int64 nUid = packet.ReadInt64();
     MS2Ptr<CMeratMarketProduct> spProduct = FUN_140d55800(key);
     if (spProduct == 0)
         return;
@@ -2368,9 +2368,9 @@ void CMeratMarketMan::FUN_140d5d3e0(CInPacket& packet)
 // @0x140d5d500
 void CMeratMarketMan::FUN_140d5d500(CInPacket& packet)
 {
-    __int64 nId = packet.vfunc_o8_4();
-    int nType = packet.vfunc_o8_3();
-    __int64 nAmount = packet.vfunc_o8_4();
+    __int64 nId = packet.ReadInt64();
+    int nType = packet.ReadInt32();
+    __int64 nAmount = packet.ReadInt64();
     MS2Ptr<CUgcMarketSeller> spSeller = FUN_140d55f40(nId);
     if (spSeller == 0)
         return;
@@ -2400,11 +2400,11 @@ void CMeratMarketMan::FUN_140d5d760(CInPacket& packet)
 {
     Unk_MeratProductKey key(0, 0);
     key.Read(packet);
-    __int64 nUid = packet.vfunc_o8_4();
+    __int64 nUid = packet.ReadInt64();
     (void)nUid;
-    int nState = packet.vfunc_o8_1();
-    int nKind = packet.vfunc_o8_1();
-    __int64 nEnd = packet.vfunc_o8_4();
+    int nState = packet.ReadUInt8();
+    int nKind = packet.ReadUInt8();
+    __int64 nEnd = packet.ReadInt64();
     MS2Ptr<CMeratMarketProduct> spProduct = FUN_140d55800(key);
     if (spProduct == 0)
         return;
@@ -2426,7 +2426,7 @@ void CMeratMarketMan::FUN_140d5d760(CInPacket& packet)
 // @0x140d5da10
 void CMeratMarketMan::FUN_140d5da10(CInPacket& packet)
 {
-    int nCount = packet.vfunc_o8_1();
+    int nCount = packet.ReadUInt8();
     {
         if (Unk_LockGuard lock = m_lock) {} else {
             FUN_140d56c60();
@@ -2461,7 +2461,7 @@ void CMeratMarketMan::FUN_140d5dba0(CInPacket& packet)
 // @0x140d5dcf0
 void CMeratMarketMan::FUN_140d5dcf0(CInPacket& packet)
 {
-    __int64 nId = packet.vfunc_o8_4();
+    __int64 nId = packet.ReadInt64();
     if (FUN_140d56db0(nId) == 0)
         return;
     FUN_140d56be0(nId);
@@ -2488,8 +2488,8 @@ void CMeratMarketMan::FUN_140d5dd80(CInPacket& packet)
 // @0x140d5de90
 void CMeratMarketMan::FUN_140d5de90(CInPacket& packet)
 {
-    __int64 nStart = packet.vfunc_o8_4();
-    __int64 nEnd = packet.vfunc_o8_4();
+    __int64 nStart = packet.ReadInt64();
+    __int64 nEnd = packet.ReadInt64();
     m_n1b0 = nStart;
     m_n1a0 = nEnd;
     {
@@ -2511,10 +2511,10 @@ void CMeratMarketMan::FUN_140d5de90(CInPacket& packet)
 void CMeratMarketMan::FUN_140d5e020(CInPacket& packet)
 {
     int nOldDays = m_n1c4;
-    m_n1b8 = packet.vfunc_o8_3();
-    m_n1bc = packet.vfunc_o8_3();
-    m_n1c0 = packet.vfunc_o8_3();
-    m_n1c4 = packet.vfunc_o8_3();
+    m_n1b8 = packet.ReadInt32();
+    m_n1bc = packet.ReadInt32();
+    m_n1c0 = packet.ReadInt32();
+    m_n1c4 = packet.ReadInt32();
     bool bChanged = nOldDays != m_n1c4;
     if (bChanged) {
         FUN_140d566f0(0);
@@ -2532,9 +2532,9 @@ void CMeratMarketMan::FUN_140d5e020(CInPacket& packet)
 // @0x140d5e190
 void CMeratMarketMan::FUN_140d5e190(CInPacket& packet)
 {
-    int nCount = packet.vfunc_o8_3();
-    int nTotal = packet.vfunc_o8_3();
-    int nPage = packet.vfunc_o8_3();
+    int nCount = packet.ReadInt32();
+    int nTotal = packet.ReadInt32();
+    int nPage = packet.ReadInt32();
     bool bMore = false;
     if (nPage < 2 || nCount != 0) {
         if (Unk_LockGuard lock = m_lock) {} else {
@@ -2548,7 +2548,7 @@ void CMeratMarketMan::FUN_140d5e190(CInPacket& packet)
     }
     int nFirst = ((nPage - 1 < 0 ? 0 : nPage - 1) % 5) * 0x12;
     for (int i = 0; i < nCount; i++) {
-        if (packet.vfunc_o8_1() == 0)
+        if (packet.ReadUInt8() == 0)
             continue;
         MS2Ptr<CMeratMarketProduct> spProduct(new CMeratMarketProduct(packet));
         if (spProduct.get() ? true : false)
@@ -2569,10 +2569,10 @@ void CMeratMarketMan::FUN_140d5e190(CInPacket& packet)
 // @0x140d5e540
 void CMeratMarketMan::FUN_140d5e540(CInPacket& packet)
 {
-    int nCount = packet.vfunc_o8_3();
-    int nTotal = packet.vfunc_o8_3();
-    unsigned char nPerPage = packet.vfunc_o8_1();
-    int nPage = packet.vfunc_o8_3();
+    int nCount = packet.ReadInt32();
+    int nTotal = packet.ReadInt32();
+    unsigned char nPerPage = packet.ReadUInt8();
+    int nPage = packet.ReadInt32();
     bool bMore = false;
     if (nPage < 2 || nCount != 0) {
         if (Unk_LockGuard lock = m_lock) {} else {
@@ -2586,7 +2586,7 @@ void CMeratMarketMan::FUN_140d5e540(CInPacket& packet)
     }
     int nFirst = ((nPage - 1 < 0 ? 0 : nPage - 1) % 5) * (int)nPerPage;
     for (int i = 0; i < nCount; i++) {
-        if (packet.vfunc_o8_1() == 0)
+        if (packet.ReadUInt8() == 0)
             continue;
         MS2Ptr<CMeratMarketProduct> spProduct(new CMeratMarketProduct(packet));
         if (spProduct.get() != 0)
@@ -2617,11 +2617,11 @@ void CMeratMarketMan::FUN_140d5e930(CInPacket& packet)
 // @0x140d5e970
 void CMeratMarketMan::FUN_140d5e970(CInPacket& packet)
 {
-    int nId = packet.vfunc_o8_3();
-    int nSale = packet.vfunc_o8_3();
-    int nRate = packet.vfunc_o8_3();
-    unsigned char nCount = packet.vfunc_o8_1();
-    CMsTime day(packet.vfunc_o8_4());
+    int nId = packet.ReadInt32();
+    int nSale = packet.ReadInt32();
+    int nRate = packet.ReadInt32();
+    unsigned char nCount = packet.ReadUInt8();
+    CMsTime day(packet.ReadInt64());
     Unk_MeratProductKey key(nId, 0);
     MS2Ptr<CMeratMarketProduct> spProduct = CMeratMarketMan::GetInstance()->FUN_140d57150(key, 0);
     if (!spProduct)
@@ -2655,10 +2655,10 @@ void CMeratMarketMan::FUN_140d5ed50(CInPacket& packet)
     CMeratMarketPacket::BuyPacket buy;
     buy.Read(packet);
     Unk_MeratProductKey key = buy.m_key;
-    int nBuyCount = packet.vfunc_o8_3();
-    int nSoldCount = packet.vfunc_o8_3();
-    int nUgc3c = packet.vfunc_o8_3();
-    int nUgc40 = packet.vfunc_o8_3();
+    int nBuyCount = packet.ReadInt32();
+    int nSoldCount = packet.ReadInt32();
+    int nUgc3c = packet.ReadInt32();
+    int nUgc40 = packet.ReadInt32();
     __int64 nBookMarkId = buy.m_n38;
     if (buy.m_n40 >= 0 && buy.m_n40 < (int)m_pending.GetCount()) {
         MS2Ptr<CPendingBuyBase> spBuy = m_pending[buy.m_n40];
@@ -2702,7 +2702,7 @@ void CMeratMarketMan::FUN_140d5f190(CInPacket& packet)
 {
     CMeratMarketPacket::BuyPacket buy;
     buy.Read(packet);
-    int nError = packet.vfunc_o8_3();
+    int nError = packet.ReadInt32();
     int nIndex = buy.m_n40;
     FUN_140d58810(false, nError, nIndex);
     FUN_140d5f330(buy, nError);
@@ -2712,7 +2712,7 @@ void CMeratMarketMan::FUN_140d5f190(CInPacket& packet)
 // @0x140d5f250
 void CMeratMarketMan::FUN_140d5f250(CInPacket& packet)
 {
-    __int64 nUid = packet.vfunc_o8_4();
+    __int64 nUid = packet.ReadInt64();
     MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
     if (spItem.get() != 0) {
         spItem->FUN_140524eb0(packet);

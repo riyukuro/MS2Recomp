@@ -311,20 +311,20 @@ MS2_REPLACE_METHOD(0x1406DC1E0, TShopPaymentAttr, FUN_1406dc1e0, 69, 0xBD64AE52)
 // @0x1406dc230
 void TShopPaymentAttr::FUN_1406dc230(COutputStream& out)
 {
-    out.vfunc_o10_1((unsigned char)m_eType);
-    out.vfunc_o10_3(m_nItemId);
-    out.vfunc_o10_3((int)m_nAmount);
-    out.vfunc_o10_7(m_strIconTag);
+    out.WriteUInt8((unsigned char)m_eType);
+    out.WriteInt32(m_nItemId);
+    out.WriteInt32((int)m_nAmount);
+    out.WriteString(m_strIconTag);
 }
 MS2_REPLACE_METHOD(0x1406DC230, TShopPaymentAttr, FUN_1406dc230, 130, 0x1A296A99);
 
 // @0x1406dc2c0
 void TShopPaymentAttr::FUN_1406dc2c0(CInPacket& in)
 {
-    m_eType = (ePaymentType)in.vfunc_o8_1();
-    m_nItemId = in.vfunc_o8_3();
-    m_nAmount = (unsigned)in.vfunc_o8_3();
-    m_strIconTag = in.vfunc_o8_7();
+    m_eType = (ePaymentType)in.ReadUInt8();
+    m_nItemId = in.ReadInt32();
+    m_nAmount = (unsigned)in.ReadInt32();
+    m_strIconTag = in.ReadString();
 }
 MS2_REPLACE_METHOD(0x1406DC2C0, TShopPaymentAttr, FUN_1406dc2c0, 249, 0xFA616EDA);
 
@@ -421,28 +421,28 @@ void CNpcShopBuyPeriod::FUN_1406dc850(COutputStream& out)
 {
     bool bDates = m_tmStart > CMsTime(0) || m_tmEnd > CMsTime(0);
     bool bParts = FUN_1406dda70();
-    out.vfunc_o10_0(bDates);
+    out.WriteBool(bDates);
     if (bDates)
     {
-        out.vfunc_o10_4(m_tmStart.Get());
-        out.vfunc_o10_4(m_tmEnd.Get());
+        out.WriteInt64(m_tmStart.Get());
+        out.WriteInt64(m_tmEnd.Get());
     }
-    out.vfunc_o10_0(bParts);
+    out.WriteBool(bParts);
     if (bParts)
     {
         ATL::CAtlArray<Unk_DayTimeRange>& aParts = m_aPartTimes;
         int nCount = (int)aParts.GetCount();
-        out.vfunc_o10_1((unsigned char)nCount);
+        out.WriteUInt8((unsigned char)nCount);
         for (int i = 0; i < nCount; i++)
         {
             Unk_DayTimeRange& range = aParts.GetAt(i);
-            out.vfunc_o10_3(range.m_start.GetSeconds());
-            out.vfunc_o10_3(range.m_end.GetSeconds());
+            out.WriteInt32(range.m_start.GetSeconds());
+            out.WriteInt32(range.m_end.GetSeconds());
         }
-        out.vfunc_o10_1((unsigned char)m_setDays.size());
+        out.WriteUInt8((unsigned char)m_setDays.size());
         std::set<int>& days = m_setDays;
         for (std::set<int>::iterator it = days.begin(); it != days.end(); ++it)
-            out.vfunc_o10_1((unsigned char)*it);
+            out.WriteUInt8((unsigned char)*it);
     }
 }
 MS2_REPLACE_METHOD(0x1406DC850, CNpcShopBuyPeriod, FUN_1406dc850, 742, 0xD2C9CD27);
@@ -450,29 +450,29 @@ MS2_REPLACE_METHOD(0x1406DC850, CNpcShopBuyPeriod, FUN_1406dc850, 742, 0xD2C9CD2
 // @0x1406dcb40
 void CNpcShopBuyPeriod::FUN_1406dcb40(CInPacket& in)
 {
-    bool bHasTime = in.vfunc_o8_0();
+    bool bHasTime = in.ReadBool();
     if (bHasTime)
     {
-        m_tmStart = in.vfunc_o8_4();
-        m_tmEnd = in.vfunc_o8_4();
+        m_tmStart = in.ReadInt64();
+        m_tmEnd = in.ReadInt64();
     }
-    bool bHasPart = in.vfunc_o8_0();
+    bool bHasPart = in.ReadBool();
     if (bHasPart)
     {
-        int nCount = in.vfunc_o8_1();
+        int nCount = in.ReadUInt8();
         for (int i = 0; i < nCount; i++)
         {
-            unsigned nStart = in.vfunc_o8_3();
-            unsigned nEnd = in.vfunc_o8_3();
+            unsigned nStart = in.ReadInt32();
+            unsigned nEnd = in.ReadInt32();
             Unk_DayTimeRange range;
             range.m_start.SetSeconds(nStart);
             range.m_end.SetSeconds(nEnd);
             m_aPartTimes.Add(range);
         }
-        int nDays = in.vfunc_o8_1();
+        int nDays = in.ReadUInt8();
         for (int i = 0; i < nDays; i++)
         {
-            int nDay = in.vfunc_o8_1();
+            int nDay = in.ReadUInt8();
             m_setDays.insert(nDay);
         }
     }
@@ -799,14 +799,14 @@ MS2_REPLACE_METHOD(0x1406DE6B0, CNpcShopItemNew, FUN_1406de6b0, 90, 0x442D4EEE);
 // @0x1406de710
 void CNpcShopItemNew::FUN_1406de710(COutputStream& out)
 {
-    out.vfunc_o10_3(m_nItemId);
-    out.vfunc_o10_0(m_bFlag);
-    out.vfunc_o10_1((unsigned char)m_nRarity);
-    out.vfunc_o10_7(m_strName);
-    out.vfunc_o10_1((unsigned char)m_nProductType);
-    out.vfunc_o10_1((unsigned char)m_nProductKind);
+    out.WriteInt32(m_nItemId);
+    out.WriteBool(m_bFlag);
+    out.WriteUInt8((unsigned char)m_nRarity);
+    out.WriteString(m_strName);
+    out.WriteUInt8((unsigned char)m_nProductType);
+    out.WriteUInt8((unsigned char)m_nProductKind);
     bool bPeriod = m_spPeriod != 0;
-    out.vfunc_o10_0(bPeriod);
+    out.WriteBool(bPeriod);
     if (bPeriod)
         m_spPeriod->FUN_1406dc850(out);
 }
@@ -815,13 +815,13 @@ MS2_REPLACE_METHOD(0x1406DE710, CNpcShopItemNew, FUN_1406de710, 288, 0x99EB800A)
 // @0x1406de840
 void CNpcShopItemNew::FUN_1406de840(CInPacket& in)
 {
-    m_nItemId = in.vfunc_o8_3();
-    m_bFlag = in.vfunc_o8_0();
-    m_nRarity = in.vfunc_o8_1();
-    m_strName = in.vfunc_o8_7();
-    m_nProductType = in.vfunc_o8_1();
-    m_nProductKind = in.vfunc_o8_1();
-    if (in.vfunc_o8_0())
+    m_nItemId = in.ReadInt32();
+    m_bFlag = in.ReadBool();
+    m_nRarity = in.ReadUInt8();
+    m_strName = in.ReadString();
+    m_nProductType = in.ReadUInt8();
+    m_nProductKind = in.ReadUInt8();
+    if (in.ReadBool())
     {
         m_spPeriod = new CNpcShopBuyPeriod;
         m_spPeriod->FUN_1406dcb40(in);
@@ -1699,11 +1699,11 @@ CBeautyShopItem::CBeautyShopItem()
 // @0x1406e3740
 void CBeautyShopItem::FUN_1406e3740(COutputStream& out)
 {
-    out.vfunc_o10_3(m_nItemId);
-    out.vfunc_o10_1((unsigned char)m_nSaleTag);
-    out.vfunc_o10_2(m_nRequireLevel);
-    out.vfunc_o10_3(m_nAchieveId);
-    out.vfunc_o10_1((unsigned char)m_nAchieveGrade);
+    out.WriteInt32(m_nItemId);
+    out.WriteUInt8((unsigned char)m_nSaleTag);
+    out.WriteInt16(m_nRequireLevel);
+    out.WriteInt32(m_nAchieveId);
+    out.WriteUInt8((unsigned char)m_nAchieveGrade);
     m_payment.FUN_1406dc230(out);
 }
 MS2_REPLACE_METHOD(0x1406E3740, CBeautyShopItem, FUN_1406e3740, 164, 0xDA590D35);
@@ -1711,11 +1711,11 @@ MS2_REPLACE_METHOD(0x1406E3740, CBeautyShopItem, FUN_1406e3740, 164, 0xDA590D35)
 // @0x1406e37f0
 void CBeautyShopItem::FUN_1406e37f0(CInPacket& in)
 {
-    m_nItemId = in.vfunc_o8_3();
-    m_nSaleTag = in.vfunc_o8_1();
-    m_nRequireLevel = in.vfunc_o8_2();
-    m_nAchieveId = in.vfunc_o8_3();
-    m_nAchieveGrade = in.vfunc_o8_1();
+    m_nItemId = in.ReadInt32();
+    m_nSaleTag = in.ReadUInt8();
+    m_nRequireLevel = in.ReadInt16();
+    m_nAchieveId = in.ReadInt32();
+    m_nAchieveGrade = in.ReadUInt8();
     m_payment.FUN_1406dc2c0(in);
 }
 MS2_REPLACE_METHOD(0x1406E37F0, CBeautyShopItem, FUN_1406e37f0, 258, 0x94AC2552);
@@ -1987,13 +1987,13 @@ int CBeautyShopData::Read(CString& strError)
 // @0x1406e4770
 void CBeautyShopData::FUN_1406e4770(COutputStream& out)
 {
-    out.vfunc_o10_3(m_nShopId);
-    out.vfunc_o10_3(m_nCategory);
-    out.vfunc_o10_3(m_nDisplayCouponId);
-    out.vfunc_o10_1(m_b24);
-    out.vfunc_o10_3(m_nReturnCouponId);
-    out.vfunc_o10_3(m_n2c);
-    out.vfunc_o10_0(m_b30);
+    out.WriteInt32(m_nShopId);
+    out.WriteInt32(m_nCategory);
+    out.WriteInt32(m_nDisplayCouponId);
+    out.WriteUInt8(m_b24);
+    out.WriteInt32(m_nReturnCouponId);
+    out.WriteInt32(m_n2c);
+    out.WriteBool(m_b30);
     FUN_1406e3dc0().FUN_1406dc230(out);
     FUN_1406e3de0().FUN_1406dc230(out);
 }
@@ -2150,13 +2150,13 @@ CBeautyShopDataCli::CBeautyShopDataCli()
 // @0x1406e5420
 void CBeautyShopDataCli::FUN_1406e5420(CInPacket& in)
 {
-    m_nShopId = in.vfunc_o8_3();
-    m_nCategory = in.vfunc_o8_3();
-    m_nDisplayCouponId = in.vfunc_o8_3();
-    m_b24 = in.vfunc_o8_1() == 1 ? true : false;
-    m_nReturnCouponId = in.vfunc_o8_3();
-    m_n2c = in.vfunc_o8_3();
-    m_b30 = in.vfunc_o8_0();
+    m_nShopId = in.ReadInt32();
+    m_nCategory = in.ReadInt32();
+    m_nDisplayCouponId = in.ReadInt32();
+    m_b24 = in.ReadUInt8() == 1 ? true : false;
+    m_nReturnCouponId = in.ReadInt32();
+    m_n2c = in.ReadInt32();
+    m_b30 = in.ReadBool();
     FUN_1406e3dc0().FUN_1406dc2c0(in);
     FUN_1406e3de0().FUN_1406dc2c0(in);
 }
@@ -2378,7 +2378,7 @@ void CNpcShopMeratItemBase::vfunc_2(CInPacket* pIn)
     if (m_spProduct == 0)
         return;
     m_spProduct->ReadBrief(*pIn);
-    m_nDisplayOrder = pIn->vfunc_o8_1();
+    m_nDisplayOrder = pIn->ReadUInt8();
 }
 
 // @0x1406f1930
@@ -2392,15 +2392,15 @@ void CNpcShopMeratItemBase::vfunc_1(COutputStream* pOut)
     if (m_spProduct == 0)
         return;
     m_spProduct->WriteBrief(*pOut);
-    pOut->vfunc_o10_1((unsigned char)m_nDisplayOrder);
+    pOut->WriteUInt8((unsigned char)m_nDisplayOrder);
 }
 
 // @0x1406f1a00
 void CNpcShopMeratItemSvr::vfunc_1(COutputStream* pOut)
 {
     CNpcShopMeratItemBase::vfunc_1(pOut);
-    pOut->vfunc_o10_3(m_34);
-    pOut->vfunc_o10_3(m_38);
+    pOut->WriteInt32(m_34);
+    pOut->WriteInt32(m_38);
 }
 
 // @0x1406f2470

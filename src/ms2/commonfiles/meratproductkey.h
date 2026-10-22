@@ -19,9 +19,9 @@ struct Unk_MeratProductKey
     // @0x1406ad6b0
     void Set(int nPremiumId, __int64 nUgcId) { m_nPremiumId = nPremiumId; m_nUgcId = nUgcId; }
     // @0x1406a9c70
-    void Write(COutputStream& stream) const { stream.vfunc_o10_3(m_nPremiumId); stream.vfunc_o10_4(m_nUgcId); }
+    void Write(COutputStream& stream) const { stream.WriteInt32(m_nPremiumId); stream.WriteInt64(m_nUgcId); }
     // @0x1406a9b40
-    void Read(CInPacket& packet) { m_nPremiumId = packet.vfunc_o8_3(); m_nUgcId = packet.vfunc_o8_4(); }
+    void Read(CInPacket& packet) { m_nPremiumId = packet.ReadInt32(); m_nUgcId = packet.ReadInt64(); }
 
     void FUN_1409c1640(CStringW strText);                   // 0x1409c1640 parse the key from its text (body in another unit)
     CStringW FUN_1409b0470() const;                         // 0x1409b0470 the key as text ("P<n>" / "U<n>")

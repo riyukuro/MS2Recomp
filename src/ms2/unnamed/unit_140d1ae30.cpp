@@ -1091,8 +1091,8 @@ int SuperWorldChat(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
     int nItemId = spItem->FUN_1405276c0();
     COutPacket packet(static_cast<int>(SendOp::SuperWorldChat), 0);
-    packet.vfunc_o10_1(0);
-    packet.vfunc_o10_3(nItemId);
+    packet.WriteUInt8(0);
+    packet.WriteInt32(nItemId);
     FUN_140710590(packet);
     return 1;
 }

@@ -233,7 +233,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
     }
     else if (nMessage == 0x10)
     {
-        bool bMatched = packet.vfunc_o8_0();
+        bool bMatched = packet.ReadBool();
         if (bMatched)
         {
             m_state = 2;
@@ -268,10 +268,10 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
     }
     else if (nMessage == 0x16)
     {
-        m_league = packet.vfunc_o8_3();
-        m_value20 = packet.vfunc_o8_3();
-        m_value24 = packet.vfunc_o8_3();
-        m_value28 = packet.vfunc_o8_3();
+        m_league = packet.ReadInt32();
+        m_value20 = packet.ReadInt32();
+        m_value24 = packet.ReadInt32();
+        m_value28 = packet.ReadInt32();
         UIRankPvPDialog* pDialog = Unk_RankDialog<UIRankPvPDialog>(0x4f04);
         if (pDialog)
             pDialog->FUN_140f94490();
@@ -279,7 +279,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
     else if (nMessage == 0x17)
     {
         m_records.clear();
-        int nCount = packet.vfunc_o8_3();
+        int nCount = packet.ReadInt32();
         m_total2c = 0;
         m_total30 = 0;
         for (int i = 0; i < nCount; i++)
@@ -328,7 +328,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
     }
     else if (nMessage == 0x13)
     {
-        bool bFlag = packet.vfunc_o8_0();
+        bool bFlag = packet.ReadBool();
         Unk_RankActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
         if (pActor == 0)
             return;
@@ -344,8 +344,8 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
     }
     else if (nMessage == 0x1b)
     {
-        int nRound = packet.vfunc_o8_3();
-        int nTotal = packet.vfunc_o8_3();
+        int nRound = packet.ReadInt32();
+        int nTotal = packet.ReadInt32();
         UIEventIntroduce* pIntro = Unk_RankDialog<UIEventIntroduce>(0x4f06);
         if (pIntro == 0)
             return;
@@ -355,7 +355,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
     }
     else if (nMessage == 0x1a)
     {
-        int nValue = packet.vfunc_o8_3();
+        int nValue = packet.ReadInt32();
         UIEventIntroduce* pIntro = Unk_RankDialog<UIEventIntroduce>(0x4f06);
         if (pIntro == 0)
             return;
@@ -365,7 +365,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
     }
     else if (nMessage == 0x1c)
     {
-        int nValue = packet.vfunc_o8_3();
+        int nValue = packet.ReadInt32();
         UIEventIntroduce* pIntro = Unk_RankDialog<UIEventIntroduce>(0x4f06);
         if (pIntro == 0)
             return;
@@ -375,7 +375,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
     }
     else if (nMessage == 0x1d)
     {
-        int nValue = packet.vfunc_o8_3();
+        int nValue = packet.ReadInt32();
         UIEventIntroduce* pIntro = Unk_RankDialog<UIEventIntroduce>(0x4f06);
         if (pIntro == 0)
             return;
@@ -385,7 +385,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
     }
     else if (nMessage == 0x1e)
     {
-        int nValue = packet.vfunc_o8_3();
+        int nValue = packet.ReadInt32();
         UIEventIntroduce* pIntro = Unk_RankDialog<UIEventIntroduce>(0x4f06);
         if (pIntro == 0)
             return;
@@ -395,7 +395,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
     }
     else if (nMessage == 0x1f)
     {
-        int nValue = packet.vfunc_o8_3();
+        int nValue = packet.ReadInt32();
         UIEventIntroduce* pIntro = Unk_RankDialog<UIEventIntroduce>(0x4f06);
         if (pIntro == 0)
             return;
@@ -441,7 +441,7 @@ bool CPvpRankDuelComponent::RequestCancelMatch()
         return false;
     }
     COutPacket packet(static_cast<int>(SendOp::Pvp), 0);
-    packet.vfunc_o10_1(0x10);
+    packet.WriteUInt8(0x10);
     FUN_1407105c0(&packet, 0x10, 1000);
     return true;
 }

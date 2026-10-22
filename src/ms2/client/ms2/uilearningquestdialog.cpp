@@ -161,8 +161,8 @@ int UILearningQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         if (pActor->FUN_141527e00() == 0 || spData->m_nGotoField != 62000000)
         {
             COutPacket packet(static_cast<int>(SendOp::Quest), 0);
-            packet.vfunc_o10_1(0x10);
-            packet.vfunc_o10_3(m_18c);
+            packet.WriteUInt8(0x10);
+            packet.WriteInt32(m_18c);
             FUN_140710590(packet);
         }
         else

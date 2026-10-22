@@ -818,7 +818,7 @@ int CUserCommandCli::FUN_141365560(Unk_CommandArgs&) {
 // @0x141365630
 int CUserCommandCli::FUN_141365630(Unk_CommandArgs&) {
     if(DAT_143ab2914<50) return 0;
-    COutPacket packet(static_cast<int>(SendOp::MeretMarket),0); packet.vfunc_o10_1(0xc9); FUN_140710590(packet); return 1;
+    COutPacket packet(static_cast<int>(SendOp::MeretMarket),0); packet.WriteUInt8(0xc9); FUN_140710590(packet); return 1;
 }
 // @0x1413656a0
 int CUserCommandCli::FUN_1413656a0(Unk_CommandArgs&) {
@@ -893,7 +893,7 @@ int CUserCommandCli::FUN_141365dd0(Unk_CommandArgs& args) {
 // @0x141365e70
 int CUserCommandCli::FUN_141365e70(Unk_CommandArgs&) {
     if(DAT_143ab2914<50) return 0;
-    COutPacket packet(static_cast<int>(SendOp::Attendance),0); packet.vfunc_o10_1(0); FUN_140710590(packet); return 1;
+    COutPacket packet(static_cast<int>(SendOp::Attendance),0); packet.WriteUInt8(0); FUN_140710590(packet); return 1;
 }
 // @0x141365ee0
 int CUserCommandCli::FUN_141365ee0(Unk_CommandArgs& args) {
@@ -936,8 +936,8 @@ int CUserCommandCli::FUN_1413662a0(Unk_CommandArgs& args) {
     if(actor) {
         Unk_CommandActorPtr ref(FUN_141523c50(actor));
         if(ref.FUN_140fa9d30()) {
-            COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.vfunc_o10_1(0x18); packet.vfunc_o10_1((unsigned char)mode);
-            packet.vfunc_o10_8(name); packet.vfunc_o10_1((unsigned char)flag); FUN_140710590(packet);
+            COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x18); packet.WriteUInt8((unsigned char)mode);
+            packet.WriteUnicodeString(name); packet.WriteUInt8((unsigned char)flag); FUN_140710590(packet);
         }
     }
     return 1;
@@ -946,7 +946,7 @@ int CUserCommandCli::FUN_1413662a0(Unk_CommandArgs& args) {
 int CUserCommandCli::FUN_141366470(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()!=0) return 0;
     if(DAT_143ab0248==2&&DAT_143ab2914<59) return 0;
-    COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.vfunc_o10_1(0x19); FUN_140710590(packet); return 1;
+    COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x19); FUN_140710590(packet); return 1;
 }
 // @0x141366500
 int CUserCommandCli::FUN_141366500(Unk_CommandArgs& args) {
@@ -965,7 +965,7 @@ int CUserCommandCli::FUN_141366600(Unk_CommandArgs& args) {
     if(actor) {
         Unk_CommandActorPtr ref(FUN_141523c50(actor));
         if(ref.FUN_140fa9d30()) {
-            COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.vfunc_o10_1(0x1d); packet.vfunc_o10_8(name); FUN_140710590(packet);
+            COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x1d); packet.WriteUnicodeString(name); FUN_140710590(packet);
         }
     }
     return 1;
@@ -987,19 +987,19 @@ int CUserCommandCli::FUN_1413669f0(Unk_CommandArgs&) { if(!FUN_14036d570(FUN_140
 // @0x141366a40
 int CUserCommandCli::FUN_141366a40(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()!=0) return 0;
-    COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.vfunc_o10_1(0x28); FUN_140710590(packet); return 1;
+    COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x28); FUN_140710590(packet); return 1;
 }
 // @0x141366ac0
 int CUserCommandCli::FUN_141366ac0(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()!=1) return 0;
     int flag=args.FUN_1408d1f60(0,0);
-    COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.vfunc_o10_1(0x29); packet.vfunc_o10_1((unsigned char)flag); FUN_140710590(packet); return 1;
+    COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x29); packet.WriteUInt8((unsigned char)flag); FUN_140710590(packet); return 1;
 }
 // @0x141366b60
 int CUserCommandCli::FUN_141366b60(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()!=1) return 0;
     int flag=args.FUN_1408d1f60(0,0);
-    COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.vfunc_o10_1(0x33); packet.vfunc_o10_1((unsigned char)flag); FUN_140710590(packet); return 1;
+    COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x33); packet.WriteUInt8((unsigned char)flag); FUN_140710590(packet); return 1;
 }
 // @0x141366c00
 int CUserCommandCli::FUN_141366c00(Unk_CommandArgs& args) { void* dialog=FUN_141264060(0x4ebe); if(dialog) FUN_141357400(dialog,args.FUN_1408d2280(0,0)); return 1; }
@@ -1009,22 +1009,22 @@ int CUserCommandCli::FUN_141366c60(Unk_CommandArgs& args) { void* dialog=FUN_141
 int CUserCommandCli::FUN_141366cd0(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()!=2) return 0;
     __int64 a=args.FUN_1408d2040(0,0),b=args.FUN_1408d2040(1,0);
-    COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.vfunc_o10_1(0x38); packet.vfunc_o10_4(a); packet.vfunc_o10_4(b); FUN_140710590(packet); return 1;
+    COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x38); packet.WriteInt64(a); packet.WriteInt64(b); FUN_140710590(packet); return 1;
 }
 // @0x141366da0
 int CUserCommandCli::FUN_141366da0(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()!=1) return 0;
     CStringW name=args.FUN_1408d21c0(0,L"");
-    COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.vfunc_o10_1(0x39); packet.vfunc_o10_6(FUN_14016a600(name,0)); FUN_140710590(packet); return 1;
+    COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x39); packet.WriteUnicodeStringA(FUN_14016a600(name,0)); FUN_140710590(packet); return 1;
 }
 // @0x141366eb0
 int CUserCommandCli::FUN_141366eb0(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()!=1) return 0;
     CStringW name=args.FUN_1408d21c0(0,L"");
-    COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.vfunc_o10_1(0x3a); packet.vfunc_o10_6(FUN_14016a600(name,0)); FUN_140710590(packet); return 1;
+    COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x3a); packet.WriteUnicodeStringA(FUN_14016a600(name,0)); FUN_140710590(packet); return 1;
 }
 // @0x141366fc0
-int CUserCommandCli::FUN_141366fc0(Unk_CommandArgs&) { COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.vfunc_o10_1(6); FUN_140710590(packet); return 1; }
+int CUserCommandCli::FUN_141366fc0(Unk_CommandArgs&) { COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(6); FUN_140710590(packet); return 1; }
 // @0x141367030
 int CUserCommandCli::FUN_141367030(Unk_CommandArgs&) { return 1; } // Original command intentionally does nothing.
 // @0x141367050
@@ -1727,17 +1727,17 @@ int CUserCommandCli::FUN_14136bac0(Unk_CommandArgs& args) {
         if(type.CompareNoCase(L"p")==0) {
             packet.FUN_140710740(_wtoi(value),0,true);
         } else if(type.CompareNoCase(L"1")==0) {
-            packet.vfunc_o10_1((unsigned char)_wtoi(value));
+            packet.WriteUInt8((unsigned char)_wtoi(value));
         } else if(type.CompareNoCase(L"2")==0) {
-            packet.vfunc_o10_2((short)_wtoi(value));
+            packet.WriteInt16((short)_wtoi(value));
         } else if(type.CompareNoCase(L"4")==0) {
-            packet.vfunc_o10_3(_wtoi(value));
+            packet.WriteInt32(_wtoi(value));
         } else if(type.CompareNoCase(L"f")==0) {
-            packet.vfunc_o10_5((float)_wtof(value));
+            packet.WriteFloat((float)_wtof(value));
         } else if(type.CompareNoCase(L"8")==0) {
-            packet.vfunc_o10_4(_wtoi64(value));
+            packet.WriteInt64(_wtoi64(value));
         } else if(type.CompareNoCase(L"s")==0) {
-            packet.vfunc_o10_8(value);
+            packet.WriteUnicodeString(value);
         }
     }
     FUN_140710590(packet);
@@ -1855,7 +1855,7 @@ int CUserCommandCli::FUN_14136c5e0(Unk_CommandArgs&) {
     if(FUN_140f2d250()==0) return 0;
     if(FUN_140f2d240()==0) return 0;
     COutPacket packet(static_cast<int>(SendOp::CharacterAbility),0);
-    packet.vfunc_o10_1(3);
+    packet.WriteUInt8(3);
     FUN_140710590(packet);
     return 1;
 }
@@ -1924,8 +1924,8 @@ int CUserCommandCli::FUN_14136cb60(Unk_CommandArgs&) {
 int CUserCommandCli::FUN_14136cc10(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()==1) {
         COutPacket packet(static_cast<int>(SendOp::RequestHome),0);
-        packet.vfunc_o10_1(1);
-        packet.vfunc_o10_8(args.FUN_1408d21c0(0,L""));
+        packet.WriteUInt8(1);
+        packet.WriteUnicodeString(args.FUN_1408d21c0(0,L""));
         FUN_140710590(packet);
     }
     return 1;
@@ -1956,13 +1956,13 @@ int CUserCommandCli::FUN_14136ccf0(Unk_CommandArgs&) {
 int CUserCommandCli::FUN_14136d0a0(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()==0) {
         COutPacket packet(static_cast<int>(SendOp::SuperWorldChat),0);
-        packet.vfunc_o10_1(1);
+        packet.WriteUInt8(1);
         FUN_140710590(packet);
     } else {
         int value=args.FUN_1408d1fd0(0,0);
         COutPacket packet(static_cast<int>(SendOp::SuperWorldChat),0);
-        packet.vfunc_o10_1(0);
-        packet.vfunc_o10_3(value);
+        packet.WriteUInt8(0);
+        packet.WriteInt32(value);
         FUN_140710590(packet);
     }
     return 1;

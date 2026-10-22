@@ -158,9 +158,9 @@ void UIHomeSummonDialog::Summon()
     else
     {
         COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
-        packet.vfunc_o10_1(0x1e);
-        packet.vfunc_o10_8(FUN_14016a730(m_178, 0));
-        packet.vfunc_o10_8(strText);
+        packet.WriteUInt8(0x1e);
+        packet.WriteUnicodeString(FUN_14016a730(m_178, 0));
+        packet.WriteUnicodeString(strText);
         FUN_140710590(packet);
         vfunc_67();
     }

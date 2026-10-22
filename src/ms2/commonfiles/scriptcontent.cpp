@@ -62,19 +62,19 @@ MS2_REPLACE_METHOD(0x14078CFD0, CScriptContent, vfunc_2, 158, 0x04708005);
 // @0x14078d080
 void CScriptContent::vfunc_5(COutputStream& out)
 {
-    out.vfunc_o10_1((unsigned char)vfunc_1());
-    out.vfunc_o10_8(m_text);
-    out.vfunc_o10_6(m_voiceId);
-    out.vfunc_o10_6(m_illust);
+    out.WriteUInt8((unsigned char)vfunc_1());
+    out.WriteUnicodeString(m_text);
+    out.WriteUnicodeStringA(m_voiceId);
+    out.WriteUnicodeStringA(m_illust);
 }
 MS2_REPLACE_METHOD(0x14078D080, CScriptContent, vfunc_5, 178, 0xB1980750);
 
 // @0x14078d140
 void CScriptContent::vfunc_6(CByteBuffer& in)
 {
-    m_text = in.vfunc_o8_8();
-    m_voiceId = in.vfunc_o8_6();
-    m_illust = in.vfunc_o8_6();
+    m_text = in.ReadUnicodeString();
+    m_voiceId = in.ReadUnicodeStringA();
+    m_illust = in.ReadUnicodeStringA();
 }
 MS2_REPLACE_METHOD(0x14078D140, CScriptContent, vfunc_6, 331, 0xB81062FF);
 
@@ -122,11 +122,11 @@ MS2_REPLACE_METHOD(0x14078D3D0, CCinematicDistractor, FUN_14078d3d0, 58, 0xA3132
 // @0x14078d410
 void CCinematicDistractor::WriteTo(COutputStream& out)
 {
-    out.vfunc_o10_1((unsigned char)m_choices.GetCount());
+    out.WriteUInt8((unsigned char)m_choices.GetCount());
     for (size_t i = 0; i < m_choices.GetCount(); i++) {
-        out.vfunc_o10_8(m_choices.GetAt(i).m_text);
-        out.vfunc_o10_6(m_choices.GetAt(i).m_goto);
-        out.vfunc_o10_6(m_choices.GetAt(i).m_gotoFail);
+        out.WriteUnicodeString(m_choices.GetAt(i).m_text);
+        out.WriteUnicodeStringA(m_choices.GetAt(i).m_goto);
+        out.WriteUnicodeStringA(m_choices.GetAt(i).m_gotoFail);
     }
 }
 MS2_REPLACE_METHOD(0x14078D410, CCinematicDistractor, WriteTo, 283, 0x6555DB89);
@@ -134,12 +134,12 @@ MS2_REPLACE_METHOD(0x14078D410, CCinematicDistractor, WriteTo, 283, 0x6555DB89);
 // @0x14078d540
 void CCinematicDistractor::ReadFrom(CByteBuffer& in)
 {
-    unsigned char nCount = in.vfunc_o8_1();
+    unsigned char nCount = in.ReadUInt8();
     for (unsigned char i = 0; i < nCount; i++) {
         Unk_ScriptChoice choice;
-        choice.m_text = in.vfunc_o8_8();
-        choice.m_goto = in.vfunc_o8_6();
-        choice.m_gotoFail = in.vfunc_o8_6();
+        choice.m_text = in.ReadUnicodeString();
+        choice.m_goto = in.ReadUnicodeStringA();
+        choice.m_gotoFail = in.ReadUnicodeStringA();
         m_choices.Add(choice);
     }
 }
@@ -206,10 +206,10 @@ CCinematicContent::CCinematicContent(CByteBuffer& in)
     m_redirect = 0;
     m_speakerNpc = 0;
     m_screenEffectValue = 0;
-    m_text = in.vfunc_o8_8();
+    m_text = in.ReadUnicodeString();
     m_voiceId = L"";
     m_illust = L"";
-    m_buttonSet = in.vfunc_o8_3();
+    m_buttonSet = in.ReadInt32();
 }
 
 // @0x14078dd60
@@ -363,12 +363,12 @@ MS2_REPLACE_METHOD(0x14078E6F0, CCinematicContent, vfunc_4, 818, 0xCFCF62C5);
 void CCinematicContent::vfunc_5(COutputStream& out)
 {
     CScriptContent::vfunc_5(out);
-    out.vfunc_o10_3(m_buttonSet);
+    out.WriteInt32(m_buttonSet);
     if (m_distractors.get() != 0) {
-        out.vfunc_o10_1(1);
+        out.WriteUInt8(1);
         m_distractors->WriteTo(out);
     } else {
-        out.vfunc_o10_1(0);
+        out.WriteUInt8(0);
     }
 }
 MS2_REPLACE_METHOD(0x14078EA30, CCinematicContent, vfunc_5, 152, 0xEB69E812);
@@ -377,8 +377,8 @@ MS2_REPLACE_METHOD(0x14078EA30, CCinematicContent, vfunc_5, 152, 0xEB69E812);
 void CCinematicContent::vfunc_6(CByteBuffer& in)
 {
     CScriptContent::vfunc_6(in);
-    m_buttonSet = in.vfunc_o8_3();
-    unsigned char bHas = in.vfunc_o8_1();
+    m_buttonSet = in.ReadInt32();
+    unsigned char bHas = in.ReadUInt8();
     if (bHas == 1) {
         CCinematicDistractor* pDistractor = new CCinematicDistractor();
         pDistractor->ReadFrom(in);

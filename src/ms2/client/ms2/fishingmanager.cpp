@@ -615,10 +615,10 @@ void CFishingManager::FUN_140cd9840(CInPacket* pPacket)
 {
     if (!FUN_140166410()->FUN_14036d570(0xb))
         return;
-    unsigned char nMode = pPacket->vfunc_o8_1();
+    unsigned char nMode = pPacket->ReadUInt8();
     if (nMode == 0)
     {
-        MS2Ptr<CItem> rod = DAT_143ab2a90.FUN_140a5d680(pPacket->vfunc_o8_4());
+        MS2Ptr<CItem> rod = DAT_143ab2a90.FUN_140a5d680(pPacket->ReadInt64());
         FUN_140cdce70(rod);
     }
     else if (nMode == 1)
@@ -629,7 +629,7 @@ void CFishingManager::FUN_140cd9840(CInPacket* pPacket)
     {
         m_bFishing = 0;
         m_fishes.RemoveAll();
-        int nCount = pPacket->vfunc_o8_3();
+        int nCount = pPacket->ReadInt32();
         for (int i = 0; i < nCount; i++)
         {
             MS2Ptr<CFish> fish(new CFish());
@@ -639,13 +639,13 @@ void CFishingManager::FUN_140cd9840(CInPacket* pPacket)
     }
     else if (nMode == 4)
     {
-        unsigned bAppend = pPacket->vfunc_o8_1();
+        unsigned bAppend = pPacket->ReadUInt8();
         if (bAppend == 0)
         {
             m_cubes.RemoveAll();
             FUN_140cdcde0();
         }
-        int nCount = pPacket->vfunc_o8_3();
+        int nCount = pPacket->ReadInt32();
         for (int i = 0; i < nCount; i++)
         {
             MS2Ptr<CFishCube> cube(new CFishCube());
@@ -657,16 +657,16 @@ void CFishingManager::FUN_140cd9840(CInPacket* pPacket)
     }
     else if (nMode == 9)
     {
-        m_bGreat = pPacket->vfunc_o8_1();
-        m_nBiteEnd = pPacket->vfunc_o8_3();
+        m_bGreat = pPacket->ReadUInt8();
+        m_nBiteEnd = pPacket->ReadInt32();
         FUN_140cdd1f0();
     }
     else if (nMode == 8)
     {
-        unsigned nFishId = pPacket->vfunc_o8_3();
-        unsigned nSize = pPacket->vfunc_o8_3();
-        unsigned bSuccess = pPacket->vfunc_o8_1();
-        m_bAutoFishing = pPacket->vfunc_o8_1();
+        unsigned nFishId = pPacket->ReadInt32();
+        unsigned nSize = pPacket->ReadInt32();
+        unsigned bSuccess = pPacket->ReadUInt8();
+        m_bAutoFishing = pPacket->ReadUInt8();
         if (bSuccess != 0)
         {
             MS2Ptr<CFish> fish = FUN_140cdba00(nFishId);
@@ -682,11 +682,11 @@ void CFishingManager::FUN_140cd9840(CInPacket* pPacket)
     }
     else if (nMode == 5)
     {
-        int nCount = pPacket->vfunc_o8_3();
+        int nCount = pPacket->ReadInt32();
         for (int i = 0; i < nCount; i++)
         {
-            int nItemId = pPacket->vfunc_o8_3();
-            unsigned nItemCount = (unsigned short)pPacket->vfunc_o8_2();
+            int nItemId = pPacket->ReadInt32();
+            unsigned nItemCount = (unsigned short)pPacket->ReadInt16();
             if (!FUN_14053f8c0(nItemId) && !FUN_14053f900(nItemId))
             {
                 Unk_FmFishGuide* pGuide = FUN_140938cd0(0x4e5d);
@@ -697,9 +697,9 @@ void CFishingManager::FUN_140cd9840(CInPacket* pPacket)
     }
     else if (nMode == 6)
     {
-        CStringW strName = pPacket->vfunc_o8_8();
-        int nFishId = pPacket->vfunc_o8_3();
-        int nCount = pPacket->vfunc_o8_3();
+        CStringW strName = pPacket->ReadUnicodeString();
+        int nFishId = pPacket->ReadInt32();
+        int nCount = pPacket->ReadInt32();
         CStringW strFish = FUN_1401a9d70()->FUN_141811980(0x1d, nFishId);
         CStringW strNotice = FUN_1408f71a0(CStringW(L"s_fishing_notice_bigfish"), strName, strFish);
         if (nCount != 0 && 0x31 < DAT_143ab2914)
@@ -708,7 +708,7 @@ void CFishingManager::FUN_140cd9840(CInPacket* pPacket)
     }
     else if (nMode == 2)
     {
-        unsigned nError = (unsigned short)pPacket->vfunc_o8_2();
+        unsigned nError = (unsigned short)pPacket->ReadInt16();
         switch (nError)
         {
         case 1: FUN_141275260(0xbde, 1, 1); break;
@@ -724,7 +724,7 @@ void CFishingManager::FUN_140cd9840(CInPacket* pPacket)
     }
     else if (nMode == 0xb)
     {
-        int nCount = pPacket->vfunc_o8_3();
+        int nCount = pPacket->ReadInt32();
         CAtlArray<MS2Ptr<CFishSimulteData> > results;
         for (int i = 0; i < nCount; i++)
         {
@@ -747,10 +747,10 @@ void CFishingManager::FUN_140cd9840(CInPacket* pPacket)
         if (pPC != 0)
         {
             unsigned nMastery = pPC->FUN_141662750(1);
-            int nFishId = pPacket->vfunc_o8_3();
-            unsigned nExp = pPacket->vfunc_o8_3();
-            short nKind = pPacket->vfunc_o8_2();
-            unsigned nLevel = (unsigned short)pPacket->vfunc_o8_2();
+            int nFishId = pPacket->ReadInt32();
+            unsigned nExp = pPacket->ReadInt32();
+            short nKind = pPacket->ReadInt16();
+            unsigned nLevel = (unsigned short)pPacket->ReadInt16();
             CStringW strNotice;
             if (nLevel != FUN_1409670c0()->FUN_14066b050(1))
             {
@@ -774,7 +774,7 @@ void CFishingManager::FUN_140cd9840(CInPacket* pPacket)
     }
     else if (nMode == 10)
     {
-        m_bAutoFishing = pPacket->vfunc_o8_1();
+        m_bAutoFishing = pPacket->ReadUInt8();
         if (m_bAutoFishing != 0)
             SendFishingMode9();
     }

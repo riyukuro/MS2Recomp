@@ -200,24 +200,24 @@ void TimeRange::FUN_140868db0(COutputStream& out) const
 {
     if (m_start.Get() == 0 || m_end.Get() == 0)
     {
-        out.vfunc_o10_1(0);
+        out.WriteUInt8(0);
     }
     else
     {
-        out.vfunc_o10_1(1);
-        out.vfunc_o10_4(m_start.Get());
-        out.vfunc_o10_4(m_end.Get());
+        out.WriteUInt8(1);
+        out.WriteInt64(m_start.Get());
+        out.WriteInt64(m_end.Get());
     }
 }
 
 // @0x140868e70
 void TimeRange::FUN_140868e70(CInPacket& in)
 {
-    int present = in.vfunc_o8_1();
+    int present = in.ReadUInt8();
     if (present == 1)
     {
-        m_start = in.vfunc_o8_4();
-        m_end = in.vfunc_o8_4();
+        m_start = in.ReadInt64();
+        m_end = in.ReadInt64();
     }
 }
 

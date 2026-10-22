@@ -285,7 +285,7 @@ void CGemTransparency::vfunc_2(COutputStream& stream)
 {
     CGemBase::vfunc_2(stream);
     for (size_t i = 0; i < 10; i++)
-        stream.vfunc_o10_1(m_aHidden[i] != 0);
+        stream.WriteUInt8(m_aHidden[i] != 0);
 }
 MS2_REPLACE_METHOD(0x1405A3F10, CGemTransparency, vfunc_2, 118, 0xBEAFA5BB);
 
@@ -294,7 +294,7 @@ void CGemTransparency::vfunc_3(CInputStream& stream)
 {
     CGemBase::vfunc_3(stream);
     for (size_t i = 0; i < 10; i++)
-        m_aHidden[i] = stream.vfunc_o8_1();
+        m_aHidden[i] = stream.ReadUInt8();
 }
 MS2_REPLACE_METHOD(0x1405A3F90, CGemTransparency, vfunc_3, 101, 0xA25B1972);
 
@@ -916,7 +916,7 @@ MS2_REPLACE_METHOD(0x1405A68D0, CGemEffect, FUN_1405a68d0, 247, 0x9858071E);
 void CGemPetSkin::vfunc_2(COutputStream& stream)
 {
     CGemBase::vfunc_2(stream);
-    stream.vfunc_o10_3(m_nPetId);
+    stream.WriteInt32(m_nPetId);
 }
 MS2_REPLACE_METHOD(0x1405A6B90, CGemPetSkin, vfunc_2, 58, 0x334662AA);
 
@@ -924,7 +924,7 @@ MS2_REPLACE_METHOD(0x1405A6B90, CGemPetSkin, vfunc_2, 58, 0x334662AA);
 void CGemPetSkin::vfunc_3(CInputStream& stream)
 {
     CGemBase::vfunc_3(stream);
-    m_nPetId = stream.vfunc_o8_3();
+    m_nPetId = stream.ReadInt32();
 }
 MS2_REPLACE_METHOD(0x1405A6BD0, CGemPetSkin, vfunc_3, 58, 0xB7D8DF08);
 
@@ -1028,11 +1028,11 @@ MS2_REPLACE_METHOD(0x1405A76E0, CItemGem, vfunc_2, 284, 0xAA301DEE);
 // @0x1405a7810
 void CItemGem::vfunc_3(COutputStream& stream)
 {
-    stream.vfunc_o10_0(m_spGem.get() != 0);
+    stream.WriteBool(m_spGem.get() != 0);
     if (m_spGem.get() != 0)
     {
-        stream.vfunc_o10_1(m_spGem->vfunc_1());
-        stream.vfunc_o10_3(m_spGem->GetGemId());
+        stream.WriteUInt8(m_spGem->vfunc_1());
+        stream.WriteInt32(m_spGem->GetGemId());
         m_spGem->vfunc_2(stream);
     }
 }
@@ -1041,11 +1041,11 @@ MS2_REPLACE_METHOD(0x1405A7810, CItemGem, vfunc_3, 262, 0xD2825D9A);
 // @0x1405a7920
 void CItemGem::vfunc_4(CInputStream& stream)
 {
-    bool bHas = stream.vfunc_o8_0();
+    bool bHas = stream.ReadBool();
     if (bHas)
     {
-        int nType = stream.vfunc_o8_1();
-        int nGemId = stream.vfunc_o8_3();
+        int nType = stream.ReadUInt8();
+        int nGemId = stream.ReadInt32();
         if (FUN_1405a7020(nType, nGemId))
             m_spGem->vfunc_3(stream);
     }

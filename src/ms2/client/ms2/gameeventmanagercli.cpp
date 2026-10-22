@@ -75,7 +75,7 @@ GameEventManagerCli::~GameEventManagerCli()
 // @0x140ceab50
 void GameEventManagerCli::Dispatch(CInPacket& packet)
 {
-    int nType = packet.vfunc_o8_1();
+    int nType = packet.ReadUInt8();
     switch (nType)
     {
     case 0:
@@ -129,10 +129,10 @@ MS2_REPLACE_METHOD(0x140CEAD80, GameEventManagerCli, IsEnabled, 179, 0x6B213D7B)
 // @0x140ceae40
 void GameEventManagerCli::Packet0(CInPacket& packet)
 {
-    int nCount = packet.vfunc_o8_3();
+    int nCount = packet.ReadInt32();
     for (int i = 0; i < nCount; ++i)
     {
-        CStringW strName = packet.vfunc_o8_8();
+        CStringW strName = packet.ReadUnicodeString();
         MS2Ptr<GameEvent> gameEvent(Create(strName));
         if (gameEvent.get())
         {
@@ -150,10 +150,10 @@ void GameEventManagerCli::Packet0(CInPacket& packet)
 // @0x140ceaff0
 void GameEventManagerCli::Packet1(CInPacket& packet)
 {
-    int nCount = packet.vfunc_o8_3();
+    int nCount = packet.ReadInt32();
     for (int i = 0; i < nCount; ++i)
     {
-        CStringW strName = packet.vfunc_o8_8();
+        CStringW strName = packet.ReadUnicodeString();
         MS2Ptr<GameEvent> gameEvent(Create(strName));
         if (gameEvent.get())
         {
@@ -172,10 +172,10 @@ void GameEventManagerCli::Packet1(CInPacket& packet)
 // @0x140ceb2a0
 void GameEventManagerCli::Packet2(CInPacket& packet)
 {
-    int nCount = packet.vfunc_o8_3();
+    int nCount = packet.ReadInt32();
     for (int i = 0; i < nCount; ++i)
     {
-        int nId = packet.vfunc_o8_3();
+        int nId = packet.ReadInt32();
         MS2Ptr<GameEvent> gameEvent = Find(nId);
         if (gameEvent.get())
         {
@@ -188,10 +188,10 @@ void GameEventManagerCli::Packet2(CInPacket& packet)
 // @0x140ceb480
 void GameEventManagerCli::Packet3(CInPacket& packet)
 {
-    int nCount = packet.vfunc_o8_3();
+    int nCount = packet.ReadInt32();
     for (int i = 0; i < nCount; ++i)
     {
-        CStringW strName = packet.vfunc_o8_8();
+        CStringW strName = packet.ReadUnicodeString();
         MS2Ptr<GameEvent> gameEvent(Create(strName));
         if (gameEvent.get())
         {

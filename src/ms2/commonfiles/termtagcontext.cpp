@@ -86,9 +86,9 @@ int TermTagContext::FUN_140866880(const __time64_t* pTime)
 // @0x140866900
 void TermTagContext::FUN_140866900(CInPacket& packet)
 {
-    m_18 = packet.vfunc_o8_3();
-    m_20 = packet.vfunc_o8_8();
-    m_28 = packet.vfunc_o8_4();
-    m_38 = packet.vfunc_o8_4();
-    m_48 = packet.vfunc_o8_0();
+    m_18 = packet.ReadInt32();
+    m_20 = packet.ReadUnicodeString();
+    m_28 = packet.ReadInt64();
+    m_38 = packet.ReadInt64();
+    m_48 = packet.ReadBool();
 }

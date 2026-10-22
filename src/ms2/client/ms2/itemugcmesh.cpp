@@ -1158,9 +1158,9 @@ void FUN_141425fc0(__int64 nUid, int nCount, void* pCallback)
         return;
     }
     COutPacket kPacket(static_cast<int>(SendOp::Shop), 0);
-    kPacket.vfunc_o10_1(5);
-    kPacket.vfunc_o10_4(nUid);
-    kPacket.vfunc_o10_3(nCount);
+    kPacket.WriteUInt8(5);
+    kPacket.WriteInt64(nUid);
+    kPacket.WriteInt32(nCount);
     FUN_140710590(kPacket);
     {
         CString strEmpty("");

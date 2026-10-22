@@ -1063,12 +1063,12 @@ MS2_REPLACE_METHOD(0x1416cbb20, CQuestManager, FUN_1416cbb20, 603, 0x95FC889F);
 void CQuestManager::OnQuest(CInPacket& packet)
 {
     int refresh = 0;
-    int mode = packet.vfunc_o8_1();
+    int mode = packet.ReadUInt8();
     if (mode == 0) {
-        FUN_1416cde50(packet.vfunc_o8_3());
+        FUN_1416cde50(packet.ReadInt32());
     } else if (mode == 0x15) {
-        m_group = packet.vfunc_o8_3();
-        m_refreshCount = packet.vfunc_o8_3();
+        m_group = packet.ReadInt32();
+        m_refreshCount = packet.ReadInt32();
         m_quests20.RemoveAll();
         m_pinnedQuests.RemoveAll();
         m_quests50.RemoveAll();
@@ -1078,14 +1078,14 @@ void CQuestManager::OnQuest(CInPacket& packet)
         m_quests110.RemoveAll();
         m_quests140.RemoveAll();
     } else if (mode == 0x16) {
-        int count = packet.vfunc_o8_3();
+        int count = packet.ReadInt32();
         for (int i = 0; i < count; i++) {
-            int questId = packet.vfunc_o8_3();
-            int state = packet.vfunc_o8_3();
-            int value68 = packet.vfunc_o8_3();
-            __int64 startTime = packet.vfunc_o8_4();
-            __int64 completeTime = packet.vfunc_o8_4();
-            int tracking = packet.vfunc_o8_1();
+            int questId = packet.ReadInt32();
+            int state = packet.ReadInt32();
+            int value68 = packet.ReadInt32();
+            __int64 startTime = packet.ReadInt64();
+            __int64 completeTime = packet.ReadInt64();
+            int tracking = packet.ReadUInt8();
             Unk_PayloadPtr<CQuest> quest(FUN_1416ca9d0(questId));
             if (static_cast<bool>(quest.get())) {
                 if (quest->Init(questId, state) != 0) {
@@ -1093,9 +1093,9 @@ void CQuestManager::OnQuest(CInPacket& packet)
                     quest->SetCompleteTime(completeTime);
                     quest->SetStartTime(startTime);
                     quest->SetTrackingState(tracking);
-                    int progressCount = packet.vfunc_o8_3();
+                    int progressCount = packet.ReadInt32();
                     for (int j = 0; j < progressCount; j++) {
-                        int progress = packet.vfunc_o8_3();
+                        int progress = packet.ReadInt32();
                         quest->SetProgress(j, progress);
                     }
                     FUN_1416caec0(quest);
@@ -1108,24 +1108,24 @@ void CQuestManager::OnQuest(CInPacket& packet)
         refresh = 1;
         FUN_1416d37c0();
     } else if (mode == 0x17) {
-        int count = packet.vfunc_o8_3();
+        int count = packet.ReadInt32();
         for (int i = 0; i < count; i++) {
-            unsigned questId = packet.vfunc_o8_3();
+            unsigned questId = packet.ReadInt32();
             m_pinnedQuests.Add(questId);
         }
         FUN_1416cef90(1);
     } else if (mode == 1) {
         FUN_140967100()->FUN_141b217b0();
-        int npcId = packet.vfunc_o8_3();
-        int count = packet.vfunc_o8_3();
+        int npcId = packet.ReadInt32();
+        int count = packet.ReadInt32();
         for (int i = 0; i < count; i++) {
-            int questId = packet.vfunc_o8_3();
+            int questId = packet.ReadInt32();
             FUN_1416ce140(questId, npcId);
         }
     } else if (mode == 2) {
-        int questId = packet.vfunc_o8_3();
-        __int64 startTime = packet.vfunc_o8_4();
-        int tracking = packet.vfunc_o8_1();
+        int questId = packet.ReadInt32();
+        __int64 startTime = packet.ReadInt64();
+        int tracking = packet.ReadUInt8();
         Unk_PayloadPtr<CQuest> quest(FUN_1416ca9d0(questId));
         if (static_cast<bool>(quest.get())) {
             if (quest->Init(questId, 1) != 0) {
@@ -1142,7 +1142,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
         FUN_14138d7e0(FUN_1409331e0(), 7, questId);
         FUN_14138bf00(FUN_1409331e0(), 0x1c, questId, 0);
     } else if (mode == 3) {
-        int questId = packet.vfunc_o8_3();
+        int questId = packet.ReadInt32();
         Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
         if (quest.IsNull()) return;
         quest->SetState(1);
@@ -1153,9 +1153,9 @@ void CQuestManager::OnQuest(CInPacket& packet)
         FUN_14138bf00(FUN_1409331e0(), 0x1d, questId, progress);
         FUN_14138d7e0(FUN_1409331e0(), 7, questId);
     } else if (mode == 4) {
-        int questId = packet.vfunc_o8_3();
-        int value68 = packet.vfunc_o8_3();
-        __int64 completeTime = packet.vfunc_o8_4();
+        int questId = packet.ReadInt32();
+        int value68 = packet.ReadInt32();
+        __int64 completeTime = packet.ReadInt64();
         Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
         if (quest.IsNull()) return;
         quest->SetState(2);
@@ -1169,24 +1169,24 @@ void CQuestManager::OnQuest(CInPacket& packet)
         FUN_14138bf00(FUN_1409331e0(), 0x1e, questId, 0);
         FUN_14138d7e0(FUN_1409331e0(), 8, questId);
     } else if (mode == 5) {
-        int questId = packet.vfunc_o8_3();
-        int result = packet.vfunc_o8_3();
+        int questId = packet.ReadInt32();
+        int result = packet.ReadInt32();
         if (result == 0) FUN_1416cb0d0(questId, 1);
         FUN_140bfc4b0()->vfunc_7(questId, result);
         FUN_14138d7e0(FUN_1409331e0(), 7, 0);
         FUN_14138d7e0(FUN_1409331e0(), 8, 0);
         refresh = 1;
     } else if (mode == 6) {
-        int questId = packet.vfunc_o8_3();
+        int questId = packet.ReadInt32();
         Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
         if (quest.IsNull()) return;
         FUN_1416cb0d0(questId, 0);
         FUN_140bfc4b0()->vfunc_5(quest.get());
         refresh = 1;
     } else if (mode == 7) {
-        int count = packet.vfunc_o8_3();
+        int count = packet.ReadInt32();
         for (int i = 0; i < count; i++) {
-            int questId = packet.vfunc_o8_3();
+            int questId = packet.ReadInt32();
             Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
             if (quest.IsNull()) continue;
             quest->ShowExpired();
@@ -1195,14 +1195,14 @@ void CQuestManager::OnQuest(CInPacket& packet)
         }
         refresh = 1;
     } else if (mode == 9) {
-        int questId = packet.vfunc_o8_3();
-        int tracking = packet.vfunc_o8_1();
+        int questId = packet.ReadInt32();
+        int tracking = packet.ReadUInt8();
         Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
         if (quest.IsNull()) return;
         quest->SetTrackingState(tracking);
         FUN_140bfc4b0()->vfunc_6(quest.get());
     } else if (mode == 0x19) {
-        __int64 now = packet.vfunc_o8_4();
+        __int64 now = packet.ReadInt64();
         POSITION pos = m_quests50.GetHeadPosition();
         while (pos != 0) {
             POSITION cur = pos;
@@ -1227,7 +1227,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
         }
         DAT_143abdf50 = 7;
     } else if (mode == 0x1a) {
-        m_group = packet.vfunc_o8_3();
+        m_group = packet.ReadInt32();
         UIWorldMapDialog* worldMap = FUN_140961730(0x4e42);
         if (worldMap) worldMap->FUN_141b5be10();
         UIRewardNotify* notify = FUN_140938cd0(0x4e5d);
@@ -1244,9 +1244,9 @@ void CQuestManager::OnQuest(CInPacket& packet)
             }
         }
     } else if (mode == 0x12) {
-        m_field190 = packet.vfunc_o8_3();
-        m_targetObject = packet.vfunc_o8_3();
-        m_requestTick = packet.vfunc_o8_3();
+        m_field190 = packet.ReadInt32();
+        m_targetObject = packet.ReadInt32();
+        m_requestTick = packet.ReadInt32();
         Unk_QmFieldHandle target;
         FUN_1403ed2d0()->FUN_141bc2800(&target, m_targetObject);
         if (target.IsNull()) return;
@@ -1267,20 +1267,20 @@ void CQuestManager::OnQuest(CInPacket& packet)
         refresh = 1;
     } else if (mode == 0x1f) {
         m_dailyCounts.RemoveAll();
-        int drop = packet.vfunc_o8_1();
-        size_t count = static_cast<unsigned>(packet.vfunc_o8_3());
-        for (size_t i = 0; i < count; i++) m_dailyCounts.SetAt(packet.vfunc_o8_3(), 1);
+        int drop = packet.ReadUInt8();
+        size_t count = static_cast<unsigned>(packet.ReadInt32());
+        for (size_t i = 0; i < count; i++) m_dailyCounts.SetAt(packet.ReadInt32(), 1);
         if (drop != 0) FUN_1416d38a0(9, 2, 1);
         refresh = 1;
     } else if (mode == 0x20) {
         m_weeklyCounts.RemoveAll();
-        int drop = packet.vfunc_o8_1();
-        size_t count = static_cast<unsigned>(packet.vfunc_o8_3());
-        for (size_t i = 0; i < count; i++) m_weeklyCounts.SetAt(packet.vfunc_o8_3(), 1);
+        int drop = packet.ReadUInt8();
+        size_t count = static_cast<unsigned>(packet.ReadInt32());
+        for (size_t i = 0; i < count; i++) m_weeklyCounts.SetAt(packet.ReadInt32(), 1);
         if (drop != 0) FUN_1416d38a0(9, 3, 1);
         refresh = 1;
     } else if (mode == 0x22 || mode == 0x23) {
-        int alliance = static_cast<unsigned short>(packet.vfunc_o8_2());
+        int alliance = static_cast<unsigned short>(packet.ReadInt16());
         FUN_1403ed2b0()->FUN_141adc5d0(0x4f50);
         Unk_QmSidePopupTalk* popup = FUN_1413868b0(0x4f57);
         if (popup) {
@@ -1560,8 +1560,8 @@ void CQuestManager::SendQuestMode12(int questId)
     if (!quest.IsNull()) {
         if (quest->FUN_1407441f0(FUN_1403ed2d0()->FUN_141bd3060()) != 0) {
             COutPacket packet(static_cast<int>(SendOp::Quest), 0);
-            packet.vfunc_o10_1(0xc);
-            packet.vfunc_o10_3(questId);
+            packet.WriteUInt8(0xc);
+            packet.WriteInt32(questId);
             FUN_140710590(packet);
         }
     }
@@ -1576,8 +1576,8 @@ void CQuestManager::SendQuestMode13(int questId)
     if (!quest.IsNull()) {
         if (quest->FUN_1407443e0(FUN_1403ed2d0()->FUN_141bd3060()) != 0) {
             COutPacket packet(static_cast<int>(SendOp::Quest), 0);
-            packet.vfunc_o10_1(0xd);
-            packet.vfunc_o10_3(questId);
+            packet.WriteUInt8(0xd);
+            packet.WriteInt32(questId);
             FUN_140710590(packet);
         }
     }
@@ -1592,8 +1592,8 @@ void CQuestManager::SendQuestMode19(int questId)
     if (!quest.IsNull()) {
         if (quest->FUN_140744670(FUN_1403ed2d0()->FUN_141bd3060()) != 0) {
             COutPacket packet(static_cast<int>(SendOp::Quest), 0);
-            packet.vfunc_o10_1(0x13);
-            packet.vfunc_o10_3(questId);
+            packet.WriteUInt8(0x13);
+            packet.WriteInt32(questId);
             FUN_140710590(packet);
         }
     }
@@ -1626,16 +1626,16 @@ void CQuestManager::FUN_1416cf980(int questId, int leave)
     if (!room) return;
     if (leave != 0) {
         COutPacket packet(static_cast<int>(SendOp::Party), 0);
-        packet.vfunc_o10_1(0x22);
-        packet.vfunc_o10_1(FUN_1402178b0(room->m_1c));
+        packet.WriteUInt8(0x22);
+        packet.WriteUInt8(FUN_1402178b0(room->m_1c));
         FUN_140710590(packet);
     } else {
         COutPacket packet(static_cast<int>(SendOp::Party), 0);
-        packet.vfunc_o10_1(0x20);
-        packet.vfunc_o10_1(FUN_1402178b0(room->m_1c));
-        packet.vfunc_o10_3(1);
-        packet.vfunc_o10_3(data->m_30c.m_roomId);
-        packet.vfunc_o10_0(false);
+        packet.WriteUInt8(0x20);
+        packet.WriteUInt8(FUN_1402178b0(room->m_1c));
+        packet.WriteInt32(1);
+        packet.WriteInt32(data->m_30c.m_roomId);
+        packet.WriteBool(false);
         FUN_140710590(packet);
     }
 }
@@ -1888,7 +1888,7 @@ void CQuestManager::SendQuestMode14()
 {
     if (FUN_1416d09d0(*FUN_1401d3200()->FameContentsSkyFortressGotoMapID.Get(), 1) != 0) {
         COutPacket packet(static_cast<int>(SendOp::Quest), 0);
-        packet.vfunc_o10_1(0xe);
+        packet.WriteUInt8(0xe);
         FUN_140710590(packet);
     }
 }
@@ -1917,8 +1917,8 @@ void CQuestManager::SendQuestMode15(int id)
     }
     m_refreshCount++;
     COutPacket packet(static_cast<int>(SendOp::Quest), 0);
-    packet.vfunc_o10_1(0xf);
-    packet.vfunc_o10_3(id);
+    packet.WriteUInt8(0xf);
+    packet.WriteInt32(id);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x1416d0c90, CQuestManager, SendQuestMode15, 381, 0x1C198416);
@@ -1937,9 +1937,9 @@ bool CQuestManager::SendQuestMode20(int result, const CMsgBoxData& message)
     unsigned id = FUN_141a02e90(&message, 0, 0);
     int count = FUN_141a02e50(&message, 1, 0);
     COutPacket packet(static_cast<int>(SendOp::Quest), 0);
-    packet.vfunc_o10_1(0x14);
-    packet.vfunc_o10_3(id);
-    packet.vfunc_o10_2(static_cast<short>(count));
+    packet.WriteUInt8(0x14);
+    packet.WriteInt32(id);
+    packet.WriteInt16(static_cast<short>(count));
     FUN_140710590(packet);
     return true;
 }
@@ -2306,10 +2306,10 @@ void CQuestManager::FUN_1416d3010()
         }
         if (changed.GetCount() != 0) {
             COutPacket packet(static_cast<int>(SendOp::Quest), 0);
-            packet.vfunc_o10_1(7);
-            packet.vfunc_o10_3(static_cast<int>(changed.GetCount()));
+            packet.WriteUInt8(7);
+            packet.WriteInt32(static_cast<int>(changed.GetCount()));
             for (size_t i = 0; i < changed.GetCount(); i = i + 1) {
-                packet.vfunc_o10_3(changed[i]);
+                packet.WriteInt32(changed[i]);
             }
             FUN_140710590(packet);
         }
@@ -2340,10 +2340,10 @@ void CQuestManager::FUN_1416d3250()
         }
         if (available.GetCount() != 0) {
             COutPacket packet(static_cast<int>(SendOp::Quest), 0);
-            packet.vfunc_o10_1(8);
-            packet.vfunc_o10_3(static_cast<int>(available.GetCount()));
+            packet.WriteUInt8(8);
+            packet.WriteInt32(static_cast<int>(available.GetCount()));
             for (size_t i = 0; i < available.GetCount(); i = i + 1) {
-                packet.vfunc_o10_3(available[i]);
+                packet.WriteInt32(available[i]);
             }
             FUN_140710590(packet);
         }

@@ -60,16 +60,16 @@ ATL::CAtlArray<char>& FUN_1406c3320(ATL::CAtlArray<char>& a, const ATL::CAtlArra
 void FUN_1406c3380(ATL::CAtlArray<char>& a, COutputStream* out)
 {
     int n = (int)a.GetCount();
-    out->vfunc_o10_3(n);
-    if (n != 0) out->vfunc_o10_9(FUN_1406c3230(a), n);
+    out->WriteInt32(n);
+    if (n != 0) out->WriteBytes(FUN_1406c3230(a), n);
 }
 
 // @0x1406c33f0
 void FUN_1406c33f0(ATL::CAtlArray<char>& a, Unk_SPDReader* in)
 {
-    int n = in->vfunc_o8_3();
+    int n = in->ReadInt32();
     a.SetCount((unsigned)n, -1);
-    if (n != 0) in->vfunc_o8_9(&a[0], n);
+    if (n != 0) in->ReadBytes(&a[0], n);
 }
 
 // @0x1406c3480

@@ -255,8 +255,8 @@ int UIPcBangDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
         {
             int nIndex = data.FUN_1422b8b10();
             COutPacket packet(static_cast<int>(SendOp::PcBangBonus), 0);
-            packet.vfunc_o10_1(2);
-            packet.vfunc_o10_3(nIndex);
+            packet.WriteUInt8(2);
+            packet.WriteInt32(nIndex);
             FUN_140710590(packet);
             return 1;
         }
@@ -268,7 +268,7 @@ MS2_REPLACE_METHOD(0x141323E20, UIPcBangDialog, vfunc_28, 280, 0x00357DA8);
 // @0x141323f40
 void UIPcBangDialog::OnPacket(CInPacket& packet)
 {
-    int nCode = packet.vfunc_o8_1();
+    int nCode = packet.ReadUInt8();
     switch (nCode)
     {
     case 0: OnPacketInfo(packet); break;
@@ -286,26 +286,26 @@ void UIPcBangDialog::OnPacketInfo(CInPacket& packet)
     ResetInfo();
     if (!FUN_140166410()->FUN_14036d570(0x3c))
         return;
-    m_nGrade = packet.vfunc_o8_1();
-    m_nStartTime = packet.vfunc_o8_3();
-    m_nPlayTime = packet.vfunc_o8_3();
+    m_nGrade = packet.ReadUInt8();
+    m_nStartTime = packet.ReadInt32();
+    m_nPlayTime = packet.ReadInt32();
     ReadBits(m_received, packet);
-    m_nBuffId = packet.vfunc_o8_3();
-    int nBonus = packet.vfunc_o8_3();
+    m_nBuffId = packet.ReadInt32();
+    int nBonus = packet.ReadInt32();
     for (int i = 0; i < nBonus; i++)
     {
         MS2Ptr<PlayBonusItemGift> spBonus(new PlayBonusItemGift());
         spBonus->vfunc_6(reinterpret_cast<Unk_GiftInput&>(static_cast<CInputStream&>(packet)));
         m_playBonus.Add(spBonus);
     }
-    int nGifts = packet.vfunc_o8_3();
+    int nGifts = packet.ReadInt32();
     for (int j = 0; j < nGifts; j++)
     {
         MS2Ptr<ItemGiftPcBang> spGift(new ItemGiftPcBang());
         spGift->vfunc_6(reinterpret_cast<Unk_GiftInput&>(static_cast<CInputStream&>(packet)));
         m_gifts.SetAt(spGift->m_giftId, spGift);
     }
-    int bShow = packet.vfunc_o8_1();
+    int bShow = packet.ReadUInt8();
     RebuildGiftOrder();
     m_nState = 1;
     FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyPcBang()));
@@ -319,7 +319,7 @@ MS2_REPLACE_METHOD(0x141324010, UIPcBangDialog, OnPacketInfo, 1199, 0xB392450C);
 // @0x1413244d0
 void UIPcBangDialog::OnPacketPlayed(CInPacket& packet)
 {
-    unsigned nIndex = packet.vfunc_o8_1();
+    unsigned nIndex = packet.ReadUInt8();
     ReadBits(m_received, packet);
     UpdateProgress();
     m_nReceivable = CountReachedBonus() - CountBits(m_received);
@@ -333,7 +333,7 @@ MS2_REPLACE_METHOD(0x1413244D0, UIPcBangDialog, OnPacketPlayed, 463, 0xC1B82850)
 // @0x1413246b0
 void UIPcBangDialog::OnPacketReward(CInPacket& packet)
 {
-    unsigned nGiftId = packet.vfunc_o8_3();
+    unsigned nGiftId = packet.ReadInt32();
     MS2Ptr<ItemGiftPcBang> spGift;
     if (!m_gifts.Lookup(nGiftId, spGift))
         return;
@@ -355,9 +355,9 @@ MS2_REPLACE_METHOD(0x1413246B0, UIPcBangDialog, OnPacketReward, 909, 0xC06E72E2)
 // @0x141324a50
 void UIPcBangDialog::OnPacketStatus(CInPacket& packet)
 {
-    m_nGrade = packet.vfunc_o8_1();
-    m_nStartTime = packet.vfunc_o8_3();
-    m_nPlayTime = packet.vfunc_o8_3();
+    m_nGrade = packet.ReadUInt8();
+    m_nStartTime = packet.ReadInt32();
+    m_nPlayTime = packet.ReadInt32();
     ReadBits(m_received, packet);
     if (FUN_1422dc2d0())
     {
@@ -371,7 +371,7 @@ MS2_REPLACE_METHOD(0x141324A50, UIPcBangDialog, OnPacketStatus, 227, 0xC48C7838)
 // @0x141324b40
 void UIPcBangDialog::OnPacketNotice(CInPacket& packet)
 {
-    int nCode = packet.vfunc_o8_1();
+    int nCode = packet.ReadUInt8();
     switch (nCode)
     {
     case 1: FUN_140d73bc0(0xad3, 0, 0, L""); break;
@@ -387,8 +387,8 @@ void UIPcBangDialog::OnResetBonus(CInPacket& packet)
     if (FUN_141924630())
     {
         COutPacket packet(static_cast<int>(SendOp::PcBangBonus), 0);
-        packet.vfunc_o10_1(0);
-        packet.vfunc_o10_1(0);
+        packet.WriteUInt8(0);
+        packet.WriteUInt8(0);
         FUN_140710590(packet);
     }
 }
@@ -579,8 +579,8 @@ void UIPcBangDialog::FUN_141325d60() {}
 void UIPcBangDialog::OnClickItemGet(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     COutPacket packet(static_cast<int>(SendOp::PcBangBonus), 0);
-    packet.vfunc_o10_1(1);
-    packet.vfunc_o10_1((unsigned char)(unsigned __int64)params.pUserData);
+    packet.WriteUInt8(1);
+    packet.WriteUInt8((unsigned char)(unsigned __int64)params.pUserData);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x141325D70, UIPcBangDialog, OnClickItemGet, 99, 0x1DF98A6C);
@@ -697,7 +697,7 @@ MS2_REPLACE_METHOD(0x141326040, UIPcBangDialog, RebuildGiftOrder, 1274, 0x7DAA87
 void UIPcBangDialog::RequestInfo()
 {
     COutPacket packet(static_cast<int>(SendOp::PcBangBonus), 0);
-    packet.vfunc_o10_1(3);
+    packet.WriteUInt8(3);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x141326540, UIPcBangDialog, RequestInfo, 75, 0x9BEF4278);

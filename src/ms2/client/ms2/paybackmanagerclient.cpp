@@ -122,7 +122,7 @@ void PaybackManagerClient::FUN_140a8afb0(CInPacket& packet)
     if (!FUN_140166410()->FUN_14036d570(0x109))
         return;
     {
-        unsigned char nKind = packet.vfunc_o8_1();
+        unsigned char nKind = packet.ReadUInt8();
         switch (nKind)
         {
         case 0:
@@ -146,7 +146,7 @@ void PaybackManagerClient::FUN_140a8afb0(CInPacket& packet)
         case 1:
         {
             m_products.clear();
-            unsigned nCount = packet.vfunc_o8_3();
+            unsigned nCount = packet.ReadInt32();
             for (unsigned i = 0; i < nCount; ++i)
             {
                 m_products.push_back(MS2Ptr<CMeratMarketProduct>(new CMeratMarketProduct(packet)));

@@ -1432,10 +1432,10 @@ int UIMessenger::FUN_141a0fe20(int nEmoticonId)
     if (!spCli->FUN_140a39dd0(spEmo->m_nId))
         return 0;
     COutPacket packet(static_cast<int>(SendOp::ChatSticker), 0);
-    packet.vfunc_o10_1(3);
-    packet.vfunc_o10_3(nEmoticonId);
-    packet.vfunc_o10_8(GetName());
-    packet.vfunc_o10_1(FUN_141a144a0());
+    packet.WriteUInt8(3);
+    packet.WriteInt32(nEmoticonId);
+    packet.WriteUnicodeString(GetName());
+    packet.WriteUInt8(FUN_141a144a0());
     FUN_140710590(packet);
     return 1;
 }
@@ -1495,8 +1495,8 @@ int UIMessenger::FUN_141a10490(int nEmoticonId, bool bFavorite)
         return 0;
     int nOp = bFavorite ? 5 : 6;
     COutPacket packet(static_cast<int>(SendOp::ChatSticker), 0);
-    packet.vfunc_o10_1(nOp);
-    packet.vfunc_o10_3(nEmoticonId);
+    packet.WriteUInt8(nOp);
+    packet.WriteInt32(nEmoticonId);
     FUN_140710590(packet);
     return 1;
 }
@@ -2505,9 +2505,9 @@ bool UIMessenger::FUN_141a17bc0(int nButton, const CMsgBoxData& box)
         if (nPartyId == 0 || nRoomId == 0)
             return true;
         COutPacket packet(static_cast<int>(SendOp::Party), 0);
-        packet.vfunc_o10_1(0x27);
-        packet.vfunc_o10_3(nPartyId);
-        packet.vfunc_o10_3(nRoomId);
+        packet.WriteUInt8(0x27);
+        packet.WriteInt32(nPartyId);
+        packet.WriteInt32(nRoomId);
         FUN_140710590(packet);
     }
     return true;
@@ -2523,9 +2523,9 @@ bool UIMessenger::FUN_141a17c90(int nButton, const CMsgBoxData& box)
         if (nPartyId == 0 || nRoomId == 0)
             return true;
         COutPacket packet(static_cast<int>(SendOp::Party), 0);
-        packet.vfunc_o10_1(0x2b);
-        packet.vfunc_o10_3(nPartyId);
-        packet.vfunc_o10_3(nRoomId);
+        packet.WriteUInt8(0x2b);
+        packet.WriteInt32(nPartyId);
+        packet.WriteInt32(nRoomId);
         FUN_140710590(packet);
     }
     return true;
@@ -3022,12 +3022,12 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
 void UIMessengerBrowser::vfunc_85(CInPacket& packet)
 {
     CInputStream& in = packet;
-    unsigned nCount = in.vfunc_o8_3();
+    unsigned nCount = in.ReadInt32();
     for (unsigned i = 0; i < nCount; i++)
     {
-        __int64 nUid = in.vfunc_o8_4();
-        int nItemId = in.vfunc_o8_3();
-        int nRarity = in.vfunc_o8_3();
+        __int64 nUid = in.ReadInt64();
+        int nItemId = in.ReadInt32();
+        int nRarity = in.ReadInt32();
         MS2Ptr<CItem> spItem(new CItem);
         if (spItem->FUN_140523c40(nItemId, nRarity, 0))
         {
@@ -3042,8 +3042,8 @@ void UIMessengerBrowser::vfunc_85(CInPacket& packet)
 // @0x141a22ee0
 void UIMessengerBrowser::FUN_141a22ee0(CInPacket& packet)
 {
-    CStringW strName = packet.vfunc_o8_8();
-    int nValue = packet.vfunc_o8_3();
+    CStringW strName = packet.ReadUnicodeString();
+    int nValue = packet.ReadInt32();
     CStringW strValue = FUN_1401aa6a0(nValue);
     CStringW strMessage = FUN_140632a60(0x898, strName, strValue);
     FUN_141a247c0(strMessage, 0x14);
@@ -3052,7 +3052,7 @@ void UIMessengerBrowser::FUN_141a22ee0(CInPacket& packet)
 // @0x141a22fc0
 void UIMessengerBrowser::FUN_141a22fc0(CInPacket& packet)
 {
-    int nValue = packet.vfunc_o8_3();
+    int nValue = packet.ReadInt32();
     CStringW strValue = FUN_1401aa6a0(nValue);
     CStringW strMessage = FUN_14052bd00(0xaf2, strValue);
     FUN_141a247c0(strMessage, 0x14);
@@ -3061,7 +3061,7 @@ void UIMessengerBrowser::FUN_141a22fc0(CInPacket& packet)
 // @0x141a23060
 void UIMessengerBrowser::FUN_141a23060(CInPacket& packet)
 {
-    int nMode = packet.vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 0:
@@ -3078,12 +3078,12 @@ void UIMessengerBrowser::FUN_141a23060(CInPacket& packet)
 void UIMessengerBrowser::FUN_141a230e0(CInPacket& packet)
 {
     CInputStream& in = packet;
-    int nPartyId = in.vfunc_o8_3();
-    CStringW strLeader = in.vfunc_o8_8();
-    __int64 nA = in.vfunc_o8_4();
-    __int64 nCharId = in.vfunc_o8_4();
-    int nRoomId = in.vfunc_o8_3();
-    unsigned bFlag = in.vfunc_o8_1();
+    int nPartyId = in.ReadInt32();
+    CStringW strLeader = in.ReadUnicodeString();
+    __int64 nA = in.ReadInt64();
+    __int64 nCharId = in.ReadInt64();
+    int nRoomId = in.ReadInt32();
+    unsigned bFlag = in.ReadUInt8();
     DungeonRoomPtr spRoom = FUN_14031c2a0()->GetRoom(nRoomId);
     if (spRoom == 0)
         return;
@@ -3101,14 +3101,14 @@ void UIMessengerBrowser::FUN_141a230e0(CInPacket& packet)
 void UIMessengerBrowser::FUN_141a233d0(CInPacket& packet)
 {
     CInputStream& in = packet;
-    unsigned nNeedHelper = in.vfunc_o8_1();
-    unsigned nNeedMember = in.vfunc_o8_1();
-    unsigned nPartyId = in.vfunc_o8_3();
-    CStringW strLeader = in.vfunc_o8_8();
-    unsigned __int64 nAccountId = in.vfunc_o8_4();
-    unsigned __int64 nCharId = in.vfunc_o8_4();
-    unsigned nRoomId = in.vfunc_o8_3();
-    int nMembers = in.vfunc_o8_1();
+    unsigned nNeedHelper = in.ReadUInt8();
+    unsigned nNeedMember = in.ReadUInt8();
+    unsigned nPartyId = in.ReadInt32();
+    CStringW strLeader = in.ReadUnicodeString();
+    unsigned __int64 nAccountId = in.ReadInt64();
+    unsigned __int64 nCharId = in.ReadInt64();
+    unsigned nRoomId = in.ReadInt32();
+    int nMembers = in.ReadUInt8();
     DungeonRoomPtr spRoom = FUN_14031c2a0()->GetRoom(nRoomId);
     if (spRoom == 0)
         return;

@@ -2682,18 +2682,18 @@ MS2_REPLACE_METHOD(0x14052B2E0, CItem, FUN_14052b2e0, 77, 0x982D1C2E);
 // MS2-FUNCTIONAL: the UGC manager call's temporaries (null key, MS2Ptr<CItem>) are laid out differently (the exe hoists both temp addresses and uses an 8-byte-larger frame); behaviour identical
 void CItem::FUN_140524eb0(CInputStream& in)
 {
-    m_6c = in.vfunc_o8_3();
-    m_60 = in.vfunc_o8_3();
-    m_90 = in.vfunc_o8_4();
-    m_80 = in.vfunc_o8_4();
-    m_88 = in.vfunc_o8_4();
-    m_9c = in.vfunc_o8_3();
-    m_a0 = in.vfunc_o8_3();
-    m_a4 = in.vfunc_o8_1();
-    m_a8 = in.vfunc_o8_4();
-    m_d8 = (unsigned short)in.vfunc_o8_2();
-    m_d4 = in.vfunc_o8_0();
-    m_dc = in.vfunc_o8_3();
+    m_6c = in.ReadInt32();
+    m_60 = in.ReadInt32();
+    m_90 = in.ReadInt64();
+    m_80 = in.ReadInt64();
+    m_88 = in.ReadInt64();
+    m_9c = in.ReadInt32();
+    m_a0 = in.ReadInt32();
+    m_a4 = in.ReadUInt8();
+    m_a8 = in.ReadInt64();
+    m_d8 = (unsigned short)in.ReadInt16();
+    m_d4 = in.ReadBool();
+    m_dc = in.ReadInt32();
     m_spProxy->vfunc_6(&in);
     m_spStatus->FUN_14062fe20(in);
     if ((FUN_140525f10() != 0 || FUN_140526010() != 0) && static_cast<CItemUgc*>(m_spUgc) != 0)
@@ -2718,11 +2718,11 @@ void CItem::FUN_140524eb0(CInputStream& in)
         m_spMusic->FUN_140632620(in);
     if (FUN_140525640() != 0)
     {
-        m_strB8 = in.vfunc_o8_8();
-        m_c0 = in.vfunc_o8_4();
-        FUN_140528bb0(in.vfunc_o8_3());
-        FUN_140528bf0(in.vfunc_o8_3());
-        m_d0 = in.vfunc_o8_1();
+        m_strB8 = in.ReadUnicodeString();
+        m_c0 = in.ReadInt64();
+        FUN_140528bb0(in.ReadInt32());
+        FUN_140528bf0(in.ReadInt32());
+        m_d0 = in.ReadUInt8();
     }
     m_spTransfer->vfunc_2(in);
     m_spSocket->FUN_140620700(in);
@@ -2826,18 +2826,18 @@ MS2_REPLACE_METHOD(0x140523C40, CItem, FUN_140523c40, 1529, 0x46F3A047);
 // @0x140524ad0
 void CItem::FUN_140524ad0(COutputStream& out)
 {
-    out.vfunc_o10_3(m_6c);
-    out.vfunc_o10_3(m_60);
-    out.vfunc_o10_4(m_90);
-    out.vfunc_o10_4(m_80);
-    out.vfunc_o10_4(m_88);
-    out.vfunc_o10_3(m_9c);
-    out.vfunc_o10_3(m_a0);
-    out.vfunc_o10_1((unsigned char)m_a4);
-    out.vfunc_o10_4(m_a8);
-    out.vfunc_o10_2((short)m_d8);
-    out.vfunc_o10_0(m_d4);
-    out.vfunc_o10_3(m_dc);
+    out.WriteInt32(m_6c);
+    out.WriteInt32(m_60);
+    out.WriteInt64(m_90);
+    out.WriteInt64(m_80);
+    out.WriteInt64(m_88);
+    out.WriteInt32(m_9c);
+    out.WriteInt32(m_a0);
+    out.WriteUInt8((unsigned char)m_a4);
+    out.WriteInt64(m_a8);
+    out.WriteInt16((short)m_d8);
+    out.WriteBool(m_d4);
+    out.WriteInt32(m_dc);
     m_spProxy->vfunc_5(reinterpret_cast<__int64>(&out));
     m_spStatus->FUN_14062fda0(out);
     if (FUN_140525f10() != 0 || FUN_140526010() != 0)
@@ -2857,11 +2857,11 @@ void CItem::FUN_140524ad0(COutputStream& out)
     }
     if (FUN_140525640() != 0)
     {
-        out.vfunc_o10_8(m_strB8);
-        out.vfunc_o10_4(m_c0);
-        out.vfunc_o10_3(m_c8);
-        out.vfunc_o10_3(m_cc);
-        out.vfunc_o10_1((unsigned char)m_d0);
+        out.WriteUnicodeString(m_strB8);
+        out.WriteInt64(m_c0);
+        out.WriteInt32(m_c8);
+        out.WriteInt32(m_cc);
+        out.WriteUInt8((unsigned char)m_d0);
     }
     m_spTransfer->vfunc_1(out);
     m_spSocket->FUN_1406205e0(out);
@@ -2874,11 +2874,11 @@ MS2_REPLACE_METHOD(0x140524AD0, CItem, FUN_140524ad0, 982, 0x8BA0884C);
 // @0x14052d090
 void CItemCoupleInfo::FUN_14052d090(CInputStream& in)
 {
-    m_n18 = in.vfunc_o8_4();
+    m_n18 = in.ReadInt64();
     if (m_n18 != 0)
     {
-        m_str20 = in.vfunc_o8_8();
-        m_b28 = in.vfunc_o8_0();
+        m_str20 = in.ReadUnicodeString();
+        m_b28 = in.ReadBool();
     }
 }
 MS2_REPLACE_METHOD(0x14052D090, CItemCoupleInfo, FUN_14052d090, 159, 0x772E2F30);
@@ -2886,11 +2886,11 @@ MS2_REPLACE_METHOD(0x14052D090, CItemCoupleInfo, FUN_14052d090, 159, 0x772E2F30)
 // @0x14052d130
 void CItemCoupleInfo::FUN_14052d130(COutputStream& out)
 {
-    out.vfunc_o10_4(m_n18);
+    out.WriteInt64(m_n18);
     if (m_n18 != 0)
     {
-        out.vfunc_o10_8(m_str20);
-        out.vfunc_o10_0(m_b28);
+        out.WriteUnicodeString(m_str20);
+        out.WriteBool(m_b28);
     }
 }
 MS2_REPLACE_METHOD(0x14052D130, CItemCoupleInfo, FUN_14052d130, 118, 0xAC4AF148);

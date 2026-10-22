@@ -367,47 +367,47 @@ bool UIReportDialog::FUN_141ab9d70(CString strMethod, unsigned int nFlags, CStri
         if (FUN_141aba4b0(strMethod) == false)
             return false;
         COutPacket packet(static_cast<int>(SendOp::RequestReport), 0);
-        packet.vfunc_o10_8(m_strTarget);
-        packet.vfunc_o10_8(strText);
+        packet.WriteUnicodeString(m_strTarget);
+        packet.WriteUnicodeString(strText);
         if (strMethod.CompareNoCase("OnSelectCharacter") == 0)
         {
-            packet.vfunc_o10_1(0);
-            packet.vfunc_o10_3(nFlags);
+            packet.WriteUInt8(0);
+            packet.WriteInt32(nFlags);
         }
         else if (strMethod.CompareNoCase("OnSelectChatting") == 0)
         {
-            packet.vfunc_o10_1(1);
-            packet.vfunc_o10_3(nFlags);
-            packet.vfunc_o10_8(m_strChat);
+            packet.WriteUInt8(1);
+            packet.WriteInt32(nFlags);
+            packet.WriteUnicodeString(m_strChat);
         }
         else if (strMethod.CompareNoCase("OnSelectWallPoster") == 0)
         {
-            packet.vfunc_o10_1(2);
-            packet.vfunc_o10_3(nFlags);
-            packet.vfunc_o10_4(m_nPosterId);
-            packet.vfunc_o10_6(m_strPosterUrl);
+            packet.WriteUInt8(2);
+            packet.WriteInt32(nFlags);
+            packet.WriteInt64(m_nPosterId);
+            packet.WriteUnicodeStringA(m_strPosterUrl);
         }
         else if (strMethod.CompareNoCase("OnSelectDesignItem") == 0)
         {
-            packet.vfunc_o10_1(3);
-            packet.vfunc_o10_3(nFlags);
-            packet.vfunc_o10_4(m_nItemId);
+            packet.WriteUInt8(3);
+            packet.WriteInt32(nFlags);
+            packet.WriteInt64(m_nItemId);
         }
         else if (strMethod.CompareNoCase("OnSelectRealStateItem") == 0)
         {
-            packet.vfunc_o10_1(4);
-            packet.vfunc_o10_3(nFlags);
-            packet.vfunc_o10_4(m_nPageId);
-            packet.vfunc_o10_3(m_nPageArg1);
-            packet.vfunc_o10_3(m_nPageArg2);
+            packet.WriteUInt8(4);
+            packet.WriteInt32(nFlags);
+            packet.WriteInt64(m_nPageId);
+            packet.WriteInt32(m_nPageArg1);
+            packet.WriteInt32(m_nPageArg2);
         }
         else
         {
             if (strMethod.CompareNoCase("OnSelectPet") != 0)
                 return false;
-            packet.vfunc_o10_1(7);
-            packet.vfunc_o10_3(nFlags);
-            packet.vfunc_o10_8(m_strPet);
+            packet.WriteUInt8(7);
+            packet.WriteInt32(nFlags);
+            packet.WriteUnicodeString(m_strPet);
         }
         FUN_140710590(packet);
         return true;

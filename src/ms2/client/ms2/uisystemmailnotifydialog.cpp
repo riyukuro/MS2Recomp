@@ -311,19 +311,19 @@ void UISystemMailNotifyDialog::vfunc_72()
 // @0x1412a53e0
 void UISystemMailNotifyDialog::FUN_1412a53e0(CInPacket& packet)
 {
-    int nType = packet.vfunc_o8_1();
+    int nType = packet.ReadUInt8();
     switch (nType)
     {
     case 0:
         {
-            int nId = packet.vfunc_o8_3();
+            int nId = packet.ReadInt32();
             m_178 = nId;
             m_17c = nId;
         }
         break;
     case 1:
         {
-            int nId = packet.vfunc_o8_3();
+            int nId = packet.ReadInt32();
             {
                 Unk_SmHandle rec(nId);
                 if (rec.FUN_1412a6f80() != 0)

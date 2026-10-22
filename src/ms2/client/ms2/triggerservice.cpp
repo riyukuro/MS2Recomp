@@ -370,7 +370,7 @@ void CTriggerService::FUN_141861810(const efd::IMessage*, efd::Category)
 // @0x141861840
 void CTriggerService::FUN_141861840(CInPacket* pEvent)
 {
-    unsigned char nType = pEvent->vfunc_o8_1();
+    unsigned char nType = pEvent->ReadUInt8();
     switch (nType)
     {
     case 2:
@@ -429,7 +429,7 @@ void CTriggerService::FUN_141861840(CInPacket* pEvent)
 // @0x141861a50
 void CTriggerService::FUN_141861a50(CInPacket* pEvent)
 {
-    int nCount = pEvent->vfunc_o8_3();
+    int nCount = pEvent->ReadInt32();
     for (int i = 0; i < nCount; i++)
         FUN_141863a90(pEvent, true);
 }
@@ -444,23 +444,23 @@ void CTriggerService::FUN_141861ad0(CInPacket* pEvent)
 void CTriggerService::FUN_141861b00(CInPacket* pEvent)
 {
     m_listCamera.RemoveAll();
-    int nCount = pEvent->vfunc_o8_1();
+    int nCount = pEvent->ReadUInt8();
     ATL::CAtlArray<int> aObjects;
     for (int i = 0; i < nCount; i++)
-        aObjects.Add(pEvent->vfunc_o8_3());
-    int bEnd = pEvent->vfunc_o8_1();
+        aObjects.Add(pEvent->ReadInt32());
+    int bEnd = pEvent->ReadUInt8();
     FUN_141863340(aObjects, bEnd);
 }
 
 // @0x141861c20
 void CTriggerService::FUN_141861c20(CInPacket* pEvent)
 {
-    char nSub = pEvent->vfunc_o8_1();
+    char nSub = pEvent->ReadUInt8();
     if (nSub == 0)
     {
         Unk_StreamPoint ptCenter = pEvent->FUN_1407140d0();
-        unsigned uOuter = pEvent->vfunc_o8_3();
-        unsigned uInner = pEvent->vfunc_o8_3();
+        unsigned uOuter = pEvent->ReadInt32();
+        unsigned uInner = pEvent->ReadInt32();
         Unk_CameraManager* pCamera = Unk_CameraManager::FUN_1409478c0();
         if (FUN_140af7e30(pCamera) != 0x13)
         {
@@ -479,7 +479,7 @@ void CTriggerService::FUN_141861c20(CInPacket* pEvent)
     }
     else if (nSub == 1)
     {
-        bool bCheck = pEvent->vfunc_o8_0();
+        bool bCheck = pEvent->ReadBool();
         CTargetLookCenterCameraMode* pMode =
             dynamic_cast<CTargetLookCenterCameraMode*>(FUN_140af2520(Unk_CameraManager::FUN_1409478c0()));
         if (pMode != 0)
@@ -487,8 +487,8 @@ void CTriggerService::FUN_141861c20(CInPacket* pEvent)
     }
     else if (nSub == 2)
     {
-        bool bFixed = pEvent->vfunc_o8_0();
-        float fAngle = pEvent->vfunc_o8_5();
+        bool bFixed = pEvent->ReadBool();
+        float fAngle = pEvent->ReadFloat();
         CTargetLookCenterCameraMode* pMode =
             dynamic_cast<CTargetLookCenterCameraMode*>(FUN_140af2520(Unk_CameraManager::FUN_1409478c0()));
         if (pMode != 0)
@@ -508,14 +508,14 @@ void CTriggerService::FUN_141861f30(CInPacket*)
 // @0x141861f60
 void CTriggerService::FUN_141861f60(CInPacket* pEvent)
 {
-    FUN_141863460(pEvent->vfunc_o8_5());
+    FUN_141863460(pEvent->ReadFloat());
 }
 
 // Show a text popup (UI 0x4e6b) with a text file buffer.
 // @0x141861fc0
 void CTriggerService::FUN_141861fc0(CInPacket* pEvent)
 {
-    CStringW strWide = FUN_1408767c0(pEvent->vfunc_o8_7());
+    CStringW strWide = FUN_1408767c0(pEvent->ReadString());
     MS2Ptr<CFileBuffer> spBuffer(new CFileBuffer);
     spBuffer->SetText(strWide);
     Unk_TrigTextUI* pUi = FUN_14122d570(0x4e6b);
@@ -526,14 +526,14 @@ void CTriggerService::FUN_141861fc0(CInPacket* pEvent)
 // @0x141862110
 void CTriggerService::FUN_141862110(CInPacket* pEvent)
 {
-    char nKind = pEvent->vfunc_o8_1();
+    char nKind = pEvent->ReadUInt8();
     if (nKind == 1)
     {
-        int nA = pEvent->vfunc_o8_3();
-        int nB = pEvent->vfunc_o8_3();
-        unsigned char nC = pEvent->vfunc_o8_1();
-        int nD = pEvent->vfunc_o8_3();
-        CStringW strCompare = pEvent->vfunc_o8_8();
+        int nA = pEvent->ReadInt32();
+        int nB = pEvent->ReadInt32();
+        unsigned char nC = pEvent->ReadUInt8();
+        int nD = pEvent->ReadInt32();
+        CStringW strCompare = pEvent->ReadUnicodeString();
         FUN_1403ed2d0()->FUN_141bc6f60(nA, nB, nC);
         if (nB == 0)
         {
@@ -555,9 +555,9 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
     }
     else if (nKind == 2)
     {
-        int nA = pEvent->vfunc_o8_3();
-        int nB = pEvent->vfunc_o8_3();
-        unsigned char nC = pEvent->vfunc_o8_1();
+        int nA = pEvent->ReadInt32();
+        int nB = pEvent->ReadInt32();
+        unsigned char nC = pEvent->ReadUInt8();
         FUN_1403ed2d0()->FUN_141bc6f60(nA, nB, nC);
         Unk_TrigPvpA kBlock;
         FUN_140743ca0(&kBlock, pEvent);
@@ -577,9 +577,9 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
     }
     else if (nKind == 5)
     {
-        int nA = pEvent->vfunc_o8_3();
-        int nB = pEvent->vfunc_o8_3();
-        unsigned char nC = pEvent->vfunc_o8_1();
+        int nA = pEvent->ReadInt32();
+        int nB = pEvent->ReadInt32();
+        unsigned char nC = pEvent->ReadUInt8();
         FUN_1403ed2d0()->FUN_141bc6f60(nA, nB, nC);
         Unk_TrigPvpB kBlock;
         FUN_140743f50(&kBlock, pEvent);
@@ -599,9 +599,9 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
     }
     else if (nKind == 3)
     {
-        int nA = pEvent->vfunc_o8_3();
-        int nB = pEvent->vfunc_o8_3();
-        unsigned char nC = pEvent->vfunc_o8_1();
+        int nA = pEvent->ReadInt32();
+        int nB = pEvent->ReadInt32();
+        unsigned char nC = pEvent->ReadUInt8();
         FUN_1403ed2d0()->FUN_141bc6f60(nA, nB, nC);
         if (nB == 0)
         {
@@ -616,9 +616,9 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
     }
     else if (nKind == 4)
     {
-        int nA = pEvent->vfunc_o8_3();
-        int nB = pEvent->vfunc_o8_3();
-        unsigned char nC = pEvent->vfunc_o8_1();
+        int nA = pEvent->ReadInt32();
+        int nB = pEvent->ReadInt32();
+        unsigned char nC = pEvent->ReadUInt8();
         FUN_1403ed2d0()->FUN_141bc6f60(nA, nB, nC);
         if (nB != 0)
         {
@@ -631,7 +631,7 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
 // @0x1418627c0
 void CTriggerService::FUN_1418627c0(CInPacket* pEvent)
 {
-    int nSub = pEvent->vfunc_o8_1();
+    int nSub = pEvent->ReadUInt8();
     switch (nSub)
     {
     case 4:
@@ -673,7 +673,7 @@ void CTriggerService::FUN_1418627c0(CInPacket* pEvent)
 // @0x141862930
 void CTriggerService::FUN_141862930(CInPacket* pEvent)
 {
-    if (pEvent->vfunc_o8_3() == 0)
+    if (pEvent->ReadInt32() == 0)
         FUN_140d73bc0(0xb03, 0, 0, CStringW(L""));
 }
 
@@ -681,13 +681,13 @@ void CTriggerService::FUN_141862930(CInPacket* pEvent)
 // @0x1418629b0
 void CTriggerService::FUN_1418629b0(CInPacket* pEvent)
 {
-    unsigned nKind = pEvent->vfunc_o8_1();
-    int nNpc = pEvent->vfunc_o8_3();
-    CStringA strName = pEvent->vfunc_o8_7();
-    CStringA strIcon = pEvent->vfunc_o8_7();
-    CStringA strSound = pEvent->vfunc_o8_7();
-    CStringA strScript = pEvent->vfunc_o8_7();
-    CStringW strText = pEvent->vfunc_o8_8();
+    unsigned nKind = pEvent->ReadUInt8();
+    int nNpc = pEvent->ReadInt32();
+    CStringA strName = pEvent->ReadString();
+    CStringA strIcon = pEvent->ReadString();
+    CStringA strSound = pEvent->ReadString();
+    CStringA strScript = pEvent->ReadString();
+    CStringW strText = pEvent->ReadUnicodeString();
     Unk_TrigTalkUI* pUi = FUN_1413868b0(0x4f57);
     if (pUi != 0)
     {
@@ -707,8 +707,8 @@ void CTriggerService::FUN_1418629b0(CInPacket* pEvent)
 // @0x141862d30
 void CTriggerService::FUN_141862d30(CInPacket* pEvent)
 {
-    int nState = pEvent->vfunc_o8_1();
-    CStringA strNames = pEvent->vfunc_o8_7();
+    int nState = pEvent->ReadUInt8();
+    CStringA strNames = pEvent->ReadString();
     ATL::CAtlArray<CString> aNames;
     FUN_14015f050(strNames, aNames, ",");
     for (size_t i = 0; i < aNames.GetCount(); i++)
@@ -724,12 +724,12 @@ void CTriggerService::FUN_141862d30(CInPacket* pEvent)
 // @0x141862ec0
 void CTriggerService::FUN_141862ec0(CInPacket* pEvent)
 {
-    bool bShow = pEvent->vfunc_o8_0();
+    bool bShow = pEvent->ReadBool();
     if (bShow)
     {
-        int nA = pEvent->vfunc_o8_3();
-        int nB = pEvent->vfunc_o8_3();
-        int nC = pEvent->vfunc_o8_3();
+        int nA = pEvent->ReadInt32();
+        int nB = pEvent->ReadInt32();
+        int nC = pEvent->ReadInt32();
         UINpcDuelHPBarDialog* pUi = FUN_14096e200(0x4f62);
         if (pUi != 0)
         {
@@ -767,8 +767,8 @@ static UITypingGameDialog* FUN_1418644d0(int nId)
 // @0x141863030
 void CTriggerService::FUN_141863030(CInPacket* pEvent)
 {
-    int nA = pEvent->vfunc_o8_3();
-    int nB = pEvent->vfunc_o8_3();
+    int nA = pEvent->ReadInt32();
+    int nB = pEvent->ReadInt32();
     UITypingGameDialog* pDialog = FUN_1418644d0(0x4f89);
     if (pDialog != 0)
     {
@@ -953,7 +953,7 @@ bool CTriggerService::FUN_1418638d0(egf::Entity* pEntity)
 // @0x141863a90
 void CTriggerService::FUN_141863a90(CInPacket* pEvent, bool bSkipFx)
 {
-    int nId = pEvent->vfunc_o8_3();
+    int nId = pEvent->ReadInt32();
     MS2Ptr<TriggerObject> spObject;
     if (m_mapObjects.Lookup(nId, spObject))
         spObject->vfunc_2(TrigEvent(pEvent), bSkipFx);
@@ -965,8 +965,8 @@ void CTriggerService::FUN_141863a90(CInPacket* pEvent, bool bSkipFx)
 // @0x141863b70
 void CTriggerService::FUN_141863b70(CInPacket* pEvent)
 {
-    CStringA strPath = pEvent->vfunc_o8_7();
-    int nCutScene = pEvent->vfunc_o8_3();
+    CStringA strPath = pEvent->ReadString();
+    int nCutScene = pEvent->ReadInt32();
     UICutSceneMovie* pMovie = FUN_14138fd50(0x4e7e);
     if (pMovie != 0)
     {
@@ -980,7 +980,7 @@ void CTriggerService::FUN_141863b70(CInPacket* pEvent)
 // @0x141863c50
 void CTriggerService::FUN_141863c50(CInPacket* pEvent)
 {
-    int nCutScene = pEvent->vfunc_o8_3();
+    int nCutScene = pEvent->ReadInt32();
     UICutSceneMovie* pMovie = FUN_14138fd50(0x4e7e);
     if (pMovie != 0)
         pMovie->StopIfCutScene(nCutScene);
@@ -989,9 +989,9 @@ void CTriggerService::FUN_141863c50(CInPacket* pEvent)
 // @0x141863cc0
 void CTriggerService::FUN_141863cc0(CInPacket* pEvent)
 {
-    unsigned nA = pEvent->vfunc_o8_3();
-    unsigned nB = pEvent->vfunc_o8_3();
-    int nC = pEvent->vfunc_o8_3();
+    unsigned nA = pEvent->ReadInt32();
+    unsigned nB = pEvent->ReadInt32();
+    int nC = pEvent->ReadInt32();
     UIGuideEvent* pGuide = FUN_14136f3e0(0x4e53);
     if (pGuide != 0)
         pGuide->FUN_14195ab40(nA, nB, nC);
@@ -1000,7 +1000,7 @@ void CTriggerService::FUN_141863cc0(CInPacket* pEvent)
 // @0x141863d80
 void CTriggerService::FUN_141863d80(CInPacket* pEvent)
 {
-    int nA = pEvent->vfunc_o8_3();
+    int nA = pEvent->ReadInt32();
     UIGuideEvent* pGuide = FUN_14136f3e0(0x4e53);
     if (pGuide != 0)
         pGuide->FUN_14195b540(nA);
@@ -1009,7 +1009,7 @@ void CTriggerService::FUN_141863d80(CInPacket* pEvent)
 // @0x141863df0
 void CTriggerService::FUN_141863df0(CInPacket* pEvent)
 {
-    int nId = pEvent->vfunc_o8_3();
+    int nId = pEvent->ReadInt32();
     FUN_1409331e0()->FUN_14138bf00(0x15, nId, 0);
 }
 
@@ -1020,14 +1020,14 @@ void CTriggerService::FUN_141863e50(CInPacket* pEvent)
     PCBase* pPlayer = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    int nCount = pEvent->vfunc_o8_3();
+    int nCount = pEvent->ReadInt32();
     MS2Ptr<StateTriggerEmotionData> spData(new StateTriggerEmotionData);
     spData->m_nFlag = 0;
     spData->m_nMode = 0;
     spData->m_nValue = 0;
     for (int i = 0; i < nCount; i++)
     {
-        CStringA strEmotion = pEvent->vfunc_o8_6();
+        CStringA strEmotion = pEvent->ReadUnicodeStringA();
         spData->m_aEmotions.Add(strEmotion);
     }
     pPlayer->vfunc_59(0x35, spData.get(), 0, 0);
@@ -1040,9 +1040,9 @@ void CTriggerService::FUN_141864010(CInPacket* pEvent)
     PCBase* pPlayer = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    int nFlag = pEvent->vfunc_o8_1();
-    int nValue = pEvent->vfunc_o8_3();
-    CStringA strEmotion = pEvent->vfunc_o8_6();
+    int nFlag = pEvent->ReadUInt8();
+    int nValue = pEvent->ReadInt32();
+    CStringA strEmotion = pEvent->ReadUnicodeStringA();
     MS2Ptr<StateTriggerEmotionData> spData(new StateTriggerEmotionData);
     spData->m_nFlag = nFlag;
     spData->m_nMode = 1;
@@ -1055,8 +1055,8 @@ void CTriggerService::FUN_141864010(CInPacket* pEvent)
 // @0x1418641e0
 void CTriggerService::FUN_1418641e0(CInPacket* pEvent)
 {
-    int nNpc = pEvent->vfunc_o8_3();
-    CStringA strText = pEvent->vfunc_o8_7();
+    int nNpc = pEvent->ReadInt32();
+    CStringA strText = pEvent->ReadString();
     Unk_TrigNpc* pNpc = reinterpret_cast<Unk_TrigNpc*>(FUN_1403ed2d0()->FUN_141bd1200(nNpc));
     if (pNpc == 0)
         return;
@@ -1078,8 +1078,8 @@ void CTriggerService::FUN_1418642e0(CInPacket* pEvent)
     PCBase* pPlayer = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    Unk_StreamPoint pt = pEvent->vfunc_o8_11();
-    bool bMove = pEvent->vfunc_o8_0();
+    Unk_StreamPoint pt = pEvent->ReadVector3Short();
+    bool bMove = pEvent->ReadBool();
     FUN_14166d8b0(pPlayer, pt.z);
     if (bMove)
         pPlayer->vfunc_21(reinterpret_cast<const efd::Point3&>(pt));
@@ -1091,8 +1091,8 @@ void CTriggerService::FUN_1418643c0(CInPacket* pEvent)
     PCBase* pPlayer = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    Unk_StreamPoint pt = pEvent->vfunc_o8_11();
-    bool bFlag = pEvent->vfunc_o8_0();
+    Unk_StreamPoint pt = pEvent->ReadVector3Short();
+    bool bFlag = pEvent->ReadBool();
     FUN_14166d2d0(pPlayer, reinterpret_cast<const efd::Point3&>(pt), bFlag);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

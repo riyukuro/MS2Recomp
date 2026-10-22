@@ -65,7 +65,7 @@ int PCInfo::FUN_140dba260()
 // @0x140dba280
 void PCInfo::FUN_140dba280(CInPacket* pPacket)
 {
-    unsigned char nCount = pPacket->vfunc_o8_1();
+    unsigned char nCount = pPacket->ReadUInt8();
     if (nCount == 0x23)
     {
         for (int nType = 0; nType < 0x23; nType++)
@@ -74,9 +74,9 @@ void PCInfo::FUN_140dba280(CInPacket* pPacket)
             {
                 __int64 nValue = 0;
                 if (FUN_14082f1a0(nType))
-                    nValue = pPacket->vfunc_o8_4();
+                    nValue = pPacket->ReadInt64();
                 else
-                    nValue = (unsigned)pPacket->vfunc_o8_3();
+                    nValue = (unsigned)pPacket->ReadInt32();
                 if (i == 1)
                     m_aStats1[nType] = nValue;
                 else if (i == 2)
@@ -90,14 +90,14 @@ void PCInfo::FUN_140dba280(CInPacket* pPacket)
     {
         for (int n = 0; n < nCount; n++)
         {
-            int nType = pPacket->vfunc_o8_1();
+            int nType = pPacket->ReadUInt8();
             for (int i = 0; i < 3; i++)
             {
                 __int64 nValue = 0;
                 if (FUN_14082f1a0(nType))
-                    nValue = pPacket->vfunc_o8_4();
+                    nValue = pPacket->ReadInt64();
                 else
-                    nValue = (unsigned)pPacket->vfunc_o8_3();
+                    nValue = (unsigned)pPacket->ReadInt32();
                 if (i == 1)
                     m_aStats1[nType] = nValue;
                 else if (i == 2)

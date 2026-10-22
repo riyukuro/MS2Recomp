@@ -51,7 +51,7 @@ HomeBlockManager::HomeBlockManager() {}
 HomeBlockManager::~HomeBlockManager() {}
 // @0x140a46b90
 void HomeBlockManager::FUN_140a46b90(CInPacket& in) {
-    int op=in.vfunc_o8_1();
+    int op=in.ReadUInt8();
     switch(op) {
     case 4: FUN_140a46c60(in); break;
     case 2: FUN_140a46f90(in); break;
@@ -66,7 +66,7 @@ MS2_REPLACE_METHOD(0x140a46b90, HomeBlockManager, FUN_140a46b90, 188, 0x123F62F9
 // @0x140a46c60
 void HomeBlockManager::FUN_140a46c60(CInPacket& in) {
     Unk_1401b4ec0 guard(m_lock,1);
-    unsigned __int64 count=(unsigned)in.vfunc_o8_3();
+    unsigned __int64 count=(unsigned)in.ReadInt32();
     for(unsigned __int64 i=0;i<count;++i) {
         HomePtr p(new HomeBlockInfo);
         p->FUN_1402706f0(in);
@@ -79,17 +79,17 @@ MS2_REPLACE_METHOD(0x140a46c60, HomeBlockManager, FUN_140a46c60, 483, 0x37E066E1
 // @0x140a46e50
 void HomeBlockManager::FUN_140a46e50(Unk_SocketPtr<PCBase> actor,CStringW text) {
     COutPacket out(0xc1,0);
-    out.vfunc_o10_1(2);
-    out.vfunc_o10_4(FUN_141656a80(actor.operator->()));
-    out.vfunc_o10_8(text);
+    out.WriteUInt8(2);
+    out.WriteInt64(FUN_141656a80(actor.operator->()));
+    out.WriteUnicodeString(text);
     FUN_140710590(out);
 }
 // @0x140a46f00
 void HomeBlockManager::FUN_140a46f00(__int64 id,CStringW text) {
     COutPacket out(0xc1,0);
-    out.vfunc_o10_1(2);
-    out.vfunc_o10_4(id);
-    out.vfunc_o10_8(text);
+    out.WriteUInt8(2);
+    out.WriteInt64(id);
+    out.WriteUnicodeString(text);
     FUN_140710590(out);
 }
 MS2_REPLACE_METHOD(0x140a46f00, HomeBlockManager, FUN_140a46f00, 133, 0x708EE438);
@@ -103,22 +103,22 @@ MS2_REPLACE_METHOD(0x140a46f90, HomeBlockManager, FUN_140a46f90, 188, 0x29D623F7
 // @0x140a47060
 void HomeBlockManager::FUN_140a47060(__int64 id) {
     COutPacket out(0xc1,0);
-    out.vfunc_o10_1(3);
-    out.vfunc_o10_4(id);
+    out.WriteUInt8(3);
+    out.WriteInt64(id);
     FUN_140710590(out);
 }
 MS2_REPLACE_METHOD(0x140a47060, HomeBlockManager, FUN_140a47060, 95, 0x30674299);
 // @0x140a470d0
 void HomeBlockManager::FUN_140a470d0(CInPacket& in) {
-    __int64 id=in.vfunc_o8_4();
+    __int64 id=in.ReadInt64();
     if(id==0) return;
     FUN_140a47b30(id);
 }
 MS2_REPLACE_METHOD(0x140a470d0, HomeBlockManager, FUN_140a470d0, 83, 0x4BE55B80);
 // @0x140a47130
 void HomeBlockManager::FUN_140a47130(CInPacket& in) {
-    unsigned __int64 id=in.vfunc_o8_4();
-    CStringW memo=in.vfunc_o8_8();
+    unsigned __int64 id=in.ReadInt64();
+    CStringW memo=in.ReadUnicodeString();
     if(id==0) return;
     Unk_1401b4ec0 guard(m_lock,1);
     auto it=m_byId.find(id);
@@ -133,7 +133,7 @@ void HomeBlockManager::FUN_140a47130(CInPacket& in) {
 MS2_REPLACE_METHOD(0x140a47130, HomeBlockManager, FUN_140a47130, 540, 0xF1BE058B);
 // @0x140a47360
 void HomeBlockManager::FUN_140a47360(CInPacket& in) {
-    int result=in.vfunc_o8_3();
+    int result=in.ReadInt32();
     switch(result) {
     case 0: FUN_141275260(0xd5a,1,1); break;
     case 1: FUN_141275260(0xd5b,1,1); break;
@@ -216,9 +216,9 @@ MS2_REPLACE_METHOD(0x140a47b30, HomeBlockManager, FUN_140a47b30, 317, 0x12A71FB8
 // @0x140a47c80
 void HomeBlockManager::FUN_140a47c80(__int64 id,CStringW text) {
     COutPacket out(0xc1,0);
-    out.vfunc_o10_1(5);
-    out.vfunc_o10_4(id);
-    out.vfunc_o10_8(text);
+    out.WriteUInt8(5);
+    out.WriteInt64(id);
+    out.WriteUnicodeString(text);
     FUN_140710590(out);
 }
 MS2_REPLACE_METHOD(0x140a47c80, HomeBlockManager, FUN_140a47c80, 133, 0x7835393B);

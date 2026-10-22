@@ -388,9 +388,9 @@ int UIItemRePackingScrollDialog::vfunc_28(const char* szMethod, const Scaleform:
                 return 1;
             }
             COutPacket packet(static_cast<int>(SendOp::ItemRepack), 0);
-            packet.vfunc_o10_1(1);
-            packet.vfunc_o10_4(m_nOwner);
-            packet.vfunc_o10_4(nTarget);
+            packet.WriteUInt8(1);
+            packet.WriteInt64(m_nOwner);
+            packet.WriteInt64(nTarget);
             FUN_140710590(packet);
         }
     }
@@ -441,12 +441,12 @@ int UIItemRePackingScrollDialog::vfunc_48()
 // @0x140f62020
 void UIItemRePackingScrollDialog::FUN_140f62020(CInPacket& packet)
 {
-    unsigned char nCode = packet.vfunc_o8_1();
+    unsigned char nCode = packet.ReadUInt8();
     if (nCode == 0)
     {
         if (FUN_141924630() == 0)
         {
-            __int64 nUid = packet.vfunc_o8_4();
+            __int64 nUid = packet.ReadInt64();
             MS2Ptr<CItem> sp = DAT_143ab2a90.FUN_140a5d680(nUid);
             if (!sp.IsNull())
             {
@@ -472,9 +472,9 @@ void UIItemRePackingScrollDialog::FUN_140f62020(CInPacket& packet)
 // MS2-FUNCTIONAL: written from the decompile; temporaries / frame slots not tuned
 void UIItemRePackingScrollDialog::FUN_140f62200(CInPacket& packet)
 {
-    if (packet.vfunc_o8_2() == 0)
+    if (packet.ReadInt16() == 0)
     {
-        __int64 nUid = packet.vfunc_o8_4();
+        __int64 nUid = packet.ReadInt64();
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
         if (!spItem.IsNull())
         {
@@ -500,8 +500,8 @@ void UIItemRePackingScrollDialog::FUN_140f62200(CInPacket& packet)
 // MS2-FUNCTIONAL: written from the decompile; temporaries / frame slots not tuned
 void UIItemRePackingScrollDialog::FUN_140f625e0(CInPacket& packet)
 {
-    unsigned nFlag = packet.vfunc_o8_1();
-    int nCode = packet.vfunc_o8_3();
+    unsigned nFlag = packet.ReadUInt8();
+    int nCode = packet.ReadInt32();
     if (nCode != 0)
     {
         if (nCode < 1 || (7 < nCode && nCode != 0xc))

@@ -45,22 +45,22 @@ Unk_CommonLog* FUN_140166440();
 BillBoardInfo::BillBoardInfo() { Clear(); }
 // @0x14026cf80
 void BillBoardInfo::Write(COutputStream& out) {
-    out.vfunc_o10_4(firstId); out.vfunc_o10_4(secondId);
-    out.vfunc_o10_8(firstName); out.vfunc_o10_8(secondName);
-    out.vfunc_o10_2(type); out.vfunc_o10_3(value);
-    out.vfunc_o10_8(title); out.vfunc_o10_8(text);
-    out.vfunc_o10_0(enabled);
-    out.vfunc_o10_4(start); out.vfunc_o10_4(end); out.vfunc_o10_4(owner);
+    out.WriteInt64(firstId); out.WriteInt64(secondId);
+    out.WriteUnicodeString(firstName); out.WriteUnicodeString(secondName);
+    out.WriteInt16(type); out.WriteInt32(value);
+    out.WriteUnicodeString(title); out.WriteUnicodeString(text);
+    out.WriteBool(enabled);
+    out.WriteInt64(start); out.WriteInt64(end); out.WriteInt64(owner);
 }
 MS2_REPLACE_METHOD(0x14026CF80, BillBoardInfo, Write, 372, 0x7A43A00D);
 // @0x14026d100
 void BillBoardInfo::Read(CInputStream& in) {
-    firstId=in.vfunc_o8_4(); secondId=in.vfunc_o8_4();
-    firstName=in.vfunc_o8_8(); secondName=in.vfunc_o8_8();
-    type=in.vfunc_o8_2(); value=in.vfunc_o8_3();
-    title=in.vfunc_o8_8(); text=in.vfunc_o8_8();
-    enabled=in.vfunc_o8_0();
-    start=in.vfunc_o8_4(); end=in.vfunc_o8_4(); owner=in.vfunc_o8_4();
+    firstId=in.ReadInt64(); secondId=in.ReadInt64();
+    firstName=in.ReadUnicodeString(); secondName=in.ReadUnicodeString();
+    type=in.ReadInt16(); value=in.ReadInt32();
+    title=in.ReadUnicodeString(); text=in.ReadUnicodeString();
+    enabled=in.ReadBool();
+    start=in.ReadInt64(); end=in.ReadInt64(); owner=in.ReadInt64();
 }
 MS2_REPLACE_METHOD(0x14026D100, BillBoardInfo, Read, 629, 0xFBD6EFDC);
 // @0x14026d380
@@ -86,7 +86,7 @@ Unk_CommonWireRecord::Unk_CommonWireRecord() : first(0),second(0),type(0),value(
 // @0x14026d670
 void Unk_CommonWireRecord::Write(COutputStream& out) {
     FUN_14070fa20(out,first); FUN_14070fa20(out,second);
-    out.vfunc_o10_2((short)type);
+    out.WriteInt16((short)type);
     FUN_14070f9a0(out,value); FUN_14070fa60(out,extra);
     FUN_14070f820(out,enabled); FUN_14070f820(out,flag);
 }
@@ -94,7 +94,7 @@ MS2_REPLACE_METHOD(0x14026D670, Unk_CommonWireRecord, Write, 157, 0x700F57C5);
 // @0x14026d720
 void Unk_CommonWireRecord::Read(CInputStream& in) {
     FUN_14070f500(in,first); FUN_14070f500(in,second);
-    type=(unsigned short)in.vfunc_o8_2();
+    type=(unsigned short)in.ReadInt16();
     FUN_14070f480(in,value); FUN_14070f540(in,extra);
     FUN_14070f300(in,enabled); FUN_14070f300(in,flag);
 }
@@ -115,41 +115,41 @@ bool Unk_CommonTimedMap::Active() {
 MS2_REPLACE_METHOD(0x14026D880, Unk_CommonTimedMap, Active, 84, 0x5F451E98);
 // @0x14026d8e0
 void Unk_CommonTimedMap::Write(COutputStream& out) {
-    out.vfunc_o10_3(selected); out.vfunc_o10_3((int)times.GetCount());
+    out.WriteInt32(selected); out.WriteInt32((int)times.GetCount());
     for(POSITION pos=times.GetStartPosition();pos;times.GetNext(pos)) {
-        out.vfunc_o10_3(times.GetKeyAt(pos)); out.vfunc_o10_4(times.GetValueAt(pos));
+        out.WriteInt32(times.GetKeyAt(pos)); out.WriteInt64(times.GetValueAt(pos));
     }
 }
 MS2_REPLACE_METHOD(0x14026D8E0, Unk_CommonTimedMap, Write, 247, 0xA93F9967);
 // @0x14026d9e0
 void Unk_CommonTimedMap::Read(CInputStream& in) {
-    times.RemoveAll(); selected=in.vfunc_o8_3();
-    int count=in.vfunc_o8_3();
+    times.RemoveAll(); selected=in.ReadInt32();
+    int count=in.ReadInt32();
     for(int i=0;i<count;++i) {
-        int key=in.vfunc_o8_3(); __int64 value=in.vfunc_o8_4(); times.SetAt(key,value);
+        int key=in.ReadInt32(); __int64 value=in.ReadInt64(); times.SetAt(key,value);
     }
 }
 MS2_REPLACE_METHOD(0x14026D9E0, Unk_CommonTimedMap, Read, 178, 0xA22F21D9);
 // @0x14026daa0
 void Unk_CommonTimedMap::WriteOne(COutputStream& out,int key) {
     __int64 value=0;
-    if(times.Lookup(key,value)==true) { out.vfunc_o10_3(key); out.vfunc_o10_4(value); }
-    else { out.vfunc_o10_3(0); out.vfunc_o10_4(0); }
+    if(times.Lookup(key,value)==true) { out.WriteInt32(key); out.WriteInt64(value); }
+    else { out.WriteInt32(0); out.WriteInt64(0); }
 }
 MS2_REPLACE_METHOD(0x14026DAA0, Unk_CommonTimedMap, WriteOne, 146, 0x1743D37C);
 // @0x14026db40
 void Unk_CommonTimedMap::ReadOne(CInputStream& in) {
-    int key=in.vfunc_o8_3(); __int64 value=in.vfunc_o8_4(); times.SetAt(key,value);
+    int key=in.ReadInt32(); __int64 value=in.ReadInt64(); times.SetAt(key,value);
 }
 MS2_REPLACE_METHOD(0x14026DB40, Unk_CommonTimedMap, ReadOne, 86, 0x2ACB529A);
 // @0x14026dba0
 void Unk_CommonFourInts::Write(COutputStream& out) {
-    out.vfunc_o10_3(first); out.vfunc_o10_3(second); out.vfunc_o10_3(third); out.vfunc_o10_3(fourth);
+    out.WriteInt32(first); out.WriteInt32(second); out.WriteInt32(third); out.WriteInt32(fourth);
 }
 MS2_REPLACE_METHOD(0x14026DBA0, Unk_CommonFourInts, Write, 114, 0xE69225D6);
 // @0x14026dc20
 void Unk_CommonFourInts::Read(CInputStream& in) {
-    first=in.vfunc_o8_3(); second=in.vfunc_o8_3(); third=in.vfunc_o8_3(); fourth=in.vfunc_o8_3();
+    first=in.ReadInt32(); second=in.ReadInt32(); third=in.ReadInt32(); fourth=in.ReadInt32();
 }
 MS2_REPLACE_METHOD(0x14026DC20, Unk_CommonFourInts, Read, 114, 0x69CFBEAE);
 // @0x14026dca0
@@ -238,10 +238,10 @@ MS2_REPLACE_METHOD(0x14026E450, Unk_CommonResendQueue, LastSequence, 14, 0x9A8B2
 // @0x14026e470
 CClientHardwareInfo::CClientHardwareInfo() : m_hardware(L"") {}
 // @0x14026e4e0
-void CClientHardwareInfo::Write(COutputStream& out) { if(Unk_LockGuard guard=m_lock) { __assume(0); } else { out.vfunc_o10_8(m_hardware); } }
+void CClientHardwareInfo::Write(COutputStream& out) { if(Unk_LockGuard guard=m_lock) { __assume(0); } else { out.WriteUnicodeString(m_hardware); } }
 MS2_REPLACE_METHOD(0x14026E4E0, CClientHardwareInfo, Write, 116, 0x52C5054C);
 // @0x14026e560
-void CClientHardwareInfo::Read(CInputStream& in) { if(Unk_LockGuard guard=m_lock) { __assume(0); } else { m_hardware=in.vfunc_o8_8(); } }
+void CClientHardwareInfo::Read(CInputStream& in) { if(Unk_LockGuard guard=m_lock) { __assume(0); } else { m_hardware=in.ReadUnicodeString(); } }
 MS2_REPLACE_METHOD(0x14026E560, CClientHardwareInfo, Read, 149, 0xE2A7F101);
 // @0x14026e600
 CStringW CClientHardwareInfo::Get() { if(Unk_LockGuard guard=m_lock) { __assume(0); } else { return m_hardware; } }

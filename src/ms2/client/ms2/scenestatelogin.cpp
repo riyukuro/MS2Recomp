@@ -106,8 +106,8 @@ void CSceneStateLogin::OnPacket(CInPacket& packet)
         break;
     case static_cast<int>(RecvOp::ServerList):
     {
-        packet.vfunc_o8_7();
-        int result = packet.vfunc_o8_1();
+        packet.ReadString();
+        int result = packet.ReadUInt8();
         if (result > 0)
         {
             FUN_1417e25a0(FUN_140aa6d30(), 0x620000d);
@@ -145,12 +145,12 @@ void CSceneStateLogin::vfunc_1(int)
 // @0x14174c520
 void FUN_14174c520(CSceneStateLogin*, CInPacket& packet)
 {
-    int kind = packet.vfunc_o8_1();
+    int kind = packet.ReadUInt8();
     switch (kind)
     {
     case 0:
     {
-        unsigned char value = packet.vfunc_o8_1();
+        unsigned char value = packet.ReadUInt8();
         FUN_140930150(value);
         break;
     }

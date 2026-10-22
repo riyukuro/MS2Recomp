@@ -114,10 +114,10 @@ void AiDebugDialog::AddLine(int nId, int nLine)
 void AiDebugDialog::RequestTrace()
 {
     COutPacket packet(static_cast<int>(SendOp::SetDebugMode), 0);
-    packet.vfunc_o10_1(4);
-    packet.vfunc_o10_3(m_nId);
-    packet.vfunc_o10_1(7);
-    packet.vfunc_o10_4(0);
+    packet.WriteUInt8(4);
+    packet.WriteInt32(m_nId);
+    packet.WriteUInt8(7);
+    packet.WriteInt64(0);
     FUN_140710590(packet);
 }
 

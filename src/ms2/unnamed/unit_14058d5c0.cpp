@@ -22,10 +22,10 @@ MS2_CHECK_SIZE(CEnchantOption, 0x68);
 // @0x14058d5c0
 void CEnchantOption::FUN_14058d5c0(CInPacket& packet)
 {
-    int nCount = packet.vfunc_o8_3();
+    int nCount = packet.ReadInt32();
     for (int i = 0; i < nCount; ++i) {
         Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
-        int nKey = (unsigned short)packet.vfunc_o8_2();
+        int nKey = (unsigned short)packet.ReadInt16();
         spOption->FUN_140266d60(reinterpret_cast<Unk_EnchantRead&>(static_cast<CInputStream&>(packet)));
         m_options.SetAt(nKey, spOption);
     }
@@ -34,6 +34,6 @@ void CEnchantOption::FUN_14058d5c0(CInPacket& packet)
 // @0x14058d710
 void CEnchantOption::FUN_14058d710(CInPacket& packet)
 {
-    m_n18 = packet.vfunc_o8_4();
+    m_n18 = packet.ReadInt64();
     FUN_14058d5c0(packet);
 }

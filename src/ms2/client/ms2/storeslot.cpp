@@ -370,10 +370,10 @@ int StoreSlot::vfunc_18(void* p)
             if (pFrom->GetIndex() == m_nIndex)
                 return pDrag->vfunc_10();
             COutPacket packet(static_cast<int>(SendOp::RequestItemStorage), 0);
-            packet.vfunc_o10_1(2);
-            packet.vfunc_o10_4(MS2_STORE_TABLE.Id());
-            packet.vfunc_o10_4(pFrom->GetStoreItemId());
-            packet.vfunc_o10_2((short)m_nIndex);
+            packet.WriteUInt8(2);
+            packet.WriteInt64(MS2_STORE_TABLE.Id());
+            packet.WriteInt64(pFrom->GetStoreItemId());
+            packet.WriteInt16((short)m_nIndex);
             FUN_140710590(packet);
             MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(pFrom->GetStoreItemId());
             if (spItem.get() != 0 && spItem.get() != 0)

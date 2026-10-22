@@ -909,7 +909,7 @@ void TabContentsPetRemakeOption::vfunc_9(void* pPacket)
     if (m_ui == 0)
         return;
     FUN_140b967c0(1);
-    int nKind = ((CInPacket*)pPacket)->vfunc_o8_1();
+    int nKind = ((CInPacket*)pPacket)->ReadUInt8();
     if (nKind == 6)
         FUN_140b97c90((CInPacket*)pPacket);
     else if (nKind == 1)
@@ -1495,20 +1495,20 @@ MS2_REPLACE_METHOD(0x140B97BF0, TabContentsPetRemakeOption, FUN_140b97bf0, 141, 
 // MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 void TabContentsPetRemakeOption::FUN_140b97c90(CInPacket* pPacket)
 {
-    int nResult = pPacket->vfunc_o8_1();
+    int nResult = pPacket->ReadUInt8();
     if (nResult == 0)
     {
         FUN_140b96520(1);
         return;
     }
-    size_t nItemId = (unsigned)pPacket->vfunc_o8_3();
+    size_t nItemId = (unsigned)pPacket->ReadInt32();
     if (nResult == 2)
     {
         FUN_140b98ad0((int)nItemId);
         FUN_140b96520(1);
         return;
     }
-    ItemPtr item = FUN_1419be700(pPacket->vfunc_o8_4());
+    ItemPtr item = FUN_1419be700(pPacket->ReadInt64());
     if (item == 0)
     {
         FUN_140b98ad0((int)nItemId);
@@ -1592,8 +1592,8 @@ void TabContentsPetRemakeOption::FUN_140b98520(CInPacket* pPacket)
 // MS2-FUNCTIONAL: switch table shape
 void TabContentsPetRemakeOption::FUN_140b98610(CInPacket* pPacket)
 {
-    int nKind = pPacket->vfunc_o8_1();
-    Unk_RemakeError eError = (Unk_RemakeError)pPacket->vfunc_o8_3();
+    int nKind = pPacket->ReadUInt8();
+    Unk_RemakeError eError = (Unk_RemakeError)pPacket->ReadInt32();
     if (GetState() == 4 && nKind == 0)
         FUN_140b96520(2);
     CStringW strKey;

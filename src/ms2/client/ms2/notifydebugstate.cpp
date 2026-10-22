@@ -136,7 +136,7 @@ void CMyCharacter::FUN_140d9f140()
 // @0x140d9fc80
 CInputStream& FUN_140d9fc80(CInputStream& in, ATL::CAtlMap<int, __int64>& map)
 {
-    unsigned nCount = in.vfunc_o8_3();
+    unsigned nCount = in.ReadInt32();
     for (unsigned i = 0; i < nCount; i++)
     {
         int nKey;
@@ -244,11 +244,11 @@ CStringW CMyCharacter::FUN_140d9f600(int nIndex)
 // @0x140d9f710
 void CMyCharacter::FUN_140d9f710(CInPacket& packet)
 {
-    int nCount = packet.vfunc_o8_3();
+    int nCount = packet.ReadInt32();
     for (int i = 0; i < nCount; i++)
     {
-        int nKey = packet.vfunc_o8_3();
-        unsigned nState = packet.vfunc_o8_1();
+        int nKey = packet.ReadInt32();
+        unsigned nState = packet.ReadUInt8();
         m_states[nKey] = nState;
     }
     FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyDungeonEnterState));

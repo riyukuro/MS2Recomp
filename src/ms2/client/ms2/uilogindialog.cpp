@@ -249,7 +249,7 @@ void UILoginDialog::FUN_1419e1160(CInPacket&)
 // @0x1419e1570
 void UILoginDialog::FUN_1419e1570(CInPacket& iPacket)
 {
-    int nResult = static_cast<CInputStream&>(iPacket).vfunc_o8_3();
+    int nResult = iPacket.ReadInt32();
     DAT_143ab2946 = nResult == 0;
     if (nResult != 0)
         FUN_140d73aa0(CStringW(L"s_delete_account_cancel_login_fail"), 0, 0, CStringW(L""));

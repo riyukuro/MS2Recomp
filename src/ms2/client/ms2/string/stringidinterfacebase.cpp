@@ -176,19 +176,19 @@ StringIdInterfaceBase& StringIdInterfaceBase::operator=(const StringIdInterfaceB
 // serializes a StringIdInterfaceBase
 void FUN_14084f270(const StringIdInterfaceBase& body, COutputStream& out)
 {
-    out.vfunc_o10_0(body.formatted);
-    out.vfunc_o10_3(body.kind);
+    out.WriteBool(body.formatted);
+    out.WriteInt32(body.kind);
     if (body.formatted)
     {
-        out.vfunc_o10_3(body.id);
+        out.WriteInt32(body.id);
         unsigned count = body.arguments.GetCount();
-        out.vfunc_o10_3(count);
+        out.WriteInt32(count);
         for (unsigned i = 0; i < count; i++)
-            out.vfunc_o10_8(body.arguments[i]);
+            out.WriteUnicodeString(body.arguments[i]);
     }
     else
     {
-        out.vfunc_o10_8(body.text);
+        out.WriteUnicodeString(body.text);
     }
 }
 
@@ -196,21 +196,21 @@ void FUN_14084f270(const StringIdInterfaceBase& body, COutputStream& out)
 // packet reader of StringIdInterfaceBase
 void FUN_14084f390(StringIdInterfaceBase* pThis, CInPacket& packet)
 {
-    pThis->formatted = packet.vfunc_o8_0();
-    pThis->kind = packet.vfunc_o8_3();
+    pThis->formatted = packet.ReadBool();
+    pThis->kind = packet.ReadInt32();
     if (pThis->formatted)
     {
-        pThis->id = packet.vfunc_o8_3();
-        size_t count = (unsigned)packet.vfunc_o8_3();
+        pThis->id = packet.ReadInt32();
+        size_t count = (unsigned)packet.ReadInt32();
         if (count != 0)
         {
             for (size_t i = 0; i < count; i++)
-                pThis->arguments.Add(packet.vfunc_o8_8());
+                pThis->arguments.Add(packet.ReadUnicodeString());
         }
     }
     else
     {
-        pThis->text = packet.vfunc_o8_8();
+        pThis->text = packet.ReadUnicodeString();
     }
 }
 

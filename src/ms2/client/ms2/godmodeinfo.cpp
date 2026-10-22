@@ -115,8 +115,8 @@ void CGodModeInfo::SendRequestCube()
             m_spTooltip->FUN_14191ab10(strText);
         }
         COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
-        packet.vfunc_o10_1(0x13);
-        packet.vfunc_o10_3(m_n18);
+        packet.WriteUInt8(0x13);
+        packet.WriteInt32(m_n18);
         FUN_140710590(packet);
     }
 }

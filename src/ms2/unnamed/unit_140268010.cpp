@@ -88,11 +88,11 @@ void Unk_LockedIntMap::Write(COutputStream* pOut)
     if (Unk_LockGuard guard = m_lock) {} else
     {
         int nCount = (int)m_map.GetCount();
-        pOut->vfunc_o10_3(nCount);
+        pOut->WriteInt32(nCount);
         for (POSITION pos = m_map.GetStartPosition(); pos != 0; m_map.GetNext(pos))
         {
-            pOut->vfunc_o10_3(m_map.GetKeyAt(pos));
-            pOut->vfunc_o10_1((unsigned char)m_map.GetValueAt(pos));
+            pOut->WriteInt32(m_map.GetKeyAt(pos));
+            pOut->WriteUInt8((unsigned char)m_map.GetValueAt(pos));
         }
     }
 }
@@ -103,13 +103,13 @@ void Unk_LockedIntMap::Read(CInputStream* pIn)
     if (Unk_LockGuard guard = m_lock) {} else
     {
         m_map.RemoveAll();
-        int nCount = pIn->vfunc_o8_3();
+        int nCount = pIn->ReadInt32();
         if (nCount == 0)
             return;
         for (int i = 0; i < nCount; i++)
         {
-            int nKey = pIn->vfunc_o8_3();
-            Unk_LimitValue nValue = (Unk_LimitValue)pIn->vfunc_o8_1();
+            int nKey = pIn->ReadInt32();
+            Unk_LimitValue nValue = (Unk_LimitValue)pIn->ReadUInt8();
             m_map.SetAt(nKey, nValue);
         }
     }
@@ -172,23 +172,23 @@ AccountBlockInfo::AccountBlockInfo()
 // @0x140268690
 void AccountBlockInfo::Write(COutputStream* pOut)
 {
-    pOut->vfunc_o10_4(m_nId);
-    pOut->vfunc_o10_3(m_nKind);
-    pOut->vfunc_o10_4(m_n18);
-    pOut->vfunc_o10_8(m_strReason);
-    pOut->vfunc_o10_4(m_nStart);
-    pOut->vfunc_o10_4(m_nExpiry);
+    pOut->WriteInt64(m_nId);
+    pOut->WriteInt32(m_nKind);
+    pOut->WriteInt64(m_n18);
+    pOut->WriteUnicodeString(m_strReason);
+    pOut->WriteInt64(m_nStart);
+    pOut->WriteInt64(m_nExpiry);
 }
 
 // @0x140268750
 void AccountBlockInfo::Read(CInputStream* pIn)
 {
-    m_nId = pIn->vfunc_o8_4();
-    m_nKind = pIn->vfunc_o8_3();
-    m_n18 = pIn->vfunc_o8_4();
-    m_strReason = pIn->vfunc_o8_8();
-    m_nStart = pIn->vfunc_o8_4();
-    m_nExpiry = pIn->vfunc_o8_4();
+    m_nId = pIn->ReadInt64();
+    m_nKind = pIn->ReadInt32();
+    m_n18 = pIn->ReadInt64();
+    m_strReason = pIn->ReadUnicodeString();
+    m_nStart = pIn->ReadInt64();
+    m_nExpiry = pIn->ReadInt64();
 }
 
 // @0x140268840
@@ -225,21 +225,21 @@ CDBMarketBuyLimitHistory::CDBMarketBuyLimitHistory()
 // @0x140268950
 void CDBMarketBuyLimitHistory::Write(COutputStream* pOut)
 {
-    pOut->vfunc_o10_4(m_n18);
-    pOut->vfunc_o10_4(m_n20);
-    pOut->vfunc_o10_1((unsigned char)m_nFlag);
-    pOut->vfunc_o10_3(m_n2c);
-    pOut->vfunc_o10_3(m_n30);
-    pOut->vfunc_o10_4(m_n38);
+    pOut->WriteInt64(m_n18);
+    pOut->WriteInt64(m_n20);
+    pOut->WriteUInt8((unsigned char)m_nFlag);
+    pOut->WriteInt32(m_n2c);
+    pOut->WriteInt32(m_n30);
+    pOut->WriteInt64(m_n38);
 }
 
 // @0x140268a00
 void CDBMarketBuyLimitHistory::Read(CInPacket& packet)
 {
-    m_n18 = packet.vfunc_o8_4();
-    m_n20 = packet.vfunc_o8_4();
-    m_nFlag = packet.vfunc_o8_1();
-    m_n2c = packet.vfunc_o8_3();
-    m_n30 = packet.vfunc_o8_3();
-    m_n38 = packet.vfunc_o8_4();
+    m_n18 = packet.ReadInt64();
+    m_n20 = packet.ReadInt64();
+    m_nFlag = packet.ReadUInt8();
+    m_n2c = packet.ReadInt32();
+    m_n30 = packet.ReadInt32();
+    m_n38 = packet.ReadInt64();
 }

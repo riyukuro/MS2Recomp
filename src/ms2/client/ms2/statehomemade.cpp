@@ -359,8 +359,8 @@ MS2_REPLACE_METHOD(0x140CA4FD0, StateHomemade, FUN_140ca4fd0, 969, 0x67B2332E);
 void StateHomemade::SendFunctionCubeMode4()
 {
     COutPacket kPacket(static_cast<int>(SendOp::FunctionCube), 0);
-    kPacket.vfunc_o10_1(4);
-    kPacket.vfunc_o10_3(static_cast<int>(m_aCubes.size()));
+    kPacket.WriteUInt8(4);
+    kPacket.WriteInt32(static_cast<int>(m_aCubes.size()));
     for (size_t i = 0; i < m_aCubes.size(); i++)
     {
         Unk_HmUseInfo kInfo;
@@ -383,8 +383,8 @@ void StateHomemade::SendFunctionCubeMode5()
         aUsable.push_back(m_aCubes[i]);
     }
     COutPacket kPacket(static_cast<int>(SendOp::FunctionCube), 0);
-    kPacket.vfunc_o10_1(5);
-    kPacket.vfunc_o10_3(static_cast<int>(aUsable.size()));
+    kPacket.WriteUInt8(5);
+    kPacket.WriteInt32(static_cast<int>(aUsable.size()));
     for (size_t i = 0; i < aUsable.size(); i++)
     {
         Unk_HmUseInfo kInfo;

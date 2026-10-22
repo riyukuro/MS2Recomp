@@ -837,14 +837,14 @@ void UIItemMergeOptionDialog::ShowMergePrice(MS2Ptr<CItem> spItem)
 // @0x1419d0ef0
 void UIItemMergeOptionDialog::FUN_1419d0ef0(CInPacket& packet)
 {
-    int nMode = packet.vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 0)
     {
         SetPhase(1);
     }
     else
     {
-        int nId = packet.vfunc_o8_3();
+        int nId = packet.ReadInt32();
         if (nMode == 2)
         {
             ShowMissingItem(nId);
@@ -852,10 +852,10 @@ void UIItemMergeOptionDialog::FUN_1419d0ef0(CInPacket& packet)
         }
         else
         {
-            unsigned __int64 nUid = packet.vfunc_o8_4();
-            int nNormal = packet.vfunc_o8_3();
-            int nSpecial = packet.vfunc_o8_3();
-            int nValue = packet.vfunc_o8_3();
+            unsigned __int64 nUid = packet.ReadInt64();
+            int nNormal = packet.ReadInt32();
+            int nSpecial = packet.ReadInt32();
+            int nValue = packet.ReadInt32();
             MS2Ptr<CItem> spItem = FindMergeItem(nUid);
             if (spItem == (CItem*)0)
             {
@@ -875,9 +875,9 @@ void UIItemMergeOptionDialog::FUN_1419d0ef0(CInPacket& packet)
 void UIItemMergeOptionDialog::FUN_1419d11b0(CInPacket& packet)
 {
     m_items190.RemoveAll();
-    unsigned nCount = packet.vfunc_o8_3();
+    unsigned nCount = packet.ReadInt32();
     for (unsigned i = 0; i < nCount; ++i)
-        m_items190.Add(reinterpret_cast<void*>(packet.vfunc_o8_4()));
+        m_items190.Add(reinterpret_cast<void*>(packet.ReadInt64()));
     RefreshMaterialBag();
     if (m_30.get() != 0)
         static_cast<Unk_MergeDialogAS*>(m_30.operator->())->FUN_140fdd6b0("setSelectItem", m_nItemUid, m_bSpecial);
@@ -1020,7 +1020,7 @@ bool UIItemMergeOptionDialog::ConfirmMerge(int nButton, const CMsgBoxData& box)
 void UIItemMergeOptionDialog::RequestInfo()
 {
     COutPacket packet(static_cast<int>(SendOp::ItemMerge), 0);
-    packet.vfunc_o10_1(0);
+    packet.WriteUInt8(0);
     FUN_140710590(packet);
 }
 
@@ -1028,9 +1028,9 @@ void UIItemMergeOptionDialog::RequestInfo()
 void UIItemMergeOptionDialog::RequestPreview()
 {
     COutPacket packet(static_cast<int>(SendOp::ItemMerge), 0);
-    packet.vfunc_o10_1(2);
-    packet.vfunc_o10_4(m_nItemUid);
-    packet.vfunc_o10_4(m_nMaterialUid);
+    packet.WriteUInt8(2);
+    packet.WriteInt64(m_nItemUid);
+    packet.WriteInt64(m_nMaterialUid);
     FUN_140710590(packet);
 }
 
@@ -1038,8 +1038,8 @@ void UIItemMergeOptionDialog::RequestPreview()
 void UIItemMergeOptionDialog::RequestSelection()
 {
     COutPacket packet(static_cast<int>(SendOp::ItemMerge), 0);
-    packet.vfunc_o10_1(1);
-    packet.vfunc_o10_4(m_nItemUid);
+    packet.WriteUInt8(1);
+    packet.WriteInt64(m_nItemUid);
     FUN_140710590(packet);
 }
 
@@ -1047,9 +1047,9 @@ void UIItemMergeOptionDialog::RequestSelection()
 void UIItemMergeOptionDialog::RequestMerge()
 {
     COutPacket packet(static_cast<int>(SendOp::ItemMerge), 0);
-    packet.vfunc_o10_1(3);
-    packet.vfunc_o10_4(m_nItemUid);
-    packet.vfunc_o10_4(m_nMaterialUid);
+    packet.WriteUInt8(3);
+    packet.WriteInt64(m_nItemUid);
+    packet.WriteInt64(m_nMaterialUid);
     FUN_140710590(packet);
 }
 
@@ -1057,8 +1057,8 @@ void UIItemMergeOptionDialog::RequestMerge()
 void UIItemMergeOptionDialog::RequestChoice(unsigned char nChoice)
 {
     COutPacket packet(static_cast<int>(SendOp::ItemMerge), 0);
-    packet.vfunc_o10_1(4);
-    packet.vfunc_o10_1(nChoice);
+    packet.WriteUInt8(4);
+    packet.WriteUInt8(nChoice);
     FUN_140710590(packet);
 }
 
@@ -1066,9 +1066,9 @@ void UIItemMergeOptionDialog::RequestChoice(unsigned char nChoice)
 void UIItemMergeOptionDialog::RequestMaterial()
 {
     COutPacket packet(static_cast<int>(SendOp::ItemMerge), 0);
-    packet.vfunc_o10_1(7);
-    packet.vfunc_o10_4(m_nItemUid);
-    packet.vfunc_o10_4(m_nMaterialUid);
+    packet.WriteUInt8(7);
+    packet.WriteInt64(m_nItemUid);
+    packet.WriteInt64(m_nMaterialUid);
     FUN_140710590(packet);
 }
 
@@ -1078,18 +1078,18 @@ void UIItemMergeOptionDialog::RequestResultTalk()
     COutPacket packet(static_cast<int>(SendOp::NpcTalk), 0);
     if (FUN_140967100()->FUN_141b213c0() == 0)
     {
-        packet.vfunc_o10_1(4);
-        packet.vfunc_o10_2(0xca);
-        packet.vfunc_o10_2((short)m_nTalkId);
+        packet.WriteUInt8(4);
+        packet.WriteInt16(0xca);
+        packet.WriteInt16((short)m_nTalkId);
     }
     else
     {
         int nTalkId = FUN_140967100()->FUN_141b212f0();
-        packet.vfunc_o10_1(6);
-        packet.vfunc_o10_3(nTalkId);
-        packet.vfunc_o10_3(FUN_1401d3200()->m_talk.FUN_1402056b0());
-        packet.vfunc_o10_2(0xca);
-        packet.vfunc_o10_2((short)m_nTalkId);
+        packet.WriteUInt8(6);
+        packet.WriteInt32(nTalkId);
+        packet.WriteInt32(FUN_1401d3200()->m_talk.FUN_1402056b0());
+        packet.WriteInt16(0xca);
+        packet.WriteInt16((short)m_nTalkId);
     }
     FUN_140710590(packet);
 }

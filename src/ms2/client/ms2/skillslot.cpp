@@ -2686,19 +2686,19 @@ void CSkillSystem::FUN_141767990(int nSkillId, unsigned short nLevel)
 void CSkillSystem::FUN_141767ae0(CByteBuffer* pBuffer)
 {
     CInputStream* pIn = pBuffer;
-    if (pIn->vfunc_o8_1() == 2)
+    if (pIn->ReadUInt8() == 2)
     {
         m_lstCompact.RemoveAll();
-        unsigned nCount = pIn->vfunc_o8_3();
+        unsigned nCount = pIn->ReadInt32();
         for (unsigned i = 0; i < nCount; i = i + 1)
         {
             MS2Ptr<CSkillCompactControlConfig> spConfig(new CSkillCompactControlConfig);
-            spConfig->m_strName = pIn->vfunc_o8_8();
-            spConfig->m_30 = pIn->vfunc_o8_4();
-            unsigned nSkills = pIn->vfunc_o8_3();
+            spConfig->m_strName = pIn->ReadUnicodeString();
+            spConfig->m_30 = pIn->ReadInt64();
+            unsigned nSkills = pIn->ReadInt32();
             for (unsigned j = 0; j < nSkills; j = j + 1)
             {
-                unsigned nId = pIn->vfunc_o8_3();
+                unsigned nId = pIn->ReadInt32();
                 spConfig->m_skills.insert(nId);
             }
             m_lstCompact.AddTail(spConfig);

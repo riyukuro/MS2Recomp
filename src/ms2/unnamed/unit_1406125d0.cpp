@@ -34,7 +34,7 @@ void CItemLockManager::SendRequestItemLockMode0()
     m_locked.RemoveAll();
     m_locked.SetCount(0x12, -1);
     COutPacket packet(static_cast<int>(SendOp::RequestItemLock), 0);
-    packet.vfunc_o10_1(0);
+    packet.WriteUInt8(0);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x1406126F0, CItemLockManager, SendRequestItemLockMode0, 137, 0x6C3F07B6);
@@ -59,15 +59,15 @@ MS2_REPLACE_METHOD(0x1406127A0, CItemLockManager, FUN_1406127a0, 160, 0xB62C07D5
 // @0x140612850
 void CItemLockManager::FUN_140612850(CInPacket& packet)
 {
-    unsigned char nMode = packet.vfunc_o8_1();
+    unsigned char nMode = packet.ReadUInt8();
     UIItemLockDialog* pDialog = Unk_LockDialog<UIItemLockDialog>(0x4f08);
     if (pDialog == 0)
         return;
     {
         if (nMode == 1)
         {
-            __int64 nItemUid = packet.vfunc_o8_4();
-            int nSlot = (unsigned short)packet.vfunc_o8_2();
+            __int64 nItemUid = packet.ReadInt64();
+            int nSlot = (unsigned short)packet.ReadInt16();
             if (nSlot < 0 || nSlot >= 0x12)
                 return;
             MS2Ptr<CItem> item = DAT_143ab2a90.FUN_140a5d680(nItemUid);
@@ -82,7 +82,7 @@ void CItemLockManager::FUN_140612850(CInPacket& packet)
         }
         else if (nMode == 2)
         {
-            __int64 nItemUid = packet.vfunc_o8_4();
+            __int64 nItemUid = packet.ReadInt64();
             FUN_140612c60(nItemUid);
             pDialog->FUN_140f56c80();
             UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
@@ -91,10 +91,10 @@ void CItemLockManager::FUN_140612850(CInPacket& packet)
         }
         else if (nMode == 3)
         {
-            unsigned nCount = packet.vfunc_o8_1();
+            unsigned nCount = packet.ReadUInt8();
             for (int i = 0; i < (int)nCount; i = i + 1)
             {
-                __int64 nItemUid = packet.vfunc_o8_4();
+                __int64 nItemUid = packet.ReadInt64();
                 MS2Ptr<CItem> item = DAT_143ab2a90.FUN_140a5d680(nItemUid);
                 if (item.get() != 0)
                     item->FUN_140524eb0(packet);
@@ -107,7 +107,7 @@ void CItemLockManager::FUN_140612850(CInPacket& packet)
         }
         else if (nMode == 4)
         {
-            Unk_LockResult nResult = (Unk_LockResult)packet.vfunc_o8_3();
+            Unk_LockResult nResult = (Unk_LockResult)packet.ReadInt32();
             if (nResult == 1)
                 FUN_141275260(0xc45, 1, 1);
             else if (nResult == 3)
@@ -169,8 +169,8 @@ MS2_REPLACE_METHOD(0x140612DA0, CItemLockManager, FUN_140612da0, 101, 0x68CEC8C8
 int CItemLockManager::SendRequestItemLockMode3()
 {
     COutPacket packet(static_cast<int>(SendOp::RequestItemLock), 0);
-    packet.vfunc_o10_1(3);
-    packet.vfunc_o10_1(m_mode);
+    packet.WriteUInt8(3);
+    packet.WriteUInt8(m_mode);
     FUN_140710590(packet);
     return 1;
 }
@@ -207,9 +207,9 @@ int CItemLockManager::FUN_140612e90(MS2Ptr<CItem> item)
         }
     }
     COutPacket packet(static_cast<int>(SendOp::RequestItemLock), 0);
-    packet.vfunc_o10_1(1);
-    packet.vfunc_o10_1(m_mode);
-    packet.vfunc_o10_4(item->FUN_140526a50());
+    packet.WriteUInt8(1);
+    packet.WriteUInt8(m_mode);
+    packet.WriteInt64(item->FUN_140526a50());
     FUN_140710590(packet);
     return 1;
 }
@@ -219,8 +219,8 @@ MS2_REPLACE_METHOD(0x140612E90, CItemLockManager, FUN_140612e90, 585, 0xB6F104AC
 int CItemLockManager::FUN_1406130e0(__int64 nItemUid)
 {
     COutPacket packet(static_cast<int>(SendOp::RequestItemLock), 0);
-    packet.vfunc_o10_1(2);
-    packet.vfunc_o10_4(nItemUid);
+    packet.WriteUInt8(2);
+    packet.WriteInt64(nItemUid);
     FUN_140710590(packet);
     return 1;
 }
@@ -259,8 +259,8 @@ void CItemLockManager::FUN_1406132f0()
         if (item.IsNull() && FUN_140534480(m_pending, nItemUid) == -1)
         {
             COutPacket packet(static_cast<int>(SendOp::RequestItemLock), 0);
-            packet.vfunc_o10_1(2);
-            packet.vfunc_o10_4(nItemUid);
+            packet.WriteUInt8(2);
+            packet.WriteInt64(nItemUid);
             FUN_140710590(packet);
             m_pending.Add(nItemUid);
         }

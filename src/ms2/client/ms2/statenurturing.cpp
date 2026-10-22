@@ -394,8 +394,8 @@ MS2_REPLACE_METHOD(0x140AC1650, StateNurturing, FUN_140ac1650, 723, 0xEE67D063);
 void StateNurturing::SendFunctionCubeMode4()
 {
     COutPacket kPacket(static_cast<int>(SendOp::FunctionCube), 0);
-    kPacket.vfunc_o10_1(4);
-    kPacket.vfunc_o10_3(static_cast<int>(m_aCubes.size()));
+    kPacket.WriteUInt8(4);
+    kPacket.WriteInt32(static_cast<int>(m_aCubes.size()));
     for (size_t i = 0; i < m_aCubes.size(); i++)
     {
         Unk_FcUseInfo kInfo;
@@ -418,8 +418,8 @@ void StateNurturing::SendFunctionCubeMode5()
         aUsable.push_back(m_aCubes[i]);
     }
     COutPacket kPacket(static_cast<int>(SendOp::FunctionCube), 0);
-    kPacket.vfunc_o10_1(5);
-    kPacket.vfunc_o10_3(static_cast<int>(aUsable.size()));
+    kPacket.WriteUInt8(5);
+    kPacket.WriteInt32(static_cast<int>(aUsable.size()));
     for (size_t i = 0; i < aUsable.size(); i++)
     {
         Unk_FcUseInfo kInfo;

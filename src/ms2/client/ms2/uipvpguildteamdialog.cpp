@@ -237,26 +237,26 @@ void UIPvPGuildTeamDialog::vfunc_79(void* pData)
     UIDialog::vfunc_79(pData);
     if (((CInPacket*)pData)->FUN_14070fe80() != 0x9a)
         return;
-    int nType = (unsigned char)((CInPacket*)pData)->vfunc_o8_1();
+    int nType = (unsigned char)((CInPacket*)pData)->ReadUInt8();
     if (nType == 's') {
         Unk_PvPGuildRoundInfo info;
-        info.m_nRound = ((CInPacket*)pData)->vfunc_o8_3();
-        info.m_nEndTime = ((CInPacket*)pData)->vfunc_o8_3();
-        int nUnused = ((CInPacket*)pData)->vfunc_o8_3();
-        int nCount = ((CInPacket*)pData)->vfunc_o8_3();
+        info.m_nRound = ((CInPacket*)pData)->ReadInt32();
+        info.m_nEndTime = ((CInPacket*)pData)->ReadInt32();
+        int nUnused = ((CInPacket*)pData)->ReadInt32();
+        int nCount = ((CInPacket*)pData)->ReadInt32();
         info.m_characters.reserve(nCount);
         for (int i = 0; i < nCount; i++) {
-            __int64 nCharId = ((CInPacket*)pData)->vfunc_o8_4();
+            __int64 nCharId = ((CInPacket*)pData)->ReadInt64();
             info.m_characters.push_back(nCharId);
         }
-        info.m_scoreA.m_nGuildId = ((CInPacket*)pData)->vfunc_o8_4();
-        info.m_scoreA.m_nScore = ((CInPacket*)pData)->vfunc_o8_3();
-        info.m_scoreB.m_nGuildId = ((CInPacket*)pData)->vfunc_o8_4();
-        info.m_scoreB.m_nScore = ((CInPacket*)pData)->vfunc_o8_3();
+        info.m_scoreA.m_nGuildId = ((CInPacket*)pData)->ReadInt64();
+        info.m_scoreA.m_nScore = ((CInPacket*)pData)->ReadInt32();
+        info.m_scoreB.m_nGuildId = ((CInPacket*)pData)->ReadInt64();
+        info.m_scoreB.m_nScore = ((CInPacket*)pData)->ReadInt32();
         FUN_14133a7a0(info);
     }
     else if (nType == 't') {
-        __int64 nWinner = ((CInPacket*)pData)->vfunc_o8_4();
+        __int64 nWinner = ((CInPacket*)pData)->ReadInt64();
         if (nWinner == 0) {
             Unk_RewardOtherDialog* pDlg = FUN_140e01890(0x4e4c);
             if (pDlg != 0)
@@ -285,12 +285,12 @@ MS2_REPLACE_METHOD(0x141339D00, UIPvPGuildTeamDialog, vfunc_79, 1285, 0x3522EB7A
 // @0x14133a210
 void UIPvPGuildTeamDialog::FUN_14133a210(CInPacket* pPacket)
 {
-    m_info.m_nGuildIdA = pPacket->vfunc_o8_4();
-    m_info.m_strNameA = pPacket->vfunc_o8_8();
-    m_info.m_strMarkA = pPacket->vfunc_o8_8();
-    m_info.m_nGuildIdB = pPacket->vfunc_o8_4();
-    m_info.m_strNameB = pPacket->vfunc_o8_8();
-    m_info.m_strMarkB = pPacket->vfunc_o8_8();
+    m_info.m_nGuildIdA = pPacket->ReadInt64();
+    m_info.m_strNameA = pPacket->ReadUnicodeString();
+    m_info.m_strMarkA = pPacket->ReadUnicodeString();
+    m_info.m_nGuildIdB = pPacket->ReadInt64();
+    m_info.m_strNameB = pPacket->ReadUnicodeString();
+    m_info.m_strMarkB = pPacket->ReadUnicodeString();
     if (m_30 == 0)
         return;
     FUN_14133a4a0(m_info);

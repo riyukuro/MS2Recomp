@@ -5820,7 +5820,7 @@ void WorldService::FUN_141bcf9f0()
     Unk_WsC_EventRef ref;
     FUN_140da4fe0(FUN_140939a10(), FUN_140938f40(&ref, ev));
     COutPacket packet(static_cast<int>(SendOp::Attendance), 0);
-    packet.vfunc_o10_1(1);
+    packet.WriteUInt8(1);
     FUN_140710590(packet);
     FUN_141bca010();
 }
@@ -10056,8 +10056,8 @@ void WorldService::FUN_141bc3560()
         FUN_140ade030(sensor, 1, level);
 
         COutPacket packet(static_cast<int>(SendOp::Tombstone));
-        packet.vfunc_o10_3(FUN_14123c580(obj));
-        packet.vfunc_o10_3(1);
+        packet.WriteInt32(FUN_14123c580(obj));
+        packet.WriteInt32(1);
         FUN_140710590(packet);
         FUN_1417591b0(FUN_141235260(&tag));
     }

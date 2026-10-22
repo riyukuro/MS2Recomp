@@ -270,8 +270,8 @@ void UIItemRemakeOptionDialog::OnLoadComplete()
     }
     FUN_1412761e0(MS2Ptr<AScript>(m_30), 0);
     COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
-    pkt.vfunc_o10_1(6);
-    pkt.vfunc_o10_1(1);
+    pkt.WriteUInt8(6);
+    pkt.WriteUInt8(1);
     FUN_140710590(pkt);
 }
 
@@ -349,7 +349,7 @@ void UIItemRemakeOptionDialog::vfunc_79(void* pPacket)
     if (m_enchantAni == 0)
         return;
     FUN_1412761e0(MS2Ptr<AScript>(m_30), 1);
-    int kind = static_cast<CInPacket*>(pPacket)->vfunc_o8_1();
+    int kind = static_cast<CInPacket*>(pPacket)->ReadUInt8();
     if (kind == 6)
         FUN_1412a2c50(static_cast<CInPacket*>(pPacket));
     else if (kind == 4)
@@ -640,7 +640,7 @@ void UIItemRemakeOptionDialog::SendChangeAttributesMode4(unsigned __int64 uid)
 // @0x14129f940
 void UIItemRemakeOptionDialog::FUN_14129f940(CInPacket* pPacket)
 {
-    unsigned __int64 uid = pPacket->vfunc_o8_4();
+    unsigned __int64 uid = pPacket->ReadInt64();
     CIngredientContainer ingredients;
     ingredients.FUN_14026c0b0(*pPacket);
     FUN_1412a2ac0();
@@ -1075,16 +1075,16 @@ void UIItemRemakeOptionDialog::FUN_1412a2b40(unsigned nItemId)
 // @0x1412a2c50
 void UIItemRemakeOptionDialog::FUN_1412a2c50(CInPacket* pPacket)
 {
-    unsigned char bResult = pPacket->vfunc_o8_1();
+    unsigned char bResult = pPacket->ReadUInt8();
     if (bResult == 0) {
         SetState(1);
     } else {
-        unsigned nErrorItem = pPacket->vfunc_o8_3();
+        unsigned nErrorItem = pPacket->ReadInt32();
         if (bResult == 2) {
             FUN_1412a2b40(nErrorItem);
             SetState(1);
         } else {
-            unsigned __int64 uid = pPacket->vfunc_o8_4();
+            unsigned __int64 uid = pPacket->ReadInt64();
             MS2Ptr<CItem> item = FUN_1419be700(uid);
             if (!(item == 0)) {
                 if (FUN_140526470(item.get(), 2) == 0) {
@@ -1158,8 +1158,8 @@ void UIItemRemakeOptionDialog::FUN_1412a3460(CInPacket* pPacket)
 // @0x1412a34f0
 void UIItemRemakeOptionDialog::FUN_1412a34f0(CInPacket* pPacket)
 {
-    unsigned bFlag = pPacket->vfunc_o8_1();
-    int nCode = pPacket->vfunc_o8_3();
+    unsigned bFlag = pPacket->ReadUInt8();
+    int nCode = pPacket->ReadInt32();
     if (GetState() == 3 && bFlag == 0)
         SetState(2);
     CStringW text;

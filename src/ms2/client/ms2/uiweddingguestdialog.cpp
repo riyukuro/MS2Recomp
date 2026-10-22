@@ -736,8 +736,8 @@ bool UIWeddingGuestPageStranger::vfunc_4(const char* szMethod, const Scaleform::
         {
             CStringW strName = data.FUN_1422b8f40();
             COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
-            packet.vfunc_o10_1(0x1b);
-            packet.vfunc_o10_8(strName);
+            packet.WriteUInt8(0x1b);
+            packet.WriteUnicodeString(strName);
             FUN_140710590(packet);
         }
     }

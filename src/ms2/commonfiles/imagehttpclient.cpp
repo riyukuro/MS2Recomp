@@ -174,8 +174,8 @@ unsigned CImageHttpClient::SendWebScreenshot()
             return 0;
         std::string strKey = ParseTemporaryKey(request->GetResponseContent());
         COutPacket packet(static_cast<int>(SendOp::WebScreenshot), 0);
-        packet.vfunc_o10_1((unsigned char)m_nMode);
-        packet.vfunc_o10_7(CString(strKey.c_str()));
+        packet.WriteUInt8((unsigned char)m_nMode);
+        packet.WriteString(CString(strKey.c_str()));
         FUN_140710590(packet);
     }
     ClearRequest();
@@ -236,7 +236,7 @@ bool CImageHttpClient::BuildImage(CByteBuffer& data)
         ImageJsonWriter writer(buffer, 0, 0x20);
         document.Accept(writer);
     }
-    data.vfunc_o10_9(buffer.GetString(), (int)buffer.GetSize());
+    data.WriteBytes(buffer.GetString(), (int)buffer.GetSize());
     return true;
 }
 
@@ -253,7 +253,7 @@ bool CImageHttpClient::BuildTemporaryKey(CByteBuffer& data, const std::string& s
         ImageJsonWriter writer(buffer, 0, 0x20);
         document.Accept(writer);
     }
-    data.vfunc_o10_9(buffer.GetString(), (int)buffer.GetSize());
+    data.WriteBytes(buffer.GetString(), (int)buffer.GetSize());
     return true;
 }
 

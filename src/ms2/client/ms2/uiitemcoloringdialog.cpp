@@ -981,10 +981,10 @@ MS2_REPLACE_METHOD(0x1419afe30, UIItemColoringDialog, FUN_1419afe30, 624, 0x56F6
 // MS2-FUNCTIONAL: code generation differs (stand-in callees / block layout)
 void UIItemColoringDialog::FUN_1419b00b0(CInPacket& packet)
 {
-    unsigned nMode = packet.vfunc_o8_1();
+    unsigned nMode = packet.ReadUInt8();
     if (nMode == 8) {
         if (vfunc_55() == 0) {
-            Unk_BSResult nResult = (Unk_BSResult)packet.vfunc_o8_3();
+            Unk_BSResult nResult = (Unk_BSResult)packet.ReadInt32();
             if (nResult == 2) {
                 FUN_14134a2e0(FUN_1419b1ac0());
             } else {
@@ -994,7 +994,7 @@ void UIItemColoringDialog::FUN_1419b00b0(CInPacket& packet)
                 FUN_1419af8d0();
         }
     } else if (nMode == 1) {
-        m_1a0 = packet.vfunc_o8_1();
+        m_1a0 = packet.ReadUInt8();
         m_1a8.FUN_1406e5420(packet);
         if (m_25c != 0)
             FUN_1419afe30();

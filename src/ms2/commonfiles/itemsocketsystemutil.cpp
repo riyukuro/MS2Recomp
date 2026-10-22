@@ -659,34 +659,34 @@ MS2_REPLACE(0x1406285D0, FUN_1406285d0, 616, 0x5E21D38A);
 // @0x140628840
 void FUN_140628840(Unk_SockUidCountSlot& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_nUid);
-    out.vfunc_o10_4(v.m_nCount);
-    out.vfunc_o10_1(v.m_nSlot);
+    out.WriteInt64(v.m_nUid);
+    out.WriteInt64(v.m_nCount);
+    out.WriteUInt8(v.m_nSlot);
 }
 MS2_REPLACE(0x140628840, FUN_140628840, 93, 0x94B22953);
 
 // @0x1406288b0
 void FUN_1406288b0(Unk_SockUidCountSlot& v, CInPacket& in)
 {
-    v.m_nUid = in.vfunc_o8_4();
-    v.m_nCount = in.vfunc_o8_4();
-    v.m_nSlot = in.vfunc_o8_1();
+    v.m_nUid = in.ReadInt64();
+    v.m_nCount = in.ReadInt64();
+    v.m_nSlot = in.ReadUInt8();
 }
 MS2_REPLACE(0x1406288B0, FUN_1406288b0, 149, 0x931EED25);
 
 // @0x140628950
 void FUN_140628950(Unk_SSGGemEquip& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_nItemUid);
-    out.vfunc_o10_1(v.m_nSlot);
+    out.WriteInt64(v.m_nItemUid);
+    out.WriteUInt8(v.m_nSlot);
     if (v.m_spGem.get() != 0)
     {
-        out.vfunc_o10_0(true);
+        out.WriteBool(true);
         FUN_14061ff90(v.m_spGem.operator->(), out);
     }
     else
     {
-        out.vfunc_o10_0(false);
+        out.WriteBool(false);
     }
 }
 MS2_REPLACE(0x140628950, FUN_140628950, 156, 0x7C5AC520);
@@ -694,9 +694,9 @@ MS2_REPLACE(0x140628950, FUN_140628950, 156, 0x7C5AC520);
 // @0x140628a00
 void FUN_140628a00(Unk_SSGGemEquip& v, CInPacket& in)
 {
-    v.m_nItemUid = in.vfunc_o8_4();
-    v.m_nSlot = in.vfunc_o8_1();
-    bool bGem = in.vfunc_o8_0();
+    v.m_nItemUid = in.ReadInt64();
+    v.m_nSlot = in.ReadUInt8();
+    bool bGem = in.ReadBool();
     if (bGem)
     {
         v.m_spGem.AssignRaw(new TSocketGemStoneInfo);
@@ -709,31 +709,31 @@ MS2_REPLACE(0x140628A00, FUN_140628a00, 348, 0xF3CBE4F7);
 // @0x140628b70
 void FUN_140628b70(Unk_SSGGemUnequip& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_nItemUid);
-    out.vfunc_o10_1(v.m_nSlot);
-    out.vfunc_o10_4(v.m_nGemUid);
+    out.WriteInt64(v.m_nItemUid);
+    out.WriteUInt8(v.m_nSlot);
+    out.WriteInt64(v.m_nGemUid);
 }
 MS2_REPLACE(0x140628B70, FUN_140628b70, 93, 0x3C1A5047);
 
 // @0x140628be0
 void FUN_140628be0(Unk_SSGGemUnequip& v, CInPacket& in)
 {
-    v.m_nItemUid = in.vfunc_o8_4();
-    v.m_nSlot = in.vfunc_o8_1();
-    v.m_nGemUid = in.vfunc_o8_4();
+    v.m_nItemUid = in.ReadInt64();
+    v.m_nSlot = in.ReadUInt8();
+    v.m_nGemUid = in.ReadInt64();
 }
 MS2_REPLACE(0x140628BE0, FUN_140628be0, 149, 0x24338E7B);
 
 // @0x140628c80
 void FUN_140628c80(Unk_SockUidList& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_nUid);
+    out.WriteInt64(v.m_nUid);
     unsigned char nCount = (unsigned char)v.m_aUids.size();
-    out.vfunc_o10_1(nCount);
+    out.WriteUInt8(nCount);
     for (unsigned char i = 0; i < nCount; i++)
     {
         __int64 nUid = v.m_aUids.at(i);
-        out.vfunc_o10_4(nUid);
+        out.WriteInt64(nUid);
     }
 }
 MS2_REPLACE(0x140628C80, FUN_140628c80, 169, 0x708F44EE);
@@ -741,13 +741,13 @@ MS2_REPLACE(0x140628C80, FUN_140628c80, 169, 0x708F44EE);
 // @0x140628d30
 void FUN_140628d30(Unk_SockUidList& v, CInPacket& in)
 {
-    v.m_nUid = in.vfunc_o8_4();
+    v.m_nUid = in.ReadInt64();
     v.m_aUids.clear();
-    unsigned char nCount = in.vfunc_o8_1();
+    unsigned char nCount = in.ReadUInt8();
     v.m_aUids.reserve(nCount);
     for (unsigned char i = 0; i < nCount; i++)
     {
-        __int64 nUid = in.vfunc_o8_4();
+        __int64 nUid = in.ReadInt64();
         v.m_aUids.push_back(nUid);
     }
 }
@@ -795,50 +795,50 @@ MS2_REPLACE(0x140628F60, FUN_140628f60, 134, 0xAB162D3C);
 // @0x140629340
 void FUN_140629340(Unk_SockUidPair& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_nFirst);
-    out.vfunc_o10_4(v.m_nSecond);
+    out.WriteInt64(v.m_nFirst);
+    out.WriteInt64(v.m_nSecond);
 }
 MS2_REPLACE(0x140629340, FUN_140629340, 68, 0x0FA3158C);
 
 // @0x140629390
 void FUN_140629390(Unk_SockUidPair& v, CInPacket& in)
 {
-    v.m_nFirst = in.vfunc_o8_4();
-    v.m_nSecond = in.vfunc_o8_4();
+    v.m_nFirst = in.ReadInt64();
+    v.m_nSecond = in.ReadInt64();
 }
 MS2_REPLACE(0x140629390, FUN_140629390, 104, 0x1A92EBE0);
 
 // @0x140629f30
 void FUN_140629f30(Unk_SockUidIntByte& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_nUid);
-    out.vfunc_o10_3(v.m_nValue);
-    out.vfunc_o10_1(v.m_nByte);
+    out.WriteInt64(v.m_nUid);
+    out.WriteInt32(v.m_nValue);
+    out.WriteUInt8(v.m_nByte);
 }
 MS2_REPLACE(0x140629F30, FUN_140629f30, 92, 0x8D3D87D3);
 
 // @0x140629fa0
 void FUN_140629fa0(Unk_SockUidIntByte& v, CInPacket& in)
 {
-    v.m_nUid = in.vfunc_o8_4();
-    v.m_nValue = in.vfunc_o8_3();
-    v.m_nByte = in.vfunc_o8_1();
+    v.m_nUid = in.ReadInt64();
+    v.m_nValue = in.ReadInt32();
+    v.m_nByte = in.ReadUInt8();
 }
 MS2_REPLACE(0x140629FA0, FUN_140629fa0, 148, 0xF627C3D9);
 
 // @0x14062a040
 void FUN_14062a040(Unk_SockUidPair& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_nFirst);
-    out.vfunc_o10_4(v.m_nSecond);
+    out.WriteInt64(v.m_nFirst);
+    out.WriteInt64(v.m_nSecond);
 }
 MS2_REPLACE(0x14062A040, FUN_14062a040, 68, 0x0FA3158C);
 
 // @0x14062a090
 void FUN_14062a090(Unk_SockUidPair& v, CInPacket& in)
 {
-    v.m_nFirst = in.vfunc_o8_4();
-    v.m_nSecond = in.vfunc_o8_4();
+    v.m_nFirst = in.ReadInt64();
+    v.m_nSecond = in.ReadInt64();
 }
 
 // The messages with a vftable: the shared base codec (uid + byte), then the fields of each message.
@@ -897,13 +897,13 @@ void FUN_140628ff0(Unk_SockItemMsg& v, COutputStream& out, bool bTransfer)
 {
     if (v.m_spItem == 0 || v.m_spItem->FUN_1405279c0() == 0)
         return;
-    out.vfunc_o10_1(v.m_bValid);
-    out.vfunc_o10_4(v.m_spItem->FUN_140526a50());
+    out.WriteUInt8(v.m_bValid);
+    out.WriteInt64(v.m_spItem->FUN_140526a50());
     if (v.m_bValid)
     {
-        out.vfunc_o10_1(v.m_nByte);
+        out.WriteUInt8(v.m_nByte);
         v.m_spItem->FUN_1405279c0()->FUN_1406205e0(out);
-        out.vfunc_o10_0(bTransfer);
+        out.WriteBool(bTransfer);
         if (bTransfer)
             reinterpret_cast<CItemTransfer*>(v.m_spItem->FUN_140527930())->vfunc_1(out);
     }
@@ -915,15 +915,15 @@ void FUN_140629140(Unk_SockItemMsg& v, CInPacket& in)
 {
     if (v.m_spItem == 0 || v.m_spItem->FUN_1405279c0() == 0)
         return;
-    v.m_bValid = in.vfunc_o8_1() == 1 ? true : false;
-    __int64 nUid = in.vfunc_o8_4();
+    v.m_bValid = in.ReadUInt8() == 1 ? true : false;
+    __int64 nUid = in.ReadInt64();
     if (v.m_bValid)
     {
-        v.m_nByte = in.vfunc_o8_1();
+        v.m_nByte = in.ReadUInt8();
         if (v.m_spItem->FUN_140526a50() == nUid)
         {
             v.m_spItem->FUN_1405279c0()->FUN_140620700(in);
-            bool bTransfer = in.vfunc_o8_0();
+            bool bTransfer = in.ReadBool();
             if (bTransfer)
                 reinterpret_cast<CItemTransfer*>(v.m_spItem->FUN_140527930())->vfunc_2(in);
         }
@@ -938,11 +938,11 @@ void FUN_140629400(Unk_SockItemPair& v, COutputStream& out, int nMode)
         return;
     if (v.m_spB == 0 || v.m_spB->FUN_1405279c0() == 0)
         return;
-    out.vfunc_o10_4(v.m_spA->FUN_140526a50());
+    out.WriteInt64(v.m_spA->FUN_140526a50());
     v.m_spA->FUN_1405279c0()->FUN_1406205e0(out);
-    out.vfunc_o10_4(v.m_spB->FUN_140526a50());
+    out.WriteInt64(v.m_spB->FUN_140526a50());
     v.m_spB->FUN_1405279c0()->FUN_1406205e0(out);
-    out.vfunc_o10_0(nMode == 1);
+    out.WriteBool(nMode == 1);
     if (nMode != 0)
         reinterpret_cast<CItemTransfer*>(v.m_spB->FUN_140527930())->vfunc_1(out);
 }
@@ -955,15 +955,15 @@ void FUN_1406295b0(Unk_SockItemPair& v, CInPacket& in)
         return;
     if (v.m_spB == 0 || v.m_spB->FUN_1405279c0() == 0)
         return;
-    __int64 nUidA = in.vfunc_o8_4();
+    __int64 nUidA = in.ReadInt64();
     if (v.m_spA->FUN_140526a50() != nUidA)
         return;
     v.m_spA->FUN_1405279c0()->FUN_140620700(in);
-    __int64 nUidB = in.vfunc_o8_4();
+    __int64 nUidB = in.ReadInt64();
     if (v.m_spB->FUN_140526a50() != nUidB)
         return;
     v.m_spB->FUN_1405279c0()->FUN_140620700(in);
-    int bTransfer = in.vfunc_o8_0();
+    int bTransfer = in.ReadBool();
     if (bTransfer != 0)
         reinterpret_cast<CItemTransfer*>(v.m_spB->FUN_140527930())->vfunc_2(in);
 }
@@ -972,16 +972,16 @@ MS2_REPLACE(0x1406295B0, FUN_1406295b0, 550, 0x1BE1882E);
 // @0x1406297e0
 void FUN_1406297e0(Unk_SockMsg& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_nUid);
-    out.vfunc_o10_1(v.m_nByte);
+    out.WriteInt64(v.m_nUid);
+    out.WriteUInt8(v.m_nByte);
 }
 MS2_REPLACE(0x1406297E0, FUN_1406297e0, 69, 0x6F3F2B16);
 
 // @0x140629830
 void FUN_140629830(Unk_SockMsg& v, CInPacket& in)
 {
-    v.m_nUid = in.vfunc_o8_4();
-    v.m_nByte = in.vfunc_o8_1();
+    v.m_nUid = in.ReadInt64();
+    v.m_nByte = in.ReadUInt8();
 }
 MS2_REPLACE(0x140629830, FUN_140629830, 107, 0xCFBFF993);
 
@@ -989,7 +989,7 @@ MS2_REPLACE(0x140629830, FUN_140629830, 107, 0xCFBFF993);
 void FUN_1406298b0(Unk_SockMsgI64& v, COutputStream& out)
 {
     FUN_1406297e0(v, out);
-    out.vfunc_o10_4(v.m_nExtra);
+    out.WriteInt64(v.m_nExtra);
 }
 MS2_REPLACE(0x1406298B0, FUN_1406298b0, 59, 0x4EE11B41);
 
@@ -997,7 +997,7 @@ MS2_REPLACE(0x1406298B0, FUN_1406298b0, 59, 0x4EE11B41);
 void FUN_140629900(Unk_SockMsgI64& v, CInPacket& in)
 {
     FUN_140629830(v, in);
-    v.m_nExtra = in.vfunc_o8_4();
+    v.m_nExtra = in.ReadInt64();
 }
 MS2_REPLACE(0x140629900, FUN_140629900, 77, 0xA282943C);
 
@@ -1005,17 +1005,17 @@ MS2_REPLACE(0x140629900, FUN_140629900, 77, 0xA282943C);
 void FUN_140629960(Unk_SockMsgGem& v, COutputStream& out)
 {
     FUN_1406297e0(v, out);
-    out.vfunc_o10_1(v.m_bB34);
-    out.vfunc_o10_1(v.m_nB30);
-    out.vfunc_o10_4(v.m_n28);
+    out.WriteUInt8(v.m_bB34);
+    out.WriteUInt8(v.m_nB30);
+    out.WriteInt64(v.m_n28);
     if (v.m_spGem.get() != 0)
     {
-        out.vfunc_o10_0(true);
+        out.WriteBool(true);
         FUN_14061ff90(v.m_spGem.operator->(), out);
     }
     else
     {
-        out.vfunc_o10_0(false);
+        out.WriteBool(false);
     }
 }
 MS2_REPLACE(0x140629960, FUN_140629960, 197, 0x2250C583);
@@ -1024,10 +1024,10 @@ MS2_REPLACE(0x140629960, FUN_140629960, 197, 0x2250C583);
 void FUN_140629a30(Unk_SockMsgGem& v, CInPacket& in)
 {
     FUN_140629830(v, in);
-    v.m_bB34 = in.vfunc_o8_1() == 1 ? true : false;
-    v.m_nB30 = in.vfunc_o8_1();
-    v.m_n28 = in.vfunc_o8_4();
-    bool bGem = in.vfunc_o8_0();
+    v.m_bB34 = in.ReadUInt8() == 1 ? true : false;
+    v.m_nB30 = in.ReadUInt8();
+    v.m_n28 = in.ReadInt64();
+    bool bGem = in.ReadBool();
     if (bGem)
     {
         v.m_spGem.AssignRaw(new TSocketGemStoneInfo);
@@ -1050,7 +1050,7 @@ MS2_REPLACE(0x140629C00, FUN_140629c00, 60, 0x86CE9CA5);
 void FUN_140629c50(Unk_SockMsgI64& v, COutputStream& out)
 {
     FUN_1406297e0(v, out);
-    out.vfunc_o10_4(v.m_nExtra);
+    out.WriteInt64(v.m_nExtra);
 }
 MS2_REPLACE(0x140629C50, FUN_140629c50, 59, 0xF7C3B48D);
 
@@ -1058,7 +1058,7 @@ MS2_REPLACE(0x140629C50, FUN_140629c50, 59, 0xF7C3B48D);
 void FUN_140629ca0(Unk_SockMsgI64& v, CInPacket& in)
 {
     FUN_140629830(v, in);
-    v.m_nExtra = in.vfunc_o8_4();
+    v.m_nExtra = in.ReadInt64();
 }
 MS2_REPLACE(0x140629CA0, FUN_140629ca0, 77, 0x91494D98);
 
@@ -1066,8 +1066,8 @@ MS2_REPLACE(0x140629CA0, FUN_140629ca0, 77, 0x91494D98);
 void FUN_140629d00(Unk_SockMsgF& v, COutputStream& out)
 {
     FUN_1406297e0(v, out);
-    out.vfunc_o10_4(v.m_nExtra);
-    out.vfunc_o10_5(v.m_fValue);
+    out.WriteInt64(v.m_nExtra);
+    out.WriteFloat(v.m_fValue);
 }
 MS2_REPLACE(0x140629D00, FUN_140629d00, 85, 0x051D76EA);
 
@@ -1075,28 +1075,28 @@ MS2_REPLACE(0x140629D00, FUN_140629d00, 85, 0x051D76EA);
 void FUN_140629d60(Unk_SockMsgF& v, CInPacket& in)
 {
     FUN_140629830(v, in);
-    v.m_nExtra = in.vfunc_o8_4();
-    v.m_fValue = in.vfunc_o8_5();
+    v.m_nExtra = in.ReadInt64();
+    v.m_fValue = in.ReadFloat();
 }
 MS2_REPLACE(0x140629D60, FUN_140629d60, 121, 0x3D3788D8);
 
 // @0x140629de0
 void FUN_140629de0(Unk_SockMsgIIL& v, COutputStream& out)
 {
-    out.vfunc_o10_1(v.m_nB8);
-    out.vfunc_o10_3(v.m_nC);
-    out.vfunc_o10_4(v.m_n10);
-    out.vfunc_o10_3(v.m_n18);
+    out.WriteUInt8(v.m_nB8);
+    out.WriteInt32(v.m_nC);
+    out.WriteInt64(v.m_n10);
+    out.WriteInt32(v.m_n18);
 }
 MS2_REPLACE(0x140629DE0, FUN_140629de0, 117, 0x8AFB7A3C);
 
 // @0x140629e60
 void FUN_140629e60(Unk_SockMsgIIL& v, CInPacket& in)
 {
-    v.m_nB8 = in.vfunc_o8_1();
-    v.m_nC = in.vfunc_o8_3();
-    v.m_n10 = in.vfunc_o8_4();
-    v.m_n18 = in.vfunc_o8_3();
+    v.m_nB8 = in.ReadUInt8();
+    v.m_nC = in.ReadInt32();
+    v.m_n10 = in.ReadInt64();
+    v.m_n18 = in.ReadInt32();
 }
 MS2_REPLACE(0x140629E60, FUN_140629e60, 191, 0xB6E1E065);
 
@@ -1105,13 +1105,13 @@ void FUN_14062a100(Unk_SockItemOne& v, COutputStream& out)
 {
     if (v.m_spItem == 0 || v.m_spItem->FUN_1405279c0() == 0)
         return;
-    out.vfunc_o10_1(v.m_bFlag);
+    out.WriteUInt8(v.m_bFlag);
     v.m_nUid = v.m_spItem->FUN_140526a50();
-    out.vfunc_o10_4(v.m_nUid);
-    out.vfunc_o10_1(v.m_nByte);
+    out.WriteInt64(v.m_nUid);
+    out.WriteUInt8(v.m_nByte);
     if (v.m_bFlag)
     {
-        out.vfunc_o10_3(v.m_spItem->FUN_1405273a0());
+        out.WriteInt32(v.m_spItem->FUN_1405273a0());
         v.m_spItem->FUN_1405279c0()->FUN_1406205e0(out);
     }
 }
@@ -1122,14 +1122,14 @@ void FUN_14062a230(Unk_SockItemOne& v, CInPacket& in)
 {
     if (v.m_spItem == 0 || v.m_spItem->FUN_1405279c0() == 0)
         return;
-    v.m_bFlag = in.vfunc_o8_1() == 1 ? true : false;
-    v.m_nUid = in.vfunc_o8_4();
-    v.m_nByte = in.vfunc_o8_1();
+    v.m_bFlag = in.ReadUInt8() == 1 ? true : false;
+    v.m_nUid = in.ReadInt64();
+    v.m_nByte = in.ReadUInt8();
     if (v.m_bFlag)
     {
         if (v.m_spItem->FUN_140526a50() == v.m_nUid)
         {
-            int nCount = in.vfunc_o8_3();
+            int nCount = in.ReadInt32();
             v.m_spItem->FUN_1405273f0(nCount);
             v.m_spItem->FUN_1405279c0()->FUN_140620700(in);
         }
@@ -1801,30 +1801,30 @@ MS2_REPLACE_METHOD(0x1406322C0, CItemCustomMusicScore, FUN_1406322c0, 556, 0x32D
 // @0x140632500
 void CItemCustomMusicScore::FUN_140632500(COutputStream& out)
 {
-    out.vfunc_o10_3(m_n18);
-    out.vfunc_o10_3(m_n1c);
-    out.vfunc_o10_8(m_str28);
-    out.vfunc_o10_8(m_str20);
-    out.vfunc_o10_3(m_note.m_n00);
-    out.vfunc_o10_4(m_note.m_n08);
-    out.vfunc_o10_1(m_n38);
-    out.vfunc_o10_4(m_n40);
-    out.vfunc_o10_4(m_n48);
+    out.WriteInt32(m_n18);
+    out.WriteInt32(m_n1c);
+    out.WriteUnicodeString(m_str28);
+    out.WriteUnicodeString(m_str20);
+    out.WriteInt32(m_note.m_n00);
+    out.WriteInt64(m_note.m_n08);
+    out.WriteUInt8(m_n38);
+    out.WriteInt64(m_n40);
+    out.WriteInt64(m_n48);
 }
 MS2_REPLACE_METHOD(0x140632500, CItemCustomMusicScore, FUN_140632500, 267, 0x7A2583B5);
 
 // @0x140632620
 void CItemCustomMusicScore::FUN_140632620(CInputStream& in)
 {
-    m_n18 = in.vfunc_o8_3();
-    m_n1c = in.vfunc_o8_3();
-    m_str28 = in.vfunc_o8_8();
-    m_str20 = in.vfunc_o8_8();
-    m_note.m_n00 = in.vfunc_o8_3();
-    m_note.m_n08 = in.vfunc_o8_4();
-    m_n38 = in.vfunc_o8_1();
-    m_n40 = in.vfunc_o8_4();
-    m_n48 = in.vfunc_o8_4();
+    m_n18 = in.ReadInt32();
+    m_n1c = in.ReadInt32();
+    m_str28 = in.ReadUnicodeString();
+    m_str20 = in.ReadUnicodeString();
+    m_note.m_n00 = in.ReadInt32();
+    m_note.m_n08 = in.ReadInt64();
+    m_n38 = in.ReadUInt8();
+    m_n40 = in.ReadInt64();
+    m_n48 = in.ReadInt64();
 }
 MS2_REPLACE_METHOD(0x140632620, CItemCustomMusicScore, FUN_140632620, 344, 0x07AB5DCE);
 
@@ -2633,15 +2633,15 @@ MS2_REPLACE(0x1406344B0, FUN_1406344b0, 487, 0xAC86C104);
 // @0x1406346a0
 void CItemTransfer::CItemBinding::FUN_1406346a0(COutputStream& out)
 {
-    out.vfunc_o10_4(m_n18);
-    out.vfunc_o10_8(m_str20);
+    out.WriteInt64(m_n18);
+    out.WriteUnicodeString(m_str20);
 }
 
 // @0x140634700
 void CItemTransfer::CItemBinding::FUN_140634700(CInputStream& in)
 {
-    m_n18 = in.vfunc_o8_4();
-    m_str20 = in.vfunc_o8_8();
+    m_n18 = in.ReadInt64();
+    m_str20 = in.ReadUnicodeString();
 }
 
 // @0x140634790
@@ -2741,35 +2741,35 @@ MS2_REPLACE_METHOD(0x140634CC0, CItemTransfer, FUN_140634cc0, 57, 0xF1D55D66);
 // @0x140634d00
 void CItemTransfer::vfunc_1(COutputStream& out)
 {
-    out.vfunc_o10_3(m_nRule);
-    out.vfunc_o10_0(m_b38);
-    out.vfunc_o10_3(m_nCount);
-    out.vfunc_o10_3(m_nMax);
-    out.vfunc_o10_1(m_b3F);
-    out.vfunc_o10_1(m_b42);
+    out.WriteInt32(m_nRule);
+    out.WriteBool(m_b38);
+    out.WriteInt32(m_nCount);
+    out.WriteInt32(m_nMax);
+    out.WriteUInt8(m_b3F);
+    out.WriteUInt8(m_b42);
     if ((bool)m_spBinding.get() && FUN_140635100() != 0)
     {
-        out.vfunc_o10_0(true);
+        out.WriteBool(true);
         m_spBinding->FUN_1406346a0(out);
     }
     else
     {
-        out.vfunc_o10_0(false);
+        out.WriteBool(false);
     }
 }
 MS2_REPLACE_METHOD(0x140634D00, CItemTransfer, vfunc_1, 288, 0xD1BB41E7);
 
 // @0x140634e30
-// MS2-FUNCTIONAL: CInputStream::vfunc_o8_1 is declared unsigned char (stream.h); the exe tests the byte without widening
+// MS2-FUNCTIONAL: CInputStream::ReadUInt8 is declared unsigned char (stream.h); the exe tests the byte without widening
 void CItemTransfer::vfunc_2(CInputStream& in)
 {
-    m_nRule = in.vfunc_o8_3();
-    m_b38 = in.vfunc_o8_0();
-    m_nCount = in.vfunc_o8_3();
-    m_nMax = in.vfunc_o8_3();
-    m_b3F = in.vfunc_o8_1() != 0;
-    m_b42 = in.vfunc_o8_1() != 0;
-    if (in.vfunc_o8_0())
+    m_nRule = in.ReadInt32();
+    m_b38 = in.ReadBool();
+    m_nCount = in.ReadInt32();
+    m_nMax = in.ReadInt32();
+    m_b3F = in.ReadUInt8() != 0;
+    m_b42 = in.ReadUInt8() != 0;
+    if (in.ReadBool())
     {
         m_spBinding.AssignRaw(new CItemBinding);
         m_spBinding->FUN_140634700(in);

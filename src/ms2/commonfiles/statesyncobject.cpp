@@ -27,13 +27,13 @@
 inline void ReadBits(Unk_PartyBits& bits, CInputStream& in)
 {
     for (int i = 0; i < 1; i++)
-        bits.m_bits[i] = in.vfunc_o8_1();
+        bits.m_bits[i] = in.ReadUInt8();
 }
 // 0x14031c240
 inline void WriteBits(Unk_PartyBits& bits, COutputStream& out)
 {
     for (int i = 0; i < 1; i++)
-        out.vfunc_o10_1(bits.m_bits[i]);
+        out.WriteUInt8(bits.m_bits[i]);
 }
 
 // Inclusive range constraint (commonfiles\constraints.h; instantiated elsewhere).
@@ -48,7 +48,7 @@ template <class Constraint> unsigned char Unk_Read8(void* packet, Constraint con
 // @0x140837040
 template <> unsigned char Unk_Read8<Unk_1402c44b0>(void* packet, Unk_1402c44b0 constraint)
 {
-    unsigned char value = static_cast<CInPacket*>(packet)->vfunc_o8_1();
+    unsigned char value = static_cast<CInPacket*>(packet)->ReadUInt8();
     if (!constraint.Check(value))
         throw Exception(13);
     return value;
@@ -112,72 +112,72 @@ void Unk_StateArg22::FUN_140835720(COutputStream& kOut)
 // @0x140835750
 void Unk_StateArg22::vfunc_1(COutputStream& kOut)
 {
-    kOut.vfunc_o10_1(m_nState);
-    kOut.vfunc_o10_1(m_nSub);
-    kOut.vfunc_o10_11(reinterpret_cast<const Unk_StreamPoint&>(m_pos20));
-    kOut.vfunc_o10_15(m_dir2c.z);
-    kOut.vfunc_o10_1(m_nDirFlags);
+    kOut.WriteUInt8(m_nState);
+    kOut.WriteUInt8(m_nSub);
+    kOut.WriteVector3Short(reinterpret_cast<const Unk_StreamPoint&>(m_pos20));
+    kOut.WriteShortDiv10(m_dir2c.z);
+    kOut.WriteUInt8(m_nDirFlags);
     if ((m_nDirFlags & 0x80) == 0x80) {
-        kOut.vfunc_o10_5(m_vel3c.x);
-        kOut.vfunc_o10_5(m_vel3c.y);
+        kOut.WriteFloat(m_vel3c.x);
+        kOut.WriteFloat(m_vel3c.y);
     }
-    kOut.vfunc_o10_11(reinterpret_cast<const Unk_StreamPoint&>(m_pos48));
-    kOut.vfunc_o10_1(m_n54);
-    kOut.vfunc_o10_15(m_f58);
-    kOut.vfunc_o10_16(m_fTime, 1000);
+    kOut.WriteVector3Short(reinterpret_cast<const Unk_StreamPoint&>(m_pos48));
+    kOut.WriteUInt8(m_n54);
+    kOut.WriteShortDiv10(m_f58);
+    kOut.WriteShortDivScaled(m_fTime, 1000);
     WriteBits(m_optional, kOut);
     if (m_optional[0])
-        kOut.vfunc_o10_3(m_n64);
+        kOut.WriteInt32(m_n64);
     if (m_optional[1])
-        kOut.vfunc_o10_3(m_n68);
+        kOut.WriteInt32(m_n68);
     if (m_optional[2])
-        kOut.vfunc_o10_2(m_n6c);
+        kOut.WriteInt16(m_n6c);
     if (m_optional[3])
-        kOut.vfunc_o10_6(m_str70);
+        kOut.WriteUnicodeStringA(m_str70);
     if (m_optional[4]) {
-        kOut.vfunc_o10_10(reinterpret_cast<const Unk_StreamPoint&>(m_pos78));
-        kOut.vfunc_o10_6(m_str88);
+        kOut.WriteVector3(reinterpret_cast<const Unk_StreamPoint&>(m_pos78));
+        kOut.WriteUnicodeStringA(m_str88);
     }
     if (m_optional[5]) {
-        kOut.vfunc_o10_3(m_n90);
-        kOut.vfunc_o10_6(m_str98);
+        kOut.WriteInt32(m_n90);
+        kOut.WriteUnicodeStringA(m_str98);
     }
-    kOut.vfunc_o10_3(m_nA0);
+    kOut.WriteInt32(m_nA0);
 }
 
 // @0x140835bd0
 void Unk_StateArg22::vfunc_2(CInPacket& kIn)
 {
     m_nSub = Unk_Read8(&kIn, Unk_1402c44b0());
-    reinterpret_cast<Unk_StreamPoint&>(m_pos20) = kIn.vfunc_o8_11();
-    m_dir2c.z = kIn.vfunc_o8_15();
-    m_nDirFlags = kIn.vfunc_o8_1();
+    reinterpret_cast<Unk_StreamPoint&>(m_pos20) = kIn.ReadVector3Short();
+    m_dir2c.z = kIn.ReadShortDiv10();
+    m_nDirFlags = kIn.ReadUInt8();
     if ((m_nDirFlags & 0x80) == 0x80) {
-        m_vel3c.x = kIn.vfunc_o8_5();
-        m_vel3c.y = kIn.vfunc_o8_5();
+        m_vel3c.x = kIn.ReadFloat();
+        m_vel3c.y = kIn.ReadFloat();
     }
-    reinterpret_cast<Unk_StreamPoint&>(m_pos48) = kIn.vfunc_o8_11();
+    reinterpret_cast<Unk_StreamPoint&>(m_pos48) = kIn.ReadVector3Short();
     m_n54 = Unk_Read8(&kIn, Unk_140203550<unsigned char>(0, 0x13));
-    m_f58 = kIn.vfunc_o8_15();
-    m_fTime = kIn.vfunc_o8_16(1000);
+    m_f58 = kIn.ReadShortDiv10();
+    m_fTime = kIn.ReadShortDivScaled(1000);
     ReadBits(m_optional, kIn);
     if (m_optional[0])
-        m_n64 = kIn.vfunc_o8_3();
+        m_n64 = kIn.ReadInt32();
     if (m_optional[1])
-        m_n68 = kIn.vfunc_o8_3();
+        m_n68 = kIn.ReadInt32();
     if (m_optional[2])
-        m_n6c = kIn.vfunc_o8_2();
+        m_n6c = kIn.ReadInt16();
     if (m_optional[3])
-        m_str70 = kIn.vfunc_o8_6();
+        m_str70 = kIn.ReadUnicodeStringA();
     if (m_optional[4]) {
-        reinterpret_cast<Unk_StreamPoint&>(m_pos78) = kIn.vfunc_o8_10();
-        m_str88 = kIn.vfunc_o8_6();
+        reinterpret_cast<Unk_StreamPoint&>(m_pos78) = kIn.ReadVector3();
+        m_str88 = kIn.ReadUnicodeStringA();
     }
     if (m_optional[5]) {
-        m_n90 = kIn.vfunc_o8_3();
-        m_str98 = kIn.vfunc_o8_6();
+        m_n90 = kIn.ReadInt32();
+        m_str98 = kIn.ReadUnicodeStringA();
     }
-    m_nA0 = kIn.vfunc_o8_3();
+    m_nA0 = kIn.ReadInt32();
 }
 
 // Marks which optional fields are set, packs the velocity direction into m_nDirFlags when it is axis-aligned, then
@@ -219,14 +219,14 @@ void Unk_StateArg22::FUN_140836250(COutputStream& kOut)
         m_nDirFlags = 0x80;
     }
     vfunc_1(kOut);
-    kOut.vfunc_o10_3(m_nAC);
+    kOut.WriteInt32(m_nAC);
 }
 
 // @0x140836540
 void Unk_StateArg22::FUN_140836540(CInPacket& kIn)
 {
     vfunc_2(kIn);
-    m_nAC = kIn.vfunc_o8_3();
+    m_nAC = kIn.ReadInt32();
 }
 
 // @0x1408365a0
@@ -268,20 +268,20 @@ StateSyncObjectMicroGameRps::StateSyncObjectMicroGameRps(int nState)
 void StateSyncObjectMicroGameRps::vfunc_1(COutputStream& kOut)
 {
     Unk_StateArg22::vfunc_1(kOut);
-    kOut.vfunc_o10_3(m_nB8);
-    kOut.vfunc_o10_1(m_nBC);
-    kOut.vfunc_o10_1(m_nC0);
-    kOut.vfunc_o10_8(m_strC8);
+    kOut.WriteInt32(m_nB8);
+    kOut.WriteUInt8(m_nBC);
+    kOut.WriteUInt8(m_nC0);
+    kOut.WriteUnicodeString(m_strC8);
 }
 
 // @0x140836810
 void StateSyncObjectMicroGameRps::vfunc_2(CInPacket& kIn)
 {
     Unk_StateArg22::vfunc_2(kIn);
-    m_nB8 = kIn.vfunc_o8_3();
-    m_nBC = (char)kIn.vfunc_o8_1();
-    m_nC0 = (char)kIn.vfunc_o8_1();
-    m_strC8 = kIn.vfunc_o8_8();
+    m_nB8 = kIn.ReadInt32();
+    m_nBC = (char)kIn.ReadUInt8();
+    m_nC0 = (char)kIn.ReadUInt8();
+    m_strC8 = kIn.ReadUnicodeString();
 }
 
 // @0x140836930
@@ -294,22 +294,22 @@ StateSyncObjectCoupleEmotion::StateSyncObjectCoupleEmotion(int nState)
 void StateSyncObjectCoupleEmotion::vfunc_1(COutputStream& kOut)
 {
     Unk_StateArg22::vfunc_1(kOut);
-    kOut.vfunc_o10_3(m_nB8);
-    kOut.vfunc_o10_3(m_nBC);
-    kOut.vfunc_o10_1(m_nC0);
-    kOut.vfunc_o10_10(reinterpret_cast<const Unk_StreamPoint&>(m_posC4));
-    kOut.vfunc_o10_10(reinterpret_cast<const Unk_StreamPoint&>(m_posD0));
+    kOut.WriteInt32(m_nB8);
+    kOut.WriteInt32(m_nBC);
+    kOut.WriteUInt8(m_nC0);
+    kOut.WriteVector3(reinterpret_cast<const Unk_StreamPoint&>(m_posC4));
+    kOut.WriteVector3(reinterpret_cast<const Unk_StreamPoint&>(m_posD0));
 }
 
 // @0x140836ab0
 void StateSyncObjectCoupleEmotion::vfunc_2(CInPacket& kIn)
 {
     Unk_StateArg22::vfunc_2(kIn);
-    m_nB8 = kIn.vfunc_o8_3();
-    m_nBC = kIn.vfunc_o8_3();
-    m_nC0 = kIn.vfunc_o8_1();
-    reinterpret_cast<Unk_StreamPoint&>(m_posC4) = kIn.vfunc_o8_10();
-    reinterpret_cast<Unk_StreamPoint&>(m_posD0) = kIn.vfunc_o8_10();
+    m_nB8 = kIn.ReadInt32();
+    m_nBC = kIn.ReadInt32();
+    m_nC0 = kIn.ReadUInt8();
+    reinterpret_cast<Unk_StreamPoint&>(m_posC4) = kIn.ReadVector3();
+    reinterpret_cast<Unk_StreamPoint&>(m_posD0) = kIn.ReadVector3();
 }
 
 // @0x140836be0
@@ -322,18 +322,18 @@ StateSyncObjectMicroGameCoupleDance::StateSyncObjectMicroGameCoupleDance(int nSt
 void StateSyncObjectMicroGameCoupleDance::vfunc_1(COutputStream& kOut)
 {
     Unk_StateArg22::vfunc_1(kOut);
-    kOut.vfunc_o10_3(m_nB8);
-    kOut.vfunc_o10_0(m_bBC);
-    kOut.vfunc_o10_6(m_strC0);
+    kOut.WriteInt32(m_nB8);
+    kOut.WriteBool(m_bBC);
+    kOut.WriteUnicodeStringA(m_strC0);
 }
 
 // @0x140836ce0
 void StateSyncObjectMicroGameCoupleDance::vfunc_2(CInPacket& kIn)
 {
     Unk_StateArg22::vfunc_2(kIn);
-    m_nB8 = kIn.vfunc_o8_3();
-    m_bBC = kIn.vfunc_o8_0();
-    m_strC0 = kIn.vfunc_o8_6();
+    m_nB8 = kIn.ReadInt32();
+    m_bBC = kIn.ReadBool();
+    m_strC0 = kIn.ReadUnicodeStringA();
 }
 
 // @0x140836dd0
@@ -346,13 +346,13 @@ StateSyncObjectWeddingEmotion::StateSyncObjectWeddingEmotion(int nState)
 void StateSyncObjectWeddingEmotion::vfunc_1(COutputStream& kOut)
 {
     Unk_StateArg22::vfunc_1(kOut);
-    kOut.vfunc_o10_0(m_bB8);
-    kOut.vfunc_o10_0(m_bB9);
+    kOut.WriteBool(m_bB8);
+    kOut.WriteBool(m_bB9);
     if (m_bB9)
-        kOut.vfunc_o10_3(m_nBC);
+        kOut.WriteInt32(m_nBC);
     if (m_bB8) {
-        kOut.vfunc_o10_3(m_nC0);
-        kOut.vfunc_o10_0(m_bC4);
+        kOut.WriteInt32(m_nC0);
+        kOut.WriteBool(m_bC4);
     }
 }
 
@@ -360,13 +360,13 @@ void StateSyncObjectWeddingEmotion::vfunc_1(COutputStream& kOut)
 void StateSyncObjectWeddingEmotion::vfunc_2(CInPacket& kIn)
 {
     Unk_StateArg22::vfunc_2(kIn);
-    m_bB8 = kIn.vfunc_o8_0();
-    m_bB9 = kIn.vfunc_o8_0();
+    m_bB8 = kIn.ReadBool();
+    m_bB9 = kIn.ReadBool();
     if (m_bB9)
-        m_nBC = kIn.vfunc_o8_3();
+        m_nBC = kIn.ReadInt32();
     if (m_bB8) {
-        m_nC0 = kIn.vfunc_o8_3();
-        m_bC4 = kIn.vfunc_o8_0();
+        m_nC0 = kIn.ReadInt32();
+        m_bC4 = kIn.ReadBool();
     }
 }
 

@@ -476,15 +476,15 @@ RemakeOptionBase::~RemakeOptionBase()
 // @0x140617230
 void RemakeOptionBase::vfunc_1(COutputStream& out)
 {
-    out.vfunc_o10_4(m_18);
-    out.vfunc_o10_4(m_20);
+    out.WriteInt64(m_18);
+    out.WriteInt64(m_20);
 }
 
 // @0x140617280
 void RemakeOptionBase::vfunc_2(CInPacket& in)
 {
-    m_18 = in.vfunc_o8_4();
-    m_20 = in.vfunc_o8_4();
+    m_18 = in.ReadInt64();
+    m_20 = in.ReadInt64();
 }
 
 // @0x1406172f0
@@ -503,14 +503,14 @@ void RemakeOption::vfunc_1(COutputStream& out)
 {
     RemakeOptionBase::vfunc_1(out);
     int nCount = (int)reinterpret_cast<Unk_RemakeOptionPairs&>(m_options).size();
-    out.vfunc_o10_1((unsigned char)nCount);
+    out.WriteUInt8((unsigned char)nCount);
     if (0 < nCount)
     {
         for (int i = 0; i < nCount; i++)
         {
             std::pair<int, int>& option = reinterpret_cast<Unk_RemakeOptionPairs&>(m_options)[i];
-            out.vfunc_o10_1((unsigned char)option.first);
-            out.vfunc_o10_2((short)option.second);
+            out.WriteUInt8((unsigned char)option.first);
+            out.WriteInt16((short)option.second);
         }
     }
 }
@@ -519,14 +519,14 @@ void RemakeOption::vfunc_1(COutputStream& out)
 void RemakeOption::vfunc_2(CInPacket& in)
 {
     RemakeOptionBase::vfunc_2(in);
-    int nCount = in.vfunc_o8_1();
+    int nCount = in.ReadUInt8();
     if (nCount > 0)
     {
         reinterpret_cast<Unk_RemakeOptionPairs&>(m_options).reserve(nCount);
         for (int i = 0; i < nCount; i++)
         {
-            unsigned nIndex = in.vfunc_o8_1();
-            int nValue = (unsigned short)in.vfunc_o8_2();
+            unsigned nIndex = in.ReadUInt8();
+            int nValue = (unsigned short)in.ReadInt16();
             reinterpret_cast<Unk_RemakeOptionPairs&>(m_options).push_back(std::pair<int, int>(nIndex, nValue));
         }
     }
@@ -542,16 +542,16 @@ RemakeOptionDebug::RemakeOptionDebug()
 void RemakeOptionDebug::vfunc_1(COutputStream& out)
 {
     RemakeOption::vfunc_1(out);
-    out.vfunc_o10_1((unsigned char)m_kind);
-    out.vfunc_o10_3(m_value);
+    out.WriteUInt8((unsigned char)m_kind);
+    out.WriteInt32(m_value);
 }
 
 // @0x140617610
 void RemakeOptionDebug::vfunc_2(CInPacket& in)
 {
     RemakeOption::vfunc_2(in);
-    m_kind = in.vfunc_o8_1();
-    m_value = in.vfunc_o8_3();
+    m_kind = in.ReadUInt8();
+    m_value = in.ReadInt32();
 }
 
 // @0x140617690
@@ -568,13 +568,13 @@ ApplyOptionBase::~ApplyOptionBase()
 // @0x1406176e0
 void ApplyOptionBase::vfunc_1(COutputStream& out)
 {
-    out.vfunc_o10_4(m_uid);
+    out.WriteInt64(m_uid);
 }
 
 // @0x140617720
 void ApplyOptionBase::vfunc_2(CInPacket& in)
 {
-    m_uid = in.vfunc_o8_4();
+    m_uid = in.ReadInt64();
 }
 
 // @0x140617770
@@ -591,15 +591,15 @@ ForceFillIngredient::~ForceFillIngredient()
 // @0x1406177d0
 void ForceFillIngredient::vfunc_1(COutputStream& out)
 {
-    out.vfunc_o10_4(m_uid);
-    out.vfunc_o10_3(m_count);
+    out.WriteInt64(m_uid);
+    out.WriteInt32(m_count);
 }
 
 // @0x140617820
 void ForceFillIngredient::vfunc_2(CInPacket& in)
 {
-    m_uid = in.vfunc_o8_4();
-    m_count = in.vfunc_o8_3();
+    m_uid = in.ReadInt64();
+    m_count = in.ReadInt32();
 }
 
 // @0x140617890
@@ -648,19 +648,19 @@ RemakeOption::~RemakeOption()
 // @0x140617a90
 void RemakeOption::vfunc_1(COutputStream& out)
 {
-    out.vfunc_o10_4(m_scrollUid);
-    out.vfunc_o10_4(m_itemUid);
-    out.vfunc_o10_4(m_ingredientUid);
-    out.vfunc_o10_0(m_bLocked);
+    out.WriteInt64(m_scrollUid);
+    out.WriteInt64(m_itemUid);
+    out.WriteInt64(m_ingredientUid);
+    out.WriteBool(m_bLocked);
     int nCount = (int)reinterpret_cast<Unk_RemakeOptionPairs&>(m_options).size();
-    out.vfunc_o10_1((unsigned char)nCount);
+    out.WriteUInt8((unsigned char)nCount);
     if (0 < nCount)
     {
         for (int i = 0; i < nCount; i++)
         {
             std::pair<int, int>& option = reinterpret_cast<Unk_RemakeOptionPairs&>(m_options)[i];
-            out.vfunc_o10_1((unsigned char)option.first);
-            out.vfunc_o10_2((short)option.second);
+            out.WriteUInt8((unsigned char)option.first);
+            out.WriteInt16((short)option.second);
         }
     }
 }
@@ -668,18 +668,18 @@ void RemakeOption::vfunc_1(COutputStream& out)
 // @0x140617bb0
 void RemakeOption::vfunc_2(CInPacket& in)
 {
-    m_scrollUid = in.vfunc_o8_4();
-    m_itemUid = in.vfunc_o8_4();
-    m_ingredientUid = in.vfunc_o8_4();
-    m_bLocked = in.vfunc_o8_0();
-    int nCount = in.vfunc_o8_1();
+    m_scrollUid = in.ReadInt64();
+    m_itemUid = in.ReadInt64();
+    m_ingredientUid = in.ReadInt64();
+    m_bLocked = in.ReadBool();
+    int nCount = in.ReadUInt8();
     if (nCount > 0)
     {
         reinterpret_cast<Unk_RemakeOptionPairs&>(m_options).reserve(nCount);
         for (int i = 0; i < nCount; i++)
         {
-            unsigned nIndex = in.vfunc_o8_1();
-            int nValue = (unsigned short)in.vfunc_o8_2();
+            unsigned nIndex = in.ReadUInt8();
+            int nValue = (unsigned short)in.ReadInt16();
             reinterpret_cast<Unk_RemakeOptionPairs&>(m_options).push_back(std::pair<int, int>(nIndex, nValue));
         }
     }

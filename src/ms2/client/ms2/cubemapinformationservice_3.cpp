@@ -1437,8 +1437,8 @@ void CubeMapInformationService::SendRequestCubeMode68(__int64 nId)
 {
     if (FUN_141151760(&f78)) {
         COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
-        packet.vfunc_o10_1(0x44);
-        packet.vfunc_o10_4(nId);
+        packet.WriteUInt8(0x44);
+        packet.WriteInt64(nId);
         FUN_140710590(packet);
         f478 = 0;
     } else {
@@ -2076,7 +2076,7 @@ void CubeMapInformationService::SendRequestCubeMode31()
             Unk_Int3 pos = spCube->position;
             if (pos.x < p300.x || pos.x > p30c.x || pos.y < p300.y || pos.y > p30c.y || pos.z < p300.z || pos.z > f2fc) {
                 COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
-                packet.vfunc_o10_1(0x1f);
+                packet.WriteUInt8(0x1f);
                 FUN_140710590(packet);
                 return;
             }
@@ -6213,7 +6213,7 @@ void CubeMapInformationService::FUN_1410cf5c0(egf::Entity* pEntity)
             if (!FUN_1410cb900() && FUN_14115ad10(&f78) == 0) {
                 FUN_1410cb8b0(true);
                 COutPacket packet(static_cast<int>(SendOp::ResponseFieldEnter), 0);
-                packet.vfunc_o10_3(FUN_1403ed2d0()->FUN_141bd98d0());
+                packet.WriteInt32(FUN_1403ed2d0()->FUN_141bd98d0());
                 FUN_140710590(packet);
                 FUN_1403ed2d0()->FUN_141bdb690();
             }
@@ -6228,8 +6228,8 @@ void CubeMapInformationService::FUN_1410cf5c0(egf::Entity* pEntity)
         }
         if (f478 != 0 && FUN_141151760(&f78)) {
             COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
-            packet.vfunc_o10_1(0x44);
-            packet.vfunc_o10_4(f478);
+            packet.WriteUInt8(0x44);
+            packet.WriteInt64(f478);
             FUN_140710590(packet);
             f478 = 0;
         }

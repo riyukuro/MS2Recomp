@@ -298,18 +298,18 @@ void UIItemPetBoxDialog::vfunc_79(void* p)
         if (m_30 == 0)
             return;
         m_sent = false;
-        unsigned reset = PETBOX_PKT->vfunc_o8_1();
+        unsigned reset = PETBOX_PKT->ReadUInt8();
         if (reset == 1) {
             PETBOX_ITEMS.FUN_14028a590();
             m_special2.clear();
             bool hasSpecial = false;
-            int n = PETBOX_PKT->vfunc_o8_3();
+            int n = PETBOX_PKT->ReadInt32();
             PETBOX_ITEMS.FUN_140c47b00(n);
             for (int i = 0; i < n; ++i) {
-                PETBOX_ITEMS.FUN_140be9400(i).m_itemId = PETBOX_PKT->vfunc_o8_3();
-                PETBOX_ITEMS.FUN_140be9400(i).m_count = PETBOX_PKT->vfunc_o8_3();
-                PETBOX_ITEMS.FUN_140be9400(i).SetRank(PETBOX_PKT->vfunc_o8_3());
-                bool special = PETBOX_PKT->vfunc_o8_0();
+                PETBOX_ITEMS.FUN_140be9400(i).m_itemId = PETBOX_PKT->ReadInt32();
+                PETBOX_ITEMS.FUN_140be9400(i).m_count = PETBOX_PKT->ReadInt32();
+                PETBOX_ITEMS.FUN_140be9400(i).SetRank(PETBOX_PKT->ReadInt32());
+                bool special = PETBOX_PKT->ReadBool();
                 if (special)
                     m_special2.insert(PETBOX_ITEMS.FUN_140be9400(i));
                 if (FUN_140e4fc90(PETBOX_ITEMS.FUN_140be9400(i)) == true)

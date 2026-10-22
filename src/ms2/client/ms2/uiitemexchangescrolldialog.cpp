@@ -246,12 +246,12 @@ void UIItemExchangeScrollDialog::vfunc_79(void* p)
     UIDialog::vfunc_79(p);
     if (pkt->FUN_14070fe80() == 0x102)
     {
-        unsigned char kind = pkt->vfunc_o8_1();
+        unsigned char kind = pkt->ReadUInt8();
         if (kind == 0)
             FUN_140f52ca0(pkt);
         else if (kind == 2)
         {
-            unsigned nCode = (unsigned short)pkt->vfunc_o8_2();
+            unsigned nCode = (unsigned short)pkt->ReadInt16();
             int nResult = (int)nCode;
             if (!FUN_140f55670(&nResult))
                 vfunc_67();
@@ -550,8 +550,8 @@ void UIItemExchangeScrollDialog::FUN_140f52c80()
 // MS2-FUNCTIONAL: temporaries / frame not tuned
 void UIItemExchangeScrollDialog::FUN_140f52ca0(CInPacket* pPacket)
 {
-    __int64 uidScroll = pPacket->vfunc_o8_4();
-    __int64 uidTarget = pPacket->vfunc_o8_4();
+    __int64 uidScroll = pPacket->ReadInt64();
+    __int64 uidTarget = pPacket->ReadInt64();
     m_spIngredients = 0;
     m_spIngredients = new CIngredientContainer();
     if (!(m_spIngredients == 0))
@@ -677,7 +677,7 @@ void UIItemExchangeScrollDialog::SendItemExchangeScrollMode1(ASData* pData)
             req.m_uidTarget = m_uidTarget;
             req.m_nMakeCount = nCount;
             COutPacket packet(static_cast<int>(SendOp::ItemExchangeScroll), 0);
-            packet.vfunc_o10_1(1);
+            packet.WriteUInt8(1);
             FUN_140202470(reinterpret_cast<unsigned char*>(&req), packet);
             FUN_140710590(packet);
         }
@@ -999,7 +999,7 @@ void UIItemExchangeScrollDialog::FUN_140f55b90(const Scaleform::GFx::FunctionHan
         fill.m_uidTarget = m_uidTarget;
         fill.m_nCount = 0;
         COutPacket packet(static_cast<int>(SendOp::ItemExchangeScroll), 0);
-        packet.vfunc_o10_1(3);
+        packet.WriteUInt8(3);
         FUN_140202580(reinterpret_cast<unsigned char*>(&fill), packet);
         FUN_140710590(packet);
     }
@@ -1016,7 +1016,7 @@ void UIItemExchangeScrollDialog::FUN_140f55c50(const Scaleform::GFx::FunctionHan
         fill.m_uidTarget = m_uidTarget;
         fill.m_nCount = 10;
         COutPacket packet(static_cast<int>(SendOp::ItemExchangeScroll), 0);
-        packet.vfunc_o10_1(3);
+        packet.WriteUInt8(3);
         FUN_140202580(reinterpret_cast<unsigned char*>(&fill), packet);
         FUN_140710590(packet);
     }

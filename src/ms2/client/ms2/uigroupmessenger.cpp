@@ -954,9 +954,9 @@ int UIGroupMessenger::SendMessengerMode4(int nEmoticonId)
         if (!spCli->FUN_140a39dd0(spEmo->m_nId))
             return 0;
         COutPacket packet(static_cast<int>(SendOp::ChatSticker), 0);
-        packet.vfunc_o10_1(4);
-        packet.vfunc_o10_3(nEmoticonId);
-        packet.vfunc_o10_8(GetName());
+        packet.WriteUInt8(4);
+        packet.WriteInt32(nEmoticonId);
+        packet.WriteUnicodeString(GetName());
         FUN_140710590(packet);
         return 1;
     }
@@ -995,8 +995,8 @@ int UIGroupMessenger::FUN_14194b190(int nEmoticonId, bool bFavorite)
         if (!spCli->FUN_140a39dd0(spEmo->m_nId))
             return 0;
         COutPacket packet(static_cast<int>(SendOp::ChatSticker), 0);
-        packet.vfunc_o10_1(bFavorite ? 5 : 6);
-        packet.vfunc_o10_3(nEmoticonId);
+        packet.WriteUInt8(bFavorite ? 5 : 6);
+        packet.WriteInt32(nEmoticonId);
         FUN_140710590(packet);
         return 1;
     }
@@ -1838,12 +1838,12 @@ MS2_REPLACE_METHOD(0x141951C50, UIGroupMessengerBrowser, FUN_141951c50, 290, 0x4
 // @0x141951d80
 void UIGroupMessengerBrowser::FUN_141951d80(int nGroupId, const CStringW& strName, CInPacket* pPacket)
 {
-    unsigned nCount = pPacket->vfunc_o8_3();
+    unsigned nCount = pPacket->ReadInt32();
     for (unsigned i = 0; i < nCount; i++)
     {
-        __int64 nUid = pPacket->vfunc_o8_4();
-        int nItemId = pPacket->vfunc_o8_3();
-        int nRarity = pPacket->vfunc_o8_3();
+        __int64 nUid = pPacket->ReadInt64();
+        int nItemId = pPacket->ReadInt32();
+        int nRarity = pPacket->ReadInt32();
         MS2Ptr<CItem> spItem(new CItem);
         if (spItem->FUN_140523c40(nItemId, nRarity, 0))
         {

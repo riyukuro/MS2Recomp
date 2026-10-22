@@ -1481,10 +1481,10 @@ void UIMailSendDialog::vfunc_79(void* p)
 {
     CInPacket* pPacket = static_cast<CInPacket*>(p);
     UIDialog::vfunc_79(p);
-    if (!(pPacket->FUN_14070fe80() == 0x54 && pPacket->vfunc_o8_1() == 0x14))
+    if (!(pPacket->FUN_14070fe80() == 0x54 && pPacket->ReadUInt8() == 0x14))
         return;
-    pPacket->vfunc_o8_1();
-    unsigned char nResult = pPacket->vfunc_o8_1();
+    pPacket->ReadUInt8();
+    unsigned char nResult = pPacket->ReadUInt8();
     if ((nResult == 1 || nResult == 0x19) && m_30.get() != 0)
         m_30->Invoke("selectRecvName");
 }

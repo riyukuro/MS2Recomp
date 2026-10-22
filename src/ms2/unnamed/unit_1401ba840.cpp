@@ -163,17 +163,17 @@ void Unk_BlockList::SetEnabled(bool bEnabled)
 // @0x1401bade0
 void Unk_BlockList::Write(COutputStream& kStream)
 {
-    kStream.vfunc_o10_3(GetId());
-    kStream.vfunc_o10_3(GetMode());
-    kStream.vfunc_o10_0(m_bEnabled);
-    kStream.vfunc_o10_2(GetCount());
+    kStream.WriteInt32(GetId());
+    kStream.WriteInt32(GetMode());
+    kStream.WriteBool(m_bEnabled);
+    kStream.WriteInt16(GetCount());
     for (std::vector<Unk_BlockEntry>::iterator it = m_entries.begin(); it != m_entries.end(); it++)
     {
-        kStream.vfunc_o10_7(it->m_strKey);
-        kStream.vfunc_o10_8(it->m_strName);
-        kStream.vfunc_o10_8(it->m_strExtra);
-        kStream.vfunc_o10_1((unsigned char)it->m_nFlags);
-        kStream.vfunc_o10_0(it->m_bEnabled);
+        kStream.WriteString(it->m_strKey);
+        kStream.WriteUnicodeString(it->m_strName);
+        kStream.WriteUnicodeString(it->m_strExtra);
+        kStream.WriteUInt8((unsigned char)it->m_nFlags);
+        kStream.WriteBool(it->m_bEnabled);
     }
 }
 
@@ -181,18 +181,18 @@ void Unk_BlockList::Write(COutputStream& kStream)
 void Unk_BlockList::Read(CInPacket& kPacket)
 {
     m_entries.clear();
-    m_nId = kPacket.vfunc_o8_3();
-    m_nMode = kPacket.vfunc_o8_3();
-    m_bEnabled = kPacket.vfunc_o8_0();
-    unsigned short nCount = kPacket.vfunc_o8_2();
+    m_nId = kPacket.ReadInt32();
+    m_nMode = kPacket.ReadInt32();
+    m_bEnabled = kPacket.ReadBool();
+    unsigned short nCount = kPacket.ReadInt16();
     for (unsigned short i = 0; i < nCount; ++i)
     {
         Unk_BlockEntry kEntry;
-        kEntry.m_strKey = kPacket.vfunc_o8_7();
-        kEntry.m_strName = kPacket.vfunc_o8_8();
-        kEntry.m_strExtra = kPacket.vfunc_o8_8();
-        kEntry.m_nFlags = kPacket.vfunc_o8_1();
-        kEntry.m_bEnabled = kPacket.vfunc_o8_0();
+        kEntry.m_strKey = kPacket.ReadString();
+        kEntry.m_strName = kPacket.ReadUnicodeString();
+        kEntry.m_strExtra = kPacket.ReadUnicodeString();
+        kEntry.m_nFlags = kPacket.ReadUInt8();
+        kEntry.m_bEnabled = kPacket.ReadBool();
         m_entries.push_back(kEntry);
     }
 }

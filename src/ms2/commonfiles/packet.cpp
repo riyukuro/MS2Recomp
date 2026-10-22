@@ -66,9 +66,9 @@ unsigned __int64 FUN_140714fc0(const Unk_OSId& id) { return id.value; }
 // @0x14070f700
 CInputStream& FUN_14070f700(CInputStream& in, ATL::CAtlArray<char>& value)
 {
-    int count = in.vfunc_o8_3();
+    int count = in.ReadInt32();
     FUN_140715250(value, count);
-    in.vfunc_o8_9(FUN_140714db0(value), count);
+    in.ReadBytes(FUN_140714db0(value), count);
     return in;
 }
 // @0x14070f770
@@ -76,44 +76,44 @@ CInputStream& FUN_14070f770(CInputStream& in, Unk_PktSerializable& item) { item.
 // @0x14070f7b0
 CInputStream& FUN_14070f7b0(CInputStream& in, CByteBuffer& value)
 {
-    int count = in.vfunc_o8_3();
+    int count = in.ReadInt32();
     value.FUN_140715230(count);
-    in.vfunc_o8_9(value.FUN_140204eb0(), count);
+    in.ReadBytes(value.FUN_140204eb0(), count);
     return in;
 }
 // @0x14070f820
-COutputStream& FUN_14070f820(COutputStream& out, bool value) { out.vfunc_o10_0(value); return out; }
+COutputStream& FUN_14070f820(COutputStream& out, bool value) { out.WriteBool(value); return out; }
 // @0x14070f860
-COutputStream& FUN_14070f860(COutputStream& out, unsigned char value) { out.vfunc_o10_1(value); return out; }
+COutputStream& FUN_14070f860(COutputStream& out, unsigned char value) { out.WriteUInt8(value); return out; }
 // @0x14070f8a0
-COutputStream& FUN_14070f8a0(COutputStream& out, short value) { out.vfunc_o10_2(value); return out; }
+COutputStream& FUN_14070f8a0(COutputStream& out, short value) { out.WriteInt16(value); return out; }
 // @0x14070f8e0
-COutputStream& FUN_14070f8e0(COutputStream& out, unsigned short value) { out.vfunc_o10_2(value); return out; }
+COutputStream& FUN_14070f8e0(COutputStream& out, unsigned short value) { out.WriteInt16(value); return out; }
 // @0x14070f920
-COutputStream& FUN_14070f920(COutputStream& out, int value) { out.vfunc_o10_3(value); return out; }
+COutputStream& FUN_14070f920(COutputStream& out, int value) { out.WriteInt32(value); return out; }
 // @0x14070f960
-COutputStream& FUN_14070f960(COutputStream& out, long value) { out.vfunc_o10_3(value); return out; }
+COutputStream& FUN_14070f960(COutputStream& out, long value) { out.WriteInt32(value); return out; }
 // @0x14070f9a0
-COutputStream& FUN_14070f9a0(COutputStream& out, unsigned int value) { out.vfunc_o10_3(value); return out; }
+COutputStream& FUN_14070f9a0(COutputStream& out, unsigned int value) { out.WriteInt32(value); return out; }
 // @0x14070f9e0
-COutputStream& FUN_14070f9e0(COutputStream& out, __int64 value) { out.vfunc_o10_4(value); return out; }
+COutputStream& FUN_14070f9e0(COutputStream& out, __int64 value) { out.WriteInt64(value); return out; }
 // @0x14070fa20
-COutputStream& FUN_14070fa20(COutputStream& out, unsigned __int64 value) { out.vfunc_o10_4(value); return out; }
+COutputStream& FUN_14070fa20(COutputStream& out, unsigned __int64 value) { out.WriteInt64(value); return out; }
 // @0x14070fa60
-COutputStream& FUN_14070fa60(COutputStream& out, float value) { out.vfunc_o10_5(value); return out; }
+COutputStream& FUN_14070fa60(COutputStream& out, float value) { out.WriteFloat(value); return out; }
 // @0x14070faa0
-COutputStream& FUN_14070faa0(COutputStream& out, const CString& value) { out.vfunc_o10_7(value); return out; }
+COutputStream& FUN_14070faa0(COutputStream& out, const CString& value) { out.WriteString(value); return out; }
 // @0x14070fae0
-COutputStream& FUN_14070fae0(COutputStream& out, const CStringW& value) { out.vfunc_o10_8(value); return out; }
+COutputStream& FUN_14070fae0(COutputStream& out, const CStringW& value) { out.WriteUnicodeString(value); return out; }
 // @0x14070fb20
-COutputStream& FUN_14070fb20(COutputStream& out, const Unk_OSId& value) { out.vfunc_o10_4(FUN_140714fc0(value)); return out; }
+COutputStream& FUN_14070fb20(COutputStream& out, const Unk_OSId& value) { out.WriteInt64(FUN_140714fc0(value)); return out; }
 // @0x14070fb70
-COutputStream& FUN_14070fb70(COutputStream& out, const Unk_OSNumber& value) { out.vfunc_o10_4(FUN_140282020(value)); return out; }
+COutputStream& FUN_14070fb70(COutputStream& out, const Unk_OSNumber& value) { out.WriteInt64(FUN_140282020(value)); return out; }
 // @0x14070fbc0
 COutputStream& FUN_14070fbc0(COutputStream& out, const ATL::CAtlArray<char>& value)
 {
-    out.vfunc_o10_3(FUN_1406c3660(value));
-    out.vfunc_o10_9(FUN_1406c3630(value), FUN_1406c3660(value));
+    out.WriteInt32(FUN_1406c3660(value));
+    out.WriteBytes(FUN_1406c3630(value), FUN_1406c3660(value));
     return out;
 }
 // @0x14070fc40
@@ -121,8 +121,8 @@ COutputStream& FUN_14070fc40(COutputStream& out, const Unk_PktSerializable& item
 // @0x14070fc80
 COutputStream& FUN_14070fc80(COutputStream& out, CByteBuffer& value)
 {
-    out.vfunc_o10_3(value.GetLength());
-    out.vfunc_o10_9(value.FUN_140204eb0(), value.GetLength());
+    out.WriteInt32(value.GetLength());
+    out.WriteBytes(value.FUN_140204eb0(), value.GetLength());
     return out;
 }
 
@@ -146,7 +146,7 @@ CInPacket::CInPacket(CInPacket& iPacket)
 int CInPacket::FUN_14070fe80() { FUN_140715280(6); return (unsigned short)FUN_1407140a0(); }
 // MS2-FUNCTIONAL: bool temp slot differs
 // @0x14070feb0
-bool CInPacket::vfunc_o8_0() { return vfunc_o8_1() != 0; }
+bool CInPacket::ReadBool() { return ReadUInt8() != 0; }
 // MS2-FUNCTIONAL: receive state machine: local layout / temp order differs
 // @0x14070ff00
 int CInPacket::FUN_14070ff00(Unk_SocketPtr<CPacketBuffer>* buffer, int* stateBefore, int hasSequence)
@@ -162,10 +162,10 @@ int CInPacket::FUN_14070ff00(Unk_SocketPtr<CPacketBuffer>* buffer, int* stateBef
         FUN_140715120(data, count);
         if (headerLen <= (unsigned)m_length) {
             m_nState = RS_DATA;
-            m_opcode = vfunc_o8_2();
-            m_packetLength = vfunc_o8_3();
+            m_opcode = ReadInt16();
+            m_packetLength = ReadInt32();
             if (hasSequence != 0) {
-                m_40 = vfunc_o8_3();
+                m_40 = ReadInt32();
                 m_length -= 4;
                 m_offset -= 4;
             }
@@ -261,7 +261,7 @@ void FUN_1407106d0(int type, int key)
     g_packetThrottle.erase(id);
 }
 // @0x140710710
-void COutPacket::vfunc_o10_0(bool value) { vfunc_o10_1(value); }
+void COutPacket::WriteBool(bool value) { WriteUInt8(value); }
 // @0x140710740
 void COutPacket::FUN_140710740(int nType, int nUnk, int bEncodeType)
 {
@@ -270,7 +270,7 @@ void COutPacket::FUN_140710740(int nType, int nUnk, int bEncodeType)
     m_n14 = 0;
     if (nType != 0x7fffffff && bEncodeType) {
         MS2_ASSERT_AT(0x161, nType < 65535);
-        vfunc_o10_2((short)nType);
+        WriteInt16((short)nType);
     }
     m_nSequence = 0;
 }
@@ -281,7 +281,7 @@ void FUN_1407107e0(COutPacket* packet, int type, int unk, const void* data, int 
     packet->m_aBuffer.RemoveAll();
     packet->m_aBuffer.SetCount(0x100, -1);
     packet->FUN_140710740(type, unk, true);
-    packet->vfunc_o10_9(data, count);
+    packet->WriteBytes(data, count);
 }
 MS2_REPLACE(0x1407107E0, FUN_1407107e0, 124, 0x76F804E3);
 // MS2-FUNCTIONAL: send path: local layout / temp order differs
@@ -354,7 +354,7 @@ void FUN_140710d40(COutPacket* packet, bool useCompression, unsigned threshold)
     Unk_CompressedStream stream(useCompression, threshold);
     CByteBuffer& raw = stream.FUN_140714de0();
     MS2_PK_ASSERT(0x1c1, "m_uOffset > PROTOCOL_LENGTH", packet->m_nLength > 2);
-    raw.vfunc_o10_9(&packet->m_aBuffer[0] + 2, packet->m_nLength - 2);
+    raw.WriteBytes(&packet->m_aBuffer[0] + 2, packet->m_nLength - 2);
     packet->m_nLength = 2;
     stream.Encode(*packet);
 }
@@ -498,97 +498,97 @@ short CInPacket::vfunc_1() {
     return *(const short*)(&m_data[0] + 6);
 }
 // @0x140713a60
-unsigned char CInPacket::vfunc_o8_1()
+unsigned char CInPacket::ReadUInt8()
 {
     unsigned char value;
     m_offset += FUN_140713970(value, &m_data[0] + m_offset, m_length - m_offset);
     return value;
 }
 // @0x140713bd0
-short CInPacket::vfunc_o8_2()
+short CInPacket::ReadInt16()
 {
     short value;
     m_offset += FUN_140713ae0(value, &m_data[0] + m_offset, m_length - m_offset);
     return value;
 }
 // @0x140713d40
-int CInPacket::vfunc_o8_3()
+int CInPacket::ReadInt32()
 {
     int value;
     m_offset += FUN_140713c50(value, &m_data[0] + m_offset, m_length - m_offset);
     return value;
 }
 // @0x140713ea0
-__int64 CInPacket::vfunc_o8_4()
+__int64 CInPacket::ReadInt64()
 {
     __int64 value;
     m_offset += FUN_140713db0(value, &m_data[0] + m_offset, m_length - m_offset);
     return value;
 }
 // @0x140714020
-void CInPacket::vfunc_o8_9(void* data, int count)
+void CInPacket::ReadBytes(void* data, int count)
 {
     m_offset += FUN_140713f20(data, count, &m_data[0] + m_offset, m_length - m_offset);
 }
 // @0x1407140a0
-short CInPacket::FUN_1407140a0() { return vfunc_o8_2(); }
+short CInPacket::FUN_1407140a0() { return ReadInt16(); }
 // @0x1407140d0
 Unk_StreamPoint CInPacket::FUN_1407140d0()
 {
     Unk_StreamPoint point;
-    point.x = vfunc_o8_5();
-    point.y = vfunc_o8_5();
-    point.z = vfunc_o8_5();
+    point.x = ReadFloat();
+    point.y = ReadFloat();
+    point.z = ReadFloat();
     return point;
 }
 // @0x140714190
-CString CInPacket::vfunc_o8_6()
+CString CInPacket::ReadUnicodeStringA()
 {
-    CStringW text = vfunc_o8_8();
+    CStringW text = ReadUnicodeString();
     return FUN_14016a600(text, 0);
 }
 // @0x140714520
-CString CInPacket::vfunc_o8_7()
+CString CInPacket::ReadString()
 {
     CString value;
     m_offset += FUN_140714210(value, &m_data[0] + m_offset, m_length - m_offset);
     return value;
 }
 // @0x140714900
-CStringW CInPacket::vfunc_o8_8()
+CStringW CInPacket::ReadUnicodeString()
 {
     CStringW value;
     m_offset += FUN_1407145e0(value, &m_data[0] + m_offset, m_length - m_offset);
     return value;
 }
 // @0x1407149c0
-Unk_StreamPoint CInPacket::vfunc_o8_10() { return FUN_1407140d0(); }
+Unk_StreamPoint CInPacket::ReadVector3() { return FUN_1407140d0(); }
 // @0x1407149f0
-Unk_StreamPoint CInPacket::vfunc_o8_11()
+Unk_StreamPoint CInPacket::ReadVector3Short()
 {
     Unk_StreamPoint point;
-    point.x = (float)vfunc_o8_2();
-    point.y = (float)vfunc_o8_2();
-    point.z = (float)vfunc_o8_2();
+    point.x = (float)ReadInt16();
+    point.y = (float)ReadInt16();
+    point.z = (float)ReadInt16();
     return point;
 }
 // @0x140714ba0
-float CInPacket::vfunc_o8_5()
+float CInPacket::ReadFloat()
 {
     float value;
     m_offset += FUN_140714ab0(value, &m_data[0] + m_offset, m_length - m_offset);
     return value;
 }
 // @0x140714c20
-float CInPacket::vfunc_o8_13() { float r = (float)vfunc_o8_2() * 100.0f; return r; }
+float CInPacket::ReadShortX100() { float r = (float)ReadInt16() * 100.0f; return r; }
 // @0x140714c70
-float CInPacket::vfunc_o8_12() { float r = (float)vfunc_o8_2() * 10.0f; return r; }
+float CInPacket::ReadShortX10() { float r = (float)ReadInt16() * 10.0f; return r; }
 // @0x140714cc0
-float CInPacket::vfunc_o8_14(int scale) { float r = (float)vfunc_o8_2() * (float)scale; return r; }
+float CInPacket::ReadShortScaled(int scale) { float r = (float)ReadInt16() * (float)scale; return r; }
 // @0x140714d10
-float CInPacket::vfunc_o8_15() { float r = (float)vfunc_o8_2() / 10.0f; return r; }
+float CInPacket::ReadShortDiv10() { float r = (float)ReadInt16() / 10.0f; return r; }
 // @0x140714d60
-float CInPacket::vfunc_o8_16(int scale) { float r = (float)vfunc_o8_2() / (float)scale; return r; }
+float CInPacket::ReadShortDivScaled(int scale) { float r = (float)ReadInt16() / (float)scale; return r; }
 // MS2-FUNCTIONAL: append: temp order differs
 // @0x140715120
 void CInPacket::FUN_140715120(const char* data, unsigned count)
@@ -660,14 +660,14 @@ MS2_REPLACE(0x14070fbc0, FUN_14070fbc0, 122, 0x62046D9B);
 MS2_REPLACE(0x14070fc40, FUN_14070fc40, 44, 0x85434CD2);
 MS2_REPLACE(0x14070fc80, FUN_14070fc80, 122, 0x93D8A2F2);
 MS2_REPLACE_METHOD(0x14070fe80, CInPacket, FUN_14070fe80, 42, 0xF20168B1);
-MS2_REPLACE_METHOD_VIA(0x14070feb0, CInPacket, CInputStream, vfunc_o8_0, 67, 0xE061F660);
+MS2_REPLACE_METHOD_VIA(0x14070feb0, CInPacket, CInputStream, ReadBool, 67, 0xE061F660);
 MS2_REPLACE_METHOD(0x14070ff00, CInPacket, FUN_14070ff00, 889, 0xCC51CDC9);
 MS2_REPLACE_METHOD(0x140710280, CInPacket, FUN_140710280, 120, 0xA9790E51);
 MS2_REPLACE(0x1407103f0, FUN_1407103f0, 262, 0x9CDB8DAB);
 MS2_REPLACE(0x140710590, FUN_140710590, 42, 0x7966F887);
 MS2_REPLACE(0x1407105c0, FUN_1407105c0, 259, 0x35988C99);
 MS2_REPLACE(0x1407106d0, FUN_1407106d0, 54, 0xD8D41D66);
-MS2_REPLACE_METHOD(0x140710710, COutPacket, vfunc_o10_0, 39, 0x553FDBF2);
+MS2_REPLACE_METHOD(0x140710710, COutPacket, WriteBool, 39, 0x553FDBF2);
 MS2_REPLACE(0x140710870, FUN_140710870, 790, 0xF5FD8FA4);
 MS2_REPLACE(0x140710b90, FUN_140710b90, 181, 0xA1C676CB);
 MS2_REPLACE(0x140710d40, FUN_140710d40, 246, 0x9461C257);
@@ -691,18 +691,18 @@ MS2_REPLACE_METHOD(0x1407145e0, CIOBuffer, FUN_1407145e0, 747, 0x9D146BE9);
 MS2_REPLACE_METHOD(0x140713940, CInPacket, FUN_140713940, 42, 0x52DF3817);
 MS2_REPLACE_METHOD(0x140714fb0, CInPacket, vfunc_0, 14, 0x921EE467);
 MS2_REPLACE_METHOD(0x140714fd0, CInPacket, vfunc_1, 37, 0x9128F8DB);
-MS2_REPLACE_METHOD_VIA(0x140713a60, CInPacket, CInputStream, vfunc_o8_1, 113, 0xFD8B0C01);
-MS2_REPLACE_METHOD_VIA(0x140713bd0, CInPacket, CInputStream, vfunc_o8_2, 113, 0xD23ADBAD);
-MS2_REPLACE_METHOD_VIA(0x140713d40, CInPacket, CInputStream, vfunc_o8_3, 112, 0x198BE64D);
-MS2_REPLACE_METHOD_VIA(0x140713ea0, CInPacket, CInputStream, vfunc_o8_4, 113, 0x442FCC14);
-MS2_REPLACE_METHOD_VIA(0x140714020, CInPacket, CInputStream, vfunc_o8_9, 124, 0x5813BF1A);
+MS2_REPLACE_METHOD_VIA(0x140713a60, CInPacket, CInputStream, ReadUInt8, 113, 0xFD8B0C01);
+MS2_REPLACE_METHOD_VIA(0x140713bd0, CInPacket, CInputStream, ReadInt16, 113, 0xD23ADBAD);
+MS2_REPLACE_METHOD_VIA(0x140713d40, CInPacket, CInputStream, ReadInt32, 112, 0x198BE64D);
+MS2_REPLACE_METHOD_VIA(0x140713ea0, CInPacket, CInputStream, ReadInt64, 113, 0x442FCC14);
+MS2_REPLACE_METHOD_VIA(0x140714020, CInPacket, CInputStream, ReadBytes, 124, 0x5813BF1A);
 MS2_REPLACE_METHOD(0x1407140a0, CInPacket, FUN_1407140a0, 48, 0x4632FC2C);
-MS2_REPLACE_METHOD_VIA(0x140714ba0, CInPacket, CInputStream, vfunc_o8_5, 114, 0x361FC030);
-MS2_REPLACE_METHOD_VIA(0x140714c20, CInPacket, CInputStream, vfunc_o8_13, 68, 0xCDD292EB);
-MS2_REPLACE_METHOD_VIA(0x140714c70, CInPacket, CInputStream, vfunc_o8_12, 68, 0xBDCB66C8);
-MS2_REPLACE_METHOD_VIA(0x140714cc0, CInPacket, CInputStream, vfunc_o8_14, 74, 0x3B9319CB);
-MS2_REPLACE_METHOD_VIA(0x140714d10, CInPacket, CInputStream, vfunc_o8_15, 68, 0xB7280D8D);
-MS2_REPLACE_METHOD_VIA(0x140714d60, CInPacket, CInputStream, vfunc_o8_16, 74, 0xBC626986);
+MS2_REPLACE_METHOD_VIA(0x140714ba0, CInPacket, CInputStream, ReadFloat, 114, 0x361FC030);
+MS2_REPLACE_METHOD_VIA(0x140714c20, CInPacket, CInputStream, ReadShortX100, 68, 0xCDD292EB);
+MS2_REPLACE_METHOD_VIA(0x140714c70, CInPacket, CInputStream, ReadShortX10, 68, 0xBDCB66C8);
+MS2_REPLACE_METHOD_VIA(0x140714cc0, CInPacket, CInputStream, ReadShortScaled, 74, 0x3B9319CB);
+MS2_REPLACE_METHOD_VIA(0x140714d10, CInPacket, CInputStream, ReadShortDiv10, 68, 0xB7280D8D);
+MS2_REPLACE_METHOD_VIA(0x140714d60, CInPacket, CInputStream, ReadShortDivScaled, 74, 0xBC626986);
 MS2_REPLACE_METHOD(0x140715120, CInPacket, FUN_140715120, 229, 0x44DDABF1);
 MS2_REPLACE_METHOD(0x140715280, CInPacket, FUN_140715280, 207, 0x044530BA);
 

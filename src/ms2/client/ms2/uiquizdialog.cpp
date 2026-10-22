@@ -129,12 +129,12 @@ void UIQuizDialog::vfunc_72()
 void UIQuizDialog::FUN_14129a930(CInPacket& packet)
 {
     CStringW strExtra;
-    m_nMode = packet.vfunc_o8_1();
+    m_nMode = packet.ReadUInt8();
     switch (m_nMode)
     {
     case 0:
-        m_strCategory = FUN_14083d340(packet.vfunc_o8_8());
-        m_strQuestion = FUN_14083d340(packet.vfunc_o8_8());
+        m_strCategory = FUN_14083d340(packet.ReadUnicodeString());
+        m_strQuestion = FUN_14083d340(packet.ReadUnicodeString());
         FUN_14070f5f0(packet, strExtra);
         FUN_14070f480(packet, m_nSeconds);
         m_nDeadline = FUN_140869420() + m_nSeconds * 1000;
@@ -143,9 +143,9 @@ void UIQuizDialog::FUN_14129a930(CInPacket& packet)
             m_strQuestion += strExtra;
         break;
     case 1:
-        m_bCorrect = packet.vfunc_o8_0();
-        m_strAnswer = FUN_14083d340(packet.vfunc_o8_8());
-        m_nSeconds = packet.vfunc_o8_3();
+        m_bCorrect = packet.ReadBool();
+        m_strAnswer = FUN_14083d340(packet.ReadUnicodeString());
+        m_nSeconds = packet.ReadInt32();
         m_nDeadline = FUN_140869420() + m_nSeconds * 1000;
         m_strAnswer.Replace(L"\\n", L"\n");
         break;

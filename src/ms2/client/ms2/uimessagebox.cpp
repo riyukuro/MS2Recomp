@@ -1722,7 +1722,7 @@ int UIMessageBox::FUN_1419fcf60(int nButton)
     {
         COutPacket packet(static_cast<int>(SendOp::RecallScroll), 0);
         packet.Encode1(m_data->FUN_141a02e50(0, 0));
-        packet.COutPacket::vfunc_o10_8(m_data->FUN_141a02fd0(1, CStringW()));
+        packet.COutPacket::WriteUnicodeString(m_data->FUN_141a02fd0(1, CStringW()));
         packet.Encode4(m_data->FUN_141a02e90(2, 0));
         FUN_140710590(packet);
     }
@@ -2188,7 +2188,7 @@ int UIMessageBox::FUN_1419feae0(int nButton, const CStringW& strName)
             return 0;
         }
         COutPacket packet(static_cast<int>(SendOp::CheckCharName), 0);
-        packet.COutPacket::vfunc_o10_8(strName);
+        packet.COutPacket::WriteUnicodeString(strName);
         packet.Encode8(spData->FUN_141a02c00());
         FUN_140710590(packet);
     }

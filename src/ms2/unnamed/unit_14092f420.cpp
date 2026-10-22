@@ -418,12 +418,12 @@ int FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, int nK
     if (!FUN_140930d70())
     {
         COutPacket packet(static_cast<int>(SendOp::KeyTable), 0);
-        packet.vfunc_o10_1(3);
-        packet.vfunc_o10_2((short)nSlot);
-        packet.vfunc_o10_3(nSkillId);
-        packet.vfunc_o10_3(nItemId);
-        packet.vfunc_o10_4(nItemUid);
-        packet.vfunc_o10_3(nKind);
+        packet.WriteUInt8(3);
+        packet.WriteInt16((short)nSlot);
+        packet.WriteInt32(nSkillId);
+        packet.WriteInt32(nItemId);
+        packet.WriteInt64(nItemUid);
+        packet.WriteInt32(nKind);
         FUN_140710590(packet);
     }
     return 1;
@@ -479,12 +479,12 @@ int FUN_14092fac0(int nSkillId, int nItemId, __int64 nItemUid, int nSlot)
         if (!FUN_140930d70())
         {
             COutPacket packet(static_cast<int>(SendOp::KeyTable), 0);
-            packet.vfunc_o10_1(4);
-            packet.vfunc_o10_2((short)nSlot);
-            packet.vfunc_o10_3(nSkillId);
-            packet.vfunc_o10_3(nItemId);
-            packet.vfunc_o10_4(nItemUid);
-            packet.vfunc_o10_3(-1);
+            packet.WriteUInt8(4);
+            packet.WriteInt16((short)nSlot);
+            packet.WriteInt32(nSkillId);
+            packet.WriteInt32(nItemId);
+            packet.WriteInt64(nItemUid);
+            packet.WriteInt32(-1);
             FUN_140710590(packet);
         }
         return 1;
@@ -504,10 +504,10 @@ int SendKeyTableMode5(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, in
         if (!FUN_140930d70())
         {
             COutPacket packet(static_cast<int>(SendOp::KeyTable), 0);
-            packet.vfunc_o10_1(5);
-            packet.vfunc_o10_2((short)nSlot);
-            packet.vfunc_o10_3(nSkillId);
-            packet.vfunc_o10_4(nItemUid);
+            packet.WriteUInt8(5);
+            packet.WriteInt16((short)nSlot);
+            packet.WriteInt32(nSkillId);
+            packet.WriteInt64(nItemUid);
             FUN_140710590(packet);
             FUN_1409331f0()->FUN_14142f470(nSlot, nParam);
         }
@@ -521,7 +521,7 @@ int SendKeyTableMode5(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, in
 int SendKeyTableMode6()
 {
     COutPacket packet(static_cast<int>(SendOp::KeyTable), 0);
-    packet.vfunc_o10_1(6);
+    packet.WriteUInt8(6);
     FUN_140710590(packet);
     return 1;
 }
@@ -530,8 +530,8 @@ int SendKeyTableMode6()
 int SendKeyTableMode8(int nSlot)
 {
     COutPacket packet(static_cast<int>(SendOp::KeyTable), 0);
-    packet.vfunc_o10_1(8);
-    packet.vfunc_o10_2((short)nSlot);
+    packet.WriteUInt8(8);
+    packet.WriteInt16((short)nSlot);
     FUN_140710590(packet);
     return 1;
 }

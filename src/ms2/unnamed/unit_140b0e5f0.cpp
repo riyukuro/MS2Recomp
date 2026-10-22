@@ -176,9 +176,9 @@ void CoupleEffectSystem::FUN_140b0ead0(__int64 nValue)
     if (m_bLinked != 0 && m_nEffectId > 0)
     {
         COutPacket packet(static_cast<int>(SendOp::BuddyBadge), 0);
-        packet.COutPacket::vfunc_o10_1(2);
-        packet.COutPacket::vfunc_o10_4(FUN_140b0ec80());
-        packet.COutPacket::vfunc_o10_4(nValue);
+        packet.COutPacket::WriteUInt8(2);
+        packet.COutPacket::WriteInt64(FUN_140b0ec80());
+        packet.COutPacket::WriteInt64(nValue);
         FUN_140710590(packet);
     }
 }
@@ -322,8 +322,8 @@ void CoupleEffectSystem::FUN_140b0f260()
     if (bSame)
     {
         COutPacket packet(static_cast<int>(SendOp::BuddyBadge), 0);
-        packet.COutPacket::vfunc_o10_1(3);
-        packet.COutPacket::vfunc_o10_4(m_nPartnerId);
+        packet.COutPacket::WriteUInt8(3);
+        packet.COutPacket::WriteInt64(m_nPartnerId);
         FUN_140710590(packet);
         m_bRequested = 1;
     }
@@ -340,8 +340,8 @@ void CoupleEffectSystem::FUN_140b0f3a0(int nMode)
             FUN_140b0eed0();
     }
     COutPacket packet(static_cast<int>(SendOp::BuddyBadge), 0);
-    packet.COutPacket::vfunc_o10_1((unsigned char)nMode);
-    packet.COutPacket::vfunc_o10_4(FUN_140b0ec80());
+    packet.COutPacket::WriteUInt8((unsigned char)nMode);
+    packet.COutPacket::WriteInt64(FUN_140b0ec80());
     FUN_140710590(packet);
 }
 

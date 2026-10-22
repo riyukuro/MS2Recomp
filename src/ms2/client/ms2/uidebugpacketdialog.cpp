@@ -205,26 +205,26 @@ void UIDebugPacketDialog::vfunc_72()
                     if (nKind == 1)
                     {
                         unsigned char n = FUN_140768010(0x100, 0);
-                        packet.vfunc_o10_1(n);
+                        packet.WriteUInt8(n);
                         nWritten += 1;
                     }
                     else if (nKind == 2)
                     {
                         short n = FUN_140768010(0xffff, 0);
-                        packet.vfunc_o10_2(n);
+                        packet.WriteInt16(n);
                         nWritten += 2;
                     }
                     else if (nKind == 3)
                     {
                         int n = FUN_140768010(0x7fffffff, 0);
-                        packet.vfunc_o10_3(n);
+                        packet.WriteInt32(n);
                         nWritten += 4;
                     }
                     else if (nKind == 4)
                     {
                         FUN_140768010(0x7fffffff, 0);
                         int n = FUN_140768010(0x7fffffff, 0);
-                        packet.vfunc_o10_4(n);
+                        packet.WriteInt64(n);
                         nWritten += 8;
                     }
                 }
@@ -313,15 +313,15 @@ int UIDebugPacketDialog::FUN_141291470()
         if (nType == 0)
             break;
         if (nType == 1)
-            m_packet.vfunc_o10_1(FUN_1406c3b20(strValue));
+            m_packet.WriteUInt8(FUN_1406c3b20(strValue));
         else if (nType == 2)
-            m_packet.vfunc_o10_2(FUN_140729360(strValue));
+            m_packet.WriteInt16(FUN_140729360(strValue));
         else if (nType == 3)
-            m_packet.vfunc_o10_3(FUN_1401d9a00(strValue));
+            m_packet.WriteInt32(FUN_1401d9a00(strValue));
         else if (nType == 4)
-            m_packet.vfunc_o10_4(FUN_140d2eff0(strValue));
+            m_packet.WriteInt64(FUN_140d2eff0(strValue));
         else if (nType == 5)
-            m_packet.vfunc_o10_8(strValue);
+            m_packet.WriteUnicodeString(strValue);
     }
     return 1;
 }

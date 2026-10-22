@@ -784,7 +784,7 @@ void UIPartyDialog::FUN_141a77760(float x, float y, __int64 nCharId)
 // @0x141a77980
 void UIPartyDialog::FUN_141a77980(CInPacket& packet)
 {
-    unsigned char nType = packet.vfunc_o8_1();
+    unsigned char nType = packet.ReadUInt8();
     if (nType == 0x11)
     {
         FUN_141a79840();
@@ -806,7 +806,7 @@ void UIPartyDialog::FUN_141a77980(CInPacket& packet)
 // @0x141a77a40
 void UIPartyDialog::FUN_141a77a40(CInPacket& packet)
 {
-    unsigned char nType = packet.vfunc_o8_1();
+    unsigned char nType = packet.ReadUInt8();
     if (nType > 2 && nType < 5)
     {
         FUN_141a79840();
@@ -1936,7 +1936,7 @@ int UIPopUpMenu::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 {
                     COutPacket packet(static_cast<int>(SendOp::Party), 0);
                     packet.Encode1(0x11);
-                    packet.COutPacket::vfunc_o10_8(args[1]);
+                    packet.COutPacket::WriteUnicodeString(args[1]);
                     FUN_140710590(packet);
                 }
                 else if (FUN_140841300(args[0], "expelMember"))
@@ -2416,7 +2416,7 @@ void UIPopUpMenu::FUN_141a80a50(CInPacket& packet)
 {
     if (FUN_141a80880() != 0)
         return;
-    unsigned char nMode = packet.vfunc_o8_1();
+    unsigned char nMode = packet.ReadUInt8();
     if (nMode == 7)
     {
         FUN_141a80770();
@@ -3395,7 +3395,7 @@ void UIPopUpMenu::FUN_141a86a50()
     {
         COutPacket packet(static_cast<int>(SendOp::RequestHome), 0);
         packet.Encode1(1);
-        packet.COutPacket::vfunc_o10_8(m_90);
+        packet.COutPacket::WriteUnicodeString(m_90);
         FUN_140710590(packet);
     }
 }
@@ -3433,7 +3433,7 @@ void UIPopUpMenu::SendRequestCube()
     {
         COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
         packet.Encode1(0x39);
-        packet.COutPacket::vfunc_o10_6(FUN_14016a600(m_90, 0));
+        packet.COutPacket::WriteUnicodeStringA(FUN_14016a600(m_90, 0));
         FUN_140710590(packet);
     }
 }
@@ -3456,7 +3456,7 @@ void UIPopUpMenu::FUN_141a86d20()
     {
         COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
         packet.Encode1(1);
-        packet.COutPacket::vfunc_o10_8(m_90);
+        packet.COutPacket::WriteUnicodeString(m_90);
         FUN_140710590(packet);
     }
 }
@@ -3468,7 +3468,7 @@ void UIPopUpMenu::FUN_141a86db0()
     {
         COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
         packet.Encode1(3);
-        packet.COutPacket::vfunc_o10_8(m_90);
+        packet.COutPacket::WriteUnicodeString(m_90);
         FUN_140710590(packet);
     }
 }
@@ -3480,7 +3480,7 @@ void UIPopUpMenu::FUN_141a86e40()
     {
         COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
         packet.Encode1(2);
-        packet.COutPacket::vfunc_o10_8(m_90);
+        packet.COutPacket::WriteUnicodeString(m_90);
         FUN_140710590(packet);
     }
 }

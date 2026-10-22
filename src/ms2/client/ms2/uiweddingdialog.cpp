@@ -294,7 +294,7 @@ bool UIWeddingDialog::SendWedding(int nResult, const CMsgBoxData& box)
     if (nResult == 0)
     {
         COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
-        packet.vfunc_o10_1(7);
+        packet.WriteUInt8(7);
         FUN_140710590(packet);
     }
     else

@@ -191,7 +191,7 @@ void UIMassiveEvent::FUN_1419f5dd0()
 // @0x1419f5e90
 void UIMassiveEvent::FUN_1419f5e90(CInPacket* pPacket)
 {
-    int nKind = pPacket->vfunc_o8_1();
+    int nKind = pPacket->ReadUInt8();
     switch (nKind)
     {
     case 0:
@@ -226,19 +226,19 @@ void UIMassiveEvent::FUN_1419f5e90(CInPacket* pPacket)
 // @0x1419f5fc0
 void UIMassiveEvent::FUN_1419f5fc0(CInPacket* pPacket)
 {
-    int nStage = pPacket->vfunc_o8_3();
-    int nA = pPacket->vfunc_o8_3();
-    int nB = pPacket->vfunc_o8_3();
-    int nC = pPacket->vfunc_o8_3();
+    int nStage = pPacket->ReadInt32();
+    int nA = pPacket->ReadInt32();
+    int nB = pPacket->ReadInt32();
+    int nC = pPacket->ReadInt32();
     FUN_1419f6df0(nStage, nA, nB, nC);
 }
 
 // @0x1419f60a0
 void UIMassiveEvent::FUN_1419f60a0(CInPacket* pPacket)
 {
-    int nRound = pPacket->vfunc_o8_3();
-    bool bFinal = pPacket->vfunc_o8_0();
-    int nGoal = pPacket->vfunc_o8_3();
+    int nRound = pPacket->ReadInt32();
+    bool bFinal = pPacket->ReadBool();
+    int nGoal = pPacket->ReadInt32();
     if (0 < nGoal)
     {
         UIEventIntroduce* pUI = FUN_140dbf520(0x4f06);
@@ -255,18 +255,18 @@ void UIMassiveEvent::FUN_1419f60a0(CInPacket* pPacket)
 void UIMassiveEvent::FUN_1419f6180(CInPacket* pPacket)
 {
     CStringW strText = StringIdInterface(*pPacket).FUN_141024e60();
-    int nDuration = pPacket->vfunc_o8_3();
+    int nDuration = pPacket->ReadInt32();
     FUN_1419f6810(6, strText, nDuration);
 }
 
 // @0x1419f6240
 void UIMassiveEvent::FUN_1419f6240(CInPacket* pPacket)
 {
-    CStringW strText = pPacket->vfunc_o8_8();
+    CStringW strText = pPacket->ReadUnicodeString();
     strText = FUN_140a87680()->FUN_140a87690()->FUN_14087ede0(strText);
-    int nStep = pPacket->vfunc_o8_3();
-    int nDuration = pPacket->vfunc_o8_3();
-    int nType = pPacket->vfunc_o8_3();
+    int nStep = pPacket->ReadInt32();
+    int nDuration = pPacket->ReadInt32();
+    int nType = pPacket->ReadInt32();
     FUN_1419f6bc0(CStringW(strText), nStep, nDuration, nType);
 }
 
@@ -274,9 +274,9 @@ void UIMassiveEvent::FUN_1419f6240(CInPacket* pPacket)
 void UIMassiveEvent::FUN_1419f63d0(CInPacket* pPacket)
 {
     CStringW strText = StringIdInterface(*pPacket).FUN_141024e60();
-    int nStep = pPacket->vfunc_o8_3();
-    int nDuration = pPacket->vfunc_o8_3();
-    int nType = pPacket->vfunc_o8_3();
+    int nStep = pPacket->ReadInt32();
+    int nDuration = pPacket->ReadInt32();
+    int nType = pPacket->ReadInt32();
     FUN_1419f6bc0(CStringW(strText), nStep, nDuration, nType);
 }
 
@@ -284,7 +284,7 @@ void UIMassiveEvent::FUN_1419f63d0(CInPacket* pPacket)
 void UIMassiveEvent::FUN_1419f6520(CInPacket* pPacket)
 {
     CStringW strText = StringIdInterface(*pPacket).FUN_141024e60();
-    int nDuration = pPacket->vfunc_o8_3();
+    int nDuration = pPacket->ReadInt32();
     FUN_1419f6810(2, strText, nDuration);
 }
 
@@ -292,24 +292,24 @@ void UIMassiveEvent::FUN_1419f6520(CInPacket* pPacket)
 void UIMassiveEvent::FUN_1419f65e0(CInPacket* pPacket)
 {
     CStringW strText = StringIdInterface(*pPacket).FUN_141024e60();
-    int nDuration = pPacket->vfunc_o8_3();
+    int nDuration = pPacket->ReadInt32();
     FUN_1419f6810(1, strText, nDuration);
 }
 
 // @0x1419f66a0
 void UIMassiveEvent::FUN_1419f66a0(CInPacket* pPacket)
 {
-    int nSubType = pPacket->vfunc_o8_1();
-    CStringW strRaw = pPacket->vfunc_o8_8();
+    int nSubType = pPacket->ReadUInt8();
+    CStringW strRaw = pPacket->ReadUnicodeString();
     CStringW strText = FUN_140a87680()->FUN_140a87690()->FUN_14087ede0(strRaw);
-    int nDuration = pPacket->vfunc_o8_3();
+    int nDuration = pPacket->ReadInt32();
     FUN_1419f6810(nSubType, strText, nDuration);
 }
 
 // @0x1419f6790
 void UIMassiveEvent::FUN_1419f6790(CInPacket* pPacket)
 {
-    int nDuration = pPacket->vfunc_o8_3();
+    int nDuration = pPacket->ReadInt32();
     FUN_1419f6bc0(GetStringCommon(0x974), 0, nDuration, 2);
 }
 

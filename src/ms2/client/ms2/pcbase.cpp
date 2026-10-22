@@ -2529,28 +2529,28 @@ MS2_REPLACE_METHOD(0x141670920, PCBase, FUN_141670920, 106, 0x9D769AB6);
 void PCBase::vfunc_90(void* p)
 {
     CInPacket* pPacket = static_cast<CInPacket*>(p);
-    unsigned char nCount = pPacket->vfunc_o8_1();
+    unsigned char nCount = pPacket->ReadUInt8();
     if (nCount == 0x23) {
         for (int nType = 0; nType < 0x23; nType++) {
             for (int i = 0; i < 3; i++) {
                 __int64 nValue;
                 if (FUN_14082f1a0(nType) == 0)
-                    nValue = (unsigned)pPacket->vfunc_o8_3();
+                    nValue = (unsigned)pPacket->ReadInt32();
                 else
-                    nValue = pPacket->vfunc_o8_4();
+                    nValue = pPacket->ReadInt64();
                 FUN_141670540(i, nType, nValue);
             }
         }
     }
     else {
         for (int n = 0; n < nCount; n++) {
-            unsigned char nType = pPacket->vfunc_o8_1();
+            unsigned char nType = pPacket->ReadUInt8();
             for (int i = 0; i < 3; i++) {
                 __int64 nValue;
                 if (FUN_14082f1a0(nType) == 0)
-                    nValue = (unsigned)pPacket->vfunc_o8_3();
+                    nValue = (unsigned)pPacket->ReadInt32();
                 else
-                    nValue = pPacket->vfunc_o8_4();
+                    nValue = pPacket->ReadInt64();
                 FUN_141670540(i, nType, nValue);
             }
         }

@@ -1420,11 +1420,11 @@ void Customize::Equipment::SendColors()
     FUN_1414239e0(&anColor[0], 0, pPc);
     FUN_1414239e0(&anColor[1], 1, pPc);
     COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
-    packet.vfunc_o10_1(6);
-    packet.vfunc_o10_1(m_pListener->GetShopId());
-    packet.vfunc_o10_3(anColor[0]);
-    packet.vfunc_o10_3(anColor[1]);
-    packet.vfunc_o10_1(m_pListener->UseFreeTry());
+    packet.WriteUInt8(6);
+    packet.WriteUInt8(m_pListener->GetShopId());
+    packet.WriteInt32(anColor[0]);
+    packet.WriteInt32(anColor[1]);
+    packet.WriteUInt8(m_pListener->UseFreeTry());
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x140CD0B30, Customize::Equipment, SendColors, 353, 0x736A2DBB);
@@ -1445,11 +1445,11 @@ void Customize::Equipment::SendAdded(MS2Ptr<CItem> spItem)
             nContext = spContext->m_20;
     }
     COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
-    packet.vfunc_o10_1(3);
-    packet.vfunc_o10_1(m_pListener->GetShopId());
-    packet.vfunc_o10_1(m_pListener->UseFreeTry());
-    packet.vfunc_o10_3(spItem->FUN_1405276c0());
-    packet.vfunc_o10_4(nContext);
+    packet.WriteUInt8(3);
+    packet.WriteUInt8(m_pListener->GetShopId());
+    packet.WriteUInt8(m_pListener->UseFreeTry());
+    packet.WriteInt32(spItem->FUN_1405276c0());
+    packet.WriteInt64(nContext);
     spItem->FUN_140525590(reinterpret_cast<__int64>(&packet));     // writes the item's extra data (citem.h types it __int64)
     FUN_140710590(packet);
     ResetCapPosition(spItem);
@@ -1466,10 +1466,10 @@ void Customize::Equipment::SendModified(MS2Ptr<CItem> spItem)
     if (spItem == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
-    packet.vfunc_o10_1(5);
-    packet.vfunc_o10_1(m_pListener->GetShopId());
-    packet.vfunc_o10_1(m_pListener->UseFreeTry());
-    packet.vfunc_o10_4(spItem->FUN_140526a50());
+    packet.WriteUInt8(5);
+    packet.WriteUInt8(m_pListener->GetShopId());
+    packet.WriteUInt8(m_pListener->UseFreeTry());
+    packet.WriteInt64(spItem->FUN_140526a50());
     spItem->FUN_140525590(reinterpret_cast<__int64>(&packet));
     FUN_140710590(packet);
 }
@@ -1485,8 +1485,8 @@ void Customize::Equipment::SendRemoved(MS2Ptr<CItem> spItem)
     if (spItem == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
-    packet.vfunc_o10_1(4);
-    packet.vfunc_o10_4(spItem->FUN_140526a50());
+    packet.WriteUInt8(4);
+    packet.WriteInt64(spItem->FUN_140526a50());
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x140CD0FD0, Customize::Equipment, SendRemoved, 210, 0x4531DD36);

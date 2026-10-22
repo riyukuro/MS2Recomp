@@ -1290,19 +1290,19 @@ void StateSkill::FUN_1417ec2f0()
     m_bSentCharging = m_bCharging;
     m_bSentLoop = m_bLoop;
     COutPacket packet(static_cast<int>(SendOp::Skill), 0);
-    packet.vfunc_o10_1(2);
-    packet.vfunc_o10_4(m_spRecord->m_nCastId);
-    packet.vfunc_o10_3(m_spRecord->GetSkillId());
-    packet.vfunc_o10_2(m_spRecord->GetLevel());
-    packet.vfunc_o10_1(m_spRecord->m_nMotion);
-    packet.vfunc_o10_10(m_spRecord->m_ptPos);
-    packet.vfunc_o10_10(m_spRecord->m_ptDir);
-    packet.vfunc_o10_10(m_spRecord->m_ptRot);
+    packet.WriteUInt8(2);
+    packet.WriteInt64(m_spRecord->m_nCastId);
+    packet.WriteInt32(m_spRecord->GetSkillId());
+    packet.WriteInt16(m_spRecord->GetLevel());
+    packet.WriteUInt8(m_spRecord->m_nMotion);
+    packet.WriteVector3(m_spRecord->m_ptPos);
+    packet.WriteVector3(m_spRecord->m_ptDir);
+    packet.WriteVector3(m_spRecord->m_ptRot);
     NiPoint3 kPos = m_pOwner->FUN_14123c360();
-    packet.vfunc_o10_10(SS_SP(kPos));
-    packet.vfunc_o10_0(m_bCharging);
-    packet.vfunc_o10_0(m_bLoop);
-    packet.vfunc_o10_5(m_spRecord->m_fCooldown);
+    packet.WriteVector3(SS_SP(kPos));
+    packet.WriteBool(m_bCharging);
+    packet.WriteBool(m_bLoop);
+    packet.WriteFloat(m_spRecord->m_fCooldown);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x1417ec2f0, StateSkill, FUN_1417ec2f0, 826, 0x2288ACBB);
@@ -1381,8 +1381,8 @@ void StateSkill::FUN_1417ecce0(unsigned nTick, MS2Ptr<CSkillRecord> spRecord, in
     packet.Encode1(0);
     packet.Encode8(spRecord->m_nCastId);
     packet.Encode1((unsigned char)nAttack);
-    packet.vfunc_o10_10(spRecord->m_ptPos);
-    packet.vfunc_o10_10(SS_SP(kDir));
+    packet.WriteVector3(spRecord->m_ptPos);
+    packet.WriteVector3(SS_SP(kDir));
     packet.Encode1((unsigned char)aTags.GetCount());
     packet.Encode4(spRecord->m_nSendCount);
     for (unsigned i = 0; i < aTags.GetCount(); i++)
@@ -1702,8 +1702,8 @@ void StateSkill::SendSkillMode4()
     if (m_spRecord == NULL)
         return;
     COutPacket packet(static_cast<int>(SendOp::Skill), 0);
-    packet.vfunc_o10_1(4);
-    packet.vfunc_o10_4(m_spRecord->m_nCastId);
+    packet.WriteUInt8(4);
+    packet.WriteInt64(m_spRecord->m_nCastId);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x1417f4e10, StateSkill, SendSkillMode4, 134, 0x06A14881);
@@ -1914,7 +1914,7 @@ int StateSkill::FUN_1417eaa50(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int
             COutPacket packet(static_cast<int>(SendOp::Emote), 0);
             packet.Encode1(2);
             packet.Encode4(spRecord->GetSkillId());
-            packet.vfunc_o10_6(spRecord->m_spSkill->GetParamStr());
+            packet.WriteUnicodeStringA(spRecord->m_spSkill->GetParamStr());
             FUN_140710590(packet);
         }
         *pResult = 1;
@@ -2116,7 +2116,7 @@ int StateSkill::FUN_1417ebc00(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int
             kPayload.m_strAttachNode = spRecord->m_strB8;
         }
         COutPacket packet(static_cast<int>(SendOp::Skill), 0);
-        packet.vfunc_o10_1(0);
+        packet.WriteUInt8(0);
         FUN_1401fd510(reinterpret_cast<unsigned char*>(&kPayload), packet);
         FUN_140710590(packet);
         Unk_SsHeldItem* pHeld = FUN_14165f100(pMyPC);

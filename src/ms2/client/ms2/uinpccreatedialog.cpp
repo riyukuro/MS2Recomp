@@ -226,11 +226,11 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             int nNpc = data.FUN_1422b8a10();
             int nCount = data.FUN_1422b8a10();
             COutPacket pkt(static_cast<int>(SendOp::RequestNpcCreate), 0);
-            pkt.vfunc_o10_3(nNpc);
-            pkt.vfunc_o10_10(pPlayer->vfunc_18());
-            pkt.vfunc_o10_10(pPlayer->vfunc_20());
-            pkt.vfunc_o10_3(nCount);
-            pkt.vfunc_o10_0(false);
+            pkt.WriteInt32(nNpc);
+            pkt.WriteVector3(pPlayer->vfunc_18());
+            pkt.WriteVector3(pPlayer->vfunc_20());
+            pkt.WriteInt32(nCount);
+            pkt.WriteBool(false);
             FUN_140710590(pkt);
             TSingleton<CFilePreload>::GetInstance()->FUN_1412104c0(nNpc);
         }
@@ -244,12 +244,12 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             float fValue = data.FUN_1422b8c10();
             int nCount = data.FUN_1422b8a10();
             COutPacket pkt(static_cast<int>(SendOp::RequestNpcCreate), 0);
-            pkt.vfunc_o10_3(nNpc);
-            pkt.vfunc_o10_10(pPlayer->vfunc_18());
-            pkt.vfunc_o10_10(pPlayer->vfunc_20());
-            pkt.vfunc_o10_3(nCount);
-            pkt.vfunc_o10_0(true);
-            pkt.vfunc_o10_5(fValue);
+            pkt.WriteInt32(nNpc);
+            pkt.WriteVector3(pPlayer->vfunc_18());
+            pkt.WriteVector3(pPlayer->vfunc_20());
+            pkt.WriteInt32(nCount);
+            pkt.WriteBool(true);
+            pkt.WriteFloat(fValue);
             FUN_140710590(pkt);
             TSingleton<CFilePreload>::GetInstance()->FUN_1412104c0(nNpc);
         }
@@ -276,8 +276,8 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
                 MS2Ptr<CProxyGameObject> spObj = FUN_1403ed2d0()->FUN_141bc9e70(nNpc);
                 if (spObj.get() != 0) {
                     COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
-                    pkt.vfunc_o10_1(2);
-                    pkt.vfunc_o10_11(spObj->FUN_1416c2270());
+                    pkt.WriteUInt8(2);
+                    pkt.WriteVector3Short(spObj->FUN_1416c2270());
                     FUN_140710590(pkt);
                 }
             } else {
@@ -309,8 +309,8 @@ void UINpcCreateDialog::vfunc_1(void* pEvt)
             MS2Ptr<CProxyGameObject> spObj = FUN_1403ed2d0()->FUN_141bc9e70(m_nPendingNpc);
             if (spObj.get() != 0) {
                 COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
-                pkt.vfunc_o10_1(2);
-                pkt.vfunc_o10_11(spObj->FUN_1416c2270());
+                pkt.WriteUInt8(2);
+                pkt.WriteVector3Short(spObj->FUN_1416c2270());
                 FUN_140710590(pkt);
                 m_nPendingNpc = 0;
             }
@@ -336,8 +336,8 @@ void UINpcCreateDialog::vfunc_3(void* pActor)
     }
     if (spActor->FUN_1416c2350() == m_nPendingNpc) {
         COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
-        pkt.vfunc_o10_1(2);
-        pkt.vfunc_o10_11(spActor->FUN_1416c2270());
+        pkt.WriteUInt8(2);
+        pkt.WriteVector3Short(spActor->FUN_1416c2270());
         FUN_140710590(pkt);
         m_nPendingNpc = 0;
     }

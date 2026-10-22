@@ -650,7 +650,7 @@ int UILapenshardEquipTab::vfunc_6(const char* szMethod, const Scaleform::GFx::Va
             if (bMounted != 0)
             {
                 COutPacket pkt(static_cast<int>(SendOp::Lapenshard), 0);
-                pkt.vfunc_o10_1(2);
+                pkt.WriteUInt8(2);
                 Unk_LsSlotArg arg;
                 arg.m_n = nSlot;
                 FUN_1405b5e40(&arg, &pkt);
@@ -673,7 +673,7 @@ void UILapenshardEquipTab::vfunc_9(CInPacket& packet)
 {
     if (packet.FUN_14070fe80() == 0x11b)
     {
-        int nKind = (unsigned char)packet.vfunc_o8_1();
+        int nKind = (unsigned char)packet.ReadUInt8();
         switch (nKind)
         {
         case 0:
@@ -1821,9 +1821,9 @@ int UILapenshardUpgradeTab::vfunc_6(const char* szMethod, const Scaleform::GFx::
         if (m_spSource == 0)
             return 0;
         COutPacket pkt(static_cast<int>(SendOp::Lapenshard), 0);
-        pkt.vfunc_o10_1(6);
-        pkt.vfunc_o10_3(m_spSource->FUN_1405276c0());
-        pkt.vfunc_o10_3(m_n_c0);
+        pkt.WriteUInt8(6);
+        pkt.WriteInt32(m_spSource->FUN_1405276c0());
+        pkt.WriteInt32(m_n_c0);
         FUN_140710590(pkt);
         return 1;
     }
@@ -1846,7 +1846,7 @@ void UILapenshardUpgradeTab::vfunc_9(CInPacket& packet)
 {
     if (packet.FUN_14070fe80() == 0x11b)
     {
-        int nKind = (unsigned char)packet.vfunc_o8_1();
+        int nKind = (unsigned char)packet.ReadUInt8();
         switch (nKind)
         {
         case 4:
@@ -1899,7 +1899,7 @@ void UILapenshardUpgradeTab::SendLapenshardMode4()
     if (pPlayer == 0)
         return;
     COutPacket pkt(static_cast<int>(SendOp::Lapenshard), 0);
-    pkt.vfunc_o10_1(4);
+    pkt.WriteUInt8(4);
     Unk_LsPktA rec;
     rec.m_nItemId = m_spSource->FUN_1405276c0();
     rec.m_nUid = m_spSource->FUN_140526a50();
@@ -1928,7 +1928,7 @@ void UILapenshardUpgradeTab::SendLapenshardMode3(MS2Ptr<CItem> spItem)
     FUN_140c68f90();
     m_nState = 1;
     COutPacket pkt(static_cast<int>(SendOp::Lapenshard), 0);
-    pkt.vfunc_o10_1(3);
+    pkt.WriteUInt8(3);
     Unk_LsRecHead rec;
     rec.m_nItemId = spItem->FUN_1405276c0();
     rec.m_nUid = spItem->FUN_140526a50();
@@ -2298,7 +2298,7 @@ void UILapenshardUpgradeTab::SendLapenshardMode5()
     if (pPlayer == 0)
         return;
     COutPacket pkt(static_cast<int>(SendOp::Lapenshard), 0);
-    pkt.vfunc_o10_1(5);
+    pkt.WriteUInt8(5);
     Unk_LsPktB rec;
     rec.m_nItemId = m_spSource->FUN_1405276c0();
     rec.m_nUid = m_spSource->FUN_140526a50();

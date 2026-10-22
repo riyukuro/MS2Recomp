@@ -198,24 +198,24 @@ void UIItemTreasureMapDialog::vfunc_79(void* p)
     UIDialog::vfunc_79(p);
     if (TM_PKT->FUN_14070fe80() == 0xf5 && FUN_140ba28d0(&m_30, 0) == 0)
     {
-        unsigned char nSub = TM_PKT->vfunc_o8_1();
+        unsigned char nSub = TM_PKT->ReadUInt8();
         if (nSub == 2)
         {
-            __int64 nUid = TM_PKT->vfunc_o8_4();
-            __int64 nCost = TM_PKT->vfunc_o8_4();
+            __int64 nUid = TM_PKT->ReadInt64();
+            __int64 nCost = TM_PKT->ReadInt64();
             FUN_140c56a50(nUid, nCost);
         }
         else if (nSub == 3)
         {
-            if (TM_PKT->vfunc_o8_0() == false)
+            if (TM_PKT->ReadBool() == false)
             {
                 m_nState = 2;
                 FUN_140c56670();
             }
             else
             {
-                int nItemId = TM_PKT->vfunc_o8_3();
-                int nRank = TM_PKT->vfunc_o8_3();
+                int nItemId = TM_PKT->ReadInt32();
+                int nRank = TM_PKT->ReadInt32();
                 FUN_140c57300(nItemId, nRank);
             }
         }
@@ -249,9 +249,9 @@ void UIItemTreasureMapDialog::SendTreasureMapMode2(const Scaleform::GFx::Functio
             {
                 __int64 nUid = spItem->FUN_140526a50();
                 COutPacket pkt(static_cast<int>(SendOp::TreasureMap), 0);
-                pkt.vfunc_o10_1(2);
-                pkt.vfunc_o10_4(nUid);
-                pkt.vfunc_o10_0(m_bFree);
+                pkt.WriteUInt8(2);
+                pkt.WriteInt64(nUid);
+                pkt.WriteBool(m_bFree);
                 FUN_140710590(pkt);
             }
         }
@@ -278,9 +278,9 @@ void UIItemTreasureMapDialog::FUN_140c55d20(const Scaleform::GFx::FunctionHandle
                     if (spItem->vfunc_4() != 0)
                     {
                         COutPacket pkt(static_cast<int>(SendOp::TreasureMap), 0);
-                        pkt.vfunc_o10_1(2);
-                        pkt.vfunc_o10_4(m_nTargetUid);
-                        pkt.vfunc_o10_0(m_bFree);
+                        pkt.WriteUInt8(2);
+                        pkt.WriteInt64(m_nTargetUid);
+                        pkt.WriteBool(m_bFree);
                         FUN_140710590(pkt);
                     }
                 }

@@ -2030,8 +2030,8 @@ bool SendRequestItemEnchant(int nButton, const CMsgBoxData& box)
         return true;
     __int64 nItemUid = box.FUN_141a02f10(0, 0);
     COutPacket packet(static_cast<int>(SendOp::RequestItemEnchant), 0);
-    packet.vfunc_o10_1(9);
-    packet.vfunc_o10_4(nItemUid);
+    packet.WriteUInt8(9);
+    packet.WriteInt64(nItemUid);
     FUN_140710590(packet);
     return true;
 }

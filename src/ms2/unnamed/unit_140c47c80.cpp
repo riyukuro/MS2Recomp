@@ -261,7 +261,7 @@ void ItemSocketSystemPageGemstoneSwap::vfunc_2()
 void ItemSocketSystemPageGemstoneSwap::vfunc_5(CInPacket* packet)
 {
     ItemSocketSystemPageBase::vfunc_5(packet);
-    int operation = packet->vfunc_o8_1();
+    int operation = packet->ReadUInt8();
     if (operation == 9)
         FUN_140c48c70(packet);
     else if (operation == 11)

@@ -74,9 +74,9 @@ EquipColorInfo::EquipColorInfo()
 void EquipColorInfo::FUN_140598bf0(COutputStream& os)
 {
     for (int i = 0; i < 3; i++)
-        os.vfunc_o10_3(m_aRgb[i]);
-    os.vfunc_o10_3(m_n24);
-    os.vfunc_o10_3(m_n28);
+        os.WriteInt32(m_aRgb[i]);
+    os.WriteInt32(m_n24);
+    os.WriteInt32(m_n28);
 }
 MS2_REPLACE_METHOD(0x140598BF0, EquipColorInfo, FUN_140598bf0, 136, 0x0DAE7468);
 
@@ -84,9 +84,9 @@ MS2_REPLACE_METHOD(0x140598BF0, EquipColorInfo, FUN_140598bf0, 136, 0x0DAE7468);
 void EquipColorInfo::FUN_140598c80(CInputStream& is)
 {
     for (int i = 0; i < 3; i++)
-        m_aRgb[i] = is.vfunc_o8_3();
-    m_n24 = is.vfunc_o8_3();
-    m_n28 = is.vfunc_o8_3();
+        m_aRgb[i] = is.ReadInt32();
+    m_n24 = is.ReadInt32();
+    m_n28 = is.ReadInt32();
 }
 MS2_REPLACE_METHOD(0x140598C80, EquipColorInfo, FUN_140598c80, 126, 0x19A61ADF);
 
@@ -519,10 +519,10 @@ MS2_REPLACE_METHOD(0x14059A620, CDecalExtraData, vfunc_3, 132, 0x0AD8B5F4);
 void CDecalExtraData::vfunc_5(COutputStream& os)
 {
     CItemExtraData::vfunc_5(os);
-    os.vfunc_o10_5(m_f58);
-    os.vfunc_o10_5(m_f5c);
-    os.vfunc_o10_5(m_f60);
-    os.vfunc_o10_5(m_f64);
+    os.WriteFloat(m_f58);
+    os.WriteFloat(m_f5c);
+    os.WriteFloat(m_f60);
+    os.WriteFloat(m_f64);
 }
 MS2_REPLACE_METHOD(0x14059A6B0, CDecalExtraData, vfunc_5, 138, 0x6ECA11DA);
 
@@ -530,10 +530,10 @@ MS2_REPLACE_METHOD(0x14059A6B0, CDecalExtraData, vfunc_5, 138, 0x6ECA11DA);
 void CDecalExtraData::vfunc_6(CInputStream& is)
 {
     CItemExtraData::vfunc_6(is);
-    m_f58 = is.vfunc_o8_5();
-    m_f5c = is.vfunc_o8_5();
-    m_f60 = is.vfunc_o8_5();
-    m_f64 = is.vfunc_o8_5();
+    m_f58 = is.ReadFloat();
+    m_f5c = is.ReadFloat();
+    m_f60 = is.ReadFloat();
+    m_f64 = is.ReadFloat();
 }
 MS2_REPLACE_METHOD(0x14059A740, CDecalExtraData, vfunc_6, 138, 0x8D92BBDB);
 
@@ -654,9 +654,9 @@ void CHairExtraData::vfunc_5(COutputStream& os)
     CItemExtraData::vfunc_5(os);
     for (int i = 0; i < 2; i++)
     {
-        os.vfunc_o10_5(m_fScale[i]);
-        os.vfunc_o10_10(m_aPt1[i]);
-        os.vfunc_o10_10(m_aPt2[i]);
+        os.WriteFloat(m_fScale[i]);
+        os.WriteVector3(m_aPt1[i]);
+        os.WriteVector3(m_aPt2[i]);
     }
 }
 MS2_REPLACE_METHOD(0x14059AE50, CHairExtraData, vfunc_5, 208, 0x03EF954E);
@@ -669,9 +669,9 @@ void CHairExtraData::vfunc_6(CInputStream& is)
     CHairExtraData kTemp;
     for (int i = 0; i < 2; i++)
     {
-        kTemp.m_fScale[i] = is.vfunc_o8_5();
-        kTemp.m_aPt1[i] = is.vfunc_o8_10();
-        kTemp.m_aPt2[i] = is.vfunc_o8_10();
+        kTemp.m_fScale[i] = is.ReadFloat();
+        kTemp.m_aPt1[i] = is.ReadVector3();
+        kTemp.m_aPt2[i] = is.ReadVector3();
     }
     for (int i = 0; i < 2; i++)
     {
@@ -806,12 +806,12 @@ void CCapExtraData::vfunc_5(COutputStream& os)
     CItemExtraData::vfunc_5(os);
     for (int i = 0; i < 1; i++)
     {
-        os.vfunc_o10_10(m_aPt[0]);
-        os.vfunc_o10_10(m_aPt[1]);
-        os.vfunc_o10_10(m_aPt[2]);
-        os.vfunc_o10_10(m_aPt[3]);
+        os.WriteVector3(m_aPt[0]);
+        os.WriteVector3(m_aPt[1]);
+        os.WriteVector3(m_aPt[2]);
+        os.WriteVector3(m_aPt[3]);
     }
-    os.vfunc_o10_5(m_f58);
+    os.WriteFloat(m_f58);
 }
 MS2_REPLACE_METHOD(0x14059B8F0, CCapExtraData, vfunc_5, 291, 0x1817F2EB);
 
@@ -823,12 +823,12 @@ void CCapExtraData::vfunc_6(CInputStream& is)
     CCapExtraData kTemp;
     for (int i = 0; i < 1; i++)
     {
-        kTemp.m_aPt[0] = is.vfunc_o8_10();
-        kTemp.m_aPt[1] = is.vfunc_o8_10();
-        kTemp.m_aPt[2] = is.vfunc_o8_10();
-        kTemp.m_aPt[3] = is.vfunc_o8_10();
+        kTemp.m_aPt[0] = is.ReadVector3();
+        kTemp.m_aPt[1] = is.ReadVector3();
+        kTemp.m_aPt[2] = is.ReadVector3();
+        kTemp.m_aPt[3] = is.ReadVector3();
     }
-    kTemp.m_f58 = is.vfunc_o8_5();
+    kTemp.m_f58 = is.ReadFloat();
     for (int i = 0; i < 1; i++)
     {
         if (!FUN_14059d190(&kTemp.m_aPt[0]))

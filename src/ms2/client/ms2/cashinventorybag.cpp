@@ -312,7 +312,7 @@ bool CCashMarketMan::GetFlag() const
 // @0x140b06020
 void CCashMarketMan::OnCash(CInPacket& packet)
 {
-    char cSub = packet.vfunc_o8_1();
+    char cSub = packet.ReadUInt8();
     if (cSub == 0)
         FUN_140b07120(packet);
     else if (cSub == 1)
@@ -341,7 +341,7 @@ void CCashMarketMan::OnCash(CInPacket& packet)
 void CCashMarketMan::SendCashMode0()
 {
     COutPacket packet(static_cast<int>(SendOp::Cash), 0);
-    packet.vfunc_o10_1(0);
+    packet.WriteUInt8(0);
     FUN_140710590(packet);
 }
 
@@ -349,7 +349,7 @@ void CCashMarketMan::SendCashMode0()
 void CCashMarketMan::SendCashMode1()
 {
     COutPacket packet(static_cast<int>(SendOp::Cash), 0);
-    packet.vfunc_o10_1(1);
+    packet.WriteUInt8(1);
     FUN_140710590(packet);
 }
 
@@ -357,9 +357,9 @@ void CCashMarketMan::SendCashMode1()
 void CCashMarketMan::SendCashMode2(int a, int b)
 {
     COutPacket packet(static_cast<int>(SendOp::Cash), 0);
-    packet.vfunc_o10_1(2);
-    packet.vfunc_o10_3(a);
-    packet.vfunc_o10_3(b);
+    packet.WriteUInt8(2);
+    packet.WriteInt32(a);
+    packet.WriteInt32(b);
     FUN_140710590(packet);
 }
 
@@ -369,11 +369,11 @@ void CCashMarketMan::SendCashMode3(int a, int b, CString s1, CString s2)
     if (FUN_1401d5a60() != 0)
     {
         COutPacket packet(static_cast<int>(SendOp::Cash), 0);
-        packet.vfunc_o10_1(3);
-        packet.vfunc_o10_3(a);
-        packet.vfunc_o10_3(b);
-        packet.vfunc_o10_6(s1);
-        packet.vfunc_o10_6(s2);
+        packet.WriteUInt8(3);
+        packet.WriteInt32(a);
+        packet.WriteInt32(b);
+        packet.WriteUnicodeStringA(s1);
+        packet.WriteUnicodeStringA(s2);
         FUN_140710590(packet);
     }
 }
@@ -384,10 +384,10 @@ void CCashMarketMan::SendCashMode4(int a, int b, int c)
     if (FUN_1401d5ab0() != 0)
     {
         COutPacket packet(static_cast<int>(SendOp::Cash), 0);
-        packet.vfunc_o10_1(4);
-        packet.vfunc_o10_3(a);
-        packet.vfunc_o10_3(b);
-        packet.vfunc_o10_3(c);
+        packet.WriteUInt8(4);
+        packet.WriteInt32(a);
+        packet.WriteInt32(b);
+        packet.WriteInt32(c);
         FUN_140710590(packet);
     }
 }
@@ -396,8 +396,8 @@ void CCashMarketMan::SendCashMode4(int a, int b, int c)
 void CCashMarketMan::SendCashMode5(int a)
 {
     COutPacket packet(static_cast<int>(SendOp::Cash), 0);
-    packet.vfunc_o10_1(5);
-    packet.vfunc_o10_3(a);
+    packet.WriteUInt8(5);
+    packet.WriteInt32(a);
     FUN_140710590(packet);
 }
 
@@ -407,11 +407,11 @@ void CCashMarketMan::SendCashMode7(int a, int b, int c, int nFlag)
     if (nFlag != 1 || FUN_1401d5b00() != 0)
     {
         COutPacket packet(static_cast<int>(SendOp::Cash), 0);
-        packet.vfunc_o10_1(7);
-        packet.vfunc_o10_3(a);
-        packet.vfunc_o10_3(b);
-        packet.vfunc_o10_3(c);
-        packet.vfunc_o10_1((unsigned char)nFlag);
+        packet.WriteUInt8(7);
+        packet.WriteInt32(a);
+        packet.WriteInt32(b);
+        packet.WriteInt32(c);
+        packet.WriteUInt8((unsigned char)nFlag);
         FUN_140710590(packet);
     }
 }
@@ -420,9 +420,9 @@ void CCashMarketMan::SendCashMode7(int a, int b, int c, int nFlag)
 void CCashMarketMan::SendCashMode6(int a, int b)
 {
     COutPacket packet(static_cast<int>(SendOp::Cash), 0);
-    packet.vfunc_o10_1(6);
-    packet.vfunc_o10_3(a);
-    packet.vfunc_o10_3(b);
+    packet.WriteUInt8(6);
+    packet.WriteInt32(a);
+    packet.WriteInt32(b);
     FUN_140710590(packet);
 }
 
@@ -544,10 +544,10 @@ void CCashMarketMan::FUN_140b06bd0(CInPacket& packet)
     if ((int)guard == 0)
     {
         m_mapLimit.RemoveAll();
-        int nCount = packet.vfunc_o8_3();
+        int nCount = packet.ReadInt32();
         for (int i = 0; i < nCount; ++i)
         {
-            if (packet.vfunc_o8_1() != 0)
+            if (packet.ReadUInt8() != 0)
             {
                 MS2Ptr<CMarketBuyLimitHistory> sp(new CMarketBuyLimitHistory);
                 sp->Read(packet);
@@ -615,7 +615,7 @@ void CCashMarketMan::FUN_140b07120(CInPacket& packet)
 {
     m_mapSale.RemoveAll();
     m_aSale.RemoveAll();
-    int nCount = packet.vfunc_o8_3();
+    int nCount = packet.ReadInt32();
     for (int i = 0; i < nCount; ++i)
     {
         MS2Ptr<CCashSaleProduct> sp(new CCashSaleProduct);
@@ -634,8 +634,8 @@ void CCashMarketMan::FUN_140b07120(CInPacket& packet)
 // @0x140b072d0
 void CCashMarketMan::FUN_140b072d0(CInPacket& packet)
 {
-    int nCode = packet.vfunc_o8_3();
-    int nArg = packet.vfunc_o8_3();
+    int nCode = packet.ReadInt32();
+    int nArg = packet.ReadInt32();
     if (nCode == 1)
     {
         if (FUN_140166410()->FUN_14036e4c0())
@@ -658,10 +658,10 @@ void CCashMarketMan::FUN_140b072d0(CInPacket& packet)
 // @0x140b07490
 void CCashMarketMan::FUN_140b07490(CInPacket& packet)
 {
-    int nCode = packet.vfunc_o8_3();
+    int nCode = packet.ReadInt32();
     if (nCode == 1)
     {
-        int nArg = packet.vfunc_o8_3();
+        int nArg = packet.ReadInt32();
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0, 0x9e0, 0, CStringW(L""));
         if (spBox.get() != 0)
             FUN_141a01c30(spBox.operator->(), s_strCashBuy);
@@ -762,8 +762,8 @@ defaultMessage:
 // @0x140b07cb0
 void CCashMarketMan::FUN_140b07cb0(CInPacket& packet)
 {
-    int nCode = packet.vfunc_o8_3();
-    CStringW strArg = packet.vfunc_o8_8();
+    int nCode = packet.ReadInt32();
+    CStringW strArg = packet.ReadUnicodeString();
     if (nCode == 1)
     {
         MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(0));
@@ -886,12 +886,12 @@ void CCashMarketMan::FUN_140b07cb0(CInPacket& packet)
 // @0x140b084f0
 void CCashMarketMan::FUN_140b084f0(CInPacket& packet)
 {
-    int nCode = packet.vfunc_o8_3();
+    int nCode = packet.ReadInt32();
     if (nCode == 1)
     {
-        int n1 = packet.vfunc_o8_3();
-        int n2 = packet.vfunc_o8_3();
-        int n3 = packet.vfunc_o8_3();
+        int n1 = packet.ReadInt32();
+        int n2 = packet.ReadInt32();
+        int n3 = packet.ReadInt32();
         FUN_140d73bc0(0xa64, 0, 0, CStringW(L""));
     }
     else if (nCode == 2)
@@ -909,11 +909,11 @@ void CCashMarketMan::FUN_140b084f0(CInPacket& packet)
 // @0x140b08760
 void CCashMarketMan::FUN_140b08760(CInPacket& packet)
 {
-    int nCode = packet.vfunc_o8_3();
+    int nCode = packet.ReadInt32();
     if (nCode == 1)
     {
-        int nPage = packet.vfunc_o8_3();
-        int nCount = packet.vfunc_o8_3();
+        int nPage = packet.ReadInt32();
+        int nCount = packet.ReadInt32();
         m_aInv.RemoveAll();
         m_aInv.SetCount(nCount, -1);
         int nIndexBase = 0;
@@ -954,13 +954,13 @@ void CCashMarketMan::FUN_140b08760(CInPacket& packet)
 // @0x140b08ab0
 void CCashMarketMan::FUN_140b08ab0(CInPacket& packet)
 {
-    int nCode = packet.vfunc_o8_3();
+    int nCode = packet.ReadInt32();
     if (nCode == 1)
     {
-        int nA = packet.vfunc_o8_3();
-        int nB = packet.vfunc_o8_3();
-        int nC = packet.vfunc_o8_3();
-        unsigned nD = packet.vfunc_o8_3();
+        int nA = packet.ReadInt32();
+        int nB = packet.ReadInt32();
+        int nC = packet.ReadInt32();
+        unsigned nD = packet.ReadInt32();
         if (!FUN_140166410()->FUN_14036e4c0())
         {
             if (FUN_140166410()->FUN_14036e5b0())
@@ -1002,14 +1002,14 @@ void CCashMarketMan::FUN_140b08ab0(CInPacket& packet)
 // @0x140b08ee0
 void CCashMarketMan::FUN_140b08ee0(CInPacket& packet)
 {
-    m_bFlag = packet.vfunc_o8_1() == 1;
+    m_bFlag = packet.ReadUInt8() == 1;
 }
 
 // @0x140b08f50
 void CCashMarketMan::FUN_140b08f50(CInPacket& packet)
 {
-    int nByte = packet.vfunc_o8_1();
-    int nResult = packet.vfunc_o8_3();
+    int nByte = packet.ReadUInt8();
+    int nResult = packet.ReadInt32();
     FUN_140b06980(nByte, nResult);
     if (nResult == 0x70)
         SendCashMode0();

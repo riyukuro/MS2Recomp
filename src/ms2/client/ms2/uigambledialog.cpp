@@ -119,7 +119,7 @@ void UIGambleDialog::vfunc_79(void* pPacket)
 {
     UIDialog::vfunc_79(pPacket);
     int cResult;
-    if (((CInPacket*)pPacket)->FUN_14070fe80() == 0x9c && (cResult = ((CInPacket*)pPacket)->vfunc_o8_1()) == 1) {
+    if (((CInPacket*)pPacket)->FUN_14070fe80() == 0x9c && (cResult = ((CInPacket*)pPacket)->ReadUInt8()) == 1) {
         for (size_t i = 0; i < m_binds.GetCount(); i++)
             FUN_141415600(m_binds[i]);
         m_binds.RemoveAll();

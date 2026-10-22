@@ -2119,14 +2119,14 @@ void CSceneStateGame::vfunc_1(int nParam)
 {
     {
         COutPacket out(static_cast<int>(SendOp::RequestLoadUgcMap), 0);
-        out.COutPacket::vfunc_o10_3(FUN_1403ed2d0()->FUN_141bd98d0());
+        out.COutPacket::WriteInt32(FUN_1403ed2d0()->FUN_141bd98d0());
         FUN_140710590(out);
     }
     FUN_14052d220()->FUN_141889150();
     {
         COutPacket out(static_cast<int>(SendOp::Ugc), 0);
-        out.COutPacket::vfunc_o10_1(0x12);
-        out.COutPacket::vfunc_o10_3(nParam);
+        out.COutPacket::WriteUInt8(0x12);
+        out.COutPacket::WriteInt32(nParam);
         FUN_140710590(out);
     }
     FUN_141739450(false);
@@ -2194,9 +2194,9 @@ MS2_REPLACE_METHOD(0x14170dc90, CSceneStateGame, FUN_14170dc90, 191, 0x74DA6D2C)
 void CSceneStateGame::OnServerEnter(CInPacket& packet)
 {
     FUN_14092f420();
-    DAT_143ab2864 = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    DAT_143ab2828 = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    int nChannel = (unsigned short)static_cast<CInputStream&>(packet).vfunc_o8_2();
+    DAT_143ab2864 = packet.ReadInt32();
+    DAT_143ab2828 = packet.ReadInt64();
+    int nChannel = (unsigned short)packet.ReadInt16();
     if (nChannel == 0 && DAT_1439f4a7c != 0)
         DAT_1439f4a80 = DAT_1439f4a7c < 1 ? 1 : DAT_1439f4a7c;
     if (nChannel != 0 && FUN_14092f640() != 0 && FUN_14092f640() != nChannel)
@@ -2208,51 +2208,51 @@ void CSceneStateGame::OnServerEnter(CInPacket& packet)
         FUN_140714f90()->FUN_141539130();
     __int64 a = 0, b = 0, c = 0, d = 0, e = 0;
     DAT_1439f4a7c = nChannel;
-    DAT_143ab28a0 = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    DAT_143ab28a8 = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    DAT_143ab2898 = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    a = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    b = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    c = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    d = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    e = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    DAT_143ab28b0 = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    DAT_143ab28b8 = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    DAT_143ab28c0 = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    DAT_143ab28c8 = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    DAT_143ab28d0 = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    DAT_143ab28d8 = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    DAT_143ab28e0 = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    DAT_143ab28e8 = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    DAT_143ab28f0 = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    CString strUnk = static_cast<CInputStream&>(packet).vfunc_o8_6();
-    int nChatFlag = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    DAT_143ab28a0 = packet.ReadInt64();
+    DAT_143ab28a8 = packet.ReadInt64();
+    DAT_143ab2898 = packet.ReadInt64();
+    a = packet.ReadInt64();
+    b = packet.ReadInt64();
+    c = packet.ReadInt64();
+    d = packet.ReadInt64();
+    e = packet.ReadInt64();
+    DAT_143ab28b0 = packet.ReadInt64();
+    DAT_143ab28b8 = packet.ReadInt64();
+    DAT_143ab28c0 = packet.ReadInt64();
+    DAT_143ab28c8 = packet.ReadInt64();
+    DAT_143ab28d0 = packet.ReadInt64();
+    DAT_143ab28d8 = packet.ReadInt64();
+    DAT_143ab28e0 = packet.ReadInt64();
+    DAT_143ab28e8 = packet.ReadInt64();
+    DAT_143ab28f0 = packet.ReadInt64();
+    CString strUnk = packet.ReadUnicodeStringA();
+    int nChatFlag = packet.ReadUInt8();
     FUN_1409304d0(a, b, c, d);
     FUN_140930af0(e);
     if (FUN_140f97ef0() != 0)
         FUN_140f97ef0()->FUN_140f97f00()->FUN_140dbde50(nChatFlag);
     DAT_143ab3058.FUN_1402c2830();
-    int nCount = (unsigned short)static_cast<CInputStream&>(packet).vfunc_o8_2();
+    int nCount = (unsigned short)packet.ReadInt16();
     for (int i = 0; i < nCount; i++)
     {
-        int n = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int n = packet.ReadInt32();
         DAT_143ab3058.FUN_1401855a0(n);
     }
     DAT_143ab3098.FUN_1402c2830();
     DAT_143ab3078.FUN_1402c2830();
-    nCount = (unsigned short)static_cast<CInputStream&>(packet).vfunc_o8_2();
+    nCount = (unsigned short)packet.ReadInt16();
     for (int j = 0; j < nCount; j++)
     {
-        int n = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int n = packet.ReadInt32();
         DAT_143ab3078.FUN_1401855a0(n);
     }
-    __int64 nGuildId = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    CStringW strGuildName = static_cast<CInputStream&>(packet).vfunc_o8_8();
+    __int64 nGuildId = packet.ReadInt64();
+    CStringW strGuildName = packet.ReadUnicodeString();
     FUN_1403ed290()->FUN_1413bc1f0(nGuildId, strGuildName);
     FUN_1403ed290()->FUN_1413bcd10();
-    CString str1 = static_cast<CInputStream&>(packet).vfunc_o8_6();
-    CString str2 = static_cast<CInputStream&>(packet).vfunc_o8_6();
-    CString str3 = static_cast<CInputStream&>(packet).vfunc_o8_6();
+    CString str1 = packet.ReadUnicodeStringA();
+    CString str2 = packet.ReadUnicodeStringA();
+    CString str3 = packet.ReadUnicodeStringA();
     if (FUN_140cc18a0() != 0)
     {
         FUN_140cc18a0()->FUN_141b77e50(str1);
@@ -2274,7 +2274,7 @@ void CSceneStateGame::OnServerEnter(CInPacket& packet)
     if (FUN_1414a56d0() != 0)
     {
         COutPacket out(static_cast<int>(SendOp::DynamicBanword), 0);
-        out.COutPacket::vfunc_o10_4(FUN_1414a56d0()->FUN_14034a1b0());
+        out.COutPacket::WriteInt64(FUN_1414a56d0()->FUN_14034a1b0());
         FUN_140710590(out);
     }
     if (FUN_140166410()->FUN_14036e5b0())
@@ -2299,9 +2299,9 @@ void CSceneStateGame::OnLoadUgcMap(CInPacket& packet)
 {
     if (FUN_1403ed2d0()->FUN_141bcfd10() != 4)
         return;
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nMapId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int bHasInfo = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadInt32();
+    int nMapId = packet.ReadInt32();
+    int bHasInfo = packet.ReadUInt8();
     if (FUN_1406aeee0()->FUN_1406af0c0())
         nMode = 0;
     CStringW strName = L"";
@@ -2322,48 +2322,48 @@ void CSceneStateGame::OnLoadUgcMap(CInPacket& packet)
     ATL::CAtlArray<MS2Ptr<UGCMapBlueprintInfo> > arrBlueprint;
     if (bHasInfo != 0)
     {
-        nOwner = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        strName = static_cast<CInputStream&>(packet).vfunc_o8_8();
-        strDesc = static_cast<CInputStream&>(packet).vfunc_o8_8();
-        nC = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        nD = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        nE = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        nF = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        nG = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        nH = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        nOwner = packet.ReadInt64();
+        strName = packet.ReadUnicodeString();
+        strDesc = packet.ReadUnicodeString();
+        nC = packet.ReadUInt8();
+        nA = packet.ReadInt32();
+        nB = packet.ReadInt32();
+        nD = packet.ReadInt32();
+        nE = packet.ReadInt32();
+        nF = packet.ReadUInt8();
+        nG = packet.ReadUInt8();
+        nH = packet.ReadUInt8();
         rule.FUN_140b68ec0(packet);
-        unsigned __int64 nFlags = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        unsigned __int64 nFlags = packet.ReadUInt8();
         for (unsigned __int64 i = 0; i < nFlags; i++)
         {
             int nKey = (int)i;
-            bool bSet = static_cast<CInputStream&>(packet).vfunc_o8_1() == 1 ? true : false;
+            bool bSet = packet.ReadUInt8() == 1 ? true : false;
             mapFlags[(Unk_CMISKindB)nKey] = bSet;
             if (bSet)
             {
-                int nValue = static_cast<CInputStream&>(packet).vfunc_o8_1();
+                int nValue = packet.ReadUInt8();
                 mapValues[(Unk_CMISKindB)nKey] = nValue;
             }
         }
         if (nOwner == DAT_143ab2820)
         {
-            unsigned __int64 nDesigns = static_cast<CInputStream&>(packet).vfunc_o8_1();
+            unsigned __int64 nDesigns = packet.ReadUInt8();
             for (unsigned __int64 j = 0; j < nDesigns; j++)
             {
                 MS2Ptr<UGCMapDesignInfo> pInfo(new UGCMapDesignInfo());
-                pInfo->m_nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-                pInfo->m_strName = static_cast<CInputStream&>(packet).vfunc_o8_6();
-                pInfo->m_nTime = static_cast<CInputStream&>(packet).vfunc_o8_4();
+                pInfo->m_nId = packet.ReadInt32();
+                pInfo->m_strName = packet.ReadUnicodeStringA();
+                pInfo->m_nTime = packet.ReadInt64();
                 arrDesign.Add(pInfo);
             }
-            unsigned __int64 nBlueprints = static_cast<CInputStream&>(packet).vfunc_o8_1();
+            unsigned __int64 nBlueprints = packet.ReadUInt8();
             for (unsigned __int64 k = 0; k < nBlueprints; k++)
             {
                 MS2Ptr<UGCMapBlueprintInfo> pInfo(new UGCMapBlueprintInfo());
-                pInfo->m_nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-                pInfo->m_strName = static_cast<CInputStream&>(packet).vfunc_o8_6();
-                pInfo->m_nTime = static_cast<CInputStream&>(packet).vfunc_o8_4();
+                pInfo->m_nId = packet.ReadInt32();
+                pInfo->m_strName = packet.ReadUnicodeStringA();
+                pInfo->m_nTime = packet.ReadInt64();
                 arrBlueprint.Add(pInfo);
             }
         }
@@ -2411,7 +2411,7 @@ void CSceneStateGame::OnLoadUgcMap(CInPacket& packet)
             }
         }
         COutPacket out(static_cast<int>(SendOp::ResponseFieldEnter), 0);
-        out.COutPacket::vfunc_o10_3(FUN_1403ed2d0()->FUN_141bd98d0());
+        out.COutPacket::WriteInt32(FUN_1403ed2d0()->FUN_141bd98d0());
         FUN_140710590(out);
         FUN_1403ed2d0()->FUN_141bdb690();
     }
@@ -2463,17 +2463,17 @@ MS2_REPLACE_METHOD(0x14170e800, CSceneStateGame, OnLoadUgcMap, 4389, 0xE0B12C5E)
 // @0x14170f930
 void CSceneStateGame::FUN_14170f930(CInPacket& packet)
 {
-    int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nError = packet.ReadUInt8();
     if (nError == 0)
     {
-        DAT_143ab2870 = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        DAT_143ab2878 = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        DAT_143ab287c = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        DAT_143ab2880 = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        FUN_140930ba0(static_cast<CInputStream&>(packet).vfunc_o8_3());
-        Unk_StreamPoint pos = static_cast<CInputStream&>(packet).vfunc_o8_10();
-        Unk_StreamPoint rot = static_cast<CInputStream&>(packet).vfunc_o8_10();
-        int nPortal = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        DAT_143ab2870 = packet.ReadInt32();
+        DAT_143ab2878 = packet.ReadUInt8();
+        DAT_143ab287c = packet.ReadUInt8();
+        DAT_143ab2880 = packet.ReadInt32();
+        FUN_140930ba0(packet.ReadInt32());
+        Unk_StreamPoint pos = packet.ReadVector3();
+        Unk_StreamPoint rot = packet.ReadVector3();
+        int nPortal = packet.ReadInt32();
         FUN_1403ed2d0()->FUN_141bd3d70(pos, rot);
         FUN_1403ed2d0()->FUN_141bbbe40(DAT_143ab2870, 1, nPortal);
         FUN_1403ed2b0()->FUN_141adc400();
@@ -2494,15 +2494,15 @@ MS2_REPLACE_METHOD(0x14170f930, CSceneStateGame, FUN_14170f930, 812, 0xCE56891C)
 // @0x14170fc70
 void CSceneStateGame::FUN_14170fc70(CInPacket& packet)
 {
-    int nResult = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nResult = packet.ReadUInt8();
     if (nResult == 0)
     {
         FUN_140931510()->FUN_140d9f710(packet);
     }
     else if (nResult == 2)
     {
-        int nType = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nType = packet.ReadUInt8();
+        int nId = packet.ReadInt32();
         FUN_1412b9870(nId, nType);
     }
     else if (nResult == 1)
@@ -2515,7 +2515,7 @@ MS2_REPLACE_METHOD(0x14170fc70, CSceneStateGame, FUN_14170fc70, 291, 0x93A32950)
 // @0x141711dc0
 void CSceneStateGame::FUN_141711dc0(CInPacket& packet)
 {
-    int nMapId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nMapId = packet.ReadInt32();
     Unk_SSGWorld* pWorld = FUN_1403ed2d0();
     MyPC* pPC = pWorld->FUN_141bd0cc0();
     if (pPC != 0)
@@ -2530,7 +2530,7 @@ MS2_REPLACE_METHOD(0x141711dc0, CSceneStateGame, FUN_141711dc0, 160, 0xEBC6BBF3)
 // @0x141712340
 void CSceneStateGame::FUN_141712340(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nId = packet.ReadInt32();
     GameObject* pObj = FUN_1403ed2d0()->FUN_141bd1180(nId);
     if (pObj == 0)
         return;
@@ -2549,8 +2549,8 @@ MS2_REPLACE_METHOD(0x141712340, CSceneStateGame, FUN_141712340, 205, 0x49E1B8C7)
 // MS2-FUNCTIONAL: stack temp layout differs (the exe spills the uid and EP reads to expression temps); same calls and args
 void CSceneStateGame::OnFieldPickupItem(CInPacket& packet)
 {
-    int bPicked = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int bPicked = packet.ReadUInt8();
+    int nId = packet.ReadInt32();
     GameObject* pObj = FUN_1403ed2d0()->FUN_141bd1180(nId);
     if (pObj == 0)
         return;
@@ -2559,15 +2559,15 @@ void CSceneStateGame::OnFieldPickupItem(CInPacket& packet)
         return;
     if (bPicked)
     {
-        int nOwnerId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nOwnerId = packet.ReadInt32();
         if (pDrop->FUN_14118fea0())
         {
-            __int64 nValue = static_cast<CInputStream&>(packet).vfunc_o8_4();
+            __int64 nValue = packet.ReadInt64();
             pDrop->FUN_14174a5a0(nValue);
         }
         if (pDrop->FUN_14118ff10())
         {
-            unsigned __int64 nAdd = (unsigned)static_cast<CInputStream&>(packet).vfunc_o8_3();
+            unsigned __int64 nAdd = (unsigned)packet.ReadInt32();
             MyPC* pMyPC = FUN_1409613d0(FUN_1403ed2d0()->FUN_141bd1290(nOwnerId));
             if (pMyPC != 0)
             {
@@ -2580,7 +2580,7 @@ void CSceneStateGame::OnFieldPickupItem(CInPacket& packet)
     }
     else
     {
-        int nMode = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nMode = packet.ReadInt32();
         if (nMode == 1)
             pDrop->FUN_141192840(0);
     }
@@ -2591,7 +2591,7 @@ MS2_REPLACE_METHOD(0x141712420, CSceneStateGame, OnFieldPickupItem, 617, 0x6508A
 // @0x141712690
 void CSceneStateGame::OnUserSync(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nId = packet.ReadInt32();
     PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
     if (pPC == 0)
         return;
@@ -2602,7 +2602,7 @@ MS2_REPLACE_METHOD(0x141712690, CSceneStateGame, OnUserSync, 109, 0x001F1562);
 // @0x141712710
 void CSceneStateGame::OnRideSync(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nId = packet.ReadInt32();
     PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
     if (pPC == 0)
         return;
@@ -2618,14 +2618,14 @@ void CSceneStateGame::FUN_1417127b0(CInPacket& packet, PCBase* pActor)
 {
     if (pActor == 0)
         return;
-    int nCount = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nCount = packet.ReadUInt8();
     MyPC* pMyPC = FUN_14096e160(pActor);
     if (pMyPC != 0)
     {
         MS2Ptr<Unk_StateArg22> spReq(0);
         for (int i = 0; i < nCount; i++)
         {
-            int nType = static_cast<CInputStream&>(packet).vfunc_o8_1();
+            int nType = packet.ReadUInt8();
             spReq = FUN_140835450(nType);
             spReq->FUN_1408356f0(packet);
         }
@@ -2641,7 +2641,7 @@ void CSceneStateGame::FUN_1417127b0(CInPacket& packet, PCBase* pActor)
     {
         for (int i = 0; i < nCount; i++)
         {
-            int nType = static_cast<CInputStream&>(packet).vfunc_o8_1();
+            int nType = packet.ReadUInt8();
             MS2Ptr<Unk_StateArg22> spReq = FUN_140835450(nType);
             spReq->FUN_1408356f0(packet);
             pActor->vfunc_114(spReq.get());
@@ -2663,37 +2663,37 @@ MS2_CHECK_SIZE(NotifyLearnEmotion, 0x20);
 // @0x141712a90
 void CSceneStateGame::FUN_141712a90(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     MyPC* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pMyPC == 0)
         return;
     if (nMode == 0)
     {
         pMyPC->FUN_141523bc0()->FUN_141769250();
-        size_t nCount = (unsigned int)static_cast<CInputStream&>(packet).vfunc_o8_3();
+        size_t nCount = (unsigned int)packet.ReadInt32();
         for (size_t i = 0; i < nCount; i++)
         {
-            int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            unsigned short nLevel = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            bool bA = static_cast<CInputStream&>(packet).vfunc_o8_0();
-            __int64 nStart = static_cast<CInputStream&>(packet).vfunc_o8_4();
-            __int64 nEnd = static_cast<CInputStream&>(packet).vfunc_o8_4();
-            bool bB = static_cast<CInputStream&>(packet).vfunc_o8_0();
+            int nId = packet.ReadInt32();
+            unsigned short nLevel = packet.ReadInt32();
+            bool bA = packet.ReadBool();
+            __int64 nStart = packet.ReadInt64();
+            __int64 nEnd = packet.ReadInt64();
+            bool bB = packet.ReadBool();
             pMyPC->FUN_141523bc0()->FUN_141768e70(nId, nLevel, nStart, nEnd, bA, bB, 0);
         }
     }
     else if (nMode == 1)
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        unsigned short nLevel = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        __int64 nStart = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        __int64 nEnd = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        int nId = packet.ReadInt32();
+        unsigned short nLevel = packet.ReadInt32();
+        __int64 nStart = packet.ReadInt64();
+        __int64 nEnd = packet.ReadInt64();
         pMyPC->FUN_141523bc0()->FUN_141768e70(nId, nLevel, nStart, nEnd, false, false, 1);
         FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyLearnEmotion(nId)));
     }
     else if (nMode == 3)
     {
-        int nResult = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nResult = packet.ReadUInt8();
         if (nResult == 1)
             FUN_140d73bc0(0x858, 0, 0, L"");
         else if (nResult == 0)
@@ -2706,20 +2706,20 @@ MS2_REPLACE_METHOD(0x141712a90, CSceneStateGame, FUN_141712a90, 1298, 0xE15A5F74
 // MS2-FUNCTIONAL: exe frame 0x20 larger (the uid reads go through extra expression temps); same calls and args
 void CSceneStateGame::OnItemPutOnOrOff(CInPacket& packet)
 {
-    switch (static_cast<CInputStream&>(packet).vfunc_o8_1())
+    switch (packet.ReadUInt8())
     {
     case 2:
-        DAT_143ab2a90.FUN_140a621c0(static_cast<CInputStream&>(packet).vfunc_o8_4(), 0, 0);
+        DAT_143ab2a90.FUN_140a621c0(packet.ReadInt64(), 0, 0);
         break;
     case 3:
-        DAT_143ab2a90.FUN_140a62920(static_cast<CInputStream&>(packet).vfunc_o8_4());
+        DAT_143ab2a90.FUN_140a62920(packet.ReadInt64());
         break;
     case 5:
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        unsigned char nSlot = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        int nKind = FUN_140222f60(static_cast<CInputStream&>(packet).vfunc_o8_1());
+        int nId = packet.ReadInt32();
+        __int64 nItemUid = packet.ReadInt64();
+        unsigned char nSlot = packet.ReadUInt8();
+        int nKind = FUN_140222f60(packet.ReadUInt8());
         MyPC* pMyPC = FUN_1409613d0(FUN_1403ed2d0()->FUN_141bd1290(nId));
         if (pMyPC == 0)
             return;
@@ -2755,20 +2755,20 @@ void CSceneStateGame::FUN_1417132b0(CInPacket& packet)
     MyPC* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pMyPC == 0)
         return;
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 6)
     {
         FUN_140535320()->FUN_140c8b410()->FUN_140c868d0();
     }
     else if (nMode == 4)
     {
-        int nCount = static_cast<unsigned short>(static_cast<CInputStream&>(packet).vfunc_o8_2());
+        int nCount = static_cast<unsigned short>(packet.ReadInt16());
         for (int i = 0; i < nCount; i++)
         {
-            int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-            short nAmount = static_cast<CInputStream&>(packet).vfunc_o8_2();
-            int nRarity = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nItemId = packet.ReadInt32();
+            __int64 nItemUid = packet.ReadInt64();
+            short nAmount = packet.ReadInt16();
+            int nRarity = packet.ReadInt32();
             MS2Ptr<CItem> spItem(new CItem());
             if (spItem->FUN_140523c40(nItemId, nRarity, 0))
             {
@@ -2784,10 +2784,10 @@ void CSceneStateGame::FUN_1417132b0(CInPacket& packet)
     }
     else if (nMode == 0)
     {
-        int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        short nAmount = static_cast<CInputStream&>(packet).vfunc_o8_2();
-        int nRarity = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nItemId = packet.ReadInt32();
+        __int64 nItemUid = packet.ReadInt64();
+        short nAmount = packet.ReadInt16();
+        int nRarity = packet.ReadInt32();
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem->FUN_140523c40(nItemId, nRarity, 0))
         {
@@ -2804,7 +2804,7 @@ void CSceneStateGame::FUN_1417132b0(CInPacket& packet)
     }
     else if (nMode == 1)
     {
-        __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        __int64 nItemUid = packet.ReadInt64();
         MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(nItemUid);
         if (!spItem)
             return;
@@ -2819,8 +2819,8 @@ void CSceneStateGame::FUN_1417132b0(CInPacket& packet)
         MS2Ptr<CItem> aspItem[2] = { 0, 0 };
         for (int i = 0; i < 2; i++)
         {
-            __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-            short nSlot = static_cast<CInputStream&>(packet).vfunc_o8_2();
+            __int64 nItemUid = packet.ReadInt64();
+            short nSlot = packet.ReadInt16();
             if (nItemUid == 0)
             {
                 MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c86c90(nSlot);
@@ -2847,8 +2847,8 @@ void CSceneStateGame::FUN_1417132b0(CInPacket& packet)
     }
     else if (nMode == 2)
     {
-        __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        int nAmount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        __int64 nItemUid = packet.ReadInt64();
+        int nAmount = packet.ReadInt32();
         MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(nItemUid);
         if (!spItem)
             return;
@@ -2878,19 +2878,19 @@ extern Unk_CubeFallbackInventory DAT_143ab2e20;
 // 0x23: the housing cube inventory.
 void CSceneStateGame::FUN_141715bd0(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 1)
         DAT_143ab2e20.FUN_1408fbac0();
     else if (nMode == 2)
     {
-        int nUnused = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nUnused = packet.ReadInt32();
     }
     else if (nMode == 3)
     {
-        int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        int nRarity = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        int nAmount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nItemId = packet.ReadInt32();
+        __int64 nItemUid = packet.ReadInt64();
+        int nRarity = packet.ReadUInt8();
+        int nAmount = packet.ReadInt32();
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem->FUN_140523c40(nItemId, nRarity, 0))
         {
@@ -2904,7 +2904,7 @@ void CSceneStateGame::FUN_141715bd0(CInPacket& packet)
     }
     else if (nMode == 4)
     {
-        __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        __int64 nItemUid = packet.ReadInt64();
         MS2Ptr<CItem> spItem = DAT_143ab2e20.FUN_1408fbf90(nItemUid);
         if (!spItem)
             return;
@@ -2913,8 +2913,8 @@ void CSceneStateGame::FUN_141715bd0(CInPacket& packet)
     }
     else if (nMode == 5)
     {
-        __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        int nValue = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        __int64 nItemUid = packet.ReadInt64();
+        int nValue = packet.ReadInt32();
         MS2Ptr<CItem> spItem = DAT_143ab2e20.FUN_1408fbf90(nItemUid);
         if (spItem.get() != 0)
         {
@@ -2928,8 +2928,8 @@ void CSceneStateGame::FUN_141715bd0(CInPacket& packet)
     }
     else if (nMode == 7)
     {
-        __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        int nAmount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        __int64 nItemUid = packet.ReadInt64();
+        int nAmount = packet.ReadInt32();
         MS2Ptr<CItem> spItem = DAT_143ab2e20.FUN_1408fbf90(nItemUid);
         if (!spItem)
             return;
@@ -2948,18 +2948,18 @@ extern CString DAT_143ae7978;                               // sound event of th
 // @0x141713fb0
 void CSceneStateGame::OnItemInventory(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 0xb)
     {
-        int nTab = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nTab = packet.ReadInt32();
         DAT_143ab2a90.FUN_140a5ca60(nTab);
     }
     else if (nMode == 0)
     {
-        int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        short nAmount = static_cast<CInputStream&>(packet).vfunc_o8_2();
-        int nRarity = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nItemId = packet.ReadInt32();
+        __int64 nItemUid = packet.ReadInt64();
+        short nAmount = packet.ReadInt16();
+        int nRarity = packet.ReadInt32();
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem->FUN_140523c40(nItemId, nRarity, 0))
         {
@@ -2978,9 +2978,9 @@ void CSceneStateGame::OnItemInventory(CInPacket& packet)
     }
     else if (nMode == 7)
     {
-        __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        int nArg = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        CStringW strName = static_cast<CInputStream&>(packet).vfunc_o8_8();
+        __int64 nItemUid = packet.ReadInt64();
+        int nArg = packet.ReadInt32();
+        CStringW strName = packet.ReadUnicodeString();
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nItemUid);
         if (spItem.get() != 0)
         {
@@ -3004,13 +3004,13 @@ void CSceneStateGame::OnItemInventory(CInPacket& packet)
     }
     else if (nMode == 6)
     {
-        int nCount = static_cast<unsigned short>(static_cast<CInputStream&>(packet).vfunc_o8_2());
+        int nCount = static_cast<unsigned short>(packet.ReadInt16());
         for (int i = 0; i < nCount; i++)
         {
-            int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-            short nAmount = static_cast<CInputStream&>(packet).vfunc_o8_2();
-            int nRarity = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nItemId = packet.ReadInt32();
+            __int64 nItemUid = packet.ReadInt64();
+            short nAmount = packet.ReadInt16();
+            int nRarity = packet.ReadInt32();
             MS2Ptr<CItem> spItem(new CItem());
             if (spItem->FUN_140523c40(nItemId, nRarity, 0))
             {
@@ -3026,7 +3026,7 @@ void CSceneStateGame::OnItemInventory(CInPacket& packet)
     }
     else if (nMode == 1)
     {
-        __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        __int64 nItemUid = packet.ReadInt64();
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nItemUid);
         if (!spItem)
             return;
@@ -3037,8 +3037,8 @@ void CSceneStateGame::OnItemInventory(CInPacket& packet)
     }
     else if (nMode == 2)
     {
-        __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        int nAmount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        __int64 nItemUid = packet.ReadInt64();
+        int nAmount = packet.ReadInt32();
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nItemUid);
         if (!spItem)
             return;
@@ -3056,8 +3056,8 @@ void CSceneStateGame::OnItemInventory(CInPacket& packet)
         MS2Ptr<CItem> aspItem[2] = { 0, 0 };
         for (int i = 0; i < 2; i++)
         {
-            __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-            short nSlot = static_cast<CInputStream&>(packet).vfunc_o8_2();
+            __int64 nItemUid = packet.ReadInt64();
+            short nSlot = packet.ReadInt16();
             if (nItemUid == 0)
             {
                 Unk_SSGDlgInv* pDlg = FUN_1405344f0(0x4e2d);
@@ -3093,8 +3093,8 @@ void CSceneStateGame::OnItemInventory(CInPacket& packet)
     }
     else if (nMode == 0xc)
     {
-        int nTab = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nTab = packet.ReadUInt8();
+        int nCount = packet.ReadInt32();
         DAT_143ab2a90.FUN_140a5cb80(nTab, nCount);
         Unk_SSGDlgInv* pDlg = FUN_1405344f0(0x4e2d);
         if (pDlg != 0 && pDlg->vfunc_55() == 0)
@@ -3102,7 +3102,7 @@ void CSceneStateGame::OnItemInventory(CInPacket& packet)
     }
     else if (nMode == 0xe)
     {
-        __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        __int64 nItemUid = packet.ReadInt64();
         if (nItemUid != 0)
         {
             MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nItemUid);
@@ -3115,7 +3115,7 @@ void CSceneStateGame::OnItemInventory(CInPacket& packet)
     }
     else if (nMode == 0xd)
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nError = packet.ReadInt32();
         int nCode = nError;
         switch (nCode)
         {
@@ -3146,15 +3146,15 @@ void CSceneStateGame::OnItemInventory(CInPacket& packet)
             break;
         case 0x28:
         {
-            int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            unsigned short nCount = static_cast<CInputStream&>(packet).vfunc_o8_2();
+            int nItemId = packet.ReadInt32();
+            unsigned short nCount = packet.ReadInt16();
             FUN_140d73aa0(FUN_140a22c00(0x941, FUN_1401a9d70()->FUN_141811980(1, nItemId), nCount), 0, 0, L"");
             break;
         }
         case 0x29:
         {
-            int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            unsigned short nCount = static_cast<CInputStream&>(packet).vfunc_o8_2();
+            int nItemId = packet.ReadInt32();
+            unsigned short nCount = packet.ReadInt16();
             Unk_SSGFormatMsg(0x942, 1, 1, FUN_1401a9d70()->FUN_141811980(1, nItemId), nCount);
             break;
         }
@@ -3176,8 +3176,8 @@ MS2_REPLACE_METHOD(0x141713FB0, CSceneStateGame, OnItemInventory, 6229, 0xDF6CC7
 // @0x141715860
 void CSceneStateGame::FUN_141715860(CInPacket& packet)
 {
-    int nCheck = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nCount = static_cast<unsigned short>(static_cast<CInputStream&>(packet).vfunc_o8_2());
+    int nCheck = packet.ReadInt32();
+    int nCount = static_cast<unsigned short>(packet.ReadInt16());
     int nNew = 0;
     if (nCheck < 0)
     {
@@ -3186,10 +3186,10 @@ void CSceneStateGame::FUN_141715860(CInPacket& packet)
     }
     for (int i = 0; i < nCount; i++)
     {
-        int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        short nAmount = static_cast<CInputStream&>(packet).vfunc_o8_2();
-        int nRarity = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nItemId = packet.ReadInt32();
+        __int64 nItemUid = packet.ReadInt64();
+        short nAmount = packet.ReadInt16();
+        int nRarity = packet.ReadInt32();
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem->FUN_140523c40(nItemId, nRarity, 0))
         {
@@ -3287,8 +3287,8 @@ MS2_REPLACE_METHOD(0x141716680, CSceneStateGame, OnItemPutOn, 1230, 0xCBFF9958);
 // @0x141716b60
 void CSceneStateGame::OnItemPutOff(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+    int nId = packet.ReadInt32();
+    __int64 nItemUid = packet.ReadInt64();
     PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
     if (pPC == 0)
         return;
@@ -3310,11 +3310,11 @@ MS2_REPLACE_METHOD(0x141716b60, CSceneStateGame, OnItemPutOff, 415, 0xAD56BCEE);
 // @0x141716d10
 void CSceneStateGame::FUN_141716d10(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    int nRarity = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nAmount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nId = packet.ReadInt32();
+    int nItemId = packet.ReadInt32();
+    __int64 nItemUid = packet.ReadInt64();
+    int nRarity = packet.ReadInt32();
+    int nAmount = packet.ReadInt32();
     PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
     if (pPC == 0)
         return;
@@ -3339,8 +3339,8 @@ MS2_REPLACE_METHOD(0x141716d10, CSceneStateGame, FUN_141716d10, 740, 0xFABDC7DD)
 // @0x141717000
 void CSceneStateGame::OnItemSkinPutOff(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+    int nId = packet.ReadInt32();
+    __int64 nItemUid = packet.ReadInt64();
     PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
     if (pPC == 0)
         return;
@@ -3357,8 +3357,8 @@ MS2_REPLACE_METHOD(0x141717000, CSceneStateGame, OnItemSkinPutOff, 314, 0xBDB257
 // @0x141717140
 void CSceneStateGame::OnItemUpdate(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+    int nId = packet.ReadInt32();
+    __int64 nItemUid = packet.ReadInt64();
     PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
     if (pPC == 0)
         return;
@@ -3382,10 +3382,10 @@ MS2_REPLACE_METHOD(0x141717140, CSceneStateGame, OnItemUpdate, 494, 0xF8FCFF09);
 // @0x141717340
 void CSceneStateGame::OnUserSkinColor(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nId = packet.ReadInt32();
     NiColor aColor[2];
-    aColor[0] = FUN_141b6dea0(static_cast<CInputStream&>(packet).vfunc_o8_3());
-    aColor[1] = FUN_141b6dea0(static_cast<CInputStream&>(packet).vfunc_o8_3());
+    aColor[0] = FUN_141b6dea0(packet.ReadInt32());
+    aColor[1] = FUN_141b6dea0(packet.ReadInt32());
     PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
     if (pPC == 0)
         return;
@@ -3412,8 +3412,8 @@ MS2_REPLACE_METHOD(0x141717560, CSceneStateGame, FUN_141717560, 11, 0x02239C70);
 // @0x141717580
 void CSceneStateGame::OnUserBattle(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nEmotion = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nId = packet.ReadInt32();
+    int nEmotion = packet.ReadUInt8();
     PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1200(nId);
     if (pActor != 0)
     {
@@ -3441,26 +3441,26 @@ public:
 // @0x141717b40
 void CSceneStateGame::OnSkillUse(CInPacket& packet)
 {
-    __int64 nCastUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    int nSerial = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nActorId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nSkillId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    short nLevel = static_cast<CInputStream&>(packet).vfunc_o8_2();
-    int nMotion = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    Unk_StreamPoint kPos = static_cast<CInputStream&>(packet).vfunc_o8_11();
-    Unk_StreamPoint kDir = static_cast<CInputStream&>(packet).vfunc_o8_10();
-    Unk_StreamPoint kRot = static_cast<CInputStream&>(packet).vfunc_o8_10();
-    float fSpeed = static_cast<CInputStream&>(packet).vfunc_o8_15();
-    bool bEffect = static_cast<CInputStream&>(packet).vfunc_o8_0();
+    __int64 nCastUid = packet.ReadInt64();
+    int nSerial = packet.ReadInt32();
+    int nActorId = packet.ReadInt32();
+    int nSkillId = packet.ReadInt32();
+    short nLevel = packet.ReadInt16();
+    int nMotion = packet.ReadUInt8();
+    Unk_StreamPoint kPos = packet.ReadVector3Short();
+    Unk_StreamPoint kDir = packet.ReadVector3();
+    Unk_StreamPoint kRot = packet.ReadVector3();
+    float fSpeed = packet.ReadShortDiv10();
+    bool bEffect = packet.ReadBool();
     int nExtra = 0;
     CString strExtra;
     if (FUN_140166410()->FUN_14036d570(0xae))
     {
-        bool bHasExtra = static_cast<CInputStream&>(packet).vfunc_o8_0();
+        bool bHasExtra = packet.ReadBool();
         if (bHasExtra)
         {
-            nExtra = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            strExtra = static_cast<CInputStream&>(packet).vfunc_o8_6();
+            nExtra = packet.ReadInt32();
+            strExtra = packet.ReadUnicodeStringA();
         }
     }
     PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1200(nActorId);
@@ -3505,18 +3505,18 @@ public:
 // @0x141718150
 void CSceneStateGame::FUN_141718150(CInPacket& packet)
 {
-    __int64 nCastUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    int nActorId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nSkillId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    short nLevel = static_cast<CInputStream&>(packet).vfunc_o8_2();
-    int nMotion = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    Unk_StreamPoint kPos = static_cast<CInputStream&>(packet).vfunc_o8_10();
-    Unk_StreamPoint kDir = static_cast<CInputStream&>(packet).vfunc_o8_10();
-    Unk_StreamPoint kRot = static_cast<CInputStream&>(packet).vfunc_o8_10();
-    Unk_StreamPoint kMove = static_cast<CInputStream&>(packet).vfunc_o8_10();
-    bool bA = static_cast<CInputStream&>(packet).vfunc_o8_0();
-    bool bB = static_cast<CInputStream&>(packet).vfunc_o8_0();
-    float fSpeed = static_cast<CInputStream&>(packet).vfunc_o8_5();
+    __int64 nCastUid = packet.ReadInt64();
+    int nActorId = packet.ReadInt32();
+    int nSkillId = packet.ReadInt32();
+    short nLevel = packet.ReadInt16();
+    int nMotion = packet.ReadUInt8();
+    Unk_StreamPoint kPos = packet.ReadVector3();
+    Unk_StreamPoint kDir = packet.ReadVector3();
+    Unk_StreamPoint kRot = packet.ReadVector3();
+    Unk_StreamPoint kMove = packet.ReadVector3();
+    bool bA = packet.ReadBool();
+    bool bB = packet.ReadBool();
+    float fSpeed = packet.ReadFloat();
     PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1200(nActorId);
     if (pActor != 0)
     {
@@ -3553,8 +3553,8 @@ MS2_REPLACE_METHOD(0x141718150, CSceneStateGame, FUN_141718150, 1309, 0xDAA82545
 // @0x141718680
 void CSceneStateGame::OnSkillCancel(CInPacket& packet)
 {
-    __int64 nSkillUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    __int64 nSkillUid = packet.ReadInt64();
+    int nId = packet.ReadInt32();
     PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1200(nId);
     if (pActor != 0)
     {
@@ -3569,10 +3569,10 @@ enum Unk_SSGSkillUseError { Unk_SSGSkillUseError_None };   // skill use fail rea
 // MS2-FUNCTIONAL: code identical; the exe gives eError a lower stack slot than nState/nSlot (0x50 vs 0x58).
 void CSceneStateGame::OnSkillUseFailed(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    __int64 nSkillUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    unsigned int nSkillId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    Unk_SSGSkillUseError eError = static_cast<Unk_SSGSkillUseError>(static_cast<CInputStream&>(packet).vfunc_o8_1());
+    int nMode = packet.ReadUInt8();
+    __int64 nSkillUid = packet.ReadInt64();
+    unsigned int nSkillId = packet.ReadInt32();
+    Unk_SSGSkillUseError eError = static_cast<Unk_SSGSkillUseError>(packet.ReadUInt8());
     MyPC* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pMyPC != 0)
     {
@@ -3584,7 +3584,7 @@ void CSceneStateGame::OnSkillUseFailed(CInPacket& packet)
         }
         else if (nMode == 6)
         {
-            int nState = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nState = packet.ReadInt32();
             if (nState == pMyPC->FUN_14166c930())
             {
                 State* pState = pMyPC->FUN_14166ccb0();
@@ -3592,9 +3592,9 @@ void CSceneStateGame::OnSkillUseFailed(CInPacket& packet)
                     pState->vfunc_7(1);
             }
         }
-        int nSlot = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        float fCool = static_cast<CInputStream&>(packet).vfunc_o8_15();
-        int nValue = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nSlot = packet.ReadInt32();
+        float fCool = packet.ReadShortDiv10();
+        int nValue = packet.ReadInt32();
         if (fCool > 0.0f)
         {
             MS2Ptr<Unk_SSGSkillRow> spRow = FUN_1401958b0()->FUN_1407ee1d0(nSkillId);
@@ -3620,15 +3620,15 @@ MS2_REPLACE_METHOD(0x1417187b0, CSceneStateGame, OnSkillUseFailed, 955, 0xBEA2CA
 // @0x141718b80
 void CSceneStateGame::FUN_141718b80(CInPacket& packet)
 {
-    int nType = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nType = packet.ReadUInt8();
     switch (nType)
     {
     case 6:
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        __int64 nSkillUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        int nSkillId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nLevel = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nId = packet.ReadInt32();
+        __int64 nSkillUid = packet.ReadInt64();
+        int nSkillId = packet.ReadInt32();
+        int nLevel = packet.ReadInt32();
         PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
         if (pPC == 0)
             break;
@@ -3676,10 +3676,10 @@ MS2Ptr<Unk_SSGNpcData> FUN_1406cd330(int nNpcId);           // the npc table row
 // @0x141718cf0
 void CSceneStateGame::OnFieldAddNpc(CInPacket& packet)
 {
-    int nObjId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nNpcId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    Unk_StreamPoint kPos = static_cast<CInputStream&>(packet).vfunc_o8_10();
-    Unk_StreamPoint kDir = static_cast<CInputStream&>(packet).vfunc_o8_10();
+    int nObjId = packet.ReadInt32();
+    int nNpcId = packet.ReadInt32();
+    Unk_StreamPoint kPos = packet.ReadVector3();
+    Unk_StreamPoint kDir = packet.ReadVector3();
     Unk_SSGWorld* pWorld = FUN_1403ed2d0();
     kPos.z += 4.0f;
     efd::SmartPointer<Unk_SSGNpc> spNpc = new (efd::MemHint(efd::MemHint::NONE)) CNpc;
@@ -3688,7 +3688,7 @@ void CSceneStateGame::OnFieldAddNpc(CInPacket& packet)
         return;
     if (spData->FUN_1406ccf40())
     {
-        CString strName = static_cast<CInputStream&>(packet).vfunc_o8_7();
+        CString strName = packet.ReadString();
         spNpc->FUN_141095190(strName);
     }
     spNpc->FUN_14123c5a0(nObjId);
@@ -3697,29 +3697,29 @@ void CSceneStateGame::OnFieldAddNpc(CInPacket& packet)
     if (spNpc->vfunc_124(nNpcId) == 0)
         return;
     spNpc->vfunc_90(&packet);
-    int bHidden = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int bHidden = packet.ReadUInt8();
     if (bHidden != 0)
         spNpc->vfunc_125(0);
     spNpc->FUN_1416749a0()->FUN_140970ff0(packet);
-    spNpc->FUN_141094790(static_cast<CInputStream&>(packet).vfunc_o8_4());
-    spNpc->FUN_14174a560(static_cast<CInputStream&>(packet).vfunc_o8_1());
-    spNpc->FUN_14174a580(static_cast<CInputStream&>(packet).vfunc_o8_3());
-    spNpc->FUN_14174a4f0(static_cast<CInputStream&>(packet).vfunc_o8_3());
+    spNpc->FUN_141094790(packet.ReadInt64());
+    spNpc->FUN_14174a560(packet.ReadUInt8());
+    spNpc->FUN_14174a580(packet.ReadInt32());
+    spNpc->FUN_14174a4f0(packet.ReadInt32());
     if (spNpc->FUN_141092ff0() != 0)
     {
-        spNpc->FUN_141094f90(static_cast<CInputStream&>(packet).vfunc_o8_6());
-        int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        spNpc->FUN_141094f90(packet.ReadUnicodeStringA());
+        int nCount = packet.ReadInt32();
         for (int i = 0; i < nCount; i++)
         {
-            int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            short nType = static_cast<CInputStream&>(packet).vfunc_o8_2();
+            int nId = packet.ReadInt32();
+            short nType = packet.ReadInt16();
             FUN_140ab7a10()->FUN_141210540(nId, nType, 4);
         }
-        spNpc->FUN_141095290(static_cast<CInputStream&>(packet).vfunc_o8_3());
+        spNpc->FUN_141095290(packet.ReadInt32());
     }
     if (spData->FUN_1406cd200(5) == true)
-        spNpc->FUN_141095240(static_cast<CInputStream&>(packet).vfunc_o8_4());
-    bool bFlag = static_cast<CInputStream&>(packet).vfunc_o8_1() == 1;
+        spNpc->FUN_141095240(packet.ReadInt64());
+    bool bFlag = packet.ReadUInt8() == 1;
     spNpc->FUN_1410952b0(bFlag);
     if (pWorld->FUN_141bbb1e0(spNpc, 0, 1) == 0)
         return;
@@ -3730,7 +3730,7 @@ MS2_REPLACE_METHOD(0x141718CF0, CSceneStateGame, OnFieldAddNpc, 2289, 0x593CABAD
 // @0x1417195f0
 void CSceneStateGame::FUN_1417195f0(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nId = packet.ReadInt32();
     Unk_SSGWorld* pWorld = FUN_1403ed2d0();
     Unk_SSGNpc* pNpc = pWorld->FUN_141bd1320(nId);
     if (pNpc == 0)
@@ -3747,7 +3747,7 @@ MS2_REPLACE_METHOD(0x1417195f0, CSceneStateGame, FUN_1417195f0, 455, 0xC7E9BA24)
 // @0x1417197c0
 void CSceneStateGame::FUN_1417197c0(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nId = packet.ReadInt32();
     Unk_SSGNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(nId);
     if (pNpc == 0)
         return;
@@ -3758,15 +3758,15 @@ MS2_REPLACE_METHOD(0x1417197c0, CSceneStateGame, FUN_1417197c0, 113, 0xF86CD5AB)
 // @0x141719840
 void CSceneStateGame::FUN_141719840(CInPacket& packet)
 {
-    int nCount = (unsigned short)static_cast<CInputStream&>(packet).vfunc_o8_2();
+    int nCount = (unsigned short)packet.ReadInt16();
     CByteBuffer buf;
     for (int i = 0; i < nCount; i++)
     {
-        int nSize = (unsigned short)static_cast<CInputStream&>(packet).vfunc_o8_2();
+        int nSize = (unsigned short)packet.ReadInt16();
         buf.FUN_140518490();
         buf.FUN_140715230(nSize);
-        static_cast<CInputStream&>(packet).vfunc_o8_9(buf.FUN_140204eb0(), nSize);
-        int nId = buf.CByteBuffer::vfunc_o8_3();
+        packet.ReadBytes(buf.FUN_140204eb0(), nSize);
+        int nId = buf.CByteBuffer::ReadInt32();
         Unk_SSGNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(nId);
         if (pNpc != 0)
             pNpc->FUN_1410918e0(buf);
@@ -3777,11 +3777,11 @@ MS2_REPLACE_METHOD(0x141719840, CSceneStateGame, FUN_141719840, 329, 0xF8C75F47)
 // @0x141719990
 void CSceneStateGame::OnInteractNpc(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nId = packet.ReadInt32();
     Unk_SSGNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(nId);
     if (pNpc == 0)
         return;
-    char cFlag = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    char cFlag = packet.ReadUInt8();
     pNpc->FUN_14174a560(cFlag);
 }
 MS2_REPLACE_METHOD(0x141719990, CSceneStateGame, OnInteractNpc, 142, 0xE0A802D1);
@@ -3810,19 +3810,19 @@ MS2_REPLACE_METHOD(0x1417212a0, CSceneStateGame, FUN_1417212a0, 37, 0xF8895DB9);
 // @0x1417212d0
 void CSceneStateGame::FUN_1417212d0(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     int nCount = 0;
     if (nMode == 1)
         nCount = 1;
     else if (nMode == 0)
-        nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        nCount = packet.ReadInt32();
     for (int i = 0; i < nCount; i++)
     {
-        CString strName = static_cast<CInputStream&>(packet).vfunc_o8_7();
-        int nState = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        int nA = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nC = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        CString strName = packet.ReadString();
+        int nState = packet.ReadUInt8();
+        int nA = packet.ReadUInt8();
+        int nB = packet.ReadInt32();
+        int nC = packet.ReadInt32();
         MS2Ptr<Unk_RideeFieldObj> spObj = FUN_1403ed2d0()->FUN_141bc4e70(strName);
         if (spObj.get() != 0)
         {
@@ -3886,8 +3886,8 @@ MS2_REPLACE_METHOD(0x141732af0, CSceneStateGame, FUN_141732af0, 37, 0x8D93BFEE);
 // @0x141733140
 void CSceneStateGame::OnWebOpen(CInPacket& packet)
 {
-    int nType = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    CString strUrl = static_cast<CInputStream&>(packet).vfunc_o8_6();
+    int nType = packet.ReadUInt8();
+    CString strUrl = packet.ReadUnicodeStringA();
     CString strTarget(strUrl);
     FUN_140cc18a0()->FUN_141b794e0(strTarget, strUrl);
     if (nType == 1)
@@ -3932,14 +3932,14 @@ MS2_REPLACE_METHOD(0x141733140, CSceneStateGame, OnWebOpen, 758, 0xE8555A88);
 // @0x141733440
 void CSceneStateGame::FUN_141733440(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 0:
         {
-            CString strUrl = static_cast<CInputStream&>(packet).vfunc_o8_6();
-            unsigned char bInGame = static_cast<CInputStream&>(packet).vfunc_o8_1();
-            int nType = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            CString strUrl = packet.ReadUnicodeStringA();
+            unsigned char bInGame = packet.ReadUInt8();
+            int nType = packet.ReadInt32();
             if (!bInGame)
             {
                 FUN_140cc18a0()->FUN_141b78cf0(nType, strUrl);
@@ -4077,12 +4077,12 @@ void CSceneStateGame::OnMastery(CInPacket& packet)
     MyPC* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pMyPC == 0)
         return;
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 0)
     {
-        int nType = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        int nExp = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nSubType = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nType = packet.ReadUInt8();
+        int nExp = packet.ReadInt32();
+        int nSubType = packet.ReadInt32();
         int nOldGrade = static_cast<PC*>(static_cast<PCBase*>(pMyPC))->FUN_1416627d0(nType);
         unsigned int nGain = nExp - static_cast<PC*>(static_cast<PCBase*>(pMyPC))->FUN_141662750(nType);
         static_cast<PC*>(static_cast<PCBase*>(pMyPC))->FUN_141662790(nType, nExp);
@@ -4156,16 +4156,16 @@ void CSceneStateGame::OnMastery(CInPacket& packet)
     }
     else if (nMode == 1)
     {
-        int nRecipe = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nRecipe = packet.ReadInt32();
+        int nCount = packet.ReadInt32();
         DAT_143ab31a0.SetAt(nRecipe, 1);
         Unk_SSGChatDialog* pChat = FUN_140938cd0(0x4e5d);
         if (pChat != 0)
         {
             for (int i = 0; i < nCount; i++)
             {
-                int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-                int nAmount = static_cast<unsigned short>(static_cast<CInputStream&>(packet).vfunc_o8_2());
+                int nItemId = packet.ReadInt32();
+                int nAmount = static_cast<unsigned short>(packet.ReadInt16());
                 pChat->FUN_141abf6e0(nItemId, nAmount);
             }
         }
@@ -4183,15 +4183,15 @@ void CSceneStateGame::OnMastery(CInPacket& packet)
     }
     else if (nMode == 2)
     {
-        int nType = static_cast<unsigned short>(static_cast<CInputStream&>(packet).vfunc_o8_2());
-        int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nType = static_cast<unsigned short>(packet.ReadInt16());
+        int nCount = packet.ReadInt32();
         Unk_SSGChatDialog* pChat = FUN_140938cd0(0x4e5d);
         if (pChat != 0)
         {
             for (int i = 0; i < nCount; i++)
             {
-                int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-                int nAmount = static_cast<unsigned short>(static_cast<CInputStream&>(packet).vfunc_o8_2());
+                int nItemId = packet.ReadInt32();
+                int nAmount = static_cast<unsigned short>(packet.ReadInt16());
                 pChat->FUN_141abf6e0(nItemId, nAmount);
             }
         }
@@ -4201,7 +4201,7 @@ void CSceneStateGame::OnMastery(CInPacket& packet)
     }
     else if (nMode == 3)
     {
-        int nRecipeId = static_cast<unsigned short>(static_cast<CInputStream&>(packet).vfunc_o8_2());
+        int nRecipeId = static_cast<unsigned short>(packet.ReadInt16());
         FUN_140e5ca20()->FUN_140b6d710(nRecipeId);
     }
 }
@@ -4222,9 +4222,9 @@ MS2_REPLACE_METHOD(0x14173a5b0, CSceneStateGame, FUN_14173a5b0, 37, 0xDB58DC13);
 // @0x14171a5f0
 void CSceneStateGame::OnSyncPetTamingPoint(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    __int64 nB = (unsigned int)static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nId = packet.ReadInt32();
+    int nA = packet.ReadInt32();
+    __int64 nB = (unsigned int)packet.ReadInt32();
     CPet* pObj = FUN_1403ed2d0()->FUN_141bd13a0(nId);
     if (pObj == 0)
         return;
@@ -4236,7 +4236,7 @@ MS2_REPLACE_METHOD(0x14171a5f0, CSceneStateGame, OnSyncPetTamingPoint, 197, 0x64
 // @0x14171a6c0
 void CSceneStateGame::FUN_14171a6c0(CInPacket& packet)
 {
-    DAT_143ab2900 = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    DAT_143ab2900 = packet.ReadInt32();
     Unk_SSGDlg4e28* pDlg = FUN_140938b90(0x4e28);
     if (pDlg != 0)
         pDlg->FUN_141939620();
@@ -4246,7 +4246,7 @@ MS2_REPLACE_METHOD(0x14171a6c0, CSceneStateGame, FUN_14171a6c0, 92, 0x4986CD7D);
 // @0x14171aa90
 void CSceneStateGame::FUN_14171aa90(CInPacket& packet)
 {
-    int n = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int n = packet.ReadInt32();
     MyPC* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pMyPC == 0)
         return;
@@ -4276,15 +4276,15 @@ void FUN_1413606c0(__int64 nExp, int nType, int bRested, bool bFlag);   // exp c
 // @0x14171ab00
 void CSceneStateGame::FUN_14171ab00(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 0)
     {
-        __int64 nExp = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        int nType = static_cast<unsigned short>(static_cast<CInputStream&>(packet).vfunc_o8_2());
-        __int64 nTotal = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        __int64 nRest = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        int nNpcId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        bool bFlag = static_cast<CInputStream&>(packet).vfunc_o8_0();
+        __int64 nExp = packet.ReadInt64();
+        int nType = static_cast<unsigned short>(packet.ReadInt16());
+        __int64 nTotal = packet.ReadInt64();
+        __int64 nRest = packet.ReadInt64();
+        int nNpcId = packet.ReadInt32();
+        bool bFlag = packet.ReadBool();
         int bRested = (DAT_143ab28a8 > 0);
         DAT_143ab28a0 = nTotal;
         DAT_143ab28a8 = nRest;
@@ -4331,7 +4331,7 @@ void CSceneStateGame::FUN_14171ab00(CInPacket& packet)
     }
     else if (nMode == 1)
     {
-        DAT_143ab28a8 = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        DAT_143ab28a8 = packet.ReadInt64();
         UIExpBar* pBar = Unk_SSGGetUI<UIExpBar>();
         if (pBar != 0)
             pBar->FUN_141932080(2);
@@ -4342,16 +4342,16 @@ MS2_REPLACE_METHOD(0x14171AB00, CSceneStateGame, FUN_14171ab00, 950, 0x6F4C1FBE)
 // @0x14171b380
 void CSceneStateGame::OnMyInfo(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    CStringW strName = static_cast<CInputStream&>(packet).vfunc_o8_8();
+    int nId = packet.ReadInt32();
+    CStringW strName = packet.ReadUnicodeString();
     PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
     if (pPC == 0)
         return;
     MyPC* pMyPC = FUN_1409613d0(pPC);
     if (pMyPC != 0)
     {
-        int nResult = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        CStringW strMsg = static_cast<CInputStream&>(packet).vfunc_o8_8();
+        int nResult = packet.ReadInt32();
+        CStringW strMsg = packet.ReadUnicodeString();
         if (nResult == 0)
         {
             pPC->FUN_141661330(strName);
@@ -4389,24 +4389,24 @@ MS2_REPLACE_METHOD(0x14172f1c0, CSceneStateGame, FUN_14172f1c0, 65, 0xDA4F33D3);
 // MS2-FUNCTIONAL: exe frame 0x10 larger (one extra stack temp shifts the later slots); same reads, calls and stores
 void CSceneStateGame::FUN_14172f210(CInPacket& packet)
 {
-    DAT_143ab2954 = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    DAT_143ab2954 = packet.ReadInt32();
     DAT_143ab32e8.FUN_1409353d0();
     DAT_143ab32f8.FUN_140642910();
-    int nGroupCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nGroupCount = packet.ReadInt32();
     for (int i = 0; i < nGroupCount; i++)
     {
-        int nGroup = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nGroup = packet.ReadInt32();
+        int nCount = packet.ReadInt32();
         Unk_SSGCountMap& kGroup = DAT_143ab32e8.FUN_140ed3b20(nGroup);
         for (int j = 0; j < nCount; j++)
         {
-            int nKey = static_cast<unsigned short>(static_cast<CInputStream&>(packet).vfunc_o8_2());
-            int nValue = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nKey = static_cast<unsigned short>(packet.ReadInt16());
+            int nValue = packet.ReadInt32();
             kGroup.FUN_14063ec70(nKey) = nValue;
             DAT_143ab32f8.FUN_14063ec70(nKey) += nValue;
         }
     }
-    int nScore = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nScore = packet.ReadInt32();
     MyPC* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pMyPC != 0)
         ((Unk_SSGMyPCScore*)pMyPC)->FUN_14174a510(nScore);
@@ -4441,12 +4441,12 @@ void CSceneStateGame::FUN_141731730(CInPacket& packet)
     MyPC* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pMyPC == 0)
         return;
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 0)
     {
-        int nFlag = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        int nType = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        __int64 nValue = static_cast<unsigned int>(static_cast<CInputStream&>(packet).vfunc_o8_3());
+        int nFlag = packet.ReadUInt8();
+        int nType = packet.ReadInt32();
+        __int64 nValue = static_cast<unsigned int>(packet.ReadInt32());
         if (nType == 4)
             FUN_14109a6f0()->FUN_14117d090(0, nMode, nValue, 0, 0, nFlag);
         else if (nType == 7)
@@ -4456,15 +4456,15 @@ void CSceneStateGame::FUN_141731730(CInPacket& packet)
     }
     else if (nMode == 1)
     {
-        __int64 nA = static_cast<unsigned int>(static_cast<CInputStream&>(packet).vfunc_o8_3());
-        __int64 nB = static_cast<unsigned int>(static_cast<CInputStream&>(packet).vfunc_o8_3());
-        __int64 nC = static_cast<unsigned int>(static_cast<CInputStream&>(packet).vfunc_o8_3());
+        __int64 nA = static_cast<unsigned int>(packet.ReadInt32());
+        __int64 nB = static_cast<unsigned int>(packet.ReadInt32());
+        __int64 nC = static_cast<unsigned int>(packet.ReadInt32());
         FUN_14109a6f0()->FUN_14117d090(0, nMode, nA, nB, nC, 0);
     }
     else if (nMode == 2)
     {
-        int nKind = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        __int64 nValue = static_cast<unsigned int>(static_cast<CInputStream&>(packet).vfunc_o8_3());
+        int nKind = packet.ReadUInt8();
+        __int64 nValue = static_cast<unsigned int>(packet.ReadInt32());
         if (FUN_14109a6f0()->FUN_14117c8b0() != 0)
         {
             if (nKind == 0)
@@ -4479,7 +4479,7 @@ MS2_REPLACE_METHOD(0x141731730, CSceneStateGame, FUN_141731730, 891, 0x1BD4802F)
 // @0x1417337c0
 void CSceneStateGame::OnAutoRevive(CInPacket& packet)
 {
-    int n = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int n = packet.ReadInt32();
     if (FUN_1403ed2b0()->FUN_141adc940(0x4ea2) != 0)
         FUN_1403ed2b0()->FUN_141adc530(0x4ea2);
     UIAutoReviveCountDownDialog* pDlg = Unk_SSGGetDialog<UIAutoReviveCountDownDialog>(0x4ea2);
@@ -4491,13 +4491,13 @@ MS2_REPLACE_METHOD(0x1417337c0, CSceneStateGame, OnAutoRevive, 134, 0x0C0969CE);
 // @0x141733850
 void CSceneStateGame::OnPlayerKillNotice(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (FUN_1403ed2b0()->FUN_141adc940(0x4ea0) != 0)
         FUN_1403ed2b0()->FUN_141adc530(0x4ea0);
     if (nMode == 0)
     {
-        CStringW strKiller = static_cast<CInputStream&>(packet).vfunc_o8_8();
-        CStringW strVictim = static_cast<CInputStream&>(packet).vfunc_o8_8();
+        CStringW strKiller = packet.ReadUnicodeString();
+        CStringW strVictim = packet.ReadUnicodeString();
         FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyKillPlayer(strKiller, strVictim)));
         UIPvPKillLogDialog* pDlg = Unk_SSGGetDialog<UIPvPKillLogDialog>(0x4ea0);
         if (pDlg != 0)
@@ -4536,7 +4536,7 @@ MS2_REPLACE_METHOD(0x141734b70, CSceneStateGame, OnQuizEvent, 59, 0x27EDF9AF);
 // @0x141734bc0
 void CSceneStateGame::FUN_141734bc0(CInPacket& packet)
 {
-    CString strUrl = static_cast<CInputStream&>(packet).vfunc_o8_6();
+    CString strUrl = packet.ReadUnicodeStringA();
     if (strUrl.GetLength() < 1)
         return;
     FUN_141276180(strUrl, "");
@@ -4558,11 +4558,11 @@ template <> void ATL::CRBTree<__int64, int, ATL::CElementTraits<__int64>, ATL::C
 // @0x141736940
 void CSceneStateGame::FUN_141736940(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 1)
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nValue = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nId = packet.ReadInt32();
+        int nValue = packet.ReadInt32();
         PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
         if (pPC == 0)
             return;
@@ -4570,7 +4570,7 @@ void CSceneStateGame::FUN_141736940(CInPacket& packet)
     }
     else if (nMode == 0)
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nId = packet.ReadInt32();
         DAT_143ab3268.Add(nId);
         Unk_SSGChatDialog* pChat = FUN_140938cd0(0x4e5d);
         if (pChat != 0)
@@ -4582,21 +4582,21 @@ void CSceneStateGame::FUN_141736940(CInPacket& packet)
     else if (nMode == 2)
     {
         DAT_143ab3268.RemoveAll();
-        int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nCount = packet.ReadInt32();
         for (int i = 0; i < nCount; i++)
         {
-            unsigned int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            unsigned int nId = packet.ReadInt32();
             DAT_143ab3268.Add(nId);
         }
     }
     else if (nMode == 3)
     {
         DAT_143ab30e0.RemoveAll();
-        size_t nCount = static_cast<unsigned int>(static_cast<CInputStream&>(packet).vfunc_o8_3());
+        size_t nCount = static_cast<unsigned int>(packet.ReadInt32());
         for (size_t i = 0; i < nCount; i++)
         {
-            unsigned int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            unsigned int nGrade = static_cast<CInputStream&>(packet).vfunc_o8_1();
+            unsigned int nId = packet.ReadInt32();
+            unsigned int nGrade = packet.ReadUInt8();
             DAT_143ab30e0.SetAt(nId, nGrade);
         }
         UIAchieveDialog* pDlg = FUN_1412bcec0(0x4e73);
@@ -4606,67 +4606,67 @@ void CSceneStateGame::FUN_141736940(CInPacket& packet)
     else if (nMode == 4)
     {
         DAT_143ab3128.RemoveAll();
-        size_t nCount = static_cast<unsigned int>(static_cast<CInputStream&>(packet).vfunc_o8_3());
+        size_t nCount = static_cast<unsigned int>(packet.ReadInt32());
         for (size_t i = 0; i < nCount; i++)
         {
-            int nTemplate = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nTemplate = packet.ReadInt32();
             DAT_143ab3128.Add(nTemplate);
         }
     }
     else if (nMode == 8)
     {
         DAT_143ab3150.RemoveAll();
-        size_t nCount = static_cast<unsigned int>(static_cast<CInputStream&>(packet).vfunc_o8_3());
+        size_t nCount = static_cast<unsigned int>(packet.ReadInt32());
         for (size_t i = 0; i < nCount; i++)
         {
-            int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nValue = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nId = packet.ReadInt32();
+            int nValue = packet.ReadInt32();
             DAT_143ab3150.SetAt(nId, nValue);
         }
     }
     else if (nMode == 9)
     {
         DAT_143ab31a0.RemoveAll();
-        size_t nCount = static_cast<unsigned int>(static_cast<CInputStream&>(packet).vfunc_o8_3());
+        size_t nCount = static_cast<unsigned int>(packet.ReadInt32());
         for (size_t i = 0; i < nCount; i++)
         {
-            unsigned int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nValue = static_cast<CInputStream&>(packet).vfunc_o8_1();
+            unsigned int nId = packet.ReadInt32();
+            int nValue = packet.ReadUInt8();
             DAT_143ab31a0.SetAt(nId, nValue);
         }
     }
     else if (nMode == 0xa)
     {
         DAT_143ab3220.RemoveAll();
-        size_t nCount = static_cast<unsigned int>(static_cast<CInputStream&>(packet).vfunc_o8_3());
+        size_t nCount = static_cast<unsigned int>(packet.ReadInt32());
         for (size_t i = 0; i < nCount; i++)
         {
-            Unk_FameAlliance eAlliance = static_cast<Unk_FameAlliance>(static_cast<unsigned short>(static_cast<CInputStream&>(packet).vfunc_o8_2()));
-            int nFame = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            Unk_FameAlliance eAlliance = static_cast<Unk_FameAlliance>(static_cast<unsigned short>(packet.ReadInt16()));
+            int nFame = packet.ReadInt32();
             DAT_143ab3220.SetAt(eAlliance, nFame);
         }
     }
     else if (nMode == 0xb)
     {
-        Unk_FameAlliance eAlliance = static_cast<Unk_FameAlliance>(static_cast<unsigned short>(static_cast<CInputStream&>(packet).vfunc_o8_2()));
-        int nFame = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        Unk_FameAlliance eAlliance = static_cast<Unk_FameAlliance>(static_cast<unsigned short>(packet.ReadInt16()));
+        int nFame = packet.ReadInt32();
         DAT_143ab3220.SetAt(eAlliance, nFame);
     }
     else if (nMode == 0xc)
     {
         DAT_143ab31e8.RemoveAll();
-        size_t nCount = static_cast<unsigned int>(static_cast<CInputStream&>(packet).vfunc_o8_3());
+        size_t nCount = static_cast<unsigned int>(packet.ReadInt32());
         for (size_t i = 0; i < nCount; i++)
         {
-            int nFame = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            __int64 nCharId = static_cast<CInputStream&>(packet).vfunc_o8_4();
+            int nFame = packet.ReadInt32();
+            __int64 nCharId = packet.ReadInt64();
             DAT_143ab31e8.SetAt(nCharId, nFame);
         }
     }
     else if (nMode == 0xd)
     {
-        int nFame = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        __int64 nCharId = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        int nFame = packet.ReadInt32();
+        __int64 nCharId = packet.ReadInt64();
         DAT_143ab31e8.SetAt(nCharId, nFame);
         CStringW strKey(L"s_fame_point_update");
         FUN_1412751b0(GetStringCommonByKey(strKey), 0x14);
@@ -4727,7 +4727,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 // @0x1417373d0
 void CSceneStateGame::FUN_1417373d0(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 0:
@@ -4745,12 +4745,12 @@ void CSceneStateGame::FUN_1417373d0(CInPacket& packet)
         break;
     case 3:
     {
-        int nPortalId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        __int64 nC = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        int nD = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int bWithPwd = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nPortalId = packet.ReadInt32();
+        int nA = packet.ReadInt32();
+        int nB = packet.ReadInt32();
+        __int64 nC = packet.ReadInt64();
+        int nD = packet.ReadInt32();
+        int bWithPwd = packet.ReadUInt8();
         Unk_SSGMyPCView* pMyPC = static_cast<Unk_SSGMyPCView*>(static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0()));
         if (pMyPC != 0)
         {
@@ -4775,10 +4775,10 @@ void CSceneStateGame::FUN_1417373d0(CInPacket& packet)
         UIMessageBox* pBox = FUN_14151f890();
         if (pBox != 0)
             pBox->FUN_1419f82b0(GetStringCommon(0xb0b));
-        int nPortalId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        __int64 nC = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        int nPortalId = packet.ReadInt32();
+        int nA = packet.ReadInt32();
+        int nB = packet.ReadInt32();
+        __int64 nC = packet.ReadInt64();
         Unk_MyPCPortalKey key(FUN_1403ed2d0()->FUN_141bd3060(), nA, nB, nC);
         MS2Ptr<Unk_MyPCPortalLock> spLock(0);
         if (!DAT_143ab3288.Lookup(key, spLock))
@@ -4880,13 +4880,13 @@ extern CStringW DAT_143ae79f8;                              // the invite messag
 // 0x8c: invite results (system messages by mode and result).
 void CSceneStateGame::FUN_141731c10(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     CStringW strMsg;
     if (nMode == 4)
     {
-        int nType = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        CStringW strName = static_cast<CInputStream&>(packet).vfunc_o8_8();
-        int nInvite = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nType = packet.ReadUInt8();
+        CStringW strName = packet.ReadUnicodeString();
+        int nInvite = packet.ReadInt32();
         if (DAT_143ab2904 == 0)
         {
             DAT_143ab2904 = nInvite;
@@ -4905,8 +4905,8 @@ void CSceneStateGame::FUN_141731c10(CInPacket& packet)
     }
     else if (nMode == 5)
     {
-        CStringW strName = static_cast<CInputStream&>(packet).vfunc_o8_8();
-        int nResult = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        CStringW strName = packet.ReadUnicodeString();
+        int nResult = packet.ReadUInt8();
         if (nResult == 0 || nResult == 2)
             strMsg = FUN_14052bd00(0x8fb, strName);
         else if (nResult == 1 || nResult == 3)
@@ -4915,14 +4915,14 @@ void CSceneStateGame::FUN_141731c10(CInPacket& packet)
     }
     else if (nMode == 6)
     {
-        CStringW strName = static_cast<CInputStream&>(packet).vfunc_o8_8();
+        CStringW strName = packet.ReadUnicodeString();
         strMsg = FUN_14052bd00(0x8fd, strName);
         FUN_1412751b0(strMsg, 0x14);
     }
     else if (nMode == 7)
     {
-        CStringW strName = static_cast<CInputStream&>(packet).vfunc_o8_8();
-        int nResult = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        CStringW strName = packet.ReadUnicodeString();
+        int nResult = packet.ReadUInt8();
         switch (nResult)
         {
         case 2:
@@ -4968,7 +4968,7 @@ public:
 // @0x14173f550
 void CSceneStateGame::OnItemSocketSystem(CInPacket& packet)
 {
-    int nMode = static_cast<unsigned char>(static_cast<CInputStream&>(packet).vfunc_o8_1());
+    int nMode = static_cast<unsigned char>(packet.ReadUInt8());
     if (nMode == 9)
     {
         Unk_SSGGemEquip kInfo;
@@ -5011,14 +5011,14 @@ MS2_REPLACE_METHOD(0x1417380c0, CSceneStateGame, FUN_1417380c0, 83, 0x2B6EC18E);
 // @0x141738240
 void CSceneStateGame::FUN_141738240(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
 }
 MS2_REPLACE_METHOD(0x141738240, CSceneStateGame, FUN_141738240, 60, 0xBCDE2DFF);
 
 // @0x141738ad0
 void CSceneStateGame::FUN_141738ad0(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nId = packet.ReadInt32();
     Unk_SSGNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(nId);
     if (pNpc == 0)
         return;
@@ -5029,17 +5029,17 @@ MS2_REPLACE_METHOD(0x141738ad0, CSceneStateGame, FUN_141738ad0, 104, 0x158C510C)
 // @0x141739220
 void CSceneStateGame::FUN_141739220(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 0:
         {
-            int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            CStringW strArg0 = static_cast<CInputStream&>(packet).vfunc_o8_8();
-            CStringW strArg1 = static_cast<CInputStream&>(packet).vfunc_o8_8();
-            CStringW strArg2 = static_cast<CInputStream&>(packet).vfunc_o8_8();
-            CStringW strArg3 = static_cast<CInputStream&>(packet).vfunc_o8_8();
-            int nValue = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nId = packet.ReadInt32();
+            CStringW strArg0 = packet.ReadUnicodeString();
+            CStringW strArg1 = packet.ReadUnicodeString();
+            CStringW strArg2 = packet.ReadUnicodeString();
+            CStringW strArg3 = packet.ReadUnicodeString();
+            int nValue = packet.ReadInt32();
             CStringW strMsg = FormatStringId(nId, strArg1, strArg2, strArg3, nValue, strArg0);
             FUN_1412751b0(strMsg, 0x14);
         }
@@ -5076,7 +5076,7 @@ MS2_CHECK_SIZE(CItemOption, 0x2f8);
 void CSceneStateGame::FUN_14173a0f0(CInPacket& packet)
 {
     static Unk_ItemOptionSimulator s_kSimulator;
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 0)
     {
         s_kSimulator.FUN_1419b8730();
@@ -5087,9 +5087,9 @@ void CSceneStateGame::FUN_14173a0f0(CInPacket& packet)
     }
     else if (nMode == 1)
     {
-        int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nRarity = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        size_t nCount = static_cast<unsigned>(static_cast<CInputStream&>(packet).vfunc_o8_3());
+        int nItemId = packet.ReadInt32();
+        int nRarity = packet.ReadInt32();
+        size_t nCount = static_cast<unsigned>(packet.ReadInt32());
         for (size_t i = 0; i < nCount; i++)
         {
             MS2Ptr<CItemOption> spOption(new CItemOption(nItemId));
@@ -5124,12 +5124,12 @@ extern CStringW DAT_143ae7a08;                              // the duel invite m
 // 0xb6: individual PvP (duel) and guild battle.
 void CSceneStateGame::OnPvp(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 'f')
         FUN_140f97ef0()->FUN_141280c60();
     else if (nMode == 'd')
     {
-        int nObjId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nObjId = packet.ReadInt32();
         PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nObjId);
         if (pPC == 0)
             return;
@@ -5137,7 +5137,7 @@ void CSceneStateGame::OnPvp(CInPacket& packet)
     }
     else if (nMode == 'e')
     {
-        int bWin = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int bWin = packet.ReadUInt8();
         MyPC* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pMyPC != 0)
             pMyPC->vfunc_59(0x28, 0, bWin ? 0x73 : 0x74, 0);
@@ -5160,7 +5160,7 @@ void CSceneStateGame::OnPvp(CInPacket& packet)
         FUN_1403ed290()->FUN_1413bc250(packet);
     else if (nMode == 9)
     {
-        int nArg = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nArg = packet.ReadInt32();
         FUN_140f97ef0()->FUN_14174a530(1, nArg);
         FUN_1417398d0();
         FUN_1412751b0(GetStringCommon(0x42b), 0x14);
@@ -5176,7 +5176,7 @@ void CSceneStateGame::OnPvp(CInPacket& packet)
     }
     else if (nMode == 11)
     {
-        int nArg = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nArg = packet.ReadInt32();
         FUN_140f97ef0()->FUN_14174a530(2, nArg);
         FUN_1417398d0();
         CStringW strMsg = GetStringCommon(0x42d);
@@ -5199,7 +5199,7 @@ void CSceneStateGame::OnPvp(CInPacket& packet)
     }
     else if (nMode == 0x11)
     {
-        int nResult = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nResult = packet.ReadInt32();
         if (nResult == 0)
             FUN_140d73aa0(GetStringCommonByKey(L"s_rank_duel_ui_error_in_arena_field"), 0, 0, L"");
         return;
@@ -5212,7 +5212,7 @@ MS2_REPLACE_METHOD(0x141732350, CSceneStateGame, OnPvp, 1891, 0x04B092F0);
 // @0x14173b1d0
 void CSceneStateGame::FUN_14173b1d0(CInPacket& packet)
 {
-    int nValue = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nValue = packet.ReadInt32();
     DAT_143ab2950 = nValue;
 }
 MS2_REPLACE_METHOD(0x14173b1d0, CSceneStateGame, FUN_14173b1d0, 67, 0x30E383DD);
@@ -5231,15 +5231,15 @@ CStringW FUN_140d2ef00(CStringW strHref, CStringW strColor, CStringW strText);
 // @0x14173b5a0
 void CSceneStateGame::FUN_14173b5a0(CInPacket& packet)
 {
-    unsigned char nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    unsigned char nMode = packet.ReadUInt8();
     if (nMode == 0)
     {
-        int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nEnvelopeId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nRewardId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nTotal = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        CStringW strName = static_cast<CInputStream&>(packet).vfunc_o8_8();
+        int nItemId = packet.ReadInt32();
+        int nEnvelopeId = packet.ReadInt32();
+        int nRewardId = packet.ReadInt32();
+        int nCount = packet.ReadInt32();
+        int nTotal = packet.ReadInt32();
+        CStringW strName = packet.ReadUnicodeString();
         CStringW strCreate = FUN_14028dfa0(CStringW(L"s_special_item_hongbao_create"), strName,
             FUN_1401a9d70()->FUN_141811980(1, nItemId), FUN_1401a9d70()->FUN_141811980(1, nRewardId), nCount);
         FUN_1412751b0(strCreate, 0x11);
@@ -5251,14 +5251,14 @@ void CSceneStateGame::FUN_14173b5a0(CInPacket& packet)
     }
     else if (nMode == 2)
     {
-        bool bGot = static_cast<CInputStream&>(packet).vfunc_o8_0();
+        bool bGot = packet.ReadBool();
         if (bGot == true)
         {
-            int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nRewardId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            CStringW strName = static_cast<CInputStream&>(packet).vfunc_o8_8();
-            CStringW strOwner = static_cast<CInputStream&>(packet).vfunc_o8_8();
+            int nItemId = packet.ReadInt32();
+            int nRewardId = packet.ReadInt32();
+            int nCount = packet.ReadInt32();
+            CStringW strName = packet.ReadUnicodeString();
+            CStringW strOwner = packet.ReadUnicodeString();
             CStringW strMsg = FUN_14028dfa0(CStringW(L"s_special_item_hongbao_getitem"), strName,
                 FUN_1401a9d70()->FUN_141811980(1, nItemId), strOwner, FUN_1401a9d70()->FUN_141811980(1, nRewardId),
                 nCount);
@@ -5272,16 +5272,16 @@ void CSceneStateGame::FUN_14173b5a0(CInPacket& packet)
     }
     else if (nMode == 3)
     {
-        CStringW strName = static_cast<CInputStream&>(packet).vfunc_o8_8();
-        int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        CStringW strName = packet.ReadUnicodeString();
+        int nItemId = packet.ReadInt32();
         CStringW strMsg = FUN_1408f71a0(CStringW(L"s_msg_item_open_massive_open_message"), strName,
             FUN_1401a9d70()->FUN_141811980(3, nItemId));
         FUN_1412751b0(strMsg, 0x11);
     }
     else if (nMode == 4)
     {
-        unsigned nStart = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        unsigned nEnd = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        unsigned nStart = packet.ReadInt32();
+        unsigned nEnd = packet.ReadInt32();
         if (nStart > nEnd)
             return;
         unsigned nLeft = nEnd - nStart;
@@ -5290,8 +5290,8 @@ void CSceneStateGame::FUN_14173b5a0(CInPacket& packet)
     }
     else if (nMode == 5)
     {
-        unsigned nStart = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        unsigned nEnd = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        unsigned nStart = packet.ReadInt32();
+        unsigned nEnd = packet.ReadInt32();
         if (nStart > nEnd)
             return;
         unsigned nLeft = nEnd - nStart;
@@ -5304,7 +5304,7 @@ MS2_REPLACE_METHOD(0x14173b5a0, CSceneStateGame, FUN_14173b5a0, 2782, 0xE2711461
 // @0x14173c090
 void CSceneStateGame::FUN_14173c090(CInPacket& packet)
 {
-    unsigned char nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    unsigned char nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 1:
@@ -5329,7 +5329,7 @@ MS2_REPLACE_METHOD(0x14173e440, CSceneStateGame, FUN_14173e440, 95, 0x9668CF92);
 // @0x14173e4b0
 void CSceneStateGame::FUN_14173e4b0(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 0:
@@ -5354,12 +5354,12 @@ public:
 // @0x14173e5b0
 void CSceneStateGame::OnHideAndSeek(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 0:
     {
-        int nCharId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nCharId = packet.ReadInt32();
         PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nCharId);
         if (pPC == 0)
             break;
@@ -5370,22 +5370,22 @@ void CSceneStateGame::OnHideAndSeek(CInPacket& packet)
     }
     case 1:
     {
-        int nCount = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nCount = packet.ReadUInt8();
         std::vector<unsigned> vIds;
         for (unsigned int i = 0; i < nCount; i++)
         {
-            vIds.push_back(static_cast<CInputStream&>(packet).vfunc_o8_1());
+            vIds.push_back(packet.ReadUInt8());
         }
         FUN_1403ed2d0()->FUN_141bda290(&vIds);
         break;
     }
     case 2:
     {
-        int nCharId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nType = static_cast<unsigned short>(static_cast<CInputStream&>(packet).vfunc_o8_2());
-        int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nC = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nCharId = packet.ReadInt32();
+        int nType = static_cast<unsigned short>(packet.ReadInt16());
+        int nA = packet.ReadInt32();
+        int nB = packet.ReadInt32();
+        int nC = packet.ReadInt32();
         MyPC* pMyPC = FUN_1409613d0(FUN_1403ed2d0()->FUN_141bd1290(nCharId));
         if (pMyPC == 0)
             break;
@@ -5418,7 +5418,7 @@ void CSceneStateGame::OnHideAndSeek(CInPacket& packet)
         break;
     case 3:
     {
-        int nCharId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nCharId = packet.ReadInt32();
         MyPC* pMyPC = FUN_1409613d0(FUN_1403ed2d0()->FUN_141bd1290(nCharId));
         if (pMyPC == 0)
             break;
@@ -5433,9 +5433,9 @@ void CSceneStateGame::OnHideAndSeek(CInPacket& packet)
         break;
     case 4:
     {
-        int nCharId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nCharId = packet.ReadInt32();
+        int nA = packet.ReadInt32();
+        int nB = packet.ReadInt32();
         MyPC* pMyPC = FUN_1409613d0(FUN_1403ed2d0()->FUN_141bd1290(nCharId));
         if (pMyPC == 0)
             break;
@@ -5446,8 +5446,8 @@ void CSceneStateGame::OnHideAndSeek(CInPacket& packet)
         break;
     case 5:
     {
-        int nCharId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nSkillId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nCharId = packet.ReadInt32();
+        int nSkillId = packet.ReadInt32();
         MyPC* pMyPC = FUN_1409613d0(FUN_1403ed2d0()->FUN_141bd1290(nCharId));
         if (pMyPC == 0)
             break;
@@ -5457,8 +5457,8 @@ void CSceneStateGame::OnHideAndSeek(CInPacket& packet)
         break;
     case 6:
     {
-        int nCharId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nSkillId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nCharId = packet.ReadInt32();
+        int nSkillId = packet.ReadInt32();
         MyPC* pMyPC = FUN_1409613d0(FUN_1403ed2d0()->FUN_141bd1290(nCharId));
         if (pMyPC == 0)
             break;
@@ -5468,10 +5468,10 @@ void CSceneStateGame::OnHideAndSeek(CInPacket& packet)
         break;
     case 7:
     {
-        int nCharId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nValue = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        bool bShow = static_cast<CInputStream&>(packet).vfunc_o8_0();
-        bool bFlag = static_cast<CInputStream&>(packet).vfunc_o8_0();
+        int nCharId = packet.ReadInt32();
+        int nValue = packet.ReadInt32();
+        bool bShow = packet.ReadBool();
+        bool bFlag = packet.ReadBool();
         MyPC* pMyPC = FUN_1409613d0(FUN_1403ed2d0()->FUN_141bd1290(nCharId));
         if (pMyPC == 0)
             break;
@@ -5493,11 +5493,11 @@ void CSceneStateGame::OnHideAndSeek(CInPacket& packet)
         break;
     case 8:
     {
-        int nCharId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nRound = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nUnused = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nCharId = packet.ReadInt32();
+        int nRound = packet.ReadInt32();
+        int nItemId = packet.ReadInt32();
+        int nUnused = packet.ReadInt32();
+        int nCount = packet.ReadInt32();
         MyPC* pMyPC = FUN_1409613d0(FUN_1403ed2d0()->FUN_141bd1290(nCharId));
         if (pMyPC == 0)
             break;
@@ -5516,7 +5516,7 @@ MS2_REPLACE_METHOD(0x14173E5B0, CSceneStateGame, OnHideAndSeek, 2757, 0xCF47C4D0
 // @0x14173f7c0
 void CSceneStateGame::FUN_14173f7c0(CInPacket& packet)
 {
-    DAT_143ab2943 = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    DAT_143ab2943 = packet.ReadUInt8();
 }
 MS2_REPLACE_METHOD(0x14173f7c0, CSceneStateGame, FUN_14173f7c0, 59, 0x3565632F);
 
@@ -5535,13 +5535,13 @@ CStringW FUN_14061ad70(const CStringW& str, const wchar_t* pszSuffix);
 // MS2-FUNCTIONAL: stack slots differ (SYSTEMTIME/strText/hFile placement) and the exe has one extra dead jmp after the switch dispatch.
 void CSceneStateGame::FUN_14173f860(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 1:
     {
-        CStringW strFile = static_cast<CInputStream&>(packet).vfunc_o8_8();
-        CStringW strText = static_cast<CInputStream&>(packet).vfunc_o8_8();
+        CStringW strFile = packet.ReadUnicodeString();
+        CStringW strText = packet.ReadUnicodeString();
         SYSTEMTIME st;
         if (strFile.IsEmpty())
         {
@@ -5586,7 +5586,7 @@ MS2_REPLACE_METHOD(0x14173fc00, CSceneStateGame, FUN_14173fc00, 47, 0xF0AACA5F);
 // @0x14171c0b0
 void CSceneStateGame::OnSkillDamage(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 0:
@@ -5653,16 +5653,16 @@ MS2_CHECK_SIZE(Unk_MagicTag, 0xd8);
 // @0x14171c1d0
 void CSceneStateGame::FUN_14171c1d0(CInPacket& packet)
 {
-    unsigned long long nTagId = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    int nOwnerId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nSkillId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    short nLevel = static_cast<CInputStream&>(packet).vfunc_o8_2();
-    int nSrcLevel = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    int nSrcIndex = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    Unk_StreamPoint ptStart = static_cast<CInputStream&>(packet).vfunc_o8_11();
-    Unk_StreamPoint ptDir = static_cast<CInputStream&>(packet).vfunc_o8_10();
-    int bServer = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    int nCount = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    unsigned long long nTagId = packet.ReadInt64();
+    int nOwnerId = packet.ReadInt32();
+    int nSkillId = packet.ReadInt32();
+    short nLevel = packet.ReadInt16();
+    int nSrcLevel = packet.ReadUInt8();
+    int nSrcIndex = packet.ReadUInt8();
+    Unk_StreamPoint ptStart = packet.ReadVector3Short();
+    Unk_StreamPoint ptDir = packet.ReadVector3();
+    int bServer = packet.ReadUInt8();
+    int nCount = packet.ReadUInt8();
 
     MS2Ptr<Unk_PCBaseComp_b18> spCast(0);
     PCBase* pOwner = FUN_1403ed2d0()->FUN_141bd1200(nOwnerId);
@@ -5683,11 +5683,11 @@ void CSceneStateGame::FUN_14171c1d0(CInPacket& packet)
     ATL::CRBMap<unsigned long long, Unk_MagicTagPtr> mapTags(10);
     for (int i = 0; i < nCount; i++)
     {
-        unsigned long long nParent = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        unsigned long long nTagSub = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        int nCasterId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int n84 = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        int n80 = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        unsigned long long nParent = packet.ReadInt64();
+        unsigned long long nTagSub = packet.ReadInt64();
+        int nCasterId = packet.ReadInt32();
+        int n84 = packet.ReadUInt8();
+        int n80 = packet.ReadUInt8();
         if (static_cast<bool>(spCast.get()) || bServer != 0)
         {
             if (nParent > 0)
@@ -5749,28 +5749,28 @@ Unk_SSGNpc* FUN_140a38a00(GameObject* pObj);                // cast to the npc c
 // @0x14171cdf0
 void CSceneStateGame::FUN_14171cdf0(CInPacket& packet)
 {
-    __int64 nCasterUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    __int64 nCastUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    int nOwnerId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nSkillId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    short nLevel = static_cast<CInputStream&>(packet).vfunc_o8_2();
-    int nMotion = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    int nAttack = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    Unk_StreamPoint kPos = static_cast<CInputStream&>(packet).vfunc_o8_11();
-    Unk_StreamPoint kDir = static_cast<CInputStream&>(packet).vfunc_o8_11();
-    int nCount = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    __int64 nCasterUid = packet.ReadInt64();
+    __int64 nCastUid = packet.ReadInt64();
+    int nOwnerId = packet.ReadInt32();
+    int nSkillId = packet.ReadInt32();
+    short nLevel = packet.ReadInt16();
+    int nMotion = packet.ReadUInt8();
+    int nAttack = packet.ReadUInt8();
+    Unk_StreamPoint kPos = packet.ReadVector3Short();
+    Unk_StreamPoint kDir = packet.ReadVector3Short();
+    int nCount = packet.ReadUInt8();
     for (int i = 0; i < nCount; i++)
     {
-        int nCasterId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nHits = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nCasterId = packet.ReadInt32();
+        int nHits = packet.ReadUInt8();
         MS2Ptr<CDamageRecord> spRecord(new CDamageRecord());
         if (!spRecord->FUN_14175a610(nCasterUid, nCastUid, nOwnerId, nCasterId, nSkillId, nLevel, nMotion, nAttack, kPos,
                                      DAT_143b01a60, kDir))
             return;
         for (int j = 0; j < nHits; j++)
         {
-            int nFlag = static_cast<CInputStream&>(packet).vfunc_o8_1();
-            __int64 nDamage = static_cast<CInputStream&>(packet).vfunc_o8_4();
+            int nFlag = packet.ReadUInt8();
+            __int64 nDamage = packet.ReadInt64();
             spRecord->FUN_14175abc0(nFlag, nDamage);
         }
         GameObject* pCaster = FUN_1403ed2d0()->FUN_141bd1180(nCasterId);
@@ -5805,11 +5805,11 @@ MS2_REPLACE_METHOD(0x14171CDF0, CSceneStateGame, FUN_14171cdf0, 2073, 0xD06DFEFB
 // @0x14171d610
 void CSceneStateGame::FUN_14171d610(CInPacket& packet)
 {
-    int nSkillId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nOwnerId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nTargetId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nFlag = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    __int64 nDamage = static_cast<CInputStream&>(packet).vfunc_o8_4();
+    int nSkillId = packet.ReadInt32();
+    int nOwnerId = packet.ReadInt32();
+    int nTargetId = packet.ReadInt32();
+    int nFlag = packet.ReadUInt8();
+    __int64 nDamage = packet.ReadInt64();
     PCBase* pOwner = FUN_1403ed2d0()->FUN_141bd1200(nOwnerId);
     if (pOwner == 0)
         return;
@@ -5827,13 +5827,13 @@ static int FUN_1417403b0(const __int64& nValue, const int& nType, int& nOutType,
 // @0x14171d820
 void CSceneStateGame::FUN_14171d820(CInPacket& packet)
 {
-    int nTargetId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nOwnerId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nBuffId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    __int64 nValue1 = static_cast<unsigned int>(static_cast<CInputStream&>(packet).vfunc_o8_3());
-    __int64 nValue2 = static_cast<unsigned int>(static_cast<CInputStream&>(packet).vfunc_o8_3());
-    __int64 nValue3 = static_cast<unsigned int>(static_cast<CInputStream&>(packet).vfunc_o8_3());
-    int bShow = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nTargetId = packet.ReadInt32();
+    int nOwnerId = packet.ReadInt32();
+    int nBuffId = packet.ReadInt32();
+    __int64 nValue1 = static_cast<unsigned int>(packet.ReadInt32());
+    __int64 nValue2 = static_cast<unsigned int>(packet.ReadInt32());
+    __int64 nValue3 = static_cast<unsigned int>(packet.ReadInt32());
+    int bShow = packet.ReadUInt8();
     PCBase* pOwner = FUN_1403ed2d0()->FUN_141bd1200(nOwnerId);
     if (pOwner == 0)
         return;
@@ -5875,23 +5875,23 @@ MS2_REPLACE_METHOD(0x14171D820, CSceneStateGame, FUN_14171d820, 1036, 0xBA2CEA1E
 // @0x14171e440
 void CSceneStateGame::FUN_14171e440(CInPacket& packet)
 {
-    __int64 nSkillUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    int nSkillId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nLevel = static_cast<unsigned short>(static_cast<CInputStream&>(packet).vfunc_o8_2());
-    int nCount = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    __int64 nSkillUid = packet.ReadInt64();
+    int nSkillId = packet.ReadInt32();
+    int nLevel = static_cast<unsigned short>(packet.ReadInt16());
+    int nCount = packet.ReadUInt8();
     for (int i = 0; i < nCount; i++)
     {
-        int nOwnerId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nHits = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        Unk_StreamPoint kDir = static_cast<CInputStream&>(packet).vfunc_o8_11();
-        Unk_StreamPoint kPos = static_cast<CInputStream&>(packet).vfunc_o8_10();
+        int nOwnerId = packet.ReadInt32();
+        int nHits = packet.ReadUInt8();
+        Unk_StreamPoint kDir = packet.ReadVector3Short();
+        Unk_StreamPoint kPos = packet.ReadVector3();
         MS2Ptr<CSplashDamageRecord> spRecord(new CSplashDamageRecord());
         if (!spRecord->FUN_14175b1c0(nOwnerId, 0, nSkillUid, nSkillId, nLevel, 0, 0, kDir, kPos))
             return;
         for (int j = 0; j < nHits; j++)
         {
-            int nFlag = static_cast<CInputStream&>(packet).vfunc_o8_1();
-            __int64 nDamage = static_cast<CInputStream&>(packet).vfunc_o8_4();
+            int nFlag = packet.ReadUInt8();
+            __int64 nDamage = packet.ReadInt64();
             spRecord->FUN_14175abc0(nFlag, nDamage);
         }
         GameObject* pOwner = FUN_1403ed2d0()->FUN_141bd1180(nOwnerId);
@@ -5904,8 +5904,8 @@ MS2_REPLACE_METHOD(0x14171e440, CSceneStateGame, FUN_14171e440, 1035, 0x6B7211C5
 // @0x141721940
 void CSceneStateGame::OnUserState(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nState = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nId = packet.ReadInt32();
+    int nState = packet.ReadUInt8();
     PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
     if (pPC == 0)
         return;
@@ -5920,10 +5920,10 @@ MS2_REPLACE_METHOD(0x141721940, CSceneStateGame, OnUserState, 232, 0x5ADFE327);
 // @0x141721a30
 void CSceneStateGame::OnUserMoveByPortal(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    Unk_StreamPoint kPos = static_cast<CInputStream&>(packet).vfunc_o8_10();
-    Unk_StreamPoint kRot = static_cast<CInputStream&>(packet).vfunc_o8_10();
-    int nFlag = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nId = packet.ReadInt32();
+    Unk_StreamPoint kPos = packet.ReadVector3();
+    Unk_StreamPoint kRot = packet.ReadVector3();
+    int nFlag = packet.ReadUInt8();
     PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
     if (pPC == 0)
         return;
@@ -5944,7 +5944,7 @@ MS2_REPLACE_METHOD(0x141721a30, CSceneStateGame, OnUserMoveByPortal, 536, 0xEC73
 // @0x141722fb0
 void CSceneStateGame::FUN_141722fb0(CInPacket& packet)
 {
-    __int64 nSkillId = (unsigned int)static_cast<CInputStream&>(packet).vfunc_o8_3();
+    __int64 nSkillId = (unsigned int)packet.ReadInt32();
     MyPC* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pMyPC == 0)
         return;
@@ -5961,8 +5961,8 @@ MS2_REPLACE_METHOD(0x141722fb0, CSceneStateGame, FUN_141722fb0, 152, 0x8674E8E3)
 // @0x141723050
 void CSceneStateGame::OnStateFallDamage(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    __int64 nAmount = static_cast<unsigned int>(static_cast<CInputStream&>(packet).vfunc_o8_3());
+    int nId = packet.ReadInt32();
+    __int64 nAmount = static_cast<unsigned int>(packet.ReadInt32());
     PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
     if (pPC != 0)
     {
@@ -5993,12 +5993,12 @@ MS2_REPLACE_METHOD(0x141723050, CSceneStateGame, OnStateFallDamage, 522, 0x8423E
 // @0x1417232a0
 void CSceneStateGame::FUN_1417232a0(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 0:
     {
-        unsigned char nValue = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        unsigned char nValue = packet.ReadUInt8();
         FUN_140930150(nValue);
         break;
     }
@@ -6009,7 +6009,7 @@ MS2_REPLACE_METHOD(0x1417232a0, CSceneStateGame, FUN_1417232a0, 127, 0x2183B5C9)
 // @0x141723330
 void CSceneStateGame::FUN_141723330(CInPacket& packet)
 {
-    int nNpcId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nNpcId = packet.ReadInt32();
     MyPC* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pMyPC == 0)
         return;
@@ -6020,7 +6020,7 @@ MS2_REPLACE_METHOD(0x141723330, CSceneStateGame, FUN_141723330, 203, 0x0195DA6E)
 // @0x1417235a0
 void CSceneStateGame::FUN_1417235a0(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nId = packet.ReadInt32();
     CubeItemInfo info(packet);
     PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
     if (pPC == 0)
@@ -6052,7 +6052,7 @@ MS2Ptr<CItem> FUN_1419be700(unsigned __int64 nItemUid);    // inventory or equip
 // @0x141729ce0
 void CSceneStateGame::OnItemFusion(CInPacket& packet)
 {
-    unsigned char nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    unsigned char nMode = packet.ReadUInt8();
     if (nMode == 0)
     {
         UIItemMergeOptionDialog* pDlg = FUN_14123a9b0(0x4e68);
@@ -6073,7 +6073,7 @@ void CSceneStateGame::OnItemFusion(CInPacket& packet)
     }
     else if (nMode == 6)
     {
-        __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        __int64 nItemUid = packet.ReadInt64();
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nItemUid);
         if (spItem.get() != 0)
         {
@@ -6085,19 +6085,19 @@ void CSceneStateGame::OnItemFusion(CInPacket& packet)
     }
     else if (nMode == 4)
     {
-        int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nC = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nA = packet.ReadInt32();
+        int nB = packet.ReadInt32();
+        int nC = packet.ReadInt32();
         UIItemMergeOptionDialog* pDlg = FUN_14123a9b0(0x4e68);
         if (pDlg != 0)
             pDlg->FUN_1419d1490(nA, nB, nC);
     }
     else if (nMode == 5)
     {
-        int nError = (unsigned short)static_cast<CInputStream&>(packet).vfunc_o8_2();
+        int nError = (unsigned short)packet.ReadInt16();
         if (nError == 0)
         {
-            __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+            __int64 nItemUid = packet.ReadInt64();
             MS2Ptr<CItem> spItem = FUN_1419be700(nItemUid);
             if (spItem.get() != 0)
             {
@@ -6127,19 +6127,19 @@ MS2_REPLACE_METHOD(0x141729ce0, CSceneStateGame, OnItemFusion, 1232, 0xC6F49804)
 // @0x14172a1c0
 void CSceneStateGame::FUN_14172a1c0(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 0 || nMode == 1)
     {
-        CString strName = static_cast<CInputStream&>(packet).vfunc_o8_7();
-        __int64 nCastUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        int nSkillId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        unsigned short nLevel = static_cast<CInputStream&>(packet).vfunc_o8_2();
-        int nMotion = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        int n94 = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        Unk_StreamPoint kPos = static_cast<CInputStream&>(packet).vfunc_o8_11();
-        int nSerial = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        CString strBone = static_cast<CInputStream&>(packet).vfunc_o8_7();
-        unsigned char nFlag = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        CString strName = packet.ReadString();
+        __int64 nCastUid = packet.ReadInt64();
+        int nSkillId = packet.ReadInt32();
+        unsigned short nLevel = packet.ReadInt16();
+        int nMotion = packet.ReadUInt8();
+        int n94 = packet.ReadUInt8();
+        Unk_StreamPoint kPos = packet.ReadVector3Short();
+        int nSerial = packet.ReadInt32();
+        CString strBone = packet.ReadString();
+        unsigned char nFlag = packet.ReadUInt8();
         Unk_InventorySkillRequest kReq(nSkillId, nLevel);
         kReq.serial = nSerial;
         kReq.tick = nCastUid;
@@ -6153,9 +6153,9 @@ void CSceneStateGame::FUN_14172a1c0(CInPacket& packet)
     }
     if (nMode == 2)
     {
-        CString strName = static_cast<CInputStream&>(packet).vfunc_o8_7();
-        CString strModel = static_cast<CInputStream&>(packet).vfunc_o8_7();
-        unsigned char nFlag = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        CString strName = packet.ReadString();
+        CString strModel = packet.ReadString();
+        unsigned char nFlag = packet.ReadUInt8();
         FUN_1403ed2d0()->FUN_141bc9560(strName, strModel, nFlag);
     }
 }
@@ -6164,7 +6164,7 @@ MS2_REPLACE_METHOD(0x14172a1c0, CSceneStateGame, FUN_14172a1c0, 1501, 0x7E67768A
 // @0x14172a7b0
 void CSceneStateGame::FUN_14172a7b0(CInPacket& packet)
 {
-    CString strName = static_cast<CInputStream&>(packet).vfunc_o8_7();
+    CString strName = packet.ReadString();
     FUN_1403ed2d0()->FUN_141bc92e0(strName);
 }
 MS2_REPLACE_METHOD(0x14172a7b0, CSceneStateGame, FUN_14172a7b0, 140, 0x6F42AED7);
@@ -6172,7 +6172,7 @@ MS2_REPLACE_METHOD(0x14172a7b0, CSceneStateGame, FUN_14172a7b0, 140, 0x6F42AED7)
 // @0x14172a850
 void CSceneStateGame::FUN_14172a850(CInPacket& packet)
 {
-    CString strName = static_cast<CInputStream&>(packet).vfunc_o8_7();
+    CString strName = packet.ReadString();
     FUN_1403ed2d0()->FUN_141bc9480(strName);
 }
 MS2_REPLACE_METHOD(0x14172a850, CSceneStateGame, FUN_14172a850, 140, 0xE3DF6E2B);
@@ -6256,7 +6256,7 @@ enum Unk_SSGEnchantExpError { };                            // the 0x97 mode 12 
 // @0x141732b20
 void CSceneStateGame::OnItemEnchant(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 5)
     {
         UIItemEnchantDialog* pDlg = FUN_1413b1bc0(0x4e92);
@@ -6265,7 +6265,7 @@ void CSceneStateGame::OnItemEnchant(CInPacket& packet)
     }
     else if (nMode == 10)
     {
-        __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        __int64 nItemUid = packet.ReadInt64();
         MS2Ptr<CItem> spItem = FUN_1419be700(nItemUid);
         if (spItem.get() != 0)
         {
@@ -6282,7 +6282,7 @@ void CSceneStateGame::OnItemEnchant(CInPacket& packet)
     }
     else if (nMode == 15)
     {
-        __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        __int64 nItemUid = packet.ReadInt64();
         MS2Ptr<CItem> spItem = FUN_1419be700(nItemUid);
         if (spItem.get() != 0)
         {
@@ -6300,7 +6300,7 @@ void CSceneStateGame::OnItemEnchant(CInPacket& packet)
     }
     else if (nMode == 11)
     {
-        __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        __int64 nItemUid = packet.ReadInt64();
         MS2Ptr<CItem> spItem = FUN_1419be700(nItemUid);
         if (spItem.get() != 0)
         {
@@ -6340,7 +6340,7 @@ void CSceneStateGame::OnItemEnchant(CInPacket& packet)
     }
     else if (nMode == 12)
     {
-        Unk_SSGEnchantExpError nError = (Unk_SSGEnchantExpError)(unsigned short)static_cast<CInputStream&>(packet).vfunc_o8_2();
+        Unk_SSGEnchantExpError nError = (Unk_SSGEnchantExpError)(unsigned short)packet.ReadInt16();
         switch (nError)
         {
         case 1:
@@ -6388,13 +6388,13 @@ enum Unk_SSGInteractMode
 // @0x14172d0f0
 void CSceneStateGame::OnInteractObject(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     switch (static_cast<Unk_SSGInteractMode>(nMode))
     {
     case SSG_INTERACT_MSG:
     {
-        CString strName = static_cast<CInputStream&>(packet).vfunc_o8_7();
-        unsigned char nKind = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        CString strName = packet.ReadString();
+        unsigned char nKind = packet.ReadUInt8();
         MS2Ptr<CInteractObject> spObj = FUN_1403ed2d0()->FUN_141bc66b0(strName);
         if (spObj.IsNull())
             break;
@@ -6406,9 +6406,9 @@ void CSceneStateGame::OnInteractObject(CInPacket& packet)
     break;
     case SSG_INTERACT_RESULT:
     {
-        Unk_SSGInteractResult nResult = static_cast<Unk_SSGInteractResult>(static_cast<CInputStream&>(packet).vfunc_o8_1());
-        CString strName = static_cast<CInputStream&>(packet).vfunc_o8_7();
-        unsigned char nKind = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        Unk_SSGInteractResult nResult = static_cast<Unk_SSGInteractResult>(packet.ReadUInt8());
+        CString strName = packet.ReadString();
+        unsigned char nKind = packet.ReadUInt8();
         if (nResult == 0)
         {
             MS2Ptr<CInteractObject> spObj = FUN_1403ed2d0()->FUN_141bc66b0(strName);
@@ -6480,18 +6480,18 @@ void CSceneStateGame::OnInteractObject(CInPacket& packet)
     break;
     case SSG_INTERACT_ADD:
     {
-        CString strName = static_cast<CInputStream&>(packet).vfunc_o8_7();
-        int nState = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        unsigned char nKind = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        int nRowId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        Unk_StreamPoint ptPos = static_cast<CInputStream&>(packet).vfunc_o8_10();
-        Unk_StreamPoint ptRot = static_cast<CInputStream&>(packet).vfunc_o8_10();
-        CString strModel = static_cast<CInputStream&>(packet).vfunc_o8_6();
-        CString strAnim = static_cast<CInputStream&>(packet).vfunc_o8_6();
-        CString strAssetA = static_cast<CInputStream&>(packet).vfunc_o8_6();
-        CString strAssetB = static_cast<CInputStream&>(packet).vfunc_o8_6();
-        float fScale = static_cast<CInputStream&>(packet).vfunc_o8_5();
-        bool bFlag = static_cast<CInputStream&>(packet).vfunc_o8_0();
+        CString strName = packet.ReadString();
+        int nState = packet.ReadUInt8();
+        unsigned char nKind = packet.ReadUInt8();
+        int nRowId = packet.ReadInt32();
+        Unk_StreamPoint ptPos = packet.ReadVector3();
+        Unk_StreamPoint ptRot = packet.ReadVector3();
+        CString strModel = packet.ReadUnicodeStringA();
+        CString strAnim = packet.ReadUnicodeStringA();
+        CString strAssetA = packet.ReadUnicodeStringA();
+        CString strAssetB = packet.ReadUnicodeStringA();
+        float fScale = packet.ReadFloat();
+        bool bFlag = packet.ReadBool();
         efd::utf8string strUrnA(FUN_1409a2360(strAssetA, 0));
         efd::utf8string strUrnB(FUN_1409a2360(strAssetB, 0));
         MS2Ptr<CInteractObjectData> spData = FUN_14051f670(nRowId);
@@ -6559,8 +6559,8 @@ void CSceneStateGame::OnInteractObject(CInPacket& packet)
                     else if (nKind == 8)
                     {
                         CInteractBillBoardObject* pBoard = new CInteractBillBoardObject();
-                        pBoard->m_nBoard = static_cast<CInputStream&>(packet).vfunc_o8_4();
-                        pBoard->m_strText = static_cast<CInputStream&>(packet).vfunc_o8_8();
+                        pBoard->m_nBoard = packet.ReadInt64();
+                        pBoard->m_strText = packet.ReadUnicodeString();
                         spObj.AssignRaw(pBoard);
                     }
                     if (static_cast<bool>(spObj))
@@ -6583,8 +6583,8 @@ void CSceneStateGame::OnInteractObject(CInPacket& packet)
     break;
     case SSG_INTERACT_REMOVE:
     {
-        CString strName = static_cast<CInputStream&>(packet).vfunc_o8_7();
-        CString strEffect = static_cast<CInputStream&>(packet).vfunc_o8_6();
+        CString strName = packet.ReadString();
+        CString strEffect = packet.ReadUnicodeStringA();
         MS2Ptr<CInteractObject> spObj = FUN_1403ed2d0()->FUN_141bc66b0(strName);
         if (spObj.IsNull())
             return;
@@ -6608,46 +6608,46 @@ void CSceneStateGame::OnInteractObject(CInPacket& packet)
     break;
     case SSG_INTERACT_STATE:
     {
-        CString strName = static_cast<CInputStream&>(packet).vfunc_o8_7();
-        int nState = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        int nB = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        CString strName = packet.ReadString();
+        int nState = packet.ReadUInt8();
+        int nB = packet.ReadUInt8();
         FUN_1403ed2d0()->FUN_141bc6860(strName, nState, nB);
     }
     break;
     case SSG_INTERACT_STATES:
     {
-        int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nCount = packet.ReadInt32();
         for (int i = 0; i < nCount; i++)
         {
-            CString strName = static_cast<CInputStream&>(packet).vfunc_o8_7();
-            int nState = static_cast<CInputStream&>(packet).vfunc_o8_1();
-            int nB = static_cast<CInputStream&>(packet).vfunc_o8_1();
+            CString strName = packet.ReadString();
+            int nState = packet.ReadUInt8();
+            int nB = packet.ReadUInt8();
             int nC = 0;
             if (nB == 6)
-                nC = static_cast<CInputStream&>(packet).vfunc_o8_3();
+                nC = packet.ReadInt32();
             FUN_1403ed2d0()->FUN_141bc6760(strName, nState, nB, nC);
         }
     }
     break;
     case SSG_INTERACT_KIND_STATE:
     {
-        int nKind = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nState = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nKind = packet.ReadInt32();
+        int nState = packet.ReadUInt8();
         FUN_1403ed2d0()->FUN_141bc6930(nKind, nState);
     }
     break;
     case SSG_INTERACT_ALL_STATE:
     {
-        int nState = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nState = packet.ReadUInt8();
         FUN_1403ed2d0()->FUN_141bc6a20(nState);
     }
     break;
     case SSG_INTERACT_NOTICE:
     {
-        int nChannel = static_cast<unsigned short>(static_cast<CInputStream&>(packet).vfunc_o8_2());
-        int nMapId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nNameId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        CStringW strArg = static_cast<CInputStream&>(packet).vfunc_o8_8();
+        int nChannel = static_cast<unsigned short>(packet.ReadInt16());
+        int nMapId = packet.ReadInt32();
+        int nNameId = packet.ReadInt32();
+        CStringW strArg = packet.ReadUnicodeString();
         CStringW strMsg = StringFormat(FUN_1401a9d70()->FUN_141811980(0x2b, nNameId), strArg);
         if (DAT_1439f4a7c == nChannel && nMapId == FUN_1403ed2d0()->FUN_141bd3060())
             FUN_1412751f0(strMsg, 10, 1);
@@ -6657,8 +6657,8 @@ void CSceneStateGame::OnInteractObject(CInPacket& packet)
     break;
     case SSG_INTERACT_WEAPON:
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int n = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nId = packet.ReadInt32();
+        int n = packet.ReadInt32();
         PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
         if (pPC == 0)
             return;
@@ -6684,12 +6684,12 @@ MS2_REPLACE_METHOD(0x141731610, CSceneStateGame, FUN_141731610, 181, 0x2EBB1C24)
 // @0x141731b20
 void CSceneStateGame::FUN_141731b20(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 7:
     {
-        int nResult = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nResult = packet.ReadInt32();
         switch (nResult)
         {
         case 1:
@@ -6708,8 +6708,8 @@ MS2_REPLACE_METHOD(0x141731b20, CSceneStateGame, FUN_141731b20, 226, 0x7BCCAB8F)
 // @0x141736880
 void CSceneStateGame::FUN_141736880(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    bool bFlag = FUN_14028d780(static_cast<CInputStream&>(packet).vfunc_o8_1());
+    int nId = packet.ReadInt32();
+    bool bFlag = FUN_14028d780(packet.ReadUInt8());
     PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
     if (pPC == 0)
         return;
@@ -6722,7 +6722,7 @@ MS2_REPLACE_METHOD(0x141736880, CSceneStateGame, FUN_141736880, 178, 0x4A0A130E)
 // @0x141738290
 void CSceneStateGame::FUN_141738290(CInPacket& packet)
 {
-    __int64 nValue = static_cast<CInputStream&>(packet).vfunc_o8_4();
+    __int64 nValue = packet.ReadInt64();
     MyPC* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pMyPC == 0)
         return;
@@ -6741,7 +6741,7 @@ MS2_REPLACE_METHOD(0x141738290, CSceneStateGame, FUN_141738290, 226, 0xEA7CE9F9)
 // @0x141738380
 void CSceneStateGame::FUN_141738380(CInPacket& packet)
 {
-    __int64 nValue = static_cast<CInputStream&>(packet).vfunc_o8_4();
+    __int64 nValue = packet.ReadInt64();
     MyPC* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pMyPC == 0)
         return;
@@ -6755,9 +6755,9 @@ MS2_REPLACE_METHOD(0x141738380, CSceneStateGame, FUN_141738380, 155, 0xA0FA9FF3)
 // @0x14173a370
 void CSceneStateGame::OnLocalCamera(CInPacket& packet)
 {
-    int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    bool bFlag = static_cast<CInputStream&>(packet).vfunc_o8_0();
-    int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nA = packet.ReadInt32();
+    bool bFlag = packet.ReadBool();
+    int nB = packet.ReadInt32();
     if (FUN_1409478c0() != 0)
         FUN_1409478c0()->FUN_140aecbb0(nA, nB, bFlag);
 }
@@ -6766,7 +6766,7 @@ MS2_REPLACE_METHOD(0x14173a370, CSceneStateGame, OnLocalCamera, 170, 0x0E98F324)
 // @0x14173a990
 void CSceneStateGame::OnHomeInvite(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 2:
@@ -6787,8 +6787,8 @@ Unk_SSGCfg* FUN_1409a8b10();
 // @0x14173aa10
 void CSceneStateGame::FUN_14173aa10(CInPacket& packet)
 {
-    __int64 nUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    CStringW strName = static_cast<CInputStream&>(packet).vfunc_o8_8();
+    __int64 nUid = packet.ReadInt64();
+    CStringW strName = packet.ReadUnicodeString();
     if (FUN_1409a8b10()->FUN_140ae6540()->m_bBlockInvite)
         FUN_141740200(strName, 5);
     else
@@ -6812,8 +6812,8 @@ MS2_REPLACE_METHOD(0x14173AA10, CSceneStateGame, FUN_14173aa10, 839, 0x1C632D3A)
 // @0x14173ad60
 void CSceneStateGame::FUN_14173ad60(CInPacket& packet)
 {
-    int nResult = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    CStringW strName = static_cast<CInputStream&>(packet).vfunc_o8_8();
+    int nResult = packet.ReadUInt8();
+    CStringW strName = packet.ReadUnicodeString();
     switch (nResult)
     {
     case 1:
@@ -6850,7 +6850,7 @@ MS2_REPLACE_METHOD(0x14173ad60, CSceneStateGame, FUN_14173ad60, 740, 0x9F113A47)
 // @0x14173b380
 void CSceneStateGame::FUN_14173b380(CInPacket& packet)
 {
-    CString strName = static_cast<CInputStream&>(packet).vfunc_o8_7();
+    CString strName = packet.ReadString();
     FUN_1403ed2b0()->FUN_141ad9a60(strName);
 }
 MS2_REPLACE_METHOD(0x14173b380, CSceneStateGame, FUN_14173b380, 140, 0x9A5D042E);
@@ -6858,11 +6858,11 @@ MS2_REPLACE_METHOD(0x14173b380, CSceneStateGame, FUN_14173b380, 140, 0x9A5D042E)
 // @0x14173c7a0
 void CSceneStateGame::FUN_14173c7a0(CInPacket& packet)
 {
-    unsigned char nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    unsigned char nMode = packet.ReadUInt8();
     if (nMode == 1)
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        __int64 nValue = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        int nId = packet.ReadInt32();
+        __int64 nValue = packet.ReadInt64();
         PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
         if (pPC != 0)
             pPC->FUN_141660000(nValue);
@@ -6880,7 +6880,7 @@ void CSceneStateGame::OnReactor(CInPacket& packet)
         MS2_ASSERT_AT(0x2adc, 0);
         return;
     }
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 0:
@@ -6899,13 +6899,13 @@ void CSceneStateGame::OnReactor(CInPacket& packet)
     }
     case 1:
     {
-        int nMapId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nMapId = packet.ReadInt32();
         pWorld->FUN_141bbbcf0(nMapId, 0);
         break;
     }
     case 3:
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nId = packet.ReadInt32();
         GameObject* pObj = pWorld->FUN_141bd1180(nId);
         if (pObj == 0)
             return;
@@ -6920,18 +6920,18 @@ void CSceneStateGame::OnReactor(CInPacket& packet)
         Unk_SSGChatDialog* pChat = FUN_140938cd0(0x4e5d);
         if (pChat == 0)
             return;
-        int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nCount = packet.ReadInt32();
         for (int i = 0; i < nCount; i++)
         {
-            int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nAmount = (unsigned short)static_cast<CInputStream&>(packet).vfunc_o8_2();
+            int nItemId = packet.ReadInt32();
+            int nAmount = (unsigned short)packet.ReadInt16();
             pChat->FUN_141abf6e0(nItemId, nAmount);
         }
         break;
     }
     case 5:
     {
-        int nReactorId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nReactorId = packet.ReadInt32();
         MyPC* pPC = pWorld->FUN_141bd0cc0();
         if (pPC == 0)
         {
@@ -6948,14 +6948,14 @@ MS2_REPLACE_METHOD(0x14173c870, CSceneStateGame, OnReactor, 1452, 0xA52CF4B9);
 // @0x14173ce30
 void CSceneStateGame::FUN_14173ce30(CInPacket& packet)
 {
-    unsigned char nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    unsigned char nMode = packet.ReadUInt8();
     if (nMode == 2)
     {
-        unsigned char nResult = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        unsigned char nResult = packet.ReadUInt8();
         if (nResult == 0)
         {
-            int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nA = packet.ReadInt32();
+            int nB = packet.ReadInt32();
             FUN_1412751f0(FUN_140811740(0xd1d, nA, nB), 1, 1);
         }
         if (nResult == 1)
@@ -6965,11 +6965,11 @@ void CSceneStateGame::FUN_14173ce30(CInPacket& packet)
     }
     if (nMode == 3)
     {
-        unsigned char nResult = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        unsigned char nResult = packet.ReadUInt8();
         if (nResult == 0)
         {
-            int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nA = packet.ReadInt32();
+            int nB = packet.ReadInt32();
             FUN_1412751f0(FUN_140811740(0xd1e, nA, nB), 1, 1);
         }
         if (nResult == 3)
@@ -6981,9 +6981,9 @@ MS2_REPLACE_METHOD(0x14173CE30, CSceneStateGame, FUN_14173ce30, 842, 0x499679E3)
 // @0x14173de10
 void CSceneStateGame::FUN_14173de10(CInPacket& packet)
 {
-    __int64 nUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    int nType = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    Unk_NiPoint3 kPos(static_cast<CInputStream&>(packet).vfunc_o8_10());
+    __int64 nUid = packet.ReadInt64();
+    int nType = packet.ReadUInt8();
+    Unk_NiPoint3 kPos(packet.ReadVector3());
     Unk_SSGDlg4e29* pDlg = FUN_140c9b540(0x4e29);
     if (pDlg != 0)
         pDlg->FUN_141a3b130(nUid, nType, kPos);
@@ -6993,9 +6993,9 @@ MS2_REPLACE_METHOD(0x14173de10, CSceneStateGame, FUN_14173de10, 217, 0x968A66BC)
 // @0x14173def0
 void CSceneStateGame::FUN_14173def0(CInPacket& packet)
 {
-    int nType = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    int nValue = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    CStringW strText = static_cast<CInputStream&>(packet).vfunc_o8_8();
+    int nType = packet.ReadUInt8();
+    int nValue = packet.ReadInt32();
+    CStringW strText = packet.ReadUnicodeString();
     if (FUN_140166440() != 0)
         FUN_140166440()->FUN_1401859c0(nType, nValue, strText);
 }
@@ -7004,10 +7004,10 @@ MS2_REPLACE_METHOD(0x14173def0, CSceneStateGame, FUN_14173def0, 215, 0x136244C6)
 // @0x14173e510
 void CSceneStateGame::FUN_14173e510(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode != 4)
         return;
-    int nValue = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nValue = packet.ReadInt32();
     Unk_SSGChatDialog* pDlg = FUN_140938cd0(0x4e5d);
     if (pDlg != 0)
         pDlg->FUN_141ac1d10(nValue);
@@ -7021,10 +7021,10 @@ void CSceneStateGame::FUN_14173f0c0(CInPacket& packet)
     if (pDlg == 0)
         return;
     pDlg->FUN_141a265d0();
-    unsigned int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    unsigned int nCount = packet.ReadInt32();
     for (unsigned int i = 0; i < nCount; i++)
     {
-        const unsigned int& nId = (unsigned short)static_cast<CInputStream&>(packet).vfunc_o8_2();
+        const unsigned int& nId = (unsigned short)packet.ReadInt16();
         pDlg->FUN_141a26560(nId);
     }
     pDlg->FUN_141a26600();
@@ -7037,7 +7037,7 @@ void CSceneStateGame::OnLimitBreak(CInPacket& packet)
     UIUnlimitedEnchantDialog* pDlg = Unk_SSGGetDialog<UIUnlimitedEnchantDialog>(0x4f97);
     if (pDlg == 0)
         return;
-    unsigned char nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    unsigned char nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 0:
@@ -7048,7 +7048,7 @@ void CSceneStateGame::OnLimitBreak(CInPacket& packet)
         break;
     case 2:
     {
-        int nValue = (unsigned short)static_cast<CInputStream&>(packet).vfunc_o8_2();
+        int nValue = (unsigned short)packet.ReadInt16();
         pDlg->FUN_140fb6c30(nValue);
         break;
     }
@@ -7060,12 +7060,12 @@ MS2_REPLACE_METHOD(0x14173f1a0, CSceneStateGame, OnLimitBreak, 206, 0xE5A97C8E);
 // MS2-FUNCTIONAL: the exe places the smart pointer below the vtable spill temps (stack slot order); same calls and control flow
 void CSceneStateGame::FUN_14173f280(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 0:
         {
-            int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nId = packet.ReadInt32();
             PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
             if (pPC == 0)
                 return;
@@ -7077,8 +7077,8 @@ void CSceneStateGame::FUN_14173f280(CInPacket& packet)
         break;
     case 1:
         {
-            int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nSkillId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nId = packet.ReadInt32();
+            int nSkillId = packet.ReadInt32();
             MyPC* pMyPC = dynamic_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd1290(nId));
             if (pMyPC == 0)
                 return;
@@ -7088,8 +7088,8 @@ void CSceneStateGame::FUN_14173f280(CInPacket& packet)
         break;
     case 2:
         {
-            int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nSkillId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nId = packet.ReadInt32();
+            int nSkillId = packet.ReadInt32();
             MyPC* pMyPC = dynamic_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd1290(nId));
             if (pMyPC == 0)
                 return;
@@ -7173,9 +7173,9 @@ MS2_REPLACE_METHOD(0x14173FEB0, CSceneStateGame, FUN_14173feb0, 830, 0xE21C6DBD)
 void CSceneStateGame::FUN_141740200(const CStringW& strName, int nType)
 {
     COutPacket out(static_cast<int>(SendOp::RequestHome), 0);
-    out.COutPacket::vfunc_o10_1(0);
-    out.COutPacket::vfunc_o10_8(strName);
-    out.COutPacket::vfunc_o10_1(nType);
+    out.COutPacket::WriteUInt8(0);
+    out.COutPacket::WriteUnicodeString(strName);
+    out.COutPacket::WriteUInt8(nType);
     FUN_140710590(out);
 }
 MS2_REPLACE_METHOD(0x141740200, CSceneStateGame, FUN_141740200, 118, 0x74A0A5D8);
@@ -7183,10 +7183,10 @@ MS2_REPLACE_METHOD(0x141740200, CSceneStateGame, FUN_141740200, 118, 0x74A0A5D8)
 // @0x14171b630
 void CSceneStateGame::OnMeso(CInPacket& packet)
 {
-    __int64 nNew = static_cast<CInputStream&>(packet).vfunc_o8_4();
+    __int64 nNew = packet.ReadInt64();
     __int64 nDelta = nNew - DAT_143ab2898;
     DAT_143ab2898 = nNew;
-    int nValue = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nValue = packet.ReadInt32();
     if (nDelta > 0)
     {
         MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -7202,11 +7202,11 @@ MS2_REPLACE_METHOD(0x14171b630, CSceneStateGame, OnMeso, 272, 0xCC9143A6);
 // @0x14171b750
 void CSceneStateGame::OnMeret(CInPacket& packet)
 {
-    __int64 a = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    __int64 b = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    __int64 c = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    __int64 d = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    __int64 nDelta = static_cast<CInputStream&>(packet).vfunc_o8_4();
+    __int64 a = packet.ReadInt64();
+    __int64 b = packet.ReadInt64();
+    __int64 c = packet.ReadInt64();
+    __int64 d = packet.ReadInt64();
+    __int64 nDelta = packet.ReadInt64();
     FUN_1409304d0(a, b, c, d);
     if (nDelta > 0)
     {
@@ -7232,8 +7232,8 @@ MS2_REPLACE_METHOD(0x14171B750, CSceneStateGame, OnMeret, 883, 0x63E8AB8C);
 // @0x14171bad0
 void CSceneStateGame::FUN_14171bad0(CInPacket& packet)
 {
-    __int64 nTotal = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    __int64 nDelta = static_cast<CInputStream&>(packet).vfunc_o8_4();
+    __int64 nTotal = packet.ReadInt64();
+    __int64 nDelta = packet.ReadInt64();
     FUN_140930af0(nTotal);
     if (nDelta > 0)
     {
@@ -7271,11 +7271,11 @@ MS2_REPLACE_METHOD(0x14171bad0, CSceneStateGame, FUN_14171bad0, 697, 0x379D3D2D)
 // @0x14171bd90
 void CSceneStateGame::OnCurrencyToken(CInPacket& packet)
 {
-    int nType = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    __int64 nValue = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    __int64 nDelta = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    int nX = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    __int64 nShow = static_cast<CInputStream&>(packet).vfunc_o8_4();
+    int nType = packet.ReadUInt8();
+    __int64 nValue = packet.ReadInt64();
+    __int64 nDelta = packet.ReadInt64();
+    int nX = packet.ReadInt32();
+    __int64 nShow = packet.ReadInt64();
     switch (static_cast<unsigned int>(nType))
     {
     case 3: DAT_143ab28b0 = nValue; break;
@@ -7305,11 +7305,11 @@ MS2_REPLACE_METHOD(0x14171bd90, CSceneStateGame, OnCurrencyToken, 740, 0xBC7B1ED
 // @0x14171e860
 void CSceneStateGame::FUN_14171e860(CInPacket& packet)
 {
-    int nTargetId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nTargetId = packet.ReadInt32();
+    int nCount = packet.ReadInt32();
     for (int i = 0; i < nCount; i++)
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nId = packet.ReadInt32();
         PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
         if (pPC == 0)
             continue;
@@ -7326,14 +7326,14 @@ MS2_REPLACE_METHOD(0x14171e860, CSceneStateGame, FUN_14171e860, 308, 0x3B1A059E)
 // @0x14171e9a0
 void CSceneStateGame::FUN_14171e9a0(CInPacket& packet)
 {
-    unsigned long long nTagId = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    int bCreate = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    unsigned long long nTagId = packet.ReadInt64();
+    int bCreate = packet.ReadUInt8();
     if (bCreate)
     {
-        int nSkillId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nLevel = static_cast<unsigned short>(static_cast<CInputStream&>(packet).vfunc_o8_2());
-        int nOwnerId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nCasterId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nSkillId = packet.ReadInt32();
+        int nLevel = static_cast<unsigned short>(packet.ReadInt16());
+        int nOwnerId = packet.ReadInt32();
+        int nCasterId = packet.ReadInt32();
         Unk_MagicTagPtr spTag(new Unk_MagicTag());
         if (!spTag->FUN_141758d70(nTagId, 0, nOwnerId, nCasterId, nSkillId, nLevel, 0, Unk_StreamPoint(0, 0, 0), 0, 0,
                 0, 0))
@@ -7404,31 +7404,31 @@ template <> CPortal* MS2Ptr<CPortal>::get() const;                   // 0x140c9b
 // @0x14171ee80
 void CSceneStateGame::OnFieldPortal(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nMode = packet.ReadUInt8();
+    int nId = packet.ReadInt32();
     if (nMode == 0)
     {
         MS2Ptr<CPortal> spPortal = new CPortal;
         spPortal->m_nId = nId;
-        int nVisible = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        int nEnabled = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        Unk_StreamPoint kPos = static_cast<CInputStream&>(packet).vfunc_o8_10();
-        Unk_StreamPoint kScale = static_cast<CInputStream&>(packet).vfunc_o8_10();
-        Unk_StreamPoint kRot = static_cast<CInputStream&>(packet).vfunc_o8_10();
-        CString strModel = static_cast<CInputStream&>(packet).vfunc_o8_6();
-        int nMapType = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nTargetField = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nTargetPortal = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nHidden = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        __int64 nOwnerId = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        int nType = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        int n164 = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int n188 = static_cast<unsigned short>(static_cast<CInputStream&>(packet).vfunc_o8_2());
-        int n170 = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        bool bConfirm = static_cast<CInputStream&>(packet).vfunc_o8_0();
-        CStringW strName = static_cast<CInputStream&>(packet).vfunc_o8_8();
-        CStringW str190 = static_cast<CInputStream&>(packet).vfunc_o8_8();
-        CStringW str198 = static_cast<CInputStream&>(packet).vfunc_o8_8();
+        int nVisible = packet.ReadUInt8();
+        int nEnabled = packet.ReadUInt8();
+        Unk_StreamPoint kPos = packet.ReadVector3();
+        Unk_StreamPoint kScale = packet.ReadVector3();
+        Unk_StreamPoint kRot = packet.ReadVector3();
+        CString strModel = packet.ReadUnicodeStringA();
+        int nMapType = packet.ReadInt32();
+        int nTargetField = packet.ReadInt32();
+        int nTargetPortal = packet.ReadInt32();
+        int nHidden = packet.ReadUInt8();
+        __int64 nOwnerId = packet.ReadInt64();
+        int nType = packet.ReadUInt8();
+        int n164 = packet.ReadInt32();
+        int n188 = static_cast<unsigned short>(packet.ReadInt16());
+        int n170 = packet.ReadInt32();
+        bool bConfirm = packet.ReadBool();
+        CStringW strName = packet.ReadUnicodeString();
+        CStringW str190 = packet.ReadUnicodeString();
+        CStringW str198 = packet.ReadUnicodeString();
         spPortal->m_nVisible = nVisible;
         spPortal->m_nEnabled = nEnabled;
         spPortal->m_kPos = kPos;
@@ -7463,10 +7463,10 @@ void CSceneStateGame::OnFieldPortal(CInPacket& packet)
     }
     else if (nMode == 2)
     {
-        int nVisible = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        int nEnabled = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        int nHidden = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        int n188 = static_cast<unsigned short>(static_cast<CInputStream&>(packet).vfunc_o8_2());
+        int nVisible = packet.ReadUInt8();
+        int nEnabled = packet.ReadUInt8();
+        int nHidden = packet.ReadUInt8();
+        int n188 = static_cast<unsigned short>(packet.ReadInt16());
         MS2Ptr<CPortal> spPortal = FUN_1403ed2d0()->FUN_141bc2800(nId);
         if (spPortal.get() != 0)
             spPortal->m_n188 = n188;
@@ -7474,8 +7474,8 @@ void CSceneStateGame::OnFieldPortal(CInPacket& packet)
     }
     else if (nMode == 3)
     {
-        Unk_StreamPoint kPos = static_cast<CInputStream&>(packet).vfunc_o8_10();
-        Unk_StreamPoint kScale = static_cast<CInputStream&>(packet).vfunc_o8_10();
+        Unk_StreamPoint kPos = packet.ReadVector3();
+        Unk_StreamPoint kScale = packet.ReadVector3();
         FUN_1403ed2d0()->FUN_141bc31d0(nId, kPos, kScale);
     }
 }
@@ -7484,11 +7484,11 @@ MS2_REPLACE_METHOD(0x14171EE80, CSceneStateGame, OnFieldPortal, 2574, 0x7FDDB2DD
 // @0x141731350
 void CSceneStateGame::FUN_141731350(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nId = packet.ReadInt32();
     Unk_SSGNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(nId);
     if (pNpc == 0)
         return;
-    CString strEffect = static_cast<CInputStream&>(packet).vfunc_o8_6();
+    CString strEffect = packet.ReadUnicodeStringA();
     FUN_1403ed280()->FUN_1411a4f40(strEffect, pNpc->vfunc_18());
 }
 MS2_REPLACE_METHOD(0x141731350, CSceneStateGame, FUN_141731350, 268, 0xD3681616);
@@ -7496,9 +7496,9 @@ MS2_REPLACE_METHOD(0x141731350, CSceneStateGame, FUN_141731350, 268, 0xD3681616)
 // @0x141733e40
 void CSceneStateGame::OnNametag(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    unsigned short nA = static_cast<CInputStream&>(packet).vfunc_o8_2();
-    int nB = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nId = packet.ReadInt32();
+    unsigned short nA = packet.ReadInt16();
+    int nB = packet.ReadUInt8();
     PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
     if (pPC == 0)
         return;
@@ -7517,20 +7517,20 @@ MS2_REPLACE_METHOD(0x141733e40, CSceneStateGame, OnNametag, 262, 0x20BDD114);
 // @0x141738120
 void CSceneStateGame::FUN_141738120(CInPacket& packet)
 {
-    bool bPos = static_cast<CInputStream&>(packet).vfunc_o8_0();
+    bool bPos = packet.ReadBool();
     if (bPos)
     {
-        int nX = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nY = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nX = packet.ReadInt32();
+        int nY = packet.ReadInt32();
         FUN_140cea070()->FUN_140dd86a0(nX, nY);
     }
     else
     {
-        unsigned char nMode = static_cast<CInputStream&>(packet).vfunc_o8_0();
+        unsigned char nMode = packet.ReadBool();
         if (nMode == 1)
             FUN_1403ed2b0()->FUN_141add1f0();
         else
-            FUN_141275260(static_cast<CInputStream&>(packet).vfunc_o8_3(), 1, 1);
+            FUN_141275260(packet.ReadInt32(), 1, 1);
     }
 }
 MS2_REPLACE_METHOD(0x141738120, CSceneStateGame, FUN_141738120, 279, 0x1DD3407C);
@@ -7538,12 +7538,12 @@ MS2_REPLACE_METHOD(0x141738120, CSceneStateGame, FUN_141738120, 279, 0x1DD3407C)
 // @0x14171a730
 void CSceneStateGame::OnRevivalConfirm(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nId = packet.ReadInt32();
     PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
     if (pPC == 0)
         return;
-    int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nA = packet.ReadInt32();
+    int nB = packet.ReadInt32();
     int bEffect = pPC->FUN_141661aa0() && nB == 0;
     pPC->FUN_141661a60(nB);
     pPC->FUN_1416619d0(nA);
@@ -7569,8 +7569,8 @@ MS2_REPLACE_METHOD(0x14171a730, CSceneStateGame, OnRevivalConfirm, 452, 0xFA154A
 // @0x14171a900
 void CSceneStateGame::OnRevival(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nFlag = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nId = packet.ReadInt32();
+    int nFlag = packet.ReadUInt8();
     PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1200(nId);
     if (pActor == 0)
         return;
@@ -7630,11 +7630,11 @@ MS2_CHECK_SIZE(NotifyChangeMyJob, 0x20);
 // @0x14171f8a0
 void CSceneStateGame::OnJob(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nId = packet.ReadInt32();
     PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
     if (pPC == 0)
         return;
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 0)
     {
         FUN_1416546d0(pPC)->vfunc_7(packet);
@@ -7717,7 +7717,7 @@ void CSceneStateGame::OnJob(CInPacket& packet)
     }
     else if (nMode == 3)
     {
-        Unk_SSGJobError nError = (Unk_SSGJobError)static_cast<CInputStream&>(packet).vfunc_o8_1();
+        Unk_SSGJobError nError = (Unk_SSGJobError)packet.ReadUInt8();
         if (nError != 0)
         {
             CStringW strMsg;
@@ -7736,7 +7736,7 @@ void CSceneStateGame::OnJob(CInPacket& packet)
             case 14: strMsg = GetStringCommon(0x7f); break;
             case 18:
             {
-                int nValue = static_cast<CInputStream&>(packet).vfunc_o8_3();
+                int nValue = packet.ReadInt32();
                 strMsg = FUN_1408116a0(0x80, nValue);
                 FUN_140d73aa0(strMsg, 0, 0, CStringW(L""));
                 break;
@@ -7795,7 +7795,7 @@ MS2_CHECK_SIZE(NotifyChangeBuff, 0x38);
 // @0x141720480
 void CSceneStateGame::OnBuff(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     Unk_SSGBuffOwner kOwner;
     kOwner.Decode(packet);
     PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1200(kOwner.m_nObjId);
@@ -7881,11 +7881,11 @@ MS2_REPLACE_METHOD(0x141720480, CSceneStateGame, OnBuff, 2008, 0x7964F895);
 // @0x141720c60
 void CSceneStateGame::FUN_141720c60(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nSkillId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    unsigned short nLevel = static_cast<CInputStream&>(packet).vfunc_o8_2();
-    Unk_StreamPoint kPos = static_cast<CInputStream&>(packet).vfunc_o8_10();
-    Unk_StreamPoint kDir = static_cast<CInputStream&>(packet).vfunc_o8_10();
+    int nId = packet.ReadInt32();
+    int nSkillId = packet.ReadInt32();
+    unsigned short nLevel = packet.ReadInt16();
+    Unk_StreamPoint kPos = packet.ReadVector3();
+    Unk_StreamPoint kDir = packet.ReadVector3();
     PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1200(nId);
     if (pActor == 0)
         return;
@@ -7916,20 +7916,20 @@ template <> Unk_InventorySkillLevel* MS2Ptr<Unk_InventorySkillLevel>::operator->
 // @0x141720e50
 void CSceneStateGame::OnRegionSkill(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nMode = packet.ReadUInt8();
+    int nId = packet.ReadInt32();
     if (nMode == 0)
     {
-        int nSkillId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nTick = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nSkillId = packet.ReadInt32();
+        int nTick = packet.ReadInt32();
         ATL::CAtlArray<Unk_StreamPoint> kPoints;
-        int nCount = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nCount = packet.ReadUInt8();
         for (int i = 0; i < nCount; i++)
-            kPoints.Add(static_cast<CInputStream&>(packet).vfunc_o8_10());
-        int nOwnerId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        short nLevel = static_cast<CInputStream&>(packet).vfunc_o8_2();
-        float fA = static_cast<CInputStream&>(packet).vfunc_o8_5();
-        float fB = static_cast<CInputStream&>(packet).vfunc_o8_5();
+            kPoints.Add(packet.ReadVector3());
+        int nOwnerId = packet.ReadInt32();
+        short nLevel = packet.ReadInt16();
+        float fA = packet.ReadFloat();
+        float fB = packet.ReadFloat();
         MS2Ptr<CRegionSkillObject> spObj(new CRegionSkillObject());
         if (!spObj->FUN_1416f5a20(nId, nSkillId, kPoints, nOwnerId, nLevel, fB, fA, nTick))
             return;
@@ -7972,29 +7972,29 @@ public:
 // @0x14171dc40
 void CSceneStateGame::FUN_14171dc40(CInPacket& packet)
 {
-    __int64 nSkillUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    int nOwnerId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nRegionId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nAttack = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    int nCount = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    __int64 nSkillUid = packet.ReadInt64();
+    int nOwnerId = packet.ReadInt32();
+    int nRegionId = packet.ReadInt32();
+    int nAttack = packet.ReadUInt8();
+    int nCount = packet.ReadUInt8();
     MS2Ptr<CRegionSkillObject> spRegion(FUN_1403ed2d0()->FUN_141bc3360(nRegionId));
     if (!spRegion)
         return;
     spRegion->FUN_1416f6900();
     for (int i = 0; i < nCount; i++)
     {
-        int nTargetId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nHits = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        Unk_StreamPoint kOrigin = static_cast<CInputStream&>(packet).vfunc_o8_11();
-        Unk_StreamPoint kDir = static_cast<CInputStream&>(packet).vfunc_o8_10();
+        int nTargetId = packet.ReadInt32();
+        int nHits = packet.ReadUInt8();
+        Unk_StreamPoint kOrigin = packet.ReadVector3Short();
+        Unk_StreamPoint kDir = packet.ReadVector3();
         MS2Ptr<CSplashDamageRecord> spRecord(new CSplashDamageRecord());
         if (!spRecord->FUN_14175b1c0(nTargetId, nOwnerId, nSkillUid, spRegion->m_spSkill->FUN_140803dc0(),
                                      spRegion->m_spSkill->FUN_140803df0(), 0, nAttack, kOrigin, kDir))
             return;
         for (int j = 0; j < nHits; j++)
         {
-            int nFlag = static_cast<CInputStream&>(packet).vfunc_o8_1();
-            __int64 nDamage = static_cast<CInputStream&>(packet).vfunc_o8_4();
+            int nFlag = packet.ReadUInt8();
+            __int64 nDamage = packet.ReadInt64();
             spRecord->FUN_14175abc0(nFlag, nDamage);
         }
         GameObject* pTarget = FUN_1403ed2d0()->FUN_141bd1180(nTargetId);
@@ -8033,8 +8033,8 @@ MS2_REPLACE_METHOD(0x14171DC40, CSceneStateGame, FUN_14171dc40, 2035, 0x57F2ECD1
 // @0x141723410
 void CSceneStateGame::OnSetCraftMode(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int bHasItem = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nId = packet.ReadInt32();
+    int bHasItem = packet.ReadUInt8();
     PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
     if (pPC == 0)
         return;
@@ -8043,7 +8043,7 @@ void CSceneStateGame::OnSetCraftMode(CInPacket& packet)
     if (bHasItem)
     {
         CubeItemInfo info(packet);
-        int nSlot = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nSlot = packet.ReadInt32();
         pPC->vfunc_135(bHasItem, nSlot, &info);
     }
     else
@@ -8066,12 +8066,12 @@ void CSceneStateGame::FUN_14172f030(CInPacket& packet)
     MyPC* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pMyPC == 0)
         return;
-    int nCount = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nCount = packet.ReadUInt8();
     for (int i = 0; i < nCount; i++)
     {
-        __int64 nUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        int nSlot = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nValue = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        __int64 nUid = packet.ReadInt64();
+        int nSlot = packet.ReadInt32();
+        int nValue = packet.ReadInt32();
         if (nSlot == 0)
             pMyPC->FUN_141523bc0()->FUN_141765f60(nUid);
         else
@@ -8086,9 +8086,9 @@ MS2_REPLACE_METHOD(0x14172f030, CSceneStateGame, FUN_14172f030, 382, 0xAA5F3F51)
 // @0x141731190
 void CSceneStateGame::FUN_141731190(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nType = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    __int64 nValue = (unsigned int)static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nId = packet.ReadInt32();
+    int nType = packet.ReadInt32();
+    __int64 nValue = (unsigned int)packet.ReadInt32();
     PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1200(nId);
     if (pActor == 0)
         return;
@@ -8139,8 +8139,8 @@ MS2_REPLACE_METHOD(0x141731470, CSceneStateGame, FUN_141731470, 407, 0x5515C134)
 // @0x141733660
 void CSceneStateGame::OnSystemShop(CInPacket& packet)
 {
-    int nType = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    bool bOk = static_cast<CInputStream&>(packet).vfunc_o8_0();
+    int nType = packet.ReadUInt8();
+    bool bOk = packet.ReadBool();
     if (nType == 0)
         return;
     if (!bOk)
@@ -8163,8 +8163,8 @@ MS2_REPLACE_METHOD(0x141733660, CSceneStateGame, OnSystemShop, 340, 0x89D2A43C);
 // @0x141733f50
 void CSceneStateGame::OnSetPcbang(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    unsigned char nValue = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nId = packet.ReadInt32();
+    unsigned char nValue = packet.ReadUInt8();
     PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
     if (pPC == 0)
         return;
@@ -8186,15 +8186,15 @@ MS2_REPLACE_METHOD(0x141733f50, CSceneStateGame, OnSetPcbang, 403, 0xB72802C3);
 // @0x1417340f0
 void CSceneStateGame::FUN_1417340f0(CInPacket& packet)
 {
-    unsigned char nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    unsigned char nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 1:
         {
-            int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            __int64 nValue = static_cast<CInputStream&>(packet).vfunc_o8_4();
-            int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nId = packet.ReadInt32();
+            __int64 nValue = packet.ReadInt64();
+            int nA = packet.ReadInt32();
+            int nB = packet.ReadInt32();
             PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
             if (pPC == 0)
                 return;
@@ -8211,8 +8211,8 @@ void CSceneStateGame::FUN_1417340f0(CInPacket& packet)
         break;
     case 0:
         {
-            __int64 nAccountId = static_cast<CInputStream&>(packet).vfunc_o8_4();
-            __int64 nValue = static_cast<CInputStream&>(packet).vfunc_o8_4();
+            __int64 nAccountId = packet.ReadInt64();
+            __int64 nValue = packet.ReadInt64();
             if (DAT_143ab2820 != nAccountId)
                 return;
             DAT_143ab2920 = nValue;
@@ -8220,8 +8220,8 @@ void CSceneStateGame::FUN_1417340f0(CInPacket& packet)
         break;
     case 2:
         {
-            __int64 nAccountId = static_cast<CInputStream&>(packet).vfunc_o8_4();
-            __int64 nValue = static_cast<CInputStream&>(packet).vfunc_o8_4();
+            __int64 nAccountId = packet.ReadInt64();
+            __int64 nValue = packet.ReadInt64();
             if (DAT_143ab2820 != nAccountId)
                 return;
             DAT_143ab2920 = nValue;
@@ -8234,10 +8234,10 @@ MS2_REPLACE_METHOD(0x1417340f0, CSceneStateGame, FUN_1417340f0, 714, 0x6B3B25EC)
 // @0x1417343f0
 void CSceneStateGame::OnItemDropNotice(CInPacket& packet)
 {
-    CStringW strName = static_cast<CInputStream&>(packet).vfunc_o8_8();
-    int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    __int64 nC = static_cast<CInputStream&>(packet).vfunc_o8_4();
+    CStringW strName = packet.ReadUnicodeString();
+    int nA = packet.ReadInt32();
+    int nB = packet.ReadInt32();
+    __int64 nC = packet.ReadInt64();
     CStringW strItem = FUN_140d2e2b0(nA, nB, nC);
     CStringW strMsg = FUN_140632a60(0x342, strName, strItem);
     FUN_1412751b0(strMsg, 0x14);
@@ -8261,16 +8261,16 @@ extern CString DAT_143ae7558;                               // the recall notice
 // @0x141734530
 void CSceneStateGame::OnRecallScroll(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    int nType = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
+    int nType = packet.ReadUInt8();
     if (nMode != 0)
     {
         Unk_SSGRecallInfo kInfo;
-        kInfo.m_strText = static_cast<CInputStream&>(packet).vfunc_o8_8();
-        kInfo.m_n8 = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        kInfo.m_nC = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        kInfo.m_n10 = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        kInfo.m_n18 = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        kInfo.m_strText = packet.ReadUnicodeString();
+        kInfo.m_n8 = packet.ReadInt32();
+        kInfo.m_nC = packet.ReadInt32();
+        kInfo.m_n10 = packet.ReadInt32();
+        kInfo.m_n18 = packet.ReadInt64();
         Unk_SSGRecallDlg* pDlg = FUN_140bc1870(0x4edd);
         if (pDlg == 0)
             return;
@@ -8304,7 +8304,7 @@ MS2_REPLACE_METHOD(0x141734530, CSceneStateGame, OnRecallScroll, 1003, 0x1620B1D
 // @0x141734950
 void CSceneStateGame::OnEnchantScroll(CInPacket& packet)
 {
-    unsigned char nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    unsigned char nMode = packet.ReadUInt8();
     UIEnchantScrollDialog* pDlg = FUN_140cd7aa0(0x4ee0);
     if (pDlg == 0)
         return;
@@ -8322,14 +8322,14 @@ void CSceneStateGame::OnEnchantScroll(CInPacket& packet)
     }
     else if (nMode == 4)
     {
-        int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nCount = packet.ReadInt32();
         Unk_SSGChatDialog* pChat = FUN_140938cd0(0x4e5d);
         if (pChat != 0)
         {
             for (int i = 0; i < nCount; i++)
             {
-                int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-                int nValue = (unsigned short)static_cast<CInputStream&>(packet).vfunc_o8_2();
+                int nItemId = packet.ReadInt32();
+                int nValue = (unsigned short)packet.ReadInt16();
                 pChat->FUN_141abf6e0(nItemId, nValue);
             }
         }
@@ -8343,7 +8343,7 @@ MS2_REPLACE_METHOD(0x141734950, CSceneStateGame, OnEnchantScroll, 452, 0x69A4772
 // @0x141734ca0
 void CSceneStateGame::OnDarkStream(CInPacket& packet)
 {
-    unsigned char nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    unsigned char nMode = packet.ReadUInt8();
     if (nMode == 0)
     {
         FUN_1403ed2b0()->FUN_141adc530(0x4ee4);
@@ -8354,7 +8354,7 @@ void CSceneStateGame::OnDarkStream(CInPacket& packet)
     }
     else if (nMode == 1)
     {
-        int nScore = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nScore = packet.ReadInt32();
         UIDarkStreamScoreDialog* pDlg = FUN_140f9d8a0(0x4ee4);
         if (pDlg == 0)
             return;
@@ -8418,10 +8418,10 @@ UIDialog* FUN_141386950(const CString& strName);           // a dialog by its na
 // MS2-FUNCTIONAL: exe frame is 0x10 bytes larger (point copy at +0xe0, unwind state at +0xf0); code otherwise identical
 void CSceneStateGame::OnPlayArcade(CInPacket& packet)
 {
-    unsigned char nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    unsigned char nMode = packet.ReadUInt8();
     if (nMode == 0)
     {
-        int nType = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nType = packet.ReadInt32();
         UIDarkStreamScoreDialog* pScore = FUN_140f9d8a0(0x4ee4);
         if (pScore != 0)
         {
@@ -8459,7 +8459,7 @@ void CSceneStateGame::OnPlayArcade(CInPacket& packet)
     }
     else if (nMode == 1)
     {
-        int nScore = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nScore = packet.ReadInt32();
         UIDarkStreamScoreDialog* pScore = FUN_140f9d8a0(0x4ee4);
         if (pScore == 0)
             return;
@@ -8477,7 +8477,7 @@ void CSceneStateGame::OnPlayArcade(CInPacket& packet)
     }
     else if (nMode == 12)
     {
-        int nAlign = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nAlign = packet.ReadUInt8();
         UIDarkStreamScoreDialog* pScore = FUN_140f9d8a0(0x4ee4);
         if (pScore != 0)
         {
@@ -8501,7 +8501,7 @@ void CSceneStateGame::OnPlayArcade(CInPacket& packet)
     }
     else if (nMode == 14)
     {
-        bool bOn = static_cast<CInputStream&>(packet).vfunc_o8_0();
+        bool bOn = packet.ReadBool();
         MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pPC == 0)
             return;
@@ -8532,7 +8532,7 @@ MS2_REPLACE_METHOD(0x141734E00, CSceneStateGame, OnPlayArcade, 1437, 0xAD857D61)
 // @0x141738b40
 void CSceneStateGame::FUN_141738b40(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 8:
@@ -8552,7 +8552,7 @@ void CSceneStateGame::FUN_141738b40(CInPacket& packet)
         break;
     }
     case 6:
-        switch (static_cast<CInputStream&>(packet).vfunc_o8_1())
+        switch (packet.ReadUInt8())
         {
         case 0:
             UIUGCPortalDialog* pDlg = Unk_SSGGetDialog<UIUGCPortalDialog>(0x4f1f);
@@ -8561,7 +8561,7 @@ void CSceneStateGame::FUN_141738b40(CInPacket& packet)
         }
         break;
     case 12:
-        switch (static_cast<CInputStream&>(packet).vfunc_o8_1())
+        switch (packet.ReadUInt8())
         {
         case 1:
         {
@@ -8574,9 +8574,9 @@ void CSceneStateGame::FUN_141738b40(CInPacket& packet)
             efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
             if (spService)
             {
-                int nCubeId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-                CStringW strText = static_cast<CInputStream&>(packet).vfunc_o8_8();
-                int nType = static_cast<CInputStream&>(packet).vfunc_o8_1();
+                int nCubeId = packet.ReadInt32();
+                CStringW strText = packet.ReadUnicodeString();
+                int nType = packet.ReadUInt8();
                 MS2Ptr<Cube> spCube(spService->FUN_1410b8b00(nCubeId));
                 if (spCube->notice == 0)
                     spCube->notice = new NoticeCubeInfo;
@@ -8604,7 +8604,7 @@ void CSceneStateGame::FUN_141738b40(CInPacket& packet)
         break;
     }
     case 14:
-        switch (static_cast<CInputStream&>(packet).vfunc_o8_1())
+        switch (packet.ReadUInt8())
         {
         case 0:
             UIUGCPVPControlDialog* pDlg = Unk_SSGGetDialog<UIUGCPVPControlDialog>(0x4f64);
@@ -8618,9 +8618,9 @@ MS2_REPLACE_METHOD(0x141738B40, CSceneStateGame, FUN_141738b40, 1665, 0x3FD69AC2
 // @0x141739e40
 void CSceneStateGame::FUN_141739e40(CInPacket& packet)
 {
-    int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nB = (unsigned short)static_cast<CInputStream&>(packet).vfunc_o8_2();
+    int nItemId = packet.ReadInt32();
+    int nA = packet.ReadInt32();
+    int nB = (unsigned short)packet.ReadInt16();
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (!spData)
         return;
@@ -8637,14 +8637,14 @@ MS2_REPLACE_METHOD(0x141739e40, CSceneStateGame, FUN_141739e40, 329, 0xADF56E72)
 // @0x141739f90
 void CSceneStateGame::OnPremiumClub(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 0)
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nId = packet.ReadInt32();
         PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
         if (pPC == 0)
             return;
-        pPC->FUN_141662d60(static_cast<CInputStream&>(packet).vfunc_o8_4());
+        pPC->FUN_141662d60(packet.ReadInt64());
         FUN_141a60f00(nId);
         if (pPC->vfunc_108())
             FUN_1419f37f0(1);
@@ -8665,10 +8665,10 @@ MS2_REPLACE_METHOD(0x141739f90, CSceneStateGame, OnPremiumClub, 311, 0x8CE619AA)
 void CSceneStateGame::OnOneTimeEffect(CInPacket& packet)
 {
     CString strName;
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    bool bHas = static_cast<CInputStream&>(packet).vfunc_o8_0();
+    int nId = packet.ReadInt32();
+    bool bHas = packet.ReadBool();
     if (bHas)
-        strName = FUN_14016a600(static_cast<CInputStream&>(packet).vfunc_o8_8(), 0);
+        strName = FUN_14016a600(packet.ReadUnicodeString(), 0);
     FUN_140ad4b90()->FUN_141863630(nId, bHas, strName);
 }
 MS2_REPLACE_METHOD(0x14173a420, CSceneStateGame, OnOneTimeEffect, 388, 0x0C53B150);
@@ -8676,11 +8676,11 @@ MS2_REPLACE_METHOD(0x14173a420, CSceneStateGame, OnOneTimeEffect, 388, 0x0C53B15
 // @0x14173a5e0
 void CSceneStateGame::OnTimeScale(CInPacket& packet)
 {
-    bool bShow = static_cast<CInputStream&>(packet).vfunc_o8_0();
-    float fX = static_cast<CInputStream&>(packet).vfunc_o8_5();
-    float fY = static_cast<CInputStream&>(packet).vfunc_o8_5();
-    float fZ = static_cast<CInputStream&>(packet).vfunc_o8_5();
-    int nType = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    bool bShow = packet.ReadBool();
+    float fX = packet.ReadFloat();
+    float fY = packet.ReadFloat();
+    float fZ = packet.ReadFloat();
+    int nType = packet.ReadUInt8();
     if (bShow)
         FUN_1403ed2d0()->FUN_141bd92c0(fX, fY, fZ, nType);
     else
@@ -8691,28 +8691,28 @@ MS2_REPLACE_METHOD(0x14173a5e0, CSceneStateGame, OnTimeScale, 310, 0xA7D1CD36);
 // @0x14173a720
 void CSceneStateGame::FUN_14173a720(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 0)
     {
-        int nCount = static_cast<unsigned short>(static_cast<CInputStream&>(packet).vfunc_o8_2());
+        int nCount = static_cast<unsigned short>(packet.ReadInt16());
         for (int i = 0; i < nCount; i++)
         {
-            int nFieldId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nNpcId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            CMsTime kTime(static_cast<CInputStream&>(packet).vfunc_o8_4());
+            int nFieldId = packet.ReadInt32();
+            int nNpcId = packet.ReadInt32();
+            CMsTime kTime(packet.ReadInt64());
             FUN_140700390()->FUN_1406fc480(nFieldId, nNpcId, kTime);
         }
     }
     else if (nMode == 1)
     {
-        int nFieldId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nNpcId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        CMsTime kTime(static_cast<CInputStream&>(packet).vfunc_o8_4());
+        int nFieldId = packet.ReadInt32();
+        int nNpcId = packet.ReadInt32();
+        CMsTime kTime(packet.ReadInt64());
         FUN_140700390()->FUN_1406fc480(nFieldId, nNpcId, kTime);
     }
     else if (nMode == 2)
     {
-        int nFieldId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nFieldId = packet.ReadInt32();
         FUN_140700390()->FUN_1406fc590(nFieldId);
     }
 }
@@ -8721,13 +8721,13 @@ MS2_REPLACE_METHOD(0x14173a720, CSceneStateGame, FUN_14173a720, 609, 0xCA68677E)
 // @0x14173b080
 void CSceneStateGame::FUN_14173b080(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nId = packet.ReadInt32();
     PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
     if (pPC == 0)
         return;
     StateFishingData* pData = new StateFishingData(32000001);
-    int nState = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nArg = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nState = packet.ReadInt32();
+    int nArg = packet.ReadInt32();
     pPC->vfunc_59(nState, pData, nArg, 0);
 }
 MS2_REPLACE_METHOD(0x14173b080, CSceneStateGame, FUN_14173b080, 319, 0x1E71DC7F);
@@ -8735,9 +8735,9 @@ MS2_REPLACE_METHOD(0x14173b080, CSceneStateGame, FUN_14173b080, 319, 0x1E71DC7F)
 // @0x14173b220
 void CSceneStateGame::FUN_14173b220(CInPacket& packet)
 {
-    __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    int nValue = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    const CStringW& strTitle = static_cast<CInputStream&>(packet).vfunc_o8_8();
+    __int64 nItemUid = packet.ReadInt64();
+    int nValue = packet.ReadInt32();
+    const CStringW& strTitle = packet.ReadUnicodeString();
     MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nItemUid);
     if (spItem == 0)
         return;
@@ -8753,7 +8753,7 @@ MS2_REPLACE_METHOD(0x14173b220, CSceneStateGame, FUN_14173b220, 334, 0xD2E16AC7)
 // @0x14173b420
 void CSceneStateGame::FUN_14173b420(CInPacket& packet)
 {
-    __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+    __int64 nItemUid = packet.ReadInt64();
     MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nItemUid);
     if (spItem == 0)
     {
@@ -8775,9 +8775,9 @@ void CSceneStateGame::FUN_14173c0f0(CInPacket& packet)
 {
     if (!FUN_140166410()->FUN_14036d570(0x88))
         return;
-    CStringW strA = static_cast<CInputStream&>(packet).vfunc_o8_8();
-    CStringW strName = static_cast<CInputStream&>(packet).vfunc_o8_8();
-    CStringW strC = static_cast<CInputStream&>(packet).vfunc_o8_8();
+    CStringW strA = packet.ReadUnicodeString();
+    CStringW strName = packet.ReadUnicodeString();
+    CStringW strC = packet.ReadUnicodeString();
     Unk_SSGCommunityPopup* pPopup = FUN_14136f1f0(0x4f5c);
     if (pPopup != 0)
     {
@@ -8815,7 +8815,7 @@ MS2_CHECK_SIZE(NotifyActiveMyCodiTab, 0x28);
 // @0x141739910
 void CSceneStateGame::FUN_141739910(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 0:
@@ -8832,7 +8832,7 @@ void CSceneStateGame::FUN_141739910(CInPacket& packet)
         break;
     case 4:
     {
-        int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nItemId = packet.ReadInt32();
         MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
         if (spData)
         {
@@ -8921,8 +8921,8 @@ void CSceneStateGame::SendBeauty(CInPacket& packet)
         pEntity->OnMessage(0, &msg);
     }
     COutPacket out(static_cast<int>(SendOp::Beauty), 0);
-    out.COutPacket::vfunc_o10_1(0x17);
-    out.COutPacket::vfunc_o10_4(req.m_nUid);
+    out.COutPacket::WriteUInt8(0x17);
+    out.COutPacket::WriteInt64(req.m_nUid);
     FUN_140710590(out);
     FUN_1408e57f0()->FUN_1422b9fd0(0x620001f);
 }
@@ -8937,12 +8937,12 @@ void CSceneStateGame::FUN_14173d180(CInPacket& packet)
     MyPC* pPC = pWorld->FUN_141bd0cc0();
     if (pPC == 0)
         return;
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 1:
     {
-        __int64 nTargetUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        __int64 nTargetUid = packet.ReadInt64();
         pPC->vfunc_59(0x3f, new StateObserverData(nTargetUid), 0, 1);
         break;
     }
@@ -8958,17 +8958,17 @@ void CSceneStateGame::OnLapenshard(CInPacket& packet)
     MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0)
         return;
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 0:
     {
         pPC->FUN_14152f9e0();
-        unsigned int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        unsigned int nCount = packet.ReadInt32();
         for (unsigned int i = 0; i < nCount; ++i)
         {
-            int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nA = packet.ReadInt32();
+            int nB = packet.ReadInt32();
             pPC->FUN_14152f530(nA, nB, 1);
         }
         pPC->FUN_14152fa20();
@@ -9170,9 +9170,9 @@ MS2_REPLACE_METHOD(0x14173D4D0, CSceneStateGame, OnPrestige, 2295, 0xD65FBD22);
 // @0x14173fc40
 void CSceneStateGame::FUN_14173fc40(CInPacket& packet)
 {
-    int nSkillId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    unsigned int nMin = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    unsigned int nUsed = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nSkillId = packet.ReadInt32();
+    unsigned int nMin = packet.ReadInt32();
+    unsigned int nUsed = packet.ReadInt32();
     MyPC* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pMyPC == 0)
         return;
@@ -9235,17 +9235,17 @@ class Unk_SSGGameMenuDlg { public: void FUN_141938ae0(int nId, int n); };
 // @0x141735dd0
 void CSceneStateGame::OnEventReward(CInPacket& packet)
 {
-    unsigned char nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    unsigned char nMode = packet.ReadUInt8();
     if (nMode == 0 || nMode == 1)
     {
         Unk_SSGChatDialog* pChat = FUN_140938cd0(0x4e5d);
         if (pChat != 0)
         {
-            int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nCount = packet.ReadInt32();
             for (int i = 0; i < nCount; i++)
             {
-                int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-                int nValue = (unsigned short)static_cast<CInputStream&>(packet).vfunc_o8_2();
+                int nItemId = packet.ReadInt32();
+                int nValue = (unsigned short)packet.ReadInt16();
                 pChat->FUN_141abf6e0(nItemId, nValue);
             }
         }
@@ -9261,8 +9261,8 @@ void CSceneStateGame::OnEventReward(CInPacket& packet)
         Unk_SSGChatDialog* pChat = FUN_140938cd0(0x4e5d);
         if (pChat != 0)
         {
-            int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nValue = (unsigned short)static_cast<CInputStream&>(packet).vfunc_o8_2();
+            int nItemId = packet.ReadInt32();
+            int nValue = (unsigned short)packet.ReadInt16();
             pChat->FUN_141abf6e0(nItemId, nValue);
         }
         UITimeRunEventDialog* pDlg = FUN_140cf8380(0x4f43);
@@ -9286,11 +9286,11 @@ void CSceneStateGame::OnEventReward(CInPacket& packet)
         Unk_SSGChatDialog* pChat = FUN_140938cd0(0x4e5d);
         if (pChat != 0)
         {
-            int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nCount = packet.ReadInt32();
             for (int i = 0; i < nCount; i++)
             {
-                int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-                int nValue = (unsigned short)static_cast<CInputStream&>(packet).vfunc_o8_2();
+                int nItemId = packet.ReadInt32();
+                int nValue = (unsigned short)packet.ReadInt16();
                 pChat->FUN_141abf6e0(nItemId, nValue);
             }
         }
@@ -9316,11 +9316,11 @@ CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 // @0x14173dfd0
 void CSceneStateGame::FUN_14173dfd0(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 0)
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        __int64 nUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        int nId = packet.ReadInt32();
+        __int64 nUid = packet.ReadInt64();
         MS2Ptr<Unk_SSGFieldWarInfo> spInfo = FUN_1414a5820()->FUN_140382be0(nId);
         if (spInfo == 0)
             return;
@@ -9358,18 +9358,18 @@ void FUN_141275360(const CStringW& strMsg, int nType, int nArg);
 // 0xe8: npc talk: a system notice, npc model/script changes and the side popup talk.
 void CSceneStateGame::FUN_141738430(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 0)
     {
-        CStringW strMsg = FUN_140a87680()->FUN_141747b40()->FUN_14087ede0(static_cast<CInputStream&>(packet).vfunc_o8_8());
-        int nArg = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        CStringW strMsg = FUN_140a87680()->FUN_141747b40()->FUN_14087ede0(packet.ReadUnicodeString());
+        int nArg = packet.ReadInt32();
         FUN_141275360(strMsg, 0xc, nArg);
         FUN_1412751b0(strMsg, 0x14);
     }
     else if (nMode == 1)
     {
-        int nObjId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        CString strModel = static_cast<CInputStream&>(packet).vfunc_o8_6();
+        int nObjId = packet.ReadInt32();
+        CString strModel = packet.ReadUnicodeStringA();
         Unk_SSGNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(nObjId);
         if (pNpc == 0)
             return;
@@ -9377,8 +9377,8 @@ void CSceneStateGame::FUN_141738430(CInPacket& packet)
     }
     else if (nMode == 2)
     {
-        int nObjId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        CString strScript = static_cast<CInputStream&>(packet).vfunc_o8_6();
+        int nObjId = packet.ReadInt32();
+        CString strScript = packet.ReadUnicodeStringA();
         Unk_SSGNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(nObjId);
         if (pNpc == 0)
             return;
@@ -9386,13 +9386,13 @@ void CSceneStateGame::FUN_141738430(CInPacket& packet)
     }
     else if (nMode == 3)
     {
-        int nKind = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        int nNpcId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        CString strName = static_cast<CInputStream&>(packet).vfunc_o8_7();
-        CString strIcon = static_cast<CInputStream&>(packet).vfunc_o8_7();
-        CString strSound = static_cast<CInputStream&>(packet).vfunc_o8_7();
-        CString strScript = static_cast<CInputStream&>(packet).vfunc_o8_7();
-        CStringW strText = static_cast<CInputStream&>(packet).vfunc_o8_8();
+        int nKind = packet.ReadUInt8();
+        int nNpcId = packet.ReadInt32();
+        CString strName = packet.ReadString();
+        CString strIcon = packet.ReadString();
+        CString strSound = packet.ReadString();
+        CString strScript = packet.ReadString();
+        CStringW strText = packet.ReadUnicodeString();
         Unk_SSGSidePopupTalk* pUi = FUN_1413868b0(0x4f57);
         if (pUi != 0)
         {
@@ -9451,7 +9451,7 @@ void CSceneStateGame::FUN_141728c20(CInPacket& packet)
             FUN_1412753b0(strText, 9, nArg);
         else if (nFlags & 0x200)
         {
-            int nValue = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nValue = packet.ReadInt32();
             FUN_141275400(strText, nValue);
         }
         else if (nFlags & 0x400)
@@ -9496,11 +9496,11 @@ CStringW FUN_140298ea0(CStringW strKey);                    // localized text fo
 // 0xf9: promotion event rewards (Goldus, Pesca, Stefan, the snowman), listed in the reward notifier.
 void CSceneStateGame::FUN_141736240(CInPacket& packet)
 {
-    int nType = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    unsigned short nRank = static_cast<CInputStream&>(packet).vfunc_o8_2();
-    unsigned int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int bNotice = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nType = packet.ReadUInt8();
+    int nId = packet.ReadInt32();
+    unsigned short nRank = packet.ReadInt16();
+    unsigned int nCount = packet.ReadInt32();
+    int bNotice = packet.ReadUInt8();
     CStringW strImage;
     CStringW strKey;
     switch (nType)
@@ -9534,8 +9534,8 @@ void CSceneStateGame::FUN_141736240(CInPacket& packet)
     {
         for (size_t i = 0; i < nCount; i++)
         {
-            int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nAmount = (unsigned short)static_cast<CInputStream&>(packet).vfunc_o8_2();
+            int nItemId = packet.ReadInt32();
+            int nAmount = (unsigned short)packet.ReadInt16();
             if (nType != 0)
             {
                 CStringW strText = FUN_1405c2690(strKey, FUN_1401a9d70()->FUN_141811980(1, nItemId));
@@ -9591,17 +9591,17 @@ void FUN_140893250(CUgcItemLook* pLook, CInputStream* pIn);  // read a UGC look
 // @0x141716200
 void CSceneStateGame::OnFurnishingInventory(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 0)
     {
         DAT_143ab2e50.FUN_140dfc4f0();
     }
     else if (nMode == 1)
     {
-        int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        __int64 nUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        __int64 nCount = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        bool bHasLook = static_cast<CInputStream&>(packet).vfunc_o8_0();
+        int nItemId = packet.ReadInt32();
+        __int64 nUid = packet.ReadInt64();
+        __int64 nCount = packet.ReadInt64();
+        bool bHasLook = packet.ReadBool();
         MS2Ptr<CUgcItemLook> spLook(0);
         if (bHasLook)
         {
@@ -9617,7 +9617,7 @@ void CSceneStateGame::OnFurnishingInventory(CInPacket& packet)
     }
     else if (nMode == 2)
     {
-        __int64 nUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        __int64 nUid = packet.ReadInt64();
         MS2Ptr<CUGCMapItem> spItem = DAT_143ab2e50.FUN_140dfc8f0(nUid);
         if (!spItem)
             return;
@@ -9625,8 +9625,8 @@ void CSceneStateGame::OnFurnishingInventory(CInPacket& packet)
     }
     else if (nMode == 3)
     {
-        __int64 nUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        int nValue = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        __int64 nUid = packet.ReadInt64();
+        int nValue = packet.ReadInt32();
         MS2Ptr<CUGCMapItem> spItem = DAT_143ab2e50.FUN_140dfc8f0(nUid);
         if (!spItem)
             return;
@@ -9642,8 +9642,8 @@ extern CString DAT_143ae7970;
 // MS2-FUNCTIONAL: the exe spills the world singleton to a temp slot before the actor lookup (one extra stack temp); everything else matches.
 void CSceneStateGame::OnStat(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nFlag = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nId = packet.ReadInt32();
+    int nFlag = packet.ReadUInt8();
     PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1200(nId);
     if (pActor == 0)
         return;
@@ -9728,8 +9728,8 @@ UIExpBar* FUN_14125b200(int nId);                           // GetDialog<UIExpBa
 // MS2-FUNCTIONAL: small residual code difference (the old 0x10 Unk_EffectQuery frame-size cause is fixed)
 void CSceneStateGame::OnLevelUp(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    unsigned short nLevel = static_cast<CInputStream&>(packet).vfunc_o8_2();
+    int nId = packet.ReadInt32();
+    unsigned short nLevel = packet.ReadInt16();
     PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
     if (pPC == 0)
         return;
@@ -9792,19 +9792,19 @@ unsigned char FUN_14053f8c0(unsigned nItemId);              // the item id is a 
 // @0x141711e70
 void CSceneStateGame::OnFieldAddItem(CInPacket& packet)
 {
-    int nObjectId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nAmount = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    __int64 nOwnerUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+    int nObjectId = packet.ReadInt32();
+    int nItemId = packet.ReadInt32();
+    int nAmount = packet.ReadInt32();
+    __int64 nOwnerUid = packet.ReadInt64();
     ATL::CAtlList<__int64> kOwners(10);
     kOwners.AddTail(nOwnerUid);
-    Unk_StreamPoint kPos = static_cast<CInputStream&>(packet).vfunc_o8_10();
-    int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nType = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nRarity = (unsigned short)static_cast<CInputStream&>(packet).vfunc_o8_2();
-    int bFlag1 = static_cast<CInputStream&>(packet).vfunc_o8_0();
-    int bFlag2 = static_cast<CInputStream&>(packet).vfunc_o8_0();
+    Unk_StreamPoint kPos = packet.ReadVector3();
+    int nB = packet.ReadInt32();
+    int nType = packet.ReadUInt8();
+    int nA = packet.ReadInt32();
+    int nRarity = (unsigned short)packet.ReadInt16();
+    int bFlag1 = packet.ReadBool();
+    int bFlag2 = packet.ReadBool();
     Unk_SSGWorld* pWorld = FUN_1403ed2d0();
     efd::SmartPointer<CDropItem> spDrop = EE_NEW CDropItem(nType, nRarity);
     if (spDrop->FUN_14118d1c0(nObjectId, nItemId, nAmount, nA, nB, kOwners) == 0)
@@ -9830,7 +9830,7 @@ bool FUN_14028d470(float a, float b);                       // approx equal
 // @0x14171a2e0
 void CSceneStateGame::FUN_14171a2e0(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nId = packet.ReadInt32();
     Unk_SSGWorld* pWorld = FUN_1403ed2d0();
     CPet* pObj = pWorld->FUN_141bd13a0(nId);
     if (pObj == 0)
@@ -9860,11 +9860,11 @@ extern CString DAT_143ae7998;                               // the pet sound on 
 // @0x1417215a0
 void CSceneStateGame::OnTombstone(CInPacket& packet)
 {
-    int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nA = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    int nB = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    int nC = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    bool bPet = static_cast<CInputStream&>(packet).vfunc_o8_0();
+    int nId = packet.ReadInt32();
+    int nA = packet.ReadUInt8();
+    int nB = packet.ReadUInt8();
+    int nC = packet.ReadInt32();
+    bool bPet = packet.ReadBool();
     PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
     if (pPC == 0)
         return;
@@ -9898,13 +9898,13 @@ MS2_REPLACE_METHOD(0x1417215a0, CSceneStateGame, OnTombstone, 919, 0xDCE8365B);
 // @0x141719a60
 void CSceneStateGame::OnFieldAddPet(CInPacket& packet)
 {
-    int nObjId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nNpcId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nLevel = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    Unk_StreamPoint kPos = static_cast<CInputStream&>(packet).vfunc_o8_10();
-    Unk_StreamPoint kDir = static_cast<CInputStream&>(packet).vfunc_o8_10();
-    float fScale = static_cast<CInputStream&>(packet).vfunc_o8_5();
-    int nValue = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nObjId = packet.ReadInt32();
+    int nNpcId = packet.ReadInt32();
+    int nLevel = packet.ReadInt32();
+    Unk_StreamPoint kPos = packet.ReadVector3();
+    Unk_StreamPoint kDir = packet.ReadVector3();
+    float fScale = packet.ReadFloat();
+    int nValue = packet.ReadInt32();
     Unk_SSGWorld* pWorld = FUN_1403ed2d0();
     kPos.z += 4.0f;
     efd::SmartPointer<CPet> spPet = new (efd::MemHint(efd::MemHint::NONE)) CPet;
@@ -9918,12 +9918,12 @@ void CSceneStateGame::OnFieldAddPet(CInPacket& packet)
     if (!FUN_14028d470(fScale, 1.0f))
         spPet->SetScaleAC(fScale);
     spPet->vfunc_90(&packet);
-    spPet->FUN_141094790(static_cast<CInputStream&>(packet).vfunc_o8_4());
-    spPet->FUN_14174a560(static_cast<CInputStream&>(packet).vfunc_o8_1());
-    spPet->FUN_14174a580(static_cast<CInputStream&>(packet).vfunc_o8_2());
-    spPet->FUN_140b10f90(static_cast<CInputStream&>(packet).vfunc_o8_2());
-    spPet->FUN_14174a4f0(static_cast<CInputStream&>(packet).vfunc_o8_3());
-    spPet->FUN_140b10c80(static_cast<CInputStream&>(packet).vfunc_o8_8());
+    spPet->FUN_141094790(packet.ReadInt64());
+    spPet->FUN_14174a560(packet.ReadUInt8());
+    spPet->FUN_14174a580(packet.ReadInt16());
+    spPet->FUN_140b10f90(packet.ReadInt16());
+    spPet->FUN_14174a4f0(packet.ReadInt32());
+    spPet->FUN_140b10c80(packet.ReadUnicodeString());
     if (pWorld->FUN_141bbb1e0(spPet, 0, 1) == 0)
         return;
     MyPC* pMyPC = pWorld->FUN_141bd0cc0();
@@ -9973,7 +9973,7 @@ bool FUN_140930b10();
 // @0x141733b30
 void CSceneStateGame::FUN_141733b30(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 0)
     {
         Unk_BmBoxPtr<SpecialNPCInfo> spInfo(Unk_BmNewTag(0));
@@ -10093,14 +10093,14 @@ extern std::set<Unk_SSGHouseKey> DAT_143ab32d8;
 void CSceneStateGame::OnResponseCube(CInPacket& packet)
 {
     efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
-    unsigned char nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    unsigned char nMode = packet.ReadUInt8();
     MyPC* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     switch (nMode)
     {
     case 0:
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nValue = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nId = packet.ReadInt32();
+        int nValue = packet.ReadInt32();
         PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
         if (pPC == 0)
             return;
@@ -10114,7 +10114,7 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 1:
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nId = packet.ReadInt32();
         CubeItemInfo info(packet);
         PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
         if (pPC == 0)
@@ -10129,20 +10129,20 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 2:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
         {
-            int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            CStringW strName = static_cast<CInputStream&>(packet).vfunc_o8_8();
-            __int64 nC = static_cast<CInputStream&>(packet).vfunc_o8_4();
-            __int64 nCharId = static_cast<CInputStream&>(packet).vfunc_o8_4();
+            int nA = packet.ReadInt32();
+            int nB = packet.ReadInt32();
+            CStringW strName = packet.ReadUnicodeString();
+            __int64 nC = packet.ReadInt64();
+            __int64 nCharId = packet.ReadInt64();
             spService->FUN_1410c4240(nA, nB, strName, nC, nCharId);
             if (nCharId == DAT_143ab2820)
             {
                 COutPacket out(static_cast<int>(SendOp::RequestCube), 0);
-                out.COutPacket::vfunc_o10_1(0x15);
-                out.COutPacket::vfunc_o10_8(strName);
+                out.COutPacket::WriteUInt8(0x15);
+                out.COutPacket::WriteUnicodeString(strName);
                 FUN_140710590(out);
             }
         }
@@ -10161,12 +10161,12 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 5:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
         {
-            int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nFlag = static_cast<CInputStream&>(packet).vfunc_o8_1();
+            int nA = packet.ReadInt32();
+            int nB = packet.ReadInt32();
+            int nFlag = packet.ReadUInt8();
             spService->FUN_1410c44b0(nA, nB, nFlag == 0);
         }
         else
@@ -10175,10 +10175,10 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 7:
     {
-        int nReason = static_cast<unsigned short>(static_cast<CInputStream&>(packet).vfunc_o8_2());
-        int bFlag = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nReason = static_cast<unsigned short>(packet.ReadInt16());
+        int bFlag = packet.ReadUInt8();
+        int nA = packet.ReadInt32();
+        int nB = packet.ReadInt32();
         if (nReason == 0x75)
             FUN_141275260(0x6c1, 3, 1);
         else
@@ -10195,11 +10195,11 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0xa:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
         {
-            int nC = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nCharId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nC = packet.ReadInt32();
+            int nCharId = packet.ReadInt32();
             if (nCharId != 0 && pMyPC != 0 && pMyPC->FUN_14123c580() == nCharId)
             {
                 Unk_PCCubeCraft* pCraft = pMyPC->FUN_141530290();
@@ -10207,21 +10207,21 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
                     pCraft->FUN_1410aa380(false);
                 FUN_141276180(DAT_143ae79b8, "");
             }
-            int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nPacked = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nA = packet.ReadInt32();
+            int nB = packet.ReadInt32();
+            int nPacked = packet.ReadInt32();
             Unk_Int3 kPos = FUN_1408a0400(nPacked);
-            __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+            __int64 nItemUid = packet.ReadInt64();
             CubeItemInfo info(packet);
-            bool bFlag = static_cast<CInputStream&>(packet).vfunc_o8_1() == 0 ? false : true;
-            float fRot = static_cast<CInputStream&>(packet).vfunc_o8_5();
-            int nD = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            bool bFlag = packet.ReadUInt8() == 0 ? false : true;
+            float fRot = packet.ReadFloat();
+            int nD = packet.ReadInt32();
             Unk_PayloadPtr<NoticeCubeInfo> spNotice(0);
-            int nHasNotice = static_cast<CInputStream&>(packet).vfunc_o8_1();
+            int nHasNotice = packet.ReadUInt8();
             if (nHasNotice == 1)
             {
-                CStringW strText = static_cast<CInputStream&>(packet).vfunc_o8_8();
-                int nType = static_cast<CInputStream&>(packet).vfunc_o8_1();
+                CStringW strText = packet.ReadUnicodeString();
+                int nType = packet.ReadUInt8();
                 spNotice = new NoticeCubeInfo;
                 spNotice->FUN_1408b4970(strText, nType);
             }
@@ -10229,8 +10229,8 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         }
         else
         {
-            int nC = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nCharId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nC = packet.ReadInt32();
+            int nCharId = packet.ReadInt32();
             if (pMyPC != 0 && pMyPC->FUN_14123c580() == nCharId)
             {
                 Unk_PCCubeCraft* pCraft = pMyPC->FUN_141530290();
@@ -10253,13 +10253,13 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0xc:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
         {
-            int nC = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nCharId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nPacked = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            bool bFlag = static_cast<CInputStream&>(packet).vfunc_o8_1() == 1;
+            int nC = packet.ReadInt32();
+            int nCharId = packet.ReadInt32();
+            int nPacked = packet.ReadInt32();
+            bool bFlag = packet.ReadUInt8() == 1;
             if (pMyPC != 0 && pMyPC->FUN_14123c580() == nCharId)
             {
                 Unk_PCCubeCraft* pCraft = pMyPC->FUN_141530290();
@@ -10272,8 +10272,8 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         }
         else
         {
-            int nC = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nCharId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nC = packet.ReadInt32();
+            int nCharId = packet.ReadInt32();
             if (pMyPC != 0 && pMyPC->FUN_14123c580() == nCharId)
             {
                 if (pMyPC->FUN_141659690() != 0)
@@ -10289,22 +10289,22 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0xe:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
         {
-            int nC = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nCharId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nC = packet.ReadInt32();
+            int nCharId = packet.ReadInt32();
             if (pMyPC != 0 && pMyPC->FUN_14123c580() == nCharId)
                 FUN_141276180(DAT_143ae79d0, "");
-            int nPacked = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nPacked = packet.ReadInt32();
             Unk_Int3 kPos = FUN_1408a0400(nPacked);
-            float fRot = static_cast<CInputStream&>(packet).vfunc_o8_5();
+            float fRot = packet.ReadFloat();
             spService->FUN_1410c4d80(kPos, fRot);
         }
         else
         {
-            int nC = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nCharId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nC = packet.ReadInt32();
+            int nCharId = packet.ReadInt32();
             if (pMyPC != 0 && pMyPC->FUN_14123c580() == nCharId)
             {
                 if (pMyPC->FUN_141659690() != 0)
@@ -10320,11 +10320,11 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0xf:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
         {
-            int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nCharId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nA = packet.ReadInt32();
+            int nCharId = packet.ReadInt32();
             if (pMyPC != 0 && pMyPC->FUN_14123c580() == nCharId)
             {
                 Unk_PCCubeCraft* pCraft = pMyPC->FUN_141530290();
@@ -10332,19 +10332,19 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
                     pCraft->FUN_1410aa380(false);
                 FUN_141276180(DAT_143ae79b8, "");
             }
-            int nPacked = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nPacked = packet.ReadInt32();
             Unk_Int3 kPos = FUN_1408a0400(nPacked);
-            __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+            __int64 nItemUid = packet.ReadInt64();
             CubeItemInfo info(packet);
-            bool bFlag = static_cast<CInputStream&>(packet).vfunc_o8_1() == 0 ? false : true;
-            float fRot = static_cast<CInputStream&>(packet).vfunc_o8_5();
-            int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            bool bFlag = packet.ReadUInt8() == 0 ? false : true;
+            float fRot = packet.ReadFloat();
+            int nB = packet.ReadInt32();
             spService->FUN_1410c4e20(nItemUid, kPos, info, fRot, bFlag, nA, nB);
         }
         else
         {
-            int nC = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nCharId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nC = packet.ReadInt32();
+            int nCharId = packet.ReadInt32();
             if (pMyPC != 0 && pMyPC->FUN_14123c580() == nCharId)
             {
                 if (pMyPC->FUN_141659690() != 0)
@@ -10360,13 +10360,13 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x11:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
         {
-            int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nCubeId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nValue = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nId = packet.ReadInt32();
+            int nCubeId = packet.ReadInt32();
+            int nA = packet.ReadInt32();
+            int nValue = packet.ReadInt32();
             MS2Ptr<Cube> spCube(spService->FUN_1410b8b00(nCubeId));
             if (spCube.get() != 0 ? true : false)
             {
@@ -10383,7 +10383,7 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         }
         else
         {
-            int nCharId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nCharId = packet.ReadInt32();
             if (pMyPC != 0 && pMyPC->FUN_14123c580() == nCharId)
                 spService->FUN_1410d6590(nError);
         }
@@ -10391,10 +10391,10 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x12:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
         {
-            int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nId = packet.ReadInt32();
             PC* pPC = FUN_140974230(FUN_1403ed2d0()->FUN_141bd1200(nId));
             if (pPC == 0)
                 return;
@@ -10402,7 +10402,7 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         }
         else
         {
-            int nCharId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nCharId = packet.ReadInt32();
             if (pMyPC != 0 && pMyPC->FUN_14123c580() == nCharId)
                 spService->FUN_1410d6590(nError);
         }
@@ -10410,11 +10410,11 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x1b:
     {
-        int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nCount = packet.ReadInt32();
         for (unsigned int i = 0; i < nCount; i++)
         {
-            int nCubeId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nValue = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nCubeId = packet.ReadInt32();
+            int nValue = packet.ReadInt32();
             MS2Ptr<Cube> spCube(spService->FUN_1410b8b00(nCubeId));
             if (spCube.get() != 0)
                 spService->FUN_1410caf20(spCube.get(), nValue);
@@ -10461,13 +10461,13 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x15:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
         {
-            __int64 nOwner = static_cast<CInputStream&>(packet).vfunc_o8_4();
-            int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            CStringW strName = static_cast<CInputStream&>(packet).vfunc_o8_8();
+            __int64 nOwner = packet.ReadInt64();
+            int nA = packet.ReadInt32();
+            int nB = packet.ReadInt32();
+            CStringW strName = packet.ReadUnicodeString();
             if (spService->FUN_1410c3180() == nOwner)
             {
                 spService->FUN_1410c3220(strName);
@@ -10479,7 +10479,7 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         }
         else
         {
-            int nCharId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nCharId = packet.ReadInt32();
             if (pMyPC != 0 && pMyPC->FUN_14123c580() == nCharId)
                 spService->FUN_1410d6590(nError);
         }
@@ -10487,10 +10487,10 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x1d:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
         {
-            CStringW strDesc = static_cast<CInputStream&>(packet).vfunc_o8_8();
+            CStringW strDesc = packet.ReadUnicodeString();
             spService->FUN_1410c32b0(strDesc);
             Unk_SSGDlg4ed8* pDlg = FUN_140bbea00(0x4ed8);
             if (pDlg != 0)
@@ -10498,7 +10498,7 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         }
         else
         {
-            int nCharId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nCharId = packet.ReadInt32();
             if (pMyPC != 0 && pMyPC->FUN_14123c580() == nCharId)
                 spService->FUN_1410d6590(nError);
         }
@@ -10506,7 +10506,7 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x18:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
             break;
         spService->FUN_1410d6590(nError);
@@ -10514,16 +10514,16 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x16:
     {
-        int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nC = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        __int64 nD = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        int nA = packet.ReadInt32();
+        int nB = packet.ReadInt32();
+        int nC = packet.ReadUInt8();
+        __int64 nD = packet.ReadInt64();
         spService->FUN_1410c7a50(nA, nB, nC, nD);
     }
         break;
     case 9:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
             break;
         spService->FUN_1410d6590(nError);
@@ -10531,11 +10531,11 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x19:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
         {
-            __int64 nCharId = static_cast<CInputStream&>(packet).vfunc_o8_4();
-            __int64 nValue = static_cast<CInputStream&>(packet).vfunc_o8_4();
+            __int64 nCharId = packet.ReadInt64();
+            __int64 nValue = packet.ReadInt64();
             if (DAT_143ab2820 == nCharId)
                 DAT_143ab2920 = nValue;
             Unk_SSGDlg4ed8* pDlg = FUN_140bbea00(0x4ed8);
@@ -10567,8 +10567,8 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x1c:
     {
-        int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nA = packet.ReadInt32();
+        int nB = packet.ReadInt32();
         spService->FUN_1410c3410(nA);
         spService->FUN_1410c3450(nB);
         Unk_SSGDlg4ed8* pDlg = FUN_140bbea00(0x4ed8);
@@ -10578,7 +10578,7 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x47:
     {
-        int nType = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nType = packet.ReadInt32();
         if (nType == 1 || nType == 2)
             FUN_1412751f0(GetStringCommon(0xb89), 1, 1);
         else if (nType == 3)
@@ -10609,7 +10609,7 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pPC != 0)
         {
-            int nValue = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nValue = packet.ReadInt32();
             pPC->FUN_14152a2d0(nValue);
         }
     }
@@ -10622,10 +10622,10 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x25:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
         {
-            unsigned char nValue = static_cast<CInputStream&>(packet).vfunc_o8_1();
+            unsigned char nValue = packet.ReadUInt8();
             if (spService != 0)
             {
                 if (nValue != spService->FUN_1410c3470())
@@ -10648,10 +10648,10 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x26:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
         {
-            unsigned char nValue = static_cast<CInputStream&>(packet).vfunc_o8_1();
+            unsigned char nValue = packet.ReadUInt8();
             if (spService != 0)
             {
                 if (nValue != spService->FUN_1410c3470())
@@ -10674,10 +10674,10 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x2c:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
         {
-            unsigned char nValue = static_cast<CInputStream&>(packet).vfunc_o8_1();
+            unsigned char nValue = packet.ReadUInt8();
             if (spService != 0)
             {
                 if (nValue != spService->FUN_1410c34b0())
@@ -10700,10 +10700,10 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x2d:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
         {
-            unsigned char nValue = static_cast<CInputStream&>(packet).vfunc_o8_1();
+            unsigned char nValue = packet.ReadUInt8();
             if (spService != 0)
             {
                 if (nValue != spService->FUN_1410c34b0())
@@ -10726,11 +10726,11 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x3e:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
         {
-            unsigned char nA = static_cast<CInputStream&>(packet).vfunc_o8_1();
-            unsigned char nB = static_cast<CInputStream&>(packet).vfunc_o8_1();
+            unsigned char nA = packet.ReadUInt8();
+            unsigned char nB = packet.ReadUInt8();
             bool bChanged = false;
             if (spService != 0)
             {
@@ -10771,19 +10771,19 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x27:
     {
-        __int64 nCharId = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        __int64 nCharId = packet.ReadInt64();
         if (DAT_143ab2820 != nCharId)
             return;
-        __int64 nA = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        unsigned short nB = static_cast<unsigned short>(static_cast<CInputStream&>(packet).vfunc_o8_4());
-        __int64 nC = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        __int64 nA = packet.ReadInt64();
+        unsigned short nB = static_cast<unsigned short>(packet.ReadInt64());
+        __int64 nC = packet.ReadInt64();
+        int nCount = packet.ReadInt32();
         DAT_143ab2928 = nA;
         DAT_143ab291c = nB;
         DAT_143ab2930 = nC;
         DAT_143ab32b8.RemoveAll();
         for (int i = 0; i < nCount; i++)
-            DAT_143ab32b8.Add(static_cast<CInputStream&>(packet).vfunc_o8_3());
+            DAT_143ab32b8.Add(packet.ReadInt32());
         UIMasteryDialog* pMastery = FUN_140faf160(0x4f1e);
         if (pMastery != 0)
         {
@@ -10803,10 +10803,10 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x35:
     {
-        __int64 nCharId = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        __int64 nA = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        __int64 nB = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        __int64 nC = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        __int64 nCharId = packet.ReadInt64();
+        __int64 nA = packet.ReadInt64();
+        __int64 nB = packet.ReadInt64();
+        __int64 nC = packet.ReadInt64();
         if (DAT_143ab2820 != nCharId)
             return;
         DAT_143ab2857 = true;
@@ -10820,8 +10820,8 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x3c:
     {
-        __int64 nCharId = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        __int64 nValue = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        __int64 nCharId = packet.ReadInt64();
+        __int64 nValue = packet.ReadInt64();
         if (DAT_143ab2820 != nCharId)
             return;
         DAT_143ab291e = true;
@@ -10830,23 +10830,23 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x2a:
     {
-        int nKey = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        bool bValue = static_cast<CInputStream&>(packet).vfunc_o8_1() == 1 ? true : false;
+        int nKey = packet.ReadUInt8();
+        bool bValue = packet.ReadUInt8() == 1 ? true : false;
         if (spService != 0)
             spService->FUN_1410c3e40(nKey, bValue);
     }
         break;
     case 0x2b:
     {
-        int nKey = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        int nValue = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nKey = packet.ReadUInt8();
+        int nValue = packet.ReadUInt8();
         if (spService != 0)
             spService->FUN_1410c3f10(nKey, nValue);
     }
         break;
     case 0x28:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
             break;
         spService->FUN_1410d6590(nError);
@@ -10854,7 +10854,7 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x29:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
             break;
         spService->FUN_1410d6590(nError);
@@ -10862,13 +10862,13 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x2e:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
         {
-            __int64 nCharId = static_cast<CInputStream&>(packet).vfunc_o8_4();
-            int nSlot = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            CString strName = static_cast<CInputStream&>(packet).vfunc_o8_6();
-            __int64 nTime = static_cast<CInputStream&>(packet).vfunc_o8_4();
+            __int64 nCharId = packet.ReadInt64();
+            int nSlot = packet.ReadInt32();
+            CString strName = packet.ReadUnicodeStringA();
+            __int64 nTime = packet.ReadInt64();
             if (nCharId == DAT_143ab2820 && spService != 0)
             {
                 spService->FUN_1410d4450(nCharId, nSlot, strName, nTime);
@@ -10884,13 +10884,13 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x40:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
         {
-            __int64 nCharId = static_cast<CInputStream&>(packet).vfunc_o8_4();
-            int nSlot = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            CString strName = static_cast<CInputStream&>(packet).vfunc_o8_6();
-            __int64 nTime = static_cast<CInputStream&>(packet).vfunc_o8_4();
+            __int64 nCharId = packet.ReadInt64();
+            int nSlot = packet.ReadInt32();
+            CString strName = packet.ReadUnicodeStringA();
+            __int64 nTime = packet.ReadInt64();
             if (nCharId == DAT_143ab2820 && spService != 0)
             {
                 spService->FUN_1410d4710(nCharId, nSlot, strName, nTime);
@@ -10906,7 +10906,7 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x32:
     {
-        unsigned __int64 nUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        unsigned __int64 nUid = packet.ReadInt64();
         UIUGCCubePaletteDialog* pPalette = FUN_140ef4a50(0x4f16);
         if (pPalette != 0)
             pPalette->FUN_140eec0b0(nUid);
@@ -10914,10 +10914,10 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x33:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
         {
-            unsigned char nValue = static_cast<CInputStream&>(packet).vfunc_o8_1();
+            unsigned char nValue = packet.ReadUInt8();
             FUN_1409670e0()->FUN_1410c3560(nValue);
             FUN_140b6a040()->FUN_140b682c0(nValue);
         }
@@ -10927,10 +10927,10 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x34:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
         {
-            unsigned char nValue = static_cast<CInputStream&>(packet).vfunc_o8_1();
+            unsigned char nValue = packet.ReadUInt8();
             FUN_1409670e0()->FUN_1410c3580(nValue);
             FUN_140b6a040()->FUN_140b682f0(nValue);
         }
@@ -10940,10 +10940,10 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x36:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
         {
-            unsigned char nValue = static_cast<CInputStream&>(packet).vfunc_o8_1();
+            unsigned char nValue = packet.ReadUInt8();
             FUN_1409670e0()->FUN_1410c35a0(nValue);
             FUN_140b6a040()->FUN_140b683f0(nValue);
         }
@@ -10953,14 +10953,14 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x37:
     {
-        DAT_143ab2940 = static_cast<CInputStream&>(packet).vfunc_o8_2();
-        int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        DAT_143ab2940 = packet.ReadInt16();
+        int nCount = packet.ReadInt32();
         DAT_143ab32d8.clear();
         for (unsigned int i = 0; i < nCount; i++)
         {
             Unk_SSGHouseKey kKey;
-            kKey.m_nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            kKey.m_nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            kKey.m_nA = packet.ReadInt32();
+            kKey.m_nB = packet.ReadInt32();
             if (DAT_143ab32d8.find(kKey) == DAT_143ab32d8.end())
                 DAT_143ab32d8.insert(kKey);
         }
@@ -10968,10 +10968,10 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x39:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
         {
-            __int64 nValue = static_cast<CInputStream&>(packet).vfunc_o8_4();
+            __int64 nValue = packet.ReadInt64();
             spService->FUN_1410d57a0(nValue);
             Unk_SSGDlg4ed8* pDlg = FUN_140bbea00(0x4ed8);
             if (pDlg != 0)
@@ -10983,10 +10983,10 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x3a:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
         {
-            __int64 nValue = static_cast<CInputStream&>(packet).vfunc_o8_4();
+            __int64 nValue = packet.ReadInt64();
             spService->FUN_1410d5830(nValue);
             Unk_SSGDlg4ed8* pDlg = FUN_140bbea00(0x4ed8);
             if (pDlg != 0)
@@ -10998,11 +10998,11 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x38:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 0)
         {
-            __int64 nA = static_cast<CInputStream&>(packet).vfunc_o8_4();
-            __int64 nB = static_cast<CInputStream&>(packet).vfunc_o8_4();
+            __int64 nA = packet.ReadInt64();
+            __int64 nB = packet.ReadInt64();
             spService->FUN_1410d5700(nA);
             spService->FUN_1410d5750(nB);
             Unk_SSGDlg4ed8* pDlg = FUN_140bbea00(0x4ed8);
@@ -11015,10 +11015,10 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x3b:
     {
-        int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nCount = packet.ReadInt32();
         for (unsigned int i = 0; i < nCount; i++)
         {
-            __int64 nValue = static_cast<CInputStream&>(packet).vfunc_o8_4();
+            __int64 nValue = packet.ReadInt64();
             spService->FUN_1410d57a0(nValue);
         }
         Unk_SSGDlg4ed8* pDlg = FUN_140bbea00(0x4ed8);
@@ -11028,10 +11028,10 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x3d:
     {
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nError = packet.ReadUInt8();
         if (nError == 100)
         {
-            int nSub = static_cast<CInputStream&>(packet).vfunc_o8_1();
+            int nSub = packet.ReadUInt8();
             if (nSub != 0 || spService->FUN_1410d5b00() != 0)
             {
                 spService->FUN_1410d6590(100);
@@ -11045,7 +11045,7 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         break;
     case 0x45:
     {
-        __int64 nValue = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        __int64 nValue = packet.ReadInt64();
         FUN_1409670e0()->FUN_1410d5b20(nValue);
     }
         break;
@@ -11065,33 +11065,33 @@ void FUN_1408a10e0(Unk_CubeOwners& owners, int nGroup, int nBlock, const CString
 void CSceneStateGame::OnLoadCubes(CInPacket& packet)
 {
     efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
-    unsigned char nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    unsigned char nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 0:
     {
         if (!FUN_1406aeee0()->FUN_1406af0c0())
         {
-            int nState = static_cast<CInputStream&>(packet).vfunc_o8_1();
+            int nState = packet.ReadUInt8();
             spService->FUN_1410c3f50(nState);
-            int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nCount = packet.ReadInt32();
             for (int i = 0; i < nCount; ++i)
             {
-                int nPacked = static_cast<CInputStream&>(packet).vfunc_o8_3();
+                int nPacked = packet.ReadInt32();
                 Unk_Int3 kPos = FUN_1408a0400(nPacked);
-                __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+                __int64 nItemUid = packet.ReadInt64();
                 CubeItemInfo info(packet);
-                int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-                int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
-                bool bFlag = static_cast<CInputStream&>(packet).vfunc_o8_1() == 0 ? false : true;
-                float fRot = static_cast<CInputStream&>(packet).vfunc_o8_5();
-                int nD = static_cast<CInputStream&>(packet).vfunc_o8_3();
+                int nA = packet.ReadInt32();
+                int nB = packet.ReadInt32();
+                bool bFlag = packet.ReadUInt8() == 0 ? false : true;
+                float fRot = packet.ReadFloat();
+                int nD = packet.ReadInt32();
                 Unk_PayloadPtr<NoticeCubeInfo> spNotice;
-                int nHasNotice = static_cast<CInputStream&>(packet).vfunc_o8_1();
+                int nHasNotice = packet.ReadUInt8();
                 if (nHasNotice == 1)
                 {
-                    CStringW strText = static_cast<CInputStream&>(packet).vfunc_o8_8();
-                    int nType = static_cast<CInputStream&>(packet).vfunc_o8_1();
+                    CStringW strText = packet.ReadUnicodeString();
+                    int nType = packet.ReadUInt8();
                     spNotice = new NoticeCubeInfo;
                     spNotice->FUN_1408b4970(strText, nType);
                 }
@@ -11109,25 +11109,25 @@ void CSceneStateGame::OnLoadCubes(CInPacket& packet)
         break;
     case 1:
     {
-        int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nCount = packet.ReadInt32();
         for (int i = 0; i < nCount; ++i)
         {
-            int nBlock = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nState = static_cast<CInputStream&>(packet).vfunc_o8_1();
+            int nBlock = packet.ReadInt32();
+            int nState = packet.ReadUInt8();
             spService->FUN_1410bbc00(nBlock, nState);
         }
     }
         break;
     case 2:
     {
-        int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nCount = packet.ReadInt32();
         Unk_CubeOwners* pOwners = spService->FUN_1410d3360();
         for (int i = 0; i < nCount; ++i)
         {
-            int nGroup = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nBlock = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            CStringW strName = static_cast<CInputStream&>(packet).vfunc_o8_8();
-            __int64 nOwnerId = static_cast<CInputStream&>(packet).vfunc_o8_4();
+            int nGroup = packet.ReadInt32();
+            int nBlock = packet.ReadInt32();
+            CStringW strName = packet.ReadUnicodeString();
+            __int64 nOwnerId = packet.ReadInt64();
             FUN_1408a10e0(*pOwners, nGroup, nBlock, strName, nOwnerId);
             Unk_CubeOwnerPtr spOwner = FUN_1408a0fa0(*pOwners, nGroup, nBlock);
             if (spOwner.get() != 0)
@@ -11137,13 +11137,13 @@ void CSceneStateGame::OnLoadCubes(CInPacket& packet)
         break;
     case 3:
     {
-        int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nCount = packet.ReadInt32();
         for (int i = 0; i < nCount; ++i)
         {
-            int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nC = static_cast<CInputStream&>(packet).vfunc_o8_1();
-            __int64 nD = static_cast<CInputStream&>(packet).vfunc_o8_4();
+            int nA = packet.ReadInt32();
+            int nB = packet.ReadInt32();
+            int nC = packet.ReadUInt8();
+            __int64 nD = packet.ReadInt64();
             spService->FUN_1410c7a50(nA, nB, nC, nD);
         }
     }
@@ -11219,14 +11219,14 @@ class Unk_StateArg29 : public CItem { };
 // @0x141730920
 void CSceneStateGame::FUN_141730920(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 0)
     {
-        int nObjId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        int nRarity = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        unsigned char nSlot = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nObjId = packet.ReadInt32();
+        int nItemId = packet.ReadInt32();
+        __int64 nItemUid = packet.ReadInt64();
+        int nRarity = packet.ReadInt32();
+        unsigned char nSlot = packet.ReadUInt8();
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem->FUN_140523c40(nItemId, nRarity, 0))
         {
@@ -11255,8 +11255,8 @@ void CSceneStateGame::FUN_141730920(CInPacket& packet)
     }
     else if (nMode == 1)
     {
-        int nObjId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nSlot = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nObjId = packet.ReadInt32();
+        int nSlot = packet.ReadUInt8();
         PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nObjId);
         if (pPC != 0)
         {
@@ -11271,7 +11271,7 @@ void CSceneStateGame::FUN_141730920(CInPacket& packet)
     }
     else if (nMode == 4)
     {
-        short nError = static_cast<CInputStream&>(packet).vfunc_o8_2();
+        short nError = packet.ReadInt16();
         switch (nError)
         {
         case 0:
@@ -11310,7 +11310,7 @@ MS2_REPLACE_METHOD(0x141730920, CSceneStateGame, FUN_141730920, 2066, 0x0E9ABD5A
 // @0x14170fda0
 void CSceneStateGame::OnAddUser(CInPacket& packet)
 {
-    int nObjId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nObjId = packet.ReadInt32();
     Unk_SSGWorld* pWorld = FUN_1403ed2d0();
     if (!pWorld->FUN_141bcfbd0())
     {
@@ -11347,8 +11347,8 @@ void CSceneStateGame::OnAddUser(CInPacket& packet)
         spPC = new (efd::MemHint(efd::MemHint::NONE)) PC;
     }
     FUN_1416546d0(spPC.operator->())->vfunc_7(packet);
-    kPos = static_cast<CInputStream&>(packet).vfunc_o8_10();
-    kDir = static_cast<CInputStream&>(packet).vfunc_o8_10();
+    kPos = packet.ReadVector3();
+    kDir = packet.ReadVector3();
     kPos.z += 25.0f;
     spPC->FUN_14123c5a0(nObjId);
     spPC->FUN_141656aa0(proxy.m_0);
@@ -11394,45 +11394,45 @@ void CSceneStateGame::OnAddUser(CInPacket& packet)
             spPC->vfunc_19(reinterpret_cast<efd::Point3&>(kHit));
     }
 
-    spPC->m_unk_1bc = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    spPC->m_unk_1bc = packet.ReadUInt8();
     spPC->vfunc_91(&packet);
     if (spPC->FUN_141670a00(4) == 0)
         spPC->FUN_14166ce50(1);
-    int nEmotion = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nEmotion = packet.ReadUInt8();
     spPC->FUN_14166ce70(nEmotion);
-    int nCubeA = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nCubeA = packet.ReadUInt8();
     CubeItemInfo kCube(packet);
-    int nCubeB = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nCubeB = packet.ReadInt32();
     spPC->vfunc_135(nCubeA, nCubeB, &kCube);
     NiColor aColor[2];
-    aColor[0] = FUN_141b6dea0(static_cast<CInputStream&>(packet).vfunc_o8_3());
-    aColor[1] = FUN_141b6dea0(static_cast<CInputStream&>(packet).vfunc_o8_3());
+    aColor[0] = FUN_141b6dea0(packet.ReadInt32());
+    aColor[1] = FUN_141b6dea0(packet.ReadInt32());
     spPC->FUN_1416591e0(0, aColor[0]);
     spPC->FUN_1416591e0(1, aColor[1]);
-    CString strTitle = static_cast<CInputStream&>(packet).vfunc_o8_6();
+    CString strTitle = packet.ReadUnicodeStringA();
     spPC->FUN_141660fc0(strTitle);
-    bool bRide = static_cast<CInputStream&>(packet).vfunc_o8_0();
+    bool bRide = packet.ReadBool();
     if (bRide)
     {
         MS2Ptr<RideOnAction> spRide = FUN_14077deb0(&static_cast<CInputStream&>(packet));
         spPC->FUN_141676320(spRide);
         spPC->FUN_141676700();
-        int nCount = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nCount = packet.ReadUInt8();
         for (int i = 0; i < nCount; i++)
         {
-            int nKey = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nValue = static_cast<CInputStream&>(packet).vfunc_o8_1();
+            int nKey = packet.ReadInt32();
+            int nValue = packet.ReadUInt8();
             spPC->FUN_141676670(nKey, nValue);
         }
     }
     if (pWorld->FUN_141bbb1e0(spPC.get(), 0, 1) == 0)
         return;
 
-    int nTitleId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nTitleId = packet.ReadInt32();
     spPC->FUN_14165f090(nTitleId);
-    __int64 nA = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    int nC = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    __int64 nA = packet.ReadInt64();
+    int nB = packet.ReadInt32();
+    int nC = packet.ReadInt32();
     spPC->FUN_141662640(nA);
     spPC->FUN_141662690(nB);
     spPC->FUN_141662710(nC);
@@ -11440,13 +11440,13 @@ void CSceneStateGame::OnAddUser(CInPacket& packet)
     // the owned items
     CZlibPacket kItems;
     CByteBuffer& buf = kItems.FUN_14083b6b0(static_cast<CInputStream&>(packet));
-    int nItems = static_cast<CInputStream&>(buf).vfunc_o8_1();
+    int nItems = buf.ReadUInt8();
     for (int i = 0; i < nItems; i++)
     {
-        int nItemId = static_cast<CInputStream&>(buf).vfunc_o8_3();
-        __int64 nItemUid = static_cast<CInputStream&>(buf).vfunc_o8_4();
-        int nSlot = static_cast<CInputStream&>(buf).vfunc_o8_1();
-        int nRarity = static_cast<CInputStream&>(buf).vfunc_o8_3();
+        int nItemId = buf.ReadInt32();
+        __int64 nItemUid = buf.ReadInt64();
+        int nSlot = buf.ReadUInt8();
+        int nRarity = buf.ReadInt32();
         MS2Ptr<CItem> spItem(new CItem);
         if (!spItem->FUN_140523c40(nItemId, nRarity, 0))
             break;
@@ -11456,17 +11456,17 @@ void CSceneStateGame::OnAddUser(CInPacket& packet)
         spItem->FUN_140526b30(nObjId);
         spPC->FUN_141653d10(spItem);
     }
-    bool bTime = static_cast<CInputStream&>(buf).vfunc_o8_0();
-    __int64 nStart = static_cast<CInputStream&>(buf).vfunc_o8_4();
-    __int64 nEnd = static_cast<CInputStream&>(buf).vfunc_o8_4();
+    bool bTime = buf.ReadBool();
+    __int64 nStart = buf.ReadInt64();
+    __int64 nEnd = buf.ReadInt64();
     spPC->FUN_1416561a0()->FUN_1411ea620(nStart, nEnd);
-    int nOutfits = static_cast<CInputStream&>(buf).vfunc_o8_1();
+    int nOutfits = buf.ReadUInt8();
     for (int i = 0; i < nOutfits; i++)
     {
-        int nItemId = static_cast<CInputStream&>(buf).vfunc_o8_3();
-        __int64 nItemUid = static_cast<CInputStream&>(buf).vfunc_o8_4();
-        int nSlot = static_cast<CInputStream&>(buf).vfunc_o8_1();
-        int nRarity = static_cast<CInputStream&>(buf).vfunc_o8_3();
+        int nItemId = buf.ReadInt32();
+        __int64 nItemUid = buf.ReadInt64();
+        int nSlot = buf.ReadUInt8();
+        int nRarity = buf.ReadInt32();
         MS2Ptr<CItem> spItem(new CItem);
         if (!spItem->FUN_140523c40(nItemId, nRarity, 0))
             break;
@@ -11492,16 +11492,16 @@ void CSceneStateGame::OnAddUser(CInPacket& packet)
     spPC->FUN_1416749a0()->FUN_140970ff0(packet);
     FUN_1416546d0(spPC.operator->())->FUN_140a6e240();
     spPC->FUN_141661b20(packet);
-    spPC->FUN_141661ba0(static_cast<CInputStream&>(packet).vfunc_o8_1());
+    spPC->FUN_141661ba0(packet.ReadUInt8());
     spPC->FUN_140967420()->FUN_140743a10(packet);
     spPC->FUN_141661c00(packet);
     spPC->FUN_141661d40(packet);
-    spPC->FUN_141676980(static_cast<CInputStream&>(packet).vfunc_o8_3());
+    spPC->FUN_141676980(packet.ReadInt32());
     spPC->FUN_141663150(packet);
-    spPC->FUN_141662d60(static_cast<CInputStream&>(packet).vfunc_o8_4());
-    spPC->FUN_141678300(static_cast<CInputStream&>(packet).vfunc_o8_3());
-    spPC->FUN_141678340(static_cast<CInputStream&>(packet).vfunc_o8_1());
-    spPC->FUN_141662e30((unsigned short)static_cast<CInputStream&>(packet).vfunc_o8_2());
+    spPC->FUN_141662d60(packet.ReadInt64());
+    spPC->FUN_141678300(packet.ReadInt32());
+    spPC->FUN_141678340(packet.ReadUInt8());
+    spPC->FUN_141662e30((unsigned short)packet.ReadInt16());
 
     MyPC* pMyPC = FUN_14161e580(spPC);
     if (pMyPC)
@@ -11549,27 +11549,27 @@ Unk_SSGProxyListener* FUN_140c607b0();
 // @0x14172f500
 void CSceneStateGame::FUN_14172f500(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 3)
     {
         MS2Ptr<CProxyGameObject> spProxy(new CProxyGameObject);
-        spProxy->m_proxyId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        spProxy->m_40 = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        spProxy->m_48 = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        spProxy->m_58 = static_cast<CInputStream&>(packet).vfunc_o8_8();
-        spProxy->m_50 = static_cast<CInputStream&>(packet).vfunc_o8_6();
-        spProxy->m_60 = static_cast<CInputStream&>(packet).vfunc_o8_8();
-        spProxy->kind = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        spProxy->m_6c = static_cast<CInputStream&>(packet).vfunc_o8_10();
-        spProxy->m_a8 = static_cast<CInputStream&>(packet).vfunc_o8_2();
-        spProxy->m_ac = (unsigned short)static_cast<CInputStream&>(packet).vfunc_o8_2();
-        spProxy->m_b0 = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        spProxy->m_b4 = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        spProxy->m_b8 = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        spProxy->m_bc = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        spProxy->m_c0 = static_cast<CInputStream&>(packet).vfunc_o8_8();
-        spProxy->m_c8 = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        spProxy->m_cc = (unsigned short)static_cast<CInputStream&>(packet).vfunc_o8_2();
+        spProxy->m_proxyId = packet.ReadInt32();
+        spProxy->m_40 = packet.ReadInt64();
+        spProxy->m_48 = packet.ReadInt64();
+        spProxy->m_58 = packet.ReadUnicodeString();
+        spProxy->m_50 = packet.ReadUnicodeStringA();
+        spProxy->m_60 = packet.ReadUnicodeString();
+        spProxy->kind = packet.ReadUInt8();
+        spProxy->m_6c = packet.ReadVector3();
+        spProxy->m_a8 = packet.ReadInt16();
+        spProxy->m_ac = (unsigned short)packet.ReadInt16();
+        spProxy->m_b0 = packet.ReadInt32();
+        spProxy->m_b4 = packet.ReadInt32();
+        spProxy->m_b8 = packet.ReadInt32();
+        spProxy->m_bc = packet.ReadInt32();
+        spProxy->m_c0 = packet.ReadUnicodeString();
+        spProxy->m_c8 = packet.ReadInt32();
+        spProxy->m_cc = (unsigned short)packet.ReadInt16();
         spProxy->m_d0.FUN_140267e70(static_cast<CInputStream&>(packet));
         if (FUN_14052d220()->FUN_14187f3b0() == 1)
             spProxy->m_50 = "";
@@ -11577,87 +11577,87 @@ void CSceneStateGame::FUN_14172f500(CInPacket& packet)
     }
     else if (nMode == 4)
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nId = packet.ReadInt32();
         FUN_1403ed2d0()->FUN_141bc9b30(nId);
     }
     else if (nMode == 5)
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nId = packet.ReadInt32();
         MS2Ptr<CProxyGameObject> spProxy = FUN_1403ed2d0()->FUN_141bc9be0(nId);
         if (spProxy.get())
         {
-            int nFlags = static_cast<CInputStream&>(packet).vfunc_o8_1();
+            int nFlags = packet.ReadUInt8();
             if (nFlags & 1)
-                spProxy->kind = static_cast<CInputStream&>(packet).vfunc_o8_1();
+                spProxy->kind = packet.ReadUInt8();
             if (nFlags & 2)
-                spProxy->m_6c = static_cast<CInputStream&>(packet).vfunc_o8_10();
+                spProxy->m_6c = packet.ReadVector3();
             if (nFlags & 4)
-                spProxy->m_a8 = static_cast<CInputStream&>(packet).vfunc_o8_2();
+                spProxy->m_a8 = packet.ReadInt16();
             if (nFlags & 8)
             {
-                spProxy->m_ac = (unsigned short)static_cast<CInputStream&>(packet).vfunc_o8_2();
-                spProxy->m_b0 = static_cast<CInputStream&>(packet).vfunc_o8_3();
+                spProxy->m_ac = (unsigned short)packet.ReadInt16();
+                spProxy->m_b0 = packet.ReadInt32();
             }
             if (nFlags & 0x10)
-                spProxy->m_60 = static_cast<CInputStream&>(packet).vfunc_o8_8();
+                spProxy->m_60 = packet.ReadUnicodeString();
             if (nFlags & 0x20)
-                spProxy->m_c8 = static_cast<CInputStream&>(packet).vfunc_o8_3();
+                spProxy->m_c8 = packet.ReadInt32();
             if (nFlags & 0x40)
-                spProxy->m_cc = (unsigned short)static_cast<CInputStream&>(packet).vfunc_o8_2();
+                spProxy->m_cc = (unsigned short)packet.ReadInt16();
             FUN_140c607b0()->vfunc_5(spProxy, nFlags);
         }
     }
     else if (nMode == 6)
     {
         MS2Ptr<CProxyGameObject> spProxy(new CProxyGameObject);
-        spProxy->m_proxyId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nTemplateId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        spProxy->kind = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        spProxy->m_7c = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        spProxy->m_6c = static_cast<CInputStream&>(packet).vfunc_o8_10();
+        spProxy->m_proxyId = packet.ReadInt32();
+        int nTemplateId = packet.ReadInt32();
+        spProxy->kind = packet.ReadUInt8();
+        spProxy->m_7c = packet.ReadInt32();
+        spProxy->m_6c = packet.ReadVector3();
         if (spProxy->FUN_1416c2990(nTemplateId))
             FUN_1403ed2d0()->FUN_141bc9aa0(spProxy);
     }
     else if (nMode == 7)
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nId = packet.ReadInt32();
         FUN_1403ed2d0()->FUN_141bc9b30(nId);
     }
     else if (nMode == 8)
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nId = packet.ReadInt32();
         MS2Ptr<CProxyGameObject> spProxy = FUN_1403ed2d0()->FUN_141bc9be0(nId);
         if (spProxy.get())
         {
-            spProxy->kind = static_cast<CInputStream&>(packet).vfunc_o8_1();
-            spProxy->m_6c = static_cast<CInputStream&>(packet).vfunc_o8_10();
+            spProxy->kind = packet.ReadUInt8();
+            spProxy->m_6c = packet.ReadVector3();
         }
     }
     else if (nMode == 9)
     {
         MS2Ptr<CProxyGameObject> spProxy(new CProxyGameObject);
-        spProxy->m_proxyId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        spProxy->m_84 = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        spProxy->m_78 = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        spProxy->kind = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        spProxy->m_6c = static_cast<CInputStream&>(packet).vfunc_o8_10();
+        spProxy->m_proxyId = packet.ReadInt32();
+        spProxy->m_84 = packet.ReadInt32();
+        spProxy->m_78 = packet.ReadInt32();
+        spProxy->kind = packet.ReadUInt8();
+        spProxy->m_6c = packet.ReadVector3();
         spProxy->m_28.FUN_140a4fe50(FUN_1406d6e90()->FUN_140a7cab0(spProxy->m_78));
         if (spProxy->m_28.FUN_140a4ff10())
             FUN_1403ed2d0()->FUN_141bc9aa0(spProxy);
     }
     else if (nMode == 10)
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nId = packet.ReadInt32();
         FUN_1403ed2d0()->FUN_141bc9b30(nId);
     }
     else if (nMode == 11)
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nId = packet.ReadInt32();
         MS2Ptr<CProxyGameObject> spProxy = FUN_1403ed2d0()->FUN_141bc9be0(nId);
         if (spProxy.get())
         {
-            spProxy->kind = static_cast<CInputStream&>(packet).vfunc_o8_1();
-            spProxy->m_6c = static_cast<CInputStream&>(packet).vfunc_o8_10();
+            spProxy->kind = packet.ReadUInt8();
+            spProxy->m_6c = packet.ReadVector3();
         }
     }
 }
@@ -11711,14 +11711,14 @@ int FUN_140718170(const CString& s);
 // @0x141721cd0
 void CSceneStateGame::FUN_141721cd0(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 0x10)
     {
         DAT_143ab2ee0.FUN_1408e3030();
     }
     else if (nMode == 0)
     {
-        int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nCount = packet.ReadInt32();
         for (int i = 0; i < nCount; i++)
         {
             CUserMail::MailPtr spMail(new CMailInfo(0));
@@ -11744,8 +11744,8 @@ void CSceneStateGame::FUN_141721cd0(CInPacket& packet)
     }
     else if (nMode == 2)
     {
-        __int64 nMailId = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        __int64 nValue = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        __int64 nMailId = packet.ReadInt64();
+        __int64 nValue = packet.ReadInt64();
         DAT_143ab2ee0.FUN_1408e3540(nMailId, nValue);
         if (FUN_1403ed2b0()->FUN_141adc940(0x4e49) == 0)
         {
@@ -11756,16 +11756,16 @@ void CSceneStateGame::FUN_141721cd0(CInPacket& packet)
     }
     else if (nMode == 3)
     {
-        __int64 nMailId = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        __int64 nMailId = packet.ReadInt64();
         FUN_141275260(0x229, 1, 1);
         DAT_143ab2ee0.FUN_1408e3b70(nMailId, 1, 0);
     }
     else if (nMode == 0xa)
     {
-        __int64 nMailId = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        int bSlot = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        int nSlot = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        __int64 nTime = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        __int64 nMailId = packet.ReadInt64();
+        int bSlot = packet.ReadUInt8();
+        int nSlot = packet.ReadUInt8();
+        __int64 nTime = packet.ReadInt64();
         CUserMail::MailPtr spMail = DAT_143ab2ee0.FUN_1408e3720(nMailId);
         if (spMail == 0)
             return;
@@ -11778,8 +11778,8 @@ void CSceneStateGame::FUN_141721cd0(CInPacket& packet)
     }
     else if (nMode == 0xb)
     {
-        __int64 nMailId = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        __int64 nTime = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        __int64 nMailId = packet.ReadInt64();
+        __int64 nTime = packet.ReadInt64();
         CUserMail::MailPtr spMail = DAT_143ab2ee0.FUN_1408e3720(nMailId);
         if (spMail == 0)
             return;
@@ -11797,8 +11797,8 @@ void CSceneStateGame::FUN_141721cd0(CInPacket& packet)
     }
     else if (nMode == 0xc)
     {
-        __int64 nMailId = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        __int64 nTime = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        __int64 nMailId = packet.ReadInt64();
+        __int64 nTime = packet.ReadInt64();
         CUserMail::MailPtr spMail = DAT_143ab2ee0.FUN_1408e3720(nMailId);
         if (spMail == 0)
             return;
@@ -11811,7 +11811,7 @@ void CSceneStateGame::FUN_141721cd0(CInPacket& packet)
     }
     else if (nMode == 0xd)
     {
-        __int64 nMailId = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        __int64 nMailId = packet.ReadInt64();
         DAT_143ab2ee0.FUN_1408e3b70(nMailId, 1, 0x41);
         if (FUN_1403ed2b0()->FUN_141adc940(0x4e49) == 0)
             DAT_143af37b4 = 1;
@@ -11876,8 +11876,8 @@ void CSceneStateGame::FUN_141721cd0(CInPacket& packet)
     }
     else if (nMode == 0x14)
     {
-        int nType = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        int nError = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nType = packet.ReadUInt8();
+        int nError = packet.ReadUInt8();
         CString strUnused;
         switch (nError)
         {
@@ -12156,24 +12156,24 @@ Unk_Int3 FUN_1408a1430(efd::Point3 kPos);                   // the cube cell of 
 // @0x141729250
 void CSceneStateGame::OnLiftable(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 0:
     {
-        int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nCount = packet.ReadInt32();
         efd::set<CString> names;
         for (int i = 0; i < nCount; i++)
         {
-            CString strName = static_cast<CInputStream&>(packet).vfunc_o8_7();
-            bool bEnable = static_cast<CInputStream&>(packet).vfunc_o8_1() == 0 ? false : true;
-            int nState = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            int nKind = static_cast<CInputStream&>(packet).vfunc_o8_1();
-            CString strA = static_cast<CInputStream&>(packet).vfunc_o8_6();
-            CString strB = static_cast<CInputStream&>(packet).vfunc_o8_6();
-            CString strC = static_cast<CInputStream&>(packet).vfunc_o8_6();
-            CString strD = static_cast<CInputStream&>(packet).vfunc_o8_6();
-            bool bFlag = static_cast<CInputStream&>(packet).vfunc_o8_0();
+            CString strName = packet.ReadString();
+            bool bEnable = packet.ReadUInt8() == 0 ? false : true;
+            int nState = packet.ReadInt32();
+            int nKind = packet.ReadUInt8();
+            CString strA = packet.ReadUnicodeStringA();
+            CString strB = packet.ReadUnicodeStringA();
+            CString strC = packet.ReadUnicodeStringA();
+            CString strD = packet.ReadUnicodeStringA();
+            bool bFlag = packet.ReadBool();
             names.insert(strName);
             MS2Ptr<Unk_SSGNamedObj> spObj = FUN_1403ed2d0()->FUN_141bc5a20(strName);
             if (spObj.get() != 0)
@@ -12211,10 +12211,10 @@ void CSceneStateGame::OnLiftable(CInPacket& packet)
         break;
     case 2:
     {
-        CString strName = static_cast<CInputStream&>(packet).vfunc_o8_7();
-        bool bEnable = static_cast<CInputStream&>(packet).vfunc_o8_1() == 0 ? false : true;
-        int nState = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nKind = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        CString strName = packet.ReadString();
+        bool bEnable = packet.ReadUInt8() == 0 ? false : true;
+        int nState = packet.ReadInt32();
+        int nKind = packet.ReadUInt8();
         MS2Ptr<Unk_SSGNamedObj> spObj = FUN_1403ed2d0()->FUN_141bc5a20(strName);
         if (spObj.get() != 0)
         {
@@ -12229,7 +12229,7 @@ void CSceneStateGame::OnLiftable(CInPacket& packet)
         break;
     case 4:
     {
-        CString strName = static_cast<CInputStream&>(packet).vfunc_o8_7();
+        CString strName = packet.ReadString();
         FUN_1403ed2d0()->FUN_141bc5830(strName);
     }
         break;
@@ -12249,10 +12249,10 @@ MS2Ptr<Unk_RideeData> FUN_1407844b0(int nRideeId);             // the ridee tabl
 // @0x14172a8f0
 void CSceneStateGame::OnResponseRide(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 0)
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nId = packet.ReadInt32();
         MS2Ptr<RideOnAction> spAction = FUN_14077deb0(&static_cast<CInputStream&>(packet));
         PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1200(nId);
         if (pActor == 0)
@@ -12261,7 +12261,7 @@ void CSceneStateGame::OnResponseRide(CInPacket& packet)
     }
     else if (nMode == 1)
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nId = packet.ReadInt32();
         PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1200(nId);
         if (pActor == 0)
             return;
@@ -12270,15 +12270,15 @@ void CSceneStateGame::OnResponseRide(CInPacket& packet)
     }
     else if (nMode == 2)
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nId = packet.ReadInt32();
         PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1200(nId);
         if (pActor == 0)
             return;
         pActor->vfunc_121(MS2Ptr<RideOffAction>(0));
         if (pActor->GetClassID() == 0x6200004)
         {
-            int nRideeId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+            int nRideeId = packet.ReadInt32();
+            __int64 nItemUid = packet.ReadInt64();
             MS2Ptr<Unk_RideeData> spData = FUN_1407844b0(nRideeId);
             if (spData.get() != 0)
                 pActor->vfunc_59(0x26, new StateSummonData(reinterpret_cast<void*>(nItemUid), 0), 0, 0);
@@ -12286,9 +12286,9 @@ void CSceneStateGame::OnResponseRide(CInPacket& packet)
     }
     else if (nMode == 3)
     {
-        int nOwnerId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nRiderId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nSeat = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nOwnerId = packet.ReadInt32();
+        int nRiderId = packet.ReadInt32();
+        int nSeat = packet.ReadUInt8();
         CString strNode("");
         PC* pOwner = FUN_1403ed2d0()->FUN_141bd1290(nOwnerId);
         if (pOwner == 0)
@@ -12312,8 +12312,8 @@ void CSceneStateGame::OnResponseRide(CInPacket& packet)
     }
     else if (nMode == 4)
     {
-        int nOwnerId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        int nRiderId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nOwnerId = packet.ReadInt32();
+        int nRiderId = packet.ReadInt32();
         PC* pOwner = FUN_1403ed2d0()->FUN_141bd1290(nOwnerId);
         if (pOwner == 0)
             return;
@@ -12324,7 +12324,7 @@ void CSceneStateGame::OnResponseRide(CInPacket& packet)
     }
     else if (nMode == 5)
     {
-        int nOwnerId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nOwnerId = packet.ReadInt32();
         PC* pOwner = FUN_1403ed2d0()->FUN_141bd1290(nOwnerId);
         if (pOwner == 0)
             return;
@@ -12335,8 +12335,8 @@ void CSceneStateGame::OnResponseRide(CInPacket& packet)
     }
     else if (nMode == 6)
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        bool bFlag = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        int nId = packet.ReadInt32();
+        bool bFlag = packet.ReadUInt8();
         PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
         if (pPC == 0)
             return;
@@ -12352,7 +12352,7 @@ MS2_REPLACE_METHOD(0x14172A8F0, CSceneStateGame, OnResponseRide, 2640, 0x4B945AD
 // @0x14172b350
 void CSceneStateGame::FUN_14172b350(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 4)
         return;
     if (nMode == 5)
@@ -12360,21 +12360,21 @@ void CSceneStateGame::FUN_14172b350(CInPacket& packet)
     if (nMode == 0)
     {
         MS2Ptr<FittingDollData> spDoll(new FittingDollData());
-        spDoll->kind = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        spDoll->instanceId = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        spDoll->field28 = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        reinterpret_cast<Unk_StreamPoint&>(spDoll->position) = static_cast<CInputStream&>(packet).vfunc_o8_10();
-        reinterpret_cast<Unk_StreamPoint&>(spDoll->rotation) = static_cast<CInputStream&>(packet).vfunc_o8_10();
-        spDoll->field44 = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        spDoll->kind = packet.ReadInt32();
+        spDoll->instanceId = packet.ReadInt64();
+        spDoll->field28 = packet.ReadInt32();
+        reinterpret_cast<Unk_StreamPoint&>(spDoll->position) = packet.ReadVector3();
+        reinterpret_cast<Unk_StreamPoint&>(spDoll->rotation) = packet.ReadVector3();
+        spDoll->field44 = packet.ReadUInt8();
         if (spDoll->field44 != 0)
         {
-            spDoll->field48 = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            spDoll->field48 = packet.ReadInt32();
             for (unsigned __int64 i = 0; i < static_cast<unsigned int>(spDoll->field48); i++)
             {
-                int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-                __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-                int nSlot = static_cast<CInputStream&>(packet).vfunc_o8_1();
-                int nRarity = static_cast<CInputStream&>(packet).vfunc_o8_3();
+                int nItemId = packet.ReadInt32();
+                __int64 nItemUid = packet.ReadInt64();
+                int nSlot = packet.ReadUInt8();
+                int nRarity = packet.ReadInt32();
                 MS2Ptr<CItem> spItem(new CItem());
                 if (!spItem->FUN_140523c40(nItemId, nRarity, 0))
                     return;
@@ -12390,16 +12390,16 @@ void CSceneStateGame::FUN_14172b350(CInPacket& packet)
     }
     else if (nMode == 1)
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nId = packet.ReadInt32();
         FUN_1403ed2d0()->FUN_141bbbcf0(nId, 0);
     }
     else if (nMode == 6)
     {
-        __int64 nOwnerUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        int nSlot = static_cast<CInputStream&>(packet).vfunc_o8_1();
-        int nRarity = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        __int64 nOwnerUid = packet.ReadInt64();
+        int nItemId = packet.ReadInt32();
+        __int64 nItemUid = packet.ReadInt64();
+        int nSlot = packet.ReadUInt8();
+        int nRarity = packet.ReadInt32();
         MS2Ptr<CItem> spItem(new CItem());
         if (!spItem->FUN_140523c40(nItemId, nRarity, 0))
             return;
@@ -12416,8 +12416,8 @@ void CSceneStateGame::FUN_14172b350(CInPacket& packet)
     }
     else if (nMode == 7)
     {
-        __int64 nOwnerUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        int nSlot = static_cast<CInputStream&>(packet).vfunc_o8_1();
+        __int64 nOwnerUid = packet.ReadInt64();
+        int nSlot = packet.ReadUInt8();
         FittingDollPC* pDoll = FUN_140884db0(FUN_1403ed2d0()->FUN_141bd1530(nOwnerUid));
         if (pDoll != 0)
         {
@@ -12435,9 +12435,9 @@ void CSceneStateGame::FUN_14172b350(CInPacket& packet)
     {
         if (FUN_140166410()->FUN_14036d570(0xd4))
         {
-            __int64 nOwnerUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+            __int64 nOwnerUid = packet.ReadInt64();
             bool bPose = true;
-            int nResult = static_cast<CInputStream&>(packet).vfunc_o8_3();
+            int nResult = packet.ReadInt32();
             switch (nResult)
             {
             case 0x17:
@@ -12470,7 +12470,7 @@ void CSceneStateGame::FUN_14172b350(CInPacket& packet)
     }
     else if (nMode == 0xb)
     {
-        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nId = packet.ReadInt32();
         FUN_14121b840(nId);
     }
 }
@@ -12479,21 +12479,21 @@ MS2_REPLACE_METHOD(0x14172B350, CSceneStateGame, FUN_14172b350, 3596, 0x220A03F9
 // @0x14172c170
 void CSceneStateGame::FUN_14172c170(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     if (nMode == 0)
     {
-        int nType = static_cast<unsigned short>(static_cast<CInputStream&>(packet).vfunc_o8_2());
-        int nGuideId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        __int64 nOwnerUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-        Unk_StreamPoint ptPos = static_cast<CInputStream&>(packet).vfunc_o8_10();
-        Unk_StreamPoint ptDir = static_cast<CInputStream&>(packet).vfunc_o8_10();
+        int nType = static_cast<unsigned short>(packet.ReadInt16());
+        int nGuideId = packet.ReadInt32();
+        __int64 nOwnerUid = packet.ReadInt64();
+        Unk_StreamPoint ptPos = packet.ReadVector3();
+        Unk_StreamPoint ptDir = packet.ReadVector3();
         PCBase* pOwner = FUN_1403ed2d0()->FUN_141bd1530(nOwnerUid);
         if (pOwner == 0)
             return;
         efd::SmartPointer<CGuideObject> spGuide(0);
         if (nType == 0)
         {
-            int nItemId = static_cast<int>(static_cast<CInputStream&>(packet).vfunc_o8_4());
+            int nItemId = static_cast<int>(packet.ReadInt64());
             efd::SmartPointer<CConstructionGuideObject> spBuild = EE_NEW CConstructionGuideObject;
             if (spBuild->FUN_1410a1ee0(nGuideId, reinterpret_cast<efd::Point3&>(ptPos), reinterpret_cast<efd::Point3&>(ptDir), pOwner, nItemId) == 0)
                 return;
@@ -12511,16 +12511,16 @@ void CSceneStateGame::FUN_14172c170(CInPacket& packet)
             int nTimeMode = FUN_1403ed2d0()->FUN_141bd1a10(pOwner);
             int nStartTick = Unk_ServerClock::GetInstance()->FUN_1414732f0(nTimeMode);
             MS2Ptr<Unk_SkillMagicInfo> spInfo(new Unk_SkillMagicInfo);
-            spInfo->m_nTagId = static_cast<CInputStream&>(packet).vfunc_o8_4();
-            spInfo->m_nSkillId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-            spInfo->m_nLevel = static_cast<CInputStream&>(packet).vfunc_o8_2();
-            spInfo->m_nSrcLevel = static_cast<CInputStream&>(packet).vfunc_o8_1();
-            spInfo->m_nSrcIndex = static_cast<CInputStream&>(packet).vfunc_o8_1();
-            unsigned char nCount = static_cast<CInputStream&>(packet).vfunc_o8_1();
+            spInfo->m_nTagId = packet.ReadInt64();
+            spInfo->m_nSkillId = packet.ReadInt32();
+            spInfo->m_nLevel = packet.ReadInt16();
+            spInfo->m_nSrcLevel = packet.ReadUInt8();
+            spInfo->m_nSrcIndex = packet.ReadUInt8();
+            unsigned char nCount = packet.ReadUInt8();
             for (unsigned char i = 0; i < nCount; i++)
             {
-                __int64 nTagSub = static_cast<CInputStream&>(packet).vfunc_o8_4();
-                unsigned char n84 = static_cast<CInputStream&>(packet).vfunc_o8_1();
+                __int64 nTagSub = packet.ReadInt64();
+                unsigned char n84 = packet.ReadUInt8();
                 Unk_MagicTagPtr spTag(new Unk_MagicTag);
                 if (spTag->FUN_141758d70(spInfo->m_nTagId, nTagSub, pOwner->FUN_14123c580(), 0, spInfo->m_nSkillId,
                         spInfo->m_nLevel, spInfo->m_nSrcLevel, ptDir, 0, n84, spInfo->m_nSrcIndex, 0))
@@ -12542,8 +12542,8 @@ void CSceneStateGame::FUN_14172c170(CInPacket& packet)
     }
     else if (nMode == 1)
     {
-        int nGuideId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        __int64 nOwnerUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        int nGuideId = packet.ReadInt32();
+        __int64 nOwnerUid = packet.ReadInt64();
         PCBase* pOwner = FUN_1403ed2d0()->FUN_141bd1530(nOwnerUid);
         if (pOwner == 0)
             return;
@@ -12564,7 +12564,7 @@ void CSceneStateGame::FUN_14172c170(CInPacket& packet)
     }
     else if (nMode == 2)
     {
-        int nGuideId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        int nGuideId = packet.ReadInt32();
         GameObject* pObj = FUN_1403ed2d0()->FUN_141bd1180(nGuideId);
         if (pObj == 0)
             return;
@@ -12575,8 +12575,8 @@ void CSceneStateGame::FUN_14172c170(CInPacket& packet)
     }
     else if (nMode == 3)
     {
-        int nGuideId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-        __int64 nOwnerUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+        int nGuideId = packet.ReadInt32();
+        __int64 nOwnerUid = packet.ReadInt64();
         PCBase* pOwner = FUN_1403ed2d0()->FUN_141bd1530(nOwnerUid);
         if (pOwner == 0)
             return;

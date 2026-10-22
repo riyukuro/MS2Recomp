@@ -215,15 +215,15 @@ void CGloabalFactor::FUN_1404c18c0(CInPacket& packet)
     CheckInit();
     for (size_t i = 0; i < 3; ++i)
     {
-        int nKind = packet.vfunc_o8_1();
+        int nKind = packet.ReadUInt8();
         for (int j = 1; j <= 99; ++j)
-            m_fExpRate[nKind][j] = packet.vfunc_o8_5();
+            m_fExpRate[nKind][j] = packet.ReadFloat();
     }
     for (size_t i = 0; i < 3; ++i)
     {
-        int nKind = packet.vfunc_o8_1();
+        int nKind = packet.ReadUInt8();
         for (int j = 1; j <= 99; ++j)
-            m_fMesoRate[nKind][j] = packet.vfunc_o8_5();
+            m_fMesoRate[nKind][j] = packet.ReadFloat();
     }
 }
 
@@ -243,17 +243,17 @@ MS2_CHECK_SIZE(Unk_GFRecord, 0x18);
 // @0x1404c5b70
 void Unk_GFRecord::FUN_1404c5b70(COutputStream* pOut)
 {
-    pOut->vfunc_o10_4(m_n0);
-    pOut->vfunc_o10_4(m_n1);
-    pOut->vfunc_o10_8(m_str);
+    pOut->WriteInt64(m_n0);
+    pOut->WriteInt64(m_n1);
+    pOut->WriteUnicodeString(m_str);
 }
 
 // @0x1404c5be0
 void Unk_GFRecord::FUN_1404c5be0(CInputStream* pIn)
 {
-    m_n0 = pIn->vfunc_o8_4();
-    m_n1 = pIn->vfunc_o8_4();
-    m_str = pIn->vfunc_o8_8();
+    m_n0 = pIn->ReadInt64();
+    m_n1 = pIn->ReadInt64();
+    m_str = pIn->ReadUnicodeString();
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

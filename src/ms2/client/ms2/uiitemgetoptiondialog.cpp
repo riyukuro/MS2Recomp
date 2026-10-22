@@ -390,7 +390,7 @@ void UIItemGetOptionDialog::FUN_1419dabc0()
         if (FUN_14036d570(FUN_140166410(), 0x8c))
             data.m_nPet = m_opt.FUN_1419daec0();
         COutPacket packet(static_cast<int>(SendOp::RequestPet), 0);
-        packet.vfunc_o10_1(6);
+        packet.WriteUInt8(6);
         FUN_1401ff810(&data, &packet);
         FUN_140710590(packet);
     }

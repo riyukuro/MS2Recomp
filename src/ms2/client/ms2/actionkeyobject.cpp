@@ -1405,7 +1405,7 @@ void LiftCubeAction::vfunc_2()
     pLift->FUN_141447d50(0);
     COutPacket packet(static_cast<int>(SendOp::Liftable));
     packet.Encode1(1);
-    packet.COutPacket::vfunc_o10_7(pLift->FUN_1414472a0());
+    packet.COutPacket::WriteString(pLift->FUN_1414472a0());
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x140957550, LiftCubeAction, vfunc_2, 452, 0x3B43636C);

@@ -162,12 +162,12 @@ void CClientPlatformTencent::vfunc_38(void*) {}
 // "show" flag, the new balance and the change
 void CClientPlatformTencent::vfunc_42(void* a1)
 {
-    int nType = static_cast<CInPacket*>(a1)->vfunc_o8_1();
+    int nType = static_cast<CInPacket*>(a1)->ReadUInt8();
     switch (nType) {
     case 0: {
-        DAT_143ab2947 = static_cast<CInPacket*>(a1)->vfunc_o8_1() == 1;
-        __int64 nBalance = static_cast<CInPacket*>(a1)->vfunc_o8_4();
-        __int64 nDelta = static_cast<CInPacket*>(a1)->vfunc_o8_4();
+        DAT_143ab2947 = static_cast<CInPacket*>(a1)->ReadUInt8() == 1;
+        __int64 nBalance = static_cast<CInPacket*>(a1)->ReadInt64();
+        __int64 nDelta = static_cast<CInPacket*>(a1)->ReadInt64();
         FUN_1409304d0(nBalance, 0, 0, 0);
         FUN_141b0ce20(FUN_140aa6d40(), 0xb, 0);
         if (nDelta > 0) {
@@ -187,9 +187,9 @@ void CClientPlatformTencent::vfunc_42(void* a1)
         break;
     }
     case 1: {
-        DAT_143ab2966 = static_cast<CInPacket*>(a1)->vfunc_o8_1() == 1;
-        __int64 nBalance = static_cast<CInPacket*>(a1)->vfunc_o8_4();
-        __int64 nDelta = static_cast<CInPacket*>(a1)->vfunc_o8_4();
+        DAT_143ab2966 = static_cast<CInPacket*>(a1)->ReadUInt8() == 1;
+        __int64 nBalance = static_cast<CInPacket*>(a1)->ReadInt64();
+        __int64 nDelta = static_cast<CInPacket*>(a1)->ReadInt64();
         FUN_140930af0(nBalance);
         FUN_141b0ce20(FUN_140aa6d40(), 0xd, 0);
         if (nDelta > 0) {
@@ -209,18 +209,18 @@ void CClientPlatformTencent::vfunc_42(void* a1)
         break;
     }
     case 2:
-        DAT_143ab2947 = static_cast<CInPacket*>(a1)->vfunc_o8_1() == 1;
-        FUN_1409304d0(static_cast<CInPacket*>(a1)->vfunc_o8_4(), 0, 0, 0);
+        DAT_143ab2947 = static_cast<CInPacket*>(a1)->ReadUInt8() == 1;
+        FUN_1409304d0(static_cast<CInPacket*>(a1)->ReadInt64(), 0, 0, 0);
         FUN_141b0ce20(FUN_140aa6d40(), 0xb, 0);
-        DAT_143ab2966 = static_cast<CInPacket*>(a1)->vfunc_o8_1() == 1;
-        FUN_140930af0(static_cast<CInPacket*>(a1)->vfunc_o8_4());
+        DAT_143ab2966 = static_cast<CInPacket*>(a1)->ReadUInt8() == 1;
+        FUN_140930af0(static_cast<CInPacket*>(a1)->ReadInt64());
         FUN_141b0ce20(FUN_140aa6d40(), 0xd, 0);
         break;
     case 4:
         FUN_140d86260()->vfunc_45();
         break;
     case 5:
-        FUN_141adc5d0(FUN_1403ed2b0(), static_cast<CInPacket*>(a1)->vfunc_o8_3());
+        FUN_141adc5d0(FUN_1403ed2b0(), static_cast<CInPacket*>(a1)->ReadInt32());
         break;
     default:
         MS2_ASSERT_AT(500, 0);
@@ -367,8 +367,8 @@ void CClientPlatformTencent::vfunc_73(int) {}
 bool FUN_140c7e3d0(CClientPlatformTencent*, unsigned char nKind, bool bOn, int nParam)
 {
     COutPacket packet(static_cast<int>(SendOp::NexonArena), 0);
-    packet.vfunc_o10_1(nKind);
-    packet.vfunc_o10_0(bOn);
+    packet.WriteUInt8(nKind);
+    packet.WriteBool(bOn);
     return FUN_1407105c0(packet, nKind, nParam);
 }
 

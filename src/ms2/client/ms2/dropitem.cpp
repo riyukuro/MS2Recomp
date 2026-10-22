@@ -1010,7 +1010,7 @@ void CDropItem::SendRequestItemPickup(int nPickerId)
     FUN_141191030();
     COutPacket kPacket(static_cast<int>(SendOp::RequestItemPickup), 0);
     kPacket.Encode4(FUN_14123c580());
-    kPacket.COutPacket::vfunc_o10_0(nPickerId != 0);
+    kPacket.COutPacket::WriteBool(nPickerId != 0);
     if (nPickerId != 0)
         kPacket.Encode4(nPickerId);
     FUN_140710590(kPacket);

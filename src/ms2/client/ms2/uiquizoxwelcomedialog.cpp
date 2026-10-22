@@ -97,8 +97,8 @@ MS2_REPLACE_METHOD(0x140E7F1C0, UIQuizOXWelcomeDialog, vfunc_28, 105, 0xAC452B05
 void FUN_140e7f230(UIQuizOXWelcomeDialog* pDialog)
 {
     COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
-    packet.vfunc_o10_1(10);
-    packet.vfunc_o10_1(7);
+    packet.WriteUInt8(10);
+    packet.WriteUInt8(7);
     FUN_140710590(packet);
 }
 MS2_REPLACE(0x140e7f230, FUN_140e7f230, 87, 0xE6DE65FD);

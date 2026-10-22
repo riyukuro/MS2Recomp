@@ -299,7 +299,7 @@ CStringW CMentoringManager::FUN_140b718b0()
 // MS2-FUNCTIONAL: jump-table data and relocs differ only
 void CMentoringManager::OnPacket(CInPacket& packet)
 {
-    int nProtocol = packet.vfunc_o8_1();
+    int nProtocol = packet.ReadUInt8();
     switch (nProtocol)
     {
     case 1:

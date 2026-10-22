@@ -75,24 +75,24 @@ void UnlimitedEnchantInfo::FUN_1408bbcb0(int nLevel, bool bChanged)
 // @0x1408bbd30
 void UnlimitedEnchantInfo::FUN_1408bbd30(COutputStream& out)
 {
-    out.vfunc_o10_3(m_nLevel);
+    out.WriteInt32(m_nLevel);
     // (the exe walks the maps through const_iterators: FUN_1408bbd30 is a const method in the original)
     unsigned nOptions = static_cast<const OptionMap&>(m_options).size();
-    out.vfunc_o10_3(nOptions);
+    out.WriteInt32(nOptions);
     OptionMap::const_iterator it = static_cast<const OptionMap&>(m_options).begin();
     OptionMap::const_iterator itEnd = static_cast<const OptionMap&>(m_options).end();
     for (; it != itEnd; ++it)
     {
-        out.vfunc_o10_2(static_cast<short>(it->first));
+        out.WriteInt16(static_cast<short>(it->first));
         it->second->FUN_140266d20(reinterpret_cast<Unk_EnchantWrite&>(out));
     }
     unsigned nSecondary = static_cast<const SecondaryMap&>(m_secondary).size();
-    out.vfunc_o10_3(nSecondary);
+    out.WriteInt32(nSecondary);
     SecondaryMap::const_iterator it2 = static_cast<const SecondaryMap&>(m_secondary).begin();
     SecondaryMap::const_iterator it2End = static_cast<const SecondaryMap&>(m_secondary).end();
     for (; it2 != it2End; ++it2)
     {
-        out.vfunc_o10_2(static_cast<short>(it2->first));
+        out.WriteInt16(static_cast<short>(it2->first));
         it2->second->FUN_140266d20(reinterpret_cast<Unk_EnchantWrite&>(out));
     }
 }
@@ -100,21 +100,21 @@ void UnlimitedEnchantInfo::FUN_1408bbd30(COutputStream& out)
 // @0x1408bbef0
 void UnlimitedEnchantInfo::FUN_1408bbef0(CInputStream& in)
 {
-    m_nLevel = in.vfunc_o8_3();
+    m_nLevel = in.ReadInt32();
     m_options.clear();
-    unsigned nCount = in.vfunc_o8_3();
+    unsigned nCount = in.ReadInt32();
     for (unsigned i = 0; i < nCount; i++)
     {
-        OptionKey key = static_cast<OptionKey>(static_cast<unsigned short>(in.vfunc_o8_2()));
+        OptionKey key = static_cast<OptionKey>(static_cast<unsigned short>(in.ReadInt16()));
         Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
         spOption->FUN_140266d60(reinterpret_cast<Unk_EnchantRead&>(in));
         m_options.insert(std::pair<OptionKey, Unk_EnchantPtr<BaseOption> >(key, spOption));
     }
     m_secondary.clear();
-    unsigned nCount2 = in.vfunc_o8_3();
+    unsigned nCount2 = in.ReadInt32();
     for (unsigned i = 0; i < nCount2; i++)
     {
-        Unk_SocketSpecialStat key = static_cast<Unk_SocketSpecialStat>(static_cast<unsigned short>(in.vfunc_o8_2()));
+        Unk_SocketSpecialStat key = static_cast<Unk_SocketSpecialStat>(static_cast<unsigned short>(in.ReadInt16()));
         Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
         spOption->FUN_140266d60(reinterpret_cast<Unk_EnchantRead&>(in));
         m_secondary.insert(std::pair<Unk_SocketSpecialStat, Unk_EnchantPtr<BaseOption> >(key, spOption));

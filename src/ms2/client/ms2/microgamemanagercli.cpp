@@ -126,7 +126,7 @@ Delegate<bool(int, const CMsgBoxData&)> FUN_140b76b10(bool (*pfn)(int, const CMs
 // @0x140b73cc0
 bool FUN_140b73cc0(void* pThis, CInPacket& packet)
 {
-    unsigned int nType = (unsigned short)packet.vfunc_o8_2();
+    unsigned int nType = (unsigned short)packet.ReadInt16();
     bool bHandled = FUN_140b73d60(pThis, nType, packet);
     if (!bHandled)
     {
@@ -163,7 +163,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
         break;
     case 1:
         {
-            __int64 nTargetId = packet.vfunc_o8_4();
+            __int64 nTargetId = packet.ReadInt64();
             PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
             if (pTarget != 0)
             {
@@ -253,7 +253,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
         break;
     case 2:
         {
-            __int64 nTargetId = packet.vfunc_o8_4();
+            __int64 nTargetId = packet.ReadInt64();
             PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
             if (pTarget != 0)
             {
@@ -278,7 +278,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
         break;
     case 3:
         {
-            __int64 nTargetId = packet.vfunc_o8_4();
+            __int64 nTargetId = packet.ReadInt64();
             PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
             if (pTarget != 0)
             {
@@ -321,7 +321,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
         break;
     case 5:
         {
-            __int64 nTargetId = packet.vfunc_o8_4();
+            __int64 nTargetId = packet.ReadInt64();
             PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
             if (pTarget != 0)
             {
@@ -346,8 +346,8 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
         break;
     case 6:
         {
-            __int64 nActorId = packet.vfunc_o8_4();
-            unsigned int nWhy = packet.vfunc_o8_1();
+            __int64 nActorId = packet.ReadInt64();
+            unsigned int nWhy = packet.ReadUInt8();
             CStringW strMessage = FUN_140b887d0(nActorId, nWhy);
             FUN_1412751f0(strMessage, 1, 1);
             if (FUN_140b768a0(s_strRpsWaiting) == 1)
@@ -376,11 +376,11 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
             UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
             if (pNotify != 0)
             {
-                int nCount = packet.vfunc_o8_3();
+                int nCount = packet.ReadInt32();
                 for (int i = 0; i < nCount; i = i + 1)
                 {
-                    int nItemId = packet.vfunc_o8_3();
-                    unsigned int nGrade = (unsigned short)packet.vfunc_o8_2();
+                    int nItemId = packet.ReadInt32();
+                    unsigned int nGrade = (unsigned short)packet.ReadInt16();
                     pNotify->FUN_141abf6e0(nItemId, nGrade);
                 }
             }
@@ -388,9 +388,9 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
         break;
     case 0xb:
         {
-            unsigned int nMode = packet.vfunc_o8_1();
-            unsigned int nCard = packet.vfunc_o8_1();
-            unsigned int nPick = packet.vfunc_o8_1();
+            unsigned int nMode = packet.ReadUInt8();
+            unsigned int nCard = packet.ReadUInt8();
+            unsigned int nPick = packet.ReadUInt8();
             if (pMyPC->FUN_14166c930() == 0x3c)
             {
                 StateMicroGameRps* pState = (StateMicroGameRps*)pMyPC->FUN_14166ccb0();
@@ -407,7 +407,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
         break;
     case 0xc:
         {
-            __int64 nTargetId = packet.vfunc_o8_4();
+            __int64 nTargetId = packet.ReadInt64();
             PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
             if (pTarget != 0)
             {
@@ -448,7 +448,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
         MS2_ASSERT_AT(0x197, 0);
         return false;
     }
-    int nValue = packet.vfunc_o8_3();
+    int nValue = packet.ReadInt32();
     switch (nType)
     {
     case 0xd:
@@ -459,7 +459,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
         break;
     case 0xe:
         {
-            __int64 nTargetId = packet.vfunc_o8_4();
+            __int64 nTargetId = packet.ReadInt64();
             PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
             if (pTarget != 0)
             {
@@ -557,7 +557,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
         break;
     case 0xf:
         {
-            __int64 nTargetId = packet.vfunc_o8_4();
+            __int64 nTargetId = packet.ReadInt64();
             if (FUN_140b768a0(s_strRpsWaiting) == 1)
                 FUN_14151f200();
             PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
@@ -579,7 +579,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
         break;
     case 0x10:
         {
-            __int64 nTargetId = packet.vfunc_o8_4();
+            __int64 nTargetId = packet.ReadInt64();
             PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
             if (pTarget != 0)
             {
@@ -605,7 +605,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
         break;
     case 0x11:
         {
-            __int64 nTargetId = packet.vfunc_o8_4();
+            __int64 nTargetId = packet.ReadInt64();
             PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
             if (pTarget != 0)
             {
@@ -653,7 +653,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                     std::vector<int> aStages;
                     for (int i = 0; i < spEvent->m_nStages; i = i + 1)
                     {
-                        unsigned int nStage = (unsigned short)packet.vfunc_o8_2();
+                        unsigned int nStage = (unsigned short)packet.ReadInt16();
                         aStages.push_back(nStage);
                     }
                     pState->FUN_140b89510(aStages);
@@ -667,7 +667,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
         break;
     case 0x13:
         {
-            __int64 nTargetId = packet.vfunc_o8_4();
+            __int64 nTargetId = packet.ReadInt64();
             MS2Ptr<CMsgBoxData> spBox = FUN_14151f820();
             if (!(spBox == 0))
             {
@@ -695,8 +695,8 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
         break;
     case 0x14:
         {
-            __int64 nActorId = packet.vfunc_o8_4();
-            unsigned int nWhy = packet.vfunc_o8_1();
+            __int64 nActorId = packet.ReadInt64();
+            unsigned int nWhy = packet.ReadUInt8();
             CStringW strMessage = FUN_140b8b0b0(nActorId, nWhy);
             FUN_1412751f0(strMessage, 1, 1);
             if (FUN_140b768a0(s_strCoupleDanceWaiting) == 1)
@@ -722,11 +722,11 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
         return false;
     case 0x16:
         {
-            unsigned int nTime = packet.vfunc_o8_1();
-            char cFlag = packet.vfunc_o8_1();
+            unsigned int nTime = packet.ReadUInt8();
+            char cFlag = packet.ReadUInt8();
             unsigned int bFlag = cFlag != 0;
-            unsigned int nA = (unsigned short)packet.vfunc_o8_2();
-            unsigned int nB = (unsigned short)packet.vfunc_o8_2();
+            unsigned int nA = (unsigned short)packet.ReadInt16();
+            unsigned int nB = (unsigned short)packet.ReadInt16();
             if (pMyPC->FUN_14166c930() == 0x45)
             {
                 StateMicroGameCoupleDance* pState = dynamic_cast<StateMicroGameCoupleDance*>(pMyPC->FUN_14166ccb0());

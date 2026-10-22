@@ -189,9 +189,9 @@ void UIBlackMarketDialog::vfunc_79(void* p)
     CInPacket* pIn = static_cast<CInPacket*>(p);
     if (pIn->FUN_14070fe80() == 0x98)
     {
-        char c = pIn->vfunc_o8_1();
+        char c = pIn->ReadUInt8();
         if (c == 0)
-            c = pIn->vfunc_o8_1();
+            c = pIn->ReadUInt8();
         if (m_spItemRegister.get())
             m_spItemRegister->FUN_140f133b0(c);
         if (m_spItemSearch.get())

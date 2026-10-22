@@ -85,12 +85,12 @@ MS2_REPLACE_METHOD(0x140FB54F0, UIUGCPVPControlDialog, OnLoadComplete, 331, 0xB3
 void FUN_140fb5650(UIUGCPVPControlDialog* pDialog, CInPacket* pPacket)
 {
     pDialog->FUN_141924680();
-    pDialog->m_b178 = pPacket->vfunc_o8_1();
-    pDialog->m_b179 = pPacket->vfunc_o8_1();
-    pDialog->m_b17a = pPacket->vfunc_o8_1();
-    pDialog->m_b17b = pPacket->vfunc_o8_1();
-    pDialog->m_b17c = pPacket->vfunc_o8_1();
-    pDialog->m_b17d = pPacket->vfunc_o8_1();
+    pDialog->m_b178 = pPacket->ReadUInt8();
+    pDialog->m_b179 = pPacket->ReadUInt8();
+    pDialog->m_b17a = pPacket->ReadUInt8();
+    pDialog->m_b17b = pPacket->ReadUInt8();
+    pDialog->m_b17c = pPacket->ReadUInt8();
+    pDialog->m_b17d = pPacket->ReadUInt8();
 }
 MS2_REPLACE(0x140FB5650, FUN_140fb5650, 299, 0x336A81DA);
 
@@ -108,14 +108,14 @@ int UIUGCPVPControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             int b4 = FUN_1409c1750(pArgs[4]);
             int b5 = FUN_1409c1750(pArgs[5]);
             COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
-            packet.vfunc_o10_1(0xe);
-            packet.vfunc_o10_1(1);
-            packet.vfunc_o10_1(b0);
-            packet.vfunc_o10_1(b1);
-            packet.vfunc_o10_1(b2);
-            packet.vfunc_o10_1(b3);
-            packet.vfunc_o10_1(b4);
-            packet.vfunc_o10_1(b5);
+            packet.WriteUInt8(0xe);
+            packet.WriteUInt8(1);
+            packet.WriteUInt8(b0);
+            packet.WriteUInt8(b1);
+            packet.WriteUInt8(b2);
+            packet.WriteUInt8(b3);
+            packet.WriteUInt8(b4);
+            packet.WriteUInt8(b5);
             FUN_140710590(packet);
         }
         vfunc_67();

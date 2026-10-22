@@ -100,7 +100,7 @@ void FUN_140a84960(void* pManager, CInPacket& packet)
 {
     COnlinePatchManagerCli* self = static_cast<COnlinePatchManagerCli*>(pManager);
     CInputStream& stream = packet;
-    unsigned char type = stream.vfunc_o8_1();
+    unsigned char type = stream.ReadUInt8();
     if (type == 1) {
         self->DeletePatchFiles("./DataPatch/");
         FUN_140714f90()->FUN_141538cb0();
@@ -113,12 +113,12 @@ void FUN_140a84960(void* pManager, CInPacket& packet)
         self->CreatePatchDirectory("./DataPatch/");
         self->m_contexts.clear();
         self->m_files.clear();
-        int nCount = stream.vfunc_o8_3();
+        int nCount = stream.ReadInt32();
         for (int i = 0; i < nCount; i = i + 1) {
             MS2Ptr<COnlinePatchFileContext> spFile(new COnlinePatchFileContext);
-            spFile->m_strPath = stream.vfunc_o8_6();
-            spFile->m_nSize = stream.vfunc_o8_4();
-            spFile->m_strDigest = stream.vfunc_o8_7();
+            spFile->m_strPath = stream.ReadUnicodeStringA();
+            spFile->m_nSize = stream.ReadInt64();
+            spFile->m_strDigest = stream.ReadString();
             spFile->m_pData = new char[spFile->m_nSize];
             self->m_contexts.insert(std::make_pair(spFile->m_strPath, spFile));
             self->m_files.push_back(spFile->m_strPath);
@@ -127,13 +127,13 @@ void FUN_140a84960(void* pManager, CInPacket& packet)
             FUN_140714f90()->FUN_141538cb0();
         }
     } else if (type == 5) {
-        CString strPath = stream.vfunc_o8_6();
-        __int64 nOffset = stream.vfunc_o8_4();
-        int nSize = stream.vfunc_o8_3();
-        unsigned char bLast = stream.vfunc_o8_1();
+        CString strPath = stream.ReadUnicodeStringA();
+        __int64 nOffset = stream.ReadInt64();
+        int nSize = stream.ReadInt32();
+        unsigned char bLast = stream.ReadUInt8();
         MS2Ptr<COnlinePatchFileContext> spFile = self->FindFile(strPath);
         if (spFile.get() != 0) {
-            stream.vfunc_o8_9(spFile->m_pData + nOffset, nSize);
+            stream.ReadBytes(spFile->m_pData + nOffset, nSize);
             spFile->m_nReceived += nSize;
             unsigned __int64 nEnd = nOffset + nSize;
             if (nEnd < spFile->m_nSize && bLast != 1) {
@@ -229,7 +229,7 @@ int COnlinePatchManagerCli::RequestFile(COnlinePatchFileContext* pFile)
     }
     COutPacket packet(static_cast<int>(SendOp::Patch), 0);
     packet.Encode1(4);
-    packet.vfunc_o10_6(pFile->m_strPath);
+    packet.WriteUnicodeStringA(pFile->m_strPath);
     packet.Encode8(pFile->m_nReceived);
     FUN_140710590(packet);
     return 1;

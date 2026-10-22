@@ -344,14 +344,14 @@ Unk_DungeonCooldownType FUN_1402199e0(const CStringA& name);
 // Count-prefixed vector streaming.
 template <class T> COutputStream& operator<<(COutputStream& out, const std::vector<T>& vec)
 {
-    out.vfunc_o10_3(vec.size());
+    out.WriteInt32(vec.size());
     for (typename std::vector<T>::const_iterator it = vec.begin(); it != vec.end(); it++)
         FUN_14070f9a0(out, *it);
     return out;
 }
 template <class T> CInputStream& operator>>(CInputStream& in, std::vector<T>& vec)
 {
-    unsigned count = in.vfunc_o8_3();
+    unsigned count = in.ReadInt32();
     vec.reserve(count);
     for (unsigned i = 0; i < count; i++) {
         T value;
@@ -624,29 +624,29 @@ void EventTimeLimitDungeonContext::Read(CInputStream& in)
 {
     FUN_14070f480(in, m_eventId);
     FUN_14070f480(in, m_dungeonId);
-    m_rangeTime.m_start.SetSeconds(in.vfunc_o8_3());
-    m_rangeTime.m_end.SetSeconds(in.vfunc_o8_3());
+    m_rangeTime.m_start.SetSeconds(in.ReadInt32());
+    m_rangeTime.m_end.SetSeconds(in.ReadInt32());
 }
 MS2_REPLACE_METHOD(0x1403fcc00, EventTimeLimitDungeonContext, Read, 127, 0x829B1FA2);
 
 // @0x1403fcc90
 void StampEventContext::Write(COutputStream& out)
 {
-    out.vfunc_o10_8(m_strTitle);
-    out.vfunc_o10_4(m_endTime);
-    out.vfunc_o10_3(m_stamps.GetCount());
-    out.vfunc_o10_3(m_98);
-    out.vfunc_o10_0(m_b9c);
+    out.WriteUnicodeString(m_strTitle);
+    out.WriteInt64(m_endTime);
+    out.WriteInt32(m_stamps.GetCount());
+    out.WriteInt32(m_98);
+    out.WriteBool(m_b9c);
     for (size_t i = 0; i < m_stamps.GetCount(); i++) {
-        out.vfunc_o10_3(m_stamps[i]->m_id);
-        out.vfunc_o10_1(m_stamps[i]->m_bStamped);
-        out.vfunc_o10_3(m_stamps[i]->m_20);
-        out.vfunc_o10_3(m_stamps[i]->m_24);
+        out.WriteInt32(m_stamps[i]->m_id);
+        out.WriteUInt8(m_stamps[i]->m_bStamped);
+        out.WriteInt32(m_stamps[i]->m_20);
+        out.WriteInt32(m_stamps[i]->m_24);
     }
-    out.vfunc_o10_3(m_rewards.GetCount());
+    out.WriteInt32(m_rewards.GetCount());
     for (size_t i = 0; i < m_rewards.GetCount(); i++) {
-        out.vfunc_o10_3(m_rewards[i]->m_count);
-        out.vfunc_o10_1(m_rewards[i]->m_bReceived);
+        out.WriteInt32(m_rewards[i]->m_count);
+        out.WriteUInt8(m_rewards[i]->m_bReceived);
         m_rewards[i]->m_item.FUN_14026b030(reinterpret_cast<Unk_GiftOutput&>(out));
         m_rewards[i]->m_item2.FUN_14026b030(reinterpret_cast<Unk_GiftOutput&>(out));
     }
@@ -657,24 +657,24 @@ MS2_REPLACE_METHOD(0x1403fcc90, StampEventContext, Write, 955, 0xDD356D28);
 // @0x1403fd060
 void StampEventContext::Read(CInPacket& packet)
 {
-    m_strTitle = packet.vfunc_o8_8();
-    m_endTime = packet.vfunc_o8_4();
-    size_t count = (unsigned)packet.vfunc_o8_3();
-    m_98 = packet.vfunc_o8_3();
-    m_b9c = packet.vfunc_o8_0();
+    m_strTitle = packet.ReadUnicodeString();
+    m_endTime = packet.ReadInt64();
+    size_t count = (unsigned)packet.ReadInt32();
+    m_98 = packet.ReadInt32();
+    m_b9c = packet.ReadBool();
     for (size_t i = 0; i < count; i++) {
         MS2Ptr<Stamp> spStamp(new Stamp);
-        spStamp->m_id = packet.vfunc_o8_3();
-        spStamp->m_bStamped = packet.vfunc_o8_1();
-        spStamp->m_20 = packet.vfunc_o8_3();
-        spStamp->m_24 = packet.vfunc_o8_3();
+        spStamp->m_id = packet.ReadInt32();
+        spStamp->m_bStamped = packet.ReadUInt8();
+        spStamp->m_20 = packet.ReadInt32();
+        spStamp->m_24 = packet.ReadInt32();
         m_stamps.Add(spStamp);
     }
-    count = (unsigned)packet.vfunc_o8_3();
+    count = (unsigned)packet.ReadInt32();
     for (size_t i = 0; i < count; i++) {
         MS2Ptr<Reward> spReward(new Reward);
-        spReward->m_count = packet.vfunc_o8_3();
-        spReward->m_bReceived = packet.vfunc_o8_1();
+        spReward->m_count = packet.ReadInt32();
+        spReward->m_bReceived = packet.ReadUInt8();
         spReward->m_item.FUN_14026b100(reinterpret_cast<Unk_GiftInput&>(static_cast<CInputStream&>(packet)));
         spReward->m_item2.FUN_14026b100(reinterpret_cast<Unk_GiftInput&>(static_cast<CInputStream&>(packet)));
         m_rewards.Add(spReward);
@@ -775,7 +775,7 @@ MS2_REPLACE_METHOD(0x1403fda00, DungeonBonusRewardCtx, Write, 136, 0xABDF08DD);
 void DungeonBonusRewardCtx::Read(CInputStream& in)
 {
     FUN_14070f480(in, m_dungeonID);
-    m_groupType = (Unk_DungeonGroupType)in.vfunc_o8_1();
+    m_groupType = (Unk_DungeonGroupType)in.ReadUInt8();
     FUN_14070f540(in, m_mesoRate);
     FUN_14070f540(in, m_expRate);
     FUN_14070f440(in, m_itemRolls);
@@ -844,24 +844,24 @@ MS2_REPLACE_METHOD(0x1403fdde0, ItemBoxEventContext, Load, 164, 0xF3C4745F);
 // @0x1403fde90
 void ItemBoxEventContext::Write(COutputStream& out)
 {
-    out.vfunc_o10_3(m_fieldID);
-    out.vfunc_o10_3(m_boxItemID);
-    out.vfunc_o10_8(m_title);
-    out.vfunc_o10_8(m_desc);
-    out.vfunc_o10_8(m_bannerPath);
-    out.vfunc_o10_3(m_3c);
+    out.WriteInt32(m_fieldID);
+    out.WriteInt32(m_boxItemID);
+    out.WriteUnicodeString(m_title);
+    out.WriteUnicodeString(m_desc);
+    out.WriteUnicodeString(m_bannerPath);
+    out.WriteInt32(m_3c);
 }
 MS2_REPLACE_METHOD(0x1403fde90, ItemBoxEventContext, Write, 205, 0x94E651EB);
 
 // @0x1403fdf70
 void ItemBoxEventContext::Read(CInPacket& packet)
 {
-    m_fieldID = packet.vfunc_o8_3();
-    m_boxItemID = packet.vfunc_o8_3();
-    m_title = packet.vfunc_o8_8();
-    m_desc = packet.vfunc_o8_8();
-    m_bannerPath = packet.vfunc_o8_8();
-    m_3c = packet.vfunc_o8_3();
+    m_fieldID = packet.ReadInt32();
+    m_boxItemID = packet.ReadInt32();
+    m_title = packet.ReadUnicodeString();
+    m_desc = packet.ReadUnicodeString();
+    m_bannerPath = packet.ReadUnicodeString();
+    m_3c = packet.ReadInt32();
 }
 MS2_REPLACE_METHOD(0x1403fdf70, ItemBoxEventContext, Read, 502, 0x43A428F1);
 
@@ -871,21 +871,21 @@ TimeRunEventContext::TimeRunEventContext(int eventId) : m_eventId(eventId), m_1c
 // @0x1403fe250
 void TimeRunEventContext::Write(COutputStream& out)
 {
-    out.vfunc_o10_3(m_value);
-    out.vfunc_o10_3(m_1c);
-    out.vfunc_o10_3(m_quests.GetCount());
+    out.WriteInt32(m_value);
+    out.WriteInt32(m_1c);
+    out.WriteInt32(m_quests.GetCount());
     for (POSITION pos = m_quests.GetStartPosition(); pos != NULL; m_quests.GetNext(pos)) {
         MS2Ptr<QuestContext> spQuest = m_quests.GetValueAt(pos);
-        out.vfunc_o10_3(spQuest->m_questId);
-        out.vfunc_o10_3(spQuest->m_1c);
-        out.vfunc_o10_2(spQuest->m_20);
+        out.WriteInt32(spQuest->m_questId);
+        out.WriteInt32(spQuest->m_1c);
+        out.WriteInt16(spQuest->m_20);
     }
     m_item.FUN_14026b030(reinterpret_cast<Unk_GiftOutput&>(out));
-    out.vfunc_o10_3(m_rewards.GetCount());
+    out.WriteInt32(m_rewards.GetCount());
     for (POSITION pos = m_rewards.GetHeadPosition(); pos != NULL; m_rewards.GetNext(pos)) {
         unsigned key = m_rewards.GetKeyAt(pos);
         MS2Ptr<ItemEntity> spItem = m_rewards.GetValueAt(pos);
-        out.vfunc_o10_3(key);
+        out.WriteInt32(key);
         spItem->FUN_14026b030(reinterpret_cast<Unk_GiftOutput&>(out));
     }
 }
@@ -895,21 +895,21 @@ MS2_REPLACE_METHOD(0x1403fe250, TimeRunEventContext, Write, 706, 0x6519EA38);
 void TimeRunEventContext::Read(CInPacket& packet)
 {
     m_quests.RemoveAll();
-    m_value = packet.vfunc_o8_3();
-    m_1c = packet.vfunc_o8_3();
-    size_t count = (unsigned)packet.vfunc_o8_3();
+    m_value = packet.ReadInt32();
+    m_1c = packet.ReadInt32();
+    size_t count = (unsigned)packet.ReadInt32();
     for (size_t i = 0; i < count; i++) {
         MS2Ptr<QuestContext> spQuest(new QuestContext);
-        spQuest->m_questId = packet.vfunc_o8_3();
-        spQuest->m_1c = packet.vfunc_o8_3();
-        spQuest->m_20 = (unsigned short)packet.vfunc_o8_2();
+        spQuest->m_questId = packet.ReadInt32();
+        spQuest->m_1c = packet.ReadInt32();
+        spQuest->m_20 = (unsigned short)packet.ReadInt16();
         m_quests.SetAt(spQuest->m_questId, spQuest);
     }
     m_item.FUN_14026b100(reinterpret_cast<Unk_GiftInput&>(static_cast<CInputStream&>(packet)));
-    count = (unsigned)packet.vfunc_o8_3();
+    count = (unsigned)packet.ReadInt32();
     for (size_t i = 0; i < count; i++) {
         MS2Ptr<ItemEntity> spItem(new ItemEntity);
-        unsigned key = packet.vfunc_o8_3();
+        unsigned key = packet.ReadInt32();
         spItem->FUN_14026b100(reinterpret_cast<Unk_GiftInput&>(static_cast<CInputStream&>(packet)));
         m_rewards.SetAt(key, spItem);
     }
@@ -970,12 +970,12 @@ MS2_REPLACE_METHOD(0x1403fea10, QuestAdditionalRewardContext, Load, 681, 0xFA2E5
 void QuestAdditionalRewardContext::Write(COutputStream& out)
 {
     for (size_t i = 0; i < _countof(m_rates); i++)
-        out.vfunc_o10_3(m_rates[i]);
+        out.WriteInt32(m_rates[i]);
     unsigned count = (unsigned)m_itemRates.GetCount();
-    out.vfunc_o10_3(count);
+    out.WriteInt32(count);
     for (POSITION pos = m_itemRates.GetStartPosition(); pos != NULL; m_itemRates.GetNext(pos)) {
-        out.vfunc_o10_3(m_itemRates.GetKeyAt(pos));
-        out.vfunc_o10_3(m_itemRates.GetValueAt(pos));
+        out.WriteInt32(m_itemRates.GetKeyAt(pos));
+        out.WriteInt32(m_itemRates.GetValueAt(pos));
     }
 }
 MS2_REPLACE_METHOD(0x1403fecc0, QuestAdditionalRewardContext, Write, 283, 0x9A1480C0);
@@ -984,11 +984,11 @@ MS2_REPLACE_METHOD(0x1403fecc0, QuestAdditionalRewardContext, Write, 283, 0x9A14
 void QuestAdditionalRewardContext::Read(CInPacket& packet)
 {
     for (size_t i = 0; i < _countof(m_rates); i++)
-        m_rates[i] = packet.vfunc_o8_3();
-    unsigned count = packet.vfunc_o8_3();
+        m_rates[i] = packet.ReadInt32();
+    unsigned count = packet.ReadInt32();
     for (size_t i = 0; i < count; i++) {
-        unsigned id = packet.vfunc_o8_3();
-        unsigned itemRate = packet.vfunc_o8_3();
+        unsigned id = packet.ReadInt32();
+        unsigned itemRate = packet.ReadInt32();
         m_itemRates.SetAt(id, itemRate);
     }
 }
@@ -997,36 +997,36 @@ MS2_REPLACE_METHOD(0x1403fedf0, QuestAdditionalRewardContext, Read, 278, 0xC6FE4
 // @0x1403fef10
 void GalleryContext::Write(COutputStream& out)
 {
-    out.vfunc_o10_2(m_cards.GetCount());
+    out.WriteInt16(m_cards.GetCount());
     for (size_t i = 0; i < m_cards.GetCount(); i++)
-        out.vfunc_o10_3(m_cards[i]->m_id);
-    out.vfunc_o10_2(m_items.GetCount());
+        out.WriteInt32(m_cards[i]->m_id);
+    out.WriteInt16(m_items.GetCount());
     for (size_t i = 0; i < m_items.GetCount(); i++)
         m_items[i].FUN_14026b030(reinterpret_cast<Unk_GiftOutput&>(out));
-    out.vfunc_o10_3(m_60);
-    out.vfunc_o10_8(m_strTitle);
-    out.vfunc_o10_4(m_endTime);
+    out.WriteInt32(m_60);
+    out.WriteUnicodeString(m_strTitle);
+    out.WriteInt64(m_endTime);
 }
 MS2_REPLACE_METHOD(0x1403fef10, GalleryContext, Write, 392, 0x0AAA5A49);
 
 // @0x1403ff0a0
 void GalleryContext::Read(CInPacket& packet)
 {
-    int cardCount = (unsigned short)packet.vfunc_o8_2();
+    int cardCount = (unsigned short)packet.ReadInt16();
     for (int i = 0; i < cardCount; i++) {
         MS2Ptr<Card> spCard(new Card);
-        spCard->m_id = packet.vfunc_o8_3();
+        spCard->m_id = packet.ReadInt32();
         m_cards.Add(spCard);
     }
-    int itemCount = (unsigned short)packet.vfunc_o8_2();
+    int itemCount = (unsigned short)packet.ReadInt16();
     for (int i = 0; i < itemCount; i++) {
         ItemEntity item;
         item.FUN_14026b100(reinterpret_cast<Unk_GiftInput&>(static_cast<CInputStream&>(packet)));
         m_items.Add(item);
     }
-    m_60 = packet.vfunc_o8_3();
-    m_strTitle = packet.vfunc_o8_8();
-    m_endTime = packet.vfunc_o8_4();
+    m_60 = packet.ReadInt32();
+    m_strTitle = packet.ReadUnicodeString();
+    m_endTime = packet.ReadInt64();
 }
 MS2_REPLACE_METHOD(0x1403ff0a0, GalleryContext, Read, 689, 0x223A401A);
 
@@ -1056,24 +1056,24 @@ MS2_REPLACE_METHOD(0x1403ff3e0, GalleryContext, GetCard, 185, 0x2AA08563);
 // @0x1403ff4a0
 void MentoringContext::Write(COutputStream& out)
 {
-    out.vfunc_o10_3(m_18);
-    out.vfunc_o10_4(m_20);
-    out.vfunc_o10_4(m_28);
-    out.vfunc_o10_3(m_ids.GetCount());
+    out.WriteInt32(m_18);
+    out.WriteInt64(m_20);
+    out.WriteInt64(m_28);
+    out.WriteInt32(m_ids.GetCount());
     for (size_t i = 0; i < m_ids.GetCount(); i++)
-        out.vfunc_o10_3(m_ids[i]);
+        out.WriteInt32(m_ids[i]);
 }
 MS2_REPLACE_METHOD(0x1403ff4a0, MentoringContext, Write, 238, 0xB91500A1);
 
 // @0x1403ff5a0
 void MentoringContext::Read(CInPacket& packet)
 {
-    m_18 = packet.vfunc_o8_3();
-    m_20 = packet.vfunc_o8_4();
-    m_28 = packet.vfunc_o8_4();
-    unsigned count = packet.vfunc_o8_3();
+    m_18 = packet.ReadInt32();
+    m_20 = packet.ReadInt64();
+    m_28 = packet.ReadInt64();
+    unsigned count = packet.ReadInt32();
     for (unsigned i = 0; i < count; i++)
-        m_ids.Add(packet.vfunc_o8_3());
+        m_ids.Add(packet.ReadInt32());
 }
 MS2_REPLACE_METHOD(0x1403ff5a0, MentoringContext, Read, 267, 0x6959083B);
 
@@ -1137,49 +1137,49 @@ MS2_REPLACE_METHOD(0x1403ff870, SnowmanContext::Snowman, CanProceed, 111, 0xE46A
 // @0x1403ff8f0
 void SnowmanContext::Write(COutputStream& out)
 {
-    out.vfunc_o10_3(m_eventId);
-    out.vfunc_o10_8(m_strTitle);
-    out.vfunc_o10_2(m_snowmen.GetCount());
+    out.WriteInt32(m_eventId);
+    out.WriteUnicodeString(m_strTitle);
+    out.WriteInt16(m_snowmen.GetCount());
     for (size_t i = 0; i < m_snowmen.GetCount(); i++) {
         MS2Ptr<Snowman>& spSnowman = m_snowmen[i];
         if (!spSnowman) {
             MS2_ASSERT_AT(0x282, "snowman" && 0);
             return;
         }
-        out.vfunc_o10_3(spSnowman->m_18);
-        out.vfunc_o10_3(spSnowman->m_1c);
-        out.vfunc_o10_3(spSnowman->m_20);
+        out.WriteInt32(spSnowman->m_18);
+        out.WriteInt32(spSnowman->m_1c);
+        out.WriteInt32(spSnowman->m_20);
         const ATL::CAtlArray<ItemEntity>& items = spSnowman->m_items;
-        out.vfunc_o10_2(items.GetCount());
+        out.WriteInt16(items.GetCount());
         for (size_t j = 0; j < items.GetCount(); j++)
             items[j].FUN_14026b030(reinterpret_cast<Unk_GiftOutput&>(out));
         const ATL::CAtlArray<ItemEntity>& bonusItems = spSnowman->m_bonusItems;
-        out.vfunc_o10_2(bonusItems.GetCount());
+        out.WriteInt16(bonusItems.GetCount());
         for (size_t j = 0; j < bonusItems.GetCount(); j++)
             bonusItems[j].FUN_14026b030(reinterpret_cast<Unk_GiftOutput&>(out));
     }
-    out.vfunc_o10_4(m_endTime);
+    out.WriteInt64(m_endTime);
 }
 MS2_REPLACE_METHOD(0x1403ff8f0, SnowmanContext, Write, 769, 0x8D6B039E);
 
 // @0x1403ffc00
 void SnowmanContext::Read(CInPacket& packet)
 {
-    m_eventId = packet.vfunc_o8_3();
-    m_strTitle = packet.vfunc_o8_8();
-    int snowmanCount = (unsigned short)packet.vfunc_o8_2();
+    m_eventId = packet.ReadInt32();
+    m_strTitle = packet.ReadUnicodeString();
+    int snowmanCount = (unsigned short)packet.ReadInt16();
     for (int i = 0; i < snowmanCount; i++) {
         MS2Ptr<Snowman> spSnowman(new Snowman);
-        spSnowman->m_18 = packet.vfunc_o8_3();
-        spSnowman->m_1c = packet.vfunc_o8_3();
-        spSnowman->m_20 = packet.vfunc_o8_3();
-        int itemCount = (unsigned short)packet.vfunc_o8_2();
+        spSnowman->m_18 = packet.ReadInt32();
+        spSnowman->m_1c = packet.ReadInt32();
+        spSnowman->m_20 = packet.ReadInt32();
+        int itemCount = (unsigned short)packet.ReadInt16();
         for (int j = 0; j < itemCount; j++) {
             ItemEntity item;
             item.FUN_14026b100(reinterpret_cast<Unk_GiftInput&>(static_cast<CInputStream&>(packet)));
             spSnowman->m_items.Add(item);
         }
-        int bonusCount = (unsigned short)packet.vfunc_o8_2();
+        int bonusCount = (unsigned short)packet.ReadInt16();
         for (int j = 0; j < bonusCount; j++) {
             ItemEntity item;
             item.FUN_14026b100(reinterpret_cast<Unk_GiftInput&>(static_cast<CInputStream&>(packet)));
@@ -1187,7 +1187,7 @@ void SnowmanContext::Read(CInPacket& packet)
         }
         m_snowmen.Add(spSnowman);
     }
-    m_endTime = packet.vfunc_o8_4();
+    m_endTime = packet.ReadInt64();
 }
 MS2_REPLACE_METHOD(0x1403ffc00, SnowmanContext, Read, 1008, 0xEA8CA9B2);
 
@@ -1293,45 +1293,45 @@ MS2_REPLACE(0x1404005e0, CompareRpsReward, 203, 0xA1C87D62);
 // @0x1404006c0
 void RpsContext::Write(COutputStream& out)
 {
-    out.vfunc_o10_8(m_strTitle);
+    out.WriteUnicodeString(m_strTitle);
     int count = (int)m_rewards.GetCount();
-    out.vfunc_o10_3(count);
+    out.WriteInt32(count);
     for (int i = 0; i < count; i++) {
         MS2Ptr<RewardData> spReward = m_rewards[i];
         if (spReward == NULL) {
             MS2_ASSERT_AT(0x345, 0);
             return;
         }
-        out.vfunc_o10_3(spReward->m_count);
+        out.WriteInt32(spReward->m_count);
         int itemCount = (int)spReward->m_items.GetCount();
-        out.vfunc_o10_3(itemCount);
+        out.WriteInt32(itemCount);
         for (int j = 0; j < itemCount; j++)
             spReward->m_items[j].FUN_14026b030(reinterpret_cast<Unk_GiftOutput&>(out));
     }
-    out.vfunc_o10_3(m_20);
-    out.vfunc_o10_3(m_48);
-    out.vfunc_o10_4(m_endTime);
+    out.WriteInt32(m_20);
+    out.WriteInt32(m_48);
+    out.WriteInt64(m_endTime);
 }
 MS2_REPLACE_METHOD(0x1404006c0, RpsContext, Write, 503, 0xC8BA33F0);
 
 // @0x1404008c0
 void RpsContext::Read(CInPacket& packet)
 {
-    m_strTitle = packet.vfunc_o8_8();
-    int count = packet.vfunc_o8_3();
+    m_strTitle = packet.ReadUnicodeString();
+    int count = packet.ReadInt32();
     m_rewards.RemoveAll();
     for (int i = 0; i < count; i++) {
         MS2Ptr<RewardData> spReward(new RewardData);
-        spReward->m_count = packet.vfunc_o8_3();
-        int itemCount = packet.vfunc_o8_3();
+        spReward->m_count = packet.ReadInt32();
+        int itemCount = packet.ReadInt32();
         spReward->m_items.SetCount(itemCount);
         for (int j = 0; j < itemCount; j++)
             spReward->m_items[j].FUN_14026b100(reinterpret_cast<Unk_GiftInput&>(static_cast<CInputStream&>(packet)));
         m_rewards.Add(spReward);
     }
-    m_20 = packet.vfunc_o8_3();
-    m_48 = packet.vfunc_o8_3();
-    m_endTime = packet.vfunc_o8_4();
+    m_20 = packet.ReadInt32();
+    m_48 = packet.ReadInt32();
+    m_endTime = packet.ReadInt64();
 }
 MS2_REPLACE_METHOD(0x1404008c0, RpsContext, Read, 813, 0xBB5BDB82);
 
@@ -1461,44 +1461,44 @@ MS2_REPLACE_METHOD(0x140401070, CoupleDanceContext, LoadDance, 1339, 0x8638015F)
 // @0x1404015c0
 void CoupleDanceContext::Write(COutputStream& out)
 {
-    out.vfunc_o10_3(m_eventId);
-    out.vfunc_o10_4(m_beginTime);
-    out.vfunc_o10_4(m_endTime);
-    out.vfunc_o10_3((int)m_dailyItems.size());
+    out.WriteInt32(m_eventId);
+    out.WriteInt64(m_beginTime);
+    out.WriteInt64(m_endTime);
+    out.WriteInt32((int)m_dailyItems.size());
     for (std::vector<std::vector<ItemEntity> >::const_iterator it = m_dailyItems.begin(); it != m_dailyItems.end(); ++it) {
-        out.vfunc_o10_3((int)(*it).size());
+        out.WriteInt32((int)(*it).size());
         for (std::vector<ItemEntity>::const_iterator jt = (*it).begin(); jt != (*it).end(); ++jt)
             const_cast<ItemEntity&>(*jt).FUN_14026b030(reinterpret_cast<Unk_GiftOutput&>(out));
     }
-    out.vfunc_o10_2((short)m_goodEndCount);
-    out.vfunc_o10_3((int)m_goodEndItems.size());
+    out.WriteInt16((short)m_goodEndCount);
+    out.WriteInt32((int)m_goodEndItems.size());
     for (std::vector<ItemEntity>::const_iterator it = m_goodEndItems.begin(); it != m_goodEndItems.end(); ++it)
         const_cast<ItemEntity&>(*it).FUN_14026b030(reinterpret_cast<Unk_GiftOutput&>(out));
-    out.vfunc_o10_1((unsigned char)m_maxRound);
-    out.vfunc_o10_3((int)m_dances.size());
+    out.WriteUInt8((unsigned char)m_maxRound);
+    out.WriteInt32((int)m_dances.size());
     for (std::vector<CStringW>::const_iterator it = m_dances.begin(); it != m_dances.end(); ++it)
-        out.vfunc_o10_8(*it);
-    out.vfunc_o10_3((int)m_steps.size());
+        out.WriteUnicodeString(*it);
+    out.WriteInt32((int)m_steps.size());
     for (std::vector<Step>::const_iterator it = m_steps.begin(); it != m_steps.end(); ++it) {
         const Step& step = *it;
-        out.vfunc_o10_8(step.m_action);
-        out.vfunc_o10_8(step.m_message);
+        out.WriteUnicodeString(step.m_action);
+        out.WriteUnicodeString(step.m_message);
     }
-    out.vfunc_o10_3(m_fieldId);
+    out.WriteInt32(m_fieldId);
 }
 MS2_REPLACE_METHOD(0x1404015c0, CoupleDanceContext, Write, 1197, 0x1BF42E6B);
 
 // @0x140401a80
 void CoupleDanceContext::Read(CInPacket& packet)
 {
-    m_eventId = packet.vfunc_o8_3();
-    m_beginTime = packet.vfunc_o8_4();
-    m_endTime = packet.vfunc_o8_4();
+    m_eventId = packet.ReadInt32();
+    m_beginTime = packet.ReadInt64();
+    m_endTime = packet.ReadInt64();
     m_dailyItems.clear();
-    size_t dayCount = (unsigned)packet.vfunc_o8_3();
+    size_t dayCount = (unsigned)packet.ReadInt32();
     for (size_t i = 0; i < dayCount; i++) {
         std::vector<ItemEntity> items;
-        size_t itemCount = (unsigned)packet.vfunc_o8_3();
+        size_t itemCount = (unsigned)packet.ReadInt32();
         for (size_t j = 0; j < itemCount; j++) {
             ItemEntity item;
             item.FUN_14026b100(reinterpret_cast<Unk_GiftInput&>(static_cast<CInputStream&>(packet)));
@@ -1506,26 +1506,26 @@ void CoupleDanceContext::Read(CInPacket& packet)
         }
         m_dailyItems.push_back(items);
     }
-    m_goodEndCount = (unsigned short)packet.vfunc_o8_2();
-    size_t goodEndCount = (unsigned)packet.vfunc_o8_3();
+    m_goodEndCount = (unsigned short)packet.ReadInt16();
+    size_t goodEndCount = (unsigned)packet.ReadInt32();
     for (size_t i = 0; i < goodEndCount; i++) {
         ItemEntity item;
         item.FUN_14026b100(reinterpret_cast<Unk_GiftInput&>(static_cast<CInputStream&>(packet)));
         m_goodEndItems.push_back(item);
     }
-    m_maxRound = packet.vfunc_o8_1();
-    size_t danceCount = (unsigned)packet.vfunc_o8_3();
+    m_maxRound = packet.ReadUInt8();
+    size_t danceCount = (unsigned)packet.ReadInt32();
     for (size_t i = 0; i < danceCount; i++)
-        m_dances.push_back(packet.vfunc_o8_8());
+        m_dances.push_back(packet.ReadUnicodeString());
     m_steps.clear();
-    size_t stepCount = (unsigned)packet.vfunc_o8_3();
+    size_t stepCount = (unsigned)packet.ReadInt32();
     for (size_t i = 0; i < stepCount; i++) {
         Step step;
-        step.m_action = packet.vfunc_o8_8();
-        step.m_message = packet.vfunc_o8_8();
+        step.m_action = packet.ReadUnicodeString();
+        step.m_message = packet.ReadUnicodeString();
         m_steps.push_back(step);
     }
-    m_fieldId = packet.vfunc_o8_3();
+    m_fieldId = packet.ReadInt32();
 }
 MS2_REPLACE_METHOD(0x140401a80, CoupleDanceContext, Read, 1517, 0xCC3E3829);
 
@@ -1593,26 +1593,26 @@ __int64 CNpcShopGivePointContextBase::GetGivePoint(MS2Ptr<CNpcShopGivePointConte
 // @0x140402560
 void ReactorContext::Write(COutputStream& out)
 {
-    out.vfunc_o10_3(m_eventId);
-    out.vfunc_o10_3(m_28);
-    out.vfunc_o10_4(m_endTime);
+    out.WriteInt32(m_eventId);
+    out.WriteInt32(m_28);
+    out.WriteInt64(m_endTime);
     int count = (int)m_30.GetCount();
-    out.vfunc_o10_3(count);
+    out.WriteInt32(count);
     for (int i = 0; i < count; i++)
-        out.vfunc_o10_3(m_30[i]);
+        out.WriteInt32(m_30[i]);
 }
 MS2_REPLACE_METHOD(0x140402560, ReactorContext, Write, 215, 0x53831722);
 
 // @0x140402640
 void ReactorContext::Read(CInPacket& packet)
 {
-    m_eventId = packet.vfunc_o8_3();
-    m_28 = packet.vfunc_o8_3();
-    m_endTime = packet.vfunc_o8_4();
+    m_eventId = packet.ReadInt32();
+    m_28 = packet.ReadInt32();
+    m_endTime = packet.ReadInt64();
     m_30.RemoveAll();
-    int count = packet.vfunc_o8_3();
+    int count = packet.ReadInt32();
     for (int i = 0; i < count; i++) {
-        unsigned value = packet.vfunc_o8_3();
+        unsigned value = packet.ReadInt32();
         m_30.Add(value);
     }
 }
@@ -1621,89 +1621,89 @@ MS2_REPLACE_METHOD(0x140402640, ReactorContext, Read, 292, 0x39050600);
 // @0x140402770
 void TreeWateringContext::Write(COutputStream& out)
 {
-    out.vfunc_o10_3(m_nEventId);
+    out.WriteInt32(m_nEventId);
     int stepCount = (int)m_steps.GetCount();
-    out.vfunc_o10_3(stepCount);
+    out.WriteInt32(stepCount);
     for (POSITION pos = m_steps.GetStartPosition(); pos != NULL; m_steps.GetNext(pos)) {
         TreeWatering_TreeStep* pStep = m_steps.GetValueAt(pos);
-        out.vfunc_o10_3(pStep->m_step);
-        out.vfunc_o10_4(pStep->m_beginTime.Get());
-        out.vfunc_o10_4(pStep->m_endTime.Get());
+        out.WriteInt32(pStep->m_step);
+        out.WriteInt64(pStep->m_beginTime.Get());
+        out.WriteInt64(pStep->m_endTime.Get());
     }
     int dayCount = (int)m_emotionDays.GetCount();
-    out.vfunc_o10_3(dayCount);
+    out.WriteInt32(dayCount);
     for (int i = 0; i < dayCount; i++) {
         MS2Ptr<TreeWatering_EmotionDay> spDay = m_emotionDays[i];
-        out.vfunc_o10_4(spDay->m_beginTime.Get());
-        out.vfunc_o10_4(spDay->m_endTime.Get());
+        out.WriteInt64(spDay->m_beginTime.Get());
+        out.WriteInt64(spDay->m_endTime.Get());
     }
-    out.vfunc_o10_3(m_nDailyLimit);
-    out.vfunc_o10_3(m_8c);
-    out.vfunc_o10_1((unsigned char)m_90);
-    out.vfunc_o10_3(m_94);
-    out.vfunc_o10_3(m_nBonusLimit);
-    out.vfunc_o10_3(m_9c);
-    out.vfunc_o10_1((unsigned char)m_a0);
-    out.vfunc_o10_3(m_a4);
+    out.WriteInt32(m_nDailyLimit);
+    out.WriteInt32(m_8c);
+    out.WriteUInt8((unsigned char)m_90);
+    out.WriteInt32(m_94);
+    out.WriteInt32(m_nBonusLimit);
+    out.WriteInt32(m_9c);
+    out.WriteUInt8((unsigned char)m_a0);
+    out.WriteInt32(m_a4);
     int resourceCount = (int)m_resources.GetCount();
-    out.vfunc_o10_3(resourceCount);
+    out.WriteInt32(resourceCount);
     for (POSITION pos = m_resources.GetStartPosition(); pos != NULL; m_resources.GetNext(pos)) {
         TreeWatering_TreeResource* pResource = m_resources.GetValueAt(pos);
-        out.vfunc_o10_3(pResource->m_id);
-        out.vfunc_o10_7(pResource->m_20);
+        out.WriteInt32(pResource->m_id);
+        out.WriteString(pResource->m_20);
     }
-    out.vfunc_o10_3(m_f0);
-    out.vfunc_o10_7(m_strTreeName);
-    out.vfunc_o10_3(m_nWaterItemId);
-    out.vfunc_o10_7(m_strStateWater);
-    out.vfunc_o10_7(m_strStateBonus);
-    out.vfunc_o10_7(m_str118);
+    out.WriteInt32(m_f0);
+    out.WriteString(m_strTreeName);
+    out.WriteInt32(m_nWaterItemId);
+    out.WriteString(m_strStateWater);
+    out.WriteString(m_strStateBonus);
+    out.WriteString(m_str118);
 }
 MS2_REPLACE_METHOD(0x140402770, TreeWateringContext, Write, 1437, 0x7D2AE94E);
 
 // @0x140402d20
 void TreeWateringContext::Read(CInPacket& packet)
 {
-    m_nEventId = packet.vfunc_o8_3();
+    m_nEventId = packet.ReadInt32();
     m_steps.RemoveAll();
-    int stepCount = packet.vfunc_o8_3();
+    int stepCount = packet.ReadInt32();
     for (int i = 0; i < stepCount; i++) {
         MS2Ptr<TreeWatering_TreeStep> spStep(new TreeWatering_TreeStep);
-        spStep->m_step = packet.vfunc_o8_3();
-        spStep->m_beginTime = packet.vfunc_o8_4();
-        spStep->m_endTime = packet.vfunc_o8_4();
+        spStep->m_step = packet.ReadInt32();
+        spStep->m_beginTime = packet.ReadInt64();
+        spStep->m_endTime = packet.ReadInt64();
         m_steps.SetAt(spStep->m_step, spStep);
     }
     m_emotionDays.RemoveAll();
-    int dayCount = packet.vfunc_o8_3();
+    int dayCount = packet.ReadInt32();
     for (int i = 0; i < dayCount; i++) {
         MS2Ptr<TreeWatering_EmotionDay> spDay(new TreeWatering_EmotionDay);
-        spDay->m_beginTime = packet.vfunc_o8_4();
-        spDay->m_endTime = packet.vfunc_o8_4();
+        spDay->m_beginTime = packet.ReadInt64();
+        spDay->m_endTime = packet.ReadInt64();
         m_emotionDays.Add(spDay);
     }
-    m_nDailyLimit = packet.vfunc_o8_3();
-    m_8c = packet.vfunc_o8_3();
-    m_90 = packet.vfunc_o8_1();
-    m_94 = packet.vfunc_o8_3();
-    m_nBonusLimit = packet.vfunc_o8_3();
-    m_9c = packet.vfunc_o8_3();
-    m_a0 = packet.vfunc_o8_1();
-    m_a4 = packet.vfunc_o8_3();
+    m_nDailyLimit = packet.ReadInt32();
+    m_8c = packet.ReadInt32();
+    m_90 = packet.ReadUInt8();
+    m_94 = packet.ReadInt32();
+    m_nBonusLimit = packet.ReadInt32();
+    m_9c = packet.ReadInt32();
+    m_a0 = packet.ReadUInt8();
+    m_a4 = packet.ReadInt32();
     m_resources.RemoveAll();
-    int resourceCount = packet.vfunc_o8_3();
+    int resourceCount = packet.ReadInt32();
     for (int i = 0; i < resourceCount; i++) {
         MS2Ptr<TreeWatering_TreeResource> spResource(new TreeWatering_TreeResource);
-        spResource->m_id = packet.vfunc_o8_3();
-        spResource->m_20 = packet.vfunc_o8_7();
+        spResource->m_id = packet.ReadInt32();
+        spResource->m_20 = packet.ReadString();
         m_resources.SetAt(spResource->m_id, spResource);
     }
-    m_f0 = packet.vfunc_o8_3();
-    m_strTreeName = packet.vfunc_o8_7();
-    m_nWaterItemId = packet.vfunc_o8_3();
-    m_strStateWater = packet.vfunc_o8_7();
-    m_strStateBonus = packet.vfunc_o8_7();
-    m_str118 = packet.vfunc_o8_7();
+    m_f0 = packet.ReadInt32();
+    m_strTreeName = packet.ReadString();
+    m_nWaterItemId = packet.ReadInt32();
+    m_strStateWater = packet.ReadString();
+    m_strStateBonus = packet.ReadString();
+    m_str118 = packet.ReadString();
 }
 MS2_REPLACE_METHOD(0x140402d20, TreeWateringContext, Read, 2538, 0x9A328910);
 
@@ -1992,33 +1992,33 @@ MS2_REPLACE_METHOD(0x1404043b0, Unk_DayItemContext, FindPeriod, 129, 0x280E7C47)
 // @0x140404440
 void BurningLevelupContext::Write(COutputStream& out)
 {
-    out.vfunc_o10_3(m_eventId);
-    out.vfunc_o10_4(m_endTime);
-    out.vfunc_o10_3(m_beginLevel);
-    out.vfunc_o10_3(m_endLevel);
-    out.vfunc_o10_3(m_burningBonus);
-    out.vfunc_o10_3(m_additionalEffectId);
-    out.vfunc_o10_8(m_setCharacterPopupStringKey);
-    out.vfunc_o10_8(m_setCharacterPopupBottomStringKey);
-    out.vfunc_o10_8(m_descPopupStringKey);
-    out.vfunc_o10_8(m_rewardUiTitleStringKey);
-    out.vfunc_o10_2(m_equipNametagSymbolId);
-    out.vfunc_o10_2((short)m_28.size());
+    out.WriteInt32(m_eventId);
+    out.WriteInt64(m_endTime);
+    out.WriteInt32(m_beginLevel);
+    out.WriteInt32(m_endLevel);
+    out.WriteInt32(m_burningBonus);
+    out.WriteInt32(m_additionalEffectId);
+    out.WriteUnicodeString(m_setCharacterPopupStringKey);
+    out.WriteUnicodeString(m_setCharacterPopupBottomStringKey);
+    out.WriteUnicodeString(m_descPopupStringKey);
+    out.WriteUnicodeString(m_rewardUiTitleStringKey);
+    out.WriteInt16(m_equipNametagSymbolId);
+    out.WriteInt16((short)m_28.size());
     for (std::set<int>::const_iterator it = m_28.begin(); it != m_28.end(); ++it)
-        out.vfunc_o10_3(*it);
-    out.vfunc_o10_3((int)m_rewardItems.size());
+        out.WriteInt32(*it);
+    out.WriteInt32((int)m_rewardItems.size());
     for (std::vector<ItemEntity>::iterator it = m_rewardItems.begin(); it != m_rewardItems.end(); ++it) {
         ItemEntity& item = *it;
         item.FUN_14026b030(reinterpret_cast<Unk_GiftOutput&>(out));
     }
-    out.vfunc_o10_0(m_spJumpingItem.get() != 0);
+    out.WriteBool(m_spJumpingItem.get() != 0);
     if (m_spJumpingItem.get() != 0) {
         m_spJumpingItem->FUN_14026b030(reinterpret_cast<Unk_GiftOutput&>(out));
-        out.vfunc_o10_3(m_8c);
-        out.vfunc_o10_3(m_tutorialEndFieldId);
-        out.vfunc_o10_8(m_jumpingItemDescPopupStringKey);
-        out.vfunc_o10_8(m_jumpingItemNotifyStringKey);
-        out.vfunc_o10_8(m_jumpingCompleteStringKey);
+        out.WriteInt32(m_8c);
+        out.WriteInt32(m_tutorialEndFieldId);
+        out.WriteUnicodeString(m_jumpingItemDescPopupStringKey);
+        out.WriteUnicodeString(m_jumpingItemNotifyStringKey);
+        out.WriteUnicodeString(m_jumpingCompleteStringKey);
     }
 }
 MS2_REPLACE_METHOD(0x140404440, BurningLevelupContext, Write, 1228, 0xEBF6AE9B);
@@ -2026,24 +2026,24 @@ MS2_REPLACE_METHOD(0x140404440, BurningLevelupContext, Write, 1228, 0xEBF6AE9B);
 // @0x140404920
 void BurningLevelupContext::Read(CInPacket& packet)
 {
-    m_eventId = packet.vfunc_o8_3();
-    m_endTime = packet.vfunc_o8_4();
-    m_beginLevel = (unsigned short)packet.vfunc_o8_3();
-    m_endLevel = (unsigned short)packet.vfunc_o8_3();
-    m_burningBonus = packet.vfunc_o8_3();
-    m_additionalEffectId = packet.vfunc_o8_3();
-    m_setCharacterPopupStringKey = packet.vfunc_o8_8();
-    m_setCharacterPopupBottomStringKey = packet.vfunc_o8_8();
-    m_descPopupStringKey = packet.vfunc_o8_8();
-    m_rewardUiTitleStringKey = packet.vfunc_o8_8();
-    m_equipNametagSymbolId = packet.vfunc_o8_2();
+    m_eventId = packet.ReadInt32();
+    m_endTime = packet.ReadInt64();
+    m_beginLevel = (unsigned short)packet.ReadInt32();
+    m_endLevel = (unsigned short)packet.ReadInt32();
+    m_burningBonus = packet.ReadInt32();
+    m_additionalEffectId = packet.ReadInt32();
+    m_setCharacterPopupStringKey = packet.ReadUnicodeString();
+    m_setCharacterPopupBottomStringKey = packet.ReadUnicodeString();
+    m_descPopupStringKey = packet.ReadUnicodeString();
+    m_rewardUiTitleStringKey = packet.ReadUnicodeString();
+    m_equipNametagSymbolId = packet.ReadInt16();
     m_28.clear();
-    size_t count = (unsigned short)packet.vfunc_o8_2();
+    size_t count = (unsigned short)packet.ReadInt16();
     for (size_t i = 0; i < count; i++) {
-        m_28.insert(packet.vfunc_o8_3());
+        m_28.insert(packet.ReadInt32());
     }
     m_rewardItems.clear();
-    size_t itemCount = (unsigned)packet.vfunc_o8_3();
+    size_t itemCount = (unsigned)packet.ReadInt32();
     for (size_t i = 0; i < itemCount; i++) {
         ItemEntity item;
         item.FUN_14026b100(reinterpret_cast<Unk_GiftInput&>(static_cast<CInputStream&>(packet)));
@@ -2052,14 +2052,14 @@ void BurningLevelupContext::Read(CInPacket& packet)
     m_spJumpingItem = 0;
     m_tutorialEndFieldId = 0;
     m_8c = 0;
-    if (packet.vfunc_o8_0()) {
+    if (packet.ReadBool()) {
         m_spJumpingItem.AssignRaw(new ItemEntity);
         m_spJumpingItem->FUN_14026b100(reinterpret_cast<Unk_GiftInput&>(static_cast<CInputStream&>(packet)));
-        m_8c = (unsigned short)packet.vfunc_o8_3();
-        m_tutorialEndFieldId = packet.vfunc_o8_3();
-        m_jumpingItemDescPopupStringKey = packet.vfunc_o8_8();
-        m_jumpingItemNotifyStringKey = packet.vfunc_o8_8();
-        m_jumpingCompleteStringKey = packet.vfunc_o8_8();
+        m_8c = (unsigned short)packet.ReadInt32();
+        m_tutorialEndFieldId = packet.ReadInt32();
+        m_jumpingItemDescPopupStringKey = packet.ReadUnicodeString();
+        m_jumpingItemNotifyStringKey = packet.ReadUnicodeString();
+        m_jumpingCompleteStringKey = packet.ReadUnicodeString();
     }
 }
 MS2_REPLACE_METHOD(0x140404920, BurningLevelupContext, Read, 2047, 0x658E5ECE);
@@ -2101,16 +2101,16 @@ FestivalContext::FestivalContext() : m_18(0), m_1c(0), m_beginTime(FUN_140869440
 // @0x140405350
 void FestivalContext::Write(COutputStream& out)
 {
-    out.vfunc_o10_1((unsigned char)m_18);
-    out.vfunc_o10_1((unsigned char)m_1c);
+    out.WriteUInt8((unsigned char)m_18);
+    out.WriteUInt8((unsigned char)m_1c);
 }
 MS2_REPLACE_METHOD(0x140405350, FestivalContext, Write, 69, 0x4AA66412);
 
 // @0x1404053a0
 void FestivalContext::Read(CInPacket& packet)
 {
-    m_18 = packet.vfunc_o8_1();
-    m_1c = packet.vfunc_o8_1();
+    m_18 = packet.ReadUInt8();
+    m_1c = packet.ReadUInt8();
 }
 MS2_REPLACE_METHOD(0x1404053a0, FestivalContext, Read, 109, 0x9B9542AA);
 
@@ -2143,10 +2143,10 @@ MS2_REPLACE_METHOD(0x1404054d0, FieldEffectContext, HasField, 107, 0xC6AF9F2C);
 void FieldEffectContext::Write(COutputStream& out)
 {
     int count = (int)m_fieldIds.GetCount();
-    out.vfunc_o10_1((unsigned char)count);
+    out.WriteUInt8((unsigned char)count);
     for (int i = 0; i < count; i++)
-        out.vfunc_o10_3(m_fieldIds[i]);
-    out.vfunc_o10_8(m_effect);
+        out.WriteInt32(m_fieldIds[i]);
+    out.WriteUnicodeString(m_effect);
 }
 MS2_REPLACE_METHOD(0x140405550, FieldEffectContext, Write, 181, 0x40FE575D);
 
@@ -2154,10 +2154,10 @@ MS2_REPLACE_METHOD(0x140405550, FieldEffectContext, Write, 181, 0x40FE575D);
 void FieldEffectContext::Read(CInPacket& packet)
 {
     m_fieldIds.RemoveAll();
-    int count = packet.vfunc_o8_1();
+    int count = packet.ReadUInt8();
     for (int i = 0; i < count; i++)
-        m_fieldIds.Add(packet.vfunc_o8_3());
-    m_effect = packet.vfunc_o8_8();
+        m_fieldIds.Add(packet.ReadInt32());
+    m_effect = packet.ReadUnicodeString();
 }
 MS2_REPLACE_METHOD(0x140405610, FieldEffectContext, Read, 257, 0xAE99D2C4);
 
@@ -2172,12 +2172,12 @@ CollectItemGroupContext::CollectItemGroupContext()
 // @0x1404057d0
 void CollectItemGroupContext::Write(COutputStream& out)
 {
-    out.vfunc_o10_3(m_eventId);
-    out.vfunc_o10_8(m_name);
-    out.vfunc_o10_4(m_beginTime);
-    out.vfunc_o10_4(m_endTime);
+    out.WriteInt32(m_eventId);
+    out.WriteUnicodeString(m_name);
+    out.WriteInt64(m_beginTime);
+    out.WriteInt64(m_endTime);
     int count = (int)m_conditions.size();
-    out.vfunc_o10_3(count);
+    out.WriteInt32(count);
     for (int i = 0; i < count; i++)
         m_conditions[i].FUN_14026b030(reinterpret_cast<Unk_GiftOutput&>(out));
     m_result.FUN_14026b030(reinterpret_cast<Unk_GiftOutput&>(out));
@@ -2187,13 +2187,13 @@ MS2_REPLACE_METHOD(0x1404057d0, CollectItemGroupContext, Write, 261, 0x10B258AA)
 // @0x1404058e0
 void CollectItemGroupContext::Read(CInPacket& packet)
 {
-    m_eventId = packet.vfunc_o8_3();
-    m_name = packet.vfunc_o8_8();
-    m_beginTime = packet.vfunc_o8_4();
-    m_endTime = packet.vfunc_o8_4();
+    m_eventId = packet.ReadInt32();
+    m_name = packet.ReadUnicodeString();
+    m_beginTime = packet.ReadInt64();
+    m_endTime = packet.ReadInt64();
     m_conditions.clear();
     m_conditionKeys.clear();
-    int count = packet.vfunc_o8_3();
+    int count = packet.ReadInt32();
     for (int i = 0; i < count; i++) {
         ItemEntity item;
         item.FUN_14026b100(reinterpret_cast<Unk_GiftInput&>(static_cast<CInputStream&>(packet)));
@@ -2222,14 +2222,14 @@ ArcadeOpenContext::ArcadeOpenContext()
 // @0x140405c50
 void ArcadeOpenContext::Write(COutputStream& out)
 {
-    out.vfunc_o10_3(m_arcadeId);
+    out.WriteInt32(m_arcadeId);
 }
 MS2_REPLACE_METHOD(0x140405c50, ArcadeOpenContext, Write, 43, 0xD74A2FC1);
 
 // @0x140405c90
 void ArcadeOpenContext::Read(CInPacket& packet)
 {
-    m_arcadeId = packet.vfunc_o8_3();
+    m_arcadeId = packet.ReadInt32();
 }
 MS2_REPLACE_METHOD(0x140405c90, ArcadeOpenContext, Read, 61, 0x85F0495A);
 
@@ -2374,16 +2374,16 @@ MS2_REPLACE_METHOD(0x140406550, BingoContext, CountLines, 800, 0x948ECF4F);
 void BingoContext::Write(COutputStream& out)
 {
     int count = (int)m_rewards.GetCount();
-    out.vfunc_o10_3(count);
+    out.WriteInt32(count);
     for (int i = 0; i < count; i++) {
         RewardPtr spItems = m_rewards[i];
         int itemCount = (int)spItems->GetCount();
-        out.vfunc_o10_3(itemCount);
+        out.WriteInt32(itemCount);
         for (int j = 0; j < itemCount; j++)
             spItems->GetAt(j).FUN_14026b030(reinterpret_cast<Unk_GiftOutput&>(out));
     }
-    out.vfunc_o10_3(m_freeItemId);
-    out.vfunc_o10_3(m_cashItemId);
+    out.WriteInt32(m_freeItemId);
+    out.WriteInt32(m_cashItemId);
 }
 MS2_REPLACE_METHOD(0x140406880, BingoContext, Write, 325, 0x87EA28D3);
 
@@ -2392,10 +2392,10 @@ void BingoContext::Read(CInPacket& packet)
 {
     m_numbers.RemoveAll();
     m_rewards.RemoveAll();
-    int count = packet.vfunc_o8_3();
+    int count = packet.ReadInt32();
     for (int i = 0; i < count; i++) {
         RewardPtr spItems(Unk_BingoNewTag(0));
-        int itemCount = packet.vfunc_o8_3();
+        int itemCount = packet.ReadInt32();
         for (int j = 0; j < itemCount; j++) {
             ItemEntity item;
             item.FUN_14026b100(reinterpret_cast<Unk_GiftInput&>(static_cast<CInputStream&>(packet)));
@@ -2403,8 +2403,8 @@ void BingoContext::Read(CInPacket& packet)
         }
         m_rewards.Add(spItems);
     }
-    m_freeItemId = packet.vfunc_o8_3();
-    m_cashItemId = packet.vfunc_o8_3();
+    m_freeItemId = packet.ReadInt32();
+    m_cashItemId = packet.ReadInt32();
 }
 MS2_REPLACE_METHOD(0x1404069d0, BingoContext, Read, 467, 0x77CEB52C);
 
@@ -2418,15 +2418,15 @@ void LimitedQuantityContext::Write(COutputStream& out)
 {
     if (m_1c == 0 || m_20 == 0)
         return;
-    out.vfunc_o10_3(m_1c);
-    out.vfunc_o10_3(m_20);
+    out.WriteInt32(m_1c);
+    out.WriteInt32(m_20);
     int count = (int)m_items.size();
     std::map<unsigned long, int>::iterator it = m_items.begin();
     std::map<unsigned long, int>::iterator end = m_items.end();
-    out.vfunc_o10_3(count);
+    out.WriteInt32(count);
     for (; it != end; it++) {
-        out.vfunc_o10_3((*it).first);
-        out.vfunc_o10_3((*it).second);
+        out.WriteInt32((*it).first);
+        out.WriteInt32((*it).second);
     }
 }
 MS2_REPLACE_METHOD(0x140406c30, LimitedQuantityContext, Write, 300, 0x4F24E218);
@@ -2434,13 +2434,13 @@ MS2_REPLACE_METHOD(0x140406c30, LimitedQuantityContext, Write, 300, 0x4F24E218);
 // @0x140406d70
 void LimitedQuantityContext::Read(CInPacket& packet)
 {
-    m_1c = packet.vfunc_o8_3();
-    m_20 = packet.vfunc_o8_3();
-    unsigned count = packet.vfunc_o8_3();
+    m_1c = packet.ReadInt32();
+    m_20 = packet.ReadInt32();
+    unsigned count = packet.ReadInt32();
     m_items.clear();
     for (unsigned i = 0; i < count; i++) {
-        unsigned long itemId = packet.vfunc_o8_3();
-        int quantity = packet.vfunc_o8_3();
+        unsigned long itemId = packet.ReadInt32();
+        int quantity = packet.ReadInt32();
         m_items[itemId] = quantity;
     }
 }
@@ -2525,46 +2525,46 @@ LongTermAttendGiftContext::LongTermAttendGiftContext(int eventId)
 // @0x140407300
 void LongTermAttendGiftContext::Write(COutputStream& out)
 {
-    out.vfunc_o10_8(m_eventTag);
-    out.vfunc_o10_4(m_40);
-    out.vfunc_o10_3(m_48);
-    out.vfunc_o10_0(m_4c);
-    out.vfunc_o10_3((int)m_rewards.GetCount());
+    out.WriteUnicodeString(m_eventTag);
+    out.WriteInt64(m_40);
+    out.WriteInt32(m_48);
+    out.WriteBool(m_4c);
+    out.WriteInt32((int)m_rewards.GetCount());
     for (size_t i = 0; i < m_rewards.GetCount(); i++) {
-        out.vfunc_o10_3(m_rewards[i]->m_count);
-        out.vfunc_o10_1(m_rewards[i]->m_1c);
+        out.WriteInt32(m_rewards[i]->m_count);
+        out.WriteUInt8(m_rewards[i]->m_1c);
         m_rewards[i]->m_item01.FUN_14026b030(reinterpret_cast<Unk_GiftOutput&>(out));
         m_rewards[i]->m_item02.FUN_14026b030(reinterpret_cast<Unk_GiftOutput&>(out));
     }
-    out.vfunc_o10_4(m_beginTime.Get());
-    out.vfunc_o10_4(m_endTime.Get());
-    out.vfunc_o10_8(m_title);
-    out.vfunc_o10_3(m_merat);
-    out.vfunc_o10_3(m_maxAttendance);
+    out.WriteInt64(m_beginTime.Get());
+    out.WriteInt64(m_endTime.Get());
+    out.WriteUnicodeString(m_title);
+    out.WriteInt32(m_merat);
+    out.WriteInt32(m_maxAttendance);
 }
 MS2_REPLACE_METHOD(0x140407300, LongTermAttendGiftContext, Write, 629, 0x77209FF9);
 
 // @0x140407580
 void LongTermAttendGiftContext::Read(CInPacket& packet)
 {
-    m_eventTag = packet.vfunc_o8_8();
-    m_40 = packet.vfunc_o8_4();
-    m_48 = packet.vfunc_o8_3();
-    m_4c = packet.vfunc_o8_0();
-    size_t count = (unsigned)packet.vfunc_o8_3();
+    m_eventTag = packet.ReadUnicodeString();
+    m_40 = packet.ReadInt64();
+    m_48 = packet.ReadInt32();
+    m_4c = packet.ReadBool();
+    size_t count = (unsigned)packet.ReadInt32();
     for (size_t i = 0; i < count; i++) {
         MS2Ptr<Reward> spReward(new Reward);
-        spReward->m_count = packet.vfunc_o8_3();
-        spReward->m_1c = (bool)packet.vfunc_o8_1();
+        spReward->m_count = packet.ReadInt32();
+        spReward->m_1c = (bool)packet.ReadUInt8();
         spReward->m_item01.FUN_14026b100(reinterpret_cast<Unk_GiftInput&>(static_cast<CInputStream&>(packet)));
         spReward->m_item02.FUN_14026b100(reinterpret_cast<Unk_GiftInput&>(static_cast<CInputStream&>(packet)));
         m_rewards.Add(spReward);
     }
-    m_beginTime = CMsTime(packet.vfunc_o8_4());
-    m_endTime = CMsTime(packet.vfunc_o8_4());
-    m_title = packet.vfunc_o8_8();
-    m_merat = packet.vfunc_o8_3();
-    m_maxAttendance = packet.vfunc_o8_3();
+    m_beginTime = CMsTime(packet.ReadInt64());
+    m_endTime = CMsTime(packet.ReadInt64());
+    m_title = packet.ReadUnicodeString();
+    m_merat = packet.ReadInt32();
+    m_maxAttendance = packet.ReadInt32();
 }
 MS2_REPLACE_METHOD(0x140407580, LongTermAttendGiftContext, Read, 1174, 0xE734B2EC);
 

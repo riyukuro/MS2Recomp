@@ -569,10 +569,10 @@ void UIBeautyShopDevDialog::vfunc_79(void* pPacket)
     int nOpcode = static_cast<CInPacket*>(pPacket)->FUN_14070fe80();
     if (nOpcode != 0x31)
         return;
-    unsigned nOp = static_cast<CInPacket*>(pPacket)->vfunc_o8_1();
+    unsigned nOp = static_cast<CInPacket*>(pPacket)->ReadUInt8();
     if (nOp == 8)
     {
-        Unk_BSResult nResult = (Unk_BSResult)static_cast<CInPacket*>(pPacket)->vfunc_o8_3();
+        Unk_BSResult nResult = (Unk_BSResult)static_cast<CInPacket*>(pPacket)->ReadInt32();
         FUN_141921990(0xcd, 1, 1, nResult);
         if (nResult != 0)
             FUN_14191ffb0();

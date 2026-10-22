@@ -205,7 +205,7 @@ CGroupChatMember::CGroupChatMember() {
 CGroupChatMember::~CGroupChatMember() {}
 // @0x14137b0c0
 int CGroupChatMember::FUN_14137b0c0(CInPacket* packet) {
-    m_state = packet->vfunc_o8_1();
+    m_state = packet->ReadUInt8();
     if (m_state == 1) {
         m_proxy.FUN_1408eeb60(packet);
     } else if (m_state == 2) {
@@ -227,8 +227,8 @@ unsigned CGroupChat::GetOid() const { return m_oid; }
 MS2_REPLACE_METHOD(0x14137B260, CGroupChat, GetOid, 14, 0x72E52537);
 // @0x14137b280
 int CGroupChat::FUN_14137b280(CInPacket* packet) {
-    m_oid = packet->vfunc_o8_3();
-    int count = packet->vfunc_o8_1();
+    m_oid = packet->ReadInt32();
+    int count = packet->ReadUInt8();
     for (int i = 0; i < count; ++i) {
         Unk_ChatMemberPtr member(new CGroupChatMember);
         if (member->FUN_14137b0c0(packet) == 0)
@@ -525,8 +525,8 @@ void CGroupChatManager::Create(CStringW name) {
             FUN_140166440()->Log(1, 0x13, L"{0}. strTargetName={1}", "CGroupChatManager::Create", name);
         } else {
             COutPacket packet(static_cast<int>(SendOp::GroupChat), 0);
-            packet.vfunc_o10_1(1);
-            packet.vfunc_o10_8(name);
+            packet.WriteUInt8(1);
+            packet.WriteUnicodeString(name);
             FUN_140710590(packet);
         }
     }
@@ -556,9 +556,9 @@ void CGroupChatManager::Invite(unsigned oid, CStringW name) {
             FUN_140166440()->Log(1, 0x13, L"{0}. strTargetName={1}", "CGroupChatManager::Invite", name);
         } else {
             COutPacket packet(static_cast<int>(SendOp::GroupChat), 0);
-            packet.vfunc_o10_1(2);
-            packet.vfunc_o10_8(name);
-            packet.vfunc_o10_3(oid);
+            packet.WriteUInt8(2);
+            packet.WriteUnicodeString(name);
+            packet.WriteInt32(oid);
             FUN_140710590(packet);
         }
     } else {
@@ -573,9 +573,9 @@ void CGroupChatManager::SendGroupChatMode4(unsigned oid, int flag) {
     if (FUN_14137e630(oid) == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::GroupChat), 0);
-    packet.vfunc_o10_1(4);
-    packet.vfunc_o10_3(oid);
-    packet.vfunc_o10_1(flag);
+    packet.WriteUInt8(4);
+    packet.WriteInt32(oid);
+    packet.WriteUInt8(flag);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x14137EFA0, CGroupChatManager, SendGroupChatMode4, 203, 0x55D554D6);
@@ -597,9 +597,9 @@ void CGroupChatManager::SendGroupChatMode10(unsigned oid, CStringW text) {
     }
     if (FUN_1403ed2d0()->FUN_141bd30a0().FUN_140885340()->FUN_140375660(0x100) == 0) {
         COutPacket packet(static_cast<int>(SendOp::GroupChat), 0);
-        packet.vfunc_o10_1(10);
-        packet.vfunc_o10_8(text);
-        packet.vfunc_o10_3(oid);
+        packet.WriteUInt8(10);
+        packet.WriteUnicodeString(text);
+        packet.WriteInt32(oid);
         FUN_140710590(packet);
     }
 }
@@ -607,7 +607,7 @@ MS2_REPLACE_METHOD(0x14137F080, CGroupChatManager, SendGroupChatMode10, 615, 0x2
 // @0x14137f2f0
 // MS2-FUNCTIONAL: dispatcher stack layout differs by a few bytes
 void CGroupChatManager::OnGroupChat(CInPacket* packet) {
-    switch (packet->vfunc_o8_1()) {
+    switch (packet->ReadUInt8()) {
     case 0:    FUN_14137f490(packet); break;
     case 1:    FUN_14137f590(packet); break;
     case 2:    FUN_14137f640(packet); break;
@@ -637,7 +637,7 @@ void CGroupChatManager::FUN_14137f490(CInPacket* packet) {
 MS2_REPLACE_METHOD(0x14137F490, CGroupChatManager, FUN_14137f490, 247, 0xD4D3E365);
 // @0x14137f590
 void CGroupChatManager::FUN_14137f590(CInPacket* packet) {
-    unsigned oid = packet->vfunc_o8_3();
+    unsigned oid = packet->ReadInt32();
     CGroupChat* chat = FUN_14137e630(oid).get();
     if (chat != 0) {
         if (FUN_141482e80()->m_messenger != 0)
@@ -647,9 +647,9 @@ void CGroupChatManager::FUN_14137f590(CInPacket* packet) {
 MS2_REPLACE_METHOD(0x14137F590, CGroupChatManager, FUN_14137f590, 164, 0x1AA86B3B);
 // @0x14137f640
 void CGroupChatManager::FUN_14137f640(CInPacket* packet) {
-    CStringW first = packet->vfunc_o8_8();
-    CStringW second = packet->vfunc_o8_8();
-    unsigned oid = packet->vfunc_o8_3();
+    CStringW first = packet->ReadUnicodeString();
+    CStringW second = packet->ReadUnicodeString();
+    unsigned oid = packet->ReadInt32();
     Unk_ChatPtrChat chat = FUN_14137e630(oid);
     if (chat == 0)
         return;
@@ -659,9 +659,9 @@ void CGroupChatManager::FUN_14137f640(CInPacket* packet) {
 MS2_REPLACE_METHOD(0x14137F640, CGroupChatManager, FUN_14137f640, 318, 0x765CA6E8);
 // @0x14137f790
 void CGroupChatManager::FUN_14137f790(CInPacket* packet) {
-    CStringW first = packet->vfunc_o8_8();
-    CStringW second = packet->vfunc_o8_8();
-    unsigned oid = packet->vfunc_o8_3();
+    CStringW first = packet->ReadUnicodeString();
+    CStringW second = packet->ReadUnicodeString();
+    unsigned oid = packet->ReadInt32();
     if (FUN_140ae6540(FUN_1409a8b10())->m_refuseInvite) {
         SendGroupChatMode4(oid, 1);
     } else {
@@ -675,7 +675,7 @@ void CGroupChatManager::FUN_14137f790(CInPacket* packet) {
 MS2_REPLACE_METHOD(0x14137F790, CGroupChatManager, FUN_14137f790, 367, 0xFB9CE439);
 // @0x14137f910
 void CGroupChatManager::FUN_14137f910(CInPacket* packet) {
-    unsigned oid = packet->vfunc_o8_3();
+    unsigned oid = packet->ReadInt32();
     CGroupChat* chat = FUN_14137e630(oid).get();
     if (chat != 0) {
         FUN_14137e5c0(oid);
@@ -686,8 +686,8 @@ void CGroupChatManager::FUN_14137f910(CInPacket* packet) {
 MS2_REPLACE_METHOD(0x14137F910, CGroupChatManager, FUN_14137f910, 178, 0xF41BB1F8);
 // @0x14137f9d0
 void CGroupChatManager::FUN_14137f9d0(CInPacket* packet) {
-    unsigned oid = packet->vfunc_o8_3();
-    CStringW name = packet->vfunc_o8_8();
+    unsigned oid = packet->ReadInt32();
+    CStringW name = packet->ReadUnicodeString();
     Unk_ChatMemberPtr member(new CGroupChatMember);
     member->FUN_14137b0c0(packet);
     Unk_ChatPtrChat chat = FUN_14137e630(oid);
@@ -701,9 +701,9 @@ void CGroupChatManager::FUN_14137f9d0(CInPacket* packet) {
 MS2_REPLACE_METHOD(0x14137F9D0, CGroupChatManager, FUN_14137f9d0, 576, 0xD23A1A70);
 // @0x14137fc20
 void CGroupChatManager::FUN_14137fc20(CInPacket* packet) {
-    unsigned oid = packet->vfunc_o8_3();
-    unsigned reason = packet->vfunc_o8_1();
-    CStringW name = packet->vfunc_o8_8();
+    unsigned oid = packet->ReadInt32();
+    unsigned reason = packet->ReadUInt8();
+    CStringW name = packet->ReadUnicodeString();
     Unk_ChatPtrChat chat = FUN_14137e630(oid);
     if (chat == 0)
         return;
@@ -717,8 +717,8 @@ void CGroupChatManager::FUN_14137fc20(CInPacket* packet) {
 MS2_REPLACE_METHOD(0x14137FC20, CGroupChatManager, FUN_14137fc20, 532, 0x73201602);
 // @0x14137fe40
 void CGroupChatManager::FUN_14137fe40(CInPacket* packet) {
-    unsigned oid = packet->vfunc_o8_3();
-    CStringW name = packet->vfunc_o8_8();
+    unsigned oid = packet->ReadInt32();
+    CStringW name = packet->ReadUnicodeString();
     Unk_ChatPtrChat chat = FUN_14137e630(oid);
     if (chat == 0)
         return;
@@ -732,8 +732,8 @@ void CGroupChatManager::FUN_14137fe40(CInPacket* packet) {
 MS2_REPLACE_METHOD(0x14137FE40, CGroupChatManager, FUN_14137fe40, 372, 0xCEC78FAD);
 // @0x14137ffc0
 void CGroupChatManager::FUN_14137ffc0(CInPacket* packet) {
-    unsigned oid = packet->vfunc_o8_3();
-    CStringW name = packet->vfunc_o8_8();
+    unsigned oid = packet->ReadInt32();
+    CStringW name = packet->ReadUnicodeString();
     Unk_ChatPtrChat chat = FUN_14137e630(oid);
     if (chat == 0)
         return;
@@ -747,9 +747,9 @@ void CGroupChatManager::FUN_14137ffc0(CInPacket* packet) {
 MS2_REPLACE_METHOD(0x14137FFC0, CGroupChatManager, FUN_14137ffc0, 372, 0xE5740DDB);
 // @0x141380140
 void CGroupChatManager::FUN_141380140(CInPacket* packet) {
-    unsigned oid = packet->vfunc_o8_3();
-    CStringW first = packet->vfunc_o8_8();
-    CStringW second = packet->vfunc_o8_8();
+    unsigned oid = packet->ReadInt32();
+    CStringW first = packet->ReadUnicodeString();
+    CStringW second = packet->ReadUnicodeString();
     Unk_ChatPtrChat chat = FUN_14137e630(oid);
     if (chat == 0)
         return;
@@ -762,8 +762,8 @@ void CGroupChatManager::FUN_141380140(CInPacket* packet) {
 MS2_REPLACE_METHOD(0x141380140, CGroupChatManager, FUN_141380140, 469, 0x39B109A7);
 // @0x141380320
 void CGroupChatManager::FUN_141380320(CInPacket* packet) {
-    unsigned oid = packet->vfunc_o8_3();
-    CStringW name = packet->vfunc_o8_8();
+    unsigned oid = packet->ReadInt32();
+    CStringW name = packet->ReadUnicodeString();
     Unk_ChatPtrChat chat = FUN_14137e630(oid);
     if (chat == 0)
         return;
@@ -780,9 +780,9 @@ MS2_REPLACE_METHOD(0x141380320, CGroupChatManager, FUN_141380320, 557, 0x5B7B0A0
 // @0x141380560
 // MS2-FUNCTIONAL: temp lifetime ordering differs by a few bytes
 void CGroupChatManager::FUN_141380560(CInPacket* packet) {
-    unsigned oid = packet->vfunc_o8_3();
-    CStringW name = packet->vfunc_o8_8();
-    CStringW picture = packet->vfunc_o8_8();
+    unsigned oid = packet->ReadInt32();
+    CStringW name = packet->ReadUnicodeString();
+    CStringW picture = packet->ReadUnicodeString();
     Unk_ChatPtrChat chat = FUN_14137e630(oid);
     if (chat == 0)
         return;
@@ -800,10 +800,10 @@ MS2_REPLACE_METHOD(0x141380560, CGroupChatManager, FUN_141380560, 921, 0x2E2E4F0
 // @0x141380900
 // MS2-FUNCTIONAL: temp lifetime ordering differs by a few bytes
 void CGroupChatManager::FUN_141380900(CInPacket* packet) {
-    unsigned char flag = packet->vfunc_o8_1();
-    int code = packet->vfunc_o8_3();
-    CStringW first = packet->vfunc_o8_8();
-    CStringW second = packet->vfunc_o8_8();
+    unsigned char flag = packet->ReadUInt8();
+    int code = packet->ReadInt32();
+    CStringW first = packet->ReadUnicodeString();
+    CStringW second = packet->ReadUnicodeString();
     if (code == 3) {
         FUN_140d73bc0(0x815, 0, 0, CStringW(L""));
     } else if (code == 10) {

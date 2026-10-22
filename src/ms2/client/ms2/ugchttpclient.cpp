@@ -249,7 +249,7 @@ void CUgcHttpClient::Append(CByteBuffer& buffer)
 {
     unsigned nSize = buffer.GetLength();
     unsigned char* pData = buffer.FUN_140204eb0();
-    static_cast<COutputStream&>(m_buffer).vfunc_o10_9(pData, nSize);
+    m_buffer.WriteBytes(pData, nSize);
 }
 
 // @0x140dfb480

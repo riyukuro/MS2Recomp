@@ -38,17 +38,17 @@ ReconnectionOptions::ReconnectionOptions(const ReconnectionOptions& other) : CPt
 // @0x140208460
 ReconnectionOptions& ReconnectionOptions::FUN_140208460(const ReconnectionOptions& other) { m_values = other.m_values; return *this; }
 // @0x1402084a0
-void ReconnectionOptions::FUN_1402084a0(COutputStream& out) const { for (int i = 0; i < 11; ++i) out.vfunc_o10_3(m_values.v[i]); }
+void ReconnectionOptions::FUN_1402084a0(COutputStream& out) const { for (int i = 0; i < 11; ++i) out.WriteInt32(m_values.v[i]); }
 // @0x140208500
-void ReconnectionOptions::FUN_140208500(CInputStream& in) { for (int i = 0; i < 11; ++i) m_values.v[i] = in.vfunc_o8_3(); }
+void ReconnectionOptions::FUN_140208500(CInputStream& in) { for (int i = 0; i < 11; ++i) m_values.v[i] = in.ReadInt32(); }
 // @0x140208560
 ReconnectionContext::ReconnectionContext() { FUN_1402085c0(); }
 // @0x1402085c0
 void ReconnectionContext::FUN_1402085c0() { m_18 = 0; m_20 = ""; m_28 = 0; }
 // @0x140208610
-void ReconnectionContext::FUN_140208610(COutputStream& out) const { out.vfunc_o10_3(m_18); out.vfunc_o10_7(m_20); out.vfunc_o10_3(m_28); }
+void ReconnectionContext::FUN_140208610(COutputStream& out) const { out.WriteInt32(m_18); out.WriteString(m_20); out.WriteInt32(m_28); }
 // @0x140208680
-void ReconnectionContext::FUN_140208680(CInputStream& in) { m_18 = in.vfunc_o8_3(); m_20 = in.vfunc_o8_7(); m_28 = in.vfunc_o8_3(); }
+void ReconnectionContext::FUN_140208680(CInputStream& in) { m_18 = in.ReadInt32(); m_20 = in.ReadString(); m_28 = in.ReadInt32(); }
 // @0x140208720
 ReconnectionContextCli::ReconnectionContextCli() { FUN_140208780(); }
 // @0x140208780
@@ -85,7 +85,7 @@ void COutPacketBuffer::RetransmitClientPackets(CGameSocket* pSocket, unsigned la
         m_resending = 1;
         unsigned newSequence = lastSequence;
         COutPacket ack(static_cast<int>(SendOp::ReconnectUnk), 0);
-        ack.vfunc_o10_3(lastSequence);
+        ack.WriteInt32(lastSequence);
         FUN_141267410(pSocket, ack);
         for (POSITION pos = m_captured.GetHeadPosition(); pos != NULL; m_captured.GetNext(pos)) {
             COutPacketPtr& captured = m_captured.GetAt(pos);
@@ -97,7 +97,7 @@ void COutPacketBuffer::RetransmitClientPackets(CGameSocket* pSocket, unsigned la
             FUN_141267410(pSocket, *captured);
         }
         COutPacket done(static_cast<int>(SendOp::FinalizeReconnect), 0);
-        done.vfunc_o10_3(m_sequence);
+        done.WriteInt32(m_sequence);
         FUN_141267410(pSocket, done);
         m_resending = 0;
     }

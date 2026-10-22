@@ -99,7 +99,7 @@ int UIDPSDialog::vfunc_65()
     CToolBaseDialog* pTool = GetToolBaseDialog();
     pTool->Create(0x91, CWnd::FromHandle(FUN_140aadf80()->FUN_14209c720()));
     COutPacket packet(static_cast<int>(SendOp::DpsMode), 0);
-    packet.vfunc_o10_1(1);
+    packet.WriteUInt8(1);
     FUN_140710590(packet);
     return 1;
 }
@@ -111,7 +111,7 @@ void UIDPSDialog::vfunc_67()
     if (GetToolBaseDialog() != 0)
         FUN_14192a260();
     COutPacket packet(static_cast<int>(SendOp::DpsMode), 0);
-    packet.vfunc_o10_1(0);
+    packet.WriteUInt8(0);
     FUN_140710590(packet);
     FUN_141929700();
     UIDialog::vfunc_67();

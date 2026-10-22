@@ -869,10 +869,10 @@ bool InvenSlot::FUN_141405a60(CItem* pItem, int nSlot)
             if (nError == 0)
             {
                 COutPacket packet(static_cast<int>(SendOp::FittingDoll), 0);
-                packet.vfunc_o10_1(2);
-                packet.vfunc_o10_4((__int64)pDoll->FUN_14121c6c0());
-                packet.vfunc_o10_4(pItem->FUN_140526a50());
-                packet.vfunc_o10_1(nType);
+                packet.WriteUInt8(2);
+                packet.WriteInt64((__int64)pDoll->FUN_14121c6c0());
+                packet.WriteInt64(pItem->FUN_140526a50());
+                packet.WriteUInt8(nType);
                 FUN_140710590(packet);
             }
             else
@@ -990,9 +990,9 @@ int InvenSlot::vfunc_13()
                                 return 0;
                             FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4e3b);
                             COutPacket packet(static_cast<int>(SendOp::SystemShop), 0);
-                            packet.vfunc_o10_1(10);
-                            packet.vfunc_o10_1(1);
-                            packet.vfunc_o10_3(spItem->FUN_1405276c0());
+                            packet.WriteUInt8(10);
+                            packet.WriteUInt8(1);
+                            packet.WriteInt32(spItem->FUN_1405276c0());
                             FUN_140710590(packet);
                             return 1;
                         }
@@ -1336,9 +1336,9 @@ int InvenSlot::vfunc_18(void* p)
     if (pInven != 0)
     {
         COutPacket packet(static_cast<int>(SendOp::RequestItemInventory), 0);
-        packet.vfunc_o10_1(3);
-        packet.vfunc_o10_4(pInven->GetItemUid());
-        packet.vfunc_o10_2((short)m_nIndex);
+        packet.WriteUInt8(3);
+        packet.WriteInt64(pInven->GetItemUid());
+        packet.WriteInt16((short)m_nIndex);
         FUN_140710590(packet);
         FUN_141404930(pInven->GetItemUid());
         return pInven->vfunc_10();

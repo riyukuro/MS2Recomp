@@ -60,10 +60,10 @@ void UIArcadeTextEffectDialog::FUN_140ba7fe0(int nMode, CInPacket& packet)
     if (nMode == 8)
     {
         m_strText = L"";
-        int nFlag = packet.vfunc_o8_1();
+        int nFlag = packet.ReadUInt8();
         if (nFlag == 0)
         {
-            int nCount = packet.vfunc_o8_3();
+            int nCount = packet.ReadInt32();
             if (nCount <= 0)
                 m_strText = L"";
             else

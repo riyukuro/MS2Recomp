@@ -314,17 +314,17 @@ int UIAllianceQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             if (FUN_140764020()->FUN_1407456d0(nQuest) != 0)
             {
                 COutPacket packet(static_cast<int>(SendOp::NpcTalk), 0);
-                packet.vfunc_o10_1(8);
-                packet.vfunc_o10_3(nQuest);
-                packet.vfunc_o10_2(2);
+                packet.WriteUInt8(8);
+                packet.WriteInt32(nQuest);
+                packet.WriteInt16(2);
                 FUN_140710590(packet);
             }
             else if (FUN_140764020()->vfunc_1(nQuest, 0) != 0)
             {
                 COutPacket packet(static_cast<int>(SendOp::NpcTalk), 0);
-                packet.vfunc_o10_1(8);
-                packet.vfunc_o10_3(nQuest);
-                packet.vfunc_o10_2(0);
+                packet.WriteUInt8(8);
+                packet.WriteInt32(nQuest);
+                packet.WriteInt16(0);
                 FUN_140710590(packet);
             }
         }
@@ -347,7 +347,7 @@ int UIAllianceQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     else if (_stricmp("onTalk", szMethod) == 0)
     {
         COutPacket packet(static_cast<int>(SendOp::NpcTalk), 0);
-        packet.vfunc_o10_1(9);
+        packet.WriteUInt8(9);
         FUN_140710590(packet);
     }
     else if (_stricmp("onTicket", szMethod) == 0)
@@ -712,7 +712,7 @@ bool UIAllianceQuestDialog::SendQuestMode34(int nResult, const CMsgBoxData&)
     if (nResult == 0)
     {
         COutPacket packet(static_cast<int>(SendOp::Quest), 0);
-        packet.vfunc_o10_1(0x22);
+        packet.WriteUInt8(0x22);
         FUN_140710590(packet);
         FUN_140bf91b0();
     }
@@ -725,7 +725,7 @@ bool UIAllianceQuestDialog::SendQuestMode35(int nResult, const CMsgBoxData&)
     if (nResult == 0)
     {
         COutPacket packet(static_cast<int>(SendOp::Quest), 0);
-        packet.vfunc_o10_1(0x23);
+        packet.WriteUInt8(0x23);
         FUN_140710590(packet);
         FUN_140bf9360();
     }
@@ -739,8 +739,8 @@ bool UIAllianceQuestDialog::SendQuestMode33(int nResult, const CMsgBoxData& rBox
     {
         unsigned nQuest = rBox.FUN_141a02e90(0, 0);
         COutPacket packet(static_cast<int>(SendOp::Quest), 0);
-        packet.vfunc_o10_1(0x21);
-        packet.vfunc_o10_3(nQuest);
+        packet.WriteUInt8(0x21);
+        packet.WriteInt32(nQuest);
         FUN_140710590(packet);
     }
     return true;

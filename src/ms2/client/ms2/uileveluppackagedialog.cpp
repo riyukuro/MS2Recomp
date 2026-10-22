@@ -277,8 +277,8 @@ void UILevelUpPackageDialog::SendQuest(int nQuest)
     if (FUN_141bd0cc0(FUN_1403ed2d0()) == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::Quest), 0);
-    packet.vfunc_o10_1(0x1b);
-    packet.vfunc_o10_3(nQuest);
+    packet.WriteUInt8(0x1b);
+    packet.WriteInt32(nQuest);
     FUN_140710590(packet);
 }
 

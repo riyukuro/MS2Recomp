@@ -450,7 +450,7 @@ int UIRevivalDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         if (pMsg->FUN_1422e4520() == 0x7d2)
         {
             COutPacket packet(static_cast<int>(SendOp::RequestMoveField), 0);
-            packet.vfunc_o10_1(1);
+            packet.WriteUInt8(1);
             FUN_140710590(packet);
         }
     }
@@ -469,8 +469,8 @@ bool UIRevivalDialog::SendRevivalMode1(int nResult, const CMsgBoxData& box)
         if (pPc->FUN_14166ce30() != 0)
         {
             COutPacket packet(static_cast<int>(SendOp::Revival), 0);
-            packet.vfunc_o10_1(1);
-            packet.vfunc_o10_1(nCoupon);
+            packet.WriteUInt8(1);
+            packet.WriteUInt8(nCoupon);
             FUN_140710590(packet);
         }
         else
@@ -547,7 +547,7 @@ bool UIRevivalDialog::SendRevivalMode0(int nResult, const CMsgBoxData& box)
     if (nResult == 0)
     {
         COutPacket packet(static_cast<int>(SendOp::Revival), 0);
-        packet.vfunc_o10_1(0);
+        packet.WriteUInt8(0);
         FUN_140710590(packet);
         FUN_14151f200();
     }
@@ -657,7 +657,7 @@ void UIRevivalDialog::FUN_141abb600()
         if (nFieldId == nTo)
         {
             COutPacket packet(static_cast<int>(SendOp::Revival), 0);
-            packet.vfunc_o10_1(0);
+            packet.WriteUInt8(0);
             FUN_140710590(packet);
         }
         else
@@ -716,8 +716,8 @@ void UIRevivalDialog::FUN_141abbb20()
         else
         {
             COutPacket packet(static_cast<int>(SendOp::Revival), 0);
-            packet.vfunc_o10_1(1);
-            packet.vfunc_o10_1(nCoupon);
+            packet.WriteUInt8(1);
+            packet.WriteUInt8(nCoupon);
             FUN_140710590(packet);
         }
     }
@@ -785,8 +785,8 @@ void UIRevivalDialog::FUN_141abc080()
             }
         }
         COutPacket packet(static_cast<int>(SendOp::Revival), 0);
-        packet.vfunc_o10_1(2);
-        packet.vfunc_o10_1(nCoupon);
+        packet.WriteUInt8(2);
+        packet.WriteUInt8(nCoupon);
         FUN_140710590(packet);
     }
 }

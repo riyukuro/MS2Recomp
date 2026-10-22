@@ -182,7 +182,7 @@ int UIAdditionalControlDialog::vfunc_28(const char* szMethod, const Scaleform::G
                 req.m_nLevel = nLevel;
                 req.m_fValue = (float)dValue;
                 COutPacket packet(static_cast<int>(SendOp::RequestAdditionalEffect), 0);
-                packet.vfunc_o10_1(0);
+                packet.WriteUInt8(0);
                 FUN_1401fd400((unsigned char*)&req, packet);
                 FUN_140710590(packet);
             }
@@ -190,7 +190,7 @@ int UIAdditionalControlDialog::vfunc_28(const char* szMethod, const Scaleform::G
         return 1;
     } else if (_stricmp("OnResetEffect", szMethod) == 0) {
         COutPacket packet(static_cast<int>(SendOp::RequestAdditionalEffect), 0);
-        packet.vfunc_o10_1(1);
+        packet.WriteUInt8(1);
         FUN_140710590(packet);
     } else if (_stricmp("OnSearchItem", szMethod) == 0) {
         if (data.FUN_1422b9620(pArgs, nArgs)) {

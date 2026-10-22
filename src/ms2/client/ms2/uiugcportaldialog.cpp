@@ -177,16 +177,16 @@ UIUGCPortalDialog::~UIUGCPortalDialog()
 // MS2-FUNCTIONAL: the exe keeps extra call-result temporaries (frame / EH layout differs); source form unknown
 void UIUGCPortalDialog::FUN_140fb0290(CInPacket& packet)
 {
-    m_178 = packet.vfunc_o8_3();
-    m_180 = packet.vfunc_o8_8();
-    m_188 = packet.vfunc_o8_1();
-    m_18c = packet.vfunc_o8_1();
-    m_190 = packet.vfunc_o8_8();
+    m_178 = packet.ReadInt32();
+    m_180 = packet.ReadUnicodeString();
+    m_188 = packet.ReadUInt8();
+    m_18c = packet.ReadUInt8();
+    m_190 = packet.ReadUnicodeString();
     m_198.clear();
-    int nCount = packet.vfunc_o8_3();
+    int nCount = packet.ReadInt32();
     for (int i = 0; i < nCount; i++)
     {
-        m_198.push_back(std::wstring(packet.vfunc_o8_8()));
+        m_198.push_back(std::wstring(packet.ReadUnicodeString()));
     }
     std::sort(m_198.begin(), m_198.end(), Unk_UgcpStrLess());
     FUN_141924680();
@@ -313,13 +313,13 @@ void UIUGCPortalDialog::OnApply()
         FUN_140fb19c0(spCombo.operator->(), CString("id"), strId);
     }
     COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
-    packet.vfunc_o10_1(6);
-    packet.vfunc_o10_1(0);
-    packet.vfunc_o10_3(m_178);
-    packet.vfunc_o10_8(strName);
-    packet.vfunc_o10_1((unsigned char)m_188);
-    packet.vfunc_o10_1((unsigned char)m_18c);
-    packet.vfunc_o10_8(strId);
+    packet.WriteUInt8(6);
+    packet.WriteUInt8(0);
+    packet.WriteInt32(m_178);
+    packet.WriteUnicodeString(strName);
+    packet.WriteUInt8((unsigned char)m_188);
+    packet.WriteUInt8((unsigned char)m_18c);
+    packet.WriteUnicodeString(strId);
     FUN_140710590(packet);
     vfunc_67();
 }

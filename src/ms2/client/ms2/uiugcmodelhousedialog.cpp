@@ -69,9 +69,9 @@ int UIUGCModelHouseDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             FUN_14152a240(pPlayer, nConcept);
         } else {
             COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
-            packet.vfunc_o10_1(2);
-            packet.vfunc_o10_3(m_nPlot);
-            packet.vfunc_o10_3(nConcept);
+            packet.WriteUInt8(2);
+            packet.WriteInt32(m_nPlot);
+            packet.WriteInt32(nConcept);
             FUN_140710590(packet);
         }
         CUIService::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f3f);

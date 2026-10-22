@@ -1737,30 +1737,30 @@ int PC::vfunc_78() { return m_nLevelDDC; }
 // MS2-FUNCTIONAL: the exe frame is 0x30 bytes larger (value temporaries in the 0x23-stat path)
 void PC::vfunc_90(void* p)
 {
-    unsigned char nCount = static_cast<CInPacket*>(p)->vfunc_o8_1();
+    unsigned char nCount = static_cast<CInPacket*>(p)->ReadUInt8();
     if (nCount == 0x23)
     {
         for (int i = 0; i < 3; i++)
         {
-            FUN_141670540(i, 4, static_cast<CInPacket*>(p)->vfunc_o8_4());
-            FUN_141670540(i, 0xd, (unsigned)static_cast<CInPacket*>(p)->vfunc_o8_3());
-            FUN_141670540(i, 0xe, (unsigned)static_cast<CInPacket*>(p)->vfunc_o8_3());
-            FUN_141670540(i, 0x20, (unsigned)static_cast<CInPacket*>(p)->vfunc_o8_3());
-            FUN_141670540(i, 0x16, (unsigned)static_cast<CInPacket*>(p)->vfunc_o8_3());
+            FUN_141670540(i, 4, static_cast<CInPacket*>(p)->ReadInt64());
+            FUN_141670540(i, 0xd, (unsigned)static_cast<CInPacket*>(p)->ReadInt32());
+            FUN_141670540(i, 0xe, (unsigned)static_cast<CInPacket*>(p)->ReadInt32());
+            FUN_141670540(i, 0x20, (unsigned)static_cast<CInPacket*>(p)->ReadInt32());
+            FUN_141670540(i, 0x16, (unsigned)static_cast<CInPacket*>(p)->ReadInt32());
         }
     }
     else
     {
         for (int n = 0; n < nCount; n++)
         {
-            unsigned char nType = static_cast<CInPacket*>(p)->vfunc_o8_1();
+            unsigned char nType = static_cast<CInPacket*>(p)->ReadUInt8();
             for (int i = 0; i < 3; i++)
             {
                 __int64 nValue;
                 if (FUN_14082f1a0(nType) == 0)
-                    nValue = (unsigned)static_cast<CInPacket*>(p)->vfunc_o8_3();
+                    nValue = (unsigned)static_cast<CInPacket*>(p)->ReadInt32();
                 else
-                    nValue = static_cast<CInPacket*>(p)->vfunc_o8_4();
+                    nValue = static_cast<CInPacket*>(p)->ReadInt64();
                 FUN_141670540(i, nType, nValue);
             }
         }
@@ -2150,7 +2150,7 @@ void PC::FUN_141661ba0(int n) { m_n10f0 = n; }
 int PC::FUN_141661bc0() { return m_nFF0; }
 
 // @0x141661c00
-void PC::FUN_141661c00(CInPacket& packet) { m_n10f4 = packet.vfunc_o8_3(); }
+void PC::FUN_141661c00(CInPacket& packet) { m_n10f4 = packet.ReadInt32(); }
 
 // @0x141661c50
 int PC::FUN_141661c50() { return m_n10f4; }
@@ -2732,8 +2732,8 @@ void PC::FUN_141661880(int bEnable, int nValue, const CubeItemInfo* pInfo)
 // @0x141661b20
 void PC::FUN_141661b20(CInPacket& packet)
 {
-    FUN_1416619d0(packet.vfunc_o8_3());
-    FUN_141661a60(packet.vfunc_o8_3());
+    FUN_1416619d0(packet.ReadInt32());
+    FUN_141661a60(packet.ReadInt32());
 }
 
 // @0x141661c70
@@ -2747,8 +2747,8 @@ void PC::FUN_141661c70(int n)
 // @0x141661d40
 void PC::FUN_141661d40(CInPacket& packet)
 {
-    m_n10f8 = packet.vfunc_o8_2();
-    m_n10fc = packet.vfunc_o8_1();
+    m_n10f8 = packet.ReadInt16();
+    m_n10fc = packet.ReadUInt8();
 }
 
 // @0x14165c970
@@ -3433,15 +3433,15 @@ void PC::FUN_1416629d0(Unk_StreamPoint kPos, Unk_StreamPoint kRot)
 // @0x141663150
 void PC::FUN_141663150(CInPacket& packet)
 {
-    bool bHas = static_cast<CInputStream&>(packet).vfunc_o8_0();
+    bool bHas = packet.ReadBool();
     if (!bHas)
     {
         m_spItem11b8 = 0;
         return;
     }
-    int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    int nRarity = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    int nItemId = packet.ReadInt32();
+    __int64 nItemUid = packet.ReadInt64();
+    int nRarity = packet.ReadInt32();
     MS2Ptr<CItem> spItem = FUN_141663450();
     if (spItem == 0 || spItem->FUN_140526a50() != nItemUid)
     {

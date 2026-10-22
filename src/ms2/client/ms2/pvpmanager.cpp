@@ -118,7 +118,7 @@ void CPVPManager::SendCancelRequest()
             return;
         }
         COutPacket packet(static_cast<int>(SendOp::Pvp), 0);
-        packet.vfunc_o10_1(0xb);
+        packet.WriteUInt8(0xb);
         FUN_140710590(packet);
     }
     }

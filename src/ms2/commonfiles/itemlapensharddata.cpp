@@ -451,126 +451,126 @@ unsigned CItemLapenshardTable::GetItem(int nGroup, unsigned short nLevel)
 // @0x1405b5cc0
 void Unk_LapenEquip::Write(COutputStream* s) const
 {
-    s->vfunc_o10_3(m_nSlot);
-    s->vfunc_o10_4(m_nUid);
+    s->WriteInt32(m_nSlot);
+    s->WriteInt64(m_nUid);
 }
 
 // @0x1405b5d10
 void Unk_LapenEquip::Read(CInPacket& p)
 {
-    m_nSlot = p.vfunc_o8_3();
-    m_nUid = p.vfunc_o8_4();
+    m_nSlot = p.ReadInt32();
+    m_nUid = p.ReadInt64();
 }
 
 // @0x1405b5d80
 void Unk_LapenEquipped::Write(COutputStream* s) const
 {
-    s->vfunc_o10_3(m_nSlot);
-    s->vfunc_o10_3(m_nItem);
+    s->WriteInt32(m_nSlot);
+    s->WriteInt32(m_nItem);
 }
 
 // @0x1405b5dd0
 void Unk_LapenEquipped::Read(CInPacket& p)
 {
-    m_nSlot = p.vfunc_o8_3();
-    m_nItem = p.vfunc_o8_3();
+    m_nSlot = p.ReadInt32();
+    m_nItem = p.ReadInt32();
 }
 
 // @0x1405b5e40
 void Unk_LapenUnequip::Write(COutputStream* s) const
 {
-    s->vfunc_o10_3(m_nSlot);
+    s->WriteInt32(m_nSlot);
 }
 
 // @0x1405b5e70
 void Unk_LapenUnequip::Read(CInPacket& p)
 {
-    m_nSlot = p.vfunc_o8_3();
+    m_nSlot = p.ReadInt32();
 }
 
 // @0x1405b5ec0
 void Unk_LapenItem::Write(COutputStream* s) const
 {
-    s->vfunc_o10_4(m_nUid);
-    s->vfunc_o10_3(m_nItem);
-    s->vfunc_o10_3(m_nSlot);
+    s->WriteInt64(m_nUid);
+    s->WriteInt32(m_nItem);
+    s->WriteInt32(m_nSlot);
 }
 
 // @0x1405b5f30
 void Unk_LapenItem::Read(CInPacket& p)
 {
-    m_nUid = p.vfunc_o8_4();
-    m_nItem = p.vfunc_o8_3();
-    m_nSlot = p.vfunc_o8_3();
+    m_nUid = p.ReadInt64();
+    m_nItem = p.ReadInt32();
+    m_nSlot = p.ReadInt32();
 }
 
 // @0x1405b5fd0
 void Unk_LapenUpgrade::Write(COutputStream* s) const
 {
     Unk_LapenItem::Write(s);
-    s->vfunc_o10_3(m_fodder.GetCount());
+    s->WriteInt32(m_fodder.GetCount());
     for (POSITION pos = m_fodder.GetStartPosition(); pos != 0; m_fodder.GetNext(pos))
     {
         unsigned __int64 nUid = m_fodder.GetKeyAt(pos);
         unsigned nAmount = m_fodder.GetValueAt(pos);
-        s->vfunc_o10_4(nUid);
-        s->vfunc_o10_3(nAmount);
+        s->WriteInt64(nUid);
+        s->WriteInt32(nAmount);
     }
-    s->vfunc_o10_3(m_nTail);
+    s->WriteInt32(m_nTail);
 }
 
 // @0x1405b60e0
 void Unk_LapenUpgrade::Read(CInPacket& p)
 {
     Unk_LapenItem::Read(p);
-    unsigned nCount = p.vfunc_o8_3();
+    unsigned nCount = p.ReadInt32();
     for (unsigned i = 0; i < nCount; i++)
     {
-        unsigned __int64 nUid = p.vfunc_o8_4();
-        unsigned nAmount = p.vfunc_o8_3();
+        unsigned __int64 nUid = p.ReadInt64();
+        unsigned nAmount = p.ReadInt32();
         m_fodder.SetAt(nUid, nAmount);
     }
-    m_nTail = p.vfunc_o8_3();
+    m_nTail = p.ReadInt32();
 }
 
 // @0x1405b61e0
 void Unk_LapenUpgradeResult::Write(COutputStream* s) const
 {
     Unk_LapenItem::Write(s);
-    s->vfunc_o10_0(m_bSuccess);
+    s->WriteBool(m_bSuccess);
 }
 
 // @0x1405b6220
 void Unk_LapenUpgradeResult::Read(CInPacket& p)
 {
     Unk_LapenItem::Read(p);
-    m_bSuccess = p.vfunc_o8_0();
+    m_bSuccess = p.ReadBool();
 }
 
 // @0x1405b6280
 void Unk_LapenAddFodder::Write(COutputStream* s) const
 {
     Unk_LapenItem::Write(s);
-    s->vfunc_o10_3(m_nAmount);
+    s->WriteInt32(m_nAmount);
 }
 
 // @0x1405b62c0
 void Unk_LapenAddFodder::Read(CInPacket& p)
 {
     Unk_LapenItem::Read(p);
-    m_nAmount = p.vfunc_o8_3();
+    m_nAmount = p.ReadInt32();
 }
 
 // @0x1405b6320
 void Unk_LapenPreview::Write(COutputStream* s) const
 {
-    s->vfunc_o10_3(m_nRate);
+    s->WriteInt32(m_nRate);
 }
 
 // @0x1405b6360
 void Unk_LapenPreview::Read(CInPacket& p)
 {
-    m_nRate = p.vfunc_o8_3();
+    m_nRate = p.ReadInt32();
 }
 
 // @0x1405b7430

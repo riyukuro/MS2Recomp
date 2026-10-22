@@ -99,7 +99,7 @@ MS2_REPLACE_METHOD(0x140F34810, UIDarkStreamResultDialog, vfunc_43, 161, 0x6FE03
 void UIDarkStreamResultDialog::vfunc_67()
 {
     COutPacket packet(static_cast<int>(SendOp::RequestMoveField), 0);
-    packet.vfunc_o10_1(1);
+    packet.WriteUInt8(1);
     FUN_140710590(packet);
     UIDialog::vfunc_67();
     FUN_14141f970(m_strBagId);
@@ -147,12 +147,12 @@ MS2_REPLACE_METHOD(0x140F34930, UIDarkStreamResultDialog, vfunc_28, 359, 0xB0C82
 void UIDarkStreamResultDialog::FUN_140f34ab0(CInPacket& packet)
 {
     m_items.FUN_14028a590();
-    m_nValue0 = packet.vfunc_o8_3();
-    m_nValue1 = packet.vfunc_o8_3();
-    m_nValue2 = packet.vfunc_o8_3();
-    m_nValue3 = packet.vfunc_o8_3();
-    m_nValue4 = packet.vfunc_o8_3();
-    int nCount = packet.vfunc_o8_1();
+    m_nValue0 = packet.ReadInt32();
+    m_nValue1 = packet.ReadInt32();
+    m_nValue2 = packet.ReadInt32();
+    m_nValue3 = packet.ReadInt32();
+    m_nValue4 = packet.ReadInt32();
+    int nCount = packet.ReadUInt8();
     for (int i = 0; i < nCount; ++i)
     {
         ItemEntity item;

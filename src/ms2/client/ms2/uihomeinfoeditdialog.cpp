@@ -224,8 +224,8 @@ void UIHomeInfoEditDialog::OnConfirm()
                         return;
                     }
                     COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
-                    packet.vfunc_o10_1(0x15);
-                    packet.vfunc_o10_8(strName);
+                    packet.WriteUInt8(0x15);
+                    packet.WriteUnicodeString(strName);
                     FUN_140710590(packet);
                 }
             }
@@ -235,8 +235,8 @@ void UIHomeInfoEditDialog::OnConfirm()
         if (spNotice.get() != 0)
         {
             COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
-            packet.vfunc_o10_1(0x1d);
-            packet.vfunc_o10_8(spNotice.operator->()->FUN_1422e0b00());
+            packet.WriteUInt8(0x1d);
+            packet.WriteUnicodeString(spNotice.operator->()->FUN_1422e0b00());
             FUN_140710590(packet);
         }
     }

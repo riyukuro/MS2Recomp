@@ -175,11 +175,11 @@ CManufactureManager::~CManufactureManager()
 // @0x140d500b0
 void CManufactureManager::OnPacket(CInPacket* pPacket)
 {
-    int cMode = pPacket->vfunc_o8_1();
+    int cMode = pPacket->ReadUInt8();
     if (cMode == 0)
     {
         m_mapManufacture.RemoveAll();
-        unsigned __int64 nCount = pPacket->vfunc_o8_3();
+        unsigned __int64 nCount = pPacket->ReadInt32();
         for (unsigned __int64 i = 0; i < nCount; i++)
         {
             MS2Ptr<CManufacture> spItem(new CManufacture);
@@ -201,12 +201,12 @@ void CManufactureManager::OnPacket(CInPacket* pPacket)
     }
     else if (cMode == 3)
     {
-        unsigned __int64 nId = pPacket->vfunc_o8_4();
+        unsigned __int64 nId = pPacket->ReadInt64();
         m_mapManufacture.RemoveKey(nId);
     }
     else if (cMode == 4)
     {
-        int nValue = pPacket->vfunc_o8_3();
+        int nValue = pPacket->ReadInt32();
         if (FUN_141adc890(FUN_1403ed2b0(), 0x4ec0) != 0)
         {
             UIManufactureDialog* pDlg = GetManufactureDialog(0x4ec0);
@@ -216,7 +216,7 @@ void CManufactureManager::OnPacket(CInPacket* pPacket)
     }
     else if (cMode == 6)
     {
-        int nValue = pPacket->vfunc_o8_3();
+        int nValue = pPacket->ReadInt32();
         if (FUN_141adc890(FUN_1403ed2b0(), 0x4ec0) != 0)
         {
             UIManufactureDialog* pDlg = GetManufactureDialog(0x4ec0);
@@ -226,7 +226,7 @@ void CManufactureManager::OnPacket(CInPacket* pPacket)
     }
     else if (cMode == 7)
     {
-        int nValue = pPacket->vfunc_o8_3();
+        int nValue = pPacket->ReadInt32();
         if (FUN_141adc890(FUN_1403ed2b0(), 0x4ec0) != 0)
         {
             UIManufactureDialog* pDlg = GetManufactureDialog(0x4ec0);
@@ -236,7 +236,7 @@ void CManufactureManager::OnPacket(CInPacket* pPacket)
     }
     else if (cMode == 8)
     {
-        int nValue = pPacket->vfunc_o8_3();
+        int nValue = pPacket->ReadInt32();
         if (FUN_141adc890(FUN_1403ed2b0(), 0x4ec0) != 0)
         {
             UIManufactureDialog* pDlg = GetManufactureDialog(0x4ec0);
@@ -246,7 +246,7 @@ void CManufactureManager::OnPacket(CInPacket* pPacket)
     }
     else if (cMode == 9)
     {
-        int nValue = pPacket->vfunc_o8_3();
+        int nValue = pPacket->ReadInt32();
         if (FUN_141adc890(FUN_1403ed2b0(), 0x4ec0) != 0)
         {
             UIManufactureDialog* pDlg = GetManufactureDialog(0x4ec0);
@@ -256,7 +256,7 @@ void CManufactureManager::OnPacket(CInPacket* pPacket)
     }
     else if (cMode == 10)
     {
-        int nValue = pPacket->vfunc_o8_3();
+        int nValue = pPacket->ReadInt32();
         if (FUN_141adc890(FUN_1403ed2b0(), 0x4ec0) != 0)
         {
             UIManufactureDialog* pDlg = GetManufactureDialog(0x4ec0);
@@ -266,13 +266,13 @@ void CManufactureManager::OnPacket(CInPacket* pPacket)
     }
     else if (cMode == 11)
     {
-        int nA = pPacket->vfunc_o8_3();
-        int nB = pPacket->vfunc_o8_3();
-        unsigned char cC = pPacket->vfunc_o8_1();
-        int nD = pPacket->vfunc_o8_3();
-        int nE = pPacket->vfunc_o8_3();
-        unsigned char cF = pPacket->vfunc_o8_1();
-        unsigned char cG = pPacket->vfunc_o8_1();
+        int nA = pPacket->ReadInt32();
+        int nB = pPacket->ReadInt32();
+        unsigned char cC = pPacket->ReadUInt8();
+        int nD = pPacket->ReadInt32();
+        int nE = pPacket->ReadInt32();
+        unsigned char cF = pPacket->ReadUInt8();
+        unsigned char cG = pPacket->ReadUInt8();
         if (FUN_141adc890(FUN_1403ed2b0(), 0x4ec0) != 0)
         {
             UIManufactureDialog* pDlg = GetManufactureDialog(0x4ec0);
@@ -337,9 +337,9 @@ int CManufactureManager::SendRequest4(unsigned __int64 nId, int nRecipeId, int* 
         }
     }
     COutPacket packet(static_cast<int>(SendOp::MaidCraftItem), 0);
-    packet.vfunc_o10_1(4);
-    packet.vfunc_o10_3(nRecipeId);
-    packet.vfunc_o10_4(nId);
+    packet.WriteUInt8(4);
+    packet.WriteInt32(nRecipeId);
+    packet.WriteInt64(nId);
     FUN_140710590(packet);
     *pnResult = 1;
     return 1;
@@ -349,9 +349,9 @@ int CManufactureManager::SendRequest4(unsigned __int64 nId, int nRecipeId, int* 
 int CManufactureManager::SendRequest5(unsigned __int64 nId, int nRecipeId, int* pnResult)
 {
     COutPacket packet(static_cast<int>(SendOp::MaidCraftItem), 0);
-    packet.vfunc_o10_1(5);
-    packet.vfunc_o10_3(nRecipeId);
-    packet.vfunc_o10_4(nId);
+    packet.WriteUInt8(5);
+    packet.WriteInt32(nRecipeId);
+    packet.WriteInt64(nId);
     FUN_140710590(packet);
     *pnResult = 1;
     return 1;
@@ -374,8 +374,8 @@ int CManufactureManager::SendRequest6(unsigned __int64 nId, int* pnResult)
         return 0;
     }
     COutPacket packet(static_cast<int>(SendOp::MaidCraftItem), 0);
-    packet.vfunc_o10_1(6);
-    packet.vfunc_o10_4(nId);
+    packet.WriteUInt8(6);
+    packet.WriteInt64(nId);
     FUN_140710590(packet);
     *pnResult = 2;
     return 1;
@@ -391,8 +391,8 @@ int CManufactureManager::SendRequest7(unsigned __int64 nId, int* pnResult)
         return 0;
     }
     COutPacket packet(static_cast<int>(SendOp::MaidCraftItem), 0);
-    packet.vfunc_o10_1(7);
-    packet.vfunc_o10_4(nId);
+    packet.WriteUInt8(7);
+    packet.WriteInt64(nId);
     FUN_140710590(packet);
     *pnResult = 2;
     return 1;
@@ -408,8 +408,8 @@ int CManufactureManager::SendRequest8(unsigned __int64 nId, int* pnResult)
         return 0;
     }
     COutPacket packet(static_cast<int>(SendOp::MaidCraftItem), 0);
-    packet.vfunc_o10_1(8);
-    packet.vfunc_o10_4(nId);
+    packet.WriteUInt8(8);
+    packet.WriteInt64(nId);
     FUN_140710590(packet);
     *pnResult = 2;
     return 1;
@@ -425,8 +425,8 @@ int CManufactureManager::SendRequest9(unsigned __int64 nId, int* pnResult)
         return 0;
     }
     COutPacket packet(static_cast<int>(SendOp::MaidCraftItem), 0);
-    packet.vfunc_o10_1(9);
-    packet.vfunc_o10_4(nId);
+    packet.WriteUInt8(9);
+    packet.WriteInt64(nId);
     FUN_140710590(packet);
     *pnResult = 3;
     return 1;
@@ -442,8 +442,8 @@ int CManufactureManager::SendRequest10(unsigned __int64 nId, int* pnResult)
         return 0;
     }
     COutPacket packet(static_cast<int>(SendOp::MaidCraftItem), 0);
-    packet.vfunc_o10_1(10);
-    packet.vfunc_o10_4(nId);
+    packet.WriteUInt8(10);
+    packet.WriteInt64(nId);
     FUN_140710590(packet);
     *pnResult = 4;
     return 1;

@@ -460,10 +460,10 @@ bool StateInteraction::vfunc_25(int, void*) { return false; }
 void StateInteraction::SendInteractObjectMode11()
 {
     COutPacket kPacket(static_cast<int>(SendOp::InteractObject), 0);
-    kPacket.vfunc_o10_1(0xb);
-    kPacket.vfunc_o10_3(static_cast<int>(m_aObjects.size()));
+    kPacket.WriteUInt8(0xb);
+    kPacket.WriteInt32(static_cast<int>(m_aObjects.size()));
     for (size_t i = 0; i < m_aObjects.size(); i++)
-        kPacket.vfunc_o10_7(m_aObjects[i]->GetName());
+        kPacket.WriteString(m_aObjects[i]->GetName());
     FUN_140710590(kPacket);
     for (size_t i = 0; i < m_aObjects.size(); i++)
     {
@@ -484,10 +484,10 @@ void StateInteraction::SendInteractObjectMode12()
             aUsable.push_back(m_aObjects[i]);
     }
     COutPacket kPacket(static_cast<int>(SendOp::InteractObject), 0);
-    kPacket.vfunc_o10_1(0xc);
-    kPacket.vfunc_o10_3(static_cast<int>(aUsable.size()));
+    kPacket.WriteUInt8(0xc);
+    kPacket.WriteInt32(static_cast<int>(aUsable.size()));
     for (size_t i = 0; i < aUsable.size(); i++)
-        kPacket.vfunc_o10_7(aUsable[i]->GetName());
+        kPacket.WriteString(aUsable[i]->GetName());
     FUN_140710590(kPacket);
 }
 
@@ -770,10 +770,10 @@ void StateAutoInteraction::vfunc_3(double fTime)
             if (m_spAuto.get())
             {
                 COutPacket kPacket(static_cast<int>(SendOp::SmartPush), 0);
-                kPacket.vfunc_o10_3(m_spAuto->m_n18);
-                kPacket.vfunc_o10_3(m_spAuto->m_n1c);
-                kPacket.vfunc_o10_3(m_spAuto->m_n20);
-                kPacket.vfunc_o10_0(true);
+                kPacket.WriteInt32(m_spAuto->m_n18);
+                kPacket.WriteInt32(m_spAuto->m_n1c);
+                kPacket.WriteInt32(m_spAuto->m_n20);
+                kPacket.WriteBool(true);
                 FUN_140710590(kPacket);
             }
         }

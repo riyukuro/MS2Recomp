@@ -535,18 +535,18 @@ void CBlackMarketProduct::Write(COutputStream* pStream)
 {
     if (m_item == 0)
         return;
-    pStream->vfunc_o10_4(m_qw18);
-    pStream->vfunc_o10_4(m_qw20);
-    pStream->vfunc_o10_4(m_qw28);
-    pStream->vfunc_o10_4(m_nExpire);
-    pStream->vfunc_o10_3(m_nCount);
-    pStream->vfunc_o10_3(m_nBought);
-    pStream->vfunc_o10_4(m_nUnitPrice);
-    pStream->vfunc_o10_1((unsigned char)m_nStateB);
-    pStream->vfunc_o10_4(m_item->FUN_140526a50());
-    pStream->vfunc_o10_3(m_item->FUN_1405276c0());
-    pStream->vfunc_o10_1((unsigned char)m_item->FUN_140526bd0());
-    pStream->vfunc_o10_4(m_qw68);
+    pStream->WriteInt64(m_qw18);
+    pStream->WriteInt64(m_qw20);
+    pStream->WriteInt64(m_qw28);
+    pStream->WriteInt64(m_nExpire);
+    pStream->WriteInt32(m_nCount);
+    pStream->WriteInt32(m_nBought);
+    pStream->WriteInt64(m_nUnitPrice);
+    pStream->WriteUInt8((unsigned char)m_nStateB);
+    pStream->WriteInt64(m_item->FUN_140526a50());
+    pStream->WriteInt32(m_item->FUN_1405276c0());
+    pStream->WriteUInt8((unsigned char)m_item->FUN_140526bd0());
+    pStream->WriteInt64(m_qw68);
     m_item->FUN_140524ad0(*pStream);
 }
 
@@ -557,18 +557,18 @@ MS2_REPLACE_METHOD(0x1401BDD80, CBlackMarketProduct, Write, 467, 0x4E40E47D);
 void CBlackMarketProduct::Read(CInPacket* pPacket)
 {
     CInputStream& stream = *pPacket;
-    m_qw18 = stream.vfunc_o8_4();
-    m_qw20 = stream.vfunc_o8_4();
-    m_qw28 = stream.vfunc_o8_4();
-    m_nExpire = stream.vfunc_o8_4();
-    m_nCount = stream.vfunc_o8_3();
-    m_nBought = stream.vfunc_o8_3();
-    m_nUnitPrice = stream.vfunc_o8_4();
-    m_nStateB = (unsigned char)stream.vfunc_o8_1();
-    __int64 nUid = stream.vfunc_o8_4();
-    int nId = stream.vfunc_o8_3();
-    unsigned char nRank = stream.vfunc_o8_1();
-    m_qw68 = stream.vfunc_o8_4();
+    m_qw18 = stream.ReadInt64();
+    m_qw20 = stream.ReadInt64();
+    m_qw28 = stream.ReadInt64();
+    m_nExpire = stream.ReadInt64();
+    m_nCount = stream.ReadInt32();
+    m_nBought = stream.ReadInt32();
+    m_nUnitPrice = stream.ReadInt64();
+    m_nStateB = (unsigned char)stream.ReadUInt8();
+    __int64 nUid = stream.ReadInt64();
+    int nId = stream.ReadInt32();
+    unsigned char nRank = stream.ReadUInt8();
+    m_qw68 = stream.ReadInt64();
     m_item.AssignRaw(new CItem);
     if (m_item->FUN_140523c40(nId, nRank, 0))
     {
@@ -746,28 +746,28 @@ MS2_REPLACE_METHOD(0x1401BE900, CBlackMarketSchCond, Read, 67, 0x3F2CE6F7);
 // @0x1401be950
 void CBlackMarketSchCond::WriteStream(COutputStream* pStream)
 {
-    pStream->vfunc_o10_3(m_dw18);
-    pStream->vfunc_o10_3(m_dw1c);
-    pStream->vfunc_o10_3(m_dw20);
-    pStream->vfunc_o10_3(m_dw24);
-    pStream->vfunc_o10_3(m_dw28);
-    pStream->vfunc_o10_3(m_dw2c);
-    pStream->vfunc_o10_3(m_dw30);
-    pStream->vfunc_o10_3(m_dw34);
-    pStream->vfunc_o10_1((unsigned char)m_dw38);
-    pStream->vfunc_o10_1((unsigned char)m_dw3c);
-    pStream->vfunc_o10_8(m_strName);
-    pStream->vfunc_o10_3(m_dw48);
-    pStream->vfunc_o10_1((unsigned char)m_dw54);
-    pStream->vfunc_o10_1((unsigned char)m_dw58);
-    pStream->vfunc_o10_3(m_dw50);
-    pStream->vfunc_o10_3(m_dw4c);
-    pStream->vfunc_o10_1((unsigned char)m_dw5c);
-    pStream->vfunc_o10_1((unsigned char)m_dw60);
+    pStream->WriteInt32(m_dw18);
+    pStream->WriteInt32(m_dw1c);
+    pStream->WriteInt32(m_dw20);
+    pStream->WriteInt32(m_dw24);
+    pStream->WriteInt32(m_dw28);
+    pStream->WriteInt32(m_dw2c);
+    pStream->WriteInt32(m_dw30);
+    pStream->WriteInt32(m_dw34);
+    pStream->WriteUInt8((unsigned char)m_dw38);
+    pStream->WriteUInt8((unsigned char)m_dw3c);
+    pStream->WriteUnicodeString(m_strName);
+    pStream->WriteInt32(m_dw48);
+    pStream->WriteUInt8((unsigned char)m_dw54);
+    pStream->WriteUInt8((unsigned char)m_dw58);
+    pStream->WriteInt32(m_dw50);
+    pStream->WriteInt32(m_dw4c);
+    pStream->WriteUInt8((unsigned char)m_dw5c);
+    pStream->WriteUInt8((unsigned char)m_dw60);
     for (int i = 0; i < 3; i++)
     {
-        pStream->vfunc_o10_3(m_aMin[i]);
-        pStream->vfunc_o10_3(m_aMax[i]);
+        pStream->WriteInt32(m_aMin[i]);
+        pStream->WriteInt32(m_aMax[i]);
     }
 }
 
@@ -776,28 +776,28 @@ MS2_REPLACE_METHOD(0x1401BE950, CBlackMarketSchCond, WriteStream, 580, 0xA49ACEC
 // @0x1401beba0
 void CBlackMarketSchCond::ReadStream(CInputStream* pStream)
 {
-    m_dw18 = pStream->vfunc_o8_3();
-    m_dw1c = pStream->vfunc_o8_3();
-    m_dw20 = pStream->vfunc_o8_3();
-    m_dw24 = pStream->vfunc_o8_3();
-    m_dw28 = pStream->vfunc_o8_3();
-    m_dw2c = pStream->vfunc_o8_3();
-    m_dw30 = pStream->vfunc_o8_3();
-    m_dw34 = pStream->vfunc_o8_3();
-    m_dw38 = pStream->vfunc_o8_1();
-    m_dw3c = pStream->vfunc_o8_1();
-    m_strName = pStream->vfunc_o8_8();
-    m_dw48 = pStream->vfunc_o8_3();
-    m_dw54 = pStream->vfunc_o8_1();
-    m_dw58 = pStream->vfunc_o8_1();
-    m_dw50 = pStream->vfunc_o8_3();
-    m_dw4c = pStream->vfunc_o8_3();
-    m_dw5c = pStream->vfunc_o8_1();
-    m_dw60 = pStream->vfunc_o8_1();
+    m_dw18 = pStream->ReadInt32();
+    m_dw1c = pStream->ReadInt32();
+    m_dw20 = pStream->ReadInt32();
+    m_dw24 = pStream->ReadInt32();
+    m_dw28 = pStream->ReadInt32();
+    m_dw2c = pStream->ReadInt32();
+    m_dw30 = pStream->ReadInt32();
+    m_dw34 = pStream->ReadInt32();
+    m_dw38 = pStream->ReadUInt8();
+    m_dw3c = pStream->ReadUInt8();
+    m_strName = pStream->ReadUnicodeString();
+    m_dw48 = pStream->ReadInt32();
+    m_dw54 = pStream->ReadUInt8();
+    m_dw58 = pStream->ReadUInt8();
+    m_dw50 = pStream->ReadInt32();
+    m_dw4c = pStream->ReadInt32();
+    m_dw5c = pStream->ReadUInt8();
+    m_dw60 = pStream->ReadUInt8();
     for (int i = 0; i < 3; i++)
     {
-        m_aMin[i] = pStream->vfunc_o8_3();
-        m_aMax[i] = pStream->vfunc_o8_3();
+        m_aMin[i] = pStream->ReadInt32();
+        m_aMax[i] = pStream->ReadInt32();
     }
 }
 

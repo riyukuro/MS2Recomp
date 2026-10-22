@@ -133,14 +133,14 @@ struct Unk_1407a5270 { __int64 m_00; unsigned char m_08; };
 // @0x1407a5270
 void FUN_1407a5270(Unk_1407a5270& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_00);
-    out.vfunc_o10_1(v.m_08);
+    out.WriteInt64(v.m_00);
+    out.WriteUInt8(v.m_08);
 }
 // @0x1407a52c0
 void FUN_1407a52c0(Unk_1407a5270& v, CInPacket& in)
 {
-    v.m_00 = in.vfunc_o8_4();
-    v.m_08 = in.vfunc_o8_1();
+    v.m_00 = in.ReadInt64();
+    v.m_08 = in.ReadUInt8();
 }
 struct Unk_1407a5330 {
     __int64 m_00, m_08; CStringW m_10, m_18; int m_20, m_24, m_28, m_2c, m_30, m_34; CString m_38; __int64 m_40; int m_48, m_4c, m_50, m_54;
@@ -148,40 +148,40 @@ struct Unk_1407a5330 {
 // @0x1407a5330
 void FUN_1407a5330(Unk_1407a5330& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_00);
-    out.vfunc_o10_4(v.m_08);
-    out.vfunc_o10_8(v.m_10);
+    out.WriteInt64(v.m_00);
+    out.WriteInt64(v.m_08);
+    out.WriteUnicodeString(v.m_10);
     bool empty = v.m_18.IsEmpty();
-    out.vfunc_o10_1(empty);
-    if (empty) out.vfunc_o10_3(v.m_48);
-    else out.vfunc_o10_8(v.m_18);
-    out.vfunc_o10_3(v.m_20);
-    out.vfunc_o10_1(v.m_34);
-    out.vfunc_o10_3(v.m_30);
-    if (v.m_20 == 3) out.vfunc_o10_6(v.m_38);
-    else if (v.m_20 == 0x14) out.vfunc_o10_4(v.m_40);
-    else if (v.m_20 == 0x10 || v.m_20 == 0x19) out.vfunc_o10_3(v.m_50);
-    out.vfunc_o10_1(v.m_4c);
+    out.WriteUInt8(empty);
+    if (empty) out.WriteInt32(v.m_48);
+    else out.WriteUnicodeString(v.m_18);
+    out.WriteInt32(v.m_20);
+    out.WriteUInt8(v.m_34);
+    out.WriteInt32(v.m_30);
+    if (v.m_20 == 3) out.WriteUnicodeStringA(v.m_38);
+    else if (v.m_20 == 0x14) out.WriteInt64(v.m_40);
+    else if (v.m_20 == 0x10 || v.m_20 == 0x19) out.WriteInt32(v.m_50);
+    out.WriteUInt8(v.m_4c);
 }
 // @0x1407a5500
 void FUN_1407a5500(Unk_1407a5330& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_4();
-    v.m_08 = in.vfunc_o8_4();
-    v.m_10 = in.vfunc_o8_8();
-    if (in.vfunc_o8_1() == 0) {
-        v.m_18 = in.vfunc_o8_8();
+    v.m_00 = in.ReadInt64();
+    v.m_08 = in.ReadInt64();
+    v.m_10 = in.ReadUnicodeString();
+    if (in.ReadUInt8() == 0) {
+        v.m_18 = in.ReadUnicodeString();
     } else {
-        v.m_48 = in.vfunc_o8_3();
+        v.m_48 = in.ReadInt32();
         v.m_18 = GetStringCommon(v.m_48);
     }
-    v.m_20 = in.vfunc_o8_3();
-    v.m_34 = in.vfunc_o8_1();
-    v.m_30 = in.vfunc_o8_3();
-    if (v.m_20 == 3) v.m_38 = in.vfunc_o8_6();
-    else if (v.m_20 == 0x14) v.m_40 = in.vfunc_o8_4();
-    else if (v.m_20 == 0x10 || v.m_20 == 0x19) v.m_50 = in.vfunc_o8_3();
-    v.m_4c = in.vfunc_o8_1();
+    v.m_20 = in.ReadInt32();
+    v.m_34 = in.ReadUInt8();
+    v.m_30 = in.ReadInt32();
+    if (v.m_20 == 3) v.m_38 = in.ReadUnicodeStringA();
+    else if (v.m_20 == 0x14) v.m_40 = in.ReadInt64();
+    else if (v.m_20 == 0x10 || v.m_20 == 0x19) v.m_50 = in.ReadInt32();
+    v.m_4c = in.ReadUInt8();
 }
 
 struct Unk_1407a5820 {
@@ -193,22 +193,22 @@ Unk_1407a5820::Unk_1407a5820() : m_00(0), m_08(0), m_0c(0), m_10(0) {}
 // @0x1407a5890
 void FUN_1407a5890(Unk_1407a5820& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_00);
-    out.vfunc_o10_3(v.m_08);
-    out.vfunc_o10_3(v.m_0c);
-    out.vfunc_o10_4(v.m_10);
-    out.vfunc_o10_8(v.m_18);
-    out.vfunc_o10_8(v.m_20);
+    out.WriteInt64(v.m_00);
+    out.WriteInt32(v.m_08);
+    out.WriteInt32(v.m_0c);
+    out.WriteInt64(v.m_10);
+    out.WriteUnicodeString(v.m_18);
+    out.WriteUnicodeString(v.m_20);
 }
 // @0x1407a5960
 void FUN_1407a5960(Unk_1407a5820& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_4();
-    v.m_08 = in.vfunc_o8_3();
-    v.m_0c = in.vfunc_o8_3();
-    v.m_10 = in.vfunc_o8_4();
-    v.m_18 = in.vfunc_o8_8();
-    v.m_20 = in.vfunc_o8_8();
+    v.m_00 = in.ReadInt64();
+    v.m_08 = in.ReadInt32();
+    v.m_0c = in.ReadInt32();
+    v.m_10 = in.ReadInt64();
+    v.m_18 = in.ReadUnicodeString();
+    v.m_20 = in.ReadUnicodeString();
 }
 
 struct Unk_1407a5a80 {
@@ -220,14 +220,14 @@ Unk_1407a5a80::Unk_1407a5a80() : m_00(0), m_04(0) {}
 // @0x1407a5ab0
 void FUN_1407a5ab0(Unk_1407a5a80& v, COutputStream& out)
 {
-    out.vfunc_o10_3(v.m_00);
-    out.vfunc_o10_3(v.m_04);
+    out.WriteInt32(v.m_00);
+    out.WriteInt32(v.m_04);
 }
 // @0x1407a5b00
 void FUN_1407a5b00(Unk_1407a5a80& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_3();
-    v.m_04 = in.vfunc_o8_3();
+    v.m_00 = in.ReadInt32();
+    v.m_04 = in.ReadInt32();
 }
 
 struct Unk_1407a5b50 {
@@ -237,9 +237,9 @@ struct Unk_1407a5b50 {
 // @0x1407a5b50
 Unk_1407a5b50::Unk_1407a5b50() : m_00(0) {}
 // @0x1407a5b70
-void FUN_1407a5b70(Unk_1407a5b50& v, COutputStream& out) { out.vfunc_o10_3(v.m_00); }
+void FUN_1407a5b70(Unk_1407a5b50& v, COutputStream& out) { out.WriteInt32(v.m_00); }
 // @0x1407a5ba0
-void FUN_1407a5ba0(Unk_1407a5b50& v, CInputStream& in) { v.m_00 = in.vfunc_o8_3(); }
+void FUN_1407a5ba0(Unk_1407a5b50& v, CInputStream& in) { v.m_00 = in.ReadInt32(); }
 
 struct Unk_1407a5bd0 {
     std::vector<std::pair<int,int> > list;
@@ -251,20 +251,20 @@ Unk_1407a5bd0::Unk_1407a5bd0() {}
 void FUN_1407a5c00(Unk_1407a5bd0& v, COutputStream& out)
 {
     unsigned short count = (unsigned short)v.list.size();
-    out.vfunc_o10_2(count);
+    out.WriteInt16(count);
     for (unsigned short i = 0; i < count; i++) {
-        out.vfunc_o10_3(v.list[i].first);
-        out.vfunc_o10_3(v.list[i].second);
+        out.WriteInt32(v.list[i].first);
+        out.WriteInt32(v.list[i].second);
     }
 }
 // @0x1407a5cd0
 void FUN_1407a5cd0(Unk_1407a5bd0& v, CInputStream& in)
 {
-    unsigned short count = in.vfunc_o8_2();
+    unsigned short count = in.ReadInt16();
     v.list.clear();
     for (unsigned short i = 0; i < count; i++) {
-        int first = in.vfunc_o8_3();
-        int second = in.vfunc_o8_3();
+        int first = in.ReadInt32();
+        int second = in.ReadInt32();
         v.list.push_back(std::make_pair(first, second));
     }
 }
@@ -278,257 +278,257 @@ Unk_1407a5d80::Unk_1407a5d80() : m_00(0), m_04(0), m_08(0), m_0c(0), m_10(0), m_
 // @0x1407a5de0
 void FUN_1407a5de0(Unk_1407a5d80& v, COutputStream& out)
 {
-    out.vfunc_o10_3(v.m_00);
-    out.vfunc_o10_1(v.m_04);
-    out.vfunc_o10_3(v.m_08);
-    out.vfunc_o10_2(v.m_0c);
-    out.vfunc_o10_1(v.m_10);
-    if (v.m_10 != 0) out.vfunc_o10_3(v.m_14);
+    out.WriteInt32(v.m_00);
+    out.WriteUInt8(v.m_04);
+    out.WriteInt32(v.m_08);
+    out.WriteInt16(v.m_0c);
+    out.WriteUInt8(v.m_10);
+    if (v.m_10 != 0) out.WriteInt32(v.m_14);
 }
 // @0x1407a5ea0
 void FUN_1407a5ea0(Unk_1407a5d80& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_3();
-    v.m_04 = in.vfunc_o8_1();
-    v.m_08 = in.vfunc_o8_3();
-    v.m_0c = in.vfunc_o8_2();
-    v.m_10 = in.vfunc_o8_1();
-    if (v.m_10 != 0) v.m_14 = in.vfunc_o8_3();
+    v.m_00 = in.ReadInt32();
+    v.m_04 = in.ReadUInt8();
+    v.m_08 = in.ReadInt32();
+    v.m_0c = in.ReadInt16();
+    v.m_10 = in.ReadUInt8();
+    if (v.m_10 != 0) v.m_14 = in.ReadInt32();
 }
 
 struct Unk_1407a5f60 { bool m_00; __int64 m_08; CStringW m_10; };
 // @0x1407a5f60
 void FUN_1407a5f60(Unk_1407a5f60& v, COutputStream& out)
 {
-    out.vfunc_o10_1(v.m_00);
-    out.vfunc_o10_4(v.m_08);
-    out.vfunc_o10_8(v.m_10);
+    out.WriteUInt8(v.m_00);
+    out.WriteInt64(v.m_08);
+    out.WriteUnicodeString(v.m_10);
 }
 // @0x1407a5fd0
 void FUN_1407a5fd0(Unk_1407a5f60& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_1() == 1;
-    v.m_08 = in.vfunc_o8_4();
-    v.m_10 = in.vfunc_o8_8();
+    v.m_00 = in.ReadUInt8() == 1;
+    v.m_08 = in.ReadInt64();
+    v.m_10 = in.ReadUnicodeString();
 }
 
 struct Unk_1407a6090 { int m_00, m_04; short m_08; CStringW m_10; };
 // @0x1407a6090
 void FUN_1407a6090(Unk_1407a6090& v, COutputStream& out)
 {
-    out.vfunc_o10_3(v.m_00);
-    out.vfunc_o10_3(v.m_04);
-    out.vfunc_o10_2(v.m_08);
-    out.vfunc_o10_8(v.m_10);
+    out.WriteInt32(v.m_00);
+    out.WriteInt32(v.m_04);
+    out.WriteInt16(v.m_08);
+    out.WriteUnicodeString(v.m_10);
 }
 // @0x1407a6120
 void FUN_1407a6120(Unk_1407a6090& v, CInPacket& in)
 {
-    v.m_00 = in.vfunc_o8_3();
-    v.m_04 = in.vfunc_o8_3();
-    v.m_08 = in.vfunc_o8_2();
-    v.m_10 = in.vfunc_o8_8();
+    v.m_00 = in.ReadInt32();
+    v.m_04 = in.ReadInt32();
+    v.m_08 = in.ReadInt16();
+    v.m_10 = in.ReadUnicodeString();
 }
 
 struct Unk_1407a6220 { int m_00; short m_04; CStringW m_08; };
 // @0x1407a6220
 void FUN_1407a6220(Unk_1407a6220& v, COutputStream& out)
 {
-    out.vfunc_o10_3(v.m_00);
-    out.vfunc_o10_2(v.m_04);
-    out.vfunc_o10_8(v.m_08);
+    out.WriteInt32(v.m_00);
+    out.WriteInt16(v.m_04);
+    out.WriteUnicodeString(v.m_08);
 }
 // @0x1407a6290
 void FUN_1407a6290(Unk_1407a6220& v, CInPacket& in)
 {
-    v.m_00 = in.vfunc_o8_3();
-    v.m_04 = in.vfunc_o8_2();
-    v.m_08 = in.vfunc_o8_8();
+    v.m_00 = in.ReadInt32();
+    v.m_04 = in.ReadInt16();
+    v.m_08 = in.ReadUnicodeString();
 }
 // @0x1407a6360
 void FUN_1407a6360(Unk_1407a5a80& v, COutputStream& out)
 {
-    out.vfunc_o10_3(v.m_00);
-    out.vfunc_o10_3(v.m_04);
+    out.WriteInt32(v.m_00);
+    out.WriteInt32(v.m_04);
 }
 // @0x1407a63b0
 void FUN_1407a63b0(Unk_1407a5a80& v, CInPacket& in)
 {
-    v.m_00 = in.vfunc_o8_3();
-    v.m_04 = in.vfunc_o8_3();
+    v.m_00 = in.ReadInt32();
+    v.m_04 = in.ReadInt32();
 }
 
 // @0x1407a6420
 void FUN_1407a6420(const ATL::CAtlArray<unsigned __int64>& ids, COutputStream& out)
 {
     int count = (int)ids.GetCount();
-    out.vfunc_o10_3(count);
-    for (int i = 0; i < count; i = i + 1) out.vfunc_o10_4(ids[i]);
+    out.WriteInt32(count);
+    for (int i = 0; i < count; i = i + 1) out.WriteInt64(ids[i]);
 }
 // @0x1407a64b0
 void FUN_1407a64b0(ATL::CAtlArray<unsigned __int64>& ids, CInPacket& in)
 {
-    int count = in.vfunc_o8_3();
+    int count = in.ReadInt32();
     for (int i = 0; i < count; i = i + 1) {
-        unsigned __int64 id = in.vfunc_o8_4();
+        unsigned __int64 id = in.ReadInt64();
         ids.Add(id);
     }
 }
 // @0x1407a6540
-void FUN_1407a6540(Unk_1407a5b50& v, COutputStream& out) { out.vfunc_o10_3(v.m_00); }
+void FUN_1407a6540(Unk_1407a5b50& v, COutputStream& out) { out.WriteInt32(v.m_00); }
 // @0x1407a6570
-void FUN_1407a6570(Unk_1407a5b50& v, CInPacket& in) { v.m_00 = in.vfunc_o8_3(); }
+void FUN_1407a6570(Unk_1407a5b50& v, CInPacket& in) { v.m_00 = in.ReadInt32(); }
 
 struct Unk_1407a65c0 { __int64 m_00, m_08, m_10; int m_18; CStringW m_20; __int64 m_28, m_30; };
 // @0x1407a65c0
 void FUN_1407a65c0(Unk_1407a65c0& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_00);
-    out.vfunc_o10_4(v.m_08);
-    out.vfunc_o10_4(v.m_10);
-    out.vfunc_o10_3(v.m_18);
-    out.vfunc_o10_8(v.m_20);
-    out.vfunc_o10_4(v.m_28);
-    out.vfunc_o10_4(v.m_30);
+    out.WriteInt64(v.m_00);
+    out.WriteInt64(v.m_08);
+    out.WriteInt64(v.m_10);
+    out.WriteInt32(v.m_18);
+    out.WriteUnicodeString(v.m_20);
+    out.WriteInt64(v.m_28);
+    out.WriteInt64(v.m_30);
 }
 // @0x1407a66a0
 void FUN_1407a66a0(Unk_1407a65c0& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_4();
-    v.m_08 = in.vfunc_o8_4();
-    v.m_10 = in.vfunc_o8_4();
-    v.m_18 = in.vfunc_o8_3();
-    v.m_20 = in.vfunc_o8_8();
-    v.m_28 = in.vfunc_o8_4();
-    v.m_30 = in.vfunc_o8_4();
+    v.m_00 = in.ReadInt64();
+    v.m_08 = in.ReadInt64();
+    v.m_10 = in.ReadInt64();
+    v.m_18 = in.ReadInt32();
+    v.m_20 = in.ReadUnicodeString();
+    v.m_28 = in.ReadInt64();
+    v.m_30 = in.ReadInt64();
 }
 
 struct Unk_1407a67a0 { __int64 m_00, m_08; };
 // @0x1407a67a0
 void FUN_1407a67a0(Unk_1407a67a0& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_00);
-    out.vfunc_o10_4(v.m_08);
+    out.WriteInt64(v.m_00);
+    out.WriteInt64(v.m_08);
 }
 // @0x1407a67f0
 void FUN_1407a67f0(Unk_1407a67a0& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_4();
-    v.m_08 = in.vfunc_o8_4();
+    v.m_00 = in.ReadInt64();
+    v.m_08 = in.ReadInt64();
 }
 
 struct Unk_1407a6840 { __int64 m_00; unsigned __int64 m_08; };
 // @0x1407a6840
 void FUN_1407a6840(Unk_1407a6840& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_00);
-    out.vfunc_o10_3((int)v.m_08);
+    out.WriteInt64(v.m_00);
+    out.WriteInt32((int)v.m_08);
 }
 // @0x1407a6890
 void FUN_1407a6890(Unk_1407a6840& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_4();
-    v.m_08 = (unsigned int)in.vfunc_o8_3();
+    v.m_00 = in.ReadInt64();
+    v.m_08 = (unsigned int)in.ReadInt32();
 }
 
 struct Unk_1407a68e0 { __int64 m_00, m_08, m_10, m_18, m_20, m_28; };
 // @0x1407a68e0
 void FUN_1407a68e0(Unk_1407a68e0& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_00);
-    out.vfunc_o10_4(v.m_08);
-    out.vfunc_o10_4(v.m_10);
-    out.vfunc_o10_4(v.m_18);
-    out.vfunc_o10_4(v.m_20);
-    out.vfunc_o10_4(v.m_28);
+    out.WriteInt64(v.m_00);
+    out.WriteInt64(v.m_08);
+    out.WriteInt64(v.m_10);
+    out.WriteInt64(v.m_18);
+    out.WriteInt64(v.m_20);
+    out.WriteInt64(v.m_28);
 }
 // @0x1407a6990
 void FUN_1407a6990(Unk_1407a68e0& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_4();
-    v.m_08 = in.vfunc_o8_4();
-    v.m_10 = in.vfunc_o8_4();
-    v.m_18 = in.vfunc_o8_4();
-    v.m_20 = in.vfunc_o8_4();
-    v.m_28 = in.vfunc_o8_4();
+    v.m_00 = in.ReadInt64();
+    v.m_08 = in.ReadInt64();
+    v.m_10 = in.ReadInt64();
+    v.m_18 = in.ReadInt64();
+    v.m_20 = in.ReadInt64();
+    v.m_28 = in.ReadInt64();
 }
 
 struct Unk_1407a6a40 { __int64 m_00, m_08, m_10; };
 // @0x1407a6a40
 void FUN_1407a6a40(Unk_1407a6a40& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_00);
-    out.vfunc_o10_4(v.m_08);
-    out.vfunc_o10_4(v.m_10);
+    out.WriteInt64(v.m_00);
+    out.WriteInt64(v.m_08);
+    out.WriteInt64(v.m_10);
 }
 // @0x1407a6ab0
 void FUN_1407a6ab0(Unk_1407a6a40& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_4();
-    v.m_08 = in.vfunc_o8_4();
-    v.m_10 = in.vfunc_o8_4();
+    v.m_00 = in.ReadInt64();
+    v.m_08 = in.ReadInt64();
+    v.m_10 = in.ReadInt64();
 }
 
 struct Unk_1407a6b20 { int m_00, m_04; __int64 m_08, m_10; CStringW m_18, m_20; };
 // @0x1407a6b20
 void FUN_1407a6b20(Unk_1407a6b20& v, COutputStream& out)
 {
-    out.vfunc_o10_3(v.m_00);
-    out.vfunc_o10_3(v.m_04);
-    out.vfunc_o10_4(v.m_08);
-    out.vfunc_o10_4(v.m_10);
-    out.vfunc_o10_8(v.m_18);
-    out.vfunc_o10_8(v.m_20);
+    out.WriteInt32(v.m_00);
+    out.WriteInt32(v.m_04);
+    out.WriteInt64(v.m_08);
+    out.WriteInt64(v.m_10);
+    out.WriteUnicodeString(v.m_18);
+    out.WriteUnicodeString(v.m_20);
 }
 // @0x1407a6bf0
 void FUN_1407a6bf0(Unk_1407a6b20& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_3();
-    v.m_04 = in.vfunc_o8_3();
-    v.m_08 = in.vfunc_o8_4();
-    v.m_10 = in.vfunc_o8_4();
-    v.m_18 = in.vfunc_o8_8();
-    v.m_20 = in.vfunc_o8_8();
+    v.m_00 = in.ReadInt32();
+    v.m_04 = in.ReadInt32();
+    v.m_08 = in.ReadInt64();
+    v.m_10 = in.ReadInt64();
+    v.m_18 = in.ReadUnicodeString();
+    v.m_20 = in.ReadUnicodeString();
 }
 
 struct Unk_1407a6d10 { int m_00; int m_04; };
 // @0x1407a6d10
 void FUN_1407a6d10(Unk_1407a6d10& v, COutputStream& out)
 {
-    out.vfunc_o10_3(v.m_00);
-    out.vfunc_o10_1((unsigned char)v.m_04);
+    out.WriteInt32(v.m_00);
+    out.WriteUInt8((unsigned char)v.m_04);
 }
 // @0x1407a6d60
 void FUN_1407a6d60(Unk_1407a6d10& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_3();
-    v.m_04 = in.vfunc_o8_1();
+    v.m_00 = in.ReadInt32();
+    v.m_04 = in.ReadUInt8();
 }
 
 struct Unk_1407a6db0 { __int64 m_00; int m_08; };
 // @0x1407a6db0
 void FUN_1407a6db0(Unk_1407a6db0& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_00);
-    out.vfunc_o10_3(v.m_08);
+    out.WriteInt64(v.m_00);
+    out.WriteInt32(v.m_08);
 }
 // @0x1407a6e00
 void FUN_1407a6e00(Unk_1407a6db0& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_4();
-    v.m_08 = in.vfunc_o8_3();
+    v.m_00 = in.ReadInt64();
+    v.m_08 = in.ReadInt32();
 }
 // @0x1407a6e50
 void FUN_1407a6e50(Unk_1407a6db0& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_00);
-    out.vfunc_o10_3(v.m_08);
+    out.WriteInt64(v.m_00);
+    out.WriteInt32(v.m_08);
 }
 // @0x1407a6ea0
 void FUN_1407a6ea0(Unk_1407a6db0& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_4();
-    v.m_08 = in.vfunc_o8_3();
+    v.m_00 = in.ReadInt64();
+    v.m_08 = in.ReadInt32();
 }
 // @0x1407a6ef0
 void FUN_1407a6ef0(Unk_1407a6db0& v, COutputStream& out)
@@ -608,109 +608,109 @@ struct Unk_1407a72c0 { CString m_00, m_08; };
 // @0x1407a72c0
 void FUN_1407a72c0(Unk_1407a72c0& v, COutputStream& out)
 {
-    out.vfunc_o10_6(v.m_00);
-    out.vfunc_o10_6(v.m_08);
+    out.WriteUnicodeStringA(v.m_00);
+    out.WriteUnicodeStringA(v.m_08);
 }
 // @0x1407a7330
 void FUN_1407a7330(Unk_1407a72c0& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_6();
-    v.m_08 = in.vfunc_o8_6();
+    v.m_00 = in.ReadUnicodeStringA();
+    v.m_08 = in.ReadUnicodeStringA();
 }
 
 // @0x1407a73e0
 void FUN_1407a73e0(Unk_1407a6db0& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_00);
-    out.vfunc_o10_3(v.m_08);
+    out.WriteInt64(v.m_00);
+    out.WriteInt32(v.m_08);
 }
 // @0x1407a7430
 void FUN_1407a7430(Unk_1407a6db0& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_4();
-    v.m_08 = in.vfunc_o8_3();
+    v.m_00 = in.ReadInt64();
+    v.m_08 = in.ReadInt32();
 }
 
 struct Unk_1407a7480 { __int64 m_00; int m_08; CStringW m_10; __int64 m_18, m_20; };
 // @0x1407a7480
 void FUN_1407a7480(Unk_1407a7480& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_00);
-    out.vfunc_o10_1((unsigned char)v.m_08);
-    out.vfunc_o10_8(v.m_10);
-    out.vfunc_o10_4(v.m_18);
-    out.vfunc_o10_4(v.m_20);
+    out.WriteInt64(v.m_00);
+    out.WriteUInt8((unsigned char)v.m_08);
+    out.WriteUnicodeString(v.m_10);
+    out.WriteInt64(v.m_18);
+    out.WriteInt64(v.m_20);
 }
 // @0x1407a7530
 void FUN_1407a7530(Unk_1407a7480& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_4();
-    v.m_08 = in.vfunc_o8_1();
-    v.m_10 = in.vfunc_o8_8();
-    v.m_18 = in.vfunc_o8_4();
-    v.m_20 = in.vfunc_o8_4();
+    v.m_00 = in.ReadInt64();
+    v.m_08 = in.ReadUInt8();
+    v.m_10 = in.ReadUnicodeString();
+    v.m_18 = in.ReadInt64();
+    v.m_20 = in.ReadInt64();
 }
 
 struct Unk_1407a7600 { __int64 m_00; };
 // @0x1407a7600
-void FUN_1407a7600(Unk_1407a7600& v, COutputStream& out) { out.vfunc_o10_4(v.m_00); }
+void FUN_1407a7600(Unk_1407a7600& v, COutputStream& out) { out.WriteInt64(v.m_00); }
 // @0x1407a7640
-void FUN_1407a7640(Unk_1407a7600& v, CInputStream& in) { v.m_00 = in.vfunc_o8_4(); }
+void FUN_1407a7640(Unk_1407a7600& v, CInputStream& in) { v.m_00 = in.ReadInt64(); }
 
 struct Unk_1407a7680 { __int64 m_00; CStringW m_08; };
 // @0x1407a7680
 void FUN_1407a7680(Unk_1407a7680& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_00);
-    out.vfunc_o10_8(v.m_08);
+    out.WriteInt64(v.m_00);
+    out.WriteUnicodeString(v.m_08);
 }
 // @0x1407a76e0
 void FUN_1407a76e0(Unk_1407a7680& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_4();
-    v.m_08 = in.vfunc_o8_8();
+    v.m_00 = in.ReadInt64();
+    v.m_08 = in.ReadUnicodeString();
 }
 
 struct Unk_1407a7770 { __int64 m_00; unsigned char m_08; CStringW m_10; int m_18; };
 // @0x1407a7770
 void FUN_1407a7770(Unk_1407a7770& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_00);
-    out.vfunc_o10_1(v.m_08);
-    out.vfunc_o10_8(v.m_10);
-    out.vfunc_o10_3(v.m_18);
+    out.WriteInt64(v.m_00);
+    out.WriteUInt8(v.m_08);
+    out.WriteUnicodeString(v.m_10);
+    out.WriteInt32(v.m_18);
 }
 // @0x1407a7800
 void FUN_1407a7800(Unk_1407a7770& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_4();
-    v.m_08 = in.vfunc_o8_1();
-    v.m_10 = in.vfunc_o8_8();
-    v.m_18 = in.vfunc_o8_3();
+    v.m_00 = in.ReadInt64();
+    v.m_08 = in.ReadUInt8();
+    v.m_10 = in.ReadUnicodeString();
+    v.m_18 = in.ReadInt32();
 }
 // @0x1407a78c0
 void FUN_1407a78c0(Unk_1407a7680& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_00);
-    out.vfunc_o10_8(v.m_08);
+    out.WriteInt64(v.m_00);
+    out.WriteUnicodeString(v.m_08);
 }
 // @0x1407a7920
 void FUN_1407a7920(Unk_1407a7680& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_4();
-    v.m_08 = in.vfunc_o8_8();
+    v.m_00 = in.ReadInt64();
+    v.m_08 = in.ReadUnicodeString();
 }
 // @0x1407a79b0
 void FUN_1407a79b0(Unk_1407a6db0& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_00);
-    out.vfunc_o10_3(v.m_08);
+    out.WriteInt64(v.m_00);
+    out.WriteInt32(v.m_08);
 }
 // @0x1407a7a00
 void FUN_1407a7a00(Unk_1407a6db0& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_4();
-    v.m_08 = in.vfunc_o8_3();
+    v.m_00 = in.ReadInt64();
+    v.m_08 = in.ReadInt32();
 }
 
 // ---- COutSendNoticePacket: opcode 0x71, notice kind byte, flags, a StringIdInterfaceBase body, optional extra short -------
@@ -760,11 +760,11 @@ struct Unk_1407a7d20 {
 // @0x1407a7d20
 Unk_1407a7d20::Unk_1407a7d20(CInPacket& in) : m_10(0)
 {
-    m_00 = in.vfunc_o8_1();
-    m_04 = (unsigned short)in.vfunc_o8_2();
+    m_00 = in.ReadUInt8();
+    m_04 = (unsigned short)in.ReadInt16();
     StringIdInterface body(in);
     m_08 = body.FUN_141024e60();
-    if ((m_04 & 0x10) != 0) m_10 = (unsigned short)in.vfunc_o8_2();
+    if ((m_04 & 0x10) != 0) m_10 = (unsigned short)in.ReadInt16();
 }
 struct Unk_1407a7eb0 {
     __int64 m_00; CStringW m_08; unsigned char m_10; CStringW m_18;
@@ -773,9 +773,9 @@ struct Unk_1407a7eb0 {
 // @0x1407a7eb0
 Unk_1407a7eb0::Unk_1407a7eb0(CInPacket& in)
 {
-    m_00 = in.vfunc_o8_4();
-    m_08 = in.vfunc_o8_8();
-    m_10 = in.vfunc_o8_1();
+    m_00 = in.ReadInt64();
+    m_08 = in.ReadUnicodeString();
+    m_10 = in.ReadUInt8();
     StringIdInterface body(in);
     m_18 = body.FUN_141024e60();
 }
@@ -784,56 +784,56 @@ struct Unk_1407a8050 { int m_00, m_04; __int64 m_08; int m_10; int m_14; int m_1
 // @0x1407a8050
 void FUN_1407a8050(Unk_1407a8050& v, COutputStream& out)
 {
-    out.vfunc_o10_3(v.m_00);
-    out.vfunc_o10_3(v.m_04);
-    out.vfunc_o10_4(v.m_08);
-    out.vfunc_o10_1((unsigned char)v.m_10);
-    out.vfunc_o10_3(v.m_14);
-    out.vfunc_o10_1((unsigned char)v.m_18);
+    out.WriteInt32(v.m_00);
+    out.WriteInt32(v.m_04);
+    out.WriteInt64(v.m_08);
+    out.WriteUInt8((unsigned char)v.m_10);
+    out.WriteInt32(v.m_14);
+    out.WriteUInt8((unsigned char)v.m_18);
 }
 // @0x1407a8100
 void FUN_1407a8100(Unk_1407a8050& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_3();
-    v.m_04 = in.vfunc_o8_3();
-    v.m_08 = in.vfunc_o8_4();
-    v.m_10 = in.vfunc_o8_1();
-    v.m_14 = in.vfunc_o8_3();
-    v.m_18 = in.vfunc_o8_1();
+    v.m_00 = in.ReadInt32();
+    v.m_04 = in.ReadInt32();
+    v.m_08 = in.ReadInt64();
+    v.m_10 = in.ReadUInt8();
+    v.m_14 = in.ReadInt32();
+    v.m_18 = in.ReadUInt8();
 }
 
 struct Unk_1407a81b0 { int m_00; __int64 m_08, m_10, m_18; bool m_20; };
 // @0x1407a81b0
 void FUN_1407a81b0(Unk_1407a81b0& v, COutputStream& out)
 {
-    out.vfunc_o10_3(v.m_00);
-    out.vfunc_o10_4(v.m_08);
-    out.vfunc_o10_4(v.m_10);
-    out.vfunc_o10_4(v.m_18);
-    out.vfunc_o10_0(v.m_20);
+    out.WriteInt32(v.m_00);
+    out.WriteInt64(v.m_08);
+    out.WriteInt64(v.m_10);
+    out.WriteInt64(v.m_18);
+    out.WriteBool(v.m_20);
 }
 // @0x1407a8250
 void FUN_1407a8250(Unk_1407a81b0& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_3();
-    v.m_08 = in.vfunc_o8_4();
-    v.m_10 = in.vfunc_o8_4();
-    v.m_18 = in.vfunc_o8_4();
-    v.m_20 = in.vfunc_o8_0();
+    v.m_00 = in.ReadInt32();
+    v.m_08 = in.ReadInt64();
+    v.m_10 = in.ReadInt64();
+    v.m_18 = in.ReadInt64();
+    v.m_20 = in.ReadBool();
 }
 
 struct Unk_1407a82f0 { int m_00; __int64 m_08; };
 // @0x1407a82f0
 void FUN_1407a82f0(Unk_1407a82f0& v, COutputStream& out)
 {
-    out.vfunc_o10_3(v.m_00);
-    out.vfunc_o10_4(v.m_08);
+    out.WriteInt32(v.m_00);
+    out.WriteInt64(v.m_08);
 }
 // @0x1407a8340
 void FUN_1407a8340(Unk_1407a82f0& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_3();
-    v.m_08 = in.vfunc_o8_4();
+    v.m_00 = in.ReadInt32();
+    v.m_08 = in.ReadInt64();
 }
 
 // ---- ItemCloset ----------------------------------------------------------------------------------------------------
@@ -844,37 +844,37 @@ ItemCloset::SlotInfo::~SlotInfo() {}
 // @0x1407a8390
 void ItemCloset::SlotInfo::FUN_1407a8390(COutputStream& out) const
 {
-    out.vfunc_o10_4(m_itemId);
-    out.vfunc_o10_3(m_20);
-    out.vfunc_o10_3(m_24);
-    out.vfunc_o10_3(m_28);
+    out.WriteInt64(m_itemId);
+    out.WriteInt32(m_20);
+    out.WriteInt32(m_24);
+    out.WriteInt32(m_28);
 }
 // @0x1407a8410
 void ItemCloset::SlotInfo::FUN_1407a8410(CInPacket& in)
 {
-    m_itemId = in.vfunc_o8_4();
-    m_20 = in.vfunc_o8_3();
-    m_24 = in.vfunc_o8_3();
-    m_28 = in.vfunc_o8_3();
+    m_itemId = in.ReadInt64();
+    m_20 = in.ReadInt32();
+    m_24 = in.ReadInt32();
+    m_28 = in.ReadInt32();
 }
 // @0x1407a84e0
 void ItemCloset::TabInfo::FUN_1407a84e0(COutputStream& out) const
 {
-    out.vfunc_o10_3(m_18);
-    out.vfunc_o10_3(m_1c);
-    out.vfunc_o10_3(m_20);
-    out.vfunc_o10_8(m_name);
-    out.vfunc_o10_3((int)m_slots.GetCount());
+    out.WriteInt32(m_18);
+    out.WriteInt32(m_1c);
+    out.WriteInt32(m_20);
+    out.WriteUnicodeString(m_name);
+    out.WriteInt32((int)m_slots.GetCount());
     for (unsigned i = 0; i < m_slots.GetCount(); i = i + 1) m_slots[i]->FUN_1407a8390(out);
 }
 // @0x1407a8600
 void ItemCloset::TabInfo::FUN_1407a8600(CInPacket& in)
 {
-    m_18 = in.vfunc_o8_3();
-    m_1c = in.vfunc_o8_3();
-    m_20 = in.vfunc_o8_3();
-    m_name = in.vfunc_o8_8();
-    unsigned count = in.vfunc_o8_3();
+    m_18 = in.ReadInt32();
+    m_1c = in.ReadInt32();
+    m_20 = in.ReadInt32();
+    m_name = in.ReadUnicodeString();
+    unsigned count = in.ReadInt32();
     m_slots.SetCount(count, -1);
     for (unsigned i = 0; i < count; i = i + 1) {
         SlotInfo* slot = new SlotInfo();
@@ -895,58 +895,58 @@ struct Unk_1407a8820 {
 // @0x1407a8820
 void FUN_1407a8820(Unk_1407a8820& v, COutputStream& out)
 {
-    out.vfunc_o10_1((unsigned char)v.m_00);
+    out.WriteUInt8((unsigned char)v.m_00);
     if (v.m_00 == 0) {
-        out.vfunc_o10_4(v.m_08);
-        out.vfunc_o10_3(v.m_10);
-        out.vfunc_o10_4(v.m_18);
-        out.vfunc_o10_3((unsigned int)v.m_20.size());
-        for (std::set<unsigned int>::iterator it = v.m_20.begin(); it != v.m_20.end(); ++it) out.vfunc_o10_3(*it);
+        out.WriteInt64(v.m_08);
+        out.WriteInt32(v.m_10);
+        out.WriteInt64(v.m_18);
+        out.WriteInt32((unsigned int)v.m_20.size());
+        for (std::set<unsigned int>::iterator it = v.m_20.begin(); it != v.m_20.end(); ++it) out.WriteInt32(*it);
     }
     else if (v.m_00 == 1) {
-        out.vfunc_o10_4(v.m_08);
-        out.vfunc_o10_4(v.m_30);
+        out.WriteInt64(v.m_08);
+        out.WriteInt64(v.m_30);
     }
     else if (v.m_00 == 2) {
-        out.vfunc_o10_3(v.m_3c);
-        out.vfunc_o10_3(v.m_38);
+        out.WriteInt32(v.m_3c);
+        out.WriteInt32(v.m_38);
     }
     else if (v.m_00 == 4) {
-        out.vfunc_o10_1((unsigned char)v.m_40);
-        out.vfunc_o10_3((unsigned int)v.m_20.size());
-        for (std::set<unsigned int>::iterator it = v.m_20.begin(); it != v.m_20.end(); ++it) out.vfunc_o10_3(*it);
+        out.WriteUInt8((unsigned char)v.m_40);
+        out.WriteInt32((unsigned int)v.m_20.size());
+        for (std::set<unsigned int>::iterator it = v.m_20.begin(); it != v.m_20.end(); ++it) out.WriteInt32(*it);
     }
 }
 // @0x1407a8b20
 void FUN_1407a8b20(Unk_1407a8820& v, CInputStream& in)
 {
-    v.m_00 = in.vfunc_o8_1();
+    v.m_00 = in.ReadUInt8();
     switch (v.m_00) {
     case 1:
-        v.m_08 = in.vfunc_o8_4();
-        v.m_30 = in.vfunc_o8_4();
+        v.m_08 = in.ReadInt64();
+        v.m_30 = in.ReadInt64();
         break;
     case 2:
-        v.m_3c = in.vfunc_o8_3();
-        v.m_38 = in.vfunc_o8_3();
+        v.m_3c = in.ReadInt32();
+        v.m_38 = in.ReadInt32();
         break;
     case 0: {
-        v.m_08 = in.vfunc_o8_4();
-        v.m_10 = in.vfunc_o8_3();
-        v.m_18 = in.vfunc_o8_4();
+        v.m_08 = in.ReadInt64();
+        v.m_10 = in.ReadInt32();
+        v.m_18 = in.ReadInt64();
         v.m_20.clear();
-        int count = in.vfunc_o8_3();
+        int count = in.ReadInt32();
         for (int i = 0; i < count; i = i + 1) {
-            v.m_20.insert(in.vfunc_o8_3());
+            v.m_20.insert(in.ReadInt32());
         }
         break;
     }
     case 4: {
-        v.m_40 = in.vfunc_o8_1();
+        v.m_40 = in.ReadUInt8();
         v.m_20.clear();
-        int count = in.vfunc_o8_3();
+        int count = in.ReadInt32();
         for (int i = 0; i < count; i = i + 1) {
-            v.m_20.insert(in.vfunc_o8_3());
+            v.m_20.insert(in.ReadInt32());
         }
         break;
     }
@@ -968,49 +968,49 @@ CSAdventureLevelMission::~CSAdventureLevelMission()
 // @0x1407a8e00
 void CSAdventureLevelMission::FUN_1407a8e00(COutputStream& out) const
 {
-    out.vfunc_o10_1((unsigned char)m_kind);
+    out.WriteUInt8((unsigned char)m_kind);
     if (m_kind == 6) {
-        out.vfunc_o10_1((unsigned char)m_0c);
-        out.vfunc_o10_3((unsigned int)m_missions.size());
+        out.WriteUInt8((unsigned char)m_0c);
+        out.WriteInt32((unsigned int)m_missions.size());
         for (std::map<unsigned int, CAdventureLevelMissionData*>::const_iterator it = m_missions.begin(); it != m_missions.end(); ++it) {
-            out.vfunc_o10_4(it->first);
-            out.vfunc_o10_4(it->second->m_progress);
-            out.vfunc_o10_1(it->second->m_complete);
+            out.WriteInt64(it->first);
+            out.WriteInt64(it->second->m_progress);
+            out.WriteUInt8(it->second->m_complete);
         }
     }
     else if (m_kind == 7) {
-        out.vfunc_o10_3((unsigned int)m_missions.size());
+        out.WriteInt32((unsigned int)m_missions.size());
         for (std::map<unsigned int, CAdventureLevelMissionData*>::const_iterator it = m_missions.begin(); it != m_missions.end(); ++it) {
-            out.vfunc_o10_4(it->first);
-            out.vfunc_o10_4(it->second->m_progress);
-            out.vfunc_o10_1(it->second->m_complete);
+            out.WriteInt64(it->first);
+            out.WriteInt64(it->second->m_progress);
+            out.WriteUInt8(it->second->m_complete);
         }
     }
 }
 // @0x1407a90e0
 void CSAdventureLevelMission::FUN_1407a90e0(CInputStream& in)
 {
-    m_kind = in.vfunc_o8_1();
+    m_kind = in.ReadUInt8();
     if (m_kind == 6) {
-        m_0c = in.vfunc_o8_1();
+        m_0c = in.ReadUInt8();
         FUN_1407a95b0();
-        unsigned __int64 count = (unsigned int)in.vfunc_o8_3();
+        unsigned __int64 count = (unsigned int)in.ReadInt32();
         for (unsigned __int64 i = 0; i < count; i++) {
             CAdventureLevelMissionData* data = new CAdventureLevelMissionData();
-            unsigned int id = (unsigned int)in.vfunc_o8_4();
-            data->m_progress = (unsigned int)in.vfunc_o8_4();
-            data->m_complete = in.vfunc_o8_1() != 0;
+            unsigned int id = (unsigned int)in.ReadInt64();
+            data->m_progress = (unsigned int)in.ReadInt64();
+            data->m_complete = in.ReadUInt8() != 0;
             m_missions.insert(std::make_pair(id, data));
         }
     }
     else if (m_kind == 7) {
         FUN_1407a95b0();
-        unsigned __int64 count = (unsigned int)in.vfunc_o8_3();
+        unsigned __int64 count = (unsigned int)in.ReadInt32();
         for (unsigned __int64 i = 0; i < count; i++) {
             CAdventureLevelMissionData* data = new CAdventureLevelMissionData();
-            unsigned int id = (unsigned int)in.vfunc_o8_4();
-            data->m_progress = (unsigned int)in.vfunc_o8_4();
-            data->m_complete = in.vfunc_o8_1() != 0;
+            unsigned int id = (unsigned int)in.ReadInt64();
+            data->m_progress = (unsigned int)in.ReadInt64();
+            data->m_complete = in.ReadUInt8() != 0;
             m_missions.insert(std::make_pair(id, data));
         }
     }
@@ -1051,14 +1051,14 @@ Unk_1407a9690::Unk_1407a9690() : m_00(0), m_08(0) {}
 // @0x1407a96c0
 void FUN_1407a96c0(Unk_1407a9690& v, COutputStream& out)
 {
-    out.vfunc_o10_3(v.m_00);
-    out.vfunc_o10_3((int)v.m_08);
+    out.WriteInt32(v.m_00);
+    out.WriteInt32((int)v.m_08);
 }
 // @0x1407a9710
 void FUN_1407a9710(Unk_1407a9690& v, CInPacket& in)
 {
-    v.m_00 = in.vfunc_o8_3();
-    v.m_08 = (unsigned int)in.vfunc_o8_3();
+    v.m_00 = in.ReadInt32();
+    v.m_08 = (unsigned int)in.ReadInt32();
 }
 
 // ---- COMDAT bodies --------------------------------------------------------------------------------------------------

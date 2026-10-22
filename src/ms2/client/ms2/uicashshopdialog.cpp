@@ -745,9 +745,9 @@ void UICashShopDialog::FUN_141034e00(int nCash)
 // @0x141034ef0
 void UICashShopDialog::FUN_141034ef0(int n, CInPacket& rPacket)
 {
-    unsigned nCount = rPacket.vfunc_o8_3();
+    unsigned nCount = rPacket.ReadInt32();
     for (unsigned i = 0; i < nCount; i++) {
-        int nProductId = rPacket.vfunc_o8_3();
+        int nProductId = rPacket.ReadInt32();
         POSITION pos = m_basket.Find(nProductId);
         if (pos != 0) {
             m_basket.RemoveAt(pos);

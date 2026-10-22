@@ -223,7 +223,7 @@ void UIItemPetStudyDialog::FUN_140e55820(CInPacket& packet)
 {
     if (m_30 == 0)
         return;
-    int nCode = packet.vfunc_o8_1();
+    int nCode = packet.ReadUInt8();
     if (nCode == 0xe)
     {
         m_30->Invoke("complete");

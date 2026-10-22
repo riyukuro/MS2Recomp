@@ -57,7 +57,7 @@ int Unk_IntTriple::IsEqual(const Unk_IntTriple& other)
 void Unk_IntTriple::Write(COutputStream& out)
 {
     for (int i = 0; i < 3; ++i) {
-        out.vfunc_o10_3(m_v[i]);
+        out.WriteInt32(m_v[i]);
     }
 }
 
@@ -65,6 +65,6 @@ void Unk_IntTriple::Write(COutputStream& out)
 void Unk_IntTriple::Read(CInputStream& in)
 {
     for (int i = 0; i < 3; ++i) {
-        m_v[i] = in.vfunc_o8_3();
+        m_v[i] = in.ReadInt32();
     }
 }

@@ -178,8 +178,8 @@ void UIObjectStoreDialog::vfunc_66()
 void UIObjectStoreDialog::vfunc_67()
 {
     COutPacket packet(static_cast<int>(SendOp::FunctionCube), 0);
-    packet.vfunc_o10_1(7);
-    packet.vfunc_o10_6(m_190);
+    packet.WriteUInt8(7);
+    packet.WriteUnicodeStringA(m_190);
     FUN_140710590(packet);
     FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     FUN_14180b230(&m_180);

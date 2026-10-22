@@ -566,14 +566,14 @@ void UIArcadeMainDialog::FUN_140ef7d30(int nMode, CInPacket& packet)
 {
     if (nMode == 9)
     {
-        int nRegion = packet.vfunc_o8_3();
-        int nCount = packet.vfunc_o8_3();
+        int nRegion = packet.ReadInt32();
+        int nCount = packet.ReadInt32();
         if (nRegion != 0)
             m_nRegion = nRegion;
         for (int i = 0; i < nCount; i++)
         {
-            int nArcade = packet.vfunc_o8_3();
-            int nScore = packet.vfunc_o8_3();
+            int nArcade = packet.ReadInt32();
+            int nScore = packet.ReadInt32();
             if (nArcade > 6)
                 continue;
             m_scores[nArcade] = nScore;

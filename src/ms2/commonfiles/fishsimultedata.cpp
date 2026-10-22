@@ -67,21 +67,21 @@ CFishSimulteData::CFishSimulteData()
 // @0x1403b0ea0
 void CFishSimulteData::Write(COutputStream& out)
 {
-    out.vfunc_o10_3(m_n18);
-    out.vfunc_o10_3(m_n1c);
-    out.vfunc_o10_3(m_n20);
+    out.WriteInt32(m_n18);
+    out.WriteInt32(m_n1c);
+    out.WriteInt32(m_n20);
     for (size_t i = 0; i < 4; i++)
-        out.vfunc_o10_3(m_aN24[i]);
+        out.WriteInt32(m_aN24[i]);
 }
 
 // @0x1403b0f50
 void CFishSimulteData::Read(CByteBuffer& in)
 {
-    m_n18 = in.vfunc_o8_3();
-    m_n1c = in.vfunc_o8_3();
-    m_n20 = in.vfunc_o8_3();
+    m_n18 = in.ReadInt32();
+    m_n1c = in.ReadInt32();
+    m_n20 = in.ReadInt32();
     for (size_t i = 0; i < 4; i++)
-        m_aN24[i] = in.vfunc_o8_3();
+        m_aN24[i] = in.ReadInt32();
 }
 
 // ---- CFishData ----

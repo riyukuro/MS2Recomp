@@ -109,14 +109,14 @@ MS2_REPLACE_METHOD(0x14067C260, Unk_MachineId, FUN_14067c260, 80, 0x7B8B5145);
 // @0x14067c2c0
 void Unk_MachineId::FUN_14067c2c0(COutputStream* pOut) const
 {
-    pOut->vfunc_o10_9((void*)m_data, 16);
+    pOut->WriteBytes((void*)m_data, 16);
 }
 MS2_REPLACE_METHOD(0x14067C2C0, Unk_MachineId, FUN_14067c2c0, 59, 0x9FBAB988);
 
 // @0x14067c310
 void Unk_MachineId::FUN_14067c310(CInputStream* pIn)
 {
-    pIn->vfunc_o8_9(m_data, 16);
+    pIn->ReadBytes(m_data, 16);
 }
 MS2_REPLACE_METHOD(0x14067C310, Unk_MachineId, FUN_14067c310, 59, 0x9FBAB988);
 

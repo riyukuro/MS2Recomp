@@ -268,15 +268,15 @@ void UIVIPDialog::FUN_140fb87d0(CInPacket& packet, int nMode)
 {
     if (nMode == 1) {
         m_claimedIds.RemoveAll();
-        unsigned nCount = packet.vfunc_o8_3();
+        unsigned nCount = packet.ReadInt32();
         for (unsigned i = 0; i < nCount; i++)
-            m_claimedIds.AddTail(packet.vfunc_o8_3());
+            m_claimedIds.AddTail(packet.ReadInt32());
         FUN_140fb9150();
         Unk_VdGameMenu* pMenu = FUN_140938b90(0x4e28);
         if (pMenu != 0)
             pMenu->FUN_141938ae0(0x4f1b, 0);
     } else if (nMode == 2) {
-        unsigned nBenefitId = packet.vfunc_o8_3();
+        unsigned nBenefitId = packet.ReadInt32();
         m_claimedIds.AddTail(nBenefitId);
         FUN_140fb9150();
         CVIPBenefitItemPtr spBenefit = FUN_140fb9980()->GetBenefitItem(nBenefitId);

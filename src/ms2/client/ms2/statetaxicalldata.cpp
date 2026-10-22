@@ -290,7 +290,7 @@ void StateTaxiCall::vfunc_3(double fTime)
                 kReq.m_nTaxiId = m_spData->m_nTaxiId;
                 kReq.m_nCost = 100000000;
                 COutPacket kPacket(static_cast<int>(SendOp::RequestTaxi), 0);
-                kPacket.vfunc_o10_1(1);
+                kPacket.WriteUInt8(1);
                 FUN_1401fe9e0((unsigned char*)&kReq, kPacket);
                 FUN_140710590(kPacket);
             }

@@ -105,7 +105,7 @@ MS2Ptr<DungeonRoom> RoomStageDungeonCli::GetRoom()
 // @0x140c9d0c0
 void RoomStageDungeonCli::OnPacket(CInPacket& packet)
 {
-    int nMode = packet.vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 0:
@@ -133,10 +133,10 @@ void RoomStageDungeonCli::OnPacket(CInPacket& packet)
 void RoomStageDungeonCli::OnInitMissions(CInPacket& packet)
 {
     m_missions.clear();
-    unsigned nCount = packet.vfunc_o8_3();
+    unsigned nCount = packet.ReadInt32();
     for (unsigned i = 0; i < nCount; i++)
     {
-        int nId = packet.vfunc_o8_3();
+        int nId = packet.ReadInt32();
         MS2Ptr<DungeonMissionCli> miCli = DungeonMissionCli::Create(nId);
         MS2_ASSERT_AT(0x68, miCli);
         if (miCli == 0)
@@ -149,10 +149,10 @@ void RoomStageDungeonCli::OnInitMissions(CInPacket& packet)
 // @0x140c9d320
 void RoomStageDungeonCli::OnUpdateMissions(CInPacket& packet)
 {
-    unsigned nCount = packet.vfunc_o8_3();
+    unsigned nCount = packet.ReadInt32();
     for (unsigned i = 0; i < nCount; i++)
     {
-        int nId = packet.vfunc_o8_3();
+        int nId = packet.ReadInt32();
         MS2Ptr<DungeonMissionCli> miCli = FindMission(nId);
         if (miCli == 0)
         {
@@ -166,7 +166,7 @@ void RoomStageDungeonCli::OnUpdateMissions(CInPacket& packet)
 // @0x140c9d460
 void RoomStageDungeonCli::OnSyncMissions(CInPacket& packet)
 {
-    unsigned nCount = packet.vfunc_o8_3();
+    unsigned nCount = packet.ReadInt32();
     if (m_missions.size() != nCount)
     {
         MS2_ASSERT_AT(0x88, 0);
@@ -174,7 +174,7 @@ void RoomStageDungeonCli::OnSyncMissions(CInPacket& packet)
     }
     for (unsigned i = 0; i < nCount; i++)
     {
-        int nId = packet.vfunc_o8_3();
+        int nId = packet.ReadInt32();
         if (m_missions[i]->GetId() != nId)
         {
             MS2_ASSERT_AT(0x91, 0);
@@ -187,13 +187,13 @@ void RoomStageDungeonCli::OnSyncMissions(CInPacket& packet)
 // @0x140c9d5d0
 void RoomStageDungeonCli::OnStage(CInPacket& packet)
 {
-    m_nStage = packet.vfunc_o8_1();
+    m_nStage = packet.ReadUInt8();
 }
 
 // @0x140c9d620
 void RoomStageDungeonCli::OnFlag(CInPacket& packet)
 {
-    m_bFlag = packet.vfunc_o8_0();
+    m_bFlag = packet.ReadBool();
 }
 
 // @0x140c9d670

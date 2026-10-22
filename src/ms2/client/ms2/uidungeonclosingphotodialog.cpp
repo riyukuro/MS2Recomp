@@ -392,13 +392,13 @@ void UIDungeonClosingPhotoDialog::FUN_140e0eb40(CInPacket& pkt)
 {
     m_entries.clear();
     m_pending.clear();
-    unsigned res = pkt.vfunc_o8_1();
-    int count = pkt.vfunc_o8_3();
+    unsigned res = pkt.ReadUInt8();
+    int count = pkt.ReadInt32();
     for (int i = 0; i < count; ++i) {
-        __int64 uid = pkt.vfunc_o8_4();
-        int rank = pkt.vfunc_o8_3();
-        int type = pkt.vfunc_o8_3();
-        int value = pkt.vfunc_o8_3();
+        __int64 uid = pkt.ReadInt64();
+        int rank = pkt.ReadInt32();
+        int type = pkt.ReadInt32();
+        int value = pkt.ReadInt32();
         CStringW text;
         if (value > 0) {
             switch (type) {

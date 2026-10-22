@@ -59,17 +59,17 @@ void CFieldMaidManager::RemoveAllMaids()
 // @0x14127e250
 void CFieldMaidManager::OnPacket(CInPacket* pPacket)
 {
-    int cMode = pPacket->vfunc_o8_1();
+    int cMode = pPacket->ReadUInt8();
     if (cMode == 0)
     {
         MS2Ptr<CMaid> spMaid(new CMaid);
-        spMaid->SetMode(pPacket->vfunc_o8_1());
+        spMaid->SetMode(pPacket->ReadUInt8());
         spMaid->FUN_14067d730(pPacket);
         m_mapMaid.SetAt(spMaid->m_nId, spMaid);
     }
     else if (cMode == 1)
     {
-        unsigned __int64 nId = pPacket->vfunc_o8_4();
+        unsigned __int64 nId = pPacket->ReadInt64();
         if (m_mapMaid.Lookup(nId) != 0)
             m_mapMaid.RemoveKey(nId);
     }
@@ -100,15 +100,15 @@ CUserMaidManager::~CUserMaidManager()
 // @0x14127e550
 void CUserMaidManager::OnPacket(CInPacket* pPacket)
 {
-    int cMode = pPacket->vfunc_o8_1();
+    int cMode = pPacket->ReadUInt8();
     if (cMode == 0)
     {
         m_mapMaid.RemoveAll();
-        unsigned int nCount = pPacket->vfunc_o8_3();
+        unsigned int nCount = pPacket->ReadInt32();
         for (unsigned int i = 0; i < nCount; i++)
         {
             MS2Ptr<CMaid> spMaid(new CMaid);
-            spMaid->SetMode(pPacket->vfunc_o8_1());
+            spMaid->SetMode(pPacket->ReadUInt8());
             spMaid->FUN_14067d730(pPacket);
             m_mapMaid.SetAt(spMaid->m_nId, spMaid);
         }
@@ -116,14 +116,14 @@ void CUserMaidManager::OnPacket(CInPacket* pPacket)
     else if (cMode == 1)
     {
         MS2Ptr<CMaid> spMaid(new CMaid);
-        spMaid->SetMode(pPacket->vfunc_o8_1());
+        spMaid->SetMode(pPacket->ReadUInt8());
         spMaid->FUN_14067d730(pPacket);
         m_mapMaid.SetAt(spMaid->m_nId, spMaid);
     }
     else if (cMode == 3)
     {
         MS2Ptr<CMaid> spMaid(new CMaid);
-        spMaid->SetMode(pPacket->vfunc_o8_1());
+        spMaid->SetMode(pPacket->ReadUInt8());
         spMaid->FUN_14067d730(pPacket);
         int bNewer = 0;
         {
@@ -154,13 +154,13 @@ void CUserMaidManager::OnPacket(CInPacket* pPacket)
     }
     else if (cMode == 2)
     {
-        unsigned __int64 nId = pPacket->vfunc_o8_4();
+        unsigned __int64 nId = pPacket->ReadInt64();
         if (m_mapMaid.Lookup(nId) != 0)
             m_mapMaid.RemoveKey(nId);
     }
     else if (cMode == 4)
     {
-        int nActorId = pPacket->vfunc_o8_3();
+        int nActorId = pPacket->ReadInt32();
         if (FUN_141adc890(FUN_1403ed2b0(), 0x4e9d) != 0)
         {
             UIMaidDialog* pDlg = GetMaidDialog(0x4e9d);
@@ -202,8 +202,8 @@ void CUserMaidManager::SendRequest5(unsigned __int64 nId)
     if (FUN_14116d720(FUN_14025e7c0()) == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::Maid), 0);
-    packet.vfunc_o10_1(5);
-    packet.vfunc_o10_4(nId);
+    packet.WriteUInt8(5);
+    packet.WriteInt64(nId);
     FUN_140710590(packet);
 }
 
@@ -213,8 +213,8 @@ void CUserMaidManager::SendRequest6(unsigned __int64 nId)
     if (FUN_14116d720(FUN_14025e7c0()) == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::Maid), 0);
-    packet.vfunc_o10_1(6);
-    packet.vfunc_o10_4(nId);
+    packet.WriteUInt8(6);
+    packet.WriteInt64(nId);
     FUN_140710590(packet);
 }
 
@@ -224,8 +224,8 @@ void CUserMaidManager::SendRequest7(unsigned __int64 nId)
     if (FUN_14116d720(FUN_14025e7c0()) == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::Maid), 0);
-    packet.vfunc_o10_1(7);
-    packet.vfunc_o10_4(nId);
+    packet.WriteUInt8(7);
+    packet.WriteInt64(nId);
     FUN_140710590(packet);
 }
 
@@ -235,8 +235,8 @@ void CUserMaidManager::SendRequest8(unsigned __int64 nId)
     if (FUN_14116d720(FUN_14025e7c0()) == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::Maid), 0);
-    packet.vfunc_o10_1(8);
-    packet.vfunc_o10_4(nId);
+    packet.WriteUInt8(8);
+    packet.WriteInt64(nId);
     FUN_140710590(packet);
 }
 
@@ -246,8 +246,8 @@ void CUserMaidManager::SendRequest9(unsigned __int64 nId)
     if (FUN_14116d720(FUN_14025e7c0()) == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::Maid), 0);
-    packet.vfunc_o10_1(9);
-    packet.vfunc_o10_4(nId);
+    packet.WriteUInt8(9);
+    packet.WriteInt64(nId);
     FUN_140710590(packet);
 }
 
@@ -257,10 +257,10 @@ void CUserMaidManager::SendRequest10(unsigned __int64 nId, unsigned __int64 nVal
     if (FUN_14116d720(FUN_14025e7c0()) == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::Maid), 0);
-    packet.vfunc_o10_1(10);
-    packet.vfunc_o10_4(nId);
-    packet.vfunc_o10_1(cFlag);
-    packet.vfunc_o10_4(nValue);
+    packet.WriteUInt8(10);
+    packet.WriteInt64(nId);
+    packet.WriteUInt8(cFlag);
+    packet.WriteInt64(nValue);
     FUN_140710590(packet);
 }
 

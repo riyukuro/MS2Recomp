@@ -1529,7 +1529,7 @@ void CUgcManager::SendUGCMode11(CString strPath)
 {
     COutPacket packet(static_cast<int>(SendOp::Ugc), 0);
     packet.Encode1(0xb);
-    packet.vfunc_o10_6(strPath);
+    packet.WriteUnicodeStringA(strPath);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x141883380, CUgcManager, SendUGCMode11, 107, 0x8ABFA234);
@@ -1577,7 +1577,7 @@ void CUgcManager::SendUGCMode12(CString strPath)
 {
     COutPacket packet(static_cast<int>(SendOp::Ugc), 0);
     packet.Encode1(0xc);
-    packet.vfunc_o10_6(strPath);
+    packet.WriteUnicodeStringA(strPath);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x141883780, CUgcManager, SendUGCMode12, 107, 0x41562117);
@@ -2766,7 +2766,7 @@ MS2_REPLACE_METHOD(0x1418897a0, CUgcManager, GetDefaultTexture, 67, 0x94B9AF46);
 // @0x1418897f0
 void CUgcManager::OnUgc(CInPacket& packet)
 {
-    int nType = packet.vfunc_o8_1();
+    int nType = packet.ReadUInt8();
     if (nType == 2)
     {
         int nResult = FUN_14188dd70(packet);
@@ -2778,7 +2778,7 @@ void CUgcManager::OnUgc(CInPacket& packet)
     else if (nType == 4)
     {
         int nResult = FUN_14188e0d0(packet);
-        CString strPath = packet.vfunc_o8_6();
+        CString strPath = packet.ReadUnicodeStringA();
         if (nResult != 0)
             FUN_1418826a0(nResult);
         else
@@ -2804,10 +2804,10 @@ void CUgcManager::OnUgc(CInPacket& packet)
     }
     else if (nType == 0x11)
     {
-        CString strUrl = packet.vfunc_o8_6();
-        CString strA = packet.vfunc_o8_6();
-        CString strB = packet.vfunc_o8_6();
-        int nResult = packet.vfunc_o8_1();
+        CString strUrl = packet.ReadUnicodeStringA();
+        CString strA = packet.ReadUnicodeStringA();
+        CString strB = packet.ReadUnicodeStringA();
+        int nResult = packet.ReadUInt8();
         FUN_140b2e990()->FUN_14176fcf0(strUrl, nResult);
         FUN_1410268a0(strA, strB);
     }
@@ -2833,7 +2833,7 @@ void CUgcManager::OnUgc(CInPacket& packet)
     }
     else if (nType == 0x16)
     {
-        int nMode = packet.vfunc_o8_3();
+        int nMode = packet.ReadInt32();
         FUN_14187f380(nMode);
     }
     else if (nType == 0)
@@ -3622,12 +3622,12 @@ int CUgcManager::FUN_14188dd70(CInPacket& packet)
     int nResult = 1;
     try
     {
-        int nKind = packet.vfunc_o8_1();
+        int nKind = packet.ReadUInt8();
         if (spCtrl->m_nKind != nKind)
             throw Exception(CString("invaild ugcType"), 0x5b);
-        __int64 uid = packet.vfunc_o8_4();
+        __int64 uid = packet.ReadInt64();
         spCtrl->m_upload.m_uid = uid;
-        spCtrl->m_upload.m_strName = packet.vfunc_o8_6();
+        spCtrl->m_upload.m_strName = packet.ReadUnicodeStringA();
         spCtrl->m_upload.m_nType = 1;
         nResult = spCtrl->FUN_1418a3b80(uid);
         if (nResult != 0)
@@ -3647,8 +3647,8 @@ MS2_REPLACE_METHOD(0x14188dd70, CUgcManager, FUN_14188dd70, 852, 0x052D5A1A);
 // @0x14188e0d0
 int CUgcManager::FUN_14188e0d0(CInPacket& packet)
 {
-    int nKind = packet.vfunc_o8_1();
-    __int64 uid = packet.vfunc_o8_4();
+    int nKind = packet.ReadUInt8();
+    __int64 uid = packet.ReadInt64();
     MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_141882610();
     if (spCtrl == 0)
         return 0xd;
@@ -3664,9 +3664,9 @@ MS2_REPLACE_METHOD(0x14188e0d0, CUgcManager, FUN_14188e0d0, 292, 0xA176ADE8);
 // A character's profile image: the character select dialog or the player in the field shows it.
 void CUgcManager::FUN_14188e200(CInPacket& packet)
 {
-    int nObjectId = packet.vfunc_o8_3();
-    __int64 characterId = packet.vfunc_o8_4();
-    CString strUrl = packet.vfunc_o8_6();
+    int nObjectId = packet.ReadInt32();
+    __int64 characterId = packet.ReadInt64();
+    CString strUrl = packet.ReadUnicodeStringA();
     if (GetMode() == 1)
         strUrl = "";
     if (nObjectId == 0)
@@ -3703,7 +3703,7 @@ MS2_REPLACE_METHOD(0x14188e200, CUgcManager, FUN_14188e200, 938, 0xC12C1044);
 // MS2-FUNCTIONAL: same calls and flow; the exe materializes both viewer checks as bool temporaries (frame 0x10 larger)
 void CUgcManager::FUN_14188e5b0(CInPacket& packet, int nType)
 {
-    int nObjectId = packet.vfunc_o8_3();
+    int nObjectId = packet.ReadInt32();
     CUgcItemProxy proxy;
     proxy.Read(packet);
     CUgcItemLook look;
@@ -3736,7 +3736,7 @@ MS2_REPLACE_METHOD(0x14188e5b0, CUgcManager, FUN_14188e5b0, 886, 0x2C8D105A);
 // The look of one of my blueprints was changed.
 void CUgcManager::FUN_14188e930(CInPacket& packet)
 {
-    int nObjectId = packet.vfunc_o8_3();
+    int nObjectId = packet.ReadInt32();
     CUgcBlueprintImageProxy proxy;
     proxy.Read(packet);
     CUgcItemLook look;
@@ -3763,10 +3763,10 @@ MS2_REPLACE_METHOD(0x14188e930, CUgcManager, FUN_14188e930, 498, 0xB307819A);
 void CUgcManager::FUN_14188eb30(CInPacket& packet)
 {
     CAtlArray<MS2Ptr<CUgcBannerRollingImage> > images;
-    int nImages = packet.vfunc_o8_3();
+    int nImages = packet.ReadInt32();
     for (int i = 0; i < nImages; i++)
     {
-        int bHas = packet.vfunc_o8_1();
+        int bHas = packet.ReadUInt8();
         if (bHas != 0)
         {
             MS2Ptr<CUgcBannerRollingImage> spImage(new CUgcBannerRollingImage);
@@ -3784,11 +3784,11 @@ void CUgcManager::FUN_14188eb30(CInPacket& packet)
         m_rollingImages.RemoveAll();
         m_rollingImages.Copy(images);
     }
-    int nBanners = packet.vfunc_o8_3();
+    int nBanners = packet.ReadInt32();
     for (int i = 0; i < nBanners; i++)
     {
-        int nBannerId = packet.vfunc_o8_4();
-        int bRegistered = packet.vfunc_o8_1();
+        int nBannerId = packet.ReadInt64();
+        int bRegistered = packet.ReadUInt8();
         MS2Ptr<CUgcRegistBanner> spBanner(0);
         if (bRegistered != 0)
         {
@@ -3798,16 +3798,16 @@ void CUgcManager::FUN_14188eb30(CInPacket& packet)
         if (FUN_141887ce0(nBannerId).get() != spBanner.get())
             FUN_141887dc0(nBannerId, spBanner);
     }
-    int nReserves = packet.vfunc_o8_3();
+    int nReserves = packet.ReadInt32();
     for (int i = 0; i < nReserves; i++)
     {
-        int nBannerId = packet.vfunc_o8_4();
-        int nHours = packet.vfunc_o8_3();
+        int nBannerId = packet.ReadInt64();
+        int nHours = packet.ReadInt32();
         FUN_141888d30(nBannerId);
         for (int j = 0; j < nHours; j++)
         {
             ReserveBannerInfo info;
-            unsigned __int64 key = packet.vfunc_o8_4();
+            unsigned __int64 key = packet.ReadInt64();
             info.Read(packet);
             FUN_1418889d0(nBannerId, key, info);
         }
@@ -3820,8 +3820,8 @@ MS2_REPLACE_METHOD(0x14188eb30, CUgcManager, FUN_14188eb30, 1450, 0x27F030F3);
 // The registration of one banner changed.
 void CUgcManager::FUN_14188f0e0(CInPacket& packet)
 {
-    int nBannerId = packet.vfunc_o8_4();
-    int bRegistered = packet.vfunc_o8_1();
+    int nBannerId = packet.ReadInt64();
+    int bRegistered = packet.ReadUInt8();
     MS2Ptr<CUgcRegistBanner> spBanner(0);
     if (bRegistered == 1)
     {
@@ -3836,13 +3836,13 @@ MS2_REPLACE_METHOD(0x14188f0e0, CUgcManager, FUN_14188f0e0, 308, 0xA0DDDBEA);
 // The reservations of one banner.
 void CUgcManager::FUN_14188f220(CInPacket& packet)
 {
-    int nBannerId = packet.vfunc_o8_4();
-    int nHours = packet.vfunc_o8_3();
+    int nBannerId = packet.ReadInt64();
+    int nHours = packet.ReadInt32();
     FUN_141888d30(nBannerId);
     for (int i = 0; i < nHours; i++)
     {
         ReserveBannerInfo info;
-        unsigned __int64 key = packet.vfunc_o8_4();
+        unsigned __int64 key = packet.ReadInt64();
         info.Read(packet);
         FUN_1418889d0(nBannerId, key, info);
     }
@@ -3853,12 +3853,12 @@ MS2_REPLACE_METHOD(0x14188f220, CUgcManager, FUN_14188f220, 287, 0x3ECBE976);
 // Reservations of a banner were confirmed.
 void CUgcManager::FUN_14188f350(CInPacket& packet)
 {
-    int nBannerId = packet.vfunc_o8_4();
-    int nHours = packet.vfunc_o8_3();
+    int nBannerId = packet.ReadInt64();
+    int nHours = packet.ReadInt32();
     for (int i = 0; i < nHours; i++)
     {
         ReserveBannerInfo info;
-        unsigned __int64 key = packet.vfunc_o8_4();
+        unsigned __int64 key = packet.ReadInt64();
         FUN_141888af0(nBannerId, key, 1);
     }
 }
@@ -3868,8 +3868,8 @@ MS2_REPLACE_METHOD(0x14188f350, CUgcManager, FUN_14188f350, 243, 0x74B9EAE4);
 // An upload error of the game server; the manager is unlocked.
 void CUgcManager::FUN_14188f450(CInPacket& packet)
 {
-    int nType = packet.vfunc_o8_1();
-    int nError = packet.vfunc_o8_1();
+    int nType = packet.ReadUInt8();
+    int nError = packet.ReadUInt8();
     switch (nError)
     {
     case 0x13:
@@ -3996,10 +3996,10 @@ void CUgcManager::FUN_14188ff10(CInPacket& packet)
 {
     try
     {
-        int bOk = packet.vfunc_o8_1();
+        int bOk = packet.ReadUInt8();
         if (bOk == 0)
             throw Exception(1);
-        __int64 itemUid = packet.vfunc_o8_4();
+        __int64 itemUid = packet.ReadInt64();
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(itemUid);
         if (spItem == 0)
             throw Exception(2);

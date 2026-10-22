@@ -432,12 +432,12 @@ int UIItemRemakeScrollDialog::vfunc_71()
 void UIItemRemakeScrollDialog::FUN_140f59230(CInPacket& packet)
 {
     FUN_1412761e0(MS2Ptr<AScript>(m_30), 1);
-    int nType = packet.vfunc_o8_1();
+    int nType = packet.ReadUInt8();
     if (nType == 0)
     {
         if (FUN_141924630() != 0)
             return;
-        __int64 nUid = packet.vfunc_o8_4();
+        __int64 nUid = packet.ReadInt64();
         if (DAT_143ab2a90.FUN_140a5d680(nUid) == 0)
             return;
         m_nScrollUid = nUid;
@@ -633,8 +633,8 @@ void UIItemRemakeScrollDialog::FUN_140f5a9c0(CInPacket& packet)
 // @0x140f5ab10
 void UIItemRemakeScrollDialog::FUN_140f5ab10(CInPacket& packet)
 {
-    unsigned nFlag = packet.vfunc_o8_1();
-    int nCode = packet.vfunc_o8_3();
+    unsigned nFlag = packet.ReadUInt8();
+    int nCode = packet.ReadInt32();
     if (nCode == 0)
         return;
     if (FUN_140f5e2a0(nCode))

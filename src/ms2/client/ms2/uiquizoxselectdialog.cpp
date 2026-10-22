@@ -80,9 +80,9 @@ int UIQuizOXSelectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 void FUN_140e7ed60(UIQuizOXSelectDialog* pDialog, char nAnswer)
 {
     COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
-    packet.vfunc_o10_1(10);
-    packet.vfunc_o10_1(11);
-    packet.vfunc_o10_1(nAnswer);
+    packet.WriteUInt8(10);
+    packet.WriteUInt8(11);
+    packet.WriteUInt8(nAnswer);
     FUN_140710590(packet);
 }
 

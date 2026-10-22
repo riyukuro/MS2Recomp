@@ -464,40 +464,40 @@ bool CNetworkService::FUN_141538600(CItem* item) {
     int type=FUN_14053fd90(FUN_140527840(item));
     int slot=FUN_140a612b0(&DAT_143ab2a90,type,Unk_SocketPtr<CItem>(item),FUN_140526c50(item));
     if(slot==-1) { FUN_140961010(0x44,1,1,FUN_1401a9d70()->FUN_141813300(type));FUN_141276180(s_warningBag,CString("")); }
-    else { FUN_141276180(s_storeItemOut,CString(""));COutPacket packet(static_cast<int>(SendOp::FurnishingStorage),0);packet.vfunc_o10_1(4);packet.vfunc_o10_4(item->FUN_140526a50());packet.vfunc_o10_2((short)slot);packet.vfunc_o10_3(FUN_140526c50(item));FUN_140710590(packet); }
+    else { FUN_141276180(s_storeItemOut,CString(""));COutPacket packet(static_cast<int>(SendOp::FurnishingStorage),0);packet.WriteUInt8(4);packet.WriteInt64(item->FUN_140526a50());packet.WriteInt16((short)slot);packet.WriteInt32(FUN_140526c50(item));FUN_140710590(packet); }
     return slot!=-1;
 }
 // @0x141538820
 void CNetworkService::FUN_141538820() {
     Unk_NetworkPlayer* player=FUN_1403ed2d0()->FUN_141bd0cc0();
     if(player) player->FUN_1415293b0();
-    COutPacket packet(static_cast<int>(SendOp::RequestQuit),0); packet.vfunc_o10_1(0); FUN_140710590(packet);
+    COutPacket packet(static_cast<int>(SendOp::RequestQuit),0); packet.WriteUInt8(0); FUN_140710590(packet);
 }
 // @0x1415388a0
 void CNetworkService::FUN_1415388a0() {
     Unk_NetworkPlayer* player=FUN_1403ed2d0()->FUN_141bd0cc0();
     if(player) player->FUN_1415293b0();
     m_socket.FUN_141267000(1);
-    COutPacket packet(static_cast<int>(SendOp::RequestQuit),0); packet.vfunc_o10_1(1); FUN_140710590(packet);
+    COutPacket packet(static_cast<int>(SendOp::RequestQuit),0); packet.WriteUInt8(1); FUN_140710590(packet);
 }
 // @0x141538930
-void CNetworkService::SendRequestItemInventoryMode4(__int64 id,int value) { COutPacket packet(static_cast<int>(SendOp::RequestItemInventory),0); packet.vfunc_o10_1(4);packet.vfunc_o10_4(id);packet.vfunc_o10_3(value);FUN_140710590(packet); }
+void CNetworkService::SendRequestItemInventoryMode4(__int64 id,int value) { COutPacket packet(static_cast<int>(SendOp::RequestItemInventory),0); packet.WriteUInt8(4);packet.WriteInt64(id);packet.WriteInt32(value);FUN_140710590(packet); }
 // @0x1415389b0
-void CNetworkService::SendRequestItemInventoryMode5(__int64 id) { COutPacket packet(static_cast<int>(SendOp::RequestItemInventory),0); packet.vfunc_o10_1(5);packet.vfunc_o10_4(id);FUN_140710590(packet); }
+void CNetworkService::SendRequestItemInventoryMode5(__int64 id) { COutPacket packet(static_cast<int>(SendOp::RequestItemInventory),0); packet.WriteUInt8(5);packet.WriteInt64(id);FUN_140710590(packet); }
 // @0x141538a20
-void CNetworkService::SendRequestItemStorage(__int64 id) { COutPacket packet(static_cast<int>(SendOp::RequestItemStorage),0); packet.vfunc_o10_1(10);packet.vfunc_o10_4(id);FUN_140710590(packet); }
+void CNetworkService::SendRequestItemStorage(__int64 id) { COutPacket packet(static_cast<int>(SendOp::RequestItemStorage),0); packet.WriteUInt8(10);packet.WriteInt64(id);FUN_140710590(packet); }
 // @0x141538a90
-void CNetworkService::SendFittingDoll(__int64 first,__int64 second) { COutPacket packet(static_cast<int>(SendOp::FittingDoll),0);packet.vfunc_o10_1(9);packet.vfunc_o10_4(first);packet.vfunc_o10_4(second);FUN_140710590(packet); }
+void CNetworkService::SendFittingDoll(__int64 first,__int64 second) { COutPacket packet(static_cast<int>(SendOp::FittingDoll),0);packet.WriteUInt8(9);packet.WriteInt64(first);packet.WriteInt64(second);FUN_140710590(packet); }
 // @0x141538b10
 void CNetworkService::FUN_141538b10(int flag) {
     if(DAT_143ab2904==0) return;
     int value=DAT_143ab2904;
-    DAT_143ab2904=0;COutPacket packet(static_cast<int>(SendOp::RecallUser),0);packet.vfunc_o10_1(4);packet.vfunc_o10_3(value);packet.vfunc_o10_1(flag);FUN_140710590(packet);
+    DAT_143ab2904=0;COutPacket packet(static_cast<int>(SendOp::RecallUser),0);packet.WriteUInt8(4);packet.WriteInt32(value);packet.WriteUInt8(flag);FUN_140710590(packet);
 }
 // @0x141538bb0
-void CNetworkService::FUN_141538bb0(CStringW text,int flag) { COutPacket packet(static_cast<int>(SendOp::RecallUser),0);packet.vfunc_o10_1(7);packet.vfunc_o10_8(text);packet.vfunc_o10_1(flag);FUN_140710590(packet); }
+void CNetworkService::FUN_141538bb0(CStringW text,int flag) { COutPacket packet(static_cast<int>(SendOp::RecallUser),0);packet.WriteUInt8(7);packet.WriteUnicodeString(text);packet.WriteUInt8(flag);FUN_140710590(packet); }
 // @0x141538c40
-void CNetworkService::FUN_141538c40(int first,int second) { COutPacket packet(static_cast<int>(SendOp::SystemShop),0);packet.vfunc_o10_1(first);packet.vfunc_o10_1(second);FUN_140710590(packet); }
+void CNetworkService::FUN_141538c40(int first,int second) { COutPacket packet(static_cast<int>(SendOp::SystemShop),0);packet.WriteUInt8(first);packet.WriteUInt8(second);FUN_140710590(packet); }
 // @0x141538cb0
 void CNetworkService::FUN_141538cb0() {
     FUN_141543190(FUN_1414a5730(),1);
@@ -507,12 +507,12 @@ void CNetworkService::FUN_141538cb0() {
 }
 // @0x141538d50
 bool CNetworkService::FUN_141538d50() {
-    COutPacket packet(static_cast<int>(SendOp::Patch),0);packet.vfunc_o10_1(0);
-    std::list<CString> names;FUN_14038bb30("./DataPatch/","",names);packet.vfunc_o10_3((int)names.size());
+    COutPacket packet(static_cast<int>(SendOp::Patch),0);packet.WriteUInt8(0);
+    std::list<CString> names;FUN_14038bb30("./DataPatch/","",names);packet.WriteInt32((int)names.size());
     for(auto it=names.begin();it!=names.end();++it) {
         COnlinePatchFileBuffer* info=FUN_14038bf20("./DataPatch/",*it);
         if(info==0) return false;
-        packet.vfunc_o10_6(info->name);packet.vfunc_o10_4(info->size);packet.vfunc_o10_7(info->digest);delete info;
+        packet.WriteUnicodeStringA(info->name);packet.WriteInt64(info->size);packet.WriteString(info->digest);delete info;
     }
     FUN_140710590(packet);return true;
 }
@@ -556,7 +556,7 @@ int CNetworkService::GetConnectionCount() { return m_connectionCount; }
 // @0x141539230
 void CNetworkService::FUN_141539230() { ++m_connectionCount; }
 // @0x141539260
-void CNetworkService::FUN_141539260() { COutPacket packet(static_cast<int>(SendOp::ServerEnter),0);packet.vfunc_o10_3(DAT_143ab0240);FUN_140710590(packet); }
+void CNetworkService::FUN_141539260() { COutPacket packet(static_cast<int>(SendOp::ServerEnter),0);packet.WriteInt32(DAT_143ab0240);FUN_140710590(packet); }
 // @0x1415392c0
 CGameSocket& CNetworkService::FUN_1415392c0() { return m_socket; }
 // @0x1415392e0
@@ -708,40 +708,40 @@ int CNetworkService::GetConnectionState() { return m_connectionState; }
 void CNetworkService::FUN_14153a250() {
     unsigned sequence=CPtred::InterlockedInc(&m_pingSequence);
     m_latency.Sent(sequence);
-    COutPacket packet(static_cast<int>(SendOp::RequestTimeSync),0);packet.vfunc_o10_3(sequence);FUN_140710590(packet);
+    COutPacket packet(static_cast<int>(SendOp::RequestTimeSync),0);packet.WriteInt32(sequence);FUN_140710590(packet);
 }
 // @0x14153a2e0
 void CNetworkService::FUN_14153a2e0(CInPacket& input) {
     Unk_NetworkPong reply;
-    reply.sequence=static_cast<CInputStream&>(input).vfunc_o8_3();
+    reply.sequence=input.ReadInt32();
     reply.value=FUN_14086d260()->FUN_141473610();
     COutPacket packet(static_cast<int>(SendOp::ResponseHeartbeat),0);reply.FUN_1401fa640(packet);FUN_140710590(packet);
 }
 // @0x14153a380
 void CNetworkService::FUN_14153a380(CInPacket& input) {
-    unsigned char kind=static_cast<CInputStream&>(input).vfunc_o8_1();
+    unsigned char kind=input.ReadUInt8();
     if(kind==0) {
-        int time=static_cast<CInputStream&>(input).vfunc_o8_3();
-        __int64 serverTime=static_cast<CInputStream&>(input).vfunc_o8_4();
-        int zone=static_cast<CInputStream&>(input).vfunc_o8_3();
-        unsigned char flag=static_cast<CInputStream&>(input).vfunc_o8_1();
-        int sequence=static_cast<CInputStream&>(input).vfunc_o8_3();
+        int time=input.ReadInt32();
+        __int64 serverTime=input.ReadInt64();
+        int zone=input.ReadInt32();
+        unsigned char flag=input.ReadUInt8();
+        int sequence=input.ReadInt32();
         m_latency.Received(sequence);
         FUN_14086d260()->FUN_1414734c0(time,m_latency.minimum,m_latency.maximum,m_latency.average);
         FUN_14086d260()->FUN_141473690(serverTime);CMsTime::SetTimeZone(zone,flag);
     } else if(kind==1) {
-        int time=static_cast<CInputStream&>(input).vfunc_o8_3();
-        __int64 serverTime=static_cast<CInputStream&>(input).vfunc_o8_4();
-        int zone=static_cast<CInputStream&>(input).vfunc_o8_3();
-        unsigned char flag=static_cast<CInputStream&>(input).vfunc_o8_1();
+        int time=input.ReadInt32();
+        __int64 serverTime=input.ReadInt64();
+        int zone=input.ReadInt32();
+        unsigned char flag=input.ReadUInt8();
         m_latency.Reset();
         FUN_14086d260()->FUN_1414734c0(time,0,0,0);
         FUN_14086d260()->FUN_141473690(serverTime);CMsTime::SetTimeZone(zone,flag);
         FUN_14153a250();
     } else if(kind==2) { FUN_14153a250(); }
-    else if(kind==3) { __int64 time=static_cast<CInputStream&>(input).vfunc_o8_4();FUN_14086d260()->FUN_141473530(time); }
+    else if(kind==3) { __int64 time=input.ReadInt64();FUN_14086d260()->FUN_141473530(time); }
     else if(kind==4) {
-        __int64 time=static_cast<CInputStream&>(input).vfunc_o8_4();
+        __int64 time=input.ReadInt64();
         void* dialog=FUN_141264060(0x4ebe);
         if(dialog) FUN_141357640(dialog,FUN_140869440(),time);
     }
@@ -755,26 +755,26 @@ void CNetworkService::FUN_14153a780(CInPacket& input) {
 }
 // @0x14153a820
 void CNetworkService::FUN_14153a820(CInPacket& input) {
-    unsigned char value=static_cast<CInputStream&>(input).vfunc_o8_1();
+    unsigned char value=input.ReadUInt8();
     DAT_143ab2856=value;
     Unk_NetworkPlayer* player=FUN_1403ed2d0()->FUN_141bd0cc0();
     if(player) FUN_1417b7450(player->FUN_141523be0());
 }
 // @0x14153a8a0
 void CNetworkService::FUN_14153a8a0(CInPacket& input) {
-    int value=static_cast<CInputStream&>(input).vfunc_o8_3();
+    int value=input.ReadInt32();
     FUN_1403ed2d0()->FUN_141bca170(value);
 }
 // @0x14153a8f0
 void CNetworkService::OnGvg(CInPacket& input) {
-    unsigned count=static_cast<CInputStream&>(input).vfunc_o8_3();
+    unsigned count=input.ReadInt32();
     for(unsigned i=0;i<count;++i) {
-        int kind=static_cast<CInputStream&>(input).vfunc_o8_3();
+        int kind=input.ReadInt32();
         switch(kind) {
-        case 1: { bool flag=static_cast<CInputStream&>(input).vfunc_o8_0();FUN_1406af130(FUN_1406aeee0(),flag);break; }
+        case 1: { bool flag=input.ReadBool();FUN_1406af130(FUN_1406aeee0(),flag);break; }
         case 7: FUN_140cca720(FUN_14025e7b0(),input);break;
         case 25: { Unk_SocketOptions options;FUN_14026dc20(&options,input);m_socket.FUN_1412672a0(options);break; }
-        case 34: DAT_143ab2964=static_cast<CInputStream&>(input).vfunc_o8_2();DAT_143ab2970=static_cast<CInputStream&>(input).vfunc_o8_3();DAT_143ab2974=static_cast<CInputStream&>(input).vfunc_o8_3();break;
+        case 34: DAT_143ab2964=input.ReadInt16();DAT_143ab2970=input.ReadInt32();DAT_143ab2974=input.ReadInt32();break;
         case 42: { Unk_NetworkSessionPtr session=reinterpret_cast<Unk_NetworkSession*>(FUN_140931510())->FUN_140d9f2c0();FUN_140b22100(FUN_140c0e5d0(&session),input);break; }
         case 43: {
             ReconnectionOptions options;FUN_140208500(&options,input);
@@ -818,7 +818,7 @@ void CNetworkService::FUN_14153b010(CInPacket&) {
         FUN_14067c080(&auth.key0,FUN_140d4fdf0(FUN_140aadf70()));
         COutPacket packet(static_cast<int>(SendOp::ResponseKey),0);auth.FUN_1401f9d20(packet);FUN_140710590(packet);m_socket.FUN_1412672d0();
     } else {
-        COutPacket packet(static_cast<int>(SendOp::RelocateWorld),0);packet.vfunc_o10_1(5);packet.vfunc_o10_3(count);packet.vfunc_o10_9(&DAT_143ab2a58[0],count);FUN_140710590(packet);DAT_143ab2a58.RemoveAll();
+        COutPacket packet(static_cast<int>(SendOp::RelocateWorld),0);packet.WriteUInt8(5);packet.WriteInt32(count);packet.WriteBytes(&DAT_143ab2a58[0],count);FUN_140710590(packet);DAT_143ab2a58.RemoveAll();
     }
 }
 // @0x14153b1c0
@@ -828,28 +828,28 @@ void CNetworkService::FUN_14153b1c0(CInPacket& input) {
 }
 // @0x14153b220
 void CNetworkService::FUN_14153b220(CInPacket& input) {
-    unsigned sequence=static_cast<CInputStream&>(input).vfunc_o8_3();
+    unsigned sequence=input.ReadInt32();
     FUN_140209050(m_socket.m_out.operator->(),sequence);
-    COutPacket packet(static_cast<int>(SendOp::Pong),0);packet.vfunc_o10_3(m_socket.m_sequence);FUN_140710590(packet);
+    COutPacket packet(static_cast<int>(SendOp::Pong),0);packet.WriteInt32(m_socket.m_sequence);FUN_140710590(packet);
 }
 // @0x14153b2d0
-void CNetworkService::FUN_14153b2d0(CInPacket& input) { int nUnused=static_cast<CInputStream&>(input).vfunc_o8_3(); }
+void CNetworkService::FUN_14153b2d0(CInPacket& input) { int nUnused=input.ReadInt32(); }
 // @0x14153b310
 void CNetworkService::FUN_14153b310(CInPacket& input) {
     unsigned sequence;
-    int nUnused=static_cast<CInputStream&>(input).vfunc_o8_3();
-    sequence=static_cast<CInputStream&>(input).vfunc_o8_3();
+    int nUnused=input.ReadInt32();
+    sequence=input.ReadInt32();
     FUN_140208ab0(m_socket.m_out.operator->(),&m_socket,sequence);
 }
 // @0x14153b3b0
 void CNetworkService::OnBypassKey(CInPacket& input) {
-    DAT_143ab2858=static_cast<CInputStream&>(input).vfunc_o8_3();
-    __int64 value=static_cast<CInputStream&>(input).vfunc_o8_4();
+    DAT_143ab2858=input.ReadInt32();
+    __int64 value=input.ReadInt64();
     FUN_140d86260()->vfunc_21(value);
 }
 // @0x14153b440
 void CNetworkService::FUN_14153b440(CInPacket& input) {
-    int result=static_cast<CInputStream&>(input).vfunc_o8_1();
+    int result=input.ReadUInt8();
     if(result==0) {
         switch(DAT_1439f4a78) {
         case 1: FUN_1417e25a0(FUN_140aa6d30(),0x620000d);FUN_141539260(); break;
@@ -883,12 +883,12 @@ void CNetworkService::FUN_14153b570(CInPacket& input) {
 }
 // @0x14153bc00
 void CNetworkService::FUN_14153bc00(CInPacket& input) {
-    int result=static_cast<CInputStream&>(input).vfunc_o8_1();
+    int result=input.ReadUInt8();
     if(result==0) {
-        unsigned ip=static_cast<CInputStream&>(input).vfunc_o8_3();
-        unsigned short port=static_cast<CInputStream&>(input).vfunc_o8_2();
-        int token1=static_cast<CInputStream&>(input).vfunc_o8_3();
-        int token2=static_cast<CInputStream&>(input).vfunc_o8_3();
+        unsigned ip=input.ReadInt32();
+        unsigned short port=input.ReadInt16();
+        int token1=input.ReadInt32();
+        int token2=input.ReadInt32();
         DAT_143ab2874=0;FUN_141bbc580(FUN_1403ed2d0(),0,2);
         CString address=FUN_14028bd10(ip);DAT_143ab2a48=address;
         DAT_143ab2848=port;DAT_143ab284c=token1;DAT_143ab2850=token2;DAT_1439f4a78=1;
@@ -897,14 +897,14 @@ void CNetworkService::FUN_14153bc00(CInPacket& input) {
 }
 // @0x14153be30
 void CNetworkService::FUN_14153be30(CInPacket& input) {
-    int result=static_cast<CInputStream&>(input).vfunc_o8_1();
+    int result=input.ReadUInt8();
     if(result==0) {
-        int token1=static_cast<CInputStream&>(input).vfunc_o8_3();
-        int token2=static_cast<CInputStream&>(input).vfunc_o8_3();
-        unsigned ip=static_cast<CInputStream&>(input).vfunc_o8_3();
-        unsigned short port=static_cast<CInputStream&>(input).vfunc_o8_2();
-        int field=static_cast<CInputStream&>(input).vfunc_o8_3();
-        unsigned char kind=static_cast<CInputStream&>(input).vfunc_o8_1();
+        int token1=input.ReadInt32();
+        int token2=input.ReadInt32();
+        unsigned ip=input.ReadInt32();
+        unsigned short port=input.ReadInt16();
+        int field=input.ReadInt32();
+        unsigned char kind=input.ReadUInt8();
         CString address=FUN_14028bd10(ip);DAT_143ab2a48=address;
         DAT_143ab2848=port;DAT_143ab284c=token1;DAT_143ab2850=token2;DAT_1439f4a78=2;DAT_143ab2890=field;DAT_143ab284a=kind;
         FUN_141bbc580(FUN_1403ed2d0(),0,field);FUN_1417e25a0(FUN_140aa6d30(),0x620003b);FUN_1415308d0();
@@ -912,17 +912,17 @@ void CNetworkService::FUN_14153be30(CInPacket& input) {
 }
 // @0x14153c0c0
 void CNetworkService::FUN_14153c0c0(CInPacket& input) {
-    unsigned char kind=static_cast<CInputStream&>(input).vfunc_o8_1();
+    unsigned char kind=input.ReadUInt8();
     if(kind==0) {
-        int count=static_cast<CInputStream&>(input).vfunc_o8_3();
-        for(int i=0;i<count;++i) { int id=static_cast<CInputStream&>(input).vfunc_o8_3();CStringW name=static_cast<CInputStream&>(input).vfunc_o8_8(); }
+        int count=input.ReadInt32();
+        for(int i=0;i<count;++i) { int id=input.ReadInt32();CStringW name=input.ReadUnicodeString(); }
     } else if(kind==2) {
-        int result=static_cast<CInputStream&>(input).vfunc_o8_3();
+        int result=input.ReadInt32();
         if(result==0) {
-            CString address=static_cast<CInputStream&>(input).vfunc_o8_6();unsigned short port=static_cast<CInputStream&>(input).vfunc_o8_2();
+            CString address=input.ReadUnicodeStringA();unsigned short port=input.ReadInt16();
             DAT_143ab2a48=address;DAT_1439f4a78=2;DAT_143ab2848=port;
-            DAT_143ab2a58.RemoveAll();int size=static_cast<CInputStream&>(input).vfunc_o8_3();DAT_143ab2a58.SetCount(size,-1);
-            static_cast<CInputStream&>(input).vfunc_o8_9(&DAT_143ab2a58[0],size);
+            DAT_143ab2a58.RemoveAll();int size=input.ReadInt32();DAT_143ab2a58.SetCount(size,-1);
+            input.ReadBytes(&DAT_143ab2a58[0],size);
             FUN_141bbc580(FUN_1403ed2d0(),0,0);FUN_1417e25a0(FUN_140aa6d30(),0x6200042);
         } else FUN_140d73aa0(FUN_1408116a0(0x227,result),0,0,L"");
     } else if(kind==4) {
@@ -933,15 +933,15 @@ void CNetworkService::FUN_14153c0c0(CInPacket& input) {
 }
 // @0x14153c4b0
 void CNetworkService::FUN_14153c4b0(CInPacket& input) {
-    unsigned char kind=static_cast<CInputStream&>(input).vfunc_o8_1();
+    unsigned char kind=input.ReadUInt8();
     if(kind==1) {
         ATL::CAtlArray<unsigned short> tabs;
-        unsigned short count=static_cast<CInputStream&>(input).vfunc_o8_2();
-        for(int i=0;i<count;++i) tabs.Add(static_cast<CInputStream&>(input).vfunc_o8_2());
+        unsigned short count=input.ReadInt16();
+        for(int i=0;i<count;++i) tabs.Add(input.ReadInt16());
         void* dialog=FUN_14136f520(0x4ef0);if(dialog) FUN_141ad3030(dialog,tabs);
         FUN_140933230()->vfunc_1();
     } else if(kind==0) {
-        for(int i=0;i<8;++i) DAT_143add400[i]=(unsigned short)static_cast<CInputStream&>(input).vfunc_o8_2();
+        for(int i=0;i<8;++i) DAT_143add400[i]=(unsigned short)input.ReadInt16();
         FUN_140933230()->vfunc_1();
     }
 }
@@ -1025,8 +1025,8 @@ void CNetworkService::OnLoginResult(CInPacket& input) {
 }
 // @0x14153e050
 void CNetworkService::OnCharMaxCount(CInPacket& input) {
-    int value=static_cast<CInputStream&>(input).vfunc_o8_3();
-    int value2=static_cast<CInputStream&>(input).vfunc_o8_3();
+    int value=input.ReadInt32();
+    int value2=input.ReadInt32();
     DAT_1439f4a84=value;DAT_1439f4a88=value2;
 }
 // @0x14153e0d0
@@ -1038,56 +1038,56 @@ void CNetworkService::FUN_14153e0d0(CInPacket& input) {
 void CNetworkService::FUN_14153e150(CInPacket&) { FUN_141275260(0xc07,1,1); }
 // @0x14153e180
 void CNetworkService::FUN_14153e180(CInPacket& input) {
-    unsigned char kind=static_cast<CInputStream&>(input).vfunc_o8_1();
+    unsigned char kind=input.ReadUInt8();
     if(kind==0) {
-        int value=static_cast<CInputStream&>(input).vfunc_o8_3();
-        unsigned char flag=static_cast<CInputStream&>(input).vfunc_o8_1();
-        bool enabled=static_cast<CInputStream&>(input).vfunc_o8_0();
+        int value=input.ReadInt32();
+        unsigned char flag=input.ReadUInt8();
+        bool enabled=input.ReadBool();
         FUN_140d9f400(FUN_140931510(),value,flag,enabled);
     } else if(kind==1) FUN_140d9f4b0(FUN_140931510());
 }
 // @0x14153e280
 // MS2-FUNCTIONAL: preserved all couple-emotion cases; consolidated equivalent rejection branches change control flow and stack temporaries.
 void CNetworkService::FUN_14153e280(CInPacket& input) {
-    unsigned kind=static_cast<CInputStream&>(input).vfunc_o8_1();
+    unsigned kind=input.ReadUInt8();
     switch(kind) {
     case 0: {
-        int emotion=static_cast<CInputStream&>(input).vfunc_o8_3();
-        __int64 targetId=static_cast<CInputStream&>(input).vfunc_o8_4();
-        CStringW targetName=static_cast<CInputStream&>(input).vfunc_o8_8();
+        int emotion=input.ReadInt32();
+        __int64 targetId=input.ReadInt64();
+        CStringW targetName=input.ReadUnicodeString();
         if(*reinterpret_cast<unsigned char*>(reinterpret_cast<char*>(FUN_140ae6540(FUN_1409a8b10()))+10)!=0) {
-            COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.vfunc_o10_1(2);packet.vfunc_o10_4(targetId);packet.vfunc_o10_1(3);FUN_140710590(packet);return;
+            COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.WriteUInt8(2);packet.WriteInt64(targetId);packet.WriteUInt8(3);FUN_140710590(packet);return;
         }
         Unk_NetworkPlayer* player=FUN_1403ed2d0()->FUN_141bd0cc0();
         if(!player) { MS2_ASSERT_AT(0x625,"pMyPC" && 0);return; }
         if(FUN_14166c930(player)==0x3a) {
-            COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.vfunc_o10_1(2);packet.vfunc_o10_4(targetId);packet.vfunc_o10_1(2);FUN_140710590(packet);FUN_141275260(0xceb,1,1);return;
+            COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.WriteUInt8(2);packet.WriteInt64(targetId);packet.WriteUInt8(2);FUN_140710590(packet);FUN_141275260(0xceb,1,1);return;
         }
         if(!FUN_140b83ec0()) {
-            COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.vfunc_o10_1(2);packet.vfunc_o10_4(targetId);packet.vfunc_o10_1(1);FUN_140710590(packet);FUN_141275260(0xceb,1,1);return;
+            COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.WriteUInt8(2);packet.WriteInt64(targetId);packet.WriteUInt8(1);FUN_140710590(packet);FUN_141275260(0xceb,1,1);return;
         }
         if(FUN_140ae51b0(FUN_14097a780(),targetId)!=0||FUN_1416595d0(player)==1||FUN_1422b9e00(FUN_1408e57f0())==0x620001f) {
-            COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.vfunc_o10_1(2);packet.vfunc_o10_4(targetId);packet.vfunc_o10_1(5);FUN_140710590(packet);FUN_141275260(0xcfa,1,1);return;
+            COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.WriteUInt8(2);packet.WriteInt64(targetId);packet.WriteUInt8(5);FUN_140710590(packet);FUN_141275260(0xcfa,1,1);return;
         }
         Unk_MessageBoxPtr data=FUN_140d73d20(1,FUN_140632a60(0xce5,targetName,FUN_1401a9d70()->FUN_141811980(4,emotion)),0,s_coupleEmotion);
         if(FUN_140bb6060(data)) { MS2_ASSERT_AT(0x665,"pData" && 0);return; }
         FUN_140534050(FUN_140534fe0(data),emotion);FUN_1405340b0(FUN_140534fe0(data),targetId);FUN_140b76940(FUN_140534fe0(data),targetName);
         CStringW countdown=GetStringCommon(0x2b8);int duration=FUN_14025a620(reinterpret_cast<char*>(FUN_1401d3200())+0x3838);
         FUN_141a01ca0(FUN_140534fe0(data),duration,1,countdown);FUN_141a02460(FUN_140534fe0(data),1);FUN_141a02480(FUN_140534fe0(data),1);FUN_141a024a0(FUN_140534fe0(data),0);FUN_140d73c60(data);
-        COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.vfunc_o10_1(1);packet.vfunc_o10_4(targetId);FUN_140710590(packet);break;
+        COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.WriteUInt8(1);packet.WriteInt64(targetId);FUN_140710590(packet);break;
     }
     case 1: {
-        __int64 id=static_cast<CInputStream&>(input).vfunc_o8_4();Unk_NetworkPlayer* target=FUN_141bd1530(FUN_1403ed2d0(),id);
+        __int64 id=input.ReadInt64();Unk_NetworkPlayer* target=FUN_141bd1530(FUN_1403ed2d0(),id);
         if(!target) { MS2_ASSERT_AT(0x67c,"pTargetPC" && 0);return; }
         CStringW text=FUN_14052bd00(0xce6,target->vfunc_77());FUN_1412751f0(text,1,1);break;
     }
     case 2: {
-        unsigned result=static_cast<CInputStream&>(input).vfunc_o8_1();Unk_NetworkPlayer* player=FUN_1403ed2d0()->FUN_141bd0cc0();
+        unsigned result=input.ReadUInt8();Unk_NetworkPlayer* player=FUN_1403ed2d0()->FUN_141bd0cc0();
         if(!player) { MS2_ASSERT_AT(0x687,"pMyPC" && 0);return; }
         if(FUN_14166c930(player)==0x3a) { FUN_140b84010(result);player->vfunc_59(1,0,0,0); }break;
     }
     case 3: {
-        int emotion=static_cast<CInputStream&>(input).vfunc_o8_3();__int64 id=static_cast<CInputStream&>(input).vfunc_o8_4();Unk_NetworkPlayer* target=FUN_141bd1530(FUN_1403ed2d0(),id);
+        int emotion=input.ReadInt32();__int64 id=input.ReadInt64();Unk_NetworkPlayer* target=FUN_141bd1530(FUN_1403ed2d0(),id);
         if(!target) { MS2_ASSERT_AT(0x696,"pTargetPC" && 0);return; }
         Unk_NetworkPlayer* player=FUN_1403ed2d0()->FUN_141bd0cc0();if(!player) { MS2_ASSERT_AT(0x699,"pMyPC" && 0);return; }
         if(FUN_14166c930(player)==0x3a) {
@@ -1096,7 +1096,7 @@ void CNetworkService::FUN_14153e280(CInPacket& input) {
         }break;
     }
     case 4: {
-        int emotion=static_cast<CInputStream&>(input).vfunc_o8_3();__int64 id=static_cast<CInputStream&>(input).vfunc_o8_4();Unk_NetworkPlayer* player=FUN_1403ed2d0()->FUN_141bd0cc0();
+        int emotion=input.ReadInt32();__int64 id=input.ReadInt64();Unk_NetworkPlayer* player=FUN_1403ed2d0()->FUN_141bd0cc0();
         if(!player) { MS2_ASSERT_AT(0x6b3,"pMyPC" && 0);return; }
         if(FUN_14166c930(player)==0x3a&&FUN_14166cc80(player)==0x93) {
             Unk_NetworkPlayer* target=FUN_141bd1530(FUN_1403ed2d0(),id);if(!target) { MS2_ASSERT_AT(0x6bc,"pTargetPC" && 0);return; }
@@ -1107,8 +1107,8 @@ void CNetworkService::FUN_14153e280(CInPacket& input) {
         }break;
     }
     case 5: {
-        int emotion=static_cast<CInputStream&>(input).vfunc_o8_3();__int64 first=static_cast<CInputStream&>(input).vfunc_o8_4();__int64 second=static_cast<CInputStream&>(input).vfunc_o8_4();
-        Unk_StreamPoint start=static_cast<CInputStream&>(input).vfunc_o8_10();Unk_StreamPoint end=static_cast<CInputStream&>(input).vfunc_o8_10();int value=static_cast<CInputStream&>(input).vfunc_o8_3();
+        int emotion=input.ReadInt32();__int64 first=input.ReadInt64();__int64 second=input.ReadInt64();
+        Unk_StreamPoint start=input.ReadVector3();Unk_StreamPoint end=input.ReadVector3();int value=input.ReadInt32();
         Unk_NetworkPlayer* player=FUN_1403ed2d0()->FUN_141bd0cc0();if(!player) { MS2_ASSERT_AT(0x6d7,"pMyPC" && 0);return; }
         if(FUN_14166c930(player)==0x3a) {
             __int64 peer=FUN_141656a80(player)==first?second:first;Unk_NetworkPlayer* target=FUN_141bd1530(FUN_1403ed2d0(),peer);
@@ -1118,7 +1118,7 @@ void CNetworkService::FUN_14153e280(CInPacket& input) {
         }break;
     }
     case 6: {
-        int emotion=static_cast<CInputStream&>(input).vfunc_o8_3();__int64 id=static_cast<CInputStream&>(input).vfunc_o8_4();Unk_NetworkPlayer* player=FUN_1403ed2d0()->FUN_141bd0cc0();
+        int emotion=input.ReadInt32();__int64 id=input.ReadInt64();Unk_NetworkPlayer* player=FUN_1403ed2d0()->FUN_141bd0cc0();
         if(!player) { MS2_ASSERT_AT(0x6f7,"pMyPC" && 0);return; }
         Unk_NetworkPlayer* target=FUN_141bd1530(FUN_1403ed2d0(),id);if(!target) { MS2_ASSERT_AT(0x6fa,"pPeerPC" && 0);return; }
         if(FUN_14166c930(player)==0x3a) {
@@ -1130,13 +1130,13 @@ void CNetworkService::FUN_14153e280(CInPacket& input) {
 }
 // @0x14153f6c0
 void CNetworkService::FUN_14153f6c0(CInPacket& input) {
-    unsigned char kind=static_cast<CInputStream&>(input).vfunc_o8_1();
-    __int64 id=static_cast<CInputStream&>(input).vfunc_o8_4();
+    unsigned char kind=input.ReadUInt8();
+    __int64 id=input.ReadInt64();
     Unk_NetworkPlayer* player=FUN_141bd1530(FUN_1403ed2d0(),id);
     if(player) {
         if(kind==0) FUN_141663620(player);else if(kind==1) FUN_141663680(player);else if(kind==2) FUN_141663620(player);
         else if(kind==3) {
-            __int64 itemId=static_cast<CInputStream&>(input).vfunc_o8_4();CStringW name=static_cast<CInputStream&>(input).vfunc_o8_8();
+            __int64 itemId=input.ReadInt64();CStringW name=input.ReadUnicodeString();
             Unk_SocketPtr<CItem> item=reinterpret_cast<Unk_NetworkEquipment*>(FUN_14165f460(player))->FUN_141270140(7);
             if(item.get()!=0&&item->FUN_140526a50()==itemId) FUN_140529330(item.operator->(),name);
         }
@@ -1144,11 +1144,11 @@ void CNetworkService::FUN_14153f6c0(CInPacket& input) {
 }
 // @0x14153f8c0
 void CNetworkService::FUN_14153f8c0(CInPacket& input) {
-    unsigned char kind=static_cast<CInputStream&>(input).vfunc_o8_1();
-    int id=static_cast<CInputStream&>(input).vfunc_o8_3();
+    unsigned char kind=input.ReadUInt8();
+    int id=input.ReadInt32();
     Unk_NetworkPlayer* player=FUN_1403ed2d0()->FUN_141bd1290(id);
     if(player) {
-        if(kind==0) player->FUN_141663a00(static_cast<CInputStream&>(input).vfunc_o8_3());
+        if(kind==0) player->FUN_141663a00(input.ReadInt32());
         else if(kind==1) player->FUN_141663a00(0);
         void* dialog=FUN_140a3ab70(0x4e61);
         if(dialog) FUN_141a23a70(dialog);

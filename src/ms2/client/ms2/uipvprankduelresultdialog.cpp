@@ -118,7 +118,7 @@ int UIPvPRankDuelResultDialog::vfunc_65()
 void UIPvPRankDuelResultDialog::vfunc_67()
 {
     COutPacket packet(static_cast<int>(SendOp::Pvp), 0);
-    packet.vfunc_o10_1(0x68);
+    packet.WriteUInt8(0x68);
     FUN_140710590(packet);
     UIDialog::vfunc_67();
 }
@@ -165,19 +165,19 @@ void UIPvPRankDuelResultDialog::vfunc_43()
 // MS2-FUNCTIONAL: the trailing branch shape (jne/jmp) differs
 void UIPvPRankDuelResultDialog::FUN_140f90b10(CInPacket* pIn)
 {
-    m_result.m_nWinnerId = pIn->vfunc_o8_4();
-    m_result.m_strNameL = pIn->vfunc_o8_8();
-    m_result.m_nCharIdL = pIn->vfunc_o8_4();
-    m_result.m_nScoreL = pIn->vfunc_o8_3();
-    m_result.m_nMinL = pIn->vfunc_o8_3();
-    m_result.m_nSecL = pIn->vfunc_o8_3();
-    m_result.m_nRewardL = pIn->vfunc_o8_3();
-    m_result.m_strNameR = pIn->vfunc_o8_8();
-    m_result.m_nCharIdR = pIn->vfunc_o8_4();
-    m_result.m_nScoreR = pIn->vfunc_o8_3();
-    m_result.m_nMinR = pIn->vfunc_o8_3();
-    m_result.m_nSecR = pIn->vfunc_o8_3();
-    m_result.m_nRewardR = pIn->vfunc_o8_3();
+    m_result.m_nWinnerId = pIn->ReadInt64();
+    m_result.m_strNameL = pIn->ReadUnicodeString();
+    m_result.m_nCharIdL = pIn->ReadInt64();
+    m_result.m_nScoreL = pIn->ReadInt32();
+    m_result.m_nMinL = pIn->ReadInt32();
+    m_result.m_nSecL = pIn->ReadInt32();
+    m_result.m_nRewardL = pIn->ReadInt32();
+    m_result.m_strNameR = pIn->ReadUnicodeString();
+    m_result.m_nCharIdR = pIn->ReadInt64();
+    m_result.m_nScoreR = pIn->ReadInt32();
+    m_result.m_nMinR = pIn->ReadInt32();
+    m_result.m_nSecR = pIn->ReadInt32();
+    m_result.m_nRewardR = pIn->ReadInt32();
     if (FUN_140ba28d0(&m_30, 0) == 0)
         FUN_140f91120(&m_result);
 }

@@ -257,8 +257,8 @@ void UIHomeInsideOptionDialog::FUN_140c280d0()
     {
         unsigned char nSelected = spBg.operator->()->FUN_1422df6c0();
         COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
-        packet.vfunc_o10_1(0x33);
-        packet.vfunc_o10_1(nSelected);
+        packet.WriteUInt8(0x33);
+        packet.WriteUInt8(nSelected);
         FUN_140710590(packet);
     }
     MS2Ptr<Unk_HioCombo> spLight = FUN_140c28560<Unk_HioCombo>("m_light");
@@ -266,8 +266,8 @@ void UIHomeInsideOptionDialog::FUN_140c280d0()
     {
         unsigned char nSelected = spLight.operator->()->FUN_1422df6c0();
         COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
-        packet.vfunc_o10_1(0x34);
-        packet.vfunc_o10_1(nSelected);
+        packet.WriteUInt8(0x34);
+        packet.WriteUInt8(nSelected);
         FUN_140710590(packet);
     }
     MS2Ptr<Unk_HioCombo> spCamera = FUN_140c28560<Unk_HioCombo>("m_camera");
@@ -275,8 +275,8 @@ void UIHomeInsideOptionDialog::FUN_140c280d0()
     {
         unsigned char nSelected = spCamera.operator->()->FUN_1422df6c0();
         COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
-        packet.vfunc_o10_1(0x36);
-        packet.vfunc_o10_1(nSelected);
+        packet.WriteUInt8(0x36);
+        packet.WriteUInt8(nSelected);
         FUN_140710590(packet);
     }
     MS2Ptr<Unk_HioButton> spApply = FUN_140bb4b10("m_apply");

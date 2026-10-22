@@ -169,7 +169,7 @@ void JobSystemCli::vfunc_7(CByteBuffer& buf)
 void JobSystemCli::RequestReset()
 {
     COutPacket packet(static_cast<int>(SendOp::Job), 0);
-    packet.vfunc_o10_1(8);
+    packet.WriteUInt8(8);
     FUN_140710590(packet);
 }
 
@@ -188,7 +188,7 @@ void JobSystemCli::SendRequest(int nJob, unsigned __int64 nSerial, int nSkill, u
     request.m_nSkill = nSkill;
     request.m_nLevel = nLevel;
     COutPacket packet(static_cast<int>(SendOp::Job), 0);
-    packet.vfunc_o10_1(7);
+    packet.WriteUInt8(7);
     FUN_1401fdb50((unsigned char*)&request, packet);
     FUN_140710590(packet);
 }

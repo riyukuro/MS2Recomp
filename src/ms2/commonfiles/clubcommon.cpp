@@ -92,19 +92,19 @@ void Club::PacketInvite::FUN_14020c580(CClub* pClub, CStringW strA, CStringW str
 // @0x14020c670
 void Club::PacketInvite::FUN_14020c670(COutputStream& out)
 {
-    out.vfunc_o10_4(m_inviteId);
-    out.vfunc_o10_8(m_20);
-    out.vfunc_o10_8(m_28);
-    out.vfunc_o10_8(m_30);
+    out.WriteInt64(m_inviteId);
+    out.WriteUnicodeString(m_20);
+    out.WriteUnicodeString(m_28);
+    out.WriteUnicodeString(m_30);
 }
 
 // @0x14020c720
 void Club::PacketInvite::FUN_14020c720(CInputStream& in)
 {
-    m_inviteId = in.vfunc_o8_4();
-    m_20 = in.vfunc_o8_8();
-    m_28 = in.vfunc_o8_8();
-    m_30 = in.vfunc_o8_8();
+    m_inviteId = in.ReadInt64();
+    m_20 = in.ReadUnicodeString();
+    m_28 = in.ReadUnicodeString();
+    m_30 = in.ReadUnicodeString();
 }
 
 // ---- Club::NameInfo / Club::UserClub ----
@@ -222,19 +222,19 @@ void Club::UserClub::FUN_14020ce50(COutputStream& out)
 {
     int count = (int)m_18.GetCount();
     MS2_ASSERT_AT(0xb9, count <= CLUB_JOIN_MAX);
-    out.vfunc_o10_1((unsigned char)count);
+    out.WriteUInt8((unsigned char)count);
     for (POSITION pos = m_18.GetHeadPosition(); pos; m_18.GetNext(pos))
     {
         MS2Ptr<NameInfo> sp = m_18.GetValueAt(pos);
         if (sp == 0)
         {
-            out.vfunc_o10_1(0);
+            out.WriteUInt8(0);
         }
         else
         {
-            out.vfunc_o10_1(1);
-            out.vfunc_o10_4(sp->m_18);
-            out.vfunc_o10_8(sp->m_20);
+            out.WriteUInt8(1);
+            out.WriteInt64(sp->m_18);
+            out.WriteUnicodeString(sp->m_20);
         }
     }
 }
@@ -242,15 +242,15 @@ void Club::UserClub::FUN_14020ce50(COutputStream& out)
 // @0x14020cfc0
 void Club::UserClub::FUN_14020cfc0(CInputStream& in)
 {
-    unsigned char count = in.vfunc_o8_1();
+    unsigned char count = in.ReadUInt8();
     MS2_ASSERT_AT(0xd0, count <= CLUB_JOIN_MAX);
     for (int i = 0; i < (int)count; i++)
     {
-        if (in.vfunc_o8_1() == 1)
+        if (in.ReadUInt8() == 1)
         {
             MS2Ptr<NameInfo> sp(new NameInfo);
-            sp->m_18 = in.vfunc_o8_4();
-            sp->m_20 = in.vfunc_o8_8();
+            sp->m_18 = in.ReadInt64();
+            sp->m_20 = in.ReadUnicodeString();
             m_18.SetAt(sp->m_18, sp);
         }
     }
@@ -323,13 +323,13 @@ void CClubMemberProxy::FUN_14020d4a0(CStringW strName, int nJobCode, int nJob, s
 // @0x14020d580
 void CClubMemberProxy::FUN_14020d580(COutputStream& out)
 {
-    out.vfunc_o10_3(m_mapId);
+    out.WriteInt32(m_mapId);
 }
 
 // @0x14020d5c0
 void CClubMemberProxy::FUN_14020d5c0(CInPacket& packet)
 {
-    m_mapId = packet.vfunc_o8_3();
+    m_mapId = packet.ReadInt32();
 }
 
 // @0x14020d610
@@ -347,11 +347,11 @@ void CClubMemberProxy::FUN_14020d640(CInPacket* packet)
 // @0x14020d690
 void CClubMemberProxy::FUN_14020d690(COutputStream& out)
 {
-    out.vfunc_o10_8(FUN_14020e5d0());
-    out.vfunc_o10_3(m_jobCode);
-    out.vfunc_o10_3(m_job);
-    out.vfunc_o10_2(m_level);
-    out.vfunc_o10_6(m_picture);
+    out.WriteUnicodeString(FUN_14020e5d0());
+    out.WriteInt32(m_jobCode);
+    out.WriteInt32(m_job);
+    out.WriteInt16(m_level);
+    out.WriteUnicodeStringA(m_picture);
 }
 
 // @0x14020d770
@@ -359,11 +359,11 @@ void CClubMemberProxy::FUN_14020d770(CInPacket& packet)
 {
     CStringW strName;
     CStringA strPicture;
-    strName = packet.vfunc_o8_8();
-    m_jobCode = packet.vfunc_o8_3();
-    m_job = packet.vfunc_o8_3();
-    m_level = packet.vfunc_o8_2();
-    strPicture = packet.vfunc_o8_6();
+    strName = packet.ReadUnicodeString();
+    m_jobCode = packet.ReadInt32();
+    m_job = packet.ReadInt32();
+    m_level = packet.ReadInt16();
+    strPicture = packet.ReadUnicodeStringA();
     FUN_14020e650(strName);
     FUN_14020e740(strPicture);
 }
@@ -371,20 +371,20 @@ void CClubMemberProxy::FUN_14020d770(CInPacket& packet)
 // @0x14020d9a0
 void CClubMemberProxy::FUN_14020d9a0(COutputStream& out)
 {
-    out.vfunc_o10_4(m_accountId);
-    out.vfunc_o10_4(m_characterId);
-    out.vfunc_o10_8(FUN_14020e5d0());
-    out.vfunc_o10_1(m_gender);
-    out.vfunc_o10_3(m_jobCode);
-    out.vfunc_o10_3(m_job);
-    out.vfunc_o10_2(m_level);
-    out.vfunc_o10_3(m_mapId);
-    out.vfunc_o10_2((short)m_channel);
-    out.vfunc_o10_6(FUN_14020e6c0());
-    out.vfunc_o10_3(m_40);
-    out.vfunc_o10_3(m_44);
-    out.vfunc_o10_3(m_48);
-    out.vfunc_o10_4(m_50);
+    out.WriteInt64(m_accountId);
+    out.WriteInt64(m_characterId);
+    out.WriteUnicodeString(FUN_14020e5d0());
+    out.WriteUInt8(m_gender);
+    out.WriteInt32(m_jobCode);
+    out.WriteInt32(m_job);
+    out.WriteInt16(m_level);
+    out.WriteInt32(m_mapId);
+    out.WriteInt16((short)m_channel);
+    out.WriteUnicodeStringA(FUN_14020e6c0());
+    out.WriteInt32(m_40);
+    out.WriteInt32(m_44);
+    out.WriteInt32(m_48);
+    out.WriteInt64(m_50);
     m_trophy.FUN_140267f50(out);
 }
 
@@ -393,20 +393,20 @@ void CClubMemberProxy::FUN_14020db80(CInputStream* in)
 {
     CStringW strName;
     CStringA strPicture;
-    m_accountId = in->vfunc_o8_4();
-    m_characterId = in->vfunc_o8_4();
-    strName = in->vfunc_o8_8();
-    m_gender = in->vfunc_o8_1();
-    m_jobCode = in->vfunc_o8_3();
-    m_job = in->vfunc_o8_3();
-    m_level = in->vfunc_o8_2();
-    m_mapId = in->vfunc_o8_3();
-    m_channel = (unsigned short)in->vfunc_o8_2();
-    strPicture = in->vfunc_o8_6();
-    m_40 = in->vfunc_o8_3();
-    m_44 = in->vfunc_o8_3();
-    m_48 = in->vfunc_o8_3();
-    m_50 = in->vfunc_o8_4();
+    m_accountId = in->ReadInt64();
+    m_characterId = in->ReadInt64();
+    strName = in->ReadUnicodeString();
+    m_gender = in->ReadUInt8();
+    m_jobCode = in->ReadInt32();
+    m_job = in->ReadInt32();
+    m_level = in->ReadInt16();
+    m_mapId = in->ReadInt32();
+    m_channel = (unsigned short)in->ReadInt16();
+    strPicture = in->ReadUnicodeStringA();
+    m_40 = in->ReadInt32();
+    m_44 = in->ReadInt32();
+    m_48 = in->ReadInt32();
+    m_50 = in->ReadInt64();
     m_trophy.FUN_140267fb0(*in);
     FUN_14020e650(strName);
     FUN_14020e740(strPicture);
@@ -415,11 +415,11 @@ void CClubMemberProxy::FUN_14020db80(CInputStream* in)
 // @0x14020de80
 void CClubMemberProxy::FUN_14020de80(COutputStream& out)
 {
-    out.vfunc_o10_8(FUN_14020e5d0());
-    out.vfunc_o10_3(m_jobCode);
-    out.vfunc_o10_3(m_job);
-    out.vfunc_o10_2(m_level);
-    out.vfunc_o10_6(FUN_14020e6c0());
+    out.WriteUnicodeString(FUN_14020e5d0());
+    out.WriteInt32(m_jobCode);
+    out.WriteInt32(m_job);
+    out.WriteInt16(m_level);
+    out.WriteUnicodeStringA(FUN_14020e6c0());
 }
 
 // @0x14020df70
@@ -427,11 +427,11 @@ void CClubMemberProxy::FUN_14020df70(CInputStream* in)
 {
     CStringW strName;
     CStringA strPicture;
-    strName = in->vfunc_o8_8();
-    m_jobCode = in->vfunc_o8_3();
-    m_job = in->vfunc_o8_3();
-    m_level = in->vfunc_o8_2();
-    strPicture = in->vfunc_o8_6();
+    strName = in->ReadUnicodeString();
+    m_jobCode = in->ReadInt32();
+    m_job = in->ReadInt32();
+    m_level = in->ReadInt16();
+    strPicture = in->ReadUnicodeStringA();
     FUN_14020e650(strName);
     FUN_14020e740(strPicture);
 }
@@ -570,18 +570,18 @@ void CClubMember::FUN_14020ea50(CInPacket* packet)
 // @0x14020eaa0
 void CClubMember::FUN_14020eaa0(COutputStream& out)
 {
-    out.vfunc_o10_1((unsigned char)m_c8);
+    out.WriteUInt8((unsigned char)m_c8);
     if (m_c8 == 2)
     {
-        out.vfunc_o10_4(m_18);
+        out.WriteInt64(m_18);
         m_info.FUN_14020d9a0(out);
-        out.vfunc_o10_4(m_d0);
-        out.vfunc_o10_4(m_d8);
-        out.vfunc_o10_1((unsigned char)m_f0);
+        out.WriteInt64(m_d0);
+        out.WriteInt64(m_d8);
+        out.WriteUInt8((unsigned char)m_f0);
     }
     else
     {
-        out.vfunc_o10_4(m_18);
+        out.WriteInt64(m_18);
         m_info.FUN_14020de80(out);
     }
 }
@@ -589,18 +589,18 @@ void CClubMember::FUN_14020eaa0(COutputStream& out)
 // @0x14020eba0
 void CClubMember::FUN_14020eba0(CInputStream* in)
 {
-    m_c8 = in->vfunc_o8_1();
+    m_c8 = in->ReadUInt8();
     if (m_c8 == 2)
     {
-        m_18 = in->vfunc_o8_4();
+        m_18 = in->ReadInt64();
         m_info.FUN_14020db80(in);
-        m_d0 = in->vfunc_o8_4();
-        m_d8 = in->vfunc_o8_4();
-        m_f0 = in->vfunc_o8_1();
+        m_d0 = in->ReadInt64();
+        m_d8 = in->ReadInt64();
+        m_f0 = in->ReadUInt8();
     }
     else
     {
-        m_18 = in->vfunc_o8_4();
+        m_18 = in->ReadInt64();
         m_info.FUN_14020df70(in);
     }
 }
@@ -998,16 +998,16 @@ void CClub::FUN_14020fb20(COutputStream& out)
     }
     else
     {
-        out.vfunc_o10_4(FUN_14020f0c0());
-        out.vfunc_o10_8(FUN_14020f1a0());
-        out.vfunc_o10_4(FUN_14020f7e0());
-        out.vfunc_o10_4(FUN_14020f850());
-        out.vfunc_o10_8(FUN_14020f8c0());
-        out.vfunc_o10_4(m_creationTime);
-        out.vfunc_o10_1((unsigned char)m_state);
-        out.vfunc_o10_3(FUN_14020f640());
-        out.vfunc_o10_3(FUN_14020f6b0());
-        out.vfunc_o10_4(m_90);
+        out.WriteInt64(FUN_14020f0c0());
+        out.WriteUnicodeString(FUN_14020f1a0());
+        out.WriteInt64(FUN_14020f7e0());
+        out.WriteInt64(FUN_14020f850());
+        out.WriteUnicodeString(FUN_14020f8c0());
+        out.WriteInt64(m_creationTime);
+        out.WriteUInt8((unsigned char)m_state);
+        out.WriteInt32(FUN_14020f640());
+        out.WriteInt32(FUN_14020f6b0());
+        out.WriteInt64(m_90);
         FUN_1402100e0(out);
     }
 }
@@ -1021,16 +1021,16 @@ void CClub::FUN_14020fd80(CInPacket& packet)
     }
     else
     {
-            __int64 nId = packet.vfunc_o8_4();
-        CStringW strName = packet.vfunc_o8_8();
-        __int64 nLeaderAccount = packet.vfunc_o8_4();
-        __int64 nLeaderCharacter = packet.vfunc_o8_4();
-        CStringW strLeader = packet.vfunc_o8_8();
-        __int64 nCreated = packet.vfunc_o8_4();
-        unsigned char nState = packet.vfunc_o8_1();
-        int nBuffId = packet.vfunc_o8_3();
-        int nBuffLevel = packet.vfunc_o8_3();
-        __int64 n90 = packet.vfunc_o8_4();
+            __int64 nId = packet.ReadInt64();
+        CStringW strName = packet.ReadUnicodeString();
+        __int64 nLeaderAccount = packet.ReadInt64();
+        __int64 nLeaderCharacter = packet.ReadInt64();
+        CStringW strLeader = packet.ReadUnicodeString();
+        __int64 nCreated = packet.ReadInt64();
+        unsigned char nState = packet.ReadUInt8();
+        int nBuffId = packet.ReadInt32();
+        int nBuffLevel = packet.ReadInt32();
+        __int64 n90 = packet.ReadInt64();
         FUN_14020f4e0(nState);
         FUN_14020f130(nId);
         FUN_14020f230(strName);
@@ -1051,7 +1051,7 @@ void CClub::FUN_1402100e0(COutputStream& out)
     }
     else
     {
-        out.vfunc_o10_1((unsigned char)FUN_140210df0());
+        out.WriteUInt8((unsigned char)FUN_140210df0());
         for (POSITION pos = m_members.GetHeadPosition(); pos; m_members.GetNext(pos))
         {
             MS2Ptr<CClubMember> sp = m_members.GetValueAt(pos);
@@ -1069,7 +1069,7 @@ void CClub::FUN_1402101e0(CInPacket& packet)
     }
     else
     {
-        unsigned char count = packet.vfunc_o8_1();
+        unsigned char count = packet.ReadUInt8();
         for (int i = 0; i < (int)count; i++)
         {
             MS2Ptr<CClubMember> sp(new CClubMember);

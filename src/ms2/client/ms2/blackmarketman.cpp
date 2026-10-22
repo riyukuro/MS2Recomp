@@ -117,12 +117,12 @@ CBlackMarketMan::~CBlackMarketMan()
 // @0x140a20650
 void CBlackMarketMan::OnBlackMarket(CInPacket& packet)
 {
-    char cSub = packet.vfunc_o8_1();
+    char cSub = packet.ReadUInt8();
     if (cSub == 6)
     {
-        unsigned char bFlag = packet.vfunc_o8_1();
-        __int64 qwA = packet.vfunc_o8_4();
-        __int64 qwB = packet.vfunc_o8_4();
+        unsigned char bFlag = packet.ReadUInt8();
+        __int64 qwA = packet.ReadInt64();
+        __int64 qwB = packet.ReadInt64();
         m_nF8 = bFlag;
         m_tmA = CMsTime(qwA);
         m_tmB = CMsTime(qwB);
@@ -158,7 +158,7 @@ void CBlackMarketMan::OnBlackMarket(CInPacket& packet)
 void CBlackMarketMan::SendBlackMarketMode1()
 {
     COutPacket packet(static_cast<int>(SendOp::BlackMarket), 0);
-    packet.vfunc_o10_1(1);
+    packet.WriteUInt8(1);
     FUN_140710590(packet);
 }
 
@@ -166,7 +166,7 @@ void CBlackMarketMan::SendBlackMarketMode1()
 void CBlackMarketMan::SendBlackMarketMode6()
 {
     COutPacket packet(static_cast<int>(SendOp::BlackMarket), 0);
-    packet.vfunc_o10_1(6);
+    packet.WriteUInt8(6);
     FUN_140710590(packet);
 }
 
@@ -174,10 +174,10 @@ void CBlackMarketMan::SendBlackMarketMode6()
 void CBlackMarketMan::SendBlackMarketMode2(unsigned __int64 qwA, unsigned __int64 qwB, int nCount)
 {
     COutPacket packet(static_cast<int>(SendOp::BlackMarket), 0);
-    packet.vfunc_o10_1(2);
-    packet.vfunc_o10_4(qwA);
-    packet.vfunc_o10_4(qwB);
-    packet.vfunc_o10_3(nCount);
+    packet.WriteUInt8(2);
+    packet.WriteInt64(qwA);
+    packet.WriteInt64(qwB);
+    packet.WriteInt32(nCount);
     FUN_140710590(packet);
 }
 
@@ -185,8 +185,8 @@ void CBlackMarketMan::SendBlackMarketMode2(unsigned __int64 qwA, unsigned __int6
 void CBlackMarketMan::SendBlackMarketMode3(unsigned __int64 qwId)
 {
     COutPacket packet(static_cast<int>(SendOp::BlackMarket), 0);
-    packet.vfunc_o10_1(3);
-    packet.vfunc_o10_4(qwId);
+    packet.WriteUInt8(3);
+    packet.WriteInt64(qwId);
     FUN_140710590(packet);
 }
 
@@ -200,7 +200,7 @@ void CBlackMarketMan::SendBlackMarketMode4(MS2Ptr<CBlackMarketSchCond> spCond)
     if (spCond->m_dw48 == 1)
         m_nReload = 1;
     COutPacket packet(static_cast<int>(SendOp::BlackMarket), 0);
-    packet.vfunc_o10_1(4);
+    packet.WriteUInt8(4);
     spCond->Write(&packet);
     FUN_140710590(packet);
 }
@@ -209,9 +209,9 @@ void CBlackMarketMan::SendBlackMarketMode4(MS2Ptr<CBlackMarketSchCond> spCond)
 void CBlackMarketMan::SendBlackMarketMode5(unsigned __int64 qwId, int nCount)
 {
     COutPacket packet(static_cast<int>(SendOp::BlackMarket), 0);
-    packet.vfunc_o10_1(5);
-    packet.vfunc_o10_4(qwId);
-    packet.vfunc_o10_3(nCount);
+    packet.WriteUInt8(5);
+    packet.WriteInt64(qwId);
+    packet.WriteInt32(nCount);
     FUN_140710590(packet);
 }
 
@@ -219,9 +219,9 @@ void CBlackMarketMan::SendBlackMarketMode5(unsigned __int64 qwId, int nCount)
 void CBlackMarketMan::SendBlackMarketMode8(int nA, int nB)
 {
     COutPacket packet(static_cast<int>(SendOp::BlackMarket), 0);
-    packet.vfunc_o10_1(8);
-    packet.vfunc_o10_3(nA);
-    packet.vfunc_o10_3(nB);
+    packet.WriteUInt8(8);
+    packet.WriteInt32(nA);
+    packet.WriteInt32(nB);
     FUN_140710590(packet);
 }
 
@@ -315,7 +315,7 @@ void CBlackMarketMan::FUN_140a210e0(ProductList& out)
 void CBlackMarketMan::FUN_140a211a0(CInPacket& packet)
 {
     m_mapOwn.RemoveAll();
-    int nCount = packet.vfunc_o8_3();
+    int nCount = packet.ReadInt32();
     for (int i = 0; i < nCount; ++i)
     {
         MS2Ptr<CBlackMarketProduct> sp(new CBlackMarketProduct);
@@ -345,8 +345,8 @@ void CBlackMarketMan::FUN_140a21340(CInPacket& packet)
 // @0x140a21460
 void CBlackMarketMan::FUN_140a21460(CInPacket& packet)
 {
-    unsigned __int64 qwId = packet.vfunc_o8_4();
-    unsigned char bFlag = packet.vfunc_o8_1();
+    unsigned __int64 qwId = packet.ReadInt64();
+    unsigned char bFlag = packet.ReadUInt8();
     ProductMap::CPair* pPair = m_mapOwn.Lookup(qwId);
     if (pPair != 0)
     {
@@ -370,7 +370,7 @@ void CBlackMarketMan::FUN_140a216b0(CInPacket& packet)
         m_listSearch.RemoveAll();
     }
     m_nReload = 0;
-    int nCount = packet.vfunc_o8_3();
+    int nCount = packet.ReadInt32();
     int nOld = m_listSearch.GetCount();
     POSITION posTail = m_listSearch.GetTailPosition();
     for (int i = 0; i < nCount; ++i)
@@ -394,8 +394,8 @@ void CBlackMarketMan::FUN_140a216b0(CInPacket& packet)
 // @0x140a21930
 void CBlackMarketMan::FUN_140a21930(CInPacket& packet)
 {
-    unsigned __int64 qwId = packet.vfunc_o8_4();
-    int nBought = packet.vfunc_o8_3();
+    unsigned __int64 qwId = packet.ReadInt64();
+    int nBought = packet.ReadInt32();
     MS2Ptr<CBlackMarketProduct> sp = FUN_140a20ff0(qwId);
     if (sp == 0)
         return;
@@ -421,9 +421,9 @@ void CBlackMarketMan::FUN_140a21930(CInPacket& packet)
 // @0x140a21be0
 void CBlackMarketMan::FUN_140a21be0(CInPacket& packet)
 {
-    int nA = packet.vfunc_o8_3();
-    int nB = packet.vfunc_o8_3();
-    __int64 qw = packet.vfunc_o8_4();
+    int nA = packet.ReadInt32();
+    int nB = packet.ReadInt32();
+    __int64 qw = packet.ReadInt64();
     UIBlackMarketDialog* pDlg = FUN_140a22f10(0x4e97);
     if (pDlg != 0)
         pDlg->FUN_1418d13a0(nA, nB, (void*)qw);
@@ -432,11 +432,11 @@ void CBlackMarketMan::FUN_140a21be0(CInPacket& packet)
 // @0x140a21ca0
 void CBlackMarketMan::FUN_140a21ca0(CInPacket& packet)
 {
-    unsigned char bType = packet.vfunc_o8_1();
-    Unk_BmResult nResult = (Unk_BmResult)packet.vfunc_o8_3();
-    __int64 qw = packet.vfunc_o8_4();
-    int nA = packet.vfunc_o8_3();
-    unsigned short nB = (unsigned short)packet.vfunc_o8_3();
+    unsigned char bType = packet.ReadUInt8();
+    Unk_BmResult nResult = (Unk_BmResult)packet.ReadInt32();
+    __int64 qw = packet.ReadInt64();
+    int nA = packet.ReadInt32();
+    unsigned short nB = (unsigned short)packet.ReadInt32();
     switch (nResult)
     {
     case 5:

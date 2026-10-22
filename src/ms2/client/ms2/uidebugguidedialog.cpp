@@ -305,15 +305,15 @@ int UIDebugGuideDialog::vfunc_13()
 // MS2-FUNCTIONAL: control flow follows the exe; the two loop-read string locals sit in swapped stack slots.
 void UIDebugGuideDialog::OnPacket(CInPacket& iPacket)
 {
-    int nType = iPacket.vfunc_o8_1();
+    int nType = iPacket.ReadUInt8();
     if (nType == 7)
     {
-        CStringW strHeader = iPacket.vfunc_o8_8();
-        int nCount = iPacket.vfunc_o8_3();
+        CStringW strHeader = iPacket.ReadUnicodeString();
+        int nCount = iPacket.ReadInt32();
         for (int i = 0; i < nCount; i++)
         {
-            CStringW strDesc = iPacket.vfunc_o8_8();
-            CStringW strName = iPacket.vfunc_o8_8();
+            CStringW strDesc = iPacket.ReadUnicodeString();
+            CStringW strName = iPacket.ReadUnicodeString();
             PrintLine(CStringW(strName), CStringW(strDesc));
             FUN_1412751b0(FUN_1406564a0(L"{0}님이 {1} {2} 커맨드 실행", strHeader, strDesc, strName), 20);
         }
@@ -490,16 +490,16 @@ bool UIDebugGuideDialog::SendCommand(int nIndex)
             Unk_DebugGuideCommand& rCommand = m_groups[nGroup].m_commands[nCommand];
             unsigned __int64 nCount = rCommand.m_args.size();
             COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
-            pkt.vfunc_o10_1(7);
-            pkt.vfunc_o10_3((int)nCount);
+            pkt.WriteUInt8(7);
+            pkt.WriteInt32((int)nCount);
             for (unsigned __int64 i = 0; i < nCount; i++)
             {
                 Unk_DebugGuideArg& rArg = rCommand.m_args[i];
-                pkt.vfunc_o10_8(rArg.m_strCmd);
+                pkt.WriteUnicodeString(rArg.m_strCmd);
                 if (!rArg.m_bUseArg)
-                    pkt.vfunc_o10_8(CStringW(L""));
+                    pkt.WriteUnicodeString(CStringW(L""));
                 else
-                    pkt.vfunc_o10_8(m_input->FUN_1422e0b00().Trim());
+                    pkt.WriteUnicodeString(m_input->FUN_1422e0b00().Trim());
             }
             FUN_140710590(&pkt);
             return true;

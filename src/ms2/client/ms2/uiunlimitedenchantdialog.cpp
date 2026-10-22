@@ -227,7 +227,7 @@ void UIUnlimitedEnchantDialog::vfunc_43()
 // MS2-FUNCTIONAL: temp/frame layout differs from the exe
 void UIUnlimitedEnchantDialog::FUN_140fb6310(CInPacket* pPacket)
 {
-    unsigned __int64 nUid = pPacket->vfunc_o8_4();
+    unsigned __int64 nUid = pPacket->ReadInt64();
     CIngredientContainer ingredients;
     ingredients.FUN_14026c0b0(*pPacket);
     MS2Ptr<CItem> spTarget = FUN_1419be700(nUid);
@@ -278,7 +278,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6310(CInPacket* pPacket)
 // @0x140fb6b00
 void UIUnlimitedEnchantDialog::FUN_140fb6b00(CInPacket* pPacket)
 {
-    unsigned __int64 nUid = pPacket->vfunc_o8_4();
+    unsigned __int64 nUid = pPacket->ReadInt64();
     MS2Ptr<CItem> spItem = FUN_1419be700(nUid);
     if (spItem == 0)
         return;
@@ -372,8 +372,8 @@ void UIUnlimitedEnchantDialog::SendLimitBreakMode0(unsigned __int64 nUid)
         return;
     }
     COutPacket packet(static_cast<int>(SendOp::LimitBreak), 0);
-    packet.vfunc_o10_1(0);
-    packet.vfunc_o10_4(spItem->FUN_140526a50());
+    packet.WriteUInt8(0);
+    packet.WriteInt64(spItem->FUN_140526a50());
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x140FB7450, UIUnlimitedEnchantDialog, SendLimitBreakMode0, 273, 0x50680FB4);
@@ -392,8 +392,8 @@ void UIUnlimitedEnchantDialog::SendLimitBreakMode1(unsigned __int64 nUid)
         return;
     }
     COutPacket packet(static_cast<int>(SendOp::LimitBreak), 0);
-    packet.vfunc_o10_1(1);
-    packet.vfunc_o10_4(spItem->FUN_140526a50());
+    packet.WriteUInt8(1);
+    packet.WriteInt64(spItem->FUN_140526a50());
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x140FB7570, UIUnlimitedEnchantDialog, SendLimitBreakMode1, 273, 0x50C15093);

@@ -32,7 +32,7 @@ CStatPointManager::~CStatPointManager()
 // @0x140ca9e90
 void CStatPointManager::OnPacket(CInPacket& packet)
 {
-    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = packet.ReadUInt8();
     switch (nMode)
     {
     case 0:
@@ -48,14 +48,14 @@ MS2_REPLACE_METHOD(0x140CA9E90, CStatPointManager, OnPacket, 116, 0x654A1F4D);
 // @0x140ca9f10
 void CStatPointManager::LoadExtra(CInPacket& packet)
 {
-    m_nTotal = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    m_nTotal = packet.ReadInt32();
     m_nRemaining = m_nTotal - m_nUsed;
     m_extra.RemoveAll();
-    unsigned nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    unsigned nCount = packet.ReadInt32();
     for (unsigned i = 0; i < nCount; i++)
     {
-        CStatPointManager::Unk_ExtraKey nKey = (CStatPointManager::Unk_ExtraKey)static_cast<CInputStream&>(packet).vfunc_o8_3();
-        unsigned nValue = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        CStatPointManager::Unk_ExtraKey nKey = (CStatPointManager::Unk_ExtraKey)packet.ReadInt32();
+        unsigned nValue = packet.ReadInt32();
         m_extra.SetAt(nKey, nValue);
     }
     FUN_140aa6d40()->FUN_141b0ce20(0x10, 0);
@@ -66,13 +66,13 @@ MS2_REPLACE_METHOD(0x140CA9F10, CStatPointManager, LoadExtra, 298, 0x04657B2B);
 void CStatPointManager::LoadStats(CInPacket& packet)
 {
     m_stats.RemoveAll();
-    m_nTotal = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    m_nTotal = packet.ReadInt32();
     m_nUsed = 0;
-    unsigned nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    unsigned nCount = packet.ReadInt32();
     for (unsigned i = 0; i < nCount; i++)
     {
-        CStatPointManager::Unk_StatKey nStat = (CStatPointManager::Unk_StatKey)static_cast<CInputStream&>(packet).vfunc_o8_1();
-        int nPoints = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        CStatPointManager::Unk_StatKey nStat = (CStatPointManager::Unk_StatKey)packet.ReadUInt8();
+        int nPoints = packet.ReadInt32();
         m_stats.SetAt(nStat, nPoints);
         m_nUsed += nPoints;
     }
@@ -134,9 +134,9 @@ void CStatPointManager::RequestAdd(int nStat, int nAmount)
     else
     {
         COutPacket packet(static_cast<int>(SendOp::AttributePoint), 0);
-        packet.vfunc_o10_1(2);
-        packet.vfunc_o10_1((unsigned char)nStat);
-        packet.vfunc_o10_3(nAmount);
+        packet.WriteUInt8(2);
+        packet.WriteUInt8((unsigned char)nStat);
+        packet.WriteInt32(nAmount);
         FUN_140710590(packet);
     }
 }
@@ -148,7 +148,7 @@ void CStatPointManager::RequestReset()
     if (m_nUsed == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::AttributePoint), 0);
-    packet.vfunc_o10_1(3);
+    packet.WriteUInt8(3);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x140CAA3B0, CStatPointManager, RequestReset, 88, 0xEE53C2F3);

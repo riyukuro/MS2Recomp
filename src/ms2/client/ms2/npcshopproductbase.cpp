@@ -146,40 +146,40 @@ void CNpcShopProductCli::FUN_140db61a0(CInPacket& in, int nMode)
 {
     if (nMode == 1)
     {
-        m_18 = in.vfunc_o8_3();
-        int nItemId = in.vfunc_o8_3();
-        m_88 = in.vfunc_o8_1();
-        m_8c = in.vfunc_o8_3();
-        m_90 = in.vfunc_o8_3();
-        m_a0 = (unsigned)in.vfunc_o8_3();
-        m_a8 = (unsigned)in.vfunc_o8_3();
-        unsigned char nRarity = in.vfunc_o8_1();
-        int nCount = in.vfunc_o8_3();
-        m_5c = in.vfunc_o8_3();
-        int nBought = in.vfunc_o8_3();
-        m_60 = in.vfunc_o8_3();
-        m_b0 = in.vfunc_o8_7();
-        m_64 = in.vfunc_o8_3();
-        m_68 = in.vfunc_o8_3();
-        m_6c = in.vfunc_o8_1();
-        m_70 = (unsigned short)in.vfunc_o8_2();
-        m_74 = in.vfunc_o8_1();
-        m_78 = (unsigned short)in.vfunc_o8_2();
-        m_84 = in.vfunc_o8_0();
-        m_b8 = (unsigned short)in.vfunc_o8_2();
-        m_bc = in.vfunc_o8_1();
-        m_c0 = in.vfunc_o8_1();
-        m_98 = in.vfunc_o8_7();
-        m_7c = (unsigned short)in.vfunc_o8_2();
-        m_80 = in.vfunc_o8_3();
-        m_c4 = in.vfunc_o8_0();
-        if (in.vfunc_o8_0())
+        m_18 = in.ReadInt32();
+        int nItemId = in.ReadInt32();
+        m_88 = in.ReadUInt8();
+        m_8c = in.ReadInt32();
+        m_90 = in.ReadInt32();
+        m_a0 = (unsigned)in.ReadInt32();
+        m_a8 = (unsigned)in.ReadInt32();
+        unsigned char nRarity = in.ReadUInt8();
+        int nCount = in.ReadInt32();
+        m_5c = in.ReadInt32();
+        int nBought = in.ReadInt32();
+        m_60 = in.ReadInt32();
+        m_b0 = in.ReadString();
+        m_64 = in.ReadInt32();
+        m_68 = in.ReadInt32();
+        m_6c = in.ReadUInt8();
+        m_70 = (unsigned short)in.ReadInt16();
+        m_74 = in.ReadUInt8();
+        m_78 = (unsigned short)in.ReadInt16();
+        m_84 = in.ReadBool();
+        m_b8 = (unsigned short)in.ReadInt16();
+        m_bc = in.ReadUInt8();
+        m_c0 = in.ReadUInt8();
+        m_98 = in.ReadString();
+        m_7c = (unsigned short)in.ReadInt16();
+        m_80 = in.ReadInt32();
+        m_c4 = in.ReadBool();
+        if (in.ReadBool())
         {
             m_c8 = new CNpcShopBuyPeriod();
             m_c8->FUN_1406dcb40(in);
             m_c8->FUN_1406dc810();
         }
-        if (in.vfunc_o8_0())
+        if (in.ReadBool())
         {
             FUN_140db8b90(m_d8, new NpcShopItemLife());
             m_d8.operator->()->FUN_14026ef20(in);
@@ -194,10 +194,10 @@ void CNpcShopProductCli::FUN_140db61a0(CInPacket& in, int nMode)
     }
     else if (nMode == 7)
     {
-        m_18 = in.vfunc_o8_3();
-        int nItemId = in.vfunc_o8_3();
-        unsigned char nRarity = in.vfunc_o8_1();
-        __int64 nPrice = in.vfunc_o8_4();
+        m_18 = in.ReadInt32();
+        int nItemId = in.ReadInt32();
+        unsigned char nRarity = in.ReadUInt8();
+        __int64 nPrice = in.ReadInt64();
         m_40.AssignRaw(new CItem());
         if (m_40->FUN_140523c40(nItemId, nRarity, 0))
             m_40->FUN_140524eb0(in);
@@ -564,8 +564,8 @@ CNpcShopMeratItemCli::~CNpcShopMeratItemCli()
 void CNpcShopMeratItemCli::vfunc_2(CInPacket* pIn)
 {
     CNpcShopMeratItemBase::vfunc_2(pIn);
-    int nA = pIn->vfunc_o8_3();
-    int nB = pIn->vfunc_o8_3();
+    int nA = pIn->ReadInt32();
+    int nB = pIn->ReadInt32();
     if (m_spProduct.get() != 0)
     {
         reinterpret_cast<Unk_ProdPremium*>(m_spProduct.operator->())->m_1c8 = nA;

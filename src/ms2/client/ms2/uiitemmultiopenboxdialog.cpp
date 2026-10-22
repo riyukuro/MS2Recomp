@@ -139,10 +139,10 @@ void UIItemMultiOpenBoxDialog::vfunc_15()
         m_198 = 0;
         int nCount = *FUN_1402fbd20(&m_194, FUN_1402056b0(&FUN_1401d3200()->m_multiOpenMax));
         COutPacket packet(static_cast<int>(SendOp::RequestItemBox), 0);
-        packet.vfunc_o10_3(m_180);
-        packet.vfunc_o10_2(m_184);
-        packet.vfunc_o10_3(nCount);
-        packet.vfunc_o10_8(m_188);
+        packet.WriteInt32(m_180);
+        packet.WriteInt16(m_184);
+        packet.WriteInt32(nCount);
+        packet.WriteUnicodeString(m_188);
         FUN_140710590(packet);
     }
 }

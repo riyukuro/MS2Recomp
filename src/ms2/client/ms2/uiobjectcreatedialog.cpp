@@ -173,10 +173,10 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             COutPacket packet(static_cast<int>(SendOp::InteractObject), 0);
             packet.Encode1(9);
             packet.Encode4(nKind);
-            packet.vfunc_o10_6(str1);
-            packet.vfunc_o10_6(str2);
-            packet.vfunc_o10_6(str3);
-            packet.vfunc_o10_6(str4);
+            packet.WriteUnicodeStringA(str1);
+            packet.WriteUnicodeStringA(str2);
+            packet.WriteUnicodeStringA(str3);
+            packet.WriteUnicodeStringA(str4);
             packet.Encode4(nCount);
             NiPoint3 kPos = pPlayer->vfunc_18();
             FUN_14020af60(&packet, reinterpret_cast<const Unk_StreamPoint*>(&kPos));
@@ -230,7 +230,7 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             kPoint.z = data.FUN_1422b8c10();
             COutPacket packet(static_cast<int>(SendOp::SetDebugMode), 0);
             packet.Encode1(2);
-            packet.vfunc_o10_11(kPoint);
+            packet.WriteVector3Short(kPoint);
             FUN_140710590(packet);
         }
         return 0;

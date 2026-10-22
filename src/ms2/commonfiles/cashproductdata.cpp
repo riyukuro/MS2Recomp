@@ -101,49 +101,49 @@ void CCashProductData::Assign(const CCashProductData* pSrc)
 // @0x1401d4d20
 void CCashProductData::Write(COutputStream& out)
 {
-    out.vfunc_o10_3(m_n18);
-    out.vfunc_o10_6(m_str20);
-    out.vfunc_o10_3(m_n28);
-    out.vfunc_o10_1(m_n2c);
-    out.vfunc_o10_4(m_n30);
-    out.vfunc_o10_4(m_n34);
-    out.vfunc_o10_1(m_n38);
-    out.vfunc_o10_1(m_n3c);
-    out.vfunc_o10_1(m_n40);
-    out.vfunc_o10_3(m_n44);
-    out.vfunc_o10_3(m_n48);
-    out.vfunc_o10_1(m_n4c);
-    out.vfunc_o10_1(m_n50);
-    out.vfunc_o10_4(m_n58);
-    out.vfunc_o10_4(m_n60);
-    out.vfunc_o10_4(m_n68);
-    out.vfunc_o10_1(m_n70);
-    out.vfunc_o10_3(m_n74);
-    out.vfunc_o10_3(m_n78);
+    out.WriteInt32(m_n18);
+    out.WriteUnicodeStringA(m_str20);
+    out.WriteInt32(m_n28);
+    out.WriteUInt8(m_n2c);
+    out.WriteInt64(m_n30);
+    out.WriteInt64(m_n34);
+    out.WriteUInt8(m_n38);
+    out.WriteUInt8(m_n3c);
+    out.WriteUInt8(m_n40);
+    out.WriteInt32(m_n44);
+    out.WriteInt32(m_n48);
+    out.WriteUInt8(m_n4c);
+    out.WriteUInt8(m_n50);
+    out.WriteInt64(m_n58);
+    out.WriteInt64(m_n60);
+    out.WriteInt64(m_n68);
+    out.WriteUInt8(m_n70);
+    out.WriteInt32(m_n74);
+    out.WriteInt32(m_n78);
 }
 
 // @0x1401d4f40
 void CCashProductData::Read(Unk_CashReader& in)
 {
-    m_n18 = in.vfunc_o8_3();
-    m_str20 = in.vfunc_o8_6();
-    m_n28 = in.vfunc_o8_3();
-    m_n2c = in.vfunc_o8_1();
-    m_n30 = (int)in.vfunc_o8_4();
-    m_n34 = (int)in.vfunc_o8_4();
-    m_n38 = in.vfunc_o8_1();
-    m_n3c = in.vfunc_o8_1();
-    m_n40 = in.vfunc_o8_1();
-    m_n44 = in.vfunc_o8_3();
-    m_n48 = in.vfunc_o8_3();
-    m_n4c = in.vfunc_o8_1();
-    m_n50 = in.vfunc_o8_1();
-    m_n58 = in.vfunc_o8_4();
-    m_n60 = in.vfunc_o8_4();
-    m_n68 = in.vfunc_o8_4();
-    m_n70 = in.vfunc_o8_1();
-    m_n74 = in.vfunc_o8_3();
-    m_n78 = in.vfunc_o8_3();
+    m_n18 = in.ReadInt32();
+    m_str20 = in.ReadUnicodeStringA();
+    m_n28 = in.ReadInt32();
+    m_n2c = in.ReadUInt8();
+    m_n30 = (int)in.ReadInt64();
+    m_n34 = (int)in.ReadInt64();
+    m_n38 = in.ReadUInt8();
+    m_n3c = in.ReadUInt8();
+    m_n40 = in.ReadUInt8();
+    m_n44 = in.ReadInt32();
+    m_n48 = in.ReadInt32();
+    m_n4c = in.ReadUInt8();
+    m_n50 = in.ReadUInt8();
+    m_n58 = in.ReadInt64();
+    m_n60 = in.ReadInt64();
+    m_n68 = in.ReadInt64();
+    m_n70 = in.ReadUInt8();
+    m_n74 = in.ReadInt32();
+    m_n78 = in.ReadInt32();
 }
 
 #ifndef MS2_HOOK_DLL
@@ -178,16 +178,16 @@ CCashSaleProduct::~CCashSaleProduct()
 // @0x1401d5520
 void CCashSaleProduct::Write(COutputStream& out)
 {
-    out.vfunc_o10_3(m_n18);
-    out.vfunc_o10_3(m_n1c);
+    out.WriteInt32(m_n18);
+    out.WriteInt32(m_n1c);
     m_data.Write(out);
 }
 
 // @0x1401d5580
 void CCashSaleProduct::Read(Unk_CashReader& in)
 {
-    m_n18 = in.vfunc_o8_3();
-    m_n1c = in.vfunc_o8_3();
+    m_n18 = in.ReadInt32();
+    m_n1c = in.ReadInt32();
     m_data.Read(in);
 }
 
@@ -209,26 +209,26 @@ CCashInventoryProduct::~CCashInventoryProduct()
 // @0x1401d5740
 void CCashInventoryProduct::Write(COutputStream& out)
 {
-    out.vfunc_o10_3(m_n18);
-    out.vfunc_o10_3(m_n1c);
-    out.vfunc_o10_3(m_n24);
-    out.vfunc_o10_3(m_n20);
-    out.vfunc_o10_1(m_nB8);
-    out.vfunc_o10_8(m_strA8);
-    out.vfunc_o10_8(m_strB0);
+    out.WriteInt32(m_n18);
+    out.WriteInt32(m_n1c);
+    out.WriteInt32(m_n24);
+    out.WriteInt32(m_n20);
+    out.WriteUInt8(m_nB8);
+    out.WriteUnicodeString(m_strA8);
+    out.WriteUnicodeString(m_strB0);
     m_data.Write(out);
 }
 
 // @0x1401d5840
 void CCashInventoryProduct::Read(Unk_CashReader& in)
 {
-    m_n18 = in.vfunc_o8_3();
-    m_n1c = in.vfunc_o8_3();
-    m_n24 = in.vfunc_o8_3();
-    m_n20 = in.vfunc_o8_3();
-    m_nB8 = in.vfunc_o8_1();
-    m_strA8 = in.vfunc_o8_8();
-    m_strB0 = in.vfunc_o8_8();
+    m_n18 = in.ReadInt32();
+    m_n1c = in.ReadInt32();
+    m_n24 = in.ReadInt32();
+    m_n20 = in.ReadInt32();
+    m_nB8 = in.ReadUInt8();
+    m_strA8 = in.ReadUnicodeString();
+    m_strB0 = in.ReadUnicodeString();
     m_data.Read(in);
 }
 

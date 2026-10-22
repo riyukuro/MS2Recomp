@@ -245,10 +245,10 @@ void CQuest::RequestTrackingState(int state)
 {
     if (FUN_14074b790(FUN_140bfc580()) == 0 && GetTrackingState() != state) {
         COutPacket packet(static_cast<int>(SendOp::Quest), 0);
-        packet.COutPacket::vfunc_o10_1(9);
-        packet.COutPacket::vfunc_o10_3(FUN_140bfc580());
+        packet.COutPacket::WriteUInt8(9);
+        packet.COutPacket::WriteInt32(FUN_140bfc580());
         unsigned char value = (unsigned char)state;
-        packet.COutPacket::vfunc_o10_1(value);
+        packet.COutPacket::WriteUInt8(value);
         FUN_140710590(packet);
     }
 }
@@ -423,9 +423,9 @@ MS2_REPLACE_METHOD(0x1416C7310, CQuest, ShowRewards, 1598, 0x3053843A);
 void CQuest::DecodeStart(CInPacket& packet)
 {
     if (!(m_data == (CQuestData*)0)) {
-        unsigned count = packet.vfunc_o8_3();
+        unsigned count = packet.ReadInt32();
         for (size_t i = 0; i < count; ++i) {
-            int value = packet.vfunc_o8_3();
+            int value = packet.ReadInt32();
             SetProgress((int)i, value);
         }
         m_startTime = FUN_140869440();
@@ -438,9 +438,9 @@ MS2_REPLACE_METHOD(0x1416C7960, CQuest, DecodeStart, 237, 0xABC6DCF6);
 // @0x1416c7a60
 void CQuest::DecodeProgress(CInPacket& packet)
 {
-    unsigned count = packet.vfunc_o8_3();
+    unsigned count = packet.ReadInt32();
     for (size_t i = 0; i < count; ++i) {
-        int value = packet.vfunc_o8_3();
+        int value = packet.ReadInt32();
         bool changed = false;
         if (i < m_data->m_conditions.GetCount()) {
             if (FUN_14029f3b0(m_data->m_conditions[i]->m_nType) != 0) {

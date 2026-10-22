@@ -770,8 +770,8 @@ void UIHomeInfoDialog::OnBalance()
 void UIHomeInfoDialog::SendRequestCubeMode58(CStringW strName)
 {
     COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
-    packet.vfunc_o10_1(0x3a);
-    packet.vfunc_o10_6(FUN_14016a600(strName.GetString(), 0));
+    packet.WriteUInt8(0x3a);
+    packet.WriteUnicodeStringA(FUN_14016a600(strName.GetString(), 0));
     FUN_140710590(packet);
 }
 
@@ -845,7 +845,7 @@ bool UIHomeInfoDialog::SendRequestCubeMode31(int nResult, const CMsgBoxData& dat
                 pPc->FUN_14152f3c0();
         }
         COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
-        packet.vfunc_o10_1(0x1f);
+        packet.WriteUInt8(0x1f);
         FUN_140710590(packet);
     }
     return true;
@@ -867,9 +867,9 @@ bool UIHomeInfoDialog::FUN_1412c7ff0(int nResult, const CMsgBoxData& data)
         if (nMeso <= DAT_143ab2898 && nMerat <= FUN_140930240() + FUN_140930ae0())
         {
             COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
-            packet.vfunc_o10_1(0x38);
-            packet.vfunc_o10_4(nMeso);
-            packet.vfunc_o10_4(nMerat);
+            packet.WriteUInt8(0x38);
+            packet.WriteInt64(nMeso);
+            packet.WriteInt64(nMerat);
             FUN_140710590(packet);
             return true;
         }

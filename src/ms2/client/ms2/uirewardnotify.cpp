@@ -1027,7 +1027,7 @@ int UIRouletteDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             }
         } else {
             COutPacket packet(static_cast<int>(SendOp::BonusGame), 0);
-            packet.vfunc_o10_1(3);
+            packet.WriteUInt8(3);
             FUN_140710590(packet);
             vfunc_67();
         }
@@ -1112,35 +1112,35 @@ MS2_REPLACE_METHOD(0x141ac5a30, UIRouletteDialog, FUN_141ac5a30, 1071, 0x93B7D82
 // @0x141ac5e70
 void UIRouletteDialog::FUN_141ac5e70(CInPacket& pkt)
 {
-    unsigned char nMode = pkt.vfunc_o8_1();
+    unsigned char nMode = pkt.ReadUInt8();
     if (nMode == 1) {
         if (FUN_141924630() == 0) {
             m_itemIds.RemoveAll();
             m_rarities.RemoveAll();
             m_counts.RemoveAll();
-            m_1e0 = pkt.vfunc_o8_1();
-            unsigned nCount = pkt.vfunc_o8_3();
+            m_1e0 = pkt.ReadUInt8();
+            unsigned nCount = pkt.ReadInt32();
             for (unsigned long long i = 0; i < nCount; i++) {
-                int nItemId = pkt.vfunc_o8_3();
-                unsigned nRarity = pkt.vfunc_o8_1();
-                int nCnt = pkt.vfunc_o8_3();
+                int nItemId = pkt.ReadInt32();
+                unsigned nRarity = pkt.ReadUInt8();
+                int nCnt = pkt.ReadInt32();
                 m_itemIds.Add(nItemId);
                 m_rarities.Add(nRarity);
                 m_counts.Add(nCnt);
             }
-            m_178 = pkt.vfunc_o8_3();
+            m_178 = pkt.ReadInt32();
             FUN_140967100()->FUN_141b21ae0("RouletteDialog");
         }
     } else if (nMode == 2 && FUN_141924630() != 0) {
         m_spinIndex = 0;
         m_spins.RemoveAll();
-        int nCount = pkt.vfunc_o8_3();
+        int nCount = pkt.ReadInt32();
         for (int i = 0; i < nCount; i++) {
             Unk_RouletteSpin spin;
-            spin.m_slot = pkt.vfunc_o8_3();
-            spin.m_itemId = pkt.vfunc_o8_3();
-            spin.m_count = pkt.vfunc_o8_3();
-            spin.m_rarity = (unsigned short)pkt.vfunc_o8_2();
+            spin.m_slot = pkt.ReadInt32();
+            spin.m_itemId = pkt.ReadInt32();
+            spin.m_count = pkt.ReadInt32();
+            spin.m_rarity = (unsigned short)pkt.ReadInt16();
             m_spins.Add(spin);
         }
         m_spinIndex = 0;

@@ -104,14 +104,14 @@ CMailAttachItem::CMailAttachItem(int index, MS2Ptr<CItem> item)
 
 CMailAttachItem::CMailAttachItem(CInPacket& packet)
 {
-    int nItemId = packet.vfunc_o8_3();
-    __int64 nUid = packet.vfunc_o8_4();
-    unsigned char nRarity = packet.vfunc_o8_1();
-    int nAmount = packet.vfunc_o8_3();
-    int nEnchant = packet.vfunc_o8_3();
-    m_nTime = packet.vfunc_o8_4();
-    m_n20 = packet.vfunc_o8_3();
-    m_n28 = packet.vfunc_o8_4();
+    int nItemId = packet.ReadInt32();
+    __int64 nUid = packet.ReadInt64();
+    unsigned char nRarity = packet.ReadUInt8();
+    int nAmount = packet.ReadInt32();
+    int nEnchant = packet.ReadInt32();
+    m_nTime = packet.ReadInt64();
+    m_n20 = packet.ReadInt32();
+    m_n28 = packet.ReadInt64();
     MS2Ptr<CItem> spItem(new CItem);
     if (spItem->FUN_140523c40(nItemId, nAmount, 0))
     {
@@ -147,13 +147,13 @@ int CMailAttachItem::FUN_14068fb10()
 
 void CMailAdItem::FUN_14068fb60(CInputStream* stream)
 {
-    m_n18 = stream->vfunc_o8_3();
-    m_n1c = stream->vfunc_o8_3();
-    m_n20 = stream->vfunc_o8_3();
-    m_n24 = stream->vfunc_o8_3();
-    m_n28 = stream->vfunc_o8_4();
-    m_n30 = stream->vfunc_o8_4();
-    m_n38 = stream->vfunc_o8_4();
+    m_n18 = stream->ReadInt32();
+    m_n1c = stream->ReadInt32();
+    m_n20 = stream->ReadInt32();
+    m_n24 = stream->ReadInt32();
+    m_n28 = stream->ReadInt64();
+    m_n30 = stream->ReadInt64();
+    m_n38 = stream->ReadInt64();
 }
 
 CMailAdItem::CMailAdItem()
@@ -233,8 +233,8 @@ bool Unk_MailTimeRange::FUN_140693b00(__int64 claim)
 
 void Unk_MailTimeRange::FUN_140693300(CInputStream* stream)
 {
-    m_nBegin = stream->vfunc_o8_4();
-    m_nClaim = stream->vfunc_o8_4();
+    m_nBegin = stream->ReadInt64();
+    m_nClaim = stream->ReadInt64();
 }
 
 Unk_MailBenefitList::Unk_MailBenefitList() {}
@@ -610,30 +610,30 @@ __int64 CMailInfo::FUN_140692760() const
 // MS2-FUNCTIONAL: 3.8 KB packet reader; local layout differs
 void CMailInfo::FUN_1406913e0(CInPacket& packet)
 {
-    m_nKind = packet.vfunc_o8_1();
-    m_nId = packet.vfunc_o8_4();
-    m_n28 = packet.vfunc_o8_4();
-    m_str30 = packet.vfunc_o8_8();
-    m_str48 = packet.vfunc_o8_8();
-    m_str50 = packet.vfunc_o8_8();
-    m_str58 = packet.vfunc_o8_8();
-    m_str60 = packet.vfunc_o8_8();
+    m_nKind = packet.ReadUInt8();
+    m_nId = packet.ReadInt64();
+    m_n28 = packet.ReadInt64();
+    m_str30 = packet.ReadUnicodeString();
+    m_str48 = packet.ReadUnicodeString();
+    m_str50 = packet.ReadUnicodeString();
+    m_str58 = packet.ReadUnicodeString();
+    m_str60 = packet.ReadUnicodeString();
     if (m_nKind == 200)
     {
-        int nAds = packet.vfunc_o8_1();
+        int nAds = packet.ReadUInt8();
         for (int i = 0; i < nAds; i++)
         {
             MS2Ptr<CMailAdItem> spAd(new CMailAdItem);
             spAd->FUN_14068fb60(&packet);
             FUN_1406923a0(i, spAd);
         }
-        m_str120 = packet.vfunc_o8_8();
-        m_n128 = packet.vfunc_o8_4();
-        m_n130 = packet.vfunc_o8_1();
+        m_str120 = packet.ReadUnicodeString();
+        m_n128 = packet.ReadInt64();
+        m_n130 = packet.ReadUInt8();
     }
     else
     {
-        int nAttach = packet.vfunc_o8_1();
+        int nAttach = packet.ReadUInt8();
         for (int i = 0; i < nAttach; i++)
         {
             Unk_MailAttachPtr spAttach(new CMailAttachItem(packet));
@@ -644,10 +644,10 @@ void CMailInfo::FUN_1406913e0(CInPacket& packet)
     m_rangeC0.FUN_140693300(&packet);
     m_rangeD0.FUN_140693300(&packet);
     m_benefits.FUN_14026a3d0(&packet);
-    m_n100 = packet.vfunc_o8_4();
-    m_n108 = packet.vfunc_o8_4();
-    m_n118 = packet.vfunc_o8_4();
-    m_str68 = packet.vfunc_o8_8();
+    m_n100 = packet.ReadInt64();
+    m_n108 = packet.ReadInt64();
+    m_n118 = packet.ReadInt64();
+    m_str68 = packet.ReadUnicodeString();
     if (FUN_140692690(m_nKind))
     {
         MS2Ptr<Unk_MailTpl> spTpl(0);

@@ -290,20 +290,20 @@ void UIVIPGoodsShopDialog::vfunc_79(void* pPacket)
     UIDialog::vfunc_79(pPacket);
     if (VIPGOODS_PKT->FUN_14070fe80() != 0xeb)
         return;
-    unsigned char nMode = VIPGOODS_PKT->vfunc_o8_1();
+    unsigned char nMode = VIPGOODS_PKT->ReadUInt8();
     if (nMode == 3) {
         m_mapBought.RemoveAll();
-        unsigned nCount = VIPGOODS_PKT->vfunc_o8_3();
+        unsigned nCount = VIPGOODS_PKT->ReadInt32();
         for (unsigned i = 0; i < nCount; i++) {
-            unsigned nGoodsId = VIPGOODS_PKT->vfunc_o8_3();
-            unsigned nBought = VIPGOODS_PKT->vfunc_o8_3();
+            unsigned nGoodsId = VIPGOODS_PKT->ReadInt32();
+            unsigned nBought = VIPGOODS_PKT->ReadInt32();
             m_mapBought.SetAt(nGoodsId, nBought);
         }
         FUN_140fbaca0();
         m_bReady = 1;
     }
     else if (nMode == 4) {
-        int nGoodsId = VIPGOODS_PKT->vfunc_o8_3();
+        int nGoodsId = VIPGOODS_PKT->ReadInt32();
         MS2Ptr<CVIPGoods> spGoods = FUN_140fb9980()->GetGoods(nGoodsId);
         if (spGoods == 0)
             return;

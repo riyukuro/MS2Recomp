@@ -75,10 +75,10 @@ static CMentorPtr FUN_140b6f200(CByteBuffer& buffer);
 // @0x140b6dfb0
 int MenteeSearch::ResponseMenteeList::FUN_140b6dfb0(CByteBuffer& buffer)
 {
-    m_nResult = buffer.vfunc_o8_3();
+    m_nResult = buffer.ReadInt32();
     if (m_nResult == 0)
     {
-        int nCount = buffer.vfunc_o8_3();
+        int nCount = buffer.ReadInt32();
         for (int i = 0; i < nCount; ++i)
         {
             CMentorPtr spMentor = FUN_140b6f200(buffer);
@@ -309,10 +309,10 @@ UINT CMenteeSearchManager::RequestWeb(LPVOID pParam)
 // @0x140b6ee70
 static CStringW FUN_140b6ee70(CByteBuffer& buffer)
 {
-    int nLen = buffer.vfunc_o8_3();
+    int nLen = buffer.ReadInt32();
     unsigned char* pBuf = new unsigned char[nLen + 2];
     memset(pBuf, 0, nLen + 2);
-    buffer.vfunc_o8_9(pBuf, nLen);
+    buffer.ReadBytes(pBuf, nLen);
     CStringW str(reinterpret_cast<wchar_t*>(pBuf));
     delete[] pBuf;
     return str;
@@ -337,13 +337,13 @@ __time64_t FUN_140b6efa0(CByteBuffer& buffer)
 static CMentorPtr FUN_140b6f200(CByteBuffer& buffer)
 {
     CMentorPtr spMentor(new CMentor);
-    spMentor->a = buffer.vfunc_o8_4();
-    spMentor->c = buffer.vfunc_o8_4();
+    spMentor->a = buffer.ReadInt64();
+    spMentor->c = buffer.ReadInt64();
     spMentor->name = FUN_140b6ee70(buffer);
     spMentor->guild = FUN_140b6ee70(buffer);
-    spMentor->level = (short)buffer.vfunc_o8_3();
-    spMentor->y = buffer.vfunc_o8_3();
-    spMentor->online = buffer.vfunc_o8_3() != 0;
+    spMentor->level = (short)buffer.ReadInt32();
+    spMentor->y = buffer.ReadInt32();
+    spMentor->online = buffer.ReadInt32() != 0;
     return spMentor;
 }
 

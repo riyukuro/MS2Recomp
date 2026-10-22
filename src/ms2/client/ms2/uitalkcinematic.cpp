@@ -1010,50 +1010,50 @@ const void* UITalkManager::vfunc_1()
 // @0x141b1ddd0
 void UITalkManager::FUN_141b1ddd0(CInPacket& in)
 {
-    char nMode = in.vfunc_o8_1();
+    char nMode = in.ReadUInt8();
     if (nMode == 1)
     {
-        int nNpcId = in.vfunc_o8_3();
-        m_nFlags = in.vfunc_o8_1();
-        m_nParam = in.vfunc_o8_3();
-        m_nPage = in.vfunc_o8_3();
-        m_nSound = in.vfunc_o8_3();
+        int nNpcId = in.ReadInt32();
+        m_nFlags = in.ReadUInt8();
+        m_nParam = in.ReadInt32();
+        m_nPage = in.ReadInt32();
+        m_nSound = in.ReadInt32();
         FUN_141b1ff80(nNpcId);
     }
     else if (nMode == 8)
     {
-        m_nFlags = in.vfunc_o8_1();
-        int nId = in.vfunc_o8_3();
-        m_nParam = in.vfunc_o8_3();
-        m_nPage = in.vfunc_o8_3();
-        m_nSound = in.vfunc_o8_3();
+        m_nFlags = in.ReadUInt8();
+        int nId = in.ReadInt32();
+        m_nParam = in.ReadInt32();
+        m_nPage = in.ReadInt32();
+        m_nSound = in.ReadInt32();
         FUN_141b217b0();
         FUN_141b217e0(nId);
         FUN_141b20700();
     }
     else if (nMode == 9)
     {
-        m_nFlags = in.vfunc_o8_1();
-        m_nParam = in.vfunc_o8_3();
-        m_nPage = in.vfunc_o8_3();
-        m_nSound = in.vfunc_o8_3();
+        m_nFlags = in.ReadUInt8();
+        m_nParam = in.ReadInt32();
+        m_nPage = in.ReadInt32();
+        m_nSound = in.ReadInt32();
         FUN_141b217b0();
         FUN_141b20700();
     }
     else if (nMode == 2)
     {
-        m_nFlags = in.vfunc_o8_1();
-        int nId = in.vfunc_o8_3();
-        m_nParam = in.vfunc_o8_3();
-        m_nPage = in.vfunc_o8_3();
-        m_nSound = in.vfunc_o8_3();
+        m_nFlags = in.ReadUInt8();
+        int nId = in.ReadInt32();
+        m_nParam = in.ReadInt32();
+        m_nPage = in.ReadInt32();
+        m_nSound = in.ReadInt32();
         FUN_141b217b0();
         FUN_141b217e0(nId);
         FUN_141b204d0();
     }
     else if (nMode == 3)
     {
-        m_nSubMode = (unsigned char)in.vfunc_o8_1();
+        m_nSubMode = (unsigned char)in.ReadUInt8();
         switch (m_nSubMode)
         {
         case 1: FUN_141b1e990(in); break;
@@ -1074,9 +1074,9 @@ void UITalkManager::FUN_141b1ddd0(CInPacket& in)
     }
     else if (nMode == 4)
     {
-        CStringW strScript = in.vfunc_o8_8();
-        CString strSound = in.vfunc_o8_6();
-        CString strIllust = in.vfunc_o8_6();
+        CStringW strScript = in.ReadUnicodeString();
+        CString strSound = in.ReadUnicodeStringA();
+        CString strIllust = in.ReadUnicodeStringA();
         FUN_1403b4750()->FUN_1416fb380(strScript);
         FUN_1403b4750()->FUN_1416fb340(strScript);
         UITalkCinematic* pUi = FUN_140a7b2b0(0x4e40);
@@ -1085,8 +1085,8 @@ void UITalkManager::FUN_141b1ddd0(CInPacket& in)
     }
     else if (nMode == 10)
     {
-        unsigned nNpcId = in.vfunc_o8_3();
-        unsigned nSub = in.vfunc_o8_2();
+        unsigned nNpcId = in.ReadInt32();
+        unsigned nSub = in.ReadInt16();
         void* pMem = operator new(0x90);
         MS2Ptr<CTalkScript> spScript(pMem != 0 ? FUN_140854fa0(pMem, in) : 0);
         if (nSub == 1)
@@ -1122,7 +1122,7 @@ void UITalkManager::FUN_141b1ddd0(CInPacket& in)
 // @0x141b1e8a0
 void UITalkManager::FUN_141b1e8a0(CInPacket& in)
 {
-    int nValue = in.vfunc_o8_3();
+    int nValue = in.ReadInt32();
     UISwfEntity* pEntity = FUN_1408e57f0()->FUN_1422b9e20(0x620001f);
     if (pEntity != 0)
     {
@@ -1139,7 +1139,7 @@ void UITalkManager::FUN_141b1e8a0(CInPacket& in)
 // @0x141b1e990
 void UITalkManager::FUN_141b1e990(CInPacket& in)
 {
-    CString strName = in.vfunc_o8_6();
+    CString strName = in.ReadUnicodeStringA();
     Unk_TcNpc* pNpc = FUN_141b21350();
     if (pNpc != 0)
     {
@@ -1156,8 +1156,8 @@ void UITalkManager::FUN_141b1e990(CInPacket& in)
 // @0x141b1ea90
 void UITalkManager::FUN_141b1ea90(CInPacket& in)
 {
-    CString strDialog = in.vfunc_o8_6();
-    CString strArg = in.vfunc_o8_6();
+    CString strDialog = in.ReadUnicodeStringA();
+    CString strArg = in.ReadUnicodeStringA();
     FUN_141b1eb90(strDialog, strArg);
 }
 
@@ -1181,7 +1181,7 @@ void UITalkManager::FUN_141b1eb90(CString strDialog, CString strArg)
         Unk_TcInt kValue;
         kValue.m_n = atoi(strArg);
         COutPacket packet(static_cast<int>(SendOp::BonusGame), 0);
-        packet.vfunc_o10_1(0);
+        packet.WriteUInt8(0);
         kValue.FUN_1401fcd50(packet);
         FUN_140710590(packet);
     }
@@ -1192,7 +1192,7 @@ void UITalkManager::FUN_141b1eb90(CString strDialog, CString strArg)
     else if (strDialog.CompareNoCase("StartGambleDialog") == 0)
     {
         COutPacket packet(static_cast<int>(SendOp::Gamble), 0);
-        packet.vfunc_o10_1(0);
+        packet.WriteUInt8(0);
         FUN_140710590(packet);
     }
     else if (strDialog.CompareNoCase("CloseGambleDialog") == 0)
@@ -1297,12 +1297,12 @@ void UITalkManager::FUN_141b1eb90(CString strDialog, CString strArg)
 // @0x141b1f350
 void UITalkManager::FUN_141b1f350(CInPacket& in)
 {
-    unsigned nCount = in.vfunc_o8_3();
+    unsigned nCount = in.ReadInt32();
     for (unsigned __int64 i = 0; i < nCount; i++)
     {
-        int nItemId = in.vfunc_o8_3();
-        unsigned nRarity = (unsigned char)in.vfunc_o8_1();
-        int nAmount = in.vfunc_o8_3();
+        int nItemId = in.ReadInt32();
+        unsigned nRarity = (unsigned char)in.ReadUInt8();
+        int nAmount = in.ReadInt32();
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem->FUN_140523c40(nItemId, nRarity, 0))
         {
@@ -1332,7 +1332,7 @@ void UITalkManager::FUN_141b1f350(CInPacket& in)
 // @0x141b1f620
 void UITalkManager::FUN_141b1f620(CInPacket& in)
 {
-    __int64 nValue = in.vfunc_o8_4();
+    __int64 nValue = in.ReadInt64();
     m_reward.m_nMerat += nValue;
     void* pHud = FUN_140938cd0(0x4e5d);
     if (pHud != 0)
@@ -1342,7 +1342,7 @@ void UITalkManager::FUN_141b1f620(CInPacket& in)
 // @0x141b1f6b0
 void UITalkManager::FUN_141b1f6b0(CInPacket& in)
 {
-    __int64 nValue = in.vfunc_o8_4();
+    __int64 nValue = in.ReadInt64();
     m_reward.m_nMeso += nValue;
     void* pHud = FUN_140938cd0(0x4e5d);
     if (pHud != 0)
@@ -1352,7 +1352,7 @@ void UITalkManager::FUN_141b1f6b0(CInPacket& in)
 // @0x141b1f740
 void UITalkManager::FUN_141b1f740(CInPacket& in)
 {
-    int nExp = in.vfunc_o8_3();
+    int nExp = in.ReadInt32();
     m_reward.m_nExp += nExp;
 }
 
@@ -1360,8 +1360,8 @@ void UITalkManager::FUN_141b1f740(CInPacket& in)
 // @0x141b1f7a0
 void UITalkManager::FUN_141b1f7a0(CInPacket& in)
 {
-    int nValue = in.vfunc_o8_3();
-    char bJackpot = in.vfunc_o8_1();
+    int nValue = in.ReadInt32();
+    char bJackpot = in.ReadUInt8();
     m_reward.m_nAffinity += nValue;
     if (bJackpot != 0)
         m_reward.m_nJackpot = 1;
@@ -1370,8 +1370,8 @@ void UITalkManager::FUN_141b1f7a0(CInPacket& in)
 // @0x141b1f840
 void UITalkManager::FUN_141b1f840(CInPacket& in)
 {
-    unsigned nValue = in.vfunc_o8_3();
-    CStringW strText = in.vfunc_o8_8();
+    unsigned nValue = in.ReadInt32();
+    CStringW strText = in.ReadUnicodeString();
     void* pDlg = FUN_14138fd50(0x4e7e);
     if (pDlg != 0)
         FUN_14190f110(pDlg, nValue, FUN_14016a600(strText, 0));
@@ -1443,9 +1443,9 @@ void UITalkManager::FUN_141b1faa0(int nMode, int nDialogId)
         if (nMode != 0)
         {
             COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
-            packet.vfunc_o10_1(0);
-            packet.vfunc_o10_3(nNpc);
-            packet.vfunc_o10_1((unsigned char)nMode);
+            packet.WriteUInt8(0);
+            packet.WriteInt32(nNpc);
+            packet.WriteUInt8((unsigned char)nMode);
             FUN_140710590(packet);
         }
     }
@@ -1484,8 +1484,8 @@ void UITalkManager::FUN_141b1fcf0(unsigned nNpcId)
                 if (FUN_140953f30()->FUN_140ad21b0() != 0)
                     FUN_140953f30()->FUN_140ad22d0();
                 COutPacket packet(static_cast<int>(SendOp::NpcTalk), 0);
-                packet.vfunc_o10_1(1);
-                packet.vfunc_o10_3(nNpcId);
+                packet.WriteUInt8(1);
+                packet.WriteInt32(nNpcId);
                 FUN_140710590(packet);
             }
         }
@@ -1502,7 +1502,7 @@ void UITalkManager::SendNpcTalkMode0()
     if (FUN_141b213c0() == 0)
     {
         COutPacket packet(static_cast<int>(SendOp::NpcTalk), 0);
-        packet.vfunc_o10_1(0);
+        packet.WriteUInt8(0);
         FUN_140710590(packet);
     }
     FUN_141b20210();
@@ -1737,8 +1737,8 @@ void UITalkManager::SendNpcTalkMode2(unsigned nNpcId)
         m_nPending = 1;
         m_nSubMode = 0;
         COutPacket packet(static_cast<int>(SendOp::NpcTalk), 0);
-        packet.vfunc_o10_1(2);
-        packet.vfunc_o10_3(nNpcId);
+        packet.WriteUInt8(2);
+        packet.WriteInt32(nNpcId);
         FUN_140710590(packet);
     }
 }

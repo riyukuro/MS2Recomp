@@ -69,9 +69,9 @@ UIUGCCubeNoticeDialog::~UIUGCCubeNoticeDialog()
 // @0x140faf900
 void UIUGCCubeNoticeDialog::FUN_140faf900(CInPacket& packet)
 {
-    m_nCubeId = packet.vfunc_o8_3();
-    m_strMessage = packet.vfunc_o8_8();
-    m_nDistance = packet.vfunc_o8_1();
+    m_nCubeId = packet.ReadInt32();
+    m_strMessage = packet.ReadUnicodeString();
+    m_nDistance = packet.ReadUInt8();
     FUN_141924680();
 }
 MS2_REPLACE_METHOD(0x140FAF900, UIUGCCubeNoticeDialog, FUN_140faf900, 222, 0x604A204E);
@@ -131,11 +131,11 @@ void UIUGCCubeNoticeDialog::OnApply()
         }
     }
     COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
-    packet.vfunc_o10_1(0xc);
-    packet.vfunc_o10_1(1);
-    packet.vfunc_o10_3(m_nCubeId);
-    packet.vfunc_o10_8(m_strMessage);
-    packet.vfunc_o10_1((char)m_nDistance);
+    packet.WriteUInt8(0xc);
+    packet.WriteUInt8(1);
+    packet.WriteInt32(m_nCubeId);
+    packet.WriteUnicodeString(m_strMessage);
+    packet.WriteUInt8((char)m_nDistance);
     FUN_140710590(packet);
     vfunc_67();
 }

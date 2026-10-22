@@ -105,7 +105,7 @@ PCGemEquip::~PCGemEquip()
 // MS2-FUNCTIONAL: same behaviour; MS2Ptr temporaries/block layout differ from the exe
 void PCGemEquip::FUN_14126fea0(CInputStream& stream, int nOwner)
 {
-    int nCount = stream.vfunc_o8_1();
+    int nCount = stream.ReadUInt8();
     Unk_GemItemWire kWire;
     for (int i = 0; i < nCount; i++)
     {
@@ -506,7 +506,7 @@ bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int nFlag)
             kReq.m_nItemUid = spItem->FUN_140526a50();
             kReq.m_nSlot = (unsigned char)nSlot;
             COutPacket kPacket(static_cast<int>(SendOp::BadgeEquip), 0);
-            kPacket.vfunc_o10_1(0);
+            kPacket.WriteUInt8(0);
             FUN_1401fd190((unsigned char*)&kReq, kPacket);
             FUN_140710590(kPacket);
             MS2Ptr<CItemData> spData(spItem->FUN_140527840());
@@ -534,7 +534,7 @@ bool FUN_141271f90(MS2Ptr<CItem> spItem)
             Unk_GemUnequipReq kReq;
             kReq.m_nSlot = (unsigned char)spItem->FUN_140526b50();
             COutPacket kPacket(static_cast<int>(SendOp::BadgeEquip), 0);
-            kPacket.vfunc_o10_1(1);
+            kPacket.WriteUInt8(1);
             FUN_1401fd250((unsigned char*)&kReq, kPacket);
             FUN_140710590(kPacket);
             MS2Ptr<CItemData> spData(spItem->FUN_140527840());

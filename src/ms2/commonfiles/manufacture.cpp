@@ -42,23 +42,23 @@ CManufacture::~CManufacture()
 // @0x140693fa0
 void FUN_140693fa0(CManufacture& v, COutputStream& out)
 {
-    out.vfunc_o10_4(v.m_18);
-    out.vfunc_o10_4(v.m_20);
-    out.vfunc_o10_3(v.m_28);
-    out.vfunc_o10_4(v.m_30);
-    out.vfunc_o10_3(v.m_38);
-    out.vfunc_o10_3(v.m_3c);
+    out.WriteInt64(v.m_18);
+    out.WriteInt64(v.m_20);
+    out.WriteInt32(v.m_28);
+    out.WriteInt64(v.m_30);
+    out.WriteInt32(v.m_38);
+    out.WriteInt32(v.m_3c);
 }
 
 // @0x140694050
 void FUN_140694050(CManufacture& v, CByteBuffer& in)
 {
-    v.m_18 = in.vfunc_o8_4();
-    v.m_20 = in.vfunc_o8_4();
-    v.m_28 = in.vfunc_o8_3();
-    v.m_30 = in.vfunc_o8_4();
-    v.m_38 = in.vfunc_o8_3();
-    v.m_3c = in.vfunc_o8_3();
+    v.m_18 = in.ReadInt64();
+    v.m_20 = in.ReadInt64();
+    v.m_28 = in.ReadInt32();
+    v.m_30 = in.ReadInt64();
+    v.m_38 = in.ReadInt32();
+    v.m_3c = in.ReadInt32();
 }
 
 // @0x140694170
@@ -94,15 +94,15 @@ Unk_140694210::~Unk_140694210()
 // @0x140694280
 void FUN_140694280(Unk_140694210& v, COutputStream& out)
 {
-    out.vfunc_o10_8(v.m_00);
-    out.vfunc_o10_0((unsigned char)v.m_08);
+    out.WriteUnicodeString(v.m_00);
+    out.WriteBool((unsigned char)v.m_08);
     FUN_14070f960(out, v.m_0c);
 }
 
 // @0x1406942f0
 void FUN_1406942f0(Unk_140694210& v, CByteBuffer& in)
 {
-    v.m_00 = in.vfunc_o8_8();
-    v.m_08 = in.vfunc_o8_1();
+    v.m_00 = in.ReadUnicodeString();
+    v.m_08 = in.ReadUInt8();
     FUN_14070f440(in, (long&)v.m_0c);
 }

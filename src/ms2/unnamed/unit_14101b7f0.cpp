@@ -90,8 +90,8 @@ void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
     }
     else if (nMessage == 0x6c)
     {
-        int nA = packet.vfunc_o8_3();
-        int nB = packet.vfunc_o8_3();
+        int nA = packet.ReadInt32();
+        int nB = packet.ReadInt32();
         FUN_14101c470(nA, nB);
         UIPvPTeamScoreDialog* pScore = FUN_14101c8f0(0x4ed3);
         if (pScore != 0)
@@ -102,8 +102,8 @@ void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
     }
     else if (nMessage == 0x6e)
     {
-        int nTeam = packet.vfunc_o8_3();
-        int nCount = packet.vfunc_o8_3();
+        int nTeam = packet.ReadInt32();
+        int nCount = packet.ReadInt32();
         FUN_1403ed2b0()->FUN_141adc5d0(0x4ed3);
         FUN_1403ed2b0()->FUN_141adc5d0(0x4e95);
         UIPvPTeamResultDialog* pResult = FUN_14101c850(0x4ed2);
@@ -114,7 +114,7 @@ void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
     }
     else if (nMessage == 0x6d)
     {
-        __int64 nCharId = packet.vfunc_o8_4();
+        __int64 nCharId = packet.ReadInt64();
         PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd1530(nCharId);
         if (pPlayer != 0)
         {
@@ -132,8 +132,8 @@ void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
     }
     else if (nMessage == 0x70)
     {
-        int nKind = packet.vfunc_o8_3();
-        int nOutcome = packet.vfunc_o8_3();
+        int nKind = packet.ReadInt32();
+        int nOutcome = packet.ReadInt32();
         CStringW strKind;
         if (nKind == 1)
             strKind = GetStringCommon(0xb15);
@@ -154,8 +154,8 @@ void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
     }
     else if (nMessage == 0x6f)
     {
-        packet.vfunc_o8_3();
-        int nValue = packet.vfunc_o8_3();
+        packet.ReadInt32();
+        int nValue = packet.ReadInt32();
         if (FUN_1403ed2b0()->FUN_141adc940(0x4ed4) != 0)
             FUN_1403ed2b0()->FUN_141adc530(0x4ed4);
         UIPvPTeamFlagGagueDialog* pGauge = FUN_14101c7b0(0x4ed4);
@@ -164,8 +164,8 @@ void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
     }
     else if (nMessage == 0x71)
     {
-        CStringW strName = packet.vfunc_o8_8();
-        int nKind = packet.vfunc_o8_1();
+        CStringW strName = packet.ReadUnicodeString();
+        int nKind = packet.ReadUInt8();
         if (nKind == 1)
             FUN_1412751f0(FUN_14052bd00(0xb1b, strName), 4, 1);
         else if (nKind == 2)
