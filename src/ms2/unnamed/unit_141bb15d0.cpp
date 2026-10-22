@@ -30,6 +30,12 @@ template <> void MS2Ptr<Unk_WsK_Rank>::ReleaseImpl(void*)
     }
 }
 
+// Not WorldService::m_980's map: this copy is unsigned-keyed (find 0x141bb8e00 / lower_bound 0x141bb91a0 call
+// less<unsigned> 0x140185090) and its erase (0x141bb8750) destroys a non-trivial value (0x141babd70), while m_980's own
+// family in worldservice.cpp#3 (erase 0x141c2d170 -> destroy 0x141bedc50) is u64-keyed and trivially destructible.
+// Own stand-in so the two families do not share one mangled name.
+struct Unk_WsV980g { void* p; void* q; };   // 16 bytes: allocate 0x141bb71d0 asks _Get_size_of_n<56>
+
 template class std::set<void*>;
 template class std::map<unsigned __int64, Unk_WsV1d8>;
 template class std::map<int, std::set<unsigned __int64> >;
@@ -37,7 +43,7 @@ template class std::map<int, Unk_WsV1f8>;
 template class std::map<unsigned __int64, Unk_WsV2e8>;
 template class std::set<unsigned __int64>;
 template class std::map<unsigned __int64, Unk_WsPod8>;
-template class std::map<unsigned __int64, Unk_WsV980>;
+template class std::map<unsigned, Unk_WsV980g>;
 template class std::map<unsigned __int64, Unk_WsV990>;
 template class std::vector<Unk_WsV9a0>;
 template class std::vector<Unk_WsVa00>;
@@ -122,7 +128,7 @@ void Unk_WsAnchorGlue()
     std::map<int, Unk_WsV1f8> a1; Unk_WsTouchTree(a1, 0);
     std::map<unsigned __int64, Unk_WsV2e8> a2; Unk_WsTouchTree(a2, 0);
     std::map<unsigned __int64, Unk_WsPod8> a3; Unk_WsTouchTree(a3, 0);
-    std::map<unsigned __int64, Unk_WsV980> a4; Unk_WsTouchTree(a4, 0);
+    std::map<unsigned, Unk_WsV980g> a4; Unk_WsTouchTree(a4, 0);
     std::map<unsigned __int64, Unk_WsV990> a5; Unk_WsTouchTree(a5, 0);
     std::map<unsigned __int64, Unk_WsVab0> a6; Unk_WsTouchTree(a6, 0);
     std::map<unsigned, Unk_WsVac0> a7; Unk_WsTouchTree(a7, 0);
@@ -147,7 +153,7 @@ void Unk_WsAnchorGlue()
 }
 // px1 2026-10-20: tplpin --simulate pins (look-alike template copies)
 // MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@_KUUnk_WsF3@@U?$less@_K@std@@V?$allocator@U?$pair@$$CB_KUUnk_WsF3@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CB_KUUnk_WsF3@@@std@@PEAX@2@XZ 0x141bb1690
-// MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@_KUUnk_WsV980@@U?$less@_K@std@@V?$allocator@U?$pair@$$CB_KUUnk_WsV980@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CB_KUUnk_WsV980@@@std@@PEAX@2@XZ 0x141bb18d0
+// MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@IUUnk_WsV980g@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUUnk_WsV980g@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIUUnk_WsV980g@@@std@@PEAX@2@XZ 0x141bb18d0
 // MS2-PIN: ?_Buynode0@?$_Tree_comp_alloc@V?$_Tmap_traits@IUUnk_WsF6@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUUnk_WsF6@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIUUnk_WsF6@@@std@@PEAX@2@XZ 0x141bb1a50
 // MS2-PIN: ?_Buynode0@?$_Tree_comp_alloc@V?$_Tmap_traits@_KUUnk_WsF3@@U?$less@_K@std@@V?$allocator@U?$pair@$$CB_KUUnk_WsF3@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CB_KUUnk_WsF3@@@std@@PEAX@2@XZ 0x141bb1b30
 // MS2-PIN: ?_Buynode0@?$_Tree_comp_alloc@V?$_Tmap_traits@_KUUnk_WsF5@@U?$less@_K@std@@V?$allocator@U?$pair@$$CB_KUUnk_WsF5@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CB_KUUnk_WsF5@@@std@@PEAX@2@XZ 0x141bb1c10
@@ -232,3 +238,17 @@ void Unk_WsAnchorGlue()
 // MS2-PIN: ?max_size@?$_Tree@V?$_Tmap_traits@_KUUnk_WsF3@@U?$less@_K@std@@V?$allocator@U?$pair@$$CB_KUUnk_WsF3@@@std@@@3@$0A@@std@@@std@@QEBA_KXZ 0x141bb9320
 // MS2-PIN: ?max_size@?$_Tree@V?$_Tmap_traits@_KUUnk_WsF5@@U?$less@_K@std@@V?$allocator@U?$pair@$$CB_KUUnk_WsF5@@@std@@@3@$0A@@std@@@std@@QEBA_KXZ 0x141bb9360
 // MS2-PIN: ?max_size@?$_Tree@V?$_Tmap_traits@_KUUnk_WsF7@@U?$less@_K@std@@V?$allocator@U?$pair@$$CB_KUUnk_WsF7@@@std@@@3@$0A@@std@@@std@@QEBA_KXZ 0x141bb9380
+// px10 2026-10-21: Unk_WsV980g (glue-only stand-in, see above) takes over the glue-range copies the old Unk_WsV980 rows named
+// MS2-PIN: ?_Extract@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_WsV980g@@@std@@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIUUnk_WsV980g@@@std@@PEAX@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_WsV980g@@@std@@@std@@@std@@@2@@Z 0x141bb4100
+// MS2-PIN: ?_Freeheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@IUUnk_WsV980g@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUUnk_WsV980g@@@std@@@3@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBIUUnk_WsV980g@@@std@@PEAX@2@@Z 0x141bb4d20
+// MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@IUUnk_WsV980g@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUUnk_WsV980g@@@std@@@3@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBIUUnk_WsV980g@@@std@@PEAX@2@@Z 0x141bb4e40
+// MS2-PIN: ?_Get_data@?$_Tree_comp_alloc@V?$_Tmap_traits@IUUnk_WsV980g@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUUnk_WsV980g@@@std@@@3@$0A@@std@@@std@@QEAAAEAV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_WsV980g@@@std@@@std@@@2@XZ 0x141bb5020
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIUUnk_WsV980g@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_WsV980g@@@std@@@std@@@2@$00@std@@QEAAAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIUUnk_WsV980g@@@std@@PEAX@std@@@2@XZ 0x141bb5270
+// MS2-PIN: ?_Get_second@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIUUnk_WsV980g@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_WsV980g@@@std@@@std@@@2@$00@2@$00@std@@QEAAAEAV?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIUUnk_WsV980g@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_WsV980g@@@std@@@std@@@2@$00@2@XZ 0x141bb5350
+// MS2-PIN: ?_Getal@?$_Tree_comp_alloc@V?$_Tmap_traits@IUUnk_WsV980g@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUUnk_WsV980g@@@std@@@3@$0A@@std@@@std@@QEAAAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIUUnk_WsV980g@@@std@@PEAX@std@@@2@XZ 0x141bb55f0
+// MS2-PIN: ?allocate@?$allocator@U?$_Tree_node@U?$pair@$$CBIUUnk_WsV980g@@@std@@PEAX@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIUUnk_WsV980g@@@std@@PEAX@2@_K@Z 0x141bb71d0
+// MS2-PIN: ?erase@?$_Tree@V?$_Tmap_traits@IUUnk_WsV980g@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUUnk_WsV980g@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_WsV980g@@@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_WsV980g@@@std@@@std@@@std@@@2@@Z 0x141bb8750
+// px10: the int-keyed find copies (they call less<int> 0x1401f1b70) get int-keyed names
+// MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@HUUnk_WsF4@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_WsF4@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsF4@@@std@@@std@@@std@@@2@AEBH@Z 0x141bb89a0
+// MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@HUUnk_WsV1f8@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_WsV1f8@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsV1f8@@@std@@@std@@@std@@@2@AEBH@Z 0x141bb8a80
+// MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@HV?$set@_KU?$less@_K@std@@V?$allocator@_K@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$set@_KU?$less@_K@std@@V?$allocator@_K@2@@std@@@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@_KU?$less@_K@std@@V?$allocator@_K@2@@std@@@std@@@std@@@std@@@2@AEBH@Z 0x141bb8c40
