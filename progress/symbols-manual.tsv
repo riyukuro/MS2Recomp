@@ -4145,8 +4145,8 @@ luaopen_Entity	1422416d0	func
 ??_G?$NiTObjectArray@UTextKeyCallbackData@NiControllerSequence@@@@UEAAPEAXI@Z	141c463d0	func
 ?ClearArray@Results@NiPick@@QEAAXXZ	141cb1540	func
 ?Clone@NiUnionBV@@UEBAPEAVNiBoundingVolume@@XZ	141cde250	func
-?GetViewerStrings@NiD3D10PersistentSrcTextureRendererData@@UEAAXPEAV?$NiTPrimitiveArray@PEAD@@@Z	142801460	func
-?GetViewerStrings@NiDX9PersistentSrcTextureRendererData@@UEAAXPEAV?$NiTPrimitiveArray@PEAD@@@Z	1428292b0	func
+?GetViewerStrings@NiDX9PersistentSrcTextureRendererData@@UEAAXPEAV?$NiTPrimitiveArray@PEAD@@@Z	142801460	func
+?GetViewerStrings@D3D11PersistentSrcTextureRendererData@ecr@@UEAAXPEAV?$NiTPrimitiveArray@PEAD@@@Z	1428292b0	func
 ?CompleteActiveWork@NiSPThreadPool@@QEAA_NXZ	141d01370	func
 ??1?$NiTArray@V?$SmartPointer@VNiSPWorkflow@@@efd@@V?$NiTNewInterface@V?$SmartPointer@VNiSPWorkflow@@@efd@@@@@@UEAA@XZ	141cffd20	func
 ??1?$NiTObjectArray@V?$SmartPointer@VNiSPWorkflow@@@efd@@@@UEAA@XZ	141cffd80	func
@@ -4170,7 +4170,7 @@ luaopen_Entity	1422416d0	func
 ??1?$list@PEAVNiTerrainSector@@V?$CustomAllocator@PEAVNiTerrainSector@@@efd@@@std@@QEAA@XZ	141f76e60	func
 ?AddPackage@NiTerrainSurfaceLibrary@@QEAAXPEAVNiSurfacePackage@@@Z	141f81b60	func
 ?ReadSurfaceCompiledTextures@NiTerrainSurfacePackageFileVersion1@@UEAA_NVutf8string@efd@@PEAV?$SmartPointer@VNiTexture@@@3@I@Z	141f8eaa0	func
-?GetViewerStrings@D3D11PersistentSrcTextureRendererData@ecr@@UEAAXPEAV?$NiTPrimitiveArray@PEAD@@@Z	14285c960	func
+?GetViewerStrings@NiD3D10PersistentSrcTextureRendererData@@UEAAXPEAV?$NiTPrimitiveArray@PEAD@@@Z	14285c960	func
 ?save@Graph@efd@@QEAA?AW4GraphSaveResult@2@_N@Z	142115070	func
 ??$_Buynode@AEAU?$pair@$$CBVutf8string@efd@@M@std@@@?$_Tree_comp_alloc@V?$_Tmap_traits@Vutf8string@efd@@MU?$less@Vutf8string@efd@@@std@@V?$CustomAllocator@U?$pair@$$CBVutf8string@efd@@M@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBVutf8string@efd@@M@std@@PEAX@1@AEAU?$pair@$$CBVutf8string@efd@@M@1@@Z	142182ef0	func
 ??$_Copy_nodes@U_Copy_tag@?$_Tree@V?$_Tmap_traits@Vutf8string@efd@@V12@U?$less@Vutf8string@efd@@@std@@V?$CustomAllocator@U?$pair@$$CBVutf8string@efd@@V12@@std@@@2@$0A@@std@@@std@@@?$_Tree@V?$_Tmap_traits@Vutf8string@efd@@V12@U?$less@Vutf8string@efd@@@std@@V?$CustomAllocator@U?$pair@$$CBVutf8string@efd@@V12@@std@@@2@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBVutf8string@efd@@V12@@std@@PEAX@1@PEAU21@0U_Copy_tag@01@@Z	142183650	func

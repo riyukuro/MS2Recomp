@@ -50,7 +50,7 @@ GB_BAND = (0x141bf0000, 0x142303c10)        # main Gamebryo band (report only)
 GB_TAIL = (0x1427b6c90, 0x1428d6000)        # Gamebryo tail: renderer / shader libs (report only)
 STUB_GAP = 48                                # longest run of uncredited functions counted as one TU's stubs
 KEY = "gb1"                                  # bump to recompile everything
-MATCH_KEY = "callee-dup"                        # bump to re-match every obj (pairing logic changed)
+MATCH_KEY = "rtti-pin1"                         # bump to re-match every obj (pairing logic changed)
 if bm.CHAIN:
     MATCH_KEY += "-chain"
 LEAF_SMALL, LEAF_NEAR = 16, 0x10000             # assign_copies: small leaf copies only this near the obj's own functions
@@ -290,6 +290,7 @@ def match_obj(path):
     copies = {}                  # unpaired name -> the exe functions whose bytes equal it (relocations masked), if several
     weak = {}                    # name -> its non-exact table-name pair, kept if nothing better turns up
     shints = {}                  # static name -> exe VA called by an exact COMDAT-any function (see _hints)
+    rtti = {}                    # the obj's ms_RTTI anchors (see _rtti_clash), found on first use
     for si in obj.func_symbols():
         n = obj.syms[si][0]
         if n.startswith(bm.FUNCLET_PREFIXES):
@@ -302,6 +303,8 @@ def match_obj(path):
         hits = ()
         if va is not None:
             ok = _match(obj, n, va)
+            if ok and _rtti_clash(obj, n, va, rtti):
+                va, ok = None, False      # a table name on another class's copy (the TUs' twins): search instead
             if ok:
                 callees.update(_hints(obj, n, shints))
         if not ok:
@@ -571,6 +574,24 @@ def _reloc_targets(obj, data, fields):
                 continue        # an inline callee has several identical copies in the exe: says nothing of the TU
             out.append((f[0], f[3] - bm.REL_REL32, struct.unpack_from("<i", data, f[0])[0], (t[0], t[2], t[1])))
     return out
+
+
+def _rtti_clash(obj, n, va, memo):
+    """the function at `va` loads an ms_RTTI other than the one _exe_anchors finds for the obj: it is another TU's
+    copy (NiDX9/NiD3D10/D3D11PersistentSrcTextureRendererData::GetViewerStrings are byte-identical twins)"""
+    data, fields, _ = obj.function(obj.by_name[n])
+    tg = [r for r in _reloc_targets(obj, data, fields) if r[3][0].startswith("?ms_RTTI@")]
+    if not tg:
+        return False
+    if "anchors" not in memo:
+        def resolve(m, v):
+            d, fl, _ = obj.function(obj.by_name[m])
+            for fo, extra, add, key in _reloc_targets(obj, d, fl):
+                yield key, v + fo + 4 + extra + struct.unpack_from("<i", G["exe"].img, v - G["exe"].base + fo)[0] - add
+        memo["anchors"] = {k: v for k, v in _exe_anchors(obj, resolve).items() if k[0].startswith("?ms_RTTI@")}
+    an, rva = memo["anchors"], va - G["exe"].base
+    return any(key in an and an[key] != va + fo + 4 + extra + struct.unpack_from("<i", G["exe"].img, rva + fo)[0] - add
+               for fo, extra, add, key in tg)
 
 
 def _exe_anchors(obj, resolve):
