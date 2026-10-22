@@ -79,10 +79,10 @@ class CLoadingDescriptionTable : public TSingleton<CLoadingDescriptionTable>,
 {
 public:
     // @0x141495f20
-    CLoadingDescriptionTable() { FUN_14144e400(); }
+    CLoadingDescriptionTable() { LoadLoadingDescription(); }
     // @0x141497470
     virtual ~CLoadingDescriptionTable() {}
-    int FUN_14144e400();                                    // loads the descriptions (?\loadingdescription.cpp)
+    int LoadLoadingDescription();                                    // loads the descriptions (?\loadingdescription.cpp)
     int FUN_14144e500(CString strUnused);                   // 0x14144e500 returns 1 (no caller)
     void Clear();                                           // 0x14144e530
     void Add(CLoadingDescriptionCache::DescPtr spDesc);     // 0x14144e5b0

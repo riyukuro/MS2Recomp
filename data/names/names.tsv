@@ -785,3 +785,5 @@
 141b2bbf0	UITriggerEditorDialog::FUN_141b2bbf0	UITriggerEditorDialog::OpenTriggerFile	certain	certain: body names the data file open-file dialog ./Data/Xml/Trigger/ *.xml	nam1	2026-10-22
 141b2d0d0	UITriggerEditorDialog::FUN_141b2d0d0	UITriggerEditorDialog::SaveTriggerFile	certain	certain: body names the data file save-file dialog ./Data/Xml/Trigger/ *.xml	nam1	2026-10-22
 1422b1820	GFxManager::FUN_1422b1820	GFxManager::InitIME	certain	certain: body names the data file GFxIMEManagerWin32 Init "ime.xml"	nam1	2026-10-22
+14144e400	CLoadingDescriptionTable::FUN_14144e400	CLoadingDescriptionTable::LoadLoadingDescription	certain	certain: body names the data file String/loadingDescription.xml	nam1	2026-10-22
+141810f70	CStringTable::FUN_141810f70	CStringTable::Load	certain	certain: body loads the string table index Table/string.xml and every String/<name>.xml it lists (v2525 also names it CStringTable::Load)	nam1	2026-10-22

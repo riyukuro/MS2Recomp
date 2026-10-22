@@ -598,7 +598,7 @@ void CStringTable::CDesc::FUN_141813b80(const CString& strTag, const CStringW& s
 
 // MS2-FUNCTIONAL: the literal-CString temporaries and the many xml-loader locals are laid out differently from the exe (precedent reactordata.cpp)
 // @0x141810f70
-bool CStringTable::FUN_141810f70()
+bool CStringTable::Load()
 {
     CString strPath = FUN_14071a5b0(CString("Table"), CString("string.xml"));
     TiXmlDocument doc;
@@ -663,7 +663,7 @@ bool CStringTable::FUN_141810f70()
 // @0x141811960
 bool CStringTable::FUN_141811960()
 {
-    return FUN_141810f70();
+    return Load();
 }
 
 // ---- the skill / item / player services the lookups reach -----------------------------------------------------------

@@ -76,7 +76,7 @@ public:
     CStringTable();                                         // 0x141810bf0
     virtual ~CStringTable();
 
-    bool FUN_141810f70();                                   // reads string.xml and the description files
+    bool Load();                                   // reads string.xml and the description files
     bool FUN_141811960();                                   // reload
     CStringW FUN_141811980(int nTable, int nId);            // the string of a table row
     CStringW GetItemDescription(int nItemId, CString strTag);    // an item description
