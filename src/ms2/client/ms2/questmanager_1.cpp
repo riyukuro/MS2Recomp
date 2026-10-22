@@ -96,7 +96,7 @@ int FUN_14074b050(CQuestData*);
 int FUN_140748050(CQuestData::QuestRewardItem*, int);
 __int64 FUN_140761ba0(int, int);
 __int64 FUN_140761cc0(int, int);
-CStringW FUN_14028b8e0(const CStringW&);
+CStringW GetStringCommonByKey(const CStringW&);
 void FUN_1412751b0(const CStringW&, int);
 
 // Read-only prefix of the constants singleton. The embedded checked constant's
@@ -413,7 +413,7 @@ void CQuest::ShowRewards(int reward)
             }
         }
         if (eventBonus && reward != 0)
-            FUN_1412751b0(FUN_14028b8e0(L"s_quest_additional_reward_event"), 0x14);
+            FUN_1412751b0(GetStringCommonByKey(L"s_quest_additional_reward_event"), 0x14);
     }
 }
 MS2_REPLACE_METHOD(0x1416C7310, CQuest, ShowRewards, 1598, 0x3053843A);

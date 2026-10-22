@@ -92,7 +92,7 @@ void FUN_14141f770(const CString& strBag, unsigned int nCount, const ATL::CAtlAr
                    MS2Ptr<CItem>(*pfnGetItem)(const ATL::CAtlArray<MS2Ptr<CItem> >&, int), int n1, int n2);
 void FUN_140710590(COutPacket& packet);                          // send
 unsigned __int64 FUN_140718370(const CStringW& str);             // text -> uid
-CStringW FUN_14028b8e0(const CStringW& strKey);                  // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                  // string table text
 CStringW FUN_14028dfa0(CStringW strKey, const fmt::ArgList& args);   // string table text, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
@@ -296,15 +296,15 @@ MS2_REPLACE_METHOD(0x140FB6B00, UIUnlimitedEnchantDialog, FUN_140fb6b00, 289, 0x
 void UIUnlimitedEnchantDialog::FUN_140fb6c30(Unk_UnlimitedEnchantError nError)
 {
     if (nError == 1)
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_unlimited_enchant_err_invalid_item")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_unlimited_enchant_err_invalid_item")), 1, 1);
     else if (nError == 2)
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_unlimited_enchant_err_lack_ingredient")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_unlimited_enchant_err_lack_ingredient")), 1, 1);
     else if (nError == 3)
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_unlimited_enchant_err_lack_meso")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_unlimited_enchant_err_lack_meso")), 1, 1);
     else if (nError == 4)
         FUN_1412751f0(FUN_14028dfa0(CStringW(L"s_unlimited_enchant_err_system"), nError), 1, 1);
     else if (nError == 5)
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_unlimited_enchant_err_max_unlimited_grade")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_unlimited_enchant_err_max_unlimited_grade")), 1, 1);
 }
 
 // Collects the enchantable items of the inventory and the equipment and hands them to the item bag.

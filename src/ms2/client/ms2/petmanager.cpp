@@ -112,7 +112,7 @@ void FUN_140e6d4a0(int nObjectId, MS2Ptr<CItem> spItem);    // the pet item arri
 extern Unk_Inventory DAT_143ab2a90;                         // the player's inventory
 
 // messages
-CStringW FUN_14028b8e0(const CStringW&);
+CStringW GetStringCommonByKey(const CStringW&);
 void FUN_141275260(int, int, int);
 void FUN_141276180(const CString&, const CString&);
 void FUN_1412751b0(const CStringW&, int);
@@ -483,7 +483,7 @@ void CPetInventory::FUN_140c88200(__int64 nUid, int nSlot, int nCount)
                     {
                         if (FUN_140c8dab0(FUN_140c8dac0()) == spItem->FUN_140526a50())
                         {
-                            FUN_140d73aa0(FUN_14028b8e0(L"s_item_err_binditem_by_playing_score"), 0, 0, CStringW(L""));
+                            FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_binditem_by_playing_score"), 0, 0, CStringW(L""));
                             return;
                         }
                     }

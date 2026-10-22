@@ -907,7 +907,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, float a1, flo
 }
 
 // The cast arguments read from a <cast> node (tick, startFrame, color, startGauge, maxGauge, text, ease).
-CStringW FUN_14028b8e0(const CStringW& strKey);                     // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
 
 // @0x1418e0ad0
 void FUN_1418e0ad0(Unk_CastingParam* pThis, MS2Ptr<CXmlData> spXml)
@@ -923,7 +923,7 @@ void FUN_1418e0ad0(Unk_CastingParam* pThis, MS2Ptr<CXmlData> spXml)
     pThis->m_fScale = spXml->FUN_1408276a0(L"maxGauge", &pThis->m_fScale);
     CStringW strText = spXml->FUN_14042cad0(L"text", CStringW());
     if (!strText.IsEmpty())
-        pThis->m_str28 = FUN_14028b8e0(strText);
+        pThis->m_str28 = GetStringCommonByKey(strText);
     pThis->m_n10 = spXml->GetInt(L"ease", pThis->m_n10);
 }
 
@@ -1180,7 +1180,7 @@ public:
     CStringW FUN_141811980(int nKind, int nId);                     // a localised name
 };
 Unk_CcNameTable* FUN_1401a9d70();
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_1408116a0(int nStringId, const int& nValue);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 int FUN_141276a30(const CStringW& strName, CStringW& strError);     // validate a character name
@@ -1669,9 +1669,9 @@ void UICharacterCreateDialog::FUN_1418e3980(CInPacket* pPacket)
     int bNotify = 0;
     int nKind = kAnswer.kind;
     if (nKind == 1)
-        strMsg = FUN_14028de60(0xb);
+        strMsg = GetStringCommon(0xb);
     else if (nKind == 0xb)
-        strMsg = FUN_14028de60(0x10);
+        strMsg = GetStringCommon(0x10);
     else if (nKind == 8)
         strMsg = FUN_14052bd00(0xf, CStringW(kAnswer.name));
     else if (nKind == 9)
@@ -1691,22 +1691,22 @@ void UICharacterCreateDialog::FUN_1418e3980(CInPacket* pPacket)
     else if (nKind == 10)
     {
         bNotify = 1;
-        strMsg = FUN_14028de60(0x11);
+        strMsg = GetStringCommon(0x11);
     }
     else if (nKind == 0xc)
     {
         bNotify = 1;
-        strMsg = FUN_14028de60(0x12);
+        strMsg = GetStringCommon(0x12);
     }
     else if (nKind == 0xe)
     {
         bNotify = 1;
-        strMsg = FUN_14028de60(0x13);
+        strMsg = GetStringCommon(0x13);
     }
     else if (nKind == 0xf)
     {
         bNotify = 1;
-        strMsg = FUN_14028de60(0x8ba);
+        strMsg = GetStringCommon(0x8ba);
     }
     else
     {
@@ -2209,7 +2209,7 @@ bool UICharacterCreateDialog::FUN_1418e6430(const CStringW& strName)
         {
             UIMessageBox* pBox = FUN_14151f890();
             if (pBox != 0)
-                pBox->FUN_1419f82b0(FUN_14028de60(0xd));
+                pBox->FUN_1419f82b0(GetStringCommon(0xd));
         }
         else
         {

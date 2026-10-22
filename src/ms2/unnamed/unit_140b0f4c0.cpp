@@ -112,7 +112,7 @@ int FUN_140678b50(Unk_LuaState* pLua, unsigned short nGrade);               // g
 void FUN_140291d10(int nFxId);
 CString FUN_140291c10(int nFxId);
 int FUN_14028d260(float fTime);
-CStringW FUN_14028b8e0(const CStringW& strKey);
+CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& arg0, const CStringW& arg1);
 struct Unk_PetStrings { CStringW FUN_141811980(int nTable, int nId); };
 Unk_PetStrings* FUN_1401a9d70();
@@ -532,7 +532,7 @@ void CPet::FUN_140b10a10(unsigned __int64 nPoint)
         {
             void* pLocal = FUN_1403ed2d0()->FUN_141bd0cc0();
             if (pLocal != 0 && static_cast<PCBase*>(pLocal)->FUN_14123c580() == GetKind())
-                FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_pet_msg_taming_max_point")), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_pet_msg_taming_max_point")), 1, 1);
             bRename = true;
             goto Store;
         }
@@ -577,10 +577,10 @@ void CPet::FUN_140b10c80(CStringW str)
             {
                 CStringW strPrefix;
                 if (FUN_140b10c20() == 0)
-                    strPrefix = FUN_14028b8e0(CStringW(L"s_pet_tamingnpc_default_perfix_name"));
+                    strPrefix = GetStringCommonByKey(CStringW(L"s_pet_tamingnpc_default_perfix_name"));
                 else
-                    strPrefix = FUN_14028b8e0(CStringW(L"s_pet_tamingnpc_max_perfix_name"));
-                strName = FUN_140656190(FUN_14028b8e0(CStringW(L"s_pet_tamingnpc_name")), strPrefix, strName);
+                    strPrefix = GetStringCommonByKey(CStringW(L"s_pet_tamingnpc_max_perfix_name"));
+                strName = FUN_140656190(GetStringCommonByKey(CStringW(L"s_pet_tamingnpc_name")), strPrefix, strName);
             }
             vfunc_76(strName);
         }

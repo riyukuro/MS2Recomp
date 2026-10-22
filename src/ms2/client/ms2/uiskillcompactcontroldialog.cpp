@@ -167,8 +167,8 @@ IClientPlatform* FUN_140d86260();
 CStringW FUN_1409eec40(int nStringId);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& strArg0, const CStringW& strArg1);
-CStringW FUN_14028de60(int nId);
-CStringTable* FUN_1401a9d70();
+CStringW GetStringCommon(int nId);
+CStringTable* GetStringTable();
 void FUN_140d73aa0(CStringW text, int nType, IMessageListener* pListener, CStringW tag);
 void FUN_140d73bc0(int nStringId, int nType, int n, CStringW tag);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nA, int nB, IMessageListener* pListener, CStringW tag);
@@ -373,9 +373,9 @@ int UISkillCompactControlDialog::vfunc_13()
                 unsigned __int64 nAction = FUN_1409331f0()->FUN_14142d190(nKey);
                 CStringW strName;
                 if (FUN_1409331f0()->FUN_14142cf10(nAction) == 0)
-                    strName = FUN_1401a9d70()->FUN_1418125b0((unsigned)nAction);
+                    strName = GetStringTable()->FUN_1418125b0((unsigned)nAction);
                 else
-                    strName = FUN_140656190(L"{0}[{1}]", FUN_1401a9d70()->FUN_1418125b0((unsigned)nAction),
+                    strName = FUN_140656190(L"{0}[{1}]", GetStringTable()->FUN_1418125b0((unsigned)nAction),
                                             FUN_1409331f0()->FUN_14142d220(nKey));
                 if (FUN_1409331f0()->FUN_141430470(nAction) == 0)
                 {
@@ -604,7 +604,7 @@ void UISkillCompactControlDialog::vfunc_79(void* pPacket)
     }
     if (m_lstConfig.IsEmpty())
     {
-        strFirst = FUN_14028de60(0xc39);
+        strFirst = GetStringCommon(0xc39);
         FUN_140fa2720(CStringW(strFirst));
     }
     FUN_140fa1ff0();
@@ -681,7 +681,7 @@ bool UISkillCompactControlDialog::FUN_140fa0a20(CStringW strName)
     {
         UIMessageBox* pBox = FUN_14151f890();
         if (pBox != 0)
-            pBox->FUN_1419f82b0(FUN_14028de60(0xc38));
+            pBox->FUN_1419f82b0(GetStringCommon(0xc38));
         return 0;
     }
     FUN_14151f200();
@@ -727,7 +727,7 @@ bool UISkillCompactControlDialog::FUN_140fa0fa0(CStringW strName)
         {
             UIMessageBox* pBox = FUN_14151f890();
             if (pBox != 0)
-                pBox->FUN_1419f82b0(FUN_14028de60(0xc38));
+                pBox->FUN_1419f82b0(GetStringCommon(0xc38));
             return 0;
         }
     }

@@ -365,7 +365,7 @@ void FUN_140d73bc0(int, int, void*, CStringW);
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
 void FUN_141275260(int, int, int);
 void FUN_141276180(const CString&, const CString&);
-CStringW FUN_14028b8e0(const CStringW&);
+CStringW GetStringCommonByKey(const CStringW&);
 void FUN_140710590(COutPacket&);
 struct Unk_InvItemDataView { CString FUN_14053eca0(); };   // CItemData member (this=rcx, hidden return=rdx)
 class Unk_InventorySound { public: int FUN_1411a5110(CString, CString, CString, int, __int64, float, int); };
@@ -1479,7 +1479,7 @@ static bool Unk_InventorySlotAllows(const MS2Ptr<Unk_InventoryEquipment>& slot, 
     return FUN_140528980(worn.get()) && FUN_140525e50(worn.get(), mask, type) != 0;
 }
 static void Unk_InventoryCodiSlotError() {
-    FUN_140d73aa0(FUN_14028b8e0(L"s_item_err_codi_slot"), 0, nullptr, L"");
+    FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_codi_slot"), 0, nullptr, L"");
 }
 // Both slots are worn by different items although the item data requires one combined item.
 static bool Unk_InventoryPairMismatch(Unk_InventoryPlayer* player, int slotA, int slotB, int mode) {
@@ -1506,7 +1506,7 @@ int Unk_Inventory::FUN_140a63950(CItem* item, int slot, int mode) {
     bool codi = FUN_140166410()->FUN_14036d570(0x8e);
     if (mode == 2) {
         if (!codi || !FUN_14053cf90(data.get())) {
-            FUN_140d73aa0(FUN_14028b8e0(L"s_item_err_Invalid_slot_codi"), 0, nullptr, L"");
+            FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_Invalid_slot_codi"), 0, nullptr, L"");
             return 0;
         }
     } else if (mode == 1) {
@@ -1661,7 +1661,7 @@ int Unk_Inventory::FUN_140a65e30(CItem* item) {
     }
     if (error == 5) { FUN_140d73bc0(225, 0, nullptr, L""); return 1; }
     if (error == 6) { FUN_140d73bc0(226, 0, nullptr, L""); return 1; }
-    if (error == 7) { FUN_140d73aa0(FUN_14028b8e0(L"s_item_err_puton_vip"), 0, nullptr, L""); return 1; }
+    if (error == 7) { FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_puton_vip"), 0, nullptr, L""); return 1; }
     if (error == 10) return 1;
     return 0;
 }

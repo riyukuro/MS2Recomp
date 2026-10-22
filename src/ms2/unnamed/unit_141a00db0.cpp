@@ -13,7 +13,7 @@
 #include "hook/ms2hook.h"
 
 // Free functions of other units.
-CStringW FUN_14028de60(int nStringId);                              // a common string by id
+CStringW GetStringCommon(int nStringId);                              // a common string by id
 unsigned int FUN_140869420();                                       // now (ms)
 CString FUN_141a06ff0(int nSound);                                  // the sound event name (uimessageboxdata.cpp)
 void FUN_141415600(const CString& strName);                         // drops an item slot bind id
@@ -140,9 +140,9 @@ MS2_REPLACE_METHOD(0x141A01690, CMsgBoxData, FUN_141a01690, 98, 0x50FBFC55);
 // @0x141a01700
 void CMsgBoxData::FUN_141a01700(int nA, int nB, int nC)
 {
-    m_strBtn0 = FUN_14028de60(nA);
-    m_strBtn1 = FUN_14028de60(nB);
-    m_strBtn2 = FUN_14028de60(nC);
+    m_strBtn0 = GetStringCommon(nA);
+    m_strBtn1 = GetStringCommon(nB);
+    m_strBtn2 = GetStringCommon(nC);
 }
 MS2_REPLACE_METHOD(0x141A01700, CMsgBoxData, FUN_141a01700, 247, 0xF5BEBE7F);
 
@@ -153,28 +153,28 @@ void CMsgBoxData::FUN_141a01800(int n)
     switch (n)
     {
     case 1:
-        m_strBtn0 = FUN_14028de60(0x477);
-        m_strBtn1 = FUN_14028de60(0x478);
+        m_strBtn0 = GetStringCommon(0x477);
+        m_strBtn1 = GetStringCommon(0x478);
         m_strBtn2 = L"";
         break;
     case 2:
-        m_strBtn0 = FUN_14028de60(0x475);
-        m_strBtn1 = FUN_14028de60(0x476);
+        m_strBtn0 = GetStringCommon(0x475);
+        m_strBtn1 = GetStringCommon(0x476);
         m_strBtn2 = L"";
         break;
     case 3:
-        m_strBtn0 = FUN_14028de60(0x475);
+        m_strBtn0 = GetStringCommon(0x475);
         m_strBtn1 = L"";
         m_strBtn2 = L"";
         break;
     case 4:
-        m_strBtn0 = FUN_14028de60(0x476);
+        m_strBtn0 = GetStringCommon(0x476);
         m_strBtn1 = L"";
         m_strBtn2 = L"";
         break;
     case 5:
-        m_strBtn0 = FUN_14028de60(0x5a0);
-        m_strBtn1 = FUN_14028de60(0x5a1);
+        m_strBtn0 = GetStringCommon(0x5a0);
+        m_strBtn1 = GetStringCommon(0x5a1);
         m_strBtn2 = L"";
         break;
     }
@@ -222,8 +222,8 @@ void CMsgBoxData::FUN_141a01d30(int nMode, const CStringW& strDefault, unsigned 
     m_input.m_nMaxChars = nMax;
     m_input.m_nShowLimit = nShowLimit;
     m_input.m_nMaxLine = nMaxLine;
-    m_input.m_strMaxLineMsg = FUN_14028de60(0x982);
-    m_input.m_strCountMsg = FUN_14028de60(0x984);
+    m_input.m_strMaxLineMsg = GetStringCommon(0x982);
+    m_input.m_strCountMsg = GetStringCommon(0x984);
 }
 MS2_REPLACE_METHOD(0x141A01D30, CMsgBoxData, FUN_141a01d30, 293, 0xB4B29E7F);
 

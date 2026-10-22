@@ -76,7 +76,7 @@ public:
     void FUN_1418e1390();                                // cancel
 };
 UICastingBar* FUN_140ac2270(int nId);
-CStringW FUN_14028de60(int nId);                         // string table text by id
+CStringW GetStringCommon(int nId);                         // string table text by id
 
 // The actor's move-key state (PCBase::FUN_14166d240).
 class Unk_TcBuffMgr { public: Unk_StreamPoint FUN_141683290(); };
@@ -213,7 +213,7 @@ void StateTaxiCall::vfunc_4(StateData* pData)
             if (pBar != 0)
             {
                 CStringW strLabel(L"");
-                pBar->FUN_1418e12f0(0, FUN_14028de60(0x64b), nDuration, false, true, strLabel);
+                pBar->FUN_1418e12f0(0, GetStringCommon(0x64b), nDuration, false, true, strLabel);
             }
             CString strEmpty("");
             FUN_141276180(&s_strTaxiCall, strEmpty);

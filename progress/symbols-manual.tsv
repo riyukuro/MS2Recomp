@@ -8261,3 +8261,7 @@ compress2	142724100	func
 ?XMLNodeCI@fl_xml@AS3@GFx@Scaleform@@3UClassInfo@234@B	143176620	data
 ?XMLNodeTypeCI@fl_xml@AS3@GFx@Scaleform@@3UClassInfo@234@B	143176670	data
 ?XMLSignatureValidatorCI@fl_security@AS3@GFx@Scaleform@@3UClassInfo@234@B	143175fb0	data
+?GetStringCommon@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H@Z	14028de60	func
+?GetStringCommon@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@W4EBanStringId@@@Z	14028de60	func
+?GetStringCommonByKey@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@AEBV12@@Z	14028b8e0	func
+?GetStringTable@@YAPEAVCStringTable@@XZ	1401a9d70	func

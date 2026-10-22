@@ -266,11 +266,11 @@ unsigned FUN_141472bc0();
 __time64_t FUN_140869440();
 extern __int64 DAT_143ab2828;
 MS2Ptr<PartyVoteCli> FUN_140a89240(int);
-CStringW FUN_14028de60(int);
+CStringW GetStringCommon(int);
 CStringW FUN_14052bd00(int, const CStringW&);
 CStringW FUN_1405c2690(CStringW, const CStringW&);
 CStringW FUN_140298ea0(CStringW);
-CStringW FUN_14028b8e0(const CStringW&);
+CStringW GetStringCommonByKey(const CStringW&);
 CStringW FUN_1409eec40(int);
 void FUN_1412751b0(const CStringW&, int);
 void FUN_1412751f0(const CStringW&, int, int);
@@ -1006,7 +1006,7 @@ void CPartyManager::FUN_14162c8b0(CInPacket& packet)
         MS2Ptr<Unk_PartyMessage> message = FUN_140d73d20(1,
             FUN_14052bd00(0x2b7, partyName), 0, CStringW(key));
         if (message.get() != NULL) {
-            FUN_141a01ca0(message.operator->(), 0x14, 1, FUN_14028de60(0x2b8));
+            FUN_141a01ca0(message.operator->(), 0x14, 1, GetStringCommon(0x2b8));
             FUN_141a02460(message.operator->(), true);
             FUN_141a02480(message.operator->(), true);
             FUN_141a024a0(message.operator->(), false);
@@ -1059,7 +1059,7 @@ void CPartyManager::FUN_14162cea0(CInPacket& packet)
             FUN_14162a370();
             FUN_141630fd0();
             FUN_141adc5d0(FUN_1403ed2b0(), 0x4e45);
-            FUN_1412751b0(FUN_14028de60(0x31d), 0xe);
+            FUN_1412751b0(GetStringCommon(0x31d), 0xe);
         }
     }
 }
@@ -1075,7 +1075,7 @@ void CPartyManager::FUN_14162d070(CInPacket& packet)
             FUN_14162a370();
             FUN_141630fd0();
             FUN_141adc5d0(FUN_1403ed2b0(), 0x4e45);
-            FUN_1412751b0(FUN_14028de60(799), 0xe);
+            FUN_1412751b0(GetStringCommon(799), 0xe);
         } else {
             int index = FUN_14162af30(id);
             if (index == -1)
@@ -1095,7 +1095,7 @@ void CPartyManager::FUN_14162d220()
     FUN_14162a370();
     FUN_141630fd0();
     FUN_141adc5d0(FUN_1403ed2b0(), 0x4e45);
-    FUN_1412751b0(FUN_14028de60(0x321), 0xe);
+    FUN_1412751b0(GetStringCommon(0x321), 0xe);
 }
 MS2_REPLACE_METHOD(0x14162D220, CPartyManager, FUN_14162d220, 123, 0x0016246B);
 
@@ -1120,7 +1120,7 @@ void CPartyManager::FUN_14162d2b0(CInPacket& packet)
     }
     if (FUN_14162af00() > 1) {
         CStringW text;
-        if (DAT_143ab2828 == leaderId) text = FUN_14028de60(0x324);
+        if (DAT_143ab2828 == leaderId) text = GetStringCommon(0x324);
         else text = FUN_14052bd00(0x325, name);
         FUN_1412751b0(text, 0xe);
     }
@@ -1164,7 +1164,7 @@ void CPartyManager::FUN_14162d5b0(CInPacket& packet)
         FUN_141adc530(FUN_1403ed2b0(), 0x4e45);
         if (FUN_14125bbe0(FUN_140e09150(FUN_1409a8b10()))) FUN_141adc530(FUN_1403ed2b0(), 0x4f23);
     }
-    if (announce && members.GetCount() > 1) FUN_1412751b0(FUN_14028de60(0x31b), 0xe);
+    if (announce && members.GetCount() > 1) FUN_1412751b0(GetStringCommon(0x31b), 0xe);
     if (changed) {
         if (FUN_141adc890(FUN_1403ed2b0(), 0x4eda)) {
             void* ui = FUN_1413226d0(0x4eda);
@@ -1421,14 +1421,14 @@ void CPartyManager::FUN_14162f030(CInPacket& packet)
     switch (result - 2) {
     case 0: FUN_1412751b0(FUN_14052bd00(0x32d, name), 0x14); break;
     default: FUN_1412751b0(FUN_14052bd00(0x979, name), 0x14); break;
-    case 2: FUN_1412751b0(FUN_14028de60(0x32c), 0x14); break;
+    case 2: FUN_1412751b0(GetStringCommon(0x32c), 0x14); break;
     case 3: FUN_1412751b0(FUN_14052bd00(0x32a, name), 0x14); break;
     case 5: case 6: case 0xb: FUN_1412751b0(FUN_14052bd00(0x329, name), 0x14); break;
     case 7: FUN_1412751b0(FUN_14052bd00(0x330, name), 0x14); break;
     case 8: FUN_1412751f0(FUN_1409eec40(0x32a), 1, 1); break;
     case 9: FUN_1412751b0(FUN_14052bd00(0x32e, name), 0x14); break;
     case 10: FUN_1412751b0(FUN_14052bd00(0x333, name), 0x14); break;
-    case 0xc: FUN_1412751b0(FUN_14028de60(0x32f), 0x14); break;
+    case 0xc: FUN_1412751b0(GetStringCommon(0x32f), 0x14); break;
     case 0xd: FUN_1412751f0(FUN_14052bd00(0x32b, name), 1, 1); break;
     case 0xe: FUN_1412751b0(FUN_14052bd00(0x336, name), 0x14); break;
     case 0xf: FUN_1412751b0(FUN_14052bd00(0x337, name), 0x14); break;
@@ -1452,8 +1452,8 @@ void CPartyManager::FUN_14162f030(CInPacket& packet)
     case 0x21: FUN_1412751f0(FUN_140298ea0(L"s_party_err_vote_cooldown"), 1, 1); break;
     case 0x22: FUN_1412751f0(FUN_1405c2690(L"s_party_err_vote_cannot_kick_vote", FUN_141630db0(name)), 1, 1); break;
     case 0x23: FUN_1412751f0(FUN_140298ea0(L"s_party_err_vote_cannot_kick_vote_only_dungeon"), 1, 1); break;
-    case 0x24: FUN_1412751f0(FUN_14028de60(0x341), 1, 1); break;
-    case 0x25: { CStringW key(L"s_party_expel_maple_survival_squad"); FUN_1412751f0(FUN_14028b8e0(key), 1, 1); } break;
+    case 0x24: FUN_1412751f0(GetStringCommon(0x341), 1, 1); break;
+    case 0x25: { CStringW key(L"s_party_expel_maple_survival_squad"); FUN_1412751f0(GetStringCommonByKey(key), 1, 1); } break;
     case 0x26: FUN_140d73ff0(L"s_dungeonMatch_error_isNotChief"); break;
     case 0x27: FUN_140d73ff0(L"s_dungeonMatch_error_hasOfflineUser"); break;
     case 0x28: FUN_140d73ff0(L"s_dungeonMatch_error_insideDungeonUser"); break;
@@ -1541,11 +1541,11 @@ void CPartyManager::FUN_141630790(CInPacket& packet)
         if (FUN_14162ab20() == true) channel = 2;
         if (!flag29) {
             CStringW key(L"s_maple_survival_squad_unregister_squad");
-            FUN_1412751b0(FUN_14028b8e0(key), channel);
+            FUN_1412751b0(GetStringCommonByKey(key), channel);
             FUN_141276180(CString("Dungeon_Room_searchPartyCancel"), CString(""));
         } else {
             CStringW key(L"s_maple_survival_squad_register_squad");
-            FUN_1412751b0(FUN_14028b8e0(key), channel);
+            FUN_1412751b0(GetStringCommonByKey(key), channel);
             FUN_141276180(CString("Dungeon_Room_searchParty"), CString(""));
         }
         FUN_140da4fe0(FUN_140939a10(), MS2Ptr<NotifyObject>(new NotifySurvivalState));
@@ -1778,7 +1778,7 @@ void CPartyManager::FUN_141631700(CInPacket& packet)
             if (result == 0x67) { FUN_140d73bc0(0xb4d, 0, 0, L""); return; }
             if (result == 0x6a) {
                 CStringW key(L"s_partysearch_err_server_not_find_recruit");
-                FUN_140d73aa0(FUN_14028b8e0(key), 0, 0, L"");
+                FUN_140d73aa0(GetStringCommonByKey(key), 0, 0, L"");
                 FUN_141631060();
                 return;
             }

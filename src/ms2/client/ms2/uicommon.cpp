@@ -180,8 +180,8 @@ void FUN_140d73c60(Unk_UcMsgBoxPtr box);
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 CStringW FUN_1409eec40(int nStrId);                                 // string table text
 CStringW FUN_14052bd00(int nStrId, const CStringW& a1);
-CStringW FUN_14028b8e0(const CStringW& strKey);
-CStringW FUN_14028de60(int nStrId);
+CStringW GetStringCommonByKey(const CStringW& strKey);
+CStringW GetStringCommon(int nStrId);
 CStringW FUN_140292a70(const wchar_t* szFormat, const unsigned int& n0);
 CStringW FUN_1409404f0(__int64 n);                                  // the number as text
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
@@ -792,13 +792,13 @@ MS2_REPLACE(0x1418fe4e0, FUN_1418fe4e0, 158, 0x44154AB3);
 CStringW FUN_1418fe5d0(int nKind)
 {
     if (nKind == 0)
-        return FUN_14028de60(0x98a);
+        return GetStringCommon(0x98a);
     if (nKind == 1)
-        return FUN_14028de60(0x98b);
+        return GetStringCommon(0x98b);
     if (nKind == 2)
-        return FUN_14028de60(0x98c);
+        return GetStringCommon(0x98c);
     if (nKind == 3)
-        return FUN_14028de60(0x98d);
+        return GetStringCommon(0x98d);
     return CStringW(L"");
 }
 MS2_REPLACE(0x1418fe5d0, FUN_1418fe5d0, 223, 0x524822CC);
@@ -815,15 +815,15 @@ MS2_REPLACE(0x1418fe590, FUN_1418fe590, 55, 0xA41E59B9);
 CStringW FUN_1418fe6c0(int nCurrency, int nKind)
 {
     if (nCurrency == 0)
-        return FUN_14028b8e0(CStringW(L"s_common_cashname"));
+        return GetStringCommonByKey(CStringW(L"s_common_cashname"));
     if (nCurrency == 1)
-        return FUN_14028b8e0(CStringW(L"s_common_mesoname"));
+        return GetStringCommonByKey(CStringW(L"s_common_mesoname"));
     if (nCurrency == 3)
         return FUN_1418fe5d0(nKind);
     if (nCurrency == 9)
-        return FUN_14028b8e0(CStringW(L"s_common_meratname_red"));
+        return GetStringCommonByKey(CStringW(L"s_common_meratname_red"));
     if (nCurrency == 0xf)
-        return FUN_14028b8e0(CStringW(L"s_common_starpointname"));
+        return GetStringCommonByKey(CStringW(L"s_common_starpointname"));
     return CStringW(L"");
 }
 MS2_REPLACE(0x1418fe6c0, FUN_1418fe6c0, 423, 0xF021F7E6);
@@ -1107,22 +1107,22 @@ void FUN_1418ff710(int nCurrency, __int64 nAmount, int nItemId, int nOpt)
         FUN_141275260(0x3c, 1, 1);
         break;
     case 9:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_err_lack_redmerat")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_err_lack_redmerat")), 1, 1);
         break;
     case 0xb:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_guild_err_not_enough_guild_fund")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_guild_err_not_enough_guild_fund")), 1, 1);
         break;
     case 0xc:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_err_lack_reverse_coin")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_err_lack_reverse_coin")), 1, 1);
         break;
     case 0xd:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_err_lack_mentor_token")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_err_lack_mentor_token")), 1, 1);
         break;
     case 0xe:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_err_lack_mentee_token")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_err_lack_mentee_token")), 1, 1);
         break;
     case 0xf:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_err_lack_star_point")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_err_lack_star_point")), 1, 1);
         break;
     case 0x10:
         FUN_141275260(0x41, 1, 1);
@@ -2049,7 +2049,7 @@ bool FUN_141902660(MS2Ptr<CItem> spItem)
         CItemEnchantInfo* pEnchant = pExtra->m_spEnchant.get();
         if (pEnchant != 0 && pEnchant->FUN_14058cd60() != 0)
         {
-            Unk_UcMsgBoxPtr spBox = FUN_140d73d20(1, FUN_14028b8e0(CStringW(L"s_itemenchant_enchant_exp_refund")), 0, CStringW(L""));
+            Unk_UcMsgBoxPtr spBox = FUN_140d73d20(1, GetStringCommonByKey(CStringW(L"s_itemenchant_enchant_exp_refund")), 0, CStringW(L""));
             if (spBox.get() != 0)
             {
                 spBox->Append<__int64>(spItem->FUN_140526a50());

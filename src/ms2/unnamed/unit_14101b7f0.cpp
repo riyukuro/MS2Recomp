@@ -59,7 +59,7 @@ Unk_PvpUiService* FUN_1403ed2b0();
 
 CStringW FUN_14052bd00(int nStringId, const CStringW& strName);     // formatted message
 CStringW FUN_140632a60(int nStringId, const CStringW& strA, const CStringW& strB);   // formatted message, two arguments
-CStringW FUN_14028de60(int nStringId);                              // string table text
+CStringW GetStringCommon(int nStringId);                              // string table text
 void FUN_1412751f0(const CStringW& strText, int nType, int nFlag);  // post a notice
 int FUN_141654730(PCBase* pPlayer);                                 // the job of a player
 
@@ -136,18 +136,18 @@ void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
         int nOutcome = packet.vfunc_o8_3();
         CStringW strKind;
         if (nKind == 1)
-            strKind = FUN_14028de60(0xb15);
+            strKind = GetStringCommon(0xb15);
         else if (nKind == 2)
-            strKind = FUN_14028de60(0xb16);
+            strKind = GetStringCommon(0xb16);
         else
             return;
         CStringW strOutcome;
         if (nOutcome == 0)
-            strOutcome = FUN_14028de60(0xb17);
+            strOutcome = GetStringCommon(0xb17);
         else if (nOutcome == 1)
-            strOutcome = FUN_14028de60(0xb18);
+            strOutcome = GetStringCommon(0xb18);
         else if (nOutcome == 2)
-            strOutcome = FUN_14028de60(0xb19);
+            strOutcome = GetStringCommon(0xb19);
         else
             return;
         FUN_1412751f0(FUN_140632a60(0xb1a, strKind, strOutcome), 4, 1);

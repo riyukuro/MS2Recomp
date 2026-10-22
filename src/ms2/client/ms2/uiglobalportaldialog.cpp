@@ -38,7 +38,7 @@ struct Unk_GpParams { char m_pad[0x30]; void* m_pButton; };
 int FUN_140bd09c0(void* pButton);                                       // which button
 
 void FUN_140cfefe0(const Scaleform::GFx::Value& root, CString strName, CString strField, CStringW strText);   // set a text clip's text
-CStringW FUN_14028b8e0(const CStringW& strKey);                         // the string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                         // the string table text
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);        // the string table text with an argument
 void FUN_1412751f0(const CStringW& text, int nA, int nB);               // the notice popup
 CString FUN_14016a600(const wchar_t* pw, int n);                        // wide to narrow
@@ -167,7 +167,7 @@ void UIGlobalPortalDialog::FUN_1412c2980()
             else
             {
                 m_enterButton1->vfunc_3(1);
-                m_enterButton1->FUN_1422cdfb0(FUN_1405c2690(L"s_massive_event_enter_button", FUN_14028b8e0(m_strCaption1)));
+                m_enterButton1->FUN_1422cdfb0(FUN_1405c2690(L"s_massive_event_enter_button", GetStringCommonByKey(m_strCaption1)));
             }
         }
         if (m_enterButton2.get() != 0)
@@ -177,7 +177,7 @@ void UIGlobalPortalDialog::FUN_1412c2980()
             else
             {
                 m_enterButton2->vfunc_3(1);
-                m_enterButton2->FUN_1422cdfb0(FUN_1405c2690(L"s_massive_event_enter_button", FUN_14028b8e0(m_strCaption2)));
+                m_enterButton2->FUN_1422cdfb0(FUN_1405c2690(L"s_massive_event_enter_button", GetStringCommonByKey(m_strCaption2)));
             }
         }
         if (m_enterButton3.get() != 0)
@@ -187,7 +187,7 @@ void UIGlobalPortalDialog::FUN_1412c2980()
             else
             {
                 m_enterButton3->vfunc_3(1);
-                m_enterButton3->FUN_1422cdfb0(FUN_1405c2690(L"s_massive_event_enter_button", FUN_14028b8e0(m_strCaption3)));
+                m_enterButton3->FUN_1422cdfb0(FUN_1405c2690(L"s_massive_event_enter_button", GetStringCommonByKey(m_strCaption3)));
             }
         }
         if (!m_strSound.IsEmpty())
@@ -211,10 +211,10 @@ void UIGlobalPortalDialog::FUN_1412c3020(CInPacket& packet)
         FUN_1412c3640(packet);
         break;
     case 3:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_massive_event_error_cant_enter_dead")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_massive_event_error_cant_enter_dead")), 1, 1);
         break;
     case 4:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_massive_event_error_cant_enter_level_limit")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_massive_event_error_cant_enter_level_limit")), 1, 1);
         break;
     }
 }
@@ -243,7 +243,7 @@ void UIGlobalPortalDialog::FUN_1412c32a0(CInPacket& packet)
 {
     m_nEventId = packet.vfunc_o8_3();
     m_nParam = packet.vfunc_o8_3();
-    m_strText = FUN_14028b8e0(packet.vfunc_o8_8());
+    m_strText = GetStringCommonByKey(packet.vfunc_o8_8());
     m_strSound = packet.vfunc_o8_8();
     m_strCaption1 = packet.vfunc_o8_8();
     m_strCaption2 = packet.vfunc_o8_8();

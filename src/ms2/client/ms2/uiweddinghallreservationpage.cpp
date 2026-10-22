@@ -23,7 +23,7 @@ MS2Ptr<AScript> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
 void FUN_140fdc9f0(UIDialog* pDialog);                                      // reservation dialog: go back to the list
 void* FUN_140967100();
 void FUN_141b1feb0(void* pSingleton);
-CStringW FUN_14028b8e0(const CStringW& strKey);                             // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 
 // @0x140fe2150
 UIWeddingHallReservationPage::UIWeddingHallReservationPage(UIDialog* pDialog) : m_pScript(0)
@@ -177,7 +177,7 @@ CString UIWeddingHallReservationPageCancel::vfunc_8()
 CStringW UIWeddingHallReservationPageCancel::vfunc_9()
 {
     CStringW strKey(L"s_wedding_reservation_cancel_page");
-    return FUN_14028b8e0(strKey);
+    return GetStringCommonByKey(strKey);
 }
 
 // MS2-FUNCTIONAL: one byte differs in else-less/else branch layout
@@ -187,8 +187,8 @@ CStringW UIWeddingHallReservationPageCancel::vfunc_10(bool bStart)
     if (bStart == 0)
     {
         CStringW strEnd(L"s_wedding_reservation_cancel_end");
-        return FUN_14028b8e0(strEnd);
+        return GetStringCommonByKey(strEnd);
     }
     CStringW strStart(L"s_wedding_reservation_cancel");
-    return FUN_14028b8e0(strStart);
+    return GetStringCommonByKey(strStart);
 }

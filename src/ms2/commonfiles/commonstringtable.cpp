@@ -96,7 +96,7 @@ template std::_Tree_node<std::pair<const unsigned, int>, void*>*& std::_Tree_val
 template std::_Tree_node<std::pair<const unsigned, int>, void*>*& std::_Tree_val<std::_Tree_simple_types<std::pair<const unsigned, int>>>::_Rmost() const;
 template std::_Tree_node<std::pair<const unsigned, int>, void*>*& std::_Tree_val<std::_Tree_simple_types<std::pair<const unsigned, int>>>::_Root() const;
 
-CStringW FUN_14028de60(EBanStringId nStringId);
+CStringW GetStringCommon(EBanStringId nStringId);
 bool FUN_14028f710(Unk_140165cf0* pNode);   // node is enabled for this client
 CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);   // path join
 
@@ -302,7 +302,7 @@ CStringW CBanTextChecker::CheckerErrStringPackage::GetErrString(EBanErrKind nKin
 {
     EBanStringId nId = (EBanStringId)0;
     if (m_ids.Lookup(nKind, nId))
-        return FUN_14028de60(nId);
+        return GetStringCommon(nId);
     return GetDefaultErrString(nKind);
 }
 
@@ -332,7 +332,7 @@ CStringW CBanTextChecker::GetDefaultErrString(EBanErrKind nKind)
     EBanStringId nId = (EBanStringId)0;
     FUN_140224600();
     if (s_mapDefaultErr.Lookup(nKind, nId))
-        return FUN_14028de60(nId);
+        return GetStringCommon(nId);
     return CStringW(L"");
 }
 

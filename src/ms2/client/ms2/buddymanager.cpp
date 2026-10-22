@@ -74,7 +74,7 @@ public:
 };
 Unk_BuddyNotifications* FUN_140a4a7b0();
 CStringW FUN_14052bd00(int,const CStringW&);
-CStringW FUN_14028de60(int);
+CStringW GetStringCommon(int);
 CStringW FUN_1409eec40(int);
 void FUN_140961010(int,int,int,const CStringW&);
 void FUN_1412751b0(const CStringW&,int);
@@ -147,7 +147,7 @@ void CBuddyManager::FUN_140ae2e90(Unk_BuddyInput& input) {
     case 9:
         if(response.result==0) {
             if((buddy->flags>>1)&1) { Unk_BuddyNotifications* events=FUN_140a4a7b0(); events->vfunc_3(buddy->id); }
-            else if(buddy->flags&1) { FUN_141276180(s_buddyRequest,""); FUN_1412751b0(FUN_14028de60(0x607),12); Unk_BuddyNotifications* events=FUN_140a4a7b0(); events->vfunc_1(buddy->id); }
+            else if(buddy->flags&1) { FUN_141276180(s_buddyRequest,""); FUN_1412751b0(GetStringCommon(0x607),12); Unk_BuddyNotifications* events=FUN_140a4a7b0(); events->vfunc_1(buddy->id); }
             else if((buddy->flags>>2)&1) { Unk_BuddyNotifications* events=FUN_140a4a7b0(); events->vfunc_4(buddy->id,0); }
         } break;
     case 10:

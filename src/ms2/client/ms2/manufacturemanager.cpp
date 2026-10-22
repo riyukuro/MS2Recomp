@@ -147,7 +147,7 @@ void* FUN_1403ed2b0();                                          // the UI servic
 int FUN_141adc890(void* pService, int nUiId);                   // is the dialog open
 struct Unk_MfUIService { MS2Ptr<UIObject> FUN_141adcea0(int nUiId); };  // the dialog's UI object
 void FUN_141276180(const CString& strName, const CString& strArg);  // play a system sound
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_1408116a0(int nStringId, const int& nValue);
 Unk_MfWordTable* FUN_1403b4750();
 void FUN_140694050(CManufacture& v, CInPacket& in);             // reads a record from the packet
@@ -524,7 +524,7 @@ CStringW CManufactureManager::GetMaidText(int nType, Unk_MfNpc* pNpc)
         strText = spMsg.get()->m_strExpired;
         break;
     case 0x15:
-        strText = FUN_14028de60(0xc07);
+        strText = GetStringCommon(0xc07);
         break;
     }
     FUN_1403b4750()->FUN_1416fb400(strText, pNpc);

@@ -211,7 +211,7 @@ Unk_MmNpcTable* FUN_1406d6e90();
 class UIDamageText { public: void FUN_141912a80(GameObject* pObj, int nValue, int n); };
 UIDamageText* FUN_140b624b0(int nUiId);
 class CStringTable { public: CStringW FUN_141811980(int nKind, int nId); };
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 #ifdef __clang__
 CStringA FUN_140298360(const char* psz, const CStringA& str);   // the exe's operator+(const char*, const CStringA&)
 #endif
@@ -1309,7 +1309,7 @@ CStringW CNpc::FUN_141093980()
         if (spDesc.get() != 0)
             return spDesc->m_08;
     }
-    return FUN_1401a9d70()->FUN_141811980(10, FUN_141092fa0());
+    return GetStringTable()->FUN_141811980(10, FUN_141092fa0());
 }
 
 // @0x141093c20

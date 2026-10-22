@@ -249,7 +249,7 @@ MS2_CHECK_SIZE(Unk_GuildAchieveRowPtr, 0x10);
 Unk_GuildAchieveRowPtr FUN_14015d9e0(int achieveId);
 __int64 FUN_140869440();                                    // the server time
 CMsTime FUN_1406c47a0(__int64 time);
-CStringW FUN_14028de60(int id);
+CStringW GetStringCommon(int id);
 CStringW FUN_14083bab0(const CMsTime& time, CStringW separator);
 CStringW FUN_140656190(const wchar_t* format, const CStringW& arg0, const CStringW& arg1);
 CStringW FUN_140d2d8a0(int achieveId, int grade, CStringW text, CStringW date);
@@ -278,8 +278,8 @@ void FUN_1412752d0(const CStringW& text, int type);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int type, CStringW text, void* listener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 int FUN_140869470(int days);
-CStringW FUN_14028de60(int id);
-CStringW FUN_14028b8e0(const CStringW& key);
+CStringW GetStringCommon(int id);
+CStringW GetStringCommonByKey(const CStringW& key);
 void FUN_1412751b0(const CStringW& text, int type);
 void FUN_1412751f0(const CStringW& text, int type, int flag);
 void FUN_141275260(int id, int type, int flag);
@@ -323,7 +323,7 @@ void CGuildManager::FUN_1413b5e80()
     if (!FUN_1413b6160()) return;
     if (m_noticeAttendance) {
         if (FUN_1401c0d90()->FUN_14047e880()) {
-            FUN_1412751f0(FUN_14028de60(0x3c4), 4, 1);
+            FUN_1412751f0(GetStringCommon(0x3c4), 4, 1);
             m_noticeAttendance = false;
         }
     }
@@ -511,7 +511,7 @@ bool CGuildManager::FUN_1413b6d10(CStringW name)
     if (FUN_1413b61a0() == 1) return false;
     int minLength = *FUN_1402056b0(&FUN_1401d3200()->m_guildNameMinLength);
     if (name.GetLength() < minLength) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_invalide_create_name"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_invalide_create_name"), 1, 1);
         return false;
     }
     if (Unk_GuildBanWord* banWord = FUN_14025e7d0()->FUN_140229a50().FUN_14025cea0()) {
@@ -725,11 +725,11 @@ bool CGuildManager::SendGuildMode15()
     MS2Ptr<CGuildMember> member = FUN_1404cf9f0(FUN_1413c7c20());
     if (member == 0) return false;
     if (FUN_14086ace0(member->fc8) == 0) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_can_next_day"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_can_next_day"), 1, 1);
         return false;
     }
     if (!FUN_1413b8460()) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_attend_already"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_attend_already"), 1, 1);
         return false;
     }
     COutPacket packet(0x4b, 0);
@@ -758,13 +758,13 @@ bool CGuildManager::FUN_1413b8540(int amount)
     MS2Ptr<CGuildMember> member = FUN_1404cf9f0(FUN_1413c7c20());
     if (member == 0) return false;
     if (FUN_14086ace0(member->fc8) == 0) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_can_next_day"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_can_next_day"), 1, 1);
         return false;
     }
     Unk_PayloadPtr<CGuildXmlData::GuildProperty> property = FUN_1404f4530()->FUN_1404d7410(FUN_1404d1ad0());
     if (property == 0) return false;
     if (member->FUN_1404cb3e0() + amount > property->f30) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_donateMax"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_donateMax"), 1, 1);
         return false;
     }
     int bonusRate = FUN_140302b00()->FUN_1403eea90()->FUN_140423780();
@@ -774,11 +774,11 @@ bool CGuildManager::FUN_1413b8540(int amount)
     __int64 guildFund = FUN_1404d1df0();
     __int64 guildFundMax = FUN_1404d1e90();
     if (guildFund + fund > guildFundMax) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_donate_guildFundMax"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_donate_guildFundMax"), 1, 1);
         return false;
     }
     if (DAT_143ab2898 < cost) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_no_money"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_no_money"), 1, 1);
         return false;
     }
     COutPacket packet(0x4b, 0);
@@ -858,12 +858,12 @@ void CGuildManager::FUN_1413b8fe0(int skillId)
     if (skillData == 0) return;
     int requiredLevel = FUN_1404f4530()->FUN_1404d7130(FUN_1404d1a80());
     if (requiredLevel < skillData->f20) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_not_enough_guild_level"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_not_enough_guild_level"), 1, 1);
         return;
     }
     int fund = skillData->FUN_1404d4e80() ? FUN_1404d1e40() : FUN_1404d1df0();
-    CStringW fundError(skillData->FUN_1404d4e80() ? FUN_14028b8e0(L"s_guild_err_not_enough_guild_event_fund")
-                                                   : FUN_14028b8e0(L"s_guild_err_not_enough_guild_fund"));
+    CStringW fundError(skillData->FUN_1404d4e80() ? GetStringCommonByKey(L"s_guild_err_not_enough_guild_event_fund")
+                                                   : GetStringCommonByKey(L"s_guild_err_not_enough_guild_fund"));
     if (fund < FUN_1403ed290()->FUN_1413bd050(skillId, skillLevel)) {
         FUN_1412751f0(fundError, 1, 1);
         return;
@@ -871,7 +871,7 @@ void CGuildManager::FUN_1413b8fe0(int skillId)
     MS2Ptr<CGuildSkill> skill = FUN_1404d2640(skillId);
     if (skill == 0) return;
     if (!skill->FUN_1404cbcd0()) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_cannot_use_skill"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_cannot_use_skill"), 1, 1);
         return;
     }
     if (FUN_140841300(skillData->f40, "recall")) {
@@ -901,18 +901,18 @@ void CGuildManager::FUN_1413b96e0(int skillId)
     if (!skillData->FUN_1404d4e40()) return;
     int requiredLevel = FUN_1404f4530()->FUN_1404d7130(FUN_1404d1a80());
     if (requiredLevel < skillData->f20) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_not_enough_guild_level"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_not_enough_guild_level"), 1, 1);
         return;
     }
     if (DAT_143ab2898 < FUN_1413bd1a0(skillId, skillLevel)) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_err_lack_meso"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_err_lack_meso"), 1, 1);
         return;
     }
     PCBase* pc = (PCBase*)FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pc == 0) return;
     Unk_GuildBuffRef buff = pc->FUN_1416749a0()->FUN_14096fe60(skillData->f34, skillData->f38, 0, true, 1);
     if (buff.FUN_140975b90() != 0) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_cannot_use_skill"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_cannot_use_skill"), 1, 1);
         return;
     }
     COutPacket packet(0x4b, 0);
@@ -932,11 +932,11 @@ void CGuildManager::FUN_1413b9ac0(int skillId)
     int nextLevel = skillLevel + 1;
     Unk_PayloadPtr<CGuildXmlData::GuildSkill> next = FUN_1404f4530()->FUN_1404d74e0(skillId, nextLevel);
     if (next == 0) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_max_level"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_max_level"), 1, 1);
         return;
     }
     if (!FUN_1404d01b0(FUN_1413c7c20())) {
-        FUN_1412751f0(FUN_14028de60(0x416), 1, 1);
+        FUN_1412751f0(GetStringCommon(0x416), 1, 1);
         return;
     }
     if (next->f20 > FUN_1404d1ad0()) {
@@ -944,8 +944,8 @@ void CGuildManager::FUN_1413b9ac0(int skillId)
         return;
     }
     int fund = current->FUN_1404d4e80() ? FUN_1404d1e40() : FUN_1404d1df0();
-    CStringW fundError(current->FUN_1404d4e80() ? FUN_14028b8e0(L"s_guild_err_not_enough_guild_event_fund")
-                                                : FUN_14028b8e0(L"s_guild_err_not_enough_guild_fund"));
+    CStringW fundError(current->FUN_1404d4e80() ? GetStringCommonByKey(L"s_guild_err_not_enough_guild_event_fund")
+                                                : GetStringCommonByKey(L"s_guild_err_not_enough_guild_fund"));
     if (next->f24 > fund) {
         FUN_1412751f0(fundError, 1, 1);
         return;
@@ -965,7 +965,7 @@ void CGuildManager::FUN_1413ba080(int eventId)
     if (eventData == 0) return;
     __int64 now = FUN_140869440();
     if (FUN_1404ccec0() + FUN_140869470(1) > now) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_cannot_open_event_create_date"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_cannot_open_event_create_date"), 1, 1);
         return;
     }
     if (!FUN_1404d0600(FUN_1413c7c20(), 0x400)) {
@@ -1021,14 +1021,14 @@ void CGuildManager::FUN_1413ba4b0()
     Unk_PayloadPtr<CGuildXmlData::GuildHouse> house = FUN_1404f4530()->FUN_1404d79b0(houseLevel, houseTheme);
     if (house == 0) return;
     if (FUN_1403ed2d0()->FUN_141bd3060() == house->f50) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_common_cant_move_from_here"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_common_cant_move_from_here"), 1, 1);
         return;
     }
     if (FUN_1403ed2d0()->FUN_141bd30a0()->m_5c == 0) {
         Unk_GuildHousingSvcPtr housing(FUN_1401cd040(&DAT_143b059e8));
         if ((housing.FUN_140885310() ? true : false) && housing.FUN_1401cd1a0()->FUN_1410d2f10()) {
         } else {
-            FUN_1412751f0(FUN_14028b8e0(L"s_common_cant_move_from_here"), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_common_cant_move_from_here"), 1, 1);
             return;
         }
     }
@@ -1045,13 +1045,13 @@ void CGuildManager::FUN_1413ba820(int level, int theme)
     if (!FUN_1413b6160()) return;
     int nextLevel = FUN_1404d1f90() + 1;
     if (level != nextLevel) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_need_pre_house_level"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_need_pre_house_level"), 1, 1);
         return;
     }
     Unk_PayloadPtr<CGuildXmlData::GuildHouse> house = FUN_1404f4530()->FUN_1404d79b0(nextLevel, theme);
     if (house == 0) return;
     if (!FUN_1404d01b0(FUN_1413c7c20())) {
-        FUN_1412751f0(FUN_14028de60(0x416), 1, 1);
+        FUN_1412751f0(GetStringCommon(0x416), 1, 1);
         return;
     }
     if (house->f2c > FUN_1404d1ad0()) {
@@ -1059,7 +1059,7 @@ void CGuildManager::FUN_1413ba820(int level, int theme)
         return;
     }
     if (house->f28 > FUN_1404d1df0()) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_not_enough_guild_fund"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_not_enough_guild_fund"), 1, 1);
         return;
     }
     COutPacket packet(0x4b, 0);
@@ -1078,16 +1078,16 @@ void CGuildManager::FUN_1413babf0(int theme)
     Unk_PayloadPtr<CGuildXmlData::GuildHouse> house = FUN_1404f4530()->FUN_1404d79b0(level, theme);
     if (house == 0) return;
     if (!FUN_1404d01b0(FUN_1413c7c20())) {
-        FUN_1412751f0(FUN_14028de60(0x416), 1, 1);
+        FUN_1412751f0(GetStringCommon(0x416), 1, 1);
         return;
     }
     int currentTheme = FUN_1404d2030();
     if (currentTheme == theme) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_same_guild_house_theme"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_same_guild_house_theme"), 1, 1);
         return;
     }
     if (house->f30 > FUN_1404d1df0()) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_not_enough_guild_fund"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_not_enough_guild_fund"), 1, 1);
         return;
     }
     COutPacket packet(0x4b, 0);
@@ -1120,11 +1120,11 @@ void CGuildManager::FUN_1413bb000(Unk_GuildNpcKind kind)
     int nextLevel = level + 1;
     Unk_PayloadPtr<CGuildXmlData::GuildNpc> npc = FUN_1404f4530()->FUN_1404d7b40(kind, nextLevel);
     if (npc == 0) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_max_level"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_max_level"), 1, 1);
         return;
     }
     if (!FUN_1404d01b0(FUN_1413c7c20())) {
-        FUN_1412751f0(FUN_14028de60(0x416), 1, 1);
+        FUN_1412751f0(GetStringCommon(0x416), 1, 1);
         return;
     }
     if (npc->f28 > FUN_1404d1ad0()) {
@@ -1136,7 +1136,7 @@ void CGuildManager::FUN_1413bb000(Unk_GuildNpcKind kind)
         return;
     }
     if (npc->f20 > FUN_1404d1df0()) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_not_enough_guild_fund"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_not_enough_guild_fund"), 1, 1);
         return;
     }
     COutPacket packet(0x4b, 0);
@@ -1151,20 +1151,20 @@ bool CGuildManager::FUN_1413bb490(ItemEntity& item, const CStringW& receiver)
 {
     if (!FUN_1413b6160()) return false;
     if (!FUN_1404d01b0(FUN_1413c7c20())) {
-        FUN_1412751f0(FUN_14028de60(0x416), 1, 1);
+        FUN_1412751f0(GetStringCommon(0x416), 1, 1);
         return false;
     }
     if (receiver.IsEmpty()) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_empty_member"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_empty_member"), 1, 1);
         return false;
     }
     MS2Ptr<CGuildMember> member = FUN_1404cf9f0(receiver);
     if (member == 0) {
-        FUN_1412751f0(FUN_14028de60(0x40d), 1, 1);
+        FUN_1412751f0(GetStringCommon(0x40d), 1, 1);
         return false;
     }
     if (item.m_count == 0) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_empty_count"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_empty_count"), 1, 1);
         return false;
     }
     int stored = FUN_1404d2db0(item.vfunc_o18_0(), item.vfunc_o18_1());
@@ -1177,12 +1177,12 @@ bool CGuildManager::FUN_1413bb490(ItemEntity& item, const CStringW& receiver)
         return false;
     }
     if ((unsigned)stored < item.m_count) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_storage_not_enough_count"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_storage_not_enough_count"), 1, 1);
         return false;
     }
     if (itemData->FUN_14053c6b0(0xd7)) {
         if (receiver != FUN_1413c7c20()) {
-            FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_storage_send_only_to_me"), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_storage_send_only_to_me"), 1, 1);
             return false;
         }
     }
@@ -1283,12 +1283,12 @@ MS2_REPLACE_METHOD(0x1413BBFE0, CGuildManager, FUN_1413bbfe0, 103, 0xB4A0F13B);
 void CGuildManager::SendPVPMode3()
 {
     if (FUN_1404d10d0() != 2) {
-        CStringW message = FUN_14028de60(0x3c5);
+        CStringW message = GetStringCommon(0x3c5);
         FUN_1412751f0(message, 1, 1);
         return;
     }
     if (FUN_1404ccbd0() != m_targetGuildId) {
-        CStringW message = FUN_14028de60(0x3c7);
+        CStringW message = GetStringCommon(0x3c7);
         FUN_1412751f0(message, 1, 1);
         return;
     }
@@ -1328,7 +1328,7 @@ void CGuildManager::FUN_1413bc250(Unk_GuildTarget* target)
     CStringW guildName = target->vfunc_8();
     m_targetGuildId = guildId;
     m_targetGuildName = guildName;
-    FUN_140d73aa0(FUN_14028de60(0x3c8), 0, 0, CStringW(L""));
+    FUN_140d73aa0(GetStringCommon(0x3c8), 0, 0, CStringW(L""));
     if (Unk_GuildDialog4e4f* dialog = FUN_14136f480(0x4e4f))
         dialog->FUN_14196cf80();
 }
@@ -1414,7 +1414,7 @@ void CGuildManager::SendGuildMode87(bool anyFocus)
     int focus = m_468;
     if (focus == 0) {
         if (!anyFocus) {
-            FUN_140d73aa0(FUN_14028de60(0x3c9), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommon(0x3c9), 0, 0, CStringW(L""));
             return;
         }
         focus = 0x7fffffff;
@@ -1437,7 +1437,7 @@ bool CGuildManager::SendGuildMode88(CStringW name)
     if (name.GetLength() < 2) {
         {
             CStringW key(L"s_guild_err_too_short_to_search");
-            FUN_1412751f0(FUN_14028b8e0(key), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(key), 1, 1);
         }
         return false;
     }
@@ -1566,7 +1566,7 @@ void CGuildManager::FUN_1413bd4c0()
         return;
     if (FUN_1401c0d90()->FUN_14047eca0()) {
         CStringW key(L"s_guild_vsGame_can_regist");
-        FUN_1412751f0(FUN_14028b8e0(key), 4, 1);
+        FUN_1412751f0(GetStringCommonByKey(key), 4, 1);
     }
 }
 MS2_REPLACE_METHOD(0x1413BD4C0, CGuildManager, FUN_1413bd4c0, 153, 0x031DD505);
@@ -1643,7 +1643,7 @@ void CGuildManager::FUN_1413bd680(CInPacket& packet)
     }
     if (FUN_1413b6160() && m_noticeAttendance) {
         if (FUN_1401c0d90()->FUN_14047e880()) {
-            FUN_1412751b0(FUN_14028de60(0x3c3), 0xd);
+            FUN_1412751b0(GetStringCommon(0x3c3), 0xd);
             m_noticeAttendance = false;
         }
     }
@@ -1675,7 +1675,7 @@ void CGuildManager::FUN_1413bda00(CInPacket& packet)
         return;
     }
     FUN_1413b5f90();
-    FUN_140d73aa0(FUN_14028de60(0x38a), 0, 0, CStringW(L""));
+    FUN_140d73aa0(GetStringCommon(0x38a), 0, 0, CStringW(L""));
     FUN_1403ed2b0()->FUN_141adc5d0(0x4e4f);
 }
 MS2_REPLACE_METHOD(0x1413BDA00, CGuildManager, FUN_1413bda00, 234, 0x5056CD05);
@@ -1709,7 +1709,7 @@ void CGuildManager::FUN_1413bdbb0(CInPacket& packet)
     } else {
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_140632a60(0x38c, m_invite->f30, m_invite->f20), 0, CStringW(s_strGuildInvite));
         if (box.get()) {
-            box->FUN_141a01ca0(0x14, 1, FUN_14028de60(0x2b8));
+            box->FUN_141a01ca0(0x14, 1, GetStringCommon(0x2b8));
             box->FUN_141a02460(1);
             box->FUN_141a02480(1);
             box->FUN_141a024a0(0);
@@ -1877,8 +1877,8 @@ void CGuildManager::FUN_1413bebc0(CInPacket& packet)
 {
     if (!FUN_1413b6160())
         return;
-    FUN_140d73aa0(FUN_14028b8e0(L"s_guild_attend_complete"), 0, 0, CStringW(L""));
-    FUN_1412751b0(FUN_14028b8e0(L"s_guild_attend_complete"), 0xd);
+    FUN_140d73aa0(GetStringCommonByKey(L"s_guild_attend_complete"), 0, 0, CStringW(L""));
+    FUN_1412751b0(GetStringCommonByKey(L"s_guild_attend_complete"), 0xd);
 }
 MS2_REPLACE_METHOD(0x1413BEBC0, CGuildManager, FUN_1413bebc0, 271, 0x92EE0AC3);
 
@@ -1895,7 +1895,7 @@ void CGuildManager::FUN_1413bece0(CInPacket& packet)
     member->ff0 = donationCount;
     member->ff8 = donationTime;
     CStringW key(L"s_guild_donate_complete");
-    FUN_1412751b0(FUN_14028b8e0(key), 0xd);
+    FUN_1412751b0(GetStringCommonByKey(key), 0xd);
 }
 MS2_REPLACE_METHOD(0x1413BECE0, CGuildManager, FUN_1413bece0, 390, 0x314F4DBE);
 
@@ -2434,7 +2434,7 @@ void CGuildManager::FUN_1413c2030(CInPacket& packet)
     if (row.FUN_140159a80()->m_category == 8)
         return;
     CMsTime now = FUN_1406c47a0(FUN_140869440());
-    CStringW suffix = FUN_14028de60(0x780);
+    CStringW suffix = GetStringCommon(0x780);
     CStringW date = FUN_14083bab0(now, CStringW(L"/"));
     CStringW text = FUN_140656190(L"{0} {1}", name, suffix);
     CStringW detail = FUN_140d2d8a0(achieveId, grade, text, date);
@@ -2505,12 +2505,12 @@ MS2_REPLACE_METHOD(0x1413C2860, CGuildManager, FUN_1413c2860, 114, 0x5145F95F);
 void CGuildManager::FUN_1413c28e0(CInPacket& packet)
 {
     bool matched = FUN_14028d780(static_cast<CInputStream&>(packet).vfunc_o8_1());
-    CStringW message = FUN_14028de60(0x3bf);
+    CStringW message = GetStringCommon(0x3bf);
     if (matched) {
         FUN_141276180(s_strGuildBattleMatchingSuccess, "");
         FUN_141276180(s_strGuildBattleMatchingNotice, "");
     } else {
-        message = FUN_14028de60(0x3c0);
+        message = GetStringCommon(0x3c0);
         FUN_141276180(s_strGuildBattleMatchingFail, "");
     }
     if (matched && FUN_140c9b8b0(FUN_1409a8b10())->m_promptArenaJoin) {
@@ -2518,10 +2518,10 @@ void CGuildManager::FUN_1413c28e0(CInPacket& packet)
             if (Unk_GuildDialog4e4f* dialog = FUN_14136f480(0x4e4f))
                 dialog->FUN_141974930();
         } else {
-            CStringW text = FUN_14028de60(0x3c1);
+            CStringW text = GetStringCommon(0x3c1);
             MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, text, 0, CStringW(s_strGuildArenaJoin));
             if (box.get()) {
-                box->FUN_141a01ca0(0x1e, 1, FUN_14028de60(0x2b8));
+                box->FUN_141a01ca0(0x1e, 1, GetStringCommon(0x2b8));
                 box->FUN_141a02460(1);
                 box->FUN_141a02480(1);
                 box->FUN_141a024a0(0);
@@ -2785,9 +2785,9 @@ void CGuildManager::FUN_1413c4420(CInPacket& packet)
     bool notify = static_cast<CInputStream&>(packet).vfunc_o8_0();
     if (notify) {
         if (f354)
-            FUN_1412751b0(FUN_14028b8e0(L"s_guild_notify_vsGame_register_ticket"), 3);
+            FUN_1412751b0(GetStringCommonByKey(L"s_guild_notify_vsGame_register_ticket"), 3);
         else
-            FUN_1412751b0(FUN_14028b8e0(L"s_guild_notify_vsGame_unregister_ticket"), 3);
+            FUN_1412751b0(GetStringCommonByKey(L"s_guild_notify_vsGame_unregister_ticket"), 3);
     }
 }
 MS2_REPLACE_METHOD(0x1413C4420, CGuildManager, FUN_1413c4420, 340, 0x9CD6C29F);
@@ -2810,10 +2810,10 @@ void CGuildManager::FUN_1413c45e0(CInPacket& packet)
     f354 = 0;
     if (f350 == 0)
         return;
-    MS2Ptr<CMsgBoxData> box = FUN_140d73f20(FUN_14028b8e0(L"s_guild_notify_vsGame_open"), 1);
+    MS2Ptr<CMsgBoxData> box = FUN_140d73f20(GetStringCommonByKey(L"s_guild_notify_vsGame_open"), 1);
     if (box.get()) {
         box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CGuildManager::SendGuildMode120));
-        box->FUN_141a01ca0(0x1e, 1, FUN_14028de60(0x2b8));
+        box->FUN_141a01ca0(0x1e, 1, GetStringCommon(0x2b8));
         box->FUN_141a02460(1);
         box->FUN_141a02480(1);
         box->FUN_141a024a0(0);
@@ -3071,7 +3071,7 @@ void CGuildManager::FUN_1413c59e0(CInPacket& packet)
     m_searchResults.RemoveAll();
     int count = static_cast<CInputStream&>(packet).vfunc_o8_3();
     if (count == 0) {
-        FUN_140d73aa0(FUN_14028de60(0x3ca), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommon(0x3ca), 0, 0, L"");
     } else {
         for (int i = 0; i < count; i++) {
             int has = static_cast<CInputStream&>(packet).vfunc_o8_1();
@@ -3363,136 +3363,136 @@ void CGuildManager::FUN_1413c66f0(int kind, int code, int arg)
     CStringW text;
     switch (code) {
     case 1:
-        text = FUN_14028de60(0x403);
+        text = GetStringCommon(0x403);
         break;
     case 3:
-        text = FUN_14028de60(0x404);
+        text = GetStringCommon(0x404);
         break;
     case 4:
-        text = FUN_14028de60(0x405);
+        text = GetStringCommon(0x405);
         break;
     case 5:
-        text = FUN_14028de60(0x406);
+        text = GetStringCommon(0x406);
         break;
     case 6:
-        text = FUN_14028de60(0x407);
+        text = GetStringCommon(0x407);
         break;
     case 7:
-        text = FUN_14028de60(0x408);
+        text = GetStringCommon(0x408);
         break;
     case 8:
-        text = FUN_14028de60(0x409);
+        text = GetStringCommon(0x409);
         break;
     case 0xa:
-        text = FUN_14028de60(0x40a);
+        text = GetStringCommon(0x40a);
         break;
     case 0xb:
-        text = FUN_14028de60(0x40b);
+        text = GetStringCommon(0x40b);
         break;
     case 0xc:
-        text = FUN_14028de60(0x40c);
+        text = GetStringCommon(0x40c);
         break;
     case 0xd:
-        text = FUN_14028de60(0x40d);
+        text = GetStringCommon(0x40d);
         break;
     case 0xe:
-        text = FUN_14028de60(0x40e);
+        text = GetStringCommon(0x40e);
         break;
     case 0xf:
-        text = FUN_14028de60(0x40f);
+        text = GetStringCommon(0x40f);
         break;
     case 0x10:
-        text = FUN_14028de60(0x410);
+        text = GetStringCommon(0x410);
         break;
     case 0x11:
-        text = FUN_14028de60(0x411);
+        text = GetStringCommon(0x411);
         break;
     case 0x12:
-        text = FUN_14028de60(0x412);
+        text = GetStringCommon(0x412);
         break;
     case 0x13:
         text = FUN_1408116a0(0x413, *FUN_1402056b0(&FUN_1401d3200()->m_guildCreateMinLevel));
         break;
     case 0x14:
-        text = FUN_14028de60(0x414);
+        text = GetStringCommon(0x414);
         break;
     case 0x15:
-        text = FUN_14028de60(0x415);
+        text = GetStringCommon(0x415);
         break;
     case 0x16:
-        text = FUN_14028de60(0x416);
+        text = GetStringCommon(0x416);
         break;
     case 0x17:
-        text = FUN_14028de60(0x417);
+        text = GetStringCommon(0x417);
         break;
     case 0x18:
-        text = FUN_14028de60(0x418);
+        text = GetStringCommon(0x418);
         break;
     case 0x19:
-        text = FUN_14028de60(0x419);
+        text = GetStringCommon(0x419);
         break;
     case 0x1a:
-        text = FUN_14028de60(0x41a);
+        text = GetStringCommon(0x41a);
         break;
     case 0x1b:
-        text = FUN_14028de60(0x41b);
+        text = GetStringCommon(0x41b);
         break;
     case 0x1c:
-        text = FUN_14028de60(0x41c);
+        text = GetStringCommon(0x41c);
         break;
     case 0x1e:
-        text = FUN_14028de60(0x41d);
+        text = GetStringCommon(0x41d);
         break;
     case 0x20:
-        text = FUN_14028de60(0x41e);
+        text = GetStringCommon(0x41e);
         break;
     case 0x21:
-        text = FUN_14028de60(0x41f);
+        text = GetStringCommon(0x41f);
         break;
     case 0x29:
-        text = FUN_14028de60(0x424);
+        text = GetStringCommon(0x424);
         break;
     case 0x22:
-        text = FUN_14028de60(0x3a0);
+        text = GetStringCommon(0x3a0);
         break;
     case 0x23:
-        text = FUN_14028de60(0x3a1);
+        text = GetStringCommon(0x3a1);
         break;
     case 0x24:
-        text = FUN_14028de60(0x3a2);
+        text = GetStringCommon(0x3a2);
         break;
     case 0x25:
-        text = FUN_14028de60(0x3a3);
+        text = GetStringCommon(0x3a3);
         break;
     case 0x26:
-        text = FUN_14028de60(0x3a4);
+        text = GetStringCommon(0x3a4);
         break;
     case 0x27:
-        text = FUN_14028de60(0x3a5);
+        text = GetStringCommon(0x3a5);
         break;
     case 0x2a:
-        text = FUN_14028b8e0(L"s_guild_err_not_enough_guild_level");
+        text = GetStringCommonByKey(L"s_guild_err_not_enough_guild_level");
         break;
     case 0x2b:
-        text = FUN_14028b8e0(L"s_guild_err_not_enough_guild_fund");
+        text = GetStringCommonByKey(L"s_guild_err_not_enough_guild_fund");
         break;
     case 0x2c:
-        text = FUN_14028b8e0(L"s_guild_err_cannot_use_skill");
+        text = GetStringCommonByKey(L"s_guild_err_cannot_use_skill");
         break;
     case 0x2d:
-        text = FUN_14028b8e0(L"s_guild_err_too_fast_to_search_by_name");
+        text = GetStringCommonByKey(L"s_guild_err_too_fast_to_search_by_name");
         break;
     case 0x2e:
-        text = FUN_14028de60(0x3c2);
+        text = GetStringCommon(0x3c2);
         break;
     case 0x2f:
-        text = FUN_14028b8e0(L"s_guild_err_isNotVsGameTime");
+        text = GetStringCommonByKey(L"s_guild_err_isNotVsGameTime");
         break;
     case 0x30:
         text = FUN_14062b4f0(L"s_guild_err_requireOnlineUserCount", &arg);
         break;
     default:
-        text = FUN_14028de60(0x420);
+        text = GetStringCommon(0x420);
         break;
     }
     FUN_1412751f0(text, 1, 1);

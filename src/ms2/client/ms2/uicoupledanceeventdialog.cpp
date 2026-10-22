@@ -223,7 +223,7 @@ class Unk_CMsgBoxData { public: void FUN_141a01660(const CStringW& str); void FU
 MS2Ptr<Unk_CMsgBoxData> FUN_140d73f20(CStringW strMessage, int nType);
 void FUN_140d73c60(MS2Ptr<Unk_CMsgBoxData> box);
 void FUN_140d73aa0(CStringW strMessage, int nType, IMessageListener* pListener, CStringW strTag);
-CStringW FUN_14028b8e0(const CStringW& strKey);     // translate
+CStringW GetStringCommonByKey(const CStringW& strKey);     // translate
 CStringW FUN_140298ea0(CStringW strKey);            // translate (by value)
 void FUN_1412752d0(const CStringW& str, int n);     // system notice
 void FUN_14151f200();
@@ -359,7 +359,7 @@ int UICoupleDanceEventDialog::vfunc_71()
         return 0;
     }
     if (pParty->FUN_140f48d40() == 1) {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_microgame_couple_dance_event_ask_close"), 1, this, CStringW(L"askClose"));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_microgame_couple_dance_event_ask_close"), 1, this, CStringW(L"askClose"));
         return 1;
     }
     return 0;

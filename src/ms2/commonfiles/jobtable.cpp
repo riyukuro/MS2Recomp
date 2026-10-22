@@ -45,7 +45,7 @@
 
 // Out-of-unit callees.
 JobTable* FUN_1401d7a50();                              // the JobTable singleton
-CStringTable* FUN_1401a9d70();                          // the string table singleton
+CStringTable* GetStringTable();                          // the string table singleton
 class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
 Unk_140166420* FUN_140166420();
 CLogString* GetLogString();
@@ -189,8 +189,8 @@ unsigned JobData::GetCharacterBGM()
 // @0x140643f30
 CStringW JobData::GetName()
 {
-    if (FUN_1401a9d70() != 0)
-        return FUN_1401a9d70()->FUN_141811980(6, m_jobGroupID);
+    if (GetStringTable() != 0)
+        return GetStringTable()->FUN_141811980(6, m_jobGroupID);
     return L"";
 }
 

@@ -65,7 +65,7 @@ private:
 extern Unk_UtilErrorDialog DAT_143af7e00;
 
 CStringA FUN_14028dc80(int nStringId);                              // UI string table (ANSI)
-CStringW FUN_14028de60(int nStringId);                              // UI string table (wide)
+CStringW GetStringCommon(int nStringId);                              // UI string table (wide)
 int FUN_141b6fcf0(const CStringW& kText, const CStringW& kTitle, unsigned nFlags);   // message box + quit prompt
 CStringW FUN_14061ad70(const CStringW& kPath, const wchar_t* pszTail);
 CStringW FUN_14016a730(const char* pszAnsi, int nCodePage);        // ANSI -> wide conversion
@@ -202,10 +202,10 @@ int FUN_141b6db40(size_t nSize)
         DAT_143af7e00.FUN_140d53570(FUN_14028dc80(0xb22));
         DAT_143af7e00.SetKText(FUN_14028dc80(0xb24));
         if (DAT_143af7e00.DoModal() == -1) {
-            FUN_141b6fcf0(FUN_14028de60(0xb24), CStringW(L"Error"), 0x10);
+            FUN_141b6fcf0(GetStringCommon(0xb24), CStringW(L"Error"), 0x10);
         }
     } else {
-        FUN_141b6fcf0(FUN_14028de60(0xb24), CStringW(L"Error"), 0x10);
+        FUN_141b6fcf0(GetStringCommon(0xb24), CStringW(L"Error"), 0x10);
     }
     return 0;
 }

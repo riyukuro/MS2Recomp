@@ -37,7 +37,7 @@ void* FUN_141bd0cc0(Unk_BlWorld* pWorld);                       // the local pla
 int FUN_141bd3060(Unk_BlWorld* pWorld);                         // the current map id
 bool FUN_1418fe060();
 void FUN_140710590(COutPacket& packet);
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommonByKey(const CStringW& str);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
@@ -135,7 +135,7 @@ int UIBeautyListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             int bFlag = FUN_1418fe060();
             if (bFlag == 0 && bSalon == 0)
             {
-                MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_14028b8e0(CStringW(L"s_beauty_goto_map_return_warn")), 0, CStringW(L""));
+                MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(CStringW(L"s_beauty_goto_map_return_warn")), 0, CStringW(L""));
                 if (box.get() != 0)
                 {
                     box->FUN_140533ff0(nType);

@@ -136,8 +136,8 @@ UIMailSendDialog* FUN_141742fb0(int nUiType);                       // the open 
 CStringW FUN_141b71910(__int64 n);                                  // number -> text
 unsigned __int64 FUN_140718370(const CStringW& text);               // text -> number
 CStringW FUN_14016a730(const char* psz, int n);                     // multibyte -> wide
-CStringW FUN_14028de60(int nStrId);                                 // string table text by id
-CStringW FUN_14028b8e0(const CStringW& strKey);                     // string table text by key
+CStringW GetStringCommon(int nStrId);                                 // string table text by id
+CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text by key
 CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& nArg);  // StringFormat<int>
 void FUN_14025a680(const CStringW& text, ATL::CAtlArray<CStringW>& out, const wchar_t* pszSep);   // split
 void FUN_140d73aa0(CStringW text, int nType, void* pListener, CStringW tag);       // notice box
@@ -154,7 +154,7 @@ CStringW FUN_1409404f0(__int64 n);                                  // an amount
 CStringW FUN_1418fec00(int nPayType, __int64 nAmount, int n);       // a price as text
 int FUN_1403bae00(int nPriceType);                                  // price kind -> pay type
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // the item data of an id
-CStringTable* FUN_1401a9d70();                                      // the string table singleton
+CStringTable* GetStringTable();                                      // the string table singleton
 UIMarketBillDialog* FUN_140b09580(int nUiType);                     // the open dialog of a UI id
 // FUN_1403ed2d0 (the world) is declared by usermail.h as Unk_MailSession*.
 PCBase* FUN_141bd0cc0(Unk_MailSession* pWorld);                     // the local player
@@ -323,7 +323,7 @@ CStringW FUN_1419e95d0(CMailInfo* pMail, int bTooltip)
     CMsTime now(FUN_140869440());
     CMsTime expire(pMail->FUN_140691160());
     if (now > expire)
-        return FUN_14028de60(0x80b);
+        return GetStringCommon(0x80b);
     ATL::CTimeSpan span = expire - now;
     CStringW str;
     if (span.GetDays() < 1)
@@ -336,7 +336,7 @@ CStringW FUN_1419e95d0(CMailInfo* pMail, int bTooltip)
         }
         else
         {
-            str = FUN_14028de60(0x809);
+            str = GetStringCommon(0x809);
         }
     }
     else
@@ -938,7 +938,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             CStringW strIds = FUN_14016a730(data.FUN_1422b8d30(), 0);
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028de60(0x22d), 0, CStringW(L""));
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0x22d), 0, CStringW(L""));
             if (spBox.get() != 0)
             {
                 spBox->FUN_140b76940(CStringW(strIds));
@@ -955,7 +955,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             CStringW strIds = FUN_14016a730(data.FUN_1422b8d30(), 0);
             if (FUN_1419e70c0(CStringW(strIds)) == 0)
             {
-                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028de60(0x22e), 0, CStringW(L""));
+                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0x22e), 0, CStringW(L""));
                 if (spBox.get() != 0)
                 {
                     spBox->FUN_140b76940(CStringW(strIds));
@@ -969,7 +969,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
                 if (spBox.get() != 0)
                 {
                     spBox->FUN_141a01800(1);
-                    spBox->FUN_141a024e0(FUN_14028de60(0x232), 0);
+                    spBox->FUN_141a024e0(GetStringCommon(0x232), 0);
                     spBox->FUN_140b76940(CStringW(strIds));
                     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::FUN_1419e7940));
                     FUN_140d73c60(spBox);
@@ -983,7 +983,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             CStringW strIds = FUN_14016a730(data.FUN_1422b8d30(), 0);
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028de60(0x22f), 0, CStringW(L""));
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0x22f), 0, CStringW(L""));
             if (spBox.get() != 0)
             {
                 spBox->FUN_140b76940(CStringW(strIds));
@@ -1068,7 +1068,7 @@ void UIMailListDialog::FUN_1419e6410(__int64 nMailId)
         if (FUN_1419eadd0(spMail.operator->()) == 0)
             nStrId = 0x236;
     }
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028de60(nStrId), 0, CStringW(L""));
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(nStrId), 0, CStringW(L""));
     if (spBox.get() != 0)
     {
         spBox->FUN_140b76940(FUN_141b71910(nMailId));
@@ -1177,7 +1177,7 @@ bool UIMailListDialog::FUN_1419e7940(int nButton, const CMsgBoxData& data)
             if (FUN_1419e74e0(aIds[i]) != 0)
             {
                 CStringW strKey(L"s_itemlock_mail_remove");
-                FUN_140d73aa0(FUN_14028b8e0(strKey), 0, 0, CStringW(L""));
+                FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
                 return true;
             }
         }
@@ -1214,7 +1214,7 @@ bool UIMailListDialog::SendMailMode13(int nButton, const CMsgBoxData& data)
         else
         {
             CStringW strKey(L"s_itemlock_mail_remove");
-            FUN_140d73aa0(FUN_14028b8e0(strKey), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
         }
     }
     return true;
@@ -1335,7 +1335,7 @@ bool UIMailListDialog::FUN_1419e8080(unsigned __int64 nMailId)
             continue;
         MS2Ptr<ASMailAdBillData> spBill(new ASMailAdBillData());
         spBill->FUN_1409ab990(spItemData, spAd->m_n20);
-        spBill->FUN_1409aba80(FUN_1401a9d70()->FUN_141811980(1, spAd->m_n18));
+        spBill->FUN_1409aba80(GetStringTable()->FUN_141811980(1, spAd->m_n18));
         spBill->FUN_1409abad0(FUN_1418fec00(3, spAd->m_n38, 0), spAd->m_n38);
         spBill->FUN_1409abcd0(3);
         spBill->FUN_1419eb8f0((int)i);

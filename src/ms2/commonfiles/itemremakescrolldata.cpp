@@ -77,7 +77,7 @@ class Unk_ItemEnchantData : public CItemStatus {};
 CItemOptionTable* FUN_140166430();                          // TSingleton<CItemOptionTable>::GetInstance
 CFeatureManager* FUN_140166410();                           // TSingleton<CFeatureManager>::GetInstance
 CGameRule* FUN_1401c0d90();                                 // TSingleton<CGameRule>::GetInstance
-CStringTable* FUN_1401a9d70();                              // TSingleton<CStringTable>::GetInstance
+CStringTable* GetStringTable();                              // TSingleton<CStringTable>::GetInstance
 Unk_IngTable* FUN_140281980();
 unsigned FUN_1405575b0(Unk_IngTable*, int);                 // the lock item of an item
 const CString& FUN_14082efb0(int nStat);                    // the xml name of a stat
@@ -88,8 +88,8 @@ bool FUN_14082f250(int nStat);                              // the stat value is
 bool FUN_14081dcd0(int nSaType);                            // the SA value is a percent
 CStringW FUN_140631600(int nStat, BaseOption* pBase);       // the text of a stat option
 CStringW FUN_140631830(int nStat, int nValue, Unk_ItemEquipData* pData);    // the text of a special stat option
-CStringW FUN_14028de60(int nStringId);                      // a common string by id
-CStringW FUN_14028b8e0(const CStringW& str);                // a string table text
+CStringW GetStringCommon(int nStringId);                      // a common string by id
+CStringW GetStringCommonByKey(const CStringW& str);                // a string table text
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& a1);    // a formatted string table text
 CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // formats one text argument
 CStringW FUN_14183e9c0(CStringW strName, int nRank);        // the item name coloured by rank
@@ -723,11 +723,11 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
     int nGroup = stat.m_nMode;
     Unk_EnchantMap& stats = spOption->FUN_1405cb8a0(nGroup);
     Unk_SocketSpecialMap& specials = spOption->FUN_1405cb8d0(nGroup);
-    CStringW strBest = FUN_14028de60(0x48d);
-    CStringW strRowBest = FUN_14028b8e0(CStringW(L"s_tooltip_itemoption_stat_row_best"));
-    CStringW strRow = FUN_14028b8e0(CStringW(L"s_tooltip_itemoption_stat_row"));
-    CStringW strRange = stat.m_bFinal ? FUN_14028b8e0(CStringW(L"s_itemremake_option_with_range")) : CStringW(L"");
-    CStringW strRangeR = stat.m_bFinal ? FUN_14028b8e0(CStringW(L"s_itemremake_option_with_range_r")) : CStringW(L"");
+    CStringW strBest = GetStringCommon(0x48d);
+    CStringW strRowBest = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_stat_row_best"));
+    CStringW strRow = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_stat_row"));
+    CStringW strRange = stat.m_bFinal ? GetStringCommonByKey(CStringW(L"s_itemremake_option_with_range")) : CStringW(L"");
+    CStringW strRangeR = stat.m_bFinal ? GetStringCommonByKey(CStringW(L"s_itemremake_option_with_range_r")) : CStringW(L"");
     Unk_OptionTextMap names(10);
     if (item->FUN_140525640() == 0 || nGroup != 2)
     {
@@ -948,7 +948,7 @@ CStringW FUN_140619760(int nItemId, unsigned nLevel)
         nRank = nLevel;
     if (nRank == 0)
         nRank = FUN_14053feb0(nLockId);
-    return FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(1, nLockId), nRank);
+    return FUN_14183e9c0(GetStringTable()->FUN_141811980(1, nLockId), nRank);
 }
 
 // @0x1406198a0

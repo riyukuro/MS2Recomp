@@ -208,7 +208,7 @@ HRESULT FUN_14028b890(unsigned uA, unsigned uB, unsigned* puOut)
 
 // Looks a key up in the localized string table; empty when the table is not up yet.
 // @0x14028b8e0
-CStringW FUN_14028b8e0(const CStringW& strKey)
+CStringW GetStringCommonByKey(const CStringW& strKey)
 {
     if (FUN_14025e7d0() == 0)
         return L"";
@@ -837,7 +837,7 @@ CString FUN_14028ddb0(const CString& strKey, const fmt::ArgList& args)
 }
 
 // @0x14028de60
-CStringW FUN_14028de60(int nId)
+CStringW GetStringCommon(int nId)
 {
     if (FUN_14025e7d0() == 0)
         return L"";
@@ -847,7 +847,7 @@ CStringW FUN_14028de60(int nId)
 // @0x14028dee0
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args)
 {
-    CStringW strText = FUN_14028de60(nId);
+    CStringW strText = GetStringCommon(nId);
     if (strText.IsEmpty())
         return L"";
     return StringFormat(strText, args);
@@ -856,7 +856,7 @@ CStringW FUN_14028dee0(int nId, const fmt::ArgList& args)
 // @0x14028dfa0
 CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args)
 {
-    CStringW strText = FUN_14028b8e0(strKey);
+    CStringW strText = GetStringCommonByKey(strKey);
     if (strText.IsEmpty())
         return L"";
     return StringFormat(strText, args);

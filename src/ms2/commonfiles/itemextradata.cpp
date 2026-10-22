@@ -34,7 +34,7 @@ int FUN_14059d150(float* p);
 CItemDataTable* FUN_140281980();                                // the item table singleton
 void FUN_140159b70(long hr);                                    // ATL throw
 float FUN_14029dd40(float f);                                   // fabs
-CStringW FUN_14028de60(int nId, void* a, void* b, int nFlag);   // string table text with two arguments
+CStringW GetStringCommon(int nId, void* a, void* b, int nFlag);   // string table text with two arguments
 
 static bool FUN_14059d190(Unk_StreamPoint* p);
 static inline const Unk_StreamPoint& AsPt(const efd::Point3& p) { return *(const Unk_StreamPoint*)&p; }
@@ -901,15 +901,15 @@ static bool FUN_14059d190(Unk_StreamPoint* p)
 CStringW FUN_14059dbe0(int nGroup, void* a, void* b)
 {
     if (nGroup == 1)
-        return FUN_14028de60(0xd52, a, b, 0);
+        return GetStringCommon(0xd52, a, b, 0);
     else if (nGroup == 2)
-        return FUN_14028de60(0xd53, a, b, 0);
+        return GetStringCommon(0xd53, a, b, 0);
     else if (nGroup == 3)
-        return FUN_14028de60(0xd54, a, b, 0);
+        return GetStringCommon(0xd54, a, b, 0);
     else if (nGroup == 4)
-        return FUN_14028de60(0xd55, a, b, 0);
+        return GetStringCommon(0xd55, a, b, 0);
     else
-        return FUN_14028de60(0xd52, a, b, 0);
+        return GetStringCommon(0xd52, a, b, 0);
 }
 
 template class std::vector<Unk_SocketPtr<EquipColorInfo> >;

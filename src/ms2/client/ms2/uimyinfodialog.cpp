@@ -160,7 +160,7 @@ void* FUN_140a50b50(void* pDragSource);
 CString FUN_140be2000(const char* szFormat, const char* a1, const char* a2, const int& a3, const char* a4);
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);
 bool FUN_140a467d0(const MS2Ptr<AScript>* pAS);
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW FUN_1409eec40(int nId);                                // string table text by id
 CStringW FUN_14062b4f0(CStringW strKey, const int* pArg);       // formatted text
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
@@ -906,7 +906,7 @@ int UIMyInfoDialog::vfunc_93()
         return 0;
     if (pPc->vfunc_65() != 0)
     {
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_msg_skillbook_set_disable_battle")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_msg_skillbook_set_disable_battle")), 0, 0, CStringW(L""));
         return 0;
     }
     MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
@@ -914,7 +914,7 @@ int UIMyInfoDialog::vfunc_93()
         return 0;
     if (spField->FUN_140375660(0x10) == 0)
         return 1;
-    FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_msg_skillbook_set_disable_field")), 0, 0, CStringW(L""));
+    FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_msg_skillbook_set_disable_field")), 0, 0, CStringW(L""));
     return 0;
 }
 
@@ -963,7 +963,7 @@ void UIMyInfoDialog::FUN_141a5b6c0()
                 {
                     if (nMinutes < 1)
                     {
-                        strRemain = FUN_14028b8e0(CStringW(L"s_item_word_s_shortly"));
+                        strRemain = GetStringCommonByKey(CStringW(L"s_item_word_s_shortly"));
                         m_274 = FUN_14028d260((float)nSeconds);
                     }
                     else
@@ -998,7 +998,7 @@ void UIMyInfoDialog::FUN_141a5b6c0()
     }
     else if (nState == 3)
     {
-        strPeriod = FUN_14028b8e0(CStringW(L"s_char_info_codi_tab_expired"));
+        strPeriod = GetStringCommonByKey(CStringW(L"s_char_info_codi_tab_expired"));
     }
     if (m_30.get() != 0)
     {
@@ -1116,7 +1116,7 @@ void UIMyInfoDialog::FUN_141a5c410(int nTab, int nNewTab)
         int nState = FUN_140d290c0(&kTitle)->FUN_1411df830();
         if (nState == 0 || nState == 4)
         {
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(FUN_14028b8e0(CStringW(L"s_char_info_changetab_not_active_codi_tab")), 0);
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(CStringW(L"s_char_info_changetab_not_active_codi_tab")), 0);
             if (spBox.get() != 0)
             {
                 spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMyInfoDialog::FUN_141a5c640));

@@ -30,7 +30,7 @@ void* FUN_1409eed90();                                                      // t
 Unk_WeddingTicketView* FUN_141b87160(void* pCharacter);                     // the character's current wedding hall ticket
 void FUN_140fdac50(int nHallId, int nSlot, __int64 nTime, unsigned char bPrivate, ASObj* pData);
 void FUN_1412751f0(const CStringW& strText, int a, int b);                  // notice
-CStringW FUN_14028b8e0(const CStringW& strKey);                             // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 int FUN_140fe2d20(UIDialog* pDialog);                                       // the selected hall id (uiweddinghallreservationpagechange.cpp)
 int FUN_140fdca20(UIDialog* pDialog);                                       // the selected slot
 __int64 FUN_140fdca40(UIDialog* pDialog);                                   // the selected time
@@ -107,12 +107,12 @@ void UIWeddingHallReservationPageConfirm::vfunc_6()
     if (FUN_140fdca40(m_pDialog) == 0)
     {
         CStringW strKey(L"s_wedding_hall_reservation_select_time");
-        FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
     }
     else if (FUN_140fdca20(m_pDialog) == 0)
     {
         CStringW strKey(L"s_wedding_hall_reservation_select_hall");
-        FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
     }
     else
     {
@@ -138,7 +138,7 @@ CString UIWeddingHallReservationPageConfirm::vfunc_8()
 CStringW UIWeddingHallReservationPageConfirm::vfunc_9()
 {
     CStringW strKey(L"s_wedding_reservation_confirm_page");
-    return FUN_14028b8e0(strKey);
+    return GetStringCommonByKey(strKey);
 }
 
 // @0x140fe3260
@@ -147,10 +147,10 @@ CStringW UIWeddingHallReservationPageConfirm::vfunc_10(bool bStart)
     if (bStart != 0)
     {
         CStringW strStart(L"s_wedding_reservation_prev");
-        return FUN_14028b8e0(strStart);
+        return GetStringCommonByKey(strStart);
     }
     CStringW strEnd(L"s_wedding_reservation_reservation");
-    return FUN_14028b8e0(strEnd);
+    return GetStringCommonByKey(strEnd);
 }
 
 // @0x140fe3320

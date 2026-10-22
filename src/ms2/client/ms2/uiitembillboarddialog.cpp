@@ -73,7 +73,7 @@ public:
 class Unk_DTPackets { public: void FUN_140da5180(int, Delegate<void(CInPacket&)>); void FUN_140da51e0(int, Delegate<void(CInPacket&)>); };
 Unk_DTPackets* FUN_140bccd50();
 
-CStringW FUN_14028b8e0(const CStringW& str);                    // string table lookup
+CStringW GetStringCommonByKey(const CStringW& str);                    // string table lookup
 void FUN_1412751f0(const CStringW& str, int a, int b);          // shows a notice
 void FUN_1412751b0(const CStringW& str, int n);                 // shows a banner
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
@@ -247,13 +247,13 @@ void UIItemBillBoardDialog::OnLoadComplete()
     if (m_bInstall == 1) {
         m_advertiserMovie->vfunc_4(1);
         m_customerMovie->vfunc_4(0);
-        FUN_140cfee80((*m_30).FUN_1422bb890(), "m_title", FUN_14028b8e0(CStringW(L"s_special_item_billboard_title_advertiser")));
+        FUN_140cfee80((*m_30).FUN_1422bb890(), "m_title", GetStringCommonByKey(CStringW(L"s_special_item_billboard_title_advertiser")));
         if (m_advertiserMovie->FUN_140bbe640("m_installButton", m_installButton).get() != 0)
             m_installButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBillBoardDialog::FUN_140c33840), 0);
     } else {
         m_advertiserMovie->vfunc_4(0);
         m_customerMovie->vfunc_4(1);
-        FUN_140cfee80((*m_30).FUN_1422bb890(), "m_title", FUN_14028b8e0(CStringW(L"s_special_item_billboard_title_customer")));
+        FUN_140cfee80((*m_30).FUN_1422bb890(), "m_title", GetStringCommonByKey(CStringW(L"s_special_item_billboard_title_customer")));
         if (m_customerMovie->FUN_140bbe640("m_homeButton", m_homeButton).get() != 0)
             m_homeButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBillBoardDialog::FUN_140c33fa0), 0);
         if (m_customerMovie->FUN_140bbe640("m_removeButton", m_removeButton).get() != 0) {
@@ -327,16 +327,16 @@ void UIItemBillBoardDialog::FUN_140c32020(CInPacket& packet)
         int nResult = packet.vfunc_o8_3();
         if (nResult == 0) {
             CStringW strKey(L"s_special_item_billboard_install_sucess");
-            FUN_1412751b0(FUN_14028b8e0(strKey), 0x11);
+            FUN_1412751b0(GetStringCommonByKey(strKey), 0x11);
         } else if (nResult == 2) {
             CStringW strKey(L"s_special_item_billboard_install_fail_max_account");
-            FUN_1412751b0(FUN_14028b8e0(strKey), 0x11);
+            FUN_1412751b0(GetStringCommonByKey(strKey), 0x11);
         } else if (nResult == 3) {
             CStringW strKey(L"s_special_item_billboard_install_fail_max_field");
-            FUN_1412751b0(FUN_14028b8e0(strKey), 0x11);
+            FUN_1412751b0(GetStringCommonByKey(strKey), 0x11);
         } else {
             CStringW strKey(L"s_special_item_billboard_install_fail");
-            FUN_1412751b0(FUN_14028b8e0(strKey), 0x11);
+            FUN_1412751b0(GetStringCommonByKey(strKey), 0x11);
         }
     }
 }
@@ -397,7 +397,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
             FUN_1412751f0(FUN_140938ae0(CStringW(L"s_common_block_for_spamer_not_enough_adventure_level"), DAT_143ab2970), 1, 1);
         } else {
             CStringW strKey(L"s_common_block_for_spamer_level_and_adventure_level");
-            FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
         }
         return false;
     }
@@ -409,22 +409,22 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
     }
     if (bBlocked) {
         CStringW strKey(L"s_msg_item_install_bill_board_cant_install");
-        FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
         return false;
     }
     if (FUN_14166c930(pPc) != 1) {
         CStringW strKey(L"s_msg_item_install_bill_board_invalid_state");
-        FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
         return false;
     }
     if (FUN_1422b9e00(FUN_1408e57f0()) != 0x620001d) {
         CStringW strKey(L"s_msg_item_install_bill_board_invalid_state");
-        FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
         return false;
     }
     if (FUN_1407d1d00(FUN_1403f31f0(FUN_140302b00())) != 0) {
         CStringW strKey(L"s_banner_billboard_shutdown");
-        FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
         return false;
     }
 
@@ -444,7 +444,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
             Unk_StreamPoint pt = reinterpret_cast<Unk_IbActorPos*>(spObj.get())->FUN_1409673c0();
             if (pt.FUN_140965c40(ptCenter).FUN_140967ac0() < 230.0f) {
                 CStringW strKey(L"s_msg_item_install_bill_board_cant_install");
-                FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
                 return false;
             }
         }
@@ -454,7 +454,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
     FUN_1403ed2d0()->FUN_141bc2c90(ptCenter, &arrField);
     if (!arrField.IsEmpty()) {
         CStringW strKey(L"s_msg_item_install_bill_board_cant_install");
-        FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
         return false;
     }
 
@@ -474,7 +474,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
                     FUN_1408a15b0(FUN_1408a0400(nActorCell), pt);
                     if (pt.FUN_140965c40(ptCenter).FUN_140967ac0() < 230.0f) {
                         CStringW strKey(L"s_msg_item_install_bill_board_cant_install");
-                        FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+                        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
                         return false;
                     }
                 }
@@ -489,12 +489,12 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
         Unk_RxCellInfo* pInfo = grid.FUN_1401cd1a0()->FUN_1410b8ab0(ptLow);
         if (pInfo == 0) {
             CStringW strKey(L"s_msg_item_install_bill_board_cant_install");
-            FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
             return false;
         }
         if (pInfo->m_nState != 1) {
             CStringW strKey(L"s_msg_item_install_bill_board_cant_install");
-            FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
             return false;
         }
         std::vector<Unk_Int3> cells;
@@ -512,7 +512,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
             Unk_RxCellInfo* pCell = grid.FUN_1401cd1a0()->FUN_1410b8a60(cells[i]);
             if (pCell != 0 && pCell->m_nCount != 0) {
                 CStringW strKey(L"s_msg_item_install_bill_board_cant_install");
-                FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
                 return false;
             }
         }
@@ -527,7 +527,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
     for (size_t i = 0; i < arrIds.GetCount(); ++i) {
         if (FUN_1403ed2d0()->FUN_141bcfd30(arrIds[i], ptCenter, 230.0f, 0, 0) != 0) {
             CStringW strKey(L"s_msg_item_install_bill_board_cant_install");
-            FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
             return false;
         }
     }
@@ -580,7 +580,7 @@ void UIItemBillBoardDialog::FUN_140c33840(const Scaleform::GFx::FunctionHandler:
                 return;
             }
         }
-        CStringW strMsg = FUN_14028b8e0(CStringW(L"s_special_item_billboard_install_info"));
+        CStringW strMsg = GetStringCommonByKey(CStringW(L"s_special_item_billboard_install_info"));
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(strMsg, 1);
         spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBillBoardDialog::FUN_140c34050));
         FUN_1405340b0(spBox.operator->(), m_nItemUid);

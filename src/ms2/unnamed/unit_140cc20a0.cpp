@@ -16,8 +16,8 @@ typedef __int64 i64;
 typedef unsigned __int64 u64;
 
 // ---- shared string-table lookups (defined in the stringtable unit) ----
-CStringW FUN_14028b8e0(const CStringW& strKey);   // text by key
-CStringW FUN_14028de60(int nStringId);            // text by numeric id
+CStringW GetStringCommonByKey(const CStringW& strKey);   // text by key
+CStringW GetStringCommon(int nStringId);            // text by numeric id
 CString FUN_140651350();                           // localized base path
 
 // ---- fmt argument pack (same layout as the other recovered fmt call sites) ----
@@ -146,23 +146,23 @@ CString FUN_140cc2ba0(const CString& strA, const CString& strB)
 CStringW FUN_140cc20a0(int nErr)
 {
     switch (nErr) {
-    case 8:  return FUN_14028de60(0x268);
+    case 8:  return GetStringCommon(0x268);
     case 9:
-    case 0x15: return FUN_14028de60(0x269);
-    case 0x11: return FUN_14028de60(0x26a);
+    case 0x15: return GetStringCommon(0x269);
+    case 0x11: return GetStringCommon(0x26a);
     case 10:
-    case 0x16: return FUN_14028de60(0x26c);
-    case 0xc:  return FUN_14028de60(0x26d);
-    case 0x1b: { CStringW str(L"s_party_err_not_chief"); return FUN_14028b8e0(str); }
-    case 0x1d: { CStringW str(L"s_move_err_dungeon_not_exist"); return FUN_14028b8e0(str); }
-    case 0x1e: { CStringW str(L"s_move_err_FailCreateDungeon"); return FUN_14028b8e0(str); }
-    case 0x1f: { CStringW str(L"s_move_err_DungeonMatch"); return FUN_14028b8e0(str); }
-    case 0x1c: { CStringW str(L"s_move_err_NotFoundParty"); return FUN_14028b8e0(str); }
-    case 0x20: { CStringW str(L"s_move_err_InsideDungeonUser"); return FUN_14028b8e0(str); }
-    case 0x22: { CStringW str(L"s_move_err_InsideSurvivalSquad"); return FUN_14028b8e0(str); }
-    case 0x21: { CStringW str(L"s_move_err_ExpireEnterTime"); return FUN_14028b8e0(str); }
-    case 7: { CStringW str(L"s_move_err_field_limit"); return FUN_14028b8e0(str); }
-    case 0x23: { CStringW str(L"s_move_err_wedding_complete"); return FUN_14028b8e0(str); }
+    case 0x16: return GetStringCommon(0x26c);
+    case 0xc:  return GetStringCommon(0x26d);
+    case 0x1b: { CStringW str(L"s_party_err_not_chief"); return GetStringCommonByKey(str); }
+    case 0x1d: { CStringW str(L"s_move_err_dungeon_not_exist"); return GetStringCommonByKey(str); }
+    case 0x1e: { CStringW str(L"s_move_err_FailCreateDungeon"); return GetStringCommonByKey(str); }
+    case 0x1f: { CStringW str(L"s_move_err_DungeonMatch"); return GetStringCommonByKey(str); }
+    case 0x1c: { CStringW str(L"s_move_err_NotFoundParty"); return GetStringCommonByKey(str); }
+    case 0x20: { CStringW str(L"s_move_err_InsideDungeonUser"); return GetStringCommonByKey(str); }
+    case 0x22: { CStringW str(L"s_move_err_InsideSurvivalSquad"); return GetStringCommonByKey(str); }
+    case 0x21: { CStringW str(L"s_move_err_ExpireEnterTime"); return GetStringCommonByKey(str); }
+    case 7: { CStringW str(L"s_move_err_field_limit"); return GetStringCommonByKey(str); }
+    case 0x23: { CStringW str(L"s_move_err_wedding_complete"); return GetStringCommonByKey(str); }
     default:
         return FUN_140cc25a0(CStringW(L"s_move_err_default"), &nErr);
     }

@@ -53,8 +53,8 @@ public:
 
 Unk_MsgBoxCallback FUN_140b240b0();
 void FUN_14151f150(Unk_MsgBoxPtr box);
-CStringW FUN_14028de60(int nId);
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommon(int nId);
+CStringW GetStringCommonByKey(const CStringW& str);
 
 // Global of this unit (constructed by the .text$di initializer) and the "terms" flag word.
 #ifdef MS2_HOOK_DLL
@@ -83,7 +83,7 @@ void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag)
 // @0x140d73bc0
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag)
 {
-    FUN_140d73aa0(FUN_14028de60(nStrId), nType, p, tag);
+    FUN_140d73aa0(GetStringCommon(nStrId), nType, p, tag);
 }
 
 // @0x140d73c60
@@ -113,7 +113,7 @@ Unk_MsgBoxPtr FUN_140d73d20(int nType, CStringW text, void* p, CStringW tag)
 // @0x140d73e40
 Unk_MsgBoxPtr FUN_140d73e40(int nType, int nStrId, void* p, CStringW tag)
 {
-    return FUN_140d73d20(nType, FUN_14028de60(nStrId), p, tag);
+    return FUN_140d73d20(nType, GetStringCommon(nStrId), p, tag);
 }
 
 // @0x140d73f20
@@ -127,14 +127,14 @@ Unk_MsgBoxPtr FUN_140d73f20(CStringW text, int nType)
 // @0x140d73ff0
 void FUN_140d73ff0(CStringW text)
 {
-    Unk_MsgBoxPtr box = FUN_140d74390(FUN_14028b8e0(text), 0, FUN_140b240b0());
+    Unk_MsgBoxPtr box = FUN_140d74390(GetStringCommonByKey(text), 0, FUN_140b240b0());
 }
 
 // @0x140d74090
 Unk_MsgBoxPtr FUN_140d74090(Unk_MsgBoxCallback cb, CStringW text)
 {
     Unk_MsgBoxPtr box(new CMsgBoxData(1));
-    box->SetMsg(FUN_14028b8e0(text));
+    box->SetMsg(GetStringCommonByKey(text));
     box->FUN_141a027c0(cb);
     FUN_14151f150(box);
     return box;
@@ -174,7 +174,7 @@ void FUN_140d746e0(void* p, int nBit, const CStringW& strA, const CStringW& strB
 // @0x140d74640
 void FUN_140d74640(void* p, int nBit, int nIdA, int nIdB)
 {
-    FUN_140d746e0(p, nBit, FUN_14028de60(nIdA), FUN_14028de60(nIdB));
+    FUN_140d746e0(p, nBit, GetStringCommon(nIdA), GetStringCommon(nIdB));
 }
 
 // @0x140d746e0
@@ -185,7 +185,7 @@ void FUN_140d746e0(void* p, int nBit, const CStringW& strA, const CStringW& strB
     {
         box->FUN_141a01800(1);
         box->SetTitle(strA);
-        box->FUN_141a024e0(FUN_14028de60(0x9d0), 1);
+        box->FUN_141a024e0(GetStringCommon(0x9d0), 1);
         g_1439f5a0c = nBit;
         box->SetAgreement(g_143ac2fb8.FUN_140d75090(nBit).FUN_140d750f0());
         FUN_140d73c60(box);
@@ -204,7 +204,7 @@ Unk_MsgBoxPtr FUN_140d748b0(int nBit, const CStringW& strA, const CStringW& strB
     }
     box->FUN_141a01800(1);
     box->SetTitle(strA);
-    box->FUN_141a024e0(FUN_14028de60(0x9d0), 1);
+    box->FUN_141a024e0(GetStringCommon(0x9d0), 1);
     box->SetAgreement(g_143ac2fb8.FUN_140d75090(nBit).FUN_140d750f0());
     box->FUN_141a027c0(cb);
     FUN_140d73c60(box);

@@ -235,7 +235,7 @@ void* FUN_1403ed2d0();
 void* FUN_141bd0cc0(void*);                                     // the local player (tooltip owner)
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                   // the item table row
 CStringW FUN_14016a730(const char* sz, int nCodePage);          // multibyte -> wide
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 __int64 FUN_140869440();                                        // server time
 unsigned short FUN_140626f20(unsigned nItemId);                 // fixed enchant level of an item
 CString FUN_14021c050(int nTag);                                // ugc tag name
@@ -1120,10 +1120,10 @@ void ASSlot::FUN_1409c2e00(float fTotal)
 // @0x1409c2e40
 void ASSlot::FUN_1409c2e40()
 {
-    FUN_1407cbb20("cooldownSecStr", FUN_14028de60(0x5cb));
-    FUN_1407cbb20("cooldownMinStr", FUN_14028de60(0x5ca));
-    FUN_1407cbb20("cooldownHourStr", FUN_14028de60(0x5cc));
-    FUN_1407cbb20("cooldownDayStr", FUN_14028de60(0x5ce));
+    FUN_1407cbb20("cooldownSecStr", GetStringCommon(0x5cb));
+    FUN_1407cbb20("cooldownMinStr", GetStringCommon(0x5ca));
+    FUN_1407cbb20("cooldownHourStr", GetStringCommon(0x5cc));
+    FUN_1407cbb20("cooldownDayStr", GetStringCommon(0x5ce));
 }
 
 // @0x1409c2f40
@@ -1804,7 +1804,7 @@ CStringW FUN_140938ae0(CStringW strKey, const unsigned int& nArg);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_1409e3050(const CStringW& strKey, int n1, int n2);
 CString FUN_1402bad60(const char* szFormat, const int* pn);
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommonByKey(const CStringW& str);
 CStringW FUN_140763e10(int value);
 CStringW FUN_1408116a0(int nId, const int& nArg);
 CString FUN_1407194b0(__int64 v);
@@ -2070,7 +2070,7 @@ bool ASMeratMarketProduct::vfunc_1(MS2Ptr<Unk_MeratEquipEntry> spEntry, const Un
         FUN_1407cbbe0("soldOut", premium.FUN_1406a0a60());
         if (!premium.FUN_140ebfb90(0))
         {
-            CStringW strFormat = FUN_14028de60(0x308);
+            CStringW strFormat = GetStringCommon(0x308);
             FUN_1407cbb20("requireAchieve", FUN_14093bad0(premium.m_nAchieveId, premium.m_nAchieveGrade, strFormat));
         }
         FUN_1407cbbe0("isPcBang", premium.FUN_14069fee0() > 0);
@@ -2128,7 +2128,7 @@ bool ASMeratMarketProduct::vfunc_1(MS2Ptr<Unk_MeratEquipEntry> spEntry, const Un
             if (tPeriod == tZero)
                 strPeriod = L"-";
             else
-                FUN_141b70f90(tPeriod, FUN_14028de60(0x9dd), strPeriod);
+                FUN_141b70f90(tPeriod, GetStringCommon(0x9dd), strPeriod);
             FUN_1407cbb20("period", strPeriod);
         }
         FUN_1407cb9c0("saleCount", ugc.m_nSaleCount);
@@ -2288,10 +2288,10 @@ void ASMeratMarketLimitedProduct::vfunc_7(MS2Ptr<Unk_MeratEquipEntry> spEntry)
 {
     Unk_MeratPremium& premium = spEntry->m_premium;
     FUN_1407cbb20("itemName", premium.FUN_1406a00e0());
-    CStringW strDesc = FUN_14028b8e0(CStringW(L"s_meratmarket_limited_desc"));
+    CStringW strDesc = GetStringCommonByKey(CStringW(L"s_meratmarket_limited_desc"));
     CStringW strStart;
     CStringW strEnd;
-    const CStringW& strDateFormat = FUN_14028b8e0(CStringW(L"s_meratmarket_limited_date"));
+    const CStringW& strDateFormat = GetStringCommonByKey(CStringW(L"s_meratmarket_limited_date"));
     CMsTime tStart(premium.m_tStart);
     CMsTime tEnd(premium.m_tEnd);
     FUN_141b70f90(tStart, strDateFormat, strStart);
@@ -2442,7 +2442,7 @@ void ASMeratMarketLimitedProduct::FUN_1409bf780(Unk_MeratPremium& premium)
             if (nRemain != 0)
                 strText = FUN_1405c2690(CStringW(L"s_meratmarket_limited_remain"), FUN_140763e10(nRemain));
             else
-                strText = FUN_14028b8e0(CStringW(L"s_meratmarket_limited_soldout"));
+                strText = GetStringCommonByKey(CStringW(L"s_meratmarket_limited_soldout"));
             bSoldOut = nRemain == 0;
         }
     }
@@ -2452,7 +2452,7 @@ void ASMeratMarketLimitedProduct::FUN_1409bf780(Unk_MeratPremium& premium)
         if (nRemain == 0)
         {
             bSoldOut = true;
-            strRemain = FUN_14028b8e0(CStringW(L"s_meratmarket_limited_soldout"));
+            strRemain = GetStringCommonByKey(CStringW(L"s_meratmarket_limited_soldout"));
         }
         else
             strRemain = FUN_1405c2690(CStringW(L"s_meratmarket_limited_remain"), FUN_140763e10(nRemain));
@@ -2575,10 +2575,10 @@ void ASMeratMarketHomeProduct::vfunc_7(MS2Ptr<Unk_MeratEquipEntry> spEntry)
     else if (premium.FUN_1406a1f50() && !premium.FUN_1406a0ea0(0) && !premium.FUN_1406a19a0(0).IsNull() &&
              !premium.FUN_1406a1a70(0).IsNull())
     {
-        CStringW strFormat = FUN_14028b8e0(CStringW(L"s_meratmarket_home_desc_period"));
+        CStringW strFormat = GetStringCommonByKey(CStringW(L"s_meratmarket_home_desc_period"));
         CStringW strStart;
         CStringW strEnd;
-        const CStringW& strDateFormat = FUN_14028b8e0(CStringW(L"s_meratmarket_limited_date"));
+        const CStringW& strDateFormat = GetStringCommonByKey(CStringW(L"s_meratmarket_limited_date"));
         CMsTime tStart = premium.FUN_1406a19a0(0);
         CMsTime tEnd = premium.FUN_1406a1a70(0);
         FUN_141b70f90(tStart, strDateFormat, strStart);

@@ -21,7 +21,7 @@ void FUN_141415600(const CString& strName);                      // drop the ite
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> item, int a, int b, int c);   // show an item under a dialog name
 unsigned FUN_140869420();                                        // the client millisecond clock
 void FUN_140710590(COutPacket& packet);
-CStringW FUN_14028b8e0(const CStringW& strKey);                  // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                  // string table text
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);   // message box
 CStringW FUN_1409e8970(CStringW strKey, const int& a, const int& b);  // formatted string-table text
 const int* FUN_1402fbd20(const int* a, const int* b);            // std::min<int>
@@ -182,13 +182,13 @@ void UIItemMultiOpenBoxDialog::FUN_140c3fa80(int nOpened, int nResult)
         case 3:
         {
             CStringW strKey(L"s_err_cannot_open_multi_itembox_inventory_fail");
-            FUN_140d73aa0(FUN_14028b8e0(strKey), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
             break;
         }
         case 4:
         {
             CStringW strKey(L"s_err_cannot_open_multi_itembox_inventory");
-            FUN_140d73aa0(FUN_14028b8e0(strKey), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
             break;
         }
         }

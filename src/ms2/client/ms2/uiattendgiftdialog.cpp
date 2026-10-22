@@ -171,7 +171,7 @@ class Unk_AttendMsgBox { public:
 };
 MS2Ptr<Unk_AttendMsgBox> FUN_140d73f20(CStringW,int);
 void FUN_140d73c60(MS2Ptr<Unk_AttendMsgBox>);
-CStringW FUN_14028b8e0(const CStringW&);
+CStringW GetStringCommonByKey(const CStringW&);
 void FUN_1412751f0(const CStringW&,int,int);
 CStringW FUN_140938ae0(CStringW,const int&);
 CStringW FUN_1409eaa20(CStringW,const CStringW&,const CStringW&,const CStringW&);
@@ -487,7 +487,7 @@ void UIAttendGiftDialog::FUN_14102cf30(const Scaleform::GFx::FunctionHandler::Pa
             MS2Ptr<Unk_AttendMsgBox> box=FUN_140d73f20(text,0x19);
             if(box.get()!=0) {
                 box->FUN_141a01800(1);
-                box->FUN_141a024e0(FUN_14028b8e0(L"s_attendGift_payAttend_coupon"),couponUid!=0);
+                box->FUN_141a024e0(GetStringCommonByKey(L"s_attendGift_payAttend_coupon"),couponUid!=0);
                 box->FUN_141a02670(couponUid!=0);
                 box->FUN_141a027c0(Delegate<bool(int,const CMsgBoxData&)>(this,&UIAttendGiftDialog::FUN_14102d4e0));
                 box->FUN_1405340b0(couponUid);
@@ -604,11 +604,11 @@ void UIAttendGiftDialog::FUN_14102e490()
     switch(m_selected->FUN_140ce38a0()) {
     case 1:
         m_pay->vfunc_4(true);
-        m_pay->FUN_1422cdfb0(FUN_14028b8e0(L"s_attendGift_payAttend_meso_button"));
+        m_pay->FUN_1422cdfb0(GetStringCommonByKey(L"s_attendGift_payAttend_meso_button"));
         break;
     case 2:
         m_pay->vfunc_4(true);
-        m_pay->FUN_1422cdfb0(FUN_14028b8e0(L"s_attendGift_payAttend_merat_button"));
+        m_pay->FUN_1422cdfb0(GetStringCommonByKey(L"s_attendGift_payAttend_merat_button"));
         break;
     }
 }
@@ -635,11 +635,11 @@ void UIAttendGiftDialog::FUN_14102ed90(CInPacket& packet)
 {
     int result=reinterpret_cast<Unk_14070f480*>(&packet.m_stream)->vfunc_1();
     switch(result) {
-    case 1: FUN_1412751f0(FUN_14028b8e0(L"s_attendGift_payAttend_result_lackMoney"),1,1); break;
-    case 2: FUN_1412751f0(FUN_14028b8e0(L"s_attendGift_payAttend_result_lackMerat"),1,1); break;
-    case 3: FUN_1412751f0(FUN_14028b8e0(L"s_attendGift_payAttend_result_hasNotCoupon"),1,1); break;
-    case 5: FUN_1412751f0(FUN_14028b8e0(L"s_attendGift_item_attend_already_used"),1,1); break;
-    case 6: FUN_1412751f0(FUN_14028b8e0(L"s_attendGift_item_attend_not_found_evnet"),1,1); break;
+    case 1: FUN_1412751f0(GetStringCommonByKey(L"s_attendGift_payAttend_result_lackMoney"),1,1); break;
+    case 2: FUN_1412751f0(GetStringCommonByKey(L"s_attendGift_payAttend_result_lackMerat"),1,1); break;
+    case 3: FUN_1412751f0(GetStringCommonByKey(L"s_attendGift_payAttend_result_hasNotCoupon"),1,1); break;
+    case 5: FUN_1412751f0(GetStringCommonByKey(L"s_attendGift_item_attend_already_used"),1,1); break;
+    case 6: FUN_1412751f0(GetStringCommonByKey(L"s_attendGift_item_attend_not_found_evnet"),1,1); break;
     default: MS2_ASSERT_AT(0x26b,0); break;
     }
 }

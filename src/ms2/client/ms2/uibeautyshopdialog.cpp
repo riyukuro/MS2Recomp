@@ -409,8 +409,8 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b240b0();
 void FUN_14151f150(MS2Ptr<CMsgBoxData> spBox);
-CStringW FUN_14028b8e0(const CStringW& strKey);
-CStringW FUN_14028de60(int nId);
+CStringW GetStringCommonByKey(const CStringW& strKey);
+CStringW GetStringCommon(int nId);
 CStringW FUN_14052bd00(int nId, const CStringW& a);
 CStringW FUN_1409eadb0(int nId, const CStringW& a, const CStringW& b, const CStringW& c);
 CStringW FUN_1409eaa20(CStringW strKey, const CStringW& a, const CStringW& b, const CStringW& c);
@@ -1250,7 +1250,7 @@ void UIBeautyShopDialog::FUN_1418c6d40(Unk_BSFee* pFee, unsigned* pPrice)
         bool bSale = FUN_1401c0d90()->FUN_140476cf0(nEvent, nLevel) == 0;
         if (pFee == 0)
         {
-            CStringW strDefault = FUN_14028b8e0(CStringW(L"s_beauty_fee_default"));
+            CStringW strDefault = GetStringCommonByKey(CStringW(L"s_beauty_fee_default"));
             m_30->Invoke("setFee", CStringW(strDefault), CStringW(strDefault), bSale, false);
         }
         else
@@ -1603,7 +1603,7 @@ void UIBeautyShopDialog::FUN_1418c80b0(CInPacket& packet)
             char bMail = packet.vfunc_o8_1();
             CStringW strMsg;
             if (nCoupon == 0)
-                strMsg = FUN_14028b8e0(CStringW(L"s_beauty_msg_complete_apply_special_hair"));
+                strMsg = GetStringCommonByKey(CStringW(L"s_beauty_msg_complete_apply_special_hair"));
             else if (bMail == 1)
                 strMsg = FUN_1405c2690(CStringW(L"s_beauty_msg_complete_apply_return_coupon_to_mail"),
                                        FUN_1401a9d70()->FUN_141811980(1, nCoupon));
@@ -1639,16 +1639,16 @@ void UIBeautyShopDialog::FUN_1418c80b0(CInPacket& packet)
                               Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopDialog::FUN_1418c9960));
                 break;
             case 7:
-                FUN_140d74390(FUN_14028de60(0x273), 0,
+                FUN_140d74390(GetStringCommon(0x273), 0,
                               Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopDialog::FUN_1418c9960));
                 break;
             case 0xc:
-                FUN_140d74390(FUN_14028b8e0(CStringW(L"s_beauty_msg_error_color")), 0, FUN_140b240b0());
+                FUN_140d74390(GetStringCommonByKey(CStringW(L"s_beauty_msg_error_color")), 0, FUN_140b240b0());
                 break;
             case 0x12:
                 break;
             case 0x13:
-                FUN_140d74390(FUN_14028b8e0(CStringW(L"s_beauty_msg_error_style_slot_max")), 0, FUN_140b240b0());
+                FUN_140d74390(GetStringCommonByKey(CStringW(L"s_beauty_msg_error_style_slot_max")), 0, FUN_140b240b0());
                 break;
             case 0x14:
                 FUN_14134a120(4, 0, 0);
@@ -1794,7 +1794,7 @@ bool UIBeautyShopDialog::FUN_1418c99e0(int nResult, const CMsgBoxData& data)
     if (nResult == 0)
     {
         if (m_298 == FUN_140f011b0())
-            FUN_140d74390(FUN_14028b8e0(CStringW(L"s_beauty_msg_error_style_slot_max")), 0, FUN_140b240b0());
+            FUN_140d74390(GetStringCommonByKey(CStringW(L"s_beauty_msg_error_style_slot_max")), 0, FUN_140b240b0());
         else
             SendBeautyMode17(data.FUN_141a02f10(0, 0));
     }
@@ -1820,7 +1820,7 @@ void UIBeautyShopDialog::FUN_1418c9b20(NotifyObject* pNotify)
         if (pTab == 0 || pTab->m_bActive)
             FUN_1418c9610();
         else
-            FUN_140d74390(FUN_14028b8e0(CStringW(L"s_beauty_msg_by_expired_codi")), 0,
+            FUN_140d74390(GetStringCommonByKey(CStringW(L"s_beauty_msg_by_expired_codi")), 0,
                           Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopDialog::FUN_1418c9ae0));
     }
 }
@@ -1854,7 +1854,7 @@ void UIBeautyShopDialog::FUN_1418c9d80()
     {
         if (m_1b8->FUN_140cd2a00() != 0)
         {
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(FUN_14028de60(0x271), 1);
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommon(0x271), 1);
             spBox->FUN_141a01800(2);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopDialog::FUN_1418c9960));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
@@ -1976,7 +1976,7 @@ int UIBeautyShopDialog::FUN_1418ca510(ASObj& out, unsigned* pPrice)
     *pPrice = 0;
     Unk_BSFee* pFee = FUN_1418c74e0(pPrice);
     ASArray rows(2);
-    CStringW strRow = FUN_14028b8e0(CStringW(L"s_bill_list_row"));
+    CStringW strRow = GetStringCommonByKey(CStringW(L"s_bill_list_row"));
     if (m_290 == 2)
     {
         out.FUN_1409c0dc0("category", "$s_beauty_special_hair");
@@ -2000,7 +2000,7 @@ int UIBeautyShopDialog::FUN_1418ca510(ASObj& out, unsigned* pPrice)
                 int nCrop = m_1b8->FUN_140cd3000();
                 CStringW strDetail = FUN_14025e7a0()->FUN_1422b0570(CString(nCrop == 0 ? "$s_beauty_none" : "$s_beauty_crop"));
                 unsigned __int64 nPrice = *pPrice;
-                CStringW strPrice = nCrop == 0 ? FUN_14028b8e0(CStringW(L"s_beauty_fee_default"))
+                CStringW strPrice = nCrop == 0 ? GetStringCommonByKey(CStringW(L"s_beauty_fee_default"))
                                                : FUN_14134a220(pFee, &nPrice);
                 row.FUN_1407cbb20("detail", CStringW(strDetail));
                 row.FUN_1407cbb20("strPrice", CStringW(strPrice));
@@ -2162,17 +2162,17 @@ CStringW UIBeautyShopDialog::FUN_1418cb920(int nShopKind, int nMode)
         if (nShopKind == 1)
         {
             if (nMode == 2)
-                return FUN_14028b8e0(CStringW(L"s_bill_coupon_special"));
-            return FUN_14028de60(0x991);
+                return GetStringCommonByKey(CStringW(L"s_bill_coupon_special"));
+            return GetStringCommon(0x991);
         }
         else if (nShopKind == 2)
-            return FUN_14028de60(0x993);
+            return GetStringCommon(0x993);
         else if (nShopKind == 3)
-            return FUN_14028de60(0x992);
+            return GetStringCommon(0x992);
         else if (nShopKind == 4)
-            return FUN_14028de60(0x994);
+            return GetStringCommon(0x994);
         else if (nShopKind == 5)
-            return FUN_14028de60(0x995);
+            return GetStringCommon(0x995);
         return CStringW(L"");
     }
     CStringW strCoupon = FUN_1401a9d70()->FUN_141811980(1, m_1d0.m_20);
@@ -2184,7 +2184,7 @@ CStringW UIBeautyShopDialog::FUN_1418cb920(int nShopKind, int nMode)
 CStringW UIBeautyShopDialog::FUN_1418cbb40(int nShopKind, int nMode)
 {
     if (nMode == 2)
-        return FUN_14028b8e0(CStringW(L"s_beauty_msg_bill_warning_special_hair"));
+        return GetStringCommonByKey(CStringW(L"s_beauty_msg_bill_warning_special_hair"));
     return CStringW(L"");
 }
 

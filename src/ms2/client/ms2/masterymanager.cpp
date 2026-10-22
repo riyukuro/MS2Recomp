@@ -110,7 +110,7 @@ public:
 Unk_MmQuestMgr* FUN_140764020();
 
 void* FUN_140665850(ATL::CAtlArray<void*>& rArr);           // the data pointer of the reward list
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommonByKey(const CStringW& str);
 void FUN_1412751f0(const CStringW& str, int nA, int nB);
 
 // @0x140b6d070
@@ -234,16 +234,16 @@ void CMasteryManager::FUN_140b6d710(Unk_MasteryResult eResult)
     switch (eResult)
     {
     case 1:
-        strText = FUN_14028b8e0(CStringW(L"s_mastery_error_lack_mastery"));
+        strText = GetStringCommonByKey(CStringW(L"s_mastery_error_lack_mastery"));
         break;
     case 2:
-        strText = FUN_14028b8e0(CStringW(L"s_mastery_error_lack_meso"));
+        strText = GetStringCommonByKey(CStringW(L"s_mastery_error_lack_meso"));
         break;
     case 3:
-        strText = FUN_14028b8e0(CStringW(L"s_mastery_error_lack_quest"));
+        strText = GetStringCommonByKey(CStringW(L"s_mastery_error_lack_quest"));
         break;
     case 4:
-        strText = FUN_14028b8e0(CStringW(L"s_mastery_error_lack_item"));
+        strText = GetStringCommonByKey(CStringW(L"s_mastery_error_lack_item"));
         break;
     case 5:
         strText = Unk_MmFormat(CStringW(L"s_mastery_error_unknown"), eResult);
@@ -252,7 +252,7 @@ void CMasteryManager::FUN_140b6d710(Unk_MasteryResult eResult)
         strText = Unk_MmFormat(CStringW(L"s_mastery_error_invalid_level"), eResult);
         break;
     case 0xc:
-        strText = FUN_14028b8e0(CStringW(L"s_anti_addiction_cannot_receive"));
+        strText = GetStringCommonByKey(CStringW(L"s_anti_addiction_cannot_receive"));
         break;
     }
     FUN_1412751f0(strText, 1, 1);

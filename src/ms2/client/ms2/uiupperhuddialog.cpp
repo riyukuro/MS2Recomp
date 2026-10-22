@@ -273,8 +273,8 @@ __int64 FUN_140869440();                                                        
 bool FUN_140184310(const CString& str, const char* psz);                        // str == psz
 void FUN_140710590(COutPacket& packet);
 
-CStringW FUN_14028b8e0(const CStringW& strKey);                                 // string table text
-CStringW FUN_14028de60(int nId);                                                // string table text by id
+CStringW GetStringCommonByKey(const CStringW& strKey);                                 // string table text
+CStringW GetStringCommon(int nId);                                                // string table text by id
 CStringW FUN_14083bdc0(const CMsTime& t, int n, CStringW strSep, CStringW strSep2);
 CStringW FUN_140f48210(int nHour, int nMinute);                                 // the clock text
 CStringW FUN_1402761d0(const wchar_t* szFormat, const CStringW& a1, const __int64& a2);
@@ -411,7 +411,7 @@ void UIUpperHudDialog::OnLoadComplete()
         if (spVersion)
         {
             spVersion->vfunc_4(true);
-            spVersion->FUN_1422c4f00(FUN_14028b8e0(L"s_upper_hud_version"));
+            spVersion->FUN_1422c4f00(GetStringCommonByKey(L"s_upper_hud_version"));
         }
     }
     {
@@ -757,7 +757,7 @@ void UIUpperHudDialog::FUN_141357640(__int64 tTime, __int64 nBonus)
         if (FUN_140166410()->FUN_14036d570(0xc9) == true)
         {
             CMsTime tm(tTime);
-            spVersion->FUN_1422c4f00(StringFormat(L"{0}\n{1}\t{2:+#}", FUN_14028b8e0(L"s_upper_hud_version"),
+            spVersion->FUN_1422c4f00(StringFormat(L"{0}\n{1}\t{2:+#}", GetStringCommonByKey(L"s_upper_hud_version"),
                                                   FUN_14083bdc0(tm, 1, CStringW(L"/"), CStringW(L":")), nBonus));
         }
         else
@@ -954,7 +954,7 @@ void UIUpperHudDialog::FUN_1413586c0(Scaleform::GFx::Value* pRetVal)
     tip.FUN_1409c6dc0(7);
     tip.FUN_1409c6e60(5);
     tip.FUN_1409c6e90(0x16);
-    CStringW strText = FUN_14028de60(0x9c4);
+    CStringW strText = GetStringCommon(0x9c4);
     if (FUN_140166410()->FUN_14036d570(0x11))
         strText += FUN_141900120(4, true, true);
     if (FUN_140166410()->FUN_14036d570(0x2e))
@@ -1025,9 +1025,9 @@ void UIUpperHudDialog::FUN_141358df0(Scaleform::GFx::Value* pRetVal)
     tip.FUN_1409c6dc0(7);
     tip.FUN_1409c6e60(5);
     tip.FUN_1409c6e90(0x19);
-    CStringW strTitle = FUN_14028de60(0x9c9);
-    CStringW strLine = FUN_14028de60(0x9ca);
-    CStringW strFormat = FUN_14028de60(0x987);
+    CStringW strTitle = GetStringCommon(0x9c9);
+    CStringW strLine = GetStringCommon(0x9ca);
+    CStringW strFormat = GetStringCommon(0x987);
     CStringW strList;
     int nCount = pMerat->FUN_140358770();
     strList.Append(FUN_140656190(strLine, FUN_1418fe590(), FUN_1401e8510(strFormat, FUN_1409404f0(FUN_140930250()))));
@@ -1040,7 +1040,7 @@ void UIUpperHudDialog::FUN_141358df0(Scaleform::GFx::Value* pRetVal)
             strList.Append(FUN_140656190(strLine, FUN_1418fe5d0(i), FUN_1401e8510(strFormat, FUN_1409404f0(nAmount))));
     }
     if (FUN_1406a5720())
-        strList.Append(FUN_140656190(strLine, FUN_14028b8e0(L"s_common_meratname_red"),
+        strList.Append(FUN_140656190(strLine, GetStringCommonByKey(L"s_common_meratname_red"),
                                      FUN_1405c2690(L"s_common_redmerat", FUN_1409404f0(FUN_140930ae0()))));
     tip.FUN_1409c6cb0(FUN_1401e8510(strTitle, strList));
     *pRetVal = tip.FUN_1422bb870();

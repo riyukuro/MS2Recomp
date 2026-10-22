@@ -6788,7 +6788,7 @@ extern int DAT_143ab2910;
 extern CStringW DAT_143af88e0;
 extern CStringW DAT_143ab2d78;
 Unk_WsC_MsgBoxPtr FUN_140d73d20(int a, CStringW text, int b, CStringW caption);     // build a message box
-CStringW FUN_14028de60(int stringId);                                               // string table lookup
+CStringW GetStringCommon(int stringId);                                               // string table lookup
 void FUN_140d73c60(Unk_WsC_MsgBoxPtr box);                                          // show
 void FUN_141adbf30(void* sys);
 bool FUN_140375130(void* data);
@@ -7051,7 +7051,7 @@ void WorldService::FUN_141bcda90()
         Unk_WsC_MsgBoxPtr box = FUN_140d73d20(0, DAT_143ab2d78, 0, DAT_143af88e0);
         if (box.m_p != 0)
         {
-            CStringW text = FUN_14028de60(0x219);
+            CStringW text = GetStringCommon(0x219);
             box->FUN_141a015d0(text);
             FUN_140d73c60(box);
         }

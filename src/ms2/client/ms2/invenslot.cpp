@@ -246,8 +246,8 @@ Unk_IsItemRules* FUN_140764020();
 CStringW FUN_1416e5210(int nQuestId, CStringW strFormat);
 
 // Strings and notices.
-CStringW FUN_14028b8e0(const CStringW& strKey);           // string table text by key
-CStringW FUN_14028de60(int nStringId);                    // string table text by id
+CStringW GetStringCommonByKey(const CStringW& strKey);           // string table text by key
+CStringW GetStringCommon(int nStringId);                    // string table text by id
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_140298ea0(CStringW strKey);
@@ -1044,13 +1044,13 @@ int InvenSlot::vfunc_13()
                     if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4eec) != 0)
                     {
                         CStringW strKey(L"s_play_instrument_cant_while_play_instrument");
-                        FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+                        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
                         return 0;
                     }
                     if (FUN_140c8dac0()->FUN_140d09d90(1))
                     {
                         CStringW strKey(L"s_play_instrument_cant_while_pre_listening");
-                        FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+                        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
                         return 0;
                     }
                     BlockPtr spBlocked = FUN_140a6a830()->FindBlockedAction(0x10);
@@ -1221,18 +1221,18 @@ int InvenSlot::vfunc_14()
         {
             CStringW strError;
             if (spItem->FUN_140527840()->FUN_14053cd10() == false)
-                strError = FUN_14028b8e0(CStringW(L"s_item_err_cannot_play_instrument"));
+                strError = GetStringCommonByKey(CStringW(L"s_item_err_cannot_play_instrument"));
             else if (spItem->FUN_140525730() == false)
             {
                 if (spItem->FUN_140527340() < 1)
-                    strError = FUN_14028b8e0(CStringW(L"s_item_err_cannot_play_none_count"));
+                    strError = GetStringCommonByKey(CStringW(L"s_item_err_cannot_play_none_count"));
                 else if (pPlay->FUN_14100c8f0() == false)
-                    strError = FUN_14028b8e0(CStringW(L"s_item_err_cannot_play_now"));
+                    strError = GetStringCommonByKey(CStringW(L"s_item_err_cannot_play_now"));
                 else if (spItem->FUN_140528980() == false)
-                    strError = FUN_14028b8e0(CStringW(L"s_item_err_cannot_invaild_item"));
+                    strError = GetStringCommonByKey(CStringW(L"s_item_err_cannot_invaild_item"));
             }
             else
-                strError = FUN_14028b8e0(CStringW(L"s_item_err_cannot_play_instrument_empty_custom"));
+                strError = GetStringCommonByKey(CStringW(L"s_item_err_cannot_play_instrument_empty_custom"));
             if (strError.IsEmpty())
                 pPlay->FUN_14100c910(spItem);
             else
@@ -1556,9 +1556,9 @@ int InvenSlot::FUN_141409150(CItem* pItem)
     {
         CStringW strError;
         if (nReason == 2)
-            strError = FUN_14028b8e0(CStringW(L"s_blackmarket_error_disable_registitem_by_gemstone"));
+            strError = GetStringCommonByKey(CStringW(L"s_blackmarket_error_disable_registitem_by_gemstone"));
         else
-            strError = FUN_14028de60(0x92c);
+            strError = GetStringCommon(0x92c);
         FUN_1412751f0(strError, 1, 1);
         return 0;
     }
@@ -1605,25 +1605,25 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
     if (pSocket != 0 && pSocket->FUN_140622750() == 0)
     {
         CStringW strKey(L"s_itembreak_usedgemstone_item");
-        FUN_140d73aa0(FUN_14028b8e0(strKey), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
         return 0;
     }
     if (spItem->FUN_140525640() != 0 && FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4f38) != 0)
     {
         CStringW strKey(L"s_err_cannot_destroy_petsystem_opendialog");
-        FUN_140d73aa0(FUN_14028b8e0(strKey), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
         return 0;
     }
     if (spData->FUN_14053c6f0() == 0xd8 && FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4f38) != 0)
     {
         CStringW strKey(L"s_err_cannot_destroy_petsystem_opendialog");
-        FUN_140d73aa0(FUN_14028b8e0(strKey), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
         return 0;
     }
     if (spItem->FUN_140527840()->FUN_14053cd10() && FUN_140c8dac0()->FUN_140c8dab0() == spItem->FUN_140526a50())
     {
         CStringW strKey(L"s_play_instrument_cant_destory_score");
-        FUN_140d73aa0(FUN_14028b8e0(strKey), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
         return 0;
     }
     if (FUN_140633700(spItem) == false)
@@ -1638,7 +1638,7 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
                 {
                     if (DAT_143ab2a90.FUN_140a65770(spItem.get()) == 7)
                     {
-                        strError = FUN_14028b8e0(CStringW(L"s_item_err_cannot_vip_drop"));
+                        strError = GetStringCommonByKey(CStringW(L"s_item_err_cannot_vip_drop"));
                         FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4f1b);
                     }
                     else
@@ -1737,12 +1737,12 @@ int InvenSlot::vfunc_0(void* p)
                 {
                     {
                         CStringW strEmpty(L"");
-                        tip.FUN_1409c6a20(strEmpty, FUN_14028de60(0x75a));
+                        tip.FUN_1409c6a20(strEmpty, GetStringCommon(0x75a));
                     }
                     {
                         CStringW strEmpty(L"");
                         CStringW strKey(L"s_word_compose_result");
-                        tip.FUN_1409c7060(FUN_14028b8e0(strKey), strEmpty);
+                        tip.FUN_1409c7060(GetStringCommonByKey(strKey), strEmpty);
                     }
                     *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
                     return 1;
@@ -1814,19 +1814,19 @@ CStringW InvenSlot::vfunc_22()
     switch (FUN_14140d3e0(spItem, 1))
     {
     case 1:
-        return FUN_14028de60(0x74f);
+        return GetStringCommon(0x74f);
     case 2:
-        return FUN_14028de60(0x755);
+        return GetStringCommon(0x755);
     case 3:
-        return FUN_14028de60(0x753);
+        return GetStringCommon(0x753);
     case 4:
-        return FUN_14028de60(0x75b);
+        return GetStringCommon(0x75b);
     case 5:
-        return FUN_14028b8e0(CStringW(L"s_msg_rclick_puton_equip_to_skintab"));
+        return GetStringCommonByKey(CStringW(L"s_msg_rclick_puton_equip_to_skintab"));
     case 6:
         if (FUN_140166410()->FUN_14036d570(0x8e) && spItem->FUN_1405258b0() != 0)
         {
-            CStringW strText = FUN_14028b8e0(CStringW(L"s_msg_rclick_puton_equip_to_coditab"));
+            CStringW strText = GetStringCommonByKey(CStringW(L"s_msg_rclick_puton_equip_to_coditab"));
             CStringW strKey = FUN_1409331f0()->FUN_14142d760(0x4940d, 0);
             if (!strKey.IsEmpty())
             {
@@ -1835,22 +1835,22 @@ CStringW InvenSlot::vfunc_22()
             }
             return strText;
         }
-        return FUN_14028de60(0x751);
+        return GetStringCommon(0x751);
     case 7:
-        return FUN_14028de60(0x75a);
+        return GetStringCommon(0x75a);
     case 8:
     case 9:
-        return FUN_14028de60(0x75f);
+        return GetStringCommon(0x75f);
     case 10:
-        return FUN_14028de60(0x75f);
+        return GetStringCommon(0x75f);
     case 11:
-        return FUN_14028de60(0x760);
+        return GetStringCommon(0x760);
     case 13:
-        return FUN_14028de60(0x761);
+        return GetStringCommon(0x761);
     case 17:
-        return FUN_14028b8e0(CStringW(L"s_msg_rclick_item_merge_revert"));
+        return GetStringCommonByKey(CStringW(L"s_msg_rclick_item_merge_revert"));
     case 18:
-        return FUN_14028b8e0(CStringW(L"s_msg_rclick_item_extraction"));
+        return GetStringCommonByKey(CStringW(L"s_msg_rclick_item_extraction"));
     default:
         return CStringW(L"");
     }
@@ -1886,16 +1886,16 @@ int InvenSlot::FUN_14140b6d0(MS2Ptr<CItem> spItem)
     {
         CStringW strError;
         if (nReason == 2)
-            strError = FUN_14028b8e0(CStringW(L"s_trade_tradelimit_by_gemstone"));
+            strError = GetStringCommonByKey(CStringW(L"s_trade_tradelimit_by_gemstone"));
         else
-            strError = FUN_14028de60(0x83f);
+            strError = GetStringCommon(0x83f);
         FUN_1412751f0(strError, 1, 1);
         return 0;
     }
     if (spItem->FUN_140527840()->FUN_14053cd10() && FUN_140c8dac0()->FUN_140c8dab0() == spItem->FUN_140526a50())
     {
         CStringW strKey(L"s_trade_tradelimit_playing_score");
-        FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
         return 0;
     }
     UITradeDialogEx* pTrade = Unk_InvGetDialogById<UITradeDialogEx>(0x4e83);
@@ -1904,7 +1904,7 @@ int InvenSlot::FUN_14140b6d0(MS2Ptr<CItem> spItem)
         int nSlot = 0;
         if (pTrade->FUN_141b283f0(&nSlot) == 0)
         {
-            FUN_140d73aa0(FUN_14028de60(0x82f), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommon(0x82f), 0, 0, CStringW(L""));
             return 0;
         }
         bool bAll;
@@ -2104,7 +2104,7 @@ static void FUN_14140cb90(__int64 nUid, int nItemId, int nCount, int nMax, int n
     else
     {
         nType = 0x12;
-        strText = nQuest == 0 ? FUN_14028b8e0(CStringW(L"s_msg_item_sell"))
+        strText = nQuest == 0 ? GetStringCommonByKey(CStringW(L"s_msg_item_sell"))
                               : FUN_1405c2690(CStringW(L"s_msg_quest_item_sell_stack"), FUN_14140c2b0(spItem));
     }
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(nType, strText, 0, s_strSell);
@@ -2114,7 +2114,7 @@ static void FUN_14140cb90(__int64 nUid, int nItemId, int nCount, int nMax, int n
         if (spCur.get() != 0)
         {
             spBox->FUN_141a01600(nUid);
-            spBox->SetTitle(FUN_14028de60(0x460));
+            spBox->SetTitle(GetStringCommon(0x460));
             spBox->FUN_141a01700(0x47e, 0x476, 0);
             spBox->FUN_141a01ee0(spCur, strName, 1, nCount, nMax, nPrice, 1);
             FUN_140d73c60(spBox);
@@ -2270,15 +2270,15 @@ static CStringW FUN_14140dd30(int nUnused, int nKind)
     case 0:
         return CStringW(L"");
     case 1:
-        return FUN_14028de60(0xbf0);
+        return GetStringCommon(0xbf0);
     case 2:
-        return FUN_14028de60(0xbf1);
+        return GetStringCommon(0xbf1);
     case 4:
-        return FUN_14028de60(0xbf2);
+        return GetStringCommon(0xbf2);
     case 5:
-        return FUN_14028de60(0xbf2);
+        return GetStringCommon(0xbf2);
     case 6:
-        return FUN_14028de60(0xbf2);
+        return GetStringCommon(0xbf2);
     default:
         return CStringW(L"");
     }
@@ -2305,26 +2305,26 @@ static int FUN_14140dea0(CItem* pItem, MyPC* pPC)
     if (pItem->FUN_140525db0() != 0 && pView->FUN_141662de0() == 0)
     {
         CStringW strKey(L"s_item_err_puton_vip");
-        FUN_140d73aa0(FUN_14028b8e0(strKey), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
         return 0;
     }
     if (pItem->FUN_140525e00() != 0 && pPC->vfunc_146() == false)
     {
         CStringW strKey(L"s_item_err_puton_wedding");
-        FUN_140d73aa0(FUN_14028b8e0(strKey), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
         return 0;
     }
     Unk_IsItemRequire* pRequire = static_cast<Unk_IsItemRequire*>(pItem);
     if (pRequire->FUN_140526810(pPC->vfunc_78()) == 0)
     {
         CStringW strKey(L"s_err_not_enough_level");
-        FUN_140d73aa0(FUN_14028b8e0(strKey), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
         return 0;
     }
     if (pRequire->FUN_140526790(pPC->FUN_141654700()) == 0)
     {
         CStringW strKey(L"s_item_err_disable_job");
-        FUN_140d73aa0(FUN_14028b8e0(strKey), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
         return 0;
     }
     __int64 nCharacterId = pPC->FUN_141656a80();

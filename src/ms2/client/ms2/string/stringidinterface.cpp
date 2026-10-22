@@ -32,7 +32,7 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 
 // Packet reader of StringIdInterfaceBase (kind/id/arguments or the plain text).
 void FUN_14084f390(StringIdInterfaceBase* pThis, CInPacket& packet);
-CStringW FUN_14028b8e0(const CStringW& strKey);                         // string table text of a key
+CStringW GetStringCommonByKey(const CStringW& strKey);                         // string table text of a key
 size_t FUN_14015a000(ATL::CAtlArray<CStringW>& arr);                    // GetCount
 CStringW& FUN_14025e580(ATL::CAtlArray<CStringW>& arr, size_t i);       // operator[]
 
@@ -130,7 +130,7 @@ CStringW StringIdInterface::FUN_141024e60()
     if (kind == 0)
         return CStringW(text);
     else if (kind == 5)
-        return FUN_14028b8e0(text);
+        return GetStringCommonByKey(text);
     else
         return CStringW(L"");
 }

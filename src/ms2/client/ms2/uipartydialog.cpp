@@ -211,7 +211,7 @@ Unk_PdApp* FUN_1403ed2b0();
 void FUN_141add1f0(Unk_PdApp* pApp);                                    // open the merat charge page
 CPartyManager* FUN_1409670d0();                                         // TSingleton<CPartyManager>::GetInstance
 CFeatureManager* FUN_140166410();                                       // TSingleton<CFeatureManager>::GetInstance
-CStringTable* FUN_1401a9d70();                                          // TSingleton<CStringTable>::GetInstance
+CStringTable* GetStringTable();                                          // TSingleton<CStringTable>::GetInstance
 IClientPlatform* FUN_140d86260();
 class Unk_PdPopupMenu;                                                  // UIPopUpMenu (below) as seen by the lookup
 UIDialog* FUN_140c30140(int nDialogId);                                 // the open dialog of this id
@@ -238,8 +238,8 @@ bool FUN_141a4bfb0(const Scaleform::GFx::Value& v);                     // is a 
 bool FUN_1409c1720(const Scaleform::GFx::Value& v);                     // the bool value
 CStringW FUN_1408116a0(int nStringId, const int& n);                    // FormatStringId<int>
 CStringW FUN_140632a60(int nStringId, const CStringW& a, const CStringW& b);   // FormatStringId<CStringW, CStringW>
-CStringW FUN_14028de60(int nStringId);                                  // the string of an id
-CStringW FUN_14028b8e0(const CStringW& strKey);                         // the string of a key
+CStringW GetStringCommon(int nStringId);                                  // the string of an id
+CStringW GetStringCommonByKey(const CStringW& strKey);                         // the string of a key
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);            // system message
 void FUN_140d73bc0(int nStringId, int nA, int nB, CStringW strText);    // notice by id
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, IMessageListener* pListener, CStringW strTag);
@@ -687,12 +687,12 @@ void UIPartyDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strM
             strInfo = FUN_1408116a0(0x76b, pUser->m_38);
             strInfo += L" ";
         }
-        strInfo += FUN_1401a9d70()->FUN_141811980(3, pUser->m_2c);
-        strText = FUN_140632a60(0x76c, FUN_14028de60(nStringId), strInfo);
+        strInfo += GetStringTable()->FUN_141811980(3, pUser->m_2c);
+        strText = FUN_140632a60(0x76c, GetStringCommon(nStringId), strInfo);
     }
     else
     {
-        strText = FUN_14028de60(nStringId);
+        strText = GetStringCommon(nStringId);
     }
     if (!strText.IsEmpty())
     {
@@ -984,7 +984,7 @@ int UIPartyDialog::FUN_141a784b0(ASObj& obj, CPartyMember* pMember, unsigned int
         CStringW strChName;
         CString strDiff;
         if (pMember->user.m_38 == 0)
-            strChName = FUN_14028b8e0(CStringW(L"s_party_ch_dungeon"));
+            strChName = GetStringCommonByKey(CStringW(L"s_party_ch_dungeon"));
         else
             strChName = FUN_14028dfa0(CStringW(L"s_party_ch"), pMember->user.m_38);
         MS2Ptr<CPartyMember> spMine = FUN_1409670d0()->FUN_14162afc0(DAT_143ab2828);
@@ -1101,7 +1101,7 @@ void UIPartyDialog::FUN_141a79570()
     if (!FUN_140930b40() && nDungeonId != 0)
     {
         m_dungeonName->vfunc_4(true);
-        m_30->Invoke("setDungeonName", FUN_1401a9d70()->FUN_141811980(0x14, nDungeonId));
+        m_30->Invoke("setDungeonName", GetStringTable()->FUN_141811980(0x14, nDungeonId));
     }
     else
     {
@@ -1316,7 +1316,7 @@ int UIPartyDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         int nMinute = kNow.GetMinute();
         int nHour = kNow.GetHour();
         CStringW strHistory = FUN_140c2fcc0(CStringW(L"s_partydps_notice_history_prefix"), nHour, nMinute, nSecond, CBattleRecordManager::FUN_140a04bc0(m_nMode));
-        CStringW strRow = FUN_14028b8e0(L"s_partydps_notice_history_row");
+        CStringW strRow = GetStringCommonByKey(L"s_partydps_notice_history_row");
         for (unsigned i = 0; i < m_members.size() && i <= 9; i++)
         {
             MS2Ptr<CPartyMember> spMember = m_members[i];
@@ -2897,7 +2897,7 @@ void UIPopUpMenu::FUN_141a84320(ASArray& menu)
     {
         ASObj item(2);
         item.FUN_1409c0d20("id", m_118[i]);
-        item.FUN_1407cbb20("label", FUN_1401a9d70()->FUN_141811980(7, m_118[i]));
+        item.FUN_1407cbb20("label", GetStringTable()->FUN_141811980(7, m_118[i]));
         menu.FUN_1422bc050(item.FUN_1422bb870());
     }
 }
@@ -3148,7 +3148,7 @@ void UIPopUpMenu::SendCharacterInfo()
         int nState = pInfo->FUN_14132c080(m_a8);
         if (nState == 1)
         {
-            FUN_140d73aa0(FUN_14028b8e0(L"s_char_info_already_request"), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommonByKey(L"s_char_info_already_request"), 0, 0, CStringW(L""));
         }
         else
         {
@@ -3500,7 +3500,7 @@ void UIPopUpMenu::FUN_141a86f50()
         return;
     if (!FUN_140900550())
         return;
-    CStringW strText = FUN_14028b8e0(L"s_wedding_msg_box_propose_confirm");
+    CStringW strText = GetStringCommonByKey(L"s_wedding_msg_box_propose_confirm");
     Unk_PmShowYesNo(strText, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UIPopUpMenu::FUN_141a7e100), m_90);
 }
 

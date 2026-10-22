@@ -59,7 +59,7 @@ __int64 FUN_140869440();                                            // the curre
 bool FUN_140900f30(__int64 nTime);                                  // the time is at night
 CStringW FUN_141b71910(unsigned __int64 n);                         // the number as text
 CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);      // localized, formatted
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 
 // @0x140fd8df0
 UIWeddingHallListDialog::UIWeddingHallListDialog()
@@ -166,7 +166,7 @@ void UIWeddingHallListDialog::FUN_140fd9110()
         CStringW strName = FUN_1408f71a0(CStringW(L"s_wedding_hall_list_name"), ticket.m_strGroom, ticket.m_strBride);
         ASObj row(2);
         row.FUN_1407cbb20("name", strName);
-        row.FUN_1407cbb20("hall", FUN_1401a9d70()->FUN_141811980(3, pHall->FUN_140906e40(FUN_140900f30(ticket.m_nTime))));
+        row.FUN_1407cbb20("hall", GetStringTable()->FUN_141811980(3, pHall->FUN_140906e40(FUN_140900f30(ticket.m_nTime))));
         row.FUN_1407cbb20("weddingSN", FUN_141b71910(it->first));
         if (ticket.m_nTime > nNow)
             pOpenList->FUN_1422dd230(row);

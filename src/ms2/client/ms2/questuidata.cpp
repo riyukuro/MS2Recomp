@@ -60,9 +60,9 @@ CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDe
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* pszDelim);
 void FUN_1401d9a30(const CStringW& str, ATL::CAtlArray<int>& out, const wchar_t* pszDelim);
 CReservedWordTable* FUN_1403b4750();
-CStringTable* FUN_1401a9d70();                                          // the string table singleton
-CStringW FUN_14028de60(int nStringId);                                  // a common string by id
-CStringW FUN_14028b8e0(const CStringW& strKey);                         // a common string by key
+CStringTable* GetStringTable();                                          // the string table singleton
+CStringW GetStringCommon(int nStringId);                                  // a common string by id
+CStringW GetStringCommonByKey(const CStringW& strKey);                         // a common string by key
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);          // a common string by id, "{0}" = strArg
 CStringW FUN_1413fac10(CStringW strText, CStringW strWord);             // strText with the josa of strWord
 CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // formats one text argument
@@ -230,15 +230,15 @@ CStringW FUN_1416e4df0(int nQuestId)
     CStringW strName;
     if (FUN_14074b070(spData.operator->()) == 1)
     {
-        strName = StringFormat(L"{0} {1}", FUN_14028de60(0x5e0), spUI->m_strName);
+        strName = StringFormat(L"{0} {1}", GetStringCommon(0x5e0), spUI->m_strName);
     }
     else if (FUN_14074b070(spData.operator->()) == 2)
     {
-        strName = StringFormat(L"{0} {1}", FUN_14028de60(0x5e1), spUI->m_strName);
+        strName = StringFormat(L"{0} {1}", GetStringCommon(0x5e1), spUI->m_strName);
     }
     else if (FUN_14074b070(spData.operator->()) == 3)
     {
-        strName = StringFormat(L"{0} {1}", FUN_14028b8e0(L"s_quest_repeat_week"), spUI->m_strName);
+        strName = StringFormat(L"{0} {1}", GetStringCommonByKey(L"s_quest_repeat_week"), spUI->m_strName);
     }
     else
     {
@@ -342,37 +342,37 @@ void FUN_1416e5890(int nQuestId, ATL::CAtlArray<CStringW>& out)
 // @0x1416e5900
 CStringW FUN_1416e5900(int nQuestId, bool bLevel)
 {
-    CStringW strType = FUN_1401a9d70()->FUN_141811980(0x50, nQuestId);
+    CStringW strType = GetStringTable()->FUN_141811980(0x50, nQuestId);
     if (strType.GetLength() == 0)
     {
         switch (FUN_14074bc90(nQuestId))
         {
         case 0:
-            strType = FUN_14028de60(0x5dd);
+            strType = GetStringCommon(0x5dd);
             break;
         case 1:
-            strType = FUN_14028de60(0x5de);
+            strType = GetStringCommon(0x5de);
             break;
         case 2:
-            strType = FUN_14028de60(0x5df);
+            strType = GetStringCommon(0x5df);
             break;
         case 3:
-            strType = FUN_14028b8e0(L"s_quest_daily_mission");
+            strType = GetStringCommonByKey(L"s_quest_daily_mission");
             break;
         case 4:
-            strType = FUN_14028b8e0(L"s_quest_field_mission");
+            strType = GetStringCommonByKey(L"s_quest_field_mission");
             break;
         case 5:
-            strType = FUN_14028b8e0(L"s_quest_event_mission");
+            strType = GetStringCommonByKey(L"s_quest_event_mission");
             break;
         case 6:
-            strType = FUN_14028b8e0(L"s_quest_guild_quest");
+            strType = GetStringCommonByKey(L"s_quest_guild_quest");
             break;
         case 8:
-            strType = FUN_14028b8e0(L"s_quest_field_quest");
+            strType = GetStringCommonByKey(L"s_quest_field_quest");
             break;
         case 9:
-            strType = FUN_14028b8e0(L"s_quest_alliance_quest");
+            strType = GetStringCommonByKey(L"s_quest_alliance_quest");
             break;
         }
     }
@@ -584,7 +584,7 @@ static CStringW FUN_1416e7000(CQuestUIData* pData, CConditionCommonData* pCond)
     if (pCond->m_code.GetIdCount() < 1)
         return L"";
     int nNpcId = (int)pCond->m_code.GetFirstValue();
-    CStringW strFormat = FUN_14028de60(0x5e3);
+    CStringW strFormat = GetStringCommon(0x5e3);
     CStringW strJosa = FUN_1413fac10(strFormat, FUN_1401aa6a0(nNpcId));
     CStringW strText = FUN_1401e8510(strJosa, FUN_1401aa6a0(nNpcId));
     return strText;
@@ -599,7 +599,7 @@ static CStringW FUN_1416e71a0(CQuestUIData* pData, CConditionCommonData* pCond)
     int nId = (int)pCond->m_code.GetFirstValue();
     if (nId == 0)
         return L"";
-    return FUN_1401a9d70()->FUN_141811980(0xb, nId);
+    return GetStringTable()->FUN_141811980(0xb, nId);
 }
 
 // type 37: the map to reach (with the josa of the name)
@@ -610,9 +610,9 @@ static CStringW FUN_1416e7270(CQuestUIData* pData, CConditionCommonData* pCond)
         return L"";
     int nMapId = (int)pCond->m_code.GetFirstValue();
     CStringW strText;
-    CStringW strFormat = FUN_14028de60(0x5e5);
-    CStringW strJosa = FUN_1413fac10(strFormat, FUN_1401a9d70()->FUN_141811980(3, nMapId));
-    strText = FUN_1401e8510(strJosa, FUN_1401a9d70()->FUN_141811980(3, nMapId));
+    CStringW strFormat = GetStringCommon(0x5e5);
+    CStringW strJosa = FUN_1413fac10(strFormat, GetStringTable()->FUN_141811980(3, nMapId));
+    strText = FUN_1401e8510(strJosa, GetStringTable()->FUN_141811980(3, nMapId));
     return strText;
 }
 
@@ -623,7 +623,7 @@ static CStringW FUN_1416e7470(CQuestUIData* pData, CConditionCommonData* pCond)
     if (pCond->m_code.GetIdCount() < 1)
         return L"";
     int nItemId = (int)pCond->m_code.GetFirstValue();
-    CStringW strText = FUN_14052bd00(0x5e6, FUN_1401a9d70()->FUN_141811980(1, nItemId));
+    CStringW strText = FUN_14052bd00(0x5e6, GetStringTable()->FUN_141811980(1, nItemId));
     return strText;
 }
 
@@ -638,10 +638,10 @@ static CStringW FUN_1416e7570(CQuestUIData* pData, CConditionCommonData* pCond)
     int nNpcId = (int)pCond->m_target.GetFirstValue();
     int nItemId = (int)pCond->m_code.GetFirstValue();
     CStringW strFormat;
-    CStringW strBase = FUN_14028de60(0x5e9);
-    strFormat = FUN_1413fac10(strBase, FUN_1401a9d70()->FUN_141811980(1, nItemId));
-    strFormat = FUN_1413fac10(strFormat, FUN_1401a9d70()->FUN_141811980(0xc, nNpcId));
-    CStringW strText = StringFormat(strFormat, FUN_1401a9d70()->FUN_141811980(1, nItemId), FUN_1401a9d70()->FUN_141811980(0xc, nNpcId));
+    CStringW strBase = GetStringCommon(0x5e9);
+    strFormat = FUN_1413fac10(strBase, GetStringTable()->FUN_141811980(1, nItemId));
+    strFormat = FUN_1413fac10(strFormat, GetStringTable()->FUN_141811980(0xc, nNpcId));
+    CStringW strText = StringFormat(strFormat, GetStringTable()->FUN_141811980(1, nItemId), GetStringTable()->FUN_141811980(0xc, nNpcId));
     return strText;
 }
 

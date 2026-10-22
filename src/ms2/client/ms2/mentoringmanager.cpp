@@ -56,7 +56,7 @@ public:
 Unk_MMUIService* FUN_1403ed2b0();
 
 class MyPC;
-CStringW FUN_14028b8e0(const CStringW& str);                // the text of a string id
+CStringW GetStringCommonByKey(const CStringW& str);                // the text of a string id
 CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArgument);
 void FUN_1412751b0(const CStringW& strText, int nType);     // a notice
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);    // a notice (error)
@@ -414,7 +414,7 @@ void CMentoringManager::OnMenteeRegistered(CInPacket& packet)
 {
     if (FUN_1403ed2b0()->FUN_141adc890(0x4f4b) != 0)
         FUN_1403ed2b0()->FUN_141adc5d0(0x4f4b);
-    FUN_1412751b0(FUN_14028b8e0(L"s_mentoring_register_mentee"), 0x10);
+    FUN_1412751b0(GetStringCommonByKey(L"s_mentoring_register_mentee"), 0x10);
 }
 
 // @0x140b72020
@@ -484,7 +484,7 @@ void CMentoringManager::OnMentorRegistered(CInPacket& packet)
 {
     if (FUN_1403ed2b0()->FUN_141adc890(0x4f4b) != 0)
         FUN_1403ed2b0()->FUN_141adc5d0(0x4f4b);
-    FUN_1412751b0(FUN_14028b8e0(L"s_mentoring_register_mentor"), 0x10);
+    FUN_1412751b0(GetStringCommonByKey(L"s_mentoring_register_mentor"), 0x10);
 }
 
 // @0x140b725f0
@@ -554,31 +554,31 @@ void CMentoringManager::OnError(CInPacket& packet)
     switch (data.result)
     {
     case 1:
-        FUN_1412751f0(FUN_14028b8e0(L"s_mentoring_error_is_not_return_user"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_is_not_return_user"), 1, 1);
         break;
     case 2:
-        FUN_1412751f0(FUN_14028b8e0(L"s_mentoring_error_target_not_exists"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_target_not_exists"), 1, 1);
         break;
     case 3:
-        FUN_1412751f0(FUN_14028b8e0(L"s_mentoring_error_invalid_target"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_invalid_target"), 1, 1);
         break;
     case 4:
-        FUN_1412751f0(FUN_14028b8e0(L"s_mentoring_error_mentor_has_max_count_waiting"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_mentor_has_max_count_waiting"), 1, 1);
         break;
     case 5:
-        FUN_1412751f0(FUN_14028b8e0(L"s_mentoring_error_mentee_has_max_count_received"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_mentee_has_max_count_received"), 1, 1);
         break;
     case 6:
-        FUN_1412751f0(FUN_14028b8e0(L"s_mentoring_error_mentee_is_not_mentee"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_mentee_is_not_mentee"), 1, 1);
         break;
     case 7:
-        FUN_1412751f0(FUN_14028b8e0(L"s_mentoring_error_mentee_has_already_mento"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_mentee_has_already_mento"), 1, 1);
         break;
     case 8:
-        FUN_1412751f0(FUN_14028b8e0(L"s_mentoring_error_already_requested_to_mentee"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_already_requested_to_mentee"), 1, 1);
         break;
     case 9:
-        FUN_1412751f0(FUN_14028b8e0(L"s_mentoring_error_full_earn_coin"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_full_earn_coin"), 1, 1);
         break;
     }
 }

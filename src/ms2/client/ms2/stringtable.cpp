@@ -75,7 +75,7 @@ static UICommon::CMyPCKeyInputController s_keyController;
 // ---- the quest kinds ----------------------------------------------------------------------------------------------
 
 // Services of the exe, bound by their FUN_<va> names.
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 bool FUN_14064d4e0(const MS2Ptr<CQuestData>&);
 void* FUN_140166410();
 bool FUN_14036d570(void*, int);
@@ -90,7 +90,7 @@ CStringW FUN_1416e7fb0(int);
 CStringW FUN_1405c2690(CStringW, const CStringW&);
 CStringW FUN_1401e8510(const wchar_t*, const CStringW&);
 void FUN_1412751f0(const CStringW&, int, int);
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommonByKey(const CStringW& str);
 CQuestManager* FUN_140764020();
 UIRewardNotify* FUN_140938cd0(int);
 UIFameContentsNotify* FUN_140e77d80(int);
@@ -250,8 +250,8 @@ void CStoryQuest::FUN_140d73960()
     {
         if (FUN_1422b9e00(FUN_1408e57f0()) == 0x620001d)
         {
-            CStringW strWho = FUN_1401a9d70()->FUN_141811980(0x47, m_data->m_2f0.m_c);
-            CStringW strText = FUN_1401e8510((const wchar_t*)strWho, FUN_1401a9d70()->FUN_141811980(3, m_data->m_2f0.m_4));
+            CStringW strWho = GetStringTable()->FUN_141811980(0x47, m_data->m_2f0.m_c);
+            CStringW strText = FUN_1401e8510((const wchar_t*)strWho, GetStringTable()->FUN_141811980(3, m_data->m_2f0.m_4));
             FUN_1403b4750()->FUN_1416fb340(strText);
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x28, CStringW(L""), 0, CStringW(strText));
             if (spBox.get() != 0)
@@ -260,7 +260,7 @@ void CStoryQuest::FUN_140d73960()
                 spBox->FUN_140533ff0(m_7c);
                 spBox->SetTitle(FUN_1403ed2d0()->FUN_141bd0d30());
                 spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(FUN_140764020(), &CQuestManager::SendQuestMode20));
-                spBox->FUN_141a01690(FUN_14028b8e0(CStringW(L"s_quest_dispatch_yes")), FUN_14028b8e0(CStringW(L"s_quest_dispatch_no")), CStringW(L""));
+                spBox->FUN_141a01690(GetStringCommonByKey(CStringW(L"s_quest_dispatch_yes")), GetStringCommonByKey(CStringW(L"s_quest_dispatch_no")), CStringW(L""));
                 FUN_140d73c60(spBox);
             }
             m_7c = 0;
@@ -480,7 +480,7 @@ void FUN_14028fd90(Unk_140165cf0*, const char*, const char*, const char*, ATL::C
 bool FUN_140184310(const CString& str, const char* psz);            // str equals psz
 unsigned char FUN_1401d1320(CCacheData*);
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& rOut, const wchar_t* pszSep);
-CStringW FUN_14028de60(int nId);                                    // the text of a string id
+CStringW GetStringCommon(int nId);                                    // the text of a string id
 void* FUN_14025e7a0();
 void FUN_1422b09a0(void*);
 
@@ -885,10 +885,10 @@ int CStringTable::FUN_141812c40(int nTable, const CStringW& strName)
 CStringW CStringTable::FUN_141812ec0(int n)
 {
     if (n == 0)
-        return FUN_14028de60(0x487);
+        return GetStringCommon(0x487);
     if (n == 1)
-        return FUN_14028de60(0x488);
-    return FUN_14028de60(0x489);
+        return GetStringCommon(0x488);
+    return GetStringCommon(0x489);
 }
 
 // @0x141812f60
@@ -899,8 +899,8 @@ CStringW CStringTable::FUN_141812f60(int nItemId)
         return CStringW(L"");
     int nStringId = spItem->FUN_14053c620();
     if (nStringId == 0)
-        return FUN_14028de60(0);
-    return FUN_1401a9d70()->FUN_141811980(8, nStringId);
+        return GetStringCommon(0);
+    return GetStringTable()->FUN_141811980(8, nStringId);
 }
 
 // @0x141813060
@@ -910,7 +910,7 @@ CStringW CStringTable::FUN_141813060(int nRank, int nItemId)
     if (spItem == 0)
         return CStringW(L"");
     if (spItem->FUN_14053c5a0() != 0)
-        return FUN_14028de60(0);
+        return GetStringCommon(0);
     return FUN_141813150(nRank);
 }
 
@@ -918,10 +918,10 @@ CStringW CStringTable::FUN_141813060(int nRank, int nItemId)
 CStringW CStringTable::FUN_141813150(int nRank)
 {
     if (nRank == 0)
-        return FUN_14028de60(0x4f9);
+        return GetStringCommon(0x4f9);
     CStringW strKey;
     strKey.Format(L"s_word_rank_%02d", nRank);
-    return FUN_14028b8e0(strKey);
+    return GetStringCommonByKey(strKey);
 }
 
 // @0x141813200
@@ -929,11 +929,11 @@ CStringW CStringTable::FUN_141813200(__int64 nItemUid)
 {
     Unk_StPlayer* pPlayer = static_cast<Unk_StPlayer*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPlayer == 0)
-        return FUN_14028de60(0);
+        return GetStringCommon(0);
     MS2Ptr<CItem> spItem = pPlayer->FUN_141655b80(nItemUid);
     if (spItem.get() != 0)
         return FUN_141813150(spItem->FUN_140526bd0());
-    return FUN_14028de60(0);
+    return GetStringCommon(0);
 }
 
 // @0x141813300
@@ -941,22 +941,22 @@ CStringW CStringTable::FUN_141813300(int nTab)
 {
     switch (nTab)
     {
-    case 0: return FUN_14028de60(0x259);
-    case 4: return FUN_14028de60(0x25a);
-    case 7: return FUN_14028de60(0x25b);
-    case 2: return FUN_14028de60(0x25c);
-    case 1: return FUN_14028de60(0x25d);
-    case 6: return FUN_14028de60(0x25e);
-    case 5: return FUN_14028de60(0x25f);
-    case 3: return FUN_14028de60(0x260);
-    case 8: return FUN_14028de60(0x261);
-    case 9: return FUN_14028de60(0x262);
-    case 10: return FUN_14028de60(0x263);
-    case 11: return FUN_14028de60(0x264);
-    case 12: return FUN_14028de60(0x265);
-    case 0xd: return FUN_14028b8e0(L"s_inventory_tab_lapenshard");
-    case 0xe: return FUN_14028b8e0(L"s_inventory_tab_piece");
-    default: return FUN_14028de60(0);
+    case 0: return GetStringCommon(0x259);
+    case 4: return GetStringCommon(0x25a);
+    case 7: return GetStringCommon(0x25b);
+    case 2: return GetStringCommon(0x25c);
+    case 1: return GetStringCommon(0x25d);
+    case 6: return GetStringCommon(0x25e);
+    case 5: return GetStringCommon(0x25f);
+    case 3: return GetStringCommon(0x260);
+    case 8: return GetStringCommon(0x261);
+    case 9: return GetStringCommon(0x262);
+    case 10: return GetStringCommon(0x263);
+    case 11: return GetStringCommon(0x264);
+    case 12: return GetStringCommon(0x265);
+    case 0xd: return GetStringCommonByKey(L"s_inventory_tab_lapenshard");
+    case 0xe: return GetStringCommonByKey(L"s_inventory_tab_piece");
+    default: return GetStringCommon(0);
     }
 }
 
@@ -966,22 +966,22 @@ CStringW CStringTable::FUN_141813610(int a, int b, int c)
     if (a == 0)
     {
         if (b == 0 && c == 0)
-            return FUN_14028de60(0x2cf);
+            return GetStringCommon(0x2cf);
         if (b == 0)
-            return FUN_14028de60(0x2d0);
+            return GetStringCommon(0x2d0);
         if (c == 0)
-            return FUN_14028de60(0x2d1);
-        return FUN_14028de60(0x2d2);
+            return GetStringCommon(0x2d1);
+        return GetStringCommon(0x2d2);
     }
     else if (b == 0)
     {
         if (c == 0)
-            return FUN_14028de60(0x2d3);
-        return FUN_14028de60(0x2d4);
+            return GetStringCommon(0x2d3);
+        return GetStringCommon(0x2d4);
     }
     else if (c == 0)
-        return FUN_14028de60(0x2d5);
-    return FUN_14028de60(0);
+        return GetStringCommon(0x2d5);
+    return GetStringCommon(0);
 }
 
 // The format arguments of a text: the type bits of the arguments and their values.

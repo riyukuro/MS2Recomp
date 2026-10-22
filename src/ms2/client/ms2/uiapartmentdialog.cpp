@@ -69,7 +69,7 @@ class Unk_AptStrings { public: CStringW FUN_141811980(int nTable, int nIndex); }
 Unk_AptStrings* FUN_1401a9d70();
 CStringW FUN_140979570(int nMap);                               // the map name
 bool FUN_140e45240(const CStringW& s, const char* c);          // case-insensitive equal
-CStringW FUN_14028de60(int nStringId);                          // string table text
+CStringW GetStringCommon(int nStringId);                          // string table text
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int bOn);
 void FUN_140cffa50(const Scaleform::GFx::Value& root, CString strName, CString strFrame);
@@ -257,7 +257,7 @@ bool UIApartmentDialog::FUN_1418b6ab0(int nMode)
         {
             if (nMode == 1)
             {
-                pBox->FUN_1419f82b0(FUN_14028de60(0x9cc));
+                pBox->FUN_1419f82b0(GetStringCommon(0x9cc));
                 return true;
             }
             return false;
@@ -322,18 +322,18 @@ void UIApartmentDialog::FUN_1418b6ec0(int nUiType)
 {
     if (nUiType == 0x2f)
     {
-        FUN_140cfefe0(FUN_1422dbc00(), "m_brokerSay", "m_default", FUN_14028de60(0x7ef));
-        FUN_140cfefe0(FUN_1422dbc00(), "m_brokerSay", "m_say", FUN_14028de60(0x7f2));
+        FUN_140cfefe0(FUN_1422dbc00(), "m_brokerSay", "m_default", GetStringCommon(0x7ef));
+        FUN_140cfefe0(FUN_1422dbc00(), "m_brokerSay", "m_say", GetStringCommon(0x7f2));
     }
     else if (nUiType == 0x31)
     {
-        FUN_140cfefe0(FUN_1422dbc00(), "m_brokerSay", "m_default", FUN_14028de60(0x7f0));
-        FUN_140cfefe0(FUN_1422dbc00(), "m_brokerSay", "m_say", FUN_14028de60(0x7f3));
+        FUN_140cfefe0(FUN_1422dbc00(), "m_brokerSay", "m_default", GetStringCommon(0x7f0));
+        FUN_140cfefe0(FUN_1422dbc00(), "m_brokerSay", "m_say", GetStringCommon(0x7f3));
     }
     else
     {
-        FUN_140cfefe0(FUN_1422dbc00(), "m_brokerSay", "m_default", FUN_14028de60(0x7ee));
-        FUN_140cfefe0(FUN_1422dbc00(), "m_brokerSay", "m_say", FUN_14028de60(0x7f1));
+        FUN_140cfefe0(FUN_1422dbc00(), "m_brokerSay", "m_default", GetStringCommon(0x7ee));
+        FUN_140cfefe0(FUN_1422dbc00(), "m_brokerSay", "m_say", GetStringCommon(0x7f1));
     }
 }
 

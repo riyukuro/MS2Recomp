@@ -143,7 +143,7 @@ void FUN_141414e50(const CString& name);
 void FUN_141414d60(const CString& name, const CAtlArray<unsigned __int64>& uids);
 
 // Strings / messages.
-CStringW FUN_14028b8e0(const CStringW& key);
+CStringW GetStringCommonByKey(const CStringW& key);
 CStringW FUN_140298ea0(CStringW key);
 CStringW FUN_14062b4f0(CStringW key, const int* v);
 CStringW FUN_1405c2690(CStringW key, const CStringW& arg);
@@ -457,7 +457,7 @@ void UIItemRemakeOptionDialog::FUN_14129e190(ASData* pData)
                 FUN_140710590(pkt);
                 return;
             }
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemremake_error_server_not_in_inven")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemremake_error_server_not_in_inven")), 1, 1);
         }
     }
 }
@@ -499,7 +499,7 @@ void UIItemRemakeOptionDialog::FUN_14129e530(ASData* pData)
                 FUN_140710590(pkt);
                 return;
             }
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemremake_error_server_not_in_inven")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemremake_error_server_not_in_inven")), 1, 1);
         }
     }
 }
@@ -519,7 +519,7 @@ void UIItemRemakeOptionDialog::FUN_14129e950(ASData* pData)
             return;
         int lockId = FUN_140616dd0(MS2Ptr<CItem>(item));
         if (lockId == 0) {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemremake_error_server_impossible")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemremake_error_server_impossible")), 1, 1);
             return;
         }
         unsigned lockLevel = FUN_140616f10(MS2Ptr<CItem>(item));
@@ -533,7 +533,7 @@ void UIItemRemakeOptionDialog::FUN_14129e950(ASData* pData)
         }
         return;
     }
-    FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemremake_error_server_not_in_inven")), 1, 1);
+    FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemremake_error_server_not_in_inven")), 1, 1);
 }
 
 // @0x14129ed90
@@ -543,7 +543,7 @@ void UIItemRemakeOptionDialog::FUN_14129ed90(ASData* pData)
         SetState(4);
         int select = pData->FUN_1422b8a10();
         if (select == -1) {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemremake_error_server_fail_apply_option")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemremake_error_server_fail_apply_option")), 1, 1);
         } else {
             MS2Ptr<CItem>& source = (select == 0) ? m_cur : m_new;
             MS2Ptr<CItem> picked = source;
@@ -589,7 +589,7 @@ void UIItemRemakeOptionDialog::FUN_14129f360(ASData* pData)
     if (!result.FUN_1422ba9a0()) {
         unsigned char bEnable = 0;
         if (m_optionCount < 2) {
-            NOTICE(FUN_14028b8e0(CStringW(L"s_itemremake_notice_disable_lock_item_option_error_count")));
+            NOTICE(GetStringCommonByKey(CStringW(L"s_itemremake_notice_disable_lock_item_option_error_count")));
         } else {
             int lockId = FUN_140616dd0(MS2Ptr<CItem>(m_cur));
             if (lockId != 0) {
@@ -622,7 +622,7 @@ void UIItemRemakeOptionDialog::SendChangeAttributesMode4(unsigned __int64 uid)
         MS2Ptr<CItem> item = FUN_1419bef70(uid);
         if (!(item == 0)) {
             if (FUN_140526470(item.get(), m_remakeMode) == 0) {
-                FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemremake_error_server_impossible")), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemremake_error_server_impossible")), 1, 1);
                 FUN_1412a0800();
                 m_enchantAni->Invoke("initEnchantSlot");
             } else {
@@ -632,7 +632,7 @@ void UIItemRemakeOptionDialog::SendChangeAttributesMode4(unsigned __int64 uid)
                 FUN_140710590(pkt);
             }
         } else {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemremake_error_server_not_in_inven")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemremake_error_server_not_in_inven")), 1, 1);
         }
     }
 }
@@ -648,7 +648,7 @@ void UIItemRemakeOptionDialog::FUN_14129f940(CInPacket* pPacket)
     MS2Ptr<CItem> item = FUN_1419bef70(uid);
     if (!(item == 0)) {
         if (FUN_140526470(item.get(), m_remakeMode) == 0) {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemremake_error_server_impossible")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemremake_error_server_impossible")), 1, 1);
             FUN_1412a0800();
             m_enchantAni->Invoke("initEnchantSlot");
             return;
@@ -693,7 +693,7 @@ void UIItemRemakeOptionDialog::FUN_14129f940(CInPacket* pPacket)
             }
         }
     } else {
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemremake_error_server_not_in_inven")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemremake_error_server_not_in_inven")), 1, 1);
     }
 }
 
@@ -957,7 +957,7 @@ void UIItemRemakeOptionDialog::FUN_1412a1d40(unsigned __int64 uid, int nOption, 
     if (!(item == 0) && item->FUN_140527840() != 0) {
         unsigned mode = m_remakeMode;
         if (FUN_140526470(item.get(), mode) == 0) {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemremake_error_server_impossible")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemremake_error_server_impossible")), 1, 1);
             return;
         }
         if (bConfirm) {
@@ -970,7 +970,7 @@ void UIItemRemakeOptionDialog::FUN_1412a1d40(unsigned __int64 uid, int nOption, 
         if (item->FUN_140526bd0() < 5 || bHighSa != 1) {
             FUN_1412a2380(uid, nOption, bConfirm);
         } else {
-            CStringW ask = FUN_14028b8e0(CStringW(L"s_itemremake_ask_high_sa_item_option"));
+            CStringW ask = GetStringCommonByKey(CStringW(L"s_itemremake_ask_high_sa_item_option"));
             CStringW text;
             text.Append(highSa);
             text.Append(L"\n");
@@ -989,7 +989,7 @@ void UIItemRemakeOptionDialog::FUN_1412a1d40(unsigned __int64 uid, int nOption, 
         }
         return;
     }
-    FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemremake_error_server_not_in_inven")), 1, 1);
+    FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemremake_error_server_not_in_inven")), 1, 1);
 }
 
 // @0x1412a2380
@@ -999,7 +999,7 @@ void UIItemRemakeOptionDialog::FUN_1412a2380(unsigned __int64 uid, int nOption, 
     if (!(item == 0) && item->FUN_140527840() != 0) {
         unsigned mode = m_remakeMode;
         if (FUN_140526470(item.get(), mode) == 0) {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemremake_error_server_impossible")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemremake_error_server_impossible")), 1, 1);
             return;
         }
         if (bConfirm) {
@@ -1017,7 +1017,7 @@ void UIItemRemakeOptionDialog::FUN_1412a2380(unsigned __int64 uid, int nOption, 
             }
             int lockId = FUN_140616dd0(MS2Ptr<CItem>(item));
             if (lockId == 0) {
-                FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemremake_error_server_impossible")), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemremake_error_server_impossible")), 1, 1);
                 return;
             }
             unsigned lockLevel = FUN_140616f10(MS2Ptr<CItem>(item));
@@ -1039,7 +1039,7 @@ void UIItemRemakeOptionDialog::FUN_1412a2380(unsigned __int64 uid, int nOption, 
         SetState(3);
         return;
     }
-    FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemremake_error_server_not_in_inven")), 1, 1);
+    FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemremake_error_server_not_in_inven")), 1, 1);
 }
 
 // @0x1412a2a50
@@ -1125,7 +1125,7 @@ void UIItemRemakeOptionDialog::FUN_1412a30f0(CInPacket* pPacket)
     if (!(item == 0))
         FUN_1412a1790(MS2Ptr<CItem>(m_cur), MS2Ptr<CItem>(m_new));
     else
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemremake_error_server_not_in_inven")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemremake_error_server_not_in_inven")), 1, 1);
 }
 
 // @0x1412a3330

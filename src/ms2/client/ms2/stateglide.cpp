@@ -35,7 +35,7 @@ class Unk_PCBaseBodyDummy;
 class Unk_GlideHit { public: void FUN_140cfaf30(); };
 Unk_GlideHit* FUN_141240f20(Unk_PCBaseBody* pBody);
 bool FUN_14028d470(float a, float b);                      // approximately equal
-CStringW FUN_14028b8e0(const CStringW& strKey);             // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);             // string table text
 void FUN_1412751f0(const CStringW& str, int a, int b);     // 0x1412751f0 chat notice
 
 // The skill table (FUN_1401958b0): the row of a glide data id.
@@ -125,7 +125,7 @@ void StateGlide::vfunc_4(StateData* pData)
     {
         m_bTooHigh = FUN_1417ca000() == 0;
         if (m_bTooHigh && m_pOwner->vfunc_108() != 0)
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_err_skill_maximum_Height")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_err_skill_maximum_Height")), 1, 1);
     }
     ((Unk_GlideBody*)m_pOwner->FUN_14166d220())->FUN_141240730();
     MyPC* pPC = FUN_1417b84b0();
@@ -361,7 +361,7 @@ efd::Point3 StateGlide::FUN_1417c9c00()
     {
         m_bHeightErr = FUN_1417ca000() == 0;
         if (m_bHeightErr == true && m_pOwner->vfunc_108() != 0)
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_err_skill_maximum_Height")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_err_skill_maximum_Height")), 1, 1);
     }
     if (!m_bHeightErr)
         fSway = fBase + fFall + fSway;

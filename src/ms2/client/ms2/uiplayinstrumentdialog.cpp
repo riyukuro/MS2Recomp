@@ -378,7 +378,7 @@ void FUN_141b706a0(int nMs, int& nMin, int& nSec, int& nCenti);            // sp
 __int64 FUN_141b71960(const char* sz);                                      // text -> uid
 CStringW FUN_141b71910(__int64 nUid);                                       // uid -> text
 CString FUN_1402bb1c0(const char* szFormat, const int* pn);                 // format one int
-CStringW FUN_14028b8e0(const CStringW& strKey);                             // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_140298ea0(CStringW strKey);                             // notice text
 CStringW FUN_14083dc40(const wchar_t* szFormat, int n1, int n2);            // format two ints
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);     // string table format
@@ -582,7 +582,7 @@ int UIPlayInstrumentDialog::vfunc_71()
 {
     if (!FUN_140c8dac0()->FUN_140d07350())
         return 0;
-    FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_play_instrument_ui_ask_close_while_playing_score")), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
+    FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_play_instrument_ui_ask_close_while_playing_score")), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
     return 1;
 }
 
@@ -858,13 +858,13 @@ void UIPlayInstrumentDialog::FUN_14100c2c0()
         float fProgress = 0.0f;
         CStringW strGrade(L"");
         if (nLevel == 1)
-            strGrade = FUN_14028b8e0(CStringW(L"s_play_instrument_grade_Lv1"));
+            strGrade = GetStringCommonByKey(CStringW(L"s_play_instrument_grade_Lv1"));
         else if (nLevel == 2)
-            strGrade = FUN_14028b8e0(CStringW(L"s_play_instrument_grade_Lv2"));
+            strGrade = GetStringCommonByKey(CStringW(L"s_play_instrument_grade_Lv2"));
         else if (nLevel == 3)
-            strGrade = FUN_14028b8e0(CStringW(L"s_play_instrument_grade_Lv3"));
+            strGrade = GetStringCommonByKey(CStringW(L"s_play_instrument_grade_Lv3"));
         else if (nLevel == 4)
-            strGrade = FUN_14028b8e0(CStringW(L"s_play_instrument_grade_Lv4"));
+            strGrade = GetStringCommonByKey(CStringW(L"s_play_instrument_grade_Lv4"));
         if (nLevel == 4)
         {
             strProgress = L"MAX";
@@ -901,7 +901,7 @@ int UIPlayInstrumentDialog::OnPlayNote()
     }
     if (bEmpty)
     {
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_play_instrument_ui_need_score")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_play_instrument_ui_need_score")), 0, 0, CStringW(L""));
         return 0;
     }
     m_bStop = 0;
@@ -991,7 +991,7 @@ void UIPlayInstrumentDialog::FUN_14100ca90(int nIndex, MS2Ptr<CItem> spItem)
             strWriterText = FUN_1405c2690(CStringW(L"s_play_instrument_ui_score_info_writer"), strWriter);
         int nMin, nSec, nCenti;
         FUN_141b706a0((int)((float)nDuration / 1000.0f) * 1000, nMin, nSec, nCenti);
-        CStringW strTime = FUN_14083dc40(FUN_14028b8e0(CStringW(L"s_writemusic_text_playtimer_cur")), nMin, nSec);
+        CStringW strTime = FUN_14083dc40(GetStringCommonByKey(CStringW(L"s_writemusic_text_playtimer_cur")), nMin, nSec);
         slot.FUN_1407cbb20("title", FUN_1405c2690(CStringW(L"s_play_instrument_ui_score_info_title"), strTitle));
         slot.FUN_1407cbb20("writer", CStringW(strWriterText));
         slot.FUN_1407cbb20("recommendInstrument", FUN_1405c2690(CStringW(L"s_play_instrument_ui_score_info_instrument"), strInstrument));
@@ -1123,10 +1123,10 @@ void UIPlayInstrumentDialog::FUN_14100da10()
         int nTotal = m_nEndTick - m_nStartTick;
         int nMin, nSec, nCenti;
         FUN_141b706a0(nElapsed, nMin, nSec, nCenti);
-        CStringW strCur = FUN_14083dc40(FUN_14028b8e0(CStringW(L"s_writemusic_text_playtimer_cur")), nMin, nSec);
+        CStringW strCur = FUN_14083dc40(GetStringCommonByKey(CStringW(L"s_writemusic_text_playtimer_cur")), nMin, nSec);
         int nTotalMin, nTotalSec, nTotalCenti;
         FUN_141b706a0(nTotal, nTotalMin, nTotalSec, nTotalCenti);
-        CStringW strTotal = FUN_14083dc40(FUN_14028b8e0(CStringW(L"s_writemusic_text_playtimer_total")), nTotalMin, nTotalSec);
+        CStringW strTotal = FUN_14083dc40(GetStringCommonByKey(CStringW(L"s_writemusic_text_playtimer_total")), nTotalMin, nTotalSec);
         CStringW strText = FUN_140656190(L"{0} {1}", strCur, strTotal);
         spTime->FUN_1422c4cd0(strText);
         if ((m_nCurrent < 3 || m_nCurrent >= 0) && m_spFold.get() && m_spScores[m_nCurrent].get())
@@ -1254,15 +1254,15 @@ void UIPlayInstrumentDialog::FUN_14100e9a0(int nMode)
             spPlay->vfunc_3(1);
             spTime->vfunc_3(0);
             if (m_nKind == 0)
-                spPlay->FUN_1422cdfb0(FUN_14028b8e0(CStringW(L"s_play_instrument_ui_button_play_solo")));
+                spPlay->FUN_1422cdfb0(GetStringCommonByKey(CStringW(L"s_play_instrument_ui_button_play_solo")));
             else if (m_nKind == 1)
             {
                 if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0)
                     return;
                 if (!FUN_14162ab60(FUN_1409670d0()))
-                    spPlay->FUN_1422cdfb0(FUN_14028b8e0(CStringW(L"s_play_instrument_ui_button_ready_ensemble")));
+                    spPlay->FUN_1422cdfb0(GetStringCommonByKey(CStringW(L"s_play_instrument_ui_button_ready_ensemble")));
                 else
-                    spPlay->FUN_1422cdfb0(FUN_14028b8e0(CStringW(L"s_play_instrument_ui_button_play_ensemble")));
+                    spPlay->FUN_1422cdfb0(GetStringCommonByKey(CStringW(L"s_play_instrument_ui_button_play_ensemble")));
             }
         }
         else if (nMode == 2)
@@ -1271,9 +1271,9 @@ void UIPlayInstrumentDialog::FUN_14100e9a0(int nMode)
             spPlay->vfunc_3(0);
             spTime->vfunc_3(0);
             if (m_nKind == 0)
-                spStop->FUN_1422cdfb0(FUN_14028b8e0(CStringW(L"s_play_instrument_ui_button_stop_solo")));
+                spStop->FUN_1422cdfb0(GetStringCommonByKey(CStringW(L"s_play_instrument_ui_button_stop_solo")));
             else if (m_nKind == 1)
-                spStop->FUN_1422cdfb0(FUN_14028b8e0(CStringW(L"s_play_instrument_ui_button_stop_ready_ensemble")));
+                spStop->FUN_1422cdfb0(GetStringCommonByKey(CStringW(L"s_play_instrument_ui_button_stop_ready_ensemble")));
         }
         else if (nMode == 3)
         {
@@ -1281,9 +1281,9 @@ void UIPlayInstrumentDialog::FUN_14100e9a0(int nMode)
             spPlay->vfunc_3(0);
             spTime->vfunc_3(1);
             if (m_nKind == 0)
-                spStop->FUN_1422cdfb0(FUN_14028b8e0(CStringW(L"s_play_instrument_ui_button_stop_solo")));
+                spStop->FUN_1422cdfb0(GetStringCommonByKey(CStringW(L"s_play_instrument_ui_button_stop_solo")));
             else if (m_nKind == 1)
-                spStop->FUN_1422cdfb0(FUN_14028b8e0(CStringW(L"s_play_instrument_ui_button_stop_ensemble")));
+                spStop->FUN_1422cdfb0(GetStringCommonByKey(CStringW(L"s_play_instrument_ui_button_stop_ensemble")));
         }
         FUN_14100f1f0();
     }

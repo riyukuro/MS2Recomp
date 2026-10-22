@@ -231,8 +231,8 @@ void FUN_141349f30(CStringW& strOut, int nType, int nToken, int nPrice, const CS
 void FUN_1412761e0(MS2Ptr<AScript> spRoot, int bEnable);    // enable the shop movie
 bool FUN_1406a5930();                                       // the star point event is running
 unsigned __int64 FUN_140718350(const CString& s);           // _atoi64
-CStringW FUN_14028b8e0(const CStringW& strKey);             // string table text
-CStringTable* FUN_1401a9d70();
+CStringW GetStringCommonByKey(const CStringW& strKey);             // string table text
+CStringTable* GetStringTable();
 CLogString* GetLogString();
 
 // The unit's two-argument log call (FMT_VARIADIC wrapper over CLogString::FUN_1406530d0).
@@ -442,7 +442,7 @@ CMeratMarketPremiumProduct* FUN_1412e1890(const MS2Ptr<CMeratMarketPremiumProduc
 CStringW FUN_140ec05f0(CMeratMarketPremiumProduct* pProduct);           // UIMeratMarketCommon: the star point text
 bool FUN_140ebfb90(CMeratMarketPremiumProduct* pProduct, bool bNotify); // UIMeratMarketCommon: the achievement requirement is met
 CStringW FUN_14093bad0(int nAchieveId, int nGrade, CStringW strFormat); // the required achievement text
-CStringW FUN_14028de60(int nId);                                        // a common string
+CStringW GetStringCommon(int nId);                                        // a common string
 
 CStringW FUN_140719630(int nCount);                                     // the item count text ("" for 1)
 CStringW FUN_14062b4f0(CStringW strKey, const int& n);                  // string table format (one int)
@@ -891,7 +891,7 @@ void UIShopDialog::OnLoadComplete()
         data.FUN_1407cba60("strGender", strGender);
     data.FUN_1407cbbe0("checkEnableItems", m_bCheckEnableItems);
     {
-        CStringW strTitle = FUN_1401a9d70()->FUN_141811980(0x53, m_nShopId);
+        CStringW strTitle = GetStringTable()->FUN_141811980(0x53, m_nShopId);
         bool bDebug = FUN_14116d720(FUN_14025e7c0());
         if (strTitle.IsEmpty()) {
             if (m_nShopType == 2) {
@@ -918,7 +918,7 @@ void UIShopDialog::OnLoadComplete()
         CStringW strNotice;
         if (m_nShopType == 3) {
             CStringW strKey(L"s_shop_text_notice_pssb");
-            strNotice = FUN_14028b8e0(strKey);
+            strNotice = GetStringCommonByKey(strKey);
         }
         data.FUN_1407cbb20("notice", strNotice);
         if (m_nShopType == 4) {
@@ -975,7 +975,7 @@ void UIShopDialog::OnLoadComplete()
     CStringW strNotice;
     if (m_bResetByAccount) {
         CStringW strKey(L"s_shop_notice_reset_by_account");
-        strNotice = FUN_14028b8e0(strKey);
+        strNotice = GetStringCommonByKey(strKey);
     }
     reset.FUN_1407cbb20("resetNotice", strNotice);
     bool bVisible = m_bHideReset == 0;
@@ -1047,7 +1047,7 @@ int UIShopDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                             spBox->FUN_140533ff0(nSerial);
                             spBox->FUN_140533ff0(nCount);
                             spBox->FUN_141a01800(2);
-                            spBox->FUN_141a024e0(FUN_14028de60(0x9d1), 0);
+                            spBox->FUN_141a024e0(GetStringCommon(0x9d1), 0);
                             spBox->SetAgreement(0);
                             spBox->FUN_141a02770(0x1c0, 400);
                             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIShopDialog::ConfirmUgcPurchase));
@@ -1294,7 +1294,7 @@ void UIShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
                 strText = FUN_1408116a0(0x307, (int&)nSecs);
             if (m_bResetByAccount) {
                 CStringW strKey(L"s_shop_tooltip_notice_reset_by_account");
-                strText.Append(FUN_14028b8e0(strKey));
+                strText.Append(GetStringCommonByKey(strKey));
             }
             ASTooltip tip(1, 2);
             if (tip.FUN_1409e26b0(strText)) {
@@ -1314,7 +1314,7 @@ void UIShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         }
         else {
             CStringW strKey(L"s_shop_tooltip_reset");
-            strText = FUN_14028b8e0(strKey);
+            strText = GetStringCommonByKey(strKey);
         }
         ASTooltip tip(1, 2);
         if (tip.FUN_1409e26b0(strText)) {
@@ -1324,7 +1324,7 @@ void UIShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     }
     else if (strName == "m_coinInfo") {
         int nCoin = FUN_14052d230()->FUN_14059e550(m_nShopId);
-        CStringW strText = FUN_1401a9d70()->FUN_141811980(1, nCoin);
+        CStringW strText = GetStringTable()->FUN_141811980(1, nCoin);
         int nBox = FUN_14052d230()->FUN_14059ebb0(nCoin);
         GachaBoxDataPtr spBox = FUN_14052d230()->FUN_14059e340(nBox);
         if (spBox == 0)
@@ -1816,7 +1816,7 @@ void UIShopDialog::ReadResetResult(CInPacket& packet)
         unsigned nCount = packet.vfunc_o8_3();
         if (nItemId > 0 && nCount > 0)
         {
-            CStringW strText = FUN_140b99450(CStringW(L"s_shop_reset_refund_item"), FUN_1401a9d70()->FUN_141811980(1, nItemId), (int&)nCount);
+            CStringW strText = FUN_140b99450(CStringW(L"s_shop_reset_refund_item"), GetStringTable()->FUN_141811980(1, nItemId), (int&)nCount);
             if (!strText.IsEmpty())
                 FUN_1412751f0(strText, 1, 1);
         }
@@ -1895,7 +1895,7 @@ void UIShopDialog::ReadPurchaseResult(CInPacket& packet)
     if (bGuildStorage)
     {
         CStringW strText;
-        CStringW strName = FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(1, nItemId), nRank);
+        CStringW strName = FUN_14183e9c0(GetStringTable()->FUN_141811980(1, nItemId), nRank);
         if (nCount > 1)
             strText = FUN_140bfa7f0(CStringW(L"s_msg_take_item_count_to_guild_storage"), strName, nCount);
         else
@@ -1936,7 +1936,7 @@ void UIShopDialog::ReadShopError(CInPacket& packet)
         FUN_141275260(0x5b, 1, 1);
         break;
     case 20:
-        FUN_1412751f0(FUN_14028b8e0(L"s_err_lack_guild_require_date"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_err_lack_guild_require_date"), 1, 1);
         break;
     case 4:
     case 5:
@@ -1965,33 +1965,33 @@ void UIShopDialog::ReadShopError(CInPacket& packet)
         FUN_141275260(0xc07, 1, 1);
         break;
     case 24:
-        FUN_1412751f0(FUN_14028b8e0(L"s_msg_cant_sell_to_only_sell_shop"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_msg_cant_sell_to_only_sell_shop"), 1, 1);
         break;
     case 25:
         FUN_1412751f0(FUN_140a228f0(0x688, *TSingleton<Client::Constants>::GetInstance()->PropertyProtectionTime.Get(), FUN_1409eec40(0x5a3)), 1, 1);
         break;
     case 26:
-        FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_buy_no_master"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_buy_no_master"), 1, 1);
         break;
     case 27:
         FUN_14134a120(7, 0, 0);
         break;
     case 28:
-        FUN_1412751f0(FUN_14028b8e0(L"s_err_invalid_item_cannot_buy_by_period"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_err_invalid_item_cannot_buy_by_period"), 1, 1);
         break;
     case 29:
         break;
     case 30:
-        FUN_140d73aa0(FUN_14028b8e0(L"s_shop_no_star_point_event"), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_shop_no_star_point_event"), 0, 0, CStringW(L""));
         break;
     case 32:
-        FUN_1412751f0(FUN_14028b8e0(L"s_meratmarket_error_country_limit"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_meratmarket_error_country_limit"), 1, 1);
         break;
     case 31:
-        FUN_1412751f0(FUN_14028b8e0(L"s_shop_err_change_reset_price"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_shop_err_change_reset_price"), 1, 1);
         break;
     case 33:
-        FUN_1412751f0(FUN_14028b8e0(L"s_err_cannot_sell_petitem_summon"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_err_cannot_sell_petitem_summon"), 1, 1);
         break;
     default:
     {
@@ -2135,24 +2135,24 @@ bool UIShopDialog::CanSellItem(MS2Ptr<CItem> spItem)
         return false;
     }
     if (IsSellOnly() == 1) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_msg_cant_sell_to_only_sell_shop"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_msg_cant_sell_to_only_sell_shop"), 1, 1);
         return false;
     }
     if (!HasStarEvent()) {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_shop_no_star_point_event"), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_shop_no_star_point_event"), 0, 0, CStringW(L""));
         return false;
     }
     if (FUN_140535310() && FUN_140535310()->FUN_140613160(FUN_14052cd70(&spItem)) == 0)
         return false;
     CItemSocket* pSocket = spItem->FUN_1405279c0();
     if (pSocket && pSocket->FUN_140622720() == 0) {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_itembreak_usedgemstone_item"), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_itembreak_usedgemstone_item"), 0, 0, CStringW(L""));
         return false;
     }
     if (FUN_14053cd10(spItem->FUN_140527840())) {
         __int64 nPlaying = FUN_140c8dab0(FUN_140c8dac0());
         if (nPlaying == spItem->FUN_140526a50()) {
-            FUN_140d73aa0(FUN_14028b8e0(L"s_play_instrument_cant_destory_score"), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_cant_destory_score"), 0, 0, CStringW(L""));
             return false;
         }
     }
@@ -2466,7 +2466,7 @@ MS2_REPLACE_METHOD(0x141AFD840, UIShopDialog, ChangeTab, 146, 0x56C7DCFF);
 void UIShopDialog::BuyProduct(int nSerial, unsigned nQuantity)
 {
     if (!HasStarEvent()) {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_shop_no_star_point_event"), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_shop_no_star_point_event"), 0, 0, CStringW(L""));
         return;
     }
     MS2Ptr<CNpcShopProductCli> spProduct = dynamic_cast<CNpcShopProductCli*>((CNpcShopProductBase*)FindCurrentProduct(nSerial));
@@ -2515,7 +2515,7 @@ MS2_REPLACE_METHOD(0x141afd8e0, UIShopDialog, BuyProduct, 1403, 0xD7C2A581);
 void UIShopDialog::BuyMeratItem(int nSerial, unsigned nQuantity, AScript& source)
 {
     if (!HasStarEvent()) {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_shop_no_star_point_event"), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_shop_no_star_point_event"), 0, 0, CStringW(L""));
         return;
     }
     MS2Ptr<CNpcShopMeratItemCli> spItem = FindMeratItem(nSerial);
@@ -2958,7 +2958,7 @@ int UIShopDialog::PopulateProduct(ASSlot& data, MS2Ptr<CNpcShopProductCli> spPro
         if (!FUN_141b04a10(spProduct.operator->(), false)) {
             int nAchieve = spProduct->m_64;
             int nGrade = spProduct->m_68;
-            CStringW strFormat = FUN_14028de60(0x308);
+            CStringW strFormat = GetStringCommon(0x308);
             data.FUN_1407cbb20("requireAchieve", FUN_14093bad0(nAchieve, nGrade, strFormat));
         }
         if (!FUN_141b04c30(spProduct.operator->(), false)) {
@@ -2974,7 +2974,7 @@ int UIShopDialog::PopulateProduct(ASSlot& data, MS2Ptr<CNpcShopProductCli> spPro
                 if (spNpc == 0)
                     return 0;
                 CStringW strText = FUN_140bfa7f0(CStringW(L"s_shop_require_guild_npc_level"),
-                                                 FUN_1401a9d70()->FUN_141811980(0x3f, spNpc->f30), nLevel);
+                                                 GetStringTable()->FUN_141811980(0x3f, spNpc->f30), nLevel);
                 data.FUN_1407cbb20("m_requireGuildNpc", strText);
             }
         }
@@ -3064,7 +3064,7 @@ int UIShopDialog::PopulateMerat(ASSlot& data, MS2Ptr<CNpcShopMeratItemCli> spIte
         if (!strStar.IsEmpty())
             data.FUN_1407cbb20("starPoint", strStar);
         if (!FUN_140ebfb90(FUN_1412e1890(&spPremium), false)) {
-            CStringW strFormat = FUN_14028de60(0x308);
+            CStringW strFormat = GetStringCommon(0x308);
             data.FUN_1407cbb20("requireAchieve", FUN_14093bad0(spPremium->m_nf8, spPremium->m_nfc, strFormat));
         }
         (void)nLimit;
@@ -3090,7 +3090,7 @@ int UIShopDialog::PopulateNewProduct(ASSlot& data, MS2Ptr<CNpcShopProductNewCli>
         data.FUN_1407cb9c0("serialID", spProduct->FUN_140db5e70());
         data.FUN_1409c0e60("itemCount", L"");
         unsigned nColor = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTextColor((ItemGradeKey)nRarity);
-        CStringW strLabel = FUN_14183e930(FUN_1401a9d70()->FUN_141811980(1, nItemId), nColor);
+        CStringW strLabel = FUN_14183e930(GetStringTable()->FUN_141811980(1, nItemId), nColor);
         data.FUN_1407cbb20("label", strLabel);
         static_cast<Unk_ShopRowObj&>(static_cast<ASObj&>(data)).FUN_141b07000("productType", spProduct->FUN_140db5ee0());
         data.FUN_140fbd930("saleTag", spProduct->vfunc_2());
@@ -3208,7 +3208,7 @@ void UIShopDialog::ShowPurchaseBill(MS2Ptr<CNpcShopProductCli> spProduct, unsign
         if (spBox.get() != 0) {
             m_selection.Set(nSerial, nQuantity, 4);
             int nUnit = spProduct->m_b8;
-            spBox->SetTitle(FUN_14028de60(0x45f));
+            spBox->SetTitle(GetStringCommon(0x45f));
             spBox->FUN_141a01700(0x47d, 0x476, 0);
             MS2Ptr<CMsgBoxDataItem> spData = new CMsgBoxDataItem();
             int nRarity = spItem->FUN_140526bd0();
@@ -3277,9 +3277,9 @@ CStringW UIShopDialog::GetTalk(int nShop, bool bWelcome)
     unsigned nTextId = FUN_1404271c0(FUN_140302b00()->GetNpcShopTalk(), nShop);
     CStringW strText;
     if (nTextId > 0)
-        strText = FUN_1401a9d70()->FUN_141811980(0x40, nTextId);
+        strText = GetStringTable()->FUN_141811980(0x40, nTextId);
     else if (bWelcome == 1)
-        strText = FUN_14028b8e0(L"s_shop_npc_talk_welcome");
+        strText = GetStringCommonByKey(L"s_shop_npc_talk_welcome");
     return strText;
 }
 MS2_REPLACE_METHOD(0x141B03470, UIShopDialog, GetTalk, 322, 0xC10E22FB);
@@ -3612,7 +3612,7 @@ bool FUN_141b047f0(CNpcShopProductCli* pProduct, bool bNotify)
     __int64 tNow = FUN_140869440();
     if (tNow < spMember->fc8 + 604800) {
         if (bNotify)
-            FUN_1412751f0(FUN_14028b8e0(L"s_err_lack_guild_require_date"), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_err_lack_guild_require_date"), 1, 1);
         return false;
     }
     if (nHave < nTrophy) {
@@ -3681,7 +3681,7 @@ bool FUN_141b04c30(CNpcShopProductCli* pProduct, bool bNotify)
         return false;
     unsigned nExp = FUN_1403ed290()->FUN_1404d0ff0();
     int nLevel = FUN_1403ed290()->FUN_1404d3180()->FUN_1404c6110(nExp);
-    CStringW strRank = FUN_1401a9d70()->FUN_141811980(0x2d, nRank);
+    CStringW strRank = GetStringTable()->FUN_141811980(0x2d, nRank);
     if (nLevel < nRank) {
         if (bNotify)
             FUN_1412751f0(FUN_14052bd00(0x5d, strRank), 1, 1);
@@ -3717,7 +3717,7 @@ bool FUN_141b04ed0(CNpcShopProductCli* pProduct, bool bNotify)
     int nGuildLevel = FUN_1403ed290()->FUN_1404d2990(nNpc);
     if (nLevel > nGuildLevel) {
         if (bNotify)
-            FUN_1412751f0(FUN_14028b8e0(L"s_err_lack_guild_npc_level"), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_err_lack_guild_npc_level"), 1, 1);
         return false;
     }
     return true;
@@ -3734,7 +3734,7 @@ bool FUN_141b04fd0(CNpcShopProductCli* pProduct, bool bNotify)
             return false;
         if (FUN_1403ed290()->FUN_1413b6160() == 0 || FUN_1403ed290()->FUN_1404d01b0(pPlayer->vfunc_77()) == 0) {
             if (bNotify)
-                FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_buy_no_master"), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_buy_no_master"), 1, 1);
             return false;
         }
     }

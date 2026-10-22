@@ -120,7 +120,7 @@ void FUN_140da4fe0(void* pObj, MS2Ptr<NotifyObject> spNotify);
 CServerListTable* FUN_1414a5790();
 int FUN_1406c34c0();                                            // the Nexon platform is active
 int FUN_14092f640();
-CStringW FUN_14028de60(int nStringId);                          // string table text by id
+CStringW GetStringCommon(int nStringId);                          // string table text by id
 CStringW FUN_1408116a0(int nId, const int& n);                  // formatted notice text
 void FUN_140d73aa0(CStringW strText, int a, int b, CStringW strTag);
 extern CStringW DAT_143af62c0;
@@ -751,7 +751,7 @@ void UIServerListDialog::FUN_141ad3370(ASArray& array, int* pnSelected, int nSel
         ATL::CRBMap<int, MS2Ptr<CMultiServerChannel> >* pChannels = &server->m_channels;
         if (!pChannels->IsEmpty()) {
             CStringW strPattern(L"{0} {1}");
-            CStringW strChannel = FUN_14028de60(0x579);
+            CStringW strChannel = GetStringCommon(0x579);
             POSITION pos = pChannels->GetHeadPosition();
             while (pos != 0) {
                 MS2Ptr<CMultiServerChannel> channel(pChannels->GetValueAt(pos));

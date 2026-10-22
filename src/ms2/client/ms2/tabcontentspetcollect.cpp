@@ -97,8 +97,8 @@ void FUN_1409b4bc0(Scaleform::GFx::Value* pDst, const Scaleform::GFx::Value& src
 CPetDataTable* FUN_14052d210();
 CPetManager* FUN_140535320();
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-CStringTable* FUN_1401a9d70();
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringTable* GetStringTable();
+CStringW GetStringCommonByKey(const CStringW& str);
 CStringW FUN_14062b4f0(CStringW fmt, const int& n);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_140938ae0(CStringW strKey, const unsigned& n);
@@ -239,7 +239,7 @@ void TabContentsPetCollect::FUN_140cac8a0()
     {
         ASArray arrTabs(2);
         ASObj objAll(2);
-        objAll.FUN_1407cbb20("tabName", FUN_14028b8e0(CStringW(L"s_pet_collect_total_category")));
+        objAll.FUN_1407cbb20("tabName", GetStringCommonByKey(CStringW(L"s_pet_collect_total_category")));
         objAll.FUN_1407cb9c0("groupId", 0);
         arrTabs.FUN_1422bc050(Scaleform::GFx::Value(objAll.FUN_1422bb870()));
         std::map<int, std::vector<unsigned> >& rGroups = FUN_14052d210()->GetCollect()->GroupPets();
@@ -251,7 +251,7 @@ void TabContentsPetCollect::FUN_140cac8a0()
             if (!(spInfo == 0))
             {
                 ASObj objTab(2);
-                objTab.FUN_1407cbb20("tabName", FUN_1401a9d70()->FUN_141811980(0x41, it->first));
+                objTab.FUN_1407cbb20("tabName", GetStringTable()->FUN_141811980(0x41, it->first));
                 objTab.FUN_1407cb9c0("groupId", it->first);
                 arrTabs.FUN_1422bc050(Scaleform::GFx::Value(objTab.FUN_1422bb870()));
             }
@@ -326,7 +326,7 @@ void TabContentsPetCollect::FUN_140cacce0()
         {
             ASObj objData(2);
             objData.FUN_1407cb9c0("groupId", 0);
-            objData.FUN_1407cbb20("name", FUN_14028b8e0(CStringW(L"s_pet_collect_total_category")));
+            objData.FUN_1407cbb20("name", GetStringCommonByKey(CStringW(L"s_pet_collect_total_category")));
             ASArray arrPets(2);
             while (it != itEnd)
             {
@@ -360,7 +360,7 @@ void TabContentsPetCollect::FUN_140cad2b0(int nGroup)
             std::stable_sort(vecPets.begin(), vecPets.end());
             ASObj objData(2);
             objData.FUN_1407cb9c0("groupId", nGroup);
-            objData.FUN_1407cbb20("name", FUN_1401a9d70()->FUN_141811980(0x41, it->first));
+            objData.FUN_1407cbb20("name", GetStringTable()->FUN_141811980(0x41, it->first));
             ASArray arrPets(2);
             for (size_t i = 0; i < vecPets.size(); i++)
             {
@@ -418,13 +418,13 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
         if (nGrade == 0)
             nShown = 1;
         CStringW strTip = FUN_14183e9c0(FUN_1405c2690(CStringW(L"s_pet_collect_pet_tooltip_pet_name"),
-            FUN_1401a9d70()->FUN_141811980(0x3b, spPet->GetId())), nShown);
+            GetStringTable()->FUN_141811980(0x3b, spPet->GetId())), nShown);
         if (spPet->m_nType == 1)
-            strTip += FUN_14028b8e0(CStringW(L"s_pet_collect_pet_tooltip_battle_pet"));
+            strTip += GetStringCommonByKey(CStringW(L"s_pet_collect_pet_tooltip_battle_pet"));
         else if (spPet->m_nType == 0)
-            strTip += FUN_14028b8e0(CStringW(L"s_pet_collect_pet_tooltip_default_pet"));
+            strTip += GetStringCommonByKey(CStringW(L"s_pet_collect_pet_tooltip_default_pet"));
         if (0 < nGrade)
-            strTip += FUN_1405c2690(CStringW(L"s_pet_collect_pet_tooltip_my_grade"), FUN_1401a9d70()->FUN_141813150(nGrade));
+            strTip += FUN_1405c2690(CStringW(L"s_pet_collect_pet_tooltip_my_grade"), GetStringTable()->FUN_141813150(nGrade));
         strTip += FUN_140938ae0(CStringW(L"s_pet_collect_pet_tooltip_limit_level"), spData->limit.levelLimit);
         {
             CStringW strPlace;
@@ -447,7 +447,7 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
                         {
                             if (!strPlace.IsEmpty())
                                 strPlace += ", ";
-                            strPlace += FUN_1401a9d70()->FUN_141811980(3, *pField);
+                            strPlace += GetStringTable()->FUN_141811980(3, *pField);
                         }
                     }
                 }
@@ -476,7 +476,7 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
                         {
                             if (!strPlace.IsEmpty())
                                 strPlace += ", ";
-                            strPlace += FUN_1401a9d70()->FUN_141811980(3, *pField);
+                            strPlace += GetStringTable()->FUN_141811980(3, *pField);
                         }
                     }
                 }

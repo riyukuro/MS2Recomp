@@ -127,7 +127,7 @@ unsigned char FUN_140bcc0c0(RList* p, int n);                               // h
 Unk_RListCtl* FUN_140bcc3f0(RList* p);
 unsigned char FUN_140ba28d0(MS2Ptr<AScript>* p, int n);
 Unk_StrTable* FUN_1401a9d70();
-CStringW FUN_14028b8e0(const CStringW& strKey);                             // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 void FUN_1412751f0(const CStringW& strText, int a, int b);                  // notice
 CStringW FUN_1409404f0(__int64 n);                                          // number to text
 CStringW FUN_14052bd00(int nId, const CStringW& strArg);                    // string with one argument
@@ -280,7 +280,7 @@ void UIWeddingHallReservationPageSelect::vfunc_6()
     if (FUN_140fdca20(m_pDialog) == 0)
     {
         CStringW strKey(L"s_wedding_hall_reservation_select_hall");
-        FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
     }
     else
     {
@@ -304,7 +304,7 @@ CString UIWeddingHallReservationPageSelect::vfunc_8()
 CStringW UIWeddingHallReservationPageSelect::vfunc_9()
 {
     CStringW strKey(L"s_wedding_reservation_select_page");
-    return FUN_14028b8e0(strKey);
+    return GetStringCommonByKey(strKey);
 }
 
 // @0x140fe4e50
@@ -313,10 +313,10 @@ CStringW UIWeddingHallReservationPageSelect::vfunc_10(bool bStart)
     if (bStart)
     {
         CStringW strPrev(L"s_wedding_reservation_prev");
-        return FUN_14028b8e0(strPrev);
+        return GetStringCommonByKey(strPrev);
     }
     CStringW strNext(L"s_wedding_reservation_next");
-    return FUN_14028b8e0(strNext);
+    return GetStringCommonByKey(strNext);
 }
 
 // @0x140fe4f10
@@ -357,7 +357,7 @@ void FUN_140fe4fb0(UIWeddingHallReservationPageSelect* pPage, int nSlotId)
     int nNameId = FUN_1409023c0()->FUN_140908d50(FUN_1409020f0(&hall)->m_nId, FUN_1409020e0(&slot)->m_nId, bFlag);
     data.FUN_1407cbb20("name", FUN_1401a9d70()->FUN_141811980(3, nNameId));
     data.FUN_1407cba60("video", CString(FUN_1409020e0(&slot)->m_strVideo));
-    data.FUN_1407cbb20("desc", FUN_14028b8e0(FUN_1409020e0(&slot)->m_strDesc));
+    data.FUN_1407cbb20("desc", GetStringCommonByKey(FUN_1409020e0(&slot)->m_strDesc));
     data.FUN_1407cb9c0("grade", FUN_1409020e0(&slot)->m_nGrade);
     __int64 nPrice = FUN_140fe5520(pPage, nHallId, nSlotId);
     ASObj item(2);

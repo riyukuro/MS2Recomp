@@ -35,7 +35,7 @@ static CString s_strReportOpen("System_ReportOpen");
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
 __int64 FUN_140869440();                                        // the server time
 void FUN_141275260(int nStringId, int nA, int nB);              // system message
-CStringW FUN_14028de60(int nStringId);                          // string table text by id
+CStringW GetStringCommon(int nStringId);                          // string table text by id
 CStringW FUN_1409eec40(int nStringId);                          // string table text by id
 void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag);   // open a message box
 void FUN_14028cd00(const CStringW& strText, CAtlArray<CStringW>& arrOut, const wchar_t* pszSep, int nMax);   // split
@@ -180,7 +180,7 @@ int UIReportDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                         }
                         else
                         {
-                            FUN_140d73aa0(FUN_14028de60(0x8ac), 0, 0, CStringW(L""));
+                            FUN_140d73aa0(GetStringCommon(0x8ac), 0, 0, CStringW(L""));
                         }
                     }
                 }
@@ -189,7 +189,7 @@ int UIReportDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     if (FUN_141ab9d70(m_strMethod, m_nFlags, m_strText) == true)
                         vfunc_67();
                     else
-                        FUN_140d73aa0(FUN_14028de60(0x8ac), 0, 0, CStringW(L""));
+                        FUN_140d73aa0(GetStringCommon(0x8ac), 0, 0, CStringW(L""));
                 }
             }
         }
@@ -441,7 +441,7 @@ void UIReportDialog::FUN_141aba110(CString strMethod, unsigned int nFlags)
             Unk_BuddyRequest request;
             request.protocol = 5;
             request.name = m_strTarget;
-            request.memo = FUN_14028de60(0x8af);
+            request.memo = GetStringCommon(0x8af);
             request.id = nBuddyId;
             FUN_14097a780()->FUN_140ae4820(request);
         }

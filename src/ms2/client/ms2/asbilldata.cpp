@@ -48,7 +48,7 @@ CString FUN_140719190(unsigned int n);                          // an unsigned n
 __int64 FUN_1407182f0(const CString& s);                        // text -> __int64
 int FUN_140718170(const CString& s);                            // text -> int
 CStringW FUN_1418fec00(int nMoneyType, __int64 nAmount, bool bIcon);   // a money text (uicommon.cpp)
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // the string-table text of a key (commonutil.cpp)
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // the string-table text of a key (commonutil.cpp)
 CStringW FUN_1409404f0(__int64 nValue);                         // a number with separators (achievemanager.cpp)
 MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);              // the item data of an id
 bool FUN_1406a5930();                                           // star points are enabled (meratmarketbasketinfo.cpp)
@@ -597,7 +597,7 @@ void ASBillData::FUN_1409ad420(ASArray& arr, int nCurrency, CDBPremiumProduct* p
     CStringW strPrice;
     if (nPrice > nSalePrice && 0 < nPrice)
     {
-        CStringW strFormat = FUN_14028b8e0(L"s_meratmarket_bill_sale_off");
+        CStringW strFormat = GetStringCommonByKey(L"s_meratmarket_bill_sale_off");
         int nPercent = (int)((nPrice - nSalePrice) * 100 / nPrice);
         if (0 < nPercent)
         {

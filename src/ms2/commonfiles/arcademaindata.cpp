@@ -43,14 +43,14 @@ bool FUN_14028f710(Unk_140165cf0* pElem);                               // the e
 class Unk_1401a9d70 { public: CStringW FUN_141811980(int nTable, int nId); };
 extern Unk_1401a9d70* DAT_143aac298;
 // @0x1401a9d70
-inline Unk_1401a9d70* FUN_1401a9d70() { return DAT_143aac298; }
+inline Unk_1401a9d70* GetStringTable() { return DAT_143aac298; }
 
 // @0x1401aa6a0
 // The npc's display name: "<title> <name>", or the name alone when the npc has no title (string tables 0x13 and 2).
 inline CStringW FUN_1401aa6a0(int nNpcId)
 {
-    CStringW strTitle = FUN_1401a9d70()->FUN_141811980(0x13, nNpcId);
-    CStringW strName = FUN_1401a9d70()->FUN_141811980(2, nNpcId);
+    CStringW strTitle = GetStringTable()->FUN_141811980(0x13, nNpcId);
+    CStringW strName = GetStringTable()->FUN_141811980(2, nNpcId);
     if (strTitle.GetLength() == 0)
         return strName;
     CStringW str;

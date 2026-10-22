@@ -42,14 +42,14 @@ class Unk_IpUIMgr { public: void FUN_141adc530(int nClass); };
 void* FUN_140204740(Unk_IpIdSet* pSet, int nKey, int nDefault);     // lookup: the value or 0
 void FUN_140203f00(Unk_IpIdSet* pSet, int nKey);                    // insert
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);          // narrow copy
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 void FUN_141415450(const CString& strKey, MS2Ptr<CItem> spItem, int nIndex, int nFlags, int nMask);   // bind the item to a name
 void FUN_141415600(const CString& strBindID);                       // release the item bound to the name
 Unk_IpWorld* FUN_1403ed2d0();
 Unk_IpActor* FUN_141bd0cc0(Unk_IpWorld* pWorld);                    // the local player
 Unk_IpUIMgr* FUN_1403ed2b0();
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 
 // ---- header statics ----
 static CString s_strBinding("binding");                             // @0x1400dfba0
@@ -205,10 +205,10 @@ void UIInteriorPreviewDialog::FUN_140f4d110()
     }
     MS2Ptr<ASTextField> spName = FUN_140bb4cf0("m_itemName");
     if (spName.get() != 0)
-        spName->FUN_1422c4cd0(FUN_1401a9d70()->FUN_141811980(1, m_178));
+        spName->FUN_1422c4cd0(GetStringTable()->FUN_141811980(1, m_178));
     MS2Ptr<ASTextField> spSize = FUN_140bb4cf0("m_cubeSize");
     if (spSize.get() != 0)
-        spSize->FUN_1422c4cd0(StringFormat(L"{0} {1}", FUN_14028de60(0x56c), spPackage->m_strIndoorSizeType));
+        spSize->FUN_1422c4cd0(StringFormat(L"{0} {1}", GetStringCommon(0x56c), spPackage->m_strIndoorSizeType));
     ASObj objData(m_28);
     objData.FUN_1409adbe0((const char*)s_strItemPackageList, arrItems.FUN_1422bb870());
     objData.FUN_1407cba60((const char*)s_strItemMovie, spData->property.movie);

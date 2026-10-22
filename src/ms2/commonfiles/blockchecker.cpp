@@ -7,7 +7,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 __int64 FUN_140869440();
-CStringW FUN_14028de60(int);
+CStringW GetStringCommon(int);
 #include "ms2/ms2format.h"
 CStringW BlockFormat(int,const fmt::ArgList&);
 FMT_VARIADIC_W(CStringW,BlockFormat,int)
@@ -119,7 +119,7 @@ CStringW FUN_1401ca400(const BlockPtr& record,int action) {
         CMsTime time(record->expiry);
         return BlockFormat(message,time.GetYear(),time.GetMonth(),time.GetDay(),time.GetHour(),time.GetMinute(),time.GetSecond());
     }
-    default: return FUN_14028de60(message);
+    default: return GetStringCommon(message);
     }
 }
 MS2_REPLACE(0x1401CA400, FUN_1401ca400, 338, 0x2B651537);

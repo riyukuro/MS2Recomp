@@ -33,7 +33,7 @@ public:
 };
 Unk_CbIcons* FUN_1401d31f0();
 
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 CStringW FUN_14062b4f0(CStringW strKey, const int* pn);         // localized text with one number (pointer form)
 CString FUN_1401d9af0(const char* szFormat, unsigned __int64* pArg);   // StringFormat "reward{0}"
 void FUN_1412751b0(const CStringW& strMsg, int nType);
@@ -90,11 +90,11 @@ void UIChapterBook::OnLoadComplete()
             CChapterBookTable::DataPtr spBook = CChapterBookTable::GetInstance()->Get(m_nEpilogue);
             if (spBook.get() != 0)
             {
-                CStringW strEpilogue = FUN_1401a9d70()->FUN_141811980(0x3a, m_nEpilogue);
+                CStringW strEpilogue = GetStringTable()->FUN_141811980(0x3a, m_nEpilogue);
                 FUN_1403b4750()->FUN_1416fb340(strEpilogue);
                 ASObj obj(2);
                 obj.FUN_1407cb9c0("id", spBook->m_nId);
-                obj.FUN_1407cbb20("chapter", FUN_1401a9d70()->FUN_141811980(0x39, m_nEpilogue));
+                obj.FUN_1407cbb20("chapter", GetStringTable()->FUN_141811980(0x39, m_nEpilogue));
                 obj.FUN_1407cbb20("epilogue", CStringW(strEpilogue));
                 for (unsigned __int64 i = 0; i < spBook->m_rewards.GetCount(); i++)
                 {
@@ -106,7 +106,7 @@ void UIChapterBook::OnLoadComplete()
                         {
                             ASObj objReward(2);
                             objReward.FUN_1407cba60("icon", spItem->FUN_14053fdd0());
-                            objReward.FUN_1407cbb20("name", FUN_1401a9d70()->FUN_141811980(1, reward.m_item.m_itemId));
+                            objReward.FUN_1407cbb20("name", GetStringTable()->FUN_141811980(1, reward.m_item.m_itemId));
                             objReward.FUN_1409c0d20("count", reward.m_item.m_count);
                             obj.FUN_1409eb270(FUN_1401d9af0("reward{0}", &i), objReward);
                         }
@@ -139,7 +139,7 @@ void UIChapterBook::OnLoadComplete()
         if (spBook.get() != 0)
         {
             static_cast<Unk_CbScript*>(m_30.operator->())->FUN_140e0a8c0("setPrologue",
-                FUN_1401a9d70()->FUN_141811980(0x39, m_nPrologue), 5000);
+                GetStringTable()->FUN_141811980(0x39, m_nPrologue), 5000);
         }
     }
 }

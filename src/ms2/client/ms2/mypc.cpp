@@ -255,7 +255,7 @@ void FUN_140d73bc0(int nStringId, int nA, void* pListener, CStringW strArg);   /
 void FUN_141275260(int nStringId, int nA, int nB);          // a blocked-feature notice
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);   // a notice text
 CStringW FUN_140298ea0(CStringW strKey);                    // the client string of a key
-CStringW FUN_14028b8e0(const CStringW& strKey);             // the client string of a key (by reference)
+CStringW GetStringCommonByKey(const CStringW& strKey);             // the client string of a key (by reference)
 class Unk_MyPCFeatures { public: bool FUN_14036d570(int nFeature); };
 Unk_MyPCFeatures* FUN_140166410();
 
@@ -2744,7 +2744,7 @@ int MyPC::FUN_141528970()
 {
     if (vfunc_65() == 1)
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_error_talk_battle_state_force_talk"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_error_talk_battle_state_force_talk"), 1, 1);
         return 0;
     }
     int nKind = 0x1e;
@@ -3295,12 +3295,12 @@ void MyPC::FUN_14152b2d0(__int64 nItemUid)
     }
     if (spItem->FUN_140525db0() != 0 && ::FUN_141662de0(this) == 0)
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_item_err_puton_vip"), 1, 0);
+        FUN_1412751f0(GetStringCommonByKey(L"s_item_err_puton_vip"), 1, 0);
         return;
     }
     if (spItem->FUN_140525e00() != 0 && !vfunc_146())
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_item_err_puton_wedding"), 1, 0);
+        FUN_1412751f0(GetStringCommonByKey(L"s_item_err_puton_wedding"), 1, 0);
         return;
     }
     if (FUN_141675ed0() != 0)
@@ -3324,7 +3324,7 @@ void MyPC::FUN_14152b2d0(__int64 nItemUid)
         if (strKey.GetLength() < 1)
             FUN_141275260(0x654, 1, 0);
         else
-            FUN_1412751f0(FUN_14028b8e0(strKey), 1, 0);
+            FUN_1412751f0(GetStringCommonByKey(strKey), 1, 0);
         return;
     }
     vfunc_59(0x26, new StateSummonData(reinterpret_cast<void*>(spItem->FUN_140526a50()), 0), 0, 0);
@@ -4725,9 +4725,9 @@ void MyPC::FUN_14152ba80(MS2Ptr<CItem> spItem)
             else if (spItem->FUN_140525ca0() != 0 && ::FUN_141658f30(this) == 0)
                 FUN_141275260(0xe2, 1, 0);
             else if (spItem->FUN_140525db0() != 0 && ::FUN_141662de0(this) == 0)
-                FUN_1412751f0(FUN_14028b8e0(L"s_item_err_puton_vip"), 1, 0);
+                FUN_1412751f0(GetStringCommonByKey(L"s_item_err_puton_vip"), 1, 0);
             else if (spItem->FUN_140525e00() != 0 && !vfunc_146())
-                FUN_1412751f0(FUN_14028b8e0(L"s_item_err_puton_wedding"), 1, 0);
+                FUN_1412751f0(GetStringCommonByKey(L"s_item_err_puton_wedding"), 1, 0);
             else
             {
                 __int64 nCharId = FUN_141656a80();
@@ -4766,9 +4766,9 @@ void MyPC::FUN_14152ba80(MS2Ptr<CItem> spItem)
                 else if (spItem->FUN_140525ca0() != 0 && ::FUN_141658f30(this) == 0)
                     FUN_141275260(0xe2, 1, 0);
                 else if (spItem->FUN_140525db0() != 0 && ::FUN_141662de0(this) == 0)
-                    FUN_1412751f0(FUN_14028b8e0(L"s_item_err_puton_vip"), 1, 0);
+                    FUN_1412751f0(GetStringCommonByKey(L"s_item_err_puton_vip"), 1, 0);
                 else if (spItem->FUN_140525e00() != 0 && !vfunc_146())
-                    FUN_1412751f0(FUN_14028b8e0(L"s_item_err_puton_wedding"), 1, 0);
+                    FUN_1412751f0(GetStringCommonByKey(L"s_item_err_puton_wedding"), 1, 0);
                 else
                     FUN_141275260(0x655, 1, 0);
             }

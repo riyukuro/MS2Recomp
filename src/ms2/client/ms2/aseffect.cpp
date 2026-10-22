@@ -43,7 +43,7 @@ unsigned FUN_140869420();                                       // millisecond c
 float FUN_14028d280(unsigned);                                  // ms -> seconds
 bool FUN_140930110(int nActorId);
 int FUN_14123c580(void*);                                       // actor id
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_1407196b0(unsigned);                               // number -> text
 CStringW FUN_1406329c0(const wchar_t* pszFormat, float* pfArg); // "{0}" substitution of a float
 class Unk_AsBuffInfo
@@ -288,21 +288,21 @@ CStringW ASEffect::FormatRemain(float fSeconds)
     if (n >= 86400)
     {
         n = n / 86400;
-        return StringFormat(L"{0}{1}", n, FUN_14028de60(0x5ce));
+        return StringFormat(L"{0}{1}", n, GetStringCommon(0x5ce));
     }
     else if (n >= 3600)
     {
         n = n / 3600;
-        return StringFormat(L"{0}{1}", n, FUN_14028de60(0x5cd));
+        return StringFormat(L"{0}{1}", n, GetStringCommon(0x5cd));
     }
     else if (n >= 60)
     {
         n = n / 60;
-        return StringFormat(L"{0}{1}", n, FUN_14028de60(0x5ca));
+        return StringFormat(L"{0}{1}", n, GetStringCommon(0x5ca));
     }
     else if (n > 0)
     {
-        return StringFormat(L"{0}{1}", n, FUN_14028de60(0x5cb));
+        return StringFormat(L"{0}{1}", n, GetStringCommon(0x5cb));
     }
     return FUN_1406329c0(L"{0:.1f}", &fSeconds);
 }

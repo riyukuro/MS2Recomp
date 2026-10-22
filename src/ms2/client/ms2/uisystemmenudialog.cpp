@@ -148,9 +148,9 @@ UIServerListDialog* FUN_14136f520(int nUiId);
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);
 void FUN_14151f200();
 void FUN_140dffb50(IMessageListener* pListener);                        // the leave request of a field
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_1409eec40(int nStringId);
-CStringW FUN_14028b8e0(const CStringW& strKey);
+CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_14052bd00(int nStringId, CStringW strArg);
 CStringW FUN_1405c2690(CStringW strKey, CStringW strArg);
 CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& n);        // one int argument
@@ -373,7 +373,7 @@ void UISystemMenuDialog::FUN_141b13880(const Scaleform::GFx::FunctionHandler::Pa
         if (spBox.get() != 0)
         {
             spBox->FUN_141a01700(0x476, 0, 0);
-            spBox->FUN_141a01ca0(*FUN_1402056b0(&FUN_1401d3200()->m_cfe0), 1, FUN_14028de60(0x2b8));
+            spBox->FUN_141a01ca0(*FUN_1402056b0(&FUN_1401d3200()->m_cfe0), 1, GetStringCommon(0x2b8));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
         }
     }
@@ -437,7 +437,7 @@ void UISystemMenuDialog::FUN_141b13b30()
                 }
                 else
                 {
-                    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028b8e0(CStringW(L"s_home_info_exit_blueprint_messagebox_save")), 0, CStringW(L""));
+                    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(CStringW(L"s_home_info_exit_blueprint_messagebox_save")), 0, CStringW(L""));
                     spBox->FUN_141a024a0(0);
                     spBox->FUN_141a01800(1);
                     spBox->FUN_141a027c0(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
@@ -453,7 +453,7 @@ void UISystemMenuDialog::FUN_141b13b30()
             }
             else
             {
-                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028b8e0(CStringW(L"s_home_info_exit_messagebox_save")), 0, CStringW(L""));
+                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(CStringW(L"s_home_info_exit_messagebox_save")), 0, CStringW(L""));
                 spBox->FUN_141a024a0(0);
                 spBox->FUN_141a01800(1);
                 spBox->FUN_141a027c0(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
@@ -533,25 +533,25 @@ CStringW UISystemMenuDialog::FUN_141b146a0(int nMapType)
             if (FUN_1409670e0()->FUN_1410c3600(3) == 0)
             {
                 if (FUN_1409670e0()->FUN_1410c3600(2) == 0)
-                    return FUN_14028de60(0xaaf);
-                return FUN_14028de60(0xabd);
+                    return GetStringCommon(0xaaf);
+                return GetStringCommon(0xabd);
             }
-            return FUN_14028de60(0xabc);
+            return GetStringCommon(0xabc);
         }
-        return FUN_14028de60(0xabb);
+        return GetStringCommon(0xabb);
     default:
-        return FUN_14028b8e0(FUN_1401ceea0(L"s_room_exit_name_{0}", nMapType));
+        return GetStringCommonByKey(FUN_1401ceea0(L"s_room_exit_name_{0}", nMapType));
     case 5:
-        return FUN_14028b8e0(CStringW(L"s_room_exit_dungeon"));
+        return GetStringCommonByKey(CStringW(L"s_room_exit_dungeon"));
     case 7:
-        return FUN_14028de60(0xab0);
+        return GetStringCommon(0xab0);
     case 8:
     case 0xe:
         return FUN_14052bd00(0xab1, FUN_140cd7d20());
     case 9:
-        return FUN_14028de60(0xab2);
+        return GetStringCommon(0xab2);
     case 0xd:
-        return FUN_14028b8e0(CStringW(L"s_room_exit_arcade"));
+        return GetStringCommonByKey(CStringW(L"s_room_exit_arcade"));
     }
 }
 

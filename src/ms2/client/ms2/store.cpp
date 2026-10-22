@@ -69,7 +69,7 @@ Unk_KhCamera* FUN_140c8dac0();
 __int64 FUN_140c8dab0(Unk_KhCamera* p);
 struct Unk_SSG535320 { __int64 FUN_140c8b2e0(); };
 Unk_SSG535320* FUN_140535320();
-CStringW FUN_14028b8e0(const CStringW& rKey);
+CStringW GetStringCommonByKey(const CStringW& rKey);
 void FUN_1412751f0(const CStringW& rText, int nA, int nB);
 void FUN_141275260(int nId, int nA, int nB);
 void FUN_140d73bc0(int nId, int nA, IMessageListener* pListener, CStringW strExtra);
@@ -581,13 +581,13 @@ void FUN_140de2dc0(void*, __int64 nId, int nSlot, int nCount, MS2Ptr<CItemData> 
     }
     if (FUN_140527840(pItem)->FUN_14053cd10()) {
         if (FUN_140c8dab0(FUN_140c8dac0()) == ((CItem*)pItem)->FUN_140526a50()) {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_item_err_binditem_by_playing_score")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_err_binditem_by_playing_score")), 1, 1);
             return;
         }
     }
     if (((CItem*)pItem)->FUN_140525640() != 0) {
         if (FUN_140535320()->FUN_140c8b2e0() == nId) {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_item_err_binditem_by_summon_pet")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_err_binditem_by_summon_pet")), 1, 1);
             return;
         }
     }

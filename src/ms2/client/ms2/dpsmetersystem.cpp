@@ -105,7 +105,7 @@ IMPLEMENT_DYNAMIC(CDPSDialog, CDialog)
 
 // ---- callees outside the unit ----
 CDPSMeterSystem* FUN_14109a6f0();                           // TSingleton<CDPSMeterSystem>::GetInstance
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 unsigned FUN_140869420();                                   // the current time (ms)
 CStringA FUN_1401d4330(const wchar_t* pszWide, int nCodePage);   // wide -> multibyte
 CString FUN_140390ea0(const wchar_t* psz, int n);           // wide -> multibyte (the text files)
@@ -445,7 +445,7 @@ const CStringW& CMeterRecordData::Aggregation::GetSkillReport()
         if (pCount != NULL)
             nCount = mapCount.GetValueAt(pCount);
         s_strReport.AppendFormat(L"%d, %d, %s, %d, %d, %d, %d, %d, %d, %d, %d, %s\r\n", spSkill->m_nSkillId,
-            (unsigned short)spSkill->m_nLevel, (const wchar_t*)FUN_1401a9d70()->FUN_141811980(4, spSkill->m_nSkillId), nCount,
+            (unsigned short)spSkill->m_nLevel, (const wchar_t*)GetStringTable()->FUN_141811980(4, spSkill->m_nSkillId), nCount,
             spSkill->m_nTotal, spSkill->m_nNormal, spSkill->m_nCritical, spSkill->m_nNormalMax, spSkill->m_nCriticalMax,
             spSkill->m_nHit, spSkill->m_nMiss, (const wchar_t*)GetAttributeName(spSkill->m_nAttribute));
     }
@@ -469,7 +469,7 @@ const CStringW& CMeterRecordData::Aggregation::GetDamageLog()
         strTime.Format(L"%02d:%02d:%02d", spData->m_time.wHour, spData->m_time.wMinute, spData->m_time.wSecond);
         s_strLog.AppendFormat(L"%s, %s, %s, %d, %d, %s, %d, %s, %s, %d\r\n", (const wchar_t*)strTime,
             (const wchar_t*)spData->m_strCaster, (const wchar_t*)spData->m_strTarget, spData->m_nSkillId,
-            (unsigned short)spData->m_nLevel, (const wchar_t*)FUN_1401a9d70()->FUN_141811980(4, spData->m_nSkillId),
+            (unsigned short)spData->m_nLevel, (const wchar_t*)GetStringTable()->FUN_141811980(4, spData->m_nSkillId),
             spData->m_nDamage, (const wchar_t*)GetAttributeName(spData->m_nAttribute),
             (const wchar_t*)GetGradeName(spData->m_nGrade), spData->m_bKilled);
     }
@@ -499,7 +499,7 @@ const CStringW& CMeterRecordData::Aggregation::GetDotReport()
             nCount = mapCount.GetValueAt(pCount);
         s_strReport.AppendFormat(L"%d, %d, %s, %d, %d, %d, %d, %d, %d, %d, %d, %s\r\n", spSkill->m_nSkillId,
             (unsigned short)spSkill->m_nLevel,
-            (const wchar_t*)FUN_1401a9d70()->FUN_141812290(spSkill->m_nSkillId, spSkill->m_nLevel, CString("name")), nCount,
+            (const wchar_t*)GetStringTable()->FUN_141812290(spSkill->m_nSkillId, spSkill->m_nLevel, CString("name")), nCount,
             spSkill->m_nTotal, spSkill->m_nNormal, spSkill->m_nCritical, spSkill->m_nNormalMax, spSkill->m_nCriticalMax,
             spSkill->m_nHit, spSkill->m_nMiss, (const wchar_t*)GetAttributeName(spSkill->m_nAttribute));
     }
@@ -524,7 +524,7 @@ const CStringW& CMeterRecordData::Aggregation::GetEffectLog()
         s_strLog.AppendFormat(L"%s, %s, %s, %s, %d, %d, %s\r\n", (const wchar_t*)strTime, (const wchar_t*)spData->m_strEvent,
             (const wchar_t*)spData->m_strCaster, (const wchar_t*)spData->m_strTarget, spData->m_nEffectId,
             (unsigned short)spData->m_nLevel,
-            (const wchar_t*)FUN_1401a9d70()->FUN_141812290(spData->m_nEffectId, spData->m_nLevel, CString("name")));
+            (const wchar_t*)GetStringTable()->FUN_141812290(spData->m_nEffectId, spData->m_nLevel, CString("name")));
     }
     return s_strLog;
 }
@@ -653,7 +653,7 @@ unsigned CDPSMeterSystem::ThreadProc()
             if (pMe != 0)
             {
                 int nJob = FUN_141654730(pMe);
-                strName.Format(L"_%s_%s", (const wchar_t*)pMe->vfunc_77(), (const wchar_t*)FUN_1401a9d70()->FUN_141811980(6, nJob));
+                strName.Format(L"_%s_%s", (const wchar_t*)pMe->vfunc_77(), (const wchar_t*)GetStringTable()->FUN_141811980(6, nJob));
             }
             if (!PathIsDirectoryW(m_szDir))
                 CreateDirectoryW(m_szDir, NULL);
@@ -1225,7 +1225,7 @@ static const CStringW& GetItemText(CItem* pItem)
     {
         for (unsigned i = 0; i < pItem->FUN_140527840()->additionalEffect.ids.GetCount(); i++)
         {
-            s_str.AppendFormat(L", %s", (const wchar_t*)FUN_1401a9d70()->FUN_141812290(
+            s_str.AppendFormat(L", %s", (const wchar_t*)GetStringTable()->FUN_141812290(
                 pItem->FUN_140527840()->additionalEffect.ids[i], pItem->FUN_140527840()->additionalEffect.levels[i],
                 CString("name")));
         }
@@ -1292,7 +1292,7 @@ void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
             strCsv.AppendFormat(L"\n");
             strCsv.AppendFormat(L"%s, ", (const wchar_t*)*FUN_1403ed2d0()->FUN_141bd3080());
             strCsv.AppendFormat(L"%s, ", (const wchar_t*)pMe->vfunc_77());
-            strCsv.AppendFormat(L"%s, ", (const wchar_t*)FUN_1401a9d70()->FUN_141811980(6, FUN_141654730(pMe)));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStringTable()->FUN_141811980(6, FUN_141654730(pMe)));
             strCsv.AppendFormat(L"%d, ", pMe->vfunc_78());
             strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(4, 0));
             strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(7, 0));
@@ -1437,7 +1437,7 @@ void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
         strText.AppendFormat(L"=== 대미지 스킬 정보 ===\r\n");
         for (std::pair<const unsigned, float> kv : spRecord->m_attack.m_skillRates)
         {
-            CStringW strName = FUN_1401a9d70()->FUN_141811980(4, kv.first);
+            CStringW strName = GetStringTable()->FUN_141811980(4, kv.first);
             strText.AppendFormat(L"%s(%d) : %.3f\r\n", (const wchar_t*)strName, kv.first, (double)kv.second);
             if (bCsv != 0)
                 strCsv.AppendFormat(L"%s,%d,%.3f", (const wchar_t*)strName, kv.first, (double)kv.second);
@@ -1445,7 +1445,7 @@ void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
         strText.AppendFormat(L"=== 대미지 애디셔널 정보 ===\r\n");
         for (std::pair<const unsigned, float> kv : spRecord->m_attack.m_dotRates)
         {
-            CStringW strName = FUN_1401a9d70()->FUN_141812290(kv.first, 1, "name");
+            CStringW strName = GetStringTable()->FUN_141812290(kv.first, 1, "name");
             strText.AppendFormat(L"%s(%d) : %.3f\r\n", (const wchar_t*)strName, kv.first, (double)kv.second);
             if (bCsv != 0)
                 strCsv.AppendFormat(L"%s,%d,%.3f", (const wchar_t*)strName, kv.first, (double)kv.second);
@@ -1465,7 +1465,7 @@ const CStringW& FUN_141181540()
     if (pMe != 0)
     {
         s_str.AppendFormat(L"캐릭터명 : %s\r\n", (const wchar_t*)pMe->vfunc_77());
-        s_str.AppendFormat(L"클래스 : %s\r\n", (const wchar_t*)FUN_1401a9d70()->FUN_141811980(6, FUN_141654730(pMe)));
+        s_str.AppendFormat(L"클래스 : %s\r\n", (const wchar_t*)GetStringTable()->FUN_141811980(6, FUN_141654730(pMe)));
         s_str.AppendFormat(L"레벨 : %d\r\n", pMe->vfunc_78());
         s_str.AppendFormat(L"\r\n");
         s_str.AppendFormat(L"--- 게임 레이어 장착 장비 목록 ---\r\n");

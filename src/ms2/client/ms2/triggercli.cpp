@@ -53,7 +53,7 @@ public:
 Unk_TrgLog* FUN_140166440();
 
 // String table and fmt helpers.
-CStringW FUN_14028de60(int nId);                            // string table entry
+CStringW GetStringCommon(int nId);                            // string table entry
 CStringW FUN_1408116a0(int nId, const int& nArg);           // string table entry with one integer argument
 CStringW FormatStringId(int id, const fmt::ArgList& args);  // 0x14028dee0
 FMT_VARIADIC_W(CStringW, FormatStringId, int)
@@ -368,7 +368,7 @@ CStringW TriggerCli::GetErrorText(int nError)
         if (nError < 0xd)
             strText = FUN_1408116a0(0xafc, nError);
         else if (nError == 0xd)
-            strText = FUN_14028de60(0xafd);
+            strText = GetStringCommon(0xafd);
     }
     return strText;
 }

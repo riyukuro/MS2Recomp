@@ -181,7 +181,7 @@ void* FUN_1401c0db0();
 void FUN_140677a70(void* pSvc, int nType, int nGrade, unsigned short nLevel, int nSubType, int* pOut);
 int FUN_140673fb0(void* pSvc, double dValue, int nDigits);          // round a value to a number of digits
 CStringW FUN_141277410(int nType);                                  // the name of a slot type
-CStringW FUN_14028de60(int nStringId);                              // a string table text
+CStringW GetStringCommon(int nStringId);                              // a string table text
 
 // One row of the socket scroll table (names invented; layout read from the validators below).
 class Unk_ItemSocketScrollData : public CPtred
@@ -601,7 +601,7 @@ CStringW FUN_1406285d0(unsigned nMask)
         {
             if (!strOut.IsEmpty())
                 strOut.Append(strSep);
-            strOut.Append(FUN_14028de60(0x594));
+            strOut.Append(GetStringCommon(0x594));
         }
         return CStringW(strOut);
     }
@@ -1248,7 +1248,7 @@ bool SendItemSocketSystem(MS2Ptr<CItem> spItem, const CMsgBoxData& box)
 MS2_REPLACE(0x14062ABB0, SendItemSocketSystem, 443, 0xB6C836FB);
 
 class Unk_ItemEnchantData : public CItemStatus {};
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommonByKey(const CStringW& str);
 class Unk_OptionFactory
 {
 public:
@@ -1327,9 +1327,9 @@ CStringW FUN_14062b310(MS2Ptr<TSocketGemStoneInfo> spSocket)
     {
         MS2Ptr<TSocketGemStoneLock> spSlot = spSocket->GetLock();
         if (spSlot.get() == 0 || spSlot->FUN_140623e20() != 1)
-            str = FUN_14028b8e0(CStringW(L"s_tooltip_itemoption_socket_row_unlock_gemstone"));
+            str = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_socket_row_unlock_gemstone"));
         else
-            str = FUN_14028b8e0(CStringW(L"s_tooltip_itemoption_socket_row_lock_gemstone"));
+            str = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_socket_row_lock_gemstone"));
     }
     return str;
 }

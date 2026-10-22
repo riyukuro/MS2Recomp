@@ -28,7 +28,7 @@ FMT_VARIADIC_W(CStringW, BlockFormat, int)
 
 // ---- out-of-unit callees ----
 __int64 FUN_140869440();                                      // current server time
-CStringW FUN_14028de60(int id);                               // string table lookup
+CStringW GetStringCommon(int id);                               // string table lookup
 void FUN_1412751b0(const CStringW& msg, int seconds);         // on-screen notice
 CStringW FUN_1408116a0(int id, const int& v);                 // string table + one int
 CStringW FUN_1409e8970(CStringW key, const int& a, const int& b);
@@ -95,9 +95,9 @@ void CBlockManager::OnBlockPacket(void* packet)
             m_checker.get()->Set(bp);
             int kind = bp->kind;
             if (kind == 2) {
-                FUN_1412751b0(FUN_14028de60(0x434), 0x14);
+                FUN_1412751b0(GetStringCommon(0x434), 0x14);
             } else if (kind == 4) {
-                FUN_1412751b0(FUN_14028de60(0x439), 0x14);
+                FUN_1412751b0(GetStringCommon(0x439), 0x14);
             } else if (kind == 10) {
                 CMsTime t(bp->expiry);
                 AddDays(t, 1);
@@ -132,7 +132,7 @@ CStringW FUN_140a2fcd0(__int64 from, __int64 to)
 {
     CMsTime t1(from);
     CMsTime t2(to);
-    CStringW fmtStr = FUN_14028de60(0x450);
+    CStringW fmtStr = GetStringCommon(0x450);
     int s2 = t2.GetSecond(), mi2 = t2.GetMinute(), h2 = t2.GetHour(), d2 = t2.GetDay(), mo2 = t2.GetMonth(), y2 = t2.GetYear();
     int s1 = t1.GetSecond(), mi1 = t1.GetMinute(), h1 = t1.GetHour(), d1 = t1.GetDay(), mo1 = t1.GetMonth(), y1 = t1.GetYear();
     CStringW r = StringFormat((const wchar_t*)fmtStr, y1, mo1, d1, h1, mi1, s1, y2, mo2, d2, h2, mi2, s2);
@@ -162,11 +162,11 @@ void FUN_140a2ff20(const BlockPtr& rec, int action, u64 cb)
         CMsTime t2(rec->expiry);
         CStringW title, body;
         if (rec->kind == 2) {
-            title = FUN_14028de60(0x436);
+            title = GetStringCommon(0x436);
             body = BlockFormat(0x437, t1.GetYear(), t1.GetMonth(), t1.GetDay(), t1.GetHour(), t1.GetMinute(), t1.GetSecond(),
                             t2.GetYear(), t2.GetMonth(), t2.GetDay(), t2.GetHour(), t2.GetMinute(), t2.GetSecond(), *(CStringW*)&rec->m_30);
         } else {
-            title = FUN_14028de60(0x43b);
+            title = GetStringCommon(0x43b);
             body = BlockFormat(0x43c, t1.GetYear(), t1.GetMonth(), t1.GetDay(), t1.GetHour(), t1.GetMinute(), t1.GetSecond(),
                             t2.GetYear(), t2.GetMonth(), t2.GetDay(), t2.GetHour(), t2.GetMinute(), t2.GetSecond(), *(CStringW*)&rec->m_30);
         }
@@ -182,14 +182,14 @@ void FUN_140a2ff20(const BlockPtr& rec, int action, u64 cb)
             MS2Ptr<Unk_BmMsgBox> h = FUN_140d73e40(1, 0x440, 0, CStringW(s_externalBlock));
             if (h) {
                 FUN_140a30b80((char*)h.operator->(), 1);
-                FUN_141a015d0(h.operator->(), FUN_14028de60(0x43f));
+                FUN_141a015d0(h.operator->(), GetStringCommon(0x43f));
                 FUN_140d73c60(MS2Ptr<Unk_BmMsgBox>(h));
             }
         } else {
             CMsTime t1((__int64)rec->m_38);
             CMsTime t2(rec->expiry);
             CStringW title, body;
-            title = FUN_14028de60(0x43d);
+            title = GetStringCommon(0x43d);
             body = BlockFormat(0x43e, t1.GetYear(), t1.GetMonth(), t1.GetDay(), t1.GetHour(), t1.GetMinute(), t1.GetSecond(),
                             t2.GetYear(), t2.GetMonth(), t2.GetDay(), t2.GetHour(), t2.GetMinute(), t2.GetSecond(), *(CStringW*)&rec->m_30);
             MS2Ptr<Unk_BmMsgBox> h = FUN_140d73d20(0x10, CStringW(body), cb, CStringW(L""));

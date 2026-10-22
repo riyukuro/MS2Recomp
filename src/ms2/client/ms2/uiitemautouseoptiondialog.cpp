@@ -182,8 +182,8 @@ class Unk_AuAS : public AScript { public: Unk_AuFn FUN_1422bb330(const char* szN
 void FUN_140614800(const Unk_AuFn& fn);
 
 CString FUN_140513200(const char* szFormat, const int& n);          // format one number
-CStringW FUN_14028de60(int nStringId);                              // string table text
-CStringW FUN_14028b8e0(const CStringW& strKey);                     // string table text by key
+CStringW GetStringCommon(int nStringId);                              // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text by key
 CStringW FUN_1409e97f0(int nId, const int& nArg);                   // string table entry, one argument
 void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
@@ -363,7 +363,7 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_18(void* p)
             }
             if (FUN_140526810(spItem.get(), AU_PLAYER_LEVEL(pPlayer)) == 0)
             {
-                FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_err_not_enough_level")), 0, 0, CStringW(L""));
+                FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_err_not_enough_level")), 0, 0, CStringW(L""));
                 return 1;
             }
             m_nItemId = nDropId;
@@ -563,10 +563,10 @@ void UIItemAutoUseOptionDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     MS2Ptr<ASTextField> spText1 = ((Unk_AuEntity*)this)->FUN_140bb4cf0(CString("m_textFieldItem1"));
     if (spText1.get() != 0)
-        spText1->FUN_1422c4cd0(FUN_14028de60(0xc08));
+        spText1->FUN_1422c4cd0(GetStringCommon(0xc08));
     MS2Ptr<ASTextField> spText2 = ((Unk_AuEntity*)this)->FUN_140bb4cf0(CString("m_textFieldItem2"));
     if (spText2.get() != 0)
-        spText2->FUN_1422c4cd0(FUN_14028de60(0xc08));
+        spText2->FUN_1422c4cd0(GetStringCommon(0xc08));
     for (unsigned i = 0; i < DAT_1439ed000; i++)
     {
         int nNumber = i + 1;
@@ -660,7 +660,7 @@ void UIItemAutoUseOptionDialog::FUN_140f4fc40(int nItemId)
     }
     if (FUN_140526810(spItem.get(), AU_PLAYER_LEVEL(pPlayer)) == 0)
     {
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_err_not_enough_level")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_err_not_enough_level")), 0, 0, CStringW(L""));
         return;
     }
     SlotBag* pBag = FUN_140f50800(FUN_1422c8e90(m_strBag));
@@ -744,7 +744,7 @@ void UIItemAutoUseOptionDialog::FUN_140f50230(void* pCombo, int nIndex)
             {
                 ASObj entry(2);
                 entry.FUN_1409c0d20("condition", nCond);
-                entry.FUN_1407cbb20("label", FUN_14028de60(0x576));
+                entry.FUN_1407cbb20("label", GetStringCommon(0x576));
                 pBox->FUN_1422dfc70(entry);
             }
             else

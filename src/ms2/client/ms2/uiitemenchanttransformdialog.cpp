@@ -142,7 +142,7 @@ void FUN_14141f770(const CString& strBag, int nCount, void* pItems, Unk_TfGetIte
 MS2Ptr<CItem> FUN_141420330(void* pItems, int nIndex);
 void FUN_141415600(const CString& strSlot);                         // unbind a slot
 void FUN_141415450(const CString& strSlot, MS2Ptr<CItem> item, int a, int nIcon, int nFlags);
-CStringW FUN_14028b8e0(const CStringW& strKey);                     // localized text
+CStringW GetStringCommonByKey(const CStringW& strKey);                     // localized text
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_1409404f0(__int64 n);                                  // number text
 CString FUN_140540050(const char* szFormat, const CString& strArg);
@@ -270,7 +270,7 @@ void UIItemEnchantTransformDialog::FUN_140c3d420()
         return;
     const MS2Ptr<Unk_TfButton>& submit = ((Unk_TfBoard*)board)->FUN_140acce30<Unk_TfButton>("m_submit");
     if (submit.get() != 0) {
-        submit->FUN_1422cdfb0(FUN_14028b8e0(CStringW(L"s_item_enchant_transform_submit")));
+        submit->FUN_1422cdfb0(GetStringCommonByKey(CStringW(L"s_item_enchant_transform_submit")));
         submit->FUN_1422c1fe0(false);
     }
 }
@@ -324,7 +324,7 @@ void UIItemEnchantTransformDialog::FUN_140c3d960(int nIndex)
     if (item->FUN_140526bd0() < 5 || bHighSa != 1) {
         FUN_140c3de50(nIndex);
     } else {
-        CStringW strAsk = FUN_14028b8e0(CStringW(L"s_item_enchant_transform_ask_high_sa_option_item"));
+        CStringW strAsk = GetStringCommonByKey(CStringW(L"s_item_enchant_transform_ask_high_sa_option_item"));
         CStringW strMsg;
         strMsg += strOption;
         strMsg += L"\n";
@@ -433,7 +433,7 @@ void UIItemEnchantTransformDialog::FUN_140c3ead0()
         return;
     const MS2Ptr<Unk_TfButton>& submit = ((Unk_TfBoard*)board)->FUN_140acce30<Unk_TfButton>("m_submit");
     if (submit.get() != 0) {
-        submit->FUN_1422cdfb0(FUN_14028b8e0(CStringW(L"s_item_enchant_transform_retry")));
+        submit->FUN_1422cdfb0(GetStringCommonByKey(CStringW(L"s_item_enchant_transform_retry")));
         submit->FUN_1422c1fe0(true);
     }
     FUN_140c3d5a0();

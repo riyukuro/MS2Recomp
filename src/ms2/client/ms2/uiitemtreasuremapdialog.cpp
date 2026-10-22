@@ -80,7 +80,7 @@ void FUN_141415450(const CString& strBindID, MS2Ptr<CItem> spItem, int n1, int n
 void FUN_141276180(const CString& strName, const CString& strArg);          // play a system sound
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_140710590(COutPacket& packet);                                     // send
-CStringW FUN_14028b8e0(const CStringW& strKey);                             // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_1409404f0(__int64 nValue);                                     // money text
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 extern __int64 DAT_143ab2898;                                               // the player's meso
@@ -162,9 +162,9 @@ void UIItemTreasureMapDialog::OnLoadComplete()
         m_submit = m_board->FUN_140acce30<Unk_140acd6e0>("m_submit");
         if (m_submit.get() != 0)
             m_submit->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemTreasureMapDialog::FUN_140c55d20), 0);
-        CStringW strDesc = FUN_14028b8e0(CStringW(L"s_item_treasure_map_appraise_desc"));
+        CStringW strDesc = GetStringCommonByKey(CStringW(L"s_item_treasure_map_appraise_desc"));
         if (m_bFree != 0)
-            strDesc = FUN_14028b8e0(CStringW(L"s_item_treasure_map_free_appraise_desc"));
+            strDesc = GetStringCommonByKey(CStringW(L"s_item_treasure_map_free_appraise_desc"));
         FUN_140cff1b0((*m_board).FUN_1422bb890(), "m_desc", CStringW(strDesc));
     }
 }
@@ -299,7 +299,7 @@ void UIItemTreasureMapDialog::FUN_140c55ea0()
     {
         m_nCost = 0;
         FUN_140c560f0();
-        FUN_140cff4e0((*m_board).FUN_1422bb890(), "m_submit", FUN_14028b8e0(CStringW(L"s_item_treasure_map_button_appraise")));
+        FUN_140cff4e0((*m_board).FUN_1422bb890(), "m_submit", GetStringCommonByKey(CStringW(L"s_item_treasure_map_button_appraise")));
         FUN_140cff950((*m_board).FUN_1422bb890(), "m_submit", 0);
         FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc1", 0);
         FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc2", 0);
@@ -417,7 +417,7 @@ void UIItemTreasureMapDialog::FUN_140c56a50(__int64 nUid, __int64 nCost)
                 CStringW strCost = FUN_1405c2690(CStringW(L"s_item_treasure_map_appraise_cost"), FUN_1409404f0(m_nCost));
                 if (nCost < 0)
                 {
-                    strCost = FUN_14028b8e0(CStringW(L"s_item_treasure_map_cant_appraise"));
+                    strCost = GetStringCommonByKey(CStringW(L"s_item_treasure_map_cant_appraise"));
                     FUN_140cff950((*m_board).FUN_1422bb890(), "m_submit", 0);
                 }
                 else
@@ -462,7 +462,7 @@ void UIItemTreasureMapDialog::FUN_140c57300(int nItemId, int nRank)
         FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc1", 1);
         FUN_140cff1b0((*m_board).FUN_1422bb890(), "m_desc1", spItem->FUN_140528160());
         FUN_140cff950((*m_board).FUN_1422bb890(), "m_submit", 1);
-        FUN_140cff4e0((*m_board).FUN_1422bb890(), "m_submit", FUN_14028b8e0(CStringW(L"s_item_treasure_map_button_back")));
+        FUN_140cff4e0((*m_board).FUN_1422bb890(), "m_submit", GetStringCommonByKey(CStringW(L"s_item_treasure_map_button_back")));
         FUN_141276180(s_sndStamp, CString(""));
         FUN_140c560f0();
         m_nState = 2;

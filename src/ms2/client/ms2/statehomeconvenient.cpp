@@ -71,7 +71,7 @@ public:
 };
 UICastingBar* FUN_140ac2270(int nId);
 
-CStringW FUN_14028de60(int nId);                         // string table text of an id
+CStringW GetStringCommon(int nId);                         // string table text of an id
 int FUN_14028d260(float fSeconds);                       // seconds -> ms
 unsigned FUN_140869420();                                // server tick
 CString* FUN_140298f80(Common::Constants::Value<CString>* pValue);   // Value<CString>::Get as a free function
@@ -159,11 +159,11 @@ CStringW StateHomeConvenient::GetLabel()
     if (nKind > 0)
     {
         if (nKind <= 2)
-            return FUN_14028de60(0x65f);
+            return GetStringCommon(0x65f);
         if (nKind == 3)
-            return FUN_14028de60(0x663);
+            return GetStringCommon(0x663);
     }
-    return FUN_14028de60(0);
+    return GetStringCommon(0);
 }
 
 // @0x140ddd870

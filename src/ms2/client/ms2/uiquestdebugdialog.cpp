@@ -259,7 +259,7 @@ CStringW FUN_1416e4df0(unsigned int);
 CStringW FUN_1416e5900(unsigned int, int);
 CStringW FUN_1416e7fb0(int);
 CStringW FUN_1401aa6a0(int);
-CStringW FUN_14028de60(int);
+CStringW GetStringCommon(int);
 unsigned __int64 FUN_140761ba0(unsigned int, int);
 unsigned __int64 FUN_140761cc0(unsigned int, int);
 void FUN_1416e5890(int, ATL::CAtlArray<CStringW>&);
@@ -716,7 +716,7 @@ void UIQuestDebugDialog::FUN_141a95310(int chapter, int search)
         list->FUN_1422dd1d0();
         for (auto it = quests.begin(); it != quests.end(); ++it) {
             auto quest = *it;
-            CStringW state = FUN_14028de60(FUN_141a96c30(quest->FUN_14074b030(), quest));
+            CStringW state = GetStringCommon(FUN_141a96c30(quest->FUN_14074b030(), quest));
             if (!search && chapter && chapter != quest->chapter) continue;
             ++count;
             unsigned int id = quest->FUN_14074b030();

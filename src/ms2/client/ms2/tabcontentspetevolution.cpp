@@ -228,7 +228,7 @@ void FUN_141275260(int nMsgId, int a1, int a2);
 
 // String helpers.
 const unsigned& FUN_1402fbd50(const unsigned& a, const unsigned& b);   // min
-CStringW FUN_14028b8e0(const CStringW& str);                            // localized string
+CStringW GetStringCommonByKey(const CStringW& str);                            // localized string
 CStringW FUN_140298ea0(CStringW str);
 CStringW FUN_1409e9890(CStringW fmt, const unsigned& a, const unsigned& b);
 CStringW FUN_140938ae0(CStringW fmt, const int& a);
@@ -651,7 +651,7 @@ void PetEvolutionPetEnchant::FUN_140ac8a00()
     if (nNeed == 0)
     {
         obj.FUN_1409c0e60("frame", L"notice");
-        obj.FUN_1407cbb20("evolutionMsg", FUN_14028b8e0(CStringW(L"s_pet_evolution_max")));
+        obj.FUN_1407cbb20("evolutionMsg", GetStringCommonByKey(CStringW(L"s_pet_evolution_max")));
         obj.FUN_1407cba60("bagId", m_strTarget);
         ench->FUN_140acd1f0("notice", AScript(obj));
     }
@@ -664,7 +664,7 @@ void PetEvolutionPetEnchant::FUN_140ac8a00()
         obj.FUN_1407cbb20(s_meso, FUN_1408116a0(0x986, nZero));
         obj.FUN_1409c0d20("petEvolutionPoint", FUN_140528bd0(pet));
         obj.FUN_1407cba60("bagId", m_strTarget);
-        obj.FUN_1407cbb20("resultMsg", FUN_14028b8e0(CStringW(L"s_pet_evolution_notice")));
+        obj.FUN_1407cbb20("resultMsg", GetStringCommonByKey(CStringW(L"s_pet_evolution_notice")));
         obj.FUN_1407cba60("bagId", m_strTarget);
         obj.FUN_1409c0d20("requirePoint", nNeed);
         if (nNeed <= FUN_140528bd0(pet))

@@ -107,7 +107,7 @@ extern Unk_RpTable* DAT_143aaff58;
 int FUN_14061d670(MS2Ptr<CItem> spItem, MS2Ptr<Unk_RpRow> spRow);   // validate the item for the scroll (0 = ok)
 
 struct Unk_RpItemData { char m_pad_00[0x2b0]; ItemFunctionArgs m_args; };   // CItemData: the <function> parameters at +0x2b0
-extern CStringTable* FUN_1401a9d70();
+extern CStringTable* GetStringTable();
 unsigned __int64 FUN_140718370(const CStringW& value);
 void FUN_140710590(COutPacket&);                                    // send
 class Unk_RpInvDlg { public: void FUN_141999e00(); };
@@ -126,7 +126,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_141b71910(__int64 nValue);
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_14183e9c0(CStringW strName, int nRank);
 CStringW FUN_140719dc0(const wchar_t* pszFormat, const unsigned short& nA);
 CStringW FUN_140c5ac00(const wchar_t* pszFormat, const unsigned short& nA, const unsigned short& nB);
@@ -330,7 +330,7 @@ void UIItemRePackingScrollDialog::OnLoadComplete()
     for (unsigned __int64 i = 0; i < spRow.get()->m_ranks.FUN_140186270(); i++)
     {
         unsigned nRank = *spRow.get()->m_ranks.FUN_140184510(i);
-        strRanks.AppendFormat(L"%s, ", (LPCWSTR)FUN_14183e9c0(FUN_1401a9d70()->FUN_141813150(nRank), nRank));
+        strRanks.AppendFormat(L"%s, ", (LPCWSTR)FUN_14183e9c0(GetStringTable()->FUN_141813150(nRank), nRank));
     }
     strRanks.TrimRight(L", ");
     CStringW strDesc;
@@ -341,14 +341,14 @@ void UIItemRePackingScrollDialog::OnLoadComplete()
         for (unsigned __int64 i = 0; i < spRow.get()->m_limits.FUN_140186270(); i++)
         {
             unsigned* pId = spRow.get()->m_limits.FUN_140184510(i);
-            strLimit.AppendFormat(L"%s, ", (LPCWSTR)FUN_1401a9d70()->FUN_141811980(8, *pId));
+            strLimit.AppendFormat(L"%s, ", (LPCWSTR)GetStringTable()->FUN_141811980(8, *pId));
         }
         strLimit.TrimRight(L", ");
     }
     else if (nKind == 1)
     {
         strDesc = L"s_item_repacking_pet_limit_desc";
-        strLimit = FUN_14028de60(0x53a);
+        strLimit = GetStringCommon(0x53a);
     }
     ASObj obj(2);
     obj.FUN_1407cbb20("itemGUID", FUN_141b71910(0));

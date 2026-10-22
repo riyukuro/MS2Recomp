@@ -22,7 +22,7 @@ static Unk_1402a9d70 s_unk1402a9d702(17, 0.75f, 0.25f, 2.25f, 10);
 void* FUN_1422bb8b0(int nMovieId);                                     // the movie of a UI layer
 void FUN_14256e3e0(void* pMovie, Scaleform::GFx::Value* pValue);       // movie->CreateArray
 CStringW FUN_14082f000(int nStat);                                     // stat display text
-CStringW FUN_14028de60(int nId);                                       // string table text
+CStringW GetStringCommon(int nId);                                       // string table text
 CStringW FUN_1409e9bc0(int nId, const int& a, const int& b);           // formatted string-table text
 
 // @0x1409f01a0
@@ -77,7 +77,7 @@ void ASStat::AddEssentialText(int a1, int a2)
 {
     CStringW strValue = FUN_1409e9bc0(0x4f8, a1, a2);
     ASObj row(2);
-    row.FUN_1407cbb20("statName", FUN_14028de60(0x4aa));
+    row.FUN_1407cbb20("statName", GetStringCommon(0x4aa));
     row.FUN_1407cbb20("statValue", strValue);
     row.FUN_1407cb9c0("statStrengthen", 0);
     m_essential.PushBack(row.FUN_1422bb870());

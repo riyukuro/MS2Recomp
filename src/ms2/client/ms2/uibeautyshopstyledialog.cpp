@@ -346,8 +346,8 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b240b0();
 void FUN_14151f150(MS2Ptr<CMsgBoxData> spBox);
-CStringW FUN_14028b8e0(const CStringW& strKey);
-CStringW FUN_14028de60(int nId);
+CStringW GetStringCommonByKey(const CStringW& strKey);
+CStringW GetStringCommon(int nId);
 CStringW FUN_14052bd00(int nId, const CStringW& a);
 CStringW FUN_1409eadb0(int nId, const CStringW& a, const CStringW& b, const CStringW& c);
 CStringW FUN_1409eaa20(CStringW strKey, const CStringW& a, const CStringW& b, const CStringW& c);
@@ -420,7 +420,7 @@ int FUN_140f01070(int nShopKind)
 CStringW FUN_140f010c0(int nItemId)
 {
     if (nItemId == 0x9a1d21)
-        return FUN_14028de60(0x26f);
+        return GetStringCommon(0x26f);
     return FUN_1401a9d70()->FUN_141811980(1, nItemId);
 }
 
@@ -932,7 +932,7 @@ int UIBeautyShopStyleDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
             int nIndex = m_items->FUN_1422dccd0();
             if (nIndex == -1)
             {
-                FUN_140d74390(FUN_14028b8e0(CStringW(L"s_beauty_msg_error_invalid_selected_style")), 0, FUN_140b240b0());
+                FUN_140d74390(GetStringCommonByKey(CStringW(L"s_beauty_msg_error_invalid_selected_style")), 0, FUN_140b240b0());
                 return 1;
             }
             MS2Ptr<CItem> spItem = FUN_140f09020(nIndex);
@@ -946,7 +946,7 @@ int UIBeautyShopStyleDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                 int nGender = FUN_141658e60(pPc);
                 if (reinterpret_cast<Unk_BSItemData*>(spItem->FUN_140527840())->FUN_14053c940(nGender) == 0)
                 {
-                    FUN_140d74390(FUN_14028b8e0(CStringW(L"s_beauty_msg_error_style_disable_gender")), 0, FUN_140b240b0());
+                    FUN_140d74390(GetStringCommonByKey(CStringW(L"s_beauty_msg_error_style_disable_gender")), 0, FUN_140b240b0());
                     return 1;
                 }
             }
@@ -1006,7 +1006,7 @@ int UIBeautyShopStyleDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         }
         if (FUN_140f09230())
         {
-            FUN_140d74390(FUN_14028b8e0(CStringW(L"s_beauty_msg_error_style_slot_max_in_style_npc")), 0, FUN_140b240b0());
+            FUN_140d74390(GetStringCommonByKey(CStringW(L"s_beauty_msg_error_style_slot_max_in_style_npc")), 0, FUN_140b240b0());
             return 1;
         }
         unsigned nCount = FUN_140f01220();
@@ -1022,7 +1022,7 @@ int UIBeautyShopStyleDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     {
         if (FUN_140f09230())
         {
-            FUN_140d74390(FUN_14028b8e0(CStringW(L"s_beauty_msg_error_style_slot_extend_max")), 0, FUN_140b240b0());
+            FUN_140d74390(GetStringCommonByKey(CStringW(L"s_beauty_msg_error_style_slot_extend_max")), 0, FUN_140b240b0());
             return 1;
         }
         __int64 nPrice = FUN_140f01180();
@@ -1044,7 +1044,7 @@ int UIBeautyShopStyleDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
             MS2Ptr<CItem> spItem = FUN_140f09020(nIndex);
             if (spItem == 0)
             {
-                FUN_140d74390(FUN_14028b8e0(CStringW(L"s_beauty_msg_error_already_empty_slot")), 0, FUN_140b240b0());
+                FUN_140d74390(GetStringCommonByKey(CStringW(L"s_beauty_msg_error_already_empty_slot")), 0, FUN_140b240b0());
                 return 1;
             }
             int nItemId = spItem->FUN_1405276c0();
@@ -1112,7 +1112,7 @@ void UIBeautyShopStyleDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CSt
                 strText = FUN_1409eadb0(0x275, FUN_140f010c0(spItem->FUN_1405276c0()), strDate, strPrice);
             }
             else
-                strText = FUN_14028b8e0(CStringW(L"s_beauty_tooltip_recommand_save_style"));
+                strText = GetStringCommonByKey(CStringW(L"s_beauty_tooltip_recommand_save_style"));
             ASTooltip tip(1, 2);
             if (tip.FUN_1409e26b0(strText))
             {
@@ -1371,17 +1371,17 @@ void UIBeautyShopStyleDialog::FUN_140f05a80(CInPacket& packet)
                           Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopStyleDialog::FUN_140f05850));
             break;
         case 7:
-            FUN_140d74390(FUN_14028de60(0x273), 0,
+            FUN_140d74390(GetStringCommon(0x273), 0,
                           Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopStyleDialog::FUN_140f05850));
             break;
         case 0x13:
-            FUN_140d74390(FUN_14028b8e0(CStringW(L"s_beauty_msg_error_style_slot_extend_max")), 0, FUN_140b240b0());
+            FUN_140d74390(GetStringCommonByKey(CStringW(L"s_beauty_msg_error_style_slot_extend_max")), 0, FUN_140b240b0());
             break;
         case 0x14:
             FUN_14134a120(4, 0, 0);
             break;
         case 0x17:
-            FUN_140d74390(FUN_14028b8e0(CStringW(L"s_beauty_msg_error_style_disable_gender")), 0, FUN_140b240b0());
+            FUN_140d74390(GetStringCommonByKey(CStringW(L"s_beauty_msg_error_style_disable_gender")), 0, FUN_140b240b0());
             break;
         case 0x18:
             FUN_1412752d0(CStringW(L"s_beauty_msg_error_style_apply_already"), 1);
@@ -1461,7 +1461,7 @@ void UIBeautyShopStyleDialog::FUN_140f07520(Unk_BSFee* pFee, unsigned* pPrice)
     bool bSale = FUN_1401c0d90()->FUN_140476cf0(nEvent, nLevel) == 0;
     if (!pFee)
     {
-        CStringW strDefault = FUN_14028b8e0(CStringW(L"s_beauty_fee_default"));
+        CStringW strDefault = GetStringCommonByKey(CStringW(L"s_beauty_fee_default"));
         m_30->Invoke("setFee", CStringW(strDefault), CStringW(strDefault), bSale, false);
         return;
     }
@@ -1523,7 +1523,7 @@ int UIBeautyShopStyleDialog::FUN_140f07a60(MS2Ptr<CItem> spItem)
     if (!m_198->FUN_140cd1c90(spItem.get()))
     {
         if (reinterpret_cast<Unk_BSItemData*>(spItem->FUN_140527840())->FUN_14053c940(FUN_141658e60(pPc)) == 0)
-            FUN_140d74390(FUN_14028b8e0(CStringW(L"s_beauty_msg_error_save_style_disable_gender")), 0, FUN_140b240b0());
+            FUN_140d74390(GetStringCommonByKey(CStringW(L"s_beauty_msg_error_save_style_disable_gender")), 0, FUN_140b240b0());
         return 0;
     }
     m_198->FUN_140cd2660(spItem->FUN_1405276c0());
@@ -1636,7 +1636,7 @@ void UIBeautyShopStyleDialog::FUN_140f082d0()
     {
         if (m_26c != 2 && m_198->FUN_140cd2c20())
         {
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(FUN_14028de60(0x271), 1);
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommon(0x271), 1);
             spBox->FUN_141a01800(2);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopStyleDialog::FUN_140f05850));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
@@ -1671,7 +1671,7 @@ int UIBeautyShopStyleDialog::FUN_140f084e0(AScript& out, unsigned* pPrice)
     if (!bChanged)
         *pPrice = 0;
     ASArray arr(2);
-    CStringW strRow = FUN_14028b8e0(CStringW(L"s_bill_list_row"));
+    CStringW strRow = GetStringCommonByKey(CStringW(L"s_bill_list_row"));
     ASObj& outObj = static_cast<ASObj&>(out);
     outObj.FUN_1409c0dc0("category", "$s_beauty_saved_hair_style");
     ASObj row(2);
@@ -1684,7 +1684,7 @@ int UIBeautyShopStyleDialog::FUN_140f084e0(AScript& out, unsigned* pPrice)
         strPrice = FUN_14134a220(pFee, &nPrice);
     }
     else
-        strPrice = FUN_14028b8e0(CStringW(L"s_beauty_fee_default"));
+        strPrice = GetStringCommonByKey(CStringW(L"s_beauty_fee_default"));
     row.FUN_1407cbb20("strPrice", strPrice);
     arr.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
     outObj.FUN_1409adbe0("list", Scaleform::GFx::Value(arr.FUN_1422bb870()));
@@ -1863,7 +1863,7 @@ void UIBeautyShopStyleDialog::FUN_140f09380(NotifyObject* pNotify)
         if (pTab == 0 || pTab->m_bActive)
             FUN_140f09560();
         else
-            FUN_140d74390(FUN_14028b8e0(CStringW(L"s_beauty_msg_by_expired_codi")), 0,
+            FUN_140d74390(GetStringCommonByKey(CStringW(L"s_beauty_msg_by_expired_codi")), 0,
                           Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopStyleDialog::FUN_140f09520));
     }
 }

@@ -160,9 +160,9 @@ public:
 extern int g_bAppActive;                                                // 0x143af7d40
 Unk_TeWebBrowser* FUN_140c43790(int nUiType);
 Unk_TeMovieMgr* FUN_14025e7a0();
-CStringTable* FUN_1401a9d70();
-CStringW FUN_14028de60(int nStringId);                                  // common string by id
-CStringW FUN_14028b8e0(const CStringW& strKey);                         // common string by key
+CStringTable* GetStringTable();
+CStringW GetStringCommon(int nStringId);                                  // common string by id
+CStringW GetStringCommonByKey(const CStringW& strKey);                         // common string by key
 CStringW FUN_1422b9490(const Scaleform::GFx::Value& v);                 // the value as a string
 void FUN_140d73bc0(int nStringId, int nType, void* pListener, CStringW strTag);   // system message
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Unk_TeBoxDelegate cb);
@@ -234,7 +234,7 @@ int UITriggerEditorDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         return 1;
     if (_stricmp("OnClose", szMethod) == 0)
     {
-        FUN_140d74390(FUN_14028de60(0xb01), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::FUN_141b2b140));
+        FUN_140d74390(GetStringCommon(0xb01), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::FUN_141b2b140));
         return 1;
     }
     else if (_stricmp("OnHelp", szMethod) == 0)
@@ -259,7 +259,7 @@ int UITriggerEditorDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
                 states.GetElement((unsigned int)i, &state);
                 FUN_141b2be80(state);
             }
-            FUN_140d74390(FUN_14028de60(0xb00), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::FUN_141b2b200));
+            FUN_140d74390(GetStringCommon(0xb00), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::FUN_141b2b200));
         }
         return 1;
     }
@@ -307,7 +307,7 @@ void UITriggerEditorDialog::OnLoadComplete()
     efd::SmartPointer<Unk_TeCubeService> spService(FUN_1401cd040(&DAT_143b059e8));
     Cube* pCube = spService->FUN_1410b8b00(m_nCubeId);
     if (pCube != 0)
-        FUN_140cfee80(FUN_1422dbb40(), "m_computerName", StringFormat(L"{0} ({1})", FUN_1401a9d70()->FUN_141811980(1, pCube->FUN_1408b4f20()), m_nCubeId));
+        FUN_140cfee80(FUN_1422dbb40(), "m_computerName", StringFormat(L"{0} ({1})", GetStringTable()->FUN_141811980(1, pCube->FUN_1408b4f20()), m_nCubeId));
     static_cast<Unk_TeScript*>(m_30.operator->())->FUN_141931d80("initalMaxAttribute",
         *TSingleton<Client::Constants>::GetInstance()->UserTriggerEnterActionMax.Get(),
         *TSingleton<Client::Constants>::GetInstance()->UserTriggerConditionMax.Get(),
@@ -402,7 +402,7 @@ int UITriggerEditorDialog::vfunc_13()
 {
     if (CInputKeyHandler::GetInstance()->FUN_14116d840())
     {
-        FUN_141b30060(FUN_14028de60(0xb01), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::FUN_141b2b140), L"TestArg");
+        FUN_141b30060(GetStringCommon(0xb01), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::FUN_141b2b140), L"TestArg");
         return 1;
     }
     if (UIDialog::vfunc_13() != 0)
@@ -500,14 +500,14 @@ MS2_REPLACE_METHOD(0x141B2BA00, UITriggerEditorDialog, FUN_141b2ba00, 29, 0xD7B9
 // @0x141b2ba30
 void UITriggerEditorDialog::FUN_141b2ba30(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_140d74390(FUN_14028de60(0xafe), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::SendTriggerMode22));
+    FUN_140d74390(GetStringCommon(0xafe), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::SendTriggerMode22));
 }
 MS2_REPLACE_METHOD(0x141B2BA30, UITriggerEditorDialog, FUN_141b2ba30, 211, 0x5605CB96);
 
 // @0x141b2bb10
 void UITriggerEditorDialog::FUN_141b2bb10(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_140d74390(FUN_14028de60(0xaff), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::FUN_141b2b180));
+    FUN_140d74390(GetStringCommon(0xaff), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::FUN_141b2b180));
 }
 MS2_REPLACE_METHOD(0x141B2BB10, UITriggerEditorDialog, FUN_141b2bb10, 211, 0x1ED019CA);
 
@@ -763,7 +763,7 @@ void UITriggerEditorDialog::FUN_141b2d870()
         return;
     spList->FUN_1422dd1d0();
     int nIndex = 1;
-    CStringW strFormat = FUN_14028b8e0(L"s_user_trigger_label_install_object");
+    CStringW strFormat = GetStringCommonByKey(L"s_user_trigger_label_install_object");
     for (size_t i = 0; i < cubes.size(); i++)
     {
         Cube* pCube = cubes[i];
@@ -771,7 +771,7 @@ void UITriggerEditorDialog::FUN_141b2d870()
             continue;
         ASObj obj(2);
         obj.FUN_1407cb9c0("id", nIndex);
-        CStringW strText = FUN_1401a9d70()->FUN_141811980(1, pCube->FUN_1408b4f20());
+        CStringW strText = GetStringTable()->FUN_141811980(1, pCube->FUN_1408b4f20());
         obj.FUN_1407cbb20("text", strText);
         int nHash = FUN_1408a03c0(pCube->position);
         obj.FUN_1407cb9c0("hash", nHash);
@@ -1000,8 +1000,8 @@ bool FUN_141b2fa20(Cube* pLeft, Cube* pRight)
         return false;
     if (pRight->item.IsNull())
         return false;
-    CStringW strLeft = FUN_1401a9d70()->FUN_141811980(1, pLeft->FUN_1408b4f20());
-    CStringW strRight = FUN_1401a9d70()->FUN_141811980(1, pRight->FUN_1408b4f20());
+    CStringW strLeft = GetStringTable()->FUN_141811980(1, pLeft->FUN_1408b4f20());
+    CStringW strRight = GetStringTable()->FUN_141811980(1, pRight->FUN_1408b4f20());
     if (strLeft.GetAt(0) < strRight.GetAt(0))
         return true;
     return false;

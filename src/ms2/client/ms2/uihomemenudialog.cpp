@@ -230,8 +230,8 @@ MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* p, CStringW
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStrId, void* p, CStringW strTag);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-CStringW FUN_14028b8e0(const CStringW& str);
-CStringW FUN_14028de60(int nId);
+CStringW GetStringCommonByKey(const CStringW& str);
+CStringW GetStringCommon(int nId);
 void FUN_141a024a0(CMsgBoxData* pBox, bool b);
 void FUN_141a024e0(CMsgBoxData* pBox, CStringW str, bool b);
 void FUN_141a02730(CMsgBoxData* pBox, bool b);
@@ -356,7 +356,7 @@ void UIHomeMenuDialog::FUN_140c29710()
         {
             if (FUN_1409670e0()->FUN_1410d5530() != 0)
             {
-                MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(FUN_14028b8e0(L"s_home_info_exit_messagebox_save"), 1);
+                MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(L"s_home_info_exit_messagebox_save"), 1);
                 FUN_141a024a0(spBox.operator->(), 0);
                 spBox->FUN_141a01800(1);
                 spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::FUN_140c2b390));
@@ -382,7 +382,7 @@ void UIHomeMenuDialog::FUN_140c29980()
     {
         if (FUN_1409670e0()->FUN_1410d5530() != 0)
         {
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(FUN_14028b8e0(L"s_home_info_exit_blueprint_messagebox_save"), 1);
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(L"s_home_info_exit_blueprint_messagebox_save"), 1);
             FUN_141a024a0(spBox.operator->(), 0);
             spBox->FUN_141a01800(1);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::FUN_140c2b390));
@@ -427,7 +427,7 @@ void UIHomeMenuDialog::OnScreenshot()
 {
     if (FUN_140d86260()->vfunc_2() == 1)
     {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028b8e0(L"s_msg_ugc_home_upload_screenshot"), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_msg_ugc_home_upload_screenshot"), 0, CStringW(L""));
         if (spBox.get() != 0)
         {
             FUN_141a024a0(spBox.operator->(), 0);
@@ -458,7 +458,7 @@ void UIHomeMenuDialog::OnDesignSave()
             pDialog->FUN_140faa6d0();
         else
         {
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028de60(0xbb1), 0, CStringW(L""));
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0xbb1), 0, CStringW(L""));
             if (spBox.get() != 0)
             {
                 FUN_141a024a0(spBox.operator->(), 0);
@@ -488,7 +488,7 @@ void UIHomeMenuDialog::OnBlueprintSave()
             pDialog->FUN_140faa6d0();
         else
         {
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028de60(0xbb1), 0, CStringW(L""));
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0xbb1), 0, CStringW(L""));
             if (spBox.get() != 0)
             {
                 FUN_141a024a0(spBox.operator->(), 0);
@@ -540,7 +540,7 @@ void UIHomeMenuDialog::OnHomeDemolish()
     if (spBox.get() != 0)
     {
         spBox->FUN_141a01800(2);
-        FUN_141a024e0(spBox.operator->(), FUN_14028de60(0x9d1), 0);
+        FUN_141a024e0(spBox.operator->(), GetStringCommon(0x9d1), 0);
         FUN_141a02730(spBox.operator->(), 0);
         FUN_141a02770(spBox.operator->(), 0x1c0, 400);
         spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::SendRequestCube));

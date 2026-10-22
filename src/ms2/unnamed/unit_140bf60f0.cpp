@@ -177,7 +177,7 @@ CStringW FUN_140762de0(int nAlliance);
 void FUN_140762fc0(int nAlliance, int* pnCurrent, int* pnMax, CStringW& strPoint);
 CString FUN_140762e90(int nAlliance);
 CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);
-CStringW FUN_14028b8e0(const CStringW& strKey);
+CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);
 CStringW FUN_14052b9d0(CStringW strKey, const unsigned short& nLevel, const CStringW& strName);
 CStringW FUN_140298ea0(CStringW strKey);
@@ -417,7 +417,7 @@ CStringW UIAllianceQuestDialog::FUN_140bf6c90(unsigned nQuest)
         reset = FUN_14086b190(spData->m_resetType, now.Get());
     CStringW strTime = FUN_14086aec0((reset - now).GetTimeSpan(), 1, 1, 1, 0);
     if (strTime.GetLength() == 0)
-        strTime = FUN_14028b8e0(L"s_alliance_quest_complete_mission_sec");
+        strTime = GetStringCommonByKey(L"s_alliance_quest_complete_mission_sec");
     return FUN_1405c2690(L"s_alliance_quest_complete_mission", strTime);
 }
 
@@ -590,7 +590,7 @@ void UIAllianceQuestDialog::FUN_140bf7630()
                         if (FUN_140764020()->FUN_140745590(nPrev) == 0)
                         {
                             if (FUN_140764020()->FUN_140745630(nPrev) != 0)
-                                row.FUN_1407cbb20("complete", FUN_14028b8e0(L"s_alliance_quest_rumble_warn"));
+                                row.FUN_1407cbb20("complete", GetStringCommonByKey(L"s_alliance_quest_rumble_warn"));
                         }
                         else
                             row.FUN_1407cbb20("complete", FUN_140bf6c90(nQuest));
@@ -606,12 +606,12 @@ void UIAllianceQuestDialog::FUN_140bf7630()
         int bEnabled;
         if (bCanStart == 0)
         {
-            strButton = FUN_14028b8e0(L"s_alliance_quest_complete");
+            strButton = GetStringCommonByKey(L"s_alliance_quest_complete");
             bEnabled = FUN_140764020()->FUN_1407456d0(nQuest);
         }
         else
         {
-            strButton = FUN_14028b8e0(L"s_alliance_quest_accept");
+            strButton = GetStringCommonByKey(L"s_alliance_quest_accept");
             bEnabled = 1;
         }
         row.FUN_1407cb9c0("enabled", bEnabled);

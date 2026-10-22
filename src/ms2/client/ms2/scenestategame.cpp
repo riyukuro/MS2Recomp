@@ -622,7 +622,7 @@ Unk_SSG6aeee0* FUN_1406aeee0();
 struct Unk_StreamPoint;
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 CStringW FUN_140cc20a0(int nError);
-CStringW FUN_14028de60(int nId);
+CStringW GetStringCommon(int nId);
 void FUN_1412751f0(const CStringW& strMsg, int a, int b);
 void FUN_140930ba0(int n);
 extern int DAT_143ab2870;
@@ -1148,7 +1148,7 @@ CInputStream& FUN_14070f300(CInputStream& stream, bool& b);   // stream >> bool
 extern CString DAT_143ae79e8;
 class Unk_SSGTaxiStation { public: void FUN_1409f1970(); };
 Unk_SSGTaxiStation* FUN_1412787a0();                        // TSingleton<CAutoFindTaxiStation>
-CStringW FUN_14028b8e0(const CStringW& strKey);              // localized text for a string key
+CStringW GetStringCommonByKey(const CStringW& strKey);              // localized text for a string key
 class Unk_SSGDlgShop { public: void FUN_141afb720(int nType); };
 Unk_SSGDlgShop* FUN_140534780(int nId);                     // Unk_BreakDialog<UIShopDialog>
 
@@ -2507,7 +2507,7 @@ void CSceneStateGame::FUN_14170fc70(CInPacket& packet)
     }
     else if (nResult == 1)
     {
-        FUN_1412751f0(FUN_14028de60(0x99d), 1, 1);
+        FUN_1412751f0(GetStringCommon(0x99d), 1, 1);
     }
 }
 MS2_REPLACE_METHOD(0x14170fc70, CSceneStateGame, FUN_14170fc70, 291, 0x93A32950);
@@ -3139,10 +3139,10 @@ void CSceneStateGame::OnItemInventory(CInPacket& packet)
             FUN_140d73bc0(0xfe, 0, 0, L"");
             break;
         case 0x25:
-            FUN_140d73aa0(FUN_14028b8e0(L"s_item_err_Invalid_slot_codi"), 0, 0, L"");
+            FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_Invalid_slot_codi"), 0, 0, L"");
             break;
         case 0x26:
-            FUN_140d73aa0(FUN_14028b8e0(L"s_item_err_not_active_tab"), 0, 0, L"");
+            FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_not_active_tab"), 0, 0, L"");
             break;
         case 0x28:
         {
@@ -4669,7 +4669,7 @@ void CSceneStateGame::FUN_141736940(CInPacket& packet)
         __int64 nCharId = static_cast<CInputStream&>(packet).vfunc_o8_4();
         DAT_143ab31e8.SetAt(nCharId, nFame);
         CStringW strKey(L"s_fame_point_update");
-        FUN_1412751b0(FUN_14028b8e0(strKey), 0x14);
+        FUN_1412751b0(GetStringCommonByKey(strKey), 0x14);
     }
 }
 MS2_REPLACE_METHOD(0x141736940, CSceneStateGame, FUN_141736940, 2576, 0xC99A41D7);
@@ -4774,7 +4774,7 @@ void CSceneStateGame::FUN_1417373d0(CInPacket& packet)
     {
         UIMessageBox* pBox = FUN_14151f890();
         if (pBox != 0)
-            pBox->FUN_1419f82b0(FUN_14028de60(0xb0b));
+            pBox->FUN_1419f82b0(GetStringCommon(0xb0b));
         int nPortalId = static_cast<CInputStream&>(packet).vfunc_o8_3();
         int nA = static_cast<CInputStream&>(packet).vfunc_o8_3();
         int nB = static_cast<CInputStream&>(packet).vfunc_o8_3();
@@ -4812,7 +4812,7 @@ void CSceneStateGame::FUN_1417373d0(CInPacket& packet)
         FUN_140d73bc0(0x87e, 0, 0, L"");
         break;
     case 11:
-        FUN_140d73aa0(FUN_14028b8e0(L"s_home_visit_failed_private"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_home_visit_failed_private"), 0, 0, L"");
         break;
     }
 }
@@ -4893,7 +4893,7 @@ void CSceneStateGame::FUN_141731c10(CInPacket& packet)
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14052bd00(0x902, strName), 0, DAT_143ae79f8);
             if (spBox.get() != 0)
             {
-                spBox->FUN_141a01ca0(0x14, 1, FUN_14028de60(0x2b8));
+                spBox->FUN_141a01ca0(0x14, 1, GetStringCommon(0x2b8));
                 spBox->FUN_141a02460(1);
                 spBox->FUN_141a02480(1);
                 spBox->FUN_141a024a0(0);
@@ -5163,7 +5163,7 @@ void CSceneStateGame::OnPvp(CInPacket& packet)
         int nArg = static_cast<CInputStream&>(packet).vfunc_o8_3();
         FUN_140f97ef0()->FUN_14174a530(1, nArg);
         FUN_1417398d0();
-        FUN_1412751b0(FUN_14028de60(0x42b), 0x14);
+        FUN_1412751b0(GetStringCommon(0x42b), 0x14);
         FUN_141276180(DAT_143ae7a00, "");
     }
     else if (nMode == 10)
@@ -5172,18 +5172,18 @@ void CSceneStateGame::OnPvp(CInPacket& packet)
         FUN_140f97ef0()->FUN_14174a530(0, 0);
         FUN_1417398d0();
         if (nPrev == 1)
-            FUN_1412751b0(FUN_14028de60(0x42c), 0x14);
+            FUN_1412751b0(GetStringCommon(0x42c), 0x14);
     }
     else if (nMode == 11)
     {
         int nArg = static_cast<CInputStream&>(packet).vfunc_o8_3();
         FUN_140f97ef0()->FUN_14174a530(2, nArg);
         FUN_1417398d0();
-        CStringW strMsg = FUN_14028de60(0x42d);
+        CStringW strMsg = GetStringCommon(0x42d);
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strMsg, 0, DAT_143ae7a08);
         if (spBox.get() != 0)
         {
-            spBox->FUN_141a01ca0(0x19, 1, FUN_14028de60(0x2b8));
+            spBox->FUN_141a01ca0(0x19, 1, GetStringCommon(0x2b8));
             spBox->FUN_141a02460(1);
             spBox->FUN_141a02480(1);
             spBox->FUN_141a024a0(0);
@@ -5201,7 +5201,7 @@ void CSceneStateGame::OnPvp(CInPacket& packet)
     {
         int nResult = static_cast<CInputStream&>(packet).vfunc_o8_3();
         if (nResult == 0)
-            FUN_140d73aa0(FUN_14028b8e0(L"s_rank_duel_ui_error_in_arena_field"), 0, 0, L"");
+            FUN_140d73aa0(GetStringCommonByKey(L"s_rank_duel_ui_error_in_arena_field"), 0, 0, L"");
         return;
     }
     else
@@ -5266,7 +5266,7 @@ void CSceneStateGame::FUN_14173b5a0(CInPacket& packet)
         }
         else
         {
-            CStringW strMsg = FUN_14028b8e0(L"s_special_item_hongbao_cantget");
+            CStringW strMsg = GetStringCommonByKey(L"s_special_item_hongbao_cantget");
             FUN_1412751b0(strMsg, 0x11);
         }
     }
@@ -6796,7 +6796,7 @@ void CSceneStateGame::FUN_14173aa10(CInPacket& packet)
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14052bd00(0x87f, strName), 0, CStringW(L""));
         if (spBox.get() != 0)
         {
-            spBox->FUN_141a01ca0(0x14, 1, FUN_14028de60(0x2b8));
+            spBox->FUN_141a01ca0(0x14, 1, GetStringCommon(0x2b8));
             spBox->FUN_141a02460(1);
             spBox->FUN_141a02480(1);
             spBox->FUN_141a024a0(0);
@@ -7723,17 +7723,17 @@ void CSceneStateGame::OnJob(CInPacket& packet)
             CStringW strMsg;
             switch (nError)
             {
-            case 9: strMsg = FUN_14028de60(0x76); break;
-            case 10: strMsg = FUN_14028de60(0x77); break;
-            case 2: strMsg = FUN_14028de60(0x78); break;
-            case 12: strMsg = FUN_14028de60(0x79); break;
-            case 11: strMsg = FUN_14028de60(0x7a); break;
+            case 9: strMsg = GetStringCommon(0x76); break;
+            case 10: strMsg = GetStringCommon(0x77); break;
+            case 2: strMsg = GetStringCommon(0x78); break;
+            case 12: strMsg = GetStringCommon(0x79); break;
+            case 11: strMsg = GetStringCommon(0x7a); break;
             case 3:
-            case 4: strMsg = FUN_14028de60(0x7b); break;
-            case 5: strMsg = FUN_14028de60(0x7c); break;
-            case 15: strMsg = FUN_14028de60(0x7d); break;
-            case 8: strMsg = FUN_14028de60(0x7e); break;
-            case 14: strMsg = FUN_14028de60(0x7f); break;
+            case 4: strMsg = GetStringCommon(0x7b); break;
+            case 5: strMsg = GetStringCommon(0x7c); break;
+            case 15: strMsg = GetStringCommon(0x7d); break;
+            case 8: strMsg = GetStringCommon(0x7e); break;
+            case 14: strMsg = GetStringCommon(0x7f); break;
             case 18:
             {
                 int nValue = static_cast<CInputStream&>(packet).vfunc_o8_3();
@@ -8147,7 +8147,7 @@ void CSceneStateGame::OnSystemShop(CInPacket& packet)
     {
         if (nType == 8)
         {
-            FUN_140d73aa0(FUN_14028b8e0(L"s_shop_no_star_point_event"), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommonByKey(L"s_shop_no_star_point_event"), 0, 0, CStringW(L""));
         }
     }
     else
@@ -8278,13 +8278,13 @@ void CSceneStateGame::OnRecallScroll(CInPacket& packet)
         switch (nType)
         {
         case 0:
-            strMsg = FUN_14028de60(0xb64);
+            strMsg = GetStringCommon(0xb64);
             break;
         case 1:
-            strMsg = FUN_14028de60(0xb63);
+            strMsg = GetStringCommon(0xb63);
             break;
         case 2:
-            strMsg = FUN_14028b8e0(L"s_cash_recall_wedding_notice");
+            strMsg = GetStringCommonByKey(L"s_cash_recall_wedding_notice");
             break;
         }
         pDlg->FUN_14129c920(nType, kInfo.m_n18, kInfo, kInfo.m_nC);
@@ -8848,7 +8848,7 @@ void CSceneStateGame::FUN_141739910(CInPacket& packet)
             {
                 CStringW strText = FUN_14052bd00(0x5f6, FUN_1401a9d70()->FUN_141811980(1, nItemId));
                 strText += L"\n";
-                strText += FUN_14028b8e0(strMsg);
+                strText += GetStringCommonByKey(strMsg);
                 FUN_140d73aa0(strText, 0, 0, L"");
             }
         }
@@ -8888,7 +8888,7 @@ void CSceneStateGame::FUN_14173c2d0(CInPacket& packet)
         if (kInfo.m_bSilent == false)
         {
             if (kInfo.m_nExpire == 0)
-                FUN_140d73aa0(FUN_14028b8e0(L"s_msg_item_active_codi_tab_complete_limitless"), 0, 0, CStringW(L""));
+                FUN_140d73aa0(GetStringCommonByKey(L"s_msg_item_active_codi_tab_complete_limitless"), 0, 0, CStringW(L""));
             else
             {
                 int nDays = FUN_14086be70(static_cast<int>(kInfo.m_nExpire));
@@ -9774,7 +9774,7 @@ void CSceneStateGame::OnLevelUp(CInPacket& packet)
             {
                 if (FUN_1403ed2b0()->FUN_141adc940(0x4f2d) != 0)
                     pNotify->FUN_141ac14b0();
-                FUN_1412751b0(FUN_14028b8e0(L"s_msg_skillbook_add_skillpoint"), 0x14);
+                FUN_1412751b0(GetStringCommonByKey(L"s_msg_skillbook_add_skillpoint"), 0x14);
             }
         }
     }
@@ -10580,11 +10580,11 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
     {
         int nType = static_cast<CInputStream&>(packet).vfunc_o8_3();
         if (nType == 1 || nType == 2)
-            FUN_1412751f0(FUN_14028de60(0xb89), 1, 1);
+            FUN_1412751f0(GetStringCommon(0xb89), 1, 1);
         else if (nType == 3)
-            FUN_1412751f0(FUN_14028de60(0xb8a), 1, 1);
+            FUN_1412751f0(GetStringCommon(0xb8a), 1, 1);
         else if (nType == 4)
-            FUN_1412751f0(FUN_14028de60(0xb8b), 1, 1);
+            FUN_1412751f0(GetStringCommon(0xb8b), 1, 1);
     }
         break;
     case 0x20:
@@ -11292,7 +11292,7 @@ void CSceneStateGame::FUN_141730920(CInPacket& packet)
         case 5:
             if (FUN_140166410()->FUN_14036d570(0x4a))
             {
-                FUN_1412751f0(FUN_14028b8e0(L"s_gem_error_VIP"), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(L"s_gem_error_VIP"), 1, 1);
             }
             else
             {
@@ -11833,7 +11833,7 @@ void CSceneStateGame::FUN_141721cd0(CInPacket& packet)
     {
         if (!FUN_1403ed2d0()->FUN_141bcb0a0())
             FUN_141275260(0x257, 1, 0);
-        FUN_1412751b0(FUN_14028de60(0x258), 0x14);
+        FUN_1412751b0(GetStringCommon(0x258), 0x14);
     }
     else if (nMode == 0x16)
     {

@@ -138,8 +138,8 @@ void FUN_14062a230(Unk_SsdItemOne& v, CInPacket& in);
 int FUN_140627450(MS2Ptr<CItem> spItem, CItemSocketScrollDataPtr spRow);   // 0 = the scroll can be used on the item
 
 
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // string table text
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // StringFormat with one text argument
 CString FUN_140540050(const char* szFormat, const CString& strArg);
@@ -285,7 +285,7 @@ void UIItemSocketScrollDialog::FUN_140f65130(ItemScrollSlot& slot, DragSlot* pDr
         return;
     if (m_nScrollUid == 0)
     {
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_itemsocket_scroll_error_have_not_scroll")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_itemsocket_scroll_error_have_not_scroll")), 0, 0, CStringW(L""));
         return;
     }
     MS2DragSlot* pSrc = FUN_140a50b50(pDrag);
@@ -294,7 +294,7 @@ void UIItemSocketScrollDialog::FUN_140f65130(ItemScrollSlot& slot, DragSlot* pDr
     MS2Ptr<CItem> spTarget = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10(pSrc));
     if (spTarget == 0)
     {
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_itemsocket_scroll_error_have_not_item")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_itemsocket_scroll_error_have_not_item")), 0, 0, CStringW(L""));
         return;
     }
     MS2Ptr<CItem> spScroll = DAT_143ab2a90.FUN_140a5d680(m_nScrollUid);
@@ -333,7 +333,7 @@ void UIItemSocketScrollDialog::FUN_140f65130(ItemScrollSlot& slot, DragSlot* pDr
         SetHasItem(1);
         return;
     }
-    FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_itemsocket_scroll_error_have_not_scroll")), 0, 0, CStringW(L""));
+    FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_itemsocket_scroll_error_have_not_scroll")), 0, 0, CStringW(L""));
 }
 
 // @0x140f659e0
@@ -390,7 +390,7 @@ bool UIItemSocketScrollDialog::FUN_140f65c10(CItemSocketScrollDataPtr spRow, CSt
     else
         strLevel = FUN_140ec2f00(CStringW(L"s_itemsocket_scroll_limit_level_range"), spRow->m_nMinLv, spRow->m_nMaxLv);
     CStringW strRanks;
-    CStringW strSep = FUN_14028b8e0(CStringW(L"s_itemsocket_scroll_limit_add"));
+    CStringW strSep = GetStringCommonByKey(CStringW(L"s_itemsocket_scroll_limit_add"));
     ATL::CAtlArray<unsigned int>& arrRank = spRow->m_arrRank;
     if (!arrRank.IsEmpty())
     {
@@ -423,13 +423,13 @@ bool UIItemSocketScrollDialog::FUN_140f65c10(CItemSocketScrollDataPtr spRow, CSt
     if (FUN_140166410()->FUN_14036d570(0x5e))
     {
         if ((spRow->m_nUnk1c & 1) != 0)
-            strUse.Append(FUN_14028b8e0(CStringW(L"s_word_game")));
+            strUse.Append(GetStringCommonByKey(CStringW(L"s_word_game")));
         if ((spRow->m_nUnk1c & 2) != 0)
         {
             if (strUse.IsEmpty())
-                strUse.Append(FUN_14028de60(0x594));
+                strUse.Append(GetStringCommon(0x594));
             else
-                strUse.Append(FUN_1401e8510(strSep, FUN_14028de60(0x594)));
+                strUse.Append(FUN_1401e8510(strSep, GetStringCommon(0x594)));
         }
     }
     CStringW strLine(L"\n");
@@ -460,7 +460,7 @@ bool UIItemSocketScrollDialog::FUN_140f66680(MS2Ptr<CItem> spItem, CItemSocketSc
         {
             if (!strDesc.IsEmpty())
                 strDesc.Append(L"\n");
-            strDesc.Append(FUN_14028b8e0(CStringW(L"s_itemsocket_scroll_tradableCountDeduction_desc")));
+            strDesc.Append(GetStringCommonByKey(CStringW(L"s_itemsocket_scroll_tradableCountDeduction_desc")));
         }
         return 1;
     }
@@ -477,14 +477,14 @@ void UIItemSocketScrollDialog::OnClickAction()
         bHasItem = true;
     if (!bHasItem)
     {
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_itemsocket_scroll_error_have_not_item")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_itemsocket_scroll_error_have_not_item")), 0, 0, CStringW(L""));
         return;
     }
     __int64 nTargetUid = pSlot->FUN_140d428f0();
     MS2Ptr<CItem> spTarget = DAT_143ab2a90.FUN_140a5d680(pSlot->FUN_140d428f0());
     if (spTarget == 0)
     {
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_itemsocket_scroll_error_have_not_item")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_itemsocket_scroll_error_have_not_item")), 0, 0, CStringW(L""));
         return;
     }
     MS2Ptr<CItem> spScroll = DAT_143ab2a90.FUN_140a5d680(m_nScrollUid);
@@ -513,7 +513,7 @@ void UIItemSocketScrollDialog::OnClickAction()
         SendItemSocketScroll(nTargetUid);
         return;
     }
-    FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_itemsocket_scroll_error_have_not_scroll")), 0, 0, CStringW(L""));
+    FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_itemsocket_scroll_error_have_not_scroll")), 0, 0, CStringW(L""));
 }
 
 // @0x140f66f70

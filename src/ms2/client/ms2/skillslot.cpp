@@ -202,8 +202,8 @@ bool FUN_140930d70();                                     // the quick slots are
 void FUN_141275260(int nNotice, int a, int b);            // a system notice by id
 void FUN_1412751f0(const CStringW& strText, int a, int b);   // a system notice
 void FUN_141276180(const CString& strSound, const CString& strArg);   // play a ui sound
-CStringW FUN_14028b8e0(const CStringW& strKey);           // string table text
-CStringW FUN_14028de60(int nStringId);                    // string table text by id
+CStringW GetStringCommonByKey(const CStringW& strKey);           // string table text
+CStringW GetStringCommon(int nStringId);                    // string table text by id
 bool FUN_140614800(const Scaleform::GFx::Value& fn);
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);    // has the AS object been released
 MS2Ptr<AScript> FUN_140d019b0(MS2Ptr<AScript> spObj, const CString& strName);   // the AS function of an AS object
@@ -487,7 +487,7 @@ int SkillSlot::vfunc_13()
             unsigned short nLevel = (unsigned short)pPc->vfunc_78();
             if (FUN_140526810(spItem.operator->(), nLevel) == 0)
             {
-                FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_err_not_enough_level")), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_err_not_enough_level")), 1, 1);
                 return vfunc_10();
             }
         }
@@ -516,7 +516,7 @@ int SkillSlot::vfunc_13()
                 return 0;
             if (spLevel->FUN_140804450())
             {
-                FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_err_invalid_shortkey_code")), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_err_invalid_shortkey_code")), 1, 1);
                 return 0;
             }
         }
@@ -807,7 +807,7 @@ int SkillSlot::vfunc_0(void* p)
         if (tip.FUN_1409e1770(m_nItemId, nRarity) != 0)
         {
             if (IsFixed() == 0)
-                tip.FUN_1409c69b0(FUN_14028de60(0x759));
+                tip.FUN_1409c69b0(GetStringCommon(0x759));
             FUN_1409b4bc0(p, tip.FUN_1422bb870());
             return 1;
         }
@@ -821,7 +821,7 @@ int SkillSlot::vfunc_0(void* p)
             if (tip.FUN_1409e0d40(spItem.get()) != 0)
             {
                 if (IsFixed() == 0)
-                    tip.FUN_1409c69b0(FUN_14028de60(0x759));
+                    tip.FUN_1409c69b0(GetStringCommon(0x759));
                 FUN_1409b4bc0(p, tip.FUN_1422bb870());
                 return 1;
             }
@@ -844,7 +844,7 @@ int SkillSlot::vfunc_0(void* p)
                 if (tip.FUN_1409e1c50(nSkillId, nLevel, 0) != 0)
                 {
                     if (IsFixed() == 0)
-                        tip.FUN_1409c69b0(FUN_14028de60(0x759));
+                        tip.FUN_1409c69b0(GetStringCommon(0x759));
                     FUN_1409b4bc0(p, tip.FUN_1422bb870());
                     return 1;
                 }
@@ -947,7 +947,7 @@ int SkillSlot::vfunc_8(void* p)
 // @0x14175f080
 CStringW SkillSlot::vfunc_22()
 {
-    return FUN_14028de60(0x759);
+    return GetStringCommon(0x759);
 }
 
 // @0x14175f0c0
@@ -1524,11 +1524,11 @@ CStringW SkillSlot::FUN_141761c30()
     if (m_kKeys.Lookup(m_nIndex, nAction))
     {
         if (nAction == 0x493e3)
-            return FUN_14028b8e0(CStringW(L"s_quick_slot_item_get"));
+            return GetStringCommonByKey(CStringW(L"s_quick_slot_item_get"));
         if (nAction == 0x49401)
-            return FUN_14028b8e0(CStringW(L"s_quick_slot_attack"));
+            return GetStringCommonByKey(CStringW(L"s_quick_slot_attack"));
         if (nAction == 0x493e1)
-            return FUN_14028b8e0(CStringW(L"s_quick_slot_jump"));
+            return GetStringCommonByKey(CStringW(L"s_quick_slot_jump"));
     }
     return CStringW(L"");
 }
@@ -2169,7 +2169,7 @@ MS2Ptr<CSkillRecord> CSkillSystem::FUN_141764e30(Unk_InventorySkillRequest& kReq
     Unk_SsPc* pOwner = reinterpret_cast<Unk_SsPc*>(m_pOwner);
     if (!pOwner->FUN_1416546d0()->vfunc_2(kReq.m_nSkillId))
     {
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_err_not_learn_skill")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_err_not_learn_skill")), 1, 1);
         FUN_141276180(DAT_143aea1b8, CString(""));
         return MS2Ptr<CSkillRecord>(nullptr);
     }
@@ -2182,7 +2182,7 @@ MS2Ptr<CSkillRecord> CSkillSystem::FUN_141764e30(Unk_InventorySkillRequest& kReq
         unsigned short nPcLevel = (unsigned short)pOwner->vfunc_78();
         if (FUN_140526810(spItem.operator->(), nPcLevel) == 0)
         {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_err_not_enough_level")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_err_not_enough_level")), 1, 1);
             return MS2Ptr<CSkillRecord>(nullptr);
         }
         kReq.m_n40 = nItemUid;
@@ -3160,7 +3160,7 @@ void CSkillSystem::FUN_141769440(int nError)
         FUN_141276180(DAT_143aea1d8, CString(""));
         break;
     case 29:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_err_cannot_use_here_pet_trap")), 1, 0);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_err_cannot_use_here_pet_trap")), 1, 0);
         FUN_141276180(DAT_143aea1d0, CString(""));
         break;
     case 30:
@@ -3172,7 +3172,7 @@ void CSkillSystem::FUN_141769440(int nError)
         FUN_141276180(DAT_143aea1e0, CString(""));
         break;
     case 32:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_err_not_allow_pvpField")), 1, 0);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_err_not_allow_pvpField")), 1, 0);
         FUN_141276180(DAT_143aea1d0, CString(""));
         break;
     }

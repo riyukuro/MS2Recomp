@@ -174,8 +174,8 @@ UIMessageBox* FUN_14151f890();
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* p, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spData);
 void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);
-CStringW FUN_14028de60(int nId);                                // string table text
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // the "s_..." key text
+CStringW GetStringCommon(int nId);                                // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // the "s_..." key text
 CStringW FUN_14052bd00(int nId, const CStringW& strArg);        // formatted string table text
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);     // system message
 void FUN_141275260(int nId, int nA, int nB);
@@ -754,7 +754,7 @@ static void FUN_1419f8920(MS2Ptr<CItem> spItem, unsigned int nCount)
     {
         CStringW strTag;
         strTag.Format(L"%s,%d", (const wchar_t*)s_143af3d70, nCount);
-        CStringW strAsk = FUN_14028de60(0x28c);
+        CStringW strAsk = GetStringCommon(0x28c);
         CStringW strMsg;
         CStringW strExtra;
         bool bExtra = false;
@@ -1309,7 +1309,7 @@ int UIMessageBox::FUN_1419fb500(int nButton)
         {
             if (DAT_143ab2858 == 0)
             {
-                FUN_140d73aa0(FUN_14052bd00(0x20f, FUN_14028de60(0xd28)), 0, 0, L"");
+                FUN_140d73aa0(FUN_14052bd00(0x20f, GetStringCommon(0xd28)), 0, 0, L"");
             }
             else
             {
@@ -1633,7 +1633,7 @@ int UIMessageBox::FUN_1419fc810(int nButton)
                     spBox->FUN_141a01600(spItem->FUN_140526a50());
                     spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
                     spBox->FUN_141a01800(2);
-                    spBox->FUN_141a024e0(FUN_14028de60(0x29e), 0);
+                    spBox->FUN_141a024e0(GetStringCommon(0x29e), 0);
                     FUN_140d73c60(spBox);
                 }
             }
@@ -2176,7 +2176,7 @@ int UIMessageBox::FUN_1419feae0(int nButton, const CStringW& strName)
         {
             UIMessageBox* pBox = FUN_14151f890();
             if (pBox)
-                pBox->FUN_1419f82b0(FUN_14028de60(0xd));
+                pBox->FUN_1419f82b0(GetStringCommon(0xd));
             return 0;
         }
         CStringW strError;
@@ -2209,7 +2209,7 @@ int UIMessageBox::FUN_1419fecc0(int nButton, const CStringW& strName)
         {
             UIMessageBox* pBox = FUN_14151f890();
             if (pBox)
-                pBox->FUN_1419f82b0(FUN_14028de60(0xd));
+                pBox->FUN_1419f82b0(GetStringCommon(0xd));
             return 0;
         }
         CStringW strError;
@@ -2247,7 +2247,7 @@ int UIMessageBox::FUN_1419feeb0(int nButton, const CStringW& strName)
         {
             UIMessageBox* pBox = FUN_14151f890();
             if (pBox)
-                pBox->FUN_1419f82b0(FUN_14028de60(0xd));
+                pBox->FUN_1419f82b0(GetStringCommon(0xd));
             return 0;
         }
         Unk_MessageBoxFilter* pFilter = FUN_14025e7d0()->FUN_140229a50().get();
@@ -2294,22 +2294,22 @@ int UIMessageBox::FUN_1419ff130(int nButton, const CStringW& strName)
         FUN_1403ed2d0()->FUN_141bc2c90(pos, portals);
         if (FUN_140966da0(portals))
         {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_msg_item_open_massive_error_another_portal")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_msg_item_open_massive_error_another_portal")), 1, 1);
             return 0;
         }
         if (FUN_140930b10())
         {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_msg_item_open_massive_cant_open")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_msg_item_open_massive_cant_open")), 1, 1);
             return 0;
         }
         if (FUN_14166c930(pPlayer) != 1)
         {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_msg_item_open_massive_invalid_state")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_msg_item_open_massive_invalid_state")), 1, 1);
             return 0;
         }
         if (FUN_1408e57f0()->FUN_1422b9e00() != 0x620001d)
         {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_msg_item_open_massive_invalid_state")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_msg_item_open_massive_invalid_state")), 1, 1);
             return 0;
         }
         int nOpen = 0;
@@ -2326,7 +2326,7 @@ int UIMessageBox::FUN_1419ff130(int nButton, const CStringW& strName)
         }
         if (nOpen > 9)
         {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_msg_item_open_massive_error_too_many_portal")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_msg_item_open_massive_error_too_many_portal")), 1, 1);
             return 0;
         }
         DAT_143ab2a90.FUN_140a63880(pItem, strName);

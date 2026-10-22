@@ -27,8 +27,8 @@ Unk_BmUIService* FUN_1403ed2b0();
 // The table of text strings and the message helpers.
 class Unk_BmStrings { public: CStringW FUN_141811980(int nTable, int nId); };
 Unk_BmStrings* FUN_1401a9d70();
-CStringW FUN_14028b8e0(const CStringW& strKey);         // string table text of a key
-CStringW FUN_14028de60(int nId);                        // string table text by id
+CStringW GetStringCommonByKey(const CStringW& strKey);         // string table text of a key
+CStringW GetStringCommon(int nId);                        // string table text by id
 CStringW FUN_1409eec40(int nId);
 CStringW FUN_1408116a0(int nId, const int& nValue);     // text of an id with one number
 void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);
@@ -140,7 +140,7 @@ void CBlackMarketMan::OnBlackMarket(CInPacket& packet)
     else if (cSub == 7)
     {
         FUN_141276180(s_strBlackMarketSell, CString(""));
-        FUN_1412751b0(FUN_14028de60(0x925), 0x12);
+        FUN_1412751b0(GetStringCommon(0x925), 0x12);
         SendBlackMarketMode1();
     }
     else if (cSub == 9)
@@ -469,7 +469,7 @@ void CBlackMarketMan::FUN_140a21ca0(CInPacket& packet)
         break;
     case 23:
         if (bType == 3)
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_err_reserved_other")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_err_reserved_other")), 1, 1);
         else
             FUN_141275260(0x87, 1, 1);
         break;
@@ -482,7 +482,7 @@ void CBlackMarketMan::FUN_140a21ca0(CInPacket& packet)
         FUN_140d73bc0(0x931, 0, 0, CStringW(L""));
         break;
     case 27:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_blackmarket_error_buy_expired")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_blackmarket_error_buy_expired")), 1, 1);
         break;
     case 29:
         FUN_141275260(0x92d, 1, 1);
@@ -513,15 +513,15 @@ void CBlackMarketMan::FUN_140a21ca0(CInPacket& packet)
         FUN_140d73bc0(0xc07, 0, 0, CStringW(L""));
         break;
     case 39:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_blackmarket_error_not_useable")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_blackmarket_error_not_useable")), 1, 1);
         break;
     case 40:
         break;
     case 41:
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_blackmarket_error_purchase_count")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_blackmarket_error_purchase_count")), 0, 0, CStringW(L""));
         break;
     case 42:
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_blackmarket_error_cannot_buy_ownProduct")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_blackmarket_error_cannot_buy_ownProduct")), 0, 0, CStringW(L""));
         break;
     case 43:
         FUN_140d73aa0(FUN_14028dee0(0x93d, FUN_1401a9d70()->FUN_141811980(1, nA), nB), 0, 0, CStringW(L""));

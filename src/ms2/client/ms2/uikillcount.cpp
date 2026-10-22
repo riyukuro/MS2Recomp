@@ -30,7 +30,7 @@ class Unk_KcWorld { };
 Unk_KcWorld* FUN_1403ed2d0();
 PCBase* FUN_141bd0cc0(Unk_KcWorld* pWorld);                         // the local player
 PCBase* FUN_14096e110(void* pObject);                               // the actor behind an object (NULL if none)
-CStringW FUN_14028b8e0(const CStringW& strKey);                     // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int nUiId, const Scaleform::GFx::Value& root);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcda0(Scaleform::GFx::Value* pValue, double n);
@@ -182,7 +182,7 @@ void UIKillCount::FUN_1419df6a0()
     {
         PCBase* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
         if (pPlayer != 0)
-            pPlayer->FUN_14166fff0(FUN_14028b8e0(strKey));
+            pPlayer->FUN_14166fff0(GetStringCommonByKey(strKey));
     }
 }
 

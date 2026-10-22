@@ -385,7 +385,7 @@ void FUN_140fb5080(UIUGCCubeNoticePopup* p, int bShow);
 // Strings and animation/listener glue of other units.
 class Unk_FcStrMgr { public: CStringW FUN_141811980(int nTable, int nIndex); };
 Unk_FcStrMgr* FUN_1401a9d70();
-CStringW FUN_14028de60(int nId);                                    // string table lookup
+CStringW GetStringCommon(int nId);                                    // string table lookup
 CStringW FUN_14061ad70(const CStringW& str, const wchar_t* psz);    // str + psz
 CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB); // strA + strB
 void FUN_140997ab0(egf::EntityPtr spEntity, NiActorManager::CallbackObject* pCb);
@@ -611,7 +611,7 @@ CStringW CFunctionCubeObject::vfunc_6()
             return CStringW(L"");
         int nItemId = pRow->FUN_1408b4f20();
         CStringW strName = FUN_1401a9d70()->FUN_141811980(1, nItemId);
-        return FUN_1401d0080(FUN_14061ad70(FUN_14028de60(0x63e), L" - "), strName);
+        return FUN_1401d0080(FUN_14061ad70(GetStringCommon(0x63e), L" - "), strName);
     }
     return CStringW(L"");
 }
@@ -1190,7 +1190,7 @@ int FUN_14086bd90(int nId);                                         // growth se
 CStringW FUN_14086aec0(__int64 nSpan, int, int, int, int);          // format a time span
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW FUN_14086d060(int nStringId, const __int64* pnValue);
-CStringW FUN_14028b8e0(const CStringW& strKey);                     // string table lookup by key
+CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table lookup by key
 void FUN_1412751f0(const CStringW& str, int nA, int nB);            // floating notice
 void FUN_140e59ea0(UIObject* pDlg, CHomemadeCubeObject* pCube);
 class UIMasteryObjectMark : public UIDialog { public: char m_pad[8]; };
@@ -1310,7 +1310,7 @@ void CHomemadeCubeObject::vfunc_8(CString str)
         {
             if (DAT_143ab2898 < FUN_14066d9a0(&kItem)->m_nPrice)
             {
-                FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_mastery_error_lack_meso")), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_mastery_error_lack_meso")), 1, 1);
             }
             else if (FUN_1416764d0(pActor) == 0)
             {
@@ -1622,9 +1622,9 @@ static CStringW Unk_FcGatherTip(CHomemadeCubeObject* pThis, int nPriceStr, int n
     if (FUN_14166c930(pActor) == 0x37)
         return CStringW(L"");
     if (pThis->vfunc_17() == 0)
-        return FUN_14028b8e0(CStringW(L"s_gathering_object_lack_mastery"));
+        return GetStringCommonByKey(CStringW(L"s_gathering_object_lack_mastery"));
     if (FUN_1410c35c0(FUN_1409670e0()) != 0)
-        return FUN_14028b8e0(CStringW(L"s_mastery_error_notuse_designmode"));
+        return GetStringCommonByKey(CStringW(L"s_mastery_error_notuse_designmode"));
     if (pThis->m_nState == 0)
     {
         Unk_FcSp24 kInfoRef;
@@ -1646,7 +1646,7 @@ static CStringW Unk_FcGatherTip(CHomemadeCubeObject* pThis, int nPriceStr, int n
     }
     else if (pThis->m_nState == 2)
     {
-        return FUN_14052bd00(0x634, FUN_14028de60(0x641));
+        return FUN_14052bd00(0x634, GetStringCommon(0x641));
     }
     else if (pThis->m_nState == 1)
     {
@@ -2133,7 +2133,7 @@ void CNurturingCubeObject::FUN_14122c460(int nMode)
 void CNurturingCubeObject::FUN_14122c7b0(int nError)
 {
     if (nError == 1)
-        FUN_14122d2a0(FUN_14028b8e0(CStringW(L"s_error_nurturing_invalid_item")));
+        FUN_14122d2a0(GetStringCommonByKey(CStringW(L"s_error_nurturing_invalid_item")));
     else if (nError == 2)
         FUN_14122d2a0(FUN_1405c2690(CStringW(L"s_error_nurturing_eat_maxcount"), FUN_1401aa6a0(FUN_14122c410())));
     else if (nError == 3)

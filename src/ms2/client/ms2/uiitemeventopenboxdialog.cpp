@@ -86,7 +86,7 @@ class Unk_EobNotices { public:                                              // t
     void FUN_140da4eb0(CStringW, Delegate<void(NotifyObject*)>);
 };
 Unk_EobNotices* FUN_140939a10();
-CStringW FUN_14028b8e0(const CStringW& strKey);                             // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 void FUN_1412751f0(const CStringW& strText, int nType, int nFlags);         // notice message box
 void FUN_141415600(const CString& strName);                                 // drop the item shown under a dialog name
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> item, int a, int b, int c);   // show an item under a dialog name
@@ -141,7 +141,7 @@ void UIItemEventOpenBoxDialog::OnLoadComplete()
     {
         m_1c8->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemEventOpenBoxDialog::SendEventReward), 0);
         CStringW strLabel(L"s_event_open_item_box_ui_button");
-        m_1c8->FUN_1422cdfb0(FUN_14028b8e0(strLabel));
+        m_1c8->FUN_1422cdfb0(GetStringCommonByKey(strLabel));
     }
     FUN_140e483b0();
 }
@@ -156,7 +156,7 @@ void UIItemEventOpenBoxDialog::FUN_140e47f10(CInPacket& iPacket)
         if (bOk == 0)
         {
             CStringW strFail(L"s_event_open_item_box_ui_fail");
-            FUN_1412751f0(FUN_14028b8e0(strFail), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(strFail), 1, 1);
         }
         if (FUN_141924630() != 0)
             vfunc_67();
@@ -233,7 +233,7 @@ void UIItemEventOpenBoxDialog::SendEventReward(const Scaleform::GFx::FunctionHan
     {
         {
             CStringW strText(L"s_event_open_item_box_ui_not_event_time");
-            FUN_1412751f0(FUN_14028b8e0(strText), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(strText), 1, 1);
         }
         vfunc_67();
         return;

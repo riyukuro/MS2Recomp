@@ -119,7 +119,7 @@ Unk_PopupMenu* FUN_140c30140(int nUiId);
 CString FUN_1402bb1c0(const char* szFormat, const int& n);           // StringFormat<int> (the copy this unit calls)
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
 CStringW FUN_140719630(int n);                                      // the number as text
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 void FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
 unsigned FUN_141472bc0();                                           // the current tick
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
@@ -260,12 +260,12 @@ void UIPvPGuildTeamDialog::vfunc_79(void* pData)
         if (nWinner == 0) {
             Unk_RewardOtherDialog* pDlg = FUN_140e01890(0x4e4c);
             if (pDlg != 0)
-                pDlg->FUN_1419f6a70(4, FUN_14028de60(0x3fc), 4000);
+                pDlg->FUN_1419f6a70(4, GetStringCommon(0x3fc), 4000);
         }
         else if (nWinner == FUN_1403ed290()->m_info.FUN_1404ccbd0()) {
             Unk_RewardOtherDialog* pDlg = FUN_140e01890(0x4e4c);
             if (pDlg != 0) {
-                pDlg->FUN_1419f6a70(2, FUN_14028de60(0x3fd), 4000);
+                pDlg->FUN_1419f6a70(2, GetStringCommon(0x3fd), 4000);
                 FUN_141276180(s_strWinGame, "");
                 FUN_141276180(s_strSemiWin, "");
             }
@@ -273,7 +273,7 @@ void UIPvPGuildTeamDialog::vfunc_79(void* pData)
         else {
             Unk_RewardOtherDialog* pDlg = FUN_140e01890(0x4e4c);
             if (pDlg != 0) {
-                pDlg->FUN_1419f6a70(0, FUN_14028de60(0x3fe), 4000);
+                pDlg->FUN_1419f6a70(0, GetStringCommon(0x3fe), 4000);
                 FUN_141276180(s_strSemiLose, "");
             }
         }

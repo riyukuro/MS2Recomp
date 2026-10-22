@@ -6,4 +6,4 @@
 #include <afx.h>
 
 // Looks a key up in the localized string table; empty when the table is not up yet. The key is taken by const& (exe).
-CStringW FUN_14028b8e0(const CStringW& strKey);         // @0x14028b8e0
+CStringW GetStringCommonByKey(const CStringW& strKey);         // @0x14028b8e0

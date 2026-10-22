@@ -78,7 +78,7 @@ COutputStream& FUN_14070f960(COutputStream&, long);
 COutputStream& FUN_14070f9a0(COutputStream&, unsigned int);
 COutputStream& FUN_14070f9e0(COutputStream&, __int64);
 COutputStream& FUN_14070fae0(COutputStream&, const CStringW&);
-CStringW FUN_14028de60(int stringId);
+CStringW GetStringCommon(int stringId);
 void FUN_14084f270(const StringIdInterfaceBase&, COutputStream&);   // serializes a StringIdInterfaceBase
 CStringW FUN_14016a730(const char*, int);                           // FormatStringId(id) without arguments
 
@@ -173,7 +173,7 @@ void FUN_1407a5500(Unk_1407a5330& v, CInputStream& in)
         v.m_18 = in.vfunc_o8_8();
     } else {
         v.m_48 = in.vfunc_o8_3();
-        v.m_18 = FUN_14028de60(v.m_48);
+        v.m_18 = GetStringCommon(v.m_48);
     }
     v.m_20 = in.vfunc_o8_3();
     v.m_34 = in.vfunc_o8_1();

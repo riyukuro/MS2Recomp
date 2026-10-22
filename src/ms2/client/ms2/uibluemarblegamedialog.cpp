@@ -66,7 +66,7 @@ Unk_BmChat* FUN_1403b4750();
 
 CGameRule* FUN_1401c0d90();                                         // TSingleton<CGameRule>::GetInstance
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 extern Unk_Inventory DAT_143ab2a90;                                 // the player inventory
 
 #include "ms2/commonfiles/commonutil.h"
@@ -203,7 +203,7 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
             m_nConsumeItemId = pPacket->vfunc_o8_3();
             m_nConsumeItemCount = pPacket->vfunc_o8_3();
             FUN_140cfee80((*m_30).FUN_1422bb890(), "m_warning",
-                          FUN_140f24320("$s_bluemarble_warning", FUN_1401a9d70()->FUN_141811980(1, m_nConsumeItemId),
+                          FUN_140f24320("$s_bluemarble_warning", GetStringTable()->FUN_141811980(1, m_nConsumeItemId),
                                         m_nConsumeItemCount));
             FUN_140f227a0(*pPacket);
             FUN_140f22bb0(m_nPosition);
@@ -264,9 +264,9 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
                 FUN_1403b4750()->FUN_1416fb300(strText);
                 FUN_1412751f0(strText, 1, 1);
             } else if (nResult == 4) {
-                FUN_1412751f0(FUN_14028b8e0(L"s_bluemarble_result_dice_complete"), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(L"s_bluemarble_result_dice_complete"), 1, 1);
             } else if (nResult == 5) {
-                FUN_1412751f0(FUN_14028b8e0(L"s_bluemarble_result_dice_not_complete"), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(L"s_bluemarble_result_dice_not_complete"), 1, 1);
             }
             FUN_140f24140(1);
             m_bIdle = 1;
@@ -316,7 +316,7 @@ int UIBlueMarbleGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
 int UIBlueMarbleGameDialog::vfunc_71()
 {
     if (m_bIdle == 0) {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d74390(FUN_14028b8e0(L"s_bluemarble_close"), 1,
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d74390(GetStringCommonByKey(L"s_bluemarble_close"), 1,
             Delegate<bool(int, const CMsgBoxData&)>(this, &UIBlueMarbleGameDialog::FUN_140f22760));
         return 1;
     }
@@ -382,7 +382,7 @@ void UIBlueMarbleGameDialog::FUN_140f22bb0(int nPosition)
                 row.FUN_1407cbbe0("receive", bReceive);
                 CStringW strRound;
                 if (nRound == 0)
-                    strRound = FUN_14028b8e0(L"s_bluemarble_reward_default");
+                    strRound = GetStringCommonByKey(L"s_bluemarble_reward_default");
                 else
                     strRound = FUN_14062b4f0(CStringW(L"s_bluemarble_reward_repeat"), &nRound);
                 row.FUN_1407cbb20("round", strRound);
@@ -400,9 +400,9 @@ void UIBlueMarbleGameDialog::FUN_140f22fe0(int nDice1, int nDice2, int nKind)
 {
     CStringW strMessage;
     if (nKind == 2)
-        strMessage = FUN_14028b8e0(L"s_bluemarble_result_trap_escape_fail");
+        strMessage = GetStringCommonByKey(L"s_bluemarble_result_trap_escape_fail");
     else if (nKind == 3)
-        strMessage = FUN_14028b8e0(L"s_bluemarble_result_trap_escape_success");
+        strMessage = GetStringCommonByKey(L"s_bluemarble_result_trap_escape_success");
     unsigned int nContinue = (unsigned int)(nKind != 2);
     int nRemain = m_nPosition - (nDice1 + nDice2);
     m_30->Invoke("onDice", nRemain, nDice1, nDice2, CStringW(strMessage), nContinue);
@@ -451,7 +451,7 @@ void UIBlueMarbleGameDialog::FUN_140f23590(int nItemId, int nRarity, int nCount)
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData.get()) {
         CStringW strMessage = FUN_1405c2690(CStringW(L"s_bluemarble_get_item"),
-                                            FUN_1401a9d70()->FUN_141811980(1, nItemId));
+                                            GetStringTable()->FUN_141811980(1, nItemId));
         m_30->Invoke("onRewardNotify", CStringW(strMessage),
                      FUN_14016a730(spData->FUN_14053fdd0(), 0), spData->FUN_14053c5a0(), nCount);
     }
@@ -478,7 +478,7 @@ void UIBlueMarbleGameDialog::FUN_140f237e0(int nPrevPosition, int nPosition)
 void UIBlueMarbleGameDialog::FUN_140f23940()
 {
     CStringW strText = m_nFreeDice > 0 ? FUN_14062b4f0(CStringW(L"s_bluemarble_free_dice"), &m_nFreeDice)
-                                       : FUN_14028b8e0(L"s_bluemarble_dice");
+                                       : GetStringCommonByKey(L"s_bluemarble_dice");
     if (m_30.get())
         m_30->Invoke("updateDiceButton", CStringW(strText), m_nFreeDice);
 }

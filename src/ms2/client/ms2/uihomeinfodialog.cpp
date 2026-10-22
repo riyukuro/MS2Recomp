@@ -219,7 +219,7 @@ __int64 FUN_140869440();
 void FUN_141275260(int nId, int a, int b);
 void FUN_140710590(COutPacket& packet);
 CString FUN_14016a600(const wchar_t* psz, int n);
-CStringW FUN_14028de60(int nId);
+CStringW GetStringCommon(int nId);
 CStringW FUN_1409404f0(__int64 n);
 CStringW FUN_140811740(int nId, const int& a, const int& b);
 CStringW FUN_14062b4f0(CStringW strFormat, const int& n);
@@ -267,7 +267,7 @@ void UIHomeInfoDialog::OnLoadComplete()
         {
             CStringW strLabel;
             unsigned int nChannel = FUN_14092f640();
-            strLabel.Format(L"%s %d", (LPCWSTR)FUN_14028de60(0x579), (unsigned __int64)nChannel);
+            strLabel.Format(L"%s %d", (LPCWSTR)GetStringCommon(0x579), (unsigned __int64)nChannel);
             ASObj obj(2);
             obj.FUN_1407cbb20("label", strLabel);
             spChannel->FUN_1422dfc70(obj);
@@ -396,7 +396,7 @@ void UIHomeInfoDialog::FUN_1412c5690()
             MS2Ptr<Unk_HiButton> spBank = spPanel->FUN_140acce30<Unk_HiButton>(CString("m_bank"));
             if (spBank.get() != 0)
             {
-                spBank->Invoke("setTimeString", FUN_14028de60(0x5ce), FUN_14028de60(0x5cc), FUN_14028de60(0x5ca), FUN_14028de60(0x5cb));
+                spBank->Invoke("setTimeString", GetStringCommon(0x5ce), GetStringCommon(0x5cc), GetStringCommon(0x5ca), GetStringCommon(0x5cb));
                 int nRemain = FUN_1412c81d0();
                 if (nRemain != 0)
                     FUN_1412c5330(nRemain);
@@ -410,7 +410,7 @@ void UIHomeInfoDialog::FUN_1412c5690()
             MS2Ptr<Unk_HiButton> spDoctor = spPanel->FUN_140acce30<Unk_HiButton>(CString("m_doctor"));
             if (spDoctor.get() != 0)
             {
-                spDoctor->Invoke("setTimeString", FUN_14028de60(0x5ce), FUN_14028de60(0x5cc), FUN_14028de60(0x5ca), FUN_14028de60(0x5cb));
+                spDoctor->Invoke("setTimeString", GetStringCommon(0x5ce), GetStringCommon(0x5cc), GetStringCommon(0x5ca), GetStringCommon(0x5cb));
                 int nRemain = FUN_1412c8280();
                 if (nRemain != 0)
                     FUN_1412c54e0(nRemain);
@@ -632,7 +632,7 @@ CStringW UIHomeInfoDialog::FUN_1412c7090()
     CStringW strNotice = FUN_1409670e0()->FUN_1410c3260();
     if (!strNotice.IsEmpty())
         return strNotice;
-    return FUN_14028de60(0x574);
+    return GetStringCommon(0x574);
 }
 
 // @0x1412c7140
@@ -797,7 +797,7 @@ bool UIHomeInfoDialog::FUN_1412c7af0(int nSlot)
             pDialog->FUN_140faa6d0();
         else
         {
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028de60(0xbb1), static_cast<IMessageListener*>(this), CStringW(L"OnHousingSave"));
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0xbb1), static_cast<IMessageListener*>(this), CStringW(L"OnHousingSave"));
             if (spBox == 0)
                 return false;
             spBox->FUN_141a024a0(0);
@@ -812,7 +812,7 @@ bool UIHomeInfoDialog::FUN_1412c7af0(int nSlot)
         if (spBox.get() != 0)
         {
             spBox->FUN_141a01800(2);
-            spBox->FUN_141a024e0(FUN_14028de60(0x9d1), 0);
+            spBox->FUN_141a024e0(GetStringCommon(0x9d1), 0);
             spBox->SetAgreement(0);
             spBox->FUN_141a02770(0x1c0, 400);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeInfoDialog::SendRequestCubeMode31));

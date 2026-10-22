@@ -89,7 +89,7 @@ struct Unk_PickXY { float x, y; };                                      // dialo
 extern Unk_PickXY DAT_143b02320;                                        // zero offset
 void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_PickXY offLeft, Unk_PickXY offRight);
 
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 void FUN_140710590(COutPacket& packet);
 void FUN_141901390(int nRelease, int nUiType);
 
@@ -212,7 +212,7 @@ void UIObjectStoreDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     if (m_30.get() != 0) {
         FUN_141a72f80(0);
-        CStringW strName = FUN_1401a9d70()->FUN_141811980(1, m_198);
+        CStringW strName = GetStringTable()->FUN_141811980(1, m_198);
         CStringW strNum = FUN_140719a00(DAT_143ab28f8);
         int nSlots = 0;
         {
@@ -225,7 +225,7 @@ void UIObjectStoreDialog::OnLoadComplete()
             }
         }
         m_30->Invoke("initData", m_180, strNum, strName,
-                     FUN_1401a9d70()->GetItemDescription(m_198, CString("functionDescription")), 1, nSlots);
+                     GetStringTable()->GetItemDescription(m_198, CString("functionDescription")), 1, nSlots);
     }
 }
 

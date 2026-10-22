@@ -79,8 +79,8 @@ CStringW FUN_1416e7fb0(int n);
 
 class Unk_CaStrings { public: CStringW FUN_141811980(int, int); };
 Unk_CaStrings* FUN_1401a9d70();
-CStringW FUN_14028de60(int nStringId);
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommon(int nStringId);
+CStringW GetStringCommonByKey(const CStringW& str);
 CStringW FUN_14028dee0(int nStringId, const fmt::ArgList& args);
 CStringW FUN_1409e9bc0(int nStringId, const int& nA, const unsigned& nB);
 CStringW FUN_14093fd30(int nStringId, const int* pDays, const __int64* pMeso);
@@ -423,7 +423,7 @@ int UICharacterAbilityDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     {
         if (FUN_140f2d240()->FUN_140f29e00() == 0)
         {
-            FUN_140d73aa0(FUN_14028de60(0xc57), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommon(0xc57), 0, 0, CStringW(L""));
             return 1;
         }
         ASData data;
@@ -459,7 +459,7 @@ int UICharacterAbilityDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         }
         else
         {
-            FUN_140d73aa0(FUN_14028de60(0xc5d), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommon(0xc5d), 0, 0, CStringW(L""));
         }
     }
     return 0;
@@ -652,22 +652,22 @@ void UICharacterAbilityDialog::FUN_140f2ba20()
                 switch (quest.FUN_14064d520()->m_nType)
                 {
                 case 0:
-                    strUnlock = FUN_14028de60(0x5dd);
+                    strUnlock = GetStringCommon(0x5dd);
                     break;
                 case 1:
-                    strUnlock = FUN_14028de60(0x5de);
+                    strUnlock = GetStringCommon(0x5de);
                     break;
                 case 2:
-                    strUnlock = FUN_14028de60(0x5df);
+                    strUnlock = GetStringCommon(0x5df);
                     break;
                 case 6:
-                    strUnlock = FUN_14028b8e0(CStringW(L"s_quest_guild_quest"));
+                    strUnlock = GetStringCommonByKey(CStringW(L"s_quest_guild_quest"));
                     break;
                 case 8:
-                    strUnlock = FUN_14028b8e0(CStringW(L"s_quest_field_quest"));
+                    strUnlock = GetStringCommonByKey(CStringW(L"s_quest_field_quest"));
                     break;
                 case 9:
-                    strUnlock = FUN_14028b8e0(CStringW(L"s_quest_alliance_quest"));
+                    strUnlock = GetStringCommonByKey(CStringW(L"s_quest_alliance_quest"));
                     break;
                 }
             }

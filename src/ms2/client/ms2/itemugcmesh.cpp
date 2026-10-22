@@ -240,7 +240,7 @@ extern char DAT_143adc208[];
 void FUN_141276180(void* pObj, const CString& strArg);
 void FUN_1412750f0(void* pCallback, int nCount, int nA, int nB);
 void FUN_1412751b0(const CStringW& strText, int nType);
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommonByKey(const CStringW& str);
 
 // The local player (a MyPC) and the world that owns it.
 #pragma pack(push, 4)
@@ -1154,7 +1154,7 @@ void FUN_141425fc0(__int64 nUid, int nCount, void* pCallback)
     if (FUN_141676b00(pPlayer, nUid) != 0)
     {
         CStringW strKey(L"s_err_cannot_sell_petitem_summon");
-        FUN_1412751b0(FUN_14028b8e0(strKey), 0x14);
+        FUN_1412751b0(GetStringCommonByKey(strKey), 0x14);
         return;
     }
     COutPacket kPacket(0x28, 0);

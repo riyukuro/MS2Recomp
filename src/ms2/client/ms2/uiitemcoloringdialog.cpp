@@ -231,8 +231,8 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_140d73aa0(CStringW strText, int nType, IMessageListener* pListener, CStringW strTag);
 void FUN_14151f200();
-CStringW FUN_14028b8e0(const CStringW& strKey);
-CStringW FUN_14028de60(int nId);
+CStringW GetStringCommonByKey(const CStringW& strKey);
+CStringW GetStringCommon(int nId);
 CStringW FUN_14052bd00(int nId, const CStringW& a);
 CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a);
 CStringW FUN_1409eb450(int n);
@@ -609,7 +609,7 @@ void UIItemColoringDialog::FUN_1419addc0(NotifyObject* pNotify)
                 FUN_1419ae940();
         } else {
             CStringW strKey(L"s_beauty_msg_restart_by_expired_codi");
-            FUN_140d74390(FUN_14028b8e0(strKey), 0, Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemColoringDialog::FUN_1419b1d70));
+            FUN_140d74390(GetStringCommonByKey(strKey), 0, Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemColoringDialog::FUN_1419b1d70));
         }
     }
 }
@@ -722,7 +722,7 @@ MS2_REPLACE_METHOD(0x1419ae940, UIItemColoringDialog, FUN_1419ae940, 163, 0x9370
 void UIItemColoringDialog::FUN_1419ae9f0()
 {
     if (FUN_1419aef80() != 0) {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(FUN_14028de60(0x271), 1);
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommon(0x271), 1);
         spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemColoringDialog::FUN_1419b1d00));
         spBox->FUN_141a01800(2);
         FUN_140d73c60(spBox);
@@ -849,7 +849,7 @@ void UIItemColoringDialog::FUN_1419af2f0(unsigned nPrice)
                 m_30->Invoke("setFee", CStringW(strPrice), FUN_1409eb450(nSale), bSale, bDiscount);
             }
         } else {
-            CStringW strDefault = FUN_14028b8e0(CStringW(L"s_beauty_fee_default"));
+            CStringW strDefault = GetStringCommonByKey(CStringW(L"s_beauty_fee_default"));
             m_30->Invoke("setFee", CStringW(strDefault), CStringW(strDefault), bSale, false);
         }
     }
@@ -970,7 +970,7 @@ int UIItemColoringDialog::FUN_1419afe30()
     bool bOption = FUN_140166410()->FUN_14036d570(0xb6);
     ASObj obj(2);
     FUN_140f01540(obj, bOption);
-    CStringW strDefault = FUN_14028b8e0(CStringW(L"s_beauty_fee_default"));
+    CStringW strDefault = GetStringCommonByKey(CStringW(L"s_beauty_fee_default"));
     m_30->Invoke("initData", CStringW(strDefault), nSale == 0, bOption, Scaleform::GFx::Value(obj.FUN_1422bb870()));
     FUN_1419ae170();
     return 1;
@@ -1094,7 +1094,7 @@ int UIItemColoringDialog::FUN_1419b0b10(ASArray* pRows, int* pTotal)
         return 0;
     if (m_2a8.IsEmpty() != false)
         return 0;
-    CStringW strRow = FUN_14028b8e0(CStringW(L"s_bill_list_row"));
+    CStringW strRow = GetStringCommonByKey(CStringW(L"s_bill_list_row"));
     int nCount = 0;
     CStringW strDetail;
     for (POSITION pos = m_2a8.GetHeadPosition(); pos != NULL; m_2a8.GetNext(pos)) {
@@ -1141,7 +1141,7 @@ int UIItemColoringDialog::FUN_1419b0ef0()
                     spBill->m_30 = 0;
                     spBill->m_20 = MS2Ptr<AScript>(spRows);
                     spBill->m_60 = bCoupon;
-                    spBill->m_58 = FUN_14028de60(0x997);
+                    spBill->m_58 = GetStringCommon(0x997);
                     CStringW strCoupon = FUN_1419b19c0();
                     CStringW strLabel(bCoupon == 0 ? CStringW(strCoupon)
                                                    : FUN_140bfa7f0(CStringW(L"s_beauty_coupon_with_count"), strCoupon, nCoupons));
@@ -1247,7 +1247,7 @@ MS2_REPLACE_METHOD(0x1419b1970, UIItemColoringDialog, FUN_1419b1970, 69, 0xC1358
 CStringW UIItemColoringDialog::FUN_1419b19c0()
 {
     if (m_1a8.m_20 == 0)
-        return FUN_14028de60(0x995);
+        return GetStringCommon(0x995);
     return FUN_1401a9d70()->FUN_141811980(1, m_1a8.m_20);
 }
 MS2_REPLACE_METHOD(0x1419b19c0, UIItemColoringDialog, FUN_1419b19c0, 126, 0x454EE4C7);

@@ -42,7 +42,7 @@ public:
     void FUN_1418e1390();                                // cancel
 };
 UICastingBar* FUN_140ac2270(int nId);
-CStringW FUN_14028de60(int nId);                         // string table text by id
+CStringW GetStringCommon(int nId);                         // string table text by id
 void* FUN_14165f100(PCBase* p);
 void FUN_14165f170(PCBase* p);
 class Unk_TwBuffMgr { public: Unk_StreamPoint FUN_141683290(); };
@@ -122,7 +122,7 @@ void StateTreeWatering::vfunc_4(StateData* pData)
         if (pBar != 0)
         {
             CStringW strLabel(L"");
-            pBar->FUN_1418e12f0(static_cast<ICastingEventListener*>(this), FUN_14028de60(nTextId), nDuration, false,
+            pBar->FUN_1418e12f0(static_cast<ICastingEventListener*>(this), GetStringCommon(nTextId), nDuration, false,
                 true, strLabel);
         }
     }

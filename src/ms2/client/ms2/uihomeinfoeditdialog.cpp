@@ -54,7 +54,7 @@ void FUN_140bbfdd0(Unk_HmNameRef* p);                               // release
 
 // ---- out-of-unit callees ----
 UIHomeInfoDialog* FUN_140bbea00(int nId);                           // dialog by its ui id
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 class Unk_HmHome { public: CStringW FUN_1410c31d0(); };             // the owner name
 Unk_HmHome* FUN_1409670e0();
 int FUN_1406516a0();                                                // the locale index
@@ -105,7 +105,7 @@ CStringW UIHomeInfoEditDialog::FUN_140c26850()
     UIHomeInfoDialog* pDlg = FUN_140bbea00(0x4ed8);
     if (pDlg != 0)
         return pDlg->FUN_1412c7090();
-    return FUN_14028de60(0x574);
+    return GetStringCommon(0x574);
 }
 MS2_REPLACE_METHOD(0x140C26850, UIHomeInfoEditDialog, FUN_140c26850, 114, 0x4162ADBB);
 

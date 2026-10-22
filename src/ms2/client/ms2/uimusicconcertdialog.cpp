@@ -43,7 +43,7 @@ public:
 class ASDialog : public ASDisplayObjectContainer { public: virtual void vfunc_2(int, int, int); };   // vfunc_2: place the movie
 
 WorldService* FUN_1403ed2d0();
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CString FUN_1402bad60(const char* szFormat, const int* pn);     // format one int
 void* FUN_140bb9630(int n);                                     // int -> delegate user data
 int FUN_140bb9640(void* p);                                     // delegate user data -> int
@@ -121,32 +121,32 @@ void UIMusicConcertDialog::OnLoadComplete()
     {
         CStringW strKey(L"s_music_concert_can_play");
         CString strIcon("./Data/Resource/Image/skill/icon/Ensemble.png");
-        FUN_140e6a5d0(0, strIcon, FUN_14028b8e0(strKey));
+        FUN_140e6a5d0(0, strIcon, GetStringCommonByKey(strKey));
     }
     {
         CStringW strKey(L"s_music_concert_move_stage");
         CString strIcon("./Data/Resource/Image/skill/icon/MoveStage.png");
-        FUN_140e6a5d0(1, strIcon, FUN_14028b8e0(strKey));
+        FUN_140e6a5d0(1, strIcon, GetStringCommonByKey(strKey));
     }
     {
         CStringW strKey(L"s_music_concert_change_camera");
         CString strIcon("./Data/Resource/Image/skill/icon/ChangeCamera.png");
-        FUN_140e6a5d0(2, strIcon, FUN_14028b8e0(strKey));
+        FUN_140e6a5d0(2, strIcon, GetStringCommonByKey(strKey));
     }
     {
         CStringW strKey(L"s_music_concert_firework");
         CString strIcon("./Data/Resource/Image/skill/icon/Firework.png");
-        FUN_140e6a5d0(3, strIcon, FUN_14028b8e0(strKey));
+        FUN_140e6a5d0(3, strIcon, GetStringCommonByKey(strKey));
     }
     {
         CStringW strKey(L"s_music_concert_emotion_shake");
         CString strIcon("./Data/Resource/Image/skill/icon/Lightstick.png");
-        FUN_140e6a5d0(4, strIcon, FUN_14028b8e0(strKey));
+        FUN_140e6a5d0(4, strIcon, GetStringCommonByKey(strKey));
     }
     {
         CStringW strKey(L"s_music_concert_emotion_clap");
         CString strIcon("./Data/Resource/Image/skill/icon/Clap.png");
-        FUN_140e6a5d0(5, strIcon, FUN_14028b8e0(strKey));
+        FUN_140e6a5d0(5, strIcon, GetStringCommonByKey(strKey));
     }
     FUN_140e6a290();
 }
@@ -214,12 +214,12 @@ void UIMusicConcertDialog::FUN_140e6a290()
     PC* pPC = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPC == 0)
         return;
-    CStringW strAction = FUN_14028b8e0(CStringW(L"s_music_concert_can_play"));
+    CStringW strAction = GetStringCommonByKey(CStringW(L"s_music_concert_can_play"));
     unsigned nStart = FUN_1403ed2d0()->FUN_141bcaf60();
     unsigned nNow = FUN_141472bc0();
     if (nStart < nNow)
     {
-        m_topText->FUN_1422c4cd0(FUN_14028b8e0(CStringW(L"s_music_concert_can_register_text")));
+        m_topText->FUN_1422c4cd0(GetStringCommonByKey(CStringW(L"s_music_concert_can_register_text")));
     }
     else
     {
@@ -229,7 +229,7 @@ void UIMusicConcertDialog::FUN_140e6a290()
         m_topText->FUN_1422c4cd0(FUN_1409e8970(CStringW(L"s_music_concert_playing_text"), nMin, nSec));
         __int64 nOwner = (__int64)FUN_1403ed2d0()->FUN_141bcaf80();
         if (pPC->FUN_141656a80() == nOwner)
-            strAction = FUN_14028b8e0(CStringW(L"s_music_concert_abort_play"));
+            strAction = GetStringCommonByKey(CStringW(L"s_music_concert_abort_play"));
     }
     MS2Ptr<ASTextField> spName = m_clips[0]->FUN_1409b4620("m_actionName");
     if (spName.get() != 0)
@@ -262,7 +262,7 @@ void UIMusicConcertDialog::FUN_140e6a780()
     unsigned nNow = FUN_141472bc0();
     if (nStart < nNow)
     {
-        MS2Ptr<CMsgBoxData> box = FUN_140d73f20(FUN_14028b8e0(CStringW(L"s_music_concert_msg_confirm_register")), 1);
+        MS2Ptr<CMsgBoxData> box = FUN_140d73f20(GetStringCommonByKey(CStringW(L"s_music_concert_msg_confirm_register")), 1);
         box->FUN_141a027c0(McBoxDelegate(this, &UIMusicConcertDialog::SendPlayInstrumentMode11));
         FUN_140d73c60(box);
     }
@@ -272,7 +272,7 @@ void UIMusicConcertDialog::FUN_140e6a780()
         if (nOwner == pPC->FUN_141656a80())
             FUN_140e6a9d0();
         else
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_music_concert_msg_cant_register")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_music_concert_msg_cant_register")), 1, 1);
     }
 }
 
@@ -280,7 +280,7 @@ void UIMusicConcertDialog::FUN_140e6a780()
 // MS2-FUNCTIONAL: exe temporary / frame-slot order differs (source form for the call-result temps not found)
 void UIMusicConcertDialog::FUN_140e6a9d0()
 {
-    MS2Ptr<CMsgBoxData> box = FUN_140d73f20(FUN_14028b8e0(CStringW(L"s_music_concert_msg_confirm_unregister")), 1);
+    MS2Ptr<CMsgBoxData> box = FUN_140d73f20(GetStringCommonByKey(CStringW(L"s_music_concert_msg_confirm_unregister")), 1);
     box->FUN_141a027c0(McBoxDelegate(this, &UIMusicConcertDialog::SendPlayInstrumentMode12));
     FUN_140d73c60(box);
 }
@@ -305,7 +305,7 @@ void UIMusicConcertDialog::FUN_140e6ab90()
     CCameraMode* pMode = FUN_1409478c0()->FUN_140af2520();
     if (pMode == 0 || pMode->vfunc_1() != 0x10)
     {
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_music_concert_msg_cant_change_camera")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_music_concert_msg_cant_change_camera")), 1, 1);
     }
     else
     {

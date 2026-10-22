@@ -92,7 +92,7 @@ void* FUN_140967100();
 int FUN_141b21220(void*);
 int FUN_1416595d0(void*);
 int FUN_141659690(void*);
-CStringW FUN_14028de60(int nId);
+CStringW GetStringCommon(int nId);
 CStringW FUN_140298ea0(CStringW);
 UISystemText* FUN_141278110(int nId);
 UITopLayerNotify* FUN_1412781b0(int nId);
@@ -239,7 +239,7 @@ MS2_REPLACE(0x1412751f0, FUN_1412751f0, 91, 0xEB4DF479);
 // @0x141275260
 void FUN_141275260(int nId, int a, int b)
 {
-    CStringW str = FUN_14028de60(nId);
+    CStringW str = GetStringCommon(nId);
     if (str.GetLength() == 0)
         return;
     FUN_1412751f0(str, a, b);
@@ -288,7 +288,7 @@ MS2_REPLACE(0x141275400, FUN_141275400, 76, 0x2195EA41);
 // @0x141275460
 void FUN_141275460(int nId, int a, int b, const fmt::ArgList& args)
 {
-    CStringW fmtStr = FUN_14028de60(nId);
+    CStringW fmtStr = GetStringCommon(nId);
     if (fmtStr.GetLength() == 0)
         return;
     CStringW text = StringFormat((const wchar_t*)fmtStr, args);
@@ -865,7 +865,7 @@ int FUN_141276c80(const CStringW& strName, bool bCheckSelf, CStringW& strOut)
         PCBase* pPlayer = static_cast<PCBase*>(FUN_141bd0cc0(FUN_1403ed2d0()));
         if (pPlayer != 0) {
             if (strName.CompareNoCase(pPlayer->vfunc_77()) == 0) {
-                strOut = FUN_14028de60(0);
+                strOut = GetStringCommon(0);
                 return 10;
             }
         }
@@ -888,7 +888,7 @@ int FUN_141276e00(const CStringW& strName, CStringW& strOut)
     if (pPlayer != 0) {
         bool bSame = strName.CompareNoCase(pPlayer->vfunc_77()) == 0;
         if (bSame) {
-            strOut = FUN_14028de60(0);
+            strOut = GetStringCommon(0);
             return 10;
         }
     }
@@ -924,7 +924,7 @@ public:
 class Unk_PenaltyMgr { public: Unk_PenaltyPtr FUN_140a2f620(int nKind); };
 Unk_PenaltyMgr* FUN_140a6a830();
 CStringW FUN_140a2fcd0(__int64 nBegin, __int64 nEnd);
-CStringW FUN_14028b8e0(const CStringW& strKey);
+CStringW GetStringCommonByKey(const CStringW& strKey);
 void FUN_140710590(COutPacket&);
 extern int DAT_143ab2914;
 class Unk_ChatMapData { public: int FUN_140375660(unsigned nMask); };
@@ -949,7 +949,7 @@ int FUN_141276f80(Unk_CommandChat* pChat)
                 nStringId = 0x430;
             else
                 nStringId = 0x431;
-            FUN_1412751b0(FUN_14028de60(nStringId), 0x14);
+            FUN_1412751b0(GetStringCommon(nStringId), 0x14);
             return 0;
         }
     }
@@ -957,10 +957,10 @@ int FUN_141276f80(Unk_CommandChat* pChat)
         Unk_PenaltyPtr penalty = FUN_140a6a830()->FUN_140a2f620(2);
         if (penalty.FUN_1401cb3d0() != 0) {
             if (penalty.FUN_1401cb410()->m_nKind == 2) {
-                FUN_1412751b0(FUN_14028de60(0x433), 0x14);
+                FUN_1412751b0(GetStringCommon(0x433), 0x14);
             } else {
                 CStringW strRemain = FUN_140a2fcd0(penalty.FUN_1401cb410()->m_n38, penalty.FUN_1401cb410()->m_n40);
-                FUN_1412751b0(FUN_14028de60(0x442), 0x14);
+                FUN_1412751b0(GetStringCommon(0x442), 0x14);
                 FUN_1412751b0(strRemain, 0x14);
             }
             return 0;
@@ -968,7 +968,7 @@ int FUN_141276f80(Unk_CommandChat* pChat)
     }
     if (DAT_143ab2914 < 0x32) {
         if (reinterpret_cast<Unk_ChatWorldView*>(FUN_1403ed2d0())->FUN_141bd30a0().FUN_140885340()->FUN_140375660(0x100) != 0) {
-            FUN_1412751b0(FUN_14028b8e0(CStringW(L"s_field_limit_content_chat")), 0x14);
+            FUN_1412751b0(GetStringCommonByKey(CStringW(L"s_field_limit_content_chat")), 0x14);
             return 0;
         }
     }
@@ -1056,15 +1056,15 @@ CStringW FUN_141277410(int nIconCode)
     case 0x2b: nStringId = 0x557; break;
     case 0x2c: nStringId = 0x558; break;
     case 0x2d: nStringId = 0x559; break;
-    case 0x2e: { CStringW strKey(L"s_word_iconcode_pettaminggoods"); return FUN_14028b8e0(strKey); }
-    case 0x2f: { CStringW strKey(L"s_word_iconcode_petgoods"); return FUN_14028b8e0(strKey); }
-    case 0x30: { CStringW strKey(L"s_word_iconcode_interiorskill"); return FUN_14028b8e0(strKey); }
-    case 0x31: { CStringW strKey(L"s_word_iconcode_interiormessage"); return FUN_14028b8e0(strKey); }
-    case 0x32: { CStringW strKey(L"s_word_iconcode_lapenshard"); return FUN_14028b8e0(strKey); }
+    case 0x2e: { CStringW strKey(L"s_word_iconcode_pettaminggoods"); return GetStringCommonByKey(strKey); }
+    case 0x2f: { CStringW strKey(L"s_word_iconcode_petgoods"); return GetStringCommonByKey(strKey); }
+    case 0x30: { CStringW strKey(L"s_word_iconcode_interiorskill"); return GetStringCommonByKey(strKey); }
+    case 0x31: { CStringW strKey(L"s_word_iconcode_interiormessage"); return GetStringCommonByKey(strKey); }
+    case 0x32: { CStringW strKey(L"s_word_iconcode_lapenshard"); return GetStringCommonByKey(strKey); }
     case 0x34: nStringId = 0x55a; break;
     case 0x35: nStringId = 0x55b; break;
     }
-    return FUN_14028de60(nStringId);
+    return GetStringCommon(nStringId);
 }
 MS2_REPLACE(0x141277410, FUN_141277410, 1056, 0x44216BDE);
 
@@ -1131,7 +1131,7 @@ MS2_CHECK_OFFSET(Unk_NamedSource, m_strName, 0x28);
 CStringW FUN_141277a90(Unk_NamedSource* pSource, const CStringW& strFallback)
 {
     if (pSource->FUN_140893520() != 0)
-        return FUN_14028de60(0xf4);
+        return GetStringCommon(0xf4);
     if (pSource->FUN_140892ec0().GetLength() > 0)
         return FUN_141277b90(pSource->m_strName);
     return CStringW(strFallback);
@@ -1156,17 +1156,17 @@ CStringW FUN_141277be0(Unk_IconItemPtr item)
         case 1:
         {
             CStringW strKey(L"s_word_iconcode_lapenshard_red");
-            return FUN_14028b8e0(strKey);
+            return GetStringCommonByKey(strKey);
         }
         case 2:
         {
             CStringW strKey(L"s_word_iconcode_lapenshard_blue");
-            return FUN_14028b8e0(strKey);
+            return GetStringCommonByKey(strKey);
         }
         case 4:
         {
             CStringW strKey(L"s_word_iconcode_lapenshard_green");
-            return FUN_14028b8e0(strKey);
+            return GetStringCommonByKey(strKey);
         }
         }
     }

@@ -22,7 +22,7 @@ public:
     void* FUN_141bd0cc0();
 };
 Unk_GameCtx* FUN_1403ed2d0();
-CStringW FUN_14028b8e0(const CStringW& str);            // string table lookup by key
+CStringW GetStringCommonByKey(const CStringW& str);            // string table lookup by key
 void FUN_1412751f0(const CStringW& str, int a, int b);  // show a notice
 
 // The inventory singleton: the item of a uid.
@@ -63,7 +63,7 @@ int DisplaySlot::vfunc_18(void* p)
         {
             if (!spItem->FUN_1405277e0(m_nSlotType))
             {
-                FUN_1412751f0(FUN_14028b8e0(L"s_item_err_not_match_slot_item"), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(L"s_item_err_not_match_slot_item"), 1, 1);
                 return static_cast<DragSlot*>((DragSlot*)p)->vfunc_10();
             }
         }

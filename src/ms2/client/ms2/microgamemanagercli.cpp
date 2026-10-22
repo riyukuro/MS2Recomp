@@ -85,7 +85,7 @@ MS2Ptr<CMsgBoxData> FUN_14151f820();                                // the messa
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW text, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                        // show the box
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_1409eec40(int nStringId);
 CStringW FUN_140298ea0(CStringW strKey);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
@@ -224,7 +224,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                             else
                             {
                                 spBox->FUN_140b76940(CStringW(strName));
-                                spBox->FUN_141a01ca0(FUN_1401d3200()->m_boxSeconds.FUN_14025a620(), 1, FUN_14028de60(0x2b8));
+                                spBox->FUN_141a01ca0(FUN_1401d3200()->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
                                 spBox->FUN_141a02460(1);
                                 spBox->FUN_141a024a0(0);
                                 FUN_140d73c60(spBox);
@@ -422,7 +422,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                 else
                 {
                     spBox->SetExtra(s_strRpsWaiting);
-                    spBox->FUN_141a01ca0(FUN_1401d3200()->m_boxSeconds.FUN_14025a620(), 1, FUN_14028de60(0x2b8));
+                    spBox->FUN_141a01ca0(FUN_1401d3200()->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
                     spBox->FUN_141a027c0(FUN_140b76b10(FUN_140bac700));
                     spBox->FUN_141a024a0(0);
                     spBox->FUN_141a01700(0x476, 0, 0);
@@ -526,7 +526,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                             {
                                 spBox->FUN_140534050(nValue);
                                 spBox->FUN_1405340b0(nTargetId);
-                                spBox->FUN_141a01ca0(FUN_1401d3200()->m_boxSeconds.FUN_14025a620(), 1, FUN_14028de60(0x2b8));
+                                spBox->FUN_141a01ca0(FUN_1401d3200()->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
                                 spBox->FUN_141a02460(1);
                                 spBox->FUN_141a024a0(0);
                                 FUN_140d73c60(spBox);
@@ -594,7 +594,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                 else
                 {
                     spBox->SetExtra(s_strCoupleDanceWaiting);
-                    spBox->FUN_141a01ca0(FUN_1401d3200()->m_boxSeconds.FUN_14025a620(), 1, FUN_14028de60(0x2b8));
+                    spBox->FUN_141a01ca0(FUN_1401d3200()->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
                     spBox->FUN_141a027c0(FUN_140b76b10(FUN_140bacda0));
                     spBox->FUN_141a024a0(0);
                     spBox->FUN_141a01700(0x476, 0, 0);

@@ -232,7 +232,7 @@ Unk_LtaNotices* FUN_140939a10();
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140d73cd0();
-CStringW FUN_14028b8e0(const CStringW& key);
+CStringW GetStringCommonByKey(const CStringW& key);
 CStringW FUN_140938ae0(CStringW strKey, const int& n);
 CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);
 CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep);
@@ -377,7 +377,7 @@ void UILongTermAttendGiftDialog::vfunc_45(Scaleform::GFx::Value* result, const C
     } else if (FUN_140184310(method, "getTooltip")) {
         CString name = args->FUN_1422b8d30();
         if (FUN_140184310(name, "m_infoIcon")) {
-            CStringW text = FUN_14028b8e0(L"s_longtermattendgift_dialog_desc");
+            CStringW text = GetStringCommonByKey(L"s_longtermattendgift_dialog_desc");
             ASTooltip tooltip(1, 2);
             tooltip.FUN_1409c6dc0(1);
             if (tooltip.FUN_1409e26b0(text))
@@ -456,7 +456,7 @@ bool UILongTermAttendGiftDialog::SendEventRewardMode26(int nResult, const CMsgBo
     if (nResult == 0) {
         Unk_LtaWallet* wallet = FUN_140d86260();
         if (!wallet->vfunc_40(m_178->m_meratCost)) {
-            FUN_140d74390(FUN_14028b8e0(CStringW(L"s_err_lack_merat_ask")), 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UILongTermAttendGiftDialog::FUN_140c6bd40));
+            FUN_140d74390(GetStringCommonByKey(CStringW(L"s_err_lack_merat_ask")), 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UILongTermAttendGiftDialog::FUN_140c6bd40));
         } else {
             COutPacket packet(0x97, 0);
             packet.Encode1(0x1a);
@@ -601,13 +601,13 @@ void UILongTermAttendGiftDialog::FUN_140c6cd00()
     int nCatchUp = FUN_140c6d130();
     if (nAttendPoint == 0) {
         if (nCatchUp == 0) {
-            FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_longtermattendgift_dialog_err_msg_empty_point")), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_longtermattendgift_dialog_err_msg_empty_point")), 0, 0, CStringW(L""));
         } else {
             CStringW strMsg = FUN_140938ae0(CStringW(L"s_longtermattendgift_dialog_use_merat"), m_178->m_meratCost);
             FUN_140d74390(strMsg, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UILongTermAttendGiftDialog::SendEventRewardMode26));
         }
     } else if (nCatchUp == 0) {
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_longtermattendgift_dialog_err_msg_attendance_full")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_longtermattendgift_dialog_err_msg_attendance_full")), 0, 0, CStringW(L""));
     } else {
         COutPacket packet(0x97, 0);
         packet.Encode1(0x1a);

@@ -96,7 +96,7 @@ __int64 FUN_140718320(const CStringW& str);                    // parse a number
 CStringW FUN_14062b4f0(CStringW strKey, const int& nArg);      // string table format
 CStringW FUN_140c160b0(CStringW strKey, const __int64& nArg);  // string table format
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);   // string table format
-CStringW FUN_14028b8e0(const CStringW& strKey);                // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                // string table text
 CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a1, const CStringW& a2);   // string table format
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);   // message box
 void FUN_141276180(const CString& strEvent, const CString& strArg);   // sound event
@@ -495,7 +495,7 @@ void UITradeDialogEx::FUN_141b28f40(__int64 nMeso, char bMine)
     __int64 nFee = FUN_14087d150(nMeso, fReduce);
     CStringW strFee = FUN_1405c2690(CStringW(L"s_trade_fee"), FUN_1409404f0(nFee));
     if (bVip)
-        strFee += FUN_14028b8e0(CStringW(L"s_vip_reduce_fee"));
+        strFee += GetStringCommonByKey(CStringW(L"s_vip_reduce_fee"));
     spText->FUN_1422c4f00(strFee);
     FUN_141b28d10(bMine, nMeso);
 }
@@ -562,7 +562,7 @@ bool UITradeDialogEx::FUN_141b295a0(__int64 nMeso)
     {
         FUN_141b294f0(0);
         nMeso = 0;
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_trade_error_lack_meso_2")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_trade_error_lack_meso_2")), 0, 0, CStringW(L""));
         bValid = false;
     }
     FUN_14140ea30()->SendTradeMode10(nMeso);

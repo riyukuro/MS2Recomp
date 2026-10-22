@@ -146,7 +146,7 @@ CStringW FUN_140763e10(int nValue);                             // a money amoun
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);   // string table format
 CStringW FUN_1409e8970(CStringW strKey, const int& nA, const int& nB);   // string table format
 CStringW FUN_140d26a00(CStringW strKey, CStringW strArg, const int& nA, const int& nB);   // string table format
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // a string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // a string table text
 void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);    // *pRetVal = v
 class Unk_GdEventValue { public: unsigned FUN_140423670(); };   // the guild exp event rate (1/10000)
 class Unk_GdSaleValue { public: int FUN_140423450(); };        // the guild skill sale event rate (percent)
@@ -195,7 +195,7 @@ CStringW FUN_140bfa7f0(CStringW strKey, const CStringW& strName, const int& nCou
 CStringW FUN_141081c60(CStringW strKey, const CStringW& strArg0, const CStringW& strArg1, const int* pArg2);   // string table format
 CStringW FUN_140632a60(int nStringId, const CStringW& strA, const CStringW& strB);   // string table format
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, IMessageListener* pListener, CStringW tag);   // create a message box
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 bool FUN_140bb6090(const MS2Ptr<ASButton>* p, int n);
 void FUN_140988d60(CStringW& strSrc, std::vector<CStringW>& arrOut, const wchar_t* pszSep);   // split
@@ -544,7 +544,7 @@ void UIGuildDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strM
         if (CGuildXmlData::GetInstance()->FUN_1404d72f0() == nLevel)
         {
             CStringW strKey(L"s_guild_ui_info_guild_exp_max");
-            strText = FUN_14028b8e0(strKey);
+            strText = GetStringCommonByKey(strKey);
         }
         ASTooltip tip(1, 2);
         tip.FUN_1409c6dc0(1);
@@ -709,7 +709,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             m_30->FUN_141979f30("showDonatePopup", nCount, nMax, strText);
             return 1;
         }
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_guild_err_donateMax")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_guild_err_donateMax")), 0, 0, CStringW(L""));
         return 1;
     }
     if (_stricmp("onDonate", szMethod) == 0)
@@ -1017,18 +1017,18 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         }
         if (!CGuildManager::GetInstance()->FUN_1404d3180()->FUN_1404c6160())
         {
-            FUN_140d73aa0(FUN_14028de60(0x3f3), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommon(0x3f3), 0, 0, CStringW(L""));
             return 1;
         }
         if (!CGameRule::GetInstance()->FUN_14047e880())
         {
-            FUN_140d73aa0(FUN_14028de60(0x3f4), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommon(0x3f4), 0, 0, CStringW(L""));
             return 1;
         }
         CStringW strMe = FUN_1403ed2d0()->FUN_141bd0d30();
         if (CGuildManager::GetInstance()->FUN_1404d0600(CStringW(strMe), 0x100) == 0)
         {
-            FUN_140d73aa0(FUN_14028de60(0x3f2), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommon(0x3f2), 0, 0, CStringW(L""));
             return 1;
         }
         if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(0x19) != 0)
@@ -1059,7 +1059,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         CStringW strMe = FUN_1403ed2d0()->FUN_141bd0d30();
         if (CGuildManager::GetInstance()->FUN_1404d0600(CStringW(strMe), 0x100) == 0)
         {
-            FUN_140d73aa0(FUN_14028de60(0x3f2), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommon(0x3f2), 0, 0, CStringW(L""));
             return 1;
         }
         FUN_140d73aa0(FUN_1409eec40(0x3f1), 1, static_cast<IMessageListener*>(this), CStringW(L"unregistPvP"));
@@ -1109,7 +1109,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                 spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGuildDialog::FUN_141974ba0));
                 spBox->FUN_140533ff0(nSkillId);
                 spBox->FUN_141a01800(2);
-                spBox->FUN_141a024e0(FUN_14028b8e0(CStringW(L"s_guild_ui_skill_use_skill_term_agree")), 0);
+                spBox->FUN_141a024e0(GetStringCommonByKey(CStringW(L"s_guild_ui_skill_use_skill_term_agree")), 0);
                 spBox->SetAgreement(false);
                 FUN_140d73c60(spBox);
             }
@@ -1277,7 +1277,7 @@ int UIGuildDialog::FUN_1419681b0(const char* szMethod, const Scaleform::GFx::Val
     }
     if (_stricmp("OnSearchGuildByName", szMethod) == 0)
     {
-        CStringW strMsg = FUN_14028b8e0(L"s_guild_ui_search_search_name");
+        CStringW strMsg = GetStringCommonByKey(L"s_guild_ui_search_search_name");
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, strMsg, static_cast<IMessageListener*>(this), CStringW(L"serachGuildName"));
         if (spBox.get() != 0)
         {
@@ -2249,13 +2249,13 @@ void UIGuildDialog::FUN_14196e590()
             if (nRemainCool != 0)
             {
                 nState = 2;
-                strState = FUN_14028b8e0(L"s_guild_ui_skill_waiting");
+                strState = GetStringCommonByKey(L"s_guild_ui_skill_waiting");
             }
         }
         else
         {
             nState = 3;
-            strState = FUN_14028b8e0(L"s_guild_ui_skill_using");
+            strState = GetStringCommonByKey(L"s_guild_ui_skill_using");
             ASObj objActive(2);
             objActive.FUN_1407cba60("imgpath", spEffect->GetIcon());
             arrActive.FUN_1422bc050(objActive.FUN_1422bb870());
@@ -2359,7 +2359,7 @@ void UIGuildDialog::FUN_14196f830()
         if (nBuffRemain != 0)
         {
             nState = 3;
-            strState = FUN_14028b8e0(L"s_guild_ui_skill_using");
+            strState = GetStringCommonByKey(L"s_guild_ui_skill_using");
             ASObj objActive(2);
             objActive.FUN_1407cba60("imgpath", strIcon);
             arrActive.FUN_1422bc050(objActive.FUN_1422bb870());
@@ -2906,7 +2906,7 @@ void UIGuildDialog::FUN_141974930()
     if (spBox.get() != 0)
     {
         spBox->FUN_141a01800(2);
-        spBox->FUN_141a024e0(FUN_14028de60(0x9d0), 1);
+        spBox->FUN_141a024e0(GetStringCommon(0x9d0), 1);
         spBox->SetAgreement(false);
         FUN_140d73c60(spBox);
     }
@@ -3358,7 +3358,7 @@ int FUN_141977b70(ASObj& obj, const MS2Ptr<CGuildPVPHistoryData>& spHistory)
         }
         else
         {
-            strTime = FUN_14028de60(0x3d5);
+            strTime = GetStringCommon(0x3d5);
         }
     }
     // fa8: the five rounds' results ('W'/'L') of the f28 guild.
@@ -3379,10 +3379,10 @@ int FUN_141977b70(ASObj& obj, const MS2Ptr<CGuildPVPHistoryData>& spHistory)
         if (nWin == 0 && nLose == 0)
         {
             bNoFight = true;
-            strScore = FUN_14028de60(0x3ea);
+            strScore = GetStringCommon(0x3ea);
             if (spHistory->f20 == 1)
             {
-                strScore = FUN_14028de60(0x3eb);
+                strScore = GetStringCommon(0x3eb);
                 bWin = false;
             }
         }
@@ -3428,7 +3428,7 @@ int FUN_141977b70(ASObj& obj, const MS2Ptr<CGuildPVPHistoryData>& spHistory)
         if (nWin == 0 && nLose == 0)
         {
             bNoFight = true;
-            strScore = FUN_14028de60(0x3eb);
+            strScore = GetStringCommon(0x3eb);
         }
         obj.FUN_1407cba60("leftSn", FUN_140719530(spHistory->f30));
         obj.FUN_1407cba60("rightSn", FUN_140719530(spHistory->f28));
@@ -3513,7 +3513,7 @@ int FUN_1419771b0(ASObj& obj, const MS2Ptr<CGuildMember>& spMember)
     {
         if (spMember->fd0 == 0)
         {
-            strTime = FUN_14028de60(0x3d6);
+            strTime = GetStringCommon(0x3d6);
         }
         else
         {
@@ -3525,7 +3525,7 @@ int FUN_1419771b0(ASObj& obj, const MS2Ptr<CGuildMember>& spMember)
                 {
                     if (span.GetMinutes() < 1)
                     {
-                        strTime = FUN_14028de60(0x3d5);
+                        strTime = GetStringCommon(0x3d5);
                     }
                     else
                     {

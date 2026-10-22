@@ -360,8 +360,8 @@ bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS ob
 void FUN_140710590(COutPacket& packet);                         // send the packet
 void FUN_14151f200();
 void FUN_14151f4e0(CStringW strTag, MS2Ptr<CMsgBoxData> spData);
-CStringW FUN_14028de60(int nId);
-CStringW FUN_14028b8e0(const CStringW& strKey);
+CStringW GetStringCommon(int nId);
+CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_14052bd00(int nId, const CStringW& strArg);
 CStringW FUN_14086d060(int nId, const __int64& n);
 CStringW FUN_140c160b0(CStringW strFmt, const __int64& n);
@@ -566,30 +566,30 @@ void UIRevivalDialog::FUN_141abae20()
         Unk_RevFieldRef spField = FUN_1403ed2d0()->FUN_141bd30a0();
         if (pPc->FUN_1416546d0()->FUN_140639340() == 1 || (spField.FUN_1409657a0() != 0 && spField.FUN_140885340()->m_60 == 0))
         {
-            strMsg = FUN_14028de60(0x27c);
+            strMsg = GetStringCommon(0x27c);
         }
         else
         {
             if (pPc->FUN_141661970() == 0)
             {
                 if (m_1b4 == 2)
-                    strMsg = FUN_14028b8e0(L"s_msg_die_meso");
+                    strMsg = GetStringCommonByKey(L"s_msg_die_meso");
                 else if (m_1b4 == 1)
-                    strMsg = FUN_14028b8e0(L"s_msg_die_merat");
+                    strMsg = GetStringCommonByKey(L"s_msg_die_merat");
                 else
-                    strMsg = FUN_14028b8e0(L"s_msg_die_none");
+                    strMsg = GetStringCommonByKey(L"s_msg_die_none");
             }
             else if (m_1b4 == 2)
             {
-                strMsg = FUN_14028b8e0(L"s_msg_die_repeat_meso");
+                strMsg = GetStringCommonByKey(L"s_msg_die_repeat_meso");
             }
             else if (m_1b4 == 1)
             {
-                strMsg = FUN_14028b8e0(L"s_msg_die_repeat_merat");
+                strMsg = GetStringCommonByKey(L"s_msg_die_repeat_merat");
             }
             else
             {
-                strMsg = FUN_14028b8e0(L"s_msg_die_repeat_none");
+                strMsg = GetStringCommonByKey(L"s_msg_die_repeat_none");
             }
         }
         if (spField.FUN_1409657a0() != 0)
@@ -641,7 +641,7 @@ void UIRevivalDialog::FUN_141abb600()
         if (spBox.get() != 0)
         {
             spBox->FUN_141a01700(0x476, 0, 0);
-            spBox->FUN_141a01ca0(*FUN_1402056b0(&FUN_1401d3200()->m_cfe0), 1, FUN_14028de60(0x2b8));
+            spBox->FUN_141a01ca0(*FUN_1402056b0(&FUN_1401d3200()->m_cfe0), 1, GetStringCommon(0x2b8));
             FUN_140d73c60(spBox);
         }
     }
@@ -1027,7 +1027,7 @@ void UIRevivalDialog::FUN_141abd640()
 CStringW UIRevivalDialog::FUN_141abd790()
 {
     m_1b0 = 0;
-    CStringW strLabel = FUN_14028de60(0x27e);
+    CStringW strLabel = GetStringCommon(0x27e);
     Unk_RevPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == 0)
         return strLabel;
@@ -1043,7 +1043,7 @@ CStringW UIRevivalDialog::FUN_141abd790()
         int nLeft = nExit - DAT_143ab2950;
         if (nLeft == 0)
         {
-            strLabel = FUN_14028b8e0(L"s_room_exit_dungeon");
+            strLabel = GetStringCommonByKey(L"s_room_exit_dungeon");
             m_1b0 = 1;
         }
         else
@@ -1070,7 +1070,7 @@ int UIRevivalDialog::FUN_141abdab0(Unk_RevFieldRef spField)
         return 0;
     if (pPc->FUN_1416749a0()->FUN_140970ad0() != 0)
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_msg_revival_merat_cannot_here_debuff"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_msg_revival_merat_cannot_here_debuff"), 1, 1);
         return 0;
     }
     return 1;

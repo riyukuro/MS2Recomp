@@ -99,7 +99,7 @@ int FUN_140748050(void* pItem, int nJob);                       // the reward it
 // strings
 class Unk_LgStrings { public: CStringW FUN_141811980(int nTable, int nId); };
 Unk_LgStrings* FUN_1401a9d70();
-CStringW FUN_14028b8e0(const CStringW& strKey);
+CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_1409e8820(CStringW strKey, const short& a1);
 CStringW FUN_1409e8820(CStringW strKey, const unsigned short& n);
 CStringW FUN_140ec2f00(CStringW strKey, const short& a1, const short& a2);
@@ -440,7 +440,7 @@ void UILevelUpGuideDialog::FUN_140f857e0(int nQuest)
     if (pSelf == 0)
         return;
     if (spData->m_338.m_value == 1 && pSelf->FUN_141654700() == 1) {
-        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028b8e0(L"s_recommend_contents_newbie_warn"), 0, L"")) {
+        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_recommend_contents_newbie_warn"), 0, L"")) {
             spBox->FUN_140534050(nQuest);
             spBox->FUN_141a027c0(LgAnswerDelegate(this, &UILevelUpGuideDialog::SendQuestMode24));
             FUN_140d73c60(spBox);

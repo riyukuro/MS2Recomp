@@ -83,8 +83,8 @@ CStringW FUN_140632a60(int nId, const CStringW& strA, const CStringW& strB);
 CStringW FUN_1409e9bc0(int nId, const int& nA, const int& nB);
 CStringW FUN_1409eadb0(int nId, const CStringW& strA, const CStringW& strB, const CStringW& strC);
 CStringW FUN_1409e9890(CStringW strKey, const unsigned& nA, const unsigned& nB);
-CStringW FUN_14028b8e0(const CStringW& strKey);
-CStringW FUN_14028de60(int nId);
+CStringW GetStringCommonByKey(const CStringW& strKey);
+CStringW GetStringCommon(int nId);
 CStringW FUN_1401d0160(const wchar_t* psz, const CStringW& str);                   // psz + str
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);
 void FUN_14151f200();
@@ -400,10 +400,10 @@ CStringW UIEnchantScrollDialog::FUN_140f3d320(int nLevel, MS2Ptr<CItem> spItem, 
     CStringW strName = FUN_14028dee0(0xb6e, strRank, nLevel, strType);
     if (bStable == 0) {
         if (bRandom != 0)
-            strName += FUN_1401d0160(L" ", FUN_14028b8e0(CStringW(L"s_enchantscroll_stable")));
+            strName += FUN_1401d0160(L" ", GetStringCommonByKey(CStringW(L"s_enchantscroll_stable")));
     }
     else {
-        strName += FUN_1401d0160(L" ", FUN_14028de60(0xb6f));
+        strName += FUN_1401d0160(L" ", GetStringCommon(0xb6f));
     }
     return strName;
 }
@@ -536,7 +536,7 @@ CStringW UIEnchantScrollDialog::FUN_140f3e550(MS2Ptr<CItem> spItem)
         nId = 0xb6b;
     CStringW strDesc = FUN_140632a60(nId, spItem->FUN_140528160(), FUN_140f3e390());
     if (m_bDisableBreak)
-        strDesc += FUN_14028b8e0(CStringW(L"s_enchantscroll_desc_disable_break"));
+        strDesc += GetStringCommonByKey(CStringW(L"s_enchantscroll_desc_disable_break"));
     FUN_1403b4750()->FUN_1416fb340(strDesc);
     return strDesc;
 }
@@ -546,13 +546,13 @@ CStringW UIEnchantScrollDialog::FUN_140f3e550(MS2Ptr<CItem> spItem)
 CStringW UIEnchantScrollDialog::FUN_140f3e730()
 {
     if (m_nType == 1)
-        return FUN_14028b8e0(CStringW(L"s_enchant_fail_desc_enchant"));
+        return GetStringCommonByKey(CStringW(L"s_enchant_fail_desc_enchant"));
     if (m_nType == 2)
-        return FUN_14028b8e0(CStringW(L"s_enchant_fail_desc_restore"));
+        return GetStringCommonByKey(CStringW(L"s_enchant_fail_desc_restore"));
     if (m_nType == 3)
         return FUN_1409e9890(CStringW(L"s_enchant_fail_desc_random"), m_nRandomMin, m_nRandomMax);
     if (m_nType == 5)
-        return FUN_14028b8e0(CStringW(L"s_enchant_fail_desc_repair"));
+        return GetStringCommonByKey(CStringW(L"s_enchant_fail_desc_repair"));
     return CStringW(L"");
 }
 

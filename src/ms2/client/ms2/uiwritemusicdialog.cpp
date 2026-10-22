@@ -260,8 +260,8 @@ CItemDataTable* FUN_140281980();
 
 unsigned FUN_140869420();                                                   // the client clock (ms)
 bool FUN_140a467d0(const MS2Ptr<AScript>* p);                               // the AS object is released
-CStringW FUN_14028b8e0(const CStringW& strKey);                             // string table text
-CStringW FUN_14028de60(int nId);                                            // string table text by id
+CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
+CStringW GetStringCommon(int nId);                                            // string table text by id
 CStringW FUN_1409eec40(int nId);                                            // system message text
 void FUN_1412751f0(const CStringW& str, int a, int b);                      // notice
 void FUN_1412761e0(MS2Ptr<AScript> spScript, int bEnable);                  // enable the movie input
@@ -442,8 +442,8 @@ void UIWriteMusicDialog::OnLoadComplete()
             MS2Ptr<ASDropdownMenu> spRollType = FUN_140c28560(CString("m_rollType"));
             if (spRollType)
             {
-                spRollType->FUN_1422dfce0(FUN_14028b8e0(CStringW(L"s_writemusic_playline_show_per_time")));
-                spRollType->FUN_1422dfce0(FUN_14028b8e0(CStringW(L"s_writemusic_playline_show_per_bar")));
+                spRollType->FUN_1422dfce0(GetStringCommonByKey(CStringW(L"s_writemusic_playline_show_per_time")));
+                spRollType->FUN_1422dfce0(GetStringCommonByKey(CStringW(L"s_writemusic_playline_show_per_bar")));
                 spRollType->FUN_1422df690(0);
             }
             FUN_140cff840(FUN_1422dbb40(), CString("m_drumInfoText"), 0);
@@ -552,7 +552,7 @@ int UIWriteMusicDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     }
     if (_stricmp("onClickTabMusicAddMaxCount", szMethod) == 0)
     {
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_writemusic_error_add_tab_maxcount")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_add_tab_maxcount")), 0, 0, CStringW(L""));
         return 1;
     }
     if (_stricmp("OnAskRemoveTabMusic", szMethod) == 0)
@@ -562,7 +562,7 @@ int UIWriteMusicDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         {
             m_nRemoveTab = data.FUN_1422b8a10();
             if (m_nRemoveTab >= 0)
-                FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_writemusic_msg_ask_remove_tab")), 1, static_cast<IMessageListener*>(this),
+                FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_msg_ask_remove_tab")), 1, static_cast<IMessageListener*>(this),
                               CStringW(L"askRemoveTabMusic"));
         }
         return 1;
@@ -680,7 +680,7 @@ int UIWriteMusicDialog::vfunc_71()
 {
     if (!FUN_140ff33c0())
         return 0;
-    FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_writemusic_msg_ask_close")), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
+    FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_msg_ask_close")), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
     return 1;
 }
 
@@ -716,7 +716,7 @@ bool UIWriteMusicDialog::FUN_140fef7b0(MS2Ptr<CItem> spItem)
     {
         if (m_nMode == 2)
         {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_writemusic_error_cant_write_when_viewscore")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_writemusic_error_cant_write_when_viewscore")), 1, 1);
             return false;
         }
         m_nMode = 1;
@@ -734,7 +734,7 @@ bool UIWriteMusicDialog::FUN_140fef8f0(MS2Ptr<CItem> spItem)
     {
         if (m_nMode == 1)
         {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_writemusic_error_cant_viewscore_when_write")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_writemusic_error_cant_viewscore_when_write")), 1, 1);
             return false;
         }
         if (!spItem->FUN_140525790())
@@ -744,12 +744,12 @@ bool UIWriteMusicDialog::FUN_140fef8f0(MS2Ptr<CItem> spItem)
             return false;
         if (pScore->m_note.m_n08 == 0)
         {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_writemusic_error_cant_know_writer")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_writemusic_error_cant_know_writer")), 1, 1);
             return false;
         }
         if (pScore->m_n38 != 0)
         {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_writemusic_error_cant_edit")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_writemusic_error_cant_edit")), 1, 1);
             return false;
         }
         Unk_WmOwner owner;
@@ -760,7 +760,7 @@ bool UIWriteMusicDialog::FUN_140fef8f0(MS2Ptr<CItem> spItem)
         owner.m_n18 = DAT_143ab2834;
         if (!FUN_14026d4d0(&owner, pScore->m_note.m_n00, pScore->m_note.m_n08))
         {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_writemusic_error_not_write_myself")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_writemusic_error_not_write_myself")), 1, 1);
             return false;
         }
         m_nMode = 2;
@@ -782,7 +782,7 @@ void UIWriteMusicDialog::FUN_140fefd00(MS2Ptr<CItem> spItem)
             FUN_1412761e0(m_30, 1);
             if (m_spItem == spItem.get())
             {
-                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, FUN_14028b8e0(CStringW(L"s_writemusic_complete_make")),
+                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, GetStringCommonByKey(CStringW(L"s_writemusic_complete_make")),
                                                           static_cast<IMessageListener*>(this), CStringW(L"completeMakeScore"));
                 if (spBox.get())
                 {
@@ -849,7 +849,7 @@ void UIWriteMusicDialog::FUN_140ff03b0(ASData* pArgs)
         strTitle.Trim();
         if (strTitle.IsEmpty())
         {
-            FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_writemusic_error_make_empty_title")), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_make_empty_title")), 0, 0, CStringW(L""));
             return;
         }
         CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker();
@@ -912,7 +912,7 @@ void UIWriteMusicDialog::FUN_140ff03b0(ASData* pArgs)
                 unsigned nLength = nEnd - nNow;
                 if (strMml.GetLength() < 1)
                 {
-                    FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_writemusic_error_make_empty_score")), 0, 0, CStringW(L""));
+                    FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_make_empty_score")), 0, 0, CStringW(L""));
                     return;
                 }
                 int nMax = 0;
@@ -927,12 +927,12 @@ void UIWriteMusicDialog::FUN_140ff03b0(ASData* pArgs)
                 }
                 if (nMax + nTabs < strMml.GetLength())
                 {
-                    FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_writemusic_error_make_maxlength")), 0, 0, CStringW(L""));
+                    FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_make_maxlength")), 0, 0, CStringW(L""));
                     return;
                 }
                 if (nLength < 2000)
                 {
-                    FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_writemusic_error_make_zero_time")), 0, 0, CStringW(L""));
+                    FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_make_zero_time")), 0, 0, CStringW(L""));
                     return;
                 }
                 m_score.m_nItemUid = static_cast<CItem*>(m_spItem)->FUN_140526a50();
@@ -941,16 +941,16 @@ void UIWriteMusicDialog::FUN_140ff03b0(ASData* pArgs)
                 m_score.m_strTitle = strTitle;
                 m_score.m_strMml = strMml;
                 CStringW strKey(L"s_writemusic_msg_terms");
-                FUN_140d746e0(static_cast<IMessageListener*>(this), 0, FUN_14028b8e0(strKey), FUN_14028de60(0x9cf));
+                FUN_140d746e0(static_cast<IMessageListener*>(this), 0, GetStringCommonByKey(strKey), GetStringCommon(0x9cf));
                 return;
             }
-            FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_writemusic_error_make")), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_make")), 0, 0, CStringW(L""));
         }
         else
-            FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_writemusic_error_make_invalid_instrument_type")), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_make_invalid_instrument_type")), 0, 0, CStringW(L""));
     }
     else
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_writemusic_error_make")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_make")), 0, 0, CStringW(L""));
 }
 
 // @0x140ff12a0
@@ -998,13 +998,13 @@ void UIWriteMusicDialog::FUN_140ff12d0(ASData* pArgs)
             m_strPlayMml = strMml;
             if (m_strPlayMml.IsEmpty())
             {
-                FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_writemusic_error_play_empty_score")), 0, 0, CStringW(L""));
+                FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_play_empty_score")), 0, 0, CStringW(L""));
                 return;
             }
             int nOffset = (int)DoubleSecondsToMs(pArgs->FUN_1422b8ca0());
             int nLength = 0;
             if (!FUN_140c8dac0()->FUN_140d099c0(m_strPlayMml, nCategory, nOffset, &nLength))
-                FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_writemusic_error_play_zero_time")), 0, 0, CStringW(L""));
+                FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_play_zero_time")), 0, 0, CStringW(L""));
             else
             {
                 FUN_140ff35c0(nOffset, nLength);
@@ -1027,7 +1027,7 @@ void UIWriteMusicDialog::FUN_140ff12d0(ASData* pArgs)
         FUN_140d73aa0(CStringW(L"s_writemusic_error_play"), 0, 0, CStringW(L""));
     }
     else
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_writemusic_error_play_invalid_instrument_type")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_play_invalid_instrument_type")), 0, 0, CStringW(L""));
 }
 
 // @0x140ff1a20
@@ -1103,7 +1103,7 @@ void UIWriteMusicDialog::OnClickSaveFile()
     if (!PathIsDirectoryW(L"./Custom/Music"))
         CreateDirectoryW(L"./Custom/Music", 0);
     if (FUN_140ff34b0() == 0)
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_writemusic_error_savefile_empty_score")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_savefile_empty_score")), 0, 0, CStringW(L""));
     else
     {
         CStringW strPath = FUN_141b6e6f0(FUN_1418fe4e0(CStringW(L"./Custom/Music")), L"ms2mml Files (*.ms2mml)", CStringW(L""));
@@ -1130,7 +1130,7 @@ void UIWriteMusicDialog::OnClickLoadFile()
     }
     else
     {
-        CStringW strText = FUN_14028b8e0(CStringW(L"s_writemusic_error_loadfile_ask_during_edit"));
+        CStringW strText = GetStringCommonByKey(CStringW(L"s_writemusic_error_loadfile_ask_during_edit"));
         FUN_140d73aa0(strText, 1, static_cast<IMessageListener*>(this), CStringW(L"askLoadFile"));
     }
 }
@@ -1159,7 +1159,7 @@ void UIWriteMusicDialog::FUN_140ff21a0(ASData* pArgs)
         }
     }
     else
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_writemusic_error_play_invalid_instrument_type")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_play_invalid_instrument_type")), 0, 0, CStringW(L""));
 }
 
 // @0x140ff23b0
@@ -1236,7 +1236,7 @@ void UIWriteMusicDialog::FUN_140ff2700(const CStringW& strPath)
         Unk_140165cf0* pMelody = pRoot->FUN_140165cf0("melody");
         if (pMelody == 0)
         {
-            FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_writemusic_error_loadfile_not_exist_melody_tag")), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_loadfile_not_exist_melody_tag")), 0, 0, CStringW(L""));
             return;
         }
         FUN_140ff3230(pMelody, nMax, strMelody, &nTotal);
@@ -1315,7 +1315,7 @@ void UIWriteMusicDialog::FUN_140ff2cf0(const CStringW& strPath)
                 FUN_140ff3450(false);
                 return;
             }
-            FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_writemusic_error_savefile")), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_savefile")), 0, 0, CStringW(L""));
         }
     }
 }
@@ -1407,7 +1407,7 @@ void UIWriteMusicDialog::FUN_140ff3610(int nTime)
         MS2Ptr<ASMovieClip> spPlaying = m_30->FUN_1409b4560(CString("m_playingMusic"));
         if (spPlaying)
             m_spTimer = spPlaying->FUN_1409b4620(CString("m_timer"));
-        m_strTimerFormat = FUN_14028b8e0(CStringW(L"s_writemusic_text_playtimer_cur"));
+        m_strTimerFormat = GetStringCommonByKey(CStringW(L"s_writemusic_text_playtimer_cur"));
     }
     if (m_spTimer)
     {

@@ -101,7 +101,7 @@ Unk_KtLog* FUN_140166440();
 CFeatureManager* FUN_140166410();
 MS2InputService* FUN_140a58540();
 CStateService* FUN_140aa6d30();
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
 int FUN_14086f500(Unk_140165cf0* pElem, const char* pszName, int* pOut);       // QueryIntAttribute
 int FUN_14086f500(Unk_140165cf0* pElem, const char* pszName, unsigned* pOut);  // QueryIntAttribute (unsigned out)
@@ -110,7 +110,7 @@ void FUN_14086f8d0(Unk_140165cf0* pElem, const char* pszName, const char* pszVal
 void FUN_14086f920(Unk_140165cf0* pElem, const char* pszName, int nValue);     // SetAttribute (int)
 void* FUN_14086e090(void* pParent, void* pChild);                              // LinkEndChild
 CString FUN_14028d1f0(const char* psz);
-CStringW FUN_14028b8e0(const CStringW& strKey);              // string table text by key
+CStringW GetStringCommonByKey(const CStringW& strKey);              // string table text by key
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);  // system notice
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);               // the item table record
 extern int DAT_143af7d40;                                   // input enabled
@@ -647,9 +647,9 @@ void CKeyTable::FUN_14142a910()
     m_keys.RemoveAll();
     for (int nKey = 1; nKey < 0xd0; nKey++)
     {
-        CStringW strName = FUN_1401a9d70()->FUN_1418125b0(nKey);
+        CStringW strName = GetStringTable()->FUN_1418125b0(nKey);
         if (!strName.IsEmpty())
-            m_keys.SetAt((Unk_MyPCKeyId)nKey, new stKeyData(FUN_1401a9d70()->FUN_1418125b0(nKey)));
+            m_keys.SetAt((Unk_MyPCKeyId)nKey, new stKeyData(GetStringTable()->FUN_1418125b0(nKey)));
     }
     int nCount = 0;
     for (int nFirst = 0x96; nFirst <= 0x99; nFirst++)
@@ -1428,12 +1428,12 @@ CStringW CKeyTable::FUN_14142d7e0(const int& nKey)
 {
     unsigned __int64 nAction = FUN_1409331f0()->FUN_14142d190(nKey);
     if (FUN_14142ce10(nKey))
-        return StringFormat(L"{0}[{1}]", FUN_1401a9d70()->FUN_1418125b0((int)nAction), FUN_1409331f0()->FUN_14142d220(nKey));
+        return StringFormat(L"{0}[{1}]", GetStringTable()->FUN_1418125b0((int)nAction), FUN_1409331f0()->FUN_14142d220(nKey));
     else if (nAction >= 0xaae61 && nAction <= 0xaae63)
-        return FUN_1401a9d70()->FUN_1418125b0((int)nAction);
+        return GetStringTable()->FUN_1418125b0((int)nAction);
     else if (nAction >= 0xdbba1 && nAction <= 0xdbbaa)
-        return FUN_1401a9d70()->FUN_1418125b0((int)nAction);
-    return FUN_1401a9d70()->FUN_1418125b0((int)nAction);
+        return GetStringTable()->FUN_1418125b0((int)nAction);
+    return GetStringTable()->FUN_1418125b0((int)nAction);
 }
 MS2_REPLACE_METHOD(0x14142D7E0, CKeyTable, FUN_14142d7e0, 442, 0x7180F4EA);
 
@@ -2600,7 +2600,7 @@ int CKeyTable::FUN_141431c80(int nKey, int nType, __int64 nCode, int nSlot, int 
         nSlot = 0;
     if (spKey->FUN_1414287c0(nType, nCode, nSlot, nPriority))
         return 0;
-    CStringW strName = FUN_1401a9d70()->FUN_1418125b0((int)nCode);
+    CStringW strName = GetStringTable()->FUN_1418125b0((int)nCode);
     if (nCode != 0 && strName.IsEmpty())
         return 0;
     spKey->m_nType = nType;
@@ -2666,7 +2666,7 @@ int CKeyTable::FUN_141432010(int nAction)
     case 0x61a81:
     case 0x61a82:
     case 0x61a85:
-        FUN_1412751f0(FUN_14028b8e0(L"s_hide_pcinfo_dialog_disable_message"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_hide_pcinfo_dialog_disable_message"), 1, 1);
         return 0;
     }
     return 1;

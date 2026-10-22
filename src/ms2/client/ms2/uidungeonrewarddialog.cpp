@@ -325,7 +325,7 @@ class Unk_RewardRoomMgr { public: Unk_RewardPtr<Unk_RewardRoom> FUN_1403206b0(un
 Unk_RewardRoomMgr* FUN_14031c2a0();
 class Unk_RewardSound { public: void FUN_141276180(const CString&); };
 extern Unk_RewardSound g_unkRewardSound; // 0x143ac5988
-CStringW FUN_14028b8e0(const CStringW&);
+CStringW GetStringCommonByKey(const CStringW&);
 CStringW FUN_1405c2690(CStringW,const CStringW&);
 CStringW FUN_1409404f0(__int64);
 CStringW FUN_1409eb450(int);
@@ -720,11 +720,11 @@ void UIDungeonRewardDialog::FUN_140e22d70() {
   }
   if(m_228.FUN_14026ce30()) m_timer1.FUN_140868750(500);
   if(m_win) {
-   FUN_140cff1b0((*m_1b0).FUN_1422bb890(),"m_name",FUN_14028b8e0(L"s_dungeon_reward_title_success"));
-   FUN_140cff310((*m_190).FUN_1422bb890(),"m_timeMovie","m_clearTimeName",FUN_14028b8e0(L"s_dungeon_reward_clear_time"));
+   FUN_140cff1b0((*m_1b0).FUN_1422bb890(),"m_name",GetStringCommonByKey(L"s_dungeon_reward_title_success"));
+   FUN_140cff310((*m_190).FUN_1422bb890(),"m_timeMovie","m_clearTimeName",GetStringCommonByKey(L"s_dungeon_reward_clear_time"));
   } else {
-   FUN_140cff1b0((*m_1b0).FUN_1422bb890(),"m_name",FUN_14028b8e0(L"s_dungeon_reward_title_fail"));
-   FUN_140cff310((*m_190).FUN_1422bb890(),"m_timeMovie","m_clearTimeName",FUN_14028b8e0(L"s_dungeon_reward_fail_time"));
+   FUN_140cff1b0((*m_1b0).FUN_1422bb890(),"m_name",GetStringCommonByKey(L"s_dungeon_reward_title_fail"));
+   FUN_140cff310((*m_190).FUN_1422bb890(),"m_timeMovie","m_clearTimeName",GetStringCommonByKey(L"s_dungeon_reward_fail_time"));
   }
   if(m_party) m_1d0->vfunc_4(true);
  }
@@ -798,14 +798,14 @@ CStringW UIDungeonRewardDialog::FUN_140e25840(int kind) {
  case 0: return L"";
  case 1:
   if(m_room.get()) { CStringW count=FUN_140e14d70(m_room->FUN_14031ddf0()); return FUN_1405c2690(L"s_dungeon_reward_dungeon_reward_count",count); }
- case 2: return FUN_14028b8e0(L"s_dungeon_reward_bonus_event");
- case 3: return FUN_14028b8e0(L"s_dungeon_reward_mission_rank");
- case 4: return FUN_14028b8e0(L"s_dungeon_reward_dungeon_helper");
- case 5: return FUN_14028b8e0(L"s_dungeon_reward_dungeon_helper_event");
- case 6: return FUN_14028b8e0(L"s_dungeon_reward_mentor");
- case 7: return FUN_14028b8e0(L"s_dungeon_reward_mentee");
- case 8: return FUN_14028b8e0(L"s_dungeon_reward_mentee_party_gift");
- case 9: return FUN_14028b8e0(L"s_dungeon_reward_united_weekly");
+ case 2: return GetStringCommonByKey(L"s_dungeon_reward_bonus_event");
+ case 3: return GetStringCommonByKey(L"s_dungeon_reward_mission_rank");
+ case 4: return GetStringCommonByKey(L"s_dungeon_reward_dungeon_helper");
+ case 5: return GetStringCommonByKey(L"s_dungeon_reward_dungeon_helper_event");
+ case 6: return GetStringCommonByKey(L"s_dungeon_reward_mentor");
+ case 7: return GetStringCommonByKey(L"s_dungeon_reward_mentee");
+ case 8: return GetStringCommonByKey(L"s_dungeon_reward_mentee_party_gift");
+ case 9: return GetStringCommonByKey(L"s_dungeon_reward_united_weekly");
  default: MS2_ASSERT_AT(0x331,0); return L"";
  }
 }

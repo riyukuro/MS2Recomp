@@ -91,7 +91,7 @@ void FUN_140710590(COutPacket& packet);                         // send the pack
 
 class Unk_VdStrings { public: CStringW FUN_141811980(int nTable, int nId); };
 Unk_VdStrings* FUN_1401a9d70();
-CStringW FUN_14028b8e0(const CStringW& strKey);
+CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_14086aec0(ATL::CTimeSpan span, int nA, int nB, bool bDays, bool bHours);   // format a time span
 bool FUN_140e452e0(const ATL::CTimeSpan& a, ATL::CTimeSpan b);  // a < b
@@ -282,7 +282,7 @@ void UIVIPDialog::FUN_140fb87d0(CInPacket& packet, int nMode)
         CVIPBenefitItemPtr spBenefit = FUN_140fb9980()->GetBenefitItem(nBenefitId);
         if (spBenefit == 0)
             return;
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, FUN_14028b8e0(CStringW(L"s_vip_dialog_get_benefit_item")), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, GetStringCommonByKey(CStringW(L"s_vip_dialog_get_benefit_item")), 0, CStringW(L""));
         if (spBox.get() == 0)
             return;
         MS2Ptr<CItem> spItem(new CItem());
@@ -309,7 +309,7 @@ void UIVIPDialog::FUN_140fb8d10()
     if (spTime == 0)
         return;
     if (FUN_141662de0(pPlayer) == 0) {
-        spTime->FUN_1422c4cd0(FUN_14028b8e0(CStringW(L"s_vip_dialog_end_time")));
+        spTime->FUN_1422c4cd0(GetStringCommonByKey(CStringW(L"s_vip_dialog_end_time")));
     } else {
         CMsTime now(FUN_140869440());
         CMsTime end(FUN_141662e90(pPlayer));
@@ -318,7 +318,7 @@ void UIVIPDialog::FUN_140fb8d10()
             return;
         CStringW strRemain = FUN_14086aec0(span, 1, 1, 0, 0);
         if (strRemain.IsEmpty())
-            strRemain = FUN_14028b8e0(CStringW(L"s_vip_dialog_remain_time_hour"));
+            strRemain = GetStringCommonByKey(CStringW(L"s_vip_dialog_remain_time_hour"));
         else
             strRemain = FUN_1405c2690(CStringW(L"s_vip_dialog_remain_time"), strRemain);
         spTime->FUN_1422c4f00(strRemain);

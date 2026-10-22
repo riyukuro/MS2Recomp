@@ -54,7 +54,7 @@ bool FUN_14028f710(Unk_140165cf0* pElem);                                    // 
 CStringA FUN_140cc2ad0(const CString& strCategory, const CString& strFile);   // icon file path in a category
 class Unk_MtTextMgr { public: CStringW FUN_1416fbfe0(unsigned nId, CStringW strColor); };
 Unk_MtTextMgr* FUN_1403b4750();
-CStringW FUN_14028b8e0(const CStringW& strKey);                              // string table lookup
+CStringW GetStringCommonByKey(const CStringW& strKey);                              // string table lookup
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);      // string table format
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 CLua* FUN_1401c0db0();
@@ -662,23 +662,23 @@ CStringW CMasteryTable::TypeName(int nType)
     switch (nType)
     {
     case 3:
-        return FUN_14028b8e0(CStringW(L"s_mastery_mining"));
+        return GetStringCommonByKey(CStringW(L"s_mastery_mining"));
     case 4:
-        return FUN_14028b8e0(CStringW(L"s_mastery_gathering"));
+        return GetStringCommonByKey(CStringW(L"s_mastery_gathering"));
     case 5:
-        return FUN_14028b8e0(CStringW(L"s_mastery_breeding"));
+        return GetStringCommonByKey(CStringW(L"s_mastery_breeding"));
     case 6:
-        return FUN_14028b8e0(CStringW(L"s_mastery_farming"));
+        return GetStringCommonByKey(CStringW(L"s_mastery_farming"));
     case 7:
-        return FUN_14028b8e0(CStringW(L"s_mastery_blacksmithing"));
+        return GetStringCommonByKey(CStringW(L"s_mastery_blacksmithing"));
     case 8:
-        return FUN_14028b8e0(CStringW(L"s_mastery_engraving"));
+        return GetStringCommonByKey(CStringW(L"s_mastery_engraving"));
     case 9:
-        return FUN_14028b8e0(CStringW(L"s_mastery_alchemist"));
+        return GetStringCommonByKey(CStringW(L"s_mastery_alchemist"));
     case 10:
-        return FUN_14028b8e0(CStringW(L"s_mastery_cooking"));
+        return GetStringCommonByKey(CStringW(L"s_mastery_cooking"));
     case 11:
-        return FUN_14028b8e0(CStringW(L"s_mastery_pettaming"));
+        return GetStringCommonByKey(CStringW(L"s_mastery_pettaming"));
     default:
         return CStringW(L"");
     }
@@ -714,7 +714,7 @@ CStringW CMasteryTable::SuccessDescription(int nType, int nReceipeId, int nColor
 // MS2-FUNCTIONAL: not byte-identical (local/temporary layout and member order differ from the exe build)
 CStringW CMasteryTable::GradeName(int nType, int nGrade)
 {
-    return FUN_14028b8e0(StringFormat(L"s_mastery_grade_{0}", nGrade));
+    return GetStringCommonByKey(StringFormat(L"s_mastery_grade_{0}", nGrade));
 }
 
 // @0x14066c710

@@ -98,7 +98,7 @@ int FUN_140748050(void* pItem, int nJob);                               // the r
 #define EwQuestLevel(pData) ((unsigned short)(pData)->m_conditions[0]->m_target.GetFirstValue())
 
 // strings and packets
-CStringW FUN_14028b8e0(const CStringW& strKey);
+CStringW GetStringCommonByKey(const CStringW& strKey);
 void FUN_140710590(COutPacket& packet);
 class Unk_LgUIMgr { public: void FUN_141adc530(int nUiId); };
 Unk_LgUIMgr* FUN_1403ed2b0();
@@ -550,7 +550,7 @@ int UIBurningEventWidgetDialog::vfunc_85(ASObj& rObj)
     if (spResult.get() == 0)
         return 0;
     m_190 = spResult->m_eventId;
-    rObj.FUN_1407cbb20("title", FUN_14028b8e0(spResult->m_rewardUiTitleStringKey));
+    rObj.FUN_1407cbb20("title", GetStringCommonByKey(spResult->m_rewardUiTitleStringKey));
     ItemEntity& item = spResult->m_rewardItems.front();
     rObj.FUN_1407cba60("binding", m_178->FUN_140d43310(item.m_itemId, item.vfunc_o18_1(), item.m_count));
     rObj.FUN_1409c48f0("max", spResult->m_endLevel);

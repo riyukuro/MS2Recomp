@@ -61,8 +61,8 @@ extern Unk_Inventory DAT_143ab2a90;
 void FUN_141275260(int nStringId, int nA, int nB);      // notice by string id
 void FUN_140d73bc0(int nStringId, int nType, void* p, CStringW strTag);
 void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);
-CStringW FUN_14028b8e0(const CStringW& strKey);         // string table lookup by key
-CStringW FUN_14028de60(int nStringId);                  // a string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);         // string table lookup by key
+CStringW GetStringCommon(int nStringId);                  // a string table text
 CString FUN_1405451e0(int nType);                       // the name of an equip slot type
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);               // item link / popup for the item
 void* FUN_140a50b50(DragSlot* pSlot);                   // the item slot behind a drag source
@@ -332,7 +332,7 @@ int EquipSlot::GetKind()
 // @0x14120d1b0
 CStringW EquipSlot::vfunc_22()
 {
-    return FUN_14028de60(0x752);
+    return GetStringCommon(0x752);
 }
 
 // @0x14120d1f0
@@ -370,7 +370,7 @@ int EquipSlot::FUN_14120d2e0(CItem* pItem)
     if (bFlag && pItem->FUN_1405258b0() == 0)
     {
         if (m_nKind == 2)
-            FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_item_err_Invalid_slot_codi")), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_item_err_Invalid_slot_codi")), 0, 0, CStringW(L""));
         else
             FUN_140d73bc0(0xd3, 0, 0, CStringW(L""));
         return 0;

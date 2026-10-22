@@ -133,7 +133,7 @@ CStringW FUN_14042cb90(CStringW strKey, const float& v);
 CStringW FUN_140938ae0(CStringW strKey, const int* pValue);
 CStringW FUN_14062b4f0(CStringW strKey, const int* pValue);
 CStringW FUN_1409404f0(__int64 nMeso);                              // meso text
-CStringW FUN_14028b8e0(const CStringW& strKey);                     // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 void FUN_1412751f0(const CStringW& strText, int a, int b);          // show a notice
 void FUN_1416fb300(void* pFilter, CStringW& strText);               // filter a script text
@@ -953,37 +953,37 @@ bool UIItemExchangeScrollDialog::FUN_140f55670(const int* pCode)
 {
     if (*pCode == 0)
     {
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemslot_exchange_ok")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemslot_exchange_ok")), 1, 1);
         return false;
     }
     switch (*pCode)
     {
     case 1:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemslot_exchange_scroll_invalid")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemslot_exchange_scroll_invalid")), 1, 1);
         break;
     case 2:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemslot_exchange_upgrade_invalid")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemslot_exchange_upgrade_invalid")), 1, 1);
         break;
     case 3:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemslot_exchange_money_invalid")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemslot_exchange_money_invalid")), 1, 1);
         break;
     case 4:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemslot_exchange_count_invalid")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemslot_exchange_count_invalid")), 1, 1);
         break;
     case 5:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemslot_exchange_grade_invalid")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemslot_exchange_grade_invalid")), 1, 1);
         break;
     case 6:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemslot_exchange_lockstate_item")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemslot_exchange_lockstate_item")), 1, 1);
         break;
     case 7:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemslot_exchange_count_check")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemslot_exchange_count_check")), 1, 1);
         break;
     case 8:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemslot_exchange_unknown")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemslot_exchange_unknown")), 1, 1);
         break;
     default:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemslot_exchange_unknown")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemslot_exchange_unknown")), 1, 1);
     }
     return true;
 }

@@ -29,7 +29,7 @@ float FUN_140718480(const CStringW&);
 CStringW FUN_14083cb20(const CStringW&);
 CStringW FUN_1401e8510(const wchar_t*,const CStringW&);
 CStringW FUN_14052bd00(int,const CStringW&);
-CStringW FUN_14028b8e0(const CStringW&);
+CStringW GetStringCommonByKey(const CStringW&);
 void FUN_141b70810(unsigned,CStringW&);
 CString FUN_1401d4330(const wchar_t*,int);
 class Unk_BattleBytes {
@@ -380,15 +380,15 @@ MS2_REPLACE_METHOD(0x140a04b00, CBattleRecordManager, FUN_140a04b00, 171, 0xE119
 // @0x140a04bc0
 CStringW CBattleRecordManager::FUN_140a04bc0(int type) {
     switch(type) {
-    case 0: return FUN_14028b8e0(L"s_dps_type_caster_damage");
-    case 1: return FUN_14028b8e0(L"s_dps_type_caster_damage_boss");
-    case 6: return FUN_14028b8e0(L"s_dps_type_target_damage");
-    case 2: return FUN_14028b8e0(L"s_dps_type_dps");
-    case 3: return FUN_14028b8e0(L"s_dps_type_dps_boss");
-    case 4: return FUN_14028b8e0(L"s_dps_type_hit_rate");
-    case 5: return FUN_14028b8e0(L"s_dps_type_critical_rate");
-    case 7: return FUN_14028b8e0(L"s_dps_type_gain_exp");
-    case 8: return FUN_14028b8e0(L"s_dps_type_gain_meso");
+    case 0: return GetStringCommonByKey(L"s_dps_type_caster_damage");
+    case 1: return GetStringCommonByKey(L"s_dps_type_caster_damage_boss");
+    case 6: return GetStringCommonByKey(L"s_dps_type_target_damage");
+    case 2: return GetStringCommonByKey(L"s_dps_type_dps");
+    case 3: return GetStringCommonByKey(L"s_dps_type_dps_boss");
+    case 4: return GetStringCommonByKey(L"s_dps_type_hit_rate");
+    case 5: return GetStringCommonByKey(L"s_dps_type_critical_rate");
+    case 7: return GetStringCommonByKey(L"s_dps_type_gain_exp");
+    case 8: return GetStringCommonByKey(L"s_dps_type_gain_meso");
     default: return CStringW();
     }
 }

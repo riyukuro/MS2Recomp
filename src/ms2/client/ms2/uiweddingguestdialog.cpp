@@ -118,8 +118,8 @@ struct Unk_GsFound
 MS2_CHECK_OFFSET(Unk_GsFound, m_info, 0x8);
 
 void* FUN_1409eed90();                                          // the singleton of the own character
-CStringTable* FUN_1401a9d70();
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // string table text
+CStringTable* GetStringTable();
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 void FUN_1412751f0(const CStringW& text, int nA, int nB);       // message popup
 void FUN_140710590(COutPacket& packet);                         // send the packet
 unsigned __int64 FUN_140718370(const CStringW& text);           // text -> number
@@ -305,7 +305,7 @@ void UIWeddingGuestDialog::FUN_140fcd5b0(Unk_GsFound* pFound)
     spGuest->m_nKind = 2;
     if (spGuest->m_n28 == 0)
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_wedding_result_err_not_find_character"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_wedding_result_err_not_find_character"), 1, 1);
     }
     else
     {
@@ -385,13 +385,13 @@ bool UIWeddingGuestDialog::FUN_140fcdf30(const CStringW& strName)
     WeddingProxy* pProxy = WeddingManager::GetInstance()->FUN_140d295d0();
     if (strName == pProxy->m_groom.m_strName || strName == pProxy->m_bride.m_strName)
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_wedding_invitation_error_user"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_wedding_invitation_error_user"), 1, 1);
         return false;
     }
     nGuests = (int)m_guests.size();
     if (nGuests > FUN_140900f00())
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_wedding_invitation_error_max_user"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_wedding_invitation_error_max_user"), 1, 1);
         return false;
     }
     return true;
@@ -508,7 +508,7 @@ bool UIWeddingGuestPageFriend::vfunc_1()
             int nLevel = spBuddy->FUN_1401cc210();
             int nJob = spBuddy->FUN_1401cc2b0();
             row.FUN_1407cbb20("extra", FUN_1409e94c0(CStringW(L"s_wedding_guest_user"), nLevel,
-                                                      FUN_1401a9d70()->FUN_141811980(6, nJob)));
+                                                      GetStringTable()->FUN_141811980(6, nJob)));
             row.FUN_1407cba60("profile", FUN_141028be0(spBuddy->FUN_1401cc230(),
                                                        FUN_14016a5c0((const char*)*spBuddy->FUN_1401cc530(), 0), 1, CString("")));
             spList->FUN_1422dd230(row);
@@ -528,7 +528,7 @@ CString UIWeddingGuestPageFriend::vfunc_6()
 // @0x140fd7500
 CStringW UIWeddingGuestPageFriend::vfunc_7()
 {
-    return FUN_14028b8e0(L"s_wedding_guest_tab_friend");
+    return GetStringCommonByKey(L"s_wedding_guest_tab_friend");
 }
 
 // @0x140fd7570
@@ -593,7 +593,7 @@ bool UIWeddingGuestPageGuild::vfunc_1()
             row.FUN_1407cbb20("charSN", FUN_141b71910(spMember->data.f08));
             row.FUN_1407cbbe0("selected", m_pDialog->FUN_140fcdb30(spMember->data.FUN_1404ca890()));
             row.FUN_1407cbb20("extra", FUN_14052b9d0(CStringW(L"s_wedding_guest_user"), spMember->data.f1c,
-                                                      FUN_1401a9d70()->FUN_141811980(6, spMember->data.f18)));
+                                                      GetStringTable()->FUN_141811980(6, spMember->data.f18)));
             row.FUN_1407cba60("profile", FUN_141028be0(spMember->data.f08,
                                                        FUN_14016a5c0(spMember->data.FUN_1404ca980(), 0), 1, CString("")));
             spList->FUN_1422dd230(row);
@@ -613,7 +613,7 @@ CString UIWeddingGuestPageGuild::vfunc_6()
 // @0x140fd7e20
 CStringW UIWeddingGuestPageGuild::vfunc_7()
 {
-    return FUN_14028b8e0(L"s_wedding_guest_tab_guild");
+    return GetStringCommonByKey(L"s_wedding_guest_tab_guild");
 }
 
 // @0x140fd7e90
@@ -717,7 +717,7 @@ CString UIWeddingGuestPageStranger::vfunc_6()
 // @0x140fd85d0
 CStringW UIWeddingGuestPageStranger::vfunc_7()
 {
-    return FUN_14028b8e0(L"s_wedding_guest_tab_stranger");
+    return GetStringCommonByKey(L"s_wedding_guest_tab_stranger");
 }
 
 // @0x140fd8640

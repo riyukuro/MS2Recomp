@@ -213,9 +213,9 @@ int FUN_140761c60(int, int);
 int FUN_14053feb0(int);
 
 // Strings, packets and misc.
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_1401aa6a0(int nId);
-CStringW FUN_14028b8e0(const CStringW&);
+CStringW GetStringCommonByKey(const CStringW&);
 CStringW FUN_1409404f0(__int64);
 CStringW FUN_1408116a0(int nStringId, const int&);
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW&, const CStringW&);
@@ -464,7 +464,7 @@ unsigned CCinematicComponent::FUN_14107d760(ASObj& obj)
         nRet = 0;
     } else {
         ASObj reward(2);
-        reward.FUN_1407cbb20("title", FUN_14028de60(0x94b));
+        reward.FUN_1407cbb20("title", GetStringCommon(0x94b));
         Unk_CinReward* pReward = FUN_140967100()->FUN_141082d60();
         unsigned bAny = 0;
         if (pReward->m_exp != 0) {
@@ -476,7 +476,7 @@ unsigned CCinematicComponent::FUN_14107d760(ASObj& obj)
             reward.FUN_1407cbb20("meso", FUN_1409404f0(pReward->m_meso));
         }
         if (pReward->m_mood != 0) {
-            reward.FUN_1407cbb20("title", FUN_14028de60(0x7c1));
+            reward.FUN_1407cbb20("title", GetStringCommon(0x7c1));
             bAny = 1;
             CStringW mood(L"");
             if (pReward->m_mood < 1) {
@@ -490,7 +490,7 @@ unsigned CCinematicComponent::FUN_14107d760(ASObj& obj)
             reward.FUN_1407cbb20("mood", CStringW(mood));
         }
         if (pReward->m_affinityExp != 0) {
-            reward.FUN_1407cbb20("title", FUN_14028de60(0x7c1));
+            reward.FUN_1407cbb20("title", GetStringCommon(0x7c1));
             bAny = 1;
             CStringW affinity(L"");
             Unk_CinNpc* pNpc = FUN_140967100()->FUN_141b21350();
@@ -529,7 +529,7 @@ unsigned CCinematicComponent::FUN_14107d760(ASObj& obj)
 // @0x14107dfa0
 CStringW CCinematicComponent::FUN_14107dfa0(int nStringId)
 {
-    CStringW text = FUN_14028de60(nStringId);
+    CStringW text = GetStringCommon(nStringId);
     FUN_1403b4750()->FUN_1416fb340(text);
     CStringW keyConfirm = FUN_1409331f0()->FUN_14142d220(1);
     CStringW keyNext = FUN_1409331f0()->FUN_14142d220(0x39);
@@ -651,7 +651,7 @@ int CQuestAcceptCinematicComponent::vfunc_2(int nMsg)
             return 1;
         MS2Ptr<CQuestData> spQuest = FUN_14074bc40(m_spContent->m_questId);
         if (bool(spQuest.get() != 0) && spQuest->m_require.m_unrequireGroup.GetCount() > 0) {
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028b8e0(L"s_alliance_quest_unreq_group_warn"), 0, L"");
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_alliance_quest_unreq_group_warn"), 0, L"");
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CQuestAcceptCinematicComponent::FUN_14107ec40));
             spBox->FUN_140534050(m_spContent->m_questId);
             spBox->FUN_140f73320(m_spContent->m_redirect != 0);
@@ -783,7 +783,7 @@ void CQuestCompleteCinematicComponent::vfunc_5(ASObj& obj)
     if (!spQuest)
         return;
     ASObj reward(2);
-    reward.FUN_1407cbb20("title", FUN_14028de60(0x5d7));
+    reward.FUN_1407cbb20("title", GetStringCommon(0x5d7));
     __int64 nExp = FUN_140761ba0(m_spContent->m_questId, 1);
     if (nExp != 0)
         reward.FUN_1407cbb20("exp", FUN_1409404f0(nExp));
@@ -1017,7 +1017,7 @@ void CSelectableTalkCinematicComponent::vfunc_5(ASObj& obj)
                     MS2Ptr<CQuestData> spQuest = FUN_14074bc40(nQuestId);
                     if (spQuest.get() != 0) {
                         icon.m_icon += FUN_141082090(nQuestId, "_epic", "", "_repeat", "_event");
-                        icon.m_text = FUN_14028dfa0(L"s_quest_distactor_quest_name", FUN_1416e4df0(nQuestId), FUN_14028de60(nState), spQuest->m_level);
+                        icon.m_text = FUN_14028dfa0(L"s_quest_distactor_quest_name", FUN_1416e4df0(nQuestId), GetStringCommon(nState), spQuest->m_level);
                         icons.Add(icon);
                     }
                 }
@@ -1026,7 +1026,7 @@ void CSelectableTalkCinematicComponent::vfunc_5(ASObj& obj)
                 Unk_CinIcon icon;
                 CStringW sJob = FUN_1401a9d70()->FUN_141811980(0xe, FUN_141092fa0(pNpc));
                 if (sJob.GetLength() == 0)
-                    sJob = FUN_14028de60(0x62d);
+                    sJob = GetStringCommon(0x62d);
                 icon.m_icon = "talk_icon_job";
                 icon.m_text = sJob;
                 icons.Add(icon);
@@ -1034,7 +1034,7 @@ void CSelectableTalkCinematicComponent::vfunc_5(ASObj& obj)
             if ((nFlags & 2) != 0) {
                 Unk_CinIcon icon;
                 icon.m_icon = "talk_icon_distractor";
-                icon.m_text = FUN_14028de60(0x62e);
+                icon.m_text = GetStringCommon(0x62e);
                 icons.Add(icon);
             }
             vfunc_6(icons, obj);

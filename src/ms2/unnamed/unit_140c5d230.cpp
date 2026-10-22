@@ -716,7 +716,7 @@ void FUN_1419cae20(Unk_LsItemEvents*, UIItemEventListener*);
 void FUN_1419caeb0(Unk_LsItemEvents*, UIItemEventListener*);
 int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, UIDialog* pDialog);
 MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommonByKey(const CStringW& str);
 
 // @0x140c61110
 UILapenshardSystemDialog::TabInfo::TabInfo(CString strName, CStringW strLabel, LapenshardTabPtr spPage)
@@ -1439,7 +1439,7 @@ void LapenshardIngredientItemSlotBagPanel::FUN_140c64390(int nIndex)
         }
         else
         {
-            if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_14028b8e0(CStringW(L"s_lapenshard_upgraded_item")), 0, CStringW(L"")))
+            if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(CStringW(L"s_lapenshard_upgraded_item")), 0, CStringW(L"")))
             {
                 box->FUN_140533ff0(nIndex);
                 box->FUN_140534050(spSource->FUN_1405276c0());
@@ -2117,14 +2117,14 @@ int FUN_140c62520()
                 FUN_1408850f0(&info);
                 return 1;
             }
-            FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_lapenshard_disable_field")), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_lapenshard_disable_field")), 0, 0, CStringW(L""));
             FUN_1408850f0(&info);
             return 0;
         }
         FUN_1408850f0(&info);
         return 0;
     }
-    FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_lapenshard_disable_battle")), 0, 0, CStringW(L""));
+    FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_lapenshard_disable_battle")), 0, 0, CStringW(L""));
     return 0;
 }
 
@@ -2186,8 +2186,8 @@ int UILapenshardSystemDialog::vfunc_65()
 {
     if (UIDialog::vfunc_65() != 0)
     {
-        m_tabs.Add(TabInfoPtr(new TabInfo(CString("equip"), FUN_14028b8e0(CStringW(L"s_lapenshard_tabname_equip")), LapenshardTabPtr(new UILapenshardEquipTab()))));
-        m_tabs.Add(TabInfoPtr(new TabInfo(CString("upgrade"), FUN_14028b8e0(CStringW(L"s_lapenshard_tabname_upgrade")), LapenshardTabPtr(new UILapenshardUpgradeTab()))));
+        m_tabs.Add(TabInfoPtr(new TabInfo(CString("equip"), GetStringCommonByKey(CStringW(L"s_lapenshard_tabname_equip")), LapenshardTabPtr(new UILapenshardEquipTab()))));
+        m_tabs.Add(TabInfoPtr(new TabInfo(CString("upgrade"), GetStringCommonByKey(CStringW(L"s_lapenshard_tabname_upgrade")), LapenshardTabPtr(new UILapenshardUpgradeTab()))));
         FUN_1419cae20(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
     }
     return 0;
@@ -2261,7 +2261,7 @@ int UILapenshardUpgradeTab::FUN_140c691f0()
     }
     if ((unsigned)FUN_140c68fd0() < (unsigned)spRec->m_nNeed)
     {
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_lapenshard_tabname_upgrade_lack_ingredient")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_lapenshard_tabname_upgrade_lack_ingredient")), 1, 1);
         return 0;
     }
     MS2Ptr<Unk_LsRecipe> spRecipe = spRec->FUN_1405b41b0(m_n_c0);
@@ -2282,7 +2282,7 @@ int UILapenshardUpgradeTab::FUN_140c691f0()
         int nHave = FUN_140c69670(nItemId, nGrade, &spEntry->m_n1c);
         if (nHave < nNeed)
         {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_lapenshard_tabname_upgrade_lack_ingredient")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_lapenshard_tabname_upgrade_lack_ingredient")), 1, 1);
             return 0;
         }
     }

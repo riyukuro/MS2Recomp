@@ -209,7 +209,7 @@ void FUN_14141f970(const CString&);
 void FUN_14141f770(CString&, unsigned int, const ATL::CAtlArray<MS2Ptr<CItem> >&, MS2Ptr<CItem>(*)(const ATL::CAtlArray<MS2Ptr<CItem> >&, int), int, int);
 MS2Ptr<CItem> FUN_141420330(const ATL::CAtlArray<MS2Ptr<CItem> >&, int);
 void FUN_141415450(const CString&, MS2Ptr<CItem>, int, int, int);
-CStringW FUN_14028b8e0(const CStringW&);
+CStringW GetStringCommonByKey(const CStringW&);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW, int);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
 int FUN_140718170(const CString&);
@@ -734,7 +734,7 @@ void UIItemPetBoxDialog::FUN_140e51e40()
         return;
     int r = FUN_140e51ca0();
     if (r != -1 && r == 1) {
-        MS2Ptr<CMsgBoxData> box = FUN_140d73f20(FUN_14028b8e0(L"s_lullu_key_not_enough_key"), 1);
+        MS2Ptr<CMsgBoxData> box = FUN_140d73f20(GetStringCommonByKey(L"s_lullu_key_not_enough_key"), 1);
         if (box.get()) {
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemPetBoxDialog::FUN_140e4fc50));
             FUN_140d73c60(box);

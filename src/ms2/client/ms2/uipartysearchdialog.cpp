@@ -185,7 +185,7 @@ unsigned int FUN_140869420();                                           // tick 
 unsigned __int64 FUN_140718350(const CString& str);                     // string -> id
 unsigned __int64 FUN_140718370(const CStringW& str);
 CStringW FUN_140719a80(unsigned __int64 n);
-CStringW FUN_14028de60(int nId);                                        // string table
+CStringW GetStringCommon(int nId);                                        // string table
 CStringW FUN_1408116a0(int nId, const int& nArg);
 CStringW FUN_14052bd00(int nId, const CStringW& strArg);
 CStringW FUN_14083dc40(const wchar_t* szFormat, const int& a1, const int& a2);
@@ -262,7 +262,7 @@ void FUN_140f8ef30(ASArray* pArray, int nSort, int* pnIndex)
     {
         ASObj item(2);
         std::pair<int, int> sort = sorts[i];
-        item.FUN_1407cbb20("label", FUN_14028de60(sort.first));
+        item.FUN_1407cbb20("label", GetStringCommon(sort.first));
         item.FUN_140f8f970("sortValue", sort.second);
         if (nSort == sort.second)
             *pnIndex = (int)i;
@@ -282,7 +282,7 @@ void FUN_140f8f170(ASArray* pArray, int nSort, int* pnIndex)
     {
         ASObj item(2);
         std::pair<int, unsigned int> sort = sorts[i];
-        item.FUN_1407cbb20("label", FUN_14028de60(sort.first));
+        item.FUN_1407cbb20("label", GetStringCommon(sort.first));
         item.FUN_140f8fa10("sortValue", sort.second);
         if (nSort == (int)sort.second)
             *pnIndex = (int)i;

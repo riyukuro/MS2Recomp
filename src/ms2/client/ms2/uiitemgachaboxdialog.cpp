@@ -145,7 +145,7 @@ void FUN_141415600(const CString&);
 void FUN_14141f860(const CString&, int, ATL::CAtlArray<MS2Ptr<CItem> >*, MS2Ptr<ItemSlotBag::CreateParam>);
 MS2Ptr<CItem> FUN_141420330(void*, int);
 void FUN_141415450(const CString&, MS2Ptr<CItem>, int, int, int);
-CStringW FUN_14028b8e0(const CStringW&);
+CStringW GetStringCommonByKey(const CStringW&);
 CStringW FUN_1405c2690(CStringW, const CStringW&);
 void FUN_1412751f0(const CStringW&, int, int);
 void FUN_141b70f90(const CMsTime&, const CStringW&, CStringW&);
@@ -305,7 +305,7 @@ void UIItemGachaBoxDialog::FUN_140c40ad0()
     obj.FUN_1407cbb20("title", m_title);
     CStringW sellingTime = L"";
     if (gacha->m_saleEndDate != CMsTime(0))
-        FUN_141b70f90(gacha->m_saleEndDate, FUN_14028b8e0(L"s_itemgacha_dialog_gacha_endtime"), sellingTime);
+        FUN_141b70f90(gacha->m_saleEndDate, GetStringCommonByKey(L"s_itemgacha_dialog_gacha_endtime"), sellingTime);
     obj.FUN_1407cbb20("sellingTime", sellingTime);
     obj.FUN_1407cbbe0("coinshop", gacha->m_nCoinItemID != 0);
     std::vector<Unk_GachaDrop> drops;
@@ -402,7 +402,7 @@ void UIItemGachaBoxDialog::FUN_140c41900(int error)
         CStringW text = FUN_1405c2690(L"s_itemgacha_dialog_not_enough_capsulemachine", FUN_1401a9d70()->FUN_141811980(1, m_machineId));
         FUN_1412751f0(text, 1, 1);
     } else if (error == 3) {
-        CStringW text = FUN_14028b8e0(L"s_itemgacha_dialog_err_unknown");
+        CStringW text = GetStringCommonByKey(L"s_itemgacha_dialog_err_unknown");
         FUN_1412751f0(text, 1, 1);
     }
 }

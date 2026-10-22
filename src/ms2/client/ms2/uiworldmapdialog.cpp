@@ -148,7 +148,7 @@ extern Unk_Inventory DAT_143ab2a90;                                         // t
 WorldMapManager* FUN_140cb17d0();                                           // TSingleton<WorldMapManager>::GetInstance
 CFeatureManager* FUN_140166410();                                           // TSingleton<CFeatureManager>::GetInstance
 CFieldMetaTable* FUN_140700390();                                           // TSingleton<CFieldMetaTable>::GetInstance
-CStringTable* FUN_1401a9d70();                                              // TSingleton<CStringTable>::GetInstance
+CStringTable* GetStringTable();                                              // TSingleton<CStringTable>::GetInstance
 CInputKeyHandler* FUN_14025e7c0();                                          // TSingleton<CInputKeyHandler>::GetInstance
 CQuestManager* FUN_140764020();                                             // TSingleton<CQuestManager>::GetInstance
 bool FUN_14036d570(CFeatureManager* pFeatures, int nFeature);               // the content switch is on
@@ -164,7 +164,7 @@ void FUN_1408741a0(void* pCfg, const char* szSection, const char* szKey, int* pn
 void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW strTag);                     // a notice box by string id
 void FUN_140d73aa0(CStringW strText, int nType, IMessageListener* pListener, CStringW strTag);                           // a notice box
 CStringW FUN_1409eec40(int nStringId);                                      // a string table text by id
-CStringW FUN_14028de60(int nStringId);                                      // a string table text by id
+CStringW GetStringCommon(int nStringId);                                      // a string table text by id
 CStringW FUN_140298ea0(CStringW strKey);                                    // a string table text by key
 CStringW FUN_1401aa6a0(int nNpcId);                                         // the npc's name
 CStringW FUN_140a22c00(int nStrId, const CStringW& strArg1, const unsigned short& nArg2);   // FormatStringId<CStringW, unsigned short>
@@ -188,7 +188,7 @@ DungeonRoomTable* FUN_14031c2a0();                                          // T
 extern ATL::CAtlArray<unsigned int> DAT_143ab3058;                          // the fields with a world map icon
 CStringW FUN_1409e97f0(int nStrId, const unsigned int& nArg);              // FormatStringId<unsigned>
 CStringW FUN_140632a60(int nStrId, const CStringW& a1, const CStringW& a2);  // FormatStringId<CStringW, CStringW>
-CStringW FUN_14028b8e0(const CStringW& strKey);                             // a string table text by key
+CStringW GetStringCommonByKey(const CStringW& strKey);                             // a string table text by key
 CFishingManager* FUN_140953f20();                                           // TSingleton<CFishingManager>::GetInstance
 void* FUN_1422bb8b0(int nMovieId);                                          // the movie of an id
 CFieldMissionTable* FUN_140d738f0();                                        // TSingleton<CFieldMissionTable>::GetInstance
@@ -217,14 +217,14 @@ bool FUN_140a55d20(CFieldDataCli* pField, CStringW* pstrError);             // t
 __int64 FUN_140632990(__int64 nValue, float fRate);                        // a meso value scaled by a rate
 float FUN_1411e1110(Unk_PCEquipSet* pEquips, int nStat);                    // a stat rate of the equips (0xaa: taxi discount)
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);           // a string table format with one string
-CStringW FUN_14028b8e0(const CStringW& strKey);                             // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_140f1fa40(CStringW strKey, const CStringW& strArg, const __int64& nArg);   // a string table format (string, meso)
 CStringW FUN_140c160b0(CStringW strKey, const __int64& nArg);              // a string table format (meso)
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)> kHandler, CStringW strText);   // a yes/no box
 void FUN_14151f150(MS2Ptr<CMsgBoxData> spBox);                              // show a message box
 static MS2Ptr<CMsgBoxData> FUN_141b62e40(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> kHandler, __int64 nPrice);   // the priced prompt (below)
 CStringW FUN_141ac31a0(int nStrId, const CStringW& strArg, const __int64& nArg);  // FormatStringId<CStringW, __int64>
-CStringW FUN_14028de60(int nStrId);                                         // string table text by id
+CStringW GetStringCommon(int nStrId);                                         // string table text by id
 int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, UIDialog* pDialog);   // the common dialog AS calls
 CRewardPreviewTable* FUN_140f26650();                                       // TSingleton<CRewardPreviewTable>::GetInstance
 class UIBossRewardPreviewDialog : public UIDialog { public: int FUN_140f25ad0(int nNpcId); };   // the boss reward preview (view)
@@ -549,7 +549,7 @@ int UIWorldMapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             if (nFare < 1)
             {
                 CStringW strKey(L"s_err_taxi_continent");
-                FUN_140d73aa0(FUN_14028b8e0(strKey), 0, 0, CStringW(L""));
+                FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
                 return 1;
             }
             if (pPlayer->FUN_141527160(0x25) == 0)
@@ -557,7 +557,7 @@ int UIWorldMapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
                 FUN_140d73bc0(0x93, 0, 0, CStringW(L""));
                 return 1;
             }
-            CStringW strText = FUN_141ac31a0(0x8b, FUN_1401a9d70()->FUN_141811980(3, m_190), nFare);
+            CStringW strText = FUN_141ac31a0(0x8b, GetStringTable()->FUN_141811980(3, m_190), nFare);
             FUN_140d73aa0(CStringW(strText), 1, static_cast<IMessageListener*>(this), CStringW(L"onTaxi"));
         }
         return 1;
@@ -637,7 +637,7 @@ int UIWorldMapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
                 FUN_140d73bc0(0xa4, 0, 0, CStringW(L""));
                 return 1;
             }
-            FUN_140d73aa0(FUN_14028de60(0xa8), 1, static_cast<IMessageListener*>(this), CStringW(L"onPortal"));
+            FUN_140d73aa0(GetStringCommon(0xa8), 1, static_cast<IMessageListener*>(this), CStringW(L"onPortal"));
         }
         return 1;
     }
@@ -672,7 +672,7 @@ int UIWorldMapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
                 spSearch->FUN_1422e0a60(CStringA(""));
             if (m_214 != 0 && FUN_140764020()->FUN_1416d0e60(nKey) != 0)
                 FUN_141b62fc0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWorldMapDialog::FUN_141b5af30),
-                    CStringW(L"s_worldmap_mission_attack_msg"), FUN_1401a9d70()->FUN_141811980(3, nKey));
+                    CStringW(L"s_worldmap_mission_attack_msg"), GetStringTable()->FUN_141811980(3, nKey));
             MS2Ptr<UIWorldMap::MapTile> spTile = FUN_140cb17d0()->FindMapTileByKey(nKey);
             UIDungeonRoomDialog* pDialog;
             if (spTile.operator UIWorldMap::MapTile*() != 0 && spTile->m_70 != 0 && (pDialog = FUN_140961550(0x4ebd)) != 0)
@@ -698,7 +698,7 @@ int UIWorldMapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         {
             int nKey = data.FUN_1422b8b10();
             FUN_141b61ff0(nKey);
-            FUN_141b605e0(FUN_1401a9d70()->FUN_141811980(3, nKey));
+            FUN_141b605e0(GetStringTable()->FUN_141811980(3, nKey));
         }
     }
     else if (_stricmp("onClickSearchInfoIcon", szMethod) == 0)
@@ -851,7 +851,7 @@ void UIWorldMapDialog::FUN_141b56c30(const Scaleform::GFx::FunctionHandler::Para
     else
     {
         tooltip.FUN_1407cbb20("extra", FUN_140298ea0(CStringW(L"s_worldmap_tooltip_channel_all")));
-        tooltip.FUN_1407cbb20("enableLClick", FUN_14028de60(0x764));
+        tooltip.FUN_1407cbb20("enableLClick", GetStringCommon(0x764));
     }
     FUN_140cb17d0()->BuildNpcRewardPreview(boss.m_0, &tooltip);
     FUN_1409b4bc0(params.pRetVal, tooltip.FUN_1422bb870());
@@ -933,7 +933,7 @@ void UIWorldMapDialog::FUN_141b57660()
         return;
     if (m_1c8 != 0)
     {
-        CStringW strName = FUN_1401a9d70()->FUN_141811980(3, m_1c8);
+        CStringW strName = GetStringTable()->FUN_141811980(3, m_1c8);
         FUN_141b605e0(strName);
         FUN_141b60c40(m_1c8, false);
         m_1c8 = 0;
@@ -1120,12 +1120,12 @@ void UIWorldMapDialog::FUN_141b58830(unsigned int nFieldId, int nNpcField, int n
     CStringW strNpc(L"");
     CStringW strState(L"");
     if (nNpcId != 0)
-        strNpc = FUN_14061ad70(FUN_1401d0160(L" (", FUN_1401a9d70()->FUN_141811980(3, nNpcField)), L")");   // exe ATL::operator+ (clang would import MFC CopyChars)
+        strNpc = FUN_14061ad70(FUN_1401d0160(L" (", GetStringTable()->FUN_141811980(3, nNpcField)), L")");   // exe ATL::operator+ (clang would import MFC CopyChars)
     int nCheck = nState;
     if (nCheck == 0)
-        strState = FUN_14028de60(0x72a);
+        strState = GetStringCommon(0x72a);
     else if (nCheck == 1)
-        strState = FUN_14028de60(0x72b);
+        strState = GetStringCommon(0x72b);
     switch (nKind)
     {
     case 1:
@@ -1445,7 +1445,7 @@ void UIWorldMapDialog::FUN_141b5aa70(int nFieldId)
     if (spFrom.operator CFieldDataCli*() != 0 && spTo.operator CFieldDataCli*() != 0 && spTo->FUN_1403754f0() != 0
         && spFrom->GetPkMode() == 0 && spTo->GetPkMode() != 0)
     {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028de60(0x971), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0x971), 0, CStringW(L""));
         if (spBox.operator CMsgBoxData*() != 0)
         {
             spBox->FUN_140534050(nFieldId);
@@ -1583,16 +1583,16 @@ CStringW UIWorldMapDialog::FUN_141b5b380(MS2Ptr<UIWorldMap::MapTile> spTile)
     CStringW strText;
     int nLimit = nLevel + 5;
     if (nLimit < (int)(unsigned short)spField->m_nMapLevel)
-        strText = FUN_140632a60(0x717, FUN_1401a9d70()->FUN_141811980(3, spTile->m_34), strLevel);
+        strText = FUN_140632a60(0x717, GetStringTable()->FUN_141811980(3, spTile->m_34), strLevel);
     else
-        strText = FUN_140632a60(0x716, FUN_1401a9d70()->FUN_141811980(3, spTile->m_34), strLevel);
+        strText = FUN_140632a60(0x716, GetStringTable()->FUN_141811980(3, spTile->m_34), strLevel);
     CStringW strFishing = FUN_140953f20()->FUN_140cdc000(spTile->m_34);
     if (strFishing.GetLength() > 0)
     {
         strText += L"\n";
         strText += strFishing;
     }
-    CStringW strHint = FUN_14028b8e0(CStringW(L"s_worldmap_tooltip_dbclick"));
+    CStringW strHint = GetStringCommonByKey(CStringW(L"s_worldmap_tooltip_dbclick"));
     if (strHint.GetLength() > 0)
     {
         strText += L"\n";
@@ -1730,7 +1730,7 @@ void UIWorldMapDialog::FUN_141b5c2b0(int nRound, ASObj* pObj)
             FUN_141415600(GetTypeName());
             FUN_141415450(GetTypeName(), MS2Ptr<CItem>(spItem), 0, 0, 0);
             pObj->FUN_1407cba60("binding", GetTypeName());
-            pObj->FUN_1407cbb20("reward", FUN_14028b8e0(CStringW(L"s_fieldmission_reward")));
+            pObj->FUN_1407cbb20("reward", GetStringCommonByKey(CStringW(L"s_fieldmission_reward")));
         }
     }
     else if (spReward->m_nType == 3)
@@ -1744,7 +1744,7 @@ void UIWorldMapDialog::FUN_141b5c2b0(int nRound, ASObj* pObj)
         FUN_141415600(GetTypeName());
         FUN_141415560(GetTypeName(), &param);
         pObj->FUN_1407cba60("binding", GetTypeName());
-        pObj->FUN_1407cbb20("reward", FUN_14028b8e0(CStringW(L"s_fieldmission_point_reward")));
+        pObj->FUN_1407cbb20("reward", GetStringCommonByKey(CStringW(L"s_fieldmission_point_reward")));
     }
     else if (spReward->m_nType == 2)
     {
@@ -1757,7 +1757,7 @@ void UIWorldMapDialog::FUN_141b5c2b0(int nRound, ASObj* pObj)
         FUN_141415600(GetTypeName());
         FUN_141415560(GetTypeName(), &param);
         pObj->FUN_1407cba60("binding", GetTypeName());
-        pObj->FUN_1407cbb20("reward", FUN_14028b8e0(CStringW(L"s_fieldmission_point_reward")));
+        pObj->FUN_1407cbb20("reward", GetStringCommonByKey(CStringW(L"s_fieldmission_point_reward")));
     }
 }
 
@@ -1897,11 +1897,11 @@ void UIWorldMapDialog::FUN_141b5d4b0(MS2Ptr<UIWorldMap::MapTile> spTile, ASObj* 
     }
     else
     {
-        CStringW strShadow = FUN_14028de60(0x72c);
+        CStringW strShadow = GetStringCommon(0x72c);
         if (spTile->m_58 != 0)
         {
             strShadow += L"\n";
-            strShadow += FUN_1405c2690(CStringW(L"s_worldmap_tooltip_shadowgate_field"), FUN_1401a9d70()->FUN_141811980(3, spTile->m_58));
+            strShadow += FUN_1405c2690(CStringW(L"s_worldmap_tooltip_shadowgate_field"), GetStringTable()->FUN_141811980(3, spTile->m_58));
             FUN_1403b4750()->FUN_1416fb340(strShadow);
         }
         pObj->FUN_1407cbb20("shadowgate", strShadow);
@@ -1922,7 +1922,7 @@ void UIWorldMapDialog::FUN_141b5d4b0(MS2Ptr<UIWorldMap::MapTile> spTile, ASObj* 
     pObj->FUN_1407cb9c0("index", spTile->m_1c);
     pObj->FUN_1407cbbe0("town", bTown);
     pObj->FUN_1407cbbe0("publicField", spTile->m_21);
-    pObj->FUN_1407cbb20("fieldName", FUN_1401a9d70()->FUN_141811980(3, spTile->m_34));
+    pObj->FUN_1407cbb20("fieldName", GetStringTable()->FUN_141811980(3, spTile->m_34));
     pObj->FUN_1407cb9c0("pvpField", spField->GetPkMode());
     bool bShowName = !bTown;
     int nNameMovie = FUN_140764020()->FUN_1416d0800(spTile->m_34);
@@ -2125,11 +2125,11 @@ void UIWorldMapDialog::FUN_141b5ee80(MS2Ptr<UIWorldMap::MapTile> spTile, ASObj* 
         if (nFare < 1)
         {
             if (bHere)
-                strDesc = FUN_14028de60(0x727);
+                strDesc = GetStringCommon(0x727);
             else if (!FUN_1403b3c40(strState, L"disabled"))
-                strDesc = FUN_14028de60(0x728);
+                strDesc = GetStringCommon(0x728);
             else
-                strDesc = FUN_14028de60(0x726);
+                strDesc = GetStringCommon(0x726);
         }
         else
         {
@@ -2141,7 +2141,7 @@ void UIWorldMapDialog::FUN_141b5ee80(MS2Ptr<UIWorldMap::MapTile> spTile, ASObj* 
             pObj->FUN_1407cbb20("goodtaxi", strState);
         pObj->FUN_1407cbb20("taxicost", strCost);
         pObj->FUN_1407cbb20("taxidesc", strDesc);
-        CStringW strTitle = FUN_14052bd00(0x724, FUN_1401a9d70()->FUN_141811980(3, spTile->m_34));
+        CStringW strTitle = FUN_14052bd00(0x724, GetStringTable()->FUN_141811980(3, spTile->m_34));
         pObj->FUN_1407cbb20("taxiTitle", strTitle);
         return;
     }
@@ -2160,7 +2160,7 @@ void UIWorldMapDialog::FUN_141b5f540(MS2Ptr<UIWorldMap::MapTile> spTile, ASObj* 
             if (i < m_npcFrames.GetCount())
                 pObj->FUN_1407cba60("specialFunctionNpc", CString(m_npcFrames[i]));
             if (i < m_npcTooltips.GetCount())
-                pObj->FUN_1407cbb20("specialFunctionNpcTooltip", FUN_14028b8e0(FUN_14016a730(m_npcTooltips[i], 0)));
+                pObj->FUN_1407cbb20("specialFunctionNpcTooltip", GetStringCommonByKey(FUN_14016a730(m_npcTooltips[i], 0)));
             return;
         }
     }
@@ -2445,7 +2445,7 @@ void UIWorldMapDialog::FUN_141b60e90(int nFieldId, MyPC* pPlayer)
         return;
     if (spTo->FUN_1403753d0() == 0)
     {
-        CStringW strText = FUN_14052bd00(0x90, FUN_1401a9d70()->FUN_141811980(3, m_190));
+        CStringW strText = FUN_14052bd00(0x90, GetStringTable()->FUN_141811980(3, m_190));
         FUN_140d73aa0(CStringW(strText), 0, 0, CStringW(L""));
         return;
     }
@@ -2469,7 +2469,7 @@ void UIWorldMapDialog::FUN_141b614c0(MyPC* pPlayer)
 {
     if (pPlayer->FUN_141662de0() != 0 && FUN_14036d570(FUN_140166410(), 0x57))
     {
-        CStringW strText = FUN_1405c2690(CStringW(L"s_taxi_transfer_vip_user"), FUN_1401a9d70()->FUN_141811980(3, m_190));
+        CStringW strText = FUN_1405c2690(CStringW(L"s_taxi_transfer_vip_user"), GetStringTable()->FUN_141811980(3, m_190));
         FUN_140d73aa0(CStringW(strText), 1, static_cast<IMessageListener*>(this), CStringW(L"onCashTaxi"));
         return;
     }
@@ -2477,12 +2477,12 @@ void UIWorldMapDialog::FUN_141b614c0(MyPC* pPlayer)
     {
         if (FUN_1401c0d90()->FUN_140477ea0() != 0)
         {
-            CStringW strText = FUN_14052bd00(0x8d, FUN_1401a9d70()->FUN_141811980(3, m_190));
+            CStringW strText = FUN_14052bd00(0x8d, GetStringTable()->FUN_141811980(3, m_190));
             FUN_140d73aa0(CStringW(strText), 1, static_cast<IMessageListener*>(this), CStringW(L"onCashTaxi"));
         }
         else if (DAT_143ab2a90.FUN_140a5f7b0(10, 0) >= 1 || DAT_143ab2a90.FUN_140a5f7b0(0xb, 0) >= 1)
         {
-            CStringW strText = FUN_14052bd00(0x8c, FUN_1401a9d70()->FUN_141811980(3, m_190));
+            CStringW strText = FUN_14052bd00(0x8c, GetStringTable()->FUN_141811980(3, m_190));
             FUN_140d73aa0(CStringW(strText), 1, static_cast<IMessageListener*>(this), CStringW(L"onCashTaxi"));
         }
         else
@@ -2490,7 +2490,7 @@ void UIWorldMapDialog::FUN_141b614c0(MyPC* pPlayer)
             __int64 nFare = FUN_1409f24a0()->FUN_14085fc80((short)pPlayer->vfunc_78());
             if (nFare != 0)
                 nFare = FUN_140632990(nFare, 1.0f - FUN_1411e1110(pPlayer->FUN_1416561a0(), 0xaa));
-            CStringW strText = FUN_140f1fa40(CStringW(L"s_cash_taxi_transfer_meso"), FUN_1401a9d70()->FUN_141811980(3, m_190), nFare);
+            CStringW strText = FUN_140f1fa40(CStringW(L"s_cash_taxi_transfer_meso"), GetStringTable()->FUN_141811980(3, m_190), nFare);
             FUN_141b62e40(CStringW(strText), 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UIWorldMapDialog::FUN_141b5ad60), nFare);
         }
         return;
@@ -2501,14 +2501,14 @@ void UIWorldMapDialog::FUN_141b614c0(MyPC* pPlayer)
     int nTickets = DAT_143ab2a90.FUN_140a5f7b0(0xb, 0);
     if (nTickets >= nNeed)
     {
-        CStringW strText = FUN_1405c2690(CStringW(L"s_cash_taxi_transfer_advanced"), FUN_1401a9d70()->FUN_141811980(3, m_190));
+        CStringW strText = FUN_1405c2690(CStringW(L"s_cash_taxi_transfer_advanced"), GetStringTable()->FUN_141811980(3, m_190));
         FUN_140d73aa0(CStringW(strText), 1, static_cast<IMessageListener*>(this), CStringW(L"onCashTaxi"));
         return;
     }
     if (!FUN_14036d570(FUN_140166410(), 0x83))
     {
         CStringW strKey(L"s_err_cash_taxi_need_advanced_ticket");
-        FUN_140d73aa0(FUN_14028b8e0(strKey), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
         return;
     }
     FUN_140d86260()->vfunc_43(2, 0, 1000);

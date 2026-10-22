@@ -53,7 +53,7 @@ CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_14052bd00(int nId, const CStringW& strArg);
 CStringW FUN_140632a60(int nId, const CStringW& strArg1, const CStringW& strArg2);
 CStringW FUN_140298ea0(CStringW strKey);
-CStringW FUN_14028de60(int nId);
+CStringW GetStringCommon(int nId);
 CStringW FUN_1409eec40(int nId);
 CStringW FUN_140c160b0(CStringW strKey, const __int64& n);
 CStringW FUN_14086d060(int nId, const __int64& n);
@@ -189,7 +189,7 @@ void FUN_1413606c0(__int64 nAmount, int nType, int nRest, bool bAdditional)
         if (pPC != 0)
         {
             if ((FUN_141658fa0(pPC) & *FUN_1401d7c10(FUN_1401d3200() + 0x5910)) != 0 && (nType == 0x15 || nType == 0xea61))
-                strA += FUN_14028de60(0x2c5);
+                strA += GetStringCommon(0x2c5);
         }
     }
     if (nRest != 0)

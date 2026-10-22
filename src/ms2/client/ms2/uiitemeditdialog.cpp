@@ -177,8 +177,8 @@ CStringW FUN_140f09f90(int nId, const int& nArg);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
-CStringW FUN_14028de60(int nId);
-CStringW FUN_14028b8e0(const CStringW& strKey);
+CStringW GetStringCommon(int nId);
+CStringW GetStringCommonByKey(const CStringW& strKey);
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -429,7 +429,7 @@ void UIItemEditDialog::FUN_1419bd530(NotifyObject* pNotify)
         if (pTab == 0 || pTab->m_bActive)
             FUN_1419bd860();
         else
-            FUN_140d74390(FUN_14028b8e0(CStringW(L"s_beauty_msg_exit_by_expired_codi")), 0,
+            FUN_140d74390(GetStringCommonByKey(CStringW(L"s_beauty_msg_exit_by_expired_codi")), 0,
                           Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemEditDialog::FUN_1419bd500));
     }
 }
@@ -520,7 +520,7 @@ void UIItemEditDialog::FUN_1419bd9f0()
     }
     else
     {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(FUN_14028de60(0x271), 1);
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommon(0x271), 1);
         spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemEditDialog::FUN_1419bd500));
         spBox->FUN_141a01800(2);
         FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));

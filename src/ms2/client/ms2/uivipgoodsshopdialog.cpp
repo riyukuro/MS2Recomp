@@ -111,8 +111,8 @@ __int64 FUN_140869440();                                        // the server ti
 
 class Unk_VgStrings { public: CStringW FUN_141811980(int nTable, int nId); };
 Unk_VgStrings* FUN_1401a9d70();
-CStringW FUN_14028b8e0(const CStringW& strKey);
-CStringW FUN_14028de60(int nId);
+CStringW GetStringCommonByKey(const CStringW& strKey);
+CStringW GetStringCommon(int nId);
 CStringW FUN_140938ae0(CStringW strKey, const unsigned& nValue);
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& strA, const CStringW& strB);
 CStringW FUN_140632a60(int nId, const CStringW& strA, const CStringW& strB);
@@ -270,11 +270,11 @@ void UIVIPGoodsShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
         if (nResetType == 0)
             return;
         if (nResetType == 1)
-            strText = FUN_14028b8e0(CStringW(L"s_vip_dialog_goods_sales_tooltip_day_limit"));
+            strText = GetStringCommonByKey(CStringW(L"s_vip_dialog_goods_sales_tooltip_day_limit"));
         else if (nResetType == 2)
-            strText = FUN_14028b8e0(CStringW(L"s_vip_dialog_goods_sales_tooltip_week_limit"));
+            strText = GetStringCommonByKey(CStringW(L"s_vip_dialog_goods_sales_tooltip_week_limit"));
         else if (nResetType == 3)
-            strText = FUN_14028b8e0(CStringW(L"s_vip_dialog_goods_sales_tooltip_month_limit"));
+            strText = GetStringCommonByKey(CStringW(L"s_vip_dialog_goods_sales_tooltip_month_limit"));
         ASTooltip tip(1, 2);
         if (tip.FUN_1409e26b0(strText) != 0) {
             tip.FUN_1409c6dc0(5);
@@ -307,10 +307,10 @@ void UIVIPGoodsShopDialog::vfunc_79(void* pPacket)
         MS2Ptr<CVIPGoods> spGoods = FUN_140fb9980()->GetGoods(nGoodsId);
         if (spGoods == 0)
             return;
-        CStringW strMsg = FUN_140656190(FUN_14028de60(0x9f6), FUN_1401a9d70()->FUN_141811980(0x2e, nGoodsId), spGoods->GetPriceText(0));
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x10, FUN_140632a60(0x9f4, FUN_14028de60(0x9f8), strMsg), 0, CStringW(L""));
+        CStringW strMsg = FUN_140656190(GetStringCommon(0x9f6), FUN_1401a9d70()->FUN_141811980(0x2e, nGoodsId), spGoods->GetPriceText(0));
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x10, FUN_140632a60(0x9f4, GetStringCommon(0x9f8), strMsg), 0, CStringW(L""));
         if (spBox.get() != 0) {
-            spBox->SetTitle(FUN_14028de60(0x9f5));
+            spBox->SetTitle(GetStringCommon(0x9f5));
             static_cast<Unk_VgMsgBox*>(spBox.operator->())->FUN_141a01c30(s_sndCashBuy);
             spBox->FUN_141a02770(0x1e0, 300);
             FUN_140d73c60(spBox);

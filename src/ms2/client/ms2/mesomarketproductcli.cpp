@@ -21,8 +21,8 @@ __int64 FUN_140869440();                                // the server time
 Unk_CMesoMarketConfig* FUN_1401d3200();                 // the config singleton
 __int64* FUN_1402c05b0(void* pConstBlock);              // the <constants> record
 unsigned* FUN_1402056b0(void* pField);                  // a config field
-CStringW FUN_14028b8e0(const CStringW& strKey);         // string table text of a key
-CStringW FUN_14028de60(int nId);                        // string table text by id
+CStringW GetStringCommonByKey(const CStringW& strKey);         // string table text of a key
+CStringW GetStringCommon(int nId);                        // string table text by id
 CStringW FUN_140298ea0(CStringW strKey);                // localized string
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_14062b4f0(CStringW strKey, const int* pnArg);
@@ -112,7 +112,7 @@ void CMesoMarketProductCli::FUN_140d6d940(ASObj& row)
     {
         CStringW strTime;
         CStringW strKey(L"s_mesoMarket_endSellTime");
-        FUN_141b70f90(CMsTime(m_40), FUN_14028b8e0(strKey), strTime);
+        FUN_141b70f90(CMsTime(m_40), GetStringCommonByKey(strKey), strTime);
         row.FUN_1407cbb20("subText", CStringW(strTime));
         row.FUN_1409c0e60("buttonText", L"$s_mesoMarket_cancel_sale");
     }
@@ -519,7 +519,7 @@ void CMesoMarketMan::FUN_140d6f130(int nCode)
     }
     case 0x14:
     {
-        MS2Ptr<CMsgBoxData> box = FUN_140d74390(FUN_14028de60(0xd56), 0, FUN_140b240b0());
+        MS2Ptr<CMsgBoxData> box = FUN_140d74390(GetStringCommon(0xd56), 0, FUN_140b240b0());
         break;
     }
     default:

@@ -116,7 +116,7 @@ MS2Ptr<Unk_LoginMsgBox> FUN_140d73d20(int nType, CStringW strText, int nUnk, CSt
 void FUN_140d73c60(MS2Ptr<Unk_LoginMsgBox> box);                // show it
 MS2Ptr<Unk_LoginMsgBox> FUN_140d74390(CStringW strText, int nUnk, Delegate<bool(int, const CMsgBoxData&)> cb);
 class Unk_LoginNotice { public: void FUN_140d73aa0(CStringW strText, int a, int b, CStringW strTag); };
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 void FUN_140d73aa0(CStringW strText, int a, void* b, CStringW strTag);
 void FUN_140710590(COutPacket& packet);                         // send the packet
 

@@ -186,7 +186,7 @@ int CItemLockManager::FUN_140612e90(MS2Ptr<CItem> item)
     {
         {
             CStringW sKey(L"s_itemlock_selected_item");
-            FUN_1412751f0(FUN_14028b8e0(sKey), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(sKey), 1, 1);
         }
         return 0;
     }

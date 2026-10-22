@@ -227,8 +227,8 @@ class Unk_QdTagFilter { public: void FUN_1416fb340(CStringW& str); void FUN_1416
 Unk_QdTagFilter* FUN_1403b4750();
 class Unk_QdStrings { public: CStringW FUN_141811980(int nTable, int nId); };
 Unk_QdStrings* FUN_1401a9d70();
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // string table text
-CStringW FUN_14028de60(int nStringId);                          // common string by id
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
+CStringW GetStringCommon(int nStringId);                          // common string by id
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);      // common string by id, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
 CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& a, const CStringW& b);
@@ -1082,7 +1082,7 @@ CStringW UIQuestDialog::QuestProgressStory(CQuest* pQuest)
         {
             if (pQuest->FUN_1407447c0() != 0)
             {
-                strEnd = FUN_14028b8e0(CStringW(L"s_quest_end_time_expired"));
+                strEnd = GetStringCommonByKey(CStringW(L"s_quest_end_time_expired"));
                 strResult = strEnd;
                 strResult += L"\n";
             }
@@ -1134,7 +1134,7 @@ CStringW UIQuestDialog::QuestStory(unsigned nQuestId)
         for (size_t j = 0; j < spData->m_require.m_selectableQuest.GetCount(); j++)
         {
             if (strAlternative.GetLength() != 0)
-                strAlternative += FUN_14028b8e0(CStringW(L"s_quest_desc_require_or"));
+                strAlternative += GetStringCommonByKey(CStringW(L"s_quest_desc_require_or"));
             strAlternative += QuestTitle(spData->m_require.m_selectableQuest[j]);
         }
         if (strAlternative.GetLength() != 0)
@@ -1209,12 +1209,12 @@ CStringW UIQuestDialog::QuestTitle(unsigned nQuestId)
     if (nType == 8)
     {
         CStringW strKey(L"s_quest_field_quest");
-        strTitle = FUN_140656190(L"[{0}] {1}", FUN_14028b8e0(strKey), spText->m_28);
+        strTitle = FUN_140656190(L"[{0}] {1}", GetStringCommonByKey(strKey), spText->m_28);
     }
     if (nType == 8 || nType == 9)
     {
         CStringW strKey(L"s_quest_alliance_quest");
-        strTitle = FUN_140656190(L"[{0}] {1}", FUN_14028b8e0(strKey), spText->m_28);
+        strTitle = FUN_140656190(L"[{0}] {1}", GetStringCommonByKey(strKey), spText->m_28);
     }
     spText.operator->();
     strTitle = FUN_1416e4df0(nQuestId);
@@ -1269,7 +1269,7 @@ CStringW UIQuestDialog::QuestDate(__int64 nTime)
         return L"";
     CTime time(FUN_1406c47a0(nTime));
     int nHour = time.GetHour();
-    CStringW strAmPm = (nHour > 11) ? FUN_14028de60(0x458) : FUN_14028de60(0x457);
+    CStringW strAmPm = (nHour > 11) ? GetStringCommon(0x458) : GetStringCommon(0x457);
     nHour = time.GetHour();
     if (nHour > 12)
         nHour -= 12;
@@ -1897,7 +1897,7 @@ void UIQuestDialog::GiveUpQuest(int nQuestId)
         bConfirm = true;
     if (bConfirm)
     {
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_14028b8e0(CStringW(L"s_quest_giveup_warning")), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(CStringW(L"s_quest_giveup_warning")), 0, CStringW(L""));
         if (box.get() != 0)
         {
             FUN_140534050(box.operator->(), nQuestId);

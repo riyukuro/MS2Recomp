@@ -118,8 +118,8 @@ void FUN_1422b9fd0(Unk_GsSceneId* p, int nScene);
 extern int DAT_143ab0248;
 extern int DAT_143ab2914;
 CStringW FUN_141850100(int a, int b);
-CStringW FUN_14028de60(int nId);
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommon(int nId);
+CStringW GetStringCommonByKey(const CStringW& str);
 void FUN_1412751b0(const CStringW& str, int nFlags);
 void FUN_141b91b20(bool b);
 void FUN_141a60d40(int n);
@@ -196,9 +196,9 @@ void UISceneGame::vfunc_48(int n)
     static int s_bWelcomeShown;
     if (s_bWelcomeShown == 0) {
         if (FUN_140302b00()->FUN_1403ed9c0()->FUN_140428830() == 0) {
-            FUN_1412751b0(FUN_14028de60(0x2d6), 0x14);
+            FUN_1412751b0(GetStringCommon(0x2d6), 0x14);
         } else {
-            FUN_1412751b0(FUN_14028b8e0(CStringW(L"s_msg_chatting_welcome_pubtest2")), 0x14);
+            FUN_1412751b0(GetStringCommonByKey(CStringW(L"s_msg_chatting_welcome_pubtest2")), 0x14);
         }
         s_bWelcomeShown = 1;
     }
@@ -1234,13 +1234,13 @@ void UISceneGamePlay::vfunc_58()
     if (spMap.FUN_1409657a0() != 0 && spMap.FUN_140885340()->FUN_1403754f0() != 0) {
         if (m_c8 != 0 && spMap.FUN_140885340()->GetPkMode() == 0) {
             FUN_141275260(0x96f, 4, 0);
-            FUN_1412751b0(FUN_14028de60(0x970), 0x14);
+            FUN_1412751b0(GetStringCommon(0x970), 0x14);
             FUN_141276180(DAT_143af6008, CString(""));
             m_c8 = 0;
         } else if (m_c8 == 0) {
             if (spMap.FUN_140885340()->GetPkMode() != 0) {
                 FUN_141275260(0x96d, 4, 0);
-                FUN_1412751b0(FUN_14028de60(0x96e), 0x14);
+                FUN_1412751b0(GetStringCommon(0x96e), 0x14);
                 FUN_141276180(DAT_143af6008, CString(""));
                 m_c8 = 1;
             }

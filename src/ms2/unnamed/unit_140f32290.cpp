@@ -39,7 +39,7 @@ public:
 Unk_WsView* FUN_1403ed2d0();
 CFeatureManager* FUN_140166410();
 CItemDataTable* FUN_140281980();
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 int FUN_140f02bc0();                                            // the hair palette id
 CStringW FUN_141b71990(unsigned nValue);
 
@@ -149,7 +149,7 @@ void FUN_140f324f0(ASObj& obj, MS2Ptr<CItemData> spData, bool bMovie)
     if (spData == 0)
         return;
     int nId = spData->FUN_14053c510();
-    CStringW strName = FUN_1401a9d70()->FUN_141811980(1, nId);
+    CStringW strName = GetStringTable()->FUN_141811980(1, nId);
     obj.FUN_1407cbb20("itemname", CStringW(strName));
     obj.FUN_1407cbb20("itemid", FUN_141b71990(nId));
     obj.FUN_1407cba60("iconpath", spData->FUN_14053fdd0());

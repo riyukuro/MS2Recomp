@@ -151,7 +151,7 @@ MS2Ptr<AScript> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
 WeddingManager* FUN_1409eed90();
 int FUN_141b89950(WeddingManager* pManager);                    // the wedding grade
 CStringW FUN_140298ea0(CStringW strKey);                        // string table text
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW FUN_14062b4f0(CStringW strKey, const int& nArg);       // string table format
 CStringW FUN_1405c2690(CStringW strKey, CStringW strArg);       // string table format
 CStringW FUN_1409404f0(__int64 nValue);                         // number with separators
@@ -284,7 +284,7 @@ CString UIWeddingPageMessage::vfunc_6()
 // @0x140fe7950
 CStringW UIWeddingPageMessage::vfunc_7()
 {
-    return FUN_14028b8e0(CStringW(L"s_wedding_dialog_page_message"));
+    return GetStringCommonByKey(CStringW(L"s_wedding_dialog_page_message"));
 }
 
 // @0x140fe79c0
@@ -395,7 +395,7 @@ CString UIWeddingPageSkill::vfunc_6()
 // @0x140fe8440
 CStringW UIWeddingPageSkill::vfunc_7()
 {
-    return FUN_14028b8e0(CStringW(L"s_wedding_dialog_page_skill"));
+    return GetStringCommonByKey(CStringW(L"s_wedding_dialog_page_skill"));
 }
 
 // @0x140fe84b0
@@ -492,7 +492,7 @@ CString UIWeddingPageMission::vfunc_6()
 // @0x140fe8b20
 CStringW UIWeddingPageMission::vfunc_7()
 {
-    return FUN_14028b8e0(CStringW(L"s_wedding_dialog_page_mission"));
+    return GetStringCommonByKey(CStringW(L"s_wedding_dialog_page_mission"));
 }
 
 // @0x140fe8b90

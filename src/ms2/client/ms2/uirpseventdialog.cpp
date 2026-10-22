@@ -249,7 +249,7 @@ MS2Ptr<Unk_RpsMsgBoxData> FUN_140d73f20(CStringW, int);
 void FUN_140d73c60(MS2Ptr<Unk_RpsMsgBoxData>);
 void FUN_140d73aa0(CStringW, int, IMessageListener*, CStringW);
 CStringW FUN_1409eec40(int);
-CStringW FUN_14028b8e0(const CStringW&);
+CStringW GetStringCommonByKey(const CStringW&);
 void FUN_14151f200();
 
 // @0x140e82350
@@ -350,7 +350,7 @@ int UIRpsEventDialog::vfunc_71() {
     MS2Ptr<Unk_RpsBanner> banner = avatar->vfunc_87();
     if (banner == NULL) { MS2_ASSERT_AT(328, 0); return 0; }
     if (banner->FUN_140f48d40() == 1) {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_rpsevent_ask_close"), 1, this, L"askClose");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_rpsevent_ask_close"), 1, this, L"askClose");
         return 1;
     }
     return 0;

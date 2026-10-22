@@ -84,7 +84,7 @@ bool FUN_140a467d0(const MS2Ptr<AScript>*);                 // has the AS object
 void FUN_140614800(Scaleform::GFx::Value* v);               // ~Value
 void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);
 CStringW FUN_1402a5170(const wchar_t* szFormat, const CString& a1);    // "{0}" formatter
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommonByKey(const CStringW& str);
 
 class Unk_HlNotices
 {
@@ -637,7 +637,7 @@ void UIHighlightGameMenu::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
 {
     CStringW strKey = FUN_1402a5170(L"s_highlightgamemenu_{0}", pArgs->FUN_1422b8d30());
     ASTooltip tip(1, 2);
-    if (tip.FUN_1409e26b0(FUN_14028b8e0(strKey)) != 0)
+    if (tip.FUN_1409e26b0(GetStringCommonByKey(strKey)) != 0)
     {
         tip.FUN_1409c6dc0(1);
         tip.FUN_1409c6e00(0);

@@ -103,7 +103,7 @@ void FUN_14165f170(PCBase* p);
 class Unk_SiBuffMgr { public: Unk_StreamPoint FUN_141683290(); };
 Unk_SiBuffMgr* FUN_14166d240(PCBase* p);
 bool FUN_1416749c0(PCBase* p);
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommonByKey(const CStringW& str);
 CString FUN_1409a2360(const char* psz, int nCodePage);   // CString from a narrow string (0 = default code page)
 
 // A npc seen through the two members this unit reads.
@@ -817,10 +817,10 @@ void StateAutoInteraction::FUN_1417d3700(Unk_CastInfo* pInfo)
         {
             switch (spRow->m_nActionValue)
             {
-            case 3: pInfo->m_str28 = FUN_14028b8e0(CStringW(L"s_mastery_automining_progress")); break;
-            case 4: pInfo->m_str28 = FUN_14028b8e0(CStringW(L"s_mastery_autogathering_progress")); break;
-            case 5: pInfo->m_str28 = FUN_14028b8e0(CStringW(L"s_mastery_autobreeding_progress")); break;
-            case 6: pInfo->m_str28 = FUN_14028b8e0(CStringW(L"s_mastery_autofarming_progress")); break;
+            case 3: pInfo->m_str28 = GetStringCommonByKey(CStringW(L"s_mastery_automining_progress")); break;
+            case 4: pInfo->m_str28 = GetStringCommonByKey(CStringW(L"s_mastery_autogathering_progress")); break;
+            case 5: pInfo->m_str28 = GetStringCommonByKey(CStringW(L"s_mastery_autobreeding_progress")); break;
+            case 6: pInfo->m_str28 = GetStringCommonByKey(CStringW(L"s_mastery_autofarming_progress")); break;
             }
             pInfo->m_nDuration = 2000;
         }

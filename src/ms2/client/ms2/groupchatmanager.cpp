@@ -177,7 +177,7 @@ Unk_ChatSettings* FUN_140ae6540(Unk_ChatOptions*);
 // Misc exe helpers.
 void FUN_1412751b0(const CStringW& text, int channel);
 CStringW FUN_14052bd00(int id, const CStringW& arg);
-CStringW FUN_14028de60(int id);
+CStringW GetStringCommon(int id);
 CString FUN_14016a600(const wchar_t* text, int codepage);
 CString FUN_141028be0(__int64 id, const CString& a, int b, CString c);
 void FUN_140710590(COutPacket& packet);
@@ -540,7 +540,7 @@ void CGroupChatManager::Invite(unsigned oid, CStringW name) {
         return;
     if (chat->FUN_14137b510(name) == 0) {
         if (chat->FUN_14137bad0() >= 0x14) {
-            CStringW text = FUN_14028de60(0x814);
+            CStringW text = GetStringCommon(0x814);
             Unk_MessageBoxPtr active = FUN_14151f820();
             if (FUN_140534fc0(active) != 0) {
                 if (FUN_14025cd60(FUN_141a02ce0(FUN_140534fe0(active)), text))
@@ -562,7 +562,7 @@ void CGroupChatManager::Invite(unsigned oid, CStringW name) {
             FUN_140710590(packet);
         }
     } else {
-        Unk_MessageBoxPtr box = FUN_140d73d20(0, FUN_14028de60(0x816), 0, CStringW(L""));
+        Unk_MessageBoxPtr box = FUN_140d73d20(0, GetStringCommon(0x816), 0, CStringW(L""));
         if (FUN_140534fc0(box) != 0)
             FUN_140d73c60(box);
     }

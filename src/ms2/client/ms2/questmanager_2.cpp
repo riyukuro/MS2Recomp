@@ -182,7 +182,7 @@ void* FUN_1409331e0();
 void FUN_14138d7e0(void*, int, int);
 CStringW FUN_1416e4df0(int);
 CStringW FUN_1405c2690(CStringW, const CStringW&);
-CStringW FUN_14028b8e0(const CStringW&);
+CStringW GetStringCommonByKey(const CStringW&);
 void FUN_1412751f0(const CStringW&, int, int);
 void FUN_1410943b0(Unk_WsC_GameObj*, int);
 // Shared quest-id list handle returned by the quest table (16 bytes, list pointer at +8).
@@ -1289,7 +1289,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
             param->m_nKind = 0;
             param->m_strIcon = FUN_1401d31f0()->m_allianceIcons[alliance];
             param->m_nNpcId = 3000;
-            param->m_strText = FUN_14028b8e0(StringFormat(format, FUN_14016a730(FUN_14021a6b0(alliance), 0)));
+            param->m_strText = GetStringCommonByKey(StringFormat(format, FUN_14016a730(FUN_14021a6b0(alliance), 0)));
             popup->FUN_140e879a0(param);
         }
     } else if (mode == 0x26) {
@@ -1318,7 +1318,7 @@ void CQuestManager::FUN_1416cde50(int error)
     } else if (error == 4) {
         FUN_140d73bc0(0x5f2, 0, 0, L"");
     } else if (error == 5) {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_quest_error_fail_complete_by_dead"), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_quest_error_fail_complete_by_dead"), 0, 0, CStringW(L""));
     } else if (error == 7) {
         unsigned name = FUN_1405575b0(FUN_140281980(), 0xd1);
         FUN_1412751f0(FUN_1405c2690(CStringW(L"s_alliance_quest_completion_ticket_error"),
@@ -1869,13 +1869,13 @@ int CQuestManager::FUN_1416d09d0(int mapId, int warn)
     }
     if (FUN_1403ed2d0()->FUN_141bd3060() == mapId) {
         if (warn != 0) {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_sky_fortress_warn_field")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_sky_fortress_warn_field")), 1, 1);
         }
         return 0;
     }
     if (FUN_1403ed2d0()->FUN_141bd3060() != 62000000 && FUN_1409312f0() == 0) {
         if (warn != 0) {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_sky_fortress_warn_field")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_sky_fortress_warn_field")), 1, 1);
         }
         return 0;
     }
@@ -1912,7 +1912,7 @@ void CQuestManager::SendQuestMode15(int id)
     if (FUN_1416d0e60(id) == 0) return;
     if (m_refreshCount >= *FUN_1401d3200()->FameContentsMissionAttackCount.Get()) {
         CStringW key(L"s_sky_fortress_warn_attack");
-        FUN_1412751f0(FUN_14028b8e0(key), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(key), 1, 1);
         return;
     }
     m_refreshCount++;

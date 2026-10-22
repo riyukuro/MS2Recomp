@@ -185,7 +185,7 @@ Unk_ClubFeatures* FUN_140166410();
 CPartyManager* FUN_1409670d0();
 
 // String helpers (string table lookups with arguments) and the chat/notice output.
-CStringW FUN_14028de60(int nId);
+CStringW GetStringCommon(int nId);
 CStringW FUN_14052bd00(int nId, const CStringW& a);
 CStringW FUN_140632a60(int nId, const CStringW& a, const CStringW& b);
 CStringW FUN_1409eadb0(int nId, const CStringW& a, const CStringW& b, const CStringW& c);
@@ -1124,7 +1124,7 @@ void CClubClientManager::FUN_140b166d0(CInPacket& packet)
         Unk_MsgBoxPtr box = FUN_140b191a0(
             FUN_140632a60(0x345, spClub->FUN_14020f8c0(), spClub->FUN_14020f1a0()), 1,
             Delegate<bool(int, const CMsgBoxData&)>(this, &CClubClientManager::FUN_140b18390), spClub->FUN_14020f0c0());
-        FUN_141a01ca0(box.operator->(), 0x14, 1, FUN_14028de60(0x2b8));
+        FUN_141a01ca0(box.operator->(), 0x14, 1, GetStringCommon(0x2b8));
         FUN_141a024a0(box.operator->(), false);
         FUN_140d73c60(box);
     }
@@ -1190,7 +1190,7 @@ void CClubClientManager::FUN_140b16d20(CInPacket& packet)
         Unk_MsgBoxPtr box = FUN_140d73d20(1, CStringW(strText), 0, CStringW(L""));
         if (box.get() != 0)
         {
-            FUN_141a01ca0(box.operator->(), 0x14, 1, FUN_14028de60(0x2b8));
+            FUN_141a01ca0(box.operator->(), 0x14, 1, GetStringCommon(0x2b8));
             FUN_141a024a0(box.operator->(), false);
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CClubClientManager::FUN_140b18400));
             FUN_1405340b0(box.operator->(), spInvite->m_inviteId);
@@ -1521,71 +1521,71 @@ void FUN_140b18700(int nKind, int nCode)
     switch (nCode - 1)
     {
     case 0:
-        strMessage = FUN_14028de60(0x368);
+        strMessage = GetStringCommon(0x368);
         break;
     default:
-        strMessage = FUN_14028de60(0x37e);
+        strMessage = GetStringCommon(0x37e);
         break;
     case 10:
     case 0xb:
-        strMessage = FUN_14028de60(0x372);
+        strMessage = GetStringCommon(0x372);
         break;
     case 0xc:
-        strMessage = FUN_14028de60(0x375);
+        strMessage = GetStringCommon(0x375);
         break;
     case 0xd:
-        strMessage = FUN_14028de60(0x36b);
+        strMessage = GetStringCommon(0x36b);
         break;
     case 0xe:
-        strMessage = FUN_14028de60(0x37d);
+        strMessage = GetStringCommon(0x37d);
         break;
     case 0x32:
-        strMessage = FUN_14028de60(0x37b);
+        strMessage = GetStringCommon(0x37b);
         break;
     case 0x33:
-        strMessage = FUN_14028de60(0x378);
+        strMessage = GetStringCommon(0x378);
         break;
     case 0x34:
-        strMessage = FUN_14028de60(0x379);
+        strMessage = GetStringCommon(0x379);
         break;
     case 0x35:
-        strMessage = FUN_14028de60(0x36f);
+        strMessage = GetStringCommon(0x36f);
         break;
     case 0x36:
-        strMessage = FUN_14028de60(0x37c);
+        strMessage = GetStringCommon(0x37c);
         break;
     case 0x38:
-        strMessage = FUN_14028de60(0x377);
+        strMessage = GetStringCommon(0x377);
         break;
     case 0x39:
-        strMessage = FUN_14028de60(0x382);
+        strMessage = GetStringCommon(0x382);
         break;
     case 0x3a:
-        strMessage = FUN_14028de60(0x387);
+        strMessage = GetStringCommon(0x387);
         break;
     case 0x3b:
-        strMessage = FUN_14028de60(0x373);
+        strMessage = GetStringCommon(0x373);
         break;
     case 0x3c:
-        strMessage = FUN_14028de60(0x374);
+        strMessage = GetStringCommon(0x374);
         break;
     case 0x3d:
-        strMessage = FUN_14028de60(0x376);
+        strMessage = GetStringCommon(0x376);
         break;
     case 0x3e:
-        strMessage = FUN_14028de60(0x36d);
+        strMessage = GetStringCommon(0x36d);
         break;
     case 0x42:
-        strMessage = FUN_14028de60(899);
+        strMessage = GetStringCommon(899);
         break;
     case 0x47:
-        strMessage = FUN_14028de60(900);
+        strMessage = GetStringCommon(900);
         break;
     case 0x48:
-        strMessage = FUN_14028de60(0x385);
+        strMessage = GetStringCommon(0x385);
         break;
     case 0x49:
-        strMessage = FUN_14028de60(0x386);
+        strMessage = GetStringCommon(0x386);
     }
     FUN_1412751f0(strMessage, 1, 1);
 }

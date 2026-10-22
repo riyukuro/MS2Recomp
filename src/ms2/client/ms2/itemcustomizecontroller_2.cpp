@@ -66,8 +66,8 @@ Unk_ExchangeMgr* FUN_140f56960();
 
 MS2Ptr<CItem> FUN_1419be700(unsigned __int64 uid);               // find an item by uid
 CStringW FUN_1419021b0(int a, int b);                   // format "a/b"
-CStringW FUN_14028de60(int id);                         // string table lookup
-CStringW FUN_14028b8e0(const CStringW& str);            // string table lookup by key
+CStringW GetStringCommon(int id);                         // string table lookup
+CStringW GetStringCommonByKey(const CStringW& str);            // string table lookup by key
 void FUN_140d2d150(int nItemId, int nAmount);           // show the item's popup menu
 void FUN_140cff1b0(const Scaleform::GFx::Value&, CString, CStringW);   // set a member of the movie to a string
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);
@@ -391,12 +391,12 @@ int ItemInfoSlot::vfunc_0(void* p)
                         {
                             {
                                 CStringW strEmpty(L"");
-                                tip2.FUN_1409c6a20(strEmpty, FUN_14028de60(0x75a));
+                                tip2.FUN_1409c6a20(strEmpty, GetStringCommon(0x75a));
                             }
                             {
                                 CStringW strEmpty(L"");
                                 CStringW strKey(L"s_word_compose_result");
-                                tip2.FUN_1409c7060(FUN_14028b8e0(strKey), strEmpty);
+                                tip2.FUN_1409c7060(GetStringCommonByKey(strKey), strEmpty);
                             }
                             *static_cast<Scaleform::GFx::Value*>(p) = tip2.FUN_1422bb870();
                             return 1;

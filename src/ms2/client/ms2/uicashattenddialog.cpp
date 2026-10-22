@@ -218,7 +218,7 @@ class Unk_CadNode : public ASDisplayObjectContainer { public:
     template<class T> MS2Ptr<T> FUN_140bc74a0(const Scaleform::GFx::Value& v,const CString& strName);
 };
 
-CStringW FUN_14028b8e0(const CStringW&);
+CStringW GetStringCommonByKey(const CStringW&);
 void FUN_1412751f0(const CStringW&,int,int);
 CStringW FUN_140938ae0(CStringW,const int&);
 CStringW FUN_1408f71a0(CStringW,const CStringW&,const CStringW&);
@@ -597,11 +597,11 @@ void UICashAttendDialog::FUN_140bc5350(CInPacket& packet)
 {
     int result=reinterpret_cast<Unk_CadReader*>(&packet.m_stream)->vfunc_1();
     switch(result) {
-    case 1: FUN_1412751f0(FUN_14028b8e0(L"s_attendGift_payAttend_result_lackMoney"),1,1); break;
-    case 2: FUN_1412751f0(FUN_14028b8e0(L"s_attendGift_payAttend_result_lackMerat"),1,1); break;
-    case 3: FUN_1412751f0(FUN_14028b8e0(L"s_attendGift_payAttend_result_hasNotCoupon"),1,1); break;
-    case 5: FUN_1412751f0(FUN_14028b8e0(L"s_attendGift_item_attend_already_used"),1,1); break;
-    case 6: FUN_1412751f0(FUN_14028b8e0(L"s_attendGift_item_attend_not_found_evnet"),1,1); break;
+    case 1: FUN_1412751f0(GetStringCommonByKey(L"s_attendGift_payAttend_result_lackMoney"),1,1); break;
+    case 2: FUN_1412751f0(GetStringCommonByKey(L"s_attendGift_payAttend_result_lackMerat"),1,1); break;
+    case 3: FUN_1412751f0(GetStringCommonByKey(L"s_attendGift_payAttend_result_hasNotCoupon"),1,1); break;
+    case 5: FUN_1412751f0(GetStringCommonByKey(L"s_attendGift_item_attend_already_used"),1,1); break;
+    case 6: FUN_1412751f0(GetStringCommonByKey(L"s_attendGift_item_attend_not_found_evnet"),1,1); break;
     default: MS2_ASSERT_AT(0x1f9,0); break;
     }
 }

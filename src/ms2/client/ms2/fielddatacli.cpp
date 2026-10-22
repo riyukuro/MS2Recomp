@@ -289,13 +289,13 @@ bool FUN_140a55d20(CFieldDataCli* self, CStringW* out)
 {
     extern void* FUN_14025e7c0();
     extern char FUN_14116d720(void*);
-    extern CStringW FUN_14028de60(int id);
+    extern CStringW GetStringCommon(int id);
     extern CStringW FUN_1402a61e0(const wchar_t*);
     if (FUN_14116d720(FUN_14025e7c0()))
         return true;
     if (self->m_nEnterAdminLevel < 1)
         return true;
-    *out = FUN_1402a61e0(FUN_14028de60(0x99d));
+    *out = FUN_1402a61e0(GetStringCommon(0x99d));
     return false;
 }
 

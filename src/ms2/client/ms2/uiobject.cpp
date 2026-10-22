@@ -43,7 +43,7 @@ void FUN_141901420(int n, int nUIType);
 CStringW FUN_140718650(const CString& str);                 // CString -> CStringW
 void FUN_1412751b0(const CStringW& strText, int nType);     // system message
 void FUN_1412751f0(const CStringW& strText, int a1, int a2);
-CStringW FUN_14028b8e0(const CStringW& strKey);             // localised string
+CStringW GetStringCommonByKey(const CStringW& strKey);             // localised string
 CStringW FUN_1402a5170(const wchar_t* szFormat, const CString& a1);    // "{0}" formatter
 void FUN_141276180(const CString& strSound, const CString& strArg);    // play a system sound
 int FUN_1407181d0(const CString& str);
@@ -157,7 +157,7 @@ void UIObject::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
         if (p == NULL)
             return;
         if (p->FUN_141a9c290(nQuestId) == 0) {
-            FUN_1412751f0(FUN_14028b8e0(L"s_quest_dialog_unknown_quest"), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_quest_dialog_unknown_quest"), 1, 1);
             return;
         }
         p->FUN_141a9bff0(nQuestId);

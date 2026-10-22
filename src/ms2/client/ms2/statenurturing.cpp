@@ -116,7 +116,7 @@ class Unk_NuBuffMgr { public: Unk_StreamPoint FUN_141683290(); };
 Unk_NuBuffMgr* FUN_14166d240(PCBase* p);
 bool FUN_1416749c0(PCBase* p);
 int FUN_1408a1360(Unk_StreamPoint a, Unk_StreamPoint b);
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommonByKey(const CStringW& str);
 CFunctionCubeService* FUN_1409670b0();
 
 // ---- the casting bar lookup ----
@@ -353,11 +353,11 @@ void StateNurturing::FUN_140ac1480(Unk_CastInfo* pInfo)
     {
         pInfo->m_nDuration = FUN_140ac1370();
         if (m_n10 == 0xa7)
-            pInfo->m_str28 = FUN_14028b8e0(CStringW(L"s_action_nurturing_gifting"));
+            pInfo->m_str28 = GetStringCommonByKey(CStringW(L"s_action_nurturing_gifting"));
         else if (m_n10 == 0xa5)
-            pInfo->m_str28 = FUN_14028b8e0(CStringW(L"s_action_nurturing_eating"));
+            pInfo->m_str28 = GetStringCommonByKey(CStringW(L"s_action_nurturing_eating"));
         else if (m_n10 == 0xa6)
-            pInfo->m_str28 = FUN_14028b8e0(CStringW(L"s_action_nurturing_playing"));
+            pInfo->m_str28 = GetStringCommonByKey(CStringW(L"s_action_nurturing_playing"));
     }
 }
 

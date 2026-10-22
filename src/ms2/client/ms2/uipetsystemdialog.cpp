@@ -54,7 +54,7 @@ extern Unk_Inventory DAT_143ab2a90;                                         // t
 int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, UIDialog* pDialog);
 MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
 void FUN_1412761e0(MS2Ptr<AScript> spMovie, int n);
-CStringW FUN_14028de60(int nId);                                            // a common string by id
+CStringW GetStringCommon(int nId);                                            // a common string by id
 
 // The page factories (null when the dialog shows no pages or the feature is off).
 static MS2Ptr<PetSystemTabContents> FUN_140e74b50(int nPages);
@@ -142,7 +142,7 @@ void UIPetSystemDialog::OnLoadComplete()
             if (spTab->m_28 == 0)
                 continue;
             ASObj obj(2);
-            obj.FUN_1407cbb20("label", FUN_14028de60(spTab->m_18));
+            obj.FUN_1407cbb20("label", GetStringCommon(spTab->m_18));
             obj.FUN_1407cba60("frame", strFrame);
             spBar->FUN_1422e3460(obj);
         }

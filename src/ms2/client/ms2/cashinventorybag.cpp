@@ -145,7 +145,7 @@ CStringW FUN_14052bd00(int nId, const CStringW& strArg);
 void FUN_141276180(const CString&, const CString&);
 void FUN_141a02750(CMsgBoxData* pBox, int n);
 void FUN_141a01c30(CMsgBoxData* pBox, const CString& strSound);
-CStringW FUN_14028de60(int nId);                        // string table text by id
+CStringW GetStringCommon(int nId);                        // string table text by id
 void FUN_140710590(COutPacket& packet);                 // send the packet
 
 // Registry of named bags/slots (GFx bind data).
@@ -1082,7 +1082,7 @@ int CashInventorySlot::vfunc_0(void* p)
     ASTooltip tip(FUN_1403ed2d0()->FUN_141bd0cc0(), 0x20, 2);
     if (tip.FUN_1409e0d40(m_spItem.get()))
     {
-        tip.FUN_1409c65f0(FUN_14028de60(0xa5d));
+        tip.FUN_1409c65f0(GetStringCommon(0xa5d));
         *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
         return 1;
     }

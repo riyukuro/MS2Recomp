@@ -50,7 +50,7 @@ Unk_CRNames* FUN_1401a9d70();
 CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);
 CStringW FUN_140b99450(CStringW strKey, const CStringW& strA, const unsigned& nB);
 CStringW FUN_1409e97f0(int nId, const unsigned& nArg);
-CStringW FUN_14028de60(int nId);
+CStringW GetStringCommon(int nId);
 void FUN_140d73aa0(CStringW strText, int nType, IMessageListener* pListener, CStringW strTag);
 
 class Unk_CRTextFilter { public: void FUN_1416fb300(CStringW& str); };
@@ -389,7 +389,7 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         if (m_1f4 < 1)
             vfunc_67();
         else
-            FUN_140d73aa0(FUN_14028de60(0xc41), 1, static_cast<IMessageListener*>(this), CStringW(L""));
+            FUN_140d73aa0(GetStringCommon(0xc41), 1, static_cast<IMessageListener*>(this), CStringW(L""));
         return 1;
     }
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)

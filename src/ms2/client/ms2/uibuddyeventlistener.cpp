@@ -192,7 +192,7 @@ void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* szText);
 
 // The string tables and the text formatters (they return the text through the hidden out pointer).
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_14093fa20(int nId, const CStringW& str, int* pnArg);
 CStringW FUN_1408116a0(int nId, int* pnArg);
 CStringW FUN_140811740(int nId, int* pnA, int* pnB);
@@ -201,7 +201,7 @@ CStringW FUN_140c348b0(int nId, short* pnArg, const CStringW& str);
 CString FUN_141028be0(unsigned __int64 nId, const CStringA* pstrImage, int a, CString str);
 CStringW FUN_1409796e0(int a, int b, int c, CStringW str);
 unsigned __int64 FUN_141b71960(const char* sz);
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 
 void FUN_140710590(COutPacket& packet);
 CString* FUN_140298f80(void* p);
@@ -1203,7 +1203,7 @@ void UICommunityDialog::FUN_1418d77f0(int nOnline, int nTotal)
     if (m_190 == 0)
     {
         int nMapId = FUN_1403ed2d0()->FUN_141bd3060();
-        strText = FUN_14093fa20(0x60e, FUN_1401a9d70()->FUN_141811980(3, nMapId), &nTotal);
+        strText = FUN_14093fa20(0x60e, GetStringTable()->FUN_141811980(3, nMapId), &nTotal);
     }
     else if (m_190 == 2)
         strText = FUN_1408116a0(0x60f, &nTotal);
@@ -1246,9 +1246,9 @@ int FUN_1418d7b90(ASObj* pRow, CBuddyManager::Ptr spBuddy, int nTab)
     if (bOffline == 0)
     {
         if (nWaiting == 0)
-            strState = FUN_14028de60(0x60d);
+            strState = GetStringCommon(0x60d);
         else
-            strState = FUN_14028de60(0x60b);
+            strState = GetStringCommon(0x60b);
     }
     else
     {
@@ -1256,12 +1256,12 @@ int FUN_1418d7b90(ASObj* pRow, CBuddyManager::Ptr spBuddy, int nTab)
         int nChannel = spBuddy->FUN_1401cc310();
         if (nChannel == 0)
         {
-            strState = FUN_1401a9d70()->FUN_141811980(3, nMapId);
+            strState = GetStringTable()->FUN_141811980(3, nMapId);
         }
         else
         {
             int nChannel2 = spBuddy->FUN_1401cc310();
-            strState = FUN_140a228f0(0x60c, &nChannel2, FUN_1401a9d70()->FUN_141811980(3, nMapId));
+            strState = FUN_140a228f0(0x60c, &nChannel2, GetStringTable()->FUN_141811980(3, nMapId));
         }
     }
     MS2Ptr<CPartyMember> spMember = FUN_1409670d0()->FUN_14162afc0(nId);
@@ -1270,7 +1270,7 @@ int FUN_1418d7b90(ASObj* pRow, CBuddyManager::Ptr spBuddy, int nTab)
     pRow->FUN_1407cbb20("state", CStringW(strState));
     short nLevel = spBuddy->FUN_1401cc210();
     int nJob = spBuddy->FUN_1401cc2b0();
-    pRow->FUN_1407cbb20("charinfo", FUN_140a228f0(0x20, (int*)&nLevel, FUN_1401a9d70()->FUN_141811980(6, nJob)));
+    pRow->FUN_1407cbb20("charinfo", FUN_140a228f0(0x20, (int*)&nLevel, GetStringTable()->FUN_141811980(6, nJob)));
     pRow->FUN_1407cb9c0("isNew", spBuddy->FUN_1401cc4f0());
     pRow->FUN_1407cb9c0("recv", nTab == 2);
     if (nTab == 2)
@@ -1313,7 +1313,7 @@ int FUN_1418d8540(ASObj* pRow, Unk_BdProxyRef ref, int bNew)
     pRow->FUN_1407cba60("imgpath", FUN_141028be0(nId, &strImage, 1, CString("")));
     short nLevel = (short)ref->FUN_1416c2330();
     int nJob = ref->FUN_1416c2390();
-    pRow->FUN_1407cbb20("charinfo", FUN_140c348b0(0x20, &nLevel, FUN_1401a9d70()->FUN_141811980(6, nJob)));
+    pRow->FUN_1407cbb20("charinfo", FUN_140c348b0(0x20, &nLevel, GetStringTable()->FUN_141811980(6, nJob)));
     pRow->FUN_1407cb9c0("offline", 0);
     pRow->FUN_1407cbb20("address", ref->FUN_1416c2600());
     pRow->FUN_1407cbb20("todaymemo", ref->FUN_1416c2570());
@@ -1805,7 +1805,7 @@ void UICommunityQueryDialog::FUN_1418db750()
         CStringW strName;
         if (m_180 == 1)
         {
-            strName = FUN_14028de60(0x60a);
+            strName = GetStringCommon(0x60a);
         }
         else if (m_180 == 4)
         {

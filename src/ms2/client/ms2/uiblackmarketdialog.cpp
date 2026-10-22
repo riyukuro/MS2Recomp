@@ -55,7 +55,7 @@ Unk_14025e7b0* FUN_14025e7b0();
 class Unk_LocalPlayer { public: int FUN_14166ce30(); };
 class Unk_WorldSvc { public: Unk_LocalPlayer* FUN_141bd0cc0(); };
 Unk_WorldSvc* FUN_1403ed2d0();
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommonByKey(const CStringW& str);
 void FUN_1412751f0(const CStringW& str, int a, int b);
 void FUN_141275260(int nId, int a, int b);
 bool FUN_140ba28d0(const MS2Ptr<AScript>* p, int n);
@@ -159,7 +159,7 @@ int UIBlackMarketDialog::vfunc_73()
         Unk_LocalPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pPlayer && pPlayer->FUN_14166ce30() != 0)
         {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_blackmarket_error_not_useable_by_dead")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_blackmarket_error_not_useable_by_dead")), 1, 1);
             return 0;
         }
         return UIDialog::vfunc_73();
@@ -175,7 +175,7 @@ void UIBlackMarketDialog::vfunc_72()
     Unk_LocalPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer && pPlayer->FUN_14166ce30() != 0 && m_68 == 0)
     {
-        CStringW strMsg = FUN_14028b8e0(L"s_blackmarket_error_not_useable_by_dead");
+        CStringW strMsg = GetStringCommonByKey(L"s_blackmarket_error_not_useable_by_dead");
         FUN_1412751f0(strMsg, 1, 1);
         vfunc_67();
     }

@@ -778,7 +778,7 @@ int FUN_1418fc760(const char*, void*, unsigned int, UIGameMenuDialog*);
 
 // ---- exe functions: messages, strings ----
 
-CStringW FUN_14028b8e0(const CStringW&);
+CStringW GetStringCommonByKey(const CStringW&);
 CStringW FUN_140298ea0(CStringW strKey);
 CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a1);
 CStringW FUN_1401ceea0(const wchar_t* szFormat, const int* pArg);
@@ -1955,14 +1955,14 @@ void UIGameMenuDialog::FUN_14193bdf0()
 {
     if (FUN_1403ed2b0()->FUN_141adc890(0x4f18) == 0) {
         if (!FUN_140930b70()) {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_learning_quest_dungeon")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_learning_quest_dungeon")), 1, 1);
         } else {
             MS2Ptr<UILearningQuestDialog> pane = FUN_14193f210(0x4f18);
             if (pane.get() != 0) {
                 if (pane->FUN_141924630() != 0)
                     return;
                 if (FUN_140ea1e20(pane.operator->(), 0) == 0)
-                    FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_learning_quest_empty")), 1, 1);
+                    FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_learning_quest_empty")), 1, 1);
             }
         }
     }
@@ -1992,23 +1992,23 @@ void UIGameMenuDialog::FUN_14193c000()
 {
     int nQuest = FUN_14047c240(FUN_1401c0d90());
     if (nQuest == 0) {
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_quest_epic_restart_event_end")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_quest_epic_restart_event_end")), 1, 1);
         return;
     }
     int nOut = 0;
     if (DAT_143ab3010.FUN_1409617d0(0x44c, nQuest, &nOut) == 0) {
         int nField = FUN_1403ed2d0()->FUN_141bd3060();
         if (FUN_14047c530(FUN_1401c0d90(), nField) == 0) {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_quest_epic_restart_invalid_field")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_quest_epic_restart_invalid_field")), 1, 1);
         } else {
-            MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_14028b8e0(CStringW(L"s_quest_epic_restart_warning")), 0, CStringW(L""));
+            MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(CStringW(L"s_quest_epic_restart_warning")), 0, CStringW(L""));
             if (box.get() != 0) {
                 box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::SendQuest));
                 FUN_140d73c60(box);
             }
         }
     } else {
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_quest_epic_restart_restarted")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_quest_epic_restart_restarted")), 1, 1);
     }
 }
 
@@ -2020,7 +2020,7 @@ void UIGameMenuDialog::FUN_14193c3c0()
         return;
     int nItem = FUN_14047c820(FUN_1401c0d90());
     if (nItem == 0) {
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_quest_scroll_package_invalid_event")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_quest_scroll_package_invalid_event")), 1, 1);
     } else if (FUN_140ea4b70(pDlg) == 0) {
         FUN_1412751f0(FUN_1405c2690(CStringW(L"s_quest_scroll_package_use_item_warn"), FUN_1401a9d70()->FUN_141811980(1, nItem)), 1, 1);
     } else {
@@ -2037,7 +2037,7 @@ void UIGameMenuDialog::FUN_14193c550()
         FUN_1403ed2b0()->FUN_141adc750(0x4f33);
         FUN_1403e5510(&list);
     } else {
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_stampevent_invalid_event")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_stampevent_invalid_event")), 1, 1);
         FUN_1403e5510(&list);
     }
 }
@@ -2057,7 +2057,7 @@ void UIGameMenuDialog::FUN_14193c660()
         FUN_1403ed2b0()->FUN_141adc750(0x4f98);
         FUN_1403e53c0(&list);
     } else {
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_longtermattendgift_dialog_invalid_event")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_longtermattendgift_dialog_invalid_event")), 1, 1);
         FUN_1403e53c0(&list);
     }
 }
@@ -2111,7 +2111,7 @@ void UIGameMenuDialog::FUN_14193c930()
     if (pPc == NULL)
         return;
     if (FUN_140424de0(FUN_14041d160(FUN_140302b00())) == 0) {
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_mentoring_error_season")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_mentoring_error_season")), 1, 1);
         return;
     }
     if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x4a) != 0) {
@@ -2122,26 +2122,26 @@ void UIGameMenuDialog::FUN_14193c930()
         CStringW strName;
         FUN_140b718b0(FUN_140c70240(), &strName);
         if (strName.IsEmpty())
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_mentoring_error_mentee_none_candidate")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_mentoring_error_mentee_none_candidate")), 1, 1);
         else
             FUN_1412751f0(FUN_1405c2690(CStringW(L"s_mentoring_error_mentee_none_mentee"), strName), 1, 1);
     } else if (FUN_140b71580(FUN_140c70240()) == 6) {
         CStringW strName;
         FUN_140b71780(FUN_140c70240(), &strName);
         if (strName.IsEmpty())
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_mentoring_error_mentor_none_candidate")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_mentoring_error_mentor_none_candidate")), 1, 1);
         else
             FUN_1412751f0(FUN_1405c2690(CStringW(L"s_mentoring_error_mentor_none_mentor"), strName), 1, 1);
     } else {
         if (FUN_140b71580(FUN_140c70240()) == 4) {
             if ((unsigned int)pPc->vfunc_78() < *FUN_1401d7c10(&FUN_1401d3200()->m_8c10)) {
-                FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_mentoring_error_mentor_candidate_level")), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_mentoring_error_mentor_candidate_level")), 1, 1);
                 return;
             }
         }
         if (FUN_140b71580(FUN_140c70240()) == 1) {
             if ((unsigned int)pPc->vfunc_78() < *FUN_1401d7c10(&FUN_1401d3200()->m_8c68)) {
-                FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_mentoring_error_mentee_candidate_level")), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_mentoring_error_mentee_candidate_level")), 1, 1);
                 return;
             }
         }
@@ -2161,7 +2161,7 @@ void UIGameMenuDialog::FUN_14193cea0()
     void* pDlg = FUN_14193f170(0x4f54);
     if (pDlg != 0) {
         if (FUN_140c156d0(pDlg) == 0)
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_fame_point_board_warn2")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_fame_point_board_warn2")), 1, 1);
         else
             FUN_1403ed2b0()->FUN_141adc750(0x4f54);
     }
@@ -2176,7 +2176,7 @@ void UIGameMenuDialog::FUN_14193cf60()
         FUN_1403ed2b0()->FUN_141adc750(0x4f59);
         FUN_1403e5360(&list);
     } else {
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_galleryevent_invalid_event")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_galleryevent_invalid_event")), 1, 1);
         FUN_1403e5360(&list);
     }
 }
@@ -2186,7 +2186,7 @@ void UIGameMenuDialog::FUN_14193d030()
 {
     if (FUN_1416d09d0(FUN_140764020(), *FUN_1401d7c10(&FUN_1401d3200()->m_8de0), 1) == 0)
         return;
-    if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_14028b8e0(L"s_sky_fortress_goto_map"), 0, CStringW(L""))) {
+    if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(L"s_sky_fortress_goto_map"), 0, CStringW(L""))) {
         box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::FUN_14193dab0));
         FUN_140d73c60(box);
     }
@@ -2201,7 +2201,7 @@ void UIGameMenuDialog::FUN_14193d250()
         FUN_1403ed2b0()->FUN_141adc750(0x4f5f);
         FUN_1403e5450(&list);
     } else {
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_rpsevent_invalid_event")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_rpsevent_invalid_event")), 1, 1);
         FUN_1403e5450(&list);
     }
 }
@@ -2304,7 +2304,7 @@ void UIGameMenuDialog::FUN_14193d700()
             if (FUN_14071b9c0(FUN_14071d7d0()) == 0) {
                 if (FUN_140a8be20(FUN_1409c1740(), 0) == 0) {
                     FUN_1403ed2b0()->FUN_141adc5d0(0x4f93);
-                    FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_payback_error_uiopen_end_time")), 0, 0, CStringW(L""));
+                    FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_payback_error_uiopen_end_time")), 0, 0, CStringW(L""));
                 } else {
                     FUN_1403ed2b0()->FUN_141adc750(0x4f93);
                 }
@@ -2434,9 +2434,9 @@ void UIGameMenuDialog::FUN_14193df10(Scaleform::GFx::Value* pOut)
         int nQuestDone = FUN_140764020()->state.FUN_140745590(*FUN_1401d7c10(&FUN_1401d3200()->m_6dd0));
         CStringW strText;
         if (FUN_1401e0800(pPc->vfunc_78()) == 0 || nQuestDone == 0)
-            strText = FUN_14028b8e0(CStringW(L"s_tooltip_gamemenu_disable_characterability"));
+            strText = GetStringCommonByKey(CStringW(L"s_tooltip_gamemenu_disable_characterability"));
         else
-            strText = FUN_14028b8e0(CStringW(L"s_tooltip_gamemenu_enable_characterability"));
+            strText = GetStringCommonByKey(CStringW(L"s_tooltip_gamemenu_enable_characterability"));
         ASTooltip tip(1, 2);
         if (tip.FUN_1409e26b0(strText) != 0)
             *pOut = tip.FUN_1422bb870();
@@ -2446,7 +2446,7 @@ void UIGameMenuDialog::FUN_14193df10(Scaleform::GFx::Value* pOut)
 // @0x14193e0e0
 void UIGameMenuDialog::FUN_14193e0e0(Scaleform::GFx::Value* pOut)
 {
-    CStringW strText = FUN_14028b8e0(CStringW(L"s_tooltip_gamemenu_mushking_royal"));
+    CStringW strText = GetStringCommonByKey(CStringW(L"s_tooltip_gamemenu_mushking_royal"));
     float nKillExp = FUN_14047d4e0(FUN_1401c0d90());
     float nTimeExp = FUN_14047d5c0(FUN_1401c0d90());
     if (FUN_14028d470(nKillExp, 0) == 0) {
@@ -2471,14 +2471,14 @@ void UIGameMenuDialog::FUN_14193e2e0(int nMapType)
         return;
     int nField = FUN_14193e940(FUN_1403ed2d0()->FUN_141bd3060());
     if (FUN_1418fe060() == 0 && nField == 0) {
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_14028b8e0(CStringW(L"s_beauty_goto_map_return_warn")), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(CStringW(L"s_beauty_goto_map_return_warn")), 0, CStringW(L""));
         if (box.get() != 0) {
             FUN_140533ff0(box.get(), nMapType);
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::SendBeauty));
             FUN_140d73c60(box);
         }
     } else {
-        CStringW strMsg = FUN_14028b8e0(FUN_1401ceea0(L"s_beauty_goto_map_beauty_{0}", &nMapType));
+        CStringW strMsg = GetStringCommonByKey(FUN_1401ceea0(L"s_beauty_goto_map_beauty_{0}", &nMapType));
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
         if (box.get() != 0) {
             FUN_140533ff0(box.get(), nMapType);

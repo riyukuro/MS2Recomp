@@ -103,7 +103,7 @@ bool FUN_140ebef60(MS2Ptr<TMarketBillDataParam> spParam, const TMarketBillDataPa
                    const CStringW& strMessage);                             // pay the bill as a gift
 bool FUN_140ebe990(Scaleform::GFx::Value* pOut, ASData& data, MS2Ptr<TMarketBillDataParam> spParam);   // the bill's tooltip
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
-CStringW FUN_14028b8e0(const CStringW& strKey);
+CStringW GetStringCommonByKey(const CStringW& strKey);
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> callback);
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b240b0();
 void FUN_1412752d0(const CStringW& key, int type);                          // a system message by string key
@@ -427,7 +427,7 @@ void UIBlueprintMarketDialog::ShowSearchResult(int nPage, int nFirst, int nLast,
         if (bFirstPage && bHasText && (bool)m_spCond.get()) {
             int nLimit = m_spCond->FUN_1406a3ea0();
             if (nTotal >= nLimit) {
-                FUN_140d74390(FUN_14028b8e0(L"s_meratmarket_notice_too_many_search_result"), 0, FUN_140b240b0());
+                FUN_140d74390(GetStringCommonByKey(L"s_meratmarket_notice_too_many_search_result"), 0, FUN_140b240b0());
             }
         }
         ASDataProvider items(2);

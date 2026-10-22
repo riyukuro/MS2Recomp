@@ -235,7 +235,7 @@ bool FUN_140e146a0();                                           // matching is a
 CString FUN_140513200(const char* szFormat, const unsigned int& n);
 void FUN_140874050(void* pCfg, const char* szName, const CString& str);
 void FUN_140178770(void* pCfg, const char* szName, std::vector<unsigned int>& out);
-CStringW FUN_14028b8e0(const CStringW& strKey);
+CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_140938ae0(CStringW strKey, const int& n);
 CStringW FUN_1409e9890(CStringW strKey, const int& a, const int& b);
 CStringW FUN_14052b9d0(CStringW strKey, const unsigned short& nLevel, const CStringW& strName);
@@ -558,7 +558,7 @@ void UIDungeonControlCenter::FUN_140c0bab0()
     if (nNext == 0) {
         nNext = nWeeklyMax;
         obj.FUN_1407cb9c0("complete", 1);
-        obj.FUN_1407cbb20("count", FUN_14028b8e0(L"s_dungeon_control_center_require_reward_complete"));
+        obj.FUN_1407cbb20("count", GetStringCommonByKey(L"s_dungeon_control_center_require_reward_complete"));
     } else {
         int nRemain = nNext - nWeekly;
         obj.FUN_1407cb9c0("complete", 0);
@@ -821,7 +821,7 @@ void UIDungeonControlCenter::FUN_140c0d260(ASArray& out)
 {
     ASObj obj(2);
     obj.FUN_1407cb9c0("isRecommend", 1);
-    obj.FUN_1407cbb20("category", FUN_14028b8e0(L"s_dungeon_control_center_recommend_category"));
+    obj.FUN_1407cbb20("category", GetStringCommonByKey(L"s_dungeon_control_center_recommend_category"));
     ASArray list(2);
     RoomVec rooms;
     FUN_140c0d800(rooms);

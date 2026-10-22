@@ -149,7 +149,7 @@ Unk_MdLevelInfo* FUN_1401d3200();
 
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW FUN_1408116a0(int nStringId, const int& nArg);
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& nArg);
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 struct Unk_MdStrings { CStringW FUN_141811980(int, int); };
@@ -550,7 +550,7 @@ void UIManufactureStatus::vfunc_72()
                 if (!FUN_1406c4c60(tReady, tNow))
                 {
                     nPercent = 100;
-                    strRemain = FUN_14028de60(0x7b8);
+                    strRemain = GetStringCommon(0x7b8);
                 }
                 else
                 {
@@ -690,7 +690,7 @@ void UIManufactureStatus::FUN_1412dc480()
                 if (!FUN_1406c4c60(tReady, tNow))
                 {
                     nPercent = 100;
-                    strRemain = FUN_14028de60(0x7b8);
+                    strRemain = GetStringCommon(0x7b8);
                 }
                 else
                 {
@@ -864,7 +864,7 @@ CStringW FUN_14086cfc0(unsigned nStringId, const int& nArg);
 int FUN_14086d270(ATL::CTimeSpan* pSpan);                   // the minutes part   // a string of the string table with an argument
 CStringW FUN_14061ad70(const CStringW& a, const wchar_t* sz);  // a + sz
 CStringW FUN_1401d0080(const CStringW& a, const CStringW& b);  // a + b
-CStringW FUN_14028de60(unsigned nStringId);
+CStringW GetStringCommon(unsigned nStringId);
 void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag);   // message box
 void FUN_14151f200();
 int FUN_14083d890(CStringW str);                     // show a notice
@@ -1132,7 +1132,7 @@ int FUN_1412df4f0(MS2Ptr<CMeratMarketPremiumProduct> spProduct, ASObj* pRow)
     ASTooltip tip(4, 2);
     if (FUN_1409e1770(&tip, nItemId, pProduct->m_nGrade) != 0)
     {
-        FUN_1409c69b0(&tip, FUN_14028de60(0x758));
+        FUN_1409c69b0(&tip, GetStringCommon(0x758));
         pRow->FUN_1409adbe0("tooltip", tip.FUN_1422bb870());
     }
     return 1;
@@ -1705,7 +1705,7 @@ CStringW FUN_1412e1e50(ATL::CTimeSpan span, int bShort, int bSuffix)
         strRet = FUN_1401d0080(FUN_1401d0080(strHours, strMinutes), strSeconds);
     }
     if (bSuffix != 0)
-        strRet = FUN_1401d0080(strRet, FUN_14028de60(0x7b6));
+        strRet = FUN_1401d0080(strRet, GetStringCommon(0x7b6));
     return strRet;
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

@@ -71,7 +71,7 @@ public:
 };
 
 WorldService* FUN_1403ed2d0();
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_1409404f0(__int64 n);
 CStringW FUN_141b71910(__int64 nValue);
@@ -246,13 +246,13 @@ int UIItemPetTrainingDialog::FUN_140e57ed0(MS2Ptr<CItem> spPet, int bMessage)
     if (spPet->FUN_140525640() == 0)
     {
         if (bMessage != 0)
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_pet_training_dialog_invalid_item")), 1, 0);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_pet_training_dialog_invalid_item")), 1, 0);
         return 0;
     }
     if ((unsigned)spPet->FUN_140528c20() == *FUN_1401d3200()->m_petMaxLevel.FUN_1401d7c10())
     {
         if (bMessage != 0)
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_pet_training_dialog_max_level")), 1, 0);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_pet_training_dialog_max_level")), 1, 0);
         return 0;
     }
     MS2Ptr<Unk_PetRow> spRow = FUN_14052d210()->FUN_1407290f0(reinterpret_cast<CItemData*>(spPet->FUN_140527840())->FUN_14053dc60());
@@ -261,11 +261,11 @@ int UIItemPetTrainingDialog::FUN_140e57ed0(MS2Ptr<CItem> spPet, int bMessage)
         if (spRow->m_n18 == 1)
             return 1;
         if (bMessage != 0)
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_pet_training_dialog_invalid_item")), 1, 0);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_pet_training_dialog_invalid_item")), 1, 0);
         return 0;
     }
     if (bMessage != 0)
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_pet_training_dialog_invalid_item")), 1, 0);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_pet_training_dialog_invalid_item")), 1, 0);
     return 0;
 }
 

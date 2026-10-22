@@ -144,7 +144,7 @@ public:
 };
 
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);                // equals
-CStringW FUN_14028b8e0(const CStringW& strKey);                             // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);        // format one argument
 CString FUN_14052ea30(const char* szFormat, const int* pn);                 // format one int
 void FUN_140d73aa0(CStringW text, int type, void* pListener, CStringW tag); // open a message box that reports to pListener
@@ -210,7 +210,7 @@ int UISkillBookAutoDistributeDialog::vfunc_28(const char* szMethod, const Scalef
             m_nSelected = data.FUN_1422b8a10() - 1;
             if (m_names.GetCount() > m_nSelected)
             {
-                CStringW strText = FUN_1405c2690(L"s_msg_skillbook_auto_distribute_msgbox", FUN_14028b8e0(m_names[m_nSelected]));
+                CStringW strText = FUN_1405c2690(L"s_msg_skillbook_auto_distribute_msgbox", GetStringCommonByKey(m_names[m_nSelected]));
                 FUN_140d73aa0(strText, 1, static_cast<IMessageListener*>(this), L"onDistribute");
             }
         }
@@ -236,7 +236,7 @@ int UISkillBookAutoDistributeDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg
                 if (pTree != 0 && pTree->vfunc_55() == 0)
                 {
                     pTree->ApplyDistribute(m_nSelected);
-                    CStringW strName = FUN_14028b8e0(m_names[m_nSelected]);
+                    CStringW strName = GetStringCommonByKey(m_names[m_nSelected]);
                     FUN_140a1f970(FUN_140d8ee90(), "skll_auto_distribute", FUN_1401d4330(m_names[m_nSelected], 0));
                 }
             }
@@ -275,8 +275,8 @@ void UISkillBookAutoDistributeDialog::FUN_140ec48e0()
         }
         else
         {
-            spButton->FUN_1422cdfb0(FUN_14028b8e0(m_names[i]));
-            CStringW strTooltip = FUN_14028b8e0(m_tooltips[i]);
+            spButton->FUN_1422cdfb0(GetStringCommonByKey(m_names[i]));
+            CStringW strTooltip = GetStringCommonByKey(m_tooltips[i]);
             if (!strTooltip.IsEmpty())
             {
                 ASTooltip tooltip(2);
@@ -684,7 +684,7 @@ int UISkillBookTreeDialog::CanApply()
         return 0;
     if (pPlayer->vfunc_65() != 0)
     {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_msg_skillbook_set_disable_battle"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_msg_skillbook_set_disable_battle"), 0, 0, L"");
         return 0;
     }
     MS2Ptr<Unk_SkillField> spField = FUN_1403ed2d0()->FUN_141bd30a0();
@@ -692,7 +692,7 @@ int UISkillBookTreeDialog::CanApply()
         return 0;
     if (spField->FUN_140375660(0x10) != 0)
     {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_msg_skillbook_set_disable_field"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_msg_skillbook_set_disable_field"), 0, 0, L"");
         return 0;
     }
     return 1;
@@ -914,7 +914,7 @@ void UISkillBookTreeDialog::RefreshTabs(__int64 nTabId)
 // @0x140ecf3d0
 void UISkillBookTreeDialog::PromptAddTab()
 {
-    if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10, FUN_14028b8e0(L"s_skillbook_tree_config_add_tab"), 0, L""))
+    if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10, GetStringCommonByKey(L"s_skillbook_tree_config_add_tab"), 0, L""))
     {
         CStringW strText;
         spBox->FUN_141a01d30(0, strText, 10, 0, 0);
@@ -980,7 +980,7 @@ int UISkillBookTreeDialog::vfunc_71()
         vfunc_67();
         return 1;
     }
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028b8e0(L"s_msg_skillbook_close_apply_msg"), 0, L"");
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_msg_skillbook_close_apply_msg"), 0, L"");
     spBox->FUN_141a027c0(SkillBoxDelegate(this, &UISkillBookTreeDialog::OnCloseConfirm));
     FUN_140d73c60(spBox);
     return 1;
@@ -996,7 +996,7 @@ bool UISkillBookTreeDialog::OnCloseConfirm(int nResult, const CMsgBoxData& box)
         RequestTree(0, 0, 0);
         SelectTab(m_nTabId);
         RequestJob(0, 0, 0);
-        FUN_1412751b0(FUN_14028b8e0(L"s_msg_skillbook_apply_skill"), 0x14);
+        FUN_1412751b0(GetStringCommonByKey(L"s_msg_skillbook_apply_skill"), 0x14);
     }
     FUN_14151f200();
     vfunc_67();
@@ -1038,7 +1038,7 @@ bool UISkillBookTreeDialog::OnResetConfirm(int nResult, const CMsgBoxData& box)
             FUN_140710590(packet);
             m_nWaitServer = 1;
         }
-        FUN_1412751b0(FUN_14028b8e0(L"s_msg_skillbook_reset_skill"), 0x14);
+        FUN_1412751b0(GetStringCommonByKey(L"s_msg_skillbook_reset_skill"), 0x14);
     }
     FUN_14151f200();
     return true;
@@ -1064,7 +1064,7 @@ bool UISkillBookTreeDialog::OnApplyConfirm(int nResult, const CMsgBoxData& box)
         }
         RequestTree(m_nShownTabId, 0, nRank);
         RequestJob(0, 0, nRank);
-        FUN_1412751b0(FUN_14028b8e0(L"s_msg_skillbook_apply_skill"), 0x14);
+        FUN_1412751b0(GetStringCommonByKey(L"s_msg_skillbook_apply_skill"), 0x14);
     }
     FUN_14151f200();
     return true;
@@ -1081,7 +1081,7 @@ bool UISkillBookTreeDialog::OnApplyTabConfirm(int nResult, const CMsgBoxData& bo
         m_nTabId = spTab->m_nId;
         RequestTree(0, 1, 0);
         RequestJob(0, 1, 0);
-        FUN_1412751f0(FUN_1405c2690(FUN_14028b8e0(L"s_skillbook_tree_config_apply_tab"), spTab->m_strName), 1, 1);
+        FUN_1412751f0(FUN_1405c2690(GetStringCommonByKey(L"s_skillbook_tree_config_apply_tab"), spTab->m_strName), 1, 1);
     }
     FUN_14151f200();
     return true;
@@ -1224,7 +1224,7 @@ void UISkillBookTreeDialog::PromptChangeTab()
     MS2Ptr<CSkillBookTreeTabConfig> spTab = FindTab(m_nShownTabId);
     if (spTab == 0)
         return;
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_1405c2690(FUN_14028b8e0(L"s_skillbook_tree_config_change_tab"), spTab->m_strName), 0, L"");
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_1405c2690(GetStringCommonByKey(L"s_skillbook_tree_config_change_tab"), spTab->m_strName), 0, L"");
     spBox->FUN_141a027c0(SkillBoxDelegate(this, &UISkillBookTreeDialog::OnApplyTabConfirm));
     FUN_140d73c60(spBox);
 }
@@ -1282,7 +1282,7 @@ void UISkillBookTreeDialog::PromptReset()
     MS2Ptr<CMsgBoxData> spBox(0);
     if (!FUN_140166410()->FUN_14036d570(0xca))
     {
-        spBox = FUN_140d73d20(1, FUN_14028b8e0(L"s_msg_skillbook_reset_desc"), 0, L"");
+        spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_msg_skillbook_reset_desc"), 0, L"");
     }
     else
     {
@@ -1292,15 +1292,15 @@ void UISkillBookTreeDialog::PromptReset()
         int nLevel = FUN_1401d7a50()->FUN_140644b80(FUN_141654730(pPlayer));
         if (nLevel < 1)
         {
-            spBox = FUN_140d73d20(1, FUN_14028b8e0(L"s_msg_skillbook_reset_desc"), 0, L"");
+            spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_msg_skillbook_reset_desc"), 0, L"");
         }
         else
         {
-            spBox = FUN_140d73d20(0x19, FUN_14028b8e0(L"s_msg_skillbook_reset_desc"), 0, L"");
+            spBox = FUN_140d73d20(0x19, GetStringCommonByKey(L"s_msg_skillbook_reset_desc"), 0, L"");
             spBox->FUN_141a01800(1);
             spBox->FUN_141a026f0(1);
-            spBox->FUN_141a024e0(FUN_14028b8e0(L"s_msg_skillbook_skill_level_0"), m_nJobLevel == 1);
-            spBox->FUN_141a02560(FUN_14028b8e0(L"s_msg_skillbook_skill_level_1"), m_nJobLevel == 2);
+            spBox->FUN_141a024e0(GetStringCommonByKey(L"s_msg_skillbook_skill_level_0"), m_nJobLevel == 1);
+            spBox->FUN_141a02560(GetStringCommonByKey(L"s_msg_skillbook_skill_level_1"), m_nJobLevel == 2);
         }
         spBox->FUN_140533ff0(nLevel);
     }
@@ -1347,7 +1347,7 @@ void UISkillBookTreeDialog::ApplyDistribute(unsigned int nIndex)
         RequestTree(m_nShownTabId, 0, 0);
         RequestJob(1, 0, 0);
     }
-    FUN_1412751b0(FUN_14028b8e0(L"s_msg_skillbook_auto_distribute_skill"), 0x14);
+    FUN_1412751b0(GetStringCommonByKey(L"s_msg_skillbook_auto_distribute_skill"), 0x14);
 }
 
 // @0x140eca230
@@ -1405,7 +1405,7 @@ void UISkillBookTreeDialog::SkillPointDown(int nSkillId)
     unsigned nBadSkill = 0;
     if (m_spSimulator->LevelDown(nSkillId, &nBadSkill) == 0)
     {
-        FUN_1412751f0(FUN_1405c2690(FUN_14028b8e0(L"s_msg_skillbook_require_learn_skill"), FUN_1401a9d70()->FUN_141811980(4, nBadSkill)), 1, 1);
+        FUN_1412751f0(FUN_1405c2690(GetStringCommonByKey(L"s_msg_skillbook_require_learn_skill"), FUN_1401a9d70()->FUN_141811980(4, nBadSkill)), 1, 1);
     }
     else
     {
@@ -2048,7 +2048,7 @@ void UISkillBookTreeDialog::vfunc_79(void* pPacket)
     else if (nMode == 4)
     {
         m_nMaxTabs = packet.vfunc_o8_3();
-        FUN_1412751f0(FUN_14028b8e0(L"s_skillbook_tree_config_payment_sucess"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_skillbook_tree_config_payment_sucess"), 1, 1);
         unsigned nNo = m_tabs.GetCount() + 1;
         AddPaidTab(FUN_14028dfa0(CStringW(L"s_skillbook_tree_config_default_tab_name"), nNo));
         m_nWaitServer = 0;
@@ -2167,11 +2167,11 @@ int UISkillBookTreeDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             int nLevel = FUN_1401d7a50()->FUN_140644b80(FUN_141654730(pPlayer));
             if (nLevel > 1)
             {
-                spBox = FUN_140d73d20(0x19, FUN_14028b8e0(L"s_msg_skillbook_apply_skill_joblevel"), 0, L"");
+                spBox = FUN_140d73d20(0x19, GetStringCommonByKey(L"s_msg_skillbook_apply_skill_joblevel"), 0, L"");
                 spBox->FUN_141a01800(1);
                 spBox->FUN_141a026f0(1);
-                spBox->FUN_141a024e0(FUN_14028b8e0(L"s_msg_skillbook_skill_level_0"), m_nJobLevel == 1);
-                spBox->FUN_141a02560(FUN_14028b8e0(L"s_msg_skillbook_skill_level_1"), m_nJobLevel == 2);
+                spBox->FUN_141a024e0(GetStringCommonByKey(L"s_msg_skillbook_skill_level_0"), m_nJobLevel == 1);
+                spBox->FUN_141a02560(GetStringCommonByKey(L"s_msg_skillbook_skill_level_1"), m_nJobLevel == 2);
                 spBox->FUN_140533ff0(nLevel);
                 spBox->FUN_141a027c0(SkillBoxDelegate(this, &UISkillBookTreeDialog::OnApplyConfirm));
                 FUN_140d73c60(spBox);
@@ -2180,7 +2180,7 @@ int UISkillBookTreeDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         }
         RequestTree(m_nShownTabId, 0, 0);
         RequestJob(0, 0, 0);
-        FUN_1412751b0(FUN_14028b8e0(L"s_msg_skillbook_apply_skill"), 0x14);
+        FUN_1412751b0(GetStringCommonByKey(L"s_msg_skillbook_apply_skill"), 0x14);
         return 1;
     }
     else if (_stricmp("onResetSkill", szMethod) == 0)
@@ -2263,7 +2263,7 @@ int UISkillBookTreeDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             CStringW strId = dataName.FUN_1422b8f40();
             __int64 nTabId = FUN_140718370(strId);
             CStringW strName = dataName.FUN_1422b8f40();
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10, FUN_14028b8e0(L"s_skillbook_tree_config_rename_tab"), 0, L"");
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10, GetStringCommonByKey(L"s_skillbook_tree_config_rename_tab"), 0, L"");
             if (spBox.get() != 0)
             {
                 spBox->FUN_141a01d30(0, strName, 10, 0, 0);
@@ -2294,7 +2294,7 @@ int UISkillBookTreeDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             spBox->FUN_141a01800(1);
             MS2Ptr<Unk_SkillCoupon> spCoupon = DAT_143ab2a90.FUN_140a5e040(0x76);
             bool bHasCoupon = spCoupon.get() != 0;
-            spBox->FUN_141a024e0(FUN_14028b8e0(L"s_skillbook_tree_config_payment_add_tab_coupon"), bHasCoupon);
+            spBox->FUN_141a024e0(GetStringCommonByKey(L"s_skillbook_tree_config_payment_add_tab_coupon"), bHasCoupon);
             spBox->FUN_141a02670(bHasCoupon);
             spBox->FUN_141a027c0(SkillBoxDelegate(this, &UISkillBookTreeDialog::OnAddTabPayConfirm));
             FUN_140d73c60(spBox);
@@ -2317,7 +2317,7 @@ int UISkillBookTreeDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             int nMax = FUN_1401d7a50()->FUN_140644b80(FUN_141654730(pPlayer));
             if (nMax < nJob)
             {
-                FUN_1412751f0(FUN_14028b8e0(L"s_skillbook_tree_disable_sub_job_skill"), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(L"s_skillbook_tree_disable_sub_job_skill"), 1, 1);
                 UpdateSubJobLevel();
                 return 1;
             }

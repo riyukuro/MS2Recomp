@@ -248,7 +248,7 @@ void FUN_140a1f970(void*, const CString&, const CString&);
 void* FUN_1403ed2b0();
 void FUN_141adbea0(void*);
 CStringW FUN_1408116a0(int, const int&);
-CStringW FUN_14028de60(unsigned);
+CStringW GetStringCommon(unsigned);
 CStringW FUN_1401d0080(const CStringW&, const CStringW&);
 CStringW FUN_14052bd00(unsigned, const CStringW&);
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
@@ -683,7 +683,7 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
                     {
                         nMsgId = 0xd28;
                     }
-                    CStringW strReason = FUN_14028de60(nMsgId);
+                    CStringW strReason = GetStringCommon(nMsgId);
                     if (!strReason.IsEmpty())
                         strReason += L" : ";
                     CStringW strCode;

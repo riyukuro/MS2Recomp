@@ -339,8 +339,8 @@ CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& n);      // StringFor
 CStringW FUN_140763e10(int nAmount);                                // the amount with separators
 CStringW FUN_1409404f0(__int64 nPrice);
 CStringW FUN_1418fec00(int nPayType, __int64 nAmount, int n);
-CStringW FUN_14028b8e0(const CStringW& strKey);
-CStringW FUN_14028de60(int nId);
+CStringW GetStringCommonByKey(const CStringW& strKey);
+CStringW GetStringCommon(int nId);
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& strA, const CStringW& strB);
 CStringW FUN_14052bd00(int nId, const CStringW& str);
 CStringW FUN_141813300(Unk_CashStrings* pStrings, int nId);
@@ -1028,7 +1028,7 @@ void UICashShopDialog::FUN_141037360()
             continue;
         if (spRow->m_strSender.GetLength() == 0)
             continue;
-        CStringW strText = FUN_140656190(FUN_14028de60(0xa66), spRow->m_strSender, spRow->m_strMessage);
+        CStringW strText = FUN_140656190(GetStringCommon(0xa66), spRow->m_strSender, spRow->m_strMessage);
         MS2Ptr<CItem> spGift(new CItem());
         if (spGift->FUN_140523c40(spRow->m_nItemId, 1, 0) == 0)
             continue;
@@ -1183,7 +1183,7 @@ bool UICashShopDialog::FUN_1410382a0(MS2Ptr<TMarketBillDataParam> spParam, const
         if (!FUN_141037cd0(spProduct->m_nItemId, &nReason, &nTab)) {
             CStringW strText;
             if (nTab < 0)
-                strText = FUN_14028de60(nReason);
+                strText = GetStringCommon(nReason);
             else
                 strText = FUN_14052bd00(nReason, FUN_141813300(FUN_1401a9d70(), nTab));
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strText), 0, CStringW(L""));
@@ -1327,7 +1327,7 @@ void UICashShopDialog::FUN_1410398f0(const CString& strSide)
 // @0x141039a90
 void UICashShopDialog::FUN_141039a90()
 {
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(FUN_14028b8e0(CStringW(L"s_cashshop_lack_balance_ask")), 1);
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(CStringW(L"s_cashshop_lack_balance_ask")), 1);
     if (spBox.get() != 0) {
         spBox->FUN_141a027c0(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_14103a040));
         FUN_140d73c60(spBox);

@@ -174,7 +174,7 @@ static CString s_stun("stun");
 // ---- unrecovered neighbours ------------------------------------------------------------------------------------------
 unsigned FUN_140869420();                                   // the frame tick (ms)
 WorldService* FUN_1403ed2d0();
-CStringW FUN_14028de60(int nStringId);                      // the client string table
+CStringW GetStringCommon(int nStringId);                      // the client string table
 CStringW FUN_14016a730(const char* psz, int nCodePage);      // multi-byte to wide
 
 // A portal of the field (the world service's field objects; class of unit_14169afb0, unrecovered); only the members
@@ -466,7 +466,7 @@ public:
 bool FUN_140a55d20(CFieldDataCli* pField, CStringW* pstrError);   // the field can be entered (else the reason)
 CStringW FUN_1416e4df0(int nQuestId);                       // the quest name
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);   // a formatted string by key
-CStringW FUN_14028b8e0(const CStringW& strKey);             // a string by key
+CStringW GetStringCommonByKey(const CStringW& strKey);             // a string by key
 // Micro-game banner (BannerAction).
 bool FUN_140b7f400(MyPC* pPlayer);                          // the player can join a micro game
 class Unk_PCBaseComp_ac8 : public CPtred                    // PCBase slot 87 (UIBanner::Entity)
@@ -917,7 +917,7 @@ void TaxiStationAction::vfunc_2()
 }
 MS2_REPLACE_METHOD(0x14095BEF0, TaxiStationAction, vfunc_2, 144, 0x65EC98D4);
 // @0x14095bfb0
-CStringW TaxiStationAction::vfunc_6() { return FUN_14028de60(0x64a); }
+CStringW TaxiStationAction::vfunc_6() { return GetStringCommon(0x64a); }
 MS2_REPLACE_METHOD(0x14095BFB0, TaxiStationAction, vfunc_6, 58, 0x4AB33250);
 
 // ---- FishingAction ---------------------------------------------------------------------------------------------------
@@ -933,7 +933,7 @@ MS2_REPLACE_METHOD(0x14095CFB0, FishingAction, vfunc_2, 27, 0x585EBA68);
 int FishingAction::vfunc_5() { return 5; }
 MS2_REPLACE_METHOD(0x14095CFE0, FishingAction, vfunc_5, 11, 0xCA9EB45C);
 // @0x14095d000
-CStringW FishingAction::vfunc_6() { return FUN_14028de60(0x658); }
+CStringW FishingAction::vfunc_6() { return GetStringCommon(0x658); }
 MS2_REPLACE_METHOD(0x14095D000, FishingAction, vfunc_6, 58, 0x6AB4AFF6);
 
 // ---- PortalAction ----------------------------------------------------------------------------------------------------
@@ -1094,7 +1094,7 @@ CStringW PortalAction::vfunc_6()
     CStringW strText;
     if (nMapId != 0)
     {
-        strText = FUN_14028de60(0x632);
+        strText = GetStringCommon(0x632);
     }
     else
     {
@@ -1103,7 +1103,7 @@ CStringW PortalAction::vfunc_6()
             strName = FUN_1401a9d70()->FUN_141811980(3, nTarget);
         MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(nTarget);
         if (spField == 0)
-            return FUN_14028de60(0x632);
+            return GetStringCommon(0x632);
         CStringW strError;
         if (spField.get())
         {
@@ -1224,7 +1224,7 @@ void PortalAction::FUN_140956370(unsigned nTarget, unsigned nPortalId)
     }
     else
     {
-        CStringW strTitle = FUN_14028de60(0xb07);
+        CStringW strTitle = GetStringCommon(0xb07);
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(strTitle, 10);
         CStringW strDefault = L"";
         spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &PortalAction::FUN_140956be0));
@@ -1250,7 +1250,7 @@ bool PortalAction::FUN_140956be0(int nButton, const CMsgBoxData& data)
         data.FUN_140961900(1, nPortalId);
         MS2Ptr<Unk_AkoPortal> spPortal = reinterpret_cast<Unk_AkoWorldView*>(FUN_1403ed2d0())->FUN_141bc2800(nPortalId);
         if (spPortal == 0)
-            FUN_1412751f0(FUN_14028b8e0(L"s_action_portal_invalid_portal"), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_action_portal_invalid_portal"), 1, 1);
         else
             pPlayer->SendRequestMoveFieldMode0(nTarget, nPortalId, 0, 0, strPassword, L"");
     }
@@ -1354,7 +1354,7 @@ MS2_REPLACE_METHOD(0x1409570C0, BuyCubeAction, vfunc_3, 117, 0xDB2B41EC);
 int BuyCubeAction::vfunc_5() { return 0x16; }
 MS2_REPLACE_METHOD(0x140957140, BuyCubeAction, vfunc_5, 11, 0x671D62B5);
 // @0x140957160
-CStringW BuyCubeAction::vfunc_6() { return FUN_14028de60(0x635); }
+CStringW BuyCubeAction::vfunc_6() { return GetStringCommon(0x635); }
 MS2_REPLACE_METHOD(0x140957160, BuyCubeAction, vfunc_6, 58, 0xE8BBC9CB);
 // @0x1409571a0
 void BuyCubeAction::FUN_1409571a0(egf::EntityID id, int bSelect)
@@ -1528,7 +1528,7 @@ CStringW TalkAction::vfunc_6()
         return L"";
     CStringW strText = FUN_1401a9d70()->FUN_141811980(0xe, m_n18);
     if (strText.GetLength() == 0)
-        strText = FUN_14028de60(0x62d);
+        strText = GetStringCommon(0x62d);
     CStringW strName = FUN_14052bd00(0x649, m_strName);
     if (strName.GetLength() != 0)
         strText.Append(strName);
@@ -1651,7 +1651,7 @@ void InteractAction::vfunc_2()
                     FUN_140966f80(reinterpret_cast<const Unk_AkoReqItemList&>(spData->m_aReqItem)),
                     CString("name"))), 1, 1);
         else
-            FUN_1412751f0(FUN_14028b8e0(L"s_interact_err_additional_effect_multi"), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_interact_err_additional_effect_multi"), 1, 1);
         return;
     }
     if (spData->m_room.m_nPartyPortal != 0 && !TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())   // <room> "partyPortal": needs a party
@@ -1827,7 +1827,7 @@ void ViewCubeMapProfileAction::vfunc_2()
 }
 MS2_REPLACE_METHOD(0x140959720, ViewCubeMapProfileAction, vfunc_2, 135, 0xF03EB00E);
 // @0x1409597d0
-CStringW ViewCubeMapProfileAction::vfunc_6() { return FUN_14028de60(0x648); }
+CStringW ViewCubeMapProfileAction::vfunc_6() { return GetStringCommon(0x648); }
 MS2_REPLACE_METHOD(0x1409597D0, ViewCubeMapProfileAction, vfunc_6, 58, 0xEF3DA54E);
 
 // ---- RegistUgcAction -------------------------------------------------------------------------------------------------
@@ -1889,11 +1889,11 @@ CStringW RegistUgcAction::vfunc_6()
         return L"";
     CStringW strText;
     if (spBanner->m_nAd == 0)
-        strText = FUN_14028de60(0x64d);
+        strText = GetStringCommon(0x64d);
     else if (spBanner->m_nAd == 1)
-        strText = FUN_14028de60(0x637);
+        strText = GetStringCommon(0x637);
     else if (spBanner->m_nAd == 2)
-        strText = FUN_14028de60(0x65b);
+        strText = GetStringCommon(0x65b);
     return strText;
 }
 MS2_REPLACE_METHOD(0x140959AE0, RegistUgcAction, vfunc_6, 644, 0x60ED213D);
@@ -2054,7 +2054,7 @@ Unk_AkoTarget PullObjectWeaponAction::vfunc_12()
 }
 MS2_REPLACE_METHOD(0x14095A980, PullObjectWeaponAction, vfunc_12, 115, 0x730CB897);
 // @0x14095a940
-CStringW PullObjectWeaponAction::vfunc_6() { return FUN_14028de60(0x63c); }
+CStringW PullObjectWeaponAction::vfunc_6() { return GetStringCommon(0x63c); }
 MS2_REPLACE_METHOD(0x14095A940, PullObjectWeaponAction, vfunc_6, 58, 0xDC4D8F98);
 
 // ---- PutDownLiftableAction -------------------------------------------------------------------------------------------
@@ -2104,7 +2104,7 @@ void PutDownLiftableAction::vfunc_2()
 }
 MS2_REPLACE_METHOD(0x14095AD50, PutDownLiftableAction, vfunc_2, 75, 0xE574BACD);
 // @0x14095add0
-CStringW PutDownLiftableAction::vfunc_6() { return FUN_14028de60(0x63d); }
+CStringW PutDownLiftableAction::vfunc_6() { return GetStringCommon(0x63d); }
 MS2_REPLACE_METHOD(0x14095ADD0, PutDownLiftableAction, vfunc_6, 58, 0x6B710DAF);
 
 // ---- FunctionCubeAction ----------------------------------------------------------------------------------------------
@@ -2268,7 +2268,7 @@ CStringW FittingDollAction::vfunc_6()
     Unk_AkoFittingDoll* pDoll = efd::DynamicCast<Unk_AkoFittingDoll>(reinterpret_cast<Unk_AkoWorldView*>(FUN_1403ed2d0())->FUN_141bd0fa0(m_id));
     if (pDoll)
         strName = FUN_1401a9d70()->FUN_141811980(1, pDoll->FUN_140967160());
-    return FUN_1401d0080(FUN_14061ad70(FUN_14028de60(0x646), L" - "), strName);
+    return FUN_1401d0080(FUN_14061ad70(GetStringCommon(0x646), L" - "), strName);
 }
 MS2_REPLACE_METHOD(0x14095BA60, FittingDollAction, vfunc_6, 386, 0x7FA9427E);
 // @0x14095bc10
@@ -2377,13 +2377,13 @@ CStringW HoldAction::vfunc_6()
     {
         m_n1c = 1;
         if (m_nNpcId == 0xa7e02a)
-            return FUN_14028b8e0(L"s_action_hold_end_cart");
-        return FUN_14028de60(0x653);
+            return GetStringCommonByKey(L"s_action_hold_end_cart");
+        return GetStringCommon(0x653);
     }
     m_n1c = 0;
     if (m_nNpcId == 0xa7e02a)
-        return FUN_14028b8e0(L"s_action_hold_cart");
-    return FUN_14028de60(0x652);
+        return GetStringCommonByKey(L"s_action_hold_cart");
+    return GetStringCommon(0x652);
 }
 MS2_REPLACE_METHOD(0x14095C560, HoldAction, vfunc_6, 326, 0x539E029C);
 
@@ -2465,7 +2465,7 @@ MS2_REPLACE_METHOD(0x14095C9A0, HoldPCAction, vfunc_2, 262, 0xBF53E2D3);
 CStringW HoldPCAction::vfunc_6()
 {
     if (m_n18 != 0)
-        return FUN_14028b8e0(L"s_action_hold_pc");
+        return GetStringCommonByKey(L"s_action_hold_pc");
     return L"";
 }
 MS2_REPLACE_METHOD(0x14095CAD0, HoldPCAction, vfunc_6, 144, 0xC108C110);
@@ -2542,7 +2542,7 @@ CStringW ReleasePCAction::vfunc_6()
 {
     MyPC* pPlayer = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPlayer && pPlayer->FUN_14166c930() == 0x20 && m_n18 != 0)
-        return FUN_14028b8e0(L"s_action_hold_pc_end");
+        return GetStringCommonByKey(L"s_action_hold_pc_end");
     return L"";
 }
 MS2_REPLACE_METHOD(0x14095CEB0, ReleasePCAction, vfunc_6, 185, 0x053AD904);
@@ -2824,10 +2824,10 @@ CStringW NurturingCubeAction::vfunc_6()
     if (!pPlayer)
         return L"";
     if (m_n30 != 0)
-        return FUN_140960c30(0x634, FUN_14028b8e0(L"s_action_nurturing_gift"));
+        return FUN_140960c30(0x634, GetStringCommonByKey(L"s_action_nurturing_gift"));
     if (Unk_AkoHouseSvc::GetInstance()->FUN_1410c3180() == reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_141656ad0())
-        return FUN_140960c30(0x634, FUN_14028b8e0(L"s_action_nurturing_eat"));
-    return FUN_140960c30(0x634, FUN_14028b8e0(L"s_action_nurturing_play"));
+        return FUN_140960c30(0x634, GetStringCommonByKey(L"s_action_nurturing_eat"));
+    return FUN_140960c30(0x634, GetStringCommonByKey(L"s_action_nurturing_play"));
 }
 MS2_REPLACE_METHOD(0x14095E870, NurturingCubeAction, vfunc_6, 490, 0x7769ECD3);
 // @0x14095ea60
@@ -2889,11 +2889,11 @@ CStringW BannerAction::vfunc_6()
     switch (m_n18)
     {
     case 1:
-        return FUN_14028de60(0x65d);
+        return GetStringCommon(0x65d);
     case 2:
-        return FUN_14028b8e0(L"s_action_banner_couple_dance");
+        return GetStringCommonByKey(L"s_action_banner_couple_dance");
     default:
-        return FUN_14028de60(0x65c);
+        return GetStringCommon(0x65c);
     }
 }
 MS2_REPLACE_METHOD(0x14095ED20, BannerAction, vfunc_6, 191, 0x7C5FCB93);
@@ -2992,10 +2992,10 @@ void ReactorAction::vfunc_2()
     case 0:
         break;
     case 6:
-        FUN_1412751f0(FUN_14028b8e0(L"s_reactor_action_failed_reward_count"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_reactor_action_failed_reward_count"), 1, 1);
         return;
     default:
-        FUN_1412751f0(FUN_14028b8e0(L"s_reactor_action_failed"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_reactor_action_failed"), 1, 1);
         return;
     }
     if (spData->m_nReactTimeMSec != 0)
@@ -3039,7 +3039,7 @@ CStringW ReactorAction::vfunc_6()
     MS2Ptr<ReactorStateData> spState = spReactor->FUN_140966db0();
     if (spState == 0)
         return L"";
-    CStringW strAction = FUN_14028b8e0(spState->m_strActionStringKey);
+    CStringW strAction = GetStringCommonByKey(spState->m_strActionStringKey);
     if (strAction.GetLength() < 1)
         return L"";
     return FUN_140960c30(0x65e, strAction);
@@ -3320,11 +3320,11 @@ CStringW TreeWateringAction::vfunc_6()
     {
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5e2e0(spContext->m_nWaterItemId);
         if (spItem.get() != 0)
-            return FUN_14028de60(0xd19);
+            return GetStringCommon(0xd19);
     }
     CMsTime now(FUN_140869440());
     if (spContext->FUN_1404038c0(now) == 1 && m_n1c < spContext->m_nBonusLimit)
-        return FUN_14028de60(0xd1a);
+        return GetStringCommon(0xd1a);
     return CStringW(L"");
 }
 MS2_REPLACE_METHOD(0x140960A10, TreeWateringAction, vfunc_6, 529, 0x58A43792);

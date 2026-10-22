@@ -57,7 +57,7 @@ CStringW FUN_1409e8970(CStringW strKey, const int& nA, const int& nB);
 CStringW FUN_14062b4f0(CStringW strKey, const int* pnValue);   // string table text with one number
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& pkt);
@@ -139,7 +139,7 @@ void UIHomeResizeDialog::OnShrinkArea()
             MS2Ptr<ExtendAreaInfo> spPrev = FUN_140933200()->GetPreviousArea(nArea);
             if (spPrev == 0) {
                 CStringW strKey(L"s_ugcmap_cant_shrink_area_level_anymore");
-                FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
             } else {
                 CStringW strMsg = FUN_1409e8970(CStringW(L"s_home_shrink_area_messagebox"), nArea, spPrev->m_nArea);
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
@@ -165,7 +165,7 @@ void UIHomeResizeDialog::OnShrinkHeight()
             MS2Ptr<ExtendHeightInfo> spPrev = FUN_140933200()->GetPreviousHeight(nHeight);
             if (spPrev == 0) {
                 CStringW strKey(L"s_ugcmap_cant_shrink_height_level_anymore");
-                FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
             } else {
                 CStringW strMsg = FUN_1409e8970(CStringW(L"s_home_shrink_height_messagebox"), nHeight, spPrev->m_nHeight);
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));

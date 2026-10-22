@@ -84,7 +84,7 @@ Unk_WrUIManager* FUN_1403ed2b0();
 bool FUN_140900f30(__int64 nTime);                              // the time is at night
 CStringW FUN_1409404f0(__int64 n);                              // a number with digit grouping
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);  // string table text with one argument
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // the localized string
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // the localized string
 
 void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned long long n);
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
@@ -344,7 +344,7 @@ void UIWeddingHallReservationDialog::FUN_140fdc180()
     MS2Ptr<UIBillDialog::TData> spBill(new UIBillDialog::TData());
     MS2Ptr<AScript> spData(new ASObj(2));
     static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("category",
-        FUN_14028b8e0(StringFormat(L"s_wedding_reservation_hall_bill_category_grade_{0}", spHall->m_nGrade)));
+        GetStringCommonByKey(StringFormat(L"s_wedding_reservation_hall_bill_category_grade_{0}", spHall->m_nGrade)));
     unsigned nFieldId = spHall->FUN_140906e40(FUN_140900f30(m_nTime));
     CStringW strDetail = CStringTable::GetInstance()->FUN_141811980(3, nFieldId);
     CStringW strPrice = FUN_14052bd00(0x987, FUN_1409404f0(spHall->m_nMerat));
@@ -360,8 +360,8 @@ void UIWeddingHallReservationDialog::FUN_140fdc180()
     if (spCoupon.get() != 0)
     {
         spBill->m_60 = 1;
-        spBill->m_50 = FUN_14028b8e0(CStringW(L"s_wedding_reservation_coupon_checkbox"));
-        spBill->m_58 = FUN_14028b8e0(CStringW(L"s_wedding_reservation_coupon_warn"));
+        spBill->m_50 = GetStringCommonByKey(CStringW(L"s_wedding_reservation_coupon_checkbox"));
+        spBill->m_58 = GetStringCommonByKey(CStringW(L"s_wedding_reservation_coupon_warn"));
     }
     spBill->m_34 = 4;
     spBill->m_48 = (int)spHall->m_nMerat;

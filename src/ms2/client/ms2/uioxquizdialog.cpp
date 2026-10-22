@@ -21,7 +21,7 @@ class ASDialog : public ASDisplayObject {};
 int FUN_1418fd280();                                    // the player is in the OX quiz field
 int FUN_1418fd2f0();                                    // the OX quiz is running
 unsigned FUN_140869420();                               // the client tick (ms)
-CStringW FUN_14028de60(int nId);                        // a common string by id
+CStringW GetStringCommon(int nId);                        // a common string by id
 void FUN_140dff2b0();                                   // the OX quiz manager: request the promote
 void FUN_140dfeeb0();                                   // the OX quiz manager: request a new quiz
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);
@@ -103,8 +103,8 @@ void UIOxQuizDialog::FUN_140e6e640()
 void UIOxQuizDialog::FUN_140e6e6c0(float fRemain, float fTotal)
 {
     if (ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30))
-        pDialog->Invoke("setQuizPromoteCooltime", fRemain, fTotal, FUN_14028de60(0x5ce), FUN_14028de60(0x5cc),
-                        FUN_14028de60(0x5ca), FUN_14028de60(0x5cb));
+        pDialog->Invoke("setQuizPromoteCooltime", fRemain, fTotal, GetStringCommon(0x5ce), GetStringCommon(0x5cc),
+                        GetStringCommon(0x5ca), GetStringCommon(0x5cb));
     m_178 = FUN_140869420() - (unsigned)((fTotal - fRemain) * 1000.0f);
     m_17c = fTotal;
 }

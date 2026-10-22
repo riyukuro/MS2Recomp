@@ -52,7 +52,7 @@ bool FUN_14025cd60(const CStringW& a, const CStringW& b);               // equal
 int FUN_1406516b0();                                                    // current language id
 unsigned FUN_140768010(unsigned nCount, unsigned nBase);                // random index
 bool FUN_141900c80(int nButton, const CMsgBoxData& box);
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 CSoundEventMgr* FUN_140d13c40();
 CEffectService* FUN_1403ed280();
 extern NiPoint3 DAT_143b01a60;                                          // the zero point
@@ -333,13 +333,13 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
                     else
                     {
                         spJob.operator->()->m_nJobCode = nJobCode;
-                        spJob.operator->()->m_strName = FUN_1401a9d70()->FUN_141811980(
+                        spJob.operator->()->m_strName = GetStringTable()->FUN_141811980(
                             6, JobTable::GetInstance()->GetSubJob1(nJobCode));
                         FUN_140873ad0(pRow, "movie", spJob.operator->()->m_strMovie);
                         int nDescKey = 0;
                         FUN_1408731e0(pRow, "descKey", nDescKey);
                         if (nDescKey != 0)
-                            spJob.operator->()->m_strDesc = FUN_1401a9d70()->FUN_141811980(0x1c, nDescKey);
+                            spJob.operator->()->m_strDesc = GetStringTable()->FUN_141811980(0x1c, nDescKey);
                         mapJobs.SetAt(nJobCode, spJob);
                     }
                 }

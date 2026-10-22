@@ -57,7 +57,7 @@ CString FUN_1401d9af0(const char* pszFormat, const __int64* pn);            // S
 CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& n);
 CStringW FUN_1402a5170(const wchar_t* pszFormat, const CString& str);
 CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);         // format a string-table text with one argument
-CStringW FUN_14028b8e0(const CStringW& strKey);                             // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_140719630(int n);                                              // number with thousands separators
 CStringW FUN_14083cb20(const CStringW& str);
 CStringW FUN_1416e7fb0(int nChapter);                                       // chapter name
@@ -237,7 +237,7 @@ void UILearningQuestDialog::FUN_140ea15d0(int bPickCategory)
         m_1a0 = m_198;
     }
     static_cast<Unk_LqRoot*>(m_30.operator->())->FUN_140ba4cc0("setData", data);
-    CStringW strCategory = FUN_14028b8e0(FUN_1401ceea0(L"s_learning_quest_category_{0}", m_190));
+    CStringW strCategory = GetStringCommonByKey(FUN_1401ceea0(L"s_learning_quest_category_{0}", m_190));
     MS2Ptr<ASTextField> spName = FUN_140bb4cf0("m_name");
     if (spName.get() != 0)
     {

@@ -65,7 +65,7 @@ class Unk_IpOutfit : public CPtred { public: MS2Ptr<Unk_IpOutfitView> FUN_140d3c
 class Unk_EquipOutfit : public CPtred { public: Unk_EquipOutfit(); };
 class Unk_IpPlayer { public: void* FUN_141bd0cc0(); };
 Unk_IpPlayer* FUN_1403ed2d0();
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 CItemData* FUN_140527840(CItem* pItem);
 bool FUN_141b487f0(MS2Ptr<CItemData> spData);
 void FUN_1418bee30(ASObj* pObj, int n);
@@ -159,8 +159,8 @@ void UIItemPreviewDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* 
                 }
             }
         }
-        if (bNoSlot) spMessage->FUN_1422c4cd0(FUN_14028de60(0x9b8));
-        else spMessage->FUN_1422c4cd0(FUN_14028de60(0));
+        if (bNoSlot) spMessage->FUN_1422c4cd0(GetStringCommon(0x9b8));
+        else spMessage->FUN_1422c4cd0(GetStringCommon(0));
         MS2Ptr<CItem> spShown = FUN_1409bb9e0()->FUN_140d40500();
         FUN_1412d6330(spShown);
     }

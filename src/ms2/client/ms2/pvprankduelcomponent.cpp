@@ -79,8 +79,8 @@ class Unk_RankUIService { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); int F
 Unk_RankUIService* FUN_1403ed2b0();
 void* FUN_1403ed2d0();
 void FUN_141276180(const CString& strName, const CString& strExtra);
-CStringW FUN_14028b8e0(const CStringW& str);
-CStringW FUN_14028de60(int nId);
+CStringW GetStringCommonByKey(const CStringW& str);
+CStringW GetStringCommon(int nId);
 void FUN_140d73aa0(CStringW text, int nA, int nB, CStringW tag);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, IMessageListener* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
@@ -241,16 +241,16 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
             if (pDialog)
             {
                 pDialog->FUN_140f94390();
-                CStringW strText(FUN_14028b8e0(CStringW(L"s_rank_duel_matching_complete")));
+                CStringW strText(GetStringCommonByKey(CStringW(L"s_rank_duel_matching_complete")));
                 MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0, strText, pDialog, DAT_143ac4878);
                 if (box.get())
                 {
-                    box->FUN_141a01ca0(0xf, 1, FUN_14028de60(0x2b8));
+                    box->FUN_141a01ca0(0xf, 1, GetStringCommon(0x2b8));
                     box->FUN_141a02460(1);
                     box->FUN_141a02480(1);
                     box->FUN_141a024a0(0);
                     box->FUN_141a024c0();
-                    box->FUN_141a01690(FUN_14028b8e0(CStringW(L"s_rank_duel_immediately_join")), CStringW(L""), CStringW(L""));
+                    box->FUN_141a01690(GetStringCommonByKey(CStringW(L"s_rank_duel_immediately_join")), CStringW(L""), CStringW(L""));
                     FUN_140d73c60(box);
                 }
             }
@@ -262,7 +262,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
             UIRankPvPDialog* pDialog = Unk_RankDialog<UIRankPvPDialog>(0x4f04);
             if (pDialog)
                 pDialog->FUN_140f94390();
-            FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_rank_duel_matching_fail")), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_rank_duel_matching_fail")), 0, 0, CStringW(L""));
             RANK_SFX(DAT_143ac4888);
         }
     }
@@ -303,14 +303,14 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
             return;
         if (FUN_140c9b8b0(FUN_1409a8b10())->m_observer)
         {
-            CStringW strText(FUN_14028b8e0(CStringW(L"s_rank_duel_matching_complete_to_observe")));
+            CStringW strText(GetStringCommonByKey(CStringW(L"s_rank_duel_matching_complete_to_observe")));
             UIRankPvPDialog* pDialog = Unk_RankDialog<UIRankPvPDialog>(0x4f04);
             if (pDialog == 0)
                 return;
             MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, strText, pDialog, DAT_143ac4890);
             if (box.get())
             {
-                box->FUN_141a01ca0(0xf, 1, FUN_14028de60(0x2b8));
+                box->FUN_141a01ca0(0xf, 1, GetStringCommon(0x2b8));
                 box->FUN_141a02460(1);
                 box->FUN_141a02480(1);
                 box->FUN_141a024a0(0);

@@ -37,8 +37,8 @@ struct Unk_MiPlayer;
 struct Unk_MiActionState;
 struct Unk_MiTextMgr { CStringW FUN_141811980(int nType, int nId); };
 Unk_MiTextMgr* FUN_1401a9d70();
-CStringW FUN_14028de60(int nStringId);
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommon(int nStringId);
+CStringW GetStringCommonByKey(const CStringW& str);
 CStringW FUN_1405c2690(CStringW fmt, const CStringW& arg);
 CStringW FUN_1408f71a0(CStringW fmt, const CStringW& a, const CStringW& b);
 struct Unk_MiNpcView { CStringW FUN_141093310(); };       // npc name (member: this=rcx, hidden return=rdx)
@@ -412,7 +412,7 @@ int CMouseInteractNpc::vfunc_1(Unk_MouseRay* pRay)
         unsigned nNpcId = FUN_141092fa0(pNpc);
         CStringW strName = FUN_1401a9d70()->FUN_141811980(0xe, nNpcId);
         if (strName.GetLength() == 0)
-            strName = FUN_14028de60(0x62d);
+            strName = GetStringCommon(0x62d);
         pRay->strCursor = FUN_1408f71a0(CStringW(L"s_mouse_interact_talk"), strName, reinterpret_cast<Unk_MiNpcView*>(pNpc)->FUN_141093310());
     } else {
         pRay->strCursor = FUN_1405c2690(CStringW(L"s_mouse_interact_hold"), reinterpret_cast<Unk_MiNpcView*>(pNpc)->FUN_141093310());
@@ -769,7 +769,7 @@ int CMouseInteractDynamicModel::vfunc_1(Unk_MouseRay* pRay)
 {
     if (!vfunc_2(pRay))
         return 0;
-    pRay->strCursor = FUN_14028b8e0(m_strCursor);
+    pRay->strCursor = GetStringCommonByKey(m_strCursor);
     return 1;
 }
 // @0x140a7a810
@@ -884,7 +884,7 @@ int CMouseInteractTalkCancel::vfunc_1(Unk_MouseRay* pRay)
 {
     if (!vfunc_2(pRay))
         return 0;
-    pRay->strCursor = FUN_14028b8e0(L"s_mouse_interact_talk_end");
+    pRay->strCursor = GetStringCommonByKey(L"s_mouse_interact_talk_end");
     return 1;
 }
 // @0x140a7ac80
@@ -923,7 +923,7 @@ int CMouseInteractWeaponObject::vfunc_1(Unk_MouseRay* pRay)
     FindTarget(&hit, &pRay->vOrigin, &pRay->vEnd);
     Unk_WeaponEnt* pEnt = FUN_140885330(&hit);
     if (pEnt != 0) {
-        pRay->strCursor = FUN_14028de60(0x63c);
+        pRay->strCursor = GetStringCommon(0x63c);
         Unk_Vec3 vTmp;
         FUN_140194470(&pRay->vPick, FUN_1408b5370(FUN_140885350(&hit), &vTmp));
     }

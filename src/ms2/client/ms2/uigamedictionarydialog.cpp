@@ -130,8 +130,8 @@ class Unk_DictPlayerMgr { public: void* FUN_141bd0cc0(); };
 Unk_DictPlayerMgr* FUN_1403ed2d0();
 class Unk_DictTextHook { public: void FUN_1416fbf20(CStringW& str); };
 Unk_DictTextHook* FUN_1403b4750();
-CStringW FUN_14028de60(int nStringId);                      // common string by id
-CStringW FUN_14028b8e0(const CStringW& strKey);             // common string by key
+CStringW GetStringCommon(int nStringId);                      // common string by id
+CStringW GetStringCommonByKey(const CStringW& strKey);             // common string by key
 CStringW FUN_1409eec40(int nStringId);
 void FUN_140d73aa0(CStringW str, int a, int b, CStringW strExtra);
 int FUN_14083fec0(CStringW strText, CStringW strSearch);    // find the search text (-1 = none)
@@ -547,9 +547,9 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                         unsigned short nLevel = pNpc->GetLevel();
                         CStringW strMini;
                         if (entry.m_invisibleLevel == 0)
-                            strMini = FUN_14052b9d0(CStringW(L"s_gamedictionary_monster_mini_info"), nLevel, FUN_14028de60(aGradeNames[nGrade]));
+                            strMini = FUN_14052b9d0(CStringW(L"s_gamedictionary_monster_mini_info"), nLevel, GetStringCommon(aGradeNames[nGrade]));
                         else
-                            strMini = FUN_1405c2690(CStringW(L"s_gamedictionary_monster_mini_info_invisible_level"), FUN_14028de60(aGradeNames[nGrade]));
+                            strMini = FUN_1405c2690(CStringW(L"s_gamedictionary_monster_mini_info_invisible_level"), GetStringCommon(aGradeNames[nGrade]));
                         detail.FUN_1407cbb20("npcInfo", CStringW(strMini));
                         CStringW strRace = FUN_1401a9d70()->FUN_141811980(0x11, pNpc->GetRace());
                         CStringW strMaps;
@@ -580,14 +580,14 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                             {
                                 int nMinute = time.GetMinute();
                                 CStringW strClock = FUN_140f48210(time.GetHour(), nMinute);
-                                CStringW strGuarantee = FUN_14028b8e0(CStringW(L"s_spawnnpc_guarantee"));
+                                CStringW strGuarantee = GetStringCommonByKey(CStringW(L"s_spawnnpc_guarantee"));
                                 strMaps += L" ";
                                 strMaps += FUN_1401e8510(strGuarantee, strClock);
                             }
                         }
                         CStringW strContent;
                         if (strMaps.IsEmpty())
-                            strContent = FUN_1408f71a0(CStringW(L"s_gamedictionary_monster_content"), strRace, FUN_14028de60(0x573));
+                            strContent = FUN_1408f71a0(CStringW(L"s_gamedictionary_monster_content"), strRace, GetStringCommon(0x573));
                         else
                             strContent = FUN_1408f71a0(CStringW(L"s_gamedictionary_monster_content"), strRace, strMaps);
                         FUN_1403b4750()->FUN_1416fbf20(strContent);

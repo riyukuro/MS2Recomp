@@ -55,7 +55,7 @@ int* FUN_1401d7c10(void* pValue);
 AScript& FUN_1409edaf0(AScript& dst, const AScript& src);          // AScript::operator=
 int FUN_140ec04b0(CMeratMarketPremiumProduct* pProduct);
 
-CStringW FUN_14028b8e0(const CStringW& strKey);
+CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_1408116a0(int nId, const int& nArg);
 CStringW FUN_14083dc40(const wchar_t* szFormat, const int& a, const int& b);
 CStringW FUN_14093bd40(int nAchieve, int nGrade, CStringW strDefault);
@@ -142,7 +142,7 @@ int FUN_140ec2b60(void* pValue);
 __int64 FUN_14028d0e0();
 void FUN_140892da0(CUgcItemLook* pDest, const CUgcItemLook* pSource);
 extern Unk_Inventory DAT_143ab2a90;
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 int FUN_140ec2ac0(MS2Ptr<CItemData> spData);
 MS2Ptr<CItem> FUN_140ebc360(int nItemId, int nGrade);
 CStringW FUN_14093fa20(int nStringId, const CStringW& strName, const int& nCount);
@@ -368,7 +368,7 @@ bool FUN_140ebc630(MS2Ptr<CMeratMarketProduct> spProduct, int nPayType)
         {
             pPlatform = FUN_140d86260();
             if (pPlatform->vfunc_39(nPrice, -1) == 1)
-                FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_meratmarket_buy_fail_music_score_by_merat_grade")), 0, 0, CStringW(L""));
+                FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_meratmarket_buy_fail_music_score_by_merat_grade")), 0, 0, CStringW(L""));
             else
                 FUN_1418ff710(FUN_14069c3e0(nPayType), nPrice, 0, 1);
             return false;
@@ -414,7 +414,7 @@ bool FUN_140ebc850(MS2Ptr<ASArray> spItems)
         int nNeed = counts[nTab];
         if (0 < nNeed && DAT_143ab2a90.FUN_140a615d0(nTab) < nNeed)
         {
-            FUN_140d73aa0(FUN_14093fa20(0xa01, FUN_1401a9d70()->FUN_141813300(nTab), nNeed), 0, 0, CStringW(L""));
+            FUN_140d73aa0(FUN_14093fa20(0xa01, GetStringTable()->FUN_141813300(nTab), nNeed), 0, 0, CStringW(L""));
             return false;
         }
     }
@@ -446,7 +446,7 @@ bool FUN_140ebcc20(ATL::CAtlArray<int>& arrItemIds)
         int nNeed = counts.GetAt(nTab);
         if (0 < nNeed && DAT_143ab2a90.FUN_140a615d0(nTab) < nNeed)
         {
-            FUN_140d73aa0(FUN_14093fa20(0xa01, FUN_1401a9d70()->FUN_141813300(nTab), nNeed), 0, 0, CStringW(L""));
+            FUN_140d73aa0(FUN_14093fa20(0xa01, GetStringTable()->FUN_141813300(nTab), nNeed), 0, 0, CStringW(L""));
             return false;
         }
     }
@@ -463,22 +463,22 @@ CStringW FUN_140ebd020(bool bDay, CDBPremiumProduct* pProduct)
     if (!bDay)
     {
         if (nBonus == 0)
-            strFormat = FUN_14028b8e0(CStringW(L"s_common_count"));
+            strFormat = GetStringCommonByKey(CStringW(L"s_common_count"));
         else
-            strFormat = FUN_14028b8e0(CStringW(L"s_common_count_bonus"));
+            strFormat = GetStringCommonByKey(CStringW(L"s_common_count_bonus"));
     }
     else
     {
         if (nBonus == 0)
-            strFormat = FUN_14028b8e0(CStringW(L"s_common_day"));
+            strFormat = GetStringCommonByKey(CStringW(L"s_common_day"));
         else
-            strFormat = FUN_14028b8e0(CStringW(L"s_common_day_bonus"));
+            strFormat = GetStringCommonByKey(CStringW(L"s_common_day_bonus"));
     }
     CStringW strResult;
     if (!bDay)
         strResult = FUN_14083dc40(strFormat, pProduct->m_nb0, nBonus);
     else if (pProduct->m_nb4 == 0)
-        strResult = FUN_14028b8e0(CStringW(L"s_common_day_limitless"));
+        strResult = GetStringCommonByKey(CStringW(L"s_common_day_limitless"));
     else
         strResult = FUN_14083dc40(strFormat, pProduct->m_nb4, nBonus);
     return strResult;
@@ -511,7 +511,7 @@ CStringW FUN_140ebd520(CMeratMarketPremiumProduct* pProduct, int nSubId)
         if (spData == 0 || !(1 < *(unsigned*)((char*)spData.operator->() + 0x88)))
             return strResult;
         int nBonus = pProduct->GetB8(0);
-        CStringW strFormat = nBonus == 0 ? FUN_14028b8e0(CStringW(L"s_common_count")) : FUN_14028b8e0(CStringW(L"s_common_count_bonus"));
+        CStringW strFormat = nBonus == 0 ? GetStringCommonByKey(CStringW(L"s_common_count")) : GetStringCommonByKey(CStringW(L"s_common_count_bonus"));
         int nCount = pProduct->GetB0(0);
         strResult = FUN_14083dc40(strFormat, nCount, nBonus);
     }
@@ -589,7 +589,7 @@ bool FUN_140ebded0(MS2Ptr<TMarketBillDataParam> spBase, const TMarketBillDataPar
         CMeratMarketPremiumProduct& prem = spProduct->m_premium;
         if (prem.FUN_1406a0090())
         {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_meratmarket_error_random_expired")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_meratmarket_error_random_expired")), 1, 1);
             return false;
         }
         COutPacket pkt(0x39, 0);
@@ -876,13 +876,13 @@ bool FUN_140ebfe30(CDBPremiumProduct* pProduct, bool bShowError)
         if (nLevel == 0)
         {
             if (bShowError)
-                FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_meratmarket_error_buy_not_pcbang")), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_meratmarket_error_buy_not_pcbang")), 1, 1);
             return false;
         }
         if ((int)nLevel < pProduct->FUN_14069fee0())
         {
             if (bShowError)
-                FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_meratmarket_error_buy_low_pcbang_level")), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_meratmarket_error_buy_low_pcbang_level")), 1, 1);
             return false;
         }
     }
@@ -907,7 +907,7 @@ bool FUN_140ebff70(CDBPremiumProduct* pProduct, bool bShowError)
     for (size_t i = 0; i < arrJobs.GetCount(); ++i)
     {
         int nName = FUN_140644bb0(FUN_1401d7a50(), arrJobs[i]);
-        CStringW strName = FUN_141811980(FUN_1401a9d70(), 6, nName);
+        CStringW strName = FUN_141811980(GetStringTable(), 6, nName);
         if (strName.IsEmpty())
             continue;
         if (!strJobs.IsEmpty())
@@ -1018,7 +1018,7 @@ CStringW FUN_140ebd9d0(bool bSelect, __int64 nCur)
         else
         {
             if (strRowFormat.IsEmpty())
-                strRowFormat = FUN_14028b8e0(CStringW(L"s_meratmarket_tooltip_table_charge_row"));
+                strRowFormat = GetStringCommonByKey(CStringW(L"s_meratmarket_tooltip_table_charge_row"));
             __int64 nNextStep = mapPayback.GetKeyAt(posNext);
             CStringW strRow = StringFormat((const wchar_t*)strRowFormat, FUN_1409404f0(nStep), FUN_1418fec00(3, nNextStep, 0), nPercent);
             if (!bSelect || nCur < nStep || nNextStep <= nCur)
@@ -1204,7 +1204,7 @@ int FUN_140d5a2e0(Unk_McMarket* pMan);
 __int64 FUN_140d5a1d0(Unk_McMarket* pMan);
 CStringW FUN_1409404f0(__int64 n);
 CStringW FUN_140a228f0(int nId, const int& nMonth, const CStringW& strArg);
-CStringW FUN_14028de60(int nId);
+CStringW GetStringCommon(int nId);
 void FUN_141b70f90(const CMsTime& tm, const CStringW& strFormat, CStringW& strOut);
 CString FUN_140719210(int n);
 void FUN_1409c23e0(ASObj* pRow, int n);
@@ -1414,7 +1414,7 @@ CStringW FUN_140ec25e0(__int64 nTime)
 {
     CMsTime tm(nTime);
     CStringW strOut;
-    FUN_141b70f90(tm, FUN_14028de60(0xa28), strOut);
+    FUN_141b70f90(tm, GetStringCommon(0xa28), strOut);
     return strOut;
 }
 

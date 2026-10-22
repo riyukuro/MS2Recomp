@@ -105,7 +105,7 @@ class Unk_AcNames { public: CStringW FUN_141811980(int nTable, int nId); };
 Unk_AcNames* FUN_1401a9d70();
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& a1);
 CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a1, const CStringW& a2);
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_1408116a0(int nStringId, const int& n);
 CStringW FUN_1409eec40(int nStringId);
 CStringW FUN_1416e4df0(int nId);
@@ -642,7 +642,7 @@ void UIAchieveDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& st
         unsigned nGrade = pArgs->FUN_1422b8b10();
         ASTooltip tip(pPlayer, 2, 2);
         if (tip.FUN_1409e21a0(nId, nGrade) != 0) {
-            tip.FUN_1407cbb20("comment", FUN_14028de60(0x781));
+            tip.FUN_1407cbb20("comment", GetStringCommon(0x781));
             FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
         }
     }

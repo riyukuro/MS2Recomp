@@ -137,7 +137,7 @@ void FUN_141632630(const CStringW& str, Unk_CtlIntVec& out, const wchar_t* szDel
 
 void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member
 int FUN_1409c17e0(const Scaleform::GFx::Value& v);
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 
 void FUN_140988d60(CStringW& str, Unk_NpcFileList& out, const wchar_t* szDelim);    // split a text
 __int64 FUN_140718320(const CStringW& str);
@@ -513,7 +513,7 @@ void UINpcControlDialog::FUN_141a63ce0(const CString& strGroup)
             const Unk_CtlSkill* pSkill = &it->second;
             CStringW strLabel;
             strLabel.Format(L"[%d] [Lv. %d] [%s]", pSkill->nId, pSkill->nLevel,
-                            (const wchar_t*)FUN_1401a9d70()->FUN_141811980(4, pSkill->nId));
+                            (const wchar_t*)GetStringTable()->FUN_141811980(4, pSkill->nId));
             ASObj itemSkill(2);
             itemSkill.FUN_1407cbb20("label", strLabel);
             itemSkill.FUN_1407cb9c0("commandId", nCommand);

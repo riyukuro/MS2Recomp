@@ -102,7 +102,7 @@ static CNpc* FUN_141a71850(const efd::SmartPointer<GameObject>& spObj);
 // The ui text service (singleton): the text of a "$s_..." key.
 class Unk_NpText { public: CStringW FUN_1422b0570(const CString& strKey); };
 Unk_NpText* FUN_14025e7a0();
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 CStringW FUN_1401aa6a0(unsigned nNpc);                  // the name text of an npc id
 
 // The talk window.
@@ -128,7 +128,7 @@ CStringW FUN_1406c6bd0(const wchar_t* szFormat, const __int64& n);
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a, const CStringW& b);
 CStringW FUN_1416e4df0(int n);
 CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a);
-CStringW FUN_14028de60(int nKey);
+CStringW GetStringCommon(int nKey);
 CString FUN_14016a5c0(const char* psz, int nCodePage);          // narrows a string
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);
 void FUN_1409989e0(efd::utf8string* pOut, const CString& str);   // utf8string from a narrow string
@@ -360,7 +360,7 @@ int UINpcPreviewDialog::FUN_141a6ee60(int nNpcId)
         spName->FUN_1422c4cd0(FUN_1401aa6a0(nNpcId));
     MS2Ptr<ASTextField> spKind = FUN_140bb4cf0("m_kind");
     if (spKind.IsNull() == 0)
-        spKind->FUN_1422c4cd0(FUN_1401a9d70()->FUN_141811980(10, nNpcId));
+        spKind->FUN_1422c4cd0(GetStringTable()->FUN_141811980(10, nNpcId));
     MS2Ptr<ASTextField> spIllust = FUN_140bb4cf0("m_illust");
     if (FUN_141a711b0()) {
         Unk_NpRow rowLoc;
@@ -442,7 +442,7 @@ int UINpcPreviewDialog::FUN_141a6ee60(int nNpcId)
 static void FUN_NpTalkText(CStringW& strText)
 {
     strText.Replace(L"$MaidName$", L"메이드");
-    strText.Replace(L"$OwnerName$", FUN_14028de60(0x787));
+    strText.Replace(L"$OwnerName$", GetStringCommon(0x787));
     FUN_1403b4750()->FUN_1416fb340(strText);
 }
 
@@ -462,7 +462,7 @@ int UINpcPreviewDialog::FUN_141a6fd90(int nRow)
         FUN_140700390()->FUN_1406fb520(m_nNpcId, ids);
         for (POSITION pos = ids.GetHeadPosition(); pos != 0; ) {
             unsigned int nId = ids.GetNext(pos);
-            strOut += FUN_1401a9d70()->FUN_141811980(3, nId);
+            strOut += GetStringTable()->FUN_141811980(3, nId);
             spOut->FUN_1422c5ab0(strOut);
         }
     } else if (row.m_kind == 2) {

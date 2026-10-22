@@ -149,8 +149,8 @@ CStringW FUN_1418fec00(int nType, __int64 nValue, int);         // money text by
 CStringW FUN_1418fec00(int nType, __int64 nValue, int, int);
 CStringW FUN_1409404f0(__int64 n);
 CStringW FUN_1409e97f0(int nId, const unsigned& nArg);          // string table entry, one argument
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // string table text
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_14052bd00(int nId, const CStringW& strArg);
 CStringW FUN_140632a60(int nId, const CStringW& strArg0, const CStringW& strArg1);
 CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);
@@ -921,7 +921,7 @@ void UIMarketBillDialog::FUN_140eaa1e0(const char* szMethod, ASData* pData)
         {
             if (FUN_14097a780()->FUN_140ae5240(strName) == 1)
             {
-                FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_cashshop_err_fail_gift_block")), 0, 0, CStringW(L""));
+                FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_cashshop_err_fail_gift_block")), 0, 0, CStringW(L""));
                 return;
             }
         }
@@ -1035,7 +1035,7 @@ bool UIMarketBillDialog::FUN_140eaad30(bool* pbClose)
         if (FUN_140ea9c30(nBlueprint))
         {
             CStringW strKey(L"s_meratmarket_buy_notice_blueprint");
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMarketBillDialog::FUN_140eab6b0), FUN_14028b8e0(strKey));
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMarketBillDialog::FUN_140eab6b0), GetStringCommonByKey(strKey));
             *pbClose = false;
             return true;
         }
@@ -1051,7 +1051,7 @@ bool UIMarketBillDialog::FUN_140eaad30(bool* pbClose)
                 if (spBox.get())
                 {
                     spBox->FUN_141a01800(2);
-                    spBox->FUN_141a024e0(FUN_14028de60(0x9d1), 0);
+                    spBox->FUN_141a024e0(GetStringCommon(0x9d1), 0);
                     spBox->SetAgreement(false);
                     spBox->FUN_141a02770(0x1c0, 400);
                     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMarketBillDialog::FUN_140eab6b0));
@@ -1068,7 +1068,7 @@ bool UIMarketBillDialog::FUN_140eaad30(bool* pbClose)
                 if (spBox.get())
                 {
                     spBox->FUN_141a01800(2);
-                    spBox->FUN_141a024e0(FUN_14028de60(0x9d1), 0);
+                    spBox->FUN_141a024e0(GetStringCommon(0x9d1), 0);
                     spBox->SetAgreement(false);
                     spBox->FUN_141a02770(0x1c0, 400);
                     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMarketBillDialog::FUN_140eab6b0));

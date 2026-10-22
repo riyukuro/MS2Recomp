@@ -5309,7 +5309,7 @@ MS2Ptr<Unk_BpMessage> FUN_140d73d20(int, CStringW, int, CStringW);
 void FUN_140d73c60(MS2Ptr<Unk_BpMessage>);
 MS2Ptr<Unk_BpMessage> FUN_140d748b0(int, const CStringW&, const CStringW&, Delegate<bool(int, const CMsgBoxData&)>);
 void FUN_140d73aa0(CStringW, int, int, CStringW);
-CStringW FUN_14028b8e0(const CStringW&);
+CStringW GetStringCommonByKey(const CStringW&);
 CStringW FUN_1405c2690(CStringW, const CStringW&);
 void FUN_1412750f0(Unk_BpItem*, int, int, int);
 class Unk_BpFilter { public: int FUN_140225630(CStringW&, CStringW&); };
@@ -5417,7 +5417,7 @@ void UIItemBlueprintCreateDialog::FUN_140c36b40(Unk_BpItem* item) {
     reinterpret_cast<Unk_BpItemRef*>(&m_item)->FUN_1401bffe0(item);
     CString owner = FUN_1401d31f0()->name;
     m_item->FUN_140529fd0(owner);
-    CStringW text = FUN_14028b8e0(L"s_blueprint_msg_item_edit_complete");
+    CStringW text = GetStringCommonByKey(L"s_blueprint_msg_item_edit_complete");
     MS2Ptr<Unk_BpMessage> message = FUN_140d73d20(0x11, text, 0, L"");
     if (message == NULL) return;
     FUN_1412750f0(item, item->FUN_140526c50(), 0x2ba, 0x2b9);
@@ -5512,7 +5512,7 @@ void UIItemBlueprintCreateDialog::FUN_140c37700(const Scaleform::GFx::FunctionHa
     CStringW price;
     if (item == NULL) price = FUN_1405c2690(L"s_ugc_item_edit_terms_price", FUN_1418fec00(m_fee.first, m_fee.second, 0));
     FUN_140d748b0(10, FUN_1405c2690(L"s_ugc_item_edit_terms", price),
-        FUN_14028b8e0(L"s_ugc_edit_terms_text_content"),
+        GetStringCommonByKey(L"s_ugc_edit_terms_text_content"),
         Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBlueprintCreateDialog::FUN_140c37d50));
 }
 MS2_REPLACE_METHOD(0x140C37700, UIItemBlueprintCreateDialog, FUN_140c37700, 1359, 0x69405210);

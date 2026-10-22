@@ -68,7 +68,7 @@ void* FUN_1403ed280();
 NiNode* FUN_1411a6b10(void* p);                                     // the scene root
 void* FUN_1408e57f0();
 int FUN_1422b9e00(void* p);
-CStringW FUN_14028b8e0(const CStringW& strKey);
+CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_14062b4f0(CStringW strKey, const int& n);              // localized text with one number
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 CQuestNavigationMap* FUN_140c9b8e0();
@@ -335,7 +335,7 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
     CQuestNavigationMap* pMap = FUN_140c9b8e0();
     if (pMap->FUN_140c9b8d0() == 0)
     {
-        pResult->m_38 = FUN_14028b8e0(CStringW(L"s_quest_navigation_initializing"));
+        pResult->m_38 = GetStringCommonByKey(CStringW(L"s_quest_navigation_initializing"));
         return 2;
     }
     MS2Ptr<CQuestData> spData = FUN_14074bc40(pResult->m_18);
@@ -537,7 +537,7 @@ CStringW CQuestNavigator::FUN_140c9b150(const Unk_StreamPoint& pos)
         }
         else
         {
-            strText = FUN_14028b8e0(CStringW(L"s_quest_navigation_dest"));
+            strText = GetStringCommonByKey(CStringW(L"s_quest_navigation_dest"));
         }
     }
     else

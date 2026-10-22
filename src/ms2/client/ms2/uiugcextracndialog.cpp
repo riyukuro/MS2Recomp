@@ -112,7 +112,7 @@ efd::ServiceManager* FUN_1413f9850();                           // the game's se
 Unk_UgcUpdateList* FUN_1413f9890();
 CStringW FUN_141850100(int a, int b);                           // the screenshot path
 void FUN_141275260(int nId, int a, int b);                      // show a notice by id
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_141a024a0(CMsgBoxData* pBox, bool b);
@@ -171,7 +171,7 @@ int UIUGCExtraCNDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         Unk_UgcShot* pShot = FUN_140d86260();
         if (pShot->vfunc_2() == 1)
         {
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028b8e0(CStringW(L"s_msg_ugc_home_upload_screenshot")), 0, CStringW(L""));
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(CStringW(L"s_msg_ugc_home_upload_screenshot")), 0, CStringW(L""));
             if (spBox.get() != 0)
             {
                 FUN_141a024a0(spBox.get(), false);

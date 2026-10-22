@@ -252,7 +252,7 @@ int FUN_140534480(const ATL::CAtlArray<void*>* pItems, const unsigned __int64* p
 CString FUN_14038f6d0(const CString& str, const char* sz);  // str + sz
 
 // Texts, notices, message boxes and number formats.
-CStringW FUN_14028b8e0(const CStringW& strKey);
+CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_140298ea0(CStringW strKey);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_1409e9890(CStringW strKey, const unsigned& nHave, const int& nNeed);
@@ -575,7 +575,7 @@ int UIItemMergeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                 }
                 else
                 {
-                    MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(FUN_14028b8e0(CStringW(L"s_item_merge_option_warn")), 1);
+                    MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(CStringW(L"s_item_merge_option_warn")), 1);
                     spBox->FUN_141a024a0(0);
                     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemMergeOptionDialog::ConfirmMerge));
                     FUN_140d73c60(spBox);
@@ -981,28 +981,28 @@ void UIItemMergeOptionDialog::FUN_1419d1d20(int nError)
     switch (nError)
     {
     case 1:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_item_merge_option_error_lack_material")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_lack_material")), 1, 1);
         break;
     case 2:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_item_merge_option_error_lack_meso")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_lack_meso")), 1, 1);
         break;
     case 3:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_item_merge_option_error_invalid_mergeitem")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_invalid_mergeitem")), 1, 1);
         break;
     case 4:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_item_merge_option_error_invalid_material")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_invalid_material")), 1, 1);
         break;
     case 5:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_item_merge_option_error_invalid_merge_scroll")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_invalid_merge_scroll")), 1, 1);
         break;
     case 6:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_item_merge_option_error_invalid_revert_rank")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_invalid_revert_rank")), 1, 1);
         break;
     case 7:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_item_merge_option_error_invalid_revert_option")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_invalid_revert_option")), 1, 1);
         break;
     case 9:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_item_merge_option_error_unknown")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_unknown")), 1, 1);
         break;
     }
 }

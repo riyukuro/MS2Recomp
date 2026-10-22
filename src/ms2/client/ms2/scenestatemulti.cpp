@@ -196,7 +196,7 @@ void FUN_140d73aa0(CStringW, int, void*, CStringW);
 void* FUN_140aa6d30();
 void FUN_1417e25a0(void*, int);
 int FUN_1406516b0();
-CStringW FUN_14028de60(int);
+CStringW GetStringCommon(int);
 CStringW FUN_1401ceea0(const wchar_t*, const int&);
 UIMessageBox* FUN_14151f890();
 CStringW FUN_141a02ce0(void*);
@@ -834,7 +834,7 @@ void CSceneStateMulti::OnWaitingTicketUpdate(CInPacket& packet)
             pList->vfunc_8(1);
     }
     int nWaiting = packet.vfunc_o8_3();
-    CStringW text = FUN_1401ceea0(FUN_14028de60(0xac0), nWaiting);
+    CStringW text = FUN_1401ceea0(GetStringCommon(0xac0), nWaiting);
     UIMessageBox* pBox = FUN_14151f890();
     if (pBox != 0)
     {
@@ -849,7 +849,7 @@ void CSceneStateMulti::OnWaitingTicketUpdate(CInPacket& packet)
         }
     }
     Unk_MessageBoxPtr box = FUN_140d73d20(0, CStringW(text), 0, CStringW(L""));
-    FUN_141a01690(FUN_140534fe0(box), FUN_14028de60(0xac1), CStringW(L""), CStringW(L""));
+    FUN_141a01690(FUN_140534fe0(box), GetStringCommon(0xac1), CStringW(L""), CStringW(L""));
     FUN_141a01660(FUN_140534fe0(box), CStringW(L"waitingticketdialog"));
     UIServerListDialog* pList = FUN_14136f520(0x4ef0);
     if (pList != 0)

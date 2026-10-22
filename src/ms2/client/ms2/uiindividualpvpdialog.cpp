@@ -102,7 +102,7 @@ bool FUN_140a467d0(const MS2Ptr<AScript>* p);
 void* FUN_140bb9630(int n);                                     // int -> delegate user data
 int FUN_140bb9640(void* p);                                     // delegate user data -> int
 CString FUN_1402bb1c0(const char* szFormat, const int* pn);     // format one int
-CStringW FUN_14028de60(int nStringId);                          // string table text
+CStringW GetStringCommon(int nStringId);                          // string table text
 CStringW FUN_1408116a0(int nStringId, const int& nArg);         // the same, one int argument
 void FUN_140d73aa0(CStringW text, int nA, int nB, CStringW tag);   // notice
 unsigned int FUN_14086bdb0(unsigned int nMilliSeconds);         // to minutes
@@ -182,7 +182,7 @@ void UIIndividualPvPDialog::OnLoadComplete()
             return;
         CStringW strName = GetStringManager()->GetText(StringXmlCategory(4), IndividualArenaStringId(spData->m_nNameId));
         it->second->FUN_1422cdfb0(strName);
-        it->second->FUN_1407cbb20("label2", FUN_14028de60(0x425));
+        it->second->FUN_1407cbb20("label2", GetStringCommon(0x425));
     }
     if (m_arenas.empty())
         return;
@@ -308,9 +308,9 @@ void UIIndividualPvPDialog::FUN_1412cb240()
         int nMax = 10;
         CStringW strText = FUN_1408116a0(0x426, nMinutes);
         if (count.second == 0)
-            strText = FUN_14028de60(0x425);
+            strText = GetStringCommon(0x425);
         else if (nMinutes > nMax)
-            strText = FUN_14028de60(0x427);
+            strText = GetStringCommon(0x427);
         m_arenas[count.first]->FUN_1407cbb20("label2", strText);
     }
 }
@@ -327,7 +327,7 @@ void UIIndividualPvPDialog::FUN_1412cb4e0(const Scaleform::GFx::FunctionHandler:
     int nState = FUN_140f97ef0()->FUN_1412818a0();
     if (nState != 0)
     {
-        FUN_140d73aa0(FUN_14028de60(0x428), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommon(0x428), 0, 0, L"");
         return;
     }
     PCBase* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
@@ -335,12 +335,12 @@ void UIIndividualPvPDialog::FUN_1412cb4e0(const Scaleform::GFx::FunctionHandler:
         return;
     if (pPC->FUN_1416749a0()->FUN_140970020(0x5f5e107, 0, 0, 1) != 0)
     {
-        FUN_140d73aa0(FUN_14028de60(0x429), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommon(0x429), 0, 0, L"");
         return;
     }
     if ((unsigned short)pPC->vfunc_78() < (unsigned short)FUN_140166410()->FUN_14036dc20())
     {
-        FUN_140d73aa0(FUN_14028de60(0x42a), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommon(0x42a), 0, 0, L"");
         return;
     }
     if (m_nSelected == 2)

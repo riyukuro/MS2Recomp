@@ -24,7 +24,7 @@ void FUN_140fdc030(UIDialog* pDialog);
 int FUN_140fe2d20(UIDialog* pDialog);
 void* FUN_140967100();
 void FUN_141b1feb0(void* pSingleton);
-CStringW FUN_14028b8e0(const CStringW& strKey);                             // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 extern __int64 DAT_143ab2828;                                               // the own character id
 
 // the reservation dialog's selected hall id lives right behind the UIDialog base
@@ -86,7 +86,7 @@ void UIWeddingHallReservationPageChange::vfunc_5()
     if (!FUN_140900f90(nId, pTicket))
     {
         CStringW strKey(L"s_wedding_hall_reservation_paclkage_err");
-        FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
         return;
     }
     int n = FUN_1409008e0(FUN_140d295d0(FUN_1409eed90()), FUN_141b87160(FUN_1409eed90()), DAT_143ab2828);
@@ -117,7 +117,7 @@ CString UIWeddingHallReservationPageChange::vfunc_8()
 CStringW UIWeddingHallReservationPageChange::vfunc_9()
 {
     CStringW strKey(L"s_wedding_reservation_change_page");
-    return FUN_14028b8e0(strKey);
+    return GetStringCommonByKey(strKey);
 }
 
 // MS2-FUNCTIONAL: one byte differs in else-less/else branch layout
@@ -127,10 +127,10 @@ CStringW UIWeddingHallReservationPageChange::vfunc_10(bool bStart)
     if (bStart == 0)
     {
         CStringW strEnd(L"s_wedding_reservation_change_end");
-        return FUN_14028b8e0(strEnd);
+        return GetStringCommonByKey(strEnd);
     }
     CStringW strStart(L"s_wedding_reservation_change_start");
-    return FUN_14028b8e0(strStart);
+    return GetStringCommonByKey(strStart);
 }
 
 // @0x140fe2d20

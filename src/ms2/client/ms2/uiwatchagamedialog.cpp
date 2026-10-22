@@ -51,7 +51,7 @@ static const unsigned s_nCameraModel = 0x65338ec3;           // the FlatModel th
 
 WorldService* FUN_1403ed2d0();
 CString FUN_1402bad60(const char* szFormat, const int* pn);     // format one int
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 void* FUN_140bb9630(int n);                                     // int -> delegate user data
 int FUN_140bb9640(void* p);                                     // delegate user data -> int
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
@@ -141,22 +141,22 @@ void UIWatchAGameDialog::OnLoadComplete()
     {
         CStringW strKey(L"s_watchagame_change_camera");
         CString strIcon("./Data/Resource/Image/skill/icon/ChangeCamera.png");
-        FUN_140fc1560(0, strIcon, FUN_14028b8e0(strKey));
+        FUN_140fc1560(0, strIcon, GetStringCommonByKey(strKey));
     }
     {
         CStringW strKey(L"s_watchagame_reset_camera");
         CString strIcon("./Data/Resource/Image/skill/icon/MoveStage.png");
-        FUN_140fc1560(1, strIcon, FUN_14028b8e0(strKey));
+        FUN_140fc1560(1, strIcon, GetStringCommonByKey(strKey));
     }
     {
         CStringW strKey(L"s_music_concert_emotion_shake");
         CString strIcon("./Data/Resource/Image/skill/icon/Lightstick.png");
-        FUN_140fc1560(2, strIcon, FUN_14028b8e0(strKey));
+        FUN_140fc1560(2, strIcon, GetStringCommonByKey(strKey));
     }
     {
         CStringW strKey(L"s_music_concert_emotion_clap");
         CString strIcon("./Data/Resource/Image/skill/icon/Clap.png");
-        FUN_140fc1560(3, strIcon, FUN_14028b8e0(strKey));
+        FUN_140fc1560(3, strIcon, GetStringCommonByKey(strKey));
     }
     FUN_140ad4b90()->FUN_1418637a0(s_nCameraModel, m_cameras);
     FUN_140fc0b60(m_bFlag);

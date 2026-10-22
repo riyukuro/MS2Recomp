@@ -291,7 +291,7 @@ bool UIHomeSaveSlotDialog::FUN_140faa7d0(int nResult, const CMsgBoxData& data)
                 MS2Ptr<Unk_HomeSlot> spSlot = (*pSlots)[i];
                 if (spSlot->m_nId == nSlot && spSlot->m_nTime != 0)
                 {
-                    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028b8e0(CStringW(L"s_home_save_btn_overwrite")), 0, CStringW(L""));
+                    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(CStringW(L"s_home_save_btn_overwrite")), 0, CStringW(L""));
                     if (spBox.get() != 0)
                     {
                         spBox->FUN_140533ff0(nSlot);
@@ -381,7 +381,7 @@ bool UIHomeSaveSlotDialog::FUN_140faaeb0(int nResult, const CMsgBoxData& data)
                 MS2Ptr<Unk_BlueprintSlot> spSlot = (*pSlots)[i];
                 if (spSlot->m_nId == nSlot && spSlot->m_nTime != 0)
                 {
-                    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028b8e0(CStringW(L"s_home_save_btn_overwrite")), 0, CStringW(L""));
+                    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(CStringW(L"s_home_save_btn_overwrite")), 0, CStringW(L""));
                     if (spBox.get() != 0)
                     {
                         spBox->FUN_140533ff0(nSlot);
@@ -447,12 +447,12 @@ void UIHomeSaveSlotDialog::FUN_140fab520(int nSlot)
     if (nSlot >= 0 && nSlot < 6)
     {
         CStringW strMsg = FUN_14062b4f0(CStringW(L"s_home_save_messagebox"), &nSlot);
-        CStringW strTitle = FUN_14028b8e0(CStringW(L"s_home_save_title_empty"));
+        CStringW strTitle = GetStringCommonByKey(CStringW(L"s_home_save_title_empty"));
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, CStringW(strMsg), 0, CStringW(L""));
         if (spBox.get() != 0)
         {
             spBox->FUN_140533ff0(nSlot);
-            spBox->FUN_141a01690(FUN_14028b8e0(CStringW(L"s_home_save_btn_text")), FUN_14028b8e0(CStringW(L"s_word_cancel")), CStringW(L""));
+            spBox->FUN_141a01690(GetStringCommonByKey(CStringW(L"s_home_save_btn_text")), GetStringCommonByKey(CStringW(L"s_word_cancel")), CStringW(L""));
             spBox->FUN_141a01d30(0, strTitle, 0x14, 1, 1);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140faa7d0));
             FUN_140d73c60(spBox);
@@ -482,12 +482,12 @@ void UIHomeSaveSlotDialog::FUN_140fabae0(int nSlot)
     if (nSlot >= 0 && nSlot < 6)
     {
         CStringW strMsg = FUN_14062b4f0(CStringW(L"s_home_save_messagebox"), &nSlot);
-        CStringW strTitle = FUN_14028b8e0(CStringW(L"s_home_save_title_empty"));
+        CStringW strTitle = GetStringCommonByKey(CStringW(L"s_home_save_title_empty"));
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, CStringW(strMsg), 0, CStringW(L""));
         if (spBox.get() != 0)
         {
             spBox->FUN_140533ff0(nSlot);
-            spBox->FUN_141a01690(FUN_14028b8e0(CStringW(L"s_home_save_btn_text")), FUN_14028b8e0(CStringW(L"s_word_cancel")), CStringW(L""));
+            spBox->FUN_141a01690(GetStringCommonByKey(CStringW(L"s_home_save_btn_text")), GetStringCommonByKey(CStringW(L"s_word_cancel")), CStringW(L""));
             spBox->FUN_141a01d30(0, strTitle, 0x14, 1, 1);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140faaeb0));
             FUN_140d73c60(spBox);

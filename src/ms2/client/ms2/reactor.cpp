@@ -105,7 +105,7 @@ void FUN_1409989e0(efd::utf8string* p, const char* psz);
 void FUN_1408a8900(efd::utf8string* p);
 CString FUN_1409a2360(const char* psz, int n);
 bool FUN_140184310(const CString& str, const char* psz);        // string equals
-CStringW FUN_14028b8e0(const CStringW& str);                    // string table lookup
+CStringW GetStringCommonByKey(const CStringW& str);                    // string table lookup
 void FUN_1412751f0(const CStringW& str, int a, int b);          // shows a notice
 CString FUN_1402bb1c0(const char* szFormat, const int& n);      // StringFormat<int>
 
@@ -273,7 +273,7 @@ void CReactor::FUN_140b78d90(Unk_ReactorInfo* pOut)
     MS2Ptr<ReactorStateData> spState = FUN_140966db0();
     if (spState == (ReactorStateData*)0)
         return;
-    pOut->m_strAction = FUN_14028b8e0(spState->m_strActionStringKey);
+    pOut->m_strAction = GetStringCommonByKey(spState->m_strActionStringKey);
     pOut->m_nReactTimeMSec = m_spData->m_nReactTimeMSec;
 }
 
@@ -772,37 +772,37 @@ void FUN_140b7b7a0(int nError)
     case 1:
     {
         CStringW strKey(L"s_reactor_failed");
-        FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
         break;
     }
     case 2:
     {
         CStringW strKey(L"s_reactor_create_failed_invalid_state");
-        FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
         break;
     }
     case 3:
     {
         CStringW strKey(L"s_reactor_create_failed_invalid_position");
-        FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
         break;
     }
     case 4:
     {
         CStringW strKey(L"s_reactor_create_failed_game_event_inactive");
-        FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
         break;
     }
     case 5:
     {
         CStringW strKey(L"s_reactor_create_failed_invalid_field");
-        FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
         break;
     }
     case 6:
     {
         CStringW strKey(L"s_reactor_create_failed_daily_reward_count");
-        FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
         break;
     }
     }

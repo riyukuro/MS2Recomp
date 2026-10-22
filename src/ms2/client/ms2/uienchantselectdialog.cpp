@@ -62,7 +62,7 @@ Unk_EsWorld* FUN_1403ed2d0();
 void* FUN_141bd0cc0(Unk_EsWorld* pWorld);
 char* FUN_1401d3200();                                                  // the constants table
 int* FUN_1402056b0(char* pEntry);
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommonByKey(const CStringW& str);
 void FUN_1412751f0(const CStringW& str, int a, int b);
 
 // @0x140e291e0
@@ -139,7 +139,7 @@ void UIEnchantSelectDialog::FUN_140e29860(const Scaleform::GFx::FunctionHandler:
     void* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPc != 0 && ((int (*)(void*))(*(void***)pPc)[0x208 / 8])(pPc) == 1)
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_error_talk_battle_state_force_talk"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_error_talk_battle_state_force_talk"), 1, 1);
         return;
     }
     if (nNpcId != 0)

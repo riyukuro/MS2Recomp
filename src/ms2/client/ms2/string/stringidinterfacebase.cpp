@@ -120,7 +120,7 @@ std::auto_ptr<IndividualArenaStringMap> MakeIndividualArenaStringMap()
 }
 
 // ---- unrecovered helpers -----------------------------------------------------------------------------------------
-CStringW FUN_14028de60(int stringId);                                   // text of a string id (StringManager lookup)
+CStringW GetStringCommon(int stringId);                                   // text of a string id (StringManager lookup)
 extern StringManager* DAT_143ab1c98;
 
 // @0x14084ee20
@@ -237,7 +237,7 @@ StringManager::~StringManager()
 // @0x14084f9c0
 CStringW StringManager::FUN_14084f9c0(StringXmlCategory category, int id)
 {
-    return FUN_14028de60(id);
+    return GetStringCommon(id);
 }
 
 // @0x14084faa0 (IndividualArenaStringId), 0x14084fb70 (PVPStringId)

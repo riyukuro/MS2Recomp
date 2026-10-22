@@ -190,7 +190,7 @@ void FUN_14125fe20(Unk_SoundState* pSound);                                 // r
 int FUN_141260310(Unk_SoundState* pSound);                                  // the instrument volume
 unsigned FUN_140869420();                                                   // the client clock (ms)
 int FUN_141472bc0();                                                        // the server clock bias
-CStringW FUN_14028b8e0(const CStringW& strKey);                             // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_1409eec40(int nId);                                            // system notice text
 void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);  // message box
 void FUN_1412751f0(const CStringW& str, int a, int b);                      // notice
@@ -600,7 +600,7 @@ void CInstrumentManager::NoteOn(int nNote)
         return;
     if (!spItem->FUN_140528980())
     {
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_play_instrument_invalid_instrument")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_play_instrument_invalid_instrument")), 1, 1);
         return;
     }
     if (FUN_1403ed2d0()->FUN_141bdb660(3) != 0)
@@ -669,13 +669,13 @@ bool CInstrumentManager::PlayScore(__int64 nScoreUid)
     MS2Ptr<CItem> spScore = DAT_143ab2a90.FUN_140a5d680(nScoreUid);
     if (spScore == 0 || !spScore->FUN_140528980())
     {
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_play_instrument_invalid_music_score")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_play_instrument_invalid_music_score")), 0, 0, CStringW(L""));
         return false;
     }
     MS2Ptr<CItem> spInstrument = DAT_143ab2a90.FUN_140a5d680(m_instrumentUid);
     if (spInstrument == 0 || !spInstrument->FUN_140528980())
     {
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_play_instrument_invalid_instrument")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_play_instrument_invalid_instrument")), 0, 0, CStringW(L""));
         return false;
     }
     Unk_ItemEquipData* pData = spScore->FUN_140527840();
@@ -705,19 +705,19 @@ bool CInstrumentManager::PlayEnsemble(__int64 nScoreUid)
         return false;
     if (!pMe->FUN_141527280())
     {
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_play_instrument_ui_need_party_for_ensemble")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_play_instrument_ui_need_party_for_ensemble")), 0, 0, CStringW(L""));
         return false;
     }
     MS2Ptr<CItem> spInstrument = DAT_143ab2a90.FUN_140a5d680(m_instrumentUid);
     if (spInstrument == 0 || !spInstrument->FUN_140528980())
     {
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_play_instrument_invalid_instrument")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_play_instrument_invalid_instrument")), 0, 0, CStringW(L""));
         return false;
     }
     MS2Ptr<CItem> spScore = DAT_143ab2a90.FUN_140a5d680(nScoreUid);
     if (spScore == 0 || !spScore->FUN_140528980())
     {
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_play_instrument_invalid_music_score")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_play_instrument_invalid_music_score")), 0, 0, CStringW(L""));
         return false;
     }
     Unk_ItemEquipData* pData = spScore->FUN_140527840();

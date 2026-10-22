@@ -102,7 +102,7 @@ UIGuideEvent* FUN_14136f3e0(int nId);                       // the guide event w
 UICutSceneCinematic* FUN_14136f290(int nId);
 UISmartRecommendNotifyDialog* FUN_14136f5c0(int nId);
 UIGameMenuDialog* FUN_140938b90(int nId);
-CStringW FUN_14028de60(int nId);                            // a system string
+CStringW GetStringCommon(int nId);                            // a system string
 void FUN_141999d20(int bUse);                               // the tutorial weapon of the main player info
 void FUN_141a5d0a0(int bUse);                               // the tutorial weapon of the quick slots
 unsigned FUN_140869420();                                   // millisecond clock
@@ -1130,11 +1130,11 @@ void CGuideActionSequenceCamera::vfunc_3()
         CStringW strEmpty;
         if (UICutSceneCinematic* pCinematic = FUN_14136f290(0x4e52))
         {
-            CStringW strKey = FUN_14028de60(0x666);
+            CStringW strKey = GetStringCommon(0x666);
             if (*FUN_1409a8b10()->FUN_140a58500() != 0)
                 strKey = FUN_1409331f0()->FUN_14142d760(0x49409, 2);
             pCinematic->FUN_141907f80(3, strEmpty);
-            pCinematic->FUN_141907d60(3, strKey, FUN_14028de60(0x667));
+            pCinematic->FUN_141907d60(3, strKey, GetStringCommon(0x667));
             FUN_140939a10()->RegisterNotify(L"NotifyCutSceneCinematicSkip",
                 Delegate<void(NotifyObject*)>(this, &CGuideActionSequenceCamera::FUN_141385ba0));
         }

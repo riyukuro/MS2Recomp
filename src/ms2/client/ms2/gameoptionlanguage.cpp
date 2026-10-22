@@ -109,7 +109,7 @@ int FUN_1406516c0();
 extern int DAT_143ab0248;                                               // the client region
 
 CStringW FUN_1402a5170(const wchar_t* szFormat, const CString& a1);     // "{0}" formatter
-CStringW FUN_14028b8e0(const CStringW& strKey);                         // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                         // string table text
 void FUN_140d73aa0(CStringW strText, int, void*, CStringW strTitle);   // message box
 
 struct Unk_LgPtrView { void* m_0; CLocaleLanguageData* m_p; };
@@ -390,19 +390,19 @@ void CGameOptionLanguage::FUN_140cfbf50()
 // @0x140cfc970
 CStringW CGameOptionLanguage::FUN_140cfc970(CString strCode)
 {
-    return FUN_14028b8e0(FUN_1402a5170(L"s_gameoption_language_{0}", strCode));
+    return GetStringCommonByKey(FUN_1402a5170(L"s_gameoption_language_{0}", strCode));
 }
 
 // @0x140cfca00
 CStringW CGameOptionLanguage::FUN_140cfca00(CString strCode)
 {
-    return FUN_14028b8e0(FUN_1402a5170(L"s_gameoption_voice_{0}", strCode));
+    return GetStringCommonByKey(FUN_1402a5170(L"s_gameoption_voice_{0}", strCode));
 }
 
 // @0x140cfca90
 CStringW CGameOptionLanguage::FUN_140cfca90(CString strCode)
 {
-    return FUN_14028b8e0(FUN_1402a5170(L"s_gameoption_region_{0}", strCode));
+    return GetStringCommonByKey(FUN_1402a5170(L"s_gameoption_region_{0}", strCode));
 }
 
 // MS2-FUNCTIONAL: temp and EH-state layout differ
@@ -423,7 +423,7 @@ void CGameOptionLanguage::vfunc_10()
         }
         if (nOk == 0)
         {
-            FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_gameoption_voice_select_warning")), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_gameoption_voice_select_warning")), 0, 0, CStringW(L""));
         }
         else
         {
@@ -432,7 +432,7 @@ void CGameOptionLanguage::vfunc_10()
         }
     }
     if (bRestart)
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_gameoption_voice_select_restart")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_gameoption_voice_select_restart")), 0, 0, CStringW(L""));
     FUN_14125f260(FUN_1409a8b10()->FUN_140cfd280(), &m_state);
 }
 

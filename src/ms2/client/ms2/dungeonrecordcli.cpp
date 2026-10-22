@@ -65,7 +65,7 @@ Unk_CommandStrings* FUN_1401a9d70();
 // Free functions of the exe, bound by their FUN_<va> names.
 __int64 FUN_140869440();
 UIGameMenuDialog* FUN_140938b90(int nId);
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommonByKey(const CStringW& str);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 void FUN_1412752d0(const CStringW& text, int nA);
 CStringW FUN_140298ea0(CStringW str);
@@ -298,11 +298,11 @@ void DungeonRecordManagerCli::OnRewardNotice(CInPacket& packet)
     unsigned char nKind = in.vfunc_o8_1();
     int nValue = in.vfunc_o8_3();
     if (nKind == 1)
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_room_dungeon_give_reward")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_room_dungeon_give_reward")), 1, 1);
     else if (nKind == 2)
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_room_dungeon_give_dungeonHelperReward")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_room_dungeon_give_dungeonHelperReward")), 1, 1);
     else if (nKind == 3)
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_room_dungeon_reward_addExtraCount")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_room_dungeon_reward_addExtraCount")), 1, 1);
     else if (nKind == 4)
         FUN_1412751f0(FUN_1405c2690(CStringW(L"s_room_dungeon_record_notify_change_expert"), FUN_1401a9d70()->FUN_141811980(0x14, nValue)), 1, 1);
 }
@@ -340,7 +340,7 @@ void DungeonRecordManagerCli::OnAddRecordExtra(CInPacket& packet)
     DungeonRecordCliPtr spRecord(new DungeonRecordCli);
     packet >> *spRecord;
     m_records.SetAt(spRecord->GetDungeonRoomID(), spRecord);
-    FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_room_dungeon_reward_addExtraCount")), 1, 1);
+    FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_room_dungeon_reward_addExtraCount")), 1, 1);
     if (UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28))
         pMenu->FUN_141938ae0(0x4f1c, 0);
 }

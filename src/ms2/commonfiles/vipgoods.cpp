@@ -38,7 +38,7 @@ void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned>* pOut, const cha
 void FUN_1402a5010(const CString& str, ATL::CAtlArray<__int64>* pOut, const char* pszSep);
 unsigned char FUN_1401d1320(CCacheData*);
 CString FUN_14016a5c0(const char* psz, int n);
-CStringW FUN_14028b8e0(const CStringW& strKey);                     // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
 CStringW FUN_140b8ec90(CMsTime time);                               // date text
 CStringW FUN_1418fec00(int nType, __int64 nValue, int);        // money text by pay type
 CStringW FUN_1418fef90(int nType, __int64 nValue);
@@ -73,7 +73,7 @@ CStringW CVIPGoods::GetPriceText(int bShort)
     if (m_nSalePrice == 0)
     {
         CStringW strKey(L"s_vip_dialog_goods_free");
-        return FUN_14028b8e0(strKey);
+        return GetStringCommonByKey(strKey);
     }
     else if (m_nPriceType == 0)
     {

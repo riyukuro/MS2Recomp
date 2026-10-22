@@ -2092,3 +2092,6 @@
 14041dfc0	GameEventShutdownEnchantScroll::vfunc_1	GameEventShutdownEnchantScroll::GetTypeName	descriptive	descriptive typename: slot 1 returns the class name; member of a renamed vfunc_1 family	nam1	2026-10-22
 14041e0b0	GameEventShutdownItemSocketTarget::vfunc_1	GameEventShutdownItemSocketTarget::GetTypeName	descriptive	descriptive typename: slot 1 returns the class name; member of a renamed vfunc_1 family	nam1	2026-10-22
 14041e1a0	GameEventShutdownItemSocketTargetGemStone::vfunc_1	GameEventShutdownItemSocketTargetGemStone::GetTypeName	descriptive	descriptive typename: slot 1 returns the class name; member of a renamed vfunc_1 family	nam1	2026-10-22
+14028de60	FUN_14028de60	GetStringCommon	descriptive	descriptive body: string-common table lookup by numeric id (callers pass s_* ids); free helper, stand-ins in ~300 files	nam1	2026-10-22
+14028b8e0	FUN_14028b8e0	GetStringCommonByKey	descriptive	descriptive body: string-common lookup by key (callers pass L"s_..."); free helper, stand-ins in ~300 files	nam1	2026-10-22
+1401a9d70	FUN_1401a9d70	GetStringTable	descriptive	descriptive body: inline accessor returning the CStringTable singleton DAT_143aac298 (v2525: CStringTable::GetInstance); Unk_* stand-ins keep FUN_1401a9d70 as alias	nam1	2026-10-22

@@ -166,7 +166,7 @@ class Unk_SmItemNames { public: CStringW FUN_141811980(int n, int nItemId); };  
 Unk_SmItemNames* FUN_1401a9d70();
 void FUN_140cfefe0(const Scaleform::GFx::Value& root, CString strProp, CString strChild, CStringW strText);   // set a child's text
 CStringW FUN_14016a730(const char* psz, int n);                             // narrow -> wide
-CStringW FUN_14028b8e0(const CStringW& strKey);                             // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& strArg);    // text with one argument
 CStringW FUN_14062b4f0(CStringW strKey, const unsigned& nArg);              // string table text with one argument
 bool FUN_140184310(const CString& str, const char* psz) noexcept;                    // string equals
@@ -371,7 +371,7 @@ void UISystemMailNotifyDialog::FUN_1412a5570(int nMailId)
             strAttach = FUN_1401a9d70()->FUN_141811980(1, rewards[0].m_nItemId);
         else
             strAttach = (const char*)rec->m_body.m_strAttach;
-        CStringW strDesc = FUN_1401e8510(FUN_14028b8e0(FUN_14016a730(rec->m_body.m_strKey, 0)), strAttach);
+        CStringW strDesc = FUN_1401e8510(GetStringCommonByKey(FUN_14016a730(rec->m_body.m_strKey, 0)), strAttach);
         FUN_140cfefe0(m_event->FUN_1422bb890(), "content", "m_desc", strDesc);
     }
     FUN_141276180(s_strPopUp, "");

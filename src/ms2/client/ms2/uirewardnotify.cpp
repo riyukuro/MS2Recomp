@@ -1016,7 +1016,7 @@ int UIRouletteDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             if (pDlg != 0)
                 pDlg->FUN_140f356e0("spin", m_spins[m_spinIndex].m_slot + 1, FUN_14116d720(FUN_14025e7c0()));
             CStringW strResult = FUN_140967100()->FUN_141b20ed0();
-            CStringW strTitle = FUN_14028b8e0(L"s_roulette_reward");
+            CStringW strTitle = GetStringCommonByKey(L"s_roulette_reward");
             FUN_1403b4750()->FUN_1416fb300(strResult);
             FUN_1403b4750()->FUN_1416fb300(strTitle);
             Unk_RLRewardUI* pUI = FUN_140a7b2b0(0x4e40);

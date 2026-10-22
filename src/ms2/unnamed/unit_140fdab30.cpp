@@ -32,7 +32,7 @@ Unk_WdUgcPaths* FUN_1401d31f0();
 
 PC* FUN_141bd1530(WorldService* pWorld, __int64 nCharacterId);              // the field player of a character id
 CString FUN_141028be0(__int64 nCharacterId, const CString& strKey, int nKind, CString strExt);   // a UGC profile path
-CStringTable* FUN_1401a9d70();                                              // the string table singleton
+CStringTable* GetStringTable();                                              // the string table singleton
 bool FUN_140900f30(__int64 nTime);                                          // the time is at night (before 6 / after 17)
 CStringW FUN_140b8e850(const CMsTime& kTime);                               // the date text
 CStringW FUN_1409404f0(__int64 nMerat);                                     // the price text
@@ -71,7 +71,7 @@ void FUN_140fdac50(int nPackageId, int nHallId, __int64 nTime, unsigned char bPu
     kBride.FUN_1407cbb20("name", pProxy->m_bride.m_strName);
     kBride.FUN_1407cba60("iconPath", FUN_140fdab30(&pProxy->m_bride));
     pData->FUN_1409eb270("bride", kBride);
-    pData->FUN_1407cbb20("hall", FUN_1401a9d70()->FUN_141811980(3,
+    pData->FUN_1407cbb20("hall", GetStringTable()->FUN_141811980(3,
         WeddingTable::GetInstance()->FUN_140908d50(spPackage->m_nId, spHall->m_nId, FUN_140900f30(nTime))));
     pData->FUN_1407cbb20("date", FUN_140b8e850(CMsTime(nTime)));
     pData->FUN_1407cbbe0("isPublic", bPublic);

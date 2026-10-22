@@ -55,7 +55,7 @@ unsigned int* FUN_140297cb0(Unk_TpIds* p, size_t n);            // operator[]
 void* FUN_140281980();                                          // the table singleton
 void FUN_1405594b0(void* pTable, Unk_TpIds* pOut);              // collect the ids
 
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 void* FUN_1422bb8b0(int nMovieId);                              // the movie of a UI layer
 // A GFx::Value that the string-value builder constructs itself (no ctor call); the dtor is Value's (0x140614800).
 struct Unk_TpValue { ~Unk_TpValue(); long long m_a, m_b, m_c, m_d; };
@@ -179,8 +179,8 @@ void UITextPreviewDialog::OnDescriptionCheck()
         FUN_1405594b0(FUN_140281980(), &ids);
         for (size_t i = 0; i < FUN_140191110(&ids); i++) {
             unsigned int nId = *FUN_140297cb0(&ids, i);
-            CStringW strMain = FUN_1401a9d70()->GetItemDescription(nId, CString("mainDescription"));
-            CStringW strTooltip = FUN_1401a9d70()->GetItemDescription(nId, CString("tooltipDescription"));
+            CStringW strMain = GetStringTable()->GetItemDescription(nId, CString("mainDescription"));
+            CStringW strTooltip = GetStringTable()->GetItemDescription(nId, CString("tooltipDescription"));
             if (strMain.IsEmpty() && strTooltip.IsEmpty())
                 continue;
             pDlg->Invoke("descriptionCheck", 0, nId, strMain, strTooltip);

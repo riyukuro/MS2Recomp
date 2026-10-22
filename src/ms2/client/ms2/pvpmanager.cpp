@@ -35,7 +35,7 @@ public:
 Unk_PvpActor* FUN_141bd0cc0(void* pWorld);                          // the local player
 void* FUN_1403ed2d0();                                              // the world
 int FUN_141bd3060(void* pWorld);                                    // the current map id
-CStringW FUN_14028de60(int nId);
+CStringW GetStringCommon(int nId);
 void FUN_140d73aa0(CStringW text, int nA, int nB, CStringW tag);
 
 // The arena table (0x14051a980 returns the record of a selection, MS2Ptr-style).
@@ -106,7 +106,7 @@ void CPVPManager::SendCancelRequest()
             return;
         if (spActor->FUN_14166ce30() != 0)
         {
-            FUN_140d73aa0(FUN_14028de60(0x42e), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommon(0x42e), 0, 0, CStringW(L""));
             return;
         }
         Unk_PvpRecordPtr spRecord = FUN_1412818c0()->FUN_14051a980(Selection());
@@ -114,7 +114,7 @@ void CPVPManager::SendCancelRequest()
             return;
         if (spRecord->m_nMapId == FUN_141bd3060(FUN_1403ed2d0()))
         {
-            FUN_140d73aa0(FUN_14028de60(0x42f), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommon(0x42f), 0, 0, CStringW(L""));
             return;
         }
         COutPacket packet(0x61, 0);

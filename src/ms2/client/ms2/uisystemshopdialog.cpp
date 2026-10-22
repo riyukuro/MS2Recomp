@@ -117,8 +117,8 @@ extern Unk_Inventory DAT_143ab2a90;
 InvenSlot* FUN_140a50b50(DragSlot* p);                          // the inventory slot behind a drag source
 SkillDataTableCli* FUN_1401958b0();                             // TSingleton<SkillDataTableCli>::GetInstance
 
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // string table text
-CStringW FUN_14028de60(int nStringId);                          // string table text by id
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
+CStringW GetStringCommon(int nStringId);                          // string table text by id
 CStringW FUN_140298ea0(CStringW strKey);                        // string table text (the callee destroys the key)
 CStringW FUN_140938ae0(CStringW strKey, const unsigned& nArg);  // localized text with one number
 CStringW FUN_14062b4f0(CStringW strKey, const int& nArg);       // localized text with one number
@@ -282,7 +282,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                         buff.m_nId = spPush->m_data->m_nActionValue;
                         buff.m_nLevel = 1;
                         CStringW strBuffKey(L"s_msg_autofishing_extend_showcurrentduration_buff_desc");
-                        buff.m_strDesc = FUN_14028b8e0(strBuffKey);
+                        buff.m_strDesc = GetStringCommonByKey(strBuffKey);
                         spBox->FUN_141a01800(1);
                         spBox->FUN_141a027c0(SsMsgBoxFn(this, &UISystemShopDialog::FUN_140fa62d0));
                         spBox->FUN_141a029b0(buff);
@@ -298,7 +298,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                         }
                         FUN_140dd63d0(spBox.operator->(), "firstUseRedMerat", FUN_140811640(1));
                         CStringW strName(L"s_auto_action_fishing");
-                        FUN_140dd61f0(spBox.operator->(), "actionName", FUN_14028b8e0(strName));
+                        FUN_140dd61f0(spBox.operator->(), "actionName", GetStringCommonByKey(strName));
                         unsigned nSale = CGameRule::GetInstance()->FUN_140479900();
                         FUN_140dd6110(spBox.operator->(), "saleRate", nSale);
                         FUN_140dd6030(spBox.operator->(), "packageCount", nCount);
@@ -312,7 +312,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, 0, CStringW(L""));
                     if (spBox.get())
                     {
-                        spBox->FUN_141a024e0(FUN_14028de60(0xc65), 1);
+                        spBox->FUN_141a024e0(GetStringCommon(0xc65), 1);
                         spBox->FUN_141a027c0(SsMsgBoxFn(this, &UISystemShopDialog::FUN_140fa64a0));
                         FUN_140d73c60(spBox);
                     }
@@ -337,7 +337,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                     buff.m_nId = spPush->m_data->m_nActionValue;
                     buff.m_nLevel = 1;
                     CStringW strBuffKey(L"s_msg_auto_play_instrument_extend_showcurrentduration_buff_desc");
-                    buff.m_strDesc = FUN_14028b8e0(strBuffKey);
+                    buff.m_strDesc = GetStringCommonByKey(strBuffKey);
                     spBox->FUN_141a01800(1);
                     spBox->FUN_141a027c0(SsMsgBoxFn(this, &UISystemShopDialog::FUN_140fa67a0));
                     spBox->FUN_141a029b0(buff);
@@ -353,7 +353,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                     }
                     FUN_140dd63d0(spBox.operator->(), "firstUseRedMerat", FUN_140811640(4));
                     CStringW strName(L"s_auto_action_play_instrument");
-                    FUN_140dd61f0(spBox.operator->(), "actionName", FUN_14028b8e0(strName));
+                    FUN_140dd61f0(spBox.operator->(), "actionName", GetStringCommonByKey(strName));
                     unsigned nSale = CGameRule::GetInstance()->FUN_140479a20();
                     FUN_140dd6110(spBox.operator->(), "saleRate", nSale);
                     FUN_140dd6030(spBox.operator->(), "packageCount", nCount);
@@ -368,7 +368,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                 if (spBox.get())
                 {
                     CStringW strCheckKey(L"s_system_auto_play_instrument_extend");
-                    spBox->FUN_141a024e0(FUN_14028b8e0(strCheckKey), 1);
+                    spBox->FUN_141a024e0(GetStringCommonByKey(strCheckKey), 1);
                     spBox->FUN_141a027c0(SsMsgBoxFn(this, &UISystemShopDialog::FUN_140fa6970));
                     FUN_140d73c60(spBox);
                 }
@@ -430,16 +430,16 @@ void UISystemShopDialog::FUN_140fa5bc0()
         pSlot->SetFlags(0x11);
     }
     int bCancel = 0;
-    CStringW strTitle = FUN_14028b8e0(CStringW(L"s_system_shop_title_fishing"));
-    CStringW strDesc = FUN_14028b8e0(CStringW(L"s_system_shop_desc_fishing"));
+    CStringW strTitle = GetStringCommonByKey(CStringW(L"s_system_shop_title_fishing"));
+    CStringW strDesc = GetStringCommonByKey(CStringW(L"s_system_shop_desc_fishing"));
     CStringW strExtend;
     if (reinterpret_cast<Unk_PCBaseBuffs*>(pPc->FUN_1416749a0())->FUN_1409701d0(1) != 0)
     {
         bCancel = CFishingManager::GetInstance()->GetAutoCount() > 0;
         if (bCancel == 0)
-            strExtend = FUN_14028b8e0(CStringW(L"s_system_shop_title_extend_autofishing"));
+            strExtend = GetStringCommonByKey(CStringW(L"s_system_shop_title_extend_autofishing"));
         else
-            strExtend = FUN_14028b8e0(CStringW(L"s_system_shop_title_extend_autofishing_cancel"));
+            strExtend = GetStringCommonByKey(CStringW(L"s_system_shop_title_extend_autofishing_cancel"));
     }
     m_30->FUN_140fa7540("setShop", strDesc, strTitle, strExtend, GetTypeName());
     m_30->FUN_1409ba0d0("setIcon", 1, bCancel);
@@ -486,14 +486,14 @@ void UISystemShopDialog::FUN_140fa64e0()
     if (pPc == 0 || m_nMode != 5 || !m_30.get())
         return;
     int bCancel = 0;
-    CStringW strTitle = FUN_14028b8e0(CStringW(L"s_system_shop_title_extend_play_instrument"));
-    CStringW strDesc = FUN_14028b8e0(CStringW(L"s_system_shop_desc_play_instrument"));
+    CStringW strTitle = GetStringCommonByKey(CStringW(L"s_system_shop_title_extend_play_instrument"));
+    CStringW strDesc = GetStringCommonByKey(CStringW(L"s_system_shop_desc_play_instrument"));
     // CanPlayEnsemble / GetVolume (instrumentmanager.h names): the auto play runs / its extension count
     if (CInstrumentManager::GetInstance()->CanPlayEnsemble() != 0)
     {
         bCancel = CInstrumentManager::GetInstance()->GetVolume() != 0;
         if (bCancel != 0)
-            strTitle = FUN_14028b8e0(CStringW(L"s_system_shop_title_extend_play_instrument_cancel"));
+            strTitle = GetStringCommonByKey(CStringW(L"s_system_shop_title_extend_play_instrument_cancel"));
     }
     m_30->FUN_140fa7400("setShop", strDesc, strTitle, L"", L"");
     m_30->FUN_1409ba0d0("setIcon", 0, bCancel);

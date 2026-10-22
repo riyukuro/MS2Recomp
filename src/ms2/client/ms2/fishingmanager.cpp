@@ -209,7 +209,7 @@ Unk_FmGameMode* FUN_140a94350();
 void FUN_141275260(int nMsgId, int a, int b);
 void FUN_1412751f0(const CStringW& strText, int a, int b);
 void FUN_1412751b0(const CStringW& strText, int nType);
-CStringW FUN_14028b8e0(const CStringW& strKey);
+CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_140298ea0(CStringW strKey);
 CStringW FUN_14062b4f0(CStringW strKey, const int* pn);
 CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);
@@ -1561,7 +1561,7 @@ CStringW CFishingManager::FUN_140cddc70(const ATL::CAtlArray<CString>& texts)
     if (nCount != 0)
     {
         unsigned nIndex = FUN_140768010(nCount, 0);
-        return FUN_14028b8e0(FUN_14016a730(texts[nIndex], 0));
+        return GetStringCommonByKey(FUN_14016a730(texts[nIndex], 0));
     }
     return CStringW(L"");
 }

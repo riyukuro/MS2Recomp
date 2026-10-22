@@ -2534,7 +2534,7 @@ void CubeMapInformationService::FUN_1410ce020(MS2Ptr<Cube> spCube)
             FUN_1410ce1e0(1, &nItemId);
     }
 }
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 // @0x1410c7ce0
 // MS2-FUNCTIONAL: exe spills the owner-temporary pointer through two extra locals; frame 0x10 larger
 CStringW CubeMapInformationService::FUN_1410c7ce0(int nA, int nB)
@@ -2543,15 +2543,15 @@ CStringW CubeMapInformationService::FUN_1410c7ce0(int nA, int nB)
     bool bHasOwner = FUN_1408a0fa0(reinterpret_cast<Unk_CubeOwners&>(f138), nA, nB) != 0;
     if (bHasOwner)
         return strText;
-    strText = FUN_14028de60(0x7e7);
+    strText = GetStringCommon(0x7e7);
     int nState = 2;
     Unk_CMISHouseRef spHouse(FUN_1410c7c20(nA, nB));
     if (spHouse.FUN_141128410() != 0)
         nState = spHouse.FUN_1411284b0()->m_state;
     if (nState == 4)
-        strText = FUN_14028de60(0x7e8);
+        strText = GetStringCommon(0x7e8);
     if (FUN_1410c80d0(nB) == 0)
-        strText = FUN_14028de60(0x7e9);
+        strText = GetStringCommon(0x7e9);
     return strText;
 }
 class Unk_CMISOwnerSvc { public: int FUN_140ae52d0(int nMapId, int nGroup); };

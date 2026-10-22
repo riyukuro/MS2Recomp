@@ -246,8 +246,8 @@ CStringW FUN_1409eaa20(CStringW key, const CStringW& a, const CStringW& b, const
 CStringW FUN_14062b4f0(CStringW key, const int* v);
 CStringW FUN_1405c2690(CStringW key, const CStringW& arg);
 CStringW FUN_140bfa7f0(CStringW key, CStringW name, const int& v);
-CStringW FUN_14028b8e0(const CStringW& key);
-CStringW FUN_14028de60(int id);
+CStringW GetStringCommonByKey(const CStringW& key);
+CStringW GetStringCommon(int id);
 bool FUN_1403b3c40(const CStringW& s, const wchar_t* w);
 bool FUN_140e45240(const CStringW& s, const char* c);
 unsigned __int64 FUN_140718350(const CString& s);
@@ -730,14 +730,14 @@ void UIItemEnchantDialog::FUN_1419c0440(ASData* pData)
                 int b = 100 - (int)m_23c;
                 int c = (int)m_23c;
                 int d = item->FUN_140526fc0() + 1;
-                CStringW text = StringFormat((LPCWSTR)FUN_14028de60(0x95f), d, c, b, a);
+                CStringW text = StringFormat((LPCWSTR)GetStringCommon(0x95f), d, c, b, a);
                 MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x1a, CStringW(text), 0, CStringW(L""));
                 if (box.get() != 0) {
                     int rank = ingredient->FUN_140526bd0();
                     int itemId = ingredient->FUN_1405276c0();
                     box->FUN_141a020b0(itemId, rank, 1);
                     box->FUN_141a01800(1);
-                    box->FUN_141a024e0(FUN_14028de60(0x961), 0);
+                    box->FUN_141a024e0(GetStringCommon(0x961), 0);
                     box->Append<__int64>(uid);
                     FUN_141a024a0(box.operator->(), 0);
                     box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemEnchantDialog::FUN_1419c5890));
@@ -843,7 +843,7 @@ void UIItemEnchantDialog::FUN_1419c1220(ASData* pData)
             FUN_1419c16c0(uid, flag);
         } else {
             CStringW key(L"s_itemenchant_over_enchanted_item");
-            MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_14028b8e0(key), 0, CStringW(L""));
+            MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(key), 0, CStringW(L""));
             if (box.get() != 0) {
                 box->Append<__int64>(uid);
                 FUN_141a024a0(box.operator->(), 0);
@@ -886,7 +886,7 @@ void UIItemEnchantDialog::FUN_1419c16c0(unsigned __int64 uid, int flag)
         return;
     if (flag != 0 && item->FUN_140526fc0() > 0) {
         CStringW key(L"s_itemenchant_enchanted_item");
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_14028b8e0(key), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(key), 0, CStringW(L""));
         if (box.get() != 0) {
             box->Append<__int64>(uid);
             FUN_141a024a0(box.operator->(), 0);
@@ -1265,7 +1265,7 @@ void UIItemEnchantDialog::FUN_1419c4360(unsigned __int64 uid)
         int v23c = (int)m_23c;
         int pct = 100 - (int)m_23c;
         int lvl = item->FUN_140526fc0() + 1;
-        CStringW text = StringFormat((LPCWSTR)FUN_14028de60(0x95f), lvl, v23c, pct, v230);
+        CStringW text = StringFormat((LPCWSTR)GetStringCommon(0x95f), lvl, v23c, pct, v230);
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, text, 0, CStringW(L""));
         if (box.get() != 0) {
             box->Append<__int64>(uid);
@@ -1279,14 +1279,14 @@ void UIItemEnchantDialog::FUN_1419c4360(unsigned __int64 uid)
         int v23c = (int)m_23c;
         int pct = 100 - (int)m_23c;
         int lvl = item->FUN_140526fc0() + 1;
-        CStringW text = StringFormat((LPCWSTR)FUN_14028de60(0x95f), lvl, v23c, pct, v230);
+        CStringW text = StringFormat((LPCWSTR)GetStringCommon(0x95f), lvl, v23c, pct, v230);
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x1a, text, 0, CStringW(L""));
         if (box.get() != 0) {
             int rank = second->FUN_140526bd0();
             int itemId = second->FUN_1405276c0();
             box->FUN_141a020b0(itemId, rank, 1);
             box->FUN_141a01800(1);
-            box->FUN_141a024e0(FUN_14028de60(0x961), 0);
+            box->FUN_141a024e0(GetStringCommon(0x961), 0);
             box->Append<__int64>(uid);
             FUN_141a024a0(box.operator->(), 0);
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemEnchantDialog::FUN_1419c4e00));
@@ -1753,7 +1753,7 @@ CStringW UIItemEnchantDialog::FUN_1419c7970(float rate)
 {
     int percent = (int)FUN_14028aed0(rate);
     if (percent == 0)
-        return FUN_14028de60(0x95d);
+        return GetStringCommon(0x95d);
     return FUN_14052bd00(0x98e, StringFormat(L"{0}", percent));
 }
 
@@ -1767,7 +1767,7 @@ void UIItemEnchantDialog::FUN_1419c7a30(unsigned __int64 uid, int mode)
         SendRequestItemEnchantMode4(uid, mode);
         return;
     }
-    MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_14028b8e0(CStringW(L"s_itemenchant_exp_payback")), 0, CStringW(L""));
+    MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(CStringW(L"s_itemenchant_exp_payback")), 0, CStringW(L""));
     if (box.get() != 0) {
         box->Append<__int64>(uid);
         box->Append<int>(mode);
@@ -1992,7 +1992,7 @@ void UIItemEnchantDialog::FUN_1419c90b0(unsigned int itemId, int count, __int64 
     if ((list.GetCount() != 0) || (arg != 0)) {
         Unk_EnInvDialog* inv = FUN_140a7b2b0(0x4e40);
         if (inv != 0)
-            inv->FUN_141b1ac40(list, FUN_14028de60(0x956), 0, 0, arg);
+            inv->FUN_141b1ac40(list, GetStringCommon(0x956), 0, 0, arg);
     }
 }
 

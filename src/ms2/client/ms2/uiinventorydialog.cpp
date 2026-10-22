@@ -427,8 +427,8 @@ void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_141275460(int nStringId, int nA, int nB, const fmt::ArgList& args);
 void FUN_14151f200();
 UIMessageBox* FUN_14151f890();
-CStringW FUN_14028b8e0(const CStringW& strKey);
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommonByKey(const CStringW& strKey);
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_1409eec40(int nStringId);
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
@@ -913,7 +913,7 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pPc != 0 && pPc->vfunc_65() == 1)
         {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_error_talk_battle_state_force_talk")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_error_talk_battle_state_force_talk")), 1, 1);
             return 1;
         }
         int nNpcId = *FUN_1401d3200()->EnchantTransformScriptID.Get();
@@ -943,7 +943,7 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pPc != 0 && pPc->vfunc_65() == 1)
         {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_error_talk_battle_state_force_talk")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_error_talk_battle_state_force_talk")), 1, 1);
             return 1;
         }
         int nNpcId = *FUN_1401d3200()->MergeSmithScriptID.Get();
@@ -1268,7 +1268,7 @@ void UIInventoryDialog::OnClickOpenBank()
     if (nElapsed < (int)(nCooltime / 1000))
     {
         int nRemain = nCooltime / 1000 - nElapsed;
-        FUN_1412751f0(FUN_1401ceea0(FUN_14028b8e0(CStringW(L"s_inventory_err_open_bank_remain_time")), nRemain), 1, 1);
+        FUN_1412751f0(FUN_1401ceea0(GetStringCommonByKey(CStringW(L"s_inventory_err_open_bank_remain_time")), nRemain), 1, 1);
     }
     else
     {
@@ -1321,7 +1321,7 @@ bool UIInventoryDialog::FUN_14199ac30(int nResult, const CMsgBoxData& box)
     if (strName.IsEmpty())
     {
         if (UIMessageBox* pBox = FUN_14151f890())
-            pBox->FUN_1419f82b0(FUN_14028de60(0xd));
+            pBox->FUN_1419f82b0(GetStringCommon(0xd));
         return false;
     }
     if (CBanTextChecker* pChecker = FUN_14025e7d0()->FUN_140229a50().get())
@@ -1362,7 +1362,7 @@ bool UIInventoryDialog::FUN_14199b100(int nResult, const CMsgBoxData& box)
     }
     else
     {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10, FUN_14028b8e0(CStringW(L"s_coupleeffect_recevie_name")), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10, GetStringCommonByKey(CStringW(L"s_coupleeffect_recevie_name")), 0, CStringW(L""));
         if (spBox.get() != 0)
         {
             spBox->FUN_141a01d30(2, CStringW(L""), 0xc, 0, 0);
@@ -1409,7 +1409,7 @@ bool UIInventoryDialog::FUN_14199b4e0(int nResult, const CMsgBoxData& box)
             return true;
         }
         if (UIMessageBox* pBox = FUN_14151f890())
-            pBox->FUN_1419f82b0(FUN_14028de60(0xe7));
+            pBox->FUN_1419f82b0(GetStringCommon(0xe7));
     }
     else
     {
@@ -2069,7 +2069,7 @@ void UIInviteGroupDialog::FUN_14199fe70(unsigned nCount)
         else
         {
             spButton->FUN_1422c1fe0(0);
-            CStringW strText = FUN_14028de60(0x814);
+            CStringW strText = GetStringCommon(0x814);
             MS2Ptr<CMsgBoxData> spTop = FUN_14151f820();
             if (spTop.get() != 0 && spTop->GetExtra() == strText)
                 return;
@@ -2744,10 +2744,10 @@ int UIItemBreakDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             if (nRarity == 6 || nRarity == 5)
             {
                 bool bLegendary = nRarity != 6;
-                CStringW strText = bLegendary ? FUN_14028b8e0(CStringW(L"s_itembreak_legendary_item"))
-                                              : FUN_14028b8e0(CStringW(L"s_itembreak_artifact_item"));
-                CStringW strCheck = bLegendary ? FUN_14028b8e0(CStringW(L"s_itembreak_legendary_item_checkbox"))
-                                               : FUN_14028b8e0(CStringW(L"s_itembreak_artifact_item_checkbox"));
+                CStringW strText = bLegendary ? GetStringCommonByKey(CStringW(L"s_itembreak_legendary_item"))
+                                              : GetStringCommonByKey(CStringW(L"s_itembreak_artifact_item"));
+                CStringW strCheck = bLegendary ? GetStringCommonByKey(CStringW(L"s_itembreak_legendary_item_checkbox"))
+                                               : GetStringCommonByKey(CStringW(L"s_itembreak_artifact_item_checkbox"));
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x19, strText, 0, CStringW(L""));
                 if (spBox.get() != 0)
                 {
@@ -2993,10 +2993,10 @@ int UIItemBreakDonationDialog::vfunc_28(const char* szMethod, const Scaleform::G
             if (nRarity == 6 || nRarity == 5)
             {
                 bool bLegendary = nRarity != 6;
-                CStringW strText = bLegendary ? FUN_14028b8e0(CStringW(L"s_itembreak_donation_legendary_item"))
-                                              : FUN_14028b8e0(CStringW(L"s_itembreak_donation_artifact_item"));
-                CStringW strCheck = bLegendary ? FUN_14028b8e0(CStringW(L"s_itembreak_donation_legendary_item_checkbox"))
-                                               : FUN_14028b8e0(CStringW(L"s_itembreak_donation_artifact_item_checkbox"));
+                CStringW strText = bLegendary ? GetStringCommonByKey(CStringW(L"s_itembreak_donation_legendary_item"))
+                                              : GetStringCommonByKey(CStringW(L"s_itembreak_donation_artifact_item"));
+                CStringW strCheck = bLegendary ? GetStringCommonByKey(CStringW(L"s_itembreak_donation_legendary_item_checkbox"))
+                                               : GetStringCommonByKey(CStringW(L"s_itembreak_donation_artifact_item_checkbox"));
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x19, strText, 0, CStringW(L""));
                 if (spBox.get() != 0)
                 {

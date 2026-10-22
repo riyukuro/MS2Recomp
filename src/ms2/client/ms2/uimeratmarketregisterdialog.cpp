@@ -160,8 +160,8 @@ void FUN_1418ffec0(int* pFlags, int nBit);
 void FUN_1418ffef0(int* pFlags, int nBit);
 bool FUN_1418ff110(int nType, __int64 nValue, int n);           // the player can pay
 CStringW FUN_1418fec00(int nType, __int64 nValue, int n);       // money text by pay type
-CStringW FUN_14028b8e0(const CStringW& strKey);
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommonByKey(const CStringW& strKey);
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_1408116a0(int nId, const int& nArg);
 CStringW FUN_14086d060(int nId, const __int64& nArg);
 CStringW FUN_1409404f0(__int64 nValue);
@@ -388,7 +388,7 @@ void UIMeratMarketRegisterDialog::OnLoadComplete()
         ASObj objData(2);
         objData.FUN_1407cbb20("saleDay", FUN_1408116a0(0xa39, nSaleDay));
         objData.FUN_1407cbb20("ad", FUN_14086d060(0xa3a, nAdFee));
-        objData.FUN_1407cbb20("royalty", FUN_14028de60(0xa3b));
+        objData.FUN_1407cbb20("royalty", GetStringCommon(0xa3b));
         objData.FUN_1407cbbe0("onlyShowEnableDesigns", m_bOnlyEnabled);
         unsigned __int64 nMinPrice = FUN_1406a6d50(MrdMinPriceValue());
         unsigned __int64 nMaxPrice = FUN_1406a6d50(MrdMaxPriceValue());
@@ -980,7 +980,7 @@ bool UIMeratMarketRegisterDialog::FUN_14131ae60(unsigned char bAddBase, bool bCh
         nFee = FUN_14131ac80(bAddBase, m_spSelected, 1);
         if (nCached != nFee)
         {
-            MS2Ptr<Unk_MrdMsgBox> spBox = FUN_140d74390(FUN_14028b8e0(CStringW(L"s_ugc_itemedit_error_check_register_fee")), 0,
+            MS2Ptr<Unk_MrdMsgBox> spBox = FUN_140d74390(GetStringCommonByKey(CStringW(L"s_ugc_itemedit_error_check_register_fee")), 0,
                 Delegate<bool(int, const CMsgBoxData&)>(this, &UIMeratMarketRegisterDialog::FUN_141319180));
             return false;
         }
@@ -1040,8 +1040,8 @@ void UIMeratMarketRegisterDialog::FUN_14131b4e0(ASObj& obj, unsigned char bAddBa
     CStringW strTotalFee;
     if (m_spSelected.get() == 0)
     {
-        strFee = FUN_14028b8e0(CStringW(L"s_meratmarket_register_fee_default"));
-        strTotalFee = FUN_14028b8e0(CStringW(L"s_meratmarket_register_total_fee_default"));
+        strFee = GetStringCommonByKey(CStringW(L"s_meratmarket_register_fee_default"));
+        strTotalFee = GetStringCommonByKey(CStringW(L"s_meratmarket_register_total_fee_default"));
     }
     else
     {
@@ -1116,7 +1116,7 @@ void UIMeratMarketRegisterDialog::FUN_14131b810(ASData& data)
             m_spRequest->name = strName;
             m_spRequest->description = strDescription;
         }
-        MS2Ptr<Unk_MrdMsgBox> spBox = FUN_140d748b0(0, FUN_14028de60(0x9da), FUN_14028de60(0x9db),
+        MS2Ptr<Unk_MrdMsgBox> spBox = FUN_140d748b0(0, GetStringCommon(0x9da), GetStringCommon(0x9db),
             Delegate<bool(int, const CMsgBoxData&)>(this, &UIMeratMarketRegisterDialog::FUN_141319100));
     }
 }
@@ -1155,7 +1155,7 @@ void UIMeratMarketRegisterDialog::FUN_14131c010(ASData& data)
             m_spRequest->name = strName;
             m_spRequest->description = strDescription;
         }
-        MS2Ptr<Unk_MrdMsgBox> spBox = FUN_140d748b0(0, FUN_14028de60(0x9da), FUN_14028de60(0x9db),
+        MS2Ptr<Unk_MrdMsgBox> spBox = FUN_140d748b0(0, GetStringCommon(0x9da), GetStringCommon(0x9db),
             Delegate<bool(int, const CMsgBoxData&)>(this, &UIMeratMarketRegisterDialog::FUN_141319100));
     }
 }

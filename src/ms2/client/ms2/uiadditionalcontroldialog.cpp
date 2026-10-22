@@ -92,7 +92,7 @@ Unk_AcSkillTable* FUN_1401958b0();
 
 class Unk_AcStringMgr { public: CStringW FUN_1422b0570(const CString& strKey); };
 Unk_AcStringMgr* FUN_14025e7a0();
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 CInputKeyHandler* FUN_14025e7c0();
 CStringW FUN_14083f330(const CStringW& str, wchar_t chBegin, wchar_t chEnd);      // the text between two characters
 int FUN_140718200(CStringW* text);                                                 // text to number
@@ -253,7 +253,7 @@ void UIAdditionalControlDialog::FUN_1418b2e80(const CString& strGroup, const CSt
             CStringW strLabel;
             CStringW strUnused;
             int nPassive = 0;
-            CStringW strName = FUN_1401a9d70()->FUN_141812290(nId, level->GetLevel(), CString("name"));
+            CStringW strName = GetStringTable()->FUN_141812290(nId, level->GetLevel(), CString("name"));
             strLabel.Format(L"[%ld] [Lv.%d] %s", nId, level->GetLevel(), (LPCWSTR)strName);
             if (level->m_nKeepCondition == 99) {
                 strLabel.Append(FUN_14025e7a0()->FUN_1422b0570("$s_additionaleffect_control_dialog_name_passive"));

@@ -160,7 +160,7 @@ CStringW FUN_140979570(int nMapId);                                 // the addre
 CStringW FUN_1409404f0(__int64 n);                                  // a number with thousand separators
 CStringW FUN_140719a00(long long n);                                // integer text
 CStringW FUN_14052bd00(int nId, const CStringW& arg);
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_14016a730(const char* psz, int nCodePage);
 CStringW FUN_14093bad0(int nId, int nGrade, CStringW strFormat);    // the trophy requirement text
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);
@@ -329,7 +329,7 @@ int UIRealEstateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         return 1;
     if (pPC->FUN_141527e00() == 0 && static_cast<Unk_RdPC*>(pPC)->FUN_141527ed0() != 0)
     {
-        FUN_140d73aa0(FUN_14028de60(0x7f5), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommon(0x7f5), 0, 0, CStringW(L""));
     }
     else
     {
@@ -695,7 +695,7 @@ void UIRealEstateDialog::FUN_141ab42a0()
     FUN_1403b4750()->FUN_1416fb300(strDesc);
     obj.FUN_1407cbb20("description", FUN_140a228f0(0x7e1, group.contractDate, strDesc));
     static_cast<Unk_ReObj&>(obj).FUN_141ab5b30("buildingIcon", group.buildingType);
-    obj.FUN_1407cbb20("buildingType", FUN_14028de60(group.buildingType + 0x7d3));
+    obj.FUN_1407cbb20("buildingType", GetStringCommon(group.buildingType + 0x7d3));
     CStringW strArea;
     strArea = FUN_140811740(0x7d7, group.field30, group.heightLimit);
     obj.FUN_1407cbb20("areaSize", CStringW(strArea));
@@ -714,13 +714,13 @@ void UIRealEstateDialog::FUN_141ab42a0()
     if (bBlocked == 0)
     {
         obj.FUN_1407cb9c0("contractable", bContractable);
-        obj.FUN_1407cbb20("contractableText", FUN_14028de60(0x7fa));
+        obj.FUN_1407cbb20("contractableText", GetStringCommon(0x7fa));
     }
     else
     {
         obj.FUN_1407cb9c0("contractable", 0);
-        obj.FUN_1407cbb20("contractableText", FUN_14028de60(0x7f8));
-        obj.FUN_1407cbb20("trophy", FUN_14028de60(0x7f9));
+        obj.FUN_1407cbb20("contractableText", GetStringCommon(0x7f8));
+        obj.FUN_1407cbb20("trophy", GetStringCommon(0x7f9));
     }
     m_30->Invoke("initData", obj);
 }

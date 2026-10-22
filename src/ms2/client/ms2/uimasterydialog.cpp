@@ -826,13 +826,13 @@ void UIMasteryDialog::FUN_140eafde0()
     } else if (nTab == 3) {
         if (FUN_140166410()->FUN_14036d570(0x5a)) {
             if (FUN_140166410()->FUN_14036d570(0x7c))
-                spSub->FUN_1422e34d0(FUN_14028b8e0(CStringW(L"s_mastery_magicscroll_enchant_scroll_tab")));
+                spSub->FUN_1422e34d0(GetStringCommonByKey(CStringW(L"s_mastery_magicscroll_enchant_scroll_tab")));
             if (FUN_140166410()->FUN_14036d570(0x7d))
-                spSub->FUN_1422e34d0(FUN_14028b8e0(CStringW(L"s_mastery_magicscroll_restore_scroll_tab")));
+                spSub->FUN_1422e34d0(GetStringCommonByKey(CStringW(L"s_mastery_magicscroll_restore_scroll_tab")));
             if (FUN_140166410()->FUN_14036d570(0x7e))
-                spSub->FUN_1422e34d0(FUN_14028b8e0(CStringW(L"s_mastery_magicscroll_fracto_scroll_tab")));
+                spSub->FUN_1422e34d0(GetStringCommonByKey(CStringW(L"s_mastery_magicscroll_fracto_scroll_tab")));
             if (FUN_140166410()->FUN_14036d570(0x7f))
-                spSub->FUN_1422e34d0(FUN_14028b8e0(CStringW(L"s_mastery_magicscroll_protected_scroll_tab")));
+                spSub->FUN_1422e34d0(GetStringCommonByKey(CStringW(L"s_mastery_magicscroll_protected_scroll_tab")));
         }
     }
     spSub->vfunc_24(1);
@@ -1238,7 +1238,7 @@ void UIMasteryDialog::FUN_140eb3460()
     FUN_14034f780()->FUN_14034e460(nTab, nSlot, nSub, recs);
     qsort(recs.GetData(), recs.GetCount(), 0x10, &UIMasteryDialog::FUN_140eb9160);
     if (recs.GetCount() == 0) {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d74390(FUN_14028b8e0(CStringW(L"s_mastery_magicscroll_no_recipe")), 0, Delegate<bool(int, const CMsgBoxData&)>(this, &UIMasteryDialog::FUN_140eb4e30));
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d74390(GetStringCommonByKey(CStringW(L"s_mastery_magicscroll_no_recipe")), 0, Delegate<bool(int, const CMsgBoxData&)>(this, &UIMasteryDialog::FUN_140eb4e30));
         return;
     }
     for (size_t i = 0; i < recs.GetCount(); i++) {
@@ -1546,11 +1546,11 @@ void UIMasteryDialog::FUN_140eb55e0(int nId)
         ent.m_count = FUN_140eb7b40(spRec->m_nType, spRec->m_nNeedMastery, ref->m_c);
         ingredients.Add(ent);
     }
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x23, FUN_14028b8e0(CStringW(L"s_craft_messagebox_desc")), static_cast<IMessageListener*>(this), CStringW(L""));
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x23, GetStringCommonByKey(CStringW(L"s_craft_messagebox_desc")), static_cast<IMessageListener*>(this), CStringW(L""));
     if (spBox.get()) {
         spBox->FUN_140533ff0(spRec->m_nId);
-        FUN_141a015d0(spBox.get(), FUN_14028b8e0(CStringW(L"s_craft_messagebox_title")));
-        spBox->FUN_141a01690(FUN_14028b8e0(CStringW(L"s_word_cancel")), FUN_14028b8e0(CStringW(L"s_word_craft")), CStringW(L""));
+        FUN_141a015d0(spBox.get(), GetStringCommonByKey(CStringW(L"s_craft_messagebox_title")));
+        spBox->FUN_141a01690(GetStringCommonByKey(CStringW(L"s_word_cancel")), GetStringCommonByKey(CStringW(L"s_word_craft")), CStringW(L""));
         int nHave = FUN_140eb6d40(0, spRec->m_nId);
         spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 1, nHave, spRec->m_nMeso, 1);
         spBox->FUN_141a024a0(0);
@@ -1593,11 +1593,11 @@ void UIMasteryDialog::FUN_140eb5e60(int nId)
         ent.SetRank(FUN_14053feb0(ref->m_a));
         ingredients.Add(ent);
     }
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x23, FUN_14028b8e0(CStringW(L"s_magicscroll_craft_messagebox_desc")), static_cast<IMessageListener*>(this), CStringW(L""));
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x23, GetStringCommonByKey(CStringW(L"s_magicscroll_craft_messagebox_desc")), static_cast<IMessageListener*>(this), CStringW(L""));
     if (spBox.get()) {
         spBox->FUN_140533ff0(spRec->m_nId);
-        FUN_141a015d0(spBox.get(), FUN_14028b8e0(CStringW(L"s_magicscroll_craft_messagebox_title")));
-        spBox->FUN_141a01690(FUN_14028b8e0(CStringW(L"s_word_cancel")), FUN_14028b8e0(CStringW(L"s_magicscroll_word_craft")), CStringW(L""));
+        FUN_141a015d0(spBox.get(), GetStringCommonByKey(CStringW(L"s_magicscroll_craft_messagebox_title")));
+        spBox->FUN_141a01690(GetStringCommonByKey(CStringW(L"s_word_cancel")), GetStringCommonByKey(CStringW(L"s_magicscroll_word_craft")), CStringW(L""));
         int nHave = FUN_140eb6d40(1, spRec->m_nId);
         spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 1, nHave, (int)spRec->m_nMeso, 1);
         spBox->FUN_141a024a0(0);
@@ -1779,9 +1779,9 @@ CStringW UIMasteryDialog::FUN_140eb71a0(MS2Ptr<Unk_MRec> spRec)
     int nType = spRec->m_nType;
     if (4 < nType && nType < 7) {
         if (!FUN_1409670e0()->FUN_1410d5640())
-            strHome = FUN_14028b8e0(CStringW(L"s_mastery_otherhome"));
+            strHome = GetStringCommonByKey(CStringW(L"s_mastery_otherhome"));
         else
-            strHome = FUN_14028b8e0(CStringW(L"s_mastery_myhome"));
+            strHome = GetStringCommonByKey(CStringW(L"s_mastery_myhome"));
     }
     return FUN_140656190(L"{0} {1}", strHome, FUN_1409670c0()->FUN_14066c110(spRec->m_nType, spRec->m_nId, 1));
 }
@@ -1853,7 +1853,7 @@ CStringW UIMasteryDialog::FUN_140eb7c50(int nType)
 // @0x140eb7d40
 CStringW UIMasteryDialog::FUN_140eb7d40()
 {
-    CStringW strName = FUN_14028b8e0(L"s_mastery_housing");
+    CStringW strName = GetStringCommonByKey(L"s_mastery_housing");
     int nRewards = FUN_140930e10();
     if (nRewards != 0)
         return FUN_140bfa7f0(CStringW(L"s_mastery_subtab_mastery_name_and_reward"), strName, nRewards);

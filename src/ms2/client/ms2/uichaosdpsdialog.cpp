@@ -74,7 +74,7 @@ void FUN_141276f80(const Unk_CommandChat& kChat);
 
 // Number parsing, localized strings and ASObj/Value setters of other units.
 double FUN_1407184e0(const CStringW& str);
-CStringW FUN_14028b8e0(const CStringW& strKey);
+CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);
 CStringW FUN_140c2fcc0(CStringW strFormat, const int& nHour, const int& nMinute, const int& nSecond, const CStringW& strArg);
 void FUN_141b70810(unsigned nMs, CStringW& strOut);
@@ -237,7 +237,7 @@ int UIChaosDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         int nMinute = kNow.GetMinute();
         int nHour = kNow.GetHour();
         CStringW strHistory = FUN_140c2fcc0(CStringW(L"s_chaosdps_notice_history_prefix"), nHour, nMinute, nSecond, CBattleRecordManager::FUN_140a04bc0(m_nMode));
-        CStringW strRow = FUN_14028b8e0(L"s_chaosdps_notice_history_row");
+        CStringW strRow = GetStringCommonByKey(L"s_chaosdps_notice_history_row");
         for (unsigned i = 0; i < m_members.size() && i <= 9; i++)
         {
             MS2Ptr<CPartyMember> spMember = m_members[i];

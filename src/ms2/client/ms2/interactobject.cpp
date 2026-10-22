@@ -344,8 +344,8 @@ void FUN_1422b9fd0(void* pSound, unsigned nId);
 void FUN_1406c4340(float* pDst, float a, float b, float c);
 class Unk_IoHelp { public: void FUN_141907f80(int n, CStringW str); void FUN_141907d60(int n, CStringW a, CStringW b); };
 Unk_IoHelp* FUN_14136f290(int nId);
-CStringW FUN_14028de60(int nStringId);
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommon(int nStringId);
+CStringW GetStringCommonByKey(const CStringW& str);
 struct Unk_IoGuideTable { CStringW FUN_14142d760(int nId, int n); };   // member (this=rcx, hidden return=rdx)
 Unk_IoGuideTable* FUN_1409331f0();
 class Unk_IoUiMgr { public: void FUN_141adc530(int n); int FUN_141adc940(int n); void FUN_141adc5d0(int n); };
@@ -1101,11 +1101,11 @@ void CInteractTelescopeObject::vfunc_2(Unk_InteractMsg* pMsg)
     Unk_IoHelp* pHelp = FUN_14136f290(0x4e52);
     if (pHelp != 0)
     {
-        CStringW strTitle = FUN_14028de60(0x666);
+        CStringW strTitle = GetStringCommon(0x666);
         if (*FUN_140a58500(FUN_1409a8b10()) != 0)
             strTitle = FUN_1409331f0()->FUN_14142d760(0x49409, 2);
         pHelp->FUN_141907f80(9, strDesc);
-        pHelp->FUN_141907d60(3, strTitle, FUN_14028de60(0x667));
+        pHelp->FUN_141907d60(3, strTitle, GetStringCommon(0x667));
         FUN_140939a10()->FUN_140da4e40(CStringW(L"NotifyCutSceneCinematicSkip"),
                                        Delegate<void(NotifyObject*)>(this, &CInteractTelescopeObject::OnCutSceneSkip));
     }
@@ -1717,7 +1717,7 @@ void CInteractGatheringObject::vfunc_6(Unk_InteractCursor* pOut)
 {
     CInteractObject::vfunc_6(pOut);
     pOut->m_nCursor = FUN_1403ef660(FUN_140302b00())->FUN_1404240e0(pOut->m_nCursor);
-    pOut->m_strHint = FUN_14028b8e0(CStringW(L"s_action_gathering"));
+    pOut->m_strHint = GetStringCommonByKey(CStringW(L"s_action_gathering"));
     pOut->m_strHint += FUN_1403ef660(FUN_140302b00())->FUN_140424150();
 }
 

@@ -267,7 +267,7 @@ struct Unk_GrmEntry
 };
 MS2_CHECK_SIZE(Unk_GrmEntry, 0x28);
 
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strA);
 CStringW FUN_140632a60(int nStringId, const CStringW& strA, const CStringW& strB);
 CStringW FUN_140cde1f0(const wchar_t* szFormat, const unsigned& nId, const int& nVSpace, const CStringW& strSize);
@@ -327,7 +327,7 @@ UIGroupMessenger::UIGroupMessenger(int nGroupId, int nIndex, int bDeleteSave)
     FUN_1422dc3b0(1);
     if (bDeleteSave)
         vfunc_84(0);
-    m_strName = StringFormat(L"{0} {1}", FUN_14028de60(0x5d0), nIndex + 1);
+    m_strName = StringFormat(L"{0} {1}", GetStringCommon(0x5d0), nIndex + 1);
 }
 
 // @0x141947bc0
@@ -1344,7 +1344,7 @@ int UIGroupMessenger::FUN_14194ce40(CStringW strName)
         UIGroupMessenger* pOther = FUN_141482e80()->m_pBrowser->FUN_141952fc0(strName);
         if (pOther != 0 && pOther != this)
         {
-            if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, FUN_14028de60(0x817), 0, L""))
+            if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, GetStringCommon(0x817), 0, L""))
                 FUN_140d73c60(spBox);
             return 1;
         }
@@ -1866,11 +1866,11 @@ void UIGroupMessengerBrowser::FUN_141951f70(CStringW strText)
     }
     else if (nCount < 3)
     {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x16, FUN_14028de60(0x81a), this, s_strGroupList);
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x16, GetStringCommon(0x81a), this, s_strGroupList);
         if (spBox.get())
         {
             ATL::CAtlList<CStringW> choices(10);
-            choices.AddTail(FUN_14028de60(0x5d1));
+            choices.AddTail(GetStringCommon(0x5d1));
             POSITION pos = m_windows.GetStartPosition();
             while (pos != 0)
             {
@@ -1885,11 +1885,11 @@ void UIGroupMessengerBrowser::FUN_141951f70(CStringW strText)
     }
     else
     {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x16, FUN_14028de60(0x81a), this, s_strGroupList);
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x16, GetStringCommon(0x81a), this, s_strGroupList);
         if (spBox.get())
         {
             ATL::CAtlList<CStringW> choices(10);
-            choices.AddTail(FUN_14028de60(0x5d1));
+            choices.AddTail(GetStringCommon(0x5d1));
             for (POSITION pos = m_windows.GetStartPosition(); pos != 0; m_windows.GetNext(pos))
             {
                 UIGroupMessenger* pWindow = m_windows.GetValueAt(pos);

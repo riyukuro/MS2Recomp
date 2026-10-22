@@ -77,7 +77,7 @@ Unk_MentorScheduleHolder* FUN_140302b00();
 
 UIRewardNotify* FUN_140938cd0(int uiType);
 CStringW FUN_14062b4f0(CStringW, const int*);
-CStringW FUN_14028b8e0(const CStringW&);
+CStringW GetStringCommonByKey(const CStringW&);
 CStringW FUN_1416e4df0(int);
 CStringW FUN_1405c2690(CStringW, const CStringW&);
 CStringW FUN_140c160b0(CStringW, const __int64*);
@@ -118,7 +118,7 @@ void CDailyMission::ShowProgress(int index)
         int grade = m_data->m_338.m_value;
         if (grade > 0 && grade <= 2) key = L"s_recommend_contents_reward_notify_levelup";
         else if (grade > 2 && grade <= 5) key = L"s_recommend_contents_reward_notify_dailymission";
-        FUN_1412751b0(FUN_14028b8e0(key), 0x14);
+        FUN_1412751b0(GetStringCommonByKey(key), 0x14);
     }
 }
 
@@ -206,7 +206,7 @@ void CEventMission::Complete(CInPacket& packet)
 // @0x140d73340
 void CEventMission::ShowProgress(int index)
 {
-    if (m_78 == 1 && IsComplete()) FUN_1412751f0(FUN_14028b8e0(L"s_event_mission_levelpackage_complete"), 3, 1);
+    if (m_78 == 1 && IsComplete()) FUN_1412751f0(GetStringCommonByKey(L"s_event_mission_levelpackage_complete"), 3, 1);
 }
 
 // @0x140d73400

@@ -138,7 +138,7 @@ bool FUN_1406344b0(MS2Ptr<CItem> spItem, const __int64* pCharacter, ItemUtilTran
 
 void* FUN_1409331e0();                                    // the game state manager
 int FUN_14138c900(void* pMgr, int n);
-CStringW FUN_14028de60(int nStringId);                    // a string table text
+CStringW GetStringCommon(int nStringId);                    // a string table text
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 void FUN_141275260(int nStringId, int nA, int nB);        // notice by string id
@@ -510,7 +510,7 @@ int StoreSlot::vfunc_26(MS2Ptr<CItem> spItem)
                 if (nKind == 1)
                     FUN_140d73bc0(0xfc, 0, 0, CStringW(L""));
                 else if (nKind == 2)
-                    FUN_140d73aa0(FUN_14028de60(0xdc), 0, 0, CStringW(L""));
+                    FUN_140d73aa0(GetStringCommon(0xdc), 0, 0, CStringW(L""));
                 return 1;
             }
             if (nKind == 1)
@@ -536,7 +536,7 @@ int StoreSlot::vfunc_26(MS2Ptr<CItem> spItem)
             spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, spItem->FUN_140526c50(), -1, -1, 1);
             spBox->FUN_141a01800(1);
             FUN_141a026f0(spBox.get(), 1);
-            spBox->FUN_141a024e0(FUN_14028de60(0x9d1), 0);
+            spBox->FUN_141a024e0(GetStringCommon(0x9d1), 0);
             FUN_140d73c60(spBox);
             return 1;
         }
@@ -553,7 +553,7 @@ int StoreSlot::vfunc_0(void* p)
     ASTooltip tip(FUN_1403ed2d0()->FUN_141bd0cc0(), 0x80, 2);
     if (tip.FUN_1409e0d40(spItem.get()) == 0)
         return 0;
-    tip.FUN_1409c69b0(FUN_14028de60(0x754));
+    tip.FUN_1409c69b0(GetStringCommon(0x754));
     if (IsEnabled() == true)
         tip.FUN_1409db7b0(spItem);
     *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
@@ -578,7 +578,7 @@ int StoreSlot::vfunc_8(void* p)
 // @0x14180ac70
 CStringW StoreSlot::vfunc_22()
 {
-    return FUN_14028de60(0x754);
+    return GetStringCommon(0x754);
 }
 
 // @0x14180acb0

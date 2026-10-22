@@ -76,7 +76,7 @@ void FUN_1414b1980();                           // parses the launch arguments
 DWORD GetTickCountMs2();
 __int64 FUN_140869440();                        // the server time
 CStringW FUN_1408116a0(int nStringId, const int& n);                       // FormatStringId<int>
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);                   // a system notice
 void FUN_141b6fcf0(const CStringW& text, const CStringW& caption, UINT nType);   // MessageBox over the game window
 CStringW FUN_14016a730(const char* sz, int nCodePage);
@@ -253,7 +253,7 @@ void CClientPlatformNexonKorea::vfunc_26(void* a1)
             FUN_140710590(packet);
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, strMessage, 0, g_strMaintenanceExit);
             if (spBox) {
-                spBox->SetTitle(FUN_14028de60(0x219));
+                spBox->SetTitle(GetStringCommon(0x219));
                 FUN_140d73c60(spBox);
             }
         }
@@ -269,7 +269,7 @@ void CClientPlatformNexonKorea::vfunc_26(void* a1)
             FUN_140710590(packet);
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, strMessage, 0, g_strMaintenanceExit);
             if (spBox) {
-                spBox->SetTitle(FUN_14028de60(0x8c6));
+                spBox->SetTitle(GetStringCommon(0x8c6));
                 FUN_140d73c60(spBox);
             }
         } else {

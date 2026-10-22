@@ -57,7 +57,7 @@ extern Unk_InventoryItems DAT_143ab2a90;
 // Item context-menu actions.
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);               // show the item's popup (id, rarity, template)
 
-CStringW FUN_14028de60(int id);                         // string table lookup
+CStringW GetStringCommon(int id);                         // string table lookup
 
 // Registry of named bags/slots (GFx bind data).
 void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
@@ -141,7 +141,7 @@ int TradeSlot::vfunc_0(void* p)
     {
         if (IsMine())
         {
-            tip.FUN_1409c69b0(FUN_14028de60(0x750));
+            tip.FUN_1409c69b0(GetStringCommon(0x750));
             {
                 CStringW strText(L"");
                 tip.FUN_1409c65f0(strText);
@@ -246,7 +246,7 @@ bool TradeSlot::IsMine()
 // @0x14185e670
 CStringW TradeSlot::vfunc_22()
 {
-    return FUN_14028de60(0x750);
+    return GetStringCommon(0x750);
 }
 
 // @0x14185e850

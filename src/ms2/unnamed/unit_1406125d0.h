@@ -37,7 +37,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_141275460(int nStringId, int nA, int nB, const fmt::ArgList& args);
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommonByKey(const CStringW& str);
 
 template <class T> T* Unk_LockDialog(int nId)
 {

@@ -19,7 +19,7 @@ Unk_140166410* FUN_140166410();
 class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
 Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
-CStringTable* FUN_1401a9d70();                          // the string table singleton
+CStringTable* GetStringTable();                          // the string table singleton
 int FUN_140873ad0(Unk_140165cf0* pElem, const char* pszName, CString& rOut);
 
 // Common::Constants::Value<T>::Get, header-inline in the original (the Value<unsigned> instance 0x1401d7c10 is in this unit's
@@ -84,15 +84,15 @@ void CChangeJobTable::Load()
         spData->m_nStartQuestId = nValue;
         FUN_1408731e0(pNode, "endquestid", nValue);
         spData->m_nEndQuestId = nValue;
-        spData->m_strJobName = FUN_1401a9d70()->FUN_141811980(6, spData->m_nChangeSubJobCode);
+        spData->m_strJobName = GetStringTable()->FUN_141811980(6, spData->m_nChangeSubJobCode);
         FUN_140873ad0(pNode, "movie", spData->m_strMovie);
         int nStringId = 0;
         FUN_1408731e0(pNode, "desc", nStringId);
-        spData->m_strDesc = FUN_1401a9d70()->FUN_141811980(0x4f, nStringId);
+        spData->m_strDesc = GetStringTable()->FUN_141811980(0x4f, nStringId);
         FUN_1408731e0(pNode, "skilldesc1", nStringId);
-        spData->m_strSkillDesc1 = FUN_1401a9d70()->FUN_141811980(0x4f, nStringId);
+        spData->m_strSkillDesc1 = GetStringTable()->FUN_141811980(0x4f, nStringId);
         FUN_1408731e0(pNode, "skilldesc2", nStringId);
-        spData->m_strSkillDesc2 = FUN_1401a9d70()->FUN_141811980(0x4f, nStringId);
+        spData->m_strSkillDesc2 = GetStringTable()->FUN_141811980(0x4f, nStringId);
         ATL::CAtlArray<CString> tokens1;
         CString strSkills1;
         FUN_1408733e0(pNode, "skillID1", strSkills1);

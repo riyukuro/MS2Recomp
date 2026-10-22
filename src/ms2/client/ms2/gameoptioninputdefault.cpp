@@ -92,7 +92,7 @@ UIMainPlayerInfo* FUN_140931900(int nUiId);
 UIGameOptionDialog* FUN_140a02e60(int nDialogId);
 CFeatureManager* FUN_140166410();
 MS2InputService* FUN_140a58540();
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 NotifySystem* FUN_140939a10();
 bool FUN_1407cce10(const Scaleform::GFx::Value* v);                     // the value is an object
 double FUN_140f17ed0(const Scaleform::GFx::Value& v);                   // Value::GetNumber
@@ -105,7 +105,7 @@ void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW tag);       
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);   // create a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                            // show it
 CStringW FUN_1409eec40(int nStrId);                                     // string table text by id
-CStringW FUN_14028b8e0(const CStringW& strKey);                         // string table text by key
+CStringW GetStringCommonByKey(const CStringW& strKey);                         // string table text by key
 CStringW FUN_14052bd00(int nStrId, const CStringW& strArg);             // formatted string table text
 CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& nArg);      // StringFormat<int>
 CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& strArg0, const CStringW& strArg1);   // StringFormat<CStringW, CStringW>
@@ -189,13 +189,13 @@ void CGameOptionInputDefault::FUN_141250cc0(int nCategory)
             ASObj row(2);
             if (spKey->m_nAction == 0x49409)
             {
-                row.FUN_1407cbb20("label", FUN_1401a9d70()->FUN_1418125b0(0x49409));
+                row.FUN_1407cbb20("label", GetStringTable()->FUN_1418125b0(0x49409));
                 row.FUN_141253870("keyGUID", 0x49409);
                 row.FUN_1407cbb20("secondaryKey", FUN_1409331f0()->FUN_14142d220(1));
             }
             else
             {
-                row.FUN_1407cbb20("label", FUN_1401a9d70()->FUN_1418125b0((int)spKey->m_nAction));
+                row.FUN_1407cbb20("label", GetStringTable()->FUN_1418125b0((int)spKey->m_nAction));
                 row.FUN_1407cba60("keyGUID", FUN_141252540(spKey->m_nAction));
                 row.FUN_1407cbb20("secondaryKey", FUN_1409331f0()->FUN_14142d220(nSecondary));
             }
@@ -318,9 +318,9 @@ int CGameOptionInputDefault::vfunc_8()
             CStringW strKey = StringFormat(L"{0}", nKey);
             CStringW strName;
             if (FUN_1409331f0()->FUN_14142cf10(nAction) != 0)
-                strName = FUN_140656190(L"{0}[{1}]", FUN_1401a9d70()->FUN_1418125b0((int)FUN_1409331f0()->FUN_14142d190(nKey)), FUN_1409331f0()->FUN_14142d220(nKey));
+                strName = FUN_140656190(L"{0}[{1}]", GetStringTable()->FUN_1418125b0((int)FUN_1409331f0()->FUN_14142d190(nKey)), FUN_1409331f0()->FUN_14142d220(nKey));
             else
-                strName = FUN_1401a9d70()->FUN_1418125b0((int)nAction);
+                strName = GetStringTable()->FUN_1418125b0((int)nAction);
             if (FUN_1409331f0()->FUN_141430470(nAction) == 0)
             {
                 m_bConfirm = 1;
@@ -431,7 +431,7 @@ void CGameOptionInputDefault::vfunc_12()
         {
             if (FUN_141252c10() != 0)
             {
-                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(6, FUN_14028b8e0(L"s_gameoption_input_reset_message"), static_cast<IMessageListener*>(this), CStringW(L""));
+                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(6, GetStringCommonByKey(L"s_gameoption_input_reset_message"), static_cast<IMessageListener*>(this), CStringW(L""));
                 if (spBox.get() != 0)
                 {
                     int bPad = FUN_140a58540()->FUN_140d8ee40() != 0 ? 1 : 0;

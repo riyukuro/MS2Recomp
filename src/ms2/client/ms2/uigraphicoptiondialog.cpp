@@ -81,7 +81,7 @@ PostProcessingService* FUN_1409a8b20();             // the post-processing servi
 unsigned char FUN_1412642d0(void* pStep);
 void FUN_1409a5850(void* pDst, const void* pSrc, int nSize);
 extern bool DAT_143ae53c0;                          // "any shimmer object this frame" flag
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 CUIService* FUN_1403ed2b0();                        // the UI service
 
 class UIGraphicOptionDialog : public UIDialog
@@ -170,11 +170,11 @@ void UIGraphicOptionDialog::OnLoadInit()
     {
         MS2Ptr<Unk_GoCombo> spShadow = FUN_140c28560(CString("m_shadow"));
         if (spShadow.get() != 0) {
-            spShadow->FUN_1422dfce0(FUN_14028de60(0x311));
-            spShadow->FUN_1422dfce0(FUN_14028de60(0x312));
-            spShadow->FUN_1422dfce0(FUN_14028de60(0x313));
-            spShadow->FUN_1422dfce0(FUN_14028de60(0x314));
-            spShadow->FUN_1422dfce0(FUN_14028de60(0x315));
+            spShadow->FUN_1422dfce0(GetStringCommon(0x311));
+            spShadow->FUN_1422dfce0(GetStringCommon(0x312));
+            spShadow->FUN_1422dfce0(GetStringCommon(0x313));
+            spShadow->FUN_1422dfce0(GetStringCommon(0x314));
+            spShadow->FUN_1422dfce0(GetStringCommon(0x315));
         }
     }
     if (m_30.get() != 0) {

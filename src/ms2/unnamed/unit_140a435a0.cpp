@@ -44,7 +44,7 @@ extern LPTOP_LEVEL_EXCEPTION_FILTER g_pfnPrevExceptionFilter;   // 0x143ab6728
 class Unk_ImgTagSource;
 Unk_ImgTagSource* FUN_14025e7a0();
 unsigned FUN_1422af8a0(Unk_ImgTagSource* pSource, int nKind);
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 CString FUN_14016a600(const wchar_t* pwsz, int n);          // wide -> narrow
 IClientPlatform* FUN_140d86260();
 void FUN_141b6db40(int nCode);
@@ -69,7 +69,7 @@ void CrashManagerCli::FUN_140a435a0()
     m_nLogId = TSingleton<CFileLogger>::GetInstance()->FUN_140392110(L"MS2Log.txt");
     __imp_CrashReporter_RegisterCallback_AfterDump(FUN_140a43d40);
     g_pfnPrevExceptionFilter = SetUnhandledExceptionFilter(FUN_140a43fa0);
-    g_dlgCrash.SetMessage(FUN_14016a600(FUN_14028de60(0xc3d), 0));
+    g_dlgCrash.SetMessage(FUN_14016a600(GetStringCommon(0xc3d), 0));
     FUN_140a43f00();
 }
 

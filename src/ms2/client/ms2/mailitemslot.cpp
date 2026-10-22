@@ -23,7 +23,7 @@ public:
 };
 Unk_GameCtx* FUN_1403ed2d0();
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);               // item link / popup for the item
-CStringW FUN_14028de60(int id);                         // string table lookup
+CStringW GetStringCommon(int id);                         // string table lookup
 
 // Registry of named bags/slots (GFx bind data).
 void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
@@ -139,7 +139,7 @@ void FUN_1414728e0(const CString& strName)
 // @0x141472920
 CStringW MailItemSlot::vfunc_22()
 {
-    return FUN_14028de60(0x757);
+    return GetStringCommon(0x757);
 }
 
 // @0x141472960

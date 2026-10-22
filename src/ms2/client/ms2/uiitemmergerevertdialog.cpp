@@ -82,7 +82,7 @@ void FUN_140d42bc0(ItemScrollSlot* pSlot, Unk_MrRemoveFn fn);      // SetRemoveF
 void FUN_140710590(COutPacket&);                                    // send
 __int64 FUN_140718370(const CStringW& str);                         // the uid in the text
 bool FUN_140630810(void* pEnchantData);                             // the item has merge options
-CStringW FUN_14028b8e0(const CStringW& strKey);                     // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);    // string table text with one argument
 CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& strArg0, const CStringW& strArg1);
 void FUN_14083d2b0(CStringW& str);
@@ -195,7 +195,7 @@ void UIItemMergeRevertDialog::FUN_140e4c7d0(CItem* pItem)
         FUN_140d42b70(pSlot, Unk_MrDropFn(this, &UIItemMergeRevertDialog::FUN_140e4cea0));
     }
     CStringW strOption = FUN_1409eecf0()->FUN_1405c1090(MS2Ptr<CItem>(pItem), 1);
-    CStringW strText = FUN_140656190(L"{0}{1}", FUN_14028b8e0(CStringW(L"s_tooltip_itemoption_kinds_merge")), strOption);
+    CStringW strText = FUN_140656190(L"{0}{1}", GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_kinds_merge")), strOption);
     CItemData* pData = reinterpret_cast<CItemData*>(pItem->FUN_140527840());
     int nType = pData->FUN_14053c620();
     FUN_14083d2b0(strText);
@@ -241,7 +241,7 @@ void UIItemMergeRevertDialog::FUN_140e4cea0(ItemScrollSlot& slot, DragSlot* pDra
         }
         else
         {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_item_merge_option_error_invalid_mergeitem")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_invalid_mergeitem")), 1, 1);
         }
     }
 }
@@ -253,22 +253,22 @@ void UIItemMergeRevertDialog::FUN_140e4d010(int nError)
     switch (nError)
     {
     case 3:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_item_merge_option_error_invalid_mergeitem")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_invalid_mergeitem")), 1, 1);
         break;
     case 4:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_item_merge_option_error_invalid_material")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_invalid_material")), 1, 1);
         break;
     case 5:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_item_merge_option_error_invalid_merge_scroll")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_invalid_merge_scroll")), 1, 1);
         break;
     case 6:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_item_merge_option_error_invalid_revert_rank")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_invalid_revert_rank")), 1, 1);
         break;
     case 7:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_item_merge_option_error_invalid_revert_option")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_invalid_revert_option")), 1, 1);
         break;
     case 8:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_item_merge_option_error_invalid_revert_slot")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_invalid_revert_slot")), 1, 1);
         break;
     }
 }

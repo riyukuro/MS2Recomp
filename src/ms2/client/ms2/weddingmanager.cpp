@@ -162,14 +162,14 @@ class Unk_LockUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
 Unk_LockUIManager* FUN_1403ed2b0();
 void FUN_141adc5d0(Unk_LockUIManager* pUI, int nId);            // close a dialog
 bool FUN_141924630(UIWeddingHallListDialog* pDialog);           // dialog is open
-CStringW FUN_14028de60(int nStringId);                          // string table text by id
+CStringW GetStringCommon(int nStringId);                          // string table text by id
 CStringW FUN_14052bd00(int nStringId, CStringW arg);            // formatted string by id
 void FUN_1412751b0(const CStringW& text, int nKind);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 void FUN_141275260(int nStringId, int nA, int nB);
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommonByKey(const CStringW& str);
 template <class T> T* Unk_WmDialog(int nId)
 {
     if (FUN_1403ed2b0())
@@ -301,7 +301,7 @@ void WeddingManager::OnHallList(CInPacket& packet)
 // @0x141b84bc0
 void WeddingManager::OnInvitationOk(CInPacket& packet)
 {
-    FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_wedding_invitation_ok")), 8, 1);
+    FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_wedding_invitation_ok")), 8, 1);
     FUN_141adc5d0(FUN_1403ed2b0(), 0x4f8e);
 }
 
@@ -316,7 +316,7 @@ void WeddingManager::OnReservationCancelRequest(CInPacket& packet)
 void WeddingManager::OnReserveCancelOk(CInPacket& packet)
 {
     m_ticket.Reset();
-    FUN_1412751b0(FUN_14028b8e0(CStringW(L"s_wedding_hall_reserve_cancel_ok")), 0x14);
+    FUN_1412751b0(GetStringCommonByKey(CStringW(L"s_wedding_hall_reserve_cancel_ok")), 0x14);
 }
 
 // @0x141b85710
@@ -511,7 +511,7 @@ CStringW WeddingManager::GetPartnerName()
     return m_proxy.GetSelf(DAT_143ab2828)->m_strName;
 }
 
-#define WM_CHAT(key) FUN_1412751f0(FUN_14028b8e0(L##key), 1, 1)
+#define WM_CHAT(key) FUN_1412751f0(GetStringCommonByKey(L##key), 1, 1)
 #define WM_CHAT_NAME(key) FUN_1412751f0(FUN_14028dfa0(CStringW(L##key), m_strTarget), 1, 1)
 
 // @0x141b87760
@@ -610,7 +610,7 @@ void WeddingManager::OnPropose(CInPacket& packet)
     CStringW message = FUN_14028dfa0(CStringW(L"s_wedding_msg_box_propose_from"), name);
     MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, message, 0, CStringW(L""));
     if (box.get()) {
-        box->FUN_141a01ca0(0x14, 1, FUN_14028de60(0x2b8));
+        box->FUN_141a01ca0(0x14, 1, GetStringCommon(0x2b8));
         box->FUN_141a024a0(0);
         box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnProposeAnswer));
         box->FUN_140b76940(FUN_141b71910(id));
@@ -712,7 +712,7 @@ void WeddingManager::ShowProposeAnswer(const CStringW& name)
         CStringW message = FUN_14028dfa0(CStringW(L"s_wedding_msg_box_propose_to"), m_strTarget);
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0, message, 0, CStringW(L""));
         if (box.get()) {
-            box->FUN_141a01ca0(0x14, 1, FUN_14028de60(0x2b8));
+            box->FUN_141a01ca0(0x14, 1, GetStringCommon(0x2b8));
             box->FUN_141a01800(4);
             box->FUN_141a024a0(0);
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnProposeSentAnswer));

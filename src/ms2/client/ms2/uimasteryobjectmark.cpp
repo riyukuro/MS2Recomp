@@ -77,8 +77,8 @@ struct Unk_AuConfig
 };
 Unk_AuConfig* FUN_1401d3200();
 bool FUN_1409b0390(Scaleform::GFx::Value* pValue);              // the value is undefined
-CStringW FUN_14028b8e0(const CStringW& str);                    // the localized text of a string key
-CStringTable* FUN_1401a9d70();                                  // the string table
+CStringW GetStringCommonByKey(const CStringW& str);                    // the localized text of a string key
+CStringTable* GetStringTable();                                  // the string table
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
 // The player's position as the engine point type.
@@ -412,7 +412,7 @@ void UIMasteryObjectMark::FUN_140e5b450(const CStringA& strKey)
 int UIMasteryObjectMark::FUN_140e5b520(CInteractObject* pObject, EntityContext* pContext)
 {
     int nChanged = FUN_140e5b720(pObject->GetRow()->m_gathering.m_nReceipeId, pContext);
-    CStringW strName = FUN_1401a9d70()->FUN_141811980(0xb, pObject->GetRowId());
+    CStringW strName = GetStringTable()->FUN_141811980(0xb, pObject->GetRowId());
     if (pContext->m_strObjName != strName)
     {
         pContext->m_strObjName = strName;
@@ -425,7 +425,7 @@ int UIMasteryObjectMark::FUN_140e5b520(CInteractObject* pObject, EntityContext* 
 int UIMasteryObjectMark::FUN_140e5b620(CFunctionCubeObject* pCube, EntityContext* pContext)
 {
     int nChanged = FUN_140e5b720(reinterpret_cast<Unk_HmCube*>(pCube)->FUN_140ca6580()->m_n100, pContext);
-    CStringW strName = FUN_1401a9d70()->FUN_141811980(1, pCube->FUN_141226cd0());
+    CStringW strName = GetStringTable()->FUN_141811980(1, pCube->FUN_141226cd0());
     if (pContext->m_strObjName != strName)
     {
         pContext->m_strObjName = strName;
@@ -448,13 +448,13 @@ unsigned UIMasteryObjectMark::FUN_140e5b720(int nReceipeId, EntityContext* pCont
     {
         int nLimit = FUN_1409670c0()->LimitState(nReceipeId);
         if (nLimit == 0)
-            strProp = FUN_14028b8e0(L"s_mastery_mark_success_prop_high");
+            strProp = GetStringCommonByKey(L"s_mastery_mark_success_prop_high");
         else if (nLimit == 1)
-            strProp = FUN_14028b8e0(L"s_mastery_mark_success_prop_normal");
+            strProp = GetStringCommonByKey(L"s_mastery_mark_success_prop_normal");
         else if (nLimit == 2)
-            strProp = FUN_14028b8e0(L"s_mastery_mark_success_prop_low");
+            strProp = GetStringCommonByKey(L"s_mastery_mark_success_prop_low");
         else if (nLimit == 3)
-            strProp = FUN_14028b8e0(L"s_mastery_mark_success_prop_zero");
+            strProp = GetStringCommonByKey(L"s_mastery_mark_success_prop_zero");
         int nType = spReceipe->m_nType;
         if (nType == 3)
             strType = L"mining";
@@ -479,7 +479,7 @@ unsigned UIMasteryObjectMark::FUN_140e5b720(int nReceipeId, EntityContext* pCont
     }
     else
     {
-        strProp = FUN_14028b8e0(L"s_mastery_mark_success_prop_lack_mastery");
+        strProp = GetStringCommonByKey(L"s_mastery_mark_success_prop_lack_mastery");
         strStatus = L"impossible";
         strType = L"lock";
         nEnabled = 0;

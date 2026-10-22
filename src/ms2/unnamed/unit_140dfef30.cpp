@@ -100,7 +100,7 @@ void* FUN_1403b4750();
 void FUN_1416fb300(void* p, const CStringW& str);                // remember the host's notice
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);     // str equals psz
 CStringW FUN_140298ea0(CStringW strKey);                         // localized string
-CStringW FUN_14028b8e0(const CStringW& strKey);
+CStringW GetStringCommonByKey(const CStringW& strKey);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 void FUN_140710590(COutPacket& packet);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
@@ -494,7 +494,7 @@ void FUN_140e003b0(CInPacket& packet)
     unsigned nCooltime = packet.vfunc_o8_3();
     int nTotal = packet.vfunc_o8_3();
     unsigned nCooltime2 = packet.vfunc_o8_3();
-    CStringW strMsg = FUN_14028b8e0(L"s_ugcox_create_complete");
+    CStringW strMsg = GetStringCommonByKey(L"s_ugcox_create_complete");
     strMsg.Replace(L"{eventFee}", (LPCWSTR)FUN_1409404f0(nFee));
     FUN_1412751f0(strMsg, 3, 1);
     FUN_140e01480(nPromoted, nCooltime, nTotal, nCooltime2);
@@ -536,7 +536,7 @@ void FUN_140e00690(CInPacket& packet)
         MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(0x27));
         spBox->SetMsg(strMsg);
         spBox->FUN_141a01800(1);
-        spBox->SetTitle(FUN_14028b8e0(CStringW(L"s_ugcox_move_eventmap_confirm")));
+        spBox->SetTitle(GetStringCommonByKey(CStringW(L"s_ugcox_move_eventmap_confirm")));
         spBox->FUN_141a027c0(FUN_140b76b10(FUN_140dff700));
         spBox->FUN_140534050(nMapId);
         spBox->FUN_140534050(nPortalId);
@@ -720,7 +720,7 @@ void FUN_140e010c0(CInPacket& packet)
 // @0x140e011c0
 void FUN_140e011c0(CStringW& strOut, const CStringW& strName, __int64 nFee, int nMax, int nShareRate)
 {
-    strOut = FUN_14028b8e0(L"s_ugcox_rule_notify");
+    strOut = GetStringCommonByKey(L"s_ugcox_rule_notify");
     strOut.Replace(L"{name}", (LPCWSTR)strName);
     strOut.Replace(L"{entryFee}", (LPCWSTR)FUN_1409404f0(nFee));
     strOut.Replace(L"{entryMax}", (LPCWSTR)FUN_140719630(nMax));
@@ -733,7 +733,7 @@ void FUN_140e013e0(CStringW& strOut, const CStringW& strName)
 {
     {
         CStringW strKey(L"s_ugcox_move_home_confirm");
-        strOut = FUN_14028b8e0(strKey);
+        strOut = GetStringCommonByKey(strKey);
     }
     strOut.Replace(L"{name}", (LPCWSTR)strName);
 }
@@ -753,7 +753,7 @@ void FUN_140e01480(int nPromoted, unsigned nCooltime, int nTotal, unsigned nCool
         Unk_OxHandle hButton = static_cast<Unk_OxMovieEntity*>(static_cast<UIDialog*>(pQuiz))->FUN_140bb4b10("m_quiz_promote");
         if (hButton.FUN_140acd9c0() != 0)
         {
-            CStringW strTip = FUN_14028b8e0(CStringW(L"s_ugcox_btn_quiz_promote_tooltip"));
+            CStringW strTip = GetStringCommonByKey(CStringW(L"s_ugcox_btn_quiz_promote_tooltip"));
             strTip.Replace(L"{totalPromoteCount}", (LPCWSTR)FUN_1401ceea0(L"{0}", nTotalCount));
             int nLeft = nTotalCount - nPromoted;
             strTip.Replace(L"{promoteCount}", (LPCWSTR)FUN_1401ceea0(L"{0}", nLeft));

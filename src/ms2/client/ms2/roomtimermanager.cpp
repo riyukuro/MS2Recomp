@@ -13,7 +13,7 @@ MS2_CHECK_SIZE(UITimerDialog,0x1a8);
 class Unk_RoomUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int); };
 Unk_RoomUIManager* FUN_1403ed2b0();
 CStringW FUN_1408116a0(int,const int&);
-CStringW FUN_14028de60(int);
+CStringW GetStringCommon(int);
 void FUN_1412751f0(const CStringW&,int,int);
 template<class T> T* FindRoomUI(int id) {
     if(FUN_1403ed2b0()) {
@@ -75,7 +75,7 @@ void RoomTimerManager::Update(Unk_RoomPacket& packet) {
             m_timer->vfunc_86();
         }
     } else if(type==2) {
-        CStringW message=FUN_14028de60(0x9a0);
+        CStringW message=GetStringCommon(0x9a0);
         FUN_1412751f0(message,4,1);
         m_timer->vfunc_85();
     }

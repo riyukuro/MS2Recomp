@@ -76,8 +76,8 @@ CFeatureManager* FUN_140166410();
 CNetworkService* FUN_140714f90();
 Unk_SbShopDialog* FUN_140534780(int nUIType);
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);
-CStringW FUN_14028de60(int nId);                                 // string table lookup
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // string table lookup by key
+CStringW GetStringCommon(int nId);                                 // string table lookup
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table lookup by key
 CStringW FUN_14062b4f0(CStringW strKey, const int& n);          // formatted string table text
 void FUN_141276180(const CString& strSound, const CString& strArg);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                  // show a message box
@@ -432,7 +432,7 @@ void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCapt
             if (bCaption)
             {
                 CStringW strEmpty(L"");
-                tip.FUN_1409c6a20(strEmpty, FUN_14028de60(0x758));
+                tip.FUN_1409c6a20(strEmpty, GetStringCommon(0x758));
             }
             *pOut = tip.FUN_1422bb870();
         }
@@ -456,12 +456,12 @@ void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCapt
                     {
                         CStringW strEmpty(L"");
                         CStringW strKey(L"s_word_compose_result");
-                        pLhs->FUN_1409c7060(FUN_14028b8e0(strKey), strEmpty);
+                        pLhs->FUN_1409c7060(GetStringCommonByKey(strKey), strEmpty);
                     }
                     if (bCaption)
                     {
                         CStringW strEmpty(L"");
-                        pLhs->FUN_1409c6a20(strEmpty, FUN_14028de60(0x758));
+                        pLhs->FUN_1409c6a20(strEmpty, GetStringCommon(0x758));
                     }
                     *pOut = pLhs->FUN_1422bb870();
                 }
@@ -514,7 +514,7 @@ void FUN_141349ae0(MS2Ptr<CItem> spItem, int nStringId, const CString& strUrl)
 {
     if (spItem == 0)
         return;
-    FUN_141349ba0(spItem, FUN_14028de60(nStringId), strUrl);
+    FUN_141349ba0(spItem, GetStringCommon(nStringId), strUrl);
 }
 MS2_REPLACE(0x141349ae0, FUN_141349ae0, 181, 0x7FFCBB10);
 

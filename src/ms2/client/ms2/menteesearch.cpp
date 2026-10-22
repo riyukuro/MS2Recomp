@@ -49,7 +49,7 @@ Unk_MenteeSettings* FUN_140166410();
 class Unk_MenteeBanFlags { public: int FUN_1402c4c90(int nFlag); };         // blocked-action flag set
 struct Unk_MenteeConfig { char m_pad[8]; Unk_MenteeBanFlags m_8; };
 Unk_MenteeConfig* FUN_14025e7b0();                                          // global client config
-CStringW FUN_14028b8e0(const CStringW& strKey);                             // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 void FUN_1412751b0(const CStringW& strText, int nKind);                     // shows the text as a notice
 void FUN_141b6de20();                                                       // thread start-up
 struct Unk_IoThreadScope { char m_buf[0x40]; };
@@ -242,7 +242,7 @@ void CMenteeSearchManager::OnWebResult(MS2Ptr<CMenteeSearchParam> pParam, MS2Ptr
     }
     if (nError != 0)
     {
-        CStringW strText = FUN_14028b8e0(CStringW(L"s_mentoring_error_request_mentee_list_search_error"));
+        CStringW strText = GetStringCommonByKey(CStringW(L"s_mentoring_error_request_mentee_list_search_error"));
         FUN_1412751b0(strText, 20);
     }
 }

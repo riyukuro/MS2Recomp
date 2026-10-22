@@ -80,8 +80,8 @@ Unk_WiTicket* FUN_141b87160(void* pCharacter);                  // the character
 Unk_WiHallTable* FUN_1409023c0();
 bool FUN_140900f30(__int64 nTime);                              // the time is at night
 CStringW FUN_140b8e850(const CMsTime& kTime);                   // the date text
-CStringTable* FUN_1401a9d70();
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // string table text
+CStringTable* GetStringTable();
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 Unk_WiUIManager* FUN_1403ed2b0();
 __int64 FUN_140900da0();                                        // the price of one invitation
 Unk_WiRefPos* FUN_140a7b2b0(int nId);                           // a dialog's position record
@@ -165,10 +165,10 @@ void UIWeddingInvitationDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     Unk_WiTicket* pTicket = FUN_141b87160(FUN_1409eed90());
     ASObj obj(2);
-    obj.FUN_1407cbb20("invitation", FUN_14028b8e0(CStringW(L"s_wedding_invitation_message")));
+    obj.FUN_1407cbb20("invitation", GetStringCommonByKey(CStringW(L"s_wedding_invitation_message")));
     obj.FUN_1407cbb20("groom", CStringW(pTicket->m_strGroom));
     obj.FUN_1407cbb20("bride", CStringW(pTicket->m_strBride));
-    obj.FUN_1407cbb20("hall", FUN_1401a9d70()->FUN_141811980(3,
+    obj.FUN_1407cbb20("hall", GetStringTable()->FUN_141811980(3,
         FUN_1409023c0()->FUN_140908d50(pTicket->m_nPackageId, pTicket->m_nHallId, FUN_140900f30(pTicket->m_nTime))));
     obj.FUN_1407cbb20("date", FUN_140b8e850(CMsTime(pTicket->m_nTime)));
     m_30->Invoke("setData", obj);
@@ -244,7 +244,7 @@ bool UIWeddingInvitationDialog::FUN_140fe60d0(int nResult, const CMsgBoxData& bo
         }
         else
         {
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_wedding_result_invitation_send_late")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_wedding_result_invitation_send_late")), 1, 1);
         }
     }
     return true;

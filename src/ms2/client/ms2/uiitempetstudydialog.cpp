@@ -94,7 +94,7 @@ public:
 };
 
 WorldService* FUN_1403ed2d0();
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_141b71910(__int64 nValue);
 CStringW FUN_1406c6bd0(const wchar_t* pszFormat, const __int64& nArg);     // "{0}" formatter
@@ -262,7 +262,7 @@ int UIItemPetStudyDialog::FUN_140e55a40(MS2Ptr<CItem> spPet, int bMessage)
     if (spPet->FUN_140525640() == 0)
     {
         if (bMessage != 0)
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_pet_study_dialog_invalid_item")), 1, 0);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_pet_study_dialog_invalid_item")), 1, 0);
         return 0;
     }
     MS2Ptr<Unk_PetRow> spRow = FUN_14052d210()->FUN_1407290f0(reinterpret_cast<CItemData*>(spPet->FUN_140527840())->FUN_14053dc60());
@@ -273,21 +273,21 @@ int UIItemPetStudyDialog::FUN_140e55a40(MS2Ptr<CItem> spPet, int bMessage)
             if (spPet->FUN_1405279c0()->GetMaxSlot() == 0)
             {
                 if (bMessage != 0)
-                    FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_pet_study_dialog_invalid_item")), 1, 0);
+                    FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_pet_study_dialog_invalid_item")), 1, 0);
                 return 0;
             }
             if (spPet->FUN_1405279c0()->FUN_140620f40(m_spBox->FUN_1405276c0()) == 0)
                 return 1;
             if (bMessage != 0)
-                FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_pet_study_dialog_already_option")), 1, 0);
+                FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_pet_study_dialog_already_option")), 1, 0);
             return 0;
         }
         if (bMessage != 0)
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_pet_study_dialog_invalid_item")), 1, 0);
+            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_pet_study_dialog_invalid_item")), 1, 0);
         return 0;
     }
     if (bMessage != 0)
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_pet_study_dialog_invalid_item")), 1, 0);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_pet_study_dialog_invalid_item")), 1, 0);
     return 0;
 }
 

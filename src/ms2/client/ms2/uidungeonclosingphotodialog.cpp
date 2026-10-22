@@ -209,8 +209,8 @@ Unk_140a94350* FUN_140a94350();
 CBuddyManager* FUN_14097a780();
 void FUN_140cfee80(const Scaleform::GFx::Value&, CString, CStringW);
 void FUN_140cffca0(const Scaleform::GFx::Value&, CString, CString);
-CStringW FUN_14028b8e0(const CStringW&);
-CStringW FUN_14028de60(int);
+CStringW GetStringCommonByKey(const CStringW&);
+CStringW GetStringCommon(int);
 CString FUN_14031c9d0(unsigned);
 CStringW FUN_14062b4f0(CStringW, const int*);
 void FUN_141275260(int, int, int);
@@ -441,14 +441,14 @@ void UIDungeonClosingPhotoDialog::FUN_140e0eb40(CInPacket& pkt)
         if (dlg) {
             flag = 2000;
             FUN_140a94350()->vfunc_10(9);
-            dlg->FUN_1419f6a70(5, FUN_14028b8e0(CStringW(L"s_room_dungeon_clear")), 2000);
+            dlg->FUN_1419f6a70(5, GetStringCommonByKey(CStringW(L"s_room_dungeon_clear")), 2000);
             FUN_141276180(s_winSound, "");
         }
     } else if (res == 2) {
         Unk_RewardOtherDialog* dlg = FUN_140e01890(0x4e4c);
         if (dlg) {
             flag = 2000;
-            dlg->FUN_1419f6a70(7, FUN_14028b8e0(CStringW(L"s_room_dungeon_fail")), 2000);
+            dlg->FUN_1419f6a70(7, GetStringCommonByKey(CStringW(L"s_room_dungeon_fail")), 2000);
         }
     }
     if (flag > 0)
@@ -613,7 +613,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e104d0(int slot)
         Unk_BuddyRequest req;
         req.protocol = 2;
         req.name = actor->vfunc_77();
-        req.memo = FUN_14028de60(0x60a);
+        req.memo = GetStringCommon(0x60a);
         FUN_14097a780()->FUN_140ae4820(req);
     }
 }

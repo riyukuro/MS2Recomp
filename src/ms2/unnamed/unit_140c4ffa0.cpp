@@ -82,7 +82,7 @@ bool FUN_14116d720(Unk_TrDebug*);
 void FUN_1422ce240(Unk_SocketPageButton*, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&, int);
 struct Unk_TrFindBag { MS2Ptr<Unk_SocketPageBag> FUN_140c4bc60(const CString&); };
 struct Unk_TrFindButton { MS2Ptr<Unk_SocketPageButton> FUN_140acce30(const CString&); };
-CStringW FUN_14028b8e0(const CStringW& key);
+CStringW GetStringCommonByKey(const CStringW& key);
 CStringW FUN_1405c2690(CStringW key, const CStringW& arg);
 CStringW FUN_1409404f0(__int64 v);
 CStringW FUN_1406564a0(const wchar_t* pszFormat, const CStringW& a, const CStringW& b, const CStringW& c);
@@ -560,7 +560,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c52f10(MS2Ptr<CItem> item, ASObj
         ASArray rows(2);
         unsigned open = socket->FUN_140620a20();
         CStringW emptyText;
-        CStringW rowStat = FUN_14028b8e0(CStringW(L"s_itemsocketsystem_socketunlock_row_socket_stat"));
+        CStringW rowStat = GetStringCommonByKey(CStringW(L"s_itemsocketsystem_socketunlock_row_socket_stat"));
         for (unsigned i = 0; i < open; ++i) {
             CStringW text;
             MS2Ptr<TSocketGemStoneInfo> info = socket->FUN_140620b70(i);
@@ -569,14 +569,14 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c52f10(MS2Ptr<CItem> item, ASObj
                 text = FUN_1406564a0(rowStat, FUN_140627390(gemId), FUN_14062ae60(gemId), FUN_14062b310(MS2Ptr<TSocketGemStoneInfo>(info)));
             } else {
                 if (emptyText.IsEmpty())
-                    emptyText = FUN_14028b8e0(CStringW(L"s_itemsocketsystem_socketunlock_row_socket_empty"));
+                    emptyText = GetStringCommonByKey(CStringW(L"s_itemsocketsystem_socketunlock_row_socket_empty"));
                 text = emptyText;
             }
             rows.FUN_1422bbfe0(text);
         }
         unsigned left = socket->FUN_140620a70();
         if (left != 0) {
-            CStringW lockText = FUN_14028b8e0(CStringW(L"s_itemsocketsystem_socketunlock_row_socket_lock"));
+            CStringW lockText = GetStringCommonByKey(CStringW(L"s_itemsocketsystem_socketunlock_row_socket_lock"));
             for (unsigned i = 0; i < left; ++i)
                 rows.FUN_1422bbfe0(lockText);
         }

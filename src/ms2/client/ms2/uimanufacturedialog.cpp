@@ -209,7 +209,7 @@ Unk_UmLevelInfo* FUN_1401d3200();
 
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW FUN_1408116a0(int nStringId, const int& nArg);
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 CStringW FUN_14093fa20(int nStringId, const CStringW& strArg, const int& nArg);
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& strArg0, const CStringW& strArg1);
@@ -533,7 +533,7 @@ void UIManufactureDialog::vfunc_72()
     {
         m_nState = 2;
         m_30->Invoke("setProgress", m_nState, FUN_14116d720(FUN_14025e7c0()) ? true : false);
-        m_30->Invoke("updateProgressGauge", FUN_14028de60(0x7b8), 1000);
+        m_30->Invoke("updateProgressGauge", GetStringCommon(0x7b8), 1000);
     }
     else
     {
@@ -576,11 +576,11 @@ void UIManufactureDialog::FUN_1412e34c0()
     CStringW strName = FUN_14052bd00(0x7af, spDesc->m_10);
     CStringW strMood;
     if (spMaid->FUN_14067dd10() == 0)
-        strMood = FUN_14028de60(0x79f);
+        strMood = GetStringCommon(0x79f);
     else if (spMaid->FUN_14067dd10() == 1)
-        strMood = FUN_14028de60(0x7a0);
+        strMood = GetStringCommon(0x7a0);
     else
-        strMood = FUN_14028de60(0x7a1);
+        strMood = GetStringCommon(0x7a1);
     CStringW strGrade = FUN_14093fa20(0x7b0, strMood, spMaid->m_54);
     int nNeed = FUN_14067e910()->FUN_14067ed30(spMaid->m_54);
     int nOne = 1;
@@ -706,7 +706,7 @@ void UIManufactureDialog::FUN_1412e4240()
         }
     }
     m_30->Invoke("setProgress", m_nState, FUN_14116d720(FUN_14025e7c0()) ? true : false);
-    m_30->Invoke("updateProgressGauge", FUN_14028de60(0x7b8), 1000);
+    m_30->Invoke("updateProgressGauge", GetStringCommon(0x7b8), 1000);
 }
 
 // @0x1412e48a0
@@ -812,23 +812,23 @@ void UIManufactureDialog::FUN_1412e48a0()
         if (nMesoCost == 0x1c)
         {
             if (nResult == 0)
-                strMesoText = FUN_14028de60(0x7bc);
+                strMesoText = GetStringCommon(0x7bc);
             else
-                strMesoText = FUN_14028de60(0x7bb);
+                strMesoText = GetStringCommon(0x7bb);
         }
         else if (nMesoCost == 0x1d)
         {
             if (nResult == 0)
-                strMesoText = FUN_14028de60(0x7be);
+                strMesoText = GetStringCommon(0x7be);
             else
-                strMesoText = FUN_14028de60(0x7bd);
+                strMesoText = GetStringCommon(0x7bd);
         }
         else if (nMesoCost == 0x1e)
         {
             if (nResult == 0)
-                strMesoText = FUN_14028de60(0x7c0);
+                strMesoText = GetStringCommon(0x7c0);
             else
-                strMesoText = FUN_14028de60(0x7bf);
+                strMesoText = GetStringCommon(0x7bf);
         }
         CStringW strMesoCount(L"");
         if (nResult == 0)
@@ -1117,7 +1117,7 @@ void UIManufactureDialog::FUN_1412e6c30(int nItemId, int nRarity, int nAmount, i
         else
             strBonus = FUN_140656190(L"{0} {1}", FUN_1408116a0(0x7c2, nBonus), FUN_1408116a0(0x7c3, spMaid->m_54));
     }
-    pTalk->FUN_141b1b000(aItems, nJackpot == 0 ? FUN_14028de60(0x7b8) : FUN_14028de60(0x7b9), strExp, strBonus, nJackpot);
+    pTalk->FUN_141b1b000(aItems, nJackpot == 0 ? GetStringCommon(0x7b8) : GetStringCommon(0x7b9), strExp, strBonus, nJackpot);
 }
 
 // @0x1412e7170

@@ -38,14 +38,14 @@ static Unk_1402a9d70 s_unk1402a9d70_2(17, 0.75f, 0.25f, 2.25f, 10);
 void FUN_140159b70(long hr);                                    // AtlThrowImpl
 void FUN_141276180(const CString& strName, const CString& strArg);       // play a system sound
 WorldService* FUN_1403ed2d0();
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW FUN_141b720b0(int nId, __int64 nValue);
 CStringW FUN_1401d0160(const wchar_t* szFirst, const CStringW& strSecond);   // szFirst + strSecond
 CStringW FUN_1401ceea0(const wchar_t* szFmt, int n);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW FUN_1409e9bc0(int nId, const int& a, const int& b);
 CStringW FUN_1409e97f0(int nId, const unsigned& nArg);
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 bool FUN_140a467d0(const MS2Ptr<AScript>*);                     // has the AS object been released
 void FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);
 void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member
@@ -307,7 +307,7 @@ void UIFishingBookDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
         int nGrade = pPC->FUN_1416627d0(1);
         if (nGrade == FUN_1409670c0()->FUN_14066b050(1))
         {
-            strText = FUN_14028b8e0(CStringW(L"s_fishing_mastery_tooltip_level_max"));
+            strText = GetStringCommonByKey(CStringW(L"s_fishing_mastery_tooltip_level_max"));
         }
         else
         {
@@ -356,10 +356,10 @@ void UIFishingBookDialog::FUN_140f41a10()
         int nBase = FUN_1409670c0()->FUN_14066b310(1, nGrade);
         int nNextBase = FUN_1409670c0()->FUN_14066b310(1, nGrade + 1);
         int nTitle = FUN_140f42ed0();
-        CStringW strTitle = (nTitle != 0) ? FUN_141b720b0(nTitle, 0) : FUN_14028b8e0(CStringW(L"s_fishing_none_title"));
+        CStringW strTitle = (nTitle != 0) ? FUN_141b720b0(nTitle, 0) : GetStringCommonByKey(CStringW(L"s_fishing_none_title"));
         CStringW strGrade = FUN_140f432e0(nGrade);
         if (nGrade == FUN_1409670c0()->FUN_14066b050(1))
-            strGrade += FUN_1401d0160(L" ", FUN_14028b8e0(CStringW(L"s_fishing_mastery_gauge_level_max")));
+            strGrade += FUN_1401d0160(L" ", GetStringCommonByKey(CStringW(L"s_fishing_mastery_gauge_level_max")));
         ASObj obj(2);
         obj.FUN_1409c0d20("fisherTitleID", nTitle);
         obj.FUN_1407cbb20("fisherTitle", CStringW(strTitle));
@@ -425,9 +425,9 @@ void UIFishingBookDialog::FUN_140f42100(int nFishId)
             obj.FUN_1407cbb20("iconPath", fish.FUN_1403b3c80()->FUN_1403b1600());
             obj.FUN_1407cbb20("fishName", fish.FUN_1403b3c80()->FUN_1403b1650());
             bool bSingle = fish.FUN_1403b3c80()->m_48 == 0;
-            obj.FUN_1407cbb20("fishingExp", bSingle ? FUN_140f432e0(nArea) : FUN_14028b8e0(CStringW(L"s_fishing_all_spot")));
+            obj.FUN_1407cbb20("fishingExp", bSingle ? FUN_140f432e0(nArea) : GetStringCommonByKey(CStringW(L"s_fishing_all_spot")));
             obj.FUN_1409adc90("fishRank", fish.FUN_1403b3c80()->m_24);
-            obj.FUN_1407cbb20("fishGradeName", FUN_14052bd00(0xbda, FUN_1401a9d70()->FUN_141813150(fish.FUN_1403b3c80()->m_24)));
+            obj.FUN_1407cbb20("fishGradeName", FUN_14052bd00(0xbda, GetStringTable()->FUN_141813150(fish.FUN_1403b3c80()->m_24)));
             int nKnown = FUN_140f43330(fish.FUN_1403b3c80()->m_18);
             obj.FUN_1407cbb20("desc", fish.FUN_1403b3c80()->FUN_1403b16b0(nKnown));
             obj.FUN_1407cb9c0("acquire", FUN_140f43330(fish.FUN_1403b3c80()->m_18));
@@ -679,8 +679,8 @@ int FUN_140f438b0(const int* pA, const int* pB)
     }
     if (fishA.FUN_1403b3c80()->m_24 == fishB.FUN_1403b3c80()->m_24)
     {
-        CStringW strA = FUN_1401a9d70()->FUN_141811980(0x1d, *pA);
-        CStringW strB = FUN_1401a9d70()->FUN_141811980(0x1d, *pB);
+        CStringW strA = GetStringTable()->FUN_141811980(0x1d, *pA);
+        CStringW strB = GetStringTable()->FUN_141811980(0x1d, *pB);
         return wcscmp(strA.GetBuffer(0), strB.GetBuffer(0));
     }
     if (fishB.FUN_1403b3c80()->m_24 < fishA.FUN_1403b3c80()->m_24)

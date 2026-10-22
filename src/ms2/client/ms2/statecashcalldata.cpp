@@ -46,7 +46,7 @@ char FUN_1401c0090(const CString& a, const CString& b);  // strings are equal
 void* FUN_14165f100(PCBase* p);
 void FUN_14165f170(PCBase* p);
 void FUN_140710590(COutPacket& packet);
-CStringW FUN_14028de60(int nId);                         // string table text by id
+CStringW GetStringCommon(int nId);                         // string table text by id
 CStringW FUN_14052bd00(int nId, const CStringW& strArg);   // formatted system text
 void FUN_1412751f0(CStringW strText, int a, int b);      // system notice
 
@@ -377,7 +377,7 @@ void StateCashCall::OnLeave(double fTime)
             nWait = FUN_14028d260(*FUN_140298f40(&static_cast<Client::Constants*>(FUN_1401d3200())->CashCallMedicLeaveDelay));
             if (FUN_1417b8560() != 0)
             {
-                CStringW strNotice = FUN_14028de60(0x98);
+                CStringW strNotice = GetStringCommon(0x98);
                 FUN_1412751f0(strNotice, 1, 1);
             }
         }
@@ -503,8 +503,8 @@ CStringW StateCashCall::GetCastText()
 {
     int nType = GetCallType();
     if (nType == 6)
-        return FUN_14028de60(0x65a);
-    return FUN_14028de60(0x64c);
+        return GetStringCommon(0x65a);
+    return GetStringCommon(0x64c);
 }
 MS2_REPLACE_METHOD(0x141023CE0, StateCashCall, GetCastText, 106, 0x45FDE91C);
 

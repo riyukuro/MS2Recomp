@@ -13,7 +13,7 @@
 // Unrecovered helpers.
 class Unk_StatPointEvents { public: void FUN_141b0ce20(int nEvent, int nArg); };
 Unk_StatPointEvents* FUN_140aa6d40();
-CStringW FUN_14028b8e0(const CStringW&);
+CStringW GetStringCommonByKey(const CStringW&);
 void FUN_1412751f0(const CStringW&, int, int);
 void FUN_140710590(COutPacket&);
 
@@ -129,7 +129,7 @@ void CStatPointManager::RequestAdd(int nStat, int nAmount)
     unsigned nNew = GetStatPoints((Unk_StatKey)nStat) + nAmount;
     if (nNew > (&FUN_1401d3200()->StatPointLimit_str)[nStat])
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_char_info_limit_stat_point"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_char_info_limit_stat_point"), 1, 1);
     }
     else
     {

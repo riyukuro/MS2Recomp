@@ -126,7 +126,7 @@ void FUN_14035e5b0(const Unk_NcRef& ref);                      // preload the np
 
 class Unk_NcWalk { public: int FUN_1406fb700(int nNpc, int* pField); };
 Unk_NcWalk* FUN_140700390();
-CStringW FUN_14028de60(int nId);                        // string table text
+CStringW GetStringCommon(int nId);                        // string table text
 void FUN_1412751f0(const CStringW& strText, int a, int b);
 
 class Unk_NcEvents { public: void FUN_1419308c0(UIEntityEventListener*); void FUN_141930950(UIEntityEventListener*); };
@@ -135,7 +135,7 @@ Unk_NcEvents* FUN_140c607b0();
 unsigned FUN_140718200(const CStringW& str);          // the npc id of an id text
 CStringW FUN_1401aa6a0(unsigned nNpc);
 void FUN_140841420(CStringW& str);                      // trim
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 CStringW FUN_140938ae0(CStringW strKey, const int& n);  // FUN_14028dfa0<int>
 
 // xml file helpers
@@ -271,7 +271,7 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             int nNpc = data.FUN_1422b8a10();
             int nField;
             if (FUN_140700390()->FUN_1406fb700(nNpc, &nField) == 0) {
-                FUN_1412751f0(FUN_14028de60(0x578), 1, 1);
+                FUN_1412751f0(GetStringCommon(0x578), 1, 1);
             } else if (FUN_1403ed2d0()->FUN_141bd3060() == nField) {
                 MS2Ptr<CProxyGameObject> spObj = FUN_1403ed2d0()->FUN_141bc9e70(nNpc);
                 if (spObj.get() != 0) {
@@ -414,7 +414,7 @@ void UINpcCreateDialog::FUN_141a6b8f0()
             continue;
         int bFriendly = row.FUN_140965990()->FUN_1406ccfc0();
         CStringW strKind = FUN_141a6b6a0(row.FUN_140965990()->m_nKind, bFriendly);
-        CStringW strName = FUN_1401a9d70()->FUN_141811980(10, nNpc);
+        CStringW strName = GetStringTable()->FUN_141811980(10, nNpc);
         CStringW strNpc = FUN_1401aa6a0(nNpc);
         CStringW strEmpty(L"");
         unsigned nHp = row.FUN_140965990()->FUN_140a7c970();

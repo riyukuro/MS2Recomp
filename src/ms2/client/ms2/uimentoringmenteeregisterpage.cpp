@@ -81,7 +81,7 @@ inline ULongLong wc_make_type(Unk_WcArgType t0 = Unk_WcArgType(), Unk_WcArgType 
 // MS2-FUNCTIONAL: fmt argument temporaries (2 extra frame slots, ArgType chain order) differ from the exe
 WC_WRAP(7)
 template CStringW FUN_14028dfa0<int, int, int, int, int, int, CStringW>(CStringW, const int&, const int&, const int&, const int&, const int&, const int&, const CStringW&);
-CStringW FUN_14028b8e0(const CStringW& strKey);                     // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
 class Unk_MentorChat { public: void FUN_1416fb340(CStringW& strText); };
 Unk_MentorChat* FUN_1403b4750();
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
@@ -157,7 +157,7 @@ int UIMentoringMenteeRegisterPage::vfunc_5(const char* szMethod, const Scaleform
 CString UIMentoringMenteeRegisterPage::vfunc_6() { return "MenteeRegisterPage"; }
 
 // @0x140c70960
-CStringW UIMentoringMenteeRegisterPage::vfunc_7() { return FUN_14028b8e0(L"s_mentoring_tab_register_mentee"); }
+CStringW UIMentoringMenteeRegisterPage::vfunc_7() { return GetStringCommonByKey(L"s_mentoring_tab_register_mentee"); }
 
 // @0x140c709d0
 bool UIMentoringMenteeRegisterPage::SendMentor(int nResult, const CMsgBoxData& data)

@@ -84,7 +84,7 @@ __int64 FUN_141405a10(void* pItemSlot);                     // its item uid
 void FUN_141405a60(void* pItemSlot, CItem* pItem, int nSlot);   // put the item into the slot
 int FUN_141275a10(CItem* pItem);                            // the item's lock kind
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);                   // item link / popup for the item
-CStringW FUN_14028de60(int nStringId);                      // a string table text
+CStringW GetStringCommon(int nStringId);                      // a string table text
 CString FUN_1405451e0(int nType);                           // the name of an equip slot type
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);   // string table text with one argument
 void FUN_140d73bc0(int nStringId, int nType, void* p, CStringW strTag);
@@ -192,7 +192,7 @@ int FittingDollSlot::vfunc_0(void* p)
     ASTooltip tip(pPlayer, nFlags, 2);
     if (tip.FUN_1409e0d40(pItem) == 0)
         return 0;
-    tip.FUN_1409c69b0(FUN_14028de60(0x75c));
+    tip.FUN_1409c69b0(GetStringCommon(0x75c));
     if (IsEnabled() == true)
         tip.FUN_1409db7b0(MS2Ptr<CItem>(pItem));
     *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
@@ -336,7 +336,7 @@ int FittingDollSlot::FUN_14121ddc0()
                     spBox->FUN_141a01ee0(spItem, ((CItem*)spItem)->FUN_140527b10(), 1, ((CItem*)spItem)->FUN_140526c50(), -1, -1, 1);
                     spBox->FUN_141a01800(1);
                     spBox->FUN_141a026f0(1);
-                    spBox->FUN_141a024e0(FUN_14028de60(0x9d1), 0);
+                    spBox->FUN_141a024e0(GetStringCommon(0x9d1), 0);
                     FUN_140d73c60(spBox);
                 }
             }

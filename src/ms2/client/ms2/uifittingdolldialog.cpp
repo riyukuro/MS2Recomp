@@ -149,7 +149,7 @@ MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStrId, void* p, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
 void FUN_140710590(COutPacket& packet);                     // send the packet
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 CString FUN_14021c050(int nSlotType);                       // slot type -> slot name
 
 extern __int64 DAT_143af25f0;                               // the id of the doll shown
@@ -356,11 +356,11 @@ void UIFittingDollDialog::FUN_141933b00()
 
     MS2Ptr<ASTextField> spName = GetChild<ASTextField>("m_name");
     if (spName.get() != 0)
-        spName->FUN_1422c4cd0(FUN_1401a9d70()->FUN_141811980(1, nItemId));
+        spName->FUN_1422c4cd0(GetStringTable()->FUN_141811980(1, nItemId));
 
     MS2Ptr<ASTextField> spDesc = GetChild<ASTextField>("m_desc");
     if (spDesc.get() != 0)
-        spDesc->FUN_1422c4cd0(FUN_1401a9d70()->GetItemDescription(nItemId, CString("functionDescription")));
+        spDesc->FUN_1422c4cd0(GetStringTable()->GetItemDescription(nItemId, CString("functionDescription")));
 
     MS2Ptr<ASMovieClip> spCharacter = GetChild<ASMovieClip>("m_character");
     if (spCharacter.get() != 0)

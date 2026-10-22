@@ -520,7 +520,7 @@ int FUN_14074b070(CQuestData* pData);
 int FUN_140931210(int n);
 CStringW FUN_140298ea0(CStringW str);
 CString FUN_14021a6b0(int n);
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommonByKey(const CStringW& str);
 CStringW FUN_140719630(int n);
 CStringW FUN_14083cb20(const CStringW& str);
 
@@ -533,7 +533,7 @@ int FUN_140762280(void* pUnused, int n)
 // @0x140762de0
 CStringW FUN_140762de0(int nQuestId)
 {
-    return FUN_14028b8e0(StringFormat(L"s_quest_alliance_{0}", FUN_14021a6b0(nQuestId)));
+    return GetStringCommonByKey(StringFormat(L"s_quest_alliance_{0}", FUN_14021a6b0(nQuestId)));
 }
 
 // @0x140762e90
@@ -635,7 +635,7 @@ MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);                 // the quest tab
 bool FUN_14028d470(float a, float b);                           // a == b within epsilon
 __int64 FUN_140632990(__int64 nValue, float fAdd);              // the Lua bonus added to an exp value
 void FUN_1402929a0(const CStringW& str, std::vector<unsigned>& out, const wchar_t* pszSep);    // split into ids
-CStringW FUN_14028de60(int nStringId);                          // a common string by id
+CStringW GetStringCommon(int nStringId);                          // a common string by id
 CStringW FUN_1416e4df0(int nQuestId);                           // the quest's localized name
 int FUN_140768010(int nCount, int nBase);
 
@@ -1020,7 +1020,7 @@ void FUN_140762fc0(int nAlliance, int* pnCur, int* pnMax, CStringW& strText)
     {
         *pnCur = 1;
         *pnMax = 1;
-        strText = FUN_14028b8e0(L"s_fame_point_board_max");
+        strText = GetStringCommonByKey(L"s_fame_point_board_max");
     }
     else
     {
@@ -1090,8 +1090,8 @@ void FUN_140763210(int nQuestId, int nState, CStringW& strDesc, CStringW& strFor
         nDescId = 0x738;
         nFormatId = 0x741;
     }
-    strDesc = FUN_14028de60(nDescId);
-    strFormat = FUN_14028de60(nFormatId);
+    strDesc = GetStringCommon(nDescId);
+    strFormat = GetStringCommon(nFormatId);
 }
 MS2_REPLACE(0x140763210, FUN_140763210, 814, 0xACF85F89);
 

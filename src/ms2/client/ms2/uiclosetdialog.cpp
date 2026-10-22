@@ -196,7 +196,7 @@ void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);         // 
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);            // notice box by string id
 void FUN_1412751f0(const CStringW& text, int nA, int nB);                    // system notice
 CStringW FUN_14052bd00(int nStrId, const CStringW& strArg);                  // formatted string table text
-CStringW FUN_14028b8e0(const CStringW& strKey);                              // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                              // string table text
 void FUN_140d01340(const Scaleform::GFx::Value& v, unsigned nFont, int n);   // the key label's font
 void FUN_1407cd930(Scaleform::GFx::Value* pObj, const char* szName, const Scaleform::GFx::Value& v);   // set a member
 int FUN_1407181a0(const CStringW& str);                                      // _wtoi
@@ -624,7 +624,7 @@ int UIClosetDialog::vfunc_73()
         return 0;
     if (pPlayer->vfunc_65() == 1)
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_closet_msg_cant_use_when_battle_state"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_closet_msg_cant_use_when_battle_state"), 1, 1);
         return 0;
     }
     return 1;
@@ -933,7 +933,7 @@ void UIClosetDialog::BuildTooltip(ASTooltip& tooltip, int nIndex)
     if (!sp->IsOwned())
     {
         nFlags = 0x800;
-        tooltip.FUN_1409c6ef0(FUN_14028b8e0(L"s_closet_tooltip_msg_for_remove"));
+        tooltip.FUN_1409c6ef0(GetStringCommonByKey(L"s_closet_tooltip_msg_for_remove"));
     }
     tooltip.FUN_1409c6580(nFlags);
     tooltip.FUN_1409e0d40(sp->GetItem());
@@ -981,7 +981,7 @@ void UIClosetDialog::OnSave(const Scaleform::GFx::FunctionHandler::Params& param
     }
     if (!sp->ItemsEmpty())
     {
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_14028b8e0(L"s_closet_ask_save_tab_not_empty"), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(L"s_closet_ask_save_tab_not_empty"), 0, CStringW(L""));
         if (box.get() != 0)
         {
             box->FUN_140533ff0(nIndex);
@@ -1004,7 +1004,7 @@ void UIClosetDialog::OnClear(const Scaleform::GFx::FunctionHandler::Params& para
     int nIndex = CurrentTabIndex();
     if (nIndex < 0)
         return;
-    MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_14028b8e0(L"s_closet_ask_clear_tab_not_empty"), 0, CStringW(L""));
+    MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(L"s_closet_ask_clear_tab_not_empty"), 0, CStringW(L""));
     if (box.get() != 0)
     {
         box->FUN_140533ff0(nIndex);
@@ -1022,7 +1022,7 @@ void UIClosetDialog::OnPutOn(const Scaleform::GFx::FunctionHandler::Params& para
     if (sp == 0 || sp->IsEmpty() == true)
         return;
     if (sp->ItemsEmpty() == true)
-        FUN_140d73aa0(FUN_14028b8e0(L"s_closet_msg_empty_items_when_click_puton"), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_closet_msg_empty_items_when_click_puton"), 0, 0, CStringW(L""));
     else
         SendApply(sp);
 }
@@ -1035,7 +1035,7 @@ void UIClosetDialog::OnTabAdd(const Scaleform::GFx::FunctionHandler::Params& par
     int nIndex = EmptyTabIndex();
     if (nIndex == -1 || nIndex >= Client::Constants::GetInstance()->MaxClosetMaxCount)
         return;
-    if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(10, FUN_14028b8e0(L"s_closet_ask_add_tab"), 0, CStringW(L"")))
+    if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(10, GetStringCommonByKey(L"s_closet_ask_add_tab"), 0, CStringW(L"")))
     {
         __int64 nNumber = nIndex + 1;
         box->FUN_141a01d30(0, FUN_14028dfa0(L"s_closet_default_tab_name", nNumber),
@@ -1126,7 +1126,7 @@ void UIClosetDialog::OnTabMenu(const Scaleform::GFx::FunctionHandler::Params& pa
     MS2Ptr<UICloset::CTab> sp = GetTab(CurrentTabIndex());
     if (sp == 0)
         return;
-    MS2Ptr<CMsgBoxData> box = FUN_140d73d20(10, FUN_14028b8e0(L"s_closet_ask_rename_tab"), 0, CStringW(L""));
+    MS2Ptr<CMsgBoxData> box = FUN_140d73d20(10, GetStringCommonByKey(L"s_closet_ask_rename_tab"), 0, CStringW(L""));
     if (box.get() != 0)
     {
         box->FUN_141a01d30(0, sp->GetName(), Client::Constants::GetInstance()->MaxClosetTabNameLength, 0, 0);
@@ -1446,7 +1446,7 @@ bool UIClosetDialog::SendApply(MS2Ptr<UICloset::CTab> spTab)
         return false;
     if (pPlayer->vfunc_65() == 1)
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_closet_msg_cant_use_when_battle_state"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_closet_msg_cant_use_when_battle_state"), 1, 1);
         return false;
     }
     MS2Ptr<ItemCloset::TabInfo> spInfo = spTab->GetInfo();

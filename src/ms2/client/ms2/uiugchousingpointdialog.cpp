@@ -98,13 +98,13 @@ void FUN_1419caeb0(Unk_UhpItemEvents*, UIItemEventListener*);   // remove it
 
 CMasteryInteriorTable* FUN_140933200();
 UGCCubeCategoryTable* FUN_1409eed80();
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 CGuideManager* FUN_1409331e0();
 int FUN_1418fd280();
 bool FUN_1409301c0();
 void FUN_140710590(COutPacket& pkt);
 CStringW FUN_14016a730(const char* szKey, int nFlags);         // the string of a key
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 
 CStringW FormatStringId(int nId, const fmt::ArgList& args);     // 0x14028dee0
 FMT_VARIADIC_W(CStringW, FormatStringId, int)
@@ -284,7 +284,7 @@ void UIUGCHousingPointDialog::RefreshInfo()
     MS2Ptr<InteriorPointReward> spReward = FUN_140933200()->GetPointReward(nPoint);
     if (spReward.get() != 0) {
         obj.FUN_1407cbb20(s_strIconPath, FUN_14016a730(spReward->m_strIcon, 0));
-        obj.FUN_1407cbb20(s_strItemDesc, FUN_14028b8e0(FUN_14016a730(spReward->m_strKey, 0)));
+        obj.FUN_1407cbb20(s_strItemDesc, GetStringCommonByKey(FUN_14016a730(spReward->m_strKey, 0)));
     }
     dialog->FUN_140acd1f0("buildInteriorInfo", obj);
     if (bReceive)
@@ -314,7 +314,7 @@ void UIUGCHousingPointDialog::RefreshList()
         CStringW strCount;
         strCount.Format(L"%d/%d", nCount, nMax);
         ASObj item(2);
-        item.FUN_1407cbb20("name", FUN_1401a9d70()->FUN_141811980(0x32, nCategory));
+        item.FUN_1407cbb20("name", GetStringTable()->FUN_141811980(0x32, nCategory));
         item.FUN_1407cbb20("count", strCount);
         item.FUN_1407cbb20("point", strPoint);
         item.FUN_1407cbbe0("active", nCount >= nMax);

@@ -171,7 +171,7 @@ void FUN_141415600(const CString&);
 void FUN_14141f860(const CString&, int, void*, MS2Ptr<ItemSlotBag::CreateParam>);
 MS2Ptr<CItem> FUN_141420330(void*, int);
 void FUN_141415450(const CString&, MS2Ptr<CItem>, int, int, int);
-CStringW FUN_14028b8e0(const CStringW&);
+CStringW GetStringCommonByKey(const CStringW&);
 CStringW FUN_140763e10(int);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW, int);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
@@ -476,11 +476,11 @@ void UIItemLulluBoxDialog::FUN_140e9c550()
     FUN_140cff840(FUN_1422dbb40(), "m_previewBagScroll", true);
     if (LULLUBOX_ATTR(data)->FUN_14092c5f0(L"showWindowTitle")) {
         CStringW title = LULLUBOX_ATTR(data)->FUN_14042cad0(L"showWindowTitle", L"");
-        FUN_140cfee80(FUN_1422dbb40(), "m_showWindowTitle", FUN_14028b8e0(title));
+        FUN_140cfee80(FUN_1422dbb40(), "m_showWindowTitle", GetStringCommonByKey(title));
     }
     if (LULLUBOX_ATTR(data)->FUN_14092c5f0(L"showWindowDesc")) {
         CStringW desc = LULLUBOX_ATTR(data)->FUN_14042cad0(L"showWindowDesc", L"");
-        FUN_140cfee80(FUN_1422dbb40(), "m_showWindowDesc", FUN_14028b8e0(desc));
+        FUN_140cfee80(FUN_1422dbb40(), "m_showWindowDesc", GetStringCommonByKey(desc));
     }
     FUN_140e9d2b0();
 }
@@ -709,7 +709,7 @@ void UIItemLulluBoxDialog::FUN_140e9ece0()
     if (r == 4)
         return;
     if (r == 1) {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_lullu_key_not_enough_money"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_lullu_key_not_enough_money"), 0, 0, L"");
     } else if (r == 3) {
         MS2Ptr<CItemData> data = FUN_14053f870(m_boxItemId);
         if (data == 0)

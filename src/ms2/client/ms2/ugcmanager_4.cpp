@@ -155,8 +155,8 @@ public:
 class IMessageListener;
 void FUN_140d73aa0(CStringW strMessage, int nType, IMessageListener* pListener, CStringW strArg);   // message box
 void FUN_140d73bc0(int nStringId, int nType, IMessageListener* pListener, CStringW strArg);         // message box
-CStringW FUN_14028b8e0(const CStringW& strKey);             // a string table entry by key
-CStringW FUN_14028de60(int nId);                            // a string table entry
+CStringW GetStringCommonByKey(const CStringW& strKey);             // a string table entry by key
+CStringW GetStringCommon(int nId);                            // a string table entry
 CStringW FormatStringId(int nId, const fmt::ArgList& args);   // a string table entry with {0} arguments
 FMT_VARIADIC_W(CStringW, FormatStringId, int)
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);   // equal to a literal
@@ -1053,7 +1053,7 @@ int CUgcManager::FUN_1418810c0(const CStringW& strDir, const wchar_t* szFilter)
     int nType = spCtrl->m_nKind;
     if (nType == 0)
     {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_msg_ugc_fail_select_design"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_msg_ugc_fail_select_design"), 0, 0, L"");
         return 0;
     }
     CStringW strFile = FUN_141b6e360(strDir, szFilter, L"");
@@ -1381,7 +1381,7 @@ void CUgcManager::FUN_1418826a0(int nResult)
         BlockPtr blocked = FUN_140a6a830()->FindBlockedAction(3);
         if (blocked.get() != 0)
         {
-            CStringW strTitle = FUN_14028de60(0x446);
+            CStringW strTitle = GetStringCommon(0x446);
             CStringW strTime = FUN_140a2fcd0((__int64)blocked->m_38, blocked->expiry);
 #ifdef __clang__
             FUN_1412751b0(FUN_1401d0080(strTitle, strTime), 0x14); // exe operator+; clang would import MFC CopyChars
@@ -3899,16 +3899,16 @@ void CUgcManager::FUN_14188f450(CInPacket& packet)
         FUN_140d73bc0(0x43, 0, 0, L"");
         break;
     case 0x82:
-        FUN_140d73aa0(FUN_14028b8e0(L"s_err_lack_price"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_err_lack_price"), 0, 0, L"");
         break;
     case 0x83:
         FUN_1403ed2b0()->FUN_141add1f0();
         break;
     case 0x84:
-        FUN_140d73aa0(FUN_14028b8e0(L"s_err_warehouse"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_err_warehouse"), 0, 0, L"");
         break;
     case 0x85:
-        FUN_140d73aa0(FUN_14028b8e0(L"s_ugc_itemedit_error_change_price"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_ugc_itemedit_error_change_price"), 0, 0, L"");
         break;
     case 0x87:
         FUN_1412751f0(FUN_140a228f0(0x688, *TSingleton<Client::Constants>::GetInstance()->PropertyProtectionTime.Get(), FUN_1409eec40(0x5a8)), 1, 1);
@@ -3921,7 +3921,7 @@ void CUgcManager::FUN_14188f450(CInPacket& packet)
         FUN_1403ed2b0()->FUN_141adc5d0(eUI_4f7b);
         break;
     case 0x8e:
-        FUN_140d73aa0(FUN_14028b8e0(L"s_ugc_uic_error"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_ugc_uic_error"), 0, 0, L"");
         break;
     default:
         FUN_1403ed2b0()->FUN_141adc5d0(eUI_4e69);

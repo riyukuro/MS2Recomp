@@ -167,7 +167,7 @@ public:
     CStringW FUN_141811980(int nTable, int nId);   // string table lookup (exe member: this=rcx, hidden return=rdx)
 };
 Unk_StringTable* FUN_1401a9d70();
-CStringW FUN_14028de60(int);
+CStringW GetStringCommon(int);
 CStringW FUN_1402758a0(const wchar_t*, const CStringW&, const int&);
 CString FUN_140536a50(const char*, const CString&);
 class StateFishingFloat { char m_pad[0x40]; };
@@ -1194,13 +1194,13 @@ void CFishingGuideObject::FUN_1410a4d30(void* pCatch)
             CStringW strGrade;
             int nGrade = spRow->FUN_1403b1520(((Unk_FishCatch*)pCatch)->m_nSize);
             if (nGrade == 0)
-                strGrade = FUN_14028de60(0xbec);
+                strGrade = GetStringCommon(0xbec);
             else if (nGrade == 1)
-                strGrade = FUN_14028de60(0xbed);
+                strGrade = GetStringCommon(0xbed);
             else if (nGrade == 2)
-                strGrade = FUN_14028de60(0xbee);
+                strGrade = GetStringCommon(0xbee);
             else if (nGrade == 3)
-                strGrade = FUN_14028de60(0xbef);
+                strGrade = GetStringCommon(0xbef);
             m_spBirdHead->FUN_1418ce8f0(strGrade, strInfo);
             m_spBirdHead->FUN_1418ce800();
         }

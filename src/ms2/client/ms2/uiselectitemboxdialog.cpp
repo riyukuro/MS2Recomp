@@ -95,7 +95,7 @@ Unk_SibPlayers* FUN_1403ed2d0();
 
 
 // string-table text with arguments (the shared FUN_14028dfa0 back end and its instances)
-CStringW FUN_14028b8e0(const CStringW& strKey);
+CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_14028dfa0(CStringW strKey, const fmt::ArgList& args);
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 void FUN_1412752d0(const CStringW& strMessage, int n);                  // pop a notice
@@ -212,9 +212,9 @@ void UISelectItemBoxDialog::OnLoadComplete()
     int nNext = pData->m_args.FUN_1408d1fd0(4, 1);
     int nHave = ((Unk_SibInventory*)&DAT_143ab2a90)->FUN_140a5f180(item->FUN_1405276c0(), 0);
     if (nNext == 1 && 1 < nHave)
-        m_okButton->FUN_1422cdfb0(FUN_14028b8e0(CStringW(L"s_selectItemBox_select_next")));
+        m_okButton->FUN_1422cdfb0(GetStringCommonByKey(CStringW(L"s_selectItemBox_select_next")));
     else
-        m_okButton->FUN_1422cdfb0(FUN_14028b8e0(CStringW(L"s_selectItemBox_select_ok")));
+        m_okButton->FUN_1422cdfb0(GetStringCommonByKey(CStringW(L"s_selectItemBox_select_ok")));
     FUN_140f9a700();
 }
 

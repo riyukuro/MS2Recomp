@@ -3341,7 +3341,7 @@ class Unk_GsUiAgreeIcon { public: void FUN_1419394a0(bool b); void FUN_141939320
 Unk_GsUiAgreeIcon* FUN_140938b90(int nUiId);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);   // a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                     // show it
-CStringW FUN_14028b8e0(const CStringW& str);                      // string table text by key
+CStringW GetStringCommonByKey(const CStringW& str);                      // string table text by key
 CStringW FUN_140298ea0(CStringW str);                             // string table text by key
 class Unk_GsUiHomeNotice { public: void FUN_140c29b70(); };                                     // 0x4f7c
 Unk_GsUiHomeNotice* FUN_140ef49b0(int nUiId);
@@ -3559,10 +3559,10 @@ void CPersonalInfoAgreement::FUN_141262180()
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(4, FUN_140298ea0(CStringW(L"s_personal_infomaion_agreement_visit_myhome_content")), 0, CStringW(L""));
             if (spBox.get())
             {
-                CStringW strPublic = FUN_14028b8e0(CStringW(L"s_personal_infomaion_agreement_visit_myhome_btn_public"));
-                CStringW strPassword = FUN_14028b8e0(CStringW(L"s_personal_infomaion_agreement_visit_myhome_btn_password"));
-                CStringW strPrivate = FUN_14028b8e0(CStringW(L"s_personal_infomaion_agreement_visit_myhome_btn_private"));
-                spBox->SetTitle(FUN_14028b8e0(CStringW(L"s_personal_infomaion_agreement_title")));
+                CStringW strPublic = GetStringCommonByKey(CStringW(L"s_personal_infomaion_agreement_visit_myhome_btn_public"));
+                CStringW strPassword = GetStringCommonByKey(CStringW(L"s_personal_infomaion_agreement_visit_myhome_btn_password"));
+                CStringW strPrivate = GetStringCommonByKey(CStringW(L"s_personal_infomaion_agreement_visit_myhome_btn_private"));
+                spBox->SetTitle(GetStringCommonByKey(CStringW(L"s_personal_infomaion_agreement_title")));
                 spBox->FUN_141a024a0(0);
                 spBox->FUN_141a024c0();
                 spBox->SetAlign(0);
@@ -3633,7 +3633,7 @@ bool CPersonalInfoAgreement::FUN_141262830(int nResult, const CMsgBoxData& data)
     }
     else if (nResult == 1)
     {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10, FUN_14028b8e0(CStringW(L"s_personal_infomaion_agreement_visit_myhome_input_password")), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10, GetStringCommonByKey(CStringW(L"s_personal_infomaion_agreement_visit_myhome_input_password")), 0, CStringW(L""));
         if (spBox.get())
         {
             spBox->FUN_141a01d30(2, CStringW(L""), 6, 0, 0);
@@ -3663,7 +3663,7 @@ bool CPersonalInfoAgreement::FUN_141262b70(int nResult, const CMsgBoxData& data)
         CStringW strPassword = data.FUN_141a02d50().Trim(L',');
         if (strPassword.GetLength() != 6)
         {
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, FUN_14028b8e0(CStringW(L"s_home_password_string_error")), 0, CStringW(L""));
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, GetStringCommonByKey(CStringW(L"s_home_password_string_error")), 0, CStringW(L""));
             if (spBox.get())
             {
                 spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CPersonalInfoAgreement::FUN_141262f10));

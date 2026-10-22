@@ -12,9 +12,9 @@
 #include "hook/ms2hook.h"
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 void FUN_14025a680(const CStringW&, ATL::CAtlArray<CStringW>&, const wchar_t*);
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommonByKey(const CStringW& str);
 
 // @0x140c6e3a0
 UIMentoringBuffPage::UIMentoringBuffPage(UIMentoringDialog* p) : UIMentoringPage(p) {}
@@ -33,7 +33,7 @@ int UIMentoringBuffPage::vfunc_1()
     else
     {
         int nBuffId = 0x55d4d2d;
-        CStringW strDesc = FUN_1401a9d70()->FUN_141812290(nBuffId, 1, CString("tooltipDescription"));
+        CStringW strDesc = GetStringTable()->FUN_141812290(nBuffId, 1, CString("tooltipDescription"));
         ATL::CAtlArray<CStringW> lines;
         FUN_14025a680(strDesc, lines, L"\n");
         for (size_t i = 0; i < 7; i++)
@@ -65,4 +65,4 @@ int UIMentoringBuffPage::vfunc_5(const char* szMethod, const Scaleform::GFx::Val
 CString UIMentoringBuffPage::vfunc_6() { return "BuffPage"; }
 
 // @0x140c6e6e0
-CStringW UIMentoringBuffPage::vfunc_7() { return FUN_14028b8e0(L"s_mentoring_tab_buff"); }
+CStringW UIMentoringBuffPage::vfunc_7() { return GetStringCommonByKey(L"s_mentoring_tab_buff"); }

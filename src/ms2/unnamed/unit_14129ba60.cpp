@@ -43,7 +43,7 @@ void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* szText);
 
 class Unk_RsWorld { public: MS2Ptr<CFieldDataCli> FUN_141bd30a0(); };
 Unk_RsWorld* FUN_1403ed2d0();
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 CStringW FUN_140632a60(int nId, const CStringW& strA, const CStringW& strB);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
@@ -159,7 +159,7 @@ int UIRecallScrollNotifyDialog::vfunc_28(const char* szMethod, const Scaleform::
                 return 1;
             MS2Ptr<CFieldDataCli> spSender = CFieldDataCli::Find(m_fields[nSlot]);
             if (spSender == 0) return 0;
-            CStringW strMsg = FUN_140632a60(0xb62, m_names[nSlot], FUN_1401a9d70()->FUN_141811980(3, m_fields[nSlot]));
+            CStringW strMsg = FUN_140632a60(0xb62, m_names[nSlot], GetStringTable()->FUN_141811980(3, m_fields[nSlot]));
             {
                 MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(s_strRecallConfirm));
                 if (box.get() != 0) {

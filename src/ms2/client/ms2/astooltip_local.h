@@ -97,7 +97,7 @@ __int64 FUN_140632990(__int64 nValue, float fRate);   // itemsocketsystemutil.cp
 CStringW FUN_140631720(int nStat, int nValue, bool bPercent);   // a stat value text (itemsocketsystemutil.cpp)
 CStringW FUN_140631af0(int nStat, Unk_EnchantPtr<BaseOption> spBase, CItemStatus* pStatus);   // an enchant stat row (itemsocketsystemutil.cpp)
 int FUN_14072fd00(int nUnused);                   // the pet option count (unit_14072f7f0.cpp)
-CStringW FUN_14028b8e0(const CStringW& strKey);   // the string-table text of a key (commonutil.cpp)
+CStringW GetStringCommonByKey(const CStringW& strKey);   // the string-table text of a key (commonutil.cpp)
 CStringW FUN_1409404f0(__int64 nValue);           // a number with separators (achievemanager.cpp)
 // ---- end part 1 ----
 
@@ -259,7 +259,7 @@ CItemExtractionTable* FUN_14052d1f0_p3();                   // 0x14052d1f0 TSing
 bool FUN_140634230(MS2Ptr<CItem> spItem);                   // the item is excluded from repacking (itemsocketsystemutil.cpp)
 bool FUN_140632780_p3(CItemCustomMusicScore* pScore);       // 0x140632780 CItemCustomMusicScore::FUN_140632780 (commonfiles/item.h is not includable here)
 CStringW FUN_1408116a0(int nStringId, const int& n);        // FormatStringId<int>
-CStringW FUN_14028b8e0(const CStringW& strKey);             // the string-table text of a key (commonutil.cpp)
+CStringW GetStringCommonByKey(const CStringW& strKey);             // the string-table text of a key (commonutil.cpp)
 // CItem::FUN_140526470 returns the count of the asked kind (citem.h declares it void).
 struct Unk_TooltipItemView : CItem { int FUN_140526470(unsigned nKind); };
 #include "ms2/client/ms2/questmanager_2.h"
@@ -325,7 +325,7 @@ extern CStringW DAT_143aef3b8;                                        // texttoh
 #include "ms2/placeholder/ckeytable.h"
 #include "ms2/commonfiles/chatemoticontable.h"
 void FUN_1402929a0(const CStringW& str, std::vector<unsigned>& rOut, const wchar_t* pszSep);   // split into ids (commonutil.cpp)
-CStringW FUN_14028b8e0(const CStringW& str);                         // a string table text (commonutil.cpp)
+CStringW GetStringCommonByKey(const CStringW& str);                         // a string table text (commonutil.cpp)
 int FUN_14028e280(CMsTime& kOut, const CString& strFormat, const CString& strText);   // parses a date text (commonutil.cpp)
 class MyPC;
 extern Unk_Inventory DAT_143ab2a90;                                   // the inventory
@@ -447,7 +447,7 @@ CStringW FUN_1409e0cb0(const CStringW& strFormat, float fRate);
 #include "ms2/placeholder/ckeytable.h"
 #include "ms2/commonfiles/chatemoticontable.h"
 void FUN_1402929a0(const CStringW& str, std::vector<unsigned>& rOut, const wchar_t* pszSep);   // split into ids (commonutil.cpp)
-CStringW FUN_14028b8e0(const CStringW& str);                         // a string table text (commonutil.cpp)
+CStringW GetStringCommonByKey(const CStringW& str);                         // a string table text (commonutil.cpp)
 int FUN_14028e280(CMsTime& kOut, const CString& strFormat, const CString& strText);   // parses a date text (commonutil.cpp)
 #include "ms2/placeholder/wcformat.h"
 class Unk_ItemEquipData : public CItemData {};                       // CItem::FUN_140527840's record (as commonfiles\item.cpp)

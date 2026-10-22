@@ -103,8 +103,8 @@ Unk_AmEventMgr* FUN_14015a050();
 int FUN_14029f2b0(int nConditionType);                          // ConditionKindOfType
 
 // Strings.
-CStringW FUN_14028de60(int nStringId);                          // string table entry
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // string by key
+CStringW GetStringCommon(int nStringId);                          // string table entry
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // string by key
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_1408116a0(int nStringId, const int& nArg);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
@@ -603,9 +603,9 @@ void CAchieveManager::NotifyClear(CAchieve* pAchieve)
             }
             CStringW strTitle = FUN_140d2d440(pAchieve->GetId(), nGrade);
             if (nState == 3)
-                FUN_1412751b0(StringFormat(FUN_14028de60(0x77d), strTitle), 0x14);
+                FUN_1412751b0(StringFormat(GetStringCommon(0x77d), strTitle), 0x14);
             else
-                FUN_1412751b0(StringFormat(FUN_14028de60(0x77c), strTitle), 0x14);
+                FUN_1412751b0(StringFormat(GetStringCommon(0x77c), strTitle), 0x14);
             ((Unk_AmReportMgr*)FUN_140939a10())->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyClearAchieve(pAchieve->GetId())));
         }
     }
@@ -959,11 +959,11 @@ CStringW FUN_14093bad0(int nId, int nGrade, CStringW strFormat)
     CStringW strTag;
     int nCategory = pData->m_nCategory;
     if (nCategory == 1)
-        strTag = FUN_14028de60(0x76e);
+        strTag = GetStringCommon(0x76e);
     else if (nCategory == 2)
-        strTag = FUN_14028de60(0x76d);
+        strTag = GetStringCommon(0x76d);
     else if (nCategory == 3)
-        strTag = FUN_14028de60(0x76f);
+        strTag = GetStringCommon(0x76f);
     return StringFormat((LPCWSTR)strFormat, strTag, FUN_14093b9c0(nId, nGrade));
 }
 
@@ -976,7 +976,7 @@ CStringW FUN_14093bd40(int nId, int nGrade, CStringW strFormat)
         return CStringW(L"");
     CStringW strCond = FUN_14093c8d0(nId, nGrade, 0);
     if (strFormat.IsEmpty())
-        strFormat = FUN_14028b8e0(CStringW(L"s_skill_require_achieve"));
+        strFormat = GetStringCommonByKey(CStringW(L"s_skill_require_achieve"));
     return StringFormat((LPCWSTR)strFormat, strTitle, strCond);
 }
 

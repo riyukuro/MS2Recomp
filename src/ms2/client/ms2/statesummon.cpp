@@ -117,7 +117,7 @@ public:
     void FUN_1418e1390();                                                  // cancel
 };
 UICastingBar* FUN_140ac2270(int nId);                                      // 0x140ac2270 the casting bar dialog
-CStringW FUN_14028de60(int nId);                                           // 0x14028de60 the string-table text of an id
+CStringW GetStringCommon(int nId);                                           // 0x14028de60 the string-table text of an id
 void FUN_141276180(const CStringA& strCommand, const CStringA& strArg);    // 0x141276180 run a client command
 
 // The pet's position buffer (statehomemade.cpp owns the real one).
@@ -240,7 +240,7 @@ void StateSummon::vfunc_4(StateData* pData)
         if (pBar != 0)
         {
             CStringW strExtra(L"");
-            CStringW strLabel = FUN_14028de60(nLabel);
+            CStringW strLabel = GetStringCommon(nLabel);
             pBar->FUN_1418e12f0(static_cast<ICastingEventListener*>(this), strLabel, nDuration, false, true,
                                 strExtra);
         }
@@ -404,7 +404,7 @@ void StateGoToHome::vfunc_4(StateData* pData)
         if (pBar != 0)
         {
             CStringW strExtra(L"");
-            CStringW strLabel = FUN_14028de60(0x651);
+            CStringW strLabel = GetStringCommon(0x651);
             pBar->FUN_1418e12f0(static_cast<ICastingEventListener*>(this), strLabel, nDuration, false, true,
                                 strExtra);
         }
@@ -477,7 +477,7 @@ void StateRecall::vfunc_4(StateData* pData)
         if (pBar != 0)
         {
             CStringW strExtra(L"");
-            CStringW strLabel = FUN_14028de60(0x657);
+            CStringW strLabel = GetStringCommon(0x657);
             pBar->FUN_1418e12f0(static_cast<ICastingEventListener*>(this), strLabel, nDuration, false, true,
                                 strExtra);
         }

@@ -65,7 +65,7 @@ public:
 };
 Unk_PsConfig* FUN_1401d3200();
 
-CStringW FUN_14028de60(int nId);                    // string table
+CStringW GetStringCommon(int nId);                    // string table
 CStringW FUN_140719630(int n);                      // "%d"
 CStringW FUN_1408116a0(int nId, const int& nArg);
 CStringW FUN_140275590(const wchar_t* szFormat, const CStringW& strArg, const int& nArg);
@@ -358,11 +358,11 @@ void UIPartySearchRegisterDialog::FUN_141321d30()
 void UIPartySearchRegisterDialog::FUN_141321d60()
 {
     m_200.RemoveAll();
-    m_200.Add(FUN_14028de60(0xc48));
-    m_200.Add(FUN_14028de60(0xc49));
-    m_200.Add(FUN_14028de60(0xc4a));
-    m_200.Add(FUN_14028de60(0xc4b));
-    m_200.Add(FUN_14028de60(0xc4c));
+    m_200.Add(GetStringCommon(0xc48));
+    m_200.Add(GetStringCommon(0xc49));
+    m_200.Add(GetStringCommon(0xc4a));
+    m_200.Add(GetStringCommon(0xc4b));
+    m_200.Add(GetStringCommon(0xc4c));
 }
 
 // @0x141321f10

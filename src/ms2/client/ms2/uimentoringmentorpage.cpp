@@ -92,7 +92,7 @@ private:
 class Unk_PopupMenu { public: void FUN_141a7f090(const Unk_PopupMenuInfo& info, const CStringW& strName, unsigned __int64 nSerial, void* p, int b, int c); };
 Unk_PopupMenu* FUN_140c30140(int nId);
 unsigned __int64 FUN_140718350(const CString& str);
-CStringW FUN_14028b8e0(const CStringW& strId);
+CStringW GetStringCommonByKey(const CStringW& strId);
 CStringW FUN_1409e9890(CStringW strFormat, const int& a, const int& b);
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 // AS helpers on the page's script and the clips it hands out.
@@ -213,7 +213,7 @@ int UIMentoringMentorPage::vfunc_5(const char* szMethod, const Scaleform::GFx::V
 CString UIMentoringMentorPage::vfunc_6() { return "MentorPage"; }
 
 // @0x140c71c20
-CStringW UIMentoringMentorPage::vfunc_7() { return FUN_14028b8e0(L"s_mentoring_tab_mentor"); }
+CStringW UIMentoringMentorPage::vfunc_7() { return GetStringCommonByKey(L"s_mentoring_tab_mentor"); }
 
 // @0x140c71c90
 void UIMentoringMentorPage::vfunc_9() { if (m_mentor.get()) m_mentor->Refresh(); }
@@ -257,7 +257,7 @@ void UIMentoringPage::FUN_140c71ee0(CString strName, MS2Ptr<Unk_MentorEntry> pEn
     {
         int nHidden = FUN_140c70240()->FUN_140b71720();
         pSearchMovie->vfunc_4(nHidden == 0);
-        FUN_140cfee80((*pSearchMovie).FUN_1422bb890(), "m_desc", FUN_14028b8e0(L"s_mentoring_tab_mentor_search_desc"));
+        FUN_140cfee80((*pSearchMovie).FUN_1422bb890(), "m_desc", GetStringCommonByKey(L"s_mentoring_tab_mentor_search_desc"));
     }
     MS2Ptr<ASMovieClip> pSearch = pScript->FUN_1409b4560("m_search");
     if (pSearch.get())
@@ -377,7 +377,7 @@ int UIMentoringMentorRegisterPage::vfunc_5(const char* szMethod, const Scaleform
 CString UIMentoringMentorRegisterPage::vfunc_6() { return "MentorRegisterPage"; }
 
 // @0x140c72ea0
-CStringW UIMentoringMentorRegisterPage::vfunc_7() { return FUN_14028b8e0(L"s_mentoring_tab_register_mentor"); }
+CStringW UIMentoringMentorRegisterPage::vfunc_7() { return GetStringCommonByKey(L"s_mentoring_tab_register_mentor"); }
 
 // @0x140c72f10
 bool UIMentoringMentorRegisterPage::SendMentor(int nResult, const CMsgBoxData& data)
@@ -657,7 +657,7 @@ int UIMentoringMissionPage::vfunc_5(const char* szMethod, const Scaleform::GFx::
 CString UIMentoringMissionPage::vfunc_6() { return "MissionPage"; }
 
 // @0x140c73e80
-CStringW UIMentoringMissionPage::vfunc_7() { return FUN_14028b8e0(L"s_mentoring_tab_mission"); }
+CStringW UIMentoringMissionPage::vfunc_7() { return GetStringCommonByKey(L"s_mentoring_tab_mission"); }
 
 // @0x140c73ef0
 void UIMentoringMissionPage::vfunc_o178_11(void* p)

@@ -124,7 +124,7 @@ class Unk_HmBuffMgr { public: Unk_StreamPoint FUN_141683290(); };
 Unk_HmBuffMgr* FUN_14166d240(PCBase* p);
 bool FUN_1416749c0(PCBase* p);
 int FUN_1408a1360(Unk_StreamPoint a, Unk_StreamPoint b);
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommonByKey(const CStringW& str);
 CFunctionCubeService* FUN_1409670b0();
 __int64 FUN_141656ad0(PCBase* p);
 
@@ -313,7 +313,7 @@ void StateHomemade::FUN_140ca4f30(Unk_HmCastInfo* pInfo)
 {
     pInfo->m_nDuration = FUN_140ca4e00();
     CStringW strLabel(L"s_action_harvesting");
-    pInfo->m_str28 = FUN_14028b8e0(strLabel);
+    pInfo->m_str28 = GetStringCommonByKey(strLabel);
 }
 MS2_REPLACE_METHOD(0x140CA4F30, StateHomemade, FUN_140ca4f30, 141, 0x30E1B0EA);
 

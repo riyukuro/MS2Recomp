@@ -102,7 +102,7 @@ public:
     void FUN_141883380(CString strPath);                // a profile image was uploaded
 };
 Unk_ClUgc* FUN_14052d220();
-CStringW FUN_14028b8e0(const CStringW& strKey);         // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);         // string table text
 void FUN_140d73aa0(CStringW strMsg, int nType, void* pTarget, CStringW strTag);
 // The generic reader of an item from a stream (the 0x141272280 object is an empty functor).
 class Unk_ClItemReader
@@ -224,7 +224,7 @@ void FUN_140a55460(Unk_ClMapRef* pOut, int nId);
 bool FUN_1409657a0(Unk_ClMapRef* pRef);
 Unk_ClMapData* FUN_140885340(Unk_ClMapRef* pRef);
 void FUN_1408850f0(Unk_ClMapRef* pRef);
-CStringW FUN_14028de60(int nId);
+CStringW GetStringCommon(int nId);
 CStringW FUN_1409e97f0(int nId, const int& nArg);
 void FUN_1412761e0(MS2Ptr<AScript> spScript, int nFlag);            // lock the movie input
 CString FUN_141028a90(CString str, int nFlag);
@@ -618,7 +618,7 @@ int UICharacterListDialog::vfunc_65()
     {
         DAT_143ab2946 = 0;
         CStringW strKey(L"s_delete_account_cancel_login_success");
-        FUN_140d73aa0(FUN_14028b8e0(strKey), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, L"");
     }
     return UIDialog::vfunc_65() != 0;
 }
@@ -1782,7 +1782,7 @@ void UICharacterListDialog::HandleDeleteReply(unsigned char nResult, const CStri
     if (nResult == 1)
         FUN_1418f2570(str1, str2, str3);
     else
-        FUN_140d73aa0(FUN_14028b8e0(L"s_delete_account_check_session_key_fail"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_delete_account_check_session_key_fail"), 0, 0, L"");
 }
 
 // @0x1418f2820
@@ -1827,19 +1827,19 @@ CStringW UICharacterListDialog::FUN_1418f2960(int nError, unsigned __int64 nId)
     case 0x1c:
         return FUN_1405c2690(CStringW(L"s_delete_account_result_check_fail_err_db_mesomarket"), FUN_1418f05b0(nId));
     case 0x15:
-        return FUN_14028b8e0(CStringW(L"s_delete_account_result_check_fail_err_db_norow"));
+        return GetStringCommonByKey(CStringW(L"s_delete_account_result_check_fail_err_db_norow"));
     case 0x1d:
-        return FUN_14028b8e0(CStringW(L"s_delete_account_check_certid_fail_empty_certnameid"));
+        return GetStringCommonByKey(CStringW(L"s_delete_account_check_certid_fail_empty_certnameid"));
     case 0x1e:
-        return FUN_14028b8e0(CStringW(L"s_delete_account_check_certid_fail_invalid_skey"));
+        return GetStringCommonByKey(CStringW(L"s_delete_account_check_certid_fail_invalid_skey"));
     case 0x1f:
-        return FUN_14028b8e0(CStringW(L"s_delete_account_check_certid_fail_invalid_platformsn"));
+        return GetStringCommonByKey(CStringW(L"s_delete_account_check_certid_fail_invalid_platformsn"));
     case 0x20:
-        return FUN_14028b8e0(CStringW(L"s_delete_account_check_user_cert_id_query_fail"));
+        return GetStringCommonByKey(CStringW(L"s_delete_account_check_user_cert_id_query_fail"));
     case 0x21:
-        return FUN_14028b8e0(CStringW(L"s_delete_account_check_user_cert_id_verify_fail"));
+        return GetStringCommonByKey(CStringW(L"s_delete_account_check_user_cert_id_verify_fail"));
     }
-    return FUN_14028b8e0(CStringW(L"s_delete_account_result_unknown"));
+    return GetStringCommonByKey(CStringW(L"s_delete_account_result_unknown"));
 }
 
 // @0x1418f31a0
@@ -1927,8 +1927,8 @@ bool UICharacterListDialog::FUN_1418f3bd0(int nButton, const CMsgBoxData& box)
         if (m_228.get() != 0)
         {
             m_228->FUN_141a01800(3);
-            m_228->FUN_141a01690(FUN_14028b8e0(L"s_delete_account_terms_step_end_game_button"), L"", L"");
-            static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a015d0(FUN_14028b8e0(L"s_delete_account_terms_step_end_title"));
+            m_228->FUN_141a01690(GetStringCommonByKey(L"s_delete_account_terms_step_end_game_button"), L"", L"");
+            static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a015d0(GetStringCommonByKey(L"s_delete_account_terms_step_end_title"));
             m_228->SetAgreement(true);
             m_228->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f3bd0));
             FUN_140d73c60(m_228);
@@ -1981,16 +1981,16 @@ void UICharacterListDialog::ShowDeleteError(int nError)
     CStringW strMsg(L"");
     switch (nError - 1)
     {
-    case 0: strMsg = FUN_14028de60(0x16); break;
-    case 1: strMsg = FUN_14028de60(0x15); break;
-    case 2: strMsg = FUN_14028de60(0x19); break;
-    case 3: strMsg = FUN_14028de60(0x1a); break;
-    case 4: strMsg = FUN_14028de60(0x1b); break;
-    case 5: strMsg = FUN_14028de60(0x1c); break;
-    case 6: strMsg = FUN_14028de60(0x1d); break;
-    case 7: strMsg = FUN_14028de60(0x1e); break;
-    case 8: strMsg = FUN_14028b8e0(L"s_char_err_meso_market_count"); break;
-    case 10: strMsg = FUN_14028b8e0(L"s_char_err_wedding"); break;
+    case 0: strMsg = GetStringCommon(0x16); break;
+    case 1: strMsg = GetStringCommon(0x15); break;
+    case 2: strMsg = GetStringCommon(0x19); break;
+    case 3: strMsg = GetStringCommon(0x1a); break;
+    case 4: strMsg = GetStringCommon(0x1b); break;
+    case 5: strMsg = GetStringCommon(0x1c); break;
+    case 6: strMsg = GetStringCommon(0x1d); break;
+    case 7: strMsg = GetStringCommon(0x1e); break;
+    case 8: strMsg = GetStringCommonByKey(L"s_char_err_meso_market_count"); break;
+    case 10: strMsg = GetStringCommonByKey(L"s_char_err_wedding"); break;
     default: strMsg = FUN_1409e97f0(0x17, nError); break;
     }
     FUN_140d73aa0(CStringW(strMsg), 0, 0, L"");
@@ -2098,7 +2098,7 @@ void UICharacterListDialog::FUN_1418ef980(unsigned __int64 nId)
     if (spFound == 0)
         return;
     CStringW strText;
-    strText.Format(FUN_14028b8e0(spFound->m_48), (const wchar_t*)spCharacter->FUN_1418e9cd0());
+    strText.Format(GetStringCommonByKey(spFound->m_48), (const wchar_t*)spCharacter->FUN_1418e9cd0());
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x2a, strText, 0, CStringW(L""));
     if (spBox == 0)
         return;
@@ -2108,7 +2108,7 @@ void UICharacterListDialog::FUN_1418ef980(unsigned __int64 nId)
     if (!spFound->m_50.IsEmpty())
     {
         CStringW strSender;
-        strSender.Format(FUN_14028b8e0(spFound->m_50), (const wchar_t*)spCharacter->FUN_1418e9cd0());
+        strSender.Format(GetStringCommonByKey(spFound->m_50), (const wchar_t*)spCharacter->FUN_1418e9cd0());
         static_cast<Unk_ClBox*>(spBox.operator->())->FUN_141a015d0(strSender);
     }
     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::SendEventReward));
@@ -2144,7 +2144,7 @@ void UICharacterListDialog::OnClickBurningLevelupDescBtn()
     }
     if (spFound == 0)
         return;
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x2a, FUN_14028b8e0(spFound->m_58), 0, CStringW(L""));
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x2a, GetStringCommonByKey(spFound->m_58), 0, CStringW(L""));
     if (spBox == 0)
         return;
     spBox->FUN_141a01800(3);
@@ -2237,7 +2237,7 @@ void FUN_1418f4df0(MS2Ptr<Unk_ClBurnEvent> spEvent, MS2Ptr<CMsgBoxData> spBox)
     else
     {
         spBox->m_spItem = spFirst;
-        static_cast<Unk_ClBox*>(spBox.operator->())->FUN_141a015a0(FUN_14028b8e0(spEvent->m_a0));
+        static_cast<Unk_ClBox*>(spBox.operator->())->FUN_141a015a0(GetStringCommonByKey(spEvent->m_a0));
         if (!(spSecond == 0))
             spBox->m_spItem2 = spSecond;
     }

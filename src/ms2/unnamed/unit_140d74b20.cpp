@@ -66,7 +66,7 @@ public:
 
 class Unk_UgcTextFilter { public: void FUN_1416fb300(CStringW& str); };
 Unk_UgcTextFilter* FUN_1403b4750();
-CStringW FUN_14028de60(int nId);
+CStringW GetStringCommon(int nId);
 CStringW FUN_1405c2690(CStringW key, const CStringW& arg);
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* sep);
 size_t FUN_14015a000(ATL::CAtlArray<CStringW>& arr);
@@ -88,7 +88,7 @@ Unk_MsgBoxPtr FUN_140d74b20(int nBit, const CStringW& strA, const CStringW& strB
     }
     box->FUN_141a01800(1);
     box->SetTitle(strA);
-    box->FUN_141a024e0(FUN_14028de60(0x9d0), 1);
+    box->FUN_141a024e0(GetStringCommon(0x9d0), 1);
     CStringW coupon = FUN_1405c2690(CStringW(L"s_ugc_edit_terms_coupon_agree"), strB);
     FUN_1403b4750()->FUN_1416fb300(coupon);
     box->FUN_141a02560(CStringW(coupon), 1);

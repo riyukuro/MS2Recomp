@@ -67,7 +67,7 @@ CLogString* GetLogString();                                                 // t
 void FUN_1401859c0(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszMessage);
 CStringW FUN_14016a730(const char* pszAnsi, int nCodePage);                  // ANSI -> wide
 CStringA FUN_14016a600(const wchar_t* pszWide, int nCodePage);               // wide -> ANSI
-CStringW FUN_14028de60(int nStringId);                                       // UI string table (wide)
+CStringW GetStringCommon(int nStringId);                                       // UI string table (wide)
 CStringA FUN_14028dc80(int nStringId);                                       // UI string table (ANSI)
 void* FUN_140876480(void* pkOut, int nCategory);                             // memory category helper, returns unsigned int*
 void* FUN_14208a860(unsigned __int64 ullSize, unsigned int uiCategory);      // tracked allocation
@@ -712,7 +712,7 @@ efd::AsyncResult MS2RenderService::OnInit()
         m_pRendererDesc = pDesc;
         if (!m_pRendererDesc->Initialize()) {
             CStringW message;
-            message.Format(L"%s", (LPCWSTR)FUN_14028de60(0x8d7));
+            message.Format(L"%s", (LPCWSTR)GetStringCommon(0x8d7));
             NiMessageBox(FUN_14016a600(message, 0), FUN_14028dc80(0x8d4), 0);
             return efd::AsyncResult_Failure;
         }
@@ -771,7 +771,7 @@ efd::AsyncResult MS2RenderService::OnInit()
     if (bBasicDriver) {
         FUN_140d86260()->ShowCloseNotice(0x397, "");
         CStringW message;
-        message.Format(L"%s\n%s", (LPCWSTR)FUN_141245b20()->FUN_141245ab0(CStringW()), (LPCWSTR)FUN_14028de60(0x8d5));
+        message.Format(L"%s\n%s", (LPCWSTR)FUN_141245b20()->FUN_141245ab0(CStringW()), (LPCWSTR)GetStringCommon(0x8d5));
         NiMessageBox(FUN_14016a600(message, 0), FUN_14028dc80(0x8d4), 0);
         return efd::AsyncResult_Failure;
     }
@@ -782,7 +782,7 @@ efd::AsyncResult MS2RenderService::OnInit()
             FUN_140d86260()->ShowCloseNotice(0x397, "");
             CStringW message;
             message.Format(L"%s\n%s", (LPCWSTR)FUN_141245b20()->FUN_141245ab0(CStringW()),
-                           (LPCWSTR)FUN_14028de60(Unk_RsGetFailure() + 0x8d6));
+                           (LPCWSTR)GetStringCommon(Unk_RsGetFailure() + 0x8d6));
             NiMessageBox(FUN_14016a600(message, 0), FUN_14028dc80(0x8d4), 0);
             return efd::AsyncResult_Failure;
         }
@@ -794,7 +794,7 @@ efd::AsyncResult MS2RenderService::OnInit()
             FUN_140d86260()->ShowCloseNotice(0x397, "");
             CStringW message;
             message.Format(L"%s\n%s", (LPCWSTR)FUN_141245b20()->FUN_141245ab0(CStringW()),
-                           (LPCWSTR)FUN_14028de60(Unk_RsGetFailure() + 0x8d6));
+                           (LPCWSTR)GetStringCommon(Unk_RsGetFailure() + 0x8d6));
             NiMessageBox(FUN_14016a600(message, 0), FUN_14028dc80(0x8d4), 0);
             return efd::AsyncResult_Failure;
         }
@@ -894,8 +894,8 @@ static void Unk_RsDriverErrorHook()
     if (!s_driverErrorShown) {
         FUN_140d86260()->ShowCloseNotice(0x398, "");
         s_driverErrorShown = true;
-        CStringW message = StringFormat(L"D3DERR_DRIVERINTERNALERROR\n{0}", FUN_14028de60(0xb20));
-        FUN_141b6fcf0(message, FUN_14028de60(0x8d4), 0);
+        CStringW message = StringFormat(L"D3DERR_DRIVERINTERNALERROR\n{0}", GetStringCommon(0xb20));
+        FUN_141b6fcf0(message, GetStringCommon(0x8d4), 0);
         PostQuitMessage(0);
     }
 }
@@ -913,8 +913,8 @@ static void Unk_RsDeviceLostHook(bool bDeviceOk)
             double elapsed = _difftime64(now, s_lastDeviceOkTime);
             if (elapsed >= 5.0 && !s_deviceLostNoticeShown) {
                 s_deviceLostNoticeShown = true;
-                CStringW message = FUN_14028de60(0xb1f);
-                FUN_141b6fcf0(message, FUN_14028de60(0x8d4), 0);
+                CStringW message = GetStringCommon(0xb1f);
+                FUN_141b6fcf0(message, GetStringCommon(0x8d4), 0);
                 throw 0xd;
             }
         }

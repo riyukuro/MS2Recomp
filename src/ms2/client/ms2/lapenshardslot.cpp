@@ -94,8 +94,8 @@ void FUN_1405b5cc0(Unk_LsEquipRequest* pRequest, COutPacket& packet);   // write
 void FUN_14092fac0(int nSkillId, int nItemId, __int64 nItemUid, int nPage);   // put a skill on a quick slot
 void FUN_141404930(__int64 nItemUid);
 void FUN_140710590(COutPacket& packet);                 // send
-CStringW FUN_14028b8e0(const CStringW& strKey);         // string table text
-CStringW FUN_14028de60(int nStringId);                  // string table text by id
+CStringW GetStringCommonByKey(const CStringW& strKey);         // string table text
+CStringW GetStringCommon(int nStringId);                  // string table text by id
 void FUN_1412751f0(const CStringW& strText, int a, int b);   // a system notice
 void FUN_140d73bc0(int nNoticeId, int a, int b, CStringW str);
 void FUN_1409b4bc0(void* pDst, const Scaleform::GFx::Value& v);
@@ -178,7 +178,7 @@ int LapenshardSlot::vfunc_18(void* p)
             int nGroup = FUN_1409c4b30()->FUN_1405b59d0(nItemId);
             if (nCurrentGroup == 0 || nCurrentGroup != nGroup || nItemId == nCurrent)
             {
-                FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_msg_shortcutkey_invalid_already_same_lapenshard")), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_msg_shortcutkey_invalid_already_same_lapenshard")), 1, 1);
                 return pFrom->vfunc_10();
             }
         }
@@ -211,7 +211,7 @@ int LapenshardSlot::vfunc_14()
                 int nCurrentGroup = FUN_1409c4b30()->FUN_1405b59d0(nCurrent);
                 if (nCurrentGroup == 0 || nCurrentGroup != nGroup || nItemId == nCurrent)
                 {
-                    FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_msg_shortcutkey_invalid_already_same_lapenshard")), 1, 1);
+                    FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_msg_shortcutkey_invalid_already_same_lapenshard")), 1, 1);
                     return 0;
                 }
             }
@@ -221,7 +221,7 @@ int LapenshardSlot::vfunc_14()
         {
             if (FUN_140a6f880() != 1)
             {
-                FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_msg_shortcutkey_invalid_lapenshard")), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_msg_shortcutkey_invalid_lapenshard")), 1, 1);
                 return 0;
             }
             if (pPc->FUN_14152f860(spItem->FUN_1405276c0()) == 0)
@@ -281,10 +281,10 @@ CStringW LapenshardSlot::vfunc_22()
     if (GetSlot() != 0)
     {
         if (FUN_140a6f880() == 1)
-            return FUN_14028de60(0x75a);
+            return GetStringCommon(0x75a);
         return CStringW();
     }
-    return FUN_14028de60(0x751);
+    return GetStringCommon(0x751);
 }
 
 // @0x140a6f610

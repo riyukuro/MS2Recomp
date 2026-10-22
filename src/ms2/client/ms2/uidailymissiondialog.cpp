@@ -133,7 +133,7 @@ CStringW FUN_140763e10(int nValue);                                         // t
 CStringW FUN_1409404f0(__int64 n);                                          // number with thousands separators
 bool FUN_140841300(const CStringW& str, const char* psz);                   // equal ignoring case
 CStringW FUN_14062b4f0(CStringW strKey, const int& n);                      // localized text with one number
-CStringW FUN_14028b8e0(const CStringW& strKey);                             // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CString FUN_14021a8b0(int n);                                               // int to text
 void FUN_1412751f0(const CStringW& text, int nA, int nB);                   // the warning bar
 void FUN_140710590(COutPacket& packet);                                     // send
@@ -170,7 +170,7 @@ int UIDailyMissionDialog::vfunc_65()
 {
     if (!FUN_140bffff0())
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_daily_mission_lack_level_warn"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_daily_mission_lack_level_warn"), 1, 1);
         return 0;
     }
     if (UIDialog::vfunc_65() == 0)
@@ -447,7 +447,7 @@ void UIDailyMissionDialog::FUN_140c009b0()
             if (nGroup == 2 && Unk_DmActorLevel(pPlayer) < 0x32)
                 strKey = "newbee";
             ASObj row(2);
-            row.FUN_1407cbb20("label", FUN_14028b8e0(StringFormat(L"s_daily_mission_{0}", strKey)));
+            row.FUN_1407cbb20("label", GetStringCommonByKey(StringFormat(L"s_daily_mission_{0}", strKey)));
             row.FUN_1407cb9c0("enabled", FUN_140c02320(nGroup));
             spTab.operator->()->FUN_1422e3460(row);
         }

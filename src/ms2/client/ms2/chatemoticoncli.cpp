@@ -125,7 +125,7 @@ class Unk_EmoChatFormat { public: void FUN_1416fb340(CStringW& strMsg); };
 Unk_EmoChatFormat* FUN_1403b4750();
 
 __int64 FUN_140869440();                                            // server time
-CStringW FUN_14028b8e0(const CStringW& strKey);
+CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_14016a730(const char* sz, int nCodePage);
 void FUN_140d73aa0(CStringW strMsg, int nType, void* pTarget, CStringW strTag);
@@ -224,7 +224,7 @@ void CChatEmoticonCli::FUN_140a39170(CInPacket& packet)
     UIChatEmoticonDialog* pDlg = FUN_140a3aa20();
     if (pDlg != 0)
         pDlg->FUN_140bd2620();
-    FUN_140d73aa0(FUN_14028b8e0(L"s_msg_chat_emoticon_expired"), 0, 0, L"");
+    FUN_140d73aa0(GetStringCommonByKey(L"s_msg_chat_emoticon_expired"), 0, 0, L"");
 }
 MS2_REPLACE_METHOD(0x140A39170, CChatEmoticonCli, FUN_140a39170, 489, 0xFCB43972);
 
@@ -334,19 +334,19 @@ void CChatEmoticonCli::FUN_140a39a20(CInPacket& packet)
     switch (nResult)
     {
     case 0:
-        FUN_140d73aa0(FUN_14028b8e0(L"s_msg_chat_emoticon_print_failed"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_msg_chat_emoticon_print_failed"), 0, 0, L"");
         break;
     case 1:
-        FUN_140d73aa0(FUN_14028b8e0(L"s_msg_chat_emoticon_add_failed"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_msg_chat_emoticon_add_failed"), 0, 0, L"");
         break;
     case 2:
-        FUN_140d73aa0(FUN_14028b8e0(L"s_msg_chat_emoticon_add_failed_already_exist"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_msg_chat_emoticon_add_failed_already_exist"), 0, 0, L"");
         break;
     case 3:
-        FUN_140d73aa0(FUN_14028b8e0(L"s_msg_chat_emoticon_add_failed"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_msg_chat_emoticon_add_failed"), 0, 0, L"");
         break;
     case 4:
-        FUN_140d73aa0(FUN_14028b8e0(L"s_msg_chat_emoticon_add_failed"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_msg_chat_emoticon_add_failed"), 0, 0, L"");
         break;
     }
 }

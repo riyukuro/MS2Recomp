@@ -1,7 +1,7 @@
 #va	current	proposed	confidence	rule	evidence	file	agent	date	status
 140166420	FUN_140166420	GetFileSystem	medium	singleton	returns the CFileSystem instance pointer DAT_143aab398	commonfiles/achievedata.cpp	nam1	2026-10-22	applied desc-3 as GetFileSystem
 140166440	FUN_140166440	GetLogString	medium	singleton	returns the CLogString instance pointer DAT_143aab390	commonfiles/achievedata.cpp	nam1	2026-10-22	applied desc-3 as GetLogString
-1401a9d70	FUN_1401a9d70	GetStringTable	medium	body	inline accessor returning the CStringTable singleton DAT_143aac298 (v2525: CStringTable::GetInstance)	client/ms2/stringtable.cpp	nam1	2026-10-22	
+1401a9d70	FUN_1401a9d70	GetStringTable	medium	body	inline accessor returning the CStringTable singleton DAT_143aac298 (v2525: CStringTable::GetInstance)	client/ms2/stringtable.cpp	nam1	2026-10-22	applied desc-sh as GetStringTable
 140205190	CByteBuffer::FUN_140205190	GetLength	high	getter	body returns m_uLength	unnamed/unit_1401f9eb0.cpp	nam1	2026-10-22	applied desc-4 as GetLength
 140209340	COutPacketBuffer::FUN_140209340	SetLimit	high	setter	body stores the argument in m_limit	commonfiles/clientreconnectionstructs.cpp	nam1	2026-10-22	applied desc-3 as SetLimit
 140209430	COutPacketBuffer::FUN_140209430	GetSequence	high	getter	body returns m_sequence	commonfiles/clientreconnectionstructs.cpp	nam1	2026-10-22	applied desc-3 as GetSequence
@@ -10,8 +10,8 @@
 140266e30	BaseOption::FUN_140266e30	GetValue	high	getter	body returns m_nValue	unnamed/unit_140266860.cpp	nam1	2026-10-22	applied desc-4 as GetValue
 140266e90	BaseOption::FUN_140266e90	SetValue	high	setter	body stores the argument in m_nValue	unnamed/unit_140266860.cpp	nam1	2026-10-22	applied desc-4 as SetValue
 14026b1c0	ItemEntity::FUN_14026b1c0	SetRank	high	setter	body stores the argument in m_rank	commonfiles/commonstruct_wa.cpp	nam1	2026-10-22	applied desc-3 as SetRank
-14028b8e0	FUN_14028b8e0	GetStringCommonByKey	medium	body	body: string-common lookup by key (callers pass L"s_..."); ~300 users, shared header	client/ms2/stringtable.cpp	nam1	2026-10-22	
-14028de60	FUN_14028de60	GetStringCommon	medium	body	body: string-common table lookup by numeric id (callers pass s_* ids); ~300 users, shared header	client/ms2/stringtable.cpp	nam1	2026-10-22	
+14028b8e0	FUN_14028b8e0	GetStringCommonByKey	medium	body	body: string-common lookup by key (callers pass L"s_..."); ~300 users, shared header	client/ms2/stringtable.cpp	nam1	2026-10-22	applied desc-sh as GetStringCommonByKey
+14028de60	FUN_14028de60	GetStringCommon	medium	body	body: string-common table lookup by numeric id (callers pass s_* ids); ~300 users, shared header	client/ms2/stringtable.cpp	nam1	2026-10-22	applied desc-sh as GetStringCommon
 14029f070	CConditionCommon::vfunc_2	GetCount	medium	getter	body returns m_nCount; virtual slot: rename the whole override family	commonfiles/conditionutil.cpp	nam1	2026-10-22	
 1402e14c0	Unk_PerfLog::FUN_1402e14c0	GetFirstTick	high	getter	body returns m_nFirstTick	unnamed/unit_1402e12c0.cpp	nam1	2026-10-22	applied desc-4 as GetFirstTick
 140314890	DungeonMissionData::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "DungeonMissionData" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	commonfiles/dungeonmissiondata.cpp	nam1	2026-10-22	applied desc-tn as GetTypeName

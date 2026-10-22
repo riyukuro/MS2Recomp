@@ -200,7 +200,7 @@ class Unk_MaidTextCheck { public: int FUN_140225470(const CStringW& str, CString
 class Unk_MaidTextSvc { public: Unk_MaidTextCheck* FUN_140229a50(); };
 Unk_MaidTextSvc* FUN_14025e7d0();
 
-CStringW FUN_14028de60(int nStringId);                          // string table text by id
+CStringW GetStringCommon(int nStringId);                          // string table text by id
 CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& strArg0, const CStringW& strArg1);
 CStringW FUN_1408116a0(int nId, const int& nArg);               // formatted system text
 CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);
@@ -441,7 +441,7 @@ void UIMaidDialog::FUN_1412d7aa0()
     obj.FUN_1409adc90("rank", FUN_14053feb0(spMaid.FUN_14067e8c0()->m_nItemId));
     obj.FUN_1407cbb20("specialTitle", CStringW(m_strSpecialTitle));
     obj.FUN_1407cb9c0("salaryType", spInfo.FUN_1406810e0()->m_nSalaryType);
-    obj.FUN_1407cbb20("salary", FUN_140656190(L"{0} {1}", FUN_14028de60(0x793), FUN_140763e10(spInfo.FUN_1406810e0()->m_nSalary)));
+    obj.FUN_1407cbb20("salary", FUN_140656190(L"{0} {1}", GetStringCommon(0x793), FUN_140763e10(spInfo.FUN_1406810e0()->m_nSalary)));
     obj.FUN_1407cbb20("endDate", FUN_1412da590());
 
     int nOne = 1;
@@ -450,11 +450,11 @@ void UIMaidDialog::FUN_1412d7aa0()
     int nGauge = spMaid.FUN_14067e8c0()->m_nExp * 100 / nMaxExp;
     CStringW strLevel = FUN_1408116a0(0x79a, spMaid.FUN_14067e8c0()->m_nLevel);
     if (spMaid.FUN_14067e8c0()->FUN_14067dca0() != 0)
-        strLevel = FUN_140656190(L"{0} {1}", strLevel, FUN_14028de60(0x79b));
+        strLevel = FUN_140656190(L"{0} {1}", strLevel, GetStringCommon(0x79b));
     obj.FUN_1407cbb20("affinityLevel", CStringW(strLevel));
     CStringW strTooltip = FUN_140811740(0x79c, spMaid.FUN_14067e8c0()->m_nExp, nMaxExp);
     if (spMaid.FUN_14067e8c0()->FUN_14067dca0() != 0)
-        strTooltip = FUN_14028de60(0x79d);
+        strTooltip = GetStringCommon(0x79d);
     obj.FUN_1407cbb20("affinityTooltip", CStringW(strTooltip));
     obj.FUN_1407cb9c0("affinityGauge", nGauge);
     obj.FUN_1407cb9c0("mood", spMaid.FUN_14067e8c0()->m_nMood);
@@ -536,27 +536,27 @@ int UIMaidDialog::FUN_1412d8e10(int nField, CStringW strValue, Unk_MaidProfile* 
     switch (nField)
     {
     case 0:
-        strName = FUN_14028de60(0x791);
+        strName = GetStringCommon(0x791);
         pFields->m_str08 = strValue;
         break;
     case 1:
-        strName = FUN_14028de60(0x792);
+        strName = GetStringCommon(0x792);
         pFields->m_str00 = strValue;
         break;
     case 2:
-        strName = FUN_14028de60(0x788);
+        strName = GetStringCommon(0x788);
         pFields->m_str10 = strValue;
         break;
     case 3:
-        strName = FUN_14028de60(0x789);
+        strName = GetStringCommon(0x789);
         pFields->m_str18 = strValue;
         break;
     case 4:
-        strName = FUN_14028de60(0x78a);
+        strName = GetStringCommon(0x78a);
         pFields->m_str20 = strValue;
         break;
     case 5:
-        strName = FUN_14028de60(0x78b);
+        strName = GetStringCommon(0x78b);
         pFields->m_str28 = strValue;
         break;
     case 6:
@@ -564,23 +564,23 @@ int UIMaidDialog::FUN_1412d8e10(int nField, CStringW strValue, Unk_MaidProfile* 
         pFields->m_str38 = strValue;
         break;
     case 7:
-        strName = FUN_14028de60(0x78c);
+        strName = GetStringCommon(0x78c);
         pFields->m_str40 = strValue;
         break;
     case 8:
-        strName = FUN_14028de60(0x78d);
+        strName = GetStringCommon(0x78d);
         pFields->m_str48 = strValue;
         break;
     case 9:
-        strName = FUN_14028de60(0x78e);
+        strName = GetStringCommon(0x78e);
         pFields->m_str50 = strValue;
         break;
     case 10:
-        strName = FUN_14028de60(0x78f);
+        strName = GetStringCommon(0x78f);
         pFields->m_str58 = strValue;
         break;
     case 11:
-        strName = FUN_14028de60(0x790);
+        strName = GetStringCommon(0x790);
         pFields->m_str60 = strValue;
     }
     Unk_MaidTextCheck* pCheck = FUN_14025e7d0()->FUN_140229a50();
@@ -642,11 +642,11 @@ void UIMaidDialog::FUN_1412d9680()
     int nGauge = spMaid.FUN_14067e8c0()->m_nExp * 100 / nMaxExp;
     CStringW strLevel = FUN_1408116a0(0x79a, spMaid.FUN_14067e8c0()->m_nLevel);
     if (spMaid.FUN_14067e8c0()->FUN_14067dca0() != 0)
-        strLevel = FUN_140656190(L"{0} {1}", strLevel, FUN_14028de60(0x79b));
+        strLevel = FUN_140656190(L"{0} {1}", strLevel, GetStringCommon(0x79b));
     obj.FUN_1407cbb20("affinityLevel", CStringW(strLevel));
     CStringW strTooltip = FUN_140811740(0x79c, spMaid.FUN_14067e8c0()->m_nExp, nMaxExp);
     if (spMaid.FUN_14067e8c0()->FUN_14067dca0() != 0)
-        strTooltip = FUN_14028de60(0x79d);
+        strTooltip = GetStringCommon(0x79d);
     obj.FUN_1407cbb20("affinityTooltip", CStringW(strTooltip));
     obj.FUN_1407cb9c0("affinityGauge", nGauge);
     obj.FUN_1407cb9c0("mood", spMaid.FUN_14067e8c0()->m_nMood);
@@ -735,7 +735,7 @@ CStringW UIMaidDialog::FUN_1412da590()
         strText = FUN_1409e90c0(0x795, nYear, nMonth, nDay, nHour, nMinute);
     }
     else
-        strText = FUN_14028de60(0x794);
+        strText = GetStringCommon(0x794);
     return strText;
 }
 

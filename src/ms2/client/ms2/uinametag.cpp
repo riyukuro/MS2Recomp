@@ -214,7 +214,7 @@ public:
 Unk_NtItemMgr* FUN_14131e120();
 CStringW FUN_140b8f730(const NiPoint3& pt);
 CStringW FUN_14016a730(const char* sz, int n);
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 
 // @0x141a5e3c0
 UINameTag::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nActorId)
@@ -478,7 +478,7 @@ void UINameTag::Entity::FUN_141a5f080()
                            (LPCWSTR)pNpc->vfunc_77(),
                            (LPCWSTR)FUN_14016a730(FUN_141a61590(FUN_14166c930(pNpc), s_gosNames), 0),
                            (unsigned int)nLevel,
-                           (LPCWSTR)FUN_14028de60(aRankStr[nRank]));
+                           (LPCWSTR)GetStringCommon(aRankStr[nRank]));
             bool bShop = pNpc->FUN_141093270().FUN_140965990()->FUN_1406cd0d0() != 0;
             if (bShop)
             {

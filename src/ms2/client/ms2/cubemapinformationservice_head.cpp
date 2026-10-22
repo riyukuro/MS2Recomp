@@ -17,8 +17,8 @@
 #include "ms2/commonfiles/ugcmapsetiteminfo.h"
 #include "ms2/ms2recover.h"
 
-CStringW FUN_14028b8e0(const CStringW& strKey);                // string table text by key
-CStringW FUN_14028de60(int nStringId);                         // string table text by id
+CStringW GetStringCommonByKey(const CStringW& strKey);                // string table text by key
+CStringW GetStringCommon(int nStringId);                         // string table text by id
 void FUN_141276180(const CString&, const CString&);
 void FUN_1412751f0(const CStringW&, int, int);                 // show a notice
 class Unk_LockUIManager;
@@ -257,7 +257,7 @@ CStringW Unk_Service6100017::FUN_1410d5d80(int nMessage)
     case 99:
     {
         CStringW strKey(L"s_ugcmap_installnpc_count");
-        return FUN_14028b8e0(strKey);
+        return GetStringCommonByKey(strKey);
     }
     case 76: nId = 0x6dc; break;
     case 77: nId = 0x6dd; break;
@@ -300,7 +300,7 @@ CStringW Unk_Service6100017::FUN_1410d5d80(int nMessage)
         nId = 0x6c2;
         break;
     }
-    return FUN_14028de60(nId);
+    return GetStringCommon(nId);
 }
 
 // @0x1410d6590

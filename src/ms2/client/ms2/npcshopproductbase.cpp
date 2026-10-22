@@ -22,7 +22,7 @@
 
 class Unk_ItemEquipData : public CItemData { };                 // CItem::FUN_140527840's record (item.cpp)
 
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // localized text
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // localized text
 CStringW FUN_1405c2690(CStringW strFmt, const CStringW& strArg);
 CStringW FUN_1408f71a0(CStringW strFmt, const CStringW& strA, const CStringW& strB);
 CStringW FUN_1409eaa20(CStringW strFmt, const CStringW& strA, const CStringW& strB, const CStringW& strC);
@@ -327,7 +327,7 @@ bool CNpcShopProductCli::FUN_140db70a0(CStringW& strError)
                 }
                 if (!(tmStart > tmNow))
                 {
-                    strError = FUN_14028b8e0(L"s_err_invalid_item_cannot_buy_by_period");
+                    strError = GetStringCommonByKey(L"s_err_invalid_item_cannot_buy_by_period");
                 }
                 else if (!(tmEnd == CMsTime(0)))
                 {
@@ -384,7 +384,7 @@ bool CNpcShopProductCli::FUN_140db70a0(CStringW& strError)
             {
                 CStringW strParts;
                 size_t nCount = m_c8->m_aPartTimes.GetCount();
-                CStringW strFormat = FUN_14028b8e0(L"s_err_cannot_buy_period_fmt_part_time");
+                CStringW strFormat = GetStringCommonByKey(L"s_err_cannot_buy_period_fmt_part_time");
                 for (size_t i = 0; i < nCount; i++)
                 {
                     Unk_DayTimeRange& pair = m_c8->m_aPartTimes[i];
@@ -411,7 +411,7 @@ bool CNpcShopProductCli::FUN_140db70a0(CStringW& strError)
         CMsTime tmNow(FUN_140869440());
         if (!m_d8.operator->()->FUN_14026f080(tmNow))
         {
-            strError = FUN_14028b8e0(L"s_blackmarket_error_buy_expired");
+            strError = GetStringCommonByKey(L"s_blackmarket_error_buy_expired");
             return false;
         }
     }
@@ -507,7 +507,7 @@ bool CNpcShopProductCli::FUN_140db8600()
 {
     if (m_88 == 0xd && !FUN_1406a5930())
     {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_shop_no_star_point_event"), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_shop_no_star_point_event"), 0, 0, CStringW(L""));
         return false;
     }
     return true;

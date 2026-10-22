@@ -69,7 +69,7 @@ int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsi
 void FUN_14151f200();
 
 int FUN_141654730(PCBase* pPC);                                 // the job level
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_1408116a0(int nStringId, const int* pnArg);
 CStringW FUN_14062b4f0(CStringW strKey, const int* pnArg);
 CString FUN_141028be0(__int64 nCharacterId, const CString& strKey, int nKind, CString strExt);   // a UGC profile path
@@ -286,7 +286,7 @@ void UIPvPObserverDialog::FUN_141a91b40()
         if (pA != 0) {
             strNameA.Format(L"%s", (LPCWSTR)pA->vfunc_77());
             if (m_1d4 == false) {
-                strStatusA = (m_178.m_nWins < 1) ? FUN_14028de60(0x89b) : FUN_1408116a0(0x89a, &m_178.m_nWins);
+                strStatusA = (m_178.m_nWins < 1) ? GetStringCommon(0x89b) : FUN_1408116a0(0x89a, &m_178.m_nWins);
             }
             else {
                 strStatusA = FUN_14062b4f0(CStringW(L"s_rank_duel_ui_rating"), &m_178.m_nRating);
@@ -301,7 +301,7 @@ void UIPvPObserverDialog::FUN_141a91b40()
         if (pB != 0) {
             strNameB.Format(L"%s", (LPCWSTR)pB->vfunc_77());
             if (m_1d4 == false) {
-                strStatusB = (m_1a0.m_nWins < 1) ? FUN_14028de60(0x89b) : FUN_1408116a0(0x89a, &m_1a0.m_nWins);
+                strStatusB = (m_1a0.m_nWins < 1) ? GetStringCommon(0x89b) : FUN_1408116a0(0x89a, &m_1a0.m_nWins);
             }
             else {
                 strStatusB = FUN_14062b4f0(CStringW(L"s_rank_duel_ui_rating"), &m_1a0.m_nRating);

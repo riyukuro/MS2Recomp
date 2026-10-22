@@ -57,8 +57,8 @@ Unk_PortalSwitches* FUN_140166410();
 // The command string table (singleton).
 class Unk_PortalStrings { public: CStringW FUN_141811980(int nTable, int nId); };
 Unk_PortalStrings* FUN_1401a9d70();
-CStringW FUN_14028b8e0(const CStringW& strKey);                     // string by key
-CStringW FUN_14028de60(int nId);                                    // string by id
+CStringW GetStringCommonByKey(const CStringW& strKey);                     // string by key
+CStringW GetStringCommon(int nId);                                    // string by id
 CStringW FUN_1408f71a0(CStringW strFormat, const CStringW& strArg1, const CStringW& strArg2);   // format with two arguments
 bool FUN_140164830(const CStringW& a, const CStringW& b);           // a != b
 float FUN_14028d280(unsigned uMilliseconds);                        // ms -> seconds
@@ -374,19 +374,19 @@ CStringW CPortal::FUN_14169c3b0()
     switch (m_nType)
     {
     case 8:
-        return FUN_14028b8e0(CStringW(L"s_action_portal_DungeonLobby"));
+        return GetStringCommonByKey(CStringW(L"s_action_portal_DungeonLobby"));
     case 9:
-        return FUN_14028b8e0(CStringW(L"s_action_portal_DungeonRoomIn"));
+        return GetStringCommonByKey(CStringW(L"s_action_portal_DungeonRoomIn"));
     default:
-        return FUN_14028de60(0x632);
+        return GetStringCommon(0x632);
     case 0xc:
-        return FUN_14028b8e0(CStringW(L"s_action_portal_ChaosDungeon"));
+        return GetStringCommonByKey(CStringW(L"s_action_portal_ChaosDungeon"));
     case 0xd:
-        return FUN_14028b8e0(CStringW(L"s_action_portal_MoveBackupField"));
+        return GetStringCommonByKey(CStringW(L"s_action_portal_MoveBackupField"));
     case 0xe:
-        return FUN_14028b8e0(CStringW(L"s_action_portal_ReverseRaid"));
+        return GetStringCommonByKey(CStringW(L"s_action_portal_ReverseRaid"));
     case 0x12:
-        return FUN_14028b8e0(CStringW(L"s_action_portal_RandomTarget"));
+        return GetStringCommonByKey(CStringW(L"s_action_portal_RandomTarget"));
     }
 }
 

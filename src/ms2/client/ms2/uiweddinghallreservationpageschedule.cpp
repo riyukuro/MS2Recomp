@@ -25,7 +25,7 @@ void FUN_140fdc160(UIDialog* pDialog, bool bPrivate);                       // t
 void* FUN_140fdca40(UIDialog* pDialog);                                     // the reservation target
 int FUN_140fdca20(UIDialog* pDialog);
 void FUN_1412751f0(const CStringW& strText, int a, int b);                  // notice
-CStringW FUN_14028b8e0(const CStringW& strKey);                             // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_140b8e910(const CMsTime& time);                                // date text
 bool FUN_14086ab70(CMsTime tmOld, CMsTime tmNew, int nBaseHour);
 void TruncateToDay(CMsTime& time);                                          // 0x14086a6c0 (commonfiles/timeutil.cpp)
@@ -220,7 +220,7 @@ void UIWeddingHallReservationPageSchedule::vfunc_6()
     if (FUN_140fdca40(m_pDialog) == 0)
     {
         CStringW strKey(L"s_wedding_hall_reservation_select_time");
-        FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
     }
     else
     {
@@ -248,7 +248,7 @@ CString UIWeddingHallReservationPageSchedule::vfunc_8()
 CStringW UIWeddingHallReservationPageSchedule::vfunc_9()
 {
     CStringW strKey(L"s_wedding_reservation_schedule_page");
-    return FUN_14028b8e0(strKey);
+    return GetStringCommonByKey(strKey);
 }
 
 // MS2-FUNCTIONAL: one byte of the branch layout differs
@@ -258,10 +258,10 @@ CStringW UIWeddingHallReservationPageSchedule::vfunc_10(bool bStart)
     if (bStart == 0)
     {
         CStringW strNext(L"s_wedding_reservation_next");
-        return FUN_14028b8e0(strNext);
+        return GetStringCommonByKey(strNext);
     }
     CStringW strPrev(L"s_wedding_reservation_prev");
-    return FUN_14028b8e0(strPrev);
+    return GetStringCommonByKey(strPrev);
 }
 
 // MS2-FUNCTIONAL: branch layout of the bool result differs

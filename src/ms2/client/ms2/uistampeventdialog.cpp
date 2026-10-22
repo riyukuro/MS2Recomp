@@ -90,7 +90,7 @@ UIQuestEventDispatcher* FUN_140bfc4b0();
 bool FUN_140184310(const CString&, const char*);
 CStringW FUN_1416e5660(int);
 CStringW FUN_1416e4df0(int);
-CStringW FUN_14028b8e0(const CStringW&);
+CStringW GetStringCommonByKey(const CStringW&);
 CStringW FUN_1409e8970(CStringW, const int&, const int&);
 void FUN_1401d9a30(const CStringW&, ATL::CAtlArray<int>&, const wchar_t*);
 int FUN_1402bacf0(ATL::CAtlArray<int>&, const int&);
@@ -260,7 +260,7 @@ void UIStampEventDialog::FUN_140ed81a0(MS2Ptr<StampEventContext> spContext)
         if (FUN_140764020()->FUN_140745630(spStamp->m_id) || FUN_140764020()->FUN_140745590(spStamp->m_id)) {
             strIcon = FUN_1416e4df0(spStamp->m_id);
         } else {
-            strIcon = FUN_14028b8e0(L"s_stampevent_closed_stamp");
+            strIcon = GetStringCommonByKey(L"s_stampevent_closed_stamp");
         }
         ASObj row(2);
         row.FUN_1407cb9c0("x", spStamp->m_20);

@@ -110,8 +110,8 @@ CStringW FUN_140631830(int nId, int nValue, int nMode);     // a special stat's 
 bool FUN_14082f250(int nId);                                // IsStatKindTwo
 CStringA FUN_140719190(int nId);
 CStringA FUN_140719530(unsigned __int64 nId);
-CStringW FUN_14028b8e0(const CStringW& strKey);
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommonByKey(const CStringW& strKey);
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_140632a60(int nStringId, const CStringW& strA, const CStringW& strB);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strA);
 CStringW FUN_1409eadb0(int nStringId, const CStringW& strA, const CStringW& strB, const CStringW& strC);
@@ -346,7 +346,7 @@ CStringW FUN_140d2b190(const CStringW& strArgs, MS2Ptr<CItem> spItem, int nKind)
 // @0x140d2b8f0
 CStringW FUN_140d2b8f0(MS2Ptr<CItem> spItem, const CStringW& strFilter)
 {
-    CStringW strLabel = FUN_14028b8e0(CStringW(L"s_word_stat_max"));
+    CStringW strLabel = GetStringCommonByKey(CStringW(L"s_word_stat_max"));
     CStringW strLines;
     CStringW strSeparator(L", ");
     ATL::CAtlArray<MS2Ptr<Unk_StatRow> > rows;
@@ -392,7 +392,7 @@ CStringW FUN_140d2b8f0(MS2Ptr<CItem> spItem, const CStringW& strFilter)
             strLines.Append(strText);
         }
     }
-    return StringFormat(FUN_14028b8e0(CStringW(L"s_word_stat_max_color")), strLines);
+    return StringFormat(GetStringCommonByKey(CStringW(L"s_word_stat_max_color")), strLines);
 }
 
 // The merge option description of an item (the max-option announcement).
@@ -663,9 +663,9 @@ CStringW FUN_140d2d440(unsigned nId, int nGrade)
         {
             nKind = 3;
         }
-        CStringW strTitle(nKind != 3 ? FUN_14028de60(0x77f) : FUN_14028de60(0x780));
+        CStringW strTitle(nKind != 3 ? GetStringCommon(0x77f) : GetStringCommon(0x780));
         strGrade = FUN_14093e330(spAchieve.get(), nGrade);
-        strUser = StringFormat(FUN_14028b8e0(CStringW(L"s_achieve_tooltip_user_info")), pPC->vfunc_77(), strTitle);
+        strUser = StringFormat(GetStringCommonByKey(CStringW(L"s_achieve_tooltip_user_info")), pPC->vfunc_77(), strTitle);
     }
     return FUN_140d2d8a0(nId, nGrade, CStringW(strGrade), CStringW(strUser));
 }

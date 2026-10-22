@@ -112,7 +112,7 @@ public:
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* p, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 CStringW FUN_140298ea0(CStringW str);
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommonByKey(const CStringW& str);
 
 
 // NiInputSystem::m_bEnumerating setter (exe-only inline, 0x140d8f490)
@@ -902,11 +902,11 @@ CStringW MS2InputService::FUN_140d8c750()
 {
     CStringW strText;
     if (FUN_140d8ee40() == 2)
-        return FUN_14028b8e0(L"s_gameoption_input_gamepad_dual");
+        return GetStringCommonByKey(L"s_gameoption_input_gamepad_dual");
     else if (FUN_140d8ee40() == 1)
-        return FUN_14028b8e0(L"s_gameoption_input_gamepad_xbox");
+        return GetStringCommonByKey(L"s_gameoption_input_gamepad_xbox");
     else if (FUN_140d8ee40() == 3)
-        return FUN_14028b8e0(L"s_gameoption_input_gamepad_steam");
+        return GetStringCommonByKey(L"s_gameoption_input_gamepad_steam");
     return L"";
 }
 MS2_REPLACE_METHOD(0x140D8C750, MS2InputService, FUN_140d8c750, 369, 0x67FCD932);

@@ -123,8 +123,8 @@ template <> Unk_RideeData* MS2Ptr<Unk_RideeData>::operator->() const;           
 
 WorldService* FUN_1403ed2d0();                                          // the world service singleton
 void FUN_140710590(COutPacket& packet);                                 // send a packet
-CStringW FUN_14028b8e0(const CStringW& strKey);                         // string table text
-CStringW FUN_14028de60(int nId);                                        // string table text by id
+CStringW GetStringCommonByKey(const CStringW& strKey);                         // string table text
+CStringW GetStringCommon(int nId);                                        // string table text by id
 CStringW FUN_140298ea0(CStringW strKey);                                // string table text (the callee destroys the key)
 CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // formats one text argument into a key
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);        // localized text with one text argument
@@ -454,7 +454,7 @@ void CSmartPushAutoFishing::vfunc_2()
             {
                 CFishingManager::GetInstance()->FUN_140cdbdf0(0);
                 CStringW strKey(L"s_msg_autofishing_extend_merat_warn");
-                FUN_140d73aa0(FUN_14028b8e0(strKey), 0, 0, CStringW(L""));
+                FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
                 return;
             }
             if (!FUN_140dd07b0())
@@ -495,7 +495,7 @@ void CSmartPushAutoFishing::vfunc_3()
             FUN_141a02880(spBox.get(), m_data->m_nActionValue, 1,
                 FUN_1409e97f0(0xc66, *Client::Constants::GetInstance()->extendAutoFishMaxCount.Get()));
             spBox->FUN_141a024a0(0);
-            spBox->FUN_141a024e0(FUN_14028de60(0xc68), 0);
+            spBox->FUN_141a024e0(GetStringCommon(0xc68), 0);
             spBox->SetStrike(strTitle);
             int nCount = CSmartPushTable::GetInstance()->GetPackageCount(CGameRule::GetInstance()->FUN_140479970());
             for (int i = 0; i < nCount; i++)
@@ -508,7 +508,7 @@ void CSmartPushAutoFishing::vfunc_3()
             }
             Unk_SetBoxBool(spBox.get(), "firstUseRedMerat", FUN_140811640(1));
             CStringW strKey(L"s_auto_action_fishing");
-            Unk_SetBoxString(spBox.get(), "actionName", FUN_14028b8e0(strKey));
+            Unk_SetBoxString(spBox.get(), "actionName", GetStringCommonByKey(strKey));
             Unk_SetBoxUInt(spBox.get(), "saleRate", nSale);
             Unk_SetBoxInt(spBox.get(), "packageCount", nCount);
             FUN_140d73c60(spBox);
@@ -546,10 +546,10 @@ CStringW CSmartPushAutoFishing::vfunc_7()
     if (m_nState == 2)
     {
         CStringW strKey(L"s_smartpush_autofishing_active");
-        return FUN_14028b8e0(strKey);
+        return GetStringCommonByKey(strKey);
     }
     CStringW strKey(L"s_smartpush_autofishing");
-    return FUN_14028b8e0(strKey);
+    return GetStringCommonByKey(strKey);
 }
 
 // @0x140dd05a0
@@ -708,7 +708,7 @@ void CSmartPushAutoPlayInstrument::vfunc_2()
         {
             CUIService::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f07);
             CStringW strKey(L"s_msg_auto_play_instrument_end");
-            FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
         }
     }
     else if (m_bPlaying != 0 && nBlocked != 0)
@@ -746,7 +746,7 @@ void CSmartPushAutoPlayInstrument::vfunc_3()
                     *Client::Constants::GetInstance()->extendAutoPlayInstrumentMaxCount.Get()));
             spBox->FUN_141a024a0(0);
             CStringW strKey(L"s_system_auto_play_instrument_extend");
-            spBox->FUN_141a024e0(FUN_14028b8e0(strKey), 0);
+            spBox->FUN_141a024e0(GetStringCommonByKey(strKey), 0);
             spBox->SetStrike(strTitle);
             int nCount = CSmartPushTable::GetInstance()->GetPackageCount(CGameRule::GetInstance()->FUN_140479a90());
             for (int i = 0; i < nCount; i++)
@@ -759,7 +759,7 @@ void CSmartPushAutoPlayInstrument::vfunc_3()
             }
             Unk_SetBoxBool(spBox.get(), "firstUseRedMerat", FUN_140811640(4));
             CStringW strName(L"s_auto_action_play_instrument");
-            Unk_SetBoxString(spBox.get(), "actionName", FUN_14028b8e0(strName));
+            Unk_SetBoxString(spBox.get(), "actionName", GetStringCommonByKey(strName));
             Unk_SetBoxUInt(spBox.get(), "saleRate", nSale);
             Unk_SetBoxInt(spBox.get(), "packageCount", nCount);
             FUN_140d73c60(spBox);
@@ -796,10 +796,10 @@ CStringW CSmartPushAutoPlayInstrument::vfunc_7()
     if (m_nState == 2)
     {
         CStringW strKey(L"s_msg_auto_play_instrument_active");
-        return FUN_14028b8e0(strKey);
+        return GetStringCommonByKey(strKey);
     }
     CStringW strKey(L"s_msg_auto_play_instrument");
-    return FUN_14028b8e0(strKey);
+    return GetStringCommonByKey(strKey);
 }
 
 // @0x140dd1990
@@ -939,10 +939,10 @@ CStringW CSmartPushSafeRiding::vfunc_7()
     if (m_nState == 2)
     {
         CStringW strKey(L"s_smartpush_saferiding_active");
-        return FUN_14028b8e0(strKey);
+        return GetStringCommonByKey(strKey);
     }
     CStringW strKey(L"s_smartpush_saferiding");
-    return FUN_14028b8e0(strKey);
+    return GetStringCommonByKey(strKey);
 }
 
 // MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
@@ -1013,10 +1013,10 @@ CStringW CSmartPushSafeWaterRiding::vfunc_7()
     if (m_nState == 2)
     {
         CStringW strKey(L"s_smartpush_saferiding_water_active");
-        return FUN_14028b8e0(strKey);
+        return GetStringCommonByKey(strKey);
     }
     CStringW strKey(L"s_smartpush_saferiding_water");
-    return FUN_14028b8e0(strKey);
+    return GetStringCommonByKey(strKey);
 }
 
 // MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
@@ -1094,10 +1094,10 @@ CStringW CSmartPushSafeWaterRidingToggle::vfunc_7()
     if (m_nState == 2)
     {
         CStringW strKey(L"s_smartpush_saferiding_water_active");
-        return FUN_14028b8e0(strKey);
+        return GetStringCommonByKey(strKey);
     }
     CStringW strKey(L"s_smartpush_saferiding_water");
-    return FUN_14028b8e0(strKey);
+    return GetStringCommonByKey(strKey);
 }
 
 // @0x140dd2d80
@@ -1132,7 +1132,7 @@ CStringW CSmartPushAutoInteraction::vfunc_7()
     CStringW strMastery = m_data->m_strContent;
     strMastery.MakeLower();
     CStringW strKey = FUN_1401e8510(L"s_mastery_{0}_button", strMastery);
-    return FUN_14028b8e0(strKey);
+    return GetStringCommonByKey(strKey);
 }
 
 // MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
@@ -1426,7 +1426,7 @@ void CSmartPushAutoInteractObjectBuffItem::vfunc_3()
     if (nItemId == 0)
     {
         CStringW strButton = FUN_1401e8510(L"s_mastery_{0}_button", strMastery);
-        FUN_140d73aa0(FUN_1405c2690(CStringW(L"s_mastery_autointeraction_lack_buff_item"), FUN_14028b8e0(strButton)),
+        FUN_140d73aa0(FUN_1405c2690(CStringW(L"s_mastery_autointeraction_lack_buff_item"), GetStringCommonByKey(strButton)),
             0, 0, CStringW(L""));
         return;
     }
@@ -1468,7 +1468,7 @@ void CSmartPushAutoFunctionCubeObjectBuffItem::vfunc_3()
     if (nItemId == 0)
     {
         CStringW strButton = FUN_1401e8510(L"s_mastery_{0}_button", strMastery);
-        FUN_140d73aa0(FUN_1405c2690(CStringW(L"s_mastery_autointeraction_lack_buff_item"), FUN_14028b8e0(strButton)),
+        FUN_140d73aa0(FUN_1405c2690(CStringW(L"s_mastery_autointeraction_lack_buff_item"), GetStringCommonByKey(strButton)),
             0, 0, CStringW(L""));
         return;
     }

@@ -305,8 +305,8 @@ CStringW FUN_1409404f0(__int64 nValue);                         // a number with
 void FUN_141276180(const CString& strSound, const CString& strArg);    // play a system sound
 bool FUN_140ebfc70(unsigned short nLevel, CDBPremiumProduct* pProduct, bool bShowError);  // the level fits the product
 
-CStringW FUN_14028de60(int nKey);                               // a common string by id
-CStringW FUN_14028b8e0(const CStringW& str);                    // a string by key
+CStringW GetStringCommon(int nKey);                               // a common string by id
+CStringW GetStringCommonByKey(const CStringW& str);                    // a string by key
 CStringW FUN_1409eec40(int nKey);                               // a system string by id
 CStringW FormatStringId(int nId, const fmt::ArgList& args);     // 0x14028dee0
 FMT_VARIADIC_W(CStringW, FormatStringId, int)
@@ -1383,13 +1383,13 @@ void CMeratMarketMan::FUN_140d58650(int nBuyType)
                 if (spBuy.get() != 0)
                     spBuy->vfunc_4();
             } else {
-                FUN_1412751f0(FUN_14028b8e0(L"s_meratmarket_error_buying_diff_buytype"), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(L"s_meratmarket_error_buying_diff_buytype"), 1, 1);
             }
         } else {
             FUN_140d589f0(0);
         }
     } else {
-        FUN_1412751f0(FUN_14028b8e0(L"s_meratmarket_error_buying"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_meratmarket_error_buying"), 1, 1);
     }
 }
 
@@ -1445,9 +1445,9 @@ void CMeratMarketMan::FUN_140d589f0(int bCancel)
     }
     int nOkId = bPremium ? 0x9fc : 0x9f6;
     int nFailId = bPremium ? 0x9fd : 0x9f7;
-    CStringW strOkFormat = FUN_14028de60(nOkId);
-    CStringW strFailFormat = FUN_14028de60(nFailId);
-    CStringW strItemName = FUN_14028b8e0(L"s_meratmarket_buy_itemname");
+    CStringW strOkFormat = GetStringCommon(nOkId);
+    CStringW strFailFormat = GetStringCommon(nFailId);
+    CStringW strItemName = GetStringCommonByKey(L"s_meratmarket_buy_itemname");
     m_b2d8 = false;
     for (unsigned i = 0; i < m_pending.GetCount(); i++) {
         MS2Ptr<CPendingBuyBase> spBuy = m_pending[i];
@@ -1471,18 +1471,18 @@ void CMeratMarketMan::FUN_140d589f0(int bCancel)
     if (FUN_1422b9dc0(FUN_1408e57f0()) == 0x620000c) {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x10, L"", 0, L"");
         if (spBox.get() != 0) {
-            CStringW strTitle = FUN_14028de60(0x9f4);
-            CStringW strCaption = FUN_14028de60(bPremium ? 0x9fb : 0x9f5);
+            CStringW strTitle = GetStringCommon(0x9f4);
+            CStringW strCaption = GetStringCommon(bPremium ? 0x9fb : 0x9f5);
             spBox->SetTitle(strCaption);
             spBox->FUN_141a02770(0x1e0, 300);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CMeratMarketMan::FUN_140d60280));
             if (nFailed == 0) {
-                spBox->SetMsg(StringFormat(strTitle, FUN_14028de60(bPremium ? 0x9fe : 0x9f8), strOk));
+                spBox->SetMsg(StringFormat(strTitle, GetStringCommon(bPremium ? 0x9fe : 0x9f8), strOk));
                 spBox->SetSound(s_cashBuy);
             } else if (nCount == nFailed) {
-                spBox->SetMsg(StringFormat(strTitle, FUN_14028de60(bPremium ? 0xa00 : 0x9fa), strFail));
+                spBox->SetMsg(StringFormat(strTitle, GetStringCommon(bPremium ? 0xa00 : 0x9fa), strFail));
             } else {
-                spBox->SetMsg(StringFormat(strTitle, FUN_14028de60(bPremium ? 0x9ff : 0x9f9),
+                spBox->SetMsg(StringFormat(strTitle, GetStringCommon(bPremium ? 0x9ff : 0x9f9),
                                                   StringFormat(L"{0}\n{1}", strOk, strFail)));
                 spBox->SetSound(s_cashBuy);
             }
@@ -1531,7 +1531,7 @@ void CMeratMarketMan::FUN_140d59810(MS2Ptr<CPendingBuyBase> spBuy, int nBuyType)
     if (m_n2a8 == 0 && m_pending.IsEmpty())
         m_n2a8 = nBuyType;
     if (nBuyType != m_n2a8) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_meratmarket_error_buying_diff_buytype"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_meratmarket_error_buying_diff_buytype"), 1, 1);
         return;
     }
     m_pending.Add(spBuy);
@@ -1673,59 +1673,59 @@ CStringW CMeratMarketMan::FUN_140d5a330(int nError, MS2Ptr<CPendingBuyBase> spBu
 {
     switch (nError) {
     case 0x6a:
-        return FUN_14028de60(0x9f0);
+        return GetStringCommon(0x9f0);
     default:
         return FormatStringId(0x9f2, nError);
     case 0x80:
-        return FUN_14028de60(0x9ef);
+        return GetStringCommon(0x9ef);
     case 0x87:
-        return FUN_14028b8e0(L"s_meratmarket_error_buy_invalid_price_type");
+        return GetStringCommonByKey(L"s_meratmarket_error_buy_invalid_price_type");
     case 0x88:
-        return FUN_14028de60(0x9e8);
+        return GetStringCommon(0x9e8);
     case 0x89:
-        return FUN_14028de60(0x9e9);
+        return GetStringCommon(0x9e9);
     case 0x90:
-        return FUN_14028de60(0x9ea);
+        return GetStringCommon(0x9ea);
     case 0x91:
-        return FUN_14028b8e0(L"s_meratmarket_error_result_gift_own_product");
+        return GetStringCommonByKey(L"s_meratmarket_error_result_gift_own_product");
     case 0x92:
-        return FUN_14028de60(0x9eb);
+        return GetStringCommon(0x9eb);
     case 0x94:
-        return FUN_14028de60(0x9ec);
+        return GetStringCommon(0x9ec);
     case 0x95:
-        return FUN_14028de60(0x9ee);
+        return GetStringCommon(0x9ee);
     case 0x97:
-        return FUN_14028b8e0(L"s_meratmarket_error_result_buy_change_star_point");
+        return GetStringCommonByKey(L"s_meratmarket_error_result_buy_change_star_point");
     case 0x9d:
-        return FUN_14028de60(0x9ed);
+        return GetStringCommon(0x9ed);
     case 0x9f:
-        return FUN_14028b8e0(L"s_meratmarket_error_result_buy_sold_out_limitedbundle");
+        return GetStringCommonByKey(L"s_meratmarket_error_result_buy_sold_out_limitedbundle");
     case 0xa1:
-        return FUN_14028b8e0(L"s_meratmarket_error_result_buy_sold_out_changeable");
+        return GetStringCommonByKey(L"s_meratmarket_error_result_buy_sold_out_changeable");
     case 0xa2:
-        return FUN_14028b8e0(L"s_meratmarket_error_random_payback_not_exist");
+        return GetStringCommonByKey(L"s_meratmarket_error_random_payback_not_exist");
     case 0xa3:
-        return FUN_14028b8e0(L"s_meratmarket_error_random_coupon_not_exist");
+        return GetStringCommonByKey(L"s_meratmarket_error_random_coupon_not_exist");
     case 0xa4:
     case 0xa5:
-        return FUN_14028b8e0(L"s_meratmarket_error_result_gift_cannot");
+        return GetStringCommonByKey(L"s_meratmarket_error_result_gift_cannot");
     case 0xa6:
-        return FUN_14028de60(0xa47);
+        return GetStringCommon(0xa47);
     case 0xa8:
     case 0xa9:
-        return FUN_14028de60(0xa48);
+        return GetStringCommon(0xa48);
     case 0xab:
-        return FUN_14028b8e0(L"s_meratmarket_error_result_buy_ing");
+        return GetStringCommonByKey(L"s_meratmarket_error_result_buy_ing");
     case 0xac:
-        return FUN_14028de60(0xa0f);
+        return GetStringCommon(0xa0f);
     case 0xad:
-        return FUN_14028b8e0(L"s_ban_check_err_all_word");
+        return GetStringCommonByKey(L"s_ban_check_err_all_word");
     case 0xb1:
-        return FUN_14028b8e0(L"s_meratmarket_error_result_buy_achieve_complete");
+        return GetStringCommonByKey(L"s_meratmarket_error_result_buy_achieve_complete");
     case 0xb2:
-        return FUN_14028de60(0x9f0);
+        return GetStringCommon(0x9f0);
     case 0xb3:
-        return FUN_14028de60(0xa6e);
+        return GetStringCommon(0xa6e);
     case 0xb4: {
         MS2Ptr<CMeratMarketBuy> spMarketBuy(dynamic_cast<CMeratMarketBuy*>(spBuy.get()));
         if (spMarketBuy.get() ? true : false) {
@@ -1733,20 +1733,20 @@ CStringW CMeratMarketMan::FUN_140d5a330(int nError, MS2Ptr<CPendingBuyBase> spBu
             if (spProduct.get() != 0 && spProduct->IsPremium())
                 return FUN_140ec01e0(&spProduct->m_premium, L"s_meratmarket_error_buy_limit_");
         }
-        return FUN_14028b8e0(L"s_meratmarket_error_buy_limit_level");
+        return GetStringCommonByKey(L"s_meratmarket_error_buy_limit_level");
     }
     case 0xb5:
-        return FUN_14028b8e0(L"s_meratmarket_error_buy_limit_job");
+        return GetStringCommonByKey(L"s_meratmarket_error_buy_limit_job");
     case 0xb6: {
         CStringW strName = FUN_1409eec40(0x5a7);
         return FUN_140a228f0(0x688, *FUN_1402056b0(&FUN_1401d3200()->m_pcBangLevel), strName);
     }
     case 0xb7:
-        return FUN_14028b8e0(L"s_meratmarket_error_buy_not_pcbang");
+        return GetStringCommonByKey(L"s_meratmarket_error_buy_not_pcbang");
     case 0xb8:
-        return FUN_14028b8e0(L"s_meratmarket_error_buy_low_pcbang_level");
+        return GetStringCommonByKey(L"s_meratmarket_error_buy_low_pcbang_level");
     case 0xbc:
-        return FUN_14028b8e0(L"s_meratmarket_error_buy_shutdown");
+        return GetStringCommonByKey(L"s_meratmarket_error_buy_shutdown");
     case 0xbd: {
         int nLevel = FUN_140d564b0();
         return FUN_14062b4f0(L"s_meratmarket_error_ugc_buy_limit_achieve_account_char_level", nLevel);
@@ -1758,7 +1758,7 @@ CStringW CMeratMarketMan::FUN_140d5a330(int nError, MS2Ptr<CPendingBuyBase> spBu
     case 0xbf:
         return FUN_14062b4f0(L"s_meratmarket_error_ugc_buy_limit_product_buy_count", m_n1c0);
     case 0xc3:
-        return FUN_14028b8e0(L"s_meratmarket_error_country_limit");
+        return GetStringCommonByKey(L"s_meratmarket_error_country_limit");
     }
 }
 
@@ -2794,7 +2794,7 @@ void CMeratMarketMan::FUN_140d5fea0(CMeratMarketPacket::ErrorPacket& error)
         if (pBox != 0) {
             MS2Ptr<CMsgBoxData> spBox = pBox->FUN_1419f8470();
             if (spBox.get() != 0 && spBox->GetExtra().Find(L"inputSeller", 0) != -1)
-                pBox->FUN_1419f82b0(FUN_14028de60(0xa20));
+                pBox->FUN_1419f82b0(GetStringCommon(0xa20));
         }
     }
 }
@@ -2903,7 +2903,7 @@ void CMeratMarketMan::FUN_140d5f610(CInPacket& packet)
         FUN_140d73bc0(0xa08, 0, 0, CStringW(L""));
         break;
     case 0xaa:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_meratmarket_error_search_ing")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_meratmarket_error_search_ing")), 1, 1);
         break;
     case 0xad:
         if (error.m_n30 == 1) {

@@ -242,8 +242,8 @@ int FUN_14074b050(CQuestData* pData);
 int FUN_14074b790(int nQuestId);
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 CString FUN_141082090(int nQuestId, const CString& strEpic, const CString& strSatisfied, const CString& strRepeat, const CString& strEvent);
-CStringW FUN_14028b8e0(const CStringW& strKey);
-CStringW FUN_14028de60(int nId);
+CStringW GetStringCommonByKey(const CStringW& strKey);
+CStringW GetStringCommon(int nId);
 CStringW FUN_1409e8ca0(CStringW strKey, const int& a1, const int& a2, const int& a3, const int& a4, const int& a5);
 CStringW FUN_140938ae0(CStringW strKey, const int& a1);
 CStringW FUN_1409e9890(CStringW strKey, const int& a1, const int& a2);
@@ -981,7 +981,7 @@ void UIQuestGuideDialog::FUN_141aac6a0(ASObj& obj, CQuest* pQuest)
         strPeriod = FUN_1409e8ca0(CStringW(L"s_quest_end_time"), nYear, nMonth, nDay, nHour, nMinute);
     }
     else {
-        strPeriod = FUN_14028b8e0(CStringW(L"s_quest_end_time_expired"));
+        strPeriod = GetStringCommonByKey(CStringW(L"s_quest_end_time_expired"));
     }
     obj.FUN_1407cbb20("period", strPeriod);
     obj.FUN_1407cb9c0("expired", bExpired);
@@ -1082,12 +1082,12 @@ CStringW UIQuestGuideDialog::FUN_141aacf40(int nQuestId)
     CStringW strKind = FUN_1401a9d70()->FUN_141811980(0x50, nQuestId);
     if (strKind.GetLength() == 0) {
         switch (FUN_14074b050(spData.operator->())) {
-        case 0: strKind = FUN_14028de60(0x5dd); break;
-        case 1: strKind = FUN_14028de60(0x5de); break;
-        case 2: strKind = FUN_14028de60(0x5df); break;
-        case 6: strKind = FUN_14028b8e0(CStringW(L"s_quest_guild_quest")); break;
-        case 8: strKind = FUN_14028b8e0(CStringW(L"s_quest_field_quest")); break;
-        case 9: strKind = FUN_14028b8e0(CStringW(L"s_quest_alliance_quest")); break;
+        case 0: strKind = GetStringCommon(0x5dd); break;
+        case 1: strKind = GetStringCommon(0x5de); break;
+        case 2: strKind = GetStringCommon(0x5df); break;
+        case 6: strKind = GetStringCommonByKey(CStringW(L"s_quest_guild_quest")); break;
+        case 8: strKind = GetStringCommonByKey(CStringW(L"s_quest_field_quest")); break;
+        case 9: strKind = GetStringCommonByKey(CStringW(L"s_quest_alliance_quest")); break;
         }
     }
     return FUN_140656190(L"[{0}] {1}", strKind, FUN_1416e7fb0(spData->m_28));
@@ -1419,7 +1419,7 @@ void UIQuestGuideDialog::FUN_141aaf150(const Scaleform::GFx::FunctionHandler::Pa
     if (FUN_140e7c990()->FUN_140c9a4c0(result) == 1) {
         obj.FUN_1407cb9c0("tracing", 0);
         obj.FUN_1409c4a30("rotation", 0);
-        obj.FUN_1407cbb20("distance", FUN_14028b8e0(CStringW(L"s_quest_navigation_none")));
+        obj.FUN_1407cbb20("distance", GetStringCommonByKey(CStringW(L"s_quest_navigation_none")));
     }
     else {
         obj.FUN_1407cb9c0("tracing", 1);

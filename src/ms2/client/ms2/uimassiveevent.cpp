@@ -42,7 +42,7 @@ unsigned int FUN_140869420();                                       // the tick
 int FUN_141276180(const CString& strSound, const CString& strArg);  // play a sound
 CString FUN_140513200(const char* szFormat, const unsigned int& n); // "{0}" substitution
 void FUN_1412751b0(const CStringW& strText, int nKind);             // chat/system message
-CStringW FUN_14028de60(int nStringId);                              // string table text by id
+CStringW GetStringCommon(int nStringId);                              // string table text by id
 CStringW FUN_14062b4f0(CStringW strKey, const int& nValue);         // string table text with one argument
 void FUN_140cffde0(const Scaleform::GFx::Value& root, CString strName, int nValue);   // set an int member of a clip
 UIEventIntroduce* FUN_140dbf520(int nUiId);                         // a UI by its type id
@@ -310,7 +310,7 @@ void UIMassiveEvent::FUN_1419f66a0(CInPacket* pPacket)
 void UIMassiveEvent::FUN_1419f6790(CInPacket* pPacket)
 {
     int nDuration = pPacket->vfunc_o8_3();
-    FUN_1419f6bc0(FUN_14028de60(0x974), 0, nDuration, 2);
+    FUN_1419f6bc0(GetStringCommon(0x974), 0, nDuration, 2);
 }
 
 // MS2-FUNCTIONAL: the exe's case 2 arm ends in two jmps (+10 bytes); no source form found

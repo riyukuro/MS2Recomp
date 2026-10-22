@@ -119,7 +119,7 @@ Unk_DaKeyBinds* FUN_1409331f0();
 
 int FUN_1409e1b80(ASTooltip* p, int nId, int n);            // the learned skill tooltip
 CStringW FUN_141811980(CStringTable* p, int nTable, int nId);
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 char FUN_1403b3c40(const CStringW& str, const wchar_t* szText);
 void FUN_140988d60(CStringW& strSrc, std::vector<CStringW>& arrOut, const wchar_t* pszSep);
 SkillDataTable* FUN_1401958b0();                            // the skill table
@@ -287,9 +287,9 @@ int UIDynamicActionDialog::vfunc_13()
                     unsigned __int64 nOther = FUN_1409331f0()->FUN_14142d190(nKey);
                     CStringW strOther;
                     if (FUN_1409331f0()->FUN_14142cf10(nOther) == 0) {
-                        strOther = FUN_1401a9d70()->FUN_1418125b0((unsigned)nOther);
+                        strOther = GetStringTable()->FUN_1418125b0((unsigned)nOther);
                     } else {
-                        strOther = FUN_140656190(L"{0}[{1}]", FUN_1401a9d70()->FUN_1418125b0((unsigned)nOther),
+                        strOther = FUN_140656190(L"{0}[{1}]", GetStringTable()->FUN_1418125b0((unsigned)nOther),
                                                  FUN_1409331f0()->FUN_14142d220(nKey));
                     }
                     if (FUN_1409331f0()->FUN_141430470(nOther) == 0) {
@@ -549,7 +549,7 @@ void UIDynamicActionDialog::FUN_14192ca70()
                 if (FUN_1403b3c40(m_1b8, L"/") != 0)
                     continue;
                 bool bFound = false;
-                CStringW strName = FUN_141811980(FUN_1401a9d70(), 4, nId);
+                CStringW strName = FUN_141811980(GetStringTable(), 4, nId);
                 if (strName.Find(m_1b8, 0) == -1) {
                     std::vector<CStringW> words;
                     CStringW strKeywords = FUN_14192d820(nId);
@@ -614,7 +614,7 @@ void UIDynamicActionDialog::FUN_14192d100()
                 if (FUN_1403b3c40(m_1b8, L"/") != 0)
                     continue;
                 bool bFound = false;
-                CStringW strName = FUN_141811980(FUN_1401a9d70(), 4, nId);
+                CStringW strName = FUN_141811980(GetStringTable(), 4, nId);
                 if (strName.Find(m_1b8, 0) == -1) {
                     std::vector<CStringW> words;
                     CStringW strKeywords = FUN_14192d820(nId);

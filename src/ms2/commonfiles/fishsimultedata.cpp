@@ -33,9 +33,9 @@ class Unk_CommonLog { public: void FUN_14015eb90(int level, int flags, const wch
 Unk_CommonLog* FUN_140166440();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
-CStringTable* FUN_1401a9d70();                              // the string table singleton
-CStringW FUN_14028b8e0(const CStringW& strKey);             // string table text
-CStringW FUN_14028de60(int nStringId);                      // string table text by id
+CStringTable* GetStringTable();                              // the string table singleton
+CStringW GetStringCommonByKey(const CStringW& strKey);             // string table text
+CStringW GetStringCommon(int nStringId);                      // string table text by id
 int FUN_14015f500(Unk_140165cf0* pElem, const char* pszName, int* pnOut);             // rank
 int FUN_140873ad0(Unk_140165cf0* pElem, const char* pszName, CString& strOut);        // string attribute
 int FUN_14015f480(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<CStringW>& rOut);   // list of strings
@@ -175,7 +175,7 @@ CStringW CFishData::FUN_1403b1600() const
 // @0x1403b1650
 CStringW CFishData::FUN_1403b1650() const
 {
-    return FUN_1401a9d70()->FUN_141811980(0x1d, m_nId);
+    return GetStringTable()->FUN_141811980(0x1d, m_nId);
 }
 
 // @0x1403b16b0
@@ -185,20 +185,20 @@ CStringW CFishData::FUN_1403b16b0(int bDetail) const
     CStringW str;
     if (m_nHabitat != 7)
     {
-        str = FUN_14028b8e0(CStringW(L"s_fishing_fish_habitat"));
+        str = GetStringCommonByKey(CStringW(L"s_fishing_fish_habitat"));
         CStringW strMaps = CFishingTable::GetInstance()->FUN_1403b2ee0(m_nId);
         if (strMaps.GetLength() == 0)
-            str += FUN_14028b8e0(CStringW(L"s_fishing_fish_habitat_unknown"));
+            str += GetStringCommonByKey(CStringW(L"s_fishing_fish_habitat_unknown"));
         else
         {
             str += strMaps;
-            str += FUN_14028b8e0(CStringW(L"s_fishing_fish_habitat_more"));
+            str += GetStringCommonByKey(CStringW(L"s_fishing_fish_habitat_more"));
         }
     }
     if (bDetail == 0)
-        str += FUN_1401a9d70()->FUN_141811980(0x1e, m_nId);
+        str += GetStringTable()->FUN_141811980(0x1e, m_nId);
     else
-        str += FUN_1401a9d70()->FUN_141811980(0x1f, m_nId);
+        str += GetStringTable()->FUN_141811980(0x1f, m_nId);
     FUN_1416fbf20(CFishingTable::GetTextFilter(), str);
     return str;
 }
@@ -325,19 +325,19 @@ CStringW CFishingTable::FUN_1403b20b0(int nHabitat)
     switch (nHabitat)
     {
     case 0:
-        return FUN_14028de60(0xbd0);
+        return GetStringCommon(0xbd0);
     case 1:
-        return FUN_14028de60(0xbd1);
+        return GetStringCommon(0xbd1);
     case 3:
-        return FUN_14028de60(0xbd2);
+        return GetStringCommon(0xbd2);
     case 2:
-        return FUN_14028de60(0xbd3);
+        return GetStringCommon(0xbd3);
     case 4:
-        return FUN_14028de60(0xbd4);
+        return GetStringCommon(0xbd4);
     case 5:
-        return FUN_14028de60(0xbd5);
+        return GetStringCommon(0xbd5);
     case 6:
-        return FUN_14028de60(0xbd6);
+        return GetStringCommon(0xbd6);
     default:
         return L"";
     }
@@ -347,7 +347,7 @@ CStringW CFishingTable::FUN_1403b20b0(int nHabitat)
 // MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
 CStringW CFishingTable::FUN_1403b2240(int n)
 {
-    return FUN_14028de60(n + 0xbba);
+    return GetStringCommon(n + 0xbba);
 }
 
 // @0x1403b22a0

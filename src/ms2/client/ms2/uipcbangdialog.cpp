@@ -67,7 +67,7 @@ template <> MS2Ptr<ASTextField> UISwfEntity::GetChild<ASTextField>(const CString
 NotifySystem* FUN_140939a10();
 PacketHandlerManager* FUN_140bccd50();
 CFeatureManager* FUN_140166410();
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 SkillDataTableCli* FUN_1401958b0();                            // TSingleton<SkillDataTableCli>::GetInstance
 class Unk_PcBangWorld { public: PCBase* FUN_141bd0cc0(); };     // the world service: the local player
 Unk_PcBangWorld* FUN_1403ed2d0();
@@ -82,7 +82,7 @@ CString FUN_140513200(const char* szFormat, const unsigned& n); // StringFormat<
 CStringW FUN_1408116a0(int nId, const int& nArg);               // system text with one argument
 CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);
 CStringW FUN_1409e97f0(int nId, const unsigned& nArg);          // string table entry, one argument
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // the localized text of a key
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // the localized text of a key
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);    // system chat notice
 void FUN_141276180(const CString& strSound, const CString& strExtra);   // play a UI sound
 void FUN_140d73bc0(int nStringId, int nType, void* pListener, CStringW strTag);   // pop a system message
@@ -383,7 +383,7 @@ MS2_REPLACE_METHOD(0x141324B40, UIPcBangDialog, OnPacketNotice, 192, 0xCF468095)
 // @0x141324c10
 void UIPcBangDialog::OnResetBonus(CInPacket& packet)
 {
-    FUN_1412751f0(FUN_14028b8e0(L"s_pcbang_msg_reset_bonus"), 1, 1);
+    FUN_1412751f0(GetStringCommonByKey(L"s_pcbang_msg_reset_bonus"), 1, 1);
     if (FUN_141924630())
     {
         COutPacket packet(0x67, 0);
@@ -467,7 +467,7 @@ void UIPcBangDialog::UpdateBuff()
     m_30->Invoke("setIcon", spBuff->GetIcon());
     if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("buffText"))
     {
-        spText->FUN_1422c4f00(FUN_1401a9d70()->FUN_141812290(spBuff->GetID(), spBuff->GetLevel(), "tooltipDescription"));
+        spText->FUN_1422c4f00(GetStringTable()->FUN_141812290(spBuff->GetID(), spBuff->GetLevel(), "tooltipDescription"));
         FUN_140d01340((*spText).FUN_1422bb890(), 2, 2);
     }
 }
@@ -505,7 +505,7 @@ void UIPcBangDialog::UpdateRows()
         MS2Ptr<PlayBonusItemGift> spBonus = m_playBonus[i];
         const Scaleform::GFx::Value& row = m_rows[i]->FUN_1422bb870();
         FUN_140d00360(row, "itemSlot", spBonus->m_itemId, spBonus->vfunc_o18_1(), spBonus->m_count);
-        FUN_140cfee80(row, "itemName", FUN_1401a9d70()->FUN_141811980(1, spBonus->m_itemId));
+        FUN_140cfee80(row, "itemName", GetStringTable()->FUN_141811980(1, spBonus->m_itemId));
         FUN_140cfee80(row, "reqPlayTime", FUN_1409e97f0(0x97c, spBonus->GetMinutes()));
     }
     UpdateProgress();
@@ -554,7 +554,7 @@ void UIPcBangDialog::RefreshGiftList()
         {
             ASObj obj(2);
             obj.FUN_1409c0d20("id", spGift->m_giftId);
-            obj.FUN_1407cbb20("label", FUN_1401a9d70()->FUN_141811980(1, spGift->m_itemId));
+            obj.FUN_1407cbb20("label", GetStringTable()->FUN_141811980(1, spGift->m_itemId));
             obj.FUN_1409adc90("itemGrade", spGift->vfunc_o18_1());
             obj.FUN_1407cba60("iconPath", spData->FUN_14053fdd0());
             obj.FUN_1407cb9c0("itemPcBang", spItem->FUN_140525ca0());

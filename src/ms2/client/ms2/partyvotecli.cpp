@@ -93,7 +93,7 @@ unsigned FUN_140869420();                                          // tick count
 __int64 FUN_140869440();                                           // server time
 CStringW FUN_140b8fbc0(const ATL::CTimeSpan& span);                // "mm:ss" text
 CPartyManager* FUN_1409670d0();
-CStringW FUN_14028de60(int nId);
+CStringW GetStringCommon(int nId);
 CStringW FUN_140298ea0(CStringW strKey);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 void FUN_1412751b0(const CStringW& str, int nChannel);
@@ -320,7 +320,7 @@ void PartyVoteReadyCli::vfunc_2()
     {
         Unk_MsgBoxPtr box = FUN_140d74500(FUN_140298ea0(CStringW(L"s_party_vote_ready_message")), 1,
                                           Unk_MsgBoxCallback(this, &PartyVoteReadyCli::FUN_140a8a0b0));
-        FUN_141a01ca0(box.operator->(), 0x14, 1, FUN_14028de60(0x2b8));
+        FUN_141a01ca0(box.operator->(), 0x14, 1, GetStringCommon(0x2b8));
         FUN_141a02460(box.operator->(), 1);
         FUN_141a02480(box.operator->(), 1);
         FUN_141a024a0(box.operator->(), 0);

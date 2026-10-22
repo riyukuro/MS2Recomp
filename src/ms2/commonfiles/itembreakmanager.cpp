@@ -145,7 +145,7 @@ template<> inline bool MS2Ptr<UIObject>::IsNull() const { return m_p==0; }
 template<class T> inline int Unk_BreakFind(const ATL::CAtlArray<T>& values,const T& value) {
     for(int i=0;i<(int)values.GetCount();++i) if(values.GetAt(i)==value) return i; return -1;
 }
-CStringW FUN_14028b8e0(const CStringW&);
+CStringW GetStringCommonByKey(const CStringW&);
 void FUN_1412751f0(const CStringW&,int,int);
 void FUN_141275260(int,int,int);
 void FUN_141275460(int,int,int,const fmt::ArgList&);
@@ -470,7 +470,7 @@ void CItemBreakManager::FUN_1405322b0(Unk_BreakPacket& packet) {
         if(result==1) FUN_141275260(0x8f6,1,1);
         else if(result==2) FUN_141275260(0x8f7,1,1);
         else if(result==3) FUN_141275260(0x43,1,1);
-        else if(result!=4) { if(result==5) FUN_1412751f0(FUN_14028b8e0(L"s_itembreak_empty"),1,1); else Unk_BreakMessage(0x8f8,1,1,result); }
+        else if(result!=4) { if(result==5) FUN_1412751f0(GetStringCommonByKey(L"s_itembreak_empty"),1,1); else Unk_BreakMessage(0x8f8,1,1,result); }
         UIItemBreakDialog* p=Unk_BreakDialog<UIItemBreakDialog>(); if(p && p->FUN_1405352d0()) p->FUN_1419a4460(); FUN_140532220();
     } else if(mode==5) {
         UIItemBreakDialog* p=Unk_BreakDialog<UIItemBreakDialog>(); if(p) p->FUN_1419a44d0(packet);
@@ -510,8 +510,8 @@ MS2_REPLACE_METHOD(0x140532D80, CItemBreakManager, SendItemDismantleMode3, 86, 0
 int CItemBreakManager::FUN_140532de0(ItemPtr item,int arg) {
     if(item==0) return 0;
     if(FUN_140535310() && !FUN_140535310()->FUN_140613160(item.get())) return 0;
-    if(ItemBreakCommon::FUN_140530a10(items,item->FUN_140526a50())!=-1) { FUN_1412751f0(FUN_14028b8e0(L"s_itembreak_selected_item"),1,1); return 0; }
-    Unk_BreakEnhance* enhance=item->FUN_1405279c0(); if(enhance && !enhance->FUN_140622820()) { FUN_140d73aa0(FUN_14028b8e0(L"s_itembreak_usedgemstone_item"),0,0,L""); return 0; }
+    if(ItemBreakCommon::FUN_140530a10(items,item->FUN_140526a50())!=-1) { FUN_1412751f0(GetStringCommonByKey(L"s_itembreak_selected_item"),1,1); return 0; }
+    Unk_BreakEnhance* enhance=item->FUN_1405279c0(); if(enhance && !enhance->FUN_140622820()) { FUN_140d73aa0(GetStringCommonByKey(L"s_itembreak_usedgemstone_item"),0,0,L""); return 0; }
     if(type==2) { if(!FUN_140531270(item)) { FUN_141275260(0x8f7,1,1); return 0; }
         if(!item->FUN_140527840()->FUN_14053cbc0() && !item->FUN_1405258b0()) { FUN_141275260(0x8f7,1,1); return 0; }
     } else if(!FUN_140531270(item)) { FUN_141275260(0x8f6,1,1); return 0; }
@@ -533,7 +533,7 @@ MS2_REPLACE_METHOD(0x140533340, CItemBreakManager, FUN_140533340, 248, 0x31B0FB0
 void CItemBreakManager::FUN_140533440(ItemPtr item,int arg) {
     if(item==0) return; if(FUN_141902660(item)!=0) return;
     if(item->FUN_1405257f0()!=0 && item->FUN_140526c50()>1) {
-        if(Unk_BreakPtr<CMsgBoxData> box=FUN_140d73d20(5,FUN_14028b8e0(L"s_msg_item_break"),0,L"")) {
+        if(Unk_BreakPtr<CMsgBoxData> box=FUN_140d73d20(5,GetStringCommonByKey(L"s_msg_item_break"),0,L"")) {
             unsigned count=item->FUN_140526c50(); CStringW text; text.Format(L"%d",(unsigned __int64)count);
             box->FUN_141a01d30(1,text,count,0,0);
             box->FUN_141a027c0(Delegate<bool(int,const CMsgBoxData&)>(this,&CItemBreakManager::FUN_140533c60));
@@ -543,7 +543,7 @@ void CItemBreakManager::FUN_140533440(ItemPtr item,int arg) {
         CStringW option; char flag=0; FUN_1409e4950(item,option,&flag);
         if(item->FUN_140526bd0()<5 || flag!=1) SendItemDismantleMode1(item->FUN_140526a50(),item->FUN_140526c50(),arg);
         else {
-            CStringW warning=FUN_14028b8e0(L"s_itembreak_high_sa_option_item"); CStringW text; text.Append(option); text.Append(L"\n"); text.Append(warning);
+            CStringW warning=GetStringCommonByKey(L"s_itembreak_high_sa_option_item"); CStringW text; text.Append(option); text.Append(L"\n"); text.Append(warning);
             Unk_BreakPtr<CMsgBoxData> box=FUN_140d73d20(0x11,text,0,L"");
             if(box) { box->FUN_141a027c0(Delegate<bool(int,const CMsgBoxData&)>(this,&CItemBreakManager::FUN_140533da0));
                 box->FUN_141a01600(item->FUN_140526a50()); box->FUN_141a01ee0(item,item->FUN_140527b10(),1,0,-1,-1,1); box->FUN_141a01700(0x475,0x476,0);

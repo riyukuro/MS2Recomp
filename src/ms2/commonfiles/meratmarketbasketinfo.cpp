@@ -52,10 +52,10 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 // Unrecovered helpers.
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 CStringW FUN_141425950(int nItemId);                                        // item name
-CStringTable* FUN_1401a9d70();                                              // the string table singleton
+CStringTable* GetStringTable();                                              // the string table singleton
 CStringW FUN_141277a90(CUgcItemLook* pLook, const CStringW& strFallback);   // the UGC item name
 CStringA FUN_140540050(const char* pszFormat, const CStringA& strArg);       // StringFormat with one string
-CStringW FUN_14028b8e0(const CStringW& strKey);                             // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 int FUN_14028e280(CMsTime& out, const CStringA& strFormat, const CStringA& str); // parses a date string
 struct Unk_MeratDefaultIcon { char m_pad[0xc0]; CStringA m_strIcon; };
 Unk_MeratDefaultIcon* FUN_1401d31f0();
@@ -848,7 +848,7 @@ CStringW CDBPremiumProduct::GetSellDayText()
         CMsTime zero(0);
         if (!(m_randomSaleDay == zero))
         {
-            const CStringW& strFormat = FUN_14028b8e0(CStringW(L"s_meratmarket_tooltip_sell_day"));
+            const CStringW& strFormat = GetStringCommonByKey(CStringW(L"s_meratmarket_tooltip_sell_day"));
             int nDay = m_randomSaleDay.GetDay();
             int nMonth = m_randomSaleDay.GetMonth();
             int nYear = m_randomSaleDay.GetYear();
@@ -2156,7 +2156,7 @@ CStringW CMeratMarketProduct::GetName()
     if (IsPremium())
         return m_premium.GetName();
     int nItemId = GetItemId();
-    CStringW strName = FUN_1401a9d70()->FUN_141811980(1, nItemId);
+    CStringW strName = GetStringTable()->FUN_141811980(1, nItemId);
     if (IsUgc())
     {
         if (m_ugc.FUN_140896310())

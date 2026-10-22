@@ -58,7 +58,7 @@ void FUN_141276f80(const Unk_CommandChat&);
 
 void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);    // pop the system message nTable
 void FUN_140841420(CStringW& str);                                              // trim
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 extern int DAT_143ab2914;                                                       // the character level
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -174,7 +174,7 @@ void UIMoveFieldDialog::FUN_141a55e30(const CStringW& strFilter)
     for (MS2Ptr<CFieldData>& field : fields) {
         CStringW strId = StringFormat(L"{0}", reinterpret_cast<const unsigned&>(field->m_nFieldID));
         int nFieldId = field->m_nFieldID;
-        CStringW strSpaced = FUN_1401a9d70()->FUN_141811980(3, nFieldId);
+        CStringW strSpaced = GetStringTable()->FUN_141811980(3, nFieldId);
         FUN_140841420(strSpaced);
         CStringW strName(strSpaced);
         strSpaced.Remove(L' ');

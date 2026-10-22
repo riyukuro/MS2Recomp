@@ -1021,7 +1021,7 @@ MS2_REPLACE_METHOD(0x141add1f0, CUIService, FUN_141add1f0, 24, 0x56AAF3CF);
 // MS2-FUNCTIONAL: the box and delegate temporaries are laid out through the exe's Delegate glue
 void CUIService::FUN_141add210()
 {
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(FUN_14028b8e0(CStringW(L"s_err_lack_merat_ask")), 1);
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(CStringW(L"s_err_lack_merat_ask")), 1);
     if (spBox.get() != 0)
     {
         spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CUIService::FUN_141add940));
@@ -1033,7 +1033,7 @@ void CUIService::FUN_141add210()
 // MS2-FUNCTIONAL: the box and delegate temporaries are laid out through the exe's Delegate glue
 void CUIService::FUN_141add390()
 {
-    CStringW strText = FUN_14028b8e0(CStringW(L"s_err_lack_meso_makret_token_ask"));
+    CStringW strText = GetStringCommonByKey(CStringW(L"s_err_lack_meso_makret_token_ask"));
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(strText, 1);
     if (spBox.get() != 0)
     {
@@ -5022,7 +5022,7 @@ void FUN_141addb30(long long n)
     if (strKeyW.Find(L"$", 0) == 0)
         strFormat = FUN_14025e7a0()->FUN_1422b0570(strKey);
     else if (strKeyW.Find(L"s_", 0) == 0)
-        strFormat = FUN_14028b8e0(strKeyW);
+        strFormat = GetStringCommonByKey(strKeyW);
     else
         strFormat = strKeyW;
     if (strFormat.IsEmpty())

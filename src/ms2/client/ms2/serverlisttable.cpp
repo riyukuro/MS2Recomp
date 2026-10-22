@@ -17,7 +17,7 @@ CStringW FUN_1401bf530(Unk_140165cf0*, const char*, CStringW);
 CString FUN_14015f710(Unk_140165cf0*, const char*, CString);
 const char* FUN_14086f4b0(Unk_140165cf0*, const char*);
 CString FUN_14028d1f0(const char*);
-CStringW FUN_14028b8e0(const CStringW& s);
+CStringW GetStringCommonByKey(const CStringW& s);
 void FUN_1408731e0(void*, const char*, int&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
@@ -57,7 +57,7 @@ void CServerListTable::Load()
                 {
                     FUN_1408731e0(pNode, "id", info->m_nId);
                     CStringW strName = FUN_1401bf530(pNode, "name", L"");
-                    info->m_strName = FUN_14028b8e0(strName);
+                    info->m_strName = GetStringCommonByKey(strName);
                     info->m_strIcon = FUN_14015f710(pNode, "icon", "");
                     info->m_strDisIcon = FUN_14028d1f0(FUN_14086f4b0(pNode, "dis_icon"));
                     m_map.SetAt(info->m_nId, info);

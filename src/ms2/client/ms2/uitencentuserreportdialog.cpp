@@ -72,7 +72,7 @@ public:
 };
 extern const int g_reportTypes[16]; // exe table; no mutable DLL-local copy
 void FUN_141275260(int message, int a, int b);
-CStringW FUN_14028de60(int id);
+CStringW GetStringCommon(int id);
 class Unk_ReportLocalizer { public: CStringW FUN_1422b0570(const CString& key); };
 Unk_ReportLocalizer* FUN_14025e7a0();
 class Unk_ReportBlindManager {
@@ -328,7 +328,7 @@ void UITencentUserReportDialog::FUN_140edbe30()
     Unk_ReportContactRequest request;
     request.kind = 5;
     request.name = m_data.name;
-    request.reason = FUN_14028de60(0x8af);
+    request.reason = GetStringCommon(0x8af);
     request.id = contact.get() ? contact->FUN_1401cc2f0() : 0;
     FUN_14097a780()->FUN_140ae4820(request);
 }
@@ -561,10 +561,10 @@ void UITencentUserReportPage::FUN_140edd450()
     Unk_ReportHandle<Unk_ReportText> text;
     if ((m_entity.get() ? true : false) && m_entity->GetChild("m_textFieldWarnig", text)) {
         switch (m_type) {
-        case 3: text->FUN_1422c4cd0(FUN_14028de60(0x8b2)); break;
-        case 4: text->FUN_1422c4cd0(FUN_14028de60(0x8b1)); break;
-        case 16: text->FUN_1422c4cd0(FUN_14028de60(0x8b1)); break;
-        default: text->FUN_1422c4cd0(FUN_14028de60(0x8b0)); break;
+        case 3: text->FUN_1422c4cd0(GetStringCommon(0x8b2)); break;
+        case 4: text->FUN_1422c4cd0(GetStringCommon(0x8b1)); break;
+        case 16: text->FUN_1422c4cd0(GetStringCommon(0x8b1)); break;
+        default: text->FUN_1422c4cd0(GetStringCommon(0x8b0)); break;
         }
     }
 }

@@ -270,8 +270,8 @@ class Unk_TextFilterMgr { public: Unk_TextFilterPtr FUN_140229a50(); };
 Unk_TextFilterMgr* FUN_14025e7d0();
 
 // Strings and tables.
-CStringW FUN_14028b8e0(const CStringW& str);
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommonByKey(const CStringW& str);
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_14052bd00(int nStringId, const CStringW& str);
 CStringW FUN_14028dee0(int nStringId, const fmt::ArgList& args);        // the string table formatter
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
@@ -282,7 +282,7 @@ CStringW FUN_1408f71a0(CStringW fmt, const CStringW& a, const CStringW& b);
 CStringW FUN_1409e8820(CStringW fmt, const unsigned short& n);
 CStringW FUN_1409e34e0(MS2Ptr<CItem> item);                             // the item's option text
 CString FUN_14038f6d0(const CString& a, const char* b);                 // a + b
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 bool FUN_140164830(const CStringW& a, const CStringW& b);
 CGameRule* FUN_1401c0d90();
 CStringW FUN_1401fedc0();                                               // the empty name
@@ -563,7 +563,7 @@ void PetInfoBasic::vfunc_3()
     MS2Ptr<Unk_PetButton> change = basic->FUN_140acce30<Unk_PetButton>(CString("m_changeName"));
     if (change.get() != 0)
     {
-        change->FUN_1422cdfb0(FUN_14028b8e0(CStringW(L"s_pet_change_name")));
+        change->FUN_1422cdfb0(GetStringCommonByKey(CStringW(L"s_pet_change_name")));
         change->FUN_1422c1fe0(FUN_140cba220());
     }
     change = 0;
@@ -584,7 +584,7 @@ void PetInfoBasic::vfunc_3()
             }
             else
             {
-                bar->Invoke("setText", FUN_14028b8e0(CStringW(L"s_word_not_enchant")));
+                bar->Invoke("setText", GetStringCommonByKey(CStringW(L"s_word_not_enchant")));
             }
             bar->Invoke("setPercent", nExp, nMax);
         }
@@ -623,7 +623,7 @@ void PetInfoBasic::vfunc_4()
     MS2Ptr<Unk_PetButton> change = basic->FUN_140acce30<Unk_PetButton>(CString("m_changeName"));
     if (change.get() != 0)
     {
-        change->FUN_1422cdfb0(FUN_14028b8e0(CStringW(L"s_pet_change_name")));
+        change->FUN_1422cdfb0(GetStringCommonByKey(CStringW(L"s_pet_change_name")));
         change->FUN_1422c1fe0(0);
     }
     change = 0;
@@ -724,7 +724,7 @@ bool PetInfoBasic::FUN_140cb9ba0(int nResult, const CMsgBoxData& box)
                 {
                     UIMessageBox* pBox = FUN_14151f890();
                     if (pBox != 0)
-                        pBox->FUN_1419f82b0(FUN_14028de60(0xc1b));
+                        pBox->FUN_1419f82b0(GetStringCommon(0xc1b));
                 }
                 else
                 {
@@ -825,7 +825,7 @@ void PetInfoInventory::vfunc_3()
             if (text.get() != 0)
             {
                 if (nSlotMax < 1)
-                    text->FUN_1422c4cd0(FUN_14028b8e0(CStringW(L"s_pet_otherpet_not_inventory")));
+                    text->FUN_1422c4cd0(GetStringCommonByKey(CStringW(L"s_pet_otherpet_not_inventory")));
                 else
                     text->FUN_1422c4cd0(FUN_14062b4f0(CStringW(L"s_pet_otherpet_inventory"), nSlotMax));
             }
@@ -840,7 +840,7 @@ void PetInfoInventory::vfunc_3()
         {
             MS2Ptr<ASTextField> text = notInv->FUN_1409b4620(CString("textField"));
             if (text.get() != 0)
-                text->FUN_1422c4cd0(FUN_14028b8e0(CStringW(L"s_pet_not_inventory")));
+                text->FUN_1422c4cd0(GetStringCommonByKey(CStringW(L"s_pet_not_inventory")));
             notInv->vfunc_3(1);
         }
     }
@@ -1006,8 +1006,8 @@ void PetInfoSkill::FUN_140cbb060(MS2Ptr<Unk_StatList> list)
         MS2Ptr<Unk_PiSkillRec> rec = FUN_1401958b0()->FUN_140aafef0(nSkillId, nLevel);
         if (rec == 0)
         {
-            CStringW strName = FUN_14052bd00(0xc18, FUN_1401a9d70()->FUN_141812290(nSkillId, nLevel, CString("name")));
-            CStringW strTip = FUN_1401a9d70()->FUN_141812290(nSkillId, nLevel, CString("tooltipDescription"));
+            CStringW strName = FUN_14052bd00(0xc18, GetStringTable()->FUN_141812290(nSkillId, nLevel, CString("name")));
+            CStringW strTip = GetStringTable()->FUN_141812290(nSkillId, nLevel, CString("tooltipDescription"));
             ASObj obj(2);
             obj.FUN_1407cbb20("buffName", CStringW(strName));
             obj.FUN_1407cbb20("buffTooltip", CStringW(strTip));
@@ -1063,7 +1063,7 @@ void PetInfoStat::vfunc_3()
     CStringW strText = FUN_1409e34e0(MS2Ptr<CItem>(pet));
     ASObj obj(2);
     if (strText.IsEmpty())
-        obj.FUN_1407cbb20("itemGuideDescription", FUN_14028b8e0(CStringW(L"s_word_not_option")));
+        obj.FUN_1407cbb20("itemGuideDescription", GetStringCommonByKey(CStringW(L"s_word_not_option")));
     else
         obj.FUN_1407cbb20("itemDescription", CStringW(strText));
     PI(stat)->FUN_1422bb7e0(obj);

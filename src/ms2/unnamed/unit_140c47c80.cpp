@@ -88,7 +88,7 @@ struct Unk_GsStrings { CStringW FUN_141811980(int, int); };
 Unk_GsStrings* FUN_1401a9d70();
 CStringW FUN_140bfa7f0(CStringW key, const CStringW& name, const int& count);
 CStringW FUN_1405c2690(CStringW key, const CStringW& arg);
-CStringW FUN_14028b8e0(const CStringW& key);
+CStringW GetStringCommonByKey(const CStringW& key);
 CStringW FUN_1409404f0(__int64 meso);
 #ifdef __clang__
 CStringW FUN_1401d0160(const wchar_t*, const CStringW&);     // ATL::operator+(const wchar_t*, const CStringW&)
@@ -675,7 +675,7 @@ bool ItemSocketSystemPageGemstoneSwap::FUN_140c4ab30(MS2Ptr<CItem> item, CString
 #endif
     } else {
         CStringW key(L"s_itemsocketsystem_socket_swap_confirm_free");
-        text = FUN_14028b8e0(key);
+        text = GetStringCommonByKey(key);
     }
     return true;
 }

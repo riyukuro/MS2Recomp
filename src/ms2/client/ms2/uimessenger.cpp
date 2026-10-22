@@ -549,7 +549,7 @@ public:
     CStringW FUN_1422b0570(const CString& strKey);                  // the text of a "$..." key
 };
 Unk_MsgStrings* FUN_14025e7a0();
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_1409e97f0(int nStringId, const int& n);                // a string with one number
 CStringW FUN_141842320(const CStringW& strText);                    // text to html
 void FUN_140d2c650(CStringW& strHtml);                              // encodes the item links
@@ -1811,7 +1811,7 @@ CStringW UIMessenger::FUN_141a13d20()
                 return strName;
         }
     }
-    return FUN_14028de60(0x57d);
+    return GetStringCommon(0x57d);
 }
 
 // @0x141a13e00
@@ -2489,9 +2489,9 @@ void UIMessenger::FUN_141a17900(const CStringW& strTarget)
 {
     CStringW strText;
     if (strTarget.IsEmpty())
-        strText = FUN_1401e8510(L"{0} ", FUN_14028de60(0xaa5));
+        strText = FUN_1401e8510(L"{0} ", GetStringCommon(0xaa5));
     else
-        strText = FUN_140656190(L"{0} {1} ", FUN_14028de60(0xaa5), strTarget);
+        strText = FUN_140656190(L"{0} {1} ", GetStringCommon(0xaa5), strTarget);
     FUN_141a17830(strText, 1);
 }
 
@@ -2542,9 +2542,9 @@ void UIMessenger::FUN_141a17a60(const CStringW& strTarget)
 {
     CStringW strText;
     if (strTarget.IsEmpty())
-        strText = FUN_1401e8510(L"{0} ", FUN_14028de60(0xaa6));
+        strText = FUN_1401e8510(L"{0} ", GetStringCommon(0xaa6));
     else
-        strText = FUN_140656190(L"{0} {1} ", FUN_14028de60(0xaa6), strTarget);
+        strText = FUN_140656190(L"{0} {1} ", GetStringCommon(0xaa6), strTarget);
     FUN_141a17830(strText, 1);
 }
 
@@ -2912,7 +2912,7 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
         return;
     if (line.m_nType == 5)
     {
-        strText = FUN_14028de60(0x4d);
+        strText = GetStringCommon(0x4d);
         FUN_141275260(0x4d, 1, 0);
     }
     else if (line.m_nType == 6)
@@ -3326,18 +3326,18 @@ void UIMessengerBrowser::FUN_141a24890(CItem* pItem, unsigned nCount, int nManyI
     {
         CStringW strFormat(L"");
         if (pItem != 0 && ((CItemData*)pItem->FUN_140527840())->FUN_14053cb80())
-            strFormat = FUN_14028de60(699);
+            strFormat = GetStringCommon(699);
         else
-            strFormat = FUN_14028de60(nOneId);
+            strFormat = GetStringCommon(nOneId);
         strText = FUN_1401e8510(strFormat, strItem);
     }
     else
     {
         CStringW strFormat(L"");
         if (pItem != 0 && ((CItemData*)pItem->FUN_140527840())->FUN_14053cb80())
-            strFormat = FUN_14028de60(700);
+            strFormat = GetStringCommon(700);
         else
-            strFormat = FUN_14028de60(nManyId);
+            strFormat = GetStringCommon(nManyId);
         strText = FUN_1402758a0(strFormat, strItem, nCount);
     }
     int nBefore = pItem->FUN_140526c50() - nCount;
@@ -3823,9 +3823,9 @@ int UIMessengerBrowser::FUN_141a26f10(const CStringW& strName, const CStringW& s
     int bShow = FUN_1409a8b10()->FUN_140b123b0()->FUN_14125c820(nType);
     CStringW strBalloon;
     if (nType == 7 && bShow)
-        strBalloon = FUN_14028de60(0xaa7);
+        strBalloon = GetStringCommon(0xaa7);
     else if (nType == 8 && bShow)
-        strBalloon = FUN_14028de60(0xaa8);
+        strBalloon = GetStringCommon(0xaa8);
     strBalloon += strText;
     float fDistance = pSpeaker->FUN_140f4a450();
     if (!bShow)
@@ -4473,7 +4473,7 @@ int UIMessenger::FUN_141a10fd0(CStringW strText, CStringW strHtml, bool bLinks)
             return 0;
         if (strTarget.IsEmpty())
         {
-            FUN_1412751f0(FUN_14028de60(0x4e), 1, 1);
+            FUN_1412751f0(GetStringCommon(0x4e), 1, 1);
             return 0;
         }
         if (bLinks)
@@ -4502,7 +4502,7 @@ int UIMessenger::FUN_141a10fd0(CStringW strText, CStringW strHtml, bool bLinks)
         nClubId = FUN_140e0d900()->FUN_140b14fc0(CStringW(strClub));
         if (nClubId == 0)
         {
-            FUN_1412751f0(FUN_14028de60(0x50), 1, 1);
+            FUN_1412751f0(GetStringCommon(0x50), 1, 1);
             return 0;
         }
         if (bLinks)
@@ -4543,7 +4543,7 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5e2e0(pMe->FUN_1416639e0());
         if (spItem == 0)
             return false;
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x1a, FUN_14028de60(0xaa1), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x1a, GetStringCommon(0xaa1), 0, CStringW(L""));
         if (spBox.get() != 0)
         {
             spBox->FUN_140b76940(CStringW(strText));
@@ -4552,7 +4552,7 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
             spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), strName, 1, 1, 1, -1, 1);
             spBox->FUN_141a01800(1);
             spBox->FUN_141a02670(!FUN_140166410()->FUN_14036e5b0());
-            spBox->FUN_141a024e0(FUN_14028de60(0xaa4), 0);
+            spBox->FUN_141a024e0(GetStringCommon(0xaa4), 0);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0f9d0));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
             return true;
@@ -4567,7 +4567,7 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
             spBox->FUN_140b76940(CStringW(strText));
             spBox->FUN_141a01800(1);
             spBox->FUN_141a02670(!FUN_140166410()->FUN_14036e5b0());
-            spBox->FUN_141a024e0(FUN_14028de60(0xaa4), 0);
+            spBox->FUN_141a024e0(GetStringCommon(0xaa4), 0);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0fb40));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
             return true;
@@ -4582,7 +4582,7 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
             spBox->FUN_140b76940(CStringW(strText));
             spBox->FUN_141a01800(1);
             spBox->FUN_141a02670(!FUN_140166410()->FUN_14036e5b0());
-            spBox->FUN_141a024e0(FUN_14028de60(0xaa4), 0);
+            spBox->FUN_141a024e0(GetStringCommon(0xaa4), 0);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0fcb0));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
             return true;

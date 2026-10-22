@@ -27,10 +27,10 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-CStringW FUN_14028de60(int nStringId);                                  // a common string by id
+CStringW GetStringCommon(int nStringId);                                  // a common string by id
 CStringW FormatStringId(int nId, const fmt::ArgList& args);             // 0x14028dee0
 FMT_VARIADIC_W(CStringW, FormatStringId, int)
-CStringTable* FUN_1401a9d70();                                          // the string table singleton
+CStringTable* GetStringTable();                                          // the string table singleton
 int FUN_1406516a0();                                                    // client language
 int FUN_1406516b0();                                                    // the language / region id
 int FUN_1406516d0(int nLanguage);                                       // the digit-group size of a language
@@ -97,7 +97,7 @@ CStringW FUN_140b8eb40(const CMsTime& time)
 {
     CStringW str = FUN_14028dfa0(L"s_common_month_date", time.GetMonth(), time.GetDay());
     if (time.GetHour() != 0) {
-        CStringW strHour = StringFormat(L" {0}{1}", time.GetHour(), FUN_14028de60(0x5cd));
+        CStringW strHour = StringFormat(L" {0}{1}", time.GetHour(), GetStringCommon(0x5cd));
         str.Append(strHour);
     }
     return str;
@@ -126,13 +126,13 @@ MS2_REPLACE(0x140B8ED80, FUN_140b8ed80, 222, 0x34EC45CA);
 CStringW FUN_140b8ee70(int nDayOfWeek)
 {
     switch (nDayOfWeek) {
-    case 1: return FUN_14028de60(0x563);
-    case 2: return FUN_14028de60(0x564);
-    case 3: return FUN_14028de60(0x565);
-    case 4: return FUN_14028de60(0x566);
-    case 5: return FUN_14028de60(0x567);
-    case 6: return FUN_14028de60(0x568);
-    case 7: return FUN_14028de60(0x569);
+    case 1: return GetStringCommon(0x563);
+    case 2: return GetStringCommon(0x564);
+    case 3: return GetStringCommon(0x565);
+    case 4: return GetStringCommon(0x566);
+    case 5: return GetStringCommon(0x567);
+    case 6: return GetStringCommon(0x568);
+    case 7: return GetStringCommon(0x569);
     default: return L"";
     }
 }
@@ -173,13 +173,13 @@ CStringW FUN_140b8f230(int nDayOfWeek)
 {
     CStringW str(L"");
     switch (nDayOfWeek) {
-    case 1: str = FUN_14028de60(0x55c); break;
-    case 2: str = FUN_14028de60(0x55d); break;
-    case 3: str = FUN_14028de60(0x55e); break;
-    case 4: str = FUN_14028de60(0x55f); break;
-    case 5: str = FUN_14028de60(0x560); break;
-    case 6: str = FUN_14028de60(0x561); break;
-    case 7: str = FUN_14028de60(0x562); break;
+    case 1: str = GetStringCommon(0x55c); break;
+    case 2: str = GetStringCommon(0x55d); break;
+    case 3: str = GetStringCommon(0x55e); break;
+    case 4: str = GetStringCommon(0x55f); break;
+    case 5: str = GetStringCommon(0x560); break;
+    case 6: str = GetStringCommon(0x561); break;
+    case 7: str = GetStringCommon(0x562); break;
     }
     return str;
 }
@@ -275,7 +275,7 @@ CStringW FUN_140b8fc70(int nHour, int nMinute, bool b24Hour)
     CStringW str(L"");
     if (!b24Hour) {
         bool bAm = nHour < 12;
-        CStringW strAmPm = FUN_14028b8e0(bAm ? L"s_timestring_am" : L"s_timestring_pm");
+        CStringW strAmPm = GetStringCommonByKey(bAm ? L"s_timestring_am" : L"s_timestring_pm");
         if (nHour == 0)
             nHour = 12;
         else if (nHour > 12)
@@ -293,8 +293,8 @@ MS2_REPLACE(0x140B8FC70, FUN_140b8fc70, 590, 0xCF168768);
 CStringW FUN_140b8fed0(int nId)
 {
     if (FUN_1406516b0() == 2)
-        return FUN_1401a9d70()->FUN_141811980(0x3e, nId);
-    return FUN_1401a9d70()->FUN_141811980(1, nId);
+        return GetStringTable()->FUN_141811980(0x3e, nId);
+    return GetStringTable()->FUN_141811980(1, nId);
 }
 MS2_REPLACE(0x140B8FED0, FUN_140b8fed0, 128, 0x5835A829);
 

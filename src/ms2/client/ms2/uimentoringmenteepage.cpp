@@ -61,7 +61,7 @@ private:
 class Unk_PopupMenu { public: void FUN_141a7f090(const Unk_PopupMenuInfo& info, const CStringW& strName, unsigned __int64 nSerial, void* p, int b, int c); };
 Unk_PopupMenu* FUN_140c30140(int nId);
 unsigned __int64 FUN_140718350(const CString& str);
-CStringW FUN_14028b8e0(const CStringW& strId);
+CStringW GetStringCommonByKey(const CStringW& strId);
 CStringW FUN_1409e9890(CStringW strFormat, const int& a, const int& b);
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 // AS helpers on the page's script and the clips it hands out.
@@ -192,7 +192,7 @@ CString UIMentoringMenteePage::vfunc_6() { return "MenteePage"; }
 MS2_REPLACE_METHOD(0x140C6F050, UIMentoringMenteePage, vfunc_6, 61, 0xBC8DA6F7);
 
 // @0x140c6f0a0
-CStringW UIMentoringMenteePage::vfunc_7() { return FUN_14028b8e0(L"s_mentoring_tab_mentee"); }
+CStringW UIMentoringMenteePage::vfunc_7() { return GetStringCommonByKey(L"s_mentoring_tab_mentee"); }
 MS2_REPLACE_METHOD(0x140C6F0A0, UIMentoringMenteePage, vfunc_7, 97, 0x91462F07);
 
 // @0x140c6f110
@@ -214,7 +214,7 @@ void UIMentoringPage::FUN_140c6f190()
     {
         int nHidden = FUN_140c70240()->FUN_140b71720();
         pSearchMovie->vfunc_4(nHidden == 0);
-        FUN_140cfee80((*pSearchMovie).FUN_1422bb890(), "m_desc", FUN_14028b8e0(L"s_mentoring_tab_mentee_search_desc"));
+        FUN_140cfee80((*pSearchMovie).FUN_1422bb890(), "m_desc", GetStringCommonByKey(L"s_mentoring_tab_mentee_search_desc"));
     }
     MS2Ptr<ASMovieClip> pSearch = pScript->FUN_1409b4560("m_search");
     if (pSearch.get())

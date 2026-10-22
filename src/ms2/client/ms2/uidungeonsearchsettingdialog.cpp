@@ -56,7 +56,7 @@ MS2Ptr<ASItemRendererBase> FUN_140bc6120(int nMovieId, const Scaleform::GFx::Val
 MS2Ptr<ASDisplayObjectContainer> FUN_140bc5fc0(int nMovieId, const Scaleform::GFx::Value& v);
 CStringW FUN_140e14bd0(MS2Ptr<DungeonRoom> pRoom, bool bShowLimit);                 // the room's list text
 CStringW FUN_14183e930(const CStringW& str, int nColor);                            // wrap in a color tag
-CStringW FUN_14028b8e0(const CStringW& strKey);                                     // the localized string
+CStringW GetStringCommonByKey(const CStringW& strKey);                                     // the localized string
 CStringW FUN_140cbf840(int nGroup);                                                 // the dungeon group's name
 void FUN_140d01340(const Scaleform::GFx::Value& target, unsigned nParam, int nMovieId);
 
@@ -115,7 +115,7 @@ void UIDungeonSearchSettingDialog::OnLoadComplete()
                                                   MS2_THIS_FILE, MS2_LINE(0x2d), __FUNCTION__));
     if (MS2Ptr<ASTextField> spDesc = GetChild<ASTextField>("m_groupDesc"))
         FUN_140d01340((*spDesc).FUN_1422bb890(), 2, 2);
-    m_group->FUN_1422dfce0(FUN_14028b8e0(L"s_dungeon_search_setting_group_none"));
+    m_group->FUN_1422dfce0(GetStringCommonByKey(L"s_dungeon_search_setting_group_none"));
     m_group->FUN_1422dfce0(FUN_140cbf840(1));
     m_group->FUN_1422dfce0(FUN_140cbf840(2));
     m_group->FUN_1422df5f0(3);

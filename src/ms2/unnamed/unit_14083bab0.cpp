@@ -290,7 +290,7 @@ CStringW FUN_14083cf50(int nValue, char bLocalized)
     int nInt = nValue / 100;
     if (nFrac < 1)
     {
-        CStringW strFormat = bLocalized == 0 ? CStringW(L"{0}") : FUN_14028b8e0(CStringW(L"s_common_percent"));
+        CStringW strFormat = bLocalized == 0 ? CStringW(L"{0}") : GetStringCommonByKey(CStringW(L"s_common_percent"));
         return FUN_1401ceea0(strFormat, nInt);
     }
     CStringW strNumber = StringFormat(L"{0}.{1}", nInt, nFrac);

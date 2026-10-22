@@ -622,7 +622,7 @@ CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW FUN_1401ceea0(const wchar_t* szFmt, int n);
 CStringW FUN_1409404f0(int n);
 CStringW FUN_1409e97f0(int nId, int* pArg);
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_1418fec00(int nCurrency, int nPrice, int n);
 class Unk_PalStrings
 {
@@ -2481,7 +2481,7 @@ void FUN_140ef2fb0()
                     spBox->FUN_141a01600(spItem->FUN_140526a50());
                     spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 1, 1, (int)nPrice, 1);
                     spBox->FUN_141a02670(FUN_14036e5b0(FUN_140166410()) == 0);
-                    spBox->FUN_141a024e0(FUN_14028de60(0x29f), 0);
+                    spBox->FUN_141a024e0(GetStringCommon(0x29f), 0);
                     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(pDlg, &UIUGCCubePaletteDialog::FUN_140eec410));
                     if (nPrice < nOrigin)
                         spBox->SetStrike(strOrigin);

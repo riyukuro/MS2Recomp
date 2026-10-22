@@ -10,7 +10,7 @@
 
 #include "hook/ms2hook.h"
 
-CStringW FUN_14028b8e0(const CStringW& strKey);                             // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 void FUN_141821bf0(CString strFirst, CString strSecond);                    // block-file modifier
 
 IMPLEMENT_DYNAMIC(CToolBlockFileModifyDialog, CDialogEx)
@@ -54,33 +54,33 @@ CStringW TranslateEnumDungeonGroup(unsigned int nGroup)
     case 0:
         return CStringW();
     case 1:
-        return FUN_14028b8e0(CStringW(L"s_enum_dungeon_group_normal"));
+        return GetStringCommonByKey(CStringW(L"s_enum_dungeon_group_normal"));
     case 2:
-        return FUN_14028b8e0(CStringW(L"s_enum_dungeon_group_raid"));
+        return GetStringCommonByKey(CStringW(L"s_enum_dungeon_group_raid"));
     case 3:
-        return FUN_14028b8e0(CStringW(L"s_enum_dungeon_group_chaosRaid"));
+        return GetStringCommonByKey(CStringW(L"s_enum_dungeon_group_chaosRaid"));
     case 4:
-        return FUN_14028b8e0(CStringW(L"s_enum_dungeon_group_reverseRaid"));
+        return GetStringCommonByKey(CStringW(L"s_enum_dungeon_group_reverseRaid"));
     case 5:
-        return FUN_14028b8e0(CStringW(L"s_enum_dungeon_group_lapenta"));
+        return GetStringCommonByKey(CStringW(L"s_enum_dungeon_group_lapenta"));
     case 6:
-        return FUN_14028b8e0(CStringW(L"s_enum_dungeon_group_guildRaid"));
+        return GetStringCommonByKey(CStringW(L"s_enum_dungeon_group_guildRaid"));
     case 7:
-        return FUN_14028b8e0(CStringW(L"s_enum_dungeon_group_darkStream"));
+        return GetStringCommonByKey(CStringW(L"s_enum_dungeon_group_darkStream"));
     case 8:
-        return FUN_14028b8e0(CStringW(L"s_enum_dungeon_group_worldBoss"));
+        return GetStringCommonByKey(CStringW(L"s_enum_dungeon_group_worldBoss"));
     case 9:
-        return FUN_14028b8e0(CStringW(L"s_enum_dungeon_group_item"));
+        return GetStringCommonByKey(CStringW(L"s_enum_dungeon_group_item"));
     case 10:
-        return FUN_14028b8e0(CStringW(L"s_enum_dungeon_group_vip"));
+        return GetStringCommonByKey(CStringW(L"s_enum_dungeon_group_vip"));
     case 11:
-        return FUN_14028b8e0(CStringW(L"s_enum_dungeon_group_event"));
+        return GetStringCommonByKey(CStringW(L"s_enum_dungeon_group_event"));
     case 12:
-        return FUN_14028b8e0(CStringW(L"s_enum_dungeon_group_fameChallenge"));
+        return GetStringCommonByKey(CStringW(L"s_enum_dungeon_group_fameChallenge"));
     case 13:
-        return FUN_14028b8e0(CStringW(L"s_enum_dungeon_group_colosseum"));
+        return GetStringCommonByKey(CStringW(L"s_enum_dungeon_group_colosseum"));
     case 14:
-        return FUN_14028b8e0(CStringW(L"s_enum_dungeon_group_turka"));
+        return GetStringCommonByKey(CStringW(L"s_enum_dungeon_group_turka"));
     default:
         ASSERT(0);
         return CStringW();

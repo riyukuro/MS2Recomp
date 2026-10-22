@@ -155,7 +155,7 @@ void FUN_1422b9fd0(Unk_BSDevSound* p, int nEvent);
 
 NotifySystem* FUN_140939a10();
 CInputKeyHandler* FUN_14025e7c0();
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 CommonResource* FUN_1401d31f0();
 CItemDataTable* FUN_140281980();
 
@@ -163,7 +163,7 @@ CItemDataTable* FUN_140281980();
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_14151f200();
-CStringW FUN_14028de60(int nId);
+CStringW GetStringCommon(int nId);
 void FUN_1412761e0(MS2Ptr<AScript> spRoot, int bEnable);   // enable the root's input
 bool FUN_140184310(const CString& str, const char* sz);
 int FUN_141b71a10(const char* sz);
@@ -713,7 +713,7 @@ void UIBeautyShopDevDialog::vfunc_84(int nTab, int bKeepList, const CStringW& st
                 nSelected = (int)i;
             if (bKeepList == 0)
             {
-                CStringW strName = FUN_1401a9d70()->FUN_141811980(1, nItemId);
+                CStringW strName = GetStringTable()->FUN_141811980(1, nItemId);
                 CStringW strCode = FUN_141b71990(nItemId);
                 int bMatch = 1;
                 if (!strSearch.IsEmpty())
@@ -909,7 +909,7 @@ void UIBeautyShopDevDialog::FUN_14191fae0()
     }
     else
     {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(FUN_14028de60(0x271), 1);
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommon(0x271), 1);
         spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopDevDialog::FUN_14191e9e0));
         spBox->FUN_141a01800(2);
         FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
@@ -1013,7 +1013,7 @@ void UIBeautyShopDevDialog::FUN_1419200c0(int bForce)
                 int nItemId = pData->FUN_14053c510();
                 ASObj row(2);
                 row.FUN_1407cbb20("guid", FUN_141b71910(spItem->FUN_140526a50()));
-                CStringW strName = FUN_1401a9d70()->FUN_141811980(1, nItemId);
+                CStringW strName = GetStringTable()->FUN_141811980(1, nItemId);
                 row.FUN_1407cbb20("itemid", FUN_141b71990(nItemId));
                 row.FUN_1407cbb20("itemname", CStringW(strName));
                 row.FUN_1407cba60("iconPath", spItem->FUN_140528590());

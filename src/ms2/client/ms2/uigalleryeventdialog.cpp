@@ -133,7 +133,7 @@ Unk_GalleryPlayer* FUN_1403ed2d0();
 bool FUN_140184310(const CString&, const char*);
 CStringW FUN_1416e5660(int);
 CStringW FUN_1416e4df0(int);
-CStringW FUN_14028b8e0(const CStringW&);
+CStringW GetStringCommonByKey(const CStringW&);
 void FUN_1412751f0(const CStringW&, int, int);
 CStringW FUN_1409eec40(int);
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
@@ -690,7 +690,7 @@ bool UIGalleryEventDialog::FUN_140c18f10()
 {
     auto context = FUN_1401c0d90()->FUN_14047cf60();
     if (context == 0) {
-        FUN_1412751f0(FUN_14028b8e0(L"s_galleryevent_invalid_event"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_galleryevent_invalid_event"), 1, 1);
         return false;
     }
     return true;

@@ -36,7 +36,7 @@ class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* 
 Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 CString FUN_14016a5c0(const char* psz, int nCodePage);                   // narrows a string (the RTTI name in CheckInit)
-CStringTable* FUN_1401a9d70();                                           // the string table singleton
+CStringTable* GetStringTable();                                           // the string table singleton
 CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDefault);   // wide string attribute with default
 bool FUN_14028f710(Unk_140165cf0* pElem);                                // the element is enabled for this build
 Unk_140165cf0* FUN_14028f8d0(Unk_140165cf0* pElem);                      // the next sibling root
@@ -138,7 +138,7 @@ void CShopCategoryTable::TabInfo::Write(Unk_AsOut* pOut)
 // @0x1407ca4e0
 CStringW CShopCategoryTable::TabInfo::GetName()
 {
-    return FUN_1401a9d70()->FUN_141811980(13, m_nName);
+    return GetStringTable()->FUN_141811980(13, m_nName);
 }
 
 // ---- SortTabInfo

@@ -229,9 +229,9 @@ void FUN_140d73bc0(int nStrId, int nType, IMessageListener* pListener, CStringW 
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& packet);
-CStringW FUN_14028b8e0(const CStringW& strKey);
-CStringW FUN_14028de60(int nStringId);
-CStringTable* FUN_1401a9d70();
+CStringW GetStringCommonByKey(const CStringW& strKey);
+CStringW GetStringCommon(int nStringId);
+CStringTable* GetStringTable();
 CStringW FUN_141b720b0(int nTitle, int n);
 CStringW FUN_141b72150(int nTitle, int nGender);
 CStringW FUN_140632a60(int nId, const CStringW& a, const CStringW& b);
@@ -752,7 +752,7 @@ int UIPCInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     {
         if (vfunc_93() != 0)
         {
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028b8e0(L"s_char_info_reset_stat_point"), 0, L"");
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_char_info_reset_stat_point"), 0, L"");
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIPCInfoDialog::FUN_14132ee90));
             FUN_140d73c60(spBox);
         }
@@ -805,7 +805,7 @@ void UIPCInfoDialog::FUN_14132eed0(const Scaleform::GFx::FunctionHandler::Params
     ASTooltip tooltip((void*)pPC, 1, 2);
     tooltip.FUN_1409c6d70("export_common_tooltip_tooltipText");
     tooltip.FUN_1409c6dc0(4);
-    tooltip.FUN_1409c6cb0(FUN_14028b8e0(strKey));
+    tooltip.FUN_1409c6cb0(GetStringCommonByKey(strKey));
     Scaleform::GFx::Value* pRetVal = params.pRetVal;
     FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
 }
@@ -1223,7 +1223,7 @@ void UIPCInfoDialog::vfunc_94(const unsigned int& nJob)
         spImage->vfunc_13(strFrame);
     }
     if (MS2Ptr<Unk_PciLabel> spJob = ((Unk_PciMovieEntity*)this)->FUN_140e6d820("m_job"))
-        spJob->FUN_1422e4a50(FUN_1401a9d70()->FUN_141811980(6, nJob));
+        spJob->FUN_1422e4a50(GetStringTable()->FUN_141811980(6, nJob));
 }
 MS2_REPLACE_METHOD(0x141333180, UIPCInfoDialog, vfunc_94, 437, 0x6E3D79C9);
 
@@ -1361,7 +1361,7 @@ void UIPCInfoDialog::vfunc_101(const CStringW& strAddress)
     {
         ((Unk_PciComp*)spAddress.operator->())->FUN_1422c1fe0(!strAddress.IsEmpty());
         if (m_spInfo->FUN_140dba1c0() != 0)
-            spAddress->FUN_1422e4a50(strAddress.IsEmpty() ? FUN_14028de60(0x22) : CStringW(strAddress));
+            spAddress->FUN_1422e4a50(strAddress.IsEmpty() ? GetStringCommon(0x22) : CStringW(strAddress));
         else
             spAddress->FUN_1422e4a50(strAddress);
     }
@@ -1392,7 +1392,7 @@ void UIPCInfoDialog::vfunc_103(const CStringW& strGuild, const CStringW& strRank
         if (strGuild.IsEmpty())
         {
             if (m_spInfo->FUN_140dba1c0() != 0)
-                strText = FUN_14028de60(0x21);
+                strText = GetStringCommon(0x21);
         }
         else
         {
@@ -1791,7 +1791,7 @@ Scaleform::GFx::Value UIPCInfoDialog::FUN_1413369a0(unsigned int nContainer, int
     Unk_PciMyPC* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPC != 0)
         nShield = FUN_1409708a0(FUN_1416749a0(pPC));
-    CStringW strName = FUN_14028b8e0(L"s_pc_info_name_shield");
+    CStringW strName = GetStringCommonByKey(L"s_pc_info_name_shield");
     CStringW strDetail;
     strDetail.Format(L"-");
     CStringW strValue;

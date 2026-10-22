@@ -42,7 +42,7 @@ Unk_HpWorld* FUN_1403ed2d0();
 Unk_HpActor* FUN_141bd0cc0(Unk_HpWorld* pWorld);
 Unk_HpActor* FUN_141523c50(Unk_HpActor* pActor);
 __int64 FUN_140869440();                                        // server time
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_1409e90c0(int nStringId, const int& nYear, const int& nMonth, const int& nDay, const int& nHour,
                        const int& nMinute);
 int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, void* pScene);
@@ -110,7 +110,7 @@ void UIHomePasswordDialog::OnLoadComplete()
             }
             else
             {
-                reinterpret_cast<Unk_HpMovie*>(m_30.operator->())->FUN_140e0a8c0("setState", FUN_14028de60(0xb09), nState);
+                reinterpret_cast<Unk_HpMovie*>(m_30.operator->())->FUN_140e0a8c0("setState", GetStringCommon(0xb09), nState);
             }
         }
     }

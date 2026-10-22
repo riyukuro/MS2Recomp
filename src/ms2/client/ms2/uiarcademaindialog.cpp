@@ -129,7 +129,7 @@ public:
 
 class Unk_ArcStrings { public: CStringW FUN_141811980(int nTable, int nIndex); };
 Unk_ArcStrings* FUN_1401a9d70();
-CStringW FUN_14028b8e0(const CStringW& strKey);                             // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_140763e10(int nScore);                                         // the score as text
 CStringW FUN_14016a730(const char* sz, int n);                              // narrow to wide
 CStringA FUN_140390ea0(const wchar_t* sz, int n);                           // wide to utf8
@@ -297,7 +297,7 @@ void UIArcadeMainDialog::OnLoadComplete()
     }
     for (int i = nButton; i < 9; i++)
     {
-        m_buttons[i]->FUN_1422cdfb0(FUN_14028b8e0(L"s_arcade_game_preparing"));
+        m_buttons[i]->FUN_1422cdfb0(GetStringCommonByKey(L"s_arcade_game_preparing"));
         m_buttons[i]->FUN_1422c1fe0(0);
         FUN_140cff840((*m_buttons[i]).FUN_1422bb890(), "m_eventBand", 0);
     }
@@ -411,7 +411,7 @@ void UIArcadeMainDialog::FUN_140ef6a60(const Scaleform::GFx::FunctionHandler::Pa
         if (FUN_1418fe060() == 0)
         {
             CStringW strMsg;
-            strMsg = FUN_14028b8e0(L"s_beauty_goto_map_return_warn");
+            strMsg = GetStringCommonByKey(L"s_beauty_goto_map_return_warn");
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strMsg, 0, L"");
             if (spBox.get() != 0)
             {

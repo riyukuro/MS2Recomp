@@ -21,7 +21,7 @@ Unk_TsActor* FUN_141bd0cc0(Unk_TsWorld* pWorld);
 int FUN_141654700(Unk_TsActor* pActor);                         // job
 CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& nArg);
 CStringW FUN_141615b70(const wchar_t* szFormat, const int& nArg);
-CStringW FUN_14028b8e0(const CStringW& strKey);                        // localized
+CStringW GetStringCommonByKey(const CStringW& strKey);                        // localized
 void FUN_140cfefe0(const Scaleform::GFx::Value& root, CString strName, CString strField, CStringW strText);
 void FUN_140cff4e0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
@@ -55,8 +55,8 @@ void UITutorialSkipDialog::OnLoadComplete()
     FUN_141923680(1);
     reinterpret_cast<Unk_TsAS*>(m_30.operator->())->FUN_1422bb330("showOnDelay");
     int nJob = FUN_141654700(pActor);
-    FUN_140cfefe0(FUN_1422dbb40(), "m_contents", "textField", FUN_14028b8e0(FUN_1401ceea0(L"s_tutorial_skip_message_job{0}", nJob)));
-    FUN_140cff4e0(FUN_1422dbb40(), "m_tutorialSkipButton", FUN_14028b8e0(FUN_1401ceea0(L"s_tutorial_skip_button_job{0}", nJob)));
+    FUN_140cfefe0(FUN_1422dbb40(), "m_contents", "textField", GetStringCommonByKey(FUN_1401ceea0(L"s_tutorial_skip_message_job{0}", nJob)));
+    FUN_140cff4e0(FUN_1422dbb40(), "m_tutorialSkipButton", GetStringCommonByKey(FUN_1401ceea0(L"s_tutorial_skip_button_job{0}", nJob)));
 }
 
 // @0x141b33ad0
@@ -70,7 +70,7 @@ int UITutorialSkipDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     if (_stricmp("onTutorialSkipButton", szMethod) == 0)
     {
         int nJob = FUN_141654700(pActor);
-        CStringW strMsg = FUN_14028b8e0(FUN_141615b70(L"s_tutorial_skip_job{0}", nJob));
+        CStringW strMsg = GetStringCommonByKey(FUN_141615b70(L"s_tutorial_skip_job{0}", nJob));
         FUN_140d74390(strMsg, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UITutorialSkipDialog::FUN_141b33ca0));
     }
     return 0;

@@ -37,7 +37,7 @@ class Unk_MentorTab:public ASDisplayObject {public:
  virtual void vfunc_6();virtual void vfunc_7();virtual void vfunc_8();virtual void vfunc_9();virtual void vfunc_10();virtual void vfunc_11();virtual void vfunc_12();virtual void vfunc_13();virtual void vfunc_14();virtual void vfunc_15();virtual void vfunc_16();virtual void vfunc_17();virtual void vfunc_18();virtual void vfunc_19();virtual void vfunc_20();virtual void vfunc_21();virtual void vfunc_22();virtual void vfunc_23();virtual void vfunc_24(bool);
  void FUN_1422e3460(const ASObj&);void FUN_1422e31e0(int);
 };
-CStringW FUN_14028b8e0(const CStringW&);
+CStringW GetStringCommonByKey(const CStringW&);
 CStringW LocalizedMentorFormat(const CStringW&,const fmt::ArgList&);
 FMT_VARIADIC_W(CStringW,LocalizedMentorFormat,CStringW)
 class Unk_MentorRewards {public:void FUN_14069c070(std::vector<unsigned>&);};Unk_MentorRewards* FUN_1406c7610();
@@ -161,7 +161,7 @@ MS2_REPLACE_METHOD(0x140E631B0, UIMentoringRewardPage, vfunc_2, 43, 0xA57B4674);
 CString UIMentoringRewardPage::vfunc_6(){return "RewardPage";}
 MS2_REPLACE_METHOD(0x140E631F0, UIMentoringRewardPage, vfunc_6, 61, 0x2670D946);
 // @0x140e63240
-CStringW UIMentoringRewardPage::vfunc_7(){return FUN_14028b8e0(L"s_mentoring_tab_reward");}
+CStringW UIMentoringRewardPage::vfunc_7(){return GetStringCommonByKey(L"s_mentoring_tab_reward");}
 MS2_REPLACE_METHOD(0x140E63240, UIMentoringRewardPage, vfunc_7, 97, 0x97C1CD7B);
 // @0x140e632b0
 int UIMentoringRewardPage::vfunc_8(){if(FUN_140c70240()->FUN_140b71610())return 1;return 0;}

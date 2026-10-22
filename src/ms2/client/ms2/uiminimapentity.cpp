@@ -178,7 +178,7 @@ public:
 };
 Unk_MmNpcTable* FUN_1406d6e90();
 
-CStringTable* FUN_1401a9d70();                                      // the string table
+CStringTable* GetStringTable();                                      // the string table
 CStringW FUN_1401aa6a0(int nNpcId);                                 // the npc name
 CStringW FUN_1409eaa20(CStringW strKey, const CStringW& a1, const CStringW& a2, const CStringW& a3);
 CStringW FUN_14183e930(const CStringW& strText, int nColor);        // a coloured text
@@ -214,7 +214,7 @@ class Unk_MmBossTip { public: void FUN_141b99dc0(int nNpcId, ASObj& tip); };
 Unk_MmBossTip* FUN_140cb17d0();
 CFeatureManager* FUN_140166410();
 CStringW FUN_14016a730(const char* psz, int nLength);              // narrow -> wide
-CStringW FUN_14028b8e0(const CStringW& strKey);                     // a common string
+CStringW GetStringCommonByKey(const CStringW& strKey);                     // a common string
 int FUN_140408410(const ATL::CAtlArray<int>& arr, const int& n);    // the index of a value or -1
 extern ATL::CAtlArray<int> DAT_143ab3078;                           // the taxi stops the player has found
 CTaxiManager* FUN_1409f24a0();                                      // TSingleton<CTaxiManager>::GetInstance
@@ -466,7 +466,7 @@ MS2_REPLACE_METHOD(0x141a316d0, UIMinimapEntity, FUN_141a316d0, 780, 0x51BBD233)
 // @0x141a319f0
 CStringW UIMinimapEntity::FUN_141a319f0(NpcDataCli* pNpc, const CStringW& strAlign, bool bMultiRow)
 {
-    CStringW strFunction = FUN_1401a9d70()->FUN_141811980(10, pNpc->GetId());
+    CStringW strFunction = GetStringTable()->FUN_141811980(10, pNpc->GetId());
     if (!strFunction.IsEmpty()) {
         int nColor = pNpc->GetFriendly() > 0 ? FUN_1401d3200()->m_colors.FUN_140a7d630() : FUN_140a7c970(pNpc);
         CStringW strColored = FUN_14183e930(strFunction, nColor);
@@ -604,7 +604,7 @@ bool UIMinimapEntity::FUN_141a32640(CNpcData* pNpc)
         return false;
     if (pNpc->GetKind() == 0)
         return false;
-    bool bEmpty = FUN_1401a9d70()->FUN_141811980(10, pNpc->GetId()).IsEmpty();
+    bool bEmpty = GetStringTable()->FUN_141811980(10, pNpc->GetId()).IsEmpty();
     if (bEmpty)
         return false;
     return true;
@@ -873,7 +873,7 @@ void UIMinimapEntityProxyPortal::FUN_141a33850(MS2Ptr<CPortal> spPortal, CString
     }
     if (!strLabel.IsEmpty()) {
         CStringW strAligned = FUN_14028dfa0(L"s_minimap_tooltip_normal_alignleft", strLabel);
-        strText = FUN_1408f71a0(L"s_minimap_tooltip_function_portal", FUN_1401a9d70()->FUN_141811980(3, nField), strAligned);
+        strText = FUN_1408f71a0(L"s_minimap_tooltip_function_portal", GetStringTable()->FUN_141811980(3, nField), strAligned);
     }
 }
 MS2_REPLACE_METHOD(0x141a33850, UIMinimapEntityProxyPortal, FUN_141a33850, 1494, 0xAD2BDB4B);
@@ -944,7 +944,7 @@ void UIMinimapEntityProxyPortal::FUN_141a33e30(MS2Ptr<CPortal> spPortal, CString
             }
         }
     }
-    strText = FUN_1408f71a0(L"s_minimap_tooltip_function_portal", FUN_1401a9d70()->FUN_141811980(3, nField), strLabel);
+    strText = FUN_1408f71a0(L"s_minimap_tooltip_function_portal", GetStringTable()->FUN_141811980(3, nField), strLabel);
 }
 MS2_REPLACE_METHOD(0x141a33e30, UIMinimapEntityProxyPortal, FUN_141a33e30, 1806, 0xFF202207);
 
@@ -1006,7 +1006,7 @@ void UIMinimapEntityTaxi::FUN_141a34890(const efd::Point3& kPos)
     m_layer = s_strLayerTaxi;
     m_position = kPos;
     m_visible = true;
-    m_text = bBest ? FUN_14028b8e0(L"s_word_besttaxistation") : FUN_14028b8e0(L"s_word_taxistation");
+    m_text = bBest ? GetStringCommonByKey(L"s_word_besttaxistation") : GetStringCommonByKey(L"s_word_taxistation");
 }
 MS2_REPLACE_METHOD(0x141a34890, UIMinimapEntityTaxi, FUN_141a34890, 908, 0x75C22537);
 
@@ -1020,7 +1020,7 @@ MS2_REPLACE_METHOD(0x141a34870, UIMinimapEntityTaxi, SetBest, 23, 0x1A4301B5);
 // @0x141a34c30
 void UIMinimapEntityTaxi::GetText(CStringW& strText, ASObj& data)
 {
-    strText = m_best ? FUN_14028b8e0(L"s_word_besttaxistation") : FUN_14028b8e0(L"s_word_taxistation");
+    strText = m_best ? GetStringCommonByKey(L"s_word_besttaxistation") : GetStringCommonByKey(L"s_word_taxistation");
 }
 MS2_REPLACE_METHOD(0x141a34c30, UIMinimapEntityTaxi, GetText, 368, 0xC0965097);
 
@@ -1442,7 +1442,7 @@ void UIMinimapDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
             MS2Ptr<CFieldDataCli> spData = CFieldDataCli::Find(nField);
             if (!spData)
                 return;
-            CStringW strText = FUN_140b99450(CStringW(L"s_minimap_tooltip_field_info"), FUN_1401a9d70()->FUN_141811980(3, nField), spData->m_nMapLevel);
+            CStringW strText = FUN_140b99450(CStringW(L"s_minimap_tooltip_field_info"), GetStringTable()->FUN_141811980(3, nField), spData->m_nMapLevel);
             CStringW strExtra = FUN_140953f20()->FUN_140cdc000(nField);
             if (strExtra.GetLength() > 0) {
                 strText += L"\n";
@@ -1971,7 +1971,7 @@ void UIMinimapDialog::FUN_141a3a200()
     MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC != 0)
         bBest = FUN_141b71c00((unsigned short)pPC->vfunc_78()) == 1;
-    spTaxi->m_text = bBest ? FUN_14028b8e0(L"s_word_besttaxistation") : FUN_14028b8e0(L"s_word_taxistation");
+    spTaxi->m_text = bBest ? GetStringCommonByKey(L"s_word_besttaxistation") : GetStringCommonByKey(L"s_word_taxistation");
     spTaxi->m_icon = bBest ? s_strTaxiBest : s_strTaxi;
     spTaxi->SetBest(bBest);
     ASObj data(2);
@@ -2357,14 +2357,14 @@ void UIMinimapDialog::FUN_141a42800()
         return;
     CStringW strGroup;
     if (DAT_143ab0248 != 2)
-        strGroup = FUN_1401a9d70()->FUN_141811980(0x17, FUN_1403ed2d0()->FUN_141bd98f0());
+        strGroup = GetStringTable()->FUN_141811980(0x17, FUN_1403ed2d0()->FUN_141bd98f0());
     m_channel = FUN_14092f640();
     int nSelected = 0;
     ASArray channels(2);
     UIServerListDialog* pServerList = Unk_MmGetDialog<UIServerListDialog>();
     if (pServerList != 0)
         pServerList->FUN_141ad2f60(channels, &nSelected, m_channel);
-    static_cast<Unk_MmScript*>(m_30.operator->())->FUN_141a468e0("buildChannelList", channels.FUN_1422bb870(), nSelected, FUN_14028b8e0(L"s_word_ch"), strGroup);
+    static_cast<Unk_MmScript*>(m_30.operator->())->FUN_141a468e0("buildChannelList", channels.FUN_1422bb870(), nSelected, GetStringCommonByKey(L"s_word_ch"), strGroup);
 }
 MS2_REPLACE_METHOD(0x141a42800, UIMinimapDialog, FUN_141a42800, 616, 0x8585C70C);
 
@@ -2849,7 +2849,7 @@ void FUN_1408a2020(egf::Entity* pEntity, unsigned nProperty, int* pOut);   // re
 MS2Ptr<CInteractObjectData> FUN_14051f670(int nId);                  // the interact table row
 int FUN_1402bacf0(ATL::CAtlArray<int>& arr, const int& value);       // index of the value or -1
 extern ATL::CAtlArray<int> DAT_143ab3128;                            // the telescopes the player has used
-CStringW FUN_14028de60(int nStringId);                               // a common string by id
+CStringW GetStringCommon(int nStringId);                               // a common string by id
 
 // @0x141a3df40
 void UIMinimapDialog::FUN_141a3df40()
@@ -2871,7 +2871,7 @@ void UIMinimapDialog::FUN_141a3df40()
             spEntity->m_position = reinterpret_cast<const efd::Point3&>(kPos);
             spEntity->m_visible = true;
             spEntity->m_state = FUN_1402bacf0(DAT_143ab3128, nId) != -1 ? "enabled" : "disabled";
-            spEntity->m_text = FUN_14028de60(0x59b);
+            spEntity->m_text = GetStringCommon(0x59b);
             if (FUN_141a3e7d0(spEntity))
                 m_telescope = spEntity;
         }
@@ -3417,7 +3417,7 @@ void UIMinimapDialog::FUN_141a44380(MS2Ptr<CInteractObject> spObject, EntityPtr 
     spEntity->m_icon = bOverlap ? s_strQuestTargetObject : spObject->GetRow()->m_display.m_strMinimapIcon;
     spEntity->m_layer = s_strLayerInteract;
     spEntity->m_position = reinterpret_cast<Unk_MmObjectPos*>(spObject.operator->())->FUN_1409673c0();
-    spEntity->m_text = FUN_1401a9d70()->FUN_141811980(0x10, spObject->GetRowId());
+    spEntity->m_text = GetStringTable()->FUN_141811980(0x10, spObject->GetRowId());
     spEntity->m_64 = bOverlap;
     if (!spEntity->m_64)
         spEntity->m_visible = spObject->FUN_1413b5600() == 1 && !spEntity->m_icon.IsEmpty();
@@ -3586,11 +3586,11 @@ void UIMinimapDialog::FUN_141a3c150()
         static_cast<ASObj*>(spData.operator->())->FUN_1407cb9c0("selectedchannel", nSelected);
         CStringW strGroup;
         if (DAT_143ab0248 != 2)
-            strGroup = FUN_1401a9d70()->FUN_141811980(0x17, FUN_1403ed2d0()->FUN_141bd98f0());
-        static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("channelprefix", FUN_14028b8e0(L"s_word_ch"));
+            strGroup = GetStringTable()->FUN_141811980(0x17, FUN_1403ed2d0()->FUN_141bd98f0());
+        static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("channelprefix", GetStringCommonByKey(L"s_word_ch"));
         static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("channelgroup", strGroup);
-        static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("mapAlphaPrefix", FUN_14028b8e0(L"s_word_minimap_alpha"));
-        static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("bgAlphaPrefix", FUN_14028b8e0(L"s_word_mapbg_alpha"));
+        static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("mapAlphaPrefix", GetStringCommonByKey(L"s_word_minimap_alpha"));
+        static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("bgAlphaPrefix", GetStringCommonByKey(L"s_word_mapbg_alpha"));
     }
     m_30->Invoke("initData", spData->FUN_1422bb870());
 }

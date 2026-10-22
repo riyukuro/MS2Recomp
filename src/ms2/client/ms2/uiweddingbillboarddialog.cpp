@@ -80,7 +80,7 @@ bool FUN_140900f30(__int64 nTime);                              // the time is a
 CStringW FUN_140b8e850(const CMsTime& kTime);                   // the date text
 CStringW FUN_141b71910(__int64 nValue);                         // the number as text
 CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& nArg);    // formats one number
-CStringTable* FUN_1401a9d70();
+CStringTable* GetStringTable();
 void FUN_140710590(COutPacket& packet);                         // send the packet
 
 // ---- WeddingHallTicket's copies (weddinghallticket.h: first instantiated here) ----
@@ -294,7 +294,7 @@ void UIWeddingBillboardDialog::FUN_140fc3680()
                     row.FUN_1407cbb20("date", FUN_140b8e850(CMsTime(entry.second.m_nTime)));
                     row.FUN_1407cbb20("groomName", entry.second.m_strGroom);
                     row.FUN_1407cbb20("brideName", entry.second.m_strBride);
-                    row.FUN_1407cbb20("weddingHall", FUN_1401a9d70()->FUN_141811980(3, nHallText));
+                    row.FUN_1407cbb20("weddingHall", GetStringTable()->FUN_141811980(3, nHallText));
                     spList->FUN_1422dd230(row);
                     bEmpty = false;
                 }

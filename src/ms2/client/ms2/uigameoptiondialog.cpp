@@ -91,8 +91,8 @@ bool FUN_140184310(const CString& str, const char* psz);        // str == psz
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);    // str == psz
 CString FUN_140651390();                                        // the language directory
 void FUN_14151f200();
-CStringW FUN_14028b8e0(const CStringW& str);
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommonByKey(const CStringW& str);
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_140632a60(int nStringId, const CStringW& strA, const CStringW& strB);
 CStringW FUN_141277dd0(const Scaleform::GFx::Value* pValue);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, IMessageListener* pListener, CStringW tag);
@@ -454,9 +454,9 @@ void UIGameOptionDialog::FUN_141943a30()
         CStringW strTab = FUN_141277dd0(&vTab);
         CStringW strCategory = FUN_141277dd0(&vCategory);
         if (8 < m_nTab && m_nTab < 0xe)
-            strCategory = FUN_14028b8e0(CStringW(L"s_gameoption_init_shoutcut"));
-        spBox->FUN_141a01690(FUN_14028de60(0x848), FUN_140632a60(0x849, strTab, strCategory), FUN_14028de60(0x476));
-        spBox->SetTitle(FUN_14028de60(0x847));
+            strCategory = GetStringCommonByKey(CStringW(L"s_gameoption_init_shoutcut"));
+        spBox->FUN_141a01690(GetStringCommon(0x848), FUN_140632a60(0x849, strTab, strCategory), GetStringCommon(0x476));
+        spBox->SetTitle(GetStringCommon(0x847));
         FUN_140d73c60(spBox);
     }
 }

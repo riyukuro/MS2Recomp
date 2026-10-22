@@ -124,8 +124,8 @@ void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_1412752d0(const CStringW& strText, int n);
 
 // String table texts.
-CStringW FUN_14028b8e0(const CStringW& strKey);
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommonByKey(const CStringW& strKey);
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_140298ea0(CStringW strKey);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_140938ae0(CStringW strKey, const int& nArg);
@@ -474,22 +474,22 @@ bool CanUseItem(MS2Ptr<CItem> spItem)
     }
     if (spItem->FUN_140525db0() != 0 && pPlayer->FUN_141662de0() == 0)
     {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_item_err_puton_vip"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_puton_vip"), 0, 0, L"");
         return false;
     }
     if (spItem->FUN_140525e00() != 0 && !pPlayer->vfunc_146())
     {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_item_err_puton_wedding"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_puton_wedding"), 0, 0, L"");
         return false;
     }
     if (!spItem->FUN_140526810((unsigned short)pPlayer->vfunc_78()))
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_err_not_enough_level"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_err_not_enough_level"), 1, 1);
         return false;
     }
     if (!spItem->FUN_140526790(pPlayer->FUN_141654700()))
     {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_item_err_disable_job"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_disable_job"), 0, 0, L"");
         return false;
     }
     if (!spItem->FUN_1405267d0(pPlayer->FUN_141658e60()))
@@ -668,7 +668,7 @@ void OpenItemBox(CItem* pItem, int nCount)
     if (nCount < 2)
     {
         CStringW strKey = pItem->FUN_140527840()->function.xml.FUN_14042cad0(L"notifyBox", L"s_msg_item_open_item_box");
-        strMsg = FUN_14028b8e0(strKey);
+        strMsg = GetStringCommonByKey(strKey);
     }
     else
     {
@@ -682,7 +682,7 @@ void OpenItemBox(CItem* pItem, int nCount)
         spBox->FUN_141a01600(pItem->FUN_140526a50());
         spBox->FUN_141a01ee0(MS2Ptr<CItem>(pItem), pItem->FUN_140527b10(), 1, 0, -1, -1, 1);
         spBox->FUN_141a01800(1);
-        spBox->FUN_141a024e0(FUN_14028de60(0x29e), 0);
+        spBox->FUN_141a024e0(GetStringCommon(0x29e), 0);
         FUN_140d73c60(spBox);
     }
 }
@@ -704,7 +704,7 @@ void OpenItemBoxSingle(CItem* pItem)
             spBox->FUN_141a01600(pItem->FUN_140526a50());
             spBox->FUN_141a01ee0(MS2Ptr<CItem>(pItem), pItem->FUN_140527b10(), 1, 0, -1, -1, 1);
             spBox->FUN_141a01800(2);
-            spBox->FUN_141a024e0(FUN_14028de60(0x29e), 0);
+            spBox->FUN_141a024e0(GetStringCommon(0x29e), 0);
             FUN_140d73c60(spBox);
         }
         return;
@@ -744,8 +744,8 @@ void OpenItemBoxContents(CItem* pItem, CStringW strArgs)
             spEntry->m_nMax = nCount;
             spEntry->m_spItem.AssignRaw(pItem);
             spBox->FUN_141a01e60(spEntry);
-            spBox->SetTitle(FUN_14028b8e0(L"s_msg_item_open_item_box_multiopen_title"));
-            spBox->FUN_141a01690(FUN_14028b8e0(L"s_msg_item_open_item_box_multiopen_ok"), FUN_14028b8e0(L"s_word_cancel"), L"");
+            spBox->SetTitle(GetStringCommonByKey(L"s_msg_item_open_item_box_multiopen_title"));
+            spBox->FUN_141a01690(GetStringCommonByKey(L"s_msg_item_open_item_box_multiopen_ok"), GetStringCommonByKey(L"s_word_cancel"), L"");
             spBox->FUN_140b76940(strArgs);
             spBox->FUN_141a027c0(Unk_IuBoxCallback(OnOpenItemBoxMulti));
             spBox->FUN_141a024a0(0);
@@ -849,14 +849,14 @@ int ItemActiveCodiTab(MS2Ptr<CItem> spItem, PC* pPlayer)
     bool bLimitless = nDays == 0;
     if (nState == 2)
     {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_msg_item_active_codi_tab_already_limitless"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_msg_item_active_codi_tab_already_limitless"), 0, 0, L"");
         return 1;
     }
     if (nState == 1)
     {
         if (bLimitless)
         {
-            strMsg = FUN_14028b8e0(L"s_msg_item_active_codi_tab_already_period_use_limitless");
+            strMsg = GetStringCommonByKey(L"s_msg_item_active_codi_tab_already_period_use_limitless");
         }
         else
         {
@@ -877,7 +877,7 @@ int ItemActiveCodiTab(MS2Ptr<CItem> spItem, PC* pPlayer)
     }
     else if (bLimitless)
     {
-        strMsg = FUN_14028b8e0(L"s_msg_item_active_codi_tab_limitless");
+        strMsg = GetStringCommonByKey(L"s_msg_item_active_codi_tab_limitless");
     }
     else
     {
@@ -932,7 +932,7 @@ int ItemChangeBeauty(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_1412752d0(L"s_msg_item_err_change_beauty_invalid_state", 1);
         return 0;
     }
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, FUN_14028b8e0(L"s_msg_item_change_beauty"), 0, s_strUseFunctionItem);
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, GetStringCommonByKey(L"s_msg_item_change_beauty"), 0, s_strUseFunctionItem);
     if (spBox.get() != 0)
     {
         spBox->FUN_141a01600(spItem->FUN_140526a50());
@@ -1105,7 +1105,7 @@ int OpenCoupleEffectBox(MS2Ptr<CItem> spItem, PC* pPlayer)
     UIInventoryDialog* pDialog = FUN_1405344f0(0x4e2d);
     if (pDialog != 0)
     {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10, FUN_14028b8e0(L"s_coupleeffect_recevie_name"), 0, L"");
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10, GetStringCommonByKey(L"s_coupleeffect_recevie_name"), 0, L"");
         if (spBox.get() != 0)
         {
             CStringW strEmpty(L"");
@@ -1165,7 +1165,7 @@ int QuestScroll(MS2Ptr<CItem> spItem, PC* pPlayer)
         }
         return DAT_143ab2a90.FUN_140a63880(spItem.get(), L"");
     }
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028b8e0(strWarn), 0, L"");
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(strWarn), 0, L"");
     if (spBox.get() != 0)
     {
         spBox->FUN_1405340b0(spItem->FUN_140526a50());
@@ -1228,7 +1228,7 @@ int ItemSocketScroll(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
     if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4f10))
     {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_itemsocket_scroll_already_open"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_itemsocket_scroll_already_open"), 0, 0, L"");
         return 0;
     }
     DAT_143ab2a90.FUN_140a63880(spItem.get(), L"");
@@ -1260,7 +1260,7 @@ int PetTraining(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
     if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4f12) != 0)
     {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_pet_training_dialog_already_open"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_pet_training_dialog_already_open"), 0, 0, L"");
         return 0;
     }
     UIItemPetTrainingDialog* pDialog = GetItemUseDialog<UIItemPetTrainingDialog>(0x4f12);
@@ -1277,7 +1277,7 @@ int ItemRePackingScroll(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
     if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4f11) != 0)
     {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_item_repacking_scroll_already_open"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_item_repacking_scroll_already_open"), 0, 0, L"");
         return 0;
     }
     return DAT_143ab2a90.FUN_140a63880(spItem.get(), L"");
@@ -1288,7 +1288,7 @@ int ItemRemakeScroll(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
     if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4f09) != 0)
     {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_itemremake_scroll_already_open"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_itemremake_scroll_already_open"), 0, 0, L"");
         return 0;
     }
     return DAT_143ab2a90.FUN_140a63880(spItem.get(), L"");
@@ -1400,12 +1400,12 @@ int RecallWedding(MS2Ptr<CItem> spItem, PC* pPlayer)
     }
     if (!FUN_141b89990(FUN_1409eed90()))
     {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_err_cash_recall_not_marriage"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_err_cash_recall_not_marriage"), 0, 0, L"");
         return 0;
     }
     if (!FUN_141b899d0(FUN_1409eed90()))
     {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_err_cash_recall_not_marriage"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_err_cash_recall_not_marriage"), 0, 0, L"");
         return 0;
     }
     return TSingleton<CCashCallManager>::GetInstance()->FUN_140b04430(spItem->FUN_140526a50(), 1);
@@ -1453,7 +1453,7 @@ int ChangeGender(MS2Ptr<CItem> spItem, PC* pPlayer)
         bool bFree = nState == 0 || nState == 5;
         if (!bFree)
         {
-            FUN_140d73aa0(FUN_14028b8e0(L"s_change_gender_err_wedding"), 0, 0, L"");
+            FUN_140d73aa0(GetStringCommonByKey(L"s_change_gender_err_wedding"), 0, 0, L"");
             return 1;
         }
     }
@@ -1478,7 +1478,7 @@ int ChangeGuildName(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
     if (FUN_1403ed290()->FUN_1404d01b0(pPlayer->vfunc_77()) == 0)
     {
-        FUN_1412751f0(FUN_14028de60(0x416), 1, 1);
+        FUN_1412751f0(GetStringCommon(0x416), 1, 1);
         return 0;
     }
     int nMax = *TSingleton<Client::Constants>::GetInstance()->GuildNameLengthMax.Get();
@@ -1582,7 +1582,7 @@ int LevelPotion(MS2Ptr<CItem> spItem, PC* pPlayer)
         return 0;
     if (spField->HasTutorialType())
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_tutorial_levelup_item_not_use"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_tutorial_levelup_item_not_use"), 1, 1);
         return 0;
     }
     int nDefault = 0;
@@ -1619,10 +1619,10 @@ int OpenDungeonItemBox(MS2Ptr<CItem> spItem, PC* pPlayer)
     int nMax = spRecord->GetMaxCount();
     if (nNow >= nMax)
     {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_msg_dungeon_item_open_dungeon_count"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_msg_dungeon_item_open_dungeon_count"), 0, 0, L"");
         return 0;
     }
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, FUN_14028b8e0(L"s_msg_item_open_dungeon_item_box"), 0, s_strUseFunctionItem);
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, GetStringCommonByKey(L"s_msg_item_open_dungeon_item_box"), 0, s_strUseFunctionItem);
     if (spBox.get() == 0)
         return 0;
     spBox->FUN_141a01600(spItem->FUN_140526a50());
@@ -1737,21 +1737,21 @@ int QuestStart(MS2Ptr<CItem> spItem, PC* pPlayer)
         nLevel = 10;
     if ((unsigned)pPlayer->vfunc_78() < nLevel)
     {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_quest_start_err_level"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_quest_start_err_level"), 0, 0, L"");
         return 0;
     }
     if (FUN_141523ba0(pPlayer)->m_list.FUN_140745820(nQuestId, 0) == 0)
     {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_quest_start_err_invalid"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_quest_start_err_invalid"), 0, 0, L"");
         return 0;
     }
     MS2Ptr<Unk_IuQuest> spQuest = (&FUN_141523ba0(pPlayer)->m_list)->vfunc_3(nQuestId);
     if (spQuest.get() != 0 && FUN_141523ba0(pPlayer)->vfunc_1(nQuestId, 0) == 0)
     {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_quest_start_err_completed"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_quest_start_err_completed"), 0, 0, L"");
         return 0;
     }
-    CStringW strTitle = FUN_14028b8e0(L"s_quest_start_title");
+    CStringW strTitle = GetStringCommonByKey(L"s_quest_start_title");
     CStringW strMsg = FUN_1405c2690(L"s_quest_start_msg", FUN_1416e4df0(nQuestId));
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(2, strMsg, 0, s_strUseFunctionItem);
     if (spBox.get() == 0)
@@ -1792,7 +1792,7 @@ int OpenMassive(MS2Ptr<CItem> spItem, PC* pPlayer)
     FUN_1403ed2d0()->FUN_141bc2c90(pPlayer->vfunc_18(), arrPortals);
     if (FUN_140966da0(arrPortals) != 0)
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_msg_item_open_massive_error_another_portal"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_error_another_portal"), 1, 1);
         return 0;
     }
     int nTipped = 0;
@@ -1808,19 +1808,19 @@ int OpenMassive(MS2Ptr<CItem> spItem, PC* pPlayer)
     }
     if (nTipped >= 10)
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_msg_item_open_massive_error_too_many_portal"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_error_too_many_portal"), 1, 1);
         return 0;
     }
     if (FUN_1403ed2d0()->FUN_141bd30a0() == 0)
         return 0;
     if (FUN_140930b10())
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_msg_item_open_massive_cant_open"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_cant_open"), 1, 1);
         return 0;
     }
     if (FUN_1403ed2d0()->FUN_141bd30a0()->m_nMassiveEventField == 1)
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_msg_item_open_massive_cant_open"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_cant_open"), 1, 1);
         return 0;
     }
     bool bDefault = false;
@@ -1829,18 +1829,18 @@ int OpenMassive(MS2Ptr<CItem> spItem, PC* pPlayer)
     {
         if (!FUN_140930b70())
         {
-            FUN_1412751f0(FUN_14028b8e0(L"s_msg_item_open_massive_cant_open"), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_cant_open"), 1, 1);
             return 0;
         }
     }
     else if (DAT_143ab287c != 0xf)
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_msg_item_open_massive_cant_open"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_cant_open"), 1, 1);
         return 0;
     }
     if (FUN_14166c930(pPlayer) != 1 || FUN_1422b9e00(FUN_1408e57f0()) != 0x620001d)
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_msg_item_open_massive_invalid_state"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_invalid_state"), 1, 1);
         return 0;
     }
     const wchar_t* pszKey = bWedding ? L"s_msg_item_open_massive_open_wedding" : L"s_msg_item_open_massive_open";
@@ -1878,7 +1878,7 @@ int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
         return 0;
     if (FUN_14166ce30(pPlayer) != 0 || FUN_14166c930(pPlayer) != 1)
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_play_instrument_invalid_state"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_invalid_state"), 1, 1);
         return 0;
     }
     bool bMovable = false;
@@ -1888,7 +1888,7 @@ int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
         bMovable = true;
     if (!bMovable || FUN_14165f100(pPlayer) != 0)
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_play_instrument_invalid_state"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_invalid_state"), 1, 1);
         return 0;
     }
     Unk_EntRef spEntity(FUN_141240f20(FUN_14166d220(pPlayer))->FUN_140cfaff0());
@@ -1897,7 +1897,7 @@ int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
         MS2Ptr<Unk_RideeFieldObj> spObj = FUN_1403ed2d0()->FUN_141bc4f10(spEntity.FUN_1408a9090());
         if (spObj.get() != 0 && spObj->FUN_140ae0700())
         {
-            FUN_1412751f0(FUN_14028b8e0(L"s_play_instrument_invalid_position"), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_invalid_position"), 1, 1);
             return 0;
         }
     }
@@ -1912,22 +1912,22 @@ int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
         return 0;
     if ((spField->m_nLimitContent & 8) != 0)
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_play_instrument_invalid_map"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_invalid_map"), 1, 1);
         return 0;
     }
     if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4eed) != 0)
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_play_instrument_cant_while_write_music"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_cant_while_write_music"), 1, 1);
         return 0;
     }
     if (FUN_140c8dac0()->FUN_140d09d90(0))
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_play_instrument_cant_while_pre_listening"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_cant_while_pre_listening"), 1, 1);
         return 0;
     }
     if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4eec) != 0)
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_play_instrument_invalid_state"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_invalid_state"), 1, 1);
         return 0;
     }
     if (FUN_1403ed2d0()->FUN_141bdb660(3) != 0)
@@ -1938,7 +1938,7 @@ int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
     }
     if (!FUN_1403ed2d0()->FUN_141bcada0(FUN_141656a80(pPlayer)))
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_play_instrument_cant_doesnt_register"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_cant_doesnt_register"), 1, 1);
         return 0;
     }
     __int64 nItemUid = spItem->FUN_140526a50();

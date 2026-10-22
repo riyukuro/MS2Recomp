@@ -173,7 +173,7 @@ Unk_ClubSkillTable* FUN_1401958b0();
 // ---- string helpers (instances living in other units; declared with their real argument lists) ----
 CString FUN_140719530(__int64 n);                                       // number to text
 __int64 FUN_140718350(const CString& str);                              // text to number
-CStringW FUN_14028de60(int nId);                                        // string table text
+CStringW GetStringCommon(int nId);                                        // string table text
 CStringW FUN_140298ea0(CStringW strKey);                                // localized string by key
 CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a1);    // StringFormat(fmt, a1)
 CStringW FUN_14083dc40(const wchar_t* szFormat, const int& a1, const int& a2);
@@ -281,7 +281,7 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     if (_stricmp("onWithdrawal", szMethod) == 0) {
         MS2Ptr<CClubCli> club = FUN_140e0d900()->FUN_140b14d80(m_nClubId);
         if (club.get() != 0) {
-            MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_1401e8510(FUN_14028de60(0x363), club->FUN_14020f1a0()), 0, CStringW(L""));
+            MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_1401e8510(GetStringCommon(0x363), club->FUN_14020f1a0()), 0, CStringW(L""));
             if (box.get() != 0) {
                 box->FUN_141a01800(2);
                 box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClubDialog::FUN_140e0bdb0));
@@ -441,7 +441,7 @@ void UIClubDialog::FUN_140e0bfd0()
                         row.FUN_1407cbb20("label", spClub->FUN_14020f1a0());
                         int nMax = 10;
                         int nCount = spClub->FUN_140210df0();
-                        row.FUN_1407cbb20("memberCount", FUN_14083dc40(FUN_14028de60(0x367), nCount, nMax));
+                        row.FUN_1407cbb20("memberCount", FUN_14083dc40(GetStringCommon(0x367), nCount, nMax));
                         unsigned nLevel = spClub->FUN_14020f6b0();
                         FUN_140e0d180(row, spClub->FUN_14020f640(), nLevel & 0xffff);
                         FUN_140e0d230(row, spClub->FUN_14020f460());
@@ -502,7 +502,7 @@ void UIClubDialog::FUN_140e0c570(__int64 nClubId)
 void UIClubDialog::FUN_140e0ca20(ASObj& row, MS2Ptr<CClubMember> spMember)
 {
     row.FUN_1407cbb20("name", spMember->m_info.FUN_14020e5d0());
-    CStringW strInfo = StringFormat(FUN_14028de60(0x360),
+    CStringW strInfo = StringFormat(GetStringCommon(0x360),
                                     reinterpret_cast<const unsigned short&>(spMember->m_info.m_level),
                                     FUN_1401a9d70()->FUN_141811980(6, spMember->m_info.m_job));
     row.FUN_1407cbb20("info", strInfo);
@@ -513,7 +513,7 @@ void UIClubDialog::FUN_140e0ca20(ASObj& row, MS2Ptr<CClubMember> spMember)
         if (span.GetDays() < 1) {
             if (span.GetHours() < 1) {
                 if (span.GetMinutes() < 1)
-                    strTime = FUN_14028de60(0x35c);
+                    strTime = GetStringCommon(0x35c);
                 else
                     strTime = FUN_14086cfc0(0x35b, span.GetMinutes());
             } else {
@@ -522,7 +522,7 @@ void UIClubDialog::FUN_140e0ca20(ASObj& row, MS2Ptr<CClubMember> spMember)
         } else {
             strTime = FUN_14086d060(0x359, span.GetDays());
         }
-        strLocation = FUN_1401e8510(FUN_14028de60(0x35e), strTime);
+        strLocation = FUN_1401e8510(GetStringCommon(0x35e), strTime);
     } else {
         if (spMember->m_info.m_channel == 0) {
             strLocation = FUN_1401a9d70()->FUN_141811980(3, spMember->m_info.m_mapId);

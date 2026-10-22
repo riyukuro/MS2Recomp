@@ -22,7 +22,7 @@ CLogString* GetLogString();
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 bool FUN_14028f710(Unk_140165cf0* pNode);                                   // node is enabled for this client
-CStringW FUN_14028b8e0(const CStringW& strKey);                             // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& nArg);          // formats one number argument into the message
 CString FUN_14016a5c0(const char* pszName, int nFlags);                     // undecorated class name
 
@@ -63,12 +63,12 @@ CStringW CInstrumentData::GetName() const
     if (m_nId == 1)
     {
         CStringW strKey(L"s_play_instrument_instrument_name_1");
-        return FUN_14028b8e0(strKey);
+        return GetStringCommonByKey(strKey);
     }
     else if (m_nId == 2)
     {
         CStringW strKey(L"s_play_instrument_instrument_name_2");
-        return FUN_14028b8e0(strKey);
+        return GetStringCommonByKey(strKey);
     }
     return CStringW(L"");
 }
@@ -102,7 +102,7 @@ CInstrumentCategoryData::~CInstrumentCategoryData()
 CStringW CInstrumentCategoryData::GetName() const
 {
     CStringW strKey = FUN_1401ceea0(L"s_play_instrument_instrument_category_name_{0}", m_nId);
-    return FUN_14028b8e0(strKey);
+    return GetStringCommonByKey(strKey);
 }
 
 // @0x14072c500

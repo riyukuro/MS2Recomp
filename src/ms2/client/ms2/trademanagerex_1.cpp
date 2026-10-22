@@ -108,7 +108,7 @@ void FUN_141a02480(void*, bool);
 void FUN_141a024a0(void*, bool);
 int FUN_14025a620(void*);
 void* FUN_1401d3200();
-CStringW FUN_14028de60(int id);
+CStringW GetStringCommon(int id);
 CStringW FUN_14052bd00(int id, const CStringW& arg);
 CStringW FUN_1409eec40(int id);
 CStringW FUN_1409e8820(CStringW key, const unsigned short& n);
@@ -402,7 +402,7 @@ void CTradeManagerEx::FUN_14185bec0(CInPacket& packet)
                 if (FUN_140534fc0(box) != 0)
                 {
                     FUN_1405340b0(FUN_140534fe0(box), uid);
-                    FUN_141a01ca0(FUN_140534fe0(box), FUN_14025a620(reinterpret_cast<char*>(FUN_1401d3200()) + 0x3788), 1, FUN_14028de60(0x2b8));
+                    FUN_141a01ca0(FUN_140534fe0(box), FUN_14025a620(reinterpret_cast<char*>(FUN_1401d3200()) + 0x3788), 1, GetStringCommon(0x2b8));
                     FUN_141a02460(FUN_140534fe0(box), true);
                     FUN_141a02480(FUN_140534fe0(box), true);
                     FUN_141a024a0(FUN_140534fe0(box), false);
@@ -651,12 +651,12 @@ void CTradeManagerEx::FUN_14185d610(CInPacket& packet)
         bool bMine = packet.vfunc_o8_1() != 0;
         if (!bMine)
         {
-            FUN_1412751b0(FUN_14028de60(0x845), 0x12);
+            FUN_1412751b0(GetStringCommon(0x845), 0x12);
         }
         else
         {
             m_bConfirmed = false;
-            FUN_1412751b0(FUN_14028de60(0x844), 0x12);
+            FUN_1412751b0(GetStringCommon(0x844), 0x12);
         }
         pDlg->FUN_141b28290(bMine, 0);
     }
@@ -671,7 +671,7 @@ void CTradeManagerEx::FUN_14185d720()
 // @0x14185d750
 void CTradeManagerEx::FUN_14185d750()
 {
-    FUN_1412751b0(FUN_14028de60(0x843), 0x12);
+    FUN_1412751b0(GetStringCommon(0x843), 0x12);
 }
 
 // @0x14185d7b0

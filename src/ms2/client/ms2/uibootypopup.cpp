@@ -28,8 +28,8 @@ Unk_UIScale* FUN_14025e7a0();                                       // ui scale 
 float FUN_1422afec0(Unk_UIScale* pScale, int nLayer);               // scale of a layer
 Unk_StreamPoint* FUN_140ad0c10(Unk_StreamPoint* pt, float f);       // efd::Point3::operator*=
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
-CStringTable* FUN_1401a9d70();                                     // the string tables
-CStringW FUN_14028de60(int nId);                                    // string table entry
+CStringTable* GetStringTable();                                     // the string tables
+CStringW GetStringCommon(int nId);                                    // string table entry
 CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& nArg);  // formats one number argument into the message
 CStringW FUN_1401d0160(const wchar_t* psz, const CStringW& str);    // psz + str
 void FUN_141b706a0(int nId, int* pA, int* pB, int* pC);             // three numbers of a skill attribute
@@ -213,7 +213,7 @@ void UIBootyPopup::FUN_141031a60(int bShow)
         m_7c = bShow;
         if (bShow != 0)
         {
-            CStringW strName = FUN_1401a9d70()->FUN_141811980(1, m_88);
+            CStringW strName = GetStringTable()->FUN_141811980(1, m_88);
             CStringW strDesc(L"");
             MS2Ptr<Unk_BootyItem> spItem = FUN_14053f870(m_88);
             if (spItem.get() != 0)
@@ -223,7 +223,7 @@ void UIBootyPopup::FUN_141031a60(int bShow)
                 {
                     int nSkillId = spEffect->m_nSkillId;
                     unsigned short nSkillLevel = spEffect->m_nSkillLevel;
-                    strDesc = FUN_1401a9d70()->FUN_141812290(nSkillId, nSkillLevel, CString("tooltipDescription"));
+                    strDesc = GetStringTable()->FUN_141812290(nSkillId, nSkillLevel, CString("tooltipDescription"));
                     MS2Ptr<Unk_BootySkillAttr> spAttr = FUN_1401958b0()->FUN_140aafef0(nSkillId, nSkillLevel);
                     if (spAttr.get() != 0)
                     {
@@ -231,7 +231,7 @@ void UIBootyPopup::FUN_141031a60(int bShow)
                         int nC = 0;
                         int nB = 0;
                         FUN_141b706a0(spAttr->m_nValueId, &nA, &nC, &nB);
-                        CStringW strLine = FUN_1401ceea0(FUN_14028de60(0x9a8), nA);
+                        CStringW strLine = FUN_1401ceea0(GetStringCommon(0x9a8), nA);
                         strDesc += FUN_1401d0160(L"\n", strLine);
                     }
                 }

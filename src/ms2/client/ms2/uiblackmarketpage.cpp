@@ -99,8 +99,8 @@ extern Unk_Inventory DAT_143ab2a90;                                 // the playe
 
 void FUN_1407cd930(Scaleform::GFx::Value* pObj, const char* szName, const Scaleform::GFx::Value& v);   // set a member
 MS2Ptr<AScript> FUN_1409e7dc0(int nMovieId, const Scaleform::GFx::Value& v);   // wrap an AS value
-CStringW FUN_14028de60(int nId);                                    // string table text
-CStringW FUN_14028b8e0(const CStringW& str);                        // text of a string key
+CStringW GetStringCommon(int nId);                                    // string table text
+CStringW GetStringCommonByKey(const CStringW& str);                        // text of a string key
 CStringW FUN_1409404f0(__int64 n);                                  // a money amount as text
 CStringW FUN_140719a80(__int64 n);                                  // a 64-bit number as text
 unsigned __int64 FUN_140718350(const CString& str);                 // a decimal string as a 64-bit number
@@ -677,7 +677,7 @@ void BlackMarketPageItemSearch::FUN_140f0e050()
         ASObj rankAll(2);
         if (FUN_140f10720(rankAll, L"$s_blackmarket_dropdown_rankall", "rank", 0))
             ranks.FUN_1422bc050(rankAll.FUN_1422bb870());
-        CStringW strRankFormat = FUN_14028de60(0x91c);
+        CStringW strRankFormat = GetStringCommon(0x91c);
         for (int nRank = 2; nRank < 7; nRank++)
         {
             CStringW strRank = StringFormat((const wchar_t*)strRankFormat, CStringTable::GetInstance()->FUN_141813150(nRank));
@@ -939,7 +939,7 @@ int BlackMarketPageItemSearch::FUN_140f0f310(ASData* pArgs, int n)
         if (strName.IsEmpty() && m_spCond->m_dw1c == 99999)
         {
             m_spCond = 0;
-            FUN_140d73aa0(FUN_14028b8e0(L"s_blackmarket_error_cannot_searchex_without_condition"), 0, 0, L"");
+            FUN_140d73aa0(GetStringCommonByKey(L"s_blackmarket_error_cannot_searchex_without_condition"), 0, 0, L"");
             return 0;
         }
     }
@@ -966,12 +966,12 @@ void BlackMarketPageItemSearch::FUN_140f103c0(unsigned __int64 nId, const CStrin
     }
     if (nState == 3)
     {
-        FUN_1412751f0(FUN_14028b8e0(L"s_blackmarket_error_buy_expired"), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_blackmarket_error_buy_expired"), 1, 1);
         return;
     }
     if (spEntry->m_qw68 == DAT_143ab2820)
     {
-        FUN_140d73aa0(FUN_14028b8e0(L"s_blackmarket_error_cannot_buy_ownProduct"), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(L"s_blackmarket_error_cannot_buy_ownProduct"), 0, 0, L"");
         return;
     }
     if (spEntry->PriceFor(1) > DAT_143ab2898)
@@ -1025,7 +1025,7 @@ void BlackMarketPageItemSearch::FUN_140f108e0(MS2Ptr<CBlackMarketProduct> spEntr
         __int64 nProductId = spEntry->m_qw18;
         MS2Ptr<CItem> spItem = spEntry->m_item;
         int nUnitCount = 1;
-        spBox->SetTitle(FUN_14028de60(0x45f));
+        spBox->SetTitle(GetStringCommon(0x45f));
         spBox->FUN_141a01700(0x47d, 0x476, 0);
         MS2Ptr<CMsgBoxDataItem> spData = new CMsgBoxDataItem();
         int nRank = spItem->FUN_140526bd0();
@@ -1064,7 +1064,7 @@ void BlackMarketPageItemSearch::FUN_140f10d90(MS2Ptr<CBlackMarketProduct> spEntr
     __int64 nPrice = spEntry->PriceFor(nCount);
     CStringW strMsg;
     CStringW strPrice = FUN_1409404f0(nPrice);
-    CStringW strDefault = FUN_14028b8e0(L"s_msg_blackmarket_ask_buy_text_default");
+    CStringW strDefault = GetStringCommonByKey(L"s_msg_blackmarket_ask_buy_text_default");
     if (!FUN_140633a90(spItem))
     {
         strMsg = FormatStringId(0x947, strPrice, strDefault);
@@ -1400,9 +1400,9 @@ void BlackMarketPageItemRegister::FUN_140f13030(MS2Ptr<CBlackMarketProduct> spEn
     m_bFilled = true;
     CStringW strMsg;
     if (nReason == 0)
-        strMsg = FUN_14028de60(0x944);
+        strMsg = GetStringCommon(0x944);
     else
-        strMsg = FUN_14028b8e0(L"s_msg_blackmarket_complete_remove_already");
+        strMsg = GetStringCommonByKey(L"s_msg_blackmarket_complete_remove_already");
     FUN_141349ba0(spEntry->m_item, strMsg, CString(""));
 }
 
@@ -1578,7 +1578,7 @@ void BlackMarketPageItemRegister::FUN_140f13e70(unsigned __int64 nUid, __int64 n
     if (DAT_143ab2898 < nDeposit)
     {
         CStringW strKey(L"s_blackmarket_error_register_lack_deposit");
-        FUN_140d73aa0(FUN_14028b8e0(strKey), 0, 0, L"");
+        FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, L"");
         return;
     }
     if ((int)CBlackMarketMan::GetInstance()->FUN_140a210b0() < 0x1c)
@@ -1710,7 +1710,7 @@ int FUN_140f14ce0(ASObj& obj, MS2Ptr<CBlackMarketProduct> spEntry, bool bManage)
                 if (nState == 2)
                 {
                     CMsTime tEnd(spEntry->m_nExpire);
-                    CStringW strPeriod = StringFormat((const wchar_t*)FUN_14028de60(0x91d), tEnd.GetYear(), tEnd.GetMonth(),
+                    CStringW strPeriod = StringFormat((const wchar_t*)GetStringCommon(0x91d), tEnd.GetYear(), tEnd.GetMonth(),
                         tEnd.GetDay(), tEnd.GetHour(), tEnd.GetMinute(), tEnd.GetSecond());
                     obj.FUN_1407cbb20("period", strPeriod);
                 }

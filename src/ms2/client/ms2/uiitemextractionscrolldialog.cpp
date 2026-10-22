@@ -89,7 +89,7 @@ void* FUN_140a50b50(DragSlot* pSlot);                       // the item slot beh
 __int64 FUN_141405a10(void* pItemSlot);                     // its item uid
 int FUN_14053feb0(int nItemId);                             // the rarity of an item id
 void FUN_140710590(COutPacket&);                            // send
-CStringW FUN_14028b8e0(const CStringW& strKey);             // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);             // string table text
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);   // string table text with one argument
 CStringW FUN_140938ae0(CStringW strKey, const int& nArg);          // string table text with one number
 CStringW FUN_14183e9c0(CStringW strName, int nRank);        // item name coloured by rank
@@ -276,11 +276,11 @@ void UIItemExtractionScrollDialog::vfunc_79(void* pPacket)
     }
     else if (nResult == 1)
     {
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemextraction_inventoryfull")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemextraction_inventoryfull")), 1, 1);
     }
     else if (nResult == 2)
     {
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemextraction_lack_scroll")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemextraction_lack_scroll")), 1, 1);
     }
     vfunc_67();
 }
@@ -349,13 +349,13 @@ void UIItemExtractionScrollDialog::FUN_140e4a920(__int64 nItemUid)
         return;
     if (spItem->FUN_1405292a0() == 0)
     {
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemextraction_cannot")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemextraction_cannot")), 1, 1);
         return;
     }
     MS2Ptr<Unk_ExtractionRow> spRow = FUN_14052d1f0()->FUN_140597580(spItem->FUN_1405276c0());
     if (!(spRow == 0))
     {
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_itemextraction_cannot")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemextraction_cannot")), 1, 1);
         return;
     }
     MS2Ptr<CItem> spScroll(new CItem);

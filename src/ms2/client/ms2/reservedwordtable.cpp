@@ -38,7 +38,7 @@ int FUN_1407181a0(const CStringW& str);
 unsigned __int64 FUN_140718370(const CStringW& str);
 CStringW FUN_14016a730(const char* psz, int nCodePage);                             // utf-8 to wide
 CStringW FUN_1416e4df0(int nQuestId);                                               // the name of a quest
-CStringW FUN_14028de60(int nStringId);
+CStringW GetStringCommon(int nStringId);
 CStringW FUN_1401aa6a0(int nId);                                                    // an npc name by id
 CStringW FUN_141700820(int nId);                                                    // 0x141700820
 CStringW FUN_1416ff950(int nId);                                                    // 0x1416ff950
@@ -324,7 +324,7 @@ void CReservedWordTable::FUN_1416fb400(CStringW& str, void* pMaid)
     Unk_RwOwnerRef kOwner;
     FUN_141093800(pMaid, &kOwner);
     if (FUN_1409ee260(&kOwner) == 0)
-        str.Replace(L"$OwnerName$", FUN_14028de60(0x787));
+        str.Replace(L"$OwnerName$", GetStringCommon(0x787));
     else
     {
         if (!FUN_14067e8c0(&kOwner)->FUN_141700510().IsEmpty())
@@ -335,7 +335,7 @@ void CReservedWordTable::FUN_1416fb400(CStringW& str, void* pMaid)
             Unk_RwUserRef kUser;
             FUN_14067f780(FUN_1409eed10(), &kUser, pRec->m_nId);
             if (FUN_14109a370(&kUser) == 0)
-                str.Replace(L"$OwnerName$", FUN_14028de60(0x787));
+                str.Replace(L"$OwnerName$", GetStringCommon(0x787));
             else
                 str.Replace(L"$OwnerName$", FUN_1406810d0(&kUser)->m_strName);
             FUN_140680b50(&kUser);

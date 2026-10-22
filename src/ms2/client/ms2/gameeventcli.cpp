@@ -88,7 +88,7 @@ struct Unk_GEFactoryRegistry {
     char m_pad;
 };
 class Unk_SingletonObj;
-CStringTable* FUN_1401a9d70();                                  // the string table singleton
+CStringTable* GetStringTable();                                  // the string table singleton
 __int64 FUN_140869440();                                        // the server time
 UIGameMenuDialog* FUN_140938b90(unsigned nUIId);                // the game menu bar
 NotifySystem* FUN_140939a10();                                  // TSingleton<NotifySystem>::GetInstance
@@ -127,7 +127,7 @@ class Unk_CliMarket { public: void FUN_140d59990(const CStringW* pStr); CStringW
 Unk_CliMarket* FUN_140939a00();                                 // the ugc market
 class Unk_CliMeratDlg { public: void FUN_14130c5b0(const CStringW& str); };
 Unk_CliMeratDlg* FUN_140bfed50(int nUiId);
-CStringW FUN_14028b8e0(const CStringW& strKey);                 // string table text
+CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 void FUN_1412751b0(const CStringW& str, int nType);             // chat / system message
 class Unk_CliStrMgr { public: void FUN_140259e60(Unk_140165cf0* pElem); };
 Unk_CliStrMgr* FUN_14025e7d0();                                 // the CommonString singleton
@@ -734,7 +734,7 @@ int GameEventCashAttendCli::FUN_140ce3ed0()
 // @0x140ce3f10
 CStringW GameEventCashAttendCli::FUN_140ce3f10()
 {
-    return FUN_1401a9d70()->FUN_141811980(1, m_i4);
+    return GetStringTable()->FUN_141811980(1, m_i4);
 }
 
 // @0x140ce3f70
@@ -814,7 +814,7 @@ void GameEventItemBuffCli::FUN_140ce4580(NotifyObject*)
     if (m_d0 == 0x140) {
         bool bDefault = false;
         if (DAT_143ab2fc0.FUN_140482280(m_d0, bDefault))
-            FUN_1412751b0(FUN_14028b8e0(L"s_event_return_user_item_buff"), 0x14);
+            FUN_1412751b0(GetStringCommonByKey(L"s_event_return_user_item_buff"), 0x14);
     }
 }
 
@@ -929,13 +929,13 @@ void GameEventUpdateStringCli::vfunc_6() {}
 void GameEventUpdateStringCli::FUN_140ce4c60(Unk_140165cf0* pElem) { FUN_14025e7d0()->FUN_140259e60(pElem); }
 
 // @0x140ce4c90
-void GameEventUpdateStringCli::FUN_140ce4c90(Unk_140165cf0* pElem) { ((Unk_CliStrTbl*)FUN_1401a9d70())->FUN_141813970(pElem); }
+void GameEventUpdateStringCli::FUN_140ce4c90(Unk_140165cf0* pElem) { ((Unk_CliStrTbl*)GetStringTable())->FUN_141813970(pElem); }
 
 // @0x140ce4cc0
-void GameEventUpdateStringCli::FUN_140ce4cc0(Unk_140165cf0* pElem) { ((Unk_CliStrTbl*)FUN_1401a9d70())->FUN_1418139b0(pElem); }
+void GameEventUpdateStringCli::FUN_140ce4cc0(Unk_140165cf0* pElem) { ((Unk_CliStrTbl*)GetStringTable())->FUN_1418139b0(pElem); }
 
 // @0x140ce4cf0
-void GameEventUpdateStringCli::FUN_140ce4cf0(Unk_140165cf0* pElem) { ((Unk_CliStrTbl*)FUN_1401a9d70())->FUN_1418139f0(pElem); }
+void GameEventUpdateStringCli::FUN_140ce4cf0(Unk_140165cf0* pElem) { ((Unk_CliStrTbl*)GetStringTable())->FUN_1418139f0(pElem); }
 
 // @0x140ce4d20
 void GameEventUpdateStringCli::FUN_140ce4d20(Unk_140165cf0* pElem) { FUN_140851c40(pElem); }
@@ -1009,7 +1009,7 @@ void GameEventStringBoardCli::OnStart()
 {
     CStringW strText;
     if (m_nId != 0)
-        strText = FUN_1401a9d70()->FUN_141811980(0x40, m_nId);
+        strText = GetStringTable()->FUN_141811980(0x40, m_nId);
     else
         strText = m_80;
     if (!strText.IsEmpty())
@@ -1236,7 +1236,7 @@ CStringW GameEventBurningLevelupCli::GetTypeName() { return CStringW(L"GameEvent
 
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-CStringW FUN_14028b8e0(const CStringW& str);
+CStringW GetStringCommonByKey(const CStringW& str);
 
 class NotifyChangeMyLevel : public NotifyObject
 {
@@ -1250,7 +1250,7 @@ public:
 // MS2-FUNCTIONAL: the exe also fills the box with the reward item bag (CMsgBoxDataItem/CItem built from the jumping item or the reward list); only the text is shown here
 static void Unk_ShowBurningPopup(const CStringW& strKey)
 {
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x2a, FUN_14028b8e0(strKey), 0, CStringW(L""));
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x2a, GetStringCommonByKey(strKey), 0, CStringW(L""));
     if (spBox == 0)
         return;
     spBox->FUN_141a01800(3);

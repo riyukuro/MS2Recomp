@@ -38,7 +38,7 @@ int FUN_140873220(Unk_140165cf0* pNode, const char* pszName, unsigned& rOut);
 int FUN_1408731a0(Unk_140165cf0* pNode, const char* pszName, unsigned short& rOut);
 int FUN_140873420(Unk_140165cf0* pNode, const char* pszName, CStringW& rOut);
 bool FUN_14028f710(Unk_140165cf0* pNode);                               // the row is for this client's region
-CStringW FUN_14028b8e0(const CStringW& strKey);                         // string by key
+CStringW GetStringCommonByKey(const CStringW& strKey);                         // string by key
 
 // The content switch table and the player level.
 class Unk_CaSwitches
@@ -146,8 +146,8 @@ int CCharacterAbilityTable::LoadCharacterAbilityCategory()
                 FUN_140873220(pNode, "id", spCategory->m_nId);
                 FUN_140873420(pNode, "name", spCategory->m_strName);
                 FUN_140873420(pNode, "tooltip", spCategory->m_strTooltip);
-                spCategory->m_strName = FUN_14028b8e0(spCategory->m_strName);
-                spCategory->m_strTooltip = FUN_14028b8e0(spCategory->m_strTooltip);
+                spCategory->m_strName = GetStringCommonByKey(spCategory->m_strName);
+                spCategory->m_strTooltip = GetStringCommonByKey(spCategory->m_strTooltip);
                 m_categories.SetAt(spCategory->m_nId, spCategory);
             }
         }
