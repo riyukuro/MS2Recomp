@@ -8341,3 +8341,5 @@ compress2	142724100	func
 ?DAT_14313e7f0@@3QBUThunkInfo@AS3@GFx@Scaleform@@B	14313e7f0	data
 ?DAT_14313e8e0@@3QBUThunkInfo@AS3@GFx@Scaleform@@B	14313e8e0	data
 ?DAT_143a2d128@@3QBUThunkInfo@AS3@GFx@Scaleform@@B	143a2d128	data
+?GetControllerMaskByFocusGroup@MovieImpl@GFx@Scaleform@@QEAAII@Z	14256f050	func
+?FindExportedResource@MovieImpl@GFx@Scaleform@@QEAA_NPEAVMovieDefImpl@23@PEAUResourceBindData@23@AEBVString@3@@Z	14256ec50	func
