@@ -286,7 +286,19 @@ class CNMReportInfo : public CNMSerializable
 public:
     virtual ~CNMReportInfo() = default;
 
-    unsigned char m_body[0x5e58];
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+
+    unsigned int m_10, m_14, m_18, m_1c;
+    char m_20[0x40];
+    char m_60[4000];
+    char m_1000[20000];
+    unsigned int m_5e20;
+    char m_5e24[0x40];
 };
 MS2_CHECK_SIZE(CNMReportInfo, 0x5e68);
 
