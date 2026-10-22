@@ -7923,3 +7923,4 @@ sfr_atan2f_thunk	14280f28e	func
 ?GetClass@VM@AS3@GFx@Scaleform@@QEAAPEAVClass@234@AEBVStringDataPtr@4@@Z	142507be0	func
 ?ThrowError@VM@AS3@GFx@Scaleform@@QEAAXAEBVError@1234@@Z	14252eca0	func
 ?_constructInstance@ASVM@AS3@GFx@Scaleform@@QEAA_NAEAV?$SPtr@VObject@AS3@GFx@Scaleform@@@234@PEAVObject@234@IPEBVValue@234@@Z	142531f40	func
+?ASValue2GFxValue@MovieRoot@AS3@GFx@Scaleform@@QEBAXAEBVValue@234@PEAV534@@Z	1424e42c0	func
