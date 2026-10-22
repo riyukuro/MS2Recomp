@@ -9120,7 +9120,6 @@ void* FUN_141bf7dc0(Unk_WsP16* p);                      // ->
 void FUN_140b9c770(void* obj, char flag);
 void FUN_141bf5690(Unk_WsP16* p);                       // release
 // apply every (id, flag) pair of a kind 0 message
-// MS2-FUNCTIONAL: not byte-identical (EH/unwind shape or opaque COMDAT callees)
 // @0x141bd9ca0
 void WorldService::FUN_141bd9ca0(Unk_WsD_Msg* msg)
 {
@@ -9136,7 +9135,6 @@ void WorldService::FUN_141bd9ca0(Unk_WsD_Msg* msg)
 }
 MS2_REPLACE_METHOD(0x141BD9CA0, WorldService, FUN_141bd9ca0, 250, 0x59CBAEC2);
 
-// MS2-FUNCTIONAL: not byte-identical (EH/unwind shape or opaque COMDAT callees)
 // @0x141bd9da0
 void WorldService::FUN_141bd9da0(Unk_WsD_Msg* msg)
 {
@@ -9149,7 +9147,6 @@ void WorldService::FUN_141bd9da0(Unk_WsD_Msg* msg)
 MS2_REPLACE_METHOD(0x141BD9DA0, WorldService, FUN_141bd9da0, 173, 0x270BEE45);
 
 // dispatch on the message kind
-// MS2-FUNCTIONAL: not byte-identical (EH/unwind shape or opaque COMDAT callees)
 // @0x141bd9c20
 void WorldService::FUN_141bd9c20(Unk_WsD_Msg* msg)
 {
@@ -9322,7 +9319,6 @@ bool FUN_141c07010(void* map, unsigned key, MS2Ptr<Unk_WsRec708>* out);   // m_7
 void FUN_141bf1990(Unk_WsP16* self);                    // null ctor
 void FUN_141bf1940(Unk_WsP16* self, int zero);
 void FUN_141bf18d0(Unk_WsP16* self, const Unk_WsP16* src);
-// MS2-FUNCTIONAL: not byte-identical (EH/unwind shape or opaque COMDAT callees)
 // @0x141bda6d0
 MS2Ptr<Unk_WsRec708> WorldService::FUN_141bda6d0(unsigned key)
 {
