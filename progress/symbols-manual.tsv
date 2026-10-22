@@ -4358,7 +4358,7 @@ criHeap_Initialize	1400282e0	func
 criHeap_Finalize	140027ea4	func
 ?Initialized@Video@1GFx@Scaleform@@2IA	143b277b4	data
 ?pHandleWorkBuf@Video@1GFx@Scaleform@@2PEAXEA	143b277a8	data
-?HandleWorkSize@Video@1GFx@Scaleform@@2IA	143b277b0	data
+?HandleWorkSize@Video@1GFx@Scaleform@@2KA	143b277b0	data
 MS2_SF_Resource_vftable	143149880	data
 MS2_SF_VideoCharacterDef_vftable	14318b778	data
 ??0BufferedFile@Scaleform@@QEAA@PEAVFile@1@@Z	14264d490	func
