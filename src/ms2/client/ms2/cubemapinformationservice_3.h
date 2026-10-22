@@ -143,7 +143,7 @@ public:
     Unk_Int3 FUN_1410bac00(Unk_StreamPoint ptDir);
     int FUN_1410bb950(Unk_Int3 pt);
     void FUN_1410bba60(int nKey);
-    bool FUN_1410bbab0(int nKey);
+    int FUN_1410bbab0(int nKey);
     void FUN_1410bbc00(int nKey, int nUnused);
     void FUN_1410bbcd0(int nKey, int nFlag);
     void FUN_1410bc1c0();
@@ -241,7 +241,7 @@ public:
     bool FUN_1410c2610(Unk_Int3 pt);
     void FUN_1410c2a90(int nGroup);
     void FUN_1410c3fc0(PCBase* pActor, float* pOutLo, float* pOutHi);
-    bool FUN_1410d2da0(int nKey, Unk_Int3 pt);
+    int FUN_1410d2da0(int nKey, Unk_Int3 pt);
     int FUN_1410d23f0(int nGroup, int nBlock);
     bool FUN_1410d2130(Cube* pCube, int nDir, float fSize, float* pOutXY, Unk_StreamPoint* pOutPt);
     int FUN_1410d2590(Unk_Int3 pt, int nGroup, int nBlock);
@@ -339,7 +339,7 @@ public:
     void FUN_1410c3330(CStringW* pOut);
     void FUN_1410c79a0(int nA, int nB);
     void* FUN_1410c7c20(int nA, int nB);
-    bool FUN_1410cdf60(Unk_Int3* pA, Unk_Int3* pB);
+    int FUN_1410cdf60(Unk_Int3* pA, Unk_Int3* pB);
     void FUN_1410c92e0(int nId);
     void FUN_1410cb380(Unk_Int3 pt, const Unk_CMISEntityRef& ref);
     void FUN_1410d4680(ATL::CAtlArray<Unk_CMISHandle3a8>* pSrc);

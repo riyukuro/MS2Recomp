@@ -268,6 +268,21 @@ struct Unk_CMISIntList { Unk_CMISIntList(); ~Unk_CMISIntList(); void* m_pFirst; 
 Unk_CMISIter<262>* FUN_141151c70(Unk_CMISTree<262>*, Unk_CMISIter<262>*);   // end
 Unk_CMISIter<262>* FUN_141157900(Unk_CMISTree<262>*, Unk_CMISIter<262>*, const int*);   // find
 bool FUN_1411275c0(Unk_CMISIter<262>*, Unk_CMISIter<262>*);                 // operator!=
+// By-value spellings of the same map<int,...> members: a non-POD iterator comes back through a hidden pointer, so its
+// temporaries sit after the named locals as in the exe's `fd8.find(k) != fd8.end()`.
+template <unsigned __int64 N> struct Unk_CMISItV {
+    void* node;
+    Unk_CMISItV() {}
+    bool FUN_1411275c0(const Unk_CMISItV&) const;   // <262> operator!=
+    bool FUN_141126e90(const Unk_CMISItV&) const;   // <262> operator==
+    bool FUN_140d7b400(const Unk_CMISItV&) const;   // <276> operator==
+};
+template <unsigned __int64 N> struct Unk_CMISTreeV {
+    Unk_CMISItV<N> FUN_141151c70();                 // <262> end
+    Unk_CMISItV<N> FUN_141157900(const int&);       // <262> find
+    Unk_CMISItV<N> FUN_141151df0();                 // <276> end
+    Unk_CMISItV<N> FUN_141157c80(const int&);       // <276> find
+};
 bool FUN_141126e90(Unk_CMISIter<262>*, Unk_CMISIter<262>*);                 // operator==
 Unk_CMISIntList* FUN_141127e10(Unk_CMISTree<262>*, const int*);             // operator[]
 void FUN_141126700(Unk_CMISIntList*, Unk_CMISIntList*);                     // operator=
@@ -315,6 +330,7 @@ struct Unk_CMISPair { int m_a, m_b; };
 extern Unk_CMISPair DAT_143b02320;                                          // initial cursor pair
 float FUN_14029d220(float f);                                               // fabsf
 Unk_Int3* FUN_14112ca20(Unk_Int3* pA, Unk_Int3* pOut, Unk_Int3* pB);   // point add
+struct Unk_DkPoint : public Unk_Int3 { Unk_Int3 operator+(const Unk_DkPoint& o) const; };   // 0x14112ca20 (unit_14112ab60)
 const int* FUN_1402fbd20(const int*, const int*);               // std::min
 const int* FUN_1404eb7e0(const int*, const int*);               // std::max
 MS2Ptr<Cube>* FUN_141127cd0(Unk_CMISTree<260>*, const int*);             // operator[]: the cube of a key
@@ -925,29 +941,27 @@ void CubeMapInformationService::FUN_1410bba60(int nKey)
 }
 
 // @0x1410bbab0
-// MS2-FUNCTIONAL: behaviour-equivalent; frame layout / local order differs from the exe (0x10 of temporaries placed differently)
-bool CubeMapInformationService::FUN_1410bbab0(int nKey)
+int CubeMapInformationService::FUN_1410bbab0(int nKey)
 {
-    Unk_CMISIter<262> itEnd, itFind;
-    if (FUN_1411275c0(FUN_141157900(&fd8, &itFind, &nKey), FUN_141151c70(&fd8, &itEnd))) {
+    if (reinterpret_cast<Unk_CMISTreeV<262>*>(&fd8)->FUN_141157900(nKey).FUN_1411275c0(reinterpret_cast<Unk_CMISTreeV<262>*>(&fd8)->FUN_141151c70())) {
         Unk_CMISIntList* pList = FUN_141127e10(&fd8, &nKey);
         Unk_CMISListIter it;
         Unk_CMISListEnd itListEnd;
         for (FUN_14114e630(pList, &it); FUN_14035ea60(&it, FUN_1411522d0(pList, &itListEnd)); FUN_14035ebf0(&it)) {
-            Unk_Int3 pt = FUN_1408a0400(*FUN_1403e8d70(&it));
+            int nCell = *FUN_1403e8d70(&it);
+            Unk_Int3 pt = FUN_1408a0400(nCell);
             pt.z = pt.z + 1;
             if (FUN_1410b7f90(pt))
-                return true;
+                return 1;
         }
     }
-    return false;
+    return 0;
 }
 // @0x1410bbc00
 // MS2-FUNCTIONAL: identical code and slot layout, but the frame is 0x10 larger than the exe (unreferenced temporary)
 void CubeMapInformationService::FUN_1410bbc00(int nKey, int nUnused)
 {
-    Unk_CMISIter<262> itEnd, itFind;
-    if (FUN_141126e90(FUN_141157900(&fd8, &itFind, &nKey), FUN_141151c70(&fd8, &itEnd))) {
+    if (reinterpret_cast<Unk_CMISTreeV<262>*>(&fd8)->FUN_141157900(nKey).FUN_141126e90(reinterpret_cast<Unk_CMISTreeV<262>*>(&fd8)->FUN_141151c70())) {
         Unk_CMISIntList kEmpty;
         FUN_141126700(FUN_141127e10(&fd8, &nKey), &kEmpty);
     }
@@ -1615,13 +1629,12 @@ void* CubeMapInformationService::FUN_1410c7c20(int nA, int nB)
     return FUN_141128410(FUN_141128090(&fe8, FUN_14111d460(nA, nB)));
 }
 // @0x1410cdf60
-// MS2-FUNCTIONAL: behaviour-equivalent; the exe frame has extra by-value temporaries / a different local order that no source form reproduced
-bool CubeMapInformationService::FUN_1410cdf60(Unk_Int3* pA, Unk_Int3* pB)
+int CubeMapInformationService::FUN_1410cdf60(Unk_Int3* pA, Unk_Int3* pB)
 {
-    Unk_Int3 kSum;
-    int nKey = FUN_1408a03c0(*FUN_14112ca20(pA, &kSum, pB));
-    Unk_CMISIter<276> itEnd, itFind;
-    return FUN_140d7b400(FUN_141157c80(&f298, &itFind, &nKey), FUN_141151df0(&f298, &itEnd)) != 0;
+    int nKey = FUN_1408a03c0(static_cast<const Unk_DkPoint&>(*pA) + static_cast<const Unk_DkPoint&>(*pB));
+    if (reinterpret_cast<Unk_CMISTreeV<276>*>(&f298)->FUN_141157c80(nKey).FUN_140d7b400(reinterpret_cast<Unk_CMISTreeV<276>*>(&f298)->FUN_141151df0()))
+        return 1;
+    return 0;
 }
 // @0x1410c92e0
 // MS2-FUNCTIONAL: behaviour-equivalent; the exe frame has extra by-value temporaries / a different local order that no source form reproduced
@@ -1672,7 +1685,6 @@ void CubeMapInformationService::FUN_1410d43c0(ATL::CAtlArray<Unk_CMISHandle388>*
     }
 }
 // @0x1410d59c0
-// MS2-FUNCTIONAL: behaviour-equivalent; the exe frame has extra by-value temporaries / a different local order that no source form reproduced
 void CubeMapInformationService::FUN_1410d59c0(ATL::CAtlArray<MS2Ptr<Cube>>* pOut)
 {
     for (unsigned __int64 i = 0; i < FUN_140186260(&a458); i++) {
@@ -1922,19 +1934,19 @@ struct Unk_CMISPartyRef                                                         
     void* FUN_140fa9d30();                                                                  // operator bool
     Unk_CMISParty* FUN_14050dee0();                                                         // operator->
 };
-struct Unk_CMISSalable { Unk_CMISSalable(); ~Unk_CMISSalable(); void* m_pad0[4]; int m_nField20; int m_pad24; void* m_pad28[15]; void* m_pField0xa0; void* m_pad1[4]; };               // ctor 0x1408ad110, dtor 0x14050de70
+struct Unk_CMISSalable { Unk_CMISSalable(); ~Unk_CMISSalable(); void* m_pad0[4]; int m_nField20; int m_pad24; void* m_pad28[15]; void* m_pField0xa0; void* m_pad1[3]; };   // 0xc0 like Unk_UGCGroup; ctor 0x1408ad110, dtor 0x14050de70
 int FUN_1408a0d30(int, Unk_CMISSalable*, int);
 // @0x1410c80d0
-// MS2-FUNCTIONAL: unwind-state locals of the exe's result temporaries differ
 bool CubeMapInformationService::FUN_1410c80d0(int nGroup)
 {
+    int nMap = FUN_1403ed2d0()->FUN_141bd3060();
     Unk_CMISSalable salable;
-    if (FUN_1408a0d30(nGroup, &salable, FUN_1403ed2d0()->FUN_141bd3060()) == 0)
+    if (FUN_1408a0d30(nGroup, &salable, nMap) == 0)
         return false;
     Unk_CubeOwnerPtr spOwner = FUN_1408a0fa0(reinterpret_cast<Unk_CubeOwners&>(f138), nGroup, 0);
-    if (spOwner == 0)
-        return false;
-    return true;
+    if (spOwner == static_cast<CubeOwner*>(0))
+        return true;
+    return false;
 }
 // @0x1410c8580
 // MS2-FUNCTIONAL: unwind-state locals of the exe's result temporaries differ
@@ -1953,15 +1965,12 @@ int CubeMapInformationService::FUN_1410c8580(int nGroup)
     return 0;
 }
 // @0x1410c78b0
-// MS2-FUNCTIONAL: unwind-state locals of the exe's result temporaries differ
 Unk_CubeOwnerMap* CubeMapInformationService::FUN_1410c78b0(int nGroup)
 {
     static Unk_CubeOwnerMap s_empty;
-    Unk_CubeOwners& owners = reinterpret_cast<Unk_CubeOwners&>(f138);
-    Unk_CubeOwners::iterator itEnd = owners.end();
-    if (owners.find(nGroup) != itEnd)
-        return &owners[nGroup];
-    return &s_empty;
+    if (reinterpret_cast<Unk_CubeOwners&>(f138).find(nGroup) == reinterpret_cast<Unk_CubeOwners&>(f138).end())
+        return &s_empty;
+    return &reinterpret_cast<Unk_CubeOwners&>(f138)[nGroup];
 }
 int FUN_1407072e0(int);
 // @0x1410cb980
@@ -2149,24 +2158,27 @@ void CubeMapInformationService::FUN_1410d4710(__int64 nId, int nIdx, CStringA st
 }
 // ---- w138 batch 6 ----
 bool FUN_1411272b0(const Unk_Int3*, const Unk_Int3*);
-Unk_CMISRes16 FUN_1408a15b0(Unk_Int3, const Unk_StreamPoint&);                              // the world point of a cell (writes the xy centre)                                        // operator==
+Unk_CMISRes16 FUN_1408a15b0(Unk_Int3, const Unk_StreamPoint&);
+Unk_Int3 FUN_1408a15b0(Unk_Int3, Unk_StreamPoint&);   // same function; 12-byte result temp (0x1410cb1b0)                              // the world point of a cell (writes the xy centre)                                        // operator==
 // @0x1410d2da0
-// MS2-FUNCTIONAL: branch/return layout of the result differs from the exe; same calls and compares
-bool CubeMapInformationService::FUN_1410d2da0(int nKey, Unk_Int3 pt)
+int CubeMapInformationService::FUN_1410d2da0(int nKey, Unk_Int3 pt)
 {
-    Unk_CMISIter<262> itEnd, itFind;
-    if (FUN_141126e90(FUN_141157900(&fd8, &itFind, &nKey), FUN_141151c70(&fd8, &itEnd)) == 0) {
-        Unk_CMISIntList* pList = FUN_141127e10(&fd8, &nKey);
-        Unk_CMISListIter it;
-        Unk_CMISListEnd itListEnd;
-        for (FUN_14114e630(pList, &it); FUN_14035ea60(&it, FUN_1411522d0(pList, &itListEnd)); FUN_14035ebf0(&it)) {
-            Unk_Int3 cell = FUN_1408a0400(*FUN_1403e8d70(&it));
-            cell.z = cell.z + 1;
-            if (FUN_1411272b0(&cell, &pt))
-                return true;
+    if (reinterpret_cast<Unk_CMISTreeV<262>*>(&fd8)->FUN_141157900(nKey).FUN_141126e90(reinterpret_cast<Unk_CMISTreeV<262>*>(&fd8)->FUN_141151c70()))
+        return 0;
+    int nResult = 0;
+    Unk_CMISIntList* pList = FUN_141127e10(&fd8, &nKey);
+    Unk_CMISListIter it;
+    Unk_CMISListEnd itListEnd;
+    for (FUN_14114e630(pList, &it); FUN_14035ea60(&it, FUN_1411522d0(pList, &itListEnd)); FUN_14035ebf0(&it)) {
+        int nCell = *FUN_1403e8d70(&it);
+        Unk_Int3 cell = FUN_1408a0400(nCell);
+        cell.z = cell.z + 1;
+        if (FUN_1411272b0(&cell, &pt)) {
+            nResult = 1;
+            break;
         }
     }
-    return false;
+    return nResult;
 }
 // @0x1410d23f0
 // MS2-FUNCTIONAL: branch/return layout of the result differs from the exe; same calls and compares
@@ -2222,7 +2234,6 @@ bool CubeMapInformationService::FUN_1410d2130(Cube* pCube, int nDir, float fSize
 }
 int FUN_1410a8a90(void*);
 // @0x1410d2590
-// MS2-FUNCTIONAL: branch/return layout of the result differs from the exe; same calls and compares
 int CubeMapInformationService::FUN_1410d2590(Unk_Int3 pt, int nGroup, int nBlock)
 {
     Unk_Int3 cell = pt;
@@ -2247,10 +2258,9 @@ int CubeMapInformationService::FUN_1410d2590(Unk_Int3 pt, int nGroup, int nBlock
         cell.z = cell.z - 1;
     if (cell.z > pt.z)
         return 0;
-    else if (cell.z + nHeight < pt.z)
+    if (cell.z + nHeight < pt.z)
         return 0;
-    else
-        return 1;
+    return 1;
 }
 // @0x1410c3fc0
 // MS2-FUNCTIONAL: std::map floors vs the exe's inlined tree helpers; stack frame differs
@@ -2425,11 +2435,12 @@ int CubeMapInformationService::FUN_1410cdd80(Unk_StreamPoint* pFrom, Unk_StreamP
     Unk_StreamPoint ptHit;
     FUN_1410b7ba0(*pFrom, *pTo, -fDist, &ptHit, 0);
     Unk_Int3 kCell = FUN_1408a1430(ptHit);
-    Unk_Int3 kSum;
-    kCell = *FUN_14112ca20(&kCell, &kSum, pOffset);
+    kCell = static_cast<const Unk_DkPoint&>(kCell) + static_cast<const Unk_DkPoint&>(*pOffset);
     int nKey = FUN_1408a03c0(kCell);
     Unk_CMISIter<276> itEnd, itFind;
-    return FUN_140d7b400(FUN_141157c80(&f298, &itFind, &nKey), FUN_141151df0(&f298, &itEnd)) ? 1 : 0;
+    if (FUN_140d7b400(FUN_141157c80(&f298, &itFind, &nKey), FUN_141151df0(&f298, &itEnd)))
+        return 1;
+    return 0;
 }
 struct Unk_EntityAppFramework;
 extern Unk_EntityAppFramework DAT_143b059e8;
@@ -2836,7 +2847,6 @@ void CubeMapInformationService::FUN_1410c4850(__int64 nOwner, Unk_Int3 pt, CubeI
     }
 }
 // @0x1410c4b50
-// MS2-FUNCTIONAL: MS2Ptr<Cube> temporaries and Unk_Int3 copies differ from the exe
 void CubeMapInformationService::FUN_1410c4b50(Unk_Int3 pt, bool bKeep)
 {
     Unk_StreamPoint ptCell = DAT_143b01a60;
@@ -3324,7 +3334,6 @@ public:
 };
 float* FUN_140298f40(Unk_CMISLimitF* pLimit);
 // @0x1410cb1b0
-// MS2-FUNCTIONAL: iterator/ref temporaries are laid out differently from the exe
 Unk_CMISEntityRef CubeMapInformationService::FUN_1410cb1b0()
 {
     Unk_CMISPawn* pPawn = reinterpret_cast<Unk_CMISPawn*>(FUN_1403ed2d0()->FUN_141bd0cc0());
@@ -3336,12 +3345,14 @@ Unk_CMISEntityRef CubeMapInformationService::FUN_1410cb1b0()
             int nKey = FUN_1411286a0(&it)->m_key;
             Unk_CMISEntityRef ref(FUN_1411286a0(&it)->m_ref);
             Unk_StreamPoint ptCell;
-            FUN_1408a15b0(FUN_1408a0400(nKey), ptCell);
+            FUN_1408a15b0(FUN_1408a0400(nKey), static_cast<Unk_StreamPoint&>(ptCell));
             float fDist = pPawn->vfunc_18().FUN_140965c40(ptCell).FUN_140967ac0();
-            if (fDist <= *FUN_140298f40(&FUN_1401d3200()->m_fNear) && fDist <= fBest) {
-                FUN_140899bd0(reinterpret_cast<Unk_CMISEntityRef*>(&best), ref);
-                fBest = fDist;
-            }
+            if (fDist > *FUN_140298f40(&FUN_1401d3200()->m_fNear))
+                continue;
+            if (fDist > fBest)
+                continue;
+            fBest = fDist;
+            FUN_140899bd0(reinterpret_cast<Unk_CMISEntityRef*>(&best), ref);
         }
     }
     return Unk_CMISEntityRef(reinterpret_cast<const Unk_CMISEntityRef&>(best));
