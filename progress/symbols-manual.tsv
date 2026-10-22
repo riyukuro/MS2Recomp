@@ -7947,3 +7947,13 @@ sfr_atan2f_thunk	14280f28e	func
 ?TextFormatAlignCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B	143167e90	data
 ?TextLineMetricsCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B	143167ee0	data
 ?TextRendererCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B	143167f30	data
+??0StaticText@fl_text@Instances@AS3@GFx@Scaleform@@QEAA@AEAVTraits@InstanceTraits@345@@Z	1424a8d20	func
+??0StyleSheet@fl_text@Instances@AS3@GFx@Scaleform@@QEAA@AEAVTraits@InstanceTraits@345@@Z	1424a8e80	func
+??0TextField@fl_text@Instances@AS3@GFx@Scaleform@@QEAA@AEAVTraits@InstanceTraits@345@@Z	1424a9290	func
+??0TextFormat@fl_text@Instances@AS3@GFx@Scaleform@@QEAA@AEAVTraits@InstanceTraits@345@@Z	1424a9690	func
+??0TextSnapshot@fl_text@Instances@AS3@GFx@Scaleform@@QEAA@AEAVTraits@InstanceTraits@345@@Z	1424a9ea0	func
+?StaticTextCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B	143167c10	data
+?StyleSheetCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B	143167c60	data
+?TextFieldCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B	143167d50	data
+?TextFormatCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B	143167e40	data
+?TextSnapshotCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B	143167f80	data
