@@ -120,7 +120,7 @@ public:
     int FUN_140745630(int);
     int FUN_140745590(int);
     int FUN_1407456d0(int);
-    int FUN_140746ba0(int, int, int);
+    int FUN_140746ba0(int, int, bool);
 };
 class Unk_GalleryQuestGlobal { public: void* m_0; void* m_8; Unk_GalleryQuestState state; };
 Unk_GalleryQuestGlobal* FUN_140764020();

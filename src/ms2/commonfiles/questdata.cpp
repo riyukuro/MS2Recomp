@@ -617,11 +617,10 @@ int CQuestManagerCommon::FUN_140746850(int questId, int npcId, int bStart)
 }
 MS2_REPLACE_METHOD(0x140746850, CQuestManagerCommon, FUN_140746850, 827, 0xB2C4964A);
 
-// MS2-FUNCTIONAL: statement order and result temporaries differ from the exe.
+// The conditional data temporary lives through the NPC comparison.
 // @0x140746ba0
-int CQuestManagerCommon::FUN_140746ba0(int questId, int npcId, int bSkip)
+int CQuestManagerCommon::FUN_140746ba0(int questId, int npcId, bool bSkip)
 {
-    bool bHaveData = false;
     Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
     if (quest.IsNull())
         return 6;
@@ -631,16 +630,7 @@ int CQuestManagerCommon::FUN_140746ba0(int questId, int npcId, int bSkip)
         return 6;
     if (bSkip == 0 && quest->FUN_1407476d0() != 1)
         return 6;
-    int bWrongNpc = 0;
-    if (bSkip == 0 && npcId != 0)
-    {
-        MS2Ptr<CQuestData> data = quest->GetData();
-        bHaveData = true;
-        if (data->m_2ec != npcId)
-            bWrongNpc = 1;
-    }
-    (void)bHaveData;
-    if (bWrongNpc)
+    if (bSkip == 0 && npcId != 0 && quest->GetData()->m_2ec != npcId)
         return 6;
     if (bSkip == 0 && FUN_1407456d0(questId) == 0)
         return 6;
