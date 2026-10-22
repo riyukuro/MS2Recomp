@@ -103,7 +103,7 @@ public:
     void FUN_1419384d0();
     void FUN_141938700();
     void FUN_141938850();
-    bool FUN_141938a00(CString strName);
+    int FUN_141938a00(CString strName);
     void FUN_141938ae0(int nId, int nValue);
     void FUN_1419391c0();
     void FUN_141939320(bool bValue);

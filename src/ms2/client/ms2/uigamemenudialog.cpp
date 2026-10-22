@@ -1337,7 +1337,7 @@ void UIGameMenuDialog::FUN_141938850()
 }
 
 // @0x141938a00
-bool UIGameMenuDialog::FUN_141938a00(CString strName)
+int UIGameMenuDialog::FUN_141938a00(CString strName)
 {
     MS2Ptr<Unk_GmItem> spItem = FUN_14193b180(strName);
     if (spItem.get() == 0)
