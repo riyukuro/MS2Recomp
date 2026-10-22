@@ -37,7 +37,7 @@ public:
     virtual void vfunc_84();                                    // 0x1419bee10 "initData"
     virtual void vfunc_85(int nType);                           // 0x1419bee80 packet 0x22 op 4
     virtual MS2Ptr<ASMovieClip> vfunc_86();                     // 0x1412a4070 returns a copy of m_enchantAni (unit_14129cfa0)
-    bool FUN_1419beef0(unsigned __int64 uid);                   // 0x1419beef0 (really a base member: UIItemRemakeOptionDialog calls it too)
+    int FUN_1419beef0(unsigned __int64 uid);                   // 0x1419beef0 (really a base member: UIItemRemakeOptionDialog calls it too)
     MS2Ptr<CItem> FUN_1419bef70(unsigned __int64 uid);          // 0x1419bef70
     MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);  // 0x140ba7930 bind a movie clip child (a UIDialog member: this+0x30)
 protected:
@@ -82,7 +82,7 @@ public:
     void FUN_1419c1a40(ATL::CAtlArray<unsigned __int64>& out);                                 // 0x1419c1a40
     int FUN_1419c1d60();                                 // 0x1419c1d60
     unsigned FUN_1419c1e00();                                 // 0x1419c1e00
-    CString FUN_1419c1e40();                                 // 0x1419c1e40
+    CString FUN_1419c1e40(CItem* item);                               // 0x1419c1e40
     void FUN_1419c1f20(CInPacket& pkt);                                 // 0x1419c1f20
     void FUN_1419c2e30(CItem* item, int prevLevel, CInPacket& pkt);                                 // 0x1419c2e30
     void FUN_1419c3390(CItem* item, CEnchantOption* stat, int prevLevel);                                 // 0x1419c3390
@@ -129,12 +129,12 @@ public:
     void FUN_1419c81a0();                                 // 0x1419c81a0
     int FUN_1419c86b0(int itemId);                                 // 0x1419c86b0
     int FUN_1419c8830(int itemId);                                 // 0x1419c8830
-    bool FUN_1419c89b0(unsigned __int64 uid);                                 // 0x1419c89b0
-    bool FUN_1419c8b80(unsigned __int64 uid);                                 // 0x1419c8b80
+    int FUN_1419c89b0(unsigned __int64 uid);                                 // 0x1419c89b0
+    int FUN_1419c8b80(unsigned __int64 uid);                                 // 0x1419c8b80
     CStringW FUN_1419c8ce0(CItem* item);                                 // 0x1419c8ce0
     void FUN_1419c90b0(unsigned int itemId, int count, __int64 arg);                                 // 0x1419c90b0
-    bool FUN_1419c9260(CItem* base, CItem* other);                                 // 0x1419c9260
-    bool FUN_1419c93a0(CItem* base, CItem* other);                                 // 0x1419c93a0
+    int FUN_1419c9260(CItem* base, CItem* other);                                 // 0x1419c9260
+    int FUN_1419c93a0(CItem* base, CItem* other);                                 // 0x1419c93a0
     bool FUN_1419c9490(CItem* base, CItem* other);                                 // 0x1419c9490
     int FUN_1419c9530(CItem* base);                                 // 0x1419c9530
     int FUN_1419c9630(CItem* base, CItem* other);                                 // 0x1419c9630
