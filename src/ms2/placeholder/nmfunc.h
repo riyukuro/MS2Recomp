@@ -350,12 +350,22 @@ public:
 };
 MS2_CHECK_SIZE(CNMCateFriendInfo, 0x58);
 
+class CNMChatRoomMemberInfo;
+
 class CNMChannelMemberInfo : public CNMSerializable
 {
 public:
+    CNMChannelMemberInfo();
     CNMChannelMemberInfo(const CNMChannelMemberInfo& r);
+    explicit CNMChannelMemberInfo(const CNMChatRoomMemberInfo& r);
     virtual ~CNMChannelMemberInfo() = default;
     CNMChannelMemberInfo& operator=(const CNMChannelMemberInfo& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     unsigned char m_10[0x8];                          // +0x10 (not recovered)
     CNMStr<0x40> m_18;                                // +0x18
