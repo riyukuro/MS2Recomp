@@ -213,7 +213,16 @@ MS2_CHECK_SIZE(CNMGetNoteBox2Func, 0x60);
 class CNMGetNoteBoxFunc : public CNMFunc
 {
 public:
+    CNMGetNoteBoxFunc(); // 0x14158a1e0
+    CNMGetNoteBoxFunc(int type, int index); // 0x14158a260
+    CNMGetNoteBoxFunc(int type, int index, int status); // 0x14158a2f0
     virtual ~CNMGetNoteBoxFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_30, m_34, m_38;
     std::vector<CNMNoteInfo> m_40;
