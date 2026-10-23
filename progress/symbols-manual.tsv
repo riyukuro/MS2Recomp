@@ -8858,3 +8858,4 @@ DAT_1431b9430	1431b9430	data
 ?GFxValue2ASValue@MovieRoot@AS3@GFx@Scaleform@@QEAAXAEBVValue@34@PEAV5234@@Z	1425048d0	func
 ?GetVariable@Movie@GFx@Scaleform@@QEBA_NPEAVValue@23@PEBD@Z	1425700a0	func
 ?SetCandidateListFont@TextField@GFx@Scaleform@@QEAAXPEAVDisplayObject@23@@Z	1425bbd70	func
+?HitTestTextNearPos@StaticTextSnapshotData@GFx@Scaleform@@QEBAHMMM@Z	1425e1840	func
