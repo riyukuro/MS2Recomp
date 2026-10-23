@@ -2191,7 +2191,16 @@ MS2_CHECK_SIZE(CNMGetMyInfoFunc, 0x11f0);
 class CNMGetMyVirtualUserListFunc : public CNMFunc
 {
 public:
+    CNMGetMyVirtualUserListFunc(); // 0x14157fbb0
+    explicit CNMGetMyVirtualUserListFunc(unsigned result); // 0x14157fc20
     virtual ~CNMGetMyVirtualUserListFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_30; // +0x30
     int m_34; // +0x34
