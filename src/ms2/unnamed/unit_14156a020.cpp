@@ -1328,3 +1328,35 @@ unsigned int CNMRealUserInfo::Decode(CNMSerializableDecoder* d,CNMStream* s)
     CNMDefaultUserInfo::DecodeDispatch(d,s); d->ReadBytes(reinterpret_cast<unsigned char*>(m_b0),0x20); d->ReadBytes(reinterpret_cast<unsigned char*>(m_d0),0x40); m_110=d->ReadU32();m_114=d->ReadU8();m_118=d->ReadU32();m_11c=d->ReadU32();d->ReadBytes(reinterpret_cast<unsigned char*>(&m_120),2);m_124=d->ReadU32();d->ReadBytes(reinterpret_cast<unsigned char*>(&m_128),2);
     auto*b=reinterpret_cast<unsigned char*>(&m_12a); const unsigned short lo=d->ReadU16();b[0]=lo;b[1]=lo>>8;b[2]=d->ReadU8();b[6]=d->ReadU8();m_140.DecodeDispatch(d,s);m_150=d->ReadU8();m_154=d->ReadU8();m_158=d->ReadU8();m_15c=d->ReadU8();if(m_bKind==2){m_160=d->ReadU8();d->ReadBytes(reinterpret_cast<unsigned char*>(m_161),0x40);}return static_cast<unsigned int>(FUN_1415fb750(d));
 }
+
+// MS2-FUNCTIONAL 0x14156ef50: initializes the virtual-user record fields and serializable type.
+// @0x14156ef50
+CNMVirtualUserInfo::CNMVirtualUserInfo() : CNMSerializable(0x7576,1,1), m_10(0),m_14(0),m_18{},m_58{},m_98{},m_480(0),m_484(0),m_488(0),m_48c(0) {}
+
+// MS2-FUNCTIONAL 0x14156f030: frames and writes the virtual-user payload.
+// @0x14156f030
+unsigned int CNMVirtualUserInfo::EncodeFramed(CNMStream*s){unsigned char b[0x18];FUN_14156bcb0(reinterpret_cast<long long>(b),reinterpret_cast<long long>(s),reinterpret_cast<long long>(this));void**v=*reinterpret_cast<void***>(this);using F=unsigned int(__fastcall*)(CNMVirtualUserInfo*,CNMEncoder*,CNMStream*);auto r=reinterpret_cast<F>(v[2])(this,reinterpret_cast<CNMEncoder*>(b),s);FUN_14156bd50(b);return r;}
+
+// MS2-FUNCTIONAL 0x14156f090: selects framed or direct encoding.
+// @0x14156f090
+unsigned int CNMVirtualUserInfo::EncodeDispatch(CNMEncoder*e,CNMStream*s){void**v=*reinterpret_cast<void***>(this);if(m_bFormat==1){using F=unsigned int(__fastcall*)(CNMVirtualUserInfo*,CNMEncoder*,CNMStream*);return reinterpret_cast<F>(v[2])(this,e,s);}using F=unsigned int(__fastcall*)(CNMVirtualUserInfo*,CNMStream*);return reinterpret_cast<F>(v[3])(this,s);}
+
+// MS2-FUNCTIONAL 0x14156f0f0: writes the virtual-user strings and numeric metadata in wire order.
+// @0x14156f0f0
+unsigned int CNMVirtualUserInfo::Encode(CNMEncoder*e,CNMStream*){FUN_14156ac20(e,m_10);FUN_14156ac20(e,m_14);FUN_14156ae30(e,m_18);FUN_14156ae30(e,m_58);FUN_14156ab00(e,static_cast<unsigned char>(m_480));FUN_14156ab00(e,static_cast<unsigned char>(m_484));FUN_14156ab00(e,static_cast<unsigned char>(m_488));FUN_14156ac20(e,m_48c);FUN_14156ae30(e,m_98);FUN_1415f9990(e);return 1;}
+
+// MS2-FUNCTIONAL 0x14156f1e0: decodes the framed virtual-user payload.
+// @0x14156f1e0
+unsigned int CNMVirtualUserInfo::DecodeFramed(CNMStream*s){unsigned char b[0x38];FUN_14156be10(b,s,this);unsigned int r=0;if(FUN_1415fb750(b)){void**v=*reinterpret_cast<void***>(this);using F=unsigned int(__fastcall*)(CNMVirtualUserInfo*,CNMSerializableDecoder*,CNMStream*);r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(b),s);}FUN_14156bf10(b);return r;}
+
+// MS2-FUNCTIONAL 0x14156f270: dispatches decoding according to decoder mode.
+// @0x14156f270
+unsigned int CNMVirtualUserInfo::DecodeDispatch(CNMSerializableDecoder*d,CNMStream*s){void**v=*reinterpret_cast<void***>(this);if(FUN_1415fb6d0(d)==2){using F=unsigned int(__fastcall*)(CNMVirtualUserInfo*,CNMStream*);return reinterpret_cast<F>(v[6])(this,s);}using F=unsigned int(__fastcall*)(CNMVirtualUserInfo*,CNMSerializableDecoder*,CNMStream*);return reinterpret_cast<F>(v[5])(this,d,s);}
+
+// MS2-FUNCTIONAL 0x14156f2d0: reads all virtual-user fields and validates the decoder state.
+// @0x14156f2d0
+unsigned int CNMVirtualUserInfo::Decode(CNMSerializableDecoder*d,CNMStream*){m_10=d->ReadU32();m_14=d->ReadU32();d->ReadBytes(reinterpret_cast<unsigned char*>(m_18),0x40);d->ReadBytes(reinterpret_cast<unsigned char*>(m_58),0x40);m_480=d->ReadU8();m_484=d->ReadU8();m_488=d->ReadU8();m_48c=d->ReadU32();d->ReadBytes(reinterpret_cast<unsigned char*>(m_98),1000);return static_cast<unsigned int>(FUN_1415fb750(d));}
+
+// MS2-PIN: ??0CNMRealUserInfo@@QEAA@XZ 0x14156e6e0 ; recovered real-user constructor
+// MS2-PIN: ??0CNMSelfUserInfo@@QEAA@XZ 0x14156ef10 ; recovered self-user constructor
+// MS2-PIN: ??0CNMVirtualUserInfo@@QEAA@XZ 0x14156ef50 ; recovered virtual-user constructor

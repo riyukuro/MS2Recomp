@@ -767,11 +767,21 @@ MS2_CHECK_SIZE(CNMSessionMemberInfo, 0xf8);
 class CNMVirtualUserInfo : public CNMSerializable
 {
 public:
+    CNMVirtualUserInfo();
     CNMVirtualUserInfo(const CNMVirtualUserInfo& r);
     virtual ~CNMVirtualUserInfo() = default;
     CNMVirtualUserInfo& operator=(const CNMVirtualUserInfo& r);
-
-    unsigned char m_body[0x480];                       // +0x10 (not recovered)
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    int m_10, m_14;
+    char m_18[0x40];
+    char m_58[0x40];
+    char m_98[0x3e8];
+    unsigned int m_480, m_484, m_488, m_48c;
 };
 MS2_CHECK_SIZE(CNMVirtualUserInfo, 0x490);
 
