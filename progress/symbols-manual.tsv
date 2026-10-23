@@ -8614,3 +8614,7 @@ DAT_143b27c80	143b27c80	data
 ?StaticFunctionTable@SharedObjectCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213ed0	data
 ?StaticFunctionTable@StringCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213610	data
 ?StaticFunctionTable@TextFieldCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143212f60	data
+?PTR_FUN_1431b6640@@3PEAXEA	1431b6640	data
+?PTR_LAB_1431b6638@@3PEAXEA	1431b6638	data
+?PTR_LAB_1431b6690@@3PEAXEA	1431b6690	data
+?PTR_s_connect_1431b6410@@3PEAXEA	1431b6410	data
