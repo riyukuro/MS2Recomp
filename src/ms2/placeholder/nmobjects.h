@@ -1460,7 +1460,15 @@ MS2_CHECK_SIZE(CNMCheckNewsFunc, 0x40);
 class CNMConfirmNewFriendFunc : public CNMFunc
 {
 public:
+    CNMConfirmNewFriendFunc(); // 0x141586f00
+    CNMConfirmNewFriendFunc(int result, int flags, int userId); // 0x141586f70
     virtual ~CNMConfirmNewFriendFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_30; // +0x30
     int m_34; // +0x34
@@ -2902,7 +2910,15 @@ MS2_CHECK_SIZE(CNMRequestNewFriendEvent, 0x218);
 class CNMRequestNewFriendFunc : public CNMFunc
 {
 public:
+    CNMRequestNewFriendFunc(); // 0x141586b60
+    explicit CNMRequestNewFriendFunc(const CNMRequestNewFriendData& data); // 0x141586bd0
     virtual ~CNMRequestNewFriendFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMRequestNewFriendData m_30; // +0x30
 };
