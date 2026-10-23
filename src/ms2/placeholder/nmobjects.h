@@ -2506,7 +2506,16 @@ MS2_CHECK_SIZE(CNMRequestChatSessionExFunc, 0x58);
 class CNMRequestChatSessionFunc : public CNMFunc
 {
 public:
+    CNMRequestChatSessionFunc();                         // 0x141596d50
+    CNMRequestChatSessionFunc(const unsigned char* pTarget, int nTarget); // 0x141596de0
     virtual ~CNMRequestChatSessionFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x141596f30
+    unsigned int EncodeFramed(CNMStream* pStream) override;                 // 0x141596e70
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x141596ed0
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override; // 0x1415970f0
+    unsigned int DecodeFramed(CNMStream* pStream) override;                 // 0x141597000
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override; // 0x141597090
 
     long long m_30; // +0x30
     int m_38; // +0x38
