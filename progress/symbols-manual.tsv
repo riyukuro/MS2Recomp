@@ -8475,3 +8475,6 @@ DAT_143ffd504	143ffd504	data
 ?RegisterSlots@Traits@ClassTraits@AS3@GFx@Scaleform@@IEAAXXZ	1425216d0	func
 ?RetrieveParentClassTraits@AS3@GFx@Scaleform@@YAPEBVTraits@ClassTraits@123@AEAVVM@123@AEBUClassInfo@123@@Z	142525ca0	func
 ?SetConstructor@Traits@AS3@GFx@Scaleform@@QEAAXAEAVClass@234@@Z	142421ac0	func
+?PTR_FUN_1431b64f0@@3PEAXEA	1431b64f0	data
+?PTR_LAB_1431b6430@@3PEAXEA	1431b6430	data
+?PTR_LAB_1431b6440@@3PEAXEA	1431b6440	data
