@@ -919,7 +919,15 @@ MS2_CHECK_SIZE(CNMCHSendChannelMessageFunc, 0x78);
 class CNMCRChangeMyInfoFunc : public CNMFunc
 {
 public:
+    CNMCRChangeMyInfoFunc();
+    CNMCRChangeMyInfoFunc(int nFlags, const char* pszInfo);
     virtual ~CNMCRChangeMyInfoFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMChatRoomMemberInfo m_30; // +0x30
 };
