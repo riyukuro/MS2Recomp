@@ -18,6 +18,7 @@ class CNMSerializableDecoder;
 class CNMSerializable
 {
 public:
+    CNMSerializable(unsigned short wSignature, unsigned char bKind, unsigned char bFormat);
     CNMSerializable(const CNMSerializable& r) noexcept;         // 0x1415eafb0
     virtual ~CNMSerializable();                                 // 0x1415eec70
     virtual unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream);
@@ -118,6 +119,7 @@ MS2_CHECK_SIZE(NMFriendKey, 0x18);
 class CNMAvatarItemInfo : public CNMSerializable
 {
 public:
+    CNMAvatarItemInfo();
     CNMAvatarItemInfo(const CNMAvatarItemInfo& r) noexcept;  // 0x1415e8970
     CNMAvatarItemInfo(CNMAvatarItemInfo&& r) noexcept;       // 0x1415e8930
     virtual ~CNMAvatarItemInfo() = default;                               // 0x1415ec300
@@ -135,6 +137,7 @@ MS2_CHECK_SIZE(CNMAvatarItemInfo, 0x10);
 class CNMAvatarFullInfo : public CNMAvatarItemInfo
 {
 public:
+    CNMAvatarFullInfo();
     CNMAvatarFullInfo(const CNMAvatarFullInfo& r) noexcept;  // 0x1415e88f0
     CNMAvatarFullInfo(CNMAvatarFullInfo&& r) noexcept;       // 0x1415e88b0
     virtual ~CNMAvatarFullInfo() = default;                               // 0x1415ec2e0
