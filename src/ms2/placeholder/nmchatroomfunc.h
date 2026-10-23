@@ -20,9 +20,24 @@
 class CNMChatMessage : public CNMSerializable
 {
 public:
-    char m_10[0x8];                                             // +0x10
-    CNMAvatarItemInfo m_avatar;                                 // +0x18
-    char m_28[0x648];                                           // +0x28
+    CNMChatMessage();
+    CNMChatMessage(const void* record, int messageType);
+    virtual ~CNMChatMessage() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+
+    int m_10;                                                    // +0x10
+    int m_14;                                                    // +0x14
+    CNMAvatarItemInfo m_avatar;                                  // +0x18
+    char m_28[0x40];                                             // +0x28
+    char m_68[0x100];                                            // +0x68
+    char m_168[0x100];                                           // +0x168
+    char m_268[0x400];                                           // +0x268
+    int m_668;                                                   // +0x668
 };
 MS2_CHECK_SIZE(CNMChatMessage, 0x670);
 
