@@ -903,10 +903,19 @@ MS2_CHECK_SIZE(CNMExecuteNGMPatcherFunc, 0x85f0);
 class CNMExecuteNGMPatcher2Func : public CNMFunc
 {
 public:
+    CNMExecuteNGMPatcher2Func();
     CNMExecuteNGMPatcher2Func(const char* szArgument, int n2);
     virtual ~CNMExecuteNGMPatcher2Func() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
-    char m_body[0x8008];                                        // +0x30 (not recovered)
+    char m_szArgument[0x8000];                                  // +0x30
+    int m_n8030;
+    int m_n8034;
 };
 MS2_CHECK_SIZE(CNMExecuteNGMPatcher2Func, 0x8038);
 
