@@ -205865,7 +205865,7 @@ DirectSoundCreate8	1423915b0	func
 ??_GRenderer2D@Render@Scaleform@@UEAAPEAXI@Z	142582170	func
 ?BeginDisplay@Renderer2D@Render@Scaleform@@QEAAXVColor@23@AEBVViewport@23@@Z	1425821f0	func
 ?FUN_142582210@Unk_GFxUIRenderer2D@@QEAA_NXZ	142582210	func
-?GetMeshCacheConfig@Renderer2D@Render@Scaleform@@QEBAPEAVMeshCacheConfig@23@XZ	142582210	func
+?BeginFrame@Renderer2D@Render@Scaleform@@QEAA_NXZ	142582210	func
 ?Display@Renderer2D@Render@Scaleform@@QEAAXPEAVTreeRoot@23@@Z	142582230	func
 ?FUN_142582230@Unk_GFxHandleObj@@QEAAXPEAX@Z	142582230	func
 ?EndFrame@Renderer2D@Render@Scaleform@@QEAAXXZ	142582250	func
@@ -208809,7 +208809,7 @@ DirectSoundCreate8	1423915b0	func
 ??0Renderer2DImpl@Render@Scaleform@@QEAA@PEAVHAL@12@@Z	14263e0f0	func
 ?AddComplexMeshToUpdateList@Renderer2DImpl@Render@Scaleform@@IEAAXAEAUUpdateNode@ComplexMesh@23@@Z	14263edc0	func
 ?BeginDisplay@Renderer2DImpl@Render@Scaleform@@QEAAXVColor@23@AEBVViewport@23@@Z	14263edf0	func
-?GetMeshCacheConfig@Renderer2DImpl@Render@Scaleform@@QEBAPEAVMeshCacheConfig@23@XZ	14263ee50	func
+?GetMeshCacheConfig@Renderer2DImpl@Render@Scaleform@@QEBAPEAVMeshCacheConfig@23@XZ	14263f920	func
 ?Draw@Renderer2DImpl@Render@Scaleform@@QEAAXPEAVTreeRoot@23@@Z	14263ee90	func
 ?EndFrame@Renderer2DImpl@Render@Scaleform@@QEAAXXZ	14263f490	func
 ??0RootMH@HeapMH@Scaleform@@QEAA@PEAVSysAlloc@2@@Z	14263fb00	func
