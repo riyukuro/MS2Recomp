@@ -1045,7 +1045,16 @@ MS2_CHECK_SIZE(CNMMyGameInfo, 0x38);
 class CNMChangeConfigFunc : public CNMFunc
 {
 public:
+    CNMChangeConfigFunc(); // 0x141581c00
+    CNMChangeConfigFunc(int setting1, int setting2, int setting3, int setting4, long long gameInfo); // 0x141581ca0
     virtual ~CNMChangeConfigFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_30; // +0x30
     int m_34; // +0x34
