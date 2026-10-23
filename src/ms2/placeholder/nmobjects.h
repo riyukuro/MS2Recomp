@@ -1699,7 +1699,16 @@ MS2_CHECK_SIZE(CNMFriendList, 0x28);
 class CNMGSGetInviteCandidateListFunc : public CNMFunc
 {
 public:
+    CNMGSGetInviteCandidateListFunc(); // 0x1415a0960
+    explicit CNMGSGetInviteCandidateListFunc(unsigned uSerialKey); // 0x1415a09c0
     virtual ~CNMGSGetInviteCandidateListFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     std::vector<CNMFriendInfo> m_30; // +0x30
 };
@@ -1709,7 +1718,16 @@ MS2_CHECK_SIZE(CNMGSGetInviteCandidateListFunc, 0x48);
 class CNMGSGetMemberListFunc : public CNMFunc
 {
 public:
+    CNMGSGetMemberListFunc(); // 0x1415a04e0
+    explicit CNMGSGetMemberListFunc(unsigned uSerialKey); // 0x1415a0540
     virtual ~CNMGSGetMemberListFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     std::vector<CNMSessionMemberInfo> m_30; // +0x30
 };
