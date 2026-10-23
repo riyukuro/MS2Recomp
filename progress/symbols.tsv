@@ -218508,8 +218508,8 @@ MS2_SF_VideoCharacterDef_vftable	14318b778	data
 ??_7VideoSound@Video@GFx@Scaleform@@6B@	1431b4b80	data
 ??_7VideoProvider@Video@GFx@Scaleform@@6B@	1431b4f30	data
 ??_7SwfVideoSyncObject@AS2@GFx@Scaleform@@6B@	1431b4fe8	data
-??_7?$LogBase@VFnCall@AS2@GFx@Scaleform@@@GFx@Scaleform@@6B@	1431b5018	data
-??_7FnCall@AS2@GFx@Scaleform@@6B@	1431b4de0	data
+??_7?$LogBase@VFnCall@AS2@GFx@Scaleform@@@GFx@Scaleform@@6B@	1431b4de0	data
+??_7FnCall@AS2@GFx@Scaleform@@6B@	1431b5018	data
 ??_7NetStream@AS2@GFx@Scaleform@@6B?$ASRefCountBase@VObject@AS2@GFx@Scaleform@@@123@@	1431b5030	data
 ??_7NetStream@AS2@GFx@Scaleform@@6BObjectInterface@123@@	1431b5080	data
 ??_7VideoProviderNetStream@AS2@GFx@Scaleform@@6B@	1431b5620	data
