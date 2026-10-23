@@ -12,8 +12,6 @@ extern void FUN_14156ac20(void*,unsigned int); extern void FUN_14156ae30(void*,c
 extern int FUN_1415fb700(void*); extern int FUN_1415fb750(void*); extern int FUN_1415fb6d0(void*);
 extern void* FUN_1415e5b60(void*); extern void FUN_1415e5b20(void*,const void*); extern void* FUN_1415f39e0(void*);
 extern unsigned int FUN_1415fa080(void*); extern void* FUN_1415f9fe0(void*);
-// The owning string-template unit is still partial; supply its recovered specialization for this request.
-template<> CNMStr<0x400>::CNMStr() : m_p(nullptr) { FUN_1415e5b60(this); }
 // MS2-FUNCTIONAL 0x14158ff90: initializes restriction mode and its fixed string.
 CNMRestrictedWordsFunc::CNMRestrictedWordsFunc():CNMFunc(0x8018,1,0,0),m_30(1),m_34(0),m_38(),m_40(0),m_44(0){FUN_1415e5b60(&m_38);}
 // MS2-FUNCTIONAL 0x141590020: stores restriction mode, category, and supplied words.

@@ -35,10 +35,6 @@ extern void* FUN_1415f9fc0(void*);
 extern unsigned int FUN_1415fa080(void*);
 extern void* FUN_1415f9fe0(void*);
 
-// MS2-FUNCTIONAL: these local template constructors delegate to the recovered CNMStr initializers.
-template<> CNMStr<0x40>::CNMStr() : m_p(nullptr) { FUN_1415e5ac0(this); }
-template<> CNMStr<0x400>::CNMStr() : m_p(nullptr) { FUN_1415e5b60(this); }
-
 // MS2-FUNCTIONAL 0x14157c1d0: initializes the channel-member strings and record fields.
 // @0x14157c1d0
 CNMChannelMemberInfo::CNMChannelMemberInfo() : CNMSerializable(0x686d,1,1),m_10{},m_18(),m_20(),m_28{} {m_bFlag=0xfe;}
