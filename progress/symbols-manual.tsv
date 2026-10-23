@@ -9806,3 +9806,5 @@ DAT_143b27c40	143b27c40	data
 ?RemoveVideoProvider@MovieImpl@GFx@Scaleform@@QEAAXPEAVVideoProvider@Video@23@@Z	1425743a0	func
 ?GAS_ASnativeMouseButtonStates@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z	1429469d0	func
 ?GFx_StringToIMEStyleCategory@AS2@GFx@Scaleform@@YAHAEBVASString@23@@Z	1429487e0	func
+?DAT_143a2d150@@3PEBDEB	143a2d150	data
+?MakeInstance@Namespace@fl@InstanceTraits@AS3@GFx@Scaleform@@QEAA?AV?$Pickable@VNamespace@Instances@AS3@GFx@Scaleform@@@6@W4NamespaceKind@Abc@456@AEBVASString@56@AEBVValue@456@@Z	14241ab60	func
