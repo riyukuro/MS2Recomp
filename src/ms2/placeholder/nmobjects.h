@@ -1865,7 +1865,16 @@ MS2_CHECK_SIZE(CNMFDSSetDownloadDirFunc, 0x138);
 class CNMFUDSGetFileEventFunc : public CNMFunc
 {
 public:
+    CNMFUDSGetFileEventFunc();
+    explicit CNMFUDSGetFileEventFunc(unsigned int serial);
     virtual ~CNMFUDSGetFileEventFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     std::vector<CNMFileEvent> m_30; // +0x30
 };

@@ -473,6 +473,7 @@ MS2_CHECK_SIZE(CNMChatRoomInfoEx, 0x4e0);
 class CNMFileEvent : public CNMSerializable
 {
 public:
+    CNMFileEvent();
     CNMFileEvent(const CNMFileEvent& r) noexcept;               // 0x1415e92c0
     CNMFileEvent(CNMFileEvent&& r) noexcept;                    // 0x1415e9200
     virtual ~CNMFileEvent() = default;                                    // 0x1415ed4b0
