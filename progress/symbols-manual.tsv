@@ -8847,3 +8847,4 @@ DAT_1431b9430	1431b9430	data
 ?CreateSprite@MovieRoot@AS2@GFx@Scaleform@@QEAAPEAVSprite@34@PEAVTimelineDef@34@PEAVMovieDefImpl@34@PEAVInteractiveObject@34@VResourceId@34@_N@Z	142937cf0	func
 ?HasStyleSheet@TextField@GFx@Scaleform@@QEBA_NXZ	1425b9730	func
 ?SetDirtyFlag@TextField@GFx@Scaleform@@QEAAXXZ	1425bc060	func
+?Unescape@AS3@ASUtils@GFx@Scaleform@@YA_NPEBD_KAEAVString@4@@Z	1425e4ad0	func
