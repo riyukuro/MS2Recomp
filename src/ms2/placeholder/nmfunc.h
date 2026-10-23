@@ -483,6 +483,8 @@ MS2_CHECK_SIZE(CNMFindUserInfo, 0xe0);
 class CNMGameCode : public CNMSerializable
 {
 public:
+    CNMGameCode();
+    explicit CNMGameCode(int nGameCode);
     CNMGameCode(const CNMGameCode& r) noexcept;                 // 0x1415e9910
     CNMGameCode(CNMGameCode&& r) noexcept;                      // 0x1415e98c0
     virtual ~CNMGameCode() = default;                                     // 0x1415ed9c0
