@@ -8911,3 +8911,8 @@ DAT_143b27a68	143b27a68	data
 ?GAS_Invoke@AS2@GFx@Scaleform@@YA_NPEBDPEAVValue@123@PEAVObjectInterface@123@PEAVEnvironment@123@HH@Z	142946fc0	func
 ?GAS_InvokeParsed@AS2@GFx@Scaleform@@YA_NPEBDPEAVValue@123@PEAVObjectInterface@123@PEAVEnvironment@123@0PEAD@Z	142947800	func
 ?LogParseAction@?$LogBase@VStream@GFx@Scaleform@@@GFx@Scaleform@@QEBAXPEBDZZ	142967c30	func
+?CInfo@Anonimous@InstanceTraits@AS3@GFx@Scaleform@@2UClassInfo@345@B	14317af30	data
+?CInfo@Void@InstanceTraits@AS3@GFx@Scaleform@@2UClassInfo@345@B	14317af80	data
+?FunctionCI@fl@AS3@GFx@Scaleform@@3UClassInfo@234@B	14313dc10	data
+?NS_AS3@fl@AS3@GFx@Scaleform@@3PEBDEB	143a2d3b0	data
+?NS_XML@fl@AS3@GFx@Scaleform@@3PEBDEB	143a2d3c8	data
