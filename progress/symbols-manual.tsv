@@ -8898,3 +8898,6 @@ DAT_143b27a68	143b27a68	data
 ?GAS_Invoke@AS2@GFx@Scaleform@@YA_NAEBVValue@123@PEAV4123@PEAVObjectInterface@123@PEAVEnvironment@123@HHPEBD@Z	142946d10	func
 ?LocalFrames_ResizeNoConstruct@AS2@GFx@Scaleform@@YAXPEAV?$ArrayLH@V?$Ptr@VLocalFrame@AS2@GFx@Scaleform@@@Scaleform@@$01UArrayDefaultPolicy@2@@3@PEBX_K@Z	14297e450	func
 ?LocalRegister_Resize@AS2@GFx@Scaleform@@YAXPEAV?$ArrayLH@VValue@AS2@GFx@Scaleform@@$01UArrayDefaultPolicy@4@@3@_K@Z	14297e0e0	func
+?ShapeObject_vftable@AS3@GFx@Scaleform@@3QBQEAXB	14317c210	data
+?ShapeObject_vftable_18@AS3@GFx@Scaleform@@3QBQEAXB	14317c488	data
+?ShapeObject_vftable_90@AS3@GFx@Scaleform@@3QBQEAXB	14317c498	data
