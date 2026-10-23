@@ -8853,3 +8853,8 @@ DAT_1431b9430	1431b9430	data
 ?SetParagraphFormat@TextFormatObject@AS2@GFx@Scaleform@@QEAAXPEAVASStringContext@234@AEBVParagraphFormat@Text@Render@4@@Z	142989480	func
 ?SetTextFormat@TextFormatObject@AS2@GFx@Scaleform@@QEAAXPEAVASStringContext@234@AEBVTextFormat@Text@Render@4@@Z	14298c090	func
 ?ProceedImageSubstitution@AvmTextField@AS2@GFx@Scaleform@@AEAAXAEBVFnCall@234@HPEBVValue@234@@Z	14296f870	func
+??0LoadQueueEntry@AS3@GFx@Scaleform@@QEAA@PEAVURLRequest@fl_net@Instances@123@PEAVLoader@fl_display@6123@W4LoadMethod@023@_N@Z	1424d81a0	func
+?EnableIME@IMEManagerBase@GFx@Scaleform@@QEAAX_N@Z	1425b4400	func
+?GFxValue2ASValue@MovieRoot@AS3@GFx@Scaleform@@QEAAXAEBVValue@34@PEAV5234@@Z	1425048d0	func
+?GetVariable@Movie@GFx@Scaleform@@QEBA_NPEAVValue@23@PEBD@Z	1425700a0	func
+?SetCandidateListFont@TextField@GFx@Scaleform@@QEAAXPEAVDisplayObject@23@@Z	1425bbd70	func
