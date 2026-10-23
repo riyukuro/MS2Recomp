@@ -8740,3 +8740,7 @@ DAT_14313bc60	14313bc60	data
 ?Vector_intCI@fl_vec@AS3@GFx@Scaleform@@3UClassInfo@234@B	143181ac0	data
 ?Vector_objectCI@fl_vec@AS3@GFx@Scaleform@@3UClassInfo@234@B	143181a70	data
 ?Vector_uintCI@fl_vec@AS3@GFx@Scaleform@@3UClassInfo@234@B	143181b10	data
+?GetClassVectorSInt@VM@AS3@GFx@Scaleform@@QEBAAEAVClass@234@XZ	142508270	func
+?GetClassVectorString@VM@AS3@GFx@Scaleform@@QEBAAEAVClass@234@XZ	1425082b0	func
+?GetClassVectorUInt@VM@AS3@GFx@Scaleform@@QEBAAEAVClass@234@XZ	1425082f0	func
+?Resolve2Vector@Vector@fl_vec@Classes@AS3@GFx@Scaleform@@QEAAAEAVTraits@ClassTraits@456@AEBV78456@@Z	142563380	func
