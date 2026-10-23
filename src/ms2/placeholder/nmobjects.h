@@ -2108,7 +2108,16 @@ MS2_CHECK_SIZE(CNMGSInviteUserExFunc, 0x48);
 class CNMGSInviteUserFunc : public CNMFunc
 {
 public:
+    CNMGSInviteUserFunc();
+    CNMGSInviteUserFunc(unsigned int n18, const unsigned char* target);
     virtual ~CNMGSInviteUserFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     long long m_30; // +0x30
     int m_38; // +0x38
