@@ -3246,7 +3246,16 @@ MS2_CHECK_SIZE(CNMRejectedUserListChangedEvent, 0x28);
 class CNMRemoveMyVirtualUserFunc : public CNMFunc
 {
 public:
+    CNMRemoveMyVirtualUserFunc();
+    explicit CNMRemoveMyVirtualUserFunc(const NMKey64* key);
     virtual ~CNMRemoveMyVirtualUserFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     NMKey64 m_30; // +0x30
 };
