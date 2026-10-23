@@ -4555,7 +4555,6 @@ MS2_SF_VideoCharacterDef_vftable	14318b778	data
 ?BeginDisplay@Renderer2DImpl@Render@Scaleform@@QEAAXVColor@23@AEBVViewport@23@@Z	14263edf0	func
 ?Draw@Renderer2DImpl@Render@Scaleform@@QEAAXPEAVTreeRoot@23@@Z	14263ee90	func
 ?EndFrame@Renderer2DImpl@Render@Scaleform@@QEAAXXZ	14263f490	func
-?GetMeshCacheConfig@Renderer2DImpl@Render@Scaleform@@QEBAPEAVMeshCacheConfig@23@XZ	14263ee50	func
 ?HeadUsedTable@BitSet1@HeapPT@Scaleform@@0QBKB	143193310	data
 ?TailUsedTable@BitSet1@HeapPT@Scaleform@@0QBKB	143193390	data
 ?HeadFreeTable@BitSet1@HeapPT@Scaleform@@0QBKB	143193410	data
