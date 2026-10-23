@@ -402,9 +402,30 @@ MS2_CHECK_SIZE(CNMLoginNexonPassportFunc, 0x1048);
 class CNMLoginPassportFunc : public CNMFunc
 {
 public:
+    CNMLoginPassportFunc();
+    CNMLoginPassportFunc(const char* account, const char* passport, unsigned long long token,
+                         const unsigned char* payload, int payloadSize, unsigned int flags,
+                         unsigned int result);
+    CNMLoginPassportFunc(const char* account, const char* passport, const unsigned char* payload,
+                         int payloadSize, unsigned int flags, unsigned int result);
     virtual ~CNMLoginPassportFunc() = default;
 
-    unsigned char m_body[0x80a0];
+    char m_30[0x40];
+    char m_70[0x40];
+    int m_b0;
+    unsigned long long m_b8;
+    unsigned char m_c0[0x8000];
+    int m_80c0;
+    int m_80c4;
+    int m_80c8;
+    int m_80cc;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 };
 MS2_CHECK_SIZE(CNMLoginPassportFunc, 0x80d0);
 
