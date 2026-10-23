@@ -2053,7 +2053,15 @@ MS2_CHECK_SIZE(CNMSessionInfo, 0x48);
 class CNMGSGetSessionInfoFunc : public CNMFunc
 {
 public:
+    CNMGSGetSessionInfoFunc();
+    explicit CNMGSGetSessionInfoFunc(int nFlags);
     virtual ~CNMGSGetSessionInfoFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMSessionInfo m_30; // +0x30
     std::vector<CNMSessionMemberInfo> m_78; // +0x78
