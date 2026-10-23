@@ -537,7 +537,15 @@ MS2_CHECK_SIZE(CNMSelfUserInfo, 0x1a8);
 class CNMSendAccuseNoteMsgFunc : public CNMFunc
 {
 public:
+    CNMSendAccuseNoteMsgFunc(); // 0x14158aea0
+    CNMSendAccuseNoteMsgFunc(int type, const void* details, int status); // 0x14158af10
     virtual ~CNMSendAccuseNoteMsgFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMReportInfo m_report;                           // +0x30
 };
