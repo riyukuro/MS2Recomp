@@ -1947,6 +1947,24 @@ public:
 };
 MS2_CHECK_SIZE(CNMWSSendWBMessageFunc, 0x8038);
 
+class CNMWSGetAssocSerialKeyFunc : public CNMFunc
+{
+public:
+    CNMWSGetAssocSerialKeyFunc();
+    explicit CNMWSGetAssocSerialKeyFunc(unsigned int serial);
+    virtual ~CNMWSGetAssocSerialKeyFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+
+    unsigned int m_30;
+};
+MS2_CHECK_SIZE(CNMWSGetAssocSerialKeyFunc, 0x38);
+
 // vftable 0x142f42e68, destructor 0x1415ed460.
 class CNMFUSFileUploadEventReceivedEvent : public CNMEvent
 {
