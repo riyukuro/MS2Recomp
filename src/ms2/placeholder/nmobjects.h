@@ -351,7 +351,16 @@ MS2_CHECK_SIZE(CNMRequestMultiChatSessionExFunc, 0x58);
 class CNMRequestMultiChatSessionFunc : public CNMFunc
 {
 public:
+    CNMRequestMultiChatSessionFunc(); // 0x1415971e0
+    CNMRequestMultiChatSessionFunc(NMKey64 key, const std::vector<NMChatSessionTarget>& targets, int mode); // 0x141597270
     virtual ~CNMRequestMultiChatSessionFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x1415973e0
+    unsigned int EncodeFramed(CNMStream* pStream) override;                 // 0x141597320
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x141597380
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override; // 0x141597640
+    unsigned int DecodeFramed(CNMStream* pStream) override;                 // 0x141597550
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override; // 0x1415975e0
 
     NMKey64 m_key;
     std::vector<NMChatSessionTarget> m_targets;
