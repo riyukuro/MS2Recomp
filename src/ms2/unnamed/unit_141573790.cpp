@@ -3,6 +3,7 @@
 // MS2-RANGE: 0x141573790-0x141574050 .text$mn
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/nmstream.h"
 #include "ms2/placeholder/nmfunc.h"
 #include "ms2/ms2recover.h"
 
@@ -25,6 +26,41 @@ void* FUN_141573870(CNMGuildInfoEx* info, void* out)
     FUN_1415eb480(out, static_cast<unsigned int>(info->m_78), info->m_10);
     return out;
 }
+
+// MS2-FUNCTIONAL 0x141573790: initializes the guild record signature and its fixed-size fields.
+// @0x141573790
+CNMGuildInfoEx::CNMGuildInfoEx() : CNMSerializable(0x6765,1,1),m_10(0),m_18{},m_58{},m_78(0),m_7c{},m_17c(0),m_180(0),m_184(0),m_188(0) {}
+
+// MS2-FUNCTIONAL 0x141573ca0: initializes the guild-list serializable and vector.
+// @0x141573ca0
+CNMGuildListExInfo::CNMGuildListExInfo() : CNMSerializable(0x656c,1,1),m_aGuilds{} {}
+
+// MS2-FUNCTIONAL 0x141573cf0: frames the guild list payload.
+// @0x141573cf0
+unsigned int CNMGuildListExInfo::EncodeFramed(CNMStream*s){unsigned char b[0x18];FUN_14156bcb0(b,s,this);void**v=*reinterpret_cast<void***>(this);using F=unsigned int(__fastcall*)(CNMGuildListExInfo*,CNMEncoder*,CNMStream*);auto r=reinterpret_cast<F>(v[2])(this,reinterpret_cast<CNMEncoder*>(b),s);FUN_14156bd50(b);return r;}
+
+// MS2-FUNCTIONAL 0x141573d50: selects framed or direct guild-list encoding.
+// @0x141573d50
+unsigned int CNMGuildListExInfo::EncodeDispatch(CNMEncoder*e,CNMStream*s){void**v=*reinterpret_cast<void***>(this);if(m_bFormat==1){using F=unsigned int(__fastcall*)(CNMGuildListExInfo*,CNMEncoder*,CNMStream*);return reinterpret_cast<F>(v[2])(this,e,s);}using F=unsigned int(__fastcall*)(CNMGuildListExInfo*,CNMStream*);return reinterpret_cast<F>(v[3])(this,s);}
+
+// MS2-FUNCTIONAL 0x141573db0: serializes the guild count and each guild in vector order.
+// @0x141573db0
+unsigned int CNMGuildListExInfo::Encode(CNMEncoder*e,CNMStream*s){FUN_14156ac20(e,static_cast<unsigned int>(m_aGuilds.size()));for(auto&g:m_aGuilds)g.EncodeDispatch(e,s);FUN_1415f9990(e);return 1;}
+
+// MS2-FUNCTIONAL 0x141573e70: decodes the framed guild-list payload.
+// @0x141573e70
+unsigned int CNMGuildListExInfo::DecodeFramed(CNMStream*s){unsigned char b[0x38];FUN_14156be10(b,s,this);unsigned int r=0;if(FUN_1415fb750(b)){void**v=*reinterpret_cast<void***>(this);using F=unsigned int(__fastcall*)(CNMGuildListExInfo*,CNMSerializableDecoder*,CNMStream*);r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(b),s);}FUN_14156bf10(b);return r;}
+
+// MS2-FUNCTIONAL 0x141573f00: selects direct or framed guild-list decoding.
+// @0x141573f00
+unsigned int CNMGuildListExInfo::DecodeDispatch(CNMSerializableDecoder*d,CNMStream*s){void**v=*reinterpret_cast<void***>(this);if(FUN_1415fb6d0(d)==2){using F=unsigned int(__fastcall*)(CNMGuildListExInfo*,CNMStream*);return reinterpret_cast<F>(v[6])(this,s);}using F=unsigned int(__fastcall*)(CNMGuildListExInfo*,CNMSerializableDecoder*,CNMStream*);return reinterpret_cast<F>(v[5])(this,d,s);}
+
+// MS2-FUNCTIONAL 0x141573f60: rebuilds the guild vector from the serialized count and record payloads.
+// @0x141573f60
+unsigned int CNMGuildListExInfo::Decode(CNMSerializableDecoder*d,CNMStream*s){const unsigned int n=d->ReadU32();m_aGuilds.clear();for(unsigned int i=0;i<n;++i){m_aGuilds.emplace_back();m_aGuilds.back().DecodeDispatch(d,s);}return static_cast<unsigned int>(FUN_1415fb750(d));}
+
+// MS2-PIN: ??0CNMGuildInfoEx@@QEAA@XZ 0x141573790 ; recovered guild info constructor
+// MS2-PIN: ??0CNMGuildListExInfo@@QEAA@XZ 0x141573ca0 ; recovered guild list constructor
 
 // MS2-FUNCTIONAL 0x1415738b0: uses opaque stack storage for the temporary encoder; guild encoding behavior is preserved.
 // @0x1415738b0

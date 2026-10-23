@@ -586,6 +586,7 @@ MS2_CHECK_SIZE(CNMGameServerCode, 0x18);
 class CNMGuildInfoEx : public CNMSerializable
 {
 public:
+    CNMGuildInfoEx();
     CNMGuildInfoEx(const CNMGuildInfoEx& r) noexcept;           // 0x1415e9e20
     CNMGuildInfoEx(CNMGuildInfoEx&& r) noexcept;                // 0x1415e9d20
     virtual ~CNMGuildInfoEx() = default;                                  // 0x1415ee070
@@ -613,6 +614,7 @@ MS2_CHECK_SIZE(CNMGuildInfoEx, 0x190);
 class CNMGuildListExInfo : public CNMSerializable
 {
 public:
+    CNMGuildListExInfo();
     CNMGuildListExInfo(const CNMGuildListExInfo& r);            // 0x1415e9f20
     virtual ~CNMGuildListExInfo() = default;                              // 0x1415ee090
     CNMGuildListExInfo& operator=(const CNMGuildListExInfo& r);
