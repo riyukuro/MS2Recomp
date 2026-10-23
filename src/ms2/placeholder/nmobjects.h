@@ -382,9 +382,29 @@ MS2_CHECK_SIZE(CNMJoinToChatRoomFunc, 0x880);
 class CNMLoginAuthFunc : public CNMFunc
 {
 public:
+    CNMLoginAuthFunc();
+    CNMLoginAuthFunc(const char* password, unsigned int value);
+    CNMLoginAuthFunc(const char* user, const char* password, unsigned int value);
+    CNMLoginAuthFunc(const char* user, const char* password, unsigned int value,
+                     const char* token, unsigned int flags);
     virtual ~CNMLoginAuthFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
-    unsigned char m_body[0x1398];
+    int m_mode; // +0x30
+    char m_password[0x1000]; // +0x34
+    char m_user[0x100]; // +0x1034
+    char m_1134[0x80];
+    int m_11b4;
+    int m_value;
+    char m_token[0x200]; // +0x11bc
+    int m_flags;
+    int m_result;
+    int m_timeout;
 };
 MS2_CHECK_SIZE(CNMLoginAuthFunc, 0x13c8);
 
