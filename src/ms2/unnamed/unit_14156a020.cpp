@@ -1240,3 +1240,35 @@ unsigned int CNMVirtualFriendInfo::Decode(CNMSerializableDecoder* pDecoder, CNMS
     reinterpret_cast<Bytes>(vt[9])(pDecoder, m_a8, 1000); reinterpret_cast<Bytes>(vt[9])(pDecoder, m_490, 0x20);
     return static_cast<unsigned int>(FUN_1415fb750(pDecoder));
 }
+
+// MS2-FUNCTIONAL 0x14156ca50: compares the two 64-bit words in the key tail.
+// @0x14156ca50
+unsigned char FUN_14156ca50(int* a, int* b) { return a[0] == b[0] && a[1] == b[1]; }
+
+// MS2-FUNCTIONAL 0x14156caa0: compares a key and its two-word suffix.
+// @0x14156caa0
+unsigned char FUN_14156caa0(long long* a, long long* b) { return a[0] == b[0] && FUN_14156ca50(reinterpret_cast<int*>(a + 1), reinterpret_cast<int*>(b + 1)); }
+
+// MS2-FUNCTIONAL 0x14156cb10: compares the key and both two-word suffix blocks.
+// @0x14156cb10
+unsigned char FUN_14156cb10(long long* a, long long* b) { return a[0] == b[0] && FUN_14156ca50(reinterpret_cast<int*>(a + 1), reinterpret_cast<int*>(b + 1)) && FUN_14156ca50(reinterpret_cast<int*>(a + 2), reinterpret_cast<int*>(b + 2)); }
+
+// MS2-FUNCTIONAL 0x14156ce80: reports that the avatar record is supported.
+// @0x14156ce80
+unsigned char FUN_14156ce80() { return 1; }
+
+// MS2-FUNCTIONAL 0x14156bd90: writes the payload length into the stream header.
+// @0x14156bd90
+unsigned int FUN_14156bd90(long long* p)
+{
+    if (p[0] && FUN_14156a0b0(reinterpret_cast<void*>(p[0]))) {
+        const int offset = *reinterpret_cast<int*>(reinterpret_cast<char*>(p) + 0x0c);
+        reinterpret_cast<int*>(p)[2] = *reinterpret_cast<int*>(reinterpret_cast<char*>(p[0]) + 0x14) - offset - 4;
+        *reinterpret_cast<int*>(p[0] + static_cast<unsigned int>(offset)) = reinterpret_cast<int*>(p)[2];
+    }
+    return static_cast<unsigned int>(reinterpret_cast<int*>(p)[2]);
+}
+
+// MS2-FUNCTIONAL 0x14156bd50: finalizes a framed encoder and releases its temporary buffer.
+// @0x14156bd50
+void FUN_14156bd50(void* p) { FUN_14156bd90(reinterpret_cast<long long*>(p)); FUN_14156a840(); }
