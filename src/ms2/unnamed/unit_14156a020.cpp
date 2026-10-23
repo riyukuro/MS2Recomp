@@ -724,37 +724,37 @@ unsigned long long CNMSerializableDecoder::ReadU64Alias()
     return ReadU64();
 }
 
-// @0x14156c910
+// @0x14156c950
 unsigned int CNMSerializable::Encode(CNMEncoder*, CNMStream*)
 {
     return 0;
 }
 
-// @0x14156c930
+// @0x14156c910
 unsigned int CNMSerializable::EncodeFramed(CNMStream*)
 {
     return 0;
 }
 
-// @0x14156c950
+// @0x14156c930
 unsigned int CNMSerializable::EncodeDispatch(CNMEncoder*, CNMStream*)
 {
     return 0;
 }
 
-// @0x14156c970
+// @0x14156c9b0
 unsigned int CNMSerializable::Decode(CNMSerializableDecoder*, CNMStream*)
 {
     return 0;
 }
 
-// @0x14156c990
+// @0x14156c970
 unsigned int CNMSerializable::DecodeFramed(CNMStream*)
 {
     return 0;
 }
 
-// @0x14156c9b0
+// @0x14156c990
 unsigned int CNMSerializable::DecodeDispatch(CNMSerializableDecoder*, CNMStream*)
 {
     return 0;
@@ -1426,6 +1426,18 @@ unsigned int CNMFriendList::DecodeDispatch(CNMSerializableDecoder*d,CNMStream*s)
 // MS2-FUNCTIONAL 0x14156f6f0: clears and rebuilds the friend vector from the serialized count.
 // @0x14156f6f0
 unsigned int CNMFriendList::Decode(CNMSerializableDecoder*d,CNMStream*s){const unsigned int n=d->ReadU32();m_10.clear();for(unsigned int i=0;i<n;++i){m_10.emplace_back();m_10.back().DecodeDispatch(d,s);}return static_cast<unsigned int>(FUN_1415fb750(d));}
+
+// MS2-FUNCTIONAL 0x14156ad40: appends the counted UTF-16 string bytes to the stream.
+// @0x14156ad40
+void FUN_14156ad40(long long* stream,const wchar_t* text){const unsigned int n=text?static_cast<unsigned int>(wcslen(text)):0;FUN_14156a850(stream,n);if(!n)return;const int bytes=static_cast<int>(n*2);if(!FUN_14156a640(stream,bytes))return;auto* dst=reinterpret_cast<unsigned char*>(*stream+*reinterpret_cast<unsigned int*>(*stream+0x14));const auto* src=reinterpret_cast<const unsigned char*>(text);for(int i=0;i<bytes;++i)dst[i]=src[i];*reinterpret_cast<int*>(*stream+0x14)+=bytes;*reinterpret_cast<int*>(*stream+0x0c)+=bytes;}
+
+// MS2-FUNCTIONAL 0x14156ae30: converts the current code-page string to UTF-16 before appending it.
+// @0x14156ae30
+void FUN_14156ae30(void* encoder,const char* text){const size_t n=text?strlen(text):0;wchar_t* wide=new wchar_t[n+1];const UINT cp=FUN_1415fa0c0(*reinterpret_cast<void**>(encoder));MultiByteToWideChar(cp,0,text?text:"",-1,wide,static_cast<int>(n+1));wide[n]=L'\0';FUN_14156ad40(reinterpret_cast<long long*>(encoder),wide);delete[] wide;}
+
+// MS2-FUNCTIONAL 0x14156e670: copies the two 64-bit identity words from a real-user record.
+// @0x14156e670
+unsigned char* FUN_14156e670(const void* obj,unsigned char* out){memcpy(out,static_cast<const char*>(obj)+0x50,8);memcpy(out+8,static_cast<const char*>(obj)+0xe8,8);return out;}
 
 // MS2-PIN: ??0CNMRealUserInfo@@QEAA@XZ 0x14156e6e0 ; recovered real-user constructor
 // MS2-PIN: ??0CNMSelfUserInfo@@QEAA@XZ 0x14156ef10 ; recovered self-user constructor

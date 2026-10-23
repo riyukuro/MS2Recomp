@@ -66,6 +66,7 @@ MS2_CHECK_SIZE(CNMCreateChatRoomExFunc, 0x758);
 class CNMChatRoomInfo : public CNMSerializable
 {
 public:
+    CNMChatRoomInfo(); // 0x141577ef0
     virtual ~CNMChatRoomInfo() = default;
 
     int m_10; // +0x10
@@ -94,11 +95,23 @@ MS2_CHECK_SIZE(CNMChatRoomInfo, 0x600);
 class CNMCreateChatRoomFunc : public CNMFunc
 {
 public:
+    CNMCreateChatRoomFunc(); // 0x141599e80
+    CNMCreateChatRoomFunc(int n10, int n14, const char* sz20, const char* sz60, int n460, int n464,
+                          int n468, const char* sz46c, const char* sz850, unsigned short n870); // 0x141599f20
     virtual ~CNMCreateChatRoomFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x14159a1c0
+    unsigned int EncodeFramed(CNMStream* pStream) override;                 // 0x14159a100
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x14159a160
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override; // 0x14159a390
+    unsigned int DecodeFramed(CNMStream* pStream) override;                 // 0x14159a2a0
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override; // 0x14159a330
 
     CNMChatRoomInfo m_room;                           // +0x30
     CNMChatRoomMemberInfo m_self;                     // +0x630
-    unsigned char m_850[0x28];                        // +0x850 (not recovered)
+    char m_850[0x20];                                 // +0x850
+    unsigned short m_870;                             // +0x870
+    unsigned char m_872[0x6];                         // tail padding
 };
 MS2_CHECK_SIZE(CNMCreateChatRoomFunc, 0x878);
 
