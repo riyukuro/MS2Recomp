@@ -236,9 +236,20 @@ MS2_CHECK_SIZE(CNMGetServerInfoFunc, 0x50);
 class CNMGetUserDataListFunc : public CNMFunc
 {
 public:
+    CNMGetUserDataListFunc(); // 0x141580d00
     virtual ~CNMGetUserDataListFunc() = default;
 
-    unsigned char m_body[0x80010];
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+
+    int m_30; // +0x30
+    int m_34; // +0x34
+    int m_38; // +0x38
+    unsigned char m_3c[0x80000]; // +0x3c
 };
 MS2_CHECK_SIZE(CNMGetUserDataListFunc, 0x80040);
 
