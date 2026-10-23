@@ -69,9 +69,17 @@ MS2_CHECK_SIZE(CNMCRCloseFunc, 0x30);
 class CNMCRChangeRoomInfoFunc : public CNMFunc
 {
 public:
+    CNMCRChangeRoomInfoFunc(); // 0x14159d6d0
     CNMCRChangeRoomInfoFunc(unsigned uSerialKey, const char* szTitle, const unsigned* pU434, const unsigned* pU438,
         const unsigned* pU43c, const char* sz448, const unsigned __int64* pU440);   // 0x14159d790
     virtual ~CNMCRChangeRoomInfoFunc() = default;                         // 0x1415ec520
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     unsigned m_uFlags;                                          // +0x30
     char m_szTitle[0x400];                                      // +0x34
