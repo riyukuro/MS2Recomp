@@ -2496,7 +2496,7 @@
 1429a2820	1429a3700	sfr_kernel_03	none	22	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Kernel (HeapPT_AllocEngine,SF_MemItem,HeapPT_FreeBin,HeapPT_Root,SF_AllocAddr,HeapPT_AllocBitSet2,...)
 1429a3700	1429a4d50	sfr_render_07	none	24	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Render (Render_TextMeshProvider,Render_MeshCache,Render_GlyphQueue,Render_CacheEffect,Render_TextPrimitiveBundle,Render_BufferGeneric,...)
 1429a4d50	1429a8c70	sfr_gfx_09	none	198	mn	sfr0 10-20: Scaleform 4.1.18 recovery, GFx core (XML_Object,XML_Document,XML_DOM,AS2_All,AS2_Xml)
-142c98f10	142c99d55	sfr_gfx_14	none	57	mn	sfr25 10-23: Scaleform gap plan: GFx static init / atexit thunks (unowned tail)
-142cc9300	142cc990f	sfr_gfx_14	none	48	mn	sfr25 10-23: Scaleform gap plan: GFx static init / atexit thunks (unowned tail)
-142cca370	142cca4e6	sfr_gfx_14	none	5	mn	sfr25 10-23: Scaleform gap plan: GFx static init / atexit thunks (unowned tail)
+142c98f10	142c99d55	sfr_gfx_13	none	57	mn	sfr25 10-23: Scaleform gap plan: GFx statics: atexit thunks / vptr+PMF initialisers (unowned tail; pairs with the .text$di initialisers)
+142cc9300	142cc990f	sfr_gfx_13	none	48	mn	sfr25 10-23: Scaleform gap plan: GFx statics: atexit thunks / vptr+PMF initialisers (unowned tail; pairs with the .text$di initialisers)
+142cca370	142cca4e6	sfr_gfx_13	none	5	mn	sfr25 10-23: Scaleform gap plan: GFx statics: atexit thunks / vptr+PMF initialisers (unowned tail; pairs with the .text$di initialisers)
 142ccb000	142ccd143	sfr_cri_03	none	20	mn	sfr0 10-20: Scaleform 4.1.18 recovery, CRI
