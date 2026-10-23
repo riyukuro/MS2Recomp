@@ -1026,7 +1026,15 @@ MS2_CHECK_SIZE(CNMChangeCategoryAllowTypeFunc, 0x40);
 class CNMChangeCategoryNameFunc : public CNMFunc
 {
 public:
+    CNMChangeCategoryNameFunc(); // 0x141589630
+    CNMChangeCategoryNameFunc(int category, long long name, int flag); // 0x1415896a0
     virtual ~CNMChangeCategoryNameFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_30; // +0x30
     char m_34[0x20]; // +0x34
