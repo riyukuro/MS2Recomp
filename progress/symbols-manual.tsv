@@ -8938,3 +8938,17 @@ DAT_143ba9d10	143ba9d10	data
 DAT_143b27c50	143b27c50	data
 DAT_143b27c58	143b27c58	data
 DAT_143b27c64	143b27c64	data
+??0XML@fl@Instances@AS3@GFx@Scaleform@@QEAA@AEAVTraits@InstanceTraits@345@AEBVASString@45@PEAV012345@@Z	1423efce0	func
+??0XMLComment@fl@Instances@AS3@GFx@Scaleform@@QEAA@AEAVTraits@InstanceTraits@345@AEBVASString@45@PEAVXML@12345@@Z	1423efe10	func
+??0XMLText@fl@Instances@AS3@GFx@Scaleform@@QEAA@AEAVTraits@InstanceTraits@345@AEBVASString@45@PEAVXML@12345@@Z	1423f02e0	func
+?AbstractEqual@AS3@GFx@Scaleform@@YA?AVCheckResult@123@AEA_NAEBVValue@123@1@Z	1424e46f0	func
+?AddSlotCPP@Traits@AS3@GFx@Scaleform@@QEAAXAEBVASString@34@V?$Pickable@$$CBVNamespace@Instances@AS3@GFx@Scaleform@@@4@PEBV1ClassTraits@234@W4BindingType@SlotInfo@234@VAbsoluteIndex@234@_N@Z	1424e9a50	func
+?CoerceValue@Traits@ClassTraits@AS3@GFx@Scaleform@@QEBA_NAEBVValue@345@AEAV6345@@Z	1424f01c0	func
+?DAT_143a2d0d0@@3PAPEBDA	143a2d0d0	data
+?MakeInstance@Array@fl@InstanceTraits@AS3@GFx@Scaleform@@QEAA?AV?$Pickable@VArray@fl@Instances@AS3@GFx@Scaleform@@@6@AEAV123456@@Z	14241a500	func
+?MakeInstance@XMLList@fl@InstanceTraits@AS3@GFx@Scaleform@@QEAA?AV?$Pickable@VXMLList@fl@Instances@AS3@GFx@Scaleform@@@6@AEAV123456@@Z	14241af80	func
+?MakeInstance@XMLList@fl@InstanceTraits@AS3@GFx@Scaleform@@QEAA?AV?$Pickable@VXMLList@fl@Instances@AS3@GFx@Scaleform@@@6@AEAV123456@AEAVObject@456@AEBVASString@56@AEAVNamespace@Instances@456@@Z	14241b010	func
+?MakeInstanceElement@XML@fl@InstanceTraits@AS3@GFx@Scaleform@@QEAA?AV?$Pickable@VXMLElement@fl@Instances@AS3@GFx@Scaleform@@@6@AEAV123456@AEBVNamespace@Instances@456@AEBVASString@56@PEAV129456@@Z	14241b5b0	func
+?MakeNamespace@VM@AS3@GFx@Scaleform@@QEBA?AV?$Pickable@VNamespace@Instances@AS3@GFx@Scaleform@@@4@W4NamespaceKind@Abc@234@AEBVASString@34@AEBVValue@234@@Z	1425164c0	func
+?RemoveMultipleAt@SparseArray@AS3@GFx@Scaleform@@QEAAX_K0@Z	14241ec80	func
+?SetNodeKind@XMLParser@AS3@GFx@Scaleform@@QEAAXW4Kind@1234@@Z	142421d60	func
