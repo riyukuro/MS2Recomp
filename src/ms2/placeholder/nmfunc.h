@@ -79,6 +79,9 @@ public:
 extern void* FUN_1415e5920(void*);
 extern void* FUN_1415e5ac0(void*);
 extern void* FUN_1415e5b60(void*);
+extern void* FUN_1415e5880(void*);
+// MS2-FUNCTIONAL: initializes the shared empty buffer through the recovered capacity-specific helper.
+template<> inline CNMStr<0x100>::CNMStr() : m_p(nullptr) { FUN_1415e5880(this); }
 // MS2-FUNCTIONAL: initializes the shared empty buffer through the recovered capacity-specific helper.
 template<> inline CNMStr<0x40>::CNMStr() : m_p(nullptr) { FUN_1415e5ac0(this); }
 // MS2-FUNCTIONAL: initializes the shared empty buffer through the recovered capacity-specific helper.
