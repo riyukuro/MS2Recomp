@@ -2644,7 +2644,16 @@ MS2_CHECK_SIZE(CNMRequestWBSessionExFunc, 0x58);
 class CNMRequestWBSessionFunc : public CNMFunc
 {
 public:
+    CNMRequestWBSessionFunc(); // 0x141597e50
+    CNMRequestWBSessionFunc(const unsigned char* pTarget, int n40, int n44); // 0x141597ef0
     virtual ~CNMRequestWBSessionFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x141598050
+    unsigned int EncodeFramed(CNMStream* pStream) override;                 // 0x141597f90
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x141597ff0
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override; // 0x141598220
+    unsigned int DecodeFramed(CNMStream* pStream) override;                 // 0x141598130
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override; // 0x1415981c0
 
     long long m_30; // +0x30
     int m_38; // +0x38
