@@ -44,7 +44,15 @@ MS2_CHECK_SIZE(CNMChannelMessage, 0x48);
 class CNMChatRoomMemberList : public CNMSerializable
 {
 public:
+    CNMChatRoomMemberList();
     virtual ~CNMChatRoomMemberList() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     std::vector<CNMChatRoomMemberInfo> m_members;
 };

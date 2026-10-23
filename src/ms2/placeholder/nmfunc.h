@@ -369,6 +369,7 @@ class CNMChatRoomMemberInfo : public CNMRealUserInfo
 {
 public:
     CNMChatRoomMemberInfo(); // 0x141576ae0
+    CNMChatRoomMemberInfo(const CNMChannelMemberInfo& r, unsigned int roomMode, const char* roomName);
     CNMChatRoomMemberInfo(const CNMChatRoomMemberInfo& r) noexcept; // 0x1415e8f40
     CNMChatRoomMemberInfo(CNMChatRoomMemberInfo&& r) noexcept;  // 0x1415e8e60
     virtual ~CNMChatRoomMemberInfo() = default;                           // 0x1415ecf90
