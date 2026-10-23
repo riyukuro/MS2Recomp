@@ -8895,3 +8895,4 @@ DAT_143b27a68	143b27a68	data
 ??0MouseCtorFunction@AS2@GFx@Scaleform@@QEAA@PEAVASStringContext@123@PEAVMovieRoot@123@@Z	14291e940	func
 ?GetCharacterDef@AvmLoader@AS3@GFx@Scaleform@@UEBAPEAVCharacterDef@34@XZ	142507b40	func
 ?Reserve@ValueStack@AS3@GFx@Scaleform@@AEAAXG@Z	1425241f0	func
+?GAS_Invoke@AS2@GFx@Scaleform@@YA_NAEBVValue@123@PEAV4123@PEAVObjectInterface@123@PEAVEnvironment@123@HHPEBD@Z	142946d10	func
