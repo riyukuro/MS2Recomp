@@ -8618,3 +8618,9 @@ DAT_143b27c80	143b27c80	data
 ?PTR_LAB_1431b6638@@3PEAXEA	1431b6638	data
 ?PTR_LAB_1431b6690@@3PEAXEA	1431b6690	data
 ?PTR_s_connect_1431b6410@@3PEAXEA	1431b6410	data
+?CreateNewObject@AmpMarkerCtorFunction@AS2@GFx@Scaleform@@UEBAPEAVObject@234@PEAVEnvironment@234@@Z	142936790	func
+?GlobalCtor@BevelFilterCtorFunction@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z	142958720	func
+?GlobalCtor@BlurFilterCtorFunction@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z	1429591e0	func
+?GlobalCtor@DropShadowFilterCtorFunction@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z	14295a4b0	func
+?GlobalCtor@GlowFilterCtorFunction@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z	14295b480	func
+?StaticFunctionTable@AmpMarkerCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143214230	data
