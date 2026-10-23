@@ -8517,3 +8517,16 @@ DAT_143ba9d08	143ba9d08	data
 DAT_143ba9d20	143ba9d20	data
 DAT_143b15f60	143b15f60	data
 DAT_143b27c80	143b27c80	data
+?GetMember@ColorTransformObject@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@PEAVValue@234@@Z	14294e940	func
+?GetObjectType@ColorObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	142954200	func
+?GetObjectType@ColorTransformObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	142954210	func
+?GetObjectType@DateObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	142954220	func
+?GetObjectType@MatrixObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	142954280	func
+?GetObjectType@MovieClipLoader@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	142954290	func
+?GetTextValue@DateObject@AS2@GFx@Scaleform@@UEBAPEBDPEAVEnvironment@234@@Z	1429566c0	func
+?NotifyOnLoadComplete@MovieClipLoader@AS2@GFx@Scaleform@@UEAAXPEAVEnvironment@234@PEAVInteractiveObject@34@H@Z	142969bd0	func
+?NotifyOnLoadError@MovieClipLoader@AS2@GFx@Scaleform@@UEAAXPEAVEnvironment@234@PEAVInteractiveObject@34@PEBDH@Z	142969d90	func
+?NotifyOnLoadInit@MovieClipLoader@AS2@GFx@Scaleform@@UEAAXPEAVEnvironment@234@PEAVInteractiveObject@34@@Z	142969f50	func
+?NotifyOnLoadProgress@MovieClipLoader@AS2@GFx@Scaleform@@UEAAXPEAVEnvironment@234@PEAVInteractiveObject@34@HH@Z	14296a0a0	func
+?NotifyOnLoadStart@MovieClipLoader@AS2@GFx@Scaleform@@UEAAXPEAVEnvironment@234@PEAVInteractiveObject@34@@Z	14296a300	func
+?SetMember@ColorTransformObject@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@AEBVValue@234@AEBVPropFlags@234@@Z	1429858c0	func
