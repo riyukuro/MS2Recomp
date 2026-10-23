@@ -9038,3 +9038,4 @@ PTR_FUN_143a48608	143a48608	data
 ?Format@VertexXY16iAlpha@Render@Scaleform@@2UVertexFormat@23@A	143a2fbd0	data
 ?initializeShaders@HAL@D3D9@Render@Scaleform@@IEAA_N_N@Z	1427387f0	func
 IID_IDirect3DDevice9Ex	14319e428	data
+?AddRoot@?$RefCountCollector@$0BED@@AS3@GFx@Scaleform@@QEAAXPEBV?$RefCountBaseGC@$0BED@@234@@Z	1423de620	func
