@@ -9006,3 +9006,6 @@ DAT_143b27c64	143b27c64	data
 ?GetInternedNamespace@VMAbcFile@AS3@GFx@Scaleform@@QEAAAEAVNamespace@Instances@234@AEBVMultiname@Abc@234@@Z	14250abf0	func
 ?LoadFinished@LoadQueueEntryMT_LoadMovie@AS3@GFx@Scaleform@@UEAA_NXZ	142515c60	func
 ?IsPreloadingFinished@LoadQueueEntryMT_LoadMovie@AS3@GFx@Scaleform@@UEAA_NXZ	142514a70	func
+??1CallFrame@AS3@GFx@Scaleform@@QEAA@XZ	1424dde10	func
+?ExecuteCode@VM@AS3@GFx@Scaleform@@QEAAHI@Z	1424fa5b0	func
+?SetupRegisters@CallFrame@AS3@GFx@Scaleform@@QEAAXAEBVMethodInfo@Abc@234@AEBVValue@234@IPEBV7234@@Z	14252b5a0	func
