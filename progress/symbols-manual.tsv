@@ -9385,3 +9385,5 @@ iRam0000000143a4a438	143a4a438	data
 iRam0000000143a4a43c	143a4a43c	data
 ?SetWideCursor@IMEManagerBase@GFx@Scaleform@@QEAAX_N@Z	1425b4ec0	func
 ?UpdateViewport@MovieImpl@GFx@Scaleform@@QEAAXXZ	1425787d0	func
+?OnMovieFocus@MovieImpl@GFx@Scaleform@@IEAAX_N@Z	142571f10	func
+?AddVideoProvider@MovieImpl@GFx@Scaleform@@QEAAXPEAVVideoProvider@Video@23@@Z	14256c520	func
