@@ -8723,3 +8723,4 @@ DAT_14313bc60	14313bc60	data
 ?GetObjectType@MovieClipObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	1429542a0	func
 ?CreateStageObject@TextField@fl_text@Instances@AS3@GFx@Scaleform@@UEAAPEAVDisplayObject@56@XZ	1424ac040	func
 ?InitInstance@TextField@fl_text@Instances@AS3@GFx@Scaleform@@UEAAX_N@Z	1424acee0	func
+?StaticFunctionTable@SelectionCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213dc0	data
