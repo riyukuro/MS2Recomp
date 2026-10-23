@@ -8893,3 +8893,5 @@ DAT_143b27a68	143b27a68	data
 ?StaticFunctionTable@MouseCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213d60	data
 ?UpdateListenersArray@MouseCtorFunction@AS2@GFx@Scaleform@@IEAAXPEAVASStringContext@234@PEAVEnvironment@234@@Z	142992a20	func
 ??0MouseCtorFunction@AS2@GFx@Scaleform@@QEAA@PEAVASStringContext@123@PEAVMovieRoot@123@@Z	14291e940	func
+?GetCharacterDef@AvmLoader@AS3@GFx@Scaleform@@UEBAPEAVCharacterDef@34@XZ	142507b40	func
+?Reserve@ValueStack@AS3@GFx@Scaleform@@AEAAXG@Z	1425241f0	func
