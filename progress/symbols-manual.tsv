@@ -8787,3 +8787,5 @@ DAT_143149940	143149940	data
 DAT_14313b8d8	14313b8d8	data
 DAT_1431c4858	1431c4858	data
 DAT_1431c4d28	1431c4d28	data
+?MemberEntry_Clear@AS2@GFx@Scaleform@@YAXPEAV?$HashsetNodeEntry@U?$HashNode@VASString@GFx@Scaleform@@VMember@AS2@23@UASStringHashFunctor@23@@Scaleform@@UNodeHashF@12@@3@@Z	142934350	func
+?MemberEntry_CopyConstruct@AS2@GFx@Scaleform@@YAXPEAV?$HashsetNodeEntry@U?$HashNode@VASString@GFx@Scaleform@@VMember@AS2@23@UASStringHashFunctor@23@@Scaleform@@UNodeHashF@12@@3@AEBV43@@Z	142917730	func
