@@ -17,6 +17,10 @@ extern void FUN_1415f9990(void*);
 extern int FUN_1415fb750(void*);
 extern int FUN_1415fb6d0(void*);
 
+// MS2-FUNCTIONAL 0x141578f50: initializes the new-friend request fields and fixed-size strings.
+// @0x141578f50
+CNMRequestNewFriendData::CNMRequestNewFriendData() : CNMSerializable(0x7266,1,1),m_10(0),m_14{},m_54(0),m_58(0),m_5c(0),m_60{},m_a0(0),m_a4(0),m_a8{},m_e8(0),m_ec{},m_1ec(0) {}
+
 // MS2-FUNCTIONAL 0x141579060: uses opaque stack storage for the temporary encoder; request data encoding behavior is preserved.
 // @0x141579060
 unsigned int CNMRequestNewFriendData::EncodeFramed(CNMStream* pStream)
@@ -114,3 +118,5 @@ unsigned int CNMRequestNewFriendData::Decode(CNMSerializableDecoder* pDecoder, C
     m_1ec = reinterpret_cast<ReadU8>(vtable[1])(pDecoder);
     return static_cast<unsigned int>(FUN_1415fb750(pDecoder));
 }
+
+// MS2-PIN: ??0CNMRequestNewFriendData@@QEAA@XZ 0x141578f50 ; recovered new-friend request data constructor

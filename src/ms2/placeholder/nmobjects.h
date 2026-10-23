@@ -2707,6 +2707,7 @@ MS2_CHECK_SIZE(CNMRequestChatSessionFunc, 0x50);
 class CNMRequestNewFriendData : public CNMSerializable
 {
 public:
+    CNMRequestNewFriendData();
     virtual ~CNMRequestNewFriendData() = default;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
