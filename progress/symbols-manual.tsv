@@ -8504,8 +8504,12 @@ DAT_1431b9820	1431b9820	data
 ?ExecuteForEachChild_GC@ArrayObject@AS2@GFx@Scaleform@@MEBAXPEAV?$RefCountCollector@$0BED@@234@W4OperationGC@?$RefCountBaseGC@$0BED@@234@@Z	142941160	func
 ?GetObjectType@ArrayObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	142954130	func
 ?SetPtr@?$SPtr@VGASRefCountBase@AS3@GFx@Scaleform@@@AS3@GFx@Scaleform@@QEAAAEAV1234@PEAVGASRefCountBase@234@@Z	1424e0710	func
+?GetInternedString@VMAbcFile@AS3@GFx@Scaleform@@QEAA?AVASString@34@_K@Z	14250b240	func
+?GetInternedNamespace@VMAbcFile@AS3@GFx@Scaleform@@QEAAAEAVNamespace@Instances@234@_K@Z	14250ae60	func
+?GetInternedNamespaceSet@VMAbcFile@AS3@GFx@Scaleform@@QEAAAEAVNamespaceSet@234@_K@Z	14250aff0	func
 ?GetObjectType@AsBroadcaster@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	142954140	func
 ?GetObjectType@ExternalInterface@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	142954240	func
 ?GetObjectType@NumberObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	1429542b0	func
 ?GetObjectType@SharedObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	142954300	func
 ?GetValue@NumberObject@AS2@GFx@Scaleform@@UEBA?AVValue@234@XZ	142956c90	func
+DAT_143ba9d28	143ba9d28	data
