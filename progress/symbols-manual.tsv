@@ -8478,3 +8478,14 @@ DAT_143ffd504	143ffd504	data
 ?PTR_FUN_1431b64f0@@3PEAXEA	1431b64f0	data
 ?PTR_LAB_1431b6430@@3PEAXEA	1431b6430	data
 ?PTR_LAB_1431b6440@@3PEAXEA	1431b6440	data
+??1ObjectInterface@AS2@GFx@Scaleform@@UEAA@XZ	142925dd0	func
+?FindMember@Object@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@PEAVMember@234@@Z	142944950	func
+?GetEnvironment@CFunctionObject@AS2@GFx@Scaleform@@UEAAPEAVEnvironment@234@AEBVFnCall@234@PEAV?$Ptr@VInteractiveObject@GFx@Scaleform@@@4@@Z	14294ab50	func
+?GetNumArgs@CFunctionObject@AS2@GFx@Scaleform@@UEBAHXZ	14000ceb0	func
+?GetTextValue@Object@AS2@GFx@Scaleform@@UEBAPEBDPEAVEnvironment@234@@Z	140007dc0	func
+?InstanceOf@ObjectInterface@AS2@GFx@Scaleform@@UEBA_NPEAVEnvironment@234@PEBVObject@234@_N@Z	142962410	func
+?IsCFunction@CFunctionObject@AS2@GFx@Scaleform@@UEBA_NXZ	14000cea0	func
+?IsNull@CFunctionObject@AS2@GFx@Scaleform@@UEBA_NXZ	14000ce90	func
+?Set__proto__@Object@AS2@GFx@Scaleform@@UEAAXPEAVASStringContext@234@PEAV1234@@Z	140007ba0	func
+?Unwatch@ObjectInterface@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@@Z	142992830	func
+?Watch@ObjectInterface@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@AEBVFunctionRef@234@AEBVValue@234@@Z	142994e00	func
