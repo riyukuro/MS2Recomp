@@ -110,3 +110,9 @@ unsigned int CNMFindUserInfo::Decode(CNMSerializableDecoder* pDecoder, CNMStream
     m_d8 = static_cast<int>(reinterpret_cast<ReadU32>(vtable[3])(pDecoder));
     return static_cast<unsigned int>(FUN_1415fb750(pDecoder));
 }
+
+// MS2-FUNCTIONAL 0x141574480: initializes the find-user signature, avatar subobject and fixed result fields.
+// @0x141574480
+CNMFindUserInfo::CNMFindUserInfo() : CNMSerializable(0x6675,1,1),m_10(0),m_18{},m_58{},m_78{},m_b8(0),m_bc(0),m_c0(0),m_c4(0),m_c8(),m_d8(0) {}
+
+// MS2-PIN: ??0CNMFindUserInfo@@QEAA@XZ 0x141574480 ; recovered find-user constructor
