@@ -2663,7 +2663,15 @@ MS2_CHECK_SIZE(CNMGetGameListFunc, 0x58);
 class CNMGetGameTokenFunc : public CNMFunc
 {
 public:
+    CNMGetGameTokenFunc();
+    explicit CNMGetGameTokenFunc(const char* token);
     virtual ~CNMGetGameTokenFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMStr<0x20> m_30; // +0x30
     int m_38; // +0x38
