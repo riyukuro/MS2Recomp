@@ -266,11 +266,25 @@ MS2_CHECK_SIZE(CNMJoinToChatRoomExFunc, 0x760);
 class CNMJoinToChatRoomFunc : public CNMFunc
 {
 public:
+    CNMJoinToChatRoomFunc(); // 0x14159aae0
+    CNMJoinToChatRoomFunc(unsigned int n44, unsigned int n48, const char* sz49c, const char* sz850,
+                          unsigned short n870);
     virtual ~CNMJoinToChatRoomFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMChatRoomInfo m_room;                           // +0x30
     CNMChatRoomMemberInfo m_self;                     // +0x630
-    unsigned char m_850[0x30];                        // +0x850 (not recovered)
+    char m_850[0x20];                                 // +0x850
+    unsigned short m_870;
+    unsigned char m_872[2];
+    unsigned int m_874;
+    unsigned int m_878;
 };
 MS2_CHECK_SIZE(CNMJoinToChatRoomFunc, 0x880);
 
