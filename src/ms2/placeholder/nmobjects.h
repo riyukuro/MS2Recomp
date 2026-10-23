@@ -326,7 +326,17 @@ MS2_CHECK_SIZE(CNMRequestFileUploadSessionExFunc, 0x70);
 class CNMRequestFileUploadSessionFunc : public CNMFunc
 {
 public:
+    CNMRequestFileUploadSessionFunc(); // 0x1415977c0
+    CNMRequestFileUploadSessionFunc(const unsigned char* pTarget, unsigned int nTarget,
+                                   std::vector<CNMFilePath> files); // 0x141597860
     virtual ~CNMRequestFileUploadSessionFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x1415979f0
+    unsigned int EncodeFramed(CNMStream* pStream) override;                 // 0x141597930
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x141597990
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override; // 0x141597c50
+    unsigned int DecodeFramed(CNMStream* pStream) override;                 // 0x141597b60
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override; // 0x141597bf0
 
     unsigned __int64 m_30;
     unsigned m_38, m_3c, m_40;

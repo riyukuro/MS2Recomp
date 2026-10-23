@@ -436,6 +436,7 @@ MS2_CHECK_SIZE(CNMFileEvent, 0x128);
 class CNMFilePath : public CNMSerializable
 {
 public:
+    CNMFilePath();                                            // 0x1415731e0
     CNMFilePath(const CNMFilePath& r) noexcept;                 // 0x1415e93e0
     CNMFilePath(CNMFilePath&& r) noexcept;                      // 0x1415e9380
     virtual ~CNMFilePath() = default;                                     // 0x1415ed4d0
