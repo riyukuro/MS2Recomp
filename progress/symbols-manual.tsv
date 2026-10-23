@@ -8407,3 +8407,5 @@ compress2	142724100	func
 ?ResizeImageBilinear@Render@Scaleform@@YAXPEAEHHHPEBEHHHW4ResizeImageType@12@@Z	1426ef7a0	func
 ?Threshold@DrawableImage@Render@Scaleform@@QEAAKPEAVImageBase@23@AEBV?$Rect@J@23@AEBV?$Point@J@23@W4ThresholdOperation@123@KKK_N@Z	1425ef1e0	func
 ?ApplyFilter@DrawableImage@Render@Scaleform@@QEAAXPEAV123@AEBV?$Rect@J@23@AEBV?$Point@J@23@PEAVFilter@23@@Z	1425eaff0	func
+?Draw@DrawableImage@Render@Scaleform@@QEAAXPEAVImage@23@AEBV?$Matrix2x4@M@23@AEBVCxform@23@W4BlendMode@23@PEBV?$Rect@J@23@_N@Z	1425eb8c0	func
+?Draw@DrawableImage@Render@Scaleform@@QEAAXPEAVTreeNode@23@AEBV?$Matrix2x4@M@23@AEBVCxform@23@W4BlendMode@23@PEBV?$Rect@J@23@@Z	1425ebf70	func
