@@ -8692,3 +8692,11 @@ DAT_1431c51e8	1431c51e8	data
 ??0CNMRejectedUser@@QEAA@PEBVCNMCharacter@@PEBD@Z	141570530	func
 ?GetObjectType@BitmapData@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	1429541a0	func
 DAT_143b27a88	143b27a88	data
+?ClearFor@IntervalTimer@AS3@GFx@Scaleform@@UEAA_NPEAVMovieImpl@34@PEAVMovieDefImpl@34@@Z	1424efc30	func
+?GetId@IntervalTimer@AS3@GFx@Scaleform@@UEBAHXZ	14250a720	func
+?GetNextInvokeTime@IntervalTimer@AS3@GFx@Scaleform@@UEBA_KXZ	14250bf80	func
+?Invoke@IntervalTimer@AS3@GFx@Scaleform@@UEAA_NPEAVMovieImpl@34@M@Z	142512fc0	func
+?IsActive@IntervalTimer@AS3@GFx@Scaleform@@UEBA_NXZ	142513eb0	func
+?SetId@IntervalTimer@AS3@GFx@Scaleform@@UEAAXH@Z	1425274a0	func
+?Start@IntervalTimer@AS3@GFx@Scaleform@@UEAAXPEAVMovieImpl@34@@Z	14252c8a0	func
+?TreeNodeNodeDataVTable@Render@Scaleform@@3QBQEBXB	14317b700	data
