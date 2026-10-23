@@ -8920,3 +8920,7 @@ DAT_143b27a68	143b27a68	data
 ?InvokeAlias@MovieRoot@AS2@GFx@Scaleform@@QEAA_NPEBDAEBUInvokeAliasInfo@1234@PEAVValue@234@I@Z	142963b90	func
 ?ResolveInvokeAlias@MovieRoot@AS2@GFx@Scaleform@@QEBAPEAUInvokeAliasInfo@1234@PEBD@Z	14297ed30	func
 ?Value2ASValue@MovieRoot@AS2@GFx@Scaleform@@QEAAXAEBVValue@34@PEAV5234@@Z	142992ee0	func
+?LogF@Disasm@AS2@GFx@Scaleform@@QEAAXPEBDZZ	142967bf0	func
+?LogScriptError@?$LogBase@VDisplayObjectBase@GFx@Scaleform@@@GFx@Scaleform@@QEBAXPEBDZZ	142967c90	func
+?Invoke@MovieRoot@AS2@GFx@Scaleform@@UEAA_NPEAVInteractiveObject@34@PEBDPEAVValue@34@PEBV634@I@Z	1429635f0	func
+?Invoke@MovieRoot@AS2@GFx@Scaleform@@UEAA_NPEBDPEAVValue@34@PEBV534@I@Z	142963a10	func
