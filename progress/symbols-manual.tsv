@@ -8877,3 +8877,5 @@ DAT_143b27a68	143b27a68	data
 ??0NumberCtorFunction@AS2@GFx@Scaleform@@QEAA@PEAVASStringContext@123@@Z	14291f2c0	func
 ?StaticFunctionTable@MathCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213900	data
 ??0MathCtorFunction@AS2@GFx@Scaleform@@QEAA@PEAVASStringContext@123@@Z	14291e210	func
+?AsString@AS3@GFx@Scaleform@@YA?AVASString@23@AEBVValue@123@AEAVStringManager@123@@Z	1424eb7b0	func
+?ExecutePropertyUnsafe@AS3@GFx@Scaleform@@YA?AVCheckResult@123@AEAVVM@123@AEBVMultiname@123@AEBVValue@123@AEAV7123@IPEBV7123@@Z	1424ff910	func
