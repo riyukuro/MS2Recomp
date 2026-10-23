@@ -3108,7 +3108,15 @@ MS2_CHECK_SIZE(CNMSetCountFunc, 0x38);
 class CNMSetLocaleFunc : public CNMFunc
 {
 public:
+    CNMSetLocaleFunc(); // 0x141584630
+    CNMSetLocaleFunc(int locale, int sublocale); // 0x141584690
     virtual ~CNMSetLocaleFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_30; // +0x30
     int m_34; // +0x34
