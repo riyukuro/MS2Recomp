@@ -2678,7 +2678,15 @@ MS2_CHECK_SIZE(CNMMonitorGuildOnlineInfoFunc, 0x40);
 class CNMMoveFriendCategoryFunc : public CNMFunc
 {
 public:
+    CNMMoveFriendCategoryFunc(); // 0x141588920
+    CNMMoveFriendCategoryFunc(const unsigned char* key, int source, int destination, int flag); // 0x1415889c0
     virtual ~CNMMoveFriendCategoryFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     NMFriendKey m_key;
     int m_48; // +0x48
