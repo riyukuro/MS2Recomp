@@ -19,6 +19,15 @@ extern unsigned int FUN_1415fa0c0(void*);
 extern unsigned char FUN_1415fb630(void*);
 extern void FUN_14156a080(void*);
 extern void FUN_14156a260(void*, int);
+extern void FUN_14156bcb0(void*, void*, void*);
+extern void FUN_14156bd50(void*);
+extern void FUN_14156be10(void*, void*, void*);
+extern void FUN_14156bf10(void*);
+extern void FUN_14156ab00(void*, unsigned char);
+extern void FUN_14156ac20(void*, unsigned int);
+extern void FUN_1415f9990(void*);
+extern int FUN_1415fb750(void*);
+extern int FUN_1415fb6d0(void*);
 
 // @0x14156a020
 long long* FUN_14156a020(long long* p)
@@ -765,6 +774,164 @@ CNMSerializable* CNMSerializable::CopyFrom(CNMSerializable* pSrc)
     FUN_14156a080(streamStorage);
     return this;
 }
+
+// MS2-FUNCTIONAL 0x14156c8b0: initializes the serializable signature fields; constructor store ordering differs from the image.
+// @0x14156c8b0
+CNMSerializable::CNMSerializable(unsigned short signature, unsigned char kind, unsigned char format)
+    : m_wSignature(signature), m_bKind(kind), m_bFormat(format), m_bFlag(0)
+{
+}
+
+// @0x14156cba0
+CNMAvatarItemInfo::CNMAvatarItemInfo() : CNMSerializable(0x6169, 1, 1) {}
+
+// MS2-FUNCTIONAL 0x14156cbe0: uses opaque temporary encoder storage; frame behavior and payload are preserved.
+// @0x14156cbe0
+unsigned int CNMAvatarItemInfo::EncodeFramed(CNMStream* pStream)
+{
+    unsigned char storage[0x18];
+    FUN_14156bcb0(storage, pStream, this);
+    void** vt = *reinterpret_cast<void***>(this);
+    using Fn = unsigned int(__fastcall*)(CNMAvatarItemInfo*, CNMEncoder*, CNMStream*);
+    const unsigned int result = reinterpret_cast<Fn>(vt[2])(this, reinterpret_cast<CNMEncoder*>(storage), pStream);
+    FUN_14156bd50(storage);
+    return result;
+}
+
+// MS2-FUNCTIONAL 0x14156cc40: dispatches with the recovered encoder virtual slot selection.
+// @0x14156cc40
+unsigned int CNMAvatarItemInfo::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
+{
+    void** vt = *reinterpret_cast<void***>(this);
+    if (m_bFormat == 1) {
+        using Fn = unsigned int(__fastcall*)(CNMAvatarItemInfo*, CNMEncoder*, CNMStream*);
+        return reinterpret_cast<Fn>(vt[2])(this, pEncoder, pStream);
+    }
+    using Framed = unsigned int(__fastcall*)(CNMAvatarItemInfo*, CNMStream*);
+    return reinterpret_cast<Framed>(vt[3])(this, pStream);
+}
+
+// @0x14156cca0
+unsigned int CNMAvatarItemInfo::Encode(CNMEncoder* pEncoder, CNMStream*)
+{
+    FUN_14156ab00(pEncoder, 0);
+    FUN_14156ac20(pEncoder, 0);
+    FUN_1415f9990(pEncoder);
+    return 1;
+}
+
+// MS2-FUNCTIONAL 0x14156ccf0: uses opaque temporary decoder storage and calls the recovered decode slot.
+// @0x14156ccf0
+unsigned int CNMAvatarItemInfo::DecodeFramed(CNMStream* pStream)
+{
+    unsigned char storage[0x38];
+    FUN_14156be10(storage, pStream, this);
+    unsigned int result = 0;
+    if (FUN_1415fb750(storage)) {
+        void** vt = *reinterpret_cast<void***>(this);
+        using Fn = unsigned int(__fastcall*)(CNMAvatarItemInfo*, CNMSerializableDecoder*, CNMStream*);
+        result = reinterpret_cast<Fn>(vt[5])(this, reinterpret_cast<CNMSerializableDecoder*>(storage), pStream);
+    }
+    FUN_14156bf10(storage);
+    return result;
+}
+
+// MS2-FUNCTIONAL 0x14156cd80: dispatches with the recovered decoder virtual slot selection.
+// @0x14156cd80
+unsigned int CNMAvatarItemInfo::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
+{
+    void** vt = *reinterpret_cast<void***>(this);
+    if (FUN_1415fb6d0(pDecoder) == 2) {
+        using Framed = unsigned int(__fastcall*)(CNMAvatarItemInfo*, CNMStream*);
+        return reinterpret_cast<Framed>(vt[6])(this, pStream);
+    }
+    using Fn = unsigned int(__fastcall*)(CNMAvatarItemInfo*, CNMSerializableDecoder*, CNMStream*);
+    return reinterpret_cast<Fn>(vt[5])(this, pDecoder, pStream);
+}
+
+// @0x14156cde0
+unsigned int CNMAvatarItemInfo::Decode(CNMSerializableDecoder* pDecoder, CNMStream*)
+{
+    return static_cast<unsigned int>(FUN_1415fb750(pDecoder));
+}
+
+// MS2-FUNCTIONAL 0x14156ce30: constructs the derived avatar record through the recovered base constructor; vftable transition differs in codegen.
+// @0x14156ce30
+__declspec(noinline) CNMAvatarFullInfo::CNMAvatarFullInfo() : CNMAvatarItemInfo() {}
+
+// MS2-FUNCTIONAL 0x14156cea0: uses opaque temporary encoder storage; frame behavior and payload are preserved.
+// @0x14156cea0
+unsigned int CNMAvatarFullInfo::EncodeFramed(CNMStream* pStream)
+{
+    unsigned char storage[0x18];
+    FUN_14156bcb0(storage, pStream, this);
+    void** vt = *reinterpret_cast<void***>(this);
+    using Fn = unsigned int(__fastcall*)(CNMAvatarFullInfo*, CNMEncoder*, CNMStream*);
+    const unsigned int result = reinterpret_cast<Fn>(vt[2])(this, reinterpret_cast<CNMEncoder*>(storage), pStream);
+    FUN_14156bd50(storage);
+    return result;
+}
+
+// MS2-FUNCTIONAL 0x14156cf00: dispatches with the recovered encoder virtual slot selection.
+// @0x14156cf00
+unsigned int CNMAvatarFullInfo::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
+{
+    void** vt = *reinterpret_cast<void***>(this);
+    if (m_bFormat == 1) {
+        using Fn = unsigned int(__fastcall*)(CNMAvatarFullInfo*, CNMEncoder*, CNMStream*);
+        return reinterpret_cast<Fn>(vt[2])(this, pEncoder, pStream);
+    }
+    using Framed = unsigned int(__fastcall*)(CNMAvatarFullInfo*, CNMStream*);
+    return reinterpret_cast<Framed>(vt[3])(this, pStream);
+}
+
+// MS2-FUNCTIONAL 0x14156cf60: emits the two default avatar fields and finishes the encoder frame.
+// @0x14156cf60
+unsigned int CNMAvatarFullInfo::Encode(CNMEncoder* pEncoder, CNMStream*)
+{
+    FUN_14156ab00(pEncoder, 0);
+    FUN_14156ac20(pEncoder, 0);
+    FUN_1415f9990(pEncoder);
+    return 1;
+}
+
+// MS2-FUNCTIONAL 0x14156d000: uses opaque temporary decoder storage and calls the recovered decode slot.
+// @0x14156d000
+unsigned int CNMAvatarFullInfo::DecodeFramed(CNMStream* pStream)
+{
+    unsigned char storage[0x38];
+    FUN_14156be10(storage, pStream, this);
+    unsigned int result = 0;
+    if (FUN_1415fb750(storage)) {
+        void** vt = *reinterpret_cast<void***>(this);
+        using Fn = unsigned int(__fastcall*)(CNMAvatarFullInfo*, CNMSerializableDecoder*, CNMStream*);
+        result = reinterpret_cast<Fn>(vt[5])(this, reinterpret_cast<CNMSerializableDecoder*>(storage), pStream);
+    }
+    FUN_14156bf10(storage);
+    return result;
+}
+
+// MS2-FUNCTIONAL 0x14156d090: dispatches with the recovered decoder virtual slot selection.
+// @0x14156d090
+unsigned int CNMAvatarFullInfo::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
+{
+    void** vt = *reinterpret_cast<void***>(this);
+    if (FUN_1415fb6d0(pDecoder) == 2) {
+        using Framed = unsigned int(__fastcall*)(CNMAvatarFullInfo*, CNMStream*);
+        return reinterpret_cast<Framed>(vt[6])(this, pStream);
+    }
+    using Fn = unsigned int(__fastcall*)(CNMAvatarFullInfo*, CNMSerializableDecoder*, CNMStream*);
+    return reinterpret_cast<Fn>(vt[5])(this, pDecoder, pStream);
+}
+
+// MS2-FUNCTIONAL 0x14156d0f0: returns the stream decoder's validity after the empty record decode.
+// @0x14156d0f0
+unsigned int CNMAvatarFullInfo::Decode(CNMSerializableDecoder* pDecoder, CNMStream*)
+{
+    return static_cast<unsigned int>(FUN_1415fb750(pDecoder));
+}
+
+// MS2-PIN: ??0CNMAvatarFullInfo@@QEAA@XZ 0x14156ce30 ; recovered default constructor
 
 // MS2-FUNCTIONAL: delegates to the stream reset implementation at 0x14156a5a0.
 // @0x14156a080
