@@ -2914,7 +2914,16 @@ MS2_CHECK_SIZE(CNMRestrictedWordsFunc, 0x48);
 class CNMSendRefreshMessageFunc : public CNMFunc
 {
 public:
+    CNMSendRefreshMessageFunc(); // 0x141580530
+    explicit CNMSendRefreshMessageFunc(unsigned result); // 0x141580590
     virtual ~CNMSendRefreshMessageFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_30; // +0x30
     int m_34; // +0x34
