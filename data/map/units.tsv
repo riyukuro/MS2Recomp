@@ -2436,11 +2436,13 @@
 142615c70	14261b450	sfr_gfx_07	none	85	mn	sfr0 10-20: Scaleform 4.1.18 recovery, GFx core (Text_EditorKit,GFx_LoadProcess,GFx_FontManager,GFx_PlayerTasks,GFx_Event,GFx_Shape,...)
 14261b450	14261e1c0	sfr_render_03	none	46	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Render (Text_DocView,Render_ShapeMeshProvider,Text_Core,Render_TreeNode,Render_TreeShape,Render_StateBag,...)
 14261e1c0	142620040	sfr_gfx_07	none	29	mn	sfr0 10-20: Scaleform 4.1.18 recovery, GFx core (Text_EditorKit,GFx_LoadProcess,GFx_FontManager,GFx_PlayerTasks,GFx_Event,GFx_Shape,...)
-142620040	1426202f0	sfr_render_03	none	6	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Render (Text_DocView,Render_ShapeMeshProvider,Text_Core,Render_TreeNode,Render_TreeShape,Render_StateBag,...)
-1426202f0	142623c60	sfr_gfx_07	none	50	mn	sfr0 10-20: Scaleform 4.1.18 recovery, GFx core (Text_EditorKit,GFx_LoadProcess,GFx_FontManager,GFx_PlayerTasks,GFx_Event,GFx_Shape,...)
-142623c60	142624020	sfr_render_03	none	6	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Render (Text_DocView,Render_ShapeMeshProvider,Text_Core,Render_TreeNode,Render_TreeShape,Render_StateBag,...)
-142624020	142625920	sfr_gfx_07	none	16	mn	sfr0 10-20: Scaleform 4.1.18 recovery, GFx core (Text_EditorKit,GFx_LoadProcess,GFx_FontManager,GFx_PlayerTasks,GFx_Event,GFx_Shape,...)
-142625920	142636190	sfr_render_03	none	136	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Render (Text_DocView,Render_ShapeMeshProvider,Text_Core,Render_TreeNode,Render_TreeShape,Render_StateBag,...)
+142620040	142620160	sfr_render_03	none	3	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Render (Text_DocView,Render_ShapeMeshProvider,Text_Core,Render_TreeNode,Render_TreeShape,Render_StateBag,...)
+142620160	142623c60	sfr_gfx_07	none	53	mn	sfr0 10-20: Scaleform 4.1.18 recovery, GFx core (Text_EditorKit,GFx_LoadProcess,GFx_FontManager,GFx_PlayerTasks,GFx_Event,GFx_Shape,...) | sfr21 10-23: GFx-side ddtors / ArrayDataBase::Reserve copies (callers in sfr_gfx_07 / AS3) moved here from sfr_render_03
+142623c60	142623d00	sfr_render_03	none	1	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Render (Text_DocView,Render_ShapeMeshProvider,Text_Core,Render_TreeNode,Render_TreeShape,Render_StateBag,...)
+142623d00	142625920	sfr_gfx_07	none	21	mn	sfr0 10-20: Scaleform 4.1.18 recovery, GFx core (Text_EditorKit,GFx_LoadProcess,GFx_FontManager,GFx_PlayerTasks,GFx_Event,GFx_Shape,...) | sfr21 10-23: GFx-side ddtors / ArrayDataBase::Reserve copies (callers in sfr_gfx_07 / AS3) moved here from sfr_render_03
+142625920	14262ce60	sfr_render_03	none	136	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Render (Text_DocView,Render_ShapeMeshProvider,Text_Core,Render_TreeNode,Render_TreeShape,Render_StateBag,...)
+14262ce60	14262cfb0	sfr_render_05	none	1	mn	sfr21 10-23: unreferenced out-of-line Matrix2x4<float>::SetRectToParl copy (Render_MeshKey TU, inlined everywhere else; MSVC drops an unreferenced inline specialization, so no source emits it)
+14262cfb0	142636190	sfr_render_03	none	136	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Render (Text_DocView,Render_ShapeMeshProvider,Text_Core,Render_TreeNode,Render_TreeShape,Render_StateBag,...)
 142636190	14263dfa0	sfr_gfx_07	none	117	mn	sfr0 10-20: Scaleform 4.1.18 recovery, GFx core (Text_EditorKit,GFx_LoadProcess,GFx_FontManager,GFx_PlayerTasks,GFx_Event,GFx_Shape,...)
 14263dfa0	14263fb00	sfr_render_04	none	27	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Render (Render_Primitive,Render_TreeText,Render_FontProviderWinAPI,Text_LineBuffer,Text_Highlight,Renderer2DImpl,...)
 14263fb00	142645590	sfr_kernel_02	none	106	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Kernel (SF_MsgFormat,HeapPT_MemoryHeap,HeapPT_AllocLite,SF_File,HeapMH_AllocEngine,SF_FileFILE,...)
