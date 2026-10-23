@@ -8850,3 +8850,5 @@ DAT_1431b9430	1431b9430	data
 ?Unescape@AS3@ASUtils@GFx@Scaleform@@YA_NPEBD_KAEAVString@4@@Z	1425e4ad0	func
 ??0CNMCustomNotifyData@@QEAA@XZ	14157a260	func
 ?ReplaceTextA@TextField@GFx@Scaleform@@QEAAXPEB_W_K11@Z	1425bb810	func
+?SetParagraphFormat@TextFormatObject@AS2@GFx@Scaleform@@QEAAXPEAVASStringContext@234@AEBVParagraphFormat@Text@Render@4@@Z	142989480	func
+?SetTextFormat@TextFormatObject@AS2@GFx@Scaleform@@QEAAXPEAVASStringContext@234@AEBVTextFormat@Text@Render@4@@Z	14298c090	func
