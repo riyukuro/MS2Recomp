@@ -51,8 +51,16 @@ MS2_CHECK_SIZE(CNMCRRegisterCallbackFunc, 0x40);
 class CNMCRCloseFunc : public CNMFunc
 {
 public:
+    CNMCRCloseFunc(); // 0x14159ccd0
     explicit CNMCRCloseFunc(unsigned uSerialKey);               // 0x14159cd20
     virtual ~CNMCRCloseFunc() = default;                                  // 0x1415ec760
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 };
 MS2_CHECK_SIZE(CNMCRCloseFunc, 0x30);
 
