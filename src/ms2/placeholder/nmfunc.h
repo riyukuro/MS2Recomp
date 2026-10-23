@@ -768,9 +768,16 @@ MS2_CHECK_SIZE(CNMRejectedUser, 0xc8);
 class CNMSessionMemberInfo : public CNMSerializable
 {
 public:
+    CNMSessionMemberInfo();
     CNMSessionMemberInfo(const CNMSessionMemberInfo& r);
     virtual ~CNMSessionMemberInfo() = default;
     CNMSessionMemberInfo& operator=(const CNMSessionMemberInfo& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     unsigned char m_10[0xd8];                         // +0x10 (not recovered)
     CNMAvatarFullInfo m_avatar;                       // +0xe8

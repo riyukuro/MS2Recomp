@@ -2864,11 +2864,15 @@ MS2_CHECK_SIZE(CNMServerMessageEvent, 0x1040);
 class CNMSessionMemberList : public CNMSerializable
 {
 public:
+    CNMSessionMemberList();
     virtual ~CNMSessionMemberList() = default;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     std::vector<CNMSessionMemberInfo> m_10; // +0x10
 };
