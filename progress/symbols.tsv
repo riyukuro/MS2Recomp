@@ -65,7 +65,7 @@ __ImageBase	140000000	data
 ?GetObjectType@ObjectInterface@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@1234@XZ	14000ce70	func
 ?IsAsFunction@FunctionObject@AS2@GFx@Scaleform@@UEBA_NXZ	14000ce80	func
 ?IsNull@FunctionObject@AS2@GFx@Scaleform@@UEBA_NXZ	14000ce90	func
-?IsCFunction@FunctionObject@AS2@GFx@Scaleform@@UEBA_NXZ	14000cea0	func
+?IsCFunction@FunctionObject@AS2@GFx@Scaleform@@UEBA_NXZ	142965490	func
 ?GetNumArgs@FunctionObject@AS2@GFx@Scaleform@@UEBAHXZ	14000ceb0	func
 ??_ENetStreamCtorFunction@AS2@GFx@Scaleform@@WCA@EAAPEAXI@Z	14000ced0	func
 ??0?$WeakPtr@VSprite@GFx@Scaleform@@@Scaleform@@QEAA@PEAVSprite@GFx@1@@Z	14000d530	func
