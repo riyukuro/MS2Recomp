@@ -394,6 +394,7 @@ MS2_CHECK_SIZE(CNMChatRoomMemberInfo, 0x220);
 class CNMGuildMemberLevelInfo : public CNMSerializable
 {
 public:
+    CNMGuildMemberLevelInfo();
     CNMGuildMemberLevelInfo(const CNMGuildMemberLevelInfo& r) noexcept; // 0x1415ea1f0
     CNMGuildMemberLevelInfo(CNMGuildMemberLevelInfo&& r) noexcept; // 0x1415ea180
     virtual ~CNMGuildMemberLevelInfo() = default;                         // 0x1415ee0f0
@@ -416,6 +417,7 @@ class CNMChatRoomInfoEx : public CNMSerializable
 public:
     CNMChatRoomInfoEx(CNMChatRoomInfoEx&& r) noexcept;          // 0x1415e8ce0
     CNMChatRoomInfoEx();                                        // 0x1415776c0
+    CNMChatRoomInfoEx(const CNMChatRoomInfoEx& r);               // 0x1415777e0
     virtual ~CNMChatRoomInfoEx() = default;                               // 0x1415ecf60
     CNMChatRoomInfoEx& operator=(const CNMChatRoomInfoEx& r);
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
