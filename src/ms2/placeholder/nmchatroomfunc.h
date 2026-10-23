@@ -114,8 +114,16 @@ MS2_CHECK_SIZE(CNMCRGetMemberListFunc, 0x48);
 class CNMCRInviteUserFunc : public CNMFunc
 {
 public:
+    CNMCRInviteUserFunc(); // 0x14159e630
     CNMCRInviteUserFunc(unsigned uSerialKey, const char* szUser, const char* szMessage); // 0x14159e6a0
     virtual ~CNMCRInviteUserFunc() = default;                             // 0x1415ec840
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     char m_szUser[0x400];                                       // +0x30
     char m_szMessage[0x400];                                    // +0x430
