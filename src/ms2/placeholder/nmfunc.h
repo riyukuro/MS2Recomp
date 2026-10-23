@@ -769,7 +769,7 @@ MS2_CHECK_SIZE(CNMNoteInfo2, 0xae8);
 class CNMRejectedUser : public CNMSerializable
 {
 public:
-    CNMRejectedUser(); // local construction for rejected-user list decoding
+    CNMRejectedUser() : CNMSerializable(0, 1, 1), m_character(), m_a8{} {}
     CNMRejectedUser(const CNMRejectedUser& r);
     virtual ~CNMRejectedUser() = default;
     CNMRejectedUser& operator=(const CNMRejectedUser& r);

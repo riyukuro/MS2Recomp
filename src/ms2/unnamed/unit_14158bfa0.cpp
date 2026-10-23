@@ -18,9 +18,6 @@ extern int FUN_1415fb720(void*);
 extern int FUN_1415fb750(void*);
 extern int FUN_1415fb6d0(void*);
 
-// MS2-FUNCTIONAL: supplies the inline default initialization needed for the temporary decoded list element.
-CNMRejectedUser::CNMRejectedUser() : CNMSerializable(0, 1, 1), m_character(), m_a8{} {}
-
 // MS2-FUNCTIONAL 0x14158bfa0: initializes the rejected-user vector.
 // @0x14158bfa0
 CNMGetRejectedUserListFunc::CNMGetRejectedUserListFunc()
