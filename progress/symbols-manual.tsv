@@ -8744,3 +8744,5 @@ DAT_14313bc60	14313bc60	data
 ?GetClassVectorString@VM@AS3@GFx@Scaleform@@QEBAAEAVClass@234@XZ	1425082b0	func
 ?GetClassVectorUInt@VM@AS3@GFx@Scaleform@@QEBAAEAVClass@234@XZ	1425082f0	func
 ?Resolve2Vector@Vector@fl_vec@Classes@AS3@GFx@Scaleform@@QEAAAEAVTraits@ClassTraits@456@AEBV78456@@Z	142563380	func
+?ValueHash_FindIndex@AS2@GFx@Scaleform@@YA_JPEBV?$ASStringHash_GC@VValue@AS2@GFx@Scaleform@@@23@AEBVASString@23@@Z	1429173d0	func
+?ValueHash_FindIndexNoCase@AS2@GFx@Scaleform@@YA_JPEBV?$ASStringHash_GC@VValue@AS2@GFx@Scaleform@@@23@AEBUASStringNoCaseKey@23@@Z	142917130	func
