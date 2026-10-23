@@ -8886,3 +8886,10 @@ DAT_143b27a68	143b27a68	data
 ?ExecuteUnsafe@CheckTypeTF@Instances@AS3@GFx@Scaleform@@UEAAXAEBVValue@345@AEAV6345@IPEBV6345@@Z	14240aac0	func
 ?ExecuteUnsafe@ThunkFunction@Instances@AS3@GFx@Scaleform@@UEAAXAEBVValue@345@AEAV6345@IPEBV6345@@Z	14240ad20	func
 ?ForEachChild_GC@ThunkFunction@Instances@AS3@GFx@Scaleform@@UEBAXPEAV?$RefCountCollector@$0BED@@345@P6AX0PEAPEBV?$RefCountBaseGC@$0BED@@345@@Z@Z	14240c160	func
+?ExecuteForEachChild_GC@MouseCtorFunction@AS2@GFx@Scaleform@@MEBAXPEAV?$RefCountCollector@$0BED@@234@W4OperationGC@?$RefCountBaseGC@$0BED@@234@@Z	1429411c0	func
+?Finalize_GC@MouseCtorFunction@AS2@GFx@Scaleform@@MEAAXXZ	142942dc0	func
+?IsEmpty@MouseCtorFunction@AS2@GFx@Scaleform@@UEBA_NXZ	1429654e0	func
+?SetMember@MouseCtorFunction@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@AEBVValue@234@AEBVPropFlags@234@@Z	1429864e0	func
+?StaticFunctionTable@MouseCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213d60	data
+?UpdateListenersArray@MouseCtorFunction@AS2@GFx@Scaleform@@IEAAXPEAVASStringContext@234@PEAVEnvironment@234@@Z	142992a20	func
+??0MouseCtorFunction@AS2@GFx@Scaleform@@QEAA@PEAVASStringContext@123@PEAVMovieRoot@123@@Z	14291e940	func
