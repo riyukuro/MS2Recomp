@@ -8924,3 +8924,5 @@ DAT_143b27a68	143b27a68	data
 ?LogScriptError@?$LogBase@VDisplayObjectBase@GFx@Scaleform@@@GFx@Scaleform@@QEBAXPEBDZZ	142967c90	func
 ?Invoke@MovieRoot@AS2@GFx@Scaleform@@UEAA_NPEAVInteractiveObject@34@PEBDPEAVValue@34@PEBV634@I@Z	1429635f0	func
 ?Invoke@MovieRoot@AS2@GFx@Scaleform@@UEAA_NPEBDPEAVValue@34@PEBV534@I@Z	142963a10	func
+?NotifyOnResize@MovieRoot@AS2@GFx@Scaleform@@UEAAXXZ	14296a450	func
+?Read@ActionBufferData@AS2@GFx@Scaleform@@QEAAXPEAUStreamContext@34@I@Z	1429726a0	func
