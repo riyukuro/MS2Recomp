@@ -3067,7 +3067,15 @@ MS2_CHECK_SIZE(CNMSetAuthClosedCallbackFunc, 0x38);
 class CNMSetCodePageFunc : public CNMFunc
 {
 public:
+    CNMSetCodePageFunc(); // 0x1415849b0
+    explicit CNMSetCodePageFunc(int codePage); // 0x141584a10
     virtual ~CNMSetCodePageFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_30; // +0x30
     int m_34; // +0x34
