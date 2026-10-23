@@ -457,13 +457,25 @@ MS2_CHECK_SIZE(CNMRequestMultiChatSessionFunc, 0x58);
 class CNMRequestSessionToOtherFunc : public CNMFunc
 {
 public:
+    CNMRequestSessionToOtherFunc(); // 0x14159b760
+    CNMRequestSessionToOtherFunc(unsigned int n30, unsigned int n34, NMKey64 key, const char* name,
+                                 unsigned int n84, const std::vector<CNMFilePath>& files);
+    CNMRequestSessionToOtherFunc(unsigned int n30, unsigned int n34, NMKey64 key, const char* name,
+                                 unsigned int n84, unsigned int nA0);
     virtual ~CNMRequestSessionToOtherFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     unsigned int m_30, m_34, m_38;
     NMKey64 m_3c; // inferred: single qword assignment at 0x14159b8df; 4-byte alignment preserves +0x3c.
     char m_44[0x40];
     unsigned int m_84;
-    std::vector<CNMFilePath> m_files;                 // +0x88 (the destructor destroys a vector<CNMFilePath>, not v2525's vector<CNMCharacter>)
+    std::vector<CNMFilePath> m_files;                 // +0x88 (exe serializer decodes CNMFilePath records)
     unsigned int m_a0, m_a4, m_a8;
 };
 MS2_CHECK_SIZE(CNMRequestSessionToOtherFunc, 0xb0);
