@@ -15,6 +15,9 @@ class CNMEvent : public CNMSerializable
 {
 public:
     virtual ~CNMEvent() = default;
+    virtual void vfunc_9(unsigned int) {}
+    virtual void vfunc_10(unsigned int) {}
+    virtual void vfunc_11(unsigned int);
 
     int m_nEventId;    // +0x10
     int m_n14;         // +0x14
@@ -306,6 +309,7 @@ class CNMInviteVirtualUserEvent : public CNMEvent
 {
 public:
     virtual ~CNMInviteVirtualUserEvent() = default;
+    void vfunc_11(unsigned int) override;
 
     unsigned char m_body[0x1a8];
 };
@@ -1041,6 +1045,7 @@ class CNMCRChatRoomMessageReceivedEvent : public CNMEvent
 {
 public:
     virtual ~CNMCRChatRoomMessageReceivedEvent() = default;
+    void vfunc_11(unsigned int) override;
 
     int m_28; // +0x28
     int m_2c; // +0x2c
@@ -1074,6 +1079,7 @@ class CNMCSChatMessageReceivedEvent : public CNMEvent
 {
 public:
     virtual ~CNMCSChatMessageReceivedEvent() = default;
+    void vfunc_11(unsigned int) override;
 
     int m_28; // +0x28
     int m_2c; // +0x2c
@@ -2176,6 +2182,7 @@ class CNMGSSessionCreatedEvent : public CNMEvent
 {
 public:
     virtual ~CNMGSSessionCreatedEvent() = default;
+    void vfunc_11(unsigned int) override;
 
     int m_28; // +0x28
     int m_2c; // +0x2c
@@ -2191,6 +2198,7 @@ class CNMGSSessionEstablishedEvent : public CNMEvent
 {
 public:
     virtual ~CNMGSSessionEstablishedEvent() = default;
+    void vfunc_11(unsigned int) override;
 
     int m_28; // +0x28
     int m_2c; // +0x2c
@@ -2230,6 +2238,7 @@ class CNMGSSessionInfoEvent : public CNMEvent
 {
 public:
     virtual ~CNMGSSessionInfoEvent() = default;
+    void vfunc_11(unsigned int) override;
 
     int m_28; // +0x28
     int m_2c; // +0x2c
