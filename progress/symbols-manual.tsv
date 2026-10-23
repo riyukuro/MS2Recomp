@@ -8818,3 +8818,9 @@ DAT_143a293e0	143a293e0	data
 DAT_143a2a6b4	143a2a6b4	data
 DAT_1431b9430	1431b9430	data
 ?SetMatrixTwips@MatrixObject@AS2@GFx@Scaleform@@QEAAXPEAVASStringContext@234@AEBV?$Matrix2x4@M@Render@4@@Z	142982690	func
+?CaptureFocus@SelectionCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z	142932ab0	func
+?FindFocus@SelectionCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z	142943ce0	func
+?GetModalClip@MovieImpl@GFx@Scaleform@@QEAAPEAVSprite@23@I@Z	14256f820	func
+?MoveFocus@SelectionCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z	1429689e0	func
+?SetControllerFocusGroup@SelectionCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z	142980120	func
+?SetModalClip@SelectionCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z	142989060	func
