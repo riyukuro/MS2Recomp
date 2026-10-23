@@ -769,9 +769,17 @@ MS2_CHECK_SIZE(CNMNoteInfo2, 0xae8);
 class CNMRejectedUser : public CNMSerializable
 {
 public:
+    CNMRejectedUser(); // local construction for rejected-user list decoding
     CNMRejectedUser(const CNMRejectedUser& r);
     virtual ~CNMRejectedUser() = default;
     CNMRejectedUser& operator=(const CNMRejectedUser& r);
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x141570680
+    unsigned int EncodeFramed(CNMStream* pStream) override; // 0x1415705c0
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x141570620
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override; // 0x1415707e0
+    unsigned int DecodeFramed(CNMStream* pStream) override; // 0x1415706f0
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override; // 0x141570780
 
     CNMCharacter m_character;                         // +0x10
     unsigned char m_a8[0x20];                         // +0xa8 (not recovered)

@@ -2477,7 +2477,14 @@ MS2_CHECK_SIZE(CNMGetPathFunc, 0x138);
 class CNMGetRejectedUserListFunc : public CNMFunc
 {
 public:
+    CNMGetRejectedUserListFunc(); // 0x14158bfa0
     virtual ~CNMGetRejectedUserListFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     std::vector<CNMRejectedUser> m_30; // +0x30
 };
