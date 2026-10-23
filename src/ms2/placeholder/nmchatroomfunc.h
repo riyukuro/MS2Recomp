@@ -147,8 +147,16 @@ MS2_CHECK_SIZE(CNMCRGetMemberInfoFunc, 0x258);
 class CNMCRGetRoomInfoExFunc : public CNMFunc
 {
 public:
+    CNMCRGetRoomInfoExFunc(); // 0x14159d340
     explicit CNMCRGetRoomInfoExFunc(unsigned uSerialKey);       // 0x14159d3b0
     virtual ~CNMCRGetRoomInfoExFunc() = default;                          // 0x1415ec7e0
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMChatRoomInfoEx m_info;                                   // +0x30 (reply)
 };
