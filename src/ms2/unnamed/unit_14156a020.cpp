@@ -3,6 +3,7 @@
 // MS2-RANGE: 0x14156a020-0x14156f7e0 .text$mn
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/nmstream.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_14156a5a0(void*);
@@ -14,6 +15,7 @@ extern void* FUN_1415fa310();
 extern void* FUN_1415caaa0(void*, unsigned int);
 extern void* FUN_1415cab60(void*, unsigned char);
 extern void FUN_1415fa380(void*);
+extern unsigned int FUN_1415fa0c0(void*);
 
 // MS2-FUNCTIONAL 0x14156a0d0: codec operations use recovered vtable slots; their opaque interface prevents an exact call-frame match.
 // @0x14156a0d0
@@ -297,6 +299,230 @@ void FUN_14156af60(long long* stream, const unsigned char* bytes, unsigned int c
 void FUN_14156b020(long long* stream, unsigned long long value)
 {
     FUN_14156acb0(stream, value);
+}
+
+static unsigned char* nm_stream_data(CNMStream* stream)
+{
+    return *reinterpret_cast<unsigned char**>(stream);
+}
+
+static unsigned int& nm_stream_size(CNMStream* stream)
+{
+    return *reinterpret_cast<unsigned int*>(reinterpret_cast<char*>(stream) + 0xc);
+}
+
+static unsigned int& nm_stream_pos(CNMStream* stream)
+{
+    return *reinterpret_cast<unsigned int*>(reinterpret_cast<char*>(stream) + 0x14);
+}
+
+static int nm_stream_valid(CNMStream* stream)
+{
+    return *reinterpret_cast<int*>(reinterpret_cast<char*>(stream) + 0x18);
+}
+
+// @0x14156b050
+CNMSimpleStreamDecoder::CNMSimpleStreamDecoder(CNMStream* pStream)
+    : m_pStream(pStream), m_pWide(nullptr), m_pAnsi(nullptr)
+{
+}
+
+// @0x14156b0a0
+CNMSimpleStreamDecoder::~CNMSimpleStreamDecoder()
+{
+    if (m_pWide) {
+        HeapFree(GetProcessHeap(), 0, m_pWide);
+        m_pWide = nullptr;
+    }
+    if (m_pAnsi) {
+        HeapFree(GetProcessHeap(), 0, m_pAnsi);
+        m_pAnsi = nullptr;
+    }
+}
+
+// MS2-FUNCTIONAL 0x14156b130: compact integer parsing is preserved; recovered stream field references alter codegen.
+// @0x14156b130
+unsigned int CNMSimpleStreamDecoder::ReadCount()
+{
+    unsigned int result = 0;
+    if (!m_pStream || !nm_stream_valid(m_pStream) ||
+        nm_stream_pos(m_pStream) + 1 > nm_stream_size(m_pStream) + 8)
+        return result;
+    const unsigned char first = nm_stream_data(m_pStream)[nm_stream_pos(m_pStream)];
+    switch (first & 3) {
+    case 0:
+        result = first >> 2;
+        ++nm_stream_pos(m_pStream);
+        break;
+    case 1:
+        if (nm_stream_pos(m_pStream) + 2 <= nm_stream_size(m_pStream) + 8) {
+            result = *reinterpret_cast<unsigned short*>(nm_stream_data(m_pStream) + nm_stream_pos(m_pStream)) >> 2;
+            nm_stream_pos(m_pStream) += 2;
+        }
+        break;
+    case 2:
+        if (nm_stream_pos(m_pStream) + 4 <= nm_stream_size(m_pStream) + 8) {
+            result = *reinterpret_cast<unsigned int*>(nm_stream_data(m_pStream) + nm_stream_pos(m_pStream)) >> 2;
+            nm_stream_pos(m_pStream) += 4;
+        }
+        break;
+    case 3:
+        if (nm_stream_pos(m_pStream) + 5 <= nm_stream_size(m_pStream) + 8) {
+            result = *reinterpret_cast<unsigned int*>(nm_stream_data(m_pStream) + nm_stream_pos(m_pStream) + 1);
+            nm_stream_pos(m_pStream) += 5;
+        }
+        break;
+    }
+    return result;
+}
+
+// MS2-FUNCTIONAL 0x14156b370: reads one bounded byte and advances the stream cursor.
+// @0x14156b370
+unsigned char CNMSimpleStreamDecoder::ReadU8()
+{
+    if (!m_pStream || !nm_stream_valid(m_pStream) || nm_stream_pos(m_pStream) + 1 > nm_stream_size(m_pStream) + 8)
+        return 0;
+    return nm_stream_data(m_pStream)[nm_stream_pos(m_pStream)++];
+}
+
+// MS2-FUNCTIONAL 0x14156b410: reads one bounded 16-bit value and advances the stream cursor.
+// @0x14156b410
+unsigned short CNMSimpleStreamDecoder::ReadU16()
+{
+    if (!m_pStream || !nm_stream_valid(m_pStream) || nm_stream_pos(m_pStream) + 2 > nm_stream_size(m_pStream) + 8)
+        return 0;
+    const unsigned short result = *reinterpret_cast<unsigned short*>(nm_stream_data(m_pStream) + nm_stream_pos(m_pStream));
+    nm_stream_pos(m_pStream) += 2;
+    return result;
+}
+
+// MS2-FUNCTIONAL 0x14156b4b0: reads one bounded 32-bit value and advances the stream cursor.
+// @0x14156b4b0
+unsigned int CNMSimpleStreamDecoder::ReadU32()
+{
+    if (!m_pStream || !nm_stream_valid(m_pStream) || nm_stream_pos(m_pStream) + 4 > nm_stream_size(m_pStream) + 8)
+        return 0;
+    const unsigned int result = *reinterpret_cast<unsigned int*>(nm_stream_data(m_pStream) + nm_stream_pos(m_pStream));
+    nm_stream_pos(m_pStream) += 4;
+    return result;
+}
+
+// MS2-FUNCTIONAL 0x14156b550: reads one bounded 64-bit value and advances the stream cursor.
+// @0x14156b550
+unsigned long long CNMSimpleStreamDecoder::ReadU64()
+{
+    if (!m_pStream || !nm_stream_valid(m_pStream) || nm_stream_pos(m_pStream) + 8 > nm_stream_size(m_pStream) + 8)
+        return 0;
+    const unsigned long long result = *reinterpret_cast<unsigned long long*>(nm_stream_data(m_pStream) + nm_stream_pos(m_pStream));
+    nm_stream_pos(m_pStream) += 8;
+    return result;
+}
+
+// MS2-FUNCTIONAL 0x14156b5f0: converts the next encoded wide string into decoder-owned storage.
+// @0x14156b5f0
+wchar_t* CNMSimpleStreamDecoder::ReadWString()
+{
+    if (m_pWide) {
+        HeapFree(GetProcessHeap(), 0, m_pWide);
+        m_pWide = nullptr;
+    }
+    if (!m_pStream || !nm_stream_valid(m_pStream))
+        return nullptr;
+    const unsigned int count = ReadCount();
+    if (count == 0 || nm_stream_pos(m_pStream) + count * 2 > nm_stream_size(m_pStream) + 8)
+        return nullptr;
+    m_pWide = static_cast<wchar_t*>(HeapAlloc(GetProcessHeap(), 0, static_cast<SIZE_T>(count) * 2 + 2));
+    if (!m_pWide)
+        return nullptr;
+    memcpy(m_pWide, nm_stream_data(m_pStream) + nm_stream_pos(m_pStream), count * 2);
+    nm_stream_pos(m_pStream) += count * 2;
+    m_pWide[count] = 0;
+    return m_pWide;
+}
+
+// MS2-FUNCTIONAL 0x14156b760: copies a bounded wide string while consuming its full encoded length.
+// @0x14156b760
+wchar_t* CNMSimpleStreamDecoder::ReadWStringBuf(wchar_t* pBuffer, unsigned int capacity)
+{
+    if (!m_pStream || !nm_stream_valid(m_pStream))
+        return pBuffer;
+    const unsigned int count = ReadCount();
+    if (count == 0) {
+        if (pBuffer) *pBuffer = 0;
+        return pBuffer;
+    }
+    if (nm_stream_pos(m_pStream) + count * 2 > nm_stream_size(m_pStream) + 8)
+        return pBuffer;
+    const unsigned int copied = capacity == 0 ? count : (count < capacity ? count : capacity);
+    memcpy(pBuffer, nm_stream_data(m_pStream) + nm_stream_pos(m_pStream), copied * 2);
+    nm_stream_pos(m_pStream) += count * 2;
+    const unsigned int terminator = capacity != 0 && capacity - 1 <= count ? capacity - 1 : count;
+    pBuffer[terminator] = 0;
+    return pBuffer;
+}
+
+// MS2-FUNCTIONAL 0x14156b8e0: converts decoder-owned wide storage using the stream code page.
+// @0x14156b8e0
+char* CNMSimpleStreamDecoder::ReadString()
+{
+    wchar_t* wide = ReadWString();
+    if (!wide)
+        return nullptr;
+    const int length = static_cast<int>(wcslen(wide));
+    if (m_pAnsi) HeapFree(GetProcessHeap(), 0, m_pAnsi);
+    m_pAnsi = static_cast<char*>(HeapAlloc(GetProcessHeap(), 0, static_cast<SIZE_T>(length) * 2 + 2));
+    if (m_pAnsi) {
+        WideCharToMultiByte(FUN_1415fa0c0(m_pStream), 0, wide, -1, m_pAnsi, length * 2 + 2, nullptr, nullptr);
+        m_pAnsi[length * 2 + 1] = 0;
+    }
+    return m_pAnsi;
+}
+
+// MS2-FUNCTIONAL 0x14156ba00: converts a wide string to the caller's buffer and bounds its terminator.
+// @0x14156ba00
+char* CNMSimpleStreamDecoder::ReadStringBuf(char* pBuffer, int capacity)
+{
+    wchar_t* wide = ReadWString();
+    if (!wide)
+        return nullptr;
+    const int length = static_cast<int>(wcslen(wide));
+    const int outputSize = capacity == 0 ? length * 2 + 1 : capacity;
+    WideCharToMultiByte(FUN_1415fa0c0(m_pStream), 0, wide, -1, pBuffer, outputSize, nullptr, nullptr);
+    pBuffer[capacity == 0 ? length : capacity - 1] = 0;
+    return pBuffer;
+}
+
+// @0x14156baf0
+void CNMSimpleStreamDecoder::ReadStringAlias()
+{
+    ReadString();
+}
+
+// @0x14156bb20
+void CNMSimpleStreamDecoder::ReadStringBufAlias(char* pBuffer, int capacity)
+{
+    ReadStringBuf(pBuffer, capacity);
+}
+
+// MS2-FUNCTIONAL 0x14156bb60: copies the requested prefix while consuming the complete encoded payload.
+// @0x14156bb60
+unsigned int CNMSimpleStreamDecoder::ReadBytes(unsigned char* pBuffer, unsigned int capacity)
+{
+    if (!m_pStream || !nm_stream_valid(m_pStream))
+        return 0;
+    const unsigned int count = ReadCount();
+    if (count == 0 || nm_stream_pos(m_pStream) + count > nm_stream_size(m_pStream) + 8)
+        return 0;
+    const unsigned int copied = capacity == 0 ? count : (count < capacity ? count : capacity);
+    memcpy(pBuffer, nm_stream_data(m_pStream) + nm_stream_pos(m_pStream), copied);
+    nm_stream_pos(m_pStream) += count;
+    return copied;
+}
+
+// @0x14156bc80
+unsigned long long CNMSimpleStreamDecoder::ReadU64Alias()
+{
+    return ReadU64();
 }
 
 // MS2-FUNCTIONAL: delegates to the stream reset implementation at 0x14156a5a0.
