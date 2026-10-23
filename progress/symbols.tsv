@@ -211420,7 +211420,7 @@ ImmIsUIMessageA	1428d8dca	func
 ?IsPath@Environment@AS2@GFx@Scaleform@@SA_NAEBVASString@34@@Z	142965d10	func
 ?IsRectValid@AS2@GFx@Scaleform@@YA_NAEBV?$Rect@N@Render@3@@Z	142965db0	func
 ?IsVerboseActionErrors@FnCall@AS2@GFx@Scaleform@@UEBA_NXZ	1400039a0	func
-?IsVerboseActionErrors@?$LogBase@VFnCall@AS2@GFx@Scaleform@@@GFx@Scaleform@@UEBA_NXZ	142966260	func
+?IsVerboseActionErrors@?$LogBase@VFnCall@AS2@GFx@Scaleform@@@GFx@Scaleform@@UEBA_NXZ	1400039a0	func
 ?JoinToString@ArrayObject@AS2@GFx@Scaleform@@QEBAXPEAVEnvironment@234@PEAVStringBuffer@4@PEBD@Z	142966270	func
 ?LocalRegisterPtr@Environment@AS2@GFx@Scaleform@@QEAAPEAVValue@234@I@Z	142967390	func
 ?LogAction@?$LogBase@VActionLogger@AS2@GFx@Scaleform@@@GFx@Scaleform@@QEBAXPEBDZZ	1429673e0	func
@@ -218509,7 +218509,7 @@ MS2_SF_VideoCharacterDef_vftable	14318b778	data
 ??_7VideoProvider@Video@GFx@Scaleform@@6B@	1431b4f30	data
 ??_7SwfVideoSyncObject@AS2@GFx@Scaleform@@6B@	1431b4fe8	data
 ??_7?$LogBase@VFnCall@AS2@GFx@Scaleform@@@GFx@Scaleform@@6B@	1431b5018	data
-??_7FnCall@AS2@GFx@Scaleform@@6B@	1431b5018	data
+??_7FnCall@AS2@GFx@Scaleform@@6B@	1431b4de0	data
 ??_7NetStream@AS2@GFx@Scaleform@@6B?$ASRefCountBase@VObject@AS2@GFx@Scaleform@@@123@@	1431b5030	data
 ??_7NetStream@AS2@GFx@Scaleform@@6BObjectInterface@123@@	1431b5080	data
 ??_7VideoProviderNetStream@AS2@GFx@Scaleform@@6B@	1431b5620	data
