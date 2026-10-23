@@ -8437,3 +8437,5 @@ compress2	142724100	func
 ?SpriteCreateGradient@AvmSprite@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@PEAVComplexFill@Render@4@@Z	14298efe0	func
 ?Histogram@DrawableImage@Render@Scaleform@@QEAAXPEAV?$Rect@J@23@QEAY0BAA@I@Z	1425ed440	func
 ??0Prototype@InstanceTraits@AS3@GFx@Scaleform@@QEAA@AEAVVM@234@AEBUClassInfo@234@AEAVClass@234@@Z	1424d9470	func
+??0Parser@Date@fl@Instances@AS3@GFx@Scaleform@@QEAA@PEBD@Z	1423ee1f0	func
+?StringToInt@NumberUtil@GFx@Scaleform@@YANPEBDKJPEAK@Z	1425e4360	func
