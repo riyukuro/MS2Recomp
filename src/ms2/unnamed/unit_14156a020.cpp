@@ -1274,3 +1274,18 @@ unsigned int FUN_14156bd90(long long* p)
 void FUN_14156bd50(void* p) { FUN_14156bd90(reinterpret_cast<long long*>(p)); FUN_14156a840(); }
 
 // MS2-PIN: ??0CNMVirtualFriendInfo@@QEAA@XZ 0x14156da70 ; recovered virtual friend constructor
+
+// MS2-FUNCTIONAL 0x14156bcb0: initializes an encoder over the destination stream and writes the record header.
+// @0x14156bcb0
+long long FUN_14156bcb0(long long storage, long long stream, long long object)
+{
+    FUN_14156a810(reinterpret_cast<long long*>(storage), stream);
+    const unsigned short type = *reinterpret_cast<unsigned short*>(object + 8);
+    const unsigned char version = *reinterpret_cast<unsigned char*>(object + 10);
+    const unsigned char format = *reinterpret_cast<unsigned char*>(object + 11);
+    *reinterpret_cast<unsigned int*>(storage + 8) = 0;
+    *reinterpret_cast<int*>(storage + 12) = *reinterpret_cast<int*>(stream + 0x14) + 4;
+    FUN_14156ac20(reinterpret_cast<void*>(storage), (static_cast<unsigned int>(type) << 16) | (static_cast<unsigned int>(version) << 8) | format);
+    FUN_14156ac20(reinterpret_cast<void*>(storage), 0);
+    return storage;
+}
