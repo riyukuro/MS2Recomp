@@ -581,6 +581,7 @@ MS2_CHECK_SIZE(CNMGameInfo, 0x14a8);
 class CNMGameServerCode : public CNMSerializable
 {
 public:
+    CNMGameServerCode();
     CNMGameServerCode(const CNMGameServerCode& r) noexcept;     // 0x1415e9cd0
     CNMGameServerCode(CNMGameServerCode&& r) noexcept;          // 0x1415e9c80
     virtual ~CNMGameServerCode() = default;                               // 0x1415edad0
@@ -1120,8 +1121,15 @@ MS2_CHECK_SIZE(CNMGetSupportGameListFunc, 0x50);
 class CNMGetGameServerListFunc : public CNMFunc
 {
 public:
+    CNMGetGameServerListFunc();
     CNMGetGameServerListFunc(int nGameCode);
     virtual ~CNMGetGameServerListFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_nGameCode;                                            // +0x30
     int m_n34;
