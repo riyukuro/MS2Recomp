@@ -1040,8 +1040,15 @@ MS2_CHECK_SIZE(CNMGetSessionValueFunc, 0x150);
 class CNMSetSessionValueFunc : public CNMFunc
 {
 public:
+    CNMSetSessionValueFunc();
     CNMSetSessionValueFunc(const char* szName, const char* szValue, int n3);
     virtual ~CNMSetSessionValueFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     char m_szName[0x20];                                        // +0x30
     char m_szValue[0x100];                                      // +0x50
