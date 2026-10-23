@@ -593,7 +593,15 @@ MS2_CHECK_SIZE(CNMSendNoteExMsgFunc, 0x8048);
 class CNMSendNoteInfoFunc : public CNMFunc
 {
 public:
+    CNMSendNoteInfoFunc(); // 0x14158b610
+    CNMSendNoteInfoFunc(const CNMNoteInfo& note, int status); // 0x14158b690
     virtual ~CNMSendNoteInfoFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     unsigned char m_30[0x8];                          // +0x30 (not recovered)
     CNMNoteInfo2 m_note;                              // +0x38
