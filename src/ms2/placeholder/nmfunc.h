@@ -830,8 +830,15 @@ MS2_CHECK_SIZE(CNMVirtualUserInfo, 0x490);
 class CNMExecutePatcherFunc : public CNMFunc
 {
 public:
+    CNMExecutePatcherFunc();
     CNMExecutePatcherFunc(const char* szUrl, const char* szPatchDir, const char* szExecPath, int n4, int n5, int n6);
     virtual ~CNMExecutePatcherFunc() = default;                           // 0x1415ed360
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     char m_szUrl[0x100];                                        // +0x30
     char m_szPatchDir[0x100];                                   // +0x130
