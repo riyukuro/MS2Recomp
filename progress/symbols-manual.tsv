@@ -8836,3 +8836,4 @@ DAT_1431b9430	1431b9430	data
 ?TCN_This@@3PEDVTreeCacheNode@Render@Scaleform@@ED	143b17220	data
 ?TCN_ThisData@@3PEDVNodeData@TreeNode@Render@Scaleform@@ED	143b17228	data
 ?TCN_ChildNode@@3PEDVTreeNode@Render@Scaleform@@ED	143b17230	data
+?OnVisit@GASTextSnapshotGlyphVisitor@AS2@GFx@Scaleform@@UEAAXXZ	14296d330	func
