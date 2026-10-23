@@ -9387,3 +9387,6 @@ iRam0000000143a4a43c	143a4a43c	data
 ?UpdateViewport@MovieImpl@GFx@Scaleform@@QEAAXXZ	1425787d0	func
 ?OnMovieFocus@MovieImpl@GFx@Scaleform@@IEAAX_N@Z	142571f10	func
 ?AddVideoProvider@MovieImpl@GFx@Scaleform@@QEAAXPEAVVideoProvider@Video@23@@Z	14256c520	func
+pcre_compile	1428e0210	func
+pcre_exec	1428e9310	func
+pcre_fullinfo	1428ea0d0	func
