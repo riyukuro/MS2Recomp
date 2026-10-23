@@ -8415,3 +8415,4 @@ compress2	142724100	func
 ?Clear@TextMeshProvider@Render@Scaleform@@QEAAXXZ	1426e21e0	func
 ?CreateMeshData@TextMeshProvider@Render@Scaleform@@QEAA_NPEBVTextLayout@23@PEAVRenderer2DImpl@23@AEBVHMatrix@MatrixPoolImpl@23@AEBV?$Matrix4x4@M@23@AEBVViewport@23@I@Z	1426e24d0	func
 ?propagate3DFlag@TreeCacheNode@Render@Scaleform@@UEAAXI@Z	142684ee0	func
+??0Error@VM@AS3@GFx@Scaleform@@QEAA@W4ErrorID@1234@AEAV1234@AEBVValue@234@PEBD@Z	1424d7130	func
