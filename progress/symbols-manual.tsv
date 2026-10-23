@@ -8805,3 +8805,4 @@ DAT_1431c5028	1431c5028	data
 ?DeleteMultipleAt@fl_vec@Instances@AS3@GFx@Scaleform@@YAXAEAV?$VectorBase@VValue@AS3@GFx@Scaleform@@@345@_K1AEAVVector_object@12345@@Z	142548a70	func
 DAT_143183b28	143183b28	data
 DAT_1431b9080	1431b9080	data
+?GetVariableRaw@Environment@AS2@GFx@Scaleform@@QEBA_NAEBUGetVarParams@1234@@Z	142957b10	func
