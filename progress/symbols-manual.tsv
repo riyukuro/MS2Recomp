@@ -8468,3 +8468,10 @@ DAT_143ffd504	143ffd504	data
 ?PTR_s_attachVideo_1431b5800@@3PEAXEA	1431b5800	data
 ?tessellateFill@ShapeMeshProvider@Render@Scaleform@@AEAA_NPEAUScale9GridInfo@23@IPEAVMeshBase@23@PEAVVertexOutput@23@I@Z	142632870	func
 ?tessellateStroke@ShapeMeshProvider@Render@Scaleform@@AEAA_NPEAUScale9GridInfo@23@IIPEAVMeshBase@23@PEAVVertexOutput@23@I@Z	142632ba0	func
+?Add2VT@Traits@AS3@GFx@Scaleform@@QEAAXAEBUClassInfo@234@AEBUThunkInfo@234@@Z	1424e56f0	func
+?AddSlot@Traits@AS3@GFx@Scaleform@@QEAAXAEBUMemberInfo@234@@Z	1424e9910	func
+?ConstructTail@Traits@AS3@GFx@Scaleform@@QEBAXAEAVObject@234@@Z	1424f0a50	func
+?CopyParentTraits@Traits@AS3@GFx@Scaleform@@IEAAXXZ	1425115f0	func
+?RegisterSlots@Traits@ClassTraits@AS3@GFx@Scaleform@@IEAAXXZ	1425216d0	func
+?RetrieveParentClassTraits@AS3@GFx@Scaleform@@YAPEBVTraits@ClassTraits@123@AEAVVM@123@AEBUClassInfo@123@@Z	142525ca0	func
+?SetConstructor@Traits@AS3@GFx@Scaleform@@QEAAXAEAVClass@234@@Z	142421ac0	func
