@@ -1186,7 +1186,14 @@ public:
     };
 
     CNMSetServerInfoFunc();                                     // 0x141590b00
+    explicit CNMSetServerInfoFunc(const std::vector<RequestInfo>& requests);
     virtual ~CNMSetServerInfoFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     std::vector<RequestInfo> m_requests;                        // +0x30
 };
