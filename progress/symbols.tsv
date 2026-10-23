@@ -211562,7 +211562,7 @@ ImmIsUIMessageA	1428d8dca	func
 ?ToCharacter@ObjectInterface@AS2@GFx@Scaleform@@QEBAPEBVInteractiveObject@34@XZ	142991080	func
 ?ToCharacter@Value@AS2@GFx@Scaleform@@QEBAPEAVInteractiveObject@34@PEBVEnvironment@234@@Z	1429910b0	func
 ?ToDebugString@Value@AS2@GFx@Scaleform@@QEBA?AVASString@34@PEAVEnvironment@234@@Z	142991110	func
-?ToFunction@ObjectInterface@AS2@GFx@Scaleform@@UEAA?AVFunctionRef@234@XZ	142991140	func
+?ToFunction@ObjectInterface@AS2@GFx@Scaleform@@UEAA?AVFunctionRef@234@XZ	142991170	func
 ?ToFunction_Call@Value@AS2@GFx@Scaleform@@QEBA?AVFunctionRef@234@PEBVEnvironment@234@@Z	142991190	func
 ?ToInt32@Value@AS2@GFx@Scaleform@@QEBAHPEAVEnvironment@234@@Z	142991210	func
 ?ToInt32@Value@AS2@GFx@Scaleform@@QEBAJPEAVEnvironment@234@@Z	142991210	func
