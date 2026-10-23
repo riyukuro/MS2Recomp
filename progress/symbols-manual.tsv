@@ -9009,3 +9009,6 @@ DAT_143b27c64	143b27c64	data
 ??1CallFrame@AS3@GFx@Scaleform@@QEAA@XZ	1424dde10	func
 ?ExecuteCode@VM@AS3@GFx@Scaleform@@QEAAHI@Z	1424fa5b0	func
 ?SetupRegisters@CallFrame@AS3@GFx@Scaleform@@QEAAXAEBVMethodInfo@Abc@234@AEBVValue@234@IPEBV7234@@Z	14252b5a0	func
+??1SystemVertexFormat@Render@Scaleform@@UEAA@XZ	1426b90b0	func
+?ShaderUniformNames@D3D9@Render@Scaleform@@3PAPEBDA	143a308a0	data
+D3DXGetShaderConstantTableEx	1428d8e24	func
