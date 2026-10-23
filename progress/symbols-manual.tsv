@@ -3,6 +3,7 @@
 ?AddRef@?$MS2Ptr@VASGameEntity@@@@AEBAXXZ	140ba7c80	func
 ??0?$MS2Ptr@VUnk_WcButton@@@@QEAA@AEBV0@@Z	140bbf530	func
 ?GetNode@Unk_DTCtxMap@@AEAAPEAXIAEAI0AEAPEAX@Z	1408db570	func
+?Add@SlotContainerType@AS3@GFx@Scaleform@@QEAA?AVAbsoluteIndex@234@AEBVASString@34@AEBVSlotInfo@234@@Z	1424e63b0	func
 ?FUN_140159bc0@Unk_DTRefCount@@QEAAHXZ	140159bc0	func
 ?FUN_140159ba0@Unk_DTRefCount@@QEAAXXZ	140159ba0	func
 ??0?$DelegateImpl@U?$pair@PEAVUIDungeonRewardDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@QEAA@AEBV01@@Z	140e26450	func
@@ -8829,6 +8830,7 @@ DAT_1431b9430	1431b9430	data
 ?SetModalClip@SelectionCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z	142989060	func
 ?Clear@StrokePath@Render@Scaleform@@QEAAXXZ	1426aa240	func
 ?ClearAndRelease@StrokePath@Render@Scaleform@@QEAAXXZ	1426aa2f0	func
+?GetStyles@StyleManager@Text@GFx@Scaleform@@QEBAAEBV?$HashUncachedLH@UStyleKey@StyleManager@Text@GFx@Scaleform@@PEAUStyle@3Render@5@UStyleHashFunc@2345@$0BEF@@4@XZ	142609e60	func
 ?BundlePatternFrameId@@3IA	143b17214	data
 ?BuildPatternCount@@3IA	143b17218	data
 ?TCN_This@@3PEDVTreeCacheNode@Render@Scaleform@@ED	143b17220	data
