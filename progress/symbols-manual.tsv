@@ -8826,3 +8826,8 @@ DAT_1431b9430	1431b9430	data
 ?SetModalClip@SelectionCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z	142989060	func
 ?Clear@StrokePath@Render@Scaleform@@QEAAXXZ	1426aa240	func
 ?ClearAndRelease@StrokePath@Render@Scaleform@@QEAAXXZ	1426aa2f0	func
+?BuildPatternCount@@3IA	143b17218	data
+?BundlePatternFrameId@@3IA	143b17214	data
+?TCN_ChildNode@@3PEDVTreeNode@Render@Scaleform@@ED	143b17230	data
+?TCN_This@@3PEDVTreeCacheNode@Render@Scaleform@@ED	143b17220	data
+?TCN_ThisData@@3PEDVNodeData@TreeNode@Render@Scaleform@@ED	143b17228	data
