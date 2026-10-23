@@ -8905,3 +8905,5 @@ DAT_143b27a68	143b27a68	data
 ?AvmBitmap_vftable_18@AS3@GFx@Scaleform@@3QBQEAXB	14317c7d8	data
 ?AvmBitmap_vftable_90@AS3@GFx@Scaleform@@3QBQEAXB	14317c7e8	data
 ?MemberTable@AvmCharacter@AS2@GFx@Scaleform@@2QBUMemberTableType@1234@B	143a512e0	data
+?IsReadOnly@TextField@GFx@Scaleform@@QEBA_NXZ	1425b9b10	func
+?IsSelectable@TextField@GFx@Scaleform@@QEBA_NXZ	1425b9b50	func
