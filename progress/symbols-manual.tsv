@@ -8659,3 +8659,9 @@ DAT_143b27c68	143b27c68	data
 ?SetMember@DropShadowFilterObject@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@AEBVValue@234@AEBVPropFlags@234@@Z	142985b50	func
 ?SetMember@GlowFilterObject@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@AEBVValue@234@AEBVPropFlags@234@@Z	142986170	func
 DAT_143ba9d18	143ba9d18	data
+?FunctionTable@PointProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213530	data
+?FunctionTable@RectangleProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	1432130e0	data
+?GetObjectType@PointObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	1429542e0	func
+?GetObjectType@RectangleObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	1429542f0	func
+?Point_DefaultParams@AS2@GFx@Scaleform@@3QBVValue@123@B	143a51b70	data
+?Rectangle_DefaultParams@AS2@GFx@Scaleform@@3QBVValue@123@B	143a51bb0	data
