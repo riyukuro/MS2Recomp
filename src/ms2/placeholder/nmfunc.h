@@ -176,6 +176,7 @@ MS2_CHECK_SIZE(CNMCharacter, 0x98);
 class CNMDefaultUserInfo : public CNMSerializable
 {
 public:
+    CNMDefaultUserInfo();
     CNMDefaultUserInfo(const CNMDefaultUserInfo& r) noexcept;   // 0x1415e9110
     CNMDefaultUserInfo(CNMDefaultUserInfo&& r) noexcept;        // 0x1415e9020
     virtual ~CNMDefaultUserInfo() = default;                              // 0x1415ed1c0
@@ -202,6 +203,7 @@ MS2_CHECK_SIZE(CNMDefaultUserInfo, 0xb0);
 class CNMRealUserInfo : public CNMDefaultUserInfo
 {
 public:
+    CNMRealUserInfo();
     CNMRealUserInfo(const CNMRealUserInfo& r) noexcept;         // 0x1415eacc0
     CNMRealUserInfo(CNMRealUserInfo&& r) noexcept;              // 0x1415eaad0
     virtual ~CNMRealUserInfo() = default;                                 // 0x1415ee780
@@ -237,6 +239,7 @@ MS2_CHECK_SIZE(CNMRealUserInfo, 0x1a8);
 class CNMRealFriendInfo : public CNMDefaultUserInfo
 {
 public:
+    CNMRealFriendInfo();
     CNMRealFriendInfo(const CNMRealFriendInfo& r) noexcept;     // 0x1415eaa40
     CNMRealFriendInfo(CNMRealFriendInfo&& r) noexcept;          // 0x1415ea9b0
     virtual ~CNMRealFriendInfo() = default;                               // 0x1415ee710
@@ -254,10 +257,34 @@ public:
 };
 MS2_CHECK_SIZE(CNMRealFriendInfo, 0xd8);
 
+// Virtual friend record, 0x4c0 bytes, vftable 0x142f3be80.
+class CNMVirtualFriendInfo : public CNMSerializable
+{
+public:
+    CNMVirtualFriendInfo();
+    virtual ~CNMVirtualFriendInfo() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+
+    unsigned long long m_10;
+    int m_18, m_1c, m_20, m_24;
+    char m_28[0x40];
+    char m_68[0x40];
+    char m_a8[0x3e8];
+    char m_490[0x20];
+    int m_4b0, m_4b4, m_4b8, m_4bc;
+};
+MS2_CHECK_SIZE(CNMVirtualFriendInfo, 0x4c0);
+
 // Friend list entry, 0x580 bytes, vftable 0x142f3bec8.
 class CNMFriendInfo : public CNMRealFriendInfo
 {
 public:
+    CNMFriendInfo();
     CNMFriendInfo(const CNMFriendInfo& r) noexcept;             // 0x1415e97b0
     CNMFriendInfo(CNMFriendInfo&& r) noexcept;                  // 0x1415e96a0
     virtual ~CNMFriendInfo() = default;                                   // 0x1415ed5b0
@@ -268,7 +295,6 @@ public:
     unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
     unsigned int DecodeFramed(CNMStream* pStream) override;
     unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
-
     NMFriendKey m_key;                                          // +0xd8
     char m_f0[0x40];                                            // +0xf0
     char m_130[0x40];                                           // +0x130
