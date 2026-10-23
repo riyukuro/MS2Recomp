@@ -3020,7 +3020,14 @@ MS2_CHECK_SIZE(CNMLogoutAuthFunc, 0x38);
 class CNMLogoutMessengerFunc : public CNMFunc
 {
 public:
+    CNMLogoutMessengerFunc();
     virtual ~CNMLogoutMessengerFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 };
 MS2_CHECK_SIZE(CNMLogoutMessengerFunc, 0x30);
 
