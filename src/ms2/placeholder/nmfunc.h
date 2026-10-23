@@ -874,11 +874,29 @@ MS2_CHECK_SIZE(CNMExecuteLauncherFunc, 0x810);
 class CNMExecuteNGMPatcherFunc : public CNMFunc
 {
 public:
+    CNMExecuteNGMPatcherFunc();
     CNMExecuteNGMPatcherFunc(int nGameCode, const char* sz2, const char* sz3, const char* sz4, int n5, int n6, int n7,
                              const char* sz8, int n9, const char* sz10, int n11);
     virtual ~CNMExecuteNGMPatcherFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
-    char m_body[0x85c0];                                        // +0x30 (not recovered)
+    int m_nGameCode;                                            // +0x30
+    char m_sz2[0x7fff];                                         // +0x34
+    char m_sz3[0x104];                                          // +0x8033
+    char m_sz4[0x400];                                          // +0x8137
+    char m_pad8537;
+    int m_n5;                                                   // +0x8538
+    int m_n6;
+    int m_n7;
+    char m_sz8[0x20];                                           // +0x8544
+    int m_n9;                                                   // +0x8564
+    char m_sz10[0x80];                                          // +0x8568
+    int m_n11;                                                  // +0x85e8
 };
 MS2_CHECK_SIZE(CNMExecuteNGMPatcherFunc, 0x85f0);
 
