@@ -8400,3 +8400,5 @@ compress2	142724100	func
 ?CleanUpFont@GlyphCache@Render@Scaleform@@QEAAXPEAVFontCacheHandle@23@@Z	1426c4f10	func
 ?MergeCacheSlots@GlyphCache@Render@Scaleform@@QEAAXXZ	1426c67b0	func
 ?LogWarning@GlyphCache@Render@Scaleform@@QEAAXPEBDZZ	1426c6710	func
+?Merge@DrawableImage@Render@Scaleform@@QEAAXPEAVImageBase@23@AEBV?$Rect@J@23@AEBV?$Point@J@23@KKKK@Z	1425edc00	func
+?PaletteMap@DrawableImage@Render@Scaleform@@QEAAXPEAVImageBase@23@AEBV?$Rect@J@23@AEBV?$Point@J@23@PEAPEAK@Z	1425ee140	func
