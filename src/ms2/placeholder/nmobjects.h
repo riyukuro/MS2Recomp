@@ -1116,7 +1116,15 @@ MS2_CHECK_SIZE(CNMChangeLocalConfigFunc, 0x438);
 class CNMChangeMetaDataFunc : public CNMFunc
 {
 public:
+    CNMChangeMetaDataFunc(); // 0x141583480
+    CNMChangeMetaDataFunc(long long key, long long metadata); // 0x1415834f0
     virtual ~CNMChangeMetaDataFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     NMKey64 m_30; // +0x30
     char m_38[0x3e8]; // +0x38
