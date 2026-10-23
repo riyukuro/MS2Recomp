@@ -8439,12 +8439,16 @@ DAT_143b27a40	143b27a40	data
 DAT_143b2794c	143b2794c	data
 DAT_143b27950	143b27950	data
 DAT_143b27aa8	143b27aa8	data
+DAT_143b27ab0	143b27ab0	data
 DAT_143b27bb0	143b27bb0	data
 DAT_143b27bb8	143b27bb8	data
 DAT_143b27bc0	143b27bc0	data
 DAT_143b27bc8	143b27bc8	data
 DAT_143b27bcc	143b27bcc	data
 DAT_143b27bd0	143b27bd0	data
+DAT_1431b97a0	1431b97a0	data
+DAT_1431b97a8	1431b97a8	data
+DAT_1431b9820	1431b9820	data
 ?GetImage@GlyphCache@Render@Scaleform@@QEAAPEAVImage@23@I@Z	1426c6380	func
 ?Format@RasterGlyphVertex@Render@Scaleform@@2UVertexFormat@23@A	143a2fe50	data
 ?SpriteCreateGradient@AvmSprite@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@PEAVComplexFill@Render@4@@Z	14298efe0	func
