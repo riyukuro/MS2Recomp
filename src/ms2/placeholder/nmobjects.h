@@ -2169,7 +2169,15 @@ MS2_CHECK_SIZE(CNMGetFindUserResultFunc, 0x50);
 class CNMGetFriendInfoFunc : public CNMFunc
 {
 public:
+    CNMGetFriendInfoFunc(); // 0x1415866f0
+    explicit CNMGetFriendInfoFunc(const unsigned char* key); // 0x141586760
     virtual ~CNMGetFriendInfoFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     unsigned long long m_30; // +0x30
     int m_38; // +0x38
@@ -2311,7 +2319,14 @@ MS2_CHECK_SIZE(CNMGetNexonPassportFunc, 0x1038);
 class CNMGetNxHWIDFunc : public CNMFunc
 {
 public:
+    CNMGetNxHWIDFunc(); // 0x1415856c0
     virtual ~CNMGetNxHWIDFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMStr<0x40> m_30; // +0x30
 };
