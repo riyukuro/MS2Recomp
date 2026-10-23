@@ -984,6 +984,7 @@ MS2_CHECK_SIZE(CNMChangeCategoryPropertyFunc, 0x40);
 class CNMMyGameInfo : public CNMSerializable
 {
 public:
+    CNMMyGameInfo();
     virtual ~CNMMyGameInfo() = default;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;

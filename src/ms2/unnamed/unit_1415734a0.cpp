@@ -90,3 +90,9 @@ unsigned int CNMMyGameInfo::Decode(CNMSerializableDecoder* pDecoder, CNMStream*)
         m_10[i] = static_cast<int>(reinterpret_cast<ReadU32>(vtable[3])(pDecoder));
     return static_cast<unsigned int>(FUN_1415fb750(pDecoder));
 }
+
+// MS2-FUNCTIONAL 0x1415734a0: initializes the my-game record signature and zeroed ten-entry payload.
+// @0x1415734a0
+CNMMyGameInfo::CNMMyGameInfo() : CNMSerializable(0x6d67,1,1),m_10{} {}
+
+// MS2-PIN: ??0CNMMyGameInfo@@QEAA@XZ 0x1415734a0 ; recovered my-game constructor
