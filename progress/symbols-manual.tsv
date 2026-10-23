@@ -9034,3 +9034,7 @@ PTR_FUN_143a48608	143a48608	data
 ?MakeInstanceText@XML@fl@InstanceTraits@AS3@GFx@Scaleform@@QEAA?AV?$Pickable@VXMLText@fl@Instances@AS3@GFx@Scaleform@@@6@AEAV123456@AEBVASString@56@PEAV12Instances@456@@Z	14241b7a0	func
 ?Parse@XMLParser@AS3@GFx@Scaleform@@QEAA?AVCheckResult@234@AEBVStringDataPtr@4@AEA_K_N@Z	14241d6f0	func
 ?MoveHashLeft@SparseArray@AS3@GFx@Scaleform@@AEAAX_K0@Z	14241ce70	func
+??0RenderBufferManager@RBGenericImpl@Render@Scaleform@@QEAA@_N_K1@Z	1429a3670	func
+?Format@VertexXY16iAlpha@Render@Scaleform@@2UVertexFormat@23@A	143a2fbd0	data
+?initializeShaders@HAL@D3D9@Render@Scaleform@@IEAA_N_N@Z	1427387f0	func
+IID_IDirect3DDevice9Ex	14319e428	data
