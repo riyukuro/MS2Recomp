@@ -12,6 +12,7 @@
 class CNMEncoder;
 class CNMStream;
 class CNMSerializableDecoder;
+class CNMNoteInfo2;
 
 // The library's serializable base, vftable 0x142f3bd18 (8 slots; slot names per the v2525 snapshot). Every record,
 // request and event derives from it.
@@ -155,6 +156,7 @@ MS2_CHECK_SIZE(CNMAvatarFullInfo, 0x10);
 class CNMCharacter : public CNMSerializable
 {
 public:
+    CNMCharacter();
     CNMCharacter(const CNMCharacter& r) noexcept;               // 0x1415e8c60
     CNMCharacter(CNMCharacter&& r) noexcept;                    // 0x1415e8be0
     virtual ~CNMCharacter() = default;                                    // 0x1415ecdb0
@@ -681,6 +683,8 @@ MS2_CHECK_SIZE(CNMGuildOnlineInfoEx, 0x68);
 class CNMNoteInfo : public CNMSerializable
 {
 public:
+    CNMNoteInfo();
+    CNMNoteInfo(const CNMNoteInfo2& r);
     CNMNoteInfo(const CNMNoteInfo& r) noexcept;                 // 0x1415ea820
     CNMNoteInfo(CNMNoteInfo&& r) noexcept;                      // 0x1415ea690
     virtual ~CNMNoteInfo() = default;                                     // 0x1415ee5d0
@@ -716,6 +720,8 @@ MS2_CHECK_SIZE(CNMNoteInfo, 0xec8);
 class CNMNoteInfo2 : public CNMSerializable
 {
 public:
+    CNMNoteInfo2();
+    CNMNoteInfo2(const CNMNoteInfo& r);
     CNMNoteInfo2(const CNMNoteInfo2& r);                        // 0x1415ea540
     CNMNoteInfo2(CNMNoteInfo2&& r) noexcept;                    // 0x1415ea400
     virtual ~CNMNoteInfo2() = default;                                    // 0x1415ee590

@@ -8411,8 +8411,11 @@ compress2	142724100	func
 ?Draw@DrawableImage@Render@Scaleform@@QEAAXPEAVTreeNode@23@AEBV?$Matrix2x4@M@23@AEBVCxform@23@W4BlendMode@23@PEBV?$Rect@J@23@@Z	1425ebf70	func
 ??0CNMChatRoomMemberInfo@@QEAA@XZ	141576ae0	func
 ??0CNMChatRoomInfo@@QEAA@XZ	141577ef0	func
-?CalcVectorParams@TextMeshProvider@Render@Scaleform@@SAIAEAUTextMeshLayer@23@AEBUTextMeshEntry@23@AEBV?$Matrix2x4@M@23@MAEBVHMatrix@MatrixPoolImpl@23@PEAVRenderer2DImpl@23@IPEAM@Z	1426e1d30	func
+?DAT_1431b6060@@3PEAXEA	1431b6060	data
+?DAT_1431b63f8@@3PEAXEA	1431b63f8	data
 ?Clear@TextMeshProvider@Render@Scaleform@@QEAAXXZ	1426e21e0	func
 ?CreateMeshData@TextMeshProvider@Render@Scaleform@@QEAA_NPEBVTextLayout@23@PEAVRenderer2DImpl@23@AEBVHMatrix@MatrixPoolImpl@23@AEBV?$Matrix4x4@M@23@AEBVViewport@23@I@Z	1426e24d0	func
+?CalcVectorParams@TextMeshProvider@Render@Scaleform@@SAIAEAUTextMeshLayer@23@AEBUTextMeshEntry@23@AEBV?$Matrix2x4@M@23@MAEBVHMatrix@MatrixPoolImpl@23@PEAVRenderer2DImpl@23@IPEAM@Z	1426e1d30	func
 ?propagate3DFlag@TreeCacheNode@Render@Scaleform@@UEAAXI@Z	142684ee0	func
 ??0Error@VM@AS3@GFx@Scaleform@@QEAA@W4ErrorID@1234@AEAV1234@AEBVValue@234@PEBD@Z	1424d7130	func
+??0CNMAvatarFullInfo@@QEAA@XZ	14156ce30	func
