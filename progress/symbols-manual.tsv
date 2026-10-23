@@ -8927,3 +8927,4 @@ DAT_143b27a68	143b27a68	data
 ?NotifyOnResize@MovieRoot@AS2@GFx@Scaleform@@UEAAXXZ	14296a450	func
 ?Read@ActionBufferData@AS2@GFx@Scaleform@@QEAAXPEAUStreamContext@34@I@Z	1429726a0	func
 ?LogDisasm@Disasm@AS2@GFx@Scaleform@@QEAAXPEBE@Z	1429674a0	func
+?Read@ActionBufferData@AS2@GFx@Scaleform@@QEAAXPEAVStream@34@I@Z	142972730	func
