@@ -8710,3 +8710,7 @@ DAT_14313bc60	14313bc60	data
 ?FunctionTable@NumberProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	1432141a0	data
 ?FunctionTable@StringProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213770	data
 ?FunctionTable@TextSnapshotProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143214250	data
+?FunctionTable@ButtonProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	1432135f0	data
+?FunctionTable@ColorProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	1432136c0	data
+?FunctionTable@MovieClipLoaderProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	1432134f0	data
+?GetObjectType@ButtonObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	1429541e0	func
