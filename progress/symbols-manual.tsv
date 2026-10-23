@@ -8852,3 +8852,4 @@ DAT_1431b9430	1431b9430	data
 ?ReplaceTextA@TextField@GFx@Scaleform@@QEAAXPEB_W_K11@Z	1425bb810	func
 ?SetParagraphFormat@TextFormatObject@AS2@GFx@Scaleform@@QEAAXPEAVASStringContext@234@AEBVParagraphFormat@Text@Render@4@@Z	142989480	func
 ?SetTextFormat@TextFormatObject@AS2@GFx@Scaleform@@QEAAXPEAVASStringContext@234@AEBVTextFormat@Text@Render@4@@Z	14298c090	func
+?ProceedImageSubstitution@AvmTextField@AS2@GFx@Scaleform@@AEAAXAEBVFnCall@234@HPEBVValue@234@@Z	14296f870	func
