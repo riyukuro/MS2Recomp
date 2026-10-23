@@ -2755,7 +2755,17 @@ MS2_CHECK_SIZE(CNMMinimizeAllFunc, 0x38);
 class CNMMonitorGuildOnlineInfoExFunc : public CNMFunc
 {
 public:
+    CNMMonitorGuildOnlineInfoExFunc(); // 0x14158d360
+    CNMMonitorGuildOnlineInfoExFunc(unsigned __int64 guildId, int type); // 0x14158d3f0
+    CNMMonitorGuildOnlineInfoExFunc(unsigned __int64 guildId, int type, int status); // 0x14158d480
+    CNMMonitorGuildOnlineInfoExFunc(unsigned __int64 guildId, int type, int status, int flags, int result); // 0x14158d520
     virtual ~CNMMonitorGuildOnlineInfoExFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     long long m_30; // +0x30
     int m_38; // +0x38
