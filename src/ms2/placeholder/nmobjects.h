@@ -231,7 +231,15 @@ MS2_CHECK_SIZE(CNMGetUserDataListFunc, 0x80040);
 class CNMGuildOnlineInfo : public CNMSerializable
 {
 public:
+    CNMGuildOnlineInfo();
     virtual ~CNMGuildOnlineInfo() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     unsigned m_10, m_14, m_18;
     char m_1c[0x20];

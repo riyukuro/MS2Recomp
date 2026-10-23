@@ -13,6 +13,7 @@ class CNMEncoder;
 class CNMStream;
 class CNMSerializableDecoder;
 class CNMNoteInfo2;
+class CNMGuildOnlineInfo;
 
 // The library's serializable base, vftable 0x142f3bd18 (8 slots; slot names per the v2525 snapshot). Every record,
 // request and event derives from it.
@@ -632,6 +633,7 @@ MS2_CHECK_SIZE(CNMGuildListExInfo, 0x28);
 class CNMGuildMemberInfo : public CNMSerializable
 {
 public:
+    CNMGuildMemberInfo();
     CNMGuildMemberInfo(const CNMGuildMemberInfo& r) noexcept;   // 0x1415ea080
     CNMGuildMemberInfo(CNMGuildMemberInfo&& r) noexcept;        // 0x1415e9f80
     CNMGuildMemberInfo(const CNMChannelMemberInfo& r);          // 0x141574aa0
@@ -660,6 +662,8 @@ MS2_CHECK_SIZE(CNMGuildMemberInfo, 0xb8);
 class CNMGuildOnlineInfoEx : public CNMSerializable
 {
 public:
+    CNMGuildOnlineInfoEx();
+    CNMGuildOnlineInfoEx(const CNMGuildOnlineInfo& a, const CNMGuildOnlineInfo& b);
     CNMGuildOnlineInfoEx(const CNMGuildOnlineInfoEx& r);        // 0x1415ea330
     CNMGuildOnlineInfoEx(CNMGuildOnlineInfoEx&& r) noexcept;    // 0x1415ea260
     virtual ~CNMGuildOnlineInfoEx() = default;                            // 0x1415ee170
