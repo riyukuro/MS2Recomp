@@ -8442,3 +8442,4 @@ compress2	142724100	func
 ?EmitToHAL@MaskPrimitive@Render@Scaleform@@UEAAXAEAVRenderQueueItem@23@AEAVRenderQueueProcessor@23@@Z	14266d890	func
 ?Clear@VertexPath@Render@Scaleform@@UEAAXXZ	1426c21e0	func
 ?CloneDisplayObject@AvmCharacter@AS2@GFx@Scaleform@@QEAAPEAVInteractiveObject@34@AEBVASString@34@HPEBVObjectInterface@234@@Z	142934610	func
+??1MS2_ImageSubstitutor@Scaleform@@QEAA@XZ	1424c7090	func
