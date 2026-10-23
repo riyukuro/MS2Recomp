@@ -8700,3 +8700,5 @@ DAT_143b27a88	143b27a88	data
 ?SetId@IntervalTimer@AS3@GFx@Scaleform@@UEAAXH@Z	1425274a0	func
 ?Start@IntervalTimer@AS3@GFx@Scaleform@@UEAAXPEAVMovieImpl@34@@Z	14252c8a0	func
 ?TreeNodeNodeDataVTable@Render@Scaleform@@3QBQEBXB	14317b700	data
+?ExecuteForEachChild_GC@TransformObject@AS2@GFx@Scaleform@@MEBAXPEAV?$RefCountCollector@$0BED@@234@W4OperationGC@?$RefCountBaseGC@$0BED@@234@@Z	142941280	func
+?GetObjectType@TransformObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	142954370	func
