@@ -2639,7 +2639,15 @@ MS2_CHECK_SIZE(CNMLogReportSyncEvent, 0x30);
 class CNMLogReportSyncFunc : public CNMFunc
 {
 public:
+    CNMLogReportSyncFunc();
+    explicit CNMLogReportSyncFunc(short nCode);
     virtual ~CNMLogReportSyncFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     short m_30; // +0x30
     unsigned char m_32[0x6]; // +0x32
