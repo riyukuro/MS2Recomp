@@ -8405,3 +8405,4 @@ compress2	142724100	func
 ?PixelDissolve@DrawableImage@Render@Scaleform@@QEAAJPEAVImageBase@23@AEBV?$Rect@J@23@AEBV?$Point@J@23@JJVColor@23@@Z	1425ee720	func
 ??0CNMFilePath@@QEAA@XZ	1415731e0	func
 ?ResizeImageBilinear@Render@Scaleform@@YAXPEAEHHHPEBEHHHW4ResizeImageType@12@@Z	1426ef7a0	func
+?Threshold@DrawableImage@Render@Scaleform@@QEAAKPEAVImageBase@23@AEBV?$Rect@J@23@AEBV?$Point@J@23@W4ThresholdOperation@123@KKK_N@Z	1425ef1e0	func
