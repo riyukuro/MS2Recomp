@@ -1702,6 +1702,7 @@ MS2_CHECK_SIZE(CNMGSGetMemberListFunc, 0x48);
 class CNMSessionInfo : public CNMSerializable
 {
 public:
+    CNMSessionInfo();
     virtual ~CNMSessionInfo() = default;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;

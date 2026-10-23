@@ -17,6 +17,10 @@ extern void FUN_1415f9990(void*);
 extern int FUN_1415fb750(void*);
 extern int FUN_1415fb6d0(void*);
 
+// MS2-FUNCTIONAL 0x141575d80: initializes the session record fields after the serializable base.
+// @0x141575d80
+CNMSessionInfo::CNMSessionInfo() : CNMSerializable(0x7369,1,1),m_10(0),m_14{},m_1c(0),m_20(0),m_24(0),m_28(0),m_30(0),m_38(0),m_3c(0),m_40(0),m_44(0) {}
+
 // MS2-FUNCTIONAL 0x141575e50: uses opaque stack storage for the temporary encoder; session record encoding behavior is preserved.
 // @0x141575e50
 unsigned int CNMSessionInfo::EncodeFramed(CNMStream* pStream)
@@ -114,3 +118,5 @@ unsigned int CNMSessionInfo::Decode(CNMSerializableDecoder* pDecoder, CNMStream*
     m_44 = static_cast<int>(reinterpret_cast<ReadU32>(vtable[3])(pDecoder));
     return static_cast<unsigned int>(FUN_1415fb750(pDecoder));
 }
+
+// MS2-PIN: ??0CNMSessionInfo@@QEAA@XZ 0x141575d80 ; recovered session constructor
