@@ -417,6 +417,7 @@ MS2_CHECK_SIZE(CNMRequestSessionToOtherFunc, 0xb0);
 class CNMSelfUserInfo : public CNMRealUserInfo
 {
 public:
+    CNMSelfUserInfo();
     virtual ~CNMSelfUserInfo() = default;
 };
 MS2_CHECK_SIZE(CNMSelfUserInfo, 0x1a8);
@@ -1570,7 +1571,14 @@ MS2_CHECK_SIZE(CNMFriendInfoChangedEvent, 0x5c0);
 class CNMFriendList : public CNMSerializable
 {
 public:
+    CNMFriendList();
     virtual ~CNMFriendList() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     std::vector<CNMFriendInfo> m_10; // +0x10
 };

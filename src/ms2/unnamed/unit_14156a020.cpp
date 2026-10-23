@@ -4,6 +4,7 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/nmstream.h"
+#include "ms2/placeholder/nmobjects.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_14156a5a0(void*);
@@ -1356,6 +1357,75 @@ unsigned int CNMVirtualUserInfo::DecodeDispatch(CNMSerializableDecoder*d,CNMStre
 // MS2-FUNCTIONAL 0x14156f2d0: reads all virtual-user fields and validates the decoder state.
 // @0x14156f2d0
 unsigned int CNMVirtualUserInfo::Decode(CNMSerializableDecoder*d,CNMStream*){m_10=d->ReadU32();m_14=d->ReadU32();d->ReadBytes(reinterpret_cast<unsigned char*>(m_18),0x40);d->ReadBytes(reinterpret_cast<unsigned char*>(m_58),0x40);m_480=d->ReadU8();m_484=d->ReadU8();m_488=d->ReadU8();m_48c=d->ReadU32();d->ReadBytes(reinterpret_cast<unsigned char*>(m_98),1000);return static_cast<unsigned int>(FUN_1415fb750(d));}
+
+// MS2-FUNCTIONAL 0x14156e000: initializes the friend key and fixed-size profile fields after the real-friend base.
+// @0x14156e000
+CNMFriendInfo::CNMFriendInfo() : CNMRealFriendInfo(),m_key{},m_f0{},m_130{},m_170{},m_558{},m_578(0),m_57c(0) { ++m_bKind; }
+
+// MS2-FUNCTIONAL 0x14156e100: frames and writes the friend entry.
+// @0x14156e100
+unsigned int CNMFriendInfo::EncodeFramed(CNMStream*s){unsigned char b[0x18];FUN_14156bcb0(reinterpret_cast<long long>(b),reinterpret_cast<long long>(s),reinterpret_cast<long long>(this));void**v=*reinterpret_cast<void***>(this);using F=unsigned int(__fastcall*)(CNMFriendInfo*,CNMEncoder*,CNMStream*);auto r=reinterpret_cast<F>(v[2])(this,reinterpret_cast<CNMEncoder*>(b),s);FUN_14156bd50(b);return r;}
+
+// MS2-FUNCTIONAL 0x14156e160: selects direct or framed friend encoding.
+// @0x14156e160
+unsigned int CNMFriendInfo::EncodeDispatch(CNMEncoder*e,CNMStream*s){void**v=*reinterpret_cast<void***>(this);if(m_bFormat==1){using F=unsigned int(__fastcall*)(CNMFriendInfo*,CNMEncoder*,CNMStream*);return reinterpret_cast<F>(v[2])(this,e,s);}using F=unsigned int(__fastcall*)(CNMFriendInfo*,CNMStream*);return reinterpret_cast<F>(v[3])(this,s);}
+
+// MS2-FUNCTIONAL 0x14156e1c0: serializes inherited friend data and the list-specific key and display fields.
+// @0x14156e1c0
+unsigned int CNMFriendInfo::Encode(CNMEncoder*e,CNMStream*s){CNMRealFriendInfo::EncodeDispatch(e,s);FUN_14156acb0(reinterpret_cast<long long*>(e),m_key.uIDCode);FUN_14156ac20(e,m_key.n08);FUN_14156ac20(e,m_key.n0c);FUN_14156ac20(e,m_key.n10);FUN_14156ac20(e,m_key.n14);FUN_14156ae30(e,m_f0);FUN_14156ae30(e,m_130);FUN_14156ab00(e,static_cast<unsigned char>(m_578));FUN_14156ac20(e,m_57c);FUN_14156ac20(e,*reinterpret_cast<unsigned short*>(&m_c0));FUN_14156ab00(e,reinterpret_cast<unsigned char*>(&m_c0)[2]);FUN_14156ab00(e,reinterpret_cast<unsigned char*>(&m_c0)[6]);FUN_14156ab00(e,m_d0);FUN_14156ae30(e,m_170);FUN_14156ae30(e,m_558);FUN_1415f9990(e);return 1;}
+
+// MS2-FUNCTIONAL 0x14156e350: decodes the framed friend entry.
+// @0x14156e350
+unsigned int CNMFriendInfo::DecodeFramed(CNMStream*s){unsigned char b[0x38];FUN_14156be10(b,s,this);unsigned int r=0;if(FUN_1415fb750(b)){void**v=*reinterpret_cast<void***>(this);using F=unsigned int(__fastcall*)(CNMFriendInfo*,CNMSerializableDecoder*,CNMStream*);r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(b),s);}FUN_14156bf10(b);return r;}
+
+// MS2-FUNCTIONAL 0x14156e3e0: selects direct or framed friend decoding.
+// @0x14156e3e0
+unsigned int CNMFriendInfo::DecodeDispatch(CNMSerializableDecoder*d,CNMStream*s){void**v=*reinterpret_cast<void***>(this);if(FUN_1415fb6d0(d)==2){using F=unsigned int(__fastcall*)(CNMFriendInfo*,CNMStream*);return reinterpret_cast<F>(v[6])(this,s);}using F=unsigned int(__fastcall*)(CNMFriendInfo*,CNMSerializableDecoder*,CNMStream*);return reinterpret_cast<F>(v[5])(this,d,s);}
+
+// MS2-FUNCTIONAL 0x14156e440: decodes the inherited and friend-list payload in original order.
+// @0x14156e440
+unsigned int CNMFriendInfo::Decode(CNMSerializableDecoder*d,CNMStream*s){CNMRealFriendInfo::DecodeDispatch(d,s);m_key.uIDCode=d->ReadU64();m_key.n08=d->ReadU32();m_key.n0c=d->ReadU32();m_key.n10=d->ReadU32();m_key.n14=d->ReadU32();d->ReadBytes(reinterpret_cast<unsigned char*>(m_f0),0x40);d->ReadBytes(reinterpret_cast<unsigned char*>(m_130),0x40);m_578=d->ReadU8();m_57c=d->ReadU32();auto*b=reinterpret_cast<unsigned char*>(&m_c0);unsigned short lo=d->ReadU16();b[0]=static_cast<unsigned char>(lo);b[1]=static_cast<unsigned char>(lo>>8);b[2]=d->ReadU8();b[6]=d->ReadU8();m_d0=static_cast<char>(d->ReadU8());d->ReadBytes(reinterpret_cast<unsigned char*>(m_170),1000);d->ReadBytes(reinterpret_cast<unsigned char*>(m_558),0x20);return static_cast<unsigned int>(FUN_1415fb750(d));}
+
+// MS2-PIN: ??0CNMSelfUserInfo@@QEAA@XZ 0x14156ef10 ; recovered self-user constructor
+// MS2-PIN: ??0CNMFriendInfo@@QEAA@XZ 0x14156e000 ; recovered friend info constructor
+// MS2-PIN: ??0CNMAvatarFullInfo@@QEAA@XZ 0x14156ce30 ; recovered default constructor
+// MS2-PIN: ??0CNMRealFriendInfo@@QEAA@XZ 0x14156d610 ; recovered default constructor
+// MS2-PIN: ??0CNMVirtualFriendInfo@@QEAA@XZ 0x14156da70 ; recovered virtual friend constructor
+// MS2-PIN: ??0CNMRealUserInfo@@QEAA@XZ 0x14156e6e0 ; recovered real-user constructor
+// MS2-PIN: ??0CNMVirtualUserInfo@@QEAA@XZ 0x14156ef50 ; recovered virtual-user constructor
+// MS2-PIN: ??0CNMSelfUserInfo@@QEAA@XZ 0x14156ef10 ; recovered self-user constructor
+
+// MS2-FUNCTIONAL 0x14156ef10: builds the real-user base and replaces its vftable with the self-user table.
+// @0x14156ef10
+CNMSelfUserInfo::CNMSelfUserInfo() : CNMRealUserInfo() {}
+
+// MS2-FUNCTIONAL 0x14156f430: initializes the friend-list serializable and its vector.
+// @0x14156f430
+CNMFriendList::CNMFriendList() : CNMSerializable(0x466c,1,1),m_10{} {}
+
+// MS2-FUNCTIONAL 0x14156f480: writes the list count and each friend entry.
+// @0x14156f480
+unsigned int CNMFriendList::EncodeFramed(CNMStream*s){unsigned char b[0x18];FUN_14156bcb0(reinterpret_cast<long long>(b),reinterpret_cast<long long>(s),reinterpret_cast<long long>(this));void**v=*reinterpret_cast<void***>(this);using F=unsigned int(__fastcall*)(CNMFriendList*,CNMEncoder*,CNMStream*);auto r=reinterpret_cast<F>(v[2])(this,reinterpret_cast<CNMEncoder*>(b),s);FUN_14156bd50(b);return r;}
+
+// MS2-FUNCTIONAL 0x14156f4e0: selects framed or direct list encoding.
+// @0x14156f4e0
+unsigned int CNMFriendList::EncodeDispatch(CNMEncoder*e,CNMStream*s){void**v=*reinterpret_cast<void***>(this);if(m_bFormat==1){using F=unsigned int(__fastcall*)(CNMFriendList*,CNMEncoder*,CNMStream*);return reinterpret_cast<F>(v[2])(this,e,s);}using F=unsigned int(__fastcall*)(CNMFriendList*,CNMStream*);return reinterpret_cast<F>(v[3])(this,s);}
+
+// MS2-FUNCTIONAL 0x14156f540: serializes every friend in vector order.
+// @0x14156f540
+unsigned int CNMFriendList::Encode(CNMEncoder*e,CNMStream*s){FUN_14156ac20(e,static_cast<unsigned int>(m_10.size()));for(auto&f:m_10)f.EncodeDispatch(e,s);FUN_1415f9990(e);return 1;}
+
+// MS2-FUNCTIONAL 0x14156f600: decodes the framed friend-list payload.
+// @0x14156f600
+unsigned int CNMFriendList::DecodeFramed(CNMStream*s){unsigned char b[0x38];FUN_14156be10(b,s,this);unsigned int r=0;if(FUN_1415fb750(b)){void**v=*reinterpret_cast<void***>(this);using F=unsigned int(__fastcall*)(CNMFriendList*,CNMSerializableDecoder*,CNMStream*);r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(b),s);}FUN_14156bf10(b);return r;}
+
+// MS2-FUNCTIONAL 0x14156f690: selects direct or framed list decoding.
+// @0x14156f690
+unsigned int CNMFriendList::DecodeDispatch(CNMSerializableDecoder*d,CNMStream*s){void**v=*reinterpret_cast<void***>(this);if(FUN_1415fb6d0(d)==2){using F=unsigned int(__fastcall*)(CNMFriendList*,CNMStream*);return reinterpret_cast<F>(v[6])(this,s);}using F=unsigned int(__fastcall*)(CNMFriendList*,CNMSerializableDecoder*,CNMStream*);return reinterpret_cast<F>(v[5])(this,d,s);}
+
+// MS2-FUNCTIONAL 0x14156f6f0: clears and rebuilds the friend vector from the serialized count.
+// @0x14156f6f0
+unsigned int CNMFriendList::Decode(CNMSerializableDecoder*d,CNMStream*s){const unsigned int n=d->ReadU32();m_10.clear();for(unsigned int i=0;i<n;++i){m_10.emplace_back();m_10.back().DecodeDispatch(d,s);}return static_cast<unsigned int>(FUN_1415fb750(d));}
 
 // MS2-PIN: ??0CNMRealUserInfo@@QEAA@XZ 0x14156e6e0 ; recovered real-user constructor
 // MS2-PIN: ??0CNMSelfUserInfo@@QEAA@XZ 0x14156ef10 ; recovered self-user constructor
