@@ -1289,3 +1289,42 @@ long long FUN_14156bcb0(long long storage, long long stream, long long object)
     FUN_14156ac20(reinterpret_cast<void*>(storage), 0);
     return storage;
 }
+
+// MS2-FUNCTIONAL 0x14156e6e0: initializes the base user, full avatar, and real-user payload fields.
+// @0x14156e6e0
+CNMRealUserInfo::CNMRealUserInfo() : CNMDefaultUserInfo(), m_b0{}, m_d0{}, m_110(0), m_114(0), m_118(0), m_11c(0), m_120(0), m_124(0), m_128(0), m_12a{}, m_140(), m_150(0), m_154(0), m_158(0), m_15c(0), m_160(0), m_161{} { ++m_bKind; }
+
+// MS2-FUNCTIONAL 0x14156e870: frames the encoder payload and finalizes the temporary header.
+// @0x14156e870
+unsigned int CNMRealUserInfo::EncodeFramed(CNMStream* s) { unsigned char storage[0x18]; FUN_14156bcb0(reinterpret_cast<long long>(storage), reinterpret_cast<long long>(s), reinterpret_cast<long long>(this)); void** vt=*reinterpret_cast<void***>(this); using Fn=unsigned int(__fastcall*)(CNMRealUserInfo*,CNMEncoder*,CNMStream*); auto r=reinterpret_cast<Fn>(vt[2])(this,reinterpret_cast<CNMEncoder*>(storage),s); FUN_14156bd50(storage); return r; }
+
+// MS2-FUNCTIONAL 0x14156e8d0: chooses the direct or framed encoder from the record format.
+// @0x14156e8d0
+unsigned int CNMRealUserInfo::EncodeDispatch(CNMEncoder* e,CNMStream* s) { void** vt=*reinterpret_cast<void***>(this); if(m_bFormat==1){using F=unsigned int(__fastcall*)(CNMRealUserInfo*,CNMEncoder*,CNMStream*);return reinterpret_cast<F>(vt[2])(this,e,s);} using F=unsigned int(__fastcall*)(CNMRealUserInfo*,CNMStream*);return reinterpret_cast<F>(vt[3])(this,s); }
+
+// MS2-FUNCTIONAL 0x14156e930: writes inherited user fields, profile data, avatar, and optional version data.
+// @0x14156e930
+unsigned int CNMRealUserInfo::Encode(CNMEncoder* e,CNMStream* s)
+{
+    CNMDefaultUserInfo::EncodeDispatch(e,s); FUN_14156ae30(e,m_b0); FUN_14156ae30(e,m_d0); FUN_14156ac20(e,m_110); FUN_14156ab00(e,static_cast<unsigned char>(m_114));
+    FUN_14156ac20(e,m_118); FUN_14156ac20(e,m_11c); FUN_14156ae30(e,&m_120); FUN_14156ac20(e,m_124); FUN_14156ae30(e,&m_128);
+    FUN_14156ac20(e,*reinterpret_cast<unsigned short*>(&m_12a)); FUN_14156ab00(e,reinterpret_cast<unsigned char*>(&m_12a)[2]); FUN_14156ab00(e,reinterpret_cast<unsigned char*>(&m_12a)[6]);
+    m_140.EncodeDispatch(e,s); FUN_14156ab00(e,m_150); FUN_14156ab00(e,m_154); FUN_14156ab00(e,m_158); FUN_14156ab00(e,m_15c);
+    if(m_bKind==2){FUN_14156ab00(e,m_160);FUN_14156ae30(e,m_161);} FUN_1415f9990(e); return 1;
+}
+
+// MS2-FUNCTIONAL 0x14156eb40: constructs the bounded decoder and dispatches its payload.
+// @0x14156eb40
+unsigned int CNMRealUserInfo::DecodeFramed(CNMStream* s) { unsigned char storage[0x38]; FUN_14156be10(storage,s,this); unsigned int r=0; if(FUN_1415fb750(storage)){void**vt=*reinterpret_cast<void***>(this);using F=unsigned int(__fastcall*)(CNMRealUserInfo*,CNMSerializableDecoder*,CNMStream*);r=reinterpret_cast<F>(vt[5])(this,reinterpret_cast<CNMSerializableDecoder*>(storage),s);} FUN_14156bf10(storage);return r; }
+
+// MS2-FUNCTIONAL 0x14156ebd0: chooses direct or framed decoding by decoder mode.
+// @0x14156ebd0
+unsigned int CNMRealUserInfo::DecodeDispatch(CNMSerializableDecoder* d,CNMStream* s) { void**vt=*reinterpret_cast<void***>(this);if(FUN_1415fb6d0(d)==2){using F=unsigned int(__fastcall*)(CNMRealUserInfo*,CNMStream*);return reinterpret_cast<F>(vt[6])(this,s);}using F=unsigned int(__fastcall*)(CNMRealUserInfo*,CNMSerializableDecoder*,CNMStream*);return reinterpret_cast<F>(vt[5])(this,d,s); }
+
+// MS2-FUNCTIONAL 0x14156ec30: decodes the complete real-user record in wire order.
+// @0x14156ec30
+unsigned int CNMRealUserInfo::Decode(CNMSerializableDecoder* d,CNMStream* s)
+{
+    CNMDefaultUserInfo::DecodeDispatch(d,s); d->ReadBytes(reinterpret_cast<unsigned char*>(m_b0),0x20); d->ReadBytes(reinterpret_cast<unsigned char*>(m_d0),0x40); m_110=d->ReadU32();m_114=d->ReadU8();m_118=d->ReadU32();m_11c=d->ReadU32();d->ReadBytes(reinterpret_cast<unsigned char*>(&m_120),2);m_124=d->ReadU32();d->ReadBytes(reinterpret_cast<unsigned char*>(&m_128),2);
+    auto*b=reinterpret_cast<unsigned char*>(&m_12a); const unsigned short lo=d->ReadU16();b[0]=lo;b[1]=lo>>8;b[2]=d->ReadU8();b[6]=d->ReadU8();m_140.DecodeDispatch(d,s);m_150=d->ReadU8();m_154=d->ReadU8();m_158=d->ReadU8();m_15c=d->ReadU8();if(m_bKind==2){m_160=d->ReadU8();d->ReadBytes(reinterpret_cast<unsigned char*>(m_161),0x40);}return static_cast<unsigned int>(FUN_1415fb750(d));
+}
