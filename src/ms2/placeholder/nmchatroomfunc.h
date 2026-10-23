@@ -134,8 +134,16 @@ MS2_CHECK_SIZE(CNMCRInviteUserFunc, 0x830);
 class CNMCRBanUserFunc : public CNMFunc
 {
 public:
+    CNMCRBanUserFunc(); // 0x14159ea60
     CNMCRBanUserFunc(unsigned uSerialKey, unsigned __int64 uUserKey); // 0x14159eac0
     virtual ~CNMCRBanUserFunc() = default;                                // 0x1415ec4d0
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     unsigned __int64 m_uUserKey;                                // +0x30
 };
