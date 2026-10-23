@@ -9804,3 +9804,5 @@ _DAT_143d4aaae	143d4aaae	data
 _DAT_143e65802	143e65802	data
 DAT_143b27c40	143b27c40	data
 ?RemoveVideoProvider@MovieImpl@GFx@Scaleform@@QEAAXPEAVVideoProvider@Video@23@@Z	1425743a0	func
+?GAS_ASnativeMouseButtonStates@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z	1429469d0	func
+?GFx_StringToIMEStyleCategory@AS2@GFx@Scaleform@@YAHAEBVASString@23@@Z	1429487e0	func
