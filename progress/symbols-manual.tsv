@@ -8625,3 +8625,8 @@ DAT_143b27c80	143b27c80	data
 ?CreateNewObject@AmpMarkerCtorFunction@AS2@GFx@Scaleform@@UEBAPEAVObject@234@PEAVEnvironment@234@@Z	142936790	func
 ?StaticFunctionTable@AmpMarkerCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143214230	data
 ?PTR_FUN_1431b7858@@3PEAXEA	1431b7858	data
+??1Object@AS3@GFx@Scaleform@@UEAA@XZ	1424de820	func
+?ForEachChild_GC@Traits@AS3@GFx@Scaleform@@UEBAXPEAV?$RefCountCollector@$0BED@@234@P6AX0PEAPEBV?$RefCountBaseGC@$0BED@@234@@Z@Z	142503d90	func
+?MakeObject@RTraits@InstanceTraits@AS3@GFx@Scaleform@@UEAAXAEAVValue@345@AEAVTraits@2345@@Z	142516570	func
+?MakeObject@Traits@InstanceTraits@AS3@GFx@Scaleform@@UEAAXAEAVValue@345@AEAV12345@@Z	1425165a0	func
+?SupportsInterface@Traits@InstanceTraits@AS3@GFx@Scaleform@@UEBA_NAEBV12345@@Z	14252e520	func
