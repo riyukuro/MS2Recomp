@@ -8634,3 +8634,10 @@ DAT_143b27c80	143b27c80	data
 ?MakeObject@Traits@InstanceTraits@AS3@GFx@Scaleform@@UEAAXAEAVValue@345@AEAV12345@@Z	1425165a0	func
 ?SupportsInterface@Traits@InstanceTraits@AS3@GFx@Scaleform@@UEBA_NAEBV12345@@Z	14252e520	func
 ?FunctionTable@BooleanProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213630	data
+?GetObjectType@KeyObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	142954260	func
+?FunctionTable@ExternalInterfaceProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213e30	data
+?FunctionTable@KeyProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	1432143a0	data
+?FunctionTable@MatrixProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213330	data
+?FunctionTable@MouseProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213410	data
+?FunctionTable@SelectionProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213040	data
+?FunctionTable@StageProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213660	data
