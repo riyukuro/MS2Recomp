@@ -8446,6 +8446,9 @@ DAT_143b27bc0	143b27bc0	data
 DAT_143b27bc8	143b27bc8	data
 DAT_143b27bcc	143b27bcc	data
 DAT_143b27bd0	143b27bd0	data
+DAT_143b27c60	143b27c60	data
+DAT_143b27c6c	143b27c6c	data
+DAT_143b27c70	143b27c70	data
 DAT_1431b97a0	1431b97a0	data
 DAT_1431b97a8	1431b97a8	data
 DAT_1431b9820	1431b9820	data
@@ -8630,3 +8633,4 @@ DAT_143b27c80	143b27c80	data
 ?MakeObject@RTraits@InstanceTraits@AS3@GFx@Scaleform@@UEAAXAEAVValue@345@AEAVTraits@2345@@Z	142516570	func
 ?MakeObject@Traits@InstanceTraits@AS3@GFx@Scaleform@@UEAAXAEAVValue@345@AEAV12345@@Z	1425165a0	func
 ?SupportsInterface@Traits@InstanceTraits@AS3@GFx@Scaleform@@UEBA_NAEBV12345@@Z	14252e520	func
+?FunctionTable@BooleanProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213630	data
