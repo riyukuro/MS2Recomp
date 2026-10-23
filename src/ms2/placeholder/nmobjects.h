@@ -2969,7 +2969,15 @@ MS2_CHECK_SIZE(CNMLoginAuthSecurityCNFunc, 0x48);
 class CNMLoginMessengerFunc : public CNMFunc
 {
 public:
+    CNMLoginMessengerFunc();
+    explicit CNMLoginMessengerFunc(int value);
     virtual ~CNMLoginMessengerFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_30; // +0x30
     int m_34; // +0x34
