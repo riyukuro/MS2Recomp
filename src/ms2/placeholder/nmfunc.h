@@ -1062,8 +1062,15 @@ MS2_CHECK_SIZE(CNMBringForwardStandAloneMsgFunc, 0x430);
 class CNMDownloadFileFunc : public CNMFunc
 {
 public:
+    CNMDownloadFileFunc();
     CNMDownloadFileFunc(const char* szUrl, const char* szPath);
     virtual ~CNMDownloadFileFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     char m_szUrl[0x100];                                        // +0x30
     char m_szPath[0x100];                                       // +0x130
