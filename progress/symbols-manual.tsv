@@ -8430,3 +8430,5 @@ compress2	142724100	func
 ?GetObjectType@FunctionObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	14000ce70	func
 ?ToFunction@FunctionObject@AS2@GFx@Scaleform@@UEAA?AVFunctionRef@234@XZ	142991140	func
 ??0CNMFriendInfo@@QEAA@XZ	14156e000	func
+?Clear@MeshGenerator@Render@Scaleform@@QEAAXXZ	14262a890	func
+?Factors@Render@Scaleform@@3QBEB	14318fb30	data
