@@ -8704,3 +8704,6 @@ DAT_143b27a88	143b27a88	data
 ?GetObjectType@TransformObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	142954370	func
 DAT_143b27948	143b27948	data
 DAT_14313bc60	14313bc60	data
+?FunctionTable@ArrayProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213250	data
+?FunctionTable@DateProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213ae0	data
+?FunctionTable@TransformProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	1432134a0	data
