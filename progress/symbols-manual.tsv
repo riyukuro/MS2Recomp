@@ -8798,3 +8798,5 @@ DAT_1431b9360	1431b9360	data
 DAT_1431b93b0	1431b93b0	data
 DAT_1431b93c0	1431b93c0	data
 DAT_1431b9410	1431b9410	data
+?ClearAndRelease@RootArray@?$RefCountCollector@$0BED@@AS2@GFx@Scaleform@@QEAAXXZ	1429343f0	func
+?Collect@?$RefCountCollector@$0BED@@AS2@GFx@Scaleform@@QEAA_NPEAUStats@1234@@Z	142592200	func
