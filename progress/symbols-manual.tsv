@@ -8824,3 +8824,5 @@ DAT_1431b9430	1431b9430	data
 ?MoveFocus@SelectionCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z	1429689e0	func
 ?SetControllerFocusGroup@SelectionCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z	142980120	func
 ?SetModalClip@SelectionCtorFunction@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@@Z	142989060	func
+?Clear@StrokePath@Render@Scaleform@@QEAAXXZ	1426aa240	func
+?ClearAndRelease@StrokePath@Render@Scaleform@@QEAAXXZ	1426aa2f0	func
