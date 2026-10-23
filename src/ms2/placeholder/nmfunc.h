@@ -994,6 +994,12 @@ class CNMGetUrlExFunc : public CNMFunc
 public:
     CNMGetUrlExFunc();
     virtual ~CNMGetUrlExFunc() = default;                                 // 0x1415edfc0
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_nUrlType;                                             // +0x30
     int m_nGameCode;                                            // +0x34 (type 1)
