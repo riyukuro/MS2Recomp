@@ -8466,3 +8466,5 @@ DAT_143ffd504	143ffd504	data
 ?PTR_LAB_1431b5e18@@3PEAXEA	1431b5e18	data
 ?PTR_LAB_1431b5e70@@3PEAXEA	1431b5e70	data
 ?PTR_s_attachVideo_1431b5800@@3PEAXEA	1431b5800	data
+?tessellateFill@ShapeMeshProvider@Render@Scaleform@@AEAA_NPEAUScale9GridInfo@23@IPEAVMeshBase@23@PEAVVertexOutput@23@I@Z	142632870	func
+?tessellateStroke@ShapeMeshProvider@Render@Scaleform@@AEAA_NPEAUScale9GridInfo@23@IIPEAVMeshBase@23@PEAVVertexOutput@23@I@Z	142632ba0	func
