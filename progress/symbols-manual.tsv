@@ -8707,3 +8707,6 @@ DAT_14313bc60	14313bc60	data
 ?FunctionTable@ArrayProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213250	data
 ?FunctionTable@DateProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213ae0	data
 ?FunctionTable@TransformProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	1432134a0	data
+?FunctionTable@NumberProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	1432141a0	data
+?FunctionTable@StringProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213770	data
+?FunctionTable@TextSnapshotProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143214250	data
