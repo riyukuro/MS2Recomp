@@ -2515,7 +2515,16 @@ MS2_CHECK_SIZE(CNMRemoveRejectedUserFunc, 0xf8);
 class CNMReplySessionRequestFunc : public CNMFunc
 {
 public:
+    CNMReplySessionRequestFunc(); // 0x141599ab0
+    CNMReplySessionRequestFunc(unsigned __int64 nSession, int bReply); // 0x141599b20
     virtual ~CNMReplySessionRequestFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x141599c60
+    unsigned int EncodeFramed(CNMStream* pStream) override;                 // 0x141599ba0
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x141599c00
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override; // 0x141599de0
+    unsigned int DecodeFramed(CNMStream* pStream) override;                 // 0x141599cf0
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override; // 0x141599d80
 
     long long m_30; // +0x30
     int m_38; // +0x38
