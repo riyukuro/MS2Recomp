@@ -8901,3 +8901,6 @@ DAT_143b27a68	143b27a68	data
 ?ShapeObject_vftable@AS3@GFx@Scaleform@@3QBQEAXB	14317c210	data
 ?ShapeObject_vftable_18@AS3@GFx@Scaleform@@3QBQEAXB	14317c488	data
 ?ShapeObject_vftable_90@AS3@GFx@Scaleform@@3QBQEAXB	14317c498	data
+?AvmBitmap_vftable@AS3@GFx@Scaleform@@3QBQEAXB	14317c560	data
+?AvmBitmap_vftable_18@AS3@GFx@Scaleform@@3QBQEAXB	14317c7d8	data
+?AvmBitmap_vftable_90@AS3@GFx@Scaleform@@3QBQEAXB	14317c7e8	data
