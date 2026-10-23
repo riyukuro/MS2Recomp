@@ -681,7 +681,15 @@ MS2_CHECK_SIZE(CNMAuthSecondaryConnectionClosedEvent, 0x30);
 class CNMBlockFriendFunc : public CNMFunc
 {
 public:
+    CNMBlockFriendFunc(); // 0x1415872d0
+    CNMBlockFriendFunc(const unsigned char* key, int blockType); // 0x141587360
     virtual ~CNMBlockFriendFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     NMFriendKey m_key;
     int m_48; // +0x48
