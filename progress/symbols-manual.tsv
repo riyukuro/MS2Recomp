@@ -8667,3 +8667,9 @@ DAT_143ba9d18	143ba9d18	data
 ?Rectangle_DefaultParams@AS2@GFx@Scaleform@@3QBVValue@123@B	143a51bb0	data
 DAT_14317b668	14317b668	data
 ??0CNMNoteInfo2@@QEAA@XZ	141571470	func
+?Decode@CNMRejectedUser@@UEAAIPEAVCNMSerializableDecoder@@PEAVCNMStream@@@Z	1415707e0	func
+?DecodeDispatch@CNMRejectedUser@@UEAAIPEAVCNMSerializableDecoder@@PEAVCNMStream@@@Z	141570780	func
+?DecodeFramed@CNMRejectedUser@@UEAAIPEAVCNMStream@@@Z	1415706f0	func
+?Encode@CNMRejectedUser@@UEAAIPEAVCNMEncoder@@PEAVCNMStream@@@Z	141570680	func
+?EncodeDispatch@CNMRejectedUser@@UEAAIPEAVCNMEncoder@@PEAVCNMStream@@@Z	141570620	func
+?EncodeFramed@CNMRejectedUser@@UEAAIPEAVCNMStream@@@Z	1415705c0	func
