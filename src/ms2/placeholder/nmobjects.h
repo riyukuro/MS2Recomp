@@ -2185,7 +2185,15 @@ MS2_CHECK_SIZE(CNMGetMyGuildListExFunc, 0x58);
 class CNMGetMyInfoFunc : public CNMFunc
 {
 public:
+    CNMGetMyInfoFunc(); // 0x141580880
     virtual ~CNMGetMyInfoFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMRealUserInfo m_30; // +0x30
     long long m_1d8; // +0x1d8
