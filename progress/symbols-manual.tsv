@@ -8432,3 +8432,5 @@ compress2	142724100	func
 ??0CNMFriendInfo@@QEAA@XZ	14156e000	func
 ?Clear@MeshGenerator@Render@Scaleform@@QEAAXXZ	14262a890	func
 ?Factors@Render@Scaleform@@3QBEB	14318fb30	data
+?Format@RasterGlyphVertex@Render@Scaleform@@2UVertexFormat@23@A	143a2fe50	data
+?GetImage@GlyphCache@Render@Scaleform@@QEAAPEAVImage@23@I@Z	1426c6380	func
