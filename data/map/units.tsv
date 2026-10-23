@@ -11,11 +11,11 @@
 140046a1c	140046e04	unit_140046a1c	none	4	text	
 140046e04	140047430	unit_140046e04	none	7	text	
 140047430	140047b30	unit_140047430	none	14	text	
-140047b30	140049e60	unit_140047b30	none	9	text	
-140049e60	14004c1d0	unit_140049e60	none	8	text	
+140047b30	14004c1d0	sfr_cri_04	none	17	text	sfr28 10-23: CRI MvCore/Sofdec link-order gap (unowned by sfr_cri_01..03)
 14004c1d0	14004da40	unit_14004c1d0	none	12	text	
-14004da40	14004dd30	unit_14004da40	none	4	text	
-14004dd30	1400b21a0	unit_14004dd30	none	552	text	
+14004da40	140054170	sfr_cri_05	none	182	text	sfr28 10-23: CRI MvCore/Sofdec link-order gap (unowned by sfr_cri_01..03)
+140054170	140066180	sfr_cri_06	none	164	text	sfr28 10-23: CRI MvCore/Sofdec link-order gap (unowned by sfr_cri_01..03)
+140066180	1400b21a0	sfr_cri_07	none	218	text	sfr28 10-23: CRI MvCore/Sofdec link-order gap (unowned by sfr_cri_01..03)
 1400b21a0	1400b21d0	unit_1400b21a0	none	1	di	
 1400b21d0	1400b2330	?\achievecondition.cpp	low	6	di	
 1400b2330	1400b4220	?\additionalactionadditional.cpp	low	2	di	
