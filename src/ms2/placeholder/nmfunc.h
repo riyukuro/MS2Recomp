@@ -1156,8 +1156,15 @@ MS2_CHECK_SIZE(CNMGetGameServerNameFunc, 0xb8);
 class CNMDownloadGuildMarkFileFunc : public CNMFunc
 {
 public:
+    CNMDownloadGuildMarkFileFunc();
     CNMDownloadGuildMarkFileFunc(int nGameCode, unsigned __int64 nGuildKey, const char* szPath);
     virtual ~CNMDownloadGuildMarkFileFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_nGameCode;                                            // +0x30
     int m_n34;
