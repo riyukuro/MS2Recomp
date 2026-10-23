@@ -9039,3 +9039,14 @@ PTR_FUN_143a48608	143a48608	data
 ?initializeShaders@HAL@D3D9@Render@Scaleform@@IEAA_N_N@Z	1427387f0	func
 IID_IDirect3DDevice9Ex	14319e428	data
 ?AddRoot@?$RefCountCollector@$0BED@@AS3@GFx@Scaleform@@QEAAXPEBV?$RefCountBaseGC@$0BED@@234@@Z	1423de620	func
+DAT_143a488c0	143a488c0	data
+DAT_143ba9dd0	143ba9dd0	data
+DAT_143baa1d0	143baa1d0	data
+DAT_143baa5d0	143baa5d0	data
+DAT_143baa9d0	143baa9d0	data
+DAT_143baadd0	143baadd0	data
+DAT_143bab1d0	143bab1d0	data
+DAT_143d74a80	143d74a80	data
+DAT_143db4ac0	143db4ac0	data
+DAT_143dc4b00	143dc4b00	data
+DAT_143e44b00	143e44b00	data
