@@ -8348,6 +8348,7 @@ compress2	142724100	func
 ?GetInstanceTraits@VM@AS3@GFx@Scaleform@@QEBAAEBVTraits@InstanceTraits@234@AEBVValue@234@@Z	14250a900	func
 ?AddDynamicSlotValuePair@Object@AS3@GFx@Scaleform@@QEAAXAEBVASString@34@AEBVValue@234@W4Attribute@SlotInfo@234@@Z	1424e7f40	func
 ?Assign@Value@AS3@GFx@Scaleform@@QEAAXPEAVClass@234@@Z	1424edb80	func
+?AssignUnsafe@Value@AS3@GFx@Scaleform@@QEAAXPEAVClass@234@@Z	1424ede20	func
 ?DAT_14313d650@@3QBUThunkInfo@AS3@GFx@Scaleform@@B	14313d650	data
 ?DAT_14313d6a0@@3QBUThunkInfo@AS3@GFx@Scaleform@@B	14313d6a0	data
 ?DAT_14313d6e8@@3QBUThunkInfo@AS3@GFx@Scaleform@@B	14313d6e8	data
