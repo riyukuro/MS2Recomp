@@ -3242,9 +3242,17 @@ MS2_CHECK_SIZE(CNMOpenGameSummaryFunc, 0x30);
 class CNMPCBangLoginFunc : public CNMFunc
 {
 public:
+    CNMPCBangLoginFunc();
+    explicit CNMPCBangLoginFunc(const char* token);
     virtual ~CNMPCBangLoginFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
-    CNMStr<0x9> m_30; // +0x30
+    unsigned char m_30[0x8]; // +0x30
     int m_38; // +0x38
     int m_3c; // +0x3c
 };
