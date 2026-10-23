@@ -8907,3 +8907,4 @@ DAT_143b27a68	143b27a68	data
 ?MemberTable@AvmCharacter@AS2@GFx@Scaleform@@2QBUMemberTableType@1234@B	143a512e0	data
 ?IsReadOnly@TextField@GFx@Scaleform@@QEBA_NXZ	1425b9b10	func
 ?IsSelectable@TextField@GFx@Scaleform@@QEBA_NXZ	1425b9b50	func
+?RegisterClassTraits@VM@AS3@GFx@Scaleform@@QEAAXAEAVTraits@ClassTraits@234@@Z	1425210e0	func
