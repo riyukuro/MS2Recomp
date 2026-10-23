@@ -1907,7 +1907,16 @@ MS2_CHECK_SIZE(CNMFUSFileUploadEventReceivedEvent, 0x48);
 class CNMFUSSendFileFunc : public CNMFunc
 {
 public:
+    CNMFUSSendFileFunc();
+    CNMFUSSendFileFunc(unsigned int serial, const char* path);
     virtual ~CNMFUSSendFileFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     char m_30[0x108]; // +0x30
 };
