@@ -108,3 +108,9 @@ unsigned int CNMReportInfo::Decode(CNMSerializableDecoder* pDecoder, CNMStream*)
     reinterpret_cast<ReadBytes>(vtable[9])(pDecoder, m_5e24, 0x40);
     return static_cast<unsigned int>(FUN_1415fb750(pDecoder));
 }
+
+// MS2-FUNCTIONAL 0x1415722e0: initializes the report signature and zeroes its fixed-size payload fields.
+// @0x1415722e0
+CNMReportInfo::CNMReportInfo() : CNMSerializable(0x7269,1,1),m_10(0),m_14(0),m_18(0),m_1c(0),m_20{},m_60{},m_1000{},m_5e20(0),m_5e24{} {}
+
+// MS2-PIN: ??0CNMReportInfo@@QEAA@XZ 0x1415722e0 ; recovered report info constructor

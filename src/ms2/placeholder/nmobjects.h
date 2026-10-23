@@ -347,6 +347,7 @@ MS2_CHECK_SIZE(CNMNotifyEvent, 0x848);
 class CNMReportInfo : public CNMSerializable
 {
 public:
+    CNMReportInfo();
     virtual ~CNMReportInfo() = default;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
