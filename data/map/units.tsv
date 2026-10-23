@@ -1,6 +1,6 @@
 #start	end	cpp	confidence	nfuncs	section	note
 140001020	140001690	unit_140001020	none	10	text	
-140001690	140002780	unit_140001690	none	29	text	
+140001690	140002780	sfr_video_04	none	29	text	sfr25 10-23: Scaleform gap plan: GFx Video registration/CreateInstance glue (was blocked unit_140001690)
 140002780	140002930	unit_140002780	none	3	text	
 140002930	14000e470	sfr_video_01	none	300	text	sfr0 10-20: Scaleform 4.1.18 recovery, Video
 14000e470	140016b50	sfr_video_02	none	262	text	sfr0 10-20: Scaleform 4.1.18 recovery, Video
@@ -694,6 +694,8 @@
 140142910	140146150	sfr_as3di_03	none	300	di	sfr0 10-20: Scaleform 4.1.18 recovery, AS3 di
 140146150	140149990	sfr_as3di_04	none	300	di	sfr0 10-20: Scaleform 4.1.18 recovery, AS3 di
 140149990	14014c8e0	sfr_as3di_05	none	250	di	sfr0 10-20: Scaleform 4.1.18 recovery, AS3 di
+14014cc20	14014ce60	sfr_gfx_13	none	9	di	sfr25 10-23: Scaleform gap plan: GFx static initialisers (unowned .text$di)
+140157e80	140157faf	sfr_gfx_13	none	5	di	sfr25 10-23: Scaleform gap plan: GFx static initialisers (unowned .text$di)
 1401580a0	14016da90	?\achievecondition.cpp	low	682	mn	
 14016da90	14016fda0	?\adbannerdata.cpp	low	65	mn	
 14016fda0	140195470	?\additionalactionadditional.cpp	low	1452	mn	
@@ -1068,7 +1070,7 @@
 140a54160	140a571b0	?\fielddatacli.cpp	low	32	mn	
 140a571b0	140a58820	?\gameoptiongamepad.cpp	low	47	mn	
 140a58820	140a5bb10	client\ms2\asyncimageloader.cpp	high	132	mn	
-140a5bb10	140a5c650	?\gfxlogger.cpp	low	25	mn	dir client\ms2
+140a5bb10	140a5c650	sfr_gfx_10	none	25	mn	sfr25 10-23: Scaleform gap plan: GFxLogger (Scaleform::Log) + RefCount/Log base COMDATs (was ?\gfxlogger.cpp)
 140a5c650	140a6d890	client\ms2\inventory.cpp	high	276	mn	
 140a6d890	140a6e830	?\jobsystemcli.cpp	low	20	mn	dir client\ms2
 140a6e830	140a702f0	?\lapenshardslot.cpp	low	27	mn	dir client\ms2
@@ -2350,13 +2352,14 @@
 1422f7310	1422f74c0	?\asscene.cpp	low	7	mn	gfx1 10-20: gfxui lib TU (ASScene)
 1422f74c0	1422f77b0	?\asvideo.cpp	low	10	mn	gfx1 10-20: gfxui lib TU (ASVideo)
 1422f77b0	1422f8c70	unit_1422f77b0	low	37	mn	gfx1 10-20: gfxui lib TU (non-virtual cache class (ctor 0x1422f77b0/dtor 0x1422f77f0 called from GFxService))
-1422f8c70	1422fe810	?\fontconfig.cpp	low	195	mn	gfx1 10-20: gfxui lib TU (FontConfig/FontTranslator/GFx::Translator)
+1422f8c70	1422fe810	sfr_gfx_11	none	195	mn	sfr25 10-23: Scaleform gap plan: FontConfigParser / FontTranslator / FontConfigSet (was blocked ?\fontconfig.cpp)
 1422fe810	142300880	?\ms2videosoundsystemdx8.cpp	low	64	mn	gfx1 10-20: gfxui lib TU (Scaleform::GFx::Video::MS2VideoSoundSystemDX8/MS2VideoSoundDX8)
 142300880	142301060	?\notifyhandler.cpp	low	22	mn	gfx1 10-20: gfxui lib TU (NotifyHandler)
 142301060	142301ff0	?\notifybinding.cpp	low	19	mn	gfx1 10-20: gfxui lib TU (NotifyBinding)
 142301ff0	142302df0	?\notifydragslot.cpp	low	24	mn	gfx1 10-20: gfxui lib TU (NotifyDragSlot)
 142302df0	142303440	?\notifyswfentity.cpp	low	7	mn	gfx1 10-20: gfxui lib TU (NotifySwfEntity)
 142303440	142303963	?\nigfxoverlayclick.cpp	low	31	mn	gfx1 10-20: gfxui lib TU (NiGFxOverlayClick ctor/dtor + inline NiRenderClick/GFxRenderer/AtlasRecord tail)
+1423b1920	1423b1d3d	sfr_gfx_12	none	2	mn	sfr25 10-23: Scaleform gap plan: XML::ParserExpat vfuncs
 1423c8a50	1423c8fa0	sfr_ime_01	none	6	mn	sfr0 10-20: Scaleform 4.1.18 recovery, IME (GFx_AS2Support,AS3_All,GFx_AS3Support,AS2_All,GFx_LoaderImpl,AS2_NetStream,...)
 1423c8fa0	1423ca350	sfr_as2_01	none	20	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS2 (AS2_All,GFx_AS2Support,AS2_NetStream,GFx_AS3Support,AS3_All)
 1423ca350	1423dbde0	sfr_ime_01	none	183	mn	sfr0 10-20: Scaleform 4.1.18 recovery, IME (GFx_AS2Support,AS3_All,GFx_AS3Support,AS2_All,GFx_LoaderImpl,AS2_NetStream,...)
@@ -2481,6 +2484,8 @@
 1427439d0	142743db0	sfr_d3d9_01	none	8	mn	sfr0 10-20: Scaleform 4.1.18 recovery, D3D9 (D3D9_HAL,D3D9_Texture,D3D9_MeshCache,D3D9_Shader,D3D9_HALSetup,D3D9_ShaderDescs,...)
 142743db0	142744560	sfr_as2_01	none	7	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS2 (AS2_All,GFx_AS2Support,AS2_NetStream,GFx_AS3Support,AS3_All)
 142744560	142746480	sfr_as3_22	none	41	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS3 (AS3_All,AS3_Obj_Utils_All,Render_FontProviderHUD,GFx_PlayerTasks,Text_StyleSheet,GFx_StaticText,...)
+142747bc0	142747d98	sfr_gfx_12	none	4	mn	sfr25 10-23: Scaleform gap plan: Lock-owning GFx object
+142748230	1427485e6	sfr_gfx_12	none	7	mn	sfr25 10-23: Scaleform gap plan: Sound::SoundInfo
 1428eb050	1428fdc00	sfr_as2_01	none	172	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS2 (AS2_All,GFx_AS2Support,AS2_NetStream,GFx_AS3Support,AS3_All)
 1428fdc00	142917bf0	sfr_as2_02	none	300	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS2 (AS2_All)
 142917bf0	142929590	sfr_as2_03	none	300	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS2 (AS2_All)
@@ -2491,4 +2496,7 @@
 1429a2820	1429a3700	sfr_kernel_03	none	22	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Kernel (HeapPT_AllocEngine,SF_MemItem,HeapPT_FreeBin,HeapPT_Root,SF_AllocAddr,HeapPT_AllocBitSet2,...)
 1429a3700	1429a4d50	sfr_render_07	none	24	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Render (Render_TextMeshProvider,Render_MeshCache,Render_GlyphQueue,Render_CacheEffect,Render_TextPrimitiveBundle,Render_BufferGeneric,...)
 1429a4d50	1429a8c70	sfr_gfx_09	none	198	mn	sfr0 10-20: Scaleform 4.1.18 recovery, GFx core (XML_Object,XML_Document,XML_DOM,AS2_All,AS2_Xml)
+142c98f10	142c99d55	sfr_gfx_14	none	57	mn	sfr25 10-23: Scaleform gap plan: GFx static init / atexit thunks (unowned tail)
+142cc9300	142cc990f	sfr_gfx_14	none	48	mn	sfr25 10-23: Scaleform gap plan: GFx static init / atexit thunks (unowned tail)
+142cca370	142cca4e6	sfr_gfx_14	none	5	mn	sfr25 10-23: Scaleform gap plan: GFx static init / atexit thunks (unowned tail)
 142ccb000	142ccd143	sfr_cri_03	none	20	mn	sfr0 10-20: Scaleform 4.1.18 recovery, CRI
