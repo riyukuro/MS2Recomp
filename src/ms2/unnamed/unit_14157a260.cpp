@@ -18,6 +18,10 @@ extern void FUN_1415f9990(void*);
 extern int FUN_1415fb750(void*);
 extern int FUN_1415fb6d0(void*);
 
+// MS2-FUNCTIONAL 0x14157a260: initializes the fixed fields and byte arrays of custom notification data.
+// @0x14157a260
+CNMCustomNotifyData::CNMCustomNotifyData() : CNMSerializable(0x636e,1,1),m_10(0),m_14(0),m_18(0),m_20(0),m_24(0),m_28(0),m_30(0),m_34(0),m_38{},m_78{},m_b8{},m_1b8(0),m_1ba(0),m_1bc{},m_1be(0),m_1c0{},m_1c8(0) {}
+
 // MS2-FUNCTIONAL 0x14157a360: uses opaque storage for the temporary encoder; payload behavior is preserved.
 // @0x14157a360
 unsigned int CNMCustomNotifyData::EncodeFramed(CNMStream* pStream)
@@ -121,3 +125,5 @@ unsigned int CNMCustomNotifyData::Decode(CNMSerializableDecoder* pDecoder, CNMSt
     m_1c8 = static_cast<int>(reinterpret_cast<Read32>(vtable[3])(pDecoder));
     return static_cast<unsigned int>(FUN_1415fb750(pDecoder));
 }
+
+// MS2-PIN: ??0CNMCustomNotifyData@@QEAA@XZ 0x14157a260 ; recovered custom notification data constructor

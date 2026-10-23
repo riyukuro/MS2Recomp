@@ -146,6 +146,7 @@ MS2_CHECK_SIZE(CNMCreateChatRoomFunc, 0x878);
 class CNMCustomNotifyData : public CNMSerializable
 {
 public:
+    CNMCustomNotifyData();
     virtual ~CNMCustomNotifyData() = default;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
