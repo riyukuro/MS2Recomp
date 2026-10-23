@@ -681,7 +681,15 @@ MS2_CHECK_SIZE(CNMAddFriendToCategoryFunc, 0x50);
 class CNMAppendRejectedUserFunc : public CNMFunc
 {
 public:
+    CNMAppendRejectedUserFunc(); // 0x14158c3c0
+    CNMAppendRejectedUserFunc(const CNMRejectedUser* user); // 0x14158c430
     virtual ~CNMAppendRejectedUserFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMRejectedUser m_30; // +0x30
 };
