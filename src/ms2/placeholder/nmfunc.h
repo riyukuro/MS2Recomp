@@ -1201,6 +1201,22 @@ MS2_CHECK_SIZE(CNMSetServerInfoFunc::ServerAddress, 0x10);
 MS2_CHECK_SIZE(CNMSetServerInfoFunc::RequestInfo, 0x20);
 MS2_CHECK_SIZE(CNMSetServerInfoFunc, 0x48);
 
+class CNMWriteToWiselogFunc : public CNMFunc
+{
+public:
+    CNMWriteToWiselogFunc();
+    explicit CNMWriteToWiselogFunc(const char* text);
+    virtual ~CNMWriteToWiselogFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    char m_text[0x400]; // +0x30
+};
+MS2_CHECK_SIZE(CNMWriteToWiselogFunc, 0x430);
+
 // Scoped critical-section lock (name invented): enters on construction, leaves on destruction.
 class CNMCSLock
 {
