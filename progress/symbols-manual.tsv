@@ -8489,3 +8489,6 @@ DAT_143ffd504	143ffd504	data
 ?Set__proto__@Object@AS2@GFx@Scaleform@@UEAAXPEAVASStringContext@234@PEAV1234@@Z	140007ba0	func
 ?Unwatch@ObjectInterface@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@@Z	142992830	func
 ?Watch@ObjectInterface@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@AEBVFunctionRef@234@AEBVValue@234@@Z	142994e00	func
+?DeleteMember@ArrayObject@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@@Z	1429385f0	func
+?ExecuteForEachChild_GC@ArrayObject@AS2@GFx@Scaleform@@MEBAXPEAV?$RefCountCollector@$0BED@@234@W4OperationGC@?$RefCountBaseGC@$0BED@@234@@Z	142941160	func
+?GetObjectType@ArrayObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	142954130	func
