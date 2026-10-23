@@ -29,7 +29,17 @@ MS2_CHECK_SIZE(CNMEvent, 0x28);
 class CNMChannelMessage : public CNMSerializable
 {
 public:
+    CNMChannelMessage();
+    CNMChannelMessage(const CNMChannelMessage& r);
+    CNMChannelMessage(const void* record, int messageType);
+    CNMChannelMessage& operator=(const CNMChannelMessage& r);
     virtual ~CNMChannelMessage() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     unsigned char m_10[0x10];                         // +0x10 (not recovered)
     CNMStr<0x40> m_20;                                // +0x20
@@ -699,7 +709,15 @@ MS2_CHECK_SIZE(CNMAppendRejectedUserFunc, 0xf8);
 class CNMAttachToNMCOServerFunc : public CNMFunc
 {
 public:
+    CNMAttachToNMCOServerFunc();
+    CNMAttachToNMCOServerFunc(int a, int b, int c, int d, int e);
     virtual ~CNMAttachToNMCOServerFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_30; // +0x30
     int m_34; // +0x34
@@ -778,7 +796,16 @@ MS2_CHECK_SIZE(CNMCHBanUserFunc, 0x38);
 class CNMChannelInfo : public CNMSerializable
 {
 public:
+    CNMChannelInfo();
+    CNMChannelInfo(const CNMChannelInfo& r);
+    CNMChannelInfo& operator=(const CNMChannelInfo& r);
     virtual ~CNMChannelInfo() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_10; // +0x10
     int m_14; // +0x14
@@ -802,7 +829,17 @@ MS2_CHECK_SIZE(CNMChannelInfo, 0x58);
 class CNMClientChannelInfo : public CNMChannelInfo
 {
 public:
+    CNMClientChannelInfo();
+    CNMClientChannelInfo(const CNMClientChannelInfo& r);
+    CNMClientChannelInfo(const CNMChannelInfo& r);
+    CNMClientChannelInfo(const void* key, int a, int b);
     virtual ~CNMClientChannelInfo() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_58; // +0x58
     int m_5c; // +0x5c
@@ -1387,7 +1424,15 @@ MS2_CHECK_SIZE(CNMChannelMemberInfoEvent, 0x60);
 class CNMChannelMemberInfoList : public CNMSerializable
 {
 public:
+    CNMChannelMemberInfoList();
+    CNMChannelMemberInfoList(const CNMChannelMemberInfoList& r);
     virtual ~CNMChannelMemberInfoList() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     std::vector<CNMChannelMemberInfo> m_10; // +0x10
 };
@@ -1595,7 +1640,17 @@ MS2_CHECK_SIZE(CNMConfirmNewFriendFunc, 0x40);
 class CNMConnConfig : public CNMSerializable
 {
 public:
+    CNMConnConfig();
+    CNMConnConfig(const char* host, unsigned short port, const char* user, unsigned short mode, unsigned char flags, const char* token, unsigned short channel);
+    CNMConnConfig(const CNMConnConfig& r);
+    CNMConnConfig& operator=(const CNMConnConfig& r);
     virtual ~CNMConnConfig() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     char m_10[0x20]; // +0x10
     short m_30; // +0x30
@@ -1706,7 +1761,15 @@ MS2_CHECK_SIZE(CNMDeleteFriendFromCategoryFunc, 0x50);
 class CNMDetachFromNMCOServerFunc : public CNMFunc
 {
 public:
+    CNMDetachFromNMCOServerFunc();
+    CNMDetachFromNMCOServerFunc(int id);
     virtual ~CNMDetachFromNMCOServerFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_30; // +0x30
     int m_34; // +0x34
@@ -2264,7 +2327,14 @@ MS2_CHECK_SIZE(CNMGetConfigFunc, 0x80);
 class CNMGetConnConfigFunc : public CNMFunc
 {
 public:
+    CNMGetConnConfigFunc();
     virtual ~CNMGetConnConfigFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMConnConfig m_30; // +0x30
 };
@@ -2969,7 +3039,15 @@ MS2_CHECK_SIZE(CNMRefreshMessageEvent, 0x30);
 class CNMRegisterCallbackFunc : public CNMFunc
 {
 public:
+    CNMRegisterCallbackFunc();
+    CNMRegisterCallbackFunc(const void* pCallback, int nFlags);
     virtual ~CNMRegisterCallbackFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     long long m_30; // +0x30
     int m_38; // +0x38
@@ -3235,7 +3313,15 @@ MS2_CHECK_SIZE(CNMRequestWBSessionFunc, 0x50);
 class CNMResetCallbackFunc : public CNMFunc
 {
 public:
+    CNMResetCallbackFunc();
+    explicit CNMResetCallbackFunc(unsigned long long callback);
     virtual ~CNMResetCallbackFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     long long m_30; // +0x30
 };
@@ -3344,7 +3430,15 @@ MS2_CHECK_SIZE(CNMSetCodePageFunc, 0x38);
 class CNMSetConnConfigFunc : public CNMFunc
 {
 public:
+    CNMSetConnConfigFunc();
+    explicit CNMSetConnConfigFunc(const CNMConnConfig& config);
     virtual ~CNMSetConnConfigFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMConnConfig m_30; // +0x30
 };
@@ -3427,7 +3521,15 @@ MS2_CHECK_SIZE(CNMSpecialEvent, 0x130);
 class CNMStartStandAloneMsgFunc : public CNMFunc
 {
 public:
+    CNMStartStandAloneMsgFunc();
+    explicit CNMStartStandAloneMsgFunc(const char* message);
     virtual ~CNMStartStandAloneMsgFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     char m_30[0x400]; // +0x30
 };

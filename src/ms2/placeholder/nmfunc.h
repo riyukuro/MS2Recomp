@@ -76,6 +76,9 @@ public:
     char* m_p;
 };
 
+extern void* FUN_1415e5920(void*);
+template<> inline CNMStr<0x1000>::CNMStr() : m_p(nullptr) { FUN_1415e5920(this); }
+
 // The library's singleton dispatcher (RTTI CNMManager). Only the two calls the request wrappers make.
 class CNMManager
 {
@@ -1060,8 +1063,15 @@ MS2_CHECK_SIZE(CNMSetSessionValueFunc, 0x158);
 class CNMBringForwardStandAloneMsgFunc : public CNMFunc
 {
 public:
+    CNMBringForwardStandAloneMsgFunc();
     CNMBringForwardStandAloneMsgFunc(const char* szName);
     virtual ~CNMBringForwardStandAloneMsgFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     char m_szName[0x400];                                       // +0x30
 };
