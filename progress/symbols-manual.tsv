@@ -9031,3 +9031,5 @@ DAT_143fe8248	143fe8248	data
 DAT_143fe8250	143fe8250	data
 PTR_FUN_143a485d8	143a485d8	data
 PTR_FUN_143a48608	143a48608	data
+?MakeInstanceText@XML@fl@InstanceTraits@AS3@GFx@Scaleform@@QEAA?AV?$Pickable@VXMLText@fl@Instances@AS3@GFx@Scaleform@@@6@AEAV123456@AEBVASString@56@PEAV12Instances@456@@Z	14241b7a0	func
+?Parse@XMLParser@AS3@GFx@Scaleform@@QEAA?AVCheckResult@234@AEBVStringDataPtr@4@AEA_K_N@Z	14241d6f0	func
