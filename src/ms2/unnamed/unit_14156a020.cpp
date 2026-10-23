@@ -1272,3 +1272,5 @@ unsigned int FUN_14156bd90(long long* p)
 // MS2-FUNCTIONAL 0x14156bd50: finalizes a framed encoder and releases its temporary buffer.
 // @0x14156bd50
 void FUN_14156bd50(void* p) { FUN_14156bd90(reinterpret_cast<long long*>(p)); FUN_14156a840(); }
+
+// MS2-PIN: ??0CNMVirtualFriendInfo@@QEAA@XZ 0x14156da70 ; recovered virtual friend constructor
