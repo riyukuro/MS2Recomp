@@ -8908,3 +8908,5 @@ DAT_143b27a68	143b27a68	data
 ?IsReadOnly@TextField@GFx@Scaleform@@QEBA_NXZ	1425b9b10	func
 ?IsSelectable@TextField@GFx@Scaleform@@QEBA_NXZ	1425b9b50	func
 ?RegisterClassTraits@VM@AS3@GFx@Scaleform@@QEAAXAEAVTraits@ClassTraits@234@@Z	1425210e0	func
+?GAS_Invoke@AS2@GFx@Scaleform@@YA_NPEBDPEAVValue@123@PEAVObjectInterface@123@PEAVEnvironment@123@HH@Z	142946fc0	func
+?GAS_InvokeParsed@AS2@GFx@Scaleform@@YA_NPEBDPEAVValue@123@PEAVObjectInterface@123@PEAVEnvironment@123@0PEAD@Z	142947800	func
