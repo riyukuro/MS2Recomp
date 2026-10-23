@@ -1126,7 +1126,16 @@ MS2_CHECK_SIZE(CNMChangeMyLevelFunc, 0x40);
 class CNMChangeMyPositionFunc : public CNMFunc
 {
 public:
+    CNMChangeMyPositionFunc(); // 0x141580080
+    explicit CNMChangeMyPositionFunc(long long position); // 0x1415800f0
+    CNMChangeMyPositionFunc(long long key, long long position); // 0x1415801a0
     virtual ~CNMChangeMyPositionFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     NMKey64 m_30; // +0x30
     char m_38[0x40]; // +0x38
