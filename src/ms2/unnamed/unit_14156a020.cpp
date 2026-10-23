@@ -17,6 +17,19 @@ extern void* FUN_1415cab60(void*, unsigned char);
 extern void FUN_1415fa380(void*);
 extern unsigned int FUN_1415fa0c0(void*);
 extern unsigned char FUN_1415fb630(void*);
+extern void FUN_14156a080(void*);
+extern void FUN_14156a260(void*, int);
+
+// @0x14156a020
+long long* FUN_14156a020(long long* p)
+{
+    *p = 0;
+    reinterpret_cast<unsigned int*>(p)[2] = 0;
+    reinterpret_cast<unsigned int*>(p)[8] = 0;
+    FUN_14156a5a0(p);
+    FUN_14156a640(p, 0x400);
+    return p;
+}
 
 // MS2-FUNCTIONAL 0x14156a0d0: codec operations use recovered vtable slots; their opaque interface prevents an exact call-frame match.
 // @0x14156a0d0
@@ -698,6 +711,59 @@ unsigned int CNMSerializableDecoder::ReadBytes(unsigned char* pBuffer, unsigned 
 unsigned long long CNMSerializableDecoder::ReadU64Alias()
 {
     return ReadU64();
+}
+
+// @0x14156c910
+unsigned int CNMSerializable::Encode(CNMEncoder*, CNMStream*)
+{
+    return 0;
+}
+
+// @0x14156c930
+unsigned int CNMSerializable::EncodeFramed(CNMStream*)
+{
+    return 0;
+}
+
+// @0x14156c950
+unsigned int CNMSerializable::EncodeDispatch(CNMEncoder*, CNMStream*)
+{
+    return 0;
+}
+
+// @0x14156c970
+unsigned int CNMSerializable::Decode(CNMSerializableDecoder*, CNMStream*)
+{
+    return 0;
+}
+
+// @0x14156c990
+unsigned int CNMSerializable::DecodeFramed(CNMStream*)
+{
+    return 0;
+}
+
+// @0x14156c9b0
+unsigned int CNMSerializable::DecodeDispatch(CNMSerializableDecoder*, CNMStream*)
+{
+    return 0;
+}
+
+// MS2-FUNCTIONAL 0x14156c9d0: copies through the original virtual framed encoder/decoder calls; stream storage remains opaque.
+// @0x14156c9d0
+CNMSerializable* CNMSerializable::CopyFrom(CNMSerializable* pSrc)
+{
+    alignas(8) unsigned char streamStorage[0x38]{};
+    FUN_14156a020(reinterpret_cast<long long*>(streamStorage));
+    void** srcVtable = *reinterpret_cast<void***>(pSrc);
+    using EncodeMethod = unsigned int(__fastcall*)(CNMSerializable*, CNMStream*);
+    reinterpret_cast<EncodeMethod>(srcVtable[2])(pSrc, reinterpret_cast<CNMStream*>(streamStorage));
+    FUN_14156a260(streamStorage, 0);
+    void** dstVtable = *reinterpret_cast<void***>(this);
+    using DecodeMethod = unsigned int(__fastcall*)(CNMSerializable*, CNMStream*);
+    reinterpret_cast<DecodeMethod>(dstVtable[5])(this, reinterpret_cast<CNMStream*>(streamStorage));
+    FUN_14156a080(streamStorage);
+    return this;
 }
 
 // MS2-FUNCTIONAL: delegates to the stream reset implementation at 0x14156a5a0.
