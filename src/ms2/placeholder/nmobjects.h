@@ -1433,6 +1433,8 @@ MS2_CHECK_SIZE(CNMCreateChannelFunc, 0x30);
 class CNMMessageData : public CNMSerializable
 {
 public:
+    CNMMessageData();
+    CNMMessageData(int type, const char* text);
     virtual ~CNMMessageData() = default;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;

@@ -15,6 +15,14 @@ extern void FUN_14156ae30(void*, const void*);
 extern void FUN_1415f9990(void*);
 extern int FUN_1415fb750(void*);
 extern int FUN_1415fb6d0(void*);
+extern void FUN_1415fc140(void*, unsigned int, const void*, ...);
+
+// MS2-FUNCTIONAL 0x141578bf0: initializes an empty message-data payload.
+// @0x141578bf0
+CNMMessageData::CNMMessageData() : CNMSerializable(0x6d64,1,1),m_10(0),m_14{} {}
+// MS2-FUNCTIONAL 0x141578c50: initializes the message type and copies its text payload.
+// @0x141578c50
+CNMMessageData::CNMMessageData(int type,const char*text) : CNMSerializable(0x6d64,1,1),m_10(type),m_14{} {m_bFlag=0xfe;FUN_1415fc140(m_14,0x1000,text);}
 
 // MS2-FUNCTIONAL 0x141578cd0: uses opaque stack storage for the temporary encoder; payload encoding behavior is preserved.
 // @0x141578cd0
@@ -92,3 +100,6 @@ unsigned int CNMMessageData::Decode(CNMSerializableDecoder* pDecoder, CNMStream*
     reinterpret_cast<ReadBytes>(vtable[9])(pDecoder, m_14, 0x1000);
     return static_cast<unsigned int>(FUN_1415fb750(pDecoder));
 }
+
+// MS2-PIN: ??0CNMMessageData@@QEAA@XZ 0x141578bf0 ; recovered message payload constructor
+// MS2-PIN: ??0CNMMessageData@@QEAA@HPEBD@Z 0x141578c50 ; recovered typed payload constructor
