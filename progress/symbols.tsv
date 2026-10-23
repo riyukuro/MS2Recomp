@@ -207222,7 +207222,6 @@ DirectSoundCreate8	1423915b0	func
 ?GetSoundStream@LoadTaskData@MovieDataDef@GFx@Scaleform@@QEBAPEAVSoundStreamDef@34@XZ	1425d1460	func
 ?GetSoundStream@MovieDataDef@GFx@Scaleform@@UEBAPEAVSoundStreamDef@23@XZ	1425d1470	func
 ?GetStateBagImpl@MovieDefImpl@GFx@Scaleform@@UEBAPEAVStateBag@23@XZ	1425d1480	func
-?GetStats@ResourceReport@GFx@Scaleform@@UEAAXPEAVStatBag@3@_N@Z	1425d14b0	func
 ?GetType@MovieDataDef@GFx@Scaleform@@UEBA?AW4CharacterDefType@CharacterDef@23@XZ	1425d14e0	func
 ?GetVersion@MovieDataDef@GFx@Scaleform@@UEBAIXZ	1425d1500	func
 ?GetVersion@MovieDefImpl@GFx@Scaleform@@UEBAIXZ	1425d1510	func
