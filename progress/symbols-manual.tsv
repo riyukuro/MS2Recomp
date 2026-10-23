@@ -8421,3 +8421,9 @@ compress2	142724100	func
 ??0CNMAvatarFullInfo@@QEAA@XZ	14156ce30	func
 ?Format@ImageGlyphVertex@Render@Scaleform@@2UVertexFormat@23@A	143a30328	data
 ??0CNMSessionMemberInfo@@QEAA@XZ	141576260	func
+??0Object@AS2@GFx@Scaleform@@QEAA@PEAVASStringContext@123@PEAV0123@@Z	14291f790	func
+?AddInterface@GASPrototypeBase@AS2@GFx@Scaleform@@IEAAXPEAVASStringContext@234@HPEAVFunctionObject@234@@Z	14292f250	func
+?GetImageResourceByLinkageId@MovieImpl@GFx@Scaleform@@QEAA?AV?$Ptr@VImageResource@GFx@Scaleform@@@3@PEAVMovieDefImpl@23@PEBD@Z	14256f370	func
+?GetObjectType@Object@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	1429542c0	func
+?SetImage@BitmapData@AS2@GFx@Scaleform@@QEAAXPEAVEnvironment@234@PEAVImageResource@34@PEAVMovieDef@34@@Z	1429818e0	func
+?ToFunction@Object@AS2@GFx@Scaleform@@UEAA?AVFunctionRef@234@XZ	142991170	func
