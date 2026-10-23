@@ -479,13 +479,43 @@ def _greedy(todo, xok, match=None):
     return out
 
 
+def _resolver(obj):
+    """resolve(n, va): (key, exe VA) of every REL32 relocation of obj function n placed at exe VA va"""
+    exe = G["exe"]
+    img, base = exe.img, exe.base
+
+    def resolve(n, va):
+        data, fields, _ = obj.function(obj.by_name[n])
+        rva = va - base
+        for fo, extra, add, key in _reloc_targets(obj, data, fields, True):
+            yield key, va + fo + 4 + extra + struct.unpack_from("<i", img, rva + fo)[0] - add
+    return resolve
+
+
+def _own_statics(obj, own, resolve):
+    """the obj's data keys (non-code targets) -> the one exe VA the unit's exact pairs `own` resolve them to (a key two
+    of them resolve differently is dropped)"""
+    dk = {}
+    for n, va in own.items():
+        if n in obj.by_name:
+            for key, tva in resolve(n, va):
+                if not obj.sec(key[1])["chars"] & 0x20:
+                    dk.setdefault(key, set()).add(tva)
+    return {key: vs.pop() for key, vs in dk.items() if len(vs) == 1}
+
+
 def _verify_job(job):
-    path, todo, xok = job
+    path, todo, xok, own = job if len(job) == 4 else job + ({},)
     try:
         obj = bm.Obj(path)
     except Exception:
         return path, xok
-    _greedy(todo, xok, lambda n, v: _match(obj, n, v))
+    # (2026-10-22 gb17) a block function that addresses a static of the obj somewhere other than the unit's own exact
+    # functions do is another TU's copy: atexit release thunks of static smart pointers are byte-identical, so a
+    # whole-layout fit can land on a neighbour TU's run (NiVisualTracker's ??__F?ms_sp* on NiMain's property defaults)
+    resolve = _resolver(obj)
+    dk = _own_statics(obj, own, resolve)
+    _greedy(todo, xok, lambda n, v: _match(obj, n, v) and all(dk.get(k, t) == t for k, t in resolve(n, v)))
     return path, xok
 
 
@@ -850,6 +880,7 @@ def assign_copies(res, cgroups, paths, j, log=print):
 # section are counted as a score (the exe TU's data layout may differ a little), used only to rank placements.
 BLOCK_SECS = (".text$di", ".text$yd")
 BLOCK_KEY = "blk7"
+BOK = "bok2"             # block verification cache (bok2: + own-static check, see _verify_job)
 
 
 def _block_layout(obj, secname):
@@ -1056,16 +1087,18 @@ def assign_blocks(res, paths, windows, j, log=print):
                 bp[k] += [(n, v) for (n, _, _), v in zip(lay, pos)]
                 break
     # verify exactly (unwind included); a placed function that differs stays a functional pair
-    vjobs = [(paths[k], [([n], [v]) for n, v in prs], res[k].get("bok", {})) for k, prs in bp.items()]
+    vjobs = [(paths[k], [([n], [v]) for n, v in prs], res[k].get(BOK, {}),
+              {n: va for n, va, ok, _ in res[k]["pairs"] + res[k].get("hpairs", []) if ok and n not in blkfn[k]})
+             for k, prs in bp.items()]
     vjobs = [jb for jb in vjobs if _greedy(jb[1], jb[2]) is None]
     if vjobs:
         byp = {paths[k]: k for k in bp}
         with Pool(max(1, j), initializer=_init) as p:
             for path, xok in p.imap_unordered(_verify_job, vjobs):
-                res[byp[path]]["bok"] = xok
+                res[byp[path]][BOK] = xok
     n_ok = 0
     for k, c in res.items():
-        xok = c.get("bok", {})
+        xok = c.get(BOK, {})
         c["bpairs"] = [[n, v, bool(xok.get(f"{n}@{v:x}")), "block"] for n, v in bp.get(k, ())]
         n_ok += sum(1 for p in c["bpairs"] if p[2])
     # an exact block pair supersedes copy pairs of the same function or exe VA
@@ -1102,12 +1135,7 @@ def _sub_job(job):
     except Exception:
         return path, out
     img, base = exe.img, exe.base
-
-    def resolve(n, va):
-        data, fields, _ = obj.function(obj.by_name[n])
-        rva = va - base
-        for fo, extra, add, key in _reloc_targets(obj, data, fields, True):
-            yield key, va + fo + 4 + extra + struct.unpack_from("<i", img, rva + fo)[0] - add
+    resolve = _resolver(obj)
     strong = None
     for sec, anchors in todo.items():
         lay = _block_layout(obj, sec)
@@ -1147,15 +1175,8 @@ def _sub_job(job):
             # (2026-10-22 gb15, sub6) and the TU's own statics those exact functions address: an atexit destructor
             # of a static smart pointer (`??__F?ms_sp...`) is one of hundreds of identical release thunks, told apart
             # only by the static it releases. A key two exact functions resolve differently is dropped.
-            dk = {}
-            for n, va in own.items():
-                if n in obj.by_name:
-                    for key, tva in resolve(n, va):
-                        if not obj.sec(key[1])["chars"] & 0x20:
-                            dk.setdefault(key, set()).add(tva)
-            for key, vs in dk.items():
-                if len(vs) == 1:
-                    strong.setdefault(key, vs.pop())
+            for key, tva in _own_statics(obj, own, resolve).items():
+                strong.setdefault(key, tva)
         for i, (n, off, data, fields, leaf, al) in enumerate(lay):
             if i in anc:
                 continue
