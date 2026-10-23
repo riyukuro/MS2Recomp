@@ -8427,3 +8427,5 @@ compress2	142724100	func
 ?GetObjectType@Object@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	1429542c0	func
 ?SetImage@BitmapData@AS2@GFx@Scaleform@@QEAAXPEAVEnvironment@234@PEAVImageResource@34@PEAVMovieDef@34@@Z	1429818e0	func
 ?ToFunction@Object@AS2@GFx@Scaleform@@UEAA?AVFunctionRef@234@XZ	142991170	func
+?GetObjectType@FunctionObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	14000ce70	func
+?ToFunction@FunctionObject@AS2@GFx@Scaleform@@UEAA?AVFunctionRef@234@XZ	142991140	func
