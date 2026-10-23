@@ -2915,7 +2915,15 @@ MS2_CHECK_SIZE(CNMGuildOnlineInfoExEvent, 0x90);
 class CNMInitializeFunc : public CNMFunc
 {
 public:
+    CNMInitializeFunc();
+    CNMInitializeFunc(int n30, int n34);
     virtual ~CNMInitializeFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_30; // +0x30
     int m_34; // +0x34
