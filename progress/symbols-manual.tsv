@@ -8875,3 +8875,5 @@ DAT_143b27a68	143b27a68	data
 ??0ArrayCtorFunction@AS2@GFx@Scaleform@@QEAA@PEAVASStringContext@123@@Z	142917d80	func
 ??0ExternalInterfaceCtorFunction@AS2@GFx@Scaleform@@QEAA@PEAVASStringContext@123@@Z	14291bc40	func
 ??0NumberCtorFunction@AS2@GFx@Scaleform@@QEAA@PEAVASStringContext@123@@Z	14291f2c0	func
+?StaticFunctionTable@MathCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213900	data
+??0MathCtorFunction@AS2@GFx@Scaleform@@QEAA@PEAVASStringContext@123@@Z	14291e210	func
