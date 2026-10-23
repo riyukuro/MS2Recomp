@@ -770,6 +770,7 @@ class CNMRejectedUser : public CNMSerializable
 {
 public:
     CNMRejectedUser() : CNMSerializable(0, 1, 1), m_character(), m_a8{} {}
+    CNMRejectedUser(const CNMCharacter* character, const char* details); // 0x141570530
     CNMRejectedUser(const CNMRejectedUser& r);
     virtual ~CNMRejectedUser() = default;
     CNMRejectedUser& operator=(const CNMRejectedUser& r);
