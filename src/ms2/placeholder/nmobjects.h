@@ -1384,7 +1384,15 @@ MS2_CHECK_SIZE(CNMConnConfig, 0x68);
 class CNMCreateChannelFunc : public CNMFunc
 {
 public:
+    CNMCreateChannelFunc(); // 0x14159c0c0
     virtual ~CNMCreateChannelFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 };
 MS2_CHECK_SIZE(CNMCreateChannelFunc, 0x30);
 
