@@ -15,6 +15,13 @@ extern void FUN_1415f9990(void*);
 extern int FUN_1415fb750(void*);
 extern int FUN_1415fb6d0(void*);
 
+// MS2-FUNCTIONAL 0x14157a830: initializes the serializable game-code record.
+// @0x14157a830
+CNMGameCode::CNMGameCode() : CNMSerializable(0x6763,1,1),m_nGameCode(0) {}
+// MS2-FUNCTIONAL 0x14157a870: initializes a game-code record with its supplied code.
+// @0x14157a870
+CNMGameCode::CNMGameCode(int code) : CNMSerializable(0x6763,1,1),m_nGameCode(code) {}
+
 // MS2-FUNCTIONAL 0x14157a8c0: uses opaque temporary encoder storage; serialized value and framing are preserved.
 // @0x14157a8c0
 unsigned int CNMGameCode::EncodeFramed(CNMStream* pStream)
@@ -86,3 +93,6 @@ unsigned int CNMGameCode::Decode(CNMSerializableDecoder* pDecoder, CNMStream*)
     m_nGameCode = static_cast<int>(reinterpret_cast<Read32>(vtable[3])(pDecoder));
     return static_cast<unsigned int>(FUN_1415fb750(pDecoder));
 }
+
+// MS2-PIN: ??0CNMGameCode@@QEAA@XZ 0x14157a830 ; recovered default constructor
+// MS2-PIN: ??0CNMGameCode@@QEAA@H@Z 0x14157a870 ; recovered value constructor
