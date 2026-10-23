@@ -598,7 +598,15 @@ MS2_CHECK_SIZE(CNMSendNoteMsgFunc, 0xf00);
 class CNMAddCategoryFunc : public CNMFunc
 {
 public:
+    CNMAddCategoryFunc(); // 0x141588e20
+    CNMAddCategoryFunc(long long key, long long name, int flags, int status); // 0x141588eb0
     virtual ~CNMAddCategoryFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     NMKey64 m_30; // +0x30
     char m_38[0x20]; // +0x38
