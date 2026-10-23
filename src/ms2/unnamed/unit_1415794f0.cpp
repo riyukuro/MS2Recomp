@@ -16,6 +16,10 @@ extern void FUN_1415f9990(void*);
 extern int FUN_1415fb750(void*);
 extern int FUN_1415fb6d0(void*);
 
+// MS2-FUNCTIONAL 0x1415794f0: initializes session request metadata and its two fixed-size strings.
+// @0x1415794f0
+CNMRequestSessionData::CNMRequestSessionData() : CNMSerializable(0x7273,1,1),m_10(0),m_14(0),m_18{},m_58{} {}
+
 // MS2-FUNCTIONAL 0x141579570: uses opaque stack storage for the temporary encoder; session request encoding behavior is preserved.
 // @0x141579570
 unsigned int CNMRequestSessionData::EncodeFramed(CNMStream* pStream)
@@ -96,3 +100,5 @@ unsigned int CNMRequestSessionData::Decode(CNMSerializableDecoder* pDecoder, CNM
     reinterpret_cast<ReadBytes>(vtable[9])(pDecoder, m_58, 0x40);
     return static_cast<unsigned int>(FUN_1415fb750(pDecoder));
 }
+
+// MS2-PIN: ??0CNMRequestSessionData@@QEAA@XZ 0x1415794f0 ; recovered session request data constructor

@@ -1929,7 +1929,16 @@ MS2_CHECK_SIZE(CNMGSSessionInfoEvent, 0x98);
 class CNMGSSetServingProcessIDFunc : public CNMFunc
 {
 public:
+    CNMGSSetServingProcessIDFunc(); // 0x1415a01a0
+    CNMGSSetServingProcessIDFunc(unsigned uSerialKey, unsigned uProcessId); // 0x1415a01f0
     virtual ~CNMGSSetServingProcessIDFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_30; // +0x30
     int m_34; // +0x34
@@ -2764,6 +2773,7 @@ MS2_CHECK_SIZE(CNMRequestNewsFunc, 0x30);
 class CNMRequestSessionData : public CNMSerializable
 {
 public:
+    CNMRequestSessionData();
     virtual ~CNMRequestSessionData() = default;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
