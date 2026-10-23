@@ -1,5 +1,5 @@
 // Recovered from low-confidence Ghidra output for the Nexon Messenger chat message record.
-// MS2-UNIT: unit_141572e00
+// MS2-UNIT: ?\nmchatmessage.cpp
 // MS2-RANGE: 0x1415727c0-0x141572e00 .text$mn
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
