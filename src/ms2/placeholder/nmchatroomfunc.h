@@ -30,8 +30,16 @@ MS2_CHECK_SIZE(CNMChatMessage, 0x670);
 class CNMCRRegisterCallbackFunc : public CNMFunc
 {
 public:
+    CNMCRRegisterCallbackFunc(); // 0x14159c950
     CNMCRRegisterCallbackFunc(unsigned uSerialKey, HWND hWnd, unsigned uMsg); // 0x14159c9b0
     virtual ~CNMCRRegisterCallbackFunc() = default;                       // 0x1415ec860
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     HWND m_hWnd;                                                // +0x30
     unsigned m_uMsg;                                            // +0x38
