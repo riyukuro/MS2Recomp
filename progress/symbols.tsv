@@ -205768,13 +205768,11 @@ DirectSoundCreate8	1423915b0	func
 ?AddRef@RefCountImpl@Scaleform@@QEAAXXZ	14257dc30	func
 ?AddRef@Unk_GFxHandleObj@@QEAAXXZ	14257dc30	func
 ?FUN_14257dc30@@YAXPEAX@Z	14257dc30	func
-?AddRef@RefCountVImpl@Scaleform@@UEAAXXZ	14257dc40	func
 ?CreateWeakProxy@RefCountWeakSupportImpl@Scaleform@@QEBAPEAVWeakPtrProxy@2@XZ	14257dc50	func
 ?FUN_14257dcb0@@YAXPEAX@Z	14257dcb0	func
 ?Release@RefCountImpl@Scaleform@@QEAAXXZ	14257dcb0	func
 ?Release@Unk_GFxHandleObj@@QEAAXXZ	14257dcb0	func
 ?Release@RefCountNTSImpl@Scaleform@@QEBAXXZ	14257dcd0	func
-?Release@RefCountVImpl@Scaleform@@UEAAXXZ	14257dcf0	func
 ??1Log@Scaleform@@UEAA@XZ	14257dd10	func
 ?DefaultLogMessageVarg@Log@Scaleform@@SAXVLogMessageId@2@PEBDPEAD@Z	14257dd40	func
 ?FormatLog@Log@Scaleform@@SAXPEADIVLogMessageId@2@PEBD0@Z	14257deb0	func
@@ -217389,7 +217387,6 @@ MS2_SF_Resource_vftable	143149880	data
 ??_7?$RefCountBaseV@VImage@Render@Scaleform@@$02@Scaleform@@6B@	1431498b8	data
 ??_7ImageBase@Render@Scaleform@@6B@	1431498d0	data
 ??_7Image@Render@Scaleform@@6B@	143149940	data
-??_7ImageDelegate@Render@Scaleform@@6B@	143149a28	data
 ??_7ImageDelegate@ImageResource@GFx@Scaleform@@6B@	143149b10	data
 ??_7ImageResource@GFx@Scaleform@@6B@	143149bf8	data
 ??_7DIPixelProvider@Render@Scaleform@@6B@	143149c28	data
@@ -218426,7 +218423,6 @@ MS2_SF_VideoCharacterDef_vftable	14318b778	data
 ??_7MemoryBufferZlibImage@GFx@Scaleform@@6B@	1431907e0	data
 ??_7ButtonDef@GFx@Scaleform@@6B@	1431914b0	data
 ??_7?$RefCountBase@VTextLayout@Render@Scaleform@@$0EO@@Scaleform@@6B@	143191890	data
-??_7?$RefCountBaseStatImpl@VRefCountImpl@Scaleform@@$0EO@@Scaleform@@6B@	143191890	data
 ??_7TextLayout@Render@Scaleform@@6B@	143191898	data
 ??_7MeshStagingNode@Render@Scaleform@@6B@	143191928	data
 ??_7?$RefCountBaseStatImpl@VRefCountImpl@Scaleform@@$0EG@@Scaleform@@6B@	143191940	data
