@@ -8838,3 +8838,8 @@ DAT_1431b9430	1431b9430	data
 ?TCN_ThisData@@3PEDVNodeData@TreeNode@Render@Scaleform@@ED	143b17228	data
 ?TCN_ChildNode@@3PEDVTreeNode@Render@Scaleform@@ED	143b17230	data
 ?OnVisit@GASTextSnapshotGlyphVisitor@AS2@GFx@Scaleform@@UEAAXXZ	14296d330	func
+?AddProperty@GASSharedObjectLoader@AS2@GFx@Scaleform@@UEAAXAEBVString@4@0W4ValueType@Value@34@@Z	142930480	func
+?PopArray@GASSharedObjectLoader@AS2@GFx@Scaleform@@UEAAXXZ	14296f0c0	func
+?PopObject@GASSharedObjectLoader@AS2@GFx@Scaleform@@UEAAXXZ	14296f260	func
+?PushArray@GASSharedObjectLoader@AS2@GFx@Scaleform@@UEAAXAEBVString@4@@Z	1429718b0	func
+?PushObject@GASSharedObjectLoader@AS2@GFx@Scaleform@@UEAAXAEBVString@4@@Z	142972190	func
