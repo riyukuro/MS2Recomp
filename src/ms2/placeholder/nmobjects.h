@@ -392,9 +392,21 @@ MS2_CHECK_SIZE(CNMLoginAuthFunc, 0x13c8);
 class CNMLoginNexonPassportFunc : public CNMFunc
 {
 public:
+    CNMLoginNexonPassportFunc();
+    CNMLoginNexonPassportFunc(const char* passport, unsigned long long token, unsigned int result);
     virtual ~CNMLoginNexonPassportFunc() = default;
 
-    unsigned char m_body[0x1018];
+    char m_30[0x1000];
+    int m_1030;
+    unsigned long long m_1038;
+    unsigned int m_1040;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 };
 MS2_CHECK_SIZE(CNMLoginNexonPassportFunc, 0x1048);
 
