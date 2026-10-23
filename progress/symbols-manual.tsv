@@ -9012,3 +9012,5 @@ DAT_143b27c64	143b27c64	data
 ??1SystemVertexFormat@Render@Scaleform@@UEAA@XZ	1426b90b0	func
 ?ShaderUniformNames@D3D9@Render@Scaleform@@3PAPEBDA	143a308a0	data
 D3DXGetShaderConstantTableEx	1428d8e24	func
+?GetStats@ViewStats@AMP@GFx@Scaleform@@QEAAXPEAVStatBag@4@_N@Z	142622740	func
+?SetCaptureThreadId@Context@ContextImpl@Render@Scaleform@@QEAAXPEAX@Z	142581220	func
