@@ -8748,3 +8748,4 @@ DAT_14313bc60	14313bc60	data
 ?ValueHash_FindIndexNoCase@AS2@GFx@Scaleform@@YA_JPEBV?$ASStringHash_GC@VValue@AS2@GFx@Scaleform@@@23@AEBUASStringNoCaseKey@23@@Z	142917130	func
 ?Compare@CompareAsStringInd@fl_vec@Instances@AS3@GFx@Scaleform@@QEBAJAEBVASString@56@0@Z	14255b4c0	func
 ?CompareFunct@Impl@AS3@GFx@Scaleform@@YAHAEAVVM@234@AEBVValue@234@11@Z	14255b5d0	func
+??0CNMGameCode@@QEAA@XZ	14157a830	func
