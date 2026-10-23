@@ -1596,7 +1596,15 @@ MS2_CHECK_SIZE(CNMDeleteCategoryFunc, 0x38);
 class CNMDeleteFriendFromCategoryFunc : public CNMFunc
 {
 public:
+    CNMDeleteFriendFromCategoryFunc(); // 0x141588470
+    CNMDeleteFriendFromCategoryFunc(const unsigned char* key, int category, int flag); // 0x141588500
     virtual ~CNMDeleteFriendFromCategoryFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     NMFriendKey m_key;
     int m_48; // +0x48
