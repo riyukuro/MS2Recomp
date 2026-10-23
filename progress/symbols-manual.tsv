@@ -8860,3 +8860,10 @@ DAT_1431b9430	1431b9430	data
 ?SetCandidateListFont@TextField@GFx@Scaleform@@QEAAXPEAVDisplayObject@23@@Z	1425bbd70	func
 ?HitTestTextNearPos@StaticTextSnapshotData@GFx@Scaleform@@QEBAHMMM@Z	1425e1840	func
 ??_7ClassCallConstruct@AS3@GFx@Scaleform@@6B@	14313f3c8	data
+?AvmButton_vftable@AS3@GFx@Scaleform@@3QBQEAXB	14317dbe0	data
+?AvmButton_vftable_30@AS3@GFx@Scaleform@@3QBQEAXB	14317dcb0	data
+?AvmButton_vftable_40@AS3@GFx@Scaleform@@3QBQEAXB	14317dd68	data
+?AvmStaticText_vftable@AS3@GFx@Scaleform@@3QBQEAXB	14317e9b8	data
+?AvmTextField_vftable@AS3@GFx@Scaleform@@3QBQEAXB	14317ea80	data
+?AvmTextField_vftable_30@AS3@GFx@Scaleform@@3QBQEAXB	14317eb50	data
+?AvmTextField_vftable_40@AS3@GFx@Scaleform@@3QBQEAXB	14317ec08	data
