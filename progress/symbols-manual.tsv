@@ -8434,3 +8434,4 @@ compress2	142724100	func
 ?Factors@Render@Scaleform@@3QBEB	14318fb30	data
 ?Format@RasterGlyphVertex@Render@Scaleform@@2UVertexFormat@23@A	143a2fe50	data
 ?GetImage@GlyphCache@Render@Scaleform@@QEAAPEAVImage@23@I@Z	1426c6380	func
+?SpriteCreateGradient@AvmSprite@AS2@GFx@Scaleform@@CAXAEBVFnCall@234@PEAVComplexFill@Render@4@@Z	14298efe0	func
