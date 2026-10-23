@@ -949,9 +949,16 @@ MS2_CHECK_SIZE(CNMExecuteNGMLauncherFunc, 0x8d0);
 class CNMExecuteNGMInstallerFunc : public CNMFunc
 {
 public:
+    CNMExecuteNGMInstallerFunc();
     CNMExecuteNGMInstallerFunc(int nGameCode, int n2, int n3, const char* sz4, const char* sz5, const char* sz6,
                                const char* sz7, int n8);
     virtual ~CNMExecuteNGMInstallerFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_nGameCode;                                            // +0x30
     int m_n34;
