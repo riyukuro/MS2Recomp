@@ -1093,7 +1093,15 @@ MS2_CHECK_SIZE(CNMChangeFriendMemoExFunc, 0x68);
 class CNMChangeFriendMemoFunc : public CNMFunc
 {
 public:
+    CNMChangeFriendMemoFunc(); // 0x141587740
+    CNMChangeFriendMemoFunc(long long key, long long memo); // 0x1415877b0
     virtual ~CNMChangeFriendMemoFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     long long m_30; // +0x30
     char m_38[0x20]; // +0x38
