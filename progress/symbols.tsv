@@ -211419,8 +211419,8 @@ ImmIsUIMessageA	1428d8dca	func
 ?IsLeapYear@AS2@GFx@Scaleform@@YA_NH@Z	142965c80	func
 ?IsPath@Environment@AS2@GFx@Scaleform@@SA_NAEBVASString@34@@Z	142965d10	func
 ?IsRectValid@AS2@GFx@Scaleform@@YA_NAEBV?$Rect@N@Render@3@@Z	142965db0	func
-?IsVerboseActionErrors@FnCall@AS2@GFx@Scaleform@@UEBA_NXZ	142966260	func
-?IsVerboseActionErrors@?$LogBase@VFnCall@AS2@GFx@Scaleform@@@GFx@Scaleform@@UEBA_NXZ	1400039a0	func
+?IsVerboseActionErrors@FnCall@AS2@GFx@Scaleform@@UEBA_NXZ	1400039a0	func
+?IsVerboseActionErrors@?$LogBase@VFnCall@AS2@GFx@Scaleform@@@GFx@Scaleform@@UEBA_NXZ	142966260	func
 ?JoinToString@ArrayObject@AS2@GFx@Scaleform@@QEBAXPEAVEnvironment@234@PEAVStringBuffer@4@PEBD@Z	142966270	func
 ?LocalRegisterPtr@Environment@AS2@GFx@Scaleform@@QEAAPEAVValue@234@I@Z	142967390	func
 ?LogAction@?$LogBase@VActionLogger@AS2@GFx@Scaleform@@@GFx@Scaleform@@QEBAXPEBDZZ	1429673e0	func
