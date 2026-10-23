@@ -396,6 +396,7 @@ MS2_CHECK_SIZE(CNMSendAccuseNoteMsgFunc, 0x5e98);
 class CNMNoteInfoEx : public CNMSerializable
 {
 public:
+    CNMNoteInfoEx();
     virtual ~CNMNoteInfoEx() = default;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -415,7 +416,15 @@ MS2_CHECK_SIZE(CNMNoteInfoEx, 0x8018);
 class CNMSendNoteExMsgFunc : public CNMFunc
 {
 public:
+    CNMSendNoteExMsgFunc();
+    CNMSendNoteExMsgFunc(int nType, const char* szText);
     virtual ~CNMSendNoteExMsgFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMNoteInfoEx m_note;                             // +0x30
 };

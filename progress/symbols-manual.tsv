@@ -8399,3 +8399,4 @@ compress2	142724100	func
 ?GetColorBoundsRect@DrawableImage@Render@Scaleform@@QEAA?AV?$Rect@J@23@KK_N@Z	1425ecb50	func
 ?CleanUpFont@GlyphCache@Render@Scaleform@@QEAAXPEAVFontCacheHandle@23@@Z	1426c4f10	func
 ?MergeCacheSlots@GlyphCache@Render@Scaleform@@QEAAXXZ	1426c67b0	func
+?LogWarning@GlyphCache@Render@Scaleform@@QEAAXPEBDZZ	1426c6710	func
