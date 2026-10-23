@@ -1,4 +1,37 @@
-1402a
+1369a
+
+            if (!spLevel)
+            {
+                NiDelete pkDest;
+                return 0;
+            }
+
+            size_t stDestSize = pkDest->GetSizeInBytes(i);
+
+            if (stDestSize != spLevel->GetSizeInBytes())
+            {
+                NiDelete pkDest;
+                return 0;
+            }
+
+            NiMemcpy(pkDest->GetPixels(i), spLevel->GetPixels(), stDestSize);
+
+            if (!i && kFmt.GetPalettized())
+            {
+                // Use the palette from the base image
+                pkDest->SetPalette(spLevel->GetPalette());
+            }
+        }
+    }
+    else
+    {
+        return 0;
+    }
+
+    return pkDest;
+}
+
+//--------------------------------------------------------------------------------------------------
 // MS2: Nexon addition (game 0x141d3ac10); a copy of the narrow version that
 // calls the wchar_t overloads of ReadImageFileInfo and ReadImageFile.
 NiPixelData* NiDevImageConverter::GenerateMipmapPyramidFromFiles(
@@ -40,37 +73,10 @@ NiPixelData* NiDevImageConverter::GenerateMipmapPyramidFromFiles(
                 spLevel = (NiPixelData*)pkSrc;
             else
                 spLevel = ReadImageFile(apwcFilenames[i], NULL);
-
-            if (!spLevel)
-            {
-                NiDelete pkDest;
-                return 0;
-            }
-
-            size_t stDestSize = pkDest->GetSizeInBytes(i);
-
-            if (stDestSize != spLevel->GetSizeInBytes())
-            {
-                NiDelete pkDest;
-                return 0;
-            }
-
-            NiMemcpy(pkDest->GetPixels(i), spLevel->GetPixels(), stDestSize);
-
-            if (!i && kFmt.GetPalettized())
-            {
-                // Use the palette from the base image
-                pkDest->SetPalette(spLevel->GetPalette());
-            }
-        }
-    }
-    else
-    {
-        return 0;
-    }
-
-    return pkDest;
-}
-
-//--------------------------------------------------------------------------------------------------
+.
+41c
+    if (ms_bMS2NIFImageReader) m_kReaders.AddHead(NiNew NiNIFImageReader); // MS2: see MS2DisableNIFImageReader
+.
+32c
+NiImplementRTTI(NiDevImageConverter, NiImageConverter); bool NiDevImageConverter::ms_bMS2NIFImageReader = true; void NiDevImageConverter::MS2DisableNIFImageReader() { ms_bMS2NIFImageReader = false; } // MS2
 .

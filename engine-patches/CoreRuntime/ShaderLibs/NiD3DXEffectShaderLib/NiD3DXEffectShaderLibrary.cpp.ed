@@ -1,3 +1,50 @@
+310c
+        // MS2: no shadowing pkTempDevice local here; the exe releases the temp device afterwards
+.
+262a
+// MS2: added by MS2 (exe 0x1427b7820); used by the reloadable post-process shaders
+bool NiD3DXEffectShaderLibrary::MS2UnloadD3DXEffect(const char** ppcFile,
+    const char* pcName)
+{
+    NiShader* pkShader =
+        NiShaderFactory::GetInstance()->RetrieveShader(pcName, 0xffffffff, false);
+
+    NiD3DXEffectTechniqueSet* pkTechniqueSet = NULL;
+    if (!m_kD3DXEffectTechniqueMap.GetAt(pcName, pkTechniqueSet) ||
+        pkTechniqueSet == NULL)
+    {
+        return false;
+    }
+
+    unsigned int uiImplementation =
+        pkShader ? pkShader->GetImplementation() : 0xffffffff;
+    NiD3DXEffectTechnique* pkTechnique =
+        pkTechniqueSet->GetTechnique(uiImplementation);
+    if (pkTechnique == NULL)
+        return false;
+
+    pkTechnique->ReleaseShader();
+    m_kD3DXEffectTechniqueMap.RemoveAt(pcName);
+
+    *ppcFile = pkTechnique->GetFile()->GetName();
+    NiTListIterator kPos = m_kD3DXEffectFileList.GetHeadPos();
+    while (kPos)
+    {
+        if (strcmp(m_kD3DXEffectFileList.Get(kPos)->GetName(), *ppcFile) == 0)
+        {
+            m_kD3DXEffectFileList.RemovePos(kPos);
+            break;
+        }
+        kPos = m_kD3DXEffectFileList.GetNextPos(kPos);
+    }
+
+    NiD3DXEffectFactory::GetInstance(true)->RemoveD3DXEffectFileFromMap(*ppcFile);
+    NiShaderFactory::GetInstance()->RemoveShader(pcName, uiImplementation);
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+.
 27c
 #include <tchar.h>
 .

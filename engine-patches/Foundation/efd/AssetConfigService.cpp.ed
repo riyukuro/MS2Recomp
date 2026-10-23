@@ -1,0 +1,3 @@
+185c
+    if (m_pAssetLocator && m_spToolsMsgService) // MS2: also null-checks the tools message service (exe 0x1420e5160)
+.

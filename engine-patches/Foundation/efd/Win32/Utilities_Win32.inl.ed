@@ -1,0 +1,3 @@
+110c
+    sprintf_s(buffer, maxlen, ".\\"); return buffer; // MS2: the working directory is always ".\\", not _getcwd
+.

@@ -1,0 +1,26 @@
+103c
+} void NiTextKeyExtraData::MS2SetTextKeyReader(MS2TextKeyReader pfnReader) { ms_pfnMS2TextKeyReader = pfnReader; } // MS2
+.
+61,74c
+    NiExtraData::LoadBinary(stream); // MS2: a .kf also takes the text keys of <dir><stream name>.xml (<ms2><fname><key text=.. time=../>), or of the game's reader when installed
+    unsigned int uiCount; char acDrive[_MAX_DRIVE], acDir[_MAX_DIR], acFName[_MAX_FNAME], acExt[_MAX_EXT];
+    NiStreamLoadBinary(stream, uiCount); NiTextKey* pkXmlKeys = 0; int iXmlCount = 0; const char* pcFile = stream.MS2GetFileName(); NiString kPath;
+    if (pcFile) { _splitpath(pcFile, acDrive, acDir, acFName, acExt); efd::FixedString kExt(acExt);
+      if (kExt.EqualsNoCase(".kf")) { kPath.Format("%s%s%s.xml", acDrive, acDir, stream.MS2GetStudioPath());
+        if (ms_pfnMS2TextKeyReader) iXmlCount = ms_pfnMS2TextKeyReader(kPath, NiString(acFName), &pkXmlKeys); else { efd::TiXmlDocument kDoc; efd::TiXmlElement* pkRoot; efd::TiXmlElement* pkSeq;
+          if (kDoc.LoadFile((const char*)kPath, efd::TIXML_ENCODING_UNKNOWN) && (pkRoot = kDoc.FirstChildElement("ms2")) != 0 && (pkSeq = pkRoot->FirstChildElement(acFName)) != 0) {
+            for (efd::TiXmlElement* pkKey = pkSeq->FirstChildElement("key"); pkKey; pkKey = pkKey->NextSiblingElement("key")) iXmlCount++;
+            if (iXmlCount > 0) pkXmlKeys = NiNew NiTextKey[iXmlCount];
+            int i = 0; for (efd::TiXmlElement* pkKey = pkSeq->FirstChildElement("key"); pkKey; i++, pkKey = pkKey->NextSiblingElement("key")) { pkXmlKeys[i].SetText(NiFixedString(pkKey->Attribute("text"))); pkXmlKeys[i].SetTime((float)atof(pkKey->Attribute("time"))); } } } } }
+    if (uiCount + iXmlCount) { NiTextKey* pTextKeys = NiNew NiTextKey[uiCount + iXmlCount]; EE_ASSERT(pTextKeys);
+        for (unsigned int uiI = 0; uiI < uiCount; uiI++) pTextKeys[uiI].LoadBinary(stream);
+        for (int i = 0; i < iXmlCount; i++) { pTextKeys[uiCount + i].SetText(pkXmlKeys[i].GetText()); pTextKeys[uiCount + i].SetTime(pkXmlKeys[i].GetTime()); }
+        SetKeys(pTextKeys, uiCount + iXmlCount); } NiDelete[] pkXmlKeys;
+.
+20,21c
+#include <efdXML/tinyxml.h> // MS2
+NiImplementRTTI(NiTextKeyExtraData,NiExtraData); NiTextKeyExtraData::MS2TextKeyReader NiTextKeyExtraData::ms_pfnMS2TextKeyReader = 0; // MS2
+.
+16c
+#include <NiString.h> // MS2
+.

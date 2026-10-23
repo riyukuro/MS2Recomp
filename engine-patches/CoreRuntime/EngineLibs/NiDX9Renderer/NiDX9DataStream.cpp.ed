@@ -1,0 +1,3 @@
+837c
+    if (!m_pkDX9BufferInfo || !m_pkDX9BufferInfo->GetLockCount()) // MS2: not locked (exe 0x1427fa490)
+.

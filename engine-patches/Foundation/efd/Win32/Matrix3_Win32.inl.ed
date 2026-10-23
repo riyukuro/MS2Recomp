@@ -1,0 +1,9 @@
+208c
+// MS2: TUs whose exe inlines Matrix3*Matrix3 where our inliner declines define EE_MS2_MATRIX3_MUL_FORCE
+#if defined(EE_MS2_MATRIX3_MUL_FORCE)
+#define EE_MS2_MATRIX3_MUL_INLINE __forceinline
+#else
+#define EE_MS2_MATRIX3_MUL_INLINE inline
+#endif
+EE_MS2_MATRIX3_MUL_INLINE Matrix3 Matrix3::operator*(const Matrix3& mat) const
+.

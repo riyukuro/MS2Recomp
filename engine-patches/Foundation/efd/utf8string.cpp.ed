@@ -1,3 +1,43 @@
+812,824c
+    // MS2: formats into an alloca buffer (malloc when alloca yields null, 0 when neither) instead of a temp internal_string
+    bool heapBuf = false;
+    size_t bytesBuf = efd::Vscprintf(format_sz, args) + 1;
+    char* pBuf = (char*)alloca(bytesBuf);
+    if (!pBuf)
+    {
+        pBuf = (char*)malloc(bytesBuf);
+        if (!pBuf) return 0;
+        heapBuf = true;
+    }
+    int bytesUsed = ::vsprintf(pBuf, format_sz, args);
+    pBuf[bytesUsed] = 0;
+    m_string += pBuf; if (heapBuf) free(pBuf);
+.
+793,805c
+    // MS2: formats into an alloca buffer (malloc when alloca yields null, 0 when neither) instead of a temp internal_string
+    bool heapBuf = false;
+    size_t bytesBuf = efd::Vscprintf(format_sz, args) + 1;
+    char* pBuf = (char*)alloca(bytesBuf);
+    if (!pBuf)
+    {
+        pBuf = (char*)malloc(bytesBuf);
+        if (!pBuf) return 0;
+        heapBuf = true;
+    }
+    int bytesUsed = ::vsprintf(pBuf, format_sz, args);
+    pBuf[bytesUsed] = 0;
+    m_string = pBuf; if (heapBuf) free(pBuf);
+.
+785@41s "tr.c_str()" "z"
+784@27s "tr" "z"
+783c
+    va_list args; const char* format_sz = format_str.c_str(); // MS2: va_start on a local copy of c_str()
+.
+765@34s "tr.c_str()" "z"
+764@27s "tr" "z"
+763c
+    va_list args; const char* format_sz = format_str.c_str(); // MS2: va_start on a local copy of c_str()
+.
 14a
 // sprintf(const utf8string&, ...) calls va_start on a reference parameter. The VC90 x64 va_start
 // intrinsic accepted that; the newer CRT rejects it with a static_assert, which this define switches

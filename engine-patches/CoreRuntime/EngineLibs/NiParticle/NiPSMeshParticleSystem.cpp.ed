@@ -32,3 +32,9 @@ static void MS2ExcludeFromShadows(NiNode* pkNode)
 
 //--------------------------------------------------------------------------------------------------
 .
+168c
+    } if (!DAT_143afbfc8 && DAT_143afa980) { NiTPointerList<NiShadowGenerator*>& kGenerators = *(NiTPointerList<NiShadowGenerator*>*)((char*)DAT_143afa980 + 0x190); NiTListIterator kPos = kGenerators.GetHeadPos(); while (kPos) { NiShadowGenerator* pkGenerator = kGenerators.GetNext(kPos); pkGenerator->DetachUnaffectedCasterNode(m_spParticleContainer); pkGenerator->DetachUnaffectedReceiverNode(m_spParticleContainer); } } // MS2: undo MS2ExcludeFromShadows (exe 0x141e9d340)
+.
+155c
+struct Unk_RsSceneRoot; extern Unk_RsSceneRoot* DAT_143afa980; extern void (*DAT_143afbfc8)(NiAVObject*); // MS2: see MS2ExcludeFromShadows
+.

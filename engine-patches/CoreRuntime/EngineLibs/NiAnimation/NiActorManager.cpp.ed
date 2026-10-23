@@ -1,3 +1,63 @@
+1275a
+    {
+        return false;
+    }
+
+    for (unsigned int ui = 0; ui < kSeqDatas.GetSize(); ui++)
+    {
+        NiSequenceData* pkSeqData = kSeqDatas.GetAt(ui);
+        if (!pkSeqData)
+            continue;
+
+        SequenceID eSeqID = FindSequenceID(pkSeqData->GetName());
+        if (eSeqID != INVALID_SEQUENCE_ID)
+        {
+            ChangeSequenceData(eSeqID, pkSeqData);
+        }
+        else
+        {
+            // This actor manager does not know anything about this
+            // sequence, so it has no sequence ID.  Add it to the
+            // controller manager in case some later actor manager
+            // (cloned from this one) knows what to do with it.
+            m_spManager->AddSequenceData(pkSeqData);
+        }
+    }
+
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+// MS2: added by MS2 (exe 0x141c42480)
+void NiActorManager::MS2GetAllSequenceData(
+    NiTPointerMap<SequenceID, NiSequenceDataPtr>& kMap) const
+{
+    NiTMapIterator kIter = m_kSeqDataMap.GetFirstPos();
+    while (kIter)
+    {
+        SequenceID eSequenceID;
+        NiSequenceDataPtr spSeqData;
+        m_kSeqDataMap.GetNext(kIter, eSequenceID, spSeqData);
+        kMap.SetAt(eSequenceID, spSeqData);
+    }
+
+    kIter = m_kMS2PendingSeqDataMap.GetFirstPos();
+    while (kIter)
+    {
+        SequenceID eSequenceID;
+        NiSequenceDataPtr spSeqData;
+        m_kMS2PendingSeqDataMap.GetNext(kIter, eSequenceID, spSeqData);
+        kMap.SetAt(eSequenceID, spSeqData);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+// MS2: ReloadKFFile from an already-loaded stream (exe 0x141c43800)
+bool NiActorManager::ReloadKFFile(const NiStream& kStream)
+{
+    NiSequenceDataPointerArray kSeqDatas;
+    if (!NiSequenceData::CreateAllSequenceDatasFromFile(kStream, kSeqDatas))
+.
 1003c
     // studio: no UnregisterCallback here (0x141c43700)  // MS2: v2525
 .

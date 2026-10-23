@@ -16,3 +16,13 @@ extern bool g_bStudioSequenceClampNoRewind;  // gb-anim (inferred): byte 0x1439f
 554c
                 bNeedFirstTextKey); if (!m_pkOwner) return;  // MS2: v2525
 .
+52c
+    // MS2: the exe's dtor has PrepareForRecycling expanded inline (exe 0x141c46050)
+    m_kActivationCallbacks.RemoveAll();
+    if (m_spScratchPad)
+    {
+        m_spScratchPad->PrepareForRecycling();
+    }
+    m_spPartnerSequence = NULL;
+    m_spTextKeys = NULL;
+.

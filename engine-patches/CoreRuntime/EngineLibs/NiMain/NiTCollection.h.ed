@@ -1,0 +1,11 @@
+37c
+    EE_MS2_NEWIFACE_ALLOC_INLINE static T* Allocate(unsigned int uiNumElements)
+.
+33a
+// MS2: TUs whose exe inlines NiTNewInterface::Allocate where our inliner declines define EE_MS2_NEWIFACE_ALLOC_FORCE
+#if defined(EE_MS2_NEWIFACE_ALLOC_FORCE)
+#define EE_MS2_NEWIFACE_ALLOC_INLINE __forceinline
+#else
+#define EE_MS2_NEWIFACE_ALLOC_INLINE inline
+#endif
+.

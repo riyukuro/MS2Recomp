@@ -1,0 +1,6 @@
+65c
+    NiTexture::UnlockTextureList(); } // MS2
+.
+50c
+{ NiTexture::LockTextureList(); // MS2: the exe holds the texture list lock (0x142823f00)
+.

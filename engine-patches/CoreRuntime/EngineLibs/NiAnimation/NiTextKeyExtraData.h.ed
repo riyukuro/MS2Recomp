@@ -1,0 +1,9 @@
+40c
+    NiTextKey* m_pKeys; static MS2TextKeyReader ms_pfnMS2TextKeyReader; // MS2: 0x143af8a30
+.
+36c
+    inline NiTextKey* GetKeys (unsigned int& uiNumKeys) const; typedef int (*MS2TextKeyReader)(NiString kPath, NiString kName, NiTextKey** ppkKeys); static void MS2SetTextKeyReader(MS2TextKeyReader pfnReader); // MS2: game-installed .kf text-key reader (0x141c51dd0)
+.
+20c
+class NiString; // MS2
+.

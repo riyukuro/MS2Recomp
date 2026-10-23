@@ -11,7 +11,7 @@ EE_MS2_ASSETID_COPY_INLINE AssetID& AssetID::operator=(const efd::AssetID& other
     EE_MS2_ASSETID_STRIP_SCHEME();
 .
 48c
-EE_MS2_ASSETID_COPY_INLINE AssetID::AssetID(const efd::AssetID& other)
+EE_MS2_ASSETID_CTOR_INLINE AssetID::AssetID(const efd::AssetID& other)
 .
 33a
     EE_MS2_ASSETID_STRIP_SCHEME();
@@ -23,6 +23,12 @@ EE_MS2_ASSETID_COPY_INLINE AssetID::AssetID(const efd::AssetID& other)
 #define EE_MS2_ASSETID_COPY_INLINE inline __declspec(noinline)
 #else
 #define EE_MS2_ASSETID_COPY_INLINE inline
+#endif
+// MS2: TUs whose exe inlines the copy ctor (not operator=) where our inliner declines define EE_MS2_ASSETID_COPY_FORCE
+#if defined(EE_MS2_ASSETID_COPY_FORCE)
+#define EE_MS2_ASSETID_CTOR_INLINE __forceinline
+#else
+#define EE_MS2_ASSETID_CTOR_INLINE EE_MS2_ASSETID_COPY_INLINE
 #endif
 
 // MS2: every URN store is followed by this: a URN ending in ':' (a bare scheme) is kept as "" (the game's /Od copies

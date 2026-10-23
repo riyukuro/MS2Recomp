@@ -2,6 +2,9 @@
     // x64 port: the length is stored as 32 bits (as on x86; the loader reads 32 bits)
     unsigned int stLength = (unsigned int)(pcString ? strlen(pcString) : 0);
 .
+838c
+} const char* NiStream::MS2GetFileName() const { return m_acFileName; } // MS2
+.
 151c
     m_acFileName[0] = '\0'; m_acStudioPath0x8[0] = '\0';  // MS2: v2525
 .

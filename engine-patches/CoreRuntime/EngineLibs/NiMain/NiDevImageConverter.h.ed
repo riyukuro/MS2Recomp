@@ -5,11 +5,12 @@
         const wchar_t* apwcFilenames[], unsigned int uiNumLevels,
         const NiPixelData* pkSrc = NULL);
 .
-31a
+30c
+    ~NiDevImageConverter(); static void MS2DisableNIFImageReader(); static bool ms_bMS2NIFImageReader; // MS2: game-called switch (0x141d38fa0) that drops the ctor's NiNIFImageReader
+
     // MS2: the game also overrides the wchar_t overloads added to
     // NiImageConverter (natively wide); here the base versions are used.
     using NiImageConverter::CanReadImageFile;
     using NiImageConverter::ReadImageFileInfo;
     using NiImageConverter::ReadImageFile;
-
 .

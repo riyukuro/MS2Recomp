@@ -23,6 +23,11 @@
 159c
     virtual void Update(float fTime); // MS2: virtual (slot 4)
 .
+124a
+    bool ReloadKFFile(const NiStream& kStream); // MS2: stream overload (exe 0x141c43800)
+    // MS2: copies m_kSeqDataMap and m_kMS2PendingSeqDataMap into kMap (exe 0x141c42480)
+    void MS2GetAllSequenceData(NiTPointerMap<SequenceID, NiSequenceDataPtr>& kMap) const;
+.
 114@69s "" " // MS2: virtual (slot 3)"
 114@3s "" " virtual"
 36a

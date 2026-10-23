@@ -1,3 +1,6 @@
 332a
     char m_acStudioPath0x8[NI_MAX_PATH];  // studio: +0x8, name inferred  // MS2: v2525
 .
+193c
+    unsigned int GetIDFromGroup(NiObjectGroup* pkGroup) const; const char* MS2GetFileName() const; const char* MS2GetStudioPath() const { return m_acStudioPath0x8; } // MS2: used by NiTextKeyExtraData::LoadBinary
+.

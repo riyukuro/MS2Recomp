@@ -1,0 +1,4 @@
+63a
+    // MS2: drops one shader's technique, effect file and factory entries so it can be reloaded (exe 0x1427b7820)
+    bool MS2UnloadD3DXEffect(const char** ppcFile, const char* pcName);
+.
