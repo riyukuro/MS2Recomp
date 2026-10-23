@@ -2433,7 +2433,16 @@ MS2_CHECK_SIZE(CNMGetFriendInfoFunc, 0x5c8);
 class CNMGetFriendListFunc : public CNMFunc
 {
 public:
+    CNMGetFriendListFunc();
+    explicit CNMGetFriendListFunc(unsigned long long key);
     virtual ~CNMGetFriendListFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     NMKey64 m_30; // +0x30
     std::vector<CNMCateFriendInfo> m_38; // +0x38
