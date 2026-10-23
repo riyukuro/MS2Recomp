@@ -1884,7 +1884,16 @@ MS2_CHECK_SIZE(CNMFUDSGetFileEventFunc, 0x48);
 class CNMFUSControlFunc : public CNMFunc
 {
 public:
+    CNMFUSControlFunc();
+    CNMFUSControlFunc(unsigned int serial, int controlType, int controlValue);
     virtual ~CNMFUSControlFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_30; // +0x30
     int m_34; // +0x34
