@@ -1080,8 +1080,15 @@ MS2_CHECK_SIZE(CNMDownloadFileFunc, 0x230);
 class CNMUploadFileFunc : public CNMFunc
 {
 public:
+    CNMUploadFileFunc();
     CNMUploadFileFunc(const char* szUrl, const char* sz2, const char* sz3, int n4);
     virtual ~CNMUploadFileFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     char m_szUrl[0x400];                                        // +0x30
     char m_sz430[0x100];
