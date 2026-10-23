@@ -1873,7 +1873,16 @@ MS2_CHECK_SIZE(CNMFDSGetDownloadDirFunc, 0x138);
 class CNMFDSSetDownloadDirFunc : public CNMFunc
 {
 public:
+    CNMFDSSetDownloadDirFunc();
+    CNMFDSSetDownloadDirFunc(unsigned int serial, const char* directory);
     virtual ~CNMFDSSetDownloadDirFunc() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     char m_30[0x108]; // +0x30
 };
