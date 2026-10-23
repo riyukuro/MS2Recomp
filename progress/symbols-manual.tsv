@@ -8724,3 +8724,4 @@ DAT_14313bc60	14313bc60	data
 ?CreateStageObject@TextField@fl_text@Instances@AS3@GFx@Scaleform@@UEAAPEAVDisplayObject@56@XZ	1424ac040	func
 ?InitInstance@TextField@fl_text@Instances@AS3@GFx@Scaleform@@UEAAX_N@Z	1424acee0	func
 ?StaticFunctionTable@SelectionCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213dc0	data
+?BuiltinStrings@StringManager@AS2@GFx@Scaleform@@2PAPEBDA	143a51c30	data
