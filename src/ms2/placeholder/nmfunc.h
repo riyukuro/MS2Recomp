@@ -1158,8 +1158,15 @@ MS2_CHECK_SIZE(CNMGetGameFullNameFunc, 0xb8);
 class CNMGetGameShortNameFunc : public CNMFunc
 {
 public:
+    CNMGetGameShortNameFunc();
     CNMGetGameShortNameFunc(int nGameCode);
     virtual ~CNMGetGameShortNameFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_nGameCode;                                            // +0x30
     char m_szName[0x84];                                        // +0x34 (reply)
