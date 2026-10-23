@@ -8586,3 +8586,8 @@ DAT_143b27c80	143b27c80	data
 ?DAT_143b276c0@@3PEAXEA	143b276c0	data
 ?DAT_143b276c8@@3PEAXEA	143b276c8	data
 ?DAT_143b276d0@@3PEAXEA	143b276d0	data
+?GetObjectType@StageObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	142954310	func
+?GetObjectType@StringObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	142954320	func
+?GetObjectType@TextFieldObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	142954340	func
+?GetObjectType@TextSnapshotObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	142954360	func
+?GetTextValue@StringObject@AS2@GFx@Scaleform@@UEBAPEBDPEAVEnvironment@234@@Z	142956730	func
