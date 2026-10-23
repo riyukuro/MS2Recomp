@@ -204828,7 +204828,7 @@ DirectSoundCreate8	1423915b0	func
 ?AssignUnsafe@Value@AS3@GFx@Scaleform@@QEAAXPEAUASStringNode@34@@Z	1424eddb0	func
 ?AssignUnsafe@Value@AS3@GFx@Scaleform@@QEAAXPEAVObject@234@@Z	1424ede50	func
 ?Call@Class@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@AEAV5234@IQEBV5234@@Z	1424ee6f0	func
-?Call@ClassCallConstruct@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@AEAV5234@IQEBV5234@@Z	1424ee7d0	func
+?Call@ClassCallConstruct@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@AEAV5234@IQEBV5234@@Z	1424ee6f0	func
 ?Call@Object@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@AEAV5234@IQEBV5234@@Z	1424ee7f0	func
 ?CheckAdvanceStatus@InteractiveObject@GFx@Scaleform@@UEAAH_N@Z	1424eeca0	func
 ?Coerce@Traits@ClassTraits@AS3@GFx@Scaleform@@UEBA_NAEBVValue@345@AEAV6345@@Z	1424effa0	func
@@ -217273,7 +217273,7 @@ _GUID_00000001_0000_0010_8000_00aa00389b71	14311b250	data
 ??_7InitStruct@String@Scaleform@@6B@	14313f358	data
 ??_7?$RefCountBaseGC@$0BED@@AS3@GFx@Scaleform@@6B@	14313f368	data
 ??_7GASRefCountBase@AS3@GFx@Scaleform@@6B@	14313f398	data
-??_7ClassCallConstruct@AS3@GFx@Scaleform@@6B@	14313f3c8	data
+??_7ClassCallConstruct@AS3@GFx@Scaleform@@6B@	143140350	data
 ??_7Object@fl@Instances@AS3@GFx@Scaleform@@6B@	14313f590	data
 ??_7Object@fl@InstanceTraits@AS3@GFx@Scaleform@@6B@	14313f650	data
 ??_7Object@fl@ClassTraits@AS3@GFx@Scaleform@@6B@	14313f6f8	data
