@@ -8591,3 +8591,4 @@ DAT_143b27c80	143b27c80	data
 ?GetObjectType@TextFieldObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	142954340	func
 ?GetObjectType@TextSnapshotObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ	142954360	func
 ?GetTextValue@StringObject@AS2@GFx@Scaleform@@UEBAPEBDPEAVEnvironment@234@@Z	142956730	func
+?PTR_FUN_1431b7360@@3PEAXEA	1431b7360	data
