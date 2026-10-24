@@ -9961,3 +9961,14 @@ Video04ClassInfo	143a47b70	data
 ?Sfr27TracerIsPrimitiveType@TR@AS3@GFx@Scaleform@@YA_N_K0@Z	142514a80	func
 DAT_14317ef38	14317ef38	data
 DAT_143a2dd50	143a2dd50	data
+??0Function@Instances@AS3@GFx@Scaleform@@QEAA@AEAVTraits@InstanceTraits@234@AEBV?$ArrayDH@VValue@AS3@GFx@Scaleform@@$01UArrayDefaultPolicy@4@@4@AEBVValue@234@AEBVASString@34@@Z	1423ed090	func
+??0GlobalObjectScript@fl@Instances@AS3@GFx@Scaleform@@QEAA@AEAV01InstanceTraits@345@@Z	1423ed7b0	func
+?Add@NamespaceArray@AS3@GFx@Scaleform@@QEAAXAEAVNamespace@Instances@234@_N@Z	142403b60	func
+?AddSlot@Traits@AS3@GFx@Scaleform@@QEAAXAEBVASString@34@V?$Pickable@$$CBVNamespace@Instances@AS3@GFx@Scaleform@@@4@W4BindingType@SlotInfo@234@VAbsoluteIndex@234@_N@Z	1424e9830	func
+?AddSlots@Traits@AS3@GFx@Scaleform@@QEAA?AVCheckResult@234@AEBVHasTraits@Abc@234@AEAVVMAbcFile@234@I@Z	1424e9b40	func
+?DAT_14313dd00@@3UClassInfo@AS3@GFx@Scaleform@@B	14313dd00	data
+?DAT_143144040@@3QBQEBXB	143144040	data
+?DAT_143186050@@3QBGB	143186050	data
+?DAT_1431866f0@@3QBGB	1431866f0	data
+?DAT_143a2aab0@@3QBUThunkInfo@AS3@GFx@Scaleform@@B	143a2aab0	data
+?FindByPrefix@NamespaceArray@AS3@GFx@Scaleform@@QEBA_NAEBVASString@34@@Z	14240aed0	func
