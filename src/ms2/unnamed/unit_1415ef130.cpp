@@ -2711,3 +2711,112 @@ void* NMScalarDelete_1415f92d0(void* object, unsigned int flags)
     if (flags & 1) ::operator delete(object);
     return object;
 }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3980
+void* FUN_1415f3980(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f39b0
+void* FUN_1415f39b0(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3a30
+void* FUN_1415f3a30(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3a40
+void* FUN_1415f3a40(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3a50
+void* FUN_1415f3a50(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3ae0
+void* FUN_1415f3ae0(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3af0
+void* FUN_1415f3af0(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3b00
+void* FUN_1415f3b00(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3b10
+void* FUN_1415f3b10(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3b20
+void* FUN_1415f3b20(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3b30
+void* FUN_1415f3b30(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3b40
+void* FUN_1415f3b40(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3b50
+void* FUN_1415f3b50(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3b60
+void* FUN_1415f3b60(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3b70
+void* FUN_1415f3b70(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3b80
+void* FUN_1415f3b80(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3b90
+void* FUN_1415f3b90(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3ba0
+void* FUN_1415f3ba0(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3bb0
+void* FUN_1415f3bb0(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3bc0
+void* FUN_1415f3bc0(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3bd0
+void* FUN_1415f3bd0(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3be0
+void* FUN_1415f3be0(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3bf0
+void* FUN_1415f3bf0(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3c00
+void* FUN_1415f3c00(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3c10
+void* FUN_1415f3c10(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3c20
+void* FUN_1415f3c20(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
+// @0x1415f3c30
+void* FUN_1415f3c30(void* p) { return *static_cast<void**>(p); }
+
