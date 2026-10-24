@@ -171,6 +171,8 @@ class CNMCharacter : public CNMSerializable
 {
 public:
     CNMCharacter();
+    CNMCharacter(int nKeyLow, const char* pszNameAt58, const char* pszNameAt10, int nKeyHigh); // 0x141570090
+    CNMCharacter(NMKey64 key, const char* pszNameAt58, const char* pszNameAt10); // 0x141570140
     CNMCharacter(const CNMCharacter& r) noexcept;               // 0x1415e8c60
     CNMCharacter(CNMCharacter&& r) noexcept;                    // 0x1415e8be0
     virtual ~CNMCharacter() = default;                                    // 0x1415ecdb0
@@ -786,7 +788,7 @@ MS2_CHECK_SIZE(CNMNoteInfo2, 0xae8);
 class CNMRejectedUser : public CNMSerializable
 {
 public:
-    CNMRejectedUser() : CNMSerializable(0, 1, 1), m_character(), m_a8{} {}
+    CNMRejectedUser();
     CNMRejectedUser(const CNMCharacter* character, const char* details); // 0x141570530
     CNMRejectedUser(const CNMRejectedUser& r);
     virtual ~CNMRejectedUser() = default;
