@@ -14,6 +14,8 @@
 // MS2-RANGE: 0x142372f20-0x1423730d1 .text$mn
 // MS2-RANGE: 0x14235a130-0x14235a27d .text$mn
 // MS2-RANGE: 0x14235c730-0x14235ca92 .text$mn
+// MS2-RANGE: 0x1423537e0-0x14235382a .text$mn
+// MS2-RANGE: 0x142353830-0x14235387a .text$mn
 // MS2-RANGE: 0x14235c2d0-0x14235c6a9 .text$mn
 // MS2-RANGE: 0x14237bef0-0x14237c166 .text$mn
 // MS2-RANGE: 0x1423770a0-0x1423772e3 .text$mn
@@ -504,4 +506,23 @@ std::istream& FUN_14235c2d0(std::istream& in, CppInteger& a)
         str[i] = 0;
     CryptoPP::UnalignedDeallocate(str);
     return in;
+}
+
+// @0x1423537e0
+// MS2-FUNCTIONAL: masm Baseline_Add (adc chain with jrcxz); the same word-wise add with carry out through _addcarry_u64
+unsigned long long FUN_1423537e0(size_t n, unsigned long long* c, const unsigned long long* a, const unsigned long long* b)
+{
+    unsigned char carry = 0;
+    for (size_t i = 0; i < n; i++)
+        carry = _addcarry_u64(carry, a[i], b[i], &c[i]);
+    return carry;
+}
+// @0x142353830
+// MS2-FUNCTIONAL: masm Baseline_Sub (sbb chain with jrcxz); the borrow out through _subborrow_u64
+unsigned long long FUN_142353830(size_t n, unsigned long long* c, const unsigned long long* a, const unsigned long long* b)
+{
+    unsigned char borrow = 0;
+    for (size_t i = 0; i < n; i++)
+        borrow = _subborrow_u64(borrow, a[i], b[i], &c[i]);
+    return borrow;
 }
