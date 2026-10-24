@@ -13,6 +13,8 @@ struct lua_State;
 
 namespace egf
 {
+class ILuaPropertyHandler;
+
 class SchedulerLua : public egf::ISchedulerScripting
 {
     EE_DECLARE_CLASS1(SchedulerLua, efd::kCLASSID_SchedulerLua, egf::ISchedulerScripting);
@@ -22,6 +24,8 @@ public:
     SchedulerLua();
     typedef int (*LuaScriptInitFunction)(lua_State*);
     static bool AddStaticBuiltinInitFunction(LuaScriptInitFunction i_pfn);
+    bool RegisterPropertyHandler(efd::ClassID propDataType, ILuaPropertyHandler* pHandler);
+    static SchedulerLua* GetSchedulerLua(lua_State* L);
     virtual lua_State* GetLuaState() const;
     virtual efd::Category GetAssetLoadCategory() const;
 protected:
