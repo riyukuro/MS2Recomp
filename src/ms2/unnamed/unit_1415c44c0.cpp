@@ -360,6 +360,19 @@ bool FUN_1415c6f80(void*, void* out)
     return result != 0;
 }
 
+// MS2-FUNCTIONAL: fetches the game-log session identifier into the caller's 0x20-byte buffer.
+// @0x1415ca240
+unsigned char* FUN_1415ca240(unsigned char* out)
+{
+    CNMGameLogGetSessionIDFunc request;
+    if (!CNMManager::GetInstance()->CallNMFunc(&request)) {
+        if (out) *out = 0;
+        return out;
+    }
+    FUN_1415fbe70(out, 0x20, request.m_30);
+    return out;
+}
+
 // @0x1415c46c0
 void FUN_1415c46c0()
 {
@@ -736,3 +749,4 @@ void FUN_1415cd010() {}
 // MS2-PIN: ?FUN_1415c7ba0@@YAHPEAXPEBDH@Z 0x1415c7ba0
 // MS2-PIN: ?FUN_1415c4e90@@YAPEAEPEAXPEAE0@Z 0x1415c4e90
 // MS2-PIN: ?FUN_1415c6f80@@YA_NPEAX0@Z 0x1415c6f80
+// MS2-PIN: ?FUN_1415ca240@@YAPEAEPEAE@Z 0x1415ca240
