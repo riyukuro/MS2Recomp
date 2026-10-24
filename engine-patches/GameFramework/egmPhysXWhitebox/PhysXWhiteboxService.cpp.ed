@@ -1,0 +1,11 @@
+507a
+    if (DAT_143b05980)  // MS2: the game's scene name decorator, as PhysXSceneModel::Initialize
+        state.physXScene = DAT_143b05980(state.physXScene);
+.
+386a
+    if (DAT_143b05980)  // MS2: the game's scene name decorator
+        sceneName = DAT_143b05980(sceneName);
+.
+344a
+extern efd::utf8string (*DAT_143b05980)(const efd::utf8string&); // MS2: the game's scene name decorator (exe 0x143b05980)
+.

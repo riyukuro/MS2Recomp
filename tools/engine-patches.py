@@ -3,11 +3,15 @@
 
 For every modified file an ed-style script (diff -e semantics: line-number
 commands carrying only OUR inserted text, never removed or context SDK lines)
-goes to engine-patches/<path>.ed; added files become a single `0a` script.
+goes to engine-patches/<path>.ed; added files become a single `0a` script, except files the SDK already ships
+(Source/ of the LightSpeed install, MS2_GAMEBRYO_SDK, default third_party/gamebryo/APPDIR/Source): those are diffed
+against their SDK original like a modified file (kind=modified, or kind=sdk with no .ed when byte-identical), found
+at the same path or, by basename + >=50% line similarity, under another path (manifest column 5 = SDK source path),
+so the BYO-SDK user, who has the original, gets only our edits and no SDK text.
 Lines that are >=80% identical to the SDK line they replace are emitted as
 column-addressed token substitutions (`N@COL s "old" "new"`) instead of whole
 lines, so they carry only the changed tokens.  engine-patches/manifest.tsv
-lists path, sha256(stock), sha256(result), kind.
+lists path, sha256(stock), sha256(result), kind[, source].
 
 Script format (bytes decoded as latin-1 only inside JSON strings):
   N a / N,M c / N,M d   text lines follow for a/c, terminated by a "." line
@@ -32,6 +36,7 @@ STOCK = "2634c347"
 SUB = "engine/gamebryo"
 THRESH = 0.8
 MIN_SDK_CHARS = 25   # shorter shared text is boilerplate: keep the literal line
+SDK_SIM = 0.5        # an added file this similar (lines) to an SDK file of the same basename is that file, edited
 
 
 def git(*a, text=False):
@@ -164,13 +169,51 @@ def emit(ops):
     return b"\n".join(out) + (b"\n" if out else b"")
 
 
+def sdk_index(sdk):
+    idx = {}
+    for dp, _, fns in os.walk(sdk):
+        for f in fns:
+            idx.setdefault(f.lower(), []).append(os.path.relpath(os.path.join(dp, f), sdk).replace(os.sep, "/"))
+    return idx
+
+
+def sdk_original(sdk, idx, rel, new):
+    """SDK file our added file `rel` was copied from -> (sdk relpath, bytes) or None"""
+    if (sdk / rel).is_file():
+        return rel, (sdk / rel).read_bytes()
+    nl = new.replace(b"\r", b"").split(b"\n")
+    best = None
+    for c in idx.get(os.path.basename(rel).lower(), []):
+        old = (sdk / c).read_bytes()
+        r = difflib.SequenceMatcher(None, old.replace(b"\r", b"").split(b"\n"), nl, autojunk=False).ratio()
+        if r >= SDK_SIM and (best is None or r > best[0]):
+            best = (r, c, old)
+    return (best[1], best[2]) if best else None
+
+
+def diff_script(rel, old, new, pol, stats):
+    ol = old.split(b"\n")
+    crlf = b"\r\n" in old and b"\r" not in new
+    if crlf:
+        ol = [l[:-1] if l.endswith(b"\r") else l for l in ol]
+    fs = []
+    ops = make_ops(rel, ol, new.split(b"\n"), pol, fs)
+    stats += fs
+    return (b"eol lf\n" if crlf else b"") + emit(ops)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=str(ROOT / "engine-patches"))
     ap.add_argument("--policy", default=str(ROOT / "tools/engine-patches-policy.txt"))
     ap.add_argument("--review", help="write the similarity list (tsv) here")
+    ap.add_argument("--sdk", default=os.environ.get("MS2_GAMEBRYO_SDK", str(ROOT / "third_party/gamebryo/APPDIR/Source")))
     a = ap.parse_args()
     out = Path(a.out)
+    sdk = Path(a.sdk)
+    if not sdk.is_dir():   # without it every SDK file imported later would ship as full SDK text
+        sys.exit(f"engine-patches: no Gamebryo SDK Source tree at {sdk} (--sdk / MS2_GAMEBRYO_SDK)")
+    idx = sdk_index(sdk)
     pol = load_policy(Path(a.policy))
     names = git("diff", "--name-status", "-z", STOCK, "HEAD", "--", SUB).decode("latin-1").split("\0")
     ents = [(names[i], names[i + 1]) for i in range(0, len(names) - 1, 2)]
@@ -187,18 +230,19 @@ def main():
             if rel in pol["withhold-file"] or p in pol["withhold-file"]:
                 man.append((rel, "-", sha(new), "withheld"))
                 continue
-            script = emit([("a", 0, new.split(b"\n"))])
-            man.append((rel, "-", sha(new), "added"))
+            org = sdk_original(sdk, idx, rel, new)
+            if org and org[1] == new:
+                man.append((rel, sha(new), sha(new), "sdk") + ((org[0],) if org[0] != rel else ()))
+                continue
+            if org:
+                script = diff_script(rel, org[1], new, pol, stats)
+                man.append((rel, sha(org[1]), sha(new), "modified") + ((org[0],) if org[0] != rel else ()))
+            else:
+                script = emit([("a", 0, new.split(b"\n"))])
+                man.append((rel, "-", sha(new), "added"))
         elif st == "M":
             old = git("show", f"{STOCK}:{p}")
-            ol = old.split(b"\n")
-            crlf = b"\r\n" in old and b"\r" not in new
-            if crlf:
-                ol = [l[:-1] if l.endswith(b"\r") else l for l in ol]
-            fs = []
-            ops = make_ops(rel, ol, new.split(b"\n"), pol, fs)
-            stats += fs
-            script = (b"eol lf\n" if crlf else b"") + emit(ops)
+            script = diff_script(rel, old, new, pol, stats)
             man.append((rel, sha(old), sha(new), "modified"))
         else:
             sys.exit(f"unsupported status {st} {p}")
@@ -207,7 +251,7 @@ def main():
         d.write_bytes(script)
         nlines += script.count(b"\n")
     with open(out / "manifest.tsv", "w") as f:
-        f.write("path\tstock_sha256\tresult_sha256\tkind\n")
+        f.write("path\tstock_sha256\tresult_sha256\tkind\tsource\n")
         for m in man:
             f.write("\t".join(m) + "\n")
     wh = sum(1 for s in stats if s[3] == "withhold")

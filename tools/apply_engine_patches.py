@@ -3,7 +3,8 @@
 
 usage: apply_engine_patches.py <patches-dir> <gamebryo-tree>
 Verifies every stock hash first, applies in memory, verifies every result hash,
-and only then writes.  Refuses (exit 1, nothing written) on any mismatch.
+and only then writes.  kind=sdk rows are stock SDK files (nothing to apply); a 5th manifest column names the SDK file
+(relative to the tree) a row starts from when that is not the row's own path.  Refuses (exit 1, nothing written) on any mismatch.
 """
 import hashlib, json, re, sys
 from pathlib import Path
@@ -61,16 +62,22 @@ def main():
     pd, tree = Path(sys.argv[1]), Path(sys.argv[2])
     rows = [l.split("\t") for l in (pd / "manifest.tsv").read_text(encoding="ascii").splitlines()[1:]]
     results, bad = {}, []
-    for path, ssha, rsha, kind in rows:
+    for row in rows:
+        path, ssha, rsha, kind = row[:4]
+        src = row[4] if len(row) > 4 and row[4] else path
         if kind == "withheld":
             print(f"skip (withheld, supply separately): {path}")
             continue
         tgt = tree / path
         try:
-            if kind == "modified":
-                data = tgt.read_bytes()
+            if kind in ("modified", "sdk"):
+                data = (tree / src).read_bytes()
                 if sha(data) != ssha:
-                    bad.append(f"{path}: stock hash mismatch")
+                    bad.append(f"{path}: stock hash mismatch" + (f" (source {src})" if src != path else ""))
+                    continue
+                if kind == "sdk":
+                    if src != path:
+                        results[path] = (data, rsha)
                     continue
             else:
                 if tgt.exists():
