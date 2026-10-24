@@ -220,7 +220,7 @@
 1400d0080	1400d00b0	?\customize.cpp	low	1	di	
 1400d00b0	1400d02f0	unit_1400d00b0	none	12	di	
 1400d02f0	1400d04f0	?\customize.cpp	low	7	di	
-1400d04f0	1400d0510	?\enchantscrollslot.cpp	low	1	di	
+1400d04f0	1400d0510	client\ms2\enchantscrollslot.cpp	high	1	di	direct MS2_THIS_FILE; EnchantScrollSlot::ms_ClassInfo; alphabetical order passes
 1400d0510	1400d08a0	unit_1400d0510	none	12	di	
 1400d08a0	1400d0b50	?\fishingmanager.cpp	low	11	di	
 1400d0b50	1400d1640	client\ms2\gameeventcli.cpp	medium	31	di	
@@ -234,7 +234,7 @@
 1400d2540	1400d2630	?\itemloadinfo.cpp	low	2	di	dir client\ms2
 1400d2630	1400d2900	?\itempreview.cpp	low	8	di	dir client\ms2
 1400d2900	1400d2c20	unit_140d418e0	none	10	di	rejected ?\itemlockslot.cpp (order within gap)
-1400d2c20	1400d2c40	?\itemscrollslot.cpp	low	1	di	dir client\ms2
+1400d2c20	1400d2c40	client\ms2\itemscrollslot.cpp	high	1	di	direct MS2_THIS_FILE; ItemScrollSlot::ms_ClassInfo; alphabetical order passes
 1400d2c40	1400d3280	unit_1400d2c40	none	17	di	
 1400d3280	1400d3440	?\manufacturemanager.cpp	low	6	di	dir client\ms2
 1400d3440	1400d3940	client\ms2\meratmarketman.cpp	medium	17	di	
@@ -290,19 +290,19 @@
 1400d9ef0	1400d9fb0	?\uiphotostudiomenudialog.cpp	low	1	di	dir client\ms2
 1400d9fb0	1400da2b0	unit_1400d9fb0	none	12	di	
 1400da2b0	1400da440	?\uiquestnavigation.cpp	low	5	di	was ?\questnavigation.cpp; dir client\ms2
-1400da440	1400da6a0	unit_1400da440	none	6	di	ps1 split from unit_140e7f2e0: header-static di sets
+1400da440	1400da6a0	unit_1400da440_orphanheaderstatics	none	6	di	descriptive: orphanheaderstatics
 1400da6a0	1400da6d0	client\ms2\uirpseventdialog.cpp	medium	1	di	
-1400da6d0	1400dacd0	unit_1400da6d0	none	18	di	
+1400da6d0	1400dacd0	unit_1400da6d0_marketheaderstatics	none	18	di	descriptive: marketheaderstatics
 1400dacd0	1400db1c0	?\uisidepopuptalk.cpp	low	15	di	dir client\ms2
 1400db1c0	1400db2e0	unit_1400db2e0	none	3	di	ps1 split from ?\uisidepopuptalk.cpp: sort-name/skill/stun statics whose TU continues with s_condition1 at 0x1400db2e0
-1400db2e0	1400db7c0	unit_1400db2e0	none	15	di	
+1400db2e0	1400db7c0	unit_1400db2e0_marketheaderstatics	none	15	di	descriptive: marketheaderstatics
 1400db7c0	1400dba90	?\uiitemlulluboxdialog.cpp	low	8	di	
 1400dba90	1400dbc00	?\uilearningquestdialog.cpp	low	4	di	
 1400dbc00	1400dbd70	?\uileveluppackagedialog.cpp	low	4	di	
 1400dbd70	1400dc070	?\uimarketbilldialog.cpp	low	9	di	dir client\ms2
 1400dc070	1400dc300	client\ms2\uimasterydialog.cpp	medium	7	di	
 1400dc300	1400dc420	?\uimeratmarketcommon.cpp	low	3	di	dir client\ms2
-1400dc420	1400dc6d0	unit_1400dc420	none	10	di	
+1400dc420	1400dc6d0	unit_1400dc420_marketheaderstatics	none	10	di	descriptive: marketheaderstatics
 1400dc6d0	1400dc9e0	?\uiskillbookautodistributedialog.cpp	low	9	di	dir client\ms2
 1400dc9e0	1400dcaa0	?\uisurveydialog.cpp	low	1	di	dir client\ms2
 1400dcaa0	1400dccc0	client\ms2\uitencentuserreportdialog.cpp	medium	5	di	
@@ -310,7 +310,7 @@
 1400dce30	1400dd010	?\uitypinggamedialog.cpp	low	7	di	
 1400dd010	1400dd160	?\uiugccubebilldialog.cpp	low	4	di	
 1400dd160	1400dd530	?\uiugccubepalettedialog.cpp	low	14	di	
-1400dd530	1400dd850	unit_1400dd530	none	10	di	
+1400dd530	1400dd850	unit_1400dd530_uiheaderstatics	none	10	di	descriptive: uiheaderstatics
 1400dd850	1400ddba0	?\uiarcademaindialog.cpp	low	10	di	
 1400ddba0	1400ddde0	unit_1400ddba0	none	5	di	ps1 split from ?\uibeautyshopstyledialog.cpp: header-static di set of the previous TU
 1400ddde0	1400de020	?\uibeautyshopstyledialog.cpp	low	5	di	
@@ -354,7 +354,7 @@
 1400e2540	1400e2570	?\uivipdialog.cpp	low	1	di	dir client\ms2
 1400e2570	1400e28a0	?\uivipgoodsshopdialog.cpp	low	10	di	dir client\ms2
 1400e28a0	1400e29c0	?\uiwatchagamedialog.cpp	low	3	di	dir client\ms2
-1400e29c0	1400e2d10	unit_1400e29c0	none	10	di	
+1400e29c0	1400e2d10	unit_1400e29c0_uiheaderstatics	none	10	di	descriptive: uiheaderstatics
 1400e2d10	1400e2f40	?\uiweddingguestdialog.cpp	low	5	di	dir client\ms2
 1400e2f40	1400e3170	?\uiweddinghallreservationdialog.cpp	low	5	di	dir client\ms2
 1400e3170	1400e33a0	?\uiweddinghallreservationpageconfirm.cpp	low	5	di	dir client\ms2
@@ -365,11 +365,11 @@
 1400e39d0	1400e3ce0	client\ms2\uiplayinstrumentdialog.cpp	medium	9	di	
 1400e3ce0	1400e3e80	unit_141017950	none	5	di	
 1400e3e80	1400e3eb0	?\rideeinterpolator.cpp	low	1	di	
-1400e3eb0	1400e4300	unit_1400e3eb0	none	12	di	
+1400e3eb0	1400e4300	unit_1400e3eb0_marketheaderstatics	none	12	di	descriptive: marketheaderstatics
 1400e4300	1400e4330	client\ms2\string\stringidinterface.cpp	medium	1	di	
 1400e4330	1400e43f0	client\ms2\ugcimagepath.cpp	medium	1	di	
 1400e43f0	1400e46a0	client\ms2\uiattendgiftdialog.cpp	medium	8	di	
-1400e46a0	1400e4960	unit_1400e46a0	none	9	di	
+1400e46a0	1400e4960	unit_1400e46a0_marketheaderstatics	none	9	di	descriptive: marketheaderstatics
 1400e4960	1400e4b60	?\uicashshopdialog.cpp	low	7	di	
 1400e4b60	1400e4b90	unit_1400e4b60	none	1	di	ps1 split from ?\uicashshopdialog.cpp: ChaosLightEffect NiRTTI initializer
 1400e4b90	1400e4c80	?\uichaoslightdialog.cpp	low	5	di	
@@ -377,29 +377,29 @@
 1400e4e20	1400e50a0	unit_14107ac30	none	10	di	rejected ?\tcreatecharinfo.cpp
 1400e50a0	1400e53c0	?\cinematiccomponent.cpp	low	10	di	dir client\ms2
 1400e53c0	1400e53e0	?\clonecube.cpp	low	1	di	dir client\ms2
-1400e53e0	1400e56b0	unit_1400e53e0	none	9	di	
+1400e53e0	1400e56b0	unit_1400e53e0_clonepcnpcregistrations	none	9	di	descriptive: clonepcnpcregistrations
 1400e56b0	1400e59d0	unit_14108e1e0	none	10	di	rejected ?\npcvibrate.cpp
 1400e59d0	1400e5dd0	client\ms2\cubecraft.cpp	medium	16	di	
-1400e5dd0	1400e6230	unit_1400e5dd0	none	15	di	
+1400e5dd0	1400e6230	unit_1400e5dd0_cubemapserviceinit	none	15	di	descriptive: cubemapserviceinit
 1400e6230	1400e6420	client\ms2\cubemapinformationservice.cpp	medium	7	di	
 1400e6420	1400e65d0	unit_1410d5bc0	none	9	di	
-1400e65d0	1400e6d40	unit_1400e65d0	none	30	di	
+1400e65d0	1400e6d40	unit_1400e65d0_uiheaderstatics	none	30	di	descriptive: uiheaderstatics
 1400e6d40	1400e7190	?\decoeditservice.cpp	low	17	di	dir client\ms2
 1400e7190	1400e7300	client\ms2\dpsmetersystem.cpp	medium	4	di	
 1400e7300	1400e74f0	client\ms2\dropitem.cpp	medium	7	di	
 1400e74f0	1400e7570	?\dropitemdata.cpp	low	2	di	dir client\ms2
-1400e7570	1400e7870	unit_1400e7570	none	11	di	
+1400e7570	1400e7870	unit_1400e7570_marketheaderstatics	none	11	di	descriptive: marketheaderstatics
 1400e7870	1400e7d30	client\ms2\effectservice.cpp	medium	16	di	
 1400e7d30	1400e7eb0	?\effectskipmgr.cpp	low	9	di	dir client\ms2
 1400e7eb0	1400e8040	?\entityworldmanager.cpp	low	7	di	dir client\ms2
 1400e8040	1400e8820	?\equipitem.cpp	low	31	di	dir client\ms2
 1400e8820	1400e8840	?\equipmodel.cpp	low	1	di	dir client\ms2
-1400e8840	1400e8b40	unit_1400e8840	none	16	di	
+1400e8840	1400e8b40	unit_1400e8840_equipmentslotlabels	none	16	di	descriptive: equipmentslotlabels
 1400e8b40	1400e8e70	?\equipmodel.cpp	low	10	di	dir client\ms2
 1400e8e70	1400e9020	?\equipslot.cpp	low	6	di	dir client\ms2
 1400e9020	1400e9290	?\filepreload.cpp	low	6	di	dir client\ms2
 1400e9290	1400e9740	client\ms2\fittingdollslot.cpp	medium	16	di	
-1400e9740	1400e9c70	unit_1400e9740	none	17	di	
+1400e9740	1400e9c70	unit_1400e9740_fogeffectheaderstatics	none	17	di	descriptive: fogeffectheaderstatics
 1400e9c70	1400ea080	client\ms2\functioncubeobject.cpp	medium	14	di	
 1400ea080	1400ea210	?\fusionslotbag.cpp	low	5	di	dir client\ms2
 1400ea210	1400ea350	unit_1400ea210	none	4	di	ps1 split from ?\fusionslotbag.cpp: di (header statics) of another TU
@@ -409,13 +409,13 @@
 1400ea9f0	1400eadb0	client\ms2\gameoptionstruct.cpp	medium	10	di	
 1400eadb0	1400eaed0	client\ms2\gamesocket.cpp	medium	3	di	
 1400eaed0	1400eb270	?\gemslot.cpp	low	12	di	dir client\ms2
-1400eb270	1400eb5a0	unit_1400eb270	none	17	di	
-1400eb5a0	1400eb710	unit_1400eb5a0	none	4	di	ps1 split from ?\gemslot.cpp: header-static di set
+1400eb270	1400eb5a0	unit_1400eb270_aspropertyheaderstatics	none	17	di	descriptive: aspropertyheaderstatics
+1400eb5a0	1400eb710	unit_1400eb5a0_orphanheaderstatics	none	4	di	descriptive: orphanheaderstatics
 1400eb710	1400eba80	?\getexp.cpp	low	11	di	was ?\expeffectinfo.cpp; dir client\ms2
 1400eba80	1400ebd60	unit_141274d10	none	8	di	
 1400ebd60	1400ebf20	?\gfxmoviebackground.cpp	low	6	di	dir client\ms2
 1400ebf20	1400ebf50	?\gfxmovieugc.cpp	low	1	di	dir client\ms2
-1400ebf50	1400ec6a0	unit_1400ebf50	none	21	di	
+1400ebf50	1400ec6a0	unit_1400ebf50_marketheaderstatics	none	21	di	descriptive: marketheaderstatics
 1400ec6a0	1400ec950	client\ms2\uidebugguidedialog.cpp	medium	8	di	
 1400ec950	1400eca70	?\uidebugpacketdialog.cpp	low	3	di	dir client\ms2
 1400eca70	1400ecca0	?\uidevelopdialog.cpp	low	5	di	dir client\ms2
@@ -424,7 +424,7 @@
 1400ed130	1400ed270	unit_1412a4590	none	6	di	rejected ?\uisystemmailnotifydialog.cpp
 1400ed270	1400ed3e0	client\ms2\uidungeonroomdialog.cpp	medium	4	di	
 1400ed3e0	1400ed4a0	?\uiglobalportaldialog.cpp	low	1	di	dir client\ms2
-1400ed4a0	1400ed7a0	unit_1400ed4a0	none	9	di	
+1400ed4a0	1400ed7a0	unit_1400ed4a0_marketheaderstatics	none	9	di	descriptive: marketheaderstatics
 1400ed7a0	1400ed9c0	?\uihomeinfodialog.cpp	low	8	di	dir client\ms2
 1400ed9c0	1400edb60	?\uihomepassworddialog.cpp	low	5	di	dir client\ms2
 1400edb60	1400edcd0	?\uiindividualpvpdialog.cpp	low	4	di	dir client\ms2
