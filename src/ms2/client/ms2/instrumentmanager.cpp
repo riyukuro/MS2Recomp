@@ -1478,3 +1478,15 @@ int& Unk_ImNullableInt::Value()
 }
 // fx25: the const _Eqrange (0x140d0cd50) builds its pair<const_iterator,const_iterator> via the look-alike 0x140d0b3a0 (the table maps it with the iterator twin 0x140d0b4e0)
 // MS2-PIN: ??$?0AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$multimap@IU?$pair@HH@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIU?$pair@HH@std@@@std@@@2@@std@@@std@@@std@@@std@@@std@@AEAV01@$0A@@?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$multimap@IU?$pair@HH@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIU?$pair@HH@std@@@std@@@2@@std@@@std@@@std@@@std@@@std@@V12@@std@@QEAA@AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$multimap@IU?$pair@HH@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIU?$pair@HH@std@@@std@@@2@@std@@@std@@@std@@@std@@@1@0@Z 0x140d0b3a0
+// Full-executable aliases for existing CInstrumentManager methods.
+// MS2-PIN: ?OnPacket@CInstrumentManager@@QEAAXAEAVCInPacket@@@Z 0x140d061b0
+// MS2-PIN: ?NoteOn@CInstrumentManager@@QEAAXH@Z 0x140d073b0
+// MS2-PIN: ?PlayScore@CInstrumentManager@@QEAA_N_J@Z 0x140d07960
+// MS2-PIN: ?PlayEnsemble@CInstrumentManager@@QEAA_N_J@Z 0x140d07f00
+// MS2-PIN: ?ParseLine@CInstrumentManager@@QEAAIHHHPEAV?$multimap@IIU?$less@I@std@@V?$allocator@U?$pair@$$CBII@std@@@2@@std@@PEAV?$multimap@IU?$pair@HH@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIU?$pair@HH@std@@@std@@@2@@3@IIAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z 0x140d08660
+// MS2-PIN: ?FUN_140d061b0@Unk_SSGc8dac0@@QEAAXAEAVCInPacket@@@Z 0x140d061b0
+// MS2-PIN: ?FUN_140d073b0@Unk_PiMgr@@QEAAXH@Z 0x140d073b0
+// MS2-PIN: ?FUN_140d07960@Unk_PiMgr@@QEAA_N_J@Z 0x140d07960
+// MS2-PIN: ?FUN_140d07f00@Unk_PiMgr@@QEAA_N_J@Z 0x140d07f00
+// MS2-PIN: ?FUN_140d08660@Unk_WmInstrumentMgr@@QEAAIHHHPEAV?$multimap@IIU?$less@I@std@@V?$allocator@U?$pair@$$CBII@std@@@2@@std@@PEAV?$multimap@IU?$pair@HH@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIU?$pair@HH@std@@@std@@@2@@3@IIAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z 0x140d08660
+// MS2-PIN: ?FUN_140d08660@Unk_MeratSound@@QEAAIHHHPEAV?$multimap@IIU?$less@I@std@@V?$allocator@U?$pair@$$CBII@std@@@2@@std@@PEAV?$multimap@IU?$pair@HH@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIU?$pair@HH@std@@@std@@@2@@3@IIAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z 0x140d08660
