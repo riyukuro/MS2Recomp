@@ -60,12 +60,14 @@ template<> void CNMStr<2048>::Free() { nm_free_string_storage(m_p); }
 class CStreamCryptor_v0
 {
 public:
-    virtual void vfunc_6(); virtual void vfunc_5(); virtual void vfunc_4(); virtual void vfunc_3();
+    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
+    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6();
 };
 class CStreamCryptor_v1
 {
 public:
-    virtual void vfunc_6(); virtual void vfunc_5(); virtual void vfunc_4(); virtual void vfunc_3();
+    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
+    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6();
 };
 // @0x1415fa0d0
 void CStreamCryptor_v0::vfunc_6() { }
