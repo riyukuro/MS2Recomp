@@ -8,6 +8,17 @@
 #include "ms2/commonfiles/os.h"
 #include "ms2/placeholder/cthread.h"
 
+// The owner's TU (commonfiles/cachedata.cpp) specializes TSingleton<CDirWatcher> and defines its s_instance (0x143aac5b8) outright; the same
+// specialization here keeps this header's users from instantiating a second, COMDAT s_instance of the primary template.
+class CDirWatcher;
+template<> class TSingleton<CDirWatcher> {
+public:
+    TSingleton();
+    virtual ~TSingleton() { s_instance = 0; }
+    static CDirWatcher* s_instance;
+    static CDirWatcher* GetInstance() { return s_instance; }
+};
+
 class CDirWatcher : public CThread, public TSingleton<CDirWatcher>
 {
 public:

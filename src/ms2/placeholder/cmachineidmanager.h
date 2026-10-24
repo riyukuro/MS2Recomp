@@ -7,6 +7,18 @@
 #include "ms2/ms2layout.h"
 #include "ms2/commonfiles/os.h"
 
+// The owner's TU (guess/machineidmanager.cpp) specializes TSingleton<CMachineIDManager> and defines its s_instance (0x143ab8aa8) outright; the same
+// specialization here keeps this header's users from instantiating a second, COMDAT s_instance of the primary template.
+class CMachineIDManager;
+template <> class TSingleton<CMachineIDManager>
+{
+public:
+    TSingleton();                                       // 0x140d4fe20
+    virtual ~TSingleton();                              // 0x140d4fe50
+    static CMachineIDManager* s_instance;               // 0x143ab8aa8
+    static CMachineIDManager* GetInstance() { return s_instance; }
+};
+
 class CMachineIDManager : public TSingleton<CMachineIDManager>
 {
 public:
