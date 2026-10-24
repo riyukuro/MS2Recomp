@@ -10297,3 +10297,7 @@ DAT_14318f040	14318f040	data
 ?FunctionTable@TextFieldProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143214410	data
 ?FunctionTable@KeyCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213a70	data
 ?FUN_14277e6e0@@YAXPEAUCefString16@@PEAUcef_string_t@@@Z	14277e6e0	func
+?Collect@?$RefCountCollector@$0BED@@AS3@GFx@Scaleform@@QEAA_NPEAUStats@1234@@Z	1423de770	func
+?ExecuteCompleteEvent@LoaderInfo@fl_display@Instances@AS3@GFx@Scaleform@@QEAAXXZ	1424422a0	func
+?ExecuteInitEvent@LoaderInfo@fl_display@Instances@AS3@GFx@Scaleform@@QEAAXPEAVDisplayObject@56@@Z	1424426d0	func
+?ExecuteProgressEvent@LoaderInfo@fl_display@Instances@AS3@GFx@Scaleform@@QEAAX_K0@Z	142442b50	func
