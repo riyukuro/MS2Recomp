@@ -852,7 +852,15 @@ MS2_CHECK_SIZE(CNMBlockFriendFunc, 0x50);
 class CNMCHBanUserFunc : public CNMFunc
 {
 public:
+    CNMCHBanUserFunc();
+    CNMCHBanUserFunc(int n18, int n30);
     virtual ~CNMCHBanUserFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_30; // +0x30
     int m_34; // +0x34
@@ -917,7 +925,15 @@ MS2_CHECK_SIZE(CNMClientChannelInfo, 0x60);
 class CNMCHChangeChannelInfoFunc : public CNMFunc
 {
 public:
+    CNMCHChangeChannelInfoFunc();
+    CNMCHChangeChannelInfoFunc(int n18, const CNMClientChannelInfo& rChannelInfo);
     virtual ~CNMCHChangeChannelInfoFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMClientChannelInfo m_30; // +0x30
 };
@@ -927,7 +943,16 @@ MS2_CHECK_SIZE(CNMCHChangeChannelInfoFunc, 0x90);
 class CNMCHChangeMyInfoFunc : public CNMFunc
 {
 public:
+    CNMCHChangeMyInfoFunc();
+    CNMCHChangeMyInfoFunc(int n18);
+    CNMCHChangeMyInfoFunc(int n18, const CNMChannelMemberInfo& rMember);
     virtual ~CNMCHChangeMyInfoFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMChannelMemberInfo m_30; // +0x30
 };
@@ -937,7 +962,15 @@ MS2_CHECK_SIZE(CNMCHChangeMyInfoFunc, 0x60);
 class CNMCHCloseFunc : public CNMFunc
 {
 public:
+    CNMCHCloseFunc();
+    CNMCHCloseFunc(int n30);
     virtual ~CNMCHCloseFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 };
 MS2_CHECK_SIZE(CNMCHCloseFunc, 0x30);
 
@@ -945,7 +978,15 @@ MS2_CHECK_SIZE(CNMCHCloseFunc, 0x30);
 class CNMCHGetChannelInfoFunc : public CNMFunc
 {
 public:
+    CNMCHGetChannelInfoFunc();
+    CNMCHGetChannelInfoFunc(int n18);
     virtual ~CNMCHGetChannelInfoFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMClientChannelInfo m_30; // +0x30
 };
@@ -955,7 +996,15 @@ MS2_CHECK_SIZE(CNMCHGetChannelInfoFunc, 0x90);
 class CNMCHGetMemberInfoListFunc : public CNMFunc
 {
 public:
+    CNMCHGetMemberInfoListFunc();
+    CNMCHGetMemberInfoListFunc(int n18);
     virtual ~CNMCHGetMemberInfoListFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     std::vector<CNMChannelMemberInfo> m_30; // +0x30
 };
@@ -965,7 +1014,15 @@ MS2_CHECK_SIZE(CNMCHGetMemberInfoListFunc, 0x48);
 class CNMCHInviteUserFunc : public CNMFunc
 {
 public:
+    CNMCHInviteUserFunc();
+    CNMCHInviteUserFunc(int n18, const char* psz30, const char* psz38);
     virtual ~CNMCHInviteUserFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMStr<0x400> m_30; // +0x30
     CNMStr<0x800> m_38; // +0x38
@@ -976,7 +1033,16 @@ MS2_CHECK_SIZE(CNMCHInviteUserFunc, 0x40);
 class CNMCHSendChannelMessageFunc : public CNMFunc
 {
 public:
+    CNMCHSendChannelMessageFunc();
+    CNMCHSendChannelMessageFunc(int n18);
+    CNMCHSendChannelMessageFunc(int n18, const CNMChannelMessage& rMessage);
     virtual ~CNMCHSendChannelMessageFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMChannelMessage m_30; // +0x30
 };
@@ -1561,7 +1627,15 @@ MS2_CHECK_SIZE(CNMChannelMessageEvent, 0x78);
 class CNMCharacterChangeName64Func : public CNMFunc
 {
 public:
+    CNMCharacterChangeName64Func();
+    CNMCharacterChangeName64Func(const char* sz30, long long n70, int n78);
     virtual ~CNMCharacterChangeName64Func() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     char m_30[0x40]; // +0x30
     long long m_70; // +0x70
@@ -1574,7 +1648,15 @@ MS2_CHECK_SIZE(CNMCharacterChangeName64Func, 0x80);
 class CNMCharacterChangeNameFunc : public CNMFunc
 {
 public:
+    CNMCharacterChangeNameFunc();
+    CNMCharacterChangeNameFunc(NMKey64 key, const char* pszName, int n78);
     virtual ~CNMCharacterChangeNameFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     NMKey64 m_30; // +0x30
     char m_38[0x40]; // +0x38
@@ -1587,7 +1669,15 @@ MS2_CHECK_SIZE(CNMCharacterChangeNameFunc, 0x80);
 class CNMCharacterLogin64Func : public CNMFunc
 {
 public:
+    CNMCharacterLogin64Func();
+    CNMCharacterLogin64Func(const char* sz30, long long n70, int n78);
     virtual ~CNMCharacterLogin64Func() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     char m_30[0x40]; // +0x30
     long long m_70; // +0x70
@@ -1600,7 +1690,15 @@ MS2_CHECK_SIZE(CNMCharacterLogin64Func, 0x80);
 class CNMCharacterLoginFunc : public CNMFunc
 {
 public:
+    CNMCharacterLoginFunc();
+    CNMCharacterLoginFunc(const char* sz30, int n74, int n78);
     virtual ~CNMCharacterLoginFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     char m_30[0x40]; // +0x30
     int m_70; // +0x70
@@ -1614,7 +1712,15 @@ MS2_CHECK_SIZE(CNMCharacterLoginFunc, 0x80);
 class CNMCharacterLogout64Func : public CNMFunc
 {
 public:
+    CNMCharacterLogout64Func();
+    CNMCharacterLogout64Func(const char* sz30, long long n70, int n78);
     virtual ~CNMCharacterLogout64Func() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     char m_30[0x40]; // +0x30
     long long m_70; // +0x70
@@ -1627,7 +1733,15 @@ MS2_CHECK_SIZE(CNMCharacterLogout64Func, 0x80);
 class CNMCharacterLogoutFunc : public CNMFunc
 {
 public:
+    CNMCharacterLogoutFunc();
+    CNMCharacterLogoutFunc(const char* sz30, int n74, int n78);
     virtual ~CNMCharacterLogoutFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     char m_30[0x40]; // +0x30
     int m_70; // +0x70
@@ -1641,7 +1755,15 @@ MS2_CHECK_SIZE(CNMCharacterLogoutFunc, 0x80);
 class CNMCharacterRemove64Func : public CNMFunc
 {
 public:
+    CNMCharacterRemove64Func();
+    CNMCharacterRemove64Func(const char* sz30, long long n70, int n78);
     virtual ~CNMCharacterRemove64Func() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     char m_30[0x40]; // +0x30
     long long m_70; // +0x70
@@ -1654,7 +1776,15 @@ MS2_CHECK_SIZE(CNMCharacterRemove64Func, 0x80);
 class CNMCharacterRemoveFunc : public CNMFunc
 {
 public:
+    CNMCharacterRemoveFunc();
+    CNMCharacterRemoveFunc(NMKey64 key, const char* pszName, int n78);
     virtual ~CNMCharacterRemoveFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     NMKey64 m_30; // +0x30
     char m_38[0x40]; // +0x38
@@ -1667,7 +1797,15 @@ MS2_CHECK_SIZE(CNMCharacterRemoveFunc, 0x80);
 class CNMCharacterSync64Func : public CNMFunc
 {
 public:
+    CNMCharacterSync64Func();
+    CNMCharacterSync64Func(const char* sz30, long long n70, int n78, int n7c);
     virtual ~CNMCharacterSync64Func() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     char m_30[0x40]; // +0x30
     long long m_70; // +0x70
@@ -1680,7 +1818,15 @@ MS2_CHECK_SIZE(CNMCharacterSync64Func, 0x80);
 class CNMCharacterSyncFunc : public CNMFunc
 {
 public:
+    CNMCharacterSyncFunc();
+    CNMCharacterSyncFunc(const char* sz30, int n74, int n78, int n7c);
     virtual ~CNMCharacterSyncFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     char m_30[0x40]; // +0x30
     int m_70; // +0x70
@@ -2482,7 +2628,14 @@ MS2_CHECK_SIZE(CNMGSWantCloseFunc, 0x38);
 class CNMGameLogFinalizeFunc : public CNMFunc
 {
 public:
+    CNMGameLogFinalizeFunc();
     virtual ~CNMGameLogFinalizeFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 };
 MS2_CHECK_SIZE(CNMGameLogFinalizeFunc, 0x30);
 
@@ -2490,7 +2643,14 @@ MS2_CHECK_SIZE(CNMGameLogFinalizeFunc, 0x30);
 class CNMGameLogGetSessionIDFunc : public CNMFunc
 {
 public:
+    CNMGameLogGetSessionIDFunc();
     virtual ~CNMGameLogGetSessionIDFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     char m_30[0x20]; // +0x30
 };
@@ -2500,7 +2660,15 @@ MS2_CHECK_SIZE(CNMGameLogGetSessionIDFunc, 0x50);
 class CNMGameLogInitializeFunc : public CNMFunc
 {
 public:
+    CNMGameLogInitializeFunc();
+    CNMGameLogInitializeFunc(const char* psz30, const char* psz50, const char* psz150);
     virtual ~CNMGameLogInitializeFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     char m_30[0x20]; // +0x30
     char m_50[0x100]; // +0x50
@@ -2512,7 +2680,15 @@ MS2_CHECK_SIZE(CNMGameLogInitializeFunc, 0x170);
 class CNMGameLogWriteErrorLogFunc : public CNMFunc
 {
 public:
+    CNMGameLogWriteErrorLogFunc();
+    CNMGameLogWriteErrorLogFunc(int n30, const char* psz34);
     virtual ~CNMGameLogWriteErrorLogFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_30; // +0x30
     char m_34[0x104]; // +0x34
@@ -2523,7 +2699,15 @@ MS2_CHECK_SIZE(CNMGameLogWriteErrorLogFunc, 0x138);
 class CNMGameLogWriteStageLogFunc : public CNMFunc
 {
 public:
+    CNMGameLogWriteStageLogFunc();
+    CNMGameLogWriteStageLogFunc(int n30, const char* psz34);
     virtual ~CNMGameLogWriteStageLogFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_30; // +0x30
     char m_34[0x104]; // +0x34
