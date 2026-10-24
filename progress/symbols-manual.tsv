@@ -9823,3 +9823,6 @@ DAT_143b27c40	143b27c40	data
 ?GetStateBagImpl@MovieImpl@GFx@Scaleform@@UEBAPEAVStateBag@23@XZ	14256fb90	func
 ?LogMessageVarg@Unk_GfxLogBase@@UEAAXVLogMessageId@Scaleform@@PEBDPEAD@Z	14257e0c0	func
 ??_7ClassCallConstruct@AS3@GFx@Scaleform@@6B@	14313f3c8	data
+??0MeshCache@D3D9@Render@Scaleform@@QEAA@PEAVMemoryHeap@3@AEBUMeshCacheParams@23@@Z	142738e60	func
+?Init@FragShader@D3D9@Render@Scaleform@@QEAA_NPEAVHAL@234@PEBUFragShaderDesc@234@@Z	142741430	func
+?Init@VertexShader@D3D9@Render@Scaleform@@QEAA_NPEAVHAL@234@PEBUVertexShaderDesc@234@@Z	142741620	func
