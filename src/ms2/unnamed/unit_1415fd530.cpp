@@ -671,6 +671,15 @@ void FUN_141600de0(void* proxy, void* element) { FUN_1415da590(FUN_141601a70(pro
 void* FUN_141601750(void* p) { return p; }
 // @0x141601760
 void* FUN_141601760(void* p) { return p; }
+// MS2-FUNCTIONAL: the underlying allocator getter returns this allocator subobject unchanged.
+// @0x141601b50
+void* FUN_141601b50(void* p) { return p; }
+// MS2-FUNCTIONAL: the underlying allocator getter returns this allocator subobject unchanged.
+// @0x141601b70
+void* FUN_141601b70(void* p) { return p; }
+// MS2-FUNCTIONAL: the underlying allocator getter returns this allocator subobject unchanged.
+// @0x141601bd0
+void* FUN_141601bd0(void* p) { return p; }
 
 // MS2-FUNCTIONAL: returns the allocator proxy address after the read-only accessor chain.
 // @0x141601a70
@@ -779,3 +788,6 @@ void* FUN_141601ed0(void* p) { return p; }
 // MS2-PIN: ?FUN_141600db0@@YAXPEAX0@Z 0x141600db0
 // MS2-PIN: ?FUN_141600de0@@YAXPEAX0@Z 0x141600de0
 // MS2-PIN: ?FUN_141601a70@@YAPEAXPEAX@Z 0x141601a70 ; MS2-FUNCTIONAL: returns proxy address after accessors
+// MS2-PIN: ?FUN_141601b50@@YAPEAXPEAX@Z 0x141601b50 ; MS2-FUNCTIONAL: allocator getter returns its subobject
+// MS2-PIN: ?FUN_141601b70@@YAPEAXPEAX@Z 0x141601b70 ; MS2-FUNCTIONAL: allocator getter returns its subobject
+// MS2-PIN: ?FUN_141601bd0@@YAPEAXPEAX@Z 0x141601bd0 ; MS2-FUNCTIONAL: allocator getter returns its subobject
