@@ -4028,7 +4028,15 @@ MS2_CHECK_SIZE(CNMSetStatInfoFunc, 0x48);
 class CNMSpecialEvent : public CNMEvent
 {
 public:
+    CNMSpecialEvent();
+    CNMSpecialEvent(int nType, const char* text);
     virtual ~CNMSpecialEvent() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_28; // +0x28
     char m_2c[0x104]; // +0x2c
