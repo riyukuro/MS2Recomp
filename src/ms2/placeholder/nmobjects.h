@@ -3546,7 +3546,15 @@ MS2_CHECK_SIZE(CNMRefreshEvent, 0x30);
 class CNMRefreshMessageEvent : public CNMEvent
 {
 public:
+    CNMRefreshMessageEvent();
+    explicit CNMRefreshMessageEvent(int nMessage);
     virtual ~CNMRefreshMessageEvent() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_28; // +0x28
     int m_2c; // +0x2c
