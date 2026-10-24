@@ -1,7 +1,7 @@
 #start	end	cpp	confidence	nfuncs	section	note
 140001020	140001690	unit_140001020	none	10	text	
 140001690	140002780	unit_140001690	none	29	text	
-140002780	140002930	unit_140002780	none	3	text	
+140002780	140002930	unit_140002780_videopc	none	3	text	descriptive: videopc
 140002930	14000e470	sfr_video_01	none	300	text	sfr0 10-20: Scaleform 4.1.18 recovery, Video
 14000e470	140016b50	sfr_video_02	none	262	text	sfr0 10-20: Scaleform 4.1.18 recovery, Video
 140016b50	14001c000	sfr_video_03	none	144	text	sfr0 10-20: Scaleform 4.1.18 recovery, Video (Video_VideoPlayerImpl)
@@ -565,47 +565,47 @@
 140103f20	140104310	client\ms2\stateskill.cpp	medium	11	di	
 140104310	140104390	?\statestun.cpp	low	2	di	dir client\ms2
 140104390	140104530	?\statesummon.cpp	low	5	di	dir client\ms2
-140104530	140104af0	unit_140104530	none	16	di	
+140104530	140104af0	unit_140104530_marketheaderstatics	none	16	di	descriptive: marketheaderstatics
 140104af0	140104b20	?\statetaxicalldata.cpp	low	1	di	dir client\ms2
-140104b20	1401050e0	unit_140104b20	none	16	di	
+140104b20	1401050e0	unit_140104b20_marketheaderstatics	none	16	di	descriptive: marketheaderstatics
 1401050e0	140105110	?\statuseffectparam.cpp	low	1	di	dir client\ms2
-140105110	1401073f0	unit_140105110	none	198	di	
+140105110	1401073f0	unit_140105110_globalinitializers	none	198	di	descriptive: globalinitializers
 1401073f0	140107420	unit_141803210	none	1	di	rejected ?\efd.cpp
-140107420	14010cbd0	unit_140107420	none	254	di	
+140107420	14010cbd0	unit_140107420_globalheaderstatics	none	254	di	descriptive: globalheaderstatics
 14010cbd0	14010cf80	client\ms2\storeslot.cpp	medium	13	di	
 14010cf80	14010d120	client\ms2\stringtable.cpp	medium	5	di	
-14010d120	14010d290	unit_14010d120	none	4	di	ps1 split from client\ms2\stringtable.cpp: header-static di set
+14010d120	14010d290	unit_14010d120_orphanheaderstatics	none	4	di	ps1 split from client\ms2\stringtable.cpp: header-static di set; descriptive: orphanheaderstatics
 14010d290	14010d320	?\swoosheffectparam.cpp	low	3	di	dir client\ms2
 14010d320	14010d4c0	client\ms2\tableexporter.cpp	medium	5	di	
-14010d4c0	14010d840	unit_14010d4c0	none	12	di	
+14010d4c0	14010d840	unit_14010d4c0_marketheaderstatics	none	12	di	descriptive: marketheaderstatics
 14010d840	14010db90	?\texttohtml.cpp	low	14	di	dir client\ms2
 14010db90	14010dd90	unit_14010db90	none	7	di	ps1 split from ?\textureanimationdata.cpp: header-static di sets of other objs (see textureanimationdata.cpp)
 14010dd90	14010ddc0	client\ms2\textureutil.cpp	medium	1	di	
-14010ddc0	14010e180	unit_14010ddc0	none	10	di	
+14010ddc0	14010e180	unit_14010ddc0_marketheaderstatics	none	10	di	descriptive: marketheaderstatics
 14010e180	14010e4a0	?\toolsmoothcameramode.cpp	low	10	di	dir client\ms2
 14010e4a0	14010e8e0	?\trademanagerex.cpp	low	13	di	dir client\ms2
 14010e8e0	14010e910	unit_14010e8e0	none	1	di	ps1 split from ?\trademanagerex.cpp: TransitionEffect NiRTTI initializer
 14010e910	14010eca0	?\triggerservice.cpp	low	11	di	dir client\ms2
 14010eca0	14010f440	client\ms2\ugcmanager.cpp	medium	27	di	
-14010f440	14010f630	unit_14010f440	none	4	di	ps1 split from client\ms2\ugcmanager.cpp: header-static di set
-14010f630	14010fa00	unit_14010f630	none	12	di	
+14010f440	14010f630	unit_14010f440_orphanugcstatics	none	4	di	ps1 split from client\ms2\ugcmanager.cpp: header-static di set; descriptive: orphanugcstatics
+14010f630	14010fa00	unit_14010f630_mixedheaderstatics	none	12	di	descriptive: mixedheaderstatics
 14010fa00	14010fbc0	?\uiachievedialog.cpp	low	6	di	dir client\ms2
 14010fbc0	14010fe10	?\uiadditionalcontroldialog.cpp	low	6	di	dir client\ms2
 14010fe10	140110080	?\uiavatarbase.cpp	low	6	di	dir client\ms2
 140110080	1401105f0	?\uibeautyshopdialog.cpp	low	22	di	dir client\ms2
-1401105f0	140110a70	unit_1401105f0	none	11	di	ps1 split from ?\uibeautyshopdialog.cpp: header-static di sets of the next TU(s)
+1401105f0	140110a70	unit_1401105f0_orphanuistatics	none	11	di	ps1 split from ?\uibeautyshopdialog.cpp: header-static di sets of the next TU(s); descriptive: orphanuistatics
 140110a70	140110b20	?\uiblackmarketdialog.cpp	low	3	di	dir client\ms2
 140110b20	140110f20	?\uibuddyeventlistener.cpp	low	11	di	was ?\uicommunitydialog.cpp; dir client\ms2
 140110f20	140111400	?\uicameraeditdialog.cpp	low	12	di	dir client\ms2
 140111400	140111600	?\uicharacterlistdialog.cpp	low	7	di	dir client\ms2
 140111600	1401117c0	?\uichatballoon.cpp	low	6	di	dir client\ms2
 1401117c0	1401119b0	client\ms2\uicommon.cpp	medium	7	di	
-1401119b0	140111bf0	unit_1401119b0	none	9	di	
+1401119b0	140111bf0	unit_1401119b0_marketheaderstatics	none	9	di	descriptive: marketheaderstatics
 140111bf0	140111d60	client\ms2\uicutscenecinematic.cpp	medium	4	di	
 140111d60	140111f00	client\ms2\uicutscenemovie.cpp	medium	5	di	
 140111f00	140112070	unit_140111f00	none	4	di	ps1 split from client\ms2\uicutscenemovie.cpp: header-static di set
 140112070	1401124f0	?\uidamagetext.cpp	low	21	di	dir client\ms2
-1401124f0	140112750	unit_1401124f0	none	9	di	
+1401124f0	140112750	unit_1401124f0_marketheaderstatics	none	9	di	descriptive: marketheaderstatics
 140112750	140112990	unit_14191c7d0	none	5	di	ps1 split from ?\uidialog.cpp: UIBeautyShopDevDialog TU di
 140112990	140112b40	?\uidialog.cpp	low	6	di	was ?\uibeautyshopdevdialog.cpp; dir client\ms2
 140112b40	140112cb0	unit_140112b40	none	4	di	ps1 split from ?\uidialog.cpp: header-static di set of the TU after uidialog
@@ -620,7 +620,7 @@
 140113b00	140113ff0	client\ms2\uigroupmessenger.cpp	medium	19	di	
 140113ff0	1401141b0	client\ms2\uiguideeventarrow.cpp	medium	6	di	
 1401141b0	140114300	client\ms2\uiguilddialog.cpp	medium	4	di	
-140114300	140114680	unit_140114300	none	18	di	
+140114300	140114680	unit_140114300_equipmentslotlabels	none	18	di	descriptive: equipmentslotlabels
 140114680	140114820	?\uihairphysxdialog.cpp	low	5	di	dir client\ms2
 140114820	140114c40	?\uiheadupdisplay.cpp	low	12	di	dir client\ms2
 140114c40	140114d00	?\uiintromovie.cpp	low	1	di	dir client\ms2
@@ -630,7 +630,7 @@
 140115690	1401158f0	?\uiitemenchantdialog.cpp	low	9	di	was ?\uiitemmodifydialogbase.cpp; dir client\ms2
 1401158f0	140115a60	client\ms2\uiitemmergeoptiondialog.cpp	medium	4	di	
 140115a60	140115b20	?\uijobchangedialog.cpp	low	1	di	dir client\ms2
-140115b20	140115ee0	unit_140115b20	none	12	di	
+140115b20	140115ee0	unit_140115b20_marketheaderstatics	none	12	di	descriptive: marketheaderstatics
 140115ee0	140116000	?\uilogindialog.cpp	low	3	di	dir client\ms2
 140116000	140116360	?\uimaillistdialog.cpp	low	8	di	dir client\ms2
 140116360	1401166e0	?\uimainplayerinfo.cpp	low	12	di	dir client\ms2
@@ -645,12 +645,12 @@
 140119e20	140119f90	?\uinpccreatedialog.cpp	low	4	di	dir client\ms2
 140119f90	14011a360	?\uinpcpreviewdialog.cpp	low	10	di	dir client\ms2
 14011a360	14011aab0	client\ms2\uipartydialog.cpp	medium	22	di	
-14011aab0	14011afa0	unit_14011aab0	none	15	di	
+14011aab0	14011afa0	unit_14011aab0_marketheaderstatics	none	15	di	descriptive: marketheaderstatics
 14011afa0	14011b110	client\ms2\uiquestdebugdialog.cpp	medium	4	di	
 14011b110	14011b480	?\uiquestdialog.cpp	low	11	di	dir client\ms2
 14011b480	14011b620	?\uiquesteventlistener.cpp	low	5	di	dir client\ms2
 14011b620	14011b740	?\uirealestatedialog.cpp	low	3	di	dir client\ms2
-14011b740	14011bde0	unit_14011b740	none	21	di	
+14011b740	14011bde0	unit_14011b740_marketheaderstatics	none	21	di	descriptive: marketheaderstatics
 14011bde0	14011bfb0	?\uireportdialog.cpp	low	6	di	dir client\ms2
 14011bfb0	14011c3e0	?\uirewardnotify.cpp	low	15	di	dir client\ms2
 14011c3e0	14011cbf0	?\uiscenegame.cpp	low	24	di	dir client\ms2
@@ -658,7 +658,7 @@
 14011d080	14011d200	?\uiserverlistdialog.cpp	low	5	di	dir client\ms2
 14011d200	14011d540	?\uiservice.cpp	low	11	di	dir client\ms2
 14011d540	14011d8d0	?\uishopdialog.cpp	low	12	di	dir client\ms2
-14011d8d0	14011dbe0	unit_14011d8d0	none	9	di	
+14011d8d0	14011dbe0	unit_14011d8d0_marketfilterstatics	none	9	di	descriptive: marketfilterstatics
 14011dbe0	14011dd60	?\uistatuseventlistener.cpp	low	5	di	dir client\ms2
 14011dd60	14011de30	?\uisystemmenudialog.cpp	low	4	di	dir client\ms2
 14011de30	14011de60	?\uisystemtext.cpp	low	1	di	dir client\ms2
@@ -673,13 +673,13 @@
 14011f460	14011f4c0	?\uiwebbrowser.cpp	low	2	di	dir client\ms2
 14011f4c0	14011f630	?\uiwhispernotifydialog.cpp	low	4	di	dir client\ms2
 14011f630	14011f750	?\uiworldmapdialog.cpp	low	3	di	dir client\ms2
-14011f750	14011fa90	unit_14011f750	none	14	di	
+14011f750	14011fa90	unit_14011f750_mixedheaderstatics	none	14	di	descriptive: mixedheaderstatics
 14011fa90	14011fb10	?\weaponactiontable.cpp	low	2	di	dir client\ms2
 14011fb10	14011fb70	unit_14011fb10	none	2	di	ps1 split from ?\weaponactiontable.cpp: WeaponAttachTransformNode / WeatherEffect NiRTTI initializers
 14011fb70	14011fc20	client\ms2\webbrowserservice.cpp	medium	4	di	
 14011fc20	14011fe40	?\weddingmanager.cpp	low	8	di	
 14011fe40	14011fff0	?\windowservice.cpp	low	6	di	
-14011fff0	140120010	?\wireframemanager.cpp	low	1	di	
+14011fff0	140120010	?\wireframemanager.cpp	low	1	di	guess: RTTI class candidate; sorts between windowservice.cpp and worldmapmanager.cpp
 140120010	140120260	?\worldmapmanager.cpp	low	9	di	was ?\uiworldmap.cpp
 140120260	140120290	?\worldservice.cpp	low	1	di	
 140120290	1401206b0	unit_140120290	none	11	di	
