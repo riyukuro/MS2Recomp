@@ -2,7 +2,7 @@
 // browser / render process handler): the command line switches of the browser process, the ms2 / ms2dl javascript extension
 // registered in the render process, and the ime / token process messages between the two. Names other than the CEF
 // overrides are invented (the exe has no symbols for them). Layout: ms2/placeholder/ccefms2clientapp.h.
-// MS2-UNIT: client\ms2\cefms2clientapp.cpp
+// MS2-UNIT: lib_cef_clientapp
 // MS2-RANGE: 0x140cbfd50-0x140cc20a0 .text$mn
 // MS2-PIN: ??_7CefBrowserProcessHandler@@6B0@@ 0x142e1afc0
 // MS2-PIN: ??_7CefRenderProcessHandler@@6B0@@ 0x142e1b018
