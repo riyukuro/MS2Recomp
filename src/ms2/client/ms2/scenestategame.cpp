@@ -1297,40 +1297,53 @@ class Unk_Handle1401cd100 { public: Unk_Handle1401cd100(int nNull); void* m_p; }
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CSceneStateGame);
 
 static CStringW s_confirmChangeCharName(L"confirmChangeCharName");
-static CStringW s_individualArenaJoin(L"individualArenaJoin");
-static CStringW s_maintenanceExit(L"maintenanceExit");
-static CStringW s_recallconfirm(L"recallconfirm");
-static CStringW s_startbypass(L"startbypass");
-static CStringW s_useBindEquipItem(L"useBindEquipItem");
+#ifndef MS2_HOOK_DLL   // the exe's objects, which the handlers read as DAT_143ae7xxx (the hook DLL binds them)
+CStringW DAT_143ae7a08(L"individualArenaJoin");
+CStringW DAT_143ae79d8(L"maintenanceExit");
+CStringW DAT_143ae79f8(L"recallconfirm");
+CStringW DAT_143ae79f0(L"startbypass");
+CStringW DAT_143ae7980(L"useBindEquipItem");
+#endif
 static CString s_sort8[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
 static CString s_sort7[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
-static CString s_skill = "skill";
-static CString s_stun = "stun";
+#ifndef MS2_HOOK_DLL   // the exe's objects, which the handlers read as DAT_143ae7xxx (the hook DLL binds them)
+CString DAT_143ae7428 = "skill";
+CString DAT_143ae7420 = "stun";
+#endif
 static Unk_Handle1401cd100 s_handle(0);                     // @0x1400ffb90
 static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
 static UICommon::CMyPCKeyInputController s_keyInput;
-static CString s_jobCode = "jobCode";
-static CString s_sortValue = "sortValue";
-static CString s_tabIndex = "tabIndex";
-static CString s_noticeBattleHp10 = "notice_battle_hp_10percent";
-static CString s_sound02100201 = "02100201";
-static CString s_sound02100200 = "02100200";
-static CString s_sound02100199 = "02100199";
-static CString s_pcBuyHouse = "PC_buy_house";
-static CString s_systemFieldWar = "System_FieldWar";
-static CString s_telescopeFind = "Telescope_Find";
-static CString s_guildBattleApply = "guildBattle_Apply";
-static CString s_noticeWarningBag = "system_notice_error_warningBag";
-static CString s_noticeWarningDanger = "system_notice_warningDanger";
-static CString s_noticeWarningNoBuild = "system_notice_error_warningNoBuild";
-static CString s_systemKillSlayer = "System_KillSlayer";
-static CString s_summonCash = "Summon_Cash";
-static CString s_systemTaxiFind = "system_Taxi_Find";
-static CString s_ugcBuyland = "ugc_buyland";
-static CString s_ugcRemoveblock = "ugc_removeblock";
-static CString s_ugcRotateblock = "ugc_rotateblock";
-static CString s_ugcSellland = "ugc_sellland";
-static CString s_ugcSetblock = "ugc_setblock";
+#ifndef MS2_HOOK_DLL   // the exe's objects, which the handlers read as DAT_143ae7xxx (the hook DLL binds them)
+CString DAT_143ae7508 = "jobCode";
+CString DAT_143ae74b8 = "sortValue";
+CString DAT_143ae7468 = "tabIndex";
+#endif
+#ifndef MS2_HOOK_DLL   // the exe's objects, which the handlers read as DAT_143ae7xxx (the hook DLL binds them)
+CString DAT_143ae7970 = "notice_battle_hp_10percent";
+CString DAT_143ae7998 = "02100201";
+CString DAT_143ae7990 = "02100200";
+CString DAT_143ae7988 = "02100199";
+CString DAT_143ae79a8 = "PC_buy_house";
+#endif
+extern CString DAT_143ae7a20;
+#ifndef MS2_HOOK_DLL   // the exe's objects, which the handlers read as DAT_143ae7xxx (the hook DLL binds them)
+CString DAT_143ae7a20 = "System_FieldWar";
+#endif
+#ifndef MS2_HOOK_DLL   // the exe's objects, which the handlers read as DAT_143ae7xxx (the hook DLL binds them)
+CString DAT_143ae79e0 = "Telescope_Find";
+CString DAT_143ae7a00 = "guildBattle_Apply";
+CString DAT_143ae7978 = "system_notice_error_warningBag";
+CString DAT_143ae7968 = "system_notice_warningDanger";
+CString DAT_143ae79c0 = "system_notice_error_warningNoBuild";
+CString DAT_143ae7a10 = "System_KillSlayer";
+CString DAT_143ae7558 = "Summon_Cash";
+CString DAT_143ae79e8 = "system_Taxi_Find";
+CString DAT_143ae79a0 = "ugc_buyland";
+CString DAT_143ae79c8 = "ugc_removeblock";
+CString DAT_143ae79d0 = "ugc_rotateblock";
+CString DAT_143ae79b0 = "ugc_sellland";
+CString DAT_143ae79b8 = "ugc_setblock";
+#endif
 
 // ---- callees of the w95 handlers (names inferred) -----------------------------------------------------------------
 int FUN_140222f60(int nType);
@@ -9328,7 +9341,7 @@ void CSceneStateGame::FUN_14173dfd0(CInPacket& packet)
         spParam->m_nKind = 4;
         spParam->m_strIcon = "Neirin_normal";
         spParam->m_nNpcId = 30000;
-        spParam->m_strScript = s_systemFieldWar;
+        spParam->m_strScript = DAT_143ae7a20;
         spParam->m_strText = FUN_1405c2690(L"s_fieldwar_sidepopup_script", FUN_1401a9d70()->FUN_141811980(3, spInfo->m_nId));
         spParam->m_str70 = FUN_1401a9d70()->FUN_141811980(3, spInfo->m_nId);
         spParam->m_str68 = StringFormat("{0}{1:08d}.png", FUN_1401d31f0()->m_strd0, spInfo->m_nId);
