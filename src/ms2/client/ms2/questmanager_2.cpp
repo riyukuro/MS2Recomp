@@ -2552,3 +2552,15 @@ int CAllianceQuest::GetQuestType()
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+
+// Full-executable aliases for existing quest manager dispatch methods.
+// MS2-PIN: ?OnQuest@CQuestManager@@QEAAXAEAVCInPacket@@@Z 0x1416cbd90
+// MS2-PIN: ?FUN_1416cbd90@@YAXPEAXAEAVCInPacket@@@Z 0x1416cbd90
+// MS2-PIN: ?SendQuestMode12@CQuestManager@@QEAAXH@Z 0x1416cf510
+// MS2-PIN: ?FUN_1416cf510@@YAXPEAVCQuestManager@@H@Z 0x1416cf510
+// MS2-PIN: ?SendQuestMode13@CQuestManager@@QEAAXH@Z 0x1416cf630
+// MS2-PIN: ?FUN_1416cf630@@YAXPEAVCQuestManager@@H@Z 0x1416cf630
+// MS2-PIN: ?SendQuestMode19@CQuestManager@@QEAAXH@Z 0x1416cf750
+// MS2-PIN: ?FUN_1416cf750@@YAXPEAVCQuestManager@@H@Z 0x1416cf750
+// MS2-PIN: ?SendQuestMode14@CQuestManager@@QEAAXXZ 0x1416d0c10
+// MS2-PIN: ?FUN_1416d0c10@@YAXPEAVUnk_GmQuestHolder@@@Z 0x1416d0c10
