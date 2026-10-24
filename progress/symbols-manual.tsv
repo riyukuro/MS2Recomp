@@ -10356,3 +10356,12 @@ DAT_1431bef38	1431bef38	data
 DAT_1431bee50	1431bee50	data
 DAT_1431bee68	1431bee68	data
 DAT_1431b80b8	1431b80b8	data
+DAT_143138530	143138530	data
+DAT_143a2a6b0	143a2a6b0	data
+XML_ErrorString	1423b24b0	func
+XML_GetCurrentColumnNumber	1423b2ab0	func
+XML_GetCurrentLineNumber	1423b2b10	func
+XML_GetErrorCode	1423b2b70	func
+XML_Parse	1423b2c20	func
+XML_SetEndElementHandler	1423b3400	func
+XML_SetStartElementHandler	1423b3500	func
