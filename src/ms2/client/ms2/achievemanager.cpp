@@ -485,7 +485,7 @@ int CAchieveManager::IsBeforeStartGradeOf(MS2Ptr<CAchieve> pAchieve, int nGrade)
 }
 
 // The three dialog lookups (UI ids 0x4e28 / 0x2711 / 0x4e5d).
-static UIGameMenuDialog* FUN_140938b90(int nId)
+UIGameMenuDialog* FUN_140938b90(int nId)
 {
     if (FUN_1403ed2b0())
     {
@@ -496,7 +496,7 @@ static UIGameMenuDialog* FUN_140938b90(int nId)
     return 0;
 }
 
-static UIMyInfoDialog* FUN_140938c30(int nId)
+UIMyInfoDialog* FUN_140938c30(int nId)
 {
     if (FUN_1403ed2b0())
     {
@@ -507,7 +507,7 @@ static UIMyInfoDialog* FUN_140938c30(int nId)
     return 0;
 }
 
-static UIRewardNotify* FUN_140938cd0(int nId)
+UIRewardNotify* FUN_140938cd0(int nId)
 {
     if (FUN_1403ed2b0())
     {
