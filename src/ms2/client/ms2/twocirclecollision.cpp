@@ -15,8 +15,6 @@
 #include "hook/ms2hook.h"
 
 NiRenderer* GetNiRenderer();                                        // NiRenderer::GetRenderer()
-void FUN_140980f20(NiVertexColorProperty* pProp, int n);            // SetSourceMode
-void FUN_140980e60(NiVertexColorProperty* pProp, int n);            // SetLightingMode
 
 static const int kRingPoints = 360;
 
@@ -68,8 +66,8 @@ void CTwoCircleCollision::vfunc_5()
     {
         m_spInner = new (efd::MemHint(efd::MemHint::NONE)) NiMesh;
         NiVertexColorProperty* pProp = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
-        FUN_140980f20(pProp, 1);
-        FUN_140980e60(pProp, 0);
+        pProp->SetSourceMode(NiVertexColorProperty::SOURCE_EMISSIVE);
+        pProp->SetLightingMode(NiVertexColorProperty::LIGHTING_E);
         m_spInner->AttachProperty(pProp);
         m_spOuter = new (efd::MemHint(efd::MemHint::NONE)) NiMesh;
         m_spOuter->AttachProperty(pProp);

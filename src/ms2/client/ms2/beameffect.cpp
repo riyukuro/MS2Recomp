@@ -5,14 +5,13 @@
 // MS2-RANGE: 0x1400c2cc0-0x1400c2f90 .text$di
 // MS2-RANGE: 0x140a071a0-0x140a0c300 .text$mn
 // MS2-PIN: ??C?$MS2Ptr@VBeamInfo@@@@QEBAPEAVBeamInfo@@XZ 0x140a0ac30
-// MS2-PIN: ??1?$vector@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@QEAA@XZ 0x140a0a8d0
-// MS2-PIN: ??1?$vector@UUnk_StreamPoint@@@efd@@QEAA@XZ 0x140a0a8b0
+// MS2-PIN: ??1?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@QEAA@XZ 0x140a0a8d0
+// MS2-PIN: ??1?$vector@UVector3@@@efd@@QEAA@XZ 0x140a0a8b0
 // MS2-PIN: ??1?$MS2Ptr@VBeamInfo@@@@QEAA@XZ 0x140a0a7d0
 // MS2-PIN: ?IsNull@?$MS2Ptr@VCBeamEffectParam@@@@QEBA_NXZ 0x140a0aaf0
 // MS2-PIN: ??C?$MS2Ptr@VCBeamEffectParam@@@@QEBAPEAVCBeamEffectParam@@XZ 0x140a0ac40
-// MS2-PIN: ?GetCount@?$CAtlArray@UUnk_StreamPoint@@V?$CElementTraits@UUnk_StreamPoint@@@ATL@@@ATL@@QEBA_KXZ 0x140a0afb0
+// MS2-PIN: ?GetCount@?$CAtlArray@UVector3@@V?$CElementTraits@UVector3@@@ATL@@@ATL@@QEBA_KXZ 0x140a0afb0
 // MS2-PIN: ?Release@?$MS2Ptr@VBeamInfo@@@@AEAAXXZ 0x140a0bc40
-// MS2-PIN: ?construct@?$CustomAllocator@UUnk_StreamPoint@@@efd@@QEAAXPEAUUnk_StreamPoint@@AEBU3@@Z 0x140a0bff0
 // MS2-PIN: ??1NiFogProperty@@UEAA@XZ 0x140a0a900
 // MS2-PIN: ??_GCBeamEffect@@UEAAPEAXI@Z 0x140a0ac50
 // MS2-PIN: ??_GNiFogProperty@@UEAAPEAXI@Z 0x140a0acb0
@@ -50,44 +49,44 @@
 // MS2-PIN: ??C?$SmartPointer@VNiTexturingProperty@@@efd@@QEBAPEAVNiTexturingProperty@@XZ 0x140a0ac00
 // MS2-PIN: ??C?$SmartPointer@VNiVertexColorProperty@@@efd@@QEBAPEAVNiVertexColorProperty@@XZ 0x140a0ac10
 // MS2-PIN: ??C?$SmartPointer@VNiWireframeProperty@@@efd@@QEBAPEAVNiWireframeProperty@@XZ 0x140a0ac20
-// MS2-PIN: ??$_Emplace_reallocate@AEBUUnk_StreamPoint@@@?$vector@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@QEAAPEAUUnk_StreamPoint@@QEAU2@AEBU2@@Z 0x140a09890
-// MS2-PIN: ??$_Emplace_reallocate@UUnk_StreamPoint@@@?$vector@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@QEAAPEAUUnk_StreamPoint@@QEAU2@$$QEAU2@@Z 0x140a09af0
-// MS2-PIN: ??$destroy@UUnk_StreamPoint@@@?$_Normal_allocator_traits@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@SAXAEAV?$CustomAllocator@UUnk_StreamPoint@@@efd@@PEAUUnk_StreamPoint@@@Z 0x140a09f30
-// MS2-PIN: ??0?$vector@UUnk_StreamPoint@@@efd@@QEAA@XZ 0x140a0a350
-// MS2-PIN: ??1?$CustomAllocator@UUnk_StreamPoint@@@efd@@QEAA@XZ 0x140a0a640
-// MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@@std@@QEBAAEBQEAUUnk_StreamPoint@@XZ 0x140a0bbb0
-// MS2-PIN: ?destroy@?$CustomAllocator@UUnk_StreamPoint@@@efd@@QEAAXPEAUUnk_StreamPoint@@@Z 0x140a0c0a0
-// MS2-PIN: ?_Xlength@?$vector@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@CAXXZ 0x140a0bf30
+// MS2-PIN: ??$_Emplace_reallocate@AEBUVector3@@@?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@QEAAPEAUVector3@@QEAU2@AEBU2@@Z 0x140a09890
+// MS2-PIN: ??$_Emplace_reallocate@UVector3@@@?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@QEAAPEAUVector3@@QEAU2@$$QEAU2@@Z 0x140a09af0
+// MS2-PIN: ??$destroy@UVector3@@@?$_Normal_allocator_traits@V?$CustomAllocator@UVector3@@@efd@@@std@@SAXAEAV?$CustomAllocator@UVector3@@@efd@@PEAUVector3@@@Z 0x140a09f30
+// MS2-PIN: ??0?$vector@UVector3@@@efd@@QEAA@XZ 0x140a0a350
+// MS2-PIN: ??1?$CustomAllocator@UVector3@@@efd@@QEAA@XZ 0x140a0a640
+// MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@@std@@QEBAAEBQEAUVector3@@XZ 0x140a0bbb0
+// MS2-PIN: ?destroy@?$CustomAllocator@UVector3@@@efd@@QEAAXPEAUVector3@@@Z 0x140a0c0a0
+// MS2-PIN: ?_Xlength@?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@CAXXZ 0x140a0bf30
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@V?$_Vector_val@U?$_Simple_types@UUnk_StreamPoint@@@std@@@std@@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x140a09510 ; unique
-// MS2-PIN: ??$_Construct1@UUnk_StreamPoint@@AEBU1@@?$_Normal_allocator_traits@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@SAXU?$integral_constant@_N$0A@@1@AEAV?$CustomAllocator@UUnk_StreamPoint@@@efd@@PEAUUnk_StreamPoint@@AEBU5@@Z 0x140a09550 ; prop
-// MS2-PIN: ??$_Construct1@UUnk_StreamPoint@@U1@@?$_Normal_allocator_traits@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@SAXU?$integral_constant@_N$0A@@1@AEAV?$CustomAllocator@UUnk_StreamPoint@@@efd@@PEAUUnk_StreamPoint@@$$QEAU5@@Z 0x140a09590 ; prop
-// MS2-PIN: ??$_Destroy1@UUnk_StreamPoint@@@?$_Normal_allocator_traits@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@SAXAEAV?$CustomAllocator@UUnk_StreamPoint@@@efd@@PEAUUnk_StreamPoint@@U?$integral_constant@_N$0A@@1@@Z 0x140a095d0 ; unique
-// MS2-PIN: ??$_Destroy_range1@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@YAXPEAUUnk_StreamPoint@@0AEAV?$CustomAllocator@UUnk_StreamPoint@@@efd@@U?$integral_constant@_N$0A@@0@@Z 0x140a09600 ; unique
-// MS2-PIN: ??$_Destroy_range@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@YAXPEAUUnk_StreamPoint@@0AEAV?$CustomAllocator@UUnk_StreamPoint@@@efd@@@Z 0x140a09660 ; unique
-// MS2-PIN: ??$_Emplace_back@UUnk_StreamPoint@@@?$_Uninitialized_backout_al@PEAUUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@QEAAX$$QEAUUnk_StreamPoint@@@Z 0x140a096b0 ; unique
-// MS2-PIN: ??$_Emplace_back_with_unused_capacity@AEBUUnk_StreamPoint@@@?$vector@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@AEAAXAEBUUnk_StreamPoint@@@Z 0x140a09710 ; prop
-// MS2-PIN: ??$_Emplace_back_with_unused_capacity@UUnk_StreamPoint@@@?$vector@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@AEAAX$$QEAUUnk_StreamPoint@@@Z 0x140a097d0 ; prop
-// MS2-PIN: ??$_Uninitialized_move@PEAUUnk_StreamPoint@@PEAU1@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@YAPEAUUnk_StreamPoint@@QEAU1@0PEAU1@AEAV?$CustomAllocator@UUnk_StreamPoint@@@efd@@@Z 0x140a09d50 ; unique
-// MS2-PIN: ??$_Uninitialized_move_al_unchecked@PEAUUnk_StreamPoint@@PEAU1@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@YAPEAUUnk_StreamPoint@@PEAU1@QEAU1@1AEAV?$CustomAllocator@UUnk_StreamPoint@@@efd@@U_General_ptr_iterator_tag@0@U_Unused_parameter@0@@Z 0x140a09e20 ; unique
-// MS2-PIN: ??$construct@UUnk_StreamPoint@@AEBU1@@?$_Normal_allocator_traits@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@SAXAEAV?$CustomAllocator@UUnk_StreamPoint@@@efd@@PEAUUnk_StreamPoint@@AEBU4@@Z 0x140a09eb0 ; prop
-// MS2-PIN: ??$construct@UUnk_StreamPoint@@U1@@?$_Normal_allocator_traits@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@SAXAEAV?$CustomAllocator@UUnk_StreamPoint@@@efd@@PEAUUnk_StreamPoint@@$$QEAU4@@Z 0x140a09ef0 ; prop
-// MS2-PIN: ??$emplace_back@AEBUUnk_StreamPoint@@@?$vector@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@QEAAXAEBUUnk_StreamPoint@@@Z 0x140a09f60 ; prop
-// MS2-PIN: ??$emplace_back@UUnk_StreamPoint@@@?$vector@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@QEAAX$$QEAUUnk_StreamPoint@@@Z 0x140a09fd0 ; prop
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$CustomAllocator@UVector3@@@efd@@V?$_Vector_val@U?$_Simple_types@UVector3@@@std@@@std@@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x140a09510 ; unique
+// MS2-PIN: ??$_Construct1@UVector3@@AEBU1@@?$_Normal_allocator_traits@V?$CustomAllocator@UVector3@@@efd@@@std@@SAXU?$integral_constant@_N$0A@@1@AEAV?$CustomAllocator@UVector3@@@efd@@PEAUVector3@@AEBU5@@Z 0x140a09550 ; prop
+// MS2-PIN: ??$_Construct1@UVector3@@U1@@?$_Normal_allocator_traits@V?$CustomAllocator@UVector3@@@efd@@@std@@SAXU?$integral_constant@_N$0A@@1@AEAV?$CustomAllocator@UVector3@@@efd@@PEAUVector3@@$$QEAU5@@Z 0x140a09590 ; prop
+// MS2-PIN: ??$_Destroy1@UVector3@@@?$_Normal_allocator_traits@V?$CustomAllocator@UVector3@@@efd@@@std@@SAXAEAV?$CustomAllocator@UVector3@@@efd@@PEAUVector3@@U?$integral_constant@_N$0A@@1@@Z 0x140a095d0 ; unique
+// MS2-PIN: ??$_Destroy_range1@V?$CustomAllocator@UVector3@@@efd@@@std@@YAXPEAUVector3@@0AEAV?$CustomAllocator@UVector3@@@efd@@U?$integral_constant@_N$0A@@0@@Z 0x140a09600 ; unique
+// MS2-PIN: ??$_Destroy_range@V?$CustomAllocator@UVector3@@@efd@@@std@@YAXPEAUVector3@@0AEAV?$CustomAllocator@UVector3@@@efd@@@Z 0x140a09660 ; unique
+// MS2-PIN: ??$_Emplace_back@UVector3@@@?$_Uninitialized_backout_al@PEAUVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@QEAAX$$QEAUVector3@@@Z 0x140a096b0 ; unique
+// MS2-PIN: ??$_Emplace_back_with_unused_capacity@AEBUVector3@@@?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@AEAAXAEBUVector3@@@Z 0x140a09710 ; prop
+// MS2-PIN: ??$_Emplace_back_with_unused_capacity@UVector3@@@?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@AEAAX$$QEAUVector3@@@Z 0x140a097d0 ; prop
+// MS2-PIN: ??$_Uninitialized_move@PEAUVector3@@PEAU1@V?$CustomAllocator@UVector3@@@efd@@@std@@YAPEAUVector3@@QEAU1@0PEAU1@AEAV?$CustomAllocator@UVector3@@@efd@@@Z 0x140a09d50 ; unique
+// MS2-PIN: ??$_Uninitialized_move_al_unchecked@PEAUVector3@@PEAU1@V?$CustomAllocator@UVector3@@@efd@@@std@@YAPEAUVector3@@PEAU1@QEAU1@1AEAV?$CustomAllocator@UVector3@@@efd@@U_General_ptr_iterator_tag@0@U_Unused_parameter@0@@Z 0x140a09e20 ; unique
+// MS2-PIN: ??$construct@UVector3@@AEBU1@@?$_Normal_allocator_traits@V?$CustomAllocator@UVector3@@@efd@@@std@@SAXAEAV?$CustomAllocator@UVector3@@@efd@@PEAUVector3@@AEBU4@@Z 0x140a09eb0 ; prop
+// MS2-PIN: ??$construct@UVector3@@U1@@?$_Normal_allocator_traits@V?$CustomAllocator@UVector3@@@efd@@@std@@SAXAEAV?$CustomAllocator@UVector3@@@efd@@PEAUVector3@@$$QEAU4@@Z 0x140a09ef0 ; prop
+// MS2-PIN: ??$emplace_back@AEBUVector3@@@?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@QEAAXAEBUVector3@@@Z 0x140a09f60 ; prop
+// MS2-PIN: ??$emplace_back@UVector3@@@?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@QEAAX$$QEAUVector3@@@Z 0x140a09fd0 ; prop
 // MS2-PIN: ??0?$MS2Ptr@VBeamInfo@@@@QEAA@AEBV0@@Z 0x140a0a250 ; unique
-// MS2-PIN: ??0?$_Uninitialized_backout_al@PEAUUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@QEAA@PEAUUnk_StreamPoint@@AEAV?$CustomAllocator@UUnk_StreamPoint@@@efd@@@Z 0x140a0a2e0 ; unique
-// MS2-PIN: ??0?$_Vector_alloc@U?$_Vec_base_types@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@@std@@QEAA@XZ 0x140a0a320 ; unique
-// MS2-PIN: ??0?$vector@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@QEAA@XZ 0x140a0a370 ; unique
+// MS2-PIN: ??0?$_Uninitialized_backout_al@PEAUVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@QEAA@PEAUVector3@@AEAV?$CustomAllocator@UVector3@@@efd@@@Z 0x140a0a2e0 ; unique
+// MS2-PIN: ??0?$_Vector_alloc@U?$_Vec_base_types@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@@std@@QEAA@XZ 0x140a0a320 ; unique
+// MS2-PIN: ??0?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@QEAA@XZ 0x140a0a370 ; unique
 // MS2-PIN: ??0NiPoint2@@QEAA@MM@Z 0x140a0a4c0 ; unique
 // MS2-PIN: ??0NiStencilProperty@@QEAA@XZ 0x140a0a500 ; unique
 // MS2-PIN: ??0NiWireframeProperty@@QEAA@XZ 0x140a0a5b0 ; unique
 // MS2-PIN: ??0Point2@efd@@QEAA@MM@Z 0x140a0a600 ; unique
-// MS2-PIN: ??1?$_Compressed_pair@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@V?$_Vector_val@U?$_Simple_types@UUnk_StreamPoint@@@std@@@std@@$00@std@@QEAA@XZ 0x140a0a830 ; prop
-// MS2-PIN: ??1?$_Uninitialized_backout_al@PEAUUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@QEAA@XZ 0x140a0a850 ; unique
-// MS2-PIN: ??1?$_Vector_alloc@U?$_Vec_base_types@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@@std@@QEAA@XZ 0x140a0a890 ; unique
+// MS2-PIN: ??1?$_Compressed_pair@V?$CustomAllocator@UVector3@@@efd@@V?$_Vector_val@U?$_Simple_types@UVector3@@@std@@@std@@$00@std@@QEAA@XZ 0x140a0a830 ; prop
+// MS2-PIN: ??1?$_Uninitialized_backout_al@PEAUVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@QEAA@XZ 0x140a0a850 ; unique
+// MS2-PIN: ??1?$_Vector_alloc@U?$_Vec_base_types@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@@std@@QEAA@XZ 0x140a0a890 ; unique
 // MS2-PIN: ??4?$SmartPointer@VNiTexturingProperty@@@efd@@QEAAAEAV01@AEBV01@@Z 0x140a0a9e0 ; unique
-// MS2-PIN: ??A?$vector@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@QEAAAEAUUnk_StreamPoint@@_K@Z 0x140a0ab20 ; unique
-// MS2-PIN: ??A?$CAtlArray@UUnk_StreamPoint@@V?$CElementTraits@UUnk_StreamPoint@@@ATL@@@ATL@@QEAAAEAUUnk_StreamPoint@@_K@Z 0x140a0af70 ; unique
+// MS2-PIN: ??A?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@QEAAAEAUVector3@@_K@Z 0x140a0ab20 ; unique
+// MS2-PIN: ??A?$CAtlArray@UVector3@@V?$CElementTraits@UVector3@@@ATL@@@ATL@@QEAAAEAUVector3@@_K@Z 0x140a0af70 ; unique
 // MS2-PIN: ?INDEX@NiCommonSemantics@@SAAEBVNiFixedString@@XZ 0x140a0b060 ; unique
 // MS2-PIN: ?POSITION@NiCommonSemantics@@SAAEBVNiFixedString@@XZ 0x140a0b280 ; unique
 // MS2-PIN: ?SetBit@NiWireframeProperty@@AEAAX_NG@Z 0x140a0b3f0 ; prop
@@ -103,40 +102,40 @@
 // MS2-PIN: ?Type@NiWireframeProperty@@UEBAHXZ 0x140a0b730 ; unique
 // MS2-PIN: ?AddRef@?$MS2Ptr@VBeamInfo@@@@AEBAXXZ 0x140a0b740 ; unique
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VBeamInfo@@@@AEBAXPEAX@Z 0x140a0b7e0 ; unique
-// MS2-PIN: ?_Calculate_growth@?$vector@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@AEBA_K_K@Z 0x140a0b840 ; unique
-// MS2-PIN: ?_Change_array@?$vector@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@AEAAXQEAUUnk_StreamPoint@@_K1@Z 0x140a0b8d0 ; unique
-// MS2-PIN: ?_Destroy@?$vector@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@AEAAXPEAUUnk_StreamPoint@@0@Z 0x140a0b9e0 ; unique
-// MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@UUnk_StreamPoint@@@std@@@2@XZ 0x140a0ba20 ; prop
-// MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@@std@@QEBAAEBV?$_Vector_val@U?$_Simple_types@UUnk_StreamPoint@@@std@@@2@XZ 0x140a0ba40 ; prop
-// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@V?$_Vector_val@U?$_Simple_types@UUnk_StreamPoint@@@std@@@std@@$00@std@@QEAAAEAV?$CustomAllocator@UUnk_StreamPoint@@@efd@@XZ 0x140a0ba60 ; prop
-// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@V?$_Vector_val@U?$_Simple_types@UUnk_StreamPoint@@@std@@@std@@$00@std@@QEBAAEBV?$CustomAllocator@UUnk_StreamPoint@@@efd@@XZ 0x140a0ba70 ; prop
-// MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@V?$_Vector_val@U?$_Simple_types@UUnk_StreamPoint@@@std@@@std@@$00@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@UUnk_StreamPoint@@@std@@@2@XZ 0x140a0ba80 ; prop
-// MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@V?$_Vector_val@U?$_Simple_types@UUnk_StreamPoint@@@std@@@std@@$00@std@@QEBAAEBV?$_Vector_val@U?$_Simple_types@UUnk_StreamPoint@@@std@@@2@XZ 0x140a0ba90 ; prop
-// MS2-PIN: ?_Getal@?$_Vector_alloc@U?$_Vec_base_types@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@@std@@QEAAAEAV?$CustomAllocator@UUnk_StreamPoint@@@efd@@XZ 0x140a0baa0 ; prop
-// MS2-PIN: ?_Getal@?$_Vector_alloc@U?$_Vec_base_types@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@@std@@QEBAAEBV?$CustomAllocator@UUnk_StreamPoint@@@efd@@XZ 0x140a0bac0 ; prop
-// MS2-PIN: ?_Has_unused_capacity@?$vector@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@AEBA_NXZ 0x140a0bae0 ; unique
-// MS2-PIN: ?_Max_size1@?$_Normal_allocator_traits@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@SA_KAEBV?$CustomAllocator@UUnk_StreamPoint@@@efd@@U?$integral_constant@_N$00@2@@Z 0x140a0bb30 ; unique
-// MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@@std@@QEAAAEAPEAUUnk_StreamPoint@@XZ 0x140a0bb50 ; prop
-// MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@@std@@QEBAAEBQEAUUnk_StreamPoint@@XZ 0x140a0bb70 ; prop
-// MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@@std@@QEAAAEAPEAUUnk_StreamPoint@@XZ 0x140a0bb90 ; prop
-// MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@@std@@QEAAAEAPEAUUnk_StreamPoint@@XZ 0x140a0bbd0 ; prop
-// MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@@std@@QEBAAEBQEAUUnk_StreamPoint@@XZ 0x140a0bbf0 ; prop
-// MS2-PIN: ?_Orphan_all@?$_Vector_alloc@U?$_Vec_base_types@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@@std@@QEAAXXZ 0x140a0bc10 ; unique
-// MS2-PIN: ?_Orphan_range@?$vector@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@AEBAXPEAUUnk_StreamPoint@@0@Z 0x140a0bc30 ; unique
-// MS2-PIN: ?_Release@?$_Uninitialized_backout_al@PEAUUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@QEAAPEAUUnk_StreamPoint@@XZ 0x140a0bcc0 ; unique
-// MS2-PIN: ?_Tidy@?$vector@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@AEAAXXZ 0x140a0bd80 ; unique
-// MS2-PIN: ?_Umove@?$vector@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@AEAAPEAUUnk_StreamPoint@@PEAU3@00@Z 0x140a0be50 ; prop
-// MS2-PIN: ?_Umove_if_noexcept1@?$vector@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@AEAAXPEAUUnk_StreamPoint@@00U?$integral_constant@_N$00@2@@Z 0x140a0be90 ; prop
-// MS2-PIN: ?_Umove_if_noexcept@?$vector@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@AEAAXPEAUUnk_StreamPoint@@00@Z 0x140a0bed0 ; unique
-// MS2-PIN: ?allocate@?$CustomAllocator@UUnk_StreamPoint@@@efd@@QEAAPEAUUnk_StreamPoint@@_KPEBX@Z 0x140a0bf50 ; unique
-// MS2-PIN: ?capacity@?$vector@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@QEBA_KXZ 0x140a0bfa0 ; prop
-// MS2-PIN: ?deallocate@?$CustomAllocator@UUnk_StreamPoint@@@efd@@QEAAXPEAUUnk_StreamPoint@@_K@Z 0x140a0c050 ; unique
-// MS2-PIN: ?max_size@?$CustomAllocator@UUnk_StreamPoint@@@efd@@QEBA_KXZ 0x140a0c0b0 ; unique
-// MS2-PIN: ?max_size@?$_Normal_allocator_traits@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@SA_KAEBV?$CustomAllocator@UUnk_StreamPoint@@@efd@@@Z 0x140a0c0c0 ; unique
-// MS2-PIN: ?max_size@?$vector@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@QEBA_KXZ 0x140a0c0e0 ; unique
-// MS2-PIN: ?push_back@?$vector@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@QEAAX$$QEAUUnk_StreamPoint@@@Z 0x140a0c130 ; unique
-// MS2-PIN: ?push_back@?$vector@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@QEAAXAEBUUnk_StreamPoint@@@Z 0x140a0c160 ; unique
-// MS2-PIN: ?size@?$vector@UUnk_StreamPoint@@V?$CustomAllocator@UUnk_StreamPoint@@@efd@@@std@@QEBA_KXZ 0x140a0c190 ; prop
+// MS2-PIN: ?_Calculate_growth@?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@AEBA_K_K@Z 0x140a0b840 ; unique
+// MS2-PIN: ?_Change_array@?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@AEAAXQEAUVector3@@_K1@Z 0x140a0b8d0 ; unique
+// MS2-PIN: ?_Destroy@?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@AEAAXPEAUVector3@@0@Z 0x140a0b9e0 ; unique
+// MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@UVector3@@@std@@@2@XZ 0x140a0ba20 ; prop
+// MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@@std@@QEBAAEBV?$_Vector_val@U?$_Simple_types@UVector3@@@std@@@2@XZ 0x140a0ba40 ; prop
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@UVector3@@@efd@@V?$_Vector_val@U?$_Simple_types@UVector3@@@std@@@std@@$00@std@@QEAAAEAV?$CustomAllocator@UVector3@@@efd@@XZ 0x140a0ba60 ; prop
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@UVector3@@@efd@@V?$_Vector_val@U?$_Simple_types@UVector3@@@std@@@std@@$00@std@@QEBAAEBV?$CustomAllocator@UVector3@@@efd@@XZ 0x140a0ba70 ; prop
+// MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$CustomAllocator@UVector3@@@efd@@V?$_Vector_val@U?$_Simple_types@UVector3@@@std@@@std@@$00@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@UVector3@@@std@@@2@XZ 0x140a0ba80 ; prop
+// MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$CustomAllocator@UVector3@@@efd@@V?$_Vector_val@U?$_Simple_types@UVector3@@@std@@@std@@$00@std@@QEBAAEBV?$_Vector_val@U?$_Simple_types@UVector3@@@std@@@2@XZ 0x140a0ba90 ; prop
+// MS2-PIN: ?_Getal@?$_Vector_alloc@U?$_Vec_base_types@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@@std@@QEAAAEAV?$CustomAllocator@UVector3@@@efd@@XZ 0x140a0baa0 ; prop
+// MS2-PIN: ?_Getal@?$_Vector_alloc@U?$_Vec_base_types@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@@std@@QEBAAEBV?$CustomAllocator@UVector3@@@efd@@XZ 0x140a0bac0 ; prop
+// MS2-PIN: ?_Has_unused_capacity@?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@AEBA_NXZ 0x140a0bae0 ; unique
+// MS2-PIN: ?_Max_size1@?$_Normal_allocator_traits@V?$CustomAllocator@UVector3@@@efd@@@std@@SA_KAEBV?$CustomAllocator@UVector3@@@efd@@U?$integral_constant@_N$00@2@@Z 0x140a0bb30 ; unique
+// MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@@std@@QEAAAEAPEAUVector3@@XZ 0x140a0bb50 ; prop
+// MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@@std@@QEBAAEBQEAUVector3@@XZ 0x140a0bb70 ; prop
+// MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@@std@@QEAAAEAPEAUVector3@@XZ 0x140a0bb90 ; prop
+// MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@@std@@QEAAAEAPEAUVector3@@XZ 0x140a0bbd0 ; prop
+// MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@@std@@QEBAAEBQEAUVector3@@XZ 0x140a0bbf0 ; prop
+// MS2-PIN: ?_Orphan_all@?$_Vector_alloc@U?$_Vec_base_types@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@@std@@QEAAXXZ 0x140a0bc10 ; unique
+// MS2-PIN: ?_Orphan_range@?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@AEBAXPEAUVector3@@0@Z 0x140a0bc30 ; unique
+// MS2-PIN: ?_Release@?$_Uninitialized_backout_al@PEAUVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@QEAAPEAUVector3@@XZ 0x140a0bcc0 ; unique
+// MS2-PIN: ?_Tidy@?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@AEAAXXZ 0x140a0bd80 ; unique
+// MS2-PIN: ?_Umove@?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@AEAAPEAUVector3@@PEAU3@00@Z 0x140a0be50 ; prop
+// MS2-PIN: ?_Umove_if_noexcept1@?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@AEAAXPEAUVector3@@00U?$integral_constant@_N$00@2@@Z 0x140a0be90 ; prop
+// MS2-PIN: ?_Umove_if_noexcept@?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@AEAAXPEAUVector3@@00@Z 0x140a0bed0 ; unique
+// MS2-PIN: ?allocate@?$CustomAllocator@UVector3@@@efd@@QEAAPEAUVector3@@_KPEBX@Z 0x140a0bf50 ; unique
+// MS2-PIN: ?capacity@?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@QEBA_KXZ 0x140a0bfa0 ; prop
+// MS2-PIN: ?deallocate@?$CustomAllocator@UVector3@@@efd@@QEAAXPEAUVector3@@_K@Z 0x140a0c050 ; unique
+// MS2-PIN: ?max_size@?$CustomAllocator@UVector3@@@efd@@QEBA_KXZ 0x140a0c0b0 ; unique
+// MS2-PIN: ?max_size@?$_Normal_allocator_traits@V?$CustomAllocator@UVector3@@@efd@@@std@@SA_KAEBV?$CustomAllocator@UVector3@@@efd@@@Z 0x140a0c0c0 ; unique
+// MS2-PIN: ?max_size@?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@QEBA_KXZ 0x140a0c0e0 ; unique
+// MS2-PIN: ?push_back@?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@QEAAX$$QEAUVector3@@@Z 0x140a0c130 ; unique
+// MS2-PIN: ?push_back@?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@QEAAXAEBUVector3@@@Z 0x140a0c160 ; unique
+// MS2-PIN: ?size@?$vector@UVector3@@V?$CustomAllocator@UVector3@@@efd@@@std@@QEBA_KXZ 0x140a0c190 ; prop
 // MS2-PINS-END tplpin
 #ifndef NOMINMAX
 #define NOMINMAX
@@ -200,10 +199,6 @@ void FUN_1409806e0(NiTexturingProperty* pProp, int n);
 void FUN_140980560(NiAlphaProperty* pProp, bool b);                 // SetAlphaBlending
 void FUN_140980f60(NiAlphaProperty* pProp, int nMode);              // source blend mode
 void FUN_140980af0(NiAlphaProperty* pProp, int nMode);              // destination blend mode
-void FUN_140980f20(NiVertexColorProperty* pProp, int n);
-void FUN_140980e60(NiVertexColorProperty* pProp, int n);
-void FUN_1409a9b90(NiFogProperty* pProp, int n);
-void FUN_140981100(NiZBufferProperty* pProp, int n);
 void FUN_1415672e0(NiAVObject* pObj, int n);
 
 // The effect node (400 bytes) carries the effect-space point.
@@ -331,8 +326,8 @@ bool CBeamEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
         m_spTexProp = spTexture;
 
         NiPointer<NiVertexColorProperty> spVertexColor = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
-        FUN_140980f20(spVertexColor.operator->(), 1);
-        FUN_140980e60(spVertexColor.operator->(), 0);
+        spVertexColor->SetSourceMode(NiVertexColorProperty::SOURCE_EMISSIVE);
+        spVertexColor->SetLightingMode(NiVertexColorProperty::LIGHTING_E);
         FUN_140980200(m_spMesh->GetMesh(), spVertexColor);
 
         NiPointer<NiAlphaProperty> spAlpha = new (efd::MemHint(efd::MemHint::NONE)) NiAlphaProperty;
@@ -356,7 +351,7 @@ bool CBeamEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
         FUN_140980200(m_spMesh->GetMesh(), spAlpha);
 
         NiPointer<NiFogProperty> spFog = new (efd::MemHint(efd::MemHint::NONE)) NiFogProperty;
-        FUN_1409a9b90(spFog.operator->(), 0);
+        spFog->SetFog(false);
         FUN_140980200(m_spMesh->GetMesh(), spFog);
 
         NiPointer<NiWireframeProperty> spWireframe = new (efd::MemHint(efd::MemHint::NONE)) NiWireframeProperty;
@@ -368,7 +363,7 @@ bool CBeamEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
         FUN_140980200(m_spMesh->GetMesh(), spStencil);
 
         NiPointer<NiZBufferProperty> spZBuffer = new (efd::MemHint(efd::MemHint::NONE)) NiZBufferProperty;
-        FUN_140981100(spZBuffer.operator->(), 0);
+        spZBuffer->SetZBufferWrite(false);
         FUN_140980200(m_spMesh->GetMesh(), spZBuffer);
 
         m_spMesh->UpdateBound();
@@ -627,4 +622,4 @@ MS2_REPLACE_METHOD(0x140A0AFC0, CBeamEffect, vfunc_12, 11, 0xB512670C);
 MS2_EMIT_CRT_MEMMOVE_S();
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9ede0-0x142c9eee0 .text$yd
-// MS2-PIN: ?construct@?$CustomAllocator@UVector3@@@efd@@QEAAXPEAUVector3@@AEBU3@@Z 0x140a0bff0 ; nam2: Unk_StreamPoint -> Vector3 (was auto-paired by its old symbols.tsv name)
+// MS2-PIN: ?construct@?$CustomAllocator@UVector3@@@efd@@QEAAXPEAUVector3@@AEBU3@@Z 0x140a0bff0 ; nam2: Vector3 -> Vector3 (was auto-paired by its old symbols.tsv name)

@@ -290,12 +290,9 @@ Unk_BgWorldMgr* FUN_1403ed2d0();
 bool* FUN_1422dad70(void* pThis, void* pOut, char n);   // pOut: caller temp (key-state flags), returned
 NiMaterial* FUN_141d284a0(char* szName);
 void FUN_14116d500(void* pMat, const NiColor& kColor);
-void FUN_140980f20(void* p, int v);
-void FUN_140980e60(void* p, int v);
 void FUN_1409807b0(void* p, int v);
 void FUN_1409805c0(void* p, int v);
 void FUN_1409806e0(void* p, int v);
-void FUN_140980880(void* p, int v);
 CString FUN_140188f50(const char* sz, int n);
 CString FUN_140cc2ad0(const CString& strPrefix, const CString& strName);
 
@@ -818,8 +815,8 @@ int GFxMovieBackground::CreateRenderView()
     NiVertexColorProperty* pVertexColor = NiNew NiVertexColorProperty;
     if (pVertexColor != 0)
     {
-        FUN_140980f20(pVertexColor, 1);
-        FUN_140980e60(pVertexColor, 0);
+        pVertexColor->SetSourceMode(NiVertexColorProperty::SOURCE_EMISSIVE);
+        pVertexColor->SetLightingMode(NiVertexColorProperty::LIGHTING_E);
         pQuad->AttachProperty(pVertexColor);
     }
     NiZBufferPropertyPtr spZBuffer = NiNew NiZBufferProperty;
@@ -841,7 +838,7 @@ int GFxMovieBackground::CreateRenderView()
         FUN_1409807b0(spTexturing, 0);
         FUN_1409805c0(spTexturing, 0);
         FUN_1409806e0(spTexturing, 0);
-        FUN_140980880(spTexturing, 0);
+        spTexturing->SetBaseTexture(0);
         pQuad->AttachProperty(spTexturing);
     }
     pQuad->Update(0.0f, true);

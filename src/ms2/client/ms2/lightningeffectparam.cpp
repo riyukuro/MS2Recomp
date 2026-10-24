@@ -7,7 +7,7 @@
 // MS2-PIN: ??1?$SmartPointer@VNiSortAdjustNode@@@efd@@QEAA@XZ 0x14144db90
 // MS2-PIN: ??B?$SmartPointer@VNiSortAdjustNode@@@efd@@QEBAPEAVNiSortAdjustNode@@XZ 0x14144dcf0
 // MS2-PIN: ??C?$SmartPointer@VNiSortAdjustNode@@@efd@@QEBAPEAVNiSortAdjustNode@@XZ 0x14144dd00
-// MS2-PIN: ??A?$CAtlArray@UUnk_StreamPoint@@V?$CElementTraits@UUnk_StreamPoint@@@ATL@@@ATL@@QEAAAEAUUnk_StreamPoint@@_K@Z 0x14144dcb0
+// MS2-PIN: ??A?$CAtlArray@UVector3@@V?$CElementTraits@UVector3@@@ATL@@@ATL@@QEAAAEAUVector3@@_K@Z 0x14144dcb0
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??0?$MS2Ptr@VLightningEffectParam@@@@QEAA@PEAVLightningEffectParam@@@Z 0x14144db40 ; unique
 // MS2-PIN: ?AssignRaw@?$MS2Ptr@VLightningEffectParam@@@@QEAAAEAV1@PEAVLightningEffectParam@@@Z 0x14144dc40 ; unique
@@ -90,12 +90,8 @@ void FUN_1409806e0(NiTexturingProperty* pProp, int n);
 void FUN_140980560(NiAlphaProperty* pProp, bool b);                 // SetAlphaBlending
 void FUN_140980f60(NiAlphaProperty* pProp, int nMode);              // source blend mode
 void FUN_140980af0(NiAlphaProperty* pProp, int nMode);              // destination blend mode
-void FUN_140980f20(NiVertexColorProperty* pProp, int n);
-void FUN_140980e60(NiVertexColorProperty* pProp, int n);
-void FUN_1409a9b90(NiFogProperty* pProp, int n);
 void FUN_140a0b6c0(NiWireframeProperty* pProp, int n);
 void FUN_140a0b450(NiStencilProperty* pProp, int n);
-void FUN_140981100(NiZBufferProperty* pProp, int n);
 void FUN_1415672e0(NiAVObject* pObj, int n);
 
 // The effect node (400 bytes) carries the effect-space point.
@@ -226,8 +222,8 @@ bool LightningEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTar
     FUN_140980200(m_spMesh->GetMesh(), m_spTexProp);
 
     NiVertexColorProperty* pVertexColor = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
-    FUN_140980f20(pVertexColor, 1);
-    FUN_140980e60(pVertexColor, 0);
+    pVertexColor->SetSourceMode(NiVertexColorProperty::SOURCE_EMISSIVE);
+    pVertexColor->SetLightingMode(NiVertexColorProperty::LIGHTING_E);
     FUN_140980200(m_spMesh->GetMesh(), pVertexColor);
 
     NiAlphaProperty* pAlpha = new (efd::MemHint(efd::MemHint::NONE)) NiAlphaProperty;
@@ -250,7 +246,7 @@ bool LightningEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTar
     FUN_140980200(m_spMesh->GetMesh(), pAlpha);
 
     NiFogProperty* pFog = new (efd::MemHint(efd::MemHint::NONE)) NiFogProperty;
-    FUN_1409a9b90(pFog, 0);
+    pFog->SetFog(false);
     FUN_140980200(m_spMesh->GetMesh(), pFog);
 
     NiWireframeProperty* pWireframe = new (efd::MemHint(efd::MemHint::NONE)) NiWireframeProperty;
@@ -262,7 +258,7 @@ bool LightningEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTar
     FUN_140980200(m_spMesh->GetMesh(), pStencil);
 
     NiZBufferProperty* pZBuffer = new (efd::MemHint(efd::MemHint::NONE)) NiZBufferProperty;
-    FUN_140981100(pZBuffer, 0);
+    pZBuffer->SetZBufferWrite(false);
     FUN_140980200(m_spMesh->GetMesh(), pZBuffer);
 
     m_spMesh->UpdateBound();

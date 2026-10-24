@@ -8,7 +8,7 @@
 // MS2-PIN: ??_GCRibbonEffect@@UEAAPEAXI@Z 0x141703860
 // MS2-PIN: ??_GCRibbonEffectParam@@UEAAPEAXI@Z 0x1417038c0
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??A?$CAtlArray@UUnk_StreamPoint@@V?$CElementTraits@UUnk_StreamPoint@@@ATL@@@ATL@@QEAAAEAUUnk_StreamPoint@@_K@Z 0x141703820 ; unique
+// MS2-PIN: ??A?$CAtlArray@UVector3@@V?$CElementTraits@UVector3@@@ATL@@@ATL@@QEAAAEAUVector3@@_K@Z 0x141703820 ; unique
 // MS2-PINS-END tplpin
 #ifndef NOMINMAX
 #define NOMINMAX
@@ -75,10 +75,6 @@ void FUN_1409806e0(NiTexturingProperty* pProp, int n);
 void FUN_140980560(NiAlphaProperty* pProp, bool b);                 // SetAlphaBlending
 void FUN_140980f60(NiAlphaProperty* pProp, int nMode);              // source blend mode
 void FUN_140980af0(NiAlphaProperty* pProp, int nMode);              // destination blend mode
-void FUN_140980f20(NiVertexColorProperty* pProp, int n);
-void FUN_140980e60(NiVertexColorProperty* pProp, int n);
-void FUN_1409a9b90(NiFogProperty* pProp, int n);
-void FUN_140981100(NiZBufferProperty* pProp, int n);
 void FUN_140a0b6c0(NiWireframeProperty* pProp, bool b);             // SetWireframe
 void FUN_1415672e0(NiAVObject* pObj, int n);
 float FUN_140a17940(float f, float fMin, float fMax);               // clamp
@@ -238,8 +234,8 @@ bool CRibbonEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         FUN_140980200(m_spMesh->GetMesh(), spTexture);
 
         NiPointer<NiVertexColorProperty> spVertexColor = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
-        FUN_140980f20(spVertexColor.operator->(), 2);
-        FUN_140980e60(spVertexColor.operator->(), 1);
+        spVertexColor->SetSourceMode(NiVertexColorProperty::SOURCE_AMB_DIFF);
+        spVertexColor->SetLightingMode(NiVertexColorProperty::LIGHTING_E_A_D);
         FUN_140980200(m_spMesh->GetMesh(), spVertexColor);
 
         NiPointer<NiAlphaProperty> spAlpha = new (efd::MemHint(efd::MemHint::NONE)) NiAlphaProperty;
@@ -263,7 +259,7 @@ bool CRibbonEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         FUN_140980200(m_spMesh->GetMesh(), spAlpha);
 
         NiPointer<NiFogProperty> spFog = new (efd::MemHint(efd::MemHint::NONE)) NiFogProperty;
-        FUN_1409a9b90(spFog.operator->(), 0);
+        spFog->SetFog(false);
         FUN_140980200(m_spMesh->GetMesh(), spFog);
 
         NiPointer<NiWireframeProperty> spWireframe = new (efd::MemHint(efd::MemHint::NONE)) NiWireframeProperty;
@@ -275,7 +271,7 @@ bool CRibbonEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         FUN_140980200(m_spMesh->GetMesh(), spStencil);
 
         NiPointer<NiZBufferProperty> spZBuffer = new (efd::MemHint(efd::MemHint::NONE)) NiZBufferProperty;
-        FUN_140981100(spZBuffer.operator->(), 0);
+        spZBuffer->SetZBufferWrite(false);
         FUN_140980200(m_spMesh->GetMesh(), spZBuffer);
     }
     else
@@ -316,8 +312,8 @@ bool CRibbonEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         if (pMeshObj->GetProperty(9) != 0)
             pMeshObj->RemoveProperty(9);
         NiPointer<NiVertexColorProperty> spVertexColor = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
-        FUN_140980f20(spVertexColor.operator->(), 2);
-        FUN_140980e60(spVertexColor.operator->(), 1);
+        spVertexColor->SetSourceMode(NiVertexColorProperty::SOURCE_AMB_DIFF);
+        spVertexColor->SetLightingMode(NiVertexColorProperty::LIGHTING_E_A_D);
         FUN_140980200(pMeshObj, spVertexColor);
         if (pMeshObj->GetProperty(7) == 0)
         {
@@ -328,7 +324,7 @@ bool CRibbonEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         if (pMeshObj->GetProperty(0xb) == 0)
         {
             NiPointer<NiZBufferProperty> spZBuffer = new (efd::MemHint(efd::MemHint::NONE)) NiZBufferProperty;
-            FUN_140981100(spZBuffer.operator->(), 0);
+            spZBuffer->SetZBufferWrite(false);
             FUN_140980200(pMeshObj, spZBuffer);
         }
         unsigned short nExtra = FUN_14106bc50(pFound);

@@ -16,8 +16,6 @@
 
 NiRenderer* GetNiRenderer();   // NiRenderer::GetRenderer()
 void FUN_140980200(NiAVObject* pObj, NiProperty* pProp);            // NiAVObject::AttachProperty
-void FUN_140980f20(NiVertexColorProperty* pProp, int n);            // SetSourceMode
-void FUN_140980e60(NiVertexColorProperty* pProp, int n);            // SetLightingMode
 
 static const int kRingPoints = 360;
 
@@ -118,8 +116,8 @@ void CHoleCylinderCollision::vfunc_5()
     if (!m_spOuterTop)
     {
         NiVertexColorProperty* pProp = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
-        FUN_140980f20(pProp, 1);
-        FUN_140980e60(pProp, 0);
+        pProp->SetSourceMode(NiVertexColorProperty::SOURCE_EMISSIVE);
+        pProp->SetLightingMode(NiVertexColorProperty::LIGHTING_E);
         NiMeshPtr* apTarget[5] = { &m_spInnerTop, &m_spInnerBottom, &m_spOuterTop, &m_spOuterBottom, &m_spLines };
         for (int i = 0; i < 5; i++)
         {
