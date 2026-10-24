@@ -907,3 +907,9 @@ inline void FUN_140a01250(efd::Point3 kRot, efd::Point3* pForward, efd::Point3* 
     *pForward = kMat * kForward;
     *pRight = kMat * kRight;
 }
+
+// Full-executable aliases for CBaseCollision::Intersect's free-function spellings.
+// MS2-PIN: ?Intersect@CBaseCollision@@SA_NPEAV1@0@Z 0x1409ff0d0
+// MS2-PIN: ?FUN_1409ff0d0@@YADPEAVUnk_FcArea@@PEAVCBoxCollision@@@Z 0x1409ff0d0
+// MS2-PIN: ?FUN_1409ff0d0@@YADPEAXPEAVCBoxCollision@@@Z 0x1409ff0d0
+// MS2-PIN: ?FUN_1409ff0d0@@YA_NPEAX0@Z 0x1409ff0d0
