@@ -9973,3 +9973,10 @@ DAT_143a2dd50	143a2dd50	data
 ?DAT_143a2aab0@@3QBUThunkInfo@AS3@GFx@Scaleform@@B	143a2aab0	data
 ?FindByPrefix@NamespaceArray@AS3@GFx@Scaleform@@QEBA_NAEBVASString@34@@Z	14240aed0	func
 ?Add@XMLSupportImpl@AS3@GFx@Scaleform@@UEBA_NAEAVValue@234@AEAVObject@234@1@Z	1424e6990	func
+?ClassRegistrationTable@AS3@GFx@Scaleform@@3PAPEBUClassInfo@123@A	143a28a30	data
+?GlobalObjectCPP_mi@fl@Instances@AS3@GFx@Scaleform@@3QBUMemberInfo@345@B	143a2a710	data
+?GlobalObjectCPP_ti@fl@Instances@AS3@GFx@Scaleform@@3QBUThunkInfo@345@B	143144150	data
+?GlobalObjectCPP_ti_system@fl@Instances@AS3@GFx@Scaleform@@3QBUThunkInfo@345@B	143144410	data
+?GlobalObjectCPP_ti_utils@fl@Instances@AS3@GFx@Scaleform@@3QBUThunkInfo@345@B	143144450	data
+?GlobalObjectCPP_ti_avmplus@fl@Instances@AS3@GFx@Scaleform@@3QBUThunkInfo@345@B	1431446e0	data
+??0UDBase@Classes@AS3@GFx@Scaleform@@QEAA@AEAVTraits@ClassTraits@234@@Z	1424dadb0	func
