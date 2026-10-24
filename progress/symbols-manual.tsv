@@ -9998,3 +9998,7 @@ DAT_143a2dd50	143a2dd50	data
 ?PickRTNameUnsafe@Multiname@AS3@GFx@Scaleform@@QEAAXAEAVValueStack@234@@Z	14251c8a0	func
 ?SetRTNamespace@Multiname@AS3@GFx@Scaleform@@QEAAXAEBVNamespace@Instances@234@@Z	142528d20	func
 ?GetDefaultValueUnsafe@Object@AS3@GFx@Scaleform@@QEAAXAEAVValue@234@W4Hint@5234@@Z	142508bd0	func
+?ExecuteActionQueue@MovieRoot@AS3@GFx@Scaleform@@QEAAXW4ActionLevel@1234@@Z	1424fa320	func
+?GetASVariableAtPath@MovieRoot@AS3@GFx@Scaleform@@QEBA_NPEAVValue@234@PEBD@Z	142506000	func
+?CreateStage@MovieRoot@AS3@GFx@Scaleform@@QEAAPEAVDisplayObject@34@PEAVMovieDefImpl@34@@Z	1424f4000	func
+?AddLoadedMovieDef@MovieRoot@AS3@GFx@Scaleform@@QEAAXPEAVMovieDefImpl@34@@Z	1424e8e20	func
