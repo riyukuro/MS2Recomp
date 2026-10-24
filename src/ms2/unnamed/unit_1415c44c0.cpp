@@ -1218,6 +1218,59 @@ int FUN_1415c9440(void* self)
     return *reinterpret_cast<int*>(static_cast<char*>(self) + 0x1d4);
 }
 
+// @0x1415c9a90
+int FUN_1415c9a90(void* self, long long callback, int code)
+{
+    CNMGSRegisterCallbackFunc request(*reinterpret_cast<int*>(static_cast<char*>(self) + 0x18c),
+                                      callback, code);
+    return FUN_1415cb440(FUN_1415fa260(), &request);
+}
+
+// @0x1415c9b10
+int FUN_1415c9b10(void* self)
+{
+    CNMGSWantCloseFunc request(*reinterpret_cast<int*>(static_cast<char*>(self) + 0x18c), 0);
+    return FUN_1415cb440(FUN_1415fa260(), &request);
+}
+
+// @0x1415c9b70
+int FUN_1415c9b70(void* self, const unsigned char* target)
+{
+    unsigned char copiedTarget[16];
+    for (unsigned int i = 0; i != sizeof(copiedTarget); ++i)
+        copiedTarget[i] = target[i];
+    CNMGSInviteUserFunc request(*reinterpret_cast<int*>(static_cast<char*>(self) + 0x18c), copiedTarget);
+    return FUN_1415cb440(FUN_1415fa260(), &request);
+}
+
+// @0x1415c9c20
+int FUN_1415c9c20(void* self, const unsigned char* target)
+{
+    unsigned char copiedTarget[24];
+    for (unsigned int i = 0; i != sizeof(copiedTarget); ++i)
+        copiedTarget[i] = target[i];
+    CNMGSInviteUserExFunc request(*reinterpret_cast<int*>(static_cast<char*>(self) + 0x18c),
+                                  copiedTarget);
+    return FUN_1415cb440(FUN_1415fa260(), &request);
+}
+
+// @0x1415c9cd0
+int FUN_1415c9cd0(void* self)
+{
+    auto* sessionInfo = reinterpret_cast<CNMSessionInfo*>(static_cast<char*>(self) + 0x190);
+    const int sessionId = *reinterpret_cast<int*>(static_cast<char*>(self) + 0x18c);
+    if (sessionId == 0) {
+        CNMSessionInfo emptyInfo;
+        FUN_1415f24e0(sessionInfo, reinterpret_cast<long long>(&emptyInfo));
+        return 1;
+    }
+    CNMGSGetSessionInfoFunc request(sessionId);
+    if (!FUN_1415cb440(FUN_1415fa260(), &request))
+        return 0;
+    FUN_1415f24e0(sessionInfo, reinterpret_cast<long long>(&request.m_30));
+    return 1;
+}
+
 
 // MS2-PIN: ?FUN_1415c4870@@YAHXZ 0x1415c4870
 // MS2-PIN: ?FUN_1415c53b0@@YAHXZ 0x1415c53b0
