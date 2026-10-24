@@ -499,6 +499,23 @@ int FUN_1415c5280(void*, int mode)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
+// MS2-FUNCTIONAL: obtains the request count, returning zero when dispatch fails.
+// @0x1415c5ac0
+int FUN_1415c5ac0()
+{
+    CNMGetCountFunc request(2);
+    if (!CNMManager::GetInstance()->CallNMFunc(&request)) request.m_34 = 0;
+    return request.m_34;
+}
+
+// MS2-FUNCTIONAL: dispatches the news check using its recovered result and key.
+// @0x1415c5b90
+int FUN_1415c5b90(void*, unsigned int result, unsigned long long newsKey)
+{
+    CNMCheckNewsFunc request(result, static_cast<long long>(newsKey));
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
 // @0x1415c46c0
 void FUN_1415c46c0()
 {
@@ -876,3 +893,4 @@ void FUN_1415cd010() {}
 // MS2-PIN: ?FUN_1415c4e90@@YAPEAEPEAXPEAE0@Z 0x1415c4e90
 // MS2-PIN: ?FUN_1415c6f80@@YA_NPEAX0@Z 0x1415c6f80
 // MS2-PIN: ?FUN_1415ca240@@YAPEAEPEAE@Z 0x1415ca240
+// MS2-PIN: ?FUN_1415c5ac0@@YAHXZ 0x1415c5ac0
