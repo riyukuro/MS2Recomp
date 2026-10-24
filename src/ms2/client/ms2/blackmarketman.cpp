@@ -89,7 +89,7 @@ template <> inline void fmt::format_arg(BasicFormatter<wchar_t>& f, const wchar_
 }
 
 // @0x140a22f10
-static UIBlackMarketDialog* FUN_140a22f10(int nClass)
+UIBlackMarketDialog* FUN_140a22f10(int nClass)
 {
     if (FUN_1403ed2b0() != 0)
     {
