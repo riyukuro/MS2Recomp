@@ -632,6 +632,36 @@ int FUN_1415c6490(void*, unsigned int selector, long long value)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
+// MS2-FUNCTIONAL: dispatches the supplied authentication credentials and returns its timeout result.
+// @0x1415c4990
+int FUN_1415c4990(void*, const char* password, unsigned int value)
+{
+    CNMLoginAuthFunc request(password, value);
+    (void)CNMManager::GetInstance()->CallNMFunc(&request);
+    return request.m_timeout;
+}
+
+// MS2-FUNCTIONAL: dispatches the full authentication request and exposes its result field.
+// @0x1415c4a80
+int FUN_1415c4a80(void*, const char* user, const char* password, unsigned int value,
+                  const char* token, unsigned int flags, unsigned int* result)
+{
+    CNMLoginAuthFunc request(user, password, value, token, flags);
+    (void)CNMManager::GetInstance()->CallNMFunc(&request);
+    if (result) *result = request.m_result;
+    return request.m_timeout;
+}
+
+// MS2-FUNCTIONAL: dispatches authentication with the recovered alternate-login mode.
+// @0x1415c4c90
+int FUN_1415c4c90(void*, const char* user, const char* password)
+{
+    CNMLoginAuthFunc request(user, password, 0);
+    request.m_11b4 = 1;
+    (void)CNMManager::GetInstance()->CallNMFunc(&request);
+    return request.m_timeout;
+}
+
 // @0x1415c46c0
 void FUN_1415c46c0()
 {
