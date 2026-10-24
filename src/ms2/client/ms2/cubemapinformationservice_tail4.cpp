@@ -108,3 +108,13 @@ void Unk_CMISDriveTail4()
     { efd::utf8string s; (void)s.find_last_of("/", 0); }
     { std::string s; s.append("x"); }
 }
+
+// The identity accessor unit_1411267c0's copy ctor calls by address (_Get_first 0x141143890 returns its argument).
+class Unk_ContA;
+
+// MS2-FUNCTIONAL: the exe forwards through the folded _Get_first instance
+// @0x141145120
+void* FUN_141145120(const Unk_ContA& o)
+{
+    return (void*)&o;
+}

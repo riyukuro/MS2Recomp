@@ -788,5 +788,22 @@ MS2_REPLACE(0x140a0f460, BGTransparencyMgr::CompareDistance, 234, 0x97E118CA);
 // MS2-PIN: ?FUN_140a0d130@Unk_GoUpdateList@@QEAAXPEAVGameObject@@@Z 0x140a0d130
 // MS2-PIN: ?FUN_140a0d190@Unk_GoUpdateList@@QEAAXPEAVGameObject@@@Z 0x140a0d190
 // MS2-PIN: ?FUN_140a0d450@@YAXPEAXPEAVEntity@egf@@@Z 0x140a0d450
-// MS2-PIN: ?FUN_140a16d80@@YAPEAXPEAX@Z 0x140a16d80
-// MS2-PIN: ?FUN_140a16d80@@YAPEAUUnk_CMISEntityRef@@PEAU?$Unk_CMISIter@$0BAA@@@@Z 0x140a16d80
+
+// The region set iterator's operator* (the node value at +0x20), called by address from ms2entityloaderservice and
+// cubemapinformationservice_3 under two stand-in signatures.
+struct Unk_CMISEntityRef;
+template <unsigned __int64 N> struct Unk_CMISIter;
+struct Unk_BGTNodeIt { char* m_pNode; };     // a tree iterator: the node; its value is at +0x20
+
+// MS2-FUNCTIONAL: the folded _Tree_const_iterator::operator* COMDAT, written out under the callers' FUN_ names
+// @0x140a16d80
+void* FUN_140a16d80(void* it)
+{
+    return static_cast<Unk_BGTNodeIt*>(it)->m_pNode + 0x20;
+}
+
+// MS2-FUNCTIONAL: second signature of the same folded operator* (see above)
+Unk_CMISEntityRef* FUN_140a16d80(Unk_CMISIter<256>* it)
+{
+    return (Unk_CMISEntityRef*)(reinterpret_cast<Unk_BGTNodeIt*>(it)->m_pNode + 0x20);
+}

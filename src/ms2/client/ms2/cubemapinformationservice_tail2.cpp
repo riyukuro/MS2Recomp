@@ -412,3 +412,22 @@ void Unk_CMISDriveTail2()
 // MS2-PIN: ??$_Try_emplace@H$$V@?$map@HW4Unk_CMISKindA@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHW4Unk_CMISKindA@@@std@@@efd@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4Unk_CMISKindA@@@std@@@std@@@std@@@std@@_N@1@$$QEAH@Z 0x1411159e0 ; fx28 rvalue copy, callee of tail7 map::try_emplace(&&)
 // MS2-PIN: ??$_Try_emplace@I$$V@?$map@IV?$MS2SvrPtr@VCUGCMapSetItemInfo@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2SvrPtr@VCUGCMapSetItemInfo@@@@@std@@@3@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2SvrPtr@VCUGCMapSetItemInfo@@@@@std@@@std@@@std@@@std@@_N@1@$$QEAI@Z 0x141115dd0 ; fx28 rvalue copy, callee of tail7 map::try_emplace(&&)
 // MS2-PIN: ??$_Try_emplace@U?$pair@HH@std@@$$V@?$map@U?$pair@HH@std@@V?$MS2Ptr@VSaleStateData@@@@U?$less@U?$pair@HH@std@@@2@V?$CustomAllocator@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VSaleStateData@@@@@std@@@efd@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VSaleStateData@@@@@std@@@std@@@std@@@std@@_N@1@$$QEAU?$pair@HH@1@@Z 0x141115f20 ; fx28 rvalue copy, callee of tail7 map::try_emplace(&&)
+
+// The vector range assigns unit_1411267c0's Unk_ContA / Unk_ContB copy assignments call by address
+// (vector<EntityPtr> / vector<EntityID> with efd::CustomAllocator: _Myfirst/_Mylast/_Copy_alloc are those vectors').
+class Unk_ContA;
+class Unk_ContB;
+
+// MS2-FUNCTIONAL: assign(first, last) inline instead of through _Assign_range 0x1410dc570
+// @0x141117760
+void FUN_141117760(Unk_ContA* pThis, void* pFirst, void* pLast)
+{
+    reinterpret_cast<Unk_CMISEntVec*>(pThis)->assign((egf::EntityPtr*)pFirst, (egf::EntityPtr*)pLast);
+}
+
+// MS2-FUNCTIONAL: assign(first, last) inline instead of through _Assign_range 0x1410dc810
+// @0x1411177c0
+void FUN_1411177c0(Unk_ContB* pThis, void* pFirst, void* pLast)
+{
+    reinterpret_cast<Unk_CMISEntityIdVec*>(pThis)->assign((egf::EntityID*)pFirst, (egf::EntityID*)pLast);
+}

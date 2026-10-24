@@ -226,3 +226,55 @@ void FUN_14115a960(void* list, void* elem)
 {
     static_cast<Unk_CMISEntVec*>(list)->emplace_back(*static_cast<const egf::EntityPtr*>(elem));
 }
+
+// The container wrappers cubemapinformationservice_3 calls by address. Its stand-in types are opaque here; each is the
+// container the callee instantiates (the exe passes the pointers straight through).
+struct Unk_CMISKeySet;
+struct Unk_CMISCubeByKey;
+struct Unk_CMISCubePtrSet;
+struct Unk_CMISEntSet;
+struct Unk_CMISEntityRef;
+struct Unk_CMISXformVec;
+template <unsigned __int64 N> struct Unk_CMISTree;
+
+// MS2-FUNCTIONAL: emplace_back inline instead of through the out-of-line instance 0x14111ac50 (vector<int>, the key)
+// @0x14115a8a0
+void FUN_14115a8a0(Unk_CMISKeySet* pVec, Unk_CMISCubeByKey* pVal)
+{
+    reinterpret_cast<Unk_CMISIntVec*>(pVec)->emplace_back(*reinterpret_cast<const int*>(pVal));
+}
+
+// MS2-FUNCTIONAL: emplace_back inline instead of through the out-of-line instance 0x14111acc0
+// @0x14115a900
+void FUN_14115a900(Unk_CMISCubePtrSet* pVec, Cube** ppCube)
+{
+    reinterpret_cast<Unk_CMISCubePtrVec*>(pVec)->emplace_back(*ppCube);
+}
+
+// MS2-FUNCTIONAL: emplace_back inline instead of through the out-of-line instance 0x14111ad30
+// @0x14115a930
+void FUN_14115a930(void* list, egf::EntityPtr* pEnt)
+{
+    static_cast<Unk_CMISEntVec*>(list)->emplace_back(*pEnt);
+}
+
+// MS2-FUNCTIONAL: emplace_back inline instead of through the out-of-line instance 0x14111ae10
+// @0x14115a990
+void FUN_14115a990(Unk_CMISEntSet* pVec, const Unk_CMISEntityRef* pId)
+{
+    reinterpret_cast<Unk_CMISEntityIdVec*>(pVec)->emplace_back(*reinterpret_cast<const egf::EntityID*>(pId));
+}
+
+// MS2-FUNCTIONAL: emplace_back inline instead of through the out-of-line instance 0x14111ae80
+// @0x14115a9c0
+void FUN_14115a9c0(Unk_CMISXformVec* pVec, const NiTransform* pXform)
+{
+    reinterpret_cast<Unk_CMISXformVec2*>(pVec)->emplace_back(*pXform);
+}
+
+// MS2-FUNCTIONAL: size() inline instead of through _Get_data 0x141142ec0 (set<MS2Ptr<CFunctionCubeObject>>)
+// @0x14115adf0
+__int64 FUN_14115adf0(Unk_CMISTree<284>* pSet)
+{
+    return (__int64)reinterpret_cast<Unk_CMISFuncCubeSet*>(pSet)->size();
+}

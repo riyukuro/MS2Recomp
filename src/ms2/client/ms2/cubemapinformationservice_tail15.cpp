@@ -510,3 +510,18 @@ void Unk_CMISDriveTail15(void* p)
 // MS2-PIN: ??1?$pair@$$CBHV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@QEAA@XZ 0x1411259d0
 // MS2-PIN: ??1?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@QEAA@XZ 0x141125b30
 // MS2-PIN: ??1?$pair@$$CB_JV?$MS2Ptr@VCube@@@@@std@@QEAA@XZ 0x141125b50
+
+// The two out-of-line destructors cubemapinformationservice_tail14 calls by address (its node-record deleting dtors).
+// MS2-FUNCTIONAL: the exe's ??1MS2Ptr<CFunctionCubeObject> / ??1pair<const int,MS2Ptr<Cube>> COMDATs; here a FUN_ name
+// so the call resolves without depending on which instantiation the compiler keeps
+// @0x1411237f0
+void FUN_1411237f0(void* p)
+{
+    Unk_CMISDestroy((MS2Ptr<CFunctionCubeObject>*)p);
+}
+
+// @0x141125970
+void FUN_141125970(void* p)
+{
+    Unk_CMISDestroy((MS2Ptr<Cube>*)((char*)p + 8));
+}

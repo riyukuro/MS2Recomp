@@ -726,3 +726,13 @@ void Unk_CMISDriveTail()
     { std::string s; s.append("x"); }
     { efd::string s; s.append("x"); }
 }
+
+// unit_14112cd60's operator+=(const char*) on an efd::utf8string's narrow storage.
+struct Unk_CMISStr;
+
+// MS2-FUNCTIONAL: append inline instead of through 0x1409a2d60 (basic_string<char, CustomAllocator>::append(sz, n))
+// @0x14114d9b0
+void FUN_14114d9b0(Unk_CMISStr* pStr, const char* pSz)
+{
+    reinterpret_cast<std::basic_string<char, std::char_traits<char>, efd::CustomAllocator<char> >*>(pStr)->append(pSz);
+}

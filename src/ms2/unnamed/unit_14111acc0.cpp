@@ -246,6 +246,46 @@ void Unk_CMISFwdAnchor(void* p)
     ((Unk_CMISAutoSet*)p)->insert(*(const MS2Ptr<AutomaticCreateCubeInfo>*)p);
 }
 
+// The set insert(const&) wrappers cubemapinformationservice_3 calls by address. Its tree/iterator stand-ins are opaque
+// here: <267> = efd::set<int>, <284> = std::set<MS2Ptr<CFunctionCubeObject>>, <295> = efd::set<MS2Ptr<
+// AutomaticCreateCubeInfo>>, <256> = efd::set<EntityID> (by the clear/find instances of the same call sites). The exe
+// returns pair<iterator, bool> into the caller's slot; the callers keep only the iterator.
+template <unsigned __int64 N> struct Unk_CMISTree;
+template <unsigned __int64 N> struct Unk_CMISIter;
+struct Unk_CMISSlot;
+struct Unk_CMISEntityRef;
+class CPtred;
 
+// MS2-FUNCTIONAL: insert inline instead of through _Insert_nohint 0x14110e910; stores only the iterator
+// @0x14111d290
+void FUN_14111d290(Unk_CMISTree<267>* pSet, Unk_CMISIter<267>* pOut, const int* pKey)
+{
+    *(void**)pOut = reinterpret_cast<Unk_CMISIntSet*>(pSet)->insert(*pKey).first._Ptr;
+}
 
+// MS2-FUNCTIONAL: insert inline instead of through _Insert_nohint 0x14110ed20; stores only the iterator
+// @0x14111d370
+Unk_CMISIter<295>* FUN_14111d370(Unk_CMISTree<295>* pSet, Unk_CMISIter<295>* pOut, const MS2Ptr<CPtred>* pVal)
+{
+    *(void**)pOut = reinterpret_cast<Unk_CMISAutoSet*>(pSet)->insert(
+        *reinterpret_cast<const MS2Ptr<AutomaticCreateCubeInfo>*>(pVal)).first._Ptr;
+    return pOut;
+}
+
+// MS2-FUNCTIONAL: insert inline instead of through _Insert_nohint 0x14110f130; stores only the iterator
+// @0x14111d3b0
+void FUN_14111d3b0(Unk_CMISTree<284>* pSet, Unk_CMISIter<284>* pOut, Unk_CMISSlot* pVal)
+{
+    *(void**)pOut = reinterpret_cast<Unk_CMISFuncCubeSet*>(pSet)->insert(
+        *reinterpret_cast<const MS2Ptr<CFunctionCubeObject>*>(pVal)).first._Ptr;
+}
+
+// MS2-FUNCTIONAL: insert inline instead of through _Insert_nohint 0x14110f540; stores only the iterator
+// @0x14111d3f0
+Unk_CMISIter<256>* FUN_14111d3f0(Unk_CMISTree<256>* pSet, Unk_CMISIter<256>* pOut, const Unk_CMISEntityRef* pId)
+{
+    *(void**)pOut = reinterpret_cast<Unk_CMISEntityIdSet*>(pSet)->insert(
+        *reinterpret_cast<const egf::EntityID*>(pId)).first._Ptr;
+    return pOut;
+}
 
