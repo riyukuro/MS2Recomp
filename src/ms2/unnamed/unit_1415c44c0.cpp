@@ -1271,6 +1271,30 @@ int FUN_1415c9cd0(void* self)
     return 1;
 }
 
+extern void* FUN_1415efa30(void*, void*);
+extern void* FUN_1415ef6b0(void*, void*);
+
+// @0x1415c9df0
+bool FUN_1415c9df0(void* self, void* out)
+{
+    CNMGSGetMemberListFunc request(*reinterpret_cast<int*>(static_cast<char*>(self) + 0x18c));
+    const bool succeeded = FUN_1415cb440(FUN_1415fa260(), &request) != 0;
+    if (succeeded)
+        FUN_1415efa30(out, &request.m_30);
+    return succeeded;
+}
+
+// @0x1415c9e90
+bool FUN_1415c9e90(void* self, void* out)
+{
+    CNMGSGetInviteCandidateListFunc request(
+        *reinterpret_cast<int*>(static_cast<char*>(self) + 0x18c));
+    const bool succeeded = FUN_1415cb440(FUN_1415fa260(), &request) != 0;
+    if (succeeded)
+        FUN_1415ef6b0(out, &request.m_30);
+    return succeeded;
+}
+
 
 // MS2-PIN: ?FUN_1415c4870@@YAHXZ 0x1415c4870
 // MS2-PIN: ?FUN_1415c53b0@@YAHXZ 0x1415c53b0
