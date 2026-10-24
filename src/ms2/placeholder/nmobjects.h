@@ -2593,11 +2593,17 @@ class CNMGSRegisterCallbackFunc : public CNMFunc
 {
 public:
     CNMGSRegisterCallbackFunc(); // 0x14159f5e0
+    CNMGSRegisterCallbackFunc(int n18, long long callback, int code); // 0x14159f640
     virtual ~CNMGSRegisterCallbackFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     long long m_30; // +0x30
     int m_38; // +0x38
-    int m_3c; // +0x3c
 };
 MS2_CHECK_SIZE(CNMGSRegisterCallbackFunc, 0x40);
 
