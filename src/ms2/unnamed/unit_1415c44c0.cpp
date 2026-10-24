@@ -1141,6 +1141,23 @@ int FUN_1415c7cd0(void*, const CNMCustomNotifyData& data)
     return FUN_1415cb440(FUN_1415fa260(), &request);
 }
 
+// @0x1415c7d60
+int FUN_1415c7d60(void*, const unsigned char* target)
+{
+    CNMRequestChatSessionFunc request(target, 0);
+    return FUN_1415cb440(FUN_1415fa260(), &request);
+}
+
+// @0x1415c7f40
+int FUN_1415c7f40(void*, const unsigned char* target, int* result)
+{
+    CNMRequestChatSessionExFunc request(target, 0);
+    const int succeeded = FUN_1415cb440(FUN_1415fa260(), &request);
+    if (succeeded && result)
+        *result = request.m_50 == 0 ? request.m_4c : request.m_50;
+    return succeeded;
+}
+
 // MS2-PIN: ?FUN_1415c4870@@YAHXZ 0x1415c4870
 // MS2-PIN: ?FUN_1415c53b0@@YAHXZ 0x1415c53b0
 // MS2-PIN: ?FUN_1415c5b40@@YAHXZ 0x1415c5b40
