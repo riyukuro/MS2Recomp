@@ -134,6 +134,8 @@ extern void FUN_1415d6ab0(void*, Unk_StlElem<0x20>*);
 extern Unk_StlElem<0x20>* FUN_1403a4b80(Unk_StlElem<0x20>*);
 
 static const char nm_empty[] = "";
+extern const char DAT_143ae2848;
+extern const char DAT_143ae2849;
 
 static void nm_copy_cnm_string(void* dst, const char* src, size_t capacity)
 {
@@ -2198,10 +2200,29 @@ void FUN_1415e4a90(void* pThis, Unk_StlElem<0x20>* pVal)
 }
 
 // @0x1415e3880
-void FUN_1415e3880() {}
+void FUN_1415e3880(void*, void*) {}
 
 // @0x1415e3890
-void FUN_1415e3890() {}
+void FUN_1415e3890(void*, void*) {}
+
+
+// MS2-FUNCTIONAL: restores the recovered shared empty-string sentinel and delegates CNMStr<32> content initialization.
+// @0x1415e59e0
+void* FUN_1415e59e0(void* pThis, const char* value)
+{
+    *reinterpret_cast<const char**>(pThis) = &DAT_143ae2848;
+    FUN_1415f9a90(pThis, value);
+    return pThis;
+}
+
+// MS2-FUNCTIONAL: restores the recovered shared empty-string sentinel and delegates CNMStr<2048> content initialization.
+// @0x1415e5bc0
+void* FUN_1415e5bc0(void* pThis, const char* value)
+{
+    *reinterpret_cast<const char**>(pThis) = &DAT_143ae2849;
+    FUN_1415f9b80(pThis, value);
+    return pThis;
+}
 
 
 // MS2-PIN: ?FUN_1415e2430@@YAXPEAXPEAU?$Unk_StlElem@$0BA@@@1@Z 0x1415e2430
