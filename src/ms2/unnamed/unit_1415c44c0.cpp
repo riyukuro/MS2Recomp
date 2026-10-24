@@ -456,6 +456,49 @@ int FUN_1415c56f0(void*, const NMKey64* key)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
+// MS2-FUNCTIONAL: queries a game token and returns both recovered result fields.
+// @0x1415c50d0
+int FUN_1415c50d0(void*, const char* token, int* output)
+{
+    CNMGetGameTokenFunc request(token);
+    if (CNMManager::GetInstance()->CallNMFunc(&request)) *output = request.m_3c;
+    return request.m_38;
+}
+
+// MS2-FUNCTIONAL: dispatches the PC-bang login and returns the request's status field.
+// @0x1415c5150
+int FUN_1415c5150(void*, const char* token)
+{
+    CNMPCBangLoginFunc request(token);
+    (void)CNMManager::GetInstance()->CallNMFunc(&request);
+    return request.m_38;
+}
+
+// MS2-FUNCTIONAL: dispatches the TPA login and returns its recovered status field.
+// @0x1415c51b0
+int FUN_1415c51b0(void*, const char* account, const char* password)
+{
+    CNMTPATokenLoginFunc request(account, password);
+    (void)CNMManager::GetInstance()->CallNMFunc(&request);
+    return request.m_40;
+}
+
+// MS2-FUNCTIONAL: dispatches registration of the authentication close callback.
+// @0x1415c5220
+int FUN_1415c5220(void*, long long callback)
+{
+    CNMSetAuthClosedCallbackFunc request(callback);
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
+// MS2-FUNCTIONAL: dispatches the messenger login using the recovered mode value.
+// @0x1415c5280
+int FUN_1415c5280(void*, int mode)
+{
+    CNMLoginMessengerFunc request(mode);
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
 // @0x1415c46c0
 void FUN_1415c46c0()
 {
