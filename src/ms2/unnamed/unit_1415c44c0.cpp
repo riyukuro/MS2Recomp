@@ -662,6 +662,54 @@ int FUN_1415c4c90(void*, const char* user, const char* password)
     return request.m_timeout;
 }
 
+// MS2-FUNCTIONAL: dispatches the new-friend confirmation with the recovered result and flags.
+// @0x1415c6640
+int FUN_1415c6640(void*, int result, int flags)
+{
+    CNMConfirmNewFriendFunc request(result, flags, 0);
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
+// MS2-FUNCTIONAL: dispatches a category creation request with its key, name, flags, and status.
+// @0x1415c66b0
+int FUN_1415c66b0(void*, long long key, long long name, int flags, int status)
+{
+    CNMAddCategoryFunc request(key, name, flags, status);
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
+// MS2-FUNCTIONAL: dispatches the requested category deletion.
+// @0x1415c6760
+int FUN_1415c6760(void*, int category, int flags)
+{
+    CNMDeleteCategoryFunc request(category, flags);
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
+// MS2-FUNCTIONAL: dispatches the category rename request.
+// @0x1415c67d0
+int FUN_1415c67d0(void*, int category, const char* name, int flags)
+{
+    CNMChangeCategoryNameFunc request(category, reinterpret_cast<long long>(name), flags);
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
+// MS2-FUNCTIONAL: dispatches the requested category property change.
+// @0x1415c6870
+int FUN_1415c6870(void*, int category, int property, int value)
+{
+    CNMChangeCategoryPropertyFunc request(category, property, value);
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
+// MS2-FUNCTIONAL: dispatches the category allow-type update.
+// @0x1415c68f0
+int FUN_1415c68f0(void*, int category, int allowType, int value)
+{
+    CNMChangeCategoryAllowTypeFunc request(category, allowType, value);
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
 // @0x1415c46c0
 void FUN_1415c46c0()
 {
