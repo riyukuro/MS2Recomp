@@ -11,17 +11,28 @@ class CCefMS2ClientApp : public CefApp, public CefBrowserProcessHandler, public 
 {
 public:
     CCefMS2ClientApp();                             // 0x140cbfd50 (edx = 1: the virtual-base "most derived" flag)
+    virtual ~CCefMS2ClientApp();                    // 0x140cbfea0
 
-    // CefBaseRefCounted (IMPLEMENT_REFCOUNTING in the exe class; defined in its unit)
-    void AddRef() const override;
-    bool Release() const override;
-    bool HasOneRef() const override;
+    // CefApp
+    void OnBeforeCommandLineProcessing(const CefString& process_type, CefRefPtr<CefCommandLine> command_line) override;
+    CefRefPtr<CefBrowserProcessHandler> GetBrowserProcessHandler() override { return this; }
+    CefRefPtr<CefRenderProcessHandler> GetRenderProcessHandler() override { return this; }
+    // CefRenderProcessHandler
+    void OnWebKitInitialized() override;
+    void OnFocusedNodeChanged(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
+        CefRefPtr<CefDOMNode> node) override;
+    bool OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefProcessId source_process,
+        CefRefPtr<CefProcessMessage> message) override;
+
+    IMPLEMENT_REFCOUNTING(CCefMS2ClientApp);
 
     void FUN_140cbff60(bool bUnk);                  // CWebBrowserService::FUN_141b78840 forwards a browser's flag
+    void FUN_140cbffc0(bool bImeRequest);           // tells the browser process the ime state (and queues it for the service)
     bool FUN_140cc0130();                           // CWebBrowserService::FUN_141b78650
     void FUN_140cc0150();                           // CWebBrowserService::FUN_141b784f0 (before closing a browser)
 private:
     MS2_LAYOUT_FRIEND;
-    char m_pad_30[0x8];                             // + the vtordisp slot cl adds before the virtual base
+    bool m_bImeRequest;                             // +0x34
+    bool m_bEditableFocus;                          // +0x35
 };
 MS2_CHECK_SIZE(CCefMS2ClientApp, 0x48);
