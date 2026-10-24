@@ -133,7 +133,7 @@ enum Unk_CompareStatType
 {
 };
 
-static int LoadXml(TiXmlDocument& doc, const char* pszPath);
+int LoadXml(TiXmlDocument& doc, const char* pszPath);
 
 // @0x1407e5b80
 Unk_SkillWeapon::Unk_SkillWeapon()
@@ -1385,7 +1385,7 @@ void SkillDataTable::LoadGlideData()
 MS2_REPLACE_METHOD(0x1407eef70, SkillDataTable, LoadGlideData, 736, 0x25108745);
 
 // @0x1407ef260
-static int LoadXml(TiXmlDocument& doc, const char* pszPath)
+int LoadXml(TiXmlDocument& doc, const char* pszPath)
 {
     return FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false);
 }
