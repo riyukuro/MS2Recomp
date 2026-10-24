@@ -259,6 +259,7 @@ ATL::CAtlMap<int, int, ATL::CDefaultElementTraits<int> > g_itemDefaultSlotMaps[2
 bool CItemDataTable::s_bInit;
 #endif
 
+
 // @0x140555a70
 CColorPaletteInfo::CColorPaletteInfo()
 {
@@ -1611,3 +1612,17 @@ void FUN_140583ea0()
     FUN_14058a830(g_itemDefaultSiblingStatic);
 }
 #endif
+
+// Full-executable aliases for byte-identical table helpers emitted here under CItemDataTable names.
+// MS2-PIN: ?GetEnchantNif@CItemDataTable@@QEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HHHI@Z 0x140557270
+// MS2-PIN: ?GetPaletteColor@CItemDataTable@@QEAA?AV?$MS2Ptr@VItemColorEx@@@@HI@Z 0x1405587f0
+// MS2-PIN: ?FindPaletteColor@CItemDataTable@@QEAA?AV?$MS2Ptr@VItemColorEx@@@@HAEBH@Z 0x140558cc0
+// MS2-PIN: ?FindPaletteColor@CItemDataTable@@QEAA?AV?$MS2Ptr@VItemColorEx@@@@HV?$MS2Ptr@VCItemData@@@@V?$Delegate@$$A6A_NAEBVItemColorEx@@V?$MS2Ptr@VCItemData@@@@@Z@@@Z 0x140558e80
+// MS2-PIN: ?FindPaletteColor@CItemDataTable@@QEAA?AV?$MS2Ptr@VItemColorEx@@@@HAEBH0@Z 0x1405590e0
+// MS2-PIN: ?FUN_140557270@Unk_IngTable@@QEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HHHI@Z 0x140557270
+// MS2-PIN: ?FUN_1405587f0@Unk_BSColorTable@@QEAA?AV?$MS2Ptr@VUnk_BSColorRow@@@@HH@Z 0x1405587f0
+// MS2-PIN: ?FUN_1405587f0@Unk_CustomizeColorTable@@QEAA?AV?$MS2Ptr@VItemColorEx@@@@HH@Z 0x1405587f0
+// MS2-PIN: ?FUN_1405587f0@Unk_IngTable@@QEAA?AVUnk_AvPresetPtr@@HH@Z 0x1405587f0
+// MS2-PIN: ?FUN_140558cc0@Unk_UgcTable@@QEAA?AUUnk_UgcRowPtr@@H_J@Z 0x140558cc0
+// MS2-PIN: ?FUN_140558e80@Unk_UgcTable@@QEAA?AUUnk_UgcRowPtr@@HV?$MS2Ptr@VCItemData@@@@V?$Delegate@$$A6A_NAEBVItemColorEx@@V?$MS2Ptr@VCItemData@@@@@Z@@@Z 0x140558e80
+// MS2-PIN: ?FUN_1405590e0@Unk_UgcTable@@QEAA?AUUnk_UgcRowPtr@@HPEAI0@Z 0x1405590e0
