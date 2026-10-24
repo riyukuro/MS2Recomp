@@ -10755,3 +10755,5 @@ DAT_143b05550	143b05550	data
 ?g_szCefMessageDlProjectReset@@3PEBDEA	1439f7f08	data
 ?g_szCefMessageDlDoAction@@3PEBDEA	1439f7f10	data
 ?g_szCefMessageDlExecuteCommand@@3PEBDEA	1439f7f18	data
+?AddTextureGlyph@TextureGlyphData@GFx@Scaleform@@QEAAXIAEBVTextureGlyph@Render@3@@Z	142654ec0	func
+?AddScene@LoadTaskData@MovieDataDef@GFx@Scaleform@@QEAAXAEBVString@4@I@Z	1425cd480	func
