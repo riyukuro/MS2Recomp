@@ -54,7 +54,8 @@ PCH_FORWARD = ("Foundation/efd/efdPCH.h", "Foundation/efdLogService/efdLogServic
                "GameFramework/ecrInput/ecrInputPCH.h", "GameFramework/ecrPhysX/ecrPhysXPCH.h", "GameFramework/egf/egfPCH.h",
                "GameFramework/egfLua/egfLuaPCH.h", "GameFramework/egfPhysX/egfPhysXPCH.h",
                "GameFramework/egmAnimation/egmAnimationPCH.h", "GameFramework/egmVisualizers/egmVisualizersPCH.h",
-               "GameFramework/egmVisualTracker/egmVisualTrackerPCH.h")
+               "GameFramework/egmVisualTracker/egmVisualTrackerPCH.h", "GameFramework/egmWhitebox/egmWhiteboxPCH.h",
+               "GameFramework/egmPhysXWhitebox/egmPhysXWhiteboxPCH.h")
 
 _idx = {}
 

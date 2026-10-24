@@ -352,6 +352,47 @@ void OpenLog() {
     }
 }
 
+// MS2HOOK_PROBE=@<list file> (or a comma list): hex exe VAs to count without replacing them. Each VA is detoured to a
+// counting stub that jumps to the Detours trampoline (the original code), so behaviour is unchanged; the stats thread
+// logs the counts as probe_<va>=n. Used to find which unreplaced exe functions run in play (work/gb18 stub hits).
+static int InstallProbes() {
+    static char* store = nullptr;
+    bool set = false;
+    const char* list = LoadList("MS2HOOK_PROBE", &store, &set);
+    if (!set) return 0;
+    int ok = 0, bad = 0;
+    for (const char* p = list; *p;) {
+        const char* e = strchr(p, ',');
+        size_t len = e ? static_cast<size_t>(e - p) : strlen(p);
+        char tmp[32] = "";
+        if (len > 0 && len < sizeof(tmp)) {
+            memcpy(tmp, p, len);
+            uintptr_t va = strtoull(tmp, nullptr, 16);
+            auto* target = static_cast<uint8_t*>(VaToPtr(va));
+            CountStub* stub = va && ExecutableRange(reinterpret_cast<uintptr_t>(target), 5) ? MakeStub(nullptr) : nullptr;
+            LONG err = stub ? DetourTransactionBegin() : -1;
+            if (stub) stub->target = target;   // Detours stores the trampoline here at commit, before the jump is live
+            if (err == NO_ERROR) err = DetourAttach(&stub->target, stub);
+            if (err == NO_ERROR) err = DetourTransactionCommit(); else if (stub) DetourTransactionAbort();
+            if (err == NO_ERROR) {
+                void* orig = stub->target;
+                auto* r = static_cast<Replacement*>(HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(Replacement)));
+                char* nm = static_cast<char*>(HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, 32));
+                snprintf(nm, 32, "probe_%llx", static_cast<unsigned long long>(va));
+                r->va = va; r->name = nm; r->file = ""; r->counter = &stub->count; r->installed = true; r->original = orig;
+                g_installed.push_back(r);
+                ++ok;
+            } else {
+                Log("PROBE REFUSED 0x%llx (error %ld)", static_cast<unsigned long long>(va), err);
+                ++bad;
+            }
+        }
+        p += len + (e ? 1 : 0);
+    }
+    Log("ms2hook: %d probe(s) installed, %d refused", ok, bad);
+    return ok;
+}
+
 int InstallAll() {
     auto* base = reinterpret_cast<uint8_t*>(GetModuleHandleW(nullptr));
     g_imageDelta = reinterpret_cast<uintptr_t>(base) - kImageBase;
@@ -435,6 +476,7 @@ int InstallAll() {
         }
     }
     Log("ms2hook: %d installed, %d refused, call counting %s", installed, refused, counting ? "on" : "off");
+    if (exeOk) installed += InstallProbes();
     return installed;
 }
 
