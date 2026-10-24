@@ -208587,7 +208587,7 @@ FUN_1423d9690	1423d9690	func
 ?Reserve@?$ArrayDataBase@KU?$AllocatorLH_POD@K$0BFD@@Scaleform@@UArrayDefaultPolicy@2@@Scaleform@@QEAAXPEBX_K@Z	142546170	func
 ?Reserve@?$ArrayDataBase@PEAVClassInfo@Abc@AS3@GFx@Scaleform@@U?$AllocatorLH_POD@PEAVClassInfo@Abc@AS3@GFx@Scaleform@@$0BFC@@5@UArrayDefaultPolicy@5@@Scaleform@@QEAAXPEBX_K@Z	142546210	func
 ?Reserve@?$ArrayDataBase@PEAVMetadataInfo@Abc@AS3@GFx@Scaleform@@U?$AllocatorLH_POD@PEAVMetadataInfo@Abc@AS3@GFx@Scaleform@@$0BFC@@5@UArrayDefaultPolicy@5@@Scaleform@@QEAAXPEBX_K@Z	1425462b0	func
-?Reserve@?$ArrayDataBase@EU?$AllocatorGH_POD@E$01@Scaleform@@UArrayDefaultPolicy@2@@Scaleform@@QEAAXPEBX_K@Z	142546350	func
+?Reserve@?$ArrayDataBase@EU?$AllocatorGH_POD@E$01@Scaleform@@UArrayDefaultPolicy@2@@Scaleform@@QEAAXPEBX_K@Z	142522d10	func
 ?Reserve@?$ArrayDataBase@PEAVMethodBodyInfo@Abc@AS3@GFx@Scaleform@@U?$AllocatorLH_POD@PEAVMethodBodyInfo@Abc@AS3@GFx@Scaleform@@$0BFC@@5@UArrayDefaultPolicy@5@@Scaleform@@QEAAXPEBX_K@Z	142546350	func
 ?Reserve@?$ArrayDataBase@PEAVMethodInfo@Abc@AS3@GFx@Scaleform@@U?$AllocatorLH_POD@PEAVMethodInfo@Abc@AS3@GFx@Scaleform@@$0BFC@@5@UArrayDefaultPolicy@5@@Scaleform@@QEAAXPEBX_K@Z	1425463f0	func
 ?Reserve@?$ArrayDataBase@PEAVScriptInfo@Abc@AS3@GFx@Scaleform@@U?$AllocatorLH_POD@PEAVScriptInfo@Abc@AS3@GFx@Scaleform@@$0BFC@@5@UArrayDefaultPolicy@5@@Scaleform@@QEAAXPEBX_K@Z	142546490	func
