@@ -177,8 +177,8 @@ const int* FUN_1402fbd20(const int* pA, const int* pB);                    // pl
 bool FUN_140b83fa0(const NiPoint3& kA, const NiPoint3& kB);         // 0x140b83fa0
 bool FUN_140b83f60(int nState);                                     // 0x140b83f60
 bool FUN_140b83ec0();                                               // 0x140b83ec0
-static bool FUN_140b84dc0(const NiPoint3& kPoint);                         // 0x140b84dc0 the point is placeable
-static void FUN_140b86230(const efd::Point3& kEuler, efd::Matrix3* pOut);  // 0x140b86230
+bool FUN_140b84dc0(const NiPoint3& kPoint);                         // 0x140b84dc0 the point is placeable
+void FUN_140b86230(const efd::Point3& kEuler, efd::Matrix3* pOut);  // 0x140b86230
 
 // ---- StateCoupleEmotionData -------------------------------------------------------------------------------------------
 
@@ -1047,7 +1047,7 @@ int StateCoupleEmotion::GetAniIndex()
 
 // Euler angles in degrees (X, Y, Z) to a rotation matrix; the engine's rotation sense is the opposite one.
 // @0x140b86230
-static void FUN_140b86230(const efd::Point3& kEuler, efd::Matrix3* pOut)
+void FUN_140b86230(const efd::Point3& kEuler, efd::Matrix3* pOut)
 {
     efd::Matrix3 matX, matY, matZ;
     FUN_1409f7320(&matX);
@@ -1283,7 +1283,7 @@ void FUN_140b84010(int nWhy)
 // Is the point a legal spot to stand: ground below, not blocked, and no solid / forbidden object on it?
 // MS2-FUNCTIONAL: written from the call sequence.
 // @0x140b84dc0
-static bool FUN_140b84dc0(const NiPoint3& kPoint)
+bool FUN_140b84dc0(const NiPoint3& kPoint)
 {
     NiPoint3 kPos = kPoint;
     kPos.z += 5.0f;
@@ -1432,3 +1432,11 @@ template bool MS2Ptr<StateSyncObjectCoupleEmotion>::operator==(StateSyncObjectCo
 // MS2-PIN: ??1CoupleEmotionAnimInfo@@UEAA@XZ 0x140b85be0 ; implicit virtual dtor (no vftable reset, like the exe)
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca1160-0x142ca1210 .text$yd
+// Full-executable aliases for existing couple-emotion helpers.
+// MS2-PIN: ?RequestCoupleEmotion@@YA_NHH@Z 0x140b845a0
+// MS2-PIN: ?FUN_140b845a0@@YAX_JI@Z 0x140b845a0
+// MS2-PIN: ?FUN_140b84dc0@@YA_NAEBVNiPoint3@@Z 0x140b84dc0
+// MS2-PIN: ?FUN_140b86230@@YAXAEBVPoint3@efd@@AEAVNiMatrix3@@Z 0x140b86230
+// MS2-PIN: ?FUN_140b86230@@YAXAEBUVector3@@AEAUUnk_NiMatrix3@@@Z 0x140b86230
+// MS2-PIN: ?FUN_140b86230@@YAXAEBVNiPoint3@@AEAVNiMatrix3@@Z 0x140b86230
+// MS2-PIN: ?FUN_140b86230@@YAXPEBUVector3@@PEAVNiTransform@@@Z 0x140b86230
