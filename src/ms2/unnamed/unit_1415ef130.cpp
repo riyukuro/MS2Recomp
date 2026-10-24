@@ -17,6 +17,16 @@ extern void FUN_1415f9a90(void*, const void*);
 extern void FUN_1415f9ae0(void*, void*);
 extern void FUN_1415f9b30(void*, void*);
 extern void FUN_1415f9b80(void*, void*);
+extern void* FUN_1415f3b00(void*); extern void* FUN_1415f3b10(void*);
+extern void* FUN_1415f3b20(void*); extern void* FUN_1415f3b30(void*);
+extern void* FUN_1415f3b40(void*); extern void* FUN_1415f3b50(void*);
+extern void* FUN_1415f3b60(void*); extern void* FUN_1415f3b70(void*);
+extern void* FUN_1415f3b80(void*); extern void* FUN_1415f3b90(void*);
+extern void* FUN_1415f3ba0(void*); extern void* FUN_1415f3bb0(void*);
+extern void* FUN_1415f3bc0(void*); extern void* FUN_1415f3bd0(void*);
+extern void* FUN_1415f3be0(void*); extern void* FUN_1415f3bf0(void*);
+extern void* FUN_1415f3c00(void*); extern void* FUN_1415f3c10(void*);
+extern void* FUN_1415f3c20(void*);
 
 template <class Id, class Get, class Set, class First, class Last, class Range>
 static void* copy_nm_sequence(void* dst, void* src, Id id, Get get, Set set,
@@ -132,6 +142,64 @@ NM_COPY_FUNCTION(FUN_1415efa30, FUN_1415e1710, FUN_141601ff0, FUN_1416000f0, FUN
 NM_COPY_FUNCTION(FUN_1415efab0, FUN_1415e1720, FUN_141602030, FUN_141600120, FUN_141603ee0, FUN_141603920, FUN_1415e2270)
 
 #undef NM_COPY_FUNCTION
+
+// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
+// @0x1415f3c40
+void FUN_1415f3c40(void* p) { (void)FUN_1415f3b00(p); }
+// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
+// @0x1415f3c60
+void FUN_1415f3c60(void* p) { (void)FUN_1415f3b10(p); }
+// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
+// @0x1415f3c80
+void FUN_1415f3c80(void* p) { (void)FUN_1415f3b20(p); }
+// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
+// @0x1415f3ca0
+void FUN_1415f3ca0(void* p) { (void)FUN_1415f3b30(p); }
+// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
+// @0x1415f3cc0
+void FUN_1415f3cc0(void* p) { (void)FUN_1415f3b40(p); }
+// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
+// @0x1415f3ce0
+void FUN_1415f3ce0(void* p) { (void)FUN_1415f3b50(p); }
+// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
+// @0x1415f3d00
+void FUN_1415f3d00(void* p) { (void)FUN_1415f3b60(p); }
+// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
+// @0x1415f3d20
+void FUN_1415f3d20(void* p) { (void)FUN_1415f3b70(p); }
+// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
+// @0x1415f3d40
+void FUN_1415f3d40(void* p) { (void)FUN_1415f3b80(p); }
+// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
+// @0x1415f3d60
+void FUN_1415f3d60(void* p) { (void)FUN_1415f3b90(p); }
+// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
+// @0x1415f3d80
+void FUN_1415f3d80(void* p) { (void)FUN_1415f3ba0(p); }
+// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
+// @0x1415f3da0
+void FUN_1415f3da0(void* p) { (void)FUN_1415f3bb0(p); }
+// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
+// @0x1415f3dc0
+void FUN_1415f3dc0(void* p) { (void)FUN_1415f3bc0(p); }
+// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
+// @0x1415f3de0
+void FUN_1415f3de0(void* p) { (void)FUN_1415f3bd0(p); }
+// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
+// @0x1415f3e00
+void FUN_1415f3e00(void* p) { (void)FUN_1415f3be0(p); }
+// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
+// @0x1415f3e20
+void FUN_1415f3e20(void* p) { (void)FUN_1415f3bf0(p); }
+// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
+// @0x1415f3e40
+void FUN_1415f3e40(void* p) { (void)FUN_1415f3c00(p); }
+// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
+// @0x1415f3e60
+void FUN_1415f3e60(void* p) { (void)FUN_1415f3c10(p); }
+// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
+// @0x1415f3e80
+void FUN_1415f3e80(void* p) { (void)FUN_1415f3c20(p); }
 
 // MS2-FUNCTIONAL: follows the recovered two-call wrapper and returns the destination.
 // @0x1415ef130
@@ -2819,4 +2887,3 @@ void* FUN_1415f3c20(void* p) { return *static_cast<void**>(p); }
 // MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3c30
 void* FUN_1415f3c30(void* p) { return *static_cast<void**>(p); }
-
