@@ -103,7 +103,7 @@ private:
 MS2_CHECK_SIZE(TiXmlDeclaration, 0x68);
 
 // @0x14081b310
-static Unk_140165cf0* DocRootElement(TiXmlDocument* pDoc)
+Unk_140165cf0* DocRootElement(TiXmlDocument* pDoc)
 {
     return reinterpret_cast<Unk_140165cf0*>(pDoc)->FUN_140345b40();
 }
