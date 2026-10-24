@@ -1142,3 +1142,12 @@ void CashInventorySlot::FUN_140b0d440()
 MS2_EMIT_CRT_MEMMOVE_S();
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca0610-0x142ca08a0 .text$yd
+// Full-executable aliases for existing CCashMarketMan methods.
+// MS2-PIN: ?OnCash@CCashMarketMan@@QEAAXAEAVCInPacket@@@Z 0x140b06020
+// MS2-PIN: ?SendCashMode3@CCashMarketMan@@QEAAXHHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@0@Z 0x140b062c0
+// MS2-PIN: ?SendCashMode4@CCashMarketMan@@QEAAXHHH@Z 0x140b063b0
+// MS2-PIN: ?SendCashMode7@CCashMarketMan@@QEAAXHHHH@Z 0x140b064c0
+// MS2-PIN: ?FUN_140b06020@@YAXPEAXAEAVCInPacket@@@Z 0x140b06020
+// MS2-PIN: ?FUN_140b062c0@Unk_CashMgr@@QEAAXHHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@0@Z 0x140b062c0
+// MS2-PIN: ?FUN_140b063b0@Unk_CashMgr@@QEAAXIHH@Z 0x140b063b0
+// MS2-PIN: ?FUN_140b064c0@Unk_CashMgr@@QEAAXHHHH@Z 0x140b064c0
