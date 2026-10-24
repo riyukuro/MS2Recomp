@@ -178,6 +178,7 @@
 #include "ms2/placeholder/physxpropmessage.h"
 #include "ms2/placeholder/tfunctor.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/tptrvalue.h"
 #include "ms2/placeholder/notifyworld.h"
 #include "ms2/placeholder/cinteractwebobject.h"
@@ -472,6 +473,38 @@ struct Unk_WsF_TagEnter;
 void FUN_141bf6010(Unk_WsF_TagEnter* p)
 {
     reinterpret_cast<CString*>(p)->~CString();
+}
+
+// MS2-FUNCTIONAL: this is the raw-pointer assignment used by both 16-byte smart-pointer views; acquire the new
+// pointee before releasing the old one, and keep the stored pointer at the observed +0x08 offset.
+static void* WsAssignPtred(void* self, CPtred* p)
+{
+    CPtred** slot = reinterpret_cast<CPtred**>(reinterpret_cast<char*>(self) + 8);
+    if (p) CPtred::AddRefPtred(p);
+    CPtred* old = *slot;
+    *slot = p;
+    if (old && CPtred::ReleasePtred(old) == 0)
+    {
+        CPtred::AddRefPtred(old);
+        CPtred::DeletePtred(old);
+    }
+    return self;
+}
+struct Unk_WsI_BoundRef;
+class Unk_WsI_Bound;
+struct Unk_WsP16;
+class Unk_WsD_FieldObj;
+// MS2-FUNCTIONAL: applies the intrusive raw-pointer assignment to the stored pointer at +0x08.
+// @0x141bf6cb0
+Unk_WsI_BoundRef* FUN_141bf6cb0(Unk_WsI_BoundRef* self, Unk_WsI_Bound* p)
+{
+    return static_cast<Unk_WsI_BoundRef*>(WsAssignPtred(self, reinterpret_cast<CPtred*>(p)));
+}
+// MS2-FUNCTIONAL: this is the same assignment body through the generic 16-byte pointer view.
+// @0x141bf6cb0
+void FUN_141bf6cb0(Unk_WsP16* self, Unk_WsD_FieldObj* p)
+{
+    WsAssignPtred(self, reinterpret_cast<CPtred*>(p));
 }
 
 // MS2-PIN: ??1ActorRemovedMessage@egmAnimation@@UEAA@XZ 0x141bf5fb0 ; stores ??_7ActorRemovedMessage (0x142ffeb08); ~ActorAddedMessage is its look-alike
