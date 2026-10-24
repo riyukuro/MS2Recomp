@@ -1548,7 +1548,6 @@ bool FUN_14135dba0(const NiFixedString& kName, const Unk_ShaderVec4* pv, int n);
 void FUN_14135db70(const NiFixedString& kName, const Unk_ShaderColor* pv, int n);
 float FUN_14135dad0(const char* pszName);
 void FUN_14135d9d0(int nMode);
-void FUN_14135d380();
 
 // The world environment behind the player table (0x141bd30a0).
 class Unk_HudEnvData
@@ -1697,7 +1696,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     }
     if (_stricmp("onSelectRadioMotionBlurAll", szMethod) == 0)
     {
-        FUN_14135d380();
+        OnSelectRadioMotionBlurAll();
         return 1;
     }
     if (_stricmp("onSelectRadioMotionBlurCharacter", szMethod) == 0)

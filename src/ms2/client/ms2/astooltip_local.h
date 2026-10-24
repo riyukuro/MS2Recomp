@@ -128,7 +128,6 @@ CStringW FUN_14016a730(const char* sz, int nCodePage);                // a multi
 CFeatureManager* FUN_140166410();                                     // TSingleton<CFeatureManager>::GetInstance (exe copy)
 CReservedWordTable* FUN_1403b4750();                                  // 0x1403b4750 the reserved word table
 CItemSocketTable* FUN_14052d200();                                    // TSingleton<CItemSocketTable>::GetInstance (exe copy)
-CItemDataTable* FUN_140281980_p2();                                   // 0x140281980 TSingleton<CItemDataTable>::GetInstance (exe copy)
 CGameRule* FUN_1401c0d90();                                           // TSingleton<CGameRule>::GetInstance (exe copy)
 SkillDataTableCli* FUN_1401958b0();                                   // TSingleton<SkillDataTableCli>::GetInstance (exe copy)
 MyPC* FUN_1409613d0(PCBase* p);                                       // efd::DynamicCast<MyPC>(PCBase*)

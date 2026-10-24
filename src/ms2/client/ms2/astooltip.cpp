@@ -1779,7 +1779,7 @@ void ASTooltip::FUN_1409cd9c0(CItem* pItem)
     if (spData->FUN_14053cb80())
     {
         int nHousingId = spData->FUN_14053c510();
-        MS2Ptr<ItemHousing> spHousing = FUN_140281980_p2()->GetHousing(nHousingId);
+        MS2Ptr<ItemHousing> spHousing = TSingleton<CItemDataTable>::GetInstance()->GetHousing(nHousingId);
         if (spHousing == 0)
             return;
         if (spTransfer->FUN_1406354d0() == 0)
@@ -2144,7 +2144,7 @@ void ASTooltip::FUN_1409d0710(CItem* pItem)
         if (pItem->FUN_140525790())
         {
             int nId = pItem->FUN_140527840()->FUN_14053c510();
-            MS2Ptr<ItemMusicScore> spScore = FUN_140281980_p2()->GetMusicScore(nId);
+            MS2Ptr<ItemMusicScore> spScore = TSingleton<CItemDataTable>::GetInstance()->GetMusicScore(nId);
             bCustom = (ItemMusicScore*)spScore != 0;
             if (bCustom)
             {
@@ -2297,7 +2297,7 @@ void ASTooltip::FUN_1409d0a80(CItem* pItem)
             else
             {
                 int nHousingId = spData->FUN_14053c510();
-                MS2Ptr<ItemHousing> spHousing = FUN_140281980_p2()->GetHousing(nHousingId);
+                MS2Ptr<ItemHousing> spHousing = TSingleton<CItemDataTable>::GetInstance()->GetHousing(nHousingId);
                 if (spHousing == 0)
                     return;
                 unsigned short nLevel = spHousing->interiorLevel;

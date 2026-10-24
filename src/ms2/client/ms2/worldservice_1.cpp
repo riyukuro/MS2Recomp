@@ -6755,7 +6755,6 @@ Unk_WsC_Box* FUN_140ada4c0(void* mem);
 void FUN_141c1b960(void* map, CString& key, MS2Ptr<Unk_WsC_Liftable>& v);          // m_510.SetAt
 void FUN_141c03e10(void* map, int key, MS2Ptr<Unk_WsC_TargetBox>& v);              // m_540.SetAt
 void FUN_141c03e40(void* map, int key, MS2Ptr<Unk_WsC_TargetGuide>& v);            // m_570.SetAt
-void FUN_141bc4b10(WorldService* self, MS2Ptr<Unk_WsC_Breakable> v);                // WorldService::FUN_141bc4b10 (part B)
 
 void* FUN_140ae1be0(egf::Entity* e);
 void FUN_140ae1f60(void* info, efd::utf8string* out);
@@ -6783,7 +6782,6 @@ int FUN_141c057f0(Unk_WsC_InteractDef* d);
 void FUN_141c1b8f0(void* map, CString& key, MS2Ptr<Unk_WsC_Interact>& v);          // m_678.SetAt
 void FUN_141c1b9d0(void* map, unsigned __int64* key, MS2Ptr<Unk_WsC_Interact>& v);  // m_6a8.SetAt
 void FUN_141bd9410(WorldService* self, MS2Ptr<Unk_WsC_Interact> v);                 // after-add hook (part D)
-void FUN_141bda580(WorldService* self);                                             // (part D)
 void FUN_1416105a0(float v);   // merge3: the exe passes xmm0 (a float member); the int declaration left xmm0 undefined
 
 extern char DAT_143b059e8;
@@ -6880,7 +6878,7 @@ void WorldService::FUN_141bcda90()
                 void* mem = ::operator new(0x2c0);
                 MS2Ptr<Unk_WsC_Breakable> obj(mem ? FUN_140add560(mem) : 0);
                 if (obj->Init(ent, 2) != 0)
-                    ::FUN_141bc4b10(this, obj);
+                    FUN_141bc4b10(reinterpret_cast<MS2Ptr<Unk_WsB_Marker>&>(obj));
             }
         }
     }
@@ -7039,7 +7037,7 @@ void WorldService::FUN_141bcda90()
         }
     }
 
-    ::FUN_141bda580(this);
+    FUN_141bda580();
     FUN_141bd6520();
     FUN_1416105a0(*reinterpret_cast<const float*>(&m_298->m_254));
     FUN_141bc7440();
@@ -9621,7 +9619,6 @@ void* FUN_141c06a60(void* map, unsigned key);                       // m_350.Loo
 bool FUN_141c06b80(void* map, unsigned key, Unk_WsE_TagPtr* out);   // m_208.Lookup(key, out)
 void FUN_141c1ad00(void* map, unsigned key, MS2Ptr<Unk_WsE_FieldObject>& v);   // m_350.SetAt
 Unk_WsE_Proxy* FUN_1416c1cc0(Unk_WsE_Proxy* self);                  // CProxyGameObject::CProxyGameObject
-void FUN_141bc9aa0(WorldService* self, MS2Ptr<Unk_WsE_Proxy> proxy);   // registers the proxy (callee releases)
 Unk_WsE_NotifyAdd* FUN_140db4b60(Unk_WsE_NotifyAdd* self, Unk_WsE_FieldObject* obj);   // NotifyAddPortal ctor
 void* FUN_140939a10();                                              // notify system singleton
 void FUN_140da4fe0(void* notifySys, MS2Ptr<Unk_WsE_NotifyAdd> msg);    // post (callee releases)
@@ -9724,7 +9721,7 @@ int WorldService::FUN_141bc1720(MS2Ptr<Unk_WsE_FieldObject> obj)
     proxy->m_proxyId = obj->m_proxyId;
     proxy->m_fieldId = obj->m_id;
     proxy->m_owner = obj;
-    ::FUN_141bc9aa0(this, proxy);
+    FUN_141bc9aa0(reinterpret_cast<MS2Ptr<Unk_WsB_Notice>&>(proxy));   // registers the proxy (callee releases)
     obj->FUN_14169d0e0();
 
     Unk_WsE_NotifyAdd* note = (Unk_WsE_NotifyAdd*)::operator new(sizeof(Unk_WsE_NotifyAdd));
