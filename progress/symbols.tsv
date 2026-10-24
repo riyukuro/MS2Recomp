@@ -207895,7 +207895,7 @@ FUN_1423d9690	1423d9690	func
 ?GetAS3ObjectType@VMAbcFile@AS3@GFx@Scaleform@@MEBAPEBDXZ	142505e40	func
 ?GetAS3Root@AvmDisplayObj@AS3@GFx@Scaleform@@QEBAPEAVMovieRoot@234@XZ	142505ee0	func
 ?Sfr33AvmBitmapGetASClassName@AS3@GFx@Scaleform@@YAAEAVString@3@PEBXPEAV43@@Z	142505ef0	func
-?GetASClassName@AvmDisplayObj@AS3@GFx@Scaleform@@UEBAAEAVString@4@PEAV54@@Z	142505fa0	func
+?GetASClassName@AvmDisplayObj@AS3@GFx@Scaleform@@UEBAAEAVString@4@PEAV54@@Z	142505f20	func
 ?Sfr33AvmLoaderGetASClassName@AS3@GFx@Scaleform@@YAAEAVString@3@PEBXPEAV43@@Z	142505fa0	func
 ?Sfr33AvmStaticTextGetASClassName@AS3@GFx@Scaleform@@YAAEAVString@3@PEBXPEAV43@@Z	142505fd0	func
 ?FUN_142506000@@YA_NPEBVMovieRoot@AS3@GFx@Scaleform@@PEAVValue@234@PEBD@Z	142506000	func
@@ -207957,7 +207957,7 @@ FUN_1423d9690	1423d9690	func
 ?Sfr33SlotDataType@AS3@GFx@Scaleform@@YAPEAVTraits@ClassTraits@123@PEBVSlotInfo@123@PEAVVM@123@@Z	1425085b0	func
 ?GetDefaultASClassName@AvmDisplayObj@AS3@GFx@Scaleform@@UEBAPEBDXZ	142508910	func
 ?GetDefaultASClassName@AvmInteractiveObj@AS3@GFx@Scaleform@@UEBAPEBDXZ	142508930	func
-?GetDefaultASClassName@AvmDisplayObjContainer@AS3@GFx@Scaleform@@UEBAPEBDXZ	142508940	func
+?GetDefaultASClassName@AvmDisplayObjContainer@AS3@GFx@Scaleform@@UEBAPEBDXZ	142508920	func
 ?GetDefaultASClassName@AvmSprite@AS3@GFx@Scaleform@@UEBAPEBDXZ	142508950	func
 ?GetDefaultValueUnsafe@Object@AS3@GFx@Scaleform@@QEAAXAEAVValue@234@W4Hint@5234@@Z	142508bd0	func
 ?GetDescendants@XMLSupport@AS3@GFx@Scaleform@@UEBA?AVCheckResult@234@AEAVValue@234@AEBVMultiname@234@@Z	142509130	func
@@ -208388,10 +208388,10 @@ FUN_1423d9690	1423d9690	func
 ?ThrowURIError@VM@AS3@GFx@Scaleform@@QEAAXAEBVError@1234@@Z	14252f1f0	func
 ?ThrowUninitializedError@VM@AS3@GFx@Scaleform@@QEAAXAEBVError@1234@@Z	14252f200	func
 ?ThrowVerifyError@VM@AS3@GFx@Scaleform@@QEAAXAEBVError@1234@@Z	14252f210	func
-?ToAvmButttonBase@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAPEAVAvmButtonBase@34@XZ	14252f260	func
+?ToAvmButttonBase@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAPEAVAvmButtonBase@34@XZ	14252f250	func
 ?ToAvmInteractiveObjBase@AvmDisplayObjContainer@AS3@GFx@Scaleform@@UEAAPEAVAvmInteractiveObjBase@34@XZ	14252f360	func
-?ToAvmSpriteBase@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAPEAVAvmSpriteBase@34@XZ	14252f410	func
-?ToAvmTextFieldBase@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAPEAVAvmTextFieldBase@34@XZ	14252f490	func
+?ToAvmSpriteBase@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAPEAVAvmSpriteBase@34@XZ	14252f400	func
+?ToAvmTextFieldBase@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAPEAVAvmTextFieldBase@34@XZ	14252f480	func
 ?Sfr31ValueToBool@AS3@GFx@Scaleform@@YAXPEAVValue@123@@Z	14252f4f0	func
 ?ToInt32Value@Value@AS3@GFx@Scaleform@@QEAA?AVCheckResult@234@XZ	14252f670	func
 ?ToNumberValue@Value@AS3@GFx@Scaleform@@QEAA?AVCheckResult@234@XZ	14252f6d0	func
