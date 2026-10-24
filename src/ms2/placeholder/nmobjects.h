@@ -4351,7 +4351,16 @@ MS2_CHECK_SIZE(CNMTPATokenLoginFunc, 0x48);
 class CNMUserInfoEvent : public CNMEvent
 {
 public:
+    CNMUserInfoEvent(); // 0x1415b49d0
+    explicit CNMUserInfoEvent(const CNMRealUserInfo& data); // 0x1415b4a40
     virtual ~CNMUserInfoEvent() = default;
+    char* vfunc_8() override { return const_cast<char*>("CNMUserInfoEvent"); }
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMRealUserInfo m_28; // +0x28
 };
