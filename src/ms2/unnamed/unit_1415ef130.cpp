@@ -27,6 +27,11 @@ extern void* FUN_1415f3bc0(void*); extern void* FUN_1415f3bd0(void*);
 extern void* FUN_1415f3be0(void*); extern void* FUN_1415f3bf0(void*);
 extern void* FUN_1415f3c00(void*); extern void* FUN_1415f3c10(void*);
 extern void* FUN_1415f3c20(void*);
+extern void* FUN_1415f3c30(void*);
+extern void* FUN_141603500(void*); extern void* FUN_1416038c0(void*); extern void* FUN_141603900(void*);
+extern void FUN_1415d2670(void*); extern void FUN_1415d2690(void*);
+extern void* FUN_1415f3f50(void*);
+extern void* FUN_1415f3a30(void*); extern void* FUN_1415f3a50(void*);
 
 template <class Id, class Get, class Set, class First, class Last, class Range>
 static void* copy_nm_sequence(void* dst, void* src, Id id, Get get, Set set,
@@ -142,6 +147,43 @@ NM_COPY_FUNCTION(FUN_1415efa30, FUN_1415e1710, FUN_141601ff0, FUN_1416000f0, FUN
 NM_COPY_FUNCTION(FUN_1415efab0, FUN_1415e1720, FUN_141602030, FUN_141600120, FUN_141603ee0, FUN_141603920, FUN_1415e2270)
 
 #undef NM_COPY_FUNCTION
+
+// MS2-FUNCTIONAL: computes the recovered CNMChatRoomMemberInfo element address using its 0x220 stride.
+// @0x1415f38f0
+long long FUN_1415f38f0(void* p, long long index)
+{
+    return index * 0x220 + *static_cast<long long*>(FUN_141603500(p));
+}
+// MS2-FUNCTIONAL: computes the recovered CNMGuildListExInfo element address using its 0xf8 stride.
+// @0x1415f3920
+long long FUN_1415f3920(void* p, long long index)
+{
+    return index * 0xf8 + *static_cast<long long*>(FUN_1416038c0(p));
+}
+// MS2-FUNCTIONAL: computes the recovered CNMChatRoomInfoEx element address using its 0x490 stride.
+// @0x1415f3950
+long long FUN_1415f3950(void* p, long long index)
+{
+    return index * 0x490 + *static_cast<long long*>(FUN_141603900(p));
+}
+// MS2-FUNCTIONAL: returns the constant one as in the executable.
+// @0x1415f3a00
+unsigned char FUN_1415f3a00() { return 1; }
+// MS2-FUNCTIONAL: returns the first pointer-sized field plus the recovered 0x20 offset.
+// @0x1415f3aa0
+long long FUN_1415f3aa0(long long* p) { return *p + 0x20; }
+// MS2-FUNCTIONAL: performs the recovered helper call and returns no value.
+// @0x1415f3ac0
+void FUN_1415f3ac0(void* p) { (void)FUN_1415f3aa0(static_cast<long long*>(p)); }
+// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
+// @0x1415f3a60
+void FUN_1415f3a60(void* p) { FUN_1415d2670(FUN_1415f3a30(p)); }
+// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
+// @0x1415f3a80
+void FUN_1415f3a80(void* p) { FUN_1415d2690(FUN_1415f3a50(p)); }
+// MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
+// @0x1415f3ea0
+void FUN_1415f3ea0(void* p) { (void)FUN_1415f3c30(p); }
 
 // MS2-FUNCTIONAL: performs the recovered getter call; the returned value is intentionally discarded.
 // @0x1415f3c40
