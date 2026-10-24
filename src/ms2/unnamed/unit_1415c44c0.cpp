@@ -614,6 +614,24 @@ int FUN_1415c6330(void*, int value)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
+// MS2-FUNCTIONAL: retrieves local configuration and copies its bounded value on success.
+// @0x1415c63d0
+int FUN_1415c63d0(void*, unsigned int selector, void* out)
+{
+    CNMGetLocalConfigFunc request(selector);
+    if (!CNMManager::GetInstance()->CallNMFunc(&request)) return 0;
+    FUN_1415fbe70(out, 0x400, request.m_34);
+    return 1;
+}
+
+// MS2-FUNCTIONAL: changes local configuration with the recovered selector and value.
+// @0x1415c6490
+int FUN_1415c6490(void*, unsigned int selector, long long value)
+{
+    CNMChangeLocalConfigFunc request(selector, value);
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
 // @0x1415c46c0
 void FUN_1415c46c0()
 {
