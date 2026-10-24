@@ -1,4 +1,5 @@
-// Data unit (sfr22; groups 143a0acf8, 143ad4348 of work/sfr35/outside-units.tsv):
+// Data unit (sfr22; group 143a0acf8 of work/sfr35/outside-units.tsv; group 143ad4348, efd::kCAT_LocalMessage, is
+// functioncubeobject's own IMessage.h static):
 // exe globals of the .data blocks below that no recovered TU defines, initialized with the exe's values.
 // One definition per exe address (tools/datacheck.py checks address, size and initializer); the other names
 // users declare at an address are mapped to it with /alternatename. Class objects are byte images up to the
@@ -8,7 +9,6 @@
 // (docs/RECOVERY.md sec. 9).
 // MS2-UNIT: data_gb_tail
 // MS2-RANGE: 0x143a0acf8-0x143a0fc10 .data
-// MS2-RANGE: 0x143ad4348-0x143ad43a0 .bss
 
 #ifndef MS2_HOOK_DLL
 
@@ -959,10 +959,8 @@ alignas(8) Sd_143a0acf8 DAT_143a0acf8 = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
 };
-alignas(8) unsigned char DAT_143ad4348[0x58];                   // 0x143ad4348
 
 #pragma comment(linker, "/alternatename:?DAT_143a0acf8@@3VAssetID@efd@@A=?DAT_143a0acf8@@3USd_143a0acf8@@A")
-#pragma comment(linker, "/alternatename:?DAT_143ad4348@@3VCategory@efd@@A=?DAT_143ad4348@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_142db4cf0@@3PAEA=??_7AssetID@efd@@6B@")
 #pragma comment(linker, "/alternatename:?DAT_1430c3b26@@3PAEA=?kLVL2@ILogger@efd@@2EB")
 
