@@ -743,3 +743,18 @@ void CMasteryTable::SetInit(bool b)
 }
 // fx25: the 1-load GetCount look-alike; FUN_14066aa90 (and uimasterydialog's 0x140eb0da0) call 0x14066e7e0
 // MS2-PIN: ?GetCount@?$CAtlArray@V?$MS2Ptr@VCMasteryReceipe@@@@V?$CElementTraits@V?$MS2Ptr@VCMasteryReceipe@@@@@ATL@@@ATL@@QEBA_KXZ 0x14066e7e0
+// Full-executable aliases to the corresponding CMasteryTable routines already emitted in this unit.
+// MS2-PIN: ?IconPath@CMasteryReceipe@@QEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ 0x140669980
+// MS2-PIN: ?Receipes@CMasteryTable@@QEAAXHAEAV?$CAtlArray@V?$MS2Ptr@VCMasteryReceipe@@@@V?$CElementTraits@V?$MS2Ptr@VCMasteryReceipe@@@@@ATL@@@ATL@@@Z 0x14066aa90
+// MS2-PIN: ?Rewards@CMasteryTable@@QEAAXHHAEAV?$CAtlArray@V?$MS2Ptr@UItemEntity@@@@V?$CElementTraits@V?$MS2Ptr@UItemEntity@@@@@ATL@@@ATL@@@Z 0x14066b100
+// MS2-PIN: ?HasTypeIngredient@CMasteryTable@@QEAAHHH@Z 0x14066b910
+// MS2-PIN: ?SuccessDescription@CMasteryTable@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HHH@Z 0x14066c110
+// MS2-PIN: ?GradeName@CMasteryTable@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HH@Z 0x14066c690
+// MS2-PIN: ?FUN_140669980@Unk_MRec@@QEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ 0x140669980
+// MS2-PIN: ?FUN_14066aa90@Unk_MData@@QEAAXHAEAV?$CAtlArray@V?$MS2Ptr@VUnk_MRec@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_MRec@@@@@ATL@@@ATL@@@Z 0x14066aa90
+// MS2-PIN: ?FUN_14066b100@Unk_MData@@QEAAXHHAEAV?$CAtlArray@UItemEntity@@V?$CElementTraits@UItemEntity@@@ATL@@@ATL@@@Z 0x14066b100
+// MS2-PIN: ?FUN_14066b100@Unk_MmTable@@QEAAXHHAEAV?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@@Z 0x14066b100
+// MS2-PIN: ?FUN_14066b910@Unk_MData@@QEAAHHH@Z 0x14066b910
+// MS2-PIN: ?FUN_14066c110@Unk_MData@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HHH@Z 0x14066c110
+// MS2-PIN: ?FUN_14066c690@Unk_MData@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HH@Z 0x14066c690
+// MS2-PIN: ?FUN_14066c690@Unk_SSGMastery@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HH@Z 0x14066c690
