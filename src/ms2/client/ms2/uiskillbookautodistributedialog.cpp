@@ -2334,3 +2334,11 @@ int UISkillBookTreeDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca8460-0x142ca85a0 .text$yd
+// Full-executable aliases for existing skill-book dialog helpers.
+// MS2-PIN: ?RefreshSlotsIfShown@UISkillBookTreeDialog@@QEAAXXZ 0x140ec8220
+// MS2-PIN: ??0UISkillBookTreeDialog@@QEAA@XZ 0x140ec4e50
+// MS2-PIN: ?Invoke@AScript@@QEAA?AVValue@GFx@Scaleform@@PEBDV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@1H@Z 0x140ed1090
+// MS2-PIN: ?FUN_140ec8220@Unk_SSGDlg4f2d@@QEAAXXZ 0x140ec8220
+// MS2-PIN: ?FUN_140ec4e50@@YAPEAVUIDialog@@PEAX@Z 0x140ec4e50
+// MS2-PIN: ?FUN_140ed1090@Unk_RmScript@@QEAA?AVValue@GFx@Scaleform@@PEBDV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@1H@Z 0x140ed1090
+// MS2-PIN: ?FUN_140ed1090@Unk_MiScript@@QEAA?AVValue@GFx@Scaleform@@PEBDV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@1_N@Z 0x140ed1090
