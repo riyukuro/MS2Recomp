@@ -9837,3 +9837,4 @@ DAT_143b27c40	143b27c40	data
 ?MakeXMLListInstance@XMLList@fl@Instances@AS3@GFx@Scaleform@@QEAA?AV?$Pickable@VXMLList@fl@Instances@AS3@GFx@Scaleform@@@6@AEBVMultiname@456@@Z	14241b190	func
 ?MakeInstanceText@XML@fl@InstanceTraits@AS3@GFx@Scaleform@@QEAA?AV?$Pickable@VXMLText@fl@Instances@AS3@GFx@Scaleform@@@6@AEAV123456@AEBVStringDataPtr@6@PEAV12Instances@456@@Z	14241b850	func
 ??0DrawableImageContext@Render@Scaleform@@QEAA@PEAVContext@ContextImpl@12@PEAVThreadCommandQueue@12@AEBUInterfaces@12@@Z	1425e9b10	func
+??1GASRefCountBase@AS3@GFx@Scaleform@@UEAA@XZ	1424de190	func
