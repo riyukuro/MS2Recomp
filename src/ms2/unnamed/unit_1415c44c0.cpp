@@ -268,6 +268,19 @@ unsigned char* FUN_1415c4f50(void*, unsigned char* out)
     return out;
 }
 
+// MS2-FUNCTIONAL: dispatches a security question query and copies the response into its output buffer.
+// @0x1415c4e90
+unsigned char* FUN_1415c4e90(void*, unsigned char* out, void*)
+{
+    CNMGetSecurityQuestionFunc request;
+    if (!CNMManager::GetInstance()->CallNMFunc(&request)) {
+        if (out) *out = 0;
+        return nullptr;
+    }
+    FUN_1415fbe70(out, 0x400, FUN_1415f39e0(&request.m_30));
+    return out;
+}
+
 // MS2-FUNCTIONAL: queries the NX hardware identifier and copies the recovered 0x40-byte result.
 // @0x1415c5010
 unsigned char* FUN_1415c5010(void*, unsigned char* out)
@@ -710,3 +723,4 @@ void FUN_1415cd010() {}
 // MS2-PIN: ?FUN_1415c4bb0@@YAPEAEPEAXPEAE@Z 0x1415c4bb0
 // MS2-PIN: ?FUN_1415c4da0@@YAPEAEPEAXPEAE@Z 0x1415c4da0
 // MS2-PIN: ?FUN_1415c7ba0@@YAHPEAXPEBDH@Z 0x1415c7ba0
+// MS2-PIN: ?FUN_1415c4e90@@YAPEAEPEAXPEAE0@Z 0x1415c4e90
