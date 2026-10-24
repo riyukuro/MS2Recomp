@@ -3155,6 +3155,12 @@ class CNMGetSecurityQuestionFunc : public CNMFunc
 public:
     CNMGetSecurityQuestionFunc(); // 0x141585390
     virtual ~CNMGetSecurityQuestionFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMStr<0x400> m_30; // +0x30
 };
