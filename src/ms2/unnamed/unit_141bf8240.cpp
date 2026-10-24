@@ -77,3 +77,40 @@ void Unk_BiAnchor()
     std::reverse_iterator<Unk_BiMap<10>::type::iterator> rit10;
     Unk_BiRev<10>(rit10);
 }
+
+// MSVC's map iterator points at a tree node. The node stores left/parent/right at +0/+8/+0x10 and the nil byte at
+// +0x19. Advancing visits the leftmost node in the right subtree, or climbs until the current node leaves a right
+// edge; this is shared by the property-map and field-object map iterator views.
+struct Unk_BiNode
+{
+    Unk_BiNode* left;
+    Unk_BiNode* parent;
+    Unk_BiNode* right;
+    unsigned char color;
+    unsigned char isNil;
+};
+static void Unk_BiAdvance(void* self)
+{
+    Unk_BiNode*& node = *reinterpret_cast<Unk_BiNode**>(self);
+    if (!node->right->isNil)
+    {
+        node = node->right;
+        while (!node->left->isNil) node = node->left;
+    }
+    else
+    {
+        Unk_BiNode* parent = node->parent;
+        while (!parent->isNil && node == parent->right)
+        {
+            node = parent;
+            parent = parent->parent;
+        }
+        node = parent;
+    }
+}
+// MS2-FUNCTIONAL: increment the property-map iterator using the standard MSVC red-black tree successor walk.
+// @0x141bf86a0
+void FUN_141bf86a0(void* it) { Unk_BiAdvance(it); }
+// MS2-FUNCTIONAL: increment the second WorldService tree iterator with the same node layout and successor walk.
+// @0x141bf8700
+void FUN_141bf8700(void* it) { Unk_BiAdvance(it); }
