@@ -12,6 +12,10 @@
 // MS2-RANGE: 0x1423729e0-0x142372b90 .text$mn
 // MS2-RANGE: 0x142372d60-0x142372f10 .text$mn
 // MS2-RANGE: 0x142372f20-0x1423730d1 .text$mn
+// MS2-RANGE: 0x14235a130-0x14235a27d .text$mn
+// MS2-RANGE: 0x14235c730-0x14235ca92 .text$mn
+// MS2-RANGE: 0x14235c2d0-0x14235c6a9 .text$mn
+// MS2-RANGE: 0x14237bef0-0x14237c166 .text$mn
 // MS2-RANGE: 0x1423770a0-0x1423772e3 .text$mn
 // MS2-RANGE: 0x1423772f0-0x142377533 .text$mn
 // MS2-RANGE: 0x1423798d0-0x142379af4 .text$mn
@@ -24,6 +28,8 @@
 #include <new>
 
 #include <string>
+#include <istream>
+#include <ostream>
 std::string* FUN_1401d2620(std::string* dst, const char* src);   // std::string(const char*)
 extern const char DAT_14311c1e0[];
 extern const char DAT_14311c638[];
@@ -305,4 +311,197 @@ extern int DAT_143b10184;   // CryptoPP cached CPU feature value (cache line siz
 int FUN_142353790()
 {
     return DAT_143b10184;
+}
+
+// std::ws<char>(std::istream&): the STL's own instantiation (skip leading whitespace; used by Crypto++ Integer text parsing)
+// MS2-FUNCTIONAL: inlined STL stream code calls dllimported msvcp140 functions, so the instantiation cannot byte-match
+// MS2-PIN: ??$ws@DU?$char_traits@D@std@@@std@@YAAEAV?$basic_istream@DU?$char_traits@D@std@@@0@AEAV10@@Z 0x14235a130
+template std::istream& std::ws<char, std::char_traits<char> >(std::istream&);
+
+namespace CryptoPP
+{
+void* UnalignedAllocate(size_t size);
+void UnalignedDeallocate(void* p);
+struct PolynomialMod2
+{
+    void* vptr;
+    size_t m_size;       // 64-bit words
+    unsigned long long* m_ptr;
+    unsigned BitCount() const;
+    bool GetBit(unsigned n) const { return (n >> 6) < m_size ? ((m_ptr[n >> 6] >> (n & 63)) & 1) != 0 : false; }
+    bool IsZero() const
+    {
+        for (size_t i = 0; i < m_size; ++i)
+            if (m_ptr[i])
+                return false;
+        return true;
+    }
+};
+}
+
+// MS2-FUNCTIONAL: same text output (base from ios flags, digit grouping, suffix); register allocation and the inlined STL flag reads differ
+// operator<<(std::ostream&, const PolynomialMod2&): bit string in binary/octal/hex groups with a b/o/h suffix
+// @0x14237bef0
+std::ostream& FUN_14237bef0(std::ostream& out, const CryptoPP::PolynomialMod2& a)
+{
+    unsigned bits, block;
+    char suffix;
+    switch (out.flags() & std::ios::basefield)
+    {
+    case std::ios::oct: bits = 3; block = 4; suffix = 'o'; break;
+    case std::ios::hex: bits = 4; block = 2; suffix = 'h'; break;
+    default:            bits = 1; block = 8; suffix = 'b'; break;
+    }
+    if (a.IsZero())
+        return out << '0' << suffix;
+    size_t n = a.BitCount() / bits + 1;
+    char* s = static_cast<char*>(CryptoPP::UnalignedAllocate(n));
+    const char* vec = (out.flags() & std::ios::uppercase) ? "0123456789ABCDEF" : "0123456789abcdef";
+    unsigned i = 0;
+    for (; i * bits < a.BitCount(); i++)
+    {
+        unsigned digit = 0;
+        for (unsigned j = 0; j < bits; j++)
+            digit |= static_cast<unsigned>(a.GetBit(i * bits + j)) << j;
+        s[i] = vec[digit];
+    }
+    while (i--)
+    {
+        out << s[i];
+        if (i && (i % block) == 0)
+            out << ',';
+    }
+    std::ostream& r = out << suffix;
+    for (size_t k = 0; k < n; ++k)
+        s[k] = 0;
+    CryptoPP::UnalignedDeallocate(s);
+    return r;
+}
+
+CppInteger* FUN_14235adf0(CppInteger* self, const CppInteger* t);                       // Integer(const Integer&)
+CppInteger* FUN_14235b7f0(CppInteger* self);                                            // Integer()
+unsigned long long FUN_142366480(unsigned long long* remainder, CppInteger* quotient, const CppInteger* dividend, unsigned long long divisor);  // Integer::Divide(word&, Integer&, const Integer&, word)
+
+static size_t CppIntegerWords(const CppInteger& v)
+{
+    size_t n = v.m_size;
+    while (n && v.m_ptr[n - 1] == 0)
+        --n;
+    return n;
+}
+
+static unsigned CppIntegerBitCount(const CppInteger& v)
+{
+    size_t n = CppIntegerWords(v);
+    if (!n)
+        return 0;
+    unsigned bits = 0;
+    for (unsigned long long top = v.m_ptr[n - 1]; top; top >>= 1)
+        ++bits;
+    return static_cast<unsigned>((n - 1) * 64) + bits;
+}
+
+static void CppIntegerSwap(CppInteger& x, CppInteger& y)
+{
+    char tmp[sizeof(x.alloc)];
+    for (size_t i = 0; i < sizeof(tmp); ++i) { tmp[i] = x.alloc[i]; x.alloc[i] = y.alloc[i]; y.alloc[i] = tmp[i]; }
+    size_t sz = x.m_size; x.m_size = y.m_size; y.m_size = sz;
+    unsigned long long* p = x.m_ptr; x.m_ptr = y.m_ptr; y.m_ptr = p;
+    int sg = x.sign; x.sign = y.sign; y.sign = sg;
+}
+
+// MS2-FUNCTIONAL: same text output (base from ios flags, repeated word division, digit buffer); our member layout/inlining of the Integer helpers differs
+// operator<<(std::ostream&, const Integer&): decimal ('.' suffix), octal ('o') or hex ('h') digits
+// @0x14235c730
+std::ostream& FUN_14235c730(std::ostream& out, const CppInteger& a)
+{
+    unsigned base;
+    char suffix;
+    switch (out.flags() & std::ios::basefield)
+    {
+    case std::ios::oct: base = 8; suffix = 'o'; break;
+    case std::ios::hex: base = 16; suffix = 'h'; break;
+    default:            base = 10; suffix = '.'; break;
+    }
+    CppInteger temp1;
+    FUN_14235adf0(&temp1, &a);
+    CppInteger temp2;
+    FUN_14235b7f0(&temp2);
+    if (a.sign == 1)
+    {
+        out << '-';
+        if (CppIntegerWords(temp1) != 0)
+            temp1.sign = 1 - temp1.sign;
+    }
+    if (a.sign != 1 && CppIntegerWords(a) == 0)
+        out << '0';
+    unsigned bitsPerDigit = 0;
+    for (unsigned b = base; b; b >>= 1)
+        ++bitsPerDigit;
+    size_t n = CppIntegerBitCount(a) / (bitsPerDigit - 1) + 1;
+    char* s = static_cast<char*>(CryptoPP::UnalignedAllocate(n));
+    const char* vec = (out.flags() & std::ios::uppercase) ? "0123456789ABCDEF" : "0123456789abcdef";
+    unsigned i = 0;
+    while (temp1.sign == 1 || CppIntegerWords(temp1) != 0)
+    {
+        unsigned long long digit;
+        FUN_142366480(&digit, &temp2, &temp1, base);
+        s[i++] = vec[digit];
+        CppIntegerSwap(temp1, temp2);
+    }
+    while (i--)
+        out << s[i];
+    std::ostream& r = out << suffix;
+    for (size_t k = 0; k < n; ++k)
+        s[k] = 0;
+    CryptoPP::UnalignedDeallocate(s);
+    return r;
+}
+
+CppInteger* FUN_142359280(CppInteger* out, const char* str);                            // Integer(const char*)
+CppInteger* FUN_14235c230(CppInteger* self, const CppInteger* t);                       // Integer::operator=
+
+static bool CppIsIntegerTextChar(char c)
+{
+    return c == '-' || c == 'x' || (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F') || c == 'h' || c == 'H' ||
+           c == 'o' || c == 'O' || c == ',' || c == '.';
+}
+
+// MS2-FUNCTIONAL: same token scan and parse; the exe inlines the Integer constructor's one-time multiply-function-pointer setup and the SecBlock growth
+// operator>>(std::istream&, Integer&): read a run of integer-text characters, parse them and assign
+// @0x14235c2d0
+std::istream& FUN_14235c2d0(std::istream& in, CppInteger& a)
+{
+    size_t cap = 16;
+    char* str = static_cast<char*>(CryptoPP::UnalignedAllocate(cap));
+    unsigned length = 0;
+    char c;
+    std::ws(in);
+    do
+    {
+        in.read(&c, 1);
+        str[length++] = c;
+        if (length >= cap)
+        {
+            size_t newCap = length + 16;
+            char* grown = static_cast<char*>(CryptoPP::UnalignedAllocate(newCap));
+            for (size_t i = 0; i < cap; ++i)
+                grown[i] = str[i];
+            for (size_t i = 0; i < cap; ++i)
+                str[i] = 0;
+            CryptoPP::UnalignedDeallocate(str);
+            str = grown;
+            cap = newCap;
+        }
+    } while (in.good() && CppIsIntegerTextChar(c));
+    if (in.gcount())
+        in.putback(c);
+    str[length - 1] = '\0';
+    CppInteger value;
+    FUN_142359280(&value, str);
+    FUN_14235c230(&a, &value);
+    for (size_t i = 0; i < cap; ++i)
+        str[i] = 0;
+    CryptoPP::UnalignedDeallocate(str);
+    return in;
 }

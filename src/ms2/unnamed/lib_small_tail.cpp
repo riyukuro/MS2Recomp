@@ -4,6 +4,8 @@
 // MS2-UNIT: lib_small_tail
 // MS2-RANGE: 0x14225bf20-0x14225bf40 .text$mn
 // MS2-RANGE: 0x1423c5740-0x1423c5808 .text$mn
+// MS2-RANGE: 0x1423a7330-0x1423a7350 .text$mn
+// MS2-RANGE: 0x142702350-0x142702fa9 .text$mn
 // MS2-RANGE: 0x142703c80-0x142703cd7 .text$mn
 // MS2-RANGE: 0x142703ce0-0x142703d0c .text$mn
 // MS2-RANGE: 0x142707ce0-0x142707da5 .text$mn
@@ -22,6 +24,18 @@ void FUN_1421e5c10(lua_State* L, const char* libname, const luaL_Reg* l);       
 int FUN_14225bf20(lua_State* L)
 {
     FUN_1421e5c10(L, DAT_1430f5f38, DAT_1430fe2b0);
+    return 1;
+}
+
+// second Lua 5.1 copy's luaopen_debug (own luaL_register / debug function table)
+extern const luaL_Reg DAT_143134480[];                                          // debug library function table
+extern const char DAT_1431323f8[];                                              // "debug"
+void FUN_142394d40(lua_State* L, const char* libname, const luaL_Reg* l);       // luaL_register
+
+// @0x1423a7330  luaopen_debug (twin)
+int FUN_1423a7330(lua_State* L)
+{
+    FUN_142394d40(L, DAT_1431323f8, DAT_143134480);
     return 1;
 }
 
@@ -149,3 +163,108 @@ void FUN_142707ce0(PngStructLite* png, int ret)
 #ifdef __clang__
 #pragma clang optimize on
 #endif
+
+// libjpeg jidctflt.c jpeg_idct_float: dequantize + 8x8 float IDCT (AA&N), range-limited output
+struct JpegDecompressLite { char pad[0x188]; const unsigned char* sample_range_limit; };
+struct JpegComponentLite { char pad[0x58]; const float* dct_table; };
+
+// DESCALE(x, 3) & RANGE_MASK of the float result
+static __forceinline unsigned JpegDescale(float v)
+{
+    long long i = static_cast<long long>(v);
+    return static_cast<unsigned>((i + 4) >> 3) & 0x3ff;
+}
+
+// MS2-FUNCTIONAL: same AA&N arithmetic as jidctflt.c; SSE register allocation and loop unrolling differ
+// @0x142702350
+void FUN_142702350(JpegDecompressLite* cinfo, JpegComponentLite* compptr, short* coef_block, unsigned char** output_buf, unsigned int output_col)
+{
+    float workspace[64];
+    const unsigned char* range_limit = cinfo->sample_range_limit + 128;
+    const float* quantptr = compptr->dct_table;
+    float* wsptr = workspace;
+    short* inptr = coef_block;
+    for (int ctr = 8; ctr > 0; --ctr)
+    {
+        if (inptr[8] == 0 && inptr[16] == 0 && inptr[24] == 0 && inptr[32] == 0 && inptr[40] == 0 && inptr[48] == 0 && inptr[56] == 0)
+        {
+            float dcval = (float)inptr[0] * quantptr[0];
+            for (int r = 0; r < 8; ++r)
+                wsptr[8 * r] = dcval;
+        }
+        else
+        {
+            float tmp0 = (float)inptr[0] * quantptr[0];
+            float tmp1 = (float)inptr[16] * quantptr[16];
+            float tmp2 = (float)inptr[32] * quantptr[32];
+            float tmp3 = (float)inptr[48] * quantptr[48];
+            float tmp10 = tmp0 + tmp2;
+            float tmp11 = tmp0 - tmp2;
+            float tmp13 = tmp1 + tmp3;
+            float tmp12 = (tmp1 - tmp3) * 1.414213562f - tmp13;
+            tmp0 = tmp10 + tmp13;
+            tmp3 = tmp10 - tmp13;
+            tmp1 = tmp11 + tmp12;
+            tmp2 = tmp11 - tmp12;
+            float tmp4 = (float)inptr[8] * quantptr[8];
+            float tmp5 = (float)inptr[24] * quantptr[24];
+            float tmp6 = (float)inptr[40] * quantptr[40];
+            float tmp7 = (float)inptr[56] * quantptr[56];
+            float z13 = tmp6 + tmp5;
+            float z10 = tmp6 - tmp5;
+            float z11 = tmp4 + tmp7;
+            float z12 = tmp4 - tmp7;
+            tmp7 = z11 + z13;
+            tmp11 = (z11 - z13) * 1.414213562f;
+            float z5 = (z10 + z12) * 1.847759065f;
+            tmp10 = 1.082392200f * z12 - z5;
+            tmp12 = -2.613125930f * z10 + z5;
+            tmp6 = tmp12 - tmp7;
+            tmp5 = tmp11 - tmp6;
+            tmp4 = tmp10 - tmp5;
+            wsptr[0] = tmp0 + tmp7;
+            wsptr[56] = tmp0 - tmp7;
+            wsptr[8] = tmp1 + tmp6;
+            wsptr[48] = tmp1 - tmp6;
+            wsptr[16] = tmp2 + tmp5;
+            wsptr[40] = tmp2 - tmp5;
+            wsptr[32] = tmp3 + tmp4;
+            wsptr[24] = tmp3 - tmp4;
+        }
+        ++inptr; ++quantptr; ++wsptr;
+    }
+    wsptr = workspace;
+    for (int ctr = 0; ctr < 8; ++ctr)
+    {
+        unsigned char* outptr = output_buf[ctr] + output_col;
+        float tmp10 = wsptr[0] + wsptr[4];
+        float tmp11 = wsptr[0] - wsptr[4];
+        float tmp13 = wsptr[2] + wsptr[6];
+        float tmp12 = (wsptr[2] - wsptr[6]) * 1.414213562f - tmp13;
+        float tmp0 = tmp10 + tmp13;
+        float tmp3 = tmp10 - tmp13;
+        float tmp1 = tmp11 + tmp12;
+        float tmp2 = tmp11 - tmp12;
+        float z13 = wsptr[5] + wsptr[3];
+        float z10 = wsptr[5] - wsptr[3];
+        float z11 = wsptr[1] + wsptr[7];
+        float z12 = wsptr[1] - wsptr[7];
+        float tmp7 = z11 + z13;
+        tmp11 = (z11 - z13) * 1.414213562f;
+        float z5 = (z10 + z12) * 1.847759065f;
+        tmp10 = 1.082392200f * z12 - z5;
+        tmp12 = -2.613125930f * z10 + z5;
+        float tmp6 = tmp12 - tmp7;
+        float tmp5 = tmp11 - tmp6;
+        float tmp4 = tmp10 - tmp5;
+        outptr[0] = range_limit[JpegDescale(tmp0 + tmp7)];
+        outptr[7] = range_limit[JpegDescale(tmp0 - tmp7)];
+        outptr[1] = range_limit[JpegDescale(tmp1 + tmp6)];
+        outptr[6] = range_limit[JpegDescale(tmp1 - tmp6)];
+        outptr[2] = range_limit[JpegDescale(tmp2 + tmp5)];
+        outptr[5] = range_limit[JpegDescale(tmp2 - tmp5)];
+        outptr[4] = range_limit[JpegDescale(tmp3 + tmp4)];
+        outptr[3] = range_limit[JpegDescale(tmp3 - tmp4)];
+        wsptr += 8;
+    }
+}

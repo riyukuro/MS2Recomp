@@ -5,6 +5,9 @@
 // MS2-RANGE: 0x142787270-0x142787313 .text$mn
 // MS2-RANGE: 0x14278bcd0-0x14278bd73 .text$mn
 // MS2-RANGE: 0x14279ff00-0x14279ff2b .text$mn
+// MS2-RANGE: 0x14278c4a0-0x14278c5a9 .text$mn
+// MS2-RANGE: 0x14278c5b0-0x14278c6b9 .text$mn
+// MS2-RANGE: 0x14278c6c0-0x14278c7c9 .text$mn
 // MS2-RANGE: 0x1427a54a0-0x1427a54c5 .text$mn
 // MS2-RANGE: 0x1427a54d0-0x1427a552f .text$mn
 // MS2-RANGE: 0x1427a9550-0x1427a95f3 .text$mn
@@ -442,3 +445,76 @@ bool FUN_14279ff00(void** self)
     void** obj = (void**)self[-1];
     return ((bool (*)(void*))(*(void***)obj)[1])(obj);
 }
+
+// CefStringBase<CefStringTraitsUTF16> (vptr, cef_string_t*, owns-flag) built from the userfree string a C struct getter returns
+struct cef_string_t { const unsigned short* str; size_t length; void (*dtor)(unsigned short*); };
+extern "C" int cef_string_utf16_set(const unsigned short* src, size_t src_len, cef_string_t* output, int copy);
+extern "C" void cef_string_utf16_clear(cef_string_t* str);
+extern const void* const DAT_142e1af88[];   // CefStringBase<CefStringTraitsUTF16> vftable
+struct CefString16
+{
+    const void* const* vt;
+    cef_string_t* str;
+    bool owner;
+    ~CefString16()
+    {
+        if (str && owner)
+        {
+            cef_string_utf16_clear(str);
+            operator delete(str, sizeof(cef_string_t));
+        }
+    }
+};
+void* operator new(size_t size);
+void FUN_14277e6e0(CefString16* s, cef_string_t* userfree);   // AttachToUserFree
+
+static __forceinline CefString16* CefStringFromUserFree(CefString16* out, cef_string_t* userfree)
+{
+    CefString16 tmp;
+    tmp.vt = DAT_142e1af88;
+    tmp.str = nullptr;
+    tmp.owner = false;
+    FUN_14277e6e0(&tmp, userfree);
+    out->vt = DAT_142e1af88;
+    out->str = nullptr;
+    out->owner = false;
+    if (tmp.str && tmp.str->str && tmp.str->length)
+    {
+        cef_string_t* copy = static_cast<cef_string_t*>(operator new(sizeof(cef_string_t)));
+        copy->str = nullptr; copy->length = 0; copy->dtor = nullptr;
+        out->str = copy;
+        out->owner = true;
+        cef_string_utf16_set(tmp.str->str, tmp.str->length, copy, 1);
+    }
+    return out;
+}
+
+struct CefV8ExceptionStruct { size_t size; void* base[3]; void* (*fns[16])(void*); };
+struct CefV8ExceptionCToCpp { char pad[8]; };
+
+static __forceinline CefString16* CefCallStringGetter(char* self, CefString16* out, size_t minSize, size_t offset)
+{
+    size_t* cs = *reinterpret_cast<size_t**>(self - 8);
+    if (cs[0] >= minSize)
+    {
+        auto fn = reinterpret_cast<cef_string_t* (*)(void*)>(cs[offset / 8]);
+        if (fn)
+            return CefStringFromUserFree(out, fn(cs));
+    }
+    out->vt = DAT_142e1af88;
+    out->str = nullptr;
+    out->owner = false;
+    return out;
+}
+
+// MS2-FUNCTIONAL: same size check, getter call, copy and cleanup; the exe also tracks the returned CefString for unwinding (more EH states)
+// @0x14278c4a0
+CefString16* FUN_14278c4a0(char* self, CefString16* out) { return CefCallStringGetter(self, out, 0x28, 0x20); }
+
+// MS2-FUNCTIONAL: same size check, getter call, copy and cleanup; the exe also tracks the returned CefString for unwinding (more EH states)
+// @0x14278c5b0
+CefString16* FUN_14278c5b0(char* self, CefString16* out) { return CefCallStringGetter(self, out, 0x38, 0x30); }
+
+// MS2-FUNCTIONAL: same size check, getter call, copy and cleanup; the exe also tracks the returned CefString for unwinding (more EH states)
+// @0x14278c6c0
+CefString16* FUN_14278c6c0(char* self, CefString16* out) { return CefCallStringGetter(self, out, 0x30, 0x28); }
