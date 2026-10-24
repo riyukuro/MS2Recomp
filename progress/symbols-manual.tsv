@@ -213,7 +213,6 @@
 ?UpdateEffectsDownward@NiNode@@UEAAXPEAVNiDynamicEffectState@@@Z	141d1c3f0	func
 ?ms_RTTI@NiNode@@2VNiRTTI@@B	143afa4d8	data
 ??0Unk_LUNHolder@@QEAA@PEAX@Z	1401cd100	func
-
 # rx1 networkservice: exe globals and CBufferCryptManager ctor.
 ?DAT_1439f4a84@@3HA	1439f4a84	data
 ?DAT_1439f4a88@@3HA	1439f4a88	data
@@ -709,7 +708,6 @@
 ?DAT_143ab2830@@3IA	143ab2830	data
 ?DAT_143ab284b@@3EA	143ab284b	data
 ?DAT_143ab285c@@3HA	143ab285c	data
-
 # a3 partymanager: typed callee bindings, verified from callsites and decompilation.
 ??0Unk_PartyCounters@@QEAA@XZ	140268010	func
 ??0CPartyMember@@QEAA@H@Z	141637930	func
@@ -3829,9 +3827,6 @@ __imp_NxGetUtilLib	142cced28	data
 ?RefreshMyShop@UIMeratMarketDialog@@QEAAXXZ	1412eef70	func
 ?OnAskMoveToModelHouse@UIMeratMarketDialog@@QEAA_NHAEBVCMsgBoxData@@@Z	1413065c0	func
 ?OnRightClickSeller@UIMeratMarketDialog@@QEAAXAEAVASData@@@Z	141304060	func
-??0CWinHttpClient@@QEAA@AEBV?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@std@@@Z	1409208e0	func
-??0Unk_GdXmlRoot@@QEAA@PEBD@Z	14086f2f0	func
-??1Unk_GdXmlRoot@@QEAA@XZ	14086f450	func
 ??1?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@QEAA@XZ	140c4de90	func
 ??4?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@QEAAAEAV0@AEBV0@@Z	140c4e0d0	func
 ?BuildSellerRow@UIMeratMarketDialog@@QEAAHAEAVASObj@@V?$MS2Ptr@VCUgcMarketSeller@@@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	1412ef960	func
@@ -3962,7 +3957,6 @@ DAT_143ae2b38	143ae2b38	data
 ?DAT_143b0dc28@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A	143b0dc28	data
 ?DAT_143b0dc30@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A	143b0dc30	data
 ?ms_pSingleton@?$SingletonClass@VUniqueSwfIDCreator@@@@2PEAVUniqueSwfIDCreator@@EA	143b0d2d8	data
-DAT_143ae2b38	143ae2b38	data
 ??0EntityFactoryRequest@egf@@QEAA@AEBVutf8string@efd@@AEBVCategory@3@AEBVEntityID@1@0_N333@Z	142171090	func
 ?kERR3@ILogger@efd@@2EB	1430c3b23	data
 ?DAT_143abb058@@3PEAVUISwfEntityManager@@EA	143abb058	data
@@ -8192,15 +8186,6 @@ compress2	142724100	func
 ??0TimeHolder@Date@fl@Instances@AS3@GFx@Scaleform@@QEAA@NN@Z	1423ef290	func
 ?DateWeekDayNames@fl@Instances@AS3@GFx@Scaleform@@3PAPEBDA	143a2a810	data
 ?DateMonthNames@fl@Instances@AS3@GFx@Scaleform@@3PAPEBDA	143a2a850	data
-?GetTypeName@UIHudEntity@@UEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	140f496f0	func
-?GetTypeName@UIItemModifyDialogBase@@UEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	1419234e0	func
-?GetTypeName@UIDialog@@UEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	1419234e0	func
-?GetTypeName@NotifyKillPlayer@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db5220	func
-?GetTypeName@NotifyChangedTokenMoney@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db4610	func
-?GetTypeName@NotifyActiveMyCodiTab@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db4cd0	func
-?GetTypeName@NotifyOpenDialogByScene@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db51c0	func
-?GetTypeName@NotifyUseSKill@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db4670	func
-?GetTypeName@NotifyUgcDownloadComplete@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db4250	func
 ?vfunc_1@UIHudEntity@@UEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	140f496f0	func
 ?vfunc_1@UIItemModifyDialogBase@@UEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	1419234e0	func
 ?vfunc_1@UIDialog@@UEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	1419234e0	func
@@ -8316,7 +8301,6 @@ compress2	142724100	func
 ?g_143b01a60@@3UVector3@@B	143b01a60	data
 ?g_143a08ce8@@3UVector3@@B	143a08ce8	data
 ?g_143a08cf8@@3UVector3@@B	143a08cf8	data
-?DAT_143b01a60@@3UVector3@@A	143b01a60	data
 ??0Vector3@@QEAA@XZ	1402bd040	func
 ??4Vector3@@QEAAAEAU0@AEBU0@@Z	140194470	func
 ??0Unk_PtVec3@@QEAA@AEBUVector3@@@Z	14027dcf0	func
@@ -8478,8 +8462,6 @@ DAT_1431b9820	1431b9820	data
 ?PTR_LAB_1431b5e18@@3PEAXEA	1431b5e18	data
 ?PTR_FUN_1431b5e20@@3PEAXEA	1431b5e20	data
 ?PTR_s_attachVideo_1431b5800@@3PEAXEA	1431b5800	data
-?PTR_LAB_1431b6540@@3PEAXEA	1431b6540	data
-?PTR_LAB_1431b65f0@@3PEAXEA	1431b65f0	data
 ?PTR_LAB_1431b67d0@@3PEAXEA	1431b67d0	data
 ?PTR_LAB_1431b6740@@3PEAXEA	1431b6740	data
 ?PTR_LAB_1431b5fb0@@3PEAXEA	1431b5fb0	data
@@ -11544,24 +11526,6 @@ DAT_143b05550	143b05550	data
 ?DAT_1428fbb80@@3PAEA	1428fbb80	data
 ?DAT_1428fbc40@@3PAEA	1428fbc40	data
 ?DAT_1428fbc50@@3PAEA	1428fbc50	data
-?Unk_IsFinite@@YA_NAEBVPoint3@efd@@@Z	140a33ff0	func
-?Unk_Acos@@YAMM@Z	140a34650	func
-?BrushService@@YAPEAVDecoEditService@@XZ	1411987a0	func
-?NpcConstantValue@@YAIPEAU?$Unk_NpcConstant@I@@@Z	140a7d630	func
-?Unk_SetBoxInt@@YAXPEAVCMsgBoxData@@PEBDH@Z	140dd6030	func
-?Unk_SetBoxUInt@@YAXPEAVCMsgBoxData@@PEBDI@Z	140dd6110	func
-?Unk_SetBoxString@@YAXPEAVCMsgBoxData@@PEBDV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	140dd61f0	func
-?Unk_SetBoxInt64@@YAXPEAVCMsgBoxData@@PEBD_J@Z	140dd62f0	func
-?Unk_SetBoxBool@@YAXPEAVCMsgBoxData@@PEBD_N@Z	140dd63d0	func
-?Unk_ArcWide@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WH@Z	140efe330	func
-?CameraMgrMoveTo@@YAXPEAVCameraMgr@@UVector3@@@Z	1418df360	func
-?FindTimerDialog@@YAPEAVUITriggerTimerDialog@@H@Z	140ee6300	func
-?GetAchieveName@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAVCAchieveData@@@Z	140159490	func
-?ContainsId@@YA_NAEAV?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@I@Z	1402a9ca0	func
-?Unk_RandomStep@@YAHPEAH@Z	140768600	func
-?LoadXml@@YAHAEAVTiXmlDocument@@PEBD@Z	1407ef260	func
-?DocRootElement@@YAPEAVUnk_140165cf0@@PEAVTiXmlDocument@@@Z	14081b310	func
-??$FindElement@H@Common@@YAHAEBV?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@AEBH@Z	1402bacf0	func
 ?DAT_143a2d3b0@@3PEBDEB	143a2d3b0	data
 ?DAT_143a2d3b8@@3PEBDEB	143a2d3b8	data
 ?DAT_143a2d3c0@@3PEBDEB	143a2d3c0	data
@@ -14656,3 +14620,7 @@ DAT_1439f8358	1439f8358	data
 ?SetOpenURLTimeout@VideoProviderNetStream@AS3@GFx@Scaleform@@QEAAXM@Z	1400254e0	func
 ?SetReloadThresholdTime@VideoProviderNetStream@AS3@GFx@Scaleform@@QEAAXM@Z	1400254b0	func
 ?Unk_GetRenderService@@YAPEAVRenderService@ecr@@PEAD@Z	14127bf80	func
+?DAT_143a07838@@3USd_143a07838@@A	143a07838	data
+?DAT_143a288b8@@3USd_143a288b8@@A	143a288b8	data
+?DAT_143a2f420@@3USd_143a2f420@@A	143a2f420	data
+?DAT_143a30650@@3USd_143a30650@@A	143a30650	data
