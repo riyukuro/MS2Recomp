@@ -530,6 +530,20 @@ template <class A, class B> void Unk_AkoMessage(int nStringId, int nA, int nB, c
 
 // @0x1409670b0 the function cube service singleton
 inline CFunctionCubeService* FUN_1409670b0() { return TSingleton<CFunctionCubeService>::s_instance; }
+
+// The out-of-line copies of the house and cutscene singleton getters that other TUs call (each under its own FUN_
+// declaration, aliased to these in the full exe).
+// @0x1409670e0 the house service (CubeMapInformationService) singleton
+void* FUN_1409670e0()
+{
+    return DAT_143ab3908;
+}
+
+// @0x140967100 the cutscene service (UITalkManager) singleton
+void* FUN_140967100()
+{
+    return TSingleton<UITalkManager>::s_instance;
+}
 int FUN_140b60d90(egf::Entity* pEntity);
 float FUN_140966f00(Vector3 a, Vector3 b);  // the distance of two points
 int FUN_1408a1360(Vector3 a, Vector3 b);   // the points are on the same level

@@ -619,11 +619,10 @@ i64 FUN_140277c90(i64 vec, i64 where, i64 v)
         FUN_140289cc0(vec, *myfirst2, *mylast2, newvec);
     } else {
         i64* myfirst3 = FUN_140288a40(vec);
-        FUN_140289b00(vec, *myfirst3, where, newvec, newvec, off, slotp);
+        FUN_140289b00((void*)vec, *myfirst3, where, newvec);
         slotp = newvec + off * 0x10 + 0x10;
-        i64 base = newvec;
         i64* mylast3 = FUN_140288ba0(vec);
-        FUN_140289b00(vec, where, *mylast3, slotp, newvec, off, base);
+        FUN_140289b00((void*)vec, where, *mylast3, slotp);
     }
     FUN_1402873b0(vec, newvec, size + 1, newcap);
     i64* myfirst4 = FUN_140288a40(vec);
@@ -722,11 +721,10 @@ i64 FUN_140278370(i64 vec, i64 where, i64 v)
         FUN_140289cc0(vec, *myfirst2, *mylast2, newvec);
     } else {
         i64* myfirst3 = FUN_140288a40(vec);
-        FUN_140289b00(vec, *myfirst3, where, newvec, newvec, off, slotp);
+        FUN_140289b00((void*)vec, *myfirst3, where, newvec);
         slotp = newvec + off * 0x10 + 0x10;
-        i64 base = newvec;
         i64* mylast3 = FUN_140288ba0(vec);
-        FUN_140289b00(vec, where, *mylast3, slotp, newvec, off, base);
+        FUN_140289b00((void*)vec, where, *mylast3, slotp);
     }
     FUN_1402873b0(vec, newvec, size + 1, newcap);
     i64* myfirst4 = FUN_140288a40(vec);

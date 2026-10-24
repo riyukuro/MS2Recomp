@@ -287,6 +287,7 @@ void GameEventUserValueManager::Dispatch(unsigned nEvent, GameEventVariable* pVa
 // ---- Notify* names (the inline GetTypeName COMDATs of the notice classes, emitted here) -----------------------------------------
 // The classes are declared by their users; only the name virtual is defined here, so these stand-ins carry no members.
 class NotifyCompleteMyPC : public NotifyObject { public: virtual CStringW GetTypeName(); };
+class ClassObject;
 class NotifyUseSKill : public NotifyObject { public: virtual CStringW GetTypeName(); };
 class NotifyUgcDownloadComplete : public NotifyObject { public: virtual CStringW GetTypeName(); };
 class NotifyLearnEmotion : public NotifyObject { public: virtual CStringW GetTypeName(); };
@@ -301,10 +302,24 @@ class NotifyCreateMyPC : public NotifyObject { public: virtual CStringW GetTypeN
 class NotifyChangeMyPC : public NotifyObject { public: virtual CStringW GetTypeName(); };
 class NotifyChangedTokenMoney : public NotifyObject { public: virtual CStringW GetTypeName(); };
 
+// NotifyObject's ClassObject factory (registered by notifychangebuff.cpp): no instance
+// @0x140db40c0
+ClassObject* FUN_140db40c0()
+{
+    return 0;
+}
+
 // @0x140db40d0
 CStringW NotifyObject::GetTypeName()
 {
     return L"NotifyObject";
+}
+
+// NotifyGameEventChanged's ClassObject factory (registered by notifychangebuff.cpp): no instance
+// @0x140db4120
+ClassObject* FUN_140db4120()
+{
+    return 0;
 }
 
 // @0x140db4130
@@ -313,10 +328,24 @@ CStringW NotifyGameEventChanged::GetTypeName()
     return L"NotifyGameEventChanged";
 }
 
+// NotifyLearnEmotion's ClassObject factory (registered by notifychangebuff.cpp): no instance
+// @0x140db4180
+ClassObject* FUN_140db4180()
+{
+    return 0;
+}
+
 // @0x140db4190
 CStringW NotifyLearnEmotion::GetTypeName()
 {
     return L"NotifyLearnEmotion";
+}
+
+// NotifyPcBang's ClassObject factory (registered by notifychangebuff.cpp): no instance
+// @0x140db41e0
+ClassObject* FUN_140db41e0()
+{
+    return 0;
 }
 
 // @0x140db41f0
@@ -325,10 +354,24 @@ CStringW NotifyPcBang::GetTypeName()
     return L"NotifyPcBang";
 }
 
+// NotifyUgcDownloadComplete's ClassObject factory (registered by notifychangebuff.cpp): no instance
+// @0x140db4240
+ClassObject* FUN_140db4240()
+{
+    return 0;
+}
+
 // @0x140db4250
 CStringW NotifyUgcDownloadComplete::GetTypeName()
 {
     return L"NotifyUgcDownloadComplete";
+}
+
+// NotifyGameStart's ClassObject factory (registered by notifychangebuff.cpp): no instance
+// @0x140db42a0
+ClassObject* FUN_140db42a0()
+{
+    return 0;
 }
 
 // @0x140db42b0
@@ -337,10 +380,24 @@ CStringW NotifyGameStart::GetTypeName()
     return L"NotifyGameStart";
 }
 
+// NotifyChangeServer's ClassObject factory (registered by notifychangebuff.cpp): no instance
+// @0x140db4300
+ClassObject* FUN_140db4300()
+{
+    return 0;
+}
+
 // @0x140db4310
 CStringW NotifyChangeServer::GetTypeName()
 {
     return L"NotifyChangeServer";
+}
+
+// NotifyChangeMyJob's ClassObject factory (registered by notifychangebuff.cpp): no instance
+// @0x140db4360
+ClassObject* FUN_140db4360()
+{
+    return 0;
 }
 
 // @0x140db4370
@@ -349,10 +406,24 @@ CStringW NotifyChangeMyJob::GetTypeName()
     return L"NotifyChangeMyJob";
 }
 
+// NotifyChangeMyLevel's ClassObject factory (registered by notifychangebuff.cpp): no instance
+// @0x140db43c0
+ClassObject* FUN_140db43c0()
+{
+    return 0;
+}
+
 // @0x140db43d0
 CStringW NotifyChangeMyLevel::GetTypeName()
 {
     return L"NotifyChangeMyLevel";
+}
+
+// NotifyRemoveGameObject's ClassObject factory (registered by notifychangebuff.cpp): no instance
+// @0x140db4420
+ClassObject* FUN_140db4420()
+{
+    return 0;
 }
 
 // @0x140db4430
@@ -361,10 +432,24 @@ CStringW NotifyRemoveGameObject::GetTypeName()
     return L"NotifyRemoveGameObject";
 }
 
+// NotifyCutSceneCinematicSkip's ClassObject factory (registered by notifychangebuff.cpp): no instance
+// @0x140db4480
+ClassObject* FUN_140db4480()
+{
+    return 0;
+}
+
 // @0x140db4490
 CStringW NotifyCutSceneCinematicSkip::GetTypeName()
 {
     return L"NotifyCutSceneCinematicSkip";
+}
+
+// NotifyCreateMyPC's ClassObject factory (registered by notifychangebuff.cpp): no instance
+// @0x140db44e0
+ClassObject* FUN_140db44e0()
+{
+    return 0;
 }
 
 // @0x140db44f0
@@ -373,10 +458,24 @@ CStringW NotifyCreateMyPC::GetTypeName()
     return L"NotifyCreateMyPC";
 }
 
+// NotifyCompleteMyPC's ClassObject factory (registered by notifychangebuff.cpp): no instance
+// @0x140db4540
+ClassObject* FUN_140db4540()
+{
+    return 0;
+}
+
 // @0x140db4550
 CStringW NotifyCompleteMyPC::GetTypeName()
 {
     return L"NotifyCompleteMyPC";
+}
+
+// NotifyChangeMyPC's ClassObject factory (registered by notifychangebuff.cpp): no instance
+// @0x140db45a0
+ClassObject* FUN_140db45a0()
+{
+    return 0;
 }
 
 // @0x140db45b0
@@ -385,10 +484,24 @@ CStringW NotifyChangeMyPC::GetTypeName()
     return L"NotifyChangeMyPC";
 }
 
+// NotifyChangedTokenMoney's ClassObject factory (registered by notifychangebuff.cpp): no instance
+// @0x140db4600
+ClassObject* FUN_140db4600()
+{
+    return 0;
+}
+
 // @0x140db4610
 CStringW NotifyChangedTokenMoney::GetTypeName()
 {
     return L"NotifyChangedTokenMoney";
+}
+
+// NotifyUseSKill's ClassObject factory (registered by notifychangebuff.cpp): no instance
+// @0x140db4660
+ClassObject* FUN_140db4660()
+{
+    return 0;
 }
 
 // @0x140db4670

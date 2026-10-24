@@ -34,6 +34,7 @@
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/coutpacket.h"
+#include "textureanimationdata.h"                   // TextureLayerManager (its ctor, worldservice_4.cpp)
 #include <efd/MessageService.h>
 #include <efd/AssetLoadResponse.h>
 #include <egf/EntityChangeMessage.h>
@@ -109,7 +110,6 @@ extern Unk_1401cd100 g_worldNullHandle;
 // ---- callees owned by other objs / not recovered yet (bound by VA) ----
 void* FUN_140876480(void* out, int cat);                // efd memory hint helper, returns int*
 void* FUN_14208a860(size_t cb, int hint);               // efd::MemObject operator new
-TextureLayerManager* FUN_141bf48f0(void* p);            // TextureLayerManager::TextureLayerManager (COMDAT, #4)
 ChaosLightEffectLayerManager* FUN_141046850(void* p);   // ChaosLightEffectLayerManager::ChaosLightEffectLayerManager (other obj)
 extern Vector3 DAT_143b01a60;
 
@@ -149,7 +149,7 @@ WorldService::WorldService()
     int hint;
     void* p = FUN_14208a860(0x20, *(int*)FUN_140876480(&hint, 0));
     TextureLayerManager* pTex = 0;
-    if (p) { memset(p, 0, 0x20); pTex = FUN_141bf48f0(p); }
+    if (p) { memset(p, 0, 0x20); pTex = new (p) TextureLayerManager(); }    // the ctor is #4's (0x141bf48f0)
     m_spTextureLayerManager = pTex;
     p = FUN_14208a860(0x28, *(int*)FUN_140876480(&hint, 0));
     m_spChaosLightEffectLayerManager = p ? FUN_141046850(p) : 0;

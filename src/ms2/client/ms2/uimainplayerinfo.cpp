@@ -262,7 +262,7 @@ public:
 class UIAvatarRidee
 {
 public:
-    UIAvatarRidee(Unk_AdvMountPtr spMount);                             // 0x1418c1fa0 (the mount by value)
+    UIAvatarRidee(Unk_AdvMountPtr spMount);                             // 0x1418bdfd0 (the mount by value)
     virtual void s0();
     virtual void vfunc_1(void* pListener);
     virtual void s2(); virtual void s3(); virtual void s4(); virtual void s5(); virtual void s6(); virtual void s7();
@@ -276,6 +276,11 @@ public:
     char m_pad_08[0xd0];
 };
 MS2_CHECK_SIZE(UIAvatarRidee, 0xd8);
+// The exe calls uiavatarbase.cpp's UIAvatarRidee(Unk_RideePtr) (0x1418bdfd0): this view spells the row pointer
+// Unk_AdvMountPtr, so the full exe binds the name to that constructor.
+#ifndef MS2_HOOK_DLL
+#pragma comment(linker, "/alternatename:??0UIAvatarRidee@@QEAA@VUnk_AdvMountPtr@@@Z=??0UIAvatarRidee@@QEAA@VUnk_RideePtr@@@Z")
+#endif
 
 // The ride-off request (0x28 bytes, ctor(int) 0x14031b2a0).
 class Unk_MpRideOff { public: Unk_MpRideOff(int n); char m_pad_00[0x28]; };
