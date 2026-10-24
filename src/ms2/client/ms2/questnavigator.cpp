@@ -131,6 +131,12 @@ static CString s_stun("stun");
 // @0x1400cf5a0
 static char s_marker[0x48];
 static Unk_QnMarker s_initMarker = (FUN_1402a9d70(&s_marker, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142ca3a50), Unk_QnMarker());
+
+void FUN_1402aa1d0(void* p);                                       // ~Unk_1402a9d70
+// The exe's atexit destructor of s_marker.
+// MS2-FUNCTIONAL: our build tail-calls the destructor; the exe's compiler-made atexit thunk keeps a frame.
+// @0x142ca3a50
+void FUN_142ca3a50() { FUN_1402aa1d0(s_marker); }
 #endif
 
 // ---- CQuestNavigator ----
