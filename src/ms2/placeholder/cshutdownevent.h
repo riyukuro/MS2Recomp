@@ -53,11 +53,16 @@ private:
 typedef CShutdownEventKeyCountMap<unsigned int, int> CShutdownEventKeyCountMapUInt;
 MS2_CHECK_SIZE(CShutdownEventKeyCountMapUInt, 0x58);
 
+// The tag of the ctors shutdowneventvalue.cpp defines so that it emits these classes' vftables and ??_G (the exe keeps
+// them there), without a second definition of the real ctors (shopeventmanager.cpp's). Name invented.
+struct Unk_ShutdownEventVftableTag {};
+
 // Shut down drop box ids (CGameEventValueManager +0xe58; dtor 0x14046e300 calls the map<unsigned long, int> dtor).
 class CShutdownEventDropBox : public CPtred
 {
 public:
     CShutdownEventDropBox();                                // 0x1407d00f0
+    explicit CShutdownEventDropBox(Unk_ShutdownEventVftableTag);  // byte-match build only: emits the vftable in shutdowneventvalue.cpp
     bool FUN_1407d0150(unsigned long nBoxId);               // 0x1407d0150 shut a box down
     void FUN_1407d01d0(unsigned long nBoxId);               // 0x1407d01d0 undo one shut down
     bool IsShutdown(unsigned long nBoxId);                     // 0x1407d02e0
@@ -77,6 +82,7 @@ class CShutdownEventInteractObject : public CPtred
 {
 public:
     CShutdownEventInteractObject();                         // 0x1407d03c0
+    explicit CShutdownEventInteractObject(Unk_ShutdownEventVftableTag);  // byte-match build only: emits the vftable in shutdowneventvalue.cpp
     bool FUN_1407d0420(unsigned nFieldId, int nObjectId);   // 0x1407d0420 shut an object down
     void FUN_1407d04c0(unsigned nFieldId, int nObjectId);   // 0x1407d04c0 undo one shut down
     bool FUN_1407d05e0(unsigned nFieldId, int nObjectId);   // 0x1407d05e0 is the object shut down
@@ -92,6 +98,7 @@ class CShutdownEventFunctionItem : public CPtred
 {
 public:
     CShutdownEventFunctionItem();                           // 0x1407d0bd0
+    explicit CShutdownEventFunctionItem(Unk_ShutdownEventVftableTag);  // byte-match build only: emits the vftable in shutdowneventvalue.cpp
     bool FUN_1407d0c30(unsigned long nItemId);              // 0x1407d0c30 shut a function item down
     void FUN_1407d0cb0(unsigned long nItemId);              // 0x1407d0cb0 undo one shut down
     bool FUN_1407d0dc0(unsigned long nItemId);              // 0x1407d0dc0 is the item shut down
@@ -112,6 +119,7 @@ class CShutdownEventQuest : public CPtred
 {
 public:
     CShutdownEventQuest();                                  // 0x1407d06d0
+    explicit CShutdownEventQuest(Unk_ShutdownEventVftableTag);  // byte-match build only: emits the vftable in shutdowneventvalue.cpp
     int FUN_1407d07a0(int nQuestId);                        // 0x1407d07a0
     void FUN_1407d0810(int nQuestId);                       // 0x1407d0810
     int FUN_1407d0870(Unk_ShutdownQuestKey eKey);           // 0x1407d0870
@@ -130,6 +138,7 @@ class CShutdownEventItemTransfer : public CPtred
 {
 public:
     CShutdownEventItemTransfer();                           // 0x1407d09f0
+    explicit CShutdownEventItemTransfer(Unk_ShutdownEventVftableTag);  // byte-match build only: emits the vftable in shutdowneventvalue.cpp
     int FUN_1407d0a80(int nKey);                            // 0x1407d0a80
     void FUN_1407d0af0(int nKey);                           // 0x1407d0af0
     int FUN_1407d0b50(int nKey);                            // 0x1407d0b50
@@ -145,6 +154,7 @@ class CShutdownEventCoupleEmotion : public CPtred
 {
 public:
     CShutdownEventCoupleEmotion();                          // 0x1407d0ea0
+    explicit CShutdownEventCoupleEmotion(Unk_ShutdownEventVftableTag);  // byte-match build only: emits the vftable in shutdowneventvalue.cpp
     int FUN_1407d0f30(int nKey);                            // 0x1407d0f30
     void FUN_1407d0fa0(int nKey);                           // 0x1407d0fa0
     int FUN_1407d1000(int nKey);                            // 0x1407d1000

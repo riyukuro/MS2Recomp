@@ -36,18 +36,25 @@
 #include "hook/ms2hook.h"
 
 #ifndef MS2_HOOK_DLL
-// The ctors of these classes (0x1407d00f0 ... 0x1407d1000, shopeventmanager.cpp's range) emit their vftables, and the
-// exe keeps their ??_G COMDATs in this range. Emit them here for the byte-match build only.
-CShutdownEventDropBox::CShutdownEventDropBox()
+// The ctors of these classes (0x1407d00f0 ... 0x1407d1000) are shopeventmanager.cpp's, but the exe keeps their
+// vftables' ??_G COMDATs in this range. The tag ctors emit the vftables and ??_G here without a second definition of
+// the real ctors (byte-match build only; never called).
+CShutdownEventDropBox::CShutdownEventDropBox(Unk_ShutdownEventVftableTag)
 {
 }
-CShutdownEventInteractObject::CShutdownEventInteractObject()
+CShutdownEventInteractObject::CShutdownEventInteractObject(Unk_ShutdownEventVftableTag)
 {
 }
-CShutdownEventFunctionItem::CShutdownEventFunctionItem()
+CShutdownEventFunctionItem::CShutdownEventFunctionItem(Unk_ShutdownEventVftableTag)
 {
 }
-CShutdownEventQuest::CShutdownEventQuest()
+CShutdownEventQuest::CShutdownEventQuest(Unk_ShutdownEventVftableTag)
+{
+}
+CShutdownEventItemTransfer::CShutdownEventItemTransfer(Unk_ShutdownEventVftableTag)
+{
+}
+CShutdownEventCoupleEmotion::CShutdownEventCoupleEmotion(Unk_ShutdownEventVftableTag)
 {
 }
 // The std::map members the drop box / function item / interact object classes use (their tree COMDATs are in this range).
@@ -90,12 +97,6 @@ void Unk_ShutdownQuestKeyAnchor(ATL::CAtlMap<Unk_ShutdownQuestKey, int>& kMap, U
     kMap.SetAt(eKey, 1);
     kMap.RemoveKey(eKey);
     kMap.Lookup(eKey, nValue);
-}
-CShutdownEventItemTransfer::CShutdownEventItemTransfer()
-{
-}
-CShutdownEventCoupleEmotion::CShutdownEventCoupleEmotion()
-{
 }
 #endif
 
