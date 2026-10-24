@@ -3491,7 +3491,16 @@ MS2_CHECK_SIZE(CNMMsgConnectionClosedEvent, 0x30);
 class CNMNoteInfoEvent : public CNMEvent
 {
 public:
+    CNMNoteInfoEvent();
+    CNMNoteInfoEvent(const CNMNoteInfo2& rNoteInfo);
     virtual ~CNMNoteInfoEvent() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMNoteInfo2 m_28; // +0x28
 };
