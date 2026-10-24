@@ -3205,11 +3205,17 @@ class CNMGetUserInfoFunc : public CNMFunc
 {
 public:
     CNMGetUserInfoFunc(); // 0x141595d10
+    CNMGetUserInfoFunc(const char* userId, int type); // 0x141595d80
     virtual ~CNMGetUserInfoFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     char m_30[0x40]; // +0x30
     int m_70; // +0x70
-    int m_74; // +0x74
 };
 MS2_CHECK_SIZE(CNMGetUserInfoFunc, 0x78);
 
