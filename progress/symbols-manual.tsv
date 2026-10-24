@@ -9935,3 +9935,6 @@ DAT_143a2d890	143a2d890	data
 ?f@VTableInd@InstanceTraits@AS3@GFx@Scaleform@@2QBUThunkInfo@345@B	143a2aa30	data
 Video04ClassInfo	143a47b70	data
 ?GetVT@Traits@AS3@GFx@Scaleform@@QEBAAEAVVTable@234@XZ	14250fa80	func
+?Compare@CompareAsString@AS3@GFx@Scaleform@@QEBAHAEBVASString@34@0@Z	1424066d0	func
+?InitPrototype@Function@Classes@AS3@GFx@Scaleform@@UEBAXAEAVObject@345@@Z	142417c30	func
+?MakePrototype@Function@Classes@AS3@GFx@Scaleform@@UEBA?AV?$Pickable@VObject@AS3@GFx@Scaleform@@@5@XZ	14241c500	func
