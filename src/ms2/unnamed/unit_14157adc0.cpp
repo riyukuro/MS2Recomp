@@ -16,7 +16,6 @@ extern void FUN_14156ac20(void*, unsigned int);
 extern void FUN_14156ae30(void*, const void*);
 extern void FUN_1415f9990(void*);
 extern int FUN_1415fb700(void*);
-extern int FUN_1415fb720(void*);
 extern int FUN_1415fb750(void*);
 extern int FUN_1415fb6d0(void*);
 extern unsigned int FUN_1415fb290(unsigned long long);
@@ -362,7 +361,7 @@ unsigned int CNMGetConnConfigFunc::EncodeFramed(CNMStream*s){unsigned char b[0x1
 unsigned int CNMGetConnConfigFunc::EncodeDispatch(CNMEncoder*e,CNMStream*s){void**v=*reinterpret_cast<void***>(this);if(m_bFormat==1){using F=unsigned int(__fastcall*)(CNMGetConnConfigFunc*,CNMEncoder*,CNMStream*);return reinterpret_cast<F>(v[2])(this,e,s);}using F=unsigned int(__fastcall*)(CNMGetConnConfigFunc*,CNMStream*);return reinterpret_cast<F>(v[3])(this,s);}
 // MS2-FUNCTIONAL 0x14157ee10: serializes the embedded config when request direction is active.
 // @0x14157ee10
-unsigned int CNMGetConnConfigFunc::Encode(CNMEncoder*e,CNMStream*s){CNMFunc::EncodeDispatch(e,s);if(FUN_1415fb720(this))m_30.EncodeFramed(s);FUN_1415f9990(e);return 1;}
+unsigned int CNMGetConnConfigFunc::Encode(CNMEncoder*e,CNMStream*s){CNMFunc::EncodeDispatch(e,s);if((m_nDirection == 0))m_30.EncodeFramed(s);FUN_1415f9990(e);return 1;}
 // MS2-FUNCTIONAL 0x14157ee90: frames connection-config response decoding.
 // @0x14157ee90
 unsigned int CNMGetConnConfigFunc::DecodeFramed(CNMStream*s){unsigned char b[0x38];FUN_14156be10(b,s,this);unsigned r=0;if(FUN_1415fb750(b)){void**v=*reinterpret_cast<void***>(this);using F=unsigned int(__fastcall*)(CNMGetConnConfigFunc*,CNMSerializableDecoder*,CNMStream*);r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(b),s);}FUN_14156bf10(b);return r;}
@@ -371,7 +370,7 @@ unsigned int CNMGetConnConfigFunc::DecodeFramed(CNMStream*s){unsigned char b[0x3
 unsigned int CNMGetConnConfigFunc::DecodeDispatch(CNMSerializableDecoder*d,CNMStream*s){void**v=*reinterpret_cast<void***>(this);if(FUN_1415fb6d0(d)==2){using F=unsigned int(__fastcall*)(CNMGetConnConfigFunc*,CNMStream*);return reinterpret_cast<F>(v[6])(this,s);}using F=unsigned int(__fastcall*)(CNMGetConnConfigFunc*,CNMSerializableDecoder*,CNMStream*);return reinterpret_cast<F>(v[5])(this,d,s);}
 // MS2-FUNCTIONAL 0x14157ef80: decodes the embedded configuration payload when requested.
 // @0x14157ef80
-unsigned int CNMGetConnConfigFunc::Decode(CNMSerializableDecoder*d,CNMStream*s){CNMFunc::DecodeDispatch(d,s);if(FUN_1415fb720(this))m_30.DecodeFramed(s);FUN_1415fb750(d);return 1;}
+unsigned int CNMGetConnConfigFunc::Decode(CNMSerializableDecoder*d,CNMStream*s){CNMFunc::DecodeDispatch(d,s);if((m_nDirection == 0))m_30.DecodeFramed(s);FUN_1415fb750(d);return 1;}
 // MS2-FUNCTIONAL 0x14157f000: initializes the set-config request.
 // @0x14157f000
 CNMSetConnConfigFunc::CNMSetConnConfigFunc():CNMFunc(0x8013,1,0,0),m_30(){}
@@ -386,7 +385,7 @@ unsigned int CNMSetConnConfigFunc::EncodeFramed(CNMStream*s){unsigned char b[0x1
 unsigned int CNMSetConnConfigFunc::EncodeDispatch(CNMEncoder*e,CNMStream*s){void**v=*reinterpret_cast<void***>(this);if(m_bFormat==1){using F=unsigned int(__fastcall*)(CNMSetConnConfigFunc*,CNMEncoder*,CNMStream*);return reinterpret_cast<F>(v[2])(this,e,s);}using F=unsigned int(__fastcall*)(CNMSetConnConfigFunc*,CNMStream*);return reinterpret_cast<F>(v[3])(this,s);}
 // MS2-FUNCTIONAL 0x14157f1a0: serializes the embedded connection configuration on requests.
 // @0x14157f1a0
-unsigned int CNMSetConnConfigFunc::Encode(CNMEncoder*e,CNMStream*s){CNMFunc::EncodeDispatch(e,s);if(FUN_1415fb720(this))m_30.EncodeFramed(s);FUN_1415f9990(e);return 1;}
+unsigned int CNMSetConnConfigFunc::Encode(CNMEncoder*e,CNMStream*s){CNMFunc::EncodeDispatch(e,s);if((m_nDirection == 0))m_30.EncodeFramed(s);FUN_1415f9990(e);return 1;}
 // MS2-FUNCTIONAL 0x14157f220: frames set-config decoding.
 // @0x14157f220
 unsigned int CNMSetConnConfigFunc::DecodeFramed(CNMStream*s){unsigned char b[0x38];FUN_14156be10(b,s,this);unsigned r=0;if(FUN_1415fb750(b)){void**v=*reinterpret_cast<void***>(this);using F=unsigned int(__fastcall*)(CNMSetConnConfigFunc*,CNMSerializableDecoder*,CNMStream*);r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(b),s);}FUN_14156bf10(b);return r;}
@@ -395,7 +394,7 @@ unsigned int CNMSetConnConfigFunc::DecodeFramed(CNMStream*s){unsigned char b[0x3
 unsigned int CNMSetConnConfigFunc::DecodeDispatch(CNMSerializableDecoder*d,CNMStream*s){void**v=*reinterpret_cast<void***>(this);if(FUN_1415fb6d0(d)==2){using F=unsigned int(__fastcall*)(CNMSetConnConfigFunc*,CNMStream*);return reinterpret_cast<F>(v[6])(this,s);}using F=unsigned int(__fastcall*)(CNMSetConnConfigFunc*,CNMSerializableDecoder*,CNMStream*);return reinterpret_cast<F>(v[5])(this,d,s);}
 // MS2-FUNCTIONAL 0x14157f310: decodes the embedded configuration from request messages.
 // @0x14157f310
-unsigned int CNMSetConnConfigFunc::Decode(CNMSerializableDecoder*d,CNMStream*s){CNMFunc::DecodeDispatch(d,s);if(FUN_1415fb720(this))m_30.DecodeFramed(s);FUN_1415fb750(d);return 1;}
+unsigned int CNMSetConnConfigFunc::Decode(CNMSerializableDecoder*d,CNMStream*s){CNMFunc::DecodeDispatch(d,s);if((m_nDirection == 0))m_30.DecodeFramed(s);FUN_1415fb750(d);return 1;}
 // MS2-FUNCTIONAL 0x14157e970: initializes an empty stand-alone message.
 // @0x14157e970
 CNMStartStandAloneMsgFunc::CNMStartStandAloneMsgFunc():CNMFunc(0x1007,1,0,0),m_30{}{}
