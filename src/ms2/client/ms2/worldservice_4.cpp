@@ -475,6 +475,11 @@ void FUN_141bf6010(Unk_WsF_TagEnter* p)
     reinterpret_cast<CString*>(p)->~CString();
 }
 
+// MS2-FUNCTIONAL: the derived manager adds no state; this constructor establishes its vtable after the base builds
+// the initially empty layer map.
+// @0x141bf48f0
+TextureLayerManager::TextureLayerManager() : LayerManager() {}
+
 // MS2-FUNCTIONAL: this is the raw-pointer assignment used by both 16-byte smart-pointer views; acquire the new
 // pointee before releasing the old one, and keep the stored pointer at the observed +0x08 offset.
 static void* WsAssignPtred(void* self, CPtred* p)
