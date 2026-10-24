@@ -9929,8 +9929,8 @@ DAT_143a2d890	143a2d890	data
 ?MakeObject@ThunkFunction@InstanceTraits@AS3@GFx@Scaleform@@UEAAXAEAVValue@345@AEAVTraits@2345@@Z	14241c210	func
 ?MakeObject@VTableInd@InstanceTraits@AS3@GFx@Scaleform@@UEAAXAEAVValue@345@AEAVTraits@2345@@Z	14241c220	func
 ?RegisterSlots@Function@InstanceTraits@AS3@GFx@Scaleform@@AEAAXXZ	14241e5d0	func
-?f@MethodInd@InstanceTraits@AS3@GFx@Scaleform@@2QBUThunkInfo@345@B	142a2a9b0	data
-?f@Thunk@InstanceTraits@AS3@GFx@Scaleform@@2QBUThunkInfo@345@B	142a2a930	data
+?f@MethodInd@InstanceTraits@AS3@GFx@Scaleform@@2QBUThunkInfo@345@B	143a2a9b0	data
+?f@Thunk@InstanceTraits@AS3@GFx@Scaleform@@2QBUThunkInfo@345@B	143a2a930	data
 ?f@ThunkFunction@InstanceTraits@AS3@GFx@Scaleform@@2QBUThunkInfo@345@B	14313e4b8	data
-?f@VTableInd@InstanceTraits@AS3@GFx@Scaleform@@2QBUThunkInfo@345@B	142a2aa30	data
+?f@VTableInd@InstanceTraits@AS3@GFx@Scaleform@@2QBUThunkInfo@345@B	143a2aa30	data
 Video04ClassInfo	143a47b70	data
