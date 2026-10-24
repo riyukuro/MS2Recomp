@@ -301,6 +301,33 @@ int FUN_1415c7b10(void*, long long outAddress)
     return 1;
 }
 
+// MS2-FUNCTIONAL: fetches the passport and copies its bounded string into the caller buffer.
+// @0x1415c4bb0
+unsigned char* FUN_1415c4bb0(void*, unsigned char* out)
+{
+    CNMGetNexonPassportFunc request;
+    if (!CNMManager::GetInstance()->CallNMFunc(&request)) {
+        if (out) *out = 0;
+        return nullptr;
+    }
+    FUN_1415fbe70(out, 0x400, request.m_34);
+    return out;
+}
+
+// MS2-FUNCTIONAL: selects the alternate passport request and returns its bounded string.
+// @0x1415c4da0
+unsigned char* FUN_1415c4da0(void*, unsigned char* out)
+{
+    CNMGetNexonPassportFunc request;
+    *reinterpret_cast<int*>(request.m_34 + 0x14) = 1;
+    if (!CNMManager::GetInstance()->CallNMFunc(&request)) {
+        if (out) *out = 0;
+        return nullptr;
+    }
+    FUN_1415fbe70(out, 0x400, request.m_34);
+    return out;
+}
+
 // @0x1415c46c0
 void FUN_1415c46c0()
 {
@@ -672,3 +699,5 @@ void FUN_1415cd010() {}
 // MS2-PIN: ?FUN_1415c5010@@YAPEAEPEAXPEAE@Z 0x1415c5010
 // MS2-PIN: ?FUN_1415c76f0@@YAPEAVCNMGuildListExInfo@@PEAXPEAV1@@Z 0x1415c76f0
 // MS2-PIN: ?FUN_1415c7b10@@YAHPEAX_J@Z 0x1415c7b10
+// MS2-PIN: ?FUN_1415c4bb0@@YAPEAEPEAXPEAE@Z 0x1415c4bb0
+// MS2-PIN: ?FUN_1415c4da0@@YAPEAEPEAXPEAE@Z 0x1415c4da0
