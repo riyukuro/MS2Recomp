@@ -204,6 +204,62 @@ int FUN_1415c8e30()
 }
 // MS2-PIN: ?FUN_1415c8e30@@YAHXZ 0x1415c8e30
 
+// MS2-FUNCTIONAL: creates the default auth logout request and dispatches it.
+// @0x1415c4a30
+int FUN_1415c4a30()
+{
+    CNMLogoutAuthFunc request;
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+// MS2-PIN: ?FUN_1415c4a30@@YAHXZ 0x1415c4a30
+
+// MS2-FUNCTIONAL: creates the default auth logout request and dispatches it.
+// @0x1415c4b60
+int FUN_1415c4b60()
+{
+    CNMLogoutAuthFunc request;
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+// MS2-PIN: ?FUN_1415c4b60@@YAHXZ 0x1415c4b60
+
+// MS2-FUNCTIONAL: sets the recovered auth logout mode before dispatch.
+// @0x1415c4d40
+int FUN_1415c4d40()
+{
+    CNMLogoutAuthFunc request;
+    request.m_34 = 1;
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+// MS2-PIN: ?FUN_1415c4d40@@YAHXZ 0x1415c4d40
+
+// MS2-FUNCTIONAL: creates and dispatches the virtual logout request.
+// @0x1415c54a0
+int FUN_1415c54a0()
+{
+    CNMLogoutVirtualFunc request;
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+// MS2-PIN: ?FUN_1415c54a0@@YAHXZ 0x1415c54a0
+
+// MS2-FUNCTIONAL: dispatches the security-code query and returns its output field.
+// @0x1415c4f00
+int FUN_1415c4f00()
+{
+    CNMGetSecurityCodeCNFunc request;
+    (void)CNMManager::GetInstance()->CallNMFunc(&request);
+    return request.m_30;
+}
+// MS2-PIN: ?FUN_1415c4f00@@YAHXZ 0x1415c4f00
+
+// MS2-FUNCTIONAL: creates and dispatches the game-log finalize request.
+// @0x1415ca0d0
+int FUN_1415ca0d0()
+{
+    CNMGameLogFinalizeFunc request;
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+// MS2-PIN: ?FUN_1415ca0d0@@YAHXZ 0x1415ca0d0
+
 // @0x1415c46c0
 void FUN_1415c46c0()
 {
