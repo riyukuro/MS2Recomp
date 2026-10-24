@@ -104,7 +104,7 @@ CString FUN_140b62550(unsigned nIndex);                                 // the i
 CString FUN_14016a600(const wchar_t* psz, int n);                       // wide -> narrow
 class Unk_SibPacketSender { public: void FUN_140a1f970(const CString& strFunction, const CString& strArgs); };
 Unk_SibPacketSender* FUN_140d8ee90();
-void FUN_140d1d3d0(void* pItemUid, const CStringW& str);
+void OpenItemBoxContents(CItem* pItem, CStringW strArgs);               // unit_140d1ae30 @0x140d1d3f0
 void* FUN_14052cd70(MS2Ptr<CItem>& item);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -268,7 +268,7 @@ void UISelectItemBoxDialog::FUN_140f9a230(const Scaleform::GFx::FunctionHandler:
             strIndices += L",";
     }
     FUN_140d8ee90()->FUN_140a1f970("select_item_box_function", FUN_14016a600(strIndices, 0));
-    FUN_140d1d3d0(FUN_14052cd70(item), CStringW(strIndices));
+    OpenItemBoxContents(static_cast<CItem*>(FUN_14052cd70(item)), CStringW(strIndices));
     vfunc_67();
     FUN_141276180("select_confirm", "");
 }
