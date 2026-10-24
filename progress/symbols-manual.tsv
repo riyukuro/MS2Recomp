@@ -10015,3 +10015,17 @@ DAT_143a2dd50	143a2dd50	data
 ?g_szCefMessageDlProjectRefresh@@3PEBDEB	1439f7ee8	data
 ?g_szCefMessageDlProjectReset@@3PEBDEB	1439f7f08	data
 ?g_szCefMessageDlProjectUpload@@3PEBDEB	1439f7ef8	data
+?NS_flash_proxy@fl@AS3@GFx@Scaleform@@3PEBDEB	143a2d3b8	data
+?DAT_14317fea0@@3QBUSfr34_OpCodeInfo@@B	14317fea0	data
+?DAT_14317b058@AS3@GFx@Scaleform@@3QEBXEB	14317b058	data
+??0Error@VM@AS3@GFx@Scaleform@@QEAA@W4ErrorID@1234@AEAV1234@PEBDAEBVValue@234@@Z	1424d79f0	func
+??0VMAbcFile@AS3@GFx@Scaleform@@QEAA@AEAVVM@123@AEBV?$Ptr@VFile@Abc@AS3@GFx@Scaleform@@@3@@Z	1424dbb30	func
+?Dispatch@EventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@QEAA_NAEBVEventId@56@PEAVDisplayObject@56@@Z	142467ec0	func
+?SetText@TextEvent@fl_events@Instances@AS3@GFx@Scaleform@@QEAAX_W@Z	14246c930	func
+?CalcDisplayListHitTestMaskArray@DisplayObjContainer@GFx@Scaleform@@QEBAXPEAV?$Array@E$01UArrayDefaultPolicy@Scaleform@@@3@AEBV?$Point@M@Render@3@_N@Z	1425fbff0	func
+?ExecuteErrorEvent@Loader@fl_display@Instances@AS3@GFx@Scaleform@@QEAAXPEBD@Z	142442410	func
+?ExecuteOpenEvent@Loader@fl_display@Instances@AS3@GFx@Scaleform@@QEAAXXZ	1424428f0	func
+?ExecuteProgressEvent@Loader@fl_display@Instances@AS3@GFx@Scaleform@@QEAAX_K0@Z	142442a60	func
+?FindProperty@Object@AS3@GFx@Scaleform@@QEAAXAEAVPropRef@234@AEBVMultiname@234@H@Z	142502360	func
+?QueueCompleteEvent@Loader@fl_display@Instances@AS3@GFx@Scaleform@@QEAAXXZ	142445ca0	func
+?QueueInitEvent@Loader@fl_display@Instances@AS3@GFx@Scaleform@@QEAAXPEAVDisplayObject@56@V?$Ptr@VRefCountImpl@Scaleform@@@6@@Z	142445db0	func
