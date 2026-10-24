@@ -3192,3 +3192,196 @@ void* FUN_1415f4680(void* p) { FUN_1415f46c0(static_cast<long long*>(p)); return
 // MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
 // @0x1415f46a0
 void* FUN_1415f46a0(void* p) { FUN_1415f4680(static_cast<long long*>(p)); return p; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f2aa0
+bool NMStringIteratorCompare_1415f2aa0(const long long* a, const long long* b) { return *a == *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f2af0
+bool NMStringIteratorCompare_1415f2af0(const long long* a, const long long* b) { return *a == *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f2b40
+bool NMStringIteratorCompare_1415f2b40(const long long* a, const long long* b) { return *a == *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f2b90
+bool NMStringIteratorCompare_1415f2b90(const long long* a, const long long* b) { return *a == *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f2be0
+bool NMStringIteratorCompare_1415f2be0(const long long* a, const long long* b) { return *a == *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f2c30
+bool NMStringIteratorCompare_1415f2c30(const long long* a, const long long* b) { return *a == *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f2c80
+bool NMStringIteratorCompare_1415f2c80(const long long* a, const long long* b) { return *a == *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f2cd0
+bool NMStringIteratorCompare_1415f2cd0(const long long* a, const long long* b) { return *a == *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f2d20
+bool NMStringIteratorCompare_1415f2d20(const long long* a, const long long* b) { return *a == *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f2d70
+bool NMStringIteratorCompare_1415f2d70(const long long* a, const long long* b) { return *a == *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f2dc0
+bool NMStringIteratorCompare_1415f2dc0(const long long* a, const long long* b) { return *a == *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f2e10
+bool NMStringIteratorCompare_1415f2e10(const long long* a, const long long* b) { return *a == *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f2e60
+bool NMStringIteratorCompare_1415f2e60(const long long* a, const long long* b) { return *a == *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f2eb0
+bool NMStringIteratorCompare_1415f2eb0(const long long* a, const long long* b) { return *a == *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f2f00
+bool NMStringIteratorCompare_1415f2f00(const long long* a, const long long* b) { return *a == *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f2f50
+bool NMStringIteratorCompare_1415f2f50(const long long* a, const long long* b) { return *a == *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f2fa0
+bool NMStringIteratorCompare_1415f2fa0(const long long* a, const long long* b) { return *a == *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f2ff0
+bool NMStringIteratorCompare_1415f2ff0(const long long* a, const long long* b) { return *a == *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f3040
+bool NMStringIteratorCompare_1415f3040(const long long* a, const long long* b) { return *a == *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f3090
+bool NMStringIteratorCompare_1415f3090(const long long* a, const long long* b) { return *a == *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f30e0
+bool NMStringIteratorCompare_1415f30e0(const long long* a, const long long* b) { return *a == *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f3130
+bool NMStringIteratorCompare_1415f3130(const long long* a, const long long* b) { return *a == *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f3180
+bool NMStringIteratorCompare_1415f3180(const long long* a, const long long* b) { return *a == *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f31d0
+bool NMStringIteratorCompare_1415f31d0(const long long* a, const long long* b) { return *a == *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f32c0
+bool NMStringIteratorCompare_1415f32c0(const long long* a, const long long* b) { return *a != *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f3300
+bool NMStringIteratorCompare_1415f3300(const long long* a, const long long* b) { return *a != *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f3340
+bool NMStringIteratorCompare_1415f3340(const long long* a, const long long* b) { return *a != *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f3380
+bool NMStringIteratorCompare_1415f3380(const long long* a, const long long* b) { return *a != *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f33c0
+bool NMStringIteratorCompare_1415f33c0(const long long* a, const long long* b) { return *a != *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f3400
+bool NMStringIteratorCompare_1415f3400(const long long* a, const long long* b) { return *a != *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f3440
+bool NMStringIteratorCompare_1415f3440(const long long* a, const long long* b) { return *a != *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f3480
+bool NMStringIteratorCompare_1415f3480(const long long* a, const long long* b) { return *a != *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f34c0
+bool NMStringIteratorCompare_1415f34c0(const long long* a, const long long* b) { return *a != *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f3500
+bool NMStringIteratorCompare_1415f3500(const long long* a, const long long* b) { return *a != *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f3540
+bool NMStringIteratorCompare_1415f3540(const long long* a, const long long* b) { return *a != *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f3580
+bool NMStringIteratorCompare_1415f3580(const long long* a, const long long* b) { return *a != *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f35c0
+bool NMStringIteratorCompare_1415f35c0(const long long* a, const long long* b) { return *a != *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f3600
+bool NMStringIteratorCompare_1415f3600(const long long* a, const long long* b) { return *a != *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f3640
+bool NMStringIteratorCompare_1415f3640(const long long* a, const long long* b) { return *a != *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f3680
+bool NMStringIteratorCompare_1415f3680(const long long* a, const long long* b) { return *a != *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f36c0
+bool NMStringIteratorCompare_1415f36c0(const long long* a, const long long* b) { return *a != *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f3700
+bool NMStringIteratorCompare_1415f3700(const long long* a, const long long* b) { return *a != *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f3740
+bool NMStringIteratorCompare_1415f3740(const long long* a, const long long* b) { return *a != *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f3780
+bool NMStringIteratorCompare_1415f3780(const long long* a, const long long* b) { return *a != *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f37c0
+bool NMStringIteratorCompare_1415f37c0(const long long* a, const long long* b) { return *a != *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f3800
+bool NMStringIteratorCompare_1415f3800(const long long* a, const long long* b) { return *a != *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f3840
+bool NMStringIteratorCompare_1415f3840(const long long* a, const long long* b) { return *a != *b; }
+
+// MS2-FUNCTIONAL: compares the recovered string iterator positions; omits only the MSVC debug verification hook.
+// @0x1415f3880
+bool NMStringIteratorCompare_1415f3880(const long long* a, const long long* b) { return *a != *b; }
+
