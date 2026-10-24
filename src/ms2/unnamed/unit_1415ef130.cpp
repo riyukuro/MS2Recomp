@@ -3423,6 +3423,22 @@ bool FUN_1415f3280(const long long* a, const long long* b)
 {
     return *a != *b;
 }
+// MS2-FUNCTIONAL: copies the recovered base, nested serializable field, and five fixed payload regions.
+// @0x1415efea0
+CNMSerializable* FUN_1415efea0(CNMSerializable* dst, long long src)
+{
+    auto* d = reinterpret_cast<unsigned char*>(dst);
+    auto* s = reinterpret_cast<const unsigned char*>(src);
+    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    std::memcpy(d + 0x10, s + 0x10, 8);
+    reinterpret_cast<CNMSerializable*>(d + 0x18)->CopyFrom(reinterpret_cast<CNMSerializable*>(const_cast<unsigned char*>(s + 0x18)));
+    std::memcpy(d + 0x28, s + 0x28, 0x40);
+    std::memcpy(d + 0x68, s + 0x68, 0x100);
+    std::memcpy(d + 0x168, s + 0x168, 0x100);
+    std::memcpy(d + 0x268, s + 0x268, 0x400);
+    std::memcpy(d + 0x668, s + 0x668, 4);
+    return dst;
+}
 
 // MS2-FUNCTIONAL: dispatches the executable's virtual CopyFrom slot and returns the destination.
 // @0x1415efb90
