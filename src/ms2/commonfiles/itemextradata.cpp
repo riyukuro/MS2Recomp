@@ -42,7 +42,7 @@ static inline const Vector3& AsPt(const efd::Point3& p) { return *(const Vector3
 // ---- the float helpers of the unit ----
 
 // @0x14059d930
-static float FUN_14059d930(float f) { return FUN_14029dd40(f); }
+float FUN_14059d930(float f) { return FUN_14029dd40(f); }
 
 // @0x14059bfe0
 static int FUN_14059bfe0(float a, float b)
