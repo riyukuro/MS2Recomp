@@ -833,7 +833,7 @@ MS2_REPLACE_METHOD(0x140b2c9d0, CGameRankingCli, RemoveParam, 100, 0xB2407F34);
 
 // The ranking dialog, when it is open.
 // @0x140b2d030
-static UIGameRankingDialog* FUN_140b2d030(int nClass)
+UIGameRankingDialog* FUN_140b2d030(int nClass)
 {
     if (FUN_1403ed2b0() != 0) {
         MS2Ptr<UIObject> spObj = FUN_1403ed2b0()->FUN_141adcea0(nClass);
