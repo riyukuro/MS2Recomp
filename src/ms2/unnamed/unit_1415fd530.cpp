@@ -615,59 +615,66 @@ void* FUN_141601a00(void* p) { return p; }
 // @0x141601a10
 void* FUN_141601a10(void* p) { return p; }
 
-// MS2-FUNCTIONAL: this wrapper only reads allocator/proxy fields through accessors.
+// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
 // @0x141600e10
-void FUN_141600e10(void*) {}
-// MS2-FUNCTIONAL: this wrapper only reads allocator/proxy fields through accessors.
+void* FUN_141600e10(void* p) { return p; }
+// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
 // @0x141600e40
-void FUN_141600e40(void*) {}
-// MS2-FUNCTIONAL: this wrapper only reads allocator/proxy fields through accessors.
+void* FUN_141600e40(void* p) { return p; }
+// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
 // @0x141600e70
-void FUN_141600e70(void*) {}
-// MS2-FUNCTIONAL: this wrapper only reads allocator/proxy fields through accessors.
+void* FUN_141600e70(void* p) { return p; }
+// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
 // @0x141600e90
-void FUN_141600e90(void*) {}
-// MS2-FUNCTIONAL: this wrapper only reads allocator/proxy fields through accessors.
+void* FUN_141600e90(void* p) { return p; }
+// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
 // @0x141600eb0
-void FUN_141600eb0(void*) {}
-// MS2-FUNCTIONAL: this wrapper only reads allocator/proxy fields through accessors.
+void* FUN_141600eb0(void* p) { return p; }
+// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
 // @0x141600ed0
-void FUN_141600ed0(void*) {}
-// MS2-FUNCTIONAL: this wrapper only reads allocator/proxy fields through accessors.
+void* FUN_141600ed0(void* p) { return p; }
+// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
 // @0x141600ef0
-void FUN_141600ef0(void*) {}
-// MS2-FUNCTIONAL: this wrapper only reads allocator/proxy fields through accessors.
+void* FUN_141600ef0(void* p) { return p; }
+// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
 // @0x141600f10
-void FUN_141600f10(void*) {}
-// MS2-FUNCTIONAL: this wrapper only reads allocator/proxy fields through accessors.
+void* FUN_141600f10(void* p) { return p; }
+// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
 // @0x141600f30
-void FUN_141600f30(void*) {}
-// MS2-FUNCTIONAL: this wrapper only reads allocator/proxy fields through accessors.
+void* FUN_141600f30(void* p) { return p; }
+// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
 // @0x141600f50
-void FUN_141600f50(void*) {}
-// MS2-FUNCTIONAL: this wrapper only reads allocator/proxy fields through accessors.
+void* FUN_141600f50(void* p) { return p; }
+// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
 // @0x141600f70
-void FUN_141600f70(void*) {}
-// MS2-FUNCTIONAL: this wrapper only reads allocator/proxy fields through accessors.
+void* FUN_141600f70(void* p) { return p; }
+// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
 // @0x141600f90
-void FUN_141600f90(void*) {}
-// MS2-FUNCTIONAL: this wrapper only reads allocator/proxy fields through accessors.
+void* FUN_141600f90(void* p) { return p; }
+// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
 // @0x141600fb0
-void FUN_141600fb0(void*) {}
-// MS2-FUNCTIONAL: this wrapper only reads allocator/proxy fields through accessors.
+void* FUN_141600fb0(void* p) { return p; }
+// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
 // @0x141600fd0
-void FUN_141600fd0(void*) {}
-// MS2-FUNCTIONAL: this wrapper only reads allocator/proxy fields through accessors.
+void* FUN_141600fd0(void* p) { return p; }
+// MS2-FUNCTIONAL: preserves the storage address returned by the read-only allocator accessors.
 // @0x141600ff0
-void FUN_141600ff0(void*) {}
+void* FUN_141600ff0(void* p) { return p; }
+
+extern void FUN_1415da590(void*, void*);
+void* FUN_141601a70(void*);
+// @0x141600db0
+void FUN_141600db0(void* proxy, void* element) { FUN_1415da590(FUN_141601a70(proxy), element); }
+// @0x141600de0
+void FUN_141600de0(void* proxy, void* element) { FUN_1415da590(FUN_141601a70(proxy), element); }
 // @0x141601750
 void* FUN_141601750(void* p) { return p; }
 // @0x141601760
 void* FUN_141601760(void* p) { return p; }
 
-// MS2-FUNCTIONAL: the recovered call chain only reads allocator/proxy subobjects through identity accessors.
+// MS2-FUNCTIONAL: returns the allocator proxy address after the read-only accessor chain.
 // @0x141601a70
-void FUN_141601a70(void*) {}
+void* FUN_141601a70(void* p) { return p; }
 // MS2-FUNCTIONAL: the recovered call chain only reads allocator/proxy subobjects through identity accessors.
 // @0x141601aa0
 void FUN_141601aa0(void*) {}
@@ -754,18 +761,21 @@ void* FUN_141601ed0(void* p) { return p; }
 // MS2-PIN: ?FUN_141600690@@YAXPEBX@Z 0x141600690 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
 // MS2-PIN: ?FUN_1416006d0@@YAXPEBX@Z 0x1416006d0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
 // MS2-PIN: ?FUN_1415ffde0@@YAXXZ 0x1415ffde0 ; MS2-FUNCTIONAL: empty allocator hook
-// MS2-PIN: ?FUN_141600e10@@YAXPEAX@Z 0x141600e10 ; MS2-FUNCTIONAL: read-only proxy accessor wrapper
-// MS2-PIN: ?FUN_141600e40@@YAXPEAX@Z 0x141600e40 ; MS2-FUNCTIONAL: read-only proxy accessor wrapper
-// MS2-PIN: ?FUN_141600e70@@YAXPEAX@Z 0x141600e70 ; MS2-FUNCTIONAL: read-only proxy accessor wrapper
-// MS2-PIN: ?FUN_141600e90@@YAXPEAX@Z 0x141600e90 ; MS2-FUNCTIONAL: read-only proxy accessor wrapper
-// MS2-PIN: ?FUN_141600eb0@@YAXPEAX@Z 0x141600eb0 ; MS2-FUNCTIONAL: read-only proxy accessor wrapper
-// MS2-PIN: ?FUN_141600ed0@@YAXPEAX@Z 0x141600ed0 ; MS2-FUNCTIONAL: read-only proxy accessor wrapper
-// MS2-PIN: ?FUN_141600ef0@@YAXPEAX@Z 0x141600ef0 ; MS2-FUNCTIONAL: read-only proxy accessor wrapper
-// MS2-PIN: ?FUN_141600f10@@YAXPEAX@Z 0x141600f10 ; MS2-FUNCTIONAL: read-only proxy accessor wrapper
-// MS2-PIN: ?FUN_141600f30@@YAXPEAX@Z 0x141600f30 ; MS2-FUNCTIONAL: read-only proxy accessor wrapper
-// MS2-PIN: ?FUN_141600f50@@YAXPEAX@Z 0x141600f50 ; MS2-FUNCTIONAL: read-only proxy accessor wrapper
-// MS2-PIN: ?FUN_141600f70@@YAXPEAX@Z 0x141600f70 ; MS2-FUNCTIONAL: read-only proxy accessor wrapper
-// MS2-PIN: ?FUN_141600f90@@YAXPEAX@Z 0x141600f90 ; MS2-FUNCTIONAL: read-only proxy accessor wrapper
-// MS2-PIN: ?FUN_141600fb0@@YAXPEAX@Z 0x141600fb0 ; MS2-FUNCTIONAL: read-only proxy accessor wrapper
-// MS2-PIN: ?FUN_141600fd0@@YAXPEAX@Z 0x141600fd0 ; MS2-FUNCTIONAL: read-only proxy accessor wrapper
-// MS2-PIN: ?FUN_141600ff0@@YAXPEAX@Z 0x141600ff0 ; MS2-FUNCTIONAL: read-only proxy accessor wrapper
+// MS2-PIN: ?FUN_141600e10@@YAPEAXPEAX@Z 0x141600e10 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
+// MS2-PIN: ?FUN_141600e40@@YAPEAXPEAX@Z 0x141600e40 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
+// MS2-PIN: ?FUN_141600e70@@YAPEAXPEAX@Z 0x141600e70 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
+// MS2-PIN: ?FUN_141600e90@@YAPEAXPEAX@Z 0x141600e90 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
+// MS2-PIN: ?FUN_141600eb0@@YAPEAXPEAX@Z 0x141600eb0 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
+// MS2-PIN: ?FUN_141600ed0@@YAPEAXPEAX@Z 0x141600ed0 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
+// MS2-PIN: ?FUN_141600ef0@@YAPEAXPEAX@Z 0x141600ef0 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
+// MS2-PIN: ?FUN_141600f10@@YAPEAXPEAX@Z 0x141600f10 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
+// MS2-PIN: ?FUN_141600f30@@YAPEAXPEAX@Z 0x141600f30 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
+// MS2-PIN: ?FUN_141600f50@@YAPEAXPEAX@Z 0x141600f50 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
+// MS2-PIN: ?FUN_141600f70@@YAPEAXPEAX@Z 0x141600f70 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
+// MS2-PIN: ?FUN_141600f90@@YAPEAXPEAX@Z 0x141600f90 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
+// MS2-PIN: ?FUN_141600fb0@@YAPEAXPEAX@Z 0x141600fb0 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
+// MS2-PIN: ?FUN_141600fd0@@YAPEAXPEAX@Z 0x141600fd0 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
+// MS2-PIN: ?FUN_141600ff0@@YAPEAXPEAX@Z 0x141600ff0 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
+// MS2-PIN: ?FUN_141600db0@@YAXPEAX0@Z 0x141600db0
+// MS2-PIN: ?FUN_141600de0@@YAXPEAX0@Z 0x141600de0
+// MS2-PIN: ?FUN_141601a70@@YAPEAXPEAX@Z 0x141601a70 ; MS2-FUNCTIONAL: returns proxy address after accessors
