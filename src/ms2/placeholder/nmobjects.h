@@ -280,9 +280,16 @@ class CNMGetServerInfoFunc : public CNMFunc
 {
 public:
     CNMGetServerInfoFunc(); // 0x1415859f0
+    CNMGetServerInfoFunc(int server, int channel); // 0x141585a50
     virtual ~CNMGetServerInfoFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
-    unsigned char m_30[0x8];                          // +0x30 (not recovered)
+    int m_30, m_34;
     std::vector<CNMSetServerInfoFunc::RequestInfo> m_requests; // +0x38
 };
 MS2_CHECK_SIZE(CNMGetServerInfoFunc, 0x50);
