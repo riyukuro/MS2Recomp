@@ -22,8 +22,9 @@ public:
     unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
     unsigned int DecodeFramed(CNMStream* pStream) override;
     unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
-    virtual void vfunc_9(unsigned int) {}
-    virtual void vfunc_10(unsigned int) {}
+    virtual char* vfunc_8() { return const_cast<char*>("CNMEvent"); }
+    virtual unsigned int vfunc_9() { return 0; }
+    virtual unsigned int vfunc_10() { return 0; }
     virtual void vfunc_11(unsigned int);
 
     int m_nEventId;    // +0x10
@@ -272,6 +273,7 @@ MS2_CHECK_SIZE(CNMGetNoteBoxFunc, 0x60);
 class CNMGetServerInfoFunc : public CNMFunc
 {
 public:
+    CNMGetServerInfoFunc(); // 0x1415859f0
     virtual ~CNMGetServerInfoFunc() = default;
 
     unsigned char m_30[0x8];                          // +0x30 (not recovered)
@@ -329,6 +331,8 @@ public:
     CNMInviteVirtualUserEvent(long long n28, int n30, int n34, long long n38, long long n40,
                               const char* text48, const char* text88);
     virtual ~CNMInviteVirtualUserEvent() = default;
+    unsigned int vfunc_10() override { return static_cast<unsigned int>(m_1c8); }
+    char* vfunc_8() override { return const_cast<char*>("CNMInviteVirtualUserEvent"); }
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -839,6 +843,7 @@ public:
     CNMAuthConnectionClosedEvent();
     explicit CNMAuthConnectionClosedEvent(int reason);
     virtual ~CNMAuthConnectionClosedEvent() = default;
+    char* vfunc_8() override { return const_cast<char*>("CNMAuthConnectionClosedEvent"); }
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -859,6 +864,7 @@ public:
     CNMAuthSecondaryConnectionClosedEvent();
     explicit CNMAuthSecondaryConnectionClosedEvent(int reason);
     virtual ~CNMAuthSecondaryConnectionClosedEvent() = default;
+    char* vfunc_8() override { return const_cast<char*>("CNMAuthSecondaryConnectionClosedEvent"); }
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -1990,6 +1996,7 @@ public:
     CNMCustomMessageEvent();
     explicit CNMCustomMessageEvent(const CNMMessageData& rMessage);
     virtual ~CNMCustomMessageEvent() = default;
+    char* vfunc_8() override { return const_cast<char*>("CNMCustomMessageEvent"); }
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -2008,6 +2015,7 @@ public:
     CNMCustomNotifyEvent();
     CNMCustomNotifyEvent(const CNMCustomNotifyData& rData);
     virtual ~CNMCustomNotifyEvent() = default;
+    char* vfunc_8() override { return const_cast<char*>("CNMCustomNotifyEvent"); }
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -2342,6 +2350,7 @@ public:
     CNMFindUserReplyEvent();
     explicit CNMFindUserReplyEvent(int nResult);
     virtual ~CNMFindUserReplyEvent() = default;
+    char* vfunc_8() override { return const_cast<char*>("CNMFindUserReplyEvent"); }
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -2570,6 +2579,7 @@ MS2_CHECK_SIZE(CNMGSNewMemberJoinedEvent, 0x128);
 class CNMGSRegisterCallbackFunc : public CNMFunc
 {
 public:
+    CNMGSRegisterCallbackFunc(); // 0x14159f5e0
     virtual ~CNMGSRegisterCallbackFunc() = default;
 
     long long m_30; // +0x30
@@ -2686,6 +2696,7 @@ MS2_CHECK_SIZE(CNMGSSetServingProcessIDFunc, 0x38);
 class CNMGSWantCloseFunc : public CNMFunc
 {
 public:
+    CNMGSWantCloseFunc(); // 0x14159f960
     virtual ~CNMGSWantCloseFunc() = default;
 
     int m_30; // +0x30
@@ -2787,6 +2798,7 @@ MS2_CHECK_SIZE(CNMGameLogWriteStageLogFunc, 0x138);
 class CNMGetConfigFunc : public CNMFunc
 {
 public:
+    CNMGetConfigFunc(); // 0x141581690
     virtual ~CNMGetConfigFunc() = default;
 
     int m_30; // +0x30
@@ -2820,6 +2832,7 @@ MS2_CHECK_SIZE(CNMGetConnConfigFunc, 0x98);
 class CNMGetCountFunc : public CNMFunc
 {
 public:
+    CNMGetCountFunc(); // 0x141582980
     virtual ~CNMGetCountFunc() = default;
 
     int m_30; // +0x30
@@ -2831,6 +2844,7 @@ MS2_CHECK_SIZE(CNMGetCountFunc, 0x38);
 class CNMGetDomainFunc : public CNMFunc
 {
 public:
+    CNMGetDomainFunc(); // 0x141583ee0
     virtual ~CNMGetDomainFunc() = default;
 
     char m_30[0x400]; // +0x30
@@ -3024,6 +3038,7 @@ MS2_CHECK_SIZE(CNMGetMyVirtualUserListFunc, 0x50);
 class CNMGetNexonPassportFunc : public CNMFunc
 {
 public:
+    CNMGetNexonPassportFunc(); // 0x141584d00
     virtual ~CNMGetNexonPassportFunc() = default;
 
     int m_30; // +0x30
@@ -3088,6 +3103,7 @@ MS2_CHECK_SIZE(CNMGetRejectedUserListFunc, 0x48);
 class CNMGetSecurityCodeCNFunc : public CNMFunc
 {
 public:
+    CNMGetSecurityCodeCNFunc(); // 0x1415850a0
     virtual ~CNMGetSecurityCodeCNFunc() = default;
 
     int m_30; // +0x30
@@ -3099,6 +3115,7 @@ MS2_CHECK_SIZE(CNMGetSecurityCodeCNFunc, 0x38);
 class CNMGetSecurityQuestionFunc : public CNMFunc
 {
 public:
+    CNMGetSecurityQuestionFunc(); // 0x141585390
     virtual ~CNMGetSecurityQuestionFunc() = default;
 
     CNMStr<0x400> m_30; // +0x30
@@ -3109,6 +3126,7 @@ MS2_CHECK_SIZE(CNMGetSecurityQuestionFunc, 0x38);
 class CNMGetUrlFunc : public CNMFunc
 {
 public:
+    CNMGetUrlFunc(); // 0x141591960
     virtual ~CNMGetUrlFunc() = default;
 
     int m_30; // +0x30
@@ -3129,6 +3147,7 @@ MS2_CHECK_SIZE(CNMGetUrlFunc, 0x650);
 class CNMGetUserInfoFunc : public CNMFunc
 {
 public:
+    CNMGetUserInfoFunc(); // 0x141595d10
     virtual ~CNMGetUserInfoFunc() = default;
 
     char m_30[0x40]; // +0x30
@@ -3144,6 +3163,7 @@ public:
     CNMGuildChatMessageEvent();
     CNMGuildChatMessageEvent(long long n28, long long n30, int n38, CNMChatMessage message);
     virtual ~CNMGuildChatMessageEvent() = default;
+    char* vfunc_8() override { return const_cast<char*>("CNMGuildChatMessageEvent"); }
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -3168,6 +3188,7 @@ public:
     CNMGuildOnlineInfoEvent(const CNMGuildOnlineInfo& rInfo);
     CNMGuildOnlineInfoEvent(const CNMGuildOnlineInfoEx& rInfo);
     virtual ~CNMGuildOnlineInfoEvent() = default;
+    char* vfunc_8() override { return const_cast<char*>("CNMGuildOnlineInfoEvent"); }
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -3187,6 +3208,7 @@ public:
     CNMGuildOnlineInfoExEvent();
     explicit CNMGuildOnlineInfoExEvent(const CNMGuildOnlineInfoEx& rInfo);
     virtual ~CNMGuildOnlineInfoExEvent() = default;
+    char* vfunc_8() override { return const_cast<char*>("CNMGuildOnlineInfoExEvent"); }
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -3397,6 +3419,8 @@ public:
     CNMMessengerReplyEvent();
     explicit CNMMessengerReplyEvent(int nReply);
     virtual ~CNMMessengerReplyEvent() = default;
+    unsigned int vfunc_9() override { return static_cast<unsigned int>(m_28); }
+    char* vfunc_8() override { return const_cast<char*>("CNMMessengerReplyEvent"); }
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3503,6 +3527,7 @@ public:
     CNMMsgConnectionClosedEvent();
     explicit CNMMsgConnectionClosedEvent(int nReason);
     virtual ~CNMMsgConnectionClosedEvent() = default;
+    char* vfunc_8() override { return const_cast<char*>("CNMMsgConnectionClosedEvent"); }
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3522,6 +3547,7 @@ public:
     CNMNoteInfoEvent();
     CNMNoteInfoEvent(const CNMNoteInfo2& rNoteInfo);
     virtual ~CNMNoteInfoEvent() = default;
+    char* vfunc_8() override { return const_cast<char*>("CNMNoteInfoEvent"); }
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -3542,6 +3568,7 @@ public:
     explicit CNMNoteInstantMsgEvent(const CNMNoteInfo& rNote);
     explicit CNMNoteInstantMsgEvent(CNMNoteInfo note);
     virtual ~CNMNoteInstantMsgEvent() = default;
+    char* vfunc_8() override { return const_cast<char*>("CNMNoteInstantMsgEvent"); }
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3611,7 +3638,17 @@ MS2_CHECK_SIZE(CNMProcessNoteFunc, 0x38);
 class CNMRealFriendInfoChangedEvent : public CNMEvent
 {
 public:
+    CNMRealFriendInfoChangedEvent();
+    CNMRealFriendInfoChangedEvent(int reason, const CNMRealFriendInfo& rInfo);
     virtual ~CNMRealFriendInfoChangedEvent() = default;
+    char* vfunc_8() override { return const_cast<char*>("CNMRealFriendInfoChangedEvent"); }
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_28; // +0x28
     int m_2c; // +0x2c
@@ -3640,6 +3677,7 @@ public:
     CNMRefreshMessageEvent();
     explicit CNMRefreshMessageEvent(int nMessage);
     virtual ~CNMRefreshMessageEvent() = default;
+    char* vfunc_8() override { return const_cast<char*>("CNMRefreshMessageEvent"); }
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3678,6 +3716,7 @@ class CNMRejectedUserListChangedEvent : public CNMEvent
 public:
     CNMRejectedUserListChangedEvent();
     virtual ~CNMRejectedUserListChangedEvent() = default;
+    char* vfunc_8() override { return const_cast<char*>("CNMRejectedUserListChangedEvent"); }
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -4155,6 +4194,7 @@ public:
     CNMSpecialEvent();
     CNMSpecialEvent(int nType, const char* text);
     virtual ~CNMSpecialEvent() = default;
+    char* vfunc_8() override { return const_cast<char*>("CNMSpecialEvent"); }
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
