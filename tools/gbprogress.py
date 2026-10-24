@@ -50,7 +50,7 @@ GB_BAND = (0x141bf0000, 0x142303c10)        # main Gamebryo band (report only)
 GB_TAIL = (0x1427b6c90, 0x1428d8dca)        # Gamebryo tail: renderer / shader libs + egmWhitebox (report only)
 STUB_GAP = 48                                # longest run of uncredited functions counted as one TU's stubs
 KEY = "gb2"                                  # gb2: .deps now case-repaired (Wine lowercases dirs); bump to recompile everything
-MATCH_KEY = "rtti-pin1"                         # bump to re-match every obj (pairing logic changed)
+MATCH_KEY = "local-1"                          # bump to re-match every obj (pairing logic changed)
 if bm.CHAIN:
     MATCH_KEY += "-chain"
 LEAF_SMALL, LEAF_NEAR = 16, 0x10000             # assign_copies: small leaf copies only this near the obj's own functions
@@ -405,6 +405,23 @@ def match_obj(path):
                 out.append((n, va, False, "hint"))
                 used.add(va)
                 pending.remove(n)
+    # locality pass (gb18): the exe keeps several copies of some COMDAT inlines (CryptoPP's AlgorithmParametersTemplate
+    # <RandomNumberType>::AssignValue in esign and integer, BitBucket::AlgorithmName); the tables name one, so the other
+    # TUs' copies stay stubs. A COMDAT-any function exact at a VA far from this obj's own code also credits an exact
+    # copy of it next to that code (the named pair stays: another TU may own that copy)
+    home = sorted(va for n, va, ok, _ in out if ok and not _comdat_any(obj, n))
+    if home and not NO_CALLEE:
+        def near(v):
+            i = bisect.bisect_left(home, v)
+            return min(abs(v - home[j]) for j in (i - 1, i) if 0 <= j < len(home)) <= STATIC_NEAR
+        used = {va for _, va, _, _ in out}
+        for n, va, ok, _ in list(out):
+            if ok and _comdat_any(obj, n) and not near(va):
+                for h in _search(obj, obj.by_name[n]):
+                    if h not in used and near(h) and _allowed(h) and not _in_game(h) and _match(obj, n, h):
+                        out.append((n, h, True, "local"))
+                        used.add(h)
+                        break
     # the remaining unpaired functions with several byte-identical exe copies are paired by assign_copies (all objs)
     out += [weak[n] for n in pending if n in weak]
     cands = [[n, list(copies[n])] for n in pending if n in copies]
