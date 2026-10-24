@@ -1342,3 +1342,6 @@ template<> CNMStr<0x800>::CNMStr()
 {
 }
 // MS2-PIN: ??0?$CNMStr@$0IAA@@@QEAA@XZ 0x1415e5c00
+
+// MS2-PIN: ??$construct@PEADAEBQEAD@?$_Default_allocator_traits@V?$allocator@D@std@@@std@@SAXAEAV?$allocator@D@1@QEAPEADAEBQEAD@Z 0x1415e2390
+// MS2-PIN: ??$forward@AEBQEAD@std@@YAAEBQEADAEBQEAD@Z 0x1415e4bb0
