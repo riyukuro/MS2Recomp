@@ -470,17 +470,20 @@ void CNametagSymbolTable::SetInit(bool b)
 // MS2-FUNCTIONAL: full-exe entry forwards to the recovered symbol-table loader; its legacy ABI discards the status.
 void FUN_1406c54d0(CNametagSymbolTable* table) { table->Load(); }
 
+class MyPC;
 class Unk_NtMgr
 {
 public:
     int FUN_1406c5a70(short id);
     int FUN_1406c5c80(short id);
     int FUN_1406c5d60(short id);
+    CStringW FUN_1406c61a0(short id, Unk_NtPlayer* player);
 };
 class Unk_MiNtMgr
 {
 public:
     int FUN_1406c5d60(short id);
+    CStringW FUN_1406c61a0(short id, MyPC* player);
 };
 class Unk_MyPCChannelTable
 {
@@ -503,3 +506,10 @@ int Unk_MiNtMgr::FUN_1406c5d60(short id)
 // MS2-FUNCTIONAL: channel-table spelling forwards to the same condition lookup.
 int Unk_MyPCChannelTable::FUN_1406c5d60(unsigned short id)
 { return static_cast<int>(reinterpret_cast<CNametagSymbolTable*>(this)->CheckCondition(id)); }
+
+// MS2-FUNCTIONAL: legacy player spellings forward to the recovered ranked-icon lookup.
+CStringW Unk_NtMgr::FUN_1406c61a0(short id, Unk_NtPlayer* player)
+{ return reinterpret_cast<CNametagSymbolTable*>(this)->GetIconRanked(static_cast<unsigned short>(id), reinterpret_cast<Unk_NametagActor*>(player)); }
+// MS2-FUNCTIONAL: legacy player spellings forward to the recovered ranked-icon lookup.
+CStringW Unk_MiNtMgr::FUN_1406c61a0(short id, MyPC* player)
+{ return reinterpret_cast<CNametagSymbolTable*>(this)->GetIconRanked(static_cast<unsigned short>(id), reinterpret_cast<Unk_NametagActor*>(player)); }
