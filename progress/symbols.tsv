@@ -142589,7 +142589,7 @@ vsprintf	14116bc30	func
 ?FUN_1413a47b0@@YA_NAEBVUnk_GeActRef@@@Z	1413a47b0	func
 ?FUN_1413a47e0@@YA_NAEBVUnk_GcCondRef@@@Z	1413a47e0	func
 ?FUN_1413a4810@@YAPEAXPEAX@Z	1413a4810	func
-?FUN_141398a90@@YAPEAXPEAX@Z	1413a4830	func
+?FUN_141398a90@@YAPEAXPEAX@Z	141398a90	func
 ??_GCGuideEntity@@UEAAPEAXI@Z	1413a4960	func
 ?Append@?$CAtlArray@UUnk_GcCondRefRaw@@V?$CElementTraits@UUnk_GcCondRefRaw@@@ATL@@@ATL@@QEAA_KAEBV12@@Z	1413a49a0	func
 ?CallConstructors@?$CAtlArray@UUnk_GcCondRefRaw@@V?$CElementTraits@UUnk_GcCondRefRaw@@@ATL@@@ATL@@CAXPEAUUnk_GcCondRefRaw@@_K@Z	1413a4a30	func

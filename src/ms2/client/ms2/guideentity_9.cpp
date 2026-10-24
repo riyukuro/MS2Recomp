@@ -86,6 +86,7 @@ void FUN_14139eff0(Unk_GeTreeHead* pHead, Unk_GeNode* pNode);           // rotat
 void FUN_14139faa0(Unk_GeTreeHead* pHead, Unk_GeNode* pNode);           // rotate right
 void FUN_1413a4e30(void* pMap, Unk_GeNode* pNode);                      // frees a node
 void* FUN_141398a90(void* pIter);
+void* FUN_1413a4830(void* pIter);                                       // map<int,int> iterator operator* (out of line, calls the const one)
 void FUN_141389060(Unk_GcCondRef* pRef);
 unsigned __int64 FUN_1413a5140(void* pMap);
 void* FUN_1413a5160(void* pNode);
@@ -216,7 +217,13 @@ bool FUN_1413a47e0(const Unk_GcCondRef& ref)
 // @0x1413a4810
 void* FUN_1413a4810(void* pIter)
 {
-    return FUN_1413a5160(FUN_141398a90(pIter));
+    return FUN_1413a5160(FUN_1413a4830(pIter));
+}
+
+// @0x1413a4830
+void* FUN_1413a4830(void* pIter)
+{
+    return FUN_141398a90(pIter);
 }
 
 // @0x1413a4a30
