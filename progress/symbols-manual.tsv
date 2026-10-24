@@ -10288,6 +10288,7 @@ DAT_14318f040	14318f040	data
 ?Add@AS3@GFx@Scaleform@@YA?AVCheckResult@123@AEAVStringManager@123@AEAVValue@123@AEBV6123@2@Z	1424e5f50	func
 ?DAT_1431323f8@@3QBDB	1431323f8	data
 ?DAT_143134480@@3QBUluaL_Reg@@B	143134480	data
+?DAT_142dc9d48@GFx@Scaleform@@3PADA	142dc9d48	data
 ?DAT_143109420@GFx@Scaleform@@3PADA	143109420	data
 ?DAT_143184be8@GFx@Scaleform@@3PADA	143184be8	data
 ?DAT_143184c18@GFx@Scaleform@@3PADA	143184c18	data
@@ -10296,9 +10297,16 @@ DAT_14318f040	14318f040	data
 ?GetDescendants@XMLSupportImpl@AS3@GFx@Scaleform@@UEBA?AVCheckResult@234@AEAVValue@234@AEBVMultiname@234@@Z	142509140	func
 ?FunctionTable@TextFieldProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143214410	data
 ?FunctionTable@KeyCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213a70	data
+?GetMember@CapabilitiesCtorFunction@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@PEAVValue@234@@Z	14294de70	func
 ?FUN_14277e6e0@@YAXPEAUCefString16@@PEAUcef_string_t@@@Z	14277e6e0	func
 ?Collect@?$RefCountCollector@$0BED@@AS3@GFx@Scaleform@@QEAA_NPEAUStats@1234@@Z	1423de770	func
 ?ExecuteCompleteEvent@LoaderInfo@fl_display@Instances@AS3@GFx@Scaleform@@QEAAXXZ	1424422a0	func
 ?ExecuteInitEvent@LoaderInfo@fl_display@Instances@AS3@GFx@Scaleform@@QEAAXPEAVDisplayObject@56@@Z	1424426d0	func
 ?ExecuteProgressEvent@LoaderInfo@fl_display@Instances@AS3@GFx@Scaleform@@QEAAX_K0@Z	142442b50	func
-?GetMember@CapabilitiesCtorFunction@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@PEAVValue@234@@Z	14294de70	func
+?OnKeyDown@KeyCtorFunction@AS2@GFx@Scaleform@@UEAAXPEAVInteractiveObject@23@AEBVEventId@23@H@Z	14296c180	func
+?OnKeyUp@KeyCtorFunction@AS2@GFx@Scaleform@@UEAAXPEAVInteractiveObject@23@AEBVEventId@23@H@Z	14296c1d0	func
+?Update@KeyCtorFunction@AS2@GFx@Scaleform@@UEAAXAEBVEventId@23@@Z	142992840	func
+?IsValid@?$Matrix2x4@M@Render@Scaleform@@QEBA_NXZ	142515710	func
+?SetText@TextField@GFx@Scaleform@@QEAAXPEB_W_N@Z	1425bd530	func
+?SetTextValue@TextField@GFx@Scaleform@@QEAA_NPEBD_N1@Z	1425bd9a0	func
+?TransformToTextRectSpace@TextField@GFx@Scaleform@@QEBA?AV?$Point@M@Render@3@AEBVDisplayInfo@Value@23@@Z	1425be970	func
