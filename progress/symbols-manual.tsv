@@ -9942,3 +9942,5 @@ Video04ClassInfo	143a47b70	data
 ?ClassClassCI@fl@AS3@GFx@Scaleform@@3UClassInfo@234@B	14313d940	data
 ?GetChildren@XMLElement@fl@Instances@AS3@GFx@Scaleform@@UEAAXAEAVXMLList@23456@AEBVMultiname@456@@Z	142415320	func
 ?GetChildren@XMLElement@fl@Instances@AS3@GFx@Scaleform@@UEAAXAEAVXMLList@23456@W4Kind@XML@23456@PEBVASString@56@@Z	1424153c0	func
+?GetChildren@XML@fl@Instances@AS3@GFx@Scaleform@@UEAAXAEAVXMLList@23456@AEBVMultiname@456@@Z	142415300	func
+?GetChildren@XML@fl@Instances@AS3@GFx@Scaleform@@UEAAXAEAVXMLList@23456@W4Kind@123456@PEBVASString@56@@Z	142415310	func
