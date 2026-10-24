@@ -169,8 +169,16 @@ MS2_CHECK_SIZE(CNMCRBanUserFunc, 0x38);
 class CNMCRSendChatMessageFunc : public CNMFunc
 {
 public:
+    CNMCRSendChatMessageFunc(); // 0x14159edb0
     CNMCRSendChatMessageFunc(unsigned uSerialKey, const unsigned __int64* pKeys, const CNMChatMessage& msg); // 0x14159ee30
     virtual ~CNMCRSendChatMessageFunc() = default;                        // 0x1415ec880
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     unsigned __int64 m_aKeys[10];                               // +0x30
     CNMChatMessage m_msg;                                       // +0x80
