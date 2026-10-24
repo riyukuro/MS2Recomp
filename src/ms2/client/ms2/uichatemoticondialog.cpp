@@ -153,7 +153,7 @@ Scaleform::GFx::Value AScript::FUN_140bd2cb0(const char* szMethod, const ASArray
 MS2_REPLACE_METHOD(0x140BD2CB0, AScript, FUN_140bd2cb0, 148, 0x01016A6F);
 
 // @0x140bd2c00
-static UIMeratMarketDialog* FUN_140bd2c00()
+UIMeratMarketDialog* FUN_140bd2c00()
 {
     Unk_EdUIManager* pManager = FUN_1403ed2b0();
     if (pManager == 0)
