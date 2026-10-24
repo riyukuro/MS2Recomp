@@ -373,6 +373,89 @@ unsigned char* FUN_1415ca240(unsigned char* out)
     return out;
 }
 
+// MS2-FUNCTIONAL: validates and stores the selected code page before dispatching its request.
+// @0x1415c4640
+int FUN_1415c4640(void*, int codePage)
+{
+    CNMManager* manager = CNMManager::GetInstance();
+    if (!FUN_1415cb710(manager, static_cast<unsigned int>(codePage))) return 0;
+    CNMSetCodePageFunc request(codePage);
+    return manager->CallNMFunc(&request);
+}
+
+// MS2-FUNCTIONAL: wraps the recovered connection configuration in a request and dispatches it.
+// @0x1415c46f0
+int FUN_1415c46f0(void*, const CNMConnConfig* config)
+{
+    CNMSetConnConfigFunc request(*config);
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
+// MS2-FUNCTIONAL: wraps the supplied server request vector and dispatches it.
+// @0x1415c4780
+int FUN_1415c4780(void*, const void* requests)
+{
+    using Requests = std::vector<CNMSetServerInfoFunc::RequestInfo>;
+    CNMSetServerInfoFunc request(*static_cast<const Requests*>(requests));
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
+// MS2-FUNCTIONAL: initializes the manager request with the recovered high-bit flag.
+// @0x1415c4810
+int FUN_1415c4810(void*, int value)
+{
+    CNMInitializeFunc request(value, static_cast<int>(0x80000000u));
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
+// MS2-FUNCTIONAL: dispatches the callback registration request with the recovered flag.
+// @0x1415c48c0
+int FUN_1415c48c0(void*, const void* callback, int flags)
+{
+    CNMRegisterCallbackFunc request(callback, flags);
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
+// MS2-FUNCTIONAL: dispatches the callback reset request for the supplied callback value.
+// @0x1415c4930
+int FUN_1415c4930(void*, unsigned long long callback)
+{
+    CNMResetCallbackFunc request(callback);
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
+// MS2-FUNCTIONAL: dispatches a change-position request for the supplied key.
+// @0x1415c5590
+int FUN_1415c5590(void*, long long position)
+{
+    CNMChangeMyPositionFunc request(position);
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
+// MS2-FUNCTIONAL: dispatches the refresh notification with its recovered result value.
+// @0x1415c5620
+int FUN_1415c5620(void*, unsigned int result)
+{
+    CNMSendRefreshMessageFunc request(result);
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
+// MS2-FUNCTIONAL: dispatches the requested character level and job values.
+// @0x1415c5680
+int FUN_1415c5680(void*, int level, int job)
+{
+    CNMChangeMyLevelFunc request(level, job);
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
+// MS2-FUNCTIONAL: dispatches removal of the supplied virtual-user key.
+// @0x1415c56f0
+int FUN_1415c56f0(void*, const NMKey64* key)
+{
+    CNMRemoveMyVirtualUserFunc request(key);
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
 // @0x1415c46c0
 void FUN_1415c46c0()
 {
