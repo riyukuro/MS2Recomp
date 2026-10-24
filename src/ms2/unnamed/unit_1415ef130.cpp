@@ -38,6 +38,7 @@ extern void FUN_1415d2670(void*); extern void FUN_1415d2690(void*);
 extern long long* FUN_1415f3f50(long long*);
 extern void* FUN_1415f3f10(void*);
 extern void* FUN_1415f3a30(void*); extern void* FUN_1415f3a50(void*);
+extern long long FUN_1415f3aa0(long long*);
 extern void* FUN_141602970(void*);
 extern void* FUN_141602940(void*);
 extern long long* FUN_1415f46c0(long long*);
@@ -3519,6 +3520,12 @@ CNMSerializable* FUN_1415f24e0(CNMSerializable* dst, long long src)
 bool FUN_1415f2a60(const long long* a, const long long* b)
 {
     return *a == *b;
+}
+// MS2-FUNCTIONAL: follows the recovered calls; the downstream helper preserves the pointer unchanged.
+// @0x1415f3a10
+void FUN_1415f3a10(void* p)
+{
+    (void)FUN_1415f3aa0(static_cast<long long*>(p));
 }
 // MS2-FUNCTIONAL: copies the recovered fixed payload and preserves the embedded serializable vtable.
 // @0x1415f1930
