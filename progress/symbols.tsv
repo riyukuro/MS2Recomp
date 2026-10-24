@@ -176921,6 +176921,7 @@ FUN_141485590	141485590	func
 ??0UIAvatarRidee@@QEAA@XZ	1418bdeb0	func
 ??0UIAvatarRidee@@QEAA@V?$MS2Ptr@VCItemData@@@@@Z	1418bdf30	func
 ??0UIAvatarRidee@@QEAA@VUnk_RideePtr@@@Z	1418bdfd0	func
+??0UIAvatarRidee@@QEAA@VUnk_AdvMountPtr@@@Z	1418bdfd0	func
 ??1UIAvatarRidee@@UEAA@XZ	1418be060	func
 ?vfunc_1@UIAvatarRidee@@UEAAXPEAVIUIAvatarEventListener@@@Z	1418be0b0	func
 ?vfunc_21@UIAvatarRidee@@UEAAXPEAVUIRenderView@@@Z	1418be2b0	func
@@ -177065,7 +177066,6 @@ FUN_141485590	141485590	func
 ?AddRefImpl@?$MS2Ptr@VCAvatarPackageEquip@@@@AEBAXPEAX@Z	1418c1f00	func
 ?AddRefImpl@?$MS2Ptr@VCLimitCharRotate@ItemPreviewCommon@@@@AEBAXPEAX@Z	1418c1f30	func
 ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@U?$pair@I_K@std@@V?$MS2Ptr@VCAvatarPackageEquip@@@@U?$less@U?$pair@I_K@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@I_K@std@@V?$MS2Ptr@VCAvatarPackageEquip@@@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBU?$pair@I_K@std@@V?$MS2Ptr@VCAvatarPackageEquip@@@@@std@@PEAX@2@XZ	1418c1f60	func
-??0UIAvatarRidee@@QEAA@VUnk_AdvMountPtr@@@Z	1418c1fa0	func
 ?_Buynode0@?$_Tree_comp_alloc@V?$_Tmap_traits@U?$pair@I_K@std@@V?$MS2Ptr@VCAvatarPackageEquip@@@@U?$less@U?$pair@I_K@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@I_K@std@@V?$MS2Ptr@VCAvatarPackageEquip@@@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBU?$pair@I_K@std@@V?$MS2Ptr@VCAvatarPackageEquip@@@@@std@@PEAX@2@XZ	1418c2020	func
 ?_Compare@?$_Tree@V?$_Tmap_traits@U?$pair@I_K@std@@V?$MS2Ptr@VCAvatarPackageEquip@@@@U?$less@U?$pair@I_K@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@I_K@std@@V?$MS2Ptr@VCAvatarPackageEquip@@@@@std@@@2@$0A@@std@@@std@@IEBA_NAEBU?$pair@I_K@2@0@Z	1418c2100	func
 ?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@U?$pair@I_K@std@@V?$MS2Ptr@VCAvatarPackageEquip@@@@U?$less@U?$pair@I_K@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@I_K@std@@V?$MS2Ptr@VCAvatarPackageEquip@@@@@std@@@2@$0A@@std@@@std@@QEAAXXZ	1418c2140	func

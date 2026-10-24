@@ -1732,7 +1732,7 @@ __imp_CrashReporter_SetClientExit	142cce1c0	data
 ?RemoveUnusedAssetData@AnimationService@egmAnimation@@IEAAXV?$SmartPointer@VAssetData@AnimationService@egmAnimation@@@efd@@@Z	14227f1a0	func
 ?UnCacheHandles@AnimationService@egmAnimation@@QEAAXAEAV?$vector@V?$SmartPointer@VKFMCacheData@KFMCache@egmAnimation@@@efd@@@efd@@@Z	14227ffe0	func
 ?Replace@NiString@@QEAAXPEBD0@Z	141d5f620	func
-??0UIAvatarRidee@@QEAA@VUnk_AdvMountPtr@@@Z	1418c1fa0	func
+??0UIAvatarRidee@@QEAA@VUnk_AdvMountPtr@@@Z	1418bdfd0	func
 ??0Unk_MpCamData@@QEAA@XZ	140cb13b0	func
 ??0Unk_MpSkillSetArg@@QEAA@AEBVUnk_MpSkillSetPtr@@@Z	14176ca20	func
 ??1Unk_MpAchieveRowPtr@@QEAA@XZ	1401597b0	func
