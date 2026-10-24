@@ -628,3 +628,81 @@ EE_HANDLER(WorldService, FUN_141bc0290, ecr::SceneGraphRemovedMessage);
 
 // fx25: the pair<const int, SmartPointer<Entity>> node's scalar deleting dtor (dtor 0x141bf5dd0, delete 0x10)
 // MS2-PIN: ??_G?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@QEAAPEAXI@Z 0x141bf9f10
+
+// ---- the typed entry points worldservice_1.cpp declares for these COMDATs ----
+// The exe bodies are the ATL members of the WorldService maps; these entry points run the same members of a
+// stand-in map whose node layout matches (a 16- or 24-byte pair ahead of the tree links).
+
+// CRBTree<CString, MS2Ptr<CLiftableObject>>::GetHeadPosition (Minimum(m_pRoot)).
+// MS2-FUNCTIONAL: the member of a stand-in map with the same node layout
+void* FUN_141bfebf0(void* map)
+{
+    return static_cast<ATL::CRBMap<CString, Unk_WsV678>*>(map)->GetHeadPosition();
+}
+
+// CRBTree<unsigned, SmartPointer<CNpc>>::GetNext(pos): returns the node, advances pos to its successor.
+// MS2-FUNCTIONAL: the member of a stand-in map with the same node layout
+void FUN_141bff0b0(ATL::CRBMap<unsigned, Unk_WsV0e8>* map, void** pos)
+{
+    POSITION p = (POSITION)*pos;
+    map->GetNext(p);
+    *pos = p;
+}
+
+// MS2-FUNCTIONAL: the member of a stand-in map with the same node layout
+void FUN_141bff0b0(void* map, void** pos)
+{
+    FUN_141bff0b0(static_cast<ATL::CRBMap<unsigned, Unk_WsV0e8>*>(map), pos);
+}
+
+// CRBTree<egf::Entity*, MS2Ptr<Unk_WsMarker>>::GetNext(pos).
+// MS2-FUNCTIONAL: the member of a stand-in map with the same node layout
+void FUN_141bff0f0(void* map, void** pos)
+{
+    POSITION p = (POSITION)*pos;
+    static_cast<ATL::CRBMap<void*, Unk_WsV208>*>(map)->GetNext(p);
+    *pos = p;
+}
+
+// CRBTree<unsigned, MS2Ptr<Unk_WsTargetF7>>::GetNext(pos).
+// MS2-FUNCTIONAL: the member of a stand-in map with the same node layout
+void FUN_141bff230(void* map, void** pos)
+{
+    POSITION p = (POSITION)*pos;
+    static_cast<ATL::CRBMap<unsigned, Unk_WsV208>*>(map)->GetNext(p);
+    *pos = p;
+}
+
+// CAtlMap<unsigned, MS2Ptr<CProxyGameObject>>::GetStartPosition: the first non-empty bin.
+// MS2-FUNCTIONAL: the member of a stand-in map with the same header layout
+void* FUN_141bffee0(void* map)
+{
+    return static_cast<ATL::CAtlMap<unsigned, Unk_WsV208>*>(map)->GetStartPosition();
+}
+
+// The Lookup(key, value&) entries worldservice_1 declares for the WorldService maps (exe 0x141c06b80 / 0x141c072e0).
+struct Unk_WsC_TagPtr;
+class Unk_WsB_Lift;
+
+// CAtlMap<unsigned, Unk_WsV208>::Lookup(key, value&): the value is a 16-byte tagged pointer assigned through the
+// folded MS2Ptr::operator= (0x141bf6c70).
+// MS2-FUNCTIONAL: Lookup(key) plus an MS2Ptr<CPtred> assignment instead of the member Lookup(key, value&)
+bool FUN_141c06b80(void* map, unsigned key, Unk_WsC_TagPtr* out)
+{
+    ATL::CAtlMap<unsigned, Unk_WsV208>::CPair* p = static_cast<ATL::CAtlMap<unsigned, Unk_WsV208>*>(map)->Lookup(key);
+    if (!p)
+        return false;
+    *(MS2Ptr<CPtred>*)out = *(MS2Ptr<CPtred>*)&p->m_value;
+    return true;
+}
+
+// CRBMap<CString, Unk_WsV678>::Lookup(key, value&) for the lift map.
+// MS2-FUNCTIONAL: Lookup(key) plus an MS2Ptr<CPtred> assignment instead of the member Lookup(key, value&)
+bool FUN_141c072e0(void* map, CString& key, MS2Ptr<Unk_WsB_Lift>& out)
+{
+    ATL::CRBMap<CString, Unk_WsV678>::CPair* p = static_cast<ATL::CRBMap<CString, Unk_WsV678>*>(map)->Lookup(key);
+    if (!p)
+        return false;
+    *(MS2Ptr<CPtred>*)&out = *(MS2Ptr<CPtred>*)&p->m_value;
+    return true;
+}

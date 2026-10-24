@@ -244,3 +244,37 @@ template class efd::MessageHandlerImpl<WorldService, egf::EntityLoadResult>;
 template class efd::MessageHandlerImpl<WorldService, ecrPhysX::PhysXPropMessage>;
 template class efd::MessageHandlerImpl<WorldService, ecr::SceneGraphAddedMessage>;
 template class efd::MessageHandlerImpl<WorldService, ecr::SceneGraphRemovedMessage>;
+
+// ---- the typed entry points worldservice_1.cpp declares for these COMDATs ----
+// worldservice_1 calls the map members by address through these declarations; the exe bodies are the
+// ATL ones (GetValueAt: ATLENSURE(pos) then the node's value at +8). The Lookup entries are in unit_141bf99b8.
+struct Unk_WsC_ActorRef;
+class Unk_WsC_GameObj;
+class FieldProperty;
+static inline void* WsNodeValue(void* pos)
+{
+    ATLENSURE(pos != NULL);
+    return (char*)pos + 8;
+}
+
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+void* FUN_141c00300(void* map, void* pos) { return WsNodeValue(pos); }
+
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+MS2Ptr<FieldProperty>* FUN_141c00530(void* map, void* pos) { return (MS2Ptr<FieldProperty>*)WsNodeValue(pos); }
+
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+void* FUN_141c007a0(void* map, void* pos) { return WsNodeValue(pos); }
+
+// The m_0e8 spelling of the same body (CRBMap<unsigned, Unk_WsV0e8>, a SmartPointer<GameObject> value).
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+efd::SmartPointer<Unk_WsC_GameObj>* FUN_141c007a0(ATL::CRBMap<unsigned, Unk_WsV0e8>* map, void* pos)
+{
+    return (efd::SmartPointer<Unk_WsC_GameObj>*)WsNodeValue(pos);
+}
+
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+Unk_WsC_ActorRef* FUN_141c00800(void* map, void* pos) { return (Unk_WsC_ActorRef*)WsNodeValue(pos); }
+
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+void* FUN_141c009e0(void* map, void* pos) { return WsNodeValue(pos); }

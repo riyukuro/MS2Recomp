@@ -2782,3 +2782,65 @@ void FUN_141562500(NiSourceTexture* pTexture, NiPixelData* pPixels)
 // MS2-PIN: ??9?$SmartPointer@VNiAVObject@@@efd@@QEBA_NPEAVNiAVObject@@@Z 0x14155be40 ; hand: this TU's byte-identical copy
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb37d0-0x142cb38a0 .text$yd
+
+// ---- the typed entry points other units declare for CNifLoadingService's texture cache ----
+// asyncimageloader / worldservice_1 / ugcviewerequip / ms2scenegraphservice / textureanimationdata reach these
+// members through local stand-in classes; each entry point forwards to the recovered member.
+// The texture handle of postprocesseffect.h (that header's data externs clash with this unit's).
+class Unk_PPSmartC {
+public:
+    Unk_PPSmartC(void* p = 0);      // 0x14097ed60
+    Unk_PPSmartC(const Unk_PPSmartC& rhs);
+    ~Unk_PPSmartC();                // 0x14097f4a0
+private:
+    void* m_p;
+};
+class Unk_UgcTextureCache
+{
+public:
+    efd::SmartPointer<NiTexture> FUN_1415534d0(CString strPath, efd::SmartPointer<NiPixelData> spPixels, int nClass);
+    efd::SmartPointer<NiTexture> FUN_141553eb0(CString strPath, NiTexture* pkSelf);
+};
+class Unk_SgNifLoader
+{
+public:
+    efd::SmartPointer<NiTexture> FUN_141553eb0(CString strPath, NiTexture* pkSelf);
+    void FUN_1415540f0(CString strPath, NiTexture* pkTex);
+};
+class Unk_TexAnimResMgr
+{
+public:
+    Unk_PPSmartC FUN_141553eb0(CString strPath, void* pkSelf);
+};
+
+// MS2-FUNCTIONAL: forwards to CNifLoadingService::CreateTexture
+efd::SmartPointer<NiTexture> Unk_UgcTextureCache::FUN_1415534d0(CString strPath, efd::SmartPointer<NiPixelData> spPixels, int nClass)
+{
+    return ((CNifLoadingService*)this)->CreateTexture(strPath, spPixels, nClass).data();
+}
+
+// MS2-FUNCTIONAL: forwards to CNifLoadingService::FindTexture
+efd::SmartPointer<NiTexture> Unk_UgcTextureCache::FUN_141553eb0(CString strPath, NiTexture* pkSelf)
+{
+    return ((CNifLoadingService*)this)->FindTexture(strPath, (const NiTexture::FormatPrefs*)pkSelf);
+}
+
+// MS2-FUNCTIONAL: forwards to CNifLoadingService::FindTexture
+efd::SmartPointer<NiTexture> Unk_SgNifLoader::FUN_141553eb0(CString strPath, NiTexture* pkSelf)
+{
+    return ((CNifLoadingService*)this)->FindTexture(strPath, (const NiTexture::FormatPrefs*)pkSelf);
+}
+
+// MS2-FUNCTIONAL: forwards to CNifLoadingService::FindTexture
+Unk_PPSmartC Unk_TexAnimResMgr::FUN_141553eb0(CString strPath, void* pkSelf)
+{
+    efd::SmartPointer<NiTexture> spTexture =
+        ((CNifLoadingService*)this)->FindTexture(strPath, (const NiTexture::FormatPrefs*)pkSelf);
+    return Unk_PPSmartC(spTexture.data());
+}
+
+// MS2-FUNCTIONAL: forwards to CNifLoadingService::AddTexture
+void Unk_SgNifLoader::FUN_1415540f0(CString strPath, NiTexture* pkTex)
+{
+    ((CNifLoadingService*)this)->AddTexture(strPath, (NiSourceTexture*)pkTex);
+}

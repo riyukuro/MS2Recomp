@@ -3639,3 +3639,24 @@ CSEReduceSkillGroupCooltimeCtx::~CSEReduceSkillGroupCooltimeCtx()
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb68d0-0x142cb6d70 .text$yd
+
+// ---- uidynamicactiondialog.cpp's comparator spellings ----
+// The symbol table binds Unk_EmotionGreater to 0x141764410 and Unk_EmotionLess to 0x141764570; each entry point
+// runs the body recovered at that address.
+class Unk_Emotion;
+struct Unk_EmotionLess { bool operator()(const MS2Ptr<Unk_Emotion>& a, const MS2Ptr<Unk_Emotion>& b) const; };
+struct Unk_EmotionGreater { bool operator()(const MS2Ptr<Unk_Emotion>& a, const MS2Ptr<Unk_Emotion>& b) const; };
+
+// MS2-FUNCTIONAL: forwards to the comparator recovered at this address
+bool Unk_EmotionGreater::operator()(const MS2Ptr<Unk_Emotion>& a, const MS2Ptr<Unk_Emotion>& b) const
+{
+    return Unk_SsEmotionLess()(reinterpret_cast<const MS2Ptr<CSkillSystem::stEmotion>&>(a),
+        reinterpret_cast<const MS2Ptr<CSkillSystem::stEmotion>&>(b));
+}
+
+// MS2-FUNCTIONAL: forwards to the comparator recovered at this address
+bool Unk_EmotionLess::operator()(const MS2Ptr<Unk_Emotion>& a, const MS2Ptr<Unk_Emotion>& b) const
+{
+    return Unk_SsEmotionGreater()(reinterpret_cast<const MS2Ptr<CSkillSystem::stEmotion>&>(a),
+        reinterpret_cast<const MS2Ptr<CSkillSystem::stEmotion>&>(b));
+}

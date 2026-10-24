@@ -382,3 +382,43 @@ MS2Ptr<CRandomTargetEffect> CRandomTargetEffectController::Find(unsigned nId)
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+
+// ---- typed entry points other units declare for this unit's COMDATs ----
+#include "ms2/placeholder/tptr.h"
+class PC;
+class PCBase;
+// The intrusive pointee: TPtr releases through vftable slot 2.
+struct Unk_RteTPtrTarget
+{
+    virtual void vfunc_0();
+    virtual void vfunc_1();
+    virtual void Release();
+};
+
+// TPtr<PC>::~TPtr (TPtr<PCBase>'s body is the same COMDAT).
+// MS2-FUNCTIONAL: the slot-2 release through a stand-in pointee type
+template <> TPtr<PC>::~TPtr()
+{
+    if (m_p)
+        ((Unk_RteTPtrTarget*)m_p)->Release();
+}
+
+// MS2-FUNCTIONAL: the slot-2 release through a stand-in pointee type
+template <> TPtr<PCBase>::~TPtr()
+{
+    if (m_p)
+        ((Unk_RteTPtrTarget*)m_p)->Release();
+}
+
+// pc.cpp's view of SetScale (it drops the result).
+class Unk_PCRandomTargetView
+{
+public:
+    void FUN_140aab3c0(float fAlpha);
+};
+
+// MS2-FUNCTIONAL: forwards to CRandomTargetEffect::SetScale
+void Unk_PCRandomTargetView::FUN_140aab3c0(float fAlpha)
+{
+    ((CRandomTargetEffect*)this)->SetScale(fAlpha);
+}

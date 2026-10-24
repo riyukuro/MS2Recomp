@@ -3135,3 +3135,17 @@ void FUN_140d61590(Unk_MmProductListByKey& map, int nKey, MS2Ptr<CMeratMarketPro
         }
     }
 }
+
+// ---- the typed entry points uiservice.cpp / unit_140e3efd0 declare for Unk_MmGetDialog<UIAdPushDialog> ----
+enum eUIClassID : int;   // uiservice.h
+// MS2-FUNCTIONAL: forwards to the template instance
+UIAdPushDialog* FUN_140d61c00(int nClass)
+{
+    return Unk_MmGetDialog<UIAdPushDialog>(nClass);
+}
+
+// MS2-FUNCTIONAL: forwards to the template instance
+UIAdPushDialog* FUN_140d61c00(eUIClassID nClass)
+{
+    return Unk_MmGetDialog<UIAdPushDialog>(nClass);
+}

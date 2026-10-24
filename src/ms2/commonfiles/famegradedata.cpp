@@ -938,3 +938,23 @@ void CFameTable::SetInit(bool b)
 {
     s_bInit = b;
 }
+
+// ---- the typed entry points uiemoticon.cpp / unit_14108e1e0 declare for IsNotOfficerNpc ----
+class Unk_EmoNpcTable
+{
+public:
+    int FUN_14035b0a0(int nNpcType);
+    int FUN_14035b0a0(unsigned int nId);
+};
+
+// MS2-FUNCTIONAL: forwards to CFameTable::IsNotOfficerNpc
+int Unk_EmoNpcTable::FUN_14035b0a0(int nNpcType)
+{
+    return ((CFameTable*)this)->IsNotOfficerNpc(nNpcType);
+}
+
+// MS2-FUNCTIONAL: forwards to CFameTable::IsNotOfficerNpc
+int Unk_EmoNpcTable::FUN_14035b0a0(unsigned int nId)
+{
+    return ((CFameTable*)this)->IsNotOfficerNpc((int)nId);
+}
