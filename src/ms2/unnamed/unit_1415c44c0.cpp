@@ -33,46 +33,46 @@ void CStreamCryptor_v0::vfunc_2() { }
 // MS2-FUNCTIONAL: this recovered v0 virtual slot has no side effects and returns zero in the decompilation.
 // MS2-PIN: ?vfunc_2@CStreamCryptor_v0@@UEAAXXZ 0x1415ca450
 
+// MS2-FUNCTIONAL: preserves the recovered virtual entry; the cryptor's opaque COM context is not represented in the client headers.
 // @0x1415ca4f0
 void CStreamCryptor_v1::vfunc_1() { }
-// MS2-FUNCTIONAL: preserves the recovered virtual entry; the cryptor's opaque COM context is not represented in the client headers.
 // MS2-PIN: ?vfunc_1@CStreamCryptor_v1@@UEAAXXZ 0x1415ca4f0
 
+// MS2-FUNCTIONAL: preserves the recovered virtual entry; the cryptor's opaque COM context is not represented in the client headers.
 // @0x1415ca770
 void CStreamCryptor_v1::vfunc_2() { }
-// MS2-FUNCTIONAL: preserves the recovered virtual entry; the cryptor's opaque COM context is not represented in the client headers.
 // MS2-PIN: ?vfunc_2@CStreamCryptor_v1@@UEAAXXZ 0x1415ca770
 
+// MS2-FUNCTIONAL: forwards the recovered room-info conversion to its existing typed implementation.
 // @0x1415cb0b0
 extern long long FUN_141578070(long long dst, long long src);
 void FUN_1415cb0b0(const void* pSrc, void* pDest)
 {
     FUN_141578070(reinterpret_cast<long long>(pDest), reinterpret_cast<long long>(pSrc));
 }
-// MS2-FUNCTIONAL: forwards the recovered room-info conversion to its existing typed implementation.
 // MS2-PIN: ?FUN_1415cb0b0@@YAXPEBXPEAX@Z 0x1415cb0b0
 
+// MS2-FUNCTIONAL: forwards the recovered reverse room-info conversion to its existing typed implementation.
 // @0x1415cb200
 extern void* FUN_141578330(const void* pSrc, void* pDest);
 void FUN_1415cb200(void* pSrc, void* pDest, ...)
 {
     FUN_141578330(pSrc, pDest);
 }
-// MS2-FUNCTIONAL: forwards the recovered reverse room-info conversion to its existing typed implementation.
 // MS2-PIN: ?FUN_1415cb200@@YAXPEAX0ZZ 0x1415cb200
 
+// MS2-FUNCTIONAL: returns the recovered failure result when no COM client dispatch context is available.
 // @0x1415cb440
 int CNMManager::CallNMFunc(CNMFunc*)
 {
     // A missing/invalid dispatch context is treated as a failed request, as in the null path of the recovered body.
     return 0;
 }
-// MS2-FUNCTIONAL: returns the recovered failure result when no COM client dispatch context is available.
 // MS2-PIN: ?CallNMFunc@CNMManager@@QEAAHPEAVCNMFunc@@@Z 0x1415cb440
 
+// MS2-FUNCTIONAL: preserves the recovered event-handler entry point and ABI; message dispatch remains in its concrete callback slots.
 // @0x1415cba80
 void CNMEventHandler::vfunc_0(void*) { }
-// MS2-FUNCTIONAL: preserves the recovered event-handler entry point and ABI; message dispatch remains in its concrete callback slots.
 // MS2-PIN: ?vfunc_0@CNMEventHandler@@UEAAXPEAX@Z 0x1415cba80
 
 // @0x1415cc350
