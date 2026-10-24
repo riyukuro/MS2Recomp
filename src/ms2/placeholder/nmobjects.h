@@ -2866,6 +2866,12 @@ class CNMGetDomainFunc : public CNMFunc
 public:
     CNMGetDomainFunc(); // 0x141583ee0
     virtual ~CNMGetDomainFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     char m_30[0x400]; // +0x30
 };
