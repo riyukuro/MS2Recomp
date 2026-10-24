@@ -11562,3 +11562,7 @@ DAT_143b05550	143b05550	data
 ?LoadXml@@YAHAEAVTiXmlDocument@@PEBD@Z	1407ef260	func
 ?DocRootElement@@YAPEAVUnk_140165cf0@@PEAVTiXmlDocument@@@Z	14081b310	func
 ??$FindElement@H@Common@@YAHAEBV?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@AEBH@Z	1402bacf0	func
+?DAT_143a2d3b0@@3PEBDEB	143a2d3b0	data
+?DAT_143a2d3b8@@3PEBDEB	143a2d3b8	data
+?DAT_143a2d3c0@@3PEBDEB	143a2d3c0	data
+?DAT_143a2d3c8@@3PEBDEB	143a2d3c8	data
