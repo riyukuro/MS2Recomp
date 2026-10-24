@@ -173,7 +173,7 @@ static Unk_DcService* FUN_141296b50(Unk_DcHost* pHost)
 }
 
 // @0x141296ab0
-static UIWeddingHallReservationDialog* FUN_141296ab0(int nId)
+UIWeddingHallReservationDialog* FUN_141296ab0(int nId)
 {
     if (FUN_1403ed2b0() != 0)
     {
