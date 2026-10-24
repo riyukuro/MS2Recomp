@@ -9938,3 +9938,7 @@ Video04ClassInfo	143a47b70	data
 ?Compare@CompareAsString@AS3@GFx@Scaleform@@QEBAHAEBVASString@34@0@Z	1424066d0	func
 ?InitPrototype@Function@Classes@AS3@GFx@Scaleform@@UEBAXAEAVObject@345@@Z	142417c30	func
 ?MakePrototype@Function@Classes@AS3@GFx@Scaleform@@UEBA?AV?$Pickable@VObject@AS3@GFx@Scaleform@@@5@XZ	14241c500	func
+?CInfo@GlobalObject@fl@InstanceTraits@AS3@GFx@Scaleform@@2UClassInfo@456@B	14313d7b0	data
+?ClassClassCI@fl@AS3@GFx@Scaleform@@3UClassInfo@234@B	14313d940	data
+?GetChildren@XMLElement@fl@Instances@AS3@GFx@Scaleform@@UEAAXAEAVXMLList@23456@AEBVMultiname@456@@Z	142415320	func
+?GetChildren@XMLElement@fl@Instances@AS3@GFx@Scaleform@@UEAAXAEAVXMLList@23456@W4Kind@XML@23456@PEBVASString@56@@Z	1424153c0	func
