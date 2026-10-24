@@ -1,6 +1,7 @@
 #!/bin/sh
-# Wrapper for Ghidra (shared install from the MCLA project, symlinked at third_party/ghidra).
-#   tools/ghidra.sh            -> GUI
+# Wrapper for Ghidra (official 12.1.4 release unpacked in third_party/ghidra_12.1.4_PUBLIC, symlinked at third_party/ghidra).
+#   tools/ghidra.sh gui        -> GUI (opens a window; agents must not use this)
+#   tools/ghidra.sh            -> prints this usage
 #   tools/ghidra.sh analyze    -> headless import + full analysis of the KMS2_DEV x64 dump into ghidra/MS2.gpr
 #   tools/ghidra.sh headless … -> raw analyzeHeadless with project args prefilled (-process MapleStory2.exe -noanalysis ...)
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
@@ -23,7 +24,11 @@ headless)
     shift
     exec "$GHIDRA/support/analyzeHeadless" "$ROOT/ghidra" MS2 -scriptPath "$ROOT/tools/ghidra_scripts" "$@"
     ;;
-*)
+gui)
     exec "$GHIDRA/ghidraRun"
+    ;;
+*)
+    sed -n '2,6p' "$0" >&2
+    exit 2
     ;;
 esac
