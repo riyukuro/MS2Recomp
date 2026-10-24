@@ -3410,7 +3410,15 @@ MS2_CHECK_SIZE(CNMMoveFriendCategoryFunc, 0x58);
 class CNMMsgConnectionClosedEvent : public CNMEvent
 {
 public:
+    CNMMsgConnectionClosedEvent();
+    explicit CNMMsgConnectionClosedEvent(int nReason);
     virtual ~CNMMsgConnectionClosedEvent() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_28; // +0x28
     int m_2c; // +0x2c
@@ -3458,7 +3466,7 @@ class CNMPCBangLoginFunc : public CNMFunc
 public:
     CNMPCBangLoginFunc();
     explicit CNMPCBangLoginFunc(const char* token);
-    virtual ~CNMPCBangLoginFunc() = default;
+    virtual ~CNMPCBangLoginFunc();
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -4051,7 +4059,7 @@ class CNMTPATokenLoginFunc : public CNMFunc
 public:
     CNMTPATokenLoginFunc();
     CNMTPATokenLoginFunc(const char* account, const char* password);
-    virtual ~CNMTPATokenLoginFunc() = default;
+    virtual ~CNMTPATokenLoginFunc();
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;

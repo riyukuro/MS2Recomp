@@ -18,6 +18,27 @@ CNMSerializable::~CNMSerializable()
 {
 }
 
+extern void FUN_1415eb660(void*);
+extern void FUN_1415eb6f0(void*);
+extern void FUN_1415eb750(void*);
+
+// MS2-FUNCTIONAL 0x1415ee6c0: releases the owned CNMStr<9> buffer and calls the CNMFunc base destructor; codegen frame differs from the exe.
+// @0x1415ee6c0
+CNMPCBangLoginFunc::~CNMPCBangLoginFunc()
+{
+    FUN_1415eb660(m_30);
+    CNMFunc::~CNMFunc();
+}
+
+// MS2-FUNCTIONAL 0x1415eeea0: releases both owned CNMStr buffers and calls the CNMFunc base destructor; codegen frame differs from the exe.
+// @0x1415eeea0
+CNMTPATokenLoginFunc::~CNMTPATokenLoginFunc()
+{
+    FUN_1415eb750(&m_38);
+    FUN_1415eb6f0(m_30);
+    CNMFunc::~CNMFunc();
+}
+
 // ---- anchors -------------------------------------------------------------------------------------------------------
 
 template <class T>
@@ -515,3 +536,5 @@ template void Unk_NMDestroy(CNMUserInfoEvent*);
 // MS2-PIN: ??1CNMSetServerInfoFunc@@UEAA@XZ 0x1415eedf0 ; prop
 // MS2-PIN: ??1CNMSetSessionValueFunc@@UEAA@XZ 0x1415eee20 ; prop
 // MS2-PINS-END tplpin
+// MS2-PIN: ??1CNMPCBangLoginFunc@@UEAA@XZ 0x1415ee6c0 ; exact destructor
+// MS2-PIN: ??1CNMTPATokenLoginFunc@@UEAA@XZ 0x1415eeea0 ; exact destructor
