@@ -899,7 +899,7 @@ CQuestConditionCheckerUserFind::CQuestConditionCheckerUserFind()
 }
 
 // @0x1402a9ca0
-static bool ContainsId(ATL::CAtlArray<unsigned>& rIds, unsigned nId)
+bool ContainsId(ATL::CAtlArray<unsigned>& rIds, unsigned nId)
 {
     if (rIds.GetCount() == 0)
         return false;
