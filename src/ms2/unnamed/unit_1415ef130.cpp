@@ -3385,3 +3385,31 @@ bool NMStringIteratorCompare_1415f3840(const long long* a, const long long* b) {
 // @0x1415f3880
 bool NMStringIteratorCompare_1415f3880(const long long* a, const long long* b) { return *a != *b; }
 
+// MS2-FUNCTIONAL: dispatches the executable's virtual CopyFrom slot and returns the destination.
+// @0x1415efb90
+CNMSerializable* FUN_1415efb90(CNMSerializable* dst, long long src)
+{
+    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    return dst;
+}
+// MS2-FUNCTIONAL: dispatches the executable's virtual CopyFrom slot and returns the destination.
+// @0x1415efbc0
+CNMSerializable* FUN_1415efbc0(CNMSerializable* dst, long long src)
+{
+    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    return dst;
+}
+// MS2-FUNCTIONAL: forwards to the recovered CNMSerializable CopyFrom wrapper.
+// @0x1415efb30
+CNMSerializable* FUN_1415efb30(CNMSerializable* dst, long long src)
+{
+    FUN_1415efb90(dst, src);
+    return dst;
+}
+// MS2-FUNCTIONAL: forwards to the recovered CNMSerializable CopyFrom wrapper.
+// @0x1415efb60
+CNMSerializable* FUN_1415efb60(CNMSerializable* dst, long long src)
+{
+    FUN_1415efbc0(dst, src);
+    return dst;
+}
