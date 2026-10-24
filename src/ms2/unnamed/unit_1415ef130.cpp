@@ -44,6 +44,8 @@ extern long long* FUN_1415f46c0(long long*);
 extern void FUN_1415eefa0(void*); extern void FUN_1415ef000(void*); extern void FUN_1415ef020(void*);
 extern void FUN_1415ef100(void*);
 extern void* FUN_141575140(void*, void*);
+extern void* FUN_1415ef7b0(void*, void*);
+extern CNMSerializable* FUN_1415efd00(CNMSerializable*, long long);
 
 template <class Id, class Get, class Set, class First, class Last, class Range>
 static void* copy_nm_sequence(void* dst, void* src, Id id, Get get, Set set,
@@ -3474,6 +3476,49 @@ CNMSerializable* FUN_1415f0b10(CNMSerializable* dst, long long src)
     std::memcpy(reinterpret_cast<unsigned char*>(dst) + 0x10,
                 reinterpret_cast<const unsigned char*>(src) + 0x10, 0x3c);
     return dst;
+}
+// MS2-FUNCTIONAL: copies the base then delegates the embedded sequence assignment at offset 0x10.
+// @0x1415f10f0
+CNMSerializable* FUN_1415f10f0(CNMSerializable* dst, long long src)
+{
+    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    FUN_1415ef7b0(reinterpret_cast<unsigned char*>(dst) + 0x10,
+                  reinterpret_cast<void*>(src + 0x10));
+    return dst;
+}
+// MS2-FUNCTIONAL: copies the base and the recovered ten-word payload.
+// @0x1415f16f0
+CNMSerializable* FUN_1415f16f0(CNMSerializable* dst, long long src)
+{
+    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    std::memcpy(reinterpret_cast<unsigned char*>(dst) + 0x10,
+                reinterpret_cast<const unsigned char*>(src) + 0x10, 0x28);
+    return dst;
+}
+// MS2-FUNCTIONAL: copies the base, embedded record, and trailing 0x20-byte payload.
+// @0x1415f21f0
+CNMSerializable* FUN_1415f21f0(CNMSerializable* dst, long long src)
+{
+    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    FUN_1415efd00(reinterpret_cast<CNMSerializable*>(reinterpret_cast<unsigned char*>(dst) + 0x10), src + 0x10);
+    std::memcpy(reinterpret_cast<unsigned char*>(dst) + 0xa8,
+                reinterpret_cast<const unsigned char*>(src) + 0xa8, 0x20);
+    return dst;
+}
+// MS2-FUNCTIONAL: copies the base and the recovered contiguous 0x38-byte record payload.
+// @0x1415f24e0
+CNMSerializable* FUN_1415f24e0(CNMSerializable* dst, long long src)
+{
+    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    std::memcpy(reinterpret_cast<unsigned char*>(dst) + 0x10,
+                reinterpret_cast<const unsigned char*>(src) + 0x10, 0x38);
+    return dst;
+}
+// MS2-FUNCTIONAL: compares the recovered pointer-sized iterator positions.
+// @0x1415f2a60
+bool FUN_1415f2a60(const long long* a, const long long* b)
+{
+    return *a == *b;
 }
 
 // MS2-FUNCTIONAL: dispatches the executable's virtual CopyFrom slot and returns the destination.
