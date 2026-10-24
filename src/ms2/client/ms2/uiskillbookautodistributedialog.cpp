@@ -2342,3 +2342,18 @@ int UISkillBookTreeDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
 // MS2-PIN: ?FUN_140ec4e50@@YAPEAVUIDialog@@PEAX@Z 0x140ec4e50
 // MS2-PIN: ?FUN_140ed1090@Unk_RmScript@@QEAA?AVValue@GFx@Scaleform@@PEBDV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@1H@Z 0x140ed1090
 // MS2-PIN: ?FUN_140ed1090@Unk_MiScript@@QEAA?AVValue@GFx@Scaleform@@PEBDV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@1_N@Z 0x140ed1090
+class Unk_SSGDlg4f2d
+{
+public:
+    void FUN_140ec8220();
+};
+
+// MS2-FUNCTIONAL: the exe factory ABI constructs the dialog in caller-provided storage and returns its UIDialog base.
+UIDialog* FUN_140ec4e50(void* storage)
+{ return static_cast<UIDialog*>(new (storage) UISkillBookTreeDialog()); }
+// MS2-FUNCTIONAL: legacy dialog spelling forwards to the recovered slot refresh helper.
+void Unk_SSGDlg4f2d::FUN_140ec8220()
+{ reinterpret_cast<UISkillBookTreeDialog*>(this)->RefreshSlotsIfShown(); }
+
+// MS2-PIN: ?FUN_140ec4e50@@YAPEAVUIDialog@@PEAX@Z 0x140ec4e50
+// MS2-PIN: ?FUN_140ec8220@Unk_SSGDlg4f2d@@QEAAXXZ 0x140ec8220
