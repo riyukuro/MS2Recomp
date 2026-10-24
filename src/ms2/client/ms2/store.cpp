@@ -964,6 +964,32 @@ TriggerActionCli* FUN_140de4cb0()
 }
 
 // Full-executable aliases for CStore's slot and storage checks.
+class Unk_IsStoreView
+{
+public:
+    int FUN_140de21a0(MS2Ptr<CItem> item, int count);
+    int FUN_140de2490(int type);
+};
+class Unk_SsStoreView
+{
+public:
+    int FUN_140de21a0(MS2Ptr<CItem> item, int count);
+    int FUN_140de2490(int type);
+};
+
+// MS2-FUNCTIONAL: legacy inventory view forwards to the recovered CStore slot check.
+int Unk_IsStoreView::FUN_140de21a0(MS2Ptr<CItem> item, int count)
+{ return reinterpret_cast<CStore*>(this)->AvailableSlot(item, count); }
+// MS2-FUNCTIONAL: legacy social-store view forwards to the same recovered slot check.
+int Unk_SsStoreView::FUN_140de21a0(MS2Ptr<CItem> item, int count)
+{ return reinterpret_cast<CStore*>(this)->AvailableSlot(item, count); }
+// MS2-FUNCTIONAL: legacy inventory view forwards to the recovered item type policy.
+int Unk_IsStoreView::FUN_140de2490(int type)
+{ return reinterpret_cast<CStore*>(this)->Allowed(type); }
+// MS2-FUNCTIONAL: legacy social-store view forwards to the same item type policy.
+int Unk_SsStoreView::FUN_140de2490(int type)
+{ return reinterpret_cast<CStore*>(this)->Allowed(type); }
+
 // MS2-PIN: ?AvailableSlot@CStore@@QEAAHV?$MS2Ptr@VCItem@@@@H@Z 0x140de21a0
 // MS2-PIN: ?Allowed@CStore@@QEAAHH@Z 0x140de2490
 // MS2-PIN: ?FUN_140de21a0@Unk_IsStoreView@@QEAAHV?$MS2Ptr@VCItem@@@@H@Z 0x140de21a0
