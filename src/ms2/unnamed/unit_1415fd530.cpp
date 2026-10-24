@@ -3,6 +3,7 @@
 // MS2-RANGE: 0x1415fd530-0x141601f30 .text$mn
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/nmfunc.h"
 #include "ms2/unnamed/unk_stlglue.h"
 #include <cstddef>
 #include <cstdint>
@@ -80,13 +81,11 @@ void FUN_1415ffdd0() {}
 // @0x1415ffde0
 void FUN_1415ffde0() {}
 
-static unsigned long long nm_vector_growth(void* p, unsigned long long requested, size_t elementSize)
+template <class T>
+static unsigned long long nm_vector_growth(const std::vector<T>& vector, unsigned long long requested)
 {
-    auto** fields = static_cast<unsigned char**>(p);
-    auto* first = fields[0];
-    auto* last = fields[1];
-    const unsigned long long current = first && last ? static_cast<unsigned long long>(last - first) / elementSize : 0;
-    const unsigned long long limit = static_cast<unsigned long long>(-1) / elementSize;
+    const unsigned long long current = vector.capacity();
+    const unsigned long long limit = vector.max_size();
     unsigned long long grown = requested;
     if (current <= limit - current / 2) {
         grown = current + current / 2;
@@ -105,25 +104,97 @@ static void nm_vector_change_array(void* p, void* memory, unsigned long long siz
     fields[2] = first ? first + capacity * elementSize : nullptr;
 }
 
-// MS2-FUNCTIONAL: reproduces the vector 1.5x growth policy for 224-byte elements.
-unsigned long long FUN_1415fdb50(void* p, unsigned long long requested) { return nm_vector_growth(p, requested, 224); }
-// MS2-PIN: ?FUN_1415fdb50@@YA_KPEAX_K@Z 0x1415fdb50 ; MS2-FUNCTIONAL: shared 1.5x growth helper preserves requested-capacity behavior with a different call sequence
+// MS2-FUNCTIONAL: applies the recovered 1.5x capacity growth rule using this vector instantiation's capacity and max_size.
+unsigned long long FUN_1415fd6d0(void* p, unsigned long long requested) { return nm_vector_growth(*static_cast<std::vector<NMChatSessionTarget>*>(p), requested); }
+// MS2-PIN: ?FUN_1415fd6d0@@YA_KPEAX_K@Z 0x1415fd6d0 ; MS2-FUNCTIONAL: reuses the recovered capacity growth decision for this instantiation
 
-// MS2-FUNCTIONAL: reproduces the vector 1.5x growth policy for 104-byte elements.
-unsigned long long FUN_1415fde20(void* p, unsigned long long requested) { return nm_vector_growth(p, requested, 104); }
-// MS2-PIN: ?FUN_1415fde20@@YA_KPEAX_K@Z 0x1415fde20 ; MS2-FUNCTIONAL: shared 1.5x growth helper preserves requested-capacity behavior with a different call sequence
+// MS2-FUNCTIONAL: applies the recovered 1.5x capacity growth rule using this vector instantiation's capacity and max_size.
+unsigned long long FUN_1415fd760(void* p, unsigned long long requested) { return nm_vector_growth(*static_cast<std::vector<NMFriendKey>*>(p), requested); }
+// MS2-PIN: ?FUN_1415fd760@@YA_KPEAX_K@Z 0x1415fd760 ; MS2-FUNCTIONAL: reuses the recovered capacity growth decision for this instantiation
 
-// MS2-FUNCTIONAL: reproduces the vector 1.5x growth policy for 400-byte elements.
-unsigned long long FUN_1415fdfd0(void* p, unsigned long long requested) { return nm_vector_growth(p, requested, 400); }
-// MS2-PIN: ?FUN_1415fdfd0@@YA_KPEAX_K@Z 0x1415fdfd0 ; MS2-FUNCTIONAL: shared 1.5x growth helper preserves requested-capacity behavior with a different call sequence
+// MS2-FUNCTIONAL: applies the recovered 1.5x capacity growth rule using this vector instantiation's capacity and max_size.
+unsigned long long FUN_1415fd7f0(void* p, unsigned long long requested) { return nm_vector_growth(*static_cast<std::vector<CNMCateFriendInfo>*>(p), requested); }
+// MS2-PIN: ?FUN_1415fd7f0@@YA_KPEAX_K@Z 0x1415fd7f0 ; MS2-FUNCTIONAL: reuses the recovered capacity growth decision for this instantiation
 
-// MS2-FUNCTIONAL: reproduces the vector 1.5x growth policy for 3784-byte elements.
-unsigned long long FUN_1415fe0f0(void* p, unsigned long long requested) { return nm_vector_growth(p, requested, 3784); }
-// MS2-PIN: ?FUN_1415fe0f0@@YA_KPEAX_K@Z 0x1415fe0f0 ; MS2-FUNCTIONAL: shared 1.5x growth helper preserves requested-capacity behavior with a different call sequence
+// MS2-FUNCTIONAL: applies the recovered 1.5x capacity growth rule using this vector instantiation's capacity and max_size.
+unsigned long long FUN_1415fd880(void* p, unsigned long long requested) { return nm_vector_growth(*static_cast<std::vector<CNMChannelMemberInfo>*>(p), requested); }
+// MS2-PIN: ?FUN_1415fd880@@YA_KPEAX_K@Z 0x1415fd880 ; MS2-FUNCTIONAL: reuses the recovered capacity growth decision for this instantiation
 
-// MS2-FUNCTIONAL: reproduces the vector 1.5x growth policy for 5288-byte elements.
-unsigned long long FUN_1415fe330(void* p, unsigned long long requested) { return nm_vector_growth(p, requested, 5288); }
-// MS2-PIN: ?FUN_1415fe330@@YA_KPEAX_K@Z 0x1415fe330 ; MS2-FUNCTIONAL: shared 1.5x growth helper preserves requested-capacity behavior with a different call sequence
+// MS2-FUNCTIONAL: applies the recovered 1.5x capacity growth rule using this vector instantiation's capacity and max_size.
+unsigned long long FUN_1415fd910(void* p, unsigned long long requested) { return nm_vector_growth(*static_cast<std::vector<CNMCharacter>*>(p), requested); }
+// MS2-PIN: ?FUN_1415fd910@@YA_KPEAX_K@Z 0x1415fd910 ; MS2-FUNCTIONAL: reuses the recovered capacity growth decision for this instantiation
+
+// MS2-FUNCTIONAL: applies the recovered 1.5x capacity growth rule using this vector instantiation's capacity and max_size.
+unsigned long long FUN_1415fd9a0(void* p, unsigned long long requested) { return nm_vector_growth(*static_cast<std::vector<CNMChatRoomMemberInfo>*>(p), requested); }
+// MS2-PIN: ?FUN_1415fd9a0@@YA_KPEAX_K@Z 0x1415fd9a0 ; MS2-FUNCTIONAL: reuses the recovered capacity growth decision for this instantiation
+
+// MS2-FUNCTIONAL: applies the recovered 1.5x capacity growth rule using this vector instantiation's capacity and max_size.
+unsigned long long FUN_1415fda30(void* p, unsigned long long requested) { return nm_vector_growth(*static_cast<std::vector<CNMFileEvent>*>(p), requested); }
+// MS2-PIN: ?FUN_1415fda30@@YA_KPEAX_K@Z 0x1415fda30 ; MS2-FUNCTIONAL: reuses the recovered capacity growth decision for this instantiation
+
+// MS2-FUNCTIONAL: applies the recovered 1.5x capacity growth rule using this vector instantiation's capacity and max_size.
+unsigned long long FUN_1415fdac0(void* p, unsigned long long requested) { return nm_vector_growth(*static_cast<std::vector<CNMFilePath>*>(p), requested); }
+// MS2-PIN: ?FUN_1415fdac0@@YA_KPEAX_K@Z 0x1415fdac0 ; MS2-FUNCTIONAL: reuses the recovered capacity growth decision for this instantiation
+
+// MS2-FUNCTIONAL: applies the recovered 1.5x capacity growth rule using this vector instantiation's capacity and max_size.
+unsigned long long FUN_1415fdb50(void* p, unsigned long long requested) { return nm_vector_growth(*static_cast<std::vector<Unk_StlElem<224>>*>(p), requested); }
+// MS2-PIN: ?FUN_1415fdb50@@YA_KPEAX_K@Z 0x1415fdb50 ; MS2-FUNCTIONAL: reuses the recovered capacity growth decision for this instantiation
+
+// MS2-FUNCTIONAL: applies the recovered 1.5x capacity growth rule using this vector instantiation's capacity and max_size.
+unsigned long long FUN_1415fdbe0(void* p, unsigned long long requested) { return nm_vector_growth(*static_cast<std::vector<CNMFriendInfo>*>(p), requested); }
+// MS2-PIN: ?FUN_1415fdbe0@@YA_KPEAX_K@Z 0x1415fdbe0 ; MS2-FUNCTIONAL: reuses the recovered capacity growth decision for this instantiation
+
+// MS2-FUNCTIONAL: applies the recovered 1.5x capacity growth rule using this vector instantiation's capacity and max_size.
+unsigned long long FUN_1415fdc70(void* p, unsigned long long requested) { return nm_vector_growth(*static_cast<std::vector<CNMGameCode>*>(p), requested); }
+// MS2-PIN: ?FUN_1415fdc70@@YA_KPEAX_K@Z 0x1415fdc70 ; MS2-FUNCTIONAL: reuses the recovered capacity growth decision for this instantiation
+
+// MS2-FUNCTIONAL: applies the recovered 1.5x capacity growth rule using this vector instantiation's capacity and max_size.
+unsigned long long FUN_1415fdd00(void* p, unsigned long long requested) { return nm_vector_growth(*static_cast<std::vector<CNMGameInfo>*>(p), requested); }
+// MS2-PIN: ?FUN_1415fdd00@@YA_KPEAX_K@Z 0x1415fdd00 ; MS2-FUNCTIONAL: reuses the recovered capacity growth decision for this instantiation
+
+// MS2-FUNCTIONAL: applies the recovered 1.5x capacity growth rule using this vector instantiation's capacity and max_size.
+unsigned long long FUN_1415fdd90(void* p, unsigned long long requested) { return nm_vector_growth(*static_cast<std::vector<CNMGameServerCode>*>(p), requested); }
+// MS2-PIN: ?FUN_1415fdd90@@YA_KPEAX_K@Z 0x1415fdd90 ; MS2-FUNCTIONAL: reuses the recovered capacity growth decision for this instantiation
+
+// MS2-FUNCTIONAL: applies the recovered 1.5x capacity growth rule using this vector instantiation's capacity and max_size.
+unsigned long long FUN_1415fde20(void* p, unsigned long long requested) { return nm_vector_growth(*static_cast<std::vector<Unk_StlElem<104>>*>(p), requested); }
+// MS2-PIN: ?FUN_1415fde20@@YA_KPEAX_K@Z 0x1415fde20 ; MS2-FUNCTIONAL: reuses the recovered capacity growth decision for this instantiation
+
+// MS2-FUNCTIONAL: applies the recovered 1.5x capacity growth rule using this vector instantiation's capacity and max_size.
+unsigned long long FUN_1415fdeb0(void* p, unsigned long long requested) { return nm_vector_growth(*static_cast<std::vector<CNMGuildMemberInfo>*>(p), requested); }
+// MS2-PIN: ?FUN_1415fdeb0@@YA_KPEAX_K@Z 0x1415fdeb0 ; MS2-FUNCTIONAL: reuses the recovered capacity growth decision for this instantiation
+
+// MS2-FUNCTIONAL: applies the recovered 1.5x capacity growth rule using this vector instantiation's capacity and max_size.
+unsigned long long FUN_1415fdf40(void* p, unsigned long long requested) { return nm_vector_growth(*static_cast<std::vector<CNMGuildMemberLevelInfo>*>(p), requested); }
+// MS2-PIN: ?FUN_1415fdf40@@YA_KPEAX_K@Z 0x1415fdf40 ; MS2-FUNCTIONAL: reuses the recovered capacity growth decision for this instantiation
+
+// MS2-FUNCTIONAL: applies the recovered 1.5x capacity growth rule using this vector instantiation's capacity and max_size.
+unsigned long long FUN_1415fdfd0(void* p, unsigned long long requested) { return nm_vector_growth(*static_cast<std::vector<Unk_StlElem<400>>*>(p), requested); }
+// MS2-PIN: ?FUN_1415fdfd0@@YA_KPEAX_K@Z 0x1415fdfd0 ; MS2-FUNCTIONAL: reuses the recovered capacity growth decision for this instantiation
+
+// MS2-FUNCTIONAL: applies the recovered 1.5x capacity growth rule using this vector instantiation's capacity and max_size.
+unsigned long long FUN_1415fe060(void* p, unsigned long long requested) { return nm_vector_growth(*static_cast<std::vector<CNMNoteInfo2>*>(p), requested); }
+// MS2-PIN: ?FUN_1415fe060@@YA_KPEAX_K@Z 0x1415fe060 ; MS2-FUNCTIONAL: reuses the recovered capacity growth decision for this instantiation
+
+// MS2-FUNCTIONAL: applies the recovered 1.5x capacity growth rule using this vector instantiation's capacity and max_size.
+unsigned long long FUN_1415fe0f0(void* p, unsigned long long requested) { return nm_vector_growth(*static_cast<std::vector<Unk_StlElem<3784>>*>(p), requested); }
+// MS2-PIN: ?FUN_1415fe0f0@@YA_KPEAX_K@Z 0x1415fe0f0 ; MS2-FUNCTIONAL: reuses the recovered capacity growth decision for this instantiation
+
+// MS2-FUNCTIONAL: applies the recovered 1.5x capacity growth rule using this vector instantiation's capacity and max_size.
+unsigned long long FUN_1415fe180(void* p, unsigned long long requested) { return nm_vector_growth(*static_cast<std::vector<CNMRejectedUser>*>(p), requested); }
+// MS2-PIN: ?FUN_1415fe180@@YA_KPEAX_K@Z 0x1415fe180 ; MS2-FUNCTIONAL: reuses the recovered capacity growth decision for this instantiation
+
+// MS2-FUNCTIONAL: applies the recovered 1.5x capacity growth rule using this vector instantiation's capacity and max_size.
+unsigned long long FUN_1415fe210(void* p, unsigned long long requested) { return nm_vector_growth(*static_cast<std::vector<CNMSessionMemberInfo>*>(p), requested); }
+// MS2-PIN: ?FUN_1415fe210@@YA_KPEAX_K@Z 0x1415fe210 ; MS2-FUNCTIONAL: reuses the recovered capacity growth decision for this instantiation
+
+// MS2-FUNCTIONAL: applies the recovered 1.5x capacity growth rule using this vector instantiation's capacity and max_size.
+unsigned long long FUN_1415fe2a0(void* p, unsigned long long requested) { return nm_vector_growth(*static_cast<std::vector<CNMVirtualUserInfo>*>(p), requested); }
+// MS2-PIN: ?FUN_1415fe2a0@@YA_KPEAX_K@Z 0x1415fe2a0 ; MS2-FUNCTIONAL: reuses the recovered capacity growth decision for this instantiation
+
+// MS2-FUNCTIONAL: applies the recovered 1.5x capacity growth rule using this vector instantiation's capacity and max_size.
+unsigned long long FUN_1415fe330(void* p, unsigned long long requested) { return nm_vector_growth(*static_cast<std::vector<Unk_StlElem<5288>>*>(p), requested); }
+// MS2-PIN: ?FUN_1415fe330@@YA_KPEAX_K@Z 0x1415fe330 ; MS2-FUNCTIONAL: reuses the recovered capacity growth decision for this instantiation
 
 // MS2-FUNCTIONAL: replaces vector storage using the recovered element size 16.
 void FUN_1415fe3c0(void* p, Unk_StlElem<16>* memory, unsigned long long size, unsigned long long capacity) { nm_vector_change_array(p, memory, size, capacity, 16); }
