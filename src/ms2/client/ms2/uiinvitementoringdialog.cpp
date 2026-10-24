@@ -216,7 +216,7 @@ void UIInviteMentoringDialog::OnLoadComplete()
 }
 
 // @0x140c30140
-static Unk_PopupMenu* FUN_140c30140(int nId)
+Unk_PopupMenu* FUN_140c30140(int nId)
 {
     if (FUN_1403ed2b0() != 0)
     {
@@ -228,7 +228,7 @@ static Unk_PopupMenu* FUN_140c30140(int nId)
 }
 
 // @0x140c300a0
-static UIDialog* FUN_140c300a0(int nId)
+UIDialog* FUN_140c300a0(int nId)
 {
     if (FUN_1403ed2b0() != 0)
     {
