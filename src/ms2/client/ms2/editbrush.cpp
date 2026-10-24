@@ -159,7 +159,7 @@ void PaintBrush::vfunc_3()
 }
 
 // The service the stamps go to.
-static DecoEditService* BrushService()
+DecoEditService* BrushService()
 {
     return TSingleton<DecoEditService>::s_instance;
 }
