@@ -1484,6 +1484,56 @@ int& Unk_ImNullableInt::Value()
 // MS2-PIN: ?PlayScore@CInstrumentManager@@QEAA_N_J@Z 0x140d07960
 // MS2-PIN: ?PlayEnsemble@CInstrumentManager@@QEAA_N_J@Z 0x140d07f00
 // MS2-PIN: ?ParseLine@CInstrumentManager@@QEAAIHHHPEAV?$multimap@IIU?$less@I@std@@V?$allocator@U?$pair@$$CBII@std@@@2@@std@@PEAV?$multimap@IU?$pair@HH@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIU?$pair@HH@std@@@std@@@2@@3@IIAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z 0x140d08660
+class Unk_SSGc8dac0
+{
+public:
+    void FUN_140d061b0(CInPacket& packet);
+};
+class Unk_PiMgr
+{
+public:
+    void FUN_140d073b0(int note);
+    bool FUN_140d07960(__int64 scoreUid);
+    bool FUN_140d07f00(__int64 scoreUid);
+};
+using Unk_InstrumentEventMap = std::multimap<unsigned, unsigned>;
+using Unk_InstrumentNoteMap = std::multimap<unsigned, std::pair<int, int>>;
+class Unk_MeratSound
+{
+public:
+    unsigned FUN_140d08660(int channel, int program, int percussion, Unk_InstrumentEventMap* events,
+                           Unk_InstrumentNoteMap* notes, unsigned time, unsigned now, const CString& mml, bool first);
+};
+class Unk_WmInstrumentMgr
+{
+public:
+    unsigned FUN_140d08660(int channel, int program, int percussion, Unk_InstrumentEventMap* events,
+                           Unk_InstrumentNoteMap* notes, unsigned time, unsigned now, const CString& mml, bool first);
+};
+
+// MS2-FUNCTIONAL: packet compatibility entry forwards to the recovered instrument manager handler.
+void Unk_SSGc8dac0::FUN_140d061b0(CInPacket& packet)
+{ reinterpret_cast<CInstrumentManager*>(this)->OnPacket(packet); }
+// MS2-FUNCTIONAL: legacy manager spelling forwards to the recovered note event handler.
+void Unk_PiMgr::FUN_140d073b0(int note)
+{ reinterpret_cast<CInstrumentManager*>(this)->NoteOn(note); }
+// MS2-FUNCTIONAL: legacy manager spelling forwards to the recovered score lookup path.
+bool Unk_PiMgr::FUN_140d07960(__int64 scoreUid)
+{ return reinterpret_cast<CInstrumentManager*>(this)->PlayScore(scoreUid); }
+// MS2-FUNCTIONAL: legacy manager spelling forwards to the recovered ensemble lookup path.
+bool Unk_PiMgr::FUN_140d07f00(__int64 scoreUid)
+{ return reinterpret_cast<CInstrumentManager*>(this)->PlayEnsemble(scoreUid); }
+// MS2-FUNCTIONAL: both sound manager spellings forward to the same recovered MML line parser.
+unsigned Unk_MeratSound::FUN_140d08660(int channel, int program, int percussion, Unk_InstrumentEventMap* events,
+                                         Unk_InstrumentNoteMap* notes, unsigned time, unsigned now, const CString& mml, bool first)
+{ return reinterpret_cast<CInstrumentManager*>(this)->ParseLine(channel, program, percussion, reinterpret_cast<Unk_MidiTrack*>(events),
+                                                               reinterpret_cast<Unk_ImScoreEvents*>(notes), time, now, mml, first); }
+// MS2-FUNCTIONAL: both sound manager spellings forward to the same recovered MML line parser.
+unsigned Unk_WmInstrumentMgr::FUN_140d08660(int channel, int program, int percussion, Unk_InstrumentEventMap* events,
+                                            Unk_InstrumentNoteMap* notes, unsigned time, unsigned now, const CString& mml, bool first)
+{ return reinterpret_cast<CInstrumentManager*>(this)->ParseLine(channel, program, percussion, reinterpret_cast<Unk_MidiTrack*>(events),
+                                                               reinterpret_cast<Unk_ImScoreEvents*>(notes), time, now, mml, first); }
+
 // MS2-PIN: ?FUN_140d061b0@Unk_SSGc8dac0@@QEAAXAEAVCInPacket@@@Z 0x140d061b0
 // MS2-PIN: ?FUN_140d073b0@Unk_PiMgr@@QEAAXH@Z 0x140d073b0
 // MS2-PIN: ?FUN_140d07960@Unk_PiMgr@@QEAA_N_J@Z 0x140d07960
