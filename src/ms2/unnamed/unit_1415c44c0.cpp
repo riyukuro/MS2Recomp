@@ -6,6 +6,10 @@
 #include "ms2/placeholder/nmfunc.h"
 #include "ms2/placeholder/nmobjects.h"
 
+extern void* FUN_1415f39d0(void*);
+extern void* FUN_1415f39e0(void*);
+extern void FUN_1415fbe70(void*, unsigned int, const void*);
+
 class CStreamCryptor_v0
 {
 public:
@@ -259,6 +263,33 @@ int FUN_1415ca0d0()
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 // MS2-PIN: ?FUN_1415ca0d0@@YAHXZ 0x1415ca0d0
+
+// MS2-FUNCTIONAL: dispatches the security question request and copies its bounded string result.
+// @0x1415c4f50
+unsigned char* FUN_1415c4f50(void*, unsigned char* out)
+{
+    CNMGetSecurityQuestionFunc request;
+    if (!CNMManager::GetInstance()->CallNMFunc(&request)) {
+        if (out) *out = 0;
+        return nullptr;
+    }
+    if (out) FUN_1415fbe70(out, 0x400, FUN_1415f39e0(&request.m_30));
+    return out;
+}
+// MS2-PIN: ?FUN_1415c4f50@@YAPEAEPEAXPEAE@Z 0x1415c4f50
+
+// MS2-FUNCTIONAL: queries the NX hardware identifier and copies the recovered 0x40-byte result.
+// @0x1415c5010
+unsigned char* FUN_1415c5010(void*, unsigned char* out)
+{
+    CNMGetNxHWIDFunc request;
+    if (out && CNMManager::GetInstance()->CallNMFunc(&request))
+        FUN_1415fbe70(out, 0x40, FUN_1415f39d0(&request.m_30));
+    else if (out)
+        *out = 0;
+    return out;
+}
+// MS2-PIN: ?FUN_1415c5010@@YAPEAEPEAXPEAE@Z 0x1415c5010
 
 // @0x1415c46c0
 void FUN_1415c46c0()
