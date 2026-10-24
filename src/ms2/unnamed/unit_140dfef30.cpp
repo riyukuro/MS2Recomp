@@ -144,6 +144,12 @@ static CString s_stun("stun");
 // @0x1400d6d60
 static char s_marker[0x48];
 static Unk_OxMarker s_initMarker = (FUN_1402a9d70(&s_marker, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142ca6130), Unk_OxMarker());
+
+void FUN_1402aa1d0(void* p);                                       // ~Unk_1402a9d70
+// The exe's atexit destructor of s_marker.
+// MS2-FUNCTIONAL: our build tail-calls the destructor; the exe's compiler-made atexit thunk keeps a frame.
+// @0x142ca6130
+void FUN_142ca6130() { FUN_1402aa1d0(s_marker); }
 #endif
 
 // forward declarations of this unit's handlers
