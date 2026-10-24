@@ -36,6 +36,139 @@ extern ptrdiff_t FUN_1415d47c0(Unk_StlElem<0xf8>* first, Unk_StlElem<0xf8>* last
 extern ptrdiff_t FUN_1415d47f0(Unk_StlElem<0x490>* first, Unk_StlElem<0x490>* last, std::random_access_iterator_tag);
 extern ptrdiff_t FUN_1415d4820(Unk_StlElem<0x30>* first, Unk_StlElem<0x30>* last, std::random_access_iterator_tag);
 
+// MS2-FUNCTIONAL: advances the recovered pointer by the requested number of elements.
+// @0x1415e5330
+void* FUN_1415e5330(void* p, ptrdiff_t n)
+{
+    return static_cast<Unk_StlElem<0x10>*>(p) + n;
+}
+
+// MS2-FUNCTIONAL: advances the recovered pointer by the requested number of elements.
+// @0x1415e5360
+void* FUN_1415e5360(void* p, ptrdiff_t n)
+{
+    return static_cast<Unk_StlElem<0x18>*>(p) + n;
+}
+
+// MS2-FUNCTIONAL: advances the recovered pointer by the requested number of elements.
+// @0x1415e5390
+void* FUN_1415e5390(void* p, ptrdiff_t n)
+{
+    return static_cast<Unk_StlElem<0x58>*>(p) + n;
+}
+
+// MS2-FUNCTIONAL: advances the recovered pointer by the requested number of elements.
+// @0x1415e53c0
+void* FUN_1415e53c0(void* p, ptrdiff_t n)
+{
+    return static_cast<Unk_StlElem<0x30>*>(p) + n;
+}
+
+// MS2-FUNCTIONAL: advances the recovered pointer by the requested number of elements.
+// @0x1415e53f0
+void* FUN_1415e53f0(void* p, ptrdiff_t n)
+{
+    return static_cast<Unk_StlElem<0x98>*>(p) + n;
+}
+
+// MS2-FUNCTIONAL: advances the recovered pointer by the requested number of elements.
+// @0x1415e5420
+void* FUN_1415e5420(void* p, ptrdiff_t n)
+{
+    return static_cast<Unk_StlElem<0x220>*>(p) + n;
+}
+
+// MS2-FUNCTIONAL: advances the recovered pointer by the requested number of elements.
+// @0x1415e5450
+void* FUN_1415e5450(void* p, ptrdiff_t n)
+{
+    return static_cast<Unk_StlElem<0x128>*>(p) + n;
+}
+
+// MS2-FUNCTIONAL: advances the recovered pointer by the requested number of elements.
+// @0x1415e5480
+void* FUN_1415e5480(void* p, ptrdiff_t n)
+{
+    return static_cast<Unk_StlElem<0x118>*>(p) + n;
+}
+
+// MS2-FUNCTIONAL: advances the recovered pointer by the requested number of elements.
+// @0x1415e54b0
+void* FUN_1415e54b0(void* p, ptrdiff_t n)
+{
+    return static_cast<Unk_StlElem<0x580>*>(p) + n;
+}
+
+// MS2-FUNCTIONAL: advances the recovered pointer by the requested number of elements.
+// @0x1415e54e0
+void* FUN_1415e54e0(void* p, ptrdiff_t n)
+{
+    return static_cast<Unk_StlElem<0x18>*>(p) + n;
+}
+
+// MS2-FUNCTIONAL: advances the recovered pointer by the requested number of elements.
+// @0x1415e5510
+void* FUN_1415e5510(void* p, ptrdiff_t n)
+{
+    return static_cast<Unk_StlElem<0x14a8>*>(p) + n;
+}
+
+// MS2-FUNCTIONAL: advances the recovered pointer by the requested number of elements.
+// @0x1415e5540
+void* FUN_1415e5540(void* p, ptrdiff_t n)
+{
+    return static_cast<Unk_StlElem<0x18>*>(p) + n;
+}
+
+// MS2-FUNCTIONAL: advances the recovered pointer by the requested number of elements.
+// @0x1415e5570
+void* FUN_1415e5570(void* p, ptrdiff_t n)
+{
+    return static_cast<Unk_StlElem<0xb8>*>(p) + n;
+}
+
+// MS2-FUNCTIONAL: advances the recovered pointer by the requested number of elements.
+// @0x1415e55a0
+void* FUN_1415e55a0(void* p, ptrdiff_t n)
+{
+    return static_cast<Unk_StlElem<0x58>*>(p) + n;
+}
+
+// MS2-FUNCTIONAL: advances the recovered pointer by the requested number of elements.
+// @0x1415e55d0
+void* FUN_1415e55d0(void* p, ptrdiff_t n)
+{
+    return static_cast<Unk_StlElem<0xae8>*>(p) + n;
+}
+
+// MS2-FUNCTIONAL: advances the recovered pointer by the requested number of elements.
+// @0x1415e5600
+void* FUN_1415e5600(void* p, ptrdiff_t n)
+{
+    return static_cast<Unk_StlElem<0xc8>*>(p) + n;
+}
+
+// MS2-FUNCTIONAL: advances the recovered pointer by the requested number of elements.
+// @0x1415e5630
+void* FUN_1415e5630(void* p, ptrdiff_t n)
+{
+    return static_cast<Unk_StlElem<0xf8>*>(p) + n;
+}
+
+// MS2-FUNCTIONAL: advances the recovered pointer by the requested number of elements.
+// @0x1415e5660
+void* FUN_1415e5660(void* p, ptrdiff_t n)
+{
+    return static_cast<Unk_StlElem<0x490>*>(p) + n;
+}
+
+// MS2-FUNCTIONAL: advances the recovered pointer by the requested number of elements.
+// @0x1415e5690
+void* FUN_1415e5690(void* p, ptrdiff_t n)
+{
+    return static_cast<Unk_StlElem<0x30>*>(p) + n;
+}
+
 // MS2-FUNCTIONAL: computes the decompiled random-access iterator distance via its recovered helper.
 // @0x1415e3c80
 ptrdiff_t FUN_1415e3c80(void* first, void* last)
@@ -1763,3 +1896,22 @@ void* FUN_1415e5320(void* p) { return p; }
 // MS2-PIN: ??$distance@PEAVCNMSessionMemberInfo@@@std@@YA_JPEAVCNMSessionMemberInfo@@0@Z 0x1415e3f80
 // MS2-PIN: ??$distance@PEAVCNMVirtualUserInfo@@@std@@YA_JPEAVCNMVirtualUserInfo@@0@Z 0x1415e3fb0
 // MS2-PIN: ??$distance@PEBVCNMChannelMemberInfo@@@std@@YA_JPEBVCNMChannelMemberInfo@@0@Z 0x1415e3fe0
+// MS2-PIN: ??$next@PEAUNMChatSessionTarget@@@std@@YAPEAUNMChatSessionTarget@@PEAU1@_J@Z 0x1415e5330
+// MS2-PIN: ??$next@PEAUNMFriendKey@@@std@@YAPEAUNMFriendKey@@PEAU1@_J@Z 0x1415e5360
+// MS2-PIN: ??$next@PEAVCNMCateFriendInfo@@@std@@YAPEAVCNMCateFriendInfo@@PEAV1@_J@Z 0x1415e5390
+// MS2-PIN: ??$next@PEAVCNMChannelMemberInfo@@@std@@YAPEAVCNMChannelMemberInfo@@PEAV1@_J@Z 0x1415e53c0
+// MS2-PIN: ??$next@PEAVCNMCharacter@@@std@@YAPEAVCNMCharacter@@PEAV1@_J@Z 0x1415e53f0
+// MS2-PIN: ??$next@PEAVCNMChatRoomMemberInfo@@@std@@YAPEAVCNMChatRoomMemberInfo@@PEAV1@_J@Z 0x1415e5420
+// MS2-PIN: ??$next@PEAVCNMFileEvent@@@std@@YAPEAVCNMFileEvent@@PEAV1@_J@Z 0x1415e5450
+// MS2-PIN: ??$next@PEAVCNMFilePath@@@std@@YAPEAVCNMFilePath@@PEAV1@_J@Z 0x1415e5480
+// MS2-PIN: ??$next@PEAVCNMFriendInfo@@@std@@YAPEAVCNMFriendInfo@@PEAV1@_J@Z 0x1415e54b0
+// MS2-PIN: ??$next@PEAVCNMGameCode@@@std@@YAPEAVCNMGameCode@@PEAV1@_J@Z 0x1415e54e0
+// MS2-PIN: ??$next@PEAVCNMGameInfo@@@std@@YAPEAVCNMGameInfo@@PEAV1@_J@Z 0x1415e5510
+// MS2-PIN: ??$next@PEAVCNMGameServerCode@@@std@@YAPEAVCNMGameServerCode@@PEAV1@_J@Z 0x1415e5540
+// MS2-PIN: ??$next@PEAVCNMGuildMemberInfo@@@std@@YAPEAVCNMGuildMemberInfo@@PEAV1@_J@Z 0x1415e5570
+// MS2-PIN: ??$next@PEAVCNMGuildMemberLevelInfo@@@std@@YAPEAVCNMGuildMemberLevelInfo@@PEAV1@_J@Z 0x1415e55a0
+// MS2-PIN: ??$next@PEAVCNMNoteInfo2@@@std@@YAPEAVCNMNoteInfo2@@PEAV1@_J@Z 0x1415e55d0
+// MS2-PIN: ??$next@PEAVCNMRejectedUser@@@std@@YAPEAVCNMRejectedUser@@PEAV1@_J@Z 0x1415e5600
+// MS2-PIN: ??$next@PEAVCNMSessionMemberInfo@@@std@@YAPEAVCNMSessionMemberInfo@@PEAV1@_J@Z 0x1415e5630
+// MS2-PIN: ??$next@PEAVCNMVirtualUserInfo@@@std@@YAPEAVCNMVirtualUserInfo@@PEAV1@_J@Z 0x1415e5660
+// MS2-PIN: ??$next@PEBVCNMChannelMemberInfo@@@std@@YAPEBVCNMChannelMemberInfo@@PEBV1@_J@Z 0x1415e5690
