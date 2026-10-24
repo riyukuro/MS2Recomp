@@ -2287,6 +2287,37 @@ void UIMeratMarketDialog::ShowKind6Item(MS2Ptr<CMeratMarketProduct> spProduct, M
 }
 
 // @0x1412f59e0
+// @0x1413140d0
+// MS2-FUNCTIONAL: transfers the ridee handle from the temporary, matching the exe's move-style copy body.
+Unk_MpRideePtr::Unk_MpRideePtr(const Unk_MpRideePtr& other)
+{
+    m_p = other.m_p;
+    const_cast<Unk_MpRideePtr&>(other).m_p = 0;
+}
+
+// @0x141314100
+// MS2-FUNCTIONAL: initializes the null handle; the unused first word remains untouched as in the exe.
+Unk_MpRideePtr::Unk_MpRideePtr(int)
+{
+    m_p = 0;
+}
+
+// @0x141314120
+// MS2-FUNCTIONAL: takes one reference to the ridee object through the recovered MS2Ptr reference path.
+Unk_MpRideePtr::Unk_MpRideePtr(UIAvatarRidee* p)
+{
+    m_p = p;
+    if (m_p != 0)
+        CPtred::AddRefPtred(m_p);
+}
+
+// @0x1413146e0
+// MS2-FUNCTIONAL: releases the owned ridee reference.
+Unk_MpRideePtr::~Unk_MpRideePtr()
+{
+    Release();
+}
+
 Unk_MpRideePtr UIMeratMarketDialog::CreateRideeAvatar(MS2Ptr<CItemData> spData)
 {
     if (spData == 0 || m_30 == 0)
