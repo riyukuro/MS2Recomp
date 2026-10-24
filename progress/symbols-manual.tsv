@@ -14429,3 +14429,16 @@ DAT_143c492a0	143c492a0	data
 ?DAT_143b17220@@3PAEA	143b17220	data
 ?DAT_143b17228@@3PAEA	143b17228	data
 ?DAT_143b17230@@3PAEA	143b17230	data
+?g_cubeMapNone@@3VUnk_1401cd100@@A	143acf820	data
+?DAT_143ac2bd0@@3V?$MS2Ptr@VUnk_HeldObject@@@@A	143ac2bd0	data
+?DAT_143adca50@@3V?$CAtlMap@IV?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@@3@@ATL@@A	143adca50	data
+?DAT_143abf510@@3V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@A	143abf510	data
+?DAT_143af2258@@3V?$CAtlList@W4Unk_UIType@@V?$CElementTraits@W4Unk_UIType@@@ATL@@@ATL@@A	143af2258	data
+?DAT_143ac5988@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A	143ac5988	data
+?DAT_143af37a0@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A	143af37a0	data
+?DAT_143ad76a8@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A	143ad76a8	data
+?DAT_143af7f80@@3VCErrorNotificationDlg@@A	143af7f80	data
+?DAT_143af7e00@@3VCMemoryDepletionDlg@@A	143af7e00	data
+?g_worldNullHandle@@3VUnk_1401cd100@@A	143af8278	data
+?ms_RTTI@NiPSParticleSystem@@2VNiRTTI@@B	143afbfb8	data
+?SendKeyTableMode5@@YAHHH_JHH@Z	14092fef0	func
