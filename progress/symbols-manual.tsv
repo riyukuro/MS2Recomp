@@ -14442,3 +14442,5 @@ DAT_143c492a0	143c492a0	data
 ?g_worldNullHandle@@3VUnk_1401cd100@@A	143af8278	data
 ?ms_RTTI@NiPSParticleSystem@@2VNiRTTI@@B	143afbfb8	data
 ?SendKeyTableMode5@@YAHHH_JHH@Z	14092fef0	func
+?NS_AS3@fl@AS3@GFx@Scaleform@@3QEBDEB	143a2d3b0	data
+?NS_flash_proxy@fl@AS3@GFx@Scaleform@@3QEBDEB	143a2d3b8	data
