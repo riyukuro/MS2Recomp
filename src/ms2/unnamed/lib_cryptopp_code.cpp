@@ -6,21 +6,24 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/ms2recover.h"
 #include <typeinfo>
+#include <new>
 
-struct CppString;
-CppString* FUN_1401d2620(CppString* dst, const char* src);   // std::string(const char*)
+#include <string>
+std::string* FUN_1401d2620(std::string* dst, const char* src);   // std::string(const char*)
 extern const char DAT_14311c1e0[];
 extern const char DAT_14311c638[];
+extern const char DAT_14312d8d8[];
+extern const char DAT_143130c28[];
 
 // @0x1423056e0
-CppString* FUN_1423056e0(void* self, CppString* out)
+std::string* FUN_1423056e0(void* self, std::string* out)
 {
     FUN_1401d2620(out, DAT_14311c1e0);
     return out;
 }
 
 // @0x142305710
-CppString* FUN_142305710(void* self, CppString* out)
+std::string* FUN_142305710(void* self, std::string* out)
 {
     FUN_1401d2620(out, DAT_14311c638);
     return out;
@@ -73,4 +76,47 @@ void FUN_1423697c0(CppIntParam* self, CppIntParam* dst)
     FUN_14038dff0(dst, self);
     dst->vptr = DAT_14312dbf8;
     dst->m_value = self->m_value;
+}
+
+#include <string>
+#include <exception>
+
+// CryptoPP::Exception: std::exception + m_errorType + m_what, as the exe's copy lays it out
+struct CppCryptoException : std::exception
+{
+    int m_errorType;
+    std::string m_what;
+    CppCryptoException(int type, const std::string& s) : m_errorType(type), m_what(s) {}
+};
+// a std::string temporary whose constructor is the out-of-line one
+struct CppTempString
+{
+    union { std::string s; };
+    CppTempString(const char* p) { FUN_1401d2620(&s, p); }
+    ~CppTempString() { s.~basic_string(); }
+};
+// a Crypto++ exception subclass with its own vftable (the vtable stored last is the derived one)
+struct CppCryptoExceptionA : CppCryptoException
+{
+    CppCryptoExceptionA() : CppCryptoException(4, CppTempString(DAT_14312d8d8).s) {}
+    virtual ~CppCryptoExceptionA() throw();
+};
+struct CppCryptoExceptionB : CppCryptoException
+{
+    CppCryptoExceptionB() : CppCryptoException(6, CppTempString(DAT_143130c28).s) {}
+    virtual ~CppCryptoExceptionB() throw();
+};
+
+// MS2-FUNCTIONAL: identical but for the exe's /GS cookie (its string temporary is a GS buffer; our union temporary is not)
+// @0x14235bce0
+CppCryptoExceptionA* FUN_14235bce0(CppCryptoExceptionA* self)
+{
+    return new (self) CppCryptoExceptionA();
+}
+
+// MS2-FUNCTIONAL: identical but for the exe's /GS cookie (its string temporary is a GS buffer; our union temporary is not)
+// @0x14237b650
+CppCryptoExceptionB* FUN_14237b650(CppCryptoExceptionB* self)
+{
+    return new (self) CppCryptoExceptionB();
 }
