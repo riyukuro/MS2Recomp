@@ -71,10 +71,24 @@ efd::UInt32 FUN_1420e6090(AssetLoaderThreadFunctorLayout* self, void* pArg)
 // MS2-FUNCTIONAL: codegen only: the exe keeps std::less<utf8string> (0x140999060) out of line and uses an r11 frame.
 template bool efd::DataDrivenEnum<efd::UInt32>::FindEnumValue(const efd::utf8string&, efd::UInt32&);   // 0x1420e62a0
 
-// QOSCompare.cpp's file statics and QOSCompare's static members.
+// QOSCompare.cpp's file statics and QOSCompare's static members. The file statics have internal linkage in the engine
+// TU, so the full exe gets this unit's copies; the hook DLL binds the exe's own through the symbols table. The static
+// members are the engine TU's (tools/fullexe/alias-manual.tsv).
+#ifdef MS2_HOOK_DLL
 extern "C" const char* DAT_143a0eae8;   // kConfigSection "QualityOfService"
 extern "C" const char* DAT_143a0eaf0;   // kVirtualQOSEnum "efdVirtualQualityOfService"
 extern "C" const char* DAT_143a0eaf8;   // kPhysicalQOSEnum "efdQualityOfService"
+#else
+// kConfigSection
+// @0x143a0eae8
+extern "C" const char* DAT_143a0eae8 = "QualityOfService";
+// kVirtualQOSEnum
+// @0x143a0eaf0
+extern "C" const char* DAT_143a0eaf0 = "efdVirtualQualityOfService";
+// kPhysicalQOSEnum
+// @0x143a0eaf8
+extern "C" const char* DAT_143a0eaf8 = "efdQualityOfService";
+#endif
 extern "C" efd::QualityOfService DAT_143a0eae0;   // QOSCompare::ms_defaultQualityOfService
 extern "C" bool DAT_143b05548;                    // QOSCompare::ms_configRead
 extern "C" efd::map<efd::QualityOfService, efd::QualityOfService> DAT_143b05550;   // QOSCompare::ms_virtualToPhysical
