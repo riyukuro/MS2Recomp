@@ -5,6 +5,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/nmfunc.h"
 #include <windows.h>
+#include <strsafe.h>
 
 static void nm_free_string_storage(char*& p)
 {
@@ -24,6 +25,17 @@ static bool nm_ensure_string(void** slot, size_t bytes, size_t emptyRva)
         *static_cast<char*>(*slot) = 0;
     }
     return *slot != nullptr && *slot != empty;
+}
+
+static void nm_reset_string(void** slot, size_t emptyRva)
+{
+    void* empty = static_cast<unsigned char*>(reinterpret_cast<void*>(GetModuleHandleW(nullptr))) + emptyRva;
+    if (*slot && *slot != empty) {
+        MEMORY_BASIC_INFORMATION info{};
+        if (VirtualQuery(*slot, &info, sizeof(info)) && info.Type == MEM_PRIVATE)
+            ::operator delete(*slot);
+    }
+    *slot = empty;
 }
 
 // MS2-FUNCTIONAL: lazily allocates and clears the session string buffer, preserving its recovered shared-empty sentinel.
@@ -57,6 +69,34 @@ bool FUN_1415f9830(void** slot) { return nm_ensure_string(slot, 0x400, 0x3ae28e8
 // MS2-FUNCTIONAL: lazily allocates and clears the session string buffer, preserving its recovered shared-empty sentinel.
 // @0x1415f98e0
 bool FUN_1415f98e0(void** slot) { return nm_ensure_string(slot, 0x800, 0x3ae2849); }
+
+// MS2-FUNCTIONAL: preserves the recovered null-free or allocate-and-copy behavior for this fixed-capacity string.
+// @0x1415f99a0
+void FUN_1415f99a0(void** slot, const char* value) { if (!value) { nm_reset_string(slot, 0x3ae28ec); return; } if (FUN_1415f9410(slot)) StringCchCopyA(static_cast<char*>(*slot), 9, value); }
+
+// MS2-FUNCTIONAL: preserves the recovered null-free or allocate-and-copy behavior for this fixed-capacity string.
+// @0x1415f99f0
+void FUN_1415f99f0(void** slot, const char* value) { if (!value) { nm_reset_string(slot, 0x3ae28ea); return; } if (FUN_1415f9570(slot)) StringCchCopyA(static_cast<char*>(*slot), 0x1000, value); }
+
+// MS2-FUNCTIONAL: preserves the recovered null-free or allocate-and-copy behavior for this fixed-capacity string.
+// @0x1415f9a40
+void FUN_1415f9a40(void** slot, const char* value) { if (!value) { nm_reset_string(slot, 0x3ae28ed); return; } if (FUN_1415f9620(slot)) StringCchCopyA(static_cast<char*>(*slot), 0x15e, value); }
+
+// MS2-FUNCTIONAL: preserves the recovered null-free or allocate-and-copy behavior for this fixed-capacity string.
+// @0x1415f9a90
+void FUN_1415f9a90(void** slot, const char* value) { if (!value) { nm_reset_string(slot, 0x3ae2848); return; } if (FUN_1415f96d0(slot)) StringCchCopyA(static_cast<char*>(*slot), 0x20, value); }
+
+// MS2-FUNCTIONAL: preserves the recovered null-free or allocate-and-copy behavior for this fixed-capacity string.
+// @0x1415f9ae0
+void FUN_1415f9ae0(void** slot, const char* value) { if (!value) { nm_reset_string(slot, 0x3ae28e9); return; } if (FUN_1415f9780(slot)) StringCchCopyA(static_cast<char*>(*slot), 0x40, value); }
+
+// MS2-FUNCTIONAL: preserves the recovered null-free or allocate-and-copy behavior for this fixed-capacity string.
+// @0x1415f9b30
+void FUN_1415f9b30(void** slot, const char* value) { if (!value) { nm_reset_string(slot, 0x3ae28e8); return; } if (FUN_1415f9830(slot)) StringCchCopyA(static_cast<char*>(*slot), 0x400, value); }
+
+// MS2-FUNCTIONAL: preserves the recovered null-free or allocate-and-copy behavior for this fixed-capacity string.
+// @0x1415f9b80
+void FUN_1415f9b80(void** slot, const char* value) { if (!value) { nm_reset_string(slot, 0x3ae2849); return; } if (FUN_1415f98e0(slot)) StringCchCopyA(static_cast<char*>(*slot), 0x800, value); }
 
 // @0x1415f9990
 void FUN_1415f9990(void*) { }
