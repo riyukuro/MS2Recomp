@@ -685,10 +685,10 @@
 140120290	1401206b0	unit_140120290	none	11	di	
 1401206b0	140120860	?\worldservice.cpp	low	6	di	
 140120860	140120880	unit_141bf99b8	none	1	di	
-1401208d0	140120be0	unit_1401208d0	none	1	di	w520 split: CMyPCKeyInputController static (0x143af82f0), likely worldservice_1 last di; rest of the old 0x140120880-0x1401580a0 row is library (Gamebryo/AS3/ATL/CRT, see work/coord/w519-unit_140120880.md)
-140135ac0	140135c50	unit_140135ac0	none	10	di	w520 split: gfxui lib di (GFxMovie RTTI, DragSlot/BindData ClassInfo, GFx::Value)
-140135c50	14013acc0	unit_140135c50	none	224	di	w520 split: header-statics TU (src/ms2/unnamed/unit_140135c50.cpp)
-14013acc0	14013b180	unit_14013acc0	none	27	di	w520 split: gfxui lib di (GFxMovie* RTTI, uiswfentity 3, NiGFxOverlayClick RTTI)
+1401208d0	140120be0	unit_1401208d0_worldservicekeyinputstatic	none	1	di	descriptive: worldservicekeyinputstatic
+140135ac0	140135c50	unit_140135ac0_gfxuilibraryinitializers	none	10	di	descriptive: gfxuilibraryinitializers
+140135c50	14013acc0	unit_140135c50_gfxuiheaderstatics	none	224	di	descriptive: gfxuiheaderstatics
+14013acc0	14013b180	unit_14013acc0_gfxuilibraryinitializers	none	27	di	descriptive: gfxuilibraryinitializers
 14013b210	14013f0d0	sfr_as3di_01	none	300	di	sfr0 10-20: Scaleform 4.1.18 recovery, AS3 di
 14013f0d0	140142910	sfr_as3di_02	none	300	di	sfr0 10-20: Scaleform 4.1.18 recovery, AS3 di
 140142910	140146150	sfr_as3di_03	none	300	di	sfr0 10-20: Scaleform 4.1.18 recovery, AS3 di
@@ -741,14 +741,14 @@
 14028b820	14029dff0	commonfiles\commonutil.cpp	high	580	mn	
 14029dff0	1402ab440	commonfiles\conditionutil.cpp	high	233	mn	
 1402ab440	1402c3760	unit_1402ab440	none	302	mn	rejected ?\common.cpp
-1402c3760	1402c3840	unit_1402c3760	none	3	mn	
+1402c3760	1402c3840	unit_1402c3760_crtvsprintfwrappers	none	3	mn	descriptive: crtvsprintfwrappers
 1402c3840	1402c4b00	commonfiles\constraints.cpp	high	45	mn	
 1402c4b00	1402c5180	commonfiles\contentshutdown.cpp	high	14	mn	
 1402c5180	1402c6c20	?\continentregiontable.cpp	low	55	mn	dir commonfiles
 1402c6c20	1402cb2a0	commonfiles\coupleemotiontable.cpp	high	113	mn	
 1402cb2a0	1402e1070	?\fmt.cpp	low	511	mn	dir commonfiles
-1402e1070	1402e12c0	unit_1402e1070	none	5	mn	
-1402e12c0	1402e1b80	unit_1402e12c0	none	11	mn	
+1402e1070	1402e12c0	unit_1402e1070_stepprofilerwrappers	none	5	mn	descriptive: stepprofilerwrappers
+1402e12c0	1402e1b80	unit_1402e12c0_profilingintervallogger	none	11	mn	descriptive: profilingintervallogger
 1402e1b80	1402e6c50	commonfiles\gameeventbase.cpp	high	148	mn	
 1402e6c50	14031b800	commonfiles\dungeonmatch.cpp	high	2346	mn	
 14031b800	140343e50	commonfiles\dungeonroom.cpp	high	1646	mn	
@@ -756,7 +756,7 @@
 140346f60	140348ce0	?\dynamicactiondata.cpp	low	70	mn	dir commonfiles
 140348ce0	14034d030	commonfiles\dynamicbanwordmanager.cpp	high	126	mn	
 14034d030	140351890	?\enchantscrolldata.cpp	low	120	mn	dir commonfiles
-140351890	140352350	unit_140351890	none	4	mn	
+140351890	140352350	unit_140351890_filesystemcipherkeytables	none	4	mn	descriptive: filesystemcipherkeytables
 140352350	1403588d0	?\exptable.cpp	low	208	mn	dir commonfiles
 1403588d0	1403687f0	?\famegradedata.cpp	low	522	mn	dir commonfiles
 1403687f0	1403727d0	commonfiles\featuremanager.cpp	high	181	mn	
@@ -766,21 +766,21 @@
 1403820e0	14038b670	commonfiles\fieldwardata.cpp	high	340	mn	
 14038b670	140395ff0	commonfiles\filebuffer.cpp	high	448	mn	
 140395ff0	1403b0790	commonfiles\filesystem.cpp	high	887	mn	
-1403b0790	1403b08b0	unit_1403b0790	none	3	mn	
+1403b0790	1403b08b0	unit_1403b0790_filesystemcrtwrappers	none	3	mn	descriptive: filesystemcrtwrappers
 1403b08b0	1403b0e30	?\fishcube.cpp	low	10	mn	dir commonfiles
 1403b0e30	1403b72d0	?\fishsimultedata.cpp	low	174	mn	dir commonfiles
 1403b72d0	1403ba180	?\gamedictionarymanager.cpp	low	126	mn	dir commonfiles
 1403ba180	1403bb510	commonfiles\gameentitycommon.cpp	high	23	mn	
 1403bb510	1403e4a90	commonfiles\gameevent.cpp	high	1236	mn	
 1403e4a90	1403e8230	?\gameeventadventurelevelbonusexprate.cpp	low	267	mn	was ?\burninglevelupcontext.cpp; dir commonfiles
-1403e8230	1403e8650	unit_1403e8230	none	19	mn	
-1403e8650	1403e8960	unit_1403e8650	none	12	mn	
-1403e8960	1403e8e30	unit_1403e8960	none	64	mn	
-1403e8e30	1403e8e60	unit_1403e8e30	none	2	mn	
-1403e8e60	1403e9180	unit_1403e8e60	none	10	mn	
-1403e9180	1403e9210	unit_1403e9180	none	3	mn	
+1403e8230	1403e8650	unit_1403e8230_eventsmartpointerglue	none	19	mn	descriptive: eventsmartpointerglue
+1403e8650	1403e8960	unit_1403e8650_iteratorcomparators	none	12	mn	descriptive: iteratorcomparators
+1403e8960	1403e8e30	unit_1403e8960_smartpointermapglue	none	64	mn	descriptive: smartpointermapglue
+1403e8e30	1403e8e60	unit_1403e8e30_pointerdereferencewrapper	none	2	mn	descriptive: pointerdereferencewrapper
+1403e8e60	1403e9180	unit_1403e8e60_eventiteratorincrementglue	none	10	mn	descriptive: eventiteratorincrementglue
+1403e9180	1403e9210	unit_1403e9180_pointeriteratorincrement	none	3	mn	descriptive: pointeriteratorincrement
 1403e9210	1403e9650	unit_1403e9210	none	11	mn	
-1403e9650	1403f37d0	unit_1403e9650	none	356	mn	
+1403e9650	1403f37d0	unit_1403e9650_gameeventcomdatglue	none	356	mn	descriptive: gameeventcomdatglue
 1403f37d0	1403f4e10	unit_1403f37d0	none	134	mn	
 1403f4e10	14041b140	commonfiles\gameeventcontext.cpp	high	1326	mn	
 14041b140	14041c1a0	?\gameeventdtreward.cpp	low	42	mn	dir commonfiles
@@ -792,10 +792,10 @@
 140421740	140426380	commonfiles\gameeventuservaluenametable.cpp	high	132	mn	
 140426380	140446320	commonfiles\gameeventvalue.cpp	high	905	mn	
 140446320	1404475d0	?\gameeventvalueidipevent.cpp	low	109	mn	dir commonfiles
-1404475d0	1404477b0	unit_1404475d0	none	7	mn	
-1404477b0	140447ef0	unit_1404477b0	none	29	mn	
-140447ef0	140448770	unit_140447ef0	none	64	mn	
-140448770	1404487e0	unit_140448770	none	2	mn	
+1404475d0	1404477b0	unit_1404475d0_gameeventvaluecomdatglue	none	7	mn	descriptive: gameeventvaluecomdatglue
+1404477b0	140447ef0	unit_1404477b0_eventvalueiteratorcomparators	none	29	mn	descriptive: eventvalueiteratorcomparators
+140447ef0	140448770	unit_140447ef0_eventvaluemapglue	none	64	mn	descriptive: eventvaluemapglue
+140448770	1404487e0	unit_140448770_intrusivelistiteratorincrement	none	2	mn	descriptive: intrusivelistiteratorincrement
 1404487e0	140448870	unit_1404487e0	none	3	mn	
 140448870	1404495e0	unit_140448870	none	46	mn	
 1404495e0	140449650	unit_1404495e0	none	3	mn	
