@@ -775,3 +775,17 @@ MS2_REPLACE(0x140a0f140, BGTransparencyMgr::DeleteMaterials, 186, 0xA24BC03D);
 MS2_REPLACE_METHOD(0x140a0f2d0, BGTransparencyMgr, MoveMissingToFadeIn, 383, 0x9B2EDDD8);
 MS2_REPLACE(0x140a0f460, BGTransparencyMgr::CompareDistance, 234, 0x97E118CA);
 
+// Full-executable aliases for existing BGTransparencyMgr and tree-iterator entries.
+// MS2-PIN: ?Init@BGTransparencyMgr@@QEAAHXZ 0x140a0cee0
+// MS2-PIN: ?Shutdown@BGTransparencyMgr@@QEAAXXZ 0x140a0cf90
+// MS2-PIN: ?AddObject@BGTransparencyMgr@@QEAAXPEAVGameObject@@@Z 0x140a0d130
+// MS2-PIN: ?RemoveObject@BGTransparencyMgr@@QEAAXPEAVGameObject@@@Z 0x140a0d190
+// MS2-PIN: ?EraseEntity@BGTransparencyMgr@@QEAAXPEAVEntity@egf@@@Z 0x140a0d450
+// MS2-PIN: ??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_BGTRegion@@@std@@@std@@@std@@QEBAAEBUUnk_BGTRegion@@XZ 0x140a16d80
+// MS2-PIN: ?FUN_140a0cee0@@YAXPEAVUnk_WsME_WorldHook@@@Z 0x140a0cee0
+// MS2-PIN: ?FUN_140a0cf90@@YAXPEAVUnk_WsME_WorldHook@@@Z 0x140a0cf90
+// MS2-PIN: ?FUN_140a0d130@Unk_GoUpdateList@@QEAAXPEAVGameObject@@@Z 0x140a0d130
+// MS2-PIN: ?FUN_140a0d190@Unk_GoUpdateList@@QEAAXPEAVGameObject@@@Z 0x140a0d190
+// MS2-PIN: ?FUN_140a0d450@@YAXPEAXPEAVEntity@egf@@@Z 0x140a0d450
+// MS2-PIN: ?FUN_140a16d80@@YAPEAXPEAX@Z 0x140a16d80
+// MS2-PIN: ?FUN_140a16d80@@YAPEAUUnk_CMISEntityRef@@PEAU?$Unk_CMISIter@$0BAA@@@@Z 0x140a16d80
