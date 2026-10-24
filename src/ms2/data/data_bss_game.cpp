@@ -4,6 +4,9 @@
 // users declare at an address are mapped to it with /alternatename. Class objects are byte images up to the
 // next known exe global; their constructors (the owning TU's .text$di initializer) are not run by this unit,
 // see the zero-blob list in work/sfr22/outside-summary.md. A recovered owner moves a definition to its TU.
+// The 39 constructed objects of these blocks (CString statics, CAtlList/CAtlMap, QuestMask, the dialogs, ...) are
+// defined by their owners as DAT_<va> now, with their dynamic initializers (work/sfr22/fullexe-staticctors.md);
+// 0x143afbfb8 is Gamebryo's NiPSParticleSystem::ms_RTTI. Users' other names reach them via tools/fullexe/alias.py.
 // The hook DLL binds every name to the exe's own global (symbols table), so nothing here is compiled into it
 // (docs/RECOVERY.md sec. 9).
 // MS2-UNIT: data_bss_game
@@ -53,15 +56,11 @@ struct Unk_M2vCtx;
 struct Unk_PtrArray;
 struct __crt_locale_pointers;
 
-alignas(8) unsigned char DAT_143aab428[0xd0];                   // 0x143aab428
 bool DAT_143aac290;                                             // 0x143aac290
 unsigned long g_dwCrashMainThreadId = 0x0u;                     // 0x143aac530
 void* DAT_143aac538;                                            // 0x143aac538
 bool DAT_143aac548;                                             // 0x143aac548
-alignas(8) unsigned char DAT_143aacc88[0x8];                    // 0x143aacc88
-alignas(16) unsigned char DAT_143aacc90[0x58];                  // 0x143aacc90
 Unk_AltStringMgr* DAT_143aaccf8;                                // 0x143aaccf8
-alignas(16) unsigned char DAT_143aacd50[0x40];                  // 0x143aacd50
 long g_lUniqueSeq;                                              // 0x143aacf78
 unsigned __int64 DAT_143aad0e8 = 0x0ull;                        // 0x143aad0e8
 __crt_locale_pointers* DAT_143aad168;                           // 0x143aad168
@@ -84,16 +83,13 @@ int g_nLocaleMode;                                              // 0x143ab0560
 int DAT_143ab5b00;                                              // 0x143ab5b00
 alignas(8) unsigned char DAT_143ab6728[0x8];                    // 0x143ab6728
 void* DAT_143ab7800;                                            // 0x143ab7800
-alignas(8) unsigned char DAT_143ab78e8[0x20];                   // 0x143ab78e8
 Unk_McEntityRules* DAT_143ab9510;                               // 0x143ab9510
 UISwfEntityManager* DAT_143abb058;                              // 0x143abb058
 float g_143abb090 = 0.0f;                                       // 0x143abb090
 int DAT_143abdc30;                                              // 0x143abdc30
 int DAT_143abdf50;                                              // 0x143abdf50
-alignas(16) unsigned char DAT_143abf510[0x8];                   // 0x143abf510
 void* DAT_143abf890;                                            // 0x143abf890
 Unk_SingletonObj* DAT_143ac1928;                                // 0x143ac1928
-alignas(16) unsigned char DAT_143ac2bd0[0x2c8];                 // 0x143ac2bd0
 int DAT_143ac2fd0;                                              // 0x143ac2fd0
 int DAT_143ac2fd4;                                              // 0x143ac2fd4
 float DAT_143ac30a8 = 0.0f;                                     // 0x143ac30a8
@@ -103,52 +99,32 @@ float DAT_143ac3d08 = 0.0f;                                     // 0x143ac3d08
 alignas(16) unsigned char DAT_143ac3d10[0x8];                   // 0x143ac3d10
 void* DAT_143ac3d18;                                            // 0x143ac3d18
 int DAT_143ac47c8;                                              // 0x143ac47c8
-alignas(8) unsigned char DAT_143ac5988[0x2b0];                  // 0x143ac5988
 Unk_140e45740* DAT_143ac5d88;                                   // 0x143ac5d88
 char DAT_143acdb20;                                             // 0x143acdb20
-alignas(16) unsigned char DAT_143acf820[0x130];                 // 0x143acf820
 void* DAT_143ad08c8;                                            // 0x143ad08c8
 int DAT_143ad1b20;                                              // 0x143ad1b20
 char DAT_143ad2168;                                             // 0x143ad2168
 alignas(8) unsigned char DAT_143ad2288[0xc0];                   // 0x143ad2288
 char DAT_143ad2348;                                             // 0x143ad2348
-alignas(8) unsigned char DAT_143ad76a8[0xc88];                  // 0x143ad76a8
 __int64 DAT_143ad9140 = 0LL;                                    // 0x143ad9140
 void* DAT_143ad95f0;                                            // 0x143ad95f0
 alignas(8) unsigned char DAT_143adc208[0xf8];                   // 0x143adc208
-alignas(16) unsigned char DAT_143adca50[0x48];                  // 0x143adca50
 alignas(16) unsigned char DAT_143add400[0xc0];                  // 0x143add400
-alignas(8) unsigned char DAT_143adda48[0x78];                   // 0x143adda48
 char DAT_143ae95e0;                                             // 0x143ae95e0
 char DAT_143ae95e1;                                             // 0x143ae95e1
 char DAT_143ae95e2;                                             // 0x143ae95e2
 char DAT_143ae95e3;                                             // 0x143ae95e3
 bool DAT_143ae9750;                                             // 0x143ae9750
 float DAT_143aea120 = 0.0f;                                     // 0x143aea120
-alignas(8) unsigned char DAT_143aea1b8[0x8];                    // 0x143aea1b8
-alignas(16) unsigned char DAT_143aea1c0[0x8];                   // 0x143aea1c0
-alignas(8) unsigned char DAT_143aea1c8[0x8];                    // 0x143aea1c8
-alignas(16) unsigned char DAT_143aea1d0[0x8];                   // 0x143aea1d0
-alignas(8) unsigned char DAT_143aea1d8[0x8];                    // 0x143aea1d8
-alignas(16) unsigned char DAT_143aea1e0[0x60];                  // 0x143aea1e0
 long g_socketThreads;                                           // 0x143aedab0
 float g_143aef240 = 0.0f;                                       // 0x143aef240
-alignas(8) unsigned char DAT_143aef3b8[0xd0];                   // 0x143aef3b8
-alignas(8) unsigned char DAT_143af1bc8[0x50];                   // 0x143af1bc8
-alignas(8) unsigned char DAT_143af1c18[0x338];                  // 0x143af1c18
-alignas(8) unsigned char DAT_143af2258[0x398];                  // 0x143af2258
 __int64 DAT_143af25f0 = 0LL;                                    // 0x143af25f0
 int DAT_143af25f8;                                              // 0x143af25f8
-alignas(16) unsigned char DAT_143af37a0[0x10];                  // 0x143af37a0
 int DAT_143af37b0;                                              // 0x143af37b0
 int DAT_143af37b4;                                              // 0x143af37b4
 __int64 DAT_143af37b8 = 0LL;                                    // 0x143af37b8
 unsigned int DAT_143af3960 = 0x0u;                              // 0x143af3960
-alignas(8) unsigned char DAT_143af3e28[0x8];                    // 0x143af3e28
-alignas(16) unsigned char DAT_143af3e30[0x3b0];                 // 0x143af3e30
 int DAT_143af4400;                                              // 0x143af4400
-alignas(8) unsigned char DAT_143af6008[0x2b8];                  // 0x143af6008
-alignas(16) unsigned char DAT_143af62c0[0x10];                  // 0x143af62c0
 bool DAT_143af62d0;                                             // 0x143af62d0
 int DAT_143af62d4;                                              // 0x143af62d4
 int DAT_143af62d8;                                              // 0x143af62d8
@@ -159,13 +135,9 @@ int DAT_143af7d44;                                              // 0x143af7d44
 alignas(8) unsigned char DAT_143af7d48[0x10];                   // 0x143af7d48
 int g_143af7d58;                                                // 0x143af7d58
 int g_bDefaultWndProc;                                          // 0x143af7d5c
-alignas(16) unsigned char DAT_143af7e00[0x180];                 // 0x143af7e00
-alignas(16) unsigned char DAT_143af7f80[0x178];                 // 0x143af7f80
 int g_bPrintScreenPending;                                      // 0x143af80f8
 int g_bHotkeyPrintScreen;                                       // 0x143af80fc
 int g_bHotkeyAltPrintScreen;                                    // 0x143af8100
-alignas(8) unsigned char DAT_143af8278[0xe8];                   // 0x143af8278
-alignas(16) unsigned char DAT_143af88e0[0x20];                  // 0x143af88e0
 char DAT_143af89f0;                                             // 0x143af89f0
 char DAT_143af8a00;                                             // 0x143af8a00
 char DAT_143af8a10;                                             // 0x143af8a10
@@ -178,7 +150,6 @@ alignas(16) unsigned char DAT_143afb020[0x28];                  // 0x143afb020
 char DAT_143afb348;                                             // 0x143afb348
 alignas(8) unsigned char DAT_143afbb98[0x8];                    // 0x143afbb98
 alignas(16) unsigned char DAT_143afbba0[0x10];                  // 0x143afbba0
-alignas(8) unsigned char DAT_143afbfb8[0x10];                   // 0x143afbfb8
 alignas(8) unsigned char DAT_143afbfc8[0x8];                    // 0x143afbfc8
 char DAT_143afc898;                                             // 0x143afc898
 char DAT_143afc8d0;                                             // 0x143afc8d0
@@ -197,13 +168,8 @@ char DAT_143b08a3c;                                             // 0x143b08a3c
 void* DAT_143b09498;                                            // 0x143b09498
 void* DAT_143b094a0;                                            // 0x143b094a0
 void* DAT_143b0d2d8;                                            // 0x143b0d2d8
-alignas(16) unsigned char DAT_143b0d330[0x8];                   // 0x143b0d330
-alignas(8) unsigned char DAT_143b0d338[0x8];                    // 0x143b0d338
-alignas(16) unsigned char DAT_143b0d340[0x8];                   // 0x143b0d340
-alignas(8) unsigned char DAT_143b0d348[0x8];                    // 0x143b0d348
 int DAT_143b0d360;                                              // 0x143b0d360
 alignas(8) unsigned char DAT_143b0d368[0x8];                    // 0x143b0d368
-alignas(8) unsigned char DAT_143b0d778[0x8];                    // 0x143b0d778
 void* DAT_143b0d780;                                            // 0x143b0d780
 int DAT_143b0d788;                                              // 0x143b0d788
 alignas(16) unsigned char DAT_143b0d790[0x8];                   // 0x143b0d790
@@ -212,8 +178,6 @@ alignas(16) unsigned char DAT_143b0d7a0[0x8];                   // 0x143b0d7a0
 alignas(8) unsigned char DAT_143b0d7a8[0x8];                    // 0x143b0d7a8
 alignas(16) unsigned char DAT_143b0d7b0[0x8];                   // 0x143b0d7b0
 alignas(8) unsigned char DAT_143b0d7b8[0x8];                    // 0x143b0d7b8
-alignas(8) unsigned char DAT_143b0dc28[0x8];                    // 0x143b0dc28
-alignas(16) unsigned char DAT_143b0dc30[0x8];                   // 0x143b0dc30
 unsigned int DAT_143b15f78 = 0x0u;                              // 0x143b15f78
 unsigned int DAT_143b15f7c = 0x0u;                              // 0x143b15f7c
 unsigned int DAT_143b15f80 = 0x0u;                              // 0x143b15f80
@@ -333,12 +297,8 @@ alignas(16) unsigned char DAT_143e668c0[0x1];                   // 0x143e668c0
 alignas(1) unsigned char DAT_143e668c1[0x1];                    // 0x143e668c1
 alignas(2) unsigned char DAT_143e668c2[0x7fffe];                // 0x143e668c2
 
-#pragma comment(linker, "/alternatename:?DAT_143aab428@@3V?$CAtlList@V?$MS2Ptr@VCAchieveData@@@@V?$CElementTraits@V?$MS2Ptr@VCAchieveData@@@@@ATL@@@ATL@@A=?DAT_143aab428@@3PAEA")
 #pragma comment(linker, "/alternatename:?s_instance@Unk_CrashSingleton@@2PEAVCCrashManager@@EA=?DAT_143aac538@@3PEAXEA")
-#pragma comment(linker, "/alternatename:?DAT_143aacc88@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143aacc88@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143aacc90@@3V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@A=?DAT_143aacc90@@3PAEA")
 #pragma comment(linker, "/alternatename:?ms_pSingleton@?$SingletonClass@VGFxManager@@@@2PEAVGFxManager@@EA=?DAT_143aaccf8@@3PEAVUnk_AltStringMgr@@EA")
-#pragma comment(linker, "/alternatename:?DAT_143aacd50@@3VQuestMask@@A=?DAT_143aacd50@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143aad1e0@@3_NA=?DAT_143aad1e0@@3DA")
 #pragma comment(linker, "/alternatename:?DAT_143aaead0@@3PEAPEAEEA=?DAT_143aaead0@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143aaead8@@3PEAPEAEEA=?DAT_143aaead8@@3PAEA")
@@ -353,62 +313,32 @@ alignas(2) unsigned char DAT_143e668c2[0x7fffe];                // 0x143e668c2
 #pragma comment(linker, "/alternatename:?DAT_143ab0560@@3HA=?g_nLocaleMode@@3HA")
 #pragma comment(linker, "/alternatename:?g_pfnPrevExceptionFilter@@3P6AJPEAU_EXCEPTION_POINTERS@@@ZEA=?DAT_143ab6728@@3PAEA")
 #pragma comment(linker, "/alternatename:?s_instance@?$TSingleton@VMS2InputService@@@@2PEAVMS2InputService@@EA=?DAT_143ab7800@@3PEAXEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab78e8@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143ab78e8@@3PAEA")
 #pragma comment(linker, "/alternatename:?s_instance@?$TSingleton@VCTriggerService@@@@2PEAVCTriggerService@@EA=?DAT_143ab9510@@3PEAVUnk_McEntityRules@@EA")
 #pragma comment(linker, "/alternatename:?ms_pSingleton@?$SingletonClass@VUISwfEntityManager@@@@2PEAVUISwfEntityManager@@EA=?DAT_143abb058@@3PEAVUISwfEntityManager@@EA")
-#pragma comment(linker, "/alternatename:?g_strMaintenanceExit@@3V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@A=?DAT_143abf510@@3PAEA")
 #pragma comment(linker, "/alternatename:?s_instance@?$TSingleton@VCSoundService@@@@2PEAVCSoundService@@EA=?DAT_143abf890@@3PEAXEA")
 #pragma comment(linker, "/alternatename:?s_instance@?$TSingleton@VCSoundEventMgr@@@@2PEAVCSoundEventMgr@@EA=?DAT_143ac1928@@3PEAVUnk_SingletonObj@@EA")
-#pragma comment(linker, "/alternatename:?g_spLoadingDialog@@3V?$MS2Ptr@VCLoadingDialog@@@@A=?DAT_143ac2bd0@@3PAEA")
-#pragma comment(linker, "/alternatename:?g_workerPtr@@3VUnk_WorkerPtr@@A=?DAT_143ac2bd0@@3PAEA")
 #pragma comment(linker, "/alternatename:?s_fTime@MultiSceneUpdater@@2MA=?DAT_143ac3d08@@3MA")
 #pragma comment(linker, "/alternatename:?s_pfnCallback@MultiSceneUpdater@@2P6AXPEAXHIIPEAVNiBatchedUpdateProcess@@@ZEA=?DAT_143ac3d10@@3PAEA")
 #pragma comment(linker, "/alternatename:?s_pCallbackContext@MultiSceneUpdater@@2PEAXEA=?DAT_143ac3d18@@3PEAXEA")
-#pragma comment(linker, "/alternatename:?g_unkRewardSound@@3VUnk_RewardSound@@A=?DAT_143ac5988@@3PAEA")
 #pragma comment(linker, "/alternatename:?ms_pSingleton@?$SingletonClass@VUIAlignWidgetManager@@@@2PEAVUIAlignWidgetManager@@EA=?DAT_143ac5d88@@3PEAVUnk_140e45740@@EA")
-#pragma comment(linker, "/alternatename:?DAT_143acf820@@3UUnk_CMISEntityRef@@A=?DAT_143acf820@@3PAEA")
 #pragma comment(linker, "/alternatename:?s_instance@?$TSingleton@VDecoEditService@@@@2PEAVDecoEditService@@EA=?DAT_143ad08c8@@3PEAXEA")
 #pragma comment(linker, "/alternatename:?DAT_143ad2288@@3PADA=?DAT_143ad2288@@3PAEA")
-#pragma comment(linker, "/alternatename:?g_strMeratLogDefault@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143ad76a8@@3PAEA")
 #pragma comment(linker, "/alternatename:?s_instance@?$TSingleton@VMS2LightService@@@@2PEAVMS2LightService@@EA=?DAT_143ad95f0@@3PEAXEA")
 #pragma comment(linker, "/alternatename:?DAT_143adc208@@3PADA=?DAT_143adc208@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143adca50@@3UUnk_MagicTable@@A=?DAT_143adca50@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143add400@@3PAHA=?DAT_143add400@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143add400@@3PAIA=?DAT_143add400@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143adda48@@3UScreenSetting@MessengerData@@A=?DAT_143adda48@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143ae95e0@@3_NA=?DAT_143ae95e0@@3DA")
 #pragma comment(linker, "/alternatename:?DAT_143ae95e1@@3_NA=?DAT_143ae95e1@@3DA")
-#pragma comment(linker, "/alternatename:?DAT_143aea1b8@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143aea1b8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143aea1c0@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143aea1c0@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143aea1c8@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143aea1c8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143aea1d0@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143aea1d0@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143aea1d8@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143aea1d8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143aea1e0@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143aea1e0@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143aef3b8@@3V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@A=?DAT_143aef3b8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143af1bc8@@3V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@A=?DAT_143af1bc8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143af1c18@@3V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@A=?DAT_143af1c18@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143af2258@@3V?$CAtlList@HV?$CElementTraits@H@ATL@@@ATL@@A=?DAT_143af2258@@3PAEA")
-#pragma comment(linker, "/alternatename:?g_strFlavor@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143af37a0@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143af3e28@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143af3e28@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143af3e30@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143af3e30@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143af6008@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143af6008@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143af62c0@@3V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@A=?DAT_143af62c0@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143af62d4@@3IA=?DAT_143af62d4@@3HA")
 #pragma comment(linker, "/alternatename:?DAT_143af62d8@@3IA=?DAT_143af62d8@@3HA")
 #pragma comment(linker, "/alternatename:?DAT_143af7d40@@3HA=?g_bAppActive@@3HA")
 #pragma comment(linker, "/alternatename:?g_rcWindow@@3UtagRECT@@A=?DAT_143af7d48@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143af7d58@@3HA=?g_143af7d58@@3HA")
-#pragma comment(linker, "/alternatename:?DAT_143af7e00@@3VUnk_UtilErrorDialog@@A=?DAT_143af7e00@@3PAEA")
-#pragma comment(linker, "/alternatename:?g_dlgCrash@@3VUnk_CrashDialog@@A=?DAT_143af7f80@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143af8278@@3VEntityID@egf@@A=?DAT_143af8278@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143af88e0@@3V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@A=?DAT_143af88e0@@3PAEA")
 #pragma comment(linker, "/alternatename:?ms_RTTI@MS2RenderListProcessor@@2VNiRTTI@@B=?DAT_143afa798@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143afa7f0@@3V?$SmartPointer@VNiFogProperty@@@efd@@A=?DAT_143afa7f0@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143afb020@@3P6AXPEAVNiAVObject@@@ZEA=?DAT_143afb020@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143afbb98@@3P6AXXZEA=?DAT_143afbb98@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143afbba0@@3P6AXXZEA=?DAT_143afbba0@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143afbfb8@@3DA=?DAT_143afbfb8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143afbfb8@@3VNiRTTI@@B=?DAT_143afbfb8@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143afbfc8@@3P6AXPEAVNiAVObject@@@ZEA=?DAT_143afbfc8@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143afc898@@3EA=?DAT_143afc898@@3DA")
 #pragma comment(linker, "/alternatename:?DAT_143afe6f8@@3P6A?AUUnk_MCPPtr@@PEAVNiVisibleArray@@PEAVNiSPWorkflowManager@@@ZEA=?DAT_143afe6f8@@3PAEA")
@@ -430,13 +360,8 @@ alignas(2) unsigned char DAT_143e668c2[0x7fffe];                // 0x143e668c2
 #pragma comment(linker, "/alternatename:?DAT_143b059e8@@3VUnk_WmFieldHolder@@A=?DAT_143b059e8@@3PAEA")
 #pragma comment(linker, "/alternatename:?g_143b059e8@@3VUnk_AppFramework@@A=?DAT_143b059e8@@3PAEA")
 #pragma comment(linker, "/alternatename:?ms_pSingleton@?$SingletonClass@VUniqueSwfIDCreator@@@@2PEAVUniqueSwfIDCreator@@EA=?DAT_143b0d2d8@@3PEAXEA")
-#pragma comment(linker, "/alternatename:?DAT_143b0d330@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143b0d330@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143b0d338@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143b0d338@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143b0d340@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143b0d340@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143b0d348@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143b0d348@@3PAEA")
 #pragma comment(linker, "/alternatename:?s_nCaptureBlock@GFxService@@2HA=?DAT_143b0d360@@3HA")
 #pragma comment(linker, "/alternatename:?DAT_143b0d368@@3P6AXXZEA=?DAT_143b0d368@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143b0d778@@3VCategory@efd@@B=?DAT_143b0d778@@3PAEA")
 #pragma comment(linker, "/alternatename:?ms_pSingleton@?$SingletonClass@VGFxAtlasCache@@@@2PEAVGFxAtlasCache@@EA=?DAT_143b0d780@@3PEAXEA")
 #pragma comment(linker, "/alternatename:?DAT_143b0d790@@3P6APEAVFile@Scaleform@@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@ZEA=?DAT_143b0d790@@3PAEA")
 #pragma comment(linker, "/alternatename:?ms_strLocale@NiGFxLocalizeManager@@2V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143b0d798@@3PAEA")
@@ -444,8 +369,6 @@ alignas(2) unsigned char DAT_143e668c2[0x7fffe];                // 0x143e668c2
 #pragma comment(linker, "/alternatename:?ms_kXmlLoader2@NiGFxLocalizeManager@@2V?$Delegate@$$A6A_NAEAVTiXmlDocument@@@Z@@A=?DAT_143b0d7a8@@3PAEA")
 #pragma comment(linker, "/alternatename:?ms_kXmlLoader3@NiGFxLocalizeManager@@2V?$Delegate@$$A6A_NAEAVTiXmlDocument@@@Z@@A=?DAT_143b0d7b0@@3PAEA")
 #pragma comment(linker, "/alternatename:?ms_kXmlLoader4@NiGFxLocalizeManager@@2V?$Delegate@$$A6A_NAEAVTiXmlDocument@@@Z@@A=?DAT_143b0d7b8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143b0dc28@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143b0dc28@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143b0dc30@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143b0dc30@@3PAEA")
 #pragma comment(linker, "/alternatename:?ConstructCopyCalls@ContextImpl@Render@Scaleform@@3IA=?DAT_143b15f78@@3IA")
 #pragma comment(linker, "/alternatename:?DestroyCalls@ContextImpl@Render@Scaleform@@3IA=?DAT_143b15f7c@@3IA")
 #pragma comment(linker, "/alternatename:?CopyCalls@ContextImpl@Render@Scaleform@@3IA=?DAT_143b15f80@@3IA")

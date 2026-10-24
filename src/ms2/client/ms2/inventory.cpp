@@ -195,7 +195,11 @@
 static CStringW s_useBindEquipItem = L"useBindEquipItem";
 static CString s_chartSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
 #include "ms2/placeholder/header_statics_a.h"
-static CString s_warningBag = "system_notice_error_warningBag";
+#ifndef MS2_HOOK_DLL   // s_warningBag: the exe's object at 0x143ab78e8, which other units reach as DAT_143ab78e8 (the hook DLL binds it)
+CString DAT_143ab78e8 = "system_notice_error_warningBag";
+#else
+extern CString DAT_143ab78e8;
+#endif
 static CString s_warningClass = "system_notice_error_warningClass";
 static CString s_warningGender = "system_notice_error_warningGender";
 static CString s_warningLevel = "system_notice_error_warningLevel";
@@ -1581,7 +1585,7 @@ int Unk_Inventory::FUN_140a655b0(CItem* item) {
     if (player->FUN_14166ce30() != 0) { FUN_140d73bc0(66, 0, nullptr, L""); return 0; }
     if (FUN_140a61430(FUN_140a617f0(ItemPtr(item))) == 0) {
         FUN_141275260(67, 1, 1);
-        FUN_141276180(s_warningBag, CString(""));
+        FUN_141276180(DAT_143ab78e8, CString(""));
         return 0;
     }
     return 1;
@@ -1894,3 +1898,19 @@ const std::vector<int>& Unk_InventoryArraySetting::FUN_140a6aa40() {
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+
+// The header/unit CString initializers and atexit thunks are byte look-alikes; pinned since DAT_143ab78e8 left the auto pairing.
+// MS2-PIN: ??__Es_strSkill@@YAXXZ 0x1400c42c0 ; probe
+// MS2-PIN: ??__Es_strStun@@YAXXZ 0x1400c42f0 ; probe
+// MS2-PIN: ??__Es_warningClass@@YAXXZ 0x1400c43a0 ; probe
+// MS2-PIN: ??__Es_warningGender@@YAXXZ 0x1400c43d0 ; probe
+// MS2-PIN: ??__Es_warningLevel@@YAXXZ 0x1400c4400 ; probe
+// MS2-PIN: ??__Es_skill2@@YAXXZ 0x1400c44f0 ; probe
+// MS2-PIN: ??__Es_stun2@@YAXXZ 0x1400c4520 ; probe
+// MS2-PIN: ??__Fs_strSkill@@YAXXZ 0x142c9f5a0 ; probe
+// MS2-PIN: ??__Fs_strStun@@YAXXZ 0x142c9f5c0 ; probe
+// MS2-PIN: ??__Fs_warningClass@@YAXXZ 0x142c9f620 ; probe
+// MS2-PIN: ??__Fs_warningGender@@YAXXZ 0x142c9f640 ; probe
+// MS2-PIN: ??__Fs_warningLevel@@YAXXZ 0x142c9f660 ; probe
+// MS2-PIN: ??__Fs_skill2@@YAXXZ 0x142c9f6b0 ; probe
+// MS2-PIN: ??__Fs_stun2@@YAXXZ 0x142c9f6d0 ; probe

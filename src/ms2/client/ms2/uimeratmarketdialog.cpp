@@ -190,8 +190,12 @@ static CStringA s_strJobCode = "jobCode";
 static CStringA s_strSortValue = "sortValue";
 // @0x1400eecc0
 static CStringA s_strTabIndex = "tabIndex";
+#ifndef MS2_HOOK_DLL   // s_strDesignUpload: the exe's object at 0x143ad76a8, which other units reach as DAT_143ad76a8 (the hook DLL binds it)
 // @0x1400eecf0
-static CStringA s_strDesignUpload = "design_Upload";
+CStringA DAT_143ad76a8 = "design_Upload";
+#else
+extern CStringA DAT_143ad76a8;
+#endif
 
 NotifySystem* FUN_140939a10();
 CAdBannerManagerCli* GetAdBannerManagerCli();

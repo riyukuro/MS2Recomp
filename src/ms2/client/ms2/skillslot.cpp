@@ -33,12 +33,12 @@
 // MS2-PIN: ??__Es_strShortcutKey@@YAXXZ 0x1401012d0 ; probe
 // MS2-PIN: ??__Es_strSkill2@@YAXXZ 0x140101300 ; probe
 // MS2-PIN: ??__Es_unk1402a9d70_3@@YAXXZ 0x140101330 ; probe
-// MS2-PIN: ??__Es_strSkill3@@YAXXZ 0x140101380 ; probe
-// MS2-PIN: ??__Es_strSkill@@YAXXZ 0x1401013b0 ; probe
-// MS2-PIN: ??__Es_strStun2@@YAXXZ 0x1401013e0 ; probe
-// MS2-PIN: ??__Es_strStun3@@YAXXZ 0x140101410 ; probe
-// MS2-PIN: ??__Es_strStun@@YAXXZ 0x140101440 ; probe
-// MS2-PIN: ??__Es_strUgcTag@@YAXXZ 0x140101470 ; probe
+// MS2-PIN: ??__EDAT_143aea1b8@@YAXXZ 0x140101380 ; probe
+// MS2-PIN: ??__EDAT_143aea1c8@@YAXXZ 0x1401013b0 ; probe
+// MS2-PIN: ??__EDAT_143aea1c0@@YAXXZ 0x1401013e0 ; probe
+// MS2-PIN: ??__EDAT_143aea1d0@@YAXXZ 0x140101410 ; probe
+// MS2-PIN: ??__EDAT_143aea1d8@@YAXXZ 0x140101440 ; probe
+// MS2-PIN: ??__EDAT_143aea1e0@@YAXXZ 0x140101470 ; probe
 // MS2-PIN: ??__Es_strSortTypeNames@@YAXXZ 0x1401014a0 ; probe
 // MS2-PIN: ??8?$MS2Ptr@VUnk_MyPCSkillSet@@@@QEBA_NPEAVUnk_MyPCSkillSet@@@Z 0x1417624d0 ; unique
 // MS2-PIN: ?GetClassDesc@SkillSlot@@UEBAPEBVClassInfo@efd@@XZ 0x141762740 ; unique
@@ -347,9 +347,19 @@ static CString s_strItemVIP = "itemVIP";
 static CString s_strItemPetRank = "itemPetRank";
 static CString s_strRechargeRemainCount = "rechargeRemainCount";
 static CString s_strShortcutKey = "shortcutKey";
-static CString s_strUgcTag = "ugctag";
+#ifndef MS2_HOOK_DLL   // s_strUgcTag: the exe's object at 0x143aea1e0, which other units reach as DAT_143aea1e0 (the hook DLL binds it)
+CString DAT_143aea1e0 = "ugctag";
+#else
+extern CString DAT_143aea1e0;
+#endif
 
-// Header-defined statics (same in every obj that includes the shared item header).
+// Header-defined statics (same in every obj that includes the shared item header). This unit's skill/stun copies are
+// the exe's objects at 0x143aea1c8/0x143aea1d8, which the sound calls below reach as DAT_ (the hook DLL binds them).
+#ifndef MS2_HOOK_DLL
+#define MS2_STATICS_A_SKILL_STUN CString DAT_143aea1c8 = "skill"; CString DAT_143aea1d8 = "stun";
+#else
+#define MS2_STATICS_A_SKILL_STUN extern CString DAT_143aea1c8; extern CString DAT_143aea1d8;
+#endif
 #include "ms2/placeholder/header_statics_a.h"
 
 static CString s_strButtonClickA = "button_click";
@@ -360,11 +370,23 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(SkillSlotBag);
 // The second and third copies of the header statics.
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill2 = "skill";
-static CString s_strStun2 = "stun";
+#ifndef MS2_HOOK_DLL   // s_strStun2: the exe's object at 0x143aea1c0, which other units reach as DAT_143aea1c0 (the hook DLL binds it)
+CString DAT_143aea1c0 = "stun";
+#else
+extern CString DAT_143aea1c0;
+#endif
 static Unk_1402a9d70 s_unk1402a9d70_2(17, 0.75f, 0.25f, 2.25f, 10);
 static CString s_strSortTypeNames3[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
-static CString s_strSkill3 = "skill";
-static CString s_strStun3 = "stun";
+#ifndef MS2_HOOK_DLL   // s_strSkill3: the exe's object at 0x143aea1b8, which other units reach as DAT_143aea1b8 (the hook DLL binds it)
+CString DAT_143aea1b8 = "skill";
+#else
+extern CString DAT_143aea1b8;
+#endif
+#ifndef MS2_HOOK_DLL   // s_strStun3: the exe's object at 0x143aea1d0, which other units reach as DAT_143aea1d0 (the hook DLL binds it)
+CString DAT_143aea1d0 = "stun";
+#else
+extern CString DAT_143aea1d0;
+#endif
 static Unk_1402a9d70 s_unk1402a9d70_3(17, 0.75f, 0.25f, 2.25f, 10);
 
 static CString s_strNoticeFailSkillIncorrectWeapon = "notice_battle_failskill_incorect_weapon";
@@ -885,7 +907,7 @@ int SkillSlot::vfunc_8(void* p)
     {
         int nUgcTag = spItem->FUN_140528840();
         if (nUgcTag != 0)
-            slot.FUN_1407cb9c0(s_strUgcTag, nUgcTag);
+            slot.FUN_1407cb9c0(DAT_143aea1e0, nUgcTag);
         int nGrade = spItem->FUN_140526bd0();
         slot.FUN_1409adc90(s_strItemGrade, nGrade);
     }

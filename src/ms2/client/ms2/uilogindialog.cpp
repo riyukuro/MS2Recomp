@@ -28,7 +28,11 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-static CString s_pendingId;
+#ifndef MS2_HOOK_DLL   // s_pendingId: the exe's object at 0x143af37a0, which other units reach as DAT_143af37a0 (the hook DLL binds it)
+CString DAT_143af37a0;
+#else
+extern CString DAT_143af37a0;
+#endif
 static CString s_sortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static UICommon::CMyPCKeyInputController s_keyInput;
 
@@ -265,17 +269,17 @@ void UILoginDialog::vfunc_67()
 void UILoginDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    CString strId = s_pendingId;
+    CString strId = DAT_143af37a0;
     if (strId.IsEmpty())
         strId = FUN_1409a8b10()->FUN_140cfd260()->m_strSavedId;
     bool bEmpty = strId.IsEmpty();
     FUN_1409a8b10()->FUN_140cfd260();
     FUN_1409a8b10()->FUN_140cfd260()->m_bSaveId = !bEmpty;
     static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_1419e2c30("initData", strId, !bEmpty, true, FUN_1406521f0(FUN_1406516b0()));
-    if (!s_pendingId.IsEmpty())
+    if (!DAT_143af37a0.IsEmpty())
     {
         OnConnect();
-        s_pendingId = L"";
+        DAT_143af37a0 = L"";
     }
 }
 

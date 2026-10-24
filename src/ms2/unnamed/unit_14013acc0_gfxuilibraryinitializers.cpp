@@ -75,14 +75,30 @@ const NiRTTI GFxMovieEventHandler::ms_RTTI("GFxMovieEventHandler", &GFxMovie::ms
 // setTextAutoSize modes (FUN_1422e51c0: 0 none, 1 top, 2 center, 3 bottom, else ""); "shrink" is passed directly.
 // @0x14013ad80
 CString DAT_143b0d350("shrink");
+#ifndef MS2_HOOK_DLL   // s_strAutoSizeBottom: the exe's object at 0x143b0d348, which other units reach as DAT_143b0d348 (the hook DLL binds it)
 // @0x14013adb0
-static CString s_strAutoSizeBottom("bottom");
+CString DAT_143b0d348("bottom");
+#else
+extern CString DAT_143b0d348;
+#endif
+#ifndef MS2_HOOK_DLL   // s_strAutoSizeCenter: the exe's object at 0x143b0d340, which other units reach as DAT_143b0d340 (the hook DLL binds it)
 // @0x14013ade0
-static CString s_strAutoSizeCenter("center");
+CString DAT_143b0d340("center");
+#else
+extern CString DAT_143b0d340;
+#endif
+#ifndef MS2_HOOK_DLL   // s_strAutoSizeNone: the exe's object at 0x143b0d330, which other units reach as DAT_143b0d330 (the hook DLL binds it)
 // @0x14013ae10
-static CString s_strAutoSizeNone("none");
+CString DAT_143b0d330("none");
+#else
+extern CString DAT_143b0d330;
+#endif
+#ifndef MS2_HOOK_DLL   // s_strAutoSizeTop: the exe's object at 0x143b0d338, which other units reach as DAT_143b0d338 (the hook DLL binds it)
 // @0x14013ae40
-static CString s_strAutoSizeTop("top");
+CString DAT_143b0d338("top");
+#else
+extern CString DAT_143b0d338;
+#endif
 
 // Loads the widget-layout document ("widget" offsetX/offsetY ...); set by FUN_1422e6e20.
 // @0x14013ae70
@@ -91,8 +107,12 @@ static Delegate<bool(TiXmlDocument&)> s_widgetXmlLoader;
 // @0x14013aea0
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(GFxService);
 
+#ifndef MS2_HOOK_DLL   // s_cat_7f00004: the exe's object at 0x143b0d778, which other units reach as DAT_143b0d778 (the hook DLL binds it)
 // @0x14013aec0
-static const efd::Category s_cat_7f00004(efd::UniversalID::ECU_Any, 0xfff, 0x07f00004);
+extern const efd::Category DAT_143b0d778(efd::UniversalID::ECU_Any, 0xfff, 0x07f00004);
+#else
+extern const efd::Category DAT_143b0d778;
+#endif
 
 // The four documents FUN_1422eb940 loads, in its call order 7a0, 7a8, 7b0, 7b8.
 // @0x14013aef0
@@ -122,10 +142,18 @@ const NiRTTI GFxMoviePostDisplay::ms_RTTI("GFxMoviePostDisplay", &GFxMovieEventH
 // @0x14013b0d0
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(UniqueSwfIDCreator);
 
+#ifndef MS2_HOOK_DLL   // s_strEmpty1: the exe's object at 0x143b0dc30, which other units reach as DAT_143b0dc30 (the hook DLL binds it)
 // @0x14013b0f0
-static CString s_strEmpty1("");
+CString DAT_143b0dc30("");
+#else
+extern CString DAT_143b0dc30;
+#endif
+#ifndef MS2_HOOK_DLL   // s_strEmpty2: the exe's object at 0x143b0dc28, which other units reach as DAT_143b0dc28 (the hook DLL binds it)
 // @0x14013b120
-static CString s_strEmpty2("");
+CString DAT_143b0dc28("");
+#else
+extern CString DAT_143b0dc28;
+#endif
 
 // @0x14013b150
 const NiRTTI NiGFxOverlayClick::ms_RTTI("NiGFxOverlayClick", &NiRenderClick::ms_RTTI);

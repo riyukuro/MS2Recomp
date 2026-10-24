@@ -13,8 +13,14 @@
 
 
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
+// A unit whose skill/stun copies other units reach by exe address (skillslot: DAT_143aea1c8/DAT_143aea1d8) defines
+// them itself in MS2_STATICS_A_SKILL_STUN.
+#ifndef MS2_STATICS_A_SKILL_STUN
 static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
+#else
+MS2_STATICS_A_SKILL_STUN
+#endif
 // A unit whose own header sits between the skill/stun statics and the condition (uinametag: the gos name table) names
 // that header in MS2_STATICS_A_BEFORE_CONDITION before including this one.
 #ifdef MS2_STATICS_A_BEFORE_CONDITION

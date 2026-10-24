@@ -108,8 +108,16 @@ extern Unk_MessageBoxStatic g_messageBoxState;                  // 0x143af3df8 t
 // @0x140117450
 Unk_MessageBoxStatic g_messageBoxState;
 #endif
-static CString s_index = "index";
-static CString s_label = "label";
+#ifndef MS2_HOOK_DLL   // s_index: the exe's object at 0x143af3e30, which other units reach as DAT_143af3e30 (the hook DLL binds it)
+CString DAT_143af3e30 = "index";
+#else
+extern CString DAT_143af3e30;
+#endif
+#ifndef MS2_HOOK_DLL   // s_label: the exe's object at 0x143af3e28, which other units reach as DAT_143af3e28 (the hook DLL binds it)
+CString DAT_143af3e28 = "label";
+#else
+extern CString DAT_143af3e28;
+#endif
 
 // ---- callees (unit-local views) ----
 class ASDialog : public ASDisplayObject {};
@@ -2541,3 +2549,13 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, const char* a
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();  // memmove_s 0x141a00c90
+
+// The header/unit CString initializers and atexit thunks are byte look-alikes; pinned since DAT_143af3e30/28 left the auto pairing.
+// MS2-PIN: ??__Es_strSkill@@YAXXZ 0x140117310 ; probe
+// MS2-PIN: ??__Es_strStun@@YAXXZ 0x140117340 ; probe
+// MS2-PIN: ??__Es_close@@YAXXZ 0x1401173f0 ; probe
+// MS2-PIN: ??__Es_warning@@YAXXZ 0x140117420 ; probe
+// MS2-PIN: ??__Fs_strSkill@@YAXXZ 0x142cbfd20 ; probe
+// MS2-PIN: ??__Fs_strStun@@YAXXZ 0x142cbfd40 ; probe
+// MS2-PIN: ??__Fs_close@@YAXXZ 0x142cbfda0 ; probe
+// MS2-PIN: ??__Fs_warning@@YAXXZ 0x142cbfdc0 ; probe

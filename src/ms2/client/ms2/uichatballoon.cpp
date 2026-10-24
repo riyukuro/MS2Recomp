@@ -22,7 +22,11 @@
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/uichatballoon_ptr.h"
 #include "ms2/placeholder/header_statics_a.h"
 #undef MS2_STATICS_A_BEFORE_CONDITION
-static CStringW s_confirmCommend = L"confirmCommend";
+#ifndef MS2_HOOK_DLL   // s_confirmCommend: the exe's object at 0x143af1c18, which other units reach as DAT_143af1c18 (the hook DLL binds it)
+CStringW DAT_143af1c18 = L"confirmCommend";
+#else
+extern CStringW DAT_143af1c18;
+#endif
 extern CStringW DAT_143af1bc8;                                      // the game exit message tag (another unit's static)
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.

@@ -21,7 +21,11 @@
 
 // ---- header statics (the order of the unit's dynamic initializers) ----
 static CStringA s_strReportSiren("PremiumShop_ReportSiren");        // 0x143abf4c0
-static CStringW s_strMaintenanceExit(L"maintenanceExit");           // 0x143abf510
+#ifndef MS2_HOOK_DLL   // s_strMaintenanceExit: the exe's object at 0x143abf510, which other units reach as DAT_143abf510 (the hook DLL binds it)
+CStringW DAT_143abf510(L"maintenanceExit");           // 0x143abf510
+#else
+extern CStringW DAT_143abf510;
+#endif
 static CStringA s_strSortNamesA[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};   // 0x143abf4d8
 static CStringA s_strSortNamesB[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};   // 0x143abf550
 static CStringA s_strSkill("skill");                                // 0x143abf548

@@ -66,7 +66,7 @@ MS2_CHECK_SIZE(Unk_MdState, 0x58);
 
 // The 1439f7cbc "global" switch (all tabs share one screen look) and the shared look.
 static int s_nGlobal = 1;                                                   // 0x1439f7cbc
-static MessengerData::ScreenSetting s_screenGlobal;                         // 0x143adda48
+extern MessengerData::ScreenSetting DAT_143adda48;                          // 0x143adda48 (its ??__E 0x1400f7dd0 is in unit_1400f7d50)
 
 // A player of the world: the name and the level-ish ushort sit in vftable slots 77 / 78 (MS2: slots proven from the callers).
 class Unk_MdPlayer
@@ -623,7 +623,7 @@ MessengerData::SystemSetting* MessengerData::PanelSetting::FUN_141482190()
 MessengerData::ScreenSetting* MessengerData::PanelSetting::FUN_1414821b0()
 {
     if (s_nGlobal)
-        return &s_screenGlobal;
+        return &DAT_143adda48;
     return &m_screen;
 }
 
@@ -657,7 +657,7 @@ int MessengerData::PanelSetting::FUN_141482220(Unk_MdXml* pXml)
             return 0;
         if (m_subject.FUN_141481ab0(pPanel) == 0)
             return 0;
-        if (s_nGlobal != 0 && s_screenGlobal.FUN_141481480(pPanel) == 0)
+        if (s_nGlobal != 0 && DAT_143adda48.FUN_141481480(pPanel) == 0)
             return 0;
         return 1;
     }
@@ -683,7 +683,7 @@ int MessengerData::PanelSetting::FUN_141482340(Unk_MdXml* pXml)
             return 0;
         if (m_subject.FUN_141481cf0(pPanel) == 0)
             return 0;
-        if (s_nGlobal != 0 && s_screenGlobal.FUN_141481540(pPanel) == 0)
+        if (s_nGlobal != 0 && DAT_143adda48.FUN_141481540(pPanel) == 0)
             return 0;
         return 1;
     }

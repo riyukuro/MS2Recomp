@@ -51,10 +51,14 @@ __declspec(selectany) const ecr::SceneGraphService::SceneGraphHandle ecr::SceneG
 // .text$di in exe order: 0x140120210 key input static, 0x140120240 ClassInfo, 0x140120260 maintenanceExit,
 // 0x140120290-0x1401206a6 the 11 message handler statics (TODO, see NOTES.md "w3o2"), 0x1401206b0-0x1401207a0
 // header_statics_a (sort names, skill, stun), 0x1401207d0/0x140120800 efd kCAT_INVALID / kCAT_LocalMessage,
-// 0x140120830 egfPhysX::kCAT_egfPhysXMessage, 0x140120860 s_pointer, 0x140120880 header_statics_a's Unk_1402a9d70.
+// 0x140120830 egfPhysX::kCAT_egfPhysXMessage, 0x140120860 g_worldNullHandle, 0x140120880 header_statics_a's Unk_1402a9d70.
 static UICommon::CMyPCKeyInputController s_keyInputController;     // header static (origin unknown)
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(WorldService);
-static CStringW s_maintenanceExit = L"maintenanceExit";            // 0x143af88e0
+#ifndef MS2_HOOK_DLL   // s_maintenanceExit: the exe's object at 0x143af88e0, which other units reach as DAT_143af88e0 (the hook DLL binds it)
+CStringW DAT_143af88e0 = L"maintenanceExit";            // 0x143af88e0
+#else
+extern CStringW DAT_143af88e0;
+#endif
 
 #ifndef MS2_HOOK_DLL  // MS2: in the hook DLL these static auto-registering objects would register DLL copies of the handlers in the exe's
 // (shared) message handler registry on top of the exe's own identical statics: the exe then called them with a null this (AV at Character Select).
@@ -89,8 +93,12 @@ static const efd::Category kCAT_egfPhysXMessage =
     efd::Category(efd::UniversalID::ECU_Any, efd::kNetID_Any, 0x07001008);   // 0x143af88d8
 }
 class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
+#ifndef MS2_HOOK_DLL   // s_pointer: the exe's object at 0x143af8278, which other units reach as DAT_143af8278 (the hook DLL binds it)
 // @0x140120860
-static Unk_1401cd100 s_pointer(NULL);                              // 0x143af8278 (same header static as scenestatelogin)
+Unk_1401cd100 g_worldNullHandle(NULL);                              // 0x143af8278 (same header static as scenestatelogin)
+#else
+extern Unk_1401cd100 g_worldNullHandle;
+#endif
 // TSingleton<WorldService>::s_instance (0x143aaee10) is the exe's: bound by progress/symbols-manual.tsv, not defined here, so hooked
 // functions that call GetInstance() read the live singleton instead of a DLL-local null copy.
 

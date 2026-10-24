@@ -35,7 +35,11 @@ static CStringW s_strIconMegaphone5 = L"export_common_icon_megaphone5";     // @
 static CStringW s_strIconMoveToHouse = L"export_common_icon_movetohouse";   // @0x14010d900
 static CStringW s_strIconOxQuiz = L"export_common_icon_ox_quiz";            // @0x14010d930
 static CStringW s_strIconReturn = L"export_common_icon_return";             // @0x14010d960
-static CStringW s_strIconMegaphone6 = L"export_common_icon_megaphone6";     // @0x14010d990
+#ifndef MS2_HOOK_DLL   // s_strIconMegaphone6: the exe's object at 0x143aef3b8, which other units reach as DAT_143aef3b8 (the hook DLL binds it)
+CStringW DAT_143aef3b8 = L"export_common_icon_megaphone6";     // @0x14010d990
+#else
+extern CStringW DAT_143aef3b8;
+#endif
 static CStringW s_strIconSystem = L"export_common_icon_system";             // @0x14010d9c0
 static CStringW s_strIconWhisper = L"export_common_icon_whisper";           // @0x14010d9f0
 static CString s_astrEnumName[7] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};   // @0x14010da20
@@ -352,7 +356,7 @@ CStringW FUN_14183e9c0(CStringW strText, int nIdx)
 // @0x14183ea40
 void FUN_14183ea40(unsigned nItemId, CStringW& strIcon)
 {
-    strIcon = s_strIconMegaphone6;
+    strIcon = DAT_143aef3b8;
     Unk_ThItemRef ref = FUN_14053f870(nItemId);
     if (ref.FUN_1401b5240(0))
         return;
@@ -370,7 +374,7 @@ void FUN_14183ea40(unsigned nItemId, CStringW& strIcon)
 void FUN_14183eba0(unsigned nItemId, CStringW& strIcon, ULong& nSize, ULong& nColor1, ULong& nColor2)
 {
     nSize = 1;
-    strIcon = s_strIconMegaphone6;
+    strIcon = DAT_143aef3b8;
     Unk_ThItemRef ref = FUN_14053f870(nItemId);
     if (ref.FUN_1401b5240(0))
         return;
@@ -395,7 +399,7 @@ void FUN_14183eba0(unsigned nItemId, CStringW& strIcon, ULong& nSize, ULong& nCo
 void FUN_14183ee10(unsigned nItemId, CStringW& strIcon, ULong& nSize, ULong& nColor1, ULong& nColor2)
 {
     nSize = 1;
-    strIcon = s_strIconMegaphone6;
+    strIcon = DAT_143aef3b8;
     Unk_ThItemRef ref = FUN_14053f870(nItemId);
     if (ref.FUN_1401b5240(0))
         return;
@@ -460,14 +464,14 @@ CStringW FUN_14183f310(const Unk_ThMsg& msg, const CStringW& strText, unsigned n
         ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_colors[6]);
         ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_colors[18]);
         ULong nIconSize = 1;
-        CStringW strIcon(s_strIconMegaphone6);
+        CStringW strIcon(DAT_143aef3b8);
         FUN_14183eba0(nItemId, strIcon, nIconSize, nColorA, nColorB);
         strResult = FUN_14028dee0(0x67c, nIconSize);
         if (!FUN_140166410()->FUN_14036d570(0xde))
-            strResult = FUN_14028dee0(0x66e, strResult, s_strIconMegaphone6, strIcon, strUser, nColorA, nSize, strName, nSex,
+            strResult = FUN_14028dee0(0x66e, strResult, DAT_143aef3b8, strIcon, strUser, nColorA, nSize, strName, nSex,
                                       strImg, strHome, s_strIconMoveToHouse, nColorB, nSize, strText2);
         else
-            strResult = FUN_14028dee0(0x66e, strResult, s_strIconMegaphone6, strIcon, strUser, nColorA, nSize, strName, strImg,
+            strResult = FUN_14028dee0(0x66e, strResult, DAT_143aef3b8, strIcon, strUser, nColorA, nSize, strName, strImg,
                                       strHome, s_strIconMoveToHouse, nColorB, nSize, strText2);
         strResult = FUN_141842560(strResult, nColorB, 0xfffffe);
     }
@@ -627,10 +631,10 @@ CStringW FUN_141841180(const Unk_ThMsg& msg, const Unk_ThWedding& wed, const CSt
     ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_colors[6]);
     ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_colors[18]);
     ULong nIconSize = 1;
-    CStringW strIcon(s_strIconMegaphone6);
+    CStringW strIcon(DAT_143aef3b8);
     FUN_14183ee10(nItemId, strIcon, nIconSize, nColorA, nColorB);
     CStringW strBody = FUN_14028dee0(0x67c, nIconSize);
-    strBody = FUN_14028dee0(0x66e, strBody, s_strIconMegaphone6, strIcon, strUser, nColorA, nSize, strName, strImg, strHome,
+    strBody = FUN_14028dee0(0x66e, strBody, DAT_143aef3b8, strIcon, strUser, nColorA, nSize, strName, strImg, strHome,
                             s_strIconMoveToHouse, nColorB, nSize, strText2);
     strBody = FUN_141842560(strBody, nColorB, 0xfffffe);
     CStringW strDate;

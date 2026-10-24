@@ -308,7 +308,11 @@ CStringW CBanTextChecker::CheckerErrStringPackage::GetErrString(EBanErrKind nKin
 
 static ATL::CAtlMap<EBanErrKind, EBanStringId> s_mapDefaultErr;   // 0x143aacca0
 static CStringA s_strSortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};  // 0x143aacc50
-static QuestMask s_questMask;                                       // 0x143aacd50
+#ifndef MS2_HOOK_DLL   // s_questMask: the exe's object at 0x143aacd50, which other units reach as DAT_143aacd50 (the hook DLL binds it)
+QuestMask DAT_143aacd50;                                       // 0x143aacd50
+#else
+extern QuestMask DAT_143aacd50;
+#endif
 
 // @0x140224600
 // The default error kind -> string id table, filled on first use.

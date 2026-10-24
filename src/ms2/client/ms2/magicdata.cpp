@@ -161,7 +161,11 @@ typedef ATL::CAtlMap<unsigned, Unk_MagicListPtr> Unk_MagicTable;
 // ---- the unit's statics, in exe order ----
 static CCacheData s_magicCache;
 static CLockCriticalSection s_magicLock;
-static Unk_MagicTable s_magics(17, .75f, .25f, 2.25f, 10);
+#ifndef MS2_HOOK_DLL   // s_magics: the exe's object at 0x143adca50, which other units reach as DAT_143adca50 (the hook DLL binds it)
+Unk_MagicTable DAT_143adca50(17, .75f, .25f, 2.25f, 10);
+#else
+extern Unk_MagicTable DAT_143adca50;
+#endif
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 // @0x1400f7660
@@ -258,7 +262,7 @@ Unk_MagicListPtr FUN_14145c250(unsigned nMagicId)
     if (FUN_1401d1320(&s_magicCache))
         FUN_14145c4b0();
     Unk_MagicListPtr list(0);
-    s_magics.Lookup(nMagicId, list);
+    DAT_143adca50.Lookup(nMagicId, list);
     return list;
 }
 
@@ -272,7 +276,7 @@ Unk_SocketPtr<CMagicData> FUN_14145c300(unsigned nMagicId, int nIndex)
     if (FUN_1401d1320(&s_magicCache))
         FUN_14145c4b0();
     Unk_MagicListPtr list(0);
-    if (s_magics.Lookup(nMagicId, list)) {
+    if (DAT_143adca50.Lookup(nMagicId, list)) {
         if (list->IsEmpty())
             return Unk_SocketPtr<CMagicData>(0);
         nIndex = (int)((unsigned long long)nIndex % list->GetCount());
@@ -294,7 +298,7 @@ void FUN_14145c4b0()
 int LoadMagicPath()
 {
     Unk_MagicLock lock(s_magicLock, 1);
-    s_magics.RemoveAll();
+    DAT_143adca50.RemoveAll();
     CString strPath;
     strPath.Format("./data/xml/table/magicPath.xml");
     TiXmlDocument doc;
@@ -349,7 +353,7 @@ int LoadMagicPath()
                 data->m_fSpeed = data->m_fDistance / data->m_fVelocity;
             list->Add(data);
         }
-        s_magics.SetAt(nId, list);
+        DAT_143adca50.SetAt(nId, list);
         if (seenIds.find(nId) == seenIds.end())
             seenIds.insert(nId);
         else
@@ -360,7 +364,7 @@ int LoadMagicPath()
     Unk_MagicListPtr defaultList(Unk_SocketNew(0));
     Unk_SocketPtr<CMagicData> defaultData(new CMagicData);
     defaultList->Add(defaultData);
-    s_magics.SetAt(0, defaultList);
+    DAT_143adca50.SetAt(0, defaultList);
     return 1;
 }
 #endif

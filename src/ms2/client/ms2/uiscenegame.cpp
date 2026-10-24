@@ -37,7 +37,11 @@ static CString s_stun4 = "stun";
 static Unk_Handle1401cd100 s_handle2(0);
 static Unk_1402a9d70 s_condition3(17, 0.75f, 0.25f, 2.25f, 10);
 static UICommon::CMyPCKeyInputController s_keyInputController3;
-static CString s_systemKillSlayer = "System_KillSlayer";
+#ifndef MS2_HOOK_DLL   // s_systemKillSlayer: the exe's object at 0x143af6008, which other units reach as DAT_143af6008 (the hook DLL binds it)
+CString DAT_143af6008 = "System_KillSlayer";
+#else
+extern CString DAT_143af6008;
+#endif
 static CString s_sortNames5[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static Unk_Handle1401cd100 s_handle3(0);
 static CString s_sortNames6[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -1878,3 +1882,20 @@ UISceneGameScreenShot::~UISceneGameScreenShot()
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cc20d0-0x142cc23d0 .text$yd
+// The skill/stun header-static initializers and atexit thunks are byte look-alikes (pinned).
+// MS2-PIN: ??__Es_skill1@@YAXXZ 0x14011c560 ; probe
+// MS2-PIN: ??__Es_stun1@@YAXXZ 0x14011c590 ; probe
+// MS2-PIN: ??__Es_skill2@@YAXXZ 0x14011c720 ; probe
+// MS2-PIN: ??__Es_stun2@@YAXXZ 0x14011c750 ; probe
+// MS2-PIN: ??__Es_skill3@@YAXXZ 0x14011c800 ; probe
+// MS2-PIN: ??__Es_stun3@@YAXXZ 0x14011c830 ; probe
+// MS2-PIN: ??__Es_skill4@@YAXXZ 0x14011c920 ; probe
+// MS2-PIN: ??__Es_stun4@@YAXXZ 0x14011c950 ; probe
+// MS2-PIN: ??__Fs_skill1@@YAXXZ 0x142cc2130 ; probe
+// MS2-PIN: ??__Fs_stun1@@YAXXZ 0x142cc2150 ; probe
+// MS2-PIN: ??__Fs_skill2@@YAXXZ 0x142cc21e0 ; probe
+// MS2-PIN: ??__Fs_stun2@@YAXXZ 0x142cc2200 ; probe
+// MS2-PIN: ??__Fs_skill3@@YAXXZ 0x142cc2260 ; probe
+// MS2-PIN: ??__Fs_stun3@@YAXXZ 0x142cc2280 ; probe
+// MS2-PIN: ??__Fs_skill4@@YAXXZ 0x142cc22d0 ; probe
+// MS2-PIN: ??__Fs_stun4@@YAXXZ 0x142cc22f0 ; probe

@@ -26,7 +26,11 @@
 // 0x140d4bf10 dtor, 0x140d4db40 Reference, 0x140d4dc30 Release, 0x140d4dc70 ReleaseImpl) were linked from this obj.
 class Unk_HeldObject : public CPtred { };
 static CString s_strSortTypeNames3[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
-static MS2Ptr<Unk_HeldObject> s_heldObject(0);
+#ifndef MS2_HOOK_DLL   // s_heldObject: the exe's object at 0x143ac2bd0, which other units reach as DAT_143ac2bd0 (the hook DLL binds it)
+MS2Ptr<Unk_HeldObject> DAT_143ac2bd0(0);
+#else
+extern MS2Ptr<Unk_HeldObject> DAT_143ac2bd0;
+#endif
 
 CString FUN_140188f50(const char* psz, int n);
 extern unsigned __int64 DAT_143a4a5e8;
@@ -398,7 +402,7 @@ LRESULT CALLBACK CLoadingDialog::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LP
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca4fd0-0x142ca5060 .text$yd
-// gap3: the s_heldObject MS2Ptr COMDATs (0x140d4bf10 was pinned to ~CSimpleArray<WORD>, whose body differs) and the
+// gap3: the DAT_143ac2bd0 MS2Ptr COMDATs (0x140d4bf10 was pinned to ~CSimpleArray<WORD>, whose body differs) and the
 // ATL/CRT inlines that compile differently with this toolset.
 // MS2-PIN: ??0?$MS2Ptr@VUnk_HeldObject@@@@QEAA@H@Z 0x140d4ba40
 // MS2-PIN: ??1?$MS2Ptr@VUnk_HeldObject@@@@QEAA@XZ 0x140d4bf10

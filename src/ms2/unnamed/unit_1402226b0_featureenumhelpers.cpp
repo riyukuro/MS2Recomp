@@ -11,8 +11,16 @@
 #include <errno.h>
 
 static CString s_marketSortNames[] = { "None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd" };
-static CString s_emptyNarrow;
-static CStringW s_emptyWide;
+#ifndef MS2_HOOK_DLL   // s_emptyNarrow: the exe's object at 0x143aacc88, which other units reach as DAT_143aacc88 (the hook DLL binds it)
+CString DAT_143aacc88;
+#else
+extern CString DAT_143aacc88;
+#endif
+#ifndef MS2_HOOK_DLL   // s_emptyWide: the exe's object at 0x143aacc90, which other units reach as DAT_143aacc90 (the hook DLL binds it)
+CStringW DAT_143aacc90;
+#else
+extern CStringW DAT_143aacc90;
+#endif
 
 // ---- unit-local placeholders (names invented) --------------------------------------------------------------------------
 // One entry of the level array (an int; its own type so the array instantiations are not shared with CAtlArray<int>).

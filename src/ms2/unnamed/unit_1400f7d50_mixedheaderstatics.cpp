@@ -8,17 +8,19 @@
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/client/ms2/mirrored3drenderview.h"
+#include "ms2/client/ms2/messengerdata.h"
 
 class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
-
-// {0x11, 0x32, 1} by its out-of-line default constructor.
-class Unk_141481440 { public: Unk_141481440(); private: int m_n0; int m_n1; int m_n2; };
 
 // first TU
 static CString s_strSkill1 = "skill";
 static CString s_strStun1 = "stun";
 static Unk_1401cd100 s_pointer1(NULL);
-static Unk_141481440 s_defaults;
+#ifndef MS2_HOOK_DLL   // s_defaults: the exe's object at 0x143adda48, which other units reach as DAT_143adda48 (the hook DLL binds it)
+MessengerData::ScreenSetting DAT_143adda48;                    // {0x11, 0x32, 1} by its out-of-line constructor
+#else
+extern MessengerData::ScreenSetting DAT_143adda48;
+#endif
 
 // second TU
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};

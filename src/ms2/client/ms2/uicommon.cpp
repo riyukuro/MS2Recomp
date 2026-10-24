@@ -136,7 +136,11 @@
 
 // The unit's statics: "gameexit", then the shared header statics (a pointer handle sits between "stun" and the
 // condition), then the key-block controller.
-static CStringW s_strGameExit = L"gameexit";                       // @0x1401117c0
+#ifndef MS2_HOOK_DLL   // s_strGameExit: the exe's object at 0x143af1bc8, which other units reach as DAT_143af1bc8 (the hook DLL binds it)
+CStringW DAT_143af1bc8 = L"gameexit";                       // @0x1401117c0
+#else
+extern CStringW DAT_143af1bc8;
+#endif
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/uichatballoon_ptr.h"
 #include "ms2/placeholder/header_statics_a.h"
 #undef MS2_STATICS_A_BEFORE_CONDITION

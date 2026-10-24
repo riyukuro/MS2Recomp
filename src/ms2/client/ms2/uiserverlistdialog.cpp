@@ -34,7 +34,11 @@
 
 // ---- statics (the exe runs them in this order: "gameexit", the sort-name table, "skill", "stun", the key input) ----
 // The shared header_statics_a.h would also construct the condition after "stun"; this unit's .text$di has none.
-static CStringW s_strGameExit(L"gameexit");                                             // @0x14011d080
+#ifndef MS2_HOOK_DLL   // s_strGameExit: the exe's object at 0x143af62c0, which other units reach as DAT_143af62c0 (the hook DLL binds it)
+CStringW DAT_143af62c0(L"gameexit");                                             // @0x14011d080
+#else
+extern CStringW DAT_143af62c0;
+#endif
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};   // @0x14011d0b0
 static CString s_strSkill = "skill";                                                    // @0x14011d170
 static CString s_strStun = "stun";                                                      // @0x14011d1a0

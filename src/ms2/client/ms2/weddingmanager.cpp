@@ -61,8 +61,16 @@
 class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };   // ctor 0x1401cd100
 static Unk_1401cd100 s_unk1401cd100(NULL);
 static CStringA s_systemFieldWar("System_FieldWar");
-static CErrorNotificationDlg s_errorNotificationDlg(NULL);
-static CMemoryDepletionDlg s_memoryDepletionDlg(NULL);
+#ifndef MS2_HOOK_DLL   // s_errorNotificationDlg: the exe's object at 0x143af7f80, which other units reach as DAT_143af7f80 (the hook DLL binds it)
+CErrorNotificationDlg DAT_143af7f80(NULL);
+#else
+extern CErrorNotificationDlg DAT_143af7f80;
+#endif
+#ifndef MS2_HOOK_DLL   // s_memoryDepletionDlg: the exe's object at 0x143af7e00, which other units reach as DAT_143af7e00 (the hook DLL binds it)
+CMemoryDepletionDlg DAT_143af7e00(NULL);
+#else
+extern CMemoryDepletionDlg DAT_143af7e00;
+#endif
 
 enum Unk_WmResultCode : int {};            // takes the formatter's custom-argument path (MakeValue<enum>)
 // fmt's ostream formatting of a custom argument with the MS2 enum shortcut in front (same shape as itembreakmanager.cpp

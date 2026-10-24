@@ -26,7 +26,11 @@
 #include "ms2/placeholder/asdata.h"
 #include "ms2/commonfiles/itemgift.h"
 #include "ms2/ms2format.h"
-static CString s_winSound="BattleField_Win";
+#ifndef MS2_HOOK_DLL   // s_winSound: the exe's object at 0x143ac5988, which other units reach as DAT_143ac5988 (the hook DLL binds it)
+CString DAT_143ac5988="BattleField_Win";
+#else
+extern CString DAT_143ac5988;
+#endif
 void FUN_1422bce70(Scaleform::GFx::Value*,const char*);
 class Unk_RewardStream {
 public: virtual bool vfunc_0(); virtual unsigned char vfunc_1(); virtual short vfunc_2(); virtual int vfunc_3();

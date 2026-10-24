@@ -648,7 +648,11 @@ inline bool Unk_ArrayEqual(const ATL::CAtlArray<CStringW>& a, const ATL::CAtlArr
 bool CAchieveData::s_bInit;                                             // 0x143aab3a0
 #endif
 static ATL::CAtlMap<unsigned, MS2Ptr<CAchieveData> > s_mapData;         // 0x143aab3e0 (achievement id -> data)
-static ATL::CAtlList<MS2Ptr<CAchieveData> > s_listData;                 // 0x143aab428 (load order)
+#ifndef MS2_HOOK_DLL   // s_listData: the exe's object at 0x143aab428, which other units reach as DAT_143aab428 (the hook DLL binds it)
+ATL::CAtlList<MS2Ptr<CAchieveData> > DAT_143aab428;                 // 0x143aab428 (load order)
+#else
+extern ATL::CAtlList<MS2Ptr<CAchieveData> > DAT_143aab428;
+#endif
 static CLockCriticalSection s_lock;                                     // 0x143aab478
 static ATL::CAtlMap<unsigned, int> s_mapSeen;                           // 0x143aab4b0 (ids reported by MarkSeen)
 typedef std::pair<unsigned, int> Unk_RewardKey;                         // (achievement id, grade)
@@ -865,7 +869,7 @@ void CAchieveData::LoadAll()
     else
     {
         s_mapData.RemoveAll();
-        s_listData.RemoveAll();
+        DAT_143aab428.RemoveAll();
         ATL::CAtlArray<CString> files;
         FUN_140399100(CString("*.xml"), FUN_14071a5b0(CString("Achieve"), CString("")), files, CString(""), false);
         for (size_t i = 0; i < files.GetCount(); i++)
@@ -976,7 +980,7 @@ void CAchieveData::Load(CString strPath)
             Unk_AchieveLog(GetLogString(), 1, 0x13, L"트로피의 최소 등급이 1이 아닙니다{0}. {1} 트로피 확인해 주세요.",
                            pData->m_nFirstGrade, pData->m_nId);
         s_mapData.SetAt(pData->m_nId, pData);
-        s_listData.AddTail(pData);
+        DAT_143aab428.AddTail(pData);
         pData->OnLoaded();
     }
 }
@@ -1057,7 +1061,7 @@ void CAchieveData::LoadClient(CString strPath, MS2Ptr<CAchieveData>& rOut)
             pData->m_mapGrade.SetAt(pGrade->m_nGrade, pGrade);
         }
         s_mapData.SetAt(pData->m_nId, pData);
-        s_listData.AddTail(pData);
+        DAT_143aab428.AddTail(pData);
         pData->OnLoaded();
         rOut = pData;
     }

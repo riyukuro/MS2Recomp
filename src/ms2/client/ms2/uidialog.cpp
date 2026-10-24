@@ -55,7 +55,8 @@ enum Unk_UIType {};
 MS2_GLOBAL(0x143af2258, ATL::CAtlList<Unk_UIType>, g_openDialogs);
 #define s_openDialogs (g_openDialogs.get())
 #else
-static ATL::CAtlList<Unk_UIType> s_openDialogs(10);                // 0x143af2258
+ATL::CAtlList<Unk_UIType> DAT_143af2258(10);                      // 0x143af2258 (invenslot.cpp reads it as DAT_143af2258)
+#define s_openDialogs DAT_143af2258
 #endif
 // Header statics (the header_statics_a.h set without its condition object).
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};

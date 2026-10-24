@@ -85,7 +85,7 @@ FittingDollData::~FittingDollData() { items.RemoveAll(); }
 // Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
 #ifndef MS2_HOOK_DLL
 // @0x1410b69e0
-CubeMapInformationService::CubeMapInformationService() : f158(0), s1c8(L""), s1d0(L""), f2d8(reinterpret_cast<const Unk_CMISEntityRef&>(s_cubeMapNone))
+CubeMapInformationService::CubeMapInformationService() : f158(0), s1c8(L""), s1d0(L""), f2d8(reinterpret_cast<const Unk_CMISEntityRef&>(g_cubeMapNone))
 {
     FUN_14112dd30();
     for (int i = 0; i < 3; i++)
@@ -3932,7 +3932,7 @@ void CubeMapInformationService::FUN_1410cb4c0(Unk_CMISBlock rec)
             MS2Ptr<Cube> spCube(*FUN_141127cd0(&f98, &nKey));
             const Unk_CMISEntityRef* pId;
             if (FUN_1408a9090(&spCube->entity) == 0)
-                pId = reinterpret_cast<const Unk_CMISEntityRef*>(&s_cubeMapNone);
+                pId = reinterpret_cast<const Unk_CMISEntityRef*>(&g_cubeMapNone);
             else
                 pId = FUN_1408b76f0(FUN_1408a9280(&spCube->entity));
             Unk_CMISEntityRef idOld(*pId);
@@ -5845,7 +5845,7 @@ int CubeMapInformationService::ExportUGCMap(CString strName)
 }
 
 // ---- w142 batch 12 ----
-extern Unk_CMISEntityRef DAT_143acf820;                                                     // the null entity ref
+extern Unk_CMISEntityRef DAT_143acf820;                                                     // the null entity ref (g_cubeMapNone of the statics header)
 struct Unk_CMISMarkList { char m_b[0x18]; };                                                // list of the mark entities of a mark record (at +0x38 of the record)
 Unk_CMISEntSetIter* FUN_14114e930(Unk_CMISMarkList*, Unk_CMISEntSetIter*);                  // begin
 Unk_CMISEntSetIter* FUN_141152570(Unk_CMISMarkList*, Unk_CMISEntSetIter*);                  // end
