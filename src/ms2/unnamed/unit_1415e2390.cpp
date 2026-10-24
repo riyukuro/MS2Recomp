@@ -2225,6 +2225,88 @@ void* FUN_1415e5bc0(void* pThis, const char* value)
 }
 
 
+// The node fields match the recovered MSVC tree node: three links, color/isnil bytes,
+// six bytes of padding, then pair<const unsigned char, void*> at +0x20.
+struct Unk_TreePairib
+{
+    void* m_pNode;
+    bool m_bInserted;
+};
+extern Unk_TreePairib* FUN_1415db990(void* pTree, Unk_TreePairib* pResult, bool bLeftish,
+                                     const unsigned char* pVal, std::_Tree_node<unsigned char, void*>* pNewNode);
+extern unsigned char FUN_1415f4790(const int* pKey, void* pRecord);
+
+// MS2-FUNCTIONAL: allocates the recovered 0x30-byte byte-to-pointer map node and inserts it through the tree helper.
+// @0x1415e4010
+void* FUN_1415e4010(void* pTree, Unk_TreePairib* pResult, const void* pVal)
+{
+    struct NodeLayout
+    {
+        void* left;
+        void* parent;
+        void* right;
+        unsigned char color;
+        unsigned char isNil;
+        unsigned char padding[6];
+        unsigned char value[0x10];
+    };
+    static_assert(sizeof(NodeLayout) == 0x30, "node size");
+    auto* node = static_cast<NodeLayout*>(::operator new(sizeof(NodeLayout)));
+    std::memset(node, 0, 0x20);
+    std::memcpy(node->value, FUN_1415e4ea0(const_cast<void*>(pVal)), sizeof(node->value));
+    FUN_1415db990(pTree, pResult, false, node->value,
+                  reinterpret_cast<std::_Tree_node<unsigned char, void*>*>(node));
+    return pResult;
+}
+
+// MS2-FUNCTIONAL: constructs the same map value and returns the caller's pair result.
+// @0x1415e50b0
+void* FUN_1415e50b0(void* pTree, Unk_TreePairib* pResult, const void* pVal)
+{
+    return FUN_1415e4010(pTree, pResult, FUN_1415e4ea0(const_cast<void*>(pVal)));
+}
+
+// MS2-FUNCTIONAL: scans the 0x68-byte guild records with the recovered key comparator and returns the found iterator.
+// @0x1415e4b00
+void* FUN_1415e4b00(void** pResult, void* first, void* last, const int* pKey)
+{
+    auto* current = static_cast<unsigned char*>(first);
+    auto* finish = static_cast<unsigned char*>(last);
+    while (current != finish && !FUN_1415f4790(pKey, current))
+        current += 0x68;
+    *pResult = current;
+    return pResult;
+}
+
+// MS2-FUNCTIONAL: compacts the range by removing matching characters and returns the new logical end iterator.
+// @0x1415e56c0
+void* FUN_1415e56c0(void** pResult, char* first, char* last, const char* pValue)
+{
+    char* found = first;
+    while (found != last && *found != *pValue)
+        ++found;
+    char* output = found;
+    for (char* current = found; current != last; ++current)
+    {
+        if (*current != *pValue)
+        {
+            *output = *current;
+            ++output;
+        }
+    }
+    *pResult = output;
+    return pResult;
+}
+
+
+// MS2-FUNCTIONAL: the two callers pass scalar values and a scalar reference; on MSVC x64 double and long double share the same 8-byte ABI.
+// @0x1415e50f0
+template<> std::pair<double, double> std::make_pair<double, double&>(double&& first, double& second)
+{
+    return std::pair<double, double>(static_cast<double&&>(first), second);
+}
+
+
 // MS2-PIN: ?FUN_1415e2430@@YAXPEAXPEAU?$Unk_StlElem@$0BA@@@1@Z 0x1415e2430
 // MS2-PIN: ?FUN_1415e2480@@YAXPEAXPEAU?$Unk_StlElem@$0BI@@@1@Z 0x1415e2480
 // MS2-PIN: ?FUN_1415e24d0@@YAXPEAXPEAU?$Unk_StlElem@$0CA@@@1@Z 0x1415e24d0
@@ -2507,3 +2589,4 @@ void* FUN_1415e5bc0(void* pThis, const char* value)
 // MS2-PIN: ??$emplace_back@AEBU?$Unk_VecElem@$0N@$0LI@@@@?$vector@U?$Unk_VecElem@$0N@$0LI@@@V?$allocator@U?$Unk_VecElem@$0N@$0LI@@@@std@@@std@@QEAAXAEBU?$Unk_VecElem@$0N@$0LI@@@@Z 0x1415e49b0
 // MS2-PIN: ??$emplace_back@AEBU?$Unk_VecElem@$0O@$0FI@@@@?$vector@U?$Unk_VecElem@$0O@$0FI@@@V?$allocator@U?$Unk_VecElem@$0O@$0FI@@@@std@@@std@@QEAAXAEBU?$Unk_VecElem@$0O@$0FI@@@@Z 0x1415e4a20
 // MS2-PIN: ??$emplace_back@AEBU?$Unk_VecElem@$0P@$0KOI@@@@?$vector@U?$Unk_VecElem@$0P@$0KOI@@@V?$allocator@U?$Unk_VecElem@$0P@$0KOI@@@@std@@@std@@QEAAXAEBU?$Unk_VecElem@$0P@$0KOI@@@@Z 0x1415e4a90
+// MS2-PIN: ??$make_pair@NAEAN@std@@YA?AU?$pair@NN@0@$$QEANAEAN@Z 0x1415e50f0
