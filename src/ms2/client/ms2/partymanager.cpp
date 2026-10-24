@@ -5,7 +5,7 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??__EDAT_143ae2c58@@YAXXZ 0x1400fad30 ; prop
 // MS2-PIN: ??__Es_unk1402a9d70@@YAXXZ 0x1400fae80 ; prop
-// MS2-PIN: ??__Es_nextClassInfo@@YAXXZ 0x1400fafc0 ; prop
+// MS2-PIN: ??__EDAT_143ae2e20@@YAXXZ 0x1400fafc0 ; prop
 // MS2-PIN: ??__Es_strSkill@@YAXXZ 0x1400fae20 ; prop
 // MS2-PIN: ??__Es_strStun@@YAXXZ 0x1400fae50 ; prop
 // MS2-PIN: ??__Es_capName@@YAXXZ 0x1400fafe0 ; prop
@@ -244,7 +244,11 @@ static CString s_nextSortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHig
 // This tail appears to come from an adjacent original object. The callback builds ClassInfo entries.
 void FUN_1409f8020(efd::ClassInfo*, size_t);
 #ifndef MS2_HOOK_DLL
-static efd::ClassInfo s_nextClassInfo(FUN_1409f8020);
+#ifndef MS2_HOOK_DLL   // s_nextClassInfo: the exe's object at 0x143ae2e20, which other units reach as DAT_143ae2e20 (the hook DLL binds it)
+efd::ClassInfo DAT_143ae2e20(FUN_1409f8020);
+#else
+extern efd::ClassInfo DAT_143ae2e20;
+#endif
 #endif
 static CString s_capName("Cap");
 
