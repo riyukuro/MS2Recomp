@@ -14649,3 +14649,9 @@ DAT_1439f8358	1439f8358	data
 ?Convert_Pos@Render@Scaleform@@3PAUConvertTarget@12@A	143a2fa90	data
 ?Convert_Color@Render@Scaleform@@3PAUConvertTarget@12@A	143a2fae0	data
 ?Convert_Instance@Render@Scaleform@@3PAUConvertTarget@12@A	143a2fb28	data
+?Seek@VideoProviderNetStream@AS3@GFx@Scaleform@@QEAAXMPEAVMovieImpl@34@@Z	140025830	func
+?SetBufferTime@VideoProviderNetStream@AS3@GFx@Scaleform@@QEAAXM@Z	140025450	func
+?SetLoopFlag@VideoProviderNetStream@AS3@GFx@Scaleform@@QEAAX_N@Z	140025380	func
+?SetNumberOfFramePools@VideoProviderNetStream@AS3@GFx@Scaleform@@QEAAXI@Z	140025480	func
+?SetOpenURLTimeout@VideoProviderNetStream@AS3@GFx@Scaleform@@QEAAXM@Z	1400254e0	func
+?SetReloadThresholdTime@VideoProviderNetStream@AS3@GFx@Scaleform@@QEAAXM@Z	1400254b0	func
