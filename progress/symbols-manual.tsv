@@ -10372,3 +10372,8 @@ XML_SetStartElementHandler	1423b3500	func
 ?DAT_14311e638@@3PADA	14311e638	data
 ?DAT_14311e7a0@@3PADA	14311e7a0	data
 ?DAT_143b0dc48@@3PADA	143b0dc48	data
+?AddPackage@GlobalContext@AS2@GFx@Scaleform@@SAPEAVObject@234@PEAVASStringContext@234@PEAV5234@1PEBD@Z	1429301d0	func
+?SetConstMemberRaw@ObjectInterface@AS2@GFx@Scaleform@@QEAA_NPEAVASStringContext@234@PEBDAEBVValue@234@AEBVPropFlags@234@@Z	1400054b0	func
+?FUN_1428f8530@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z	1428f8530	func
+?FUN_1428fbb70@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z	1428fbb70	func
+?FUN_1428fbc40@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z	1428fbc40	func
