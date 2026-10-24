@@ -9947,3 +9947,11 @@ Video04ClassInfo	143a47b70	data
 ??0Multiname@AS3@GFx@Scaleform@@QEAA@AEAVVMAbcFile@123@AEBV0Abc@123@@Z	1424d8ec0	func
 ??1PropRef@AS3@GFx@Scaleform@@QEAA@XZ	1424de8f0	func
 ?Sfr27TracerGetValueTraits@TR@AS3@GFx@Scaleform@@YA_K_KPEBVValue@234@_N@Z	14250ff00	func
+?OnMouseUp@IMEManagerBase@GFx@Scaleform@@QEAAXPEAVMovie@23@HPEAVInteractiveObject@23@@Z	1425b4960	func
+?MultiplyMatrix@?$Matrix3x4@M@Render@Scaleform@@QEAAXAEBV?$Matrix2x4@M@23@AEBV123@@Z	142604500	func
+?SetIndirectTransform@DisplayObjectBase@GFx@Scaleform@@QEAA?AV?$Ptr@VTreeNode@Render@Scaleform@@@3@PEAVTreeNode@Render@3@@Z	1425f4800	func
+?IsLevelMovie@Sprite@GFx@Scaleform@@QEBA_NXZ	1425dbb60	func
+?GetExportedResource@MovieDefImpl@GFx@Scaleform@@QEAA_NPEAUResourceBindData@23@AEBVString@3@PEAV123@@Z	1425cf660	func
+?FinalizeComposition@IMEManagerBase@GFx@Scaleform@@QEAAXPEB_W_K@Z	1425b4420	func
+?OnMouseDown@IMEManagerBase@GFx@Scaleform@@QEAAXPEAVMovie@23@HPEAVInteractiveObject@23@@Z	1425b4900	func
+?SetName@ViewStats@AMP@GFx@Scaleform@@QEAAXPEBD@Z	142624660	func
