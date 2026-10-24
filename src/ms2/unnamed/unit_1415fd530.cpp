@@ -345,6 +345,48 @@ void FUN_141601250(void*) {}
 // MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
 // @0x141601270
 void FUN_141601270(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x141601010
+void FUN_141601010(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x141601290
+void FUN_141601290(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x1416012b0
+void FUN_1416012b0(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x1416012d0
+void FUN_1416012d0(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x1416012f0
+void FUN_1416012f0(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x141601310
+void FUN_141601310(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x141601330
+void FUN_141601330(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x141601350
+void FUN_141601350(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x141601370
+void FUN_141601370(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x141601390
+void FUN_141601390(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x1416013b0
+void FUN_1416013b0(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x1416013d0
+void FUN_1416013d0(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x1416013f0
+void FUN_1416013f0(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x141601410
+void FUN_141601410(void*) {}
 
 // @0x141601a20
 void* FUN_141601a20(void* p) { return p; }
@@ -395,3 +437,17 @@ void* FUN_141601ed0(void* p) { return p; }
 // MS2-PIN: ?FUN_141601230@@YAXPEAX@Z 0x141601230 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
 // MS2-PIN: ?FUN_141601250@@YAXPEAX@Z 0x141601250 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
 // MS2-PIN: ?FUN_141601270@@YAXPEAX@Z 0x141601270 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_141601010@@YAXPEAX@Z 0x141601010 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_141601290@@YAXPEAX@Z 0x141601290 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_1416012b0@@YAXPEAX@Z 0x1416012b0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_1416012d0@@YAXPEAX@Z 0x1416012d0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_1416012f0@@YAXPEAX@Z 0x1416012f0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_141601310@@YAXPEAX@Z 0x141601310 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_141601330@@YAXPEAX@Z 0x141601330 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_141601350@@YAXPEAX@Z 0x141601350 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_141601370@@YAXPEAX@Z 0x141601370 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_141601390@@YAXPEAX@Z 0x141601390 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_1416013b0@@YAXPEAX@Z 0x1416013b0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_1416013d0@@YAXPEAX@Z 0x1416013d0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_1416013f0@@YAXPEAX@Z 0x1416013f0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_141601410@@YAXPEAX@Z 0x141601410 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
