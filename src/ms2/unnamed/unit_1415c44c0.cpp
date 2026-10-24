@@ -10,6 +10,7 @@ extern void* FUN_1415f39d0(void*);
 extern void* FUN_1415f39e0(void*);
 extern void FUN_1415fbe70(void*, unsigned int, const void*);
 extern CNMSerializable* FUN_1415f10f0(CNMSerializable*, long long);
+extern void* FUN_1415ef9b0(void*, void*);
 
 class CStreamCryptor_v0
 {
@@ -347,6 +348,16 @@ int FUN_1415c7ba0(void*, const char* userId, int type)
 {
     CNMGetUserInfoFunc request(userId, type);
     return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
+// MS2-FUNCTIONAL: dispatches the rejected-user query and copies its vector only on success.
+// @0x1415c6f80
+bool FUN_1415c6f80(void*, void* out)
+{
+    CNMGetRejectedUserListFunc request;
+    const int result = CNMManager::GetInstance()->CallNMFunc(&request);
+    if (result) FUN_1415ef9b0(out, &request.m_30);
+    return result != 0;
 }
 
 // @0x1415c46c0
@@ -724,3 +735,4 @@ void FUN_1415cd010() {}
 // MS2-PIN: ?FUN_1415c4da0@@YAPEAEPEAXPEAE@Z 0x1415c4da0
 // MS2-PIN: ?FUN_1415c7ba0@@YAHPEAXPEBDH@Z 0x1415c7ba0
 // MS2-PIN: ?FUN_1415c4e90@@YAPEAEPEAXPEAE0@Z 0x1415c4e90
+// MS2-PIN: ?FUN_1415c6f80@@YA_NPEAX0@Z 0x1415c6f80
