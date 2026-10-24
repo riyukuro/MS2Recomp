@@ -328,6 +328,14 @@ unsigned char* FUN_1415c4da0(void*, unsigned char* out)
     return out;
 }
 
+// MS2-FUNCTIONAL: creates the user-info request with the recovered identifier and query type.
+// @0x1415c7ba0
+int FUN_1415c7ba0(void*, const char* userId, int type)
+{
+    CNMGetUserInfoFunc request(userId, type);
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
 // @0x1415c46c0
 void FUN_1415c46c0()
 {
@@ -701,3 +709,4 @@ void FUN_1415cd010() {}
 // MS2-PIN: ?FUN_1415c7b10@@YAHPEAX_J@Z 0x1415c7b10
 // MS2-PIN: ?FUN_1415c4bb0@@YAPEAEPEAXPEAE@Z 0x1415c4bb0
 // MS2-PIN: ?FUN_1415c4da0@@YAPEAEPEAXPEAE@Z 0x1415c4da0
+// MS2-PIN: ?FUN_1415c7ba0@@YAHPEAXPEBDH@Z 0x1415c7ba0
