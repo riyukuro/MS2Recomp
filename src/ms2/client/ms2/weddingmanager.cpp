@@ -1299,6 +1299,24 @@ int Unk_IndexPool::Pick()
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cc3790-0x142cc38a0 .text$yd
+class Unk_MsgWedding
+{
+public:
+    bool FUN_141b867e0(__int64 partnerId);
+};
+class Unk_UcSlotMgr
+{
+public:
+    bool FUN_141b867e0(__int64 partnerId);
+};
+
+// MS2-FUNCTIONAL: legacy message-manager spelling forwards to the recovered wedding eligibility check.
+bool Unk_MsgWedding::FUN_141b867e0(__int64 partnerId)
+{ return reinterpret_cast<WeddingManager*>(this)->CanStartWedding(partnerId); }
+// MS2-FUNCTIONAL: legacy slot-manager spelling forwards to the same recovered eligibility check.
+bool Unk_UcSlotMgr::FUN_141b867e0(__int64 partnerId)
+{ return reinterpret_cast<WeddingManager*>(this)->CanStartWedding(partnerId); }
+
 // Full-executable aliases for existing WeddingManager methods.
 // MS2-PIN: ?ApplyHallTicket@WeddingManager@@QEAAXXZ 0x141b89950
 // MS2-PIN: ?ReadTicketMail@WeddingManager@@QEAAXV?$MS2Ptr@VUnk_WeddingMail@@@@PEAVAScript@@@Z 0x141b873c0
