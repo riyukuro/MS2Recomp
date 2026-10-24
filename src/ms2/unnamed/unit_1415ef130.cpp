@@ -30,8 +30,10 @@ extern void* FUN_1415f3c20(void*);
 extern void* FUN_1415f3c30(void*);
 extern void* FUN_141603500(void*); extern void* FUN_1416038c0(void*); extern void* FUN_141603900(void*);
 extern void FUN_1415d2670(void*); extern void FUN_1415d2690(void*);
-extern void* FUN_1415f3f50(void*);
+extern long long* FUN_1415f3f50(long long*);
+extern void* FUN_1415f3f10(void*);
 extern void* FUN_1415f3a30(void*); extern void* FUN_1415f3a50(void*);
+extern void* FUN_141602970(void*);
 
 template <class Id, class Get, class Set, class First, class Last, class Range>
 static void* copy_nm_sequence(void* dst, void* src, Id id, Get get, Set set,
@@ -147,6 +149,49 @@ NM_COPY_FUNCTION(FUN_1415efa30, FUN_1415e1710, FUN_141601ff0, FUN_1416000f0, FUN
 NM_COPY_FUNCTION(FUN_1415efab0, FUN_1415e1720, FUN_141602030, FUN_141600120, FUN_141603ee0, FUN_141603920, FUN_1415e2270)
 
 #undef NM_COPY_FUNCTION
+
+// MS2-FUNCTIONAL: performs postfix increment on the recovered binary tree iterator fields.
+// @0x1415f3ec0
+void** FUN_1415f3ec0(void** it, void** old)
+{
+    void* value = *it;
+    FUN_1415f3f10(it);
+    *old = value;
+    return old;
+}
+// MS2-FUNCTIONAL: returns the iterator after applying the recovered tree increment.
+// @0x1415f3f10
+void* FUN_1415f3f10(void* it)
+{
+    FUN_1415f3f50(static_cast<long long*>(it));
+    return it;
+}
+// MS2-FUNCTIONAL: forwards to the recovered iterator increment and returns its input.
+// @0x1415f3f30
+void* FUN_1415f3f30(void* it)
+{
+    FUN_1415f3f10(it);
+    return it;
+}
+// MS2-FUNCTIONAL: follows the executable's parent/right-child traversal for a tree iterator.
+// @0x1415f3f50
+long long* FUN_1415f3f50(long long* it)
+{
+    long long node = *it;
+    long long parent = *reinterpret_cast<long long*>(node + 0x10);
+    if (*reinterpret_cast<unsigned char*>(parent + 0x19) == 0) {
+        *it = reinterpret_cast<long long>(FUN_141602970(reinterpret_cast<void*>(parent)));
+    } else {
+        long long next;
+        while ((next = *reinterpret_cast<long long*>(node + 8),
+                *reinterpret_cast<unsigned char*>(next + 0x19) == 0 &&
+                node == *reinterpret_cast<long long*>(next + 0x10))) {
+            node = next;
+        }
+        *it = next;
+    }
+    return it;
+}
 
 // MS2-FUNCTIONAL: computes the recovered CNMChatRoomMemberInfo element address using its 0x220 stride.
 // @0x1415f38f0
@@ -2929,3 +2974,91 @@ void* FUN_1415f3c20(void* p) { return *static_cast<void**>(p); }
 // MS2-FUNCTIONAL: returns the pointer-sized value stored in the first field.
 // @0x1415f3c30
 void* FUN_1415f3c30(void* p) { return *static_cast<void**>(p); }
+
+// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x10.
+// @0x1415f3fe0
+long long* FUN_1415f3fe0(long long* p) { *p += 0x10; return p; }
+
+// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x18.
+// @0x1415f4000
+long long* FUN_1415f4000(long long* p) { *p += 0x18; return p; }
+
+// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x20.
+// @0x1415f4020
+long long* FUN_1415f4020(long long* p) { *p += 0x20; return p; }
+
+// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x58.
+// @0x1415f4040
+long long* FUN_1415f4040(long long* p) { *p += 0x58; return p; }
+
+// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x30.
+// @0x1415f4060
+long long* FUN_1415f4060(long long* p) { *p += 0x30; return p; }
+
+// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x98.
+// @0x1415f4080
+long long* FUN_1415f4080(long long* p) { *p += 0x98; return p; }
+
+// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x220.
+// @0x1415f40b0
+long long* FUN_1415f40b0(long long* p) { *p += 0x220; return p; }
+
+// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x128.
+// @0x1415f40e0
+long long* FUN_1415f40e0(long long* p) { *p += 0x128; return p; }
+
+// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x118.
+// @0x1415f4110
+long long* FUN_1415f4110(long long* p) { *p += 0x118; return p; }
+
+// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0xe0.
+// @0x1415f4140
+long long* FUN_1415f4140(long long* p) { *p += 0xe0; return p; }
+
+// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x580.
+// @0x1415f4170
+long long* FUN_1415f4170(long long* p) { *p += 0x580; return p; }
+
+// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x18.
+// @0x1415f41a0
+long long* FUN_1415f41a0(long long* p) { *p += 0x18; return p; }
+
+// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x14a8.
+// @0x1415f41c0
+long long* FUN_1415f41c0(long long* p) { *p += 0x14a8; return p; }
+
+// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x18.
+// @0x1415f41f0
+long long* FUN_1415f41f0(long long* p) { *p += 0x18; return p; }
+
+// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0xb8.
+// @0x1415f4240
+long long* FUN_1415f4240(long long* p) { *p += 0xb8; return p; }
+
+// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x58.
+// @0x1415f4270
+long long* FUN_1415f4270(long long* p) { *p += 0x58; return p; }
+
+// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x68.
+// @0x1415f4290
+long long* FUN_1415f4290(long long* p) { *p += 0x68; return p; }
+
+// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0xae8.
+// @0x1415f42b0
+long long* FUN_1415f42b0(long long* p) { *p += 0xae8; return p; }
+
+// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0xec8.
+// @0x1415f42e0
+long long* FUN_1415f42e0(long long* p) { *p += 0xec8; return p; }
+
+// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0xf8.
+// @0x1415f4340
+long long* FUN_1415f4340(long long* p) { *p += 0xf8; return p; }
+
+// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x490.
+// @0x1415f4370
+long long* FUN_1415f4370(long long* p) { *p += 0x490; return p; }
+
+// MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x20.
+// @0x1415f43a0
+long long* FUN_1415f43a0(long long* p) { *p += 0x20; return p; }
