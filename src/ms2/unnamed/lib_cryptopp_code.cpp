@@ -12,6 +12,10 @@
 // MS2-RANGE: 0x1423729e0-0x142372b90 .text$mn
 // MS2-RANGE: 0x142372d60-0x142372f10 .text$mn
 // MS2-RANGE: 0x142372f20-0x1423730d1 .text$mn
+// MS2-RANGE: 0x1423770a0-0x1423772e3 .text$mn
+// MS2-RANGE: 0x1423772f0-0x142377533 .text$mn
+// MS2-RANGE: 0x1423798d0-0x142379af4 .text$mn
+// MS2-RANGE: 0x142353790-0x142353796 .text$mn
 // MS2-FLAGS: gamebryo
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
@@ -208,4 +212,97 @@ CppAssignHelper* FUN_142372f20(CppAssignHelper* self, char* pObject, const CppNa
     else if (DAT_143aa1d00 != DAT_143aa1d00)
         FUN_142375640(pObject + 0x50, source);
     return self;
+}
+
+// CryptoPP::Integer, as far as DL_PrivateKeyImpl<...>::GenerateRandom needs it: ASN1Object vptr + SecBlock + sign
+void FUN_142308be0(void* p);   // CryptoPP::UnalignedDeallocate
+struct CppInteger
+{
+    void* vptr;
+    char alloc[8];
+    size_t m_size;
+    unsigned long long* m_ptr;
+    int sign;
+    ~CppInteger()
+    {
+        for (size_t i = 0; i < m_size; ++i)
+            m_ptr[i] = 0;
+        FUN_142308be0(m_ptr);
+    }
+};
+CppInteger* FUN_14235a970(CppInteger* out, void* rng, const CppInteger* min, const CppInteger* max, int type, const CppInteger* equiv, const CppInteger* mod); // Integer(rng, min, max, type, equiv, mod)
+const CppInteger* FUN_14236a270();   // Integer::One()
+const CppInteger* FUN_14236cea0();   // Integer::Zero()
+
+struct CppGroupParams
+{
+    virtual void GenerateRandom(void* rng, const CppNameValuePairs* params) {}
+};
+struct CppAbstractGroupParams
+{
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
+    virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8();
+    virtual CppInteger* GetMaxExponent(CppInteger* out) const;   // vtable +0x48
+};
+struct CppKeyObj
+{
+    virtual CppAbstractGroupParams* GetAbstractGroupParameters();
+    virtual void v1();
+    virtual void v2();
+    virtual void SetPrivateExponent(const CppInteger* x);   // vtable +0x18
+    char pad[8];
+};
+struct CppKeyGroupPart
+{
+    char pad[0x60];
+    void* groupObject;
+    CppGroupParams group;
+};
+struct CppDLPrivateKey : CppKeyObj, CppKeyGroupPart {};
+extern const std::type_info DAT_143aa1768;
+extern const std::type_info DAT_143aa3860;
+
+// DL_PrivateKeyImpl<GP>::GenerateRandom: take the group parameters from the source if it carries them, else generate them; x = random in [1, max exponent]
+static __forceinline void CppDLGenerateRandom(CppDLPrivateKey& key, void* rng, const CppNameValuePairs* params, const std::type_info& gpType)
+{
+    if (!CppGetThisObject(params, gpType, &key.groupObject))
+        key.group.GenerateRandom(rng, params);
+    CppInteger maxExp;
+    key.GetAbstractGroupParameters()->GetMaxExponent(&maxExp);
+    CppInteger x;
+    FUN_14235a970(&x, rng, FUN_14236a270(), &maxExp, 0, FUN_14236cea0(), FUN_14236a270());
+    key.SetPrivateExponent(&x);
+}
+
+// MS2-FUNCTIONAL: same calls and logic; the temporaries are laid out differently (/GS cookie, string/Integer slot sharing)
+// @0x1423770a0
+void FUN_1423770a0(CppKeyGroupPart* sub, void* rng, const CppNameValuePairs* params)
+{
+    __assume(sub != nullptr);
+    CppDLGenerateRandom(*static_cast<CppDLPrivateKey*>(sub), rng, params, DAT_143aa1768);
+}
+
+// MS2-FUNCTIONAL: same calls and logic; the temporaries are laid out differently (/GS cookie, string/Integer slot sharing)
+// @0x1423772f0
+void FUN_1423772f0(CppKeyGroupPart* sub, void* rng, const CppNameValuePairs* params)
+{
+    __assume(sub != nullptr);
+    CppDLGenerateRandom(*static_cast<CppDLPrivateKey*>(sub), rng, params, DAT_143aa3860);
+}
+
+// HMAC<SHA1>::StaticAlgorithmName: "HMAC(" + SHA1::StaticAlgorithmName() + ")"
+// MS2-FUNCTIONAL: same string building; the /GS cookie differs (our string temporaries are not GS buffers)
+// @0x1423798d0
+std::string* FUN_1423798d0(std::string* out)
+{
+    CppTempString head("HMAC(");
+    return new (out) std::string(std::move(std::move(head.s) + "SHA-1") + ")");
+}
+
+extern int DAT_143b10184;   // CryptoPP cached CPU feature value (cache line size)
+
+// @0x142353790
+int FUN_142353790()
+{
+    return DAT_143b10184;
 }
