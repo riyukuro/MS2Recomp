@@ -964,7 +964,7 @@
 1408533a0	140854ea0	?\taileffectdatatable.cpp	low	51	mn	dir commonfiles
 140854ea0	14085f650	?\talkscript.cpp	low	244	mn	dir commonfiles
 14085f650	1408665a0	?\taximanager.cpp	low	307	mn	dir commonfiles
-1408665a0	1408665e0	unit_1408665a0	none	2	mn	
+1408665a0	1408665e0	unit_1408665a0_pointerdereferencewrapper	none	2	mn	descriptive: pointerdereferencewrapper
 1408665e0	140866b00	?\termtagcontext.cpp	low	14	mn	dir commonfiles
 140866b00	1408686b0	?\textlogfile.cpp	low	95	mn	dir commonfiles
 1408686b0	1408691c0	?\timer.cpp	low	32	mn	dir commonfiles
@@ -972,10 +972,10 @@
 14086d350	14087d0c0	commonfiles\tinyxmlhelper.cpp	high	447	mn	
 14087d0c0	14087d240	unit_14087d0c0_trademesolimits	none	5	mn	descriptive: trademesolimits
 14087d240	14087e8c0	?\trafficoptimizer.cpp	low	41	mn	dir commonfiles
-14087e8c0	1408806b0	unit_14087e8c0	none	48	mn	rejected ?\serverstringgroup.cpp
+14087e8c0	1408806b0	unit_14087e8c0_serverstringtables	none	48	mn	descriptive: serverstringtables
 1408806b0	140885f20	?\ugcbuildvalidator.cpp	low	126	mn	dir commonfiles
 140885f20	14088dbf0	?\ugccubecategorytable.cpp	low	274	mn	dir commonfiles
-14088dbf0	14088e340	unit_14088dbf0	none	11	mn	
+14088dbf0	14088e340	unit_14088dbf0_ugcreservationdatehelpers	none	11	mn	descriptive: ugcreservationdatehelpers
 14088e340	14089e270	commonfiles\ugcdef.cpp	high	464	mn	
 14089e270	1408a0190	?\ugcdesigntable.cpp	low	56	mn	dir commonfiles
 1408a0190	1408b3260	?\ugcmapdata.cpp	low	585	mn	was ?\cubeowner.cpp; dir commonfiles
@@ -983,11 +983,11 @@
 1408b9860	1408bb9d0	?\ugcmappackageinfo.cpp	low	67	mn	dir commonfiles
 1408bb9d0	1408c3140	commonfiles\unlimitedenchantinfo.cpp	high	241	mn	
 1408c3140	1408d1c50	?\unlimitedenchantoption.cpp	low	502	mn	dir commonfiles
-1408d1c50	1408d1ec0	unit_1408d1c50	none	4	mn	
-1408d1ec0	1408d2280	unit_1408d1ec0	none	8	mn	
-1408d2280	1408d24c0	unit_1408d2280	none	5	mn	
+1408d1c50	1408d1ec0	unit_1408d1c50_splitstringmap	none	4	mn	descriptive: splitstringmap
+1408d1ec0	1408d2280	unit_1408d1ec0_commandargumentaccessors	none	8	mn	descriptive: commandargumentaccessors
+1408d2280	1408d24c0	unit_1408d2280_commandargumenttail	none	5	mn	descriptive: commandargumenttail
 1408d24c0	1408d5040	?\userconditioneventdata.cpp	low	70	mn	dir commonfiles
-1408d5040	1408d5470	unit_1408d5040	none	4	mn	
+1408d5040	1408d5470	unit_1408d5040_usereventcoreloader	none	4	mn	descriptive: usereventcoreloader
 1408d5470	1408d6b30	commonfiles\usereventcontext.cpp	high	52	mn	
 1408d6b30	1408e1840	?\usereventmanager.cpp	low	309	mn	dir commonfiles
 1408e1840	1408e2330	unit_1408e1840_resizetemplates	none	14	mn	descriptive: resizetemplates
@@ -1002,7 +1002,7 @@
 1408fe100	1409030d0	?\weddingproxy.cpp	low	194	mn	
 1409030d0	1409063b0	?\weddingemotiondata.cpp	low	131	mn	
 1409063b0	140920cf0	?\weddingrewarditem.cpp	low	962	mn	
-140920cf0	14092c230	unit_140920cf0	none	213	mn	
+140920cf0	14092c230	?\winhttpclient.cpp	low	213	mn	guess: class-name candidate winhttpclient.cpp; sorts between weddingrewarditem.cpp and xmldata.cpp
 14092c230	14092cb30	?\xmldata.cpp	low	18	mn	
 14092cb30	14092f420	unit_14092cb30	none	84	mn	rejected ?\nxa.cpp
 14092f420	140935c20	unit_14092f420_accountsessionstate	none	268	mn	descriptive: accountsessionstate
@@ -1031,15 +1031,15 @@
 1409b8e30	1409b9ee0	?\asequipicon.cpp	low	52	mn	dir client\ms2
 1409b9ee0	1409ba1d0	?\asgaugecontrol.cpp	low	8	mn	dir client\ms2
 1409ba1d0	1409c4b40	?\asitemslot.cpp	low	241	mn	dir client\ms2
-1409c4b40	1409c5210	unit_1409c4b40	none	9	mn	
+1409c4b40	1409c5210	unit_1409c4b40_registryassociationregistration	none	9	mn	descriptive: registryassociationregistration
 1409c5210	1409f00e0	?\astooltip.cpp	low	514	mn	dir client\ms2
 1409f00e0	1409f01a0	?\astriggerstate.cpp	low	3	mn	dir client\ms2
-1409f01a0	1409f0910	unit_1409f01a0	none	7	mn	rejected ?\asstat.cpp (order within gap)
+1409f01a0	1409f0910	unit_1409f01a0_asstatheaderstatics	none	7	mn	descriptive: asstatheaderstatics
 1409f0910	1409f11a0	?\atigpu.cpp	low	17	mn	dir client\ms2
 1409f11a0	1409f2670	?\autofindtaxistation.cpp	low	52	mn	dir client\ms2
 1409f2670	1409f3370	?\avatarcube.cpp	low	30	mn	dir client\ms2
 1409f3370	1409faff0	?\avatarpc.cpp	low	206	mn	dir client\ms2
-1409faff0	1409fbb80	unit_1409faff0	none	28	mn	
+1409faff0	1409fbb80	?\bannerurlgetter.cpp	low	28	mn	guess: class-name candidate bannerurlgetter.cpp; sorts between avatarpc.cpp and basecollision.cpp
 1409fbb80	140a02ac0	?\basecollision.cpp	low	122	mn	was ?\detectcontext.cpp; dir client\ms2
 140a02ac0	140a03090	?\baseoption.cpp	low	26	mn	dir client\ms2
 140a03090	140a071a0	client\ms2\battlerecordmanager.cpp	high	112	mn	
@@ -1057,14 +1057,14 @@
 140a38fa0	140a40060	client\ms2\chatemoticoncli.cpp	high	257	mn	
 140a40060	140a40940	?\commoneffectdummy.cpp	low	32	mn	
 140a40940	140a435a0	?\cooltimemanager.cpp	low	112	mn	
-140a435a0	140a45d40	unit_140a435a0	none	69	mn	
+140a435a0	140a45d40	?\crashmanagercli.cpp	low	69	mn	guess: class-name candidate crashmanagercli.cpp; sorts between cooltimemanager.cpp and gameoptionpersonalinfoagreement.cpp
 140a45d40	140a46ab0	?\gameoptionpersonalinfoagreement.cpp	low	29	mn	
 140a46ab0	140a4c470	?\homeblockmanager.cpp	low	234	mn	
 140a4c470	140a4e690	?\targetlookcentercameramode.cpp	low	30	mn	
 140a4e690	140a50440	?\cubespawnobject.cpp	low	60	mn	
 140a50440	140a50d40	?\displayslot.cpp	low	17	mn	
 140a50d40	140a52ef0	?\effectdummy.cpp	low	114	mn	
-140a52ef0	140a53740	unit_140a52ef0	none	27	mn	
+140a52ef0	140a53740	unit_140a52ef0_noticemessageaccessors	none	27	mn	descriptive: noticemessageaccessors
 140a53740	140a54160	?\effectobject.cpp	low	23	mn	
 140a54160	140a571b0	?\fielddatacli.cpp	low	32	mn	
 140a571b0	140a58820	?\gameoptiongamepad.cpp	low	47	mn	
@@ -1084,7 +1084,7 @@
 140a8af50	140a8f1d0	?\paybackmanagerclient.cpp	low	146	mn	dir client\ms2
 140a8f1d0	140a91030	?\pendingeffect.cpp	low	95	mn	dir client\ms2
 140a91030	140a93d00	unit_140a91030_chromacolortable	none	100	mn	descriptive: chromacolortable
-140a93d00	140aaadb0	unit_140a93d00	none	815	mn	rejected ?\chromasdk.cpp
+140a93d00	140aaadb0	unit_140a93d00_chromasdkclasses	none	815	mn	descriptive: chromasdkclasses
 140aaadb0	140aace60	?\randomtargeteffect.cpp	low	61	mn	dir client\ms2
 140aace60	140aadff0	?\reconnectionmanagercli.cpp	low	32	mn	dir client\ms2
 140aadff0	140aae580	?\scenestatemodeselect.cpp	low	18	mn	dir client\ms2
@@ -1096,10 +1096,10 @@
 140ac6400	140ac7740	?\stateweddingemotiondata.cpp	low	35	mn	dir client\ms2
 140ac7740	140aced60	?\tabcontentspetevolution.cpp	low	149	mn	was ?\petevolutionpetcard.cpp; dir client\ms2
 140aced60	140ad1860	client\ms2\taileffectobject.cpp	high	112	mn	
-140ad1860	140ad5280	unit_140ad1860	none	98	mn	rejected ?\mousecontroller.cpp
-140ad5280	140ad5df0	unit_140ad5280	none	21	mn	rejected ?\statetreewateringdata.cpp
+140ad1860	140ad5280	unit_140ad1860_mousecontroller	none	98	mn	descriptive: mousecontroller
+140ad5280	140ad5df0	unit_140ad5280_statetreewateringcontext	none	21	mn	descriptive: statetreewateringcontext
 140ad5df0	140ad5f00	?\taileffectobjectfromadditional.cpp	low	4	mn	
-140ad5f00	140ada4c0	unit_140ad5f00	none	207	mn	
+140ad5f00	140ada4c0	unit_140ad5f00_termtagmanagercli	none	207	mn	descriptive: termtagmanagercli
 140ada4c0	140add560	?\boxcollision.cpp	low	84	mn	ub1 10-20: split; CBreakableObject TU from 0x140add560
 140add560	140ae2d20	?\breakableobject.cpp	low	124	mn	ub1 10-20: split from ?\boxcollision.cpp (CBreakableObject ctor 0x140add560; Nx*/CGlobalKeyTextCallback COMDATs)
 140ae2d20	140ae7940	client\ms2\buddymanager.cpp	high	86	mn	
@@ -1113,15 +1113,15 @@
 140b055c0	140b0dc40	?\cashinventorybag.cpp	low	206	mn	dir client\ms2
 140b0dc40	140b0dc70	?\cashunlockdialog.cpp	low	1	mn	ps1 split from ?\cashinventorybag.cpp: RUNTIME_CLASS(CDialogEx) _GetBaseClass of CCashUnlockDialog (GetRuntimeClass follows)
 140b0dc70	140b0e5f0	?\cashunlockdialog.cpp	low	17	mn	dir client\ms2
-140b0e5f0	140b0f4c0	unit_140b0e5f0	none	18	mn	rejected ?\coupleeffectsystem.cpp
-140b0f4c0	140b12780	unit_140b0f4c0	none	75	mn	rejected ?\pet.cpp
+140b0e5f0	140b0f4c0	unit_140b0e5f0_coupleeffectsystem	none	18	mn	descriptive: coupleeffectsystem
+140b0f4c0	140b12780	unit_140b0f4c0_petactor	none	75	mn	descriptive: petactor
 140b12780	140b1d2b0	client\ms2\clubcli.cpp	high	231	mn	
 140b1d2b0	140b1dcf0	?\costumemanager.cpp	low	14	mn	dir client\ms2
 140b1dcf0	140b206b0	?\dungeonmissioncli.cpp	low	115	mn	dir client\ms2
 140b206b0	140b26ff0	client\ms2\dungeonrecordcli.cpp	high	210	mn	
 140b26ff0	140b287b0	client\ms2\fieldpropertycli.cpp	high	61	mn	
 140b287b0	140b498e0	?\gamerankingcli.cpp	low	937	mn	dir client\ms2
-140b498e0	140b5faf0	unit_140b498e0	none	417	mn	
+140b498e0	140b5faf0	unit_140b498e0_gamerankingcomdat	none	417	mn	descriptive: gamerankingcomdat
 140b5faf0	140b602f0	unit_140b5faf0_boxedptrwrappers	none	48	mn	descriptive: boxedptrwrappers
 140b602f0	140b60ff0	unit_140b602f0	none	41	mn	
 140b60ff0	140b64c30	?\gfxmoviedamage.cpp	low	127	mn	dir client\ms2
