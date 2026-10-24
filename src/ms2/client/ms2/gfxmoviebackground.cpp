@@ -38,6 +38,7 @@
 #include <ecr/RenderSurface.h>
 #include <efd/ServiceManager.h>
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/gfxrenderer2d.h"
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/client/ms2/worldservice.h"
@@ -973,3 +974,10 @@ MS2_REPLACE_METHOD(0x14127b9e0, GFxMovieBackground, CreateRenderTarget, 349, 0xC
 MS2_REPLACE_METHOD(0x14127bb50, GFxMovieBackground, CreateRenderTexture, 330, 0x31F3B57A);
 MS2_REPLACE_METHOD(0x14127bcb0, GFxMovieBackground, SetBaseTexture, 336, 0x893CF012);
 MS2_REPLACE_METHOD(0x14127be10, GFxMovieBackground, FUN_14127be10, 360, 0xFCB863E7);
+
+#if defined(MS2_HAVE_SCALEFORM_SDK)
+// vfunc_9's second by-value Ptr<> argument is the Renderer2D in the exe: its release COMDAT 0x14127c5c0 is a separate
+// copy of 0x14127c550 (gfxmovie.h spells both arguments Unk_GFxHandleObj), emitted here explicitly.
+template Scaleform::Ptr<Unk_GFxUIRenderer2D>::~Ptr();
+#endif
+// MS2-PIN: ??1?$Ptr@VUnk_GFxUIRenderer2D@@@Scaleform@@QEAA@XZ 0x14127c5c0
