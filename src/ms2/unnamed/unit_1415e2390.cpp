@@ -14,6 +14,169 @@ extern void* FUN_140159860(unsigned __int64 n, void* p);
 extern void FUN_1415f9a90(void* p, const char* value);
 extern void FUN_1415f9b80(void* p, const char* value);
 extern void FUN_1415f93d0(void* p, unsigned int flags);
+extern void FUN_1415ce470(void* p, const void* value);
+extern void* FUN_1415e4ea0(void* p);
+extern ptrdiff_t FUN_1415d44c0(Unk_StlElem<0x10>* first, Unk_StlElem<0x10>* last, std::random_access_iterator_tag);
+extern ptrdiff_t FUN_1415d44f0(Unk_StlElem<0x18>* first, Unk_StlElem<0x18>* last, std::random_access_iterator_tag);
+extern ptrdiff_t FUN_1415d4520(Unk_StlElem<0x58>* first, Unk_StlElem<0x58>* last, std::random_access_iterator_tag);
+extern ptrdiff_t FUN_1415d4550(Unk_StlElem<0x30>* first, Unk_StlElem<0x30>* last, std::random_access_iterator_tag);
+extern ptrdiff_t FUN_1415d4580(Unk_StlElem<0x98>* first, Unk_StlElem<0x98>* last, std::random_access_iterator_tag);
+extern ptrdiff_t FUN_1415d45b0(Unk_StlElem<0x220>* first, Unk_StlElem<0x220>* last, std::random_access_iterator_tag);
+extern ptrdiff_t FUN_1415d45e0(Unk_StlElem<0x128>* first, Unk_StlElem<0x128>* last, std::random_access_iterator_tag);
+extern ptrdiff_t FUN_1415d4610(Unk_StlElem<0x118>* first, Unk_StlElem<0x118>* last, std::random_access_iterator_tag);
+extern ptrdiff_t FUN_1415d4640(Unk_StlElem<0x580>* first, Unk_StlElem<0x580>* last, std::random_access_iterator_tag);
+extern ptrdiff_t FUN_1415d4670(Unk_StlElem<0x18>* first, Unk_StlElem<0x18>* last, std::random_access_iterator_tag);
+extern ptrdiff_t FUN_1415d46a0(Unk_StlElem<0x14a8>* first, Unk_StlElem<0x14a8>* last, std::random_access_iterator_tag);
+extern ptrdiff_t FUN_1415d46d0(Unk_StlElem<0x18>* first, Unk_StlElem<0x18>* last, std::random_access_iterator_tag);
+extern ptrdiff_t FUN_1415d4700(Unk_StlElem<0xb8>* first, Unk_StlElem<0xb8>* last, std::random_access_iterator_tag);
+extern ptrdiff_t FUN_1415d4730(Unk_StlElem<0x58>* first, Unk_StlElem<0x58>* last, std::random_access_iterator_tag);
+extern ptrdiff_t FUN_1415d4760(Unk_StlElem<0xae8>* first, Unk_StlElem<0xae8>* last, std::random_access_iterator_tag);
+extern ptrdiff_t FUN_1415d4790(Unk_StlElem<0xc8>* first, Unk_StlElem<0xc8>* last, std::random_access_iterator_tag);
+extern ptrdiff_t FUN_1415d47c0(Unk_StlElem<0xf8>* first, Unk_StlElem<0xf8>* last, std::random_access_iterator_tag);
+extern ptrdiff_t FUN_1415d47f0(Unk_StlElem<0x490>* first, Unk_StlElem<0x490>* last, std::random_access_iterator_tag);
+extern ptrdiff_t FUN_1415d4820(Unk_StlElem<0x30>* first, Unk_StlElem<0x30>* last, std::random_access_iterator_tag);
+
+// MS2-FUNCTIONAL: computes the decompiled random-access iterator distance via its recovered helper.
+// @0x1415e3c80
+ptrdiff_t FUN_1415e3c80(void* first, void* last)
+{
+    return FUN_1415d44c0(static_cast<Unk_StlElem<0x10>*>(first), static_cast<Unk_StlElem<0x10>*>(last), std::random_access_iterator_tag{});
+}
+
+// MS2-FUNCTIONAL: computes the decompiled random-access iterator distance via its recovered helper.
+// @0x1415e3cb0
+ptrdiff_t FUN_1415e3cb0(void* first, void* last)
+{
+    return FUN_1415d44f0(static_cast<Unk_StlElem<0x18>*>(first), static_cast<Unk_StlElem<0x18>*>(last), std::random_access_iterator_tag{});
+}
+
+// MS2-FUNCTIONAL: computes the decompiled random-access iterator distance via its recovered helper.
+// @0x1415e3ce0
+ptrdiff_t FUN_1415e3ce0(void* first, void* last)
+{
+    return FUN_1415d4520(static_cast<Unk_StlElem<0x58>*>(first), static_cast<Unk_StlElem<0x58>*>(last), std::random_access_iterator_tag{});
+}
+
+// MS2-FUNCTIONAL: computes the decompiled random-access iterator distance via its recovered helper.
+// @0x1415e3d10
+ptrdiff_t FUN_1415e3d10(void* first, void* last)
+{
+    return FUN_1415d4550(static_cast<Unk_StlElem<0x30>*>(first), static_cast<Unk_StlElem<0x30>*>(last), std::random_access_iterator_tag{});
+}
+
+// MS2-FUNCTIONAL: computes the decompiled random-access iterator distance via its recovered helper.
+// @0x1415e3d40
+ptrdiff_t FUN_1415e3d40(void* first, void* last)
+{
+    return FUN_1415d4580(static_cast<Unk_StlElem<0x98>*>(first), static_cast<Unk_StlElem<0x98>*>(last), std::random_access_iterator_tag{});
+}
+
+// MS2-FUNCTIONAL: computes the decompiled random-access iterator distance via its recovered helper.
+// @0x1415e3d70
+ptrdiff_t FUN_1415e3d70(void* first, void* last)
+{
+    return FUN_1415d45b0(static_cast<Unk_StlElem<0x220>*>(first), static_cast<Unk_StlElem<0x220>*>(last), std::random_access_iterator_tag{});
+}
+
+// MS2-FUNCTIONAL: computes the decompiled random-access iterator distance via its recovered helper.
+// @0x1415e3da0
+ptrdiff_t FUN_1415e3da0(void* first, void* last)
+{
+    return FUN_1415d45e0(static_cast<Unk_StlElem<0x128>*>(first), static_cast<Unk_StlElem<0x128>*>(last), std::random_access_iterator_tag{});
+}
+
+// MS2-FUNCTIONAL: computes the decompiled random-access iterator distance via its recovered helper.
+// @0x1415e3dd0
+ptrdiff_t FUN_1415e3dd0(void* first, void* last)
+{
+    return FUN_1415d4610(static_cast<Unk_StlElem<0x118>*>(first), static_cast<Unk_StlElem<0x118>*>(last), std::random_access_iterator_tag{});
+}
+
+// MS2-FUNCTIONAL: computes the decompiled random-access iterator distance via its recovered helper.
+// @0x1415e3e00
+ptrdiff_t FUN_1415e3e00(void* first, void* last)
+{
+    return FUN_1415d4640(static_cast<Unk_StlElem<0x580>*>(first), static_cast<Unk_StlElem<0x580>*>(last), std::random_access_iterator_tag{});
+}
+
+// MS2-FUNCTIONAL: computes the decompiled random-access iterator distance via its recovered helper.
+// @0x1415e3e30
+ptrdiff_t FUN_1415e3e30(void* first, void* last)
+{
+    return FUN_1415d4670(static_cast<Unk_StlElem<0x18>*>(first), static_cast<Unk_StlElem<0x18>*>(last), std::random_access_iterator_tag{});
+}
+
+// MS2-FUNCTIONAL: computes the decompiled random-access iterator distance via its recovered helper.
+// @0x1415e3e60
+ptrdiff_t FUN_1415e3e60(void* first, void* last)
+{
+    return FUN_1415d46a0(static_cast<Unk_StlElem<0x14a8>*>(first), static_cast<Unk_StlElem<0x14a8>*>(last), std::random_access_iterator_tag{});
+}
+
+// MS2-FUNCTIONAL: computes the decompiled random-access iterator distance via its recovered helper.
+// @0x1415e3e90
+ptrdiff_t FUN_1415e3e90(void* first, void* last)
+{
+    return FUN_1415d46d0(static_cast<Unk_StlElem<0x18>*>(first), static_cast<Unk_StlElem<0x18>*>(last), std::random_access_iterator_tag{});
+}
+
+// MS2-FUNCTIONAL: computes the decompiled random-access iterator distance via its recovered helper.
+// @0x1415e3ec0
+ptrdiff_t FUN_1415e3ec0(void* first, void* last)
+{
+    return FUN_1415d4700(static_cast<Unk_StlElem<0xb8>*>(first), static_cast<Unk_StlElem<0xb8>*>(last), std::random_access_iterator_tag{});
+}
+
+// MS2-FUNCTIONAL: computes the decompiled random-access iterator distance via its recovered helper.
+// @0x1415e3ef0
+ptrdiff_t FUN_1415e3ef0(void* first, void* last)
+{
+    return FUN_1415d4730(static_cast<Unk_StlElem<0x58>*>(first), static_cast<Unk_StlElem<0x58>*>(last), std::random_access_iterator_tag{});
+}
+
+// MS2-FUNCTIONAL: computes the decompiled random-access iterator distance via its recovered helper.
+// @0x1415e3f20
+ptrdiff_t FUN_1415e3f20(void* first, void* last)
+{
+    return FUN_1415d4760(static_cast<Unk_StlElem<0xae8>*>(first), static_cast<Unk_StlElem<0xae8>*>(last), std::random_access_iterator_tag{});
+}
+
+// MS2-FUNCTIONAL: computes the decompiled random-access iterator distance via its recovered helper.
+// @0x1415e3f50
+ptrdiff_t FUN_1415e3f50(void* first, void* last)
+{
+    return FUN_1415d4790(static_cast<Unk_StlElem<0xc8>*>(first), static_cast<Unk_StlElem<0xc8>*>(last), std::random_access_iterator_tag{});
+}
+
+// MS2-FUNCTIONAL: computes the decompiled random-access iterator distance via its recovered helper.
+// @0x1415e3f80
+ptrdiff_t FUN_1415e3f80(void* first, void* last)
+{
+    return FUN_1415d47c0(static_cast<Unk_StlElem<0xf8>*>(first), static_cast<Unk_StlElem<0xf8>*>(last), std::random_access_iterator_tag{});
+}
+
+// MS2-FUNCTIONAL: computes the decompiled random-access iterator distance via its recovered helper.
+// @0x1415e3fb0
+ptrdiff_t FUN_1415e3fb0(void* first, void* last)
+{
+    return FUN_1415d47f0(static_cast<Unk_StlElem<0x490>*>(first), static_cast<Unk_StlElem<0x490>*>(last), std::random_access_iterator_tag{});
+}
+
+// MS2-FUNCTIONAL: computes the decompiled random-access iterator distance via its recovered helper.
+// @0x1415e3fe0
+ptrdiff_t FUN_1415e3fe0(void* first, void* last)
+{
+    return FUN_1415d4820(static_cast<Unk_StlElem<0x30>*>(first), static_cast<Unk_StlElem<0x30>*>(last), std::random_access_iterator_tag{});
+}
+
+// MS2-FUNCTIONAL: follows the decompiled allocator construction path and calls the recovered element copy helper.
+// @0x1415e23e0
+void FUN_1415e23e0(void*, void* p, void* pVal)
+{
+    void* pObject = FUN_140159860(0x10, p);
+    const void* value = reinterpret_cast<const void*>(FUN_1415e4ea0(pVal));
+    FUN_1415ce470(pObject, value);
+}
 
 // MS2-FUNCTIONAL: reproduces the allocator-traits construction operation recovered at 0x1415e2430.
 // @0x1415e2430
@@ -1580,3 +1743,23 @@ void* FUN_1415e5320(void* p) { return p; }
 // MS2-PIN: ?FUN_1415e5300@@YAPEAXPEAX@Z 0x1415e5300
 // MS2-PIN: ?FUN_1415e5310@@YAPEAXPEAX@Z 0x1415e5310
 // MS2-PIN: ?FUN_1415e5320@@YAPEAXPEAX@Z 0x1415e5320
+// MS2-PIN: ?FUN_1415e23e0@@YAXPEAX00@Z 0x1415e23e0
+// MS2-PIN: ??$distance@PEAUNMChatSessionTarget@@@std@@YA_JPEAUNMChatSessionTarget@@0@Z 0x1415e3c80
+// MS2-PIN: ??$distance@PEAUNMFriendKey@@@std@@YA_JPEAUNMFriendKey@@0@Z 0x1415e3cb0
+// MS2-PIN: ??$distance@PEAVCNMCateFriendInfo@@@std@@YA_JPEAVCNMCateFriendInfo@@0@Z 0x1415e3ce0
+// MS2-PIN: ??$distance@PEAVCNMChannelMemberInfo@@@std@@YA_JPEAVCNMChannelMemberInfo@@0@Z 0x1415e3d10
+// MS2-PIN: ??$distance@PEAVCNMCharacter@@@std@@YA_JPEAVCNMCharacter@@0@Z 0x1415e3d40
+// MS2-PIN: ??$distance@PEAVCNMChatRoomMemberInfo@@@std@@YA_JPEAVCNMChatRoomMemberInfo@@0@Z 0x1415e3d70
+// MS2-PIN: ??$distance@PEAVCNMFileEvent@@@std@@YA_JPEAVCNMFileEvent@@0@Z 0x1415e3da0
+// MS2-PIN: ??$distance@PEAVCNMFilePath@@@std@@YA_JPEAVCNMFilePath@@0@Z 0x1415e3dd0
+// MS2-PIN: ??$distance@PEAVCNMFriendInfo@@@std@@YA_JPEAVCNMFriendInfo@@0@Z 0x1415e3e00
+// MS2-PIN: ??$distance@PEAVCNMGameCode@@@std@@YA_JPEAVCNMGameCode@@0@Z 0x1415e3e30
+// MS2-PIN: ??$distance@PEAVCNMGameInfo@@@std@@YA_JPEAVCNMGameInfo@@0@Z 0x1415e3e60
+// MS2-PIN: ??$distance@PEAVCNMGameServerCode@@@std@@YA_JPEAVCNMGameServerCode@@0@Z 0x1415e3e90
+// MS2-PIN: ??$distance@PEAVCNMGuildMemberInfo@@@std@@YA_JPEAVCNMGuildMemberInfo@@0@Z 0x1415e3ec0
+// MS2-PIN: ??$distance@PEAVCNMGuildMemberLevelInfo@@@std@@YA_JPEAVCNMGuildMemberLevelInfo@@0@Z 0x1415e3ef0
+// MS2-PIN: ??$distance@PEAVCNMNoteInfo2@@@std@@YA_JPEAVCNMNoteInfo2@@0@Z 0x1415e3f20
+// MS2-PIN: ??$distance@PEAVCNMRejectedUser@@@std@@YA_JPEAVCNMRejectedUser@@0@Z 0x1415e3f50
+// MS2-PIN: ??$distance@PEAVCNMSessionMemberInfo@@@std@@YA_JPEAVCNMSessionMemberInfo@@0@Z 0x1415e3f80
+// MS2-PIN: ??$distance@PEAVCNMVirtualUserInfo@@@std@@YA_JPEAVCNMVirtualUserInfo@@0@Z 0x1415e3fb0
+// MS2-PIN: ??$distance@PEBVCNMChannelMemberInfo@@@std@@YA_JPEBVCNMChannelMemberInfo@@0@Z 0x1415e3fe0
