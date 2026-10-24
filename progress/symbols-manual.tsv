@@ -10140,3 +10140,6 @@ DAT_143a2dd50	143a2dd50	data
 ?DAT_14317aeb0@@3QBUThunkInfo@AS3@GFx@Scaleform@@B	14317aeb0	data
 ?DAT_143a2d5c0@@3QBUThunkInfo@AS3@GFx@Scaleform@@B	143a2d5c0	data
 DAT_143a2dd40	143a2dd40	data
+?FindProp@State@TR@AS3@GFx@Scaleform@@AEAAXAEAVPropRef@345@AEBVMultiname@345@AEAW4ScopeType@12345@AEA_K@Z	142501e80	func
+?SetAS3ObjCollectible@AvmDisplayObj@AS3@GFx@Scaleform@@QEAAXPEAVDisplayObject@fl_display@Instances@234@@Z	142526340	func
+?HasLoaderInfo@DisplayObject@fl_display@Instances@AS3@GFx@Scaleform@@QEBA_NXZ	1424445f0	func
