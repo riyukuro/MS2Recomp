@@ -10,7 +10,11 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/gfxvalue.h"
 
+#include <stdlib.h>
+
+#include "Kernel/SF_Hash.h"
 #include "Kernel/SF_WString.h"
+#include "GFx/GFx_Loader.h"
 
 // Reads a font config file (wide text) line by line (0x30 bytes, the frame of NiGFxLocalizeManager::FUN_1422eb570).
 class ConfigParser
@@ -18,6 +22,15 @@ class ConfigParser
     Scaleform::WStringBuffer Buffer;    // +0x00
     int Pos;                            // +0x20
     unsigned Line;                      // +0x24
+
+    void SkipWhitespace()
+    {
+        while (Pos < (int)Buffer.GetLength() && (Buffer[Pos] == L' ' || Buffer[Pos] == L'\t'))
+            Pos++;
+    }
+    static bool IsFirstIdChar(wchar_t c) { return (c >= L'a' && c <= L'z') || (c >= L'A' && c <= L'Z') || c == L'_'; }
+    static bool IsNextIdChar(wchar_t c) { return IsFirstIdChar(c) || (c >= L'0' && c <= L'9'); }
+    static bool IsNumberChar(wchar_t c) { return (c >= L'0' && c <= L'9') || c == L'.'; }
 public:
     Scaleform::String ParentPath;       // +0x28
 
@@ -26,9 +39,101 @@ public:
 
     // @0x1422ec2b0
     bool IsValid() const { return Buffer.GetLength() != 0; }
+
+    enum TokenType
+    {
+        Tok_Error,
+        Tok_EOL,
+        Tok_EOF,
+        Tok_Char,
+        Tok_String,
+        Tok_Id,
+        Tok_Number
+    };
+
+    struct Token
+    {
+        TokenType Type;
+        const wchar_t* pData;
+        unsigned Length;
+        const char* pError;
+
+        TokenType Set(TokenType t, const wchar_t* pdata = 0, unsigned length = 0)
+        {
+            pError = "";
+            Type = t;
+            pData = pdata;
+            Length = length;
+            return t;
+        }
+
+        // Newlines are stripped (Flash multiline text uses \r).
+        Scaleform::String GetString() const
+        {
+            if (pData)
+            {
+                Scaleform::String str;
+                for (unsigned i = 0; i < Length; i++)
+                {
+                    if (pData[i] != '\n')
+                        str.AppendChar(pData[i]);
+                }
+                return str;
+            }
+            else
+            {
+                return Scaleform::String();
+            }
+        }
+        wchar_t GetChar() const { return pData ? pData[0] : 0; }
+        float GetNumber() const
+        {
+            Scaleform::String s1;
+            s1.AppendString(pData, Length);
+            return (float)atof(s1.ToCStr());
+        }
+        bool IsId() const { return Type == Tok_Id; }
+        bool IsString() const { return Type == Tok_String; }
+        bool IsNumber() const { return Type == Tok_Number; }
+        bool IsId(const wchar_t* pid) const
+        {
+            Scaleform::String s1, s2;
+            s1.AppendString(pData, Length);
+            s2.AppendString(pid);
+            return Type == Tok_Id && Length == s2.GetLength() && !s1.CompareNoCase(s2);
+        }
+        bool IsChar(wchar_t c) const { return Type == Tok_Char && GetChar() == c; }
+    };
+
+    TokenType NextToken(Token* ptoken);                         // 0x1422f9240
+
+    struct TokenLine
+    {
+        Scaleform::Array<Token> Tokens;     // +0x00
+        int ErrorIndex;                     // +0x18
+        unsigned LineIndex;                 // +0x1c
+
+        bool HasErrors() { return ErrorIndex != -1; }
+    };
+
+    bool TokenizeLine(TokenLine* pline, unsigned max);          // 0x1422f97b0
+    static bool MatchLine(Scaleform::Array<Token>& tokens, const wchar_t* pformat, ...);    // 0x1422f9880
 };
 
-class FontTranslator;
+// The translator of a font config: "tr" lines map a key to a replacement text.
+class FontTranslator : public Scaleform::GFx::Translator
+{
+public:
+    typedef Scaleform::Hash<Scaleform::String, Scaleform::String, Scaleform::String::HashFunctor> MappingHash;
+
+    virtual unsigned GetCaps() const { return Cap_StripTrailingNewLines; }
+
+    void AddMapping(const Scaleform::String& key, const Scaleform::String& value);      // 0x1422f9cd0
+    void AddMappings(const MappingHash& mappings);
+    virtual void Translate(TranslateInfo* ptranslateInfo);                              // 0x1422f9d10
+private:
+    MappingHash Mappings;               // +0x20
+};
 
 class FontConfig : public Scaleform::RefCountBase<FontConfig, Scaleform::Stat_Default_Mem>
 {
@@ -46,6 +151,8 @@ public:
     Scaleform::ArrayLH<Scaleform::String> FontLibFiles;     // +0x20
     Scaleform::Ptr<Scaleform::GFx::FontMap> pFontMap;       // +0x38
     Scaleform::Ptr<FontTranslator> pTranslation;            // +0x40
+
+    FontConfig();                                           // 0x1422fbcf0
 
     // Apply config settings to loader.
     void Apply(Scaleform::GFx::Loader* ploader);            // 0x1422f9dd0
