@@ -1,6 +1,14 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). Crypto++ 5.6.2 functions that the engine-stage gb:CryptoPP/*
 // TUs leave as stubs because the exe's copy was folded or compiled with different codegen than the in-tree source.
 // MS2-UNIT: lib_cryptopp_code
+// MS2-RANGE: 0x1423056e0-0x142305701 .text$mn
+// MS2-RANGE: 0x142305710-0x142305731 .text$mn
+// MS2-RANGE: 0x142311c70-0x142311cf1 .text$mn
+// MS2-RANGE: 0x1423140b0-0x1423140e6 .text$mn
+// MS2-RANGE: 0x14235bce0-0x14235bda1 .text$mn
+// MS2-RANGE: 0x14235df70-0x14235dff1 .text$mn
+// MS2-RANGE: 0x1423697c0-0x1423697f6 .text$mn
+// MS2-RANGE: 0x14237b650-0x14237b711 .text$mn
 // MS2-FLAGS: gamebryo
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
@@ -34,7 +42,7 @@ struct CppParamBase { void* vptr; char pad[0x18]; };
 struct CppIntParam : CppParamBase { int m_value; };
 typedef bool (*AssignIntFn)(const std::type_info&, void*, const void*);
 extern AssignIntFn DAT_143b0dc90;                 // CryptoPP::g_pAssignIntToInteger
-extern const std::type_info DAT_143a57d70;        // typeid(int)
+extern const std::type_info DAT_143a57d68;        // typeid(int)
 extern const std::type_info DAT_143aa1220;        // typeid(T) of the first instantiation
 extern const std::type_info DAT_143aa7a80;        // typeid(T) of the second instantiation
 void FUN_140390ef0(const char* name, const std::type_info& t1, const std::type_info& t2);   // ThrowIfTypeMismatch
@@ -45,7 +53,7 @@ extern char DAT_14312dbf8[];                      // vftable of the second insta
 // @0x142311c70
 void FUN_142311c70(CppIntParam* self, const char* name, const std::type_info& valueType, void* pValue)
 {
-    if (!(DAT_143b0dc90 != 0 && DAT_143aa1220 == DAT_143a57d70 && DAT_143b0dc90(valueType, pValue, &self->m_value)))
+    if (!(DAT_143b0dc90 != 0 && DAT_143aa1220 == DAT_143a57d68 && DAT_143b0dc90(valueType, pValue, &self->m_value)))
     {
         FUN_140390ef0(name, DAT_143aa1220, valueType);
         *(int*)pValue = self->m_value;
@@ -55,7 +63,7 @@ void FUN_142311c70(CppIntParam* self, const char* name, const std::type_info& va
 // @0x14235df70
 void FUN_14235df70(CppIntParam* self, const char* name, const std::type_info& valueType, void* pValue)
 {
-    if (!(DAT_143b0dc90 != 0 && DAT_143aa7a80 == DAT_143a57d70 && DAT_143b0dc90(valueType, pValue, &self->m_value)))
+    if (!(DAT_143b0dc90 != 0 && DAT_143aa7a80 == DAT_143a57d68 && DAT_143b0dc90(valueType, pValue, &self->m_value)))
     {
         FUN_140390ef0(name, DAT_143aa7a80, valueType);
         *(int*)pValue = self->m_value;
@@ -81,12 +89,19 @@ void FUN_1423697c0(CppIntParam* self, CppIntParam* dst)
 #include <string>
 #include <exception>
 
-// CryptoPP::Exception: std::exception + m_errorType + m_what, as the exe's copy lays it out
-struct CppCryptoException : std::exception
+extern char DAT_142d30650[];   // vftable of the exe's CryptoPP::Exception base
+extern char DAT_14312d848[];   // vftable of the first Exception subclass
+extern char DAT_143130c18[];   // vftable of the second Exception subclass
+
+// CryptoPP::Exception: vptr + two zeroed words + m_errorType + m_what, as the exe's copy lays it out
+struct CppCryptoException
 {
+    void* vptr;
+    void* m_whatPtr;
+    void* m_doFree;
     int m_errorType;
     std::string m_what;
-    CppCryptoException(int type, const std::string& s) : m_errorType(type), m_what(s) {}
+    CppCryptoException(int type, const std::string& s) : vptr(DAT_142d30650), m_whatPtr(0), m_doFree(0), m_errorType(type), m_what(s) {}
 };
 // a std::string temporary whose constructor is the out-of-line one
 struct CppTempString
@@ -95,16 +110,14 @@ struct CppTempString
     CppTempString(const char* p) { FUN_1401d2620(&s, p); }
     ~CppTempString() { s.~basic_string(); }
 };
-// a Crypto++ exception subclass with its own vftable (the vtable stored last is the derived one)
+// Crypto++ exception subclasses; the derived vftable is stored last
 struct CppCryptoExceptionA : CppCryptoException
 {
-    CppCryptoExceptionA() : CppCryptoException(4, CppTempString(DAT_14312d8d8).s) {}
-    virtual ~CppCryptoExceptionA() throw();
+    CppCryptoExceptionA() : CppCryptoException(4, CppTempString(DAT_14312d8d8).s) { vptr = DAT_14312d848; }
 };
 struct CppCryptoExceptionB : CppCryptoException
 {
-    CppCryptoExceptionB() : CppCryptoException(6, CppTempString(DAT_143130c28).s) {}
-    virtual ~CppCryptoExceptionB() throw();
+    CppCryptoExceptionB() : CppCryptoException(6, CppTempString(DAT_143130c28).s) { vptr = DAT_143130c18; }
 };
 
 // MS2-FUNCTIONAL: identical but for the exe's /GS cookie (its string temporary is a GS buffer; our union temporary is not)

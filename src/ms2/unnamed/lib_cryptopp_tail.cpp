@@ -3,17 +3,28 @@
 // pass does not pair: their initializers run lazily inside the engine-stage gb:CryptoPP/* TUs, so no .text$di function
 // registers them. Each thunk is written out by hand over the static it destroys; the statics are exe data (DAT_<va>).
 // MS2-UNIT: lib_cryptopp_tail
-// MS2-RANGE: 0x142cc8ce0-0x142cc9280 .text$yd
+// MS2-RANGE: 0x142cc8ce0-0x142cc92ab .text$yd
 // MS2-FLAGS: gamebryo
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/ms2recover.h"
+#include <windows.h>
+#include <wincrypt.h>
 #include <intrin.h>
 #include <vector>
 
 // operator delete / aligned free / __ehvec_dtor as the exe's CRT and Crypto++ expose them
 void FUN_142308be0(void* p);                                                    // CryptoPP::UnalignedDeallocate
-void FUN_142749a60(void* p, size_t size, size_t count, void (*pDtor)(void*));   // __ehvec_dtor
+// the CRT'"'"'s array-destructor helper, which this link does not provide: destroys the elements in reverse order
+extern "C" __declspec(noinline) void __ehvec_dtor(void* p, size_t size, int count, void (*pDtor)(void*))
+{
+    char* e = (char*)p + size * count;
+    while (count-- > 0)
+    {
+        e -= size;
+        pDtor(e);
+    }
+}
 void FUN_1423291a0(void* p);
 void FUN_142329200(void* p);
 
@@ -57,12 +68,12 @@ extern Cpp8 DAT_143b0fb00[22];
 // @0x142cc8ce0
 void FUN_142cc8ce0()
 {
-    FUN_142749a60(DAT_143b0f4c0, 0x58, 18, (void (*)(void*))FUN_1423291a0);
+    __ehvec_dtor(DAT_143b0f4c0, 0x58, 18, (void (*)(void*))FUN_1423291a0);
 }
 // @0x142cc8d00
 void FUN_142cc8d00()
 {
-    FUN_142749a60(DAT_143b0fb00, 0x48, 22, (void (*)(void*))FUN_142329200);
+    __ehvec_dtor(DAT_143b0fb00, 0x48, 22, (void (*)(void*))FUN_142329200);
 }
 
 
@@ -209,4 +220,17 @@ extern CppSimplePtr<CppU16Vec> DAT_143b10388;
 void FUN_142cc91b0()
 {
     DAT_143b10388.Free();
+}
+
+// CryptoPP::MicrosoftCryptoProvider: the process-wide CryptoAPI context (Singleton<MicrosoftCryptoProvider>)
+struct CppCryptoProvider
+{
+    HCRYPTPROV m_hProvider;
+    ~CppCryptoProvider() { CryptReleaseContext(m_hProvider, 0); }
+};
+extern CppSimplePtr<CppCryptoProvider> DAT_143b103a8;
+// @0x142cc9270
+void FUN_142cc9270()
+{
+    DAT_143b103a8.Free();
 }

@@ -2,12 +2,34 @@
 // leave as stubs (ICF-folded bodies and this-adjusting scalar deleting destructors of std::ostringstream-style classes
 // with a virtual base), written out over raw object bytes.
 // MS2-UNIT: lib_cef_tail
+// MS2-RANGE: 0x142787270-0x142787313 .text$mn
+// MS2-RANGE: 0x14278bcd0-0x14278bd73 .text$mn
+// MS2-RANGE: 0x14279ff00-0x14279ff2b .text$mn
+// MS2-RANGE: 0x1427a54a0-0x1427a54c5 .text$mn
+// MS2-RANGE: 0x1427a54d0-0x1427a552f .text$mn
+// MS2-RANGE: 0x1427a9550-0x1427a95f3 .text$mn
+// MS2-RANGE: 0x1427aabf0-0x1427aac15 .text$mn
+// MS2-RANGE: 0x1427aac20-0x1427aac7f .text$mn
+// MS2-RANGE: 0x1427ad990-0x1427ada33 .text$mn
+// MS2-RANGE: 0x1427b0250-0x1427b027b .text$mn
+// MS2-RANGE: 0x1427b0280-0x1427b02ab .text$mn
+// MS2-RANGE: 0x1427b08f0-0x1427b0993 .text$mn
+// MS2-RANGE: 0x1427b0d10-0x1427b0d35 .text$mn
+// MS2-RANGE: 0x1427b0d40-0x1427b0d9f .text$mn
+// MS2-RANGE: 0x1427b1070-0x1427b1095 .text$mn
+// MS2-RANGE: 0x1427b10a0-0x1427b10ff .text$mn
+// MS2-RANGE: 0x1427b36f0-0x1427b3715 .text$mn
+// MS2-RANGE: 0x1427b3720-0x1427b377f .text$mn
+// MS2-RANGE: 0x1427b3a60-0x1427b3b03 .text$mn
+// MS2-RANGE: 0x1427b4610-0x1427b4635 .text$mn
+// MS2-RANGE: 0x1427b4640-0x1427b469f .text$mn
+// MS2-RANGE: 0x1427b5780-0x1427b57a5 .text$mn
 // MS2-FLAGS: gamebryo
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/ms2recover.h"
 
-void FUN_142749444(void* p, size_t size);   // sized operator delete
+void operator delete(void* p, size_t size);   // sized operator delete (the CRT's)
 extern char DAT_142e1af98[];                // std::ios_base vftable
 
 // @0x1427a54a0
@@ -15,7 +37,7 @@ void* FUN_1427a54a0(char* self, unsigned flags)
 {
     char* base = self - 0x10;
     if (flags & 1)
-        FUN_142749444(base, 0x18);
+        operator delete(base, 0x18);
     return base;
 }
 
@@ -24,7 +46,7 @@ void* FUN_1427aabf0(char* self, unsigned flags)
 {
     char* base = self - 0x10;
     if (flags & 1)
-        FUN_142749444(base, 0x18);
+        operator delete(base, 0x18);
     return base;
 }
 
@@ -33,7 +55,7 @@ void* FUN_1427b0d10(char* self, unsigned flags)
 {
     char* base = self - 0x10;
     if (flags & 1)
-        FUN_142749444(base, 0x18);
+        operator delete(base, 0x18);
     return base;
 }
 
@@ -42,7 +64,7 @@ void* FUN_1427b1070(char* self, unsigned flags)
 {
     char* base = self - 0x10;
     if (flags & 1)
-        FUN_142749444(base, 0x18);
+        operator delete(base, 0x18);
     return base;
 }
 
@@ -51,7 +73,7 @@ void* FUN_1427b36f0(char* self, unsigned flags)
 {
     char* base = self - 0x10;
     if (flags & 1)
-        FUN_142749444(base, 0x18);
+        operator delete(base, 0x18);
     return base;
 }
 
@@ -60,7 +82,7 @@ void* FUN_1427b4610(char* self, unsigned flags)
 {
     char* base = self - 0x10;
     if (flags & 1)
-        FUN_142749444(base, 0x18);
+        operator delete(base, 0x18);
     return base;
 }
 
@@ -69,25 +91,25 @@ void* FUN_1427b5780(char* self, unsigned flags)
 {
     char* base = self - 0x10;
     if (flags & 1)
-        FUN_142749444(base, 0x18);
+        operator delete(base, 0x18);
     return base;
 }
 
 // @0x1427b0250
 void* FUN_1427b0250(char* self, unsigned flags)
 {
-    *(void* volatile*)self = DAT_142e1af98;
+    *(void**)self = DAT_142e1af98;
     if (flags & 1)
-        FUN_142749444(self, 0x58);
+        operator delete(self, 0x58);
     return self;
 }
 
 // @0x1427b0280
 void* FUN_1427b0280(char* self, unsigned flags)
 {
-    *(void* volatile*)self = DAT_142e1af98;
+    *(void**)self = DAT_142e1af98;
     if (flags & 1)
-        FUN_142749444(self, 0x58);
+        operator delete(self, 0x58);
     return self;
 }
 
@@ -102,9 +124,9 @@ void* FUN_1427a54d0(char* self, unsigned flags)
     char* vbtable = *(char**)(self - 0x18);
     int off = *(int*)(vbtable + 4);
     *(int*)(self - 0x1c + off) = off - 0x18;
-    *(void* volatile*)self = DAT_142e1af98;
+    *(void**)self = DAT_142e1af98;
     if (flags & 1)
-        FUN_142749444(base, 0x28);
+        operator delete(base, 0x28);
     return base;
 }
 
@@ -119,9 +141,9 @@ void* FUN_1427aac20(char* self, unsigned flags)
     char* vbtable = *(char**)(self - 0x18);
     int off = *(int*)(vbtable + 4);
     *(int*)(self - 0x1c + off) = off - 0x18;
-    *(void* volatile*)self = DAT_142e1af98;
+    *(void**)self = DAT_142e1af98;
     if (flags & 1)
-        FUN_142749444(base, 0x28);
+        operator delete(base, 0x28);
     return base;
 }
 
@@ -136,9 +158,9 @@ void* FUN_1427b0d40(char* self, unsigned flags)
     char* vbtable = *(char**)(self - 0x18);
     int off = *(int*)(vbtable + 4);
     *(int*)(self - 0x1c + off) = off - 0x18;
-    *(void* volatile*)self = DAT_142e1af98;
+    *(void**)self = DAT_142e1af98;
     if (flags & 1)
-        FUN_142749444(base, 0x28);
+        operator delete(base, 0x28);
     return base;
 }
 
@@ -153,9 +175,9 @@ void* FUN_1427b10a0(char* self, unsigned flags)
     char* vbtable = *(char**)(self - 0x18);
     int off = *(int*)(vbtable + 4);
     *(int*)(self - 0x1c + off) = off - 0x18;
-    *(void* volatile*)self = DAT_142e1af98;
+    *(void**)self = DAT_142e1af98;
     if (flags & 1)
-        FUN_142749444(base, 0x28);
+        operator delete(base, 0x28);
     return base;
 }
 
@@ -170,9 +192,9 @@ void* FUN_1427b3720(char* self, unsigned flags)
     char* vbtable = *(char**)(self - 0x18);
     int off = *(int*)(vbtable + 4);
     *(int*)(self - 0x1c + off) = off - 0x18;
-    *(void* volatile*)self = DAT_142e1af98;
+    *(void**)self = DAT_142e1af98;
     if (flags & 1)
-        FUN_142749444(base, 0x28);
+        operator delete(base, 0x28);
     return base;
 }
 
@@ -187,11 +209,31 @@ void* FUN_1427b4640(char* self, unsigned flags)
     char* vbtable = *(char**)(self - 0x18);
     int off = *(int*)(vbtable + 4);
     *(int*)(self - 0x1c + off) = off - 0x18;
-    *(void* volatile*)self = DAT_142e1af98;
+    *(void**)self = DAT_142e1af98;
     if (flags & 1)
-        FUN_142749444(base, 0x28);
+        operator delete(base, 0x28);
     return base;
 }
+
+// ostringstream-style object with a virtual base: vptr, vbtable pointer (entry 1 = offset of the virtual base), a state word
+// and the virtual base's ios_base vptr at +0x20
+struct CefStrmObj
+{
+    void* volatile vptr;            // +0x00
+    void* volatile vbptr;           // +0x08 (vbtable; [1] = virtual base offset)
+    volatile int state;             // +0x10
+    char pad_14[0xc];
+    void* iosVptr;                  // +0x20
+};
+struct CefVBase
+{
+    int pad_0;
+    int adj;                        // +4
+    void* vptr;                     // +8
+};
+static inline int CefVBaseOff(CefStrmObj* self) { return ((const int*)self->vbptr)[1]; }
+static inline CefVBase* CefVBaseAt(CefStrmObj* self, int off) { return (CefVBase*)((char*)self + off); }
+static inline CefVBase* CefVBaseOf(CefStrmObj* self) { return CefVBaseAt(self, CefVBaseOff(self)); }
 
 extern char DAT_1431d9618[];
 extern char DAT_1431d9568[];
@@ -201,27 +243,27 @@ extern char DAT_1431d7000[];
 extern char DAT_1431d95c0[];
 extern char DAT_1431d95f8[];
 // @0x142787270
-void* FUN_142787270(char* self, int mostDerived)
+void* FUN_142787270(CefStrmObj* self, int mostDerived)
 {
     if (mostDerived)
     {
-        *(void* volatile*)(self + 8) = DAT_1431d9618;
-        *(void**)(self + 0x20) = DAT_142e1af98;
+        self->vbptr = DAT_1431d9618;
+        self->iosVptr = DAT_142e1af98;
     }
-    *(void* volatile*)self = DAT_1431d9568;
-    *(void**)(self + *(int*)(*(char**)(self + 8) + 4) + 8) = DAT_1431d95a0;
-    *(void* volatile*)self = DAT_1431d6fc8;
-    *(void**)(self + *(int*)(*(char**)(self + 8) + 4) + 8) = DAT_1431d7000;
+    self->vptr = DAT_1431d9568;
+    CefVBaseOf(self)->vptr = DAT_1431d95a0;
+    self->vptr = DAT_1431d6fc8;
+    CefVBaseOf(self)->vptr = DAT_1431d7000;
     {
-        int off = *(int*)(*(char**)(self + 8) + 4);
-        *(int*)(self + off + 4) = off - 0x18;
+        int off = CefVBaseOff(self);
+        CefVBaseAt(self, off)->adj = off - 0x18;
     }
-    *(volatile int*)(self + 0x10) = 0;
-    *(void* volatile*)self = DAT_1431d95c0;
-    *(void**)(self + *(int*)(*(char**)(self + 8) + 4) + 8) = DAT_1431d95f8;
+    self->state = 0;
+    self->vptr = DAT_1431d95c0;
+    CefVBaseOf(self)->vptr = DAT_1431d95f8;
     {
-        int off = *(int*)(*(char**)(self + 8) + 4);
-        *(int*)(self + off + 4) = off - 0x18;
+        int off = CefVBaseOff(self);
+        CefVBaseAt(self, off)->adj = off - 0x18;
     }
     return self;
 }
@@ -234,27 +276,27 @@ extern char DAT_1431d7610[];
 extern char DAT_1431da260[];
 extern char DAT_1431da288[];
 // @0x14278bcd0
-void* FUN_14278bcd0(char* self, int mostDerived)
+void* FUN_14278bcd0(CefStrmObj* self, int mostDerived)
 {
     if (mostDerived)
     {
-        *(void* volatile*)(self + 8) = DAT_1431da2a8;
-        *(void**)(self + 0x20) = DAT_142e1af98;
+        self->vbptr = DAT_1431da2a8;
+        self->iosVptr = DAT_142e1af98;
     }
-    *(void* volatile*)self = DAT_1431da218;
-    *(void**)(self + *(int*)(*(char**)(self + 8) + 4) + 8) = DAT_1431da240;
-    *(void* volatile*)self = DAT_1431d75e8;
-    *(void**)(self + *(int*)(*(char**)(self + 8) + 4) + 8) = DAT_1431d7610;
+    self->vptr = DAT_1431da218;
+    CefVBaseOf(self)->vptr = DAT_1431da240;
+    self->vptr = DAT_1431d75e8;
+    CefVBaseOf(self)->vptr = DAT_1431d7610;
     {
-        int off = *(int*)(*(char**)(self + 8) + 4);
-        *(int*)(self + off + 4) = off - 0x18;
+        int off = CefVBaseOff(self);
+        CefVBaseAt(self, off)->adj = off - 0x18;
     }
-    *(volatile int*)(self + 0x10) = 0;
-    *(void* volatile*)self = DAT_1431da260;
-    *(void**)(self + *(int*)(*(char**)(self + 8) + 4) + 8) = DAT_1431da288;
+    self->state = 0;
+    self->vptr = DAT_1431da260;
+    CefVBaseOf(self)->vptr = DAT_1431da288;
     {
-        int off = *(int*)(*(char**)(self + 8) + 4);
-        *(int*)(self + off + 4) = off - 0x18;
+        int off = CefVBaseOff(self);
+        CefVBaseAt(self, off)->adj = off - 0x18;
     }
     return self;
 }
@@ -267,27 +309,27 @@ extern char DAT_1431dc208[];
 extern char DAT_1431df3a0[];
 extern char DAT_1431df470[];
 // @0x1427a9550
-void* FUN_1427a9550(char* self, int mostDerived)
+void* FUN_1427a9550(CefStrmObj* self, int mostDerived)
 {
     if (mostDerived)
     {
-        *(void* volatile*)(self + 8) = DAT_1431df490;
-        *(void**)(self + 0x20) = DAT_142e1af98;
+        self->vbptr = DAT_1431df490;
+        self->iosVptr = DAT_142e1af98;
     }
-    *(void* volatile*)self = DAT_1431df2b0;
-    *(void**)(self + *(int*)(*(char**)(self + 8) + 4) + 8) = DAT_1431df380;
-    *(void* volatile*)self = DAT_1431dc138;
-    *(void**)(self + *(int*)(*(char**)(self + 8) + 4) + 8) = DAT_1431dc208;
+    self->vptr = DAT_1431df2b0;
+    CefVBaseOf(self)->vptr = DAT_1431df380;
+    self->vptr = DAT_1431dc138;
+    CefVBaseOf(self)->vptr = DAT_1431dc208;
     {
-        int off = *(int*)(*(char**)(self + 8) + 4);
-        *(int*)(self + off + 4) = off - 0x18;
+        int off = CefVBaseOff(self);
+        CefVBaseAt(self, off)->adj = off - 0x18;
     }
-    *(volatile int*)(self + 0x10) = 0;
-    *(void* volatile*)self = DAT_1431df3a0;
-    *(void**)(self + *(int*)(*(char**)(self + 8) + 4) + 8) = DAT_1431df470;
+    self->state = 0;
+    self->vptr = DAT_1431df3a0;
+    CefVBaseOf(self)->vptr = DAT_1431df470;
     {
-        int off = *(int*)(*(char**)(self + 8) + 4);
-        *(int*)(self + off + 4) = off - 0x18;
+        int off = CefVBaseOff(self);
+        CefVBaseAt(self, off)->adj = off - 0x18;
     }
     return self;
 }
@@ -300,27 +342,27 @@ extern char DAT_1431dd108[];
 extern char DAT_1431e0208[];
 extern char DAT_1431e03c8[];
 // @0x1427ad990
-void* FUN_1427ad990(char* self, int mostDerived)
+void* FUN_1427ad990(CefStrmObj* self, int mostDerived)
 {
     if (mostDerived)
     {
-        *(void* volatile*)(self + 8) = DAT_1431e03e8;
-        *(void**)(self + 0x20) = DAT_142e1af98;
+        self->vbptr = DAT_1431e03e8;
+        self->iosVptr = DAT_142e1af98;
     }
-    *(void* volatile*)self = DAT_1431e0028;
-    *(void**)(self + *(int*)(*(char**)(self + 8) + 4) + 8) = DAT_1431e01e8;
-    *(void* volatile*)self = DAT_1431dcf48;
-    *(void**)(self + *(int*)(*(char**)(self + 8) + 4) + 8) = DAT_1431dd108;
+    self->vptr = DAT_1431e0028;
+    CefVBaseOf(self)->vptr = DAT_1431e01e8;
+    self->vptr = DAT_1431dcf48;
+    CefVBaseOf(self)->vptr = DAT_1431dd108;
     {
-        int off = *(int*)(*(char**)(self + 8) + 4);
-        *(int*)(self + off + 4) = off - 0x18;
+        int off = CefVBaseOff(self);
+        CefVBaseAt(self, off)->adj = off - 0x18;
     }
-    *(volatile int*)(self + 0x10) = 0;
-    *(void* volatile*)self = DAT_1431e0208;
-    *(void**)(self + *(int*)(*(char**)(self + 8) + 4) + 8) = DAT_1431e03c8;
+    self->state = 0;
+    self->vptr = DAT_1431e0208;
+    CefVBaseOf(self)->vptr = DAT_1431e03c8;
     {
-        int off = *(int*)(*(char**)(self + 8) + 4);
-        *(int*)(self + off + 4) = off - 0x18;
+        int off = CefVBaseOff(self);
+        CefVBaseAt(self, off)->adj = off - 0x18;
     }
     return self;
 }
@@ -333,27 +375,27 @@ extern char DAT_1431de388[];
 extern char DAT_1431e0980[];
 extern char DAT_1431e0990[];
 // @0x1427b08f0
-void* FUN_1427b08f0(char* self, int mostDerived)
+void* FUN_1427b08f0(CefStrmObj* self, int mostDerived)
 {
     if (mostDerived)
     {
-        *(void* volatile*)(self + 8) = DAT_1431e09b0;
-        *(void**)(self + 0x20) = DAT_142e1af98;
+        self->vbptr = DAT_1431e09b0;
+        self->iosVptr = DAT_142e1af98;
     }
-    *(void* volatile*)self = DAT_1431e0950;
-    *(void**)(self + *(int*)(*(char**)(self + 8) + 4) + 8) = DAT_1431e0960;
-    *(void* volatile*)self = DAT_1431de378;
-    *(void**)(self + *(int*)(*(char**)(self + 8) + 4) + 8) = DAT_1431de388;
+    self->vptr = DAT_1431e0950;
+    CefVBaseOf(self)->vptr = DAT_1431e0960;
+    self->vptr = DAT_1431de378;
+    CefVBaseOf(self)->vptr = DAT_1431de388;
     {
-        int off = *(int*)(*(char**)(self + 8) + 4);
-        *(int*)(self + off + 4) = off - 0x18;
+        int off = CefVBaseOff(self);
+        CefVBaseAt(self, off)->adj = off - 0x18;
     }
-    *(volatile int*)(self + 0x10) = 0;
-    *(void* volatile*)self = DAT_1431e0980;
-    *(void**)(self + *(int*)(*(char**)(self + 8) + 4) + 8) = DAT_1431e0990;
+    self->state = 0;
+    self->vptr = DAT_1431e0980;
+    CefVBaseOf(self)->vptr = DAT_1431e0990;
     {
-        int off = *(int*)(*(char**)(self + 8) + 4);
-        *(int*)(self + off + 4) = off - 0x18;
+        int off = CefVBaseOff(self);
+        CefVBaseAt(self, off)->adj = off - 0x18;
     }
     return self;
 }
@@ -366,27 +408,27 @@ extern char DAT_1431df100[];
 extern char DAT_1431e1340[];
 extern char DAT_1431e13f8[];
 // @0x1427b3a60
-void* FUN_1427b3a60(char* self, int mostDerived)
+void* FUN_1427b3a60(CefStrmObj* self, int mostDerived)
 {
     if (mostDerived)
     {
-        *(void* volatile*)(self + 8) = DAT_1431e1418;
-        *(void**)(self + 0x20) = DAT_142e1af98;
+        self->vbptr = DAT_1431e1418;
+        self->iosVptr = DAT_142e1af98;
     }
-    *(void* volatile*)self = DAT_1431e1268;
-    *(void**)(self + *(int*)(*(char**)(self + 8) + 4) + 8) = DAT_1431e1320;
-    *(void* volatile*)self = DAT_1431df048;
-    *(void**)(self + *(int*)(*(char**)(self + 8) + 4) + 8) = DAT_1431df100;
+    self->vptr = DAT_1431e1268;
+    CefVBaseOf(self)->vptr = DAT_1431e1320;
+    self->vptr = DAT_1431df048;
+    CefVBaseOf(self)->vptr = DAT_1431df100;
     {
-        int off = *(int*)(*(char**)(self + 8) + 4);
-        *(int*)(self + off + 4) = off - 0x18;
+        int off = CefVBaseOff(self);
+        CefVBaseAt(self, off)->adj = off - 0x18;
     }
-    *(volatile int*)(self + 0x10) = 0;
-    *(void* volatile*)self = DAT_1431e1340;
-    *(void**)(self + *(int*)(*(char**)(self + 8) + 4) + 8) = DAT_1431e13f8;
+    self->state = 0;
+    self->vptr = DAT_1431e1340;
+    CefVBaseOf(self)->vptr = DAT_1431e13f8;
     {
-        int off = *(int*)(*(char**)(self + 8) + 4);
-        *(int*)(self + off + 4) = off - 0x18;
+        int off = CefVBaseOff(self);
+        CefVBaseAt(self, off)->adj = off - 0x18;
     }
     return self;
 }
