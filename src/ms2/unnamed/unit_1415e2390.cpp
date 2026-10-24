@@ -49,6 +49,25 @@ static void nm_copy_cnm_string(void* dst, const char* src, size_t capacity)
     *reinterpret_cast<char**>(dst) = buffer;
 }
 
+class CNMCOClientObject;
+template <class T>
+class CNMSingleton
+{
+public:
+    CNMSingleton();
+    virtual ~CNMSingleton();
+};
+
+// MS2-FUNCTIONAL: initializes the singleton's recovered vptr; the destructor/vftable are emitted by the owning singleton unit.
+// @0x1415e57b0
+template <>
+CNMSingleton<CNMCOClientObject>::CNMSingleton() { }
+
+// MS2-FUNCTIONAL: initializes the singleton's recovered vptr; the destructor/vftable are emitted by the owning singleton unit.
+// @0x1415e57d0
+template <>
+CNMSingleton<CNMManager>::CNMSingleton() { }
+
 // MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
 // @0x1415e5820
 void FUN_1415e5820(void* p, const void* value)
@@ -2049,3 +2068,5 @@ void* FUN_1415e5320(void* p) { return p; }
 // MS2-PIN: ?FUN_1415e5ae0@@YAPEAXPEAXPEBQBX@Z 0x1415e5ae0
 // MS2-PIN: ?FUN_1415e5b20@@YAPEAXPEAXPEBX@Z 0x1415e5b20
 // MS2-PIN: ?FUN_1415e5b60@@YAPEAXPEAX@Z 0x1415e5b60
+// MS2-PIN: ??0?$CNMSingleton@VCNMCOClientObject@@@@QEAA@XZ 0x1415e57b0
+// MS2-PIN: ??0?$CNMSingleton@VCNMManager@@@@QEAA@XZ 0x1415e57d0
