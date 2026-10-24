@@ -32,6 +32,10 @@ becomes a status.tsv row with unit gb:<Lib>/<TU> (state matched | functional, pl
 end of summary.txt. Engine functions never enter the hook DLL. Runs with every full pass; `--engine` forces it when
 unit filters are given, `--no-engine` reuses the cached engine results.
 
+Imports stage (tools/importthunks.py, full passes only): every linker import thunk `<DLL>::<name>` (6-byte FF 25 jump
+through an IAT slot of that DLL) becomes a row with unit imp:<dll>, matched when some compiled game/engine obj
+references the import without __imp_ (the full link emits the thunk), else stub; "imports total" line in summary.txt.
+
 Parallel agents (docs/RECOVERY.md section 12): `--agent NAME` or MS2_AGENT=NAME selects a private cache
 build/progress-NAME/ and REPORT MODE: progress/* is never written. status.tsv / summary.txt go to the agent dir, and
 build/progress-NAME/symbols.tsv = committed progress/symbols.tsv + the harvest of the units in the agent's cache (the
@@ -58,6 +62,7 @@ sys.path.insert(0, os.path.join(ROOT, "tools"))
 import bytematch as bm  # noqa: E402
 import ms2paths  # noqa: E402
 import gbprogress  # noqa: E402
+import importthunks  # noqa: E402  (imports stage: linker import thunks)
 import ms2flags  # noqa: E402  (`// MS2-FLAGS: <profile>` per-unit flags, cmake/ms2-unit-profiles.cmake)
 import sf_sdk_guard  # noqa: E402  (MS2-FLAGS: scaleform units must not include SDK headers)
 import mergekey  # noqa: E402
@@ -1426,6 +1431,15 @@ def main():
         edem = demangle_all(sorted({r[1] for r in eng_rows if r[3] != "stub"}))
         rows += [(va, short_name(edem.get(sym, sym)) if st != "stub" else sym, un, st, sz)
                  for va, sym, un, st, sz in eng_rows]
+    # imports stage: the linker's 6-byte `jmp [__imp_X]` thunks (functions.tsv `<DLL>::<name>`), rows unit imp:<dll>,
+    # matched when verified in the exe and some compiled game/engine obj calls X without dllimport (tools/importthunks.py).
+    # Full passes only (a filtered cache has too few objs); only VAs no game/engine row claims; totals kept separate.
+    imp_rows = []
+    if not a.filters:
+        refs = importthunks.referenced(importthunks.cache_objs(CACHE, [u.obj for u in all_units]),
+                                       os.path.join(CACHE, "imports.json"))
+        imp_rows = importthunks.credit(exe, refs, {r[0] for r in rows})
+        rows += imp_rows
     rows.sort()
     with open(os.path.join(OUT, "status.tsv"), "w") as fo:
         fo.write("#va\tname\tunit\tstate\tsize\n")
@@ -1462,6 +1476,8 @@ def main():
                f"functions, {100.0 * (tot['bm'] + tot['bf']) / game_b:.3f}% of bytes")
     if eng_rows:
         out += gbprogress.summary(eng_rows)
+    if imp_rows:
+        out += importthunks.summary(imp_rows)
     text = "\n".join(out) + "\n"
     open(os.path.join(OUT, "summary.txt"), "w").write(text)
     print(text, end="")
