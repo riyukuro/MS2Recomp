@@ -1,5 +1,5 @@
-// Data unit (sfr22; group 1439ed000 of work/sfr35/outside-units.tsv): exe globals of the .data block below
-// that no recovered TU defines, initialized with the exe's values.
+// Data unit (sfr22; group 1439ed000 of work/sfr35/outside-units.tsv):
+// exe globals of the .data block below that no recovered TU defines, initialized with the exe's values.
 // One definition per exe address (tools/datacheck.py checks address, size and initializer); the other names
 // users declare at an address are mapped to it with /alternatename. Class objects are byte images up to the
 // next known exe global; their constructors (the owning TU's .text$di initializer) are not run by this unit,
@@ -2692,28 +2692,9 @@ int DAT_1439fc854 = -1;                                         // 0x1439fc854
 #pragma comment(linker, "/alternatename:?DAT_1439f4910@@3QBW4Unk_SocketSpecialStat@@B=?DAT_1439f4910@@3USd_1439f4910@@A")
 #pragma comment(linker, "/alternatename:?errorString@TiXmlBase@@1PAPEBDA=?DAT_1439f4940@@3USd_1439f4940@@A")
 #pragma comment(linker, "/alternatename:?g_pChromaManager@ChromaSDK@@3PEAVIChromaManager@1@EA=?DAT_1439f4d68@@3USd_1439f4d68@@A")
-#pragma comment(linker, "/alternatename:?PTR_DAT_1439f4da0@@3PEBDEB=?PTR_DAT_1439f4da0@@3PEBDEA")
-#pragma comment(linker, "/alternatename:?PTR_DAT_1439f4da8@@3PEBDEB=?PTR_DAT_1439f4da8@@3PEBDEA")
-#pragma comment(linker, "/alternatename:?PTR_s_Eff_center_1439f4db0@@3PEBDEB=?PTR_s_Eff_center_1439f4db0@@3PEBDEA")
-#pragma comment(linker, "/alternatename:?DAT_1439f5dd0@@3PEBDEB=?DAT_1439f5dd0@@3PEBDEA")
 #pragma comment(linker, "/alternatename:?g_reportTypes@@3QBHB=?DAT_1439f6560@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_1439f7040@@3PAIA=?DAT_1439f7040@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_1439f7de4@@3HA=?g_nLogLevel@@3HA")
-#pragma comment(linker, "/alternatename:?g_szCefMessageImeRequest@@3PEBDEB=?g_szCefMessageImeRequest@@3PEBDEA")
-#pragma comment(linker, "/alternatename:?g_szCefMessageToken@@3PEBDEB=?g_szCefMessageToken@@3PEBDEA")
-#pragma comment(linker, "/alternatename:?g_szCefMessageOpenUI@@3PEBDEB=?g_szCefMessageOpenUI@@3PEBDEA")
-#pragma comment(linker, "/alternatename:?g_szCefMessageOpenWeb@@3PEBDEB=?g_szCefMessageOpenWeb@@3PEBDEA")
-#pragma comment(linker, "/alternatename:?g_szCefMessageOpenMaview@@3PEBDEB=?g_szCefMessageOpenMaview@@3PEBDEA")
-#pragma comment(linker, "/alternatename:?g_szCefMessageMoveHome@@3PEBDEB=?g_szCefMessageMoveHome@@3PEBDEA")
-#pragma comment(linker, "/alternatename:?g_szCefMessageDlProjectNew@@3PEBDEB=?g_szCefMessageDlProjectNew@@3PEBDEA")
-#pragma comment(linker, "/alternatename:?g_szCefMessageDlProjectOpen@@3PEBDEB=?g_szCefMessageDlProjectOpen@@3PEBDEA")
-#pragma comment(linker, "/alternatename:?g_szCefMessageDlProjectRefresh@@3PEBDEB=?g_szCefMessageDlProjectRefresh@@3PEBDEA")
-#pragma comment(linker, "/alternatename:?g_szCefMessageDlProjectClose@@3PEBDEB=?g_szCefMessageDlProjectClose@@3PEBDEA")
-#pragma comment(linker, "/alternatename:?g_szCefMessageDlProjectUpload@@3PEBDEB=?g_szCefMessageDlProjectUpload@@3PEBDEA")
-#pragma comment(linker, "/alternatename:?g_szCefMessageDlProjectPlay@@3PEBDEB=?g_szCefMessageDlProjectPlay@@3PEBDEA")
-#pragma comment(linker, "/alternatename:?g_szCefMessageDlProjectReset@@3PEBDEB=?g_szCefMessageDlProjectReset@@3PEBDEA")
-#pragma comment(linker, "/alternatename:?g_szCefMessageDlDoAction@@3PEBDEB=?g_szCefMessageDlDoAction@@3PEBDEA")
-#pragma comment(linker, "/alternatename:?g_szCefMessageDlExecuteCommand@@3PEBDEB=?g_szCefMessageDlExecuteCommand@@3PEBDEA")
 #pragma comment(linker, "/alternatename:?DAT_1439f81f4@@3MA=?g_1439f81f4@@3MA")
 #pragma comment(linker, "/alternatename:?DAT_1439f81f8@@3MA=?g_1439f81f8@@3MA")
 #pragma comment(linker, "/alternatename:?DAT_1439f81fc@@3MA=?g_1439f81fc@@3MA")
@@ -2728,5 +2709,6 @@ int DAT_1439fc854 = -1;                                         // 0x1439fc854
 #pragma comment(linker, "/alternatename:?DAT_1439fb040@@3VNiPixelFormat@@B=?DAT_1439fb040@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_1439fc800@@3DA=?DAT_1439fc800@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_1439fc800@@3VFormatPrefs@NiTexture@@A=?DAT_1439fc800@@3PAEA")
+#pragma comment(linker, "/alternatename:?DAT_143ab89f8@@3PAEA=?g_chromaManagerDummy@ChromaSDK@@3VChromaManagerDummy@1@A")
 
 #endif // MS2_HOOK_DLL
