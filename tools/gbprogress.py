@@ -1407,6 +1407,150 @@ def header_statics(res, paths, log=print):
     log(f"engine: header-static copies {len(out)} ({len(loaders)} key loaders, {len(tmpl)} templates)")
 
 
+# ---------------------------------------------------------------------------------------------------------------
+# initializer/destructor pair rule (2026-10-23 gb19). An exe .text$di initializer no unit pairs exactly ends with
+# `lea rcx,<dtor>; jmp atexit`: it is credited to unit U when U's ??__E<X> (not yet placed) matches it exactly, U's
+# ??__F<X> matches the dtor it registers exactly, the two agree on every symbol they share, every symbol either
+# references that some unit pairs exactly resolves to that VA, every data object they reference starts with the obj's
+# initial bytes (relocations masked), and no other unit qualifies (a unit already owning the dtor wins a tie). Before
+# that, a block/sub-block/copy placement of ??__E<X> is dropped when the dtor its copy registers is another unit's
+# exact pair while U's own ??__F<X> is exact elsewhere by name search (QOSCompare's map initializer sat in
+# NiTerrainConditionVariable's slot). Adds [name, va, True, "dipair"] to bpairs.
+DIPAIR_MOVED = ("block", "subblock", "copy")
+
+
+def _dipair_data_ok(obj, s, va):
+    i = obj.by_name.get(s)
+    if i is None or obj.syms[i][2] <= 0:
+        return True                      # external: another TU's (or a COMDAT) object
+    _, val, sn, _, _ = obj.syms[i]
+    sec = obj.sec(sn)
+    if sec["chars"] & 0x20:
+        return True                      # code
+    n = min(64, sec["size"] - val)
+    if n <= 0:
+        return True
+    ob = bytearray(sec["data"][val:val + n])
+    eb = bytearray(G["exe"].read(va, n))
+    for r, _, _ in sec["relocs"]:
+        for x in range(r, r + 8):
+            if val <= x < val + n:
+                ob[x - val] = eb[x - val] = 0
+    return ob == eb
+
+
+def _dipair_job(job):
+    paths, tmpl, todo, taken, known, placed, moved = job
+    objs = {}
+
+    def obj(k):
+        if k not in objs:
+            objs[k] = bm.Obj(paths[k])
+        return objs[k]
+    # inconsistent placements: (key, E, va) whose copy registers a dtor another unit owns
+    drop = []
+    for k, u, e, va, fva in moved:
+        if _match(obj(k), e, va):
+            d = bm.LAST_TARGETS.get("??__F" + e[5:])
+            if d is not None and d != fva and taken.get(d, set()) - {u}:
+                drop.append((k, e, va))
+    dropped = {(k, e) for k, e, _ in drop}
+    dva = {va for _, _, va in drop}
+    out = []
+    for va, n in todo + [(va, None) for va in sorted(dva)]:
+        if va in taken and va not in dva:
+            continue
+        hits = {}
+        for k, u, e, f, sz in tmpl:
+            if (n is not None and sz != n) or ((k, e) in placed and (k, e) not in dropped):
+                continue
+            o = obj(k)
+            if not _match(o, e, va):
+                continue
+            te = dict(bm.LAST_TARGETS)
+            d = te.get(f)
+            if d is None or not _match(o, f, d):
+                continue
+            tf = dict(bm.LAST_TARGETS)
+            if any(te[s] != tf[s] for s in set(te) & set(tf)):
+                continue
+            tt = dict(te, **tf)
+            if any(s in known and t not in known[s] for s, t in tt.items()):
+                continue
+            if not all(_dipair_data_ok(o, s, t) for s, t in tt.items()):
+                continue
+            hits.setdefault(u, (k, e, f, d))
+        own = {x: h for x, h in hits.items() if x in taken.get(h[3], ())}
+        if len(own) == 1:
+            hits = own
+        if len(hits) == 1:
+            out.append((va,) + next(iter(hits.values())))
+    return drop, out
+
+
+def assign_dipairs(res, paths, log=print):
+    """credit the initializers no other pass places through the dtor they register (see DIPAIR_MOVED)"""
+    taken, known, placed, fsearch = {}, {}, set(), {}
+    for k, c in res.items():
+        for n, va, ok, how in c["pairs"] + c.get("xpairs", []) + c.get("hpairs", []) + c.get("bpairs", []):
+            if ok:
+                placed.add((k, n))
+                taken.setdefault(va, set()).add(c["unit"].lower())
+                known.setdefault(n, set()).add(va)
+                if how == "search" and n.startswith("??__F"):
+                    fsearch[(k, n)] = va
+    tmpl, moved = [], []
+    for k, c in sorted(res.items()):
+        if k not in paths:
+            continue
+        secs = c.get("blk", {}).get("secs", {})
+        yd = {n for n, _, _ in secs.get(".text$yd", {}).get("lay", ())}
+        for n, _, sz in secs.get(".text$di", {}).get("lay", ()):
+            if n.startswith("??__E") and "??__F" + n[5:] in yd:
+                tmpl.append((k, c["unit"].lower(), n, "??__F" + n[5:], sz))
+        for n, va, ok, how in c.get("xpairs", []) + c.get("bpairs", []):
+            if ok and how in DIPAIR_MOVED and n.startswith("??__E") and (k, "??__F" + n[5:]) in fsearch:
+                moved.append((k, c["unit"].lower(), n, va, fsearch[(k, "??__F" + n[5:])]))
+    sizes = {t[4] for t in tmpl}
+    evas = sorted(va for n, vas in known.items() if n.startswith("??__E") for va in vas)
+    runs = [[]]                          # the exe's .text$di span: the largest run of exact ??__E pairs (copies of
+    for a, b in zip([0] + evas, evas):   # a folded initializer body elsewhere in .text lie outside it)
+        if b - a > 0x40000:
+            runs.append([])
+        runs[-1].append(b)
+    span = max(runs, key=len)
+    di_lo, di_hi = (span[0], span[-1]) if span else (0, 0)
+    game = game_ranges()
+    gs = [a for a, _ in game]
+
+    def in_game(va):
+        i = bisect.bisect_right(gs, va) - 1
+        return i >= 0 and va < game[i][1]
+    todo = []
+    for line in open(FUNCS):
+        p = line.rstrip("\n").split("\t")
+        if p[0] and not p[0].startswith("#"):
+            va, n = int(p[0], 16), int(p[1])
+            if di_lo <= va <= di_hi and n in sizes and va not in taken and not in_game(va):
+                todo.append((va, n))
+    with Pool(1, initializer=_init) as p:
+        drop, out = p.apply(_dipair_job, ((paths, tmpl, todo, taken, known, placed, moved),))
+    dk = {(k, e, va) for k, e, va in drop}
+    new = collections.defaultdict(list)
+    for va, k, e, f, d in out:
+        new[k].append([e, va, True, "dipair"])
+        if d not in taken:
+            new[k].append([f, d, True, "dipair"])
+    nva = {p[1] for prs in new.values() for p in prs}
+    for k, c in res.items():
+        c["bpairs"] = [p for p in c.get("bpairs", []) if (k, p[0], p[1]) not in dk] + new.get(k, [])
+        nn = {p[0] for p in new.get(k, ())}
+        if "xpairs" in c:
+            c["xpairs"] = [x for x in c["xpairs"] if (k, x[0], x[1]) not in dk and x[0] not in nn and x[1] not in nva]
+    log(f"engine: di/yd pairs {len(out)} initializers ({sum(len(v) for v in new.values()) - len(out)} new dtors,"
+        f" {len(drop)} misplaced dropped; {len(todo)} open in 0x{di_lo:x}-0x{di_hi:x}, {len(moved)} placements checked)")
+
+
 def run(cache, j=8, filters=(), log=print):
     """Compile + match every engine unit (those whose name contains one of `filters`); returns (results, failed)."""
     t0 = time.time()
@@ -1472,6 +1616,7 @@ def run(cache, j=8, filters=(), log=print):
         assign_blocks(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, windows, j, log)
         assign_subblocks(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, windows, j, log)
         header_statics(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, log)
+        assign_dipairs(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, log)
         used = {g for c in res.values() for _, g in c.get("cands", ())}
         groups = {g: h for g, h in groups.items() if g in used}
         json.dump(groups, open(gpath + ".tmp", "w"))
