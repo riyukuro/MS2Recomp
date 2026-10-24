@@ -15,7 +15,6 @@
 // MS2-PIN: ??C?$SmartPointer@VNiScreenFillingRenderView@@@efd@@QEBAPEAVNiScreenFillingRenderView@@XZ 0x14127c9c0 ; unique
 // MS2-PINS-END tplpin
 // MS2-PIN: ??1?$Ptr@VUnk_GFxHandleObj@@@Scaleform@@QEAA@XZ 0x14127c550
-// MS2-PIN: ??1?$SmartPointer@VNiSPWorkflow@@@efd@@QEAA@XZ 0x14127c5c0
 // MS2-PIN: ??1?$SmartPointer@VMinimapViewport@@@efd@@QEAA@XZ 0x14127c5f0
 // MS2-PIN: ??4?$SmartPointer@VNiProperty@@@efd@@QEAAAEAV01@AEBV01@@Z 0x14127c780
 // MS2-PIN: ??B?$SmartPointer@VNiScreenFillingRenderView@@@efd@@QEBAPEAVNiScreenFillingRenderView@@XZ 0x14127c940
@@ -372,7 +371,7 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, float a1, float a2, 
 // The render service through the service manager cell.
 // MS2-FUNCTIONAL: argument evaluation order of the nested call differs
 // @0x14127bf80
-static ecr::RenderService* Unk_GetRenderService(char* pCell)
+ecr::RenderService* Unk_GetRenderService(char* pCell)
 {
     return FUN_1411d15b0(FUN_1401cd190(pCell));
 }

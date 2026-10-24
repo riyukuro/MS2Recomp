@@ -97,7 +97,7 @@ public:
 };
 Unk_NpWorld* FUN_1403ed2d0();
 int FUN_141274aa0(GameObject* pObj);                    // the actor filter of the collection above
-static CNpc* FUN_141a71850(const efd::SmartPointer<GameObject>& spObj);
+CNpc* FUN_141a71850(const efd::SmartPointer<GameObject>& spObj);
 
 // The ui text service (singleton): the text of a "$s_..." key.
 class Unk_NpText { public: CStringW FUN_1422b0570(const CString& strKey); };
@@ -646,7 +646,7 @@ void UINpcPreviewDialog::FUN_141a717c0()
 }
 
 // @0x141a71850
-static CNpc* FUN_141a71850(const efd::SmartPointer<GameObject>& spObj)
+CNpc* FUN_141a71850(const efd::SmartPointer<GameObject>& spObj)
 {
     CNpc* pNpc = 0;
     if (spObj != 0 && spObj->TypeCast(0x6200028, (void**)&pNpc))

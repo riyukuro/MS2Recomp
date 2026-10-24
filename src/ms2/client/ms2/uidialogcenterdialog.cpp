@@ -167,7 +167,7 @@ static HWND FUN_1412976b0(CWnd* pWnd)
 }
 
 // @0x141296b50
-static Unk_DcService* FUN_141296b50(Unk_DcHost* pHost)
+Unk_DcService* FUN_141296b50(Unk_DcHost* pHost)
 {
     return FUN_141296a60(pHost->vfunc_14(0x7002010));
 }

@@ -738,7 +738,7 @@ MS2_REPLACE_METHOD(0x1419F88E0, UIMessageBox, FUN_1419f88e0, 48, 0x9F3089AC);
 // Sell an item: asks first when the item is rare or the price is over the confirm limit.
 // @0x1419f8920
 // MS2-FUNCTIONAL: branch/early-return layout differs from the exe
-static void FUN_1419f8920(MS2Ptr<CItem> spItem, unsigned int nCount)
+void FUN_1419f8920(MS2Ptr<CItem> spItem, unsigned int nCount)
 {
     if (!spItem)
         return;

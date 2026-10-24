@@ -180,7 +180,7 @@ static void FsPlay(PCBase* pOwner, const char* pszAnim)
 
 // @0x140ddc910
 // The guide object (class id 0x6200064) of an object, NULL when it is none.
-static CFishingGuideObject* FUN_140ddc910(GameObject* pObject)
+CFishingGuideObject* FUN_140ddc910(GameObject* pObject)
 {
     CFishingGuideObject* pValue = 0;
     if (pObject == 0 || !pObject->TypeCast(0x6200064, (const void**)&pValue))

@@ -253,7 +253,7 @@ CStringW FUN_14093bf10(CAchieve* pAchieve, int nGrade);
 static void AcCollectClears(std::vector<UIAchieveDialog::ClearRecord>& rRecords);
 #define FUN_1418adae0 AcCollectClears
 static void FUN_1418ae010(ASObj& rObj, const char* szName, int n);
-static void FUN_1418adf60(ASObj& rObj, const CString& strName, const AScript& v);
+void FUN_1418adf60(ASObj& rObj, const CString& strName, const AScript& v);
 
 // @0x1418aff70
 int CAchieve::GetBookmark() { return m_d8; }
@@ -1525,7 +1525,7 @@ static void FUN_1418ae010(ASObj& rObj, const char* szName, int n)
 }
 
 // @0x1418adf60
-static void FUN_1418adf60(ASObj& rObj, const CString& strName, const AScript& v)
+void FUN_1418adf60(ASObj& rObj, const CString& strName, const AScript& v)
 {
     rObj.FUN_1409eb270(strName, static_cast<const ASObj&>(v));
 }
