@@ -333,7 +333,7 @@ MS2_REPLACE_METHOD(0x140a38480, CBossTargetCamera, vfunc_36, 189, 0xAF6BDD8D);
 // ---- the target point: the boss, nudged towards the player when both are within reach ----
 
 // @0x140a38a00
-static Unk_CameraTargetEntity* FUN_140a38a00(Unk_BossObject* pObject)
+Unk_CameraTargetEntity* FUN_140a38a00(Unk_BossObject* pObject)
 {
     Unk_CameraTargetEntity* pValue = NULL;
     if (pObject != NULL && pObject->vfunc_5(0x6200028, &pValue))
