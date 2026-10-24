@@ -1123,7 +1123,7 @@
 140b287b0	140b498e0	?\gamerankingcli.cpp	low	937	mn	dir client\ms2
 140b498e0	140b5faf0	unit_140b498e0_gamerankingcomdat	none	417	mn	descriptive: gamerankingcomdat
 140b5faf0	140b602f0	unit_140b5faf0_boxedptrwrappers	none	48	mn	descriptive: boxedptrwrappers
-140b602f0	140b60ff0	unit_140b602f0	none	41	mn	
+140b602f0	140b60ff0	unit_140b602f0_gamerankingitemtail	none	41	mn	descriptive: gamerankingitemtail
 140b60ff0	140b64c30	?\gfxmoviedamage.cpp	low	127	mn	dir client\ms2
 140b64c30	140b67d70	?\homecameramode.cpp	low	24	mn	dir client\ms2
 140b67d70	140b6c7a0	unit_140b67d70	none	141	mn	rejected ?\ugchomebgdata.cpp
@@ -1139,15 +1139,15 @@
 140b866d0	140b8c180	client\ms2\statemicrogame.cpp	high	106	mn	
 140b8c180	140b8d3e0	client\ms2\roomtimermanager.cpp	high	37	mn	
 140b8d3e0	140b8e760	client\ms2\statereact.cpp	high	28	mn	
-140b8e760	140b914f0	unit_140b8e760	none	41	mn	
+140b8e760	140b914f0	unit_140b8e760_clientdatetimehelpers	none	41	mn	descriptive: clientdatetimehelpers
 140b914f0	140b9b440	?\tabcontentspetremakeoption.cpp	low	159	mn	was ?\petremakeoptionpetcard.cpp; dir client\ms2
 140b9b440	140b9c680	?\triggerdebugdialog.cpp	low	26	mn	dir client\ms2
 140b9c680	140b9c920	?\ugcbannerobject.cpp	low	8	mn	dir client\ms2
 140b9c920	140ba2180	?\ugcmapsetiteminfo.cpp	low	141	mn	dir client\ms2
-140ba2180	140ba2a80	unit_140ba2180	none	24	mn	rejected ?\uistancebar.cpp
+140ba2180	140ba2a80	unit_140ba2180_uistancesbar	none	24	mn	descriptive: uistancesbar
 140ba2a80	140ba53b0	?\uiadventureleveldialog.cpp	low	58	mn	dir client\ms2
 140ba53b0	140ba6b20	?\uiadventurelevelolddialog.cpp	low	21	mn	dir client\ms2
-140ba6b20	140ba7d90	unit_140ba6b20	none	39	mn	rejected ?\uiadventurelevelexpbar.cpp (order within gap)
+140ba6b20	140ba7d90	unit_140ba6b20_uiadventurelevelexpbar	none	39	mn	descriptive: uiadventurelevelexpbar
 140ba7d90	140ba8280	?\uiarcadetexteffectdialog.cpp	low	9	mn	dir client\ms2
 140ba8280	140bac2f0	client\ms2\uibanner.cpp	high	127	mn	
 140bac2f0	140bad0a0	client\ms2\uibannereventlistener.cpp	high	6	mn	
@@ -1158,11 +1158,11 @@
 140bc1b00	140bd09e0	client\ms2\uicashattenddialog.cpp	high	566	mn	
 140bd09e0	140bd0e90	?\uichangejobeffect.cpp	low	10	mn	dir client\ms2
 140bd0e90	140bd7e10	client\ms2\uichatemoticondialog.cpp	high	265	mn	
-140bd7e10	140bd8ca0	unit_140bd7e10	none	13	mn	rejected ?\uichangejobdialog.cpp
+140bd7e10	140bd8ca0	unit_140bd7e10_uichangejobdialog	none	13	mn	descriptive: uichangejobdialog
 140bd8ca0	140be99c0	client\ms2\uiclosetdialog.cpp	high	427	mn	
 140be99c0	140bebfb0	client\ms2\uicommunitypopup.cpp	high	72	mn	
 140bebfb0	140bf60f0	client\ms2\uicoupleactiondialog.cpp	high	351	mn	
-140bf60f0	140bfcb00	unit_140bf60f0	none	104	mn	rejected ?\uialliancequestdialog.cpp
+140bf60f0	140bfcb00	unit_140bf60f0_uialliancequestdialog	none	104	mn	descriptive: uialliancequestdialog
 140bfcb00	140bfe4b0	client\ms2\uicoupledanceeventdialog.cpp	high	23	mn	
 140bfe4b0	140bff060	unit_140bfe4b0	none	19	mn	rejected ?\uirandomcoupon.cpp
 140bff060	140c032b0	?\uidailymissiondialog.cpp	low	72	mn	dir client\ms2
@@ -1189,7 +1189,7 @@
 140c3f350	140c3ff80	?\uiitemmultiopenboxdialog.cpp	low	16	mn	dir client\ms2
 140c3ff80	140c47c80	unit_140c3ff80	none	178	mn	rejected ?\uiitemgachaboxdialog.cpp (order within gap)
 140c47c80	140c4ffa0	unit_140c47c80_gemstoneswappage	none	203	mn	descriptive: gemstoneswappage
-140c4ffa0	140c54ee0	unit_140c4ffa0	none	74	mn	rejected ?\itemsocketsystempagesockettransfer.cpp
+140c4ffa0	140c54ee0	unit_140c4ffa0_itemsocketsystempagesockettransfer	none	74	mn	descriptive: itemsocketsystempagesockettransfer
 140c54ee0	140c581a0	?\uiitemtreasuremapdialog.cpp	low	40	mn	dir client\ms2
 140c581a0	140c58d30	?\uikeysettingselectdialog.cpp	low	24	mn	dir client\ms2
 140c58d30	140c5d230	?\uileveluppackagewidgetdialog.cpp	low	140	mn	was ?\uieventwidgetdialog.cpp; dir client\ms2
@@ -1200,11 +1200,11 @@
 140c70480	140c71310	?\uimentoringmenteeregisterpage.cpp	low	25	mn	dir client\ms2
 140c71310	140c74e70	client\ms2\uimentoringmentorpage.cpp	high	89	mn	
 140c74e70	140c77ab0	client\ms2\ms2clientplatformbase.cpp	high	132	mn	
-140c77ab0	140c7cd70	unit_140c77ab0	none	101	mn	ps1 split from client\ms2\ms2clientplatformbase.cpp: CClientPlatformNexonKorea TU (ends with its memmove_s 0x140c7cc50)
+140c77ab0	140c7cd70	unit_140c77ab0_clientplatformnexonkorea	none	101	mn	descriptive: clientplatformnexonkorea
 140c7cd70	140c7eea0	client\ms2\ms2clientplatformtencent.cpp	high	80	mn	
 140c7eea0	140c7fc20	?\nodeviewerdlg.cpp	low	25	mn	dir client\ms2
-140c7fc20	140c86000	unit_140c7fc20	none	21	mn	
-140c86000	140c86860	unit_140c86000	none	9	mn	
+140c7fc20	140c86000	unit_140c7fc20_nexoncashshopurlcipher	none	21	mn	descriptive: nexoncashshopurlcipher
+140c86000	140c86860	unit_140c86000_pcitemcooldowns	none	9	mn	descriptive: pcitemcooldowns
 140c86860	140c8ef00	?\petmanager.cpp	low	191	mn	dir client\ms2
 140c8ef00	140c8efe0	?\petsystemtabcontents.cpp	low	8	mn	dir client\ms2
 140c8efe0	140c90340	?\postshimmerrenderstep.cpp	low	46	mn	dir client\ms2
@@ -1221,13 +1221,13 @@
 140cb87d0	140cbf600	?\tabcontentspetinfo.cpp	low	145	mn	was ?\petinfobasic.cpp; dir client\ms2
 140cbf600	140cbfd50	client\ms2\translateenum.cpp	high	9	mn	
 140cbfd50	140cc20a0	?\cefms2clientapp.cpp	low	107	mn	
-140cc20a0	140cc2c70	unit_140cc20a0	none	12	mn	
+140cc20a0	140cc2c70	unit_140cc20a0_fieldmoveerrormessage	none	12	mn	descriptive: fieldmoveerrormessage
 140cc2c70	140cca6a0	?\commonresource.cpp	low	22	mn	
 140cca6a0	140cca840	?\contentshutdownmanager.cpp	low	8	mn	
 140cca840	140ccac60	?\crash.cpp	low	9	mn	
 140ccac60	140cd73b0	?\customize.cpp	low	270	mn	
 140cd73b0	140cd7ce0	?\enchantscrollslot.cpp	low	18	mn	
-140cd7ce0	140cd7e40	unit_140cd7ce0	none	3	mn	ps1 split from ?\enchantscrollslot.cpp: 3 funcs no enchantscrollslot code calls
+140cd7ce0	140cd7e40	unit_140cd7ce0_fishinglinehelpers	none	3	mn	descriptive: fishinglinehelpers
 140cd7e40	140ce28a0	?\fishingmanager.cpp	low	209	mn	
 140ce28a0	140ceaa70	client\ms2\gameeventcli.cpp	high	322	mn	
 140ceaa70	140cfad00	client\ms2\gameeventmanagercli.cpp	high	312	mn	
@@ -1236,11 +1236,11 @@
 140cfb450	140cfd2a0	?\gameoptionlanguage.cpp	low	23	mn	dir client\ms2
 140cfd2a0	140cfd6f0	?\gaussianblureffectparam.cpp	low	11	mn	dir client\ms2
 140cfd6f0	140cff310	?\gemstoneslot.cpp	low	57	mn	dir client\ms2
-140cff310	140d03650	unit_140cff310	none	88	mn	
+140cff310	140d03650	unit_140cff310_gfxutilwrappers	none	88	mn	descriptive: gfxutilwrappers
 140d03650	140d05a90	?\holecylindercollision.cpp	low	15	mn	dir client\ms2
 140d05a90	140d1ae30	?\instrumentmanager.cpp	low	706	mn	dir client\ms2
-140d1ae30	140d2a7e0	unit_140d1ae30	none	170	mn	
-140d2a7e0	140d31670	unit_140d2a7e0	none	59	mn	
+140d1ae30	140d2a7e0	unit_140d1ae30_itemfunctiondispatch	none	170	mn	descriptive: itemfunctiondispatch
+140d2a7e0	140d31670	unit_140d2a7e0_chatlinkhelpers	none	59	mn	descriptive: chatlinkhelpers
 140d31670	140d3b9f0	?\itemloadinfo.cpp	low	343	mn	dir client\ms2
 140d3b9f0	140d418e0	?\itempreview.cpp	low	112	mn	dir client\ms2
 140d418e0	140d42540	unit_140d418e0	none	26	mn	rejected ?\itemlockslot.cpp (order within gap)
@@ -1254,9 +1254,9 @@
 140d53490	140d53ad0	?\memorydepletiondlg.cpp	low	21	mn	dir client\ms2
 140d53ad0	140d6d8c0	client\ms2\meratmarketman.cpp	high	650	mn	
 140d6d8c0	140d72a60	?\mesomarketproductcli.cpp	low	111	mn	dir client\ms2
-140d72a60	140d73aa0	unit_140d72a60	none	46	mn	rejected ?\dailymission.cpp
+140d72a60	140d73aa0	unit_140d72a60_questmissionclasses	none	46	mn	descriptive: questmissionclasses
 140d73aa0	140d74b20	unit_140d73aa0_messageboxfactory	none	15	mn	descriptive: messageboxfactory
-140d74b20	140d75430	unit_140d74b20	none	15	mn	
+140d74b20	140d75430	unit_140d74b20_termsagreementmessagebox	none	15	mn	descriptive: termsagreementmessagebox
 140d75430	140d7e600	?\midimessage.cpp	low	331	mn	dir client\ms2
 140d7e600	140d7e660	?\mmltoken.cpp	low	1	mn	ps1 split from ?\midimessage.cpp: ctor calling mmltoken functions: mmltoken TU head
 140d7e660	140d81400	?\mmltoken.cpp	low	79	mn	dir client\ms2
@@ -1274,11 +1274,11 @@
 140d9e530	140d9ee70	client\ms2\multisceneupdater.cpp	high	18	mn	
 140d9ee70	140da4da0	?\notifydebugstate.cpp	low	214	mn	was ?\chatemoticoncli.cpp; dir client\ms2
 140da4da0	140da50e0	?\notifysystem.cpp	low	5	mn	dir client\ms2
-140da50e0	140db46d0	unit_140da50e0	none	606	mn	rejected ?\packethandlermanager.cpp (order within gap)
+140da50e0	140db46d0	unit_140da50e0_observermanagers	none	606	mn	descriptive: observermanagers
 140db46d0	140db5c50	unit_140db46d0	none	68	mn	rejected ?\notifychangebuff.cpp (order within gap)
 140db5c50	140db8d80	?\npcshopproductbase.cpp	low	54	mn	dir client\ms2
 140db8d80	140db9610	?\npsman.cpp	low	21	mn	dir client\ms2
-140db9610	140db9e30	unit_140db9610	none	12	mn	
+140db9610	140db9e30	unit_140db9610_textvectorhelpers	none	12	mn	descriptive: textvectorhelpers
 140db9e30	140dbad20	?\pcinfo.cpp	low	18	mn	dir client\ms2
 140dbad20	140dbcbc0	?\petslot.cpp	low	49	mn	dir client\ms2
 140dbcbc0	140dbddc0	?\posteffectparam.cpp	low	25	mn	dir client\ms2
