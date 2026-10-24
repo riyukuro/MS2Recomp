@@ -10310,6 +10310,13 @@ DAT_14318f040	14318f040	data
 ?SetText@TextField@GFx@Scaleform@@QEAAXPEB_W_N@Z	1425bd530	func
 ?SetTextValue@TextField@GFx@Scaleform@@QEAA_NPEBD_N1@Z	1425bd9a0	func
 ?TransformToTextRectSpace@TextField@GFx@Scaleform@@QEBA?AV?$Point@M@Render@3@AEBVDisplayInfo@Value@23@@Z	1425be970	func
+DAT_14311e038	14311e038	data
+DAT_14311e200	14311e200	data
+DAT_14311e220	14311e220	data
+DAT_14311e3e8	14311e3e8	data
+DAT_14311e638	14311e638	data
+DAT_14311e7a0	14311e7a0	data
+DAT_143b0dc48	143b0dc48	data
 ?HighlightCompositionStringText@TextField@GFx@Scaleform@@QEAAX_K0I@Z	1425b9770	func
 ?AvmStage_vftable@AS3@GFx@Scaleform@@3QBQEAXB	14317d600	data
 ?AvmStage_vftable_30@AS3@GFx@Scaleform@@3QBQEAXB	14317d6f8	data
@@ -10321,3 +10328,5 @@ DAT_14318f040	14318f040	data
 ?MayHaveExitFrameHandler@EventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@QEBA_NXZ	14246c290	func
 ?MayHaveFrameConstructedHandler@EventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@QEBA_NXZ	14246c2b0	func
 ?MayHaveRenderHandler@EventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@QEBA_NXZ	14246c2d0	func
+?OnEventLoad@AvmButton@AS2@GFx@Scaleform@@UEAAXXZ	14296b820	func
+DAT_143192190	143192190	data
