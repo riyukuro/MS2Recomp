@@ -45,10 +45,10 @@ bool FUN_14116d9c0(Unk_SmLogin* p, int a, int b, int c);
 bool FUN_14116dd30(Unk_SmLogin* p, int a, int b, int c);
 int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, UISceneModeSelect* pScene);
 
-static int FUN_140e85580(Unk_SmPlayerState* p);
+int FUN_140e85580(Unk_SmPlayerState* p);
 static int FUN_140e853c0();
-static UIIntroMovie* FUN_140e85420(int nUiId);
-static GFxMovieBackground* FUN_140e85550(const NiRTTI* pRtti, GFxMovie* pObj);
+UIIntroMovie* FUN_140e85420(int nUiId);
+GFxMovieBackground* FUN_140e85550(const NiRTTI* pRtti, GFxMovie* pObj);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -160,7 +160,7 @@ static int FUN_140e853c0()
 }
 
 // @0x140e85420
-static UIIntroMovie* FUN_140e85420(int nUiId)
+UIIntroMovie* FUN_140e85420(int nUiId)
 {
     if (FUN_1403ed2b0() != 0)
     {
@@ -185,7 +185,7 @@ static bool FUN_140e85590(GFxMovie* pObj, const NiRTTI* pRtti)
 }
 
 // @0x140e85580
-static int FUN_140e85580(Unk_SmPlayerState* p)
+int FUN_140e85580(Unk_SmPlayerState* p)
 {
     return p->m_8;
 }
@@ -197,7 +197,7 @@ static GFxMovie* FUN_140e85500(GFxMovie* pObj, const NiRTTI* pRtti)
 }
 
 // @0x140e85550
-static GFxMovieBackground* FUN_140e85550(const NiRTTI* pRtti, GFxMovie* pObj)
+GFxMovieBackground* FUN_140e85550(const NiRTTI* pRtti, GFxMovie* pObj)
 {
     if (pObj == 0)
         return 0;
