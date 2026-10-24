@@ -1343,5 +1343,240 @@ template<> CNMStr<0x800>::CNMStr()
 }
 // MS2-PIN: ??0?$CNMStr@$0IAA@@@QEAA@XZ 0x1415e5c00
 
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e4bc0
+void* FUN_1415e4bc0(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e4bd0
+void* FUN_1415e4bd0(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e4be0
+void* FUN_1415e4be0(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e4e90
+void* FUN_1415e4e90(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e4ea0
+void* FUN_1415e4ea0(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e4eb0
+void* FUN_1415e4eb0(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e4ec0
+void* FUN_1415e4ec0(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e4ed0
+void* FUN_1415e4ed0(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e4ee0
+void* FUN_1415e4ee0(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e4ef0
+void* FUN_1415e4ef0(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e4f00
+void* FUN_1415e4f00(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e4f10
+void* FUN_1415e4f10(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e4f20
+void* FUN_1415e4f20(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e4f30
+void* FUN_1415e4f30(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e4f40
+void* FUN_1415e4f40(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e4f50
+void* FUN_1415e4f50(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e5140
+void* FUN_1415e5140(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e5150
+void* FUN_1415e5150(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e5160
+void* FUN_1415e5160(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e5170
+void* FUN_1415e5170(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e5180
+void* FUN_1415e5180(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e5190
+void* FUN_1415e5190(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e51a0
+void* FUN_1415e51a0(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e51b0
+void* FUN_1415e51b0(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e51c0
+void* FUN_1415e51c0(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e51d0
+void* FUN_1415e51d0(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e51e0
+void* FUN_1415e51e0(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e51f0
+void* FUN_1415e51f0(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e5200
+void* FUN_1415e5200(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e5210
+void* FUN_1415e5210(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e5220
+void* FUN_1415e5220(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e5230
+void* FUN_1415e5230(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e5240
+void* FUN_1415e5240(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e5250
+void* FUN_1415e5250(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e5260
+void* FUN_1415e5260(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e5270
+void* FUN_1415e5270(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e5280
+void* FUN_1415e5280(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e5290
+void* FUN_1415e5290(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e52a0
+void* FUN_1415e52a0(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e52b0
+void* FUN_1415e52b0(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e52c0
+void* FUN_1415e52c0(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e52d0
+void* FUN_1415e52d0(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e52e0
+void* FUN_1415e52e0(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e52f0
+void* FUN_1415e52f0(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e5300
+void* FUN_1415e5300(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e5310
+void* FUN_1415e5310(void* p) { return p; }
+
+// MS2-FUNCTIONAL: implements the recovered one-argument identity helper.
+// @0x1415e5320
+void* FUN_1415e5320(void* p) { return p; }
+
 // MS2-PIN: ??$construct@PEADAEBQEAD@?$_Default_allocator_traits@V?$allocator@D@std@@@std@@SAXAEAV?$allocator@D@1@QEAPEADAEBQEAD@Z 0x1415e2390
 // MS2-PIN: ??$forward@AEBQEAD@std@@YAAEBQEADAEBQEAD@Z 0x1415e4bb0
+// MS2-PIN: ?FUN_1415e4bc0@@YAPEAXPEAX@Z 0x1415e4bc0
+// MS2-PIN: ?FUN_1415e4bd0@@YAPEAXPEAX@Z 0x1415e4bd0
+// MS2-PIN: ?FUN_1415e4be0@@YAPEAXPEAX@Z 0x1415e4be0
+// MS2-PIN: ?FUN_1415e4e90@@YAPEAXPEAX@Z 0x1415e4e90
+// MS2-PIN: ?FUN_1415e4ea0@@YAPEAXPEAX@Z 0x1415e4ea0
+// MS2-PIN: ?FUN_1415e4eb0@@YAPEAXPEAX@Z 0x1415e4eb0
+// MS2-PIN: ?FUN_1415e4ec0@@YAPEAXPEAX@Z 0x1415e4ec0
+// MS2-PIN: ?FUN_1415e4ed0@@YAPEAXPEAX@Z 0x1415e4ed0
+// MS2-PIN: ?FUN_1415e4ee0@@YAPEAXPEAX@Z 0x1415e4ee0
+// MS2-PIN: ?FUN_1415e4ef0@@YAPEAXPEAX@Z 0x1415e4ef0
+// MS2-PIN: ?FUN_1415e4f00@@YAPEAXPEAX@Z 0x1415e4f00
+// MS2-PIN: ?FUN_1415e4f10@@YAPEAXPEAX@Z 0x1415e4f10
+// MS2-PIN: ?FUN_1415e4f20@@YAPEAXPEAX@Z 0x1415e4f20
+// MS2-PIN: ?FUN_1415e4f30@@YAPEAXPEAX@Z 0x1415e4f30
+// MS2-PIN: ?FUN_1415e4f40@@YAPEAXPEAX@Z 0x1415e4f40
+// MS2-PIN: ?FUN_1415e4f50@@YAPEAXPEAX@Z 0x1415e4f50
+// MS2-PIN: ?FUN_1415e5140@@YAPEAXPEAX@Z 0x1415e5140
+// MS2-PIN: ?FUN_1415e5150@@YAPEAXPEAX@Z 0x1415e5150
+// MS2-PIN: ?FUN_1415e5160@@YAPEAXPEAX@Z 0x1415e5160
+// MS2-PIN: ?FUN_1415e5170@@YAPEAXPEAX@Z 0x1415e5170
+// MS2-PIN: ?FUN_1415e5180@@YAPEAXPEAX@Z 0x1415e5180
+// MS2-PIN: ?FUN_1415e5190@@YAPEAXPEAX@Z 0x1415e5190
+// MS2-PIN: ?FUN_1415e51a0@@YAPEAXPEAX@Z 0x1415e51a0
+// MS2-PIN: ?FUN_1415e51b0@@YAPEAXPEAX@Z 0x1415e51b0
+// MS2-PIN: ?FUN_1415e51c0@@YAPEAXPEAX@Z 0x1415e51c0
+// MS2-PIN: ?FUN_1415e51d0@@YAPEAXPEAX@Z 0x1415e51d0
+// MS2-PIN: ?FUN_1415e51e0@@YAPEAXPEAX@Z 0x1415e51e0
+// MS2-PIN: ?FUN_1415e51f0@@YAPEAXPEAX@Z 0x1415e51f0
+// MS2-PIN: ?FUN_1415e5200@@YAPEAXPEAX@Z 0x1415e5200
+// MS2-PIN: ?FUN_1415e5210@@YAPEAXPEAX@Z 0x1415e5210
+// MS2-PIN: ?FUN_1415e5220@@YAPEAXPEAX@Z 0x1415e5220
+// MS2-PIN: ?FUN_1415e5230@@YAPEAXPEAX@Z 0x1415e5230
+// MS2-PIN: ?FUN_1415e5240@@YAPEAXPEAX@Z 0x1415e5240
+// MS2-PIN: ?FUN_1415e5250@@YAPEAXPEAX@Z 0x1415e5250
+// MS2-PIN: ?FUN_1415e5260@@YAPEAXPEAX@Z 0x1415e5260
+// MS2-PIN: ?FUN_1415e5270@@YAPEAXPEAX@Z 0x1415e5270
+// MS2-PIN: ?FUN_1415e5280@@YAPEAXPEAX@Z 0x1415e5280
+// MS2-PIN: ?FUN_1415e5290@@YAPEAXPEAX@Z 0x1415e5290
+// MS2-PIN: ?FUN_1415e52a0@@YAPEAXPEAX@Z 0x1415e52a0
+// MS2-PIN: ?FUN_1415e52b0@@YAPEAXPEAX@Z 0x1415e52b0
+// MS2-PIN: ?FUN_1415e52c0@@YAPEAXPEAX@Z 0x1415e52c0
+// MS2-PIN: ?FUN_1415e52d0@@YAPEAXPEAX@Z 0x1415e52d0
+// MS2-PIN: ?FUN_1415e52e0@@YAPEAXPEAX@Z 0x1415e52e0
+// MS2-PIN: ?FUN_1415e52f0@@YAPEAXPEAX@Z 0x1415e52f0
+// MS2-PIN: ?FUN_1415e5300@@YAPEAXPEAX@Z 0x1415e5300
+// MS2-PIN: ?FUN_1415e5310@@YAPEAXPEAX@Z 0x1415e5310
+// MS2-PIN: ?FUN_1415e5320@@YAPEAXPEAX@Z 0x1415e5320
