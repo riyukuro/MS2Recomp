@@ -1411,7 +1411,7 @@ public:
 Unk_BossNotifyMgr* FUN_140541580();
 
 // @0x1406cfaa0
-static int FUN_1406cfaa0(Unk_140165cf0* pElem, const char* pszName, std::vector<CString>& rOut)
+int FUN_1406cfaa0(Unk_140165cf0* pElem, const char* pszName, std::vector<CString>& rOut)
 {
     CStringA str;
     int nRet = FUN_1408733e0(pElem, pszName, str);
