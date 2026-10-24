@@ -11,15 +11,17 @@
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 
-// Unrecovered container/record classes: only their constructor/destructor are known (called through FUN_<va>).
-#define UNK_STATIC1(Name, ctor, dtor)                                  \
+// Unrecovered container/record classes: only their constructor/destructor are known (called through FUN_<va>). `size`
+// is the object's extent in the exe (the gap to the next static): the ctors write that far, so a smaller m_pad lets a
+// full-exe ctor overwrite the neighbouring statics.
+#define UNK_STATIC1(Name, ctor, dtor, size)                            \
     void ctor(void*);                                                  \
     void dtor(void*);                                                  \
     struct Name                                                        \
     {                                                                  \
         Name() { ctor(this); }                                         \
         ~Name() { dtor(this); }                                        \
-        char m_pad[8];                                                 \
+        char m_pad[size];                                              \
     };
 
 struct Unk_Be790Map
@@ -33,14 +35,37 @@ void FUN_14027deb0(void*);
 Unk_Be790Map::Unk_Be790Map(int n1, float f1, float f2, float f3, int n2) { FUN_14027c6b0(this, n1, f1, f2, f3, n2); }
 Unk_Be790Map::~Unk_Be790Map() { FUN_14027deb0(this); }
 
-UNK_STATIC1(Unk_Be790B, FUN_140932870, FUN_140932b40)
-UNK_STATIC1(Unk_Be790C, FUN_14063e410, FUN_14063e780)
-UNK_STATIC1(Unk_Be790D, FUN_140333290, FUN_140333cb0)
-UNK_STATIC1(Unk_Be790E, FUN_140de0f70, FUN_140de0ff0)
-UNK_STATIC1(Unk_Be790F, FUN_140182e30, FUN_140183b40)
-UNK_STATIC1(Unk_Be790G, FUN_14185b130, FUN_14185b170)
-UNK_STATIC1(Unk_Be790H, FUN_140dfc480, FUN_140dfc4b0)
-UNK_STATIC1(Unk_Be790J, FUN_1408fba50, FUN_1408fba80)
+UNK_STATIC1(Unk_Be790B, FUN_140932870, FUN_140932b40, 0x10)
+UNK_STATIC1(Unk_Be790C, FUN_14063e410, FUN_14063e780, 0x10)
+UNK_STATIC1(Unk_Be790D, FUN_140333290, FUN_140333cb0, 0x10)
+UNK_STATIC1(Unk_Be790E, FUN_140de0f70, FUN_140de0ff0, 0xa0)
+UNK_STATIC1(Unk_Be790F, FUN_140182e30, FUN_140183b40, 0x10)
+UNK_STATIC1(Unk_Be790H, FUN_140dfc480, FUN_140dfc4b0, 0x30)
+UNK_STATIC1(Unk_Be790J, FUN_1408fba50, FUN_1408fba80, 0x30)
+
+// 0x14185b130 / 0x14185b170 are this class's own ctor/dtor (symbols.tsv binds ??0/??1Unk_Be790G there; tpscameramode
+// pins the same folded code as ATL's _ATL_WIN_MODULE70), so the bodies are written out here: forwarding to FUN_14185b130
+// would make the full-exe ctor call itself. A block-size-10 container at +8 (FUN_140a698a0) and a CAtlArray<void*> at
+// +0x38, the same pair as unit_140de0f70's object.
+void FUN_140a698a0(void*, int, void*, void*, unsigned __int64);
+void FUN_140a69d20(void*);
+struct Unk_Be790G
+{
+    Unk_Be790G()
+    {
+        FUN_140a698a0(m_storage, 10, nullptr, nullptr, 0);
+        new (&m_items) ATL::CAtlArray<void*>;
+    }
+    ~Unk_Be790G()
+    {
+        m_items.~CAtlArray<void*>();
+        FUN_140a69d20(m_storage);
+    }
+    char m_head[8];
+    char m_storage[0x30];
+    union { ATL::CAtlArray<void*> m_items; };
+    char m_tail[0x60 - 0x38 - sizeof(ATL::CAtlArray<void*>)];
+};
 
 struct Unk_Be790TreeA
 {
