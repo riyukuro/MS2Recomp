@@ -9,6 +9,7 @@
 extern void* FUN_1415f39d0(void*);
 extern void* FUN_1415f39e0(void*);
 extern void FUN_1415fbe70(void*, unsigned int, const void*);
+extern CNMSerializable* FUN_1415f10f0(CNMSerializable*, long long);
 
 class CStreamCryptor_v0
 {
@@ -300,6 +301,19 @@ CNMGuildListExInfo* FUN_1415c76f0(void*, CNMGuildListExInfo* out)
     return new (out) CNMGuildListExInfo(request.m_30);
 }
 // MS2-PIN: ?FUN_1415c76f0@@YAPEAVCNMGuildListExInfo@@PEAXPEAV1@@Z 0x1415c76f0
+
+// MS2-FUNCTIONAL: dispatches the game-list request and copies its result on success.
+// @0x1415c7b10
+int FUN_1415c7b10(void*, long long outAddress)
+{
+    if (!outAddress) return 0;
+    CNMGetGameListFunc request;
+    if (!CNMManager::GetInstance()->CallNMFunc(&request)) return 0;
+    FUN_1415f10f0(reinterpret_cast<CNMSerializable*>(outAddress),
+                   reinterpret_cast<long long>(&request.m_30));
+    return 1;
+}
+// MS2-PIN: ?FUN_1415c7b10@@YAHPEAX_J@Z 0x1415c7b10
 
 // @0x1415c46c0
 void FUN_1415c46c0()
