@@ -32,27 +32,19 @@ struct Unk_De0f70
     CAtlArray<void*> m_items;
 };
 
-// Destructor range uses a distinct object with the same three members at its recovered offsets.
-struct Unk_De0ff0
-{
-    char m_prefix[0x100];
-    CLockCriticalSection m_lock;
-    char m_serviceStorage[0x150];
-    char m_service[0x180];
-    CAtlArray<void*> m_items;
-};
-
 // @0x140de0f70
 Unk_De0f70* FUN_140de0f70(Unk_De0f70* self, void*, void* p3, void* p4)
 {
     self->m_state = 0;
+    new (&self->m_lock) CLockCriticalSection;
     FUN_140a698a0(&self->m_serviceStorage, 10, p3, p4, ~static_cast<unsigned __int64>(1));
+    new (&self->m_items) CAtlArray<void*>;
     FUN_140de1040(self);
     return self;
 }
 
-// @0x140de0ff0
-void FUN_140de0ff0(Unk_De0ff0* self)
+// @0x140de0ff0 (the ctor's object: m_items +0x80, m_serviceStorage +0x50, m_lock +0x20)
+void FUN_140de0ff0(Unk_De0f70* self)
 {
     self->m_items.~CAtlArray<void*>();
     FUN_140a69d20(&self->m_serviceStorage);
