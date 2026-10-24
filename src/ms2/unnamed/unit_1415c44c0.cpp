@@ -138,11 +138,15 @@ int FUN_1415c91e0(const void* session)
     return *reinterpret_cast<const int*>(static_cast<const unsigned char*>(session) + 0x1a0);
 }
 
+// MS2-FUNCTIONAL: preserves the recovered null result returned by both empty optional callbacks.
 // @0x1415c5750
 unsigned long long FUN_1415c5750() { return 0; }
-
+// MS2-FUNCTIONAL: preserves the recovered null result returned by both empty optional callbacks.
 // @0x1415c5760
 unsigned long long FUN_1415c5760() { return 0; }
+// MS2-FUNCTIONAL: copies the recovered 16-byte identifier field to the caller buffer.
+// @0x1415c5970
+void* FUN_1415c5970(const void* p, void* out) { const auto* src = static_cast<const unsigned char*>(p) + 0x15a; auto* dst = static_cast<unsigned char*>(out); for (int i = 0; i != 16; ++i) dst[i] = src[i]; return out; }
 
 // @0x1415c5770
 unsigned long long FUN_1415c5770(const void* p) { return *reinterpret_cast<const unsigned long long*>(static_cast<const unsigned char*>(p) + 0x80); }
@@ -191,10 +195,6 @@ unsigned int FUN_1415c5930(const void* p) { return *reinterpret_cast<const unsig
 
 // @0x1415c5950
 void* FUN_1415c5950(void* p) { return static_cast<unsigned char*>(p) + 0x158; }
-
-// @0x1415c5970
-void* FUN_1415c5970(const void* p, void* out) { const auto* src = static_cast<const unsigned char*>(p) + 0x15a; auto* dst = static_cast<unsigned char*>(out); for (int i = 0; i != 16; ++i) dst[i] = src[i]; return out; }
-
 
 // @0x1415cc390
 void CNMEventHandler::vfunc_3() {}
