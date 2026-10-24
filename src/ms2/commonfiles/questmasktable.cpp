@@ -1228,3 +1228,20 @@ unsigned FUN_140767ff0()
 #endif
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9bd80-0x142c9be60 .text$yd
+
+// Full-executable aliases for QuestMaskTable methods already emitted by this unit.
+// MS2-PIN: ?Load@CQuestMaskTable@@QEAA_NXZ 0x1407649d0
+// MS2-PIN: ?FUN_1407649d0@@YAXPEAVCQuestMaskTable@@@Z 0x1407649d0
+// MS2-PIN: ?HasNpcMask@CQuestMaskTable@@QEAA_NPEAX@Z 0x140764c90
+// MS2-PIN: ?FUN_140764c90@Unk_PortalQuestTable@@QEAAHPEAVCNpc@@@Z 0x140764c90
+// MS2-PIN: ?HasNpcMaskHere@CQuestMaskTable@@QEAA_NH@Z 0x140764cd0
+// MS2-PIN: ?FUN_140764cd0@Unk_Svc109a710@@QEAAHH@Z 0x140764cd0
+// MS2-PIN: ?HasPortalMask@CQuestMaskTable@@QEAA_NPEAUUnk_QmPortal@@@Z 0x140764d50
+// MS2-PIN: ?FUN_140764d50@Unk_PortalQuestTable@@QEAAHPEAVCPortal@@@Z 0x140764d50
+// MS2-PIN: ?CheckNpc@CQuestMaskTable@@QEAAHIH@Z 0x140764e40
+// MS2-PIN: ?FUN_140764e40@Unk_QmNpcTable@@QEAAHHI@Z 0x140764e40
+// MS2-PIN: ?FUN_140764e40@Unk_WmNpcTable@@QEAAHHI@Z 0x140764e40
+// MS2-PIN: ?CheckNpcObject@CQuestMaskTable@@QEAAHPEAX@Z 0x140764ef0
+// MS2-PIN: ?FUN_140764ef0@Unk_PortalQuestTable2@@QEAAHPEAVCNpc@@@Z 0x140764ef0
+// MS2-PIN: ?CheckPortal@CQuestMaskTable@@QEAAHPEAUUnk_QmPortal@@@Z 0x140764f30
+// MS2-PIN: ?FUN_140764f30@Unk_PortalQuestTable@@QEAAHPEAVCPortal@@@Z 0x140764f30
