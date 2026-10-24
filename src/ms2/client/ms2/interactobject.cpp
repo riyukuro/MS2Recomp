@@ -1990,7 +1990,7 @@ void CInteractWatchTowerObject::vfunc_3(int nState)
 }
 
 // @0x141403f20
-static float FUN_141403f20(Vector3* pA, Vector3* pB)
+float FUN_141403f20(Vector3* pA, Vector3* pB)
 {
     pA->z = 0.0f;
     pB->z = 0.0f;
