@@ -288,6 +288,17 @@ void FUN_1415ffa10(void* p, Unk_StlElem<1168>* memory, unsigned long long size, 
 void FUN_1415ffb20(void* p, Unk_StlElem<32>* memory, unsigned long long size, unsigned long long capacity) { nm_vector_change_array(p, memory, size, capacity, 32); }
 // MS2-PIN: ?FUN_1415ffb20@@YAXPEAXPEAU?$Unk_StlElem@$0CA@@@_K2@Z 0x1415ffb20 ; MS2-FUNCTIONAL: size-specialized helper performs the same storage field updates and old allocation release
 
+// @0x141601a20
+void* FUN_141601a20(void* p) { return p; }
+// @0x141601a30
+void* FUN_141601a30(void* p) { return p; }
+// @0x141601a40
+void* FUN_141601a40(void* p) { return p; }
+// @0x141601a50
+void* FUN_141601a50(void* p) { return p; }
+// @0x141601a60
+void* FUN_141601a60(void* p) { return p; }
+
 // MS2-FUNCTIONAL: returns the vector allocator/storage address recovered by the wrapper.
 void* FUN_141601cd0(void* p) { return p; }
 // MS2-PIN: ?FUN_141601cd0@@YAPEAXPEAX@Z 0x141601cd0 ; MS2-FUNCTIONAL: returns the storage address, with a different leaf/non-leaf frame
