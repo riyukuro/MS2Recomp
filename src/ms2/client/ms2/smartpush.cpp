@@ -232,31 +232,31 @@ class Unk_SpSkillTable { public: Unk_SpBuffLevelPtr FUN_140aafef0(int nId, unsig
 Unk_SpSkillTable* FUN_1401958b0();
 
 // CMsgBoxData::SetValue<T> (the COMDATs 0x140dd6030..0x140dd63d0): a named GFx value of the box.
-static void Unk_SetBoxInt(CMsgBoxData* pBox, const char* szName, int n)
+void Unk_SetBoxInt(CMsgBoxData* pBox, const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
     pBox->m_values.insert(std::make_pair(szName, data.FUN_1422b9260()));
 }
-static void Unk_SetBoxUInt(CMsgBoxData* pBox, const char* szName, unsigned n)
+void Unk_SetBoxUInt(CMsgBoxData* pBox, const char* szName, unsigned n)
 {
     ASData data;
     data.FUN_1422b8030(n);
     pBox->m_values.insert(std::make_pair(szName, data.FUN_1422b9260()));
 }
-static void Unk_SetBoxString(CMsgBoxData* pBox, const char* szName, CStringW str)
+void Unk_SetBoxString(CMsgBoxData* pBox, const char* szName, CStringW str)
 {
     ASData data;
     data.FUN_1422b8310(str);
     pBox->m_values.insert(std::make_pair(szName, data.FUN_1422b9260()));
 }
-static void Unk_SetBoxInt64(CMsgBoxData* pBox, const char* szName, __int64 n)
+void Unk_SetBoxInt64(CMsgBoxData* pBox, const char* szName, __int64 n)
 {
     ASData data;
     data.FUN_1422b81c0(n);
     pBox->m_values.insert(std::make_pair(szName, data.FUN_1422b9260()));
 }
-static void Unk_SetBoxBool(CMsgBoxData* pBox, const char* szName, bool b)
+void Unk_SetBoxBool(CMsgBoxData* pBox, const char* szName, bool b)
 {
     ASData data;
     data.FUN_1422b7fd0(b);
