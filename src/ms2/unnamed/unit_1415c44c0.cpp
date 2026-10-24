@@ -291,6 +291,16 @@ unsigned char* FUN_1415c5010(void*, unsigned char* out)
 }
 // MS2-PIN: ?FUN_1415c5010@@YAPEAEPEAXPEAE@Z 0x1415c5010
 
+// MS2-FUNCTIONAL: dispatches the guild-list request and copy-constructs its result for the caller.
+// @0x1415c76f0
+CNMGuildListExInfo* FUN_1415c76f0(void*, CNMGuildListExInfo* out)
+{
+    CNMGetMyGuildListExFunc request;
+    (void)CNMManager::GetInstance()->CallNMFunc(&request);
+    return new (out) CNMGuildListExInfo(request.m_30);
+}
+// MS2-PIN: ?FUN_1415c76f0@@YAPEAVCNMGuildListExInfo@@PEAXPEAV1@@Z 0x1415c76f0
+
 // @0x1415c46c0
 void FUN_1415c46c0()
 {
