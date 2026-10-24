@@ -407,13 +407,13 @@ static float FUN_14109ac70(float f)
 }
 
 // @0x14109a9e0
-static int FUN_14109a9e0()
+int FUN_14109a9e0()
 {
     return rand();
 }
 
 // @0x14109ace0
-static float FUN_14109ace0()
+float FUN_14109ace0()
 {
     return -1.0f + (2.0f * (float)FUN_14109a9e0()) / 32767.0f;
 }
