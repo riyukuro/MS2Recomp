@@ -1161,6 +1161,20 @@ int FUN_1415c7d60(void*, unsigned char* target)
     return FUN_1415cb440(FUN_1415fa260(), &request);
 }
 
+// @0x1415c7e00
+int FUN_1415c7e00(void*, const std::vector<NMChatSessionTarget>& targets, NMKey64 key)
+{
+    CNMRequestMultiChatSessionFunc request(key, targets, 0);
+    return FUN_1415cb440(FUN_1415fa260(), &request);
+}
+
+// @0x1415c8030
+int FUN_1415c8030(void*, const std::vector<NMFriendKey>& targets, NMKey64 key)
+{
+    CNMRequestMultiChatSessionExFunc request(key, targets, 0);
+    return FUN_1415cb440(FUN_1415fa260(), &request);
+}
+
 
 // MS2-PIN: ?FUN_1415c4870@@YAHXZ 0x1415c4870
 // MS2-PIN: ?FUN_1415c53b0@@YAHXZ 0x1415c53b0
