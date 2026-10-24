@@ -98,6 +98,61 @@ void FUN_1415f9b30(void** slot, const char* value) { if (!value) { nm_reset_stri
 // @0x1415f9b80
 void FUN_1415f9b80(void** slot, const char* value) { if (!value) { nm_reset_string(slot, 0x3ae2849); return; } if (FUN_1415f98e0(slot)) StringCchCopyA(static_cast<char*>(*slot), 0x800, value); }
 
+// MS2-FUNCTIONAL: preserves the recovered lazy initialization and returns the slot's resulting buffer.
+// @0x1415f9f20
+void* FUN_1415f9f20(void** slot) { FUN_1415f9410(slot); return *slot; }
+
+// MS2-FUNCTIONAL: preserves the recovered lazy initialization and returns the slot's resulting buffer.
+// @0x1415f9f40
+void* FUN_1415f9f40(void** slot) { FUN_1415f94c0(slot); return *slot; }
+
+// MS2-FUNCTIONAL: preserves the recovered lazy initialization and returns the slot's resulting buffer.
+// @0x1415f9f60
+void* FUN_1415f9f60(void** slot) { FUN_1415f9570(slot); return *slot; }
+
+// MS2-FUNCTIONAL: preserves the recovered lazy initialization and returns the slot's resulting buffer.
+// @0x1415f9f80
+void* FUN_1415f9f80(void** slot) { FUN_1415f9620(slot); return *slot; }
+
+// MS2-FUNCTIONAL: preserves the recovered lazy initialization and returns the slot's resulting buffer.
+// @0x1415f9fa0
+void* FUN_1415f9fa0(void** slot) { FUN_1415f96d0(slot); return *slot; }
+
+// MS2-FUNCTIONAL: preserves the recovered lazy initialization and returns the slot's resulting buffer.
+// @0x1415f9fc0
+void* FUN_1415f9fc0(void** slot) { FUN_1415f9780(slot); return *slot; }
+
+// MS2-FUNCTIONAL: preserves the recovered lazy initialization and returns the slot's resulting buffer.
+// @0x1415f9fe0
+void* FUN_1415f9fe0(void** slot) { FUN_1415f9830(slot); return *slot; }
+
+// MS2-FUNCTIONAL: preserves the recovered lazy initialization and returns the slot's resulting buffer.
+// @0x1415fa000
+void* FUN_1415fa000(void** slot) { FUN_1415f98e0(slot); return *slot; }
+// @0x1415fa020
+size_t FUN_1415fa020() { return 9; }
+
+// @0x1415fa030
+size_t FUN_1415fa030() { return 0x100; }
+
+// @0x1415fa040
+size_t FUN_1415fa040() { return 0x1000; }
+
+// @0x1415fa050
+size_t FUN_1415fa050() { return 0x15e; }
+
+// @0x1415fa060
+size_t FUN_1415fa060() { return 0x20; }
+
+// @0x1415fa070
+size_t FUN_1415fa070() { return 0x40; }
+
+// @0x1415fa080
+size_t FUN_1415fa080() { return 0x400; }
+
+// @0x1415fa090
+size_t FUN_1415fa090() { return 0x800; }
+
 // @0x1415f9990
 void FUN_1415f9990(void*) { }
 // MS2-FUNCTIONAL: the recovered helper is an empty body; pin the alternate unsigned return analysis too.
