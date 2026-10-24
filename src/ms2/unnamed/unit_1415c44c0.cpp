@@ -138,6 +138,64 @@ int FUN_1415c91e0(const void* session)
     return *reinterpret_cast<const int*>(static_cast<const unsigned char*>(session) + 0x1a0);
 }
 
+// @0x1415c5750
+unsigned long long FUN_1415c5750() { return 0; }
+
+// @0x1415c5760
+unsigned long long FUN_1415c5760() { return 0; }
+
+// @0x1415c5770
+unsigned long long FUN_1415c5770(const void* p) { return *reinterpret_cast<const unsigned long long*>(static_cast<const unsigned char*>(p) + 0x80); }
+
+// @0x1415c5790
+unsigned long long FUN_1415c5790(const void* p) { return *reinterpret_cast<const unsigned long long*>(static_cast<const unsigned char*>(p) + 0x80) >> 32; }
+
+// @0x1415c57b0
+void* FUN_1415c57b0(void* p) { return static_cast<unsigned char*>(p) + 0x40; }
+
+// @0x1415c57d0
+void* FUN_1415c57d0(void* p) { return static_cast<unsigned char*>(p) + 0x8c; }
+
+// @0x1415c57f0
+unsigned int FUN_1415c57f0(const void* p) { return *reinterpret_cast<const unsigned int*>(static_cast<const unsigned char*>(p) + 0xcc); }
+
+// @0x1415c5810
+unsigned int FUN_1415c5810(const void* p) { return *reinterpret_cast<const unsigned int*>(static_cast<const unsigned char*>(p) + 0xd0); }
+
+// @0x1415c5830
+unsigned int FUN_1415c5830(const void* p) { return *reinterpret_cast<const unsigned int*>(static_cast<const unsigned char*>(p) + 0xd4); }
+
+// @0x1415c5850
+void* FUN_1415c5850(void* p) { return static_cast<unsigned char*>(p) + 0xe0; }
+
+// @0x1415c5870
+void* FUN_1415c5870(void* p) { return static_cast<unsigned char*>(p) + 0x100; }
+
+// @0x1415c5890
+unsigned int FUN_1415c5890(const void* p) { return *reinterpret_cast<const unsigned int*>(static_cast<const unsigned char*>(p) + 0x140); }
+
+// @0x1415c58b0
+unsigned int FUN_1415c58b0(const void* p) { return *reinterpret_cast<const unsigned int*>(static_cast<const unsigned char*>(p) + 0x144); }
+
+// @0x1415c58d0
+unsigned int FUN_1415c58d0(const void* p) { return *reinterpret_cast<const unsigned int*>(static_cast<const unsigned char*>(p) + 0x148); }
+
+// @0x1415c58f0
+unsigned int FUN_1415c58f0(const void* p) { return *reinterpret_cast<const unsigned int*>(static_cast<const unsigned char*>(p) + 0x14c); }
+
+// @0x1415c5910
+void* FUN_1415c5910(void* p) { return static_cast<unsigned char*>(p) + 0x150; }
+
+// @0x1415c5930
+unsigned int FUN_1415c5930(const void* p) { return *reinterpret_cast<const unsigned int*>(static_cast<const unsigned char*>(p) + 0x154); }
+
+// @0x1415c5950
+void* FUN_1415c5950(void* p) { return static_cast<unsigned char*>(p) + 0x158; }
+
+// @0x1415c5970
+void* FUN_1415c5970(const void* p, void* out) { const auto* src = static_cast<const unsigned char*>(p) + 0x15a; auto* dst = static_cast<unsigned char*>(out); for (int i = 0; i != 16; ++i) dst[i] = src[i]; return out; }
+
+
 // @0x1415cc390
 void CNMEventHandler::vfunc_3() {}
 
