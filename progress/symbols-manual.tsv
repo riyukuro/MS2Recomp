@@ -8808,6 +8808,7 @@ DAT_143183b28	143183b28	data
 DAT_1431b9080	1431b9080	data
 ??0CNMFileEvent@@QEAA@XZ	141572e00	func
 DAT_1431b9028	1431b9028	data
+DAT_1431b8e30	1431b8e30	data
 DAT_1431b8fc8	1431b8fc8	data
 DAT_1431b8fa0	1431b8fa0	data
 DAT_1431b8e08	1431b8e08	data
@@ -9823,13 +9824,16 @@ DAT_143b27c40	143b27c40	data
 ?GetStateBagImpl@MovieImpl@GFx@Scaleform@@UEBAPEAVStateBag@23@XZ	14256fb90	func
 ?LogMessageVarg@Unk_GfxLogBase@@UEAAXVLogMessageId@Scaleform@@PEBDPEAD@Z	14257e0c0	func
 ??_7ClassCallConstruct@AS3@GFx@Scaleform@@6B@	14313f3c8	data
+??_7SoundData@Sound@Scaleform@@6B@	1431bef70	data
+??_7AppendableSoundData@Sound@Scaleform@@6B@	1431bef78	data
+??_7SoundFile@Sound@Scaleform@@6B@	1431bef80	data
 ??0MeshCache@D3D9@Render@Scaleform@@QEAA@PEAVMemoryHeap@3@AEBUMeshCacheParams@23@@Z	142738e60	func
-?Init@FragShader@D3D9@Render@Scaleform@@QEAA_NPEAVHAL@234@PEBUFragShaderDesc@234@@Z	142741430	func
 ?Init@VertexShader@D3D9@Render@Scaleform@@QEAA_NPEAVHAL@234@PEBUVertexShaderDesc@234@@Z	142741620	func
+?Init@FragShader@D3D9@Render@Scaleform@@QEAA_NPEAVHAL@234@PEBUFragShaderDesc@234@@Z	142741430	func
 ?DAT_143a2f780@@3PAUCharBreakInfo@WordWrapHelper@Text@Render@Scaleform@@A	143a2f780	data
-DAT_1431b8e30	1431b8e30	data
 ??0Multiname@AS3@GFx@Scaleform@@QEAA@AEAVVM@123@@Z	1424d8bb0	func
 ?Append@SparseArray@AS3@GFx@Scaleform@@QEAAXAEBV1234@_K1@Z	1424043e0	func
 ?GetFlags@RegExp@fl@Instances@AS3@GFx@Scaleform@@QEAA?AVASString@56@XZ	142429920	func
-?MakeInstanceText@XML@fl@InstanceTraits@AS3@GFx@Scaleform@@QEAA?AV?$Pickable@VXMLText@fl@Instances@AS3@GFx@Scaleform@@@6@AEAV123456@AEBVStringDataPtr@6@PEAV12Instances@456@@Z	14241b850	func
 ?MakeXMLListInstance@XMLList@fl@Instances@AS3@GFx@Scaleform@@QEAA?AV?$Pickable@VXMLList@fl@Instances@AS3@GFx@Scaleform@@@6@AEBVMultiname@456@@Z	14241b190	func
+?MakeInstanceText@XML@fl@InstanceTraits@AS3@GFx@Scaleform@@QEAA?AV?$Pickable@VXMLText@fl@Instances@AS3@GFx@Scaleform@@@6@AEAV123456@AEBVStringDataPtr@6@PEAV12Instances@456@@Z	14241b850	func
+??0DrawableImageContext@Render@Scaleform@@QEAA@PEAVContext@ContextImpl@12@PEAVThreadCommandQueue@12@AEBUInterfaces@12@@Z	1425e9b10	func
