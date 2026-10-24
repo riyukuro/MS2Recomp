@@ -534,3 +534,9 @@ const Vector3& Unk_ConfigPoint::FUN_141274420() const
 MS2_EMIT_CRT_MEMMOVE_S();
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cae6c0-0x142cae800 .text$yd
+
+// Full-executable aliases for existing experience effect methods.
+// MS2-PIN: ?Update@CGetExp@@QEAAXM@Z 0x1412739d0
+// MS2-PIN: ?FUN_1412739d0@CGetExp@@QEAAXM@Z 0x1412739d0
+// MS2-PIN: ?AddEffect@CGetExp@@QEAAXHPEAX@Z 0x141273b60
+// MS2-PIN: ?FUN_141273b60@CGetExp@@QEAAXH_J@Z 0x141273b60

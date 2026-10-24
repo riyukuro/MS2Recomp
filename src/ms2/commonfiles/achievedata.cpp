@@ -1218,3 +1218,14 @@ CStringW CAchieveData::GetRewardTypeName(int nType)
         return CStringW(L"");
     }
 }
+
+// Full-executable aliases for existing achievement loaders and string helpers.
+// MS2-PIN: ?LoadAll@CAchieveData@@SAXXZ 0x14015c050
+// MS2-PIN: ?FUN_14015c050@@YAXXZ 0x14015c050
+// MS2-PIN: ?Unk_ParseExtra@@YAXV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAV?$CAtlMap@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@V?$CStringElementTraitsI@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CDefaultCharTraits@D@2@@2@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@2@@Z 0x14015f2b0
+// MS2-PIN: ?FUN_14015f2b0@@YAXV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAV?$CAtlMap@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@V?$CStringElementTraitsI@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CDefaultCharTraits@D@2@@2@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@2@@Z 0x14015f2b0
+// MS2-PIN: ?FUN_14016a600@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEB_WH@Z 0x14016a600
+// MS2-PIN: ?FUN_14016a600@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEB_WI@Z 0x14016a600
+// MS2-PIN: ?FUN_14016a600@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEB_W_N@Z 0x14016a600
+// MS2-PIN: ?FUN_14016a730@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEBDH@Z 0x14016a730
+// MS2-PIN: ?FUN_14016a730@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEBDI@Z 0x14016a730

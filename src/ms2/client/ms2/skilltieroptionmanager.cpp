@@ -285,3 +285,11 @@ CSkillTierOptionManager::~CSkillTierOptionManager()
 // MS2-RANGE: 0x142c9c200-0x142c9c2f0 .text$yd
 // Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
 // MS2-RANGE: 0x142c9c2f0-0x142c9c330 .text$yd
+
+// Full-executable aliases for existing skill-tier helpers.
+// MS2-PIN: ?Update@CSkillTierOptionManager@@QEAAHXZ 0x14080b8e0
+// MS2-PIN: ?FUN_14080b8e0@@YAHPEAVCSkillTierOptionManager@@@Z 0x14080b8e0
+// MS2-PIN: ?LoadItemOptionSkillTier@@YAHXZ 0x14080bc00
+// MS2-PIN: ?FUN_14080bc00@@YAXXZ 0x14080bc00
+// MS2-PIN: ?FUN_14080c370@@YAHIW4eJobCode@@PEAV?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@@Z 0x14080c370
+// MS2-PIN: ?FUN_14080c370@@YA_NIIAEAV?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@@Z 0x14080c370

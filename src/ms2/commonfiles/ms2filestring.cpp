@@ -1014,3 +1014,13 @@ void CPackBuffer::SetSize(size_t size, BOOL zero) {
     if (zero)
         memset(&(*this)[0], 0, size);
 }
+
+// Full-executable aliases for existing CPackFile helpers.
+// MS2-PIN: ?Open@CPackFile@@QEAAHV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEBD@Z 0x1406af680
+// MS2-PIN: ?FUN_1406af680@Unk_FileArchive@@QEAAHV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z 0x1406af680
+// MS2-PIN: ?Read@CPackFile@@QEAAHV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEAPEAEPEA_K_N@Z 0x1406b0e20
+// MS2-PIN: ?FUN_1406b0e20@Unk_FileArchive@@QEAAHV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEAPEAXPEA_K_N@Z 0x1406b0e20
+// MS2-PIN: ?Exists@CPackFile@@QEAA_NV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z 0x1406b1460
+// MS2-PIN: ?FUN_1406b1460@Unk_FileArchive@@QEAAHV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z 0x1406b1460
+// MS2-PIN: ?GetTexturePaths@CPackFile@@QEAAXAEAV?$list@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@@Z 0x1406b1830
+// MS2-PIN: ?FUN_1406b1830@Unk_FileArchive@@QEAAXAEAV?$list@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@@Z 0x1406b1830
