@@ -43,7 +43,7 @@ MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 unsigned char FUN_1401d1320(CCacheData* pCache);    // file changed since load
 
 // @0x140729360
-static unsigned short FUN_140729360(const CStringW& str) { return (unsigned short)_wtoi(str); }
+unsigned short FUN_140729360(const CStringW& str) { return (unsigned short)_wtoi(str); }
 
 // @0x140729390
 static void FUN_140729390(CStringW& str, std::vector<unsigned short>& rOut, const wchar_t* pszSep)
