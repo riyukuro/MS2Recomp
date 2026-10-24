@@ -244,3 +244,12 @@ int CFieldMissionTable::GetStatPoints(int nRound)
     }
     return nSum;
 }
+
+// Full-executable aliases for existing field-mission table methods.
+// MS2-PIN: ?Load@CFieldMissionTable@@QEAAHXZ 0x14037c010
+// MS2-PIN: ?GetPrevRound@CFieldMissionTable@@QEAAHH@Z 0x14037c450
+// MS2-PIN: ?GetNextRound@CFieldMissionTable@@QEAAHH@Z 0x14037c510
+// MS2-PIN: ?FUN_14037c010@@YAXPEAVCFieldMissionTable@@@Z 0x14037c010
+// MS2-PIN: ?FUN_14037c450@@YAHPEAVCFieldMissionTable@@H@Z 0x14037c450
+// MS2-PIN: ?FUN_14037c510@@YAHPEAVCFieldMissionTable@@H@Z 0x14037c510
+// MS2-PIN: ?FUN_14037c510@@YAHPEAXH@Z 0x14037c510
