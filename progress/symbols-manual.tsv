@@ -10002,3 +10002,16 @@ DAT_143a2dd50	143a2dd50	data
 ?GetASVariableAtPath@MovieRoot@AS3@GFx@Scaleform@@QEBA_NPEAVValue@234@PEBD@Z	142506000	func
 ?CreateStage@MovieRoot@AS3@GFx@Scaleform@@QEAAPEAVDisplayObject@34@PEAVMovieDefImpl@34@@Z	1424f4000	func
 ?AddLoadedMovieDef@MovieRoot@AS3@GFx@Scaleform@@QEAAXPEAVMovieDefImpl@34@@Z	1424e8e20	func
+?CreateBool@CefV8Value@@SA?AV?$scoped_refptr@VCefV8Value@@@@_N@Z	14277e950	func
+?CreateInt@CefV8Value@@SA?AV?$scoped_refptr@VCefV8Value@@@@H@Z	14277eb60	func
+?CreateObject@CefV8Value@@SA?AV?$scoped_refptr@VCefV8Value@@@@V?$scoped_refptr@VCefV8Accessor@@@@V?$scoped_refptr@VCefV8Interceptor@@@@@Z	14277ebc0	func
+?GetCurrentContext@CefV8Context@@SA?AV?$scoped_refptr@VCefV8Context@@@@XZ	14277d190	func
+?g_szCefMessageDlDoAction@@3PEBDEB	1439f7f10	data
+?g_szCefMessageDlExecuteCommand@@3PEBDEB	1439f7f18	data
+?g_szCefMessageDlProjectClose@@3PEBDEB	1439f7ef0	data
+?g_szCefMessageDlProjectNew@@3PEBDEB	1439f7ed8	data
+?g_szCefMessageDlProjectOpen@@3PEBDEB	1439f7ee0	data
+?g_szCefMessageDlProjectPlay@@3PEBDEB	1439f7f00	data
+?g_szCefMessageDlProjectRefresh@@3PEBDEB	1439f7ee8	data
+?g_szCefMessageDlProjectReset@@3PEBDEB	1439f7f08	data
+?g_szCefMessageDlProjectUpload@@3PEBDEB	1439f7ef8	data
