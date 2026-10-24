@@ -8,9 +8,12 @@
 // (docs/RECOVERY.md sec. 9).
 // Group 143a51160 starts at 0x143a51180: its first 0x20 bytes are pcre's own globals (pcre_free 0x143a51160 ...),
 // which the engine's pcre_globals.c defines.
+// Groups 143a07430 / 143a284b0 start at 0x143a07838 / 0x143a288b8: their first 0x408 bytes are the efd::ClassInfo
+// objects PropService::ms_ClassInfo / PropertyVisualizationService::ms_ClassInfo, which the engine's
+// PropService.cpp / PropertyVisualizationService.cpp define; the names users declare there are mapped to them.
 // MS2-UNIT: data_data_game
-// MS2-RANGE: 0x143a07430-0x143a09680 .data
-// MS2-RANGE: 0x143a284b0-0x143a46430 .data
+// MS2-RANGE: 0x143a07838-0x143a09680 .data
+// MS2-RANGE: 0x143a288b8-0x143a46430 .data
 // MS2-RANGE: 0x143a46430-0x143a4b229 .data
 // MS2-RANGE: 0x143a51180-0x143a52a80 .data
 // MS2-RANGE: 0x143a59c28-0x143a65c80 .data
@@ -774,296 +777,292 @@ void FUN_1428fa7a0();
 void FUN_1428fafd0();
 
 #pragma pack(push, 1)
-struct Sd_143a07430 {
-    unsigned char b0[0x10];
-    const void* p10;
-    const void* p18;
-    unsigned char b20[0x3e8];
+struct Sd_143a07838 {
+    const void* p0;
+    unsigned char b8[0x20];
+    const void* p28;
+    unsigned char b30[0x20];
+    const void* p50;
+    unsigned char b58[0x20];
+    const void* p78;
+    unsigned char b80[0x20];
+    const void* pa0;
+    unsigned char ba8[0x20];
+    const void* pc8;
+    unsigned char bd0[0x20];
+    const void* pf0;
+    unsigned char bf8[0x20];
+    const void* p118;
+    unsigned char b120[0x20];
+    const void* p140;
+    unsigned char b148[0x20];
+    const void* p168;
+    unsigned char b170[0x20];
+    const void* p190;
+    const void* p198;
+    unsigned char b1a0[0x28];
+    const void* p1c8;
+    const void* p1d0;
+    unsigned char b1d8[0x20];
+    const void* p1f8;
+    const void* p200;
+    unsigned char b208[0x20];
+    const void* p228;
+    const void* p230;
+    unsigned char b238[0x20];
+    const void* p258;
+    const void* p260;
+    unsigned char b268[0x20];
+    const void* p288;
+    const void* p290;
+    unsigned char b298[0x20];
+    const void* p2b8;
+    const void* p2c0;
+    unsigned char b2c8[0x20];
+    const void* p2e8;
+    const void* p2f0;
+    unsigned char b2f8[0x20];
+    const void* p318;
+    const void* p320;
+    unsigned char b328[0x20];
+    const void* p348;
+    const void* p350;
+    unsigned char b358[0x20];
+    const void* p378;
+    const void* p380;
+    unsigned char b388[0x20];
+    const void* p3a8;
+    const void* p3b0;
+    unsigned char b3b8[0x20];
+    const void* p3d8;
+    const void* p3e0;
+    unsigned char b3e8[0x20];
     const void* p408;
-    unsigned char b410[0x20];
-    const void* p430;
-    unsigned char b438[0x20];
-    const void* p458;
-    unsigned char b460[0x20];
-    const void* p480;
-    unsigned char b488[0x20];
-    const void* p4a8;
-    unsigned char b4b0[0x20];
+    const void* p410;
+    unsigned char b418[0x20];
+    const void* p438;
+    const void* p440;
+    unsigned char b448[0x20];
+    const void* p468;
+    const void* p470;
+    unsigned char b478[0x20];
+    const void* p498;
+    const void* p4a0;
+    unsigned char b4a8[0x20];
+    const void* p4c8;
     const void* p4d0;
     unsigned char b4d8[0x20];
     const void* p4f8;
-    unsigned char b500[0x20];
-    const void* p520;
-    unsigned char b528[0x20];
-    const void* p548;
-    unsigned char b550[0x20];
-    const void* p570;
-    unsigned char b578[0x20];
-    const void* p598;
-    const void* p5a0;
-    unsigned char b5a8[0x28];
-    const void* p5d0;
-    const void* p5d8;
-    unsigned char b5e0[0x20];
-    const void* p600;
-    const void* p608;
-    unsigned char b610[0x20];
-    const void* p630;
-    const void* p638;
-    unsigned char b640[0x20];
-    const void* p660;
-    const void* p668;
-    unsigned char b670[0x20];
-    const void* p690;
-    const void* p698;
-    unsigned char b6a0[0x20];
-    const void* p6c0;
-    const void* p6c8;
-    unsigned char b6d0[0x20];
-    const void* p6f0;
-    const void* p6f8;
-    unsigned char b700[0x20];
-    const void* p720;
-    const void* p728;
-    unsigned char b730[0x20];
-    const void* p750;
-    const void* p758;
-    unsigned char b760[0x20];
-    const void* p780;
-    const void* p788;
-    unsigned char b790[0x20];
-    const void* p7b0;
-    const void* p7b8;
-    unsigned char b7c0[0x20];
-    const void* p7e0;
-    const void* p7e8;
-    unsigned char b7f0[0x20];
-    const void* p810;
-    const void* p818;
-    unsigned char b820[0x20];
-    const void* p840;
-    const void* p848;
-    unsigned char b850[0x20];
-    const void* p870;
-    const void* p878;
-    unsigned char b880[0x20];
-    const void* p8a0;
-    const void* p8a8;
-    unsigned char b8b0[0x20];
-    const void* p8d0;
-    const void* p8d8;
-    unsigned char b8e0[0x20];
-    const void* p900;
-    const void* p908;
-    unsigned char b910[0x20];
-    const void* p930;
+    const void* p500;
+    unsigned char b508[0x20];
+    const void* p528;
+    const void* p530;
+    unsigned char b538[0x20];
+    const void* p558;
+    const void* p560;
+    unsigned char b568[0x20];
+    const void* p588;
+    const void* p590;
+    unsigned char b598[0x20];
+    const void* p5b8;
+    const void* p5c0;
+    unsigned char b5c8[0x20];
+    const void* p5e8;
+    const void* p5f0;
+    unsigned char b5f8[0x20];
+    const void* p618;
+    const void* p620;
+    unsigned char b628[0x20];
+    const void* p648;
+    const void* p650;
+    unsigned char b658[0x20];
+    const void* p678;
+    const void* p680;
+    unsigned char b688[0x20];
+    const void* p6a8;
+    const void* p6b0;
+    unsigned char b6b8[0x20];
+    const void* p6d8;
+    const void* p6e0;
+    unsigned char b6e8[0x20];
+    const void* p708;
+    const void* p710;
+    unsigned char b718[0x20];
+    const void* p738;
+    const void* p740;
+    unsigned char b748[0x20];
+    const void* p768;
+    const void* p770;
+    unsigned char b778[0x20];
+    const void* p798;
+    const void* p7a0;
+    unsigned char b7a8[0x20];
+    const void* p7c8;
+    const void* p7d0;
+    unsigned char b7d8[0x20];
+    const void* p7f8;
+    const void* p800;
+    unsigned char b808[0x20];
+    const void* p828;
+    const void* p830;
+    unsigned char b838[0x20];
+    const void* p858;
+    const void* p860;
+    unsigned char b868[0x20];
+    const void* p888;
+    const void* p890;
+    unsigned char b898[0x20];
+    const void* p8b8;
+    unsigned char b8c0[0x38];
+    const void* p8f8;
+    unsigned char b900[0x38];
     const void* p938;
-    unsigned char b940[0x20];
-    const void* p960;
-    const void* p968;
-    unsigned char b970[0x20];
-    const void* p990;
-    const void* p998;
-    unsigned char b9a0[0x20];
-    const void* p9c0;
-    const void* p9c8;
-    unsigned char b9d0[0x20];
-    const void* p9f0;
+    unsigned char b940[0x38];
+    const void* p978;
+    unsigned char b980[0x38];
+    const void* p9b8;
+    unsigned char b9c0[0x38];
     const void* p9f8;
-    unsigned char ba00[0x20];
-    const void* pa20;
-    const void* pa28;
-    unsigned char ba30[0x20];
-    const void* pa50;
-    const void* pa58;
-    unsigned char ba60[0x20];
-    const void* pa80;
-    const void* pa88;
-    unsigned char ba90[0x20];
-    const void* pab0;
+    unsigned char ba00[0x38];
+    const void* pa38;
+    unsigned char ba40[0x38];
+    const void* pa78;
+    unsigned char ba80[0x38];
     const void* pab8;
-    unsigned char bac0[0x20];
-    const void* pae0;
-    const void* pae8;
-    unsigned char baf0[0x20];
-    const void* pb10;
-    const void* pb18;
-    unsigned char bb20[0x20];
-    const void* pb40;
-    const void* pb48;
-    unsigned char bb50[0x20];
-    const void* pb70;
+    unsigned char bac0[0x38];
+    const void* paf8;
+    unsigned char bb00[0x38];
+    const void* pb38;
+    unsigned char bb40[0x38];
     const void* pb78;
-    unsigned char bb80[0x20];
-    const void* pba0;
-    const void* pba8;
-    unsigned char bbb0[0x20];
-    const void* pbd0;
-    const void* pbd8;
-    unsigned char bbe0[0x20];
-    const void* pc00;
-    const void* pc08;
-    unsigned char bc10[0x20];
-    const void* pc30;
+    unsigned char bb80[0x38];
+    const void* pbb8;
+    unsigned char bbc0[0x38];
+    const void* pbf8;
+    unsigned char bc00[0x38];
     const void* pc38;
-    unsigned char bc40[0x20];
-    const void* pc60;
-    const void* pc68;
-    unsigned char bc70[0x20];
-    const void* pc90;
-    const void* pc98;
-    unsigned char bca0[0x20];
-    const void* pcc0;
-    unsigned char bcc8[0x38];
-    const void* pd00;
-    unsigned char bd08[0x38];
-    const void* pd40;
-    unsigned char bd48[0x38];
-    const void* pd80;
-    unsigned char bd88[0x38];
-    const void* pdc0;
-    unsigned char bdc8[0x38];
-    const void* pe00;
-    unsigned char be08[0x38];
-    const void* pe40;
-    unsigned char be48[0x38];
-    const void* pe80;
-    unsigned char be88[0x38];
-    const void* pec0;
-    unsigned char bec8[0x38];
-    const void* pf00;
-    unsigned char bf08[0x38];
-    const void* pf40;
-    unsigned char bf48[0x38];
-    const void* pf80;
-    unsigned char bf88[0x38];
-    const void* pfc0;
-    unsigned char bfc8[0x38];
-    const void* p1000;
-    unsigned char b1008[0x38];
-    const void* p1040;
-    unsigned char b1048[0x38];
-    const void* p1080;
-    unsigned char b1088[0x38];
-    const void* p10c0;
-    unsigned char b10c8[0x38];
-    const void* p1100;
-    unsigned char b1108[0x38];
-    const void* p1140;
-    unsigned char b1148[0x38];
-    const void* p1180;
-    unsigned char b1188[0x38];
-    const void* p11c0;
-    unsigned char b11c8[0x38];
-    const void* p1200;
-    unsigned char b1208[0x38];
-    const void* p1240;
-    unsigned char b1248[0x38];
+    unsigned char bc40[0x38];
+    const void* pc78;
+    unsigned char bc80[0x38];
+    const void* pcb8;
+    unsigned char bcc0[0x38];
+    const void* pcf8;
+    unsigned char bd00[0x38];
+    const void* pd38;
+    unsigned char bd40[0x38];
+    const void* pd78;
+    unsigned char bd80[0x38];
+    const void* pdb8;
+    unsigned char bdc0[0x38];
+    const void* pdf8;
+    unsigned char be00[0x38];
+    const void* pe38;
+    unsigned char be40[0x38];
+    const void* pe78;
+    unsigned char be80[0x38];
+    const void* peb8;
+    unsigned char bec0[0x38];
+    const void* pef8;
+    unsigned char bf00[0x38];
+    const void* pf38;
+    unsigned char bf40[0x38];
+    const void* pf78;
+    unsigned char bf80[0x38];
+    const void* pfb8;
+    unsigned char bfc0[0x38];
+    const void* pff8;
+    unsigned char b1000[0x38];
+    const void* p1038;
+    unsigned char b1040[0x38];
+    const void* p1078;
+    unsigned char b1080[0x38];
+    const void* p10b8;
+    unsigned char b10c0[0x38];
+    const void* p10f8;
+    unsigned char b1100[0x38];
+    const void* p1138;
+    unsigned char b1140[0x38];
+    const void* p1178;
+    unsigned char b1180[0x38];
+    const void* p11b8;
+    unsigned char b11c0[0x38];
+    const void* p11f8;
+    unsigned char b1200[0x48];
+    const void* p1248;
+    const void* p1250;
+    const void* p1258;
+    const void* p1260;
+    const void* p1268;
+    const void* p1270;
+    const void* p1278;
     const void* p1280;
-    unsigned char b1288[0x38];
+    const void* p1288;
+    const void* p1290;
+    const void* p1298;
+    const void* p12a0;
+    const void* p12a8;
+    const void* p12b0;
+    const void* p12b8;
     const void* p12c0;
-    unsigned char b12c8[0x38];
+    const void* p12c8;
+    const void* p12d0;
+    const void* p12d8;
+    const void* p12e0;
+    const void* p12e8;
+    const void* p12f0;
+    const void* p12f8;
     const void* p1300;
-    unsigned char b1308[0x38];
+    const void* p1308;
+    const void* p1310;
+    const void* p1318;
+    const void* p1320;
+    const void* p1328;
+    const void* p1330;
+    const void* p1338;
     const void* p1340;
-    unsigned char b1348[0x38];
+    const void* p1348;
+    const void* p1350;
+    const void* p1358;
+    const void* p1360;
+    const void* p1368;
+    unsigned char b1370[0x8];
+    const void* p1378;
     const void* p1380;
-    unsigned char b1388[0x38];
+    const void* p1388;
+    const void* p1390;
+    const void* p1398;
+    const void* p13a0;
+    const void* p13a8;
+    const void* p13b0;
+    const void* p13b8;
     const void* p13c0;
-    unsigned char b13c8[0x38];
+    const void* p13c8;
+    const void* p13d0;
+    const void* p13d8;
+    const void* p13e0;
+    const void* p13e8;
+    const void* p13f0;
+    const void* p13f8;
     const void* p1400;
-    unsigned char b1408[0x38];
+    const void* p1408;
+    const void* p1410;
+    const void* p1418;
+    const void* p1420;
+    const void* p1428;
+    const void* p1430;
+    const void* p1438;
     const void* p1440;
-    unsigned char b1448[0x38];
+    const void* p1448;
+    const void* p1450;
+    const void* p1458;
+    const void* p1460;
+    const void* p1468;
+    const void* p1470;
+    const void* p1478;
     const void* p1480;
-    unsigned char b1488[0x38];
-    const void* p14c0;
-    unsigned char b14c8[0x38];
-    const void* p1500;
-    unsigned char b1508[0x38];
-    const void* p1540;
-    unsigned char b1548[0x38];
-    const void* p1580;
-    unsigned char b1588[0x38];
-    const void* p15c0;
-    unsigned char b15c8[0x38];
-    const void* p1600;
-    unsigned char b1608[0x48];
-    const void* p1650;
-    const void* p1658;
-    const void* p1660;
-    const void* p1668;
-    const void* p1670;
-    const void* p1678;
-    const void* p1680;
-    const void* p1688;
-    const void* p1690;
-    const void* p1698;
-    const void* p16a0;
-    const void* p16a8;
-    const void* p16b0;
-    const void* p16b8;
-    const void* p16c0;
-    const void* p16c8;
-    const void* p16d0;
-    const void* p16d8;
-    const void* p16e0;
-    const void* p16e8;
-    const void* p16f0;
-    const void* p16f8;
-    const void* p1700;
-    const void* p1708;
-    const void* p1710;
-    const void* p1718;
-    const void* p1720;
-    const void* p1728;
-    const void* p1730;
-    const void* p1738;
-    const void* p1740;
-    const void* p1748;
-    const void* p1750;
-    const void* p1758;
-    const void* p1760;
-    const void* p1768;
-    const void* p1770;
-    unsigned char b1778[0x8];
-    const void* p1780;
-    const void* p1788;
-    const void* p1790;
-    const void* p1798;
-    const void* p17a0;
-    const void* p17a8;
-    const void* p17b0;
-    const void* p17b8;
-    const void* p17c0;
-    const void* p17c8;
-    const void* p17d0;
-    const void* p17d8;
-    const void* p17e0;
-    const void* p17e8;
-    const void* p17f0;
-    const void* p17f8;
-    const void* p1800;
-    const void* p1808;
-    const void* p1810;
-    const void* p1818;
-    const void* p1820;
-    const void* p1828;
-    const void* p1830;
-    const void* p1838;
-    const void* p1840;
-    const void* p1848;
-    const void* p1850;
-    const void* p1858;
-    const void* p1860;
-    const void* p1868;
-    const void* p1870;
-    const void* p1878;
-    const void* p1880;
-    const void* p1888;
-    const void* p1890;
-    const void* p1898;
-    const void* p18a0;
+    const void* p1488;
+    const void* p1490;
+    const void* p1498;
 };
 struct Sd_143a08d08 {
     unsigned char b0[0x18];
@@ -1107,26 +1106,22 @@ struct Sd_143a09600 {
     const void* p50;
     unsigned char b58[0x8];
 };
-struct Sd_143a284b0 {
-    unsigned char b0[0x10];
-    const void* p10;
-    const void* p18;
-    unsigned char b20[0x3e8];
-    const void* p408;
-    unsigned char b410[0x20];
-    const void* p430;
-    unsigned char b438[0x40];
-    const void* p478;
-    const void* p480;
-    unsigned char b488[0x8];
-    const void* p490;
-    unsigned char b498[0x20];
-    const void* p4b8;
-    unsigned char b4c0[0x20];
-    const void* p4e0;
-    unsigned char b4e8[0x50];
-    const void* p538;
-    unsigned char b540[0x40];
+struct Sd_143a288b8 {
+    const void* p0;
+    unsigned char b8[0x20];
+    const void* p28;
+    unsigned char b30[0x40];
+    const void* p70;
+    const void* p78;
+    unsigned char b80[0x8];
+    const void* p88;
+    unsigned char b90[0x20];
+    const void* pb0;
+    unsigned char bb8[0x20];
+    const void* pd8;
+    unsigned char be0[0x50];
+    const void* p130;
+    unsigned char b138[0x40];
 };
 struct Sd_143a28a30 {
     const void* p0;
@@ -3791,8 +3786,10 @@ struct Sd_143a2f2c0 {
     unsigned char b60[0x30];
 };
 struct Sd_143a2f3a0 {
-    unsigned char b0[0x80];
-    const void* p80;
+    unsigned char b0[0x70];
+};
+struct Sd_143a2f420 {
+    const void* p0;
 };
 struct Sd_143a2f968 {
     unsigned char b0[0x8];
@@ -3878,7 +3875,10 @@ struct Sd_143a303c0 {
     unsigned char b220[0x10];
     const void* p230;
     const void* p238;
-    unsigned char b240[0x2a0];
+    unsigned char b240[0x30];
+};
+struct Sd_143a30650 {
+    unsigned char b0[0x250];
 };
 struct Sd_143a308a0 {
     const void* p0;
@@ -12361,20 +12361,14 @@ struct Sd_143a8da88 {
 };
 #pragma pack(pop)
 
-extern Sd_143a07430 DAT_143a07430;
+extern Sd_143a07838 DAT_143a07838;
 extern Sd_143a08d08 DAT_143a08d08;
-extern Sd_143a284b0 DAT_143a284b0;
+extern Sd_143a288b8 DAT_143a288b8;
 extern Sd_143a2fcb0 DAT_143a2fcb0;
 extern Sd_143a30c50 DAT_143a30c50;
 
-// 0x143a07430
-alignas(16) Sd_143a07430 DAT_143a07430 = {
-    {
-        0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x20, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00,
-    },
-    "PropService",
-    (const void*)&DAT_143a07430,
-    {0},
+// 0x143a07838
+alignas(8) Sd_143a07838 DAT_143a07838 = {
     &DAT_1430ad42c[0xe6e4],
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x20, 0x00, 0x00, 0x20, 0x20, 0x00, 0x07,
@@ -12543,79 +12537,79 @@ alignas(16) Sd_143a07430 DAT_143a07430 = {
     "_p_value_type",
     "value_type *",
     {0},
-    (const unsigned char*)&DAT_143a07430 + 0x5d0,
+    (const unsigned char*)&DAT_143a07838 + 0x1c8,
     {0},
-    (const unsigned char*)&DAT_143a07430 + 0x600,
+    (const unsigned char*)&DAT_143a07838 + 0x1f8,
     {0},
-    (const unsigned char*)&DAT_143a07430 + 0x630,
+    (const unsigned char*)&DAT_143a07838 + 0x228,
     {0},
-    (const unsigned char*)&DAT_143a07430 + 0x660,
+    (const unsigned char*)&DAT_143a07838 + 0x258,
     {0},
-    (const unsigned char*)&DAT_143a07430 + 0x690,
+    (const unsigned char*)&DAT_143a07838 + 0x288,
     {0},
-    (const unsigned char*)&DAT_143a07430 + 0x6c0,
-    {0},
-    "",
-    {0},
-    (const unsigned char*)&DAT_143a07430 + 0x720,
-    {0},
-    (const unsigned char*)&DAT_143a07430 + 0x750,
-    {0},
-    (const unsigned char*)&DAT_143a07430 + 0x780,
-    {0},
-    (const unsigned char*)&DAT_143a07430 + 0x7b0,
-    {0},
-    (const unsigned char*)&DAT_143a07430 + 0x7e0,
-    {0},
-    (const unsigned char*)&DAT_143a07430 + 0x810,
-    {0},
-    (const unsigned char*)&DAT_143a07430 + 0x840,
-    {0},
-    (const unsigned char*)&DAT_143a07430 + 0x870,
-    {0},
-    (const unsigned char*)&DAT_143a07430 + 0x8a0,
-    {0},
-    (const unsigned char*)&DAT_143a07430 + 0x8d0,
-    {0},
-    (const unsigned char*)&DAT_143a07430 + 0x900,
-    {0},
-    (const unsigned char*)&DAT_143a07430 + 0x930,
-    {0},
-    (const unsigned char*)&DAT_143a07430 + 0x960,
-    {0},
-    (const unsigned char*)&DAT_143a07430 + 0x990,
-    {0},
-    (const unsigned char*)&DAT_143a07430 + 0x9c0,
-    {0},
-    (const unsigned char*)&DAT_143a07430 + 0x9f0,
+    (const unsigned char*)&DAT_143a07838 + 0x2b8,
     {0},
     "",
     {0},
-    (const unsigned char*)&DAT_143a07430 + 0xa50,
+    (const unsigned char*)&DAT_143a07838 + 0x318,
     {0},
-    (const unsigned char*)&DAT_143a07430 + 0xa80,
+    (const unsigned char*)&DAT_143a07838 + 0x348,
     {0},
-    (const unsigned char*)&DAT_143a07430 + 0xab0,
+    (const unsigned char*)&DAT_143a07838 + 0x378,
     {0},
-    (const unsigned char*)&DAT_143a07430 + 0xae0,
+    (const unsigned char*)&DAT_143a07838 + 0x3a8,
     {0},
-    (const unsigned char*)&DAT_143a07430 + 0xb10,
+    (const unsigned char*)&DAT_143a07838 + 0x3d8,
     {0},
-    (const unsigned char*)&DAT_143a07430 + 0xb40,
+    (const unsigned char*)&DAT_143a07838 + 0x408,
     {0},
-    (const unsigned char*)&DAT_143a07430 + 0xb70,
+    (const unsigned char*)&DAT_143a07838 + 0x438,
     {0},
-    (const unsigned char*)&DAT_143a07430 + 0xba0,
+    (const unsigned char*)&DAT_143a07838 + 0x468,
     {0},
-    (const unsigned char*)&DAT_143a07430 + 0xbd0,
+    (const unsigned char*)&DAT_143a07838 + 0x498,
     {0},
-    (const unsigned char*)&DAT_143a07430 + 0xc00,
+    (const unsigned char*)&DAT_143a07838 + 0x4c8,
     {0},
-    (const unsigned char*)&DAT_143a07430 + 0xc30,
+    (const unsigned char*)&DAT_143a07838 + 0x4f8,
     {0},
-    (const unsigned char*)&DAT_143a07430 + 0xc60,
+    (const unsigned char*)&DAT_143a07838 + 0x528,
     {0},
-    (const unsigned char*)&DAT_143a07430 + 0xc90,
+    (const unsigned char*)&DAT_143a07838 + 0x558,
+    {0},
+    (const unsigned char*)&DAT_143a07838 + 0x588,
+    {0},
+    (const unsigned char*)&DAT_143a07838 + 0x5b8,
+    {0},
+    (const unsigned char*)&DAT_143a07838 + 0x5e8,
+    {0},
+    "",
+    {0},
+    (const unsigned char*)&DAT_143a07838 + 0x648,
+    {0},
+    (const unsigned char*)&DAT_143a07838 + 0x678,
+    {0},
+    (const unsigned char*)&DAT_143a07838 + 0x6a8,
+    {0},
+    (const unsigned char*)&DAT_143a07838 + 0x6d8,
+    {0},
+    (const unsigned char*)&DAT_143a07838 + 0x708,
+    {0},
+    (const unsigned char*)&DAT_143a07838 + 0x738,
+    {0},
+    (const unsigned char*)&DAT_143a07838 + 0x768,
+    {0},
+    (const unsigned char*)&DAT_143a07838 + 0x798,
+    {0},
+    (const unsigned char*)&DAT_143a07838 + 0x7c8,
+    {0},
+    (const unsigned char*)&DAT_143a07838 + 0x7f8,
+    {0},
+    (const unsigned char*)&DAT_143a07838 + 0x828,
+    {0},
+    (const unsigned char*)&DAT_143a07838 + 0x858,
+    {0},
+    (const unsigned char*)&DAT_143a07838 + 0x888,
     {0},
     "",
     {
@@ -12625,81 +12619,81 @@ alignas(16) Sd_143a07430 DAT_143a07430 = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0,
     },
-    (const unsigned char*)&DAT_143a07430 + 0x5d0,
-    (const unsigned char*)&DAT_143a07430 + 0x600,
-    (const unsigned char*)&DAT_143a07430 + 0x630,
-    (const unsigned char*)&DAT_143a07430 + 0x660,
-    (const unsigned char*)&DAT_143a07430 + 0x690,
-    (const unsigned char*)&DAT_143a07430 + 0x6c0,
+    (const unsigned char*)&DAT_143a07838 + 0x1c8,
+    (const unsigned char*)&DAT_143a07838 + 0x1f8,
+    (const unsigned char*)&DAT_143a07838 + 0x228,
+    (const unsigned char*)&DAT_143a07838 + 0x258,
+    (const unsigned char*)&DAT_143a07838 + 0x288,
+    (const unsigned char*)&DAT_143a07838 + 0x2b8,
     "",
-    (const unsigned char*)&DAT_143a07430 + 0x720,
-    (const unsigned char*)&DAT_143a07430 + 0x750,
-    (const unsigned char*)&DAT_143a07430 + 0x780,
-    (const unsigned char*)&DAT_143a07430 + 0x7b0,
-    (const unsigned char*)&DAT_143a07430 + 0x7e0,
-    (const unsigned char*)&DAT_143a07430 + 0x810,
-    (const unsigned char*)&DAT_143a07430 + 0x840,
-    (const unsigned char*)&DAT_143a07430 + 0x870,
-    (const unsigned char*)&DAT_143a07430 + 0x8a0,
-    (const unsigned char*)&DAT_143a07430 + 0x8d0,
-    (const unsigned char*)&DAT_143a07430 + 0x900,
-    (const unsigned char*)&DAT_143a07430 + 0x930,
-    (const unsigned char*)&DAT_143a07430 + 0x960,
-    (const unsigned char*)&DAT_143a07430 + 0x990,
-    (const unsigned char*)&DAT_143a07430 + 0x9c0,
-    (const unsigned char*)&DAT_143a07430 + 0x9f0,
+    (const unsigned char*)&DAT_143a07838 + 0x318,
+    (const unsigned char*)&DAT_143a07838 + 0x348,
+    (const unsigned char*)&DAT_143a07838 + 0x378,
+    (const unsigned char*)&DAT_143a07838 + 0x3a8,
+    (const unsigned char*)&DAT_143a07838 + 0x3d8,
+    (const unsigned char*)&DAT_143a07838 + 0x408,
+    (const unsigned char*)&DAT_143a07838 + 0x438,
+    (const unsigned char*)&DAT_143a07838 + 0x468,
+    (const unsigned char*)&DAT_143a07838 + 0x498,
+    (const unsigned char*)&DAT_143a07838 + 0x4c8,
+    (const unsigned char*)&DAT_143a07838 + 0x4f8,
+    (const unsigned char*)&DAT_143a07838 + 0x528,
+    (const unsigned char*)&DAT_143a07838 + 0x558,
+    (const unsigned char*)&DAT_143a07838 + 0x588,
+    (const unsigned char*)&DAT_143a07838 + 0x5b8,
+    (const unsigned char*)&DAT_143a07838 + 0x5e8,
     "",
-    (const unsigned char*)&DAT_143a07430 + 0xa50,
-    (const unsigned char*)&DAT_143a07430 + 0xa80,
-    (const unsigned char*)&DAT_143a07430 + 0xab0,
-    (const unsigned char*)&DAT_143a07430 + 0xae0,
-    (const unsigned char*)&DAT_143a07430 + 0xb10,
-    (const unsigned char*)&DAT_143a07430 + 0xb40,
-    (const unsigned char*)&DAT_143a07430 + 0xb70,
-    (const unsigned char*)&DAT_143a07430 + 0xba0,
-    (const unsigned char*)&DAT_143a07430 + 0xbd0,
-    (const unsigned char*)&DAT_143a07430 + 0xc00,
-    (const unsigned char*)&DAT_143a07430 + 0xc30,
-    (const unsigned char*)&DAT_143a07430 + 0xc60,
-    (const unsigned char*)&DAT_143a07430 + 0xc90,
+    (const unsigned char*)&DAT_143a07838 + 0x648,
+    (const unsigned char*)&DAT_143a07838 + 0x678,
+    (const unsigned char*)&DAT_143a07838 + 0x6a8,
+    (const unsigned char*)&DAT_143a07838 + 0x6d8,
+    (const unsigned char*)&DAT_143a07838 + 0x708,
+    (const unsigned char*)&DAT_143a07838 + 0x738,
+    (const unsigned char*)&DAT_143a07838 + 0x768,
+    (const unsigned char*)&DAT_143a07838 + 0x798,
+    (const unsigned char*)&DAT_143a07838 + 0x7c8,
+    (const unsigned char*)&DAT_143a07838 + 0x7f8,
+    (const unsigned char*)&DAT_143a07838 + 0x828,
+    (const unsigned char*)&DAT_143a07838 + 0x858,
+    (const unsigned char*)&DAT_143a07838 + 0x888,
     {0},
     "",
-    (const unsigned char*)&DAT_143a07430 + 0xd00,
-    (const unsigned char*)&DAT_143a07430 + 0xd40,
-    (const unsigned char*)&DAT_143a07430 + 0xd80,
-    (const unsigned char*)&DAT_143a07430 + 0xdc0,
-    (const unsigned char*)&DAT_143a07430 + 0xe00,
-    (const unsigned char*)&DAT_143a07430 + 0xe40,
-    (const unsigned char*)&DAT_143a07430 + 0xe80,
-    (const unsigned char*)&DAT_143a07430 + 0xec0,
-    (const unsigned char*)&DAT_143a07430 + 0xf00,
-    (const unsigned char*)&DAT_143a07430 + 0xf40,
-    (const unsigned char*)&DAT_143a07430 + 0xf80,
-    (const unsigned char*)&DAT_143a07430 + 0xfc0,
-    (const unsigned char*)&DAT_143a07430 + 0x1000,
-    (const unsigned char*)&DAT_143a07430 + 0x1040,
-    (const unsigned char*)&DAT_143a07430 + 0x1080,
+    (const unsigned char*)&DAT_143a07838 + 0x8f8,
+    (const unsigned char*)&DAT_143a07838 + 0x938,
+    (const unsigned char*)&DAT_143a07838 + 0x978,
+    (const unsigned char*)&DAT_143a07838 + 0x9b8,
+    (const unsigned char*)&DAT_143a07838 + 0x9f8,
+    (const unsigned char*)&DAT_143a07838 + 0xa38,
+    (const unsigned char*)&DAT_143a07838 + 0xa78,
+    (const unsigned char*)&DAT_143a07838 + 0xab8,
+    (const unsigned char*)&DAT_143a07838 + 0xaf8,
+    (const unsigned char*)&DAT_143a07838 + 0xb38,
+    (const unsigned char*)&DAT_143a07838 + 0xb78,
+    (const unsigned char*)&DAT_143a07838 + 0xbb8,
+    (const unsigned char*)&DAT_143a07838 + 0xbf8,
+    (const unsigned char*)&DAT_143a07838 + 0xc38,
+    (const unsigned char*)&DAT_143a07838 + 0xc78,
     "",
-    (const unsigned char*)&DAT_143a07430 + 0x1100,
-    (const unsigned char*)&DAT_143a07430 + 0x1140,
-    (const unsigned char*)&DAT_143a07430 + 0x1180,
-    (const unsigned char*)&DAT_143a07430 + 0x11c0,
-    (const unsigned char*)&DAT_143a07430 + 0x1200,
-    (const unsigned char*)&DAT_143a07430 + 0x1240,
-    (const unsigned char*)&DAT_143a07430 + 0x1280,
-    (const unsigned char*)&DAT_143a07430 + 0x12c0,
-    (const unsigned char*)&DAT_143a07430 + 0x1300,
-    (const unsigned char*)&DAT_143a07430 + 0x1340,
-    (const unsigned char*)&DAT_143a07430 + 0x1380,
-    (const unsigned char*)&DAT_143a07430 + 0x13c0,
-    (const unsigned char*)&DAT_143a07430 + 0x1400,
-    (const unsigned char*)&DAT_143a07430 + 0x1440,
-    (const unsigned char*)&DAT_143a07430 + 0x1480,
+    (const unsigned char*)&DAT_143a07838 + 0xcf8,
+    (const unsigned char*)&DAT_143a07838 + 0xd38,
+    (const unsigned char*)&DAT_143a07838 + 0xd78,
+    (const unsigned char*)&DAT_143a07838 + 0xdb8,
+    (const unsigned char*)&DAT_143a07838 + 0xdf8,
+    (const unsigned char*)&DAT_143a07838 + 0xe38,
+    (const unsigned char*)&DAT_143a07838 + 0xe78,
+    (const unsigned char*)&DAT_143a07838 + 0xeb8,
+    (const unsigned char*)&DAT_143a07838 + 0xef8,
+    (const unsigned char*)&DAT_143a07838 + 0xf38,
+    (const unsigned char*)&DAT_143a07838 + 0xf78,
+    (const unsigned char*)&DAT_143a07838 + 0xfb8,
+    (const unsigned char*)&DAT_143a07838 + 0xff8,
+    (const unsigned char*)&DAT_143a07838 + 0x1038,
+    (const unsigned char*)&DAT_143a07838 + 0x1078,
     "",
-    (const unsigned char*)&DAT_143a07430 + 0x1500,
-    (const unsigned char*)&DAT_143a07430 + 0x1540,
-    (const unsigned char*)&DAT_143a07430 + 0x1580,
-    (const unsigned char*)&DAT_143a07430 + 0x15c0,
+    (const unsigned char*)&DAT_143a07838 + 0x10f8,
+    (const unsigned char*)&DAT_143a07838 + 0x1138,
+    (const unsigned char*)&DAT_143a07838 + 0x1178,
+    (const unsigned char*)&DAT_143a07838 + 0x11b8,
 };
 // 0x143a08d08
 alignas(8) Sd_143a08d08 DAT_143a08d08 = {
@@ -12896,14 +12890,8 @@ alignas(16) unsigned char DAT_143a09660[0x10] = {
 alignas(16) unsigned char DAT_143a09670[0x10] = {
     0x00, 0x00, 0x80, 0x3f, 0x00, 0x00, 0x80, 0x3f, 0x00, 0x00, 0x80, 0x3f, 0x00, 0x00, 0x80, 0x3f,
 };
-// 0x143a284b0
-alignas(16) Sd_143a284b0 DAT_143a284b0 = {
-    {
-        0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x20, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00,
-    },
-    "PropertyVisualizationService",
-    (const void*)&DAT_143a284b0,
-    {0},
+// 0x143a288b8
+alignas(8) Sd_143a288b8 DAT_143a288b8 = {
     &DAT_1430fe2b0[0x6880],
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x20, 0x00, 0x00, 0x07, 0x20, 0x00, 0x07,
@@ -16637,8 +16625,10 @@ alignas(16) Sd_143a2f3a0 DAT_143a2f3a0 = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x3f, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x3f,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
     },
+};
+// 0x143a2f420
+alignas(16) Sd_143a2f420 DAT_143a2f420 = {
     DAT_14318ee08,
 };
 int DAT_143a2f428 = 1;                                          // 0x143a2f428
@@ -16832,8 +16822,11 @@ alignas(16) Sd_143a303c0 DAT_143a303c0 = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00,
-        0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00,
-        0x04, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    },
+};
+// 0x143a30650
+alignas(16) Sd_143a30650 DAT_143a30650 = {
+    {
         0x01, 0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
         0x05, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00,
         0x06, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x09, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
@@ -47366,7 +47359,7 @@ alignas(8) Sd_143a8da88 DAT_143a8da88 = {
     },
 };
 
-#pragma comment(linker, "/alternatename:?ms_ClassInfo@MS2PropService@@2VClassInfo@efd@@B=?DAT_143a07430@@3USd_143a07430@@A")
+#pragma comment(linker, "/alternatename:?ms_ClassInfo@MS2PropService@@2VClassInfo@efd@@B=?ms_ClassInfo@PropService@ecrPhysX@@2VClassInfo@efd@@B")
 #pragma comment(linker, "/alternatename:?DAT_143a08d08@@3UVector3@@A=?DAT_143a08d08@@3USd_143a08d08@@A")
 #pragma comment(linker, "/alternatename:?DAT_143a08d08@@3VPoint3@efd@@A=?DAT_143a08d08@@3USd_143a08d08@@A")
 #pragma comment(linker, "/alternatename:?DAT_143a09600@@3DA=?DAT_143a09600@@3USd_143a09600@@A")
@@ -47376,8 +47369,8 @@ alignas(8) Sd_143a8da88 DAT_143a8da88 = {
 #pragma comment(linker, "/alternatename:?g_143a09660@@3VColor@efd@@B=?DAT_143a09660@@3PAEA")
 #pragma comment(linker, "/alternatename:?g_143a09660@@3VNiColor@@B=?DAT_143a09660@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143a09670@@3VColorA@efd@@A=?DAT_143a09670@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143a284b0@@3HA=?DAT_143a284b0@@3USd_143a284b0@@A")
-#pragma comment(linker, "/alternatename:?ms_ClassInfo@MS2PropertyVisualizationService@@2VClassInfo@efd@@B=?DAT_143a284b0@@3USd_143a284b0@@A")
+#pragma comment(linker, "/alternatename:?DAT_143a284b0@@3HA=?ms_ClassInfo@PropertyVisualizationService@egmVisualizers@@2VClassInfo@efd@@B")
+#pragma comment(linker, "/alternatename:?ms_ClassInfo@MS2PropertyVisualizationService@@2VClassInfo@efd@@B=?ms_ClassInfo@PropertyVisualizationService@egmVisualizers@@2VClassInfo@efd@@B")
 #pragma comment(linker, "/alternatename:?ClassRegistrationTable@AS3@GFx@Scaleform@@3PAPEBUClassInfo@123@A=?DAT_143a28a30@@3USd_143a28a30@@A")
 #pragma comment(linker, "/alternatename:DAT_143a293e0=?DAT_143a293e0@@3USd_143a293e0@@A")
 #pragma comment(linker, "/alternatename:DAT_143a2a3e0=?DAT_143a2a3e0@@3USd_143a2a3e0@@A")
