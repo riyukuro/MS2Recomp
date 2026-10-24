@@ -325,10 +325,28 @@ MS2_CHECK_SIZE(CNMGuildOnlineInfo, 0x58);
 class CNMInviteVirtualUserEvent : public CNMEvent
 {
 public:
+    CNMInviteVirtualUserEvent();
+    CNMInviteVirtualUserEvent(long long n28, int n30, int n34, long long n38, long long n40,
+                              const char* text48, const char* text88);
     virtual ~CNMInviteVirtualUserEvent() = default;
-    void vfunc_11(unsigned int) override;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
-    unsigned char m_body[0x1a8];
+    long long m_28; // +0x28
+    int m_30; // +0x30
+    int m_34; // +0x34
+    int m_38; // +0x38
+    int m_3c; // +0x3c
+    int m_40; // +0x40
+    int m_44; // +0x44
+    char m_48[0x40]; // +0x48
+    char m_88[0x40]; // +0x88
+    char m_c8[0x100]; // +0xc8
+    int m_1c8; // +0x1c8
 };
 MS2_CHECK_SIZE(CNMInviteVirtualUserEvent, 0x1d0);
 
