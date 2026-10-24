@@ -1319,3 +1319,10 @@ MS2_REPLACE(0x14184e2e0, ApplyColorKeyToSurface, 742, 0xD780E1C8);
 MS2_REPLACE(0x14184e5d0, GetScreenshotBuffer, 102, 0xFD4CA42A);
 MS2_REPLACE(0x141851320, CountMipLevels, 148, 0x44BB3F0F);
 
+// Full-executable aliases for existing texture helper implementations.
+// MS2-PIN: ?SamplePixelData@@YAHPEAVNiPixelData@@VNiPoint2@@PEAUUnk_TexColor@@_N@Z 0x14184dad0
+// MS2-PIN: ?TakeScreenshotJpg@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HH@Z 0x141850100
+// MS2-PIN: ?FUN_14184dad0@@YAXPEAXUUnk_CtiUV@@PEAUUnk_CtiPixel@@H@Z 0x14184dad0
+// MS2-PIN: ?FUN_141850100_2@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HH@Z 0x141850100
+// MS2-PIN: ?FUN_141850100@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HH_N@Z 0x141850100
+// MS2-PIN: ?FUN_141850100@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HH@Z 0x141850100
