@@ -9955,3 +9955,9 @@ Video04ClassInfo	143a47b70	data
 ?FinalizeComposition@IMEManagerBase@GFx@Scaleform@@QEAAXPEB_W_K@Z	1425b4420	func
 ?OnMouseDown@IMEManagerBase@GFx@Scaleform@@QEAAXPEAVMovie@23@HPEAVInteractiveObject@23@@Z	1425b4900	func
 ?SetName@ViewStats@AMP@GFx@Scaleform@@QEAAXPEBD@Z	142624660	func
+??0Error@VM@AS3@GFx@Scaleform@@QEAA@W4ErrorID@1234@AEAV1234@AEBVValue@234@@Z	1424d6f40	func
+?GetFunctType@State@TR@AS3@GFx@Scaleform@@QEBAAEAVTraits@InstanceTraits@345@AEBVValue@345@@Z	14250a1b0	func
+?Sfr27GetClassTraitsByName@AS3@GFx@Scaleform@@YAPEAVTraits@ClassTraits@123@PEAVVM@123@PEBVASString@23@PEBVNamespace@Instances@123@@Z	1425251e0	func
+?Sfr27TracerIsPrimitiveType@TR@AS3@GFx@Scaleform@@YA_N_K0@Z	142514a80	func
+DAT_14317ef38	14317ef38	data
+DAT_143a2dd50	143a2dd50	data
