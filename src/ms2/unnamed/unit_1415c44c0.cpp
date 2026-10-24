@@ -4,6 +4,7 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/nmfunc.h"
+#include "ms2/placeholder/nmobjects.h"
 
 class CStreamCryptor_v0
 {
@@ -166,6 +167,42 @@ unsigned int FUN_1415cb740(const void* manager)
 {
     return *reinterpret_cast<const unsigned int*>(static_cast<const unsigned char*>(manager) + 0x38);
 }
+
+// MS2-FUNCTIONAL: constructs the finalize request and forwards it to the manager dispatcher.
+// @0x1415c4870
+int FUN_1415c4870()
+{
+    CNMFinalizeFunc request;
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+// MS2-PIN: ?FUN_1415c4870@@YAHXZ 0x1415c4870
+
+// MS2-FUNCTIONAL: constructs the messenger logout request and forwards it to the manager dispatcher.
+// @0x1415c53b0
+int FUN_1415c53b0()
+{
+    CNMLogoutMessengerFunc request;
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+// MS2-PIN: ?FUN_1415c53b0@@YAHXZ 0x1415c53b0
+
+// MS2-FUNCTIONAL: constructs the news request and forwards it to the manager dispatcher.
+// @0x1415c5b40
+int FUN_1415c5b40()
+{
+    CNMRequestNewsFunc request;
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+// MS2-PIN: ?FUN_1415c5b40@@YAHXZ 0x1415c5b40
+
+// MS2-FUNCTIONAL: constructs the game summary request and forwards it to the manager dispatcher.
+// @0x1415c8e30
+int FUN_1415c8e30()
+{
+    CNMOpenGameSummaryFunc request;
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+// MS2-PIN: ?FUN_1415c8e30@@YAHXZ 0x1415c8e30
 
 // @0x1415c46c0
 void FUN_1415c46c0()
