@@ -351,7 +351,7 @@ bool CQuestMaskTable::LoadFile(const CStringA& strFile, Unk_QmFieldMap& rMap)
 }
 
 // @0x140768600
-static int Unk_RandomStep(int* pState)
+int Unk_RandomStep(int* pState)
 {
     int nValue = *pState;
     *pState = *pState * 0x343fd + 0x269ec3;
