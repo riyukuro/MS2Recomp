@@ -63,6 +63,7 @@ import bytematch as bm  # noqa: E402
 import ms2paths  # noqa: E402
 import gbprogress  # noqa: E402
 import importthunks  # noqa: E402  (imports stage: linker import thunks)
+import datacheck  # noqa: E402  (data units: globals of ranges outside .text)
 import ms2flags  # noqa: E402  (`// MS2-FLAGS: <profile>` per-unit flags, cmake/ms2-unit-profiles.cmake)
 import sf_sdk_guard  # noqa: E402  (MS2-FLAGS: scaleform units must not include SDK headers)
 import mergekey  # noqa: E402
@@ -1074,6 +1075,11 @@ def process_unit(u, exe, starts, finfo, bases, vft, verbose):
                 bm.HARVEST.clear()
                 bm.HARVEST.update(snap)
             res["vft"][name] = {"va": va, "ok": ok, "report": "" if ok else text}
+    # 5. data units (tools/datacheck.py): every range outside .text, so the unit's globals are checked, not functions
+    if datacheck.is_data_unit(u, exe):
+        res["data"] = datacheck.check(u, obj, exe)
+        nd = sum(1 for d in res["data"].values() if d["ok"])
+        res["notes"].append(f"data unit: {nd}/{len(res['data'])} globals OK")
     res["harvest"] = dict(bm.HARVEST)
     res["symmismatch"] = sorted({f"{n} is 0x{w:x} in the symbol table, exe uses 0x{v:x}" for n, w, v in bm.SYMBOL_MISMATCH})
     # byte-identical exe copies under one name (bytematch.same_code): the unit's own binding is accepted, info only
@@ -1446,6 +1452,17 @@ def main():
         for va, nm, un, st, sz in rows:
             fo.write(f"{va:x}\t{nm}\t{un}\t{st}\t{sz}\n")
 
+    # data units (tools/datacheck.py): one row per global (aliases included), separate from the function rows
+    with open(os.path.join(OUT, "data-status.tsv"), "w") as fo:
+        fo.write("#va\tname\tunit\tstate\tsize\n")
+        drows = []
+        for rel in sorted(cache):
+            for dn, dv in ((cache[rel].get("res") or {}).get("data") or {}).items():
+                drows.append((dv["va"] or 0, dn, unit_by_rel[rel].name, "matched" if dv["ok"] else "bad",
+                              dv["size"] or 0))
+        for va, dn, un, st, sz in sorted(drows):
+            fo.write(f"{va:x}\t{dn}\t{un}\t{st}\t{sz}\n")
+
     # overall game-code denominator: functions inside work/map/units.tsv ranges (minus the rows a library lane owns)
     game_n = game_b = 0
     lib_owned = gbprogress.owned_game_units()
@@ -1535,9 +1552,13 @@ def main():
                 continue
             rel = by_rel.get(name)
             res = cache.get(rel, {}).get("res") or {}
+            dres = res.get("data") or {}
+            for dn, dv in sorted(dres.items()):
+                if not dv["ok"]:
+                    bad.append(f"{name}: data {dn}: {dv['report']}")
             if a.functional:
                 stubs = n - m - f
-                if fail or n == 0 or stubs or vok != nv:
+                if fail or (n == 0 and not dres) or stubs or vok != nv:
                     bad.append(f"{name}: " + ("COMPILE FAILED" if fail else
                                               f"{m + f}/{n} functions implemented ({stubs} stub), vftables {vok}/{nv}"))
                 for d in res.get("symmismatch", []):
@@ -1571,7 +1592,7 @@ def main():
                             bad.append(line)
                 ok_msg = (f"functional: OK (matched {m}/{n}, {f} functional, {bmt} of {b} bytes = "
                           f"{100.0 * bmt / b if b else 0:.1f}% exact, {100.0 * (bmt + bft) / b if b else 0:.1f}% implemented)")
-            elif fail or n == 0 or m != n or vok != nv:
+            elif fail or (n == 0 and not dres) or m != n or vok != nv:
                 bad.append(f"{name}: " + ("COMPILE FAILED" if fail else
                                           f"{m}/{n} functions matched ({f} functional, {n - m - f} stub), "
                                           f"vftables {vok}/{nv}"))
