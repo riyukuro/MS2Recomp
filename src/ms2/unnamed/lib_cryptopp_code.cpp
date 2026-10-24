@@ -9,6 +9,9 @@
 // MS2-RANGE: 0x14235df70-0x14235dff1 .text$mn
 // MS2-RANGE: 0x1423697c0-0x1423697f6 .text$mn
 // MS2-RANGE: 0x14237b650-0x14237b711 .text$mn
+// MS2-RANGE: 0x1423729e0-0x142372b90 .text$mn
+// MS2-RANGE: 0x142372d60-0x142372f10 .text$mn
+// MS2-RANGE: 0x142372f20-0x1423730d1 .text$mn
 // MS2-FLAGS: gamebryo
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
@@ -107,6 +110,7 @@ struct CppCryptoException
 struct CppTempString
 {
     union { std::string s; };
+    CppTempString() {}
     CppTempString(const char* p) { FUN_1401d2620(&s, p); }
     ~CppTempString() { s.~basic_string(); }
 };
@@ -132,4 +136,76 @@ CppCryptoExceptionA* FUN_14235bce0(CppCryptoExceptionA* self)
 CppCryptoExceptionB* FUN_14237b650(CppCryptoExceptionB* self)
 {
     return new (self) CppCryptoExceptionB();
+}
+
+// CryptoPP::AssignFromHelperClass<T, BASE>: if the source holds "ThisObject:<T>" copy it, else let BASE assign
+struct CppNameValuePairs
+{
+    virtual void v0();
+    virtual bool GetVoidValue(const char* name, const std::type_info& valueType, void* pValue) const;
+};
+struct CppAssignHelper
+{
+    void* m_pObject;
+    const CppNameValuePairs* m_source;
+    bool m_done;
+};
+extern const char DAT_14312b860[];
+extern const std::type_info DAT_143aa7e90;
+extern const std::type_info DAT_143aa1e90;
+extern const std::type_info DAT_143aa7e20;
+extern const std::type_info DAT_143aa1de0;
+extern const std::type_info DAT_143aa1d00;
+void FUN_14232fe10(void* pObject, const CppNameValuePairs* source);
+void FUN_1423306d0(void* pObject, const CppNameValuePairs* source);
+void FUN_142375640(void* pObject, const CppNameValuePairs* source);
+
+// NameValuePairs::GetThisObject: GetValue("ThisObject:" + typeid(T).name(), object)
+static __forceinline bool CppGetThisObject(const CppNameValuePairs* source, const std::type_info& t, void* pObject)
+{
+    CppTempString base;
+    std::string& b = *FUN_1401d2620(&base.s, DAT_14312b860);
+    return source->GetVoidValue((std::move(b) + t.name()).c_str(), t, pObject);
+}
+
+// MS2-FUNCTIONAL: same calls and logic; the string temporaries sit in swapped stack slots and are destroyed in a different order (the exe puts the operator+ result below the base string)
+// @0x1423729e0
+CppAssignHelper* FUN_1423729e0(CppAssignHelper* self, void* pObject, const CppNameValuePairs* source)
+{
+    self->m_pObject = pObject;
+    self->m_source = source;
+    self->m_done = false;
+    if (CppGetThisObject(source, DAT_143aa7e90, pObject))
+        self->m_done = true;
+    else if (DAT_143aa1e90 != DAT_143aa7e90)
+        FUN_14232fe10(pObject, source);
+    return self;
+}
+
+// MS2-FUNCTIONAL: same calls and logic; the string temporaries sit in swapped stack slots and are destroyed in a different order (the exe puts the operator+ result below the base string)
+// @0x142372d60
+CppAssignHelper* FUN_142372d60(CppAssignHelper* self, void* pObject, const CppNameValuePairs* source)
+{
+    self->m_pObject = pObject;
+    self->m_source = source;
+    self->m_done = false;
+    if (CppGetThisObject(source, DAT_143aa7e20, pObject))
+        self->m_done = true;
+    else if (DAT_143aa1de0 != DAT_143aa7e20)
+        FUN_1423306d0(pObject, source);
+    return self;
+}
+
+// MS2-FUNCTIONAL: same calls and logic; the string temporaries sit in swapped stack slots and are destroyed in a different order (the exe puts the operator+ result below the base string)
+// @0x142372f20
+CppAssignHelper* FUN_142372f20(CppAssignHelper* self, char* pObject, const CppNameValuePairs* source)
+{
+    self->m_pObject = pObject;
+    self->m_source = source;
+    self->m_done = false;
+    if (CppGetThisObject(source, DAT_143aa1d00, pObject))
+        self->m_done = true;
+    else if (DAT_143aa1d00 != DAT_143aa1d00)
+        FUN_142375640(pObject + 0x50, source);
+    return self;
 }
