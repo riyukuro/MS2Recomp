@@ -36,6 +36,125 @@ extern ptrdiff_t FUN_1415d47c0(Unk_StlElem<0xf8>* first, Unk_StlElem<0xf8>* last
 extern ptrdiff_t FUN_1415d47f0(Unk_StlElem<0x490>* first, Unk_StlElem<0x490>* last, std::random_access_iterator_tag);
 extern ptrdiff_t FUN_1415d4820(Unk_StlElem<0x30>* first, Unk_StlElem<0x30>* last, std::random_access_iterator_tag);
 
+static const char nm_empty[] = "";
+
+static void nm_copy_cnm_string(void* dst, const char* src, size_t capacity)
+{
+    if (!src) return;
+    size_t length = 0;
+    while (length + 1 < capacity && src[length]) ++length;
+    char* buffer = static_cast<char*>(::operator new(capacity));
+    std::memcpy(buffer, src, length);
+    buffer[length] = '\0';
+    *reinterpret_cast<char**>(dst) = buffer;
+}
+
+// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// @0x1415e5820
+void FUN_1415e5820(void* p, const void* value)
+{
+    *reinterpret_cast<const char**>(p) = nm_empty; nm_copy_cnm_string(p, static_cast<const char*>(value), 9);
+}
+
+// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// @0x1415e5860
+void* FUN_1415e5860(void* p)
+{
+    *reinterpret_cast<const char**>(p) = nm_empty; return p;
+}
+
+// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// @0x1415e5880
+void* FUN_1415e5880(void* p)
+{
+    *reinterpret_cast<const char**>(p) = nm_empty; return p;
+}
+
+// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// @0x1415e58a0
+void* FUN_1415e58a0(void* p, const void* const* value)
+{
+    *reinterpret_cast<const char**>(p) = nm_empty; nm_copy_cnm_string(p, static_cast<const char*>(*value), 0x1000); return p;
+}
+
+// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// @0x1415e58e0
+void* FUN_1415e58e0(void* p, const void* value)
+{
+    *reinterpret_cast<const char**>(p) = nm_empty; nm_copy_cnm_string(p, static_cast<const char*>(value), 0x1000); return p;
+}
+
+// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// @0x1415e5920
+void* FUN_1415e5920(void* p)
+{
+    *reinterpret_cast<const char**>(p) = nm_empty; return p;
+}
+
+// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// @0x1415e5940
+void* FUN_1415e5940(void* p, const void* value)
+{
+    *reinterpret_cast<const char**>(p) = nm_empty; nm_copy_cnm_string(p, static_cast<const char*>(value), 0x15e); return p;
+}
+
+// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// @0x1415e5980
+void* FUN_1415e5980(void* p)
+{
+    *reinterpret_cast<const char**>(p) = nm_empty; return p;
+}
+
+// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// @0x1415e5a40
+void* FUN_1415e5a40(void* p, const void* const* value)
+{
+    *reinterpret_cast<const char**>(p) = nm_empty; nm_copy_cnm_string(p, static_cast<const char*>(*value), 0x40); return p;
+}
+
+// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// @0x1415e5a80
+void* FUN_1415e5a80(void* p, const void* value)
+{
+    *reinterpret_cast<const char**>(p) = nm_empty; nm_copy_cnm_string(p, static_cast<const char*>(value), 0x40); return p;
+}
+
+// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// @0x1415e5ac0
+void* FUN_1415e5ac0(void* p)
+{
+    *reinterpret_cast<const char**>(p) = nm_empty; return p;
+}
+
+// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// @0x1415e5ae0
+void* FUN_1415e5ae0(void* p, const void* const* value)
+{
+    *reinterpret_cast<const char**>(p) = nm_empty; nm_copy_cnm_string(p, static_cast<const char*>(*value), 0x400); return p;
+}
+
+// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// @0x1415e5b20
+void* FUN_1415e5b20(void* p, const void* value)
+{
+    *reinterpret_cast<const char**>(p) = nm_empty; nm_copy_cnm_string(p, static_cast<const char*>(value), 0x400); return p;
+}
+
+// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// @0x1415e5b60
+void* FUN_1415e5b60(void* p)
+{
+    *reinterpret_cast<const char**>(p) = nm_empty; return p;
+}
+
+// MS2-FUNCTIONAL: copies the 12-byte record exactly as recovered from the loop in the decompilation.
+// @0x1415e57f0
+unsigned char* FUN_1415e57f0(unsigned char* dst, const unsigned char* src)
+{
+    std::memcpy(dst, src, 0x0c);
+    return dst;
+}
+
 // MS2-FUNCTIONAL: advances the recovered pointer by the requested number of elements.
 // @0x1415e5330
 void* FUN_1415e5330(void* p, ptrdiff_t n)
@@ -1915,3 +2034,18 @@ void* FUN_1415e5320(void* p) { return p; }
 // MS2-PIN: ??$next@PEAVCNMSessionMemberInfo@@@std@@YAPEAVCNMSessionMemberInfo@@PEAV1@_J@Z 0x1415e5630
 // MS2-PIN: ??$next@PEAVCNMVirtualUserInfo@@@std@@YAPEAVCNMVirtualUserInfo@@PEAV1@_J@Z 0x1415e5660
 // MS2-PIN: ??$next@PEBVCNMChannelMemberInfo@@@std@@YAPEBVCNMChannelMemberInfo@@PEBV1@_J@Z 0x1415e5690
+// MS2-PIN: ?FUN_1415e57f0@@YAPEAEPEAEPEBE@Z 0x1415e57f0
+// MS2-PIN: ?FUN_1415e5820@@YAXPEAXPEBX@Z 0x1415e5820
+// MS2-PIN: ?FUN_1415e5860@@YAPEAXPEAX@Z 0x1415e5860
+// MS2-PIN: ?FUN_1415e5880@@YAPEAXPEAX@Z 0x1415e5880
+// MS2-PIN: ?FUN_1415e58a0@@YAPEAXPEAXPEBQBX@Z 0x1415e58a0
+// MS2-PIN: ?FUN_1415e58e0@@YAPEAXPEAXPEBX@Z 0x1415e58e0
+// MS2-PIN: ?FUN_1415e5920@@YAPEAXPEAX@Z 0x1415e5920
+// MS2-PIN: ?FUN_1415e5940@@YAPEAXPEAXPEBX@Z 0x1415e5940
+// MS2-PIN: ?FUN_1415e5980@@YAPEAXPEAX@Z 0x1415e5980
+// MS2-PIN: ?FUN_1415e5a40@@YAPEAXPEAXPEBQBX@Z 0x1415e5a40
+// MS2-PIN: ?FUN_1415e5a80@@YAPEAXPEAXPEBX@Z 0x1415e5a80
+// MS2-PIN: ?FUN_1415e5ac0@@YAPEAXPEAX@Z 0x1415e5ac0
+// MS2-PIN: ?FUN_1415e5ae0@@YAPEAXPEAXPEBQBX@Z 0x1415e5ae0
+// MS2-PIN: ?FUN_1415e5b20@@YAPEAXPEAXPEBX@Z 0x1415e5b20
+// MS2-PIN: ?FUN_1415e5b60@@YAPEAXPEAX@Z 0x1415e5b60
