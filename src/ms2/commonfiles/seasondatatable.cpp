@@ -786,3 +786,15 @@ MS2Ptr<CSeasonReward> CSeasonDataTable::GetReward(SeasonRankType type)
 // MS2-RANGE: 0x1407a1bf0-0x1407a3380 .text$mn
 // @0x1407a3260
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
+
+// Full-executable aliases for existing CSeasonDataTable methods.
+// MS2-PIN: ?Tick@CSeasonDataTable@@QEAAXXZ 0x140791ac0
+// MS2-PIN: ?Load@CSeasonDataTable@@QEAA_NXZ 0x140791c30
+// MS2-PIN: ?GetUpcoming@CSeasonDataTable@@QEAAXW4SeasonRankType@@AEAV?$CAtlArray@V?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@ATL@@@ATL@@@Z 0x1407920d0
+// MS2-PIN: ?GetRecent@CSeasonDataTable@@QEAAXW4SeasonRankType@@AEAV?$CAtlArray@V?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@ATL@@@ATL@@@Z 0x140792250
+// MS2-PIN: ?GetContentsName@CSeasonDataTable@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$MS2Ptr@VCSeasonData@@@@H@Z 0x1407925e0
+// MS2-PIN: ?FUN_140791ac0@@YAXPEAX@Z 0x140791ac0
+// MS2-PIN: ?FUN_140791c30@@YAXPEAVCSeasonDataTable@@@Z 0x140791c30
+// MS2-PIN: ?FUN_1407920d0@Unk_RankSeasonTable@@QEAAXHAEAV?$CAtlArray@UUnk_RankSeasonPtr@@V?$CElementTraits@UUnk_RankSeasonPtr@@@ATL@@@ATL@@@Z 0x1407920d0
+// MS2-PIN: ?FUN_140792250@Unk_RankSeasonTable@@QEAAXHAEAV?$CAtlArray@UUnk_RankSeasonPtr@@V?$CElementTraits@UUnk_RankSeasonPtr@@@ATL@@@ATL@@@Z 0x140792250
+// MS2-PIN: ?FUN_1407925e0@Unk_RankSeasonTable@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@UUnk_RankSeasonPtr@@H@Z 0x1407925e0
