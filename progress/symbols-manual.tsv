@@ -10137,3 +10137,6 @@ DAT_143a2dd50	143a2dd50	data
 ?RefineOpCodeStack2@State@TR@AS3@GFx@Scaleform@@AEAAXAEAVTraits@InstanceTraits@345@W4OpCode@Code@Abc@345@@Z	142520f30	func
 ?RefineOpCodeReg1@State@TR@AS3@GFx@Scaleform@@AEAAXAEAVTraits@InstanceTraits@345@W4OpCode@Code@Abc@345@H@Z	142520d80	func
 ?exec_opcode@State@TR@AS3@GFx@Scaleform@@AEAAXW4OpCode@Code@Abc@345@AEA_K@Z	14253d520	func
+?DAT_14317aeb0@@3QBUThunkInfo@AS3@GFx@Scaleform@@B	14317aeb0	data
+?DAT_143a2d5c0@@3QBUThunkInfo@AS3@GFx@Scaleform@@B	143a2d5c0	data
+DAT_143a2dd40	143a2dd40	data
