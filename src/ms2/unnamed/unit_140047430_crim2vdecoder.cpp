@@ -221,6 +221,12 @@ void FUN_140047580(Unk_M2vParams* p)
     p->m_64 = 0xff;
 }
 
+// The decoder table's no-op entry (LAB_140047620, stored by address in FUN_1400478a0).
+// @0x140047620
+void FUN_140047620(void)
+{
+}
+
 // @0x140047630
 Unk_M2vCtx* FUN_140047630(void)
 {
@@ -269,6 +275,16 @@ void FUN_1400476e0(int nIndex, int nValue)
             uCount = uCount - 1;
         } while (uCount != 0);
     }
+}
+
+// The decoder table entry LAB_140047730 (stored by address in FUN_1400478a0): sets the +0x1a90 value and the
+// +0x1a98/+0x1aa0 pair FUN_140047660 resets.
+// @0x140047730
+void FUN_140047730(Unk_M2vCtx* pCtx, int n1a90, unsigned long long u1a98, unsigned long long u1aa0)
+{
+    pCtx->m_1a90 = n1a90;
+    pCtx->m_1aa0 = u1aa0;
+    pCtx->m_1a98 = u1a98;
 }
 
 // @0x140047750

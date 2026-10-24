@@ -85,6 +85,14 @@ MentoringContext::MentoringContext() : m_18(0), m_20(0), m_28(0)
 {
 }
 
+// The factory GameEventShutdown registers: GameEventShutdown is not constructible from the registry, so it
+// returns NULL.
+// @0x14041d460
+GameEvent* FUN_14041d460()
+{
+    return NULL;
+}
+
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- hooks ----

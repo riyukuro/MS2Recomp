@@ -357,4 +357,14 @@ unsigned long long FUN_14004730c(const Unk_CriUtfValue* a, const Unk_CriUtfValue
     }
     return 1;
 }
+
+// The M2V decoder's version entry (LAB_140047420, the first slot of unit_140047430's FUN_1400478a0 table).
+// MS2-FUNCTIONAL: the version text is a literal here, not the exe's .rdata copy.
+// @0x140047420
+const char* FUN_140047420(void)
+{
+    return "\nCRI M2V/PCx64 Ver.2.076 Build:Jan 13 2012 18:29:31\n";
+}
+
+// ---- hooks ----
 MS2_REPLACE(0x14004730C, FUN_14004730c, 261, 0x1F479B7F);

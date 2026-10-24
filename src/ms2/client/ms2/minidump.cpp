@@ -25,8 +25,8 @@
 int FUN_14092c040(wchar_t* pBuffer, size_t cchBuffer, const wchar_t* pszFormat, ...);   // wide "sprintf_s" helper
 int FUN_140392040(char* pBuffer, size_t nSize, const char* pszFormat, ...);              // narrow "sprintf_s" helper
 
-// The two CRT callback stubs the exe keeps out of line at 0x141485570 (spills its arguments and breaks) and
-// 0x141485590 (nop/int3/ret). They sit inside this TU's range but are not separate entries of the unit.
+// The two CRT callback stubs at 0x141485570 (spills its arguments and breaks) and 0x141485590 (nop/int3/ret),
+// defined after the exception filter.
 extern "C" void __cdecl FUN_141485570(const wchar_t*, const wchar_t*, const wchar_t*, unsigned, uintptr_t);
 extern "C" void __cdecl FUN_141485590();
 
@@ -272,6 +272,22 @@ LONG WINAPI FUN_1414854b0(LPEXCEPTION_POINTERS pExceptionInfo)
     MessageBoxA(NULL, "\xc7\xc1\xb7\xce\xb1\xd7\xb7\xa5\xc0\xcc \xc1\xd7\xbe\xfa\xbd\xc0\xb4\xcf\xb4\xd9.\n\n\xb0\xeb\xb9\xdf\xc6\xf7\xbf\xa1 \xb9\xae\xc0\xc7\xc7\xd8\xc1\xd6\xbc\xbc\xbf\xe4.", "MapleStory2", 0);
     TerminateProcess(GetCurrentProcess(), 2);
     return 1;
+}
+
+// The invalid-parameter handler FUN_141484920 installs: breaks into the debugger.
+// MS2-FUNCTIONAL: the exe spills the four register arguments to their home slots before the int3.
+// @0x141485570
+extern "C" void __cdecl FUN_141485570(const wchar_t*, const wchar_t*, const wchar_t*, unsigned, uintptr_t)
+{
+    __debugbreak();
+}
+
+// The purecall handler FUN_141484920 installs: breaks into the debugger.
+// MS2-FUNCTIONAL: the exe pads the int3 with a 2-byte nop.
+// @0x141485590
+extern "C" void __cdecl FUN_141485590()
+{
+    __debugbreak();
 }
 
 // @0x1414855a0
