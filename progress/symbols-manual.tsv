@@ -14620,3 +14620,14 @@ DAT_1439f8358	1439f8358	data
 ?DAT_14317c9b0@@3USd_14317c9b0@@A	14317c9b0	data
 ?DAT_143215368@@3USd_143215368@@A	143215368	data
 ?DAT_143222278@@3USd_143222278@@A	143222278	data
+?DAT_143a2f9a0@@3PAEA	143a2f9a0	data
+?DAT_143a2fb88@@3USd_143a2fb88@@A	143a2fb88	data
+?Format@VertexXY16f@Render@Scaleform@@2UVertexFormat@23@A	143a2fb88	data
+?DAT_143a2fba0@@3USd_143a2fba0@@A	143a2fba0	data
+?Format@VertexXY16fAlpha@Render@Scaleform@@2UVertexFormat@23@A	143a2fba0	data
+?DAT_143a2fbb8@@3USd_143a2fbb8@@A	143a2fbb8	data
+?Format@VertexXY16iC32@Render@Scaleform@@2UVertexFormat@23@A	143a2fbb8	data
+?DAT_143a2fc00@@3USd_143a2fc00@@A	143a2fc00	data
+?Format@VertexXY16iInstance@Render@Scaleform@@2UVertexFormat@23@A	143a2fc00	data
+?DAT_143a2fc18@@3USd_143a2fc18@@A	143a2fc18	data
+?Format@VertexXY16iUV@Render@Scaleform@@2UVertexFormat@23@A	143a2fc18	data
