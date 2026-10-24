@@ -1148,3 +1148,22 @@ int FUN_1415fb720(void* p) { return *reinterpret_cast<int*>(static_cast<char*>(p
 unsigned int FUN_1415fb750(void* p) { return *reinterpret_cast<unsigned int*>(static_cast<char*>(p) + 0x24); }
 // MS2-PIN: ?FUN_1415fb750@@YAIPEAX@Z 0x1415fb750
 // MS2-PIN: ?FUN_1415fb750@@YAHPEAX@Z 0x1415fb750
+
+// @0x1415f9bd0
+void FUN_1415f9bd0(void** p) { nm_reset_string(p, 0xae28ec); }
+// @0x1415fb290
+unsigned long long FUN_1415fb290(unsigned long long value) { return value >> 32; }
+// @0x1415fb2a0
+unsigned short FUN_1415fb2a0(const void* p) { return *reinterpret_cast<const unsigned short*>(static_cast<const char*>(p) + 8); }
+// @0x1415fb3a0
+const char* FUN_1415fb3a0(const char* p) { return p + 0xa38; }
+// @0x1415fb5f0
+unsigned long long FUN_1415fb5f0(const unsigned long long* p) { return *p >> 32; }
+// @0x1415fb630
+unsigned char FUN_1415fb630(const void* p) { return *(static_cast<const unsigned char*>(p) + 0x1c); }
+// @0x1415fb640
+unsigned int FUN_1415fb640(const void* p) { return *reinterpret_cast<const unsigned int*>(static_cast<const char*>(p) + 4); }
+// @0x1415fb6d0
+unsigned char FUN_1415fb6d0(const void* p) { return *(static_cast<const unsigned char*>(p) + 0x28); }
+// @0x1415fb710
+unsigned int FUN_1415fb710(const void* p) { return *reinterpret_cast<const unsigned int*>(static_cast<const char*>(p) + 0x18); }
