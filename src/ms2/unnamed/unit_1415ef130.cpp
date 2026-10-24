@@ -3520,6 +3520,51 @@ bool FUN_1415f2a60(const long long* a, const long long* b)
 {
     return *a == *b;
 }
+// MS2-FUNCTIONAL: copies the recovered fixed payload and preserves the embedded serializable vtable.
+// @0x1415f1930
+CNMSerializable* FUN_1415f1930(CNMSerializable* dst, long long src)
+{
+    auto* d = reinterpret_cast<unsigned char*>(dst);
+    auto* s = reinterpret_cast<const unsigned char*>(src);
+    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    std::memcpy(d + 0x10, s + 0x10, 0xd8);
+    reinterpret_cast<CNMSerializable*>(d + 0xe8)->CopyFrom(reinterpret_cast<CNMSerializable*>(const_cast<unsigned char*>(s + 0xe8)));
+    std::memcpy(d + 0xf8, s + 0xf8, 0x3c0);
+    std::memcpy(d + 0x4b8, s + 0x4b8, 0x800);
+    return dst;
+}
+// MS2-FUNCTIONAL: applies the recovered field ranges and embedded CopyFrom operation.
+// @0x1415f1f10
+long long FUN_1415f1f10(long long dst, long long src)
+{
+    auto* d = reinterpret_cast<unsigned char*>(dst);
+    auto* s = reinterpret_cast<const unsigned char*>(src);
+    FUN_1415f0870(reinterpret_cast<CNMSerializable*>(dst), src);
+    std::memcpy(d + 0xb0, s + 0xb0, 0x7a);
+    std::memcpy(d + 0x12a, s + 0x12a, 0x10);
+    reinterpret_cast<CNMSerializable*>(d + 0x140)->CopyFrom(reinterpret_cast<CNMSerializable*>(const_cast<unsigned char*>(s + 0x140)));
+    std::memcpy(d + 0x150, s + 0x150, 0x11);
+    std::memcpy(d + 0x161, s + 0x161, 0x40);
+    return dst;
+}
+// MS2-FUNCTIONAL: copies the recovered contiguous 0x1e0-byte payload after base CopyFrom.
+// @0x1415f2310
+CNMSerializable* FUN_1415f2310(CNMSerializable* dst, long long src)
+{
+    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    std::memcpy(reinterpret_cast<unsigned char*>(dst) + 0x10,
+                reinterpret_cast<const unsigned char*>(src) + 0x10, 0x1e0);
+    return dst;
+}
+// MS2-FUNCTIONAL: copies the recovered contiguous 0x4ac-byte payload after base CopyFrom.
+// @0x1415f2720
+CNMSerializable* FUN_1415f2720(CNMSerializable* dst, long long src)
+{
+    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    std::memcpy(reinterpret_cast<unsigned char*>(dst) + 0x10,
+                reinterpret_cast<const unsigned char*>(src) + 0x10, 0x4ac);
+    return dst;
+}
 
 // MS2-FUNCTIONAL: dispatches the executable's virtual CopyFrom slot and returns the destination.
 // @0x1415efb90
