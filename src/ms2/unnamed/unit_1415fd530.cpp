@@ -519,6 +519,101 @@ void* FUN_141601a40(void* p) { return p; }
 void* FUN_141601a50(void* p) { return p; }
 // @0x141601a60
 void* FUN_141601a60(void* p) { return p; }
+
+// @0x141601710
+void* FUN_141601710(void* p) { return p; }
+// @0x141601720
+void* FUN_141601720(void* p) { return p; }
+// @0x141601730
+void* FUN_141601730(void* p) { return p; }
+// @0x141601740
+void* FUN_141601740(void* p) { return p; }
+// @0x141601770
+void* FUN_141601770(void* p) { return p; }
+// @0x141601780
+void* FUN_141601780(void* p) { return p; }
+// @0x141601790
+void* FUN_141601790(void* p) { return p; }
+// @0x1416017a0
+void* FUN_1416017a0(void* p) { return p; }
+// @0x1416017b0
+void* FUN_1416017b0(void* p) { return p; }
+// @0x1416017c0
+void* FUN_1416017c0(void* p) { return p; }
+// @0x1416017d0
+void* FUN_1416017d0(void* p) { return p; }
+// @0x1416017e0
+void* FUN_1416017e0(void* p) { return p; }
+// @0x1416017f0
+void* FUN_1416017f0(void* p) { return p; }
+// @0x141601800
+void* FUN_141601800(void* p) { return p; }
+// @0x141601810
+void* FUN_141601810(void* p) { return p; }
+// @0x141601820
+void* FUN_141601820(void* p) { return p; }
+// @0x141601830
+void* FUN_141601830(void* p) { return p; }
+// @0x141601840
+void* FUN_141601840(void* p) { return p; }
+// @0x141601850
+void* FUN_141601850(void* p) { return p; }
+// @0x141601860
+void* FUN_141601860(void* p) { return p; }
+// @0x141601870
+void* FUN_141601870(void* p) { return p; }
+// @0x141601880
+void* FUN_141601880(void* p) { return p; }
+// @0x141601890
+void* FUN_141601890(void* p) { return p; }
+// @0x1416018a0
+void* FUN_1416018a0(void* p) { return p; }
+// @0x1416018b0
+void* FUN_1416018b0(void* p) { return p; }
+// @0x1416018c0
+void* FUN_1416018c0(void* p) { return p; }
+// @0x1416018d0
+void* FUN_1416018d0(void* p) { return p; }
+// @0x1416018e0
+void* FUN_1416018e0(void* p) { return p; }
+// @0x1416018f0
+void* FUN_1416018f0(void* p) { return p; }
+// @0x141601900
+void* FUN_141601900(void* p) { return p; }
+// @0x141601910
+void* FUN_141601910(void* p) { return p; }
+// @0x141601920
+void* FUN_141601920(void* p) { return p; }
+// @0x141601930
+void* FUN_141601930(void* p) { return p; }
+// @0x141601940
+void* FUN_141601940(void* p) { return p; }
+// @0x141601950
+void* FUN_141601950(void* p) { return p; }
+// @0x141601960
+void* FUN_141601960(void* p) { return p; }
+// @0x141601970
+void* FUN_141601970(void* p) { return p; }
+// @0x141601980
+void* FUN_141601980(void* p) { return p; }
+// @0x141601990
+void* FUN_141601990(void* p) { return p; }
+// @0x1416019a0
+void* FUN_1416019a0(void* p) { return p; }
+// @0x1416019b0
+void* FUN_1416019b0(void* p) { return p; }
+// @0x1416019c0
+void* FUN_1416019c0(void* p) { return p; }
+// @0x1416019d0
+void* FUN_1416019d0(void* p) { return p; }
+// @0x1416019e0
+void* FUN_1416019e0(void* p) { return p; }
+// @0x1416019f0
+void* FUN_1416019f0(void* p) { return p; }
+// @0x141601a00
+void* FUN_141601a00(void* p) { return p; }
+// @0x141601a10
+void* FUN_141601a10(void* p) { return p; }
 // @0x141601750
 void* FUN_141601750(void* p) { return p; }
 // @0x141601760
