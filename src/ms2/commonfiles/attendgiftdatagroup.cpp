@@ -135,3 +135,13 @@ AttendGiftDataPtr AttendGiftDataTable::Find(unsigned nGiftId)
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+
+// The full-exe object references the loader under this C++ helper name.
+// Keep the existing named implementation as the single behavior source.
+// MS2-FUNCTIONAL ?FUN_1401ae2f0@@YAXPEAVAttendGiftDataTable@@@Z: forwards to the recovered loader.
+void FUN_1401ae2f0(AttendGiftDataTable* table)
+{
+    table->Load();
+}
+
+// MS2-PIN: ?FUN_1401ae2f0@@YAXPEAVAttendGiftDataTable@@@Z 0x1401ae2f0
