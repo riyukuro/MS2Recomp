@@ -100,7 +100,7 @@ TMarketBillDataParam::GiftCallback FUN_140bbf040(bool (*pfn)(MS2Ptr<TMarketBillD
 TMarketBillDataParam::TooltipCallback FUN_140bbef00(bool (*pfn)(Scaleform::GFx::Value*, ASData&,
                                                                 MS2Ptr<TMarketBillDataParam>));
 
-static CStringW FUN_140e70010(CStringW str);
+CStringW FUN_140e70010(CStringW str);
 
 // @0x140e6ec50
 UIPaybackDialog::UIPaybackDialog()
@@ -281,7 +281,7 @@ void UIPaybackDialog::FUN_140e6fdf0()
 }
 
 // @0x140e70010
-static CStringW FUN_140e70010(CStringW str)
+CStringW FUN_140e70010(CStringW str)
 {
     return FUN_14083cb20(FUN_140719900(str));
 }
