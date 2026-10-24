@@ -7,6 +7,8 @@
 #include <windows.h>
 #include <strsafe.h>
 
+unsigned long long FUN_1415fb760(int high, int low);
+
 static void nm_free_string_storage(char*& p)
 {
     if (p) {
@@ -153,16 +155,32 @@ size_t FUN_1415fa080() { return 0x400; }
 // @0x1415fa090
 size_t FUN_1415fa090() { return 0x800; }
 
+// @0x1415fa380
+unsigned char FUN_1415fa380(const void* p) { return *(static_cast<const unsigned char*>(p) + 0x10); }
 // @0x1415fa0a0
 unsigned int FUN_1415fa0a0(const void* p) { return *reinterpret_cast<const unsigned int*>(static_cast<const unsigned char*>(p) + 0x10); }
 // @0x1415fa0b0
 unsigned int FUN_1415fa0b0(const void* p) { return *reinterpret_cast<const unsigned int*>(static_cast<const unsigned char*>(p) + 0x10); }
 // @0x1415fa0c0
 unsigned int FUN_1415fa0c0(const void* p) { return *reinterpret_cast<const unsigned int*>(static_cast<const unsigned char*>(p) + 0x20); }
+// @0x1415fa120
+void FUN_1415fa120(const void* p) { FUN_1415fb760(*reinterpret_cast<const int*>(static_cast<const unsigned char*>(p) + 4), *reinterpret_cast<const int*>(static_cast<const unsigned char*>(p) + 8)); }
 // @0x1415fa150
 unsigned int FUN_1415fa150(const unsigned int* p) { return *p; }
 // @0x1415fa160
 unsigned int FUN_1415fa160(const unsigned int* p) { return *p; }
+// @0x1415fb760
+unsigned long long FUN_1415fb760(int high, int low) { return (static_cast<unsigned long long>(static_cast<unsigned int>(high)) << 32) | static_cast<unsigned int>(low); }
+// @0x1415fb780
+unsigned long long FUN_1415fb780(int high, int low) { return (static_cast<unsigned long long>(static_cast<unsigned int>(high)) << 32) | static_cast<unsigned int>(low); }
+// @0x1415fb7a0
+void FUN_1415fb7a0(void* p) { *reinterpret_cast<unsigned int*>(static_cast<unsigned char*>(p) + 0x14) = 1; }
+// @0x1415fb7c0
+void FUN_1415fb7c0(void* p, unsigned int value) { *reinterpret_cast<unsigned int*>(static_cast<unsigned char*>(p) + 0x20) = value; }
+// @0x1415fb7e0
+void FUN_1415fb7e0(void* p, unsigned int value) { *reinterpret_cast<unsigned int*>(static_cast<unsigned char*>(p) + 0x14) = value; }
+// @0x1415fb800
+void FUN_1415fb800(unsigned int* p, unsigned int value) { *p = value; }
 
 // @0x1415f9990
 void FUN_1415f9990(void*) { }
