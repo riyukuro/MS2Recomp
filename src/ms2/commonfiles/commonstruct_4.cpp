@@ -214,6 +214,15 @@ Unk_It* Unk_HistList::FUN_14028a1a0(Unk_It* out)
     return out;
 }
 
+// std::list::front returns the value subobject in the node after the sentinel.
+// MS2-FUNCTIONAL: the target's list node stores next/prev links before the 16-byte smart-pointer value.
+// @0x14028aef0
+Unk_HistRef* Unk_HistList::FUN_14028aef0()
+{
+    void* node = *reinterpret_cast<void**>(m_head);
+    return reinterpret_cast<Unk_HistRef*>(static_cast<char*>(node) + 0x10);
+}
+
 // float floor(float)
 // MS2-FUNCTIONAL: calls the CRT floorf (the exe's import) through <cmath>
 // @0x14028aed0
