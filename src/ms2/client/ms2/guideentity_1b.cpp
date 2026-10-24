@@ -1140,3 +1140,18 @@ unsigned char* FUN_141396750(Unk_Bitset8* pBits, unsigned char nValue)
     }
     return pBits->m_bits;
 }
+
+// Full-executable aliases for existing CGuideManager methods.
+// MS2-PIN: ?CheckTriggerRange@CGuideManager@@QEAA_NW4TriggerType@1@UUnk_GameEventIntRange@@@Z 0x14138c210
+// MS2-PIN: ?IsSkillRestricted@CGuideManager@@QEAAHH@Z 0x14138c930
+// MS2-PIN: ?TestEntity@CGuideManager@@QEAAXHH@Z 0x14138cce0
+// MS2-PIN: ?TestCondition@CGuideManager@@QEAAXV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z 0x14138d090
+// MS2-PIN: ?ShowEntityState@CGuideManager@@QEAAXH@Z 0x14138d160
+// MS2-PIN: ?ToggleDebug@CGuideManager@@QEAAXXZ 0x14138d460
+// MS2-PIN: ?FUN_14138c210@Unk_GeMgr@@QEAADHUUnk_GeRange@@@Z 0x14138c210
+// MS2-PIN: ?FUN_14138c930@@YAHPEAXH@Z 0x14138c930
+// MS2-PIN: ?FUN_14138c930@Unk_PCBuffTable@@YAHH@Z 0x14138c930
+// MS2-PIN: ?FUN_14138cce0@@YAXPEAXHH@Z 0x14138cce0
+// MS2-PIN: ?FUN_14138d090@@YAXPEAXV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z 0x14138d090
+// MS2-PIN: ?FUN_14138d160@@YAXPEAXH@Z 0x14138d160
+// MS2-PIN: ?FUN_14138d460@@YAXPEAX@Z 0x14138d460
