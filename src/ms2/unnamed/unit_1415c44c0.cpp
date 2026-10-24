@@ -582,6 +582,38 @@ int FUN_1415c60b0()
     return request.m_40;
 }
 
+// MS2-FUNCTIONAL: updates the first manager configuration value and dispatches the request.
+// @0x1415c6150
+int FUN_1415c6150(void*, int value)
+{
+    CNMChangeConfigFunc request(value, 0, 0, 0, 0);
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
+// MS2-FUNCTIONAL: updates the second manager configuration value and dispatches the request.
+// @0x1415c61f0
+int FUN_1415c61f0(void*, int value)
+{
+    CNMChangeConfigFunc request(0, value, 0, 0, 0);
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
+// MS2-FUNCTIONAL: updates the third manager configuration value and dispatches the request.
+// @0x1415c6290
+int FUN_1415c6290(void*, int value)
+{
+    CNMChangeConfigFunc request(0, 0, value, 0, 0);
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
+// MS2-FUNCTIONAL: updates the fourth manager configuration value and dispatches the request.
+// @0x1415c6330
+int FUN_1415c6330(void*, int value)
+{
+    CNMChangeConfigFunc request(0, 0, 0, value, 0);
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
 // @0x1415c46c0
 void FUN_1415c46c0()
 {
