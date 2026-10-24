@@ -9826,3 +9826,4 @@ DAT_143b27c40	143b27c40	data
 ??0MeshCache@D3D9@Render@Scaleform@@QEAA@PEAVMemoryHeap@3@AEBUMeshCacheParams@23@@Z	142738e60	func
 ?Init@FragShader@D3D9@Render@Scaleform@@QEAA_NPEAVHAL@234@PEBUFragShaderDesc@234@@Z	142741430	func
 ?Init@VertexShader@D3D9@Render@Scaleform@@QEAA_NPEAVHAL@234@PEBUVertexShaderDesc@234@@Z	142741620	func
+?DAT_143a2f780@@3PAUCharBreakInfo@WordWrapHelper@Text@Render@Scaleform@@A	143a2f780	data
