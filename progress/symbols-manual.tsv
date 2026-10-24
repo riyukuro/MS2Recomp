@@ -10311,3 +10311,13 @@ DAT_14318f040	14318f040	data
 ?SetTextValue@TextField@GFx@Scaleform@@QEAA_NPEBD_N1@Z	1425bd9a0	func
 ?TransformToTextRectSpace@TextField@GFx@Scaleform@@QEBA?AV?$Point@M@Render@3@AEBVDisplayInfo@Value@23@@Z	1425be970	func
 ?HighlightCompositionStringText@TextField@GFx@Scaleform@@QEAAX_K0I@Z	1425b9770	func
+?AvmStage_vftable@AS3@GFx@Scaleform@@3QBQEAXB	14317d600	data
+?AvmStage_vftable_30@AS3@GFx@Scaleform@@3QBQEAXB	14317d6f8	data
+?AvmStage_vftable_40@AS3@GFx@Scaleform@@3QBQEAXB	14317d7b0	data
+??0ConstPool@Abc@AS3@GFx@Scaleform@@QEAA@XZ	142545230	func
+?DispatchTypeToTarget@EventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@QEAA_NAEBVASString@56@PEAVObject@fl@3456@_NPEAVDisplayObject@56@@Z	142468e60	func
+?MayHaveActivateHandler@EventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@QEBA_NXZ	14246c230	func
+?MayHaveDeactivateHandler@EventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@QEBA_NXZ	14246c250	func
+?MayHaveExitFrameHandler@EventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@QEBA_NXZ	14246c290	func
+?MayHaveFrameConstructedHandler@EventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@QEBA_NXZ	14246c2b0	func
+?MayHaveRenderHandler@EventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@QEBA_NXZ	14246c2d0	func
