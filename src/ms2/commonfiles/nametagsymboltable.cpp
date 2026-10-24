@@ -15,6 +15,24 @@
 // MS2-PINS-END tplpin
 // MS2-PIN: ??_7CNametagSymbolTable@@6B?$TSingleton@VCNametagSymbolTable@@@@@ 0x142d79fe0
 // MS2-PIN: ??_7CNametagSymbolTable@@6B?$CValidData@VCNametagSymbolTable@@@@@ 0x142d79ff0
+// Full-executable aliases for the existing CNametagSymbolTable helpers.
+// MS2-PIN: ?Load@CNametagSymbolTable@@QEAAHXZ 0x1406c54d0
+// MS2-PIN: ?Exists@CNametagSymbolTable@@QEAA_NG@Z 0x1406c5a70
+// MS2-PIN: ?IsType@CNametagSymbolTable@@QEAA_NGH@Z 0x1406c5b00
+// MS2-PIN: ?IsShown@CNametagSymbolTable@@QEAA_NG@Z 0x1406c5c80
+// MS2-PIN: ?CheckCondition@CNametagSymbolTable@@QEAAIG@Z 0x1406c5d60
+// MS2-PIN: ?GetIconRanked@CNametagSymbolTable@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@GPEAVUnk_NametagActor@@@Z 0x1406c61a0
+// MS2-PIN: ?GetIcon@CNametagSymbolTable@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@GPEAVUnk_NametagActor@@@Z 0x1406c6360
+// MS2-PIN: ?FUN_1406c54d0@@YAXPEAVCNametagSymbolTable@@@Z 0x1406c54d0
+// MS2-PIN: ?FUN_1406c5a70@Unk_NtMgr@@QEAAHF@Z 0x1406c5a70
+// MS2-PIN: ?FUN_1406c5b00@Unk_NtItemMgr@@QEAAH_JH@Z 0x1406c5b00
+// MS2-PIN: ?FUN_1406c5c80@Unk_NtMgr@@QEAAHF@Z 0x1406c5c80
+// MS2-PIN: ?FUN_1406c5d60@Unk_MiNtMgr@@QEAAHF@Z 0x1406c5d60
+// MS2-PIN: ?FUN_1406c5d60@Unk_MyPCChannelTable@@QEAAHG@Z 0x1406c5d60
+// MS2-PIN: ?FUN_1406c5d60@Unk_NtMgr@@QEAAHF@Z 0x1406c5d60
+// MS2-PIN: ?FUN_1406c61a0@Unk_NtMgr@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@FPEAUUnk_NtPlayer@@@Z 0x1406c61a0
+// MS2-PIN: ?FUN_1406c61a0@Unk_MiNtMgr@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@FPEAVMyPC@@@Z 0x1406c61a0
+// MS2-PIN: ?FUN_1406c6360@Unk_NtItemMgr@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@_JPEAVPC@@H@Z 0x1406c6360
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\nametagsymboltable.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "nametagsymboltable.h"
