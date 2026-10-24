@@ -241,7 +241,7 @@ static unsigned __int64 FUN_140ac5130(std::set<unsigned __int64>& excluded)
 }
 
 // @0x140ac55a0
-static UIDamageEffect* FUN_140ac55a0(int nUiId)
+UIDamageEffect* FUN_140ac55a0(int nUiId)
 {
     if (FUN_1403ed2b0() != 0)
     {
