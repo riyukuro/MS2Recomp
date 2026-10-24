@@ -10,6 +10,7 @@ extern void* FUN_1415f39d0(void*);
 extern void* FUN_1415f39e0(void*);
 extern void FUN_1415fbe70(void*, unsigned int, const void*);
 extern void* FUN_1415fa260();
+extern void* FUN_1415fa120(const void*);
 extern int FUN_1415cb440(void*, void*);
 extern CNMSerializable* FUN_1415f10f0(CNMSerializable*, long long);
 extern void* FUN_1415ef9b0(void*, void*);
@@ -1084,7 +1085,7 @@ int FUN_1415c70a0(void*, const CNMRejectedUser* user)
 }
 
 // @0x1415c7400
-int FUN_1415c7400(void*, short code)
+int FUN_1415c7400(void*, unsigned short code)
 {
     CNMLogReportSyncFunc request(code);
     return FUN_1415cb440(FUN_1415fa260(), &request);
@@ -1108,6 +1109,35 @@ int FUN_1415c7630(void*, int noteId)
 int FUN_1415c7690(void*, int noteId)
 {
     CNMProcessNoteFunc request(2, noteId);
+    return FUN_1415cb440(FUN_1415fa260(), &request);
+}
+
+// @0x1415c7770
+int FUN_1415c7770(void*, unsigned long long guildId, int type)
+{
+    CNMMonitorGuildOnlineInfoExFunc request(guildId, type);
+    return FUN_1415cb440(FUN_1415fa260(), &request);
+}
+
+// @0x1415c77e0
+int FUN_1415c77e0(void*, unsigned int* userId, int type, int flags)
+{
+    const auto guildId = reinterpret_cast<unsigned long long>(FUN_1415fa120(userId));
+    CNMMonitorGuildOnlineInfoExFunc request(guildId, flags, 0, *userId, type);
+    return FUN_1415cb440(FUN_1415fa260(), &request);
+}
+
+// @0x1415c7c30
+int FUN_1415c7c30(void*, int type, const char* message, int flags)
+{
+    CNMCustomNotifyFunc request(type, message, flags);
+    return FUN_1415cb440(FUN_1415fa260(), &request);
+}
+
+// @0x1415c7cd0
+int FUN_1415c7cd0(void*, const CNMCustomNotifyData& data)
+{
+    CNMCustomNotifyFunc request(data);
     return FUN_1415cb440(FUN_1415fa260(), &request);
 }
 
