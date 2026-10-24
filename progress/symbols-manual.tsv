@@ -10291,3 +10291,6 @@ DAT_14318f040	14318f040	data
 ?DAT_143109420@GFx@Scaleform@@3PADA	143109420	data
 ?DAT_143184be8@GFx@Scaleform@@3PADA	143184be8	data
 ?DAT_143184c18@GFx@Scaleform@@3PADA	143184c18	data
+?EqualsXML@XMLSupportImpl@AS3@GFx@Scaleform@@UEBA?AVCheckResult@234@AEA_N0AEAVXML@fl@Instances@234@AEBVValue@234@@Z	1424f9850	func
+?DescribeType@XMLSupportImpl@AS3@GFx@Scaleform@@UEBAXAEAVVM@234@AEAV?$SPtr@VXML@fl@Instances@AS3@GFx@Scaleform@@@234@AEBVValue@234@@Z	1424f4a90	func
+?GetDescendants@XMLSupportImpl@AS3@GFx@Scaleform@@UEBA?AVCheckResult@234@AEAVValue@234@AEBVMultiname@234@@Z	142509140	func
