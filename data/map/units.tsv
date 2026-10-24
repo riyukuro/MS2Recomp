@@ -798,14 +798,14 @@
 1404477b0	140447ef0	unit_1404477b0_eventvalueiteratorcomparators	none	29	mn	descriptive: eventvalueiteratorcomparators
 140447ef0	140448770	unit_140447ef0_eventvaluemapglue	none	64	mn	descriptive: eventvaluemapglue
 140448770	1404487e0	unit_140448770_intrusivelistiteratorincrement	none	2	mn	descriptive: intrusivelistiteratorincrement
-1404487e0	140448870	unit_1404487e0	none	3	mn	
-140448870	1404495e0	unit_140448870	none	46	mn	
-1404495e0	140449650	unit_1404495e0	none	3	mn	
+1404487e0	140448870	unit_1404487e0_intrusivelistiteratoradvance	none	3	mn	descriptive: intrusivelistiteratoradvance
+140448870	1404495e0	unit_140448870_gameeventvalueiteratorcomdat	none	46	mn	descriptive: gameeventvalueiteratorcomdat
+1404495e0	140449650	unit_1404495e0_intrusivelistiteratoradvance	none	3	mn	descriptive: intrusivelistiteratoradvance
 140449650	14044a880	unit_140449650_mapsettreeglue	none	55	mn	descriptive: mapsettreeglue
-14044a880	14045b2c0	unit_14044a880	none	348	mn	
+14044a880	14045b2c0	unit_14044a880_gameeventvaluecontainercomdat	none	348	mn	descriptive: gameeventvaluecontainercomdat
 14045b2c0	14045b6e0	unit_14045b2c0_boxedptrwrappers	none	25	mn	descriptive: boxedptrwrappers
-14045b6e0	14045b740	unit_14045b6e0	none	2	mn	
-14045b740	14046c710	unit_14045b740	none	746	mn	
+14045b6e0	14045b740	unit_14045b6e0_fieldptrlistwrappers	none	2	mn	descriptive: fieldptrlistwrappers
+14045b740	14046c710	unit_14045b740_gameeventvaluecontainercomdat	none	746	mn	descriptive: gameeventvaluecontainercomdat
 14046c710	1404746a0	?\gameeventvaluemanager.cpp	low	303	mn	dir commonfiles
 1404746a0	140474af0	?\gameobjecteffectnifctx.cpp	low	10	mn	dir commonfiles
 140474af0	140476cf0	unit_140474af0	none	16	mn	rejected ?\gamerule.cpp
@@ -822,12 +822,12 @@
 1404af370	1404c11a0	unit_1404af370	none	783	mn	
 1404c11a0	1404c5c80	?\gloabalfactor.cpp	low	200	mn	dir commonfiles
 1404c5c80	1404efc20	commonfiles\guilddef.cpp	high	1127	mn	
-1404efc20	1404efd80	unit_1404efc20	none	4	mn	
-1404efd80	1404f01e0	unit_1404efd80	none	16	mn	
+1404efc20	1404efd80	unit_1404efc20_guilddefcopyassignments	none	4	mn	descriptive: guilddefcopyassignments
+1404efd80	1404f01e0	unit_1404efd80_pointerwrappercomdat	none	16	mn	descriptive: pointerwrappercomdat
 1404f01e0	1404f07a0	unit_1404f01e0_iteratorcomparators	none	23	mn	descriptive: iteratorcomparators
 1404f07a0	1404fa6b0	unit_1404f07a0	none	349	mn	
 1404fa6b0	1404faed0	unit_1404fa6b0_guildpayloadrefcounts	none	49	mn	descriptive: guildpayloadrefcounts
-1404faed0	1405021c0	unit_1404faed0	none	274	mn	
+1404faed0	1405021c0	unit_1404faed0_guilddefmapcomdat	none	274	mn	descriptive: guilddefmapcomdat
 1405021c0	14050a120	unit_1405021c0	none	386	mn	
 14050a120	14050d4c0	?\hideandseek.cpp	low	133	mn	dir commonfiles
 14050d4c0	14050e140	?\homeprivilege.cpp	low	27	mn	dir commonfiles
@@ -842,7 +842,7 @@
 140543a30	140555a70	commonfiles\itemdatastruct.cpp	high	613	mn	
 140555a70	14057a380	?\itemdatatable.cpp	low	1007	mn	was ?\colorpaletteinfo.cpp; dir commonfiles
 14057a380	140583f00	?\itemdatatable.cpp	low	461	mn	itemdatatable COMDAT tail; was unit_14057a380 + unit_14057a5c0 (folded into itemdatatable.cpp 28dcf2b56)
-140583f00	140583fa0	unit_140583f00	none	2	mn	
+140583f00	140583fa0	unit_140583f00_itemdefaulttablelookups	none	2	mn	descriptive: itemdefaulttablelookups
 140583fa0	14058c160	?\itemdefaultdata.cpp	low	209	mn	dir commonfiles
 14058c160	14058d5c0	commonfiles\itemenchantinfo.cpp	high	61	mn	
 14058d5c0	14058d770	unit_14058d5c0_enchantoption	none	2	mn	descriptive: enchantoption
@@ -883,17 +883,17 @@
 14068f630	140693e60	?\mailattachitem.cpp	low	146	mn	dir commonfiles
 140693e60	1406943b0	?\manufacture.cpp	low	13	mn	dir commonfiles
 1406943b0	140695130	?\matchpartyrecruitschcond.cpp	low	25	mn	dir commonfiles
-140695130	140696ed0	unit_140695130	none	20	mn	
+140695130	140696ed0	unit_140695130_md5checksumhelpers	none	20	mn	descriptive: md5checksumhelpers
 140696ed0	14069a010	commonfiles\md5checksum.cpp	high	40	mn	
 14069a010	14069a0b0	commonfiles\mentor.cpp	high	1	mn	ps1 split from commonfiles\md5checksum.cpp: called by uiinvitementoringdialog; mentor TU head
 14069a0b0	14069bcb0	commonfiles\mentor.cpp	high	68	mn	
 14069bcb0	14069c3e0	?\mentoringdatatable.cpp	low	16	mn	dir commonfiles
 14069c3e0	1406ae9c0	?\meratmarketbasketinfo.cpp	low	457	mn	dir commonfiles
-1406ae9c0	1406aeaf0	unit_1406ae9c0	none	4	mn	
+1406ae9c0	1406aeaf0	unit_1406ae9c0_tixmlstringhelpers	none	4	mn	descriptive: tixmlstringhelpers
 1406aeaf0	1406aee80	?\mesomarketproduct.cpp	low	9	mn	dir commonfiles
 1406aee80	1406af1a0	unit_1406aee80_launchoptions	none	17	mn	descriptive: launchoptions
 1406af1a0	1406c3230	commonfiles\ms2filestring.cpp	high	704	mn	
-1406c3230	1406c3700	unit_1406c3230	none	17	mn	
+1406c3230	1406c3700	unit_1406c3230_atlbytearrayglue	none	17	mn	descriptive: atlbytearrayglue
 1406c3700	1406c47a0	unit_1406c3700_fieldrgbcolor	none	45	mn	descriptive: fieldrgbcolor
 1406c47a0	1406c53d0	unit_1406c47a0	none	32	mn	
 1406c53d0	1406c8680	?\nametagsymboltable.cpp	low	84	mn	dir commonfiles
@@ -906,7 +906,7 @@
 14070f700	140716a40	commonfiles\packet.cpp	high	224	mn	
 140716a40	1407186f0	commonfiles\packetlogger.cpp	high	68	mn	
 1407186f0	14071a5b0	unit_1407186f0_stringconversionhelpers	none	57	mn	descriptive: stringconversionhelpers
-14071a5b0	14071af20	unit_14071a5b0	none	13	mn	
+14071a5b0	14071af20	unit_14071a5b0_datapathbuilders	none	13	mn	descriptive: datapathbuilders
 14071af20	14071e2f0	?\paybacktable.cpp	low	133	mn	dir commonfiles
 14071e2f0	140721000	?\pcdata.cpp	low	25	mn	dir commonfiles
 140721000	140728140	?\petgroupinfo.cpp	low	228	mn	dir commonfiles
@@ -939,26 +939,26 @@
 1407dc950	1407dee30	?\singletonobject.cpp	low	124	mn	dir commonfiles
 1407dee30	1407e5b80	?\skillattackdata.cpp	low	213	mn	dir commonfiles
 1407e5b80	1408001f0	?\skilloverlapcompare.cpp	low	1127	mn	dir commonfiles
-1408001f0	1408011f0	unit_1408001f0	none	8	mn	
+1408001f0	1408011f0	unit_1408001f0_skillrangeandtarget	none	8	mn	descriptive: skillrangeandtarget
 1408011f0	1408092d0	unit_1408011f0	none	235	mn	rejected ?\skillactionskill.cpp (order within gap)
 1408092d0	14080b800	?\skillset.cpp	low	59	mn	dir commonfiles
 14080b800	1408105e0	?\skilltieroptionmanager.cpp	low	136	mn	dir commonfiles
 1408105e0	140815690	?\smartpushtable.cpp	low	148	mn	dir commonfiles
-140815690	1408179d0	unit_140815690	none	61	mn	rejected ?\recommenditem.cpp
+140815690	1408179d0	?\smartrecommendshoptable.cpp	low	61	mn	guess: CSmartRecommendShopTable class-name candidate; commonfiles link-order gap between smartpushtable.cpp and sounddatatable.cpp
 1408179d0	14081c780	commonfiles\sounddatatable.cpp	high	144	mn	
 14081c780	1408273f0	commonfiles\specialability.cpp	high	369	mn	
-1408273f0	140827420	unit_1408273f0	none	2	mn	
+1408273f0	140827420	unit_1408273f0_globalflagsetter	none	2	mn	descriptive: globalflagsetter
 140827420	140827580	?\specialeffectctx.cpp	low	4	mn	dir commonfiles
 140827580	1408290b0	?\specialeffectfunctionmanager.cpp	low	59	mn	dir commonfiles
 1408290b0	14082e170	?\stanceleveldata.cpp	low	230	mn	dir commonfiles
 14082e170	140835210	commonfiles\stat.cpp	high	258	mn	
 140835210	140837660	?\statesyncobject.cpp	low	48	mn	dir commonfiles
-140837660	140838d50	unit_140837660	none	39	mn	
+140837660	140838d50	unit_140837660_idcosttable	none	39	mn	descriptive: idcosttable
 140838d50	14083bab0	commonfiles\stream.cpp	high	64	mn	
-14083bab0	14083f3d0	unit_14083bab0	none	26	mn	
+14083bab0	14083f3d0	unit_14083bab0_localizedtexthelpers	none	26	mn	descriptive: localizedtexthelpers
 14083f3d0	140841780	unit_14083f3d0_stringutilities	none	34	mn	descriptive: stringutilities
 140841780	140841c70	unit_140841780	none	9	mn	
-140841c70	14084cb30	unit_140841c70	none	583	mn	
+140841c70	14084cb30	unit_140841c70_hiddenstringcomdatinternals	none	583	mn	descriptive: hiddenstringcomdatinternals
 14084cb30	140851620	?\stringidinterfacebase.cpp	low	129	mn	dir commonfiles
 140851620	1408533a0	?\systemmailcontent.cpp	low	43	mn	dir commonfiles
 1408533a0	140854ea0	?\taileffectdatatable.cpp	low	51	mn	dir commonfiles
