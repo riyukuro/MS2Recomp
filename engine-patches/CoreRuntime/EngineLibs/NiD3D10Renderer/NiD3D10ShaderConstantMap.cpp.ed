@@ -1,0 +1,4 @@
+3032,3033c
+                NiLight* pkMS2Light = kRCC.m_pkEffects->GetNextLight(kIter); NiAmbientLight* pkLight = 0;  // MS2: NiDynamicCast expanded inline (exe 0x14286ca90)
+                if (pkMS2Light) { bool bMS2Kind = false; for (const NiRTTI* pkMS2RTTI = pkMS2Light->GetRTTI(); pkMS2RTTI; pkMS2RTTI = pkMS2RTTI->GetBaseRTTI()) { if (pkMS2RTTI == &NiAmbientLight::ms_RTTI) { bMS2Kind = true; break; } } pkLight = bMS2Kind ? (NiAmbientLight*)pkMS2Light : 0; }
+.

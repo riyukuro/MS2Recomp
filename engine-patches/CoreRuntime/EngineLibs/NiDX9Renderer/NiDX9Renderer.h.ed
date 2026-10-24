@@ -26,6 +26,9 @@
     void SetDeviceLostHeld(bool bHeld);
 
 .
+635c
+    static void ReleaseVertexDecl(NiD3DVertexDeclaration pkVertDecl); static void MS2DeferVertexDecl(NiD3DVertexDeclaration pkVertDecl) { ms_kDeferredReleaseLock.Lock(); ms_akDeferredReleaseList[D3DRT_VERTEXDECL].AddTail(pkVertDecl); ms_kDeferredReleaseLock.Unlock(); }  // MS2: unconditional deferral (exe 0x1427e4240)
+.
 464a
     const char* GetDriverName() const;  // MS2: v2525 (studio 0x1427cf790, name inferred)
 .

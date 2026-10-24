@@ -1,0 +1,12 @@
+1282c
+        bHasRotationAxes, bHasAnimatedTextures); SetParticleSystemFlag(true);  // MS2 (exe 0x141e9afd0)
+.
+353c
+    UpdateWorldData(); if (kUpdate.GetUpdateControllers()) UpdateObjectControllers(kUpdate.GetTime()); CompleteUpdateModifiers(); SubmitUpdateModifiers(kUpdate); UpdateWorldBound();  // MS2: world data before controllers, in place of NiMesh::UpdateDownwardPass (exe 0x141e9c9f0)
+.
+194c
+        bHasRotationAxes, bHasAnimatedTextures); SetParticleSystemFlag(true);  // MS2 (exe 0x141e98420)
+.
+137c
+{ SetParticleSystemFlag(true);  // MS2: flags particle systems (exe 0x141e98670)
+.

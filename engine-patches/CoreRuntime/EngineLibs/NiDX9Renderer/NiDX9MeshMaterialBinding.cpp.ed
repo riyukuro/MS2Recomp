@@ -2,3 +2,6 @@
 152@12s "" "(const char*)"
 99@16s "" "(const char*)"
 98@16s "" "(const char*)"
+47c
+        NiDX9Renderer::MS2DeferVertexDecl(m_pkVertexDecl);  // MS2: always deferred (exe 0x1427e4240)
+.

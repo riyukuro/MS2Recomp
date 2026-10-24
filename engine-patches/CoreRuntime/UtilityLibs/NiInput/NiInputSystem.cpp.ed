@@ -1,0 +1,6 @@
+182c
+    if (m_bEnumerating) for (unsigned int ui = 0; ui < MAX_GAMEPADS; ui++)  // MS2: gamepads only polled while m_bEnumerating (exe 0x141d0e010)
+.
+44a
+    m_bStudioFlag0x2d(false),  // MS2: cleared with m_bEnumerating (exe 0x141d0be00)
+.

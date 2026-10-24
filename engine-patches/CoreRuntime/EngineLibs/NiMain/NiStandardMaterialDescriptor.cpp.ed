@@ -1,3 +1,6 @@
+1140c
+                case NiTextureEffect::NUM_COORD_GEN: SetENVMAPTYPE(NiStandardMaterial::TEXEFFECT_MAX); break; default:  // MS2: a sixth coord-gen type (exe 0x141de36f0)
+.
 568c
         } else if (pkVCProp->GetSourceMode() == (NiVertexColorProperty::SourceVertexMode)3) { SetAMBDIFFEMISSIVE((NiStandardMaterial::AmbDiffEmissiveEnum)3); }  // MS2: v2525
 .

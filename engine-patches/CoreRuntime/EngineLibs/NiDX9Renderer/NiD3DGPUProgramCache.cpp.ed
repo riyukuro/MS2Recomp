@@ -2,3 +2,14 @@
 203@12s "" "(const char*)"
 186@35s "" "(const char*)"
 186@12s "" "(const char*)"
+142c
+        // MS2: a cache file that fails to load is deleted (exe 0x142802690)
+        if (!Load() && efd::File::DefaultFileAccessFunc(
+            (const char*)m_kPathAndFilename, efd::File::READ_ONLY))
+        {
+            remove((const char*)m_kPathAndFilename);
+        }
+.
+23a
+#include <stdio.h> // MS2: remove()
+.

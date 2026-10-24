@@ -1,0 +1,20 @@
+235c
+    // MS2: large-address-aware constant table
+    D3DXGetShaderConstantTableEx((const DWORD*)pvCode,
+        D3DXCONSTTABLE_LARGEADDRESSAWARE, &pkConstantTable);
+.
+174c
+    // MS2: large-address-aware constant table
+    D3DXGetShaderConstantTableEx((const DWORD*)pvCode,
+        D3DXCONSTTABLE_LARGEADDRESSAWARE, &pkConstantTable);
+.
+110c
+    // MS2: large-address-aware constant table
+    D3DXGetShaderConstantTableEx((const DWORD*)pvCode,
+        D3DXCONSTTABLE_LARGEADDRESSAWARE, &pkConstantTable);
+.
+45c
+    // MS2: large-address-aware constant table
+    D3DXGetShaderConstantTableEx((const DWORD*)pvCode,
+        D3DXCONSTTABLE_LARGEADDRESSAWARE, &pkConstantTable);
+.

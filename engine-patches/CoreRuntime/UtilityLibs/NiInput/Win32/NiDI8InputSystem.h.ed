@@ -9,6 +9,6 @@
 121a
         // MS2: Nexon keeps the force-feedback driver GUID (DIDEVICEINSTANCE::guidFFDriver)
         inline const GUID* GetMS2FFDriverGUID() const;
-        inline void SetMS2FFDriverGUID(const GUID& kGUID);
+        inline void SetMS2FFDriverGUID(GUID kGUID);
 
 .

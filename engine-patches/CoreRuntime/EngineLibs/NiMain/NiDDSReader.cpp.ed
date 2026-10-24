@@ -1,0 +1,9 @@
+122a
+    // MS2: reject zero-sized surfaces (exe 0x141d7a170)
+    if (!m_uiHeight || !m_uiWidth)
+    {
+        m_kReadCriticalSection.Unlock();
+        return false;
+    }
+
+.

@@ -11,7 +11,7 @@ inline const GUID* NiDI8InputSystem::DI8Description::GetMS2FFDriverGUID() const
 //--------------------------------------------------------------------------------------------------
 // MS2
 inline void NiDI8InputSystem::DI8Description::SetMS2FFDriverGUID(
-    const GUID& kGUID)
+    GUID kGUID)  // MS2: by value (exe 0x141d0f900)
 {
     unsigned int uiSize = sizeof(GUID);
     if (kGUID == GUID_NULL)

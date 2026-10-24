@@ -1,0 +1,3 @@
+440c
+#define twoto(x)	((lua_Integer)1<<(x))  /* MS2: 64-bit (exe propagatemark 0x142243870) */
+.

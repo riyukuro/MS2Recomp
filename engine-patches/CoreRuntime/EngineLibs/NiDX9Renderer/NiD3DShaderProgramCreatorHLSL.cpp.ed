@@ -1,0 +1,48 @@
+643a
+    // MS2: large-address-aware constant table
+    if (FAILED(D3DXGetShaderConstantTableEx(
+        (const DWORD*)pkCode->GetBufferPointer(),
+        D3DXCONSTTABLE_LARGEADDRESSAWARE, &pkConstantTable)))
+    {
+        pkCode->Release();
+        return false;
+    }
+
+.
+607c
+        &pkErrors, NULL);
+.
+591,592c
+    // MS2: NULL-initialized; the constant table is fetched after compiling (exe 0x14280a000)
+    LPD3DXBUFFER pkCode = NULL;
+    LPD3DXBUFFER pkErrors = NULL;
+.
+560a
+    // MS2: large-address-aware constant table
+    if (FAILED(D3DXGetShaderConstantTableEx(
+        (const DWORD*)pkCode->GetBufferPointer(),
+        D3DXCONSTTABLE_LARGEADDRESSAWARE, &pkConstantTable)))
+    {
+        pkCode->Release();
+        return false;
+    }
+
+.
+520c
+            NULL);
+.
+476,477c
+    // MS2: NULL-initialized; the constant table is fetched after compiling (exe 0x14280a2c0)
+    LPD3DXBUFFER pkCode = NULL;
+    LPD3DXBUFFER pkErrors = NULL;
+.
+437,438c
+    // MS2: large-address-aware constant table
+    HRESULT hr = D3DXGetShaderConstantTableEx((const DWORD*)pvCode,
+        D3DXCONSTTABLE_LARGEADDRESSAWARE, &pkConstantTable);
+.
+407,408c
+    // MS2: large-address-aware constant table
+    HRESULT hr = D3DXGetShaderConstantTableEx((const DWORD*)pvCode,
+        D3DXCONSTTABLE_LARGEADDRESSAWARE, &pkConstantTable);
+.

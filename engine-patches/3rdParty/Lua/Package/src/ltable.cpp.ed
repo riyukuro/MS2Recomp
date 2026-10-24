@@ -1,0 +1,5 @@
+64@40s "sizenode" "MS2_SIZENODE"
+52c
+#define MS2_SIZENODE(t) ((lua_Integer)1 << (t)->lsizenode)  /* MS2: 64-bit node count (exe luaH_getstr 0x1422448f0) */
+.
+51@47s "sizenode" "MS2_SIZENODE"

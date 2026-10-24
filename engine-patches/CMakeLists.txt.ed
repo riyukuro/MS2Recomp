@@ -246,8 +246,10 @@ add_subdirectory(GameFramework/egfPhysX)
 add_subdirectory(GameFramework/egmAnimation)
 add_subdirectory(GameFramework/egmVisualizers)
 add_subdirectory(GameFramework/egmVisualTracker)
+add_subdirectory(GameFramework/egmWhitebox)
+add_subdirectory(GameFramework/egmPhysXWhitebox)
 
 add_library(gamebryo_all INTERFACE)
-target_link_libraries(gamebryo_all INTERFACE zlib Effects11 efd efdLogService efdNetwork efdPhysX NiSystem NiMain NiFloodgate NiMesh NiAnimation NiParticle NiCollision NiTerrain NiDX9Renderer NiD3D10Renderer ecrD3D11Renderer NiBinaryShaderLib NiD3DXEffectShaderLib NSBShaderLib NSFParserLib NiInput NiVisualTracker NiDX9RendererSetup NiPhysX NiPhysXParticle ecr ecrInput ecrPhysX egf egfLua egfPhysX egmAnimation egmVisualizers egmVisualTracker)
+target_link_libraries(gamebryo_all INTERFACE zlib Effects11 efd efdLogService efdNetwork efdPhysX NiSystem NiMain NiFloodgate NiMesh NiAnimation NiParticle NiCollision NiTerrain NiDX9Renderer NiD3D10Renderer ecrD3D11Renderer NiBinaryShaderLib NiD3DXEffectShaderLib NSBShaderLib NSFParserLib NiInput NiVisualTracker NiDX9RendererSetup NiPhysX NiPhysXParticle ecr ecrInput ecrPhysX egf egfLua egfPhysX egmAnimation egmVisualizers egmVisualTracker egmWhitebox egmPhysXWhitebox)
 
 .

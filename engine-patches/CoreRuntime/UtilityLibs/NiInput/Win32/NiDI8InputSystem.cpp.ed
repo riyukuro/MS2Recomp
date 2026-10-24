@@ -70,7 +70,7 @@ BOOL CALLBACK NiDI8InputSystem::DIEnumFFDriverCallback(
 .
 725a
         MS2_INPUT_LOG("SYSTEM MOUSE FOUND.");   // MS2
-        bMS2SystemDevice = true;
+        bMS2SystemDevice = TRUE;
     }
     // MS2: Nexon also accepts the joystick the control panel marks as preferred
     if (memcmp((const void*)&GUID_Joystick,
@@ -100,16 +100,19 @@ BOOL CALLBACK NiDI8InputSystem::DIEnumFFDriverCallback(
 .
 720a
         MS2_INPUT_LOG("SYSTEM KEYBOARD FOUND.");   // MS2
-        bMS2SystemDevice = true;
+        bMS2SystemDevice = TRUE;
 .
 710a
-    bool bMS2SystemDevice = false;   // MS2
+    // MS2: bMS2SystemDevice is declared at the top
 .
 696a
         MS2_INPUT_LOG("EnumDevicesCallback --> No valid DI8 interface!");   // MS2
 .
 689a
         MS2_INPUT_LOG("EnumDevicesCallback --> No valid input system!");   // MS2
+.
+682c
+    BOOL bMS2SystemDevice = FALSE;  // MS2: 32-bit flag set up front (exe 0x141d0fdb0). Check for XInput device
 .
 450a
         MS2_INPUT_LOG("INITFAILED CreateDI8Interface0");   // MS2

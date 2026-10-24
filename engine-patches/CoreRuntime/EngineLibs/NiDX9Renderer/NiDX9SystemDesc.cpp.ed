@@ -1,0 +1,8 @@
+801c
+        if (pAdapter)  // MS2: skips failed allocations
+            m_kAdapterList.SetAt(ui, pAdapter);
+.
+789a
+    if (!pkD3D9)  // MS2: null device guard (exe 0x1427f6a30)
+        return;
+.

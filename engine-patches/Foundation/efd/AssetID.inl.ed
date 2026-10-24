@@ -13,6 +13,11 @@ EE_MS2_ASSETID_COPY_INLINE AssetID& AssetID::operator=(const efd::AssetID& other
 48c
 EE_MS2_ASSETID_CTOR_INLINE AssetID::AssetID(const efd::AssetID& other)
 .
+44a
+#if defined(EE_MS2_ASSETID_CHAR_STRIP)   // MS2: the exe's out-of-line copy (AssetID.cpp) strips; inline game copies do not
+    EE_MS2_ASSETID_STRIP_SCHEME();
+#endif
+.
 33a
     EE_MS2_ASSETID_STRIP_SCHEME();
 .

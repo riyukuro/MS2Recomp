@@ -1,3 +1,4 @@
-241a
+241c
+    bool m_bEnumerating; friend class NiInputXInputGamePad;  // MS2: the XInput pad reads it in UpdateDevice (exe 0x141d09270)
     bool m_bStudioFlag0x2d;  // studio: +0x2d, name inferred  // MS2: v2525
 .

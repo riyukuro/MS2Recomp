@@ -1,0 +1,3 @@
+789c
+    if (!pkMesh->GetParticleSystemFlag())  // MS2: the 0x400 flag instead of NiIsKindOf (exe 0x141ea0b90)
+.

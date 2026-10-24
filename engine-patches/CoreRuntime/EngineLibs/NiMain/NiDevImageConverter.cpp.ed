@@ -74,9 +74,134 @@ NiPixelData* NiDevImageConverter::GenerateMipmapPyramidFromFiles(
             else
                 spLevel = ReadImageFile(apwcFilenames[i], NULL);
 .
+172a
+// MS2: wchar_t overload (game 0x141d34fd0)
+bool NiDevImageConverter::CanReadImageFile(const wchar_t* pwcFilename) const
+{
+    NiTListIterator pkIter = m_kReaders.GetHeadPos();
+
+    wchar_t awcStandardFilename[NI_MAX_PATH];
+    wcscpy_s(awcStandardFilename, NI_MAX_PATH, pwcFilename);
+    efd::PathUtils::Standardize(awcStandardFilename);
+    NiFilenameW kFileName(awcStandardFilename);
+
+    while (pkIter)
+    {
+        NiImageReader* pkReader = m_kReaders.GetNext(pkIter);
+        efd::string kExt(ATL::CW2A(kFileName.GetExt()));
+
+        if (pkReader->CanReadFile(kExt.c_str()))
+        {
+            efd::File* pkIstr = efd::File::GetFile(awcStandardFilename,
+                efd::File::READ_ONLY);
+            if ((!pkIstr) || (!(*pkIstr)))
+            {
+                NiDelete pkIstr;
+                return false;
+            }
+
+            NiDelete pkIstr;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//--------------------------------------------------------------------------------------------------
+// MS2: wchar_t overload (game 0x141d3b840)
+bool NiDevImageConverter::ReadImageFileInfo(const wchar_t* pwcFilename,
+    NiPixelFormat& kFmt, bool& bMipmap, unsigned int& uiWidth,
+    unsigned int& uiHeight, unsigned int& uiNumFaces)
+{
+    NiTListIterator pkIter = m_kReaders.GetHeadPos();
+
+    wchar_t awcStandardFilename[NI_MAX_PATH];
+    wcscpy_s(awcStandardFilename, NI_MAX_PATH, pwcFilename);
+    efd::PathUtils::Standardize(awcStandardFilename);
+    NiFilenameW kFileName(awcStandardFilename);
+
+    while (pkIter)
+    {
+        NiImageReader* pkReader = m_kReaders.GetNext(pkIter);
+        efd::string kExt(ATL::CW2A(kFileName.GetExt()));
+
+        if (pkReader->CanReadFile(kExt.c_str()))
+        {
+            efd::File* pkIstr = efd::File::GetFile(awcStandardFilename,
+                efd::File::READ_ONLY);
+            if ((!pkIstr) || (!(*pkIstr)))
+            {
+                NiDelete pkIstr;
+                return false;
+            }
+
+            if (pkReader->ReadHeader(*pkIstr, uiWidth, uiHeight, kFmt,
+                bMipmap, uiNumFaces))
+            {
+                NiDelete pkIstr;
+                return true;
+            }
+
+            NiDelete pkIstr;
+        }
+    }
+
+    return false;
+}
+
+//--------------------------------------------------------------------------------------------------
+// MS2: wchar_t overload (game 0x141d3bd70)
+NiPixelData* NiDevImageConverter::ReadImageFile(const wchar_t* pwcFilename,
+    NiPixelData* pkOptDest)
+{
+    NiTListIterator pkIter = m_kReaders.GetHeadPos();
+
+    wchar_t awcStandardFilename[NI_MAX_PATH];
+    wcscpy_s(awcStandardFilename, NI_MAX_PATH, pwcFilename);
+    efd::PathUtils::Standardize(awcStandardFilename);
+    NiFilenameW kFileName(awcStandardFilename);
+
+    while (pkIter)
+    {
+        NiImageReader* pkReader = m_kReaders.GetNext(pkIter);
+        efd::string kExt(ATL::CW2A(kFileName.GetExt()));
+
+        if (pkReader->CanReadFile(kExt.c_str()))
+        {
+            efd::File* pkIstr = efd::File::GetFile(awcStandardFilename,
+                efd::File::READ_ONLY);
+            if ((!pkIstr) || (!(*pkIstr)))
+            {
+                NiDelete pkIstr;
+                return NULL;
+            }
+
+            NiPixelData* pkDest = pkReader->ReadFile(*pkIstr, pkOptDest);
+
+            if (pkDest)
+            {
+                NiDelete pkIstr;
+                return pkDest;
+            }
+
+            NiDelete pkIstr;
+        }
+    }
+
+    return NULL;
+}
+
+//--------------------------------------------------------------------------------------------------
+.
 41c
     if (ms_bMS2NIFImageReader) m_kReaders.AddHead(NiNew NiNIFImageReader); // MS2: see MS2DisableNIFImageReader
 .
 32c
 NiImplementRTTI(NiDevImageConverter, NiImageConverter); bool NiDevImageConverter::ms_bMS2NIFImageReader = true; void NiDevImageConverter::MS2DisableNIFImageReader() { ms_bMS2NIFImageReader = false; } // MS2
+.
+30a
+#include <efd/PathUtils.h>
+#include <efd/StdContainers.h>
+#include <atlconv.h> // MS2: CW2A in the wchar_t overloads
 .

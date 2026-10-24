@@ -9,3 +9,59 @@
     unsigned int uiMeshSize = (unsigned int)m_uiMeshSize;
     NiStreamSaveBinary(kStream, uiMeshSize);
 .
+350a
+    m_pkTriangleMesh = 0;  // MS2: the mesh is not cached on the descriptor
+.
+287,292c
+        // MS2: the cooked data is kept whatever bKeepData says.
+        EE_UNUSED_ARG(bKeepData);
+.
+272a
+        if (m_kMeshName == "he_n_box_e02_ym")  // MS2: a leftover debug hook on one mesh name
+            m_kMeshName = m_kMeshName;
+.
+247,248c
+    if (!bMS2ValidPlatform)
+.
+243,245c
+        switch (NiSystemDesc::GetSystemDesc().GetPlatformID())
+        {
+            case NiSystemDesc::NI_WIN32: bMS2ValidPlatform = GetBit(COOKED_FOR_WIN32_MASK); break;
+            case NiSystemDesc::NI_PS3: bMS2ValidPlatform = GetBit(COOKED_FOR_PS3_MASK); break;
+            case NiSystemDesc::NI_XENON: bMS2ValidPlatform = GetBit(COOKED_FOR_XENON_MASK); break;
+            default: break;
+        }
+.
+241c
+    // MS2: no early return for an already-created mesh (it is never cached, see the end).
+    // MS2: IsValidPlatform() expanded inline (exe 0x141f0ae20/0x141f0b240; ToClothDesc still calls it).
+    bool bMS2ValidPlatform = true;
+    if (bCheckPlatform && (GetBit(COOKED_FOR_WIN32_MASK) || GetBit(COOKED_FOR_PS3_MASK) ||
+        GetBit(COOKED_FOR_XENON_MASK)))
+.
+230a
+    m_pkConvexMesh = 0;  // MS2: the mesh is not cached on the descriptor
+.
+167,172c
+        // MS2: the cooked data is kept whatever bKeepData says.
+        EE_UNUSED_ARG(bKeepData);
+.
+127,128c
+    if (!bMS2ValidPlatform)
+.
+123,125c
+        switch (NiSystemDesc::GetSystemDesc().GetPlatformID())
+        {
+            case NiSystemDesc::NI_WIN32: bMS2ValidPlatform = GetBit(COOKED_FOR_WIN32_MASK); break;
+            case NiSystemDesc::NI_PS3: bMS2ValidPlatform = GetBit(COOKED_FOR_PS3_MASK); break;
+            case NiSystemDesc::NI_XENON: bMS2ValidPlatform = GetBit(COOKED_FOR_XENON_MASK); break;
+            default: break;
+        }
+.
+121c
+    // MS2: no early return for an already-created mesh (it is never cached, see the end).
+    // MS2: IsValidPlatform() expanded inline (exe 0x141f0ae20/0x141f0b240; ToClothDesc still calls it).
+    bool bMS2ValidPlatform = true;
+    if (bCheckPlatform && (GetBit(COOKED_FOR_WIN32_MASK) || GetBit(COOKED_FOR_PS3_MASK) ||
+        GetBit(COOKED_FOR_XENON_MASK)))
+.

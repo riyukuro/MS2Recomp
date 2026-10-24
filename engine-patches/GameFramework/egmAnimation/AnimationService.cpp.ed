@@ -25,6 +25,12 @@ bool (*g_pfnMS2SceneGraphCacheFilter)(const SceneGraphCacheResponse*) = NULL;  /
 214c
 KFMCache* (*g_pfnMS2CreateKFMCache)() = NULL;  // MS2: KFMCache factory hook (0x143b094a0, set by the game's FUN_1414a6230)
 .
+24c
+EE_MS2_INSERT_NOHINT(egmAnimation::MS2AnimationServiceAccess::Tree, egmAnimation::MS2AnimationServiceAccess::Tree::value_type&, egmAnimation::MS2AnimationServiceAccess::Tree::_Nodeptr) EE_MS2_EQRANGE(egmAnimation::MS2AnimationServiceAccess::Tree)
+.
+22c
+namespace egmAnimation { struct MS2AnimationServiceAccess { typedef AnimationService::AssetMap::_Mybase Tree; }; } /* MS2: see utf8string.inl */
+.
 13c
 #define MS2_NIACTORMANAGER_PENDING_LOOKUP  // MS2: this TU sees the game's NiActorManager::GetSequenceData (NiActorManager.inl)
 .

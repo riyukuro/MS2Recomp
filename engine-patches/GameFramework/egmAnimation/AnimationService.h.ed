@@ -1,0 +1,3 @@
+937c
+    AssetMap m_assetsByPhysicalID; friend struct MS2AnimationServiceAccess;  // MS2: names AssetMap for the EE_MS2_INSERT_NOHINT specialization in AnimationService.cpp
+.

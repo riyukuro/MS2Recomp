@@ -1,0 +1,4 @@
+121,122c
+        if (pkPoseBuffer->GetNumTotalItems() != pkPoseBuffer->GetPoseBinding()->GetNumTotalBindings())  // MS2: grow instead of
+            pkPoseBuffer->AddNewItemsFromPoseBinding(true, true);  // asserting (exe 0x141c6ab10); line count kept
+.

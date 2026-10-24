@@ -1,6 +1,12 @@
 423a
     SetDisplayObject(true);  // MS2
 .
+255c
+        if (pkObject->GetDisplayObject())  // MS2: display-object flag (set by the NiRenderObject ctor) instead of NiIsKindOf (exe 0x141d2b6f0/0x141d2b640)
+.
+234c
+        if (pkObject->GetDisplayObject())  // MS2: display-object flag (set by the NiRenderObject ctor) instead of NiIsKindOf (exe 0x141d2b6f0/0x141d2b640)
+.
 38a
     SetDisplayObject(true);  // MS2
 .

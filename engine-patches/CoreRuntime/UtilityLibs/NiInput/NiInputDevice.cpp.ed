@@ -1,0 +1,3 @@
+33c
+    if (!pkDesc->GetName()) return 0xffffffff;  // MS2: rejects unnamed controls (exe 0x141d0b870)
+.

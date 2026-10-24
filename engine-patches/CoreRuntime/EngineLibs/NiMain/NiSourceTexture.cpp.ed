@@ -1,4 +1,10 @@
 296,299d
+277c
+            } NiRenderer::Warning("NiSourceTexture::LoadBinary Failed to find texture %s", (const char*)m_kFilename); MS2Found:;
+.
+275c
+                    goto MS2Found;  // MS2: warns when no search path has the file (exe 0x141d33950)
+.
 239a
     // MS2: the format prefs are read before the texture palette / disk lookup
     NiStreamLoadEnum(kStream, m_kFormatPrefs.m_ePixelLayout);
