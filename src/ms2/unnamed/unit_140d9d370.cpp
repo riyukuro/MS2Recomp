@@ -65,16 +65,20 @@ public:
 };
 
 // ---- unrecovered neighbours -------------------------------------------------------------------------------------------------
-extern char DAT_143ac3ce8; extern char DAT_143d6eb58; extern char DAT_143a4b228;
+extern char DAT_143a4b228;
 extern Unk_PtrArray* DAT_143d6eab8;     // per-frame render object list
-void FUN_141d16b90(void* rtti, const char* name, void* parent);     // NiRTTI::NiRTTI
 void* FUN_1427e4d90(NiDX9MeshMaterialBinding* binding);
 void FUN_141d4d520(void* shader, Unk_PtrArray* list);
 void* FUN_140876480(void* out, int cat);   void* FUN_14208a860(unsigned __int64 size, unsigned cat);
 void* FUN_140d878b0(void* mem, void* arg);                          // MS2FragmentShader::MS2FragmentShader (0xd8 bytes)
 
-// @0x1400d3cd0   static initializer: MS2Renderer::ms_RTTI
-void FUN_1400d3cd0() { FUN_141d16b90(&DAT_143ac3ce8, "MS2Renderer", &DAT_143d6eb58); }
+// MS2Renderer::ms_RTTI (parent NiDX9Renderer::ms_RTTI 0x143d6eb58). Its dynamic initializer is the exe's .text$di
+// 0x1400d3cd0, so it runs from this unit's .CRT$XCU slot.
+#ifndef MS2_HOOK_DLL   // the exe's object at 0x143ac3ce8, which other units reach as DAT_143ac3ce8 (the hook DLL binds it)
+NiRTTI DAT_143ac3ce8("MS2Renderer", &NiDX9Renderer::ms_RTTI);
+#else
+extern NiRTTI DAT_143ac3ce8;
+#endif
 
 // @0x140d9d370
 MS2Renderer::MS2Renderer() {}
@@ -200,7 +204,6 @@ void MS2Renderer::SetRenderShadowCasterBackfaces(bool bRenderBackfaces) { FUN_14
 void MS2Renderer::SetStencilClear(unsigned int uiClear) { m_uiStencilClear = uiClear; }
 
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
-MS2_REPLACE(0x1400d3cd0, FUN_1400d3cd0, 35, 0xB607932C);
 MS2_REPLACE_METHOD(0x140d9d3e0, MS2Renderer, Do_RenderMesh, 206, 0x7B72FAC8);
 MS2_REPLACE_METHOD(0x140d9d4c0, MS2Renderer, GetFragmentShader, 121, 0xD9701CE9);
 MS2_REPLACE_METHOD(0x140d9d690, MS2Renderer, Do_LockRenderer, 6, 0xA9AF6E37);
