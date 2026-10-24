@@ -10310,3 +10310,4 @@ DAT_14318f040	14318f040	data
 ?SetText@TextField@GFx@Scaleform@@QEAAXPEB_W_N@Z	1425bd530	func
 ?SetTextValue@TextField@GFx@Scaleform@@QEAA_NPEBD_N1@Z	1425bd9a0	func
 ?TransformToTextRectSpace@TextField@GFx@Scaleform@@QEBA?AV?$Point@M@Render@3@AEBVDisplayInfo@Value@23@@Z	1425be970	func
+?HighlightCompositionStringText@TextField@GFx@Scaleform@@QEAAX_K0I@Z	1425b9770	func
