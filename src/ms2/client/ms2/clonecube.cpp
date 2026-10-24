@@ -214,7 +214,7 @@ bool CloneCube::IsVisible()
 }
 MS2_REPLACE_METHOD(0x141085420, CloneCube, IsVisible, 18, 0x76A63993);
 
-static void FUN_1410865e0(NiObjectNET* pObj, const NiFixedString& kKey, bool bValue);
+void FUN_1410865e0(NiObjectNET* pObj, const NiFixedString& kKey, bool bValue);
 
 // @0x141085440
 void CloneCube::FUN_141085440()
@@ -426,7 +426,7 @@ bool CloneCube::vfunc_61(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
 
 // Sets the boolean extra data kKey of pObj to bValue, adding it when missing.
 // @0x1410865e0
-static void FUN_1410865e0(NiObjectNET* pObj, const NiFixedString& kKey, bool bValue)
+void FUN_1410865e0(NiObjectNET* pObj, const NiFixedString& kKey, bool bValue)
 {
     NiBooleanExtraData* pData = NiDynamicCast(NiBooleanExtraData, pObj->GetExtraData(kKey));
     if (!pData)
