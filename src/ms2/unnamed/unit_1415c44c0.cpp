@@ -148,6 +148,31 @@ unsigned long long FUN_1415c5760() { return 0; }
 // @0x1415c5970
 void* FUN_1415c5970(const void* p, void* out) { const auto* src = static_cast<const unsigned char*>(p) + 0x15a; auto* dst = static_cast<unsigned char*>(out); for (int i = 0; i != 16; ++i) dst[i] = src[i]; return out; }
 
+// @0x1415cb420
+void FUN_1415cb420() {}
+// @0x1415cb430
+void FUN_1415cb430() {}
+
+// MS2-FUNCTIONAL: stores the recovered code page field and returns the helper's success value.
+// @0x1415cb710
+unsigned long long FUN_1415cb710(void* manager, unsigned int value)
+{
+    *reinterpret_cast<unsigned int*>(static_cast<unsigned char*>(manager) + 0x38) = value;
+    return 1;
+}
+
+// @0x1415cb740
+unsigned int FUN_1415cb740(const void* manager)
+{
+    return *reinterpret_cast<const unsigned int*>(static_cast<const unsigned char*>(manager) + 0x38);
+}
+
+// @0x1415c46c0
+void FUN_1415c46c0()
+{
+    (void)FUN_1415cb740(CNMManager::GetInstance());
+}
+
 // @0x1415c5770
 unsigned long long FUN_1415c5770(const void* p) { return *reinterpret_cast<const unsigned long long*>(static_cast<const unsigned char*>(p) + 0x80); }
 
