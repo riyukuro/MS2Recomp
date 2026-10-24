@@ -10301,3 +10301,4 @@ DAT_14318f040	14318f040	data
 ?ExecuteCompleteEvent@LoaderInfo@fl_display@Instances@AS3@GFx@Scaleform@@QEAAXXZ	1424422a0	func
 ?ExecuteInitEvent@LoaderInfo@fl_display@Instances@AS3@GFx@Scaleform@@QEAAXPEAVDisplayObject@56@@Z	1424426d0	func
 ?ExecuteProgressEvent@LoaderInfo@fl_display@Instances@AS3@GFx@Scaleform@@QEAAX_K0@Z	142442b50	func
+?GetMember@CapabilitiesCtorFunction@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@PEAVValue@234@@Z	14294de70	func
