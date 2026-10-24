@@ -10030,3 +10030,5 @@ DAT_143a2dd50	143a2dd50	data
 ?QueueCompleteEvent@Loader@fl_display@Instances@AS3@GFx@Scaleform@@QEAAXXZ	142445ca0	func
 ?QueueInitEvent@Loader@fl_display@Instances@AS3@GFx@Scaleform@@QEAAXPEAVDisplayObject@56@V?$Ptr@VRefCountImpl@Scaleform@@@6@@Z	142445db0	func
 ??0Error@VM@AS3@GFx@Scaleform@@QEAA@W4ErrorID@1234@AEAV1234@AEBVValue@234@2@Z	1424d6cf0	func
+?CheckObject@StackReader@AS3@GFx@Scaleform@@QEBAXAEBVValue@234@@Z	1424ef180	func
+?Read@StackReader@AS3@GFx@Scaleform@@QEAAXAEAVMultiname@234@@Z	1425201f0	func
