@@ -21,6 +21,45 @@ class CNMEventHandler
 {
 public:
     virtual void vfunc_0(void*); virtual void vfunc_1(void*); virtual void vfunc_2(void*);
+    virtual void vfunc_3();
+    virtual void vfunc_4();
+    virtual void vfunc_5();
+    virtual void vfunc_6();
+    virtual void vfunc_7();
+    virtual void vfunc_8();
+    virtual void vfunc_9();
+    virtual void vfunc_10();
+    virtual void vfunc_11();
+    virtual void vfunc_12();
+    virtual void vfunc_13();
+    virtual void vfunc_14();
+    virtual void vfunc_15();
+    virtual void vfunc_16();
+    virtual void vfunc_17();
+    virtual void vfunc_18();
+    virtual void vfunc_19();
+    virtual void vfunc_20();
+    virtual void vfunc_21();
+    virtual void vfunc_22();
+    virtual void vfunc_23();
+    virtual void vfunc_24();
+    virtual void vfunc_25();
+    virtual void vfunc_26();
+    virtual void vfunc_27();
+    virtual void vfunc_28();
+    virtual void vfunc_29();
+    virtual void vfunc_30();
+    virtual void vfunc_31();
+    virtual void vfunc_32();
+    virtual void vfunc_33();
+    virtual void vfunc_34();
+    virtual void vfunc_35();
+    virtual void vfunc_36();
+    virtual void vfunc_37();
+    virtual void vfunc_38();
+    virtual void vfunc_39();
+    virtual void vfunc_40();
+    virtual void vfunc_41();
 };
 
 // @0x1415ca430
@@ -98,3 +137,120 @@ int FUN_1415c91e0(const void* session)
 {
     return *reinterpret_cast<const int*>(static_cast<const unsigned char*>(session) + 0x1a0);
 }
+
+// @0x1415cc390
+void CNMEventHandler::vfunc_3() {}
+
+// @0x1415cc3b0
+void CNMEventHandler::vfunc_4() {}
+
+// @0x1415cc3d0
+void CNMEventHandler::vfunc_5() {}
+
+// @0x1415cc3f0
+void CNMEventHandler::vfunc_6() {}
+
+// @0x1415cc410
+void CNMEventHandler::vfunc_7() {}
+
+// @0x1415cc430
+void CNMEventHandler::vfunc_8() {}
+
+// @0x1415cc450
+void CNMEventHandler::vfunc_9() {}
+
+// @0x1415cc470
+void CNMEventHandler::vfunc_10() {}
+
+// @0x1415cc490
+void CNMEventHandler::vfunc_11() {}
+
+// @0x1415cc4b0
+void CNMEventHandler::vfunc_12() {}
+
+// @0x1415cc4d0
+void CNMEventHandler::vfunc_13() {}
+
+// @0x1415cc4f0
+void CNMEventHandler::vfunc_14() {}
+
+// @0x1415cc510
+void CNMEventHandler::vfunc_15() {}
+
+// @0x1415cc530
+void CNMEventHandler::vfunc_16() {}
+
+// @0x1415cc550
+void CNMEventHandler::vfunc_17() {}
+
+// @0x1415cc570
+void CNMEventHandler::vfunc_18() {}
+
+// @0x1415cc590
+void CNMEventHandler::vfunc_19() {}
+
+// @0x1415cc5b0
+void CNMEventHandler::vfunc_20() {}
+
+// @0x1415cc5d0
+void CNMEventHandler::vfunc_21() {}
+
+// @0x1415cc5f0
+void CNMEventHandler::vfunc_22() {}
+
+// @0x1415cc610
+void CNMEventHandler::vfunc_23() {}
+
+// @0x1415cc630
+void CNMEventHandler::vfunc_24() {}
+
+// @0x1415cc650
+void CNMEventHandler::vfunc_25() {}
+
+// @0x1415cc670
+void CNMEventHandler::vfunc_26() {}
+
+// @0x1415cc690
+void CNMEventHandler::vfunc_27() {}
+
+// @0x1415cc6b0
+void CNMEventHandler::vfunc_28() {}
+
+// @0x1415cc6d0
+void CNMEventHandler::vfunc_29() {}
+
+// @0x1415cc6f0
+void CNMEventHandler::vfunc_30() {}
+
+// @0x1415cc710
+void CNMEventHandler::vfunc_31() {}
+
+// @0x1415cc730
+void CNMEventHandler::vfunc_32() {}
+
+// @0x1415cc750
+void CNMEventHandler::vfunc_33() {}
+
+// @0x1415cc770
+void CNMEventHandler::vfunc_34() {}
+
+// @0x1415cc790
+void CNMEventHandler::vfunc_35() {}
+
+// @0x1415cc7b0
+void CNMEventHandler::vfunc_36() {}
+
+// @0x1415cc7d0
+void CNMEventHandler::vfunc_37() {}
+
+// @0x1415cc7f0
+void CNMEventHandler::vfunc_38() {}
+
+// @0x1415cc810
+void CNMEventHandler::vfunc_39() {}
+
+// @0x1415cc830
+void CNMEventHandler::vfunc_40() {}
+
+// @0x1415cc850
+void CNMEventHandler::vfunc_41() {}
