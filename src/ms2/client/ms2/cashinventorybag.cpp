@@ -1147,6 +1147,37 @@ MS2_EMIT_CRT_MEMMOVE_S();
 // MS2-PIN: ?SendCashMode3@CCashMarketMan@@QEAAXHHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@0@Z 0x140b062c0
 // MS2-PIN: ?SendCashMode4@CCashMarketMan@@QEAAXHHH@Z 0x140b063b0
 // MS2-PIN: ?SendCashMode7@CCashMarketMan@@QEAAXHHHH@Z 0x140b064c0
+// MS2-FUNCTIONAL: full-exe entry forwards packet handling to the recovered market manager method.
+void FUN_140b06020(void* self, CInPacket& packet)
+{
+    reinterpret_cast<CCashMarketMan*>(self)->OnCash(packet);
+}
+
+// The exe exposes these cash-mode helpers under the older manager type name.
+class Unk_CashMgr
+{
+public:
+    void FUN_140b062c0(int mode, int item, CStringA first, CStringA second);
+    void FUN_140b063b0(unsigned item, int count, int flags);
+    void FUN_140b064c0(int a, int b, int c, int flags);
+};
+
+// MS2-FUNCTIONAL: forwards the legacy entry to the implemented mode-3 packet builder.
+void Unk_CashMgr::FUN_140b062c0(int mode, int item, CStringA first, CStringA second)
+{
+    reinterpret_cast<CCashMarketMan*>(this)->SendCashMode3(mode, item, first, second);
+}
+// MS2-FUNCTIONAL: forwards the legacy entry to the implemented mode-4 packet builder.
+void Unk_CashMgr::FUN_140b063b0(unsigned item, int count, int flags)
+{
+    reinterpret_cast<CCashMarketMan*>(this)->SendCashMode4(static_cast<int>(item), count, flags);
+}
+// MS2-FUNCTIONAL: forwards the legacy entry to the implemented mode-7 packet builder.
+void Unk_CashMgr::FUN_140b064c0(int a, int b, int c, int flags)
+{
+    reinterpret_cast<CCashMarketMan*>(this)->SendCashMode7(a, b, c, flags);
+}
+
 // MS2-PIN: ?FUN_140b06020@@YAXPEAXAEAVCInPacket@@@Z 0x140b06020
 // MS2-PIN: ?FUN_140b062c0@Unk_CashMgr@@QEAAXHHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@0@Z 0x140b062c0
 // MS2-PIN: ?FUN_140b063b0@Unk_CashMgr@@QEAAXIHH@Z 0x140b063b0
