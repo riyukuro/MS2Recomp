@@ -466,3 +466,40 @@ void CNametagSymbolTable::SetInit(bool b)
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9b750-0x142c9b7e0 .text$yd
+
+// MS2-FUNCTIONAL: full-exe entry forwards to the recovered symbol-table loader; its legacy ABI discards the status.
+void FUN_1406c54d0(CNametagSymbolTable* table) { table->Load(); }
+
+class Unk_NtMgr
+{
+public:
+    int FUN_1406c5a70(short id);
+    int FUN_1406c5c80(short id);
+    int FUN_1406c5d60(short id);
+};
+class Unk_MiNtMgr
+{
+public:
+    int FUN_1406c5d60(short id);
+};
+class Unk_MyPCChannelTable
+{
+public:
+    int FUN_1406c5d60(unsigned short id);
+};
+
+// MS2-FUNCTIONAL: full-exe entry forwards to the recovered Exists lookup.
+int Unk_NtMgr::FUN_1406c5a70(short id)
+{ return reinterpret_cast<CNametagSymbolTable*>(this)->Exists(static_cast<unsigned short>(id)); }
+// MS2-FUNCTIONAL: full-exe entry forwards to the recovered visibility lookup.
+int Unk_NtMgr::FUN_1406c5c80(short id)
+{ return reinterpret_cast<CNametagSymbolTable*>(this)->IsShown(static_cast<unsigned short>(id)); }
+// MS2-FUNCTIONAL: legacy manager spelling forwards to the same condition lookup.
+int Unk_NtMgr::FUN_1406c5d60(short id)
+{ return static_cast<int>(reinterpret_cast<CNametagSymbolTable*>(this)->CheckCondition(static_cast<unsigned short>(id))); }
+// MS2-FUNCTIONAL: legacy manager spelling forwards to the same condition lookup.
+int Unk_MiNtMgr::FUN_1406c5d60(short id)
+{ return static_cast<int>(reinterpret_cast<CNametagSymbolTable*>(this)->CheckCondition(static_cast<unsigned short>(id))); }
+// MS2-FUNCTIONAL: channel-table spelling forwards to the same condition lookup.
+int Unk_MyPCChannelTable::FUN_1406c5d60(unsigned short id)
+{ return static_cast<int>(reinterpret_cast<CNametagSymbolTable*>(this)->CheckCondition(id)); }
