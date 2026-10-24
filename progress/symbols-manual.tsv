@@ -9980,3 +9980,9 @@ DAT_143a2dd50	143a2dd50	data
 ?GlobalObjectCPP_ti_utils@fl@Instances@AS3@GFx@Scaleform@@3QBUThunkInfo@345@B	143144450	data
 ?GlobalObjectCPP_ti_avmplus@fl@Instances@AS3@GFx@Scaleform@@3QBUThunkInfo@345@B	1431446e0	data
 ??0UDBase@Classes@AS3@GFx@Scaleform@@QEAA@AEAVTraits@ClassTraits@234@@Z	1424dadb0	func
+?GetValueTraits@VM@AS3@GFx@Scaleform@@QEBAAEBVTraits@234@AEBVValue@234@@Z	14250ffc0	func
+?IsBooleanType@Tracer@AS3@GFx@Scaleform@@QEBA_NAEBVValue@234@@Z	142514000	func
+?IsNumberType@Tracer@AS3@GFx@Scaleform@@QEBA_NAEBVValue@234@@Z	142514470	func
+?IsSIntType@Tracer@AS3@GFx@Scaleform@@QEBA_NAEBVValue@234@@Z	142514c30	func
+?IsStringType@Tracer@AS3@GFx@Scaleform@@QEBA_NAEBVValue@234@@Z	142514e10	func
+?IsUIntType@Tracer@AS3@GFx@Scaleform@@QEBA_NAEBVValue@234@@Z	1425150c0	func
