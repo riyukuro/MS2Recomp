@@ -9986,3 +9986,9 @@ DAT_143a2dd50	143a2dd50	data
 ?IsSIntType@Tracer@AS3@GFx@Scaleform@@QEBA_NAEBVValue@234@@Z	142514c30	func
 ?IsStringType@Tracer@AS3@GFx@Scaleform@@QEBA_NAEBVValue@234@@Z	142514e10	func
 ?IsUIntType@Tracer@AS3@GFx@Scaleform@@QEBA_NAEBVValue@234@@Z	1425150c0	func
+?SetMember@AvmCharacter@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@AEBVValue@234@AEBVPropFlags@234@@Z	142982d20	func
+?GetMember@AvmCharacter@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@PEAVValue@234@@Z	14294bfe0	func
+?SetMember@AvmTextField@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@AEBVValue@234@AEBVPropFlags@234@@Z	142983360	func
+?GetMember@AvmTextField@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@PEAVValue@234@@Z	14294c720	func
+?GetStyleSheet@AvmTextField@AS2@GFx@Scaleform@@UEBAPEBVStyleManager@Text@34@XZ	1429561e0	func
+?HasStyleSheet@AvmTextField@AS2@GFx@Scaleform@@UEBA_NXZ	14295dbb0	func
