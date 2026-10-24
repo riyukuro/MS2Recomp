@@ -384,7 +384,7 @@ NiAVObject* Unk_NodeQueue::Next(bool bAddChildren)
 
 // Is the object flagged 0x400 (excluded from the alpha fade)?
 // @0x14098dfc0
-static bool FUN_14098dfc0(NiAVObject* pkObject)
+bool FUN_14098dfc0(NiAVObject* pkObject)
 {
     return pkObject->MS2HasAnyFlag(0x400);
 }
