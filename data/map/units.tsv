@@ -444,30 +444,30 @@
 1400ef900	1400efc20	?\uipvpguildteamdialog.cpp	low	10	di	dir client\ms2
 1400efc20	1400efce0	?\uipvpguildteamresultdialog.cpp	low	4	di	dir client\ms2
 1400efce0	1400efeb0	?\uipvpkilllogdialog.cpp	low	6	di	dir client\ms2
-1400efeb0	1400f0390	unit_1400efeb0	none	15	di	
+1400efeb0	1400f0390	unit_1400efeb0_marketheaderstatics	none	15	di	descriptive: marketheaderstatics
 1400f0390	1400f0590	?\uipvpteamresultdialog.cpp	low	7	di	dir client\ms2
 1400f0590	1400f0980	unit_141347b10	none	11	di	rejected ?\shopbannerinfo.cpp
 1400f0980	1400f0a70	?\uismartrecommendbillingdialog.cpp	low	2	di	dir client\ms2
-1400f0a70	1400f1000	unit_1400f0a70	none	13	di	
+1400f0a70	1400f1000	unit_1400f0a70_marketheaderstatics	none	13	di	descriptive: marketheaderstatics
 1400f1000	1400f1760	client\ms2\uiupperhuddialog.cpp	medium	22	di	
 1400f1760	1400f1bc0	?\usercommandcli.cpp	low	13	di	
 1400f1bc0	1400f1f60	?\groundeffectdata.cpp	low	9	di	
 1400f1f60	1400f27b0	client\ms2\guideaction.cpp	medium	27	di	
 1400f27b0	1400f2ed0	client\ms2\guideentity.cpp	medium	8	di	
 1400f2ed0	1400f2f20	unit_1413a6580	none	1	di	rejected ?\guideconditioninput.cpp
-1400f2f20	1400f3420	unit_1400f2f20	none	16	di	
+1400f2f20	1400f3420	unit_1400f2f20_guideconditionregistrations	none	16	di	descriptive: guideconditionregistrations
 1400f3420	1400f36a0	unit_1413a6e30	none	8	di	rejected ?\guideconditionposition.cpp
 1400f36a0	1400f36f0	unit_1413a76f0	none	1	di	rejected ?\guideconditionmovement.cpp
-1400f36f0	1400f3a10	unit_1400f36f0	none	10	di	
+1400f36f0	1400f3a10	unit_1400f36f0_guideconditionregistrations	none	10	di	descriptive: guideconditionregistrations
 1400f3a10	1400f3a60	unit_1413a76f0	none	1	di	rejected ?\guideconditionmovement.cpp
-1400f3a60	1400f40a0	unit_1400f3a60	none	20	di	
+1400f3a60	1400f40a0	unit_1400f3a60_guideconditionregistrations	none	20	di	descriptive: guideconditionregistrations
 1400f40a0	1400f4190	unit_1413a7bc0	none	3	di	rejected ?\guideconditionnext.cpp
-1400f4190	1400f4460	unit_1400f4190	none	9	di	
+1400f4190	1400f4460	unit_1400f4190_guideconditionregistrations	none	9	di	descriptive: guideconditionregistrations
 1400f4460	1400f4800	unit_1413a8370	none	10	di	rejected ?\guideconditionequipskill.cpp
 1400f4800	1400f4c80	client\ms2\guildmanager.cpp	medium	18	di	
 1400f4c80	1400f4ea0	?\hardwareinstancingservice.cpp	low	8	di	dir client\ms2
 1400f4ea0	1400f4f00	unit_1413f9810	none	2	di	rejected ?\`bool __cdecl nodehelper.cpp
-1400f4f00	1400f5200	unit_1400f4f00	none	9	di	
+1400f4f00	1400f5200	unit_1400f4f00_marketheaderstatics	none	9	di	descriptive: marketheaderstatics
 1400f5200	1400f5230	?\interactobject.cpp	low	1	di	dir client\ms2
 1400f5230	1400f5950	?\invenslot.cpp	low	28	di	dir client\ms2
 1400f5950	1400f5c70	?\itembreakslot.cpp	low	10	di	dir client\ms2
@@ -476,7 +476,7 @@
 1400f6bf0	1400f6ce0	?\itemugcmesh.cpp	low	2	di	dir client\ms2
 1400f6ce0	1400f6db0	client\ms2\keytable.cpp	medium	4	di	
 1400f6db0	1400f6f20	?\kfmmodel.cpp	low	5	di	dir client\ms2
-1400f6f20	1400f7290	unit_1400f6f20	none	11	di	
+1400f6f20	1400f7290	unit_1400f6f20_marketheaderstatics	none	11	di	descriptive: marketheaderstatics
 1400f7290	1400f7340	?\lighteffectparam.cpp	low	4	di	dir client\ms2
 1400f7340	1400f73f0	?\lightningeffectparam.cpp	low	4	di	dir client\ms2
 1400f73f0	1400f7440	?\lightunaffectednode.cpp	low	2	di	dir client\ms2
@@ -484,7 +484,7 @@
 1400f77f0	1400f7980	?\mailitemslot.cpp	low	5	di	dir client\ms2
 1400f7980	1400f7d10	?\mainsystem.cpp	low	12	di	dir client\ms2
 1400f7d10	1400f7d50	?\mapmetamanager.cpp	low	2	di	dir client\ms2
-1400f7d50	1400f8050	unit_1400f7d50	none	13	di	
+1400f7d50	1400f8050	unit_1400f7d50_mixedheaderstatics	none	13	di	descriptive: mixedheaderstatics
 1400f8050	1400f82a0	?\motioncontroller.cpp	low	9	di	dir client\ms2
 1400f82a0	1400f8710	?\ms2.cpp	low	17	di	dir client\ms2
 1400f8710	1400f8990	?\ms2animationservice.cpp	low	10	di	dir client\ms2
@@ -507,9 +507,9 @@
 1400fa2d0	1400fa2f0	?\nifanimationservice.cpp	low	1	di	dir client\ms2
 1400fa2f0	1400fa540	?\nifeffectparam.cpp	low	9	di	was ?\duplicatedalphacontroller.cpp; dir client\ms2
 1400fa540	1400fa560	?\nifmodel.cpp	low	1	di	dir client\ms2
-1400fa560	1400fa870	unit_1400fa560	none	9	di	
+1400fa560	1400fa870	unit_1400fa560_marketnmheaderstatics	none	9	di	descriptive: marketnmheaderstatics
 1400fa870	1400fa940	?\offscreenwebbrowser.cpp	low	1	di	dir client\ms2
-1400fa940	1400fad30	unit_1400fa940	none	14	di	
+1400fa940	1400fad30	unit_1400fa940_marketheaderstatics	none	14	di	descriptive: marketheaderstatics
 1400fad30	1400fb010	?\partymanager.cpp	low	9	di	dir client\ms2
 1400fb010	1400fb4d0	unit_14164dfd0	none	22	di	ps1 split from client\ms2\pcbase.cpp: PC class TU di (pc.cpp?)
 1400fb4d0	1400fb790	client\ms2\pcbase.cpp	medium	8	di	
@@ -525,21 +525,21 @@
 1400fc9b0	1400fc9e0	?\radialblurrenderstep.cpp	low	1	di	dir client\ms2\postprocessing
 1400fc9e0	1400fca70	?\screenmaskingrenderstep.cpp	low	3	di	dir client\ms2\postprocessing
 1400fca70	1400fcad0	?\worldfadeoutrenderstep.cpp	low	2	di	dir client\ms2\postprocessing
-1400fcad0	1400fcc80	unit_1400fcad0	none	9	di	
+1400fcad0	1400fcc80	unit_1400fcad0_emptyfixedstrings	none	9	di	descriptive: emptyfixedstrings
 1400fcc80	1400fcce0	?\worldfadeoutrenderstep.cpp	low	2	di	dir client\ms2\postprocessing
-1400fcce0	1400fcf80	unit_1400fcce0	none	14	di	
+1400fcce0	1400fcf80	unit_1400fcce0_fixedstringinitializers	none	14	di	descriptive: fixedstringinitializers
 1400fcf80	1400fd100	?\worldfadeoutrenderstep.cpp	low	8	di	dir client\ms2\postprocessing
-1400fd100	1400fd610	unit_1400fd100	none	27	di	
+1400fd100	1400fd610	unit_1400fd100_fixedstringinitializers	none	27	di	descriptive: fixedstringinitializers
 1400fd610	1400fd830	unit_1416bc380	none	11	di	
-1400fd830	1400fda40	unit_1400fd830	none	11	di	
+1400fd830	1400fda40	unit_1400fd830_emptyfixedstrings	none	11	di	descriptive: emptyfixedstrings
 1400fda40	1400fda80	unit_1416bc380	none	1	di	
-1400fda80	1400fe1a0	unit_1400fda80	none	38	di	
+1400fda80	1400fe1a0	unit_1400fda80_fixedstringinitializers	none	38	di	descriptive: fixedstringinitializers
 1400fe1a0	1400fe440	unit_1416bc380	none	7	di	
 1400fe440	1400fe730	unit_1416c2c00	none	10	di	rejected ?\proxyobject.cpp (order within gap)
 1400fe730	1400feaa0	client\ms2\questmanager.cpp	medium	14	di	
 1400feaa0	1400fed80	?\questuidata.cpp	low	9	di	dir client\ms2
 1400fed80	1400fedb0	?\raindroponcubeemitter.cpp	low	1	di	dir client\ms2
-1400fedb0	1400ff140	unit_1400fedb0	none	12	di	
+1400fedb0	1400ff140	unit_1400fedb0_randomeffectheaderstatics	none	12	di	descriptive: randomeffectheaderstatics
 1400ff140	1400ff2b0	?\reservedwordtable.cpp	low	4	di	dir client\ms2
 1400ff2b0	1400ff360	?\ribboneffectparam.cpp	low	4	di	dir client\ms2
 1400ff360	140100050	client\ms2\scenestategame.cpp	medium	53	di	
@@ -550,17 +550,17 @@
 140100540	140100720	?\scenestatemulti.cpp	low	7	di	was ?\lobbyfieldtable.cpp; dir client\ms2
 140100720	140100860	?\scenestaterelocateworld.cpp	low	4	di	dir client\ms2
 140100860	140100890	?\separatenode.cpp	low	1	di	dir client\ms2
-140100890	140100bf0	unit_140100890	none	11	di	
+140100890	140100bf0	unit_140100890_marketheaderstatics	none	11	di	descriptive: marketheaderstatics
 140100bf0	140101560	?\skillslot.cpp	low	37	di	dir client\ms2
 140101560	140101680	client\ms2\soundeventmgr.cpp	medium	6	di	
 140101680	1401017f0	client\ms2\soundproperty.cpp	medium	4	di	
 1401017f0	140101890	?\soundservice.cpp	low	4	di	dir client\ms2
 140101890	140101fe0	?\state.cpp	low	21	di	was ?\statelocalcontroller.cpp; dir client\ms2
 140101fe0	140102270	client\ms2\stateemotionidle.cpp	medium	7	di	
-140102270	140102e00	unit_140102270	none	33	di	
+140102270	140102e00	unit_140102270_marketheaderstatics	none	33	di	descriptive: marketheaderstatics
 140102e00	140102ff0	?\stateinteractdata.cpp	low	6	di	dir client\ms2
 140102ff0	140103020	?\statejump.cpp	low	1	di	dir client\ms2
-140103020	140103470	unit_140103020	none	12	di	
+140103020	140103470	unit_140103020_marketheaderstatics	none	12	di	descriptive: marketheaderstatics
 140103470	140103f20	client\ms2\statemanager.cpp	medium	32	di	
 140103f20	140104310	client\ms2\stateskill.cpp	medium	11	di	
 140104310	140104390	?\statestun.cpp	low	2	di	dir client\ms2
