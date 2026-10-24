@@ -27,8 +27,13 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(GFxSceneService);
 // @0x140135ae0
 Scaleform::GFx::Value DAT_143b0ae18;
 
+// The method name AScript::FUN_1422bb7e0 calls (ascript.cpp binds it by this name).
+#ifndef MS2_HOOK_DLL   // the exe's object at 0x143b0ae38 (the hook DLL binds it)
 // @0x140135b10
-static CString s_strSetData("setData");
+CString DAT_143b0ae38("setData");
+#else
+extern CString DAT_143b0ae38;
+#endif
 
 // @0x140135b40
 const NiRTTI GFxMovie::ms_RTTI("GFxMovie", 0);
