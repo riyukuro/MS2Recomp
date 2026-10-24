@@ -1,7 +1,7 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). Cash shop product records and their serialisers.
 // MS2-UNIT: ?\cashproductdata.cpp
 // MS2-RANGE: 0x1401d4a00-0x1401d64a0 .text$mn
-// MS2-RANGE: 0x1400b46f0-0x1400b48e5 .text$di
+// MS2-RANGE: 0x1400b46f0-0x1400b48d0 .text$di
 // MS2-RANGE: 0x142c9a260-0x142c9a295 .text$yd
 // MS2-RANGE: 0x142c9a2c0-0x142c9a317 .text$yd
 // MS2-PINS-BEGIN tplpin
@@ -18,21 +18,13 @@
 // Region setting of the client (0/1 here); read by the three selectors below.
 extern int DAT_143ab0248;
 
-// An unrecovered table built by its constructor (commonenum.cpp); only its constructor is called here.
-class Unk_CashEnumTable
-{
-public:
-    Unk_CashEnumTable();                        // 0x140220190
-    char m_pad[0x30];
-};
-
 #ifndef MS2_HOOK_DLL
 typedef MS2Ptr<CCashSaleProduct> CashSalePtr;
 static ATL::CRBMap<unsigned, CashSalePtr> s_products(10);
 static CLockCriticalSection s_lock;
 static CString s_sortNamesA[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_sortNamesB[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
-static Unk_CashEnumTable s_enumTable;
+// (s_enumTable, .text$di 0x1400b48d0, is defined in commonenum.cpp after the `cache` map its constructor fills)
 #endif
 
 // @0x1401d4a00

@@ -1,7 +1,7 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). Common enum conversions: string <-> enum parsers/namers
 // used by the table loaders (grade, exp categories, block types ...). Free-function names are invented from the VA.
 // MS2-UNIT: commonfiles\commonenum.cpp
-// MS2-RANGE: 0x1400b48f0-0x1400b53d0 .text$di
+// MS2-RANGE: 0x1400b48d0-0x1400b53d0 .text$di
 // MS2-RANGE: 0x140217910-0x1402226b0 .text$mn
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??8ATL@@YA_NPEB_WAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@0@@Z 0x140220db0 ; unique
@@ -1132,6 +1132,19 @@ else if(value.CompareNoCase("Equal")==0 || value.Compare("==")==0 || value.Compa
 else { (void)((!!0)||(_wassert(L"0",L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\commonenum.cpp",472),0)); return 0; }
  }
 std::map<CStringA,unsigned,CommonEnumNoCaseLess> cache; // 0x143aac740, inferred
+
+// cashproductdata's enum table (.text$di 0x1400b48d0): its constructor is 0x140220190 (InitializeExperienceNames
+// below), which fills `cache`. Defined here, after `cache`, so that the map is constructed first under any obj
+// order (the exe's XC table runs it right after this TU's initializers).
+class Unk_CashEnumTable
+{
+public:
+    Unk_CashEnumTable();                        // 0x140220190
+    char m_pad[0x30];
+};
+#ifndef MS2_HOOK_DLL
+static Unk_CashEnumTable s_enumTable;
+#endif
 // inferred: 0x140220190 clears the global then inserts literal/int pairs in this order.
 void* InitializeExperienceNames(void* context) {
     cache.clear();
