@@ -10378,3 +10378,10 @@ XML_SetStartElementHandler	1423b3500	func
 ?FUN_1428fbb70@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z	1428fbb70	func
 ?FUN_1428fbc40@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z	1428fbc40	func
 ?ReplaceText@DocView@Text@Render@Scaleform@@QEAA_KPEB_W_K11@Z	142614ee0	func
+??1IntervalTimer@AS2@GFx@Scaleform@@UEAA@XZ	1429259d0	func
+?Clear@IntervalTimer@AS2@GFx@Scaleform@@UEAAXXZ	1429343e0	func
+?ClearFor@IntervalTimer@AS2@GFx@Scaleform@@UEAA_NPEAVMovieImpl@34@PEAVMovieDefImpl@34@@Z	1429345c0	func
+?GetId@IntervalTimer@AS2@GFx@Scaleform@@UEBAHXZ	14294b080	func
+?GetNextInvokeTime@IntervalTimer@AS2@GFx@Scaleform@@UEBA_KXZ	142953f40	func
+?IsActive@IntervalTimer@AS2@GFx@Scaleform@@UEBA_NXZ	142964e30	func
+?SetId@IntervalTimer@AS2@GFx@Scaleform@@UEAAXH@Z	1429818d0	func
