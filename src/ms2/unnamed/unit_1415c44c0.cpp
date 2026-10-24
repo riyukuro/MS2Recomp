@@ -84,3 +84,17 @@ void CNMEventHandler::vfunc_1(void*) { }
 void CNMEventHandler::vfunc_2(void*) { }
 // MS2-FUNCTIONAL: preserves the recovered empty event-handler virtual slot.
 // MS2-PIN: ?vfunc_2@CNMEventHandler@@UEAAXPEAX@Z 0x1415cc370
+
+// MS2-FUNCTIONAL: returns the recovered session state field at offset 0x18c.
+// @0x1415c91c0
+int FUN_1415c91c0(const void* session)
+{
+    return *reinterpret_cast<const int*>(static_cast<const unsigned char*>(session) + 0x18c);
+}
+
+// MS2-FUNCTIONAL: returns the recovered session state field at offset 0x1a0.
+// @0x1415c91e0
+int FUN_1415c91e0(const void* session)
+{
+    return *reinterpret_cast<const int*>(static_cast<const unsigned char*>(session) + 0x1a0);
+}
