@@ -9,8 +9,8 @@
 extern void FUN_1415fb880(void*, unsigned short);
 extern void FUN_1415fb8d0(void*, unsigned int);
 extern void FUN_1415ef280(void*, unsigned long long);
-extern int FUN_141569b40(char*, const char*, unsigned int);
-extern int FUN_141569c80(char*, const char*, int, unsigned long long, unsigned int);
+extern int FUN_141569b40(char*, unsigned long long, unsigned long long);
+extern int FUN_141569c80(char*, unsigned long long, unsigned long long*, const char*, unsigned long long);
 
 // @0x1415fb880
 void FUN_1415fb880(void* p, unsigned short v) { *reinterpret_cast<unsigned short*>(static_cast<char*>(p) + 8) = v; }
@@ -55,13 +55,13 @@ void FUN_1415fba10(void* p, unsigned int v) { *reinterpret_cast<unsigned int*>(s
 void FUN_1415fba30(void* p, unsigned long long v) { FUN_1415ef280(static_cast<char*>(p) + 0x18, v); }
 
 // @0x1415fba60
-int FUN_1415fba60(char* dst, const char* src, unsigned long long n)
+int FUN_1415fba60(char* dst, unsigned long long cchDest, const char* src)
 {
-    int r = FUN_141569b40(dst, src, 0x7fffffff);
+    int r = FUN_141569b40(dst, cchDest, 0x7fffffff);
     if (r < 0) {
-        if (n != 0) *dst = 0;
+        if (cchDest != 0) *dst = 0;
     } else {
-        r = FUN_141569c80(dst, src, 0, n, 0x7ffffffe);
+        r = FUN_141569c80(dst, cchDest, nullptr, src, 0x7ffffffe);
     }
     return r;
 }
