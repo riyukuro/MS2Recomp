@@ -34,6 +34,8 @@ extern long long* FUN_1415f3f50(long long*);
 extern void* FUN_1415f3f10(void*);
 extern void* FUN_1415f3a30(void*); extern void* FUN_1415f3a50(void*);
 extern void* FUN_141602970(void*);
+extern void* FUN_141602940(void*);
+extern long long* FUN_1415f46c0(long long*);
 
 template <class Id, class Get, class Set, class First, class Last, class Range>
 static void* copy_nm_sequence(void* dst, void* src, Id id, Get get, Set set,
@@ -149,6 +151,30 @@ NM_COPY_FUNCTION(FUN_1415efa30, FUN_1415e1710, FUN_141601ff0, FUN_1416000f0, FUN
 NM_COPY_FUNCTION(FUN_1415efab0, FUN_1415e1720, FUN_141602030, FUN_141600120, FUN_141603ee0, FUN_141603920, FUN_1415e2270)
 
 #undef NM_COPY_FUNCTION
+
+// MS2-FUNCTIONAL: follows the recovered left/right and parent traversal for tree iterator decrement.
+// @0x1415f46c0
+long long* FUN_1415f46c0(long long* it)
+{
+    long long node = *it;
+    if (*reinterpret_cast<unsigned char*>(node + 0x19) == 0) {
+        long long left = *reinterpret_cast<long long*>(node);
+        if (*reinterpret_cast<unsigned char*>(left + 0x19) == 0) {
+            *it = reinterpret_cast<long long>(FUN_141602940(reinterpret_cast<void*>(left)));
+        } else {
+            long long parent;
+            while ((parent = *reinterpret_cast<long long*>(node + 8),
+                    *reinterpret_cast<unsigned char*>(parent + 0x19) == 0 &&
+                    node == *reinterpret_cast<long long*>(parent))) {
+                node = parent;
+            }
+            if (*reinterpret_cast<unsigned char*>(node + 0x19) == 0) *it = parent;
+        }
+    } else {
+        *it = *reinterpret_cast<long long*>(node + 0x10);
+    }
+    return it;
+}
 
 // MS2-FUNCTIONAL: performs postfix increment on the recovered binary tree iterator fields.
 // @0x1415f3ec0
@@ -3062,3 +3088,107 @@ long long* FUN_1415f4370(long long* p) { *p += 0x490; return p; }
 // MS2-FUNCTIONAL: advances the recovered iterator or field pointer by 0x20.
 // @0x1415f43a0
 long long* FUN_1415f43a0(long long* p) { *p += 0x20; return p; }
+
+// MS2-FUNCTIONAL: advances the recovered pointer by 400 bytes.
+// @0x1415f4210
+long long* FUN_1415f4210(long long* p) { *p += 400; return p; }
+
+// MS2-FUNCTIONAL: advances the recovered pointer by 200 bytes.
+// @0x1415f4310
+long long* FUN_1415f4310(long long* p) { *p += 200; return p; }
+
+// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
+// @0x1415f43c0
+void* FUN_1415f43c0(void* p) { FUN_1415f4020(static_cast<long long*>(p)); return p; }
+
+// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
+// @0x1415f43e0
+void* FUN_1415f43e0(void* p) { FUN_1415f4040(static_cast<long long*>(p)); return p; }
+
+// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
+// @0x1415f4400
+void* FUN_1415f4400(void* p) { FUN_1415f4060(static_cast<long long*>(p)); return p; }
+
+// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
+// @0x1415f4420
+void* FUN_1415f4420(void* p) { FUN_1415f4080(static_cast<long long*>(p)); return p; }
+
+// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
+// @0x1415f4440
+void* FUN_1415f4440(void* p) { FUN_1415f40b0(static_cast<long long*>(p)); return p; }
+
+// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
+// @0x1415f4460
+void* FUN_1415f4460(void* p) { FUN_1415f40e0(static_cast<long long*>(p)); return p; }
+
+// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
+// @0x1415f4480
+void* FUN_1415f4480(void* p) { FUN_1415f4110(static_cast<long long*>(p)); return p; }
+
+// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
+// @0x1415f44a0
+void* FUN_1415f44a0(void* p) { FUN_1415f4140(static_cast<long long*>(p)); return p; }
+
+// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
+// @0x1415f44c0
+void* FUN_1415f44c0(void* p) { FUN_1415f4170(static_cast<long long*>(p)); return p; }
+
+// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
+// @0x1415f44e0
+void* FUN_1415f44e0(void* p) { FUN_1415f41a0(static_cast<long long*>(p)); return p; }
+
+// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
+// @0x1415f4500
+void* FUN_1415f4500(void* p) { FUN_1415f41c0(static_cast<long long*>(p)); return p; }
+
+// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
+// @0x1415f4520
+void* FUN_1415f4520(void* p) { FUN_1415f41f0(static_cast<long long*>(p)); return p; }
+
+// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
+// @0x1415f4540
+void* FUN_1415f4540(void* p) { FUN_1415f4210(static_cast<long long*>(p)); return p; }
+
+// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
+// @0x1415f4560
+void* FUN_1415f4560(void* p) { FUN_1415f4240(static_cast<long long*>(p)); return p; }
+
+// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
+// @0x1415f4580
+void* FUN_1415f4580(void* p) { FUN_1415f4270(static_cast<long long*>(p)); return p; }
+
+// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
+// @0x1415f45a0
+void* FUN_1415f45a0(void* p) { FUN_1415f4290(static_cast<long long*>(p)); return p; }
+
+// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
+// @0x1415f45c0
+void* FUN_1415f45c0(void* p) { FUN_1415f42b0(static_cast<long long*>(p)); return p; }
+
+// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
+// @0x1415f45e0
+void* FUN_1415f45e0(void* p) { FUN_1415f42e0(static_cast<long long*>(p)); return p; }
+
+// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
+// @0x1415f4600
+void* FUN_1415f4600(void* p) { FUN_1415f4310(static_cast<long long*>(p)); return p; }
+
+// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
+// @0x1415f4620
+void* FUN_1415f4620(void* p) { FUN_1415f4340(static_cast<long long*>(p)); return p; }
+
+// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
+// @0x1415f4640
+void* FUN_1415f4640(void* p) { FUN_1415f4370(static_cast<long long*>(p)); return p; }
+
+// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
+// @0x1415f4660
+void* FUN_1415f4660(void* p) { FUN_1415f43a0(static_cast<long long*>(p)); return p; }
+
+// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
+// @0x1415f4680
+void* FUN_1415f4680(void* p) { FUN_1415f46c0(static_cast<long long*>(p)); return p; }
+
+// MS2-FUNCTIONAL: forwards to the recovered field-pointer adjustment helper.
+// @0x1415f46a0
+void* FUN_1415f46a0(void* p) { FUN_1415f4680(static_cast<long long*>(p)); return p; }
