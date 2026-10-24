@@ -16,6 +16,121 @@ extern void FUN_1415f9ae0(void*, void*);
 extern void FUN_1415f9b30(void*, void*);
 extern void FUN_1415f9b80(void*, void*);
 
+template <class Id, class Get, class Set, class First, class Last, class Range>
+static void* copy_nm_sequence(void* dst, void* src, Id id, Get get, Set set,
+                              First first, Last last, Range range)
+{
+    if (dst != id(src)) {
+        set(dst, get(src));
+        range(dst, *reinterpret_cast<void**>(first(src)), *reinterpret_cast<void**>(last(src)));
+    }
+    return dst;
+}
+
+#define NM_COPY_HELPERS(addr) \
+    extern void* FUN_##addr(void*)
+NM_COPY_HELPERS(1415e1620); NM_COPY_HELPERS(1415e1630); NM_COPY_HELPERS(1415e1640);
+NM_COPY_HELPERS(1415e1650); NM_COPY_HELPERS(1415e1660); NM_COPY_HELPERS(1415e1670);
+NM_COPY_HELPERS(1415e1680); NM_COPY_HELPERS(1415e1690); NM_COPY_HELPERS(1415e16a0);
+NM_COPY_HELPERS(1415e16b0); NM_COPY_HELPERS(1415e16c0); NM_COPY_HELPERS(1415e16d0);
+NM_COPY_HELPERS(1415e16e0); NM_COPY_HELPERS(1415e16f0); NM_COPY_HELPERS(1415e1700);
+NM_COPY_HELPERS(1415e1710); NM_COPY_HELPERS(1415e1720);
+NM_COPY_HELPERS(141601af0); NM_COPY_HELPERS(141601b30); NM_COPY_HELPERS(141601b70);
+NM_COPY_HELPERS(141601bb0); NM_COPY_HELPERS(141601bf0); NM_COPY_HELPERS(141601c30);
+NM_COPY_HELPERS(141601c70); NM_COPY_HELPERS(141601cb0); NM_COPY_HELPERS(141601d30);
+NM_COPY_HELPERS(141601d70); NM_COPY_HELPERS(141601db0); NM_COPY_HELPERS(141601df0);
+NM_COPY_HELPERS(141601e70); NM_COPY_HELPERS(141601eb0); NM_COPY_HELPERS(141601fb0);
+NM_COPY_HELPERS(141601ff0); NM_COPY_HELPERS(141602030);
+NM_COPY_HELPERS(1416039a0); NM_COPY_HELPERS(1416033e0); NM_COPY_HELPERS(1416039e0);
+NM_COPY_HELPERS(141603420); NM_COPY_HELPERS(141603a20); NM_COPY_HELPERS(141603460);
+NM_COPY_HELPERS(141603a60); NM_COPY_HELPERS(1416034a0); NM_COPY_HELPERS(141603aa0);
+NM_COPY_HELPERS(1416034e0); NM_COPY_HELPERS(141603ae0); NM_COPY_HELPERS(141603520);
+NM_COPY_HELPERS(141603b20); NM_COPY_HELPERS(141603560); NM_COPY_HELPERS(141603b60);
+NM_COPY_HELPERS(1416035a0); NM_COPY_HELPERS(141603be0); NM_COPY_HELPERS(141603620);
+NM_COPY_HELPERS(141603c20); NM_COPY_HELPERS(141603660); NM_COPY_HELPERS(141603c60);
+NM_COPY_HELPERS(1416036a0); NM_COPY_HELPERS(141603ca0); NM_COPY_HELPERS(1416036e0);
+NM_COPY_HELPERS(141603d20); NM_COPY_HELPERS(141603760); NM_COPY_HELPERS(141603d60);
+NM_COPY_HELPERS(1416037a0); NM_COPY_HELPERS(141603e60); NM_COPY_HELPERS(1416038a0);
+NM_COPY_HELPERS(141603ea0); NM_COPY_HELPERS(1416038e0); NM_COPY_HELPERS(141603ee0);
+NM_COPY_HELPERS(141603920);
+#undef NM_COPY_HELPERS
+
+#define NM_COPY_SETTER(addr) extern void FUN_##addr(void*, void*)
+NM_COPY_SETTER(1415ffe20); NM_COPY_SETTER(1415ffe50); NM_COPY_SETTER(1415ffe80);
+NM_COPY_SETTER(1415ffeb0); NM_COPY_SETTER(1415ffee0); NM_COPY_SETTER(1415fff10);
+NM_COPY_SETTER(1415fff40); NM_COPY_SETTER(1415fff70); NM_COPY_SETTER(1415fffa0);
+NM_COPY_SETTER(1415fffd0); NM_COPY_SETTER(141600000); NM_COPY_SETTER(141600030);
+NM_COPY_SETTER(141600060); NM_COPY_SETTER(141600090); NM_COPY_SETTER(1416000c0);
+NM_COPY_SETTER(1416000f0); NM_COPY_SETTER(141600120);
+#undef NM_COPY_SETTER
+
+#define NM_COPY_RANGE(addr) extern void FUN_##addr(void*, void*, void*)
+NM_COPY_RANGE(1415e1c70); NM_COPY_RANGE(1415e1cd0); NM_COPY_RANGE(1415e1d30);
+NM_COPY_RANGE(1415e1d90); NM_COPY_RANGE(1415e1df0); NM_COPY_RANGE(1415e1e50);
+NM_COPY_RANGE(1415e1eb0); NM_COPY_RANGE(1415e1f10); NM_COPY_RANGE(1415e1f70);
+NM_COPY_RANGE(1415e1fd0); NM_COPY_RANGE(1415e2030); NM_COPY_RANGE(1415e2090);
+NM_COPY_RANGE(1415e20f0); NM_COPY_RANGE(1415e2150); NM_COPY_RANGE(1415e21b0);
+NM_COPY_RANGE(1415e2210); NM_COPY_RANGE(1415e2270);
+#undef NM_COPY_RANGE
+
+#define NM_COPY_FUNCTION(name, identity, getter, setter, first, last, range) \
+    void* name(void* dst, void* src) \
+    { return copy_nm_sequence(dst, src, identity, getter, setter, first, last, range); }
+
+// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+// @0x1415ef2b0
+NM_COPY_FUNCTION(FUN_1415ef2b0, FUN_1415e1620, FUN_141601af0, FUN_1415ffe20, FUN_1416039a0, FUN_1416033e0, FUN_1415e1c70)
+// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+// @0x1415ef330
+NM_COPY_FUNCTION(FUN_1415ef330, FUN_1415e1630, FUN_141601b30, FUN_1415ffe50, FUN_1416039e0, FUN_141603420, FUN_1415e1cd0)
+// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+// @0x1415ef3b0
+NM_COPY_FUNCTION(FUN_1415ef3b0, FUN_1415e1640, FUN_141601b70, FUN_1415ffe80, FUN_141603a20, FUN_141603460, FUN_1415e1d30)
+// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+// @0x1415ef430
+NM_COPY_FUNCTION(FUN_1415ef430, FUN_1415e1650, FUN_141601bb0, FUN_1415ffeb0, FUN_141603a60, FUN_1416034a0, FUN_1415e1d90)
+// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+// @0x1415ef4b0
+NM_COPY_FUNCTION(FUN_1415ef4b0, FUN_1415e1660, FUN_141601bf0, FUN_1415ffee0, FUN_141603aa0, FUN_1416034e0, FUN_1415e1df0)
+// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+// @0x1415ef530
+NM_COPY_FUNCTION(FUN_1415ef530, FUN_1415e1670, FUN_141601c30, FUN_1415fff10, FUN_141603ae0, FUN_141603520, FUN_1415e1e50)
+// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+// @0x1415ef5b0
+NM_COPY_FUNCTION(FUN_1415ef5b0, FUN_1415e1680, FUN_141601c70, FUN_1415fff40, FUN_141603b20, FUN_141603560, FUN_1415e1eb0)
+// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+// @0x1415ef630
+NM_COPY_FUNCTION(FUN_1415ef630, FUN_1415e1690, FUN_141601cb0, FUN_1415fff70, FUN_141603b60, FUN_1416035a0, FUN_1415e1f10)
+// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+// @0x1415ef6b0
+NM_COPY_FUNCTION(FUN_1415ef6b0, FUN_1415e16a0, FUN_141601d30, FUN_1415fffa0, FUN_141603be0, FUN_141603620, FUN_1415e1f70)
+// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+// @0x1415ef730
+NM_COPY_FUNCTION(FUN_1415ef730, FUN_1415e16b0, FUN_141601d70, FUN_1415fffd0, FUN_141603c20, FUN_141603660, FUN_1415e1fd0)
+// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+// @0x1415ef7b0
+NM_COPY_FUNCTION(FUN_1415ef7b0, FUN_1415e16c0, FUN_141601db0, FUN_141600000, FUN_141603c60, FUN_1416036a0, FUN_1415e2030)
+// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+// @0x1415ef830
+NM_COPY_FUNCTION(FUN_1415ef830, FUN_1415e16d0, FUN_141601df0, FUN_141600030, FUN_141603ca0, FUN_1416036e0, FUN_1415e2090)
+// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+// @0x1415ef8b0
+NM_COPY_FUNCTION(FUN_1415ef8b0, FUN_1415e16e0, FUN_141601e70, FUN_141600060, FUN_141603d20, FUN_141603760, FUN_1415e20f0)
+// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+// @0x1415ef930
+NM_COPY_FUNCTION(FUN_1415ef930, FUN_1415e16f0, FUN_141601eb0, FUN_141600090, FUN_141603d60, FUN_1416037a0, FUN_1415e2150)
+// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+// @0x1415ef9b0
+NM_COPY_FUNCTION(FUN_1415ef9b0, FUN_1415e1700, FUN_141601fb0, FUN_1416000c0, FUN_141603e60, FUN_1416038a0, FUN_1415e21b0)
+// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+// @0x1415efa30
+NM_COPY_FUNCTION(FUN_1415efa30, FUN_1415e1710, FUN_141601ff0, FUN_1416000f0, FUN_141603ea0, FUN_1416038e0, FUN_1415e2210)
+// MS2-FUNCTIONAL: applies the recovered same-object guard, scalar copy, and sequence range copy.
+// @0x1415efab0
+NM_COPY_FUNCTION(FUN_1415efab0, FUN_1415e1720, FUN_141602030, FUN_141600120, FUN_141603ee0, FUN_141603920, FUN_1415e2270)
+
+#undef NM_COPY_FUNCTION
+
 // MS2-FUNCTIONAL: follows the recovered two-call wrapper and returns the destination.
 // @0x1415ef130
 void* FUN_1415ef130(void* dst, void* src)
