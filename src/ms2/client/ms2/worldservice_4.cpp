@@ -458,4 +458,20 @@ void Unk_WsInst4(WorldService* w, Unk_WsTextEntry& text, Unk_WsLogEntry& log, Un
     { ATL::CAtlArray<void*> a; }
     w->TSingleton<WorldService>::~TSingleton();
 }
+struct Unk_WsF_TagLeave;
+// MS2-FUNCTIONAL: the packet payload's only nontrivial member is its leading CString; destroy that member.
+// @0x141bf5ff0
+void FUN_141bf5ff0(Unk_WsF_TagLeave* p)
+{
+    reinterpret_cast<CString*>(p)->~CString();
+}
+
+struct Unk_WsF_TagEnter;
+// MS2-FUNCTIONAL: the packet payload's only nontrivial member is its leading CString; destroy that member.
+// @0x141bf6010
+void FUN_141bf6010(Unk_WsF_TagEnter* p)
+{
+    reinterpret_cast<CString*>(p)->~CString();
+}
+
 // MS2-PIN: ??1ActorRemovedMessage@egmAnimation@@UEAA@XZ 0x141bf5fb0 ; stores ??_7ActorRemovedMessage (0x142ffeb08); ~ActorAddedMessage is its look-alike
