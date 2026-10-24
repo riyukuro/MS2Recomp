@@ -8,12 +8,12 @@
 14001c000	14002a0e0	sfr_cri_01	none	300	text	sfr0 10-20: Scaleform 4.1.18 recovery, CRI
 14002a0e0	140039ea8	sfr_cri_02	none	300	text	sfr0 10-20: Scaleform 4.1.18 recovery, CRI
 140039ea8	140046a1c	sfr_cri_03	none	300	text	sfr0 10-20: Scaleform 4.1.18 recovery, CRI
-140046a1c	140046e04	unit_140046a1c	none	4	text	
-140046e04	140047430	unit_140046e04	none	7	text	
-140047430	140047b30	unit_140047430	none	14	text	
+140046a1c	140046e04	unit_140046a1c_criutfsortindex	none	4	text	descriptive: criutfsortindex
+140046e04	140047430	unit_140046e04_criutfparser	none	7	text	descriptive: criutfparser
+140047430	140047b30	unit_140047430_crim2vdecoder	none	14	text	descriptive: crim2vdecoder
 140047b30	140049e60	unit_140047b30	none	9	text	
 140049e60	14004c1d0	unit_140049e60	none	8	text	
-14004c1d0	14004da40	unit_14004c1d0	none	12	text	
+14004c1d0	14004da40	unit_14004c1d0_videocolorspace	none	12	text	descriptive: videocolorspace
 14004da40	14004dd30	unit_14004da40	none	4	text	
 14004dd30	1400b21a0	unit_14004dd30	none	552	text	
 1400b21a0	1400b21d0	unit_1400b21a0	none	1	di	
@@ -779,9 +779,9 @@
 1403e8e30	1403e8e60	unit_1403e8e30	none	2	mn	
 1403e8e60	1403e9180	unit_1403e8e60	none	10	mn	
 1403e9180	1403e9210	unit_1403e9180	none	3	mn	
-1403e9210	1403e9650	unit_1403e9210	none	11	mn	
+1403e9210	1403e9650	unit_1403e9210_eventiterdecrement	none	11	mn	descriptive: eventiterdecrement
 1403e9650	1403f37d0	unit_1403e9650	none	356	mn	
-1403f37d0	1403f4e10	unit_1403f37d0	none	134	mn	
+1403f37d0	1403f4e10	unit_1403f37d0_boxedptrwrappers	none	134	mn	descriptive: boxedptrwrappers
 1403f4e10	14041b140	commonfiles\gameeventcontext.cpp	high	1326	mn	
 14041b140	14041c1a0	?\gameeventdtreward.cpp	low	42	mn	dir commonfiles
 14041c1a0	14041cb50	?\gameeventlobbymap.cpp	low	39	mn	dir commonfiles
@@ -799,9 +799,9 @@
 1404487e0	140448870	unit_1404487e0	none	3	mn	
 140448870	1404495e0	unit_140448870	none	46	mn	
 1404495e0	140449650	unit_1404495e0	none	3	mn	
-140449650	14044a880	unit_140449650	none	55	mn	
+140449650	14044a880	unit_140449650_mapsettreeglue	none	55	mn	descriptive: mapsettreeglue
 14044a880	14045b2c0	unit_14044a880	none	348	mn	
-14045b2c0	14045b6e0	unit_14045b2c0	none	25	mn	
+14045b2c0	14045b6e0	unit_14045b2c0_boxedptrwrappers	none	25	mn	descriptive: boxedptrwrappers
 14045b6e0	14045b740	unit_14045b6e0	none	2	mn	
 14045b740	14046c710	unit_14045b740	none	746	mn	
 14046c710	1404746a0	?\gameeventvaluemanager.cpp	low	303	mn	dir commonfiles
@@ -822,9 +822,9 @@
 1404c5c80	1404efc20	commonfiles\guilddef.cpp	high	1127	mn	
 1404efc20	1404efd80	unit_1404efc20	none	4	mn	
 1404efd80	1404f01e0	unit_1404efd80	none	16	mn	
-1404f01e0	1404f07a0	unit_1404f01e0	none	23	mn	
+1404f01e0	1404f07a0	unit_1404f01e0_iteratorcomparators	none	23	mn	descriptive: iteratorcomparators
 1404f07a0	1404fa6b0	unit_1404f07a0	none	349	mn	
-1404fa6b0	1404faed0	unit_1404fa6b0	none	49	mn	
+1404fa6b0	1404faed0	unit_1404fa6b0_guildpayloadrefcounts	none	49	mn	descriptive: guildpayloadrefcounts
 1404faed0	1405021c0	unit_1404faed0	none	274	mn	
 1405021c0	14050a120	unit_1405021c0	none	386	mn	
 14050a120	14050d4c0	?\hideandseek.cpp	low	133	mn	dir commonfiles
@@ -890,7 +890,7 @@
 14069c3e0	1406ae9c0	?\meratmarketbasketinfo.cpp	low	457	mn	dir commonfiles
 1406ae9c0	1406aeaf0	unit_1406ae9c0	none	4	mn	
 1406aeaf0	1406aee80	?\mesomarketproduct.cpp	low	9	mn	dir commonfiles
-1406aee80	1406af1a0	unit_1406aee80	none	17	mn	
+1406aee80	1406af1a0	unit_1406aee80_launchoptions	none	17	mn	descriptive: launchoptions
 1406af1a0	1406c3230	commonfiles\ms2filestring.cpp	high	704	mn	
 1406c3230	1406c3700	unit_1406c3230	none	17	mn	
 1406c3700	1406c47a0	unit_1406c3700	none	45	mn	
@@ -910,7 +910,7 @@
 14071e2f0	140721000	?\pcdata.cpp	low	25	mn	dir commonfiles
 140721000	140728140	?\petgroupinfo.cpp	low	228	mn	dir commonfiles
 140728140	14072bdc0	unit_140728140	none	95	mn	rejected ?\petdata.cpp (order within gap)
-14072bdc0	14072f7f0	unit_14072bdc0	none	104	mn	rejected ?\instrumentdata.cpp
+14072bdc0	14072f7f0	unit_14072bdc0_instrumenttable	none	104	mn	descriptive: instrumenttable
 14072f7f0	14072fd10	unit_14072f7f0	none	6	mn	
 14072fd10	140730120	?\portaldata.cpp	low	7	mn	dir commonfiles
 140730120	140738a30	?\portaltable.cpp	low	294	mn	dir commonfiles
@@ -923,7 +923,7 @@
 14076a1e0	1407703a0	commonfiles\reactordata.cpp	high	217	mn	
 1407703a0	14077dd10	commonfiles\rewardcontentstable.cpp	high	525	mn	
 14077dd10	140781d80	?\rideonaction.cpp	low	166	mn	dir commonfiles
-140781d80	14078ced0	unit_140781d80	none	377	mn	rejected ?\rideedata.cpp (order within gap)
+140781d80	14078ced0	unit_140781d80_ridingtable	none	377	mn	descriptive: ridingtable
 14078ced0	140790bd0	?\scriptcontent.cpp	low	118	mn	dir commonfiles
 140790bd0	1407a1bf0	commonfiles\seasondatatable.cpp	high	506	mn	
 1407a1bf0	1407a3380	commonfiles\seasondatatable.cpp	high	61	mn	ps1 split from commonfiles\serverpacketdef.cpp: seasondatatable COMDAT tail (only seasondatatable calls it; ends with memmove_s 0x1407a3260)
@@ -989,9 +989,9 @@
 1408d5040	1408d5470	unit_1408d5040	none	4	mn	
 1408d5470	1408d6b30	commonfiles\usereventcontext.cpp	high	52	mn	
 1408d6b30	1408e1840	?\usereventmanager.cpp	low	309	mn	dir commonfiles
-1408e1840	1408e2330	unit_1408e1840	none	14	mn	
-1408e2330	1408e2810	unit_1408e2330	none	29	mn	
-1408e2810	1408e2ed0	unit_1408e2810	none	21	mn	
+1408e1840	1408e2330	unit_1408e1840_resizetemplates	none	14	mn	descriptive: resizetemplates
+1408e2330	1408e2810	unit_1408e2330_boxedptrwrappers	none	29	mn	descriptive: boxedptrwrappers
+1408e2810	1408e2ed0	unit_1408e2810_boxedptrtail	none	21	mn	descriptive: boxedptrtail
 1408e2ed0	1408e70b0	commonfiles\usermail.cpp	high	125	mn	
 1408e70b0	1408f4e20	commonfiles\userproxy.cpp	high	368	mn	
 1408f4e20	1408f50a0	?\usertrigger.cpp	low	5	mn	
@@ -1048,7 +1048,7 @@
 140a1f250	140a20460	client\ms2\bigdatalogsystem.cpp	high	35	mn	
 140a20460	140a24e90	?\blackmarketman.cpp	low	104	mn	dir client\ms2
 140a24e90	140a2a0a0	?\blindmanager.cpp	low	179	mn	dir client\ms2
-140a2a0a0	140a2f540	unit_140a2a0a0	none	99	mn	
+140a2a0a0	140a2f540	unit_140a2a0a0_modelpropertycache	none	99	mn	descriptive: modelpropertycache
 140a2f540	140a31af0	?\blockmanager.cpp	low	26	mn	dir client\ms2
 140a31af0	140a365c0	client\ms2\bonerotateinterpolator.cpp	high	109	mn	
 140a365c0	140a376e0	?\bookslot.cpp	low	39	mn	dir client\ms2
@@ -1082,7 +1082,7 @@
 140a89190	140a8af50	?\partyvotecli.cpp	low	71	mn	dir client\ms2
 140a8af50	140a8f1d0	?\paybackmanagerclient.cpp	low	146	mn	dir client\ms2
 140a8f1d0	140a91030	?\pendingeffect.cpp	low	95	mn	dir client\ms2
-140a91030	140a93d00	unit_140a91030	none	100	mn	
+140a91030	140a93d00	unit_140a91030_chromacolortable	none	100	mn	descriptive: chromacolortable
 140a93d00	140aaadb0	unit_140a93d00	none	815	mn	rejected ?\chromasdk.cpp
 140aaadb0	140aace60	?\randomtargeteffect.cpp	low	61	mn	dir client\ms2
 140aace60	140aadff0	?\reconnectionmanagercli.cpp	low	32	mn	dir client\ms2
@@ -1121,7 +1121,7 @@
 140b26ff0	140b287b0	client\ms2\fieldpropertycli.cpp	high	61	mn	
 140b287b0	140b498e0	?\gamerankingcli.cpp	low	937	mn	dir client\ms2
 140b498e0	140b5faf0	unit_140b498e0	none	417	mn	
-140b5faf0	140b602f0	unit_140b5faf0	none	48	mn	
+140b5faf0	140b602f0	unit_140b5faf0_boxedptrwrappers	none	48	mn	descriptive: boxedptrwrappers
 140b602f0	140b60ff0	unit_140b602f0	none	41	mn	
 140b60ff0	140b64c30	?\gfxmoviedamage.cpp	low	127	mn	dir client\ms2
 140b64c30	140b67d70	?\homecameramode.cpp	low	24	mn	dir client\ms2
@@ -1213,7 +1213,7 @@
 140c9cc60	140c9f7a0	client\ms2\roomstagedungeoncli.cpp	high	141	mn	
 140c9f7a0	140ca4360	?\stateeffectmgr.cpp	low	184	mn	dir client\ms2
 140ca4360	140ca6fc0	?\statehomemade.cpp	low	111	mn	dir client\ms2
-140ca6fc0	140ca9d50	unit_140ca6fc0	none	118	mn	rejected ?\oncecallbacktimer.cpp
+140ca6fc0	140ca9d50	unit_140ca6fc0_oncecallbacktimer	none	118	mn	descriptive: oncecallbacktimer
 140ca9d50	140cac530	?\statpointmanager.cpp	low	61	mn	dir client\ms2
 140cac530	140cb1d90	?\tabcontentspetcollect.cpp	low	121	mn	dir client\ms2
 140cb1d90	140cb87d0	?\tabcontentspetcompose.cpp	low	118	mn	was ?\petcomposepetcard.cpp; dir client\ms2
