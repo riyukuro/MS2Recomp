@@ -2039,7 +2039,6 @@ void* FUN_140297a40(size_t nBytes);
 extern void FUN_140297790(void* p);
 extern void FUN_1402978c0(void* p);
 extern void** FUN_140298fc0(void* pHolder);
-extern void FUN_14028b5b0(void* pDst, unsigned long long nDstBytes, const void* pSrc, unsigned long long nCount);
 extern void* FUN_140183290(void* pOut);
 extern unsigned long long* FUN_14029dcd0();
 extern void FUN_14029b680(void** pp);
@@ -2119,10 +2118,10 @@ Unk_BstrBlock* FUN_140297250(Unk_BstrBlock* p, Unk_BstrHolderRef* pA, Unk_BstrHo
     {
         const void* pSrcA = pA->m_pHolder ? *FUN_140298fc0(pA->m_pHolder) : NULL;
         if (pSrcA)
-            FUN_14028b5b0(bstr, (unsigned long long)(nLenA + 1 + nLenB) << 1, pSrcA, (unsigned long long)(nLenA + 1) << 1);
+            memcpy_s(bstr, (unsigned long long)(nLenA + 1 + nLenB) << 1, pSrcA, (unsigned long long)(nLenA + 1) << 1);
         const void* pSrcB = pB->m_pHolder ? *FUN_140298fc0(pB->m_pHolder) : NULL;
         if (pSrcB)
-            FUN_14028b5b0(bstr + nLenA, (unsigned long long)(nLenB + 1) << 1, pSrcB, (unsigned long long)(nLenB + 1) << 1);
+            memcpy_s(bstr + nLenA, (unsigned long long)(nLenB + 1) << 1, pSrcB, (unsigned long long)(nLenB + 1) << 1);
     }
     return p;
 }
