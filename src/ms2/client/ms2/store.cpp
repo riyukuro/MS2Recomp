@@ -962,3 +962,11 @@ TriggerActionCli* FUN_140de4cb0()
 {
     return new TriggerActionCli();
 }
+
+// Full-executable aliases for CStore's slot and storage checks.
+// MS2-PIN: ?AvailableSlot@CStore@@QEAAHV?$MS2Ptr@VCItem@@@@H@Z 0x140de21a0
+// MS2-PIN: ?Allowed@CStore@@QEAAHH@Z 0x140de2490
+// MS2-PIN: ?FUN_140de21a0@Unk_IsStoreView@@QEAAHV?$MS2Ptr@VCItem@@@@H@Z 0x140de21a0
+// MS2-PIN: ?FUN_140de21a0@Unk_SsStoreView@@QEAAHV?$MS2Ptr@VCItem@@@@H@Z 0x140de21a0
+// MS2-PIN: ?FUN_140de2490@Unk_IsStoreView@@QEAAHH@Z 0x140de2490
+// MS2-PIN: ?FUN_140de2490@Unk_SsStoreView@@QEAAHH@Z 0x140de2490
