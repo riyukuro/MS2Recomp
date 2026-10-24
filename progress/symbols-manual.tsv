@@ -10444,3 +10444,4 @@ DAT_143d747f0	143d747f0	data
 ??1CAtlBaseModule@ATL@@QEAA@XZ	14274b838	func
 ?GetASClassName@AvmLoader@AS3@GFx@Scaleform@@UEBAAEAVString@4@PEAV54@@Z	142505fa0	func
 ?GetDefaultASClassName@AvmLoader@AS3@GFx@Scaleform@@UEBAPEBDXZ	142508940	func
+?Read@ShapeSwfReader@GFx@Scaleform@@QEAA_NPEAVLoadProcess@23@W4TagType@23@I_N@Z	14265b620	func
