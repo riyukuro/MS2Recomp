@@ -314,7 +314,7 @@ BOOL CAchieve::CanRewardData68()
 }
 MS2_REPLACE_METHOD(0x1401593C0, CAchieve, CanRewardData68, 91, 0x40E30D70);
 
-static CString GetAchieveName(CAchieveData* pData);
+CString GetAchieveName(CAchieveData* pData);
 // @0x140159430
 CString CAchieve::GetName(int nUnused)
 {
@@ -322,7 +322,7 @@ CString CAchieve::GetName(int nUnused)
 }
 MS2_REPLACE_METHOD(0x140159430, CAchieve, GetName, 78, 0x3AE703C8);
 // @0x140159490
-static CString GetAchieveName(CAchieveData* pData)
+CString GetAchieveName(CAchieveData* pData)
 {
     if (pData == NULL)
         return CString("");
