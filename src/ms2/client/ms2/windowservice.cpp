@@ -1160,6 +1160,33 @@ Unk_ComObj* FUN_141b93c80(Unk_ComObj** ppObj) { return *ppObj; }
 // @0x141b93c90
 Unk_Worker* Unk_WorkerPtr::operator->() const { return m_p; }
 
+// Full-exe clients use two older manager class names for the window-service methods.
+class Unk_RsApp
+{
+public:
+    void FUN_141b90f20(int message);
+    bool FUN_141b91010(bool fullscreen, int width, int height);
+    void FUN_141b91290(bool fullscreen, int width, int height);
+};
+class Unk_GsApp
+{
+public:
+    bool FUN_141b91010(bool fullscreen, int width, int height);
+};
+
+// MS2-FUNCTIONAL: legacy message entry delegates to the recovered platform service method.
+void Unk_RsApp::FUN_141b90f20(int message)
+{ reinterpret_cast<CWindowService*>(this)->PostMouseMove(static_cast<UINT>(message)); }
+// MS2-FUNCTIONAL: both old client spellings delegate to the same renderer recreation path.
+bool Unk_GsApp::FUN_141b91010(bool fullscreen, int width, int height)
+{ return reinterpret_cast<CWindowService*>(this)->RecreateRenderer(fullscreen, width, height); }
+// MS2-FUNCTIONAL: both old client spellings delegate to the same renderer recreation path.
+bool Unk_RsApp::FUN_141b91010(bool fullscreen, int width, int height)
+{ return reinterpret_cast<CWindowService*>(this)->RecreateRenderer(fullscreen, width, height); }
+// MS2-FUNCTIONAL: legacy mode entry delegates to the recovered platform service method.
+void Unk_RsApp::FUN_141b91290(bool fullscreen, int width, int height)
+{ reinterpret_cast<CWindowService*>(this)->ApplyWindowMode(fullscreen, width, height); }
+
 // Full-executable aliases for the corresponding CWindowService methods.
 // MS2-PIN: ?PostMouseMove@CWindowService@@QEAAXI@Z 0x141b90f20
 // MS2-PIN: ?RecreateRenderer@CWindowService@@QEAA_N_NII@Z 0x141b91010
