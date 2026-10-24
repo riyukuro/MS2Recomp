@@ -10385,3 +10385,7 @@ XML_SetStartElementHandler	1423b3500	func
 ?GetNextInvokeTime@IntervalTimer@AS2@GFx@Scaleform@@UEBA_KXZ	142953f40	func
 ?IsActive@IntervalTimer@AS2@GFx@Scaleform@@UEBA_NXZ	142964e30	func
 ?SetId@IntervalTimer@AS2@GFx@Scaleform@@UEAAXH@Z	1429818d0	func
+?OnChar@EditorKit@Text@GFx@Scaleform@@QEAA_NK@Z	142618120	func
+?OnKeyDown@EditorKit@Text@GFx@Scaleform@@QEAA_NHAEBVKeyModifiers@4@@Z	142618400	func
+?SetX@TextField@GFx@Scaleform@@UEAAXN@Z	1425be380	func
+?SetRotation@TextField@GFx@Scaleform@@UEAAXN@Z	1425bced0	func
