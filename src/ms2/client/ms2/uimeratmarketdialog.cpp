@@ -7380,6 +7380,28 @@ void UIMeratMarketDialog::DirtyState::AddPremiumSale(const int& nId)
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cafa70-0x142cafbd0 .text$yd
+class Unk_MmDialog
+{
+public:
+    void FUN_14130c670(int kind);
+    void FUN_14130ce70(bool force);
+    void FUN_14130d390(int category, int page, int sort, int order, bool limited);
+    void FUN_141310970();
+};
+
+// MS2-FUNCTIONAL: legacy dialog spelling forwards to the recovered item-list builder.
+void Unk_MmDialog::FUN_14130c670(int kind)
+{ reinterpret_cast<UIMeratMarketDialog*>(this)->BuildItemList(kind); }
+// MS2-FUNCTIONAL: legacy dialog spelling forwards to the recovered limited-tab refresh.
+void Unk_MmDialog::FUN_14130ce70(bool force)
+{ reinterpret_cast<UIMeratMarketDialog*>(this)->RefreshLimitedTab(force); }
+// MS2-FUNCTIONAL: legacy dialog spelling forwards to the recovered search-page display.
+void Unk_MmDialog::FUN_14130d390(int category, int page, int sort, int order, bool limited)
+{ reinterpret_cast<UIMeratMarketDialog*>(this)->ShowSearchPage(category, page, sort, order, limited); }
+// MS2-FUNCTIONAL: legacy dialog spelling forwards to the recovered search input reset.
+void Unk_MmDialog::FUN_141310970()
+{ reinterpret_cast<UIMeratMarketDialog*>(this)->ClearSearchInput(); }
+
 // Full-executable aliases for existing UIMeratMarketDialog methods.
 // MS2-PIN: ?BuildItemList@UIMeratMarketDialog@@QEAAXH@Z 0x14130c670
 // MS2-PIN: ?RefreshLimitedTab@UIMeratMarketDialog@@QEAAX_N@Z 0x14130ce70
