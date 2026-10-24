@@ -298,6 +298,17 @@ void* FUN_141601a40(void* p) { return p; }
 void* FUN_141601a50(void* p) { return p; }
 // @0x141601a60
 void* FUN_141601a60(void* p) { return p; }
+// @0x141601750
+void* FUN_141601750(void* p) { return p; }
+// @0x141601760
+void* FUN_141601760(void* p) { return p; }
+
+// MS2-FUNCTIONAL: the recovered call chain only reads allocator/proxy subobjects through identity accessors.
+// @0x141601a70
+void FUN_141601a70(void*) {}
+// MS2-FUNCTIONAL: the recovered call chain only reads allocator/proxy subobjects through identity accessors.
+// @0x141601aa0
+void FUN_141601aa0(void*) {}
 
 // MS2-FUNCTIONAL: returns the vector allocator/storage address recovered by the wrapper.
 void* FUN_141601cd0(void* p) { return p; }
