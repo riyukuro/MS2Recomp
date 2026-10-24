@@ -1059,6 +1059,40 @@ template<> void CNMStr<0x100>::Free() { nm_free_string_storage(m_p); }
 // @0x1415f9c90
 template<> void CNMStr<0x1000>::Free() { nm_free_string_storage(m_p); }
 // MS2-FUNCTIONAL: frees heap storage while preserving the image-backed shared empty string.
+extern void FUN_1415eb4d0(void*, void*, void*, void*, int);
+extern void FUN_1415e5b80(void*, void*, void*, void*, int);
+
+// @0x1415f9ed0
+unsigned long long FUN_1415f9ed0(void* first, void* result, void* value, void* end)
+{
+    FUN_1415eb4d0(result, static_cast<char*>(first) + 8, value, end, 0);
+    return reinterpret_cast<unsigned long long>(result);
+}
+
+// @0x1415fa740
+void* FUN_1415fa740(void* p) { return static_cast<char*>(p) + 0x58; }
+
+// @0x1415fb2b0
+void FUN_1415fb2b0(void* p)
+{
+    auto** vtable = *reinterpret_cast<void***>(p);
+    reinterpret_cast<void (*)(void*)>(vtable[10])(p);
+}
+
+// @0x1415fb650
+unsigned long long FUN_1415fb650(void* first, void* result, void* value, void* end)
+{
+    FUN_1415e5b80(result, static_cast<char*>(first) + 0x18, value, end, 0);
+    return reinterpret_cast<unsigned long long>(result);
+}
+
+// @0x1415fb6a0
+unsigned long long* FUN_1415fb6a0(const void* first, unsigned long long* result)
+{
+    *result = *reinterpret_cast<const unsigned long long*>(static_cast<const char*>(first) + 0x50);
+    return result;
+}
+
 // MS2-PIN: ?Free@?$CNMStr@$0BAAA@@@QEAAXXZ 0x1415f9c90
 
 // @0x1415f9cf0
