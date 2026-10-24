@@ -3065,7 +3065,14 @@ class CNMGetNexonPassportFunc : public CNMFunc
 {
 public:
     CNMGetNexonPassportFunc(); // 0x141584d00
+    explicit CNMGetNexonPassportFunc(int passport); // 0x141584d70
     virtual ~CNMGetNexonPassportFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_30; // +0x30
     char m_34[0x1004]; // +0x34
