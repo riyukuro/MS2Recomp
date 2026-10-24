@@ -10104,7 +10104,7 @@ DAT_143a2dd50	143a2dd50	data
 ?DAT_1431e1340@@3PADA	1431e1340	data
 ?DAT_1431e13f8@@3PADA	1431e13f8	data
 ?DAT_1431e1418@@3PADA	1431e1418	data
-?DAT_143a57d70@@3Vtype_info@@B	143a57d70	data
+?DAT_143a57d68@@3Vtype_info@@B	143a57d68	data
 ?DAT_143aa1220@@3Vtype_info@@B	143aa1220	data
 ?DAT_143aa7a80@@3Vtype_info@@B	143aa7a80	data
 ?DAT_143b0dc90@@3P6A_NAEBVtype_info@@PEAXPEBX@ZEA	143b0dc90	data
@@ -10129,3 +10129,7 @@ DAT_143a2dd50	143a2dd50	data
 ?RequeueActionQueue@MovieRoot@AS3@GFx@Scaleform@@QEAAXW4ActionLevel@1234@0@Z	142522ae0	func
 ?CheckObject@StackReader@AS3@GFx@Scaleform@@QEBAXAEBVValue@234@@Z	1424ef180	func
 ?Read@StackReader@AS3@GFx@Scaleform@@QEAAXAEAVMultiname@234@@Z	1425201f0	func
+?DAT_142d30650@@3PADA	142d30650	data
+?DAT_14312d848@@3PADA	14312d848	data
+?DAT_143130c18@@3PADA	143130c18	data
+?DAT_143a57d70@@3Vtype_info@@B	143a57d70	data
