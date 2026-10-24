@@ -80,7 +80,7 @@ static float FUN_140ad0db0(NiAVObject* pNode)
 
 // in-unit helpers
 // @0x140ad02c0
-static int FUN_140ad02c0(int a, int b)
+int FUN_140ad02c0(int a, int b)
 {
     int r = b;
     if (b < a)
@@ -89,7 +89,7 @@ static int FUN_140ad02c0(int a, int b)
 }
 
 // @0x140ad02f0
-static int FUN_140ad02f0(int a, int b)
+int FUN_140ad02f0(int a, int b)
 {
     int r = b;
     if (a < b)
@@ -98,7 +98,7 @@ static int FUN_140ad02f0(int a, int b)
 }
 
 // @0x140ad0d60
-static int FUN_140ad0d60(int n, int nMin, int nMax)
+int FUN_140ad0d60(int n, int nMin, int nMax)
 {
     return FUN_140ad02f0(FUN_140ad02c0(n, nMin), nMax);
 }
@@ -359,6 +359,7 @@ void CTailEffectObject::FUN_140acf8f0()
     }
 }
 
+// MS2-FUNCTIONAL: the list traversal is equivalent; our build inlines the list iterator helpers emitted out of line by the exe.
 // @0x140acfda0
 void CTailEffectObject::FUN_140acfda0()
 {
@@ -373,6 +374,7 @@ void CTailEffectObject::FUN_140acfda0()
     }
 }
 
+// MS2-FUNCTIONAL: the list traversal is equivalent; our build inlines the list iterator helpers emitted out of line by the exe.
 // @0x140acfeb0
 void CTailEffectObject::FUN_140acfeb0()
 {
@@ -387,6 +389,7 @@ void CTailEffectObject::FUN_140acfeb0()
     }
 }
 
+// MS2-FUNCTIONAL: the list traversal is equivalent; our build inlines the list iterator helpers emitted out of line by the exe.
 // @0x140acffc0
 void CTailEffectObject::FUN_140acffc0(float fAlpha)
 {
@@ -447,3 +450,7 @@ bool CTailEffectObject::vfunc_1()
         return false;
     return FUN_14166ce30(m_pOwner) != 0;
 }
+
+// MS2-PIN: ?FUN_140ad02c0@@YAHHH@Z 0x140ad02c0
+// MS2-PIN: ?FUN_140ad02f0@@YAHHH@Z 0x140ad02f0
+// MS2-PIN: ?FUN_140ad0d60@@YAHHHH@Z 0x140ad0d60
