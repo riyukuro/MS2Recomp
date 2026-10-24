@@ -569,6 +569,7 @@ MS2_CHECK_SIZE(CNMGameCode, 0x18);
 class CNMGameInfo : public CNMSerializable
 {
 public:
+    CNMGameInfo();                                             // 0x141579850
     CNMGameInfo(const CNMGameInfo& r) noexcept;                 // 0x1415e9af0
     CNMGameInfo(CNMGameInfo&& r) noexcept;                      // 0x1415e9960
     virtual ~CNMGameInfo() = default;                                     // 0x1415ed9e0
