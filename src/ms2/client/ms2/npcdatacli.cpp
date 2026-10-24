@@ -90,7 +90,7 @@ Unk_NpcConstants* FUN_1401d3200_1();
 unsigned FUN_14056d500(unsigned* p);
 
 // @0x140a7d630
-static unsigned NpcConstantValue(Unk_NpcConstant<unsigned>* p)
+unsigned NpcConstantValue(Unk_NpcConstant<unsigned>* p)
 {
     return FUN_14056d500(p->Get());
 }
