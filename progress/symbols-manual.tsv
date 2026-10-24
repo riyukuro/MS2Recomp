@@ -10377,3 +10377,4 @@ XML_SetStartElementHandler	1423b3500	func
 ?FUN_1428f8530@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z	1428f8530	func
 ?FUN_1428fbb70@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z	1428fbb70	func
 ?FUN_1428fbc40@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z	1428fbc40	func
+?ReplaceText@DocView@Text@Render@Scaleform@@QEAA_KPEB_W_K11@Z	142614ee0	func
