@@ -110,7 +110,7 @@ static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 // ---- .text$mn ----
 
 // @0x140a33ff0
-static inline bool Unk_IsFinite(const efd::Point3& kPoint)
+bool Unk_IsFinite(const efd::Point3& kPoint)
 {
     if ((_fpclass((double)kPoint.x) & 0x207) != 0 || (_fpclass((double)kPoint.y) & 0x207) != 0 ||
         (_fpclass((double)kPoint.z) & 0x207) != 0)
@@ -130,7 +130,7 @@ static inline int Unk_IsFiniteQuat(const efd::Quaternion& kQuat)
 }
 
 // @0x140a34650
-static inline float Unk_Acos(float fValue)
+float Unk_Acos(float fValue)
 {
     return __imp_acosf(fValue);
 }
@@ -145,7 +145,7 @@ template<class T> T* Common::Constants::Value<T>::Get()
 }
 
 // @0x140a35ca0
-static inline unsigned FUN_140a35ca0(MS2Tick* pTick)
+unsigned FUN_140a35ca0(MS2Tick* pTick)
 {
     return pTick->value;
 }
