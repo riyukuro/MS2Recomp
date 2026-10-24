@@ -288,6 +288,64 @@ void FUN_1415ffa10(void* p, Unk_StlElem<1168>* memory, unsigned long long size, 
 void FUN_1415ffb20(void* p, Unk_StlElem<32>* memory, unsigned long long size, unsigned long long capacity) { nm_vector_change_array(p, memory, size, capacity, 32); }
 // MS2-PIN: ?FUN_1415ffb20@@YAXPEAXPEAU?$Unk_StlElem@$0CA@@@_K2@Z 0x1415ffb20 ; MS2-FUNCTIONAL: size-specialized helper performs the same storage field updates and old allocation release
 
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x141601030
+void FUN_141601030(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x141601050
+void FUN_141601050(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x141601070
+void FUN_141601070(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x141601090
+void FUN_141601090(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x1416010b0
+void FUN_1416010b0(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x1416010d0
+void FUN_1416010d0(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x1416010f0
+void FUN_1416010f0(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x141601110
+void FUN_141601110(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x141601130
+void FUN_141601130(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x141601150
+void FUN_141601150(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x141601170
+void FUN_141601170(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x141601190
+void FUN_141601190(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x1416011b0
+void FUN_1416011b0(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x1416011d0
+void FUN_1416011d0(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x1416011f0
+void FUN_1416011f0(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x141601210
+void FUN_141601210(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x141601230
+void FUN_141601230(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x141601250
+void FUN_141601250(void*) {}
+// MS2-FUNCTIONAL: this wrapper only calls a read-only allocator accessor and discards its result.
+// @0x141601270
+void FUN_141601270(void*) {}
+
 // @0x141601a20
 void* FUN_141601a20(void* p) { return p; }
 // @0x141601a30
@@ -317,3 +375,23 @@ void* FUN_141601cd0(void* p) { return p; }
 // MS2-FUNCTIONAL: returns the vector allocator/storage address recovered by the wrapper.
 void* FUN_141601ed0(void* p) { return p; }
 // MS2-PIN: ?FUN_141601ed0@@YAPEAXPEAX@Z 0x141601ed0 ; MS2-FUNCTIONAL: returns the storage address, with a different leaf/non-leaf frame
+
+// MS2-PIN: ?FUN_141601030@@YAXPEAX@Z 0x141601030 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_141601050@@YAXPEAX@Z 0x141601050 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_141601070@@YAXPEAX@Z 0x141601070 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_141601090@@YAXPEAX@Z 0x141601090 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_1416010b0@@YAXPEAX@Z 0x1416010b0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_1416010d0@@YAXPEAX@Z 0x1416010d0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_1416010f0@@YAXPEAX@Z 0x1416010f0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_141601110@@YAXPEAX@Z 0x141601110 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_141601130@@YAXPEAX@Z 0x141601130 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_141601150@@YAXPEAX@Z 0x141601150 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_141601170@@YAXPEAX@Z 0x141601170 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_141601190@@YAXPEAX@Z 0x141601190 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_1416011b0@@YAXPEAX@Z 0x1416011b0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_1416011d0@@YAXPEAX@Z 0x1416011d0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_1416011f0@@YAXPEAX@Z 0x1416011f0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_141601210@@YAXPEAX@Z 0x141601210 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_141601230@@YAXPEAX@Z 0x141601230 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_141601250@@YAXPEAX@Z 0x141601250 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_141601270@@YAXPEAX@Z 0x141601270 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
