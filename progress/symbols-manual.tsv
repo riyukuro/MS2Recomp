@@ -9992,3 +9992,9 @@ DAT_143a2dd50	143a2dd50	data
 ?GetMember@AvmTextField@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@PEAVValue@234@@Z	14294c720	func
 ?GetStyleSheet@AvmTextField@AS2@GFx@Scaleform@@UEBAPEBVStyleManager@Text@34@XZ	1429561e0	func
 ?HasStyleSheet@AvmTextField@AS2@GFx@Scaleform@@UEBA_NXZ	14295dbb0	func
+?Resolve2ClassTraits@VM@AS3@GFx@Scaleform@@QEAAPEBVTraits@ClassTraits@234@AEBVMultiname@234@@Z	142525270	func
+?GetDataType@SlotInfo@AS3@GFx@Scaleform@@QEBAPEBVTraits@ClassTraits@234@AEAVVM@234@@Z	1425085b0	func
+?SetSlotValue@SlotInfo@AS3@GFx@Scaleform@@QEBA?AVCheckResult@234@AEAVVM@234@AEBVValue@234@1PEBVVTable@234@@Z	142529030	func
+?PickRTNameUnsafe@Multiname@AS3@GFx@Scaleform@@QEAAXAEAVValueStack@234@@Z	14251c8a0	func
+?SetRTNamespace@Multiname@AS3@GFx@Scaleform@@QEAAXAEBVNamespace@Instances@234@@Z	142528d20	func
+?GetDefaultValueUnsafe@Object@AS3@GFx@Scaleform@@QEAAXAEAVValue@234@W4Hint@5234@@Z	142508bd0	func
