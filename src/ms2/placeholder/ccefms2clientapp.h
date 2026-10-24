@@ -25,6 +25,7 @@ public:
         CefRefPtr<CefProcessMessage> message) override;
 
     IMPLEMENT_REFCOUNTING(CCefMS2ClientApp);
+public:                                             // the macro ends private
 
     void FUN_140cbff60(bool bUnk);                  // CWebBrowserService::FUN_141b78840 forwards a browser's flag
     void FUN_140cbffc0(bool bImeRequest);           // tells the browser process the ime state (and queues it for the service)
