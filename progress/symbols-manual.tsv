@@ -4162,7 +4162,6 @@ luaopen_Entity	1422416d0	func
 ??1?$NiTArray@UTextKeyCallbackData@NiControllerSequence@@V?$NiTNewInterface@UTextKeyCallbackData@NiControllerSequence@@@@@@UEAA@XZ	141c45f30	func
 ??_G?$NiTArray@UTextKeyCallbackData@NiControllerSequence@@V?$NiTNewInterface@UTextKeyCallbackData@NiControllerSequence@@@@@@UEAAPEAXI@Z	141c46320	func
 ??_G?$NiTObjectArray@UTextKeyCallbackData@NiControllerSequence@@@@UEAAPEAXI@Z	141c463d0	func
-?ClearArray@Results@NiPick@@QEAAXXZ	141cb1540	func
 ?Clone@NiUnionBV@@UEBAPEAVNiBoundingVolume@@XZ	141cde250	func
 ?GetViewerStrings@NiDX9PersistentSrcTextureRendererData@@UEAAXPEAV?$NiTPrimitiveArray@PEAD@@@Z	142801460	func
 ?GetViewerStrings@D3D11PersistentSrcTextureRendererData@ecr@@UEAAXPEAV?$NiTPrimitiveArray@PEAD@@@Z	1428292b0	func
@@ -4176,7 +4175,7 @@ luaopen_Entity	1422416d0	func
 ?Create@NiInputSystem@@SAPEAV1@PEAVCreateParams@1@@Z	141d0f0b0	func
 ?EnumerateDevices@NiDI8InputSystem@@QEAA?AW4NiInputErr@@XZ	141d10260	func
 ?ConvertPixelData@NiImageConverter@@UEAAPEAVNiPixelData@@AEBV2@AEBVNiPixelFormat@@PEAV2@_N@Z	141d6f0f0	func
-?GetRange_ColorA@NiShaderAttributeDesc@@QEBA_NAEAVNiColorA@@0@Z	141d806d0	func
+?GetRange_ColorA@NiShaderAttributeDesc@@QEBA_NAEAVNiColorA@@0@Z	141d80560	func
 ??1?$NiTPtrSet@V?$SmartPointer@VNiShadowClickGenerator@@@efd@@V?$NiTNewInterface@V?$SmartPointer@VNiShadowClickGenerator@@@efd@@@@@@QEAA@XZ	141d3fd10	func
 ?Allocate@?$NiTNewInterface@V?$SmartPointer@VNiShadowClickGenerator@@@efd@@@@SAPEAV?$SmartPointer@VNiShadowClickGenerator@@@efd@@I@Z	141d40a90	func
 ?PreRenderProcessList@NiShadowSortProcessor@@UEAAXPEBVNiVisibleArray@@AEAV2@PEAX@Z	141db7770	func
