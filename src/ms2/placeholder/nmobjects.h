@@ -14,7 +14,14 @@
 class CNMEvent : public CNMSerializable
 {
 public:
+    CNMEvent(int nEventId, unsigned char bFormat, int n1c, int n24);
     virtual ~CNMEvent() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
     virtual void vfunc_9(unsigned int) {}
     virtual void vfunc_10(unsigned int) {}
     virtual void vfunc_11(unsigned int);
@@ -3297,7 +3304,15 @@ MS2_CHECK_SIZE(CNMLogoutVirtualFunc, 0x38);
 class CNMMessengerReplyEvent : public CNMEvent
 {
 public:
+    CNMMessengerReplyEvent();
+    explicit CNMMessengerReplyEvent(int nReply);
     virtual ~CNMMessengerReplyEvent() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_28; // +0x28
     int m_2c; // +0x2c
