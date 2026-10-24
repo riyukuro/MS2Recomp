@@ -231,6 +231,15 @@ float FUN_14028aed0(float f)
     return floorf(f);
 }
 
+// MS2-FUNCTIONAL: the helper copies a source half-open range into a bounded destination; derive the byte count from
+// its end pointer and preserve the secure CRT's bounds/error handling.
+// @0x14028b5b0
+void FUN_14028b5b0(void* dest, size_t destSize, const void* first, const void* last)
+{
+    const size_t count = static_cast<const char*>(last) - static_cast<const char*>(first);
+    (void)memcpy_s(dest, destSize, first, count);
+}
+
 // push_back(MS2Ptr&&)
 // MS2-FUNCTIONAL: calls the std::vector member; the exe calls its emplace_back instance out of line
 // @0x14028b300
