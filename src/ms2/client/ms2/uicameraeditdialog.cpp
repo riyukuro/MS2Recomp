@@ -146,7 +146,7 @@ int FUN_1408746f0(Unk_140165cf0* pElem, const char* pszName, efd::Point3& kOut);
 
 // The camera manager's "move the current camera mode to a point" helper (a CameraMgr inline).
 // @0x1418df360
-static void CameraMgrMoveTo(CameraMgr* pMgr, Vector3 vPos)
+void CameraMgrMoveTo(CameraMgr* pMgr, Vector3 vPos)
 {
     if (pMgr->m_spMode.get() != 0)
         pMgr->m_spMode->vfunc_3(vPos);
