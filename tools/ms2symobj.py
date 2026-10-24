@@ -222,6 +222,84 @@ def rebind_objects(syms, objs, prev_log=None):
     return out
 
 
+def retarget_imgrel(syms, objs):
+    """ADDR32NB (image-relative) fixups against an exe global: the optimizer addresses a table as [base + index*scale +
+    sym@IMGREL] and the linker rejects an absolute symbol as ADDR32NB target (LNK2016). The absolute value is already
+    VA - DLL_BASE, i.e. the image-relative offset, so the fixup is rewritten to target __ImageBase (RVA 0) with that
+    value added to the inline addend. Rewrites objects in place (compile mtime kept), idempotent. Returns the count."""
+    rel = {n: va - DLL_BASE for n, (va, k) in syms.items() if k != "func" and not n.startswith(KEEP_LOCAL_PREFIXES)}
+    total = 0
+    for path in objs:
+        d = bytearray(open(path, "rb").read())
+        st = os.stat(path)
+        big = d[:4] == b"\0\0\xff\xff"
+        if big:
+            symoff, nsyms = struct.unpack_from("<II", d, 48)
+            nsec = struct.unpack_from("<I", d, 44)[0]
+            recsz, secbase = 20, 56
+        else:
+            symoff, nsyms = struct.unpack_from("<II", d, 8)
+            nsec = struct.unpack_from("<H", d, 2)[0]
+            recsz, secbase = 18, 20
+        stroff = symoff + nsyms * recsz
+        want = {}             # symbol index -> image-relative value (undefined externals bound to exe data)
+        imgbase = None
+        i = 0
+        while i < nsyms:
+            o = symoff + i * recsz
+            nm = bytes(d[o:o + 8])
+            value, secnum = struct.unpack_from("<Ii", d, o + 8) if big else struct.unpack_from("<Ih", d, o + 8)
+            sclass, naux = d[o + recsz - 2], d[o + recsz - 1]
+            if sclass == 2 and secnum == 0 and value == 0:
+                if nm[:4] == b"\0\0\0\0":
+                    so = stroff + struct.unpack_from("<I", nm, 4)[0]
+                    nm = bytes(d[so:d.index(b"\0", so)])
+                else:
+                    nm = nm.rstrip(b"\0")
+                nm = nm.decode("latin1")
+                if nm in rel:
+                    want[i] = rel[nm]
+                elif nm == "__ImageBase":
+                    imgbase = i
+            i += 1 + naux
+        if not want:
+            continue
+        fix = []              # (field file offset, reloc record offset, symbol index)
+        for sn in range(nsec):
+            h = secbase + 40 * sn
+            rawp, relp = struct.unpack_from("<II", d, h + 20)
+            nrel = struct.unpack_from("<H", d, h + 32)[0]
+            for r in range(nrel):
+                ro = relp + 10 * r
+                va, si, ty = struct.unpack_from("<IIH", d, ro)
+                if ty == 3 and si in want:                # IMAGE_REL_AMD64_ADDR32NB
+                    fix.append((rawp + va, ro, si))
+        if not fix:
+            continue
+        if imgbase is None:
+            imgbase = nsyms
+            strtab = bytearray(d[stroff:])
+            nmf = struct.pack("<II", 0, len(strtab))
+            strtab.extend(b"__ImageBase\0")
+            struct.pack_into("<I", strtab, 0, len(strtab))
+            rec = nmf + struct.pack("<I", 0) + (struct.pack("<i", 0) if big else struct.pack("<h", 0)) \
+                + struct.pack("<HBB", 0, 2, 0)
+            assert len(rec) == recsz, (len(rec), recsz)
+            d = d[:stroff] + rec + strtab
+            nsyms += 1
+            struct.pack_into("<I", d, 52 if big else 12, nsyms)
+        for fo, ro, si in fix:
+            add = struct.unpack_from("<I", d, fo)[0]
+            struct.pack_into("<I", d, fo, (add + want[si]) & 0xFFFFFFFF)
+            struct.pack_into("<I", d, ro + 4, imgbase)
+        total += len(fix)
+        tmp = path + ".ib"
+        open(tmp, "wb").write(d)
+        os.utime(tmp, ns=(st.st_atime_ns, st.st_mtime_ns))
+        os.replace(tmp, path)
+    return total
+
+
 def build(syms):
     vas = {}
     for name, (va, kind) in syms.items():
@@ -353,6 +431,9 @@ def main():
         if a.rebind_log:
             open(a.rebind_log, "w").write("\n".join(sorted(set(rb))) + "\n")
     if a.objs:
+        nib = retarget_imgrel(syms, a.objs)
+        if nib:
+            print(f"retargeted {nib} ADDR32NB fixups on exe globals to __ImageBase")
         nauto = autobind_fun(syms, a.objs)
         print(f"auto-bound {nauto} FUN_<va> externals")
     if a.objs and a.prune:
