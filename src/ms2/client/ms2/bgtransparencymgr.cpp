@@ -113,6 +113,7 @@
 // MS2-PIN: ?erase@?$_Tree@V?$_Tset_traits@UUnk_BGTRegion@@U?$less@UUnk_BGTRegion@@@std@@V?$allocator@UUnk_BGTRegion@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_BGTRegion@@@std@@@std@@@2@V32@0@Z 0x140a1e740 ; unique
 // MS2-PIN: ?erase@?$_Tree@V?$_Tset_traits@UUnk_BGTRegion@@U?$less@UUnk_BGTRegion@@@std@@V?$allocator@UUnk_BGTRegion@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_BGTRegion@@@std@@@std@@@2@V32@@Z 0x140a1e830 ; prop
 // MS2-PIN: ?size@?$_Tree@V?$_Tset_traits@PEAVEntity@egf@@U?$less@PEAVEntity@egf@@@std@@V?$CustomAllocator@PEAVEntity@egf@@@efd@@$0A@@std@@@std@@QEBA_KXZ 0x140a1f0b0 ; unique
+// MS2-PIN: ??C?$SmartPointer@VGameObject@@@efd@@QEBAPEAVGameObject@@XZ 0x140a16c30 ; unique (sfr36: exe name; mousecontroller/rpgcameramode/toolsmoothcameramode call FUN_140a16c30)
 // MS2-PINS-END tplpin
 // BGTransparencyMgr (see bgtransparencymgr.h) and TransparencyElement. The unit is large and mostly template glue
 // of the std containers the class uses (std::set<SmartPointer<GameObject>>, two std::map<SmartPointer<Entity>,
