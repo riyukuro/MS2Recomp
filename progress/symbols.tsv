@@ -210106,7 +210106,7 @@ FUN_1423d9690	1423d9690	func
 ??4?$StringLH_HashNode@VResourceHandle@GFx@Scaleform@@UNoCaseHashFunctor@String@3@@Scaleform@@QEAAXAEBUNodeRef@01@@Z	1425cc570	func
 ??4CharPosInfo@GFx@Scaleform@@QEAAAEAV012@AEBV012@@Z	1425cc5d0	func
 ??_EMovieDataDef@GFx@Scaleform@@WCA@EAAPEAXI@Z	1425cc6e8	func
-?GetStats@MovieDataDef@GFx@Scaleform@@UEAAXPEAVStatBag@23@_N@Z	1425cc6e8	func
+?GetStats@MovieDataDef@GFx@Scaleform@@UEAAXPEAVStatBag@3@_N@Z	1425d14a0	func
 ??_EMovieDefImpl@GFx@Scaleform@@WBI@EAAPEAXI@Z	1425cc700	func
 ??_G?$RefCountBase@VStateBagImpl@GFx@Scaleform@@$01@Scaleform@@UEAAPEAXI@Z	1425cc890	func
 ??_G?$RefCountBaseStatImpl@VRefCountImpl@Scaleform@@$0BAJ@@Scaleform@@UEAAPEAXI@Z	1425cc8f0	func
