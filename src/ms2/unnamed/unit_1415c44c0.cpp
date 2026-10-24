@@ -12,6 +12,7 @@ extern void FUN_1415fbe70(void*, unsigned int, const void*);
 extern void* FUN_1415fa260();
 extern void* FUN_1415fa120(const void*);
 extern int FUN_1415cb440(void*, void*);
+extern CNMSerializable* FUN_1415f24e0(CNMSerializable*, long long);
 extern CNMSerializable* FUN_1415f10f0(CNMSerializable*, long long);
 extern void* FUN_1415ef9b0(void*, void*);
 
@@ -1173,6 +1174,48 @@ int FUN_1415c8030(void*, const std::vector<NMFriendKey>& targets, NMKey64 key)
 {
     CNMRequestMultiChatSessionExFunc request(key, targets, 0);
     return FUN_1415cb440(FUN_1415fa260(), &request);
+}
+
+static void nm_refresh_session_info(void* self, CNMGSGetSessionInfoFunc& request)
+{
+    if (FUN_1415cb440(FUN_1415fa260(), &request))
+        FUN_1415f24e0(reinterpret_cast<CNMSerializable*>(static_cast<char*>(self) + 0x190),
+                      reinterpret_cast<long long>(&request.m_30));
+}
+
+// @0x1415c9200
+unsigned char* FUN_1415c9200(void* self, unsigned char* out)
+{
+    CNMGSGetSessionInfoFunc request(*reinterpret_cast<int*>(static_cast<char*>(self) + 0x18c));
+    nm_refresh_session_info(self, request);
+    for (unsigned int i = 0; i != 16; ++i)
+        out[i] = *(static_cast<unsigned char*>(self) + 0x1c0 + i);
+    return out;
+}
+
+// @0x1415c92d0
+unsigned long long* FUN_1415c92d0(void* self, unsigned long long* out)
+{
+    CNMGSGetSessionInfoFunc request(*reinterpret_cast<int*>(static_cast<char*>(self) + 0x18c));
+    nm_refresh_session_info(self, request);
+    *out = *reinterpret_cast<unsigned long long*>(static_cast<char*>(self) + 0x1a4);
+    return out;
+}
+
+// @0x1415c9390
+int FUN_1415c9390(void* self)
+{
+    CNMGSGetSessionInfoFunc request(*reinterpret_cast<int*>(static_cast<char*>(self) + 0x18c));
+    nm_refresh_session_info(self, request);
+    return *reinterpret_cast<int*>(static_cast<char*>(self) + 0x1ac);
+}
+
+// @0x1415c9440
+int FUN_1415c9440(void* self)
+{
+    CNMGSGetSessionInfoFunc request(*reinterpret_cast<int*>(static_cast<char*>(self) + 0x18c));
+    nm_refresh_session_info(self, request);
+    return *reinterpret_cast<int*>(static_cast<char*>(self) + 0x1d4);
 }
 
 
