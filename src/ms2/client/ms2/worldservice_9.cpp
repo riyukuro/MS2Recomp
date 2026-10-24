@@ -8,6 +8,16 @@
 // MS2-RANGE: 0x141c28640-0x141c2efb0 .text$mn
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
+#include "ms2/placeholder/ms2stdafx.h"
+#include <efd/utf8string.h>
+
+// MS2-FUNCTIONAL: the world-service caller uses this legacy entry as efd::utf8string::size (byte count).
+// @0x141c2eee0
+size_t FUN_141c2eee0(const efd::utf8string* s)
+{
+    return s->size();
+}
+
 // MS2-PIN: ?reserve@?$vector@V?$MS2Ptr@VMS2ActorUpdater@@@@V?$allocator@V?$MS2Ptr@VMS2ActorUpdater@@@@@std@@@std@@QEAAX_K@Z 0x141c2ecb0
 // MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VMS2ActorUpdater@@@@V?$allocator@V?$MS2Ptr@VMS2ActorUpdater@@@@@std@@@std@@@std@@QEAAAEAPEAV?$MS2Ptr@VMS2ActorUpdater@@@@XZ 0x141c288f0
 // MS2-PIN: ?_Umove_if_noexcept@?$vector@V?$MS2Ptr@VCLiftableObject@@@@V?$allocator@V?$MS2Ptr@VCLiftableObject@@@@@std@@@std@@AEAAXPEAV?$MS2Ptr@VCLiftableObject@@@@00@Z 0x141c2a6a0
