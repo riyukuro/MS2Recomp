@@ -14598,3 +14598,5 @@ DAT_1439f8358	1439f8358	data
 ?strMgr@?1??GetInstance@CAtlStringMgr@ATL@@SAPEAUIAtlStringMgr@3@XZ@4V23@A	143acd190	data
 ??__FstrHeap@?1??GetInstance@CAtlStringMgr@ATL@@SAPEAUIAtlStringMgr@2@XZ@YAXXZ	142cab860	func
 ??__FstrMgr@?1??GetInstance@CAtlStringMgr@ATL@@SAPEAUIAtlStringMgr@2@XZ@YAXXZ	142cab880	func
+??__E?ms_aMaps@CItemDefaultData@@2PAV?$CAtlMap@W4Unk_ItemDefaultKind@@HV?$CElementTraits@W4Unk_ItemDefaultKind@@@ATL@@V?$CElementTraits@H@3@@ATL@@A@@YAXXZ	1400b9b00	func
+??__F?ms_aMaps@CItemDefaultData@@2PAV?$CAtlMap@W4Unk_ItemDefaultKind@@HV?$CElementTraits@W4Unk_ItemDefaultKind@@@ATL@@V?$CElementTraits@H@3@@ATL@@A@@YAXXZ	142c9aee0	func
