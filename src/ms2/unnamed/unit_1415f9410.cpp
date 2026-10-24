@@ -1061,6 +1061,14 @@ template<> void CNMStr<0x1000>::Free() { nm_free_string_storage(m_p); }
 // MS2-FUNCTIONAL: frees heap storage while preserving the image-backed shared empty string.
 extern void FUN_1415eb4d0(void*, void*, void*, void*, int);
 extern void FUN_1415e5b80(void*, void*, void*, void*, int);
+extern void FUN_1415e59a0(void*, void*, void*, void*, int);
+
+// @0x1415fa170
+void* FUN_1415fa170(void* result, void* first, void* value, void* end)
+{
+    FUN_1415e59a0(result, first, value, end, 0);
+    return result;
+}
 
 // @0x1415f9ed0
 unsigned long long FUN_1415f9ed0(void* first, void* result, void* value, void* end)
