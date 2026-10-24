@@ -126,12 +126,17 @@ unsigned FUN_1410dc0e0() { return 0x7ffffffu; }
 // @0x1410dc0f0
 template void efd::RegisterMessageWrapperFactory<egf::EntityChangeMessage, 0x203d>(efd::GenericFactory<efd::SmartPointer<efd::IMessage>, unsigned>*);
 
+// The engine (egfLua SchedulerLua.cpp, built with MS2_ENTITY_PROPERTY_CACHE) instantiates the same body as a COMDAT;
+// inline + noinline makes this one COMDAT-any too, so the full exe keeps a single copy instead of two strong
+// definitions. The anchor below (no exe counterpart) makes this TU emit it.
 // @0x1410dc360   egf::Entity::SetPropertyValue<int>: refreshes the client cache before the engine write
-template <> egf::PropertyResult egf::Entity::SetPropertyValue<int>(egf::PropertyID propID, const int& data)
+template <> inline __declspec(noinline) egf::PropertyResult egf::Entity::SetPropertyValue<int>(egf::PropertyID propID, const int& data)
 {
     FUN_1410dbc10(this, propID, &data);
     return SetPropertyValueUnsafe(propID, &data, FUN_1408a1ff0());
 }
+egf::PropertyResult Unk_SetPropertyIntAnchor(egf::Entity* p, egf::PropertyID id, const int& n)
+{ return p->SetPropertyValue<int>(id, n); }
 
 // @0x1410dc3b0   house sale marker record factory
 // MS2-FUNCTIONAL 0x1410dc3b0: the exe is a value-initializing `new SalesInfo()` (memset 0x38, then the implicit ctor 0x1411232e0 under

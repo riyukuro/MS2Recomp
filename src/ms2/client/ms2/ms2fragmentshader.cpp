@@ -685,10 +685,14 @@ void MS2FragmentShader::PrepareTextureStage(
 MS2_REPLACE_METHOD(0x140D88750, MS2FragmentShaderHookAccess, PrepareTextureStageHook, 2169, 0xFDCA82C4);
 
 //--------------------------------------------------------------------------------------------------
+// The engine's NiDX9FragmentShader.cpp defines this (0x1427e2d20) in the full-exe link; only the hook DLL, which links
+// no engine objs, needs this copy.
+#ifdef MS2_HOOK_DLL
 const NiShader::NiShaderInstanceDescriptor*
     NiDX9FragmentShader::GetShaderInstanceDesc() const
 {
     return &m_kDescriptor;
 }
+#endif
 
 //--------------------------------------------------------------------------------------------------

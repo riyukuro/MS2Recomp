@@ -6,14 +6,18 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/clockcriticalsection.h"
 #include "ms2/placeholder/mstime.h"
+#include "ms2/commonfiles/os.h"
 
-// Server clock object read by GetServerTime (0x141473640 returns now - m_base + m_offset).
+// Server clock object read by GetServerTime (0x141473640 returns now - m_base + m_offset): CMainSystem
+// (placeholder/cmainsystem.h), viewed through these calls. Its singleton slot 0x143ab1fa8 is the one
+// TSingleton<CMainSystem>::s_instance every CMainSystem user shares (a static of its own would be a second copy).
+class CMainSystem;
 class Unk_ServerClock {
 public:
     __int64 FUN_141473640();
     __int64 FUN_1414732f0(int nMode);                               // 0x1414732f0 the clock in ms (mode: the actor's time mode)
-    static Unk_ServerClock* GetInstance() { return s_instance; }   // 0x14086d260
-    static Unk_ServerClock* s_instance;                            // 0x143ab1fa8
+    static Unk_ServerClock* GetInstance()                          // 0x14086d260
+    { return reinterpret_cast<Unk_ServerClock*>(TSingleton<CMainSystem>::s_instance); }
 };
 
 // Callback object stored in CStopWatchEx (slot 0 is called after every message).

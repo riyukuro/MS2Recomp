@@ -46,8 +46,10 @@ CMsgBoxData::CMsgBoxData(int nType)
     FUN_141a050b0();
 }
 
+// inline + noinline: COMDAT-any, so the token-identical copy client\ms2\uimessageboxdata.cpp needs (for the vftable and
+// ??_G in its range) folds into this one in the full exe instead of being a second strong definition.
 // @0x141a01170
-CMsgBoxData::~CMsgBoxData()
+inline __declspec(noinline) CMsgBoxData::~CMsgBoxData()
 {
     m_spItem = NULL;
     m_spItem2 = NULL;

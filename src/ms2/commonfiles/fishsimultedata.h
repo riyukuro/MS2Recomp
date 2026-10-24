@@ -111,7 +111,8 @@ typedef MS2Ptr<CFishingRodData> CFishingRodDataPtr;
 typedef MS2Ptr<CFishingSpotData> CFishingSpotDataPtr;
 typedef Unk_BmBoxPtr<ATL::CAtlArray<unsigned int> > CFishMapIdsPtr;
 
-class Unk_FishTextFilter;       // the text post-processor of the UI (0x1416fbf20)
+class Unk_FishTextFilter;       // the text post-processor of the UI (0x1416fbf20): CReservedWordTable, viewed through it
+class CReservedWordTable;
 
 // The table. RTTI CFishingTable, 0x130 bytes: TSingleton +0, CValidData +8 and the four maps. Created by
 // CGameApp::InitInstance (?\ms2.cpp).
@@ -137,10 +138,12 @@ public:
 
     static void CheckInit();                                        // 0x1403b3f70
     static void SetInit(bool b);                                    // 0x1403b6cf0
-    static Unk_FishTextFilter* GetTextFilter() { return s_pTextFilter; }   // 0x1403b4750
+    // 0x1403b4750; the filter's slot DAT_143aaecf0 is the one TSingleton<CReservedWordTable>::s_instance every
+    // CReservedWordTable user shares (a static of its own would be a second copy).
+    static Unk_FishTextFilter* GetTextFilter()
+    { return reinterpret_cast<Unk_FishTextFilter*>(TSingleton<CReservedWordTable>::s_instance); }
 
     static bool s_bInit;                                            // DAT_143aaece8
-    static Unk_FishTextFilter* s_pTextFilter;                       // DAT_143aaecf0
 
 private:
     MS2_LAYOUT_FRIEND;

@@ -50,7 +50,7 @@ __int64 g_timeOffset;
 int g_timeHistoryCount;
 __int64 g_timeHistory[10];
 DWORD g_tickBase;
-Unk_ServerClock* Unk_ServerClock::s_instance;
+// 0x143ab1fa8 is TSingleton<CMainSystem>::s_instance (timeutil.h).
 
 static const int kDaysInMonth[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};   // 0x142d9b8f8
 

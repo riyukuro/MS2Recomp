@@ -2,15 +2,15 @@
 // creation (Table/defaultItems.xml): per job code and gender the items per slot, the preselected ones and the base items;
 // see itemdefaultdata.h. File name assumed (the exe has no assert path for it); method names are invented.
 // MS2-UNIT: ?\itemdefaultdata.cpp
-// MS2-RANGE: 0x1400b9b40-0x1400b9dd0 .text$di
+// MS2-RANGE: 0x1400b9b00-0x1400b9dd0 .text$di
 // MS2-RANGE: 0x140583fa0-0x14058c160 .text$mn
-// MS2-RANGE: 0x142c9af10-0x142c9afc0 .text$yd
+// MS2-RANGE: 0x142c9aee0-0x142c9afc0 .text$yd
 // MS2-PIN: ??_7?$TPtredDummy@V?$CAtlArray@V?$MS2Ptr@UDefaultItemData@@@@V?$CElementTraits@V?$MS2Ptr@UDefaultItemData@@@@@ATL@@@ATL@@@@6B@ 0x142d5fd18
 // MS2-PIN: ?GetNode@?$CAtlMap@HV?$MS2Ptr@UDefaultItemData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@UDefaultItemData@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x140588680
 // MS2-PIN: ??$format_arg@_WW4Unk_ItemDefaultKind@@@fmt@@YAXAEAV?$BasicFormatter@_W@0@AEAPEB_WAEBW4Unk_ItemDefaultKind@@@Z 0x1405864d0
 //
-// The TU also owns ms_aMaps' initializer 0x1400b9b00 / atexit 0x142c9aee0 (in ?\itemdatatable.cpp's ranges, which defines
-// the same object as g_itemDefaultSlotMaps): its array ctor closure 0x140587540 is in this range, so ms_aMaps is defined here.
+// The TU also owns ms_aMaps' initializer 0x1400b9b00 / atexit 0x142c9aee0 (its array ctor closure 0x140587540 is in this
+// range), so ms_aMaps is defined here; ?\itemdatatable.cpp names the same object g_itemDefaultSlotMaps and only declares it.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\itemdefaultdata.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
 #define MS2_TPTRVALUE_ASSIGN_VIA_TEMP

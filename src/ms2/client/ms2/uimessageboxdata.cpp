@@ -915,10 +915,18 @@ void Unk_MsgBoxGlueAnchor(CMsgBoxData* pData, Delegate<bool(int, const CMsgBoxDa
     delete pData;
 }
 
-// 0x141a01170 is owned by unit_141a00db0: defined here only outside the DLL, to emit the vftable and ??_G (0x141a07ca0) in this unit's COMDAT tail.
+// 0x141a01170 is owned by unit_141a00db0: defined here only outside the DLL, to emit the vftable and ??_G (0x141a07ca0) in
+// this unit's COMDAT tail. Both definitions are inline (COMDAT-any) and token-identical, so the full exe keeps one; keep
+// this body in step with unit_141a00db0's. The anchor (no exe counterpart) makes this TU emit it.
 #ifndef MS2_HOOK_DLL
-CMsgBoxData::~CMsgBoxData()
-{ }
+inline __declspec(noinline) CMsgBoxData::~CMsgBoxData()
+{
+    m_spItem = NULL;
+    m_spItem2 = NULL;
+    for (size_t i = 0; i < m_reqItems.m_binds.GetCount(); i++)
+        FUN_141415600(m_reqItems.m_binds[i]);
+}
+void Unk_MsgBoxDataDtorAnchor(CMsgBoxData* p) { p->CMsgBoxData::~CMsgBoxData(); }
 #endif
 
 MS2_EMIT_CRT_MEMMOVE_S();

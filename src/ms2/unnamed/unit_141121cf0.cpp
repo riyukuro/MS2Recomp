@@ -260,7 +260,13 @@ struct Unk_CMISAnchorMH : efd::BaseMessageHandler
 };                                                                                                                   // 0x141122f10
 class Unk_CMISAnchorSvc : public efd::ISystemService
 {
-    EE_DECLARE_CLASS1(Unk_CMISAnchorSvc, 0x06100fff, efd::ISystemService);
+    // The anchor stands for the exe's abstract ISystemService vftable (0x142eb3698): these slots are _purecall there
+    // (their symbol rows bind them to the thunk). EE_DECLARE_CLASS1's bodies would read an ms_ClassInfo no exe
+    // global stands for, so the slots get bodies of their own.
+public:
+    virtual const efd::ClassInfo* GetClassDesc() const { return 0; }
+    virtual bool TypeCast(const efd::ClassID, const void** ppValue) const { *ppValue = 0; return false; }
+    virtual bool TypeCast(const efd::ClassID, void** ppValue) const { *ppValue = 0; return false; }
     EE_DECLARE_CONCRETE_ATOMIC_REFCOUNT;
 public:
     Unk_CMISAnchorSvc() {}

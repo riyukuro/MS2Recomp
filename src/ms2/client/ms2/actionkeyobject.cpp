@@ -244,10 +244,14 @@ CStringW FUN_1401d0160(const wchar_t* psz, const CStringW& str);   // psz + str 
                                                             // would need the unresolvable MFC CopyChars import)
 CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB); // strA + strB
 
-// The house service singleton (global 0x143ab3908).
-class Unk_AkoHouseSvc : public TSingleton<Unk_AkoHouseSvc>
+// The house service: CubeMapInformationService, viewed through the calls made here. Its singleton slot (0x143ab3908)
+// is TSingleton<CubeMapInformationService>::s_instance, defined by cubemapinformationservice_3.cpp (an explicit
+// TSingleton specialization this TU cannot see); a TSingleton<Unk_AkoHouseSvc> of its own would be a second copy.
+extern void* DAT_143ab3908;
+class Unk_AkoHouseSvc
 {
 public:
+    static Unk_AkoHouseSvc* GetInstance() { return static_cast<Unk_AkoHouseSvc*>(DAT_143ab3908); }
     std::map<unsigned __int64, Unk_CubeOwnerPtr>* FUN_1410d3380();  // the house owners by account (less<unsigned __int64> 0x14044a540)
     __int64 FUN_1410c3180();                                // the owner account of the current house
     bool FUN_1410c35c0();                                   // the player is in a house
@@ -410,10 +414,15 @@ public:
 };
 Unk_AkoStrings* FUN_1401a9d70();
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);   // a formatted client string
-// The cutscene service singleton (global 0x143ab3900).
-class Unk_AkoCutscene : public TSingleton<Unk_AkoCutscene>
+// The cutscene service: UITalkManager, viewed through the calls made here. Its singleton slot (0x143ab3900) is the one
+// TSingleton<UITalkManager>::s_instance every UITalkManager user shares (a TSingleton<Unk_AkoCutscene> of its own would
+// be a second copy).
+class UITalkManager;
+class Unk_AkoCutscene
 {
 public:
+    static Unk_AkoCutscene* GetInstance()
+    { return reinterpret_cast<Unk_AkoCutscene*>(TSingleton<UITalkManager>::s_instance); }
     int FUN_141b21220();                                    // a cutscene is playing
     int FUN_141b211d0();                                    // npc talk is enabled
 };

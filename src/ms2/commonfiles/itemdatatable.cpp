@@ -3,7 +3,7 @@
 // housing rows) and its colour palette record CColorPaletteInfo.
 // MS2-UNIT: ?\itemdatatable.cpp
 // MS2-RANGE: 0x140555a70-0x14057a380 .text$mn
-// MS2-RANGE: 0x1400b9a40-0x1400b9b40 .text$di
+// MS2-RANGE: 0x1400b9a40-0x1400b9b00 .text$di
 // The COMDAT tail (std/ATL template members over MS2Ptr<CItemData> & co, then the item default tables' teardown):
 // MS2-RANGE: 0x14057a380-0x140583f00 .text$mn
 // MS2-GUESS-LOOKALIKES
@@ -252,8 +252,9 @@ static int LoadXml(TiXmlDocument& doc, const char* pszPath);
 
 // The market sort-key names (the header statics this unit includes; names are invented).
 static CString s_strSortTypeNames[] = { "None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd" };
-// The default item table's per-kind maps (written by ?\itemdefaultdata.cpp; the name is invented).
-ATL::CAtlMap<int, int, ATL::CDefaultElementTraits<int> > g_itemDefaultSlotMaps[2];
+// The default item table's per-kind maps: CItemDefaultData::ms_aMaps (0x143aafa40), which ?\itemdefaultdata.cpp
+// defines and constructs; this name is mapped to it by address (a definition here would be a second copy).
+extern ATL::CAtlMap<int, int, ATL::CDefaultElementTraits<int> > g_itemDefaultSlotMaps[2];
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flag (symbols.tsv); a local copy stays false -> "is not initialized" box
 bool CItemDataTable::s_bInit;
@@ -1596,7 +1597,7 @@ static int LoadXml(TiXmlDocument& doc, const char* pszPath)
     return FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
-// MS2-RANGE: 0x142c9ae90-0x142c9af10 .text$yd
+// MS2-RANGE: 0x142c9ae90-0x142c9aee0 .text$yd
 
 #ifndef MS2_HOOK_DLL   // the hook DLL leaves this teardown to the exe (as when it was unit_14057a380)
 // ---- the exe's static-teardown function of the item default tables (CItemDefaultData::ms_aMaps and its sibling) ----

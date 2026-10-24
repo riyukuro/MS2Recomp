@@ -1117,10 +1117,15 @@ public:
     MS2Ptr<Unk_EsSoundProp> FUN_141792ee0(const CString& strName, const CString& strArg);
     MS2Ptr<Unk_EsVoiceProp> FUN_141793110(const CString& strName);
 };
-// Singleton 0x143ab6718.
-class CCooltimeManager : public TSingleton<CCooltimeManager>
+// CooltimeManager (placeholder/cooltimemanager.h), viewed through the call made here. Its singleton slot (0x143ab6718)
+// is the one TSingleton<CooltimeManager>::s_instance every CooltimeManager user shares (a TSingleton<CCooltimeManager>
+// of its own would be a second copy).
+class CooltimeManager;
+class CCooltimeManager
 {
 public:
+    static CCooltimeManager* GetInstance()
+    { return reinterpret_cast<CCooltimeManager*>(TSingleton<CooltimeManager>::s_instance); }
     bool FUN_140a40ca0(int nId);                                // false while cooling down
 };
 extern int DAT_143ae2b30;                                       // 1: the scene is split over several effect roots
@@ -1505,8 +1510,8 @@ unsigned CEffectService::FUN_1411a5a60(const CString& strName, const CString& st
     CString strSound = spProp->FUN_141790ed0(nGender, nJob);
     if (strSound.IsEmpty() || strSound == "0")
         return 0;
-    if (spProp->FUN_141791120() != 0 && TSingleton<CCooltimeManager>::GetInstance() != 0) {
-        if (!TSingleton<CCooltimeManager>::GetInstance()->FUN_140a40ca0(spProp->FUN_141791120()))
+    if (spProp->FUN_141791120() != 0 && CCooltimeManager::GetInstance() != 0) {
+        if (!CCooltimeManager::GetInstance()->FUN_140a40ca0(spProp->FUN_141791120()))
             return 0;
     }
     NiTransform kXform;

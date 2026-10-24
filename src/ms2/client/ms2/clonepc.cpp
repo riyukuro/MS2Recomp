@@ -157,7 +157,8 @@ int FUN_140970020(Unk_PCCliList* pList, unsigned int nId, unsigned short nSub, i
 bool FUN_140b02900(const MS2Ptr<CEquipItem>& sp);
 bool FUN_1409edd90(const MS2Ptr<CEquipItem>& sp, int n);
 
-EE_IMPLEMENT_CONCRETE_CLASS_INFO(ClonePC);
+// ClonePC::ms_ClassInfo (0x143acdbc0) and its registration (0x1400e53e0 .text$di) are defined by
+// unit_1400e53e0_clonepcnpcregistrations.cpp: a second definition here is a duplicate of it.
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

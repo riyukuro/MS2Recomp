@@ -46,7 +46,6 @@ void FUN_1416fbf20(Unk_FishTextFilter* pFilter, CStringW& str);   // post-proces
 // The unit's exe globals are in symbols-manual.tsv; the hook DLL binds the exe's.
 #ifndef MS2_HOOK_DLL
 bool CFishingTable::s_bInit;
-Unk_FishTextFilter* CFishingTable::s_pTextFilter;
 #endif
 
 // ---- CFishSimulteData ----
