@@ -42,6 +42,8 @@ extern void* FUN_141602970(void*);
 extern void* FUN_141602940(void*);
 extern long long* FUN_1415f46c0(long long*);
 extern void FUN_1415eefa0(void*); extern void FUN_1415ef000(void*); extern void FUN_1415ef020(void*);
+extern void FUN_1415ef100(void*);
+extern void* FUN_141575140(void*, void*);
 
 template <class Id, class Get, class Set, class First, class Last, class Range>
 static void* copy_nm_sequence(void* dst, void* src, Id id, Get get, Set set,
@@ -3520,6 +3522,22 @@ void* NMScalarDelete_1415f47d0(void* object, unsigned int flags)
 void* NMScalarDelete_1415f4810(void* object, unsigned int flags)
 {
     static_cast<CNMSingleton<CNMManager>*>(object)->~CNMSingleton();
+    if (flags & 1) ::operator delete(object);
+    return object;
+}
+// MS2-FUNCTIONAL: materializes the recovered guild-online tuple and compares its three key fields.
+// @0x1415f4790
+unsigned char FUN_1415f4790(const int* key, void* item)
+{
+    unsigned char tuple[32]{};
+    void* value = FUN_141575140(item, tuple);
+    return FUN_1415f3220(static_cast<const int*>(value), key);
+}
+// MS2-FUNCTIONAL: calls the recovered destructor helper and conditionally frees the object.
+// @0x1415f93d0
+void* FUN_1415f93d0(void* object, unsigned int flags)
+{
+    FUN_1415ef100(object);
     if (flags & 1) ::operator delete(object);
     return object;
 }
