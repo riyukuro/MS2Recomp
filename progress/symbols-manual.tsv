@@ -9828,3 +9828,8 @@ DAT_143b27c40	143b27c40	data
 ?Init@VertexShader@D3D9@Render@Scaleform@@QEAA_NPEAVHAL@234@PEBUVertexShaderDesc@234@@Z	142741620	func
 ?DAT_143a2f780@@3PAUCharBreakInfo@WordWrapHelper@Text@Render@Scaleform@@A	143a2f780	data
 DAT_1431b8e30	1431b8e30	data
+??0Multiname@AS3@GFx@Scaleform@@QEAA@AEAVVM@123@@Z	1424d8bb0	func
+?Append@SparseArray@AS3@GFx@Scaleform@@QEAAXAEBV1234@_K1@Z	1424043e0	func
+?GetFlags@RegExp@fl@Instances@AS3@GFx@Scaleform@@QEAA?AVASString@56@XZ	142429920	func
+?MakeInstanceText@XML@fl@InstanceTraits@AS3@GFx@Scaleform@@QEAA?AV?$Pickable@VXMLText@fl@Instances@AS3@GFx@Scaleform@@@6@AEAV123456@AEBVStringDataPtr@6@PEAV12Instances@456@@Z	14241b850	func
+?MakeXMLListInstance@XMLList@fl@Instances@AS3@GFx@Scaleform@@QEAA?AV?$Pickable@VXMLList@fl@Instances@AS3@GFx@Scaleform@@@6@AEBVMultiname@456@@Z	14241b190	func
