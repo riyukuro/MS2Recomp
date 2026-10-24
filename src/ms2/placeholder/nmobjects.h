@@ -3113,7 +3113,16 @@ MS2_CHECK_SIZE(CNMGetUserInfoFunc, 0x78);
 class CNMGuildChatMessageEvent : public CNMEvent
 {
 public:
+    CNMGuildChatMessageEvent();
+    CNMGuildChatMessageEvent(long long n28, long long n30, int n38, CNMChatMessage message);
     virtual ~CNMGuildChatMessageEvent() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     long long m_28; // +0x28
     long long m_30; // +0x30
