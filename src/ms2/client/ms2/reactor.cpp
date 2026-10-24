@@ -820,7 +820,8 @@ struct Unk_GluePair { void* first; void* second; };
 struct Unk_GlueNode { char m_pad_00[0x18]; Unk_GlueNode* left; Unk_GlueNode* right; Unk_GlueNode* parent; };
 
 __declspec(noreturn) void FUN_140159b70(unsigned int hr);
-bool FUN_140b7d0c0(void* pTree, Unk_GlueNode* pNode);
+// CRBTree<UINT, Unk_WsV148>::IsNil (0x140b7d0c0, private): the node is the tree's nil node (+0x28)
+static bool Rx_IsNil(void* pTree, Unk_GlueNode* pNode) { return pNode == *reinterpret_cast<Unk_GlueNode**>(static_cast<char*>(pTree) + 0x28); }
 Unk_GlueNode* FUN_140b7d300(void* pTree, Unk_GlueNode* pNode);
 Unk_GlueNode* FUN_140b7e2a0(void* pTree, Unk_GlueNode* pNode);
 void FUN_140b7bb00(void* a, void* b, void* c);
@@ -828,12 +829,6 @@ void* FUN_140b7e7d0(void* p);
 void* FUN_140b7e770(void* p);
 void* FUN_140b7e750(void* p);
 void FUN_14016c7c0(void* p);
-Unk_GlueNode** FUN_140b7e8a0(void* p);
-Unk_GlueNode** FUN_140b7e8e0(void* p);
-Unk_GlueNode** FUN_140b7e860(void* p);
-void* FUN_140b7ec10(void* p);
-void FUN_140b7c690(void* p);
-void FUN_140b7c650(void* p);
 void FUN_14016c7c0(void* p);
 Unk_Int3* FUN_140b7c1d0(Unk_Int3* p);
 void FUN_140b7c1e0(void* a, void* b);
@@ -843,8 +838,8 @@ Unk_Int3* FUN_140b7c370(Unk_Int3* f, Unk_Int3* l, Unk_Int3* d, void* alloc, char
 void FUN_14015fc80(void* p, __int64 nBytes);   // std::_Deallocate<16,0>
 
 // @0x140b7bab0
-// MS2-FUNCTIONAL: std::string allocator pair ctor glue, stand-in for the exe instantiation
-void* FUN_140b7bab0(void* p) { FUN_140b7c690(p); FUN_140b7c650(p); return p; }
+// MS2-FUNCTIONAL: std::vector<Unk_Int3> _Compressed_pair ctor glue (allocator 0x140b7c690, _Vector_val 0x140b7c650), stand-in for the exe instantiation
+void* FUN_140b7bab0(void* p) { ::new (p) std::allocator<Unk_Int3>(); ::new (p) std::_Vector_val<std::_Simple_types<Unk_Int3> >(); return p; }
 
 // @0x140b7c2a0
 // MS2-FUNCTIONAL: std::vector<Unk_Int3> _Ucopy stand-in
@@ -881,8 +876,7 @@ struct Unk_RxAnimRec;
 bool FUN_1409991a0(Unk_RxAnimSvc* pSvc, const egf::EntityID* pId, Unk_RxAnimRec** ppRec, int a, int b);
 void* FUN_140998e80(Unk_RxAnimRec* p);
 void* FUN_140998e90(Unk_RxAnimRec* p);
-void* FUN_1409a1a90();
-void FUN_1409a0f10(efd::utf8string* pOut, void* pDefault);
+const efd::utf8string& FUN_1409a1a90();      // the empty name
 void* FUN_1409f7900(Unk_RxAnimRec* p);
 int FUN_1409a1890(void* p);
 void FUN_1409a1940(void* pName, efd::utf8string* pOut, int nIdx);
@@ -890,29 +884,19 @@ void FUN_1409a1940(void* pName, efd::utf8string* pOut, int nIdx);
 // MS2-FUNCTIONAL: animation-service current-name lookup; callee prototypes unproven
 efd::utf8string Unk_RxAnimSvc::FUN_140b7cc50(const egf::EntityID& id)
 {
-    efd::utf8string strOut;
     Unk_RxAnimRec* pRec = 0;
     if (!FUN_1409991a0(this, &id, &pRec, 0, 0))
-    {
-        FUN_1409a0f10(&strOut, FUN_1409a1a90());
-        return strOut;
-    }
+        return FUN_1409a1a90();
     void* pName = FUN_140998e80(pRec);
     if (!pName)
-    {
-        FUN_1409a0f10(&strOut, FUN_1409a1a90());
-        return strOut;
-    }
+        return FUN_1409a1a90();
     if (!FUN_140998e90(pRec))
-    {
-        FUN_1409a0f10(&strOut, FUN_1409a1a90());
-        return strOut;
-    }
+        return FUN_1409a1a90();
     int nIdx = FUN_1409a1890(FUN_1409f7900(pRec));
     if (nIdx == -2)
-        FUN_1409a0f10(&strOut, FUN_1409a1a90());
-    else
-        FUN_1409a1940(pName, &strOut, nIdx);
+        return FUN_1409a1a90();
+    efd::utf8string strOut;
+    FUN_1409a1940(pName, &strOut, nIdx);
     return strOut;
 }
 
@@ -941,9 +925,9 @@ void* FUN_140b7cf00(void* pTree, Unk_GlueNode* pNode)
 Unk_GlueNode* FUN_140b7d300(void* pTree, Unk_GlueNode* pNode)
 {
     Unk_GlueNode* pCur;
-    if (!pNode || (pCur = pNode, FUN_140b7d0c0(pTree, pNode)))
+    if (!pNode || (pCur = pNode, Rx_IsNil(pTree, pNode)))
         return 0;
-    while (!FUN_140b7d0c0(pTree, pCur->left))
+    while (!Rx_IsNil(pTree, pCur->left))
         pCur = pCur->left;
     return pCur;
 }
@@ -964,15 +948,15 @@ void FUN_140b7e920(void* p) { FUN_14016c7c0(FUN_140b7e750(p)); }
 // MS2-FUNCTIONAL: std::vector<Unk_Int3> _Tidy stand-in
 void FUN_140b7ea10(void* pVec)
 {
+    std::vector<Unk_Int3>* v = static_cast<std::vector<Unk_Int3>*>(pVec);
     FUN_140b7e920(pVec);
-    if (*FUN_140b7e8a0(pVec) != 0)
+    if (v->_Myfirst() != 0)
     {
-        FUN_140b7e710(pVec, *FUN_140b7e8a0(pVec), *FUN_140b7e8e0(pVec));
-        void* pCap = FUN_140b7ec10(pVec);
-        FUN_14015fc80(*FUN_140b7e8a0(pVec), reinterpret_cast<__int64>(pCap) * 0xc);
-        *FUN_140b7e8a0(pVec) = 0;
-        *FUN_140b7e8e0(pVec) = 0;
-        *FUN_140b7e860(pVec) = 0;
+        FUN_140b7e710(pVec, v->_Myfirst(), v->_Mylast());
+        FUN_14015fc80(v->_Myfirst(), static_cast<__int64>(v->capacity()) * 0xc);
+        v->_Myfirst() = 0;
+        v->_Mylast() = 0;
+        v->_Myend() = 0;
     }
 }
 
