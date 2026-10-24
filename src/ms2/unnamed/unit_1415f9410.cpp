@@ -153,6 +153,17 @@ size_t FUN_1415fa080() { return 0x400; }
 // @0x1415fa090
 size_t FUN_1415fa090() { return 0x800; }
 
+// @0x1415fa0a0
+unsigned int FUN_1415fa0a0(const void* p) { return *reinterpret_cast<const unsigned int*>(static_cast<const unsigned char*>(p) + 0x10); }
+// @0x1415fa0b0
+unsigned int FUN_1415fa0b0(const void* p) { return *reinterpret_cast<const unsigned int*>(static_cast<const unsigned char*>(p) + 0x10); }
+// @0x1415fa0c0
+unsigned int FUN_1415fa0c0(const void* p) { return *reinterpret_cast<const unsigned int*>(static_cast<const unsigned char*>(p) + 0x20); }
+// @0x1415fa150
+unsigned int FUN_1415fa150(const unsigned int* p) { return *p; }
+// @0x1415fa160
+unsigned int FUN_1415fa160(const unsigned int* p) { return *p; }
+
 // @0x1415f9990
 void FUN_1415f9990(void*) { }
 // MS2-FUNCTIONAL: the recovered helper is an empty body; pin the alternate unsigned return analysis too.
@@ -197,31 +208,27 @@ template<> void CNMStr<2048>::Free() { nm_free_string_storage(m_p); }
 class CStreamCryptor_v0
 {
 public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6();
+    virtual void vfunc_1(); virtual void vfunc_2(); virtual bool vfunc_3();
+    virtual unsigned long long vfunc_4(); virtual unsigned int vfunc_5(); virtual unsigned int vfunc_6(unsigned int);
 };
 class CStreamCryptor_v1
 {
 public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6();
+    virtual void vfunc_1(); virtual void vfunc_2(); virtual bool vfunc_3();
+    virtual unsigned long long vfunc_4(); virtual unsigned int vfunc_5(); virtual int vfunc_6(int);
 };
 // @0x1415fa0d0
-void CStreamCryptor_v0::vfunc_6() { }
-// MS2-FUNCTIONAL: preserves the recovered virtual slot; Ghidra's return-value annotation conflicts with the exported signature.
-// MS2-PIN: ?vfunc_6@CStreamCryptor_v0@@UEAAXXZ 0x1415fa0d0
+unsigned int CStreamCryptor_v0::vfunc_6(unsigned int value) { return value; }
+// MS2-PIN: ?vfunc_6@CStreamCryptor_v0@@UEAAII@Z 0x1415fa0d0
 // @0x1415fa0e0
-void CStreamCryptor_v1::vfunc_6() { }
-// MS2-FUNCTIONAL: preserves the recovered virtual slot; Ghidra's return-value annotation conflicts with the exported signature.
-// MS2-PIN: ?vfunc_6@CStreamCryptor_v1@@UEAAXXZ 0x1415fa0e0
+int CStreamCryptor_v1::vfunc_6(int value) { return value + 10; }
+// MS2-PIN: ?vfunc_6@CStreamCryptor_v1@@UEAAHH@Z 0x1415fa0e0
 // @0x1415fa100
-void CStreamCryptor_v0::vfunc_5() { }
-// MS2-FUNCTIONAL: preserves the recovered virtual slot; Ghidra's return-value annotation conflicts with the exported signature.
-// MS2-PIN: ?vfunc_5@CStreamCryptor_v0@@UEAAXXZ 0x1415fa100
+unsigned int CStreamCryptor_v0::vfunc_5() { return 0x8a119e; }
+// MS2-PIN: ?vfunc_5@CStreamCryptor_v0@@UEAAIXZ 0x1415fa100
 // @0x1415fa110
-void CStreamCryptor_v1::vfunc_5() { }
-// MS2-FUNCTIONAL: preserves the recovered virtual slot; Ghidra's return-value annotation conflicts with the exported signature.
-// MS2-PIN: ?vfunc_5@CStreamCryptor_v1@@UEAAXXZ 0x1415fa110
+unsigned int CStreamCryptor_v1::vfunc_5() { return 0x820a9e12; }
+// MS2-PIN: ?vfunc_5@CStreamCryptor_v1@@UEAAIXZ 0x1415fa110
 
 // MS2-FUNCTIONAL: provides the process-stable singleton instance recovered from this function.
 // @0x1415fa260
@@ -233,21 +240,17 @@ CNMManager* CNMManager::GetInstance()
 // MS2-PIN: ?GetInstance@CNMManager@@SAPEAV1@XZ 0x1415fa260
 
 // @0x1415fb610
-void CStreamCryptor_v0::vfunc_4() { }
-// MS2-FUNCTIONAL: preserves the recovered virtual slot; Ghidra's return-value annotation conflicts with the exported signature.
-// MS2-PIN: ?vfunc_4@CStreamCryptor_v0@@UEAAXXZ 0x1415fb610
+unsigned long long CStreamCryptor_v0::vfunc_4() { return 0x1fca34; }
+// MS2-PIN: ?vfunc_4@CStreamCryptor_v0@@UEAA_KXZ 0x1415fb610
 // @0x1415fb620
-void CStreamCryptor_v1::vfunc_4() { }
-// MS2-FUNCTIONAL: preserves the recovered virtual slot; Ghidra's return-value annotation conflicts with the exported signature.
-// MS2-PIN: ?vfunc_4@CStreamCryptor_v1@@UEAAXXZ 0x1415fb620
+unsigned long long CStreamCryptor_v1::vfunc_4() { return 0xa98c32a; }
+// MS2-PIN: ?vfunc_4@CStreamCryptor_v1@@UEAA_KXZ 0x1415fb620
 // @0x1415fb6e0
-void CStreamCryptor_v0::vfunc_3() { }
-// MS2-FUNCTIONAL: preserves the recovered virtual slot; Ghidra's return-value annotation conflicts with the exported signature.
-// MS2-PIN: ?vfunc_3@CStreamCryptor_v0@@UEAAXXZ 0x1415fb6e0
+bool CStreamCryptor_v0::vfunc_3() { return false; }
+// MS2-PIN: ?vfunc_3@CStreamCryptor_v0@@UEAA_NXZ 0x1415fb6e0
 // @0x1415fb6f0
-void CStreamCryptor_v1::vfunc_3() { }
-// MS2-FUNCTIONAL: preserves the recovered virtual slot; Ghidra's return-value annotation conflicts with the exported signature.
-// MS2-PIN: ?vfunc_3@CStreamCryptor_v1@@UEAAXXZ 0x1415fb6f0
+bool CStreamCryptor_v1::vfunc_3() { return true; }
+// MS2-PIN: ?vfunc_3@CStreamCryptor_v1@@UEAA_NXZ 0x1415fb6f0
 
 // @0x1415fb700
 int FUN_1415fb700(void* p) { return *reinterpret_cast<int*>(static_cast<char*>(p) + 0x14); }
