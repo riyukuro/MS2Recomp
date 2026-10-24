@@ -9972,4 +9972,4 @@ DAT_143a2dd50	143a2dd50	data
 ?DAT_1431866f0@@3QBGB	1431866f0	data
 ?DAT_143a2aab0@@3QBUThunkInfo@AS3@GFx@Scaleform@@B	143a2aab0	data
 ?FindByPrefix@NamespaceArray@AS3@GFx@Scaleform@@QEBA_NAEBVASString@34@@Z	14240aed0	func
-?Add@XMLSupport@AS3@GFx@Scaleform@@UEBA_NAEAVValue@234@AEAVObject@234@1@Z	1424e6990	func
+?Add@XMLSupportImpl@AS3@GFx@Scaleform@@UEBA_NAEAVValue@234@AEAVObject@234@1@Z	1424e6990	func
