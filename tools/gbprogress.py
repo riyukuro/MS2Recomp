@@ -50,7 +50,7 @@ GB_BAND = (0x141bf0000, 0x142303c10)        # main Gamebryo band (report only)
 GB_TAIL = (0x1427b6c90, 0x1428d8dca)        # Gamebryo tail: renderer / shader libs + egmWhitebox (report only)
 STUB_GAP = 48                                # longest run of uncredited functions counted as one TU's stubs
 KEY = "gb2"                                  # gb2: .deps now case-repaired (Wine lowercases dirs); bump to recompile everything
-MATCH_KEY = "local-1"                          # bump to re-match every obj (pairing logic changed)
+MATCH_KEY = "alias-1"                          # bump to re-match every obj (pairing logic changed)
 if bm.CHAIN:
     MATCH_KEY += "-chain"
 LEAF_SMALL, LEAF_NEAR = 16, 0x10000             # assign_copies: small leaf copies only this near the obj's own functions
@@ -188,7 +188,7 @@ def _is_text(va):
 
 def _init():
     exe = bm.Exe(bm.EXE)
-    names, dnames = {}, {}
+    names, dnames, aliases = {}, {}, {}
     # symbols-engine-manual first (gb15): an engine function whose mangled name the game also defines (the game's own
     # TinyXML has a global ?TiXmlFOpen too) is pinned to the engine copy by a row there; no other row overlaps.
     for f in ("symbols-engine-manual.tsv", "symbols-manual.tsv", "symbols.tsv", "symbols-engine.tsv"):
@@ -197,7 +197,11 @@ def _init():
             continue
         for ln in open(p):
             c = ln.rstrip("\n").split("\t")
-            if ln[0] != "#" and len(c) > 1 and (len(c) < 3 or c[2] == "func"):
+            if ln[0] != "#" and len(c) > 2 and c[2] == "alias":
+                # alias row (gb18): name<TAB>va<TAB>alias[<TAB>obj substring]: a further copy of a named function
+                # (the exe keeps several byte-identical copies, the name map holds one VA per name)
+                aliases.setdefault(c[0], []).append((int(c[1], 16), c[3].lower() if len(c) > 3 else ""))
+            elif ln[0] != "#" and len(c) > 1 and (len(c) < 3 or c[2] == "func"):
                 names.setdefault(c[0], int(c[1], 16))
             elif ln[0] != "#" and len(c) > 2 and c[0].startswith("??_7"):
                 dnames.setdefault(c[0], int(c[1], 16))
@@ -218,8 +222,8 @@ def _init():
                 bylen[int(p[1])].append(rva)
                 leaf.add(rva)
     game = game_ranges()
-    G.update(exe=exe, names=names, dnames=dnames, bylen=bylen, leaf=leaf, game=game, game_lo=[a for a, _ in game],
-             named_vas=set(names.values()))
+    G.update(exe=exe, names=names, dnames=dnames, aliases=aliases, bylen=bylen, leaf=leaf, game=game, game_lo=[a for a, _ in game],
+             named_vas=set(names.values()) | {v for a in aliases.values() for v, _ in a})
 
 
 def owned_game_units():
@@ -422,6 +426,17 @@ def match_obj(path):
                         out.append((n, h, True, "local"))
                         used.add(h)
                         break
+    # alias pass (gb18): an alias row credits its further copy to the objs that define the name (restricted to the
+    # objs whose file name contains the row's substring: a static SWIG helper is defined by every wrapper TU)
+    if G["aliases"]:
+        used = {va for _, va, _, _ in out}
+        low = os.path.basename(path).lower()
+        for si in obj.func_symbols():
+            n = obj.syms[si][0]
+            for va, sub in G["aliases"].get(n, ()):
+                if va not in used and sub in low and _allowed(va):
+                    out.append((n, va, _match(obj, n, va), "alias"))
+                    used.add(va)
     # the remaining unpaired functions with several byte-identical exe copies are paired by assign_copies (all objs)
     out += [weak[n] for n in pending if n in weak]
     cands = [[n, list(copies[n])] for n in pending if n in copies]
