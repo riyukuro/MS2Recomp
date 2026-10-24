@@ -1100,12 +1100,364 @@ unsigned int CNMCHGetMemberInfoListFunc::Decode(CNMSerializableDecoder* d,CNMStr
 // MS2-PIN: ??0CNMGameLogGetSessionIDFunc@@QEAA@XZ 0x1415ad3f0
 
 
-// 0x1415ad6f0 is the request factory for 176 function IDs. Its recovered switch constructs types whose
-// default constructors belong to other units and are not yet declared/implemented here (first compile blocker:
-// CNMGetConfigFunc). Keep this unit partial until those constructor units are recovered.
-void* FUN_1415ad6f0(unsigned int functionId)
+// Request factory: constructs the CNM*Func registered for each function ID.
+// @0x1415ad6f0
+CNMFunc* FUN_1415ad6f0(unsigned int functionId)
 {
-    (void)functionId;
+    switch (functionId)
+    {
+    case 0x1002:
+        return new CNMRegisterCallbackFunc;
+    case 0x1003:
+        return new CNMResetCallbackFunc;
+    case 0x1004:
+        return new CNMAttachToNMCOServerFunc;
+    case 0x1005:
+        return new CNMDetachFromNMCOServerFunc;
+    case 0x1006:
+        return new CNMBringForwardStandAloneMsgFunc;
+    case 0x1007:
+        return new CNMStartStandAloneMsgFunc;
+    case 0x1103:
+        return new CNMLoginVirtualFunc;
+    case 0x1104:
+        return new CNMLogoutVirtualFunc;
+    case 0x1105:
+        return new CNMGetMyVirtualUserListFunc;
+    case 0x1106:
+        return new CNMChangeMyPositionFunc;
+    case 0x1107:
+        return new CNMSendRefreshMessageFunc;
+    case 0x1108:
+        return new CNMChangeMyLevelFunc;
+    case 0x1109:
+        return new CNMRemoveMyVirtualUserFunc;
+    case 0x110a:
+        return new CNMLoginPassportFunc;
+    case 0x110c:
+        return new CNMLoginNexonPassportFunc;
+    case 0x110d:
+        return new CNMLoginMessengerFunc;
+    case 0x110e:
+        return new CNMLogoutMessengerFunc;
+    case 0x110f:
+        return new CNMLoginAuthFunc;
+    case 0x1112:
+        return new CNMLoginAuthSecurityCNFunc;
+    case 0x1110:
+        return new CNMLogoutAuthFunc;
+    case 0x1111:
+        return new CNMInitializeFunc;
+    case 0x1113:
+        return new CNMGetGameTokenFunc;
+    case 0x1114:
+        return new CNMFinalizeFunc;
+    case 0x1115:
+        return new CNMPCBangLoginFunc;
+    case 0x1119:
+        return new CNMTPATokenLoginFunc;
+    case 0x1118:
+        return new CNMSetAuthClosedCallbackFunc;
+    case 0x2001:
+        return new CNMGetMyInfoFunc;
+    case 0x2002:
+        return new CNMGetUserDataListFunc;
+    case 0x2003:
+        return new CNMChangeMyInfoFunc;
+    case 0x2004:
+        return new CNMGetConfigFunc;
+    case 0x2005:
+        return new CNMChangeConfigFunc;
+    case 0x2006:
+        return new CNMGetLocalConfigFunc;
+    case 0x2007:
+        return new CNMChangeLocalConfigFunc;
+    case 0x2008:
+        return new CNMGetCountFunc;
+    case 0x2009:
+        return new CNMSetCountFunc;
+    case 0x200a:
+        return new CNMChangeNicknameFunc;
+    case 0x200c:
+        return new CNMRequestNewsFunc;
+    case 0x200d:
+        return new CNMCheckNewsFunc;
+    case 0x200b:
+        return new CNMChangeMetaDataFunc;
+    case 0x2101:
+        return new CNMGetDomainFunc;
+    case 0x2103:
+        return new CNMSetStatInfoFunc;
+    case 0x2104:
+        return new CNMSetLocaleFunc;
+    case 0x2105:
+        return new CNMGetNexonPassportFunc;
+    case 0x2108:
+        return new CNMGetSecurityCodeCNFunc;
+    case 0x2106:
+        return new CNMGetSecurityQuestionFunc;
+    case 0x2107:
+        return new CNMGetNxHWIDFunc;
+    case 0x2109:
+        return new CNMSetCodePageFunc;
+    case 0x4001:
+        return new CNMGetFriendListFunc;
+    case 0x4002:
+        return new CNMGetFriendInfoFunc;
+    case 0x4003:
+        return new CNMRequestNewFriendFunc;
+    case 0x4004:
+        return new CNMConfirmNewFriendFunc;
+    case 0x4005:
+        return new CNMBlockFriendFunc;
+    case 0x4006:
+        return new CNMChangeFriendMemoFunc;
+    case 0x4007:
+        return new CNMAddFriendToCategoryFunc;
+    case 0x4008:
+        return new CNMDeleteFriendFromCategoryFunc;
+    case 0x4009:
+        return new CNMMoveFriendCategoryFunc;
+    case 0x400a:
+        return new CNMChangeFriendMemoExFunc;
+    case 0x4101:
+        return new CNMAddCategoryFunc;
+    case 0x4102:
+        return new CNMDeleteCategoryFunc;
+    case 0x4103:
+        return new CNMChangeCategoryNameFunc;
+    case 0x4104:
+        return new CNMChangeCategoryPropertyFunc;
+    case 0x4105:
+        return new CNMChangeCategoryAllowTypeFunc;
+    case 0x6001:
+        return new CNMGetNoteBoxFunc;
+    case 0x6002:
+        return new CNMSendNoteMsgFunc;
+    case 0x6006:
+        return new CNMSendAccuseNoteMsgFunc;
+    case 0x6003:
+        return new CNMProcessNoteFunc;
+    case 0x6004:
+        return new CNMSendNoteInfoFunc;
+    case 0x6005:
+        return new CNMGetNoteBox2Func;
+    case 0x5201:
+        return new CNMGetRejectedUserListFunc;
+    case 0x5202:
+        return new CNMAppendRejectedUserFunc;
+    case 0x5203:
+        return new CNMRemoveRejectedUserFunc;
+    case 0x7003:
+        return new CNMGetMyGuildListExFunc;
+    case 0x7002:
+        return new CNMMonitorGuildOnlineInfoFunc;
+    case 0x7004:
+        return new CNMMonitorGuildOnlineInfoExFunc;
+    case 0x8001:
+        return new CNMExecutePatcherFunc;
+    case 0x8002:
+        return new CNMExecuteLauncherFunc;
+    case 0x8003:
+        return new CNMExecuteCommonFunc;
+    case 0x8004:
+        return new CNMGetUrlFunc;
+    case 0x8005:
+        return new CNMGetPathFunc;
+    case 0x8006:
+        return new CNMSetSessionValueFunc;
+    case 0x8007:
+        return new CNMGetSessionValueFunc;
+    case 0x8008:
+        return new CNMGetGameListFunc;
+    case 0x8009:
+        return new CNMGetUrlExFunc;
+    case 0x801d:
+        return new CNMDownloadGuildMarkFileFunc;
+    case 0x800a:
+        return new CNMDownloadFileFunc;
+    case 0x800b:
+        return new CNMUploadFileFunc;
+    case 0x800c:
+        return new CNMGetSupportGameListFunc;
+    case 0x800d:
+        return new CNMGetGameServerListFunc;
+    case 0x800e:
+        return new CNMGetGameFullNameFunc;
+    case 0x800f:
+        return new CNMGetGameShortNameFunc;
+    case 0x8010:
+        return new CNMGetGameFriendTitleFunc;
+    case 0x8011:
+        return new CNMGetGameServerNameFunc;
+    case 0x8012:
+        return new CNMGetConnConfigFunc;
+    case 0x8013:
+        return new CNMSetConnConfigFunc;
+    case 0x8015:
+        return new CNMExecuteNGMPatcherFunc;
+    case 0x8022:
+        return new CNMExecuteNGMPatcher2Func;
+    case 0x8016:
+        return new CNMExecuteNGMLauncherFunc;
+    case 0x8020:
+        return new CNMExecuteNGMInstallerFunc;
+    case 0x8017:
+        return new CNMIsNGMInstalledFunc;
+    case 0x8018:
+        return new CNMRestrictedWordsFunc;
+    case 0x8019:
+        return new CNMMinimizeAllFunc;
+    case 0x801a:
+        return new CNMLogReportSyncFunc;
+    case 0x801c:
+        return new CNMSetServerInfoFunc;
+    case 0x801e:
+        return new CNMGetServerInfoFunc;
+    case 0x801f:
+        return new CNMWriteToWiselogFunc;
+    case 0x8021:
+        return new CNMOpenGameSummaryFunc;
+    case 0x9001:
+        return new CNMGetUserInfoFunc;
+    case 0x9002:
+        return new CNMFindUserFunc;
+    case 0x9003:
+        return new CNMGetFindUserResultFunc;
+    case 0x9004:
+        return new CNMSendNoteExMsgFunc;
+    case 0x9006:
+        return new CNMCustomNotifyFunc;
+    case 0xa001:
+        return new CNMRequestChatSessionFunc;
+    case 0xa00b:
+        return new CNMRequestChatSessionExFunc;
+    case 0xa002:
+        return new CNMRequestMultiChatSessionFunc;
+    case 0xa003:
+        return new CNMRequestFileUploadSessionFunc;
+    case 0xa00d:
+        return new CNMRequestFileUploadSessionExFunc;
+    case 0xa004:
+        return new CNMRequestWBSessionFunc;
+    case 0xa005:
+        return new CNMReplySessionRequestFunc;
+    case 0xa006:
+        return new CNMCreateChatRoomFunc;
+    case 0xa007:
+        return new CNMJoinToChatRoomFunc;
+    case 0xa008:
+        return new CNMRequestSessionToOtherFunc;
+    case 0xa009:
+        return new CNMCreateChatRoomExFunc;
+    case 0xa00a:
+        return new CNMJoinToChatRoomExFunc;
+    case 0xa010:
+        return new CNMCreateChannelFunc;
+    case 0xa011:
+        return new CNMJoinChannelFunc;
+    case 0xb001:
+        return new CNMCRRegisterCallbackFunc;
+    case 0xb002:
+        return new CNMCRCloseFunc;
+    case 0xb003:
+        return new CNMCRGetRoomInfoFunc;
+    case 0xb004:
+        return new CNMCRChangeRoomInfoFunc;
+    case 0xb005:
+        return new CNMCRChangeMyInfoFunc;
+    case 0xb006:
+        return new CNMCRGetMemberListFunc;
+    case 0xb007:
+        return new CNMCRInviteUserFunc;
+    case 0xb008:
+        return new CNMCRBanUserFunc;
+    case 0xb009:
+        return new CNMCRSendChatMessageFunc;
+    case 0xb00a:
+        return new CNMCRGetMemberInfoFunc;
+    case 0xb00b:
+        return new CNMCRGetRoomInfoExFunc;
+    case 0xc001:
+        return new CNMGSRegisterCallbackFunc;
+    case 0xc002:
+        return new CNMGSWantCloseFunc;
+    case 0xc003:
+        return new CNMGSGetSessionInfoFunc;
+    case 0xc004:
+        return new CNMGSSetServingProcessIDFunc;
+    case 0xc005:
+        return new CNMGSGetMemberListFunc;
+    case 0xc006:
+        return new CNMGSInviteUserFunc;
+    case 0xc008:
+        return new CNMGSInviteUserExFunc;
+    case 0xc007:
+        return new CNMGSGetInviteCandidateListFunc;
+    case 0xc101:
+        return new CNMCSSendChatMessageFunc;
+    case 0xc201:
+        return new CNMFUDSGetFileEventFunc;
+    case 0xc202:
+        return new CNMFUSSendFileFunc;
+    case 0xc203:
+        return new CNMFUSControlFunc;
+    case 0xc301:
+        return new CNMFDSControlFunc;
+    case 0xc302:
+        return new CNMFDSGetDownloadDirFunc;
+    case 0xc303:
+        return new CNMFDSSetDownloadDirFunc;
+    case 0xc401:
+        return new CNMWSSendWBMessageFunc;
+    case 0xc402:
+        return new CNMWSGetAssocSerialKeyFunc;
+    case 0xf000:
+        return new CNMCharacterLoginFunc;
+    case 0xf001:
+        return new CNMCharacterLogoutFunc;
+    case 0xf002:
+        return new CNMCharacterRemoveFunc;
+    case 0xf003:
+        return new CNMCharacterChangeNameFunc;
+    case 0xf008:
+        return new CNMCharacterSyncFunc;
+    case 0xf004:
+        return new CNMCharacterLogin64Func;
+    case 0xf005:
+        return new CNMCharacterLogout64Func;
+    case 0xf006:
+        return new CNMCharacterRemove64Func;
+    case 0xf007:
+        return new CNMCharacterChangeName64Func;
+    case 0xf009:
+        return new CNMCharacterSync64Func;
+    case 0xf010:
+        return new CNMGameLogInitializeFunc;
+    case 0xf011:
+        return new CNMGameLogFinalizeFunc;
+    case 0xf012:
+        return new CNMGameLogWriteStageLogFunc;
+    case 0xf013:
+        return new CNMGameLogWriteErrorLogFunc;
+    case 0xf014:
+        return new CNMGameLogGetSessionIDFunc;
+    case 0xd001:
+        return new CNMCHCloseFunc;
+    case 0xd002:
+        return new CNMCHGetChannelInfoFunc;
+    case 0xd003:
+        return new CNMCHChangeChannelInfoFunc;
+    case 0xd004:
+        return new CNMCHGetMemberInfoListFunc;
+    case 0xd005:
+        return new CNMCHChangeMyInfoFunc;
+    case 0xd006:
+        return new CNMCHInviteUserFunc;
+    case 0xd007:
+        return new CNMCHBanUserFunc;
+    case 0xd008:
+        return new CNMCHSendChannelMessageFunc;
+    }
     return nullptr;
 }
-

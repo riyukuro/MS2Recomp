@@ -155956,6 +155956,8 @@ FUN_141485590	141485590	func
 ?DecodeFramed@CNMChannelMemberInfoList@@UEAAIPEAVCNMStream@@@Z	14157ca80	func
 ?DecodeDispatch@CNMChannelMemberInfoList@@UEAAIPEAVCNMSerializableDecoder@@PEAVCNMStream@@@Z	14157cb10	func
 ?Decode@CNMChannelMemberInfoList@@UEAAIPEAVCNMSerializableDecoder@@PEAVCNMStream@@@Z	14157cb70	func
+??0CNMChannelMessage@@QEAA@XZ	14157cc30	func
+??0CNMChannelMessage@@QEAA@AEBV0@@Z	14157cd00	func
 ?EncodeFramed@CNMChannelMessage@@UEAAIPEAVCNMStream@@@Z	14157d080	func
 ?EncodeDispatch@CNMChannelMessage@@UEAAIPEAVCNMEncoder@@PEAVCNMStream@@@Z	14157d0e0	func
 ?Encode@CNMChannelMessage@@UEAAIPEAVCNMEncoder@@PEAVCNMStream@@@Z	14157d140	func
