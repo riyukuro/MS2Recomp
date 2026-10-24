@@ -6,6 +6,8 @@
 #include "ms2/placeholder/nmfunc.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmchatroomfunc.h"
+#include "unit_1415cd8a0.h"
+#include "unit_1415eb400.h"
 #include <cstring>
 
 extern void* FUN_1415f39a0(void*);
@@ -36,6 +38,7 @@ extern void* FUN_1415f3a30(void*); extern void* FUN_1415f3a50(void*);
 extern void* FUN_141602970(void*);
 extern void* FUN_141602940(void*);
 extern long long* FUN_1415f46c0(long long*);
+extern void FUN_1415eefa0(void*); extern void FUN_1415ef000(void*); extern void FUN_1415ef020(void*);
 
 template <class Id, class Get, class Set, class First, class Last, class Range>
 static void* copy_nm_sequence(void* dst, void* src, Id id, Get get, Set set,
@@ -3443,4 +3446,61 @@ CNMSerializable* FUN_1415efb60(CNMSerializable* dst, long long src)
 {
     FUN_1415efbc0(dst, src);
     return dst;
+}
+
+// MS2-FUNCTIONAL: runs the recovered chat-room destructor and applies scalar-delete flag semantics.
+// @0x1415f4e10
+void* NMScalarDelete_1415f4e10(void* object, unsigned int flags)
+{
+    static_cast<CNMCRChatRoom*>(object)->~CNMCRChatRoom();
+    if (flags & 1) ::operator delete(object);
+    return object;
+}
+// MS2-FUNCTIONAL: runs the recovered abstract stream-cryptor destructor and applies scalar-delete flag semantics.
+// @0x1415f9310
+void* NMScalarDelete_1415f9310(void* object, unsigned int flags)
+{
+    static_cast<CStreamCryptor*>(object)->~CStreamCryptor();
+    if (flags & 1) ::operator delete(object);
+    return object;
+}
+// MS2-FUNCTIONAL: runs the recovered v0 stream-cryptor destructor and applies scalar-delete flag semantics.
+// @0x1415f9350
+void* NMScalarDelete_1415f9350(void* object, unsigned int flags)
+{
+    static_cast<CStreamCryptor_v0*>(object)->~CStreamCryptor_v0();
+    if (flags & 1) ::operator delete(object);
+    return object;
+}
+// MS2-FUNCTIONAL: runs the recovered v1 stream-cryptor destructor and applies scalar-delete flag semantics.
+// @0x1415f9390
+void* NMScalarDelete_1415f9390(void* object, unsigned int flags)
+{
+    static_cast<CStreamCryptor_v1*>(object)->~CStreamCryptor_v1();
+    if (flags & 1) ::operator delete(object);
+    return object;
+}
+// MS2-FUNCTIONAL: calls the recovered event destructor and applies scalar-delete flag semantics.
+// @0x1415f9150
+void* NMScalarDelete_1415f9150(void* object, unsigned int flags)
+{
+    FUN_1415eefa0(object);
+    if (flags & 1) ::operator delete(object);
+    return object;
+}
+// MS2-FUNCTIONAL: calls the recovered event destructor and applies scalar-delete flag semantics.
+// @0x1415f9250
+void* NMScalarDelete_1415f9250(void* object, unsigned int flags)
+{
+    FUN_1415ef000(object);
+    if (flags & 1) ::operator delete(object);
+    return object;
+}
+// MS2-FUNCTIONAL: calls the recovered event destructor and applies scalar-delete flag semantics.
+// @0x1415f9290
+void* NMScalarDelete_1415f9290(void* object, unsigned int flags)
+{
+    FUN_1415ef020(object);
+    if (flags & 1) ::operator delete(object);
+    return object;
 }
