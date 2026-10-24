@@ -14594,3 +14594,7 @@ DAT_1439f8358	1439f8358	data
 ??$?0AEAY0N@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0N@$$CBD$$QEAH@Z	14021d380	func
 ??$?0AEAY0O@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0O@$$CBD$$QEAH@Z	14021d420	func
 ??$?0AEAY0P@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0P@$$CBD$$QEAH@Z	14021d4c0	func
+?strHeap@?1??GetInstance@CAtlStringMgr@ATL@@SAPEAUIAtlStringMgr@3@XZ@4VCWin32Heap@3@A	143acd170	data
+?strMgr@?1??GetInstance@CAtlStringMgr@ATL@@SAPEAUIAtlStringMgr@3@XZ@4V23@A	143acd190	data
+??__FstrHeap@?1??GetInstance@CAtlStringMgr@ATL@@SAPEAUIAtlStringMgr@2@XZ@YAXXZ	142cab860	func
+??__FstrMgr@?1??GetInstance@CAtlStringMgr@ATL@@SAPEAUIAtlStringMgr@2@XZ@YAXXZ	142cab880	func
