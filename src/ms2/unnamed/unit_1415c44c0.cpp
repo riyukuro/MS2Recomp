@@ -516,6 +516,36 @@ int FUN_1415c5b90(void*, unsigned int result, unsigned long long newsKey)
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
 
+// MS2-FUNCTIONAL: constructs the recovered optional change-my-info fields and dispatches them.
+// @0x1415c5e20
+int FUN_1415c5e20(void*, int mode, const char* name, const void* position, int state)
+{
+    CNMChangeMyInfoFunc request(mode, reinterpret_cast<long long>(name),
+                                reinterpret_cast<long long>(position), state, 0);
+    return CNMManager::GetInstance()->CallNMFunc(&request);
+}
+
+// MS2-FUNCTIONAL: dispatches a change-my-info request containing only the recovered mode.
+// @0x1415c5c00
+void FUN_1415c5c00(void* self, unsigned int mode)
+{
+    (void)FUN_1415c5e20(self, static_cast<int>(mode), nullptr, nullptr, -1);
+}
+
+// MS2-FUNCTIONAL: dispatches a change-my-info request containing the recovered name field.
+// @0x1415c5c40
+void FUN_1415c5c40(void* self, const char* name)
+{
+    (void)FUN_1415c5e20(self, 0, name, nullptr, -1);
+}
+
+// MS2-FUNCTIONAL: dispatches a change-my-info request containing the recovered position field.
+// @0x1415c5c80
+void FUN_1415c5c80(void* self, const void* position)
+{
+    (void)FUN_1415c5e20(self, 0, nullptr, position, -1);
+}
+
 // @0x1415c46c0
 void FUN_1415c46c0()
 {
