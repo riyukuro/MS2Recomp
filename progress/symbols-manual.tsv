@@ -10654,3 +10654,10 @@ criHeap_Destroy	140028074	func
 ?MPVDEC_ResetDc@@YAXPEAUCriMpvDecoderState@@@Z	142ccb500	func
 ?GetText@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEBA_NPEAXPEAVValue@34@_N@Z	14250f110	func
 ?Sfr34_FlNamespaceArray_Reserve@Scaleform@@YAXPEAXPEBX_K@Z	142522db0	func
+?FUN_1424e6aa0@AS3@GFx@Scaleform@@YAPEAXPEAVTracer@123@PEBX_KH_N@Z	1424e6aa0	func
+?FUN_1424e6cf0@AS3@GFx@Scaleform@@YAXPEAVTracer@123@_K@Z	1424e6cf0	func
+?Sfr21AddInterfaceSlots@AS3@GFx@Scaleform@@YAXPEAVTraits@123@AEAVVMAbcFile@123@AEBVClassInfo@Abc@123@@Z	1424e80f0	func
+?AttachMovie@Sfr34d_ValueObjIfc@AS3@GFx@Scaleform@@UEAA_NPEAXPEAVValue@34@PEBD2JPEBVMemberValueSet@34@@Z	1424ede80	func
+?FUN_1424f03f0@@YAXPEAEPEAVMemoryHeap@Scaleform@@@Z	1424f03f0	func
+?CreateEmptyMovieClip@Sfr34d_ValueObjIfc@AS3@GFx@Scaleform@@UEAA_NPEAXPEAVValue@34@PEBDJ@Z	1424f33d0	func
+?GetDisplayInfo@Sfr34d_ValueObjIfc@AS3@GFx@Scaleform@@UEBA_NPEAXPEAVDisplayInfo@Value@34@@Z	1425094e0	func
