@@ -513,3 +513,28 @@ CStringW Unk_NtMgr::FUN_1406c61a0(short id, Unk_NtPlayer* player)
 // MS2-FUNCTIONAL: legacy player spellings forward to the recovered ranked-icon lookup.
 CStringW Unk_MiNtMgr::FUN_1406c61a0(short id, MyPC* player)
 { return reinterpret_cast<CNametagSymbolTable*>(this)->GetIconRanked(static_cast<unsigned short>(id), reinterpret_cast<Unk_NametagActor*>(player)); }
+
+class PC;
+class Unk_NtItemMgr
+{
+public:
+    int FUN_1406c5b00(__int64 nId, int nKind);
+    CStringW FUN_1406c6360(__int64 nId, PC* pPc, int n);
+};
+
+// MS2-FUNCTIONAL: the recovered call sites pass the nametag id and PC pointer to these legacy manager spellings;
+// the table stores 16-bit ids and GetIcon consumes the common actor interface, so adapt those ABI types here.
+// @0x1406c5b00
+int Unk_NtItemMgr::FUN_1406c5b00(__int64 nId, int nKind)
+{
+    return reinterpret_cast<CNametagSymbolTable*>(this)->IsType(static_cast<unsigned short>(nId), nKind);
+}
+
+// MS2-FUNCTIONAL: the final legacy integer is unused by the observed callers and the recovered GetIcon implementation.
+// @0x1406c6360
+CStringW Unk_NtItemMgr::FUN_1406c6360(__int64 nId, PC* pPc, int n)
+{
+    (void)n;
+    return reinterpret_cast<CNametagSymbolTable*>(this)->GetIcon(static_cast<unsigned short>(nId),
+        reinterpret_cast<Unk_NametagActor*>(pPc));
+}
