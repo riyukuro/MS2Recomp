@@ -237,7 +237,7 @@ UIArcadeMainDialog::~UIArcadeMainDialog()
 }
 
 // @0x140efe330
-static CStringW Unk_ArcWide(const wchar_t* sz, int n)
+CStringW Unk_ArcWide(const wchar_t* sz, int n)
 {
     return CStringW(sz);
 }
