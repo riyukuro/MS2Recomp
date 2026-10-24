@@ -10,6 +10,9 @@
 #include "unit_1415eb400.h"
 #include <cstring>
 
+class CNMCOClientObject;
+template <class T> class CNMSingleton { public: virtual ~CNMSingleton(); };
+
 extern void* FUN_1415f39a0(void*);
 extern void* FUN_1415f39c0(void*);
 extern void* FUN_1415f39d0(void*);
@@ -3501,6 +3504,22 @@ void* NMScalarDelete_1415f9250(void* object, unsigned int flags)
 void* NMScalarDelete_1415f9290(void* object, unsigned int flags)
 {
     FUN_1415ef020(object);
+    if (flags & 1) ::operator delete(object);
+    return object;
+}
+// MS2-FUNCTIONAL: invokes the recovered CNMSingleton destructor and applies scalar-delete flag semantics.
+// @0x1415f47d0
+void* NMScalarDelete_1415f47d0(void* object, unsigned int flags)
+{
+    static_cast<CNMSingleton<CNMCOClientObject>*>(object)->~CNMSingleton();
+    if (flags & 1) ::operator delete(object);
+    return object;
+}
+// MS2-FUNCTIONAL: invokes the recovered CNMSingleton destructor and applies scalar-delete flag semantics.
+// @0x1415f4810
+void* NMScalarDelete_1415f4810(void* object, unsigned int flags)
+{
+    static_cast<CNMSingleton<CNMManager>*>(object)->~CNMSingleton();
     if (flags & 1) ::operator delete(object);
     return object;
 }
