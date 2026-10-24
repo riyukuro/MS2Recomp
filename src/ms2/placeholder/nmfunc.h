@@ -325,7 +325,7 @@ MS2_CHECK_SIZE(CNMFriendInfo, 0x580);
 class CNMCategoryInfo : public CNMSerializable
 {
 public:
-    CNMCategoryInfo() : CNMSerializable(0x6369, 1, 1), m_10(0), m_14{}, m_1c{}, m_3c(0), m_3d(0) {}
+    CNMCategoryInfo();                                         // 0x14156f7e0
     CNMCategoryInfo(const CNMCategoryInfo& r) noexcept;         // 0x1415e8b40
     CNMCategoryInfo(CNMCategoryInfo&& r) noexcept;              // 0x1415e8aa0
     virtual ~CNMCategoryInfo() = default;                                 // 0x1415ec980
@@ -349,7 +349,7 @@ MS2_CHECK_SIZE(CNMCategoryInfo, 0x40);
 class CNMCateFriendInfo : public CNMCategoryInfo
 {
 public:
-    CNMCateFriendInfo() : CNMCategoryInfo(), m_aFriends{} { ++m_bKind; }
+    CNMCateFriendInfo();                                       // 0x14156fbb0
     CNMCateFriendInfo(const CNMCateFriendInfo& r);              // 0x1415e8a40
     CNMCateFriendInfo(CNMCateFriendInfo&& r) noexcept;          // 0x1415e89f0
     virtual ~CNMCateFriendInfo() = default;                               // 0x1415ec950
