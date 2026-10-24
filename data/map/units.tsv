@@ -701,13 +701,13 @@
 1401a2e40	1401adea0	?\arcademaindata.cpp	low	425	mn	
 1401adea0	1401b3c70	?\attendgiftdatagroup.cpp	low	292	mn	
 1401b3c70	1401b6d10	commonfiles\banktable.cpp	high	99	mn	
-1401b6d10	1401ba840	unit_1401b6d10	none	121	mn	rejected ?\fieldbannerdata.cpp
+1401b6d10	1401ba840	unit_1401b6d10_fieldbannerdata	none	121	mn	descriptive: fieldbannerdata
 1401ba840	1401bcbf0	unit_1401ba840_blocklistrecordlist	none	106	mn	descriptive: blocklistrecordlist
 1401bcbf0	1401c9a00	?\blackmarketitemoption.cpp	low	403	mn	was ?\dbblackmarketproductinfo.cpp; dir commonfiles
 1401c9a00	1401cbd50	commonfiles\blockchecker.cpp	high	53	mn	
 1401cbd50	1401cd310	?\buddy.cpp	low	46	mn	dir commonfiles
 1401cd310	1401ce010	?\buffercryptmanager.cpp	low	31	mn	was ?\xorcrypter.cpp; dir commonfiles
-1401ce010	1401d1020	unit_1401ce010	none	107	mn	rejected ?\crashmanager.cpp
+1401ce010	1401d1020	unit_1401ce010_crashmanager	none	107	mn	descriptive: crashmanager
 1401d1020	1401d4a00	?\cachedata.cpp	low	137	mn	dir commonfiles
 1401d4a00	1401d64a0	?\cashproductdata.cpp	low	46	mn	dir commonfiles
 1401d64a0	1401d8bc0	?\changejobtable.cpp	low	74	mn	dir commonfiles
@@ -716,31 +716,31 @@
 1401e4000	1401e5760	?\characterdecaldata.cpp	low	84	mn	dir commonfiles
 1401e5760	1401f7ee0	commonfiles\chatemoticontable.cpp	high	650	mn	
 1401f7ee0	1401f9eb0	?\classobject.cpp	low	43	mn	dir commonfiles
-1401f9eb0	140208340	unit_1401f9eb0	none	390	mn	rejected ?\citemcoloringpacket.cpp (order within gap)
+1401f9eb0	140208340	unit_1401f9eb0_packetpayloadserializers	none	390	mn	descriptive: packetpayloadserializers
 140208340	14020c3a0	commonfiles\clientreconnectionstructs.cpp	high	142	mn	
 14020c3a0	140217910	commonfiles\clubcommon.cpp	high	305	mn	
 140217910	1402226b0	commonfiles\commonenum.cpp	high	272	mn	
-1402226b0	140223c60	unit_1402226b0	none	30	mn	
+1402226b0	140223c60	unit_1402226b0_featureenumhelpers	none	30	mn	descriptive: featureenumhelpers
 140223c60	140266860	commonfiles\commonstringtable.cpp	high	541	mn	
-140266860	140267090	unit_140266860	none	25	mn	rejected ?\questmask.cpp
-140267090	140267390	unit_140267090	none	9	mn	
-140267390	140267670	unit_140267390	none	3	mn	rejected ?\remakeoptioncontext.cpp
-140267670	140267ba0	unit_140267670	none	6	mn	rejected ?\additionaleffecteventctx.cpp
-140267ba0	140267c10	unit_140267ba0	none	2	mn	
-140267c10	140267e40	unit_140267c10	none	5	mn	
-140267e40	140268010	unit_140267e40	none	6	mn	
-140268010	140268b20	unit_140268010	none	15	mn	rejected ?\accountblockinfo.cpp
-140268b20	140269020	unit_140268b20	none	6	mn	rejected ?\marketbuylimithistory.cpp
-140269020	140269160	unit_140269020	none	4	mn	rejected ?\marketbuylimitproduct.cpp
-140269160	140269440	unit_140269160	none	4	mn	rejected ?\userlimithistory.cpp
-140269440	1402698d0	unit_140269440	none	5	mn	rejected ?\userlimitgroup.cpp
-1402698d0	140269c30	unit_1402698d0	none	4	mn	rejected ?\premiumproductlimitinfo.cpp
-140269c30	14026a1b0	unit_140269c30	none	10	mn	
-14026a1b0	14026ab50	unit_14026a1b0	none	19	mn	rejected ?\skillcompactcontrolconfig.cpp
+140266860	140267090	unit_140266860_sharedptredrecords	none	25	mn	descriptive: sharedptredrecords
+140267090	140267390	unit_140267090_gaugestate	none	9	mn	descriptive: gaugestate
+140267390	140267670	unit_140267390_remakeoptioncontext	none	3	mn	descriptive: remakeoptioncontext
+140267670	140267ba0	unit_140267670_additionaleffectcontext	none	6	mn	descriptive: additionaleffectcontext
+140267ba0	140267c10	unit_140267ba0_tripletintclear	none	2	mn	descriptive: tripletintclear
+140267c10	140267e40	unit_140267c10_tripletintoperations	none	5	mn	descriptive: tripletintoperations
+140267e40	140268010	unit_140267e40_tripletintstream	none	6	mn	descriptive: tripletintstream
+140268010	140268b20	unit_140268010_sharedstatemap	none	15	mn	descriptive: sharedstatemap
+140268b20	140269020	unit_140268b20_marketbuylimithistory	none	6	mn	descriptive: marketbuylimithistory
+140269020	140269160	unit_140269020_marketbuyproductvalues	none	4	mn	descriptive: marketbuyproductvalues
+140269160	140269440	unit_140269160_userlimithistory	none	4	mn	descriptive: userlimithistory
+140269440	1402698d0	unit_140269440_userlimitgroup	none	5	mn	descriptive: userlimitgroup
+1402698d0	140269c30	unit_1402698d0_premiumpurchaseinfo	none	4	mn	descriptive: premiumpurchaseinfo
+140269c30	14026a1b0	unit_140269c30_shopmailpricevalue	none	10	mn	descriptive: shopmailpricevalue
+14026a1b0	14026ab50	unit_14026a1b0_commonstructpriceconfigs	none	19	mn	descriptive: commonstructpriceconfigs
 14026ab50	14028b820	commonfiles\commonstruct.cpp	high	1153	mn	
 14028b820	14029dff0	commonfiles\commonutil.cpp	high	580	mn	
 14029dff0	1402ab440	commonfiles\conditionutil.cpp	high	233	mn	
-1402ab440	1402c3760	unit_1402ab440	none	302	mn	rejected ?\common.cpp
+1402ab440	1402c3760	unit_1402ab440_constantsblocks	none	302	mn	descriptive: constantsblocks
 1402c3760	1402c3840	unit_1402c3760	none	3	mn	
 1402c3840	1402c4b00	commonfiles\constraints.cpp	high	45	mn	
 1402c4b00	1402c5180	commonfiles\contentshutdown.cpp	high	14	mn	
