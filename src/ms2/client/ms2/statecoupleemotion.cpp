@@ -174,8 +174,8 @@ void* FUN_140166440();                                                     // 0x
 const int* FUN_1402fbd20(const int* pA, const int* pB);                    // placeholder for std::min
 
 // ---- local helpers declared early ---------------------------------------------------------------------------------------
-static bool FUN_140b83fa0(const NiPoint3& kA, const NiPoint3& kB);         // 0x140b83fa0
-static bool FUN_140b83f60(int nState);                                     // 0x140b83f60
+bool FUN_140b83fa0(const NiPoint3& kA, const NiPoint3& kB);         // 0x140b83fa0
+bool FUN_140b83f60(int nState);                                     // 0x140b83f60
 bool FUN_140b83ec0();                                               // 0x140b83ec0
 static bool FUN_140b84dc0(const NiPoint3& kPoint);                         // 0x140b84dc0 the point is placeable
 static void FUN_140b86230(const efd::Point3& kEuler, efd::Matrix3* pOut);  // 0x140b86230
@@ -1213,7 +1213,7 @@ bool FUN_140b83ec0()
 
 // Is the actor in a state that may start a couple emotion?
 // @0x140b83f60
-static bool FUN_140b83f60(int nState)
+bool FUN_140b83f60(int nState)
 {
     switch (nState)
     {
@@ -1229,7 +1229,7 @@ static bool FUN_140b83f60(int nState)
 
 // The two actors are within the table's maximum distance of each other.
 // @0x140b83fa0
-static bool FUN_140b83fa0(const NiPoint3& kA, const NiPoint3& kB)
+bool FUN_140b83fa0(const NiPoint3& kA, const NiPoint3& kB)
 {
     float fMax = (float)*FUN_1401d3200()->m_maxDist.FUN_1402056b0();
     float fLen = (kA - kB).Length();
