@@ -55,7 +55,11 @@ int* FUN_141128290(Unk_CMISTree<281>*, const int*);
 int* FUN_1411280d0(Unk_CMISTree<270>*, const CString*);
 void FUN_14114fae0(Unk_CMISTree<282>*);
 
+// ms_ClassInfo and its initializer belong to unit_1400e5dd0 (.text$di 0x1400e5dd0-, outside the hook DLL); the
+// hook DLL defines it here.
+#ifdef MS2_HOOK_DLL
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CubeMapInformationService);
+#endif
 CubeMapInformationService* TSingleton<CubeMapInformationService>::s_instance = 0;
 inline TSingleton<CubeMapInformationService>::TSingleton() { s_instance = static_cast<CubeMapInformationService*>(this); }
 

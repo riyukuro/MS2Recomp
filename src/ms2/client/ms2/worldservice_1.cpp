@@ -46,7 +46,11 @@
 // Engine statics the exe folded to immediates; defined here (selectany) so the engine headers' macros link.
 __declspec(selectany) const efd::UInt8 efd::ILogger::kLVL0 = 4;
 __declspec(selectany) const efd::UInt8 efd::ILogger::kLVL2 = 6;
+// kInvalidHandle: Gamebryo's SceneGraphService.cpp defines it (not COMDAT) in the full-exe link; only the hook DLL,
+// which links no engine objs, needs this copy.
+#ifdef MS2_HOOK_DLL
 __declspec(selectany) const ecr::SceneGraphService::SceneGraphHandle ecr::SceneGraphService::kInvalidHandle = 0;
+#endif
 
 // .text$di in exe order: 0x140120210 key input static, 0x140120240 ClassInfo, 0x140120260 maintenanceExit,
 // 0x140120290-0x1401206a6 the 11 message handler statics (TODO, see NOTES.md "w3o2"), 0x1401206b0-0x1401207a0

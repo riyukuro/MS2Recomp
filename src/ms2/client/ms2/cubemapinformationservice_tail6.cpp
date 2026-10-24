@@ -18,8 +18,11 @@
 #include "ms2/commonfiles/ugcmapsetiteminfo.h"
 
 // ecr::SceneGraphService::kInvalidHandle is referenced by the SceneGraphAddedMessage factory method the
-// handler anchor below instantiates; the engine ships the declaration, the definition is selectany.
+// handler anchor below instantiates; the engine ships the declaration, the definition is selectany. Gamebryo's
+// SceneGraphService.cpp defines it in the full-exe link, so only the hook DLL needs this copy.
+#ifdef MS2_HOOK_DLL
 __declspec(selectany) const ecr::SceneGraphService::SceneGraphHandle ecr::SceneGraphService::kInvalidHandle = 0;
+#endif
 
 typedef std::map<unsigned int, MS2SvrPtr<CUGCMapSetItemInfo> > Unk_CMISMapSetItem;
 typedef efd::vector<NiTransform> Unk_CMISXformVec2;
