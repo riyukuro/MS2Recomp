@@ -4365,3 +4365,23 @@ public:
     CNMRealUserInfo m_28; // +0x28
 };
 MS2_CHECK_SIZE(CNMUserInfoEvent, 0x1d0);
+
+// vftable 0x142f41f10, destructor 0x1415eed30.
+class CNMVirtualFriendInfoChangedEvent : public CNMEvent
+{
+public:
+    CNMVirtualFriendInfoChangedEvent(); // 0x1415b6dc0
+    CNMVirtualFriendInfoChangedEvent(int type, const CNMVirtualFriendInfo& info); // 0x1415b6e30
+    virtual ~CNMVirtualFriendInfoChangedEvent() = default;
+    char* vfunc_8() override { return const_cast<char*>("CNMVirtualFriendInfoChangedEvent"); }
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+
+    int m_28;
+    CNMVirtualFriendInfo m_30;
+};
+MS2_CHECK_SIZE(CNMVirtualFriendInfoChangedEvent, 0x4f0);
