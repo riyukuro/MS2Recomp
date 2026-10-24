@@ -3953,7 +3953,16 @@ MS2_CHECK_SIZE(CNMRequestNewFriendData, 0x1f0);
 class CNMRequestNewFriendEvent : public CNMEvent
 {
 public:
+    CNMRequestNewFriendEvent(); // 0x1415b2e20
+    explicit CNMRequestNewFriendEvent(const CNMRequestNewFriendData& data); // 0x1415b2e90
     virtual ~CNMRequestNewFriendEvent() = default;
+    char* vfunc_8() override { return const_cast<char*>("CNMRequestNewFriendEvent"); }
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMRequestNewFriendData m_28; // +0x28
 };
