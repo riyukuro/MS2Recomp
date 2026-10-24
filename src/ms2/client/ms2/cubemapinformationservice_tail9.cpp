@@ -114,3 +114,115 @@ void Unk_CMISDriveTail9()
     { int a = nKey, b = nKey; std::pair<int, int> pr = std::make_pair(a, b); (void)pr; }
     { ATL::CAtlArray<Unk_CMISElem388*> a; ATL::CAtlArray<Unk_CMISElem3a8*> b; ATL::CAtlArray<Unk_CMISElem458*> c; }
 }
+
+// Full-exe entry points under the FUN_ spellings that unit_141127a90's iterator helpers call: each is a
+// _Compressed_pair / _Get_unwrapped accessor that ICF folded onto an addressof / _Kfn identity, so it returns
+// its argument.
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a580
+char* FUN_14115a580(char* p) { return p; }
+
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a5a0
+char* FUN_14115a5a0(char* p) { return p; }
+
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a5c0
+char* FUN_14115a5c0(char* p) { return p; }
+
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a5e0
+char* FUN_14115a5e0(char* p) { return p; }
+
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a600
+char* FUN_14115a600(char* p) { return p; }
+
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a620
+char* FUN_14115a620(char* p) { return p; }
+
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a640
+char* FUN_14115a640(char* p) { return p; }
+
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a660
+char* FUN_14115a660(char* p) { return p; }
+
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a680
+char* FUN_14115a680(char* p) { return p; }
+
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a6a0
+char* FUN_14115a6a0(char* p) { return p; }
+
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a6c0
+char* FUN_14115a6c0(char* p) { return p; }
+
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a6e0
+char* FUN_14115a6e0(char* p) { return p; }
+
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a700
+char* FUN_14115a700(char* p) { return p; }
+
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a720
+char* FUN_14115a720(char* p) { return p; }
+
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a740
+char* FUN_14115a740(char* p) { return p; }
+
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a760
+char* FUN_14115a760(char* p) { return p; }
+
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a780
+char* FUN_14115a780(char* p) { return p; }
+
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a7a0
+char* FUN_14115a7a0(char* p) { return p; }
+
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a7c0
+char* FUN_14115a7c0(char* p) { return p; }
+
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a7e0
+char* FUN_14115a7e0(char* p) { return p; }
+
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a800
+char* FUN_14115a800(char* p) { return p; }
+
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a820
+char* FUN_14115a820(char* p) { return p; }
+
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a840
+char* FUN_14115a840(char* p) { return p; }
+
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a860
+char* FUN_14115a860(char* p) { return p; }
+
+// MS2-FUNCTIONAL: identity; the exe forwards through a folded addressof instance
+// @0x14115a880
+char* FUN_14115a880(char* p) { return p; }
+
+// The list append worldservice_1 calls: efd::vector<EntityPtr>::emplace_back (folded with
+// vector<Cube*>::push_back).
+// MS2-FUNCTIONAL: calls emplace_back inline instead of through the out-of-line instance
+// @0x14115a960
+void FUN_14115a960(void* list, void* elem)
+{
+    static_cast<Unk_CMISEntVec*>(list)->emplace_back(*static_cast<const egf::EntityPtr*>(elem));
+}
