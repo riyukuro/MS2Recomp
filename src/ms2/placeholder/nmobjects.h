@@ -1986,7 +1986,16 @@ MS2_CHECK_SIZE(CNMCustomMessageEvent, 0x1040);
 class CNMCustomNotifyEvent : public CNMEvent
 {
 public:
+    CNMCustomNotifyEvent();
+    CNMCustomNotifyEvent(const CNMCustomNotifyData& rData);
     virtual ~CNMCustomNotifyEvent() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMCustomNotifyData m_28; // +0x28
 };
