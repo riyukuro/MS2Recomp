@@ -2201,3 +2201,9 @@ MS2_REPLACE_METHOD(0x14124D6A0, CGameOptionGraphicDefault, vfunc_10, 240, 0xF49F
 MS2_REPLACE_METHOD(0x14124D890, CGameOptionGraphicDefault, vfunc_14, 106, 0xDC755D9F);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cadf10-0x142cae070 .text$yd
+// Full-executable aliases for the account and character option loaders.
+// MS2-PIN: ?LoadAccountOption@CGameOption@@QEAAXXZ 0x141242570
+// MS2-PIN: ?LoadCharacterOption@CGameOption@@QEAAXXZ 0x141242990
+// MS2-PIN: ?FUN_141242570@Unk_SlOptionsHolder@@QEAAXXZ 0x141242570
+// MS2-PIN: ?FUN_141242990@@YAXPEAX@Z 0x141242990
+// MS2-PIN: ?FUN_141242990@Unk_ClUserMgr@@QEAAXXZ 0x141242990
