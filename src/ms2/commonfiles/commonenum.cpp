@@ -1588,3 +1588,25 @@ bool FUN_140222590(int value)
 // MS2-PIN: ??$?0AEAY0L@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0L@$$CBD$$QEAH@Z 0x14021d240 ; this TU's copy (0x1401818d0 is another TU's), called by make_pair 0x14021fc50
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9a320-0x142c9a340 .text$yd
+
+// MS2-FUNCTIONAL: named full-exe compatibility entry; delegates to the recovered enum-name table above.
+CStringA FUN_14021a8b0(int value) { return Name_14021a8b0(value); }
+// MS2-FUNCTIONAL: named full-exe compatibility entry; delegates to the recovered grade-name table above.
+CStringA FUN_14021aa20(int value) { return Name_14021aa20(value); }
+// The same named enum is declared in additionalactionadditional.h; this TU only needs its ABI type.
+enum Unk_SkillMasteryType { Unk_SkillMasteryType_None };
+// MS2-FUNCTIONAL: enum ABI compatibility entry; the recovered parser returns the enum's underlying integer value.
+Unk_SkillMasteryType FUN_14021c400(const CStringA& value)
+{
+    return static_cast<Unk_SkillMasteryType>(Parse_14021c400(value));
+}
+// MS2-FUNCTIONAL: unsigned ABI compatibility entry; delegates to the recovered string parser above.
+unsigned FUN_14021c7c0(const CStringA& value)
+{
+    return static_cast<unsigned>(Parse_14021c7c0(value));
+}
+
+// MS2-PIN: ?FUN_14021a8b0@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@Z 0x14021a8b0
+// MS2-PIN: ?FUN_14021aa20@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@Z 0x14021aa20
+// MS2-PIN: ?FUN_14021c400@@YA?AW4Unk_SkillMasteryType@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z 0x14021c400
+// MS2-PIN: ?FUN_14021c7c0@@YAIAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z 0x14021c7c0
