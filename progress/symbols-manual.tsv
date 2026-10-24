@@ -10447,3 +10447,5 @@ DAT_143d747f0	143d747f0	data
 ?Read@ShapeSwfReader@GFx@Scaleform@@QEAA_NPEAVLoadProcess@23@W4TagType@23@I_N@Z	14265b620	func
 ??0MorphCharacterDef@GFx@Scaleform@@QEAA@XZ	14265ebc0	func
 ?Read@MorphCharacterDef@GFx@Scaleform@@QEAAXPEAVLoadProcess@23@AEBUTagInfo@23@_N@Z	14265f0b0	func
+?FromString@AttachNifData@ecr@@UEAA_NAEBVutf8string@efd@@@Z	14202dca0	func
+?ms_ClassInfo@AttachNifData@ecr@@2VClassInfo@efd@@B	143a028a0	data
