@@ -700,7 +700,11 @@ static CString s_strInvalide = "Invalide";
 static CString s_strLayerExpired = "layerExpired";
 static CString s_strLower = "Lower";
 static CString s_strMissMatch = "MissMatch";
-static CString s_strOptimizer = "Optimizer";
+#ifndef MS2_HOOK_DLL   // s_strOptimizer: the exe's object at 0x143ae2de8, which other units reach as DAT_143ae2de8 (the hook DLL binds it)
+CString DAT_143ae2de8 = "Optimizer";
+#else
+extern CString DAT_143ae2de8;
+#endif
 static CString s_strPCBang = "PCBang";
 static CString s_strSlot = "Slot";
 static CString s_strUndo = "Undo";
@@ -4857,6 +4861,41 @@ void PC::FUN_141660fc0(CString str)
 // MS2-PIN: ??_EPC@@W7EAAPEAXI@Z 0x1416677f8
 // MS2-PIN: ??__Es_category@@YAXXZ 0x1400fb430
 // MS2-PIN: ??__Es_pointer@@YAXXZ 0x1400fb460
+// the header-static CString initializers and their atexit thunks are byte-identical look-alikes: pinned in definition order
+// MS2-PIN: ??__Es_strCustomize@@YAXXZ 0x1400fb010
+// MS2-PIN: ??__Fs_strCustomize@@YAXXZ 0x142cb3d50
+// MS2-PIN: ??__Es_strDefault@@YAXXZ 0x1400fb040
+// MS2-PIN: ??__Fs_strDefault@@YAXXZ 0x142cb3d70
+// MS2-PIN: ??__Es_strEmotion@@YAXXZ 0x1400fb070
+// MS2-PIN: ??__Fs_strEmotion@@YAXXZ 0x142cb3d90
+// MS2-PIN: ??__Es_strExceptRender@@YAXXZ 0x1400fb0a0
+// MS2-PIN: ??__Fs_strExceptRender@@YAXXZ 0x142cb3db0
+// MS2-PIN: ??__Es_strExpired@@YAXXZ 0x1400fb0d0
+// MS2-PIN: ??__Fs_strExpired@@YAXXZ 0x142cb3dd0
+// MS2-PIN: ??__Es_strHair@@YAXXZ 0x1400fb100
+// MS2-PIN: ??__Fs_strHair@@YAXXZ 0x142cb3df0
+// MS2-PIN: ??__Es_strInvalide@@YAXXZ 0x1400fb130
+// MS2-PIN: ??__Fs_strInvalide@@YAXXZ 0x142cb3e10
+// MS2-PIN: ??__Es_strLayerExpired@@YAXXZ 0x1400fb160
+// MS2-PIN: ??__Fs_strLayerExpired@@YAXXZ 0x142cb3e30
+// MS2-PIN: ??__Es_strLower@@YAXXZ 0x1400fb190
+// MS2-PIN: ??__Fs_strLower@@YAXXZ 0x142cb3e50
+// MS2-PIN: ??__Es_strMissMatch@@YAXXZ 0x1400fb1c0
+// MS2-PIN: ??__Fs_strMissMatch@@YAXXZ 0x142cb3e70
+// MS2-PIN: ??__Es_strPCBang@@YAXXZ 0x1400fb220
+// MS2-PIN: ??__Fs_strPCBang@@YAXXZ 0x142cb3eb0
+// MS2-PIN: ??__Es_strSlot@@YAXXZ 0x1400fb250
+// MS2-PIN: ??__Fs_strSlot@@YAXXZ 0x142cb3ed0
+// MS2-PIN: ??__Es_strUndo@@YAXXZ 0x1400fb280
+// MS2-PIN: ??__Fs_strUndo@@YAXXZ 0x142cb3ef0
+// MS2-PIN: ??__Es_strVIP@@YAXXZ 0x1400fb2b0
+// MS2-PIN: ??__Fs_strVIP@@YAXXZ 0x142cb3f10
+// MS2-PIN: ??__Es_strWillUpdatePos@@YAXXZ 0x1400fb2e0
+// MS2-PIN: ??__Fs_strWillUpdatePos@@YAXXZ 0x142cb3f30
+// MS2-PIN: ??__Es_strSkill@@YAXXZ 0x1400fb3d0
+// MS2-PIN: ??__Fs_strSkill@@YAXXZ 0x142cb3f80
+// MS2-PIN: ??__Es_strStun@@YAXXZ 0x1400fb400
+// MS2-PIN: ??__Fs_strStun@@YAXXZ 0x142cb3fa0
 // MS2-PIN: ??$SetPropertyValue@I@Unk_CachedEntity@@QEAA?AW4PropertyResult@egf@@IAEBI@Z 0x141664540
 // MS2-PIN: ??$CachePropertyValue@I@Unk_CachedEntity@@QEAAXIAEBI@Z 0x141664360
 // tplpin --simulate (w558), hand-applied (skipped: vfunc/FUN_ names already bind; prop guesses 0x141666f80 = AssignRaw<CTailEffectObject> per its ctor callee, 0x1416662a0; 0x141666020 already named MS2Ptr<Unk_RideeFieldObj>; 0x141667640 not called by the ctor):

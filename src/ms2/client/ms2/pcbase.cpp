@@ -55,6 +55,10 @@
 // MS2-PIN: ?GetClassDesc@PCBase@@UEBAPEBVClassInfo@efd@@XZ 0x14167f940
 // MS2-PIN: ??0?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$vector@IV?$allocator@I@std@@@std@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@V?$allocator@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$vector@IV?$allocator@I@std@@@std@@@std@@@4@@std@@@std@@@std@@@std@@QEAA@XZ 0x14167e430
 // MS2-PIN: ??__EkENTITY_INVALID@egf@@YAXXZ 0x1400fb6f0
+// MS2-PIN: ??__Es_skill@@YAXXZ 0x1400fb5b0
+// MS2-PIN: ??__Es_stun@@YAXXZ 0x1400fb5e0
+// MS2-PIN: ??__Fs_skill@@YAXXZ 0x142cb4030
+// MS2-PIN: ??__Fs_stun@@YAXXZ 0x142cb4050
 // MS2-PIN: ??0PCBase@@QEAA@XZ 0x14166a650
 // MS2-PIN: ?AssignRaw@?$MS2Ptr@VUnk_PCBaseComp_b18@@@@QEAAAEAV1@PEAVUnk_PCBaseComp_b18@@@Z 0x14167ebf0
 // MS2-PIN: ?GetTail@?$CAtlList@V?$MS2Ptr@VUnk_PCBaseComp_b18@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_PCBaseComp_b18@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VUnk_PCBaseComp_b18@@@@XZ 0x14167fa30
@@ -892,7 +896,11 @@ bool FUN_140a33ff0(const efd::Point3& kPt);                         // a usable 
 float FUN_141224f30(float fX, float fY);                            // atan2-style heading                         // "<part>NN" dummy names (unit_1416bc380)
 static CString s_partNames[] = {"Head", "Body", "Back", "RHand", "LHand", "RFoot", "LFoot", "Tail", "Hold_Point"};
 static ATL::CAtlMap<unsigned int, CString> s_conditions(17, .75f, .25f, 2.25f, 10);
-static CString s_strNotice("system_notice_error_warningNotThisPlace");
+#ifndef MS2_HOOK_DLL   // s_strNotice: the exe's object at 0x143ae32c8, which other units reach as DAT_143ae32c8 (the hook DLL binds it)
+CString DAT_143ae32c8("system_notice_error_warningNotThisPlace");
+#else
+extern CString DAT_143ae32c8;
+#endif
 
 // ---- PCBase ----
 
