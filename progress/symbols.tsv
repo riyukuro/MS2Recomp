@@ -330,7 +330,7 @@ criHeap_Initialize	1400282e0	func
 ?GetSoundChannel@VideoPlayerImpl@Video@GFx@Scaleform@@UEAAPEAVSoundChannel@Sound@4@W4SoundTrack@VideoPlayer@234@@Z	1400298b0	func
 ?SetSoundSpatialInfo@VideoPlayerImpl@Video@GFx@Scaleform@@UEAAXQEAV?$Array@UVector@SoundChannel@Sound@Scaleform@@$01UArrayDefaultPolicy@4@@4@@Z	1400298e0	func
 ?FUN_140029ed0@@YAXPEAX@Z	140029ed0	func
-?FUN_14002a000@@YAPEAXPEAX00@Z	14002a000	func
+?FUN_14002a010@@YAPEAXPEAX00@Z	14002a010	func
 ?FUN_14002a090@@YAXPEAX@Z	14002a090	func
 ?StopDecoding@VideoDecoderThrd@Video@GFx@Scaleform@@UEAAXPEAVVideoPlayer@234@@Z	14002a160	func
 ?IsDecodingStopped@VideoDecoderThrd@Video@GFx@Scaleform@@UEAA_NPEAVVideoPlayer@234@@Z	14002a1e0	func
@@ -230613,3 +230613,6 @@ DAT_143ffd4e8	143ffd4e8	data
 DAT_143ffd500	143ffd500	data
 DAT_143ffd504	143ffd504	data
 DAT_143ffd550	143ffd550	data
+?DAT_1431b8f30@@3QBQEBXB	1431b8f30	data
+DAT_1431b8f30	1431b8f30	data
+DAT_143c492a0	143c492a0	data

@@ -6197,7 +6197,7 @@ png_write_end	14270ec90	func
 ?zGet@Vector3D@fl_geom@Instances@AS3@GFx@Scaleform@@QEAAXAEAN@Z	142491360	func
 ?zSet@DisplayObject@fl_display@Instances@AS3@GFx@Scaleform@@QEAAXAEBVValue@456@N@Z	142454c10	func
 ?zSet@Vector3D@fl_geom@Instances@AS3@GFx@Scaleform@@QEAAXAEBVValue@456@N@Z	142491370	func
-?FUN_14002a000@@YAPEAXPEAX00@Z	14002a000	func
+?FUN_14002a010@@YAPEAXPEAX00@Z	14002a010	func
 ?ToUpper@String@Scaleform@@QEBA?AV12@XZ	142587e00	func
 jpeg_CreateDecompress	1426f4460	func
 jpeg_abort_decompress	1426f4590	func
@@ -12581,3 +12581,6 @@ DAT_143b05550	143b05550	data
 ?DAT_142cca4b0@@3PAEA	142cca4b0	data
 ?DAT_142ccb500@@3PAEA	142ccb500	data
 ?DAT_142ccc850@@3PAEA	142ccc850	data
+?DAT_1431b8f30@@3QBQEBXB	1431b8f30	data
+DAT_1431b8f30	1431b8f30	data
+DAT_143c492a0	143c492a0	data
