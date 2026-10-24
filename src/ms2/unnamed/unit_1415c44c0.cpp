@@ -546,6 +546,42 @@ void FUN_1415c5c80(void* self, const void* position)
     (void)FUN_1415c5e20(self, 0, nullptr, position, -1);
 }
 
+// MS2-FUNCTIONAL: fetches configuration selector 1 and returns its recovered field on success.
+// @0x1415c5ed0
+int FUN_1415c5ed0()
+{
+    CNMGetConfigFunc request(1);
+    if (!CNMManager::GetInstance()->CallNMFunc(&request)) return 0;
+    return request.m_34;
+}
+
+// MS2-FUNCTIONAL: fetches configuration selector 2 and returns its recovered field on success.
+// @0x1415c5f70
+int FUN_1415c5f70()
+{
+    CNMGetConfigFunc request(2);
+    if (!CNMManager::GetInstance()->CallNMFunc(&request)) return 0;
+    return request.m_38;
+}
+
+// MS2-FUNCTIONAL: fetches configuration selector 4 and returns its recovered field on success.
+// @0x1415c6010
+int FUN_1415c6010()
+{
+    CNMGetConfigFunc request(4);
+    if (!CNMManager::GetInstance()->CallNMFunc(&request)) return 0;
+    return request.m_3c;
+}
+
+// MS2-FUNCTIONAL: fetches configuration selector 8 and returns its recovered field on success.
+// @0x1415c60b0
+int FUN_1415c60b0()
+{
+    CNMGetConfigFunc request(8);
+    if (!CNMManager::GetInstance()->CallNMFunc(&request)) return 0;
+    return request.m_40;
+}
+
 // @0x1415c46c0
 void FUN_1415c46c0()
 {
@@ -924,3 +960,4 @@ void FUN_1415cd010() {}
 // MS2-PIN: ?FUN_1415c6f80@@YA_NPEAX0@Z 0x1415c6f80
 // MS2-PIN: ?FUN_1415ca240@@YAPEAEPEAE@Z 0x1415ca240
 // MS2-PIN: ?FUN_1415c5ac0@@YAHXZ 0x1415c5ac0
+// MS2-PIN: ?FUN_1415c5ed0@@YAHXZ 0x1415c5ed0
