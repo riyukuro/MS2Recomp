@@ -3,7 +3,8 @@
 // pass does not pair: their initializers run lazily inside the engine-stage gb:CryptoPP/* TUs, so no .text$di function
 // registers them. Each thunk is written out by hand over the static it destroys; the statics are exe data (DAT_<va>).
 // MS2-UNIT: lib_cryptopp_tail
-// MS2-RANGE: 0x142cc8c20-0x142cc92ab .text$yd
+// MS2-RANGE: 0x142cc8c20-0x142cc8cb0 .text$yd
+// MS2-RANGE: 0x142cc8ce0-0x142cc92ab .text$yd
 // MS2-FLAGS: gamebryo
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
