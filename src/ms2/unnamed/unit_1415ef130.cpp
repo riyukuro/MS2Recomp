@@ -3385,6 +3385,37 @@ bool NMStringIteratorCompare_1415f3840(const long long* a, const long long* b) {
 // @0x1415f3880
 bool NMStringIteratorCompare_1415f3880(const long long* a, const long long* b) { return *a != *b; }
 
+// MS2-FUNCTIONAL: copies the serializable base and the recovered contiguous 0x2e-byte record payload.
+// @0x1415efc40
+CNMSerializable* FUN_1415efc40(CNMSerializable* dst, long long src)
+{
+    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    std::memcpy(reinterpret_cast<unsigned char*>(dst) + 0x10,
+                reinterpret_cast<const unsigned char*>(src) + 0x10, 0x2e);
+    return dst;
+}
+// MS2-FUNCTIONAL: copies the serializable base and the recovered contiguous 0x88-byte record payload.
+// @0x1415efd00
+CNMSerializable* FUN_1415efd00(CNMSerializable* dst, long long src)
+{
+    dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
+    std::memcpy(reinterpret_cast<unsigned char*>(dst) + 0x10,
+                reinterpret_cast<const unsigned char*>(src) + 0x10, 0x88);
+    return dst;
+}
+// MS2-FUNCTIONAL: compares the three recovered 32-bit fields.
+// @0x1415f3220
+unsigned char FUN_1415f3220(const int* a, const int* b)
+{
+    return static_cast<unsigned char>(a[0] == b[0] && a[1] == b[1] && a[2] == b[2]);
+}
+// MS2-FUNCTIONAL: returns the inverse of the recovered iterator position equality.
+// @0x1415f3280
+bool FUN_1415f3280(const long long* a, const long long* b)
+{
+    return *a != *b;
+}
+
 // MS2-FUNCTIONAL: dispatches the executable's virtual CopyFrom slot and returns the destination.
 // @0x1415efb90
 CNMSerializable* FUN_1415efb90(CNMSerializable* dst, long long src)
