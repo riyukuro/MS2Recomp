@@ -388,6 +388,127 @@ void FUN_1416013f0(void*) {}
 // @0x141601410
 void FUN_141601410(void*) {}
 
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x1415ffe20
+void FUN_1415ffe20(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x1415ffe50
+void FUN_1415ffe50(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x1415ffe80
+void FUN_1415ffe80(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x1415ffeb0
+void FUN_1415ffeb0(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x1415ffee0
+void FUN_1415ffee0(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x1415fff10
+void FUN_1415fff10(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x1415fff40
+void FUN_1415fff40(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x1415fff70
+void FUN_1415fff70(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x1415fffa0
+void FUN_1415fffa0(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x1415fffd0
+void FUN_1415fffd0(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x141600000
+void FUN_141600000(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x141600030
+void FUN_141600030(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x141600060
+void FUN_141600060(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x141600090
+void FUN_141600090(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x1416000c0
+void FUN_1416000c0(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x1416000f0
+void FUN_1416000f0(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x141600120
+void FUN_141600120(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x141600150
+void FUN_141600150(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x141600190
+void FUN_141600190(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x1416001d0
+void FUN_1416001d0(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x141600210
+void FUN_141600210(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x141600250
+void FUN_141600250(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x141600290
+void FUN_141600290(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x1416002d0
+void FUN_1416002d0(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x141600310
+void FUN_141600310(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x141600350
+void FUN_141600350(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x141600390
+void FUN_141600390(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x1416003d0
+void FUN_1416003d0(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x141600410
+void FUN_141600410(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x141600450
+void FUN_141600450(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x141600490
+void FUN_141600490(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x1416004d0
+void FUN_1416004d0(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x141600510
+void FUN_141600510(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x141600550
+void FUN_141600550(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x141600590
+void FUN_141600590(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x1416005d0
+void FUN_1416005d0(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x141600610
+void FUN_141600610(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x141600650
+void FUN_141600650(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x141600690
+void FUN_141600690(void*, const void*) {}
+// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+// @0x1416006d0
+void FUN_1416006d0(void*, const void*) {}
+
 // @0x141601a20
 void* FUN_141601a20(void* p) { return p; }
 // @0x141601a30
@@ -451,3 +572,43 @@ void* FUN_141601ed0(void* p) { return p; }
 // MS2-PIN: ?FUN_1416013d0@@YAXPEAX@Z 0x1416013d0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
 // MS2-PIN: ?FUN_1416013f0@@YAXPEAX@Z 0x1416013f0 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
 // MS2-PIN: ?FUN_141601410@@YAXPEAX@Z 0x141601410 ; MS2-FUNCTIONAL: discarded read-only allocator accessor
+// MS2-PIN: ?FUN_1415ffe20@@YAXPEBX@Z 0x1415ffe20 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_1415ffe50@@YAXPEBX@Z 0x1415ffe50 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_1415ffe80@@YAXPEBX@Z 0x1415ffe80 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_1415ffeb0@@YAXPEBX@Z 0x1415ffeb0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_1415ffee0@@YAXPEBX@Z 0x1415ffee0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_1415fff10@@YAXPEBX@Z 0x1415fff10 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_1415fff40@@YAXPEBX@Z 0x1415fff40 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_1415fff70@@YAXPEBX@Z 0x1415fff70 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_1415fffa0@@YAXPEBX@Z 0x1415fffa0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_1415fffd0@@YAXPEBX@Z 0x1415fffd0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_141600000@@YAXPEBX@Z 0x141600000 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_141600030@@YAXPEBX@Z 0x141600030 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_141600060@@YAXPEBX@Z 0x141600060 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_141600090@@YAXPEBX@Z 0x141600090 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_1416000c0@@YAXPEBX@Z 0x1416000c0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_1416000f0@@YAXPEBX@Z 0x1416000f0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_141600120@@YAXPEBX@Z 0x141600120 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_141600150@@YAXPEBX@Z 0x141600150 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_141600190@@YAXPEBX@Z 0x141600190 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_1416001d0@@YAXPEBX@Z 0x1416001d0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_141600210@@YAXPEBX@Z 0x141600210 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_141600250@@YAXPEBX@Z 0x141600250 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_141600290@@YAXPEBX@Z 0x141600290 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_1416002d0@@YAXPEBX@Z 0x1416002d0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_141600310@@YAXPEBX@Z 0x141600310 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_141600350@@YAXPEBX@Z 0x141600350 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_141600390@@YAXPEBX@Z 0x141600390 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_1416003d0@@YAXPEBX@Z 0x1416003d0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_141600410@@YAXPEBX@Z 0x141600410 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_141600450@@YAXPEBX@Z 0x141600450 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_141600490@@YAXPEBX@Z 0x141600490 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_1416004d0@@YAXPEBX@Z 0x1416004d0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_141600510@@YAXPEBX@Z 0x141600510 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_141600550@@YAXPEBX@Z 0x141600550 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_141600590@@YAXPEBX@Z 0x141600590 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_1416005d0@@YAXPEBX@Z 0x1416005d0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_141600610@@YAXPEBX@Z 0x141600610 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_141600650@@YAXPEBX@Z 0x141600650 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_141600690@@YAXPEBX@Z 0x141600690 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
+// MS2-PIN: ?FUN_1416006d0@@YAXPEBX@Z 0x1416006d0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
