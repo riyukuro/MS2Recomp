@@ -99,29 +99,73 @@ extern NiFixedString DAT_143ae5468; // "gfGaussianValueY"
 
 // @0x1400fd610
 static NiFixedString s_k_gkShadowAdjust;
+#ifndef MS2_HOOK_DLL   // s_k_gkSSSPower: the exe's object at 0x143ae53a0, which other units reach as DAT_143ae53a0 (the hook DLL binds it)
 // @0x1400fd640
-static NiFixedString s_k_gkSSSPower;
+NiFixedString DAT_143ae53a0;
+#else
+extern NiFixedString DAT_143ae53a0;
+#endif
+#ifndef MS2_HOOK_DLL   // s_k_MS2GlowMaterial: the exe's object at 0x143ae51f0, which other units reach as DAT_143ae51f0 (the hook DLL binds it)
 // @0x1400fd670
-static NiFixedString s_k_MS2GlowMaterial;
+NiFixedString DAT_143ae51f0;
+#else
+extern NiFixedString DAT_143ae51f0;
+#endif
+#ifndef MS2_HOOK_DLL   // s_k_GlowModifier: the exe's object at 0x143ae5178, which other units reach as DAT_143ae5178 (the hook DLL binds it)
 // @0x1400fd6a0
-static NiFixedString s_k_GlowModifier;
+NiFixedString DAT_143ae5178;
+#else
+extern NiFixedString DAT_143ae5178;
+#endif
+#ifndef MS2_HOOK_DLL   // s_akPartDummyNames: the exe's object at 0x143ae5470, which other units reach as DAT_143ae5470 (the hook DLL binds it)
 // @0x1400fd6d0
-static NiFixedString s_akPartDummyNames[9][30];         // "<part>NN" (s_partNames x 30)
+NiFixedString DAT_143ae5470[9][30];         // "<part>NN" (s_partNames x 30)
+#else
+extern NiFixedString DAT_143ae5470[9][30];
+#endif
+#ifndef MS2_HOOK_DLL   // s_k_gvSSAOParams: the exe's object at 0x143ae5428, which other units reach as DAT_143ae5428 (the hook DLL binds it)
 // @0x1400fd710
-static NiFixedString s_k_gvSSAOParams;
+NiFixedString DAT_143ae5428;
+#else
+extern NiFixedString DAT_143ae5428;
+#endif
+#ifndef MS2_HOOK_DLL   // s_k_g_afBlurOffsetU: the exe's object at 0x143ae5330, which other units reach as DAT_143ae5330 (the hook DLL binds it)
 // @0x1400fd740
-static NiFixedString s_k_g_afBlurOffsetU;
+NiFixedString DAT_143ae5330;
+#else
+extern NiFixedString DAT_143ae5330;
+#endif
+#ifndef MS2_HOOK_DLL   // s_k_g_afBlurOffsetV: the exe's object at 0x143ae5338, which other units reach as DAT_143ae5338 (the hook DLL binds it)
 // @0x1400fd770
-static NiFixedString s_k_g_afBlurOffsetV;
+NiFixedString DAT_143ae5338;
+#else
+extern NiFixedString DAT_143ae5338;
+#endif
+#ifndef MS2_HOOK_DLL   // s_k_g_fPerturbationMultiplier: the exe's object at 0x143ae5430, which other units reach as DAT_143ae5430 (the hook DLL binds it)
 // @0x1400fd7a0
-static NiFixedString s_k_g_fPerturbationMultiplier;
+NiFixedString DAT_143ae5430;
+#else
+extern NiFixedString DAT_143ae5430;
+#endif
+#ifndef MS2_HOOK_DLL   // s_k_g_fPostPerturbationMultiplier: the exe's object at 0x143ae5438, which other units reach as DAT_143ae5438 (the hook DLL binds it)
 // @0x1400fd7d0
-static NiFixedString s_k_g_fPostPerturbationMultiplier;
+NiFixedString DAT_143ae5438;
+#else
+extern NiFixedString DAT_143ae5438;
+#endif
+#ifndef MS2_HOOK_DLL   // s_k_g_fPostShimmerMove: the exe's object at 0x143ae5448, which other units reach as DAT_143ae5448 (the hook DLL binds it)
 // @0x1400fd800
-static NiFixedString s_k_g_fPostShimmerMove;
+NiFixedString DAT_143ae5448;
+#else
+extern NiFixedString DAT_143ae5448;
+#endif
 
+#ifndef MS2_HOOK_DLL   // s_akHoldPointNames: the exe's object at 0x143ae5ce0, which other units reach as DAT_143ae5ce0 (the hook DLL binds it)
 // @0x1400fda40
-static NiFixedString s_akHoldPointNames[50];            // "Hold_PointNN"
+NiFixedString DAT_143ae5ce0[50];            // "Hold_PointNN"
+#else
+extern NiFixedString DAT_143ae5ce0[50];
+#endif
 
 // @0x1400fe1a0
 static std::map<std::string, NiMaterialPtr> s_kMaterials;
@@ -165,7 +209,7 @@ void ResetMaterialNames()
     DAT_143ae5248 = NiFixedString();
     DAT_143ae5250 = NiFixedString();
     DAT_143ae5258 = NiFixedString();
-    s_k_MS2GlowMaterial = NiFixedString();
+    DAT_143ae51f0 = NiFixedString();
     DAT_143ae52e0 = NiFixedString();
     DAT_143ae5260 = NiFixedString();
     DAT_143ae5268 = NiFixedString();
@@ -210,7 +254,7 @@ void RegisterMaterials(bool bRegister)
     MS2_REGISTER_MATERIAL(DAT_143ae5248);
     MS2_REGISTER_MATERIAL(DAT_143ae5250);
     MS2_REGISTER_MATERIAL(DAT_143ae5258);
-    MS2_REGISTER_MATERIAL(s_k_MS2GlowMaterial);
+    MS2_REGISTER_MATERIAL(DAT_143ae51f0);
     MS2_REGISTER_MATERIAL(DAT_143ae52e0);
     MS2_REGISTER_MATERIAL(DAT_143ae5260);
     MS2_REGISTER_MATERIAL(DAT_143ae5268);
@@ -242,8 +286,8 @@ void InitShaderConstantNames()
     DAT_143ae5318 = "gfHeightFogPercent";
     DAT_143ae5320 = "gakFadeInOutRenderStepPercent";
     DAT_143ae5328 = "g_vTexelSize";
-    s_k_g_afBlurOffsetU = "g_afBlurOffsetU";
-    s_k_g_afBlurOffsetV = "g_afBlurOffsetV";
+    DAT_143ae5330 = "g_afBlurOffsetU";
+    DAT_143ae5338 = "g_afBlurOffsetV";
     DAT_143ae5340 = "gakScreenMaskingRenderStepBlend";
     DAT_143ae5348 = "gkOuterColor";
     DAT_143ae5350 = "gakMonochromeLevel";
@@ -256,7 +300,7 @@ void InitShaderConstantNames()
     DAT_143ae5388 = "gakRimLightDirection";
     DAT_143ae5390 = "gakCharacterLightDirection";
     DAT_143ae5398 = "gakSSSColor";
-    s_k_gkSSSPower = "gkSSSPower";
+    DAT_143ae53a0 = "gkSSSPower";
     DAT_143ae53a8 = "gfStrength";
     DAT_143ae53b0 = "gfRange";
     DAT_143ae53b8 = "gfNearZ";
@@ -273,10 +317,10 @@ void InitShaderConstantNames()
     DAT_143ae5410 = "gfEdgeSmoothDepthWeight";
     DAT_143ae5418 = "gfEdgeSmoothNormalWeight";
     DAT_143ae5420 = "gfAdaptationScale";
-    s_k_gvSSAOParams = "gvSSAOParams";
-    s_k_g_fPerturbationMultiplier = "g_fPerturbationMultiplier";
-    s_k_g_fPostPerturbationMultiplier = "g_fPostPerturbationMultiplier";
-    s_k_g_fPostShimmerMove = "g_fPostShimmerMove";
+    DAT_143ae5428 = "gvSSAOParams";
+    DAT_143ae5430 = "g_fPerturbationMultiplier";
+    DAT_143ae5438 = "g_fPostPerturbationMultiplier";
+    DAT_143ae5448 = "g_fPostShimmerMove";
     DAT_143ae5440 = "g_fShimmerBrightness";
     DAT_143ae5450 = "PixelBlurConst";
     DAT_143ae5458 = "sampleDist";
@@ -294,8 +338,8 @@ void ResetShaderConstantNames()
     DAT_143ae5318 = NiFixedString();
     DAT_143ae5320 = NiFixedString();
     DAT_143ae5328 = NiFixedString();
-    s_k_g_afBlurOffsetU = NiFixedString();
-    s_k_g_afBlurOffsetV = NiFixedString();
+    DAT_143ae5330 = NiFixedString();
+    DAT_143ae5338 = NiFixedString();
     DAT_143ae5340 = NiFixedString();
     DAT_143ae5348 = NiFixedString();
     DAT_143ae5350 = NiFixedString();
@@ -308,7 +352,7 @@ void ResetShaderConstantNames()
     DAT_143ae5388 = NiFixedString();
     DAT_143ae5390 = NiFixedString();
     DAT_143ae5398 = NiFixedString();
-    s_k_gkSSSPower = NiFixedString();
+    DAT_143ae53a0 = NiFixedString();
     DAT_143ae53a8 = NiFixedString();
     DAT_143ae53b0 = NiFixedString();
     DAT_143ae53b8 = NiFixedString();
@@ -325,10 +369,10 @@ void ResetShaderConstantNames()
     DAT_143ae5410 = NiFixedString();
     DAT_143ae5418 = NiFixedString();
     DAT_143ae5420 = NiFixedString();
-    s_k_gvSSAOParams = NiFixedString();
-    s_k_g_fPerturbationMultiplier = NiFixedString();
-    s_k_g_fPostPerturbationMultiplier = NiFixedString();
-    s_k_g_fPostShimmerMove = NiFixedString();
+    DAT_143ae5428 = NiFixedString();
+    DAT_143ae5430 = NiFixedString();
+    DAT_143ae5438 = NiFixedString();
+    DAT_143ae5448 = NiFixedString();
     DAT_143ae5440 = NiFixedString();
     DAT_143ae5450 = NiFixedString();
     DAT_143ae5458 = NiFixedString();
@@ -345,14 +389,14 @@ void InitDummyNames()
         {
             CString strName;
             strName.Format("%s%02d", (const char*)s_partNames[i], j);
-            s_akPartDummyNames[i][j] = (const char*)strName;
+            DAT_143ae5470[i][j] = (const char*)strName;
         }
     }
     for (unsigned int i = 0; i < 50; i++)
     {
         CString strName;
         strName.Format("Hold_Point%02d", i);
-        s_akHoldPointNames[i] = (const char*)strName;
+        DAT_143ae5ce0[i] = (const char*)strName;
     }
 }
 
@@ -362,8 +406,8 @@ void ResetDummyNames()
     for (unsigned int i = 0; i < 9; i++)
     {
         for (unsigned int j = 0; j < 30; j++)
-            s_akPartDummyNames[i][j] = NiFixedString();
+            DAT_143ae5470[i][j] = NiFixedString();
     }
     for (unsigned int i = 0; i < 50; i++)
-        s_akHoldPointNames[i] = NiFixedString();
+        DAT_143ae5ce0[i] = NiFixedString();
 }
