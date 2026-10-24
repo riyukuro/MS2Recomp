@@ -67,6 +67,9 @@
 // MS2-PIN: ?Minimum@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VCInteractObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCInteractObject@@@@@2@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x141c07e00 ; prop
 // MS2-PIN: ?Minimum@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VCLiftableObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCLiftableObject@@@@@2@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x141c07e70 ; prop
 // MS2-PIN: ?Minimum@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsMarker@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VUnk_WsMarker@@@@@2@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x141c07ee0 ; prop
+// MS2-PIN: ?NewNode@?$CAtlList@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@ATL@@@ATL@@AEAAPEAVCNode@12@AEBV?$SmartPointer@VGameObject@@@efd@@PEAV312@1@Z 0x141c080f0 ; exe: m_178: CNode 0x141bf3640 copies a SmartPointer<GameObject>
+// MS2-PIN: ?NewNode@?$CAtlList@V?$SmartPointer@VPC@@@efd@@V?$CElementTraits@V?$SmartPointer@VPC@@@efd@@@ATL@@@ATL@@AEAAPEAVCNode@12@AEBV?$SmartPointer@VPC@@@efd@@PEAV312@1@Z 0x141c081b0 ; exe: CNode 0x141bf3670 of the PC list
+// MS2-PIN: ?NewNode@?$CAtlList@V?$SmartPointer@VUnk_WsProp058@@@efd@@V?$CElementTraits@V?$SmartPointer@VUnk_WsProp058@@@efd@@@ATL@@@ATL@@AEAAPEAVCNode@12@AEBV?$SmartPointer@VUnk_WsProp058@@@efd@@PEAV312@1@Z 0x141c08030 ; exe: m_058 props: CNode 0x141bf3610 copies a Unk_WsA_PropPtr
 // MS2-PIN: ?NewNode@?$CRBTree@HV?$MS2Ptr@VCLiftableTargetBox@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCLiftableTargetBox@@@@@3@@ATL@@AEAAPEAVCNode@12@HAEBV?$MS2Ptr@VCLiftableTargetBox@@@@@Z 0x141c09920 ; prop
 // MS2-PIN: ?NewNode@?$CRBTree@HV?$MS2Ptr@VCLiftableTargetGuide@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCLiftableTargetGuide@@@@@3@@ATL@@AEAAPEAVCNode@12@HAEBV?$MS2Ptr@VCLiftableTargetGuide@@@@@Z 0x141c09b80 ; prop
 // MS2-PIN: ?NewNode@?$CRBTree@IUUnk_WsObjectEntry@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsObjectEntry@@@3@@ATL@@AEAAPEAVCNode@12@IAEBUUnk_WsObjectEntry@@@Z 0x141c09de0 ; prop
@@ -233,6 +236,43 @@ void Unk_WsTail6Getters(PC& pc, CInteractObject& obj, CInteractObjectData& def, 
     def.FUN_141c057f0();
     web.CInteractWebObject::vfunc_5();
     proxies.FUN_141c05780();
+}
+
+// The out-of-line helpers worldservice_1.cpp calls by address.
+class Unk_WsB_Vibrator;
+class Unk_WsB_Marker;
+
+// The asset id's URN (msg->m_assetID of the AssetLoadResponse handlers).
+// @0x141c002e0
+const void* FUN_141c002e0(const void* assetID)
+{
+    return &static_cast<const efd::AssetID*>(assetID)->GetURN();
+}
+
+// m_468.Lookup(key, out): the vibrator of an entity key.
+// MS2-FUNCTIONAL: Lookup(key) of the M11 family plus an MS2Ptr<CPtred> assignment; the exe calls GetNode and the
+// value type's operator= directly
+// @0x141c06ed0
+bool FUN_141c06ed0(void* map, const unsigned __int64& key, MS2Ptr<Unk_WsB_Vibrator>* out)
+{
+    Unk_WsM11::CPair* p = static_cast<Unk_WsM11*>(map)->Lookup((__int64)key);
+    if (!p)
+        return false;
+    *(MS2Ptr<CPtred>*)out = *(MS2Ptr<CPtred>*)&p->m_value;
+    return true;
+}
+
+// m_4b0.Lookup(name, out): the marker of a name.
+// MS2-FUNCTIONAL: Lookup(key) of the m_4b0 map plus an MS2Ptr<CPtred> assignment; the exe calls Find and the value
+// type's operator= directly
+// @0x141c07210
+bool FUN_141c07210(void* map, CString& key, MS2Ptr<Unk_WsB_Marker>& out)
+{
+    ATL::CRBMap<CString, Unk_WsV4b0>::CPair* p = static_cast<ATL::CRBMap<CString, Unk_WsV4b0>*>(map)->Lookup(key);
+    if (!p)
+        return false;
+    *(MS2Ptr<CPtred>*)&out = *(MS2Ptr<CPtred>*)&p->m_value;
+    return true;
 }
 
 // The message handler instances registered by worldservice_1.cpp's EE_HANDLER statics (HandleMessage 0x141c00f80 ..).

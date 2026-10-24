@@ -533,6 +533,21 @@ void* Unk_WsScalarDeletingDtor(WorldService* pService, unsigned int nFlags)
     }
     return pService;
 }
+// Likewise ??_GTextureLayerManager: its vftable now goes with the out-of-line ctor in worldservice_4.cpp.
+// MS2-FUNCTIONAL: ??_GTextureLayerManager (efd::MemObject sized delete unless bit 4 asks for the global one)
+// @0x141bfaa70
+void* Unk_WsTextureLayerManagerDeletingDtor(TextureLayerManager* pManager, unsigned int nFlags)
+{
+    pManager->TextureLayerManager::~TextureLayerManager();
+    if (nFlags & 1)
+    {
+        if ((nFlags & 4) == 0)
+            efd::MemObject::operator delete(pManager, sizeof(TextureLayerManager));
+        else
+            ::operator delete(pManager, sizeof(TextureLayerManager));
+    }
+    return pManager;
+}
 // @0x141bf99b8
 // MS2-FUNCTIONAL: the vftable 0x142ffec20 thunk (this - 0x18) into ??_GWorldService
 void* Unk_WsSingletonDeletingDtor(TSingleton<WorldService>* pSingleton, unsigned int nFlags)
@@ -874,13 +889,6 @@ bool FUN_141c07140(void* map, const CString& key, efd::SmartPointer<Unk_WsB_Spaw
         return false;
     *(efd::SmartPointer<efd::IBase>*)&out = *(efd::SmartPointer<efd::IBase>*)&p->m_value;
     return true;
-}
-
-// MS2-FUNCTIONAL: Lookup(key) of the map worldservice_1 passes plus an MS2Ptr<CPtred> assignment (m_4b0)
-bool FUN_141c07210(void* map, CString& key, MS2Ptr<Unk_WsB_Marker>& out)
-{
-    ATL::CRBMap<CString, Unk_WsV4b0>::CPair* p = static_cast<ATL::CRBMap<CString, Unk_WsV4b0>*>(map)->Lookup(key);
-    return WsLookupOut(p ? &p->m_value : 0, &out);
 }
 
 // MS2-FUNCTIONAL: Lookup(key) of the map worldservice_1 passes plus an MS2Ptr<CPtred> assignment (m_678)

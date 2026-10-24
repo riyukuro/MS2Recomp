@@ -39,7 +39,6 @@
 // MS2-PIN: ??0CNode@?$CAtlMap@W4Unk_FameSeason@@V?$MS2Ptr@VCFameSeasonDef@@@@V?$CElementTraits@W4Unk_FameSeason@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VCFameSeasonDef@@@@@4@@ATL@@QEAA@AEBW4Unk_FameSeason@@I@Z 0x14035df00 ; unique: single byte-identical candidate
 // MS2-PIN: ??0CPair@?$CAtlMap@W4Unk_FameSeason@@V?$MS2Ptr@VCFameSeasonDef@@@@V?$CElementTraits@W4Unk_FameSeason@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VCFameSeasonDef@@@@@4@@ATL@@IEAA@AEBW4Unk_FameSeason@@@Z 0x14035e0a0 ; unique: single byte-identical candidate
 // MS2-PIN: ??1?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAA@XZ 0x14035e2f0 ; unique
-// MS2-PIN: ??1?$CSimpleArray@GV?$CSimpleArrayEqualHelper@G@ATL@@@ATL@@QEAA@XZ 0x14035e5b0 ; unique
 // MS2-PIN: ??1?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@QEAA@XZ 0x14035e630 ; prop
 // MS2-PIN: ??1?$_Tree_comp_alloc@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@QEAA@XZ 0x14035e660 ; unique: single byte-identical candidate
 // MS2-PIN: ??1?$set@HU?$less@H@std@@V?$allocator@H@2@@std@@QEAA@XZ 0x14035e6c0 ; hand: caller CFameTable dtor destroys m_setOfficerNpc (+0x338) with FUN_14035e6c0
