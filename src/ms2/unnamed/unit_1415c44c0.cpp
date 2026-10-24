@@ -180,7 +180,6 @@ int FUN_1415c4870()
     CNMFinalizeFunc request;
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
-// MS2-PIN: ?FUN_1415c4870@@YAHXZ 0x1415c4870
 
 // MS2-FUNCTIONAL: constructs the messenger logout request and forwards it to the manager dispatcher.
 // @0x1415c53b0
@@ -189,7 +188,6 @@ int FUN_1415c53b0()
     CNMLogoutMessengerFunc request;
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
-// MS2-PIN: ?FUN_1415c53b0@@YAHXZ 0x1415c53b0
 
 // MS2-FUNCTIONAL: constructs the news request and forwards it to the manager dispatcher.
 // @0x1415c5b40
@@ -198,7 +196,6 @@ int FUN_1415c5b40()
     CNMRequestNewsFunc request;
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
-// MS2-PIN: ?FUN_1415c5b40@@YAHXZ 0x1415c5b40
 
 // MS2-FUNCTIONAL: constructs the game summary request and forwards it to the manager dispatcher.
 // @0x1415c8e30
@@ -207,7 +204,6 @@ int FUN_1415c8e30()
     CNMOpenGameSummaryFunc request;
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
-// MS2-PIN: ?FUN_1415c8e30@@YAHXZ 0x1415c8e30
 
 // MS2-FUNCTIONAL: creates the default auth logout request and dispatches it.
 // @0x1415c4a30
@@ -216,7 +212,6 @@ int FUN_1415c4a30()
     CNMLogoutAuthFunc request;
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
-// MS2-PIN: ?FUN_1415c4a30@@YAHXZ 0x1415c4a30
 
 // MS2-FUNCTIONAL: creates the default auth logout request and dispatches it.
 // @0x1415c4b60
@@ -225,7 +220,6 @@ int FUN_1415c4b60()
     CNMLogoutAuthFunc request;
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
-// MS2-PIN: ?FUN_1415c4b60@@YAHXZ 0x1415c4b60
 
 // MS2-FUNCTIONAL: sets the recovered auth logout mode before dispatch.
 // @0x1415c4d40
@@ -235,7 +229,6 @@ int FUN_1415c4d40()
     request.m_34 = 1;
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
-// MS2-PIN: ?FUN_1415c4d40@@YAHXZ 0x1415c4d40
 
 // MS2-FUNCTIONAL: creates and dispatches the virtual logout request.
 // @0x1415c54a0
@@ -244,7 +237,6 @@ int FUN_1415c54a0()
     CNMLogoutVirtualFunc request;
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
-// MS2-PIN: ?FUN_1415c54a0@@YAHXZ 0x1415c54a0
 
 // MS2-FUNCTIONAL: dispatches the security-code query and returns its output field.
 // @0x1415c4f00
@@ -254,7 +246,6 @@ int FUN_1415c4f00()
     (void)CNMManager::GetInstance()->CallNMFunc(&request);
     return request.m_30;
 }
-// MS2-PIN: ?FUN_1415c4f00@@YAHXZ 0x1415c4f00
 
 // MS2-FUNCTIONAL: creates and dispatches the game-log finalize request.
 // @0x1415ca0d0
@@ -263,7 +254,6 @@ int FUN_1415ca0d0()
     CNMGameLogFinalizeFunc request;
     return CNMManager::GetInstance()->CallNMFunc(&request);
 }
-// MS2-PIN: ?FUN_1415ca0d0@@YAHXZ 0x1415ca0d0
 
 // MS2-FUNCTIONAL: dispatches the security question request and copies its bounded string result.
 // @0x1415c4f50
@@ -277,7 +267,6 @@ unsigned char* FUN_1415c4f50(void*, unsigned char* out)
     if (out) FUN_1415fbe70(out, 0x400, FUN_1415f39e0(&request.m_30));
     return out;
 }
-// MS2-PIN: ?FUN_1415c4f50@@YAPEAEPEAXPEAE@Z 0x1415c4f50
 
 // MS2-FUNCTIONAL: queries the NX hardware identifier and copies the recovered 0x40-byte result.
 // @0x1415c5010
@@ -290,7 +279,6 @@ unsigned char* FUN_1415c5010(void*, unsigned char* out)
         *out = 0;
     return out;
 }
-// MS2-PIN: ?FUN_1415c5010@@YAPEAEPEAXPEAE@Z 0x1415c5010
 
 // MS2-FUNCTIONAL: dispatches the guild-list request and copy-constructs its result for the caller.
 // @0x1415c76f0
@@ -300,7 +288,6 @@ CNMGuildListExInfo* FUN_1415c76f0(void*, CNMGuildListExInfo* out)
     (void)CNMManager::GetInstance()->CallNMFunc(&request);
     return new (out) CNMGuildListExInfo(request.m_30);
 }
-// MS2-PIN: ?FUN_1415c76f0@@YAPEAVCNMGuildListExInfo@@PEAXPEAV1@@Z 0x1415c76f0
 
 // MS2-FUNCTIONAL: dispatches the game-list request and copies its result on success.
 // @0x1415c7b10
@@ -313,7 +300,6 @@ int FUN_1415c7b10(void*, long long outAddress)
                    reinterpret_cast<long long>(&request.m_30));
     return 1;
 }
-// MS2-PIN: ?FUN_1415c7b10@@YAHPEAX_J@Z 0x1415c7b10
 
 // @0x1415c46c0
 void FUN_1415c46c0()
@@ -671,3 +657,18 @@ void FUN_1415ccff0() {}
 
 // @0x1415cd010
 void FUN_1415cd010() {}
+
+// MS2-PIN: ?FUN_1415c4870@@YAHXZ 0x1415c4870
+// MS2-PIN: ?FUN_1415c53b0@@YAHXZ 0x1415c53b0
+// MS2-PIN: ?FUN_1415c5b40@@YAHXZ 0x1415c5b40
+// MS2-PIN: ?FUN_1415c8e30@@YAHXZ 0x1415c8e30
+// MS2-PIN: ?FUN_1415c4a30@@YAHXZ 0x1415c4a30
+// MS2-PIN: ?FUN_1415c4b60@@YAHXZ 0x1415c4b60
+// MS2-PIN: ?FUN_1415c4d40@@YAHXZ 0x1415c4d40
+// MS2-PIN: ?FUN_1415c54a0@@YAHXZ 0x1415c54a0
+// MS2-PIN: ?FUN_1415c4f00@@YAHXZ 0x1415c4f00
+// MS2-PIN: ?FUN_1415ca0d0@@YAHXZ 0x1415ca0d0
+// MS2-PIN: ?FUN_1415c4f50@@YAPEAEPEAXPEAE@Z 0x1415c4f50
+// MS2-PIN: ?FUN_1415c5010@@YAPEAEPEAXPEAE@Z 0x1415c5010
+// MS2-PIN: ?FUN_1415c76f0@@YAPEAVCNMGuildListExInfo@@PEAXPEAV1@@Z 0x1415c76f0
+// MS2-PIN: ?FUN_1415c7b10@@YAHPEAX_J@Z 0x1415c7b10
