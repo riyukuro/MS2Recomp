@@ -706,3 +706,193 @@ bool FUN_141c072e0(void* map, CString& key, MS2Ptr<Unk_WsB_Lift>& out)
     *(MS2Ptr<CPtred>*)&out = *(MS2Ptr<CPtred>*)&p->m_value;
     return true;
 }
+
+// ---- the rest of the worldservice_1 map entry points ----
+// Each one runs the member of the WorldService map it is called on (or of a stand-in map Unk_WsInst6 already
+// drives with the same node layout), so no new template instances come from here.
+
+// GetHeadPosition: Minimum(m_pRoot).
+// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_540)
+void* FUN_141bfead0(void* map) { return static_cast<ATL::CRBMap<int, Unk_WsV540>*>(map)->GetHeadPosition(); }
+
+// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_6d8)
+void* FUN_141bfeb70(void* map) { return static_cast<ATL::CRBMap<unsigned __int64, Unk_WsV6d8>*>(map)->GetHeadPosition(); }
+
+// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_7c8)
+void* FUN_141bfeb90(void* map) { return static_cast<ATL::CRBMap<CString, Unk_WsV7c8>*>(map)->GetHeadPosition(); }
+
+// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_4b0)
+void* FUN_141bfebd0(void* map) { return static_cast<ATL::CRBMap<CString, Unk_WsV4b0>*>(map)->GetHeadPosition(); }
+
+// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_510)
+void* FUN_141bfec10(void* map) { return static_cast<ATL::CRBMap<CString, Unk_WsV510>*>(map)->GetHeadPosition(); }
+
+// GetKeyAt: ATLENSURE(pos), then the node's key (at +0).
+// MS2-FUNCTIONAL: ATL GetKeyAt written over the node layout (m_148); the exe is the member instance
+unsigned* FUN_141bfecc0(void* map, void* pos)
+{
+    ATLENSURE(pos != NULL);
+    return (unsigned*)pos;
+}
+
+// MS2-FUNCTIONAL: ATL GetKeyAt written over the node layout (m_5e8); the exe is the member instance
+CString* FUN_141bfed20(void* map, void* pos)
+{
+    ATLENSURE(pos != NULL);
+    return (CString*)pos;
+}
+
+// GetNext(pos): returns the node, advances pos to its successor.
+// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_540)
+void FUN_141bff030(void* map, void** pos)
+{
+    POSITION p = (POSITION)*pos;
+    static_cast<ATL::CRBMap<int, Unk_WsV540>*>(map)->GetNext(p);
+    *pos = p;
+}
+
+// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_570)
+void FUN_141bff070(void* map, void** pos)
+{
+    POSITION p = (POSITION)*pos;
+    static_cast<ATL::CRBMap<int, Unk_WsV570>*>(map)->GetNext(p);
+    *pos = p;
+}
+
+// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_6d8)
+void FUN_141bff130(void* map, void** pos)
+{
+    POSITION p = (POSITION)*pos;
+    static_cast<ATL::CRBMap<unsigned __int64, Unk_WsV6d8>*>(map)->GetNext(p);
+    *pos = p;
+}
+
+// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_5e8)
+void FUN_141bff1b0(void* map, void** pos)
+{
+    POSITION p = (POSITION)*pos;
+    static_cast<ATL::CRBMap<CString, Unk_WsV5e8>*>(map)->GetNext(p);
+    *pos = p;
+}
+
+// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_4b0)
+void* FUN_141bff1f0_G(void* map, void** pos)
+{
+    POSITION p = (POSITION)*pos;
+    void* node = static_cast<ATL::CRBMap<CString, Unk_WsV4b0>*>(map)->GetNext(p);
+    *pos = p;
+    return node;
+}
+
+// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_4b0)
+void FUN_141bff1f0(void* map, void** pos)
+{
+    FUN_141bff1f0_G(map, pos);
+}
+
+// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_510)
+void FUN_141bff270(void* map, void** pos)
+{
+    POSITION p = (POSITION)*pos;
+    static_cast<ATL::CRBMap<CString, Unk_WsV510>*>(map)->GetNext(p);
+    *pos = p;
+}
+
+// GetStartPosition: the first non-empty bin.
+// MS2-FUNCTIONAL: the member of a stand-in map with the same header layout (m_738)
+void* FUN_141bfff50(void* map) { return static_cast<ATL::CAtlMap<unsigned, Unk_W6V738>*>(map)->GetStartPosition(); }
+
+// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_848)
+void* FUN_141bfffc0(void* map) { return static_cast<ATL::CAtlMap<unsigned, Unk_WsV848>*>(map)->GetStartPosition(); }
+
+// Lookup(key, value&): the exe assigns the 16-byte value through the map's MS2Ptr::operator=.
+static bool WsLookupOut(void* value, void* out)
+{
+    if (!value)
+        return false;
+    *(MS2Ptr<CPtred>*)out = *(MS2Ptr<CPtred>*)value;
+    return true;
+}
+
+// Lookup(key): the pair, or null (m_350).
+// MS2-FUNCTIONAL: the member of a stand-in map with the same node layout
+void* FUN_141c06a60(void* map, unsigned key) { return static_cast<ATL::CAtlMap<unsigned, Unk_W6V350>*>(map)->Lookup(key); }
+
+struct Unk_WsA_FieldRef;
+struct Unk_WsA_Val16;
+struct Unk_WsA_RegRef;
+struct Unk_WsE_TagPtr;
+class Unk_WsB_Marker;
+class Unk_WsB_Spawn;
+class Unk_WsB_Prop;
+
+// MS2-FUNCTIONAL: Lookup(key) of a stand-in map plus an MS2Ptr<CPtred> assignment (m_350)
+bool FUN_141c06aa0(void* map, unsigned key, Unk_WsA_FieldRef* out)
+{
+    ATL::CAtlMap<unsigned, Unk_W6V350>::CPair* p = static_cast<ATL::CAtlMap<unsigned, Unk_W6V350>*>(map)->Lookup(key);
+    return WsLookupOut(p ? &p->m_value : 0, out);
+}
+
+// MS2-FUNCTIONAL: Lookup(key) of a stand-in map plus an MS2Ptr<CPtred> assignment (m_848)
+bool FUN_141c06b10(void* map, unsigned key, Unk_WsA_Val16* out)
+{
+    ATL::CAtlMap<unsigned, Unk_W6V780>::CPair* p = static_cast<ATL::CAtlMap<unsigned, Unk_W6V780>*>(map)->Lookup(key);
+    return WsLookupOut(p ? &p->m_value : 0, out);
+}
+
+// MS2-FUNCTIONAL: the m_208 Lookup above under the other value spellings worldservice_1 uses
+bool FUN_141c06b80(void* map, unsigned key, Unk_WsE_TagPtr* out) { return FUN_141c06b80(map, key, (Unk_WsC_TagPtr*)out); }
+
+// MS2-FUNCTIONAL: the m_208 Lookup above under the other value spellings worldservice_1 uses
+bool FUN_141c06b80(void* map, unsigned key, Unk_WsP16* out) { return FUN_141c06b80(map, key, (Unk_WsC_TagPtr*)out); }
+
+// Lookup(key): the pair, or null (m_3a0; the exe folds it with m_848's map type).
+// MS2-FUNCTIONAL: the member of a map with the same node layout
+void* FUN_141c06c60(void* map, unsigned key) { return static_cast<ATL::CAtlMap<unsigned, Unk_WsV848>*>(map)->Lookup(key); }
+
+// MS2-FUNCTIONAL: Lookup(key) of a map with the same node layout plus an MS2Ptr<CPtred> assignment (m_3a0)
+bool FUN_141c06ca0(void* map, unsigned key, Unk_WsA_RegRef* out)
+{
+    ATL::CAtlMap<unsigned, Unk_WsV848>::CPair* p = static_cast<ATL::CAtlMap<unsigned, Unk_WsV848>*>(map)->Lookup(key);
+    return WsLookupOut(p ? &p->m_value : 0, out);
+}
+
+// The CRBMap ones: Find(key), then the value at +8.
+// MS2-FUNCTIONAL: Lookup(key) of the map worldservice_1 passes plus an MS2Ptr<CPtred> assignment (m_4e0)
+bool FUN_141c070c0(void* map, unsigned __int64* key, MS2Ptr<Unk_WsB_Marker>& out)
+{
+    ATL::CRBMap<unsigned __int64, Unk_WsV4e0>::CPair* p = static_cast<ATL::CRBMap<unsigned __int64, Unk_WsV4e0>*>(map)->Lookup(*key);
+    return WsLookupOut(p ? &p->m_value : 0, &out);
+}
+
+// The value is an 8-byte efd::SmartPointer; assigned through efd::IBase's refcount virtuals.
+// MS2-FUNCTIONAL: Lookup(key) of the map worldservice_1 passes plus a SmartPointer<IBase> assignment (m_7c8)
+bool FUN_141c07140(void* map, const CString& key, efd::SmartPointer<Unk_WsB_Spawn>& out)
+{
+    ATL::CRBMap<CString, Unk_WsV7c8>::CPair* p = static_cast<ATL::CRBMap<CString, Unk_WsV7c8>*>(map)->Lookup(key);
+    if (!p)
+        return false;
+    *(efd::SmartPointer<efd::IBase>*)&out = *(efd::SmartPointer<efd::IBase>*)&p->m_value;
+    return true;
+}
+
+// MS2-FUNCTIONAL: Lookup(key) of the map worldservice_1 passes plus an MS2Ptr<CPtred> assignment (m_4b0)
+bool FUN_141c07210(void* map, CString& key, MS2Ptr<Unk_WsB_Marker>& out)
+{
+    ATL::CRBMap<CString, Unk_WsV4b0>::CPair* p = static_cast<ATL::CRBMap<CString, Unk_WsV4b0>*>(map)->Lookup(key);
+    return WsLookupOut(p ? &p->m_value : 0, &out);
+}
+
+// MS2-FUNCTIONAL: Lookup(key) of the map worldservice_1 passes plus an MS2Ptr<CPtred> assignment (m_678)
+bool FUN_141c07290(void* map, const CString& key, MS2Ptr<Unk_WsB_Prop>& out)
+{
+    ATL::CRBMap<CString, Unk_WsV678>::CPair* p = static_cast<ATL::CRBMap<CString, Unk_WsV678>*>(map)->Lookup(key);
+    return WsLookupOut(p ? &p->m_value : 0, &out);
+}
+
+// MS2-FUNCTIONAL: Lookup(key) of the map worldservice_1 passes plus an MS2Ptr<CPtred> assignment (m_6a8)
+bool FUN_141c07360(void* map, const unsigned __int64* key, Unk_WsA_Val16* out)
+{
+    ATL::CRBMap<unsigned __int64, Unk_WsV6a8>::CPair* p = static_cast<ATL::CRBMap<unsigned __int64, Unk_WsV6a8>*>(map)->Lookup(*key);
+    return WsLookupOut(p ? &p->m_value : 0, out);
+}

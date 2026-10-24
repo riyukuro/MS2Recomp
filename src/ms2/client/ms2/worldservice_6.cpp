@@ -278,3 +278,70 @@ Unk_WsC_ActorRef* FUN_141c00800(void* map, void* pos) { return (Unk_WsC_ActorRef
 
 // MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
 void* FUN_141c009e0(void* map, void* pos) { return WsNodeValue(pos); }
+
+// The rest of the GetValueAt entry points (all exe bodies are ATLENSURE(pos); return pos + 8).
+struct Unk_WsF_EntRef;
+class Unk_WsB_Active;
+class Unk_WsB_Spawn;
+
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+void* FUN_141c00370(void* map, void* pos) { return WsNodeValue(pos); }
+
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+void* FUN_141c003e0(void* map, void* pos) { return WsNodeValue(pos); }
+
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+void* FUN_141c00450(void* map, void* pos) { return WsNodeValue(pos); }
+
+// m_3a0.GetValueAt.
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+Unk_WsV3a0* FUN_141c004c0(ATL::CAtlMap<unsigned, Unk_WsV3a0>* map, void* pos) { return (Unk_WsV3a0*)WsNodeValue(pos); }
+
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+void* FUN_141c004c0(void* map, void* pos) { return WsNodeValue(pos); }
+
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+Unk_WsV3a0* FUN_141c004c0_G(void* map, void* pos) { return (Unk_WsV3a0*)WsNodeValue(pos); }
+
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+MS2Ptr<Unk_WsB_Active>* FUN_141c005a0(void* map, void* pos) { return (MS2Ptr<Unk_WsB_Active>*)WsNodeValue(pos); }
+
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+void* FUN_141c00610(void* map, void* pos) { return WsNodeValue(pos); }
+
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+void* FUN_141c00680(void* map, void* pos) { return WsNodeValue(pos); }
+
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+void* FUN_141c006e0(void* map, void* pos) { return WsNodeValue(pos); }
+
+// m_1a8.GetValueAt.
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+Unk_WsV1a8* FUN_141c00740(void* map, void* pos) { return (Unk_WsV1a8*)WsNodeValue(pos); }
+
+// m_6d8.GetValueAt.
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+Unk_WsV6d8* FUN_141c00860(void* map, void* pos) { return (Unk_WsV6d8*)WsNodeValue(pos); }
+
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+efd::SmartPointer<Unk_WsB_Spawn>* FUN_141c008c0(void* map, void* pos) { return (efd::SmartPointer<Unk_WsB_Spawn>*)WsNodeValue(pos); }
+
+// m_5e8.GetValueAt.
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+void* FUN_141c00920(void* map, void* pos) { return WsNodeValue(pos); }
+
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+Unk_WsF_EntRef* FUN_141c00920_F(void* map, void* pos) { return (Unk_WsF_EntRef*)WsNodeValue(pos); }
+
+// m_4b0.GetValueAt.
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+void* FUN_141c00980(void* map, void* pos) { return WsNodeValue(pos); }
+
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+MS2Ptr<Unk_WsB_Marker>* FUN_141c00980_B(void* map, void* pos) { return (MS2Ptr<Unk_WsB_Marker>*)WsNodeValue(pos); }
+
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+Unk_WsV4b0* FUN_141c00980_G(void* map, void* pos) { return (Unk_WsV4b0*)WsNodeValue(pos); }
+
+// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
+void* FUN_141c00a40(void* map, void* pos) { return WsNodeValue(pos); }
