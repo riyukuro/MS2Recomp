@@ -551,7 +551,7 @@ static bool FUN_140c43260(Unk_GachaDrop a, Unk_GachaDrop b)
 }
 
 // @0x140c43580
-static MS2Ptr<Unk_GachaText> FUN_140c43580(int nMovieId, const Scaleform::GFx::Value& v)
+MS2Ptr<Unk_GachaText> FUN_140c43580(int nMovieId, const Scaleform::GFx::Value& v)
 {
     MS2Ptr<Unk_GachaText> sp(new Unk_GachaText(v, nMovieId));
     return sp;

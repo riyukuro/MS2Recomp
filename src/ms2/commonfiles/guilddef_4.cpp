@@ -321,8 +321,10 @@ template TSingleton<CGuildXmlData>::TSingleton();
 template TSingleton<CGuildXmlData>::~TSingleton();
 
 // ---- std::_Uninitialized_backout_al (vector reallocation guards) ----
-template std::_Uninitialized_backout_al<ItemEntity*,std::allocator<ItemEntity>>::_Uninitialized_backout_al(ItemEntity*,std::allocator<ItemEntity>&);
-template std::_Uninitialized_backout_al<ItemEntity*,std::allocator<ItemEntity>>::~_Uninitialized_backout_al();
+// 0x1404edbc0 / 0x1404ef060 destroy a trivially destructible element (their _Destroy_range at 0x1404dbb10 is a no-op):
+// the pair<int,int> guard. The ItemEntity guard is commonstruct's copy (0x14027d120 / 0x14027e2a0, which destroys).
+template std::_Uninitialized_backout_al<std::pair<int,int>*,std::allocator<std::pair<int,int>>>::_Uninitialized_backout_al(std::pair<int,int>*,std::allocator<std::pair<int,int>>&);
+template std::_Uninitialized_backout_al<std::pair<int,int>*,std::allocator<std::pair<int,int>>>::~_Uninitialized_backout_al();
 template std::_Uninitialized_backout_al<TP<GX::GuildSkill>*,std::allocator<TP<GX::GuildSkill>>>::_Uninitialized_backout_al(TP<GX::GuildSkill>*,std::allocator<TP<GX::GuildSkill>>&);
 template std::_Uninitialized_backout_al<TP<GX::GuildSkill>*,std::allocator<TP<GX::GuildSkill>>>::~_Uninitialized_backout_al();
 template std::_Uninitialized_backout_al<TP<CNpcShopProductProxy>*,std::allocator<TP<CNpcShopProductProxy>>>::_Uninitialized_backout_al(TP<CNpcShopProductProxy>*,std::allocator<TP<CNpcShopProductProxy>>&);
