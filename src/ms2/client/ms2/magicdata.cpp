@@ -154,7 +154,7 @@ private:
 };
 MS2_CHECK_SIZE(Unk_MagicLock, 8);
 
-static void FUN_14145c4b0();
+void FUN_14145c4b0();
 unsigned char FUN_1401d1320(CCacheData*);
 typedef ATL::CAtlMap<unsigned, Unk_MagicListPtr> Unk_MagicTable;
 
@@ -283,7 +283,7 @@ Unk_SocketPtr<CMagicData> FUN_14145c300(unsigned nMagicId, int nIndex)
 #endif
 
 // @0x14145c4b0
-static void FUN_14145c4b0()
+void FUN_14145c4b0()
 {
     LoadMagicPath();
 }
