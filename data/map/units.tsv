@@ -1,6 +1,6 @@
 #start	end	cpp	confidence	nfuncs	section	note
 140001020	140001690	unit_140001020	none	10	text	
-140001690	140002780	unit_140001690	none	29	text	
+140001690	140002780	sfr_video_04	none	29	text	sfr25 10-23: Scaleform gap plan: GFx Video registration/CreateInstance glue (was blocked unit_140001690)
 140002780	140002930	unit_140002780_videopc	none	3	text	descriptive: videopc
 140002930	14000e470	sfr_video_01	none	300	text	sfr0 10-20: Scaleform 4.1.18 recovery, Video
 14000e470	140016b50	sfr_video_02	none	262	text	sfr0 10-20: Scaleform 4.1.18 recovery, Video
@@ -8,15 +8,15 @@
 14001c000	14002a0e0	sfr_cri_01	none	300	text	sfr0 10-20: Scaleform 4.1.18 recovery, CRI
 14002a0e0	140039ea8	sfr_cri_02	none	300	text	sfr0 10-20: Scaleform 4.1.18 recovery, CRI
 140039ea8	140046a1c	sfr_cri_03	none	300	text	sfr0 10-20: Scaleform 4.1.18 recovery, CRI
-140046a1c	140046e04	unit_140046a1c	none	4	text	
-140046e04	140047430	unit_140046e04	none	7	text	
-140047430	140047b30	unit_140047430	none	14	text	
-140047b30	140049e60	unit_140047b30	none	9	text	
-140049e60	14004c1d0	unit_140049e60	none	8	text	
-14004c1d0	14004da40	unit_14004c1d0	none	12	text	
-14004da40	14004dd30	unit_14004da40	none	4	text	
-14004dd30	1400b21a0	unit_14004dd30	none	552	text	
-1400b21a0	1400b21d0	unit_1400b21a0	none	1	di	
+140046a1c	140046e04	unit_140046a1c_criutfsortindex	none	4	text	descriptive: criutfsortindex
+140046e04	140047430	unit_140046e04_criutfparser	none	7	text	descriptive: criutfparser
+140047430	140047b30	unit_140047430_crim2vdecoder	none	14	text	descriptive: crim2vdecoder
+140047b30	14004c1d0	sfr_cri_04	none	17	text	sfr28 10-23: CRI MvCore/Sofdec link-order gap (unowned by sfr_cri_01..03)
+14004c1d0	14004da40	unit_14004c1d0_videocolorspace	none	12	text	descriptive: videocolorspace
+14004da40	140054170	sfr_cri_05	none	182	text	sfr28 10-23: CRI MvCore/Sofdec link-order gap (unowned by sfr_cri_01..03)
+140054170	140066180	sfr_cri_06	none	164	text	sfr28 10-23: CRI MvCore/Sofdec link-order gap (unowned by sfr_cri_01..03)
+140066180	1400b21a0	sfr_cri_07	none	218	text	sfr28 10-23: CRI MvCore/Sofdec link-order gap (unowned by sfr_cri_01..03)
+1400b21a0	1400b21d0	unit_1400b21a0_criticalsectioninitializer	none	1	di	descriptive: criticalsectioninitializer
 1400b21d0	1400b2330	?\achievecondition.cpp	low	6	di	
 1400b2330	1400b4220	?\additionalactionadditional.cpp	low	2	di	
 1400b4220	1400b42e0	commonfiles\banktable.cpp	medium	1	di	
@@ -91,7 +91,7 @@
 1400bd1f0	1400bd250	unit_140837660	none	2	di	
 1400bd250	1400bd2a0	?\systemmailcontent.cpp	low	1	di	dir commonfiles
 1400bd2a0	1400bd460	?\talkscript.cpp	low	7	di	dir commonfiles
-1400bd460	1400bd760	unit_1400bd460	none	9	di	
+1400bd460	1400bd760	unit_1400bd460_marketsorttables	none	9	di	descriptive: marketsorttables
 1400bd760	1400bd940	?\ugccubecategorytable.cpp	low	3	di	dir commonfiles
 1400bd940	1400bdb40	commonfiles\ugcdef.cpp	medium	7	di	
 1400bdb40	1400bdde0	?\ugcdesigntable.cpp	low	8	di	dir commonfiles
@@ -102,17 +102,17 @@
 1400be260	1400be2c0	commonfiles\usermail.cpp	medium	2	di	
 1400be2c0	1400be590	commonfiles\userproxy.cpp	medium	9	di	
 1400be590	1400be790	unit_14092f420	none	8	di	
-1400be790	1400bed10	unit_1400be790	none	25	di	
+1400be790	1400bed10	unit_1400be790_mixedheaderstatics	none	25	di	descriptive: mixedheaderstatics
 1400bed10	1400befb0	unit_14092f420	none	7	di	
 1400befb0	1400bf220	?\achievemanager.cpp	low	8	di	
 1400bf220	1400bf250	client\ms2\actioncameradata.cpp	medium	1	di	
 1400bf250	1400bf390	unit_1400bf250	none	4	di	ps1 split from client\ms2\actioncameradata.cpp: header-static di set
 1400bf390	1400bf670	client\ms2\actioncontainer.cpp	medium	8	di	
 1400bf670	1400bf7b0	?\actionkeyobject.cpp	low	4	di	was ?\fishingaction.cpp; dir client\ms2
-1400bf7b0	1400bfae0	unit_1400bf7b0	none	9	di	
+1400bf7b0	1400bfae0	unit_1400bf7b0_marketconditiontables	none	9	di	descriptive: marketconditiontables
 1400bfae0	1400bfd30	?\addresstable.cpp	low	9	di	dir client\ms2
 1400bfd30	1400bfd50	?\alphaanimation.cpp	low	1	di	dir client\ms2
-1400bfd50	1400c0150	unit_1400bfd50	none	11	di	
+1400bfd50	1400c0150	unit_1400bfd50_markettables	none	11	di	descriptive: markettables
 1400c0150	1400c0170	?\arccontroller.cpp	low	1	di	dir client\ms2
 1400c0170	1400c03c0	?\asbilldata.cpp	low	6	di	dir client\ms2
 1400c03c0	1400c06c0	?\aseffect.cpp	low	6	di	dir client\ms2
@@ -121,7 +121,7 @@
 1400c2000	1400c2300	unit_1409f01a0	none	9	di	rejected ?\asstat.cpp (order within gap)
 1400c2300	1400c2440	?\avatarcube.cpp	low	4	di	dir client\ms2
 1400c2440	1400c28c0	?\avatarpc.cpp	low	15	di	dir client\ms2
-1400c28c0	1400c2b20	unit_1400c28c0	none	6	di	ps1 split from ?\avatarpc.cpp: header-static di sets
+1400c28c0	1400c2b20	unit_1400c28c0_orphanheaderinitializers	none	6	di	descriptive: orphanheaderinitializers
 1400c2b20	1400c2cc0	client\ms2\battlerecordmanager.cpp	medium	5	di	
 1400c2cc0	1400c2f90	client\ms2\beameffect.cpp	medium	9	di	
 1400c2f90	1400c2fc0	?\blackmarketman.cpp	low	1	di	dir client\ms2
@@ -130,7 +130,7 @@
 1400c3320	1400c34f0	?\bookslot.cpp	low	7	di	dir client\ms2
 1400c34f0	1400c3670	client\ms2\chatemoticoncli.cpp	medium	2	di	
 1400c3670	1400c36d0	?\gameoptionpersonalinfoagreement.cpp	low	2	di	
-1400c36d0	1400c3a20	unit_1400c36d0	none	10	di	
+1400c36d0	1400c3a20	unit_1400c36d0_mixedheaderstatics	none	10	di	descriptive: mixedheaderstatics
 1400c3a20	1400c3bb0	?\cubespawnobject.cpp	low	5	di	
 1400c3bb0	1400c3eb0	?\displayslot.cpp	low	9	di	
 1400c3eb0	1400c4040	?\effectobject.cpp	low	5	di	
@@ -145,19 +145,19 @@
 1400c5120	1400c51e0	?\reconnectionmanagercli.cpp	low	1	di	dir client\ms2
 1400c51e0	1400c5340	?\scenestatemodeselect.cpp	low	5	di	dir client\ms2
 1400c5340	1400c5460	?\skilldatatablecli.cpp	low	3	di	dir client\ms2
-1400c5460	1400c5a10	unit_1400c5460	none	16	di	
+1400c5460	1400c5a10	unit_1400c5460_multituheaderstatics	none	16	di	descriptive: multituheaderstatics
 1400c5a10	1400c5c20	client\ms2\stateobserver.cpp	medium	7	di	
 1400c5c20	1400c5e00	?\tabcontentspetevolution.cpp	low	7	di	was ?\petevolutionpetcard.cpp; dir client\ms2
-1400c5e00	1400c6490	unit_1400c5e00	none	20	di	
+1400c5e00	1400c6490	unit_1400c5e00_multituheaderstatics	none	20	di	descriptive: multituheaderstatics
 1400c6490	1400c6520	client\ms2\buddymanager.cpp	medium	3	di	
 1400c6520	1400c6730	?\camera.cpp	low	9	di	dir client\ms2
-1400c6730	1400c6cf0	unit_1400c6730	none	20	di	
+1400c6730	1400c6cf0	unit_1400c6730_cameraheaderstatics	none	20	di	descriptive: cameraheaderstatics
 1400c6cf0	1400c73d0	?\cashinventorybag.cpp	low	20	di	dir client\ms2
 1400c73d0	1400c7620	unit_140b0f4c0	none	6	di	rejected ?\pet.cpp
 1400c7620	1400c7840	client\ms2\clubcli.cpp	medium	7	di	
 1400c7840	1400c7d40	?\dungeonmissioncli.cpp	low	16	di	dir client\ms2
 1400c7d40	1400c7e00	client\ms2\dungeonrecordcli.cpp	medium	1	di	
-1400c7e00	1400c81c0	unit_1400c7e00	none	10	di	
+1400c7e00	1400c81c0	unit_1400c7e00_marketheaderstatics	none	10	di	descriptive: marketheaderstatics
 1400c81c0	1400c8430	?\gfxmoviedamage.cpp	low	10	di	dir client\ms2
 1400c8430	1400c85c0	?\itemexchangeslot.cpp	low	5	di	dir client\ms2
 1400c85c0	1400c87f0	?\masterymanager.cpp	low	5	di	dir client\ms2
@@ -213,15 +213,15 @@
 1400cf2b0	1400cf480	?\postshimmerrenderstep.cpp	low	6	di	dir client\ms2
 1400cf480	1400cf5f0	?\questnavigator.cpp	low	4	di	dir client\ms2
 1400cf5f0	1400cf710	?\stateeffectmgr.cpp	low	3	di	dir client\ms2
-1400cf710	1400cfa40	unit_1400cf710	none	9	di	
+1400cf710	1400cfa40	unit_1400cf710_marketconditiontables	none	9	di	descriptive: marketconditiontables
 1400cfa40	1400cfbb0	?\tabcontentspetcollect.cpp	low	4	di	dir client\ms2
 1400cfbb0	1400cfde0	?\tabcontentspetcompose.cpp	low	8	di	was ?\petcomposepetcard.cpp; dir client\ms2
 1400cfde0	1400d0080	?\tabcontentspetinfo.cpp	low	11	di	was ?\petinfobasic.cpp; dir client\ms2
 1400d0080	1400d00b0	?\customize.cpp	low	1	di	
-1400d00b0	1400d02f0	unit_1400d00b0	none	12	di	
+1400d00b0	1400d02f0	unit_1400d00b0_customizelabelstatics	none	12	di	descriptive: customizelabelstatics
 1400d02f0	1400d04f0	?\customize.cpp	low	7	di	
 1400d04f0	1400d0510	client\ms2\enchantscrollslot.cpp	high	1	di	direct MS2_THIS_FILE; EnchantScrollSlot::ms_ClassInfo; alphabetical order passes
-1400d0510	1400d08a0	unit_1400d0510	none	12	di	
+1400d0510	1400d08a0	unit_1400d0510_marketheaderstatics	none	12	di	descriptive: marketheaderstatics
 1400d08a0	1400d0b50	?\fishingmanager.cpp	low	11	di	
 1400d0b50	1400d1640	client\ms2\gameeventcli.cpp	medium	31	di	
 1400d1640	1400d16f0	client\ms2\gameeventmanagercli.cpp	medium	3	di	
@@ -235,7 +235,7 @@
 1400d2630	1400d2900	?\itempreview.cpp	low	8	di	dir client\ms2
 1400d2900	1400d2c20	unit_140d418e0	none	10	di	rejected ?\itemlockslot.cpp (order within gap)
 1400d2c20	1400d2c40	client\ms2\itemscrollslot.cpp	high	1	di	direct MS2_THIS_FILE; ItemScrollSlot::ms_ClassInfo; alphabetical order passes
-1400d2c40	1400d3280	unit_1400d2c40	none	17	di	
+1400d2c40	1400d3280	unit_1400d2c40_marketheaderstatics	none	17	di	descriptive: marketheaderstatics
 1400d3280	1400d3440	?\manufacturemanager.cpp	low	6	di	dir client\ms2
 1400d3440	1400d3940	client\ms2\meratmarketman.cpp	medium	17	di	
 1400d3940	1400d39c0	unit_140d72a60	none	2	di	rejected ?\dailymission.cpp
@@ -257,7 +257,7 @@
 1400d58e0	1400d5a30	?\skillcompactcontroltable.cpp	low	5	di	dir client\ms2
 1400d5a30	1400d5fd0	?\smartpush.cpp	low	18	di	dir client\ms2
 1400d5fd0	1400d6090	?\statefishingdata.cpp	low	1	di	dir client\ms2
-1400d6090	1400d66e0	unit_1400d6090	none	19	di	
+1400d6090	1400d66e0	unit_1400d6090_triggeractionregistration	none	19	di	descriptive: triggeractionregistration
 1400d66e0	1400d67b0	?\triggeractioncli.cpp	low	4	di	dir client\ms2
 1400d67b0	1400d6940	?\ugcballobject.cpp	low	5	di	dir client\ms2
 1400d6940	1400d6b50	?\ugccubepalette.cpp	low	7	di	dir client\ms2
@@ -280,15 +280,15 @@
 1400d8630	1400d8770	?\uiitempetboxdialog.cpp	low	6	di	dir client\ms2
 1400d8770	1400d8940	?\uiitempetstudydialog.cpp	low	6	di	dir client\ms2
 1400d8940	1400d8a30	?\uiitempettrainingdialog.cpp	low	2	di	dir client\ms2
-1400d8a30	1400d8e30	unit_1400d8a30	none	11	di	
+1400d8a30	1400d8e30	unit_1400d8a30_marketandchartstatics	none	11	di	descriptive: marketandchartstatics
 1400d8e30	1400d8ee0	client\ms2\uimentoringrewardpage.cpp	medium	3	di	
 1400d8ee0	1400d9080	client\ms2\uimicrogamecoupledance.cpp	medium	5	di	
-1400d9080	1400d93c0	unit_1400d9080	none	10	di	
+1400d9080	1400d93c0	unit_1400d9080_marketheaderstatics	none	10	di	descriptive: marketheaderstatics
 1400d93c0	1400d94e0	?\uimusicconcertdialog.cpp	low	3	di	dir client\ms2
-1400d94e0	1400d98b0	unit_1400d94e0	none	13	di	
+1400d94e0	1400d98b0	unit_1400d94e0_marketheaderstatics	none	13	di	descriptive: marketheaderstatics
 1400d98b0	1400d9ef0	?\uiotherpetsystemdialog.cpp	low	17	di	dir client\ms2
 1400d9ef0	1400d9fb0	?\uiphotostudiomenudialog.cpp	low	1	di	dir client\ms2
-1400d9fb0	1400da2b0	unit_1400d9fb0	none	12	di	
+1400d9fb0	1400da2b0	unit_1400d9fb0_marketheaderstatics	none	12	di	descriptive: marketheaderstatics
 1400da2b0	1400da440	?\uiquestnavigation.cpp	low	5	di	was ?\questnavigation.cpp; dir client\ms2
 1400da440	1400da6a0	unit_1400da440_orphanheaderstatics	none	6	di	descriptive: orphanheaderstatics
 1400da6a0	1400da6d0	client\ms2\uirpseventdialog.cpp	medium	1	di	
@@ -694,6 +694,8 @@
 140142910	140146150	sfr_as3di_03	none	300	di	sfr0 10-20: Scaleform 4.1.18 recovery, AS3 di
 140146150	140149990	sfr_as3di_04	none	300	di	sfr0 10-20: Scaleform 4.1.18 recovery, AS3 di
 140149990	14014c8e0	sfr_as3di_05	none	250	di	sfr0 10-20: Scaleform 4.1.18 recovery, AS3 di
+14014cc20	14014ce60	sfr_gfx_13	none	9	di	sfr25 10-23: Scaleform gap plan: GFx static initialisers (unowned .text$di)
+140157e80	140157faf	sfr_gfx_13	none	5	di	sfr25 10-23: Scaleform gap plan: GFx static initialisers (unowned .text$di)
 1401580a0	14016da90	?\achievecondition.cpp	low	682	mn	
 14016da90	14016fda0	?\adbannerdata.cpp	low	65	mn	
 14016fda0	140195470	?\additionalactionadditional.cpp	low	1452	mn	
@@ -701,13 +703,13 @@
 1401a2e40	1401adea0	?\arcademaindata.cpp	low	425	mn	
 1401adea0	1401b3c70	?\attendgiftdatagroup.cpp	low	292	mn	
 1401b3c70	1401b6d10	commonfiles\banktable.cpp	high	99	mn	
-1401b6d10	1401ba840	unit_1401b6d10	none	121	mn	rejected ?\fieldbannerdata.cpp
-1401ba840	1401bcbf0	unit_1401ba840	none	106	mn	
+1401b6d10	1401ba840	unit_1401b6d10_fieldbannerdata	none	121	mn	descriptive: fieldbannerdata
+1401ba840	1401bcbf0	unit_1401ba840_blocklistrecordlist	none	106	mn	descriptive: blocklistrecordlist
 1401bcbf0	1401c9a00	?\blackmarketitemoption.cpp	low	403	mn	was ?\dbblackmarketproductinfo.cpp; dir commonfiles
 1401c9a00	1401cbd50	commonfiles\blockchecker.cpp	high	53	mn	
 1401cbd50	1401cd310	?\buddy.cpp	low	46	mn	dir commonfiles
 1401cd310	1401ce010	?\buffercryptmanager.cpp	low	31	mn	was ?\xorcrypter.cpp; dir commonfiles
-1401ce010	1401d1020	unit_1401ce010	none	107	mn	rejected ?\crashmanager.cpp
+1401ce010	1401d1020	unit_1401ce010_crashmanager	none	107	mn	descriptive: crashmanager
 1401d1020	1401d4a00	?\cachedata.cpp	low	137	mn	dir commonfiles
 1401d4a00	1401d64a0	?\cashproductdata.cpp	low	46	mn	dir commonfiles
 1401d64a0	1401d8bc0	?\changejobtable.cpp	low	74	mn	dir commonfiles
@@ -716,31 +718,31 @@
 1401e4000	1401e5760	?\characterdecaldata.cpp	low	84	mn	dir commonfiles
 1401e5760	1401f7ee0	commonfiles\chatemoticontable.cpp	high	650	mn	
 1401f7ee0	1401f9eb0	?\classobject.cpp	low	43	mn	dir commonfiles
-1401f9eb0	140208340	unit_1401f9eb0	none	390	mn	rejected ?\citemcoloringpacket.cpp (order within gap)
+1401f9eb0	140208340	unit_1401f9eb0_packetpayloadserializers	none	390	mn	descriptive: packetpayloadserializers
 140208340	14020c3a0	commonfiles\clientreconnectionstructs.cpp	high	142	mn	
 14020c3a0	140217910	commonfiles\clubcommon.cpp	high	305	mn	
 140217910	1402226b0	commonfiles\commonenum.cpp	high	272	mn	
-1402226b0	140223c60	unit_1402226b0	none	30	mn	
+1402226b0	140223c60	unit_1402226b0_featureenumhelpers	none	30	mn	descriptive: featureenumhelpers
 140223c60	140266860	commonfiles\commonstringtable.cpp	high	541	mn	
-140266860	140267090	unit_140266860	none	25	mn	rejected ?\questmask.cpp
-140267090	140267390	unit_140267090	none	9	mn	
-140267390	140267670	unit_140267390	none	3	mn	rejected ?\remakeoptioncontext.cpp
-140267670	140267ba0	unit_140267670	none	6	mn	rejected ?\additionaleffecteventctx.cpp
-140267ba0	140267c10	unit_140267ba0	none	2	mn	
-140267c10	140267e40	unit_140267c10	none	5	mn	
-140267e40	140268010	unit_140267e40	none	6	mn	
-140268010	140268b20	unit_140268010	none	15	mn	rejected ?\accountblockinfo.cpp
-140268b20	140269020	unit_140268b20	none	6	mn	rejected ?\marketbuylimithistory.cpp
-140269020	140269160	unit_140269020	none	4	mn	rejected ?\marketbuylimitproduct.cpp
-140269160	140269440	unit_140269160	none	4	mn	rejected ?\userlimithistory.cpp
-140269440	1402698d0	unit_140269440	none	5	mn	rejected ?\userlimitgroup.cpp
-1402698d0	140269c30	unit_1402698d0	none	4	mn	rejected ?\premiumproductlimitinfo.cpp
-140269c30	14026a1b0	unit_140269c30	none	10	mn	
-14026a1b0	14026ab50	unit_14026a1b0	none	19	mn	rejected ?\skillcompactcontrolconfig.cpp
+140266860	140267090	unit_140266860_sharedptredrecords	none	25	mn	descriptive: sharedptredrecords
+140267090	140267390	unit_140267090_gaugestate	none	9	mn	descriptive: gaugestate
+140267390	140267670	unit_140267390_remakeoptioncontext	none	3	mn	descriptive: remakeoptioncontext
+140267670	140267ba0	unit_140267670_additionaleffectcontext	none	6	mn	descriptive: additionaleffectcontext
+140267ba0	140267c10	unit_140267ba0_tripletintclear	none	2	mn	descriptive: tripletintclear
+140267c10	140267e40	unit_140267c10_tripletintoperations	none	5	mn	descriptive: tripletintoperations
+140267e40	140268010	unit_140267e40_tripletintstream	none	6	mn	descriptive: tripletintstream
+140268010	140268b20	unit_140268010_sharedstatemap	none	15	mn	descriptive: sharedstatemap
+140268b20	140269020	unit_140268b20_marketbuylimithistory	none	6	mn	descriptive: marketbuylimithistory
+140269020	140269160	unit_140269020_marketbuyproductvalues	none	4	mn	descriptive: marketbuyproductvalues
+140269160	140269440	unit_140269160_userlimithistory	none	4	mn	descriptive: userlimithistory
+140269440	1402698d0	unit_140269440_userlimitgroup	none	5	mn	descriptive: userlimitgroup
+1402698d0	140269c30	unit_1402698d0_premiumpurchaseinfo	none	4	mn	descriptive: premiumpurchaseinfo
+140269c30	14026a1b0	unit_140269c30_shopmailpricevalue	none	10	mn	descriptive: shopmailpricevalue
+14026a1b0	14026ab50	unit_14026a1b0_commonstructpriceconfigs	none	19	mn	descriptive: commonstructpriceconfigs
 14026ab50	14028b820	commonfiles\commonstruct.cpp	high	1153	mn	
 14028b820	14029dff0	commonfiles\commonutil.cpp	high	580	mn	
 14029dff0	1402ab440	commonfiles\conditionutil.cpp	high	233	mn	
-1402ab440	1402c3760	unit_1402ab440	none	302	mn	rejected ?\common.cpp
+1402ab440	1402c3760	unit_1402ab440_constantsblocks	none	302	mn	descriptive: constantsblocks
 1402c3760	1402c3840	unit_1402c3760_crtvsprintfwrappers	none	3	mn	descriptive: crtvsprintfwrappers
 1402c3840	1402c4b00	commonfiles\constraints.cpp	high	45	mn	
 1402c4b00	1402c5180	commonfiles\contentshutdown.cpp	high	14	mn	
@@ -779,9 +781,9 @@
 1403e8e30	1403e8e60	unit_1403e8e30_pointerdereferencewrapper	none	2	mn	descriptive: pointerdereferencewrapper
 1403e8e60	1403e9180	unit_1403e8e60_eventiteratorincrementglue	none	10	mn	descriptive: eventiteratorincrementglue
 1403e9180	1403e9210	unit_1403e9180_pointeriteratorincrement	none	3	mn	descriptive: pointeriteratorincrement
-1403e9210	1403e9650	unit_1403e9210	none	11	mn	
+1403e9210	1403e9650	unit_1403e9210_eventiterdecrement	none	11	mn	descriptive: eventiterdecrement
 1403e9650	1403f37d0	unit_1403e9650_gameeventcomdatglue	none	356	mn	descriptive: gameeventcomdatglue
-1403f37d0	1403f4e10	unit_1403f37d0	none	134	mn	
+1403f37d0	1403f4e10	unit_1403f37d0_boxedptrwrappers	none	134	mn	descriptive: boxedptrwrappers
 1403f4e10	14041b140	commonfiles\gameeventcontext.cpp	high	1326	mn	
 14041b140	14041c1a0	?\gameeventdtreward.cpp	low	42	mn	dir commonfiles
 14041c1a0	14041cb50	?\gameeventlobbymap.cpp	low	39	mn	dir commonfiles
@@ -799,9 +801,9 @@
 1404487e0	140448870	unit_1404487e0	none	3	mn	
 140448870	1404495e0	unit_140448870	none	46	mn	
 1404495e0	140449650	unit_1404495e0	none	3	mn	
-140449650	14044a880	unit_140449650	none	55	mn	
+140449650	14044a880	unit_140449650_mapsettreeglue	none	55	mn	descriptive: mapsettreeglue
 14044a880	14045b2c0	unit_14044a880	none	348	mn	
-14045b2c0	14045b6e0	unit_14045b2c0	none	25	mn	
+14045b2c0	14045b6e0	unit_14045b2c0_boxedptrwrappers	none	25	mn	descriptive: boxedptrwrappers
 14045b6e0	14045b740	unit_14045b6e0	none	2	mn	
 14045b740	14046c710	unit_14045b740	none	746	mn	
 14046c710	1404746a0	?\gameeventvaluemanager.cpp	low	303	mn	dir commonfiles
@@ -822,9 +824,9 @@
 1404c5c80	1404efc20	commonfiles\guilddef.cpp	high	1127	mn	
 1404efc20	1404efd80	unit_1404efc20	none	4	mn	
 1404efd80	1404f01e0	unit_1404efd80	none	16	mn	
-1404f01e0	1404f07a0	unit_1404f01e0	none	23	mn	
+1404f01e0	1404f07a0	unit_1404f01e0_iteratorcomparators	none	23	mn	descriptive: iteratorcomparators
 1404f07a0	1404fa6b0	unit_1404f07a0	none	349	mn	
-1404fa6b0	1404faed0	unit_1404fa6b0	none	49	mn	
+1404fa6b0	1404faed0	unit_1404fa6b0_guildpayloadrefcounts	none	49	mn	descriptive: guildpayloadrefcounts
 1404faed0	1405021c0	unit_1404faed0	none	274	mn	
 1405021c0	14050a120	unit_1405021c0	none	386	mn	
 14050a120	14050d4c0	?\hideandseek.cpp	low	133	mn	dir commonfiles
@@ -835,16 +837,15 @@
 14051c920	140523790	?\interactobjectdata.cpp	low	179	mn	dir commonfiles
 140523790	140530640	commonfiles\item.cpp	high	484	mn	
 140530640	140535bc0	commonfiles\itembreakmanager.cpp	high	136	mn	
-140535bc0	140539370	unit_140535bc0	none	89	mn	rejected ?\costumeset.cpp
+140535bc0	140539370	unit_140535bc0_costumesettable	none	89	mn	descriptive: costumesettable
 140539370	140543a30	commonfiles\itemdata.cpp	high	428	mn	
 140543a30	140555a70	commonfiles\itemdatastruct.cpp	high	613	mn	
 140555a70	14057a380	?\itemdatatable.cpp	low	1007	mn	was ?\colorpaletteinfo.cpp; dir commonfiles
-14057a380	14057a5c0	unit_14057a380	none	8	mn	
-14057a5c0	140583f00	unit_14057a5c0	none	453	mn	
+14057a380	140583f00	?\itemdatatable.cpp	low	461	mn	itemdatatable COMDAT tail; was unit_14057a380 + unit_14057a5c0 (folded into itemdatatable.cpp 28dcf2b56)
 140583f00	140583fa0	unit_140583f00	none	2	mn	
 140583fa0	14058c160	?\itemdefaultdata.cpp	low	209	mn	dir commonfiles
 14058c160	14058d5c0	commonfiles\itemenchantinfo.cpp	high	61	mn	
-14058d5c0	14058d770	unit_14058d5c0	none	2	mn	
+14058d5c0	14058d770	unit_14058d5c0_enchantoption	none	2	mn	descriptive: enchantoption
 14058d770	140591330	?\itemenchantlimittable.cpp	low	102	mn	dir commonfiles
 140591330	1405942e0	?\itemenchanttransformtable.cpp	low	70	mn	was ?\enchanttransformdata.cpp; dir commonfiles
 1405942e0	140595050	?\itemenchantutil.cpp	low	31	mn	dir commonfiles
@@ -860,7 +861,7 @@
 1405bd5b0	1405bea40	?\itemlinkdata.cpp	low	57	mn	was ?\hyperlinkdata.cpp; dir commonfiles
 1405bea40	1405caed0	commonfiles\itemmergeoptiontable.cpp	high	388	mn	
 1405caed0	1406125d0	commonfiles\itemoptiondata.cpp	high	2443	mn	
-1406125d0	140615410	unit_1406125d0	none	104	mn	rejected ?\itemlockmanager.cpp
+1406125d0	140615410	unit_1406125d0_itemlockmanager	none	104	mn	descriptive: itemlockmanager
 140615410	14061ce90	?\itemremakescrolldata.cpp	low	172	mn	dir commonfiles
 14061ce90	14061f540	?\itemrepackingscrolldata.cpp	low	60	mn	dir commonfiles
 14061f540	140624700	?\itemsocket.cpp	low	165	mn	was ?\tsocketgemstoneinfo.cpp; dir commonfiles
@@ -876,7 +877,7 @@
 140661c00	1406694a0	?\masteryinteriortable.cpp	low	213	mn	dir commonfiles
 1406694a0	140672770	commonfiles\masterytable.cpp	high	238	mn	
 140672770	14067c020	commonfiles\luautil.cpp	high	129	mn	
-14067c020	14067c610	unit_14067c020	none	15	mn	
+14067c020	14067c610	unit_14067c020_machineidcodec	none	15	mn	descriptive: machineidcodec
 14067c610	1406846a0	?\maid.cpp	low	233	mn	dir commonfiles
 1406846a0	14068f630	?\maidgradejockpottable.cpp	low	424	mn	dir commonfiles
 14068f630	140693e60	?\mailattachitem.cpp	low	146	mn	dir commonfiles
@@ -890,10 +891,10 @@
 14069c3e0	1406ae9c0	?\meratmarketbasketinfo.cpp	low	457	mn	dir commonfiles
 1406ae9c0	1406aeaf0	unit_1406ae9c0	none	4	mn	
 1406aeaf0	1406aee80	?\mesomarketproduct.cpp	low	9	mn	dir commonfiles
-1406aee80	1406af1a0	unit_1406aee80	none	17	mn	
+1406aee80	1406af1a0	unit_1406aee80_launchoptions	none	17	mn	descriptive: launchoptions
 1406af1a0	1406c3230	commonfiles\ms2filestring.cpp	high	704	mn	
 1406c3230	1406c3700	unit_1406c3230	none	17	mn	
-1406c3700	1406c47a0	unit_1406c3700	none	45	mn	
+1406c3700	1406c47a0	unit_1406c3700_fieldrgbcolor	none	45	mn	descriptive: fieldrgbcolor
 1406c47a0	1406c53d0	unit_1406c47a0	none	32	mn	
 1406c53d0	1406c8680	?\nametagsymboltable.cpp	low	84	mn	dir commonfiles
 1406c8680	1406dc170	commonfiles\npcdata.cpp	high	512	mn	
@@ -904,14 +905,14 @@
 14070e080	14070f700	commonfiles\os.cpp	high	35	mn	
 14070f700	140716a40	commonfiles\packet.cpp	high	224	mn	
 140716a40	1407186f0	commonfiles\packetlogger.cpp	high	68	mn	
-1407186f0	14071a5b0	unit_1407186f0	none	57	mn	
+1407186f0	14071a5b0	unit_1407186f0_stringconversionhelpers	none	57	mn	descriptive: stringconversionhelpers
 14071a5b0	14071af20	unit_14071a5b0	none	13	mn	
 14071af20	14071e2f0	?\paybacktable.cpp	low	133	mn	dir commonfiles
 14071e2f0	140721000	?\pcdata.cpp	low	25	mn	dir commonfiles
 140721000	140728140	?\petgroupinfo.cpp	low	228	mn	dir commonfiles
 140728140	14072bdc0	unit_140728140	none	95	mn	rejected ?\petdata.cpp (order within gap)
-14072bdc0	14072f7f0	unit_14072bdc0	none	104	mn	rejected ?\instrumentdata.cpp
-14072f7f0	14072fd10	unit_14072f7f0	none	6	mn	
+14072bdc0	14072f7f0	unit_14072bdc0_instrumenttable	none	104	mn	descriptive: instrumenttable
+14072f7f0	14072fd10	unit_14072f7f0_petsummonstate	none	6	mn	descriptive: petsummonstate
 14072fd10	140730120	?\portaldata.cpp	low	7	mn	dir commonfiles
 140730120	140738a30	?\portaltable.cpp	low	294	mn	dir commonfiles
 140738a30	14073b630	?\pricetable.cpp	low	67	mn	dir commonfiles
@@ -923,12 +924,12 @@
 14076a1e0	1407703a0	commonfiles\reactordata.cpp	high	217	mn	
 1407703a0	14077dd10	commonfiles\rewardcontentstable.cpp	high	525	mn	
 14077dd10	140781d80	?\rideonaction.cpp	low	166	mn	dir commonfiles
-140781d80	14078ced0	unit_140781d80	none	377	mn	rejected ?\rideedata.cpp (order within gap)
+140781d80	14078ced0	unit_140781d80_ridingtable	none	377	mn	descriptive: ridingtable
 14078ced0	140790bd0	?\scriptcontent.cpp	low	118	mn	dir commonfiles
 140790bd0	1407a1bf0	commonfiles\seasondatatable.cpp	high	506	mn	
 1407a1bf0	1407a3380	commonfiles\seasondatatable.cpp	high	61	mn	ps1 split from commonfiles\serverpacketdef.cpp: seasondatatable COMDAT tail (only seasondatatable calls it; ends with memmove_s 0x1407a3260)
 1407a3380	1407a4f20	commonfiles\serverpacketdef.cpp	high	22	mn	
-1407a4f20	1407ad240	unit_1407a4f20	none	248	mn	rejected ?\outsendnoticepacket.cpp
+1407a4f20	1407ad240	unit_1407a4f20_packetserializers	none	248	mn	descriptive: packetserializers
 1407ad240	1407bc4b0	?\setiteminfo.cpp	low	643	mn	dir commonfiles
 1407bc4b0	1407c4980	?\setitemoptionpart.cpp	low	471	mn	dir commonfiles
 1407c4980	1407c9f40	?\setitemtable.cpp	low	201	mn	dir commonfiles
@@ -955,7 +956,7 @@
 140837660	140838d50	unit_140837660	none	39	mn	
 140838d50	14083bab0	commonfiles\stream.cpp	high	64	mn	
 14083bab0	14083f3d0	unit_14083bab0	none	26	mn	
-14083f3d0	140841780	unit_14083f3d0	none	34	mn	
+14083f3d0	140841780	unit_14083f3d0_stringutilities	none	34	mn	descriptive: stringutilities
 140841780	140841c70	unit_140841780	none	9	mn	
 140841c70	14084cb30	unit_140841c70	none	583	mn	
 14084cb30	140851620	?\stringidinterfacebase.cpp	low	129	mn	dir commonfiles
@@ -969,7 +970,7 @@
 1408686b0	1408691c0	?\timer.cpp	low	32	mn	dir commonfiles
 1408691c0	14086d350	commonfiles\timeutil.cpp	high	113	mn	
 14086d350	14087d0c0	commonfiles\tinyxmlhelper.cpp	high	447	mn	
-14087d0c0	14087d240	unit_14087d0c0	none	5	mn	
+14087d0c0	14087d240	unit_14087d0c0_trademesolimits	none	5	mn	descriptive: trademesolimits
 14087d240	14087e8c0	?\trafficoptimizer.cpp	low	41	mn	dir commonfiles
 14087e8c0	1408806b0	unit_14087e8c0	none	48	mn	rejected ?\serverstringgroup.cpp
 1408806b0	140885f20	?\ugcbuildvalidator.cpp	low	126	mn	dir commonfiles
@@ -989,9 +990,9 @@
 1408d5040	1408d5470	unit_1408d5040	none	4	mn	
 1408d5470	1408d6b30	commonfiles\usereventcontext.cpp	high	52	mn	
 1408d6b30	1408e1840	?\usereventmanager.cpp	low	309	mn	dir commonfiles
-1408e1840	1408e2330	unit_1408e1840	none	14	mn	
-1408e2330	1408e2810	unit_1408e2330	none	29	mn	
-1408e2810	1408e2ed0	unit_1408e2810	none	21	mn	
+1408e1840	1408e2330	unit_1408e1840_resizetemplates	none	14	mn	descriptive: resizetemplates
+1408e2330	1408e2810	unit_1408e2330_boxedptrwrappers	none	29	mn	descriptive: boxedptrwrappers
+1408e2810	1408e2ed0	unit_1408e2810_boxedptrtail	none	21	mn	descriptive: boxedptrtail
 1408e2ed0	1408e70b0	commonfiles\usermail.cpp	high	125	mn	
 1408e70b0	1408f4e20	commonfiles\userproxy.cpp	high	368	mn	
 1408f4e20	1408f50a0	?\usertrigger.cpp	low	5	mn	
@@ -1004,7 +1005,7 @@
 140920cf0	14092c230	unit_140920cf0	none	213	mn	
 14092c230	14092cb30	?\xmldata.cpp	low	18	mn	
 14092cb30	14092f420	unit_14092cb30	none	84	mn	rejected ?\nxa.cpp
-14092f420	140935c20	unit_14092f420	none	268	mn	
+14092f420	140935c20	unit_14092f420_accountsessionstate	none	268	mn	descriptive: accountsessionstate
 140935c20	1409436b0	?\achievemanager.cpp	low	276	mn	
 1409436b0	140944f30	client\ms2\actioncameradata.cpp	high	45	mn	
 140944f30	140948420	?\actioncameramode.cpp	low	125	mn	dir client\ms2
@@ -1048,7 +1049,7 @@
 140a1f250	140a20460	client\ms2\bigdatalogsystem.cpp	high	35	mn	
 140a20460	140a24e90	?\blackmarketman.cpp	low	104	mn	dir client\ms2
 140a24e90	140a2a0a0	?\blindmanager.cpp	low	179	mn	dir client\ms2
-140a2a0a0	140a2f540	unit_140a2a0a0	none	99	mn	
+140a2a0a0	140a2f540	unit_140a2a0a0_modelpropertycache	none	99	mn	descriptive: modelpropertycache
 140a2f540	140a31af0	?\blockmanager.cpp	low	26	mn	dir client\ms2
 140a31af0	140a365c0	client\ms2\bonerotateinterpolator.cpp	high	109	mn	
 140a365c0	140a376e0	?\bookslot.cpp	low	39	mn	dir client\ms2
@@ -1068,7 +1069,7 @@
 140a54160	140a571b0	?\fielddatacli.cpp	low	32	mn	
 140a571b0	140a58820	?\gameoptiongamepad.cpp	low	47	mn	
 140a58820	140a5bb10	client\ms2\asyncimageloader.cpp	high	132	mn	
-140a5bb10	140a5c650	?\gfxlogger.cpp	low	25	mn	dir client\ms2
+140a5bb10	140a5c650	sfr_gfx_10	none	25	mn	sfr25 10-23: Scaleform gap plan: GFxLogger (Scaleform::Log) + RefCount/Log base COMDATs (was ?\gfxlogger.cpp)
 140a5c650	140a6d890	client\ms2\inventory.cpp	high	276	mn	
 140a6d890	140a6e830	?\jobsystemcli.cpp	low	20	mn	dir client\ms2
 140a6e830	140a702f0	?\lapenshardslot.cpp	low	27	mn	dir client\ms2
@@ -1082,7 +1083,7 @@
 140a89190	140a8af50	?\partyvotecli.cpp	low	71	mn	dir client\ms2
 140a8af50	140a8f1d0	?\paybackmanagerclient.cpp	low	146	mn	dir client\ms2
 140a8f1d0	140a91030	?\pendingeffect.cpp	low	95	mn	dir client\ms2
-140a91030	140a93d00	unit_140a91030	none	100	mn	
+140a91030	140a93d00	unit_140a91030_chromacolortable	none	100	mn	descriptive: chromacolortable
 140a93d00	140aaadb0	unit_140a93d00	none	815	mn	rejected ?\chromasdk.cpp
 140aaadb0	140aace60	?\randomtargeteffect.cpp	low	61	mn	dir client\ms2
 140aace60	140aadff0	?\reconnectionmanagercli.cpp	low	32	mn	dir client\ms2
@@ -1121,7 +1122,7 @@
 140b26ff0	140b287b0	client\ms2\fieldpropertycli.cpp	high	61	mn	
 140b287b0	140b498e0	?\gamerankingcli.cpp	low	937	mn	dir client\ms2
 140b498e0	140b5faf0	unit_140b498e0	none	417	mn	
-140b5faf0	140b602f0	unit_140b5faf0	none	48	mn	
+140b5faf0	140b602f0	unit_140b5faf0_boxedptrwrappers	none	48	mn	descriptive: boxedptrwrappers
 140b602f0	140b60ff0	unit_140b602f0	none	41	mn	
 140b60ff0	140b64c30	?\gfxmoviedamage.cpp	low	127	mn	dir client\ms2
 140b64c30	140b67d70	?\homecameramode.cpp	low	24	mn	dir client\ms2
@@ -1187,12 +1188,12 @@
 140c3cc10	140c3f350	?\uiitemenchanttransformdialog.cpp	low	35	mn	dir client\ms2
 140c3f350	140c3ff80	?\uiitemmultiopenboxdialog.cpp	low	16	mn	dir client\ms2
 140c3ff80	140c47c80	unit_140c3ff80	none	178	mn	rejected ?\uiitemgachaboxdialog.cpp (order within gap)
-140c47c80	140c4ffa0	unit_140c47c80	none	203	mn	rejected ?\itemsocketsystempagegemstoneswap.cpp
+140c47c80	140c4ffa0	unit_140c47c80_gemstoneswappage	none	203	mn	descriptive: gemstoneswappage
 140c4ffa0	140c54ee0	unit_140c4ffa0	none	74	mn	rejected ?\itemsocketsystempagesockettransfer.cpp
 140c54ee0	140c581a0	?\uiitemtreasuremapdialog.cpp	low	40	mn	dir client\ms2
 140c581a0	140c58d30	?\uikeysettingselectdialog.cpp	low	24	mn	dir client\ms2
 140c58d30	140c5d230	?\uileveluppackagewidgetdialog.cpp	low	140	mn	was ?\uieventwidgetdialog.cpp; dir client\ms2
-140c5d230	140c6b300	unit_140c5d230	none	322	mn	rejected ?\uilapenshardequiptab.cpp (order within gap)
+140c5d230	140c6b300	?\uilapenshardsystemdialog.cpp	medium	322	mn	guess: UILapenshardSystemDialog; order uikeysettingselectdialog.cpp < uilapenshardsystemdialog.cpp < uilongtermattendgiftdialog.cpp
 140c6b300	140c6e3a0	?\uilongtermattendgiftdialog.cpp	low	66	mn	dir client\ms2
 140c6e3a0	140c6e790	?\uimentoringbuffpage.cpp	low	8	mn	dir client\ms2
 140c6e790	140c70480	client\ms2\uimentoringmenteepage.cpp	high	36	mn	
@@ -1213,7 +1214,7 @@
 140c9cc60	140c9f7a0	client\ms2\roomstagedungeoncli.cpp	high	141	mn	
 140c9f7a0	140ca4360	?\stateeffectmgr.cpp	low	184	mn	dir client\ms2
 140ca4360	140ca6fc0	?\statehomemade.cpp	low	111	mn	dir client\ms2
-140ca6fc0	140ca9d50	unit_140ca6fc0	none	118	mn	rejected ?\oncecallbacktimer.cpp
+140ca6fc0	140ca9d50	unit_140ca6fc0_oncecallbacktimer	none	118	mn	descriptive: oncecallbacktimer
 140ca9d50	140cac530	?\statpointmanager.cpp	low	61	mn	dir client\ms2
 140cac530	140cb1d90	?\tabcontentspetcollect.cpp	low	121	mn	dir client\ms2
 140cb1d90	140cb87d0	?\tabcontentspetcompose.cpp	low	118	mn	was ?\petcomposepetcard.cpp; dir client\ms2
@@ -1254,7 +1255,7 @@
 140d53ad0	140d6d8c0	client\ms2\meratmarketman.cpp	high	650	mn	
 140d6d8c0	140d72a60	?\mesomarketproductcli.cpp	low	111	mn	dir client\ms2
 140d72a60	140d73aa0	unit_140d72a60	none	46	mn	rejected ?\dailymission.cpp
-140d73aa0	140d74b20	unit_140d73aa0	none	15	mn	
+140d73aa0	140d74b20	unit_140d73aa0_messageboxfactory	none	15	mn	descriptive: messageboxfactory
 140d74b20	140d75430	unit_140d74b20	none	15	mn	
 140d75430	140d7e600	?\midimessage.cpp	low	331	mn	dir client\ms2
 140d7e600	140d7e660	?\mmltoken.cpp	low	1	mn	ps1 split from ?\midimessage.cpp: ctor calling mmltoken functions: mmltoken TU head
@@ -1574,7 +1575,7 @@
 1412646a0	14126d170	client\ms2\gamesocket.cpp	high	235	mn	
 14126d170	141272630	?\gemslot.cpp	low	101	mn	dir client\ms2
 141272630	141274d10	?\getexp.cpp	low	65	mn	was ?\expeffectinfo.cpp; dir client\ms2
-141274d10	141279710	unit_141274d10	none	115	mn	
+141274d10	141279710	unit_141274d10_uihelpers	none	115	mn	descriptive: uihelpers
 141279710	14127d290	?\gfxmoviebackground.cpp	low	93	mn	dir client\ms2
 14127d290	14127e190	?\gfxmovieugc.cpp	low	21	mn	dir client\ms2
 14127e190	141280b40	unit_14127e190	none	61	mn	rejected ?\fieldmaidmanager.cpp
@@ -1590,8 +1591,8 @@
 141294100	141299650	?\uidialogcenterdialog.cpp	low	107	mn	dir client\ms2
 141299650	14129a3c0	unit_141299650	none	28	mn	rejected ?\uihomesummondialog.cpp
 14129a3c0	14129ba60	unit_14129a3c0	none	28	mn	rejected ?\uiquizdialog.cpp
-14129ba60	14129cfa0	unit_14129ba60	none	24	mn	rejected ?\uirecallscrollnotifydialog.cpp
-14129cfa0	1412a4590	unit_14129cfa0	none	91	mn	rejected ?\uiitemremakeoptiondialog.cpp
+14129ba60	14129cfa0	unit_14129ba60_recallscrollnotifydialog	none	24	mn	descriptive: recallscrollnotifydialog
+14129cfa0	1412a4590	unit_14129cfa0_itemremakeoptiondialog	none	91	mn	descriptive: itemremakeoptiondialog
 1412a4590	1412a74a0	unit_1412a4590	none	64	mn	rejected ?\uisystemmailnotifydialog.cpp
 1412a74a0	1412c2020	client\ms2\uidungeonroomdialog.cpp	high	391	mn	
 1412c2020	1412c3ac0	?\uiglobalportaldialog.cpp	low	29	mn	dir client\ms2
@@ -2033,7 +2034,7 @@
 1416ba7f0	1416bad00	?\ssaorenderstep.cpp	low	7	mn	dir client\ms2\postprocessing
 1416bad00	1416bc380	?\worldfadeoutrenderstep.cpp	low	12	mn	dir client\ms2\postprocessing
 1416bc380	1416c1cc0	unit_1416bc380	none	95	mn	
-1416c1cc0	1416c2c00	unit_1416c1cc0	none	29	mn	rejected ?\proxygameobject.cpp (order within gap)
+1416c1cc0	1416c2c00	client\ms2\proxygameobject.cpp	high	29	mn	proven: MS2_THIS_FILE; order ponytailphysxhelper.cpp < proxygameobject.cpp < questmanager.cpp
 1416c2c00	1416c4de0	unit_1416c2c00	none	56	mn	rejected ?\proxyobject.cpp (order within gap)
 1416c4de0	1416c6210	unit_1416c4de0	none	14	mn	rejected ?\pvpcameramode.cpp (order within gap)
 1416c6210	1416e3800	client\ms2\questmanager.cpp	high	811	mn	
@@ -2060,7 +2061,7 @@
 141754490	141758d70	?\skillcollisionmanager.cpp	low	85	mn	dir client\ms2
 141758d70	14175c840	?\skillrecord.cpp	low	101	mn	dir client\ms2
 14175c840	14176f2a0	?\skillslot.cpp	low	332	mn	dir client\ms2
-14176f2a0	14176fbb0	unit_14176f2a0	none	17	mn	rejected ?\nimeshupdateprocess.cpp
+14176f2a0	14176fbb0	unit_14176f2a0_meshupdategate	none	17	mn	descriptive: meshupdategate
 14176fbb0	141773630	client\ms2\soapclient.cpp	high	67	mn	
 141773630	141774240	?\softparticlesmanager.cpp	low	16	mn	dir client\ms2
 141774240	141775810	?\sounddlg.cpp	low	19	mn	dir client\ms2
@@ -2350,21 +2351,22 @@
 1422f7310	1422f74c0	?\asscene.cpp	low	7	mn	gfx1 10-20: gfxui lib TU (ASScene)
 1422f74c0	1422f77b0	?\asvideo.cpp	low	10	mn	gfx1 10-20: gfxui lib TU (ASVideo)
 1422f77b0	1422f8c70	unit_1422f77b0	low	37	mn	gfx1 10-20: gfxui lib TU (non-virtual cache class (ctor 0x1422f77b0/dtor 0x1422f77f0 called from GFxService))
-1422f8c70	1422fe810	?\fontconfig.cpp	low	195	mn	gfx1 10-20: gfxui lib TU (FontConfig/FontTranslator/GFx::Translator)
+1422f8c70	1422fe810	sfr_gfx_11	none	195	mn	sfr25 10-23: Scaleform gap plan: FontConfigParser / FontTranslator / FontConfigSet (was blocked ?\fontconfig.cpp)
 1422fe810	142300880	?\ms2videosoundsystemdx8.cpp	low	64	mn	gfx1 10-20: gfxui lib TU (Scaleform::GFx::Video::MS2VideoSoundSystemDX8/MS2VideoSoundDX8)
 142300880	142301060	?\notifyhandler.cpp	low	22	mn	gfx1 10-20: gfxui lib TU (NotifyHandler)
 142301060	142301ff0	?\notifybinding.cpp	low	19	mn	gfx1 10-20: gfxui lib TU (NotifyBinding)
 142301ff0	142302df0	?\notifydragslot.cpp	low	24	mn	gfx1 10-20: gfxui lib TU (NotifyDragSlot)
 142302df0	142303440	?\notifyswfentity.cpp	low	7	mn	gfx1 10-20: gfxui lib TU (NotifySwfEntity)
 142303440	142303963	?\nigfxoverlayclick.cpp	low	31	mn	gfx1 10-20: gfxui lib TU (NiGFxOverlayClick ctor/dtor + inline NiRenderClick/GFxRenderer/AtlasRecord tail)
+1423b1920	1423b1d3d	sfr_gfx_12	none	2	mn	sfr25 10-23: Scaleform gap plan: XML::ParserExpat vfuncs
 1423c8a50	1423c8fa0	sfr_ime_01	none	6	mn	sfr0 10-20: Scaleform 4.1.18 recovery, IME (GFx_AS2Support,AS3_All,GFx_AS3Support,AS2_All,GFx_LoaderImpl,AS2_NetStream,...)
 1423c8fa0	1423ca350	sfr_as2_01	none	20	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS2 (AS2_All,GFx_AS2Support,AS2_NetStream,GFx_AS3Support,AS3_All)
 1423ca350	1423dbde0	sfr_ime_01	none	183	mn	sfr0 10-20: Scaleform 4.1.18 recovery, IME (GFx_AS2Support,AS3_All,GFx_AS3Support,AS2_All,GFx_LoaderImpl,AS2_NetStream,...)
 1423dbde0	1423dc0b0	sfr_as2_01	none	9	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS2 (AS2_All,GFx_AS2Support,AS2_NetStream,GFx_AS3Support,AS3_All)
 1423dc110	1423df850	sfr_as3_01	none	48	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS3 (AS3_Obj_All,GFx_AS3Support,AS3_All,AS2_All,GFx_AS2Support)
 1423df8a0	1423e0260	sfr_as2_01	none	8	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS2 (AS2_All,GFx_AS2Support,AS2_NetStream,GFx_AS3Support,AS3_All)
-1423e0260	1423f5770	sfr_as3_01	none	258	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS3 (AS3_Obj_All,GFx_AS3Support,AS3_All,AS2_All,GFx_AS2Support)
-1423f5770	1423ff040	sfr_as3_02	none	302	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS3 (AS3_Obj_All,AS3_Obj_Display_All,AS3_All,AS3_IMEManager,AS2_All,GFx_SpriteDef,...)
+1423e0260	1423f06a0	sfr_as3_01	none	258	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS3 (AS3_Obj_All,GFx_AS3Support,AS3_All,AS2_All,GFx_AS2Support)
+1423f06a0	1423ff040	sfr_as3_02	none	302	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS3 (AS3_Obj_All,AS3_Obj_Display_All,AS3_All,AS3_IMEManager,AS2_All,GFx_SpriteDef,...)
 1423ff040	1424133c0	sfr_as3_03	none	335	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS3 (AS3_Obj_All,AS3_All,AS3_Abc_Read)
 1424133c0	14242a640	sfr_as3_04	none	337	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS3 (AS3_Obj_All,AS3_All,AS2_All,AS3_Obj_Display_All,AS3_IMEManager)
 14242a640	142438be0	sfr_as3_05	none	287	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS3 (AS3_Obj_Display_All,AS3_Obj_All,AS3_All)
@@ -2436,11 +2438,13 @@
 142615c70	14261b450	sfr_gfx_07	none	85	mn	sfr0 10-20: Scaleform 4.1.18 recovery, GFx core (Text_EditorKit,GFx_LoadProcess,GFx_FontManager,GFx_PlayerTasks,GFx_Event,GFx_Shape,...)
 14261b450	14261e1c0	sfr_render_03	none	46	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Render (Text_DocView,Render_ShapeMeshProvider,Text_Core,Render_TreeNode,Render_TreeShape,Render_StateBag,...)
 14261e1c0	142620040	sfr_gfx_07	none	29	mn	sfr0 10-20: Scaleform 4.1.18 recovery, GFx core (Text_EditorKit,GFx_LoadProcess,GFx_FontManager,GFx_PlayerTasks,GFx_Event,GFx_Shape,...)
-142620040	1426202f0	sfr_render_03	none	6	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Render (Text_DocView,Render_ShapeMeshProvider,Text_Core,Render_TreeNode,Render_TreeShape,Render_StateBag,...)
-1426202f0	142623c60	sfr_gfx_07	none	50	mn	sfr0 10-20: Scaleform 4.1.18 recovery, GFx core (Text_EditorKit,GFx_LoadProcess,GFx_FontManager,GFx_PlayerTasks,GFx_Event,GFx_Shape,...)
-142623c60	142624020	sfr_render_03	none	6	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Render (Text_DocView,Render_ShapeMeshProvider,Text_Core,Render_TreeNode,Render_TreeShape,Render_StateBag,...)
-142624020	142625920	sfr_gfx_07	none	16	mn	sfr0 10-20: Scaleform 4.1.18 recovery, GFx core (Text_EditorKit,GFx_LoadProcess,GFx_FontManager,GFx_PlayerTasks,GFx_Event,GFx_Shape,...)
-142625920	142636190	sfr_render_03	none	136	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Render (Text_DocView,Render_ShapeMeshProvider,Text_Core,Render_TreeNode,Render_TreeShape,Render_StateBag,...)
+142620040	142620160	sfr_render_03	none	3	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Render (Text_DocView,Render_ShapeMeshProvider,Text_Core,Render_TreeNode,Render_TreeShape,Render_StateBag,...)
+142620160	142623c60	sfr_gfx_07	none	53	mn	sfr0 10-20: Scaleform 4.1.18 recovery, GFx core (Text_EditorKit,GFx_LoadProcess,GFx_FontManager,GFx_PlayerTasks,GFx_Event,GFx_Shape,...) | sfr21 10-23: GFx-side ddtors / ArrayDataBase::Reserve copies (callers in sfr_gfx_07 / AS3) moved here from sfr_render_03
+142623c60	142623d00	sfr_render_03	none	1	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Render (Text_DocView,Render_ShapeMeshProvider,Text_Core,Render_TreeNode,Render_TreeShape,Render_StateBag,...)
+142623d00	142625920	sfr_gfx_07	none	21	mn	sfr0 10-20: Scaleform 4.1.18 recovery, GFx core (Text_EditorKit,GFx_LoadProcess,GFx_FontManager,GFx_PlayerTasks,GFx_Event,GFx_Shape,...) | sfr21 10-23: GFx-side ddtors / ArrayDataBase::Reserve copies (callers in sfr_gfx_07 / AS3) moved here from sfr_render_03
+142625920	14262ce60	sfr_render_03	none	136	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Render (Text_DocView,Render_ShapeMeshProvider,Text_Core,Render_TreeNode,Render_TreeShape,Render_StateBag,...)
+14262ce60	14262cfb0	sfr_render_05	none	1	mn	sfr21 10-23: unreferenced out-of-line Matrix2x4<float>::SetRectToParl copy (Render_MeshKey TU, inlined everywhere else; MSVC drops an unreferenced inline specialization, so no source emits it)
+14262cfb0	142636190	sfr_render_03	none	136	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Render (Text_DocView,Render_ShapeMeshProvider,Text_Core,Render_TreeNode,Render_TreeShape,Render_StateBag,...)
 142636190	14263dfa0	sfr_gfx_07	none	117	mn	sfr0 10-20: Scaleform 4.1.18 recovery, GFx core (Text_EditorKit,GFx_LoadProcess,GFx_FontManager,GFx_PlayerTasks,GFx_Event,GFx_Shape,...)
 14263dfa0	14263fb00	sfr_render_04	none	27	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Render (Render_Primitive,Render_TreeText,Render_FontProviderWinAPI,Text_LineBuffer,Text_Highlight,Renderer2DImpl,...)
 14263fb00	142645590	sfr_kernel_02	none	106	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Kernel (SF_MsgFormat,HeapPT_MemoryHeap,HeapPT_AllocLite,SF_File,HeapMH_AllocEngine,SF_FileFILE,...)
@@ -2479,6 +2483,11 @@
 1427439d0	142743db0	sfr_d3d9_01	none	8	mn	sfr0 10-20: Scaleform 4.1.18 recovery, D3D9 (D3D9_HAL,D3D9_Texture,D3D9_MeshCache,D3D9_Shader,D3D9_HALSetup,D3D9_ShaderDescs,...)
 142743db0	142744560	sfr_as2_01	none	7	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS2 (AS2_All,GFx_AS2Support,AS2_NetStream,GFx_AS3Support,AS3_All)
 142744560	142746480	sfr_as3_22	none	41	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS3 (AS3_All,AS3_Obj_Utils_All,Render_FontProviderHUD,GFx_PlayerTasks,Text_StyleSheet,GFx_StaticText,...)
+142747bc0	142747d98	sfr_gfx_12	none	4	mn	sfr25 10-23: Scaleform gap plan: Lock-owning GFx object
+142747da0	142747ed0	sfr_gfx_12	none	4	mn	sfr32 10-23: Sound gap: AppendableSoundData / SoundData / SoundFile destructors
+142747f30	142748080	sfr_gfx_12	none	2	mn	sfr32 10-23: Sound gap: AppendableSoundData / SoundData scalar deleting destructors
+1427480e0	142748150	sfr_gfx_12	none	1	mn	sfr32 10-23: Sound gap: SoundFile scalar deleting destructor
+142748230	1427485e6	sfr_gfx_12	none	7	mn	sfr25 10-23: Scaleform gap plan: Sound::SoundInfo
 1428eb050	1428fdc00	sfr_as2_01	none	172	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS2 (AS2_All,GFx_AS2Support,AS2_NetStream,GFx_AS3Support,AS3_All)
 1428fdc00	142917bf0	sfr_as2_02	none	300	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS2 (AS2_All)
 142917bf0	142929590	sfr_as2_03	none	300	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS2 (AS2_All)
@@ -2489,4 +2498,7 @@
 1429a2820	1429a3700	sfr_kernel_03	none	22	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Kernel (HeapPT_AllocEngine,SF_MemItem,HeapPT_FreeBin,HeapPT_Root,SF_AllocAddr,HeapPT_AllocBitSet2,...)
 1429a3700	1429a4d50	sfr_render_07	none	24	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Render (Render_TextMeshProvider,Render_MeshCache,Render_GlyphQueue,Render_CacheEffect,Render_TextPrimitiveBundle,Render_BufferGeneric,...)
 1429a4d50	1429a8c70	sfr_gfx_09	none	198	mn	sfr0 10-20: Scaleform 4.1.18 recovery, GFx core (XML_Object,XML_Document,XML_DOM,AS2_All,AS2_Xml)
+142c98f10	142c99d55	sfr_gfx_13	none	57	mn	sfr25 10-23: Scaleform gap plan: GFx statics: atexit thunks / vptr+PMF initialisers (unowned tail; pairs with the .text$di initialisers)
+142cc9300	142cc990f	sfr_gfx_13	none	48	mn	sfr25 10-23: Scaleform gap plan: GFx statics: atexit thunks / vptr+PMF initialisers (unowned tail; pairs with the .text$di initialisers)
+142cca370	142cca4e6	sfr_gfx_13	none	5	mn	sfr25 10-23: Scaleform gap plan: GFx statics: atexit thunks / vptr+PMF initialisers (unowned tail; pairs with the .text$di initialisers)
 142ccb000	142ccd143	sfr_cri_03	none	20	mn	sfr0 10-20: Scaleform 4.1.18 recovery, CRI

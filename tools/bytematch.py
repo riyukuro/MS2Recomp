@@ -794,6 +794,11 @@ def harvestable(name, va):
     # every user anyway.
     if "=" in name:
         return False
+    # a linker import thunk (FF 25 jmp [__imp_X]) is the C import X itself: a C++ name never binds to it (2026-10-24:
+    # the CRT's inline ?strrchr@@YAPEADQEADH@Z overload, which the exe inlines into a call of the thunk, was harvested
+    # onto 0x14280efa0 and then let gb:Lua/loadlib claim the imports stage's row)
+    if name.startswith("?") and CUR_EXE is not None and CUR_EXE.read(va, 2) == b"\xff\x25":
+        return False
     return not any(a <= va < b for a, b in RUNTIME_RANGES)
 
 
