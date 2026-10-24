@@ -855,8 +855,9 @@ def write_harvest(path, exe, fresh=False):
     return added
 
 
-def match_data(obj, si, va, exe, verbose, quiet=False):
-    """Data symbol (vftable, constant table): unrelocated bytes equal, ADDR64 slots resolved against the exe."""
+def match_data(obj, si, va, exe, verbose, quiet=False, limit=None):
+    """Data symbol (vftable, constant table): unrelocated bytes equal, ADDR64 slots resolved against the exe.
+    limit: compare at most this many bytes (a data unit's global, whose obj padding is not the exe's neighbour)."""
     global CUR_EXE
     CUR_EXE = exe
     rep = Report()
@@ -864,6 +865,8 @@ def match_data(obj, si, va, exe, verbose, quiet=False):
     sec = obj.sec(secnum)
     nxt = [v for (n, v, sn, t, c) in obj.syms.values() if sn == secnum and v > value]
     end = min(nxt) if nxt else sec["size"]
+    if limit is not None:
+        end = min(end, value + limit)
     data = sec["data"][value:end]
     xb = exe.read(va, len(data))
     mask = bytearray(len(data))
