@@ -293,10 +293,11 @@ static CString s_strBgAlpha = "bgAlpha";
 static CString s_strBoss = "boss";
 static CString s_strBuddy = "buddy";
 static CString s_strDie = "die";
-namespace { extern CString s_strEmptyIcon; }                         // defined below (the exe copies it before its own init)
-static CString s_strNoIcon = MS2_MINIMAP_NOICON_SRC;
-static CString s_strEliteBoss = "elite_boss";
+// The exe's .CRT$XCU runs s_strEmptyIcon (#5212) right before s_strNoIcon (#5213), which copies it: define it first so the
+// copy never reads a zero CString (the old order faulted in mfc140 CloneData at -0x18 in both the hook DLL and the full exe).
 namespace { CString s_strEmptyIcon = "empty"; }
+static CString s_strNoIcon = s_strEmptyIcon;
+static CString s_strEliteBoss = "elite_boss";
 static CString s_strEnemy = "enemy";
 static CString s_strEventBoss = "event_boss";
 static CString s_strFrame = "frame";
