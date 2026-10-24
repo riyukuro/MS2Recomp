@@ -79,7 +79,7 @@ static CString s_strKeyPopUp = "System_TypingGame_Key_PopUp_01";
 static CString s_strSuccess = "System_TypingGame_Success_01";
 
 // The countdown dialog (UI id 0x4e95), nullptr when it is not open.
-static UITriggerTimerDialog* FindTimerDialog(int nId)
+UITriggerTimerDialog* FindTimerDialog(int nId)
 {
     if (FUN_1403ed2b0())
     {
