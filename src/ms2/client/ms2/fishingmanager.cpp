@@ -6,7 +6,6 @@
 // MS2-RANGE: 0x1400d08a0-0x1400d0b50 .text$di
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??C?$MS2Ptr@VCFishCube@@@@QEBAPEAVCFishCube@@XZ 0x140cd8c10 ; unique
-// MS2-PIN: ??R<lambda_19b5090103c7d1d77b829144b6a9da73>@@QEBAMM@Z 0x140cd8c20 ; unique
 // MS2-PIN: ??$Unk_FmGetDialog@VUIFishingBookDialog@@@@YAPEAVUIFishingBookDialog@@W4eUIClassID@@@Z 0x140cdecd0 ; prop
 // MS2-PIN: ??$Unk_FmGetDialog@VUIFishingFloatDialog@@@@YAPEAVUIFishingFloatDialog@@W4eUIClassID@@@Z 0x140cded70 ; unique
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVCFishingManager@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBV01@@Z 0x140cdf140 ; unique
@@ -349,6 +348,20 @@ void Unk_FishLineBody::FUN_140cd8080()
 }
 MS2_REPLACE_METHOD(0x140CD8080, Unk_FishLineBody, FUN_140cd8080, 68, 0x785D1C07);
 
+// The out-of-line ease of the fly-to-landing timer (clamped 0..1, sqrt(1 - (t - 1)^2)); the exe emits it as a
+// lambda's operator(), shared by the transition / scale / cube-craft users of the same helper.
+struct Unk_EaseOut { float FUN_140cd8c20(float t); };
+
+// @0x140cd8c20
+float Unk_EaseOut::FUN_140cd8c20(float t)
+{
+    if (t < 0.0f)
+        return 0.0f;
+    if (1.0f < t)
+        return 1.0f;
+    return FUN_14096b1c0(1.0f - (t - 1.0f) * (t - 1.0f));
+}
+
 // @0x140cd80d0
 // MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 void Unk_FishLineBody::FUN_140cd80d0()
@@ -378,14 +391,8 @@ void Unk_FishLineBody::FUN_140cd80d0()
     }
     else
     {
-        auto ease = [](float t) -> float {
-            if (t < 0.0f)
-                return 0.0f;
-            if (1.0f < t)
-                return 1.0f;
-            return FUN_14096b1c0(1.0f - (t - 1.0f) * (t - 1.0f));
-        };
-        float fEase = ease(m_flyTimer.FUN_140868940());
+        Unk_EaseOut ease;
+        float fEase = ease.FUN_140cd8c20(m_flyTimer.FUN_140868940());
         efd::Point3 kDelta = m_kLanding - m_kTarget;
         float fLength = kDelta.Length();
         kDelta.Unitize();
