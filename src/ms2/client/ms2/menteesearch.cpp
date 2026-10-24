@@ -248,7 +248,7 @@ void CMenteeSearchManager::OnWebResult(MS2Ptr<CMenteeSearchParam> pParam, MS2Ptr
 }
 
 // The mentoring invite dialog, when it is open (the UI service's lookup by class id).
-static UIInviteMentoringDialog* FUN_140b6f4c0(int nClass);
+UIInviteMentoringDialog* FUN_140b6f4c0(int nClass);
 
 // @0x140b6eae0
 void CMenteeSearchManager::FUN_140b6eae0()
@@ -348,7 +348,7 @@ static CMentorPtr FUN_140b6f200(CByteBuffer& buffer)
 }
 
 // @0x140b6f4c0
-static UIInviteMentoringDialog* FUN_140b6f4c0(int nClass)
+UIInviteMentoringDialog* FUN_140b6f4c0(int nClass)
 {
     if (FUN_1403ed2b0() != 0)
     {
