@@ -41,7 +41,7 @@ bool CItemExchangeScrollTable::s_bInit;
 
 // The price with the discount rate (per 10000) applied.
 // @0x1405957d0
-static __int64 FUN_1405957d0(__int64 nMeso, unsigned int nRate);
+__int64 FUN_1405957d0(__int64 nMeso, unsigned int nRate);
 
 // ---- CExchangeItemInfo ----
 
@@ -148,7 +148,7 @@ CExchangeItemInfoPtr CItemExchangeScrollTable::GetData(unsigned int nId)
 }
 
 // @0x1405957d0
-static __int64 FUN_1405957d0(__int64 nMeso, unsigned int nRate)
+__int64 FUN_1405957d0(__int64 nMeso, unsigned int nRate)
 {
     double dRate = 1.0 - (double)nRate / 10000.0;
     return (__int64)((double)nMeso * dRate + 1e-06);
