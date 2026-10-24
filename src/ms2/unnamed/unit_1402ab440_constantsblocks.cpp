@@ -433,7 +433,7 @@ template<class T> void Constants::Values<T>::vfunc_1()
     m_values.RemoveAll();
 }
 // @0x1402bacf0
-template<class T> static int FindElement(const ATL::CAtlArray<T>& arr, const T& v)
+template<class T> int FindElement(const ATL::CAtlArray<T>& arr, const T& v)
 {
     for (int i = 0; i < (int)arr.GetCount(); i++)
         if (arr[i] == v)
