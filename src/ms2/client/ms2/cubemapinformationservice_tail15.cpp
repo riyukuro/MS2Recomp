@@ -503,3 +503,10 @@ void Unk_CMISDriveTail15(void* p)
 // MS2-PIN: ??1Unk_CMISNotifyBuilding@@UEAA@XZ 0x141125fa0
 // MS2-PIN: ??1SaleStateData@@UEAA@XZ 0x141125fc0
 // MS2-PIN: ??1SalesInfo@@UEAA@XZ 0x141125fe0
+
+// Full-exe compatibility names for container and smart-pointer destructors emitted above.
+// MS2-PIN: ??1?$MS2Ptr@VCFunctionCubeObject@@@@QEAA@XZ 0x1411237f0
+// MS2-PIN: ??1?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@QEAA@XZ 0x141125970
+// MS2-PIN: ??1?$pair@$$CBHV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@QEAA@XZ 0x1411259d0
+// MS2-PIN: ??1?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@QEAA@XZ 0x141125b30
+// MS2-PIN: ??1?$pair@$$CB_JV?$MS2Ptr@VCube@@@@@std@@QEAA@XZ 0x141125b50
