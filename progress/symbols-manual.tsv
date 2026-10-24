@@ -10133,3 +10133,7 @@ DAT_143a2dd50	143a2dd50	data
 ?DAT_14312d848@@3PADA	14312d848	data
 ?DAT_143130c18@@3PADA	143130c18	data
 ?DAT_143a57d70@@3Vtype_info@@B	143a57d70	data
+?RefineOpCodeStack1@State@TR@AS3@GFx@Scaleform@@AEAAXAEAVTraits@InstanceTraits@345@W4OpCode@Code@Abc@345@@Z	142520e60	func
+?RefineOpCodeStack2@State@TR@AS3@GFx@Scaleform@@AEAAXAEAVTraits@InstanceTraits@345@W4OpCode@Code@Abc@345@@Z	142520f30	func
+?RefineOpCodeReg1@State@TR@AS3@GFx@Scaleform@@AEAAXAEAVTraits@InstanceTraits@345@W4OpCode@Code@Abc@345@H@Z	142520d80	func
+?exec_opcode@State@TR@AS3@GFx@Scaleform@@AEAAXW4OpCode@Code@Abc@345@AEA_K@Z	14253d520	func
