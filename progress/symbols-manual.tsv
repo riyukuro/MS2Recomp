@@ -10449,3 +10449,4 @@ DAT_143d747f0	143d747f0	data
 ?Read@MorphCharacterDef@GFx@Scaleform@@QEAAXPEAVLoadProcess@23@AEBUTagInfo@23@_N@Z	14265f0b0	func
 ?FromString@AttachNifData@ecr@@UEAA_NAEBVutf8string@efd@@@Z	14202dca0	func
 ?ms_ClassInfo@AttachNifData@ecr@@2VClassInfo@efd@@B	143a028a0	data
+?FindSlotInfoIndex@Slots@AS3@GFx@Scaleform@@IEBA?AVAbsoluteIndex@234@AEBVASString@34@AEBVNamespace@Instances@234@@Z	142502b20	func
