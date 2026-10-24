@@ -10143,3 +10143,4 @@ DAT_143a2dd40	143a2dd40	data
 ?FindProp@State@TR@AS3@GFx@Scaleform@@AEAAXAEAVPropRef@345@AEBVMultiname@345@AEAW4ScopeType@12345@AEA_K@Z	142501e80	func
 ?SetAS3ObjCollectible@AvmDisplayObj@AS3@GFx@Scaleform@@QEAAXPEAVDisplayObject@fl_display@Instances@234@@Z	142526340	func
 ?HasLoaderInfo@DisplayObject@fl_display@Instances@AS3@GFx@Scaleform@@QEBA_NXZ	1424445f0	func
+?MakeInstance@Interface@InstanceTraits@AS3@GFx@Scaleform@@QEAA?AV?$Pickable@VObject@fl@Instances@AS3@GFx@Scaleform@@@5@AEAV12345@@Z	14241aaf0	func
