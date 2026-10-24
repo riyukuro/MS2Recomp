@@ -1151,6 +1151,16 @@ int FUN_1415c7f40(void*, const unsigned char* target, int* result)
     return succeeded;
 }
 
+// @0x1415c7d60
+int FUN_1415c7d60(void*, unsigned char* target)
+{
+    unsigned char copiedTarget[16];
+    for (unsigned int i = 0; i != sizeof(copiedTarget); ++i)
+        copiedTarget[i] = target[i];
+    CNMRequestChatSessionFunc request(copiedTarget, 0);
+    return FUN_1415cb440(FUN_1415fa260(), &request);
+}
+
 
 // MS2-PIN: ?FUN_1415c4870@@YAHXZ 0x1415c4870
 // MS2-PIN: ?FUN_1415c53b0@@YAHXZ 0x1415c53b0
