@@ -3127,7 +3127,17 @@ MS2_CHECK_SIZE(CNMGuildChatMessageEvent, 0x6b0);
 class CNMGuildOnlineInfoEvent : public CNMEvent
 {
 public:
+    CNMGuildOnlineInfoEvent();
+    CNMGuildOnlineInfoEvent(const CNMGuildOnlineInfo& rInfo);
+    CNMGuildOnlineInfoEvent(const CNMGuildOnlineInfoEx& rInfo);
     virtual ~CNMGuildOnlineInfoEvent() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMGuildOnlineInfo m_28; // +0x28
 };
