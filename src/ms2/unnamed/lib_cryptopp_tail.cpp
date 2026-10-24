@@ -14,8 +14,7 @@
 #include <vector>
 #include <memory>
 
-// @0x142cc8c20
-// std::string::_Tidy(true): free a heap buffer (big-allocation header unwrapped), then reset to the empty SSO string
+// the MSVC std::string layout (SSO buffer / heap pointer, size, capacity)
 struct CppStdString
 {
     union { char buf[16]; char* ptr; };
@@ -23,6 +22,8 @@ struct CppStdString
     size_t res;
 };
 extern CppStdString DAT_143a29388;
+// @0x142cc8c20
+// std::string::_Tidy(true): free a heap buffer, then reset to the empty SSO string
 void FUN_142cc8c20()
 {
     CppStdString& s = DAT_143a29388;                                    // CryptoPP::DEFAULT_CHANNEL
