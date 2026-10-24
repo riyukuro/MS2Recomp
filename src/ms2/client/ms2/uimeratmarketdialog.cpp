@@ -7380,3 +7380,12 @@ void UIMeratMarketDialog::DirtyState::AddPremiumSale(const int& nId)
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cafa70-0x142cafbd0 .text$yd
+// Full-executable aliases for existing UIMeratMarketDialog methods.
+// MS2-PIN: ?BuildItemList@UIMeratMarketDialog@@QEAAXH@Z 0x14130c670
+// MS2-PIN: ?RefreshLimitedTab@UIMeratMarketDialog@@QEAAX_N@Z 0x14130ce70
+// MS2-PIN: ?ShowSearchPage@UIMeratMarketDialog@@QEAAXHHHH_N@Z 0x14130d390
+// MS2-PIN: ?ClearSearchInput@UIMeratMarketDialog@@QEAAXXZ 0x141310970
+// MS2-PIN: ?FUN_14130c670@Unk_MmDialog@@QEAAXH@Z 0x14130c670
+// MS2-PIN: ?FUN_14130ce70@Unk_MmDialog@@QEAAX_N@Z 0x14130ce70
+// MS2-PIN: ?FUN_14130d390@Unk_MmDialog@@QEAAXHHHH_N@Z 0x14130d390
+// MS2-PIN: ?FUN_141310970@Unk_MmDialog@@QEAAXXZ 0x141310970
