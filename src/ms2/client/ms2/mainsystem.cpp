@@ -83,6 +83,7 @@ public:
 private:
     char m_pad[0x28 - 0x8];
 };
+template<> CPhysXHelper* TSingleton<CPhysXHelper>::s_instance;   // physxhelper.cpp
 class CSkillCollisionManager : public TSingleton<CSkillCollisionManager>
 {
 public:

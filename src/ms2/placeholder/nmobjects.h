@@ -333,6 +333,7 @@ public:
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    void vfunc_11(unsigned int) override;
     unsigned int DecodeFramed(CNMStream* pStream) override;
     unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 

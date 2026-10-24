@@ -39,3 +39,8 @@ target_include_directories(ms2game PRIVATE "${PROJECT_SOURCE_DIR}" "${PROJECT_SO
 ms2_engine_flags(ms2game)
 ms2_scaleform_flags(ms2game)
 ms2_game_flags(ms2game)
+
+# /Zc:inline: drop the unreferenced inline copies (Multiname / TextSnapshotObject / VideoCharacterDef) that other units
+# define out of line (LNK2005, Any vs NoDuplicates COMDAT). APPEND: set_source_files_properties would replace the scaleform profile
+set_property(SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/scaleform/as3/sfr_as3_06.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/scaleform/as2/sfr_as2_02.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/scaleform/cri/sfr_cri_01.cpp" APPEND PROPERTY COMPILE_OPTIONS "/Zc:inline")
