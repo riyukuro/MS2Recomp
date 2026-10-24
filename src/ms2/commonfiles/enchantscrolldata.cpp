@@ -357,3 +357,11 @@ MS2_REPLACE_METHOD(0x14034D400, CEnchantScrollData, GetMinKey, 139, 0x9C389C75);
 MS2_REPLACE_METHOD(0x14034D4A0, CEnchantScrollData, GetMaxKey, 128, 0x5ED7EB3A);
 MS2_REPLACE_METHOD(0x14034E360, CEnchantScrollTable, FindScroll, 121, 0x9A814225);
 MS2_REPLACE_METHOD(0x14034E3E0, CEnchantScrollTable, FindRecipe, 121, 0x2A6812D6);
+
+// Full-executable aliases for existing enchant-scroll queries.
+// MS2-PIN: ?GetRewardName@CEnchantScrollRecipe@@QEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ 0x14034dbe0
+// MS2-PIN: ?FUN_14034dbe0@Unk_MScrollRec@@QEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ 0x14034dbe0
+// MS2-PIN: ?FindRecipes@CEnchantScrollTable@@QEAAXHHHAEAV?$CAtlArray@V?$MS2Ptr@VCEnchantScrollRecipe@@@@V?$CElementTraits@V?$MS2Ptr@VCEnchantScrollRecipe@@@@@ATL@@@ATL@@@Z 0x14034e460
+// MS2-PIN: ?FUN_14034e460@Unk_MScrollTable@@QEAAXHHHAEAV?$CAtlArray@V?$MS2Ptr@VUnk_MScrollRec@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_MScrollRec@@@@@ATL@@@ATL@@@Z 0x14034e460
+// MS2-PIN: ?HasRecipe@CEnchantScrollTable@@QEAAHHH@Z 0x14034e5e0
+// MS2-PIN: ?FUN_14034e5e0@Unk_MScrollTable@@QEAAHHH@Z 0x14034e5e0

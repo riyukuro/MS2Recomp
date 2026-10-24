@@ -197,3 +197,12 @@ template class MS2Ptr<CDynamicActionData>;
 template class TPtrValue<std::set<unsigned> >;
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9a650-0x142c9a6d0 .text$yd
+
+// Full-executable aliases for existing dynamic-action lookup helpers.
+// MS2-PIN: ?Find@CDynamicActionData@@SA?AV?$MS2Ptr@VCDynamicActionData@@@@H@Z 0x140347050
+// MS2-PIN: ?FUN_140347050@@YA?AV?$MS2Ptr@VUnk_EmotionKeywords@@@@H@Z 0x140347050
+// MS2-PIN: ?FUN_140347050@@YA?AV?$MS2Ptr@VUnk_MsgEmotionKeywords@@@@H@Z 0x140347050
+// MS2-PIN: ?Load@CDynamicActionData@@SAXXZ 0x140347180
+// MS2-PIN: ?FUN_140347180@@YAXXZ 0x140347180
+// MS2-PIN: ?IsListed@CDynamicActionData@@SA_NI@Z 0x140347960
+// MS2-PIN: ?FUN_140347960@@YA_NH@Z 0x140347960
