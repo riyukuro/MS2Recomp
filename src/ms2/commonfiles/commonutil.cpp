@@ -1995,7 +1995,12 @@ struct Unk_BindHostPtr
     void FUN_140299e30();                                       // 0x140299e30
 };
 
-extern void FUN_140297a00(void* p);
+// Releases a bind host's BSTR holder (the holder sits at the block's start).
+// @0x140297a00
+void FUN_140297a00(void* p)
+{
+    static_cast<Unk_BstrHolder*>(p)->FUN_14029b610();
+}
 
 // Destroy-and-free helper of the bind host (flag bit 0 = free the block).
 // @0x1402986c0
