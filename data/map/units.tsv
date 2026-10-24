@@ -2485,6 +2485,9 @@
 142743db0	142744560	sfr_as2_01	none	7	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS2 (AS2_All,GFx_AS2Support,AS2_NetStream,GFx_AS3Support,AS3_All)
 142744560	142746480	sfr_as3_22	none	41	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS3 (AS3_All,AS3_Obj_Utils_All,Render_FontProviderHUD,GFx_PlayerTasks,Text_StyleSheet,GFx_StaticText,...)
 142747bc0	142747d98	sfr_gfx_12	none	4	mn	sfr25 10-23: Scaleform gap plan: Lock-owning GFx object
+142747da0	142747ed0	sfr_gfx_12	none	4	mn	sfr32 10-23: Sound gap: AppendableSoundData / SoundData / SoundFile destructors
+142747f30	142748080	sfr_gfx_12	none	2	mn	sfr32 10-23: Sound gap: AppendableSoundData / SoundData scalar deleting destructors
+1427480e0	142748150	sfr_gfx_12	none	1	mn	sfr32 10-23: Sound gap: SoundFile scalar deleting destructor
 142748230	1427485e6	sfr_gfx_12	none	7	mn	sfr25 10-23: Scaleform gap plan: Sound::SoundInfo
 1428eb050	1428fdc00	sfr_as2_01	none	172	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS2 (AS2_All,GFx_AS2Support,AS2_NetStream,GFx_AS3Support,AS3_All)
 1428fdc00	142917bf0	sfr_as2_02	none	300	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS2 (AS2_All)
