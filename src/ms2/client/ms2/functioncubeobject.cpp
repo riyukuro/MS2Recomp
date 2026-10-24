@@ -2341,7 +2341,7 @@ public:
 Unk_FcNetSvc* FUN_140ae1200(efd::ServiceManager* pManager);
 void FUN_1410db4c0(efd::IDependencyRegistrar* pRegistrar, unsigned n);
 void FUN_1411ab6e0(efd::IDependencyRegistrar* pRegistrar, unsigned n);
-extern efd::Category DAT_143ad4348;                                 // the entity change channel
+// the entity change channel is efd::kCAT_LocalMessage, the IMessage.h static the exe keeps for this TU at 0x143ad4348
 
 // Entity, state and UI helpers used by the packet dispatcher.
 __int64 FUN_141656a80(Unk_FcActor* p);                              // entity id of the actor
@@ -2440,7 +2440,7 @@ efd::AsyncResult CFunctionCubeService::OnInit()
     efd::MessageService* pMessages = FUN_1411d1530(m_pServiceManager);
     ATL::CComPtr<Unk_FcNetSvc> pNet(FUN_140ae1200(m_pServiceManager));
     m_catGlobal = pMessages->GetGloballyUniqueCategory();
-    pMessages->Subscribe(this, DAT_143ad4348, 0, false);
+    pMessages->Subscribe(this, efd::kCAT_LocalMessage, 0, false);
     pMessages->Subscribe(this, m_catGlobal, 0, false);
     efd::Category catNet = pNet->FUN_142156c20();
     pMessages->Subscribe(this, catNet, 0, false);
@@ -2465,7 +2465,7 @@ efd::AsyncResult CFunctionCubeService::OnShutdown()
 {
     efd::MessageService* pMessages = FUN_1411d1530(m_pServiceManager);
     ATL::CComPtr<Unk_FcNetSvc> pNet(FUN_140ae1200(m_pServiceManager));
-    pMessages->Unsubscribe(this, DAT_143ad4348, 0);
+    pMessages->Unsubscribe(this, efd::kCAT_LocalMessage, 0);
     pMessages->Unsubscribe(this, m_catGlobal, 0);
     efd::Category catNet = pNet->FUN_142156c20();
     pMessages->Unsubscribe(this, catNet, 0);
