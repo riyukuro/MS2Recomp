@@ -11,12 +11,12 @@
 // MS2-PIN: ??__Es_proxySortA@@YAXXZ 0x1400be2c0
 // MS2-PIN: ??__Es_proxyKeys@@YAXXZ 0x1400be380
 // MS2-PIN: ??__Es_proxySortB@@YAXXZ 0x1400be3b0
-// MS2-PIN: ??__Es_proxyEmpty@@YAXXZ 0x1400be470
-// MS2-PIN: ??__Es_proxyEventA@@YAXXZ 0x1400be4a0
-// MS2-PIN: ??__Es_proxyTreeA@@YAXXZ 0x1400be4d0
-// MS2-PIN: ??__Es_proxyEventB@@YAXXZ 0x1400be500
-// MS2-PIN: ??__Es_proxyTreeB@@YAXXZ 0x1400be530
-// MS2-PIN: ??__Es_proxyMap@@YAXXZ 0x1400be560
+// MS2-PIN: ??__EDAT_143ab29d8@@YAXXZ 0x1400be470
+// MS2-PIN: ??__EDAT_143ab2fc0@@YAXXZ 0x1400be4a0
+// MS2-PIN: ??__EDAT_143ab3318@@YAXXZ 0x1400be4d0
+// MS2-PIN: ??__EDAT_143ab3010@@YAXXZ 0x1400be500
+// MS2-PIN: ??__EDAT_143ab32d8@@YAXXZ 0x1400be530
+// MS2-PIN: ??__EDAT_143ab31e8@@YAXXZ 0x1400be560
 // MS2-PIN: ??_GCJPPlatformProxy@@UEAAPEAXI@Z 0x1408f29f0
 // MS2-PIN: ??_GCKRPlatformProxy@@UEAAPEAXI@Z 0x1408f2a30
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\userproxy.cpp"
@@ -103,12 +103,36 @@ MS2_CHECK_SIZE(Unk_ProxyStaticMap, 0x30);
 static CString s_proxySortA[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static UICommon::CMyPCKeyInputController s_proxyKeys;
 static CString s_proxySortB[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
-static CString s_proxyEmpty;
-static GameEventUserValue s_proxyEventA;
-static Unk_ProxyStaticTreeA s_proxyTreeA;
-static GameEventUserValue s_proxyEventB;
-static Unk_ProxyStaticTreeB s_proxyTreeB;
-static Unk_ProxyStaticMap s_proxyMap(10);
+#ifndef MS2_HOOK_DLL   // s_proxyEmpty: the exe's object at 0x143ab29d8, which other units reach as DAT_143ab29d8 (the hook DLL binds it)
+CString DAT_143ab29d8;
+#else
+extern CString DAT_143ab29d8;
+#endif
+#ifndef MS2_HOOK_DLL   // s_proxyEventA: the exe's object at 0x143ab2fc0, which other units reach as DAT_143ab2fc0 (the hook DLL binds it)
+GameEventUserValue DAT_143ab2fc0;
+#else
+extern GameEventUserValue DAT_143ab2fc0;
+#endif
+#ifndef MS2_HOOK_DLL   // s_proxyTreeA: the exe's object at 0x143ab3318, which other units reach as DAT_143ab3318 (the hook DLL binds it)
+Unk_ProxyStaticTreeA DAT_143ab3318;
+#else
+extern Unk_ProxyStaticTreeA DAT_143ab3318;
+#endif
+#ifndef MS2_HOOK_DLL   // s_proxyEventB: the exe's object at 0x143ab3010, which other units reach as DAT_143ab3010 (the hook DLL binds it)
+GameEventUserValue DAT_143ab3010;
+#else
+extern GameEventUserValue DAT_143ab3010;
+#endif
+#ifndef MS2_HOOK_DLL   // s_proxyTreeB: the exe's object at 0x143ab32d8, which other units reach as DAT_143ab32d8 (the hook DLL binds it)
+Unk_ProxyStaticTreeB DAT_143ab32d8;
+#else
+extern Unk_ProxyStaticTreeB DAT_143ab32d8;
+#endif
+#ifndef MS2_HOOK_DLL   // s_proxyMap: the exe's object at 0x143ab31e8, which other units reach as DAT_143ab31e8 (the hook DLL binds it)
+Unk_ProxyStaticMap DAT_143ab31e8(10);
+#else
+extern Unk_ProxyStaticMap DAT_143ab31e8;
+#endif
 // @0x1408e70b0
 CPlatformProxy::CPlatformProxy() { vfunc_1(); }
 
@@ -2585,3 +2609,10 @@ CStringW Unk_UserProxyTriggerText::GetText() {
 
 // No hooks for constructors/destructors, the platform factory, or the COMDAT tail.
 // Packet wrapper methods constructing RTTI-bearing embedded club/platform objects are also left unhooked.
+// The exe-addressed statics (DAT_<va>, other units reach them) pinned: their look-alike ??__E/??__F bodies
+// MS2-PIN: ??__FDAT_143ab29d8@@YAXXZ 0x142c9cbb0
+// MS2-PIN: ??__FDAT_143ab2fc0@@YAXXZ 0x142c9cbd0
+// MS2-PIN: ??__FDAT_143ab3010@@YAXXZ 0x142c9cc10
+// MS2-PIN: ??__FDAT_143ab31e8@@YAXXZ 0x142c9cc50
+// MS2-PIN: ??__FDAT_143ab32d8@@YAXXZ 0x142c9cc30
+// MS2-PIN: ??__FDAT_143ab3318@@YAXXZ 0x142c9cbf0

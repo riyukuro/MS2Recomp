@@ -4,7 +4,9 @@
 //  - scalars and pointers: the widest type their users declare, under the most meaningful name;
 //  - class objects (CString, CAtlArray, std::map, the placeholder Unk_* tables ...): a zero blob up to the next
 //    known exe global. Their constructors belong to the TU that owns them (its .text$di initializer), not
-//    to this unit; a recovered owner moves the definition there and drops it here.
+//    to this unit; a recovered owner moves the definition there and drops it here. The 26 of 0x143ab29d8-0x143ab3318
+//    are defined as DAT_<va> by unit_1400be790_mixedheaderstatics and commonfiles/userproxy.cpp now (their
+//    initializers run there, work/sfr22/fullexe-staticctors.md); users' other names reach them via tools/fullexe/alias.py.
 // The other names users declare at an address are mapped with /alternatename. The hook DLL binds every name
 // to the exe's own global (symbols table), so nothing here is compiled into it (docs/RECOVERY.md sec. 9).
 // MS2-UNIT: data_bss_143ab1b14
@@ -89,32 +91,6 @@ int DAT_143ab2974;                                      // 0x143ab2974
 __int64 DAT_143ab2978;                                  // 0x143ab2978
 __int64 DAT_143ab2980;                                  // 0x143ab2980
 __int64 DAT_143ab2988;                                  // 0x143ab2988
-alignas(8) unsigned char DAT_143ab29d8[0x50];           // 0x143ab29d8
-alignas(8) unsigned char DAT_143ab2a28[0x8];            // 0x143ab2a28
-alignas(16) unsigned char DAT_143ab2a30[0x10];          // 0x143ab2a30
-alignas(16) unsigned char DAT_143ab2a40[0x8];           // 0x143ab2a40
-alignas(8) unsigned char DAT_143ab2a48[0x8];            // 0x143ab2a48
-alignas(8) unsigned char DAT_143ab2a58[0x20];           // 0x143ab2a58
-alignas(8) unsigned char DAT_143ab2d78[0x8];            // 0x143ab2d78
-alignas(16) unsigned char DAT_143ab2d80[0xa0];          // 0x143ab2d80
-alignas(16) unsigned char DAT_143ab2e20[0x30];          // 0x143ab2e20
-alignas(16) unsigned char DAT_143ab2e80[0x60];          // 0x143ab2e80
-alignas(16) unsigned char DAT_143ab2fc0[0x50];          // 0x143ab2fc0
-alignas(16) unsigned char DAT_143ab3010[0x48];          // 0x143ab3010
-alignas(8) unsigned char DAT_143ab3058[0x20];           // 0x143ab3058
-alignas(8) unsigned char DAT_143ab3078[0x20];           // 0x143ab3078
-alignas(8) unsigned char DAT_143ab3098[0x20];           // 0x143ab3098
-alignas(8) unsigned char DAT_143ab30b8[0x28];           // 0x143ab30b8
-alignas(16) unsigned char DAT_143ab30e0[0x48];          // 0x143ab30e0
-alignas(8) unsigned char DAT_143ab31e8[0x38];           // 0x143ab31e8
-alignas(8) unsigned char DAT_143ab3268[0x20];           // 0x143ab3268
-alignas(8) unsigned char DAT_143ab3288[0x30];           // 0x143ab3288
-alignas(8) unsigned char DAT_143ab32b8[0x20];           // 0x143ab32b8
-alignas(8) unsigned char DAT_143ab32d8[0x10];           // 0x143ab32d8
-alignas(8) unsigned char DAT_143ab32e8[0x10];           // 0x143ab32e8
-alignas(8) unsigned char DAT_143ab32f8[0x10];           // 0x143ab32f8
-alignas(8) unsigned char DAT_143ab3308[0x10];           // 0x143ab3308
-alignas(8) unsigned char DAT_143ab3318[0x10];           // 0x143ab3318
 void* DAT_143ab3910;                                    // 0x143ab3910
 void* DAT_143ab3918;                                    // 0x143ab3918
 Unk_AeFeatureMgr* DAT_143ab3da0;                        // 0x143ab3da0
@@ -132,74 +108,6 @@ Unk_AeFeatureMgr* DAT_143ab3da0;                        // 0x143ab3da0
 #pragma comment(linker, "/alternatename:?DAT_143ab2930@@3HA=?DAT_143ab2930@@3_JA")
 #pragma comment(linker, "/alternatename:?DAT_143ab2946@@3_NA=?DAT_143ab2946@@3DA")
 #pragma comment(linker, "/alternatename:?DAT_143ab2970@@3IA=?DAT_143ab2970@@3HA")
-#pragma comment(linker, "/alternatename:?DAT_143ab29d8@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143ab29d8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2a28@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143ab2a28@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2a30@@3VUnk_InventoryCharacters@@A=?DAT_143ab2a30@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2a40@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143ab2a40@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2a48@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143ab2a48@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2a58@@3V?$CAtlArray@EV?$CElementTraits@E@ATL@@@ATL@@A=?DAT_143ab2a58@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2d78@@3V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@A=?DAT_143ab2d78@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2d80@@3DA=?DAT_143ab2d80@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2d80@@3PADA=?DAT_143ab2d80@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2d80@@3VUnk_MessageBoxStore@@A=?DAT_143ab2d80@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2d80@@3VUnk_Misc2d80@@A=?DAT_143ab2d80@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2d80@@3VUnk_SSGMisc2d80@@A=?DAT_143ab2d80@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2d80@@3VUnk_StModel@@A=?DAT_143ab2d80@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2e20@@3UUnk_ItemMgr@@A=?DAT_143ab2e20@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2e20@@3VCWarehouseItemTable@@A=?DAT_143ab2e20@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2e20@@3VUnk_CubeFallbackInventory@@A=?DAT_143ab2e20@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2e20@@3VUnk_MFurnInv@@A=?DAT_143ab2e20@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2e20@@3VUnk_Misc2e20@@A=?DAT_143ab2e20@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2e20@@3VUnk_MyPCGlobal2e20@@A=?DAT_143ab2e20@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2e20@@3VUnk_UgcCubeInventory@@A=?DAT_143ab2e20@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2e80@@3VUnk_TradeItemTable@@A=?DAT_143ab2e80@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2fc0@@3VUnk_CliEvtKeys@@A=?DAT_143ab2fc0@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2fc0@@3VUnk_GmEvtKey@@A=?DAT_143ab2fc0@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2fc0@@3VUnk_NoticeList@@A=?DAT_143ab2fc0@@3PAEA")
-#pragma comment(linker, "/alternatename:?g_attendTable@@3VUnk_AttendTable@@A=?DAT_143ab2fc0@@3PAEA")
-#pragma comment(linker, "/alternatename:?g_galleryCounters@@3VUnk_GalleryCounters@@A=?DAT_143ab2fc0@@3PAEA")
-#pragma comment(linker, "/alternatename:?g_gameEventUserValue@@3VGameEventUserValue@@A=?DAT_143ab2fc0@@3PAEA")
-#pragma comment(linker, "/alternatename:?g_ltaTable@@3VUnk_LtaTable@@A=?DAT_143ab2fc0@@3PAEA")
-#pragma comment(linker, "/alternatename:?g_rpsStrings@@3VUnk_RpsStringTable@@A=?DAT_143ab2fc0@@3PAEA")
-#pragma comment(linker, "/alternatename:?g_snowmanStrings@@3VUnk_SnowmanStrings@@A=?DAT_143ab2fc0@@3PAEA")
-#pragma comment(linker, "/alternatename:?g_unkTable@@3VUnk_Table@@A=?DAT_143ab2fc0@@3PAEA")
-#pragma comment(linker, "/alternatename:?g_unkTableA@@3VUnk_DTTable@@A=?DAT_143ab2fc0@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab3010@@3VUnk_GmQuestRec@@A=?DAT_143ab3010@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab3010@@3VUnk_NoticeList@@A=?DAT_143ab3010@@3PAEA")
-#pragma comment(linker, "/alternatename:?g_stampTable@@3VUnk_AttendTable@@A=?DAT_143ab3010@@3PAEA")
-#pragma comment(linker, "/alternatename:?g_trCounters@@3VUnk_TrCounters@@A=?DAT_143ab3010@@3PAEA")
-#pragma comment(linker, "/alternatename:?g_unkTableB@@3VUnk_DTTable@@A=?DAT_143ab3010@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab3058@@3UUnk_WsD_IdArray@@A=?DAT_143ab3058@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab3058@@3V?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@A=?DAT_143ab3058@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab3058@@3VUnk_CcIdList@@A=?DAT_143ab3058@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab3058@@3VUnk_IdList@@A=?DAT_143ab3058@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab3058@@3VUnk_SSGIntList@@A=?DAT_143ab3058@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab3078@@3UUnk_TaxiIdArray@@A=?DAT_143ab3078@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab3078@@3V?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@A=?DAT_143ab3078@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab3078@@3VUnk_AkoTaxiList@@A=?DAT_143ab3078@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab3078@@3VUnk_SSGIntList@@A=?DAT_143ab3078@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab3098@@3UUnk_TaxiIdArray@@A=?DAT_143ab3098@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab3098@@3VUnk_AkoTaxiList@@A=?DAT_143ab3098@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab3098@@3VUnk_SSGIntList@@A=?DAT_143ab3098@@3PAEA")
-#pragma comment(linker, "/alternatename:?g_aShutdownNoticed@@3V?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@A=?DAT_143ab30b8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab30e0@@3V?$CAtlMap@IIV?$CElementTraits@I@ATL@@V12@@ATL@@A=?DAT_143ab30e0@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab31e8@@3V?$CRBMap@_JHV?$CElementTraits@_J@ATL@@V?$CElementTraits@H@2@@ATL@@A=?DAT_143ab31e8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab3268@@3V?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@A=?DAT_143ab3268@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab3268@@3VUnk_G9U32Arr@@A=?DAT_143ab3268@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab3268@@3VUnk_IdList@@A=?DAT_143ab3268@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab3268@@3VUnk_NametagTitles@@A=?DAT_143ab3268@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab3288@@3V?$CRBMap@UUnk_MyPCPortalKey@@V?$MS2Ptr@VUnk_MyPCPortalLock@@@@V?$CElementTraits@UUnk_MyPCPortalKey@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_MyPCPortalLock@@@@@4@@ATL@@A=?DAT_143ab3288@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab32b8@@3V?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@A=?DAT_143ab32b8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab32b8@@3VUnk_MHouseSet@@A=?DAT_143ab32b8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab32d8@@3V?$set@UUnk_SSGHouseKey@@U?$less@UUnk_SSGHouseKey@@@std@@V?$allocator@UUnk_SSGHouseKey@@@3@@std@@A=?DAT_143ab32d8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab32d8@@3VUnk_Misc32d8@@A=?DAT_143ab32d8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab32e8@@3VUnk_SSGCountMapMap@@A=?DAT_143ab32e8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab32f8@@3VUnk_SSGCountMap@@A=?DAT_143ab32f8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab3308@@3V?$set@IU?$less@I@std@@V?$allocator@I@2@@std@@A=?DAT_143ab3308@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab3308@@3VUnk_GmEvtKey@@A=?DAT_143ab3308@@3PAEA")
-#pragma comment(linker, "/alternatename:?g_unkClaimed@@3VUnk_ALClaimed@@A=?DAT_143ab3308@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143ab3318@@3V?$map@IVCAdventureLevelMissionData@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@3@@std@@A=?DAT_143ab3318@@3PAEA")
-#pragma comment(linker, "/alternatename:?g_unkMissionStates@@3V?$map@IVUnk_ALMissionState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@3@@std@@A=?DAT_143ab3318@@3PAEA")
 #pragma comment(linker, "/alternatename:?s_instance@?$TSingleton@VEntityWorldManager@@@@2PEAVEntityWorldManager@@EA=?DAT_143ab3910@@3PEAXEA")
 #pragma comment(linker, "/alternatename:?s_instance@?$TSingleton@VCFunctionCubeService@@@@2PEAVCFunctionCubeService@@EA=?DAT_143ab3918@@3PEAXEA")
 #pragma comment(linker, "/alternatename:?s_instance@?$TSingleton@VPostProcessingService@@@@2PEAVPostProcessingService@@EA=?DAT_143ab3da0@@3PEAVUnk_AeFeatureMgr@@EA")
