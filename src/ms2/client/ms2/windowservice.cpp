@@ -1159,3 +1159,12 @@ Unk_WorkerPtr::operator Unk_Worker*() const { return m_p; }
 Unk_ComObj* FUN_141b93c80(Unk_ComObj** ppObj) { return *ppObj; }
 // @0x141b93c90
 Unk_Worker* Unk_WorkerPtr::operator->() const { return m_p; }
+
+// Full-executable aliases for the corresponding CWindowService methods.
+// MS2-PIN: ?PostMouseMove@CWindowService@@QEAAXI@Z 0x141b90f20
+// MS2-PIN: ?RecreateRenderer@CWindowService@@QEAA_N_NII@Z 0x141b91010
+// MS2-PIN: ?ApplyWindowMode@CWindowService@@QEAAX_NII@Z 0x141b91290
+// MS2-PIN: ?FUN_141b90f20@Unk_RsApp@@QEAAXH@Z 0x141b90f20
+// MS2-PIN: ?FUN_141b91010@Unk_GsApp@@QEAA_N_NHH@Z 0x141b91010
+// MS2-PIN: ?FUN_141b91010@Unk_RsApp@@QEAA_N_NHH@Z 0x141b91010
+// MS2-PIN: ?FUN_141b91290@Unk_RsApp@@QEAAX_NHH@Z 0x141b91290
