@@ -1546,7 +1546,6 @@ void FUN_141207fd0(Unk_AttachDummy* p, const NiPoint3& pt)
 }
 
 // Out-of-range template glue, kept as plain functions.
-void FUN_1401cd100(void* p, int n);
 void* FUN_141208da0(void* p);
 void* FUN_141208dc0(void* p);
 void FUN_141205170(void* a, void* b);
@@ -1554,13 +1553,15 @@ void FUN_141205570(void* p);
 bool FUN_141205640(void* a, void* b);
 void* FUN_141204a10(void* a, void* b, void* c, void* d, char e);
 void* FUN_1410431d0(void* p);
-extern char DAT_143ad2288[];
 
-// @0x1400e8c90
-void FUN_1400e8c90()
-{
-    FUN_1401cd100(DAT_143ad2288, 0);
-}
+// Pointer holder whose dynamic initializer is the exe's .text$di 0x1400e8c90 (ctor 0x1401cd100), so it runs from
+// this unit's .CRT$XCU slot.
+class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
+#ifndef MS2_HOOK_DLL   // the exe's object at 0x143ad2288 (the hook DLL binds it)
+Unk_1401cd100 DAT_143ad2288(NULL);
+#else
+extern Unk_1401cd100 DAT_143ad2288;
+#endif
 
 // @0x141204e70
 void* FUN_141204e70(void* p)
