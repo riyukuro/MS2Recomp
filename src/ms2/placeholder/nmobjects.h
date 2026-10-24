@@ -3738,10 +3738,18 @@ MS2_CHECK_SIZE(CNMRealFriendInfoChangedEvent, 0x120);
 class CNMRefreshEvent : public CNMEvent
 {
 public:
+    CNMRefreshEvent(); // 0x1415b2740
+    explicit CNMRefreshEvent(int value); // 0x1415b27a0
     virtual ~CNMRefreshEvent() = default;
+    char* vfunc_8() override { return const_cast<char*>("CNMRefreshEvent"); }
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_28; // +0x28
-    int m_2c; // +0x2c
 };
 MS2_CHECK_SIZE(CNMRefreshEvent, 0x30);
 
