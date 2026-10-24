@@ -57,7 +57,6 @@
 // MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@_JV?$allocator@_J@std@@@std@@@std@@QEBAAEBQEA_JXZ 0x140288b00 ; prop
 // MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPtred@@@@V?$allocator@V?$MS2Ptr@VCPtred@@@@@std@@@std@@@std@@QEAAAEAPEAV?$MS2Ptr@VCPtred@@@@XZ 0x140288ba0 ; prop
 // MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPtred@@@@V?$allocator@V?$MS2Ptr@VCPtred@@@@@std@@@std@@@std@@QEBAAEBQEAV?$MS2Ptr@VCPtred@@@@XZ 0x140288c00 ; prop
-// MS2-PIN: ??C?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@UItemEntity@@@std@@@std@@@std@@QEBAPEAUItemEntity@@XZ 0x140288c60 ; prop
 // MS2-PIN: ?_Orphan_all@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPtred@@@@V?$allocator@V?$MS2Ptr@VCPtred@@@@@std@@@std@@@std@@QEAAXXZ 0x140288cc0 ; prop
 // MS2-PIN: ?_Orphan_range@?$vector@UItemEntity@@V?$allocator@UItemEntity@@@std@@@std@@AEBAXPEAUItemEntity@@0@Z 0x140288d00 ; prop
 // MS2-PIN: ?_Orphan_range@?$vector@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@AEBAXPEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@0@Z 0x140288d10 ; prop
@@ -169,3 +168,81 @@ __declspec(selectany) extern errno_t (__cdecl* const ms2_pfnCsMemcpyS)(void*, rs
 
 // @0x14028b700
 MS2_EMIT_CRT_MEMMOVE_S();
+
+// ---- Full-exe entry points under the FUN_ spellings the commonstruct slices call. The exe's bodies are ICF-folded
+// template instances; these give the same behaviour over the real containers. ----
+typedef std::vector<MS2Ptr<CIngredientInfo> > Unk_CsIngVector;
+typedef std::list<MS2Ptr<CUserChangeableItemHistory> > Unk_CsHistList;
+
+// vector<MS2Ptr<CIngredientInfo>>::_Make_iterator_offset: an iterator `idx` elements past _Myfirst.
+// MS2-FUNCTIONAL: writes the 8-byte iterator directly; the exe goes through _Get_second / the iterator ctor
+// @0x140288770
+void FUN_140288770(__int64 self, __int64 out, __int64 idx)
+{
+    *(Unk_IngRef**)out = *(Unk_IngRef**)self + idx;
+}
+
+// vector<__int64>::_Tidy
+// MS2-FUNCTIONAL: frees through std::allocator directly; the exe calls the _Myfirst/_Mylast/_Myend accessors
+// @0x140289670
+__int64 FUN_140289670(void* t)
+{
+    __int64** v = (__int64**)t;
+    if (v[0]) {
+        std::allocator<__int64>().deallocate(v[0], v[2] - v[0]);
+        v[0] = 0;
+        v[1] = 0;
+        v[2] = 0;
+    }
+    return 0;
+}
+
+// list::_Unchecked_begin: the head's next node.
+// MS2-FUNCTIONAL: writes the iterator directly instead of calling its ctor
+// @0x140289d20
+void Unk_HistList::FUN_140289d20(Unk_It* out)
+{
+    out->p = *(void**)m_head;
+}
+
+// list::begin
+// MS2-FUNCTIONAL: writes the iterator directly instead of calling its ctor
+// @0x14028a1a0
+Unk_It* Unk_HistList::FUN_14028a1a0(Unk_It* out)
+{
+    out->p = *(void**)m_head;
+    return out;
+}
+
+// float floor(float)
+// MS2-FUNCTIONAL: calls the CRT floorf (the exe's import) through <cmath>
+// @0x14028aed0
+float FUN_14028aed0(float f)
+{
+    return floorf(f);
+}
+
+// push_back(MS2Ptr&&)
+// MS2-FUNCTIONAL: calls the std::vector member; the exe calls its emplace_back instance out of line
+// @0x14028b300
+void Unk_IngVec::FUN_14028b300(Unk_IngRef& r)
+{
+    reinterpret_cast<Unk_CsIngVector*>(this)->push_back(std::move(reinterpret_cast<MS2Ptr<CIngredientInfo>&>(r)));
+}
+
+// push_back(const MS2Ptr&)
+// MS2-FUNCTIONAL: calls the std::vector member; the exe calls its push_back instance out of line
+// @0x14028b330
+void Unk_IngVec::FUN_14028b330(Unk_IngRef& r)
+{
+    reinterpret_cast<Unk_CsIngVector*>(this)->push_back(reinterpret_cast<const MS2Ptr<CIngredientInfo>&>(r));
+}
+
+// vector<ItemEntity>::rbegin: a reverse iterator over end().
+// MS2-FUNCTIONAL: writes the iterator directly instead of calling end() and the reverse_iterator ctor
+// @0x14028b360
+Unk_It* Unk_ItemVec::FUN_14028b360(Unk_It* out)
+{
+    out->p = m_end;
+    return out;
+}

@@ -257,3 +257,32 @@ MS2_CS_SCALAR_DELETING_DTOR(WeddingHallReservationFee)
 // MS2-PIN: ?_Get_data@?$_Tree_comp_alloc@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAAAEAV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@2@XZ 0x140287eb0
 // MS2-PIN: ?GetNode@?$CAtlMap@HW4Unk_LimitValue@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4Unk_LimitValue@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x140281e10
 // MS2-PIN: ?GetNode@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x140281d20
+
+// ---- Full-exe entry points under the FUN_ spellings the commonstruct slices call (ICF-folded template instances). ----
+// _Vector_alloc::_Copy_alloc for std::allocator: nothing to copy.
+// MS2-FUNCTIONAL: empty; the exe calls the (empty) _Pocca instance
+// @0x140287550
+void FUN_140287550(__int64, __int64) {}
+
+// MS2-FUNCTIONAL: empty; the exe calls the (empty) _Pocca instance
+// @0x140287580
+void FUN_140287580(__int64, __int64) {}
+
+// _Tree<map<int,int>>::_Freeheadnode
+// MS2-FUNCTIONAL: frees the node directly; the exe destroys its links and deallocates through the allocator traits
+// @0x140287dc0
+void FUN_140287dc0(void* tree, __int64 head)
+{
+    (void)tree;
+    std::allocator<std::_Tree_node<std::pair<const int, int>, void*> >().deallocate(
+        reinterpret_cast<std::_Tree_node<std::pair<const int, int>, void*>*>(head), 1);
+}
+
+struct Unk_TVal;
+// _Tree<map<int,int>>::_Get_data: the tree value is at offset 0.
+// MS2-FUNCTIONAL: returns the argument; the exe forwards through two folded accessor instances
+// @0x140287ee0
+Unk_TVal* FUN_140287ee0(void* tree)
+{
+    return (Unk_TVal*)tree;
+}
