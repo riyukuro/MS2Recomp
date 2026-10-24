@@ -1141,6 +1141,40 @@ unsigned char* FUN_141396750(Unk_Bitset8* pBits, unsigned char nValue)
     return pBits->m_bits;
 }
 
+struct Unk_GeRange { int min; int max; };
+class Unk_GeMgr
+{
+public:
+    char FUN_14138c210(int trigger, Unk_GeRange range);
+};
+class Unk_PCBuffTable;
+
+// MS2-FUNCTIONAL: legacy range-check entry adapts the recovered two-int range and manager method.
+char Unk_GeMgr::FUN_14138c210(int trigger, Unk_GeRange range)
+{
+    Unk_GameEventIntRange converted(range.min, range.max);
+    return static_cast<char>(reinterpret_cast<CGuideManager*>(this)->CheckTriggerRange(
+        static_cast<CGuideManager::TriggerType>(trigger), converted));
+}
+// MS2-FUNCTIONAL: generic caller spelling forwards to the recovered skill restriction check.
+int FUN_14138c930(Unk_PCBuffTable* self, int skillId)
+{ return reinterpret_cast<CGuideManager*>(self)->IsSkillRestricted(skillId); }
+// MS2-FUNCTIONAL: generic caller spelling forwards to the recovered skill restriction check.
+int FUN_14138c930(void* self, int skillId)
+{ return reinterpret_cast<CGuideManager*>(self)->IsSkillRestricted(skillId); }
+// MS2-FUNCTIONAL: generic caller spelling forwards to the recovered guide manager method.
+void FUN_14138cce0(void* self, int mode, int id)
+{ reinterpret_cast<CGuideManager*>(self)->TestEntity(mode, id); }
+// MS2-FUNCTIONAL: generic caller spelling forwards to the recovered guide condition method.
+void FUN_14138d090(void* self, CStringA condition)
+{ reinterpret_cast<CGuideManager*>(self)->TestCondition(condition); }
+// MS2-FUNCTIONAL: generic caller spelling forwards to the recovered entity-state method.
+void FUN_14138d160(void* self, int id)
+{ reinterpret_cast<CGuideManager*>(self)->ShowEntityState(id); }
+// MS2-FUNCTIONAL: generic caller spelling forwards to the recovered debug toggle.
+void FUN_14138d460(void* self)
+{ reinterpret_cast<CGuideManager*>(self)->ToggleDebug(); }
+
 // Full-executable aliases for existing CGuideManager methods.
 // MS2-PIN: ?CheckTriggerRange@CGuideManager@@QEAA_NW4TriggerType@1@UUnk_GameEventIntRange@@@Z 0x14138c210
 // MS2-PIN: ?IsSkillRestricted@CGuideManager@@QEAAHH@Z 0x14138c930
