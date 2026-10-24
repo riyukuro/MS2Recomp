@@ -253,3 +253,17 @@ int CFieldMissionTable::GetStatPoints(int nRound)
 // MS2-PIN: ?FUN_14037c450@@YAHPEAVCFieldMissionTable@@H@Z 0x14037c450
 // MS2-PIN: ?FUN_14037c510@@YAHPEAVCFieldMissionTable@@H@Z 0x14037c510
 // MS2-PIN: ?FUN_14037c510@@YAHPEAXH@Z 0x14037c510
+
+// MS2-FUNCTIONAL: full-exe void ABI entry; the source Load result is intentionally discarded.
+void FUN_14037c010(CFieldMissionTable* pTable) { pTable->Load(); }
+// MS2-FUNCTIONAL: full-exe compatibility entry forwarding to the recovered round traversal.
+int FUN_14037c450(CFieldMissionTable* pTable, int nRound) { return pTable->GetPrevRound(nRound); }
+// MS2-FUNCTIONAL: full-exe compatibility entry forwarding to the recovered round traversal.
+int FUN_14037c510(CFieldMissionTable* pTable, int nRound) { return pTable->GetNextRound(nRound); }
+// MS2-FUNCTIONAL: same pointer ABI under a generic caller-side type used by one unresolved reference.
+int FUN_14037c510(void* pTable, int nRound) { return static_cast<CFieldMissionTable*>(pTable)->GetNextRound(nRound); }
+
+// MS2-PIN: ?FUN_14037c010@@YAXPEAVCFieldMissionTable@@@Z 0x14037c010
+// MS2-PIN: ?FUN_14037c450@@YAHPEAVCFieldMissionTable@@H@Z 0x14037c450
+// MS2-PIN: ?FUN_14037c510@@YAHPEAVCFieldMissionTable@@H@Z 0x14037c510
+// MS2-PIN: ?FUN_14037c510@@YAHPEAXH@Z 0x14037c510
