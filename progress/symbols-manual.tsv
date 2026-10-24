@@ -14655,3 +14655,4 @@ DAT_1439f8358	1439f8358	data
 ?SetNumberOfFramePools@VideoProviderNetStream@AS3@GFx@Scaleform@@QEAAXI@Z	140025480	func
 ?SetOpenURLTimeout@VideoProviderNetStream@AS3@GFx@Scaleform@@QEAAXM@Z	1400254e0	func
 ?SetReloadThresholdTime@VideoProviderNetStream@AS3@GFx@Scaleform@@QEAAXM@Z	1400254b0	func
+?Unk_GetRenderService@@YAPEAVRenderService@ecr@@PEAD@Z	14127bf80	func
