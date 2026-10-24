@@ -16,6 +16,48 @@ static void nm_free_string_storage(char*& p)
     }
 }
 
+static bool nm_ensure_string(void** slot, size_t bytes, size_t emptyRva)
+{
+    void* empty = static_cast<unsigned char*>(reinterpret_cast<void*>(GetModuleHandleW(nullptr))) + emptyRva;
+    if (*slot == nullptr || *slot == empty) {
+        *slot = ::operator new(bytes);
+        *static_cast<char*>(*slot) = 0;
+    }
+    return *slot != nullptr && *slot != empty;
+}
+
+// MS2-FUNCTIONAL: lazily allocates and clears the session string buffer, preserving its recovered shared-empty sentinel.
+// @0x1415f9410
+bool FUN_1415f9410(void** slot) { return nm_ensure_string(slot, 9, 0x3ae28ec); }
+
+// MS2-FUNCTIONAL: lazily allocates and clears the session string buffer, preserving its recovered shared-empty sentinel.
+// @0x1415f94c0
+bool FUN_1415f94c0(void** slot) { return nm_ensure_string(slot, 0x100, 0x3ae28eb); }
+
+// MS2-FUNCTIONAL: lazily allocates and clears the session string buffer, preserving its recovered shared-empty sentinel.
+// @0x1415f9570
+bool FUN_1415f9570(void** slot) { return nm_ensure_string(slot, 0x1000, 0x3ae28ea); }
+
+// MS2-FUNCTIONAL: lazily allocates and clears the session string buffer, preserving its recovered shared-empty sentinel.
+// @0x1415f9620
+bool FUN_1415f9620(void** slot) { return nm_ensure_string(slot, 0x15e, 0x3ae28ed); }
+
+// MS2-FUNCTIONAL: lazily allocates and clears the session string buffer, preserving its recovered shared-empty sentinel.
+// @0x1415f96d0
+bool FUN_1415f96d0(void** slot) { return nm_ensure_string(slot, 0x20, 0x3ae2848); }
+
+// MS2-FUNCTIONAL: lazily allocates and clears the session string buffer, preserving its recovered shared-empty sentinel.
+// @0x1415f9780
+bool FUN_1415f9780(void** slot) { return nm_ensure_string(slot, 0x40, 0x3ae28e9); }
+
+// MS2-FUNCTIONAL: lazily allocates and clears the session string buffer, preserving its recovered shared-empty sentinel.
+// @0x1415f9830
+bool FUN_1415f9830(void** slot) { return nm_ensure_string(slot, 0x400, 0x3ae28e8); }
+
+// MS2-FUNCTIONAL: lazily allocates and clears the session string buffer, preserving its recovered shared-empty sentinel.
+// @0x1415f98e0
+bool FUN_1415f98e0(void** slot) { return nm_ensure_string(slot, 0x800, 0x3ae2849); }
+
 // @0x1415f9990
 void FUN_1415f9990(void*) { }
 // MS2-FUNCTIONAL: the recovered helper is an empty body; pin the alternate unsigned return analysis too.
@@ -86,13 +128,13 @@ void CStreamCryptor_v1::vfunc_5() { }
 // MS2-FUNCTIONAL: preserves the recovered virtual slot; Ghidra's return-value annotation conflicts with the exported signature.
 // MS2-PIN: ?vfunc_5@CStreamCryptor_v1@@UEAAXXZ 0x1415fa110
 
+// MS2-FUNCTIONAL: provides the process-stable singleton instance recovered from this function.
 // @0x1415fa260
 CNMManager* CNMManager::GetInstance()
 {
     static CNMManager manager;
     return &manager;
 }
-// MS2-FUNCTIONAL: provides a process-stable singleton instance with static initialization.
 // MS2-PIN: ?GetInstance@CNMManager@@SAPEAV1@XZ 0x1415fa260
 
 // @0x1415fb610
