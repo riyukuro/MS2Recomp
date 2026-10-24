@@ -1299,3 +1299,11 @@ int Unk_IndexPool::Pick()
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cc3790-0x142cc38a0 .text$yd
+// Full-executable aliases for existing WeddingManager methods.
+// MS2-PIN: ?ApplyHallTicket@WeddingManager@@QEAAXXZ 0x141b89950
+// MS2-PIN: ?ReadTicketMail@WeddingManager@@QEAAXV?$MS2Ptr@VUnk_WeddingMail@@@@PEAVAScript@@@Z 0x141b873c0
+// MS2-PIN: ?CanStartWedding@WeddingManager@@QEAA_N_J@Z 0x141b867e0
+// MS2-PIN: ?FUN_141b873c0@Unk_MlWedding@@QEAAXV?$Unk_MailPtr@VCMailInfo@@@@PEAVAScript@@@Z 0x141b873c0
+// MS2-PIN: ?FUN_141b867e0@Unk_MsgWedding@@QEAA_N_J@Z 0x141b867e0
+// MS2-PIN: ?FUN_141b867e0@Unk_UcSlotMgr@@QEAA_N_J@Z 0x141b867e0
+// MS2-PIN: ?FUN_141b89950@@YAHPEAVWeddingManager@@@Z 0x141b89950
