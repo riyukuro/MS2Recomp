@@ -2197,6 +2197,13 @@ void FUN_1415e4a90(void* pThis, Unk_StlElem<0x20>* pVal)
     }
 }
 
+// @0x1415e3880
+void FUN_1415e3880() {}
+
+// @0x1415e3890
+void FUN_1415e3890() {}
+
+
 // MS2-PIN: ?FUN_1415e2430@@YAXPEAXPEAU?$Unk_StlElem@$0BA@@@1@Z 0x1415e2430
 // MS2-PIN: ?FUN_1415e2480@@YAXPEAXPEAU?$Unk_StlElem@$0BI@@@1@Z 0x1415e2480
 // MS2-PIN: ?FUN_1415e24d0@@YAXPEAXPEAU?$Unk_StlElem@$0CA@@@1@Z 0x1415e24d0
