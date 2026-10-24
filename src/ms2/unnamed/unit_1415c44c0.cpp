@@ -9,6 +9,8 @@
 extern void* FUN_1415f39d0(void*);
 extern void* FUN_1415f39e0(void*);
 extern void FUN_1415fbe70(void*, unsigned int, const void*);
+extern void* FUN_1415fa260();
+extern int FUN_1415cb440(void*, void*);
 extern CNMSerializable* FUN_1415f10f0(CNMSerializable*, long long);
 extern void* FUN_1415ef9b0(void*, void*);
 
@@ -1066,6 +1068,48 @@ void FUN_1415ccff0() {}
 
 // @0x1415cd010
 void FUN_1415cd010() {}
+
+// @0x1415c7010
+int FUN_1415c7010(void*, const CNMRejectedUser* user)
+{
+    CNMAppendRejectedUserFunc request(user);
+    return FUN_1415cb440(FUN_1415fa260(), &request);
+}
+
+// @0x1415c70a0
+int FUN_1415c70a0(void*, const CNMRejectedUser* user)
+{
+    CNMRemoveRejectedUserFunc request(user);
+    return FUN_1415cb440(FUN_1415fa260(), &request);
+}
+
+// @0x1415c7400
+int FUN_1415c7400(void*, short code)
+{
+    CNMLogReportSyncFunc request(code);
+    return FUN_1415cb440(FUN_1415fa260(), &request);
+}
+
+// @0x1415c75d0
+int FUN_1415c75d0(void*, int noteId)
+{
+    CNMProcessNoteFunc request(0, noteId);
+    return FUN_1415cb440(FUN_1415fa260(), &request);
+}
+
+// @0x1415c7630
+int FUN_1415c7630(void*, int noteId)
+{
+    CNMProcessNoteFunc request(1, noteId);
+    return FUN_1415cb440(FUN_1415fa260(), &request);
+}
+
+// @0x1415c7690
+int FUN_1415c7690(void*, int noteId)
+{
+    CNMProcessNoteFunc request(2, noteId);
+    return FUN_1415cb440(FUN_1415fa260(), &request);
+}
 
 // MS2-PIN: ?FUN_1415c4870@@YAHXZ 0x1415c4870
 // MS2-PIN: ?FUN_1415c53b0@@YAHXZ 0x1415c53b0
