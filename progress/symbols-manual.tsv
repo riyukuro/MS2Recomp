@@ -10661,3 +10661,4 @@ criHeap_Destroy	140028074	func
 ?FUN_1424f03f0@@YAXPEAEPEAVMemoryHeap@Scaleform@@@Z	1424f03f0	func
 ?CreateEmptyMovieClip@Sfr34d_ValueObjIfc@AS3@GFx@Scaleform@@UEAA_NPEAXPEAVValue@34@PEBDJ@Z	1424f33d0	func
 ?GetDisplayInfo@Sfr34d_ValueObjIfc@AS3@GFx@Scaleform@@UEBA_NPEAXPEAVDisplayInfo@Value@34@@Z	1425094e0	func
+?Sfr33CallerAccessKind@AS3@GFx@Scaleform@@YAHPEAEPEBE1@Z	1425075e0	func
