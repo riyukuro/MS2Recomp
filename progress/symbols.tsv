@@ -172687,8 +172687,8 @@ FUN_141485590	141485590	func
 ??0SysAllocBase@Scaleform@@QEAA@XZ	141803a70	func
 ??0SysAllocContainer@?$SysAllocBase_SingletonSupport@VSysAllocMalloc@Scaleform@@VSysAlloc@2@@Scaleform@@QEAA@XZ	141803a90	func
 ??0SysAllocMalloc@Scaleform@@QEAA@XZ	141803ab0	func
-??0System@Scaleform@@QEAA@AEBUHeapDesc@MemoryHeap@1@PEAVSysAllocBase@1@@Z	14258c270	func
-??0System@Scaleform@@QEAA@PEAVSysAllocBase@1@@Z	14258c290	func
+??0System@Scaleform@@QEAA@AEBUHeapDesc@MemoryHeap@1@PEAVSysAllocBase@1@@Z	141803ae0	func
+??0System@Scaleform@@QEAA@PEAVSysAllocBase@1@@Z	141803b10	func
 ??0_ATL_COM_MODULE70@ATL@@QEAA@XZ	141803b40	func
 ??0_ATL_WIN_MODULE70@ATL@@QEAA@XZ	141803b70	func
 ??0Unk_WsaStartup@@QEAA@XZ	141803bb0	func
