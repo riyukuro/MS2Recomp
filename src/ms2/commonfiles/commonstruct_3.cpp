@@ -286,3 +286,16 @@ Unk_TVal* FUN_140287ee0(void* tree)
 {
     return (Unk_TVal*)tree;
 }
+
+// Vector::_Udefault: default-construct each CString in the uninitialised tail and return the end cursor.
+// MS2-FUNCTIONAL: CString's default constructor does not need allocator state, so this preserves the element
+// construction and return behavior of the original vector helper.
+// @0x1402875b0
+__int64 FUN_1402875b0(__int64, __int64 first, __int64 last)
+{
+    CString* current = reinterpret_cast<CString*>(first);
+    CString* finish = reinterpret_cast<CString*>(last);
+    for (; current != finish; ++current)
+        ::new (current) CString();
+    return last;
+}
