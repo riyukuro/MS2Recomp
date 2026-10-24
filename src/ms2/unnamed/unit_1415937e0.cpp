@@ -9,8 +9,7 @@
 extern void FUN_14156bcb0(void*,void*,void*); extern void FUN_14156bd50(void*); extern void FUN_14156be10(void*,void*,void*); extern void FUN_14156bf10(void*);
 extern void FUN_14156ac20(void*,unsigned int); extern void FUN_1415f9990(void*); extern int FUN_1415fb700(void*); extern int FUN_1415fb750(void*); extern int FUN_1415fb6d0(void*);
 extern void FUN_1415e8260(void*); extern void FUN_141608f60(void*); extern void FUN_14160b390(void*,void*); extern unsigned int FUN_14160b9d0(void*);
-// MS2-FUNCTIONAL: fallback temporary for decoding; the executable has no standalone default-constructor symbol.
-CNMGameServerCode::CNMGameServerCode():CNMSerializable(0x6763,1,1),m_nServerCode(0){}
+// CNMGameServerCode::CNMGameServerCode: nmgameservercode.cpp @0x14157aaf0
 // MS2-FUNCTIONAL 0x1415937e0: initializes the game-server list with request mode zero.
 CNMGetGameServerListFunc::CNMGetGameServerListFunc():CNMFunc(0x800d,1,0,0),m_nGameCode(0),m_n34(0),m_aServerCode(){FUN_1415e8260(&m_aServerCode);}
 // MS2-FUNCTIONAL 0x141593850: stores the requested game code.

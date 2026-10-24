@@ -27,8 +27,7 @@ extern void FUN_14156acb0(long long*, unsigned long long);
 bool FUN_141572020(const std::vector<CNMCharacter>*, char*, unsigned int);
 unsigned int FUN_141572110(const char*, std::vector<CNMCharacter>*, unsigned int);
 
-// MS2-FUNCTIONAL: constructs the zeroed character value used by the note-list parser.
-CNMCharacter::CNMCharacter() : CNMSerializable(0x6163,1,1),m_10{},m_50{},m_58{} {}
+// CNMCharacter::CNMCharacter: nmcharacter.cpp @0x141570010
 
 // @0x141571fb0
 void FUN_141571fb0(void* note, void* item)
