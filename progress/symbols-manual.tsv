@@ -9934,3 +9934,4 @@ DAT_143a2d890	143a2d890	data
 ?f@ThunkFunction@InstanceTraits@AS3@GFx@Scaleform@@2QBUThunkInfo@345@B	14313e4b8	data
 ?f@VTableInd@InstanceTraits@AS3@GFx@Scaleform@@2QBUThunkInfo@345@B	143a2aa30	data
 Video04ClassInfo	143a47b70	data
+?GetVT@Traits@AS3@GFx@Scaleform@@QEBAAEAVVTable@234@XZ	14250fa80	func
