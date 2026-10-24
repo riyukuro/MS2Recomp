@@ -601,6 +601,7 @@ class CNMGameServerCode : public CNMSerializable
 {
 public:
     CNMGameServerCode();
+    explicit CNMGameServerCode(int serverCode);                  // 0x14157ab40
     CNMGameServerCode(const CNMGameServerCode& r) noexcept;     // 0x1415e9cd0
     CNMGameServerCode(CNMGameServerCode&& r) noexcept;          // 0x1415e9c80
     virtual ~CNMGameServerCode() = default;                               // 0x1415edad0
