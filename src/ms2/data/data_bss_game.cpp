@@ -7,6 +7,9 @@
 // The 39 constructed objects of these blocks (CString statics, CAtlList/CAtlMap, QuestMask, the dialogs, ...) are
 // defined by their owners as DAT_<va> now, with their dynamic initializers (work/sfr22/fullexe-staticctors.md);
 // 0x143afbfb8 is Gamebryo's NiPSParticleSystem::ms_RTTI. Users' other names reach them via tools/fullexe/alias.py.
+// Gamebryo/efd/CRT statics that were zero-blobbed here (NiRTTIs, NiViewRenderClick/NiFogProperty defaults,
+// egf::g_bapiContext, _OptionsStorage, ...) were dropped: their GB/CRT definition owns the address (symbols rows),
+// and the blob would have shadowed it (sfr36, work/sfr36/fullexe-gamedata.md).
 // The hook DLL binds every name to the exe's own global (symbols table), so nothing here is compiled into it
 // (docs/RECOVERY.md sec. 9).
 // MS2-UNIT: data_bss_game
@@ -62,7 +65,6 @@ void* DAT_143aac538;                                            // 0x143aac538
 bool DAT_143aac548;                                             // 0x143aac548
 Unk_AltStringMgr* DAT_143aaccf8;                                // 0x143aaccf8
 long g_lUniqueSeq;                                              // 0x143aacf78
-unsigned __int64 DAT_143aad0e8 = 0x0ull;                        // 0x143aad0e8
 __crt_locale_pointers* DAT_143aad168;                           // 0x143aad168
 char DAT_143aad1e0;                                             // 0x143aad1e0
 alignas(16) unsigned char DAT_143aad2d0[0x800];                 // 0x143aad2d0
@@ -94,7 +96,6 @@ int DAT_143ac2fd0;                                              // 0x143ac2fd0
 int DAT_143ac2fd4;                                              // 0x143ac2fd4
 float DAT_143ac30a8 = 0.0f;                                     // 0x143ac30a8
 float DAT_143ac30ac = 0.0f;                                     // 0x143ac30ac
-char DAT_143ac3ce8;                                             // 0x143ac3ce8
 float DAT_143ac3d08 = 0.0f;                                     // 0x143ac3d08
 alignas(16) unsigned char DAT_143ac3d10[0x8];                   // 0x143ac3d10
 void* DAT_143ac3d18;                                            // 0x143ac3d18
@@ -104,7 +105,6 @@ char DAT_143acdb20;                                             // 0x143acdb20
 void* DAT_143ad08c8;                                            // 0x143ad08c8
 int DAT_143ad1b20;                                              // 0x143ad1b20
 char DAT_143ad2168;                                             // 0x143ad2168
-alignas(8) unsigned char DAT_143ad2288[0xc0];                   // 0x143ad2288
 char DAT_143ad2348;                                             // 0x143ad2348
 __int64 DAT_143ad9140 = 0LL;                                    // 0x143ad9140
 void* DAT_143ad95f0;                                            // 0x143ad95f0
@@ -138,16 +138,8 @@ int g_bDefaultWndProc;                                          // 0x143af7d5c
 int g_bPrintScreenPending;                                      // 0x143af80f8
 int g_bHotkeyPrintScreen;                                       // 0x143af80fc
 int g_bHotkeyAltPrintScreen;                                    // 0x143af8100
-char DAT_143af89f0;                                             // 0x143af89f0
-char DAT_143af8a00;                                             // 0x143af8a00
-char DAT_143af8a10;                                             // 0x143af8a10
 int g_143afa350;                                                // 0x143afa350
 int DAT_143afa750;                                              // 0x143afa750
-alignas(8) unsigned char DAT_143afa798[0x10];                   // 0x143afa798
-char DAT_143afa7c8;                                             // 0x143afa7c8
-alignas(16) unsigned char DAT_143afa7f0[0x8];                   // 0x143afa7f0
-alignas(16) unsigned char DAT_143afb020[0x28];                  // 0x143afb020
-char DAT_143afb348;                                             // 0x143afb348
 alignas(8) unsigned char DAT_143afbb98[0x8];                    // 0x143afbb98
 alignas(16) unsigned char DAT_143afbba0[0x10];                  // 0x143afbba0
 alignas(8) unsigned char DAT_143afbfc8[0x8];                    // 0x143afbfc8
@@ -155,7 +147,6 @@ char DAT_143afc898;                                             // 0x143afc898
 char DAT_143afc8d0;                                             // 0x143afc8d0
 char DAT_143afc8e8;                                             // 0x143afc8e8
 char DAT_143afc900;                                             // 0x143afc900
-char DAT_143afc918;                                             // 0x143afc918
 char DAT_143afcb90;                                             // 0x143afcb90
 char DAT_143afcba8;                                             // 0x143afcba8
 alignas(8) unsigned char DAT_143afe6f8[0x68];                   // 0x143afe6f8
@@ -163,7 +154,6 @@ alignas(16) unsigned char DAT_143b023c0[0x8];                   // 0x143b023c0
 alignas(8) unsigned char DAT_143b023c8[0x10];                   // 0x143b023c8
 alignas(16) unsigned char DAT_143b03490[0x20b8];                // 0x143b03490
 alignas(16) unsigned char DAT_143b05980[0x8];                   // 0x143b05980
-alignas(8) unsigned char DAT_143b059e8[0x468];                  // 0x143b059e8
 char DAT_143b08a3c;                                             // 0x143b08a3c
 void* DAT_143b09498;                                            // 0x143b09498
 void* DAT_143b094a0;                                            // 0x143b094a0
@@ -322,7 +312,6 @@ alignas(2) unsigned char DAT_143e668c2[0x7fffe];                // 0x143e668c2
 #pragma comment(linker, "/alternatename:?s_pCallbackContext@MultiSceneUpdater@@2PEAXEA=?DAT_143ac3d18@@3PEAXEA")
 #pragma comment(linker, "/alternatename:?ms_pSingleton@?$SingletonClass@VUIAlignWidgetManager@@@@2PEAVUIAlignWidgetManager@@EA=?DAT_143ac5d88@@3PEAVUnk_140e45740@@EA")
 #pragma comment(linker, "/alternatename:?s_instance@?$TSingleton@VDecoEditService@@@@2PEAVDecoEditService@@EA=?DAT_143ad08c8@@3PEAXEA")
-#pragma comment(linker, "/alternatename:?DAT_143ad2288@@3PADA=?DAT_143ad2288@@3PAEA")
 #pragma comment(linker, "/alternatename:?s_instance@?$TSingleton@VMS2LightService@@@@2PEAVMS2LightService@@EA=?DAT_143ad95f0@@3PEAXEA")
 #pragma comment(linker, "/alternatename:?DAT_143adc208@@3PADA=?DAT_143adc208@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143add400@@3PAHA=?DAT_143add400@@3PAEA")
@@ -334,9 +323,6 @@ alignas(2) unsigned char DAT_143e668c2[0x7fffe];                // 0x143e668c2
 #pragma comment(linker, "/alternatename:?DAT_143af7d40@@3HA=?g_bAppActive@@3HA")
 #pragma comment(linker, "/alternatename:?g_rcWindow@@3UtagRECT@@A=?DAT_143af7d48@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143af7d58@@3HA=?g_143af7d58@@3HA")
-#pragma comment(linker, "/alternatename:?ms_RTTI@MS2RenderListProcessor@@2VNiRTTI@@B=?DAT_143afa798@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143afa7f0@@3V?$SmartPointer@VNiFogProperty@@@efd@@A=?DAT_143afa7f0@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143afb020@@3P6AXPEAVNiAVObject@@@ZEA=?DAT_143afb020@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143afbb98@@3P6AXXZEA=?DAT_143afbb98@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143afbba0@@3P6AXXZEA=?DAT_143afbba0@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143afbfc8@@3P6AXPEAVNiAVObject@@@ZEA=?DAT_143afbfc8@@3PAEA")
@@ -346,19 +332,6 @@ alignas(2) unsigned char DAT_143e668c2[0x7fffe];                // 0x143e668c2
 #pragma comment(linker, "/alternatename:?DAT_143b023c8@@3P6AH_K@ZEA=?DAT_143b023c8@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143b03490@@3P6AXFEPEBD@ZEA=?DAT_143b03490@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143b05980@@3P6A?AVutf8string@efd@@AEBV12@@ZEA=?DAT_143b05980@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143b059e8@@3DA=?DAT_143b059e8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143b059e8@@3EA=?DAT_143b059e8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143b059e8@@3HA=?DAT_143b059e8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143b059e8@@3UUnk_EntityAppFramework@@A=?DAT_143b059e8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143b059e8@@3UUnk_FdFramework@@A=?DAT_143b059e8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143b059e8@@3UUnk_FmFramework@@A=?DAT_143b059e8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143b059e8@@3UUnk_TeFramework@@A=?DAT_143b059e8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143b059e8@@3UUnk_TrgFramework@@A=?DAT_143b059e8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143b059e8@@3UUnk_UgcFramework@@A=?DAT_143b059e8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143b059e8@@3VUnk_CinFramework@@A=?DAT_143b059e8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143b059e8@@3VUnk_GsAppG@@A=?DAT_143b059e8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143b059e8@@3VUnk_WmFieldHolder@@A=?DAT_143b059e8@@3PAEA")
-#pragma comment(linker, "/alternatename:?g_143b059e8@@3VUnk_AppFramework@@A=?DAT_143b059e8@@3PAEA")
 #pragma comment(linker, "/alternatename:?ms_pSingleton@?$SingletonClass@VUniqueSwfIDCreator@@@@2PEAVUniqueSwfIDCreator@@EA=?DAT_143b0d2d8@@3PEAXEA")
 #pragma comment(linker, "/alternatename:?s_nCaptureBlock@GFxService@@2HA=?DAT_143b0d360@@3HA")
 #pragma comment(linker, "/alternatename:?DAT_143b0d368@@3P6AXXZEA=?DAT_143b0d368@@3PAEA")
