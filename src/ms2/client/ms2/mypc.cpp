@@ -510,9 +510,9 @@ int FUN_14165c1b0(PCBase* pPC, int* pOut, CString& strOut, float f);   // PCBase
 extern int DAT_143ab2914;                                   // the local character level
 extern int DAT_143ab288c;                                   // the id of the last portal used
 class Unk_MyPCNoticeSound { public: void FUN_141276180(const CString& str); };
-extern Unk_MyPCNoticeSound DAT_143ae14c8;                   // the blocked-action notice sound
-extern Unk_MyPCNoticeSound DAT_143ae14b8;                   // the build mode off / on sounds
-extern Unk_MyPCNoticeSound DAT_143ae10a8;
+extern CString DAT_143ae14c8;                            // the blocked-action notice sound
+extern CString DAT_143ae14b8;                            // the build mode off / on sounds
+extern CString DAT_143ae10a8;
 void FUN_140ef4330();
 int FUN_1408a18d0(__int64 nCharId);
 class Unk_MyPCGuildHouse { public: bool FUN_14047e150(__int64 nValue); };
@@ -887,9 +887,21 @@ static CStringW s_strUseBindItemSkill = L"useBindItemSkill";                    
 #include "ms2/placeholder/header_statics_a.h"
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;                                       // @0x1400f9d30
-static CString s_strUgcEndMode = "ugc_EndMode";                                            // @0x1400f9d60
-static CString s_strWarningNotThisPlace = "system_notice_error_warningNotThisPlace";       // @0x1400f9d90
-static CString s_strUgcChangeMode = "ugc_changeMode";                                      // @0x1400f9dc0
+#ifndef MS2_HOOK_DLL   // s_strUgcEndMode: the exe's object at 0x143ae14b8, which other units reach as DAT_143ae14b8 (the hook DLL binds it)
+CString DAT_143ae14b8 = "ugc_EndMode";                                            // @0x1400f9d60
+#else
+extern CString DAT_143ae14b8;
+#endif
+#ifndef MS2_HOOK_DLL   // s_strWarningNotThisPlace: the exe's object at 0x143ae14c8, which other units reach as DAT_143ae14c8 (the hook DLL binds it)
+CString DAT_143ae14c8 = "system_notice_error_warningNotThisPlace";       // @0x1400f9d90
+#else
+extern CString DAT_143ae14c8;
+#endif
+#ifndef MS2_HOOK_DLL   // s_strUgcChangeMode: the exe's object at 0x143ae10a8, which other units reach as DAT_143ae10a8 (the hook DLL binds it)
+CString DAT_143ae10a8 = "ugc_changeMode";                                      // @0x1400f9dc0
+#else
+extern CString DAT_143ae10a8;
+#endif
 
 
 // @0x141520680
@@ -1415,14 +1427,14 @@ void MyPC::vfunc_135(int a, int b, void* p)
             FUN_1403ed2b0()->FUN_141adc190();
             FUN_1403ed2b0()->FUN_141adc530(0x4e85);
             CString strEmpty("");
-            DAT_143ae10a8.FUN_141276180(strEmpty);
+            reinterpret_cast<Unk_MyPCNoticeSound&>(DAT_143ae10a8).FUN_141276180(strEmpty);   // this = the sound name
         }
         else
         {
             m_b15d4 = 0;
             FUN_1403ed2b0()->FUN_141adc5d0(0x4e85);
             CString strEmpty("");
-            DAT_143ae14b8.FUN_141276180(strEmpty);
+            reinterpret_cast<Unk_MyPCNoticeSound&>(DAT_143ae14b8).FUN_141276180(strEmpty);   // this = the sound name
         }
     }
 }
@@ -1758,7 +1770,6 @@ MS2Ptr<Unk_PCBaseComp_b18> MyPC::vfunc_104(bool a, bool b, bool c)
     FUN_141526c80(kReq.skill, kReq.level);
     return FUN_141523bc0()->FUN_141764e30(&kReq);
 }
-#line 1761
 MS2_REPLACE_METHOD(0x1415219D0, MyPC, vfunc_104, 1509, 0xDEE50707);
 
 // @0x1415248d0
@@ -1997,7 +2008,7 @@ int MyPC::FUN_141527650(int nKind)
         FUN_141275260(nNotice, 1, 1);
         {
             CString strEmpty("");
-            DAT_143ae14c8.FUN_141276180(strEmpty);
+            reinterpret_cast<Unk_MyPCNoticeSound&>(DAT_143ae14c8).FUN_141276180(strEmpty);   // this = the sound name
         }
         return 0;
     }
