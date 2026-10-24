@@ -307,3 +307,8 @@ MS2_REPLACE_METHOD(0x141377420, CGroundEffectDataManager, PlayEffects, 826, 0x9C
 MS2_EMIT_CRT_MEMMOVE_S();
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb0ef0-0x142cb1040 .text$yd
+// Full-executable aliases for this effect-dispatch helper under its other recovered class names.
+// MS2-PIN: ?PlayEffects@CGroundEffectDataManager@@QEAAXPEAVGameObject@@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z 0x141377420
+// MS2-PIN: ?FUN_141377420@Unk_LandSound@@QEAAXPEAVPCBase@@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z 0x141377420
+// MS2-PIN: ?FUN_141377420@Unk_PCBaseSound@@QEAAXPEAVPCBase@@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z 0x141377420
+// MS2-PIN: ?FUN_141377420@Unk_StSound@@QEAAXPEAVPCBase@@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z 0x141377420
