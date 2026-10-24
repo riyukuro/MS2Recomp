@@ -315,3 +315,188 @@ Unk_StlElem<224>* FUN_1416074b0(void*, unsigned long long count) { return static
 // MS2-FUNCTIONAL: applies the allocator size multiplication recovered from the decompilation.
 Unk_StlElem<104>* FUN_141607630(void*, unsigned long long count) { return static_cast<Unk_StlElem<104>*>(::operator new(count * 104)); }
 // MS2-PIN: ?FUN_141607630@@YAPEAU?$Unk_StlElem@$0GI@@@PEAX_K@Z 0x141607630
+
+// These accessors return the value subobject at +0x10 in their corresponding vector allocation triples.
+extern unsigned long long FUN_141600e70(void*);
+extern unsigned long long FUN_141600e90(void*);
+extern unsigned long long FUN_141600eb0(void*);
+extern unsigned long long FUN_141600ed0(void*);
+extern unsigned long long FUN_141600ef0(void*);
+extern unsigned long long FUN_141600f10(void*);
+extern unsigned long long FUN_141600f30(void*);
+extern unsigned long long FUN_141600f50(void*);
+extern unsigned long long FUN_141600f70(void*);
+extern unsigned long long FUN_141600f90(void*);
+extern unsigned long long FUN_141600fb0(void*);
+extern unsigned long long FUN_141600fd0(void*);
+extern unsigned long long FUN_141600ff0(void*);
+extern unsigned long long FUN_141601010(void*);
+extern unsigned long long FUN_141601030(void*);
+extern unsigned long long FUN_141601050(void*);
+extern unsigned long long FUN_141601070(void*);
+extern unsigned long long FUN_141601090(void*);
+extern unsigned long long FUN_1416010b0(void*);
+extern unsigned long long FUN_1416010d0(void*);
+extern unsigned long long FUN_1416010f0(void*);
+extern unsigned long long FUN_141601110(void*);
+extern unsigned long long FUN_141601130(void*);
+extern unsigned long long FUN_141601150(void*);
+extern unsigned long long FUN_141601170(void*);
+extern unsigned long long FUN_141601190(void*);
+extern unsigned long long FUN_1416011b0(void*);
+extern unsigned long long FUN_1416011d0(void*);
+extern unsigned long long FUN_1416011f0(void*);
+extern unsigned long long FUN_141601210(void*);
+extern unsigned long long FUN_141601230(void*);
+extern unsigned long long FUN_141601250(void*);
+
+// @0x141602e00
+unsigned long long FUN_141602e00(void* p) { return FUN_141600e70(p) + 0x10; }
+
+// @0x141602e20
+unsigned long long FUN_141602e20(void* p) { return FUN_141600e90(p) + 0x10; }
+
+// @0x141602e40
+unsigned long long FUN_141602e40(void* p) { return FUN_141600eb0(p) + 0x10; }
+
+// @0x141602e60
+unsigned long long FUN_141602e60(void* p) { return FUN_141600ed0(p) + 0x10; }
+
+// @0x141602e80
+unsigned long long FUN_141602e80(void* p) { return FUN_141600ef0(p) + 0x10; }
+
+// @0x141602ea0
+unsigned long long FUN_141602ea0(void* p) { return FUN_141600f10(p) + 0x10; }
+
+// @0x141602ec0
+unsigned long long FUN_141602ec0(void* p) { return FUN_141600f30(p) + 0x10; }
+
+// @0x141602ee0
+unsigned long long FUN_141602ee0(void* p) { return FUN_141600f50(p) + 0x10; }
+
+// @0x141602f00
+unsigned long long FUN_141602f00(void* p) { return FUN_141600f70(p) + 0x10; }
+
+// @0x141602f20
+unsigned long long FUN_141602f20(void* p) { return FUN_141600f90(p) + 0x10; }
+
+// @0x141602f40
+unsigned long long FUN_141602f40(void* p) { return FUN_141600fb0(p) + 0x10; }
+
+// @0x141602f60
+unsigned long long FUN_141602f60(void* p) { return FUN_141600fd0(p) + 0x10; }
+
+// @0x141602f80
+unsigned long long FUN_141602f80(void* p) { return FUN_141600ff0(p) + 0x10; }
+
+// @0x141602fa0
+unsigned long long FUN_141602fa0(void* p) { return FUN_141601010(p) + 0x10; }
+
+// @0x141602fc0
+unsigned long long FUN_141602fc0(void* p) { return FUN_141601030(p) + 0x10; }
+
+// @0x141602fe0
+unsigned long long FUN_141602fe0(void* p) { return FUN_141601050(p) + 0x10; }
+
+// @0x141603000
+unsigned long long FUN_141603000(void* p) { return FUN_141601070(p) + 0x10; }
+
+// @0x141603020
+unsigned long long FUN_141603020(void* p) { return FUN_141601090(p) + 0x10; }
+
+// @0x141603040
+unsigned long long FUN_141603040(void* p) { return FUN_1416010b0(p) + 0x10; }
+
+// @0x141603060
+unsigned long long FUN_141603060(void* p) { return FUN_1416010d0(p) + 0x10; }
+
+// @0x141603080
+unsigned long long FUN_141603080(void* p) { return FUN_1416010f0(p) + 0x10; }
+
+// @0x1416030a0
+unsigned long long FUN_1416030a0(void* p) { return FUN_141601110(p) + 0x10; }
+
+// @0x1416030c0
+unsigned long long FUN_1416030c0(void* p) { return FUN_141601130(p) + 0x10; }
+
+// @0x1416030e0
+unsigned long long FUN_1416030e0(void* p) { return FUN_141601150(p) + 0x10; }
+
+// @0x141603100
+unsigned long long FUN_141603100(void* p) { return FUN_141601170(p) + 0x10; }
+
+// @0x141603120
+unsigned long long FUN_141603120(void* p) { return FUN_141601190(p) + 0x10; }
+
+// @0x141603140
+unsigned long long FUN_141603140(void* p) { return FUN_1416011b0(p) + 0x10; }
+
+// @0x141603160
+unsigned long long FUN_141603160(void* p) { return FUN_1416011d0(p) + 0x10; }
+
+// @0x141603180
+unsigned long long FUN_141603180(void* p) { return FUN_1416011f0(p) + 0x10; }
+
+// @0x1416031a0
+unsigned long long FUN_1416031a0(void* p) { return FUN_141601210(p) + 0x10; }
+
+// @0x1416031c0
+unsigned long long FUN_1416031c0(void* p) { return FUN_141601230(p) + 0x10; }
+
+// @0x1416031e0
+unsigned long long FUN_1416031e0(void* p) { return FUN_141601250(p) + 0x10; }
+
+
+// Explicit functional-interface notes for opaque vector specializations shared with unit_1415d3570.
+// MS2-FUNCTIONAL ?FUN_1416035c0@@YAAEAPEAU?$Unk_StlElem@$0OA@@@PEAX@Z: The observed reference targets the allocation-member subobject; the executable helper layering and frame are not recovered.
+// MS2-FUNCTIONAL ?FUN_1416037c0@@YAAEAPEAU?$Unk_StlElem@$0GI@@@PEAX@Z: The observed reference targets the allocation-member subobject; the executable helper layering and frame are not recovered.
+// MS2-FUNCTIONAL ?FUN_141603b80@@YAAEAPEAU?$Unk_StlElem@$0OA@@@PEAX@Z: The observed reference targets the allocation-member subobject; the executable helper layering and frame are not recovered.
+// MS2-FUNCTIONAL ?FUN_141603d80@@YAAEAPEAU?$Unk_StlElem@$0GI@@@PEAX@Z: The observed reference targets the allocation-member subobject; the executable helper layering and frame are not recovered.
+// MS2-FUNCTIONAL ?FUN_141605bd0@@YAPEAU?$Unk_StlElem@$0BA@@@PEAXPEAU1@11@Z: Opaque element lifetime and allocator details remain unrecovered; this body preserves the observed byte span move and returned destination end.
+// MS2-FUNCTIONAL ?FUN_141605c10@@YAPEAU?$Unk_StlElem@$0BI@@@PEAXPEAU1@11@Z: Opaque element lifetime and allocator details remain unrecovered; this body preserves the observed byte span move and returned destination end.
+// MS2-FUNCTIONAL ?FUN_141605c50@@YAPEAU?$Unk_StlElem@$0FI@@@PEAXPEAU1@11@Z: Opaque element lifetime and allocator details remain unrecovered; this body preserves the observed byte span move and returned destination end.
+// MS2-FUNCTIONAL ?FUN_141605c90@@YAPEAU?$Unk_StlElem@$0DA@@@PEAXPEAU1@11@Z: Opaque element lifetime and allocator details remain unrecovered; this body preserves the observed byte span move and returned destination end.
+// MS2-FUNCTIONAL ?FUN_141605cd0@@YAPEAU?$Unk_StlElem@$0JI@@@PEAXPEAU1@11@Z: Opaque element lifetime and allocator details remain unrecovered; this body preserves the observed byte span move and returned destination end.
+// MS2-FUNCTIONAL ?FUN_141605d10@@YAPEAU?$Unk_StlElem@$0CCA@@@PEAXPEAU1@11@Z: Opaque element lifetime and allocator details remain unrecovered; this body preserves the observed byte span move and returned destination end.
+// MS2-FUNCTIONAL ?FUN_141605d50@@YAPEAU?$Unk_StlElem@$0BCI@@@PEAXPEAU1@11@Z: Opaque element lifetime and allocator details remain unrecovered; this body preserves the observed byte span move and returned destination end.
+// MS2-FUNCTIONAL ?FUN_141605d90@@YAPEAU?$Unk_StlElem@$0BBI@@@PEAXPEAU1@11@Z: Opaque element lifetime and allocator details remain unrecovered; this body preserves the observed byte span move and returned destination end.
+// MS2-FUNCTIONAL ?FUN_141605dd0@@YAPEAU?$Unk_StlElem@$0OA@@@PEAXPEAU1@11@Z: Opaque element lifetime and allocator details remain unrecovered; this body preserves the observed byte span move and returned destination end.
+// MS2-FUNCTIONAL ?FUN_141605e10@@YAPEAU?$Unk_StlElem@$0FIA@@@PEAXPEAU1@11@Z: Opaque element lifetime and allocator details remain unrecovered; this body preserves the observed byte span move and returned destination end.
+// MS2-FUNCTIONAL ?FUN_141605e50@@YAPEAU?$Unk_StlElem@$0BI@@@PEAXPEAU1@11@Z: Opaque element lifetime and allocator details remain unrecovered; this body preserves the observed byte span move and returned destination end.
+// MS2-FUNCTIONAL ?FUN_141605e90@@YAPEAU?$Unk_StlElem@$0BEKI@@@PEAXPEAU1@11@Z: Opaque element lifetime and allocator details remain unrecovered; this body preserves the observed byte span move and returned destination end.
+// MS2-FUNCTIONAL ?FUN_141605ed0@@YAPEAU?$Unk_StlElem@$0BI@@@PEAXPEAU1@11@Z: Opaque element lifetime and allocator details remain unrecovered; this body preserves the observed byte span move and returned destination end.
+// MS2-FUNCTIONAL ?FUN_141605f10@@YAPEAU?$Unk_StlElem@$0BJA@@@PEAXPEAU1@11@Z: Opaque element lifetime and allocator details remain unrecovered; this body preserves the observed byte span move and returned destination end.
+// MS2-FUNCTIONAL ?FUN_141605f50@@YAPEAU?$Unk_StlElem@$0LI@@@PEAXPEAU1@11@Z: Opaque element lifetime and allocator details remain unrecovered; this body preserves the observed byte span move and returned destination end.
+// MS2-FUNCTIONAL ?FUN_141605f90@@YAPEAU?$Unk_StlElem@$0FI@@@PEAXPEAU1@11@Z: Opaque element lifetime and allocator details remain unrecovered; this body preserves the observed byte span move and returned destination end.
+// MS2-FUNCTIONAL ?FUN_141605fd0@@YAPEAU?$Unk_StlElem@$0GI@@@PEAXPEAU1@11@Z: Opaque element lifetime and allocator details remain unrecovered; this body preserves the observed byte span move and returned destination end.
+// MS2-FUNCTIONAL ?FUN_141606010@@YAPEAU?$Unk_StlElem@$0KOI@@@PEAXPEAU1@11@Z: Opaque element lifetime and allocator details remain unrecovered; this body preserves the observed byte span move and returned destination end.
+// MS2-FUNCTIONAL ?FUN_141606050@@YAPEAU?$Unk_StlElem@$0OMI@@@PEAXPEAU1@11@Z: Opaque element lifetime and allocator details remain unrecovered; this body preserves the observed byte span move and returned destination end.
+// MS2-FUNCTIONAL ?FUN_141606090@@YAPEAU?$Unk_StlElem@$0MI@@@PEAXPEAU1@11@Z: Opaque element lifetime and allocator details remain unrecovered; this body preserves the observed byte span move and returned destination end.
+// MS2-FUNCTIONAL ?FUN_1416060d0@@YAPEAU?$Unk_StlElem@$0PI@@@PEAXPEAU1@11@Z: Opaque element lifetime and allocator details remain unrecovered; this body preserves the observed byte span move and returned destination end.
+// MS2-FUNCTIONAL ?FUN_141606110@@YAPEAU?$Unk_StlElem@$0EJA@@@PEAXPEAU1@11@Z: Opaque element lifetime and allocator details remain unrecovered; this body preserves the observed byte span move and returned destination end.
+// MS2-FUNCTIONAL ?FUN_141606150@@YAPEAU?$Unk_StlElem@$0CA@@@PEAXPEAU1@11@Z: Opaque element lifetime and allocator details remain unrecovered; this body preserves the observed byte span move and returned destination end.
+// MS2-FUNCTIONAL ?FUN_141606750@@YAXPEAXPEAU?$Unk_StlElem@$0BA@@@11@Z: Opaque element lifetime details remain unrecovered; this body preserves the observed byte span move for the caller-facing range.
+// MS2-FUNCTIONAL ?FUN_1416067b0@@YAXPEAXPEAU?$Unk_StlElem@$0BI@@@11@Z: Opaque element lifetime details remain unrecovered; this body preserves the observed byte span move for the caller-facing range.
+// MS2-FUNCTIONAL ?FUN_141606810@@YAXPEAXPEAU?$Unk_StlElem@$0FI@@@11@Z: Opaque element lifetime details remain unrecovered; this body preserves the observed byte span move for the caller-facing range.
+// MS2-FUNCTIONAL ?FUN_141606870@@YAXPEAXPEAU?$Unk_StlElem@$0DA@@@11@Z: Opaque element lifetime details remain unrecovered; this body preserves the observed byte span move for the caller-facing range.
+// MS2-FUNCTIONAL ?FUN_1416068d0@@YAXPEAXPEAU?$Unk_StlElem@$0JI@@@11@Z: Opaque element lifetime details remain unrecovered; this body preserves the observed byte span move for the caller-facing range.
+// MS2-FUNCTIONAL ?FUN_141606930@@YAXPEAXPEAU?$Unk_StlElem@$0CCA@@@11@Z: Opaque element lifetime details remain unrecovered; this body preserves the observed byte span move for the caller-facing range.
+// MS2-FUNCTIONAL ?FUN_141606990@@YAXPEAXPEAU?$Unk_StlElem@$0BCI@@@11@Z: Opaque element lifetime details remain unrecovered; this body preserves the observed byte span move for the caller-facing range.
+// MS2-FUNCTIONAL ?FUN_1416069f0@@YAXPEAXPEAU?$Unk_StlElem@$0BBI@@@11@Z: Opaque element lifetime details remain unrecovered; this body preserves the observed byte span move for the caller-facing range.
+// MS2-FUNCTIONAL ?FUN_141606a50@@YAXPEAXPEAU?$Unk_StlElem@$0OA@@@11@Z: Opaque element lifetime details remain unrecovered; this body preserves the observed byte span move for the caller-facing range.
+// MS2-FUNCTIONAL ?FUN_141606ab0@@YAXPEAXPEAU?$Unk_StlElem@$0FIA@@@11@Z: Opaque element lifetime details remain unrecovered; this body preserves the observed byte span move for the caller-facing range.
+// MS2-FUNCTIONAL ?FUN_141606b10@@YAXPEAXPEAU?$Unk_StlElem@$0BI@@@11@Z: Opaque element lifetime details remain unrecovered; this body preserves the observed byte span move for the caller-facing range.
+// MS2-FUNCTIONAL ?FUN_141606b70@@YAXPEAXPEAU?$Unk_StlElem@$0BEKI@@@11@Z: Opaque element lifetime details remain unrecovered; this body preserves the observed byte span move for the caller-facing range.
+// MS2-FUNCTIONAL ?FUN_141606bd0@@YAXPEAXPEAU?$Unk_StlElem@$0BI@@@11@Z: Opaque element lifetime details remain unrecovered; this body preserves the observed byte span move for the caller-facing range.
+// MS2-FUNCTIONAL ?FUN_141606c30@@YAXPEAXPEAU?$Unk_StlElem@$0BJA@@@11@Z: Opaque element lifetime details remain unrecovered; this body preserves the observed byte span move for the caller-facing range.
+// MS2-FUNCTIONAL ?FUN_141606c90@@YAXPEAXPEAU?$Unk_StlElem@$0LI@@@11@Z: Opaque element lifetime details remain unrecovered; this body preserves the observed byte span move for the caller-facing range.
+// MS2-FUNCTIONAL ?FUN_141606cf0@@YAXPEAXPEAU?$Unk_StlElem@$0FI@@@11@Z: Opaque element lifetime details remain unrecovered; this body preserves the observed byte span move for the caller-facing range.
+// MS2-FUNCTIONAL ?FUN_141606d50@@YAXPEAXPEAU?$Unk_StlElem@$0GI@@@11@Z: Opaque element lifetime details remain unrecovered; this body preserves the observed byte span move for the caller-facing range.
+// MS2-FUNCTIONAL ?FUN_141606db0@@YAXPEAXPEAU?$Unk_StlElem@$0KOI@@@11@Z: Opaque element lifetime details remain unrecovered; this body preserves the observed byte span move for the caller-facing range.
+// MS2-FUNCTIONAL ?FUN_141606e10@@YAXPEAXPEAU?$Unk_StlElem@$0OMI@@@11@Z: Opaque element lifetime details remain unrecovered; this body preserves the observed byte span move for the caller-facing range.
+// MS2-FUNCTIONAL ?FUN_141606e70@@YAXPEAXPEAU?$Unk_StlElem@$0MI@@@11@Z: Opaque element lifetime details remain unrecovered; this body preserves the observed byte span move for the caller-facing range.
+// MS2-FUNCTIONAL ?FUN_141606ed0@@YAXPEAXPEAU?$Unk_StlElem@$0PI@@@11@Z: Opaque element lifetime details remain unrecovered; this body preserves the observed byte span move for the caller-facing range.
+// MS2-FUNCTIONAL ?FUN_141606f30@@YAXPEAXPEAU?$Unk_StlElem@$0EJA@@@11@Z: Opaque element lifetime details remain unrecovered; this body preserves the observed byte span move for the caller-facing range.
+// MS2-FUNCTIONAL ?FUN_141606f90@@YAXPEAXPEAU?$Unk_StlElem@$0CA@@@11@Z: Opaque element lifetime details remain unrecovered; this body preserves the observed byte span move for the caller-facing range.
+// MS2-FUNCTIONAL ?FUN_1416074b0@@YAPEAU?$Unk_StlElem@$0OA@@@PEAX_K@Z: The recovered allocation scales element count by the correct opaque element stride; the executable length-check helper sequence differs.
+// MS2-FUNCTIONAL ?FUN_141607630@@YAPEAU?$Unk_StlElem@$0GI@@@PEAX_K@Z: The recovered allocation scales element count by the correct opaque element stride; the executable length-check helper sequence differs.
