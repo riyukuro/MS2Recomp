@@ -14617,3 +14617,4 @@ DAT_1439f8358	1439f8358	data
 ??0CNMFUDSGetFileEventFunc@@QEAA@I@Z	1415a19d0	func
 ??0CNMFUSSendFileFunc@@QEAA@IPEBD@Z	1415a1e50	func
 ??0CNMGetPathFunc@@QEAA@H@Z	141594b80	func
+??0TextureLayerManager@@QEAA@XZ	141bf48f0	func
