@@ -1269,7 +1269,7 @@
 140d96010	140d966b0	?\ms2meshcullingprocess.cpp	low	17	mn	dir client\ms2
 140d966b0	140d9aba0	?\ms2messageservice.cpp	low	160	mn	dir client\ms2
 140d9aba0	140d9d370	?\ms2pngreader.cpp	low	43	mn	dir client\ms2
-140d9d370	140d9dba0	?\ms2renderer.cpp	low	33	mn	dir client\ms2
+140d9d370	140d9dba0	?\ms2renderer.cpp	low	33	mn	guess: class-name candidate ms2renderer.cpp; sorts between ms2pngreader.cpp and ms2renderview.cpp
 140d9dba0	140d9e530	?\ms2renderview.cpp	low	34	mn	dir client\ms2
 140d9e530	140d9ee70	client\ms2\multisceneupdater.cpp	high	18	mn	
 140d9ee70	140da4da0	?\notifydebugstate.cpp	low	214	mn	was ?\chatemoticoncli.cpp; dir client\ms2
@@ -1300,13 +1300,13 @@
 140dfa160	140dfc1b0	?\ugchttpclient.cpp	low	23	mn	dir client\ms2
 140dfc1b0	140dfee10	?\ugcmapitem.cpp	low	74	mn	dir client\ms2
 140dfee10	140dfef30	unit_140dfef30	none	2	mn	ps1 split from ?\ugcmapitem.cpp: called only from other units: head of the next TU
-140dfef30	140e01f50	unit_140dfef30	none	37	mn	
+140dfef30	140e01f50	unit_140dfef30_ugcoxevent	none	37	mn	descriptive: ugcoxevent
 140e01f50	140e05260	?\uiadpushlimiteddialog.cpp	low	73	mn	dir client\ms2
 140e05260	140e05460	?\uicameramodehelpdialog.cpp	low	6	mn	dir client\ms2
 140e05460	140e09a90	?\uichaosdpsdialog.cpp	low	125	mn	dir client\ms2
 140e09a90	140e0aa10	?\uichapterbook.cpp	low	16	mn	dir client\ms2
 140e0aa10	140e0da60	?\uiclubdialog.cpp	low	41	mn	dir client\ms2
-140e0da60	140e0de40	unit_140e0da60	none	14	mn	rejected ?\tdamagefontattr.cpp (order within gap)
+140e0da60	140e0de40	unit_140e0da60_uidamagefont	none	14	mn	descriptive: uidamagefont
 140e0de40	140e12730	?\uidungeonclosingphotodialog.cpp	low	125	mn	dir client\ms2
 140e12730	140e176a0	client\ms2\uidungeonhelper.cpp	high	137	mn	
 140e176a0	140e186e0	client\ms2\uidungeonlobby.cpp	high	23	mn	
@@ -1317,7 +1317,7 @@
 140e29f60	140e2cc90	?\uiequipiconcontainer.cpp	low	65	mn	dir client\ms2
 140e2cc90	140e39790	?\uigamerankingdialog.cpp	low	220	mn	dir client\ms2
 140e39790	140e3efd0	?\uiguildhouseupgradedialog.cpp	low	147	mn	dir client\ms2
-140e3efd0	140e47540	unit_140e3efd0	none	218	mn	rejected ?\uiadpushdialog.cpp
+140e3efd0	140e47540	unit_140e3efd0_uiadpushdialog	none	218	mn	descriptive: uiadpushdialog
 140e47540	140e497d0	?\uiitemeventopenboxdialog.cpp	low	57	mn	dir client\ms2
 140e497d0	140e4c050	?\uiitemextractionscrolldialog.cpp	low	56	mn	dir client\ms2
 140e4c050	140e4df70	?\uiitemmergerevertdialog.cpp	low	52	mn	dir client\ms2
@@ -1381,7 +1381,7 @@
 140f26990	140f29a20	?\uicardreversegamedialog.cpp	low	53	mn	dir client\ms2
 140f29a20	140f2e4d0	?\uicharacterabilitydialog.cpp	low	111	mn	was ?\characterabilitymanager.cpp; dir client\ms2
 140f2e4d0	140f32290	?\uicharactercreateselectdialog.cpp	low	97	mn	dir client\ms2
-140f32290	140f345b0	unit_140f32290	none	14	mn	
+140f32290	140f345b0	unit_140f32290_charactercustomizepayloadwriters	none	14	mn	descriptive: charactercustomizepayloadwriters
 140f345b0	140f35340	?\uidarkstreamresultdialog.cpp	low	13	mn	dir client\ms2
 140f35340	140f359b0	?\uidarkstreamscoredialog.cpp	low	16	mn	dir client\ms2
 140f359b0	140f3a810	client\ms2\uidteventdialog.cpp	high	85	mn	
@@ -1403,8 +1403,8 @@
 140f60e00	140f64630	?\uiitemrepackingscrolldialog.cpp	low	71	mn	dir client\ms2
 140f64630	140f68da0	?\uiitemsocketscrolldialog.cpp	low	89	mn	dir client\ms2
 140f68da0	140f6c680	?\uiitemsocketsystemdialog.cpp	low	165	mn	dir client\ms2
-140f6c680	140f7d060	unit_140f6c680	none	293	mn	rejected ?\itemsocketsystempagebase.cpp
-140f7d060	140f83ff0	unit_140f7d060	none	77	mn	rejected ?\itemsocketsystempagesocketunlock.cpp
+140f6c680	140f7d060	unit_140f6c680_itemsocketsystempagesbase	none	293	mn	descriptive: itemsocketsystempagesbase
+140f7d060	140f83ff0	unit_140f7d060_itemsocketsystempagesocketunlock	none	77	mn	descriptive: itemsocketsystempagesocketunlock
 140f83ff0	140f84310	?\uikeyboardguidedialog.cpp	low	8	mn	dir client\ms2
 140f84310	140f8c480	?\uilevelupguidedialog.cpp	low	189	mn	dir client\ms2
 140f8c480	140f90780	?\uipartysearchdialog.cpp	low	81	mn	dir client\ms2
@@ -1418,7 +1418,7 @@
 140fa4180	140fa8640	?\uisystemshopdialog.cpp	low	102	mn	dir client\ms2
 140fa8640	140fa8cc0	?\uitoplayernotify.cpp	low	13	mn	dir client\ms2
 140fa8cc0	140fa9eb0	unit_140fa8cc0	none	17	mn	rejected ?\uihomeoptiondialog.cpp
-140fa9eb0	140facb20	unit_140fa9eb0	none	57	mn	rejected ?\uihomesaveslotdialog.cpp
+140fa9eb0	140facb20	unit_140fa9eb0_uihomesaveslotdialog	none	57	mn	descriptive: uihomesaveslotdialog
 140facb20	140fadb00	?\uiugcextracndialog.cpp	low	29	mn	dir client\ms2
 140fadb00	140faf390	?\uiugchousingpointdialog.cpp	low	24	mn	dir client\ms2
 140faf390	140faf840	?\uiugcmodelhousedialog.cpp	low	10	mn	dir client\ms2
@@ -1436,7 +1436,7 @@
 140fc6fa0	140fcc860	?\uiweddingdialog.cpp	low	161	mn	dir client\ms2
 140fcc860	140fd8df0	?\uiweddingguestdialog.cpp	low	372	mn	dir client\ms2
 140fd8df0	140fdab30	?\uiweddinghalllistdialog.cpp	low	71	mn	dir client\ms2
-140fdab30	140fdb090	unit_140fdab30	none	2	mn	
+140fdab30	140fdb090	unit_140fdab30_weddinghallreservationdata	none	2	mn	descriptive: weddinghallreservationdata
 140fdb090	140fe2150	?\uiweddinghallreservationdialog.cpp	low	223	mn	dir client\ms2
 140fe2150	140fe2880	?\uiweddinghallreservationpage.cpp	low	24	mn	dir client\ms2
 140fe2880	140fe2d40	?\uiweddinghallreservationpagechange.cpp	low	11	mn	dir client\ms2
@@ -1449,15 +1449,15 @@
 140fed9c0	1410084b0	?\uiwritemusicdialog.cpp	low	721	mn	
 1410084b0	14100a030	?\uinoticedialog.cpp	low	41	mn	
 14100a030	141017950	client\ms2\uiplayinstrumentdialog.cpp	high	338	mn	
-141017950	14101b7f0	unit_141017950	none	115	mn	
-14101b7f0	141020350	unit_14101b7f0	none	177	mn	
+141017950	14101b7f0	unit_141017950_pvprankinglist	none	115	mn	descriptive: pvprankinglist
+14101b7f0	141020350	unit_14101b7f0_pvpteammembertables	none	177	mn	descriptive: pvpteammembertables
 141020350	141020bd0	?\rideeinterpolator.cpp	low	10	mn	
 141020bd0	1410229d0	?\scripttable.cpp	low	44	mn	
 1410229d0	141024250	?\statecashcalldata.cpp	low	42	mn	
 141024250	141024dc0	?\statedatagrabtarget.cpp	low	29	mn	
 141024dc0	141026ab0	client\ms2\string\stringidinterface.cpp	high	38	mn	
-141026ab0	141026be0	unit_141026ab0	none	2	mn	
-141026be0	141026d10	unit_141026be0	none	2	mn	
+141026ab0	141026be0	unit_141026ab0_ugcthumbnaildirectory	none	2	mn	descriptive: ugcthumbnaildirectory
+141026be0	141026d10	unit_141026be0_ugcthumbnailfilepath	none	2	mn	descriptive: ugcthumbnailfilepath
 141026d10	14102b4d0	client\ms2\ugcimagepath.cpp	high	46	mn	
 14102b4d0	141031430	client\ms2\uiattendgiftdialog.cpp	high	130	mn	
 141031430	141031f80	?\uibootypopup.cpp	low	17	mn	
@@ -1467,15 +1467,15 @@
 1410459c0	141049240	?\chaoslighttransitiondata.cpp	low	130	mn	
 141049240	141064d70	client\ms2\charactermeshmerger.cpp	high	668	mn	
 141064d70	141073440	unit_141064d70	none	828	mn	rejected ?\customizedtexturemanager.cpp
-141073440	1410799d0	unit_141073440	none	364	mn	
-1410799d0	141079ed0	unit_1410799d0	none	26	mn	
-141079ed0	14107ac30	unit_141079ed0	none	70	mn	
-14107ac30	14107ce50	unit_14107ac30	none	28	mn	rejected ?\tcreatecharinfo.cpp
+141073440	1410799d0	unit_141073440_charactermeshmergercomdattail	none	364	mn	descriptive: charactermeshmergercomdattail
+1410799d0	141079ed0	unit_1410799d0_charactermeshmergercomdattail2	none	26	mn	descriptive: charactermeshmergercomdattail2
+141079ed0	14107ac30	unit_141079ed0_sequencecontainercomdatglue	none	70	mn	descriptive: sequencecontainercomdatglue
+14107ac30	14107ce50	unit_14107ac30_tcreatecharinfo	none	28	mn	descriptive: tcreatecharinfo
 14107ce50	141083230	?\cinematiccomponent.cpp	low	170	mn	dir client\ms2
-141083230	141084ad0	unit_141083230	none	12	mn	rejected ?\cylindercollision.cpp
+141083230	141084ad0	unit_141083230_cylindercollision	none	12	mn	descriptive: cylindercollision
 141084ad0	141086ae0	?\clonecube.cpp	low	66	mn	dir client\ms2
 141086ae0	14108e1e0	?\clonepc.cpp	low	286	mn	dir client\ms2
-14108e1e0	14109b6b0	unit_14108e1e0	none	233	mn	rejected ?\npcvibrate.cpp
+14108e1e0	14109b6b0	unit_14108e1e0_npcactorandvibrate	none	233	mn	descriptive: npcactorandvibrate
 14109b6b0	14109c630	?\colorboostdata.cpp	low	30	mn	dir client\ms2
 14109c630	14109eb00	?\colorlistctrl.cpp	low	97	mn	dir client\ms2
 14109eb00	1410a0e80	?\consolecameramode.cpp	low	16	mn	dir client\ms2
@@ -1483,7 +1483,7 @@
 1410b2510	1410d5bc0	client\ms2\cubemapinformationservice.cpp	high	373	mn	
 1410d5bc0	1410d6a30	unit_1410d5bc0	none	15	mn	
 1410d6a30	1410dbc10	unit_1410d6a30	none	252	mn	
-1410dbc10	1410dc420	unit_1410dbc10	none	13	mn	
+1410dbc10	1410dc420	unit_1410dbc10_houseandentitycomdatglue	none	13	mn	descriptive: houseandentitycomdatglue
 1410dc420	1410dc570	unit_1410dc420	none	8	mn	
 1410dc570	1410e29c0	unit_1410dc570	none	239	mn	
 1410e29c0	1410e4e80	unit_1410e29c0	none	53	mn	
