@@ -16,6 +16,7 @@
 #include "ms2/client/ms2/networkservice.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/client/ms2/uiobject.h"
+#include "ms2/client/ms2/uiservice.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -49,9 +50,7 @@ void FUN_1409304d0(__int64 nValue, int a, int b, int c);
 void FUN_140930af0(__int64 nValue);
 void* FUN_140aa6d40();
 void FUN_141b0ce20(void* pObject, int nKind, int nValue);
-void* FUN_1403ed2b0();                                              // the UI service
-MS2Ptr<UIObject> FUN_141adcea0(void* pService, int nId);
-const CStringA& FUN_141adc5d0(void* pStrings, int nId);
+CUIService* FUN_1403ed2b0();                                        // the UI service
 void FUN_140200e40(Unk_ReportData* pData);                          // the report struct's ctor
 
 class Unk_TcRewardNotify
@@ -220,7 +219,7 @@ void CClientPlatformTencent::vfunc_42(void* a1)
         FUN_140d86260()->vfunc_45();
         break;
     case 5:
-        FUN_141adc5d0(FUN_1403ed2b0(), static_cast<CInPacket*>(a1)->ReadInt32());
+        FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)static_cast<CInPacket*>(a1)->ReadInt32());
         break;
     default:
         MS2_ASSERT_AT(500, 0);
@@ -377,7 +376,7 @@ bool FUN_140c7e3d0(CClientPlatformTencent*, unsigned char nKind, bool bOn, int n
 UITencentUserReportDialog* FUN_140c7e460(int nId)
 {
     if (FUN_1403ed2b0() != 0) {
-        MS2Ptr<UIObject> spObject = FUN_141adcea0(FUN_1403ed2b0(), nId);
+        MS2Ptr<UIObject> spObject = FUN_1403ed2b0()->FUN_141adcea0((eUIClassID)nId);
         if (spObject.get() != 0)
             return dynamic_cast<UITencentUserReportDialog*>((UIObject*)spObject);
     }
