@@ -353,7 +353,7 @@ extern unsigned long long FUN_141601210(void*);
 extern unsigned long long FUN_141601230(void*);
 extern unsigned long long FUN_141601250(void*);
 
-extern unsigned long long FUN_141601270(void*);
+extern void* FUN_141601270(void*);
 extern unsigned long long FUN_141601290(void*);
 
 // @0x141602e00
@@ -1145,7 +1145,7 @@ void FUN_141604670(long long* tree, long long* position) {
 unsigned long long FUN_141603220(void* p) { return FUN_141601290(p) + 0x10; }
 
 // @0x141603200
-unsigned long long FUN_141603200(void* p) { return FUN_141601270(p) + 0x10; }
+unsigned long long FUN_141603200(void* p) { return reinterpret_cast<unsigned long long>(FUN_141601270(p)) + 0x10; }
 // @0x141603240
 unsigned long long FUN_141603240(void* p) { return FUN_1416012b0(p) + 0x10; }
 // @0x141603260
@@ -1193,7 +1193,7 @@ void FUN_141604100(void* p) { FUN_14016c7c0(reinterpret_cast<void*>(FUN_1416011f
 // @0x141604120
 void FUN_141604120(void* p) { FUN_14016c7c0(reinterpret_cast<void*>(FUN_141601230(p))); }
 // @0x141604140
-void FUN_141604140(void* p) { FUN_14016c7c0(reinterpret_cast<void*>(FUN_141601270(p))); }
+void FUN_141604140(void* p) { FUN_14016c7c0(FUN_141601270(p)); }
 // @0x141604160
 void FUN_141604160(void* p) { FUN_14016c7c0(reinterpret_cast<void*>(FUN_1416012b0(p))); }
 // @0x141604180
