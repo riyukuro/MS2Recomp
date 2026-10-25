@@ -68,9 +68,9 @@ int FUN_140038ddc(int level, const char* msg);
 int FUN_140038e24(int level, const char* code, int err);
 void FUN_14003af50(Unk_CriUtfSortTable* table, unsigned row, unsigned column, Unk_CriUtfValue* out);
 const char* FUN_14003a7f4(Unk_CriUtfSortTable* table, unsigned row, unsigned column);
-unsigned FUN_14003a45c();
+unsigned FUN_14003a45c(const void* table);
 void* FUN_14003a0d0(void* heap, unsigned size, const char* tag, int align, int flags);
-void FUN_14003a0ec();
+void FUN_14003a0ec(void* heap, void* p);
 unsigned FUN_140047158(unsigned type);
 
 // @0x140046a1c
@@ -132,7 +132,7 @@ unsigned long long FUN_140046c0c(Unk_CriUtfSortTable* table, unsigned slot, unsi
         {
             if (table->m_slots[slot].value == 0)
             {
-                unsigned n = FUN_14003a45c();
+                unsigned n = FUN_14003a45c(table);
                 unsigned* rows = (unsigned*)FUN_14003a0d0(table->m_heap, n << 2, "UtfRtvIdxTbl", 4, table->m_nRows);
                 table->m_slots[slot].value = rows;
                 if (rows == 0)
@@ -169,7 +169,7 @@ void FUN_140046d50(Unk_CriUtfSortTable* table, unsigned slot)
         if (table->m_slots[slot].value != 0)
         {
             if (table->m_heap != 0)
-                FUN_14003a0ec();
+                FUN_14003a0ec(table->m_heap, table->m_slots[slot].value);
             table->m_slots[slot].key = (unsigned)-1;
             table->m_slots[slot].value = 0;
             return;
