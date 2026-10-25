@@ -192,7 +192,6 @@ unsigned short FUN_140528c20(CItem* pItem);                             // pet c
 Unk_PetItemInfo* FUN_1405278a0(CItem* pItem);
 Unk_PetBind* FUN_140527930(CItem* pItem);
 struct Unk_PeItemView { CStringW FUN_140528160(); };                     // item name (CItem member: this=rcx, hidden return=rdx)
-CStringW FUN_140527b10(CItem* pItem);
 __int64 FUN_140528e00(CItem* pItem);                                    // item price
 int FUN_140528c60(CItem* pItem);
 int FUN_140528ca0(CItem* pItem);                                        // item lock state
@@ -1013,7 +1012,7 @@ void TabContentsPetEvolution::OnPetEnchant(int bUsePoint)
             if (box.get() != 0)
             {
                 FUN_141a01600(box.operator->(), pet->FUN_140526a50());
-                FUN_141a01ee0(box.operator->(), ItemPtr(pet), FUN_140527b10(pet), 1, 0, -1, -1, 1);
+                FUN_141a01ee0(box.operator->(), ItemPtr(pet), pet->FUN_140527b10(), 1, 0, -1, -1, 1);
                 FUN_141a01700(box.operator->(), 0x477, 0x478, 0);
                 FUN_140d73c60(box);
                 return;
