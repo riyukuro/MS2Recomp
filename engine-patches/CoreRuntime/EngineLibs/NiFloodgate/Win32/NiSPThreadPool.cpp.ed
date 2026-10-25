@@ -1,0 +1,9 @@
+425c
+                Sleep(1);   // MS2: Sleep(1) instead of NiYieldThread()/Sleep(0) (exe 0x141d01370, 0x141d01690, 0x141d017d0)
+.
+276c
+        Sleep(1);   // MS2: Sleep(1) instead of NiYieldThread()/Sleep(0) (exe 0x141d01370, 0x141d01690, 0x141d017d0)
+.
+185c
+        Sleep(1);   // MS2: Sleep(1) instead of NiYieldThread()/Sleep(0) (exe 0x141d01370, 0x141d01690, 0x141d017d0)
+.

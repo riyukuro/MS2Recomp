@@ -1,0 +1,3 @@
+36,39c
+    return !pkNode->GetSwitchNodeBit();  // MS2: flag test instead of NiIsKindOf (exe 0x141d73a50)
+.

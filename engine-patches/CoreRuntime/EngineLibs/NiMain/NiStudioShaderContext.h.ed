@@ -1,7 +1,9 @@
 0a
-// gb-nimain-a: studio singleton (names inferred). Instance getter 0x141d6fd90 (function-local
-// static at 0x143afb278: pointer + std::map whose node keys a scene object and holds a NiString);
-// NiFragmentMaterial::GetCurrentShader 0x141d6a831/0x141d6a84b sets/clears the first member.
+// MS2 engine addition (names inferred): the studio shader context. Own TU 0x141d6fcb0-0x141d6fed0
+// (NiStudioShaderContext.cpp); instance getter 0x141d6fd90 returns a function-local static at
+// 0x143afb278. NiFragmentMaterial::GetCurrentShader 0x141d6a831/0x141d6a84b sets/clears the
+// current object; the game records each loaded nif's path (insert 0x14154ff90) and asks the
+// renderer service which nif the shader being built belongs to.
 #ifndef NISTUDIOSHADERCONTEXT_H
 #define NISTUDIOSHADERCONTEXT_H
 
@@ -12,6 +14,16 @@ class NiAVObject;
 
 struct NiStudioShaderContext
 {
+    NiStudioShaderContext();                                              // 0x141d6fcb0
+
+    // Nif path (and the current object's name) of the object the shader is being built for: the
+    // nearest ancestor of m_pkCurrentObject with a path record.
+    bool GetCurrentNifPath(NiString& kNifPath, NiString& kObjectName);   // 0x141d6fcf0
+    // Nif path of pkObject or its nearest recorded ancestor.
+    bool GetNifPath(const NiAVObject* pkObject, NiString& kNifPath);      // 0x141d6fe20
+    // Record pkObject's nif path (0x14154ff90; defined by the game in nifeffectparam.cpp).
+    void AddNifPath(NiAVObject* pkObject, const char* pszPath);
+
     const NiAVObject* m_pkCurrentObject;
     void RemoveNifPath(NiAVObject* pkObject) { m_kNifPaths.erase(pkObject); }
     std::map<NiAVObject*, NiString> m_kNifPaths;  // +0x08: nif path of each loaded object (game Unk_NifPathRegistry, insert 0x14154ff90); ~NiAVObject erases

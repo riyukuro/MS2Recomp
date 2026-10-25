@@ -5,6 +5,9 @@
 838c
 } const char* NiStream::MS2GetFileName() const { return m_acFileName; } // MS2
 .
+160c
+    m_pkSearchPath = NiSearchPath::Create();  // MS2: the game's create func (MS2SearchTexturePath), exe 0x141d449b7
+.
 151c
     m_acFileName[0] = '\0'; m_acStudioPath0x8[0] = '\0';  // MS2: v2525
 .

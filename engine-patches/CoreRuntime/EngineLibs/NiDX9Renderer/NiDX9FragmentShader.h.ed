@@ -3,3 +3,7 @@
     // NiDX9ShadowWriteShader and overridable by the game's MS2FragmentShader).
     virtual void PrepareTextureStage(
 .
+71c
+    // MS2: inline (COMDAT, exe 0x1427e2d20) so the game's ms2fragmentshader copy links beside it.
+    inline virtual const NiShader::NiShaderInstanceDescriptor*
+.

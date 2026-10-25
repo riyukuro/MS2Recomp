@@ -1,0 +1,38 @@
+867a
+    if (!m_pMessageService)   // MS2: message service null check first (exe 0x14203be60)
+        return false;
+
+.
+344,349c
+    // MS2: no early failure without an input system; after the first failed update following a good one the
+    // keyboard's key states are cleared (exe 0x14203ca40, flag at 0x143a03960)
+    static bool s_bUpdateOK = false;
+    if (m_spInput)
+    {
+        // Update input
+        NiInputErr eErr = m_spInput->UpdateAllDevices();
+        if (eErr != NIIERR_OK)
+        {
+            if (eErr == NIIERR_DEVICELOST)
+                m_spInput->HandleDeviceChanges();
+            if (s_bUpdateOK)
+            {
+                m_spInput->ResetKeyboardStates();
+                s_bUpdateOK = false;
+            }
+        }
+        else
+        {
+            s_bUpdateOK = true;
+        }
+    }
+.
+50a
+// MS2: every log in this TU goes to the client's error-log hook instead of the efd logger
+// (see efd/ServiceManager.cpp, NiDI8InputSystem.cpp)
+extern void (*DAT_143b03490)(short, unsigned char, const char*);
+#undef EE_LOG
+#define EE_LOG(module, level, args) \
+    do { if (DAT_143b03490) DAT_143b03490(module, level, efd::LogHelper args); } while (0)
+
+.

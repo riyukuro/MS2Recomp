@@ -1,3 +1,4 @@
+eol lf
 147a
 
 
@@ -38,4 +39,16 @@
 .
 91c
 extern char DAT_143b08a3c; // MS2: the game's "assertions throw" switch (exe 0x143b08a3c)
+.
+86a
+        if (DAT_143b05980)  // MS2: decorated as in the ctor (exe 0x14225f510)
+            m_sceneName = DAT_143b05980(m_sceneName);
+.
+54a
+    if (DAT_143b05980)  // MS2: the game's scene name decorator (exe 0x14225f250)
+        m_sceneName = DAT_143b05980(m_sceneName);
+.
+27a
+extern efd::utf8string (*DAT_143b05980)(const efd::utf8string&); // MS2: the game's scene name decorator (exe 0x143b05980)
+
 .

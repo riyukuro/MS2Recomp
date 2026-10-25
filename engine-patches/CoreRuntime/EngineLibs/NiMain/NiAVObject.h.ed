@@ -24,6 +24,7 @@
     // MS2: v2525 (studio, names inferred): flag 0x400 marks NiPSParticleSystem objects
     inline void SetParticleSystemFlag(bool bSet) { SetBit(bSet, IS_PARTICLE_SYSTEM); }
     inline bool GetParticleSystemFlag() const { return GetBit(IS_PARTICLE_SYSTEM); }
+    bool GetSwitchNodeBit() const { return GetBit(0x0200); }  // MS2: see SetSwitchNodeBit
     // MS2: non-virtual helper for the above (not in the game binary).
     bool MS2HasAnyFlag(unsigned short usMask) const
     {

@@ -1,3 +1,13 @@
+eol lf
+414a
+}
+
+//--------------------------------------------------------------------------------------------------
+void NiInputSystem::ResetKeyboardStates()   // MS2: exe 0x141d0dc90
+{
+    if (m_spKeyboard)
+        m_spKeyboard->ResetKeyStates();
+.
 182c
     if (m_bEnumerating) for (unsigned int ui = 0; ui < MAX_GAMEPADS; ui++)  // MS2: gamepads only polled while m_bEnumerating (exe 0x141d0e010)
 .

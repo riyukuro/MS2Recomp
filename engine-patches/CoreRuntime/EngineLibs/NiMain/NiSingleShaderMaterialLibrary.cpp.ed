@@ -1,0 +1,3 @@
+44c
+    return NiSingleShaderMaterial::Create(kName, false);  // MS2: bPreloadShader off (exe 0x141dd7150)
+.

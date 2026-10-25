@@ -2,3 +2,7 @@
     char* p = (char *)EE_MALLOC((size + 1) * sizeof(char)); // MS2: room for a terminator
 	file->Read(p, size); p[size] = 0; // MS2: NUL-terminate the buffer
 .
+56c
+// MS2: internal linkage; the exe keeps two copies (this one 0x1420bf550, the game's tinyxml 0x1408720d0).
+static FILE* TiXmlFOpen( const char* filename, const char* mode )
+.

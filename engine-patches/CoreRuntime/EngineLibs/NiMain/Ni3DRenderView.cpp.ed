@@ -1,0 +1,6 @@
+92c
+    else if (pkObject->IsNode())
+.
+87c
+    if (pkObject->GetDisplayObject())   // MS2: flag tests instead of NiIsKindOf (exe 0x141d54c50)
+.

@@ -1,10 +1,14 @@
-1057@64s "kTestIter" "ui"
+1057@69s "Iter" "--"
+1057@64s "k" "i"
 1057@59s "Nex" "A"
-1056@46s "kBaseIter" "ui"
+1056@51s "Iter" "--"
+1056@46s "k" "i"
 1056@41s "Nex" "A"
 1052,1054c
-    // MS2: set instead of list.
-    for (unsigned int ui = 0; ui < m_kUnaffectedReceiverList.GetSize(); ui++)
+    // MS2: set instead of list; both cursors walk from the tail (exe 0x141d5a8b0).
+    int iBase = (int)m_kUnaffectedReceiverList.GetSize() - 1;
+    int iTest = (int)pkTestObject->m_kUnaffectedReceiverList.GetSize() - 1;
+    while (iBase >= 0 && iTest >= 0)
 .
 998@61s "kIter" "ui"
 998@56s "Nex" "A"

@@ -11,7 +11,7 @@ void NiInputDI8GamePad::SetFFDevice(LPDIRECTINPUTDEVICE8 pkFFDevice)
 
     m_pkMS2FFDevice = pkFFDevice;
     HRESULT hr = m_pkMS2FFDevice->SetCooperativeLevel(
-        NiDI8InputSystem::GetOwnerWindow(), DISCL_EXCLUSIVE | DISCL_BACKGROUND);
+        NiDI8InputSystem::GetOwnerWindow(), DISCL_EXCLUSIVE | DISCL_FOREGROUND);   // MS2: foreground (exe 0x141d07fd0)
     if (FAILED(hr))
     {
         NILOG(NIMESSAGE_GENERAL_1, "DI8GamePad> Warning - Set "
@@ -138,8 +138,8 @@ void NiInputDI8GamePad::StartRumble()
 
     // The motor values run 0..20000; 10000 is the rest position
     int iX = (int)m_auiMS2RumbleValue[0];
-    int iY = (int)m_auiMS2RumbleValue[1];
     LONG lX = (iX > 10000) ? iX - 10000 : -iX;
+    int iY = (int)m_auiMS2RumbleValue[1];   // MS2: Y read after lX (exe 0x141d081e0)
 
     DICONSTANTFORCE kCF;
     if (m_dwMS2FFAxisCount == 1)

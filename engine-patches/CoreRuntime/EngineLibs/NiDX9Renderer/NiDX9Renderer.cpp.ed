@@ -68,6 +68,18 @@ void NiDX9Renderer::SetDeviceLostHeld(bool bHeld)
         if (DAT_143d6eb50)  // MS2: MS2RenderService hook
             DAT_143d6eb50(bSuccess);
 .
+3430a
+    else
+    {
+        return false;   // MS2: a lost device fails the frame (exe 0x1427cd450)
+    }
+.
+3410a
+
+        // MS2: MS2RenderService hook (exe 0x1427cd550)
+        if (DAT_143d6eb40)
+            DAT_143d6eb40((Unk_RsRendererSize*)this);
+.
 3391c
     return false;
 .
@@ -143,6 +155,8 @@ const char* NiDX9Renderer::GetDriverName() const
 // MS2: device hooks installed by MS2RenderService::OnInit (game: ms2renderservice.cpp)
 extern void (*DAT_143d6eb38)(void*);
 extern void (*DAT_143d6eb48)();
+struct Unk_RsRendererSize;
+extern void (*DAT_143d6eb40)(Unk_RsRendererSize*);
 extern void (*DAT_143d6eb50)(bool);
 
 .

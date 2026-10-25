@@ -1,3 +1,4 @@
+eol lf
 953a
 
 
@@ -21,6 +22,10 @@
 
 
 
+.
+693a
+    if (DAT_143b05980)  // MS2: the game's scene name decorator (exe 0x14205ea10)
+        sceneName = DAT_143b05980(sceneName);
 .
 569a
 
@@ -56,4 +61,16 @@
 .
 407a
 #line 418 // MS2 __LINE__ (linefix)
+.
+399a
+            if (DAT_143b05980)  // MS2: decorated as above
+                sceneName = DAT_143b05980(sceneName);
+.
+336a
+            if (DAT_143b05980)  // MS2: the game's scene name decorator (exe 0x142061590)
+                sceneName = DAT_143b05980(sceneName);
+.
+28a
+extern efd::utf8string (*DAT_143b05980)(const efd::utf8string&); // MS2: the game's scene name decorator (exe 0x143b05980)
+
 .

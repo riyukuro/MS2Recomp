@@ -1,4 +1,4 @@
-82a
+83c
 #if defined(EE_ARCH_64)  // studio x64 port (inferred bodies)  // MS2: v2525
 #define EE_STUDIO_ATOMIC64 1  // lets unit-local stand-ins step aside
 inline efd::SInt64 AtomicIncrement(efd::SInt64& value)
@@ -37,4 +37,5 @@ inline efd::UInt64 AtomicDecrement(volatile efd::UInt64& value)
 }
 //-------------------------------------------------------------------------------------------------
 #endif
+#if 1 // (_WIN32_WINNT >= 0x0502)  // MS2: on; the exe inlines it (cmpxchg in LockFreeQueue::Produce, 1420a27c5)
 .

@@ -1,3 +1,9 @@
+181c
+            if (pkChild->GetDisplayObject())   // MS2: flag test instead of NiIsKindOf (exe 0x141d73930)
+.
+151c
+            if (pkChild->GetDisplayObject() &&   // MS2: flag test instead of NiIsKindOf (exe 0x141d733d0)
+.
 115@57s "kIter" "ui"
 115@52s "Nex" "A"
 112,113c

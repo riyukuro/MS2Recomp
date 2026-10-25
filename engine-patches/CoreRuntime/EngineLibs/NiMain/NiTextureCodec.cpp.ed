@@ -1,0 +1,44 @@
+203a
+    aaucColors[1][2] |= aaucColors[1][2] >> 5;
+.
+202c
+    aaucColors[1][0] |= aaucColors[1][0] >> 5;
+    aaucColors[1][1] = (unsigned char)((usColor1 & 0x07e0) >> 3);
+    aaucColors[1][1] |= aaucColors[1][1] >> 6;
+.
+200a
+    // MS2: exact 565 -> 888 expansion (replicate the high bits; green mask 0x07e0) (exe 0x141db3cc0/0x141db3a00)
+.
+198a
+    aaucColors[0][2] |= aaucColors[0][2] >> 5;
+.
+197c
+    aaucColors[0][0] |= aaucColors[0][0] >> 5;
+    aaucColors[0][1] = (unsigned char)((usColor0 & 0x07e0) >> 3);
+    aaucColors[0][1] |= aaucColors[0][1] >> 6;
+.
+195a
+    // MS2: exact 565 -> 888 expansion (replicate the high bits; green mask 0x07e0) (exe 0x141db3cc0/0x141db3a00)
+.
+137a
+    aaucColors[1][2] |= aaucColors[1][2] >> 5;
+.
+136c
+    aaucColors[1][0] |= aaucColors[1][0] >> 5;
+    aaucColors[1][1] = (unsigned char)((usColor1 & 0x07e0) >> 3);
+    aaucColors[1][1] |= aaucColors[1][1] >> 6;
+.
+134a
+    // MS2: exact 565 -> 888 expansion (replicate the high bits; green mask 0x07e0) (exe 0x141db3cc0/0x141db3a00)
+.
+133a
+    aaucColors[0][2] |= aaucColors[0][2] >> 5;
+.
+132c
+    aaucColors[0][0] |= aaucColors[0][0] >> 5;
+    aaucColors[0][1] = (unsigned char)((usColor0 & 0x07e0) >> 3);
+    aaucColors[0][1] |= aaucColors[0][1] >> 6;
+.
+130a
+    // MS2: exact 565 -> 888 expansion (replicate the high bits; green mask 0x07e0) (exe 0x141db3cc0/0x141db3a00)
+.

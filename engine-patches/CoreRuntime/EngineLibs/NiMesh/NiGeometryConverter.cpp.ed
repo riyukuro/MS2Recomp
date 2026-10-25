@@ -1,3 +1,6 @@
+264c
+    else if (pkObject->IsNode())   // MS2: IS_NODE flag test (exe 0x141e36470), not NiIsKindOf
+.
 65a
 #else
     // cvtss2si rounds with the current MXCSR mode (default round-to-nearest-even), like fistp.

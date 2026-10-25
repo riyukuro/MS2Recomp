@@ -29,7 +29,7 @@ __forceinline bool MS2InlineUtf8Less(const efd::utf8string& _Left, const efd::ut
 }
 }
 #define EE_MS2_INSERT_NOHINT(TREE, VALTY, NODETY) \
-template<> template<> \
+template<> template<> inline \
 TREE::_Pairib TREE::_Insert_nohint<VALTY, NODETY>(bool _Leftish, std::add_rvalue_reference<VALTY>::type _Val, NODETY _Newnode) \
 { \
     auto& _My_data = this->_Get_data(); \
@@ -74,7 +74,7 @@ TREE::_Pairib TREE::_Insert_nohint<VALTY, NODETY>(bool _Leftish, std::add_rvalue
 }
 // MS2: likewise map<utf8string, ..>::equal_range is called out of line with both descent loops' compares inlined.
 #define EE_MS2_EQRANGE(TREE) \
-template<> template<> __declspec(noinline) \
+template<> template<> __declspec(noinline) inline \
 TREE::_Pairii TREE::_Eqrange<efd::utf8string>(const efd::utf8string& _Keyval) \
 { \
     auto& _My_data = this->_Get_data(); \

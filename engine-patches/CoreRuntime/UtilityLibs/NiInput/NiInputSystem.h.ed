@@ -1,4 +1,10 @@
+eol lf
 241c
     bool m_bEnumerating; friend class NiInputXInputGamePad;  // MS2: the XInput pad reads it in UpdateDevice (exe 0x141d09270)
     bool m_bStudioFlag0x2d;  // studio: +0x2d, name inferred  // MS2: v2525
+.
+196a
+    // MS2: clears the keyboard's key states; InputService::OnTick calls it when a device update starts failing
+    // (exe 0x141d0dc90, name inferred)
+    void ResetKeyboardStates();
 .

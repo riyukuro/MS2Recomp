@@ -1,0 +1,62 @@
+0a
+// MS2 engine addition (no stock counterpart): the studio shader context, an exe TU of its own
+// at 0x141d6fcb0-0x141d6fed0 between NiImageConverter and NiDefaultShadowClickGenerator.
+// Recovered from the exe; see NiStudioShaderContext.h.
+
+// Precompiled Header
+#include "NiMainPCH.h"
+
+#include "NiStudioShaderContext.h"
+#include "NiAVObject.h"
+#include "NiNode.h"
+
+//--------------------------------------------------------------------------------------------------
+NiStudioShaderContext::NiStudioShaderContext() :
+    m_pkCurrentObject(NULL)
+{
+}
+
+//--------------------------------------------------------------------------------------------------
+bool NiStudioShaderContext::GetCurrentNifPath(NiString& kNifPath, NiString& kObjectName)
+{
+    for (const NiAVObject* pkObject = m_pkCurrentObject; pkObject;
+        pkObject = pkObject->GetParent())
+    {
+        std::map<NiAVObject*, NiString>::iterator kIter =
+            m_kNifPaths.find(const_cast<NiAVObject*>(pkObject));
+        if (kIter != m_kNifPaths.end())
+        {
+            kNifPath = kIter->second;
+            kObjectName = m_pkCurrentObject->GetName();
+            return true;
+        }
+    }
+    return false;
+}
+
+//--------------------------------------------------------------------------------------------------
+NiStudioShaderContext& NiGetStudioShaderContext()
+{
+    static NiStudioShaderContext s_kContext;
+    return s_kContext;
+}
+
+//--------------------------------------------------------------------------------------------------
+bool NiStudioShaderContext::GetNifPath(const NiAVObject* pkObject, NiString& kNifPath)
+{
+    for (; pkObject; pkObject = pkObject->GetParent())
+    {
+        std::map<NiAVObject*, NiString>::iterator kIter =
+            m_kNifPaths.find(const_cast<NiAVObject*>(pkObject));
+        if (kIter != m_kNifPaths.end())
+        {
+            kNifPath = kIter->second;
+            return true;
+        }
+    }
+    return false;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+.
