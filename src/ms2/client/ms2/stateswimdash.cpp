@@ -30,7 +30,6 @@ void FUN_1408a8900(void* pStr);                            // 0x1408a8900 ~efd::
 void FUN_140ae18f0(void* pStr, const char* psz);           // 0x140ae18f0 efd::utf8string::operator=(const char*)
 bool FUN_14096ad40(const efd::utf8string& str);            // 0x14096ad40 the string is empty
 void FUN_14165e2a0(PCBase* p, void* pStr, int nKey);       // 0x14165e2a0 the player's animation name of a key
-CString FUN_14165e010(PCBase* p, int nKey);                // 0x14165e010 the player's effect name of a key
 void FUN_14165f170(PCBase* p);                             // 0x14165f170
 int FUN_140b7f6a0(void* pSvc, const egf::EntityID& kId);   // 0x140b7f6a0 sequence id of the model
 void* FUN_141b6f910();                                     // 0x141b6f910 the animation service
@@ -230,7 +229,7 @@ void StateSwimDash::FUN_1417fbec0()
     if (pPC != 0)
     {
         Unk_EffectQuery query;
-        query.m_strName = FUN_14165e010(pPC, 0x32);
+        query.m_strName = static_cast<PC*>(pPC)->FUN_14165e010(0x32);
         query.m_nObject = FUN_141bd1a10(FUN_1403ed2d0(), m_pOwner);
         query.SetActor(pPC->FUN_14123c580());
         m_nEffect = FUN_1411a49c0(FUN_1403ed280(), &query);
