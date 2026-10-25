@@ -143,6 +143,7 @@
 #include "ms2/placeholder/cadbannermanagercli.h"
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/citemdata.h"
+#include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include "ms2/placeholder/imessagelistener.h"
@@ -271,8 +272,7 @@ public:
 class Unk_CashAdMgr { public: int FUN_14096b540(int nType, ATL::CAtlArray<MS2Ptr<Unk_CashBannerRecord> >& rOut); };
 Unk_CashAdMgr* FUN_1409fb930();
 
-class Unk_CashStrings { public: CStringW FUN_141811980(int nTable, int nId); };
-Unk_CashStrings* FUN_1401a9d70();
+CStringTable* GetStringTable();                                        // FUN_1401a9d70
 
 class Unk_CashFeatures { public: bool FUN_14036d570(int nFeature); };
 Unk_CashFeatures* FUN_140166410();
@@ -343,7 +343,6 @@ CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nId);
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& strA, const CStringW& strB);
 CStringW FUN_14052bd00(int nId, const CStringW& str);
-CStringW FUN_141813300(Unk_CashStrings* pStrings, int nId);
 int FUN_1402912d0(CStringW strName);                                // the inventory tab of a name
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
@@ -892,7 +891,7 @@ bool UICashShopDialog::FUN_141035990(const CString& strName, ATL::CAtlArray<int>
             continue;
         MS2Ptr<ASCashShopBillData> spBill(new ASCashShopBillData());
         spBill->FUN_1409ab990(spItem, spProduct->m_nRank);
-        spBill->FUN_1409aba80(FUN_1401a9d70()->FUN_141811980(1, spProduct->m_nItemId));
+        spBill->FUN_1409aba80(GetStringTable()->FUN_141811980(1, spProduct->m_nItemId));
         spBill->FUN_1409abad0(FUN_1418fec00(0, spProduct->m_nSalePrice, 0), spProduct->m_nSalePrice);
         spBill->FUN_1409abc90(spProduct->m_nDiscount == 1);
         spBill->FUN_1409abcd0(0);
@@ -944,7 +943,7 @@ void UICashShopDialog::FUN_1410360c0()
             continue;
         MS2Ptr<ASObj> spRow(new ASObj(2));
         spRow->FUN_1407cba60("productSN", FUN_140513200("{0}", spProduct->m_nSerial));
-        spRow->FUN_1407cbb20("itemName", FUN_1401a9d70()->FUN_141811980(1, spProduct->m_nItemId));
+        spRow->FUN_1407cbb20("itemName", GetStringTable()->FUN_141811980(1, spProduct->m_nItemId));
         spRow->FUN_1407cba60("iconPath", spItem->FUN_14053fdd0());
         spRow->FUN_1407cb9c0("saleTag", spProduct->m_nSaleTag);
         __int64 nPrice = spProduct->m_nPrice;
@@ -1006,7 +1005,7 @@ void UICashShopDialog::FUN_141036ca0()
             continue;
         MS2Ptr<ASObj> spRow(new ASObj(2));
         spRow->FUN_1407cba60("productSN", FUN_140513200("{0}", spProduct->m_nSerial));
-        spRow->FUN_1407cbb20("itemName", FUN_1401a9d70()->FUN_141811980(1, spProduct->m_nItemId));
+        spRow->FUN_1407cbb20("itemName", GetStringTable()->FUN_141811980(1, spProduct->m_nItemId));
         spRow->FUN_1407cba60("iconPath", spItem->FUN_14053fdd0());
         spRow->FUN_1407cb9c0("saleTag", spProduct->m_nSaleTag);
         __int64 nPrice = spProduct->m_nPrice;
@@ -1187,7 +1186,7 @@ bool UICashShopDialog::FUN_1410382a0(MS2Ptr<TMarketBillDataParam> spParam, const
             if (nTab < 0)
                 strText = GetStringCommon(nReason);
             else
-                strText = FUN_14052bd00(nReason, FUN_141813300(FUN_1401a9d70(), nTab));
+                strText = FUN_14052bd00(nReason, GetStringTable()->FUN_141813300(nTab));
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strText), 0, CStringW(L""));
             if (spBox.get() != 0) {
                 spBox->FUN_140534050(nProductId);
