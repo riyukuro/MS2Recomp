@@ -15,6 +15,7 @@
 
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/astextfield.h"
+#include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -27,8 +28,7 @@ static CString s_sortNamesB[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh",
 
 class Unk_OptionTable { public: bool FUN_1405f4720(); };            // loads every table
 Unk_OptionTable* FUN_140166430();                                   // the option table singleton
-void* FUN_1401a9d70();                                              // the string table
-void* FUN_141813150(void* pTable, CStringW* pOut, unsigned int nId, void* pArg, int nZero);
+extern CStringTable* GetStringTable();                              // FUN_1401a9d70
 
 // @0x14192a2e0
 UIItemDropSimulatorDialog::UIItemDropSimulatorDialog()
@@ -116,10 +116,9 @@ void UIItemDropSimulatorDialog::FUN_14192a9a0(CStringW strText)
 }
 
 // @0x14192aa50
-CStringW* UIItemDropSimulatorDialog::FUN_14192aa50(CStringW* pOut, unsigned int nId, void* pArg)
+CStringW UIItemDropSimulatorDialog::FUN_14192aa50(int nId)
 {
-    FUN_141813150(FUN_1401a9d70(), pOut, nId, pArg, 0);
-    return pOut;
+    return GetStringTable()->FUN_141813150(nId);
 }
 
 // @0x14192ab00

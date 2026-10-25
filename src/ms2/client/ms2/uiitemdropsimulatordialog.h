@@ -33,7 +33,7 @@ public:
     void FUN_14192a940(CString strA, CString strB, int nA, int nB, int nC, int nD, int nE, int nF, int nG, int nH,
                        int nI);                                 // 0x14192a940 custom drop
     void FUN_14192a9a0(CStringW strText);                       // 0x14192a9a0 show the result text
-    CStringW* FUN_14192aa50(CStringW* pOut, unsigned int nId, void* pArg);  // 0x14192aa50 localized word
+    CStringW FUN_14192aa50(int nId);                        // 0x14192aa50 the rank string (CStringTable::FUN_141813150)
 
     MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);  // 0x140bb4cf0 text field child lookup (a UIDialog member)
 };
