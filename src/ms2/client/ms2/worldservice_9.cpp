@@ -11,11 +11,18 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include <efd/utf8string.h>
 
-// MS2-FUNCTIONAL: the world-service caller uses this legacy entry as efd::utf8string::size (byte count).
+// MS2-FUNCTIONAL: the wrapper forwards to the string's stored byte length.
 // @0x141c2eee0
 size_t FUN_141c2eee0(const efd::utf8string* s)
 {
     return s->size();
+}
+
+// MS2-FUNCTIONAL: this wrapper returns its pointer argument unchanged.
+// @0x141c2e9f0
+void* FUN_141c2e9f0(void* value)
+{
+    return value;
 }
 
 // MS2-PIN: ?reserve@?$vector@V?$MS2Ptr@VMS2ActorUpdater@@@@V?$allocator@V?$MS2Ptr@VMS2ActorUpdater@@@@@std@@@std@@QEAAX_K@Z 0x141c2ecb0
