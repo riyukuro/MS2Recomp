@@ -14912,3 +14912,6 @@ DAT_1439f8358	1439f8358	data
 ??0CNMLoginVirtualFunc@@QEAA@_JH0@Z	14157f420	func
 ??0CNMFDSGetDownloadDirFunc@@QEAA@I@Z	1415a28f0	func
 ??0CNMGetNoteBox2Func@@QEAA@HHH@Z	14158ba80	func
+?SKI_NullInterface@Render@Scaleform@@3USortKeyInterface@12@A	143a2fe08	data
+?ImageFileKeyInterface_Instance@GFx@Scaleform@@3VImageFileKeyInterface@12@A	143a2fe18	data
+?SoundFileKeyInterface_Instance@GFx@Scaleform@@3VSoundFileKeyInterface@12@A	143a2fef8	data
