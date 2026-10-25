@@ -310,6 +310,7 @@
 #include "ms2/placeholder/physxpropmessage.h"
 #include <egmAnimation/ActorMessages.h>
 #include "ms2/placeholder/tptreddummy.h"
+#include "ms2/placeholder/tptrvalue.h"
 
 // The container drivers of worldservice_inst.inl, copied: the CAtlMap value types whose destructors are not trivial in the exe
 // (CAtlMap::FreeNode then calls the CNode scalar deleting dtor) are unit-local stand-ins with an out-of-line dtor.
@@ -699,15 +700,17 @@ void* FUN_141bffee0(void* map)
 struct Unk_WsC_TagPtr;
 class Unk_WsB_Lift;
 
-// CAtlMap<unsigned, Unk_WsV208>::Lookup(key, value&): the value is a 16-byte tagged pointer assigned through the
-// folded MS2Ptr::operator= (0x141bf6c70).
-// MS2-FUNCTIONAL: Lookup(key) plus an MS2Ptr<CPtred> assignment instead of the member Lookup(key, value&)
+// CAtlMap<unsigned, Unk_WsV208>::Lookup(key, value&): the value is a TPtrValue to the entity list inside its TPtredDummy
+// box (count 0x18 bytes before the list), assigned through TPtrValue::operator= (0x141bf6c70). An MS2Ptr<CPtred>
+// assignment counts at the list itself and bumps its m_pTail.
+// MS2-FUNCTIONAL: Lookup(key) plus a TPtrValue assignment instead of the member Lookup(key, value&)
 bool FUN_141c06b80(void* map, unsigned key, Unk_WsC_TagPtr* out)
 {
+    typedef TPtrValue<ATL::CAtlList<efd::SmartPointer<egf::Entity> > > EntityListPtr;
     ATL::CAtlMap<unsigned, Unk_WsV208>::CPair* p = static_cast<ATL::CAtlMap<unsigned, Unk_WsV208>*>(map)->Lookup(key);
     if (!p)
         return false;
-    *(MS2Ptr<CPtred>*)out = *(MS2Ptr<CPtred>*)&p->m_value;
+    *(EntityListPtr*)out = *(const EntityListPtr*)&p->m_value;
     return true;
 }
 
