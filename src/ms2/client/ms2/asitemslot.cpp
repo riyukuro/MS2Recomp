@@ -1571,6 +1571,10 @@ struct Unk_MeratOid
 MS2_CHECK_SIZE(Unk_MeratOid, 0x10);
 
 // The premium part of a market record (the coin shop product, 0x238 bytes at record +0x30).
+class CDBPremiumProduct;
+class CMeratMarketPremiumProduct;
+CStringW FUN_140ec05f0(CMeratMarketPremiumProduct* pProduct);                  // the star point text (uimeratmarketcommon.cpp)
+CStringW FUN_140ec01e0(CDBPremiumProduct* pProduct, const CStringW& strKey);   // the buy limit text (uimeratmarketcommon.cpp)
 class Unk_MeratPremium
 {
 public:
@@ -1580,10 +1584,8 @@ public:
     int FUN_14069fee0();                                        // PC bang only
     bool FUN_1406a0a60();                                       // sold out
     bool FUN_140ebfb90(int n);                                  // the required achievement is done
-    CStringW FUN_140ec05f0();                                   // the star point text
     int FUN_1406a17f0(int nIndex);                              // item count
     CStringW FUN_1406a00e0();                                   // name
-    CStringW FUN_140ec01e0(const CStringW& strKey);             // the buy limit text
     bool FUN_1406a0090();                                       // not a random sale
     CStringW FUN_1406a02c0();                                   // the random sale expiry date
     __int64 FUN_1406a0270();                                    // the random sale payback
@@ -2074,7 +2076,7 @@ bool ASMeratMarketProduct::vfunc_1(MS2Ptr<Unk_MeratEquipEntry> spEntry, const Un
             FUN_1407cbb20("requireAchieve", FUN_14093bad0(premium.m_nAchieveId, premium.m_nAchieveGrade, strFormat));
         }
         FUN_1407cbbe0("isPcBang", premium.FUN_14069fee0() > 0);
-        CStringW strStar = premium.FUN_140ec05f0();
+        CStringW strStar = FUN_140ec05f0((CMeratMarketPremiumProduct*)&premium);
         if (!strStar.IsEmpty())
             FUN_1407cbb20("starPoint", strStar);
     }
@@ -2305,7 +2307,7 @@ void ASMeratMarketLimitedProduct::vfunc_7(MS2Ptr<Unk_MeratEquipEntry> spEntry)
     }
     CStringW strBuyLimit2;
     if (premium.m_nBuyLimit94 != 0 || premium.m_nBuyLimit96 != 0)
-        strBuyLimit2 = premium.FUN_140ec01e0(CStringW(L"s_meratmarket_limited_buylimit_"));
+        strBuyLimit2 = FUN_140ec01e0((CDBPremiumProduct*)&premium, CStringW(L"s_meratmarket_limited_buylimit_"));
     FUN_1407cbb20("desc", StringFormat((const wchar_t*)strDesc, strStart, strEnd, premium.m_nLimitCount, strBuyLimit, strBuyLimit2));
 }
 
