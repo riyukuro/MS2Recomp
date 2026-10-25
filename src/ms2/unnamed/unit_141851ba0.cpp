@@ -21,6 +21,7 @@ int FUN_140873710(Unk_140165cf0* pElem, const char* pszName, int* pValue);      
 Unk_140165cf0* FUN_140165cf0(Unk_140165cf0* pElem, const char* pszName);         // first child element
 Unk_140165cf0* FUN_140168650(Unk_140165cf0* pElem, const char* pszName);         // next sibling element
 void FUN_1418528d0(void* pVisitor, float fWeight);                               // ctor of the weight visitor (next TU)
+#pragma comment(linker, "/alternatename:?FUN_1418528d0@@YAXPEAXM@Z=??0Unk_CtrlValue@@QEAA@M@Z")   // sfr36: full-exe link: unit_141851fd0 defines it as the ctor
 void FUN_141852690(void* pObject, void* pVisitor);                               // walk the scene graph with a visitor
 
 // 0x141851ba0

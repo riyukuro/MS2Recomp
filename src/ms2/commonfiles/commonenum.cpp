@@ -1542,6 +1542,8 @@ int Lookup(const CStringA& value, const std::pair<const char*, int> (&table)[75]
 }
 // @0x14021b830
 int Parse_14021b830(const CStringA& value) { return Lookup(FUN_14016a5c0(static_cast<const char*>(value),0),lookupTable); }
+// sfr36: full-exe link: itemdatastruct/banktable call it as FUN_14021bdc0(CString&)
+#pragma comment(linker, "/alternatename:?FUN_14021bdc0@@YAHAEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z=?Parse_14021bdc0@@YAHAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z")
 // @0x14021bdc0
 int Parse_14021bdc0(const CStringA& value) { if("HR" == value) return 1;
 if("FA" == value) return 2;

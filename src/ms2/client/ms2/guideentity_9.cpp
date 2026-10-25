@@ -86,6 +86,8 @@ void FUN_14139eff0(Unk_GeTreeHead* pHead, Unk_GeNode* pNode);           // rotat
 void FUN_14139faa0(Unk_GeTreeHead* pHead, Unk_GeNode* pNode);           // rotate right
 void FUN_1413a4e30(void* pMap, Unk_GeNode* pNode);                      // frees a node
 void* FUN_141398a90(void* pIter);
+// sfr36: full-exe link: the const operator* above is the std comdat guideentity_5 defines
+#pragma comment(linker, "/alternatename:?FUN_141398a90@@YAPEAXPEAX@Z=??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Occurrence@CGuideManager@@H@std@@@std@@@std@@@std@@QEBAAEBU?$pair@$$CBW4Occurrence@CGuideManager@@H@1@XZ")
 void* FUN_1413a4830(void* pIter);                                       // map<int,int> iterator operator* (out of line, calls the const one)
 void FUN_141389060(Unk_GcCondRef* pRef);
 unsigned __int64 FUN_1413a5140(void* pMap);
