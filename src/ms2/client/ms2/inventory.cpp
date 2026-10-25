@@ -409,7 +409,6 @@ void FUN_141a01600(CMsgBoxData*, __int64);
 void FUN_141a01ee0(CMsgBoxData*, Unk_Inventory::ItemPtr, const CStringW&, int, int, int, int, int);
 void FUN_141a01700(CMsgBoxData*, int, int, int);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
-CStringW FUN_140527b10(CItem*);
 CStringW FUN_1405c2690(CStringW, CStringW);
 class Unk_InventoryBinding { public: int FUN_140635100(); int FUN_140635120(); };
 Unk_InventoryBinding* FUN_140527930(CItem*);
@@ -1317,7 +1316,7 @@ int Unk_Inventory::FUN_140a62270(CItem* item, int slot, int mode, int skipBindin
                 FUN_140534050(box.operator->(), slot);
                 FUN_140534050(box.operator->(), mode);
                 FUN_141a01600(box.operator->(), item->FUN_140526a50());
-                FUN_141a01ee0(box.operator->(), ItemPtr(item), FUN_140527b10(item), 1, 0, -1, -1, 1);
+                FUN_141a01ee0(box.operator->(), ItemPtr(item), item->FUN_140527b10(), 1, 0, -1, -1, 1);
                 FUN_141a01700(box.operator->(), 1143, 1144, 0);
                 FUN_140d73c60(box);
                 return 1;
