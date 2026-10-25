@@ -2376,7 +2376,7 @@ public:
     float m_f290;
 };
 MS2_CHECK_OFFSET(Unk_SsEffectData, m_f290, 0x290);
-MS2Ptr<Unk_SsEffectData> FUN_140aafef0(SkillDataTable* pTable, int nEffectId, unsigned short nLevel);
+class Unk_SsSkillTableCli { public: MS2Ptr<Unk_SsEffectData> FUN_140aafef0(int nEffectId, unsigned short nLevel); };  // SkillDataTableCli
 class Unk_SsSkillSetTable { public: MS2Ptr<Unk_MyPCSkillSet> FUN_140809840(int nSetId); };
 Unk_SsSkillSetTable* FUN_1414a57b0();
 
@@ -3271,7 +3271,7 @@ int CSkillSystem::FUN_141769b70(MS2Ptr<SkillLevelData> spLevel, Unk_InventorySki
         std::vector<MS2Ptr<SkillActionAdditional> >& vAdd = spLevel->m_vAdditional;
         for (std::vector<MS2Ptr<SkillActionAdditional> >::iterator it = vAdd.begin(); it != vAdd.end(); ++it)
         {
-            MS2Ptr<Unk_SsEffectData> spEffect = FUN_140aafef0(FUN_1401958b0(), (*it)->m_nAdditionalID, (*it)->m_nLevel);
+            MS2Ptr<Unk_SsEffectData> spEffect = ((Unk_SsSkillTableCli*)FUN_1401958b0())->FUN_140aafef0((*it)->m_nAdditionalID, (*it)->m_nLevel);
             if (!spEffect.IsNull())
             {
                 Unk_SsEffectData* pEffect = spEffect.operator->();
