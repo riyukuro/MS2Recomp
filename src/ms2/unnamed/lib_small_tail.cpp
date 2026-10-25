@@ -1,7 +1,8 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). Single functions of the small third-party libraries that the
-// engine-stage TUs leave as stubs: expat xmltok scanDecl, libjpeg jpeg_idct helpers (the JPEG
+// engine-stage TUs leave as stubs: expat xmltok scanComment/scanDecl, libjpeg jpeg_idct helpers (the JPEG
 // marker-name char test), libpng png_zstream_error.
 // MS2-UNIT: lib_small_tail
+// MS2-RANGE: 0x1423c55a0-0x1423c5740 .text$mn
 // MS2-RANGE: 0x1423c5740-0x1423c5808 .text$mn
 // MS2-RANGE: 0x142702350-0x142702fa9 .text$mn
 // MS2-RANGE: 0x142703c80-0x142703cd7 .text$mn
@@ -17,10 +18,88 @@ struct ExpatNormalEncoding
 {
     char enc[0x90];
     unsigned char type[256];
+    char pad190[0x30];
+    int (*isInvalid2)(const ExpatNormalEncoding* enc, const char* p);  // +0x1c0
+    int (*isInvalid3)(const ExpatNormalEncoding* enc, const char* p);  // +0x1c8
+    int (*isInvalid4)(const ExpatNormalEncoding* enc, const char* p);  // +0x1d0
 };
-int FUN_1423c55a0(const ExpatNormalEncoding* enc, const char* ptr, const char* end, const char** nextTokPtr); // scanComment
 
-enum { BT_LSQB = 20, BT_S = 21, BT_NMSTRT = 22, BT_HEX = 24, BT_MINUS = 27, BT_CR = 9, BT_LF = 10, BT_PERCNT = 30 };
+enum { BT_NONXML = 0, BT_MALFORM = 1, BT_LEAD2 = 5, BT_LEAD3 = 6, BT_LEAD4 = 7, BT_TRAIL = 8,
+       BT_LSQB = 20, BT_S = 21, BT_NMSTRT = 22, BT_HEX = 24, BT_MINUS = 27, BT_CR = 9, BT_LF = 10, BT_PERCNT = 30 };
+
+// @0x1423c55a0  expat normal_scanComment: ptr is past "<!-"; returns XML_TOK_COMMENT (13) after "-->"
+int FUN_1423c55a0(const ExpatNormalEncoding* enc, const char* ptr, const char* end, const char** nextTokPtr)
+{
+    if (ptr == end)
+        return -1;
+    if (*ptr != '-')
+    {
+        *nextTokPtr = ptr;
+        return 0;
+    }
+    ++ptr;
+    while (ptr != end)
+    {
+        switch (enc->type[(unsigned char)*ptr])
+        {
+        case BT_LEAD2:
+            if (end - ptr < 2)
+                return -2;
+            if (enc->isInvalid2(enc, ptr))
+            {
+                *nextTokPtr = ptr;
+                return 0;
+            }
+            ptr += 2;
+            break;
+        case BT_LEAD3:
+            if (end - ptr < 3)
+                return -2;
+            if (enc->isInvalid3(enc, ptr))
+            {
+                *nextTokPtr = ptr;
+                return 0;
+            }
+            ptr += 3;
+            break;
+        case BT_LEAD4:
+            if (end - ptr < 4)
+                return -2;
+            if (enc->isInvalid4(enc, ptr))
+            {
+                *nextTokPtr = ptr;
+                return 0;
+            }
+            ptr += 4;
+            break;
+        case BT_NONXML:
+        case BT_MALFORM:
+        case BT_TRAIL:
+            *nextTokPtr = ptr;
+            return 0;
+        case BT_MINUS:
+            if (++ptr == end)
+                return -1;
+            if (*ptr == '-')
+            {
+                if (++ptr == end)
+                    return -1;
+                if (*ptr != '>')
+                {
+                    *nextTokPtr = ptr;
+                    return 0;
+                }
+                *nextTokPtr = ptr + 1;
+                return 13;
+            }
+            break;
+        default:
+            ++ptr;
+            break;
+        }
+    }
+    return -1;
+}
 
 // @0x1423c5740  expat normal_scanDecl
 int FUN_1423c5740(const ExpatNormalEncoding* enc, const char* ptr, const char* end, const char** nextTokPtr)
