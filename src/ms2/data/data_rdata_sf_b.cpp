@@ -13,7 +13,6 @@
 // MS2-RANGE: 0x143184be8-0x1431893f0 .rdata
 // MS2-RANGE: 0x14318ec30-0x14318fb38 .rdata
 // MS2-RANGE: 0x143193310-0x143193710 .rdata
-// MS2-RANGE: 0x1431b5800-0x1431b7860 .rdata
 // MS2-RANGE: 0x1431c4828-0x1431c5b30 .rdata
 // MS2-RANGE: 0x143212f60-0x143215ac0 .rdata
 // MS2-RANGE: 0x143217750-0x1432177c8 .rdata
@@ -7516,29 +7515,6 @@ alignas(16) unsigned char DAT_143193610[0x100] = {
     0x00, 0x01, 0x00, 0x02, 0x00, 0x01, 0x00, 0x03, 0x00, 0x01, 0x00, 0x02, 0x00, 0x01, 0x00, 0x04,
     0x00, 0x01, 0x00, 0x02, 0x00, 0x01, 0x00, 0x03, 0x00, 0x01, 0x00, 0x02, 0x00, 0x01, 0x00, 0x08,
 };
-void* PTR_s_attachVideo_1431b5800 = (void*)"attachVideo";       // 0x1431b5800
-void* PTR_LAB_1431b5e18 = (void*)(const void*)&FUN_14000ebd0;   // 0x1431b5e18
-void* PTR_FUN_1431b5e20 = (void*)DAT_14000e1a0;                 // 0x1431b5e20
-void* PTR_LAB_1431b5e70 = (void*)(const void*)&FUN_14000ebc0;   // 0x1431b5e70
-void* PTR_LAB_1431b5f20 = (void*)DAT_1429411f0;                 // 0x1431b5f20
-void* PTR_LAB_1431b5fb0 = (void*)(const void*)&FUN_14000ed10;   // 0x1431b5fb0
-void* PTR_FUN_1431b6060 = (void*)(const void*)&FUN_140010530;   // 0x1431b6060
-void* PTR_LAB_1431b63f8 = (void*)(const void*)&FUN_140010180;   // 0x1431b63f8
-void* PTR_s_connect_1431b6410 = (void*)"connect";               // 0x1431b6410
-void* PTR_LAB_1431b6430 = (void*)(const void*)&FUN_140011c80;   // 0x1431b6430
-void* PTR_LAB_1431b6440 = (void*)(const void*)&FUN_140011c70;   // 0x1431b6440
-void* PTR_FUN_1431b64f0 = (void*)(const void*)&FUN_140012400;   // 0x1431b64f0
-void* PTR_LAB_1431b6540 = (void*)(const void*)&FUN_140011d00;   // 0x1431b6540
-void* PTR_LAB_1431b65f0 = (void*)DAT_1429411f0;                 // 0x1431b65f0
-void* PTR_LAB_1431b6638 = (void*)(const void*)&FUN_140012590;   // 0x1431b6638
-void* PTR_FUN_1431b6640 = (void*)(const void*)&FUN_140012400;   // 0x1431b6640
-void* PTR_LAB_1431b6690 = (void*)(const void*)&FUN_140012580;   // 0x1431b6690
-void* PTR_LAB_1431b6740 = (void*)DAT_1429411f0;                 // 0x1431b6740
-void* PTR_LAB_1431b67d0 = (void*)(const void*)&FUN_1400126a0;   // 0x1431b67d0
-void* PTR_FUN_1431b71b0 = (void*)DAT_142503fa0;                 // 0x1431b71b0
-void* PTR_FUN_1431b7260 = (void*)DAT_142503800;                 // 0x1431b7260
-void* PTR_FUN_1431b7360 = (void*)(const void*)&FUN_140012e10;   // 0x1431b7360
-void* PTR_FUN_1431b7858 = (void*)(const void*)&FUN_140015c00;   // 0x1431b7858
 alignas(8) unsigned char DAT_1431c4828[0x8];                    // 0x1431c4828
 // 0x1431c4830
 alignas(16) unsigned char DAT_1431c4830[0x28] = {
