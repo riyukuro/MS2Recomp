@@ -1556,6 +1556,26 @@ bool FUN_1415c54f0(void*, void* output, int resultCode)
     return ok != 0;
 }
 
+
+extern void* FUN_14160a190(void*, void*);
+extern void* FUN_141607f70(void*, void*);
+extern void FUN_1415e2330(void*, unsigned long long, unsigned long long);
+// MS2-FUNCTIONAL 0x1415c7500: requests the indexed note box and copies its two returned identifiers on success.
+// @0x1415c7500
+int FUN_1415c7500(void*, int type, int index, void* output)
+{
+    CNMGetNoteBox2Func request(type, index, 0);
+    const int ok = FUN_1415cb440(FUN_1415fa260(), &request);
+    if (ok) {
+        alignas(8) unsigned char first[16]{};
+        alignas(8) unsigned char last[16]{};
+        auto* firstValue = static_cast<unsigned long long*>(FUN_14160a190(&request.m_40, first));
+        auto* lastValue = static_cast<unsigned long long*>(FUN_141607f70(&request.m_40, last));
+        FUN_1415e2330(output, *lastValue, *firstValue);
+    }
+    return ok;
+}
+
 // MS2-PIN: ?FUN_1415c5ed0@@YAHXZ 0x1415c5ed0
 // MS2-PIN: ?FUN_1415c4540@@YAHPEAXHHHH@Z 0x1415c4540
 // MS2-PIN: ?FUN_1415caaa0@@YAPEAXPEAXI@Z 0x1415caaa0
@@ -1579,3 +1599,4 @@ bool FUN_1415c54f0(void*, void* output, int resultCode)
 // MS2-PIN: ?FUN_1415cb430@@YAXXZ 0x1415cb430
 // MS2-PIN: ?FUN_1415c5400@@YAIPEAX_JH0@Z 0x1415c5400
 // MS2-PIN: ?FUN_1415c54f0@@YA_NPEAX0H@Z 0x1415c54f0
+// MS2-PIN: ?FUN_1415c7500@@YAHPEAXHH0@Z 0x1415c7500
