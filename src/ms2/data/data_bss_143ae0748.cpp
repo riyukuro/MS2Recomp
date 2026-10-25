@@ -26,6 +26,8 @@ int DAT_143ae0fb8;                                              // 0x143ae0fb8
 int DAT_143ae0fbc;                                              // 0x143ae0fbc
 int g_nDebugUI;                                                 // 0x143ae0fc0
 int DAT_143ae1f20;                                              // 0x143ae1f20
+char DAT_143ae2848;                                             // 0x143ae2848: NM CNMStr<32> empty-string sentinel
+char DAT_143ae2849;                                             // 0x143ae2849: NM CNMStr<2048> empty-string sentinel
 int DAT_143ae2960;                                              // 0x143ae2960
 int DAT_143ae2b30;                                              // 0x143ae2b30
 int DAT_143ae2b34;                                              // 0x143ae2b34
@@ -43,6 +45,8 @@ alignas(16) unsigned char DAT_143ae37d0[0x1d0];                 // 0x143ae37d0
 PostProcessingService* DAT_143ae4660;                           // 0x143ae4660
 char DAT_143ae53d8;                                             // 0x143ae53d8
 
+#pragma comment(linker, "/alternatename:?DAT_143ae2848@@3DB=?DAT_143ae2848@@3DA")
+#pragma comment(linker, "/alternatename:?DAT_143ae2849@@3DB=?DAT_143ae2849@@3DA")
 #pragma comment(linker, "/alternatename:?ms_pSingleton@?$SingletonClass@VGFxService@@@@2PEAVGFxService@@EA=?DAT_143ae0748@@3PEAVUnk_SingletonObj@@EA")
 #pragma comment(linker, "/alternatename:?DAT_143ae0fb0@@3IA=?DAT_143ae0fb0@@3HA")
 #pragma comment(linker, "/alternatename:?DAT_143ae0fb8@@3IA=?DAT_143ae0fb8@@3HA")
