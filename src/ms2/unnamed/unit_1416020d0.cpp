@@ -1120,3 +1120,23 @@ long long FUN_141604630(long long* tree) { return *tree + 0x10; }
 
 // @0x141604650
 long long FUN_141604650(long long* tree) { return *tree + 8; }
+
+// MS2-FUNCTIONAL: reproduces the recovered red-black tree node relink using the exe field offsets (left 0, right 8, parent 16, nil flag 25).
+// @0x141604670
+void FUN_141604670(long long* tree, long long* position) {
+    auto node = *position;
+    auto right = *reinterpret_cast<long long*>(node + 16 / 8);
+    *position = right;
+    if (*reinterpret_cast<unsigned char*>(right + 25) == 0)
+        *reinterpret_cast<long long**>(right + 8) = position;
+    *reinterpret_cast<long long*>(node + 8) = position[1];
+    auto head = *tree;
+    if (position == *reinterpret_cast<long long**>(head + 8))
+        *reinterpret_cast<long long*>(head + 8) = node;
+    else if (position == *reinterpret_cast<long long**>(position[1] + 16))
+        *reinterpret_cast<long long*>(position[1] + 16) = node;
+    else
+        *reinterpret_cast<long long*>(position[1]) = node;
+    *reinterpret_cast<long long*>(node + 16) = reinterpret_cast<long long>(position);
+    position[1] = node;
+}
