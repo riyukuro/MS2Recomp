@@ -9,6 +9,7 @@
 // MS2-UNIT: data_rdata_sf_a
 // MS2-RANGE: 0x14305cd3c-0x14305cd3e .rdata
 // MS2-RANGE: 0x143138360-0x143138510 .rdata
+// MS2-RANGE: 0x143138530-0x1431385b8 .rdata
 // MS2-RANGE: 0x14313a200-0x14313f358 .rdata
 // MS2-RANGE: 0x143144150-0x1431496d0 .rdata
 // MS2-RANGE: 0x14314ed40-0x14314ef70 .rdata
@@ -1032,6 +1033,16 @@ void FUN_1423ca540();
 void FUN_1423ca620();
 void FUN_1423ca920();
 void FUN_1423cb400();
+void FUN_1423c8e70();
+void FUN_1423d8140();
+void FUN_1423d7dc0();
+void FUN_1423d7df0();
+void FUN_1423d76f0();
+void FUN_1423d7890();
+void FUN_1423d7e80();
+void FUN_1423d8870();
+void FUN_1423d8a10();
+void FUN_1423d7940();
 void FUN_1423cb5b0();
 void FUN_1423cb600();
 void FUN_1423cb650();
@@ -1330,6 +1341,9 @@ void FUN_1425b48a0();
 void FUN_1425b48d0();
 
 #pragma pack(push, 1)
+struct Sd_143138530 {
+    const void* p[17];
+};
 struct Sd_143138360 {
     const void* p0;
     const void* p8;
@@ -9385,6 +9399,27 @@ extern Sd_14316ff40 DAT_14316ff40;
 extern Sd_143172640 DAT_143172640;
 extern Sd_1431726d0 DAT_1431726d0;
 
+// 0x143138530: 17-slot table of the 0x1a0 IME object sfr_as2_01c FUN_1423cabb0 builds (slots in sfr_ime_01)
+alignas(16) Sd_143138530 DAT_143138530 = {
+    (const void*)&FUN_1423c8e70,
+    (const void*)&FUN_1423d8140,
+    (const void*)&FUN_1423d7dc0,
+    (const void*)&FUN_1423cb5b0,
+    (const void*)&FUN_1423cb600,
+    (const void*)&FUN_1423d7df0,
+    (const void*)&FUN_1423cb980,
+    (const void*)&FUN_1423cbe90,
+    (const void*)&FUN_1423d76f0,
+    (const void*)&FUN_1423d7890,
+    (const void*)&FUN_1423cc7c0,
+    (const void*)&FUN_1423d7e80,
+    (const void*)&FUN_1423d8870,
+    (const void*)&FUN_1423d8a10,
+    (const void*)&FUN_1423cb970,
+    (const void*)&FUN_1423cb920,
+    (const void*)&FUN_1423d7940,
+};
+
 // 0x143138360
 alignas(16) Sd_143138360 DAT_143138360 = {
     (const void*)&FUN_1423c8e10,
@@ -12730,7 +12765,7 @@ alignas(16) Sd_143146850 DAT_143146850 = {
     {
         0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    "",
+    (const unsigned char*)&DAT_1431446e0 + 0x1b10,
     {0},
 };
 // 0x1431468a0
@@ -14753,7 +14788,7 @@ alignas(16) Sd_1431510a0 DAT_1431510a0 = {
     {
         0x00, 0x01, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    "",
+    DAT_14314f2f8 + 0x7f8,
     &DAT_14314f2f8[0x6b8],
     {0},
 };
@@ -14848,7 +14883,7 @@ alignas(16) Sd_143151280 DAT_143151280 = {
         0x00, 0x01, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
     (const unsigned char*)&DAT_143151280 + 0x9e0,
-    "",
+    (const unsigned char*)&DAT_143151280 + 0x990,
     {0},
     "AT_TARGET",
     {
@@ -16994,7 +17029,7 @@ alignas(16) Sd_14315d220 DAT_14315d220 = {
         0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    "\300",
+    (const unsigned char*)&DAT_14315d220 + 0x50,
     {0},
     DAT_1424800c0,
     (const void*)&DAT_14315cff0,
@@ -18595,7 +18630,7 @@ alignas(16) Sd_143165260 DAT_143165260 = {
     {
         0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    "",
+    DAT_143164860 + 0xe0,
     {0},
 };
 // 0x1431652b0
@@ -23051,6 +23086,7 @@ alignas(16) Sd_1431726d0 DAT_1431726d0 = {
 };
 
 #pragma comment(linker, "/alternatename:DAT_143138360=?DAT_143138360@@3USd_143138360@@A")
+#pragma comment(linker, "/alternatename:DAT_143138530=?DAT_143138530@@3USd_143138530@@A")
 #pragma comment(linker, "/alternatename:DAT_1431383e0=?DAT_1431383e0@@3USd_1431383e0@@A")
 #pragma comment(linker, "/alternatename:DAT_14313a200=?DAT_14313a200@@3USd_14313a200@@A")
 #pragma comment(linker, "/alternatename:DAT_14313a210=?DAT_14313a210@@3USd_14313a210@@A")
