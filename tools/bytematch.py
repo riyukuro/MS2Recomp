@@ -394,6 +394,36 @@ class Exe:
         return ""
 
 
+def exe_section(exe, va):
+    """name of the exe section holding va, or None"""
+    for s in exe.pe.sections:
+        lo = exe.base + s.VirtualAddress
+        if lo <= va < lo + s.Misc_VirtualSize:
+            return s.Name.rstrip(b"\0").decode()
+    return None
+
+
+def _pool_byte(c):
+    return c == 0 or c >= 0x20 and c != 0x7f or c in (9, 10, 13)       # >= 0x80: CP949 text
+
+
+def string_pool_literal(exe, va, n):
+    """True when the n bytes at va (a string and its terminator) can be one of the exe's string-pool literals, as
+    opposed to bytes inside a data object or blob that merely start like a short string ("!", "1", "": a shader
+    desc field, a D3D shader binary's version token 00 03 fe ff). cl puts literals in .rdata only, each after the
+    previous literal's terminator (or zero padding), and what follows a literal up to the next 8-byte boundary is
+    padding or the next literal's text. A string of 3+ characters in .rdata is taken as text whatever surrounds it
+    (a pointer to the tail of a longer literal, a literal next to a table: the same bytes either way)."""
+    if exe_section(exe, va) != ".rdata":
+        return False
+    if n >= 4 and all(c >= 0x20 and c != 0x7f or c in (9, 10, 13) for c in exe.read(va, n - 1)):
+        return True
+    if exe.read(va - 1, 1) != b"\0":
+        return False
+    end = va + n
+    return all(_pool_byte(c) for c in exe.read(end, -end % 8 or 8))
+
+
 # ----------------------------------------------------------------------------------------------------------------
 # Unwind / EH
 
@@ -863,9 +893,25 @@ def write_harvest(path, exe, fresh=False):
     return added
 
 
-def match_data(obj, si, va, exe, verbose, quiet=False, limit=None):
+def obj_literal(obj, lsi, addend=0):
+    """bytes of the obj's string literal symbol lsi (??_C@ COMDAT or a $SG static) from addend on, through the
+    terminator (a wide literal ??_C@_1: its double-NUL)"""
+    name, value, secnum = obj.syms[lsi][0], obj.syms[lsi][1], obj.syms[lsi][2]
+    nxt = [v for (n, v, sn, t, c) in obj.syms.values() if sn == secnum and v > value]
+    sec = obj.sec(secnum)
+    b = sec["data"][value:min(nxt) if nxt else sec["size"]][addend:]
+    if name.startswith("??_C@_1"):
+        k = next((k for k in range(0, len(b) - 1, 2) if b[k] == 0 and b[k + 1] == 0), len(b) - 2)
+        return b[:k + 2]
+    k = b.find(b"\0")
+    return b[:k + 1] if k >= 0 else b
+
+
+def match_data(obj, si, va, exe, verbose, quiet=False, limit=None, strings=False):
     """Data symbol (vftable, constant table): unrelocated bytes equal, ADDR64 slots resolved against the exe.
-    limit: compare at most this many bytes (a data unit's global, whose obj padding is not the exe's neighbour)."""
+    limit: compare at most this many bytes (a data unit's global, whose obj padding is not the exe's neighbour).
+    strings: a slot pointing at one of the obj's string literals (??_C@) must point at the same bytes in the exe,
+    and there at a string-pool literal, not into a data object that starts like one (string_pool_literal)."""
     global CUR_EXE
     CUR_EXE = exe
     rep = Report()
@@ -893,6 +939,14 @@ def match_data(obj, si, va, exe, verbose, quiet=False, limit=None):
             if verbose:
                 rep.info(f"[+0x{off:x}] {tname} -> 0x{tgt:x} {exe.name(tgt)}")
             want = LOCAL_KNOWN.get(tname)
+            if strings and tname.startswith(("??_C@", "$SG")) and obj.defined(rsi):
+                lit = obj_literal(obj, rsi, struct.unpack_from("<q", data, off)[0])
+                if exe.read(tgt, len(lit)) != lit:
+                    rep.bad(f"[+0x{off:x}] string literal {bytes(lit[:24])!r} != exe bytes at 0x{tgt:x} "
+                            f"{exe.read(tgt, min(len(lit), 24))!r}")
+                elif not string_pool_literal(exe, tgt, len(lit)):
+                    rep.bad(f"[+0x{off:x}] string literal {bytes(lit[:24])!r}: the exe slot points at 0x{tgt:x} "
+                            f"{exe.read(tgt, 8).hex()}, not a string-pool literal (a pointer into a data object?)")
             if want is not None and want != tgt:
                 rep.bad(f"[+0x{off:x}] {tname} is paired with 0x{want:x}, exe slot holds 0x{tgt:x}")
             elif obj.is_external(rsi) or obj.defined(rsi):
