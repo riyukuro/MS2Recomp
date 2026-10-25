@@ -55,6 +55,7 @@
 // MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@U_NpcInfo@Unk_TableExporter@@V?$CElementTraits@U_NpcInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@U_NpcInfo@Unk_TableExporter@@V?$CElementTraits@U_NpcInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAX@2@_K@Z 0x1418367f0
 // MS2-PIN: ?FindNextNode@?$CAtlMap@I_NV?$CElementTraits@I@ATL@@V?$CElementTraits@_N@2@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141830f30
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\tableexporter.cpp"
+#include "ms2/commonfiles/npcdata.h"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <atlcoll.h>
 #include <atlfile.h>
@@ -277,7 +278,6 @@ bool FUN_140375130(void* pObj);
 void FUN_1408850f0(Unk_Ref* pRef);
 void FUN_1406cd330(Unk_Ref* pOut, unsigned int nFieldId);
 char FUN_1406a9050(Unk_Ref* pRef, int n);
-void FUN_14035e5b0(Unk_Ref* pRef);
 
 // TinyXML nodes written by the export (stack objects of 0x90 bytes).
 void FUN_14086f2f0(Unk_XmlNodeBuf* pElem, const char* pszName);         // TiXmlElement ctor
@@ -966,7 +966,7 @@ bool FUN_1418226b0(bool bLog)
             FUN_14086e000(&elemRoot, &elemNpc);
             FUN_14086f450(&elemNpc);
         }
-        FUN_14035e5b0(&npcRow);
+        reinterpret_cast<MS2Ptr<CNpcData>*>(&npcRow)->~MS2Ptr<CNpcData>();
     }
 
     for (POSITION pos = g_mapTaxi.GetStartPosition(); pos != NULL;) {
