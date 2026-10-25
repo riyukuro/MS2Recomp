@@ -52,15 +52,19 @@ BIGOBJ_CLASSID = bytes.fromhex("c7a1bad1eebaa94baf20faf66aa4dcb8")
 def load(paths):
     """Later tables override earlier ones, but only engine -> anything is a deliberate override (symbols-engine.tsv is
     the FID guess table, lowest priority). The same name at two different VAs anywhere else (within a file, or across
-    symbols.tsv / symbols-manual.tsv) is an error; so is the engine table itself having a name twice."""
+    symbols.tsv / symbols-manual.tsv) is an error; so is the engine table itself having a name twice. Exception:
+    symbols-manual.tsv beats symbols.tsv for the same name (symbols.tsv is regenerated from each worker's uncommitted
+    unit state, so its rows flip); the overridden rows are listed in one WARN line."""
     syms = {}
     src = {}
     conflicts = []
     multicopy = []
+    overridden = []
     for p in paths:
         if not os.path.exists(p):
             continue
         is_engine = os.path.basename(p) == "symbols-engine.tsv"
+        is_manual = os.path.basename(p) == "symbols-manual.tsv"
         for n, line in enumerate(open(p), 1):
             if line.startswith("#") or not line.strip():
                 continue
@@ -76,9 +80,19 @@ def load(paths):
                         # either is equivalent; the earlier table's binding stays (deterministic)
                         multicopy.append(name)
                         continue
-                    conflicts.append(f"{name}: 0x{syms[name][0]:x} ({prev[0]}:{prev[1]}) vs 0x{va:x} ({os.path.basename(p)}:{n})")
+                    pair = {prev[0], os.path.basename(p)}
+                    if pair == {"symbols.tsv", "symbols-manual.tsv"}:
+                        if not is_manual:      # manual row came first: it stays
+                            overridden.append(f"{name} 0x{va:x}->0x{syms[name][0]:x}")
+                            continue
+                        overridden.append(f"{name} 0x{syms[name][0]:x}->0x{va:x}")
+                    else:
+                        conflicts.append(f"{name}: 0x{syms[name][0]:x} ({prev[0]}:{prev[1]}) vs 0x{va:x} ({os.path.basename(p)}:{n})")
             syms[name] = (va, kind)
             src[name] = (os.path.basename(p), n, is_engine)
+    if overridden:
+        print(f"ms2symobj: WARN {len(overridden)} symbols.tsv row(s) overridden by symbols-manual.tsv: " +
+              "; ".join(overridden))
     if multicopy:
         print(f"ms2symobj: {len(multicopy)} name(s) listed at byte-identical exe copies; first table's VA kept")
     if conflicts:
