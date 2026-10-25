@@ -5698,7 +5698,7 @@ extern char DAT_143afa940;                                                      
 void* FUN_141851720();                                                                      // texture service
 Unk_WsB_TexLoader* FUN_140a5af40(char* rtti, void* service);                                // checked cast
 void* FUN_140a0afd0();                                                                      // texture cache
-efd::SmartPointer<NiTexture> FUN_1415534d0(void* cache, CString path, Unk_WsB_TexRef source, int flags);
+struct Unk_WsB_TexCache { efd::SmartPointer<NiTexture> FUN_1415534d0(CString path, Unk_WsB_TexRef source, int flags); };   // CNifLoadingService::CreateTexture (nifeffectparam.cpp)
 // Applies the entity's Index00..02 mesh / texture properties as decal maps on the matching scene nodes.
 // MS2-FUNCTIONAL: texture loader COMDATs by VA
 // @0x141bc7490
@@ -5726,7 +5726,7 @@ void WorldService::FUN_141bc7490(egf::Entity* entity, NiNode* root)
         Unk_WsB_TexRef source(loader->Load(texturePath.c_str(), 0));
         if (source.get() == 0)
             continue;
-        efd::SmartPointer<NiTexture> texture = FUN_1415534d0(FUN_140a0afd0(), CString(texturePath.c_str()), source, 5);
+        efd::SmartPointer<NiTexture> texture = static_cast<Unk_WsB_TexCache*>(FUN_140a0afd0())->FUN_1415534d0(CString(texturePath.c_str()), source, 5);
         NiTexturingProperty::Map* map = NiNew NiTexturingProperty::Map();
         map->SetTexture(texture.data());
         texturing->SetDecalMap(i, map);
