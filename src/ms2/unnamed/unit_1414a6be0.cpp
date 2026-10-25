@@ -30,8 +30,8 @@ typedef Unk_CacheAccess::Ptr Unk_CachePtr;
 typedef std::map<__int64, CStringA> Unk_Int64StrMap;
 typedef std::vector<Unk_CachePtr, efd::CustomAllocator<Unk_CachePtr> > Unk_CacheDataVec;
 
-// Composite key of the unordered_map; its hasher (FUN_140ad7090, shared with the owner of this container) hashes the
-// members at +0 and +8 and is not a std::hash specialization the exe instantiates here.
+// Composite key of the unordered_map. No exe function in this range calls its hasher (0x140ad7090, once bound here,
+// is an ICF-folded _Freenode0 body), so the anchor-only hasher is defined locally.
 struct Unk_HashKey
 {
     unsigned __int64 m_a;
@@ -40,7 +40,7 @@ struct Unk_HashKey
 };
 struct Unk_HashKeyHash
 {
-    size_t operator()(const Unk_HashKey& k) const;
+    size_t operator()(const Unk_HashKey& k) const { return (size_t)(k.m_a ^ (k.m_b * 0x9E3779B97F4A7C15ull)); }
 };
 typedef std::unordered_map<Unk_HashKey, int, Unk_HashKeyHash> Unk_KeyIntMap;
 
