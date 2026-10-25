@@ -7,6 +7,8 @@
 #include "ms2/unnamed/unk_stlglue.h"
 #include <cstddef>
 #include <cstdint>
+#include <functional>
+#include <map>
 #include <new>
 
 // @0x1415ffc70
@@ -791,3 +793,236 @@ void* FUN_141601ed0(void* p) { return p; }
 // MS2-PIN: ?FUN_141601b50@@YAPEAXPEAX@Z 0x141601b50 ; MS2-FUNCTIONAL: allocator getter returns its subobject
 // MS2-PIN: ?FUN_141601b70@@YAPEAXPEAX@Z 0x141601b70 ; MS2-FUNCTIONAL: allocator getter returns its subobject
 // MS2-PIN: ?FUN_141601bd0@@YAPEAXPEAX@Z 0x141601bd0 ; MS2-FUNCTIONAL: allocator getter returns its subobject
+
+// @0x1415ffc30
+bool FUN_1415ffc30(void*, const unsigned char& left, const unsigned char& right)
+{
+    return left < right;
+}
+// MS2-PIN: ?FUN_1415ffc30@@YA_NPEAXAEBE1@Z 0x1415ffc30 ; MS2-FUNCTIONAL: applies the recovered std::less<unsigned char> comparison
+
+namespace {
+struct NMByteTreeNode {
+    NMByteTreeNode* left;
+    NMByteTreeNode* parent;
+    NMByteTreeNode* right;
+    unsigned char color;
+    unsigned char isNil;
+    unsigned char padding[6];
+    unsigned char value;
+};
+
+struct NMByteTree {
+    NMByteTreeNode* head;
+    size_t size;
+};
+
+static_assert(offsetof(NMByteTreeNode, value) == 0x20, "byte-tree node value offset");
+
+static NMByteTreeNode* nm_tree_min(NMByteTreeNode* node, const NMByteTreeNode* head)
+{
+    while (node != head && !node->isNil && node->left != head)
+        node = node->left;
+    return node;
+}
+
+static NMByteTreeNode* nm_tree_max(NMByteTreeNode* node, const NMByteTreeNode* head)
+{
+    while (node != head && !node->isNil && node->right != head)
+        node = node->right;
+    return node;
+}
+
+static void nm_tree_rotate_left(NMByteTree& tree, NMByteTreeNode* pivot)
+{
+    NMByteTreeNode* head = tree.head;
+    NMByteTreeNode* child = pivot->right;
+    pivot->right = child->left;
+    if (child->left != head) child->left->parent = pivot;
+    child->parent = pivot->parent;
+    if (pivot->parent == head) head->parent = child;
+    else if (pivot == pivot->parent->left) pivot->parent->left = child;
+    else pivot->parent->right = child;
+    child->left = pivot;
+    pivot->parent = child;
+}
+
+static void nm_tree_rotate_right(NMByteTree& tree, NMByteTreeNode* pivot)
+{
+    NMByteTreeNode* head = tree.head;
+    NMByteTreeNode* child = pivot->left;
+    pivot->left = child->right;
+    if (child->right != head) child->right->parent = pivot;
+    child->parent = pivot->parent;
+    if (pivot->parent == head) head->parent = child;
+    else if (pivot == pivot->parent->right) pivot->parent->right = child;
+    else pivot->parent->left = child;
+    child->right = pivot;
+    pivot->parent = child;
+}
+
+static void nm_tree_transplant(NMByteTree& tree, NMByteTreeNode* from, NMByteTreeNode* to,
+                               NMByteTreeNode*& nilParent)
+{
+    NMByteTreeNode* head = tree.head;
+    if (from->parent == head) head->parent = to;
+    else if (from == from->parent->left) from->parent->left = to;
+    else from->parent->right = to;
+    if (to != head) to->parent = from->parent;
+    else nilParent = from->parent;
+}
+
+static void nm_tree_erase_fixup(NMByteTree& tree, NMByteTreeNode* node,
+                                NMByteTreeNode* parent)
+{
+    NMByteTreeNode* head = tree.head;
+    auto black = [head](NMByteTreeNode* p) { return p == head || p->color != 0; };
+    while (node != head->parent && black(node)) {
+        if (parent == head) break;
+        if (node == parent->left) {
+            NMByteTreeNode* sibling = parent->right;
+            if (sibling != head && sibling->color == 0) {
+                sibling->color = 1;
+                parent->color = 0;
+                nm_tree_rotate_left(tree, parent);
+                sibling = parent->right;
+            }
+            if (black(sibling == head ? head : sibling->left) &&
+                black(sibling == head ? head : sibling->right)) {
+                if (sibling != head) sibling->color = 0;
+                node = parent;
+                parent = node->parent;
+            } else {
+                if (black(sibling == head ? head : sibling->right)) {
+                    if (sibling != head) {
+                        if (sibling->left != head) sibling->left->color = 1;
+                        sibling->color = 0;
+                        nm_tree_rotate_right(tree, sibling);
+                    }
+                    sibling = parent->right;
+                }
+                if (sibling != head) {
+                    sibling->color = parent->color;
+                    if (sibling->right != head) sibling->right->color = 1;
+                }
+                parent->color = 1;
+                nm_tree_rotate_left(tree, parent);
+                node = head->parent;
+                parent = head;
+            }
+        } else {
+            NMByteTreeNode* sibling = parent->left;
+            if (sibling != head && sibling->color == 0) {
+                sibling->color = 1;
+                parent->color = 0;
+                nm_tree_rotate_right(tree, parent);
+                sibling = parent->left;
+            }
+            if (black(sibling == head ? head : sibling->right) &&
+                black(sibling == head ? head : sibling->left)) {
+                if (sibling != head) sibling->color = 0;
+                node = parent;
+                parent = node->parent;
+            } else {
+                if (black(sibling == head ? head : sibling->left)) {
+                    if (sibling != head) {
+                        if (sibling->right != head) sibling->right->color = 1;
+                        sibling->color = 0;
+                        nm_tree_rotate_left(tree, sibling);
+                    }
+                    sibling = parent->left;
+                }
+                if (sibling != head) {
+                    sibling->color = parent->color;
+                    if (sibling->left != head) sibling->left->color = 1;
+                }
+                parent->color = 1;
+                nm_tree_rotate_right(tree, parent);
+                node = head->parent;
+                parent = head;
+            }
+        }
+    }
+    if (node != head) node->color = 1;
+}
+} // namespace
+
+// @0x141600710
+void FUN_141600710(void*, std::_Tree_node<unsigned char, void*>* node)
+{
+    // std::_Tree_node<unsigned char, void*> stores a trivial byte value; the
+    // recovered allocator path destroys it and releases the node allocation.
+    ::operator delete(node);
+}
+// MS2-PIN: ?FUN_141600710@@YAXPEAXPEAU?$_Tree_node@EPEAX@std@@@Z 0x141600710 ; MS2-FUNCTIONAL: releases a detached byte-tree node
+
+// @0x141600760
+void FUN_141600760(void* tree, void* node)
+{
+    auto* current = static_cast<NMByteTreeNode*>(node);
+    auto* head = static_cast<NMByteTree*>(tree)->head;
+    while (current != head && !current->isNil) {
+        FUN_141600760(tree, current->right);
+        auto* left = current->left;
+        FUN_141600710(tree, reinterpret_cast<std::_Tree_node<unsigned char, void*>*>(current));
+        current = left;
+    }
+}
+// MS2-PIN: ?FUN_141600760@@YAXPEAX0@Z 0x141600760 ; MS2-FUNCTIONAL: erases a tree postorder with the recovered tail loop over left children
+
+// @0x141600800
+void* FUN_141600800(void* treePointer, void* erasedPointer)
+{
+    auto& tree = *static_cast<NMByteTree*>(treePointer);
+    NMByteTreeNode* head = tree.head;
+    NMByteTreeNode* erased = static_cast<NMByteTreeNode*>(erasedPointer);
+    NMByteTreeNode* replacement = erased;
+    NMByteTreeNode* fixNode = head;
+    NMByteTreeNode* fixParent = head;
+    unsigned char removedColor = replacement->color;
+
+    if (erased->left == head) {
+        fixNode = erased->right;
+        nm_tree_transplant(tree, erased, erased->right, fixParent);
+    } else if (erased->right == head) {
+        fixNode = erased->left;
+        nm_tree_transplant(tree, erased, erased->left, fixParent);
+    } else {
+        replacement = nm_tree_min(erased->right, head);
+        removedColor = replacement->color;
+        fixNode = replacement->right;
+        if (replacement->parent == erased) {
+            fixParent = replacement;
+            if (fixNode != head) fixNode->parent = replacement;
+        } else {
+            nm_tree_transplant(tree, replacement, replacement->right, fixParent);
+            replacement->right = erased->right;
+            replacement->right->parent = replacement;
+        }
+        nm_tree_transplant(tree, erased, replacement, fixParent);
+        replacement->left = erased->left;
+        replacement->left->parent = replacement;
+        replacement->color = erased->color;
+    }
+
+    if (removedColor != 0)
+        nm_tree_erase_fixup(tree, fixNode, fixNode == head ? fixParent : fixNode->parent);
+
+    if (head->parent != head) {
+        head->left = nm_tree_min(head->parent, head);
+        head->right = nm_tree_max(head->parent, head);
+    } else {
+        head->left = head;
+        head->right = head;
+    }
+    if (tree.size) --tree.size;
+    return erased;
+}
+// MS2-PIN: ?FUN_141600800@@YAPEAXPEAX0@Z 0x141600800 ; MS2-FUNCTIONAL: unlinks the requested node and restores red-black invariants before its caller frees it
+
+// @0x141602090
+const std::less<unsigned char>& FUN_141602090(void* comparator)
+{
+    return *static_cast<const std::less<unsigned char>*>(comparator);
+}
+// MS2-PIN: ?FUN_141602090@@YAAEBU?$less@E@std@@PEAX@Z 0x141602090 ; MS2-FUNCTIONAL: returns the recovered stateless byte comparator reference
