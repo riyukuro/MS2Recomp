@@ -151,7 +151,6 @@ AScript* FUN_140ba7c60(MS2Ptr<AScript>* p);
 bool FUN_140a467d0(MS2Ptr<AScript>* p);                         // the AS object is gone
 bool FUN_1409c1720(const Scaleform::GFx::Value& v);
 int FUN_1409c17e0(const Scaleform::GFx::Value& v);
-Scaleform::GFx::Value FUN_14190b490(AScript* pDlg, const char* szMethod, unsigned nW, unsigned nH, float fScale);
 extern int DAT_143af62d4, DAT_143af62d8;
 
 // ---- UITalkCinematic ----
@@ -226,7 +225,7 @@ void UITalkCinematic::vfunc_43()
     {
         spClip->vfunc_2(5, 0, 0);
         float fScale = FUN_14025e7a0()->FUN_1422afec0(m_28);
-        FUN_14190b490(spClip.operator->(), "setStageSize", DAT_143af62d4, DAT_143af62d8, fScale);
+        spClip->FUN_14190b490("setStageSize", DAT_143af62d4, DAT_143af62d8, fScale);
     }
 }
 
