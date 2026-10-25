@@ -612,7 +612,7 @@ void CBoneRotateManager::FUN_140a35060()
 
 // @0x140a35500
 // MS2-FUNCTIONAL: stack temporaries differ
-void CBoneRotateManager::FUN_140a35500(void* pArg)
+void CBoneRotateManager::FUN_140a35500(double dTime)
 {
     if (m_bEnabled == false)
         return;
@@ -623,7 +623,7 @@ void CBoneRotateManager::FUN_140a35500(void* pArg)
         if (m_actions.Lookup(m_nCurrent, spAction))
         {
             Unk_BrAction* pAction = spAction.operator->();
-            pAction->vfunc_6(pArg);
+            pAction->vfunc_6(dTime);
             FUN_140a35060();
         }
     }

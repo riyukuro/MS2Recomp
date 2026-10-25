@@ -109,7 +109,7 @@ class Unk_DropBagDlg { public: void FUN_141abfa10(MS2Ptr<CItem> spItem); };
 Unk_DropBagDlg* FUN_140938cd0(int nUiId);
 void FUN_14098c6e0(egf::Entity* pEntity, unsigned int uiPropId, const bool& b);   // set an entity bool property
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                           // the scene root of an entity
-void FUN_141851f90(void* pRoot, unsigned int uValue);
+void FUN_141851f90(void* pRoot, float fWeight);
 void FUN_141852050(void* pRoot, unsigned int uValue);
 void* FUN_14086d260();
 double FUN_141473280(void* p);                                      // the frame time
@@ -336,7 +336,7 @@ int CDropItem::vfunc_10()
     {
         bool bValue = false;
         FUN_14098c6e0(FUN_14123c410(), 0x2a7fd9f4, bValue);
-        FUN_141851f90(FUN_141b6efc0(FUN_14123c410()), 0);
+        FUN_141851f90(FUN_141b6efc0(FUN_14123c410()), 0.0f);
         float fFrame = (float)FUN_141473280(FUN_14086d260());
         FUN_141b6efc0(FUN_14123c410())->Update(fFrame, true);
         FUN_141852050(FUN_141b6efc0(FUN_14123c410()), 0);

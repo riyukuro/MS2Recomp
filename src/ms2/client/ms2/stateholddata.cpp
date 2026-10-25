@@ -89,7 +89,7 @@ Unk_HoldSkillTable* FUN_1401958b0();
 int FUN_141654700(MyPC* pPc);                                            // 0x141654700 the job
 void* FUN_14165f100(MyPC* pPC);                                          // 0x14165f100 the playing emotion
 void FUN_14165f170(MyPC* pPC);                                           // 0x14165f170 stop it
-void FUN_140ad0c10(efd::Point3* pAngles, unsigned nRadToDeg);            // 0x140ad0c10 scale the angles (radians -> degrees)
+void FUN_140ad0c10(efd::Point3* pAngles, float fScale);                    // 0x140ad0c10 scale the angles (radians -> degrees)
 PCBase* FUN_140974230(GameObject* pObject);                              // 0x140974230 the actor as a player
 void FUN_1409989e0(void* pOut, const char* psz);                         // 0x1409989e0 efd::utf8string(const char*)
 void FUN_1408a8900(void* pStr);                                          // 0x1408a8900 ~efd::utf8string
@@ -275,7 +275,7 @@ void StateHold::vfunc_3(double fTime)
         efd::Point3 kAngles;
         if (spNode->GetWorldRotate().ToEulerAnglesXYZ(kAngles.x, kAngles.y, kAngles.z))
         {
-            FUN_140ad0c10(&kAngles, 0xc2652ee0);
+            FUN_140ad0c10(&kAngles, -57.2957764f);
             m_pOwner->vfunc_21(kAngles);
         }
         efd::Point3 kPos = spNode->GetWorldTranslate();

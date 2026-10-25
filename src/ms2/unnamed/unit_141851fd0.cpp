@@ -62,8 +62,8 @@ struct Unk_CtrlIface
 // Small value holders (the exe builds them in 24-byte locals; names invented).
 struct Unk_CtrlValue
 {
-    unsigned int m_uValue;
-    Unk_CtrlValue(unsigned int uValue);     // 0x1418528d0
+    float m_fValue;
+    Unk_CtrlValue(float fValue);            // 0x1418528d0
 };
 struct Unk_CtrlValueB
 {
@@ -85,9 +85,9 @@ void FUN_141852930(Unk_CtrlValueB* pArg, void* pCtrl);
 void FUN_141852970(Unk_CtrlValue* pArg, void* pCtrl);
 
 // @0x141851fd0
-void FUN_141851fd0(void* pRoot, unsigned int uValue)
+void FUN_141851fd0(void* pRoot, float fValue)
 {
-    Unk_CtrlValue kValue(uValue);
+    Unk_CtrlValue kValue(fValue);
     FUN_141852080(pRoot, &kValue);
 }
 
@@ -293,9 +293,9 @@ Unk_CtrlValueB::Unk_CtrlValueB(unsigned int uValue)
 }
 
 // @0x1418528d0
-Unk_CtrlValue::Unk_CtrlValue(unsigned int uValue)
+Unk_CtrlValue::Unk_CtrlValue(float fValue)
 {
-    m_uValue = uValue;
+    m_fValue = fValue;
 }
 
 // @0x1418528f0
@@ -324,5 +324,5 @@ void FUN_141852970(Unk_CtrlValue* pArg, void* pCtrl)
     void* pHandle = FUN_14086d260();
     float fScale = FUN_141473280(pHandle);
     ((Unk_CtrlIface*)pCtrl)->vfunc_18(fScale);
-    FUN_14098e9e0(pCtrl, *reinterpret_cast<const float*>(&pArg->m_uValue));
+    FUN_14098e9e0(pCtrl, pArg->m_fValue);
 }

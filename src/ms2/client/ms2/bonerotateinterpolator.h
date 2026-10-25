@@ -27,7 +27,7 @@ public:
     virtual bool vfunc_3();                                             // +0x18 may be started now
     virtual void vfunc_4();                                             // +0x20
     virtual void vfunc_5();                                             // +0x28
-    virtual void vfunc_6(void* pArg);                                   // +0x30 per-frame update
+    virtual void vfunc_6(double dTime);                                 // +0x30 per-frame update
 };
 
 class BoneRotateInterpolator : public NiTransformInterpolator
@@ -92,7 +92,7 @@ public:
     void FUN_140a34de0(const egf::EntityID& kId, CString strBone, int nStart, int nEnd, int nDuration);    // look at an entity
     void FUN_140a34f00();                                       // stop looking, return to the animation
     void FUN_140a35060();                                       // per-frame: switch the interpolator at the end of a look
-    void FUN_140a35500(void* pArg);                             // per-frame: pick/advance actions
+    void FUN_140a35500(double dTime);                           // per-frame: pick/advance actions
     int FUN_140a35780();                                        // a look is running
     Unk_BrMode GetCurrent();                                 // current action mode
     void FUN_140a357e0(float fValue);                           // interpolator pitch bias

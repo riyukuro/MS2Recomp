@@ -660,8 +660,6 @@ Unk_PCNotices* FUN_140939a10();
 // Unk_PCD88 name, which the exe's MS2Ptr COMDAT symbols carry) and the +0xfd8 record (create 0x141993100).
 class Unk_PCD88 : public CBoneRotateManager
 {
-public:
-    void FUN_140a35500(double dTime);                               // per-frame: pick/advance actions
 };
 class Unk_PCLinkFD8 : public CPtred                                 // UITombStoneBar::Entity
 {

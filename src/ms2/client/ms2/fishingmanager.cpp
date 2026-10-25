@@ -246,7 +246,7 @@ class Unk_FmAdditionalData { public: Unk_FmAdditionalRowPtr FUN_140aafef0(int nI
     Unk_FmAdditionalPtr FUN_1407ee2f0(int nId, short nLevel); };
 Unk_FmAdditionalData* FUN_1401958b0();                      // the additional effect table
 
-class Unk_FmPhysX { public: int FUN_14168a310(const efd::Point3& kFrom, const efd::Point3& kTo, void* pHit, int a, __int64 b, int c); };
+class Unk_FmPhysX { public: int FUN_14168a310(const efd::Point3& kFrom, const efd::Point3& kTo, void* pHit, float fLen, __int64 b, int c); };
 Unk_FmPhysX* FUN_1409f7ca0();
 void FUN_140ad4440(void* pHit);
 
@@ -1248,7 +1248,7 @@ int CFishingManager::FUN_140cdc520()
     NiPoint3 kPos = pPC->vfunc_18();
     efd::Point3 kFrom = efd::Point3(kPos.x, kPos.y, kPos.z) + efd::Point3(0.0f, 0.0f, 10.0f);
     efd::Point3 kTo = DAT_143b01a60;
-    if (FUN_1409f7ca0()->FUN_14168a310(kFrom, kTo, &kHit, 0, 0, 0) == 0 || kHit.m_hitEntity == 0)
+    if (FUN_1409f7ca0()->FUN_14168a310(kFrom, kTo, &kHit, 0.0f, 0, 0) == 0 || kHit.m_hitEntity == 0)
         return 0;
     efd::utf8string kName("None");
     FUN_1408a2060(kHit.m_hitEntity, 0x15014205, &kName);

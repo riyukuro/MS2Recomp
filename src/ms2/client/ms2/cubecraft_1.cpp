@@ -140,7 +140,7 @@ struct Unk_RayHit { char m_pad[0x48]; float m_fHeight; char m_pad_4c[4]; };
 void FUN_140ad4440(Unk_RayHit*);
 class CPhysXHelper;
 CPhysXHelper* FUN_1409f7ca0();
-int FUN_14168a310(CPhysXHelper*, NiPoint3*, Vector3*, Unk_RayHit*, int, int, int);
+int FUN_14168a310(CPhysXHelper*, NiPoint3*, Vector3*, Unk_RayHit*, float, Vector3*, int);
 Vector3 FUN_1408a1430(const NiPoint3&);
 
 class Unk_CubeGridSvc {
@@ -694,7 +694,7 @@ void CConstructionGuideObject::FUN_1410a2440()
         FUN_140ad4440(&kInfo);
         NiPoint3 kPos = vfunc_18();
         kPos.z = kPos.z - 200.0f;
-        if (FUN_14168a310(FUN_1409f7ca0(), &kPos, &kHit, &kInfo, 0, 0, 0) != 0)
+        if (FUN_14168a310(FUN_1409f7ca0(), &kPos, &kHit, &kInfo, 0.0f, 0, 0) != 0)
         {
             FUN_1410a7800(m_spModel.operator->(), 0.0f, 0.0f, -(kInfo.m_fHeight + 100.0f));
             m_spModel->UpdateProperties();
