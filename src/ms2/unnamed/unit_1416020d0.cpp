@@ -350,6 +350,9 @@ extern unsigned long long FUN_141601210(void*);
 extern unsigned long long FUN_141601230(void*);
 extern unsigned long long FUN_141601250(void*);
 
+extern unsigned long long FUN_141601270(void*);
+extern unsigned long long FUN_141601290(void*);
+
 // @0x141602e00
 unsigned long long FUN_141602e00(void* p) { return FUN_141600e70(p) + 0x10; }
 
@@ -500,3 +503,426 @@ unsigned long long FUN_1416031e0(void* p) { return FUN_141601250(p) + 0x10; }
 // MS2-FUNCTIONAL ?FUN_141606f90@@YAXPEAXPEAU?$Unk_StlElem@$0CA@@@11@Z: Opaque element lifetime details remain unrecovered; this body preserves the observed byte span move for the caller-facing range.
 // MS2-FUNCTIONAL ?FUN_1416074b0@@YAPEAU?$Unk_StlElem@$0OA@@@PEAX_K@Z: The recovered allocation scales element count by the correct opaque element stride; the executable length-check helper sequence differs.
 // MS2-FUNCTIONAL ?FUN_141607630@@YAPEAU?$Unk_StlElem@$0GI@@@PEAX_K@Z: The recovered allocation scales element count by the correct opaque element stride; the executable length-check helper sequence differs.
+
+
+// Recovered container iterator sentinel checks from the owner decomp.
+// MS2-FUNCTIONAL: the decompiled accessor chain resolves to the vector's +0x10 begin and +0x08 end slots; compare those recovered boundaries.
+// @0x1416020d0
+bool FUN_1416020d0(const void* p)
+{
+    const auto* bytes = static_cast<const unsigned char*>(p);
+    const auto first = *reinterpret_cast<const unsigned long long*>(bytes + 0x10);
+    const auto last = *reinterpret_cast<const unsigned long long*>(bytes + 0x08);
+    return first != last;
+}
+
+// MS2-FUNCTIONAL: the decompiled accessor chain resolves to the vector's +0x10 begin and +0x08 end slots; compare those recovered boundaries.
+// @0x141602120
+bool FUN_141602120(const void* p)
+{
+    const auto* bytes = static_cast<const unsigned char*>(p);
+    const auto first = *reinterpret_cast<const unsigned long long*>(bytes + 0x10);
+    const auto last = *reinterpret_cast<const unsigned long long*>(bytes + 0x08);
+    return first != last;
+}
+
+// MS2-FUNCTIONAL: the decompiled accessor chain resolves to the vector's +0x10 begin and +0x08 end slots; compare those recovered boundaries.
+// @0x141602170
+bool FUN_141602170(const void* p)
+{
+    const auto* bytes = static_cast<const unsigned char*>(p);
+    const auto first = *reinterpret_cast<const unsigned long long*>(bytes + 0x10);
+    const auto last = *reinterpret_cast<const unsigned long long*>(bytes + 0x08);
+    return first != last;
+}
+
+// MS2-FUNCTIONAL: the decompiled accessor chain resolves to the vector's +0x10 begin and +0x08 end slots; compare those recovered boundaries.
+// @0x1416021c0
+bool FUN_1416021c0(const void* p)
+{
+    const auto* bytes = static_cast<const unsigned char*>(p);
+    const auto first = *reinterpret_cast<const unsigned long long*>(bytes + 0x10);
+    const auto last = *reinterpret_cast<const unsigned long long*>(bytes + 0x08);
+    return first != last;
+}
+
+// MS2-FUNCTIONAL: the decompiled accessor chain resolves to the vector's +0x10 begin and +0x08 end slots; compare those recovered boundaries.
+// @0x141602210
+bool FUN_141602210(const void* p)
+{
+    const auto* bytes = static_cast<const unsigned char*>(p);
+    const auto first = *reinterpret_cast<const unsigned long long*>(bytes + 0x10);
+    const auto last = *reinterpret_cast<const unsigned long long*>(bytes + 0x08);
+    return first != last;
+}
+
+// MS2-FUNCTIONAL: the decompiled accessor chain resolves to the vector's +0x10 begin and +0x08 end slots; compare those recovered boundaries.
+// @0x141602260
+bool FUN_141602260(const void* p)
+{
+    const auto* bytes = static_cast<const unsigned char*>(p);
+    const auto first = *reinterpret_cast<const unsigned long long*>(bytes + 0x10);
+    const auto last = *reinterpret_cast<const unsigned long long*>(bytes + 0x08);
+    return first != last;
+}
+
+// MS2-FUNCTIONAL: the decompiled accessor chain resolves to the vector's +0x10 begin and +0x08 end slots; compare those recovered boundaries.
+// @0x1416022b0
+bool FUN_1416022b0(const void* p)
+{
+    const auto* bytes = static_cast<const unsigned char*>(p);
+    const auto first = *reinterpret_cast<const unsigned long long*>(bytes + 0x10);
+    const auto last = *reinterpret_cast<const unsigned long long*>(bytes + 0x08);
+    return first != last;
+}
+
+// MS2-FUNCTIONAL: the decompiled accessor chain resolves to the vector's +0x10 begin and +0x08 end slots; compare those recovered boundaries.
+// @0x141602300
+bool FUN_141602300(const void* p)
+{
+    const auto* bytes = static_cast<const unsigned char*>(p);
+    const auto first = *reinterpret_cast<const unsigned long long*>(bytes + 0x10);
+    const auto last = *reinterpret_cast<const unsigned long long*>(bytes + 0x08);
+    return first != last;
+}
+
+// MS2-FUNCTIONAL: the decompiled accessor chain resolves to the vector's +0x10 begin and +0x08 end slots; compare those recovered boundaries.
+// @0x141602350
+bool FUN_141602350(const void* p)
+{
+    const auto* bytes = static_cast<const unsigned char*>(p);
+    const auto first = *reinterpret_cast<const unsigned long long*>(bytes + 0x10);
+    const auto last = *reinterpret_cast<const unsigned long long*>(bytes + 0x08);
+    return first != last;
+}
+
+// MS2-FUNCTIONAL: the decompiled accessor chain resolves to the vector's +0x10 begin and +0x08 end slots; compare those recovered boundaries.
+// @0x1416023a0
+bool FUN_1416023a0(const void* p)
+{
+    const auto* bytes = static_cast<const unsigned char*>(p);
+    const auto first = *reinterpret_cast<const unsigned long long*>(bytes + 0x10);
+    const auto last = *reinterpret_cast<const unsigned long long*>(bytes + 0x08);
+    return first != last;
+}
+
+// MS2-FUNCTIONAL: the decompiled accessor chain resolves to the vector's +0x10 begin and +0x08 end slots; compare those recovered boundaries.
+// @0x1416023f0
+bool FUN_1416023f0(const void* p)
+{
+    const auto* bytes = static_cast<const unsigned char*>(p);
+    const auto first = *reinterpret_cast<const unsigned long long*>(bytes + 0x10);
+    const auto last = *reinterpret_cast<const unsigned long long*>(bytes + 0x08);
+    return first != last;
+}
+
+// MS2-FUNCTIONAL: the decompiled accessor chain resolves to the vector's +0x10 begin and +0x08 end slots; compare those recovered boundaries.
+// @0x141602440
+bool FUN_141602440(const void* p)
+{
+    const auto* bytes = static_cast<const unsigned char*>(p);
+    const auto first = *reinterpret_cast<const unsigned long long*>(bytes + 0x10);
+    const auto last = *reinterpret_cast<const unsigned long long*>(bytes + 0x08);
+    return first != last;
+}
+
+// MS2-FUNCTIONAL: the decompiled accessor chain resolves to the vector's +0x10 begin and +0x08 end slots; compare those recovered boundaries.
+// @0x141602490
+bool FUN_141602490(const void* p)
+{
+    const auto* bytes = static_cast<const unsigned char*>(p);
+    const auto first = *reinterpret_cast<const unsigned long long*>(bytes + 0x10);
+    const auto last = *reinterpret_cast<const unsigned long long*>(bytes + 0x08);
+    return first != last;
+}
+
+// MS2-FUNCTIONAL: the decompiled accessor chain resolves to the vector's +0x10 begin and +0x08 end slots; compare those recovered boundaries.
+// @0x1416024e0
+bool FUN_1416024e0(const void* p)
+{
+    const auto* bytes = static_cast<const unsigned char*>(p);
+    const auto first = *reinterpret_cast<const unsigned long long*>(bytes + 0x10);
+    const auto last = *reinterpret_cast<const unsigned long long*>(bytes + 0x08);
+    return first != last;
+}
+
+// MS2-FUNCTIONAL: the decompiled accessor chain resolves to the vector's +0x10 begin and +0x08 end slots; compare those recovered boundaries.
+// @0x141602530
+bool FUN_141602530(const void* p)
+{
+    const auto* bytes = static_cast<const unsigned char*>(p);
+    const auto first = *reinterpret_cast<const unsigned long long*>(bytes + 0x10);
+    const auto last = *reinterpret_cast<const unsigned long long*>(bytes + 0x08);
+    return first != last;
+}
+
+// MS2-FUNCTIONAL: the decompiled accessor chain resolves to the vector's +0x10 begin and +0x08 end slots; compare those recovered boundaries.
+// @0x141602580
+bool FUN_141602580(const void* p)
+{
+    const auto* bytes = static_cast<const unsigned char*>(p);
+    const auto first = *reinterpret_cast<const unsigned long long*>(bytes + 0x10);
+    const auto last = *reinterpret_cast<const unsigned long long*>(bytes + 0x08);
+    return first != last;
+}
+
+// MS2-FUNCTIONAL: the decompiled accessor chain resolves to the vector's +0x10 begin and +0x08 end slots; compare those recovered boundaries.
+// @0x1416025d0
+bool FUN_1416025d0(const void* p)
+{
+    const auto* bytes = static_cast<const unsigned char*>(p);
+    const auto first = *reinterpret_cast<const unsigned long long*>(bytes + 0x10);
+    const auto last = *reinterpret_cast<const unsigned long long*>(bytes + 0x08);
+    return first != last;
+}
+
+// MS2-FUNCTIONAL: the decompiled accessor chain resolves to the vector's +0x10 begin and +0x08 end slots; compare those recovered boundaries.
+// @0x141602620
+bool FUN_141602620(const void* p)
+{
+    const auto* bytes = static_cast<const unsigned char*>(p);
+    const auto first = *reinterpret_cast<const unsigned long long*>(bytes + 0x10);
+    const auto last = *reinterpret_cast<const unsigned long long*>(bytes + 0x08);
+    return first != last;
+}
+
+// MS2-FUNCTIONAL: the decompiled accessor chain resolves to the vector's +0x10 begin and +0x08 end slots; compare those recovered boundaries.
+// @0x141602670
+bool FUN_141602670(const void* p)
+{
+    const auto* bytes = static_cast<const unsigned char*>(p);
+    const auto first = *reinterpret_cast<const unsigned long long*>(bytes + 0x10);
+    const auto last = *reinterpret_cast<const unsigned long long*>(bytes + 0x08);
+    return first != last;
+}
+
+// MS2-FUNCTIONAL: the decompiled accessor chain resolves to the vector's +0x10 begin and +0x08 end slots; compare those recovered boundaries.
+// @0x1416026c0
+bool FUN_1416026c0(const void* p)
+{
+    const auto* bytes = static_cast<const unsigned char*>(p);
+    const auto first = *reinterpret_cast<const unsigned long long*>(bytes + 0x10);
+    const auto last = *reinterpret_cast<const unsigned long long*>(bytes + 0x08);
+    return first != last;
+}
+
+// MS2-FUNCTIONAL: the decompiled accessor chain resolves to the vector's +0x10 begin and +0x08 end slots; compare those recovered boundaries.
+// @0x141602710
+bool FUN_141602710(const void* p)
+{
+    const auto* bytes = static_cast<const unsigned char*>(p);
+    const auto first = *reinterpret_cast<const unsigned long long*>(bytes + 0x10);
+    const auto last = *reinterpret_cast<const unsigned long long*>(bytes + 0x08);
+    return first != last;
+}
+
+// MS2-FUNCTIONAL: the decompiled accessor chain resolves to the vector's +0x10 begin and +0x08 end slots; compare those recovered boundaries.
+// @0x141602760
+bool FUN_141602760(const void* p)
+{
+    const auto* bytes = static_cast<const unsigned char*>(p);
+    const auto first = *reinterpret_cast<const unsigned long long*>(bytes + 0x10);
+    const auto last = *reinterpret_cast<const unsigned long long*>(bytes + 0x08);
+    return first != last;
+}
+
+// MS2-FUNCTIONAL: the decompiled accessor chain resolves to the vector's +0x10 begin and +0x08 end slots; compare those recovered boundaries.
+// @0x1416027b0
+bool FUN_1416027b0(const void* p)
+{
+    const auto* bytes = static_cast<const unsigned char*>(p);
+    const auto first = *reinterpret_cast<const unsigned long long*>(bytes + 0x10);
+    const auto last = *reinterpret_cast<const unsigned long long*>(bytes + 0x08);
+    return first != last;
+}
+
+// Recovered vector end adapters and empty allocator callbacks.
+// @0x141603980
+unsigned long long FUN_141603980(void* p) { return FUN_141600e70(p) + 8; }
+
+// @0x1416039a0
+unsigned long long FUN_1416039a0(void* p) { return FUN_141600e90(p) + 8; }
+
+// @0x1416039c0
+unsigned long long FUN_1416039c0(void* p) { return FUN_141600eb0(p) + 8; }
+
+// @0x1416039e0
+unsigned long long FUN_1416039e0(void* p) { return FUN_141600ed0(p) + 8; }
+
+// @0x141603a00
+unsigned long long FUN_141603a00(void* p) { return FUN_141600ef0(p) + 8; }
+
+// @0x141603a20
+unsigned long long FUN_141603a20(void* p) { return FUN_141600f10(p) + 8; }
+
+// @0x141603a40
+unsigned long long FUN_141603a40(void* p) { return FUN_141600f30(p) + 8; }
+
+// @0x141603a60
+unsigned long long FUN_141603a60(void* p) { return FUN_141600f50(p) + 8; }
+
+// @0x141603a80
+unsigned long long FUN_141603a80(void* p) { return FUN_141600f70(p) + 8; }
+
+// @0x141603aa0
+unsigned long long FUN_141603aa0(void* p) { return FUN_141600f90(p) + 8; }
+
+// @0x141603ac0
+unsigned long long FUN_141603ac0(void* p) { return FUN_141600fb0(p) + 8; }
+
+// @0x141603ae0
+unsigned long long FUN_141603ae0(void* p) { return FUN_141600fd0(p) + 8; }
+
+// @0x141603b00
+unsigned long long FUN_141603b00(void* p) { return FUN_141600ff0(p) + 8; }
+
+// @0x141603b20
+unsigned long long FUN_141603b20(void* p) { return FUN_141601010(p) + 8; }
+
+// @0x141603b40
+unsigned long long FUN_141603b40(void* p) { return FUN_141601030(p) + 8; }
+
+// @0x141603b60
+unsigned long long FUN_141603b60(void* p) { return FUN_141601050(p) + 8; }
+
+// @0x141603ba0
+unsigned long long FUN_141603ba0(void* p) { return FUN_141601090(p) + 8; }
+
+// @0x141603bc0
+unsigned long long FUN_141603bc0(void* p) { return FUN_1416010b0(p) + 8; }
+
+// @0x141603be0
+unsigned long long FUN_141603be0(void* p) { return FUN_1416010d0(p) + 8; }
+
+// @0x141603c00
+unsigned long long FUN_141603c00(void* p) { return FUN_1416010f0(p) + 8; }
+
+// @0x141603c20
+unsigned long long FUN_141603c20(void* p) { return FUN_141601110(p) + 8; }
+
+// @0x141603c40
+unsigned long long FUN_141603c40(void* p) { return FUN_141601130(p) + 8; }
+
+// @0x141603c60
+unsigned long long FUN_141603c60(void* p) { return FUN_141601150(p) + 8; }
+
+// @0x141603c80
+unsigned long long FUN_141603c80(void* p) { return FUN_141601170(p) + 8; }
+
+// @0x141603ca0
+unsigned long long FUN_141603ca0(void* p) { return FUN_141601190(p) + 8; }
+
+// @0x141603cc0
+unsigned long long FUN_141603cc0(void* p) { return FUN_1416011b0(p) + 8; }
+
+// @0x141603ce0
+unsigned long long FUN_141603ce0(void* p) { return FUN_1416011d0(p) + 8; }
+
+// @0x141603d00
+unsigned long long FUN_141603d00(void* p) { return FUN_1416011f0(p) + 8; }
+
+// @0x141603d20
+unsigned long long FUN_141603d20(void* p) { return FUN_141601210(p) + 8; }
+
+// @0x141603d40
+unsigned long long FUN_141603d40(void* p) { return FUN_141601230(p) + 8; }
+
+// @0x141603d60
+unsigned long long FUN_141603d60(void* p) { return FUN_141601250(p) + 8; }
+
+// @0x1416033c0
+void FUN_1416033c0(void* p) { (void)FUN_141600e70(p); }
+
+// @0x1416033e0
+void FUN_1416033e0(void* p) { (void)FUN_141600e90(p); }
+
+// @0x141603400
+void FUN_141603400(void* p) { (void)FUN_141600eb0(p); }
+
+// @0x141603420
+void FUN_141603420(void* p) { (void)FUN_141600ed0(p); }
+
+// @0x141603440
+void FUN_141603440(void* p) { (void)FUN_141600ef0(p); }
+
+// @0x141603460
+void FUN_141603460(void* p) { (void)FUN_141600f10(p); }
+
+// @0x141603480
+void FUN_141603480(void* p) { (void)FUN_141600f30(p); }
+
+// @0x1416034a0
+void FUN_1416034a0(void* p) { (void)FUN_141600f50(p); }
+
+// @0x1416034c0
+void FUN_1416034c0(void* p) { (void)FUN_141600f70(p); }
+
+// @0x1416034e0
+void FUN_1416034e0(void* p) { (void)FUN_141600f90(p); }
+
+// @0x141603500
+void FUN_141603500(void* p) { (void)FUN_141600fb0(p); }
+
+// @0x141603520
+void FUN_141603520(void* p) { (void)FUN_141600fd0(p); }
+
+// @0x141603540
+void FUN_141603540(void* p) { (void)FUN_141600ff0(p); }
+
+// @0x141603560
+void FUN_141603560(void* p) { (void)FUN_141601010(p); }
+
+// @0x141603580
+void FUN_141603580(void* p) { (void)FUN_141601030(p); }
+
+// @0x1416035a0
+void FUN_1416035a0(void* p) { (void)FUN_141601050(p); }
+
+// @0x1416035e0
+void FUN_1416035e0(void* p) { (void)FUN_141601090(p); }
+
+// @0x141603600
+void FUN_141603600(void* p) { (void)FUN_1416010b0(p); }
+
+// @0x141603620
+void FUN_141603620(void* p) { (void)FUN_1416010d0(p); }
+
+// @0x141603640
+void FUN_141603640(void* p) { (void)FUN_1416010f0(p); }
+
+// @0x141603660
+void FUN_141603660(void* p) { (void)FUN_141601110(p); }
+
+// @0x141603680
+void FUN_141603680(void* p) { (void)FUN_141601130(p); }
+
+// @0x1416036a0
+void FUN_1416036a0(void* p) { (void)FUN_141601150(p); }
+
+// @0x1416036c0
+void FUN_1416036c0(void* p) { (void)FUN_141601170(p); }
+
+// @0x1416036e0
+void FUN_1416036e0(void* p) { (void)FUN_141601190(p); }
+
+// @0x141603700
+void FUN_141603700(void* p) { (void)FUN_1416011b0(p); }
+
+// @0x141603720
+void FUN_141603720(void* p) { (void)FUN_1416011d0(p); }
+
+// @0x141603740
+void FUN_141603740(void* p) { (void)FUN_1416011f0(p); }
+
+// @0x141603760
+void FUN_141603760(void* p) { (void)FUN_141601210(p); }
+
+// @0x141603780
+void FUN_141603780(void* p) { (void)FUN_141601230(p); }
+
+// @0x1416037a0
+void FUN_1416037a0(void* p) { (void)FUN_141601250(p); }
+
+// @0x1416037e0
+void FUN_1416037e0(void* p) { (void)FUN_141601290(p); }
+
