@@ -15787,3 +15787,7 @@ DAT_1431921e0	1431921e0	data
 ??0Environment@AS2@GFx@Scaleform@@QEAA@XZ	14291b930	func
 ?DAT_143a462f0@@3PAPEBXA	143a462f0	data
 ?ms_spInstance@LuaBehaviorDebugger@egf@@0V?$SmartPointer@VLuaBehaviorDebugger@egf@@@efd@@A	143b07998	data
+?DAT_1432223d8@@3USd_1432223d8@@A	1432223d8	data
+?DAT_143214fc8@@3USd_143214fc8@@A	143214fc8	data
+?CreateObject@Sfr33MovieRoot@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@PEBDPEBV534@I@Z	1424f39c0	func
+?SpriteGetTextSnapshot@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z	1429064b0	func
