@@ -10309,6 +10309,7 @@ DAT_14318f040	14318f040	data
 ?MayHaveFrameConstructedHandler@EventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@QEBA_NXZ	14246c2b0	func
 ?MayHaveRenderHandler@EventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@QEBA_NXZ	14246c2d0	func
 ?OnEventLoad@AvmButton@AS2@GFx@Scaleform@@UEAAXXZ	14296b820	func
+?OnEventLoad@AvmCharacter@AS2@GFx@Scaleform@@UEAAXXZ	14000e390	func
 DAT_143192190	143192190	data
 ?SetBackground@TextField@GFx@Scaleform@@QEAAX_N@Z	1425bbb90	func
 ?SetBackgroundColor@TextField@GFx@Scaleform@@QEAAXK@Z	1425bbc10	func

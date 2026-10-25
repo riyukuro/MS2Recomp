@@ -223159,7 +223159,7 @@ FUN_142939780	142939780	func
 ?OnEvent@AvmTextField@AS2@GFx@Scaleform@@UEAA_NAEBVEventId@34@@Z	14296b810	func
 ?OnEvent@AvmTextField@AS2@GFx@Scaleform@@WDA@EAA_NAEBVEventId@34@@Z	14296b814	func
 ?OnEventLoad@AvmButton@AS2@GFx@Scaleform@@UEAAXXZ	14296b820	func
-?OnEventLoad@AvmCharacter@AS2@GFx@Scaleform@@UEAAXXZ	14296b820	func
+?OnEventLoad@AvmCharacter@AS2@GFx@Scaleform@@UEAAXXZ	14000e390	func
 ?OnEventLoad@AvmButton@AS2@GFx@Scaleform@@WDA@EAAXXZ	14296b850	func
 ?OnEventLoad@AvmSprite@AS2@GFx@Scaleform@@UEAAXXZ	14296b860	func
 ?OnEventLoad@AvmSprite@AS2@GFx@Scaleform@@WDA@EAAXXZ	14296ba54	func
