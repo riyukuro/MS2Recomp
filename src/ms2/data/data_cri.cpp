@@ -57,8 +57,6 @@ extern unsigned char DAT_14257d4c0[];
 extern unsigned char DAT_14257dc40[];
 extern unsigned char DAT_14257dcf0[];
 extern unsigned char DAT_14280ef52[];
-extern unsigned char DAT_142cca4b0[];
-extern unsigned char DAT_142ccb500[];
 extern unsigned char DAT_142ccc850[];
 extern unsigned char DAT_143224848[];
 void FUN_1400283a0();
@@ -134,6 +132,9 @@ void FUN_14005a070();
 void FUN_14005a140();
 void FUN_14005a1b0();
 void FUN_140062c10();
+long FUN_142ccb000(void*, void*);
+long FUN_142ccb710(void*, void*);
+long FUN_142ccbe90(void*, void*);
 void FUN_140066450();
 void FUN_140066d80();
 void FUN_140066da0();
@@ -835,9 +836,9 @@ alignas(8) unsigned char DAT_1431ba4f8[0x10] = {
 // 0x1431ba7c8
 alignas(8) Sd_1431ba7c8 DAT_1431ba7c8 = {
     {0},
-    &DAT_142cca4b0[0xb50],
-    &DAT_142ccb500[0x990],
-    &DAT_142ccb500[0x210],
+    (const void*)&FUN_142ccb000,
+    (const void*)&FUN_142ccbe90,
+    (const void*)&FUN_142ccb710,
     (const void*)&FUN_140062c10,
 };
 // 0x1431ba800
@@ -2994,8 +2995,6 @@ alignas(16) unsigned char DAT_143ffd550[0x8];                   // 0x143ffd550
 #pragma comment(linker, "/alternatename:?DAT_14257dc40@@3PAEA=?AddRef@RefCountVImpl@Scaleform@@UEAAXXZ")
 #pragma comment(linker, "/alternatename:?DAT_14257dcf0@@3PAEA=?Release@RefCountVImpl@Scaleform@@UEAAXXZ")
 #pragma comment(linker, "/alternatename:?DAT_14280ef52@@3PAEA=_purecall")
-#pragma comment(linker, "/alternatename:?DAT_142cca4b0@@3PAEA=??__FnotsetVal@?1??SetMember@Object@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@AEBVValue@234@AEBVPropFlags@234@@Z@YAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_142ccb500@@3PAEA=?MPVDEC_ResetDc@@YAXPEAUCriMpvDecoderState@@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142ccc850@@3PAEA=LAB_142ccc850")
 #pragma comment(linker, "/alternatename:?DAT_143224848@@3PAEA=??_7DOMBuilder@XML@GFx@Scaleform@@6B@")
 

@@ -13943,6 +13943,8 @@ alignas(16) Sd_143a2a3e0 DAT_143a2a3e0 = {
         0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00,
     },
 };
+// 0x143a2a6b0: entry count of the table sfr_as2_01c walks
+int DAT_143a2a6b0 = 0x2d;
 // 0x143a2a6b4
 alignas(4) Sd_143a2a6b4 DAT_143a2a6b4 = {
     {
@@ -15822,6 +15824,10 @@ alignas(16) Sd_143a2d890 DAT_143a2d890 = {
     "Frame label {0} was not found in scene {1}.",
     "The SWF file {0} contains invalid data.",
 };
+// 0x143a2dd20: an AS3 Value singleton, kind byte 0x0c (destroyed by the exe exit dtor, sfr_atexit_01)
+alignas(16) unsigned char DAT_143a2dd20[0x20] = {
+    0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+};
 // 0x143a2dd40
 alignas(16) Sd_143a2dd40 DAT_143a2dd40 = {
     "scaleform.gfx",
@@ -16766,6 +16772,8 @@ alignas(16) Sd_143a2fe50 DAT_143a2fe50 = {
     },
     "",
 };
+// 0x143a2fe60: a static Ptr<> (released by the exe exit dtor, sfr_atexit_01)
+alignas(16) unsigned char DAT_143a2fe60[0x8] = {};
 // 0x143a30328
 alignas(8) Sd_143a30328 DAT_143a30328 = {
     {
@@ -16773,6 +16781,8 @@ alignas(8) Sd_143a30328 DAT_143a30328 = {
     },
     "",
 };
+// 0x143a30338: a static Ptr<> (released by the exe exit dtor, sfr_atexit_01)
+alignas(8) unsigned char DAT_143a30338[0x8] = {};
 // 0x143a303c0
 alignas(16) Sd_143a303c0 DAT_143a303c0 = {
     {
@@ -47421,6 +47431,7 @@ alignas(8) Sd_143a8da88 DAT_143a8da88 = {
 #pragma comment(linker, "/alternatename:?ClassRegistrationTable@AS3@GFx@Scaleform@@3PAPEBUClassInfo@123@A=?DAT_143a28a30@@3USd_143a28a30@@A")
 #pragma comment(linker, "/alternatename:DAT_143a293e0=?DAT_143a293e0@@3USd_143a293e0@@A")
 #pragma comment(linker, "/alternatename:DAT_143a2a3e0=?DAT_143a2a3e0@@3USd_143a2a3e0@@A")
+#pragma comment(linker, "/alternatename:DAT_143a2a6b0=?DAT_143a2a6b0@@3HA")
 #pragma comment(linker, "/alternatename:DAT_143a2a6b4=?DAT_143a2a6b4@@3USd_143a2a6b4@@A")
 #pragma comment(linker, "/alternatename:?GlobalObjectCPP_mi@fl@Instances@AS3@GFx@Scaleform@@3QBUMemberInfo@345@B=?DAT_143a2a710@@3USd_143a2a710@@A")
 #pragma comment(linker, "/alternatename:?DateWeekDayNames@fl@Instances@AS3@GFx@Scaleform@@3PAPEBDA=?DAT_143a2a810@@3USd_143a2a810@@A")
@@ -47440,6 +47451,7 @@ alignas(8) Sd_143a8da88 DAT_143a8da88 = {
 #pragma comment(linker, "/alternatename:?DAT_143a2d5c0@@3QBUThunkInfo@AS3@GFx@Scaleform@@B=?DAT_143a2d5c0@@3USd_143a2d5c0@@A")
 #pragma comment(linker, "/alternatename:DAT_143a2d640=?DAT_143a2d640@@3PAEA")
 #pragma comment(linker, "/alternatename:DAT_143a2d890=?DAT_143a2d890@@3USd_143a2d890@@A")
+#pragma comment(linker, "/alternatename:DAT_143a2dd20=?DAT_143a2dd20@@3PAEA")
 #pragma comment(linker, "/alternatename:DAT_143a2dd40=?DAT_143a2dd40@@3USd_143a2dd40@@A")
 #pragma comment(linker, "/alternatename:DAT_143a2dd50=?DAT_143a2dd50@@3USd_143a2dd50@@A")
 #pragma comment(linker, "/alternatename:?SWF_TagLoaderTable@GFx@Scaleform@@3PAP6AXPEAVLoadProcess@12@AEBUTagInfo@12@@ZA=?DAT_143a2efe0@@3USd_143a2efe0@@A")
@@ -47459,7 +47471,9 @@ alignas(8) Sd_143a8da88 DAT_143a8da88 = {
 #pragma comment(linker, "/alternatename:?MatrixElementSizeTable@HMatrixConstants@MatrixPoolImpl@Render@Scaleform@@2PAUElementsInfo@1234@A=?DAT_143a2fc60@@3PAEA")
 #pragma comment(linker, "/alternatename:?NullHandle@HMatrix@MatrixPoolImpl@Render@Scaleform@@2UEntryHandle@234@A=?DAT_143a2fcb0@@3USd_143a2fcb0@@A")
 #pragma comment(linker, "/alternatename:?Format@RasterGlyphVertex@Render@Scaleform@@2UVertexFormat@23@A=?DAT_143a2fe50@@3USd_143a2fe50@@A")
+#pragma comment(linker, "/alternatename:DAT_143a2fe60=?DAT_143a2fe60@@3PAEA")
 #pragma comment(linker, "/alternatename:?Format@ImageGlyphVertex@Render@Scaleform@@2UVertexFormat@23@A=?DAT_143a30328@@3USd_143a30328@@A")
+#pragma comment(linker, "/alternatename:DAT_143a30338=?DAT_143a30338@@3PAEA")
 #pragma comment(linker, "/alternatename:?D3D9TextureFormatMapping@D3D9@Render@Scaleform@@3PAUMapping@TextureFormat@123@A=?DAT_143a303c0@@3USd_143a303c0@@A")
 #pragma comment(linker, "/alternatename:?ShaderUniformNames@D3D9@Render@Scaleform@@3PAPEBDA=?DAT_143a308a0@@3USd_143a308a0@@A")
 #pragma comment(linker, "/alternatename:?Descs@VertexShaderDesc@D3D9@Render@Scaleform@@2PAPEBU1234@A=?DAT_143a30930@@3USd_143a30930@@A")
