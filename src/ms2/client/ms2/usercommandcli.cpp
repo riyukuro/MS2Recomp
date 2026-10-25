@@ -195,7 +195,7 @@ public:
 private: void* unknown; UIObject* object;
 };
 MS2_CHECK_SIZE(Unk_CommandUIRef,0x10);
-struct Unk_CommandUIMgr { Unk_CommandUIRef FUN_141adcf50(const CString&); };
+struct Unk_CommandUIMgr { Unk_CommandUIRef FUN_141adcf50(const CString&); Unk_CommandUIRef FUN_141adcea0(int); };
 void* FUN_1409a8b10(); void* FUN_140a58500(void*); void FUN_14125f670(void*,bool,bool);
 void FUN_1406537e0(Unk_CommandLog*,int);
 CStringW FUN_1402a61e0(const wchar_t*);
@@ -510,7 +510,6 @@ void* FUN_1401958b0();
 void FUN_140aae640(void*);
 extern bool DAT_143aac548;
 void FUN_141370b80(void*);
-Unk_CommandUIRef FUN_141adcea0(void*,int);
 UIObject* FUN_1403ed9e0(Unk_CommandUIRef&);
 bool FUN_140534e80(Unk_CommandUIRef&);
 // @0x141371d80
@@ -2101,7 +2100,7 @@ void* FUN_14136db90(void* p) {
 // @0x14136f1f0
 void* FUN_14136f1f0(int id) {
     if(FUN_1403ed2b0()) {
-        Unk_CommandUIRef ref=FUN_141adcea0(FUN_1403ed2b0(),id);
+        Unk_CommandUIRef ref=((Unk_CommandUIMgr*)FUN_1403ed2b0())->FUN_141adcea0(id);
         if(ref.FUN_1403e8a70()) return dynamic_cast<UICommunityPopup*>(FUN_1403ed9e0(ref));
     }
     return 0;
@@ -2109,7 +2108,7 @@ void* FUN_14136f1f0(int id) {
 // @0x14136f290
 void* FUN_14136f290(int id) {
     if(FUN_1403ed2b0()) {
-        Unk_CommandUIRef ref=FUN_141adcea0(FUN_1403ed2b0(),id);
+        Unk_CommandUIRef ref=((Unk_CommandUIMgr*)FUN_1403ed2b0())->FUN_141adcea0(id);
         if(ref.FUN_1403e8a70()) return dynamic_cast<UICutSceneCinematic*>(FUN_1403ed9e0(ref));
     }
     return 0;
@@ -2118,14 +2117,14 @@ void* FUN_14136f290(int id) {
 void* FUN_14136f330() {
     void* mgr=FUN_1403ed2b0();
     if(!mgr) return 0;
-    Unk_CommandUIRef ref=FUN_141adcea0(mgr,FUN_141371d80());
+    Unk_CommandUIRef ref=((Unk_CommandUIMgr*)mgr)->FUN_141adcea0(FUN_141371d80());
     if(FUN_140534e80(ref)) return 0;
     return dynamic_cast<UIGameMenuDialog*>(FUN_1403ed9e0(ref));
 }
 // @0x14136f3e0
 void* FUN_14136f3e0(int id) {
     if(FUN_1403ed2b0()) {
-        Unk_CommandUIRef ref=FUN_141adcea0(FUN_1403ed2b0(),id);
+        Unk_CommandUIRef ref=((Unk_CommandUIMgr*)FUN_1403ed2b0())->FUN_141adcea0(id);
         if(ref.FUN_1403e8a70()) return dynamic_cast<UIGuideEvent*>(FUN_1403ed9e0(ref));
     }
     return 0;
@@ -2133,7 +2132,7 @@ void* FUN_14136f3e0(int id) {
 // @0x14136f480
 void* FUN_14136f480(int id) {
     if(FUN_1403ed2b0()) {
-        Unk_CommandUIRef ref=FUN_141adcea0(FUN_1403ed2b0(),id);
+        Unk_CommandUIRef ref=((Unk_CommandUIMgr*)FUN_1403ed2b0())->FUN_141adcea0(id);
         if(ref.FUN_1403e8a70()) return dynamic_cast<UIGuildDialog*>(FUN_1403ed9e0(ref));
     }
     return 0;
@@ -2141,7 +2140,7 @@ void* FUN_14136f480(int id) {
 // @0x14136f520
 void* FUN_14136f520(int id) {
     if(FUN_1403ed2b0()) {
-        Unk_CommandUIRef ref=FUN_141adcea0(FUN_1403ed2b0(),id);
+        Unk_CommandUIRef ref=((Unk_CommandUIMgr*)FUN_1403ed2b0())->FUN_141adcea0(id);
         if(ref.FUN_1403e8a70()) return dynamic_cast<UIServerListDialog*>(FUN_1403ed9e0(ref));
     }
     return 0;
@@ -2149,7 +2148,7 @@ void* FUN_14136f520(int id) {
 // @0x14136f5c0
 void* FUN_14136f5c0(int id) {
     if(FUN_1403ed2b0()) {
-        Unk_CommandUIRef ref=FUN_141adcea0(FUN_1403ed2b0(),id);
+        Unk_CommandUIRef ref=((Unk_CommandUIMgr*)FUN_1403ed2b0())->FUN_141adcea0(id);
         if(ref.FUN_1403e8a70()) return dynamic_cast<UISmartRecommendNotifyDialog*>(FUN_1403ed9e0(ref));
     }
     return 0;
