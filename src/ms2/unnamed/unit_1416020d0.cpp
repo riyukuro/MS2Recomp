@@ -8,6 +8,9 @@
 #include <new>
 #include <stdexcept>
 
+extern void FUN_141602830(void*, void*);
+extern void* FUN_1415dbda0(void*);
+
 // MS2-FUNCTIONAL: returns the recovered opaque vector storage reference.
 Unk_StlElem<224>*& FUN_1416035c0(void* p) { return *reinterpret_cast<Unk_StlElem<224>**>(p); }
 // MS2-PIN: ?FUN_1416035c0@@YAAEAPEAU?$Unk_StlElem@$0OA@@@PEAX@Z 0x1416035c0
@@ -925,4 +928,189 @@ void FUN_1416037a0(void* p) { (void)FUN_141601250(p); }
 
 // @0x1416037e0
 void FUN_1416037e0(void* p) { (void)FUN_141601290(p); }
+
+
+// MS2-FUNCTIONAL: preserves the observed MSVC tree-node relink using links at +0x00/+0x08/+0x10 and the nil flag at +0x19.
+// @0x141602860
+void FUN_141602860(long long* tree, long long node)
+{
+    auto* link = reinterpret_cast<long long*>(node + 0x10);
+    const long long successor = *link;
+    *link = *reinterpret_cast<long long*>(successor);
+    if (*reinterpret_cast<unsigned char*>(*link + 0x19) == 0)
+        *reinterpret_cast<long long*>(*link + 8) = node;
+    *reinterpret_cast<long long*>(successor + 8) = *reinterpret_cast<long long*>(node + 8);
+    if (node == *reinterpret_cast<long long*>(*tree + 8))
+        *reinterpret_cast<long long*>(*tree + 8) = successor;
+    else if (node == **reinterpret_cast<long long**>(node + 8))
+        **reinterpret_cast<long long**>(node + 8) = successor;
+    else
+        *reinterpret_cast<long long*>(*reinterpret_cast<long long*>(node + 8) + 0x10) = successor;
+    *reinterpret_cast<long long*>(successor) = node;
+    *reinterpret_cast<long long*>(node + 8) = successor;
+}
+
+// MS2-FUNCTIONAL: follows the recovered tree right-link to the minimum node; the local node layout is inferred from the exe offsets.
+// @0x141602940
+long long FUN_141602940(long long node)
+{
+    while (*reinterpret_cast<unsigned char*>(*reinterpret_cast<long long*>(node + 0x10) + 0x19) == 0)
+        node = *reinterpret_cast<long long*>(node + 0x10);
+    return node;
+}
+
+// MS2-FUNCTIONAL: follows the recovered tree left-link to the maximum node; the local node layout is inferred from the exe offsets.
+// @0x141602970
+long long* FUN_141602970(long long* node)
+{
+    while (*reinterpret_cast<unsigned char*>(*node + 0x19) == 0)
+        node = reinterpret_cast<long long*>(*node);
+    return node;
+}
+
+// @0x141602800
+void FUN_141602800(void* first, long long second)
+{
+    FUN_141602830(first, reinterpret_cast<void*>(second + 0x20));
+}
+
+// @0x141602830
+void FUN_141602830(void*, void* value)
+{
+    FUN_1415dbda0(value);
+}
+
+// @0x141602850
+void* FUN_141602850(void** value)
+{
+    return *value;
+}
+
+// Recovered tree accessor wrappers from the owner decomp.
+
+
+// Recovered tree accessor wrappers from the owner decomp.
+extern unsigned long long FUN_141601410(void*);
+
+extern unsigned long long FUN_1416013f0(void*);
+
+extern unsigned long long FUN_1416013d0(void*);
+
+extern unsigned long long FUN_1416013b0(void*);
+
+extern unsigned long long FUN_141601390(void*);
+
+extern unsigned long long FUN_141601370(void*);
+
+extern unsigned long long FUN_141601350(void*);
+
+extern unsigned long long FUN_141601330(void*);
+
+extern unsigned long long FUN_141601310(void*);
+
+extern unsigned long long FUN_1416012f0(void*);
+
+extern unsigned long long FUN_1416012d0(void*);
+
+extern unsigned long long FUN_1416012b0(void*);
+
+// MS2-FUNCTIONAL: forwards the recovered empty allocator accessor call; only codegen frame details may differ.
+// @0x141603800
+void FUN_141603800(void* p) { FUN_1416012b0(p); }
+
+// MS2-FUNCTIONAL: forwards the recovered empty allocator accessor call; only codegen frame details may differ.
+// @0x141603820
+void FUN_141603820(void* p) { FUN_1416012d0(p); }
+
+// MS2-FUNCTIONAL: forwards the recovered empty allocator accessor call; only codegen frame details may differ.
+// @0x141603840
+void FUN_141603840(void* p) { FUN_1416012f0(p); }
+
+// MS2-FUNCTIONAL: forwards the recovered empty allocator accessor call; only codegen frame details may differ.
+// @0x141603860
+void FUN_141603860(void* p) { FUN_141601310(p); }
+
+// MS2-FUNCTIONAL: forwards the recovered empty allocator accessor call; only codegen frame details may differ.
+// @0x141603880
+void FUN_141603880(void* p) { FUN_141601330(p); }
+
+// MS2-FUNCTIONAL: forwards the recovered empty allocator accessor call; only codegen frame details may differ.
+// @0x1416038a0
+void FUN_1416038a0(void* p) { FUN_141601350(p); }
+
+// MS2-FUNCTIONAL: forwards the recovered empty allocator accessor call; only codegen frame details may differ.
+// @0x1416038c0
+void FUN_1416038c0(void* p) { FUN_141601370(p); }
+
+// MS2-FUNCTIONAL: forwards the recovered empty allocator accessor call; only codegen frame details may differ.
+// @0x1416038e0
+void FUN_1416038e0(void* p) { FUN_141601390(p); }
+
+// MS2-FUNCTIONAL: forwards the recovered empty allocator accessor call; only codegen frame details may differ.
+// @0x141603900
+void FUN_141603900(void* p) { FUN_1416013b0(p); }
+
+// MS2-FUNCTIONAL: forwards the recovered empty allocator accessor call; only codegen frame details may differ.
+// @0x141603920
+void FUN_141603920(void* p) { FUN_1416013d0(p); }
+
+// MS2-FUNCTIONAL: forwards the recovered empty allocator accessor call; only codegen frame details may differ.
+// @0x141603940
+void FUN_141603940(void* p) { FUN_1416013f0(p); }
+
+// MS2-FUNCTIONAL: forwards the recovered empty allocator accessor call; only codegen frame details may differ.
+// @0x141603960
+void FUN_141603960(void* p) { FUN_141601410(p); }
+
+// MS2-FUNCTIONAL: forwards the recovered tree end accessor and applies its +8 field displacement.
+// @0x141603da0
+unsigned long long FUN_141603da0(void* p) { return FUN_141601290(p) + 8; }
+
+// MS2-FUNCTIONAL: forwards the recovered tree end accessor and applies its +8 field displacement.
+// @0x141603dc0
+unsigned long long FUN_141603dc0(void* p) { return FUN_1416012b0(p) + 8; }
+
+// MS2-FUNCTIONAL: forwards the recovered tree end accessor and applies its +8 field displacement.
+// @0x141603de0
+unsigned long long FUN_141603de0(void* p) { return FUN_1416012d0(p) + 8; }
+
+// MS2-FUNCTIONAL: forwards the recovered tree end accessor and applies its +8 field displacement.
+// @0x141603e00
+unsigned long long FUN_141603e00(void* p) { return FUN_1416012f0(p) + 8; }
+
+// MS2-FUNCTIONAL: forwards the recovered tree end accessor and applies its +8 field displacement.
+// @0x141603e20
+unsigned long long FUN_141603e20(void* p) { return FUN_141601310(p) + 8; }
+
+// MS2-FUNCTIONAL: forwards the recovered tree end accessor and applies its +8 field displacement.
+// @0x141603e40
+unsigned long long FUN_141603e40(void* p) { return FUN_141601330(p) + 8; }
+
+// MS2-FUNCTIONAL: forwards the recovered tree end accessor and applies its +8 field displacement.
+// @0x141603e60
+unsigned long long FUN_141603e60(void* p) { return FUN_141601350(p) + 8; }
+
+// MS2-FUNCTIONAL: forwards the recovered tree end accessor and applies its +8 field displacement.
+// @0x141603e80
+unsigned long long FUN_141603e80(void* p) { return FUN_141601370(p) + 8; }
+
+// MS2-FUNCTIONAL: forwards the recovered tree end accessor and applies its +8 field displacement.
+// @0x141603ea0
+unsigned long long FUN_141603ea0(void* p) { return FUN_141601390(p) + 8; }
+
+// MS2-FUNCTIONAL: forwards the recovered tree end accessor and applies its +8 field displacement.
+// @0x141603ec0
+unsigned long long FUN_141603ec0(void* p) { return FUN_1416013b0(p) + 8; }
+
+// MS2-FUNCTIONAL: forwards the recovered tree end accessor and applies its +8 field displacement.
+// @0x141603ee0
+unsigned long long FUN_141603ee0(void* p) { return FUN_1416013d0(p) + 8; }
+
+// MS2-FUNCTIONAL: forwards the recovered tree end accessor and applies its +8 field displacement.
+// @0x141603f00
+unsigned long long FUN_141603f00(void* p) { return FUN_1416013f0(p) + 8; }
+
+// MS2-FUNCTIONAL: forwards the recovered tree end accessor and applies its +8 field displacement.
+// @0x141603f20
+unsigned long long FUN_141603f20(void* p) { return FUN_141601410(p) + 8; }
 
