@@ -284,35 +284,35 @@ class __declspec(novtable) CNMCRChatRoomCreatedEvent { public: virtual char* vfu
 // @0x1415fa4d0
 char* CNMCRChatRoomCreatedEvent::vfunc_8() { return const_cast<char*>("CNMCRChatRoomCreatedEvent"); }
 
-class __declspec(novtable) CNMCRChatRoomCreatedExEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMCRChatRoomCreatedExEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415fa4e0
 char* CNMCRChatRoomCreatedExEvent::vfunc_8() { return const_cast<char*>("CNMCRChatRoomCreatedExEvent"); }
 
-class __declspec(novtable) CNMCRChatRoomErrorEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMCRChatRoomErrorEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415fa4f0
 char* CNMCRChatRoomErrorEvent::vfunc_8() { return const_cast<char*>("CNMCRChatRoomErrorEvent"); }
 
-class __declspec(novtable) CNMCRChatRoomEstablishedEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMCRChatRoomEstablishedEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415fa500
 char* CNMCRChatRoomEstablishedEvent::vfunc_8() { return const_cast<char*>("CNMCRChatRoomEstablishedEvent"); }
 
-class __declspec(novtable) CNMCRChatRoomEstablishedExEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMCRChatRoomEstablishedExEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415fa510
 char* CNMCRChatRoomEstablishedExEvent::vfunc_8() { return const_cast<char*>("CNMCRChatRoomEstablishedExEvent"); }
 
-class __declspec(novtable) CNMCRChatRoomInfoEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMCRChatRoomInfoEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415fa520
 char* CNMCRChatRoomInfoEvent::vfunc_8() { return const_cast<char*>("CNMCRChatRoomInfoEvent"); }
 
-class __declspec(novtable) CNMCRChatRoomInfoExEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMCRChatRoomInfoExEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415fa530
 char* CNMCRChatRoomInfoExEvent::vfunc_8() { return const_cast<char*>("CNMCRChatRoomInfoExEvent"); }
 
-class __declspec(novtable) CNMCRChatRoomMemberEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMCRChatRoomMemberEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415fa540
 char* CNMCRChatRoomMemberEvent::vfunc_8() { return const_cast<char*>("CNMCRChatRoomMemberEvent"); }
 
-class __declspec(novtable) CNMCRChatRoomMessageReceivedEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMCRChatRoomMessageReceivedEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); virtual unsigned int vfunc_10(); };
 // @0x1415fa550
 char* CNMCRChatRoomMessageReceivedEvent::vfunc_8() { return const_cast<char*>("CNMCRChatRoomMessageReceivedEvent"); }
 
@@ -348,11 +348,11 @@ class __declspec(novtable) CNMCRSendChatMessageFunc { public: virtual char* vfun
 // @0x1415fa5d0
 char* CNMCRSendChatMessageFunc::vfunc_8() { return const_cast<char*>("CNMCRSendChatMessageFunc"); }
 
-class __declspec(novtable) CNMCSChatMessageReceivedEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMCSChatMessageReceivedEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); virtual unsigned int vfunc_10(); };
 // @0x1415fa5e0
 char* CNMCSChatMessageReceivedEvent::vfunc_8() { return const_cast<char*>("CNMCSChatMessageReceivedEvent"); }
 
-class __declspec(novtable) CNMCSMultiChatCreatedEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMCSMultiChatCreatedEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415fa5f0
 char* CNMCSMultiChatCreatedEvent::vfunc_8() { return const_cast<char*>("CNMCSMultiChatCreatedEvent"); }
 
@@ -408,31 +408,31 @@ class __declspec(novtable) CNMChangeNicknameFunc { public: virtual char* vfunc_8
 // @0x1415fa6c0
 char* CNMChangeNicknameFunc::vfunc_8() { return const_cast<char*>("CNMChangeNicknameFunc"); }
 
-class __declspec(novtable) CNMChannelCreatedEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMChannelCreatedEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415fa6d0
 char* CNMChannelCreatedEvent::vfunc_8() { return const_cast<char*>("CNMChannelCreatedEvent"); }
 
-class __declspec(novtable) CNMChannelErrorEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMChannelErrorEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415fa6e0
 char* CNMChannelErrorEvent::vfunc_8() { return const_cast<char*>("CNMChannelErrorEvent"); }
 
-class __declspec(novtable) CNMChannelEstablishedEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMChannelEstablishedEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415fa6f0
 char* CNMChannelEstablishedEvent::vfunc_8() { return const_cast<char*>("CNMChannelEstablishedEvent"); }
 
-class __declspec(novtable) CNMChannelInfoEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMChannelInfoEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415fa700
 char* CNMChannelInfoEvent::vfunc_8() { return const_cast<char*>("CNMChannelInfoEvent"); }
 
-class __declspec(novtable) CNMChannelMemberInfoEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMChannelMemberInfoEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415fa710
 char* CNMChannelMemberInfoEvent::vfunc_8() { return const_cast<char*>("CNMChannelMemberInfoEvent"); }
 
-class __declspec(novtable) CNMChannelMemberInfoListEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMChannelMemberInfoListEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415fa720
 char* CNMChannelMemberInfoListEvent::vfunc_8() { return const_cast<char*>("CNMChannelMemberInfoListEvent"); }
 
-class __declspec(novtable) CNMChannelMessageEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMChannelMessageEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415fa730
 char* CNMChannelMessageEvent::vfunc_8() { return const_cast<char*>("CNMChannelMessageEvent"); }
 
@@ -520,7 +520,7 @@ class __declspec(novtable) CNMFDSControlFunc { public: virtual char* vfunc_8(); 
 // @0x1415fa940
 char* CNMFDSControlFunc::vfunc_8() { return const_cast<char*>("CNMFDSControlFunc"); }
 
-class __declspec(novtable) CNMFDSFileDownloadEventReceivedEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMFDSFileDownloadEventReceivedEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415fa950
 char* CNMFDSFileDownloadEventReceivedEvent::vfunc_8() { return const_cast<char*>("CNMFDSFileDownloadEventReceivedEvent"); }
 
@@ -540,7 +540,7 @@ class __declspec(novtable) CNMFUSControlFunc { public: virtual char* vfunc_8(); 
 // @0x1415fa990
 char* CNMFUSControlFunc::vfunc_8() { return const_cast<char*>("CNMFUSControlFunc"); }
 
-class __declspec(novtable) CNMFUSFileUploadEventReceivedEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMFUSFileUploadEventReceivedEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415fa9a0
 char* CNMFUSFileUploadEventReceivedEvent::vfunc_8() { return const_cast<char*>("CNMFUSFileUploadEventReceivedEvent"); }
 
@@ -572,7 +572,7 @@ class __declspec(novtable) CNMGSGetSessionInfoFunc { public: virtual char* vfunc
 // @0x1415faa30
 char* CNMGSGetSessionInfoFunc::vfunc_8() { return const_cast<char*>("CNMGSGetSessionInfoFunc"); }
 
-class __declspec(novtable) CNMGSInviteRejectedEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMGSInviteRejectedEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415faa40
 char* CNMGSInviteRejectedEvent::vfunc_8() { return const_cast<char*>("CNMGSInviteRejectedEvent"); }
 
@@ -584,15 +584,15 @@ class __declspec(novtable) CNMGSInviteUserFunc { public: virtual char* vfunc_8()
 // @0x1415faa60
 char* CNMGSInviteUserFunc::vfunc_8() { return const_cast<char*>("CNMGSInviteUserFunc"); }
 
-class __declspec(novtable) CNMGSMemberInfoChangedEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMGSMemberInfoChangedEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415faa70
 char* CNMGSMemberInfoChangedEvent::vfunc_8() { return const_cast<char*>("CNMGSMemberInfoChangedEvent"); }
 
-class __declspec(novtable) CNMGSMemberLeavedEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMGSMemberLeavedEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415faa80
 char* CNMGSMemberLeavedEvent::vfunc_8() { return const_cast<char*>("CNMGSMemberLeavedEvent"); }
 
-class __declspec(novtable) CNMGSNewMemberJoinedEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMGSNewMemberJoinedEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415faa90
 char* CNMGSNewMemberJoinedEvent::vfunc_8() { return const_cast<char*>("CNMGSNewMemberJoinedEvent"); }
 
@@ -600,27 +600,27 @@ class __declspec(novtable) CNMGSRegisterCallbackFunc { public: virtual char* vfu
 // @0x1415faaa0
 char* CNMGSRegisterCallbackFunc::vfunc_8() { return const_cast<char*>("CNMGSRegisterCallbackFunc"); }
 
-class __declspec(novtable) CNMGSSessionClosedEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMGSSessionClosedEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415faab0
 char* CNMGSSessionClosedEvent::vfunc_8() { return const_cast<char*>("CNMGSSessionClosedEvent"); }
 
-class __declspec(novtable) CNMGSSessionCreatedEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMGSSessionCreatedEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); virtual unsigned int vfunc_10(); };
 // @0x1415faac0
 char* CNMGSSessionCreatedEvent::vfunc_8() { return const_cast<char*>("CNMGSSessionCreatedEvent"); }
 
-class __declspec(novtable) CNMGSSessionEstablishedEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMGSSessionEstablishedEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); virtual unsigned int vfunc_10(); };
 // @0x1415faad0
 char* CNMGSSessionEstablishedEvent::vfunc_8() { return const_cast<char*>("CNMGSSessionEstablishedEvent"); }
 
-class __declspec(novtable) CNMGSSessionFailedEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMGSSessionFailedEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415faae0
 char* CNMGSSessionFailedEvent::vfunc_8() { return const_cast<char*>("CNMGSSessionFailedEvent"); }
 
-class __declspec(novtable) CNMGSSessionInfoChangedEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMGSSessionInfoChangedEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415faaf0
 char* CNMGSSessionInfoChangedEvent::vfunc_8() { return const_cast<char*>("CNMGSSessionInfoChangedEvent"); }
 
-class __declspec(novtable) CNMGSSessionInfoEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMGSSessionInfoEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); virtual unsigned int vfunc_10(); };
 // @0x1415fab00
 char* CNMGSSessionInfoEvent::vfunc_8() { return const_cast<char*>("CNMGSSessionInfoEvent"); }
 
@@ -964,7 +964,7 @@ class __declspec(novtable) CNMTPATokenLoginFunc { public: virtual char* vfunc_8(
 // @0x1415fb1f0
 char* CNMTPATokenLoginFunc::vfunc_8() { return const_cast<char*>("CNMTPATokenLoginFunc"); }
 
-class __declspec(novtable) CNMWSAssocSerialKeyEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMWSAssocSerialKeyEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415fb230
 char* CNMWSAssocSerialKeyEvent::vfunc_8() { return const_cast<char*>("CNMWSAssocSerialKeyEvent"); }
 
@@ -976,11 +976,11 @@ class __declspec(novtable) CNMWSSendWBMessageFunc { public: virtual char* vfunc_
 // @0x1415fb250
 char* CNMWSSendWBMessageFunc::vfunc_8() { return const_cast<char*>("CNMWSSendWBMessageFunc"); }
 
-class __declspec(novtable) CNMWSWhiteBoardAckReceivedEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMWSWhiteBoardAckReceivedEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415fb260
 char* CNMWSWhiteBoardAckReceivedEvent::vfunc_8() { return const_cast<char*>("CNMWSWhiteBoardAckReceivedEvent"); }
 
-class __declspec(novtable) CNMWSWhiteBoardMsgReceivedEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMWSWhiteBoardMsgReceivedEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415fb270
 char* CNMWSWhiteBoardMsgReceivedEvent::vfunc_8() { return const_cast<char*>("CNMWSWhiteBoardMsgReceivedEvent"); }
 class __declspec(novtable) CNMAuthConnectionClosedEvent { public: virtual char* vfunc_8(); };
@@ -999,7 +999,7 @@ class __declspec(novtable) CNMCustomNotifyEvent { public: virtual char* vfunc_8(
 // @0x1415fa850
 char* CNMCustomNotifyEvent::vfunc_8() { return const_cast<char*>("CNMCustomNotifyEvent"); }
 
-class __declspec(novtable) CNMEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); virtual unsigned int vfunc_10(); };
 // @0x1415fa8c0
 char* CNMEvent::vfunc_8() { return const_cast<char*>("CNMEvent"); }
 
@@ -1019,11 +1019,11 @@ class __declspec(novtable) CNMGuildOnlineInfoExEvent { public: virtual char* vfu
 // @0x1415fadb0
 char* CNMGuildOnlineInfoExEvent::vfunc_8() { return const_cast<char*>("CNMGuildOnlineInfoExEvent"); }
 
-class __declspec(novtable) CNMInviteVirtualUserEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMInviteVirtualUserEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_10(); };
 // @0x1415fadd0
 char* CNMInviteVirtualUserEvent::vfunc_8() { return const_cast<char*>("CNMInviteVirtualUserEvent"); }
 
-class __declspec(novtable) CNMMessengerReplyEvent { public: virtual char* vfunc_8(); };
+class __declspec(novtable) CNMMessengerReplyEvent { public: virtual char* vfunc_8(); virtual unsigned int vfunc_9(); };
 // @0x1415faed0
 char* CNMMessengerReplyEvent::vfunc_8() { return const_cast<char*>("CNMMessengerReplyEvent"); }
 
@@ -1351,3 +1351,134 @@ int FUN_1415fb6d0(void* p) { return *reinterpret_cast<int*>(static_cast<char*>(p
 // MS2-FUNCTIONAL: reads the recovered 32-bit field through the const-pointer ABI.
 int FUN_1415fb720(const void* p) { return *reinterpret_cast<const int*>(static_cast<const char*>(p) + 0x14) == 0; }
 // MS2-PIN: ?FUN_1415fb720@@YAHPEBX@Z 0x1415fb720
+
+
+// Recovered NM event type and payload accessors from their virtual dispatch bodies.
+// @0x1415fa410
+char* CNMBringForwardStandAloneMsgFunc::vfunc_8() { return const_cast<char*>("CNMBringForwardStandAloneMsgFunc"); }
+// @0x1415fa8a0
+char* CNMDownloadFileFunc::vfunc_8() { return const_cast<char*>("CNMDownloadFileFunc"); }
+// @0x1415fa8b0
+char* CNMDownloadGuildMarkFileFunc::vfunc_8() { return const_cast<char*>("CNMDownloadGuildMarkFileFunc"); }
+// @0x1415fa8e0
+char* CNMExecuteLauncherFunc::vfunc_8() { return const_cast<char*>("CNMExecuteLauncherFunc"); }
+// @0x1415fa8f0
+char* CNMExecuteNGMInstallerFunc::vfunc_8() { return const_cast<char*>("CNMExecuteNGMInstallerFunc"); }
+// @0x1415fa900
+char* CNMExecuteNGMLauncherFunc::vfunc_8() { return const_cast<char*>("CNMExecuteNGMLauncherFunc"); }
+// @0x1415fa910
+char* CNMExecuteNGMPatcher2Func::vfunc_8() { return const_cast<char*>("CNMExecuteNGMPatcher2Func"); }
+// @0x1415fa920
+char* CNMExecuteNGMPatcherFunc::vfunc_8() { return const_cast<char*>("CNMExecuteNGMPatcherFunc"); }
+// @0x1415fa930
+char* CNMExecutePatcherFunc::vfunc_8() { return const_cast<char*>("CNMExecutePatcherFunc"); }
+// @0x1415faa00
+char* CNMFunc::vfunc_8() { return const_cast<char*>("CNMFunc"); }
+// @0x1415fabf0
+char* CNMGetGameFriendTitleFunc::vfunc_8() { return const_cast<char*>("CNMGetGameFriendTitleFunc"); }
+// @0x1415fac00
+char* CNMGetGameFullNameFunc::vfunc_8() { return const_cast<char*>("CNMGetGameFullNameFunc"); }
+// @0x1415fac20
+char* CNMGetGameServerListFunc::vfunc_8() { return const_cast<char*>("CNMGetGameServerListFunc"); }
+// @0x1415fac30
+char* CNMGetGameServerNameFunc::vfunc_8() { return const_cast<char*>("CNMGetGameServerNameFunc"); }
+// @0x1415fac40
+char* CNMGetGameShortNameFunc::vfunc_8() { return const_cast<char*>("CNMGetGameShortNameFunc"); }
+// @0x1415fad30
+char* CNMGetSessionValueFunc::vfunc_8() { return const_cast<char*>("CNMGetSessionValueFunc"); }
+// @0x1415fad40
+char* CNMGetSupportGameListFunc::vfunc_8() { return const_cast<char*>("CNMGetSupportGameListFunc"); }
+// @0x1415fad50
+char* CNMGetUrlExFunc::vfunc_8() { return const_cast<char*>("CNMGetUrlExFunc"); }
+// @0x1415fade0
+char* CNMIsNGMInstalledFunc::vfunc_8() { return const_cast<char*>("CNMIsNGMInstalledFunc"); }
+// @0x1415fb1a0
+char* CNMSetServerInfoFunc::vfunc_8() { return const_cast<char*>("CNMSetServerInfoFunc"); }
+// @0x1415fb1b0
+char* CNMSetSessionValueFunc::vfunc_8() { return const_cast<char*>("CNMSetSessionValueFunc"); }
+// @0x1415fb200
+char* CNMUploadFileFunc::vfunc_8() { return const_cast<char*>("CNMUploadFileFunc"); }
+// @0x1415fb280
+char* CNMWriteToWiselogFunc::vfunc_8() { return const_cast<char*>("CNMWriteToWiselogFunc"); }
+// @0x1415fb2d0
+unsigned int CNMCRChatRoomMessageReceivedEvent::vfunc_10() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x6a4); }
+// @0x1415fb2f0
+unsigned int CNMCSChatMessageReceivedEvent::vfunc_10() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x6a0); }
+// @0x1415fb310
+unsigned int CNMEvent::vfunc_10() { return 0; }
+// @0x1415fb320
+unsigned int CNMGSSessionCreatedEvent::vfunc_10() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x90); }
+// @0x1415fb340
+unsigned int CNMGSSessionEstablishedEvent::vfunc_10() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x90); }
+// @0x1415fb360
+unsigned int CNMGSSessionInfoEvent::vfunc_10() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x90); }
+// @0x1415fb380
+unsigned int CNMInviteVirtualUserEvent::vfunc_10() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x1c8); }
+// @0x1415fb3d0
+unsigned int CNMCRChatRoomCreatedExEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb3e0
+unsigned int CNMCRChatRoomErrorEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb3f0
+unsigned int CNMCRChatRoomEstablishedEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb400
+unsigned int CNMCRChatRoomEstablishedExEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb410
+unsigned int CNMCRChatRoomInfoEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb420
+unsigned int CNMCRChatRoomInfoExEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb430
+unsigned int CNMCRChatRoomMemberEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb440
+unsigned int CNMCRChatRoomMessageReceivedEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb450
+unsigned int CNMCSChatMessageReceivedEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb460
+unsigned int CNMCSMultiChatCreatedEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb470
+unsigned int CNMChannelCreatedEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb480
+unsigned int CNMChannelErrorEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb490
+unsigned int CNMChannelEstablishedEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb4a0
+unsigned int CNMChannelInfoEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb4b0
+unsigned int CNMChannelMemberInfoEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb4c0
+unsigned int CNMChannelMemberInfoListEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb4d0
+unsigned int CNMChannelMessageEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb4e0
+unsigned int CNMEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb4f0
+unsigned int CNMFDSFileDownloadEventReceivedEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb500
+unsigned int CNMFUSFileUploadEventReceivedEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb510
+unsigned int CNMGSInviteRejectedEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb520
+unsigned int CNMGSMemberInfoChangedEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb530
+unsigned int CNMGSMemberLeavedEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb540
+unsigned int CNMGSNewMemberJoinedEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb550
+unsigned int CNMGSSessionClosedEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb560
+unsigned int CNMGSSessionCreatedEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb570
+unsigned int CNMGSSessionEstablishedEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb580
+unsigned int CNMGSSessionFailedEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb590
+unsigned int CNMGSSessionInfoChangedEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb5a0
+unsigned int CNMGSSessionInfoEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb5b0
+unsigned int CNMMessengerReplyEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb5c0
+unsigned int CNMWSAssocSerialKeyEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb5d0
+unsigned int CNMWSWhiteBoardAckReceivedEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }
+// @0x1415fb5e0
+unsigned int CNMWSWhiteBoardMsgReceivedEvent::vfunc_9() { return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned char*>(this) + 0x28); }

@@ -41,6 +41,7 @@ MS2_CHECK_SIZE(CNMSerializable, 0x10);
 class CNMFunc : public CNMSerializable
 {
 public:
+    virtual char* vfunc_8();
     CNMFunc(int nFuncId, int nDirection, int n18, int n1c);       // 0x14157d4c0
     virtual ~CNMFunc() = default;                                         // 0x1415ed640
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x14157d630
@@ -851,6 +852,7 @@ MS2_CHECK_SIZE(CNMVirtualUserInfo, 0x490);
 class CNMExecutePatcherFunc : public CNMFunc
 {
 public:
+    virtual char* vfunc_8();
     CNMExecutePatcherFunc();
     CNMExecutePatcherFunc(const char* szUrl, const char* szPatchDir, const char* szExecPath, int n4, int n5, int n6);
     virtual ~CNMExecutePatcherFunc() = default;                           // 0x1415ed360
@@ -874,6 +876,7 @@ MS2_CHECK_SIZE(CNMExecutePatcherFunc, 0xa10);
 class CNMExecuteLauncherFunc : public CNMFunc
 {
 public:
+    virtual char* vfunc_8();
     CNMExecuteLauncherFunc();
     CNMExecuteLauncherFunc(int nGameCode, int n2, const char* szArgument, int n4, int n5);
     virtual ~CNMExecuteLauncherFunc() = default;
@@ -895,6 +898,7 @@ MS2_CHECK_SIZE(CNMExecuteLauncherFunc, 0x810);
 class CNMExecuteNGMPatcherFunc : public CNMFunc
 {
 public:
+    virtual char* vfunc_8();
     CNMExecuteNGMPatcherFunc();
     CNMExecuteNGMPatcherFunc(int nGameCode, const char* sz2, const char* sz3, const char* sz4, int n5, int n6, int n7,
                              const char* sz8, int n9, const char* sz10, int n11);
@@ -924,6 +928,7 @@ MS2_CHECK_SIZE(CNMExecuteNGMPatcherFunc, 0x85f0);
 class CNMExecuteNGMPatcher2Func : public CNMFunc
 {
 public:
+    virtual char* vfunc_8();
     CNMExecuteNGMPatcher2Func();
     CNMExecuteNGMPatcher2Func(const char* szArgument, int n2);
     virtual ~CNMExecuteNGMPatcher2Func() = default;
@@ -943,6 +948,7 @@ MS2_CHECK_SIZE(CNMExecuteNGMPatcher2Func, 0x8038);
 class CNMExecuteNGMLauncherFunc : public CNMFunc
 {
 public:
+    virtual char* vfunc_8();
     CNMExecuteNGMLauncherFunc();
     CNMExecuteNGMLauncherFunc(int nGameCode, int n2, const char* sz3, int n4, const char* sz5, int n6, const char* sz7,
                               const char* sz8, int n9);
@@ -970,6 +976,7 @@ MS2_CHECK_SIZE(CNMExecuteNGMLauncherFunc, 0x8d0);
 class CNMExecuteNGMInstallerFunc : public CNMFunc
 {
 public:
+    virtual char* vfunc_8();
     CNMExecuteNGMInstallerFunc();
     CNMExecuteNGMInstallerFunc(int nGameCode, int n2, int n3, const char* sz4, const char* sz5, const char* sz6,
                                const char* sz7, int n8);
@@ -995,6 +1002,7 @@ MS2_CHECK_SIZE(CNMExecuteNGMInstallerFunc, 0x8e0);
 class CNMIsNGMInstalledFunc : public CNMFunc
 {
 public:
+    virtual char* vfunc_8();
     CNMIsNGMInstalledFunc();
     virtual ~CNMIsNGMInstalledFunc() = default;                           // 0x1415ee210
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1013,6 +1021,7 @@ MS2_CHECK_SIZE(CNMIsNGMInstalledFunc, 0x38);
 class CNMGetUrlExFunc : public CNMFunc
 {
 public:
+    virtual char* vfunc_8();
     CNMGetUrlExFunc();
     virtual ~CNMGetUrlExFunc() = default;                                 // 0x1415edfc0
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1042,6 +1051,7 @@ MS2_CHECK_OFFSET(CNMGetUrlExFunc, m_szUrl, 0x35c);
 class CNMGetSessionValueFunc : public CNMFunc
 {
 public:
+    virtual char* vfunc_8();
     CNMGetSessionValueFunc();
     CNMGetSessionValueFunc(const char* szName);
     virtual ~CNMGetSessionValueFunc() = default;                          // 0x1415edf70
@@ -1060,6 +1070,7 @@ MS2_CHECK_SIZE(CNMGetSessionValueFunc, 0x150);
 class CNMSetSessionValueFunc : public CNMFunc
 {
 public:
+    virtual char* vfunc_8();
     CNMSetSessionValueFunc();
     CNMSetSessionValueFunc(const char* szName, const char* szValue, int n3);
     virtual ~CNMSetSessionValueFunc() = default;
@@ -1080,6 +1091,7 @@ MS2_CHECK_SIZE(CNMSetSessionValueFunc, 0x158);
 class CNMBringForwardStandAloneMsgFunc : public CNMFunc
 {
 public:
+    virtual char* vfunc_8();
     CNMBringForwardStandAloneMsgFunc();
     CNMBringForwardStandAloneMsgFunc(const char* szName);
     virtual ~CNMBringForwardStandAloneMsgFunc() = default;
@@ -1097,6 +1109,7 @@ MS2_CHECK_SIZE(CNMBringForwardStandAloneMsgFunc, 0x430);
 class CNMDownloadFileFunc : public CNMFunc
 {
 public:
+    virtual char* vfunc_8();
     CNMDownloadFileFunc();
     CNMDownloadFileFunc(const char* szUrl, const char* szPath);
     virtual ~CNMDownloadFileFunc() = default;
@@ -1115,6 +1128,7 @@ MS2_CHECK_SIZE(CNMDownloadFileFunc, 0x230);
 class CNMUploadFileFunc : public CNMFunc
 {
 public:
+    virtual char* vfunc_8();
     CNMUploadFileFunc();
     CNMUploadFileFunc(const char* szUrl, const char* sz2, const char* sz3, int n4);
     virtual ~CNMUploadFileFunc() = default;
@@ -1136,6 +1150,7 @@ MS2_CHECK_SIZE(CNMUploadFileFunc, 0xa38);
 class CNMGetSupportGameListFunc : public CNMFunc
 {
 public:
+    virtual char* vfunc_8();
     CNMGetSupportGameListFunc();
     CNMGetSupportGameListFunc(int n);
     virtual ~CNMGetSupportGameListFunc() = default;                       // 0x1415edf90
@@ -1155,6 +1170,7 @@ MS2_CHECK_SIZE(CNMGetSupportGameListFunc, 0x50);
 class CNMGetGameServerListFunc : public CNMFunc
 {
 public:
+    virtual char* vfunc_8();
     CNMGetGameServerListFunc();
     CNMGetGameServerListFunc(int nGameCode);
     virtual ~CNMGetGameServerListFunc() = default;
@@ -1174,6 +1190,7 @@ MS2_CHECK_SIZE(CNMGetGameServerListFunc, 0x50);
 class CNMGetGameFullNameFunc : public CNMFunc
 {
 public:
+    virtual char* vfunc_8();
     CNMGetGameFullNameFunc();
     CNMGetGameFullNameFunc(int nGameCode);
     virtual ~CNMGetGameFullNameFunc() = default;
@@ -1192,6 +1209,7 @@ MS2_CHECK_SIZE(CNMGetGameFullNameFunc, 0xb8);
 class CNMGetGameShortNameFunc : public CNMFunc
 {
 public:
+    virtual char* vfunc_8();
     CNMGetGameShortNameFunc();
     CNMGetGameShortNameFunc(int nGameCode);
     virtual ~CNMGetGameShortNameFunc() = default;
@@ -1210,6 +1228,7 @@ MS2_CHECK_SIZE(CNMGetGameShortNameFunc, 0xb8);
 class CNMGetGameFriendTitleFunc : public CNMFunc
 {
 public:
+    virtual char* vfunc_8();
     CNMGetGameFriendTitleFunc();
     CNMGetGameFriendTitleFunc(int nGameCode);
     virtual ~CNMGetGameFriendTitleFunc() = default;
@@ -1228,6 +1247,7 @@ MS2_CHECK_SIZE(CNMGetGameFriendTitleFunc, 0xb8);
 class CNMGetGameServerNameFunc : public CNMFunc
 {
 public:
+    virtual char* vfunc_8();
     CNMGetGameServerNameFunc();
     CNMGetGameServerNameFunc(int nGameCode, int nServerCode);
     virtual ~CNMGetGameServerNameFunc() = default;
@@ -1247,6 +1267,7 @@ MS2_CHECK_SIZE(CNMGetGameServerNameFunc, 0xb8);
 class CNMDownloadGuildMarkFileFunc : public CNMFunc
 {
 public:
+    virtual char* vfunc_8();
     CNMDownloadGuildMarkFileFunc();
     CNMDownloadGuildMarkFileFunc(int nGameCode, unsigned __int64 nGuildKey, const char* szPath);
     virtual ~CNMDownloadGuildMarkFileFunc() = default;
@@ -1269,6 +1290,7 @@ MS2_CHECK_SIZE(CNMDownloadGuildMarkFileFunc, 0x140);
 class CNMSetServerInfoFunc : public CNMFunc
 {
 public:
+    virtual char* vfunc_8();
     class ServerAddress
     {
     public:
@@ -1308,6 +1330,7 @@ MS2_CHECK_SIZE(CNMSetServerInfoFunc, 0x48);
 class CNMWriteToWiselogFunc : public CNMFunc
 {
 public:
+    virtual char* vfunc_8();
     CNMWriteToWiselogFunc();
     explicit CNMWriteToWiselogFunc(const char* text);
     virtual ~CNMWriteToWiselogFunc() = default;
