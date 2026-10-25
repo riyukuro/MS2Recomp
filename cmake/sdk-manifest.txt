@@ -1,0 +1,17 @@
+# BYO SDK manifest: names and SHA-256 only (no SDK text). Columns: sdk, cache variable of its root, file relative to that root, sha256, optional (1 = skip when the root is unset)
+# gamebryo = the stock 3.2.0.661 tree after tools/apply-engine-patches.sh (results of engine-patches/manifest.tsv); the full per-file check is that script.
+# MSVC 14.16 + Windows SDK and the exe are pinned elsewhere: tools/toolchain-manifest.tsv (check_toolchain.py), tools/check_exe.py.
+gamebryo	MS2_GAMEBRYO_ROOT	gamebryo/3rdParty/Lua/Package/src/lobject.h	63f97c529886dd3da4ea58909848b39041460e793bd30053344e8f13c6494c68	0
+gamebryo	MS2_GAMEBRYO_ROOT	gamebryo/CoreRuntime/EngineLibs/NiAnimation/NiActorManager.h	09d8623c1ceb2096468b81a0dd45382be3a949436e5939380addad6993f24ab3	0
+gamebryo	MS2_GAMEBRYO_ROOT	gamebryo/CoreRuntime/EngineLibs/NiAnimation/NiAnimation.h	7b9d57b2f4df1cddf09247c7c70d084c1535ac3c7930d2d90df8f0c6f8e6cc86	0
+dxsdk	MS2_DXSDK_ROOT	Include/d3dx9.h	7b20fea554f2aaef744d17e31ddf303b7c6b4bd4c8d279bad8cb2998781cab79	0
+dxsdk	MS2_DXSDK_ROOT	Include/XInput.h	5a1956acaa1c838a52b7c248fc54ac7f2bb5f330b41d1bffed7808636f175822	0
+dxsdk	MS2_DXSDK_ROOT	Lib/x64/dxguid.lib	96677c579cfb86ec5b2fc2cf962f5de6112357961bc5ec330b4e223c0b4adca8	0
+dxsdk	MS2_DXSDK_ROOT	Lib/x64/d3dx9.lib	3ffdfb74ad1aa478bfdec55a18050c24b05867349bd2b427958f09b41acf6545	0
+physx284	MS2_PHYSX_ROOT	SDKs/Physics/include/NxPhysics.h	f5dd53679e464d21daedc71b6ea23b385d1f2e3f5778ab9a03a141cdc114edf4	0
+physx284	MS2_PHYSX_ROOT	SDKs/Foundation/include/NxVec3.h	66eecd1881ae69632c823f3c45138fada6db5feb8d29ff4eb7a92f9462854a05	0
+cef	MS2_CEF_ROOT	include/cef_version.h	72308dcb4dc3fb25dc2d8ee4b07f5ffbda575765c86c7944152941cde21145b9	0
+cef	MS2_CEF_ROOT	include/cef_app.h	00a86ad08d282345a7f4fa64bde0935676d16803487aca2ae062e2e0c526e0b1	0
+pathengine	MS2_PATHENGINE_ROOT	code/base/Assert.h	686a7e94a4633649870c5279130b0d0cd9ea071bc9ca5f2d91460889793542b0	0
+pathengine	MS2_PATHENGINE_ROOT	code/base/Geometry/HorizontalRange_Helper.h	fe8391915df2c96c668790fe211c02e2e0c75eabc11a496913020f8ed31d1586	0
+scaleform	MS2_SCALEFORM_ROOT	Include/GFx_AMP.h	d1070f69d83e479d4f20469739a5a8255452f9203a93ef6935b3247eb872c491	1
