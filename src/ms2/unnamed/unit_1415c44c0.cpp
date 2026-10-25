@@ -1402,8 +1402,99 @@ void* FUN_1415cab60(void* self, unsigned char key)
     return *reinterpret_cast<void**>(static_cast<unsigned char*>(node) + 8);
 }
 
+
+extern void* FUN_1415ef3b0(void*, void*);
+extern void* FUN_1415ef6b0(void*, void*);
+extern void* FUN_1415f0bf0(void*, void*);
+
+// MS2-FUNCTIONAL 0x1415c6970: requests the friend list and copies both decoded vectors when successful.
+// @0x1415c6970
+bool FUN_1415c6970(void*, void* categories, void* friends, int all)
+{
+    CNMGetFriendListFunc request(all == 0 ? ~0ull : 0ull);
+    const int ok = FUN_1415cb440(FUN_1415fa260(), &request);
+    if (ok) {
+        FUN_1415ef3b0(categories, &request.m_38);
+        FUN_1415ef6b0(friends, &request.m_50);
+    }
+    return ok != 0;
+}
+
+// MS2-FUNCTIONAL 0x1415c6a50: requests the friend list for the supplied key and copies both decoded vectors.
+// @0x1415c6a50
+bool FUN_1415c6a50(void*, void* categories, void* friends, unsigned long long key)
+{
+    CNMGetFriendListFunc request(key);
+    const int ok = FUN_1415cb440(FUN_1415fa260(), &request);
+    if (ok) {
+        FUN_1415ef3b0(categories, &request.m_38);
+        FUN_1415ef6b0(friends, &request.m_50);
+    }
+    return ok != 0;
+}
+
+// MS2-FUNCTIONAL 0x1415c6b00: sends a friend-info request and copies its decoded result on success.
+// @0x1415c6b00
+unsigned int FUN_1415c6b00(void*, const unsigned char* key, void* result)
+{
+    CNMGetFriendInfoFunc request(key);
+    const unsigned int ok = static_cast<unsigned int>(FUN_1415cb440(FUN_1415fa260(), &request));
+    if (ok)
+        FUN_1415f0bf0(result, &request.m_48);
+    return ok;
+}
+
+// MS2-FUNCTIONAL 0x1415c6be0: sends a block-friend request using the supplied fixed-size key.
+// @0x1415c6be0
+unsigned int FUN_1415c6be0(void*, const unsigned char* key, int blockType)
+{
+    CNMBlockFriendFunc request(key, blockType);
+    const unsigned int result = static_cast<unsigned int>(FUN_1415cb440(FUN_1415fa260(), &request));
+    return result;
+}
+
+// MS2-FUNCTIONAL 0x1415c6c90: sends a request to add a friend to a category.
+// @0x1415c6c90
+unsigned int FUN_1415c6c90(void*, const unsigned char* key, int category, int flag)
+{
+    CNMAddFriendToCategoryFunc request(key, category, flag);
+    return static_cast<unsigned int>(FUN_1415cb440(FUN_1415fa260(), &request));
+}
+
+// MS2-FUNCTIONAL 0x1415c6d50: sends a request to remove a friend from a category.
+// @0x1415c6d50
+unsigned int FUN_1415c6d50(void*, const unsigned char* key, int category, int flag)
+{
+    CNMDeleteFriendFromCategoryFunc request(key, category, flag);
+    return static_cast<unsigned int>(FUN_1415cb440(FUN_1415fa260(), &request));
+}
+
+// MS2-FUNCTIONAL 0x1415c6e10: sends a request to move a friend between categories.
+// @0x1415c6e10
+unsigned int FUN_1415c6e10(void*, const unsigned char* key, int source, int destination, int flag)
+{
+    CNMMoveFriendCategoryFunc request(key, source, destination, flag);
+    return static_cast<unsigned int>(FUN_1415cb440(FUN_1415fa260(), &request));
+}
+
+// MS2-FUNCTIONAL 0x1415c6ed0: sends an extended friend-memo request.
+// @0x1415c6ed0
+unsigned int FUN_1415c6ed0(void*, const unsigned char* key, unsigned long long memo)
+{
+    CNMChangeFriendMemoExFunc request(key, static_cast<long long>(memo));
+    return static_cast<unsigned int>(FUN_1415cb440(FUN_1415fa260(), &request));
+}
+
 // MS2-PIN: ?FUN_1415c5ed0@@YAHXZ 0x1415c5ed0
 // MS2-PIN: ?FUN_1415c4540@@YAHPEAXHHHH@Z 0x1415c4540
 // MS2-PIN: ?FUN_1415caaa0@@YAPEAXPEAXI@Z 0x1415caaa0
 // MS2-PIN: ?FUN_1415cab60@@YAPEAXPEAXE@Z 0x1415cab60
 // MS2-PIN: ?FUN_1415ca030@@YAXPEBD00@Z 0x1415ca030
+// MS2-PIN: ?FUN_1415c6970@@YA_NPEAX00H@Z 0x1415c6970
+// MS2-PIN: ?FUN_1415c6a50@@YA_NPEAX00_K@Z 0x1415c6a50
+// MS2-PIN: ?FUN_1415c6b00@@YAIPEAXPEBE0@Z 0x1415c6b00
+// MS2-PIN: ?FUN_1415c6be0@@YAIPEAXPEBEH@Z 0x1415c6be0
+// MS2-PIN: ?FUN_1415c6c90@@YAIPEAXPEBEHH@Z 0x1415c6c90
+// MS2-PIN: ?FUN_1415c6d50@@YAIPEAXPEBEHH@Z 0x1415c6d50
+// MS2-PIN: ?FUN_1415c6e10@@YAIPEAXPEBEHHH@Z 0x1415c6e10
+// MS2-PIN: ?FUN_1415c6ed0@@YAIPEAXPEBE_K@Z 0x1415c6ed0
