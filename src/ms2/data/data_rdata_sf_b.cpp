@@ -616,7 +616,7 @@ void FUN_142508550();
 void FUN_142508554();
 void FUN_1425088f0();
 void FUN_142508900();
-void FUN_142508960();
+const char* FUN_142508960(const void*);
 void FUN_142508980();
 void FUN_142508990();
 void FUN_14250b490();
