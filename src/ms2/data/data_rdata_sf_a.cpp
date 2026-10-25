@@ -47,6 +47,24 @@ extern unsigned char DAT_1423dd8f0[];
 extern unsigned char DAT_1423dda30[];
 extern unsigned char DAT_1423e02a0[];
 extern unsigned char DAT_1423e0660[];
+extern unsigned char DAT_1423e02e0[];
+extern unsigned char DAT_1423e03c0[];
+extern unsigned char DAT_1423e04a0[];
+extern unsigned char DAT_1423e0580[];
+extern unsigned char DAT_1423e07e0[];
+extern unsigned char DAT_1423e0910[];
+extern unsigned char DAT_1423e09f0[];
+extern unsigned char DAT_1423e0ad0[];
+extern unsigned char DAT_1423e0bb0[];
+extern unsigned char DAT_1423e0c90[];
+extern unsigned char DAT_1423e0d70[];
+extern unsigned char DAT_1423e0e70[];
+extern unsigned char DAT_1423e0f50[];
+extern unsigned char DAT_1423e1030[];
+extern unsigned char DAT_1423e1110[];
+extern unsigned char DAT_1423e1240[];
+extern unsigned char DAT_1423e1260[];
+extern unsigned char DAT_1423e1280[];
 extern unsigned char DAT_1423e12f0[];
 extern unsigned char DAT_1423e1590[];
 extern unsigned char DAT_1423e16e0[];
@@ -983,7 +1001,6 @@ extern unsigned char DAT_14251b0e0[];
 extern unsigned char DAT_14251f430[];
 extern unsigned char DAT_14280ef52[];
 extern unsigned char DAT_14313c0b0[];
-extern unsigned char DAT_14313cfb8[];
 extern unsigned char DAT_14314f2f8[];
 extern unsigned char DAT_143158ab8[];
 extern unsigned char DAT_14315c0a0[];
@@ -1798,6 +1815,27 @@ struct Sd_14313c670 {
     unsigned char b28[0x20];
     const void* p48;
     unsigned char b50[0x268];
+};
+struct Sd_14313d260 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[8];
+};
+struct Sd_14313d2e0 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        unsigned long long q18;
+        unsigned long long q20;
+    } e[18];
+};
+struct Sd_14313d5b0 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[5];
 };
 struct Sd_14313d610 {
     const void* p0;
@@ -10306,6 +10344,52 @@ alignas(16) Sd_14313c670 DAT_14313c670 = {
         0x70, 0x65, 0x72, 0x74, 0x69, 0x65, 0x73, 0x00,
     },
 };
+// 0x14313d260
+alignas(16) Sd_14313d260 DAT_14313d260 = {
+    {
+        {"LN10", 0x280050},
+        {"E", 0x280058},
+        {"LN2", 0x280060},
+        {"LOG10E", 0x280068},
+        {"LOG2E", 0x280070},
+        {"PI", 0x280078},
+        {"SQRT1_2", 0x280080},
+        {"SQRT2", 0x280088},
+    },
+};
+// 0x14313d2e0
+alignas(16) Sd_14313d2e0 DAT_14313d2e0 = {
+    {
+        {DAT_1423e02e0, (const void*)&DAT_14313db20, "abs", 0x0, 0x48},
+        {DAT_1423e03c0, (const void*)&DAT_14313db20, "acos", 0x0, 0x48},
+        {DAT_1423e04a0, (const void*)&DAT_14313db20, "asin", 0x0, 0x48},
+        {DAT_1423e0580, (const void*)&DAT_14313db20, "atan", 0x0, 0x48},
+        {DAT_1423e07e0, (const void*)&DAT_14313db20, "atan2", 0x0, 0x90},
+        {DAT_1423e0910, (const void*)&DAT_14313db20, "ceil", 0x0, 0x48},
+        {DAT_1423e09f0, (const void*)&DAT_14313db20, "cos", 0x0, 0x48},
+        {DAT_1423e0ad0, (const void*)&DAT_14313db20, "exp", 0x0, 0x48},
+        {DAT_1423e0bb0, (const void*)&DAT_14313db20, "floor", 0x0, 0x48},
+        {DAT_1423e0c90, (const void*)&DAT_14313db20, "log", 0x0, 0x48},
+        {DAT_1423e0d70, (const void*)&DAT_14313db20, "round", 0x0, 0x48},
+        {DAT_1423e0e70, (const void*)&DAT_14313db20, "sin", 0x0, 0x48},
+        {DAT_1423e0f50, (const void*)&DAT_14313db20, "sqrt", 0x0, 0x48},
+        {DAT_1423e1030, (const void*)&DAT_14313db20, "tan", 0x0, 0x48},
+        {DAT_1423e1110, (const void*)&DAT_14313db20, "pow", 0x0, 0x90},
+        {DAT_1423e1240, (const void*)&DAT_14313db20, "max", 0x0, 0xffc0},
+        {DAT_1423e1260, (const void*)&DAT_14313db20, "min", 0x0, 0xffc0},
+        {DAT_1423e1280, (const void*)&DAT_14313db20, "random", 0x0, 0x0},
+    },
+};
+// 0x14313d5b0
+alignas(16) Sd_14313d5b0 DAT_14313d5b0 = {
+    {
+        {"CASEINSENSITIVE", 0x270050},
+        {"DESCENDING", 0x270054},
+        {"UNIQUESORT", 0x270058},
+        {"RETURNINDEXEDARRAY", 0x27005c},
+        {"NUMERIC", 0x270060},
+    },
+};
 // 0x14313d610
 alignas(16) Sd_14313d610 DAT_14313d610 = {
     "toLocaleString",
@@ -10572,7 +10656,7 @@ alignas(16) Sd_14313dbc0 DAT_14313dbc0 = {
     {
         0x00, 0x05, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14313cfb8[0x5f8],
+    &DAT_14313d5b0,
     &DAT_143a2aab0[0x810],
     {0},
 };
@@ -10784,8 +10868,8 @@ alignas(16) Sd_14313e160 DAT_14313e160 = {
     {
         0x12, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14313cfb8[0x328],
-    &DAT_14313cfb8[0x2a8],
+    &DAT_14313d2e0,
+    &DAT_14313d260,
     {0},
 };
 // 0x14313e1b0
@@ -23368,6 +23452,24 @@ alignas(16) Sd_1431726d0 DAT_1431726d0 = {
 #pragma comment(linker, "/alternatename:?DAT_1423dd8f0@@3PAEA=?MakeClassTraits@AccessibilityProperties@fl_accessibility@ClassTraits@AS3@GFx@Scaleform@@SA?AV?$Pickable@VTraits@ClassTraits@AS3@GFx@Scaleform@@@6@AEAVVM@456@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1423dda30@@3PAEA=?MakeClassTraits@ISearchableText@fl_accessibility@ClassTraits@AS3@GFx@Scaleform@@SA?AV?$Pickable@VTraits@ClassTraits@AS3@GFx@Scaleform@@@6@AEAVVM@456@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1423e02a0@@3PAEA=?toStringProto@Array@fl@Instances@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@456@AEAVVM@456@AEBVValue@456@AEAV9456@IPEBV9456@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1423e02e0@@3PAEA=?Func@?$ThunkFunc1@VMath@fl@Classes@AS3@GFx@Scaleform@@$0A@NN@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1423e03c0@@3PAEA=?Func@?$ThunkFunc1@VMath@fl@Classes@AS3@GFx@Scaleform@@$00NN@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1423e04a0@@3PAEA=?Func@?$ThunkFunc1@VMath@fl@Classes@AS3@GFx@Scaleform@@$01NN@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1423e0580@@3PAEA=?Func@?$ThunkFunc1@VMath@fl@Classes@AS3@GFx@Scaleform@@$02NN@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1423e07e0@@3PAEA=?Func@?$ThunkFunc2@VMath@fl@Classes@AS3@GFx@Scaleform@@$03NNN@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1423e0910@@3PAEA=?Func@?$ThunkFunc1@VMath@fl@Classes@AS3@GFx@Scaleform@@$04NN@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1423e09f0@@3PAEA=?Func@?$ThunkFunc1@VMath@fl@Classes@AS3@GFx@Scaleform@@$05NN@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1423e0ad0@@3PAEA=?Func@?$ThunkFunc1@VMath@fl@Classes@AS3@GFx@Scaleform@@$06NN@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1423e0bb0@@3PAEA=?Func@?$ThunkFunc1@VMath@fl@Classes@AS3@GFx@Scaleform@@$07NN@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1423e0c90@@3PAEA=?Func@?$ThunkFunc1@VMath@fl@Classes@AS3@GFx@Scaleform@@$08NN@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1423e0d70@@3PAEA=?Func@?$ThunkFunc1@VMath@fl@Classes@AS3@GFx@Scaleform@@$09NN@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1423e0e70@@3PAEA=?Func@?$ThunkFunc1@VMath@fl@Classes@AS3@GFx@Scaleform@@$0L@NN@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1423e0f50@@3PAEA=?Func@?$ThunkFunc1@VMath@fl@Classes@AS3@GFx@Scaleform@@$0M@NN@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1423e1030@@3PAEA=?Func@?$ThunkFunc1@VMath@fl@Classes@AS3@GFx@Scaleform@@$0N@NN@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1423e1110@@3PAEA=?Func@?$ThunkFunc2@VMath@fl@Classes@AS3@GFx@Scaleform@@$0O@NNN@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1423e1240@@3PAEA=?Func@?$ThunkFunc2@VMath@fl@Classes@AS3@GFx@Scaleform@@$0P@VValue@456@IPEBV7456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1423e1260@@3PAEA=?Func@?$ThunkFunc2@VMath@fl@Classes@AS3@GFx@Scaleform@@$0BA@VValue@456@IPEBV7456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1423e1280@@3PAEA=?Func@?$ThunkFunc0@VMath@fl@Classes@AS3@GFx@Scaleform@@$0BB@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1423e0660@@3PAEA=?MakeClassTraits@Array@fl@ClassTraits@AS3@GFx@Scaleform@@SA?AV?$Pickable@VTraits@ClassTraits@AS3@GFx@Scaleform@@@6@AEAVVM@456@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1423e12f0@@3PAEA=?AS3hasOwnProperty@XMLList@fl@InstanceTraits@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@456@AEAVVM@456@AEBVValue@456@AEAV9456@IPEBV9456@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1423e1590@@3PAEA=?MakeClassTraits@RegExp@fl@ClassTraits@AS3@GFx@Scaleform@@SA?AV?$Pickable@VTraits@ClassTraits@AS3@GFx@Scaleform@@@6@AEAVVM@456@@Z")
@@ -24305,7 +24407,6 @@ alignas(16) Sd_1431726d0 DAT_1431726d0 = {
 #pragma comment(linker, "/alternatename:?DAT_14251f430@@3PAEA=?PropagateEvent@AvmDisplayObjContainer@AS3@GFx@Scaleform@@UEAAXAEBVEvent@fl_events@Instances@234@_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_14280ef52@@3PAEA=_purecall")
 #pragma comment(linker, "/alternatename:?DAT_14313c0b0@@3PAEA=??_7DoAbc@AS3@GFx@Scaleform@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_14313cfb8@@3PAEA=??_7AccessibilityProperties@fl_accessibility@ClassTraits@AS3@GFx@Scaleform@@6B@")
 #pragma comment(linker, "/alternatename:?DAT_14314f2f8@@3PAEA=??_7StackOverflowError@fl_errors@ClassTraits@AS3@GFx@Scaleform@@6B@")
 #pragma comment(linker, "/alternatename:?DAT_143158ab8@@3PAEA=??_7ExternalInterface@fl_external@Classes@AS3@GFx@Scaleform@@6B@")
 #pragma comment(linker, "/alternatename:?DAT_14315c0a0@@3PAEA=??_7GradientGlowFilter@fl_filters@ClassTraits@AS3@GFx@Scaleform@@6B@")
