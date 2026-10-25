@@ -1770,7 +1770,7 @@ efd::AsyncResult CStateService::OnInit()
     Unk_SMInputHandle kHandle = FUN_14025e7a0()->FUN_1422b02f0(2);
     bool bNone = FUN_1417e3620(&kHandle);
     FUN_140b62a60(&kHandle);
-    if (!bNone)
+    if (bNone)
         return efd::AsyncResult_Pending;
     FUN_1417e25a0(0x620000b);
     return efd::AsyncResult_Complete;
