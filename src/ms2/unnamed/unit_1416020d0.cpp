@@ -1114,3 +1114,9 @@ unsigned long long FUN_141603f00(void* p) { return FUN_1416013f0(p) + 8; }
 // @0x141603f20
 unsigned long long FUN_141603f20(void* p) { return FUN_141601410(p) + 8; }
 
+
+// @0x141604630
+long long FUN_141604630(long long* tree) { return *tree + 0x10; }
+
+// @0x141604650
+long long FUN_141604650(long long* tree) { return *tree + 8; }
