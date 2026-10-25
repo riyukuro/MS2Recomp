@@ -1536,6 +1536,26 @@ unsigned int FUN_1415c5d80(void*, void* key, long long metadata)
 }
 
 
+
+extern void* FUN_1415efab0(void*, void*);
+// MS2-FUNCTIONAL 0x1415c5400: submits a virtual-login request with the supplied login, value, and password fields.
+// @0x1415c5400
+unsigned int FUN_1415c5400(void*, long long login, int value, long long password)
+{
+    CNMLoginVirtualFunc request(login, value, password);
+    return static_cast<unsigned int>(FUN_1415cb440(FUN_1415fa260(), &request));
+}
+
+// MS2-FUNCTIONAL 0x1415c54f0: requests the virtual-user list and copies its result vector when successful.
+// @0x1415c54f0
+bool FUN_1415c54f0(void*, void* output, int resultCode)
+{
+    CNMGetMyVirtualUserListFunc request(static_cast<unsigned int>(resultCode));
+    const int ok = FUN_1415cb440(FUN_1415fa260(), &request);
+    if (ok) FUN_1415efab0(output, &request.m_38);
+    return ok != 0;
+}
+
 // MS2-PIN: ?FUN_1415c5ed0@@YAHXZ 0x1415c5ed0
 // MS2-PIN: ?FUN_1415c4540@@YAHPEAXHHHH@Z 0x1415c4540
 // MS2-PIN: ?FUN_1415caaa0@@YAPEAXPEAXI@Z 0x1415caaa0
@@ -1557,3 +1577,5 @@ unsigned int FUN_1415c5d80(void*, void* key, long long metadata)
 // MS2-PIN: ?FUN_1415c7400@@YAHPEAXG@Z 0x1415c7400
 // MS2-PIN: ?FUN_1415cb420@@YAXXZ 0x1415cb420
 // MS2-PIN: ?FUN_1415cb430@@YAXXZ 0x1415cb430
+// MS2-PIN: ?FUN_1415c5400@@YAIPEAX_JH0@Z 0x1415c5400
+// MS2-PIN: ?FUN_1415c54f0@@YA_NPEAX0H@Z 0x1415c54f0
