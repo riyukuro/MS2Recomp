@@ -219,9 +219,12 @@ void CClientPlatformNexonKorea::vfunc_14()
 }
 #ifndef MS2_HOOK_DLL   // hook DLL: the vtable slot binds the exe body, which the compat NexonKorea_ShutdownNX replaces
 // @0x140c78180
+// MS2-FUNCTIONAL: null-safe. The rebuild has no Nexon Messenger (stubbed, user 2026-10-24) and FUN_1406c34b0 returns 0,
+// so vslot 14 never creates CNXMan; the exe body would call FUN_14160da80 on null at exit.
 void CClientPlatformNexonKorea::vfunc_15()
 {
-    CNXMan::GetInstance()->FUN_14160da80();
+    if (CNXMan* pNx = CNXMan::GetInstance())
+        pNx->FUN_14160da80();
     CNXMan::DestroyInstance();
 }
 #endif
@@ -382,9 +385,12 @@ int CClientPlatformNexonKorea::vfunc_1()
 MS2_REPLACE_METHOD(0x140C78CB0, CClientPlatformNexonKorea, vfunc_1, 48, 0x20596032);
 #ifndef MS2_HOOK_DLL   // hook DLL: the vtable slot binds the exe body (null CNXMan; compat NexonKorea_GetServiceIndex)
 // @0x140c78cf0
+// MS2-FUNCTIONAL: null-safe like vfunc_15 (no CNXMan in the rebuild): the exe body reads the null CNXMan on every
+// field entry. 4 is the result for a CNXMan whose game code is not 0x1A002.
 int CClientPlatformNexonKorea::vfunc_74()
 {
-    if (FUN_14160e5f0(CNXMan::GetInstance()) != 0)
+    CNXMan* pNx = CNXMan::GetInstance();
+    if (pNx != 0 && FUN_14160e5f0(pNx) != 0)
         return 5;
     return 4;
 }

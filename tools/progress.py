@@ -162,6 +162,7 @@ class Unit:
         self.guess = bool(os.environ.get("MS2_GUESS_LOOKALIKES"))   # `// MS2-GUESS-LOOKALIKES`: pair leftover identical groups (functional)
         self.pins = {}       # `// MS2-PIN: <mangled> 0x<va>`: obj symbol -> exe VA (must lie in a MS2-RANGE)
         self.profile = None  # `// MS2-FLAGS: <profile>`: per-unit flag profile (ms2flags; None = game flags)
+        self.no_exe = None   # `// MS2-NO-EXE: 0x<va> <reason>`: rebuild-only stand-ins, no exe functions (fullexe/plan.py places it at <va>)
         for line in open(path, encoding="latin1"):
             if "MS2-" not in line:                    # every directive below contains it (find_units reads ~470 files)
                 continue
@@ -173,6 +174,9 @@ class Unit:
             m = re.match(r"\s*//\s*MS2-UNIT:\s*(\S+)", line)
             if m:
                 self.name = m.group(1)
+            m = re.match(r"\s*//\s*MS2-NO-EXE:\s*0x([0-9a-fA-F]+)", line)
+            if m:
+                self.no_exe = int(m.group(1), 16)
             if self.profile is None and re.match(r"\s*//\s*MS2-FLAGS:", line):
                 self.profile = ms2flags.profile_of(line)
             m = re.match(r"\s*//\s*MS2-RANGE:\s*0x([0-9a-fA-F]+)\s*-\s*0x([0-9a-fA-F]+)", line)
@@ -1559,7 +1563,8 @@ def main():
                     bad.append(f"{name}: data {dn}: {dv['report']}")
             if a.functional:
                 stubs = n - m - f
-                if fail or (n == 0 and not dres) or stubs or vok != nv:
+                no_exe = next((x.no_exe is not None for x in all_units if x.name == name), False)
+                if fail or (n == 0 and not dres and not no_exe) or stubs or vok != nv:
                     bad.append(f"{name}: " + ("COMPILE FAILED" if fail else
                                               f"{m + f}/{n} functions implemented ({stubs} stub), vftables {vok}/{nv}"))
                 for d in res.get("symmismatch", []):
