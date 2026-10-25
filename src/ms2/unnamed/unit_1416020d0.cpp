@@ -1170,3 +1170,39 @@ unsigned long long FUN_141603360(void* p) { return FUN_1416013d0(p) + 0x10; }
 unsigned long long FUN_141603380(void* p) { return FUN_1416013f0(p) + 0x10; }
 // @0x1416033a0
 unsigned long long FUN_1416033a0(void* p) { return FUN_141601410(p) + 0x10; }
+
+extern void FUN_14016c7c0(void*);
+// @0x141604000
+void FUN_141604000(void* p) { FUN_14016c7c0(reinterpret_cast<void*>(FUN_141600ff0(p))); }
+// @0x141604020
+void FUN_141604020(void* p) { FUN_14016c7c0(reinterpret_cast<void*>(FUN_141601030(p))); }
+// @0x141604040
+void FUN_141604040(void* p) { FUN_14016c7c0(reinterpret_cast<void*>(FUN_141601070(p))); }
+// @0x141604060
+void FUN_141604060(void* p) { FUN_14016c7c0(reinterpret_cast<void*>(FUN_1416010b0(p))); }
+// @0x141604080
+void FUN_141604080(void* p) { FUN_14016c7c0(reinterpret_cast<void*>(FUN_1416010f0(p))); }
+// @0x1416040a0
+void FUN_1416040a0(void* p) { FUN_14016c7c0(reinterpret_cast<void*>(FUN_141601130(p))); }
+// @0x1416040c0
+void FUN_1416040c0(void* p) { FUN_14016c7c0(reinterpret_cast<void*>(FUN_141601170(p))); }
+// @0x1416040e0
+void FUN_1416040e0(void* p) { FUN_14016c7c0(reinterpret_cast<void*>(FUN_1416011b0(p))); }
+// @0x141604100
+void FUN_141604100(void* p) { FUN_14016c7c0(reinterpret_cast<void*>(FUN_1416011f0(p))); }
+// @0x141604120
+void FUN_141604120(void* p) { FUN_14016c7c0(reinterpret_cast<void*>(FUN_141601230(p))); }
+// @0x141604140
+void FUN_141604140(void* p) { FUN_14016c7c0(reinterpret_cast<void*>(FUN_141601270(p))); }
+// @0x141604160
+void FUN_141604160(void* p) { FUN_14016c7c0(reinterpret_cast<void*>(FUN_1416012b0(p))); }
+// @0x141604180
+void FUN_141604180(void* p) { FUN_14016c7c0(reinterpret_cast<void*>(FUN_1416012f0(p))); }
+// @0x1416041a0
+void FUN_1416041a0(void* p) { FUN_14016c7c0(reinterpret_cast<void*>(FUN_141601330(p))); }
+// @0x1416041c0
+void FUN_1416041c0(void* p) { FUN_14016c7c0(reinterpret_cast<void*>(FUN_141601370(p))); }
+// @0x1416041e0
+void FUN_1416041e0(void* p) { FUN_14016c7c0(reinterpret_cast<void*>(FUN_1416013b0(p))); }
+// @0x141604200
+void FUN_141604200(void* p) { FUN_14016c7c0(reinterpret_cast<void*>(FUN_1416013f0(p))); }
