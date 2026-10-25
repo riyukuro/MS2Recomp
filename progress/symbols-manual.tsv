@@ -10284,8 +10284,8 @@ DAT_14318f040	14318f040	data
 ?ExecuteCompleteEvent@LoaderInfo@fl_display@Instances@AS3@GFx@Scaleform@@QEAAXXZ	1424422a0	func
 ?ExecuteInitEvent@LoaderInfo@fl_display@Instances@AS3@GFx@Scaleform@@QEAAXPEAVDisplayObject@56@@Z	1424426d0	func
 ?ExecuteProgressEvent@LoaderInfo@fl_display@Instances@AS3@GFx@Scaleform@@QEAAX_K0@Z	142442b50	func
-?OnKeyDown@KeyCtorFunction@AS2@GFx@Scaleform@@UEAAXPEAVInteractiveObject@23@AEBVEventId@23@H@Z	14296c180	func
-?OnKeyUp@KeyCtorFunction@AS2@GFx@Scaleform@@UEAAXPEAVInteractiveObject@23@AEBVEventId@23@H@Z	14296c1d0	func
+?OnKeyDown@KeyCtorFunction@AS2@GFx@Scaleform@@UEAAXPEAVInteractiveObject@34@AEBVEventId@34@H@Z	14296c180	func
+?OnKeyUp@KeyCtorFunction@AS2@GFx@Scaleform@@UEAAXPEAVInteractiveObject@34@AEBVEventId@34@H@Z	14296c1d0	func
 ?Update@KeyCtorFunction@AS2@GFx@Scaleform@@UEAAXAEBVEventId@23@@Z	142992840	func
 ?IsValid@?$Matrix2x4@M@Render@Scaleform@@QEBA_NXZ	142515710	func
 ?SetText@TextField@GFx@Scaleform@@QEAAXPEB_W_N@Z	1425bd530	func
