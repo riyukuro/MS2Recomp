@@ -93,3 +93,39 @@ void* FUN_1415ce4c0(void* result, void* second, void* third)
     return result;
 }
 
+
+// This unreachable helper forces MSVC to emit the vendor container constructor COMDATs used by this owner.
+class CNMCodec;
+__declspec(noinline) void force_nm_vector_ctor_symbols()
+{
+    std::vector<NMChatSessionTarget> v0;
+    std::vector<NMFriendKey> v1;
+    std::vector<CNMCateFriendInfo> v2;
+    std::vector<CNMChannelMemberInfo> v3;
+    std::vector<CNMCharacter> v4;
+    std::vector<CNMChatRoomMemberInfo> v5;
+    std::vector<CNMFileEvent> v6;
+    std::vector<CNMFilePath> v7;
+    std::vector<CNMFindUserInfo> v8;
+    std::vector<CNMFriendInfo> v9;
+    std::vector<CNMGameCode> v10;
+    std::vector<CNMGameInfo> v11;
+    std::vector<CNMGameServerCode> v12;
+    std::vector<CNMGuildInfoEx> v13;
+    std::vector<CNMGuildMemberInfo> v14;
+    std::vector<CNMGuildMemberLevelInfo> v15;
+    std::vector<CNMGuildOnlineInfoEx> v16;
+    std::vector<CNMNoteInfo2> v17;
+    std::vector<CNMNoteInfo> v18;
+    std::vector<CNMRejectedUser> v19;
+    std::vector<CNMSessionMemberInfo> v20;
+    std::vector<CNMVirtualUserInfo> v21;
+    std::vector<CNMSetServerInfoFunc::RequestInfo> v22;
+    std::map<unsigned char, CNMCodec*> codecMap;
+    (void)v0; (void)v1; (void)v2; (void)v3; (void)v4; (void)v5; (void)v6; (void)v7;
+    (void)v8; (void)v9; (void)v10; (void)v11; (void)v12; (void)v13; (void)v14; (void)v15;
+    (void)v16; (void)v17; (void)v18; (void)v19; (void)v20; (void)v21; (void)v22; (void)codecMap;
+}
+
+using ForceNmCtorSymbols = void (*)();
+static ForceNmCtorSymbols volatile s_force_nm_ctor_symbols = &force_nm_vector_ctor_symbols;
