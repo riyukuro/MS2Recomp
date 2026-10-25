@@ -31,6 +31,7 @@
 #include "ms2/placeholder/tixmlprinter.h"
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/commonfiles/meratmarketbasketinfo.h"
 #include "ms2/client/ms2/uimessagebox.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -856,7 +857,9 @@ const char* Unk_SfString::ToCStr() const
 {
     return GetData()->m_str;
 }
-Unk_SfString FUN_142576d50(const Scaleform::GFx::Value& v);     // the string of a value
+// The string of a value (Scaleform::GFx::Value::ToString() const, sfr_gfx_01i): a const member, so this is in rcx and the
+// String return slot in rdx.
+struct Unk_SfValueView { Unk_SfString FUN_142576d50() const; };
 unsigned FUN_141b71a10(const char* sz);                     // string -> number
 CStringW FUN_141b71990(unsigned nItemId);                   // the number as text
 CStringW FUN_141b71910(__int64 n);
@@ -891,7 +894,6 @@ CMeratMarketPremium* FUN_1406f2370();
 bool FUN_1406ab310(CAtlMap<int, MS2Ptr<CMeratMarketPremiumProduct> >* pMap, int nId, MS2Ptr<CMeratMarketPremiumProduct>& spOut);
 CAtlMap<int, MS2Ptr<CMeratMarketPremiumProduct> >* FUN_1406a3470(CMeratMarketPremium* p);
 CAtlArray<MS2Ptr<CMeratMarketPremiumProduct> >* FUN_1406a3490(CMeratMarketPremium* p);
-MS2Ptr<CMeratMarketPremiumProduct> FUN_1406a32d0(CMeratMarketPremium* p, int nId);
 bool FUN_1409e1770(ASTooltip* pTip, unsigned nItemId, int nGrade);
 void FUN_1409c69b0(ASTooltip* pTip, const CStringW& str);
 void FUN_1409c4990_(ASObj* p);
@@ -1259,7 +1261,7 @@ int FUN_1412dffb0(CString strPath, int nMode, AScript* pTarget)
         FUN_1412e1bd0(&entry, pItem);
         MS2Ptr<CMeratMarketPremiumProduct> spProduct(0);
         if (entry.m_sn > 0)
-            spProduct = FUN_1406a32d0(FUN_1406f2370(), entry.m_sn);
+            spProduct = FUN_1406f2370()->FindProduct(entry.m_sn);
         ASObj row(2);
         FUN_1412df8b0(&row, spProduct, &entry);
         items.FUN_1422bc050(row.FUN_1422bb870());
@@ -1516,7 +1518,8 @@ int UIMDEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
             if (!spObj.IsNull())
             {
                 int nSn = FUN_1412df3b0(reinterpret_cast<Unk_MdMemberText*>(spObj.get())->FUN_1422bb2b0("sn"));
-                unsigned nItemId = FUN_141b71a10(FUN_142576d50(spObj->FUN_1422baa20("itemID")).ToCStr());
+                const Scaleform::GFx::Value& vItemId = spObj->FUN_1422baa20("itemID");
+                unsigned nItemId = FUN_141b71a10(reinterpret_cast<const Unk_SfValueView&>(vItemId).FUN_142576d50().ToCStr());
                 Unk_MdItemRef item = FUN_14053f870(nItemId);
                 if (item.FUN_140203c60() == 0)
                 {
