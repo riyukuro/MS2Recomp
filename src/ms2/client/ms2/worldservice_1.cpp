@@ -30,6 +30,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/tptrvalue.h"
 #include "ms2/client/ms2/ugcbannerobject.h"     // UgcBannerObject (m_708 values)
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include "ms2/placeholder/header_statics_a.h"
@@ -174,7 +175,10 @@ WorldService::WorldService()
         char tag[8];
         Unk_WsTagPtr value;
         FUN_141bf1270(&value, FUN_1401b7b90(tag, 0));
-        FUN_141c1af10(&m_208, key, &value);
+        // MS2-FUNCTIONAL: boot tag 59 requires the entity-list TPtrValue refcount.
+        typedef TPtrValue<ATL::CAtlList<efd::SmartPointer<egf::Entity> > > EntityListPtr;
+        reinterpret_cast<ATL::CAtlMap<unsigned, EntityListPtr>*>(&m_208)->SetAt(
+            key, *reinterpret_cast<EntityListPtr*>(&value));
         FUN_1409f20e0(&value);
     }
     list.FUN_1402038f0();
