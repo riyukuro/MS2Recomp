@@ -159,12 +159,15 @@ unsigned long long FUN_1415c5760() { return 0; }
 // @0x1415c5970
 void* FUN_1415c5970(const void* p, void* out) { const auto* src = static_cast<const unsigned char*>(p) + 0x15a; auto* dst = static_cast<unsigned char*>(out); for (int i = 0; i != 16; ++i) dst[i] = src[i]; return out; }
 
+// MS2-FUNCTIONAL 0x1415cb420: the recovered callback is empty.
 // @0x1415cb420
 void FUN_1415cb420() {}
+// MS2-FUNCTIONAL 0x1415cb430: the recovered callback is empty.
 // @0x1415cb430
 void FUN_1415cb430() {}
 
 // MS2-FUNCTIONAL: stores the recovered code page field and returns the helper's success value.
+// MS2-FUNCTIONAL 0x1415cb710: stores the request result at offset 0x38 and returns success.
 // @0x1415cb710
 unsigned long long FUN_1415cb710(void* manager, unsigned int value)
 {
@@ -172,6 +175,7 @@ unsigned long long FUN_1415cb710(void* manager, unsigned int value)
     return 1;
 }
 
+// MS2-FUNCTIONAL 0x1415cb740: returns the request result stored at offset 0x38.
 // @0x1415cb740
 unsigned int FUN_1415cb740(const void* manager)
 {
@@ -1085,6 +1089,7 @@ int FUN_1415c70a0(void*, const CNMRejectedUser* user)
     return FUN_1415cb440(FUN_1415fa260(), &request);
 }
 
+// MS2-FUNCTIONAL 0x1415c7400: submits the synchronization-code request.
 // @0x1415c7400
 int FUN_1415c7400(void*, unsigned short code)
 {
@@ -1485,6 +1490,52 @@ unsigned int FUN_1415c6ed0(void*, const unsigned char* key, unsigned long long m
     return static_cast<unsigned int>(FUN_1415cb440(FUN_1415fa260(), &request));
 }
 
+
+// MS2-FUNCTIONAL 0x1415c72c0: sends a note-ex request with the supplied type and text.
+// @0x1415c72c0
+unsigned int FUN_1415c72c0(void*, int type, const char* text)
+{
+    CNMSendNoteExMsgFunc request(type, text);
+    return static_cast<unsigned int>(FUN_1415cb440(FUN_1415fa260(), &request));
+}
+
+// MS2-FUNCTIONAL 0x1415c7360: sends the accusation-note request with its type, detail record, and status.
+// @0x1415c7360
+unsigned int FUN_1415c7360(void*, int type, const void* details, int status)
+{
+    CNMSendAccuseNoteMsgFunc request(type, details, status);
+    return static_cast<unsigned int>(FUN_1415cb440(FUN_1415fa260(), &request));
+}
+
+
+extern void FUN_1415cb640(void*, unsigned int);
+// MS2-FUNCTIONAL 0x1415c47e0: forwards the integer command to the messenger manager.
+// @0x1415c47e0
+void FUN_1415c47e0(void*, unsigned int command)
+{
+    FUN_1415cb640(FUN_1415fa260(), command);
+}
+
+
+// MS2-FUNCTIONAL 0x1415c5ce0: returns zero for an empty nickname; otherwise submits the nickname request.
+// @0x1415c5ce0
+unsigned int FUN_1415c5ce0(void*, void* key, long long nickname)
+{
+    if (!nickname) return 0;
+    CNMChangeNicknameFunc request(reinterpret_cast<long long>(key), nickname);
+    return static_cast<unsigned int>(FUN_1415cb440(FUN_1415fa260(), &request));
+}
+
+// MS2-FUNCTIONAL 0x1415c5d80: returns zero for an empty metadata value; otherwise submits the metadata request.
+// @0x1415c5d80
+unsigned int FUN_1415c5d80(void*, void* key, long long metadata)
+{
+    if (!metadata) return 0;
+    CNMChangeMetaDataFunc request(reinterpret_cast<long long>(key), metadata);
+    return static_cast<unsigned int>(FUN_1415cb440(FUN_1415fa260(), &request));
+}
+
+
 // MS2-PIN: ?FUN_1415c5ed0@@YAHXZ 0x1415c5ed0
 // MS2-PIN: ?FUN_1415c4540@@YAHPEAXHHHH@Z 0x1415c4540
 // MS2-PIN: ?FUN_1415caaa0@@YAPEAXPEAXI@Z 0x1415caaa0
@@ -1498,3 +1549,11 @@ unsigned int FUN_1415c6ed0(void*, const unsigned char* key, unsigned long long m
 // MS2-PIN: ?FUN_1415c6d50@@YAIPEAXPEBEHH@Z 0x1415c6d50
 // MS2-PIN: ?FUN_1415c6e10@@YAIPEAXPEBEHHH@Z 0x1415c6e10
 // MS2-PIN: ?FUN_1415c6ed0@@YAIPEAXPEBE_K@Z 0x1415c6ed0
+// MS2-PIN: ?FUN_1415c72c0@@YAIPEAXHPEBD@Z 0x1415c72c0
+// MS2-PIN: ?FUN_1415c7360@@YAIPEAXHPEBXH@Z 0x1415c7360
+// MS2-PIN: ?FUN_1415c47e0@@YAXPEAXI@Z 0x1415c47e0
+// MS2-PIN: ?FUN_1415c5ce0@@YAIPEAX0_J@Z 0x1415c5ce0
+// MS2-PIN: ?FUN_1415c5d80@@YAIPEAX0_J@Z 0x1415c5d80
+// MS2-PIN: ?FUN_1415c7400@@YAHPEAXG@Z 0x1415c7400
+// MS2-PIN: ?FUN_1415cb420@@YAXXZ 0x1415cb420
+// MS2-PIN: ?FUN_1415cb430@@YAXXZ 0x1415cb430
