@@ -1317,4 +1317,22 @@ bool FUN_1415c9e90(void* self, void* out)
 // MS2-PIN: ?FUN_1415c6f80@@YA_NPEAX0@Z 0x1415c6f80
 // MS2-PIN: ?FUN_1415ca240@@YAPEAEPEAE@Z 0x1415ca240
 // MS2-PIN: ?FUN_1415c5ac0@@YAHXZ 0x1415c5ac0
+// MS2-FUNCTIONAL 0x1415c9fa0: builds the recovered send-chat request from this session's serial and dispatches it through the manager.
+// @0x1415c9fa0
+extern unsigned int FUN_1415c91c0(void* self);
+extern void* FUN_1415fa260();
+int FUN_1415c9fa0(void* self, const CNMChatMessage& message)
+{
+    CNMCSSendChatMessageFunc request(FUN_1415c91c0(self), message);
+    return FUN_1415cb440(FUN_1415fa260(), &request);
+}
+
+// MS2-FUNCTIONAL 0x1415ca030: constructs the game-log initialize request from its three recovered strings and dispatches it.
+// @0x1415ca030
+int FUN_1415ca030(const char* gameName, const char* userName, const char* characterName)
+{
+    CNMGameLogInitializeFunc request(gameName, userName, characterName);
+    return FUN_1415cb440(FUN_1415fa260(), &request);
+}
+
 // MS2-PIN: ?FUN_1415c5ed0@@YAHXZ 0x1415c5ed0
