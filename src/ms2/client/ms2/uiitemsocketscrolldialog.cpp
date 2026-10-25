@@ -64,6 +64,7 @@ static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "Pric
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/placeholder/coutpacket.h"
+#include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/wcformat.h"
@@ -92,13 +93,7 @@ public:
 Unk_SsPackets* FUN_140bccd50();
 class Unk_SsFeatures { public: bool FUN_14036d570(int nFeature); };
 Unk_SsFeatures* FUN_140166410();
-class Unk_SsStrings
-{
-public:
-    CStringW FUN_141811980(int nTable, int nId);                // the string of an id in a client string table
-    CStringW FUN_141813150(unsigned nRank);                     // the rank string ("s_word_rank_%02d")
-};
-Unk_SsStrings* FUN_1401a9d70();
+extern CStringTable* GetStringTable();                          // FUN_1401a9d70
 
 // The unit's three packet records (the item socket system util reads / writes them with these shapes).
 struct Unk_SsdUidIntByte
@@ -397,7 +392,7 @@ bool UIItemSocketScrollDialog::FUN_140f65c10(CItemSocketScrollDataPtr spRow, CSt
         for (size_t i = 0; i < arrRank.GetCount(); i++)
         {
             unsigned nRank = arrRank[i];
-            CStringW strOne = FUN_14183e9c0(FUN_1401a9d70()->FUN_141813150(nRank), nRank);
+            CStringW strOne = FUN_14183e9c0(GetStringTable()->FUN_141813150(nRank), nRank);
             if (i == 0)
                 strRanks.Append(strOne);
             else
@@ -410,7 +405,7 @@ bool UIItemSocketScrollDialog::FUN_140f65c10(CItemSocketScrollDataPtr spRow, CSt
     {
         for (size_t i = 0; i < arrSlot.GetCount(); i++)
         {
-            CStringW strOne = FUN_1401a9d70()->FUN_141811980(8, arrSlot[i]);
+            CStringW strOne = GetStringTable()->FUN_141811980(8, arrSlot[i]);
             if (strOne.IsEmpty())
                 continue;
             if (strSlots.IsEmpty())
