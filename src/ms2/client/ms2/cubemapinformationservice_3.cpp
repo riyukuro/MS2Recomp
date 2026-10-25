@@ -4050,7 +4050,7 @@ Cube* CubeMapInformationService::FUN_1410badf0(int nGroup, Unk_CMISPawn* pPawn)
 }
 
 // ---- w138 batch 21 ----
-void FUN_141689ec0(CPhysXHelper*, egf::Entity*, int, int);
+void FUN_141689ec0(CPhysXHelper*, egf::Entity*, int, int, int);
 bool FUN_141689a10(CPhysXHelper*, egf::Entity*);
 void FUN_1410dc360(egf::Entity*, unsigned, int*);                                           // SetProperty(int)
 void FUN_140ae1240(egf::Entity*, unsigned, Unk_CMISStr*);                                   // SetProperty(string)
@@ -4080,7 +4080,7 @@ void CubeMapInformationService::FUN_1410d0e30(egf::Entity* pEntity, MS2Ptr<Cube>
     if (spCube->fieldA8 == 8 || spCube->fieldA8 == 9) {
         if (FUN_141689a10(FUN_1409f7ca0(), pEntity)) {
             FUN_1410dc360(pEntity, 0xada5c5d2, &spCube->fieldA8);
-            FUN_141689ec0(FUN_1409f7ca0(), pEntity, (short)spCube->fieldA8, 0);
+            FUN_141689ec0(FUN_1409f7ca0(), pEntity, (short)spCube->fieldA8, 0, 0);
         }
     }
     int nKey = FUN_1408a03c0(spCube->position);

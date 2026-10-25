@@ -190,7 +190,7 @@ public:
     void FUN_1411ef2e0(CEquipModel* pModel, const NiPoint3& kPos, const NiPoint3& kRot);   // move a kind 13 model
     void FUN_1411ed270();                                   // hide the hair parts the cap collides with
     void FUN_1411edbb0();                                   // the top / bottom miss match tags
-    int FUN_1411e99a0(int nSlot, CString strName, int nType, int bByName);   // detach (replace) the slot's body meshes
+    int FUN_1411e99a0(int nSlot, const CString& strName, int nType, int bByName);   // detach (replace) the slot's body meshes
     void FUN_1411eef60();                                   // merge the meshes (MeshOptimizer)
     void FUN_1411ee930();                                   // OnSetItemChanged
     void FUN_1411ee980(int bMissMatch, MS2Ptr<CEquipItem> spA, MS2Ptr<CEquipItem> spB);   // the miss match tag

@@ -345,7 +345,7 @@ void UIMyInfoDialog::OnLoadComplete()
     FUN_140939a10()->RegisterNotify(CStringW(L"NotifyPcBang"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c2a0));
     FUN_1419260d0(CString("m_webGuideButton"), 0);
     m_30->FUN_140bbe640<ASButton>(CString("m_closet"), m_280);
-    if (!m_280.IsNull())
+    if (!(m_280 == 0))
     {
         if (m_280.get() != 0)
         {
@@ -731,7 +731,7 @@ void UIMyInfoDialog::OnChangeTodayMemo()
 // @0x141a5a8d0
 void UIMyInfoDialog::FUN_141a5a8d0(int nTitle)
 {
-    if (m_spInfo.IsNull())
+    if ((m_spInfo == 0))
         return;
     if (nTitle == 0)
     {
@@ -756,7 +756,7 @@ void UIMyInfoDialog::FUN_141a5a8d0(int nTitle)
 // @0x141a5a9f0
 void UIMyInfoDialog::FUN_141a5a9f0(int nConfig)
 {
-    if (m_spInfo.IsNull())
+    if ((m_spInfo == 0))
         return;
     MS2Ptr<CItem> spItem = m_spInfo->FUN_140dba560(nConfig);
     if (spItem.get() != 0)
@@ -776,7 +776,7 @@ void UIMyInfoDialog::FUN_141a5aab0(int a, int b, int c, int d)
 // @0x141a5ab10
 void UIMyInfoDialog::FUN_141a5ab10(int bRefresh, int bTabs, int bStats)
 {
-    if (m_spInfo.IsNull())
+    if ((m_spInfo == 0))
         return;
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == 0)
@@ -827,7 +827,7 @@ void UIMyInfoDialog::vfunc_104(int nTrophy)
 void UIMyInfoDialog::vfunc_91(int nStat)
 {
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPc == 0 || m_spInfo.IsNull() || FUN_140ba28d0(&m_30, 0) != 0 || vfunc_93() == 0)
+    if (pPc == 0 || (m_spInfo == 0) || FUN_140ba28d0(&m_30, 0) != 0 || vfunc_93() == 0)
         return;
     ATL::CAtlArray<void*> aStats;
     FUN_1408377d0(&aStats);
@@ -842,7 +842,7 @@ void UIMyInfoDialog::vfunc_91(int nStat)
 void UIMyInfoDialog::FUN_141a5b080(int nStat)
 {
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPc == 0 || m_spInfo.IsNull() || FUN_140ba28d0(&m_30, 0) != 0 || vfunc_93() == 0)
+    if (pPc == 0 || (m_spInfo == 0) || FUN_140ba28d0(&m_30, 0) != 0 || vfunc_93() == 0)
         return;
     ATL::CAtlArray<void*> aStats;
     FUN_1408377d0(&aStats);
@@ -870,7 +870,7 @@ void UIMyInfoDialog::FUN_141a5b080(int nStat)
 // @0x141a5b2c0
 void UIMyInfoDialog::vfunc_92()
 {
-    if (!m_spInfo.IsNull() && FUN_140ba28d0(&m_30, 0) == 0 && vfunc_93() != 0)
+    if (!(m_spInfo == 0) && FUN_140ba28d0(&m_30, 0) == 0 && vfunc_93() != 0)
     {
         MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pPc != 0)
@@ -1002,7 +1002,7 @@ void UIMyInfoDialog::FUN_141a5b6c0()
     }
     if (m_30.get() != 0)
     {
-        if (m_258.IsNull())
+        if ((m_258 == 0))
         {
             MS2Ptr<ASMovieClip> spEquip = m_30->FUN_1409b4560(CString("m_equip"));
             if (spEquip.get() != 0)
@@ -1047,7 +1047,7 @@ void UIMyInfoDialog::FUN_141a5bed0()
 // @0x141a5c080
 void UIMyInfoDialog::FUN_141a5c080()
 {
-    if (FUN_140ba28d0(&m_30, 0) != 0 || m_spAvatar.IsNull())
+    if (FUN_140ba28d0(&m_30, 0) != 0 || (m_spAvatar == 0))
         return;
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == 0)
@@ -1155,7 +1155,7 @@ int UIMyInfoDialog::GetTab()
 void UIMyInfoDialog::FUN_141a5c7c0(int nStat)
 {
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPc == 0 || m_spInfo.IsNull())
+    if (pPc == 0 || (m_spInfo == 0))
         return;
     if (m_spInfo->FUN_140dba1c0() == 0)
         return;
@@ -1229,7 +1229,7 @@ void UIMyInfoDialog::vfunc_87()
 // MS2-FUNCTIONAL: vector temporaries
 void UIMyInfoDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, void* p4)
 {
-    if (vfunc_55() != 0 || FUN_140ba28d0(&m_30, 0) != 0 || m_spAvatar.IsNull())
+    if (vfunc_55() != 0 || FUN_140ba28d0(&m_30, 0) != 0 || (m_spAvatar == 0))
         return;
     if (p2.get() != 0 && p3 != 0)
     {

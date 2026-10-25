@@ -744,7 +744,7 @@ int FUN_140ebf520(MS2Ptr<CMeratMarketProduct> spProduct, AScript* pRow)
 // Open the bill dialog for a limited product.
 // MS2-FUNCTIONAL: not byte-matched (unrecovered callee signatures, temporaries)
 // @0x140ebf610
-void FUN_140ebf610(MS2Ptr<CMeratMarketProduct> spProduct, MS2Ptr<TMeratMarketBillDataParam> spParam, int nPayType)
+void FUN_140ebf610(const CStringA& /*strMovie*/, MS2Ptr<CMeratMarketProduct> spProduct, MS2Ptr<TMeratMarketBillDataParam> spParam, int nPayType)
 {
     if (spProduct == 0 || spParam == 0)
         return;
@@ -787,7 +787,7 @@ extern Unk_McPayback* DAT_143ab22a8;
 Unk_McPayback* FUN_140ec3940();
 CStringW FUN_1409404f0(__int64 n);
 CStringW FUN_1418fec00(int nType, __int64 nAmount, int n);
-CStringW FUN_140bfa7f0(CStringW strKey, const CStringW& strArg);
+CStringW FUN_140bfa7f0(CStringW strKey, const CStringW& strArg, const int& nArg);   // FUN_14028dfa0<CStringW, int>
 int FUN_1407cccd0(const Scaleform::GFx::Value* pValue);
 bool FUN_140ebb1e0(const Scaleform::GFx::Value* pValue);
 class Unk_McAchieveMgr;
@@ -1009,7 +1009,7 @@ CStringW FUN_140ebd9d0(bool bSelect, __int64 nCur)
             strResult.Append(L"\n");
         if (pos == mapPayback.GetTailPosition())
         {
-            CStringW strRow = FUN_140bfa7f0(CStringW(L"s_meratmarket_tooltip_table_charge_row_max"), FUN_1418fec00(3, nStep, 0));
+            CStringW strRow = FUN_140bfa7f0(CStringW(L"s_meratmarket_tooltip_table_charge_row_max"), FUN_1418fec00(3, nStep, 0), nPercent);
             if (!bSelect || nCur < nStep)
                 strResult.Append(strRow);
             else

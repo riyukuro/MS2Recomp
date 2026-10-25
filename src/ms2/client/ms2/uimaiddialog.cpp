@@ -197,7 +197,9 @@ struct Unk_MaidProfileFields
 MS2_CHECK_SIZE(Unk_MaidProfileFields, 0x68);
 
 class Unk_MaidTextCheck { public: int FUN_140225470(const CStringW& str, CStringW& strOut); int FUN_140225550(const CStringW& str, CStringW& strOut); };
-class Unk_MaidTextSvc { public: Unk_MaidTextCheck* FUN_140229a50(); };
+void FUN_14025c670(void* p);                                    // text-checker smart pointer dtor
+struct Unk_MaidTextCheckRef { void* m_00; Unk_MaidTextCheck* m_p; ~Unk_MaidTextCheckRef() { FUN_14025c670(this); } };
+class Unk_MaidTextSvc { public: Unk_MaidTextCheckRef FUN_140229a50(); };   // returns the smart pointer by value
 Unk_MaidTextSvc* FUN_14025e7d0();
 
 CStringW GetStringCommon(int nStringId);                          // string table text by id
@@ -583,7 +585,8 @@ int UIMaidDialog::FUN_1412d8e10(int nField, CStringW strValue, Unk_MaidProfile* 
         strName = GetStringCommon(0x790);
         pFields->m_str60 = strValue;
     }
-    Unk_MaidTextCheck* pCheck = FUN_14025e7d0()->FUN_140229a50();
+    Unk_MaidTextCheckRef checkRef = FUN_14025e7d0()->FUN_140229a50();
+    Unk_MaidTextCheck* pCheck = checkRef.m_p;
     if (pCheck == 0)
         return 0;
     CStringW strBad;

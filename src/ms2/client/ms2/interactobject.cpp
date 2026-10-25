@@ -866,10 +866,10 @@ CInteractMeshObject::~CInteractMeshObject()
 // @0x1413febf0
 int CInteractMeshObject::vfunc_1(Unk_Entity* pEntity, int nState)
 {
-    Unk_EntRef owner(0);
-    owner.FUN_1408b6ec0(pEntity);
     void* pMem = operator new(0x98);
-    Unk_PhysPropObj* pProp = pMem ? FUN_14225f250(pMem, &owner) : 0;
+    // the owner is a by-value SmartPointer<Entity>: the callee releases this temp, so the caller never destroys it
+    alignas(8) char ownerBuf[sizeof(Unk_EntRef)];
+    Unk_PhysPropObj* pProp = pMem ? FUN_14225f250(pMem, new (ownerBuf) Unk_EntRef(pEntity)) : 0;
     m_spProp.FUN_140ae17e0(pProp);
     efd::utf8string strMesh;
     FUN_1409989e0(&strMesh, "MS2InteractMesh");

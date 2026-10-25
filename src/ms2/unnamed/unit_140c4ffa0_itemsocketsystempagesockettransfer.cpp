@@ -60,7 +60,7 @@ class Unk_TrBag {
 public:
     MS2Ptr<CItem> FUN_140a5d680(__int64 uid);
     int FUN_140a5f180(int itemId, int grade);
-    int FUN_140a5f7b0(int itemId);
+    int FUN_140a5f7b0(int itemId, int rarity);
     void FUN_140a60880(int tab, CAtlArray<MS2Ptr<CItem>>& out);
 };
 extern Unk_TrBag DAT_143ab2a90;
@@ -431,7 +431,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51fa0()
                 if (!(ingredient == 0)) {
                     int have = DAT_143ab2a90.FUN_140a5f180(ingredient->m_a, 0);
                     if (ingredient->m_b != 0)
-                        have = DAT_143ab2a90.FUN_140a5f7b0(ingredient->m_b);
+                        have = DAT_143ab2a90.FUN_140a5f7b0(ingredient->m_b, 0);
                     int need = ingredient->m_c;
                     if (have < need) {
                         FUN_1412752d0(CStringW(L"s_itemsocketsystem_error_lack_price"), 1);

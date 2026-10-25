@@ -139,7 +139,8 @@ class Unk_InventoryCharacters
 public:
     void FUN_1403416e0();                               // clear
     void FUN_1404bfb40(const unsigned __int64* pnId);   // erase
-    void FUN_1416da690(const unsigned __int64* pnId);   // insert
+    struct InsertRet { void* it; bool bNew; };
+    InsertRet FUN_1416da690(const unsigned __int64* pnId);   // insert (std::set::insert: returns the pair)
 };
 extern Unk_InventoryCharacters DAT_143ab2a30;           // ids of the characters of the account
 class Unk_GmEvtKey;

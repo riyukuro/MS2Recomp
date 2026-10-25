@@ -272,7 +272,7 @@ public:
 struct Unk_FcAnimName { char m_pad[0x10]; };
 Unk_FcAnimSvc* FUN_141b6f910();
 void FUN_1409989e0(Unk_FcAnimName*, const char*);
-void FUN_1409a1fc0(Unk_FcAnimSvc*, const egf::EntityID&, Unk_FcAnimName*, float);
+void FUN_1409a1fc0(Unk_FcAnimSvc*, const egf::EntityID&, Unk_FcAnimName*, float, bool bForce);
 void FUN_1408a8900(Unk_FcAnimName*);
 
 bool FUN_1402a5b40(const CString& a, const char* b);                // CString != C string
@@ -669,7 +669,7 @@ void CFunctionCubeObject::vfunc_10(int nState, bool bFlag)
         int nPick = rand() % arrAnims.GetCount();
         Unk_FcAnimName kName;
         FUN_1409989e0(&kName, arrAnims[nPick]);
-        FUN_1409a1fc0(FUN_141b6f910(), *FUN_1408b76f0(m_ent.FUN_1408a9280()), &kName, 1.0f);
+        FUN_1409a1fc0(FUN_141b6f910(), *FUN_1408b76f0(m_ent.FUN_1408a9280()), &kName, 1.0f, true);
         FUN_1408a8900(&kName);
     }
     vfunc_11(nState);
@@ -1585,7 +1585,7 @@ void CBreedingCubeObject::vfunc_3()
         {
             Unk_FcAnimName kName;
             FUN_1409989e0(&kName, m_strAnim);
-            FUN_1409a1fc0(FUN_141b6f910(), kId, &kName, 1.0f);
+            FUN_1409a1fc0(FUN_141b6f910(), kId, &kName, 1.0f, true);
             FUN_1408a8900(&kName);
         }
         FUN_1408a8900(&kCur);
@@ -1719,7 +1719,7 @@ void CBreedingCubeObject::vfunc_10(int nState, bool bFlag)
             m_strAnim = arrAnims[(unsigned)rand() % arrAnims.GetCount()];
             Unk_FcAnimName kName;
             FUN_1409989e0(&kName, m_strAnim);
-            FUN_1409a1fc0(FUN_141b6f910(), *FUN_1408b76f0(m_entPet.FUN_1408a9280()), &kName, 1.0f);
+            FUN_1409a1fc0(FUN_141b6f910(), *FUN_1408b76f0(m_entPet.FUN_1408a9280()), &kName, 1.0f, true);
             FUN_1408a8900(&kName);
         }
     }

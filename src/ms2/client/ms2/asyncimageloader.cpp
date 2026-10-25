@@ -66,13 +66,13 @@ class Unk_TexCache
 {
 public:
     efd::SmartPointer<NiTexture> FUN_141553eb0(CString strPath, int nFlags);                       // find a loaded texture
-    efd::SmartPointer<NiTexture> FUN_1415534d0(CString strPath, NiPointer<NiPixelData> spPixels);   // register one from pixels
+    efd::SmartPointer<NiTexture> FUN_1415534d0(CString strPath, NiPointer<NiPixelData> spPixels, int nClass);   // register one from pixels
 };
 Unk_TexCache* FUN_140a0afd0();
 
 void* FUN_1422cf0f0();                                      // the UI renderer context
-void* FUN_14257a340(int n3, int n1, Unk_ImgSize* pSize, int nFormat);   // a new Scaleform image of the size
-NiSourceTexture* FUN_141d33530(NiPixelData* pPixels, const NiTexture::FormatPrefs& kPrefs, bool bStatic);   // a texture from pixels
+void* FUN_14257a340(int n3, int n1, Unk_ImgSize* pSize, int nFormat, void* pHeap, void* pTexMan, void* pSync);   // Image::Create(format, mips, size, use, heap, texman, sync)
+NiPointer<NiSourceTexture> FUN_141d33530(NiPixelData* pPixels, const NiTexture::FormatPrefs& kPrefs, bool bStatic);   // NiSourceTexture::Create_ThreadSafe (smart pointer: hidden return in rcx)
 void FUN_14184d520(const unsigned char* pucPixel, NiPixelData* pkDest, const NiRect<unsigned int>& kRect);   // fill a rectangle
 void FUN_14272b7f0(void* pTarget, IDirect3DBaseTexture9* pD3DTexture);       // bind the D3D texture to the image
 void* FUN_14208a860(unsigned __int64 nSize, int nHint);     // MemObject operator new
@@ -275,7 +275,7 @@ bool CAsyncImageLoader::FUN_140a59090(ParamPtr spParam)
         return false;
     }
     NiPointer<NiPixelData> spCopy(spPixels);
-    efd::SmartPointer<NiTexture> spCreated = FUN_140a0afd0()->FUN_1415534d0(CString(strFile), spCopy);
+    efd::SmartPointer<NiTexture> spCreated = FUN_140a0afd0()->FUN_1415534d0(CString(strFile), spCopy, 5);
     if (spCreated.operator NiTexture*() == 0)
     {
         MS2_ASSERT_AT(0xda, 0);
@@ -377,7 +377,7 @@ Unk_GfxImage* FUN_140a59830(Unk_ImgReq* pReq, void* pCtx)
     if (!pkConverter->ReadImageFileInfo(strFile, kFormat, bMipmap, uiWidth, uiHeight, uiFaces))
         return 0;
     Unk_ImgSize size(uiWidth, uiHeight);
-    Unk_GfxImage* pImage = (Unk_GfxImage*)FUN_14257a340(3, 1, &size, 0x11);
+    Unk_GfxImage* pImage = (Unk_GfxImage*)FUN_14257a340(3, 1, &size, 0x11, 0, pCtx, 0);
     if (pImage == 0)
         return 0;
     void* pTarget = pImage->vfunc_24(pCtx);

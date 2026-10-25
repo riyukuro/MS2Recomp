@@ -237,7 +237,7 @@ void* FUN_140994450();
 NiDX9Renderer* FUN_14098d8d0(const NiRTTI*, void*);
 void* FUN_1409a8d60(NiDX9Renderer*);
 void FUN_1427d5390(NiDX9Renderer*);
-void FUN_1427cb2a0(NiDX9Renderer*, unsigned);
+void FUN_1427cb2a0(NiDX9Renderer*, unsigned, unsigned);                  // NiDX9Renderer::SetDisplayMode(width, height)
 void FUN_140d4a600(Unk_Worker*);
 void* FUN_14025e7a0();
 struct Unk_WinMovieMgrView { Unk_HudPtr FUN_1422b0370(int nLayer); };   // member (this=rcx, hidden return=rdx)
@@ -473,7 +473,7 @@ void CWindowService::ApplyWindowMode(bool bFullscreen, unsigned nWidth, unsigned
         {
             NiDX9Renderer* pRenderer = FUN_14098d8d0(&NiDX9Renderer::ms_RTTI, pRenderMgr);
             if (pRenderer != 0)
-                FUN_1427cb2a0(pRenderer, nWidth);
+                FUN_1427cb2a0(pRenderer, nWidth, nHeight);
         }
         CWnd::FromHandle(m_hWnd)->SetMenu(0);
         CRect rcWindow(0, 0, nWidth, nHeight);

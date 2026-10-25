@@ -32,6 +32,7 @@
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/chomeprivilege.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -145,7 +146,7 @@ void FUN_140a0b2a0(NiAVObject* pObject);                                   // 0x
 void FUN_140a0b1f0(const NiTransform* pXform, NiPoint3* pEuler);           // 0x140a0b1f0 rotation as Euler angles
 bool FUN_1409a7f70(const NiNodePtr& sp, int nNull);                        // 0x1409a7f70 smart pointer == null
 float FUN_140967ac0(const NiPoint3& kVec);                                 // 0x140967ac0 length
-void FUN_1406530d0(void* pLogger, int nLevel, int nId, const CStringW& strText);   // 0x1406530d0 log
+void FUN_1406530d0(void* pLogger, int nLevel, int nId, const wchar_t* pszFmt, const fmt::ArgList& args);   // 0x1406530d0 log
 const char* FUN_1408ac310(const efd::utf8string& s);                       // 0x1408ac310 c string
 int FUN_1408a01e0(CStringA s);                                      // 0x1408a01e0 string -> id
 MS2Ptr<CMsgBoxData> FUN_14151f820();                                      // 0x14151f820 the message box currently shown
@@ -1321,7 +1322,10 @@ void FUN_140b850d0(void* pLogger, int nLevel, int nId, const wchar_t* pszFmt, co
     CStringW strText(pszFmt);
     strText.Replace(L"{0}", CStringW(*ppszArg0));
     strText.Replace(L"{1}", CStringW(strArg1));
-    FUN_1406530d0(pLogger, nLevel, nId, strText);
+    // the exe hands the format and both arguments to the logger; the text is already formatted here, so it goes as "{0}"
+    const wchar_t* pszText = strText;
+    const fmt::internal::ArgArray<1>::Type args = { fmt::internal::MakeValue< fmt::BasicFormatter<wchar_t> >(pszText) };
+    FUN_1406530d0(pLogger, nLevel, nId, L"{0}", fmt::ArgList(fmt::internal::make_type(pszText), args));
 }
 
 // The couple-emotion request (the UI's "ask <target> to do emotion <emotionId>"). Checks the situation, then sends

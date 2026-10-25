@@ -122,7 +122,7 @@ public:
     void FUN_1417691a0(ATL::CAtlArray<MS2Ptr<stEmotion> >& arrOut);   // the emotions that are valid now
     void FUN_141769250();                                   // forget the emotions
     void FUN_141769280();                                   // the emotions are not new
-    void FUN_141769440(int nError);                         // tell why a skill cannot be cast
+    static void FUN_141769440(int nError);                  // tell why a skill cannot be cast (static: the exe passes ecx only)
     int FUN_141769410(SkillData* pData);                    // the jump skill of a skill
     int FUN_141769b70(MS2Ptr<SkillLevelData> spLevel, Unk_InventorySkillRequest* pReq);   // why a skill cannot be cast (0: it can)
     int FUN_14176a380(MS2Ptr<SkillLevelData> spLevel, Unk_InventorySkillRequest* pReq);

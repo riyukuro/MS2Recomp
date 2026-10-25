@@ -82,7 +82,7 @@ CScriptTable* FUN_141371b30();
 // The view / dictionary (maview) switches.
 struct Unk_RwView { char m_pad[0x8b]; char m_bMaview; };
 struct Unk_RwViewRef { void* m_p0; void* m_p1; };
-void FUN_1406cd330(Unk_RwViewRef* pRef);
+void FUN_1406cd330(Unk_RwViewRef* pRef, int nNpcId);   // the common npc row (returned through pRef)
 __int64 FUN_140729ad0(Unk_RwViewRef* pRef);
 Unk_RwView* FUN_14035eb90(Unk_RwViewRef* pRef);
 void FUN_14035e5b0(Unk_RwViewRef* pRef);
@@ -996,7 +996,7 @@ static void Rw_NpcLink(unsigned int nId, CStringW strText, CStringW& strOut)
 {
     strOut.Empty();
     Unk_RwViewRef kView;
-    FUN_1406cd330(&kView);
+    FUN_1406cd330(&kView, nId);
     if (FUN_140729ad0(&kView) == 0 || FUN_14035eb90(&kView)->m_bMaview == 0)
         strOut = strText;
     else

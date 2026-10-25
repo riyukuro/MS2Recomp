@@ -189,7 +189,7 @@ static ATL::CAtlMap<unsigned int, bool> g_mapTaxi;
 struct Unk_Ref { void* m_pObj; void* m_pCtrl; };            // counted handle: object + control block
 struct Unk_NpcData { char m_pad[0x18]; int m_nId; };
 struct Unk_NpcRow { char m_pad[0x50]; CString m_strModel; };
-struct Unk_RegionData { char m_pad[0x20]; CStringW m_strName; int m_nIndex; int m_pad2c; int m_nCount; };
+struct Unk_RegionData { char m_pad[0x20]; CStringW m_strName; int m_nIndex; int m_nMinDifficulty; int m_nCount; };
 struct Unk_SpawnRegion { char m_pad[200]; ATL::CAtlArray<unsigned int> m_arrPoints; };
 struct Unk_EntryArray { char m_raw[8]; };
 struct Unk_EntryBox { char m_raw[8]; };
@@ -249,7 +249,7 @@ Unk_RegionData* FUN_140377940(Unk_Ref* pRef);
 void FUN_1403775a0(Unk_Ref* pRef);
 struct Unk_SpawnMgr { char m_pad[8]; char m_groups[1]; };
 Unk_SpawnMgr* FUN_1406d6e90();
-void FUN_1406cd840(void* pGroups, Unk_Ref* pOut, CStringW strName, int nIndex);
+void FUN_1406cd840(void* pGroups, Unk_Ref* pOut, CStringW strName, int nMinDifficulty, int nMaxDifficulty);   // CNpcDataTable::FindSpawnResult (exe: r9d = +0x2c, [rsp+20] = +0x28)
 void* FUN_14182fd90(Unk_Ref* pRef);
 Unk_SpawnGroup* FUN_1406d5cb0(Unk_Ref* pRef);
 unsigned long long FUN_1406d6e40(Unk_EntryArray* pArr);
@@ -786,7 +786,7 @@ bool FUN_1418226b0(bool bLog)
                         if (FUN_140377940(&region)->m_nCount > 0) {
                             Unk_Ref group;
                             FUN_1406cd840(FUN_1406d6e90()->m_groups, &group, CStringW(FUN_140377940(&region)->m_strName),
-                                          FUN_140377940(&region)->m_nIndex);
+                                          FUN_140377940(&region)->m_nMinDifficulty, FUN_140377940(&region)->m_nIndex);
                             if (FUN_14182fd90(&group) != 0) {
                                 for (unsigned int i = 0; i < FUN_1406d6e40(&FUN_1406d5cb0(&group)->m_entries); i++) {
                                     Unk_Ref entry;

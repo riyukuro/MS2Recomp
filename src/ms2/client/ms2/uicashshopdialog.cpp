@@ -358,7 +358,9 @@ void FUN_1416fb340(void* pLog, const CStringW& strText);
 void* FUN_1403b4750();
 void* FUN_14025e7d0();
 class Unk_CashChecker { public: int FUN_140226260(const CStringW& strText, CStringW& rError); };
-class Unk_CashCommon { public: Unk_CashChecker* FUN_140229a50(); };
+void FUN_14025c670(void* p);                                    // text-checker smart pointer dtor
+struct Unk_CashCheckerRef { void* m_00; Unk_CashChecker* m_p; ~Unk_CashCheckerRef() { FUN_14025c670(this); } };
+class Unk_CashCommon { public: Unk_CashCheckerRef FUN_140229a50(); };   // returns the smart pointer by value
 
 // ---- delegates ----
 
@@ -1262,7 +1264,8 @@ bool UICashShopDialog::FUN_141038aa0(MS2Ptr<TMarketBillDataParam> spParam, const
     if (spGift == 0)
         return true;
     if (!strMessage.IsEmpty()) {
-        Unk_CashChecker* pChecker = ((Unk_CashCommon*)FUN_14025e7d0())->FUN_140229a50();
+        Unk_CashCheckerRef checkerRef = ((Unk_CashCommon*)FUN_14025e7d0())->FUN_140229a50();
+        Unk_CashChecker* pChecker = checkerRef.m_p;
         if (pChecker != 0) {
             CStringW strError;
             if (pChecker->FUN_140226260(strMessage, strError) != 0) {

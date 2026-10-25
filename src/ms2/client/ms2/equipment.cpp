@@ -2519,7 +2519,7 @@ MS2_REPLACE_METHOD(0x1411DF8E0, CEquipmentSlotLayerInfo, FUN_1411df8e0, 33, 0xA4
 
 // @0x1411e99a0
 // MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
-int CEquipment::FUN_1411e99a0(int nSlot, CString strName, int nType, int bByName)
+int CEquipment::FUN_1411e99a0(int nSlot, const CString& strName, int nType, int bByName)
 {
     if (bByName == 0) {
         if (nSlot != 1 && FUN_1411e1860(nSlot, 6, 0).get() != NULL)

@@ -3549,7 +3549,7 @@ void FUN_141689ac0(void* svc, Unk_WsA_PropPtr prop);                    // takes
 void* FUN_1409f7ca0();
 bool FUN_141689a10(void* svc, egf::Entity* e);
 void FUN_140ae1160(egf::Entity* e, unsigned propId, unsigned short* out);
-void FUN_141689ec0(void* svc, egf::Entity* e, unsigned short v, int arg);
+void FUN_141689ec0(void* svc, egf::Entity* e, unsigned short v, int arg, int bRefresh);
 // @0x141bc0530
 void WorldService::FUN_141bc0530(const ecrPhysX::PhysXPropMessage* pMsg, efd::Category targetChannel)
 {
@@ -3581,7 +3581,7 @@ void WorldService::FUN_141bc0530(const ecrPhysX::PhysXPropMessage* pMsg, efd::Ca
         {
             unsigned short v = 9;
             FUN_140ae1160(ent.data(), 0xada5c5d2, &v);
-            FUN_141689ec0(FUN_1409f7ca0(), ent.data(), v, 0);
+            FUN_141689ec0(FUN_1409f7ca0(), ent.data(), v, 0, 0);
         }
     }
     else if (ent->GetModel()->ContainsModel(0xc9cd2193) || ent->GetModel()->ContainsModel(0x1a4eeeea))
@@ -3590,7 +3590,7 @@ void WorldService::FUN_141bc0530(const ecrPhysX::PhysXPropMessage* pMsg, efd::Ca
         {
             unsigned short v = 0;
             FUN_140ae1160(ent.data(), 0xada5c5d2, &v);
-            FUN_141689ec0(FUN_1409f7ca0(), ent.data(), v, 0);
+            FUN_141689ec0(FUN_1409f7ca0(), ent.data(), v, 0, 0);
         }
     }
     else if (ent->GetModel()->ContainsModel(0xe4c01702))
@@ -3599,7 +3599,7 @@ void WorldService::FUN_141bc0530(const ecrPhysX::PhysXPropMessage* pMsg, efd::Ca
         {
             unsigned short v = 3;
             FUN_140ae1160(ent.data(), 0xada5c5d2, &v);
-            FUN_141689ec0(FUN_1409f7ca0(), ent.data(), v, 0);
+            FUN_141689ec0(FUN_1409f7ca0(), ent.data(), v, 0, 0);
         }
     }
 }

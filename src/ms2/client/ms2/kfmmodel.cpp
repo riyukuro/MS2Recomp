@@ -152,7 +152,7 @@ void FUN_141205320(void* s);   void FUN_141205530(void* s);
 void FUN_141209360(void* list, void* out);   void FUN_141209190(void* list, void* out);
 char FUN_140b029f0(void* a, void* b);   void* FUN_140b02a60(void* it);   void FUN_140b02a80(void* it);
 void* FUN_141c43700(void* a, int b, unsigned c, int d);
-void FUN_141c435b0(void* a, int b, unsigned c);
+void FUN_141c435b0(void* a, int b, unsigned c, void* pName);   // RegisterCallback(type, seq, const NiFixedString&)
 bool FUN_140d821f0(void* p);
 void* FUN_14098db90(void* pClassInfo);   // ClassInfo::GetParent
 void FUN_140de91f0(void* pStr);
@@ -382,7 +382,7 @@ int CKfmModel::vfunc_6()
                     for (unsigned int k = 0; k < nKeys; ++k) {
                         void* pName = FUN_1409998f0(pKey + (unsigned long long)k * 0x10);
                         if (FUN_140998dc0(pName, "start") == 0 && FUN_140998dc0(pName, "end") == 0)
-                            FUN_141c435b0(pActorMgr, 3, nSeqId);
+                            FUN_141c435b0(pActorMgr, 3, nSeqId, pName);
                     }
                 }
             }
