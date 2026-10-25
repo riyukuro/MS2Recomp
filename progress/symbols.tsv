@@ -196447,7 +196447,6 @@ FUN_141485590	141485590	func
 ?FUN_141cae4f0@@YA_NW4NSBRenderStateEnum@NSBRenderStates@@IAEAI@Z	141cae4f0	func
 ?FUN_141caeee0@@YA_NW4NSBRenderStateEnum@NSBRenderStates@@AEAW4_D3DRENDERSTATETYPE@@@Z	141caeee0	func
 ??0NiPick@@QEAA@II@Z	141cb1110	func
-?ClearArray@Results@NiPick@@QEAAXXZ	141cb1540	func
 ?ClearResultsArray@NiPick@@QEAAXXZ	141cb1890	func
 ?FindIntersections@NiCollisionTraversals@@YA_NAEBVNiPoint3@@0AEAVNiPick@@PEAVNiAVObject@@@Z	141cb55d0	func
 ??0NiCollisionSDM@@QEAA@XZ	141cb9050	func
@@ -196959,7 +196958,7 @@ FUN_141485590	141485590	func
 ??1NiOutputStreamDescriptor@@UEAA@XZ	141d76f80	func
 ??1NiDDSReader@@UEAA@XZ	141d78b60	func
 ??0NiShaderAttributeDesc@@QEAA@XZ	141d7f710	func
-?GetRange_ColorA@NiShaderAttributeDesc@@QEBA_NAEAVNiColorA@@0@Z	141d806d0	func
+?GetRange_ColorA@NiShaderAttributeDesc@@QEBA_NAEAVNiColorA@@0@Z	141d80560	func
 ?SetHidden@NiShaderAttributeDesc@@QEAAX_N@Z	141d809d0	func
 ?SetType@NiShaderAttributeDesc@@QEAAXW4AttributeType@1@@Z	141d80e40	func
 ?SetValue_Color@NiShaderAttributeDesc@@QEAAXAEAVNiColor@@@Z	141d81050	func
