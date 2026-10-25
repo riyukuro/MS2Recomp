@@ -214,6 +214,7 @@
 #include <NiMaterialProperty.h>
 #include <NiStringExtraData.h>
 #include <NiString.h>
+#include <NiStudioShaderContext.h>
 #include <NiFloatData.h>
 #include <NiLinFloatKey.h>
 #include <NiFloatInterpolator.h>
@@ -536,30 +537,21 @@ void* FUN_1409a5160(void* p);
 void FUN_141773a90(void* pRegistry, void* pNode);                   // register a model
 void FUN_141773cc0(void* pRegistry, void* pNode);                   // unregister a model
 
-// Registry of the nif path each loaded node came from. It is the object FUN_141d6fd90 returns (the renderer's shader
-// context in ms2renderservice.cpp); only its path map at +0x08 matters here.
-class Unk_NifPathRegistry
-{
-public:
+// NiStudioShaderContext::AddNifPath (NiStudioShaderContext.h): nif loading records the path each loaded node came from
 #ifndef MS2_HOOK_DLL
-    void Register(NiAVObject* pNode, const char* pszPath)           // @0x14154ff90
-    {
-        NiString kPath;
-        kPath = pszPath;
-        m_mapPath.insert(std::pair<NiAVObject* const, NiString>(pNode, kPath));
-    }
-#else
-    void Register(NiAVObject* pNode, const char* pszPath);          // the exe's copy
+// @0x14154ff90
+void NiStudioShaderContext::AddNifPath(NiAVObject* pkObject, const char* pszPath)
+{
+    NiString kPath;
+    kPath = pszPath;
+    m_kNifPaths.insert(std::pair<NiAVObject* const, NiString>(pkObject, kPath));
+}
 #endif
-    char m_pad_0[8];
-    std::map<NiAVObject*, NiString> m_mapPath;                      // +0x08
-};
-Unk_NifPathRegistry* FUN_141d6fd90_np();                            // the same function as FUN_141d6fd90 (see symbols-manual)
 // remember the nif path of the node
 // @0x141550050
 inline void FUN_141550050(void* pNode, const char* pszPath)
 {
-    FUN_141d6fd90_np()->Register(static_cast<NiAVObject*>(pNode), pszPath);
+    NiGetStudioShaderContext().AddNifPath(static_cast<NiAVObject*>(pNode), pszPath);
 }
 
 // Query passed to the culler (ctor 0x1411b8570: kind 9, default position).

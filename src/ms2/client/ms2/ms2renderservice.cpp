@@ -61,6 +61,7 @@
 #include <efd/ServiceManager.h>
 #include "ms2/placeholder/tfunctor.h"
 #include "ms2/commonfiles/logstring.h"
+#include <NiStudioShaderContext.h>
 
 // ---- out-of-unit callees and data (bound to the exe by name) ----
 CLogString* GetLogString();                                                 // the game log, or 0
@@ -125,12 +126,10 @@ template<class T, class U, class V> inline void Unk_RsLog3(CLogString* log, int 
 }
 
 // ---- shader-load context (the nif / node being loaded when a shader error is reported) ----
-class Unk_RsShaderCtx { public: bool FUN_141d6fcf0(NiString& kNifPath, NiString& kNodeName); };
-Unk_RsShaderCtx* FUN_141d6fd90();
 // @0x1414f0ac0
 inline bool Unk_RsGetShaderSource(NiString& kNifPath, NiString& kNodeName)
 {
-    return FUN_141d6fd90()->FUN_141d6fcf0(kNifPath, kNodeName);
+    return NiGetStudioShaderContext().GetCurrentNifPath(kNifPath, kNodeName);
 }
 // Effect manager: remembers the last executed effect / map effect names.
 class Unk_RsEffectMgr { public: CStringA FUN_1411aad50(); CStringA FUN_1411aaeb0(); };
