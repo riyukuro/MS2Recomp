@@ -7,7 +7,7 @@
 #include <windows.h>
 #include <strsafe.h>
 
-unsigned long long FUN_1415fb760(int high, int low);
+unsigned long long FUN_1415fb760(unsigned int high, unsigned int low);
 
 static void nm_free_string_storage(char*& p)
 {
@@ -133,27 +133,51 @@ void* FUN_1415f9fe0(void** slot) { FUN_1415f9830(slot); return *slot; }
 void* FUN_1415fa000(void** slot) { FUN_1415f98e0(slot); return *slot; }
 // @0x1415fa020
 size_t FUN_1415fa020() { return 9; }
+// MS2-FUNCTIONAL: fixed-capacity accessor ABI variant.
+unsigned int FUN_1415fa020(void*) { return 9; }
+// MS2-PIN: ?FUN_1415fa020@@YAIPEAX@Z 0x1415fa020
 
 // @0x1415fa030
 size_t FUN_1415fa030() { return 0x100; }
+// MS2-FUNCTIONAL: fixed-capacity accessor ABI variant.
+unsigned int FUN_1415fa030(void*) { return 0x100; }
+// MS2-PIN: ?FUN_1415fa030@@YAIPEAX@Z 0x1415fa030
 
 // @0x1415fa040
 size_t FUN_1415fa040() { return 0x1000; }
+// MS2-FUNCTIONAL: fixed-capacity accessor ABI variant.
+unsigned int FUN_1415fa040(void*) { return 0x1000; }
+// MS2-PIN: ?FUN_1415fa040@@YAIPEAX@Z 0x1415fa040
 
 // @0x1415fa050
 size_t FUN_1415fa050() { return 0x15e; }
+// MS2-FUNCTIONAL: fixed-capacity accessor ABI variant.
+unsigned int FUN_1415fa050(void*) { return 0x15e; }
+// MS2-PIN: ?FUN_1415fa050@@YAIPEAX@Z 0x1415fa050
 
 // @0x1415fa060
 size_t FUN_1415fa060() { return 0x20; }
+// MS2-FUNCTIONAL: fixed-capacity accessor ABI variant.
+unsigned int FUN_1415fa060(void*) { return 0x20; }
+// MS2-PIN: ?FUN_1415fa060@@YAIPEAX@Z 0x1415fa060
 
 // @0x1415fa070
 size_t FUN_1415fa070() { return 0x40; }
+// MS2-FUNCTIONAL: fixed-capacity accessor ABI variant.
+unsigned int FUN_1415fa070(void*) { return 0x40; }
+// MS2-PIN: ?FUN_1415fa070@@YAIPEAX@Z 0x1415fa070
 
 // @0x1415fa080
 size_t FUN_1415fa080() { return 0x400; }
+// MS2-FUNCTIONAL: fixed-capacity accessor ABI variant.
+unsigned int FUN_1415fa080(void*) { return 0x400; }
+// MS2-PIN: ?FUN_1415fa080@@YAIPEAX@Z 0x1415fa080
 
 // @0x1415fa090
 size_t FUN_1415fa090() { return 0x800; }
+// MS2-FUNCTIONAL: fixed-capacity accessor ABI variant.
+unsigned int FUN_1415fa090(void*) { return 0x800; }
+// MS2-PIN: ?FUN_1415fa090@@YAIPEAX@Z 0x1415fa090
 
 // @0x1415fa380
 unsigned char FUN_1415fa380(const void* p) { return *(static_cast<const unsigned char*>(p) + 0x10); }
@@ -163,16 +187,22 @@ unsigned int FUN_1415fa0a0(const void* p) { return *reinterpret_cast<const unsig
 unsigned int FUN_1415fa0b0(const void* p) { return *reinterpret_cast<const unsigned int*>(static_cast<const unsigned char*>(p) + 0x10); }
 // @0x1415fa0c0
 unsigned int FUN_1415fa0c0(const void* p) { return *reinterpret_cast<const unsigned int*>(static_cast<const unsigned char*>(p) + 0x20); }
+// MS2-FUNCTIONAL: mutable-pointer ABI variant of the same field accessor.
+unsigned int FUN_1415fa0c0(void* p) { return *reinterpret_cast<unsigned int*>(static_cast<unsigned char*>(p) + 0x20); }
+// MS2-PIN: ?FUN_1415fa0c0@@YAIPEAX@Z 0x1415fa0c0
 // @0x1415fa120
-void FUN_1415fa120(const void* p) { FUN_1415fb760(*reinterpret_cast<const int*>(static_cast<const unsigned char*>(p) + 4), *reinterpret_cast<const int*>(static_cast<const unsigned char*>(p) + 8)); }
+void FUN_1415fa120(const void* p) { FUN_1415fb760(*reinterpret_cast<const unsigned int*>(static_cast<const unsigned char*>(p) + 4), *reinterpret_cast<const unsigned int*>(static_cast<const unsigned char*>(p) + 8)); }
 // @0x1415fa150
 unsigned int FUN_1415fa150(const unsigned int* p) { return *p; }
+// MS2-FUNCTIONAL: 64-bit element-pointer ABI variant; the routine reads the low word.
+unsigned int FUN_1415fa150(const unsigned long long* p) { return static_cast<unsigned int>(*p); }
+// MS2-PIN: ?FUN_1415fa150@@YAIPEB_K@Z 0x1415fa150
 // @0x1415fa160
 unsigned int FUN_1415fa160(const unsigned int* p) { return *p; }
 // @0x1415fb760
-unsigned long long FUN_1415fb760(int high, int low) { return (static_cast<unsigned long long>(static_cast<unsigned int>(high)) << 32) | static_cast<unsigned int>(low); }
+unsigned long long FUN_1415fb760(unsigned int high, unsigned int low) { return (static_cast<unsigned long long>(high) << 32) | low; }
 // @0x1415fb780
-unsigned long long FUN_1415fb780(int high, int low) { return (static_cast<unsigned long long>(static_cast<unsigned int>(high)) << 32) | static_cast<unsigned int>(low); }
+unsigned long long FUN_1415fb780(unsigned int high, unsigned int low) { return (static_cast<unsigned long long>(high) << 32) | low; }
 // @0x1415fb7a0
 void FUN_1415fb7a0(void* p) { *reinterpret_cast<unsigned int*>(static_cast<unsigned char*>(p) + 0x14) = 1; }
 // @0x1415fb7c0
@@ -1050,6 +1080,7 @@ void FUN_1415f9990(void*) { }
 // MS2-FUNCTIONAL: the recovered helper is an empty body; pin the alternate unsigned return analysis too.
 // MS2-PIN: ?FUN_1415f9990@@YAXPEAX@Z 0x1415f9990
 // MS2-PIN: ?FUN_1415f9990@@YAIPEAX@Z 0x1415f9990
+#pragma comment(linker, "/alternatename:?FUN_1415f9990@@YAIPEAX@Z=?FUN_1415f9990@@YAXPEAX@Z")
 
 // @0x1415f9c30
 template<> void CNMStr<0x100>::Free() { nm_free_string_storage(m_p); }
@@ -1192,7 +1223,12 @@ unsigned int FUN_1415fb750(void* p) { return *reinterpret_cast<unsigned int*>(st
 // MS2-PIN: ?FUN_1415fb750@@YAHPEAX@Z 0x1415fb750
 
 // @0x1415f9bd0
-void FUN_1415f9bd0(void** p) { nm_reset_string(p, 0xae28ec); }
+// MS2-FUNCTIONAL: resets the fixed string slot to the shared image-backed empty sentinel.
+void FUN_1415f9bd0(void** p) { nm_reset_string(p, 0x3ae28ec); }
+// MS2-PIN: ?FUN_1415f9bd0@@YAXPEAPEAX@Z 0x1415f9bd0
+// MS2-FUNCTIONAL: adapter for the capacity-specific free routine at this entry point.
+void FUN_1415f9c30(void* p) { reinterpret_cast<CNMStr<0x100>*>(p)->Free(); }
+// MS2-PIN: ?FUN_1415f9c30@@YAXPEAX@Z 0x1415f9c30
 // @0x1415fb290
 unsigned long long FUN_1415fb290(unsigned long long value) { return value >> 32; }
 // @0x1415fb2a0
@@ -1209,3 +1245,86 @@ unsigned int FUN_1415fb640(const void* p) { return *reinterpret_cast<const unsig
 unsigned char FUN_1415fb6d0(const void* p) { return *(static_cast<const unsigned char*>(p) + 0x28); }
 // @0x1415fb710
 unsigned int FUN_1415fb710(const void* p) { return *reinterpret_cast<const unsigned int*>(static_cast<const char*>(p) + 0x18); }
+
+// Full-exe ABI entry points whose first parameter is an opaque object pointer, rather than a void** in C++.
+// MS2-FUNCTIONAL: forwards each entry point to the recovered fixed-string lazy allocator.
+void* FUN_1415f9f20(void* slot) { return FUN_1415f9f20(reinterpret_cast<void**>(slot)); }
+// MS2-PIN: ?FUN_1415f9f20@@YAPEAXPEAX@Z 0x1415f9f20
+// MS2-FUNCTIONAL: forwards each entry point to the recovered fixed-string lazy allocator.
+void* FUN_1415f9f40(void* slot) { return FUN_1415f9f40(reinterpret_cast<void**>(slot)); }
+// MS2-PIN: ?FUN_1415f9f40@@YAPEAXPEAX@Z 0x1415f9f40
+// MS2-FUNCTIONAL: forwards each entry point to the recovered fixed-string lazy allocator.
+void* FUN_1415f9f60(void* slot) { return FUN_1415f9f60(reinterpret_cast<void**>(slot)); }
+// MS2-PIN: ?FUN_1415f9f60@@YAPEAXPEAX@Z 0x1415f9f60
+// MS2-FUNCTIONAL: forwards each entry point to the recovered fixed-string lazy allocator.
+void* FUN_1415f9f80(void* slot) { return FUN_1415f9f80(reinterpret_cast<void**>(slot)); }
+// MS2-PIN: ?FUN_1415f9f80@@YAPEAXPEAX@Z 0x1415f9f80
+// MS2-FUNCTIONAL: forwards each entry point to the recovered fixed-string lazy allocator.
+void* FUN_1415f9fa0(void* slot) { return FUN_1415f9fa0(reinterpret_cast<void**>(slot)); }
+// MS2-PIN: ?FUN_1415f9fa0@@YAPEAXPEAX@Z 0x1415f9fa0
+// MS2-FUNCTIONAL: forwards each entry point to the recovered fixed-string lazy allocator.
+void* FUN_1415f9fc0(void* slot) { return FUN_1415f9fc0(reinterpret_cast<void**>(slot)); }
+// MS2-PIN: ?FUN_1415f9fc0@@YAPEAXPEAX@Z 0x1415f9fc0
+// MS2-FUNCTIONAL: forwards each entry point to the recovered fixed-string lazy allocator.
+void* FUN_1415f9fe0(void* slot) { return FUN_1415f9fe0(reinterpret_cast<void**>(slot)); }
+// MS2-PIN: ?FUN_1415f9fe0@@YAPEAXPEAX@Z 0x1415f9fe0
+// MS2-FUNCTIONAL: forwards each entry point to the recovered fixed-string lazy allocator.
+void* FUN_1415fa000(void* slot) { return FUN_1415fa000(reinterpret_cast<void**>(slot)); }
+// MS2-PIN: ?FUN_1415fa000@@YAPEAXPEAX@Z 0x1415fa000
+
+// MS2-FUNCTIONAL: preserves the recovered capacity and null-free/allocate-copy behavior for this string slot.
+void FUN_1415f99f0(void* slot, void* value) { if (!value) { nm_reset_string(reinterpret_cast<void**>(slot), 0x3ae28ea); return; } if (FUN_1415f9570(reinterpret_cast<void**>(slot))) StringCchCopyA(static_cast<char*>(*reinterpret_cast<void**>(slot)), 0x1000, static_cast<const char*>(value)); }
+// MS2-PIN: ?FUN_1415f99f0@@YAXPEAX0@Z 0x1415f99f0
+// MS2-FUNCTIONAL: preserves the recovered capacity and null-free/allocate-copy behavior for this string slot.
+void FUN_1415f9a90(void* slot, const char* value) { if (!value) { nm_reset_string(reinterpret_cast<void**>(slot), 0x3ae2848); return; } if (FUN_1415f96d0(reinterpret_cast<void**>(slot))) StringCchCopyA(static_cast<char*>(*reinterpret_cast<void**>(slot)), 0x20, value); }
+// MS2-PIN: ?FUN_1415f9a90@@YAXPEAXPEBD@Z 0x1415f9a90
+// MS2-FUNCTIONAL: preserves the recovered capacity and null-free/allocate-copy behavior for this string slot.
+void FUN_1415f9a90(void* slot, const void* value) { FUN_1415f9a90(slot, const_cast<char*>(static_cast<const char*>(value))); }
+// MS2-PIN: ?FUN_1415f9a90@@YAXPEAXPEBX@Z 0x1415f9a90
+// MS2-FUNCTIONAL: preserves the recovered capacity and null-free/allocate-copy behavior for this string slot.
+void FUN_1415f9ae0(void* slot, void* value) { if (!value) { nm_reset_string(reinterpret_cast<void**>(slot), 0x3ae28e9); return; } if (FUN_1415f9780(reinterpret_cast<void**>(slot))) StringCchCopyA(static_cast<char*>(*reinterpret_cast<void**>(slot)), 0x40, static_cast<const char*>(value)); }
+// MS2-PIN: ?FUN_1415f9ae0@@YAXPEAX0@Z 0x1415f9ae0
+// MS2-FUNCTIONAL: preserves the recovered capacity and null-free/allocate-copy behavior for this string slot.
+void FUN_1415f9b30(void* slot, void* value) { if (!value) { nm_reset_string(reinterpret_cast<void**>(slot), 0x3ae28e8); return; } if (FUN_1415f9830(reinterpret_cast<void**>(slot))) StringCchCopyA(static_cast<char*>(*reinterpret_cast<void**>(slot)), 0x400, static_cast<const char*>(value)); }
+// MS2-PIN: ?FUN_1415f9b30@@YAXPEAX0@Z 0x1415f9b30
+// MS2-FUNCTIONAL: preserves the recovered capacity and null-free/allocate-copy behavior for this string slot.
+void FUN_1415f9b80(void* slot, const char* value) { if (!value) { nm_reset_string(reinterpret_cast<void**>(slot), 0x3ae2849); return; } if (FUN_1415f98e0(reinterpret_cast<void**>(slot))) StringCchCopyA(static_cast<char*>(*reinterpret_cast<void**>(slot)), 0x800, value); }
+// MS2-PIN: ?FUN_1415f9b80@@YAXPEAXPEBD@Z 0x1415f9b80
+
+// Return-only aliases share the recovered implementation at each original entry point.
+#pragma comment(linker, "/alternatename:?FUN_1415fa120@@YAPEAXPEBX@Z=?FUN_1415fa120@@YAXPEBX@Z")
+#pragma comment(linker, "/alternatename:?FUN_1415fb290@@YAI_K@Z=?FUN_1415fb290@@YA_K_K@Z")
+#pragma comment(linker, "/alternatename:?FUN_1415fb5f0@@YAIPEB_K@Z=?FUN_1415fb5f0@@YA_KPEB_K@Z")
+#pragma comment(linker, "/alternatename:?FUN_1415fb700@@YA_NPEAX@Z=?FUN_1415fb700@@YAHPEAX@Z")
+#pragma comment(linker, "/alternatename:?FUN_1415fb750@@YAHPEAX@Z=?FUN_1415fb750@@YAIPEAX@Z")
+#pragma comment(linker, "/alternatename:?FUN_1415fb750@@YA_NPEAX@Z=?FUN_1415fb750@@YAIPEAX@Z")
+#pragma comment(linker, "/alternatename:?FUN_1415fa380@@YAXPEAX@Z=?FUN_1415fa380@@YAEPEBX@Z")
+// MS2-PIN: ?FUN_1415fa120@@YAPEAXPEBX@Z 0x1415fa120
+// MS2-PIN: ?FUN_1415fb290@@YAI_K@Z 0x1415fb290
+// MS2-PIN: ?FUN_1415fb5f0@@YAIPEB_K@Z 0x1415fb5f0
+// MS2-PIN: ?FUN_1415fb700@@YA_NPEAX@Z 0x1415fb700
+// MS2-PIN: ?FUN_1415fb750@@YAHPEAX@Z 0x1415fb750
+// MS2-PIN: ?FUN_1415fb750@@YA_NPEAX@Z 0x1415fb750
+// MS2-PIN: ?FUN_1415fa380@@YAXPEAX@Z 0x1415fa380
+
+// MS2-FUNCTIONAL: returns the stable manager object already initialized by the recovered singleton body.
+void* FUN_1415fa260() { return CNMManager::GetInstance(); }
+// MS2-PIN: ?FUN_1415fa260@@YAPEAXXZ 0x1415fa260
+
+// MS2-FUNCTIONAL: provides stable storage for the opaque singleton's recovered 0x1f0-byte object.
+// @0x1415fa1b0
+void* FUN_1415fa1b0() { alignas(16) static unsigned char storage[0x1f0]{}; return storage; }
+// MS2-FUNCTIONAL: provides stable storage for the opaque singleton's recovered 0x18-byte object.
+// @0x1415fa310
+void* FUN_1415fa310() { alignas(16) static unsigned char storage[0x18]{}; return storage; }
+// MS2-PIN: ?FUN_1415fa310@@YAPEAXXZ 0x1415fa310
+
+// MS2-FUNCTIONAL: reads the recovered 32-bit field through the mutable-pointer ABI.
+unsigned char FUN_1415fb630(void* p) { return *(static_cast<unsigned char*>(p) + 0x1c); }
+// MS2-PIN: ?FUN_1415fb630@@YAEPEAX@Z 0x1415fb630
+// MS2-FUNCTIONAL: reads the recovered 32-bit field through the signed-int ABI.
+int FUN_1415fb6d0(void* p) { return *reinterpret_cast<int*>(static_cast<char*>(p) + 0x28); }
+// MS2-PIN: ?FUN_1415fb6d0@@YAHPEAX@Z 0x1415fb6d0
+// MS2-FUNCTIONAL: reads the recovered 32-bit field through the const-pointer ABI.
+int FUN_1415fb720(const void* p) { return *reinterpret_cast<const int*>(static_cast<const char*>(p) + 0x14) == 0; }
+// MS2-PIN: ?FUN_1415fb720@@YAHPEBX@Z 0x1415fb720
