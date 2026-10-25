@@ -1,6 +1,7 @@
 // MS2-GUESS-LOOKALIKES
 // MS2-UNIT: unit_14111acc0
 // MS2-RANGE: 0x14111acc0-0x14111d430 .text$mn
+// MS2-PIN: ??$erase@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@std@@X@?$_Tree@V?$_Tmap_traits@VEntityID@egf@@V?$MS2Ptr@VCube@@@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@1@V21@@Z 0x14111c730 ; sfr36: the symbols.tsv row; exe callers 0x1410c1910 / 0x1410cb4c0 / 0x1410cf5c0 erase from the EntityID->MS2Ptr<Cube> map
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include <map>
