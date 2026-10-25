@@ -15793,3 +15793,4 @@ DAT_1431921e0	1431921e0	data
 ?DAT_143214fc8@@3USd_143214fc8@@A	143214fc8	data
 ?CreateObject@Sfr33MovieRoot@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@PEBDPEBV534@I@Z	1424f39c0	func
 ?SpriteGetTextSnapshot@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z	1429064b0	func
+?SetWorkflowManager@PropService@ecrPhysX@@QEAAXPEAVNiSPWorkflowManager@@@Z	142064e10	func
