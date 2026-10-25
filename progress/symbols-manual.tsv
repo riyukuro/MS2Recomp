@@ -14853,3 +14853,7 @@ DAT_1439f8358	1439f8358	data
 ??_R0?AV?$DL_PrivateKeyImpl@VDL_GroupParameters_GFP_DefaultSafePrime@CryptoPP@@@CryptoPP@@@8	143aa7e90	data
 ?AAD_CHANNEL@CryptoPP@@3V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@B	143b0dc48	data
 ?g_powerUpSelfTestStatus@CryptoPP@@3W4PowerUpSelfTestStatus@1@A	143b10184	data
+??0CNMChangeMetaDataFunc@@QEAA@_J0@Z	1415834f0	func
+??0CNMChangeNicknameFunc@@QEAA@_J0@Z	1415830f0	func
+??0CNMSendAccuseNoteMsgFunc@@QEAA@HPEBXH@Z	14158af10	func
+??0CNMSendNoteExMsgFunc@@QEAA@HPEBD@Z	1415969f0	func
