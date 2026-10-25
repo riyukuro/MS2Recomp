@@ -156,7 +156,7 @@ struct Unk_XmlElement;                                          // XML element n
 CStringW FUN_1401bf530(Unk_XmlElement* pElem, const char* pszName, CStringW strDefault);
 CString FUN_14015f710(Unk_XmlElement* pElem, const char* pszName, CString strDefault);
 bool FUN_14036d4b0(void* pFeatures, const CStringW& strFeature);   // feature enabled
-CString FUN_14036d8e0(void* pFeatures);                            // current locale name
+struct Unk_CuFeatureView { CString FUN_14036d8e0(); };              // CFeatureManager: current locale name (member: this=rcx, hidden return=rdx)
 bool FUN_1401647e0(const CString& strLeft, const CString& strRight);
 Unk_XmlElement* FUN_140165cf0(Unk_XmlElement* pParent, const char* pszName);       // first child
 Unk_XmlElement* FUN_140168650(Unk_XmlElement* pElem, const char* pszName);         // next sibling
@@ -1027,7 +1027,7 @@ bool FUN_14028f650(Unk_XmlElement* pElem)
 bool FUN_14028f710(Unk_XmlElement* pElem)
 {
     CString strLocale = FUN_14015f710(pElem, "locale", CString(""));
-    bool bMatch = !strLocale.IsEmpty() && FUN_1401647e0(strLocale, FUN_14036d8e0(FUN_140166410()));
+    bool bMatch = !strLocale.IsEmpty() && FUN_1401647e0(strLocale, static_cast<Unk_CuFeatureView*>(FUN_140166410())->FUN_14036d8e0());
     if (bMatch)
         return false;
     CStringW strFeature = FUN_1401bf530(pElem, "feature", CStringW(L""));
@@ -1051,7 +1051,7 @@ Unk_XmlElementList* FUN_14028f8d0(Unk_XmlElement* pParent)
         CString strLocale;
         FUN_140873420(pElem, "feature", strFeature);
         FUN_1408733e0(pElem, "locale", strLocale);
-        bool bLocale = !strLocale.IsEmpty() && FUN_1401647e0(strLocale, FUN_14036d8e0(FUN_140166410()));
+        bool bLocale = !strLocale.IsEmpty() && FUN_1401647e0(strLocale, static_cast<Unk_CuFeatureView*>(FUN_140166410())->FUN_14036d8e0());
         if (!bLocale)
         {
             if (!FUN_14036d4b0(FUN_140166410(), strFeature))
