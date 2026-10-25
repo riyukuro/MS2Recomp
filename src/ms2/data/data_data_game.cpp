@@ -645,9 +645,7 @@ extern unsigned char DAT_14318ee08[];
 extern unsigned char DAT_1431b67d0[];
 extern unsigned char DAT_1431b7858[];
 extern unsigned char DAT_1431bef80[];
-extern unsigned char DAT_143a2fe28[];
-extern unsigned char DAT_143a2fef8[];
-extern unsigned char DAT_143b01050[];
+extern void* DAT_143b018a0;
 void FUN_1400279b4();
 void FUN_140027be4();
 void FUN_1400280a4();
@@ -12629,7 +12627,7 @@ alignas(8) Sd_143a07838 DAT_143a07838 = {
     {0},
     (const unsigned char*)&DAT_143a07838 + 0x888,
     {0},
-    DAT_143b01050 + 0x850,
+    &DAT_143b018a0,
     {
         0x25, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -16770,21 +16768,29 @@ alignas(16) Sd_143a2fcb0 DAT_143a2fcb0 = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
 };
+// 0x143a2fe30: VertexElement[] (RasterGlyphVertex/ImageGlyphVertex::Format.pElements)
+alignas(16) unsigned char DAT_143a2fe30[0x20] = {
+    0x00, 0x00, 0x00, 0x00, 0x62, 0x01, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x51, 0x02, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x62, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+};
 // 0x143a2fe50
 alignas(16) Sd_143a2fe50 DAT_143a2fe50 = {
     {
         0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_143a2fe28 + 0x8,
+    DAT_143a2fe30,
 };
 // 0x143a2fe60: a static Ptr<> (released by the exe exit dtor, sfr_atexit_01)
 alignas(16) unsigned char DAT_143a2fe60[0x8] = {};
+// 0x143a30310: VertexElement[] (RasterGlyphVertex/ImageGlyphVertex::Format.pElements)
+alignas(16) unsigned char DAT_143a30310[0x18] = {
+    0x00, 0x00, 0x00, 0x00, 0x62, 0x01, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x62, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+};
 // 0x143a30328
 alignas(8) Sd_143a30328 DAT_143a30328 = {
     {
         0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_143a2fef8 + 0x418,
+    DAT_143a30310,
 };
 // 0x143a30338: a static Ptr<> (released by the exe exit dtor, sfr_atexit_01)
 alignas(8) unsigned char DAT_143a30338[0x8] = {};
@@ -48170,7 +48176,4 @@ alignas(8) Sd_143a8da88 DAT_143a8da88 = {
 #pragma comment(linker, "/alternatename:?DAT_1431b7858@@3PAEA=?PTR_FUN_1431b7858@@3PEAXEA")
 #pragma comment(linker, "/alternatename:?DAT_1431bef80@@3PAEA=??_7SoundFile@Sound@Scaleform@@6B@")
 
-#pragma comment(linker, "/alternatename:?DAT_143a2fe28@@3PAEA=?Instance@HALEndDisplayItem@Render@Scaleform@@2V123@A")
-#pragma comment(linker, "/alternatename:?DAT_143a2fef8@@3PAEA=?SoundFileKeyInterface_Instance@GFx@Scaleform@@3VSoundFileKeyInterface@12@A")
-#pragma comment(linker, "/alternatename:?DAT_143b01050@@3PAEA=?ms_ClassInfo@PhysXPropMessage@ecrPhysX@@2VClassInfo@efd@@B")
 #endif // MS2_HOOK_DLL

@@ -38,6 +38,7 @@
 // MS2-RANGE: 0x143af7d40-0x143af8a11 .bss
 // MS2-RANGE: 0x143afa350-0x143afcba9 .bss
 // MS2-RANGE: 0x143afe6f8-0x143afe760 .bss
+// MS2-RANGE: 0x143b018a0-0x143b018a8 .bss
 // MS2-RANGE: 0x143b023c0-0x143b023d8 .bss
 // MS2-RANGE: 0x143b03490-0x143b05e50 .bss
 // MS2-RANGE: 0x143b08a3c-0x143b094a8 .bss
@@ -150,6 +151,7 @@ char DAT_143afc900;                                             // 0x143afc900
 char DAT_143afcb90;                                             // 0x143afcb90
 char DAT_143afcba8;                                             // 0x143afcba8
 alignas(8) unsigned char DAT_143afe6f8[0x68];                   // 0x143afe6f8
+void* DAT_143b018a0;                                            // 0x143b018a0: luaopen_PhysX static
 alignas(16) unsigned char DAT_143b023c0[0x8];                   // 0x143b023c0
 alignas(8) unsigned char DAT_143b023c8[0x10];                   // 0x143b023c8
 alignas(16) unsigned char DAT_143b03490[0x20b8];                // 0x143b03490
