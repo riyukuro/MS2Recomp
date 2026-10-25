@@ -518,11 +518,14 @@ void FUN_140012e10();
 void FUN_140015c00();
 void FUN_1423dc0c0();
 void FUN_1423dd1b0();
+void FUN_1423dd3f0();
 void FUN_1424d21e0();
 void FUN_1424e1a98();
 void FUN_1424e1aa4();
 void FUN_1424e1ab0();
 void FUN_1424e1abc();
+void FUN_1424e1b40();
+void FUN_1424e1b4c();
 void FUN_1424e1b58();
 void FUN_1424e1b64();
 void FUN_1424e1b7c();
@@ -535,9 +538,11 @@ void FUN_1424e1fe0();
 void FUN_1424e2150();
 void FUN_1424e2610();
 void FUN_1424e26d0();
+void FUN_1424e2a10();
 void FUN_1424e2ac0();
 void FUN_1424e2c90();
 void FUN_1424e2e70();
+void FUN_1424e3020();
 void FUN_1424e3290();
 void FUN_1424e33f0();
 void FUN_1424e3450();
@@ -547,6 +552,8 @@ void FUN_1424e3b90();
 void FUN_1424e3de0();
 void FUN_1424e5460();
 void FUN_1424e5464();
+void FUN_1424e5470();
+void FUN_1424e5474();
 void FUN_1424e54f0();
 void FUN_1424e54f4();
 void FUN_1424eb2f0();
@@ -555,10 +562,14 @@ void FUN_1424eecb0();
 void FUN_1424efb40();
 void FUN_1424efde0();
 void FUN_1424efde4();
+void FUN_1424efdf0();
+void FUN_1424efdf4();
 void FUN_1424efe20();
 void FUN_1424efe24();
 void FUN_1424f1f50();
 void FUN_1424f1f54();
+void FUN_1424f1f60();
+void FUN_1424f1f64();
 void FUN_1424f1f80();
 void FUN_1424f1f84();
 void FUN_1424f2010();
@@ -569,9 +580,16 @@ void FUN_1424f3e60();
 void FUN_1424f41f0();
 void FUN_1424f42d0();
 void FUN_1424f6f50();
+void FUN_1424f7190();
+void FUN_1424fe5f0();
+void FUN_1424feaa0();
+void FUN_1424fee00();
+void FUN_142500770();
+void FUN_142501920();
 void FUN_142502cf0();
 void FUN_1425046d0();
 void FUN_1425047c0();
+void FUN_142504800();
 void FUN_142504b40();
 void FUN_142504b50();
 void FUN_1425057e0();
@@ -579,6 +597,9 @@ void FUN_142505e00();
 void FUN_142506df0();
 void FUN_142506df8();
 void FUN_142506e04();
+void FUN_142506ea0();
+void FUN_142506ea8();
+void FUN_142506eb4();
 void FUN_142506ed0();
 void FUN_142506ed8();
 void FUN_142506ee4();
@@ -588,14 +609,18 @@ void FUN_142507b30();
 void FUN_142507b70();
 void FUN_142508500();
 void FUN_142508514();
+void FUN_142508520();
+void FUN_142508524();
 void FUN_142508550();
 void FUN_142508554();
 void FUN_1425088f0();
 void FUN_142508900();
+void FUN_142508960();
 void FUN_142508980();
 void FUN_142508990();
 void FUN_14250b490();
 void FUN_14250ba00();
+void FUN_14250c360();
 void FUN_14250d630();
 void FUN_14250d700();
 void FUN_14250d960();
@@ -606,6 +631,9 @@ void FUN_142510240();
 void FUN_142510da0();
 void FUN_142510da4();
 void FUN_142510db0();
+void FUN_142510dd0();
+void FUN_142510dd4();
+void FUN_142510de0();
 void FUN_142510df0();
 void FUN_142510df4();
 void FUN_142510e00();
@@ -613,10 +641,16 @@ void FUN_142513240();
 void FUN_1425136f0();
 void FUN_142514280();
 void FUN_142514284();
+void FUN_142514290();
+void FUN_142514294();
 void FUN_1425142e0();
 void FUN_142514304();
+void FUN_142514330();
+void FUN_142514d10();
 void FUN_142514eb0();
 void FUN_142514efc();
+void FUN_142514f10();
+void FUN_142514f5c();
 void FUN_142515050();
 void FUN_1425150b0();
 void FUN_1425181b0();
@@ -633,38 +667,55 @@ void FUN_142518a10();
 void FUN_142518a18();
 void FUN_142518a24();
 void FUN_142518a30();
+void FUN_142518c50();
+void FUN_142518c58();
+void FUN_142518c64();
 void FUN_142518fc0();
 void FUN_142518fc8();
 void FUN_142518fd4();
 void FUN_142518fe0();
 void FUN_142518ffc();
 void FUN_142519008();
+void FUN_1425190d0();
+void FUN_1425190d4();
+void FUN_1425190e0();
 void FUN_1425190f0();
 void FUN_1425191bc();
 void FUN_1425191c8();
 void FUN_1425191e0();
 void FUN_1425191e8();
 void FUN_1425191f4();
+void FUN_142519890();
+void FUN_142519898();
+void FUN_1425198a4();
 void FUN_1425198b0();
 void FUN_1425198b8();
 void FUN_1425198c4();
 void FUN_142519d10();
 void FUN_142519d18();
+void FUN_142519d30();
+void FUN_142519d38();
 void FUN_142519ec0();
 void FUN_142519ec8();
 void FUN_14251a0d0();
 void FUN_14251a0d4();
+void FUN_14251a0e0();
+void FUN_14251a0e4();
 void FUN_14251a0f0();
 void FUN_14251a0f4();
 void FUN_14251a1e0();
 void FUN_14251a330();
 void FUN_14251a334();
+void FUN_14251a340();
+void FUN_14251a344();
 void FUN_14251a350();
 void FUN_14251a388();
 void FUN_14251a3b0();
 void FUN_14251a500();
 void FUN_14251a7f0();
 void FUN_14251a7f4();
+void FUN_14251a800();
+void FUN_14251a804();
 void FUN_14251a810();
 void FUN_14251a814();
 void FUN_14251a830();
@@ -680,6 +731,9 @@ void FUN_14251af20();
 void FUN_14251af24();
 void FUN_14251af30();
 void FUN_14251af40();
+void FUN_14251b0a0();
+void FUN_14251b0a8();
+void FUN_14251b0b4();
 void FUN_14251b0f0();
 void FUN_14251b0f4();
 void FUN_14251b100();
@@ -688,6 +742,7 @@ void FUN_14251bda0();
 void FUN_14251c9f0();
 void FUN_14251d060();
 void FUN_14251e560();
+void FUN_14251f430();
 void FUN_1425210c0();
 void FUN_142525500();
 void FUN_1425262d0();
@@ -702,6 +757,9 @@ void FUN_14252e980();
 void FUN_14252f220();
 void FUN_14252f230();
 void FUN_14252f23c();
+void FUN_14252f260();
+void FUN_14252f264();
+void FUN_14252f270();
 void FUN_14252f290();
 void FUN_14252f294();
 void FUN_14252f2a0();
@@ -709,6 +767,8 @@ void FUN_14252f2b0();
 void FUN_14252f2b4();
 void FUN_14252f2c0();
 void FUN_14252f2d0();
+void FUN_14252f2d4();
+void FUN_14252f2e0();
 void FUN_14252f300();
 void FUN_14252f304();
 void FUN_14252f310();
@@ -716,18 +776,27 @@ void FUN_14252f320();
 void FUN_14252f330();
 void FUN_14252f33c();
 void FUN_14252f350();
+void FUN_14252f360();
+void FUN_14252f370();
+void FUN_14252f37c();
 void FUN_14252f3b0();
 void FUN_14252f3c0();
 void FUN_14252f3cc();
 void FUN_14252f3e0();
 void FUN_14252f3e4();
 void FUN_14252f3f0();
+void FUN_14252f410();
+void FUN_14252f414();
+void FUN_14252f420();
 void FUN_14252f440();
 void FUN_14252f444();
 void FUN_14252f450();
 void FUN_14252f460();
 void FUN_14252f464();
 void FUN_14252f470();
+void FUN_14252f490();
+void FUN_14252f494();
+void FUN_14252f4a0();
 void FUN_14252f4c0();
 void FUN_14252f4d0();
 void FUN_14252f4dc();
@@ -1550,6 +1619,92 @@ struct Sd_14317c7e8 {
 struct Sd_14317c9b0 {
     const void* p0;
     const void* p8;
+};
+struct Sd_14317d600 {
+    const void* p0;
+    const void* p8;
+    const void* p10;
+    const void* p18;
+    const void* p20;
+    const void* p28;
+    const void* p30;
+    const void* p38;
+    const void* p40;
+    const void* p48;
+    const void* p50;
+    const void* p58;
+    const void* p60;
+    const void* p68;
+    const void* p70;
+    const void* p78;
+    const void* p80;
+    const void* p88;
+    const void* p90;
+    const void* p98;
+    const void* pa0;
+    const void* pa8;
+    const void* pb0;
+    const void* pb8;
+    const void* pc0;
+    const void* pc8;
+    const void* pd0;
+    const void* pd8;
+    const void* pe0;
+    const void* pe8;
+    const void* pf0;
+};
+struct Sd_14317d6f8 {
+    const void* p0;
+    const void* p8;
+    const void* p10;
+    const void* p18;
+    const void* p20;
+    const void* p28;
+    const void* p30;
+    const void* p38;
+    const void* p40;
+    const void* p48;
+    const void* p50;
+    const void* p58;
+    const void* p60;
+    const void* p68;
+    const void* p70;
+    const void* p78;
+    const void* p80;
+    const void* p88;
+    const void* p90;
+    const void* p98;
+    const void* pa0;
+    const void* pa8;
+    const void* pb0;
+};
+struct Sd_14317d7b0 {
+    const void* p0;
+    const void* p8;
+    const void* p10;
+    const void* p18;
+    const void* p20;
+    const void* p28;
+    const void* p30;
+    const void* p38;
+    const void* p40;
+    const void* p48;
+    const void* p50;
+    const void* p58;
+    const void* p60;
+    const void* p68;
+    const void* p70;
+    const void* p78;
+    const void* p80;
+    const void* p88;
+    const void* p90;
+    const void* p98;
+    const void* pa0;
+    const void* pa8;
+    const void* pb0;
+    const void* pb8;
+    unsigned char bc0[0x18];
+    const void* pd8;
 };
 struct Sd_14317d8c0 {
     const void* p0;
@@ -4398,6 +4553,98 @@ alignas(8) Sd_14317c7e8 DAT_14317c7e8 = {
 alignas(16) Sd_14317c9b0 DAT_14317c9b0 = {
     (const void*)&FUN_1424e1fe0,
     (const void*)&FUN_1424e1e60,
+};
+// 0x14317d600
+alignas(16) Sd_14317d600 DAT_14317d600 = {
+    (const void*)&FUN_1424e2a10,
+    (const void*)&FUN_14252f360,
+    (const void*)&FUN_14252f410,
+    (const void*)&FUN_14252f260,
+    (const void*)&FUN_14252f490,
+    (const void*)&FUN_1423dd3f0,
+    (const void*)&FUN_142506ea0,
+    (const void*)&FUN_142510dd0,
+    (const void*)&FUN_142518c50,
+    (const void*)&FUN_1425190d0,
+    (const void*)&FUN_142519890,
+    (const void*)&FUN_14251b0a0,
+    DAT_1423dd4f0,
+    DAT_1423dc0b0,
+    DAT_14251ace0,
+    DAT_1424f2400,
+    (const void*)&FUN_142508960,
+    DAT_142505f20,
+    (const void*)&FUN_14251f430,
+    DAT_1425185d0,
+    (const void*)&FUN_14250c360,
+    (const void*)&FUN_1424f7190,
+    (const void*)&FUN_142514d10,
+    DAT_14250f820,
+    DAT_142507590,
+    (const void*)&FUN_142501920,
+    (const void*)&FUN_142514330,
+    (const void*)&FUN_142504800,
+    (const void*)&FUN_1424fee00,
+    (const void*)&FUN_1424fe5f0,
+    (const void*)&FUN_1424feaa0,
+};
+// 0x14317d6f8
+alignas(8) Sd_14317d6f8 DAT_14317d6f8 = {
+    (const void*)&FUN_1424e1b40,
+    (const void*)&FUN_14252f370,
+    (const void*)&FUN_14252f414,
+    (const void*)&FUN_14252f264,
+    (const void*)&FUN_14252f494,
+    (const void*)&FUN_14252f2d4,
+    (const void*)&FUN_142506ea8,
+    (const void*)&FUN_142510dd4,
+    (const void*)&FUN_142518c58,
+    (const void*)&FUN_1425190d4,
+    (const void*)&FUN_142519898,
+    (const void*)&FUN_14251b0a8,
+    DAT_1423dd4f0,
+    (const void*)&FUN_1424e5470,
+    (const void*)&FUN_142508520,
+    (const void*)&FUN_1424efdf0,
+    (const void*)&FUN_1424f1f60,
+    (const void*)&FUN_142519d30,
+    (const void*)&FUN_14251a0e0,
+    (const void*)&FUN_14251a340,
+    (const void*)&FUN_14251a800,
+    (const void*)&FUN_142514290,
+    (const void*)&FUN_142514f10,
+};
+// 0x14317d7b0
+alignas(16) Sd_14317d7b0 DAT_14317d7b0 = {
+    (const void*)&FUN_1424e1b4c,
+    (const void*)&FUN_14252f37c,
+    (const void*)&FUN_14252f420,
+    (const void*)&FUN_14252f270,
+    (const void*)&FUN_14252f4a0,
+    (const void*)&FUN_14252f2e0,
+    (const void*)&FUN_142506eb4,
+    (const void*)&FUN_142510de0,
+    (const void*)&FUN_142518c64,
+    (const void*)&FUN_1425190e0,
+    (const void*)&FUN_1425198a4,
+    (const void*)&FUN_14251b0b4,
+    DAT_1423dd4f0,
+    (const void*)&FUN_1424e5474,
+    (const void*)&FUN_142508524,
+    (const void*)&FUN_1424efdf4,
+    (const void*)&FUN_1424f1f64,
+    (const void*)&FUN_142519d38,
+    (const void*)&FUN_14251a0e4,
+    (const void*)&FUN_14251a344,
+    (const void*)&FUN_14251a804,
+    (const void*)&FUN_142514294,
+    (const void*)&FUN_142514f5c,
+    (const void*)&FUN_142500770,
+    {
+        0x66, 0x6c, 0x61, 0x73, 0x68, 0x2e, 0x64, 0x69, 0x73, 0x70, 0x6c, 0x61, 0x79, 0x2e, 0x53, 0x74,
+        0x61, 0x67, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00,
+    },
+    (const void*)&FUN_1424e3020,
 };
 // 0x14317d8c0
 alignas(16) Sd_14317d8c0 DAT_14317d8c0 = {
@@ -8890,6 +9137,9 @@ alignas(8) Sd_143222278 DAT_143222278 = {
 #pragma comment(linker, "/alternatename:?DAT_14317d8d8@AS3@GFx@Scaleform@@3PAPEBXA=?DAT_14317d8d8@@3USd_14317d8d8@@A")
 #pragma comment(linker, "/alternatename:?DAT_14317da88@AS3@GFx@Scaleform@@3PAPEBXA=?DAT_14317da88@@3USd_14317da88@@A")
 #pragma comment(linker, "/alternatename:?DAT_14317daa0@AS3@GFx@Scaleform@@3PAPEBXA=?DAT_14317daa0@@3USd_14317daa0@@A")
+#pragma comment(linker, "/alternatename:?AvmStage_vftable@AS3@GFx@Scaleform@@3QBQEAXB=?DAT_14317d600@@3USd_14317d600@@A")
+#pragma comment(linker, "/alternatename:?AvmStage_vftable_30@AS3@GFx@Scaleform@@3QBQEAXB=?DAT_14317d6f8@@3USd_14317d6f8@@A")
+#pragma comment(linker, "/alternatename:?AvmStage_vftable_40@AS3@GFx@Scaleform@@3QBQEAXB=?DAT_14317d7b0@@3USd_14317d7b0@@A")
 #pragma comment(linker, "/alternatename:?AvmButton_vftable@AS3@GFx@Scaleform@@3QBQEAXB=?DAT_14317dbe0@@3USd_14317dbe0@@A")
 #pragma comment(linker, "/alternatename:?AvmButton_vftable_30@AS3@GFx@Scaleform@@3QBQEAXB=?DAT_14317dcb0@@3USd_14317dcb0@@A")
 #pragma comment(linker, "/alternatename:?AvmButton_vftable_40@AS3@GFx@Scaleform@@3QBQEAXB=?DAT_14317dd68@@3USd_14317dd68@@A")
