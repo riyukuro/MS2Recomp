@@ -14915,3 +14915,5 @@ DAT_1439f8358	1439f8358	data
 ?SKI_NullInterface@Render@Scaleform@@3USortKeyInterface@12@A	143a2fe08	data
 ?ImageFileKeyInterface_Instance@GFx@Scaleform@@3VImageFileKeyInterface@12@A	143a2fe18	data
 ?SoundFileKeyInterface_Instance@GFx@Scaleform@@3VSoundFileKeyInterface@12@A	143a2fef8	data
+?vfunc_8@CNMFunc@@UEAAPEADXZ	1415faa00	func
+?vfunc_8@CNMSetServerInfoFunc@@UEAAPEADXZ	1415fb1a0	func
