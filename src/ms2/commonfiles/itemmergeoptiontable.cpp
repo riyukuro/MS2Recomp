@@ -68,6 +68,7 @@
 #include "ms2/placeholder/citemmergeoptiontable.h"
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/citemdata.h"
+#include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
@@ -114,12 +115,10 @@ inline void Unk_MergeLog(CLogString* log, unsigned __int64 a, unsigned __int64 b
 }
 
 // Option text helpers of the item tooltip (string table lookups and highlight).
-class Unk_StringTableRef;
-Unk_StringTableRef* FUN_1401a9d70();
+CStringTable* GetStringTable();                                        // FUN_1401a9d70
 class Unk_FeatureSet;
 Unk_FeatureSet* FUN_14025e7c0();
 bool FUN_14116d720(Unk_FeatureSet* p);                                  // the option ids are shown (debug)
-CStringW FUN_141811980(Unk_StringTableRef* p, int nTable, int nId);
 CStringW FUN_140631600(int nStat, BaseOption* pOption);                  // the text of a normal stat option
 CStringW FUN_140631830(int nStat, int nValue, Unk_ItemEquipData* pData);   // the text of a special stat option
 CStringW FUN_1401d0080(const CStringW& a, const CStringW& b);           // a + b
@@ -616,7 +615,7 @@ CStringW CItemMergeOptionTable::FUN_1405c1090(MS2Ptr<CItem> spItem, int nFlag)
     int nMergeId = spOption->FUN_1405cb380();
     CStringW strTag;
     if (FUN_14116d720(FUN_14025e7c0()) && nMergeId != 0)
-        strTag = StringFormat(L"[{0}]", FUN_141811980(FUN_1401a9d70(), 1, nMergeId));
+        strTag = StringFormat(L"[{0}]", GetStringTable()->FUN_141811980(1, nMergeId));
     Unk_EnchantMap& rNormal = spOption->FUN_1405cb8a0(4);
     Unk_SocketSpecialMap& rSpecial = spOption->FUN_1405cb8d0(4);
     for (POSITION pos = rNormal.GetStartPosition(); pos != 0; rNormal.GetNext(pos))
