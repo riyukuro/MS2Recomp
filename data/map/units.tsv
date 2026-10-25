@@ -1484,30 +1484,30 @@
 1410d5bc0	1410d6a30	unit_1410d5bc0	none	15	mn	
 1410d6a30	1410dbc10	unit_1410d6a30	none	252	mn	
 1410dbc10	1410dc420	unit_1410dbc10_houseandentitycomdatglue	none	13	mn	descriptive: houseandentitycomdatglue
-1410dc420	1410dc570	unit_1410dc420	none	8	mn	
+1410dc420	1410dc570	unit_1410dc420_enablesharedfromthisglue	none	8	mn	descriptive: enablesharedfromthisglue
 1410dc570	1410e29c0	unit_1410dc570	none	239	mn	
-1410e29c0	1410e4e80	unit_1410e29c0	none	53	mn	
-1410e4e80	1410e5150	unit_1410e4e80	none	2	mn	
-1410e5150	1410e5420	unit_1410e5150	none	2	mn	
-1410e5420	1410e56f0	unit_1410e5420	none	2	mn	
-1410e56f0	1410e59c0	unit_1410e56f0	none	2	mn	
-1410e59c0	1410e5c90	unit_1410e59c0	none	2	mn	
-1410e5c90	1410e5f60	unit_1410e5c90	none	2	mn	
-1410e5f60	1410e6230	unit_1410e5f60	none	2	mn	
-1410e6230	1410e6500	unit_1410e6230	none	2	mn	
-1410e6500	1410e67d0	unit_1410e6500	none	2	mn	
-1410e67d0	1410e6aa0	unit_1410e67d0	none	2	mn	
-1410e6aa0	1410e6d70	unit_1410e6aa0	none	2	mn	
-1410e6d70	1410e7040	unit_1410e6d70	none	2	mn	
-1410e7040	1410e7310	unit_1410e7040	none	2	mn	
-1410e7310	1410e75e0	unit_1410e7310	none	2	mn	
-1410e75e0	1410e78b0	unit_1410e75e0	none	2	mn	
-1410e78b0	1410e9350	unit_1410e78b0	none	48	mn	
+1410e29c0	1410e4e80	unit_1410e29c0_cubemapinformationservicecontainercomdats	none	53	mn	descriptive: cubemapinformationservicecontainercomdats
+1410e4e80	1410e5150	unit_1410e4e80_cubemapinformationserviceintuintmaprange	none	2	mn	descriptive: cubemapinformationserviceintuintmaprange
+1410e5150	1410e5420	unit_1410e5150_cubemapinformationservicemarkmaprange	none	2	mn	descriptive: cubemapinformationservicemarkmaprange
+1410e5420	1410e56f0	unit_1410e5420_cubemapinformationservicenearestmaprange	none	2	mn	descriptive: cubemapinformationservicenearestmaprange
+1410e56f0	1410e59c0	unit_1410e56f0_mapintrangecomdat	none	2	mn	descriptive: mapintrangecomdat
+1410e59c0	1410e5c90	unit_1410e59c0_mapintrangecomdat2	none	2	mn	descriptive: mapintrangecomdat2
+1410e5c90	1410e5f60	unit_1410e5c90_mapintrangecomdat3	none	2	mn	descriptive: mapintrangecomdat3
+1410e5f60	1410e6230	unit_1410e5f60_mapintrangecomdat4	none	2	mn	descriptive: mapintrangecomdat4
+1410e6230	1410e6500	unit_1410e6230_mapintrangecomdat5	none	2	mn	descriptive: mapintrangecomdat5
+1410e6500	1410e67d0	unit_1410e6500_mapintrangecomdat6	none	2	mn	descriptive: mapintrangecomdat6
+1410e67d0	1410e6aa0	unit_1410e67d0_mapintrangecomdat7	none	2	mn	descriptive: mapintrangecomdat7
+1410e6aa0	1410e6d70	unit_1410e6aa0_mappairintrangecomdat	none	2	mn	descriptive: mappairintrangecomdat
+1410e6d70	1410e7040	unit_1410e6d70_mapcstringrangecomdat	none	2	mn	descriptive: mapcstringrangecomdat
+1410e7040	1410e7310	unit_1410e7040_cubemapinformationserviceentityvaluemaprange	none	2	mn	descriptive: cubemapinformationserviceentityvaluemaprange
+1410e7310	1410e75e0	unit_1410e7310_cubemapinformationserviceentitypropertymaprange	none	2	mn	descriptive: cubemapinformationserviceentitypropertymaprange
+1410e75e0	1410e78b0	unit_1410e75e0_mapintrangecomdat8	none	2	mn	descriptive: mapintrangecomdat8
+1410e78b0	1410e9350	unit_1410e78b0_cubemapinformationservicetreecomdats	none	48	mn	descriptive: cubemapinformationservicetreecomdats
 1410e9350	14111acc0	unit_1410e9350	none	572	mn	
-14111acc0	14111d430	unit_14111acc0	none	211	mn	
+14111acc0	14111d430	unit_14111acc0_cubemapinformationserviceentitycubemapcomdats	none	211	mn	descriptive: cubemapinformationserviceentitycubemapcomdats
 14111d430	14111e450	unit_14111d430	none	115	mn	
 14111e450	14111eb90	unit_14111e450	none	34	mn	rejected ?\cubemapinformationservice.cpp
-14111eb90	14111fdf0	unit_14111eb90	none	76	mn	
+14111eb90	14111fdf0	unit_14111eb90_treecomparatorconstructors	none	76	mn	descriptive: treecomparatorconstructors
 14111fdf0	141121cf0	unit_14111fdf0	none	157	mn	
 141121cf0	141123340	unit_141121cf0	none	120	mn	rejected ?\automaticcreatecubeinfo.cpp
 141123340	1411234d0	unit_141123340	none	6	mn	rejected ?\ecr.cpp
