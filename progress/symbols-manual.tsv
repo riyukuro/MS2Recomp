@@ -14910,3 +14910,4 @@ DAT_1439f8358	1439f8358	data
 ?AvmTextFieldBase_HasStyleSheet@AS2@GFx@Scaleform@@YA_NPEBX@Z	14295dbb0	func
 ??0CNMGetMyVirtualUserListFunc@@QEAA@I@Z	14157fc20	func
 ??0CNMLoginVirtualFunc@@QEAA@_JH0@Z	14157f420	func
+??0CNMFDSGetDownloadDirFunc@@QEAA@I@Z	1415a28f0	func
