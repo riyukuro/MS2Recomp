@@ -32,7 +32,6 @@
 // MS2-PIN: ?SetCount@?$CAtlArray@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$CElementTraits@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@ATL@@@ATL@@QEAA_N_KH@Z 0x1418f9eb0 ; unique
 // MS2-PIN: ?_Change_array@?$vector@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@std@@AEAAXQEAV?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@_K1@Z 0x1418fa1b0 ; unique
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@2@$00@std@@QEBAAEBV?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@2@XZ 0x1418fa420 ; unique
-// MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@V?$MS2Ptr@VUnk_ClBurnEvent@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VUnk_ClBurnEvent@@@@@std@@@2@$00@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VUnk_ClBurnEvent@@@@@std@@@2@XZ 0x1418fa430 ; unique
 // MS2-PIN: ?_Xrange@?$vector@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@std@@CAXXZ 0x1418fa900 ; order
 // MS2-PIN: ?at@?$vector@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@std@@QEAAAEAV?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@_K@Z 0x1418fa950 ; unique
 // MS2-PIN: ?clear@?$vector@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@std@@QEAAXXZ 0x1418faa30 ; unique
@@ -328,7 +327,7 @@ public:
     Unk_ClRewardList m_90;
     CStringW m_a0;
 };
-typedef std::vector<MS2Ptr<Unk_ClBurnEvent> > BurnEvents;
+typedef std::list<MS2Ptr<Unk_ClBurnEvent> > BurnEvents;                 // CGameEventValueBurningLevelup::GetAll fills a list
 class Unk_ClBurnSub { public: void FUN_140428300(BurnEvents* pEvents); };
 class Unk_ClBurnMgr { public: Unk_ClBurnSub* FUN_1403ed080(); };
 Unk_ClBurnMgr* FUN_140302b00();
@@ -2016,9 +2015,9 @@ void UICharacterListDialog::FUN_1418ed6b0(CInPacket& packet)
         return;
     BurnEvents events;
     FUN_140302b00()->FUN_1403ed080()->FUN_140428300(&events);
-    for (size_t i = 0; i < events.size(); ++i)
+    for (BurnEvents::iterator it = events.begin(); it != events.end(); ++it)
     {
-        MS2Ptr<Unk_ClBurnEvent> spEvent(events[i]);
+        MS2Ptr<Unk_ClBurnEvent> spEvent(*it);
         if (!(spEvent == 0))
         {
             __int64 nZero = 0;
@@ -2044,9 +2043,9 @@ void UICharacterListDialog::FUN_1418ef700()
 {
     BurnEvents events;
     FUN_140302b00()->FUN_1403ed080()->FUN_140428300(&events);
-    for (size_t i = 0; i < events.size(); ++i)
+    for (BurnEvents::iterator it = events.begin(); it != events.end(); ++it)
     {
-        MS2Ptr<Unk_ClBurnEvent> spEvent(events[i]);
+        MS2Ptr<Unk_ClBurnEvent> spEvent(*it);
         if (!(spEvent == 0))
         {
             __int64 nZero = 0;
@@ -2071,9 +2070,9 @@ void UICharacterListDialog::FUN_1418ef980(unsigned __int64 nId)
     MS2Ptr<Unk_ClBurnEvent> spFound(0);
     BurnEvents events;
     FUN_140302b00()->FUN_1403ed080()->FUN_140428300(&events);
-    for (size_t i = 0; i < events.size(); ++i)
+    for (BurnEvents::iterator it = events.begin(); it != events.end(); ++it)
     {
-        MS2Ptr<Unk_ClBurnEvent> spEvent(events[i]);
+        MS2Ptr<Unk_ClBurnEvent> spEvent(*it);
         if (spEvent == 0)
             continue;
         __int64 nZero = 0;
@@ -2134,11 +2133,11 @@ void UICharacterListDialog::OnClickBurningLevelupDescBtn()
     BurnEvents events;
     FUN_140302b00()->FUN_1403ed080()->FUN_140428300(&events);
     MS2Ptr<Unk_ClBurnEvent> spFound(0);
-    for (size_t i = 0; i < events.size(); ++i)
+    for (BurnEvents::iterator it = events.begin(); it != events.end(); ++it)
     {
-        if (!(events[i] == 0))
+        if (!(*it == 0))
         {
-            spFound = events[i];
+            spFound = *it;
             break;
         }
     }
@@ -2160,9 +2159,9 @@ void UICharacterListDialog::FUN_1418f0400()
         return;
     BurnEvents events;
     FUN_140302b00()->FUN_1403ed080()->FUN_140428300(&events);
-    for (size_t i = 0; i < events.size(); ++i)
+    for (BurnEvents::iterator it = events.begin(); it != events.end(); ++it)
     {
-        if (!(events[i] == 0))
+        if (!(*it == 0))
         {
             m_30->Invoke("attachBurningLevelupDescBtn");
             break;

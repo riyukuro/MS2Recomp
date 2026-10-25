@@ -28,7 +28,7 @@ void* FUN_1406c4730(void* out);                         // Unk_DateTime default
 void* FUN_1406c47d0(void* out, int y, int m, int d, int h, int mi, int s);   // CMsTime(y,m,d,h,mi,s) (6 ints; no DST arg, sb2)
 void* FUN_140182ea0(void* s);   void FUN_140183b60(void* s);   void FUN_140178270(const CString* in, void* tmp, const char* sep);
 void* FUN_140182ed0(void* s);   void FUN_140183b90(void* s);   void FUN_1401783d0(const CString* in, void* tmp, const char* sep);
-void FUN_1402929a0(const CString* in, void* tmp, const char* sep);
+void FUN_1402929a0(const CStringW* in, void* tmp, const wchar_t* sep);   // wide (commonutil.cpp)
 void* FUN_14016a600(void* out, const wchar_t* s, int);
 void* FUN_14016a730(void* out, const char* s, int);
 void* FUN_14050dba0(void* dst, void* alloc);
@@ -161,10 +161,10 @@ void* FUN_140719010(void* ret, const CString* s) {
     return ret;
 }
 // @0x140719090
-void* FUN_140719090(void* ret, const CString* s) {
+void* FUN_140719090(void* ret, const CStringW* s) {
     Unk_Bytes tmp[0x28];
     FUN_140182ed0(tmp);
-    FUN_1402929a0(s, tmp, ",");
+    FUN_1402929a0(s, tmp, L",");
     FUN_14071a240(ret, tmp);
     FUN_140183b90(tmp);
     return ret;

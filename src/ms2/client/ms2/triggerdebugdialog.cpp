@@ -24,7 +24,7 @@ int FUN_140518af0(const CRect* pRect);                  // 0x140518af0 CRect::He
 int FUN_140519850(const CRect* pRect);                  // 0x140519850 CRect::Width
 CRect* FUN_140517a60(CRect* pRect);                     // 0x140517a60 CRect::CRect()
 LPRECT FUN_14098a2a0(CRect* pRect);                     // 0x14098a2a0 CRect::operator LPRECT
-void FUN_140988d60(CStringW& strSrc, ATL::CAtlArray<CStringW>& arrOut, const wchar_t* pszSep);   // 0x140988d60 (aidebugdialog)
+void FUN_140988d60(CStringW& strSrc, std::vector<CStringW>& arrOut, const wchar_t* pszSep);   // 0x140988d60 (aidebugdialog)
 
 // MS2-FUNCTIONAL: OnTimer (+ inlined GetCheck/Resize call sites) differ in callee order; permuter lane
 IMPLEMENT_DYNAMIC(TriggerDebugDialog, CDialog)
@@ -209,10 +209,10 @@ int TriggerDebugDialog::LoadXml()
     if (spBuffer.IsNull())
         return 0;
     CStringW strXml = FUN_1408767c0(spBuffer->GetBuffer());
-    ATL::CAtlArray<CStringW> arrLines;
+    std::vector<CStringW> arrLines;
     FUN_140988d60(strXml, arrLines, L"\n");
     CStringW strText;
-    for (size_t i = 0; i < arrLines.GetCount(); i++)
+    for (size_t i = 0; i < arrLines.size(); i++)
         strText += StringFormat(L"{0:03} : \t{1}\n", i + 1, arrLines[i]);
     m_editXml.SetWindowText(FUN_1401d4330(strText, 0));
     return 1;

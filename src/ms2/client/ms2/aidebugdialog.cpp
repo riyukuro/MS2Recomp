@@ -31,14 +31,13 @@ __int64 FUN_140869440();                                // server time
 CStringW FUN_1408767c0(void* pszUtf8);                  // utf8 -> wide
 CString FUN_1401d4330(const wchar_t* psz, int nFlag);   // wide -> narrow
 CStringW FUN_14025a640(const CStringW& str);            // copy
-size_t FUN_14041ad70(ATL::CAtlArray<CStringW>* pArray, const CStringW& str);   // CAtlArray<CStringW>::Add (the exe copy of gameeventcontext)
 CFileSystem* GetFileSystem();                           // the file system singleton
 int FUN_140518af0(const CRect* pRect);                  // 0x140518af0 CRect::Height
 int FUN_140519850(const CRect* pRect);                  // 0x140519850 CRect::Width
 CRect* FUN_140517a60(CRect* pRect);                     // 0x140517a60 CRect::CRect()
 LPRECT FUN_14098a2a0(CRect* pRect);                     // 0x14098a2a0 CRect::operator LPRECT
 
-void FUN_140988d60(CStringW& strSrc, ATL::CAtlArray<CStringW>& arrOut, const wchar_t* pszSep);   // 0x140988d60
+void FUN_140988d60(CStringW& strSrc, std::vector<CStringW>& arrOut, const wchar_t* pszSep);   // 0x140988d60
 
 IMPLEMENT_DYNAMIC(AiDebugDialog, CDialog)
 
@@ -259,10 +258,10 @@ int AiDebugDialog::LoadXml()
     if (spBuffer.IsNull())
         return 0;
     CStringW strXml = FUN_1408767c0(spBuffer->GetBuffer());
-    ATL::CAtlArray<CStringW> arrLines;
+    std::vector<CStringW> arrLines;
     FUN_140988d60(strXml, arrLines, L"\n");
     CStringW strText;
-    for (size_t i = 0; i < arrLines.GetCount(); i++)
+    for (size_t i = 0; i < arrLines.size(); i++)
         strText += StringFormat(L"{0:03} : \t{1}\n", i + 1, arrLines[i]);
     m_editXml.SetWindowText(FUN_1401d4330(strText, 0));
     return 1;
@@ -277,13 +276,13 @@ void AiDebugDialog::AddStartMarker()
 }
 
 // @0x140988d60
-void FUN_140988d60(CStringW& strSrc, ATL::CAtlArray<CStringW>& arrOut, const wchar_t* pszSep)
+void FUN_140988d60(CStringW& strSrc, std::vector<CStringW>& arrOut, const wchar_t* pszSep)
 {
     int iStart = 0;
     CStringW strToken = strSrc.Tokenize(pszSep, iStart);
     while (!strToken.IsEmpty())
     {
-        FUN_14041ad70(&arrOut, FUN_14025a640(strToken));
+        arrOut.push_back(FUN_14025a640(strToken));            // 0x14041ad70 push_back(CStringW&&)
         strToken = strSrc.Tokenize(pszSep, iStart);
     }
 }

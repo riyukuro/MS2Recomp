@@ -79,7 +79,6 @@ CStringW FUN_140e14bd0(MS2Ptr<DungeonRoom> pRoom, bool bShowLimit);             
 CStringW FUN_14183e930(const CStringW& str, int nColor);                            // wrap in a color tag
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);
-void FUN_140e1ba80(UIDungeonSearchDialog* pDialog, int nPage, const std::set<unsigned>& rooms);   // UIDungeonSearchDialog: sets a page's room set
 
 #define MS2_ASCRIPT_INL_ASSERT(line, expression) \
     (void)((!!(expression)) || (_wassert(_CRT_WIDE(#expression), L"e:\\build\\kr\\22_04\\ms2code\\client\\gfxlib\\ascript.inl", (unsigned)(line)), 0))
@@ -243,7 +242,7 @@ void UIDungeonSearchSelectDialog::FUN_140e281f0(const Scaleform::GFx::FunctionHa
     if (pDialog != 0) {
         if (m_bAll)
             m_selected.clear();
-        FUN_140e1ba80(pDialog, m_nPage, m_selected);
+        pDialog->FUN_140e1ba80(m_nPage, m_selected);
     }
     vfunc_67();
 }

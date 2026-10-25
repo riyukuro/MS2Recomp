@@ -52,7 +52,7 @@ class Unk_SlOptions
 public:
     void FUN_141260a30(const CStringW& strServer);              // remember the server name
     void FUN_141260ab0(int nChannel);                           // remember the channel
-    void FUN_141260b60(const CStringW& strName);                // remember the login name
+    void FUN_141260b60(const CString& strName);                 // remember the login name (CStringA)
     void FUN_141260c00(const __int64* pnCharId);                // remember the character id
 
     void* m_00;                                                 // +0x00
@@ -350,7 +350,7 @@ void UIServerListDialog::ReceiveServerList(CInPacket& packet)
             m_servers.SetAt(server->m_strName, server);
         }
     }
-    FUN_1409a8b10()->FUN_140cfd260()->FUN_141260b60(CStringW(DAT_143ab29d8));
+    FUN_1409a8b10()->FUN_140cfd260()->FUN_141260b60(DAT_143ab29d8);
 }
 
 // @0x141ad16b0

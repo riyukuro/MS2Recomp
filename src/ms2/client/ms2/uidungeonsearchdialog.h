@@ -8,6 +8,7 @@
 
 #include <afx.h>
 #include <list>
+#include <set>
 #include <vector>
 
 #include "ms2/ms2layout.h"
@@ -34,7 +35,7 @@ public:
     void FUN_140e18f30();                                                       // releases the bound clips
     void FUN_140e18f90();                                                       // title and progress icon
     void FUN_140e19220();                                                       // clears the room id list
-    void FUN_140e19250(const std::list<int>& rooms);                            // sets the room id list
+    void FUN_140e19250(std::set<unsigned>& rooms);                              // swaps in the room id set
     bool FUN_140e19290(int nResult, const CMsgBoxData& data);                   // message box answer
     void FUN_140e192d0(const Scaleform::GFx::FunctionHandler::Params& params);  // find button
     void SendPartyMode34(const Scaleform::GFx::FunctionHandler::Params& params);  // cancel button
@@ -50,7 +51,7 @@ private:
     MS2Ptr<Unk_DsButton> m_findButton;                                          // +0x30 "m_findButton"
     MS2Ptr<Unk_DsButton> m_cancelButton;                                        // +0x40 "m_cancelButton"
     MS2Ptr<Unk_DsButton> m_settingButton;                                       // +0x50 "m_settingButton"
-    std::list<int> m_rooms;                                                     // +0x60 selected dungeon room ids
+    std::set<unsigned> m_rooms;                                                 // +0x60 selected dungeon room ids
 };
 MS2_CHECK_SIZE(UIDungeonSearchPage, 0x70);
 MS2_CHECK_OFFSET(UIDungeonSearchPage, m_nPage, 0x18);
@@ -81,7 +82,7 @@ public:
     void SendRoomDungeonMode13(const Scaleform::GFx::FunctionHandler::Params& params);  // category 13 packet
     void SendRoomDungeonMode14(const Scaleform::GFx::FunctionHandler::Params& params);  // category 14 packet
     void FUN_140e1ba50(const Scaleform::GFx::FunctionHandler::Params& params);  // opens UI 0x4eda
-    void FUN_140e1ba80(int nPage, const std::list<int>& rooms);                 // sets the room list of a page
+    void FUN_140e1ba80(int nPage, std::set<unsigned>& rooms);                   // sets the room set of a page
     MS2Ptr<UIDungeonSearchPage> FUN_140e1baf0(int nPage);                       // page 1 = custom, otherwise random
     void FUN_140e1bb70();                                                       // enables the category buttons
     void FUN_140e1bc70(int nContent, int nButton);                              // enables one category button

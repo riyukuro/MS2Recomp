@@ -269,7 +269,7 @@ public:
 class UIDungeonSearchSelectDialog : public UIDialog
 {
 public:
-    void FUN_140e27ed0(int nPage, const std::list<int>& rooms, std::list<int>* pSelected);
+    void FUN_140e27ed0(int nPage, std::set<unsigned>& rooms, std::set<unsigned>* pSelected);
 };
 class Unk_DsHelperDialog : public UIDialog
 {
@@ -288,7 +288,7 @@ void* FUN_141bd0cc0(void*);
 bool FUN_140e146a0();
 int FUN_140bb9640(void*);
 void FUN_140710590(COutPacket&);
-void FUN_140c0dd90(COutPacket&, const std::list<int>&);
+COutputStream& FUN_140c0dd90(COutputStream&, const std::set<unsigned>&);
 void FUN_14070f820(COutPacket&, bool);
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nValue);
 void FUN_140cff1b0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
@@ -392,9 +392,9 @@ void UIDungeonSearchPage::FUN_140e19220()
 MS2_REPLACE_METHOD(0x140e19220, UIDungeonSearchPage, FUN_140e19220, 31, 0x45C421AC);
 
 // @0x140e19250
-void UIDungeonSearchPage::FUN_140e19250(const std::list<int>& rooms)
+void UIDungeonSearchPage::FUN_140e19250(std::set<unsigned>& rooms)
 {
-    m_rooms = rooms;
+    m_rooms.swap(rooms);
     FUN_140e18f90();
 }
 MS2_REPLACE_METHOD(0x140e19250, UIDungeonSearchPage, FUN_140e19250, 51, 0x0EA65951);
@@ -432,9 +432,9 @@ void UIDungeonSearchPage::FUN_140e19380(const Scaleform::GFx::FunctionHandler::P
 {
     Unk_DsRoomVec rooms;
     FUN_140e199b0(rooms);
-    std::list<int> ids;
+    std::set<unsigned> ids;
     MS2_FOR_EACH(MS2Ptr<Unk_DsRoom> room, rooms)
-        ids.push_back(room->FUN_14031ddd0());
+        ids.insert(room->FUN_14031ddd0());
     UIDungeonSearchSelectDialog* pDialog = FUN_140e1cfe0(0x4f22);
     if (pDialog != 0) {
         pDialog->FUN_140e27ed0(m_nPage, ids, &m_rooms);
@@ -712,7 +712,7 @@ void UIDungeonSearchDialog::FUN_140e1ba50(const Scaleform::GFx::FunctionHandler:
 MS2_REPLACE_METHOD(0x140e1ba50, UIDungeonSearchDialog, FUN_140e1ba50, 37, 0x93C9A0C4);
 
 // @0x140e1ba80
-void UIDungeonSearchDialog::FUN_140e1ba80(int nPage, const std::list<int>& rooms)
+void UIDungeonSearchDialog::FUN_140e1ba80(int nPage, std::set<unsigned>& rooms)
 {
     MS2Ptr<UIDungeonSearchPage> pPage = FUN_140e1baf0(nPage);
     if (pPage.get() != 0)

@@ -1543,25 +1543,25 @@ int Lookup(const CStringA& value, const std::pair<const char*, int> (&table)[75]
 // @0x14021b830
 int Parse_14021b830(const CStringA& value) { return Lookup(FUN_14016a5c0(static_cast<const char*>(value),0),lookupTable); }
 // @0x14021bdc0
-int Parse_14021bdc0(const CStringW& value) { if(L"\u5248" == value) return 1;
-if(L"\u4146" == value) return 2;
-if(L"\u4446" == value) return 3;
-if(L"\u484c" == value) return 4;
-if(L"\u4852" == value) return 5;
-if(L"\u5043" == value) return 6;
-if(L"\u544d" == value) return 7;
-if(L"\u4c43" == value) return 8;
-if(L"\u4150" == value) return 9;
-if(L"\u4c47" == value) return 10;
-if(L"\u4853" == value) return 11;
-if(L"\u4846" == value) return 12;
-if(L"\u5945" == value) return 13;
-if(L"\u4145" == value) return 14;
-if(L"\u4450" == value) return 15;
-if(L"\u4952" == value) return 16;
-if(L"\u4542" == value) return 17;
-if(L"\u5245" == value) return 18;
-if(L"\u484f" == value) return 19;
+int Parse_14021bdc0(const CStringA& value) { if("HR" == value) return 1;
+if("FA" == value) return 2;
+if("FD" == value) return 3;
+if("LH" == value) return 4;
+if("RH" == value) return 5;
+if("CP" == value) return 6;
+if("MT" == value) return 7;
+if("CL" == value) return 8;
+if("PA" == value) return 9;
+if("GL" == value) return 10;
+if("SH" == value) return 11;
+if("FH" == value) return 12;
+if("EY" == value) return 13;
+if("EA" == value) return 14;
+if("PD" == value) return 15;
+if("RI" == value) return 16;
+if("BE" == value) return 17;
+if("ER" == value) return 18;
+if("OH" == value) return 19;
 return 0; }
 
 MS2_EMIT_CRT_MEMMOVE_S();

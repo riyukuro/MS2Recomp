@@ -96,7 +96,7 @@ class Unk_SsStrings
 {
 public:
     CStringW FUN_141811980(int nTable, int nId);                // the string of an id in a client string table
-    CString FUN_141813150(unsigned nRank);                      // the key of a rank string
+    CStringW FUN_141813150(unsigned nRank);                     // the rank string ("s_word_rank_%02d")
 };
 Unk_SsStrings* FUN_1401a9d70();
 
@@ -151,7 +151,7 @@ CStringW FUN_1409e8820(CStringW strKey, const unsigned short& nA);
 CStringW FUN_140ec2f00(CStringW strKey, const unsigned short& nA, const unsigned short& nB);
 CStringW FUN_140b99450(CStringW strKey, const CStringW& strA, const unsigned& nB);
 CStringW FUN_140e63450(CStringW strKey, const unsigned& nA, const unsigned& nB, const unsigned& nC);
-CStringW FUN_14183e9c0(CString strKey, unsigned nRank);        // rank text
+CStringW FUN_14183e9c0(CStringW strText, int nRank);          // rank text
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
