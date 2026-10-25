@@ -31,44 +31,11 @@
 // MS2-RANGE: 0x142ffa104-0x142ffeb08 .rdata
 // MS2-RANGE: 0x1430c3b20-0x1430c3b21 .rdata
 // MS2-RANGE: 0x1430e3b20-0x1430e3b21 .rdata
-// MS2-RANGE: 0x1430f5f38-0x1430f5f3e .rdata
-// MS2-RANGE: 0x1430fe2b0-0x1430fe3a0 .rdata
-// MS2-RANGE: 0x1431323f8-0x1431323fe .rdata
-// MS2-RANGE: 0x143134480-0x143134570 .rdata
 
 #ifndef MS2_HOOK_DLL
 
 extern unsigned char DAT_140c7ee70[];
 extern unsigned char DAT_143224848[];
-struct lua_State;
-int FUN_14225b970(lua_State* L);
-int FUN_14225af50(lua_State* L);
-int FUN_14225b840(lua_State* L);
-int FUN_14225afc0(lua_State* L);
-int FUN_14225b360(lua_State* L);
-int FUN_14225ae90(lua_State* L);
-int FUN_14225aeb0(lua_State* L);
-int FUN_14225b590(lua_State* L);
-int FUN_14225af70(lua_State* L);
-int FUN_14225b6c0(lua_State* L);
-int FUN_14225b480(lua_State* L);
-int FUN_14225aef0(lua_State* L);
-int FUN_14225b620(lua_State* L);
-int FUN_14225bb20(lua_State* L);
-int FUN_1423a6d80(lua_State* L);
-int FUN_1423a6370(lua_State* L);
-int FUN_1423a6c50(lua_State* L);
-int FUN_1423a63e0(lua_State* L);
-int FUN_1423a6780(lua_State* L);
-int FUN_1423a62b0(lua_State* L);
-int FUN_1423a62d0(lua_State* L);
-int FUN_1423a69b0(lua_State* L);
-int FUN_1423a6390(lua_State* L);
-int FUN_1423a6ae0(lua_State* L);
-int FUN_1423a68a0(lua_State* L);
-int FUN_1423a6310(lua_State* L);
-int FUN_1423a6a40(lua_State* L);
-int FUN_1423a6f30(lua_State* L);
 
 #pragma pack(push, 1)
 struct Sd_142ceaec8 {
@@ -132,70 +99,6 @@ struct Sd_142fdef20 {
 };
 struct Sd_142ffa83c {
     unsigned char b0[0x5];
-};
-struct Sd_1430fe2b0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-    const void* pc0;
-    const void* pc8;
-    const void* pd0;
-    const void* pd8;
-    const void* pe0;
-    const void* pe8;
-};
-struct Sd_143134480 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-    const void* pc0;
-    const void* pc8;
-    const void* pd0;
-    const void* pd8;
-    const void* pe0;
-    const void* pe8;
 };
 #pragma pack(pop)
 
@@ -799,50 +702,6 @@ alignas(4) Sd_142ffa83c DAT_142ffa83c = {
 };
 unsigned char DAT_1430c3b20 = 0x0u;                             // 0x1430c3b20
 unsigned char DAT_1430e3b20 = 0x0u;                             // 0x1430e3b20
-// 0x1430f5f38  Lua 5.1 ldblib: the library name luaopen_debug registers
-alignas(8) unsigned char DAT_1430f5f38[0x6] = {
-    0x64, 0x65, 0x62, 0x75, 0x67, 0x00,
-};
-// 0x1430fe2b0  Lua 5.1 ldblib: dblib, the debug library's luaL_Reg table (name, lua_CFunction; null-terminated)
-alignas(16) Sd_1430fe2b0 DAT_1430fe2b0 = {
-    DAT_1430f5f38, (const void*)&FUN_14225b970,
-    "getfenv", (const void*)&FUN_14225af50,
-    "gethook", (const void*)&FUN_14225b840,
-    "getinfo", (const void*)&FUN_14225afc0,
-    "getlocal", (const void*)&FUN_14225b360,
-    "getregistry", (const void*)&FUN_14225ae90,
-    "getmetatable", (const void*)&FUN_14225aeb0,
-    "getupvalue", (const void*)&FUN_14225b590,
-    "setfenv", (const void*)&FUN_14225af70,
-    "sethook", (const void*)&FUN_14225b6c0,
-    "setlocal", (const void*)&FUN_14225b480,
-    "setmetatable", (const void*)&FUN_14225aef0,
-    "setupvalue", (const void*)&FUN_14225b620,
-    "traceback", (const void*)&FUN_14225bb20,
-    nullptr, nullptr,
-};
-// 0x1431323f8  the second Lua 5.1 copy's ldblib: the library name its luaopen_debug registers
-alignas(8) unsigned char DAT_1431323f8[0x6] = {
-    0x64, 0x65, 0x62, 0x75, 0x67, 0x00,
-};
-// 0x143134480  the second Lua 5.1 copy's dblib luaL_Reg table
-alignas(16) Sd_143134480 DAT_143134480 = {
-    DAT_1431323f8, (const void*)&FUN_1423a6d80,
-    "getfenv", (const void*)&FUN_1423a6370,
-    "gethook", (const void*)&FUN_1423a6c50,
-    "getinfo", (const void*)&FUN_1423a63e0,
-    "getlocal", (const void*)&FUN_1423a6780,
-    "getregistry", (const void*)&FUN_1423a62b0,
-    "getmetatable", (const void*)&FUN_1423a62d0,
-    "getupvalue", (const void*)&FUN_1423a69b0,
-    "setfenv", (const void*)&FUN_1423a6390,
-    "sethook", (const void*)&FUN_1423a6ae0,
-    "setlocal", (const void*)&FUN_1423a68a0,
-    "setmetatable", (const void*)&FUN_1423a6310,
-    "setupvalue", (const void*)&FUN_1423a6a40,
-    "traceback", (const void*)&FUN_1423a6f30,
-    nullptr, nullptr,
-};
 
 #pragma comment(linker, "/alternatename:?DAT_142ceae98@@3UCAdventureLevelReward@@A=?DAT_142ceae98@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_142ceaea8@@3UCAdventureLevelAbility@@A=?DAT_142ceaea8@@3PAEA")
@@ -897,10 +756,5 @@ alignas(16) Sd_143134480 DAT_143134480 = {
 #pragma comment(linker, "/alternatename:?DAT_142ffa83c@@3QBDB=?DAT_142ffa83c@@3USd_142ffa83c@@A")
 #pragma comment(linker, "/alternatename:?DAT_140c7ee70@@3PAEA=?FUN_140c7ee70@@YAPEAUCRuntimeClass@@XZ")
 #pragma comment(linker, "/alternatename:?DAT_143224848@@3PAEA=??_7DOMBuilder@XML@GFx@Scaleform@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_1430f5f38@@3QBDB=?DAT_1430f5f38@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_1430fe2b0@@3QBUluaL_Reg@@B=?DAT_1430fe2b0@@3USd_1430fe2b0@@A")
-#pragma comment(linker, "/alternatename:?DAT_1430fe2b0@@3PAEA=?DAT_1430fe2b0@@3USd_1430fe2b0@@A")
-#pragma comment(linker, "/alternatename:?DAT_1431323f8@@3QBDB=?DAT_1431323f8@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143134480@@3QBUluaL_Reg@@B=?DAT_143134480@@3USd_143134480@@A")
 
 #endif // MS2_HOOK_DLL
