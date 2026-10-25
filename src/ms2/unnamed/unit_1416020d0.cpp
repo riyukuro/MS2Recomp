@@ -1140,3 +1140,23 @@ void FUN_141604670(long long* tree, long long* position) {
     *reinterpret_cast<long long*>(node + 16) = reinterpret_cast<long long>(position);
     position[1] = node;
 }
+
+// @0x141603220
+unsigned long long FUN_141603220(void* p) { return FUN_141601290(p) + 0x10; }
+
+// @0x141603200
+unsigned long long FUN_141603200(void* p) { return FUN_141601270(p) + 0x10; }
+// @0x141603240
+unsigned long long FUN_141603240(void* p) { return FUN_1416012b0(p) + 0x10; }
+// @0x141603260
+unsigned long long FUN_141603260(void* p) { return FUN_1416012d0(p) + 0x10; }
+// @0x141603280
+unsigned long long FUN_141603280(void* p) { return FUN_1416012f0(p) + 0x10; }
+// @0x1416032a0
+unsigned long long FUN_1416032a0(void* p) { return FUN_141601310(p) + 0x10; }
+// @0x1416032c0
+unsigned long long FUN_1416032c0(void* p) { return FUN_141601330(p) + 0x10; }
+// @0x1416032e0
+unsigned long long FUN_1416032e0(void* p) { return FUN_141601350(p) + 0x10; }
+// @0x141603300
+unsigned long long FUN_141603300(void* p) { return FUN_141601370(p) + 0x10; }
