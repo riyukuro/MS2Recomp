@@ -499,8 +499,6 @@ extern unsigned char DAT_14313dad0[];
 extern unsigned char DAT_14313db20[];
 extern unsigned char DAT_14313dbc0[];
 extern unsigned char DAT_143150b00[];
-extern unsigned char DAT_143176370[];
-extern unsigned char DAT_143176f18[];
 extern unsigned char DAT_143a2dd50[];
 void FUN_14000ebc0();
 void FUN_14000ebd0();
@@ -3630,6 +3628,103 @@ struct Sd_143222278 {
 };
 #pragma pack(pop)
 
+struct Sd_1431765b0 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[2];
+};
+struct Sd_143177000 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[2];
+};
+struct Sd_143177050 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[3];
+};
+struct Sd_1431770c8 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[1];
+};
+struct Sd_1431770f0 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[19];
+};
+struct Sd_1431773e8 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[1];
+};
+struct Sd_143177410 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[7];
+};
+struct Sd_143177480 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[12];
+};
+struct Sd_143177660 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[16];
+};
+extern Sd_143177930 DAT_143177930;
+extern Sd_1431765b0 DAT_1431765b0;
+extern Sd_143177000 DAT_143177000;
+extern Sd_143177050 DAT_143177050;
+extern Sd_1431770c8 DAT_1431770c8;
+extern Sd_1431770f0 DAT_1431770f0;
+extern Sd_1431773e8 DAT_1431773e8;
+extern Sd_143177410 DAT_143177410;
+extern Sd_143177480 DAT_143177480;
+extern Sd_143177660 DAT_143177660;
+extern unsigned char DAT_1424cdc40[];
+extern unsigned char DAT_1424cdcb0[];
+extern unsigned char DAT_1424cdd40[];
+extern unsigned char DAT_1424cddb0[];
+extern unsigned char DAT_1424cde40[];
+extern unsigned char DAT_1424cdeb0[];
+extern unsigned char DAT_1424cdf40[];
+extern unsigned char DAT_1424cdfb0[];
+extern unsigned char DAT_1424ce040[];
+extern unsigned char DAT_1424ce0b0[];
+extern unsigned char DAT_1424ce140[];
+extern unsigned char DAT_1424ce1b0[];
 extern Sd_143175fb0 DAT_143175fb0;
 extern Sd_143176620 DAT_143176620;
 extern Sd_143176670 DAT_143176670;
@@ -3761,6 +3856,13 @@ alignas(16) Sd_143175fb0 DAT_143175fb0 = {
         0x63, 0x75, 0x72, 0x69, 0x74, 0x79, 0x00, 0x00,
     },
 };
+// 0x1431765b0
+alignas(16) Sd_1431765b0 DAT_1431765b0 = {
+    {
+        {"ELEMENT_NODE", 0x270050},
+        {"TEXT_NODE", 0x270054},
+    },
+};
 // 0x1431765d0
 alignas(16) Sd_1431765d0 DAT_1431765d0 = {
     {
@@ -3805,7 +3907,7 @@ alignas(16) Sd_143176670 DAT_143176670 = {
     {
         0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143176370[0x240],
+    &DAT_1431765b0,
     {0},
     "firstChild",
     {
@@ -3961,6 +4063,107 @@ alignas(16) Sd_143176670 DAT_143176670 = {
         0x58, 0x4d, 0x4c, 0x4e, 0x6f, 0x64, 0x65, 0x54, 0x79, 0x70, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
 };
+// 0x143177000
+alignas(16) Sd_143177000 DAT_143177000 = {
+    {
+        {DAT_1424f9480, 0, "bufferTime", 0, 0x4a},
+        {DAT_1424f9480, 0, "soundTransform", 0, 0x4a},
+    },
+};
+// 0x143177050
+alignas(16) Sd_143177050 DAT_143177050 = {
+    {
+        {DAT_1424f9480, (const void*)&DAT_14313da30, "areSoundsInaccessible", 0, 0x0},
+        {DAT_1424f9480, 0, "computeSpectrum", 0, 0xc8},
+        {DAT_1424f9480, 0, "stopAll", 0, 0x0},
+    },
+};
+// 0x1431770c8
+alignas(16) Sd_1431770c8 DAT_1431770c8 = {
+    {
+        {DAT_1424f9480, (const void*)&DAT_143177b10, "getCamera", 0, 0x40},
+    },
+};
+// 0x1431770f0
+alignas(16) Sd_1431770f0 DAT_1431770f0 = {
+    {
+        {DAT_1424f9480, (const void*)&DAT_14313db20, "activityLevel", 0, 0x1},
+        {DAT_1424f9480, (const void*)&DAT_14313da80, "bandwidth", 0, 0x1},
+        {DAT_1424f9480, (const void*)&DAT_14313db20, "currentFPS", 0, 0x1},
+        {DAT_1424f9480, (const void*)&DAT_14313db20, "fps", 0, 0x1},
+        {DAT_1424f9480, (const void*)&DAT_14313da80, "height", 0, 0x1},
+        {DAT_1424f9480, (const void*)&DAT_14313da80, "index", 0, 0x1},
+        {DAT_1424f9480, (const void*)&DAT_14313da80, "keyFrameInterval", 0, 0x1},
+        {DAT_1424f9480, (const void*)&DAT_14313da30, "loopback", 0, 0x1},
+        {DAT_1424f9480, (const void*)&DAT_14313da80, "motionLevel", 0, 0x1},
+        {DAT_1424f9480, (const void*)&DAT_14313da80, "motionTimeout", 0, 0x1},
+        {DAT_1424f9480, (const void*)&DAT_14313da30, "muted", 0, 0x1},
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "name", 0, 0x1},
+        {DAT_1424f9480, (const void*)&DAT_14313da80, "quality", 0, 0x1},
+        {DAT_1424f9480, (const void*)&DAT_14313da80, "width", 0, 0x1},
+        {DAT_1424f9480, 0, "setKeyFrameInterval", 0, 0x48},
+        {DAT_1424f9480, 0, "setLoopback", 0, 0x40},
+        {DAT_1424f9480, 0, "setMode", 0, 0x118},
+        {DAT_1424f9480, 0, "setMotionLevel", 0, 0x88},
+        {DAT_1424f9480, 0, "setQuality", 0, 0x90},
+    },
+};
+// 0x1431773e8
+alignas(16) Sd_1431773e8 DAT_1431773e8 = {
+    {
+        {DAT_1424f9480, (const void*)&DAT_143177930, "getMicrophone", 0, 0x40},
+    },
+};
+// 0x143177410
+alignas(16) Sd_143177410 DAT_143177410 = {
+    {
+        {"album", 0x90038},
+        {"artist", 0x90040},
+        {"comment", 0x90048},
+        {"genre", 0x90050},
+        {"songName", 0x90058},
+        {"track", 0x90060},
+        {"year", 0x90068},
+    },
+};
+// 0x143177480
+alignas(16) Sd_143177480 DAT_143177480 = {
+    {
+        {DAT_1424cdc40, (const void*)&DAT_14313db20, "leftToLeft", 0, 0x1},
+        {DAT_1424cdcb0, 0, "leftToLeft", 0, 0x4a},
+        {DAT_1424cdd40, (const void*)&DAT_14313db20, "leftToRight", 0, 0x1},
+        {DAT_1424cddb0, 0, "leftToRight", 0, 0x4a},
+        {DAT_1424cde40, (const void*)&DAT_14313db20, "pan", 0, 0x1},
+        {DAT_1424cdeb0, 0, "pan", 0, 0x4a},
+        {DAT_1424cdf40, (const void*)&DAT_14313db20, "rightToLeft", 0, 0x1},
+        {DAT_1424cdfb0, 0, "rightToLeft", 0, 0x4a},
+        {DAT_1424ce040, (const void*)&DAT_14313db20, "rightToRight", 0, 0x1},
+        {DAT_1424ce0b0, 0, "rightToRight", 0, 0x4a},
+        {DAT_1424ce140, (const void*)&DAT_14313db20, "volume", 0, 0x1},
+        {DAT_1424ce1b0, 0, "volume", 0, 0x4a},
+    },
+};
+// 0x143177660
+alignas(16) Sd_143177660 DAT_143177660 = {
+    {
+        {DAT_1424f9480, (const void*)&DAT_14313db20, "activityLevel", 0, 0x1},
+        {DAT_1424f9480, (const void*)&DAT_14313db20, "gain", 0, 0x1},
+        {DAT_1424f9480, 0, "gain", 0, 0x4a},
+        {DAT_1424f9480, (const void*)&DAT_14313da80, "index", 0, 0x1},
+        {DAT_1424f9480, (const void*)&DAT_14313da30, "muted", 0, 0x1},
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "name", 0, 0x1},
+        {DAT_1424f9480, (const void*)&DAT_14313da80, "rate", 0, 0x1},
+        {DAT_1424f9480, 0, "rate", 0, 0x4a},
+        {DAT_1424f9480, (const void*)&DAT_14313db20, "silenceLevel", 0, 0x1},
+        {DAT_1424f9480, (const void*)&DAT_14313da80, "silenceTimeout", 0, 0x1},
+        {DAT_1424f9480, (const void*)&DAT_143177ac0, "soundTransform", 0, 0x1},
+        {DAT_1424f9480, 0, "soundTransform", 0, 0x4a},
+        {DAT_1424f9480, (const void*)&DAT_14313da30, "useEchoSuppression", 0, 0x1},
+        {DAT_1424f9480, 0, "setLoopBack", 0, 0x40},
+        {DAT_1424f9480, 0, "setSilenceLevel", 0, 0x88},
+        {DAT_1424f9480, 0, "setUseEchoSuppression", 0, 0x48},
+    },
+};
 // 0x1431778e0
 alignas(16) Sd_1431778e0 DAT_1431778e0 = {
     {
@@ -3974,7 +4177,7 @@ alignas(16) Sd_1431778e0 DAT_1431778e0 = {
         0x00, 0x00, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143176f18[0x4f8],
+    &DAT_143177410,
 };
 // 0x143177930
 alignas(16) Sd_143177930 DAT_143177930 = {
@@ -3988,9 +4191,9 @@ alignas(16) Sd_143177930 DAT_143177930 = {
     {
         0x01, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143176f18[0x4d0],
+    &DAT_1431773e8,
     {0},
-    &DAT_143176f18[0x748],
+    &DAT_143177660,
     {0},
 };
 // 0x143177980
@@ -4052,9 +4255,9 @@ alignas(16) Sd_143177a70 DAT_143177a70 = {
     {
         0x03, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143176f18[0x138],
+    &DAT_143177050,
     {0},
-    &DAT_143176f18[0xe8],
+    &DAT_143177000,
     {0},
 };
 // 0x143177ac0
@@ -4070,7 +4273,7 @@ alignas(16) Sd_143177ac0 DAT_143177ac0 = {
         0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143176f18[0x568],
+    &DAT_143177480,
     {0},
 };
 // 0x143177b10
@@ -4085,9 +4288,9 @@ alignas(16) Sd_143177b10 DAT_143177b10 = {
     {
         0x01, 0x00, 0x13, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143176f18[0x1b0],
+    &DAT_1431770c8,
     {0},
-    &DAT_143176f18[0x1d8],
+    &DAT_1431770f0,
     {0},
     DAT_1424ceb00,
     DAT_14313dad0,
@@ -9103,6 +9306,18 @@ alignas(8) Sd_143222278 DAT_143222278 = {
     },
 };
 
+#pragma comment(linker, "/alternatename:?DAT_1424cdc40@@3PAEA=?Func@?$ThunkFunc0@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@$0A@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424cdcb0@@3PAEA=?Func@?$ThunkFunc1@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@$00$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424cdd40@@3PAEA=?Func@?$ThunkFunc0@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@$01N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424cddb0@@3PAEA=?Func@?$ThunkFunc1@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@$02$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424cde40@@3PAEA=?Func@?$ThunkFunc0@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@$03N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424cdeb0@@3PAEA=?Func@?$ThunkFunc1@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@$04$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424cdf40@@3PAEA=?Func@?$ThunkFunc0@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@$05N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424cdfb0@@3PAEA=?Func@?$ThunkFunc1@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@$06$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424ce040@@3PAEA=?Func@?$ThunkFunc0@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@$07N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424ce0b0@@3PAEA=?Func@?$ThunkFunc1@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@$08$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424ce140@@3PAEA=?Func@?$ThunkFunc0@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@$09N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424ce1b0@@3PAEA=?Func@?$ThunkFunc1@VSoundTransform@fl_media@Instances@AS3@GFx@Scaleform@@$0L@$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
 #pragma comment(linker, "/alternatename:?XMLSignatureValidatorCI@fl_security@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143175fb0@@3USd_143175fb0@@A")
 #pragma comment(linker, "/alternatename:?XMLDocumentCI@fl_xml@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_1431765d0@@3USd_1431765d0@@A")
 #pragma comment(linker, "/alternatename:?XMLNodeCI@fl_xml@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143176620@@3USd_143176620@@A")
@@ -9737,8 +9952,6 @@ alignas(8) Sd_143222278 DAT_143222278 = {
 #pragma comment(linker, "/alternatename:?DAT_14313db20@@3PAEA=?NumberCI@fl@AS3@GFx@Scaleform@@3UClassInfo@234@B")
 #pragma comment(linker, "/alternatename:?DAT_14313dbc0@@3PAEA=?ArrayCI@fl@AS3@GFx@Scaleform@@3UClassInfo@234@B")
 #pragma comment(linker, "/alternatename:?DAT_143150b00@@3PAEA=?EventDispatcherCI@fl_events@AS3@GFx@Scaleform@@3UClassInfo@234@B")
-#pragma comment(linker, "/alternatename:?DAT_143176370@@3PAEA=??_7XMLSignatureValidator@fl_security@ClassTraits@AS3@GFx@Scaleform@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_143176f18@@3PAEA=??_7XMLNodeType@fl_xml@Classes@AS3@GFx@Scaleform@@6B@")
 #pragma comment(linker, "/alternatename:?DAT_143a2dd50@@3PAEA=DAT_143a2dd50")
 
 #endif // MS2_HOOK_DLL

@@ -13,13 +13,26 @@
 // MS2-RANGE: 0x14313a200-0x14313f358 .rdata
 // MS2-RANGE: 0x143144150-0x1431496d0 .rdata
 // MS2-RANGE: 0x14314ed40-0x14314ef70 .rdata
+// MS2-RANGE: 0x14314f3e0-0x14314f738 .rdata
+// MS2-RANGE: 0x14314f740-0x14314fe18 .rdata
+// MS2-RANGE: 0x14314fe20-0x143150388 .rdata
+// MS2-RANGE: 0x143150390-0x143150788 .rdata
+// MS2-RANGE: 0x143150790-0x143150920 .rdata
 // MS2-RANGE: 0x143150920-0x1431533b8 .rdata
 // MS2-RANGE: 0x143158870-0x14315ac78 .rdata
+// MS2-RANGE: 0x14315c1d0-0x14315c2e8 .rdata
+// MS2-RANGE: 0x14315c2f0-0x14315c6d8 .rdata
+// MS2-RANGE: 0x14315c6e0-0x14315cfe8 .rdata
 // MS2-RANGE: 0x14315cff0-0x14315de18 .rdata
+// MS2-RANGE: 0x14315f270-0x14315ff20 .rdata
 // MS2-RANGE: 0x14315ff20-0x143162100 .rdata
+// MS2-RANGE: 0x143164940-0x143165068 .rdata
+// MS2-RANGE: 0x143165070-0x143165208 .rdata
 // MS2-RANGE: 0x143165210-0x143165920 .rdata
+// MS2-RANGE: 0x143167360-0x143167a30 .rdata
 // MS2-RANGE: 0x143167a30-0x143169970 .rdata
 // MS2-RANGE: 0x14316b3f0-0x14316b640 .rdata
+// MS2-RANGE: 0x14316ccb0-0x14316d038 .rdata
 // MS2-RANGE: 0x14316d040-0x14316e6f0 .rdata
 // MS2-RANGE: 0x14316fd10-0x143173d28 .rdata
 
@@ -1000,15 +1013,6 @@ extern unsigned char DAT_14251ace0[];
 extern unsigned char DAT_14251b0e0[];
 extern unsigned char DAT_14251f430[];
 extern unsigned char DAT_14280ef52[];
-extern unsigned char DAT_14313c0b0[];
-extern unsigned char DAT_14314f2f8[];
-extern unsigned char DAT_143158ab8[];
-extern unsigned char DAT_14315c0a0[];
-extern unsigned char DAT_14315f178[];
-extern unsigned char DAT_143164860[];
-extern unsigned char DAT_143167168[];
-extern unsigned char DAT_14316be60[];
-extern unsigned char DAT_143171f38[];
 extern unsigned char DAT_143177ac0[];
 extern unsigned char DAT_143a2a850[];
 extern unsigned char DAT_143a2aab0[];
@@ -9369,6 +9373,1152 @@ struct Sd_1431726d0 {
 };
 #pragma pack(pop)
 
+struct Sd_14313c200 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[1];
+};
+struct Sd_14313c230 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[2];
+};
+struct Sd_14313c280 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[2];
+};
+struct Sd_14313c2d0 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[2];
+};
+struct Sd_14313c2f0 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[12];
+};
+struct Sd_14313c4d0 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[6];
+};
+struct Sd_14314f3e0 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[21];
+};
+struct Sd_14314f728 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[1];
+};
+struct Sd_14314f740 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[5];
+};
+struct Sd_14314f790 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[12];
+};
+struct Sd_14314f970 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[4];
+};
+struct Sd_14314f9b0 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[8];
+};
+struct Sd_14314faf0 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[1];
+};
+struct Sd_14314fb00 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[19];
+};
+struct Sd_14314fdf8 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[2];
+};
+struct Sd_14314fe20 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[6];
+};
+struct Sd_14314ff10 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[2];
+};
+struct Sd_14314ff30 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[10];
+};
+struct Sd_1431500c0 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[4];
+};
+struct Sd_143150160 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[4];
+};
+struct Sd_1431501a0 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[4];
+};
+struct Sd_143150240 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[4];
+};
+struct Sd_1431502e0 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[2];
+};
+struct Sd_143150300 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[1];
+};
+struct Sd_143150390 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[4];
+};
+struct Sd_143150430 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[1];
+};
+struct Sd_143150440 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[1];
+};
+struct Sd_143150450 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[1];
+};
+struct Sd_143150460 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[2];
+};
+struct Sd_1431504b0 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[1];
+};
+struct Sd_1431504c0 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[2];
+};
+struct Sd_143150510 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[1];
+};
+struct Sd_143150520 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[1];
+};
+struct Sd_143150530 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[6];
+};
+struct Sd_143150620 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[1];
+};
+struct Sd_143150630 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[2];
+};
+struct Sd_143150650 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[4];
+};
+struct Sd_1431506f0 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[3];
+};
+struct Sd_143150768 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[2];
+};
+struct Sd_143150790 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[10];
+};
+struct Sd_143158cd0 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[19];
+};
+struct Sd_143158fc8 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[1];
+};
+struct Sd_143158ff0 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[4];
+};
+struct Sd_143159030 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[3];
+};
+struct Sd_143159060 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[3];
+};
+struct Sd_143159090 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[23];
+};
+struct Sd_143159430 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[7];
+};
+struct Sd_143159550 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[3];
+};
+struct Sd_14315c1d0 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[7];
+};
+struct Sd_14315c2f0 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[25];
+};
+struct Sd_14315c6e0 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[24];
+};
+struct Sd_14315caa0 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[3];
+};
+struct Sd_14315cad0 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[2];
+};
+struct Sd_14315cb20 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[4];
+};
+struct Sd_14315cb60 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[29];
+};
+struct Sd_14315f270 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[3];
+};
+struct Sd_14315f2a0 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[6];
+};
+struct Sd_14315f390 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[2];
+};
+struct Sd_14315f3b0 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[2];
+};
+struct Sd_14315f3d0 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[6];
+};
+struct Sd_14315f430 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[41];
+};
+struct Sd_14315fa98 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[1];
+};
+struct Sd_14315fac0 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[4];
+};
+struct Sd_14315fb60 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[24];
+};
+struct Sd_143164940 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[27];
+};
+struct Sd_143164d78 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[1];
+};
+struct Sd_143164da0 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[6];
+};
+struct Sd_143164e90 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[8];
+};
+struct Sd_143164f10 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[4];
+};
+struct Sd_143164f50 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[5];
+};
+struct Sd_143164fa0 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[4];
+};
+struct Sd_143165040 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[1];
+};
+struct Sd_143165070 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[7];
+};
+struct Sd_1431650e0 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[1];
+};
+struct Sd_1431650f0 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[7];
+};
+struct Sd_143167360 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[2];
+};
+struct Sd_1431673b0 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[36];
+};
+struct Sd_143167950 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[2];
+};
+struct Sd_143167970 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[3];
+};
+struct Sd_1431679a0 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[3];
+};
+struct Sd_1431679d0 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[4];
+};
+struct Sd_143167a10 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[2];
+};
+struct Sd_14316ccb0 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[4];
+};
+struct Sd_14316ccf0 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[4];
+};
+struct Sd_14316cd90 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[5];
+};
+struct Sd_14316cde0 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[6];
+};
+struct Sd_14316ced0 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[5];
+};
+struct Sd_14316cf20 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[7];
+};
+struct Sd_143172010 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[1];
+};
+struct Sd_143172020 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[8];
+};
+struct Sd_1431720a0 {
+    struct {
+        const char* p0;
+        unsigned long long q8;
+    } e[10];
+};
+struct Sd_143172140 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[5];
+};
+struct Sd_143172208 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[1];
+};
+struct Sd_143150310 {
+    struct {
+        const void* p0;
+        const void* p8;
+        const char* p10;
+        const char* p18;
+        unsigned long long q20;
+    } e[3];
+};
+extern Sd_14316d0e0 DAT_14316d0e0;
+extern Sd_143165350 DAT_143165350;
+extern Sd_143150310 DAT_143150310;
+extern unsigned char DAT_14245af00[];
+extern unsigned char DAT_14245af60[];
+extern unsigned char DAT_14245b080[];
+extern Sd_14313c200 DAT_14313c200;
+extern Sd_14313c230 DAT_14313c230;
+extern Sd_14313c280 DAT_14313c280;
+extern Sd_14313c2d0 DAT_14313c2d0;
+extern Sd_14313c2f0 DAT_14313c2f0;
+extern Sd_14313c4d0 DAT_14313c4d0;
+extern Sd_14314f3e0 DAT_14314f3e0;
+extern Sd_14314f728 DAT_14314f728;
+extern Sd_14314f740 DAT_14314f740;
+extern Sd_14314f790 DAT_14314f790;
+extern Sd_14314f970 DAT_14314f970;
+extern Sd_14314f9b0 DAT_14314f9b0;
+extern Sd_14314faf0 DAT_14314faf0;
+extern Sd_14314fb00 DAT_14314fb00;
+extern Sd_14314fdf8 DAT_14314fdf8;
+extern Sd_14314fe20 DAT_14314fe20;
+extern Sd_14314ff10 DAT_14314ff10;
+extern Sd_14314ff30 DAT_14314ff30;
+extern Sd_1431500c0 DAT_1431500c0;
+extern Sd_143150160 DAT_143150160;
+extern Sd_1431501a0 DAT_1431501a0;
+extern Sd_143150240 DAT_143150240;
+extern Sd_1431502e0 DAT_1431502e0;
+extern Sd_143150300 DAT_143150300;
+extern Sd_143150390 DAT_143150390;
+extern Sd_143150430 DAT_143150430;
+extern Sd_143150440 DAT_143150440;
+extern Sd_143150450 DAT_143150450;
+extern Sd_143150460 DAT_143150460;
+extern Sd_1431504b0 DAT_1431504b0;
+extern Sd_1431504c0 DAT_1431504c0;
+extern Sd_143150510 DAT_143150510;
+extern Sd_143150520 DAT_143150520;
+extern Sd_143150530 DAT_143150530;
+extern Sd_143150620 DAT_143150620;
+extern Sd_143150630 DAT_143150630;
+extern Sd_143150650 DAT_143150650;
+extern Sd_1431506f0 DAT_1431506f0;
+extern Sd_143150768 DAT_143150768;
+extern Sd_143150790 DAT_143150790;
+extern Sd_143158cd0 DAT_143158cd0;
+extern Sd_143158fc8 DAT_143158fc8;
+extern Sd_143158ff0 DAT_143158ff0;
+extern Sd_143159030 DAT_143159030;
+extern Sd_143159060 DAT_143159060;
+extern Sd_143159090 DAT_143159090;
+extern Sd_143159430 DAT_143159430;
+extern Sd_143159550 DAT_143159550;
+extern Sd_14315c1d0 DAT_14315c1d0;
+extern Sd_14315c2f0 DAT_14315c2f0;
+extern Sd_14315c6e0 DAT_14315c6e0;
+extern Sd_14315caa0 DAT_14315caa0;
+extern Sd_14315cad0 DAT_14315cad0;
+extern Sd_14315cb20 DAT_14315cb20;
+extern Sd_14315cb60 DAT_14315cb60;
+extern Sd_14315f270 DAT_14315f270;
+extern Sd_14315f2a0 DAT_14315f2a0;
+extern Sd_14315f390 DAT_14315f390;
+extern Sd_14315f3b0 DAT_14315f3b0;
+extern Sd_14315f3d0 DAT_14315f3d0;
+extern Sd_14315f430 DAT_14315f430;
+extern Sd_14315fa98 DAT_14315fa98;
+extern Sd_14315fac0 DAT_14315fac0;
+extern Sd_14315fb60 DAT_14315fb60;
+extern Sd_143164940 DAT_143164940;
+extern Sd_143164d78 DAT_143164d78;
+extern Sd_143164da0 DAT_143164da0;
+extern Sd_143164e90 DAT_143164e90;
+extern Sd_143164f10 DAT_143164f10;
+extern Sd_143164f50 DAT_143164f50;
+extern Sd_143164fa0 DAT_143164fa0;
+extern Sd_143165040 DAT_143165040;
+extern Sd_143165070 DAT_143165070;
+extern Sd_1431650e0 DAT_1431650e0;
+extern Sd_1431650f0 DAT_1431650f0;
+extern Sd_143167360 DAT_143167360;
+extern Sd_1431673b0 DAT_1431673b0;
+extern Sd_143167950 DAT_143167950;
+extern Sd_143167970 DAT_143167970;
+extern Sd_1431679a0 DAT_1431679a0;
+extern Sd_1431679d0 DAT_1431679d0;
+extern Sd_143167a10 DAT_143167a10;
+extern Sd_14316ccb0 DAT_14316ccb0;
+extern Sd_14316ccf0 DAT_14316ccf0;
+extern Sd_14316cd90 DAT_14316cd90;
+extern Sd_14316cde0 DAT_14316cde0;
+extern Sd_14316ced0 DAT_14316ced0;
+extern Sd_14316cf20 DAT_14316cf20;
+extern Sd_143172010 DAT_143172010;
+extern Sd_143172020 DAT_143172020;
+extern Sd_1431720a0 DAT_1431720a0;
+extern Sd_143172140 DAT_143172140;
+extern Sd_143172208 DAT_143172208;
+extern unsigned char DAT_142455e90[];
+extern unsigned char DAT_142455ef0[];
+extern unsigned char DAT_142455f60[];
+extern unsigned char DAT_142455fc0[];
+extern unsigned char DAT_142456030[];
+extern unsigned char DAT_142456090[];
+extern unsigned char DAT_142456250[];
+extern unsigned char DAT_142456470[];
+extern unsigned char DAT_1424564e0[];
+extern unsigned char DAT_1424576e0[];
+extern unsigned char DAT_142457790[];
+extern unsigned char DAT_1424578e0[];
+extern unsigned char DAT_142457c50[];
+extern unsigned char DAT_142457f80[];
+extern unsigned char DAT_142457ff0[];
+extern unsigned char DAT_142458080[];
+extern unsigned char DAT_1424580f0[];
+extern unsigned char DAT_142458180[];
+extern unsigned char DAT_142458230[];
+extern unsigned char DAT_142458980[];
+extern unsigned char DAT_1424589f0[];
+extern unsigned char DAT_142458af0[];
+extern unsigned char DAT_142458ba0[];
+extern unsigned char DAT_142458c10[];
+extern unsigned char DAT_142458eb0[];
+extern unsigned char DAT_142458f50[];
+extern unsigned char DAT_142459090[];
+extern unsigned char DAT_142459400[];
+extern unsigned char DAT_142459540[];
+extern unsigned char DAT_1424595f0[];
+extern unsigned char DAT_142459660[];
+extern unsigned char DAT_142459680[];
+extern unsigned char DAT_1424596e0[];
+extern unsigned char DAT_142459740[];
+extern unsigned char DAT_1424597a0[];
+extern unsigned char DAT_142459800[];
+extern unsigned char DAT_142459860[];
+extern unsigned char DAT_1424598c0[];
+extern unsigned char DAT_142459a70[];
+extern unsigned char DAT_142459ad0[];
+extern unsigned char DAT_142459b40[];
+extern unsigned char DAT_142459bd0[];
+extern unsigned char DAT_142459c40[];
+extern unsigned char DAT_142459cd0[];
+extern unsigned char DAT_142459d40[];
+extern unsigned char DAT_142459e40[];
+extern unsigned char DAT_142459ea0[];
+extern unsigned char DAT_142459f00[];
+extern unsigned char DAT_142459f70[];
+extern unsigned char DAT_142459fe0[];
+extern unsigned char DAT_14245a090[];
+extern unsigned char DAT_14245a100[];
+extern unsigned char DAT_14245a270[];
+extern unsigned char DAT_14245a2e0[];
+extern unsigned char DAT_14245a370[];
+extern unsigned char DAT_14245a3e0[];
+extern unsigned char DAT_14245a470[];
+extern unsigned char DAT_14245a4e0[];
+extern unsigned char DAT_14245a570[];
+extern unsigned char DAT_14245a5e0[];
+extern unsigned char DAT_14245a650[];
+extern unsigned char DAT_14245a750[];
+extern unsigned char DAT_14245a7e0[];
+extern unsigned char DAT_14245a840[];
+extern unsigned char DAT_14245a8b0[];
+extern unsigned char DAT_14245a920[];
+extern unsigned char DAT_14245a9b0[];
+extern unsigned char DAT_14245aa60[];
+extern unsigned char DAT_14245ab10[];
+extern unsigned char DAT_14245ab50[];
+extern unsigned char DAT_14245abc0[];
+extern unsigned char DAT_14245ac20[];
+extern unsigned char DAT_14245ac80[];
+extern unsigned char DAT_14245ad30[];
+extern unsigned char DAT_14245b010[];
+extern unsigned char DAT_14245b0f0[];
+extern unsigned char DAT_14245b2e0[];
+extern unsigned char DAT_14245b350[];
+extern unsigned char DAT_14245b3e0[];
+extern unsigned char DAT_14245b450[];
+extern unsigned char DAT_14245b620[];
+extern unsigned char DAT_14245b6d0[];
+extern unsigned char DAT_14245d4b0[];
+extern unsigned char DAT_14245d5d0[];
+extern unsigned char DAT_14245d780[];
+extern unsigned char DAT_14245d8a0[];
+extern unsigned char DAT_14245d910[];
+extern unsigned char DAT_14245d970[];
+extern unsigned char DAT_14245d9d0[];
+extern unsigned char DAT_14245dbe0[];
+extern unsigned char DAT_14245dc50[];
+extern unsigned char DAT_14245de10[];
+extern unsigned char DAT_14245de70[];
+extern unsigned char DAT_14245df40[];
+extern unsigned char DAT_14245e010[];
+extern unsigned char DAT_14245e120[];
+extern unsigned char DAT_1424748b0[];
+extern unsigned char DAT_142474d50[];
+extern unsigned char DAT_142474dc0[];
+extern unsigned char DAT_142474e50[];
+extern unsigned char DAT_142474ec0[];
+extern unsigned char DAT_142475090[];
+extern unsigned char DAT_142475100[];
+extern unsigned char DAT_142475190[];
+extern unsigned char DAT_142475200[];
+extern unsigned char DAT_142475270[];
+extern unsigned char DAT_142475300[];
+extern unsigned char DAT_142475390[];
+extern unsigned char DAT_142475400[];
+extern unsigned char DAT_142475460[];
+extern unsigned char DAT_1424754f0[];
+extern unsigned char DAT_142475560[];
+extern unsigned char DAT_1424755c0[];
+extern unsigned char DAT_142475630[];
+extern unsigned char DAT_1424756a0[];
+extern unsigned char DAT_142475730[];
+extern unsigned char DAT_1424757e0[];
+extern unsigned char DAT_142475840[];
+extern unsigned char DAT_1424758a0[];
+extern unsigned char DAT_142475900[];
+extern unsigned char DAT_142475960[];
+extern unsigned char DAT_1424759c0[];
+extern unsigned char DAT_142475a20[];
+extern unsigned char DAT_142475a80[];
+extern unsigned char DAT_142475af0[];
+extern unsigned char DAT_142475b60[];
+extern unsigned char DAT_142475bf0[];
+extern unsigned char DAT_142476970[];
+extern unsigned char DAT_142476a20[];
+extern unsigned char DAT_142476a60[];
+extern unsigned char DAT_14247cf80[];
+extern unsigned char DAT_14247d030[];
+extern unsigned char DAT_14247d070[];
+extern unsigned char DAT_14247d0e0[];
+extern unsigned char DAT_14247d170[];
+extern unsigned char DAT_14247d1e0[];
+extern unsigned char DAT_14247d2d0[];
+extern unsigned char DAT_14247df10[];
+extern unsigned char DAT_14247df80[];
+extern unsigned char DAT_14247dff0[];
+extern unsigned char DAT_14247e080[];
+extern unsigned char DAT_14247e0f0[];
+extern unsigned char DAT_14247e180[];
+extern unsigned char DAT_14247e1f0[];
+extern unsigned char DAT_14247e280[];
+extern unsigned char DAT_14247e2f0[];
+extern unsigned char DAT_14247e380[];
+extern unsigned char DAT_14247e3f0[];
+extern unsigned char DAT_14247e620[];
+extern unsigned char DAT_14247e6d0[];
+extern unsigned char DAT_14247e7c0[];
+extern unsigned char DAT_14247e830[];
+extern unsigned char DAT_14247e870[];
+extern unsigned char DAT_14247e900[];
+extern unsigned char DAT_14247e9b0[];
+extern unsigned char DAT_14247ea60[];
+extern unsigned char DAT_14247eb40[];
+extern unsigned char DAT_14247eb80[];
+extern unsigned char DAT_14247ebc0[];
+extern unsigned char DAT_14247ec30[];
+extern unsigned char DAT_14247ed60[];
+extern unsigned char DAT_14247edf0[];
+extern unsigned char DAT_14247ee10[];
+extern unsigned char DAT_14247ee80[];
+extern unsigned char DAT_14247eef0[];
+extern unsigned char DAT_14247ef80[];
+extern unsigned char DAT_14247efa0[];
+extern unsigned char DAT_14247f050[];
+extern unsigned char DAT_14247f0e0[];
+extern unsigned char DAT_14247f120[];
+extern unsigned char DAT_14247f210[];
+extern unsigned char DAT_14247f280[];
+extern unsigned char DAT_14247f2f0[];
+extern unsigned char DAT_14247f380[];
+extern unsigned char DAT_14247f430[];
+extern unsigned char DAT_14247f470[];
+extern unsigned char DAT_14247f520[];
+extern unsigned char DAT_14247f650[];
+extern unsigned char DAT_14247f6f0[];
+extern unsigned char DAT_14247f790[];
+extern unsigned char DAT_14247f830[];
+extern unsigned char DAT_14247f910[];
+extern unsigned char DAT_14247f950[];
+extern unsigned char DAT_14247fa40[];
+extern unsigned char DAT_14247fb10[];
+extern unsigned char DAT_14247fbb0[];
+extern unsigned char DAT_14247fc80[];
+extern unsigned char DAT_14247fce0[];
+extern unsigned char DAT_14247fdc0[];
+extern unsigned char DAT_14247fe00[];
+extern unsigned char DAT_14247fe20[];
+extern unsigned char DAT_14247fe90[];
+extern unsigned char DAT_142480780[];
+extern unsigned char DAT_1424807f0[];
+extern unsigned char DAT_1424808a0[];
+extern unsigned char DAT_1424808e0[];
+extern unsigned char DAT_142480990[];
+extern unsigned char DAT_1424809d0[];
+extern unsigned char DAT_142480b50[];
+extern unsigned char DAT_142480c50[];
+extern unsigned char DAT_142480d80[];
+extern unsigned char DAT_142480eb0[];
+extern unsigned char DAT_142480f60[];
+extern unsigned char DAT_1424810f0[];
+extern unsigned char DAT_1424811e0[];
+extern unsigned char DAT_142481200[];
+extern unsigned char DAT_142481370[];
+extern unsigned char DAT_142481430[];
+extern unsigned char DAT_142481490[];
+extern unsigned char DAT_142481510[];
+extern unsigned char DAT_142481550[];
+extern unsigned char DAT_142481650[];
+extern unsigned char DAT_142481780[];
+extern unsigned char DAT_1424818b0[];
+extern unsigned char DAT_142481a30[];
+extern unsigned char DAT_142481b20[];
+extern unsigned char DAT_142481b70[];
+extern unsigned char DAT_1424914e0[];
+extern unsigned char DAT_142491540[];
+extern unsigned char DAT_1424915a0[];
+extern unsigned char DAT_142491600[];
+extern unsigned char DAT_142491660[];
+extern unsigned char DAT_1424916d0[];
+extern unsigned char DAT_1424917d0[];
+extern unsigned char DAT_142491880[];
+extern unsigned char DAT_1424919d0[];
+extern unsigned char DAT_142491a40[];
+extern unsigned char DAT_142491b40[];
+extern unsigned char DAT_142491ba0[];
+extern unsigned char DAT_142491c00[];
+extern unsigned char DAT_142491c60[];
+extern unsigned char DAT_142491cc0[];
+extern unsigned char DAT_142491d30[];
+extern unsigned char DAT_142491e30[];
+extern unsigned char DAT_142491ee0[];
+extern unsigned char DAT_142491f20[];
+extern unsigned char DAT_142491f90[];
+extern unsigned char DAT_142492090[];
+extern unsigned char DAT_1424920f0[];
+extern unsigned char DAT_142492150[];
+extern unsigned char DAT_1424921c0[];
+extern unsigned char DAT_14249c500[];
+extern unsigned char DAT_14249c560[];
+extern unsigned char DAT_14249c5c0[];
+extern unsigned char DAT_14249c620[];
+extern unsigned char DAT_14249c680[];
+extern unsigned char DAT_14249c6e0[];
+extern unsigned char DAT_14249c740[];
+extern unsigned char DAT_14249c7a0[];
+extern unsigned char DAT_14249c800[];
+extern unsigned char DAT_14249c860[];
+extern unsigned char DAT_14249c8c0[];
+extern unsigned char DAT_14249c920[];
+extern unsigned char DAT_14249ca30[];
+extern unsigned char DAT_14249ca90[];
+extern unsigned char DAT_14249cc70[];
+extern unsigned char DAT_14249ce10[];
+extern unsigned char DAT_14249ce80[];
+extern unsigned char DAT_14249cee0[];
+extern unsigned char DAT_14249cf50[];
+extern unsigned char DAT_14249cfc0[];
+extern unsigned char DAT_14249d030[];
+extern unsigned char DAT_14249d1e0[];
+extern unsigned char DAT_14249d250[];
+extern unsigned char DAT_14249d2c0[];
+extern unsigned char DAT_14249d330[];
+extern unsigned char DAT_14249d3a0[];
+extern unsigned char DAT_14249d410[];
+extern unsigned char DAT_14249d5c0[];
+extern unsigned char DAT_14249d6c0[];
+extern unsigned char DAT_14249d730[];
+extern unsigned char DAT_14249d790[];
+extern unsigned char DAT_14249d7f0[];
+extern unsigned char DAT_14249d810[];
+extern unsigned char DAT_14249deb0[];
+extern unsigned char DAT_14249e230[];
+extern unsigned char DAT_14249e250[];
+extern unsigned char DAT_14249e2b0[];
+extern unsigned char DAT_14249e320[];
+extern unsigned char DAT_14249e340[];
+extern unsigned char DAT_14249e360[];
+extern unsigned char DAT_14249e380[];
+extern unsigned char DAT_1424a43e0[];
+extern unsigned char DAT_1424a4450[];
+extern unsigned char DAT_1424a4550[];
+extern unsigned char DAT_1424a4570[];
+extern unsigned char DAT_1424a46c0[];
+extern unsigned char DAT_1424a46e0[];
+extern unsigned char DAT_1424a4830[];
+extern unsigned char DAT_1424a4850[];
+extern unsigned char DAT_1424a49a0[];
+extern unsigned char DAT_1424a49c0[];
+extern unsigned char DAT_1424a4b10[];
+extern unsigned char DAT_1424a4b80[];
+extern unsigned char DAT_1424a4c80[];
+extern unsigned char DAT_1424a4ca0[];
+extern unsigned char DAT_1424a4df0[];
+extern unsigned char DAT_1424a4e10[];
+extern unsigned char DAT_1424a4f60[];
+extern unsigned char DAT_1424a4f80[];
+extern unsigned char DAT_1424a50d0[];
+extern unsigned char DAT_1424a50f0[];
+extern unsigned char DAT_1424a5240[];
+extern unsigned char DAT_1424a5260[];
+extern unsigned char DAT_1424a53b0[];
+extern unsigned char DAT_1424a53d0[];
+extern unsigned char DAT_1424a5520[];
+extern unsigned char DAT_1424a5540[];
+extern unsigned char DAT_1424a5690[];
+extern unsigned char DAT_1424a56b0[];
+extern unsigned char DAT_1424a5800[];
+extern unsigned char DAT_1424a58b0[];
+extern unsigned char DAT_1424a58f0[];
+extern unsigned char DAT_1424a5960[];
+extern unsigned char DAT_1424a5a60[];
+extern unsigned char DAT_1424a5a80[];
+extern unsigned char DAT_1424a5bd0[];
+extern unsigned char DAT_1424a5c40[];
+extern unsigned char DAT_1424a7180[];
+extern unsigned char DAT_1424a7270[];
+extern unsigned char DAT_1424b5730[];
+extern unsigned char DAT_1424b5830[];
+extern unsigned char DAT_1424b58a0[];
+extern unsigned char DAT_1424b58c0[];
+extern unsigned char DAT_1424b6390[];
+extern unsigned char DAT_1424b6400[];
+extern unsigned char DAT_1424b6500[];
+extern unsigned char DAT_1424b6560[];
+extern unsigned char DAT_1424b6610[];
+extern unsigned char DAT_1424b6670[];
+extern unsigned char DAT_1424c1860[];
+extern unsigned char DAT_1424c1910[];
+extern unsigned char DAT_1424c1950[];
+extern unsigned char DAT_1424c1b60[];
+extern unsigned char DAT_1424c1bd0[];
+extern unsigned char DAT_1424c3b90[];
 extern Sd_14313c670 DAT_14313c670;
 extern Sd_14313d6a0 DAT_14313d6a0;
 extern Sd_14313d6e8 DAT_14313d6e8;
@@ -10225,6 +11375,61 @@ alignas(8) Sd_14313bf48 DAT_14313bf48 = {
     (const void*)&FUN_1423db970,
     (const void*)&FUN_1423db8b0,
 };
+// 0x14313c200
+alignas(16) Sd_14313c200 DAT_14313c200 = {
+    {
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "searchText", "flash.accessibility:ISearchableText", 0x1},
+    },
+};
+// 0x14313c230
+alignas(16) Sd_14313c230 DAT_14313c230 = {
+    {
+        {DAT_1424f9480, (const void*)&DAT_14313da80, "selectionActiveIndex", "flash.accessibility:ISimpleTextSelection", 0x1},
+        {DAT_1424f9480, (const void*)&DAT_14313da80, "selectionAnchorIndex", "flash.accessibility:ISimpleTextSelection", 0x1},
+    },
+};
+// 0x14313c280
+alignas(16) Sd_14313c280 DAT_14313c280 = {
+    {
+        {DAT_1424f9480, (const void*)&DAT_14313da30, "active", 0, 0x1},
+        {DAT_1424f9480, 0, "updateProperties", 0, 0x0},
+    },
+};
+// 0x14313c2d0
+alignas(16) Sd_14313c2d0 DAT_14313c2d0 = {
+    {
+        {"errno", 0x70038},
+        {"stub", 0x5003c},
+    },
+};
+// 0x14313c2f0
+alignas(16) Sd_14313c2f0 DAT_14313c2f0 = {
+    {
+        {DAT_1424f9480, 0, "accDoDefaultAction", 0, 0x48},
+        {DAT_1424f9480, 0, "accLocation", 0, 0x48},
+        {DAT_1424f9480, 0, "accSelect", 0, 0x90},
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "get_accDefaultAction", 0, 0x48},
+        {DAT_1424f9480, (const void*)&DAT_14313dad0, "get_accFocus", 0, 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "get_accName", 0, 0x48},
+        {DAT_1424f9480, (const void*)&DAT_14313dad0, "get_accRole", 0, 0x48},
+        {DAT_1424f9480, (const void*)&DAT_14313dbc0, "get_accSelection", 0, 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313dad0, "get_accState", 0, 0x48},
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "get_accValue", 0, 0x48},
+        {DAT_1424f9480, (const void*)&DAT_14313dbc0, "getChildIDArray", 0, 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313da30, "isLabeledBy", 0, 0x48},
+    },
+};
+// 0x14313c4d0
+alignas(16) Sd_14313c4d0 DAT_14313c4d0 = {
+    {
+        {"description", 0x90038},
+        {"forceSimple", 0x50040},
+        {"name", 0x90048},
+        {"noAutoLabeling", 0x50050},
+        {"shortcut", 0x90058},
+        {"silent", 0x50060},
+    },
+};
 // 0x14313c530
 alignas(16) Sd_14313c530 DAT_14313c530 = {
     {
@@ -10238,7 +11443,7 @@ alignas(16) Sd_14313c530 DAT_14313c530 = {
         0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14313c0b0[0x150],
+    &DAT_14313c200,
     {0},
 };
 // 0x14313c580
@@ -10254,7 +11459,7 @@ alignas(16) Sd_14313c580 DAT_14313c580 = {
         0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14313c0b0[0x180],
+    &DAT_14313c230,
     {0},
 };
 // 0x14313c5d0
@@ -10269,7 +11474,7 @@ alignas(16) Sd_14313c5d0 DAT_14313c5d0 = {
     {
         0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14313c0b0[0x1d0],
+    &DAT_14313c280,
     {0},
 };
 // 0x14313c620
@@ -10285,8 +11490,8 @@ alignas(16) Sd_14313c620 DAT_14313c620 = {
         0x00, 0x00, 0x0c, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14313c0b0[0x240],
-    &DAT_14313c0b0[0x220],
+    &DAT_14313c2f0,
+    &DAT_14313c2d0,
 };
 // 0x14313c670
 alignas(16) Sd_14313c670 DAT_14313c670 = {
@@ -10301,7 +11506,7 @@ alignas(16) Sd_14313c670 DAT_14313c670 = {
         0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14313c0b0[0x420],
+    &DAT_14313c4d0,
     {
         0x73, 0x65, 0x61, 0x72, 0x63, 0x68, 0x54, 0x65, 0x78, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x66, 0x6c, 0x61, 0x73, 0x68, 0x2e, 0x61, 0x63, 0x63, 0x65, 0x73, 0x73, 0x69, 0x62, 0x69, 0x6c,
@@ -12637,7 +13842,7 @@ alignas(16) Sd_1431463f0 DAT_1431463f0 = {
         0x00, 0x00, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    "",
+    (const unsigned char*)&DAT_143146df0 + 0x1540,
     {0},
 };
 // 0x143146440
@@ -12865,7 +14070,7 @@ alignas(16) Sd_1431468a0 DAT_1431468a0 = {
         0x00, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    "",
+    (const unsigned char*)&DAT_1431446e0 + 0x1b50,
     {0},
 };
 // 0x1431468f0
@@ -14477,6 +15682,336 @@ alignas(16) Sd_14314ef20 DAT_14314ef20 = {
     DAT_1424551d0,
     {0},
 };
+// 0x14314f3e0
+alignas(16) Sd_14314f3e0 DAT_14314f3e0 = {
+    {
+        {DAT_142459680, (const void*)&DAT_14313da30, "altKey", 0, 0x1},
+        {DAT_1424596e0, 0, "altKey", 0, 0x4a},
+        {DAT_142459740, (const void*)&DAT_14313da30, "commandKey", 0, 0x1},
+        {DAT_1424597a0, 0, "commandKey", 0, 0x4a},
+        {DAT_142459800, (const void*)&DAT_14313da30, "controlKey", 0, 0x1},
+        {DAT_142459860, 0, "controlKey", 0, 0x4a},
+        {DAT_1424598c0, (const void*)&DAT_14313da30, "ctrlKey", 0, 0x1},
+        {DAT_142459a70, 0, "ctrlKey", 0, 0x4a},
+        {DAT_142459ad0, (const void*)&DAT_14313db20, "localX", 0, 0x1},
+        {DAT_142459b40, 0, "localX", 0, 0x4a},
+        {DAT_142459bd0, (const void*)&DAT_14313db20, "localY", 0, 0x1},
+        {DAT_142459c40, 0, "localY", 0, 0x4a},
+        {DAT_142459cd0, (const void*)&DAT_14313d9e0, "phase", 0, 0x1},
+        {DAT_142459d40, 0, "phase", 0, 0x4a},
+        {DAT_142459e40, (const void*)&DAT_14313da30, "shiftKey", 0, 0x1},
+        {DAT_142459ea0, 0, "shiftKey", 0, 0x4a},
+        {DAT_142459f00, (const void*)&DAT_14313db20, "stageX", 0, 0x1},
+        {DAT_142459f70, (const void*)&DAT_14313db20, "stageY", 0, 0x1},
+        {DAT_142459fe0, (const void*)&DAT_143150ab0, "clone", 0, 0x0},
+        {DAT_14245a090, (const void*)&DAT_14313d9e0, "toString", 0, 0x0},
+        {DAT_14245a100, 0, "updateAfterEvent", 0, 0x0},
+    },
+};
+// 0x14314f728
+alignas(16) Sd_14314f728 DAT_14314f728 = {
+    {
+        {"GESTURE_TWO_FINGER_TAP", 0x2a0050},
+    },
+};
+// 0x14314f740
+alignas(16) Sd_14314f740 DAT_14314f740 = {
+    {
+        {"DEFAULT", 0x2a0050},
+        {"ROTATED_LEFT", 0x2a0058},
+        {"ROTATED_RIGHT", 0x2a0060},
+        {"UNKNOWN", 0x2a0068},
+        {"UPSIDE_DOWN", 0x2a0070},
+    },
+};
+// 0x14314f790
+alignas(16) Sd_14314f790 DAT_14314f790 = {
+    {
+        {DAT_14245a270, (const void*)&DAT_14313db20, "offsetX", 0, 0x1},
+        {DAT_14245a2e0, 0, "offsetX", 0, 0x4a},
+        {DAT_14245a370, (const void*)&DAT_14313db20, "offsetY", 0, 0x1},
+        {DAT_14245a3e0, 0, "offsetY", 0, 0x4a},
+        {DAT_14245a470, (const void*)&DAT_14313db20, "rotation", 0, 0x1},
+        {DAT_14245a4e0, 0, "rotation", 0, 0x4a},
+        {DAT_14245a5e0, (const void*)&DAT_14313db20, "scaleX", 0, 0x1},
+        {DAT_14245a750, 0, "scaleX", 0, 0x4a},
+        {DAT_14245a840, (const void*)&DAT_14313db20, "scaleY", 0, 0x1},
+        {DAT_14245a920, 0, "scaleY", 0, 0x4a},
+        {DAT_14245aa60, (const void*)&DAT_143150ab0, "clone", 0, 0x0},
+        {DAT_14245ab50, (const void*)&DAT_14313d9e0, "toString", 0, 0x0},
+    },
+};
+// 0x14314f970
+alignas(16) Sd_14314f970 DAT_14314f970 = {
+    {
+        {"GESTURE_PAN", 0x2a0050},
+        {"GESTURE_ROTATE", 0x2a0058},
+        {"GESTURE_SWIPE", 0x2a0060},
+        {"GESTURE_ZOOM", 0x2a0068},
+    },
+};
+// 0x14314f9b0
+alignas(16) Sd_14314f9b0 DAT_14314f9b0 = {
+    {
+        {DAT_14245b010, (const void*)&DAT_14313db20, "tapLocalX", 0, 0x1},
+        {DAT_14245b0f0, 0, "tapLocalX", 0, 0x4a},
+        {DAT_14245b2e0, (const void*)&DAT_14313db20, "tapLocalY", 0, 0x1},
+        {DAT_14245b350, 0, "tapLocalY", 0, 0x4a},
+        {DAT_14245b3e0, (const void*)&DAT_14313db20, "tapStageX", 0, 0x1},
+        {DAT_14245b450, (const void*)&DAT_14313db20, "tapStageY", 0, 0x1},
+        {DAT_14245b620, (const void*)&DAT_143150ab0, "clone", 0, 0x0},
+        {DAT_14245b6d0, (const void*)&DAT_14313d9e0, "toString", 0, 0x0},
+    },
+};
+// 0x14314faf0
+alignas(16) Sd_14314faf0 DAT_14314faf0 = {
+    {
+        {"GESTURE_PRESS_AND_TAP", 0x2a0050},
+    },
+};
+// 0x14314fb00
+alignas(16) Sd_14314fb00 DAT_14314fb00 = {
+    {
+        {DAT_14245d910, (const void*)&DAT_14313da30, "altKey", 0, 0x1},
+        {DAT_14245d970, 0, "altKey", 0, 0x4a},
+        {DAT_14245d9d0, (const void*)&DAT_14313dad0, "charCode", 0, 0x1},
+        {DAT_14245dbe0, 0, "charCode", 0, 0x4a},
+        {DAT_14245dc50, (const void*)&DAT_14313da30, "commandKey", 0, 0x1},
+        {DAT_14245de10, 0, "commandKey", 0, 0x4a},
+        {DAT_14245de70, (const void*)&DAT_14313da30, "controlKey", 0, 0x1},
+        {DAT_14245df40, 0, "controlKey", 0, 0x4a},
+        {DAT_14245e010, (const void*)&DAT_14313da30, "ctrlKey", 0, 0x1},
+        {DAT_14245e120, 0, "ctrlKey", 0, 0x4a},
+        {DAT_142455e90, (const void*)&DAT_14313dad0, "keyCode", 0, 0x1},
+        {DAT_142455ef0, 0, "keyCode", 0, 0x4a},
+        {DAT_142455f60, (const void*)&DAT_14313dad0, "keyLocation", 0, 0x1},
+        {DAT_142455fc0, 0, "keyLocation", 0, 0x4a},
+        {DAT_142456030, (const void*)&DAT_14313da30, "shiftKey", 0, 0x1},
+        {DAT_142456090, 0, "shiftKey", 0, 0x4a},
+        {DAT_142456250, (const void*)&DAT_143150ab0, "clone", 0, 0x0},
+        {DAT_142456470, (const void*)&DAT_14313d9e0, "toString", 0, 0x0},
+        {DAT_1424564e0, 0, "updateAfterEvent", 0, 0x0},
+    },
+};
+// 0x14314fdf8
+alignas(16) Sd_14314fdf8 DAT_14314fdf8 = {
+    {
+        {"KEY_DOWN", 0x2a0050},
+        {"KEY_UP", 0x2a0058},
+    },
+};
+// 0x14314fe20
+alignas(16) Sd_14314fe20 DAT_14314fe20 = {
+    {
+        {DAT_142457f80, (const void*)&DAT_14313db20, "bytesLoaded", 0, 0x1},
+        {DAT_142457ff0, 0, "bytesLoaded", 0, 0x4a},
+        {DAT_142458080, (const void*)&DAT_14313db20, "bytesTotal", 0, 0x1},
+        {DAT_1424580f0, 0, "bytesTotal", 0, 0x4a},
+        {DAT_142458180, (const void*)&DAT_143150ab0, "clone", 0, 0x0},
+        {DAT_142458230, (const void*)&DAT_14313d9e0, "toString", 0, 0x0},
+    },
+};
+// 0x14314ff10
+alignas(16) Sd_14314ff10 DAT_14314ff10 = {
+    {
+        {"PROGRESS", 0x2a0050},
+        {"SOCKET_DATA", 0x2a0058},
+    },
+};
+// 0x14314ff30
+alignas(16) Sd_14314ff30 DAT_14314ff30 = {
+    {
+        {DAT_14245a570, (const void*)&DAT_14313d9e0, "direction", 0, 0x1},
+        {DAT_14245a650, 0, "direction", 0, 0x4a},
+        {DAT_14245a7e0, (const void*)&DAT_14313dad0, "keyCode", 0, 0x1},
+        {DAT_14245a8b0, 0, "keyCode", 0, 0x4a},
+        {DAT_14245a9b0, (const void*)&DAT_143146760, "relatedObject", 0, 0x1},
+        {DAT_14245ab10, 0, "relatedObject", 0, 0x4a},
+        {DAT_14245abc0, (const void*)&DAT_14313da30, "shiftKey", 0, 0x1},
+        {DAT_14245ac20, 0, "shiftKey", 0, 0x4a},
+        {DAT_14245ac80, (const void*)&DAT_143150ab0, "clone", 0, 0x0},
+        {DAT_14245ad30, (const void*)&DAT_14313d9e0, "toString", 0, 0x0},
+    },
+};
+// 0x1431500c0
+alignas(16) Sd_1431500c0 DAT_1431500c0 = {
+    {
+        {DAT_1424f9480, (const void*)&DAT_14313da30, "activating", 0, 0x1},
+        {DAT_1424f9480, 0, "activating", 0, 0x4a},
+        {DAT_1424f9480, (const void*)&DAT_143150ab0, "clone", 0, 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "toString", 0, 0x0},
+    },
+};
+// 0x143150160
+alignas(16) Sd_143150160 DAT_143150160 = {
+    {
+        {"FOCUS_IN", 0x2a0050},
+        {"FOCUS_OUT", 0x2a0058},
+        {"KEY_FOCUS_CHANGE", 0x2a0060},
+        {"MOUSE_FOCUS_CHANGE", 0x2a0068},
+    },
+};
+// 0x1431501a0
+alignas(16) Sd_1431501a0 DAT_1431501a0 = {
+    {
+        {DAT_142458980, (const void*)&DAT_14313d9e0, "text", 0, 0x1},
+        {DAT_1424589f0, 0, "text", 0, 0x4a},
+        {DAT_142458af0, (const void*)&DAT_143150ab0, "clone", 0, 0x0},
+        {DAT_142458ba0, (const void*)&DAT_14313d9e0, "toString", 0, 0x0},
+    },
+};
+// 0x143150240
+alignas(16) Sd_143150240 DAT_143150240 = {
+    {
+        {DAT_14245d4b0, (const void*)&DAT_14313d9e0, "text", 0, 0x1},
+        {DAT_14245d5d0, 0, "text", 0, 0x4a},
+        {DAT_14245d780, (const void*)&DAT_143150ab0, "clone", 0, 0x0},
+        {DAT_14245d8a0, (const void*)&DAT_14313d9e0, "toString", 0, 0x0},
+    },
+};
+// 0x1431502e0
+alignas(16) Sd_1431502e0 DAT_1431502e0 = {
+    {
+        {"LINK", 0x2a0050},
+        {"TEXT_INPUT", 0x2a0058},
+    },
+};
+// 0x143150300
+alignas(16) Sd_143150300 DAT_143150300 = {
+    {
+        {"IO_ERROR", 0x2a0050},
+    },
+};
+// 0x143150310
+alignas(16) Sd_143150310 DAT_143150310 = {
+    {
+        {DAT_14245af00, (const void*)&DAT_14313da80, "errorID", 0, 0x1},
+        {DAT_14245af60, (const void*)&DAT_143150ab0, "clone", 0, 0x0},
+        {DAT_14245b080, (const void*)&DAT_14313d9e0, "toString", 0, 0x0},
+    },
+};
+// 0x143150390
+alignas(16) Sd_143150390 DAT_143150390 = {
+    {
+        {DAT_1424576e0, (const void*)&DAT_14313d990, "info", 0, 0x1},
+        {DAT_142457790, 0, "info", 0, 0x4a},
+        {DAT_1424578e0, (const void*)&DAT_143150ab0, "clone", 0, 0x0},
+        {DAT_142457c50, (const void*)&DAT_14313d9e0, "toString", 0, 0x0},
+    },
+};
+// 0x143150430
+alignas(16) Sd_143150430 DAT_143150430 = {
+    {
+        {"ERROR", 0x2a0050},
+    },
+};
+// 0x143150440
+alignas(16) Sd_143150440 DAT_143150440 = {
+    {
+        {"NET_STATUS", 0x2a0050},
+    },
+};
+// 0x143150450
+alignas(16) Sd_143150450 DAT_143150450 = {
+    {
+        {"error", 0x40060},
+    },
+};
+// 0x143150460
+alignas(16) Sd_143150460 DAT_143150460 = {
+    {
+        {DAT_1424f9480, (const void*)&DAT_143150ab0, "clone", 0, 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "toString", 0, 0x0},
+    },
+};
+// 0x1431504b0
+alignas(16) Sd_1431504b0 DAT_1431504b0 = {
+    {
+        {"SECURITY_ERROR", 0x2a0050},
+    },
+};
+// 0x1431504c0
+alignas(16) Sd_1431504c0 DAT_1431504c0 = {
+    {
+        {DAT_1424f9480, (const void*)&DAT_143150ab0, "clone", 0, 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "toString", 0, 0x0},
+    },
+};
+// 0x143150510
+alignas(16) Sd_143150510 DAT_143150510 = {
+    {
+        {"ASYNC_ERROR", 0x2a0050},
+    },
+};
+// 0x143150520
+alignas(16) Sd_143150520 DAT_143150520 = {
+    {
+        {"STATUS", 0x2a0050},
+    },
+};
+// 0x143150530
+alignas(16) Sd_143150530 DAT_143150530 = {
+    {
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "code", 0, 0x1},
+        {DAT_1424f9480, 0, "code", 0, 0x4a},
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "level", 0, 0x1},
+        {DAT_1424f9480, 0, "level", 0, 0x4a},
+        {DAT_1424f9480, (const void*)&DAT_143150ab0, "clone", 0, 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "toString", 0, 0x0},
+    },
+};
+// 0x143150620
+alignas(16) Sd_143150620 DAT_143150620 = {
+    {
+        {"SYNC", 0x2a0050},
+    },
+};
+// 0x143150630
+alignas(16) Sd_143150630 DAT_143150630 = {
+    {
+        {"MENU_ITEM_SELECT", 0x2a0050},
+        {"MENU_SELECT", 0x2a0058},
+    },
+};
+// 0x143150650
+alignas(16) Sd_143150650 DAT_143150650 = {
+    {
+        {DAT_1424f9480, (const void*)&DAT_14313dbc0, "changeList", 0, 0x1},
+        {DAT_1424f9480, 0, "changeList", 0, 0x4a},
+        {DAT_1424f9480, (const void*)&DAT_143150ab0, "clone", 0, 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "toString", 0, 0x0},
+    },
+};
+// 0x1431506f0
+alignas(16) Sd_1431506f0 DAT_1431506f0 = {
+    {
+        {DAT_142459540, (const void*)&DAT_143150ab0, "clone", 0, 0x0},
+        {DAT_1424595f0, (const void*)&DAT_14313d9e0, "toString", 0, 0x0},
+        {DAT_142459660, 0, "updateAfterEvent", 0, 0x0},
+    },
+};
+// 0x143150768
+alignas(16) Sd_143150768 DAT_143150768 = {
+    {
+        {"TIMER", 0x2a0050},
+        {"TIMER_COMPLETE", 0x2a0058},
+    },
+};
+// 0x143150790
+alignas(16) Sd_143150790 DAT_143150790 = {
+    {
+        {DAT_142458c10, 0, "addEventListener", 0, 0x150},
+        {DAT_142458eb0, (const void*)&DAT_14313da30, "dispatchEvent", 0, 0x48},
+        {DAT_142458f50, (const void*)&DAT_14313da30, "hasEventListener", 0, 0x48},
+        {DAT_142459090, 0, "removeEventListener", 0, 0xd0},
+        {DAT_142459400, (const void*)&DAT_14313da30, "willTrigger", 0, 0x48},
+        {DAT_142458c10, 0, "addEventListener", "flash.events:IEventDispatcher", 0x150},
+        {DAT_142458eb0, (const void*)&DAT_14313da30, "dispatchEvent", "flash.events:IEventDispatcher", 0x48},
+        {DAT_142458f50, (const void*)&DAT_14313da30, "hasEventListener", "flash.events:IEventDispatcher", 0x48},
+        {DAT_142459090, 0, "removeEventListener", "flash.events:IEventDispatcher", 0xd0},
+        {DAT_142459400, (const void*)&DAT_14313da30, "willTrigger", "flash.events:IEventDispatcher", 0x48},
+    },
+};
 // 0x143150920
 alignas(16) Sd_143150920 DAT_143150920 = {
     {
@@ -14490,7 +16025,7 @@ alignas(16) Sd_143150920 DAT_143150920 = {
         0x00, 0x01, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
     (const unsigned char*)&DAT_143151280 + 0x750,
-    &DAT_14314f2f8[0xdc8],
+    &DAT_1431500c0,
     {0},
 };
 // 0x143150970
@@ -14505,9 +16040,9 @@ alignas(16) Sd_143150970 DAT_143150970 = {
     {
         0x00, 0x01, 0x02, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14314f2f8[0x1218],
-    &DAT_14314f2f8[0x1168],
-    &DAT_14314f2f8[0x1158],
+    &DAT_143150510,
+    &DAT_143150460,
+    &DAT_143150450,
 };
 // 0x1431509c0
 alignas(16) Sd_1431509c0 DAT_1431509c0 = {
@@ -14521,7 +16056,7 @@ alignas(16) Sd_1431509c0 DAT_1431509c0 = {
     {
         0x00, 0x02, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14314f2f8[0x1338],
+    &DAT_143150630,
     (const unsigned char*)&DAT_143151280 + 0x80,
     {0},
 };
@@ -14553,8 +16088,8 @@ alignas(16) Sd_143150a60 DAT_143150a60 = {
     {
         0x00, 0x01, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14314f2f8[0x1138],
-    "",
+    &DAT_143150430,
+    &DAT_143150310,
     {0},
 };
 // 0x143150ab0
@@ -14586,7 +16121,7 @@ alignas(16) Sd_143150b00 DAT_143150b00 = {
         0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14314f2f8[0x1498],
+    &DAT_143150790,
     {0},
 };
 // 0x143150b50
@@ -14616,8 +16151,8 @@ alignas(16) Sd_143150ba0 DAT_143150ba0 = {
     {
         0x00, 0x04, 0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14314f2f8[0xe68],
-    &DAT_14314f2f8[0xc38],
+    &DAT_143150160,
+    &DAT_14314ff30,
     {0},
 };
 // 0x143150bf0
@@ -14680,8 +16215,8 @@ alignas(16) Sd_143150ce0 DAT_143150ce0 = {
     {
         0x00, 0x01, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14314f2f8[0x1008],
-    &DAT_14314f2f8[0xf48],
+    &DAT_143150300,
+    &DAT_143150240,
     {0},
 };
 // 0x143150d30
@@ -14696,8 +16231,8 @@ alignas(16) Sd_143150d30 DAT_143150d30 = {
     {
         0x00, 0x02, 0x13, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14314f2f8[0xb00],
-    &DAT_14314f2f8[0x808],
+    &DAT_14314fdf8,
+    &DAT_14314fb00,
     {0},
 };
 // 0x143150d80
@@ -14728,8 +16263,8 @@ alignas(16) Sd_143150dd0 DAT_143150dd0 = {
     {
         0x00, 0x01, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14314f2f8[0x1148],
-    &DAT_14314f2f8[0x1098],
+    &DAT_143150440,
+    &DAT_143150390,
     {0},
 };
 // 0x143150e20
@@ -14744,8 +16279,8 @@ alignas(16) Sd_143150e20 DAT_143150e20 = {
     {
         0x00, 0x02, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14314f2f8[0xc18],
-    &DAT_14314f2f8[0xb28],
+    &DAT_14314ff10,
+    &DAT_14314fe20,
     {0},
 };
 // 0x143150e70
@@ -14760,8 +16295,8 @@ alignas(16) Sd_143150e70 DAT_143150e70 = {
     {
         0x00, 0x01, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14314f2f8[0x11b8],
-    &DAT_14314f2f8[0x11c8],
+    &DAT_1431504b0,
+    &DAT_1431504c0,
     {0},
 };
 // 0x143150ec0
@@ -14776,8 +16311,8 @@ alignas(16) Sd_143150ec0 DAT_143150ec0 = {
     {
         0x00, 0x01, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14314f2f8[0x1228],
-    &DAT_14314f2f8[0x1238],
+    &DAT_143150520,
+    &DAT_143150530,
     {0},
 };
 // 0x143150f10
@@ -14792,8 +16327,8 @@ alignas(16) Sd_143150f10 DAT_143150f10 = {
     {
         0x00, 0x01, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14314f2f8[0x1328],
-    &DAT_14314f2f8[0x1358],
+    &DAT_143150620,
+    &DAT_143150650,
     {0},
 };
 // 0x143150f60
@@ -14808,8 +16343,8 @@ alignas(16) Sd_143150f60 DAT_143150f60 = {
     {
         0x00, 0x02, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14314f2f8[0xfe8],
-    &DAT_14314f2f8[0xea8],
+    &DAT_1431502e0,
+    &DAT_1431501a0,
     {0},
 };
 // 0x143150fb0
@@ -14824,8 +16359,8 @@ alignas(16) Sd_143150fb0 DAT_143150fb0 = {
     {
         0x00, 0x02, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14314f2f8[0x1470],
-    &DAT_14314f2f8[0x13f8],
+    &DAT_143150768,
+    &DAT_1431506f0,
     {0},
 };
 // 0x143151000
@@ -14840,8 +16375,8 @@ alignas(16) Sd_143151000 DAT_143151000 = {
     {
         0x00, 0x01, 0x15, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14314f2f8[0x430],
-    &DAT_14314f2f8[0xe8],
+    &DAT_14314f728,
+    &DAT_14314f3e0,
     {0},
 };
 // 0x143151050
@@ -14856,8 +16391,8 @@ alignas(16) Sd_143151050 DAT_143151050 = {
     {
         0x00, 0x04, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14314f2f8[0x678],
-    &DAT_14314f2f8[0x498],
+    &DAT_14314f970,
+    &DAT_14314f790,
     {0},
 };
 // 0x1431510a0
@@ -14872,8 +16407,8 @@ alignas(16) Sd_1431510a0 DAT_1431510a0 = {
     {
         0x00, 0x01, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_14314f2f8 + 0x7f8,
-    &DAT_14314f2f8[0x6b8],
+    &DAT_14314faf0,
+    &DAT_14314f9b0,
     {0},
 };
 // 0x1431510f0
@@ -14951,7 +16486,7 @@ alignas(16) Sd_143151230 DAT_143151230 = {
     {
         0x00, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14314f2f8[0x448],
+    &DAT_14314f740,
     {0},
 };
 // 0x143151280
@@ -16118,6 +17653,109 @@ alignas(16) Sd_143158870 DAT_143158870 = {
         0x66, 0x6c, 0x61, 0x73, 0x68, 0x2e, 0x65, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x00, 0x00,
     },
 };
+// 0x143158cd0
+alignas(16) Sd_143158cd0 DAT_143158cd0 = {
+    {
+        {DAT_1424f9480, (const void*)&DAT_14313db20, "alpha", 0, 0x1},
+        {DAT_1424f9480, 0, "alpha", 0, 0x4a},
+        {DAT_1424f9480, (const void*)&DAT_14313dad0, "color", 0, 0x1},
+        {DAT_1424f9480, 0, "color", 0, 0x4a},
+        {DAT_1424f9480, (const void*)&DAT_14313dad0, "componentX", 0, 0x1},
+        {DAT_1424f9480, 0, "componentX", 0, 0x4a},
+        {DAT_1424f9480, (const void*)&DAT_14313dad0, "componentY", 0, 0x1},
+        {DAT_1424f9480, 0, "componentY", 0, 0x4a},
+        {DAT_1424f9480, (const void*)&DAT_143146440, "mapBitmap", 0, 0x1},
+        {DAT_1424f9480, 0, "mapBitmap", 0, 0x4a},
+        {DAT_1424f9480, (const void*)&DAT_14315d180, "mapPoint", 0, 0x1},
+        {DAT_1424f9480, 0, "mapPoint", 0, 0x4a},
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "mode", 0, 0x1},
+        {DAT_1424f9480, 0, "mode", 0, 0x4a},
+        {DAT_1424f9480, (const void*)&DAT_14313db20, "scaleX", 0, 0x1},
+        {DAT_1424f9480, 0, "scaleX", 0, 0x4a},
+        {DAT_1424f9480, (const void*)&DAT_14313db20, "scaleY", 0, 0x1},
+        {DAT_1424f9480, 0, "scaleY", 0, 0x4a},
+        {DAT_1424f9480, (const void*)&DAT_143159620, "clone", 0, 0x0},
+    },
+};
+// 0x143158fc8
+alignas(16) Sd_143158fc8 DAT_143158fc8 = {
+    {
+        {DAT_1424748b0, (const void*)&DAT_143159620, "clone", 0, 0x0},
+    },
+};
+// 0x143158ff0
+alignas(16) Sd_143158ff0 DAT_143158ff0 = {
+    {
+        {"CLAMP", 0x2a0050},
+        {"COLOR", 0x2a0058},
+        {"IGNORE", 0x2a0060},
+        {"WRAP", 0x2a0068},
+    },
+};
+// 0x143159030
+alignas(16) Sd_143159030 DAT_143159030 = {
+    {
+        {"HIGH", 0x260050},
+        {"LOW", 0x260054},
+        {"MEDIUM", 0x260058},
+    },
+};
+// 0x143159060
+alignas(16) Sd_143159060 DAT_143159060 = {
+    {
+        {"FULL", 0x2a0050},
+        {"INNER", 0x2a0058},
+        {"OUTER", 0x2a0060},
+    },
+};
+// 0x143159090
+alignas(16) Sd_143159090 DAT_143159090 = {
+    {
+        {DAT_142474d50, (const void*)&DAT_14313db20, "alpha", 0, 0x1},
+        {DAT_142474dc0, 0, "alpha", 0, 0x4a},
+        {DAT_142474e50, (const void*)&DAT_14313db20, "angle", 0, 0x1},
+        {DAT_142474ec0, 0, "angle", 0, 0x4a},
+        {DAT_142475090, (const void*)&DAT_14313db20, "blurX", 0, 0x1},
+        {DAT_142475100, 0, "blurX", 0, 0x4a},
+        {DAT_142475200, (const void*)&DAT_14313db20, "blurY", 0, 0x1},
+        {DAT_142475300, 0, "blurY", 0, 0x4a},
+        {DAT_142475400, (const void*)&DAT_14313dad0, "color", 0, 0x1},
+        {DAT_1424754f0, 0, "color", 0, 0x4a},
+        {DAT_1424755c0, (const void*)&DAT_14313db20, "distance", 0, 0x1},
+        {DAT_1424756a0, 0, "distance", 0, 0x4a},
+        {DAT_1424757e0, (const void*)&DAT_14313da30, "hideObject", 0, 0x1},
+        {DAT_142475840, 0, "hideObject", 0, 0x4a},
+        {DAT_1424758a0, (const void*)&DAT_14313da30, "inner", 0, 0x1},
+        {DAT_142475900, 0, "inner", 0, 0x4a},
+        {DAT_142475960, (const void*)&DAT_14313da30, "knockout", 0, 0x1},
+        {DAT_1424759c0, 0, "knockout", 0, 0x4a},
+        {DAT_142475a20, (const void*)&DAT_14313da80, "quality", 0, 0x1},
+        {DAT_142475a80, 0, "quality", 0, 0x4a},
+        {DAT_142475af0, (const void*)&DAT_14313db20, "strength", 0, 0x1},
+        {DAT_142475b60, 0, "strength", 0, 0x4a},
+        {DAT_142475bf0, (const void*)&DAT_143159620, "clone", 0, 0x0},
+    },
+};
+// 0x143159430
+alignas(16) Sd_143159430 DAT_143159430 = {
+    {
+        {DAT_142475190, (const void*)&DAT_14313db20, "blurX", 0, 0x1},
+        {DAT_142475270, 0, "blurX", 0, 0x4a},
+        {DAT_142475390, (const void*)&DAT_14313db20, "blurY", 0, 0x1},
+        {DAT_142475460, 0, "blurY", 0, 0x4a},
+        {DAT_142475560, (const void*)&DAT_14313da80, "quality", 0, 0x1},
+        {DAT_142475630, 0, "quality", 0, 0x4a},
+        {DAT_142475730, (const void*)&DAT_143159620, "clone", 0, 0x0},
+    },
+};
+// 0x143159550
+alignas(16) Sd_143159550 DAT_143159550 = {
+    {
+        {DAT_142476970, (const void*)&DAT_14313dbc0, "matrix", 0, 0x1},
+        {DAT_142476a20, 0, "matrix", 0, 0x4a},
+        {DAT_142476a60, (const void*)&DAT_143159620, "clone", 0, 0x0},
+    },
+};
 // 0x1431595d0
 alignas(16) Sd_1431595d0 DAT_1431595d0 = {
     {
@@ -16147,7 +17785,7 @@ alignas(16) Sd_143159620 DAT_143159620 = {
         0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143158ab8[0x510],
+    &DAT_143158fc8,
     {0},
 };
 // 0x143159670
@@ -16162,7 +17800,7 @@ alignas(16) Sd_143159670 DAT_143159670 = {
     {
         0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143158ab8[0x578],
+    &DAT_143159030,
     {0},
 };
 // 0x1431596c0
@@ -16177,7 +17815,7 @@ alignas(16) Sd_1431596c0 DAT_1431596c0 = {
     {
         0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143158ab8[0x5a8],
+    &DAT_143159060,
     {0},
 };
 // 0x143159710
@@ -16193,7 +17831,7 @@ alignas(16) Sd_143159710 DAT_143159710 = {
         0x00, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143158ab8[0x978],
+    &DAT_143159430,
     {0},
 };
 // 0x143159760
@@ -16209,7 +17847,7 @@ alignas(16) Sd_143159760 DAT_143159760 = {
         0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143158ab8[0xa98],
+    &DAT_143159550,
     {0},
 };
 // 0x1431597b0
@@ -16241,7 +17879,7 @@ alignas(16) Sd_143159800 DAT_143159800 = {
         0x00, 0x00, 0x13, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143158ab8[0x218],
+    &DAT_143158cd0,
     {0},
 };
 // 0x143159850
@@ -16256,7 +17894,7 @@ alignas(16) Sd_143159850 DAT_143159850 = {
     {
         0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143158ab8[0x538],
+    &DAT_143158ff0,
     {0},
 };
 // 0x1431598a0
@@ -16272,7 +17910,7 @@ alignas(16) Sd_1431598a0 DAT_1431598a0 = {
         0x00, 0x00, 0x17, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143158ab8[0x5d8],
+    &DAT_143159090,
     {0},
 };
 // 0x1431598f0
@@ -16986,6 +18624,135 @@ alignas(16) Sd_143159990 DAT_143159990 = {
     },
     DAT_142478480,
 };
+// 0x14315c1d0
+alignas(16) Sd_14315c1d0 DAT_14315c1d0 = {
+    {
+        {DAT_14247cf80, (const void*)&DAT_14315d180, "projectionCenter", 0, 0x1},
+        {DAT_14247d030, 0, "projectionCenter", 0, 0x4a},
+        {DAT_14247d070, (const void*)&DAT_14313db20, "focalLength", 0, 0x1},
+        {DAT_14247d0e0, 0, "focalLength", 0, 0x4a},
+        {DAT_14247d170, (const void*)&DAT_14313db20, "fieldOfView", 0, 0x1},
+        {DAT_14247d1e0, 0, "fieldOfView", 0, 0x4a},
+        {DAT_14247d2d0, (const void*)&DAT_14315d090, "toMatrix3D", 0, 0x0},
+    },
+};
+// 0x14315c2f0
+alignas(16) Sd_14315c2f0 DAT_14315c2f0 = {
+    {
+        {DAT_142480780, (const void*)&DAT_14313db20, "determinant", 0, 0x1},
+        {DAT_1424807f0, (const void*)&DAT_14315d040, "position", 0, 0x1},
+        {DAT_1424808a0, 0, "position", 0, 0x4a},
+        {DAT_1424808e0, 0, "rawData", 0, 0x1},
+        {DAT_142480990, 0, "rawData", 0, 0x4a},
+        {DAT_1424809d0, 0, "append", 0, 0x48},
+        {DAT_142480b50, 0, "appendRotation", 0, 0xd0},
+        {DAT_142480c50, 0, "appendScale", 0, 0xd8},
+        {DAT_142480d80, 0, "appendTranslation", 0, 0xd8},
+        {DAT_142480eb0, (const void*)&DAT_14315d090, "clone", 0, 0x0},
+        {DAT_142480f60, 0, "decompose", 0, 0x40},
+        {DAT_1424810f0, (const void*)&DAT_14315d040, "deltaTransformVector", 0, 0x48},
+        {DAT_1424811e0, 0, "identity", 0, 0x0},
+        {DAT_142481200, (const void*)&DAT_14315d090, "interpolate", 0, 0xd8},
+        {DAT_142481370, 0, "interpolateTo", 0, 0x90},
+        {DAT_142481430, (const void*)&DAT_14313da30, "invert", 0, 0x0},
+        {DAT_142481490, 0, "pointAt", 0, 0xc8},
+        {DAT_142481510, 0, "prepend", 0, 0x48},
+        {DAT_142481550, 0, "prependRotation", 0, 0xd0},
+        {DAT_142481650, 0, "prependScale", 0, 0xd8},
+        {DAT_142481780, 0, "prependTranslation", 0, 0xd8},
+        {DAT_1424818b0, (const void*)&DAT_14313da30, "recompose", 0, 0x88},
+        {DAT_142481a30, (const void*)&DAT_14315d040, "transformVector", 0, 0x48},
+        {DAT_142481b20, 0, "transformVectors", 0, 0x90},
+        {DAT_142481b70, 0, "transpose", 0, 0x0},
+    },
+};
+// 0x14315c6e0
+alignas(16) Sd_14315c6e0 DAT_14315c6e0 = {
+    {
+        {DAT_14247df10, (const void*)&DAT_14313db20, "length", 0, 0x1},
+        {DAT_14247df80, (const void*)&DAT_14313db20, "lengthSquared", 0, 0x1},
+        {DAT_14247dff0, 0, "x", 0, 0x4a},
+        {DAT_14247e080, (const void*)&DAT_14313db20, "x", 0, 0x1},
+        {DAT_14247e0f0, 0, "y", 0, 0x4a},
+        {DAT_14247e180, (const void*)&DAT_14313db20, "y", 0, 0x1},
+        {DAT_14247e1f0, 0, "z", 0, 0x4a},
+        {DAT_14247e280, (const void*)&DAT_14313db20, "z", 0, 0x1},
+        {DAT_14247e2f0, 0, "w", 0, 0x4a},
+        {DAT_14247e380, (const void*)&DAT_14313db20, "w", 0, 0x1},
+        {DAT_14247e3f0, (const void*)&DAT_14315d040, "add", 0, 0x48},
+        {DAT_14247e620, (const void*)&DAT_14315d040, "clone", 0, 0x0},
+        {DAT_14247e6d0, (const void*)&DAT_14315d040, "crossProduct", 0, 0x48},
+        {DAT_14247e830, 0, "decrementBy", 0, 0x48},
+        {DAT_14247e900, (const void*)&DAT_14313db20, "dotProduct", 0, 0x48},
+        {DAT_14247ea60, (const void*)&DAT_14313da30, "equals", 0, 0x88},
+        {DAT_14247eb80, 0, "incrementBy", 0, 0x48},
+        {DAT_14247ec30, (const void*)&DAT_14313da30, "nearEquals", 0, 0xd0},
+        {DAT_14247edf0, 0, "negate", 0, 0x0},
+        {DAT_14247ee80, (const void*)&DAT_14313db20, "normalize", 0, 0x0},
+        {DAT_14247ef80, 0, "project", 0, 0x0},
+        {DAT_14247f050, 0, "scaleBy", 0, 0x48},
+        {DAT_14247f120, (const void*)&DAT_14315d040, "subtract", 0, 0x48},
+        {DAT_14247f280, (const void*)&DAT_14313d9e0, "toString", 0, 0x0},
+    },
+};
+// 0x14315caa0
+alignas(16) Sd_14315caa0 DAT_14315caa0 = {
+    {
+        {"X_AXIS", 0x240050},
+        {"Y_AXIS", 0x240058},
+        {"Z_AXIS", 0x240060},
+    },
+};
+// 0x14315cad0
+alignas(16) Sd_14315cad0 DAT_14315cad0 = {
+    {
+        {DAT_14247fa40, (const void*)&DAT_14313db20, "angleBetween", 0, 0x90},
+        {DAT_14247fbb0, (const void*)&DAT_14313db20, "distance", 0, 0x90},
+    },
+};
+// 0x14315cb20
+alignas(16) Sd_14315cb20 DAT_14315cb20 = {
+    {
+        {"height", 0x80038},
+        {"width", 0x80040},
+        {"x", 0x80048},
+        {"y", 0x80050},
+    },
+};
+// 0x14315cb60
+alignas(16) Sd_14315cb60 DAT_14315cb60 = {
+    {
+        {DAT_14247e7c0, (const void*)&DAT_14313db20, "bottom", 0, 0x1},
+        {DAT_14247e870, 0, "bottom", 0, 0x4a},
+        {DAT_14247e9b0, (const void*)&DAT_14315d180, "bottomRight", 0, 0x1},
+        {DAT_14247eb40, 0, "bottomRight", 0, 0x4a},
+        {DAT_14247ebc0, (const void*)&DAT_14313db20, "left", 0, 0x1},
+        {DAT_14247ed60, 0, "left", 0, 0x4a},
+        {DAT_14247ee10, (const void*)&DAT_14313db20, "right", 0, 0x1},
+        {DAT_14247eef0, 0, "right", 0, 0x4a},
+        {DAT_14247efa0, (const void*)&DAT_14315d180, "size", 0, 0x1},
+        {DAT_14247f0e0, 0, "size", 0, 0x4a},
+        {DAT_14247f210, (const void*)&DAT_14313db20, "top", 0, 0x1},
+        {DAT_14247f2f0, 0, "top", 0, 0x4a},
+        {DAT_14247f380, (const void*)&DAT_14315d180, "topLeft", 0, 0x1},
+        {DAT_14247f430, 0, "topLeft", 0, 0x4a},
+        {DAT_14247f470, (const void*)&DAT_14315d1d0, "clone", 0, 0x0},
+        {DAT_14247f520, (const void*)&DAT_14313da30, "contains", 0, 0x90},
+        {DAT_14247f650, (const void*)&DAT_14313da30, "containsPoint", 0, 0x48},
+        {DAT_14247f6f0, (const void*)&DAT_14313da30, "containsRect", 0, 0x48},
+        {DAT_14247f790, (const void*)&DAT_14313da30, "equals", 0, 0x48},
+        {DAT_14247f830, 0, "inflate", 0, 0x90},
+        {DAT_14247f910, 0, "inflatePoint", 0, 0x48},
+        {DAT_14247f950, (const void*)&DAT_14315d1d0, "intersection", 0, 0x48},
+        {DAT_14247fb10, (const void*)&DAT_14313da30, "intersects", 0, 0x48},
+        {DAT_14247fc80, (const void*)&DAT_14313da30, "isEmpty", 0, 0x0},
+        {DAT_14247fce0, 0, "offset", 0, 0x90},
+        {DAT_14247fdc0, 0, "offsetPoint", 0, 0x48},
+        {DAT_14247fe00, 0, "setEmpty", 0, 0x0},
+        {DAT_14247fe20, (const void*)&DAT_14313d9e0, "toString", 0, 0x0},
+        {DAT_14247fe90, (const void*)&DAT_14315d1d0, "union", 0, 0x48},
+    },
+};
 // 0x14315cff0
 alignas(16) Sd_14315cff0 DAT_14315cff0 = {
     {
@@ -17014,9 +18781,9 @@ alignas(16) Sd_14315d040 DAT_14315d040 = {
     {
         0x02, 0x03, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14315c0a0[0xa30],
-    &DAT_14315c0a0[0xa00],
-    &DAT_14315c0a0[0x640],
+    &DAT_14315cad0,
+    &DAT_14315caa0,
+    &DAT_14315c6e0,
     {0},
 };
 // 0x14315d090
@@ -17032,7 +18799,7 @@ alignas(16) Sd_14315d090 DAT_14315d090 = {
         0x00, 0x00, 0x19, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14315c0a0[0x250],
+    &DAT_14315c2f0,
     {0},
 };
 // 0x14315d0e0
@@ -17049,7 +18816,7 @@ alignas(16) Sd_14315d0e0 DAT_14315d0e0 = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
     (const unsigned char*)&DAT_14315d220 + 0x3b0,
-    "",
+    (const unsigned char*)&DAT_14315d220 + 0x350,
 };
 // 0x14315d130
 alignas(16) Sd_14315d130 DAT_14315d130 = {
@@ -17064,7 +18831,7 @@ alignas(16) Sd_14315d130 DAT_14315d130 = {
         0x00, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14315c0a0[0x130],
+    &DAT_14315c1d0,
     {0},
 };
 // 0x14315d180
@@ -17097,8 +18864,8 @@ alignas(16) Sd_14315d1d0 DAT_14315d1d0 = {
         0x00, 0x00, 0x1d, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14315c0a0[0xac0],
-    &DAT_14315c0a0[0xa80],
+    &DAT_14315cb60,
+    &DAT_14315cb20,
 };
 // 0x14315d220
 alignas(16) Sd_14315d220 DAT_14315d220 = {
@@ -17473,6 +19240,140 @@ alignas(16) Sd_14315d220 DAT_14315d220 = {
         0x4d, 0x61, 0x74, 0x72, 0x69, 0x78, 0x33, 0x44, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
 };
+// 0x14315f270
+alignas(16) Sd_14315f270 DAT_14315f270 = {
+    {
+        {"BINARY", 0x2a0050},
+        {"TEXT", 0x2a0058},
+        {"VARIABLES", 0x2a0060},
+    },
+};
+// 0x14315f2a0
+alignas(16) Sd_14315f2a0 DAT_14315f2a0 = {
+    {
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "description", 0, 0x1},
+        {DAT_1424f9480, 0, "description", 0, 0x4a},
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "extension", 0, 0x1},
+        {DAT_1424f9480, 0, "extension", 0, 0x4a},
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "macType", 0, 0x1},
+        {DAT_1424f9480, 0, "macType", 0, 0x4a},
+    },
+};
+// 0x14315f390
+alignas(16) Sd_14315f390 DAT_14315f390 = {
+    {
+        {"name", 0x90038},
+        {"value", 0x90040},
+    },
+};
+// 0x14315f3b0
+alignas(16) Sd_14315f3b0 DAT_14315f3b0 = {
+    {
+        {"FLUSHED", 0x2a0050},
+        {"PENDING", 0x2a0058},
+    },
+};
+// 0x14315f3d0
+alignas(16) Sd_14315f3d0 DAT_14315f3d0 = {
+    {
+        {"DELETE", 0x2a0050},
+        {"GET", 0x2a0058},
+        {"HEAD", 0x2a0060},
+        {"OPTIONS", 0x2a0068},
+        {"POST", 0x2a0070},
+        {"PUT", 0x2a0078},
+    },
+};
+// 0x14315f430
+alignas(16) Sd_14315f430 DAT_14315f430 = {
+    {
+        {DAT_1424f9480, (const void*)&DAT_14313dad0, "bytesAvailable", 0, 0x1},
+        {DAT_1424f9480, (const void*)&DAT_14313da30, "connected", 0, 0x1},
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "endian", 0, 0x1},
+        {DAT_1424f9480, 0, "endian", 0, 0x4a},
+        {DAT_1424f9480, (const void*)&DAT_14313dad0, "objectEncoding", 0, 0x1},
+        {DAT_1424f9480, 0, "objectEncoding", 0, 0x4a},
+        {DAT_1424f9480, 0, "close", 0, 0x0},
+        {DAT_1424f9480, 0, "load", 0, 0x48},
+        {DAT_1424f9480, (const void*)&DAT_14313da30, "readBoolean", 0, 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313da80, "readByte", 0, 0x0},
+        {DAT_1424f9480, 0, "readBytes", 0, 0xc8},
+        {DAT_1424f9480, (const void*)&DAT_14313db20, "readDouble", 0, 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313db20, "readFloat", 0, 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313da80, "readInt", 0, 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "readMultiByte", 0, 0x90},
+        {DAT_1424f9480, 0, "readObject", 0, 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313da80, "readShort", 0, 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313dad0, "readUnsignedByte", 0, 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313dad0, "readUnsignedInt", 0, 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313dad0, "readUnsignedShort", 0, 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "readUTF", 0, 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "readUTFBytes", 0, 0x48},
+        {DAT_1424f9480, (const void*)&DAT_14313dad0, "bytesAvailable", "flash.utils:IDataInput", 0x1},
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "endian", "flash.utils:IDataInput", 0x1},
+        {DAT_1424f9480, 0, "endian", "flash.utils:IDataInput", 0x4a},
+        {DAT_1424f9480, (const void*)&DAT_14313dad0, "objectEncoding", "flash.utils:IDataInput", 0x1},
+        {DAT_1424f9480, 0, "objectEncoding", "flash.utils:IDataInput", 0x4a},
+        {DAT_1424f9480, (const void*)&DAT_14313da30, "readBoolean", "flash.utils:IDataInput", 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313da80, "readByte", "flash.utils:IDataInput", 0x0},
+        {DAT_1424f9480, 0, "readBytes", "flash.utils:IDataInput", 0xc8},
+        {DAT_1424f9480, (const void*)&DAT_14313db20, "readDouble", "flash.utils:IDataInput", 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313db20, "readFloat", "flash.utils:IDataInput", 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313da80, "readInt", "flash.utils:IDataInput", 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "readMultiByte", "flash.utils:IDataInput", 0x90},
+        {DAT_1424f9480, 0, "readObject", "flash.utils:IDataInput", 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313da80, "readShort", "flash.utils:IDataInput", 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313dad0, "readUnsignedByte", "flash.utils:IDataInput", 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313dad0, "readUnsignedInt", "flash.utils:IDataInput", 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313dad0, "readUnsignedShort", "flash.utils:IDataInput", 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "readUTF", "flash.utils:IDataInput", 0x0},
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "readUTFBytes", "flash.utils:IDataInput", 0x48},
+    },
+};
+// 0x14315fa98
+alignas(16) Sd_14315fa98 DAT_14315fa98 = {
+    {
+        {DAT_1424f9480, 0, "writeDynamicProperty", "flash.net:IDynamicPropertyOutput", 0x90},
+    },
+};
+// 0x14315fac0
+alignas(16) Sd_14315fac0 DAT_14315fac0 = {
+    {
+        {DAT_1424f9480, (const void*)&DAT_14313da30, "connected", 0, 0x1},
+        {DAT_1424f9480, 0, "close", 0, 0x0},
+        {DAT_1424f9480, 0, "connect", 0, 0x90},
+        {DAT_1424f9480, 0, "send", 0, 0x48},
+    },
+};
+// 0x14315fb60
+alignas(16) Sd_14315fb60 DAT_14315fb60 = {
+    {
+        {DAT_1424914e0, (const void*)&DAT_14313da30, "authenticate", 0, 0x1},
+        {DAT_142491540, 0, "authenticate", 0, 0x4a},
+        {DAT_1424915a0, (const void*)&DAT_14313da30, "cacheResponse", 0, 0x1},
+        {DAT_142491600, 0, "cacheResponse", 0, 0x4a},
+        {DAT_142491660, (const void*)&DAT_14313d9e0, "contentType", 0, 0x1},
+        {DAT_1424916d0, 0, "contentType", 0, 0x4a},
+        {DAT_1424917d0, (const void*)&DAT_14313d990, "data", 0, 0x1},
+        {DAT_142491880, 0, "data", 0, 0x4a},
+        {DAT_1424919d0, (const void*)&DAT_14313d9e0, "digest", 0, 0x1},
+        {DAT_142491a40, 0, "digest", 0, 0x4a},
+        {DAT_142491b40, (const void*)&DAT_14313da30, "followRedirects", 0, 0x1},
+        {DAT_142491ba0, 0, "followRedirects", 0, 0x4a},
+        {DAT_142491c00, (const void*)&DAT_14313da30, "manageCookies", 0, 0x1},
+        {DAT_142491c60, 0, "manageCookies", 0, 0x4a},
+        {DAT_142491cc0, (const void*)&DAT_14313d9e0, "method", 0, 0x1},
+        {DAT_142491d30, 0, "method", 0, 0x4a},
+        {DAT_142491e30, (const void*)&DAT_14313dbc0, "requestHeaders", 0, 0x1},
+        {DAT_142491ee0, 0, "requestHeaders", 0, 0x4a},
+        {DAT_142491f20, (const void*)&DAT_14313d9e0, "url", 0, 0x1},
+        {DAT_142491f90, 0, "url", 0, 0x4a},
+        {DAT_142492090, (const void*)&DAT_14313da30, "useCache", 0, 0x1},
+        {DAT_1424920f0, 0, "useCache", 0, 0x4a},
+        {DAT_142492150, (const void*)&DAT_14313d9e0, "userAgent", 0, 0x1},
+        {DAT_1424921c0, 0, "userAgent", 0, 0x4a},
+    },
+};
 // 0x14315ff20
 alignas(16) Sd_14315ff20 DAT_14315ff20 = {
     {
@@ -17486,7 +19387,7 @@ alignas(16) Sd_14315ff20 DAT_14315ff20 = {
         0x00, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14315f178[0x9e8],
+    &DAT_14315fb60,
     {0},
 };
 // 0x14315ff70
@@ -17502,7 +19403,7 @@ alignas(16) Sd_14315ff70 DAT_14315ff70 = {
         0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14315f178[0x948],
+    &DAT_14315fac0,
     {0},
 };
 // 0x14315ffc0
@@ -17518,7 +19419,7 @@ alignas(16) Sd_14315ffc0 DAT_14315ffc0 = {
         0x00, 0x00, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14315f178[0x128],
+    &DAT_14315f2a0,
     {0},
 };
 // 0x143160010
@@ -17566,7 +19467,7 @@ alignas(16) Sd_1431600b0 DAT_1431600b0 = {
         0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14315f178[0x920],
+    &DAT_14315fa98,
     {0},
 };
 // 0x143160100
@@ -17673,7 +19574,7 @@ alignas(16) Sd_1431602e0 DAT_1431602e0 = {
     {
         0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14315f178[0x238],
+    &DAT_14315f3b0,
     {0},
 };
 // 0x143160330
@@ -17720,7 +19621,7 @@ alignas(16) Sd_1431603d0 DAT_1431603d0 = {
     {
         0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14315f178[0xf8],
+    &DAT_14315f270,
     {0},
 };
 // 0x143160420
@@ -17736,7 +19637,7 @@ alignas(16) Sd_143160420 DAT_143160420 = {
         0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14315f178[0x218],
+    &DAT_14315f390,
 };
 // 0x143160470
 alignas(16) Sd_143160470 DAT_143160470 = {
@@ -17750,7 +19651,7 @@ alignas(16) Sd_143160470 DAT_143160470 = {
     {
         0x00, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14315f178[0x258],
+    &DAT_14315f3d0,
     {0},
 };
 // 0x1431604c0
@@ -17766,7 +19667,7 @@ alignas(16) Sd_1431604c0 DAT_1431604c0 = {
         0x00, 0x00, 0x29, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14315f178[0x2b8],
+    &DAT_14315f430,
     {0},
 };
 // 0x143160510
@@ -18686,6 +20587,132 @@ alignas(16) Sd_143160510 DAT_143160510 = {
         0x64, 0x61, 0x74, 0x61, 0x46, 0x6f, 0x72, 0x6d, 0x61, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
 };
+// 0x143164940
+alignas(16) Sd_143164940 DAT_143164940 = {
+    {
+        {DAT_14249c500, (const void*)&DAT_14313da30, "avHardwareDisable", 0, 0x1},
+        {DAT_14249c560, (const void*)&DAT_14313da30, "hasAccessibility", 0, 0x1},
+        {DAT_14249c5c0, (const void*)&DAT_14313da30, "hasAudio", 0, 0x1},
+        {DAT_14249c620, (const void*)&DAT_14313da30, "hasAudioEncoder", 0, 0x1},
+        {DAT_14249c680, (const void*)&DAT_14313da30, "hasEmbeddedVideo", 0, 0x1},
+        {DAT_14249c6e0, (const void*)&DAT_14313da30, "hasIME", 0, 0x1},
+        {DAT_14249c740, (const void*)&DAT_14313da30, "hasMP3", 0, 0x1},
+        {DAT_14249c7a0, (const void*)&DAT_14313da30, "hasPrinting", 0, 0x1},
+        {DAT_14249c800, (const void*)&DAT_14313da30, "hasScreenBroadcast", 0, 0x1},
+        {DAT_14249c860, (const void*)&DAT_14313da30, "hasScreenPlayback", 0, 0x1},
+        {DAT_14249c8c0, (const void*)&DAT_14313da30, "hasStreamingAudio", 0, 0x1},
+        {DAT_14249c920, (const void*)&DAT_14313da30, "hasStreamingVideo", 0, 0x1},
+        {DAT_14249ca30, (const void*)&DAT_14313da30, "hasTLS", 0, 0x1},
+        {DAT_14249ca90, (const void*)&DAT_14313da30, "hasVideoEncoder", 0, 0x1},
+        {DAT_14249cc70, (const void*)&DAT_14313da30, "isDebugger", 0, 0x1},
+        {DAT_14249ce10, (const void*)&DAT_14313d9e0, "language", 0, 0x1},
+        {DAT_14249ce80, (const void*)&DAT_14313da30, "localFileReadDisable", 0, 0x1},
+        {DAT_14249cee0, (const void*)&DAT_14313d9e0, "manufacturer", 0, 0x1},
+        {DAT_14249cf50, (const void*)&DAT_14313d9e0, "os", 0, 0x1},
+        {DAT_14249cfc0, (const void*)&DAT_14313db20, "pixelAspectRatio", 0, 0x1},
+        {DAT_14249d030, (const void*)&DAT_14313d9e0, "playerType", 0, 0x1},
+        {DAT_14249d1e0, (const void*)&DAT_14313d9e0, "screenColor", 0, 0x1},
+        {DAT_14249d250, (const void*)&DAT_14313db20, "screenDPI", 0, 0x1},
+        {DAT_14249d2c0, (const void*)&DAT_14313db20, "screenResolutionX", 0, 0x1},
+        {DAT_14249d330, (const void*)&DAT_14313db20, "screenResolutionY", 0, 0x1},
+        {DAT_14249d3a0, (const void*)&DAT_14313d9e0, "serverString", 0, 0x1},
+        {DAT_14249d410, (const void*)&DAT_14313d9e0, "version", 0, 0x1},
+    },
+};
+// 0x143164d78
+alignas(16) Sd_143164d78 DAT_143164d78 = {
+    {
+        {DAT_14249deb0, (const void*)&DAT_143165350, "currentDomain", 0, 0x1},
+    },
+};
+// 0x143164da0
+alignas(16) Sd_143164da0 DAT_143164da0 = {
+    {
+        {DAT_14249d5c0, 0, "conversionMode", 0, 0x4a},
+        {DAT_14249d6c0, (const void*)&DAT_14313d9e0, "conversionMode", 0, 0x1},
+        {DAT_14249d730, (const void*)&DAT_14313da30, "enabled", 0, 0x1},
+        {DAT_14249d790, 0, "enabled", 0, 0x4a},
+        {DAT_14249d7f0, 0, "doConversion", 0, 0x0},
+        {DAT_14249d810, 0, "setCompositionString", 0, 0x48},
+    },
+};
+// 0x143164e90
+alignas(16) Sd_143164e90 DAT_143164e90 = {
+    {
+        {"ALPHANUMERIC_FULL", 0x2a0050},
+        {"ALPHANUMERIC_HALF", 0x2a0058},
+        {"CHINESE", 0x2a0060},
+        {"JAPANESE_HIRAGANA", 0x2a0068},
+        {"JAPANESE_KATAKANA_FULL", 0x2a0070},
+        {"JAPANESE_KATAKANA_HALF", 0x2a0078},
+        {"KOREAN", 0x2a0080},
+        {"UNKNOWN", 0x2a0088},
+    },
+};
+// 0x143164f10
+alignas(16) Sd_143164f10 DAT_143164f10 = {
+    {
+        {"allowLoadBytesCodeExecution", 0x50038},
+        {"applicationDomain", 0x40040},
+        {"checkPolicyFile", 0x50048},
+        {"securityDomain", 0x40050},
+    },
+};
+// 0x143164f50
+alignas(16) Sd_143164f50 DAT_143164f50 = {
+    {
+        {"APPLICATION", 0x2a0050},
+        {"LOCAL_TRUSTED", 0x2a0058},
+        {"LOCAL_WITH_FILE", 0x2a0060},
+        {"LOCAL_WITH_NETWORK", 0x2a0068},
+        {"REMOTE", 0x2a0070},
+    },
+};
+// 0x143164fa0
+alignas(16) Sd_143164fa0 DAT_143164fa0 = {
+    {
+        {DAT_1424f9480, 0, "allowDomain", 0, 0xffc0},
+        {DAT_1424f9480, 0, "allowInsecureDomain", 0, 0xffc0},
+        {DAT_1424f9480, 0, "loadPolicyFile", 0, 0x48},
+        {DAT_1424f9480, 0, "showSettings", 0, 0x40},
+    },
+};
+// 0x143165040
+alignas(16) Sd_143165040 DAT_143165040 = {
+    {
+        {DAT_1424f9480, 0, "exactSettings", 0, 0x4a},
+    },
+};
+// 0x143165070
+alignas(16) Sd_143165070 DAT_143165070 = {
+    {
+        {"CAMERA", 0x2a0050},
+        {"DEFAULT", 0x2a0058},
+        {"DISPLAY", 0x2a0060},
+        {"LOCAL_STORAGE", 0x2a0068},
+        {"MICROPHONE", 0x2a0070},
+        {"PRIVACY", 0x2a0078},
+        {"SETTINGS_MANAGER", 0x2a0080},
+    },
+};
+// 0x1431650e0
+alignas(16) Sd_1431650e0 DAT_1431650e0 = {
+    {
+        {"useCodePage", 0x50050},
+    },
+};
+// 0x1431650f0
+alignas(16) Sd_1431650f0 DAT_1431650f0 = {
+    {
+        {DAT_14249e230, 0, "ime", 0, 0x1},
+        {DAT_14249e250, (const void*)&DAT_14313dad0, "totalMemory", 0, 0x1},
+        {DAT_14249e2b0, 0, "exit", 0, 0x48},
+        {DAT_14249e320, 0, "gc", 0, 0x0},
+        {DAT_14249e340, 0, "pause", 0, 0x0},
+        {DAT_14249e360, 0, "resume", 0, 0x0},
+        {DAT_14249e380, 0, "setClipboard", 0, 0x48},
+    },
+};
 // 0x143165210
 alignas(16) Sd_143165210 DAT_143165210 = {
     {
@@ -18714,7 +20741,7 @@ alignas(16) Sd_143165260 DAT_143165260 = {
     {
         0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_143164860 + 0xe0,
+    &DAT_143164940,
     {0},
 };
 // 0x1431652b0
@@ -18730,7 +20757,7 @@ alignas(16) Sd_1431652b0 DAT_1431652b0 = {
         0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143164860[0x6b0],
+    &DAT_143164f10,
 };
 // 0x143165300
 alignas(16) Sd_143165300 DAT_143165300 = {
@@ -18744,9 +20771,9 @@ alignas(16) Sd_143165300 DAT_143165300 = {
     {
         0x04, 0x05, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143164860[0x740],
-    &DAT_143164860[0x6f0],
-    &DAT_143164860[0x7e0],
+    &DAT_143164fa0,
+    &DAT_143164f50,
+    &DAT_143165040,
     {0},
 };
 // 0x143165350
@@ -18761,7 +20788,7 @@ alignas(16) Sd_143165350 DAT_143165350 = {
     {
         0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143164860[0x518],
+    &DAT_143164d78,
     {0},
 };
 // 0x1431653a0
@@ -18776,7 +20803,7 @@ alignas(16) Sd_1431653a0 DAT_1431653a0 = {
     {
         0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143164860[0x810],
+    &DAT_143165070,
     {0},
 };
 // 0x1431653f0
@@ -18791,8 +20818,8 @@ alignas(16) Sd_1431653f0 DAT_1431653f0 = {
     {
         0x07, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143164860[0x890],
-    &DAT_143164860[0x880],
+    &DAT_1431650f0,
+    &DAT_1431650e0,
     {0},
 };
 // 0x143165440
@@ -18807,7 +20834,7 @@ alignas(16) Sd_143165440 DAT_143165440 = {
     {
         0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143164860[0x540],
+    &DAT_143164da0,
     {0},
 };
 // 0x143165490
@@ -18822,7 +20849,7 @@ alignas(16) Sd_143165490 DAT_143165490 = {
     {
         0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143164860[0x630],
+    &DAT_143164e90,
     {0},
     DAT_14249c980,
     (const void*)&DAT_143165210,
@@ -18904,6 +20931,93 @@ alignas(16) Sd_143165490 DAT_143165490 = {
         0x53, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x00, 0x00,
     },
 };
+// 0x143167360
+alignas(16) Sd_143167360 DAT_143167360 = {
+    {
+        {DAT_1424a7180, (const void*)&DAT_14313dbc0, "enumerateFonts", 0, 0x40},
+        {DAT_1424a7270, 0, "registerFont", 0, 0x48},
+    },
+};
+// 0x1431673b0
+alignas(16) Sd_1431673b0 DAT_1431673b0 = {
+    {
+        {DAT_1424a43e0, (const void*)&DAT_14313d9e0, "align", 0, 0x1},
+        {DAT_1424a4450, 0, "align", 0, 0x4a},
+        {DAT_1424a4550, 0, "blockIndent", 0, 0x1},
+        {DAT_1424a4570, 0, "blockIndent", 0, 0x4a},
+        {DAT_1424a46c0, 0, "bold", 0, 0x1},
+        {DAT_1424a46e0, 0, "bold", 0, 0x4a},
+        {DAT_1424a4830, 0, "bullet", 0, 0x1},
+        {DAT_1424a4850, 0, "bullet", 0, 0x4a},
+        {DAT_1424a49a0, 0, "color", 0, 0x1},
+        {DAT_1424a49c0, 0, "color", 0, 0x4a},
+        {DAT_1424a4b10, (const void*)&DAT_14313d9e0, "font", 0, 0x1},
+        {DAT_1424a4b80, 0, "font", 0, 0x4a},
+        {DAT_1424a4c80, 0, "indent", 0, 0x1},
+        {DAT_1424a4ca0, 0, "indent", 0, 0x4a},
+        {DAT_1424a4df0, 0, "italic", 0, 0x1},
+        {DAT_1424a4e10, 0, "italic", 0, 0x4a},
+        {DAT_1424a4f60, 0, "kerning", 0, 0x1},
+        {DAT_1424a4f80, 0, "kerning", 0, 0x4a},
+        {DAT_1424a50d0, 0, "leading", 0, 0x1},
+        {DAT_1424a50f0, 0, "leading", 0, 0x4a},
+        {DAT_1424a5240, 0, "leftMargin", 0, 0x1},
+        {DAT_1424a5260, 0, "leftMargin", 0, 0x4a},
+        {DAT_1424a53b0, 0, "letterSpacing", 0, 0x1},
+        {DAT_1424a53d0, 0, "letterSpacing", 0, 0x4a},
+        {DAT_1424a5520, 0, "rightMargin", 0, 0x1},
+        {DAT_1424a5540, 0, "rightMargin", 0, 0x4a},
+        {DAT_1424a5690, 0, "size", 0, 0x1},
+        {DAT_1424a56b0, 0, "size", 0, 0x4a},
+        {DAT_1424a5800, (const void*)&DAT_14313dbc0, "tabStops", 0, 0x1},
+        {DAT_1424a58b0, 0, "tabStops", 0, 0x4a},
+        {DAT_1424a58f0, (const void*)&DAT_14313d9e0, "target", 0, 0x1},
+        {DAT_1424a5960, 0, "target", 0, 0x4a},
+        {DAT_1424a5a60, 0, "underline", 0, 0x1},
+        {DAT_1424a5a80, 0, "underline", 0, 0x4a},
+        {DAT_1424a5bd0, (const void*)&DAT_14313d9e0, "url", 0, 0x1},
+        {DAT_1424a5c40, 0, "url", 0, 0x4a},
+    },
+};
+// 0x143167950
+alignas(16) Sd_143167950 DAT_143167950 = {
+    {
+        {"DARK_COLOR", 0x2a0050},
+        {"LIGHT_COLOR", 0x2a0058},
+    },
+};
+// 0x143167970
+alignas(16) Sd_143167970 DAT_143167970 = {
+    {
+        {"CRT", 0x2a0050},
+        {"DEFAULT", 0x2a0058},
+        {"LCD", 0x2a0060},
+    },
+};
+// 0x1431679a0
+alignas(16) Sd_1431679a0 DAT_1431679a0 = {
+    {
+        {"fontSize", 0x80038},
+        {"insideCutoff", 0x80040},
+        {"outsideCutoff", 0x80048},
+    },
+};
+// 0x1431679d0
+alignas(16) Sd_1431679d0 DAT_1431679d0 = {
+    {
+        {"CENTER", 0x2a0050},
+        {"LEFT", 0x2a0058},
+        {"NONE", 0x2a0060},
+        {"RIGHT", 0x2a0068},
+    },
+};
+// 0x143167a10
+alignas(16) Sd_143167a10 DAT_143167a10 = {
+    {
+        {"DYNAMIC", 0x2a0050},
+        {"INPUT", 0x2a0058},
+    },
+};
 // 0x143167a30
 alignas(16) Sd_143167a30 DAT_143167a30 = {
     {
@@ -18932,7 +21046,7 @@ alignas(16) Sd_143167a80 DAT_143167a80 = {
         0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143167168[0x838],
+    &DAT_1431679a0,
 };
 // 0x143167ad0
 alignas(16) Sd_143167ad0 DAT_143167ad0 = {
@@ -18946,7 +21060,7 @@ alignas(16) Sd_143167ad0 DAT_143167ad0 = {
     {
         0x02, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143167168[0x1f8],
+    &DAT_143167360,
     {0},
     (const unsigned char*)&DAT_143167f80 + 0x11a0,
     {0},
@@ -19040,7 +21154,7 @@ alignas(16) Sd_143167cb0 DAT_143167cb0 = {
     {
         0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143167168[0x7e8],
+    &DAT_143167950,
     {0},
 };
 // 0x143167d00
@@ -19055,7 +21169,7 @@ alignas(16) Sd_143167d00 DAT_143167d00 = {
     {
         0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143167168[0x808],
+    &DAT_143167970,
     {0},
 };
 // 0x143167d50
@@ -19086,7 +21200,7 @@ alignas(16) Sd_143167da0 DAT_143167da0 = {
     {
         0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143167168[0x868],
+    &DAT_1431679d0,
     {0},
 };
 // 0x143167df0
@@ -19101,7 +21215,7 @@ alignas(16) Sd_143167df0 DAT_143167df0 = {
     {
         0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143167168[0x8a8],
+    &DAT_143167a10,
     {0},
 };
 // 0x143167e40
@@ -19117,7 +21231,7 @@ alignas(16) Sd_143167e40 DAT_143167e40 = {
         0x00, 0x00, 0x24, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143167168[0x248],
+    &DAT_1431673b0,
     {0},
 };
 // 0x143167e90
@@ -20070,6 +22184,67 @@ alignas(16) Sd_14316b3f0 DAT_14316b3f0 = {
         0x63, 0x73, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
 };
+// 0x14316ccb0
+alignas(16) Sd_14316ccb0 DAT_14316ccb0 = {
+    {
+        {"LEFT", 0x270050},
+        {"NUM_PAD", 0x270054},
+        {"RIGHT", 0x270058},
+        {"STANDARD", 0x27005c},
+    },
+};
+// 0x14316ccf0
+alignas(16) Sd_14316ccf0 DAT_14316ccf0 = {
+    {
+        {DAT_1424b5730, 0, "cursor", 0, 0x4a},
+        {DAT_1424b5830, (const void*)&DAT_14313d9e0, "cursor", 0, 0x1},
+        {DAT_1424b58a0, 0, "hide", 0, 0x0},
+        {DAT_1424b58c0, 0, "show", 0, 0x0},
+    },
+};
+// 0x14316cd90
+alignas(16) Sd_14316cd90 DAT_14316cd90 = {
+    {
+        {"ARROW", 0x2a0050},
+        {"AUTO", 0x2a0058},
+        {"BUTTON", 0x2a0060},
+        {"HAND", 0x2a0068},
+        {"IBEAM", 0x2a0070},
+    },
+};
+// 0x14316cde0
+alignas(16) Sd_14316cde0 DAT_14316cde0 = {
+    {
+        {DAT_1424b6390, (const void*)&DAT_14313d9e0, "inputMode", 0, 0x1},
+        {DAT_1424b6400, 0, "inputMode", 0, 0x4a},
+        {DAT_1424b6500, (const void*)&DAT_14313da80, "maxTouchPoints", 0, 0x1},
+        {DAT_1424b6560, 0, "supportedGestures", 0, 0x1},
+        {DAT_1424b6610, (const void*)&DAT_14313da30, "supportsGestureEvents", 0, 0x1},
+        {DAT_1424b6670, (const void*)&DAT_14313da30, "supportsTouchEvents", 0, 0x1},
+    },
+};
+// 0x14316ced0
+alignas(16) Sd_14316ced0 DAT_14316ced0 = {
+    {
+        {"clear", 0x50038},
+        {"copy", 0x50039},
+        {"cut", 0x5003a},
+        {"paste", 0x5003b},
+        {"selectAll", 0x5003c},
+    },
+};
+// 0x14316cf20
+alignas(16) Sd_14316cf20 DAT_14316cf20 = {
+    {
+        {DAT_1424f9480, (const void*)&DAT_14313d9e0, "caption", 0, 0x1},
+        {DAT_1424f9480, 0, "caption", 0, 0x4a},
+        {DAT_1424f9480, (const void*)&DAT_14313da30, "separatorBefore", 0, 0x1},
+        {DAT_1424f9480, 0, "separatorBefore", 0, 0x4a},
+        {DAT_1424f9480, (const void*)&DAT_14313da30, "visible", 0, 0x1},
+        {DAT_1424f9480, 0, "visible", 0, 0x4a},
+        {DAT_1424f9480, (const void*)&DAT_14316d0e0, "clone", 0, 0x0},
+    },
+};
 // 0x14316d040
 alignas(16) Sd_14316d040 DAT_14316d040 = {
     {
@@ -20098,7 +22273,7 @@ alignas(16) Sd_14316d090 DAT_14316d090 = {
         0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14316be60[0x1070],
+    &DAT_14316ced0,
 };
 // 0x14316d0e0
 alignas(16) Sd_14316d0e0 DAT_14316d0e0 = {
@@ -20113,7 +22288,7 @@ alignas(16) Sd_14316d0e0 DAT_14316d0e0 = {
         0x00, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14316be60[0x10c0],
+    &DAT_14316cf20,
     {0},
 };
 // 0x14316d130
@@ -20160,7 +22335,7 @@ alignas(16) Sd_14316d1d0 DAT_14316d1d0 = {
     {
         0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14316be60[0xe50],
+    &DAT_14316ccb0,
     {0},
 };
 // 0x14316d220
@@ -20175,7 +22350,7 @@ alignas(16) Sd_14316d220 DAT_14316d220 = {
     {
         0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14316be60[0xe90],
+    &DAT_14316ccf0,
     {0},
 };
 // 0x14316d270
@@ -20190,7 +22365,7 @@ alignas(16) Sd_14316d270 DAT_14316d270 = {
     {
         0x00, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14316be60[0xf30],
+    &DAT_14316cd90,
     {0},
 };
 // 0x14316d2c0
@@ -20205,7 +22380,7 @@ alignas(16) Sd_14316d2c0 DAT_14316d2c0 = {
     {
         0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_14316be60[0xf80],
+    &DAT_14316cde0,
     {0},
 };
 // 0x14316d310
@@ -22202,6 +24377,56 @@ alignas(16) Sd_14316ff40 DAT_14316ff40 = {
         0x65, 0x00, 0x00, 0x00, 0x50, 0x72, 0x6f, 0x78, 0x79, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
 };
+// 0x143172010
+alignas(16) Sd_143172010 DAT_143172010 = {
+    {
+        {"message", 0x90058},
+    },
+};
+// 0x143172020
+alignas(16) Sd_143172020 DAT_143172020 = {
+    {
+        {"SET_CURRENT_INPUT_LANGUAGE", 0x2a0050},
+        {"SET_SUPPORTED_LANGUAGES", 0x2a0058},
+        {"SET_SUPPORTED_IMENAMES", 0x2a0060},
+        {"SET_IMENAME", 0x2a0068},
+        {"SET_CURRENT_LANGUAGE", 0x2a0070},
+        {"REMOVE_STATUS_WINDOW", 0x2a0078},
+        {"DISPLAY_STATUS_WINDOW", 0x2a0080},
+        {"SET_CONVERSION_STATUS", 0x2a0088},
+    },
+};
+// 0x1431720a0
+alignas(16) Sd_1431720a0 DAT_1431720a0 = {
+    {
+        {"textColor", 0x60038},
+        {"selectedTextColor", 0x6003c},
+        {"fontSize", 0x60040},
+        {"backgroundColor", 0x60044},
+        {"selectedBackgroundColor", 0x60048},
+        {"indexBackgroundColor", 0x6004c},
+        {"selectedIndexBackgroundColor", 0x60050},
+        {"readingWindowTextColor", 0x60054},
+        {"readingWindowBackgroundColor", 0x60058},
+        {"readingWindowFontSize", 0x6005c},
+    },
+};
+// 0x143172140
+alignas(16) Sd_143172140 DAT_143172140 = {
+    {
+        {DAT_1424c1860, (const void*)&DAT_1431726d0, "getIMECandidateListStyle", 0, 0x0},
+        {DAT_1424c1910, 0, "setIMECandidateListStyle", 0, 0x48},
+        {DAT_1424c1950, 0, "SendLangBarMessage", 0, 0xd8},
+        {DAT_1424c1b60, (const void*)&DAT_14313d9e0, "GetOSVersion", 0, 0x0},
+        {DAT_1424c1bd0, (const void*)&DAT_14313d9e0, "GetCompositionString", 0, 0x0},
+    },
+};
+// 0x143172208
+alignas(16) Sd_143172208 DAT_143172208 = {
+    {
+        {DAT_1424c3b90, (const void*)&DAT_14313da30, "supportsAnalogEvents", 0, 0x0},
+    },
+};
 // 0x143172230
 alignas(16) Sd_143172230 DAT_143172230 = {
     {
@@ -22339,7 +24564,7 @@ alignas(16) Sd_1431724b0 DAT_1431724b0 = {
     {
         0x01, 0x1d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143171f38[0x2d0],
+    &DAT_143172208,
     (const unsigned char*)&DAT_1431726d0 + 0x520,
     {0},
 };
@@ -22402,9 +24627,9 @@ alignas(16) Sd_1431725f0 DAT_1431725f0 = {
     {
         0x00, 0x08, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143171f38[0xe8],
+    &DAT_143172020,
     {0},
-    &DAT_143171f38[0xd8],
+    &DAT_143172010,
 };
 // 0x143172640
 alignas(16) Sd_143172640 DAT_143172640 = {
@@ -22418,7 +24643,7 @@ alignas(16) Sd_143172640 DAT_143172640 = {
     {
         0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143171f38[0x208],
+    &DAT_143172140,
     {0},
     "EDGEAA_INHERIT",
     {
@@ -22450,7 +24675,7 @@ alignas(16) Sd_1431726d0 DAT_1431726d0 = {
         0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    &DAT_143171f38[0x168],
+    &DAT_1431720a0,
     DAT_1424c2610,
     {0},
     "enabled",
@@ -23169,6 +25394,345 @@ alignas(16) Sd_1431726d0 DAT_1431726d0 = {
     },
 };
 
+#pragma comment(linker, "/alternatename:?DAT_14245af00@@3PAEA=?Func@?$ThunkFunc0@VErrorEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0A@J@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245af60@@3PAEA=?Func@?$ThunkFunc0@VErrorEvent@fl_events@Instances@AS3@GFx@Scaleform@@$00V?$SPtr@VEvent@fl_events@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245b080@@3PAEA=?Func@?$ThunkFunc0@VErrorEvent@fl_events@Instances@AS3@GFx@Scaleform@@$01VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142455e90@@3PAEA=?Func@?$ThunkFunc0@VKeyboardEvent@fl_events@Instances@AS3@GFx@Scaleform@@$09K@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142455ef0@@3PAEA=?Func@?$ThunkFunc1@VKeyboardEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0L@$$CBVValue@456@K@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142455f60@@3PAEA=?Func@?$ThunkFunc0@VKeyboardEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0M@K@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142455fc0@@3PAEA=?Func@?$ThunkFunc1@VKeyboardEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0N@$$CBVValue@456@K@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142456030@@3PAEA=?Func@?$ThunkFunc0@VKeyboardEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0O@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142456090@@3PAEA=?Func@?$ThunkFunc1@VKeyboardEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0P@$$CBVValue@456@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142456250@@3PAEA=?Func@?$ThunkFunc0@VKeyboardEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0BA@V?$SPtr@VEvent@fl_events@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142456470@@3PAEA=?Func@?$ThunkFunc0@VKeyboardEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0BB@VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424564e0@@3PAEA=?Func@?$ThunkFunc0@VKeyboardEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0BC@$$CBVValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424576e0@@3PAEA=?Func@?$ThunkFunc0@VNetStatusEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0A@V?$SPtr@VObject@fl@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142457790@@3PAEA=?Func@?$ThunkFunc1@VNetStatusEvent@fl_events@Instances@AS3@GFx@Scaleform@@$00$$CBVValue@456@AEBV7456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424578e0@@3PAEA=?Func@?$ThunkFunc0@VNetStatusEvent@fl_events@Instances@AS3@GFx@Scaleform@@$01V?$SPtr@VEvent@fl_events@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142457c50@@3PAEA=?Func@?$ThunkFunc0@VNetStatusEvent@fl_events@Instances@AS3@GFx@Scaleform@@$02VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142457f80@@3PAEA=?Func@?$ThunkFunc0@VProgressEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0A@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142457ff0@@3PAEA=?Func@?$ThunkFunc1@VProgressEvent@fl_events@Instances@AS3@GFx@Scaleform@@$00$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142458080@@3PAEA=?Func@?$ThunkFunc0@VProgressEvent@fl_events@Instances@AS3@GFx@Scaleform@@$01N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424580f0@@3PAEA=?Func@?$ThunkFunc1@VProgressEvent@fl_events@Instances@AS3@GFx@Scaleform@@$02$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142458180@@3PAEA=?Func@?$ThunkFunc0@VProgressEvent@fl_events@Instances@AS3@GFx@Scaleform@@$03V?$SPtr@VEvent@fl_events@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142458230@@3PAEA=?Func@?$ThunkFunc0@VProgressEvent@fl_events@Instances@AS3@GFx@Scaleform@@$04VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142458980@@3PAEA=?Func@?$ThunkFunc0@VTextEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0A@VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424589f0@@3PAEA=?Func@?$ThunkFunc1@VTextEvent@fl_events@Instances@AS3@GFx@Scaleform@@$00$$CBVValue@456@AEBVASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142458af0@@3PAEA=?Func@?$ThunkFunc0@VTextEvent@fl_events@Instances@AS3@GFx@Scaleform@@$01V?$SPtr@VEvent@fl_events@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142458ba0@@3PAEA=?Func@?$ThunkFunc0@VTextEvent@fl_events@Instances@AS3@GFx@Scaleform@@$02VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142458c10@@3PAEA=?Func@?$ThunkFunc5@VEventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@$0A@$$CBVValue@456@AEBVASString@56@AEBV7456@_NJ_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142458eb0@@3PAEA=?Func@?$ThunkFunc1@VEventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@$00_NPEAVEvent@23456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142458f50@@3PAEA=?Func@?$ThunkFunc1@VEventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@$01_NAEBVASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142459090@@3PAEA=?Func@?$ThunkFunc3@VEventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@$02$$CBVValue@456@AEBVASString@56@AEBV7456@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142459400@@3PAEA=?Func@?$ThunkFunc1@VEventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@$03_NAEBVASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142459540@@3PAEA=?Func@?$ThunkFunc0@VTimerEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0A@V?$SPtr@VEvent@fl_events@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424595f0@@3PAEA=?Func@?$ThunkFunc0@VTimerEvent@fl_events@Instances@AS3@GFx@Scaleform@@$00VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142459660@@3PAEA=?Func@?$ThunkFunc0@VTimerEvent@fl_events@Instances@AS3@GFx@Scaleform@@$01$$CBVValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142459680@@3PAEA=?Func@?$ThunkFunc0@VGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0A@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424596e0@@3PAEA=?Func@?$ThunkFunc1@VGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$00$$CBVValue@456@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142459740@@3PAEA=?Func@?$ThunkFunc0@VGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$01_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424597a0@@3PAEA=?Func@?$ThunkFunc1@VGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$02$$CBVValue@456@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142459800@@3PAEA=?Func@?$ThunkFunc0@VGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$03_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142459860@@3PAEA=?Func@?$ThunkFunc1@VGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$04$$CBVValue@456@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424598c0@@3PAEA=?Func@?$ThunkFunc0@VGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$05_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142459a70@@3PAEA=?Func@?$ThunkFunc1@VGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$06$$CBVValue@456@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142459ad0@@3PAEA=?Func@?$ThunkFunc0@VGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$07N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142459b40@@3PAEA=?Func@?$ThunkFunc1@VGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$08$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142459bd0@@3PAEA=?Func@?$ThunkFunc0@VGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$09N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142459c40@@3PAEA=?Func@?$ThunkFunc1@VGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0L@$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142459cd0@@3PAEA=?Func@?$ThunkFunc0@VGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0M@VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142459d40@@3PAEA=?Func@?$ThunkFunc1@VGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0N@$$CBVValue@456@AEBVASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142459e40@@3PAEA=?Func@?$ThunkFunc0@VGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0O@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142459ea0@@3PAEA=?Func@?$ThunkFunc1@VGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0P@$$CBVValue@456@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142459f00@@3PAEA=?Func@?$ThunkFunc0@VGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0BA@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142459f70@@3PAEA=?Func@?$ThunkFunc0@VGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0BB@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142459fe0@@3PAEA=?Func@?$ThunkFunc0@VGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0BC@V?$SPtr@VEvent@fl_events@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245a090@@3PAEA=?Func@?$ThunkFunc0@VGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0BD@VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245a100@@3PAEA=?Func@?$ThunkFunc0@VGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0BE@$$CBVValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245a270@@3PAEA=?Func@?$ThunkFunc0@VTransformGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0A@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245a2e0@@3PAEA=?Func@?$ThunkFunc1@VTransformGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$00$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245a370@@3PAEA=?Func@?$ThunkFunc0@VTransformGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$01N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245a3e0@@3PAEA=?Func@?$ThunkFunc1@VTransformGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$02$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245a470@@3PAEA=?Func@?$ThunkFunc0@VTransformGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$03N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245a4e0@@3PAEA=?Func@?$ThunkFunc1@VTransformGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$04$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245a570@@3PAEA=?Func@?$ThunkFunc0@VFocusEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0A@VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245a5e0@@3PAEA=?Func@?$ThunkFunc0@VTransformGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$05N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245a650@@3PAEA=?Func@?$ThunkFunc1@VFocusEvent@fl_events@Instances@AS3@GFx@Scaleform@@$00$$CBVValue@456@AEBVASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245a750@@3PAEA=?Func@?$ThunkFunc1@VTransformGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$06$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245a7e0@@3PAEA=?Func@?$ThunkFunc0@VFocusEvent@fl_events@Instances@AS3@GFx@Scaleform@@$01K@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245a840@@3PAEA=?Func@?$ThunkFunc0@VTransformGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$07N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245a8b0@@3PAEA=?Func@?$ThunkFunc1@VFocusEvent@fl_events@Instances@AS3@GFx@Scaleform@@$02$$CBVValue@456@K@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245a920@@3PAEA=?Func@?$ThunkFunc1@VTransformGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$08$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245a9b0@@3PAEA=?Func@?$ThunkFunc0@VFocusEvent@fl_events@Instances@AS3@GFx@Scaleform@@$03V?$SPtr@VInteractiveObject@fl_display@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245aa60@@3PAEA=?Func@?$ThunkFunc0@VTransformGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$09V?$SPtr@VEvent@fl_events@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245ab10@@3PAEA=?Func@?$ThunkFunc1@VFocusEvent@fl_events@Instances@AS3@GFx@Scaleform@@$04$$CBVValue@456@PEAVInteractiveObject@fl_display@3456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245ab50@@3PAEA=?Func@?$ThunkFunc0@VTransformGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0L@VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245abc0@@3PAEA=?Func@?$ThunkFunc0@VFocusEvent@fl_events@Instances@AS3@GFx@Scaleform@@$05_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245ac20@@3PAEA=?Func@?$ThunkFunc1@VFocusEvent@fl_events@Instances@AS3@GFx@Scaleform@@$06$$CBVValue@456@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245ac80@@3PAEA=?Func@?$ThunkFunc0@VFocusEvent@fl_events@Instances@AS3@GFx@Scaleform@@$07V?$SPtr@VEvent@fl_events@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245ad30@@3PAEA=?Func@?$ThunkFunc0@VFocusEvent@fl_events@Instances@AS3@GFx@Scaleform@@$08VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245b010@@3PAEA=?Func@?$ThunkFunc0@VPressAndTapGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0A@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245b0f0@@3PAEA=?Func@?$ThunkFunc1@VPressAndTapGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$00$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245b2e0@@3PAEA=?Func@?$ThunkFunc0@VPressAndTapGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$01N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245b350@@3PAEA=?Func@?$ThunkFunc1@VPressAndTapGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$02$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245b3e0@@3PAEA=?Func@?$ThunkFunc0@VPressAndTapGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$03N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245b450@@3PAEA=?Func@?$ThunkFunc0@VPressAndTapGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$04N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245b620@@3PAEA=?Func@?$ThunkFunc0@VPressAndTapGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$05V?$SPtr@VEvent@fl_events@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245b6d0@@3PAEA=?Func@?$ThunkFunc0@VPressAndTapGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@$06VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245d4b0@@3PAEA=?Func@?$ThunkFunc0@VIOErrorEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0A@VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245d5d0@@3PAEA=?Func@?$ThunkFunc1@VIOErrorEvent@fl_events@Instances@AS3@GFx@Scaleform@@$00$$CBVValue@456@AEBVASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245d780@@3PAEA=?Func@?$ThunkFunc0@VIOErrorEvent@fl_events@Instances@AS3@GFx@Scaleform@@$01V?$SPtr@VEvent@fl_events@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245d8a0@@3PAEA=?Func@?$ThunkFunc0@VIOErrorEvent@fl_events@Instances@AS3@GFx@Scaleform@@$02VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245d910@@3PAEA=?Func@?$ThunkFunc0@VKeyboardEvent@fl_events@Instances@AS3@GFx@Scaleform@@$0A@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245d970@@3PAEA=?Func@?$ThunkFunc1@VKeyboardEvent@fl_events@Instances@AS3@GFx@Scaleform@@$00$$CBVValue@456@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245d9d0@@3PAEA=?Func@?$ThunkFunc0@VKeyboardEvent@fl_events@Instances@AS3@GFx@Scaleform@@$01K@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245dbe0@@3PAEA=?Func@?$ThunkFunc1@VKeyboardEvent@fl_events@Instances@AS3@GFx@Scaleform@@$02$$CBVValue@456@K@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245dc50@@3PAEA=?Func@?$ThunkFunc0@VKeyboardEvent@fl_events@Instances@AS3@GFx@Scaleform@@$03_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245de10@@3PAEA=?Func@?$ThunkFunc1@VKeyboardEvent@fl_events@Instances@AS3@GFx@Scaleform@@$04$$CBVValue@456@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245de70@@3PAEA=?Func@?$ThunkFunc0@VKeyboardEvent@fl_events@Instances@AS3@GFx@Scaleform@@$05_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245df40@@3PAEA=?Func@?$ThunkFunc1@VKeyboardEvent@fl_events@Instances@AS3@GFx@Scaleform@@$06$$CBVValue@456@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245e010@@3PAEA=?Func@?$ThunkFunc0@VKeyboardEvent@fl_events@Instances@AS3@GFx@Scaleform@@$07_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14245e120@@3PAEA=?Func@?$ThunkFunc1@VKeyboardEvent@fl_events@Instances@AS3@GFx@Scaleform@@$08$$CBVValue@456@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424748b0@@3PAEA=?Func@?$ThunkFunc0@VBitmapFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$0A@V?$SPtr@VBitmapFilter@fl_filters@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142474d50@@3PAEA=?Func@?$ThunkFunc0@VDropShadowFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$0A@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142474dc0@@3PAEA=?Func@?$ThunkFunc1@VDropShadowFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$00$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142474e50@@3PAEA=?Func@?$ThunkFunc0@VDropShadowFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$01N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142474ec0@@3PAEA=?Func@?$ThunkFunc1@VDropShadowFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$02$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142475090@@3PAEA=?Func@?$ThunkFunc0@VDropShadowFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$03N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142475100@@3PAEA=?Func@?$ThunkFunc1@VDropShadowFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$04$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142475190@@3PAEA=?Func@?$ThunkFunc0@VBlurFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$0A@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142475200@@3PAEA=?Func@?$ThunkFunc0@VDropShadowFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$05N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142475270@@3PAEA=?Func@?$ThunkFunc1@VBlurFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$00$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142475300@@3PAEA=?Func@?$ThunkFunc1@VDropShadowFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$06$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142475390@@3PAEA=?Func@?$ThunkFunc0@VBlurFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$01N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142475400@@3PAEA=?Func@?$ThunkFunc0@VDropShadowFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$07K@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142475460@@3PAEA=?Func@?$ThunkFunc1@VBlurFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$02$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424754f0@@3PAEA=?Func@?$ThunkFunc1@VDropShadowFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$08$$CBVValue@456@K@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142475560@@3PAEA=?Func@?$ThunkFunc0@VBlurFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$03J@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424755c0@@3PAEA=?Func@?$ThunkFunc0@VDropShadowFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$09N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142475630@@3PAEA=?Func@?$ThunkFunc1@VBlurFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$04$$CBVValue@456@J@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424756a0@@3PAEA=?Func@?$ThunkFunc1@VDropShadowFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$0L@$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142475730@@3PAEA=?Func@?$ThunkFunc0@VBlurFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$05V?$SPtr@VBitmapFilter@fl_filters@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424757e0@@3PAEA=?Func@?$ThunkFunc0@VDropShadowFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$0M@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142475840@@3PAEA=?Func@?$ThunkFunc1@VDropShadowFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$0N@$$CBVValue@456@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424758a0@@3PAEA=?Func@?$ThunkFunc0@VDropShadowFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$0O@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142475900@@3PAEA=?Func@?$ThunkFunc1@VDropShadowFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$0P@$$CBVValue@456@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142475960@@3PAEA=?Func@?$ThunkFunc0@VDropShadowFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$0BA@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424759c0@@3PAEA=?Func@?$ThunkFunc1@VDropShadowFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$0BB@$$CBVValue@456@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142475a20@@3PAEA=?Func@?$ThunkFunc0@VDropShadowFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$0BC@J@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142475a80@@3PAEA=?Func@?$ThunkFunc1@VDropShadowFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$0BD@$$CBVValue@456@J@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142475af0@@3PAEA=?Func@?$ThunkFunc0@VDropShadowFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$0BE@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142475b60@@3PAEA=?Func@?$ThunkFunc1@VDropShadowFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$0BF@$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142475bf0@@3PAEA=?Func@?$ThunkFunc0@VDropShadowFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$0BG@V?$SPtr@VBitmapFilter@fl_filters@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142476970@@3PAEA=?Func@?$ThunkFunc0@VColorMatrixFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$0A@V?$SPtr@VArray@fl@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142476a20@@3PAEA=?Func@?$ThunkFunc1@VColorMatrixFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$00$$CBVValue@456@PEAVArray@fl@3456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142476a60@@3PAEA=?Func@?$ThunkFunc0@VColorMatrixFilter@fl_filters@Instances@AS3@GFx@Scaleform@@$01V?$SPtr@VBitmapFilter@fl_filters@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247cf80@@3PAEA=?Func@?$ThunkFunc0@VPerspectiveProjection@fl_geom@Instances@AS3@GFx@Scaleform@@$0A@V?$SPtr@VPoint@fl_geom@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247d030@@3PAEA=?Func@?$ThunkFunc1@VPerspectiveProjection@fl_geom@Instances@AS3@GFx@Scaleform@@$00$$CBVValue@456@PEAVPoint@23456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247d070@@3PAEA=?Func@?$ThunkFunc0@VPerspectiveProjection@fl_geom@Instances@AS3@GFx@Scaleform@@$01N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247d0e0@@3PAEA=?Func@?$ThunkFunc1@VPerspectiveProjection@fl_geom@Instances@AS3@GFx@Scaleform@@$02$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247d170@@3PAEA=?Func@?$ThunkFunc0@VPerspectiveProjection@fl_geom@Instances@AS3@GFx@Scaleform@@$03N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247d1e0@@3PAEA=?Func@?$ThunkFunc1@VPerspectiveProjection@fl_geom@Instances@AS3@GFx@Scaleform@@$04$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247d2d0@@3PAEA=?Func@?$ThunkFunc0@VPerspectiveProjection@fl_geom@Instances@AS3@GFx@Scaleform@@$05V?$SPtr@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247df10@@3PAEA=?Func@?$ThunkFunc0@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0A@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247df80@@3PAEA=?Func@?$ThunkFunc0@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@$00N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247dff0@@3PAEA=?Func@?$ThunkFunc1@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@$01$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247e080@@3PAEA=?Func@?$ThunkFunc0@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@$02N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247e0f0@@3PAEA=?Func@?$ThunkFunc1@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@$03$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247e180@@3PAEA=?Func@?$ThunkFunc0@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@$04N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247e1f0@@3PAEA=?Func@?$ThunkFunc1@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@$05$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247e280@@3PAEA=?Func@?$ThunkFunc0@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@$06N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247e2f0@@3PAEA=?Func@?$ThunkFunc1@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@$07$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247e380@@3PAEA=?Func@?$ThunkFunc0@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@$08N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247e3f0@@3PAEA=?Func@?$ThunkFunc1@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@$09V?$SPtr@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@@456@PEAV123456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247e620@@3PAEA=?Func@?$ThunkFunc0@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0L@V?$SPtr@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247e6d0@@3PAEA=?Func@?$ThunkFunc1@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0M@V?$SPtr@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@@456@PEAV123456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247e7c0@@3PAEA=?Func@?$ThunkFunc0@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$0A@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247e830@@3PAEA=?Func@?$ThunkFunc1@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0N@$$CBVValue@456@PEAV123456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247e870@@3PAEA=?Func@?$ThunkFunc1@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$00$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247e900@@3PAEA=?Func@?$ThunkFunc1@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0O@NPEAV123456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247e9b0@@3PAEA=?Func@?$ThunkFunc0@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$01V?$SPtr@VPoint@fl_geom@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247ea60@@3PAEA=?Func@?$ThunkFunc2@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0P@_NPEAV123456@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247eb40@@3PAEA=?Func@?$ThunkFunc1@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$02$$CBVValue@456@PEAVPoint@23456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247eb80@@3PAEA=?Func@?$ThunkFunc1@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0BA@$$CBVValue@456@PEAV123456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247ebc0@@3PAEA=?Func@?$ThunkFunc0@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$03N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247ec30@@3PAEA=?Func@?$ThunkFunc3@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0BB@_NPEAV123456@N_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247ed60@@3PAEA=?Func@?$ThunkFunc1@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$04$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247edf0@@3PAEA=?Func@?$ThunkFunc0@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0BC@$$CBVValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247ee10@@3PAEA=?Func@?$ThunkFunc0@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$05N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247ee80@@3PAEA=?Func@?$ThunkFunc0@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0BD@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247eef0@@3PAEA=?Func@?$ThunkFunc1@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$06$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247ef80@@3PAEA=?Func@?$ThunkFunc0@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0BE@$$CBVValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247efa0@@3PAEA=?Func@?$ThunkFunc0@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$07V?$SPtr@VPoint@fl_geom@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247f050@@3PAEA=?Func@?$ThunkFunc1@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0BF@$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247f0e0@@3PAEA=?Func@?$ThunkFunc1@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$08$$CBVValue@456@PEAVPoint@23456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247f120@@3PAEA=?Func@?$ThunkFunc1@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0BG@V?$SPtr@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@@456@PEAV123456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247f210@@3PAEA=?Func@?$ThunkFunc0@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$09N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247f280@@3PAEA=?Func@?$ThunkFunc0@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0BH@VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247f2f0@@3PAEA=?Func@?$ThunkFunc1@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$0L@$$CBVValue@456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247f380@@3PAEA=?Func@?$ThunkFunc0@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$0M@V?$SPtr@VPoint@fl_geom@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247f430@@3PAEA=?Func@?$ThunkFunc1@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$0N@$$CBVValue@456@PEAVPoint@23456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247f470@@3PAEA=?Func@?$ThunkFunc0@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$0O@V?$SPtr@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247f520@@3PAEA=?Func@?$ThunkFunc2@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$0P@_NNN@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247f650@@3PAEA=?Func@?$ThunkFunc1@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$0BA@_NPEAVPoint@23456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247f6f0@@3PAEA=?Func@?$ThunkFunc1@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$0BB@_NPEAV123456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247f790@@3PAEA=?Func@?$ThunkFunc1@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$0BC@_NPEAV123456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247f830@@3PAEA=?Func@?$ThunkFunc2@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$0BD@$$CBVValue@456@NN@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247f910@@3PAEA=?Func@?$ThunkFunc1@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$0BE@$$CBVValue@456@PEAVPoint@23456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247f950@@3PAEA=?Func@?$ThunkFunc1@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$0BF@V?$SPtr@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@@456@PEAV123456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247fa40@@3PAEA=?Func@?$ThunkFunc2@VVector3D@fl_geom@Classes@AS3@GFx@Scaleform@@$0A@NPEAV12Instances@456@PEAV127456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247fb10@@3PAEA=?Func@?$ThunkFunc1@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$0BG@_NPEAV123456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247fbb0@@3PAEA=?Func@?$ThunkFunc2@VVector3D@fl_geom@Classes@AS3@GFx@Scaleform@@$00NPEAV12Instances@456@PEAV127456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247fc80@@3PAEA=?Func@?$ThunkFunc0@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$0BH@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247fce0@@3PAEA=?Func@?$ThunkFunc2@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$0BI@$$CBVValue@456@NN@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247fdc0@@3PAEA=?Func@?$ThunkFunc1@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$0BJ@$$CBVValue@456@PEAVPoint@23456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247fe00@@3PAEA=?Func@?$ThunkFunc0@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$0BK@$$CBVValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247fe20@@3PAEA=?Func@?$ThunkFunc0@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$0BL@VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14247fe90@@3PAEA=?Func@?$ThunkFunc1@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@$0BM@V?$SPtr@VRectangle@fl_geom@Instances@AS3@GFx@Scaleform@@@456@PEAV123456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142480780@@3PAEA=?Func@?$ThunkFunc0@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0A@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424807f0@@3PAEA=?Func@?$ThunkFunc0@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$00V?$SPtr@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424808a0@@3PAEA=?Func@?$ThunkFunc1@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$01$$CBVValue@456@PEAVVector3D@23456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424808e0@@3PAEA=?Func@?$ThunkFunc0@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$02V?$SPtr@VVector_double@fl_vec@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142480990@@3PAEA=?Func@?$ThunkFunc1@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$03$$CBVValue@456@PEAVVector_double@fl_vec@3456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424809d0@@3PAEA=?Func@?$ThunkFunc1@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$04$$CBVValue@456@PEAV123456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142480b50@@3PAEA=?Func@?$ThunkFunc3@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$05$$CBVValue@456@NPEAVVector3D@23456@PEAV823456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142480c50@@3PAEA=?Func@?$ThunkFunc3@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$06$$CBVValue@456@NNN@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142480d80@@3PAEA=?Func@?$ThunkFunc3@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$07$$CBVValue@456@NNN@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142480eb0@@3PAEA=?Func@?$ThunkFunc0@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$08V?$SPtr@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142480f60@@3PAEA=?Func@?$ThunkFunc1@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$09V?$SPtr@VVector_object@fl_vec@Instances@AS3@GFx@Scaleform@@@456@AEBVASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424810f0@@3PAEA=?Func@?$ThunkFunc1@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0L@V?$SPtr@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@@456@PEAVVector3D@23456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424811e0@@3PAEA=?Func@?$ThunkFunc0@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0M@$$CBVValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142481200@@3PAEA=?Func@?$ThunkFunc3@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0N@V?$SPtr@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@@456@PEAV123456@PEAV123456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142481370@@3PAEA=?Func@?$ThunkFunc2@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0O@$$CBVValue@456@PEAV123456@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142481430@@3PAEA=?Func@?$ThunkFunc0@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0P@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142481490@@3PAEA=?Func@?$ThunkFunc3@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0BA@$$CBVValue@456@PEAVVector3D@23456@PEAV823456@PEAV823456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142481510@@3PAEA=?Func@?$ThunkFunc1@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0BB@$$CBVValue@456@PEAV123456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142481550@@3PAEA=?Func@?$ThunkFunc3@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0BC@$$CBVValue@456@NPEAVVector3D@23456@PEAV823456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142481650@@3PAEA=?Func@?$ThunkFunc3@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0BD@$$CBVValue@456@NNN@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142481780@@3PAEA=?Func@?$ThunkFunc3@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0BE@$$CBVValue@456@NNN@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424818b0@@3PAEA=?Func@?$ThunkFunc2@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0BF@_NPEAVVector_object@fl_vec@3456@AEBVASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142481a30@@3PAEA=?Func@?$ThunkFunc1@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0BG@V?$SPtr@VVector3D@fl_geom@Instances@AS3@GFx@Scaleform@@@456@PEAVVector3D@23456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142481b20@@3PAEA=?Func@?$ThunkFunc2@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0BH@$$CBVValue@456@PEAVVector_double@fl_vec@3456@PEAV893456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142481b70@@3PAEA=?Func@?$ThunkFunc0@VMatrix3D@fl_geom@Instances@AS3@GFx@Scaleform@@$0BI@$$CBVValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424914e0@@3PAEA=?Func@?$ThunkFunc0@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$0A@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142491540@@3PAEA=?Func@?$ThunkFunc1@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$00$$CBVValue@456@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424915a0@@3PAEA=?Func@?$ThunkFunc0@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$01_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142491600@@3PAEA=?Func@?$ThunkFunc1@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$02$$CBVValue@456@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142491660@@3PAEA=?Func@?$ThunkFunc0@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$03VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424916d0@@3PAEA=?Func@?$ThunkFunc1@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$04$$CBVValue@456@AEBVASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424917d0@@3PAEA=?Func@?$ThunkFunc0@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$05VValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142491880@@3PAEA=?Func@?$ThunkFunc1@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$06$$CBVValue@456@AEBV7456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424919d0@@3PAEA=?Func@?$ThunkFunc0@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$07VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142491a40@@3PAEA=?Func@?$ThunkFunc1@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$08$$CBVValue@456@AEBVASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142491b40@@3PAEA=?Func@?$ThunkFunc0@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$09_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142491ba0@@3PAEA=?Func@?$ThunkFunc1@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$0L@$$CBVValue@456@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142491c00@@3PAEA=?Func@?$ThunkFunc0@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$0M@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142491c60@@3PAEA=?Func@?$ThunkFunc1@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$0N@$$CBVValue@456@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142491cc0@@3PAEA=?Func@?$ThunkFunc0@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$0O@VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142491d30@@3PAEA=?Func@?$ThunkFunc1@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$0P@$$CBVValue@456@AEBVASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142491e30@@3PAEA=?Func@?$ThunkFunc0@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$0BA@V?$SPtr@VArray@fl@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142491ee0@@3PAEA=?Func@?$ThunkFunc1@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$0BB@$$CBVValue@456@PEAVArray@fl@3456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142491f20@@3PAEA=?Func@?$ThunkFunc0@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$0BC@VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142491f90@@3PAEA=?Func@?$ThunkFunc1@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$0BD@$$CBVValue@456@AEBVASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142492090@@3PAEA=?Func@?$ThunkFunc0@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$0BE@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424920f0@@3PAEA=?Func@?$ThunkFunc1@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$0BF@$$CBVValue@456@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142492150@@3PAEA=?Func@?$ThunkFunc0@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$0BG@VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424921c0@@3PAEA=?Func@?$ThunkFunc1@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$0BH@$$CBVValue@456@AEBVASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249c500@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$0A@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249c560@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$00_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249c5c0@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$01_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249c620@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$02_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249c680@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$03_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249c6e0@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$04_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249c740@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$05_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249c7a0@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$06_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249c800@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$07_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249c860@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$08_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249c8c0@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$09_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249c920@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$0L@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249ca30@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$0M@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249ca90@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$0N@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249cc70@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$0O@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249ce10@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$0P@VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249ce80@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$0BA@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249cee0@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$0BB@VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249cf50@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$0BC@VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249cfc0@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$0BD@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249d030@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$0BE@VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249d1e0@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$0BF@VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249d250@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$0BG@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249d2c0@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$0BH@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249d330@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$0BI@N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249d3a0@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$0BJ@VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249d410@@3PAEA=?Func@?$ThunkFunc0@VCapabilities@fl_system@Classes@AS3@GFx@Scaleform@@$0BK@VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249d5c0@@3PAEA=?Func@?$ThunkFunc1@VIME@fl_system@Classes@AS3@GFx@Scaleform@@$0A@$$CBVValue@456@AEBVASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249d6c0@@3PAEA=?Func@?$ThunkFunc0@VIME@fl_system@Classes@AS3@GFx@Scaleform@@$00VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249d730@@3PAEA=?Func@?$ThunkFunc0@VIME@fl_system@Classes@AS3@GFx@Scaleform@@$01_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249d790@@3PAEA=?Func@?$ThunkFunc1@VIME@fl_system@Classes@AS3@GFx@Scaleform@@$02$$CBVValue@456@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249d7f0@@3PAEA=?Func@?$ThunkFunc0@VIME@fl_system@Classes@AS3@GFx@Scaleform@@$03$$CBVValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249d810@@3PAEA=?Func@?$ThunkFunc1@VIME@fl_system@Classes@AS3@GFx@Scaleform@@$04$$CBVValue@456@AEBVASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249deb0@@3PAEA=?Func@?$ThunkFunc0@VSecurityDomain@fl_system@Classes@AS3@GFx@Scaleform@@$0A@V?$SPtr@VSecurityDomain@fl_system@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249e230@@3PAEA=?Func@?$ThunkFunc0@VSystem@fl_system@Classes@AS3@GFx@Scaleform@@$0A@VValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249e250@@3PAEA=?Func@?$ThunkFunc0@VSystem@fl_system@Classes@AS3@GFx@Scaleform@@$00K@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249e2b0@@3PAEA=?Func@?$ThunkFunc1@VSystem@fl_system@Classes@AS3@GFx@Scaleform@@$01$$CBVValue@456@K@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249e320@@3PAEA=?Func@?$ThunkFunc0@VSystem@fl_system@Classes@AS3@GFx@Scaleform@@$02$$CBVValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249e340@@3PAEA=?Func@?$ThunkFunc0@VSystem@fl_system@Classes@AS3@GFx@Scaleform@@$03$$CBVValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249e360@@3PAEA=?Func@?$ThunkFunc0@VSystem@fl_system@Classes@AS3@GFx@Scaleform@@$04$$CBVValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14249e380@@3PAEA=?Func@?$ThunkFunc1@VSystem@fl_system@Classes@AS3@GFx@Scaleform@@$05$$CBVValue@456@AEBVASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a43e0@@3PAEA=?Func@?$ThunkFunc0@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0A@VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a4450@@3PAEA=?Func@?$ThunkFunc1@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$00$$CBVValue@456@AEBVASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a4550@@3PAEA=?Func@?$ThunkFunc0@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$01VValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a4570@@3PAEA=?Func@?$ThunkFunc1@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$02$$CBVValue@456@AEBV7456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a46c0@@3PAEA=?Func@?$ThunkFunc0@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$03VValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a46e0@@3PAEA=?Func@?$ThunkFunc1@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$04$$CBVValue@456@AEBV7456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a4830@@3PAEA=?Func@?$ThunkFunc0@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$05VValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a4850@@3PAEA=?Func@?$ThunkFunc1@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$06$$CBVValue@456@AEBV7456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a49a0@@3PAEA=?Func@?$ThunkFunc0@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$07VValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a49c0@@3PAEA=?Func@?$ThunkFunc1@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$08$$CBVValue@456@AEBV7456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a4b10@@3PAEA=?Func@?$ThunkFunc0@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$09VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a4b80@@3PAEA=?Func@?$ThunkFunc1@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0L@$$CBVValue@456@AEBVASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a4c80@@3PAEA=?Func@?$ThunkFunc0@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0M@VValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a4ca0@@3PAEA=?Func@?$ThunkFunc1@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0N@$$CBVValue@456@AEBV7456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a4df0@@3PAEA=?Func@?$ThunkFunc0@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0O@VValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a4e10@@3PAEA=?Func@?$ThunkFunc1@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0P@$$CBVValue@456@AEBV7456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a4f60@@3PAEA=?Func@?$ThunkFunc0@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0BA@VValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a4f80@@3PAEA=?Func@?$ThunkFunc1@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0BB@$$CBVValue@456@AEBV7456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a50d0@@3PAEA=?Func@?$ThunkFunc0@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0BC@VValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a50f0@@3PAEA=?Func@?$ThunkFunc1@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0BD@$$CBVValue@456@AEBV7456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a5240@@3PAEA=?Func@?$ThunkFunc0@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0BE@VValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a5260@@3PAEA=?Func@?$ThunkFunc1@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0BF@$$CBVValue@456@AEBV7456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a53b0@@3PAEA=?Func@?$ThunkFunc0@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0BG@VValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a53d0@@3PAEA=?Func@?$ThunkFunc1@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0BH@$$CBVValue@456@AEBV7456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a5520@@3PAEA=?Func@?$ThunkFunc0@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0BI@VValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a5540@@3PAEA=?Func@?$ThunkFunc1@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0BJ@$$CBVValue@456@AEBV7456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a5690@@3PAEA=?Func@?$ThunkFunc0@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0BK@VValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a56b0@@3PAEA=?Func@?$ThunkFunc1@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0BL@$$CBVValue@456@AEBV7456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a5800@@3PAEA=?Func@?$ThunkFunc0@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0BM@V?$SPtr@VArray@fl@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a58b0@@3PAEA=?Func@?$ThunkFunc1@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0BN@$$CBVValue@456@PEAVArray@fl@3456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a58f0@@3PAEA=?Func@?$ThunkFunc0@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0BO@VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a5960@@3PAEA=?Func@?$ThunkFunc1@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0BP@$$CBVValue@456@AEBVASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a5a60@@3PAEA=?Func@?$ThunkFunc0@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0CA@VValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a5a80@@3PAEA=?Func@?$ThunkFunc1@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0CB@$$CBVValue@456@AEBV7456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a5bd0@@3PAEA=?Func@?$ThunkFunc0@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0CC@VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a5c40@@3PAEA=?Func@?$ThunkFunc1@VTextFormat@fl_text@Instances@AS3@GFx@Scaleform@@$0CD@$$CBVValue@456@AEBVASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a7180@@3PAEA=?Func@?$ThunkFunc1@VFont@fl_text@Classes@AS3@GFx@Scaleform@@$0A@V?$SPtr@VArray@fl@Instances@AS3@GFx@Scaleform@@@456@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424a7270@@3PAEA=?Func@?$ThunkFunc1@VFont@fl_text@Classes@AS3@GFx@Scaleform@@$00$$CBVValue@456@PEAVClass@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424b5730@@3PAEA=?Func@?$ThunkFunc1@VMouse@fl_ui@Classes@AS3@GFx@Scaleform@@$0A@$$CBVValue@456@AEBVASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424b5830@@3PAEA=?Func@?$ThunkFunc0@VMouse@fl_ui@Classes@AS3@GFx@Scaleform@@$00VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424b58a0@@3PAEA=?Func@?$ThunkFunc0@VMouse@fl_ui@Classes@AS3@GFx@Scaleform@@$01$$CBVValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424b58c0@@3PAEA=?Func@?$ThunkFunc0@VMouse@fl_ui@Classes@AS3@GFx@Scaleform@@$02$$CBVValue@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424b6390@@3PAEA=?Func@?$ThunkFunc0@VMultitouch@fl_ui@Classes@AS3@GFx@Scaleform@@$0A@VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424b6400@@3PAEA=?Func@?$ThunkFunc1@VMultitouch@fl_ui@Classes@AS3@GFx@Scaleform@@$00$$CBVValue@456@AEBVASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424b6500@@3PAEA=?Func@?$ThunkFunc0@VMultitouch@fl_ui@Classes@AS3@GFx@Scaleform@@$01J@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424b6560@@3PAEA=?Func@?$ThunkFunc0@VMultitouch@fl_ui@Classes@AS3@GFx@Scaleform@@$02V?$SPtr@VVector_String@fl_vec@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424b6610@@3PAEA=?Func@?$ThunkFunc0@VMultitouch@fl_ui@Classes@AS3@GFx@Scaleform@@$03_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424b6670@@3PAEA=?Func@?$ThunkFunc0@VMultitouch@fl_ui@Classes@AS3@GFx@Scaleform@@$04_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424c1860@@3PAEA=?Func@?$ThunkFunc0@VIMEEx@fl_gfx@Classes@AS3@GFx@Scaleform@@$0A@V?$SPtr@VIMECandidateListStyle@fl_gfx@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424c1910@@3PAEA=?Func@?$ThunkFunc1@VIMEEx@fl_gfx@Classes@AS3@GFx@Scaleform@@$00$$CBVValue@456@PEAVIMECandidateListStyle@2Instances@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424c1950@@3PAEA=?Func@?$ThunkFunc3@VIMEEx@fl_gfx@Classes@AS3@GFx@Scaleform@@$01$$CBVValue@456@PEAVSprite@fl_display@Instances@456@AEBVASString@56@AEBVASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424c1b60@@3PAEA=?Func@?$ThunkFunc0@VIMEEx@fl_gfx@Classes@AS3@GFx@Scaleform@@$02VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424c1bd0@@3PAEA=?Func@?$ThunkFunc0@VIMEEx@fl_gfx@Classes@AS3@GFx@Scaleform@@$03VASString@56@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424c3b90@@3PAEA=?Func@?$ThunkFunc0@VGamePad@fl_gfx@Classes@AS3@GFx@Scaleform@@$0A@_N@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
 #pragma comment(linker, "/alternatename:DAT_143138360=?DAT_143138360@@3USd_143138360@@A")
 #pragma comment(linker, "/alternatename:DAT_143138530=?DAT_143138530@@3USd_143138530@@A")
 #pragma comment(linker, "/alternatename:DAT_1431383e0=?DAT_1431383e0@@3USd_1431383e0@@A")
@@ -24406,15 +26970,6 @@ alignas(16) Sd_1431726d0 DAT_1431726d0 = {
 #pragma comment(linker, "/alternatename:?DAT_14251b0e0@@3PAEA=?OnUnloading@AvmSprite@AS3@GFx@Scaleform@@UEAA_N_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_14251f430@@3PAEA=?PropagateEvent@AvmDisplayObjContainer@AS3@GFx@Scaleform@@UEAAXAEBVEvent@fl_events@Instances@234@_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_14280ef52@@3PAEA=_purecall")
-#pragma comment(linker, "/alternatename:?DAT_14313c0b0@@3PAEA=??_7DoAbc@AS3@GFx@Scaleform@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_14314f2f8@@3PAEA=??_7StackOverflowError@fl_errors@ClassTraits@AS3@GFx@Scaleform@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_143158ab8@@3PAEA=??_7ExternalInterface@fl_external@Classes@AS3@GFx@Scaleform@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_14315c0a0@@3PAEA=??_7GradientGlowFilter@fl_filters@ClassTraits@AS3@GFx@Scaleform@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_14315f178@@3PAEA=??_7Transform@fl_geom@ClassTraits@AS3@GFx@Scaleform@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_143164860@@3PAEA=??_7XMLSocket@fl_net@ClassTraits@AS3@GFx@Scaleform@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_143167168@@3PAEA=??_7System@fl_system@Classes@AS3@GFx@Scaleform@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_14316be60@@3PAEA=??_7TextSnapshotGlyphVisitor@AS3@GFx@Scaleform@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_143171f38@@3PAEA=??_7Timer@fl_utils@ClassTraits@AS3@GFx@Scaleform@@6B@")
 #pragma comment(linker, "/alternatename:?DAT_143177ac0@@3PAEA=?SoundTransformCI@fl_media@AS3@GFx@Scaleform@@3UClassInfo@234@B")
 #pragma comment(linker, "/alternatename:?DAT_143a2a850@@3PAEA=?DateMonthNames@fl@Instances@AS3@GFx@Scaleform@@3PAPEBDA")
 #pragma comment(linker, "/alternatename:?DAT_143a2aab0@@3PAEA=?DAT_143a2aab0@@3QBUThunkInfo@AS3@GFx@Scaleform@@B")
