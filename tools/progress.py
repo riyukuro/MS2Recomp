@@ -80,7 +80,8 @@ RTTI_VFTABLES = ms2paths.RTTI_VFTABLES
 
 # cmake/ms2-game-flags.cmake (MS2_GAME_COMPILE_OPTIONS + _DEFINITIONS + C++14) + /MD /Z7 + the ms2game include dirs.
 GAME_FLAGS = ["/nologo", "/c", "/Od", "/Ob0", "/Oi", "/EHsc", "/GS", "/GR", "/Gy", "/fp:fast", "/Zc:wchar_t",
-              "/Zc:threadSafeInit", "/std:c++14", "/MD", "/Z7", "/W3", "/D_MBCS", "/D_AFXDLL",
+              "/Zc:threadSafeInit", "/source-charset:utf-8", "/execution-charset:.949", "/std:c++14", "/MD", "/Z7", "/W3",
+              "/D_MBCS", "/D_AFXDLL",
               "/I" + SRC, "/I" + os.path.join(SRC, "hook")]
 
 

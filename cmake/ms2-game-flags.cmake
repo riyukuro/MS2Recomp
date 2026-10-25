@@ -14,11 +14,16 @@
 #   _AFXDLL       MFC as a shared DLL (required by afx.h with /MD; CString methods are mfc140.dll imports)
 #   also on       /GR /Gy (COMDAT per function) /Zc:wchar_t /Zc:threadSafeInit /Zc:sizedDealloc; no /permissive-
 #   absent        /RTC* /JMC /sdl /guard:cf /arch:AVX* /Qspectre /J (each tested: breaks matches); no /GL (no LTCG)
+#   charset       /source-charset:utf-8 /execution-charset:.949: our sources are UTF-8 without a BOM, which cl reads as
+#                 the build host's ANSI page (1252), turning every Korean L"..." into mojibake; the exe's wide literals
+#                 are UTF-16 Hangul and its narrow ones CP949 (Nexon's Korean-locale build). Narrow non-ASCII bytes that
+#                 must stay as-is are written as \x escapes (scaleform/as3/sfr_as3_13.cpp key names).
 #   untestable    /Zi vs /Z7, /permissive-, /hotpatch: no codegen difference
 #
 # _ITERATOR_DEBUG_LEVEL is 0, which is the /MD release default (no define needed).
 
-set(MS2_GAME_COMPILE_OPTIONS /Od /Ob0 /Oi /EHsc /GS /GR /Gy /fp:fast /Zc:wchar_t /Zc:threadSafeInit)
+set(MS2_GAME_COMPILE_OPTIONS /Od /Ob0 /Oi /EHsc /GS /GR /Gy /fp:fast /Zc:wchar_t /Zc:threadSafeInit
+    /source-charset:utf-8 /execution-charset:.949)
 set(MS2_GAME_COMPILE_DEFINITIONS _MBCS _AFXDLL)
 set(MS2_GAME_CXX_STANDARD 14)
 

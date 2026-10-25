@@ -15,7 +15,8 @@ if(MSVC AND NOT CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 endif()
 
 # Game code sees Nexon's preprocessor environment, not the hook project's (no WIN32_LEAN_AND_MEAN / NOMINMAX:
-# MFC and the original headers need the full windows.h and the min/max macros; no /utf-8: literals stay bytes).
+# MFC and the original headers need the full windows.h and the min/max macros; no /utf-8: cmake/ms2-game-flags.cmake reads the
+# sources as UTF-8 and emits CP949 narrow literals, like the exe).
 set_directory_properties(PROPERTIES COMPILE_DEFINITIONS "" COMPILE_OPTIONS "")
 add_compile_options(/W3 /EHsc)
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
