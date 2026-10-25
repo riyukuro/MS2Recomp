@@ -117,7 +117,7 @@ void FUN_14147b6d0(CObjectShadow* self, short a, short b, short c, short d, shor
 void FUN_14147b8b0(CObjectShadow* self, int k);   void FUN_14147b9c0(CObjectShadow* self, int k);
 void FUN_140984450(void* name, const char* s);   void FUN_1409845a0(void* name);   // NiFixedString ctor / dtor
 void FUN_141d18b90(void* obj, void* name);                          // NiObjectNET::SetName
-void FUN_141552f90(void* mgr, void* outTex, CString* path, char b); // load texture
+void FUN_141552f90(void* mgr, void* outTex, CString path, char b); // load texture
 void* FUN_14097fbf0(void* texPtr);   void FUN_14097f4a0(void* texPtr);
 void FUN_140980880(void* tex, void* src);   void FUN_140980200(void* geom, void* prop);   // NiTexturingProperty::SetBaseTexture / AttachProperty
 void* FUN_141d1d470(void* mem);                                     // NiTexturingProperty ctor
@@ -372,7 +372,7 @@ void FUN_1416106e0(CObjectShadow* self, void* owner, int lodHi, int lodLo, float
 
     CString path(*(CString*)((char*)FUN_1401d31f0() + 0xf0));
     char tex[8];
-    FUN_141552f90(FUN_140a0afd0(), tex, &path, 1);
+    FUN_141552f90(FUN_140a0afd0(), tex, path, 1);
     void* texProp;
     MS2_SHADOW_NEW(texProp, 0x58, FUN_141d1d470(mem));
     FUN_140980880(texProp, FUN_14097fbf0(tex));

@@ -1764,7 +1764,7 @@ void FUN_1411ab770(void* pRegistrar, int n);
 void FUN_141af1860(Unk_UisMovieMgr* pMgr, void (*pfn)(CString, void*, void*, void*));
 void FUN_141af1a90(Unk_UisMovieMgr* pMgr, void (*pfn)());
 void FUN_141b6fc50();
-void FUN_1422aee50(void* pMgr, TFunctor<bool, ParamList<HWND__*, EmptyParam> >& fn);
+void FUN_1422aee50(void* pMgr, TFunctor<bool, ParamList<HWND__*, EmptyParam> > fn);
 void* FUN_1411d15b0(void* pSvcMgr);
 void* FUN_14168ab40(void* pSvcMgr);
 void* FUN_140af7da0(void* pWorld);

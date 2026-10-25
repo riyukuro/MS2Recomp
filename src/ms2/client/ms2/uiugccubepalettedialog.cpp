@@ -593,7 +593,7 @@ ASDialog* FUN_140ba7c60(void* pRef);
 int FUN_1422c76c0(Unk_CubeCtl* p);
 void FUN_1422c7630(void* pDlg, int n);
 int FUN_1422cf520(Unk_CubeCtl* p);
-int FUN_1422d4e20(void* p, const CString& str);
+int FUN_1422d4e20(void* p, CString str);
 void FUN_1422dcca0(Unk_CubeCtl* p, int n);
 void FUN_1422dd000(Unk_CubeCtl* p, int n);
 unsigned int FUN_1422dd150(Unk_CubeCtl* p);

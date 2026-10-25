@@ -106,7 +106,7 @@ extern char DAT_143afa4f0;                                          // NiTexturi
 NiTexturingProperty::Map* FUN_14109a6b0(NiTexturingProperty* pProp);   // GetBaseMap
 void FUN_140981040(NiTexturingProperty::Map* pMap, void* pTexture);    // SetTexture
 void* FUN_140a0afd0();                                              // texture manager
-void FUN_141552f90(void* pMgr, void* pOutTexture, CString* pPath, char bFlag);   // load a texture
+void FUN_141552f90(void* pMgr, void* pOutTexture, CString strPath, char bFlag);   // load a texture
 void* FUN_14097fbf0(void* pTexture);                                // texture pointer
 void FUN_14097f4a0(void* pTexture);                                 // release
 
@@ -264,7 +264,7 @@ bool CPortal::FUN_14169ba90()
                         {
                             CString strLoad(strPath);
                             void* spTex[2];
-                            FUN_141552f90(FUN_140a0afd0(), spTex, &strLoad, 5);
+                            FUN_141552f90(FUN_140a0afd0(), spTex, strLoad, 5);
                             if (FUN_14097fbf0(spTex) != 0)
                                 FUN_140981040(pMap, FUN_14097fbf0(spTex));
                             FUN_14097f4a0(spTex);

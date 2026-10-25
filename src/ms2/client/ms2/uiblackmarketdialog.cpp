@@ -61,7 +61,7 @@ void FUN_141275260(int nId, int a, int b);
 bool FUN_140ba28d0(const MS2Ptr<AScript>* p, int n);
 class Unk_Features { public: bool FUN_14036d570(int n); };
 Unk_Features* FUN_140166410();
-void FUN_140cff840(const Scaleform::GFx::Value& root, const char* szName, int nVisible);
+void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nVisible);
 class Unk_MesoCfg { public: int FUN_140f20b90(); };
 class Unk_Cfg6198 { public: CString FUN_1409f6f30(); };
 class Unk_Cfg { public: char m_pad[0x6078]; Unk_MesoCfg m_6078; char m_pad2[0x6198 - 0x6078 - 1]; Unk_Cfg6198 m_6198; };

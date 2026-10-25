@@ -228,12 +228,12 @@ bool FUN_1408710c0(TiXmlDocument* pDoc, const char* pszPath);           // SaveF
 bool FUN_140184310(const CString& str, const char* psz);                // str == psz
 
 // Model manager property readers: (manager, entity element, model name, property name, out).
-void FUN_140a2b550(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, unsigned int* pOut);
-void FUN_140a2b270(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, int* pOut);
-void FUN_140a2b9d0(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, bool* pOut);
-void FUN_140a2bc30(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, CString* pOut);
+void FUN_140a2b550(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, CString strModel, const char* pszProp, unsigned int* pOut);
+void FUN_140a2b270(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, CString strModel, const char* pszProp, int* pOut);
+void FUN_140a2b9d0(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, CString strModel, const char* pszProp, bool* pOut);
+void FUN_140a2bc30(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, CString strModel, const char* pszProp, CString* pOut);
 void FUN_140a2aab0(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, CString strModel, const char* pszProp, Unk_PtrArray* pOut);
-void FUN_140a2afd0(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, NiPoint3* pOut);
+void FUN_140a2afd0(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, CString strModel, const char* pszProp, NiPoint3* pOut);
 void FUN_140a2c120(Unk_Ref* pRef, void* pRaw);
 Unk_NpcData* FUN_140a2c430(Unk_Ref* pRef);
 void FUN_140a2c340(Unk_Ref* pRef);

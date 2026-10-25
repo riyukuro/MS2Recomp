@@ -46,7 +46,7 @@ class ASDialog : public ASDisplayObject
 };
 
 class Unk_ItemEquipData : public CItemData { };                         // CItem::FUN_140527840's record
-struct Unk_IbArgs { CStringW FUN_1408d21c0(int nIndex, const wchar_t* szDefault); };   // the nIndex-th function argument
+struct Unk_IbArgs { CStringW FUN_1408d21c0(int nIndex, CStringW strDefault); };   // the nIndex-th function argument
 inline Unk_IbArgs& IbArgs(CItemData* p) { return reinterpret_cast<Unk_IbArgs&>(p->function.parameter); }
 
 extern Unk_Inventory DAT_143ab2a90;                                     // the own inventory

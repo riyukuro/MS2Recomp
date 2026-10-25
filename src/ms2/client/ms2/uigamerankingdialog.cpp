@@ -282,7 +282,7 @@ class PCBase;
 CStringW* FUN_141656be0(PCBase* pPc);                       // guild name
 class Unk_RankPlayerMgr { public: PCBase* FUN_141bd0cc0(); };
 Unk_RankPlayerMgr* FUN_1403ed2d0();
-class Unk_RankUiMgr { public: int FUN_1422d4e20(const CString& strKey); };
+class Unk_RankUiMgr { public: int FUN_1422d4e20(CString strKey); };
 Unk_RankUiMgr* FUN_140b632f0();
 
 // Popup menu parameters (uipartysearchdialog.cpp).

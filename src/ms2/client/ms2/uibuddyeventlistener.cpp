@@ -545,7 +545,9 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
                     {
                         Unk_BdMenuInfo info;
                         info.FUN_140c302f0(fX, fY, 3, 0x3f3fe, 1, CString(""), 0);
-                        pMenu->FUN_141a7eb60(info, &ref, 8);
+                        alignas(8) char tmp[sizeof(Unk_BdProxyRef)];   // the by-value argument copy; the callee destroys it
+                        FUN_140ac58f0(reinterpret_cast<Unk_BdProxyRef*>(tmp), &ref);
+                        pMenu->FUN_141a7eb60(info, reinterpret_cast<Unk_BdProxyRef*>(tmp), 8);
                         info.FUN_140c304c0();
                         return 1;
                     }

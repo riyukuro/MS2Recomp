@@ -3531,7 +3531,9 @@ egf::EntityPtr CubeMapInformationService::FUN_1410bc3d0(Unk_CMISBlock rec)
         for (unsigned i = 0; i < FUN_140720ca0(r->m_items); i++) {
             Unk_CMISItemElem e;
             FUN_1402034d0(&e, FUN_140a69ee0(r->m_items, i));
-            pc->FUN_141653d10(&e);
+            Unk_CMISItemElem tmp;                               // the by-value argument copy; the callee destroys it
+            FUN_1402034d0(&tmp, &e);
+            pc->FUN_141653d10(&tmp);
             FUN_1401bfde0(&e);
         }
     }

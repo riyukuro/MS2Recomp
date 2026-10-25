@@ -249,7 +249,7 @@ void FUN_141275260(int nStringId, int a, int b);
 void FUN_140874440(void* pCfg, const char* szSection, const char* szKey, int nValue, int bFlag);
 void FUN_1408741a0(void* pCfg, const char* szSection, const char* szKey, int* pnValue);
 void FUN_141415600(const CString& strName);                     // close a quest movie by name
-void FUN_141415450(const CString& strName, void* pItem, int a, int nType, int nFlags);
+void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int a, int nType, int nFlags);
 void FUN_140710590(COutPacket& packet);
 
 // The AS controls of the movie (children of the root). Slot 24 is the one the dialog calls on the list.

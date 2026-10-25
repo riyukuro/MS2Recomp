@@ -1757,7 +1757,7 @@ void FUN_14151f150(MS2Ptr<CMsgBoxData> box);                            // show 
 class Unk_PmMdState { public: char m_00[0x48]; void* m_48; void* m_50; };
 Unk_PmMdState* FUN_141482e80();
 void FUN_141a252a0(void* pWhisper, const CStringW& strName);            // whisper to
-void FUN_141951f70(void* pMail, const CStringW& strName);               // mail to
+void FUN_141951f70(void* pMail, CStringW strName);               // mail to
 class Unk_PmCommunity { public: virtual void s0(); };                   // UICommunityDialog
 int FUN_1418d6960(Unk_PmCommunity* pDialog);                            // the current tab
 UIDialog* FUN_140ae5990(int nUiId);                                     // UICommunityDialog lookup
