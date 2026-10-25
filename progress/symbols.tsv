@@ -126631,7 +126631,7 @@ _vscprintf_l	1410409c0	func
 ?FUN_14112d3e0@@YAPEAXPEAXI@Z	14112d3e0	func
 ?FUN_14112d420@@YAPEAXPEAXI@Z	14112d420	func
 ?FUN_14112d460@@YAPEAXPEAXI@Z	14112d460	func
-??1Unk_CMISPropPtr@@QEAA@XZ	140ae16b0	func
+??1Unk_CMISPropPtr@@QEAA@XZ	14112d4a0	func
 ?FUN_14112d4a0@@YAPEAXPEAXI@Z	14112d4a0	func
 ?FUN_14112d4e0@@YAPEAXPEAXI@Z	14112d4e0	func
 ?FUN_14112d520@@YAPEAXPEAXI@Z	14112d520	func
@@ -218648,7 +218648,6 @@ FUN_142939780	142939780	func
 ?ObjectRelease@AS2ValueObjectInterface@GFx@Scaleform@@EEAAXPEAVValue@23@PEAX@Z	14296a9f0	func
 ?OnAddedDisplayObject@AvmSprite@AS2@GFx@Scaleform@@QEAAXPEAVInteractiveObject@34@I_N@Z	14296aa90	func
 ?OnEventLoad@AvmButton@AS2@GFx@Scaleform@@UEAAXXZ	14296b820	func
-?OnEventLoad@AvmCharacter@AS2@GFx@Scaleform@@UEAAXXZ	14000e390	func
 ?FUN_14296bba0@@YAXXZ	14296bba0	func
 ?OnEventUnload@AvmCharacter@AS2@GFx@Scaleform@@UEAAXXZ	14296bba0	func
 ?OnKeyDown@KeyCtorFunction@AS2@GFx@Scaleform@@UEAAXPEAVInteractiveObject@23@AEBVEventId@23@H@Z	14296c180	func
