@@ -186,6 +186,7 @@ def rebind_objects(syms, objs, prev_log=None):
         if gone:
             for path in objs:
                 os.remove(path)
+            os.remove(prev_log)   # no object is rebound any more
             sys.exit(f"ms2symobj: {len(gone)} previously rebound symbols left the symbol tables (e.g. {sorted(gone)[0]}); "
                     f"deleted the game objects, rerun the build")
     for path in objs:
@@ -443,7 +444,10 @@ def main():
         rb = rebind_objects(syms, a.objs, a.rebind_log)
         print(f"rebound {len(rb)} data definitions ({len(set(rb))} distinct symbols) to the exe")
         if a.rebind_log:
-            open(a.rebind_log, "w").write("\n".join(sorted(set(rb))) + "\n")
+            # keep the names an earlier run rebound: their objects no longer define them, so this run cannot see them,
+            # and the left-the-tables check above needs them once a later revision drops the rows
+            keep = set(open(a.rebind_log).read().split()) if os.path.exists(a.rebind_log) else set()
+            open(a.rebind_log, "w").write("\n".join(sorted(keep | set(rb))) + "\n")
     if a.objs:
         nib = retarget_imgrel(syms, a.objs)
         if nib:
