@@ -14908,3 +14908,5 @@ DAT_1439f8358	1439f8358	data
 ??_7?$CefCToCppRefCounted@VCefJSDialogCallbackCToCpp@@VCefJSDialogCallback@@U_cef_jsdialog_callback_t@@@@6BCefJSDialogCallback@@@	1431df020	data
 ??_7?$CefCToCppRefCounted@VCefJSDialogCallbackCToCpp@@VCefJSDialogCallback@@U_cef_jsdialog_callback_t@@@@6BCefBaseRefCounted@@@	1431df028	data
 ?AvmTextFieldBase_HasStyleSheet@AS2@GFx@Scaleform@@YA_NPEBX@Z	14295dbb0	func
+??0CNMGetMyVirtualUserListFunc@@QEAA@I@Z	14157fc20	func
+??0CNMLoginVirtualFunc@@QEAA@_JH0@Z	14157f420	func
