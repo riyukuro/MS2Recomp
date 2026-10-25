@@ -185,8 +185,6 @@ void FUN_1422c0ec0(ASMovieClip* p, int n);
 int FUN_1422c1340(ASMovieClip* p);
 double FUN_1422c5970(ASTextField* p);
 
-int FUN_1409c4510(ASSlot* p, unsigned a, unsigned b, unsigned c);
-Scaleform::GFx::Value FUN_1409bb460(AScript* p, const char* szMethod, ASSlot slot);
 
 void FUN_1422e55c0(Unk_AasImage* p, bool b);
 void FUN_1422e5530(Unk_AasImage* p, Unk_AasSourcePtr sp);   // by value: the exe callee destroys sp
@@ -398,8 +396,8 @@ void FUN_140d00360(const Scaleform::GFx::Value& root, CString strName, unsigned 
     if (spClip == 0)
         return;
     ASSlot slot(2);
-    if (FUN_1409c4510(&slot, a, b, c) != 0)
-        FUN_1409bb460(spClip.operator->(), "setSlotData", ASSlot(slot));
+    if (slot.FUN_1409c4510(a, b, c) != 0)
+        spClip->Invoke("setSlotData", ASSlot(slot));
 }
 
 // @0x140d004f0
@@ -412,7 +410,7 @@ void FUN_140d004f0(const Scaleform::GFx::Value& root, CString strName, ASSlot* p
     MS2Ptr<ASMovieClip> spClip = node.FUN_140bc7450(strName);
     if (spClip == 0)
         return;
-    FUN_1409bb460(spClip.operator->(), "setSlotData", ASSlot(*pSlot));
+    spClip->Invoke("setSlotData", ASSlot(*pSlot));
 }
 
 // @0x140d00640
