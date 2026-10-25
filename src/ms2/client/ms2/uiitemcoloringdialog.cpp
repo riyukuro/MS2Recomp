@@ -115,7 +115,6 @@ public:
 };
 CItemData* FUN_140527840(CItem* pItem);         // the item's data record
 CItemExtraData* FUN_140527870(CItem* pItem);    // the item's extra data (colours)
-CString FUN_140528590(CItem* pItem);            // icon path
 
 class Unk_IcField
 {
@@ -663,7 +662,7 @@ void UIItemColoringDialog::FUN_1419ae170()
         obj.FUN_1407cbb20("guid", FUN_141b71910(spItem->FUN_140526a50()));
         obj.FUN_1407cbb20("itemid", FUN_141b71990(nItemId));
         obj.FUN_1407cbb20("itemname", FUN_1401a9d70()->FUN_141811980(1, nItemId));
-        obj.FUN_1407cba60("iconPath", FUN_140528590(spItem.operator->()));
+        obj.FUN_1407cba60("iconPath", spItem->FUN_140528590());
         ASFunction tooltip(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemColoringDialog::FUN_1419afcd0),
                            spItem.get(), FUN_1422db730());
         obj.FUN_1409adbe0("tooltipFunction", Scaleform::GFx::Value(tooltip.FUN_1422bb870()));
