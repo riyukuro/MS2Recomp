@@ -1728,7 +1728,6 @@ CString FUN_141028a90(CString strImage, int n);                         // profi
 CString FUN_141028be0(__int64 nCharId, const CString& strImage, int n, CString strDefault);
 __int64 FUN_141656a80(PCBase* pPC);                                     // character id
 __int64 FUN_141656ad0(PCBase* pPC);                                     // account id
-CString FUN_1416612e0(PCBase* pPC);                                     // PC: profile image
 int FUN_14166ce30(PCBase* pPC);
 int FUN_141654700(PCBase* pPC);
 int FUN_141654730(PCBase* pPC);
@@ -2030,7 +2029,7 @@ void UIPopUpMenu::PopUpMenu(const Unk_PopupMenuInfo& info, PCBase* pTarget, int 
         target.m_pos = pTarget->vfunc_18();
     target.m_nLevel = (unsigned short)pTarget->vfunc_78();
     target.m_nCharId = FUN_141656a80(pTarget);
-    target.m_strImage = FUN_141028be0(FUN_141656a80(pTarget), FUN_1416612e0(pTarget), 1, CString(""));
+    target.m_strImage = FUN_141028be0(FUN_141656a80(pTarget), static_cast<PC*>(pTarget)->FUN_1416612e0(), 1, CString(""));
     target.m_strName = strName;
     target.m_b38 = FUN_14166ce30(pTarget) == 0;
     target.m_bOnline = 1;
