@@ -14804,7 +14804,6 @@ DAT_1439f8358	1439f8358	data
 ?DAT_143a2fe60@@3PAEA	143a2fe60	data
 ?DAT_143a30338@@3PAEA	143a30338	data
 ?DAT_143b15780@@3PAEA	143b15780	data
-??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$SmartPointer@VEntity@egf@@@efd@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z	1410de410	func
 ?OnEventLoad@AvmCharacter@AS2@GFx@Scaleform@@UEAAXXZ	14000e390	func
 ?DAT_143218188@@3USd_143218188@@A	143218188	data
 ?DeleteAs2_14292a0e0@AS2@GFx@Scaleform@@YAPEAXPEAXI@Z	14292a0e0	func
