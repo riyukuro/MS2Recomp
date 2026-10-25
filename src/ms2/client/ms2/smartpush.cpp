@@ -149,9 +149,8 @@ void FUN_1412751f0(const CStringW& str, int nType, int nFlag);          // chat 
 void FUN_141a02880(CMsgBoxData* pBox, int nBuffId, unsigned short nLevel, CStringW strName);
 
 // The local player's buffs (PCBase +0x748).
-class Unk_PCBaseBuffs { public: int FUN_1409701d0(int nKind); };
+class Unk_PCBaseBuffs { public: int FUN_1409701d0(int nKind); MS2Ptr<AdditionalCli> FUN_14096fd30(int nKind); };   // AdditionalCliList
 class AdditionalCli : public CPtred {};
-MS2Ptr<AdditionalCli> FUN_14096fd30(Unk_PCBaseBuffs* pBuffs, int nKind);   // the active buff of a kind
 __int64 FUN_141656ad0(PCBase* pPc);                                     // the character id
 int FUN_1416595b0(PCBase* pPc);                                         // a home edit state flag
 
@@ -442,7 +441,7 @@ void CSmartPushAutoFishing::vfunc_2()
         return;
     if (CFishingManager::GetInstance()->FUN_140954150() == 0)
         return;
-    MS2Ptr<AdditionalCli> spBuff = FUN_14096fd30(pMy->FUN_1416749a0(), 1);
+    MS2Ptr<AdditionalCli> spBuff = pMy->FUN_1416749a0()->FUN_14096fd30(1);
     if (m_bActive != 0 && !spBuff)
     {
         int nCount = CFishingManager::GetInstance()->GetAutoCount();
