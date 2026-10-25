@@ -163,11 +163,6 @@ alignas(8) unsigned char DAT_143b0d368[0x8];                    // 0x143b0d368
 void* DAT_143b0d780;                                            // 0x143b0d780
 int DAT_143b0d788;                                              // 0x143b0d788
 alignas(16) unsigned char DAT_143b0d790[0x8];                   // 0x143b0d790
-alignas(8) unsigned char DAT_143b0d798[0x8];                    // 0x143b0d798
-alignas(16) unsigned char DAT_143b0d7a0[0x8];                   // 0x143b0d7a0
-alignas(8) unsigned char DAT_143b0d7a8[0x8];                    // 0x143b0d7a8
-alignas(16) unsigned char DAT_143b0d7b0[0x8];                   // 0x143b0d7b0
-alignas(8) unsigned char DAT_143b0d7b8[0x8];                    // 0x143b0d7b8
 unsigned int DAT_143b15f78 = 0x0u;                              // 0x143b15f78
 unsigned int DAT_143b15f7c = 0x0u;                              // 0x143b15f7c
 unsigned int DAT_143b15f80 = 0x0u;                              // 0x143b15f80
@@ -337,11 +332,6 @@ alignas(2) unsigned char DAT_143e668c2[0x7fffe];                // 0x143e668c2
 #pragma comment(linker, "/alternatename:?DAT_143b0d368@@3P6AXXZEA=?DAT_143b0d368@@3PAEA")
 #pragma comment(linker, "/alternatename:?ms_pSingleton@?$SingletonClass@VGFxAtlasCache@@@@2PEAVGFxAtlasCache@@EA=?DAT_143b0d780@@3PEAXEA")
 #pragma comment(linker, "/alternatename:?DAT_143b0d790@@3P6APEAVFile@Scaleform@@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@ZEA=?DAT_143b0d790@@3PAEA")
-#pragma comment(linker, "/alternatename:?ms_strLocale@NiGFxLocalizeManager@@2V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A=?DAT_143b0d798@@3PAEA")
-#pragma comment(linker, "/alternatename:?ms_kXmlLoader1@NiGFxLocalizeManager@@2V?$Delegate@$$A6A_NAEAVTiXmlDocument@@@Z@@A=?DAT_143b0d7a0@@3PAEA")
-#pragma comment(linker, "/alternatename:?ms_kXmlLoader2@NiGFxLocalizeManager@@2V?$Delegate@$$A6A_NAEAVTiXmlDocument@@@Z@@A=?DAT_143b0d7a8@@3PAEA")
-#pragma comment(linker, "/alternatename:?ms_kXmlLoader3@NiGFxLocalizeManager@@2V?$Delegate@$$A6A_NAEAVTiXmlDocument@@@Z@@A=?DAT_143b0d7b0@@3PAEA")
-#pragma comment(linker, "/alternatename:?ms_kXmlLoader4@NiGFxLocalizeManager@@2V?$Delegate@$$A6A_NAEAVTiXmlDocument@@@Z@@A=?DAT_143b0d7b8@@3PAEA")
 #pragma comment(linker, "/alternatename:?ConstructCopyCalls@ContextImpl@Render@Scaleform@@3IA=?DAT_143b15f78@@3IA")
 #pragma comment(linker, "/alternatename:?DestroyCalls@ContextImpl@Render@Scaleform@@3IA=?DAT_143b15f7c@@3IA")
 #pragma comment(linker, "/alternatename:?CopyCalls@ContextImpl@Render@Scaleform@@3IA=?DAT_143b15f80@@3IA")

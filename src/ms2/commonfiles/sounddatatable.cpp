@@ -47,7 +47,7 @@ class TiXmlNode
 public:
     virtual ~TiXmlNode();                                                // 0x14086dd00
     virtual void Print(FILE*, int) const = 0;
-    virtual const char* Parse(const char*, void*, int) = 0;
+    virtual const char* Parse(const char*, class TiXmlParsingData*, enum TiXmlEncoding) = 0;
     // @0x14081b360
     virtual TiXmlDocument* ToDocument() { return 0; }
     // @0x14081b350
@@ -82,7 +82,7 @@ public:
     virtual ~TiXmlDeclaration() {}      // inline as in tinyxml.h (the out-of-line copy clashed with commonfiles/tinyxml.cpp in the DLL)
     // @0x14081b2d0
     virtual void Print(FILE* f, int nDepth) const { Print(f, nDepth, 0); }
-    virtual const char* Parse(const char*, void*, int) { return 0; }
+    virtual const char* Parse(const char*, class TiXmlParsingData*, enum TiXmlEncoding);   // tinyxmlparser.cpp: declaration only, an inline body here would be the vftable the linker keeps for every TiXmlDeclaration
     // @0x14081b340
     virtual TiXmlDeclaration* ToDeclaration() { return this; }
     // @0x14081b330

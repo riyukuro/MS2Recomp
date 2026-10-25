@@ -23,6 +23,7 @@
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
 bool FUN_14028f710(Unk_140165cf0* pElem);                   // the node is a usable element
+int FUN_140873710(Unk_140165cf0* pElem, const char* pszName, int& nOut);   // XmlGetBool (petType is read as a bool)
 class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
 Unk_140166420* FUN_140166420();
 class Unk_CommonLog { public: void FUN_14015eb90(int level, int flags, const wchar_t* format, const CString& arg); };
@@ -100,7 +101,7 @@ int CItemRePackingScrollTable::Load()
         XmlTokenList(pNode, "rank", spData->m_arrRank);
         XmlTokenList(pNode, "slot", spData->m_arrSlot);
         int nPetType = 0;
-        XmlValue(pNode, "petType", nPetType);
+        FUN_140873710(pNode, "petType", nPetType);
         if (nPetType == 1)
             spData->m_nPet = 1;
         if (Unk_LockGuard guard = m_lock) {}

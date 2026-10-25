@@ -24,6 +24,7 @@
 #include "ms2/placeholder/gfxservice.h"
 #include "ms2/placeholder/gfxmovie.h"
 #include "ms2/placeholder/delegate.h"
+#include "ms2/gfxui/nigfxlocalizemanager.h"
 
 class TiXmlDocument;
 
@@ -114,19 +115,21 @@ extern const efd::Category DAT_143b0d778(efd::UniversalID::ECU_Any, 0xfff, 0x07f
 extern const efd::Category DAT_143b0d778;
 #endif
 
-// The four documents FUN_1422eb940 loads, in its call order 7a0, 7a8, 7b0, 7b8.
+// NiGFxLocalizeManager's four XML documents (FUN_1422eb940 loads them in the order 7a0, 7a8, 7b0, 7b8) and its locale,
+// which FUN_1422ebc80 compares a node's name against (CompareNoCase). The hook DLL binds the exe's objects (symbols
+// rows) instead of DLL-local copies.
+#ifndef MS2_HOOK_DLL
 // @0x14013aef0
-static Delegate<bool(TiXmlDocument&)> s_xmlLoader4;
+Delegate<bool(TiXmlDocument&)> NiGFxLocalizeManager::ms_kXmlLoader4;
 // @0x14013af20
-static Delegate<bool(TiXmlDocument&)> s_xmlLoader1;
+Delegate<bool(TiXmlDocument&)> NiGFxLocalizeManager::ms_kXmlLoader1;
 // @0x14013af50
-static Delegate<bool(TiXmlDocument&)> s_xmlLoader3;
+Delegate<bool(TiXmlDocument&)> NiGFxLocalizeManager::ms_kXmlLoader3;
 // @0x14013af80
-static Delegate<bool(TiXmlDocument&)> s_xmlLoader2;
-
-// FUN_1422ebc80 compares a node's name against it (CompareNoCase).
+Delegate<bool(TiXmlDocument&)> NiGFxLocalizeManager::ms_kXmlLoader2;
 // @0x14013afb0
-static CString s_strMatchName;
+CString NiGFxLocalizeManager::ms_strLocale;
+#endif
 
 // @0x14013afe0
 const NiRTTI GFxMovieMain::ms_RTTI("GFxMovieMain", &GFxMovieEventHandler::ms_RTTI);

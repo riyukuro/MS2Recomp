@@ -476,7 +476,7 @@ int FUN_1408731e0(Unk_140165cf0*, const char*, int&);
 int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
 int FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
 bool FUN_14028f710(Unk_140165cf0*);                                 // the element is usable
-void FUN_14028fd90(Unk_140165cf0*, const char*, const char*, const char*, ATL::CAtlArray<void*>&);
+void FUN_14028fd90(Unk_140165cf0*, const char*, const char*, const char*, std::vector<Unk_140165cf0*>&);   // commonutil.cpp
 bool FUN_140184310(const CString& str, const char* psz);            // str equals psz
 unsigned char FUN_1401d1320(CCacheData*);
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& rOut, const wchar_t* pszSep);
@@ -1203,11 +1203,11 @@ int CStringTable::FUN_141814cf0(LevelDescMap& rMap, CachePtr spCache)
             FUN_14015eb90(FUN_140166440(), 1, 0x13, MS2_XML_FORMAT_ERROR, *spFile->FUN_1401d1140());
             continue;
         }
-        ATL::CAtlArray<void*> aNodes;
+        std::vector<Unk_140165cf0*> aNodes;
         FUN_14028fd90(pRoot, "key", "id", "level", aNodes);
-        for (size_t i = 0; i < aNodes.GetCount(); i++)
+        for (size_t i = 0; i < aNodes.size(); i++)
         {
-            Unk_140165cf0* pNode = static_cast<Unk_140165cf0*>(aNodes[i]);
+            Unk_140165cf0* pNode = aNodes[i];
             if (pNode == 0)
                 continue;
             int nId = 0;
