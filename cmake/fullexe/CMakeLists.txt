@@ -73,7 +73,7 @@ set(FE "${MS2_ROOT}/tools/fullexe")
 stage(compile "" COMMAND ${PY} "${MS2_ROOT}/tools/progress.py" --agent ${CACHE_TAG} -j ${MS2_JOBS})
 # 2. plan the obj order, import libs (from the exe's IAT), asm objs
 stage(plan "" COMMAND ${PY} "${FE}/plan.py")
-stage(implibs "" COMMAND ${PY} "${FE}/implibs.py")
+stage(implibs "" COMMAND ${PY} "${FE}/implibs.py" --lib)
 stage(asm "" COMMAND ${PY} "${FE}/asm.py")
 # 3. open link (/force:unresolved) -> the unresolved set and every obj's defined externals
 stage(link0 "" COMMAND ${PY} "${FE}/link.py")
