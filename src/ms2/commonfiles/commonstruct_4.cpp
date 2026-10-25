@@ -264,3 +264,21 @@ Unk_It* Unk_ItemVec::FUN_14028b360(Unk_It* out)
     out->p = m_end;
     return out;
 }
+
+// vector<16-byte value>::_Ucopy body shared by the insertion paths in commonstruct slices C/D.
+// Keep the allocator-aware copy path: these values carry reference-counted members.
+// @0x140289b00
+__int64 FUN_140289b00(void* vec, __int64 first, __int64 last, __int64 dest)
+{
+    extern __int64 FUN_14027b250(__int64, __int64, __int64, __int64);
+    extern __int64 FUN_1402883b0(__int64);
+    return FUN_14027b250(first, last, dest, FUN_1402883b0((__int64)vec));
+}
+
+// Alternate call-site prototype recorded for the same folded helper in the exe.
+// The executable body consumes only the first four registers/arguments.
+// MS2-PIN: ?FUN_140289b00@@YA_J_J000000@Z 0x140289b00
+__int64 FUN_140289b00(__int64 vec, __int64 first, __int64 last, __int64 dest, __int64, __int64, __int64)
+{
+    return FUN_140289b00(reinterpret_cast<void*>(vec), first, last, dest);
+}
