@@ -77,6 +77,9 @@ FUNCS = ms2paths.FUNCTIONS_TSV
 UNITS = ms2paths.UNITS_TSV
 RTTI_CLASSES = ms2paths.RTTI_CLASSES
 RTTI_VFTABLES = ms2paths.RTTI_VFTABLES
+# Nexon Messenger is not part of the rebuild (user 2026-10-24); the same zone as tools/fullexe/plan.py's NM_ZONE
+NM_ZONE = (0x14156a020, 0x14160a7f0)
+NM_QUEUE_NOTE = "stubbed: NM not needed"
 
 # cmake/ms2-game-flags.cmake (MS2_GAME_COMPILE_OPTIONS + _DEFINITIONS + C++14) + /MD /Z7 + the ms2game include dirs.
 GAME_FLAGS = ["/nologo", "/c", "/Od", "/Ob0", "/Oi", "/EHsc", "/GS", "/GR", "/Gy", "/fp:fast", "/Zc:wchar_t",
@@ -1093,6 +1096,20 @@ def process_unit(u, exe, starts, finfo, bases, vft, verbose):
     return res
 
 
+def excluded_reason(u, urows, queue_stubbed):
+    """why a unit is "stubbed (excluded)" from the headline totals, or None: an MS2-NO-EXE stand-in, a queue row
+    marked `stubbed: NM not needed`, or a unit whose address (as tools/fullexe/plan.py places it: its lowest
+    implemented row, else its lowest row, else its lowest range) lies in NM_ZONE. Its rows stay in status.tsv."""
+    if u.no_exe is not None:
+        return "MS2-NO-EXE"
+    if u.name in queue_stubbed:
+        return "queue: " + NM_QUEUE_NOTE
+    v = [r[0] for r in urows if r[3] != "stub"] or [r[0] for r in urows] or [lo for lo, _ in u.ranges]
+    if v and NM_ZONE[0] <= min(v) < NM_ZONE[1]:
+        return "NM stub zone"
+    return None
+
+
 def exe_is_code_ptr(exe, va):
     """True if the qword at exe address va points into the exe's .text section (slot 0 of a vftable)."""
     q = exe.read(va, 8)
@@ -1384,6 +1401,14 @@ def main():
     rows = []
     summary = []
     tot = dict(n=0, m=0, f=0, b=0, bm=0, bf=0)
+    tot_x = dict(n=0, m=0, f=0, b=0, bm=0, bf=0)          # stubbed (excluded) units: not in the headline totals
+    excluded, excluded_vas = [], set()
+    queue_stubbed = set()
+    try:
+        queue_stubbed = {l.split("\t")[0] for l in open(os.path.join(ROOT, "progress", "queue.tsv"))
+                         if not l.startswith("#") and NM_QUEUE_NOTE in l}
+    except OSError:
+        pass
     names_to_demangle = []
     for rel, c in cache.items():
         if c.get("res"):
@@ -1398,6 +1423,7 @@ def main():
                 if p["va"] not in byva or p["ok"] and not byva[p["va"]][1]:     # several names on one ICF-folded VA: exact wins
                     byva[p["va"]] = (n, p["ok"])
         n = m = f = b = bmt = bft = 0
+        r0 = len(rows)
         for lo, hi in u.ranges:
             i = bisect.bisect_left(starts, lo)
             while i < len(starts) and starts[i] < hi:
@@ -1422,10 +1448,15 @@ def main():
         vt = c["res"]["vft"] if c.get("res") else {}
         vok = sum(1 for v in vt.values() if v["ok"])
         summary.append((u.name, n, m, f, b, bmt, len(vt), vok, c.get("failed"), bft))
+        why = excluded_reason(u, rows[r0:], queue_stubbed)
+        if why:
+            excluded.append((u.name, n, m, f, why))
+            excluded_vas.update(r[0] for r in rows[r0:])
+        t = tot_x if why else tot
         for k, v in zip("nmfb", (n, m, f, b)):
-            tot[k] += v
-        tot["bm"] += bmt
-        tot["bf"] += bft
+            t[k] += v
+        t["bm"] += bmt
+        t["bf"] += bft
     # engine stage: Gamebryo TUs of engine/units-gb.json (tools/gbprogress.py; own cache, no MS2-UNIT/queue rows, no
     # symbols harvested). Its rows only cover VAs outside the game units; game rows and totals are unaffected.
     eng_rows = []
@@ -1478,24 +1509,35 @@ def main():
         lo, hi = int(p[0], 16), int(p[1], 16)
         i = bisect.bisect_left(starts, lo)
         while i < len(starts) and starts[i] < hi:
-            game_n += 1
-            game_b += finfo[starts[i]][0]
+            if starts[i] not in excluded_vas:
+                game_n += 1
+                game_b += finfo[starts[i]][0]
             i += 1
     out = []
     out.append(f"# tools/progress.py  {time.strftime('%Y-%m-%d %H:%M')}")
     out.append(f"{'unit':<45} {'funcs':>6} {'match':>6} {'func.':>6} {'stub':>5} {'bytes':>8} {'matched':>8}  "
                f"{'exact':>6} {'impl.':>6}  vftables")
+    xnames = {e[0] for e in excluded}
     for name, n, m, f, b, bmt, nv, vok, fail, bft in summary:
         pct = 100.0 * bmt / b if b else 0
         ipct = 100.0 * (bmt + bft) / b if b else 0
         out.append(f"{name:<45} {n:6} {m:6} {f:6} {n - m - f:5} {b:8} {bmt:8}  {pct:5.1f}% {ipct:5.1f}%  {vok}/{nv}"
-                   + ("  COMPILE FAILED" if fail else ""))
-    out.append(f"{'total (' + str(len(summary)) + ' units)':<45} {tot['n']:6} {tot['m']:6} {tot['f']:6} "
+                   + ("  COMPILE FAILED" if fail else "") + ("  STUBBED (excluded)" if name in xnames else ""))
+    out.append(f"{'total (' + str(len(summary) - len(excluded)) + ' units)':<45} {tot['n']:6} {tot['m']:6} {tot['f']:6} "
                f"{tot['n'] - tot['m'] - tot['f']:5} {tot['b']:8} {tot['bm']:8}")
     out.append(f"game code (work/map/units.tsv): {game_n} functions, {game_b} bytes; matched "
                f"{tot['m']} ({100.0 * tot['m'] / game_n:.3f}%) functions, {100.0 * tot['bm'] / game_b:.3f}% of bytes; "
                f"implemented (matched + functional) {tot['m'] + tot['f']} ({100.0 * (tot['m'] + tot['f']) / game_n:.3f}%) "
                f"functions, {100.0 * (tot['bm'] + tot['bf']) / game_b:.3f}% of bytes")
+    # stubbed (excluded): Nexon Messenger is not in the rebuild; its units keep their per-unit rows above and in
+    # status.tsv but count neither in the total line nor in the game-code denominator (progress/excluded.tsv)
+    out.append(f"{'stubbed (excluded: ' + str(len(excluded)) + ' units)':<45} {tot_x['n']:6} {tot_x['m']:6} "
+               f"{tot_x['f']:6} {tot_x['n'] - tot_x['m'] - tot_x['f']:5} {tot_x['b']:8} {tot_x['bm']:8}  "
+               f"(NM stub zone 0x{NM_ZONE[0]:x}-0x{NM_ZONE[1]:x}, MS2-NO-EXE, queue '{NM_QUEUE_NOTE}')")
+    with open(os.path.join(OUT, "excluded.tsv"), "w") as fo:
+        fo.write("#unit\tfuncs\tmatched\tfunctional\tstub\treason\n")
+        for name, n, m, f, why in sorted(excluded):
+            fo.write(f"{name}\t{n}\t{m}\t{f}\t{n - m - f}\t{why}\n")
     if eng_rows:
         out += gbprogress.summary(eng_rows)
     if imp_rows:
