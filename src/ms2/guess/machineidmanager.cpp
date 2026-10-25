@@ -25,6 +25,32 @@ void* FUN_1423b1080(Unk_MachineIDLocal* pLocal);            // the id buffer ins
 unsigned int FUN_1423ae960(Unk_MachineIDLocal* pLocal);
 void FUN_1423ae800(Unk_MachineIDLocal* pLocal);
 
+#ifndef MS2_HOOK_DLL
+// TODO(fullexe): stand-ins for the unrecovered machine-id gatherer, so a full relink boots (the hook DLL binds the
+// exe's). 0x1423b10a0 enumerates the network adapters (GetAdaptersInfo, then a sized retry) and fills the 16-byte id
+// at +0x18; 0x1423ae960 derives a value from it. Here the id is a fixed pattern and the value its FNV-1a hash: every
+// relinked client reports the same machine id. No tags: these are not the exe's code.
+void FUN_1423b10a0(Unk_MachineIDLocal* pLocal)
+{
+    for (int i = 0; i < 0x10; ++i)
+        pLocal->m_data[0x18 + i] = static_cast<unsigned char>(0x5a ^ (i * 0x11));
+}
+
+// the id buffer (the exe's is the same lea rax, [rcx+18h])
+void* FUN_1423b1080(Unk_MachineIDLocal* pLocal)
+{
+    return pLocal->m_data + 0x18;
+}
+
+unsigned int FUN_1423ae960(Unk_MachineIDLocal* pLocal)
+{
+    unsigned int h = 2166136261u;
+    for (int i = 0; i < 0x10; ++i)
+        h = (h ^ pLocal->m_data[0x18 + i]) * 16777619u;
+    return h;
+}
+#endif
+
 CMachineIDManager* TSingleton<CMachineIDManager>::s_instance = 0;   // 0x143ab8aa8
 
 // @0x140d4fcd0
