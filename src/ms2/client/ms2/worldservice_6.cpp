@@ -253,7 +253,7 @@ const void* FUN_141c002e0(const void* assetID)
 // MS2-FUNCTIONAL: Lookup(key) of the M11 family plus an MS2Ptr<CPtred> assignment; the exe calls GetNode and the
 // value type's operator= directly
 // @0x141c06ed0
-bool FUN_141c06ed0(void* map, const unsigned __int64& key, MS2Ptr<Unk_WsB_Vibrator>* out)
+bool FUN_141c06ed0(void* map, unsigned __int64 key, MS2Ptr<Unk_WsB_Vibrator>* out)   // key by value: GetNode 0x141bffcf0 hashes its home
 {
     Unk_WsM11::CPair* p = static_cast<Unk_WsM11*>(map)->Lookup((__int64)key);
     if (!p)

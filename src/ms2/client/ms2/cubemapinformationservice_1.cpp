@@ -93,7 +93,7 @@ void Unk_CubeHeightIndex::FUN_1410b25a0(int x,int y,int z) {
         if(cube!=0) {
             if((egf::Entity*)cube->entity!=0) {
                 unsigned __int64 id=cube->entity->GetEntityIDValue();
-                MS2Ptr<Unk_WsB_Vibrator> vibrator=FUN_1403ed2d0()->FUN_141bc8f60_value(id);
+                MS2Ptr<Unk_WsB_Vibrator> vibrator=FUN_1403ed2d0()->FUN_141bc8f60(id);
                 if(vibrator.get()!=0) {
                     if(FUN_1411cd550(vibrator.operator->())!=0) continue;
                 }

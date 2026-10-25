@@ -363,10 +363,8 @@ public:
     void FUN_141bc7fe0(const unsigned __int64& key); // 0x141bc7fe0
     int FUN_141bc80c0(int channel); // 0x141bc80c0
     void FUN_141bc8e00(); // 0x141bc8e00
-    void FUN_141bc8ef0(const unsigned __int64& key, MS2Ptr<class Unk_WsB_Vibrator> vibrator); // 0x141bc8ef0
-    MS2Ptr<class Unk_WsB_Vibrator> FUN_141bc8f60(const unsigned __int64& key); // 0x141bc8f60
-    // Height-index caller proves an ID value in r8; retained alias pending owner signature audit.
-    MS2Ptr<class Unk_WsB_Vibrator> FUN_141bc8f60_value(unsigned __int64 key);
+    void FUN_141bc8ef0(unsigned __int64 key, MS2Ptr<class Unk_WsB_Vibrator> vibrator); // 0x141bc8ef0 (key by value, as m_468's SetAt)
+    MS2Ptr<class Unk_WsB_Vibrator> FUN_141bc8f60(unsigned __int64 key); // 0x141bc8f60 (key by value in r8, as m_468's Lookup)
     void FUN_141bc9020(CString name, class Unk_WsB_ShakeRef shake, CString shakeName, bool flag); // 0x141bc9020
     void FUN_141bc92e0(CString name); // 0x141bc92e0
     void FUN_141bc9480(CString name); // 0x141bc9480
@@ -510,7 +508,7 @@ public:
     bool FUN_141bd8e30(unsigned __int64 entityId, char show, float fFade);   // fade an entity in or out over fFade seconds
     void FUN_141bd92c0(float scale, float scale2, float duration, int mode);   // start the time-scale change
     void FUN_141bd9380();                               // end the time-scale change
-    void FUN_141bd9410(Unk_WsP16* pObj);                 // show a debug tooltip over an interactive object
+    void FUN_141bd9410(MS2Ptr<class Unk_WsB_Prop> spObj); // show a debug tooltip over an interactive object (releases spObj)
     void FUN_141bd97a0(unsigned __int64 id);            // remove the debug tooltip of id
     int FUN_141bd9870();                                // per-class table value of the local player
     int FUN_141bd98d0();                                // m_2c0
