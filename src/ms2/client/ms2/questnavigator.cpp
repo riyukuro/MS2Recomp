@@ -108,7 +108,7 @@ public:
     void* m_p;
 };
 class Unk_QnRideEntry { public: ~Unk_QnRideEntry(); Unk_QnRideRow* FUN_1407895c0(); void* m_0; void* m_p; };   // dtor 0x140788ea0
-Unk_QnRideEntry FUN_140784970(void* pTable);
+class Unk_QnRideTable { public: Unk_QnRideEntry FUN_140784970(); };  // CRideeData (unit_140781d80)
 
 // ---- dynamic initializers (.text$di) ----
 
@@ -503,7 +503,7 @@ bool CQuestNavigator::FUN_140c9af60()
         Unk_QnRideRef ride(pPC->FUN_141676410());
         if (ride.FUN_140c9b760())
             return false;
-        Unk_QnRideEntry entry = FUN_140784970(ride.FUN_1407895d0());
+        Unk_QnRideEntry entry = ((Unk_QnRideTable*)ride.FUN_1407895d0())->FUN_140784970();
         int nValue = entry.FUN_1407895c0()->m_6c;
         return nValue != 0;
     }
