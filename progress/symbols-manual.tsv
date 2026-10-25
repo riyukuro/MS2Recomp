@@ -14799,3 +14799,11 @@ DAT_1439f8358	1439f8358	data
 ?GetStringManager@MovieRoot@AS2@GFx@Scaleform@@UEBAPEAVASStringManager@34@XZ	1429561d0	func
 ??0SuperObject@AS2@GFx@Scaleform@@QEAA@PEAVObject@123@PEAVObjectInterface@123@AEBVFunctionRef@123@@Z	1429213a0	func
 ?FUN_141c17660@@YAXPEAX0@Z	141c17660	func
+?Instance@SKI_MaskStart@Render@Scaleform@@2V123@A	143a2fd28	data
+?InstanceClipped@SKI_MaskStart@Render@Scaleform@@2V123@A	143a2fd38	data
+?Instance@SKI_MaskEnd@Render@Scaleform@@2V123@A	143a2fd50	data
+?DAT_143a2a6b0@@3HA	143a2a6b0	data
+?DAT_143a2dd20@@3PAEA	143a2dd20	data
+?DAT_143a2fe60@@3PAEA	143a2fe60	data
+?DAT_143a30338@@3PAEA	143a30338	data
+?DAT_143b15780@@3PAEA	143b15780	data
