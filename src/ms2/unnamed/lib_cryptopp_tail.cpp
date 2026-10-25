@@ -84,8 +84,15 @@ struct CppOneBlock { CppSecBlock a; };
 struct CppTwoBlocks { void* vptr; CppSecBlock a; CppSecBlock b; };
 struct CppFourWords { void* v0; void* v1; CppSecBlock a; void* v5; void* v6; CppSecBlock b; void* v9; };
 
-extern Cpp8 DAT_143b0f4c0[18];
-extern Cpp8 DAT_143b0fb00[22];
+// eccrypto's GetRecommendedParameters tables: 18 ECP entries of 0x58 bytes and 22 EC2N entries of 0x48
+extern Cpp8 DAT_143b0f4c0[18 * 0x58 / sizeof(Cpp8)];
+extern Cpp8 DAT_143b0fb00[22 * 0x48 / sizeof(Cpp8)];
+#ifndef MS2_HOOK_DLL
+// Full exe: gb:CryptoPP builds no eccrypto, so the tables these exit-time destructors walk are defined here. Nothing
+// fills or registers them there; zeroed entries destroy as empty. The hook DLL binds the exe's own.
+Cpp8 DAT_143b0f4c0[18 * 0x58 / sizeof(Cpp8)];
+Cpp8 DAT_143b0fb00[22 * 0x48 / sizeof(Cpp8)];
+#endif
 
 // @0x142cc8ce0
 void FUN_142cc8ce0()

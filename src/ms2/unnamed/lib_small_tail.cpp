@@ -1,10 +1,8 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). Single functions of the small third-party libraries that the
-// engine-stage TUs leave as stubs: Lua 5.1 luaopen_debug, expat xmltok scanDecl, libjpeg jpeg_idct helpers (the JPEG
+// engine-stage TUs leave as stubs: expat xmltok scanDecl, libjpeg jpeg_idct helpers (the JPEG
 // marker-name char test), libpng png_zstream_error.
 // MS2-UNIT: lib_small_tail
-// MS2-RANGE: 0x14225bf20-0x14225bf40 .text$mn
 // MS2-RANGE: 0x1423c5740-0x1423c5808 .text$mn
-// MS2-RANGE: 0x1423a7330-0x1423a7350 .text$mn
 // MS2-RANGE: 0x142702350-0x142702fa9 .text$mn
 // MS2-RANGE: 0x142703c80-0x142703cd7 .text$mn
 // MS2-RANGE: 0x142703ce0-0x142703d0c .text$mn
@@ -13,31 +11,6 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/ms2recover.h"
-
-struct lua_State;
-struct luaL_Reg;
-extern const luaL_Reg DAT_1430fe2b0[];                                          // debug library function table
-extern const char DAT_1430f5f38[];                                              // "debug"
-void FUN_1421e5c10(lua_State* L, const char* libname, const luaL_Reg* l);       // luaL_register
-
-// @0x14225bf20  luaopen_debug
-int FUN_14225bf20(lua_State* L)
-{
-    FUN_1421e5c10(L, DAT_1430f5f38, DAT_1430fe2b0);
-    return 1;
-}
-
-// second Lua 5.1 copy's luaopen_debug (own luaL_register / debug function table)
-extern const luaL_Reg DAT_143134480[];                                          // debug library function table
-extern const char DAT_1431323f8[];                                              // "debug"
-void FUN_142394d40(lua_State* L, const char* libname, const luaL_Reg* l);       // luaL_register
-
-// @0x1423a7330  luaopen_debug (twin)
-int FUN_1423a7330(lua_State* L)
-{
-    FUN_142394d40(L, DAT_1431323f8, DAT_143134480);
-    return 1;
-}
 
 // expat xmltok: the normal_encoding type table sits 0x90 bytes into ENCODING-derived struct
 struct ExpatNormalEncoding
