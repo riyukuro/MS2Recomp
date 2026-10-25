@@ -8,7 +8,7 @@
 // (docs/RECOVERY.md sec. 9).
 // MS2-UNIT: data_rdata_sf_a
 // MS2-RANGE: 0x14305cd3c-0x14305cd3e .rdata
-// MS2-RANGE: 0x143138360-0x1431383e0 .rdata
+// MS2-RANGE: 0x143138360-0x143138510 .rdata
 // MS2-RANGE: 0x14313a200-0x14313f358 .rdata
 // MS2-RANGE: 0x143144150-0x1431496d0 .rdata
 // MS2-RANGE: 0x14314ed40-0x14314ef70 .rdata
@@ -995,11 +995,41 @@ extern unsigned char DAT_143177ac0[];
 extern unsigned char DAT_143a2a850[];
 extern unsigned char DAT_143a2aab0[];
 extern unsigned char DAT_143a2d158[];
+void FUN_1423c8ce0();
 void FUN_1423c8e10();
 void FUN_1423c9000();
 void FUN_1423c9010();
+void FUN_1423c9020();
+void FUN_1423c9040();
+void FUN_1423c9060();
+void FUN_1423c9080();
+void FUN_1423c90a0();
+void FUN_1423c90c0();
+void FUN_1423c90e0();
+void FUN_1423c9100();
+void FUN_1423c9120();
+void FUN_1423c92f0();
+void FUN_1423c9570();
+void FUN_1423c9590();
+void FUN_1423c95b0();
 void FUN_1423c95f0();
+void FUN_1423c9670();
+void FUN_1423c96d0();
+void FUN_1423c9780();
 void FUN_1423c9b90();
+void FUN_1423c9ba0();
+void FUN_1423ca060();
+void FUN_1423ca080();
+void FUN_1423ca0a0();
+void FUN_1423ca100();
+void FUN_1423ca140();
+void FUN_1423ca160();
+void FUN_1423ca1c0();
+void FUN_1423ca210();
+void FUN_1423ca410();
+void FUN_1423ca520();
+void FUN_1423ca540();
+void FUN_1423ca620();
 void FUN_1423ca920();
 void FUN_1423cb400();
 void FUN_1423cb5b0();
@@ -1011,6 +1041,9 @@ void FUN_1423cb980();
 void FUN_1423cbe90();
 void FUN_1423cc2d0();
 void FUN_1423cc7c0();
+void FUN_1423ccfc0();
+void FUN_1423cd0a0();
+void FUN_1423cd6b0();
 void FUN_1423ce100();
 void FUN_1423ce160();
 void FUN_1423ce1f0();
@@ -1290,6 +1323,11 @@ void FUN_1424c4c90();
 void FUN_1424c4e60();
 void FUN_1424fee10();
 void FUN_142518df0();
+void FUN_1425b41e0();
+void FUN_1425b4520();
+void FUN_1425b4590();
+void FUN_1425b48a0();
+void FUN_1425b48d0();
 
 #pragma pack(push, 1)
 struct Sd_143138360 {
@@ -1442,6 +1480,46 @@ struct Sd_14313a5f8 {
     const void* p110;
     const void* p118;
     unsigned char b120[0xce8];
+};
+struct Sd_1431383e0 {
+    const void* p0;
+    const void* p8;
+    const void* p10;
+    const void* p18;
+    const void* p20;
+    const void* p28;
+    const void* p30;
+    const void* p38;
+    const void* p40;
+    const void* p48;
+    const void* p50;
+    const void* p58;
+    const void* p60;
+    const void* p68;
+    const void* p70;
+    const void* p78;
+    const void* p80;
+    const void* p88;
+    const void* p90;
+    const void* p98;
+    const void* pa0;
+    const void* pa8;
+    const void* pb0;
+    const void* pb8;
+    const void* pc0;
+    const void* pc8;
+    const void* pd0;
+    const void* pd8;
+    const void* pe0;
+    const void* pe8;
+    const void* pf0;
+    const void* pf8;
+    const void* p100;
+    const void* p108;
+    const void* p110;
+    const void* p118;
+    const void* p120;
+    const void* p128;
 };
 struct Sd_14313b520 {
     const void* p0;
@@ -9325,6 +9403,47 @@ alignas(16) Sd_143138360 DAT_143138360 = {
     (const void*)&FUN_1423ca920,
     (const void*)&FUN_1423cb970,
     (const void*)&FUN_1423cb920,
+};
+// 0x1431383e0: the GFxIMEManagerWin32 vtable (sfr_ime_01's constructor installs it)
+alignas(16) Sd_1431383e0 DAT_1431383e0 = {
+    (const void*)&FUN_1423c8ce0,
+    (const void*)&FUN_1423c9ba0,
+    (const void*)&FUN_1423ccfc0,
+    (const void*)&FUN_1423cd0a0,
+    (const void*)&FUN_1423c9780,
+    (const void*)&FUN_1423c92f0,
+    (const void*)&FUN_1423ca540,
+    (const void*)&FUN_1423c9570,
+    (const void*)&FUN_1423ca620,
+    (const void*)&FUN_1423c9590,
+    (const void*)&FUN_1423c95b0,
+    (const void*)&FUN_1423c9040,
+    (const void*)&FUN_1423c9120,
+    (const void*)&FUN_1423c9100,
+    (const void*)&FUN_1423c90e0,
+    (const void*)&FUN_1423c90a0,
+    (const void*)&FUN_1423c90c0,
+    (const void*)&FUN_1423c9080,
+    (const void*)&FUN_1423c9060,
+    (const void*)&FUN_1423c9020,
+    (const void*)&FUN_1423cd6b0,
+    (const void*)&FUN_1423ca520,
+    (const void*)&FUN_1425b4590,
+    (const void*)&FUN_1423ca210,
+    (const void*)&FUN_1423ca1c0,
+    (const void*)&FUN_1423ca140,
+    (const void*)&FUN_1423ca100,
+    (const void*)&FUN_1425b48d0,
+    (const void*)&FUN_1423ca160,
+    (const void*)&FUN_1423ca410,
+    (const void*)&FUN_1425b48a0,
+    (const void*)&FUN_1425b4520,
+    (const void*)&FUN_1425b41e0,
+    (const void*)&FUN_1423c9670,
+    (const void*)&FUN_1423ca060,
+    (const void*)&FUN_1423ca0a0,
+    (const void*)&FUN_1423ca080,
+    (const void*)&FUN_1423c96d0,
 };
 // 0x14313a200
 alignas(16) Sd_14313a200 DAT_14313a200 = {
@@ -22932,6 +23051,7 @@ alignas(16) Sd_1431726d0 DAT_1431726d0 = {
 };
 
 #pragma comment(linker, "/alternatename:DAT_143138360=?DAT_143138360@@3USd_143138360@@A")
+#pragma comment(linker, "/alternatename:DAT_1431383e0=?DAT_1431383e0@@3USd_1431383e0@@A")
 #pragma comment(linker, "/alternatename:DAT_14313a200=?DAT_14313a200@@3USd_14313a200@@A")
 #pragma comment(linker, "/alternatename:DAT_14313a210=?DAT_14313a210@@3USd_14313a210@@A")
 #pragma comment(linker, "/alternatename:DAT_14313a228=?DAT_14313a228@@3USd_14313a228@@A")
