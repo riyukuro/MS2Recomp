@@ -233139,3 +233139,6 @@ DAT_143ffd550	143ffd550	data
 ??_7?$CefCToCppRefCounted@VCefJSDialogCallbackCToCpp@@VCefJSDialogCallback@@U_cef_jsdialog_callback_t@@@@6BCefJSDialogCallback@@@	1431df020	data
 ??_7?$CefCToCppRefCounted@VCefJSDialogCallbackCToCpp@@VCefJSDialogCallback@@U_cef_jsdialog_callback_t@@@@6BCefBaseRefCounted@@@	1431df028	data
 ?AvmTextFieldBase_HasStyleSheet@AS2@GFx@Scaleform@@YA_NPEBX@Z	14295dbb0	func
+?SKI_NullInterface@Render@Scaleform@@3USortKeyInterface@12@A	143a2fe08	data
+?ImageFileKeyInterface_Instance@GFx@Scaleform@@3VImageFileKeyInterface@12@A	143a2fe18	data
+?SoundFileKeyInterface_Instance@GFx@Scaleform@@3VSoundFileKeyInterface@12@A	143a2fef8	data
