@@ -26,6 +26,7 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/commonfiles/npcdata.h"
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/client/ms2/filepreload_1.h"
@@ -122,7 +123,6 @@ struct Unk_NcRef { void* m_0; void* m_8; };
 class Unk_NcMgr { public: Unk_NcHandle FUN_140a7cab0(unsigned nNpc); };
 Unk_NcMgr* FUN_1406d6e90();
 Unk_NcRef FUN_1406cd330(unsigned nNpc);
-void FUN_14035e5b0(const Unk_NcRef& ref);                      // preload the npc
 
 class Unk_NcWalk { public: int FUN_1406fb700(int nNpc, int* pField); };
 Unk_NcWalk* FUN_140700390();
@@ -396,7 +396,8 @@ void UINpcCreateDialog::FUN_141a6b800()
     FUN_1401859c0(FUN_140166440(), 0xc, 0x13, L"ReadNpcAll");
     for (unsigned __int64 i = 0; i < m_files.FUN_14041af10(); i++) {
         CStringW strId = m_files.FUN_1405e99b0(i);
-        FUN_14035e5b0(FUN_1406cd330(FUN_140718200(strId)));
+        Unk_NcRef npcRow = FUN_1406cd330(FUN_140718200(strId));
+        reinterpret_cast<MS2Ptr<CNpcData>*>(&npcRow)->~MS2Ptr<CNpcData>();
     }
     FUN_1401859c0(FUN_140166440(), 0xc, 0x13, L"End ReadNpcAll");
 }
