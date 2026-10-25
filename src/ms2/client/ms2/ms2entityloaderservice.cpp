@@ -243,6 +243,7 @@ void* FUN_1414b4910(void* tree, void* out, void* key)
         void* nk = FUN_1414b4860(tree, *(void**)lb);
         FUN_1414b4820(tree);
         if (!FUN_1414b44f0(0, key, nk)) {
+            fb[0] = *(void**)lb;
             res = fb;
             goto done;
         }
