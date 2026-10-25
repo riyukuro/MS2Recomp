@@ -39,6 +39,7 @@
 #include "ms2/placeholder/chomeprivilege.h"
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/client/ms2/uiskillpreviewdialog.h"
+#include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/skilloverlapcompare.h"
 #include "ms2/ms2recover.h"
@@ -118,7 +119,6 @@ public:
 Unk_DaKeyBinds* FUN_1409331f0();
 
 int FUN_1409e1b80(ASTooltip* p, int nId, int n);            // the learned skill tooltip
-CStringW FUN_141811980(CStringTable* p, int nTable, int nId);
 CStringTable* GetStringTable();
 char FUN_1403b3c40(const CStringW& str, const wchar_t* szText);
 void FUN_140988d60(CStringW& strSrc, std::vector<CStringW>& arrOut, const wchar_t* pszSep);
@@ -133,17 +133,7 @@ __int64 FUN_140869440();                                    // the server time
 CStringW FUN_1409e90c0(int nStringId, const int& nYear, const int& nMonth, const int& nDay, const int& nHour,
                        const int& nMinute);
 int FUN_1416595d0(PCBase* pActor);
-void* FUN_1403ed2b0();                                      // the UI service
-class Unk_DaUIRef {
-public:
-    ~Unk_DaUIRef();
-    UIObject* FUN_1403e8a70() const;
-private: void* unknown; UIObject* object;
-};
-MS2_CHECK_SIZE(Unk_DaUIRef, 0x10);
-Unk_DaUIRef FUN_141adcea0(void*, int);
-UIObject* FUN_1403ed9e0(Unk_DaUIRef&);
-void FUN_141adc530(void*, int);
+CUIService* FUN_1403ed2b0();                                // the UI service
 
 // Sort orders of the action pages (the comparators live in the skill system unit).
 struct Unk_EmotionLess { bool operator()(const MS2Ptr<Unk_Emotion>& a, const MS2Ptr<Unk_Emotion>& b) const; };   // 0x141764410
@@ -502,9 +492,9 @@ MS2_REPLACE_METHOD(0x14192C9B0, UIDynamicActionDialog, FUN_14192c9b0, 79, 0);
 UISkillPreviewDialog* FUN_14192e1f0(int nDialog)
 {
     if (FUN_1403ed2b0() != 0) {
-        Unk_DaUIRef ref = FUN_141adcea0(FUN_1403ed2b0(), nDialog);
-        if (ref.FUN_1403e8a70() != 0)
-            return dynamic_cast<UISkillPreviewDialog*>(FUN_1403ed9e0(ref));
+        MS2Ptr<UIObject> spUI = FUN_1403ed2b0()->FUN_141adcea0((eUIClassID)nDialog);
+        if (spUI.get() != 0)
+            return dynamic_cast<UISkillPreviewDialog*>((UIObject*)spUI);
     }
     return 0;
 }
@@ -515,7 +505,7 @@ void UIDynamicActionDialog::FUN_14192ca10(int nAction)
 {
     UISkillPreviewDialog* pPreview = FUN_14192e1f0(0x4ec3);
     if (pPreview != 0) {
-        FUN_141adc530(FUN_1403ed2b0(), 0x4ec3);
+        FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4ec3);
         pPreview->FUN_140e93e70(nAction, 0);
     }
 }
@@ -549,7 +539,7 @@ void UIDynamicActionDialog::FUN_14192ca70()
                 if (FUN_1403b3c40(m_1b8, L"/") != 0)
                     continue;
                 bool bFound = false;
-                CStringW strName = FUN_141811980(GetStringTable(), 4, nId);
+                CStringW strName = GetStringTable()->FUN_141811980(4, nId);
                 if (strName.Find(m_1b8, 0) == -1) {
                     std::vector<CStringW> words;
                     CStringW strKeywords = FUN_14192d820(nId);
@@ -614,7 +604,7 @@ void UIDynamicActionDialog::FUN_14192d100()
                 if (FUN_1403b3c40(m_1b8, L"/") != 0)
                     continue;
                 bool bFound = false;
-                CStringW strName = FUN_141811980(GetStringTable(), 4, nId);
+                CStringW strName = GetStringTable()->FUN_141811980(4, nId);
                 if (strName.Find(m_1b8, 0) == -1) {
                     std::vector<CStringW> words;
                     CStringW strKeywords = FUN_14192d820(nId);
