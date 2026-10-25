@@ -233054,3 +233054,11 @@ DAT_143ffd550	143ffd550	data
 ?GetStringManager@MovieRoot@AS2@GFx@Scaleform@@UEBAPEAVASStringManager@34@XZ	1429561d0	func
 ??$?0AEBI$$Z$$V@?$pair@$$CBIV?$MS2Ptr@VCube@@@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBI@1@V?$tuple@$$V@1@@Z	1410d9bb0	func
 ??$_Construct1@U?$pair@$$CBHW4Unk_CMISByteKind@@@std@@AEBUpiecewise_construct_t@2@V?$tuple@$$QEAH@2@V?$tuple@$$V@2@@?$_Normal_allocator_traits@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHW4Unk_CMISByteKind@@@std@@PEAX@std@@@efd@@@std@@SAXU?$integral_constant@_N$00@1@AEAV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHW4Unk_CMISByteKind@@@std@@PEAX@std@@@efd@@PEAU?$pair@$$CBHW4Unk_CMISByteKind@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@$$QEAH@1@$$QEAV?$tuple@$$V@1@@Z	1410e0950	func
+?Instance@SKI_MaskStart@Render@Scaleform@@2V123@A	143a2fd28	data
+?InstanceClipped@SKI_MaskStart@Render@Scaleform@@2V123@A	143a2fd38	data
+?Instance@SKI_MaskEnd@Render@Scaleform@@2V123@A	143a2fd50	data
+?DAT_143a2a6b0@@3HA	143a2a6b0	data
+?DAT_143a2dd20@@3PAEA	143a2dd20	data
+?DAT_143a2fe60@@3PAEA	143a2fe60	data
+?DAT_143a30338@@3PAEA	143a30338	data
+?DAT_143b15780@@3PAEA	143b15780	data
