@@ -18,7 +18,7 @@ struct Unk_C16 { char b[16]; };
 void* FUN_1401d3200();   void* FUN_1403ed2d0();   void* FUN_141bd0cc0(void* a);   void* FUN_14123c410(void* a);   void* FUN_141b6efc0(void* a);
 void FUN_1409a7460(void* sp, int n);   void* FUN_141d284a0(void* tbl);   void FUN_1414802a0(void* sp, void* p);   void FUN_1409a7b00(void* sp);
 void* FUN_1409a8120(void* sp);
-unsigned FUN_14056d500(unsigned v);   Unk_Colc FUN_1408a85e0(unsigned c);   float FUN_1402bac70(void* p);   void FUN_1409a5770(void* dst, void* src, int n);
+unsigned FUN_14056d500(const COLORREF* p);   Unk_Colc FUN_1408a85e0(unsigned c);   float FUN_1402bac70(void* p);   void FUN_1409a5770(void* dst, void* src, int n);
 char FUN_1402b74f0(void* p);   void FUN_1402b7560(void* p, const char* s);   void FUN_1402c2870(void* arr);   void FUN_1402bf0f0(void* arr, void* src);
 void FUN_1414d1170(void* map, unsigned bins);   void FUN_1414d13d0(void* map);   void FUN_1414d1320(void* arr);
 unsigned FUN_140d89680(const void* arr);   void* FUN_1414d1830(const void* arr, unsigned i);   void FUN_140d9d620(void* arr, void* obj);   void FUN_140d9e140(void* arr);
@@ -53,7 +53,7 @@ MS2OutlinePreProcessor::MS2OutlinePreProcessor()
     FUN_1414d4110((char*)FUN_1401d3200() + 0xb460, arr);
     for (unsigned i = 0; i < 3; ++i) {
         if (arr.GetCount() <= i) break;
-        unsigned v = FUN_14056d500(arr[i]);
+        unsigned v = FUN_14056d500(&arr[i]);
         Unk_Colc c = FUN_1408a85e0(v);
         col[idx] = c.x;
         col[idx + 1] = c.y;
