@@ -263,16 +263,3 @@ void FUN_142cc9270()
 {
     DAT_143b103a8.Free();
 }
-
-#ifndef MS2_HOOK_DLL
-// TODO(fullexe): Crypto++ fips140.cpp is not in the gb plan, but the gb:CryptoPP objs call it. Built with
-// CRYPTOPP_ENABLE_COMPLIANCE_WITH_FIPS_140_2 0, it returns false. The exe's copy is not located (likely folded into
-// another `xor al, al; ret`), hence no tag.
-namespace CryptoPP
-{
-bool FIPS_140_2_ComplianceEnabled()
-{
-    return false;
-}
-}
-#endif
