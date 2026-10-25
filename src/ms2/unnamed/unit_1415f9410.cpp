@@ -1206,6 +1206,29 @@ bool CStreamCryptor_v0::vfunc_3() { return false; }
 bool CStreamCryptor_v1::vfunc_3() { return true; }
 // MS2-PIN: ?vfunc_3@CStreamCryptor_v1@@UEAA_NXZ 0x1415fb6f0
 
+// The executable's vftable refers to these slots with the recovered void() ABI.
+// The source-level return-value variants above share the same code and calling
+// convention for slots 3-5, so preserve those bodies under the vftable names.
+#pragma comment(linker, "/alternatename:?vfunc_3@CStreamCryptor_v0@@UEAAXXZ=?vfunc_3@CStreamCryptor_v0@@UEAA_NXZ")
+#pragma comment(linker, "/alternatename:?vfunc_3@CStreamCryptor_v1@@UEAAXXZ=?vfunc_3@CStreamCryptor_v1@@UEAA_NXZ")
+#pragma comment(linker, "/alternatename:?vfunc_4@CStreamCryptor_v0@@UEAAXXZ=?vfunc_4@CStreamCryptor_v0@@UEAA_KXZ")
+#pragma comment(linker, "/alternatename:?vfunc_4@CStreamCryptor_v1@@UEAAXXZ=?vfunc_4@CStreamCryptor_v1@@UEAA_KXZ")
+#pragma comment(linker, "/alternatename:?vfunc_5@CStreamCryptor_v0@@UEAAXXZ=?vfunc_5@CStreamCryptor_v0@@UEAAIXZ")
+#pragma comment(linker, "/alternatename:?vfunc_5@CStreamCryptor_v1@@UEAAXXZ=?vfunc_5@CStreamCryptor_v1@@UEAAIXZ")
+
+extern "C" void __fastcall nm_streamcryptor_v0_v6(void* self)
+{
+    static_cast<CStreamCryptor_v0*>(self)->CStreamCryptor_v0::vfunc_6(0);
+}
+
+extern "C" void __fastcall nm_streamcryptor_v1_v6(void* self)
+{
+    static_cast<CStreamCryptor_v1*>(self)->CStreamCryptor_v1::vfunc_6(0);
+}
+
+#pragma comment(linker, "/alternatename:?vfunc_6@CStreamCryptor_v0@@UEAAXXZ=nm_streamcryptor_v0_v6")
+#pragma comment(linker, "/alternatename:?vfunc_6@CStreamCryptor_v1@@UEAAXXZ=nm_streamcryptor_v1_v6")
+
 // @0x1415fb700
 int FUN_1415fb700(void* p) { return *reinterpret_cast<int*>(static_cast<char*>(p) + 0x14); }
 // MS2-PIN: ?FUN_1415fb700@@YAHPEAX@Z 0x1415fb700
