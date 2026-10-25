@@ -1594,9 +1594,16 @@ def main():
         ifc_cache = {}
         sel = {u.name for u in units}
         by_rel = {u.name: u.rel for u in all_units}
+        # stubbed (excluded) units do not fail on their stubs, non-exact functions or vftables (Nexon Messenger is
+        # not in the rebuild): only compile failures, data, symbol conflicts, lint and inconsistent mappings count
+        xwhy = {e[0]: e[4] for e in excluded}
+        ok_excluded = []
         for name, n, m, f, b, bmt, nv, vok, fail, bft in summary:
             if name not in sel:
                 continue
+            if name in xwhy:
+                ok_excluded.append(f"{name}: OK (excluded: {xwhy[name]}; {m} exact / {f} functional / "
+                                   f"{n - m - f} stub of {n}, vftables {vok}/{nv})")
             rel = by_rel.get(name)
             res = cache.get(rel, {}).get("res") or {}
             dres = res.get("data") or {}
@@ -1606,7 +1613,7 @@ def main():
             if a.functional:
                 stubs = n - m - f
                 no_exe = next((x.no_exe is not None for x in all_units if x.name == name), False)
-                if fail or (n == 0 and not dres and not no_exe) or stubs or vok != nv:
+                if fail or (name not in xwhy and ((n == 0 and not dres and not no_exe) or stubs or vok != nv)):
                     bad.append(f"{name}: " + ("COMPILE FAILED" if fail else
                                               f"{m + f}/{n} functions implemented ({stubs} stub), vftables {vok}/{nv}"))
                 for d in res.get("symmismatch", []):
@@ -1620,7 +1627,7 @@ def main():
                         bad.append(f"{name}: lint: ... {len(lh) - 12} more")
                 # exact interface (tools/interface_check.py, fx12): non-exact functions other units depend on need a
                 # byte match or an `// MS2-FUNCTIONAL: <reason>`; a hard gate only for units not yet done
-                if res and not fail:
+                if res and not fail and name not in xwhy:
                     import interface_check as ifc
                     if "states" not in ifc_cache:
                         ifc_cache["states"] = ifc.done_units()
@@ -1640,7 +1647,7 @@ def main():
                             bad.append(line)
                 ok_msg = (f"functional: OK (matched {m}/{n}, {f} functional, {bmt} of {b} bytes = "
                           f"{100.0 * bmt / b if b else 0:.1f}% exact, {100.0 * (bmt + bft) / b if b else 0:.1f}% implemented)")
-            elif fail or (n == 0 and not dres) or m != n or vok != nv:
+            elif fail or (name not in xwhy and ((n == 0 and not dres) or m != n or vok != nv)):
                 bad.append(f"{name}: " + ("COMPILE FAILED" if fail else
                                           f"{m}/{n} functions matched ({f} functional, {n - m - f} stub), "
                                           f"vftables {vok}/{nv}"))
@@ -1658,6 +1665,8 @@ def main():
             sys.exit(1)
         if ok_msg:
             print(ok_msg)
+        for line in ok_excluded:
+            print(line)
         print("CHECK OK: " + ", ".join(u.name for u in units))
 
 
