@@ -2037,7 +2037,6 @@ struct Unk_BstrBlock
 extern void FUN_14016ad80(void* pThis, void* pArg);
 void* FUN_140297a40(size_t nBytes);
 extern void FUN_140297790(void* p);
-extern void FUN_1402978c0(void* p);
 extern void** FUN_140298fc0(void* pHolder);
 extern void* FUN_140183290(void* pOut);
 extern unsigned long long* FUN_14029dcd0();
@@ -2200,7 +2199,7 @@ void FUN_1402979b0(void* p)
 {
     ((CLockCriticalSection*)((char*)p + 0x168))->~CLockCriticalSection();
     for (int i = 14; i >= 0; --i)
-        FUN_1402978c0((char*)p + i * 0x18);
+        static_cast<CItemTabNameTable*>(p)->m_arrNames[i].~vector();
 }
 
 // @0x1402999c0

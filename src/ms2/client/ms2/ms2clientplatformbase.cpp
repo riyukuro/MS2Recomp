@@ -35,7 +35,6 @@ static UICommon::CMyPCKeyInputController s_keyInput;                // 0x143abf5
 static CStringA s_strReportSiren2("PremiumShop_ReportSiren");       // 0x143abf588
 
 // ---- out-of-unit types and functions ----
-void FUN_140c77760(void* p);
 void FUN_14092e580(void* p);
 void FUN_14092ea10(void* p, int n);
 void* FUN_140159860(int nSize, void* pStorage);
@@ -602,12 +601,6 @@ void Unk_NxNumber::Init(unsigned n)
     Set(n);
 }
 
-// @0x140c77230
-void FUN_140c77230(void* pThis)
-{
-    FUN_140c77760(pThis);
-}
-
 // @0x140c77260
 Unk_NexonAnalytics::~Unk_NexonAnalytics()
 {
@@ -703,3 +696,6 @@ Unk_NexonAnalytics* FUN_140c77900()
 MS2_EMIT_CRT_MEMMOVE_S();
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca3690-0x142ca37f0 .text$yd
+// sfr34: ~MS2Ptr<CUserReportData> (vfunc_48's by-value argument) replaces the FUN_140c77230 stand-in that called its
+// private Release 0x140c77760 under a FUN_ twin.
+// MS2-PIN: ??1?$MS2Ptr@VCUserReportData@@@@QEAA@XZ 0x140c77230

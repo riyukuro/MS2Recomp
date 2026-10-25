@@ -510,7 +510,6 @@ void* FUN_1401958b0();
 void FUN_140aae640(void*);
 extern bool DAT_143aac548;
 void FUN_141370b80(void*);
-void FUN_141370b50(void*);
 Unk_CommandUIRef FUN_141adcea0(void*,int);
 UIObject* FUN_1403ed9e0(Unk_CommandUIRef&);
 bool FUN_140534e80(Unk_CommandUIRef&);
@@ -2096,7 +2095,7 @@ int CUserCommandCli::FUN_14136dab0(Unk_CommandArgs& args) {
 // @0x14136db90
 void* FUN_14136db90(void* p) {
     FUN_141370b80(p);
-    FUN_141370b50(p);
+    ::new (p) std::_List_val<std::_List_simple_types<std::list<int> > >();     // 0x141370b50
     return p;
 }
 // @0x14136f1f0

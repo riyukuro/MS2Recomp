@@ -208,7 +208,6 @@ bool FUN_141b70f50(const CStringW& left, const CStringW& right);   // the names 
 bool FUN_14025cd60(const CStringW& left, const CStringW& right);
 CStringW FUN_1409eec40(int id);
 CStringW FUN_1408116a0(int id, const int& value);
-void FUN_1404eeaa0(Unk_GuildRef* grade);              // the grade reference dtor (guilddef_1.cpp)
 int FUN_141adc890(Unk_GuildUiMgr* ui, int uiId);
 CStringW FUN_140763e10(int value);                   // the number with digit grouping
 CStringW FUN_1408f71a0(CStringW key, const CStringW& arg0, const CStringW& arg1);
@@ -1942,7 +1941,7 @@ void CGuildManager::FUN_1413bf050(CInPacket& packet)
 }
 MS2_REPLACE_METHOD(0x1413BF050, CGuildManager, FUN_1413bf050, 216, 0x7E8A5D03);
 
-// MS2-FUNCTIONAL: the grade reference is guilddef_1's POD Unk_GuildRef with an explicit FUN_1404eeaa0 call, so the
+// MS2-FUNCTIONAL: the grade reference is guilddef_1's POD Unk_GuildRef with an explicit ~Unk_PayloadPtr<CGuildGrade> call, so the
 // exe's extra EH state for its destructible type is missing.
 // @0x1413bf130
 void CGuildManager::FUN_1413bf130(CInPacket& packet)
@@ -1955,7 +1954,7 @@ void CGuildManager::FUN_1413bf130(CInPacket& packet)
     Unk_GuildRef current;
     FUN_1404d0860(&current, index);
     FUN_140d73aa0(FUN_14052bd00(0x398, FUN_1404d0af0(index)), 0, 0, CStringW(L""));
-    FUN_1404eeaa0(&current);
+    reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(&current)->~Unk_PayloadPtr();
 }
 MS2_REPLACE_METHOD(0x1413BF130, CGuildManager, FUN_1413bf130, 358, 0x5D4FD5ED);
 
@@ -2166,7 +2165,7 @@ void CGuildManager::FUN_1413c0630(CInPacket& packet)
 }
 MS2_REPLACE_METHOD(0x1413C0630, CGuildManager, FUN_1413c0630, 579, 0x092A4272);
 
-// MS2-FUNCTIONAL: the grade reference is guilddef_1's POD Unk_GuildRef with an explicit FUN_1404eeaa0 call, so the
+// MS2-FUNCTIONAL: the grade reference is guilddef_1's POD Unk_GuildRef with an explicit ~Unk_PayloadPtr<CGuildGrade> call, so the
 // exe's EH state for its destructible type is missing.
 // @0x1413c0880
 void CGuildManager::FUN_1413c0880(CInPacket& packet)
@@ -2191,7 +2190,7 @@ void CGuildManager::FUN_1413c0880(CInPacket& packet)
                 FUN_1412751b0(FUN_140632a60(0x3ae, name, FUN_1404f0b70(&grade)->name), 0xd);
             }
         }
-        FUN_1404eeaa0(&grade);
+        reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(&grade)->~Unk_PayloadPtr();
     }
     if (Unk_GuildDialog4e4f* dialog = FUN_14136f480(0x4e4f))
         dialog->FUN_141973b20(name);
@@ -2342,7 +2341,7 @@ void CGuildManager::FUN_1413c1840(CInPacket& packet)
 }
 MS2_REPLACE_METHOD(0x1413C1840, CGuildManager, FUN_1413c1840, 281, 0xD98EC819);
 
-// MS2-FUNCTIONAL: the grade reference is guilddef_1's POD Unk_GuildRef with an explicit FUN_1404eeaa0 call, so the
+// MS2-FUNCTIONAL: the grade reference is guilddef_1's POD Unk_GuildRef with an explicit ~Unk_PayloadPtr<CGuildGrade> call, so the
 // exe's EH state for its destructible type is missing.
 // @0x1413c1960
 void CGuildManager::FUN_1413c1960(CInPacket& packet)
@@ -2356,7 +2355,7 @@ void CGuildManager::FUN_1413c1960(CInPacket& packet)
     Unk_GuildRef current;
     FUN_1404d0860(&current, index);
     if (FUN_1404effe0(&current, 0)) {
-        FUN_1404eeaa0(&current);
+        reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(&current)->~Unk_PayloadPtr();
         return;
     }
     FUN_1404f0b70(&current)->FUN_1404c70f0(grade.grade, grade.name, grade.permissions);
@@ -2365,7 +2364,7 @@ void CGuildManager::FUN_1413c1960(CInPacket& packet)
     MS2Ptr<CGuildMember> me = FUN_1404cf9f0(FUN_1413c7c20());
     if (me.get() != 0 && me->fb4 == index)
         FUN_1412751b0(FUN_14052bd00(0x3a7, FUN_1413c7c20()), 0xd);
-    FUN_1404eeaa0(&current);
+    reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(&current)->~Unk_PayloadPtr();
 }
 MS2_REPLACE_METHOD(0x1413C1960, CGuildManager, FUN_1413c1960, 741, 0xB97EA301);
 

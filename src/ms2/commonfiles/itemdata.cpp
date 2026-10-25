@@ -72,7 +72,7 @@ private:
 
 // The row lookup of the PC bang table: a 24-byte handle and the node it resolves to.
 struct Unk_TableHandle { ~Unk_TableHandle(); unsigned long long unknown0, unknown8, unknown10; };   // dtor 0x1403b87a0
-class Unk_HandleNode { public: void* FUN_140541270(); void* unknown0; void* pValue; };
+class Unk_HandleNode { public: void* unknown0; void* pValue; };   // the row's MS2Ptr<CChangeBeautyData> (operator-> 0x140541270)
 class Unk_PcBangTable { public: Unk_HandleNode* FUN_1403b7c40(Unk_TableHandle* pOut, int nMode, int nId); };
 Unk_PcBangTable* FUN_140541580();
 extern Unk_PcBangTable* g_pPcBangTable;      // 0x143aaecf8
@@ -376,7 +376,7 @@ bool CItemData::Load(Unk_140165cf0* pElem)
         Unk_TableHandle handle;
         Unk_HandleNode* pNode = FUN_140541580()->FUN_1403b7c40(&handle, 3, nItemId);
         Unk_HandleNode* pRow = pNode;
-        property.flag09 = pRow->FUN_140541270() != 0;
+        property.flag09 = reinterpret_cast<CItemChangeBeautyTable::DataPtr*>(pRow)->operator->() != 0;
     }
     return true;
 }

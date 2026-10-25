@@ -37,11 +37,11 @@ size_t FUN_1404f4440(void* arr); Unk_GuildRef* FUN_1404f0720(void* arr,__int64 i
 void FUN_1404f86e0(void* arr); void FUN_1404f9b50(void* arr,unsigned count,unsigned grow);
 void FUN_1404f9730(void* arr,__int64 index,Unk_GuildRef* v); void FUN_1404f3110(void* arr,Unk_GuildRef* v);
 void FUN_1404ec4d0(Unk_GuildRef*,Unk_GuildRef*); void FUN_1404ec510(Unk_GuildRef*,int); void FUN_1404ec530(Unk_GuildRef*,CGuildGrade*);
-void FUN_1404eeaa0(Unk_GuildRef*); CGuildGrade* FUN_1404f0b70(Unk_GuildRef*); __int64 FUN_1404f0aa0(Unk_GuildRef*); char FUN_1404effe0(Unk_GuildRef*,int);
+CGuildGrade* FUN_1404f0b70(Unk_GuildRef*); __int64 FUN_1404f0aa0(Unk_GuildRef*); char FUN_1404effe0(Unk_GuildRef*,int);
 // CGuildSkill map (+0x238, key = skill id)
 unsigned char FUN_1404f4480(void* map); void* FUN_1404f4cd0(void* map); Unk_GuildRef* FUN_1404f4e90(void* map,void* pos); void FUN_1404f4660(void* map,void** pos);
 void FUN_1404f8920(void* map); void FUN_1404f98e0(void* map,int key,Unk_GuildRef* v); char FUN_1404f5f60(void* map,int key,Unk_GuildRef* out);
-void FUN_1404ec940(Unk_GuildRef*,CGuildSkill*); void FUN_1404ec920(Unk_GuildRef*,int); void FUN_1404ec8e0(Unk_GuildRef*,Unk_GuildRef*); void FUN_1404ec8b0(Unk_GuildRef*,Unk_GuildRef*);
+void FUN_1404ec940(Unk_GuildRef*,CGuildSkill*); void FUN_1404ec920(Unk_GuildRef*,int); void FUN_1404ec8b0(Unk_GuildRef*,Unk_GuildRef*);
 void FUN_1404eeb90(Unk_GuildRef*); CGuildSkill* FUN_1404f0bc0(Unk_GuildRef*); char FUN_1404f0120(Unk_GuildRef*,int);
 // CGuildCustomEvent map (+0x280, key = event id)
 unsigned char FUN_1404f4470(void* map); void* FUN_1404f4c60(void* map); Unk_GuildRef* FUN_1404f4e20(void* map,void* pos); void FUN_1404f4610(void* map,void** pos);
@@ -1311,7 +1311,7 @@ void CGuildInfo::FUN_1404ce8f0(COutputStream& out)
             if(FUN_1404f4440(&fa0)<=(unsigned __int64)index) break;
             Unk_GuildRef ref; FUN_1404ec4d0(&ref,FUN_1404f0720(&fa0,i));
             if(FUN_1404f0aa0(&ref)!=0) FUN_1404f0b70(&ref)->FUN_1404c7160(out);
-            FUN_1404eeaa0(&ref);
+            reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(&ref)->~Unk_PayloadPtr();
         }
     }
 }
@@ -1329,7 +1329,7 @@ void CGuildInfo::FUN_1404cea10(CInPacket& packet)
             Unk_GuildRef ref; FUN_1404ec530(&ref,grade);
             FUN_1404f0b70(&ref)->FUN_1404c71d0(packet);
             FUN_1404f9730(&fa0,i,&ref);
-            FUN_1404eeaa0(&ref);
+            reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(&ref)->~Unk_PayloadPtr();
         }
     }
 }
@@ -1662,9 +1662,9 @@ unsigned CGuildInfo::FUN_1404d06a0(CStringW name)
         MS2Ptr<CGuildMember> member=FUN_1404cf9f0(name);
         if(!(member==0)) {
             Unk_GuildRef grade; FUN_1404d0860(&grade,member->fb4);
-            if(FUN_1404f0aa0(&grade)==0) { FUN_1404eeaa0(&grade); return 0; }
+            if(FUN_1404f0aa0(&grade)==0) { reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(&grade)->~Unk_PayloadPtr(); return 0; }
             unsigned v=FUN_1404f0b70(&grade)->permissions;
-            FUN_1404eeaa0(&grade); return v;
+            reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(&grade)->~Unk_PayloadPtr(); return v;
         }
         return 0;
     }
@@ -1693,20 +1693,20 @@ Unk_GuildRef* CGuildInfo::FUN_1404d0860(Unk_GuildRef* ret,int index)
 int CGuildInfo::FUN_1404d0990(int index,Unk_GuildRef* grade)
 {
     if(Unk_LockGuard guard=lock) {
-        FUN_1404eeaa0(grade);
+        reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(grade)->~Unk_PayloadPtr();
         return 0;
     }
     Unk_GuildRef cur;
     char isNull=FUN_1404effe0(FUN_1404d0860(&cur,index),0);
-    FUN_1404eeaa0(&cur);
+    reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(&cur)->~Unk_PayloadPtr();
     if(isNull==0) {
         FUN_1404f9730(&fa0,index,grade);
     } else {
-        if(index!=FUN_1404d0580()+1) { FUN_1404eeaa0(grade); return 0; }
+        if(index!=FUN_1404d0580()+1) { reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(grade)->~Unk_PayloadPtr(); return 0; }
         FUN_1404f3110(&fa0,grade);
     }
     fc0=0;
-    FUN_1404eeaa0(grade);
+    reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(grade)->~Unk_PayloadPtr();
     return 1;
 }
 
@@ -1716,9 +1716,9 @@ CStringW CGuildInfo::FUN_1404d0af0(int index)
 {
     { if(Unk_LockGuard guard=lock) { __assume(0); } else {
         Unk_GuildRef grade; FUN_1404d0860(&grade,index);
-        if(FUN_1404f0aa0(&grade)==0) { CStringW empty(L""); FUN_1404eeaa0(&grade); return empty; }
+        if(FUN_1404f0aa0(&grade)==0) { CStringW empty(L""); reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(&grade)->~Unk_PayloadPtr(); return empty; }
         CStringW text(FUN_1404f0b70(&grade)->name);
-        FUN_1404eeaa0(&grade);
+        reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(&grade)->~Unk_PayloadPtr();
         return text;
     } }
 }
@@ -2445,7 +2445,7 @@ void CGuildInfo::FUN_1404d36d0()
                 else if(FUN_1404f0b70(&ref)->grade==5) { GSTR(0x39e,FUN_1404f0b70(&ref)->name); }
             }
             FUN_1404f3110(&fa0,&ref);
-            FUN_1404eeaa0(&ref);
+            reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(&ref)->~Unk_PayloadPtr();
         }
     }
 }
@@ -2469,7 +2469,7 @@ void CGuildInfo::FUN_1404d3b80()
         int* id=FUN_1404f0a10(&v1,i);
         FUN_1404f0bc0(&ref)->f18=*id;
         FUN_1404f0bc0(&ref)->f1c=1;
-        Unk_GuildRef copy; FUN_1404ec8e0(&copy,&ref);
+        Unk_GuildRef copy; ::new (&copy) Unk_PayloadPtr<CGuildSkill>(reinterpret_cast<const Unk_PayloadPtr<CGuildSkill>&>(ref));
         FUN_1404d25a0(&copy);
         FUN_1404eeb90(&ref);
     }
@@ -2482,7 +2482,7 @@ void CGuildInfo::FUN_1404d3b80()
         int* id=FUN_1404f0a10(&v2,i);
         FUN_1404f0bc0(&ref)->f18=*id;
         FUN_1404f0bc0(&ref)->f1c=1;
-        Unk_GuildRef copy; FUN_1404ec8e0(&copy,&ref);
+        Unk_GuildRef copy; ::new (&copy) Unk_PayloadPtr<CGuildSkill>(reinterpret_cast<const Unk_PayloadPtr<CGuildSkill>&>(ref));
         FUN_1404d25a0(&copy);
         FUN_1404eeb90(&ref);
     }
