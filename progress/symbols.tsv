@@ -208432,7 +208432,7 @@ FUN_1424df070	1424df070	func
 ?Construct@Class@AS3@GFx@Scaleform@@UEAAXAEAVValue@234@IPEBV5234@_N@Z	1424f0610	func
 ?Construct@Instance@AS3@GFx@Scaleform@@UEAAXAEAVValue@234@IPEBV5234@_N@Z	1424f0700	func
 ?Sfr33ThrowNotConstructor@AS3@GFx@Scaleform@@YAXPEBE@Z	1424f0700	func
-?Construct@VM@AS3@GFx@Scaleform@@QEAAXPEBDAEAVValue@234@IPEBV5234@_N@Z	1424f0750	func
+?Construct@VM@AS3@GFx@Scaleform@@QEAA_NPEBDAEAVValue@234@IPEBV5234@_N@Z	1424f0750	func
 ?ConstructCopy@?$ContextData_ImplMixin@VNodeData@TreeShape@Render@Scaleform@@V1TreeNode@34@@ContextImpl@Render@Scaleform@@UEBAPEAVEntryData@234@AEAVLinearHeap@34@@Z	1424f0990	func
 ?Sfr33ShapeDataConstructCopy@Render@Scaleform@@YAPEAVEntryData@ContextImpl@12@PEBVNodeData@TreeShape@12@AEAVLinearHeap@12@@Z	1424f0990	func
 ?ConstructTail@Traits@AS3@GFx@Scaleform@@QEBAXAEAVObject@234@@Z	1424f0a50	func
