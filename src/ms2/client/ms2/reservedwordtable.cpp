@@ -13,6 +13,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/placeholder/cnpc.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/cscripttable.h"
 #include "ms2/client/ms2/uirewardnotify.h"
@@ -113,7 +114,6 @@ __int64 FUN_1409ee260(Unk_RwOwnerRef* pRef);
 Unk_RwOwnerRec* FUN_14067e8c0(Unk_RwOwnerRef* pRef);
 void FUN_14067e620(Unk_RwOwnerRef* pRef);
 int FUN_14067db20(Unk_RwOwnerRec* pRec);
-CStringW FUN_141093310(void* pMaid);                        // the maid name
 struct Unk_RwUserRef { void* m_p0; void* m_p1; };
 class Unk_RwUserDb { public: };
 Unk_RwUserDb* FUN_1409eed10();
@@ -373,7 +373,7 @@ void CReservedWordTable::FUN_1416fb400(CStringW& str, void* pMaid)
         FUN_140680b80(&kMaid);
     }
     FUN_14067e620(&kOwner);
-    str.Replace(L"$MaidName$", FUN_141093310(pMaid));
+    str.Replace(L"$MaidName$", ((CNpc*)pMaid)->FUN_141093310());
     str.Replace(L"$MaidEndDate$", strEnd);
     str.Replace(L"$MaidExtendDate$", strExtend);
     CStringW strPassed = FUN_1408116a0(0x7a5, nPassed);
