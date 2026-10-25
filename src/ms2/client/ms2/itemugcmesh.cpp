@@ -1361,7 +1361,6 @@ bool FUN_14098dba0(void* pObj, unsigned short nMask);
 unsigned FUN_141427b60(void* pArray);
 void FUN_1414280a0(void* pPtr, void* pOld);
 void FUN_141428560(void* pNode);
-void* FUN_141427290(void* pMem, void* pArg);
 void* FUN_141427210(void* pIter);
 void* FUN_1412095f0(void* pSet);
 void** FUN_140553e80(void* pSet);
@@ -1483,13 +1482,6 @@ bool FUN_141427ff0(void* pFilter, unsigned short nId)      // MS2-FUNCTIONAL: ra
     return FUN_1414279b0((char*)pFilter + 0x10, &nId) != -1;
 }
 
-// @0x1414281e0
-void* FUN_1414281e0(void* pSelf, void* pArg)    // MS2-FUNCTIONAL: raw allocate + construct of a 0x18 byte node
-{
-    void* pMem = operator new(0x18);
-    return pMem ? FUN_141427290(pMem, pArg) : 0;
-}
-
 // @0x141428240
 bool FUN_141428240(void* pSet)                  // MS2-FUNCTIONAL: raw emptiness test
 {
@@ -1598,3 +1590,7 @@ CString FUN_1414218c0(const CString& strPath, const CString& strSuffix)
 MS2_REPLACE(0x1414218C0, FUN_1414218c0, 477, 0x1EC93043);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb21e0-0x142cb2230 .text$yd
+// sfr34: the bound-member DelegateImpl's clone (vfunc_1) and copy ctor replace the FUN_1414281e0 stand-in, which
+// copied from its second argument instead of this and called the copy ctor under a FUN_ twin.
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVCItemExtraData@@P81@EAA_NAEBVItemColorEx@@V?$MS2Ptr@VCItemData@@@@@Z@std@@@?$Delegate@$$A6A_NAEBVItemColorEx@@V?$MS2Ptr@VCItemData@@@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1414281e0
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVCItemExtraData@@P81@EAA_NAEBVItemColorEx@@V?$MS2Ptr@VCItemData@@@@@Z@std@@@?$Delegate@$$A6A_NAEBVItemColorEx@@V?$MS2Ptr@VCItemData@@@@@Z@@QEAA@AEBV01@@Z 0x141427290

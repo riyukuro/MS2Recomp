@@ -356,15 +356,11 @@ struct Unk_UisRef
     char m_pad[0x20];
 };
 Unk_UisRef* FUN_141aede30(Unk_UisRef* p, int n);
-UIDialog* FUN_1412784d0(Unk_UisRef* p);                        // get (checked)
 UIDialog* FUN_1412784f0(Unk_UisRef* p);                        // operator->
 void FUN_141278470(Unk_UisRef* p);                                  // release
 bool FUN_141aefc70(void* pMap, const int* pKey, Unk_UisRef* pOut);  // Lookup
 bool FUN_141aee4a0(Unk_UisRef* p);                                  // is null
 void FUN_141aeddf0(Unk_UisRef* pDst, Unk_UisRef* pSrc);             // copy
-void* FUN_141aef6d0(void* pMap);                                    // first position
-Unk_UisRef* FUN_141aef740(void* pMap, void* pos);                   // value at position
-void FUN_141aef370(void* pMap, void** pPos);                        // next position
 int FUN_1419244c0(UIDialog* p, int n);
 void FUN_141924680(UIDialog* p);
 void FUN_1419246f0(UIDialog* p);
@@ -1792,10 +1788,7 @@ void FUN_140cf10d0(void* p);
 extern char DAT_143d6eb58;
 unsigned FUN_14086d260();
 float FUN_141473230(void* p);   // frame delta (s), cvtsd2ss xmm0
-void* FUN_141aef6d0(void* pMap);
-void* FUN_1412784d0(void* pRef);
 int FUN_1419244c0(void* pDlg, int n);
-void FUN_141aef370(void* pMap, void* pPos);
 void FUN_141aee3b0(void* p, int n);
 void FUN_141e30f30(NiDebugVisualizationClick* p);
 bool FUN_1401d1320(void* pCache);
@@ -1863,11 +1856,11 @@ efd::AsyncResult CUIService::OnTick()
     }
     FUN_141aec690();
     FUN_141aec760(fDelta);
-    void* pos = FUN_141aef6d0(&m_mapDlg);
+    POSITION pos = m_mapDlg.GetStartPosition();
     while (pos != 0)
     {
-        void** pDlg = (void**)FUN_1412784d0(FUN_141aef740(&m_mapDlg, pos));
-        FUN_141aef370(&m_mapDlg, &pos);
+        UIDialog* pDlg = m_mapDlg.GetValueAt(pos);      // MS2Ptr<UIDialog>::operator UIDialog* 0x1412784d0
+        m_mapDlg.GetNext(pos);
         (void)pDlg;
     }
     if (m_spDebugClick != 0)

@@ -699,7 +699,7 @@ bool CubeMapInformationService::FUN_1410b9330(void* pArg, Vector3 pt, float fSte
     if (FUN_14029d220(fDy) > fLimit - fRadius)
         fDy = (fDy / FUN_14029d220(fDy)) * (fLimit - fRadius);
     *pnResult = FUN_1410d1820(pArg, *pnResult, pt, ptCur, &pFound);
-    if (pFound == 0 || FUN_1410d2130(pFound, *pnResult, fRadius, pOutPos, pOutRot) == 0) {
+    if (pFound == 0 || FUN_1410d2130(static_cast<Cube*>(pFound), *pnResult, fRadius, reinterpret_cast<float*>(pOutPos), pOutRot) == 0) {
         int nDir = *pnResult;
         switch (nDir) {
         case 0:
@@ -1910,10 +1910,12 @@ struct Unk_CMISHouseRef                                                         
     Unk_CMISHouseRef(void* p);                                                              // 0x14111ea00
     Unk_CMISHouseRef(void** pSlot);                                                         // 0x14111e9c0 (copy of a map slot)
     ~Unk_CMISHouseRef();                                                                    // 0x141123820
-    void* m_p;
+    void* m_0;
+    void* m_p;                                                                              // object at +8 (ctor 0x14111ea00)
     void* FUN_141128410();                                                                  // operator bool
     Unk_CMISHouseRec* FUN_1411284b0();                                                      // operator->
 };
+MS2_CHECK_SIZE(Unk_CMISHouseRef, 0x10);   // 8 bytes overflowed the locals the exe's ctors fill at +8
 // @0x1410c8470
 // MS2-FUNCTIONAL: unwind-state locals of the exe's result temporaries differ
 bool CubeMapInformationService::FUN_1410c8470(int nA, int nB, int* pState, __int64* pValue)
@@ -2336,7 +2338,6 @@ int CubeMapInformationService::FUN_1410c6980(Cube* pCube, int nKind, Unk_CMISIte
     return 1;
 }
 struct Unk_CMISSaleState { Unk_CMISSaleState(); char m_pad[0x28]; };                        // ctor 0x141123290
-void FUN_141126340(void** pSlot, Unk_CMISHouseRef& rRef);                                   // assign into a map slot
 // @0x1410c7a50
 // MS2-FUNCTIONAL: exe keeps the iterators and make_pair results in unwind-state temporaries
 void CubeMapInformationService::FUN_1410c7a50(int nA, int nB, int nState, __int64 nValue)
@@ -2345,7 +2346,8 @@ void CubeMapInformationService::FUN_1410c7a50(int nA, int nB, int nState, __int6
     Unk_CMISIter<263> itFind;
     if (FUN_141126fd0(FUN_141157f20(&fe8, &itFind, FUN_14111d460(nA, nB)), FUN_141151f70(&fe8, &itEnd)) != 0) {
         Unk_CMISHouseRef spNew(new Unk_CMISSaleState());
-        FUN_141126340(FUN_141128090(&fe8, FUN_14111d460(nA, nB)), spNew);
+        *reinterpret_cast<Unk_PayloadPtr<NoticeCubeInfo>*>(FUN_141128090(&fe8, FUN_14111d460(nA, nB))) =
+            reinterpret_cast<const Unk_PayloadPtr<NoticeCubeInfo>&>(spNew);      // 0x141126340 (ICF)
     }
     Unk_CMISHouseRef spHouse(FUN_141128090(&fe8, FUN_14111d460(nA, nB)));
     spHouse.FUN_1411284b0()->m_state = nState;

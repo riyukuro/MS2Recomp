@@ -592,13 +592,11 @@ Unk_EdMapPair* FUN_140bd47c0(Unk_EdMapPair* p);
 Unk_EdMapPair* FUN_140bd7d50(Unk_EdMapPair* p);
 void* FUN_140bd69d0(void* p);
 Unk_EdListVal* FUN_140bd6890(Unk_EdListVal* pList);
-Unk_EdListVal* FUN_140bd4780(Unk_EdListVal* pList);
 Unk_EdNode** FUN_140bd6e40(Unk_EdListVal* pList);
 Unk_EdNode** FUN_140bd6dc0(Unk_EdListVal* pList);
 void FUN_140bd6ee0(Unk_EdRef* pRef);
 void FUN_140bd6f70(Unk_EdRef* pRef, void* pUnused);
 Unk_EdAlc* FUN_140bd6930(Unk_EdAlc* pAlc);
-Unk_EdNode* FUN_140bd7200(Unk_EdAlc* pAlc, size_t nCount);
 void FUN_140bd4840(Unk_EdAlc* pAlc, void* pWhere, Unk_EdNode** ppValue);
 void FUN_140bd7140(Unk_EdListVal* pList);
 void FUN_140bd5c10(CPtred* p);
@@ -811,7 +809,8 @@ void FUN_140bd6ee0(Unk_EdRef* pRef)
 // MS2-FUNCTIONAL
 Unk_EdNode* FUN_140bd5d80(Unk_EdListVal* pList, Unk_EdNode* pNext, Unk_EdNode* pPrev)
 {
-    Unk_EdNode* pHead = FUN_140bd7200(FUN_140bd6a00(pList), 1);
+    Unk_EdNode* pHead = reinterpret_cast<Unk_EdNode*>(
+        reinterpret_cast<std::allocator<std::_List_node<UIChatEmoticonTab, void*> >*>(FUN_140bd6a00(pList))->allocate(1));   // 0x140bd7200
     if (pNext == 0)
     {
         pNext = pHead;
@@ -1146,7 +1145,8 @@ Unk_EdMapPair* FUN_140bd7d50(Unk_EdMapPair* p)
 // MS2-FUNCTIONAL
 Unk_EdIter* FUN_140bd7420(Unk_EdListVal* pList, Unk_EdIter* pOut) noexcept
 {
-    Unk_EdListVal* pVal = FUN_140bd4780(FUN_140bd6890(pList));
+    Unk_EdListVal* pVal = reinterpret_cast<Unk_EdListVal*>(
+        std::addressof(*reinterpret_cast<std::_List_val<std::_List_simple_types<UIChatEmoticonTab> >*>(FUN_140bd6890(pList))));   // 0x140bd4780
     FUN_140bd4d90(pOut, (*FUN_140bd6e40(pList))->m_pNext, pVal);
     return pOut;
 }
@@ -1155,7 +1155,8 @@ Unk_EdIter* FUN_140bd7420(Unk_EdListVal* pList, Unk_EdIter* pOut) noexcept
 // MS2-FUNCTIONAL
 Unk_EdIter* FUN_140bd7980(Unk_EdListVal* pList, Unk_EdIter* pOut) noexcept
 {
-    Unk_EdListVal* pVal = FUN_140bd4780(FUN_140bd6890(pList));
+    Unk_EdListVal* pVal = reinterpret_cast<Unk_EdListVal*>(
+        std::addressof(*reinterpret_cast<std::_List_val<std::_List_simple_types<UIChatEmoticonTab> >*>(FUN_140bd6890(pList))));   // 0x140bd4780
     FUN_140bd4d90(pOut, *FUN_140bd6e40(pList), pVal);
     return pOut;
 }

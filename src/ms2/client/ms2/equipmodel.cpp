@@ -1546,13 +1546,9 @@ void FUN_141207fd0(Unk_AttachDummy* p, const NiPoint3& pt)
 }
 
 // Out-of-range template glue, kept as plain functions.
-void* FUN_141208da0(void* p);
-void* FUN_141208dc0(void* p);
 void FUN_141205170(void* a, void* b);
 void FUN_141205570(void* p);
 bool FUN_141205640(void* a, void* b);
-void* FUN_141204a10(void* a, void* b, void* c, void* d, char e);
-void* FUN_1410431d0(void* p);
 
 // Pointer holder whose dynamic initializer is the exe's .text$di 0x1400e8c90 (ctor 0x1401cd100), so it runs from
 // this unit's .CRT$XCU slot.
@@ -1567,13 +1563,6 @@ extern Unk_1401cd100 DAT_143ad2288;
 void* FUN_141204e70(void* p)
 {
     return p;
-}
-
-// @0x141205000
-void* FUN_141205000(void* a, void* b, void* c, char d)
-{
-    FUN_141204a10(a, b, 0, FUN_1410431d0(c), d);
-    return b;
 }
 
 // @0x141205140
@@ -1593,12 +1582,6 @@ void FUN_141205550(void* p)
 bool FUN_141205690(void* a, void* b)
 {
     return !FUN_141205640(a, b);
-}
-
-// @0x141208de0
-void* FUN_141208de0(void* p)
-{
-    return FUN_141208da0(FUN_141208dc0(p));
 }
 
 MS2_REPLACE_METHOD(0x1411FFFC0, CEquipModel, vfunc_21, 16, 0x23B2047A);
@@ -1628,3 +1611,8 @@ MS2_REPLACE(0x141207FB0, FUN_141207fb0, 28, 0x2F87969E);
 MS2_REPLACE(0x141207FD0, FUN_141207fd0, 60, 0x5B49E748);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cad5b0-0x142cad6f0 .text$yd
+// sfr34: set<SmartPointer<NiAVObject>>::insert(const value_type&) and the non-const _Tree_comp_alloc::_Getal replace
+// the FUN_141205000 / FUN_141208de0 stand-ins, which called _Insert_nohint / _Get_first / _Get_second under FUN_ twins.
+// MS2-FUNCTIONAL 0x141205000: the exe passes the value through std::forward 0x1410431d0, which this toolchain's insert folds away
+// MS2-PIN: ??$insert@$0A@$0A@@?$_Tree@V?$_Tset_traits@V?$SmartPointer@VNiAVObject@@@efd@@U?$less@V?$SmartPointer@VNiAVObject@@@efd@@@std@@V?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@4@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@std@@@std@@_N@1@AEBV?$SmartPointer@VNiAVObject@@@efd@@@Z 0x141205000
+// MS2-PIN: ?_Getal@?$_Tree_comp_alloc@V?$_Tset_traits@V?$SmartPointer@VNiAVObject@@@efd@@U?$less@V?$SmartPointer@VNiAVObject@@@efd@@@std@@V?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@4@$0A@@std@@@std@@QEAAAEAV?$allocator@U?$_Tree_node@V?$SmartPointer@VNiAVObject@@@efd@@PEAX@std@@@2@XZ 0x141208de0

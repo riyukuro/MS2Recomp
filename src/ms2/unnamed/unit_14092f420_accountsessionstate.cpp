@@ -1229,7 +1229,6 @@ __int64& FUN_140867870(__int64& n);
 int& FUN_140162e40(int& n);
 const std::less<unsigned>& FUN_140180bc0(const std::less<unsigned>& cmp);
 Unk_TailZeroTag& FUN_140162f10(Unk_TailZeroTag& tag);
-const Unk_TailAlc& FUN_1409323a0(const Unk_TailAlc& alc);
 void FUN_1403564a0(Unk_TailVecBase* pBase);
 Unk_TailSetNode*& FUN_140932360(Unk_TailSetNode*& pNode);
 Unk_TailPair* FUN_1409323b0(Unk_TailPair* pPair);
@@ -1292,7 +1291,6 @@ void* FUN_14015f9d0(void* pBytes);
 void FUN_14015fc80(void* p, size_t nBytes);
 unsigned __int64 FUN_140935ac0(std::vector<Unk_TailPair>* pVec);
 Unk_TailPair** FUN_140934be0(std::vector<Unk_TailPair>* pVec);
-Unk_TailPair** FUN_140934c20(std::vector<Unk_TailPair>* pVec);
 void FUN_140935120();
 void* FUN_1409347e0(void* pThis);
 
@@ -1328,7 +1326,7 @@ Unk_TailVecBase* FUN_140931720(Unk_TailVecBase* pThis, bool, const std::less<uns
 // MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailVecBase* FUN_1409317c0(Unk_TailVecBase* pThis, bool, const Unk_TailAlc& alc)
 {
-    FUN_1409323a0(alc);
+    std::forward<const std::allocator<__int64>&>(reinterpret_cast<const std::allocator<__int64>&>(alc));   // 0x1409323a0 (ICF)
     FUN_1403564a0(pThis);
     return pThis;
 }
@@ -1814,7 +1812,8 @@ void FUN_140935580(Unk_TailAlc*, void* p, size_t n)
 // MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 bool FUN_1409355e0(std::vector<Unk_TailPair>* pThis)
 {
-    return FUN_140934be0(pThis) == FUN_140934c20(pThis);
+    const std::vector<Unk_TailPair>* pVec = pThis;
+    return pVec->_Myfirst() == pVec->_Mylast();     // 0x140934be0, 0x140934c20 (compares the pointers, not their slots)
 }
 
 // @0x140935690

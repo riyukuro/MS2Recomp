@@ -129,7 +129,6 @@ public:
     bool FUN_1410b9330(void* pArg, Vector3 pt, float fStep, Vector3* pOutPos, Vector3* pOutRot, int* pnResult, void** ppHit);
     int FUN_1410d1320(void* pArg, Vector3 pt, float fStep, Vector3* pOut);
     int FUN_1410d1820(void* pArg, int nDir, Vector3 pt, Vector3 ptCur, void** ppFound);
-    int FUN_1410d2130(void* pFound, int nDir, float fRadius, Vector3* pOutPos, Vector3* pOutRot);
     Cube* FUN_1410b9850(int nItemId);
     int FUN_1410b9950(int nCategory);
     int FUN_1410b9a50();
