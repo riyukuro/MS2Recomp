@@ -1785,18 +1785,10 @@ void Unk_AcAnimSvc::FUN_1409fad80(const Unk_GoModelKey& id, bool bFlag)
 struct Unk_AvBox { void* m_pad_00; void* m_p; };
 struct Unk_AvPtrArray { void** m_pData; unsigned __int64 m_nSize; unsigned __int64 m_nAlloc; int m_nGrowBy; };
 void FUN_1405a93d0(NiRefObject* p);
-void FUN_140978c40(void* p);
-void FUN_1409f8240(void* p);
-void FUN_1409f83e0(Unk_AvBox* p);
 void FUN_1401b6ac0(Unk_AvBox* p);
-char FUN_1409f7cd0(Unk_AvPtrArray* p, unsigned __int64 n);
 void FUN_14015b310(void* p, unsigned __int64 n);
 void* FUN_140159860(unsigned __int64 n, void* p);
 void FUN_140159b70(unsigned nHr);
-void FUN_1409f8180(Unk_AvBox* p);
-void FUN_1409f81b0(Unk_AvBox* p);
-void FUN_1409f82a0(Unk_AvBox* p, int n);
-void FUN_1409f82d0(Unk_AvBox* p, int n);
 void FUN_1409f7480(NiRefObject** pp);
 void FUN_1409f7b90(void** pData, unsigned __int64 n);
 
@@ -1825,60 +1817,6 @@ void* FUN_1409f7950(Unk_AvBox* p) { return p->m_p; }
 // @0x1409f7c70
 void* FUN_1409f7c70(Unk_AvBox* p) { return p->m_p; }
 
-// @0x1409f71b0
-Unk_AvBox* FUN_1409f71b0(Unk_AvBox* p, Unk_AvBox* pSrc)
-{
-    p->m_p = pSrc->m_p;
-    FUN_1409f8180(p);
-    return p;
-}
-
-// @0x1409f71f0
-Unk_AvBox* FUN_1409f71f0(Unk_AvBox* p, void* pRaw)
-{
-    p->m_p = pRaw;
-    FUN_1409f8180(p);
-    return p;
-}
-
-// @0x1409f7220
-Unk_AvBox* FUN_1409f7220(Unk_AvBox* p, Unk_AvBox* pSrc)
-{
-    p->m_p = pSrc->m_p;
-    FUN_1409f81b0(p);
-    return p;
-}
-
-// @0x1409f8180
-void FUN_1409f8180(Unk_AvBox* p)
-{
-    if (p->m_p != 0)
-    {
-        FUN_1409f82a0(p, 0);
-    }
-}
-
-// @0x1409f81b0
-void FUN_1409f81b0(Unk_AvBox* p)
-{
-    if (p->m_p != 0)
-    {
-        FUN_1409f82d0(p, 0);
-    }
-}
-
-// @0x1409f82a0
-void FUN_1409f82a0(Unk_AvBox* p, int)
-{
-    FUN_140978c40(p->m_p);
-}
-
-// @0x1409f82d0
-void FUN_1409f82d0(Unk_AvBox* p, int)
-{
-    FUN_1409f8240(p->m_p);
-}
-
 // @0x1409f90f0
 bool FUN_1409f90f0(Unk_AvBox* p, void* pOther)
 {
@@ -1889,12 +1827,6 @@ bool FUN_1409f90f0(Unk_AvBox* p, void* pOther)
 void* FUN_1409f72e0(void* p)
 {
     return p;
-}
-
-// @0x1409f7540
-void FUN_1409f7540(Unk_AvBox* p)
-{
-    FUN_1409f83e0(p);
 }
 
 // @0x1409fac60
@@ -1974,23 +1906,6 @@ void Unk_AvPtrArrayDtor(Unk_AvPtrArray* p)
     }
 }
 
-// @0x1409f7aa0
-unsigned __int64 FUN_1409f7aa0(Unk_AvPtrArray* p, void** ppElem)
-{
-    unsigned __int64 nIdx = p->m_nSize;
-    if (p->m_nAlloc <= nIdx)
-    {
-        if (FUN_1409f7cd0(p, nIdx + 1) == 0)
-        {
-            FUN_140159b70(0x8007000e);
-        }
-    }
-    void** pSlot = static_cast<void**>(FUN_140159860(8, p->m_pData + nIdx));
-    *pSlot = *ppElem;
-    p->m_nSize++;
-    return nIdx;
-}
-
 // @0x1409f6fc0
 Unk_AvPtrArray* Unk_AvPtrArrayCtor(Unk_AvPtrArray* p)
 {
@@ -2011,3 +1926,11 @@ Unk_RideeRow* Unk_RideePtr::get() const
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9eae0-0x142c9ec70 .text$yd
+// sfr34: the MS2Ptr / Unk_PayloadPtr / CAtlArray<NiNode*> instantiations this unit defines replace the unit-local
+// Unk_AvBox / Unk_AvPtrArray stand-ins that sat at the same VAs (the copy/raw ctors 0x1409f71b0 / 71f0 / 7220 and
+// Add 0x1409f7aa0 pair by name; AddRef / AddRefImpl and the StateSkillData dtor are pinned).
+// MS2-PIN: ?AddRef@?$MS2Ptr@VCSkillRecord@@@@AEBAXXZ 0x1409f8180
+// MS2-PIN: ?AddRef@?$MS2Ptr@VUnk_PCArg125@@@@AEBAXXZ 0x1409f81b0
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCSkillRecord@@@@AEBAXPEAX@Z 0x1409f82a0
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VUnk_PCArg125@@@@AEBAXPEAX@Z 0x1409f82d0
+// MS2-PIN: ??1?$Unk_PayloadPtr@VStateSkillData@@@@QEAA@XZ 0x1409f7540
