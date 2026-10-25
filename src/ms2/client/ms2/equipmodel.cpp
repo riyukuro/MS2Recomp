@@ -905,10 +905,8 @@ void FUN_141201cb0(CEquipModel* self, std::set<NiAVObjectPtr>& kSet)
     kSet = self->m_unk_f8;
     if (((Unk_PartInfo*)self->m_unk_20)->m_n20 == 0) {
         NiAVObject* pRoot = (NiAVObject*)self->vfunc_14();
-        if (pRoot != 0) {
-            NiAVObjectPtr sp(pRoot);
-            kSet.insert(sp);
-        }
+        if (pRoot != 0)
+            kSet.insert(NiAVObjectPtr(pRoot));   // rvalue: the exe calls insert(value_type&&) 0x141205000
     }
 }
 
@@ -1611,8 +1609,8 @@ MS2_REPLACE(0x141207FB0, FUN_141207fb0, 28, 0x2F87969E);
 MS2_REPLACE(0x141207FD0, FUN_141207fd0, 60, 0x5B49E748);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cad5b0-0x142cad6f0 .text$yd
-// sfr34: set<SmartPointer<NiAVObject>>::insert(const value_type&) and the non-const _Tree_comp_alloc::_Getal replace
+// sfr34: set<SmartPointer<NiAVObject>>::insert(value_type&&) and the non-const _Tree_comp_alloc::_Getal replace
 // the FUN_141205000 / FUN_141208de0 stand-ins, which called _Insert_nohint / _Get_first / _Get_second under FUN_ twins.
 // MS2-FUNCTIONAL 0x141205000: the exe passes the value through std::forward 0x1410431d0, which this toolchain's insert folds away
-// MS2-PIN: ??$insert@$0A@$0A@@?$_Tree@V?$_Tset_traits@V?$SmartPointer@VNiAVObject@@@efd@@U?$less@V?$SmartPointer@VNiAVObject@@@efd@@@std@@V?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@4@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@std@@@std@@_N@1@AEBV?$SmartPointer@VNiAVObject@@@efd@@@Z 0x141205000
+// MS2-PIN: ??$insert@$0A@$0A@@?$_Tree@V?$_Tset_traits@V?$SmartPointer@VNiAVObject@@@efd@@U?$less@V?$SmartPointer@VNiAVObject@@@efd@@@std@@V?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@4@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@std@@@std@@_N@1@$$QEAV?$SmartPointer@VNiAVObject@@@efd@@@Z 0x141205000
 // MS2-PIN: ?_Getal@?$_Tree_comp_alloc@V?$_Tset_traits@V?$SmartPointer@VNiAVObject@@@efd@@U?$less@V?$SmartPointer@VNiAVObject@@@efd@@@std@@V?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@4@$0A@@std@@@std@@QEAAAEAV?$allocator@U?$_Tree_node@V?$SmartPointer@VNiAVObject@@@efd@@PEAX@std@@@2@XZ 0x141208de0
