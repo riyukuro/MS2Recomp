@@ -14,6 +14,7 @@
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/placeholder/cnpc.h"
+#include "ms2/commonfiles/npcdata.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/cscripttable.h"
 #include "ms2/client/ms2/uirewardnotify.h"
@@ -86,7 +87,6 @@ struct Unk_RwViewRef { void* m_p0; void* m_p1; };
 void FUN_1406cd330(Unk_RwViewRef* pRef, int nNpcId);   // the common npc row (returned through pRef)
 __int64 FUN_140729ad0(Unk_RwViewRef* pRef);
 Unk_RwView* FUN_14035eb90(Unk_RwViewRef* pRef);
-void FUN_14035e5b0(Unk_RwViewRef* pRef);
 
 // An item reference (smart pointer to the item data).
 struct Unk_RwItemRef { void* m_p0; void* m_p1; };
@@ -1014,7 +1014,7 @@ static void Rw_NpcLink(unsigned int nId, CStringW strText, CStringW& strOut)
             strOut = StringFormat(L"<a href='event:webPage,{0}'><FONT color='#5c2b00'><u>{1}</u></FONT></a>",
                                   FUN_14016a730((const char*)strUrl, 0), strText);
     }
-    FUN_14035e5b0(&kView);
+    reinterpret_cast<MS2Ptr<CNpcData>*>(&kView)->~MS2Ptr<CNpcData>();
 }
 
 // @0x1416fea90
