@@ -160,7 +160,7 @@ __int64 FUN_14028d0e0();                                     // the current time
 PCBase* FUN_140974230(PCBase* pPC);                          // the player of an actor
 ClonePC* FUN_1405a7e30(PCBase* pPC);                         // the mannequin of a player
 CFishingGuideObject* FUN_1416625e0(PCBase* pPC);             // the fishing guide object of a player
-MS2Ptr<AdditionalCli> FUN_14096fd30(Unk_PCBaseBuffs* pBuffs, int n);
+class Unk_PCBaseBuffs { public: MS2Ptr<AdditionalCli> FUN_14096fd30(int nKind); };   // AdditionalCliList (FUN_1416749a0)
 Vector3 FUN_140a0b080(const NiPoint3& kA, const NiPoint3& kB, const Vector3& kC);
 void FUN_140b86230(const efd::Point3& kDir, NiMatrix3& kOut);   // rotation matrix of a direction
 Unk_FsCell FUN_1408a1430(Vector3 k);                 // the grid cell of a point
@@ -398,7 +398,7 @@ void StateFishing::EndOfSequence(NiActorManager* pkManager, unsigned int eSequen
     bool bLeave = true;
     if (FsFishMgr()->FUN_140ce0cb0() == 0)
     {
-        MS2Ptr<AdditionalCli> spCli = FUN_14096fd30(pMy->FUN_1416749a0(), 1);
+        MS2Ptr<AdditionalCli> spCli = pMy->FUN_1416749a0()->FUN_14096fd30(1);
         bLeave = spCli.get() != 0;
     }
     if (bLeave)
