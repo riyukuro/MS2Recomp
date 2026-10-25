@@ -1160,3 +1160,13 @@ unsigned long long FUN_1416032c0(void* p) { return FUN_141601330(p) + 0x10; }
 unsigned long long FUN_1416032e0(void* p) { return FUN_141601350(p) + 0x10; }
 // @0x141603300
 unsigned long long FUN_141603300(void* p) { return FUN_141601370(p) + 0x10; }
+// @0x141603320
+unsigned long long FUN_141603320(void* p) { return FUN_141601390(p) + 0x10; }
+// @0x141603340
+unsigned long long FUN_141603340(void* p) { return FUN_1416013b0(p) + 0x10; }
+// @0x141603360
+unsigned long long FUN_141603360(void* p) { return FUN_1416013d0(p) + 0x10; }
+// @0x141603380
+unsigned long long FUN_141603380(void* p) { return FUN_1416013f0(p) + 0x10; }
+// @0x1416033a0
+unsigned long long FUN_1416033a0(void* p) { return FUN_141601410(p) + 0x10; }
