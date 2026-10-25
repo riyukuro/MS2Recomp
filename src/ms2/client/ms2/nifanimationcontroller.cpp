@@ -8,6 +8,7 @@
 #include "hook/ms2hook.h"
 #include <NiAVObject.h>
 #include <NiMultiTargetTransformController.h>
+#include <NiTimeController.h>
 #include <string.h>
 #include <errno.h>
 #pragma function(memset, memcpy)
@@ -60,7 +61,6 @@ void* FUN_1413f98b0();
 void* FUN_1409670f0();
 void* FUN_1411cf440(void* a, void* id);
 void* FUN_141fff400(void* svc, void* ent);   // ecr::SceneGraphService::GetSceneGraphFromEntity
-void FUN_141d24c70(void* o);
 void FUN_141d24a50(void* o);
 extern char DAT_143af8a00;
 extern char DAT_143af89f0;
@@ -243,7 +243,7 @@ void FUN_141545250(void* entityId, int mode)
             void* n = FUN_141fff400(sg, ent);
             if (n != 0) {
                 if (mode == 0)
-                    FUN_141d24c70(n);
+                    NiTimeController::StopAnimations(static_cast<NiObjectNET*>(n));
                 else
                     FUN_141d24a50(n);
             }
