@@ -1329,10 +1329,81 @@ int FUN_1415c9fa0(void* self, const CNMChatMessage& message)
 
 // MS2-FUNCTIONAL 0x1415ca030: constructs the game-log initialize request from its three recovered strings and dispatches it.
 // @0x1415ca030
-int FUN_1415ca030(const char* gameName, const char* userName, const char* characterName)
+void FUN_1415ca030(const char* gameName, const char* userName, const char* characterName)
 {
     CNMGameLogInitializeFunc request(gameName, userName, characterName);
-    return FUN_1415cb440(FUN_1415fa260(), &request);
+    FUN_1415cb440(FUN_1415fa260(), &request);
+}
+
+// MS2-FUNCTIONAL 0x1415c4540: applies the requested locale after the manager accepts it and reports the recovered error outputs.
+// @0x1415c4540
+extern int FUN_1415cb6d0(void* manager, int locale, int sublocale, int* error, int* detail);
+extern "C" int FUN_1415c4540(void* self, int locale, int sublocale, int error, int detail)
+{
+    void* manager = FUN_1415fa260();
+    auto* pError = reinterpret_cast<int*>(static_cast<std::uintptr_t>(error));
+    auto* pDetail = reinterpret_cast<int*>(static_cast<std::uintptr_t>(detail));
+    if (!FUN_1415cb6d0(manager, locale, sublocale, pError, pDetail))
+        return 0;
+    CNMSetLocaleFunc request(locale, sublocale);
+    if (!FUN_1415cb440(FUN_1415fa260(), &request))
+    {
+        if (pError) *pError = 0xbb9;
+        if (pDetail) *pDetail = 0;
+        return 0;
+    }
+    return 1;
+}
+
+// These two wrappers perform the ordered byte-map searches shown in the exe's iterator loops.
+extern void FUN_1415e5d30(void* iterator);
+extern void* FUN_141607780(void* self, void* iterator);
+extern void* FUN_1416099b0(void* self, void* iterator);
+extern bool FUN_1415f3280(void* first, void* last);
+extern void* FUN_1415f3a10(void* iterator);
+extern void FUN_1415f3f30(void* iterator);
+// MS2-FUNCTIONAL 0x1415caaa0: scans the ordered map until its mapped object's virtual key matches, returning that object.
+// @0x1415caaa0
+void* FUN_1415caaa0(void* self, unsigned int wanted)
+{
+    alignas(8) unsigned char first[0x20]{};
+    alignas(8) unsigned char last[0x20]{};
+    FUN_1415e5d30(first);
+    FUN_1415e5d30(last);
+    *reinterpret_cast<void**>(first) = *static_cast<void**>(FUN_141607780(self, first));
+    *reinterpret_cast<void**>(last) = *static_cast<void**>(FUN_1416099b0(self, last));
+    while (FUN_1415f3280(first, last))
+    {
+        auto* node = FUN_1415f3a10(first);
+        void* value = *reinterpret_cast<void**>(static_cast<unsigned char*>(node) + 8);
+        auto** vtable = *reinterpret_cast<void***>(value);
+        using KeyMethod = int(__fastcall*)(void*);
+        if (reinterpret_cast<KeyMethod>(vtable[4])(value) == static_cast<int>(wanted))
+            return value;
+        FUN_1415f3f30(first);
+    }
+    return nullptr;
+}
+
+extern void FUN_14160a570(void* self, void* iterator, void* key);
+// MS2-FUNCTIONAL 0x1415cab60: finds the entry associated with a one-byte key and returns its mapped object or null.
+// @0x1415cab60
+void* FUN_1415cab60(void* self, unsigned char key)
+{
+    alignas(8) unsigned char iterator[0x20]{};
+    alignas(8) unsigned char end[0x20]{};
+    alignas(8) unsigned char lookupKey[0x20]{};
+    lookupKey[0] = key;
+    FUN_14160a570(self, iterator, lookupKey);
+    FUN_1416099b0(self, end);
+    if (!FUN_1415f3280(iterator, end))
+        return nullptr;
+    auto* node = FUN_1415f3a10(iterator);
+    return *reinterpret_cast<void**>(static_cast<unsigned char*>(node) + 8);
 }
 
 // MS2-PIN: ?FUN_1415c5ed0@@YAHXZ 0x1415c5ed0
+// MS2-PIN: ?FUN_1415c4540@@YAHPEAXHHHH@Z 0x1415c4540
+// MS2-PIN: ?FUN_1415caaa0@@YAPEAXPEAXI@Z 0x1415caaa0
+// MS2-PIN: ?FUN_1415cab60@@YAPEAXPEAXE@Z 0x1415cab60
+// MS2-PIN: ?FUN_1415ca030@@YAXPEBD00@Z 0x1415ca030
