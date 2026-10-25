@@ -782,7 +782,7 @@ void FUN_1408559b0()
         for (POSITION pos = s_npcTalks.GetStartPosition(); pos != 0; s_npcTalks.GetNext(pos))
         {
             int npcId = s_npcTalks.GetKeyAt(pos);
-            TalkArrayPtr list = s_npcTalks.GetValueAt(pos);
+            TalkArrayPtr list = static_cast<const TalkArrayPtr&>(s_npcTalks.GetValueAt(pos));
             for (size_t i = 0; i < (*list.operator->()).GetCount(); i++)
             {
                 TalkPtr script = (*list.operator->())[i];
@@ -793,7 +793,7 @@ void FUN_1408559b0()
         for (POSITION pos = s_questTalks.GetStartPosition(); pos != 0; s_questTalks.GetNext(pos))
         {
             int questId = s_questTalks.GetKeyAt(pos);
-            TalkIdMapPtr talks = s_questTalks.GetValueAt(pos);
+            TalkIdMapPtr talks = static_cast<const TalkIdMapPtr&>(s_questTalks.GetValueAt(pos));
             for (POSITION inner = talks->GetStartPosition(); inner != 0; talks->GetNext(inner))
             {
                 TalkPtr script = talks->GetValueAt(inner);
@@ -904,3 +904,6 @@ int FUN_140857990(TalkPtr script, unsigned char nFlags, int nNpcId, int nPage)
 // Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
 // MS2-RANGE: 0x142c9c540-0x142c9c560 .text$yd
 // MS2-RANGE: 0x142c9c580-0x142c9c5a0 .text$yd
+
+// Retain the original move-like copy COMDAT after LoadTalkScripts uses the const copy.
+template TPtrValue<TalkIdMap>::TPtrValue(TPtrValue<TalkIdMap>&);
