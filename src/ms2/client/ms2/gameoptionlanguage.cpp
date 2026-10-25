@@ -71,7 +71,6 @@ struct Unk_LgDialog
 };
 bool FUN_140a467d0(const MS2Ptr<AScript>& kScript);             // has the AS object been released
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
-Scaleform::GFx::Value FUN_140a46640(AScript* pObj, CString name, int nIndex);   // getTabChild
 bool FUN_1407cce10(const Scaleform::GFx::Value* v);
 int FUN_1409c1750(const Scaleform::GFx::Value& v);              // the value as an int
 void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member
@@ -472,7 +471,7 @@ RLg Unk_LgDialog::FUN_140cfcf10(CString name, int nIndex)
     // destroyed would release the handle the caller receives.
     if (FUN_140a467d0(m_root) == 0)
     {
-        Scaleform::GFx::Value child = FUN_140a46640(FUN_1409ee290(&m_root), name, nIndex);
+        Scaleform::GFx::Value child = FUN_1409ee290(&m_root)->Invoke("getTabChild", name, nIndex);
         if (FUN_1407cce10(&child))
         {
             RLg list;

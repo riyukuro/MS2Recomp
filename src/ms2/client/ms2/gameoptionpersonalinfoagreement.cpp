@@ -4,9 +4,9 @@
 // MS2-RANGE: 0x1400c3670-0x1400c36d0 .text$di
 // MS2-RANGE: 0x140a45d40-0x140a46ab0 .text$mn
 // MS2-PIN: ??_GCGameOptionPersonalInfoAgreement@@UEAAPEAXI@Z 0x140a46820
-// MS2-PIN: ?FUN_140a46640@@YA?AVValue@GFx@Scaleform@@PEAVAScript@@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@Z 0x140a46640
+// MS2-PIN: ?Invoke@AScript@@QEAA?AVValue@GFx@Scaleform@@PEBDV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@Z 0x140a46640
 // MS2-PIN: ?FUN_140a463d0@@YA?AV?$MS2Ptr@VUnk_PiCheck@@@@HAEBVValue@GFx@Scaleform@@@Z 0x140a463d0
-// MS2-PIN: ?FUN_140a46480@@YA?AV?$MS2Ptr@VUnk_PiCheck@@@@PEAUUnk_PiDialog@@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@Z 0x140a46480
+// MS2-PIN: ?FUN_140a46480@Unk_PiDialog@@QEAA?AV?$MS2Ptr@VUnk_PiCheck@@@@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@Z 0x140a46480
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\gameoptionpersonalinfoagreement.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "gameoptionpersonalinfoagreement.h"
@@ -61,23 +61,28 @@ bool FUN_141261f00(void* p, int n);
 void FUN_141261e40(Unk_PiAgreeState* p, int a, int b);
 CString* FUN_140298f80(void* p);
 
-// View of the option dialog: the AS root at +0x30.
+// View of the option dialog: an id at +0x28, the AS root at +0x30.
 struct Unk_PiDialog
 {
-    char m_pad[0x30];
+    // The check box child of a tab by name (a member: this in rcx, the return slot in rdx).
+    MS2Ptr<Unk_PiCheck> FUN_140a46480(CString name, int nIndex);
+    char m_pad[0x28];
+    int m_nDialogId;    // +0x28, handed to each check box
+    char m_pad2c[4];
     MS2Ptr<AScript> m_root;
 };
 void FUN_1422bce70(Scaleform::GFx::Value* v, const char* s);
 void FUN_1422bccb0(Scaleform::GFx::Value* v, int n);
 bool FUN_1407cce10(const Scaleform::GFx::Value* v);
 
-Scaleform::GFx::Value FUN_140a46640(AScript* pObj, CString name, int nIndex)   // 0x140a46640
+// AScript::Invoke(method, CString, int) (inline COMDAT; this in rcx, the return slot in rdx, the method name in r8).
+Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString name, int nIndex)   // 0x140a46640
 {
     ASArgList args;
     args.FUN_1409b2800(2);
     FUN_1422bce70(args.FUN_1409b1f70(0), (const char*)name);
     FUN_1422bccb0(args.FUN_1409b1f70(1), nIndex);
-    return pObj->FUN_1422bb8f0("getTabChild", args);
+    return FUN_1422bb8f0(szMethod, args);
 }
 
 MS2Ptr<Unk_PiCheck> FUN_140a463d0(int nId, const Scaleform::GFx::Value& v)    // 0x140a463d0
@@ -89,14 +94,14 @@ MS2Ptr<Unk_PiCheck> FUN_140a463d0(int nId, const Scaleform::GFx::Value& v)    //
     return res;
 }
 
-MS2Ptr<Unk_PiCheck> FUN_140a46480(Unk_PiDialog* pDlg, CString name, int nIndex)   // 0x140a46480
+MS2Ptr<Unk_PiCheck> Unk_PiDialog::FUN_140a46480(CString name, int nIndex)   // 0x140a46480
 {
-    if (!pDlg->m_root.IsNull())
+    if (!m_root.IsNull())
     {
-        Scaleform::GFx::Value child = FUN_140a46640(pDlg->m_root.operator->(), name, nIndex);
+        Scaleform::GFx::Value child = m_root->Invoke("getTabChild", name, nIndex);
         if (FUN_1407cce10(&child))
         {
-            MS2Ptr<Unk_PiCheck> check = FUN_140a463d0(*(int*)((char*)pDlg + 0x28), child);
+            MS2Ptr<Unk_PiCheck> check = FUN_140a463d0(m_nDialogId, child);
             if (!check.IsNull())
                 return check;
         }
@@ -137,11 +142,11 @@ int CGameOptionPersonalInfoAgreement::vfunc_5(const char* pszName, void* pArg, i
 // MS2-FUNCTIONAL: MS2Ptr/CString temporaries and EH states differ
 void CGameOptionPersonalInfoAgreement::vfunc_6()   // @0x140a45ed0
 {
-    MS2Ptr<Unk_PiCheck> agree = FUN_140a46480((Unk_PiDialog*)GetOptionDialog(), CString("m_sendLogAgree"), -1);
+    MS2Ptr<Unk_PiCheck> agree = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogAgree"), -1);
     if (agree.get() != 0)
         agree->FUN_1422ce090(m_state.m_bAgree);
     agree = 0;
-    MS2Ptr<Unk_PiCheck> deny = FUN_140a46480((Unk_PiDialog*)GetOptionDialog(), CString("m_sendLogDeny"), -1);
+    MS2Ptr<Unk_PiCheck> deny = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogDeny"), -1);
     if (deny.get() != 0)
         deny->FUN_1422ce090(m_state.m_bAgree == 0);
 }
@@ -149,14 +154,14 @@ void CGameOptionPersonalInfoAgreement::vfunc_6()   // @0x140a45ed0
 // MS2-FUNCTIONAL: MS2Ptr/CString temporaries and EH states differ
 void CGameOptionPersonalInfoAgreement::vfunc_7()   // @0x140a46040
 {
-    MS2Ptr<Unk_PiCheck> agree = FUN_140a46480((Unk_PiDialog*)GetOptionDialog(), CString("m_sendLogAgree"), -1);
+    MS2Ptr<Unk_PiCheck> agree = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogAgree"), -1);
     if (agree.get() != 0)
     {
         if (agree->FUN_1422ce0e0())
             m_state.m_bAgree = true;
     }
     agree = 0;
-    MS2Ptr<Unk_PiCheck> deny = FUN_140a46480((Unk_PiDialog*)GetOptionDialog(), CString("m_sendLogDeny"), -1);
+    MS2Ptr<Unk_PiCheck> deny = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogDeny"), -1);
     if (deny.get() != 0)
     {
         if (deny->FUN_1422ce0e0())
