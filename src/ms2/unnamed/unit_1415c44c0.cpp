@@ -1576,6 +1576,36 @@ int FUN_1415c7500(void*, int type, int index, void* output)
     return ok;
 }
 
+
+extern void FUN_1415e50b0(void*, void*, const void*);
+// MS2-FUNCTIONAL: inserts the supplied interface pointer paired with its virtual enabled flag.
+// @0x1415caa40
+void FUN_1415caa40(void* map, void* item)
+{
+    if (!item) return;
+    void** vtable = *reinterpret_cast<void***>(item);
+    using Enabled = unsigned char(__fastcall*)(void*);
+    struct Entry { void* item; unsigned char enabled; };
+    Entry value{item, reinterpret_cast<Enabled>(vtable[3])(item)};
+    alignas(8) unsigned char inserted[0x20]{};
+    FUN_1415e50b0(map, inserted, &value);
+}
+
+extern void FUN_1415e89b0(void*, const void*);
+extern int FUN_1415f3a00(void*);
+extern void FUN_141609160(void*);
+extern void FUN_14156a080(void*);
+// MS2-FUNCTIONAL: initializes a temporary BSTR from the object's text and clears its trailing list when nonempty.
+// @0x1415c9040
+void FUN_1415c9040(void* object)
+{
+    alignas(8) unsigned char text[16]{};
+    FUN_1415e89b0(text, static_cast<unsigned char*>(object) + 8);
+    if (FUN_1415f3a00(text))
+        FUN_141609160(static_cast<unsigned char*>(object) + 0x1d8);
+    FUN_14156a080(text);
+}
+
 // MS2-PIN: ?FUN_1415c5ed0@@YAHXZ 0x1415c5ed0
 // MS2-PIN: ?FUN_1415c4540@@YAHPEAXHHHH@Z 0x1415c4540
 // MS2-PIN: ?FUN_1415caaa0@@YAPEAXPEAXI@Z 0x1415caaa0
@@ -1600,3 +1630,5 @@ int FUN_1415c7500(void*, int type, int index, void* output)
 // MS2-PIN: ?FUN_1415c5400@@YAIPEAX_JH0@Z 0x1415c5400
 // MS2-PIN: ?FUN_1415c54f0@@YA_NPEAX0H@Z 0x1415c54f0
 // MS2-PIN: ?FUN_1415c7500@@YAHPEAXHH0@Z 0x1415c7500
+// MS2-PIN: ?FUN_1415caa40@@YAXPEAX0@Z 0x1415caa40
+// MS2-PIN: ?FUN_1415c9040@@YAXPEAX@Z 0x1415c9040
