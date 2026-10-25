@@ -112,6 +112,7 @@ bool UIMeratMarketCommon::WeaponType::FUN_140ebb780(int nGender, int nJob, MS2Pt
 
 // ---- more unit-local declarations ----
 #include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/cmeratmarketman.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/mstime.h"
 #include "ms2/client/ms2/cmeratmarketbuy.h"
@@ -811,7 +812,6 @@ int FUN_1406a59f0(CDBPremiumProduct* pProduct, int nJob);
 void FUN_140222a70(int nMask, ATL::CAtlArray<int>& out);
 int FUN_140644bb0(void* p, int nJob);
 void* FUN_1401d7a50();
-CStringW FUN_141811980(CStringTable* pTable, int nType, int nId);
 Unk_McAchieveMgr* FUN_1406c7600();
 
 // The achievement the product requires.
@@ -907,7 +907,7 @@ bool FUN_140ebff70(CDBPremiumProduct* pProduct, bool bShowError)
     for (size_t i = 0; i < arrJobs.GetCount(); ++i)
     {
         int nName = FUN_140644bb0(FUN_1401d7a50(), arrJobs[i]);
-        CStringW strName = FUN_141811980(GetStringTable(), 6, nName);
+        CStringW strName = GetStringTable()->FUN_141811980(6, nName);
         if (strName.IsEmpty())
             continue;
         if (!strJobs.IsEmpty())
@@ -1195,10 +1195,6 @@ CStringW FUN_14016a730(const char* sz, int n);
 void FUN_1409c1640(void* pId, CStringW str);
 __int64 FUN_140718350(const CString& str);
 bool FUN_141b70f50(const CStringW& strA, const CStringW& strB);
-MS2Ptr<CMeratMarketProduct> FUN_140d57150(Unk_McMarket* pMan, const Unk_MeratProductKey& key, int n);
-MS2Ptr<CMeratMarketProduct> FUN_140d57d80(Unk_McMarket* pMan, const Unk_MeratProductKey& key);
-MS2Ptr<CMeratMarketProduct> FUN_140d57f70(Unk_McMarket* pMan, const Unk_MeratProductKey& key);
-MS2Ptr<CMeratMarketProduct> FUN_140d576a0(Unk_McMarket* pMan, const Unk_MeratProductKey& key);
 int FUN_140896310(CUgcMarketProduct* pUgc);
 int FUN_140d5a2e0(Unk_McMarket* pMan);
 __int64 FUN_140d5a1d0(Unk_McMarket* pMan);
@@ -1249,7 +1245,7 @@ void FUN_140ec1340(ASData& data)
     spReport->SetFieldb0(strName);
     spReport->SetFieldd8(nTarget);
     spReport->SetFieldb8(strReason);
-    if (MS2Ptr<CMeratMarketProduct> spProduct = FUN_140d57150(FUN_140939a00(), *(Unk_MeratProductKey*)&id, 0))
+    if (MS2Ptr<CMeratMarketProduct> spProduct = ((CMeratMarketMan*)FUN_140939a00())->FUN_140d57150(*(Unk_MeratProductKey*)&id, 0))
     {
         spReport->SetFielda0(*(__int64*)((char*)spProduct.get() + 0x318));
         spReport->SetFielda8(*(__int64*)((char*)spProduct.get() + 0x320));
@@ -1386,25 +1382,25 @@ bool FUN_140ec20d0(ASObj* pRow, MS2Ptr<CMeratMarketProduct> spProduct, MS2Ptr<CI
 MS2Ptr<CMeratMarketProduct> FUN_140ec2300(const Unk_MeratProductKey& key, int* pnKind, int nParam)
 {
     MS2Ptr<CMeratMarketProduct> spProduct(0);
-    Unk_McMarket* pMan;
+    CMeratMarketMan* pMan;
     switch (*pnKind)
     {
     case 1:
-        spProduct = FUN_140d57d80(FUN_140939a00(), key);
+        spProduct = ((CMeratMarketMan*)FUN_140939a00())->FUN_140d57d80(key);
         break;
     case 2:
-        spProduct = FUN_140d57d80(FUN_140939a00(), key);
+        spProduct = ((CMeratMarketMan*)FUN_140939a00())->FUN_140d57d80(key);
         break;
     case 3:
-        spProduct = FUN_140d57f70(FUN_140939a00(), key);
+        spProduct = ((CMeratMarketMan*)FUN_140939a00())->FUN_140d57f70(key);
         break;
     case 4:
-        spProduct = FUN_140d576a0(FUN_140939a00(), key);
+        spProduct = ((CMeratMarketMan*)FUN_140939a00())->FUN_140d576a0(key);
         break;
     }
-    pMan = FUN_140939a00();
+    pMan = (CMeratMarketMan*)FUN_140939a00();
     if (spProduct == 0)
-        spProduct = FUN_140d57150(pMan, key, nParam);
+        spProduct = pMan->FUN_140d57150(key, nParam);
     return spProduct;
 }
 
