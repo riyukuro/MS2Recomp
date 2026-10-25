@@ -2358,7 +2358,9 @@
 142301ff0	142302df0	?\notifydragslot.cpp	low	24	mn	gfx1 10-20: gfxui lib TU (NotifyDragSlot)
 142302df0	142303440	?\notifyswfentity.cpp	low	7	mn	gfx1 10-20: gfxui lib TU (NotifySwfEntity)
 142303440	142303963	?\nigfxoverlayclick.cpp	low	31	mn	gfx1 10-20: gfxui lib TU (NiGFxOverlayClick ctor/dtor + inline NiRenderClick/GFxRenderer/AtlasRecord tail)
+1423b14e0	1423b1912	sfr_gfx_12x	none	6	mn	sfr36 10-24: GFx XML ParserExpat Expat callbacks + one-arg Format (unowned full-exe stubs)
 1423b1920	1423b1d3d	sfr_gfx_12	none	2	mn	sfr25 10-23: Scaleform gap plan: XML::ParserExpat vfuncs
+1423b1d40	1423b245e	sfr_gfx_12x	none	2	mn	sfr36 10-24: GFx XML ParserExpat start element / XML decl callbacks
 1423c8a50	1423c8fa0	sfr_ime_01	none	6	mn	sfr0 10-20: Scaleform 4.1.18 recovery, IME (GFx_AS2Support,AS3_All,GFx_AS3Support,AS2_All,GFx_LoaderImpl,AS2_NetStream,...)
 1423c8fa0	1423ca350	sfr_as2_01	none	20	mn	sfr0 10-20: Scaleform 4.1.18 recovery, AS2 (AS2_All,GFx_AS2Support,AS2_NetStream,GFx_AS3Support,AS3_All)
 1423ca350	1423dbde0	sfr_ime_01	none	183	mn	sfr0 10-20: Scaleform 4.1.18 recovery, IME (GFx_AS2Support,AS3_All,GFx_AS3Support,AS2_All,GFx_LoaderImpl,AS2_NetStream,...)
@@ -2499,6 +2501,9 @@
 1429a3700	1429a4d50	sfr_render_07	none	24	mn	sfr0 10-20: Scaleform 4.1.18 recovery, Render (Render_TextMeshProvider,Render_MeshCache,Render_GlyphQueue,Render_CacheEffect,Render_TextPrimitiveBundle,Render_BufferGeneric,...)
 1429a4d50	1429a8c70	sfr_gfx_09	none	198	mn	sfr0 10-20: Scaleform 4.1.18 recovery, GFx core (XML_Object,XML_Document,XML_DOM,AS2_All,AS2_Xml)
 142c98f10	142c99d55	sfr_gfx_13	none	57	mn	sfr25 10-23: Scaleform gap plan: GFx statics: atexit thunks / vptr+PMF initialisers (unowned tail; pairs with the .text$di initialisers)
+142cc4300	142cc4470	lib_atl_moduleterm	none	2	mn	sfr36 10-24: ATL module destructors (lib_di_atl exit routines)
+142cc4590	142cc4700	lib_atl_moduleterm	none	2	mn	sfr36 10-24: ATL module destructors (lib_di_atl exit routines)
+142cc5d00	142cc5e70	lib_atl_moduleterm	none	2	mn	sfr36 10-24: ATL module destructors (lib_di_atl exit routines)
 142cc9300	142cc990f	sfr_gfx_13	none	48	mn	sfr25 10-23: Scaleform gap plan: GFx statics: atexit thunks / vptr+PMF initialisers (unowned tail; pairs with the .text$di initialisers)
 142cca370	142cca4e6	sfr_gfx_13	none	5	mn	sfr25 10-23: Scaleform gap plan: GFx statics: atexit thunks / vptr+PMF initialisers (unowned tail; pairs with the .text$di initialisers)
 142ccb000	142ccd143	sfr_cri_03	none	20	mn	sfr0 10-20: Scaleform 4.1.18 recovery, CRI
