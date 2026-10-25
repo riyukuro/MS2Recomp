@@ -17,6 +17,7 @@
 // MS2-RANGE: 0x1431c4828-0x1431c5b30 .rdata
 // MS2-RANGE: 0x143212f60-0x143215ac0 .rdata
 // MS2-RANGE: 0x143217750-0x1432177c8 .rdata
+// MS2-RANGE: 0x143218188-0x1432181a0 .rdata
 // MS2-RANGE: 0x143222128-0x1432227a8 .rdata
 
 #ifndef MS2_HOOK_DLL
@@ -978,6 +979,11 @@ void FUN_14294b250();
 void FUN_14294bbb0();
 void FUN_142956270();
 void FUN_142956be0();
+void FUN_1429565c0();
+void FUN_14295d440();
+namespace Scaleform { namespace GFx { namespace AS2 {
+void* DeleteAs2_14292a0e0(void* p, unsigned flags);
+} } }
 void FUN_142958290();
 void FUN_14295d5e0();
 void FUN_142962710();
@@ -3566,6 +3572,11 @@ struct Sd_143217798 {
     const void* p10;
 };
 struct Sd_1432177b0 {
+    const void* p0;
+    const void* p8;
+    const void* p10;
+};
+struct Sd_143218188 {
     const void* p0;
     const void* p8;
     const void* p10;
@@ -8975,6 +8986,12 @@ alignas(16) Sd_1432177b0 DAT_1432177b0 = {
     (const void*)&FUN_1429665a0,
     DAT_14263a800,
 };
+// 0x143218188: vftable of AS2 AvmTextField::CSSHolder (deleting dtor, HasStyleSheet, GetStyleSheet)
+alignas(8) Sd_143218188 DAT_143218188 = {
+    (const void*)&Scaleform::GFx::AS2::DeleteAs2_14292a0e0,
+    (const void*)&FUN_14295d440,
+    (const void*)&FUN_1429565c0,
+};
 // 0x143222128
 alignas(8) Sd_143222128 DAT_143222128 = {
     (const void*)&FUN_142928d00,
@@ -9264,6 +9281,7 @@ alignas(8) Sd_143222278 DAT_143222278 = {
 #pragma comment(linker, "/alternatename:?DAT_143217780@AS2@GFx@Scaleform@@3PAPEBXA=?DAT_143217780@@3USd_143217780@@A")
 #pragma comment(linker, "/alternatename:?DAT_143217798@AS2@GFx@Scaleform@@3PAPEBXA=?DAT_143217798@@3USd_143217798@@A")
 #pragma comment(linker, "/alternatename:?DAT_1432177b0@AS2@GFx@Scaleform@@3PAPEBXA=?DAT_1432177b0@@3USd_1432177b0@@A")
+#pragma comment(linker, "/alternatename:?AvmTextFieldCSSHolder_vftable@AS2@GFx@Scaleform@@3QBQEAXB=?DAT_143218188@@3USd_143218188@@A")
 #pragma comment(linker, "/alternatename:?DAT_143222128@AS2@GFx@Scaleform@@3PAPEBXA=?DAT_143222128@@3USd_143222128@@A")
 #pragma comment(linker, "/alternatename:?DAT_14000e1a0@@3PAEA=?ExecuteForEachChild_GC@?$Prototype@VVideoObject@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@MEBAXPEAV?$RefCountCollector@$0BED@@234@W4OperationGC@?$RefCountBaseGC@$0BED@@234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1423dc0b0@@3PAEA=?Bind@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAXPEAVDisplayObject@34@@Z")
