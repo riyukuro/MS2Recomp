@@ -17,6 +17,7 @@
 #include <atlcoll.h>
 
 #include "ms2/ms2format.h"
+#include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/ms2recover.h"
@@ -261,8 +262,6 @@ CStringW FUN_14086d060(int nId, const unsigned __int64& a, const CStringW& b);
 CStringW FUN_1409eaa20(CStringW strKey, const CStringW& a, const CStringW& b, const CStringW& c);
 CStringW FUN_140cbf840(unsigned nId);                           // the dungeon name
 class Unk_ThItem;
-CStringW FUN_140527b10(Unk_ThItem* pItem);
-unsigned FUN_140526bd0(Unk_ThItem* pItem);
 unsigned FUN_141275c00(unsigned nRank);
 unsigned FUN_141275bd0(unsigned __int64 nId);
 unsigned FUN_141275b40();
@@ -673,8 +672,8 @@ CStringW FUN_141841a80(const CStringW& strText, int nSize)
 CStringW FUN_141841b40(Unk_ThItem* pItem, int nUnused, unsigned nSize)
 {
     CStringW strQuote(L"''");
-    CStringW strName = FUN_14052bd00(0x626, FUN_140527b10(pItem));
-    ULong nColor = FUN_141275c00(FUN_140526bd0(pItem));
+    CStringW strName = FUN_14052bd00(0x626, ((CItem*)pItem)->FUN_140527b10());
+    ULong nColor = FUN_141275c00(((CItem*)pItem)->FUN_140526bd0());
     CStringW strResult = FUN_14028dee0(0x678, strQuote, nColor, nSize, strName);
     return strResult;
 }
