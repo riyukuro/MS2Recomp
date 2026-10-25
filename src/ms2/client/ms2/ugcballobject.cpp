@@ -29,7 +29,7 @@ extern __int64 DAT_143ab2828;                                       // my charac
 unsigned int FUN_140869420();                                       // tick count (ms)
 void FUN_14020af60(COutPacket* pPacket, const Vector3* pPt);    // writes the three floats of a point
 void FUN_140710590(COutPacket& packet);                             // send
-Vector3 FUN_140204500(CInPacket* pPacket);                  // reads a point (three floats)
+struct Unk_UbPointReader { Vector3 FUN_140204500(); };      // reads a point (three floats); Unk_PayloadReader::ReadPoint (unit_1401f9eb0)
 NxVec3 FUN_141b6e0e0(const Vector3& kPt);                   // Point3 -> NxVec3
 Vector3 FUN_141b6e150(const NxVec3& kVec);                  // NxVec3 -> Point3
 char FUN_1409ff0d0(void* pShape, CBoxCollision* pBox);              // does the box touch the shape
@@ -319,7 +319,7 @@ void FUN_140dee4a0(CInPacket& packet)
     {
         int nObjectId = pStream->ReadInt32();
         __int64 nOwner = pStream->ReadInt64();
-        Vector3 kPos = FUN_140204500(&packet);
+        Vector3 kPos = reinterpret_cast<Unk_UbPointReader*>(&packet)->FUN_140204500();
         float fRadius = pStream->ReadFloat();
         CUGCBallObject* pBall = new (efd::MemHint(efd::MemHint::NONE)) CUGCBallObject;
         if (pBall->FUN_140decfc0(nOwner, nObjectId, &kPos, fRadius) != 0)
