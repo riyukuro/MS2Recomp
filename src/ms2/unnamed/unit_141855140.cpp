@@ -9,7 +9,7 @@
 class Unk_EffectDummyRecord
 {
 public:
-    Unk_EffectDummyRecord();
+    Unk_EffectDummyRecord(const Unk_EffectDummyRecord& other);
     long long AssignRecord(const Unk_EffectDummyRecord& other);
     CEffectDummy m_effect;
     CString m_recordName;
@@ -25,8 +25,9 @@ long long Unk_EffectDummyRecord::AssignRecord(const Unk_EffectDummyRecord& other
     return reinterpret_cast<long long>(this);
 }
 
-// @0x141855140
-Unk_EffectDummyRecord::Unk_EffectDummyRecord()
-    : m_effect(), m_recordName(), m_recordValue(0)
+// @0x141855140 copy ctor: default-constructs the members, then AssignRecord(other) (exe: rcx = this, rdx = other)
+Unk_EffectDummyRecord::Unk_EffectDummyRecord(const Unk_EffectDummyRecord& other)
+    : m_effect(), m_recordName()
 {
+    AssignRecord(other);
 }
