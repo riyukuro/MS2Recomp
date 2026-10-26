@@ -422,7 +422,7 @@ public:
     void DumpTextures();                            // 0x141554f60 write LoadedTextures.txt
     void DumpNifs();                                // 0x141555600 write LoadedNifs.txt
     void ApplyWeights(CString strNifPath, NiAVObject* pkRoot);     // 0x141555f50 per-node weight from the sibling .xml
-    NiAVObjectPtr CloneCached(CString strPath, CCachedNifPtr spCached);     // 0x141556320
+    NiAVObject* CloneCached(CString strPath, CCachedNifPtr spCached);     // 0x141556320 (exe returns the raw pointer in rax; callers wrap it)
     void RefreshTextures();                         // 0x141556410
     void LogCounts();                               // 0x141556610
     unsigned FUN_14151e770();                       // 0x14151e770 number of cached nifs (defined elsewhere)

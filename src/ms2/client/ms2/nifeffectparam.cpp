@@ -2383,7 +2383,7 @@ MS2_REPLACE_METHOD(0x141555F50, CNifLoadingService, ApplyWeights, 967, 0x6D7EAF5
 
 // MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x141556320
-NiAVObjectPtr CNifLoadingService::CloneCached(CString strPath, CCachedNifPtr spCached)
+NiAVObject* CNifLoadingService::CloneCached(CString strPath, CCachedNifPtr spCached)
 {
     NiCloningProcess kCloning(0x25);
     kCloning.m_eCopyType = NiObjectNET::COPY_EXACT;
