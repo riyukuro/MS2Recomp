@@ -864,7 +864,8 @@ void UIItemColoringDialog::FUN_1419af750()
         if (pPc->FUN_14166c930() != 0xe)
             pPc->vfunc_59(0xe, 0, 0, 0);
         FUN_14166cc40(pPc, 0x53);
-        Unk_IcEffectRequest request;
+        alignas(8) char requestBuf[sizeof(Unk_IcEffectRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+        Unk_IcEffectRequest& request = *reinterpret_cast<Unk_IcEffectRequest*>(requestBuf);
         FUN_140a52ef0(&request);
         request.m_strName = FUN_1401d31f0()->m_hairApply;
         request.m_n08 = 1;
