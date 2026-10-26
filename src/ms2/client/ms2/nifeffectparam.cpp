@@ -110,7 +110,7 @@
 // MS2-PIN: ?GetModuleInstance@CAtlBaseModule@ATL@@QEAAPEAUHINSTANCE__@@XZ 0x14154f520 ; hand: identical look-alike group
 // MS2-PIN: ??C?$MS2Ptr@VCNifEffectParam@@@@QEBAPEAVCNifEffectParam@@XZ 0x14154f530 ; hand: identical look-alike group
 // MS2-PIN: ?GetAt@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$SmartPointer@VCCachedNif@@@efd@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$SmartPointer@VCCachedNif@@@efd@@@2@@ATL@@QEAAPEAVCPair@12@PEAU__POSITION@@@Z 0x14155d570 ; hand: identical look-alike group
-// MS2-PIN: ??F?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@QEAVNiAVObject@@VNiString@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x14155ae20 ; hand: identical look-alike group
+// MS2-PIN: ??F?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@QEAVNiAVObject@@VNiString@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x14154f540 ; la1: wraps the decrement 0x14154f580; 14155ae20 is a CString-map wrapper called by Sweep
 // MS2-PIN: ??1?$pair@QEAVNiAVObject@@VNiString@@@std@@QEAA@XZ 0x14154f1a0 ; hand: identical look-alike group
 // MS2-PIN: ??Y?$basic_string@DU?$char_traits@D@std@@V?$CustomAllocator@D@efd@@@std@@QEAAAEAV01@QEBD@Z 0x141561910 ; hand: identical look-alike group
 // MS2-PIN: ?Release@?$MS2Ptr@VCBirdMovement@@@@AEAAXXZ 0x141550520 ; hand: identical look-alike group
@@ -646,24 +646,13 @@ Unk_BitRef::operator bool() const
     return FUN_140314790(m_pBits, m_nPos);
 }
 
-// The exe's 0x14154f540 / 0x14154f560 are the pre-increment wrappers of std::map<NiAVObject*, NiString> iterators
-// (_Tree_const_iterator / _Tree_iterator::operator++ over _Tree_unchecked_const_iterator::operator++ 0x14154f580); the
-// source never iterates that map, so they are stand-ins.
-void FUN_14154f580(void* pIter);
+// The exe's 0x14154f540 / 0x14154f560 are std::map<NiAVObject*, NiString>'s _Tree_const_iterator / _Tree_iterator
+// operator-- (over _Tree_unchecked_const_iterator::operator-- 0x14154f580); the map's own _Tree code instantiates them,
+// they are pinned at the end of the file.
 
-// @0x14154f540
-void* Unk_PathMapConstIterInc(void* pIter)
-{
-    FUN_14154f580(pIter);
-    return pIter;
-}
-
-// @0x14154f560
-void* Unk_PathMapIterInc(void* pIter)
-{
-    Unk_PathMapConstIterInc(pIter);
-    return pIter;
-}
+// The exe's Sweep walks the pool map with a default-constructed iterator (0x14155ae20 over _Tree_const_iterator() 0x14155ad60);
+// ours walks the CRBMap, so the constructor is instantiated here and pinned at the end of the file.
+template std::_Tree_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const CString, TCircleList<NiAVObjectPtr> > > > >::_Tree_iterator();
 
 // @0x1415494d0
 CNifEffect::CNifEffect()
@@ -2836,3 +2825,5 @@ void Unk_SgNifLoader::FUN_1415540f0(CString strPath, NiTexture* pkTex)
 {
     ((CNifLoadingService*)this)->AddTexture(strPath, (NiSourceTexture*)pkTex);
 }
+// MS2-PIN: ??F?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@QEAVNiAVObject@@VNiString@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x14154f560 ; la1: called by the map's _Tree code at 0x14154e934, calls the const operator-- 0x14154f540
+// MS2-PIN: ??0?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$TCircleList@V?$SmartPointer@VNiAVObject@@@efd@@@@@std@@@std@@@std@@@std@@QEAA@XZ 0x14155ae20 ; la1: calls _Tree_const_iterator() 0x14155ad60, only caller is the exe Sweep
