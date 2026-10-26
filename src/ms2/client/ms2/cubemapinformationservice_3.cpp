@@ -2642,7 +2642,8 @@ void CubeMapInformationService::FUN_1410c4240(int nGroup, int nBlock, const CStr
             FUN_1410ce3f0(spOwner);
         Unk_CMISIter<264> itEnd, itFind;
         if (FUN_1411273c0(FUN_141157200(&ff8, &itFind, &nGroup), FUN_141151970(&ff8, &itEnd))) {
-            Unk_CMISEffReq request;
+            alignas(8) char requestBuf[sizeof(Unk_CMISEffReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+            Unk_CMISEffReq& request = *reinterpret_cast<Unk_CMISEffReq*>(requestBuf);
             FUN_140a52ef0(&request);
             request.m_strName = FUN_1401d31f0()->m_strSaleEffect;
             request.m_nOwnerId = 7;
@@ -2677,7 +2678,8 @@ void CubeMapInformationService::FUN_1410c44b0(int nGroup, int nBlock, int bFlag)
                 FUN_1410cd440();
                 Unk_CMISIter<264> itEnd2, itFind2;
                 if (FUN_1411273c0(FUN_141157200(&ff8, &itFind2, &nGroup), FUN_141151970(&ff8, &itEnd2))) {
-                    Unk_CMISEffReq request;
+                    alignas(8) char requestBuf[sizeof(Unk_CMISEffReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+                    Unk_CMISEffReq& request = *reinterpret_cast<Unk_CMISEffReq*>(requestBuf);
                     FUN_140a52ef0(&request);
                     request.m_strName = FUN_1401d31f0()->m_strSaleEffect;
                     request.m_nOwnerId = 7;
@@ -3126,7 +3128,8 @@ void CubeMapInformationService::FUN_1410bf610(Unk_CMISCubeList* pPlaced, Unk_CMI
                         FUN_140b9cda0(&rPiece);
                         continue;
                     }
-                    Unk_CMISEffReq request;
+                    alignas(8) char requestBuf[sizeof(Unk_CMISEffReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+                    Unk_CMISEffReq& request = *reinterpret_cast<Unk_CMISEffReq*>(requestBuf);
                     FUN_140a52ef0(&request);
                     request.m_strName = FUN_140ba0d40(&rPiece)->strSetName;
                     if (FUN_140ba0d40(&rPiece)->strAttachNode.IsEmpty()) {
@@ -3983,7 +3986,8 @@ void CubeMapInformationService::FUN_1410c9db0()
             bool bFlag = false;
             FUN_1408a20a0(FUN_1408a9280(&pCube->entity), 0x23f9860e, &bFlag);
             if (pCube->field44 == 1) {
-                Unk_CMISEffReq request;
+                alignas(8) char requestBuf[sizeof(Unk_CMISEffReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+                Unk_CMISEffReq& request = *reinterpret_cast<Unk_CMISEffReq*>(requestBuf);
                 FUN_140a52ef0(&request);
                 request.m_strName = FUN_1401d31f0()->m_strCubeEffect;
                 request.m_nOwnerId = 7;
@@ -5477,7 +5481,8 @@ bool CubeMapInformationService::FUN_1410c06b0(MS2Ptr<Cube> spCube)
         int nDir = FUN_1410ba4a0(ptDir);
         Unk_CMISIter<261> itHouseEnd, itHouse;
         if (FUN_141126e50(FUN_141157820(&fc8, &itHouse, &nHouse), FUN_141151c10(&fc8, &itHouseEnd))) {
-            Unk_CMISTree<287> empty;
+            alignas(8) char emptyBuf[sizeof(Unk_CMISTree<287>)];   // FUN_1411228d0 / FUN_1411258b0 construct and destroy it: no implicit dtor
+            Unk_CMISTree<287>& empty = *reinterpret_cast<Unk_CMISTree<287>*>(emptyBuf);
             FUN_1411228d0(&empty);
             FUN_1411266a0(FUN_141127dd0(&fc8, &nHouse), &empty);
             FUN_1411258b0(&empty);
@@ -5499,7 +5504,8 @@ bool CubeMapInformationService::FUN_1410c06b0(MS2Ptr<Cube> spCube)
                 bMine = true;
             }
             if (bMine && FUN_14053fc10(FUN_1408b4f20(spCube.get())) == 0xd) {
-                Unk_CMISEffReq request;
+                alignas(8) char requestBuf[sizeof(Unk_CMISEffReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+                Unk_CMISEffReq& request = *reinterpret_cast<Unk_CMISEffReq*>(requestBuf);
                 FUN_140a52ef0(&request);
                 request.m_strName = FUN_1401d31f0()->m_strHouseEffect;
                 request.m_nOwnerId = 0;
@@ -5620,7 +5626,8 @@ bool CubeMapInformationService::FUN_1410c1910(const Unk_Int3& pt, int bDefer)
         FUN_1403ed280()->FUN_1411a6060(*FUN_141127a50(&f338, &nKey));
         FUN_141152dd0(&f338, &nKey);
     }
-    Unk_CMISEffReq request;
+    alignas(8) char requestBuf[sizeof(Unk_CMISEffReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+    Unk_CMISEffReq& request = *reinterpret_cast<Unk_CMISEffReq*>(requestBuf);
     FUN_140a52ef0(&request);
     request.m_strName = FUN_1401d31f0()->m_strRemoveEffect;
     request.m_nOwnerId = 7;
