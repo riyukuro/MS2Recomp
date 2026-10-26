@@ -34,7 +34,8 @@ CFeatureManager* FUN_140166410();
 CStringW FUN_1406c6bd0(const wchar_t* pszFormat, const unsigned __int64& nArg);   // "{0}" formatter
 void* FUN_14086e9c0(void* pNode, int nType);                            // TiXmlNode::TiXmlNode
 void FUN_140872b60(void* pNode, const char* pszValue);                  // TiXmlNode::SetValue
-extern char DAT_142dfc138;                                              // the TiXmlComment vftable
+extern char DAT_142d9c138;                                              // the TiXmlComment vftable
+// (was DAT_142dfc138, RTTI data, not a vftable: InsertEndChild's virtual Clone ran through garbage)
 
 // The game's TinyXML (bare global names, not efd::), as far as this unit builds it.
 class Unk_TiXmlElement
@@ -214,7 +215,7 @@ bool BlindManager::IsBlockedId(int nType, unsigned __int64 nId)
 Unk_TiXmlComment::Unk_TiXmlComment(const char* pszValue)
 {
     FUN_14086e9c0(this, 2);
-    *reinterpret_cast<void**>(this) = &DAT_142dfc138;
+    *reinterpret_cast<void**>(this) = &DAT_142d9c138;
     FUN_140872b60(this, pszValue);
 }
 
