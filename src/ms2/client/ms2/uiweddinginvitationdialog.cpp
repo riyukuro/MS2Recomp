@@ -24,6 +24,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uitalkcinematic.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -55,12 +56,6 @@ struct Unk_WiTicket
     CStringW m_strBride;                                        // +0x50
 };
 class Unk_WiHallTable { public: int FUN_140908d50(int nPackageId, int nHallId, bool bNight); };
-class Unk_WiRefPos
-{
-public:
-    int FUN_141b1d3d0();                                        // x
-    int FUN_141b1d460();                                        // y
-};
 class UIWeddingGuestDialog : public UIObject
 {
 public:
@@ -84,13 +79,13 @@ CStringTable* GetStringTable();
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 Unk_WiUIManager* FUN_1403ed2b0();
 __int64 FUN_140900da0();                                        // the price of one invitation
-Unk_WiRefPos* FUN_140a7b2b0(int nId);                           // a dialog's position record
+UITalkCinematic* FUN_140a7b2b0(int nId);                           // a dialog's position record
 void FUN_141b1feb0(void* p);
 void* FUN_140967100();
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
-__int64 FUN_140869440();                                        // the current time
-void FUN_14086a880(CMsTime& kTime, int nMinutes);
+__int64 GetServerTime();                                        // the current time
+void AddMinutes(CMsTime& kTime, int nMinutes);
 __int64 FUN_140282020(const CMsTime& kTime);
 
 CStringW FUN_14028dfa0(CStringW strKey, const fmt::ArgList& args);        // the string table formatter
@@ -141,7 +136,7 @@ void UIWeddingInvitationDialog::vfunc_67()
 void UIWeddingInvitationDialog::vfunc_43()
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    Unk_WiRefPos* pRef;
+    UITalkCinematic* pRef;
     if (pDialog != 0 && (pRef = FUN_140a7b2b0(0x4e40)) != 0)
     {
         int nX = pRef->FUN_141b1d3d0();
@@ -231,8 +226,8 @@ bool UIWeddingInvitationDialog::FUN_140fe60d0(int nResult, const CMsgBoxData& bo
     {
         Unk_WiTicket* pTicket = FUN_141b87160(FUN_1409eed90());
         CMsTime kLimit(pTicket->m_nTime);
-        FUN_14086a880(kLimit, -10);
-        __int64 nNow = FUN_140869440();
+        AddMinutes(kLimit, -10);
+        __int64 nNow = GetServerTime();
         if (nNow < FUN_140282020(kLimit))
         {
             COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
