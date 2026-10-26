@@ -239,7 +239,8 @@ NiActorManager* FUN_140999440(void* pLoader, const egf::EntityID& kId);   // the
 static unsigned s_aDeadGroupMask[] = { 0x400, 0x800, 0x1000, 0x2000, 0x4000, 0x8000, 0x10000, 0x20000 };
 static int s_nDeadGroupMask = 8;
 static int s_nDeadActorSerial;
-NxVec3 FUN_140ae1df0(const Vector3* pPoint);               // game point -> PhysX point
+// game point -> PhysX point; the exe takes the Vector3 as this and the hidden return slot in rdx (a free declaration swapped them)
+struct Unk_PointView { NxVec3 FUN_140ae1df0() const; };
 // The maid description table (the row's +0x08 is the maid npc's title); the 16 byte row pointer of the maid tables
 // (uimanufacturedialog.cpp), its members are COMDATs of other units.
 template <class T> class Unk_UmValuePtr
@@ -2410,7 +2411,7 @@ void CNpc::NxTerrainPhsyx()
         return;
     NxVec3 kUnused;
     Vector3 ptSelf(vfunc_18());
-    kUnused = FUN_140ae1df0(&ptSelf);
+    kUnused = reinterpret_cast<const Unk_PointView*>(&ptSelf)->FUN_140ae1df0();
     NxBoxShapeDesc kBoxDesc;
     kBoxDesc.dimensions.set(m_spNpcData->m_collision.m_fWidth, m_spNpcData->m_collision.m_fDepth,
         m_spNpcData->m_collision.m_fHeight);
