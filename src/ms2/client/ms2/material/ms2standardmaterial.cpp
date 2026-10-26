@@ -450,7 +450,7 @@ NiFragmentMaterial::ReturnCode MS2StandardMaterial::GenerateShaderDescArray(
         pkPixelDesc->m_pkBitArray[0] |= 0x10;   // WORLDVIEW
     }
 
-    // USERDEFINED02 -> UVSET11TEXOUTPUT: pass the second colour stream through
+    // USERDEFINED02 -> index-2 bit 7 (UVSET10TEXOUTPUT in the stock layout): pass the second colour stream through
     if (puiMaterialBits[3] & 0x4000000)
         pkVertexDesc->m_pkBitArray[2] |= 0x80;
 
@@ -811,8 +811,9 @@ bool MS2StandardMaterial::HandleFinalVertexOutputs(Context& kContext, NiStandard
     if (!HandleCalculateFog(kContext, pkViewPos, (Fog)pkVertDesc->GetFOGTYPE()))
         return false;
 
-    // UVSET11TEXOUTPUT (set from USERDEFINED02): multiply the vertex colours by the second colour stream
-    if (!pkVertDesc->GetUVSET11TEXOUTPUT())
+    // index-2 bit 7 (set from USERDEFINED02 in GenerateShaderDescArray): multiply the vertex colours by the second
+    // colour stream
+    if (!(pkVertDesc->m_pkBitArray[2] & 0x80))
         return true;
 
     NiMaterialResource* pkBrightness = kContext.m_spInputs->AddOutputResource("float4", "Color", "",
