@@ -85,6 +85,7 @@ enum Unk_CMISKindC { Unk_CMISKindC_None };             // element of the std::ve
 // mark record of a cube group: poll timer and the mark entities (node value of f288)
 struct Unk_CMISMarkRec
 {
+    Unk_CMISMarkRec();                                         // 0x141122f30, user-provided: the piecewise pair ctor 0x1410dac10 calls it (no zero fill)
     Timer m_timer;
     efd::vector<egf::EntityPtr> m_marks;                       // the dtor (0x141125e70) calls ~efd::vector<SmartPointer<Entity>> 0x141125d00
 };

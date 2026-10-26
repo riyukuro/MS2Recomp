@@ -154,15 +154,8 @@ template <> struct Unk_CMISTree<496> : std::vector<egf::EntityPtr, efd::CustomAl
 extern Unk_CMISEntityRef DAT_143acf820;                      // the null entity ref
 
 // @0x141122f30
-// The mark record of tail.h (Timer + id vector) as the exe builds it: the vector holds entity pointers and the ctor resets
-// the timer and clears the list.
-struct Unk_CMISMarkRecInit
-{
-    Unk_CMISMarkRecInit() { m_timer.FUN_1408687f0(); m_marks.clear(); }
-    Timer m_timer;
-    efd::vector<egf::EntityPtr> m_marks;
-};
-MS2_CHECK_SIZE(Unk_CMISMarkRecInit, 0x50);
+// The mark record of tail.h (Timer + entity pointer vector): the ctor resets the timer and clears the list.
+Unk_CMISMarkRec::Unk_CMISMarkRec() { m_timer.FUN_1408687f0(); m_marks.clear(); }
 
 // @0x141123160
 Unk_CMISCubeTimer::Unk_CMISCubeTimer()
@@ -322,7 +315,6 @@ void Unk_CMISTreeAnchor(void* p)
     new (p) std::vector<egf::EntityPtr>;
     new (p) Unk_CMISAnchorMH;
     new (p) Unk_CMISAnchorSvc;
-    new (p) Unk_CMISMarkRecInit;
     new (p) Unk_CMISCellInit;
     new (p) Unk_CMISCell56(*(const Unk_CMISCell56*)p);
     new (p) Unk_CMISIdPtr(*(const Unk_CMISIdPtr*)p);
