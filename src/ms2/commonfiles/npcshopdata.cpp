@@ -10,7 +10,7 @@
 // MS2-GUESS-LOOKALIKES
 // MS2-PIN: ??_7?$TPtredDummy@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@6B@ 0x142d7e768
 // MS2-PIN: ??_7?$TPtredDummy@V?$CAtlArray@V?$MS2Ptr@VCNpcShopMeratItemSvr@@@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopMeratItemSvr@@@@@ATL@@@ATL@@@@6B@ 0x142d7e778
-// MS2-PIN: ??1CPair@?$CRBTree@IV?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@@3@@ATL@@IEAA@XZ 0x1406ef8d0
+// MS2-PIN: ??1CPair@?$CRBTree@IV?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@@3@@ATL@@IEAA@XZ 0x1406ef890 ; destroys s_coupons (atexit 0x142c9b9c0 -> CRBMap dtor 0x1406eee30 chain)
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??__Es_coupons@@YAXXZ 0x1400bbb40 ; prop
 // MS2-PIN: ??__Es_npcShops@@YAXXZ 0x1400bbb70 ; prop
@@ -52,8 +52,8 @@
 // MS2-PIN: ??0?$MS2Ptr@VCBeautyShopItem@@@@QEAA@H@Z 0x1406ee040 ; unique
 // MS2-PIN: ??0?$MS2SvrPtr@VCNpcShopBuyPeriod@@@@QEAA@H@Z 0x1406ee1c0 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VCNpcShopData@@@@QEAA@H@Z 0x1406ee2a0 ; unique
-// MS2-PIN: ??1?$CRBMap@IV?$MS2Ptr@VCBeautyShopData@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBeautyShopData@@@@@3@@ATL@@QEAA@XZ 0x1406eee30 ; prop
-// MS2-PIN: ??1?$CRBMap@IV?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@@3@@ATL@@QEAA@XZ 0x1406eee70 ; prop
+// MS2-PIN: ??1?$CRBMap@IV?$MS2Ptr@VCBeautyShopData@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBeautyShopData@@@@@3@@ATL@@QEAA@XZ 0x1406eee70 ; destroys s_beautyShops (atexit 0x142c9b960 -> CRBMap dtor 0x1406eee70 chain)
+// MS2-PIN: ??1?$CRBMap@IV?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@@3@@ATL@@QEAA@XZ 0x1406eee30 ; destroys s_coupons (atexit 0x142c9b9c0 -> CRBMap dtor 0x1406eee30 chain)
 // MS2-PIN: ??1?$CRBMap@IV?$MS2Ptr@VCNpcShopData@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopData@@@@@3@@ATL@@QEAA@XZ 0x1406eee90 ; prop
 // MS2-PIN: ??1?$CRBTree@IV?$Unk_SocketPtr@V?$CAtlArray@_JV?$CElementTraits@_J@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@_JV?$CElementTraits@_J@ATL@@@ATL@@@@@3@@ATL@@QEAA@XZ 0x1406eeef0 ; prop
 // MS2-PIN: ??1?$CRBTree@IV?$MS2Ptr@VCNpcShopData@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopData@@@@@3@@ATL@@QEAA@XZ 0x1406eef70 ; prop
@@ -70,10 +70,10 @@
 // MS2-PIN: ??C?$MS2Ptr@VCBeautyShopItemGroup@@@@QEBAPEAVCBeautyShopItemGroup@@XZ 0x1406f03a0 ; unique
 // MS2-PIN: ??C?$MS2Ptr@VCBeautyShopItemGroups@@@@QEBAPEAVCBeautyShopItemGroups@@XZ 0x1406f03b0 ; unique
 // MS2-PIN: ??C?$MS2Ptr@VCNpcShopItemNew@@@@QEBAPEAVCNpcShopItemNew@@XZ 0x1406f03f0 ; unique
-// MS2-PIN: ??_GCNode@?$CRBTree@IV?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@@3@@ATL@@QEAAPEAXI@Z 0x1406f0f80 ; unique
+// MS2-PIN: ??_GCNode@?$CRBTree@IV?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@@3@@ATL@@QEAAPEAXI@Z 0x1406f0f00 ; destroys s_coupons (atexit 0x142c9b9c0 -> CRBMap dtor 0x1406eee30 chain)
 // MS2-PIN: ?Add@?$CAtlArray@V?$MS2Ptr@VCBeautyShopItem@@@@V?$CElementTraits@V?$MS2Ptr@VCBeautyShopItem@@@@@ATL@@@ATL@@QEAA_KAEBV?$MS2Ptr@VCBeautyShopItem@@@@@Z 0x1406f11c0 ; unique
 // MS2-PIN: ?Find@?$CRBTree@IV?$MS2Ptr@VCBeautyShopData@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBeautyShopData@@@@@3@@ATL@@IEBAPEAVCNode@12@I@Z 0x1406f1c40 ; unique
-// MS2-PIN: ?FreeNode@?$CRBTree@IV?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x1406f2060 ; unique
+// MS2-PIN: ?FreeNode@?$CRBTree@IV?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x1406f1f20 ; destroys s_coupons (atexit 0x142c9b9c0 -> CRBMap dtor 0x1406eee30 chain)
 // MS2-PIN: ?GetCount@?$CAtlArray@V?$MS2Ptr@VCNpcShopItem@@@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopItem@@@@@ATL@@@ATL@@QEBA_KXZ 0x1406f2340 ; unique
 // MS2-PIN: ?GetCount@?$CAtlArray@V?$MS2Ptr@VCNpcShopItemNew@@@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopItemNew@@@@@ATL@@@ATL@@QEBA_KXZ 0x1406f2350 ; unique
 // MS2-PIN: ?GetInstance@?$TSingleton@VCMeratMarketPremium@@@@SAPEAVCMeratMarketPremium@@XZ 0x1406f2370 ; unique
@@ -86,8 +86,8 @@
 // MS2-PIN: ?Lookup@?$CRBMap@IV?$MS2Ptr@VCNpcShopData@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopData@@@@@3@@ATL@@QEBA_NIAEAV?$MS2Ptr@VCNpcShopData@@@@@Z 0x1406f3420 ; unique
 // MS2-PIN: ?Maximum@?$CRBTree@IV?$MS2Ptr@VCBeautyShopData@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBeautyShopData@@@@@3@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x1406f3550 ; unique
 // MS2-PIN: ?Predecessor@?$CRBTree@IV?$MS2Ptr@VCBeautyShopData@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBeautyShopData@@@@@3@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x1406f3f90 ; unique
-// MS2-PIN: ?RemoveAll@?$CRBTree@IV?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@@3@@ATL@@QEAAXXZ 0x1406f4b70 ; unique
-// MS2-PIN: ?RemovePostOrder@?$CRBTree@IV?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x1406f4ee0 ; unique
+// MS2-PIN: ?RemoveAll@?$CRBTree@IV?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@@3@@ATL@@QEAAXXZ 0x1406f4a70 ; destroys s_coupons (atexit 0x142c9b9c0 -> CRBMap dtor 0x1406eee30 chain)
+// MS2-PIN: ?RemovePostOrder@?$CRBTree@IV?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x1406f4e20 ; destroys s_coupons (atexit 0x142c9b9c0 -> CRBMap dtor 0x1406eee30 chain)
 // MS2-PIN: ?AddRef@?$MS2Ptr@VCItemData@@@@AEBAXXZ 0x1406f5890 ; prop
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCBeautyShopItem@@@@AEBAXPEAX@Z 0x1406f5b90 ; unique
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCMeratMarketPremiumProduct@@@@AEBAXPEAX@Z 0x1406f5c50 ; prop
@@ -2445,4 +2445,14 @@ MS2_REPLACE_METHOD(0x1406f1980, CNpcShopMeratItemBase, vfunc_1, 115, 0xCD056558)
 MS2_REPLACE_METHOD(0x1406f1a00, CNpcShopMeratItemSvr, vfunc_1, 82, 0xDA979F2E);
 MS2_REPLACE_METHOD(0x1406f2470, CNpcShopMeratItemBase, vfunc_3, 60, 0xABB6EB59);
 MS2_REPLACE_METHOD(0x1406f24b0, CNpcShopMeratItemSvr, vfunc_3, 14, 0x828204CF);
+// MS2-PIN: ??1?$CRBTree@IV?$MS2Ptr@VCBeautyShopData@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBeautyShopData@@@@@3@@ATL@@QEAA@XZ 0x1406eef30 ; destroys s_beautyShops (atexit 0x142c9b960 -> CRBMap dtor 0x1406eee70 chain)
+// MS2-PIN: ??1?$CRBTree@IV?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@@3@@ATL@@QEAA@XZ 0x1406eeeb0 ; destroys s_coupons (atexit 0x142c9b9c0 -> CRBMap dtor 0x1406eee30 chain)
+// MS2-PIN: ?RemoveAll@?$CRBTree@IV?$MS2Ptr@VCBeautyShopData@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBeautyShopData@@@@@3@@ATL@@QEAAXXZ 0x1406f4b70 ; destroys s_beautyShops (atexit 0x142c9b960 -> CRBMap dtor 0x1406eee70 chain)
+// MS2-PIN: ?RemovePostOrder@?$CRBTree@IV?$MS2Ptr@VCBeautyShopData@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBeautyShopData@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x1406f4ee0 ; destroys s_beautyShops (atexit 0x142c9b960 -> CRBMap dtor 0x1406eee70 chain)
+// MS2-PIN: ?FreeNode@?$CRBTree@IV?$MS2Ptr@VCBeautyShopData@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBeautyShopData@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x1406f2060 ; destroys s_beautyShops (atexit 0x142c9b960 -> CRBMap dtor 0x1406eee70 chain)
+// MS2-PIN: ??_GCNode@?$CRBTree@IV?$MS2Ptr@VCBeautyShopData@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBeautyShopData@@@@@3@@ATL@@QEAAPEAXI@Z 0x1406f0f80 ; destroys s_beautyShops (atexit 0x142c9b960 -> CRBMap dtor 0x1406eee70 chain)
+// MS2-PIN: ??1CNode@?$CRBTree@IV?$MS2Ptr@VCBeautyShopData@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBeautyShopData@@@@@3@@ATL@@QEAA@XZ 0x1406ef610 ; destroys s_beautyShops (atexit 0x142c9b960 -> CRBMap dtor 0x1406eee70 chain)
+// MS2-PIN: ??1CNode@?$CRBTree@IV?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@@3@@ATL@@QEAA@XZ 0x1406ef5d0 ; destroys s_coupons (atexit 0x142c9b9c0 -> CRBMap dtor 0x1406eee30 chain)
+// MS2-PIN: ??1CPair@?$CRBTree@IV?$MS2Ptr@VCBeautyShopData@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBeautyShopData@@@@@3@@ATL@@IEAA@XZ 0x1406ef8d0 ; destroys s_beautyShops (atexit 0x142c9b960 -> CRBMap dtor 0x1406eee70 chain)
+// MS2-PIN: ??1?$MS2Ptr@VCBeautyShopData@@@@QEAA@XZ 0x1406ef070 ; s_beautyShops lookup 0x1406e4ef0 and CPair dtor 0x1406ef8d0 call it
 
