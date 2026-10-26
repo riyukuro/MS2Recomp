@@ -336,7 +336,8 @@ void CReactor::FUN_140b791a0()
             if (FUN_141b6f910() != 0 && !m_listAnims.IsEmpty())
             {
                 CString strTemp = FUN_1409a2360(m_listAnims.GetHead(), 0);
-                efd::utf8string strAni;
+                alignas(8) char strAniBuf[sizeof(efd::utf8string)];   // FUN_1409989e0 / FUN_1408a8900 construct and destroy it: no implicit dtor
+                efd::utf8string& strAni = *reinterpret_cast<efd::utf8string*>(strAniBuf);
                 FUN_1409989e0(&strAni, strTemp);
                 spAnim->FUN_14099e050(strAni, 1.0f, false);
                 FUN_1408a8900(&strAni);
@@ -550,9 +551,11 @@ void CReactor::EndOfSequence(NiActorManager* pkManager, NiActorManager::Sequence
     GameObject::EndOfSequence(pkManager, eSequenceID, pkSeq, fEventTime);
     if (m_unk_80 != 0 && !m_listAnims.IsEmpty() && FUN_141b6f910() != 0)
     {
-        efd::utf8string strCur = FUN_141b6f910()->FUN_140b7cc50(*FUN_1408b76f0(m_unk_80));
-        bool bSame = FUN_140184310(m_listAnims.GetHead(), FUN_1408ac310(&strCur));
-        FUN_1408a8900(&strCur);
+        bool bSame;
+        {   // the scope exit is the exe's FUN_1408a8900 (~utf8string): an explicit call on top released it twice
+            efd::utf8string strCur = FUN_141b6f910()->FUN_140b7cc50(*FUN_1408b76f0(m_unk_80));
+            bSame = FUN_140184310(m_listAnims.GetHead(), FUN_1408ac310(&strCur));
+        }
         if (bSame)
             m_listAnims.RemoveHead();
     }
@@ -872,27 +875,33 @@ Unk_Int3* FUN_140b7c930(Unk_GlueVec* pVec, __int64 nIdx) { return pVec->first + 
 void* FUN_140b7c960(const Unk_GluePair* p) { return p->second; }
 
 // Animation-service current-name lookup
-struct Unk_RxAnimRec;
+// AnimationService::ActorEntry: +0x08 SmartPointer<NiActorManager>, +0x10 SmartPointer<AssetData>
+struct Unk_RxAnimRec
+{
+    void* m_unk_00;
+    void* m_spActorManager;
+    void* m_spAssetData;
+};
 bool FUN_1409991a0(Unk_RxAnimSvc* pSvc, const egf::EntityID* pId, Unk_RxAnimRec** ppRec, int a, int b);
-void* FUN_140998e80(Unk_RxAnimRec* p);
-void* FUN_140998e90(Unk_RxAnimRec* p);
+void* FUN_140998e80(void* pSp);              // SmartPointer<AssetData>::operator AssetData*
+void* FUN_140998e90(void* pSp);              // SmartPointer<NiActorManager>::operator NiActorManager*
 const efd::utf8string& FUN_1409a1a90();      // the empty name
-void* FUN_1409f7900(Unk_RxAnimRec* p);
+void* FUN_1409f7900(void* pSp);              // SmartPointer<NiActorManager>::operator->
 int FUN_1409a1890(void* p);
 void FUN_1409a1940(void* pName, efd::utf8string* pOut, int nIdx);
 // @0x140b7cc50
-// MS2-FUNCTIONAL: animation-service current-name lookup; callee prototypes unproven
+// MS2-FUNCTIONAL: animation-service current-name lookup (AnimationService::GetCurrentAnimation: the getters take the ActorEntry smart-pointer members, not the entry)
 efd::utf8string Unk_RxAnimSvc::FUN_140b7cc50(const egf::EntityID& id)
 {
     Unk_RxAnimRec* pRec = 0;
     if (!FUN_1409991a0(this, &id, &pRec, 0, 0))
         return FUN_1409a1a90();
-    void* pName = FUN_140998e80(pRec);
+    void* pName = FUN_140998e80(&pRec->m_spAssetData);
     if (!pName)
         return FUN_1409a1a90();
-    if (!FUN_140998e90(pRec))
+    if (!FUN_140998e90(&pRec->m_spActorManager))
         return FUN_1409a1a90();
-    int nIdx = FUN_1409a1890(FUN_1409f7900(pRec));
+    int nIdx = FUN_1409a1890(FUN_1409f7900(&pRec->m_spActorManager));
     if (nIdx == -2)
         return FUN_1409a1a90();
     efd::utf8string strOut;
