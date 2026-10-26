@@ -37,6 +37,9 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/inventory.h"
+#include "ms2/placeholder/citemmergeoptiontable.h"
+#include "ms2/commonfiles/luautil.h"
 
 // ---- statics (.text$di): the sort-name table of the shared item header, twice (two headers of the unit pull it in) ----
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -52,8 +55,7 @@ template<> Unk_MrRemoveFn::DelegateImplBase::~DelegateImplBase();
 template<> Unk_MrDropFn::DelegateImplBase::~DelegateImplBase();
 
 // The inventory's bag of items by uid.
-class Unk_MrInventory { public: MS2Ptr<CItem> FUN_140a5d680(__int64 nUid); };
-extern Unk_MrInventory DAT_143ab2a90;
+extern Unk_Inventory DAT_143ab2a90;
 
 // The inventory slot (invenslot.cpp) a slot can be dropped on: id 0x6200023.
 class Unk_MrInvenSlot : public DragSlot
@@ -64,12 +66,9 @@ public:
 Unk_MrInvenSlot* FUN_140a50b50(DragSlot* pSlot);        // pSlot->TypeCast(0x6200023), 0 on failure
 
 // The item price table (global of the lua state, FUN_1401c0db0).
-class Unk_MrPrice { public: __int64 FUN_140679790(int nRank, int nType); };
-Unk_MrPrice* FUN_1401c0db0();
+CLua* FUN_1401c0db0();
 
-// The item option text builder (FUN_1409eecf0).
-class Unk_MrOptionText { public: CStringW FUN_1405c1090(MS2Ptr<CItem> spItem, int nFlags); };
-Unk_MrOptionText* FUN_1409eecf0();
+// The item option text builder (TSingleton<CItemMergeOptionTable>::GetInstance).
 
 // The slot registry (see unit_1400d2c20.cpp / itemexchangeslot.cpp).
 void FUN_140d42540(const CString& strName, unsigned __int64 nOwner, MS2Ptr<CItem> spItem);
@@ -194,7 +193,7 @@ void UIItemMergeRevertDialog::FUN_140e4c7d0(CItem* pItem)
         FUN_140d42bc0(pSlot, Unk_MrRemoveFn(this, &UIItemMergeRevertDialog::FUN_140e4ce70));
         FUN_140d42b70(pSlot, Unk_MrDropFn(this, &UIItemMergeRevertDialog::FUN_140e4cea0));
     }
-    CStringW strOption = FUN_1409eecf0()->FUN_1405c1090(MS2Ptr<CItem>(pItem), 1);
+    CStringW strOption = TSingleton<CItemMergeOptionTable>::GetInstance()->FUN_1405c1090(MS2Ptr<CItem>(pItem), 1);
     CStringW strText = FUN_140656190(L"{0}{1}", GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_kinds_merge")), strOption);
     CItemData* pData = reinterpret_cast<CItemData*>(pItem->FUN_140527840());
     int nType = pData->FUN_14053c620();
@@ -206,7 +205,7 @@ void UIItemMergeRevertDialog::FUN_140e4c7d0(CItem* pItem)
     obj.FUN_1407cbb20("optionStr", CStringW(strText));
     obj.FUN_1407cbbe0("enabled", FUN_140e4d330(pItem) == 0);
     obj.FUN_1407cbb20("itemGUID", FUN_141b71910(pItem->FUN_140526a50()));
-    obj.FUN_1409c1180("price", FUN_1401c0db0()->FUN_140679790(pItem->FUN_140526bd0(), nType));
+    obj.FUN_1409c1180("price", FUN_1401c0db0()->CalcItemMergeRevertMeso(pItem->FUN_140526bd0(), nType));
     m_30->Invoke("setData", obj);
 }
 
