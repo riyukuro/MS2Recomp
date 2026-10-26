@@ -37,7 +37,22 @@ include("${CMAKE_CURRENT_LIST_DIR}/check-sdk.cmake")
 set(OUT "${CMAKE_BINARY_DIR}/out")
 set(MS2_CACHE_TAG fullexe CACHE STRING "progress cache tag: objs and gb overlay live in build/progress-<tag> (a private tag keeps a build off other agents' caches)")
 set(CACHE_TAG "${MS2_CACHE_TAG}")
-set(GB_OVERLAY "${MS2_ROOT}/build/progress-${CACHE_TAG}/gb")
+set(MS2_ENGINE_CACHE_TAG "" CACHE STRING "read the engine objs from build/progress-<tag>/gb instead of the build's own cache (bisecting; pair with MS2_ENGINE_REFRESH=0, the cache is not written)")
+set(MS2_ENGINE_REFRESH 1 CACHE STRING "FULLEXE_ENGINE_REFRESH: 1 rebuild stale engine objs, check list them, 0/empty take the cache as is")
+set(MS2_ALIAS_CURRENT 1 CACHE STRING "FULLEXE_ALIAS_CURRENT: 1 drop alias.py cache entries that do not describe the current obj, 0 keep them all")
+set(_er "${MS2_ENGINE_REFRESH}")
+if(_er STREQUAL "0")
+  set(_er "")
+endif()
+set(_ac "${MS2_ALIAS_CURRENT}")
+if(_ac STREQUAL "0" OR _ac STREQUAL "OFF")
+  set(_ac "")
+endif()
+if(MS2_ENGINE_CACHE_TAG)
+  set(GB_OVERLAY "${MS2_ROOT}/build/progress-${MS2_ENGINE_CACHE_TAG}/gb")
+else()
+  set(GB_OVERLAY "${MS2_ROOT}/build/progress-${CACHE_TAG}/gb")
+endif()
 set(WINSDK_VERSION "10.0.19041.0" CACHE STRING "Windows SDK version of the MSVC tree")
 if(MS2_MSVC_ROOT)
   set(_tp "${MS2_MSVC_ROOT}")
@@ -53,7 +68,7 @@ endforeach()
 # environment every tools/fullexe script reads (tools/ms2paths.py, tools/fullexe/common.py)
 set(ENVV FULLEXE_DIR=${OUT} FULLEXE_TREE=${MS2_ROOT} FULLEXE_FRESH=all FULLEXE_GB_OVERLAY=${GB_OVERLAY}
     FULLEXE_OBJ_CACHES=${MS2_ROOT}/build/progress-${CACHE_TAG}
-    FULLEXE_HERMETIC=1 FULLEXE_ENGINE_REFRESH=1 FULLEXE_ALIAS_CURRENT=1
+    FULLEXE_HERMETIC=1 FULLEXE_ENGINE_REFRESH=${_er} FULLEXE_ALIAS_CURRENT=${_ac}
     MS2_THIRD_PARTY=${_tp} MS2_ENGINE_DIR=${MS2_GAMEBRYO_ROOT} MS2_AGENT=${CACHE_TAG})
 file(MAKE_DIRECTORY "${OUT}")
 
@@ -73,6 +88,8 @@ set(PY ${MS2_PYTHON} -P)
 set(FE "${MS2_ROOT}/tools/fullexe")
 # 1. compile: the gates' incremental per-TU cache (game, Scaleform, engine); only changed units rebuild
 stage(compile "" COMMAND ${PY} "${MS2_ROOT}/tools/progress.py" --agent ${CACHE_TAG} -j ${MS2_JOBS})
+# ignored pins / look-alike COMDATs the gates only note: summary in out/pinreport.txt (FULLEXE_STRICT_PINS=1 fails on ignored pins)
+stage(pinreport "" COMMAND ${PY} "${FE}/pinreport.py")
 # 2. plan the obj order, import libs (from the exe's IAT), asm objs
 stage(plan "" COMMAND ${PY} "${FE}/plan.py")
 stage(implibs "" COMMAND ${PY} "${FE}/implibs.py" --lib)
@@ -83,6 +100,8 @@ stage(defsyms "" COMMAND ${PY} "${FE}/defsyms.py")
 stage(analyze0 "" COMMAND ${PY} "${FE}/analyze.py")
 # 4. glue: alias pairs (alias.rsp, abithunks.tsv) and /ORDER list
 stage(alias "" COMMAND ${PY} "${FE}/alias.py")
+# data aliases alias.py cannot pair (engine/CryptoPP/Cef vftables, singleton statics): link.py --alias appends datapair-alias.rsp
+stage(datapair "" COMMAND ${PY} "${FE}/datapair.py")
 stage(order "" COMMAND ${PY} "${FE}/order.py")
 # 5. alias + order link (still open), then the shim: trap stubs, ABI adapters, resources
 stage(link1 2 COMMAND ${PY} "${FE}/link.py" --alias --order)
