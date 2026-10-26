@@ -382,7 +382,7 @@ void EntityInstancing::FUN_1411c68d0() {
             if (original != NULL) { entry.clone->SetLocalTransform(original->GetLocalTransform()); dirty = true; }
             bool hidden = false;
             FUN_14098c6e0(entity, 0xa0b6b179, hidden);
-            if (!FUN_141bc7b20(FUN_1403ed2d0(), it->first)) renderer->AddRenderedEntity(entity, entry.original);
+            if (!FUN_141bc7b20(FUN_1403ed2d0(), it->first)) renderer->RemoveRenderedEntity(entity, entry.original);
         }
     }
 }
