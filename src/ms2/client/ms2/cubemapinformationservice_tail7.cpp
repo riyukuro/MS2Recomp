@@ -28,7 +28,7 @@
 // MS2-PIN: ??$try_emplace@$$V@?$map@W4Unk_CMISKindA@@HU?$less@W4Unk_CMISKindA@@@std@@V?$allocator@U?$pair@$$CBW4Unk_CMISKindA@@H@std@@@3@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_CMISKindA@@H@std@@@std@@@std@@@std@@_N@1@AEBW4Unk_CMISKindA@@@Z 0x14111de60 ; prop
 // MS2-PIN: ??$try_emplace@$$V@?$map@W4Unk_CMISKindB@@HU?$less@W4Unk_CMISKindB@@@std@@V?$CustomAllocator@U?$pair@$$CBW4Unk_CMISKindB@@H@std@@@efd@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_CMISKindB@@H@std@@@std@@@std@@@std@@_N@1@$$QEAW4Unk_CMISKindB@@@Z 0x14111dea0 ; fx28 callee 0x141116070 (int value)
 // MS2-PIN: ??$try_emplace@$$V@?$map@W4Unk_CMISKindB@@EU?$less@W4Unk_CMISKindB@@@std@@V?$CustomAllocator@U?$pair@$$CBW4Unk_CMISKindB@@E@std@@@efd@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_CMISKindB@@E@std@@@std@@@std@@@std@@_N@1@$$QEAW4Unk_CMISKindB@@@Z 0x14111df20 ; fx28 callee 0x1411161c0 (uchar value)
-// MS2-PIN: ??$try_emplace@$$V@?$map@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@std@@_N@1@AEBH@Z 0x14111dfa0 ; prop
+// MS2-PIN: ??$try_emplace@$$V@?$map@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@std@@_N@1@AEBH@Z 0x14111d8a0 ; la1: std::allocator copy (deep-same SalesInfo std chain); 0x14111dfa0 is the efd::map<long,MS2Ptr<Cube>> one
 // MS2-PIN: ??0?$CAtlArray@PEAUUnk_CMISElem458@@V?$CElementTraits@PEAUUnk_CMISElem458@@@ATL@@@ATL@@QEAA@XZ 0x14111dfe0 ; unique
 // MS2-PIN: ??0?$CustomAllocator@H@efd@@QEAA@XZ 0x14111e0a0 ; prop
 // MS2-PIN: ??$?0U?$integral_constant@_N$00@std@@@_Unused_parameter@std@@QEAA@$$QEAU?$integral_constant@_N$00@1@@Z 0x14111e0b0 ; order
@@ -94,6 +94,16 @@
 #include <algorithm>
 #include <NiTransform.h>
 #include "ms2/commonfiles/ugcmapsetiteminfo.h"
+
+// la1: the column map efd::map<long, MS2Ptr<Cube>> (operator[] 0x141128350, erase(where) 0x141156050); its copies in this
+// unit's range are pinned at the end.
+void Unk_CMISDriveColumnMapTail7()
+{
+    efd::map<long, MS2Ptr<Cube> > m;
+    const long k = 0;
+    m[k];
+    m.erase(m.begin());
+}
 
 struct Unk_CMISPawn;
 // The ordering FUN_1410bb610 sorts its entity list with: by distance from the pawn (ctor 0x141123230, operator()
@@ -196,3 +206,4 @@ void Unk_CMISDriveTail7()
     { int a = nKey, b = nKey; std::pair<int, int> pr = std::make_pair(a, b); (void)pr; }
     { ATL::CAtlArray<Unk_CMISElem388*> a; ATL::CAtlArray<Unk_CMISElem3a8*> b; ATL::CAtlArray<Unk_CMISElem458*> c; }
 }
+// MS2-PIN: ??$try_emplace@$$V@?$map@JV?$MS2Ptr@VCube@@@@U?$less@J@std@@V?$CustomAllocator@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@efd@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@std@@_N@1@AEBJ@Z 0x14111dfa0 ; la1: the efd::map<long,MS2Ptr<Cube>> (column map, operator[] 0x141128350) chain
