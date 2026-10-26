@@ -2210,12 +2210,12 @@ class Unk_LsCostList : public CPtred
 {
 public:
     int FUN_14028b500();                                                // the number of entries
-    MS2Ptr<Unk_LsCostEntry> FUN_14028a0f0(int nIndex);
+    Unk_LsCostEntry* FUN_14028a0f0(int nIndex);                        // 0x14028a0f0 returns the raw entry pointer in rax (no hidden slot)
 };
 class Unk_LsRecipe : public CPtred
 {
 public:
-    MS2Ptr<Unk_LsCostList> FUN_14026c230();                             // the ingredient entries
+    Unk_LsCostList* FUN_14026c230();                                  // the ingredient entries
 };
 
 extern char DAT_143ab2a90;                                              // the inventory
@@ -2267,11 +2267,11 @@ int UILapenshardUpgradeTab::FUN_140c691f0()
     MS2Ptr<Unk_LsRecipe> spRecipe = spRec->FUN_1405b41b0(m_n_c0);
     if (spRecipe == 0)
         return 0;
-    MS2Ptr<Unk_LsCostList> spList = spRecipe->FUN_14026c230();
+    Unk_LsCostList* spList = spRecipe->FUN_14026c230();
     int nEntries = spList->FUN_14028b500();
     for (int i = 0; i < nEntries; ++i)
     {
-        MS2Ptr<Unk_LsCostEntry> spEntry = spList->FUN_14028a0f0(i);
+        Unk_LsCostEntry* spEntry = spList->FUN_14028a0f0(i);
         if (spEntry == 0)
             continue;
         if (spEntry->FUN_14026b350())
@@ -2467,11 +2467,11 @@ void LapenshardUpgradeSlotPanel::FUN_140c65540(CString& strBag, MS2Ptr<Unk_LsRec
     MS2Ptr<Unk_LsRecipe> spRecipe = spRec->FUN_1405b41b0(nTier);
     if (!(spRecipe == 0))
     {
-        MS2Ptr<Unk_LsCostList> spList = spRecipe->FUN_14026c230();
+        Unk_LsCostList* spList = spRecipe->FUN_14026c230();
         unsigned nEntries = spList->FUN_14028b500();
         for (unsigned i = 0; i < nEntries; ++i)
         {
-            MS2Ptr<Unk_LsCostEntry> spEntry = spList->FUN_14028a0f0(i);
+            Unk_LsCostEntry* spEntry = spList->FUN_14028a0f0(i);
             if (spEntry == 0)
                 continue;
             if (spEntry->FUN_14026b350())
