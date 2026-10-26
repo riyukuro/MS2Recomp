@@ -1509,20 +1509,20 @@
 14111e450	14111eb90	unit_14111e450	none	34	mn	rejected ?\cubemapinformationservice.cpp
 14111eb90	14111fdf0	unit_14111eb90_treecomparatorconstructors	none	76	mn	descriptive: treecomparatorconstructors
 14111fdf0	141121cf0	unit_14111fdf0	none	157	mn	
-141121cf0	141123340	unit_141121cf0	none	120	mn	rejected ?\automaticcreatecubeinfo.cpp
+141121cf0	141123340	unit_141121cf0_cubemapinformationserviceconstructorcomdats	none	120	mn	descriptive: cubemapinformationserviceconstructorcomdats
 141123340	1411234d0	unit_141123340	none	6	mn	rejected ?\ecr.cpp
 1411234d0	141126010	unit_1411234d0	none	296	mn	rejected ?\cubemapinformationservice.cpp
 141126010	1411263f0	unit_141126010	none	15	mn	rejected ?\ecr.cpp
-1411263f0	1411267c0	unit_1411263f0	none	12	mn	
-1411267c0	141126bd0	unit_1411267c0	none	13	mn	
-141126bd0	141127a90	unit_141126bd0	none	58	mn	
-141127a90	141128e70	unit_141127a90	none	131	mn	
-141128e70	14112ab60	unit_141128e70	none	102	mn	
-14112ab60	14112cd60	unit_14112ab60	none	90	mn	
-14112cd60	14112cdec	unit_14112cd60	none	3	mn	
+1411263f0	1411267c0	unit_1411263f0_cubemapinformationservicecontainerassignments	none	12	mn	descriptive: cubemapinformationservicecontainerassignments
+1411267c0	141126bd0	unit_1411267c0_stlvalueassignmentsanditeratorcomparisons	none	13	mn	descriptive: stlvalueassignmentsanditeratorcomparisons
+141126bd0	141127a90	unit_141126bd0_containeriteratorcomparisons	none	58	mn	descriptive: containeriteratorcomparisons
+141127a90	141128e70	unit_141127a90_mapiteratorlookupglue	none	131	mn	descriptive: mapiteratorlookupglue
+141128e70	14112ab60	unit_141128e70_treeiteratorincrementglue	none	102	mn	descriptive: treeiteratorincrementglue
+14112ab60	14112cd60	unit_14112ab60_mapiteratordecrementglue	none	90	mn	descriptive: mapiteratordecrementglue
+14112cd60	14112cdec	unit_14112cd60_cubemapinformationserviceutf8appenders	none	3	mn	descriptive: cubemapinformationserviceutf8appenders
 14112cdec	14112fa90	unit_14112cdec	none	114	mn	
-14112fa90	14112fe10	unit_14112fa90	none	21	mn	
-14112fe10	14112fe60	unit_14112fe10	none	2	mn	
+14112fa90	14112fe10	unit_14112fa90_boxedpointerwrappers	none	21	mn	descriptive: boxedpointerwrappers
+14112fe10	14112fe60	unit_14112fe10_pooledobjectfactoryglue	none	2	mn	descriptive: pooledobjectfactoryglue
 14112fe60	141142d40	unit_14112fe60	none	412	mn	
 141142d40	141145cb0	unit_141142d40	none	477	mn	
 141145cb0	141148d70	unit_141145cb0	none	207	mn	
@@ -1530,11 +1530,11 @@
 141159a60	14115b040	unit_141159a60	none	156	mn	
 14115b040	141165f00	?\cubemotionmanager.cpp	low	310	mn	dir client\ms2
 141165f00	1411673f0	?\customizedtexinfo.cpp	low	23	mn	dir client\ms2
-1411673f0	141168140	unit_1411673f0	none	12	mn	
-141168140	14116bdc0	unit_141168140	none	121	mn	
+1411673f0	141168140	unit_1411673f0_equipmodelpartscenehelpers	none	12	mn	descriptive: equipmodelpartscenehelpers
+141168140	14116bdc0	unit_141168140_debugconsole	none	121	mn	descriptive: debugconsole
 14116bdc0	14116d540	?\debughelper.cpp	low	26	mn	dir client\ms2
-14116d540	14116e3f0	unit_14116d540	none	31	mn	rejected ?\inputkeyhandler.cpp
-14116e3f0	14116f6a0	unit_14116e3f0	none	5	mn	
+14116d540	14116e3f0	unit_14116d540_inputkeyhandler	none	31	mn	descriptive: inputkeyhandler
+14116e3f0	14116f6a0	unit_14116e3f0_customizedmeshdecaltextures	none	5	mn	descriptive: customizedmeshdecaltextures
 14116f6a0	141177ee0	?\decoeditservice.cpp	low	240	mn	dir client\ms2
 141177ee0	141178370	?\depthoffieldmanager.cpp	low	18	mn	dir client\ms2
 141178370	14118b420	client\ms2\dpsmetersystem.cpp	high	378	mn	
@@ -1552,8 +1552,8 @@
 1411cb290	1411ce100	client\ms2\entityvibrator.cpp	high	17	mn	
 1411ce100	1411dbc70	?\entityworldmanager.cpp	low	456	mn	dir client\ms2
 1411dbc70	1411ff420	?\equipitem.cpp	low	818	mn	dir client\ms2
-1411ff420	1411ff4c0	unit_1411ff420	none	2	mn	
-1411ff4c0	1411ffa10	unit_1411ff4c0	none	11	mn	rejected ?\priortycutting.cpp
+1411ff420	1411ff4c0	unit_1411ff420_bytebuffermaskhelpers	none	2	mn	descriptive: bytebuffermaskhelpers
+1411ff4c0	1411ffa10	unit_1411ff4c0_equipmentcuttinginterface	none	11	mn	descriptive: equipmentcuttinginterface
 1411ffa10	141209610	?\equipmodel.cpp	low	247	mn	dir client\ms2
 141209610	14120c0e0	client\ms2\equipmodelforceapplier.cpp	high	95	mn	
 14120c0e0	14120f7c0	?\equipslot.cpp	low	70	mn	dir client\ms2
@@ -1568,7 +1568,7 @@
 14123a080	14123b2b0	?\fusionslotbag.cpp	low	46	mn	dir client\ms2
 14123b2b0	14123f2d0	client\ms2\gameobject.cpp	high	145	mn	
 14123f2d0	14123f5b0	unit_14123f5b0	none	2	mn	ps1 split from client\ms2\gameobject.cpp: PhysX controller holder: head of the next obj (see gameobject.cpp)
-14123f5b0	141241810	unit_14123f5b0	none	53	mn	rejected ?\nxcapsulecontrollerdesc.cpp
+14123f5b0	141241810	unit_14123f5b0_gameobjectcontrollerphysxhelpers	none	53	mn	descriptive: gameobjectcontrollerphysxhelpers
 141241810	141250a80	client\ms2\gameoption.cpp	high	307	mn	
 141250a80	1412558c0	?\gameoptioninputdefault.cpp	low	133	mn	dir client\ms2
 1412558c0	1412646a0	client\ms2\gameoptionstruct.cpp	high	246	mn	
@@ -1585,18 +1585,18 @@
 141284ac0	141284e00	?\uiautorevivecountdowndialog.cpp	low	9	mn	dir client\ms2
 141284e00	141286410	?\uidebuggingdialog.cpp	low	19	mn	dir client\ms2
 141286410	14128e7f0	client\ms2\uidebugguidedialog.cpp	high	310	mn	
-14128e7f0	14128f8f0	unit_14128e7f0	none	28	mn	rejected ?\uibuffballoon.cpp
+14128e7f0	14128f8f0	unit_14128e7f0_uibuffballoon	none	28	mn	descriptive: uibuffballoon
 14128f8f0	1412920b0	?\uidebugpacketdialog.cpp	low	31	mn	dir client\ms2
 1412920b0	141294100	?\uidevelopdialog.cpp	low	57	mn	dir client\ms2
 141294100	141299650	?\uidialogcenterdialog.cpp	low	107	mn	dir client\ms2
-141299650	14129a3c0	unit_141299650	none	28	mn	rejected ?\uihomesummondialog.cpp
+141299650	14129a3c0	unit_141299650_uihomesummondialog	none	28	mn	descriptive: uihomesummondialog
 14129a3c0	14129ba60	unit_14129a3c0	none	28	mn	rejected ?\uiquizdialog.cpp
 14129ba60	14129cfa0	unit_14129ba60_recallscrollnotifydialog	none	24	mn	descriptive: recallscrollnotifydialog
 14129cfa0	1412a4590	unit_14129cfa0_itemremakeoptiondialog	none	91	mn	descriptive: itemremakeoptiondialog
 1412a4590	1412a74a0	unit_1412a4590	none	64	mn	rejected ?\uisystemmailnotifydialog.cpp
 1412a74a0	1412c2020	client\ms2\uidungeonroomdialog.cpp	high	391	mn	
 1412c2020	1412c3ac0	?\uiglobalportaldialog.cpp	low	29	mn	dir client\ms2
-1412c3ac0	1412c3e60	unit_1412c3ac0	none	11	mn	rejected ?\uiiguidemoviedialog.cpp (order within gap)
+1412c3ac0	1412c3e60	unit_1412c3ac0_uiiguide-moviedialog	none	11	mn	descriptive: uiiguide-moviedialog
 1412c3e60	1412c4cd0	?\uiguildflagtooltip.cpp	low	15	mn	dir client\ms2
 1412c4cd0	1412c8bd0	?\uihomeinfodialog.cpp	low	56	mn	dir client\ms2
 1412c8bd0	1412c9860	?\uihomepassworddialog.cpp	low	15	mn	dir client\ms2
