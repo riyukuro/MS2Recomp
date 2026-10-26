@@ -1713,8 +1713,8 @@ unsigned FUN_14098dea0(NiRefObject* pObject);                       // reference
 NiTexture* FUN_140a5ac80(NiTexturePtr* pHandle);                    // handle -> texture pointer
 NiPixelData* FUN_140a5ac70(NiPixelDataPtr* pHandle);                // handle -> pixel data pointer
 void FUN_1409fabf0(NiAVObjectPtr* pHandle, void* pNode);            // assign a node to a handle
-NiPixelData* FUN_140980440(NiSourceTexture* pTexture);              // source pixel data
-void FUN_141562500(NiSourceTexture* pTexture, NiPixelData* pPixels);    // set the source pixel data
+NiTexture::RendererData* FUN_140980440(NiSourceTexture* pTexture);  // GetRendererData (+0x40)
+void FUN_141562500(NiSourceTexture* pTexture, NiTexture::RendererData* pData);    // SetRendererData (+0x40)
 void FUN_140399100(CString strPattern, CString strDirectory, ATL::CAtlArray<CString>& aOut, CString strExclude, bool bLocalOnly);
 
 // MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
@@ -1956,10 +1956,13 @@ void CNifLoadingService::RefreshTextures()
                     {
                         NiSourceTexture* pTexture = static_cast<NiSourceTexture*>(
                             FUN_14098d8d0(&DAT_143afa930, FUN_14097fbf0(&pPair->m_value->m_spData)));
-                        NiPixelDataPtr spOld = FUN_140980440(pTexture);
-                        if (spOld != 0)
+                        NiTexture::RendererData* pOld = FUN_140980440(pTexture);
+                        if (pOld != 0)
+                        {
                             FUN_141562500(pTexture, 0);
-                        pTexture->LoadPixelDataFromFile();
+                            delete pOld;
+                        }
+                        pTexture->DestroyAppPixelData();
                         pPair->m_value->m_dLastUse = FUN_14086d260()->FUN_141473280();
                     }
                 }
@@ -2745,17 +2748,11 @@ void FUN_14154fda0(void* pObj)
 template CCachedNifPtr& ATL::CRBTree<CString, CCachedNifPtr, ATL::CElementTraits<CString>, ATL::CElementTraits<CCachedNifPtr> >::GetValueAt(POSITION);
 template CCachedTexturePtr& ATL::CRBTree<Unk_NifTexKey, CCachedTexturePtr, ATL::CElementTraits<Unk_NifTexKey>, ATL::CElementTraits<CCachedTexturePtr> >::GetValueAt(POSITION);
 
-// Raw (no reference counting) store into NiSourceTexture's protected m_spSrcPixelData.
-struct Unk_NifSrcTexAccess : NiSourceTexture
+// MS2-FUNCTIONAL: an out-of-line NiTexture::SetRendererData (the exe stores the raw pointer at +0x40)
+// MS2-PIN: ?FUN_141562500@@YAXPEAVNiSourceTexture@@PEAVRendererData@NiTexture@@@Z 0x141562500
+void FUN_141562500(NiSourceTexture* pTexture, NiTexture::RendererData* pData)
 {
-    static NiPixelDataPtr NiSourceTexture::* Member() { return &Unk_NifSrcTexAccess::m_spSrcPixelData; }
-};
-
-// MS2-FUNCTIONAL: the exe stores the raw pointer at +0x40 directly (25 bytes); the protected member needs the access helper
-// MS2-PIN: ?FUN_141562500@@YAXPEAVNiSourceTexture@@PEAVNiPixelData@@@Z 0x141562500
-void FUN_141562500(NiSourceTexture* pTexture, NiPixelData* pPixels)
-{
-    *reinterpret_cast<NiPixelData**>(&(pTexture->*Unk_NifSrcTexAccess::Member())) = pPixels;
+    pTexture->SetRendererData(pData);
 }
 
 // MS2-PIN: ??__EDAT_143ae1f28@@YAXXZ 0x1400fa4e0 ; generated initializer of the nif cache lock
