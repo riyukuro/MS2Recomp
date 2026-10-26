@@ -88,11 +88,12 @@ class Unk_TransformRow : public CPtred
 {
 public:
     __int64 m_nFee;                                     // +0x18
-    char m_pad_20[0x20];
     ATL::CAtlArray<int> m_ids;                          // +0x20
     ATL::CAtlArray<int> m_ranks;                        // +0x40
     ATL::CAtlArray<int> m_counts;                       // +0x60
 };
+MS2_CHECK_OFFSET(Unk_TransformRow, m_ids, 0x20);
+MS2_CHECK_OFFSET(Unk_TransformRow, m_counts, 0x60);
 
 // The transform table singleton.
 class Unk_TransformTable
