@@ -1075,7 +1075,7 @@ void Unk_PCCubeCraft::FUN_1410aad50()
             {
                 NiMatrix3 kRot = m_spGuide->vfunc_5();
                 kRot.ToEulerAnglesXYZ(kEuler.x, kEuler.y, kEuler.z);
-                kEuler.FUN_140ad0c10(-57.29578f);
+                kEuler.FUN_140ad0c10(-57.295776f);
             }
             else
             {
@@ -1083,11 +1083,10 @@ void Unk_PCCubeCraft::FUN_1410aad50()
                 kEuler = pLift->vfunc_20();
                 kEuler.z = kEuler.z + spData->install.staticAngle;
             }
-            if (0.0f <= kEuler.z)
-                kEuler.z = kEuler.z + 89.0f;
+            if (kEuler.z >= 0.0)   // the exe compares in double
+                kEuler.z = (float)(int)((kEuler.z + 89.0f) / 90.0f) * 90.0f;
             else
-                kEuler.z = kEuler.z - 89.0f;
-            kEuler.z = (float)(int)(kEuler.z / 90.0f) * 90.0f;
+                kEuler.z = (float)(int)((kEuler.z - 89.0f) / 90.0f) * 90.0f;
             Unk_Int3 kGrid = FUN_1408a1430((const NiPoint3&)m_ptCell);
             CubeItemInfo kInfo(*m_spItem.get());
             COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
@@ -1104,7 +1103,7 @@ void Unk_PCCubeCraft::FUN_1410aad50()
             {
                 NiMatrix3 kRot = m_spGuide->vfunc_5();
                 kRot.ToEulerAnglesXYZ(kEuler.x, kEuler.y, kEuler.z);
-                kEuler.FUN_140ad0c10(-57.29578f);
+                kEuler.FUN_140ad0c10(-57.295776f);
             }
             else
             {
@@ -1112,11 +1111,10 @@ void Unk_PCCubeCraft::FUN_1410aad50()
                 kEuler = pLift->vfunc_20();
                 kEuler.z = kEuler.z + spData->install.staticAngle;
             }
-            if (0.0f <= kEuler.z)
-                kEuler.z = kEuler.z + 89.0f;
+            if (kEuler.z >= 0.0)   // the exe compares in double
+                kEuler.z = (float)(int)((kEuler.z + 89.0f) / 90.0f) * 90.0f;
             else
-                kEuler.z = kEuler.z - 89.0f;
-            kEuler.z = (float)(int)(kEuler.z / 90.0f) * 90.0f;
+                kEuler.z = (float)(int)((kEuler.z - 89.0f) / 90.0f) * 90.0f;
             FUN_140291b70(&kEuler.z);
             CubeItemInfo kInfo(*m_spItem.get());
             COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
@@ -1715,8 +1713,8 @@ void Unk_PCCubeCraft::FUN_1410ac9b0()
         Vector3 kAngles;
         NiMatrix3 kCur = m_spGuide->vfunc_5();
         kCur.ToEulerAnglesXYZ(kAngles.x, kAngles.y, kAngles.z);
-        kAngles.x = kAngles.x * -57.29578f;
-        kAngles.y = kAngles.y * -57.29578f;
+        kAngles.x = kAngles.x * -57.295776f;
+        kAngles.y = kAngles.y * -57.295776f;
         kAngles.z = fYaw;
         NiMatrix3 kRot;
         FUN_140b86230((const efd::Point3&)kAngles, kRot);
