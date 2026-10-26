@@ -737,9 +737,9 @@ void UIAvatarBase::FUN_1418b9c10()
             const Vector3& kPos = FUN_140e69200(pNode);
             m_kPosBase = kPos;
             if (m_kAngleBase.FUN_140552700(DAT_143b01a60))
-                FUN_1418ba4a0(pRot, &kPos, &m_kPos);
+                FUN_1418ba4a0(pRot, &kPos, &m_kPivotBase);
             else
-                m_kPos = m_kPosBase;
+                m_kPivotBase = m_kPosBase;
             if (m_spView)
             {
                 UIModelView* pModelView = dynamic_cast<UIModelView*>((UIRenderView*)m_spView);
