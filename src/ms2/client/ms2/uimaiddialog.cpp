@@ -30,6 +30,9 @@
 #include "ms2/commonfiles/npcdata.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/client/ms2/uitalkcinematic.h"
+#include "ms2/commonfiles/commonstringtable.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -174,8 +177,8 @@ public:
 Unk_MaidWorld* FUN_1403ed2d0();
 CInputKeyHandler* FUN_14025e7c0();                              // the key handler singleton
 
-class Unk_MaidBgSvc { public: void FUN_1416fb340(CStringW& strPath); };    // resolve a background path
-Unk_MaidBgSvc* FUN_1403b4750();
+    // resolve a background path
+CReservedWordTable* FUN_1403b4750();
 
 // The game constants (0xa118: the maxChars1 limits, 0xa1c8: the maxChars2 limits). View only.
 struct Unk_MaidLimitBox { unsigned char m[0xb0]; };
@@ -196,9 +199,8 @@ struct Unk_MaidProfileFields
 };
 MS2_CHECK_SIZE(Unk_MaidProfileFields, 0x68);
 
-class Unk_MaidTextCheck { public: int FUN_140225470(const CStringW& str, CStringW& strOut); int FUN_140225550(const CStringW& str, CStringW& strOut); };
 void FUN_14025c670(void* p);                                    // text-checker smart pointer dtor
-struct Unk_MaidTextCheckRef { void* m_00; Unk_MaidTextCheck* m_p; ~Unk_MaidTextCheckRef() { FUN_14025c670(this); } };
+struct Unk_MaidTextCheckRef { void* m_00; CBanTextChecker* m_p; ~Unk_MaidTextCheckRef() { FUN_14025c670(this); } };
 class Unk_MaidTextSvc { public: Unk_MaidTextCheckRef FUN_140229a50(); };   // returns the smart pointer by value
 Unk_MaidTextSvc* FUN_14025e7d0();
 
@@ -210,15 +212,14 @@ CStringW FUN_1409e90c0(int nId, const int& n1, const int& n2, const int& n3, con
 CStringW FUN_140763e10(int nNumber);                            // a number with digit grouping
 const int& FUN_1404eb7e0(const int& a, const int& b);           // std::max<int>
 int FUN_14053feb0(int nItemId);                                 // default rank of an item
-__int64 FUN_140869440();                                        // the server time
+__int64 GetServerTime();                                        // the server time
 void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW strTag);   // pop the system message
 void FUN_140d73aa0(CStringW text, int nA, int nB, CStringW strTag);     // pop the notice
 int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned nArgs, int n);
 void FUN_14151f200();
 int FUN_1403b3c40(const CStringW& str, const wchar_t* psz);
 void FUN_140710590(COutPacket& packet);                         // send
-class Unk_MaidRefPos { public: int FUN_141b1d3d0(); int FUN_141b1d460(); };
-Unk_MaidRefPos* FUN_140a7b2b0(int nId);                         // a dialog's position record
+UITalkCinematic* FUN_140a7b2b0(int nId);                         // a dialog's position record
 
 // The "int" setters of ASObj used here only exist in the shared header; the exe calls them from this unit.
 
@@ -283,7 +284,7 @@ int UIMaidDialog::vfunc_13()
 void UIMaidDialog::vfunc_43()
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    Unk_MaidRefPos* pRef;
+    UITalkCinematic* pRef;
     if (pDialog != 0 && (pRef = FUN_140a7b2b0(0x4e40)) != 0)
     {
         int nX = pRef->FUN_141b1d3d0();
@@ -586,7 +587,7 @@ int UIMaidDialog::FUN_1412d8e10(int nField, CStringW strValue, Unk_MaidProfile* 
         pFields->m_str60 = strValue;
     }
     Unk_MaidTextCheckRef checkRef = FUN_14025e7d0()->FUN_140229a50();
-    Unk_MaidTextCheck* pCheck = checkRef.m_p;
+    CBanTextChecker* pCheck = checkRef.m_p;
     if (pCheck == 0)
         return 0;
     CStringW strBad;
@@ -727,7 +728,7 @@ CStringW UIMaidDialog::FUN_1412da590()
     Unk_MaidRef spMaid = pView->FUN_141093800();
     if (spMaid.FUN_140d51d60())
         return strText;
-    if (FUN_140869440() < spMaid.FUN_14067e8c0()->m_nExpireTime)
+    if (GetServerTime() < spMaid.FUN_14067e8c0()->m_nExpireTime)
     {
         CMsTime kTime(spMaid.FUN_14067e8c0()->m_nExpireTime);
         int nYear = kTime.GetYear();
