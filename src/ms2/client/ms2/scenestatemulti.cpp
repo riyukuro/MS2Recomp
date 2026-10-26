@@ -199,7 +199,7 @@ int FUN_1406516b0();
 CStringW GetStringCommon(int);
 CStringW FUN_1401ceea0(const wchar_t*, const int&);
 UIMessageBox* FUN_14151f890();
-CStringW FUN_141a02ce0(void*);
+const CStringW& FUN_141a02ce0(void*);   // CMsgBoxData::GetExtra: returns a reference in rax, no hidden slot
 void FUN_141a01690(void*, const CStringW&, const CStringW&, const CStringW&);
 void FUN_141a01660(void*, const CStringW&);
 void FUN_141a027c0(void*, Delegate<bool(int, const CMsgBoxData&)>);
