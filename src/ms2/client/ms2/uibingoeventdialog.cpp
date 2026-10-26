@@ -111,6 +111,8 @@ static CString s_sndRegPopUp = "System_Bingo_RegPopUp_01";
 static CString s_sndSpecialPopUp = "System_Bingo_SpecialPopUp_01";
 static CString s_sndSuccess = "System_Bingo_Success_01";
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/placeholder/gfxmanager.h"
+#include "ms2/placeholder/creservedwordtable.h"
 
 // ---- local stand-ins for classes whose units are not recovered yet ----
 class Unk_140acd6e0 : public ASDisplayObject
@@ -169,13 +171,11 @@ struct Unk_BingoItemKey
     int m_rank;
     int m_extra;
 };
-extern Unk_Inventory DAT_143ab2a90;
-class Unk_BingoLocalizer { public: CStringW FUN_1422b0570(const CString& key); };
-Unk_BingoLocalizer* FUN_14025e7a0();
+extern Unk_Inventory g_143ab2a90;
+GFxManager* FUN_14025e7a0();
 class Unk_BingoStrings { public: CStringW FUN_141811980(int, int); };
 Unk_BingoStrings* FUN_1401a9d70();
-class Unk_BingoTextFilter { public: void FUN_1416fb300(CStringW&); };
-Unk_BingoTextFilter* FUN_1403b4750();
+CReservedWordTable* FUN_1403b4750();
 
 // Client globals: the account's bingo event record (singleton 0x140302b00 -> member +0xd78).
 class Unk_BingoEventData
@@ -229,12 +229,12 @@ unsigned FUN_140406550(Unk_BingoEventData*, unsigned long long, ATL::CAtlArray<i
 CString FUN_1402bb1c0(const char*, const int&);
 CString FUN_14052ea30(const char*, const unsigned&);
 CString FUN_1401d9af0(const char*, const unsigned long long&);
-CStringW FUN_1402a61e0(const wchar_t*);
+CStringW StringFormat(const wchar_t*);
 CStringW FUN_140292a70(const wchar_t*, const unsigned&);
 CStringW FUN_140656190(const wchar_t*, const CStringW&, const CStringW&);
 
 void FUN_1401d9a30(const CStringW&, ATL::CAtlArray<int>&, const wchar_t*);
-__int64 FUN_140869440();
+__int64 GetServerTime();
 unsigned FUN_140869420();
 bool FUN_14086ab70(CMsTime, CMsTime, int);
 void FUN_141276180(const CString&, const CString&);
@@ -316,7 +316,7 @@ int UIBingoEventDialog::vfunc_65()
     pkt.WriteUInt8(0x14);
     FUN_140710590(pkt);
     m_state = 0;
-    m_time = CMsTime(FUN_140869440());
+    m_time = CMsTime(GetServerTime());
     m_msgOpen = false;
     m_tick = FUN_140869420();
     return UIDialog::vfunc_65();
@@ -387,7 +387,7 @@ void UIBingoEventDialog::OnLoadComplete()
         if (text.IsNull() == false)
             continue;
         if (i == 7)
-            text->FUN_1422c4cd0(FUN_1402a61e0(FUN_14025e7a0()->FUN_1422b0570(CString("$s_bingo_event_dialog_reward_condition_last"))));
+            text->FUN_1422c4cd0(StringFormat(FUN_14025e7a0()->FUN_1422b0570(CString("$s_bingo_event_dialog_reward_condition_last"))));
         else
         {
             unsigned n = i + 1;
@@ -487,7 +487,7 @@ void UIBingoEventDialog::vfunc_79(void* pData)
     unsigned char cmd = ((CInPacket*)pData)->ReadUInt8();
     if (cmd == 0x14)
     {
-        m_time = CMsTime(FUN_140869440());
+        m_time = CMsTime(GetServerTime());
         m_stage = ((CInPacket*)pData)->ReadInt32();
         CStringW strChecked = ((CInPacket*)pData)->ReadUnicodeString();
         m_checked.RemoveAll();
@@ -582,9 +582,9 @@ int UIBingoEventDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 // MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIBingoEventDialog::vfunc_72()
 {
-    if (FUN_14086ab70(CMsTime(m_time), CMsTime(FUN_140869440()), 0))
+    if (FUN_14086ab70(CMsTime(m_time), CMsTime(GetServerTime()), 0))
     {
-        m_time = CMsTime(FUN_140869440());
+        m_time = CMsTime(GetServerTime());
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0, FUN_14025e7a0()->FUN_1422b0570(CString("$s_bingo_event_change_day")), 0, CStringW(L""));
         if (box.get() != 0)
         {
@@ -698,7 +698,7 @@ void UIBingoEventDialog::FUN_140bb06e0(const Scaleform::GFx::FunctionHandler::Pa
         Unk_BingoItemKey key;
         key.m_id = nItemId;
         key.m_rank = FUN_14053feb0(nItemId);
-        if (DAT_143ab2a90.FUN_140a5eda0(&key.m_id) < 1)
+        if (g_143ab2a90.FUN_140a5eda0(&key.m_id) < 1)
             return;
         CStringW strTag = FUN_1401ceea0(L"{0}", nIndex);
         strMsg = FUN_140275590(strMsg, FUN_1401a9d70()->FUN_141811980(1, key.m_id), m_board[nIndex]);
@@ -716,7 +716,7 @@ void UIBingoEventDialog::FUN_140bb06e0(const Scaleform::GFx::FunctionHandler::Pa
         Unk_BingoItemKey key;
         key.m_id = nItemId;
         key.m_rank = FUN_14053feb0(nItemId);
-        if (DAT_143ab2a90.FUN_140a5eda0(&key.m_id) < 1)
+        if (g_143ab2a90.FUN_140a5eda0(&key.m_id) < 1)
             return;
         CStringW strTag = FUN_1401ceea0(L"{0}", nIndex);
         strMsg = FUN_140275590(strMsg, FUN_1401a9d70()->FUN_141811980(1, key.m_id), m_board[nIndex]);
@@ -889,8 +889,8 @@ void UIBingoEventDialog::FUN_140bb1d60()
     Unk_BingoItemKey cashKey;
     cashKey.m_id = nCashId;
     cashKey.m_rank = FUN_14053feb0(nCashId);
-    int nFree = DAT_143ab2a90.FUN_140a5eda0(&freeKey.m_id);
-    int nCash = DAT_143ab2a90.FUN_140a5eda0(&cashKey.m_id);
+    int nFree = g_143ab2a90.FUN_140a5eda0(&freeKey.m_id);
+    int nCash = g_143ab2a90.FUN_140a5eda0(&cashKey.m_id);
     if (m_free.m_text.get() != 0)
         BINGO_TEXT(m_free.m_text)->FUN_1422c4c80(FUN_1402bb1c0("X {0}", nFree));
     if (m_cash.m_text.get() != 0)
@@ -1217,7 +1217,7 @@ void UIBingoEventDialog::FUN_140bb4150(unsigned nLines)
 {
     if ((size_t)nLines == 12)
     {
-        FUN_1412751f0(FUN_1402a61e0(FUN_14025e7a0()->FUN_1422b0570("$s_bingo_event_complete_all_bingo")), 3, 1);
+        FUN_1412751f0(StringFormat(FUN_14025e7a0()->FUN_1422b0570("$s_bingo_event_complete_all_bingo")), 3, 1);
         return;
     }
     Unk_BingoRef ref = FUN_1403ed060(FUN_140302b00())->FUN_140429c80();
