@@ -12,6 +12,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 
 #include "ms2/placeholder/unk_1402a9d70.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
 
 // The shared eight-byte null-handle wrapper; constructor forwards to its pointer setter.
 class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
@@ -30,15 +31,7 @@ static CString s_sortNames2[] = { "None", "Buy", "Like", "PriceLow", "PriceHigh"
 // ---- unit-local placeholders ----
 
 // The input state (FUN_14025e7c0).
-class Unk_InputState
-{
-public:
-    bool FUN_14116d950(int nKey, bool b, int n);                    // key held
-    bool FUN_14116d9c0(int nKey, bool b, int n);                    // key pressed
-    bool FUN_14116daa0(int nButton, bool b, int n);                 // mouse button held
-    bool FUN_14116dbf0(int* pnX, int* pnY, int* pnZ, bool b, int n);    // mouse move delta
-};
-Unk_InputState* FUN_14025e7c0();
+CInputKeyHandler* FUN_14025e7c0();
 
 // The camera option row held by the game context (+0x154 rotation).
 struct Unk_CameraOption
@@ -111,7 +104,7 @@ Unk_Cursor* FUN_140aadf80();
 
 // Camera tuning values of the camera xml (FUN_140ae8910 consumes its by-value CString key).
 float FUN_140ae8910(CString key);
-int FUN_140ae8540();                                // reloads the camera xml (returns 0 on failure)
+int LoadTestCamerValue();                                // reloads the camera xml (returns 0 on failure)
 
 float FUN_14059d930(float f);                       // fabs
 float FUN_140a17940(float f, float fMin, float fMax);   // clamp
@@ -419,7 +412,7 @@ MS2_REPLACE_METHOD(0x1418585D0, CToolSmoothCameraMode, vfunc_24, 434, 0x00620478
 // @0x141858790
 BOOL CToolSmoothCameraMode::vfunc_31()
 {
-    if (FUN_140ae8540())
+    if (LoadTestCamerValue())
     {
         m_154 = FUN_140ae8910(CString("ToolSmooth_KeyMoveSpeed"));
         m_158 = FUN_140ae8910(CString("ToolSmooth_KeyRotationSpeed"));
