@@ -556,7 +556,7 @@ void UIItemPetBoxDialog::FUN_140e504e0()
         return;
     FUN_140e4f9e0();
     if (PETBOX_ITEMS.FUN_14028b470() == 1) {
-        MS2Ptr<ASMovieClip> single = m_itemBox->FUN_1409b4560("m_singleItem");
+        MS2Ptr<ASMovieClip> single = m_resultItem->FUN_1409b4560("m_singleItem");
         if (single.get() == 0)
             return;
         MS2Ptr<ASMovieClip> slot = single->FUN_1409b4560("m_itemSlot");
@@ -593,7 +593,7 @@ void UIItemPetBoxDialog::FUN_140e504e0()
         for (size_t i = 0; i < count; ++i) {
             size_t k = i + 1;
             CString nm = StringFormat("m_multi{0}", k);
-            MS2Ptr<ASMovieClip> multi = m_itemBox->FUN_1409b4560(nm);
+            MS2Ptr<ASMovieClip> multi = m_resultItem->FUN_1409b4560(nm);
             if (multi.get() == 0)
                 continue;
             MS2Ptr<ASMovieClip> slot = multi->FUN_1409b4560("m_itemSlot");
