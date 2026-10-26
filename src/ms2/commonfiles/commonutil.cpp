@@ -1915,6 +1915,8 @@ float FUN_14029d430(float fX, float fY)
     return fmodf(fX, fY);
 }
 
+// the exe calls fabs out of line through the ucrt import (not the /Oi intrinsic)
+#pragma function(fabs)
 // MS2-FUNCTIONAL: not yet byte-matched (CRT import / inline layout)
 // @0x14029dd40
 float FUN_14029dd40(float fValue)
