@@ -263,9 +263,9 @@
 // MS2-PIN: ?GetNode@?$CAtlMap@W4Unk_WsMapKey7@@V?$MS2Ptr@VUnk_WsMapV7@@@@V?$CElementTraits@W4Unk_WsMapKey7@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsMapV7@@@@@4@@ATL@@AEBAPEAVCNode@12@AEBW4Unk_WsMapKey7@@AEAI1AEAPEAV312@@Z 0x141bff930
 // MS2-PIN: ?GetNode@?$CAtlMap@_KUUnk_W6V5a0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V5a0@@@3@@ATL@@AEBAPEAVCNode@12@_KAEAI1AEAPEAV312@@Z 0x141bffa20
 // MS2-PIN: ??_GCNode@?$CAtlMap@IV?$MS2Ptr@VCProxyGameObject@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCProxyGameObject@@@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa370
-// MS2-PIN: ?AddTail@?$CAtlList@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$SmartPointer@VGameObject@@@efd@@@Z 0x141bfad40
-// MS2-PIN: ?AddTail@?$CAtlList@V?$SmartPointer@VPC@@@efd@@V?$CElementTraits@V?$SmartPointer@VPC@@@efd@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$SmartPointer@VPC@@@efd@@@Z 0x141bfadc0
-// MS2-PIN: ?AddTail@?$CAtlList@V?$SmartPointer@VUnk_WsProp058@@@efd@@V?$CElementTraits@V?$SmartPointer@VUnk_WsProp058@@@efd@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$SmartPointer@VUnk_WsProp058@@@efd@@@Z 0x141bfae40
+// MS2-PIN: ?AddTail@?$CAtlList@V?$SmartPointer@VUnk_WsProp058@@@efd@@V?$CElementTraits@V?$SmartPointer@VUnk_WsProp058@@@efd@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$SmartPointer@VUnk_WsProp058@@@efd@@@Z 0x141bfad40 ; m_058 (NewNode 0x141c08030)
+// MS2-PIN: ?AddTail@?$CAtlList@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$SmartPointer@VGameObject@@@efd@@@Z 0x141bfadc0 ; m_178 (NewNode 0x141c080f0)
+// MS2-PIN: ?AddTail@?$CAtlList@V?$SmartPointer@VPC@@@efd@@V?$CElementTraits@V?$SmartPointer@VPC@@@efd@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$SmartPointer@VPC@@@efd@@@Z 0x141bfae40 ; PC list (NewNode 0x141c081b0)
 // MS2-PIN: ?FreePlexes@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@AEAAXXZ 0x141bfe400
 // MS2-PIN: ?GetFreeNode@?$CAtlList@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@ATL@@@ATL@@AEAAXXZ 0x141bfe790
 // MS2-PIN: ?GetFreeNode@?$CAtlList@V?$SmartPointer@VPC@@@efd@@V?$CElementTraits@V?$SmartPointer@VPC@@@efd@@@ATL@@@ATL@@AEAAXXZ 0x141bfe870
