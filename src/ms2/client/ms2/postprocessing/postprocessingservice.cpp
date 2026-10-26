@@ -2581,7 +2581,7 @@ void PostProcessingService::FUN_1416a7570()
             if (pkStep != 0)
             {
                 pkStep->SetName("PreprocessRenderStep");
-                pkFrame->AppendRenderStep(pkStep);
+                pkFrame->PrependRenderStep(pkStep);
 
                 if (m_aspClicks[3] = FUN_1416a8140())
                 {
@@ -2624,7 +2624,7 @@ void PostProcessingService::FUN_1416a7570()
             if (m_spMirroredStep = NiNew NiDefaultClickRenderStep())
             {
                 m_spMirroredStep->SetName("MirroredRenderStep");
-                pkFrame->AppendRenderStep(m_spMirroredStep);
+                pkFrame->PrependRenderStep(m_spMirroredStep);
                 if (m_aspClicks[7] = FUN_1416a97b0())
                 {
                     m_aspClicks[7]->SetActive(abActive[7]);
