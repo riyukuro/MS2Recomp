@@ -151,6 +151,9 @@ const char* NiDX9Renderer::GetDriverName() const
     ReleaseDeferredResources();
 
 .
+164a
+    m_bMS2DeviceLostHeld = false;  // MS2: +0x851
+.
 73a
 // MS2: device hooks installed by MS2RenderService::OnInit (game: ms2renderservice.cpp)
 extern void (*DAT_143d6eb38)(void*);

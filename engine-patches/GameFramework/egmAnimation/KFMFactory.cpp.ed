@@ -1,0 +1,6 @@
+198a
+            // MS2: label the stream with the KFM's file name (NiTextKeyExtraData::LoadBinary reads <dir><label>.xml)
+            char acKFMPath[NI_MAX_PATH];
+            sprintf(acKFMPath, "%s", pRequest->GetAssetPath().c_str());
+            _splitpath(acKFMPath, NULL, NULL, const_cast<char*>(stream.MS2GetStudioPath()), NULL);
+.

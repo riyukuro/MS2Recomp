@@ -29,6 +29,11 @@ void ecr::SceneGraphService::RemoveFromUpdate(SceneGraphData* pData)
 3640c
     size_t count = m_objects.size();  // MS2: 64-bit count (exe), stock efd::UInt32
 .
+3633c
+    m_flags(0),
+    m_ms2UpdateBucket(0),
+    m_ms2UpdateBucketIndex(kInvalidUpdateIndex)  // MS2
+.
 2582a
 // MS2: 3 lines of MS2 source not recovered here; padding keeps the EE_LOG __LINE__s below equal to the exe's
 //
@@ -75,6 +80,10 @@ void ecr::SceneGraphService::RemoveFromUpdate(SceneGraphData* pData)
 .
 646a
 // MS2: 1 line of MS2 source not recovered here; padding keeps the EE_LOG __LINE__s below equal to the exe's
+.
+61c
+// MS2: not registered (the exe has 4 handler objects here); MS2SceneGraphService registers MS2_HandleCacheResponse.
+// EE_HANDLER(SceneGraphService, HandleCacheResponse, SceneGraphCacheResponse);
 .
 33c
 #include <NiMemStream.h>
