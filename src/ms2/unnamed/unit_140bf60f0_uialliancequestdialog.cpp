@@ -702,7 +702,7 @@ void UIAllianceQuestDialog::FUN_140bf8c30(unsigned nQuest)
     {
         CStringW strText = FUN_14028dfa0(L"s_alliance_quest_completion_ticket_use", FUN_1401a9d70()->FUN_141811980(1, nItem), nCost);
         MS2Ptr<CMsgBoxData> spBox = FUN_140bfab20(CStringW(strText), 1, AqAnswerDelegate(this, &UIAllianceQuestDialog::SendQuestMode33), nQuest);
-        FUN_140534d60(reinterpret_cast<MS2Ptr<Unk_AqMsgBox>*>(&spBox));
+        // spBox's scope exit is the exe's FUN_140534d60: an explicit call on top released the box twice
     }
 }
 
