@@ -35,6 +35,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uitalkcinematic.h"
 
 // ---- the unit's header statics: header_statics_a.h above, a key controller, then a second copy of the four ---------------
 static UICommon::CMyPCKeyInputController s_keyInput;
@@ -64,8 +65,7 @@ public:
 };
 
 // A dialog's position record (the maid dialog's, UI type 0x4e40).
-class Unk_UeRefPos { public: int FUN_141b1d3d0(); int FUN_141b1d460(); };
-Unk_UeRefPos* FUN_140a7b2b0(int nId);
+UITalkCinematic* FUN_140a7b2b0(int nId);
 
 class Unk_BackUpItem : public CPtred { public: MS2Ptr<CItem> FUN_1411dc7a0(); };
 class Unk_PCItems { public: };
@@ -102,7 +102,7 @@ CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 void* FUN_140967100();
 void FUN_141b1feb0(void* pService);
 
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 
 #include "ms2/placeholder/gfxvalue.h"
 extern template class MS2Ptr<CItem>;
@@ -206,7 +206,7 @@ int UIUnlimitedEnchantDialog::vfunc_28(const char* szMethod, const Scaleform::GF
 void UIUnlimitedEnchantDialog::vfunc_43()
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    Unk_UeRefPos* pRef;
+    UITalkCinematic* pRef;
     if (pDialog != 0 && (pRef = FUN_140a7b2b0(0x4e40)) != 0)
     {
         int nX = pRef->FUN_141b1d3d0();
@@ -254,7 +254,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6310(CInPacket* pPacket)
                 Unk_IngRef ref = ingredients.FUN_14026bdc0(i);
                 unsigned nIngredientId = ref->FUN_14026b500();
                 int nCount = ref->m_c;
-                int nHave = FUN_140a5f780_1(&DAT_143ab2a90, ref->m_b, 0);
+                int nHave = FUN_140a5f780_1(&g_143ab2a90, ref->m_b, 0);
                 int nIngredientRank = FUN_14053feb0(nIngredientId);
                 MS2Ptr<CItem> spIngredient(new CItem());
                 if (spIngredient->FUN_14052b2e0(nIngredientId, nIngredientRank, 0, nCount) != 0)
@@ -317,7 +317,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6ed0()
     {
         m_items.RemoveAll();
         ATL::CAtlArray<unsigned __int64> uids;
-        DAT_143ab2a90.FUN_140a609a0(0, uids);
+        g_143ab2a90.FUN_140a609a0(0, uids);
         for (unsigned i = 0; i < uids.GetCount(); i++)
         {
             MS2Ptr<CItem> spItem = FUN_1419be700(uids[i]);
