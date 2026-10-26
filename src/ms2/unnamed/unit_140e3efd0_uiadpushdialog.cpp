@@ -670,6 +670,9 @@ void UIAdPushDialog::OnNotifyCompleteMyPC(NotifyObject*)
     Refresh(2);
 }
 #include "ms2/placeholder/asuicomponent.h"
+
+// the exe calls fabs out of line through the ucrt import (not the /Oi intrinsic)
+#pragma function(fabs)
 // @0x140e41720
 // MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 MS2Ptr<ASMovieClip> UIAdPushDialog::AddBadge(MS2Ptr<AScript> value)
