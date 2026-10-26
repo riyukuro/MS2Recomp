@@ -620,20 +620,20 @@ void Unk_WsInst6Tail(PC& pc, CEntityShower& shower, MS2ActorUpdater& updater, Ca
     sequence.GetLastScaledTime();
 }
 
-#ifndef MS2_HOOK_DLL  // MS2: instantiates the handler classes (and their scalar deleting dtors) whose COMDATs sit in this tail; the same
-// statics live in worldservice_1.cpp (.text$di 0x140120290), so the hook DLL must not register a second set.
-EE_HANDLER_WRAP(WorldService, FUN_141bc0530, ecrPhysX::PhysXPropMessage, 12299);
-EE_HANDLER_WRAP(WorldService, FUN_141bbd640, egf::EntityChangeMessage, 8253);
-EE_HANDLER_WRAP(WorldService, FUN_141bbf2f0, egf::EntityChangeMessage, 8254);
-EE_HANDLER_WRAP(WorldService, FUN_141bbfa50, egf::EntityChangeMessage, 8196);
-EE_HANDLER(WorldService, FUN_141bbf9f0, efd::AssetLoadResponse);
-EE_HANDLER_SUBCLASS(WorldService, FUN_141bc0f50, efd::AssetLoadResponse, egf::FlatModelFactoryResponse);
-EE_HANDLER(WorldService, FUN_141bbfb50, egmAnimation::ActorAddedMessage);
-EE_HANDLER(WorldService, FUN_141bbfde0, egmAnimation::ActorRemovedMessage);
-EE_HANDLER(WorldService, FUN_141bc0a70, egf::EntityLoadResult);
-EE_HANDLER(WorldService, FUN_141bbfe30, ecr::SceneGraphAddedMessage);
-EE_HANDLER(WorldService, FUN_141bc0290, ecr::SceneGraphRemovedMessage);
-#endif
+// The handler classes (and their scalar deleting dtors) have their COMDATs in this tail. worldservice_1.cpp owns the
+// auto-registering statics; instantiate the classes here without a second registration (every handler ran twice).
+template class efd::MessageWrapperSubclassHandler<WorldService, ecrPhysX::PhysXPropMessage, ecrPhysX::PhysXPropMessage, 12299>;
+template class efd::MessageWrapperSubclassHandler<WorldService, egf::EntityChangeMessage, egf::EntityChangeMessage, 8253>;
+template class efd::MessageWrapperSubclassHandler<WorldService, egf::EntityChangeMessage, egf::EntityChangeMessage, 8254>;
+template class efd::MessageWrapperSubclassHandler<WorldService, egf::EntityChangeMessage, egf::EntityChangeMessage, 8196>;
+template class efd::MessageHandlerImpl<WorldService, efd::AssetLoadResponse>;
+template class efd::MessageSubclassHandler<WorldService, efd::AssetLoadResponse, egf::FlatModelFactoryResponse>;
+template class efd::MessageHandlerImpl<WorldService, egmAnimation::ActorAddedMessage>;
+template class efd::MessageHandlerImpl<WorldService, egmAnimation::ActorRemovedMessage>;
+template class efd::MessageHandlerImpl<WorldService, egf::EntityLoadResult>;
+template class efd::MessageHandlerImpl<WorldService, ecr::SceneGraphAddedMessage>;
+template class efd::MessageHandlerImpl<WorldService, ecr::SceneGraphRemovedMessage>;
+
 // Scalar deleting dtors told apart by their exe users (fx24): the CNode ones are called by the M10 / M11 FreeNode
 // 0x141bfd620 / 0x141bfd720; the ClassFunHandler one calls FunctorImpl's dtor 0x141bf5210, TPtredDummy's its dtor 0x141bf56c0.
 // MS2-PIN: ??_GCNode@?$CAtlMap@_JV?$MS2Ptr@VUnk_WsMapV10@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsMapV10@@@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa4b0
