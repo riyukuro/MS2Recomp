@@ -121,29 +121,27 @@ Vector3* StateFloat::FUN_1417c85d0(Vector3* pOut, const Vector3& kIn, double fTi
             else
             {
                 NiPoint3 kSurface = m_pOwner->vfunc_18();
-                float fBand = FUN_14029d220(FUN_14029d430(kSurface.z - 200.0f, 150.0f));
-                float fBand2 = FUN_14029d220(FUN_14029d430(kSurface.z - 200.0f, 150.0f));
-                if (50.0f < fBand && fBand2 < 100.0f && m_bBandChanged)
+                float fLo = 50.0f;
+                float fHi = 100.0f;
+                float fMod = FUN_14029d430(kSurface.z - 200.0f, 150.0f);
+                if (FUN_14029d220(fMod) > fLo && FUN_14029d220(fMod) < fHi && m_bBandChanged)
                 {
                     fVel = 0.0f;
                     FUN_1417c8560();
                 }
             }
-            if (fVel <= 0.0f)
-            {
-                if (fVel < 0.0f)
-                {
-                    float fMin = -0.5f;
-                    float fDelta = (float)((double)fVel * fTime);
-                    const float& fClamped = FUN_140805fc0(fDelta, fMin);
-                    pOut->z = pOut->z + fClamped;
-                }
-            }
-            else
+            if (fVel > 0.0f)
             {
                 float fMax = 0.5f;
                 float fDelta = (float)((double)fVel * fTime);
                 const float& fClamped = FUN_1409ffe80(fDelta, fMax);
+                pOut->z = pOut->z + fClamped;
+            }
+            else if (fVel < 0.0f)
+            {
+                float fMin = -0.5f;
+                float fDelta = (float)((double)fVel * fTime);
+                const float& fClamped = FUN_140805fc0(fDelta, fMin);
                 pOut->z = pOut->z + fClamped;
             }
             FUN_1410a77e0(m_pOwner, fVel);
