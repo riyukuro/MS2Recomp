@@ -23,6 +23,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/uiugceventdispatcher.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -33,22 +35,10 @@ static CString s_shopSort[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "
 class ASDialog : public ASDisplayObject {};
 
 // The status-listener registry (singleton 0x140aa6d40).
-class Unk_UiStatusMgr
-{
-public:
-    void FUN_141b0cd00(UIStatusEventListener* pListener);       // register
-    void FUN_141b0cd90(UIStatusEventListener* pListener);       // unregister
-};
-Unk_UiStatusMgr* FUN_140aa6d40();
+UIStatusEventDispatcher* FUN_140aa6d40();
 
 // The UGC listener registry (singleton 0x140bc09f0).
-class Unk_UgcEvents
-{
-public:
-    void FUN_141b38be0(UIUGCEventListener* p);                  // register
-    void FUN_141b38c70(UIUGCEventListener* p);                  // unregister
-};
-Unk_UgcEvents* FUN_140bc09f0();
+UIUGCEventDispatcher* FUN_140bc09f0();
 
 // The movie root of the dialog: Invoke of a method with an int and an AS array (inline COMDAT 0x141b36aa0).
 class Unk_UgcScript : public AScript
