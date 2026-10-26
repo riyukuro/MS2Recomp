@@ -234,7 +234,7 @@ void CItemLoader::LoadNext(CItemLoader* pLoader)
         if (it != m_pending.end())
         {
             nId = it->first;
-            ItemLoadInfoList list(it->second);
+            ItemLoadInfoList list(static_cast<const ItemLoadInfoList&>(it->second));
             if (list.get())
             {
                 if (list->GetCount() > 0)
