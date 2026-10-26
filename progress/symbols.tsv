@@ -196052,10 +196052,10 @@ FUN_141485590	141485590	func
 ?Add@?$CAtlArray@V?$MS2Ptr@VCInteractObject@@@@V?$CElementTraits@V?$MS2Ptr@VCInteractObject@@@@@ATL@@@ATL@@QEAA_KAEBV?$MS2Ptr@VCInteractObject@@@@@Z	141bfabe0	func
 ?Add@?$CAtlArray@V?$MS2Ptr@VCPortal@@@@V?$CElementTraits@V?$MS2Ptr@VCPortal@@@@@ATL@@@ATL@@QEAA_KAEBV?$MS2Ptr@VCPortal@@@@@Z	141bfac90	func
 ?FUN_141bfac90@@YAXPEAXAEBUUnk_WsA_FieldRef@@@Z	141bfac90	func
-?AddTail@?$CAtlList@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$SmartPointer@VGameObject@@@efd@@@Z	141bfad40	func
-?AddTail@?$CAtlList@V?$SmartPointer@VPC@@@efd@@V?$CElementTraits@V?$SmartPointer@VPC@@@efd@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$SmartPointer@VPC@@@efd@@@Z	141bfadc0	func
+?AddTail@?$CAtlList@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$SmartPointer@VGameObject@@@efd@@@Z	141bfadc0	func
+?AddTail@?$CAtlList@V?$SmartPointer@VPC@@@efd@@V?$CElementTraits@V?$SmartPointer@VPC@@@efd@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$SmartPointer@VPC@@@efd@@@Z	141bfae40	func
 ?AddTail@?$CAtlList@V?$SmartPointer@VUnk_WsC_GameObj@@@efd@@V?$CElementTraits@V?$SmartPointer@VUnk_WsC_GameObj@@@efd@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$SmartPointer@VUnk_WsC_GameObj@@@efd@@@Z	141bfadc0	func
-?AddTail@?$CAtlList@V?$SmartPointer@VUnk_WsProp058@@@efd@@V?$CElementTraits@V?$SmartPointer@VUnk_WsProp058@@@efd@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$SmartPointer@VUnk_WsProp058@@@efd@@@Z	141bfae40	func
+?AddTail@?$CAtlList@V?$SmartPointer@VUnk_WsProp058@@@efd@@V?$CElementTraits@V?$SmartPointer@VUnk_WsProp058@@@efd@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$SmartPointer@VUnk_WsProp058@@@efd@@@Z	141bfad40	func
 ?FUN_141bfaec0@PC@@QEAAX_N@Z	141bfaec0	func
 ?CallDestructors@?$CAtlArray@PEAVGameObject@@V?$CElementTraits@PEAVGameObject@@@ATL@@@ATL@@CAXPEAPEAVGameObject@@_K@Z	141bfaee0	func
 ?CompareElements@?$CDefaultCompareTraits@W4Unk_WsMapKey7@@@ATL@@SA_NAEBW4Unk_WsMapKey7@@0@Z	141bfaf20	func
@@ -196242,9 +196242,9 @@ FUN_141485590	141485590	func
 ?FUN_141bfe6d0@MS2ActorUpdater@@QEAA?AVEntityID@egf@@XZ	141bfe6d0	func
 ?FUN_141bfe700@Camera@@QEAA_KXZ	141bfe700	func
 ?FUN_141bfe750@CameraMgr@@QEAA_KXZ	141bfe750	func
-?GetFreeNode@?$CAtlList@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@ATL@@@ATL@@AEAAXXZ	141bfe790	func
+?GetFreeNode@?$CAtlList@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@ATL@@@ATL@@AEAAXXZ	141bfe870	func
 ?GetFreeNode@?$CAtlList@V?$SmartPointer@VUnk_WsProp058@@@efd@@V?$CElementTraits@V?$SmartPointer@VUnk_WsProp058@@@efd@@@ATL@@@ATL@@AEAAXXZ	141bfe790	func
-?GetFreeNode@?$CAtlList@V?$SmartPointer@VPC@@@efd@@V?$CElementTraits@V?$SmartPointer@VPC@@@efd@@@ATL@@@ATL@@AEAAXXZ	141bfe870	func
+?GetFreeNode@?$CAtlList@V?$SmartPointer@VPC@@@efd@@V?$CElementTraits@V?$SmartPointer@VPC@@@efd@@@ATL@@@ATL@@AEAAXXZ	141bfe950	func
 ?GetHash@CNode@?$CAtlMap@HV?$MS2Ptr@VCPortal@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCPortal@@@@@3@@ATL@@QEBAIXZ	141bfea30	func
 ?GetHash@CNode@?$CAtlMap@IUUnk_W6V350@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V350@@@3@@ATL@@QEBAIXZ	141bfea30	func
 ?GetHash@CNode@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@QEBAIXZ	141bfea30	func
