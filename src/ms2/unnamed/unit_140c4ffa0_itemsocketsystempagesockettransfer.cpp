@@ -596,7 +596,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c533f0(CInPacket* packet)
             result.m_spA = m_source;
             result.m_spB = m_target;
             FUN_1406295b0(result, *packet);
-            FUN_140f6d340(m_targetName, m_target);
+            FUN_140f6d340(m_sourceName, m_target);   // the exe refreshes the source-name slot (+0x38) with the target
             ASObj data(2);
             data.FUN_1407cb9c0("unlockSocketIndex", -1);
             FUN_140c52f10(MS2Ptr<CItem>(m_target), data, -1);
