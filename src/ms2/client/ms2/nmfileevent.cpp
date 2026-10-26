@@ -91,7 +91,7 @@ unsigned int CNMFileEvent::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMS
 unsigned int CNMFileEvent::Decode(CNMSerializableDecoder* pDecoder, CNMStream*)
 {
     m_10 = static_cast<int>(pDecoder->ReadU32());
-    pDecoder->ReadBytes(reinterpret_cast<unsigned char*>(m_14), sizeof m_14);
+    pDecoder->ReadStringBufAlias(reinterpret_cast<char*>(m_14), sizeof m_14);
     m_114 = static_cast<int>(pDecoder->ReadU32());
     m_118 = static_cast<int>(pDecoder->ReadU32());
     m_11c = static_cast<int>(pDecoder->ReadU32());
