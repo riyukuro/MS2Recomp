@@ -763,7 +763,7 @@ void UISkillBookTreeDialog::RefreshTabButtons(int bKeepSelection)
 // @0x140ec8220
 void UISkillBookTreeDialog::RefreshSlotsIfShown()
 {
-    if (m_30 == 0 || vfunc_9() == 0)
+    if (m_30 == 0 || FUN_141924630() == 0)
         return;
     RefreshSlots(1);
     m_nWaitServer = 0;
@@ -2080,7 +2080,7 @@ void UISkillBookTreeDialog::vfunc_79(void* pPacket)
 // @0x140ec5820
 void UISkillBookTreeDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
 {
-    if (m_30 == 0 || vfunc_9() == 0 || m_spSimulator == 0)
+    if (m_30 == 0 || FUN_141924630() == 0 || m_spSimulator == 0)
         return;
     MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
