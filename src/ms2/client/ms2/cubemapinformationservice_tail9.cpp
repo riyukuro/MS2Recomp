@@ -15,6 +15,16 @@
 #include <NiTransform.h>
 #include "ms2/commonfiles/ugcmapsetiteminfo.h"
 
+// la1: the column map efd::map<long, MS2Ptr<Cube>> (operator[] 0x141128350, erase(where) 0x141156050); its copies in this
+// unit's range are pinned at the end.
+void Unk_CMISDriveColumnMapTail9()
+{
+    efd::map<long, MS2Ptr<Cube> > m;
+    const long k = 0;
+    m[k];
+    m.erase(m.begin());
+}
+
 struct Unk_CMISPawn;
 // The ordering FUN_1410bb610 sorts its entity list with: by distance from the pawn (ctor 0x141123230, operator()
 // 0x14112cbc0, outside this slice).
@@ -218,13 +228,13 @@ char* FUN_14115a860(char* p) { return p; }
 // @0x14115a880
 char* FUN_14115a880(char* p) { return p; }
 
-// The list append worldservice_1 calls: efd::vector<EntityPtr>::emplace_back (folded with
-// vector<Cube*>::push_back).
+// The list append worldservice_1 calls: std::vector<EntityPtr>::emplace_back (folded with
+// vector<Cube*>::push_back). The exe calls the std::allocator instance 0x14111ada0, not the CustomAllocator 0x14111ad30.
 // MS2-FUNCTIONAL: calls emplace_back inline instead of through the out-of-line instance
 // @0x14115a960
 void FUN_14115a960(void* list, void* elem)
 {
-    static_cast<Unk_CMISEntVec*>(list)->emplace_back(*static_cast<const egf::EntityPtr*>(elem));
+    static_cast<std::vector<egf::EntityPtr>*>(list)->emplace_back(*static_cast<const egf::EntityPtr*>(elem));
 }
 
 // The container wrappers cubemapinformationservice_3 calls by address. Its stand-in types are opaque here; each is the
@@ -278,3 +288,5 @@ __int64 FUN_14115adf0(Unk_CMISTree<284>* pSet)
 {
     return (__int64)reinterpret_cast<Unk_CMISFuncCubeSet*>(pSet)->size();
 }
+// MS2-PIN: ?max_size@?$_Normal_allocator_traits@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@efd@@@std@@SA_KAEBV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@efd@@@Z 0x141159e10 ; la1: the efd::map<long,MS2Ptr<Cube>> (column map, operator[] 0x141128350) chain
+// MS2-PIN: ?max_size@?$_Tree@V?$_Tmap_traits@JV?$MS2Ptr@VCube@@@@U?$less@J@std@@V?$CustomAllocator@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@efd@@$0A@@std@@@std@@QEBA_KXZ 0x14115a270 ; la1: the efd::map<long,MS2Ptr<Cube>> (column map, operator[] 0x141128350) chain
