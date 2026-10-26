@@ -628,7 +628,8 @@ void CFunctionCubeObject::vfunc_8(CString str)
 {
     if (FUN_140966fc0() == 3 || FUN_140966fc0() == 9)
     {
-        Unk_FcCubeUseInfo kInfo;
+        alignas(8) char kInfoBuf[sizeof(Unk_FcCubeUseInfo)];   // FUN_140ac2e80 / FUN_140ac3050 construct and destroy it: no implicit dtor
+        Unk_FcCubeUseInfo& kInfo = *reinterpret_cast<Unk_FcCubeUseInfo*>(kInfoBuf);
         FUN_140ac2e80(&kInfo);
         kInfo.m_strId = m_strId;
         kInfo.m_nCount = 1;
@@ -684,7 +685,8 @@ void CFunctionCubeObject::vfunc_11(int nState)
     CString strSound = m_spData->m_sounds[nState];
     if (!strSound.IsEmpty())
     {
-        Unk_FcSoundReq kReq;
+        alignas(8) char kReqBuf[sizeof(Unk_FcSoundReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+        Unk_FcSoundReq& kReq = *reinterpret_cast<Unk_FcSoundReq*>(kReqBuf);
         FUN_140a52ef0(&kReq);
         kReq.m_strName = strSound;
         kReq.m_nType = 0;
@@ -1235,7 +1237,8 @@ void CHomemadeCubeObject::vfunc_4()
     {
         if (FUN_141229120() != 0)
         {
-            Unk_FcSoundReq kReq;
+            alignas(8) char kReqBuf[sizeof(Unk_FcSoundReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+            Unk_FcSoundReq& kReq = *reinterpret_cast<Unk_FcSoundReq*>(kReqBuf);
             FUN_140a52ef0(&kReq);
             kReq.m_strName = strSound;
             kReq.m_nType = 0;
@@ -1366,7 +1369,8 @@ void CHomemadeCubeObject::vfunc_11(int nState)
     {
         if (FUN_141229120() != 0)
         {
-            Unk_FcSoundReq kReq;
+            alignas(8) char kReqBuf[sizeof(Unk_FcSoundReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+            Unk_FcSoundReq& kReq = *reinterpret_cast<Unk_FcSoundReq*>(kReqBuf);
             FUN_140a52ef0(&kReq);
             kReq.m_strName = strSound;
             kReq.m_nType = 0;
@@ -2973,7 +2977,8 @@ void CFunctionCubeService::FUN_141231730()
                     nAreaValue = nEquipField;
             }
             pCube->FUN_141227100(nSound);
-            Unk_FcCubeUseInfo kInfo;
+            alignas(8) char kInfoBuf[sizeof(Unk_FcCubeUseInfo)];   // FUN_140ac2e80 / FUN_140ac3050 construct and destroy it: no implicit dtor
+            Unk_FcCubeUseInfo& kInfo = *reinterpret_cast<Unk_FcCubeUseInfo*>(kInfoBuf);
             FUN_140ac2e80(&kInfo);
             kInfo.m_strId = strKey;
             kInfo.m_nCount = 2;
