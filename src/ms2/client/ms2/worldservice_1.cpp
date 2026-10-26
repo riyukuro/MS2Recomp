@@ -9815,7 +9815,7 @@ bool FUN_140addea0(Unk_WsF_Sensor* s);                                          
 char FUN_140adf310(Unk_WsF_Sensor* s);                                          // sensor wants tag callbacks
 void FUN_140addf10(Unk_WsF_Sensor* s, Unk_WsF_Weak* out);                       // copy of its shape handle
 Unk_WsF_EntRef* FUN_140adf980(Unk_WsF_Sensor* s, Unk_WsF_EntRef* out);          // owner entity ref
-void FUN_140ade030(Unk_WsF_Sensor* s, int state, int level);                    // fire entry effect
+void FUN_140ade030(Unk_WsF_Sensor* s, int nHitter, int nKind);                  // CBreakableObject: play the hit sound (hitter, kind)
 CString* FUN_140adde50(Unk_WsF_Sensor* s, CString* out);                        // sensor name
 Unk_WsF_Sensor* FUN_14165ca50(Unk_WsF_GameObj* o);                              // pc->sensor
 Unk_WsF_Sensor* FUN_140d290a0(void* ref);                                       // ref->get()
@@ -10005,7 +10005,7 @@ void WorldService::FUN_141bc3560()
 
         FUN_14101aee0(&FUN_141235260(&tag)->entered, FUN_140affe40(owner), 0);
         int level = Unk_WsF_RangeLevel(found, defaultLevel);
-        FUN_140ade030(sensor, 1, level);
+        FUN_140ade030(sensor, level, 1);
 
         Unk_WsF_TagLeave info;
         CString sensorName;
@@ -10046,7 +10046,7 @@ void WorldService::FUN_141bc3560()
 
         FUN_14101aee0(&FUN_141235260(&tag)->entered, FUN_140affe40(owner), 0);
         int level = Unk_WsF_RangeLevel(found, defaultLevel);
-        FUN_140ade030(sensor, 1, level);
+        FUN_140ade030(sensor, level, 1);
 
         COutPacket packet(static_cast<int>(SendOp::Tombstone));
         packet.WriteInt32(FUN_14123c580(obj));
