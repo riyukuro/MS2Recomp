@@ -41,7 +41,7 @@ int FUN_140869420();                        // the current tick
 unsigned int FUN_141697bc0(Unk_PpConst* p);  // a configured value
 
 // The character state manager (singleton 0x1409670d0).
-class Unk_PpStateMgr { public: int FUN_14162ae20(unsigned __int64 nId, void* pA, void* pB, int n); };
+class Unk_PpStateMgr { public: int FUN_14162ae20(unsigned __int64 nId); };   // CPartyManager: a party member
 Unk_PpStateMgr* FUN_1409670d0();
 
 // The popup target of a character: the entity manager finds the entity, whose slot 86 hands out a reference to the
@@ -197,10 +197,10 @@ MS2_REPLACE_METHOD(0x141697200, CPopupProfileImageData, FUN_141697200, 80, 0x857
 
 // @0x141697260
 // MS2-FUNCTIONAL: frame-slot order of the locals/temps differs from the exe (permuter lane)
-int CPopupProfileImageData::FUN_141697260(int nNow, void* pA, void* pB)
+int CPopupProfileImageData::FUN_141697260(int nNow)
 {
     int nTime = m_nTime;
-    int nDelay = FUN_1409670d0()->FUN_14162ae20(m_nId, pA, pB, 0);
+    int nDelay = FUN_1409670d0()->FUN_14162ae20(m_nId);
     if (nDelay == 1)
         nDelay = FUN_141697bc0(&FUN_1401d3200()->m_expireB);
     else

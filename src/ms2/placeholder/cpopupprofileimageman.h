@@ -24,7 +24,7 @@ public:
     void SetTime(int nTime);                          // set the tick it was shown
     int GetTime();                                    // the tick it was shown
     int FUN_141697200(int nNow);                            // shown long enough ago to be dropped
-    int FUN_141697260(int nNow, void* pA, void* pB);       // same, with the extra delay of the character's state
+    int FUN_141697260(int nNow);                            // same, with the extra delay of the character's state
 private:
     MS2_LAYOUT_FRIEND;
     unsigned __int64 m_nId;                                 // +0x18
