@@ -70,7 +70,7 @@ endforeach()
 set(ENVV FULLEXE_DIR=${OUT} FULLEXE_TREE=${MS2_ROOT} FULLEXE_FRESH=all FULLEXE_GB_OVERLAY=${GB_OVERLAY}
     FULLEXE_OBJ_CACHES=${MS2_ROOT}/build/progress-${CACHE_TAG}
     FULLEXE_HERMETIC=1 FULLEXE_ENGINE_REFRESH=${_er} FULLEXE_ALIAS_CURRENT=${_ac}
-    MS2_THIRD_PARTY=${_tp} MS2_ENGINE_DIR=${MS2_GAMEBRYO_ROOT} MS2_AGENT=${CACHE_TAG})
+    MS2_CLASSES_DIR=${OUT}/classes MS2_THIRD_PARTY=${_tp} MS2_ENGINE_DIR=${MS2_GAMEBRYO_ROOT} MS2_AGENT=${CACHE_TAG})
 file(MAKE_DIRECTORY "${OUT}")
 
 set(_prev "")
@@ -87,6 +87,9 @@ endfunction()
 
 set(PY ${MS2_PYTHON} -P)
 set(FE "${MS2_ROOT}/tools/fullexe")
+# 0. RTTI tables (rtti_classes.tsv, rtti_vftables.tsv) the vftable pairing reads: derived from the exe, so generated here
+#    instead of living in the untracked work/classes (byte-identical to the maintainer's)
+stage(rtti "" COMMAND ${PY} "${MS2_ROOT}/tools/rtti_scan.py" "${MS2_ROOT}/Game Versions/KMS2_DEV/x64/MapleStory2.exe" "${OUT}/classes")
 # 1. compile: the gates' incremental per-TU cache (game, Scaleform, engine); only changed units rebuild
 stage(compile "" COMMAND ${PY} "${MS2_ROOT}/tools/progress.py" --agent ${CACHE_TAG} -j ${MS2_JOBS})
 # ignored pins / look-alike COMDATs the gates only note: summary in out/pinreport.txt. Strict: a row that is not in the reviewed
