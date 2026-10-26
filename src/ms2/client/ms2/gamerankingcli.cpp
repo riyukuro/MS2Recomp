@@ -24,6 +24,9 @@
 #include "ms2/client/ms2/uidialog.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/guilddef_1.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/cstringtable.h"
 
 // ---- out-of-unit callees and data (bound to the exe by their FUN_<va> / DAT_<va> names) ----
 
@@ -33,8 +36,8 @@ extern __int64 DAT_143ab2828;                       // the own character id
 extern int DAT_1439f4d94;                           // lifetime of a personal / daily board answer (seconds)
 extern int DAT_1439f4d98;                           // lifetime of the other board answers (minutes)
 
-class Unk_GrSettings { public: bool FUN_14036d570(int nFeature); };         // the content switches
-Unk_GrSettings* FUN_140166410();
+         // the content switches
+CFeatureManager* FUN_140166410();
 class Unk_GrBanFlags { public: int FUN_1402c4c90(int nFlag); };             // blocked-action flag set
 struct Unk_GrConfig { char m_pad[8]; Unk_GrBanFlags m_8; };
 Unk_GrConfig* FUN_14025e7b0();                                              // global client config
@@ -50,12 +53,9 @@ private:
 };
 class Unk_GrUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nClass); };
 Unk_GrUIManager* FUN_1403ed2b0();                                           // the UI service
-class Unk_GrGuildInfo { public: __int64 FUN_1404ccbd0(); };                // the guild id
-class Unk_GrGuildManager { public: int FUN_1413b6160(); char m_pad[8]; Unk_GrGuildInfo m_8; };
+                // the guild id
+class Unk_GrGuildManager { public: int FUN_1413b6160(); char m_pad[8]; CGuildInfo m_8; };
 Unk_GrGuildManager* FUN_1403ed290();                                        // the guild manager (+8: the own guild)
-class Unk_GrStrings { public: CStringW FUN_141811980(int nTable, int nId); };
-Unk_GrStrings* FUN_1401a9d70();                                             // the string tables
-DungeonRoomTable* FUN_14031c2a0();
 CStringW FUN_140811740(int nId, const int& n0, const int& n1);              // a string table text with two numbers
 CStringW FUN_14083bdc0(const CMsTime& t, bool bSeconds, CStringW strSep, CStringW strSep2);    // date + time text
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);                   // narrows a string
@@ -142,7 +142,7 @@ void CGameRankingData::Convert(int nType, MS2Ptr<GameRankingItem::IRankItem> spI
             m_point = p->m_40;
             m_48 = p->m_name;
             m_50 = p->m_38;
-            m_70 = FUN_1401a9d70()->FUN_141811980(0x2d, p->m_44);
+            m_70 = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x2d, p->m_44);
             m_image = p->m_30;
             CString strUrl("");
             FUN_141029590(p->m_id, FUN_14016a600(p->m_30, 0), strUrl, CString(""));
@@ -2875,7 +2875,7 @@ int FUN_140b3e210(CGameRankingParam::Key key)
     else if (nType == 0x3d || nType == 0x3e || nType == 0x3f || nType == 0x40)
         return 6;
     else if (nType == 0x47 || nType == 0x48 || nType == 0x51 || nType == 0x5b) {
-        DungeonRoomPtr spRoom = FUN_14031c2a0()->GetRoom(nRoom);
+        DungeonRoomPtr spRoom = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(nRoom);
         if (spRoom.get() != 0) {
             if (spRoom->m_groupType == 2)
                 return 7;
