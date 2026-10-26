@@ -16,7 +16,9 @@
 
 #include "ms2/ms2recover.h"
 
+#define PSAPI_VERSION 1  // the exe imports PSAPI.DLL!GetProcessMemoryInfo, not kernel32 K32GetProcessMemoryInfo
 #include <psapi.h>
+#pragma comment(lib, "psapi.lib")
 
 #pragma comment(lib, "dbghelp.lib")     // MiniDumpWriteDump
 

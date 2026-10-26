@@ -20,7 +20,9 @@
 // MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@_KUEntry@COptimizer@@U?$less@_K@std@@V?$allocator@U?$pair@$$CB_KUEntry@COptimizer@@@std@@@4@$0A@@std@@@std@@IEBA_NAEB_K0@Z 0x141622bd0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\optimizer.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#define PSAPI_VERSION 1  // the exe imports PSAPI.DLL!GetProcessMemoryInfo, not kernel32 K32GetProcessMemoryInfo
 #include <psapi.h>
+#pragma comment(lib, "psapi.lib")
 #include <float.h>
 #include "ms2/placeholder/coptimizer.h"
 #include "ms2/placeholder/fittingdollpc.h"
