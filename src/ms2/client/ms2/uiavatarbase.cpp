@@ -948,9 +948,10 @@ Unk_UabPlayer* FUN_14099eef0(GameObject* pObj);                         // the P
 AvatarPC* FUN_140a535c0(GameObject* pObj);                              // the AvatarPC of an object (NULL if it is none)
 
 // The client constants used by the rotation limit.
-struct Unk_UabCfgFloat { float FUN_1402bac70(); char m_pad[0x54]; };
-struct Unk_UabCfgInt { int* FUN_1402056b0(); char m_pad[0x54]; };
+struct Unk_UabCfgFloat { float FUN_1402bac70(); char m_pad[0x58]; };
+struct Unk_UabCfgInt { int* FUN_1402056b0(); char m_pad[0x58]; };
 struct Unk_UabConfig { char m_pad0[0xc6b8]; Unk_UabCfgFloat m_fRotateSpeed; Unk_UabCfgInt m_nRotateMax; };
+MS2_CHECK_OFFSET(Unk_UabConfig, m_nRotateMax, 0xc710);
 Unk_UabConfig* FUN_1401d3200();
 float FUN_1418bffd0(Unk_UabCfgInt* pValue);                             // the int value as a float
 
