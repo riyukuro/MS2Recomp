@@ -51,11 +51,6 @@ public:
 class Unk_UpperEvents : public UIEntityEventDispatcher
 {
 public:
-    virtual void vfunc_1(const Unk_UpperEvt& evt);
-    virtual void vfunc_2(const Unk_UpperEvt& evt);
-    virtual void vfunc_3(MS2Ptr<CProxyGameObject> p);
-    virtual void vfunc_4(MS2Ptr<CProxyGameObject> p);
-    virtual void vfunc_5(MS2Ptr<CProxyGameObject> p, int n);
     void FUN_1419308c0(UIEntityEventListener* pListener);
     void FUN_141930950(UIEntityEventListener* pListener);
 };
@@ -137,7 +132,7 @@ void Unk_UpperEvents::FUN_141930950(UIEntityEventListener* pListener)
 
 // MS2-FUNCTIONAL: the event copy local / copy-ctor call does not pair (FUN_1408b6b20 shape)
 // @0x1419309e0
-void Unk_UpperEvents::vfunc_1(const Unk_UpperEvt& evt)
+void UIEntityEventDispatcher::vfunc_1(const Unk_UpperEvt& evt)
 {
     for (size_t i = 0; i < m_listeners.GetCount(); i++)
     {
@@ -152,7 +147,7 @@ void Unk_UpperEvents::vfunc_1(const Unk_UpperEvt& evt)
 
 // MS2-FUNCTIONAL: as vfunc_1 (event copy local)
 // @0x141930a90
-void Unk_UpperEvents::vfunc_2(const Unk_UpperEvt& evt)
+void UIEntityEventDispatcher::vfunc_2(const Unk_UpperEvt& evt)
 {
     for (size_t i = 0; i < m_listeners.GetCount(); i++)
     {
@@ -166,7 +161,7 @@ void Unk_UpperEvents::vfunc_2(const Unk_UpperEvt& evt)
 }
 
 // @0x141930b40
-void Unk_UpperEvents::vfunc_3(MS2Ptr<CProxyGameObject> p)
+void UIEntityEventDispatcher::vfunc_3(MS2Ptr<CProxyGameObject> p)
 {
     for (size_t i = 0; i < m_listeners.GetCount(); i++)
     {
@@ -177,7 +172,7 @@ void Unk_UpperEvents::vfunc_3(MS2Ptr<CProxyGameObject> p)
 }
 
 // @0x141930c00
-void Unk_UpperEvents::vfunc_4(MS2Ptr<CProxyGameObject> p)
+void UIEntityEventDispatcher::vfunc_4(MS2Ptr<CProxyGameObject> p)
 {
     for (size_t i = 0; i < m_listeners.GetCount(); i++)
     {
@@ -188,7 +183,7 @@ void Unk_UpperEvents::vfunc_4(MS2Ptr<CProxyGameObject> p)
 }
 
 // @0x141930cc0
-void Unk_UpperEvents::vfunc_5(MS2Ptr<CProxyGameObject> p, int n)
+void UIEntityEventDispatcher::vfunc_5(MS2Ptr<CProxyGameObject> p, int n)
 {
     for (size_t i = 0; i < m_listeners.GetCount(); i++)
     {
