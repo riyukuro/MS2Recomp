@@ -715,6 +715,8 @@ bool FUN_140ebef60(MS2Ptr<TMarketBillDataParam> spBase, const TMarketBillDataPar
     for (size_t i = 0; i < nCount; ++i)
     {
         MS2Ptr<CMeratMarketBuy> spBuy = new CMeratMarketBuy();
+        if (spBuy == 0 || spBuy->m_spPacket == 0)   // exe: CMeratMarketBuy +0x38
+            continue;
         FUN_140d604c0(spBuy.get(), arrBuy[i], nSrc, 1);
         spBuy->FUN_140d60d60((int)i, (int)nCount);
         FUN_140d60dd0(spBuy.get(), strA, strB);
