@@ -119,7 +119,6 @@
 // MS2-PIN: ?_Key@?$_Tree@V?$_Tmap_traits@IUUnk_EntityWorldRecord@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUUnk_EntityWorldRecord@@@std@@@3@$0A@@std@@@std@@IEBAAEBIPEAU?$_Tree_node@U?$pair@$$CBIUUnk_EntityWorldRecord@@@std@@PEAX@2@@Z 0x1411da730
 // MS2-PIN: ?_Kfn@?$_Tree@V?$_Tmap_traits@IUUnk_EntityWorldRecord@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUUnk_EntityWorldRecord@@@std@@@3@$0A@@std@@@std@@IEBAAEBIAEBU?$pair@$$CBIUUnk_EntityWorldRecord@@@2@@Z 0x1411da790
 // MS2-PIN: ?lower_bound@?$_Tree@V?$_Tmap_traits@IUUnk_EntityWorldRecord@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUUnk_EntityWorldRecord@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_EntityWorldRecord@@@std@@@std@@@std@@@2@AEBI@Z 0x1411db970
-// MS2-PIN: ??C?$_List_iterator@V?$_List_val@U?$_List_simple_types@VAssetID@efd@@@std@@@std@@@std@@QEBAPEAVAssetID@efd@@XZ 0x1411dba50
 // MS2-PIN: ?size@?$_Tree@V?$_Tmap_traits@IUUnk_EntityWorldRecord@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUUnk_EntityWorldRecord@@@std@@@3@$0A@@std@@@std@@QEBA_KXZ 0x1411dbaf0
 // RTTI COL offsets 0 and 0x20 identify these two namespaced base vftables.
 // MS2-PIN: ??_7EntityWorldManager@@6BISystemService@efd@@@ 0x142ebe0f8
