@@ -237,7 +237,7 @@ public:
     Unk_MergeEquipList(int nGrow);                          // 0x140884ed0
     ~Unk_MergeEquipList();                                  // 0x1408850d0
     POSITION FUN_140885670();                               // head position
-    MS2Ptr<Unk_MergeEquipItem> FUN_140885600(POSITION pos);
+    MS2Ptr<Unk_MergeEquipItem>& FUN_140885600(POSITION pos);   // 0x140885600 returns &node->data (pos+0x10) in rax, no hidden slot
     void FUN_140885680(POSITION& pos);                      // next
 private:
     void* m_pad[8];
