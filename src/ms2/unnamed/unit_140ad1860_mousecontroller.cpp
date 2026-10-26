@@ -544,7 +544,8 @@ void CMouseController::FUN_140ad2300(Vector3 pt)
     FUN_1420849a0(&xf.m_rotate);
     Unk_NiPoint3 niPt(pt);
     FUN_14097fad0(xf.m_afTranslate, &niPt);
-    Unk_McRequest request;
+    alignas(8) char requestBuf[sizeof(Unk_McRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+    Unk_McRequest& request = *reinterpret_cast<Unk_McRequest*>(requestBuf);
     FUN_140a52ef0(&request);
     request.m_strName = "CH/Common/Eff_mouse_click.xml";
     request.m_pXform = &xf;
