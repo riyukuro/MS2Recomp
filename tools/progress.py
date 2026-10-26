@@ -1389,6 +1389,27 @@ def main():
                     bm.HARVEST[q[0]] = va
                 else:
                     bm.HARVEST.setdefault(q[0], va)
+        # carry-forward: a committed row whose name a unit still pairs at the same VA (tag/pin evidence) but only
+        # functionally (not ok -> no harvest) keeps its row. Merge 34 dropped such rows (CreateObject 0x1424f39c0,
+        # SpriteGetTextSnapshot 0x1429064b0: /alternatename targets of data units -> datacheck failed until restored).
+        carried = 0
+        if os.path.exists(bm.SYMBOLS_TSV) and not os.environ.get("MS2_NO_CARRY"):
+            paired = set()
+            for rel, c in cache.items():
+                if not c.get("res") or rel in stale_units:
+                    continue
+                for n, p in c["res"]["pairs"].items():
+                    if p.get("va") is not None and (rel in queue_done or p["how"] not in ("auto-order", "auto-leaf")):
+                        paired.add((n, p["va"]))
+            for line in open(bm.SYMBOLS_TSV):
+                if line.startswith("#") or not line.strip():
+                    continue
+                q = line.rstrip("\n").split("\t")
+                va = int(q[1], 16)
+                if q[0] not in bm.HARVEST and (q[0], va) in paired:
+                    bm.HARVEST[q[0]] = va
+                    carried += 1
+        print(f"symbols: {carried} committed row(s) carried forward (paired functional at the same VA)")
     elif symbols_out != bm.SYMBOLS_TSV:
         # report mode: the committed table plus this cache's harvest (rebuilt every run, nothing stale survives)
         os.makedirs(OUT, exist_ok=True)
