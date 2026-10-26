@@ -58,8 +58,8 @@ public:
     void SendRequestPetInventoryMode1(__int64 nUid, int nSlot, int nCount); // packet 0x79 mode 1 (put in)
     bool FUN_140c88650(int nButton, const CMsgBoxData& box);   // count box result of FUN_140c88200
     bool FUN_140c88700(int nButton, const CMsgBoxData& box);   // count box result of SendRequestPetInventoryMode1
-    void FUN_140c887b0(ItemPtr spItem, int nSlot);          // take an item out of the pet inventory (count box when stacked)
-    void FUN_140c88c30(ItemPtr spItem, int nSlot);          // put an item into the pet inventory
+    static void FUN_140c887b0(ItemPtr spItem, int nSlot);   // no `this` in the exe (spItem in rcx); take an item out of the pet inventory (count box when stacked)
+    static void FUN_140c88c30(ItemPtr spItem, int nSlot);   // no `this` in the exe (spItem in rcx); put an item into the pet inventory
     bool FUN_140c88f70(ItemPtr spItem);                     // use the item's skill
 
     CLockCriticalSection m_lock;                            // +0x00
