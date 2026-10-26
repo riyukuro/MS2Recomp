@@ -601,7 +601,8 @@ void TriggerObjectSound::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
                 FUN_1408a2060(TRIG_ENT(), 0xcdeb811e, &kName);
                 if (!FUN_14096ad40(kName))
                 {
-                    Unk_TrigFxReq req;
+                    alignas(8) char reqBuf[sizeof(Unk_TrigFxReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+                    Unk_TrigFxReq& req = *reinterpret_cast<Unk_TrigFxReq*>(reqBuf);
                     FUN_140a52ef0(&req);
                     req.m_strName = FUN_1408ac310(kName);
                     req.m_nOwnerId = 0;
@@ -617,7 +618,8 @@ void TriggerObjectSound::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
             FUN_1408a2060(TRIG_ENT(), 0x131dc1d2, &kName);
             if (!FUN_14096ad40(kName))
             {
-                Unk_TrigFxReq req;
+                alignas(8) char reqBuf[sizeof(Unk_TrigFxReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+                Unk_TrigFxReq& req = *reinterpret_cast<Unk_TrigFxReq*>(reqBuf);
                 FUN_140a52ef0(&req);
                 req.m_strName = FUN_1408ac310(kName);
                 req.m_nOwnerId = 0;
@@ -704,7 +706,8 @@ void TriggerObjectMesh::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
             FUN_1408a2060(TRIG_ENT(), 0x6dd85c78, &kFx);
         if (!FUN_14096ad40(kFx))
         {
-            Unk_TrigFxReq req;
+            alignas(8) char reqBuf[sizeof(Unk_TrigFxReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+            Unk_TrigFxReq& req = *reinterpret_cast<Unk_TrigFxReq*>(reqBuf);
             FUN_140a52ef0(&req);
             req.m_strName = FUN_1408ac310(kFx);
             req.m_nOwnerId = 0;
@@ -769,7 +772,8 @@ void TriggerObjectRope::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
             FUN_1408a2060(TRIG_ENT(), 0x6dd85c78, &kFx);
         if (!FUN_14096ad40(kFx))
         {
-            Unk_TrigFxReq req;
+            alignas(8) char reqBuf[sizeof(Unk_TrigFxReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+            Unk_TrigFxReq& req = *reinterpret_cast<Unk_TrigFxReq*>(reqBuf);
             FUN_140a52ef0(&req);
             req.m_strName = FUN_1408ac310(kFx);
             req.m_nOwnerId = 0;
@@ -829,7 +833,8 @@ void TriggerObjectEffect::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
         FUN_14027dcf0(aPos, aTmp);
         FUN_14097faa0(xf.m_afTranslate, aPos);
         memcpy(&xf, &kRot, 0x24);
-        Unk_TrigFxReq req;
+        alignas(8) char reqBuf[sizeof(Unk_TrigFxReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+        Unk_TrigFxReq& req = *reinterpret_cast<Unk_TrigFxReq*>(reqBuf);
         FUN_140a52ef0(&req);
         req.m_strName = FUN_140b60bf0(TRIG_ENT_RAW());
         req.m_nOwnerId = 0;
