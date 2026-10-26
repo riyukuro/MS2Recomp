@@ -16,21 +16,21 @@ static CString s_sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", 
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/uiswfentitymanager.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/placeholder/uivideocontents.h"
 
 template <> MS2Ptr<Unk_ASVideoPlayer> UISwfEntity::GetChild<Unk_ASVideoPlayer>(const CString& strName);
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-class Unk_IntroPlayerView { public: void FUN_1422e9360(const CString& strProp); void FUN_1422e97c0(int a, int b); };
-class Unk_IntroHub { public: void FUN_1422d4780(UISwfEntity* p, int n); void FUN_1422d4840(UISwfEntity* p, int n); };
-Unk_IntroHub* FUN_140b632f0();
+UISwfEntityManager* FUN_140b632f0();
 class Unk_IntroScenes { public: void FUN_1417e25a0(int nSceneId); };
 Unk_IntroScenes* FUN_140aa6d30();
 int FUN_1417e2610(Unk_IntroScenes* p);
-class Unk_IntroLogin { public: bool FUN_14116d840(); };
-Unk_IntroLogin* FUN_14025e7c0();
-class Unk_IntroFeatures { public: bool FUN_14036d570(int nFeature); };
-Unk_IntroFeatures* FUN_140166410();
+CInputKeyHandler* FUN_14025e7c0();
+CFeatureManager* FUN_140166410();
 class Unk_IntroWindow { public: void FUN_141b91ba0(); };
 Unk_IntroWindow* FUN_140aadf80();
 class Unk_IntroFiles { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
@@ -44,7 +44,7 @@ void FUN_1402928e0(const CStringW& str, ATL::CAtlArray<float>& arr, const wchar_
 bool FUN_140184310(const CString&, const char*);
 unsigned char FUN_1401c0090(const CString&, const CString&);
 int FUN_141995eb0();
-__int64 FUN_140869440();
+__int64 GetServerTime();
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -92,8 +92,8 @@ void UIIntroMovie::OnLoadInit()
     if (MS2Ptr<Unk_ASVideoPlayer> spPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer")) {
         int nWidth = spPlayer->FUN_1422c1500();
         int nHeight = spPlayer->FUN_1422c1530();
-        reinterpret_cast<Unk_IntroPlayerView*>(spPlayer.operator->())->FUN_1422e9360("maintainAspectRatio");
-        reinterpret_cast<Unk_IntroPlayerView*>(spPlayer.operator->())->FUN_1422e97c0(0x10, 9);
+        reinterpret_cast<Unk_ASVideoPlayer*>(spPlayer.operator->())->FUN_1422e9360("maintainAspectRatio");
+        reinterpret_cast<Unk_ASVideoPlayer*>(spPlayer.operator->())->FUN_1422e97c0(0x10, 9);
         spPlayer->FUN_1422e9810(nWidth, nHeight);
     }
 }
@@ -210,7 +210,7 @@ void UIIntroMovie::LoadIntroMovie()
         CMsTime end;
         FUN_140873600(pNode, "startDate", start);
         FUN_140873600(pNode, "endDate", end);
-        CMsTime now(FUN_140869440());
+        CMsTime now(GetServerTime());
         if (start > now && end < now) continue;
         MS2Ptr<MovieInfo> spInfo(new MovieInfo);
         if (spInfo.get() != 0) {
