@@ -26,6 +26,7 @@
 // MS2-PIN: ??_7WorldService@@6B?$TSingleton@VWorldService@@@@@ 0x142ffec20
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\worldservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/client/ms2/itemloadinfo.h"
 #include "worldservice.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -10285,8 +10286,8 @@ efd::AsyncResult WorldService::OnTick()
                 Unk_WsG_Actor* actor = reinterpret_cast<Unk_WsG_Actor*>(FUN_141bd1290(pair->m_actorId));
                 if (actor != 0)
                 {
-                    Unk_WsG_ArrayHandle entries;
-                    FUN_140d371c0(&entries, &pair->m_array);
+                    ItemLoadInfoList entriesOwner(*reinterpret_cast<const ItemLoadInfoList*>(&pair->m_array));
+                    Unk_WsG_ArrayHandle& entries = *reinterpret_cast<Unk_WsG_ArrayHandle*>(&entriesOwner);
                     for (unsigned __int64 i = 0; i < FUN_140d38870(entries.m_p); ++i)
                     {
                         Unk_WsG_EntryHandle entry;
@@ -10316,7 +10317,7 @@ efd::AsyncResult WorldService::OnTick()
                     int classId = actor->GetClassId();
                     if (classId == 0x6200004 || classId == 0x6200046)
                         FUN_140a6a840()->OnSpecialActorRefreshed(classId);
-                    FUN_140d37950(&entries);
+
                 }
                 FUN_141bf86a0(&it);
             }
