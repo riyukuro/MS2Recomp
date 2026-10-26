@@ -43,6 +43,9 @@ static CString s_mentorSortNames3[] = {"None", "Buy", "Like", "PriceLow", "Price
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/client/ms2/uiquesteventlistener.h"
+#include "ms2/client/ms2/partymanager.h"
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 // The mentee/mentor record of one user (a CPtred; +0x30 serial number, names at +0x38/+0x40, icon url at +0x48).
@@ -76,8 +79,7 @@ Unk_MentorFlags* FUN_14025e7b0();
 class Unk_MentorInviteDialog { public: void FUN_140c2f010(); };
 Unk_MentorInviteDialog* FUN_140b6f4c0(int nId);
 void FUN_141275260(int, int, int);
-class Unk_PartyService { public: void FUN_14162ba50(CStringW strName); };
-Unk_PartyService* FUN_1409670d0();
+CPartyManager* FUN_1409670d0();
 // The popup-menu request (0x80 bytes), built by the ctor at 0x140c302f0 and released by the dtor at 0x140c304c0.
 class Unk_PopupMenuInfo
 {
@@ -186,7 +188,7 @@ int UIMentoringMentorPage::vfunc_5(const char* szMethod, const Scaleform::GFx::V
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_1409670d0()->FUN_14162ba50(data.FUN_1422b8f40());
+            FUN_1409670d0()->SendPartyMode1(data.FUN_1422b8f40());
     }
     else if (_stricmp(szMethod, "OnPopupMenu") == 0)
     {
@@ -302,8 +304,7 @@ class Unk_MentorScheduleHolder { public: Unk_MentorSchedule* FUN_14041d160(); };
 Unk_MentorScheduleHolder* FUN_140302b00();
 
 CStringW FUN_140c70b70(CStringW strFormat, const int& nStartYear, const int& nStartMonth, const int& nStartDay, const int& nEndYear, const int& nEndMonth, const int& nEndDay, const CStringW& strName);
-class Unk_MentorChat { public: void FUN_1416fb340(CStringW& strText); };
-Unk_MentorChat* FUN_1403b4750();
+CReservedWordTable* FUN_1403b4750();
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& pkt);
@@ -396,13 +397,7 @@ bool UIMentoringMentorRegisterPage::SendMentor(int nResult, const CMsgBoxData& d
 // ============================================================================
 
 // The quest event manager: registers the listener that is told about quest changes.
-class Unk_MentorQuestManager
-{
-public:
-    void FUN_141aa87c0(UIQuestEventListener*);
-    void FUN_141aa8850(UIQuestEventListener*);
-};
-Unk_MentorQuestManager* FUN_140bfc4b0();
+UIQuestEventDispatcher* FUN_140bfc4b0();
 // The quest record (a CPtred-like object; +0x358 the mission day, +0x360 the icon name).
 class Unk_MentorQuest
 {
@@ -517,7 +512,7 @@ CStringW FUN_1409404f0(__int64 n);
 __int64 FUN_140761ba0(int nQuest, int n);
 int FUN_140761e40(int nQuest, int n);
 CStringW FUN_140763e10(int n);
-__int64 FUN_140869440();
+__int64 GetServerTime();
 void FUN_140e5ec30(UIMentoringDialog* pDlg);
 
 // @0x140c733b0
@@ -538,7 +533,7 @@ int UIMentoringMissionPage::vfunc_1()
     __int64 nStart = FUN_140c74720();
     if (nStart != 0)
     {
-        CMsTime now(FUN_140869440());
+        CMsTime now(GetServerTime());
         for (int i = 0; i < 7; i++)
         {
             CMsTime tDay(nStart);
@@ -571,7 +566,7 @@ void UIMentoringMissionPage::vfunc_3(Scaleform::GFx::Value* pOut, const CString&
     if (FUN_140184310(strMethod, "getTabTooltip"))
     {
         int nDay = FUN_140718170(pArgs->FUN_1422b8d30());
-        CMsTime now(FUN_140869440());
+        CMsTime now(GetServerTime());
         CMsTime tDay(FUN_140c74720());
         AddDays(tDay, nDay);
         TruncateToDay(tDay);
