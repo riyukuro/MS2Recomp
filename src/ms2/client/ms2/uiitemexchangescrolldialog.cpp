@@ -29,6 +29,9 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
+#include "ms2/placeholder/cstringtable.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -72,7 +75,6 @@ extern __int64 DAT_143ab2898;                           // the player's mesos
 extern int DAT_143ab2914;                               // the build level (> 0x31: debug commands)
 
 
-CGameEventValueManager* FUN_140302b00();                            // TSingleton<CGameEventValueManager>::GetInstance
 unsigned FUN_140428cb0(Unk_GameEventLockedValue<0x78>* pSale, unsigned long nItemId);   // the sale rate (percent) of the scroll item
 
 // Dialog child lookups.
@@ -83,21 +85,12 @@ public:
 };
 
 // The debug key state (singleton).
-class Unk_14025e7c0 { public: bool FUN_14116d720(); };
-Unk_14025e7c0* FUN_14025e7c0();
+CInputKeyHandler* FUN_14025e7c0();
 
 // The status listener registry.
-class Unk_IesStatusMgr
-{
-public:
-    void FUN_141b0cd00(UIStatusEventListener* pListener);           // register
-    void FUN_141b0cd90(UIStatusEventListener* pListener);           // unregister
-};
-Unk_IesStatusMgr* FUN_140aa6d40();
+UIStatusEventDispatcher* FUN_140aa6d40();
 
 // The string table (item names).
-class Unk_IesStrTable { public: CStringW FUN_141811980(int nTable, int nIndex); };
-Unk_IesStrTable* FUN_1401a9d70();
 
 // AS views.
 class Unk_IesChild : public ASMovieClip
@@ -524,7 +517,7 @@ void UIItemExchangeScrollDialog::FUN_140f52880()
         strTitle = L"$s_item_exchange_trading_title";
     }
     unsigned nItemId = spInfo->m_nId;
-    unsigned nSale = FUN_140428cb0(FUN_140302b00()->GetExchangeScrollSale(), nItemId);
+    unsigned nSale = FUN_140428cb0(TSingleton<CGameEventValueManager>::GetInstance()->GetExchangeScrollSale(), nItemId);
     CStringW strSale;
     if (nSale != 0)
     {
@@ -757,7 +750,7 @@ void UIItemExchangeScrollDialog::FUN_140f54120(ASObj& obj, CExchangeItemInfo* pI
         FUN_140f514c0(&pInfo->m_requireEquip, CString("recipe"), obj, 0xc, 1, MS2Ptr<CItem>(0));
         FUN_140f514c0(&pInfo->m_exchange, CString("exchange"), obj, 6, 1, MS2Ptr<CItem>(0));
         CStringW strNotify = FUN_1405c2690(CStringW(L"s_itemslot_exchange_upgrade_notify"),
-                                           FUN_1401a9d70()->FUN_141811980(1, pInfo->m_requireEquip.m_nId));
+                                           TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pInfo->m_requireEquip.m_nId));
         FUN_1416fb300(FUN_1403b4750(), strNotify);
         obj.FUN_1407cbb20("warning", FUN_14062b4f0(CStringW(L"s_itemslot_exchange_upgrade_warning"), &pInfo->m_nMaxGrade));
         obj.FUN_1407cbb20("notify", CStringW(strNotify));
@@ -1026,7 +1019,7 @@ void UIItemExchangeScrollDialog::FUN_140f55c50(const Scaleform::GFx::FunctionHan
 // MS2-FUNCTIONAL: temporaries / frame not tuned
 void UIItemExchangeScrollDialog::FUN_140f55d10()
 {
-    bool bDebug = FUN_14025e7c0()->FUN_14116d720();
+    bool bDebug = FUN_14025e7c0()->IsDebugMode();
     if (bDebug && !(m_spExchange == 0))
     {
         CIngredientContainer* pRequire = 0;
