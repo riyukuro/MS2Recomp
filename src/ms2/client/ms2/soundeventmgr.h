@@ -274,7 +274,7 @@ public:
     bool m_b30;                         // +0x30 = true
     TToolHistory<MusicData> m_histMusic;            // +0x38
     TToolHistory<ReverbData> m_histReverb;          // +0x58
-    std::map<int, TToolHistory<ParamVaule> > m_mapParams;   // +0x78 music parameter histories by id
+    std::map<unsigned int, TToolHistory<ParamVaule> > m_mapParams;   // +0x78 music parameter histories by id
     int m_bMusicPlaying;                // +0x88
     int m_bReady;                       // +0x8c
     FMOD::EventCategory* m_apCategory[11];          // +0x90 effect, environment, ...
