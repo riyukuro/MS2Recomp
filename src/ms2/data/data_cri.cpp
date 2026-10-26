@@ -1629,6 +1629,10 @@ void* DAT_143b27478;                                            // 0x143b27478
 void* DAT_143b27480;                                            // 0x143b27480
 void* DAT_143b27488;                                            // 0x143b27488
 void* DAT_143b27490;                                            // 0x143b27490
+void* DAT_143b27498;                                            // 0x143b27498
+int DAT_143b274a0;                                              // 0x143b274a0
+void* DAT_143b274a8;                                            // 0x143b274a8
+int DAT_143b274b0;                                              // 0x143b274b0
 void* DAT_143b274b8;                                            // 0x143b274b8
 void* DAT_143b274c0;                                            // 0x143b274c0
 void* DAT_143b274c8;                                            // 0x143b274c8
@@ -1649,6 +1653,8 @@ void* DAT_143b27538;                                            // 0x143b27538
 void* DAT_143b27540;                                            // 0x143b27540
 void* DAT_143b27548;                                            // 0x143b27548
 void* DAT_143b27550;                                            // 0x143b27550
+void* DAT_143b27558;                                            // 0x143b27558
+int DAT_143b27560;                                              // 0x143b27560
 void* DAT_143b27568;                                            // 0x143b27568
 void* DAT_143b27570;                                            // 0x143b27570
 void* DAT_143b27578;                                            // 0x143b27578
@@ -1663,6 +1669,8 @@ void* DAT_143b275b8;                                            // 0x143b275b8
 void* DAT_143b275c0;                                            // 0x143b275c0
 void* DAT_143b275c8;                                            // 0x143b275c8
 void* DAT_143b275d0;                                            // 0x143b275d0
+void* DAT_143b275d8;                                            // 0x143b275d8
+int DAT_143b275e0;                                              // 0x143b275e0
 void* DAT_143b275e8;                                            // 0x143b275e8
 void* DAT_143b275f0;                                            // 0x143b275f0
 void* DAT_143b275f8;                                            // 0x143b275f8
@@ -1679,6 +1687,8 @@ void* DAT_143b27648;                                            // 0x143b27648
 void* DAT_143b27650;                                            // 0x143b27650
 void* DAT_143b27658;                                            // 0x143b27658
 void* DAT_143b27660;                                            // 0x143b27660
+void* DAT_143b27668;                                            // 0x143b27668
+int DAT_143b27670;                                              // 0x143b27670
 void* DAT_143b27678;                                            // 0x143b27678
 void* DAT_143b27680;                                            // 0x143b27680
 void* DAT_143b27688;                                            // 0x143b27688
@@ -1695,6 +1705,8 @@ void* DAT_143b276d8;                                            // 0x143b276d8
 void* DAT_143b276e0;                                            // 0x143b276e0
 void* DAT_143b276e8;                                            // 0x143b276e8
 void* DAT_143b276f0;                                            // 0x143b276f0
+void* DAT_143b276f8;                                            // 0x143b276f8
+int DAT_143b27700;                                              // 0x143b27700
 void* DAT_143b27708;                                            // 0x143b27708
 void* DAT_143b27710;                                            // 0x143b27710
 void* DAT_143b27718;                                            // 0x143b27718
@@ -1711,6 +1723,8 @@ void* DAT_143b27768;                                            // 0x143b27768
 void* DAT_143b27770;                                            // 0x143b27770
 void* DAT_143b27778;                                            // 0x143b27778
 void* DAT_143b27780;                                            // 0x143b27780
+void* DAT_143b27788;                                            // 0x143b27788
+int DAT_143b27790;                                              // 0x143b27790
 void* DAT_143b27798;                                            // 0x143b27798
 void* DAT_143b277a0;                                            // 0x143b277a0
 void* DAT_143b277a8;                                            // 0x143b277a8
