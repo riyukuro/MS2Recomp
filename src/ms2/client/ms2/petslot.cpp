@@ -26,13 +26,15 @@
 #include "ms2/client/ms2/uidialog.h"
 #include "ms2/client/ms2/questmanager_2.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiquesteventlistener.h"
+#include "ms2/client/ms2/uiservice.h"
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 
 // ---- out-of-unit callees ----
 class Unk_ItemEquipData : public CItemData { };          // CItem::FUN_140527840's record
 
-extern Unk_Inventory DAT_143ab2a90;                       // the player's inventory
+extern Unk_Inventory g_143ab2a90;                       // the player's inventory
 CPetManager* FUN_140535320();                             // CPetManager::GetInstance
 
 // The local player and its views.
@@ -62,8 +64,8 @@ void* FUN_1405a8e70(Unk_PsHandle* pHandle);               // handle.get
 void* FUN_1405a8ed0(Unk_PsHandle* pHandle);               // handle.get (the equip item)
 MS2Ptr<CItem>* FUN_1411dc7a0(void* pEquip, MS2Ptr<CItem>* pOut);   // the item of an equip, returns pOut
 void FUN_1405a85f0(Unk_PsHandle* pHandle);                // release
-class Unk_PsUi { public: int FUN_141adcb40(); };          // 0: the compare view is off
-Unk_PsUi* FUN_1403ed2b0();
+          // 0: the compare view is off
+CUIService* FUN_1403ed2b0();
 
 char FUN_140534e50(MS2Ptr<CItem>* pItem);                 // the item is expired / unusable
 
@@ -83,13 +85,7 @@ public:
 Unk_PsPane* FUN_140cbe1c0(int nId);
 
 // The quest event dispatcher the slot registers with.
-class Unk_PsQuestEvents
-{
-public:
-    void FUN_141aa87c0(UIQuestEventListener*);
-    void FUN_141aa8850(UIQuestEventListener*);
-};
-Unk_PsQuestEvents* FUN_140bfc4b0();
+UIQuestEventDispatcher* FUN_140bfc4b0();
 // The item event hub the bag registers with.
 struct Unk_PsItemEvents;
 Unk_PsItemEvents* FUN_140a6a840();
@@ -97,12 +93,7 @@ void FUN_1419cae20(Unk_PsItemEvents*, UIItemEventListener*);
 void FUN_1419caeb0(Unk_PsItemEvents*, UIItemEventListener*);
 
 // The singleton that decides whether an item may be handled.
-class Unk_PsItemRules
-{
-public:
-    int FUN_1416ce170(MS2Ptr<CItem> spItem);
-};
-Unk_PsItemRules* FUN_140764020();
+CQuestManager* FUN_140764020();
 
 void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);
 void FUN_141276180(const CString& strA, const CString& strB);
@@ -251,9 +242,9 @@ int PetSlot::vfunc_14()
         Unk_PsPane* pPane = FUN_140cbe1c0(0x4ef4);
         if (pPane == 0 || pPane->FUN_141924630() == 0)
         {
-            int nTab = DAT_143ab2a90.FUN_140a617f0(spItem);
+            int nTab = g_143ab2a90.FUN_140a617f0(spItem);
             int nCount = spItem->FUN_140526c50();
-            int nSlot = DAT_143ab2a90.FUN_140a612b0(nTab, spItem, nCount);
+            int nSlot = g_143ab2a90.FUN_140a612b0(nTab, spItem, nCount);
             FUN_140c88c30(spItem, nSlot);
         }
         else
@@ -288,7 +279,7 @@ int PetSlot::vfunc_18(void* p)
     Unk_PsPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return pDrag->vfunc_10();
-    MS2Ptr<CItem> spPet = DAT_143ab2a90.FUN_140a5d680(FUN_140535320()->GetSummonUid());
+    MS2Ptr<CItem> spPet = g_143ab2a90.FUN_140a5d680(FUN_140535320()->GetSummonUid());
     if (!(spPet == 0))
     {
         PetSlot* pFrom = FUN_140dbc0d0(pDrag);
@@ -298,7 +289,7 @@ int PetSlot::vfunc_18(void* p)
             if (pItemSlot != 0)
             {
                 __int64 nUid = FUN_141405a10(pItemSlot);
-                MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+                MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
                 if (spItem.get() != 0)
                     FUN_140c887b0(spItem, m_nIndex);
                 FUN_141404930(nUid);
