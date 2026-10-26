@@ -21,6 +21,8 @@
 // The unit's statics: the npc id -> movie name table, then the shared header statics, then one more sort name table.
 static ATL::CAtlMap<unsigned int, CString, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<CString> > s_npcMovieNames(17, 0.75f, 0.25f, 2.25f, 10);
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/client/ms2/uiquesteventlistener.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
 static CString s_sortNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
@@ -50,10 +52,8 @@ Unk_EmoPlayer* FUN_14096e110(PCBase* pActor);
 class Unk_EmoNpcTable { public: int FUN_14035b0a0(unsigned int nId); CString FUN_14035b2a0(unsigned int nId); };
 Unk_EmoNpcTable* FUN_140764010();
 CString FUN_141082090(unsigned int nQuestId, const CString& a, const CString& b, const CString& c, const CString& d);
-class Unk_EmoQuestMgr { public: void FUN_141aa87c0(UIQuestEventListener*); void FUN_141aa8850(UIQuestEventListener*); };
-Unk_EmoQuestMgr* FUN_140bfc4b0();
-class Unk_EmoStatusMgr { public: void FUN_141b0cd00(UIStatusEventListener*); void FUN_141b0cd90(UIStatusEventListener*); };
-Unk_EmoStatusMgr* FUN_140aa6d40();
+UIQuestEventDispatcher* FUN_140bfc4b0();
+UIStatusEventDispatcher* FUN_140aa6d40();
 class Unk_EmoUIScale;
 Unk_EmoUIScale* FUN_14025e7a0();                                            // ui scale service
 float FUN_1422afec0(Unk_EmoUIScale* pScale, int nLayer);                    // scale of a layer
