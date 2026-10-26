@@ -10,6 +10,7 @@ struct Unk_PiAgreeState
     bool m_bAgree;
     char m_pad[7];
 };
+// +0 agree flag, +4 int, +8 byte (state ctor 0x141261cf0)
 
 class CGameOptionPersonalInfoAgreement : public CBaseOption
 {
@@ -28,5 +29,6 @@ public:
     virtual int vfunc_14();                                      // 0x140a46390
 
     Unk_PiAgreeState m_state;                                    // +0x30
+    char m_pad_38[0x40 - 0x38];                                  // the exe allocates 0x40 (UIGameOptionDialog ctor); members unknown
 };
-MS2_CHECK_SIZE(CGameOptionPersonalInfoAgreement, 0x38);
+MS2_CHECK_SIZE(CGameOptionPersonalInfoAgreement, 0x40);
