@@ -41,6 +41,9 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/client/ms2/worldservice.h"
 
 #include <atlcoll.h>
 #include <algorithm>
@@ -143,17 +146,14 @@ void FUN_141276180(const CString& strSound, const CString& strArg);   // play a 
 class Unk_140166440 { public: void FUN_14015eb90(int a1, int a2, const wchar_t* szFormat, const CString& a3); };
 Unk_140166440* FUN_140166440();                                     // debug log
 int FUN_141383a70(CString strName);
-class Unk_1403ed2d0 { public: bool FUN_141bcb0a0(); void* FUN_141bd0cc0(); };
-Unk_1403ed2d0* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 void FUN_140d73cd0();
 void FUN_141275260(int nId, int a1, int a2);                        // system message by id
 void FUN_141a8a730();
 class Unk_14025e7a0 { public: void FUN_1422b0840(int nLayer, unsigned* pWidth, unsigned* pHeight); };
 Unk_14025e7a0* FUN_14025e7a0();
-class Unk_14025e7c0 { public: bool FUN_14116d840(); };
-Unk_14025e7c0* FUN_14025e7c0();
-class Unk_140166410 { public: bool FUN_14036d570(int nId); };
-Unk_140166410* FUN_140166410();                                     // content options
+CInputKeyHandler* FUN_14025e7c0();
+CFeatureManager* FUN_140166410();                                     // content options
 void* FUN_140bb9630(int n);                                         // int -> delegate user data
 int FUN_140bb9640(void* p);                                         // delegate user data -> int
 void FUN_140d01960(CString strKey);                                 // open the web guide page
