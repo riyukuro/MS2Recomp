@@ -239680,3 +239680,4 @@ DAT_143ffd550	143ffd550	data
 ?CreateEmptyLevelMovie@MovieRoot@AS2@GFx@Scaleform@@QEAAPEAVSprite@34@PEAVLoadStates@34@H@Z	1429360e0	func
 ??_GSharedObjectFlushVisitor@AS2@GFx@Scaleform@@UEAAPEAXI@Z	14292a6b0	func
 ?HasFinalize_GC@VMAbcFile@AS3@GFx@Scaleform@@MEBA_NXZ	142510e10	func
+?MakeObject@ClassClass@ClassTraits@AS3@GFx@Scaleform@@UEAAXAEAVValue@345@PEAVTraits@345@@Z	14241be90	func
