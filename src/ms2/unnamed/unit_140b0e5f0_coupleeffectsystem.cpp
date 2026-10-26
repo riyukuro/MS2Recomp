@@ -242,7 +242,8 @@ void CoupleEffectSystem::FUN_140b0ed30()
     Unk_CoupleRot rot;
     FUN_140a33240(&rot, &DAT_143a09600);
     xf.m_rotate = rot;
-    Unk_CeRequest request;
+    alignas(8) char requestBuf[sizeof(Unk_CeRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+    Unk_CeRequest& request = *reinterpret_cast<Unk_CeRequest*>(requestBuf);
     FUN_140a52ef0(&request);
     request.m_strName = FUN_140b0efb0();
     request.m_nOwnerId = 0;
