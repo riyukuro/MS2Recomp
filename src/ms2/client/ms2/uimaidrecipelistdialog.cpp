@@ -1304,7 +1304,9 @@ int FUN_1412dffb0(CString strPath, int nMode, AScript* pTarget)
 struct Unk_MdAsRows { ~Unk_MdAsRows(); ASArray* FUN_140be3d00(); void* m_pad[2]; };   // 0x10 in the exe (+8 = the array pointer)     // dtor 0x140be3520
 Unk_MdAsRows FUN_140ff6b60(int nMode, Scaleform::GFx::Value& v);
 void FUN_1409c1770(AScript* p, const char* szName, Scaleform::GFx::Value& out);
-class Unk_MdRowObj : public ASObj { public: Unk_MdRowObj(ASArray* pArr, unsigned nIndex); };     // 0x1422df140 the element as an object
+class Unk_MdRowObj : public ASObj { };                                       // the element as an object
+// 0x1422df140 ASDataProvider::requestItemAt viewed through the array: this = the array (rcx), hidden return = rdx
+struct Unk_MdRowSource { Unk_MdRowObj FUN_1422df140(unsigned nIndex); };
 struct Unk_MdMemberText { CStringW FUN_1422bb2b0(const char* szName); }; // a member as text
 int FUN_1409c17e0(const Scaleform::GFx::Value& v);          // the value as int
 bool FUN_1409c1720(const Scaleform::GFx::Value& v);         // the value as bool
@@ -1372,7 +1374,7 @@ bool FUN_1412e06f0(CString strPath, int nMode, AScript* pData, ATL::CAtlList<int
     unsigned nItems = items.FUN_140be3d00()->FUN_1422bc5d0();
     for (unsigned i = 0; i < nItems; i++)
     {
-        Unk_MdRowObj row(items.FUN_140be3d00(), i);
+        Unk_MdRowObj row = reinterpret_cast<Unk_MdRowSource*>(items.FUN_140be3d00())->FUN_1422df140(i);
         Unk_MdXmlElement item("item");
         int nSn = FUN_1412df3b0(reinterpret_cast<Unk_MdMemberText*>(&row)->FUN_1422bb2b0("sn"));
         FUN_1408740a0(&item, "sn", reinterpret_cast<Unk_MdMemberText*>(&row)->FUN_1422bb2b0("sn"));
@@ -1386,7 +1388,7 @@ bool FUN_1412e06f0(CString strPath, int nMode, AScript* pData, ATL::CAtlList<int
     unsigned nCategories = categories.FUN_140be3d00()->FUN_1422bc5d0();
     for (unsigned i = 0; i < nCategories; i++)
     {
-        Unk_MdRowObj row(categories.FUN_140be3d00(), i);
+        Unk_MdRowObj row = reinterpret_cast<Unk_MdRowSource*>(categories.FUN_140be3d00())->FUN_1422df140(i);
         Unk_MdXmlElement category("category");
         Scaleform::GFx::Value vId = row.FUN_1422baa20("stringId");
         int nStringId = i;
