@@ -71,7 +71,7 @@ struct Unk_Be790TreeA
 {
     Unk_Be790TreeA(int nBlock);
     ~Unk_Be790TreeA();
-    char m_pad[8];
+    char m_pad[0x30];
 };
 void FUN_140932400(void*, int);
 void FUN_140932930(void*);
