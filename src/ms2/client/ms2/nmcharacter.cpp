@@ -108,10 +108,10 @@ unsigned int CNMCharacter::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMS
 // @0x141570410
 unsigned int CNMCharacter::Decode(CNMSerializableDecoder* pDecoder, CNMStream*)
 {
-    pDecoder->ReadBytes(reinterpret_cast<unsigned char*>(m_10), sizeof m_10);
+    pDecoder->ReadStringBufAlias(reinterpret_cast<char*>(m_10), sizeof m_10);
     m_50.nLow = pDecoder->ReadU32();
     m_50.nHigh = pDecoder->ReadU32();
-    pDecoder->ReadBytes(reinterpret_cast<unsigned char*>(m_58), sizeof m_58);
+    pDecoder->ReadStringBufAlias(reinterpret_cast<char*>(m_58), sizeof m_58);
     FUN_1415fb750(pDecoder);
     return 1;
 }
@@ -193,7 +193,7 @@ unsigned int CNMRejectedUser::DecodeDispatch(CNMSerializableDecoder* pDecoder, C
 unsigned int CNMRejectedUser::Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     m_character.DecodeFramed(pStream);
-    pDecoder->ReadBytes(m_a8, sizeof m_a8);
+    pDecoder->ReadStringBufAlias(reinterpret_cast<char*>(m_a8), sizeof m_a8);
     FUN_1415fb750(pDecoder);
     return 1;
 }
