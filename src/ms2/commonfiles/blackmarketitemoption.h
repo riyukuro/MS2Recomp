@@ -383,7 +383,7 @@ public:
     IdArrayPtr GetOptionStats(unsigned int nOption);    // 0x1401c4430 stat tables of an option
     StatArrayPtr GetStatTable(unsigned int nId);        // 0x1401c44f0
     TabPtr GetTab(unsigned int nId);    // 0x1401c45b0
-    void ReadTabs(Unk_140165cf0* pElem, TabList* pOut, TabMap* pById, CStringA* pCategories);  // 0x1401c4670
+    static void ReadTabs(Unk_140165cf0* pElem, TabList* pOut, TabMap* pById, CStringA* pCategories);  // 0x1401c4670 (static: rcx = pElem)
 
     static void CheckInit();            // 0x1401c60f0
     static void SetInit(bool b);        // 0x1401c9180
