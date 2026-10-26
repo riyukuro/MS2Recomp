@@ -127774,7 +127774,7 @@ _vscprintf_l	1410409c0	func
 ??_G?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VSaleStateData@@@@@std@@QEAAPEAXI@Z	14112d420	func
 ?FUN_14112d420@@YAPEAXPEAXI@Z	14112d420	func
 ?FUN_14112d460@@YAPEAXPEAXI@Z	14112d460	func
-??1Unk_CMISPropPtr@@QEAA@XZ	14112d4a0	func
+??1Unk_CMISPropPtr@@QEAA@XZ	140ae16b0	func
 ??_G?$pair@$$CBVEntityID@egf@@VUnk_CMISPropPtr@@@std@@QEAAPEAXI@Z	14112d4a0	func
 ?FUN_14112d4a0@@YAPEAXPEAXI@Z	14112d4a0	func
 ??_G?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@QEAAPEAXI@Z	14112d4e0	func
