@@ -31,6 +31,10 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/uiattendgiftdialog.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/client/ms2/scenestatemulti.h"
+#include "ms2/client/ms2/worldservice.h"
 
 // ---- statics (the exe runs them in this order: "gameexit", the sort-name table, "skill", "stun", the key input) ----
 // The shared header_statics_a.h would also construct the condition after "stun"; this unit's .text$di has none.
@@ -140,12 +144,10 @@ void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);                // set 
 class Unk_SlKeys { public: char FUN_14116d890(int nKey); };
 Unk_SlKeys* FUN_14025e7c0();
 
-class Unk_SlBanner { public: void FUN_141031260(); void FUN_1410312d0(); };
-Unk_SlBanner* FUN_141876420(int nId);
+UIBannerAdvertisingDialog* FUN_141876420(int nId);
 class Unk_SlRanking { public: void FUN_140b2c7d0(); };
 Unk_SlRanking* FUN_140b2e980();
-class Unk_SlLobby { public: void FUN_14174f470(); };
-Unk_SlLobby* FUN_140f30370();
+CSceneStateMulti* FUN_140f30370();
 const int* FUN_1404eb7e0(const int* a, const int* b);           // std::max<int>
 const int* FUN_1402fbd20(const int* a, const int* b);           // std::min<int>
 UIServerListDialog* FUN_14136f520(int nId);                     // the dialog by UI id
@@ -194,8 +196,7 @@ struct Unk_NetworkLoginResult {
     int result,error;__int64 id;CStringW message;__int64 a18;int zone,zoneFlag;bool flag;__int64 a30,start,end;int value,a4c;__int64 a50;
 };
 MS2_CHECK_SIZE(Unk_NetworkLoginResult,0x58);
-class Unk_SlClientInfo { public: void FUN_141473690(__int64 tServer); };
-Unk_SlClientInfo* FUN_14086d260();
+CMainSystem* FUN_14086d260();
 void FUN_141b70390();
 class Unk_SlBlind { public: void FUN_140a250a0(); };
 Unk_SlBlind* FUN_1409c1730();
@@ -232,7 +233,6 @@ struct Unk_SlEnterRequest
 };
 void FUN_1401f9e60(Unk_SlEnterRequest* pRequest, COutPacket* pOut);
 class ASDialog : public ASDisplayObject { public: };
-class Unk_SlWorld { public: void FUN_141bca1e0(); int FUN_141bd9870(); };
 
 // AScript with the "buildServerList" invoke shape (array, int, int, int, int).
 class Unk_SlScript : public AScript
@@ -364,14 +364,14 @@ void UIServerListDialog::OnLoadComplete()
     m_nChannel = *FUN_1404eb7e0(&nChannel[1], &nChannel[0]);
     FUN_141ad1d20();
     if (FUN_140d86260()->vfunc_1() == 1) {
-        Unk_SlBanner* pBanner = FUN_141876420(0x4eca);
+        UIBannerAdvertisingDialog* pBanner = FUN_141876420(0x4eca);
         if (pBanner != 0)
             pBanner->FUN_141031260();
     } else {
         if (DAT_143ab285c == 0) {
             FUN_141ad2560(m_nChannel);
         } else {
-            Unk_SlLobby* pLobby = FUN_140f30370();
+            CSceneStateMulti* pLobby = FUN_140f30370();
             if (pLobby != 0)
                 pLobby->FUN_14174f470();
         }
@@ -454,7 +454,7 @@ void UIServerListDialog::vfunc_67()
     UIDialog::vfunc_67();
     m_nSceneId = 0;
     m_nConnecting = 0;
-    Unk_SlBanner* pBanner = FUN_141876420(0x4eca);
+    UIBannerAdvertisingDialog* pBanner = FUN_141876420(0x4eca);
     if (pBanner != 0)
         pBanner->FUN_1410312d0();
 }
@@ -643,7 +643,7 @@ int UIServerListDialog::FUN_141ad2c50(__int64 nCharId, __int64 n3)
     if (nChannel == 0)
         nChannel = FUN_14092f640();
     DAT_1439f4a7c = nChannel;
-    static_cast<Unk_SlWorld*>(FUN_1403ed2d0())->FUN_141bca1e0();
+    static_cast<WorldService*>(FUN_1403ed2d0())->FUN_141bca1e0();
     Unk_SlEnterRequest request;
     request.m_nCharId = nCharId;
     request.m_nChannel = nChannel;
@@ -761,7 +761,7 @@ void UIServerListDialog::FUN_141ad3370(ASArray& array, int* pnSelected, int nSel
                 MS2Ptr<CMultiServerChannel> channel(pChannels->GetValueAt(pos));
                 if (channel.get() != 0) {
                     int nId = channel->m_nId;
-                    int nLimit = static_cast<Unk_SlWorld*>(FUN_1403ed2d0())->FUN_141bd9870();
+                    int nLimit = static_cast<WorldService*>(FUN_1403ed2d0())->FUN_141bd9870();
                     if (DAT_143ab2914 > 49 || nId == nSelectedChannel || nId <= nLimit) {
                         ASObj row(2);
                         row.FUN_1407cb9c0("id", nId);
