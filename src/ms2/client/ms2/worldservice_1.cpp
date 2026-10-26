@@ -2979,6 +2979,7 @@ int WorldService::FUN_141bbb1e0(GameObject* obj, int bFullInit, unsigned cameraA
         Unk_WsA_Val16 v;
         FUN_141bf48b0(&v);
         FUN_140af6ce0(&v, FUN_14099eef0(obj));
+        memcpy(v.raw + 8, &id, sizeof(id));     // FUN_140899bd0 (0x141bbb751): the entry's entity id, which OnTick hands to FUN_141bbaf00
         ATL::CRBMap<unsigned, Unk_WsV1a8>::CPair* old = m_1a8.Lookup(obj->m_unk_70);
         if (old)
             FUN_141bf6870(reinterpret_cast<Unk_WsA_Val16*>(&old->m_value));
