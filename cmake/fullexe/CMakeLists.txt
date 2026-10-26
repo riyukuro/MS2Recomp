@@ -52,6 +52,7 @@ endforeach()
 # environment every tools/fullexe script reads (tools/ms2paths.py, tools/fullexe/common.py)
 set(ENVV FULLEXE_DIR=${OUT} FULLEXE_TREE=${MS2_ROOT} FULLEXE_FRESH=all FULLEXE_GB_OVERLAY=${GB_OVERLAY}
     FULLEXE_OBJ_CACHES=${MS2_ROOT}/build/progress-${CACHE_TAG}
+    FULLEXE_HERMETIC=1 FULLEXE_ENGINE_REFRESH=1 FULLEXE_ALIAS_CURRENT=1
     MS2_THIRD_PARTY=${_tp} MS2_ENGINE_DIR=${MS2_GAMEBRYO_ROOT} MS2_AGENT=${CACHE_TAG})
 file(MAKE_DIRECTORY "${OUT}")
 
