@@ -28,6 +28,8 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
+#include "ms2/client/ms2/trademanagerex.h"
 
 // ---- unit-local placeholders (names invented; promote to src/ms2/placeholder/ when shared) ----
 
@@ -53,13 +55,7 @@ public:
 };
 
 // The status-listener registry (singleton 0x140aa6d40).
-class Unk_TdStatusMgr
-{
-public:
-    void FUN_141b0cd00(UIStatusEventListener* pListener);   // register
-    void FUN_141b0cd90(UIStatusEventListener* pListener);   // unregister
-};
-Unk_TdStatusMgr* FUN_140aa6d40();
+UIStatusEventDispatcher* FUN_140aa6d40();
 
 // The movie root (m_30) with the child lookup of the trade controls.
 class Unk_TdRoot : public AScript
@@ -169,8 +165,8 @@ int UITradeDialogEx::vfunc_65()
 void UITradeDialogEx::vfunc_67()
 {
     FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
-    FUN_14140ea30()->SendTradeMode7();
-    FUN_14140ea30()->FUN_14185d7b0();
+    TSingleton<CTradeManagerEx>::GetInstance()->SendTradeMode7();
+    TSingleton<CTradeManagerEx>::GetInstance()->FUN_14185d7b0();
     UIInventoryDialog* pInv = FUN_1405344f0(0x4e2d);
     if (pInv != 0)
     {
@@ -230,9 +226,9 @@ void UITradeDialogEx::FUN_141b27580()
 {
     if (FUN_140ba28d0(&m_30, 0) == 0)
     {
-        m_uidTarget = FUN_14140ea30()->FUN_141b29c10();
-        m_strTargetName = FUN_14140ea30()->FUN_141b29c20();
-        m_strTargetChar = FUN_14140ea30()->FUN_141b29c70();
+        m_uidTarget = TSingleton<CTradeManagerEx>::GetInstance()->FUN_141b29c10();
+        m_strTargetName = TSingleton<CTradeManagerEx>::GetInstance()->FUN_141b29c20();
+        m_strTargetChar = TSingleton<CTradeManagerEx>::GetInstance()->FUN_141b29c70();
         PC* pPlayer = static_cast<PC*>(FUN_141bd0cc0(FUN_1403ed2d0()));
         if (pPlayer != 0)
         {
@@ -284,13 +280,13 @@ int UITradeDialogEx::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         {
             __int64 nMeso = FUN_1407182f0(data.FUN_1422b8d30());
             if (FUN_141b295a0(nMeso))
-                FUN_14140ea30()->SendTradeMode11();
+                TSingleton<CTradeManagerEx>::GetInstance()->SendTradeMode11();
         }
         return 1;
     }
     if (_stricmp("OnConfirm", szMethod) == 0)
     {
-        FUN_14140ea30()->SendTradeMode13();
+        TSingleton<CTradeManagerEx>::GetInstance()->SendTradeMode13();
         return 1;
     }
     return 0;
@@ -407,7 +403,7 @@ int UITradeDialogEx::FUN_141b283f0(int* pnSlot)
 void UITradeDialogEx::vfunc_oa0_11(void* a1)
 {
     if (FUN_140ba28d0(&m_30, 0) == 0)
-        FUN_141b27d90(FUN_14140ea30()->GetUidLastSent() + DAT_143ab2898);
+        FUN_141b27d90(TSingleton<CTradeManagerEx>::GetInstance()->GetUidLastSent() + DAT_143ab2898);
 }
 
 // @0x141b284b0
@@ -565,7 +561,7 @@ bool UITradeDialogEx::FUN_141b295a0(__int64 nMeso)
         FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_trade_error_lack_meso_2")), 0, 0, CStringW(L""));
         bValid = false;
     }
-    FUN_14140ea30()->SendTradeMode10(nMeso);
+    TSingleton<CTradeManagerEx>::GetInstance()->SendTradeMode10(nMeso);
     return bValid;
 }
 
