@@ -816,6 +816,14 @@ def load_symbols(path=SYMBOLS_TSV):
             SYMBOLS[p[0]] = int(p[1], 16)
 
 
+def global_alloc(name):
+    """global ::operator new/delete (scalar, array, sized, nothrow, aligned): the hook DLL/fullexe link the CRT's. The
+    exe's deleting dtors call __empty_global_delete (0x14015b310, an empty body) in their flag-4 branch where clang
+    calls the sized ::operator delete, so pairing harvested ??3@YAXPEAX_K@Z onto the empty function (2026-10-26).
+    Placement new (??2@YAPEAX_KPEAX@Z, ??_U@YAPEAX_KPEAX@Z) is an inline body and keeps its binding."""
+    return name.startswith(("??2@Y", "??3@Y", "??_U@Y", "??_V@Y")) and not name.endswith("_KPEAX@Z")
+
+
 def harvestable(name, va):
     if name.startswith(NO_HARVEST_PREFIXES) or name in ("memset", "memcpy", "memmove", "memcmp", "strlen", "atexit"):
         return False
@@ -823,6 +831,8 @@ def harvestable(name, va):
     # "!=", which /alternatename:<name>=<target> (tools/ms2symobj.py) cannot express. The inline COMDAT is defined by
     # every user anyway.
     if "=" in name:
+        return False
+    if global_alloc(name):
         return False
     # a linker import thunk (FF 25 jmp [__imp_X]) of a C import X is X itself: a C++ overload of X never binds to it
     # (2026-10-24: the CRT's inline ?strrchr@@YAPEADQEADH@Z, which the exe inlines into a call of the strrchr thunk, was

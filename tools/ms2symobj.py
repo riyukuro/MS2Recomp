@@ -36,6 +36,12 @@ CEF_NAME_RE = re.compile(r"^cef_|Cef|@cef@@")
 
 def runtime_va(name, va):
     return any(a <= va < b for a, b in RUNTIME_RANGES) and not CEF_NAME_RE.search(name)
+def global_alloc(name):
+    """global ::operator new/delete: the DLL's CRT defines them (a stale harvest bound the sized delete onto the exe's
+    empty __empty_global_delete 0x14015b310; tools/bytematch.py global_alloc). Placement new keeps its binding."""
+    return name.startswith(("??2@Y", "??3@Y", "??_U@Y", "??_V@Y")) and not name.endswith("_KPEAX@Z")
+
+
 DEFAULT_INPUTS = [os.path.join(ROOT, "progress", "symbols.tsv"), os.path.join(ROOT, "progress", "symbols-manual.tsv")]
 
 IMAGE_SCN_CNT_CODE = 0x20
@@ -70,7 +76,7 @@ def load(paths):
                 continue
             f = line.rstrip("\n").split("\t")
             name, va, kind = f[0], int(f[1], 16), (f[2] if len(f) > 2 else "func")
-            if runtime_va(name, va):
+            if runtime_va(name, va) or global_alloc(name):
                 continue
             if name in syms and syms[name][0] != va:
                 prev = src[name]
