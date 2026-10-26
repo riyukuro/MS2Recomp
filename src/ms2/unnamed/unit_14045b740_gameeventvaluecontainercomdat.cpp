@@ -378,6 +378,9 @@ template class std::vector<MS2Ptr<BurningLevelupContext> >;
 template class std::vector<MS2Ptr<CollectItemGroupContext> >;
 // An id set (insert / erase only).
 template class std::set<__int64>;
+// Unk_GameEventValueIdSet's id set has 4-byte keys: erase(key) 0x14046afc0 is Remove(unsigned)'s, and its range erase
+// 0x14018ff00 reads the key at node+0x1c.
+template class std::set<unsigned>;
 // The exe keeps vector<unsigned __int64>::reserve here (0x14046c510; its _Reallocate_exactly 0x140465b80 calls the vector<_K> members).
 template void std::vector<unsigned __int64>::reserve(size_t);
 
@@ -416,6 +419,11 @@ void Unk_GameEventValueIdSetAdd(std::set<__int64>& ids, __int64 id)
 {
     ids.insert(id);
     ids.erase(ids.begin());
+}
+// Unk_GameEventValueIdSet::Remove(unsigned)'s erase(key) 0x14046afc0.
+void Unk_GameEventValueIdSetRemove(std::set<unsigned>& ids, unsigned id)
+{
+    ids.erase(id);
 }
 // fx25: vector<__int64>/<unsigned __int64>::reserve are look-alikes of the one exe copy in range (both table rows say 0x14046c510)
 // MS2-PIN: ?reserve@?$vector@_KV?$allocator@_K@std@@@std@@QEAAX_K@Z 0x14046c510
