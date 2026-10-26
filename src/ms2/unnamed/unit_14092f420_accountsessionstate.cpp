@@ -61,7 +61,7 @@
 // MS2-PIN: ?_Min@?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@std@@SAPEAU?$_Tree_node@UUnk_TailSetVal@@PEAX@2@PEAU32@@Z 0x140934b50 ; prop
 // MS2-PIN: ?_Rrotate@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBIUUnk_TailAlmState@@@std@@PEAX@2@@Z 0x140934da0 ; prop
 // MS2-PIN: ?_Rrotate@?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@std@@QEAAXPEAU?$_Tree_node@UUnk_TailSetVal@@PEAX@2@@Z 0x140934e80 ; prop
-// MS2-PIN: ?erase@?$_Tree@V?$_Tset_traits@UUnk_TailSetVal@@UUnk_TailSetLess@@V?$allocator@UUnk_TailSetVal@@@std@@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@std@@@2@V32@@Z 0x1409357e0 ; unique
+// MS2-PIN: ?erase@?$_Tree@V?$_Tset_traits@UUnk_TailSetVal@@UUnk_TailSetLess@@V?$allocator@UUnk_TailSetVal@@@std@@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@std@@@2@V32@@Z 0x140935980 ; la1: called from set erase(first,last) 140935890
 // MS2-PIN: ?erase@?$_Tree@V?$_Tset_traits@UUnk_TailSetVal@@UUnk_TailSetLess@@V?$allocator@UUnk_TailSetVal@@@std@@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@std@@@2@V32@0@Z 0x140935890 ; unique
 // MS2-PIN: ??__Fg_143ab3128@@YAXXZ 0x142c9cc90 ; unique
 // MS2-PIN: ??__Fg_143ab3150@@YAXXZ 0x142c9cd10 ; unique
@@ -1940,3 +1940,4 @@ Unk_TailSetVal* FUN_140932fe0(Unk_TailSetVal* pThis, unsigned nFlags)
 
 template class std::set<Unk_TailSetVal, Unk_TailSetLess>;
 template class std::map<unsigned int, Unk_TailAlmState>;
+// MS2-PIN: ?erase@?$_Tree@V?$_Tmap_traits@IUUnk_TailAlmState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@std@@@std@@@2@@Z 0x1409357e0 ; la1: called from map erase(first,last) 1409356f0, frees through the Alm _Freenode0 140931d80
