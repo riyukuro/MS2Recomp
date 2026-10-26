@@ -14,6 +14,10 @@
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIDungeonRewardDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x140e26a80
 // MS2-PIN: ??$Call@VUIDungeonRewardDialog@@P81@EAAXAEAVCInPacket@@@Z@?$DelegateImpl@U?$pair@PEAVUIDungeonRewardDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@CAXAEAU?$pair@PEAVUIDungeonRewardDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@AEAVCInPacket@@@Z 0x140e269a0
 // MS2-PIN: ??$Call@VUIDungeonRewardDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@?$DelegateImpl@U?$pair@PEAVUIDungeonRewardDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@CAXAEAU?$pair@PEAVUIDungeonRewardDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@AEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x140e269e0
+// MS2-PIN: ??__Es_strSkill@@YAXXZ 0x1400d7800
+// MS2-PIN: ??__Es_strStun@@YAXXZ 0x1400d7830
+// MS2-PIN: ??__Fs_strSkill@@YAXXZ 0x142ca6550
+// MS2-PIN: ??__Fs_strStun@@YAXXZ 0x142ca6570
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uidungeonrewarddialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uidungeonrewarddialog.h"
