@@ -2222,12 +2222,10 @@ void FUN_14029b680(void** pp)
 }
 
 // @0x140298ea0
-void* FUN_140298ea0(void* pOut, CStringW* pStr, void* pUnused, void* pArgs)
+__declspec(safebuffers) CStringW FUN_140298ea0(CStringW strKey)      // the exe has no /GS cookie here
 {
-    char buf[24];
-    CStringW strOut = FUN_14028dfa0(*pStr, *(const fmt::ArgList*)FUN_140183290(buf));
-    (void)pOut; (void)pUnused; (void)pArgs; (void)strOut;
-    return pOut;
+    char buf[16];                                       // the fmt::ArgList FUN_140183290 constructs
+    return FUN_14028dfa0(strKey, *(const fmt::ArgList*)FUN_140183290(buf));
 }
 
 // @0x14029dce0
