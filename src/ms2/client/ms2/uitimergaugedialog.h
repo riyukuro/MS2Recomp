@@ -18,7 +18,7 @@ template<class T>class Unk_TimerPtr {
 public:Unk_TimerPtr();Unk_TimerPtr(int);Unk_TimerPtr(T*);Unk_TimerPtr(const Unk_TimerPtr&);Unk_TimerPtr(Unk_TimerPtr&&);~Unk_TimerPtr();
  Unk_TimerPtr& operator=(int);
  Unk_TimerPtr& operator=(T* p){Unk_TimerPtr tmp(p);T* old=m_p;m_p=tmp.m_p;tmp.m_p=old;return *this;}
- bool operator==(T*)const;T* get()const;T* operator->()const;T& operator*()const;
+ bool operator==(T*)const;T* get()const;T* operator->()const{return m_p;}T& operator*()const;   // operator->: 0x140bcc3d0 (no other definition)
 private:void* m_0;T* m_p;
 };
 class UITimerGaugeDialog : public UITimerBase {

@@ -32,11 +32,13 @@ struct Unk_RemakeOptionList50 {
 MS2_CHECK_SIZE(Unk_RemakeOptionList50, 0x18);
 
 // std::vector of 16-byte refcounted handles.
+void FUN_1402876b0(void* list, void* first, void* last);    // vector<MS2Ptr<CPtred>>::_Destroy
 struct Unk_RemakeOptionList68 {
     Unk_RemakeOptionList68();                                       // 0x14027d750
     ~Unk_RemakeOptionList68();                                      // 0x14027e4b0
     Unk_RemakeOptionList68& operator=(const Unk_RemakeOptionList68& o); // 0x14027ebb0
-    void clear();                                                   // 0x14028a690
+    // 0x14028a690 (commonstruct.cpp's vector::clear; no other definition): _Destroy(_Myfirst, _Mylast), _Mylast = _Myfirst
+    void clear() { FUN_1402876b0(this, m_p[0], m_p[1]); m_p[1] = m_p[0]; }
     void* m_p[3];
 };
 MS2_CHECK_SIZE(Unk_RemakeOptionList68, 0x18);
