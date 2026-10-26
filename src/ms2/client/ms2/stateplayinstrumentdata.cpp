@@ -457,7 +457,7 @@ void StatePlayInstrument::vfunc_2(int n)
         FUN_140ddfc00();
         if (FUN_1417b8370() != 0 && !m_spInstrument.IsNull())
         {
-            m_strLastAnim = m_spInstrument->m_strAnimationReady;
+            m_strLastAnim = m_spInstrument->m_strAnimationPlayIdle;   // exe: row +0x50
             if (m_n10 == 0x7e || m_n10 == 0x7f || m_n10 == 0x81)
                 FUN_140de0780(m_strLastAnim);
             else

@@ -57,6 +57,8 @@ public:
     CString m_strAnimationPlayLevel4;                   // +0x70 "animationPlayLevel4"
 };
 MS2_CHECK_SIZE(CInstrumentData, 0x78);
+MS2_CHECK_OFFSET(CInstrumentData, m_strAnimationReady, 0x48);
+MS2_CHECK_OFFSET(CInstrumentData, m_strAnimationPlayIdle, 0x50);
 
 class CInstrumentDataTable : public TSingleton<CInstrumentDataTable>, public CValidData<CInstrumentDataTable>
 {
