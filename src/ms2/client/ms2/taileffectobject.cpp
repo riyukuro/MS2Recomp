@@ -190,7 +190,8 @@ void CTailEffectObject::FUN_140acee90()
         pRoot->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&spNode)), false);
     }
 
-    Unk_TeRequest kRequest;
+    alignas(8) char kRequestBuf[sizeof(Unk_TeRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+    Unk_TeRequest& kRequest = *reinterpret_cast<Unk_TeRequest*>(kRequestBuf);
     FUN_140a52ef0(&kRequest);
     kRequest.m_strName = strPath;
     kRequest.m_nOwnerId = 0;
@@ -207,7 +208,10 @@ void CTailEffectObject::FUN_140acee90()
     char aTmp[16];
     Unk_NodePtr spBase(FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6ef70(FUN_14123c460(m_pOwner, aTmp))));
     if (FUN_1409475d0(&spBase) == 0)
+    {
+        FUN_1405a89e0(&kRequest);   // the exe destroys the request on this exit too (raw storage: no implicit dtor)
         return;
+    }
 
     NiPoint3 ptBase = static_cast<NiAVObject*>(FUN_1409475f0(&spBase))->GetWorldTranslate();
     if (!m_listInfo.empty())
@@ -224,7 +228,10 @@ void CTailEffectObject::FUN_140acee90()
         }
     }
     if (FUN_1409475d0(&spBase) == 0)
+    {
+        FUN_1405a89e0(&kRequest);   // the exe destroys the request on this exit too (raw storage: no implicit dtor)
         return;
+    }
 
     NiTransform kBase = static_cast<NiAVObject*>(FUN_1409475f0(&spBase))->GetWorldTransform();
     NiPoint3 kEuler;
@@ -268,7 +275,8 @@ void CTailEffectObject::FUN_140acf570()
             kXform.m_Translate = pNode->GetWorldTranslate();
             kXform.m_fScale = FUN_140ad0db0(pNode);
 
-            Unk_TeRequest kRequest;
+            alignas(8) char kRequestBuf[sizeof(Unk_TeRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+            Unk_TeRequest& kRequest = *reinterpret_cast<Unk_TeRequest*>(kRequestBuf);
             FUN_140a52ef0(&kRequest);
             kRequest.m_strName = m_spData->m_strEndEffectPath;
             kRequest.m_pTransform = &kXform;
