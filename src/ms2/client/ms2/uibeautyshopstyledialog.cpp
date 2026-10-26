@@ -494,7 +494,8 @@ void FUN_140f01350()
         if (pPc->FUN_14166c930() != 0xe)
             pPc->vfunc_59(0xe, 0, 0, 0);
         FUN_14166cc40(pPc, 0x50);
-        Unk_BSEffectRequest request;
+        alignas(8) char requestBuf[sizeof(Unk_BSEffectRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+        Unk_BSEffectRequest& request = *reinterpret_cast<Unk_BSEffectRequest*>(requestBuf);
         FUN_140a52ef0(&request);
         request.m_strName = FUN_1401d31f0()->m_hairApply;
         request.m_n08 = 1;
