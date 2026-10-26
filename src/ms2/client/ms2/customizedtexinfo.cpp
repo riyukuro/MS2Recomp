@@ -30,7 +30,7 @@ struct Unk_CtiColor                                             // 4 floats (r, 
     Unk_CtiColor operator-(const Unk_CtiColor& kRhs);           // 0x141166e20
     Unk_CtiColor operator+(const Unk_CtiColor& kRhs);           // 0x141166ec0
     Unk_CtiColor& operator+=(const Unk_CtiColor& kRhs);         // 0x141166f60
-    Unk_CtiColor FUN_140987930();                               // copy
+    explicit Unk_CtiColor(const Unk_CtiColor* pSrc);            // 0x140987930 NiColorA(const efd::ColorA&): this = rcx, source = rdx
 };
 MS2_CHECK_SIZE(Unk_CtiColor, 0x10);
 
@@ -218,9 +218,11 @@ void* FUN_141166110(CCustomizedTextureManager* pMgr, CCustomizedTexInfo* pA, CCu
                 Unk_CtiColor kInv = FUN_141166de0(1.0f - kMask.r, pA->m_akColor[2]);
                 Unk_CtiColor kGreen = FUN_141166de0(kMask.g, pA->m_akColor[1]);
                 Unk_CtiColor kRed = FUN_141166de0(kMask.r, pA->m_akColor[0]);
-                Unk_CtiColor kTint = (kRed + kGreen + kInv).FUN_140987930();
+                const Unk_CtiColor& kSum = kRed + kGreen + kInv;
+                Unk_CtiColor kTint(&kSum);
                 Unk_CtiColor kDelta = FUN_141166de0(kMask.a, kTint - kBase);
-                kColor = (kBase + kDelta).FUN_140987930();
+                const Unk_CtiColor& kMix = kBase + kDelta;
+                kColor = Unk_CtiColor(&kMix);
                 kColor.a = 1.0f;
             }
             if (FUN_140a5ac70(hBaseB) != 0)
@@ -240,9 +242,11 @@ void* FUN_141166110(CCustomizedTextureManager* pMgr, CCustomizedTexInfo* pA, CCu
                     Unk_CtiColor kInv2 = FUN_141166de0(1.0f - kMask2.r, pB->m_akColor[2]);
                     Unk_CtiColor kGreen2 = FUN_141166de0(kMask2.g, pB->m_akColor[1]);
                     Unk_CtiColor kRed2 = FUN_141166de0(kMask2.r, pB->m_akColor[0]);
-                    Unk_CtiColor kTint2 = (kRed2 + kGreen2 + kInv2).FUN_140987930();
+                    const Unk_CtiColor& kSum2 = kRed2 + kGreen2 + kInv2;
+                    Unk_CtiColor kTint2(&kSum2);
                     Unk_CtiColor kDelta2 = FUN_141166de0(kMask2.a, kTint2 - kBase2);
-                    kColor = (kBase2 + kDelta2).FUN_140987930();
+                    const Unk_CtiColor& kMix2 = kBase2 + kDelta2;
+                    kColor = Unk_CtiColor(&kMix2);
                     kColor.a = 1.0f;
                 }
             }
