@@ -59,25 +59,21 @@
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "ms2/ms2format.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/worldservice.h"
 #include <sstream>
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 
 // ---- out-of-unit callees ----
-class Unk_CashGameCtx
-{
-public:
-    void* FUN_141bd0cc0();
-};
-Unk_CashGameCtx* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 
 // Feature switches of the client.
-class Unk_CashFeature { public: bool FUN_14036e4c0(); bool FUN_14036e5b0(); };
-Unk_CashFeature* FUN_140166410();
-int FUN_1401d5a60();
-int FUN_1401d5ab0();
-int FUN_1401d5b00();
-__int64 FUN_140869440();                                // now
+CFeatureManager* FUN_140166410();
+int CashRegionSelectA();
+int CashRegionSelectB();
+int CashRegionSelectC();
+__int64 GetServerTime();                                // now
 
 // The cash shop dialog (id 0x4ebc); the exe calls its members through the handle of the cash shop ref.
 int FUN_141034dc0(UICashShopDialog* pDlg, int nId);
@@ -366,7 +362,7 @@ void CCashMarketMan::SendCashMode2(int a, int b)
 // @0x140b062c0
 void CCashMarketMan::SendCashMode3(int a, int b, CString s1, CString s2)
 {
-    if (FUN_1401d5a60() != 0)
+    if (CashRegionSelectA() != 0)
     {
         COutPacket packet(static_cast<int>(SendOp::Cash), 0);
         packet.WriteUInt8(3);
@@ -381,7 +377,7 @@ void CCashMarketMan::SendCashMode3(int a, int b, CString s1, CString s2)
 // @0x140b063b0
 void CCashMarketMan::SendCashMode4(int a, int b, int c)
 {
-    if (FUN_1401d5ab0() != 0)
+    if (CashRegionSelectB() != 0)
     {
         COutPacket packet(static_cast<int>(SendOp::Cash), 0);
         packet.WriteUInt8(4);
@@ -404,7 +400,7 @@ void CCashMarketMan::SendCashMode5(int a)
 // @0x140b064c0
 void CCashMarketMan::SendCashMode7(int a, int b, int c, int nFlag)
 {
-    if (nFlag != 1 || FUN_1401d5b00() != 0)
+    if (nFlag != 1 || CashRegionSelectC() != 0)
     {
         COutPacket packet(static_cast<int>(SendOp::Cash), 0);
         packet.WriteUInt8(7);
@@ -438,7 +434,7 @@ int CCashMarketMan::FUN_140b06680(MS2Ptr<CCashSaleProduct> spSale)
 {
     if (!spSale)
         return 0x6d;
-    __int64 nNow = FUN_140869440();
+    __int64 nNow = GetServerTime();
     if (nNow < spSale->m_data.m_n60)
         return 0x6a;
     if (nNow >= spSale->m_data.m_n68)
@@ -931,7 +927,7 @@ void CCashMarketMan::FUN_140b08760(CInPacket& packet)
                 FUN_141035080(ref.FUN_140b051d0(), nPage);
         }
         m_nPage = nPage;
-        if (m_aInv.GetCount() > 0 && FUN_1401d5b00() == 1)
+        if (m_aInv.GetCount() > 0 && CashRegionSelectC() == 1)
         {
             MS2Ptr<CCashInventoryProduct> spFirst = m_aInv[0];
             if (spFirst.get() != 0)
