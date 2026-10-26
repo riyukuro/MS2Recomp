@@ -95,6 +95,7 @@ class Unk_PhysPropPtr
 {
 public:
     ~Unk_PhysPropPtr();                                     // 0x140ae16b0
+    Unk_PhysPropPtr(const Unk_PhysPropPtr&);                // 0x141bf10a0 (declared only: makes MSVC pass it by hidden reference like the exe, not in a register)
     Unk_PhysPropObj* FUN_140ae1920() const;                 // the object
     Unk_PhysPropObj* FUN_14168afe0() const;                 // the object (this unit's copy)
 private:
