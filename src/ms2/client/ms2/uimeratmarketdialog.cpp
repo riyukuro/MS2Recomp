@@ -295,9 +295,11 @@ class Unk_MmSellerShop : public CPtred
 public:
     void FUN_140896e50(ATL::CAtlArray<MS2Ptr<Unk_MeratEquipEntry> >& out); // copy of the product list (CUgcCharBookMark)
     MS2Ptr<Unk_MmSellerInfo> m_spSeller;                                    // +0x18
-    char m_pad[0x58 - 0x20];
+    char m_pad[0x58 - 0x28];                                                // +0x28 the key map (CUgcCharBookMark::m_map)
     Unk_MmProductArray m_products;                                          // +0x58
 };
+MS2_CHECK_OFFSET(Unk_MmSellerShop, m_spSeller, 0x18);
+MS2_CHECK_OFFSET(Unk_MmSellerShop, m_products, 0x58);
 // A banner of the market (asmeratmarketproduct.h forward declares it).
 class Unk_MeratBanner : public CPtred { public: CStringA m_strBackground; };
 // The market product record the equip icon data carries: ASMeratMarketEquipData (asequipicon.h) only forward declares
