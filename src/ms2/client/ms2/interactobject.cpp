@@ -556,7 +556,8 @@ void CInteractObject::FUN_1413fda50()
         xf.m_rotate.FUN_142083d40((m_vRot.x * 3.1415927f) / 180.0f, (m_vRot.y * 3.1415927f) / 180.0f,
                                   (m_vRot.z * 3.1415927f) / 180.0f);
         xf.m_fScale = 1.0f;
-        Unk_IoFxRequest request;
+        alignas(8) char requestBuf[sizeof(Unk_IoFxRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+        Unk_IoFxRequest& request = *reinterpret_cast<Unk_IoFxRequest*>(requestBuf);
         FUN_140a52ef0(&request);
         request.m_strName = strAsset;
         request.m_nOwnerId = 0;
@@ -768,7 +769,8 @@ void CInteractObject::vfunc_12()
         xf.m_rotate.FUN_142083d40((m_vRot.x * 3.1415927f) / 180.0f, (m_vRot.y * 3.1415927f) / 180.0f,
                                   (m_vRot.z * 3.1415927f) / 180.0f);
         xf.m_fScale = 1.0f;
-        Unk_IoFxRequest request;
+        alignas(8) char requestBuf[sizeof(Unk_IoFxRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+        Unk_IoFxRequest& request = *reinterpret_cast<Unk_IoFxRequest*>(requestBuf);
         FUN_140a52ef0(&request);
         request.m_strName = m_spRow->m_effect.m_strSuccess;
         request.m_nOwnerId = 1;
@@ -874,13 +876,15 @@ int CInteractMeshObject::vfunc_1(Unk_Entity* pEntity, int nState)
     alignas(8) char ownerBuf[sizeof(Unk_EntRef)];
     Unk_PhysPropObj* pProp = pMem ? FUN_14225f250(pMem, new (ownerBuf) Unk_EntRef(pEntity)) : 0;
     m_spProp.FUN_140ae17e0(pProp);
-    efd::utf8string strMesh;
+    alignas(8) char strMeshBuf[sizeof(efd::utf8string)];   // FUN_1409989e0 / FUN_1408a8900 construct and destroy it: no implicit dtor
+    efd::utf8string& strMesh = *reinterpret_cast<efd::utf8string*>(strMeshBuf);
     FUN_1409989e0(&strMesh, "MS2InteractMesh");
     bool bMesh = FUN_1408a9bd0(pEntity)->ContainsModel(strMesh);
     FUN_1408a8900(&strMesh);
     if (!bMesh)
     {
-        efd::utf8string strActor;
+        alignas(8) char strActorBuf[sizeof(efd::utf8string)];   // FUN_1409989e0 / FUN_1408a8900 construct and destroy it: no implicit dtor
+        efd::utf8string& strActor = *reinterpret_cast<efd::utf8string*>(strActorBuf);
         FUN_1409989e0(&strActor, "MS2InteractActor");
         bool bActor = FUN_1408a9bd0(pEntity)->ContainsModel(strActor);
         FUN_1408a8900(&strActor);
@@ -1032,7 +1036,8 @@ void CInteractMeshObject::FUN_1413ff690(const CString& strAsset)
     if (m_nAssetType == 1)
     {
         efd::AssetID id;
-        efd::utf8string str;
+        alignas(8) char strBuf[sizeof(efd::utf8string)];   // FUN_1409989e0 / FUN_1408a8900 construct and destroy it: no implicit dtor
+        efd::utf8string& str = *reinterpret_cast<efd::utf8string*>(strBuf);
         FUN_1409989e0(&str, strAsset);
         FUN_140de0cb0(&id, &str);
         FUN_1408a8900(&str);
@@ -1040,7 +1045,8 @@ void CInteractMeshObject::FUN_1413ff690(const CString& strAsset)
     }
     else if (m_nAssetType == 2)
     {
-        efd::utf8string str;
+        alignas(8) char strBuf[sizeof(efd::utf8string)];   // FUN_1409989e0 / FUN_1408a8900 construct and destroy it: no implicit dtor
+        efd::utf8string& str = *reinterpret_cast<efd::utf8string*>(strBuf);
         FUN_1409989e0(&str, strAsset);
         egf::EntityID idEnt = *FUN_1408b76f0(m_ent.FUN_1408a9280());
         FUN_141b6f910()->FUN_1409a1fc0(idEnt, &str, 1.0f);
