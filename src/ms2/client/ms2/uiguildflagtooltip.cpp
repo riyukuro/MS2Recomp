@@ -189,8 +189,8 @@ bool UIGuildFlagTooltip::FUN_1412c46d0()
         if (pEntity.get())
         {
             FUN_140ad0c10(&kScreen, FUN_1422afec0(FUN_14025e7a0(), m_28));
-            kScreen.x = kScreen.x - (float)pEntity->FUN_1422c1340() * 0.5f;
-            kScreen.y = kScreen.y - (float)pEntity->FUN_1422c13b0() * 0.5f;
+            kScreen.x = (float)(kScreen.x - pEntity->FUN_1422c1340() * 0.5);
+            kScreen.y = (float)(kScreen.y - pEntity->FUN_1422c13b0() * 0.5);
             pEntity->FUN_1422c00f0(kScreen.x, kScreen.y);
             return true;
         }
