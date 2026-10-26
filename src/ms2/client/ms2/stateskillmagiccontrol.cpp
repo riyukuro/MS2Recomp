@@ -30,7 +30,7 @@ void FUN_140968990(NiPoint3* p);                                    // normalize
 NiPoint3* FUN_14097fc90(const NiPoint3* pIn, NiPoint3* pOut, float f);   // scale (member: this=rcx, hidden return=rdx)
 float FUN_140966ea0(NiPoint3 a, NiPoint3 b);                        // horizontal distance
 void* FUN_14166d240(PCBase* p);                                     // buff container
-NiPoint3 FUN_141683900(void* pContainer);
+NiPoint3* FUN_141683900(void* pContainer, NiPoint3* pOut);          // move direction (member: this=rcx, hidden return=rdx)
 
 // @0x140ac06f0
 Unk_ControlTarget* FUN_140ac06f0(PCBase* p)
@@ -109,7 +109,8 @@ void StateSkillMagicControl::vfunc_8(double fTime)
     if (!m_pOwner->vfunc_63())
         return;
     void* pBuffs = FUN_14166d240(m_pOwner);
-    NiPoint3 kPos = FUN_141683900(pBuffs);
+    NiPoint3 kPos;
+    FUN_141683900(pBuffs, &kPos);
     m_pOwner->vfunc_22(kPos);
 }
 
