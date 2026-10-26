@@ -144,7 +144,7 @@ class Unk_UmRecipeArr
 {
 public:
     size_t FUN_14068acc0() const;                               // count
-    Unk_UmValuePtr<Unk_UmRecipeRef> FUN_140689a50(size_t n);
+    Unk_UmValuePtr<Unk_UmRecipeRef>& FUN_140689a50(size_t n);   // 0x140689a50 returns &slot[n] (0x10 stride) in rax, no hidden slot
 };
 class Unk_UmBook
 {
