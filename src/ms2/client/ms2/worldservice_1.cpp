@@ -3219,9 +3219,8 @@ void WorldService::FUN_141bbd490(egf::Entity* entity, void* sceneNode)
             FUN_141c2dbb0(&m_2e8, &it, &entityId);
             if (FUN_141bf7540(&it, FUN_141c2c400(&m_2e8, &end)))
             {
-                Unk_WsA_IdPair pr = { entityId, entity };
-                char result[32];
-                FUN_141beed10(&m_2e8, result, &pr);
+                typedef std::map<egf::EntityID, efd::SmartPointer<egf::Entity> > Unk_WsA_EntMap;
+                reinterpret_cast<Unk_WsA_EntMap*>(&m_2e8)->insert(std::make_pair(entity->GetEntityID(), entity));
             }
             int count = FUN_140ae1c10();
             bool bLimit = FUN_141376880(FUN_140ae1c00(), 5) <= count;
