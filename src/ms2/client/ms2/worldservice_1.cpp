@@ -2681,10 +2681,11 @@ struct Unk_WsI_CameraTarget
     float m_far;                // +0x08 = 18000.0f
     Vector3 m_pos;      // +0x0c
     Vector3 m_look;     // +0x18 (pad to +0x24)
-    char m_pad_24[4];
     bool m_flag;                // +0x24 (byte at +0x24 in the exe)
     char m_pad_25[3];
 };
+MS2_CHECK_OFFSET(Unk_WsI_CameraTarget, m_flag, 0x24);
+MS2_CHECK_SIZE(Unk_WsI_CameraTarget, 0x28);
 // Camera settings read from an entity (ctor 0x140ae8aa0): 0x70 bytes, filled from the entity's properties.
 struct Unk_WsI_CameraSetup
 {
