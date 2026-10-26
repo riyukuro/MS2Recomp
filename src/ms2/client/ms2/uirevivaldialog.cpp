@@ -21,6 +21,10 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/commonfiles/gamerule.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -229,19 +233,10 @@ public:
     int FUN_1406771e0(short nJob, int nA, int nB);
 };
 Unk_RevJob* FUN_1401c0db0();
-class Unk_RevRule { public: int FUN_140477d10(int nLevel); };
-Unk_RevRule* FUN_1401c0d90();
-class Unk_RevFeatures
-{
-public:
-    bool FUN_14036d570(int nFeature);
-    bool FUN_14036d6d0();
-};
-Unk_RevFeatures* FUN_140166410();
+CGameRule* FUN_1401c0d90();
+CFeatureManager* FUN_140166410();
 
 // The string table singleton: FUN_141811980(table, id).
-class Unk_RevStrings { public: CStringW FUN_141811980(int nTable, int nId); };
-Unk_RevStrings* FUN_1401a9d70();
 
 // The platform host (singleton 0x140d86260): slots 40/41 test whether a cost can be paid, 43 raises a notice.
 class Unk_RevNet
@@ -379,7 +374,6 @@ __int64 FUN_140632990(__int64 nValue, float fRate);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW text, int nType);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, IMessageListener* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-CUIService* FUN_1403ed2b0();
 
 typedef Delegate<bool(int, const CMsgBoxData&)> RevAnswerDelegate;
 
@@ -598,7 +592,7 @@ void UIRevivalDialog::FUN_141abae20()
             if (pData->m_38 != FUN_1403ed2d0()->FUN_141bd3060())
             {
                 Unk_RevFieldData* pTo = spField.FUN_140885340();
-                strMsg += FUN_1401d0160(L"\n", FUN_14052bd00(0x27d, FUN_1401a9d70()->FUN_141811980(3, pTo->m_38)));
+                strMsg += FUN_1401d0160(L"\n", FUN_14052bd00(0x27d, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, pTo->m_38)));
             }
         }
         if (m_30.get() != 0)
@@ -662,7 +656,7 @@ void UIRevivalDialog::FUN_141abb600()
         }
         else
         {
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(FUN_14052bd00(0x287, FUN_1401a9d70()->FUN_141811980(3, nTo)), 1);
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(FUN_14052bd00(0x287, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nTo)), 1);
             spBox->FUN_141a027c0(RevAnswerDelegate(this, &UIRevivalDialog::SendRevivalMode0));
             spBox->FUN_141a01800(2);
             FUN_140d73c60(spBox);
@@ -723,7 +717,7 @@ void UIRevivalDialog::FUN_141abbb20()
     }
     else
     {
-        FUN_1403ed2b0()->FUN_141add1f0();
+        TSingleton<CUIService>::GetInstance()->FUN_141add1f0();
     }
 }
 
