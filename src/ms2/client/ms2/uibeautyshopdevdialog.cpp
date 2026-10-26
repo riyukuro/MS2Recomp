@@ -137,8 +137,12 @@ Unk_BSDevSpawnMgr* FUN_140a50010();
 // An element of a tile list's data provider, viewed as an object.
 class Unk_BSDevRow : public ASObj
 {
-public:
-    Unk_BSDevRow(ASArray* pArray, unsigned nIndex);     // 0x1422df140
+};
+
+// 0x1422df140 ASDataProvider::requestItemAt viewed through the array: this = the array (rcx), hidden return = rdx
+struct Unk_BSDevRowSource
+{
+    Unk_BSDevRow FUN_1422df140(unsigned nIndex);
 };
 
 class Unk_BSDevItemEvents
@@ -1076,7 +1080,8 @@ void UIBeautyShopDevDialog::FUN_1419207c0(int nTab)
                     }
                     else
                     {
-                        Unk_BSDevRow row(spList->FUN_1422dcd80().operator->(), spList->FUN_1422dccd0());
+                        Unk_BSDevRow row = reinterpret_cast<Unk_BSDevRowSource*>(spList->FUN_1422dcd80().operator->())
+                                               ->FUN_1422df140(spList->FUN_1422dccd0());
                         if (row.FUN_1422bb870().IsObject())
                         {
                             Scaleform::GFx::Value vId = row.FUN_1422baa20("itemid");
