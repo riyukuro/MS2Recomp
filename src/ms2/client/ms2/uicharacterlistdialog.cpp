@@ -237,7 +237,7 @@ class Unk_ClPopupInfo                                   // 0x30 bytes: the popup
 public:
     Unk_ClPopupInfo();                                  // 0x141540eb0
     ~Unk_ClPopupInfo();                                 // 0x141541190
-    void FUN_1407a4c60(CInPacket* pPacket);
+    void FUN_1407a4c60(CInputStream* pPacket);
     char m_bEmpty;
     char m_pad[0x2f];
 };
