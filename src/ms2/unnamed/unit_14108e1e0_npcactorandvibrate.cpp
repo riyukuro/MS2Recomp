@@ -1957,9 +1957,9 @@ void CNpc::vfunc_33(void* a, void* b)
         if (pPlayer != NULL && pRecord->m_nOwnerId != pPlayer->FUN_14123c580()) {
             Common::Constants::Value<float>* pVolume;
             if (nOwnerRel == 1 || nOwnerRel == 2)
-                pVolume = &FUN_1401d3200()->VolumeNpcToMyPc;
+                pVolume = &FUN_1401d3200()->VolumeMyPcToNpc;
             else
-                pVolume = &FUN_1401d3200()->VolumeNpcToPc;
+                pVolume = &FUN_1401d3200()->VolumePcToNpc;
             float fVolume = pVolume->Read();
             NiPoint3 kPos = vfunc_18();
             reinterpret_cast<Unk_PCFxMgr*>(FUN_1403ed280())->FUN_1411a5580(pRecord->FUN_14175ad50(),
@@ -2016,9 +2016,9 @@ void CNpc::vfunc_34(void* p)
         if (nMaterial != 0) {
             Common::Constants::Value<float>* pVolume;
             if (nOwnerRel == 1 || nOwnerRel == 2)
-                pVolume = &FUN_1401d3200()->VolumeNpcToMyPc;
+                pVolume = &FUN_1401d3200()->VolumeMyPcToNpc;
             else
-                pVolume = &FUN_1401d3200()->VolumeNpcToPc;
+                pVolume = &FUN_1401d3200()->VolumePcToNpc;
             float fVolume = pVolume->Read();
             NiPoint3 kPos = vfunc_18();
             reinterpret_cast<Unk_PCFxMgr*>(FUN_1403ed280())->FUN_1411a5580(nMaterial, m_spNpcData->m_nDefenceMaterial,
@@ -2071,9 +2071,9 @@ void CNpc::vfunc_35(void* p)
         FUN_14166ccb0()->vfunc_6();
         Common::Constants::Value<float>* pVolume;
         if (nOwnerRel == 1 || nOwnerRel == 2)
-            pVolume = &FUN_1401d3200()->VolumeNpcToMyPc;
+            pVolume = &FUN_1401d3200()->VolumeMyPcToNpc;
         else
-            pVolume = &FUN_1401d3200()->VolumeNpcToPc;
+            pVolume = &FUN_1401d3200()->VolumePcToNpc;
         float fVolume = pVolume->Read();
         NiPoint3 kPos = vfunc_18();
         reinterpret_cast<Unk_PCFxMgr*>(FUN_1403ed280())->FUN_1411a5580(pRecord->FUN_14175ad50(),
