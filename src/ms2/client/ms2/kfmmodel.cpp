@@ -570,11 +570,13 @@ void CKfmModel::vfunc_13()
     int nResult = FUN_1411e99a0(FUN_1416561a0(pActor), nModelKind, &s, uAttrB, cAttrA);
     s.~CString();
     if (nResult != 0) {
-        NiFixedString kName("Bip01 Head");
-        void* o = FUN_1409f7cb0(pRootNode);
-        void* r = V1(void*, o, 0xa0, void*, &kName);
-        void* target = FUN_14098d8d0(&DAT_143afa4d8, r);
-        kName.~NiFixedString();
+        void* target;
+        {
+            NiFixedString kName("Bip01 Head");
+            void* o = FUN_1409f7cb0(pRootNode);
+            void* r = V1(void*, o, 0xa0, void*, &kName);
+            target = FUN_14098d8d0(&DAT_143afa4d8, r);
+        }   // scoped, not kName.~NiFixedString(): an explicit dtor on a local runs twice (double DecRefCount)
         if (target == 0) {
             FUN_1401bfde0(v120);
             return;
@@ -1074,15 +1076,18 @@ void CKfmModel::FUN_14143f3d0()
             for (int k = 0; k < 2; ++k) {
                 CString strKey;
                 strKey.Format("%s%d", (const char*)strName, k);
-                NiFixedString kFixed((const char*)strKey);
-                NiFloatsExtraData* pExtra = (NiFloatsExtraData*)FUN_14098d8d0(&DAT_143afafe0, FUN_141d17b40(pNode, &kFixed));
-                kFixed.~NiFixedString();
+                NiFloatsExtraData* pExtra;
+                {
+                    NiFixedString kFixed((const char*)strKey);
+                    pExtra = (NiFloatsExtraData*)FUN_14098d8d0(&DAT_143afafe0, FUN_141d17b40(pNode, &kFixed));
+                }
                 if (pExtra == 0) {
                     float v[3] = { kDesc.localAnchor[k].x, kDesc.localAnchor[k].y, kDesc.localAnchor[k].z };
                     pExtra = EE_NEW NiFloatsExtraData(3, v);
-                    NiFixedString kFixed2((const char*)strKey);
-                    pNode->AddExtraData(kFixed2, pExtra);
-                    kFixed2.~NiFixedString();
+                    {
+                        NiFixedString kFixed2((const char*)strKey);
+                        pNode->AddExtraData(kFixed2, pExtra);
+                    }
                     kDesc.localAnchor[k] = kDesc.localAnchor[k] * m_fScale44;
                 } else {
                     kDesc.localAnchor[k].x = FUN_141d57ca0(pExtra, 0) * m_fScale44;
