@@ -176,7 +176,7 @@ GE_TREE_DTOR_MAP(CStringA, int) GE_TREE_DTOR_MAP(int, GeVecEnt)
 template void GeMapSub::_Mybase::_Assign_rv(GeMapSub::_Mybase&&, std::true_type);
 
 // @0x141398fd0
-MS2Ptr<CGuideEntity>** FUN_141398fd0(MS2Ptr<CGuideEntity>** ppIt)
+std::pair<CGuideManager::Occurrence, int>** FUN_141398fd0(std::pair<CGuideManager::Occurrence, int>** ppIt)
 {
     ++*ppIt;
     return ppIt;
