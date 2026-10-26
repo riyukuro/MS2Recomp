@@ -143396,7 +143396,7 @@ vsprintf	14116bc30	func
 ??E?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VCGuideEntity@@@@V?$allocator@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ	141398d90	func
 ??E?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@J@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ	141398e20	func
 ??E?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ	141398e20	func
-??F?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Occurrence@CGuideManager@@VGuideOccurContainer@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ	141398e20	func
+??F?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Occurrence@CGuideManager@@VGuideOccurContainer@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ	141399180	func
 ??E?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Occurrence@CGuideManager@@H@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ	141398eb0	func
 ??E?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@W4Occurrence@CGuideManager@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ	141398f40	func
 ?FUN_141398ff0@@YAPEAPEAU?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@PEAPEAU12@@Z	141398ff0	func
@@ -143412,7 +143412,7 @@ vsprintf	14116bc30	func
 ??F?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VCGuideEntity@@@@V?$allocator@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ	141399070	func
 ??F?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Occurrence@CGuideManager@@H@std@@@std@@@std@@@std@@QEAAAEAV01@XZ	141399090	func
 ??F?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Occurrence@CGuideManager@@VGuideOccurContainer@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ	141399090	func
-??E?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Occurrence@CGuideManager@@VGuideOccurContainer@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ	1413990b0	func
+??E?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Occurrence@CGuideManager@@VGuideOccurContainer@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ	141398eb0	func
 ??F?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@J@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ	1413990b0	func
 ??F?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VCGuideEntity@@@@V?$allocator@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ	1413990b0	func
 ??F?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Occurrence@CGuideManager@@H@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ	141399180	func
