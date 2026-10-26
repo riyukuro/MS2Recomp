@@ -98,9 +98,10 @@ __int64 FUN_14088df20(unsigned nElapsed, unsigned nTotal, __int64 nValue)
         return nValue;
     if (nElapsed == nTotal)
         return 0;
-    unsigned long long nLeft = nTotal - nElapsed;
-    __int64 nRes = nValue * nLeft / (__int64)nTotal;
-    return nRes;
+    nValue *= (unsigned long long)(nTotal - nElapsed);
+    __int64 nDiv = nTotal;
+    nValue /= nDiv;   // signed: the exe divides with cqo/idiv
+    return nValue;
 }
 
 // @0x14088dfa0
