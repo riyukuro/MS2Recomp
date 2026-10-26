@@ -21,6 +21,9 @@
 #include "ms2/gfxui/uiswfentity.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/creservedwordtable.h"
 
 // ---- the unit's header statics (the page includes the statics header a second time) ----
 static UICommon::CMyPCKeyInputController s_keyInput;
@@ -45,16 +48,13 @@ void FUN_140614800(const Scaleform::GFx::Value& v);                // destroy a 
 Scaleform::GFx::Value FUN_1406146a0(const Scaleform::GFx::Value& v);   // copy a value
 
 // The name table (global strings).
-class Unk_CRNames { public: CStringW FUN_141811980(int nTable, int nId); };
-Unk_CRNames* FUN_1401a9d70();
 CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);
 CStringW FUN_140b99450(CStringW strKey, const CStringW& strA, const unsigned& nB);
 CStringW FUN_1409e97f0(int nId, const unsigned& nArg);
 CStringW GetStringCommon(int nId);
 void FUN_140d73aa0(CStringW strText, int nType, IMessageListener* pListener, CStringW strTag);
 
-class Unk_CRTextFilter { public: void FUN_1416fb300(CStringW& str); };
-Unk_CRTextFilter* FUN_1403b4750();
+CReservedWordTable* FUN_1403b4750();
 
 // Item slot bindings (the bound slot key -> the item).
 void FUN_141415600(const CString& strKey);                         // unbind
@@ -66,13 +66,11 @@ char FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);             // has the AS
 class Unk_CRSceneMgr;
 Unk_CRSceneMgr* FUN_1408e57f0();
 void FUN_1422b9fd0(Unk_CRSceneMgr* pMgr, int nScene);
-CUIService* FUN_1403ed2b0();
 void FUN_141901470(int n, int nTypeId);
 void FUN_14151f200();
 void FUN_140710590(COutPacket& packet);                            // send
 
-class Unk_CRPlayer { public: void* FUN_141bd0cc0(); };
-Unk_CRPlayer* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 
 class Unk_CRRawItem { public: char m_data[0x10]; };
 
@@ -155,8 +153,8 @@ void UICardReverseGameDialog::vfunc_67()
     FUN_1402c2890(m_180);
     FUN_141901470(1, 0x4f02);
     UIDialog::vfunc_67();
-    FUN_1403ed2b0()->FUN_141ada610(0x6200022);
-    FUN_1403ed2b0()->FUN_141adad20(0x6200022);
+    TSingleton<CUIService>::GetInstance()->FUN_141ada610(0x6200022);
+    TSingleton<CUIService>::GetInstance()->FUN_141adad20(0x6200022);
     FUN_1422b9fd0(FUN_1408e57f0(), 0x620001d);
 }
 
@@ -165,8 +163,8 @@ void UICardReverseGameDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
     FUN_1422b9fd0(FUN_1408e57f0(), 0x6200022);
-    FUN_1403ed2b0()->FUN_141ad9e50(0x6200022);
-    FUN_1403ed2b0()->FUN_141ada6f0(0x6200022);
+    TSingleton<CUIService>::GetInstance()->FUN_141ad9e50(0x6200022);
+    TSingleton<CUIService>::GetInstance()->FUN_141ada6f0(0x6200022);
     m_1c8.RemoveAll();
     m_1a8.RemoveAll();
     m_1a0 = 0;
@@ -235,7 +233,7 @@ void UICardReverseGameDialog::vfunc_79(void* p)
                     m_1a8.Add(spCard);
                 }
             }
-            CStringW strItem = FUN_1401a9d70()->FUN_141811980(1, m_1e8);
+            CStringW strItem = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_1e8);
             CStringW strNotice = FUN_140b99450(CStringW(L"s_card_reverse_game_dialog_play_notice"), strItem, m_1ec);
             static_cast<Unk_CRAS*>(m_30.operator->())->FUN_140acd130("setPlayInfoText", CStringW(strNotice));
         }
@@ -347,7 +345,7 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                         obj.FUN_1409c0d20("itemID", spCard->m_nItemId);
                         obj.FUN_1409adc90("itemRank", spCard->m_nRank);
                         obj.FUN_1407cb9c0("itemCount", spCard->m_nCount);
-                        obj.FUN_1407cbb20("itemName", FUN_1401a9d70()->FUN_141811980(1, spCard->m_nItemId));
+                        obj.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spCard->m_nItemId));
                         static_cast<Unk_CRAS*>(m_30.operator->())->FUN_1409b13b0("updateItem", FUN_1406146a0(obj.FUN_1422bb870()));
                     }
                 }
@@ -369,7 +367,7 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                     obj.FUN_1409c0d20("itemID", m_1f8->m_nItemId);
                     obj.FUN_1409c0d20("itemRank", m_1f8->m_nRank);
                     obj.FUN_1407cb9c0("itemCount", m_1f8->m_nCount);
-                    obj.FUN_1407cbb20("itemName", FUN_1401a9d70()->FUN_141811980(1, m_1f8->m_nItemId));
+                    obj.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_1f8->m_nItemId));
                     static_cast<Unk_CRAS*>(m_30.operator->())->FUN_1409b13b0("updateItem", FUN_1406146a0(obj.FUN_1422bb870()));
                     OnCardTweenComplete();
                     m_1f0 = -1;
