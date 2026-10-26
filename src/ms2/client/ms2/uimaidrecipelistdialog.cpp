@@ -162,7 +162,7 @@ class Unk_MdItemData : public CPtred
 public:
     CString FUN_14053fdd0();                                // the icon path
 };
-class Unk_MdItemPtr { public: Unk_MdItemPtr(); ~Unk_MdItemPtr(); Unk_MdItemData* get() const; Unk_MdItemData* operator->() const; };
+class Unk_MdItemPtr { public: Unk_MdItemPtr(); ~Unk_MdItemPtr(); Unk_MdItemData* get() const; Unk_MdItemData* operator->() const; void* m_p; };   // 8 bytes (MS2Ptr<CItemData>)
 Unk_MdItemPtr FUN_14053f870(int nItemId);
 void FUN_141415450(const CString& strKey, MS2Ptr<CItem> spItem, int a, int b, int c);
 void FUN_141415600(const CString& strKey);
@@ -1301,7 +1301,7 @@ int FUN_1412dffb0(CString strPath, int nMode, AScript* pTarget)
 // ---- UIMDEditDialog: the shop list, the xml export ----------------------------------------------------------------------
 
 // The AS controls of the shop list.
-struct Unk_MdAsRows { ~Unk_MdAsRows(); ASArray* FUN_140be3d00(); };     // dtor 0x140be3520
+struct Unk_MdAsRows { ~Unk_MdAsRows(); ASArray* FUN_140be3d00(); void* m_pad[2]; };   // 0x10 in the exe (+8 = the array pointer)     // dtor 0x140be3520
 Unk_MdAsRows FUN_140ff6b60(int nMode, Scaleform::GFx::Value& v);
 void FUN_1409c1770(AScript* p, const char* szName, Scaleform::GFx::Value& out);
 class Unk_MdRowObj : public ASObj { public: Unk_MdRowObj(ASArray* pArr, unsigned nIndex); };     // 0x1422df140 the element as an object
