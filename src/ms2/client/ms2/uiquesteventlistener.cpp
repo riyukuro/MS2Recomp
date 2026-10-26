@@ -115,9 +115,10 @@ struct Unk_QgCfgInt { int* FUN_1402056b0(); void* m_unknown; };
 struct Unk_QgCfg {
     char m_pad_0[0x4078];
     Unk_QgCfgInt m_4078;                                                    // max tracked quests
-    char m_pad_4088[0x40d0 - 0x4088];
+    char m_pad_4080[0x40d0 - 0x4080];
     Unk_QgCfgInt m_40d0;                                                    // max tracked quests (second)
 };
+MS2_CHECK_OFFSET(Unk_QgCfg, m_40d0, 0x40d0);
 Unk_QgCfg* FUN_1401d3200();
 
 // The map data kept behind the world service's counted pointer.
