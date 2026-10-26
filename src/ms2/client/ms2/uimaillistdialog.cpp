@@ -51,6 +51,7 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/creservedwordtable.h"
 
 // ---- statics of the unit's headers (two copies of the merat market sort names / key controller block) ----
 
@@ -159,7 +160,7 @@ UIMarketBillDialog* FUN_140b09580(int nUiType);                     // the open 
 // FUN_1403ed2d0 (the world) is declared by usermail.h as Unk_MailSession*.
 PCBase* FUN_141bd0cc0(Unk_MailSession* pWorld);                     // the local player
 void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);    // pRetVal = v
-__int64 FUN_140869440();                                            // the server time
+__int64 GetServerTime();                                            // the server time
 CStringW FormatStringId(int nId, const fmt::ArgList& args);         // 0x14028dee0
 FMT_VARIADIC_W(CStringW, FormatStringId, int)
 
@@ -192,13 +193,12 @@ struct Unk_MailSendInfo
     void FUN_1401fc2a0(COutPacket& packet);
 };
 // CommonString as the send dialog calls it: the ban word checker.
-class Unk_MsStrings { public: MS2Ptr<CBanTextChecker> FUN_140229a50(); };
-Unk_MsStrings* FUN_14025e7d0();                                     // TSingleton<CommonString>::GetInstance
+CommonString* FUN_14025e7d0();                                     // TSingleton<CommonString>::GetInstance
 CInputKeyHandler* FUN_14025e7c0();                                  // TSingleton<CInputKeyHandler>::GetInstance
 UIStatusEventDispatcher* FUN_140aa6d40();                           // TSingleton<UIStatusEventDispatcher>::GetInstance
 int FUN_1418fccc0(int nMsg, unsigned __int64 wParam, unsigned __int64 lParam, CStringW* pStr);   // the key edits the text
 CStringW FUN_1413fa9b0(const CStringW& str);                        // lower case
-CStringW FUN_1408767c0(const char* psz);                            // UTF-8 -> wide
+CStringW XmlWide(const char* psz);                            // UTF-8 -> wide
 void FUN_1412751f0(const CStringW& text, int nA, int nB);           // system notice text
 extern __int64 DAT_143ab2828;                                       // the own character id
 
@@ -217,8 +217,7 @@ int FUN_1419eadd0(CMailInfo* pMail)
 }
 
 // The text translator of the system mails (sender / title keys -> text).
-class Unk_MlTextFilter { public: void FUN_1416fb300(CStringW& str); };
-Unk_MlTextFilter* FUN_1403b4750();
+CReservedWordTable* FUN_1403b4750();
 CStringW FUN_1419e95d0(CMailInfo* pMail, int bTooltip);             // the "days left" text of a row
 
 // The mail pointer is empty.
@@ -320,7 +319,7 @@ MS2_REPLACE(0x1419E9460, FUN_1419e9460, 362, 0xB651066D); // FUN_1419e9460
 // @0x1419e95d0
 CStringW FUN_1419e95d0(CMailInfo* pMail, int bTooltip)
 {
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     CMsTime expire(pMail->FUN_140691160());
     if (now > expire)
         return GetStringCommon(0x80b);
@@ -1641,7 +1640,7 @@ void UIMailSendDialog::OnSend()
     }
     if (info.m_strContent.GetLength() < 0x7d1)
     {
-        CBanTextChecker* pChecker = FUN_14025e7d0()->FUN_140229a50();
+        CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker();
         if (pChecker != 0)
         {
             CStringW strMessage;
@@ -1681,7 +1680,7 @@ void UIMailSendDialog::FUN_1419ed4e0(CStringW& strTitle)
                 strTitle = spField->FUN_1422c4da0();
         }
     }
-    CBanTextChecker* pChecker = FUN_14025e7d0()->FUN_140229a50();
+    CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker();
     if (pChecker != 0)
         pChecker->FilterReservedWords(strTitle);
 }
@@ -1693,8 +1692,8 @@ void UIMailSendDialog::FUN_1419ed6b0(CStringW& strContent)
 {
     if (m_30.IsNull())
         return;
-    strContent = FUN_1408767c0(FUN_140b63540(m_30->Invoke("getContent")));
-    CBanTextChecker* pChecker = FUN_14025e7d0()->FUN_140229a50();
+    strContent = XmlWide(FUN_140b63540(m_30->Invoke("getContent")));
+    CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker();
     if (pChecker != 0)
         pChecker->FilterReservedWords(strContent);
 }
