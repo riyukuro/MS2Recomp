@@ -325,7 +325,7 @@ void UILoadingProgress::FUN_1419e07a0()
             if (FUN_141419be0(pRenderer) == 0 && pBack != 0)
             {
                 void* pTex = (*reinterpret_cast<void* (***)(void*)>(FUN_14127c9b0(&m_78)))[0xa0 / 8](FUN_14127c9b0(&m_78));
-                (*reinterpret_cast<void (***)(NiRenderer*, void*, void*, int, int, int)>(pRenderer))[0x1b](pRenderer, pBack, pTex, 0, 0, 2);
+                (*reinterpret_cast<bool (***)(NiRenderer*, void*, void*, void*, void*, int)>(pRenderer))[0x1b0 / 8](pRenderer, pBack, pTex, 0, 0, 2);   // Copy(src, dest, srcRect, destRect, filter)
             }
         }
     }
