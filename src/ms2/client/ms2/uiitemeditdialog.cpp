@@ -32,6 +32,9 @@
 #include "ms2/gfxui/uiswfentity.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/placeholder/uitalkmanager.h"
+#include "ms2/placeholder/notifysystem.h"
 
 // ---- local stand-ins for classes whose units are not recovered yet ----
 
@@ -144,8 +147,7 @@ public:
 Unk_IEWorld* FUN_1403ed2d0();
 
 // Misc singletons.
-class Unk_IECutScene { public: bool FUN_14116d840(); };
-Unk_IECutScene* FUN_14025e7c0();
+CInputKeyHandler* FUN_14025e7c0();
 class Unk_IEItemEvents
 {
 public:
@@ -153,15 +155,8 @@ public:
     void FUN_1419caeb0(UIItemEventListener* pListener);
 };
 Unk_IEItemEvents* FUN_140a6a840();
-class Unk_IENotices
-{
-public:
-    void FUN_140da4e40(CStringW strName, Delegate<void(NotifyObject*)> cb);
-    void FUN_140da4eb0(CStringW strName, Delegate<void(NotifyObject*)> cb);
-};
-Unk_IENotices* FUN_140939a10();
-class Unk_IEMgr { public: int FUN_141b21220(); void FUN_141b1feb0(); };
-Unk_IEMgr* FUN_140967100();
+NotifySystem* FUN_140939a10();
+UITalkManager* FUN_140967100();
 Unk_BSCamera* FUN_140cd47b0(int nId);
 class Unk_IESound;
 Unk_IESound* FUN_1408e57f0();
@@ -208,10 +203,10 @@ void UIItemEditDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
     FUN_140a6a840()->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
-    FUN_140939a10()->FUN_140da4eb0(CStringW(L"NotifyChangeActiveMyCodiTab"),
+    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
                                    Delegate<void(NotifyObject*)>(this, &UIItemEditDialog::FUN_1419bd530));
-    if (FUN_140967100()->FUN_141b21220() != 0)
-        FUN_140967100()->FUN_141b1feb0();
+    if (FUN_140967100()->GetTalking() != 0)
+        FUN_140967100()->SendNpcTalkMode0();
     m_198 = 0;
     m_1a8 = 0;
     m_1b0 = 0;
@@ -236,7 +231,7 @@ void UIItemEditDialog::OnLoadComplete()
         CString strGuide = FUN_1401d3200()->m_cc50.FUN_1409f6f30();
         m_30->Invoke("initData", CString(strGuide));
     }
-    FUN_140939a10()->FUN_140da4e40(CStringW(L"NotifyChangeActiveMyCodiTab"),
+    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
                                    Delegate<void(NotifyObject*)>(this, &UIItemEditDialog::FUN_1419bd530));
 }
 
