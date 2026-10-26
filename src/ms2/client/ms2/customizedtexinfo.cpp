@@ -275,9 +275,12 @@ void* FUN_141166c80(CCustomizedTextureManager* pMgr, CCustomizedTexInfo* pA, CCu
     return 0;
 }
 
+// the exe's is a member (this unused, hidden return slot in rdx); a free function put the slot in rcx
+struct Unk_CtiCacheName { CString FUN_141166ca0(); };
+
 // @0x141166ca0
 // MS2-FUNCTIONAL: the exe copies the formatted name into the return slot (no NRVO); the copy shape differs
-CString FUN_141166ca0()
+CString Unk_CtiCacheName::FUN_141166ca0()
 {
     CString strName;
     strName.Format("CustomizingCache%d.dds", rand());
