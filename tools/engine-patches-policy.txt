@@ -1,7 +1,6 @@
 # tools/engine-patches.py policy. Entries: exclude-file <path> | keep|withhold <path>:<newline>
 # (every added file our build needs ships; no withhold-file entries)
 # Patched in the tree but not part of our build (no CMake target / never included): no patch shipped.
-exclude-file CoreRuntime/EngineLibs/NiTerrain/NiTerrainLib.h
 exclude-file CoreRuntime/UtilityLibs/NiSettingsDialog/NiBaseRendererOptionsView.cpp
 exclude-file CoreRuntime/UtilityLibs/NiSettingsDialog/NiRendererTabController.cpp
 exclude-file CoreRuntime/UtilityLibs/NiSettingsDialog/NiSettingsDialog.cpp

@@ -1,0 +1,8 @@
+34a
+#endif
+.
+33a
+// MS2: units that define MS2_NO_ENGINE_STATIC_INIT construct the SDM themselves at the exe's initializer position
+// (unit_140105110_globalinitializers) or not at all (the hook DLL runs inside the exe, which already ran it)
+#ifndef MS2_NO_ENGINE_STATIC_INIT
+.
