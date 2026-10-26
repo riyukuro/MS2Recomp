@@ -91,9 +91,13 @@ Unk_JcWorld* FUN_1403ed2d0();
 
 static bool s_bValid;                                           // 0x143af3588 the tables were read
 
+// the exe's is a member of the dialog's script (this, hidden return slot in rdx); a free function put the slot in rcx
+struct Unk_JcInvokeSkill { Scaleform::GFx::Value FUN_1419dc5e0(const char* szMethod, int n, ASObj& obj); };
+
 // @0x1419dc5e0
-Scaleform::GFx::Value FUN_1419dc5e0(AScript* pDlg, const char* szMethod, int n, ASObj& obj)
+Scaleform::GFx::Value Unk_JcInvokeSkill::FUN_1419dc5e0(const char* szMethod, int n, ASObj& obj)
 {
+    AScript* pDlg = reinterpret_cast<AScript*>(this);
     ASArgList args;
     args.FUN_1409b2800(2);
     FUN_1422bce00(args.FUN_1409b1f70(0), n);
@@ -294,7 +298,7 @@ void UIJobChangeDialog::FUN_1419dbe30(int nJob)
                 obj.FUN_1407cbb20("skillName", FUN_1401a9d70()->FUN_141811980(4, nSkill));
                 obj.FUN_1407cbb20("skillLevel", strLevel);
                 obj.FUN_1407cba60("imgPath", ref.FUN_14063ed50()->m_strIcon);
-                FUN_1419dc5e0(pDlg, "setSkill", (int)i, obj);
+                reinterpret_cast<Unk_JcInvokeSkill*>(pDlg)->FUN_1419dc5e0("setSkill", (int)i, obj);
             }
         }
         reinterpret_cast<Unk_JcInvoke1*>(pDlg)->FUN_1409ba030("setDifficulty", spPreview->m_nDifficulty);
