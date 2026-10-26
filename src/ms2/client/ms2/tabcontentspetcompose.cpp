@@ -77,6 +77,9 @@ static CString s_strStun = "stun";
 struct Unk_RegMarker {};
 #ifndef MS2_HOOK_DLL
 #include "ms2/placeholder/unk_1402a9d70.h"
+
+// the exe calls _abs64 out of line through the ucrt import (not the /Oi intrinsic)
+#pragma function(_abs64)
 static Unk_1402a9d70 s_marker(17, 0.75f, 0.25f, 2.25f, 10);   // atexit thunk FUN_142ca3da0
 #endif
 
