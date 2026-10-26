@@ -13,18 +13,13 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
 
 // ---- unit-local placeholders ----
 
 // The input state (FUN_14025e7c0).
-class Unk_InputState
-{
-public:
-    bool FUN_14116d950(int nKey, bool b, int n);                    // key held
-    bool FUN_14116daa0(int nButton, bool b, int n);                 // mouse button held
-    bool FUN_14116dbf0(int* pnX, int* pnY, int* pnZ, bool b, int n);    // mouse move delta
-};
-Unk_InputState* FUN_14025e7c0();
+CInputKeyHandler* FUN_14025e7c0();
 
 // The camera option row held by the game context (+0x154 rotation).
 struct Unk_CameraOption
@@ -60,12 +55,7 @@ public:
 Unk_GameContext* FUN_1403ed2d0();
 
 // The game clock (FUN_14086d260).
-class Unk_GameClock
-{
-public:
-    double FUN_141473280();
-};
-Unk_GameClock* FUN_14086d260();
+CMainSystem* FUN_14086d260();
 
 namespace egf { class Entity; }
 egf::Entity* FUN_14123c410(Unk_CameraTargetEntity* p);      // m_80 of the game object
