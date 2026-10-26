@@ -448,7 +448,8 @@ void StateCashCall::SpawnEffect(const CString& strEffect)
     FUN_14097faa0(&xf.m_Translate, reinterpret_cast<const NiPoint3*>(&kSum));
     float fAngle = ((180.0f - kRot.z) * 3.1415927f) / 180.0f - 1.5707964f;
     xf.m_Rotate.FromEulerAnglesXYZ(0.0f, 0.0f, fAngle);
-    Unk_CcRequest request;
+    alignas(8) char requestBuf[sizeof(Unk_CcRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+    Unk_CcRequest& request = *reinterpret_cast<Unk_CcRequest*>(requestBuf);
     FUN_140a52ef0(&request);
     request.m_strName = strEffect;
     request.m_nKind = (FUN_1417b8560() == 0) ? 3 : 1;
