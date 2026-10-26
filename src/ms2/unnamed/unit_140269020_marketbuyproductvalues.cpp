@@ -2,9 +2,11 @@
 // MS2-UNIT: unit_140269020
 // MS2-RANGE: 0x140269020-0x140269160 .text$mn
 #define MS2_THIS_FILE ""
+// MS2-PIN: ??_7Unk_MarketBuyLimitProduct@@6B@ 0x142d15a88
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/ms2recover.h"
 #include "ms2/ms2layout.h"
+#include "ms2/placeholder/cptred.h"
 
 class Unk_MarketLimitWriteArchive
 {
@@ -24,21 +26,23 @@ public:
     virtual int ReadInt() = 0;
 };
 
-class Unk_MarketBuyLimitProduct
+// RTTI CMarketBuyLimitProduct, vftable 0x142d15a88 with one slot: ??_G (0x14027fc70, crt delete 0x20). The ctor runs
+// CPtred() (0x140159740), stores that vftable and calls Reset; the old `char m_base[0x18]` stand-in left it null.
+class Unk_MarketBuyLimitProduct : public CPtred
 {
 public:
     Unk_MarketBuyLimitProduct();
     void Reset();
     void Deserialize(Unk_MarketLimitReadArchive& archive);
-    char m_base[0x18];
     int m_limit;
     int m_count;
 };
 MS2_CHECK_SIZE(Unk_MarketBuyLimitProduct, 0x20);
 
 // @0x140269020
-Unk_MarketBuyLimitProduct::Unk_MarketBuyLimitProduct() : m_base{}, m_limit(0), m_count(0)
+Unk_MarketBuyLimitProduct::Unk_MarketBuyLimitProduct()
 {
+    Reset();
 }
 
 // @0x140269070

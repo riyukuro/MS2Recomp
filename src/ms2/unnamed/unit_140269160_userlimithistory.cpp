@@ -5,6 +5,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/ms2recover.h"
 #include "ms2/ms2layout.h"
+#include "ms2/placeholder/cptred.h"
 
 class CUserLimitArchive
 {
@@ -16,15 +17,15 @@ public:
     virtual void Transfer64(unsigned __int64& value) = 0; // byte offset 0x20
 };
 
-class CUserLimitHistory
+// vftable 0x142d15a98: ??_G (0x14027fef0, crt delete 0x50), Initialize, Serialize, Deserialize. The ctor runs
+// CPtred() (0x140159740) and stores that vftable; the old `void* m_vftable` stand-in left it null.
+class CUserLimitHistory : public CPtred
 {
 public:
     CUserLimitHistory();
-    void Initialize();
-    void Serialize(CUserLimitArchive& archive);
-    void Deserialize(CUserLimitArchive& archive);
-    void* m_vftable;
-    char m_base[0x10];
+    virtual void Initialize();
+    virtual void Serialize(CUserLimitArchive& archive);
+    virtual void Deserialize(CUserLimitArchive& archive);
     unsigned __int64 m_value18;
     unsigned __int64 m_value20;
     unsigned __int64 m_value28;
@@ -38,7 +39,7 @@ public:
 MS2_CHECK_SIZE(CUserLimitHistory, 0x50);
 
 // @0x140269160
-CUserLimitHistory::CUserLimitHistory() : m_vftable(nullptr), m_base{}
+CUserLimitHistory::CUserLimitHistory()
 {
     Initialize();
 }
