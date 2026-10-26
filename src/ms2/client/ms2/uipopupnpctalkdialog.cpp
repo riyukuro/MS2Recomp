@@ -21,6 +21,9 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/ckeytable.h"
+#include "ms2/placeholder/creservedwordtable.h"
 #include <stdlib.h>
 
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -55,10 +58,8 @@ public:
 class Unk_PnWorld { public: void* FUN_141bd0cc0(); };
 Unk_PnWorld* FUN_1403ed2d0();
 unsigned FUN_141bd3060(Unk_PnWorld* pWorld);                    // the map id
-class Unk_PnQuestTable { public: void FUN_14074d360(unsigned nMap, ATL::CAtlArray<unsigned>& rOut); };
-Unk_PnQuestTable* FUN_1407476c0();
-class Unk_PnGame { public: bool FUN_14036d570(int nId); };
-Unk_PnGame* FUN_140166410();
+QuestDataTable* FUN_1407476c0();
+CFeatureManager* FUN_140166410();
 class Unk_PnUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int nType); };
 Unk_PnUIMgr* FUN_1403ed2b0();
 CQuestManager* FUN_140764020();
@@ -68,10 +69,8 @@ NotifySystem* FUN_140939a10();
 UIQuestEventDispatcher* FUN_140bfc4b0();
 CStringW FUN_1401aa6a0(int nId);                                // npc name
 CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);
-class Unk_PnKeyTable { public: CStringW FUN_14142d220(int n); CStringW FUN_14142d760(int nId, int n); };
-Unk_PnKeyTable* FUN_1409331f0();
-class Unk_PnTextFilter { public: void FUN_1416fb300(CStringW& str); };
-Unk_PnTextFilter* FUN_1403b4750();
+CKeyTable* FUN_1409331f0();
+CReservedWordTable* FUN_1403b4750();
 class Unk_PnButton : public ASDisplayObject { public: void FUN_1422cdfb0(const CStringW& strText); };
 class Unk_PnRoot : public AScript { public:
     Scaleform::GFx::Value FUN_1409b46e0(const char* szMethod, CString strArg);
