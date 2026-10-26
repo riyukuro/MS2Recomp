@@ -16279,7 +16279,7 @@ DAT_1431921e0	1431921e0	data
 ?s_meshSuffixes@@3V?$CAtlList@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@A	143ad2168	data
 ?DAT_1431b79e0@@3QBUSd_1431b79e0@@B	1431b79e0	data
 ?HasButtonHandlers@EventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@QEBA_NXZ	14246a140	func
-??1ShapeObject@AS3@GFx@Scaleform@@UEAA@XZ	1424ddb00	func
+??1ShapeObject@AS3@GFx@Scaleform@@UEAA@XZ	1424deeb0	func
 ??_GSharedObjectFlushVisitor@AS2@GFx@Scaleform@@UEAAPEAXI@Z	14292a6b0	func
 ?CreateEmptyLevelMovie@MovieRoot@AS2@GFx@Scaleform@@QEAAPEAVSprite@34@PEAVLoadStates@34@H@Z	1429360e0	func
 ?DAT_1432155c0@AS2@GFx@Scaleform@@3PAPEBXA	1432155c0	data
@@ -16410,3 +16410,5 @@ DAT_14313b9c8	14313b9c8	data
 ?DAT_1432153a0@AS2@GFx@Scaleform@@3PAPEBXA	1432153a0	data
 ?DAT_143215ab0@AS2@GFx@Scaleform@@3PAPEBXA	143215ab0	data
 ?DAT_143215ad0@AS2@GFx@Scaleform@@3PAPEBXA	143215ad0	data
+?DAT_14317b648@AS3@GFx@Scaleform@@3PAPEBXA	14317b648	data
+?DAT_14317afe8@AS3@GFx@Scaleform@@3PAPEBXA	14317afe8	data
