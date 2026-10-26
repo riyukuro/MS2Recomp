@@ -34,6 +34,8 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 // The header statics of this unit (same shape as header_statics_a.h).
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/cstringtable.h"
 
 // ---- unit-local views of exe types ----
 
@@ -106,8 +108,7 @@ template<class T> MS2Ptr<T> AScript::FUN_140bc7280(const CString& strName)
 struct Unk_DmActor { virtual void Unk_Slot0(); virtual void Unk_Slot1(); virtual void Unk_Slot2(); virtual void Unk_Slot3(); virtual void Unk_Slot4(); virtual void Unk_Slot5(); virtual void Unk_Slot6(); virtual void Unk_Slot7(); virtual void Unk_Slot8(); virtual void Unk_Slot9(); virtual void Unk_Slot10(); virtual void Unk_Slot11(); virtual void Unk_Slot12(); virtual void Unk_Slot13(); virtual void Unk_Slot14(); virtual void Unk_Slot15(); virtual void Unk_Slot16(); virtual void Unk_Slot17(); virtual void Unk_Slot18(); virtual void Unk_Slot19(); virtual void Unk_Slot20(); virtual void Unk_Slot21(); virtual void Unk_Slot22(); virtual void Unk_Slot23(); virtual void Unk_Slot24(); virtual void Unk_Slot25(); virtual void Unk_Slot26(); virtual void Unk_Slot27(); virtual void Unk_Slot28(); virtual void Unk_Slot29(); virtual void Unk_Slot30(); virtual void Unk_Slot31(); virtual void Unk_Slot32(); virtual void Unk_Slot33(); virtual void Unk_Slot34(); virtual void Unk_Slot35(); virtual void Unk_Slot36(); virtual void Unk_Slot37(); virtual void Unk_Slot38(); virtual void Unk_Slot39(); virtual void Unk_Slot40(); virtual void Unk_Slot41(); virtual void Unk_Slot42(); virtual void Unk_Slot43(); virtual void Unk_Slot44(); virtual void Unk_Slot45(); virtual void Unk_Slot46(); virtual void Unk_Slot47(); virtual void Unk_Slot48(); virtual void Unk_Slot49(); virtual void Unk_Slot50(); virtual void Unk_Slot51(); virtual void Unk_Slot52(); virtual void Unk_Slot53(); virtual void Unk_Slot54(); virtual void Unk_Slot55(); virtual void Unk_Slot56(); virtual void Unk_Slot57(); virtual void Unk_Slot58(); virtual void Unk_Slot59(); virtual void Unk_Slot60(); virtual void Unk_Slot61(); virtual void Unk_Slot62(); virtual void Unk_Slot63(); virtual void Unk_Slot64(); virtual void Unk_Slot65(); virtual void Unk_Slot66(); virtual void Unk_Slot67(); virtual void Unk_Slot68(); virtual void Unk_Slot69(); virtual void Unk_Slot70(); virtual void Unk_Slot71(); virtual void Unk_Slot72(); virtual void Unk_Slot73(); virtual void Unk_Slot74(); virtual void Unk_Slot75(); virtual void Unk_Slot76(); virtual void Unk_Slot77(); virtual unsigned short vfunc_78(); };   // the local player: only the level (slot 78, +0x270) is used
 #define Unk_DmActorLevel(pActor) static_cast<Unk_DmActor*>(pActor)->vfunc_78()
 
-class Unk_DmFeatures { public: bool FUN_14036d570(int nFeature); };
-Unk_DmFeatures* FUN_140166410();
+CFeatureManager* FUN_140166410();
 
 class Unk_DmSceneMgr;
 Unk_DmSceneMgr* FUN_1408e57f0();
@@ -116,15 +117,13 @@ class Unk_DmUIMgr { public: void FUN_141adc530(int nUiId); };
 Unk_DmUIMgr* FUN_1403ed2b0();
 WorldService* FUN_1403ed2d0();
 bool FUN_140930b40();
-class Unk_DmStatusMgr { public: void FUN_141b0cd00(UIStatusEventListener* p); void FUN_141b0cd90(UIStatusEventListener* p); };
-Unk_DmStatusMgr* FUN_140aa6d40();
+UIStatusEventDispatcher* FUN_140aa6d40();
 NotifySystem* FUN_140939a10();
 PacketHandlerManager* FUN_140bccd50();
 UIQuestEventDispatcher* FUN_140bfc4b0();
 CQuestManager* FUN_140764020();
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);                  // has the AS object been released
-QuestDataTable* FUN_1407476c0();
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 int FUN_14074b030(CQuestData* pData);                                       // the quest id
 CStringW FUN_1416e5350(int nQuestId, int nIndex);                           // the description text of a quest
@@ -139,8 +138,6 @@ void FUN_1412751f0(const CStringW& text, int nA, int nB);                   // t
 void FUN_140710590(COutPacket& packet);                                     // send
 void FUN_141415450(const CString& strBindId, MS2Ptr<CItem> spItem, int a, int b, int c);   // bind the item to the id
 void FUN_141415600(const CString& strBindId);                               // release the bind
-class Unk_DmStrings { public: CStringW FUN_141811980(int nKind, int nId); };
-Unk_DmStrings* FUN_1401a9d70();
 void FUN_141924170(UIDialog* p, int n);
 extern int DAT_143abdf50;                                              // refresh flags: 1 guide bar / point, 2 list, 4 counts
 
@@ -404,7 +401,7 @@ void UIDailyMissionDialog::FUN_140c00500()
     if (spBar.operator->() != 0)
         spBar->Invoke("removeAll");
     ATL::CAtlArray<MS2Ptr<CQuestData>> datas;
-    FUN_1407476c0()->FUN_14074cca0(datas, 5);
+    TSingleton<QuestDataTable>::GetInstance()->FUN_14074cca0(datas, 5);
     for (size_t i = 0; i < datas.GetCount(); i++)
     {
         MS2Ptr<CQuestData> spData = datas[i];
@@ -591,7 +588,7 @@ void UIDailyMissionDialog::FUN_140c01790(ASObj& rRow, unsigned nQuestId, int bNa
     FUN_141415450(strBind, spItem, 0, nFlags, 0x800);
     rRow.FUN_1407cba60("binding", strBind);
     if (bName != 0)
-        rRow.FUN_1407cbb20("itemName", FUN_1401a9d70()->FUN_141811980(1, pReward->m_itemId));
+        rRow.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pReward->m_itemId));
     m_188.Add(strBind);
 }
 
