@@ -25,6 +25,8 @@
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/bigdatalogsystem.h"
+#include "ms2/placeholder/cstringtable.h"
 
 // The header statics of the including TU: the sort type names, then the open sound name.
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -75,11 +77,7 @@ public:
 };
 Unk_SrUIMgr* FUN_1403ed2b0();
 
-class Unk_SrStrings { public: CStringW FUN_141811980(int nTable, int nIndex); };
-Unk_SrStrings* FUN_1401a9d70();
 
-class Unk_SrSound { public: void FUN_140a1f970(const CString& strKey, const CString& strValue); };
-Unk_SrSound* FUN_140d8ee90();
 
 class Unk_SrClock;
 Unk_SrClock* FUN_14086d260();
@@ -266,7 +264,7 @@ void UISmartRecommendBillingDialog::FUN_14134cfa0()
                 }
                 else if (nMode == 2)
                 {
-                    CStringW strPay = FUN_1401a9d70()->FUN_141811980(1, m_item->m_nPayItemId);
+                    CStringW strPay = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_item->m_nPayItemId);
                     strText.Format(L"%s x%d", (const wchar_t*)strPay, m_item->m_nPayCount);
                 }
                 pDialog->FUN_14134d4d0("Open", nMode, m_strBagKey, spItem->FUN_140527b10(), m_item->m_strName, strText);
@@ -372,7 +370,7 @@ int UISmartRecommendNotifyDialog::vfunc_28(const char* szMethod, const Scaleform
         if (m_item.get() != 0)
         {
             CString strValue = FUN_140513200("{0}", m_item->m_nId);
-            FUN_140d8ee90()->FUN_140a1f970(CString("smart_recommend_try"), strValue);
+            TSingleton<CBigDataLogSystem>::GetInstance()->SendLog(CString("smart_recommend_try"), strValue);
         }
         return 1;
     }
@@ -428,7 +426,7 @@ void UISmartRecommendNotifyDialog::FUN_14134dcc0()
                 if (m_item.get() != 0)
                 {
                     CString strValue = FUN_140513200("{0}", m_item->m_nId);
-                    FUN_140d8ee90()->FUN_140a1f970(CString("smart_recommend_open"), strValue);
+                    TSingleton<CBigDataLogSystem>::GetInstance()->SendLog(CString("smart_recommend_open"), strValue);
                 }
             }
         }
