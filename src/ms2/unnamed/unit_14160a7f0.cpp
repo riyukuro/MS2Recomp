@@ -199,7 +199,7 @@ void Unk_NpcBeam::Set(const efd::Point3& a, const efd::Point3& b, const char* ps
     m_a = a;
     m_b = b;
     float fUnused = 212.132f;
-    m_fLength = 0.7071f * (a - b).Length();
+    m_fLength = 150.0f / 212.132f * (a - b).Length();
     m_fWidth = 0.45f;
     m_strLabel = pszLabel;
 }
@@ -213,7 +213,7 @@ void Unk_NpcBeam::Set(const efd::Point3& a, const efd::Point3& b, float fWidth, 
     m_a = a;
     m_b = b;
     float fUnused = 212.132f;
-    m_fLength = 0.7071f * (a - b).Length() * fScale;
+    m_fLength = 150.0f / 212.132f * (a - b).Length() * fScale;
     m_fWidth = fWidth;
     m_strLabel = pszLabel;
 }
