@@ -1002,7 +1002,7 @@ void CInteractMeshObject::MakeNxBoxController()
         NxU32 nShapes = m_pActor->getNbShapes();
         NxShape* const* ppShapes = m_pActor->getShapes();
         for (NxU32 i = 0; i < nShapes; ++i)
-            ppShapes[i]->setFlag(NX_SF_VISUALIZATION, false);
+            ppShapes[i]->setGroup(0);   // exe: NxShape slot 2 [rax+0x10] with edx=0, not setFlag
         m_pActor->userData = m_spProp.FUN_140ae1920();
         m_pActor->setGlobalPosition(vSet);
     }
