@@ -2536,7 +2536,7 @@ __imp_CrashReporter_SetStrInfoW	142cce1b8	data
 ??0?$TSingleton@VCSoundEventMgr@@@@QEAA@XZ	141786300	func
 ??0Unk_SmPoint3@@QEAA@MMM@Z	14097f250	func
 ??0Unk_SmPoint3@@QEAA@AEBUVector3@@@Z	14027dcf0	func
-??1Unk_CMISPropPtr@@QEAA@XZ	14112d4a0	func
+??1Unk_CMISPropPtr@@QEAA@XZ	140ae16b0	func
 ?DAT_142f67fe8@@3IB	142f67fe8	data
 ?s_bInit@SoundPropertyMgr@@2_NA	143aea270	data
 ?GetPerformanceCounter@efd@@YAIXZ	1420b1a40	func
