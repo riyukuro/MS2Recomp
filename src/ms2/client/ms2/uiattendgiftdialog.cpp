@@ -37,6 +37,9 @@
 #include "ms2/placeholder/gfxexception.h"
 #include "ms2/ms2format.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cmycharacter.h"
+#include "ms2/placeholder/ascript.h"
+#include "ms2/client/ms2/worldservice.h"
 
 static CString s_marketSort[]={"None","Buy","PriceLow","PriceHigh","Create","ChartOrder","BuyTotal","EnumEnd"};
 static CString s_shopSort[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
@@ -64,8 +67,7 @@ class Unk_14070f480 { public:
     virtual int vfunc_3();
 };
 class CInPacket { public: void* m_00; void* m_stream; };
-class Unk_140931510 { public: void FUN_140d9f1c0(CInPacket&); bool FUN_140d9f530(int); };
-Unk_140931510* FUN_140931510();
+CMyCharacter* FUN_140931510();
 class CItem {
 public:
     CItem();
@@ -182,8 +184,7 @@ CStringW FUN_1408f71a0(CStringW,const CStringW&,const CStringW&);
 CStringW FUN_1405c2690(CStringW,const CStringW&);
 class Unk_1401a9d70 { public: CStringW FUN_141811980(int,int); };
 Unk_1401a9d70* FUN_1401a9d70();
-class Unk_AttendAvatarMgr { public: void* FUN_141bd0cc0(); };
-Unk_AttendAvatarMgr* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 class Unk_AttendCtl { public: bool FUN_14116dcb0(int,int,int); };
 Unk_AttendCtl* FUN_14025e7c0();
 class Unk_AttendCursor { public: int FUN_140d40670(); void FUN_140d40120(MS2Ptr<CItem>,int); };
@@ -207,7 +208,6 @@ Unk_1409fb930* FUN_1409fb930();
 CString FUN_14016a600(const wchar_t*,int);
 CStringW FUN_14016a730(const char*,int);
 CString FUN_141029ca0(const CString&);
-class Unk_140acd130 { public: Scaleform::GFx::Value FUN_140acd130(const char*,CStringW); };
 
 // @0x14102f840
 void FUN_14102f840(ATL::CAtlArray<Unk_14102fe10<Unk_140ce3510> >& dst,const ATL::CAtlArray<Unk_14102fe10<Unk_140ce3510> >& src) { dst.Copy(src); }
@@ -689,7 +689,7 @@ MS2_REPLACE_METHOD(0x141031090, UIBannerAdvertisingDialog, OnLoadInit, 138, 0x44
 void UIBannerAdvertisingDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    if(m_image.GetLength()>0) reinterpret_cast<Unk_140acd130*>(m_30.operator->())->FUN_140acd130("setImage",FUN_14016a730(m_image,0));
+    if(m_image.GetLength()>0) reinterpret_cast<AScript*>(m_30.operator->())->Invoke("setImage",FUN_14016a730(m_image,0));
 }
 MS2_REPLACE_METHOD(0x141031120, UIBannerAdvertisingDialog, OnLoadComplete, 183, 0x19B4D646);
 // @0x1410311e0
