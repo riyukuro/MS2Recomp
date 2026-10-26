@@ -61,6 +61,12 @@ static CString s_sortNames6[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh",
 #include <egf/Entity.h>
 #include <egf/FlatModel.h>
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/partymanager.h"
+#include "ms2/client/ms2/guildmanager.h"
+#include "ms2/client/ms2/groupchatmanager.h"
+#include "ms2/placeholder/uirecallscrollnotifydialog.h"
+#include "ms2/client/ms2/clubcli.h"
+#include "ms2/placeholder/uitalkmanager.h"
 
 // ---- unit-local views of exe types (unrecovered helpers) ----
 
@@ -121,28 +127,22 @@ int FUN_1422b9e00(Unk_GsSceneId* p);
 void FUN_1422b9fd0(Unk_GsSceneId* p, int nScene);
 extern int DAT_143ab0248;
 extern int DAT_143ab2914;
-CStringW FUN_141850100(int a, int b);
+CStringW TakeScreenshotJpg(int a, int b);
 CStringW GetStringCommon(int nId);
 CStringW GetStringCommonByKey(const CStringW& str);
 void FUN_1412751b0(const CStringW& str, int nFlags);
 void FUN_141b91b20(bool b);
 void FUN_141a60d40(int n);
-class Unk_GsA { public: void FUN_14162a480(); };
-class Unk_GsB { public: void FUN_1413b5f90(); };
-class Unk_GsC { public: void FUN_14137e190(); };
 class Unk_GsD { public: void FUN_140b2ab00(); };
-class Unk_GsE { public: void FUN_140b14c50(); };
-class Unk_GsF { public: void FUN_141b20af0(); int FUN_141b20ac0(); void FUN_141b1feb0(); };
-class Unk_GsDlg1 { public: void FUN_14129cb20(); };
 class Unk_GsDlg2 { public: void FUN_140ef6920(); };
 class Unk_GsDlg3 { public: void FUN_140be18a0(); void FUN_140be1910(int n); };
-Unk_GsA* FUN_1409670d0();
-Unk_GsB* FUN_1403ed290();
-Unk_GsC* FUN_141484720();
+CPartyManager* FUN_1409670d0();
+CGuildManager* FUN_1403ed290();
+CGroupChatManager* FUN_141484720();
 Unk_GsD* FUN_140b2e980();
-Unk_GsE* FUN_140e0d900();
-Unk_GsF* FUN_140967100();
-Unk_GsDlg1* FUN_140bc1870(int nUiId);
+CClubClientManager* FUN_140e0d900();
+UITalkManager* FUN_140967100();
+UIRecallScrollNotifyDialog* FUN_140bc1870(int nUiId);
 Unk_GsDlg2* FUN_141742590(int nUiId);
 Unk_GsDlg3* FUN_141815ed0();
 
@@ -226,7 +226,7 @@ void UISceneGame::vfunc_49(int n)
     FUN_141a60d40(0);
     FUN_1403ed2b0()->FUN_141add0b0(0x4e55);
     FUN_1403ed2b0()->FUN_141add0b0(0x4e41);
-    Unk_GsDlg1* pDlg1 = FUN_140bc1870(0x4edd);
+    UIRecallScrollNotifyDialog* pDlg1 = FUN_140bc1870(0x4edd);
     if (pDlg1 != 0) pDlg1->FUN_14129cb20();
     Unk_GsDlg2* pDlg2 = FUN_141742590(0x4efd);
     if (pDlg2 != 0) pDlg2->FUN_140ef6920();
@@ -251,7 +251,7 @@ int UISceneGame::vfunc_13()
     if (UISwfEntity::vfunc_13()) return 1;
     if (FUN_14025e7c0()->FUN_14116d950(0x1d, 0, 0) == 0) {
         if (FUN_14025e7c0()->FUN_14116dd30(0x493ef, 0, 0)) {
-            FUN_141850100(0, 0);
+            TakeScreenshotJpg(0, 0);
             return 1;
         }
     } else {
@@ -284,7 +284,7 @@ int UISceneGame::vfunc_14()
 {
     if (UISwfEntity::vfunc_14()) return 1;
     if (FUN_14025e7c0()->FUN_14116dd30(0x493ef, 0, 0) != 0) {
-        FUN_141850100(0, 0);
+        TakeScreenshotJpg(0, 0);
         return 1;
     }
     return 0;
@@ -306,7 +306,7 @@ void UISceneGame::vfunc_56()
     UISceneEntity::vfunc_56();
     if (FUN_1422b9e00(FUN_1408e57f0()) != 0x620001d) {
         FUN_1422e7a40(0x620001d);
-        FUN_140967100()->FUN_141b1feb0();
+        FUN_140967100()->SendNpcTalkMode0();
     }
     FUN_1403ed2b0()->FUN_141add0b0(0x4e55);
     FUN_1403ed2b0()->FUN_141add0b0(0x4e41);
@@ -321,6 +321,15 @@ MS2_REPLACE_METHOD(0x141ac78f0, UISceneGame, vfunc_56, 108, 0xF5771772);
 #include "ms2/commonfiles/rideonaction.h"
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/placeholder/commandchat.h"
+#include "ms2/client/ms2/uiminimapentity.h"
+#include "ms2/client/ms2/questmanager_2.h"
+#include "ms2/placeholder/cguidemanager.h"
+#include "ms2/client/ms2/itempreview.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/placeholder/cscripttable.h"
+#include "ms2/commonfiles/commonstringtable.h"
+#include "ms2/client/ms2/uimassiveevent.h"
 
 class Unk_GsEnt { public: Vector3 FUN_14169d2f0(); };
 class Unk_GsObjRef { public: void* FUN_140c9b7d0(); Unk_GsEnt* FUN_140965960(); void FUN_140964a70(); void* m_0; void* m_8; };
@@ -987,7 +996,6 @@ MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // UISceneGamePlay
 
-class Unk_GsMouseEff { public: void FUN_1411a8880(int n); };
 class Unk_GsInvis { public: char FUN_140d9f5d0(int n); };
 class Unk_GsTexReload
 {
@@ -999,20 +1007,12 @@ public:
 };
 class Unk_GsDlgA { public: void FUN_1419246f0(); };
 class Unk_GsStrTbl { public: void FUN_141811960(); };
-class Unk_GsSnd { public: void FUN_140259930(); };
 class Unk_GsPal { public: void FUN_141815db0(); };
-class Unk_GsRel { public: void FUN_141021140(); };
 class Unk_GsDbgLog { public: char FUN_141168310(); void FUN_141168270(); void FUN_1411682d0(); void FUN_1411683e0(const char* szFormat, int n); };
 class Unk_GsHk { public: void FUN_14142b300(int nId); };
-class Unk_GsHk2 { public: int FUN_14138c900(int n); };
 class Unk_GsDlgB { public: void FUN_14193b750(); void FUN_14193bf70(); void FUN_14193bfd0(); void FUN_14193bfa0(); };
-class Unk_GsDlgC { public: void FUN_141a39e40(); };
-class Unk_GsUnit { public: void FUN_1419f5ab0(); };
-class Unk_GsHud { public: void FUN_140d406d0(int n); };
 class Unk_GsHudInfo { public: char m_pad_00[8]; float m_8; };
 class Unk_GsFlags2 { public: char FUN_14036d570(int n); };
-class Unk_GsFx { public: void FUN_1416ca670(); };
-class Unk_GsNotices { public: void FUN_140da4e40(CStringW strName, Delegate<void(NotifyObject*)> cb); void FUN_140da4fe0(MS2Ptr<NotifyObject> spNotify); };
 class Unk_GsMapPtr
 {
 public:
@@ -1028,7 +1028,7 @@ void FUN_141acc5a0(float fValue);
 int FUN_141acc5f0(int nSceneId);
 int FUN_141acc6c0(int nSceneId);
 class Unk_GsCommon;
-Unk_GsHud* FUN_1409bb9e0();
+ItemPreviewMgr* FUN_1409bb9e0();
 void* FUN_1409a8b10();
 Unk_GsHudInfo* FUN_140e09150(void* p);
 void FUN_141b70290();
@@ -1037,31 +1037,31 @@ char* FUN_140a58500(void* p);
 void FUN_14125f670(char* p, char a, int b);
 char* FUN_140c58ac0(void* p);
 void FUN_14125bd20(char* p, char a);
-Unk_GsUnit* FUN_140e01890(int nId);
+UIMassiveEvent* FUN_140e01890(int nId);
 void FUN_1408e48f0(void* p);
 extern char DAT_143ab2ee0;
-Unk_GsFx* FUN_140764020();
-Unk_GsNotices* FUN_140939a10();
+CQuestManager* FUN_140764020();
+NotifySystem* FUN_140939a10();
 Unk_GsMapPtr FUN_140a55460(unsigned nFieldId);
 void FUN_141275260(int nId, int a, int b);
 void FUN_141276180(const CString& a, const CString& b);
 extern CString DAT_143af6008;
 int FUN_1418fcb70();
-Unk_GsMouseEff* FUN_1403ed280();
+CEffectService* FUN_1403ed280();
 Unk_GsInvis* FUN_140931510();
 Unk_GsTexReload* FUN_140a0afd0();
 Unk_GsDlgA* FUN_14167a900(int nId);
 Unk_GsStrTbl* FUN_1401a9d70();
-Unk_GsSnd* FUN_14025e7d0();
+CommonString* FUN_14025e7d0();
 Unk_GsPal* FUN_141371b20();
-Unk_GsRel* FUN_141371b30();
+CScriptTable* FUN_141371b30();
 void FUN_140c9cb10();
 void FUN_1417af7a0();
 void FUN_1409c51f0();
 void FUN_141a0df10();
 void FUN_140710590(COutPacket& packet);
 void FUN_141276f80(const struct Unk_CommandChat& cmd);
-void FUN_1418508e0(int n);
+void TakeScreenshotPng(int n);
 void* FUN_140994450();
 void FUN_1427d5c10(void* p, unsigned char b);
 void* FUN_1414a56c0();
@@ -1070,8 +1070,8 @@ Unk_GsDbgLog* FUN_141168200();
 void* FUN_14127bf80(Unk_GsAppG* p);
 void FUN_1414ea8b0(void* p);
 Unk_GsHk* FUN_1409331f0();
-Unk_GsHk2* FUN_1409331e0();
-Unk_GsDlgC* FUN_140c9b540(int nId);
+CGuideManager* FUN_1409331e0();
+UIMinimapDialog* FUN_140c9b540(int nId);
 Unk_GsDlgB* FUN_140938b90(int nId);
 Unk_GsFlags2* FUN_140166410();
 int FUN_140ae1c10();
@@ -1094,7 +1094,7 @@ UISceneGamePlay::UISceneGamePlay()
 {
     m_6c = 0x620001d;
     m_c8 = 0;
-    FUN_140939a10()->FUN_140da4e40(L"NotifyChangeEnableFeature", Delegate<void(NotifyObject*)>(this, &UISceneGamePlay::FUN_141acc510));
+    FUN_140939a10()->RegisterNotify(L"NotifyChangeEnableFeature", Delegate<void(NotifyObject*)>(this, &UISceneGamePlay::FUN_141acc510));
 }
 
 // @0x141ac9e80
@@ -1221,7 +1221,7 @@ MS2_REPLACE_METHOD(0x141aca4e0, UISceneGamePlay, vfunc_55, 24, 0x6A6ADC0B);
 void UISceneGamePlay::vfunc_56()
 {
     UISceneEntity::vfunc_56();
-    Unk_GsUnit* pUnit = FUN_140e01890(0x4e4c);
+    UIMassiveEvent* pUnit = FUN_140e01890(0x4e4c);
     if (pUnit != 0) pUnit->FUN_1419f5ab0();
     FUN_1403ed2b0()->FUN_141ada610(m_6c);
     FUN_1403ed2b0()->FUN_141adad20(m_6c);
@@ -1233,7 +1233,7 @@ MS2_REPLACE_METHOD(0x141aca500, UISceneGamePlay, vfunc_56, 99, 0xDBBEB784);
 void UISceneGamePlay::vfunc_58()
 {
     FUN_140764020()->FUN_1416ca670();
-    FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyFadeInComplete));
+    FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyFadeInComplete));
     Unk_GsMapPtr spMap = FUN_140a55460(FUN_1403ed2d0()->FUN_141bd3060());
     if (spMap.FUN_1409657a0() != 0 && spMap.FUN_140885340()->FUN_1403754f0() != 0) {
         if (m_c8 != 0 && spMap.FUN_140885340()->GetPkMode() == 0) {
@@ -1278,7 +1278,7 @@ int UISceneGamePlay::FUN_141aca870()
         }
         if (FUN_14025e7c0()->FUN_14116d950(0x2a, 1, 0) != 0) {
             if (FUN_14025e7c0()->FUN_14116d9c0(0x1e, 1, 0) != 0) {
-                FUN_141371b30()->FUN_141021140();
+                FUN_141371b30()->Reload();
                 FUN_1412751b0(CStringW(L"Script reloaded"), 0x14);
                 return 1;
             }
@@ -1396,7 +1396,7 @@ int UISceneGamePlay::FUN_141aca870()
                 FUN_140c9cb10();
                 FUN_1417af7a0();
                 if (FUN_140281980()->FUN_1401d1320() != 0) FUN_140281980()->FUN_140556ea0();
-                FUN_14025e7d0()->FUN_140259930();
+                FUN_14025e7d0()->Reload();
                 FUN_1409c51f0();
                 FUN_141a0df10();
                 FUN_141371b20()->FUN_141815db0();
@@ -1421,7 +1421,7 @@ int UISceneGamePlay::FUN_141aca870()
                 return 1;
             }
             if (FUN_14025e7c0()->FUN_14116d9c0(0x44, 1, 0) != 0) {
-                FUN_1418508e0(0);
+                TakeScreenshotPng(0);
                 FUN_1412751b0(CStringW(L"SaveScreenShotToPNG"), 0x14);
                 return 1;
             }
@@ -1509,7 +1509,7 @@ int UISceneGamePlay::FUN_141aca870()
         nResult = 1;
     }
     else if (FUN_14025e7c0()->FUN_14116dd30(0x493ed, 0, 0)) {
-        if (FUN_1409331e0()->FUN_14138c900(0x13) == 0) {
+        if (FUN_1409331e0()->IsRestricted(0x13) == 0) {
             Unk_GsPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
             if (pPlayer != 0) {
                 if (pPlayer->FUN_1416595d0() == 0) pPlayer->FUN_14152feb0(1, 0);
@@ -1525,7 +1525,7 @@ int UISceneGamePlay::FUN_141aca870()
     else if (FUN_14025e7c0()->FUN_14116dd30(0x493f6, 0, 0)) {
         if (FUN_1409478c0()->FUN_140a18070() != 0) {
             FUN_1409478c0()->FUN_140aefa70();
-            Unk_GsDlgC* pDlg = FUN_140c9b540(0x4e29);
+            UIMinimapDialog* pDlg = FUN_140c9b540(0x4e29);
             if (pDlg != 0) pDlg->FUN_141a39e40();
         }
         nResult = 1;
@@ -1680,7 +1680,7 @@ void UISceneGamePlay::FUN_141acc510(NotifyObject* pNotify)
     if (pChange == 0) return;
     FUN_1401d3200()->FUN_1402b7200();
     FUN_1401a9d70()->FUN_141811960();
-    FUN_14025e7d0()->FUN_140259930();
+    FUN_14025e7d0()->Reload();
     FUN_1409c51f0();
     FUN_141371b20()->FUN_141815db0();
 }
