@@ -31,7 +31,7 @@ float FUN_140a38cd0(float fValue);                               // efd::Abs
 float FUN_140a0fda0(float fA, float fB);                         // the larger of the two floats
 void FUN_1409f72e0(Unk_MvMatrix3& kMatrix);                      // efd::Matrix3::Matrix3()
 
-static const float k_fPiOver180 = 3.1415927f / 180.0f;
+static const float k_fPi = 3.1415927f;   // the exe multiplies by pi, then divides by 180
 
 // ---- MinimapViewport ----------------------------------------------------------------------------------------------------
 // @0x1414856d0
@@ -201,7 +201,7 @@ void MinimapViewport::FUN_141486a20(Unk_GVec3 kRot, Unk_GVec3& kAxisX, Unk_GVec3
     if (FUN_140a38cd0(kRot.z) >= 1e-05f)
     {
         FUN_1409f72e0(kMatrix);
-        kMatrix.FUN_142083d40(kRot.x * k_fPiOver180, kRot.y * k_fPiOver180, kRot.z * k_fPiOver180);
+        kMatrix.FUN_142083d40(kRot.x * k_fPi / 180.0f, kRot.y * k_fPi / 180.0f, kRot.z * k_fPi / 180.0f);
         kMatrix.FUN_140a01190(0, kAxisY);
         kMatrix.FUN_140a01190(1, kAxisZ);
         kMatrix.FUN_140a01190(2, kAxisX);
@@ -216,7 +216,7 @@ void MinimapViewport::FUN_141486a20(Unk_GVec3 kRot, Unk_GVec3& kAxisX, Unk_GVec3
     else
     {
         FUN_1409f72e0(kMatrix);
-        kMatrix.FUN_142083d40(-kRot.x * k_fPiOver180, -kRot.y * k_fPiOver180, kRot.z * k_fPiOver180);
+        kMatrix.FUN_142083d40(-kRot.x * k_fPi / 180.0f, -kRot.y * k_fPi / 180.0f, kRot.z * k_fPi / 180.0f);
         kMatrix.FUN_140a01190(0, kAxisY);
         kMatrix.FUN_140a01190(1, kAxisZ);
         kMatrix.FUN_140a01190(2, kAxisX);
