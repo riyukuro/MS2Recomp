@@ -77,7 +77,7 @@
 // MS2-PIN: ?allocate@?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@2@_K@Z 0x1413a0490
 // MS2-PIN: ?_Xlength@?$vector@V?$MS2Ptr@VCGuideEntity@@@@V?$allocator@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@CAXXZ 0x1413a03c0
 // MS2-PIN: ?_Xlength@?$vector@U?$pair@W4Occurrence@CGuideManager@@H@std@@V?$allocator@U?$pair@W4Occurrence@CGuideManager@@H@std@@@2@@std@@CAXXZ 0x1413a03e0
-// MS2-PIN: ?clear@?$vector@V?$MS2Ptr@VCGuideEntity@@@@V?$allocator@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@QEAAXXZ 0x1413a0dc0
+// MS2-PIN: ?clear@?$vector@U?$pair@W4Occurrence@CGuideManager@@H@std@@V?$allocator@U?$pair@W4Occurrence@CGuideManager@@H@std@@@2@@std@@QEAAXXZ 0x1413a0dc0 ; la1: called by ProcessOccurrences on m_vecSub, calls the trivial _Destroy 14139c600 (was the MS2Ptr<CGuideEntity> clear)
 // MS2-PIN: ?empty@?$vector@U?$pair@W4Occurrence@CGuideManager@@H@std@@V?$allocator@U?$pair@W4Occurrence@CGuideManager@@H@std@@@2@@std@@QEBA_NXZ 0x1413a1180
 // MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCGuideEntity@@@@V?$allocator@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@@std@@QEAAAEAPEAV?$MS2Ptr@VCGuideEntity@@@@XZ 0x1413a26b0
 // MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCGuideEntity@@@@V?$allocator@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@@std@@QEBAAEBQEAV?$MS2Ptr@VCGuideEntity@@@@XZ 0x1413a26d0
