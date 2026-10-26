@@ -18,10 +18,11 @@
 #include "ms2/placeholder/userugcmapinfo.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- unit-local views of exe types ----
 
-CUIService* FUN_1403ed2b0();
 class Unk_RsWorld { public: MyPC* FUN_141bd0cc0(); };               // the local player
 Unk_RsWorld* FUN_1403ed2d0();
 
@@ -68,10 +69,9 @@ Unk_RsGrid* FUN_1409670e0();
 __int64 FUN_1410c3180(Unk_RsGrid* p);                               // the account id of the house owner? (compared to the own account)
 extern __int64 DAT_143ab2820;                                       // my account id
 
-class Unk_RsStrings { public: CStringW FUN_141811980(int nTable, int nIndex); };   // string table by (table, id)
-Unk_RsStrings* FUN_1401a9d70();
+   // string table by (table, id)
 
-__int64 FUN_140869440();                                            // the server time
+__int64 GetServerTime();                                            // the server time
 CStringW FUN_140979570(int nMapId);                                 // the address of a map
 CStringW FUN_14086d060(int nId, const __int64& n);                  // string table text with one number
 CStringW FUN_14052bd00(int nId, const CStringW& arg);               // string table text with one argument
@@ -122,7 +122,7 @@ void UIRealEstateSell::vfunc_67()
 {
     vfunc_47(1);
     if (m_178 != 0)
-        FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)0x4e76);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e76);
     UIDialog::vfunc_67();
 }
 
@@ -198,7 +198,7 @@ void UIRealEstateSell::FUN_141ab6230()
     obj.FUN_1407cbb20("houseName", strName);
     CStringW strAddress = FUN_140979570(target.FUN_14050dee0()->m_20);
     obj.FUN_1407cbb20("address", strAddress);
-    CMsTime tNow(FUN_140869440());
+    CMsTime tNow(GetServerTime());
     CMsTime tEnd(pPC->FUN_141523c50()->m_n30);
     ATL::CTimeSpan span = tEnd - tNow;
     if (span.GetDays() >= 0)
@@ -226,7 +226,7 @@ void UIRealEstateSell::FUN_141ab6230()
     else
     {
         CStringW strPrice;
-        strPrice.Format(L"%s x%d", (const wchar_t*)FUN_1401a9d70()->FUN_141811980(1, nItem), nPrice);
+        strPrice.Format(L"%s x%d", (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItem), nPrice);
         obj.FUN_1407cbb20("price", strPrice);
     }
     if (FUN_14053f8c0(nItem2))
@@ -240,7 +240,7 @@ void UIRealEstateSell::FUN_141ab6230()
     else
     {
         CStringW strExtend;
-        strExtend.Format(L"%s x%d", (const wchar_t*)FUN_1401a9d70()->FUN_141811980(1, nItem2), nPrice2);
+        strExtend.Format(L"%s x%d", (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItem2), nPrice2);
         obj.FUN_1407cbb20("extend", strExtend);
     }
     m_30->Invoke("initData", obj);
