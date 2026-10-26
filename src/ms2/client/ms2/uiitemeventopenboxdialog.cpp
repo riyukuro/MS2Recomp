@@ -42,6 +42,8 @@
 #include "ms2/commonfiles/timeutil.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/creservedwordtable.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -61,11 +63,7 @@ class Unk_140acd6e0 : public ASDisplayObject { public:
 class Unk_EobSlot : public ASUIComponent { public:
     void FUN_1407cba60(const char*, CString);
 };
-class Unk_1403ed2d0 { public:                                               // the world service
-    int FUN_141bd3060();                                                    // the field id of the player
-    void* FUN_141bd0cc0();                                                  // the player's actor
-};
-Unk_1403ed2d0* FUN_1403ed2d0();
+WorldService* FUN_1403ed2d0();
 CGameEventValueManager* FUN_140302b00();                                    // TSingleton<CGameEventValueManager>::GetInstance
 class Unk_AttendTable { public:                                             // the per-user event value table (global 0x143ab2fc0)
     int FUN_1409617d0(int, unsigned, const int&);
@@ -74,18 +72,14 @@ extern Unk_AttendTable g_attendTable;
 class Unk_TextFilter { public: CStringW FUN_14087ede0(const CStringW&); };   // string-table translation
 class Unk_EobTextMgr { public: Unk_TextFilter* FUN_140be95b0(); };
 Unk_EobTextMgr* FUN_140a87680();
-class Unk_EobNameFilter { public: void FUN_1416fb300(CStringW&); };         // the name / profanity filter
-Unk_EobNameFilter* FUN_1403b4750();
+         // the name / profanity filter
+CReservedWordTable* FUN_1403b4750();
 class Unk_EobPackets { public:                                              // the packet handler table (TSingleton)
     void FUN_140da5180(int, Delegate<void(CInPacket&)>);
     void FUN_140da51e0(int, Delegate<void(CInPacket&)>);
 };
 Unk_EobPackets* FUN_140bccd50();
-class Unk_EobNotices { public:                                              // the notify table (TSingleton)
-    void FUN_140da4e40(CStringW, Delegate<void(NotifyObject*)>);
-    void FUN_140da4eb0(CStringW, Delegate<void(NotifyObject*)>);
-};
-Unk_EobNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 void FUN_1412751f0(const CStringW& strText, int nType, int nFlags);         // notice message box
 void FUN_141415600(const CString& strName);                                 // drop the item shown under a dialog name
@@ -98,7 +92,7 @@ UIItemEventOpenBoxDialog::UIItemEventOpenBoxDialog()
 {
     m_178 = 0;
     m_80 = 0;
-    FUN_140939a10()->FUN_140da4e40(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIItemEventOpenBoxDialog::FUN_140e48020));
+    FUN_140939a10()->RegisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIItemEventOpenBoxDialog::FUN_140e48020));
     FUN_140bccd50()->FUN_140da5180(0xf7, Delegate<void(CInPacket&)>(this, &UIItemEventOpenBoxDialog::FUN_140e47f10));
 }
 
@@ -106,7 +100,7 @@ UIItemEventOpenBoxDialog::UIItemEventOpenBoxDialog()
 UIItemEventOpenBoxDialog::~UIItemEventOpenBoxDialog()
 {
     FUN_140bccd50()->FUN_140da51e0(0xf7, Delegate<void(CInPacket&)>(this, &UIItemEventOpenBoxDialog::FUN_140e47f10));
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIItemEventOpenBoxDialog::FUN_140e48020));
+    FUN_140939a10()->UnregisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIItemEventOpenBoxDialog::FUN_140e48020));
 }
 
 // @0x140e47a50
