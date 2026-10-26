@@ -592,7 +592,12 @@ void* FUN_1415f39f0(void* p) { return *static_cast<void**>(p); }
 // MS2-PIN: ?FUN_1415f39f0@@YAPEAXPEAX@Z 0x1415f39f0
 
 // @0x1415f9110
-void FUN_1415f9110(void*) { }
+void* FUN_1415f9110(void* object, unsigned int flags)
+{
+    static_cast<CNMVirtualUserInfo*>(object)->~CNMVirtualUserInfo();
+    if (flags & 1) ::operator delete(object);
+    return object;
+}
 // MS2-FUNCTIONAL: the recovered target is the virtual slot's scalar deleting destructor entry.
 // MS2-PIN: ?vfunc_0@CNMVirtualUserInfo@@UEAAXXZ 0x1415f9110
 
