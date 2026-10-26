@@ -334,7 +334,8 @@ void FUN_14056c300(void* p);
 __declspec(noreturn) void FUN_140159b70(long hr);                   // ATL throw
 void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member
 // ---- housing / furniture / scroll tables ----
-class Unk_MHouseLevel : public CPtred { public: int m_n1c; };
+class Unk_MHouseLevel : public CPtred { public: int m_n18; int m_n1c; };
+MS2_CHECK_OFFSET(Unk_MHouseLevel, m_n1c, 0x1c);   // exe 0x140eb2c88: [rcx + 0x1c]
 class Unk_MHousing
 {
 public:
