@@ -138,7 +138,7 @@ void CFreeCameraMode::vfunc_8(double fTime)
             Vector3 ptInput = ptMove;
             float fRate = 15.0f;
             float fDelta = (float)fTime;
-            float fStep = FUN_140a17940(fDelta, 0.0f, 1.0f / 15.0f);
+            float fStep = FUN_140a17940(fDelta, 0.0f, 1.0f / fRate);
             float fAbsZ = FUN_140a38cd0(ptInput.z);
             float fMaxYZ = FUN_140a0fda0(FUN_140a38cd0(ptInput.y), fAbsZ);
             float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x), fMaxYZ);
