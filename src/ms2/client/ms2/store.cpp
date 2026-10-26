@@ -15,6 +15,9 @@
 #include "ms2/client/ms2/triggeractioncli.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cpetmanager.h"
+#include "ms2/client/ms2/inventory.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
 
 // ---- external surfaces (names invented; every callee is bound by its exe address) ---------------------------------
 class UIStoreDialog : public UIDialog {};                        // RTTI name; only the dynamic_cast target is used
@@ -27,11 +30,6 @@ struct Unk_StoreUIMgr
 };
 Unk_StoreUIMgr* FUN_1403ed2b0();
 void FUN_141b109a0(Unk_SSGDlg4e47* pDlg);
-struct Unk_StoreInv
-{
-    MS2Ptr<CItem> FUN_140a5d680(__int64 nId);
-    int FUN_140a661e0(CItem* pItem);
-};
 struct Unk_StoreEvents                                           // the item event hub (FUN_140a6a840), slots 8..12
 {
     virtual void vfunc_0() = 0; virtual void vfunc_1() = 0; virtual void vfunc_2() = 0; virtual void vfunc_3() = 0;
@@ -53,8 +51,7 @@ MS2_CHECK_SIZE(Unk_AuConfig, 0x4608);
 Unk_AuConfig* FUN_1401d3200();
 int* FUN_1402056b0(Unk_GuildConstInt* p);
 int FUN_1408b6200(int nType);
-struct Unk_StoreStatusMgr { void FUN_141b0ce20(int, int); };
-Unk_StoreStatusMgr* FUN_140aa6d40();
+UIStatusEventDispatcher* FUN_140aa6d40();
 unsigned char FUN_140361ab0(void* pMap, int nKey, int* pValue);
 struct Unk_SsMap;
 void FUN_14016a050(Unk_SsMap* pMap, int nKey, int nValue);
@@ -67,8 +64,7 @@ void FUN_1401fba60(unsigned char* pReq, COutputStream& rStream);
 struct Unk_KhCamera;
 Unk_KhCamera* FUN_140c8dac0();
 __int64 FUN_140c8dab0(Unk_KhCamera* p);
-struct Unk_SSG535320 { __int64 FUN_140c8b2e0(); };
-Unk_SSG535320* FUN_140535320();
+CPetManager* FUN_140535320();
 CStringW GetStringCommonByKey(const CStringW& rKey);
 void FUN_1412751f0(const CStringW& rText, int nA, int nB);
 void FUN_141275260(int nId, int nA, int nB);
@@ -90,7 +86,7 @@ extern __int64 DAT_143ab2828;
 extern int DAT_143ab2864;
 extern __int64 DAT_143ab28f8;
 // /Ob0: the exe reads these globals inline, so they are macros
-#define Unk_Inventory() (reinterpret_cast<Unk_StoreInv*>(&DAT_143ab2a90))
+#define Unk_Inventory() (reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90))
 #define Unk_StoreInstance() (reinterpret_cast<CStore*>(&DAT_143ab2d80))
 
 // ---- CStore -----------------------------------------------------------------------------------------------------
@@ -586,7 +582,7 @@ void FUN_140de2dc0(void*, __int64 nId, int nSlot, int nCount, MS2Ptr<CItemData> 
         }
     }
     if (((CItem*)pItem)->FUN_140525640() != 0) {
-        if (FUN_140535320()->FUN_140c8b2e0() == nId) {
+        if (FUN_140535320()->GetSummonUid() == nId) {
             FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_err_binditem_by_summon_pet")), 1, 1);
             return;
         }
