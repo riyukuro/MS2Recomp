@@ -109,7 +109,7 @@ void StateGlide::vfunc_4(StateData* pData)
     StateMoveSkill::vfunc_4(pData);
     if (m_spRow.IsNull())
     {
-        m_pOwner->vfunc_59(1, 0, 0, 1);
+        m_pOwner->vfunc_59(1, 0, 0, 0);
         return;
     }
     m_fTime = 0;
