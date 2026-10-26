@@ -23,9 +23,7 @@ public:
         : NiMaterialSwapProcessor(pkMaterial, uiMaterialExtraData)
     {
     }
-    virtual ~MS2VelocityMaterialSwapProcessor()     // 0x1416af0e0, ??_G 0x1416b01b0
-    {
-    }
+    virtual ~MS2VelocityMaterialSwapProcessor() = default;  // 0x1416af0e0 (no vptr store), ??_G 0x1416b01b0
     virtual void PreRenderProcessList(const NiVisibleArray* pkInput, NiVisibleArray& kOutput, void* pvExtraData);   // 0x1415154d0
 
     void FUN_14135e060(int nMode);      // m_nMode setter (ICF-folded int setter)
