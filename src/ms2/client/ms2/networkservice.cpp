@@ -1202,9 +1202,9 @@ inline void FUN_141540130(ATL::CRBMap<unsigned,unsigned>& target,const ATL::CRBM
 }
 // @0x1415401b0
 inline Unk_NetworkLoadingPtr FUN_1415401b0(const efd::SmartPointer<CSceneStateBase>& source) {
-    void* result=0;
+    const void* result=0;  // the const overload (slot 4); slot 5 is the void** one
     if(source!=0) {
-        if(source->TypeCast(0x6200042,&result)) return Unk_NetworkLoadingPtr(static_cast<CSceneStateBase*>(result));
+        if(source->TypeCast(0x6200042,&result)) return Unk_NetworkLoadingPtr(static_cast<CSceneStateBase*>(const_cast<void*>(result)));
     }
     return Unk_NetworkLoadingPtr(0);
 }
