@@ -310,3 +310,4 @@ void Unk_CMISDriveTail10()
     { ATL::CAtlArray<Unk_CMISElem388*> a; ATL::CAtlArray<Unk_CMISElem3a8*> b; ATL::CAtlArray<Unk_CMISElem458*> c; }
 }
 // MS2-PIN: ??$?0V?$tuple@AEBW4Unk_CMISKindB@@@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBW4Unk_CMISKindB@@H@std@@QEAA@AEAV?$tuple@AEBW4Unk_CMISKindB@@@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1410db2e0 ; sfr36: exe const& KindB/int pair ctor 0x1410d9a90 calls it
+// MS2-PIN: ??$?0AEBH$$Z$$V@?$pair@$$CBHV?$vector@V?$SmartPointer@VEntity@egf@@@efd@@@efd@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBH@1@V?$tuple@$$V@1@@Z 0x1410d8a80 ; la1: deep-matches 1410d8a80 (callers' target), not 1410d9850
