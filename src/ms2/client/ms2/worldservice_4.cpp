@@ -513,3 +513,8 @@ void FUN_141bf6cb0(Unk_WsP16* self, Unk_WsD_FieldObj* p)
 }
 
 // MS2-PIN: ??1ActorRemovedMessage@egmAnimation@@UEAA@XZ 0x141bf5fb0 ; stores ??_7ActorRemovedMessage (0x142ffeb08); ~ActorAddedMessage is its look-alike
+// MS2-PIN: ??1CNode@?$CAtlMap@_KV?$MS2Ptr@VCBoxCollision@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBoxCollision@@@@@3@@ATL@@QEAA@XZ 0x141bf61c0 ; la1: exe body calls this CPair dtor 141bf6540 (was 141bf6400)
+// MS2-PIN: ??1CNode@?$CAtlMap@HV?$MS2Ptr@VCProxyGameObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCProxyGameObject@@@@@3@@ATL@@QEAA@XZ 0x141bf6140 ; la1: exe body calls this CPair dtor 141bf64c0
+// MS2-PIN: ??1CNode@?$CAtlMap@HV?$MS2Ptr@VCRegionSkillObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCRegionSkillObject@@@@@3@@ATL@@QEAA@XZ 0x141bf6160 ; la1: exe body calls this CPair dtor 141bf64e0
+// MS2-PIN: ??1CNode@?$CAtlMap@_JV?$MS2Ptr@VUnk_WsB_Vibrator@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsB_Vibrator@@@@@3@@ATL@@QEAA@XZ 0x141bf6200 ; la1: exe body calls this CPair dtor 141bf6580
+// MS2-PIN: ??0CNode@?$CRBTree@IV?$MS2Ptr@VUnk_WsRec708@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsRec708@@@@@3@@ATL@@QEAA@IAEBV?$MS2Ptr@VUnk_WsRec708@@@@@Z 0x141bf3b40 ; la1: exe body calls this CPair ctor 141bf42f0
