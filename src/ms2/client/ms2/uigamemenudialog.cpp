@@ -376,11 +376,8 @@ public:
     void FUN_1422ce090(int nEnable);
 };
 class Unk_GmCtl : public ASObj { public: int FUN_1422c2030(); };
-class Unk_GmItem : public ASMovieClip
-{
-public:
-    Unk_GmCtl* FUN_140bc0530();
-};
+class Unk_GmItem : public ASMovieClip {};
+Unk_GmCtl* FUN_140bc0530(MS2Ptr<Unk_GmItem>* pItem);   // MS2Ptr::operator-> (takes the smart pointer, not the clip)
 class Unk_GmClip : public ASMovieClip
 {
 public:
@@ -1136,7 +1133,7 @@ void UIGameMenuDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
             CStringW strTip(ref.FUN_140c1cda0()->m_strTip);
             MS2Ptr<Unk_GmItem> item = FUN_14193b180(strName);
             if (item.get() != 0) {
-                if (item->FUN_140bc0530()->FUN_1422c2030() == 0)
+                if (FUN_140bc0530(&item)->FUN_1422c2030() == 0)
                     strTip = ref.FUN_140c1cda0()->m_strTipOff;
             }
             FUN_14193dd90(pRetVal, ref.FUN_140c1cda0()->m_18, strTip, ref.FUN_140c1cda0()->m_58);
@@ -2393,7 +2390,7 @@ void UIGameMenuDialog::FUN_14193daf0(bool bEvent)
             CString strLayer(ref.FUN_140c1cda0()->m_strName);
             if (bEvent)
                 strLayer += "_event";
-            spItem->FUN_140bc0530()->FUN_1407cba60("layerName", CString(strLayer));
+            FUN_140bc0530(&spItem)->FUN_1407cba60("layerName", CString(strLayer));
         }
     }
 }
