@@ -351,11 +351,11 @@ void UIMyInfoDialog::OnLoadComplete()
         {
             if (FUN_140166410()->FUN_14036d570(0xe3) == 0)
             {
-                m_280->vfunc_3(0);
+                m_280->vfunc_4(false);   // exe: call [rax+0x20] (slot 4, bool), not slot 3
             }
             else
             {
-                m_280->vfunc_3(1);
+                m_280->vfunc_4(true);
                 m_280->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIMyInfoDialog::FUN_141a5d690), 0);
             }
         }
@@ -774,7 +774,7 @@ void UIMyInfoDialog::FUN_141a5aab0(int a, int b, int c, int d)
 }
 
 // @0x141a5ab10
-void UIMyInfoDialog::FUN_141a5ab10(int bRefresh, int bTabs, int bStats)
+void UIMyInfoDialog::FUN_141a5ab10(int bRefresh, int bStatLists, int bBag)
 {
     if ((m_spInfo == 0))
         return;
@@ -785,10 +785,10 @@ void UIMyInfoDialog::FUN_141a5ab10(int bRefresh, int bTabs, int bStats)
     pPc->vfunc_125(reinterpret_cast<MS2Ptr<Unk_PCArg125>&>(m_spInfo));
     if (bRefresh != 0)
         vfunc_84();
-    if (bTabs != 0)
-        vfunc_87();
-    if (bStats != 0)
-        vfunc_91(m_nTab);
+    if (bStatLists != 0)
+        vfunc_86();         // exe: call [rax+0x2b0], the stat lists
+    if (bBag != 0)
+        vfunc_88(m_nTab);   // exe: call [rax+0x2c0], the equip / gem bag
 }
 
 // @0x141a5ac90

@@ -101,7 +101,7 @@ public:
     void FUN_141a5a8d0(int nTitle);                             // OnTitleChange
     void FUN_141a5a9f0(int nConfig);                            // OnConfig
     void FUN_141a5aab0(int a, int b, int c, int d);             // OnScreenshot
-    void FUN_141a5ab10(int bRefresh, int bTabs, int bStats);    // rebuild the shown PCInfo from the player
+    void FUN_141a5ab10(int bRefresh, int bStatLists, int bBag);    // rebuild the shown PCInfo from the player
     void FUN_141a5ac90(unsigned short nLevel);                  // the symbol of the level
     void FUN_141a5b080(int nStat);                              // OnAddStatPointRepeat
     void FUN_141a5b6c0();                                       // the remaining time of the codi tab
