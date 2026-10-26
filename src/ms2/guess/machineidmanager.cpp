@@ -49,6 +49,13 @@ unsigned int FUN_1423ae960(Unk_MachineIDLocal* pLocal)
         h = (h ^ pLocal->m_data[0x18 + i]) * 16777619u;
     return h;
 }
+
+// BuildID's gate pairing is only functional (the exe's frame has an EH unwind), so the alias pass does not bind the free
+// declaration ms2.cpp calls it through (FUN_140d4fd50); define that name here so the relinked exe resolves it.
+void FUN_140d4fd50(CMachineIDManager* pManager)
+{
+    pManager->BuildID();
+}
 #endif
 
 CMachineIDManager* TSingleton<CMachineIDManager>::s_instance = 0;   // 0x143ab8aa8
