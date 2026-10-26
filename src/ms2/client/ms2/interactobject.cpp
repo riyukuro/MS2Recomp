@@ -310,6 +310,8 @@ Unk_IoSoundMgr* FUN_141b6f910();
 // physics prop object of a mesh interact object
 class Unk_PhysPropObj;
 Unk_PhysPropObj* FUN_14225f250(void* pMem, Unk_EntRef* pOwner);
+void* FUN_14208a860(unsigned __int64 nSize, int nHint);          // MemObject operator new (the prop object is freed through MemObject::operator delete)
+void* FUN_140876480(void* pOut, int nCat);                      // efd::MemHint(NONE)
 
 // notices
 class Unk_IoNotifyBind : public NotifyObject {};
@@ -866,7 +868,8 @@ CInteractMeshObject::~CInteractMeshObject()
 // @0x1413febf0
 int CInteractMeshObject::vfunc_1(Unk_Entity* pEntity, int nState)
 {
-    void* pMem = operator new(0x98);
+    int hintBuf[2];
+    void* pMem = FUN_14208a860(0x98, *(int*)FUN_140876480(hintBuf, 0));
     // the owner is a by-value SmartPointer<Entity>: the callee releases this temp, so the caller never destroys it
     alignas(8) char ownerBuf[sizeof(Unk_EntRef)];
     Unk_PhysPropObj* pProp = pMem ? FUN_14225f250(pMem, new (ownerBuf) Unk_EntRef(pEntity)) : 0;
