@@ -510,12 +510,12 @@ PCBase* CMouseInteractNpc::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* p
                         NiPoint3 vTmp = pPos->vfunc_18();
                         Unk_Vec3 vCenter;
                         FUN_14027dcf0(&vCenter, reinterpret_cast<const Unk_Vec3*>(&vTmp));
-                        vCenter.z = vCenter.z + fSize * 0.5f;
+                        vCenter.z = (float)(vCenter.z + fSize * 0.5);
                         Unk_Vec3 vEnd;
                         Unk_Vec3 vOrigin;
                         FUN_14027dcf0(&vEnd, pEnd);
                         FUN_14027dcf0(&vOrigin, pOrigin);
-                        if (FUN_14147ad10(&vOrigin, &vEnd, &vCenter, fSize * 0.5f)) {
+                        if (FUN_14147ad10(&vOrigin, &vEnd, &vCenter, (float)(fSize * 0.5))) {
                             PCBase* pResult = ref.operator PCBase*();
                             FUN_14035e5b0(&kData);
                             return pResult;
@@ -805,8 +805,8 @@ void* CMouseInteractDynamicModel::FindTarget(const Unk_Vec3* pOrigin, const Unk_
         float fSize = m_fPickSize;
         Unk_Vec3 vCenter;
         FUN_14027dcf0(&vCenter, &vPos);
-        vCenter.z = vCenter.z + fSize * 0.5f;
-        float fRadius = fSize * 0.5f;
+        vCenter.z = (float)(vCenter.z + fSize * 0.5);
+        float fRadius = (float)(fSize * 0.5);
         Unk_Vec3 vEnd;
         Unk_Vec3 vOrigin;
         FUN_14027dcf0(&vEnd, pEnd);
