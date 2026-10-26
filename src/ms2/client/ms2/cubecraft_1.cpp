@@ -845,7 +845,8 @@ void CConstructionGuideObject::vfunc_128()
     PCBase* pOwner = FUN_1410a1310();
     if (pOwner != 0)
     {
-        Unk_GuideRequest kReq;
+        alignas(8) char kReqBuf[sizeof(Unk_GuideRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+        Unk_GuideRequest& kReq = *reinterpret_cast<Unk_GuideRequest*>(kReqBuf);
         FUN_140a52ef0(&kReq);
         kReq.m_strName = FUN_1401d31f0()->m_strLiftEffect;
         kReq.m_nType = 7;
@@ -1130,7 +1131,8 @@ int CFishingGuideObject::vfunc_11()
     FUN_1410a5690();
     PCBase* pOwner = FUN_1410a1310();
     Unk_GuidePlayer* pPlayer = FUN_1405a7e30(pOwner);
-    Unk_GuideRequest kReq;
+    alignas(8) char kReqBuf[sizeof(Unk_GuideRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+    Unk_GuideRequest& kReq = *reinterpret_cast<Unk_GuideRequest*>(kReqBuf);
     FUN_140a52ef0(&kReq);
     kReq.m_strName = FUN_1401d31f0()->m_strFishEffectA;
     kReq.m_nType = 0;
@@ -1276,7 +1278,8 @@ void CFishingGuideObject::vfunc_53(float f)
         }
         else if (m_nEffectB == 0)
         {
-            Unk_GuideRequest kReq;
+            alignas(8) char kReqBuf[sizeof(Unk_GuideRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+            Unk_GuideRequest& kReq = *reinterpret_cast<Unk_GuideRequest*>(kReqBuf);
             FUN_140a52ef0(&kReq);
             kReq.m_strName = FUN_1401d31f0()->m_strFishEffectB;
             kReq.m_nType = 0;
@@ -1356,7 +1359,8 @@ void CFishingGuideObject::FUN_1410a59f0()
     }
     else if (m_nEffectC == 0)
     {
-        Unk_GuideRequest kReq;
+        alignas(8) char kReqBuf[sizeof(Unk_GuideRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+        Unk_GuideRequest& kReq = *reinterpret_cast<Unk_GuideRequest*>(kReqBuf);
         FUN_140a52ef0(&kReq);
         kReq.m_strName = (const wchar_t*)strGem;
         kReq.m_nType = FUN_1403ed2d0()->FUN_141bd1a10(pOwner);
