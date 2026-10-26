@@ -354,7 +354,7 @@
 // MS2-PIN: ?clear@?$_Tree@V?$_Tmap_traits@HW4Unk_CMISKindA@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHW4Unk_CMISKindA@@@std@@@efd@@$0A@@std@@@std@@QEAAXXZ 0x14114f5e0 ; w151 family
 // MS2-PIN: ?clear@?$_Tree@V?$_Tmap_traits@IHU?$less@I@std@@V?$CustomAllocator@U?$pair@$$CBIH@std@@@efd@@$0A@@std@@@std@@QEAAXXZ 0x14114f680 ; w151 family
 // MS2-PIN: ?clear@?$_Tree@V?$_Tmap_traits@W4Unk_CMISKindB@@EU?$less@W4Unk_CMISKindB@@@std@@V?$CustomAllocator@U?$pair@$$CBW4Unk_CMISKindB@@E@std@@@efd@@$0A@@std@@@std@@QEAAXXZ 0x14114fcc0 ; w151 family
-// MS2-PIN: ?clear@?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@$0A@@std@@@std@@QEAAXXZ 0x14114fd60 ; w151 family
+// MS2-PIN: ?clear@?$_Tree@V?$_Tmap_traits@JV?$MS2Ptr@VCube@@@@U?$less@J@std@@V?$CustomAllocator@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@efd@@$0A@@std@@@std@@QEAAXXZ 0x14114fd60 ; la1: CustomAllocator copy (int/long trees fold), called from the efd::map operator= 0x141126470; was the std::allocator<int> name; w151 family
 // MS2-PIN: ?end@?$_Tree@V?$_Tmap_traits@HUUnk_CMISMarkRec@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHUUnk_CMISMarkRec@@@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_CMISMarkRec@@@std@@@std@@@std@@@2@XZ 0x141151850 ; w151 family
 // MS2-PIN: ?end@?$_Tree@V?$_Tmap_traits@HUUnk_CMISCell@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHUUnk_CMISCell@@@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_CMISCell@@@std@@@std@@@std@@@2@XZ 0x141151910 ; w151 family
 // MS2-PIN: ?end@?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@VFittingDollData@@@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHV?$MS2Ptr@VFittingDollData@@@@@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VFittingDollData@@@@@std@@@std@@@std@@@2@XZ 0x1411519d0 ; w151 family
@@ -459,8 +459,8 @@
 // MS2-PIN: ?erase@?$_Tree@V?$_Tmap_traits@HUUnk_CMISCell@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHUUnk_CMISCell@@@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_CMISCell@@@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_CMISCell@@@std@@@std@@@std@@@2@0@Z 0x141153260 ; w151 family
 // MS2-PIN: ?erase@?$_Tree@V?$_Tmap_traits@HUUnk_CMISCell@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHUUnk_CMISCell@@@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_CMISCell@@@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_CMISCell@@@std@@@std@@@std@@@2@@Z 0x141153350 ; w151 family
 // MS2-PIN: ?_Tidy@?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@$0A@@std@@@std@@IEAAXXZ 0x14114c030 ; w151 family
-// MS2-PIN: ?erase@?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@2@0@Z 0x141155f60 ; w151 family
-// MS2-PIN: ?erase@?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@2@@Z 0x141156050 ; w151 family
+// MS2-PIN: ?erase@?$_Tree@V?$_Tmap_traits@JV?$MS2Ptr@VCube@@@@U?$less@J@std@@V?$CustomAllocator@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@2@0@Z 0x141155f60 ; la1: CustomAllocator copy (int/long trees fold), called from the efd::map operator= 0x141126470; was the std::allocator<int> name; w151 family
+// MS2-PIN: ?erase@?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@2@@Z 0x1411538a0 ; la1: std::allocator copy (deep-same SalesInfo std chain); 0x141156050 is the efd::map<long,MS2Ptr<Cube>> one
 // MS2-PIN: ?erase@?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@$0A@@std@@@std@@QEAA_KAEBH@Z 0x141156100 ; w151 family
 // MS2-PIN: ?_Tidy@?$_Tree@V?$_Tmap_traits@HV?$map@HV?$Unk_PayloadPtr@VCubeOwner@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$Unk_PayloadPtr@VCubeOwner@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@@3@@std@@@std@@@2@$0A@@std@@@std@@IEAAXXZ 0x14114b910 ; w151 family
 // MS2-PIN: ?equal_range@?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@std@@V12@@2@AEBH@Z 0x1411529d0 ; w151 family
@@ -669,6 +669,16 @@
 #include "ms2/client/ms2/cubemapinformationservice_tail.h"
 #include "hook/ms2hook.h"
 
+// la1: the column map efd::map<long, MS2Ptr<Cube>> (operator[] 0x141128350, erase(where) 0x141156050); its copies in this
+// unit's range are pinned at the end.
+void Unk_CMISDriveColumnMapTail()
+{
+    efd::map<long, MS2Ptr<Cube> > m;
+    const long k = 0;
+    m[k];
+    m.erase(m.begin());
+}
+
 void Unk_CMISDriveTail()
 {
     int nKey = 0;
@@ -736,3 +746,4 @@ void FUN_14114d9b0(Unk_CMISStr* pStr, const char* pSz)
 {
     reinterpret_cast<std::basic_string<char, std::char_traits<char>, efd::CustomAllocator<char> >*>(pStr)->append(pSz);
 }
+// MS2-PIN: ?erase@?$_Tree@V?$_Tmap_traits@JV?$MS2Ptr@VCube@@@@U?$less@J@std@@V?$CustomAllocator@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@2@@Z 0x141156050 ; la1: efd::map<long,MS2Ptr<Cube>> column-map copy (CustomAllocator chain of operator[] 0x141128350)
