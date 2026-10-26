@@ -252,7 +252,8 @@ void* FUN_1413f9850();
 void* FUN_1401cd190(void*);
 void* FUN_1410a6920(void*);
 float FUN_140966f00(efd::Point3, efd::Point3);
-efd::Point3 FUN_1410a7590(PCBase*);
+// the exe takes the PCBase as this and the hidden return slot in rdx (a free declaration swapped them)
+struct Unk_CcActorPos { efd::Point3 FUN_1410a7590() const; };
 float FUN_1410a7600(PCBase*);
 void FUN_1410a77e0(CGuideObject*, float);
 
@@ -429,7 +430,7 @@ int CGuideObject::vfunc_124(int nOwnerId, efd::Point3 kPos, efd::Point3 kDir, PC
     vfunc_19(kPos);
     vfunc_21(kDir);
     FUN_14123c5a0(nOwnerId);
-    ::FUN_141678160(this, FUN_1410a7590(pOwner));
+    ::FUN_141678160(this, reinterpret_cast<const Unk_CcActorPos*>(pOwner)->FUN_1410a7590());
     FUN_1410a12e0(pOwner);
     for (int nPart = 0; nPart < 3; ++nPart)
     {
@@ -1582,8 +1583,9 @@ void* FUN_1410a6920(void* pHost)
 }
 
 // @0x1410a7590
-efd::Point3 FUN_1410a7590(PCBase* pActor)
+efd::Point3 Unk_CcActorPos::FUN_1410a7590() const
 {
+    const PCBase* pActor = reinterpret_cast<const PCBase*>(this);
     return pActor->m_posBF4;
 }
 
