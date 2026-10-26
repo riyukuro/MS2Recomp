@@ -95,10 +95,10 @@
 // MS2-PIN: ?Create@?$Unk_SocketRef@V?$CAtlArray@V?$MS2Ptr@VCNpcShopMeratItemSvr@@@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopMeratItemSvr@@@@@ATL@@@ATL@@@@SAPEAV?$CAtlArray@V?$MS2Ptr@VCNpcShopMeratItemSvr@@@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopMeratItemSvr@@@@@ATL@@@ATL@@PEAX@Z 0x1406f5ec0 ; prop
 // MS2-PIN: ?Create@?$Unk_SocketRef@V?$CAtlArray@_JV?$CElementTraits@_J@ATL@@@ATL@@@@SAPEAV?$CAtlArray@_JV?$CElementTraits@_J@ATL@@@ATL@@PEAX@Z 0x1406f5ef0 ; unique
 // MS2-PIN: ?_Unwrapped@?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@std@@@std@@QEBA?AV?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@std@@U_Iterator_base0@2@@2@XZ 0x1406f8740 ; unique
-// MS2-PIN: ??__Fs_coupons@@YAXXZ 0x142c9b960 ; prop
+// MS2-PIN: ??__Fs_coupons@@YAXXZ 0x142c9b9c0 ; la1: destroys 0x143ab0958 (s_coupons) via its CRBMap dtor 0x1406eee30
 // MS2-PIN: ??__Fs_npcShops@@YAXXZ 0x142c9b980 ; prop
 // MS2-PIN: ??__Fs_shopLimits@@YAXXZ 0x142c9b9a0 ; prop
-// MS2-PIN: ??__Fs_beautyShops@@YAXXZ 0x142c9b9c0 ; prop
+// MS2-PIN: ??__Fs_beautyShops@@YAXXZ 0x142c9b960 ; la1: destroys 0x143ab08d8 (s_beautyShops) via its CRBMap dtor 0x1406eee70
 // MS2-PIN: ??__Fempty@?1??FUN_1406e3f10@CBeautyShopItemGroup@@QEAAAEAV?$CAtlArray@V?$MS2Ptr@VCBeautyShopItem@@@@V?$CElementTraits@V?$MS2Ptr@VCBeautyShopItem@@@@@ATL@@@ATL@@H@Z@YAXXZ 0x142c9ba40 ; unique
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\npcshopdata.cpp"
