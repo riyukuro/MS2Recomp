@@ -97,7 +97,7 @@ unsigned int CNMCategoryInfo::Decode(CNMSerializableDecoder* pDecoder, CNMStream
     m_10 = static_cast<int>(pDecoder->ReadU32());
     m_14.nLow = pDecoder->ReadU32();
     m_14.nHigh = pDecoder->ReadU32();
-    pDecoder->ReadBytes(reinterpret_cast<unsigned char*>(m_1c), sizeof m_1c);
+    pDecoder->ReadStringBufAlias(reinterpret_cast<char*>(m_1c), sizeof m_1c);
     if (m_bKind == 1)
     {
         m_3c = pDecoder->ReadU8();
