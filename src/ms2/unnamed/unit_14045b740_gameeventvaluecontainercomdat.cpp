@@ -427,3 +427,4 @@ void Unk_GameEventValueIdSetRemove(std::set<unsigned>& ids, unsigned id)
 }
 // fx25: vector<__int64>/<unsigned __int64>::reserve are look-alikes of the one exe copy in range (both table rows say 0x14046c510)
 // MS2-PIN: ?reserve@?$vector@_KV?$allocator@_K@std@@@std@@QEAAX_K@Z 0x14046c510
+// MS2-PIN: ?capacity@?$vector@V?$MS2Ptr@VCollectItemGroupContext@@@@V?$allocator@V?$MS2Ptr@VCollectItemGroupContext@@@@@std@@@std@@QEBA_KXZ 0x1404680f0 ; la1: the copy its _Calculate_growth 0x14045cf80 calls (symbols.tsv agrees)
