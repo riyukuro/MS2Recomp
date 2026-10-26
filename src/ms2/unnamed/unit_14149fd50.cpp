@@ -15,12 +15,16 @@
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
 // Release target of the scene graph cache smart pointer (ecr::SceneGraphCache::SceneGraphCacheData in the exe: the reference
-// count is the first member and the destructor is non-virtual, deleted through the MemObject operator delete).
+// count is the first member and the destructor is non-virtual, deleted through the MemObject operator delete). The sized
+// delete hands the block back to the efd pool by size, so the stand-in keeps the exe's sizeof (0x90): a smaller one returns
+// the 0x90 block to the wrong FixedSizeAllocator.
 struct Unk_SceneCacheData : public efd::MemObject
 {
     ~Unk_SceneCacheData();
     efd::AtomicRefCount m_refCount;
+    char m_aRest[0x8c];             // status, llid/physicalID/filePath, objects, request list (not touched here)
 };
+MS2_CHECK_SIZE(Unk_SceneCacheData, 0x90);
 // Class whose virtual destructor sits in vftable slot 8.
 struct Unk_Slot8Delete
 {
