@@ -14,6 +14,16 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/ugcmapdata.h"
 
+// la1: the column map efd::map<long, MS2Ptr<Cube>> (operator[] 0x141128350, erase(where) 0x141156050); its copies in this
+// unit's range are pinned at the end.
+void Unk_CMISDriveColumnMapTreeComdats()
+{
+    efd::map<long, MS2Ptr<Cube> > m;
+    const long k = 0;
+    m[k];
+    m.erase(m.begin());
+}
+
 template <int N> struct Unk_Fn { int v[N + 1]; };
 
 // Stand-in for the exe's tree allocator: a converting constructor and a user-provided destructor are out-of-line calls.
@@ -94,3 +104,4 @@ void Unk_FnAnchor()
     Unk_CMISOwnerById m;
     (void)m.equal_range(0);
 }
+// MS2-PIN: ??$_Freenode0@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@efd@@@?$_Tree_node@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@PEAX@std@@SAXAEAV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@efd@@PEAU01@@Z 0x1410e8b50 ; la1: the efd::map<long,MS2Ptr<Cube>> (column map, operator[] 0x141128350) chain
