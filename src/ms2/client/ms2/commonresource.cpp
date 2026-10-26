@@ -6,7 +6,7 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$StringFormat@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBV01@1@Z 0x140cca160 ; unique
 // MS2-PINS-END tplpin
-// MS2-PIN: ?GetModelPath@NiKFMTool@@QEBAAEBVNiFixedString@@XZ 0x140cca680
+// MS2-PIN: ?GetBaseKFMPath@NiKFMTool@@QEBAAEBVNiFixedString@@XZ 0x140cca680
 // MS2-PIN: ??_7CommonResource@@6B?$TSingleton@VCommonResource@@@@@ 0x142e1c780
 // MS2-PIN: ??_7CommonResource@@6B?$CValidData@VCommonResource@@@@@ 0x142e1c790
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\commonresource.cpp"
@@ -68,7 +68,7 @@ void FUN_140cc2d00(const egf::EntityID& kId, CString* pOut)
     NiKFMTool* pKfm = FUN_1409995d0(pActorMgr);
     if (pKfm == 0)
         return;
-    NiFixedString kPath(pKfm->GetModelPath());
+    NiFixedString kPath(pKfm->GetBaseKFMPath());
     *pOut = (const char*)kPath;
 }
 
