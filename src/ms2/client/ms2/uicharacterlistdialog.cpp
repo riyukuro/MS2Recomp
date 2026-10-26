@@ -919,6 +919,9 @@ bool UICharacterListDialog::FUN_1418ed650()
     return true;
 }
 
+MS2_CHECK_OFFSET(UICharacterListDialog, m_1e8, 0x1e8);
+MS2_CHECK_OFFSET(UICharacterListDialog, m_220, 0x220);
+
 // @0x1418ed880
 // MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
 void UICharacterListDialog::FUN_1418ed880(CInPacket& packet)
@@ -932,7 +935,7 @@ void UICharacterListDialog::FUN_1418ed880(CInPacket& packet)
     }
     else if (nMode == 4)
     {
-        m_220 = packet.ReadBool();
+        m_1e8 = packet.ReadBool();   // exe: byte [this+0x1e8], not m_220
         if (vfunc_55() == 0 && FUN_1422dc430() == 1)
             RefreshLobby();
         else if (FUN_1408e57f0()->FUN_1422b9da0() == 0x620000c)
