@@ -21,6 +21,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/weddingmanager.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -46,16 +47,10 @@ class Unk_WhTable { public: MS2Ptr<Unk_WhPackage> FUN_140908b80(int nPackageId);
 Unk_WhTable* FUN_1409023c0();
 
 // The own character: its wedding hall tickets and the "enter the wedding" request.
-class Unk_WhCharacter
-{
-public:
-    void FUN_141b896f0(std::map<unsigned __int64, WeddingHallTicket>& halls);   // copy the ticket map out
-    void FUN_141b86750(unsigned __int64 nWeddingSn);                            // enter the wedding
-};
-Unk_WhCharacter* FUN_1409eed90();
+WeddingManager* FUN_1409eed90();
 
 unsigned __int64 FUN_140718370(const CStringW& str);                // string to unsigned __int64
-__int64 FUN_140869440();                                            // the current time
+__int64 GetServerTime();                                            // the current time
 bool FUN_140900f30(__int64 nTime);                                  // the time is at night
 CStringW FUN_141b71910(unsigned __int64 n);                         // the number as text
 CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);      // localized, formatted
@@ -124,7 +119,7 @@ int UIWeddingHallListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
             unsigned __int64 nWeddingSn = FUN_140718370(data.FUN_1422b8f40());
-            FUN_1409eed90()->FUN_141b86750(nWeddingSn);
+            FUN_1409eed90()->SendInvitation(nWeddingSn);
             return 1;
         }
     }
@@ -143,7 +138,7 @@ MS2_REPLACE_METHOD(0x140FD90F0, UIWeddingHallListDialog, FUN_140fd90f0, 22, 0x41
 void UIWeddingHallListDialog::FUN_140fd9110()
 {
     std::map<unsigned __int64, WeddingHallTicket> halls;
-    FUN_1409eed90()->FUN_141b896f0(halls);
+    FUN_1409eed90()->CollectTickets(halls);
     MS2Ptr<Unk_WhList> pOpenList = FUN_140c02900("m_openList");
     MS2Ptr<Unk_WhList> pProgressList = FUN_140c02900("m_progressList");
     if (pOpenList.IsNull() || pProgressList.IsNull()) {
@@ -154,7 +149,7 @@ void UIWeddingHallListDialog::FUN_140fd9110()
     pProgressList->FUN_1422dd1d0();
     std::map<unsigned __int64, WeddingHallTicket>::iterator it = halls.begin();
     std::map<unsigned __int64, WeddingHallTicket>::iterator itEnd = halls.end();
-    __int64 nNow = FUN_140869440();
+    __int64 nNow = GetServerTime();
     for (; it != itEnd; ++it) {
         WeddingHallTicket& ticket = it->second;
         MS2Ptr<Unk_WhPackage> pPackage = FUN_1409023c0()->FUN_140908b80(ticket.m_nPackageId);
