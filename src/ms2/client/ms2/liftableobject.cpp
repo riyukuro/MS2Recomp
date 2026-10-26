@@ -267,7 +267,8 @@ void CLiftableObject::FUN_141447910(char bOn)
         }
         else
         {
-            Unk_LiftSoundReq kReq;
+            alignas(8) char kReqBuf[sizeof(Unk_LiftSoundReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+            Unk_LiftSoundReq& kReq = *reinterpret_cast<Unk_LiftSoundReq*>(kReqBuf);
             FUN_140a52ef0(&kReq);
             kReq.m_strName = *(CString*)((char*)FUN_1401d31f0() + 0x350);
             kReq.m_nType = 0;
