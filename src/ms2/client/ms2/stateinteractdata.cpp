@@ -535,7 +535,8 @@ void StateInteraction::FUN_1417d22f0(MS2Ptr<CInteractObjectData> spRow)
                 kXform.m_rotate.FUN_142083d40((kRot.x * 3.1415927f) / 180.0f, (kRot.y * 3.1415927f) / 180.0f,
                                               (kRot.z * 3.1415927f) / 180.0f);
                 kXform.m_fScale = 1.0f;
-                Unk_SiFxRequest kRequest;
+                alignas(8) char kRequestBuf[sizeof(Unk_SiFxRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+                Unk_SiFxRequest& kRequest = *reinterpret_cast<Unk_SiFxRequest*>(kRequestBuf);
                 FUN_140a52ef0(&kRequest);
                 kRequest.m_strName = SiRowEffect(spRow.get());
                 kRequest.m_nOwnerId = 0;
