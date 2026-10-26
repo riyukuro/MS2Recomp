@@ -1027,9 +1027,13 @@ __int64 FUN_1414840d0(GroupMessengerData::TalkLog* pLog)
     return member.FUN_14137c3b0()->m_nOwner;
 }
 
+// the exe's is a TalkLog member (this = the log, hidden return slot in rdx); a free function put the slot in rcx
+struct Unk_MdTalkName { CString FUN_141484200(); };
+
 // @0x141484200
-CString FUN_141484200(GroupMessengerData::TalkLog* pLog)
+CString Unk_MdTalkName::FUN_141484200()
 {
+    GroupMessengerData::TalkLog* pLog = reinterpret_cast<GroupMessengerData::TalkLog*>(this);
     return FUN_1414842b0(pLog->m_nKind, CStringW(pLog->m_strMsg));
 }
 
