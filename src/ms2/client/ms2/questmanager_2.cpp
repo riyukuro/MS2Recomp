@@ -18,7 +18,6 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?8PEAVCQuestManager@@P80@EAAXAEAVCInPacket@@@Z@std@@YA_NAEBU?$pair@PEAVCQuestManager@@P81@EAAXAEAVCInPacket@@@Z@0@0@Z 0x1416d4a40 ; prop
 // MS2-PIN: ??$?8PEAVCQuestManager@@P80@EAAXPEAVNotifyObject@@@Z@std@@YA_NAEBU?$pair@PEAVCQuestManager@@P81@EAAXPEAVNotifyObject@@@Z@0@0@Z 0x1416d4ab0 ; prop
-// MS2-PIN: ??$destroy@V?$list@IV?$allocator@I@std@@@std@@@?$_Default_allocator_traits@V?$allocator@U?$_List_node@V?$list@IV?$allocator@I@std@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_List_node@V?$list@IV?$allocator@I@std@@@std@@PEAX@std@@@1@QEAV?$list@IV?$allocator@I@std@@@1@@Z 0x1416da140 ; unique
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVCQuestManager@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBV01@@Z 0x1416daf60 ; unique
 // MS2-PIN: ??0?$Unk_PayloadPtr@VCQuest@@@@QEAA@PEAVCQuest@@@Z 0x1416db050 ; unique
 // MS2-PIN: ?IsEmpty@?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@QEBA_NXZ 0x1416dc1d0 ; unique
@@ -33,6 +32,10 @@
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVCQuestManager@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x1416e3290 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVCQuestManager@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x1416e32f0 ; unique
 // MS2-PINS-END tplpin
+// destroy<list<unsigned>> has no copy in this range: the exe folds it with destroy<list<int>> 0x141370410 (ICF,
+// usercommandcli; calls list<int>'s ??_G 0x141371390, size 0x10). 0x1416da140 is destroy<pair<int const,
+// Unk_PayloadPtr<CQuest>>> (called from the map's _Tree code; calls the pair's ??_G 0x1416dd010, size 0x18).
+// MS2-PIN: ??$destroy@U?$pair@$$CBHV?$Unk_PayloadPtr@VCQuest@@@@@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@VCQuest@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@VCQuest@@@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBHV?$Unk_PayloadPtr@VCQuest@@@@@1@@Z 0x1416da140
 // MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@VCQuest@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@VCQuest@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1416d4530
 // MS2-PIN: ??$_Insert_at@_KU_Not_a_node_tag@std@@@?$_Tree@V?$_Tset_traits@_KU?$less@_K@std@@V?$allocator@_K@2@$0A@@std@@@std@@IEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@_K@std@@@std@@@1@_NPEAU?$_Tree_node@_KPEAX@1@$$QEA_KU_Not_a_node_tag@1@@Z 0x1416d6b40
 // MS2-PIN: ??$_Insert_nohint@_KU_Not_a_node_tag@std@@@?$_Tree@V?$_Tset_traits@_KU?$less@_K@std@@V?$allocator@_K@2@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@_K@std@@@std@@@std@@_N@1@_N$$QEA_KU_Not_a_node_tag@1@@Z 0x1416d7ef0
