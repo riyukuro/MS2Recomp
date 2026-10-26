@@ -14,6 +14,11 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/commonfiles/exptable.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/placeholder/gfxmanager.h"
 #include <string.h>
 #include <algorithm>
 
@@ -32,26 +37,16 @@ public:
 };
 Unk_ExpGlobals* FUN_1401d3200();
 
-class Unk_ExpStatusMgr
-{
-public:
-    void FUN_141b0cd00(UIStatusEventListener* pListener);           // register
-    void FUN_141b0cd90(UIStatusEventListener* pListener);           // unregister
-};
-Unk_ExpStatusMgr* FUN_140aa6d40();
+UIStatusEventDispatcher* FUN_140aa6d40();
 class Unk_ExpUIMgr { public: void FUN_141adc750(int nUiId); };      // opens a ui
 Unk_ExpUIMgr* FUN_1403ed2b0();
 struct Unk_ExpCfgData { char m_pad_00[8]; unsigned char m_bShowPoint; };
 class Unk_ExpCfgHolder { public: Unk_ExpCfgData* FUN_140b123b0(); };
 Unk_ExpCfgHolder* FUN_1409a8b10();
-class Unk_ExpUiScale { public: float FUN_1422afec0(int nUiId); };
-Unk_ExpUiScale* FUN_14025e7a0();
-class Unk_ExpDebug { public: bool FUN_14116d720(); };
-Unk_ExpDebug* FUN_14025e7c0();
-class Unk_ExpTextFilter { public: void FUN_1416fb340(CStringW& strText); };
-Unk_ExpTextFilter* FUN_1403b4750();
-class Unk_ExpLevelTable { public: __int64 FUN_140353610(unsigned short nLevel); };
-Unk_ExpLevelTable* FUN_1404a1bb0();
+GFxManager* FUN_14025e7a0();
+CInputKeyHandler* FUN_14025e7c0();
+CReservedWordTable* FUN_1403b4750();
+CExpTable* FUN_1404a1bb0();
 int FUN_1412755a0();
 bool FUN_140184310(const CString& str, const char* psz);            // str == psz
 CStringW FUN_1409404f0(__int64 n);                                  // the number as text
@@ -176,7 +171,7 @@ __int64 UIExpBar::FUN_1419322e0()
     if (pPlayer == 0)
         return 0;
     unsigned short nLevel = pPlayer->vfunc_78();
-    return FUN_1404a1bb0()->FUN_140353610(nLevel);
+    return FUN_1404a1bb0()->GetNextExp(nLevel);
 }
 
 // @0x141932340
@@ -249,14 +244,14 @@ void UIExpBar::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
             if (pPlayer == 0)
                 return;
             unsigned short nLevel = (unsigned short)pPlayer->vfunc_78();
-            __int64 nNeed = FUN_1404a1bb0()->FUN_140353610(nLevel);
+            __int64 nNeed = FUN_1404a1bb0()->GetNextExp(nLevel);
             float fPct = (float)((DAT_143ab28a0 + DAT_143ab28a8) * 100) / (float)nNeed;
             float fShow = (std::min)(100.0f, fPct);
             if (DAT_143ab28a8 != 0)
                 fShow = (std::max)(0.01f, fShow);
             unsigned int nUnit = *FUN_1401d3200()->m_6b00.FUN_1401d7c10() / 100;
             strText += FUN_14028dfa0(CStringW(L"s_tooltip_rest_exp"), nLevel, fShow, nUnit);
-            if (FUN_14025e7c0()->FUN_14116d720())
+            if (FUN_14025e7c0()->IsDebugMode())
                 strText += StringFormat(L"[{0}]", DAT_143ab28a8);
         }
         FUN_1403b4750()->FUN_1416fb340(strText);
