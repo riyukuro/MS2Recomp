@@ -203,8 +203,9 @@ Unk_UmMfBook* FUN_1409eed40();
 // The string table and the client constants.
 struct Unk_UmStrings { CStringW FUN_141811980(int, int); };
 Unk_UmStrings* FUN_1401a9d70();
-struct Unk_UmLevels { char m_pad[0x5180]; int m_5180; };
 class Unk_UmLevelInfo { public: int* FUN_1402056b0(); };        // the player's manufacture level
+struct Unk_UmLevels { char m_pad[0x5180]; Unk_UmLevelInfo m_5180; };   // FUN_1401d3200(): the constant slot at +0x5180
+MS2_CHECK_OFFSET(Unk_UmLevels, m_5180, 0x5180);
 Unk_UmLevelInfo* FUN_1401d3200();
 
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
@@ -623,7 +624,7 @@ void UIManufactureDialog::FUN_1412e3990(int bSelect)
         row.FUN_140e846b0("id", i + 1);
         row.FUN_1407cbb20("itemName", FUN_1401a9d70()->FUN_141811980(1, spRecipe->m_50));
         row.FUN_1407cb9c0("recipeID", spRef->m_id);
-        if (*FUN_1401d3200()->FUN_1402056b0() < spRef->m_level)
+        if (*reinterpret_cast<Unk_UmLevels*>(FUN_1401d3200())->m_5180.FUN_1402056b0() < spRef->m_level)   // exe: add rax, 0x5180
             row.FUN_1407cbb20("require", FUN_1408116a0(0x7ab, spRef->m_level));
         else
             row.FUN_1407cbb20("require", FUN_1408116a0(0x7aa, spRef->m_level));
