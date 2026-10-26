@@ -2518,6 +2518,30 @@ alignas(16) Sd_1431b7900 DAT_1431b7900 = {
     DAT_1425117f0,
     DAT_1424effa0,
 };
+// Video instance thunks begin at 0x1431b79e0, beyond the preceding vtable.
+extern unsigned char DAT_14313da80[];
+void FUN_14001a9b0(void*, void*, void*, unsigned int*);
+void FUN_14001aa20(void*, void*, void*, unsigned __int64, int, void*);
+void FUN_14001aa90(void*, void*, void*, unsigned int*);
+void FUN_14001ab00(void*, void*, void*, unsigned __int64, int, void*);
+void FUN_14001ab60(void*, void*, void*, unsigned int*);
+void FUN_14001abd0(void*, void*, void*, unsigned int*);
+void FUN_14001ac80(void*, void*, void*, unsigned __int64, int, const unsigned char*);
+void FUN_14001acd0(void*, void*, void*, unsigned __int64, int, const unsigned char*);
+void FUN_14001a180(void*, void*, void*, void*);
+struct Sd_1431b79e0 { const void* f; const void* t; const char* n; const void* ns; unsigned long long k; };
+alignas(16) extern const Sd_1431b79e0 DAT_1431b79e0[9];
+alignas(16) const Sd_1431b79e0 DAT_1431b79e0[9] = {
+    {(const void*)&FUN_14001a9b0, DAT_14313da80, "deblocking", nullptr, 0x1ull},
+    {(const void*)&FUN_14001aa20, nullptr, "deblocking", nullptr, 0x4aull},
+    {(const void*)&FUN_14001aa90, DAT_14313da30, "smoothing", nullptr, 0x1ull},
+    {(const void*)&FUN_14001ab00, nullptr, "smoothing", nullptr, 0x4aull},
+    {(const void*)&FUN_14001ab60, DAT_14313da80, "videoHeight", nullptr, 0x1ull},
+    {(const void*)&FUN_14001abd0, DAT_14313da80, "videoWidth", nullptr, 0x1ull},
+    {(const void*)&FUN_14001ac80, nullptr, "attachCamera", nullptr, 0x48ull},
+    {(const void*)&FUN_14001acd0, nullptr, "attachNetStream", nullptr, 0x48ull},
+    {(const void*)&FUN_14001a180, nullptr, "clear", nullptr, 0x0ull},
+};
 // 0x1431b7b50
 alignas(16) Sd_1431b7b50 DAT_1431b7b50 = {
     {
@@ -2531,7 +2555,7 @@ alignas(16) Sd_1431b7b50 DAT_1431b7b50 = {
         0x00, 0x00, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    (const unsigned char*)&DAT_1431b7900 + 0xe0,
+    (const unsigned char*)&DAT_1431b79e0[0],
     {0},
 };
 // 0x1431b7ba0
