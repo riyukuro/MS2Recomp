@@ -191,7 +191,14 @@ void FUN_140874210(Unk_AdXmlNode* pNode, const char* szGroup, const char* szName
 void FUN_1408740a0(Unk_AdXmlNode* pNode, const char* szName, const CStringW& v);
 void FUN_140873bc0(Unk_AdXmlNode* pNode, const char* szName, bool v);
 void FUN_140873eb0(Unk_AdXmlNode* pNode, const char* szName, __int64& v);
-class TiXmlElement { public: TiXmlElement(const char* szName); };
+// The game TinyXML element (ctor 0x14086f2f0, 0x90 bytes; the document owns and deletes it).
+class TiXmlElement
+{
+public:
+    TiXmlElement(const char* szName);
+private:
+    void* m_pad[0x90 / sizeof(void*)];
+};
 class Unk_AdXmlNode {};
 
 // UIAdPushDialog
