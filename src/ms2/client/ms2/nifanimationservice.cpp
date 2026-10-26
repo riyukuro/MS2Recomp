@@ -107,7 +107,7 @@ bool CNifAnimationService::FUN_1415455a0(unsigned __int64 nKey, NiNode* pkNif, i
         }
         if (pInfo->m_fEndTime <= 0.0f)
             pInfo->m_fEndTime = 0.1f;
-        pInfo->m_timer.FUN_140868750((int)(pInfo->m_fEndTime * 1000.0));
+        pInfo->m_timer.FUN_140868750((int)(pInfo->m_fEndTime * 1000.0f));
         m_mapInfo.SetAt(nKey, pInfo);
         m_spView->AppendScene(pInfo->m_spClone);
     }
