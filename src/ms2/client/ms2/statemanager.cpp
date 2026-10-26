@@ -949,6 +949,19 @@ public:
 };
 Unk_SMNpc* FUN_14096e110(PCBase* p);
 class Unk_SMEffectSvc { public: int FUN_1411a4a00(const CStringA& strName); };
+// Effect request layout shared with entityvibrator.cpp.
+struct Unk_VibEffectReq
+{
+    Unk_VibEffectReq();
+    ~Unk_VibEffectReq();
+    CString m_name;                                                 // +0x00
+    int m_type;                                                     // +0x08
+    int m_pad_0c;
+    void* m_pad_10;
+    void* m_pXform;                                                 // +0x18 rotation 3x3, translation, scale (0x34)
+    void* m_pad_20[10];
+};
+MS2_CHECK_SIZE(Unk_VibEffectReq, 0x70);
 Unk_SMEffectSvc* FUN_1403ed280();
 
 // @0x1417dfc70
@@ -1027,7 +1040,7 @@ void StateRegen::vfunc_5(int n)
 }
 
 // @0x1417e01d0
-// MS2-FUNCTIONAL: the effect transform locals the exe builds for the spawn effect are not reproduced
+// MS2-FUNCTIONAL: the spawn effect uses the recovered 0x70-byte request and an identity transform; local construction differs
 void StateRegen::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
@@ -1050,9 +1063,14 @@ void StateRegen::vfunc_9(double fTime)
             FUN_1408a8900(&kAnim);
             FUN_14166ca80(m_pOwner, 9);
             m_pOwner->vfunc_18();
-            CStringA strEffect;
-            strEffect = pNpc->FUN_141093270()->m_str550;
-            FUN_1403ed280()->FUN_1411a4a00(strEffect);
+            NiPoint3 kRegenPos = m_pOwner->vfunc_18();
+            float afXform[13] = { 1, 0, 0, 0, 1, 0, 0, 0, 1, kRegenPos.x, kRegenPos.y, kRegenPos.z, 1.0f };
+            Unk_VibEffectReq req;
+            req.m_name = pNpc->FUN_141093270()->m_str550;
+            req.m_type = 0;
+            req.m_pXform = afXform;
+            // The recovered import takes the full request; its first field is the name.
+            FUN_1403ed280()->FUN_1411a4a00(*reinterpret_cast<const CStringA*>(&req));
             if (m_nSkip == 0)
             {
                 if (m_nVariantB == 0)
