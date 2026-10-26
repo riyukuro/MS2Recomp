@@ -16,7 +16,6 @@ class Unk_GlideRow : public CPtred
 public:
     int FUN_140802ab0();                    // 0x140802ab0 (a value of the row; returned by FUN_1417c9740)
 
-    char m_pad_18[4];
     int m_nSkill;                           // +0x18
     float m_f1c;                            // +0x1c subtracted from the end height
     float m_f20;                            // +0x20 maximum fall height (0 = unlimited)
@@ -38,6 +37,9 @@ public:
     char m_pad_71[3];
     int m_nSpeedMul;                        // +0x74
 };
+MS2_CHECK_OFFSET(Unk_GlideRow, m_nSkill, 0x18);
+MS2_CHECK_OFFSET(Unk_GlideRow, m_strEffectA, 0x48);
+MS2_CHECK_OFFSET(Unk_GlideRow, m_bCheckGround, 0x70);
 
 // 0xa0.
 class StateGlide : public StateMoveSkill
