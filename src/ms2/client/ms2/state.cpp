@@ -1613,10 +1613,10 @@ MS2_REPLACE_METHOD(0x1417be990, StateClimb, FUN_1417be990, 423, 0xEB583BE6);
 // MS2-FUNCTIONAL: /Od stack-slot / branch layout differs; logic follows the decompile
 void StateClimb::FUN_1417beb40()
 {
-    float fMargin = 2.0f;
+    const float fMargin = 2.0f;
     NiPoint3 kPos = m_pOwner->vfunc_18();
     Unk_RayCastInfo kInfo;
-    kInfo.m_origin = kPos + efd::Point3(0.0f, 0.0f, m_fF4 + 90.0f + fMargin);
+    kInfo.m_origin = kPos + efd::Point3(0.0f, 0.0f, 90.0f + m_fF4 + fMargin);
     kInfo.m_dir = m_pOwner->FUN_14123cc20();
     kInfo.m_maxDist = 77.0f;
     kInfo.m_groups = FUN_1417bc010();
