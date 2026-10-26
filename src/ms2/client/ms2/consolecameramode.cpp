@@ -18,6 +18,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
 
 #pragma intrinsic(abs)
 
@@ -26,14 +27,7 @@
 extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 
 // The input state (FUN_14025e7c0).
-class Unk_InputState
-{
-public:
-    bool FUN_14116d950(int nKey, bool b, int n);                    // key held
-    bool FUN_14116daa0(int nButton, bool b, int n);                 // mouse button held
-    bool FUN_14116dbf0(int* pnX, int* pnY, int* pnZ, bool b, int n);    // mouse move delta
-};
-Unk_InputState* FUN_14025e7c0();
+CInputKeyHandler* FUN_14025e7c0();
 
 class Unk_BuffContainer
 {
@@ -128,7 +122,7 @@ float FUN_140a0fda0(float a, float b);              // max
 float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
 void FUN_140291b70(float* pfDegree);                // wraps an angle to (-180, 180]
-int FUN_140ae8540();                                // reloads the camera xml (returns 0 on failure)
+int LoadTestCamerValue();                                // reloads the camera xml (returns 0 on failure)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -399,7 +393,7 @@ MS2_REPLACE_METHOD(0x1410a0180, CConsoleCameraMode, vfunc_30, 326, 0x2CCF8E9B);
 // @0x1410a02d0
 BOOL CConsoleCameraMode::vfunc_31()
 {
-    if (FUN_140ae8540())
+    if (LoadTestCamerValue())
     {
         m_110 = FUN_140ae8910(CString("Console_RotationInterpolateSpeed"));
         m_114 = FUN_140ae8910(CString("Console_MouseRotationSpeed"));
