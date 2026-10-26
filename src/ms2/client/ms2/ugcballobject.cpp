@@ -305,7 +305,7 @@ void CUGCBallObject::FUN_140dee3e0(const NxQuat& kQuat, efd::Point3& kEuler)
     NiMatrix3 kRot;
     kQ.ToRotation(kRot);
     kRot.ToEulerAnglesXYZ(kEuler.x, kEuler.y, kEuler.z);
-    kEuler *= -57.29578f;
+    kEuler *= -57.295776f;
 }
 
 // @0x140dee4a0
