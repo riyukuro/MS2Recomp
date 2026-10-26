@@ -375,6 +375,6 @@ Vector3 FUN_141198410(Vector3 ptCenter, float fRadius)
     Unk_RayCastInfo info;
     Vector3 ptHit(0.0f, 0.0f, 0.0f);
     Vector3 ptFrom = ptCenter.FUN_14097fd50(ptOff);
-    FUN_1409f7ca0()->FUN_14168a310(ptFrom, ptHit, &info, 800.0f, 0, 0x201);
+    FUN_1409f7ca0()->FUN_14168a310(ptFrom, ptHit, &info, 200.0f, 0, 0x201);
     return ptHit;
 }
