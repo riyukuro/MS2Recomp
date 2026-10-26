@@ -223,7 +223,8 @@ void CLiftableTarget::FUN_141448750()
         xform.m_pos = m_vPos.FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f));
         xform.m_rot.FromEulerAnglesXYZ(m_vRot.x * 3.1415927f / 180.0f, m_vRot.y * 3.1415927f / 180.0f, m_vRot.z * 3.1415927f / 180.0f);
         xform.m_fScale = 1.0f;
-        Unk_LtFxReq req;
+        alignas(8) char reqBuf[sizeof(Unk_LtFxReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+        Unk_LtFxReq& req = *reinterpret_cast<Unk_LtFxReq*>(reqBuf);
         FUN_140a52ef0(&req);
         req.m_strName = vfunc_2();
         req.m_nType = 0;
