@@ -83,7 +83,7 @@ unsigned int CNMFilePath::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMSt
 // @0x141573440
 unsigned int CNMFilePath::Decode(CNMSerializableDecoder* pDecoder, CNMStream*)
 {
-    pDecoder->ReadBytes(reinterpret_cast<unsigned char*>(m_10), sizeof m_10);
+    pDecoder->ReadStringBufAlias(reinterpret_cast<char*>(m_10), sizeof m_10);
     FUN_1415fb750(pDecoder);
     return 1;
 }
