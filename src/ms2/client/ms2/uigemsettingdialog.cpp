@@ -93,8 +93,7 @@ CGemTransparency* UIGemSettingDialog::FUN_1419469b0()
         return 0;
     MS2Ptr<CGemBase> spGem = FUN_14165f460(pActor)->FUN_141270740(1);
     CGemTransparency* pGem = dynamic_cast<CGemTransparency*>(FUN_140ddcc50(spGem));
-    FUN_1405a8650(spGem);
-    return pGem;
+    return pGem;   // spGem's scope exit is the exe's FUN_1405a8650: an explicit call on top released it twice
 }
 
 // @0x141946140
