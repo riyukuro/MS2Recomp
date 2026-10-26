@@ -105,7 +105,7 @@
 // MS2-PIN: ??$?0AEBU?$less@V?$MS2Ptr@VAutomaticCreateCubeInfo@@@@@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@V?$MS2Ptr@VAutomaticCreateCubeInfo@@@@@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@V?$MS2Ptr@VAutomaticCreateCubeInfo@@@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@V?$MS2Ptr@VAutomaticCreateCubeInfo@@@@@std@@@std@@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@V?$MS2Ptr@VAutomaticCreateCubeInfo@@@@@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1410d9760 ; prop
 // MS2-PIN: ??$?0AEBU?$less@_J@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@_J@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CB_JV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@_J@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1410d97b0 ; prop
 // MS2-PIN: ??$?0AEBW4Unk_CMISKindB@@$$Z$$V@?$pair@$$CBW4Unk_CMISKindB@@H@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBW4Unk_CMISKindB@@@1@V?$tuple@$$V@1@@Z 0x1410d9a90 ; sfr36: rvalue/const& chain from the exe (head-range pair ctors are the rvalue ones)
-// MS2-PIN: ??$?0AEBI$$Z$$V@?$pair@$$CBIV?$MS2Ptr@VCube@@@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBI@1@V?$tuple@$$V@1@@Z 0x1410d9bb0 ; sfr36: exe uint->Cube Custom chain (_Construct1 0x1410e11e0) calls it
+// MS2-PIN: ??$?0AEBJ$$Z$$V@?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBJ@1@V?$tuple@$$V@1@@Z 0x1410d9bb0 ; sfr36: exe uint->Cube Custom chain (_Construct1 0x1410e11e0) calls it
 // MS2-PIN: ??$?0V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$MS2Ptr@VAutomaticCreateCubeInfo@@@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$MS2Ptr@VAutomaticCreateCubeInfo@@@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$MS2Ptr@VAutomaticCreateCubeInfo@@@@@std@@@std@@@1@$$QEA_N@Z 0x1410d9e60 ; order
 // MS2-PIN: ??$?0V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$MS2Ptr@VCFunctionCubeObject@@@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$MS2Ptr@VCFunctionCubeObject@@@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$MS2Ptr@VCFunctionCubeObject@@@@@std@@@std@@@1@$$QEA_N@Z 0x1410d9eb0 ; order
 // MS2-PIN: ??$?0V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@VEntityID@egf@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@VEntityID@egf@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@VEntityID@egf@@@std@@@std@@@1@$$QEA_N@Z 0x1410d9f00 ; order
@@ -140,7 +140,7 @@
 // MS2-PIN: ??$?0V?$tuple@AEBH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHV?$MS2Ptr@VSetItemEffectInfo@@@@@std@@QEAA@AEAV?$tuple@AEBH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1410dae60 ; prop
 // MS2-PIN: ??$?0V?$tuple@AEBH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHV?$map@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@@std@@@std@@QEAA@AEAV?$tuple@AEBH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1410daf50 ; prop
 // MS2-PIN: ??$?0V?$tuple@AEBH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHVEntityID@egf@@@std@@QEAA@AEAV?$tuple@AEBH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1410db040 ; prop
-// MS2-PIN: ??$?0V?$tuple@AEBI@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBIV?$MS2Ptr@VCube@@@@@std@@QEAA@AEAV?$tuple@AEBI@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1410db380 ; prop
+// MS2-PIN: ??$?0V?$tuple@AEBJ@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@QEAA@AEAV?$tuple@AEBJ@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1410db380 ; prop
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\cubemapinformationservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -279,7 +279,7 @@ void Unk_CMISDriveTail10()
     Unk_CMISPiecewisePair<int, Unk_CMISTree<267> >(nKey);
     Unk_CMISPiecewisePair<int, Unk_CMISTree<496> >(nKey);
     Unk_CMISPiecewisePair<int, Unk_CMISCubeTimer>(nKey);
-    Unk_CMISPiecewisePair<unsigned int, MS2Ptr<Cube> >(uKey);
+    Unk_CMISPiecewisePair<long, MS2Ptr<Cube> >(static_cast<long>(uKey));
     Unk_CMISPiecewisePair<int, Unk_CMISMapBucket>(nKey);
     { Unk_CubeOwners m; }                                                                       // ugcmapdata's owner table
     { Unk_CMISIntSet s; Unk_CMISDriveSet(s, nKey); { int n = nKey; s.insert(std::move(n)); } (void)s.equal_range(nKey); s.erase(nKey); (void)s.key_comp(); }
