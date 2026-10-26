@@ -28,6 +28,8 @@
 #include "ms2/client/ms2/uidialog.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/gameeventmanagercli.h"
+#include "ms2/placeholder/ascript.h"
 #include <algorithm>
 #include <vector>
 
@@ -72,8 +74,7 @@ public:
 Unk_PbUiMgr* FUN_1403ed2b0();
 
 // The events of the game (a closed event is not running).
-class Unk_PbEventMgr { public: bool FUN_140cead80(CStringW strEvent); };
-Unk_PbEventMgr* FUN_14015a050();
+GameEventManagerCli* FUN_14015a050();
 
 // The blocked-action flags of the client config.
 class Unk_PbFlagSet { public: int FUN_1402c4c90(int nFlag); };
@@ -99,10 +100,10 @@ PaybackManagerClient* FUN_1409c1740();                              // the payba
 CStringW FUN_140298ea0(CStringW strKey);                            // string table text
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);   // notice by string id
 void FUN_141275260(int nStringId, int nA, int nB);                  // notice by string id
-__int64 FUN_140869440();                                            // the server clock
-__int64 FUN_14086b380(__int64 nTime);                               // midnight of the day
-int FUN_14086b490(int year, int month);                             // days of the month
-struct Unk_PbMember { Scaleform::GFx::Value FUN_1422baa20(const char* szMember); }; // child member by name
+__int64 GetServerTime();                                            // the server clock
+__int64 GetNextMonthStart(__int64 nTime);                               // midnight of the day
+int GetDaysInMonth(int year, int month);                             // days of the month
+ // child member by name
 unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);         // value is undefined
 int FUN_1409c17e0(const Scaleform::GFx::Value& v);
 
@@ -221,7 +222,7 @@ void PaybackManagerClient::FUN_140a8b490(MS2Ptr<TMarketBillDataParam> spParam)
         MS2Ptr<ASMeratMarketBuyBillData> spBuy(dynamic_cast<ASMeratMarketBuyBillData*>(spBill.get()));
         if (spBuy == 0)
             continue;
-        Scaleform::GFx::Value serial = reinterpret_cast<Unk_PbMember*>(spBill.operator->())->FUN_1422baa20("serialID");
+        Scaleform::GFx::Value serial = reinterpret_cast<AScript*>(spBill.operator->())->FUN_1422baa20("serialID");
         if (FUN_1409b0390(&serial) == 0)
         {
             int nSerial = FUN_1409c17e0(serial);
@@ -251,23 +252,23 @@ void PaybackManagerClient::FUN_140a8b490(MS2Ptr<TMarketBillDataParam> spParam)
 // @0x140a8ba00
 CStringW PaybackManagerClient::FUN_140a8ba00()
 {
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     int nYear = now.GetYear();
     int nMonth = now.GetMonth();
     int nDay = 1;
     int nEndYear = now.GetYear();
     int nEndMonth = now.GetMonth();
-    int nEndDay = FUN_14086b490(now.GetYear(), now.GetMonth());
+    int nEndDay = GetDaysInMonth(now.GetYear(), now.GetMonth());
     if (FUN_14071d7d0()->GetStartTime() != 0)
     {
         CMsTime start(FUN_14071d7d0()->GetStartTime());
-        CMsTime end(FUN_14086b380(FUN_14071d7d0()->GetStartTime()));
+        CMsTime end(GetNextMonthStart(FUN_14071d7d0()->GetStartTime()));
         if (now.GetYear() == start.GetYear() && now.GetMonth() == start.GetMonth())
         {
             nDay = start.GetDay();
             nEndYear = end.GetYear();
             nEndMonth = end.GetMonth();
-            nEndDay = FUN_14086b490(end.GetYear(), end.GetMonth());
+            nEndDay = GetDaysInMonth(end.GetYear(), end.GetMonth());
         }
         else if (now.GetYear() == end.GetYear() && now.GetMonth() == end.GetMonth())
         {
@@ -299,7 +300,7 @@ bool PaybackManagerClient::FUN_140a8be20(unsigned char bNotify)
 {
     if (!FUN_140a8be80(bNotify))
         return false;
-    if (!FUN_14071d7d0()->InPeriod(FUN_140869440()))
+    if (!FUN_14071d7d0()->InPeriod(GetServerTime()))
         return false;
     return true;
 }
@@ -309,7 +310,7 @@ bool PaybackManagerClient::FUN_140a8be80(unsigned char bNotify)
 {
     if (!FUN_140166410()->FUN_14036d570(0x109))
         return false;
-    if (!FUN_14015a050()->FUN_140cead80(CStringW(L"FinishPayback")))
+    if (!FUN_14015a050()->IsEnabled(CStringW(L"FinishPayback")))
         return false;
     if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(0x6f) != 0)
     {
