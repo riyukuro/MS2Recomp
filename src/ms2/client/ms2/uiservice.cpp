@@ -344,6 +344,7 @@ void FUN_141af0ce0(void* p);
 void* FUN_141aee9a0();
 void FUN_141aeec30();
 void FUN_141aeec90();
+class GFxLogger { public: GFxLogger(); virtual ~GFxLogger(); };
 void FUN_140a5bb80(void* p);
 void FUN_140a5bba0(void* p);
 unsigned char FUN_140361ab0(void* pMap, int nKey, int* pVal);                // CAtlMap<int,int>::Lookup
@@ -403,6 +404,7 @@ CUIService::CUIService()
     FUN_140163400(&m_mapOpen2, 0x11, 0.75f, 0.25f, 2.25f, 10);
     FUN_141926ff0(&m_listOpen, 10);
     FUN_141926ff0(&m_listClose, 10);
+    new (&m_log) GFxLogger;
     FUN_140a5bb80(&m_log);
     FUN_14016a050(&m_mapOpen, 0x6200018, 0);
     FUN_14016a050(&m_mapOpen, 0x620001d, 0);
@@ -439,6 +441,7 @@ CUIService::~CUIService()
     FUN_1401642a0(&m_mapOpen2);
     FUN_1401642a0(&m_mapOpen);
     FUN_1416aecf0(&m_x38);
+    reinterpret_cast<GFxLogger*>(&m_log)->GFxLogger::~GFxLogger();
 }
 
 // @0x141ad9330
@@ -4816,7 +4819,8 @@ void FUN_1414756e0(NiDefaultClickRenderStep* pStep, NiRenderClick* pClick);
 // @0x141aee8d0
 void FUN_141aee8d0(NiRenderFrame* pFrame, NiRenderStep* pStep)
 {
-    pFrame->GetRenderSteps().AddTail(pStep);
+    // MS2: the exe reaches the step list at +0x10 directly (GetRenderSteps is not a call there)
+    reinterpret_cast<NiTPointerList<NiRenderStepPtr>*>(reinterpret_cast<char*>(pFrame) + 0x10)->AddTail(pStep);
 }
 
 // @0x141adf250
