@@ -346,7 +346,7 @@ NiMesh* FUN_141197f80(float fRadius, NiColorA kColor)
     pkMesh->AddStream(NiCommonSemantics::POSITION(), 0, NiDataStreamElement::F_FLOAT32_3, 360, 0x13,
         NiDataStream::USAGE_VERTEX, aPoints, false, true);
     NiDataStreamElementLock kColors = pkMesh->AddStreamGetLock(NiCommonSemantics::COLOR(), 0,
-        NiDataStreamElement::F_FLOAT32_4, 360, 0x12, NiDataStream::USAGE_VERTEX, false, true);
+        NiDataStreamElement::F_FLOAT32_4, 360, 0x12, NiDataStream::USAGE_VERTEX, false, true, NiDataStream::LOCK_WRITE);
     NiTStridedRandomAccessIterator<NiColorA> it = kColors.begin<NiColorA>(0);
     for (int i = 0; i < 360; ++i)
         it[i] = kColor;
