@@ -239681,3 +239681,4 @@ DAT_143ffd550	143ffd550	data
 ??_GSharedObjectFlushVisitor@AS2@GFx@Scaleform@@UEAAPEAXI@Z	14292a6b0	func
 ?HasFinalize_GC@VMAbcFile@AS3@GFx@Scaleform@@MEBA_NXZ	142510e10	func
 ?MakeObject@ClassClass@ClassTraits@AS3@GFx@Scaleform@@UEAAXAEAVValue@345@PEAVTraits@345@@Z	14241be90	func
+?SetupSlotValues@Object@fl@Classes@AS3@GFx@Scaleform@@UEBAXAEAV1456@@Z	142423d80	func
