@@ -393,7 +393,8 @@ void StateTaxiCall::FUN_1417fdc00(const CString& strEffect)
     if (!m_bSurprise)
         fAngle = fAngle - 1.5707964f;
     xf.m_Rotate.FromEulerAnglesXYZ(0.0f, 0.0f, fAngle);
-    Unk_TcRequest request;
+    alignas(8) char requestBuf[sizeof(Unk_TcRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+    Unk_TcRequest& request = *reinterpret_cast<Unk_TcRequest*>(requestBuf);
     FUN_140a52ef0(&request);
     request.m_strName = strEffect;
     request.m_nKind = (FUN_1417b8560() == 0) ? 3 : 1;
