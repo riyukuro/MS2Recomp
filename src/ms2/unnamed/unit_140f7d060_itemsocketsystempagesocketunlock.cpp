@@ -135,7 +135,7 @@ class ASItemBag : public Unk_SocketPageBag {};
 class ASMultiSelectTileCacheList : public ASItemBag {
 public:
     unsigned FUN_1422cf920();                       // the selected count
-    void FUN_1422cf980(CAtlArray<int>& indices);    // the selected row indices
+    void FUN_1422cf980(std::vector<unsigned>& indices);    // the selected row indices
 };
 struct Unk_TrFindMulti { MS2Ptr<ASMultiSelectTileCacheList> FUN_140e8cee0(const CString&); };
 
@@ -640,19 +640,19 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f80160()
         int need = FUN_140628350();
         MS2Ptr<ASMultiSelectTileCacheList> list(dynamic_cast<ASMultiSelectTileCacheList*>(static_cast<ASItemBag*>(m_ingredientControl.get())));
         if (list.get() != 0) {
-            CAtlArray<int> selected;
+            std::vector<unsigned> selected;
             list->FUN_1422cf980(selected);
-            if (selected.IsEmpty()) {
+            if (selected.empty()) {
                 FUN_1412752d0(CStringW(L"s_itemsocketsystem_error_invalid_target_ingredient_null"), 1);
                 return;
             }
-            int count = (int)selected.GetCount();
+            int count = (int)selected.size();
             if (count != need) {
                 FUN_1412752d0(CStringW(L"s_itemsocketsystem_error_invalid_target_ingredient_count"), 1);
                 return;
             }
             for (int i = 0; i < count; ++i) {
-                int index = selected[i];
+                int index = (int)selected[i];
                 MS2Ptr<CItem> item = FUN_140f6d840(m_ingredientEquips, index);
                 if (item == 0 || DAT_143ab2a90.FUN_140a5d680(item->FUN_140526a50()) == 0) {
                     FUN_1412752d0(CStringW(L"s_itemsocketsystem_error_invalid_target_ingredient"), 1);
