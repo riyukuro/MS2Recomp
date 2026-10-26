@@ -128,11 +128,12 @@ class Unk_MdBookTable { public: Unk_MdPtr<Unk_MdBook> FUN_140685da0(int nBookId)
 extern Unk_MdBookTable* g_pMaidBooks;                       // the recipe books
 // @0x1412db940
 Unk_MdBookTable* FUN_1412db940() { return g_pMaidBooks; }
-struct Unk_MdBookInfo : public CPtred                       // the book's maid
+struct Unk_MdBookInfo                                       // the book's maid: a maid desc row (uimaiddialog's Unk_MaidDescRow)
 {
-    char m_pad_18[8];
-    CStringW m_20;                                          // title
+    char m_pad_00[0x10];
+    CStringW m_strSpecialty;                                // +0x10
 };
+MS2_CHECK_OFFSET(Unk_MdBookInfo, m_strSpecialty, 0x10);     // exe 0x1412dad61: add rax, 0x10
 class Unk_MdBookInfos { public: Unk_MdPtr<Unk_MdBookInfo> FUN_14067f780(int nBookId); };
 Unk_MdBookInfos* FUN_1409eed10();
 struct Unk_MdRecipe : public CPtred                         // a manufacture recipe
@@ -144,8 +145,9 @@ struct Unk_MdRecipe : public CPtred                         // a manufacture rec
 };
 class Unk_MdRecipeTable { public: Unk_MdPtr<Unk_MdRecipe> FUN_1406855c0(int nRecipeId); };
 Unk_MdRecipeTable* FUN_1409eed30();
-struct Unk_MdLevels { char m_pad[0x5180]; int m_5180; };
 class Unk_MdLevelInfo { public: int* FUN_1402056b0(); };    // the player's manufacture level
+struct Unk_MdLevels { char m_pad[0x5180]; Unk_MdLevelInfo m_5180; };   // FUN_1401d3200(): the constant slot at +0x5180
+MS2_CHECK_OFFSET(Unk_MdLevels, m_5180, 0x5180);
 Unk_MdLevelInfo* FUN_1401d3200();
 
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
@@ -248,7 +250,7 @@ void UIMaidRecipeListDialog::FUN_1412dac40()
     Unk_MdPtr<Unk_MdBookInfo> spInfo = FUN_1409eed10()->FUN_14067f780(m_178);
     if (!spInfo)
         return;
-    FUN_140cfee80(FUN_1422dbc00(), CString("m_txtTitle"), FUN_14052bd00(0x7c7, spInfo->m_20));
+    FUN_140cfee80(FUN_1422dbc00(), CString("m_txtTitle"), FUN_14052bd00(0x7c7, spInfo->m_strSpecialty));
     MS2Ptr<Unk_MdList> spList = FUN_140c02900<Unk_MdList>(CString("m_scrollList"));
     if (spList.get() != 0)
     {
@@ -265,7 +267,7 @@ void UIMaidRecipeListDialog::FUN_1412dac40()
             row.FUN_140e846b0("id", i + 1);
             row.FUN_1407cbb20("itemName", FUN_1401a9d70()->FUN_141811980(1, spRecipe->m_50));
             row.FUN_1407cb9c0("recipeID", spRef->m_id);
-            if (*FUN_1401d3200()->FUN_1402056b0() < spRef->m_level)
+            if (*reinterpret_cast<Unk_MdLevels*>(FUN_1401d3200())->m_5180.FUN_1402056b0() < spRef->m_level)   // exe: add rax, 0x5180
                 row.FUN_1407cbb20("require", FUN_1408116a0(0x7ab, spRef->m_level));
             else
                 row.FUN_1407cbb20("require", FUN_1408116a0(0x7aa, spRef->m_level));
