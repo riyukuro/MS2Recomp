@@ -11,6 +11,10 @@
 // MS2-PINS-END tplpin
 // MS2-GUESS-LOOKALIKES
 
+// the exe's abs(long) calls labs out of line through the ucrt import (not the /Oi intrinsic);
+// declared up front so the pragma applies before the CRT headers define abs(long)
+extern "C" long __cdecl labs(long);
+#pragma function(labs)
 #include "ms2/placeholder/cloadingdialog.h"
 
 #include <afxwin.h>
@@ -414,4 +418,3 @@ LRESULT CALLBACK CLoadingDialog::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LP
 // MS2-PIN: ?abs@@YAJJ@Z 0x140d4dcc0
 // MS2-FUNCTIONAL ?CreateEx@CImage@ATL@@QEAAHHHHKPEBKK@Z: the exe calls memset out of line for the BITMAPINFO/palette clears; /Oi expands the memset intrinsic (rep stosb, extra rdi save) inside the header inline
 // MS2-FUNCTIONAL ?_AtlInitializeCriticalSectionEx@ATL@@YAHPEAU_RTL_CRITICAL_SECTION@@KK@Z: the exe's ATL takes the pre-Vista branch (InitializeCriticalSectionAndSpinCount(cs, spin)); 14.16 calls InitializeCriticalSectionEx(cs, spin, flags), same result for flags 0
-// MS2-FUNCTIONAL ?abs@@YAJJ@Z: the exe's abs(long) calls labs out of line; /Oi expands the labs intrinsic inside the header inline
