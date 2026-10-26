@@ -1573,7 +1573,7 @@ void UIInventoryDialog::SendRequestItemInventory(int nTab, bool bStack)
     packet.WriteBool(bStack);
     FUN_140710590(packet);
 }
-MS2_REPLACE(0x14199C230, UIInventoryDialog::SendRequestItemInventory, 117, 0);
+MS2_REPLACE_METHOD(0x14199C230, UIInventoryDialog, SendRequestItemInventory, 117, 0);
 
 // @0x14199c2b0
 // MS2-FUNCTIONAL: frame layout of the message box temporaries differs
