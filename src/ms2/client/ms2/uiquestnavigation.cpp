@@ -332,12 +332,10 @@ int InteractNavigationEntity::vfunc_5(const TraceResult* pResult)
         return 0;
     if (pContext->m_30.find(m_30) == pContext->m_30.end())
         return 0;
-    if (pResult->m_1c == 2)
-        return 0;
     MS2Ptr<CInteractObject> spObj = FUN_1403ed2d0()->FUN_141bc66b0(m_38);
     if (spObj.IsNull())
         return 0;
-    return spObj->vfunc_7() == 0 ? 1 : 0;
+    return spObj->vfunc_7() != 0 ? 1 : 0;   // exe: test eax / jne -> 1
 }   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
 
 // @0x140e79450
@@ -350,7 +348,7 @@ int InteractNavigationEntity::vfunc_6(const TraceContext* pContext)
     MS2Ptr<CInteractObject> spObj = FUN_1403ed2d0()->FUN_141bc66b0(m_38);
     if (spObj.IsNull())
         return 0;
-    return spObj->vfunc_7() == 0 ? 1 : 0;
+    return spObj->vfunc_7() != 0 ? 1 : 0;   // exe: test eax / jne -> 1
 }   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
 
 // @0x140e79590
@@ -396,8 +394,6 @@ int LiftableNavigationEntity::vfunc_5(const TraceResult* pResult)
     if (pContext->m_18 != FUN_1403ed2d0()->FUN_141bd3060())
         return 0;
     if (pContext->m_40.find(m_30) == pContext->m_40.end())
-        return 0;
-    if (pResult->m_1c == 2)
         return 0;
     MS2Ptr<Unk_SSGNamedObj> spObj = FUN_1403ed2d0()->FUN_141bc5a20(m_38);
     if (spObj.IsNull())
