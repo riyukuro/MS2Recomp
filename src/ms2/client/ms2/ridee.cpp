@@ -32,6 +32,7 @@
 #include <efd/ServiceManager.h>
 #include "ms2/client/ms2/stateemotionidle.h"         // StateTriggerEmotion, StateTriggerFollowNpc
 #include "ms2/client/ms2/gameobjectcontrollerhitreport.h"
+#include "ms2/client/ms2/rideeinterpolator.h"
 #include "ms2/placeholder/effectquery.h"
 #include "ms2/client/ms2/effectparam.h"
 
@@ -364,14 +365,6 @@ void FUN_141683a90(void* pTracker);
 bool FUN_141682fe0(void* pTracker, int nKind);
 void FUN_14123fbf0(void* pBody, unsigned short n);
 void FUN_14123fd30(void* pBody, int n);
-
-// The interpolator driving a seat node from the rider (?\rideeinterpolator.cpp).
-class RideeInterpolator : public NiTransformInterpolator
-{
-public:
-    RideeInterpolator(NiTransformData* pData);                      // 0x1410203a0
-    void SetObjectId(int nObjectId);
-};
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(Ridee);
 
