@@ -196543,9 +196543,9 @@ FUN_141485590	141485590	func
 ?Minimum@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VCLiftableObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCLiftableObject@@@@@2@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z	141c07e00	func
 ?Minimum@?$CRBTree@VEntityID@egf@@V?$MS2Ptr@VCInteractObject@@@@V?$CElementTraits@VEntityID@egf@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VCInteractObject@@@@@5@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z	141c07f50	func
 ?Minimum@?$CRBTree@W4Unk_WsKindKey@@HV?$CElementTraits@W4Unk_WsKindKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z	141c07fc0	func
-?NewNode@?$CAtlList@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@ATL@@@ATL@@AEAAPEAVCNode@12@AEBV?$SmartPointer@VGameObject@@@efd@@PEAV312@1@Z	141c08030	func
+?NewNode@?$CAtlList@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@ATL@@@ATL@@AEAAPEAVCNode@12@AEBV?$SmartPointer@VGameObject@@@efd@@PEAV312@1@Z	141c080f0	func
 ?NewNode@?$CAtlList@V?$SmartPointer@VUnk_WsProp058@@@efd@@V?$CElementTraits@V?$SmartPointer@VUnk_WsProp058@@@efd@@@ATL@@@ATL@@AEAAPEAVCNode@12@AEBV?$SmartPointer@VUnk_WsProp058@@@efd@@PEAV312@1@Z	141c08030	func
-?NewNode@?$CAtlList@V?$SmartPointer@VPC@@@efd@@V?$CElementTraits@V?$SmartPointer@VPC@@@efd@@@ATL@@@ATL@@AEAAPEAVCNode@12@AEBV?$SmartPointer@VPC@@@efd@@PEAV312@1@Z	141c080f0	func
+?NewNode@?$CAtlList@V?$SmartPointer@VPC@@@efd@@V?$CElementTraits@V?$SmartPointer@VPC@@@efd@@@ATL@@@ATL@@AEAAPEAVCNode@12@AEBV?$SmartPointer@VPC@@@efd@@PEAV312@1@Z	141c081b0	func
 ?NewNode@?$CAtlMap@HV?$MS2Ptr@VCPortal@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCPortal@@@@@3@@ATL@@AEAAPEAVCNode@12@HII@Z	141c08270	func
 ?NewNode@?$CAtlMap@IUUnk_W6V350@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V350@@@3@@ATL@@AEAAPEAVCNode@12@III@Z	141c08270	func
 ?NewNode@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@AEAAPEAVCNode@12@III@Z	141c08480	func
