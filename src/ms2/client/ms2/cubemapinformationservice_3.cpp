@@ -4755,7 +4755,7 @@ static NxActor* CMISCreateBoxActor(NxScene* pScene, const Vector3& pos, float sx
 }
 
 // @0x1410c5680
-// MS2-FUNCTIONAL: PhysX descriptor setup written with the SDK's own members; the shape group is a guess (the exe passes none)
+// MS2-FUNCTIONAL: PhysX descriptor setup written with the SDK's own members
 void CubeMapInformationService::GeneratePhysX(Unk_EntRef spEnt, Vector3 pt)
 {
     Unk_CMISIter<257> itEnd, itFind;
@@ -4767,7 +4767,7 @@ void CubeMapInformationService::GeneratePhysX(Unk_EntRef spEnt, Vector3 pt)
     Vector3 ptPos, ptRot;
     FUN_1409618c0(FUN_1408a9280(&spEnt), 0xfd95ca52, &ptPos);
     FUN_1409618c0(FUN_1408a9280(&spEnt), 0x68c7c29d, &ptRot);
-    NxActor* pActor = CMISCreateBoxActor(pScene, ptPos, pt.x, pt.y, pt.z, ptRot.z, "CubeMapInformationService::GeneratePhysX", 0);
+    NxActor* pActor = CMISCreateBoxActor(pScene, ptPos, pt.x, pt.y, pt.z, ptRot.z, "CubeMapInformationService::GeneratePhysX", 9);   // exe: setGroup(9) (mov dx, 9)
     if (pActor != 0) {
         int tmp;
         int* cat = (int*)FUN_140876480(&tmp, 0);
