@@ -11,19 +11,13 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- unit-local placeholders ----
 
 // The input state (FUN_14025e7c0).
-class Unk_FreeCamInput
-{
-public:
-    bool FUN_14116d950(int nKey, bool b, int n);                    // key held
-    bool FUN_14116da30(int nKey, bool b, int n);                    // key pressed
-    bool FUN_14116daa0(int nButton, bool b, int n);                 // mouse button held
-    bool FUN_14116dbf0(int* pnX, int* pnY, int* pnZ, bool b, int n);    // mouse move delta
-};
-Unk_FreeCamInput* FUN_14025e7c0();
+CInputKeyHandler* FUN_14025e7c0();
 
 // The camera option row held by the game context (+0x1f4 fov).
 struct Unk_FreeCamOption
@@ -55,12 +49,7 @@ Unk_FreeCamContext* FUN_1403ed2d0();
 Unk_CameraTargetEntity* FUN_141bd0cc0(Unk_FreeCamContext* p);   // the local player
 
 // The UI service (FUN_1403ed2b0).
-class Unk_FreeCamUi
-{
-public:
-    void FUN_141adbca0(int n);
-};
-Unk_FreeCamUi* FUN_1403ed2b0();
+CUIService* FUN_1403ed2b0();
 
 // The game's TinyXML element (0x90 bytes).
 class Unk_TiXmlElement
