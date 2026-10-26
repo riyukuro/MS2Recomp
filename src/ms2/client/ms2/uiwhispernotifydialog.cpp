@@ -38,6 +38,8 @@
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/uiugceventdispatcher.h"
+#include "ms2/placeholder/creservedwordtable.h"
 
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 
@@ -106,15 +108,9 @@ public:
 };
 Unk_WhisperSenderPtr FUN_1406cd330(int nId);
 
-class Unk_WhisperTextFilter
-{
-public:
-    void FUN_1416fb340(CStringW& str);                          // 0x1416fb340 system text
-};
-Unk_WhisperTextFilter* FUN_1403b4750();
+CReservedWordTable* FUN_1403b4750();
 
-class Unk_UgcEvents { public: void FUN_141b38be0(UIUGCEventListener* p); void FUN_141b38c70(UIUGCEventListener* p); };
-Unk_UgcEvents* FUN_140bc09f0();
+UIUGCEventDispatcher* FUN_140bc09f0();
 
 CString FUN_141028a90(CString strId, int bDefault);             // the local file of a downloaded image
 CString FUN_1410280d0(int nKind, CString strName);
