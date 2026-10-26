@@ -1583,6 +1583,148 @@ def assign_dipairs(res, paths, log=print):
         f" {len(drop)} misplaced dropped; {len(todo)} open in 0x{di_lo:x}-0x{di_hi:x}, {len(moved)} placements checked)")
 
 
+# ---------------------------------------------------------------------------------------------------------------
+# verified initializer slots (2026-10-26 gb19). The block/sub-block/copy passes place a ??__E<X> by its bytes with
+# relocations masked, so a TU's initializer can take another TU's slot (NiCubeMapDepthStencilBuffer's ms_RTTI init on
+# NiDebugVisualizationClick's at 0x140124230) and leave its own (0x1401521c0) open. An exe .text$di function in the
+# initializer span that is still unpaired is credited to a ??__E<X> of any unit (placed elsewhere or not) when it
+# matches exactly and every target checks out: a function either references resolves to its exactly paired VA (an
+# unpaired one: no rule), a code symbol the obj defines matches exactly at its target, a named data symbol of the
+# symbol tables sits at its target, and every initialized data object (string literals) holds the obj's bytes.
+# Attribution: the units whose match is anchored by such data content first, then the unit with an exact pair nearest
+# the slot (a TU's initializers are contiguous); a tie credits nothing. A match no data content anchors (a header
+# static's `lea rcx,<own object>; jmp <ctor>`: every TU including the header has one) only uses a ??__E<X> that no pass
+# placed yet, once, from a unit with an exact pair within DISLOT_NEAR. Adds [name, va, True, "dislot"] to bpairs.
+DISLOT_NEAR = 0x4000
+
+
+def _dislot_check(o, e, va, known, dnames, text):
+    if not _match(o, e, va):
+        return None
+    tt = dict(bm.LAST_TARGETS)
+    anchored = False
+    for s, t in tt.items():
+        if s == e:
+            continue
+        if s in known:
+            if t not in known[s]:
+                return None
+            continue
+        if s in dnames and dnames[s] != t:
+            return None
+        i = o.by_name.get(s)
+        if i is None or o.syms[i][2] <= 0:
+            if any(lo <= t < hi for lo, hi in text) and s not in bm.SYMBOLS:
+                return None          # an external function no pass pairs: unverified
+            continue
+        sec = o.sec(o.syms[i][2])
+        if sec["chars"] & 0x20:
+            if not _match(o, s, t):
+                return None
+            continue
+        if not _dipair_data_ok(o, s, t):
+            return None
+        if not sec["chars"] & 0x80 and any(sec["data"][o.syms[i][1]:o.syms[i][1] + 64]):
+            anchored = True          # initialized, non-zero content verified
+    return anchored
+
+
+def _dislot_job(job):
+    paths, tmpl, todo, known, near, placed = job
+    exe = G["exe"]
+    text = [(exe.base + s.VirtualAddress, exe.base + s.VirtualAddress + s.Misc_VirtualSize)
+            for s in exe.pe.sections if s.Name.rstrip(b"\0") == b".text"]
+    dnames = {}
+    for f in ("symbols-engine-manual.tsv", "symbols-manual.tsv", "symbols-engine.tsv", "symbols.tsv"):
+        p = os.path.join(ROOT, "progress", f)
+        if os.path.exists(p):
+            for ln in open(p):
+                c = ln.rstrip("\n").split("\t")
+                if ln[0] != "#" and len(c) > 2 and c[2] == "data":
+                    dnames.setdefault(c[0], int(c[1], 16))
+    objs, masks, out = {}, {}, []
+    for va, n in todo:
+        img = bytes(exe.read(va, n))
+        hits = []
+        for k, u, e, sz in tmpl:
+            if sz != n:
+                continue
+            if k not in objs:
+                objs[k] = bm.Obj(paths[k])
+            o = objs[k]
+            if (k, e) not in masks:
+                data, fields, _ = o.function(o.by_name[e])
+                keep = bytearray(b"\x01") * len(data)
+                for off, ln, *_ in fields:
+                    for x in range(off, min(off + ln, len(data))):
+                        keep[x] = 0
+                masks[(k, e)] = (bytes(data), keep)
+            data, keep = masks[(k, e)]
+            if len(data) != n or any(keep[x] and data[x] != img[x] for x in range(n)):
+                continue
+            a = _dislot_check(o, e, va, known, dnames, text)
+            if a is None or (not a and (k, e) in placed):
+                continue
+            d = min((abs(v - va) for v in near.get(u, ())), default=1 << 40)
+            if a or d <= DISLOT_NEAR:
+                hits.append((not a, d, u, k, e))
+        if not hits:
+            continue
+        hits.sort()
+        best = [h for h in hits if h[:2] == hits[0][:2]]
+        if len({h[2] for h in best}) == 1:
+            out.append((va, best[0][3], best[0][4]))
+            placed.add((best[0][3], best[0][4]))
+    return out
+
+
+def assign_dislots(res, paths, log=print):
+    """credit the initializer slots still open after the other passes (see DISLOT_NEAR)"""
+    taken, known, near, placed = set(), {}, {}, set()
+    game = game_ranges()
+    gs = [a for a, _ in game]
+
+    def in_game(va):
+        i = bisect.bisect_right(gs, va) - 1
+        return i >= 0 and va < game[i][1]
+    for k, c in res.items():
+        for n, va, ok, how in c["pairs"] + c.get("xpairs", []) + c.get("hpairs", []) + c.get("bpairs", []):
+            if ok:
+                taken.add(va)
+                if not in_game(va):
+                    placed.add((k, n))
+                known.setdefault(n, set()).add(va)
+                near.setdefault(c["unit"].lower(), []).append(va)
+    tmpl, sizes = [], set()
+    for k, c in sorted(res.items()):
+        if k not in paths:
+            continue
+        for n, _, sz in c.get("blk", {}).get("secs", {}).get(".text$di", {}).get("lay", ()):
+            if n.startswith("??__E"):
+                tmpl.append((k, c["unit"].lower(), n, sz))
+                sizes.add(sz)
+    evas = sorted(va for n, vas in known.items() if n.startswith("??__E") for va in vas)
+    runs = [[]]
+    for a, b in zip([0] + evas, evas):
+        if b - a > 0x40000:
+            runs.append([])
+        runs[-1].append(b)
+    span = max(runs, key=len)
+    di_lo, di_hi = (span[0], span[-1]) if span else (0, 0)
+    todo = []
+    for line in open(FUNCS):
+        p = line.rstrip("\n").split("\t")
+        if p[0] and not p[0].startswith("#"):
+            va, n = int(p[0], 16), int(p[1])
+            if di_lo <= va <= di_hi and n in sizes and va not in taken and not in_game(va):
+                todo.append((va, n))
+    with Pool(1, initializer=_init) as p:
+        out = p.apply(_dislot_job, ((paths, tmpl, todo, known, near, placed),))
+    for va, k, e in out:
+        res[k].setdefault("bpairs", []).append([e, va, True, "dislot"])
+    log(f"engine: verified initializer slots {len(out)} of {len(todo)} open in 0x{di_lo:x}-0x{di_hi:x}")
+
+
 def run(cache, j=8, filters=(), log=print):
     """Compile + match every engine unit (those whose name contains one of `filters`); returns (results, failed)."""
     t0 = time.time()
@@ -1649,6 +1791,7 @@ def run(cache, j=8, filters=(), log=print):
         assign_subblocks(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, windows, j, log)
         header_statics(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, log)
         assign_dipairs(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, log)
+        assign_dislots(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, log)
         used = {g for c in res.values() for _, g in c.get("cands", ())}
         groups = {g: h for g, h in groups.items() if g in used}
         json.dump(groups, open(gpath + ".tmp", "w"))
