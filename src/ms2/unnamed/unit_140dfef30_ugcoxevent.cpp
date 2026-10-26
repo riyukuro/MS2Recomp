@@ -54,6 +54,8 @@ public:
     Unk_OxButton* FUN_140acd9c0();
     Unk_OxButton* FUN_140acd9e0();
     void FUN_140acd6e0();
+    // 0x10 bytes in the exe (MS2Ptr-like; FUN_140bb4b10 returns it by sret through ctor 0x140acd3b0, +8 = the pointer)
+    void* m_pad[2];
 };
 class Unk_OxMovieEntity : public UIDialog
 {
