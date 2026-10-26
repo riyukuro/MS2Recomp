@@ -15795,3 +15795,4 @@ DAT_1431921e0	1431921e0	data
 ?SpriteGetTextSnapshot@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z	1429064b0	func
 ?SetWorkflowManager@PropService@ecrPhysX@@QEAAXPEAVNiSPWorkflowManager@@@Z	142064e10	func
 ?s_meshSuffixes@@3V?$CAtlList@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@A	143ad2168	data
+?DAT_1431b79e0@@3QBUSd_1431b79e0@@B	1431b79e0	data
