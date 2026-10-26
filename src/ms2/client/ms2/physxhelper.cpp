@@ -22,6 +22,8 @@ extern "C" float (__cdecl* __imp_sqrtf)(float);
 #include <efd/ServiceManager.h>
 #include <egf/Entity.h>
 #include <ecrPhysX/PropService.h>
+#include <efdPhysX/PhysXTypes.h>
+#include <NiPhysXTypes.h>
 #include <NiPhysXProp.h>
 #include <NiPhysXPropDesc.h>
 #include <NiPhysXActorDesc.h>
@@ -102,12 +104,6 @@ Unk_PhysXApp* FUN_14168ab00(efd::ServiceManager* pServices);
 Unk_PhysWorldSvc* FUN_14168ab40(efd::ServiceManager* pServices);
 void FUN_140d86210(char* pLock);
 void FUN_140d852c0(char* pLock);
-// NxVec3 <-> game point conversions (member-style calls with the result in the hidden return slot).
-struct Unk_PhysVecView
-{
-    Vector3 FUN_140deea90() const;                  // NxVec3 to game point
-    float x, y, z;
-};
 
 Unk_PhysAppHost* FUN_14086d260();
 efd::ServiceManager* FUN_140af8310(char* pManager);
@@ -135,10 +131,6 @@ void FUN_141bc8e00(void*);
 extern int DAT_143ae2b30;
 extern const Vector3 g_143b01a60;
 extern const Vector3 g_143a08cf8;
-struct Unk_PointView
-{
-    NxVec3 FUN_140ae1df0() const;                           // game point to NxVec3 (this = the point, result in the hidden slot)
-};
 
 // The PhysX character kit entry points are DLL imports of the exe (IAT slots 0x142ccec98 / 0x142ccec90).
 extern "C" __declspec(dllimport) NxControllerManager* NxCreateControllerManager(NxUserAllocator*);
@@ -192,8 +184,8 @@ bool CPhysXHelper::CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask)
         fMaxDist = fMaxDist * (1.0f / fScale);
     else
         fMaxDist = FLT_MAX;
-    ray.orig = reinterpret_cast<const Unk_PointView&>(pInfo->m_origin).FUN_140ae1df0();
-    ray.dir = reinterpret_cast<const Unk_PointView&>(pInfo->m_dir).FUN_140ae1df0();
+    efdPhysX::PhysXTypes::Point3ToNxVec3(reinterpret_cast<const efd::Point3&>(pInfo->m_origin), ray.orig);
+    efdPhysX::PhysXTypes::Point3ToNxVec3(reinterpret_cast<const efd::Point3&>(pInfo->m_dir), ray.dir);
     ray.orig *= 1.0f / fScale;
     ray.dir.normalize();
     if (ray.dir == NxVec3(0, 0, 0))
@@ -216,8 +208,8 @@ bool CPhysXHelper::CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask)
         pInfo->m_hitShape = pHit->shape;
         pInfo->m_hitDist = pHit->distance * fScale;
         NxVec3 vPoint = pHit->worldImpact * fScale;
-        pInfo->m_hitPoint = reinterpret_cast<const Unk_PhysVecView&>(vPoint).FUN_140deea90();
-        pInfo->m_hitNormal = reinterpret_cast<const Unk_PhysVecView&>(pHit->worldNormal).FUN_140deea90();
+        NiPhysXTypes::NxVec3ToNiPoint3(vPoint, reinterpret_cast<NiPoint3&>(pInfo->m_hitPoint));
+        NiPhysXTypes::NxVec3ToNiPoint3(pHit->worldNormal, reinterpret_cast<NiPoint3&>(pInfo->m_hitNormal));
     }
     FUN_1409f7ca0()->FUN_14168a570();
     return pHit != 0;
