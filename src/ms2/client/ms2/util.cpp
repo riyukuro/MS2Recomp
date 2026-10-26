@@ -358,7 +358,7 @@ CStringA FUN_141b6e560(const CStringA& kInitialDir, LPCSTR pszFilter, const CStr
     ofn.nMaxFileTitle = 0;
     ofn.lpstrFilter = pszFilter;
     ofn.lpstrInitialDir = (LPCSTR)kInitialDir;
-    ofn.Flags = OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;
+    ofn.Flags = OFN_OVERWRITEPROMPT | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;   // 0x180a, as the exe
     CStringA kResult;
     if (GetSaveFileNameA(&ofn) == 1)
         kResult = ofn.lpstrFile;
@@ -382,7 +382,7 @@ CStringW FUN_141b6e6f0(const CStringW& kInitialDir, LPCWSTR pszFilter, const CSt
     ofn.nMaxFileTitle = 0;
     ofn.lpstrFilter = pszFilter;
     ofn.lpstrInitialDir = (LPCWSTR)kInitialDir;
-    ofn.Flags = OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;
+    ofn.Flags = OFN_OVERWRITEPROMPT | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;   // 0x180a, as the exe
     CStringW kResult;
     if (GetSaveFileNameW(&ofn) == 1)
         kResult = ofn.lpstrFile;
@@ -407,7 +407,7 @@ CStringW FUN_141b6e990(const CStringW& kStartPath)
     bi.hwndOwner = FUN_14209c720(FUN_140aadf80());
     bi.pszDisplayName = szPath;
     bi.lpszTitle = L"\uD3F4\uB354\uB97C \uC120\uD0DD\uD558\uC138\uC694";
-    bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_STATUSTEXT | BIF_EDITBOX;
+    bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_STATUSTEXT | BIF_EDITBOX | BIF_NEWDIALOGSTYLE;   // 0x55
     bi.lpfn = FUN_141b72310;
     bi.lParam = (LPARAM)szPath;
     LPITEMIDLIST pidl = SHBrowseForFolderW(&bi);
