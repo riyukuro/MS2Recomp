@@ -1665,7 +1665,7 @@ BOOL CGameApp::InitInstance()
         TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2b0(CW2A(g_143ac2fe8));
     TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2b0(StringFormat("ver '{0}', '{1}'", 2525u, 106302u));
     char szCurrentDirectory[MAX_PATH];
-    GetCurrentDirectoryA(MAX_PATH, szCurrentDirectory);
+    GetCurrentDirectoryA(0x100, szCurrentDirectory);
     FILE* pRevisions = fopen("revisions.txt", "r");
     if (pRevisions)
     {
