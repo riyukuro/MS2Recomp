@@ -107,7 +107,7 @@ template <> struct Unk_CMISTree<260> : Unk_McC<8> { Unk_CMISTree() {} };     // 
 template <> struct Unk_CMISTree<261> : Unk_McC<9> { Unk_CMISTree() {} };     // 0x1411223c0 -> map ctor 0x1411223e0
 template <> struct Unk_CMISTree<262> : Unk_McC<10> { Unk_CMISTree() {} };     // 0x141122410 -> map ctor 0x141122430
 template <> struct Unk_CMISTree<287> : Unk_McC<11> { Unk_CMISTree() {} };     // 0x1411228d0 -> map ctor 0x1411228f0
-template <> struct Unk_CMISTree<267> : Unk_McC<12> { Unk_CMISTree() {} };     // 0x1411229d0 -> map ctor 0x1411229f0
+template <> struct Unk_CMISTree<267> : efd::set<int> { Unk_CMISTree() {} };     // 0x1411229d0: the dtor 0x141125b70 is efd::set<int>'s, so the ctor builds that set (head node from the efd heap)
 template <> struct Unk_CMISTree<4109> : Unk_McC<13> { Unk_CMISTree() {} };     // unnamed family, wrapper 0x141122a70 -> map ctor 0x141122a90
 template <> struct Unk_CMISTree<4110> : Unk_McC<14> { Unk_CMISTree() {} };     // unnamed family, wrapper 0x141122af0 -> map ctor 0x141122b10
 template <> struct Unk_CMISTree<256> : Unk_McC<15> { Unk_CMISTree() {} };     // 0x141122b70 -> map ctor 0x141122b90
@@ -121,7 +121,8 @@ template <> struct Unk_CMISTree<270> : Unk_McC<22> { Unk_CMISTree() {} };     //
 template <> struct Unk_CMISTree<257> : Unk_McC<23> { Unk_CMISTree() {} };     // 0x1411226c0 -> map ctor 0x1411226e0
 template <> struct Unk_CMISTree<258> : Unk_McC<24> { Unk_CMISTree() {} };     // 0x141122710 -> map ctor 0x141122730
 template <> struct Unk_CMISTree<259> : Unk_McC<25> { Unk_CMISTree() {} };     // 0x141122760 -> map ctor 0x141122780
-template <> struct Unk_CMISTree<282> : Unk_McC<26> { Unk_CMISTree() {} };     // 0x1411227b0 -> map ctor 0x1411227d0
+template <> struct Unk_CMISTree<282> : efd::map<int, int> { Unk_CMISTree() {} };     // 0x1411227b0: the dtor is efd::map<Unk_CMISKindA,int>'s (same node size as <int,int>)
+template Unk_McC<26>::map();     // 0x1411227d0: the exe still instantiates the old std::map ctor here (the <282> ctor above now builds the efd::map)
 template <> struct Unk_CMISTree<281> : Unk_McC<27> { Unk_CMISTree() {} };     // 0x141122830 -> map ctor 0x141122850
 template <> struct Unk_CMISTree<280> : Unk_McC<28> { Unk_CMISTree() {} };     // 0x141122880 -> map ctor 0x1411228a0
 struct Unk_CMISAnchorS29 : Unk_McS<29> { Unk_CMISAnchorS29() {} };     // std::map ctor 0x141122140
