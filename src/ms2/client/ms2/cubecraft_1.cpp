@@ -677,7 +677,7 @@ void CConstructionGuideObject::FUN_1410a2440()
             FUN_1410a2a60(pSel);
         if (m_spGuide.get())
         {
-            m_spGuide->vfunc_9(3.1415927f);
+            m_spGuide->vfunc_9(0.5f);
             m_spGuide->vfunc_10(m_spLiftNode.operator->(), 1);
             m_spGuide->vfunc_12();
         }
