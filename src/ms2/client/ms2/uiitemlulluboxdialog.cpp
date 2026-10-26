@@ -499,25 +499,26 @@ void UIItemLulluBoxDialog::FUN_140e9cde0(int count)
         rows = 2;
     if (rows > 3)
         rows = 3;
-    int h = rows * 0x46;
+    int h = rows * 0x3c;
+    h = h + (rows - 1) * 0xa;
     MS2Ptr<ASMovieClip> bag = FUN_140ba7930("m_previewItemBag");
     if (bag == 0)
         return;
-    bag->FUN_1422c0ec0(h - 10);
+    bag->FUN_1422c0ec0(h);
     float y = bag->FUN_1422c1110() + (float)bag->FUN_1422c13b0() + 6.0f;
     m_skipEffect->FUN_1422c05a0(y);
     m_autoPay->FUN_1422c05a0(y);
     float y2 = m_skipEffect->FUN_1422c1110() + (float)m_skipEffect->FUN_1422c13b0() + 10.0f;
     m_singleOpen->FUN_1422c05a0(y2);
     m_multiOpen->FUN_1422c05a0(y2);
-    FUN_140d00c80(FUN_1422dbb40(), "m_boxBG", h + 0x103);
+    FUN_140d00c80(FUN_1422dbb40(), "m_boxBG", h + 0x10d);
     if (tall) {
         float x = bag->FUN_1422c10a0();
         x = x - 6.0f;
         bag->FUN_1422c0420(x);
     }
     if (rows > 2) {
-        float v = FUN_1422dba50()->FUN_1422c1110() - (float)(h - 0x96);
+        float v = FUN_1422dba50()->FUN_1422c1110() - (float)(h - 0x8c);
         FUN_1422dba50()->FUN_1422c05a0(v);
     }
 }
@@ -599,7 +600,7 @@ void UIItemLulluBoxDialog::FUN_140e9dc30()
         return;
     FUN_140e9c0d0();
     if (LULLUBOX_ITEMS.FUN_14028b470() == 1) {
-        MS2Ptr<ASMovieClip> single = m_itemBox->FUN_1409b4560("m_singleItem");
+        MS2Ptr<ASMovieClip> single = m_resultItem->FUN_1409b4560("m_singleItem");
         if (single.get() == 0)
             return;
         MS2Ptr<ASMovieClip> slot = single->FUN_1409b4560("m_itemSlot");
@@ -633,7 +634,7 @@ void UIItemLulluBoxDialog::FUN_140e9dc30()
         for (size_t i = 0; i < 10; ++i) {
             size_t k = i + 1;
             CString nm = StringFormat("m_multi{0}", k);
-            MS2Ptr<ASMovieClip> multi = m_itemBox->FUN_1409b4560(nm);
+            MS2Ptr<ASMovieClip> multi = m_resultItem->FUN_1409b4560(nm);
             if (multi.get() == 0)
                 continue;
             MS2Ptr<ASMovieClip> slot = multi->FUN_1409b4560("m_itemSlot");
