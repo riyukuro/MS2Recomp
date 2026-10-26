@@ -33,6 +33,9 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/fieldmetatable.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
 #include <algorithm>
 #include <stdlib.h>
 #include <string.h>
@@ -79,12 +82,11 @@ void* FUN_141bd0cc0(void* pWorld);                              // its local pla
 // the local player: only the level (slot 78, +0x270) is used
 struct Unk_LgActor { virtual void Unk_Slot0(); virtual void Unk_Slot1(); virtual void Unk_Slot2(); virtual void Unk_Slot3(); virtual void Unk_Slot4(); virtual void Unk_Slot5(); virtual void Unk_Slot6(); virtual void Unk_Slot7(); virtual void Unk_Slot8(); virtual void Unk_Slot9(); virtual void Unk_Slot10(); virtual void Unk_Slot11(); virtual void Unk_Slot12(); virtual void Unk_Slot13(); virtual void Unk_Slot14(); virtual void Unk_Slot15(); virtual void Unk_Slot16(); virtual void Unk_Slot17(); virtual void Unk_Slot18(); virtual void Unk_Slot19(); virtual void Unk_Slot20(); virtual void Unk_Slot21(); virtual void Unk_Slot22(); virtual void Unk_Slot23(); virtual void Unk_Slot24(); virtual void Unk_Slot25(); virtual void Unk_Slot26(); virtual void Unk_Slot27(); virtual void Unk_Slot28(); virtual void Unk_Slot29(); virtual void Unk_Slot30(); virtual void Unk_Slot31(); virtual void Unk_Slot32(); virtual void Unk_Slot33(); virtual void Unk_Slot34(); virtual void Unk_Slot35(); virtual void Unk_Slot36(); virtual void Unk_Slot37(); virtual void Unk_Slot38(); virtual void Unk_Slot39(); virtual void Unk_Slot40(); virtual void Unk_Slot41(); virtual void Unk_Slot42(); virtual void Unk_Slot43(); virtual void Unk_Slot44(); virtual void Unk_Slot45(); virtual void Unk_Slot46(); virtual void Unk_Slot47(); virtual void Unk_Slot48(); virtual void Unk_Slot49(); virtual void Unk_Slot50(); virtual void Unk_Slot51(); virtual void Unk_Slot52(); virtual void Unk_Slot53(); virtual void Unk_Slot54(); virtual void Unk_Slot55(); virtual void Unk_Slot56(); virtual void Unk_Slot57(); virtual void Unk_Slot58(); virtual void Unk_Slot59(); virtual void Unk_Slot60(); virtual void Unk_Slot61(); virtual void Unk_Slot62(); virtual void Unk_Slot63(); virtual void Unk_Slot64(); virtual void Unk_Slot65(); virtual void Unk_Slot66(); virtual void Unk_Slot67(); virtual void Unk_Slot68(); virtual void Unk_Slot69(); virtual void Unk_Slot70(); virtual void Unk_Slot71(); virtual void Unk_Slot72(); virtual void Unk_Slot73(); virtual void Unk_Slot74(); virtual void Unk_Slot75(); virtual void Unk_Slot76(); virtual void Unk_Slot77(); virtual unsigned short vfunc_78(); };
 #define Unk_LgActorLevel(pActor) static_cast<Unk_LgActor*>(pActor)->vfunc_78()
-class Unk_LgSelf { public: int FUN_141654700(); };               // the job of the player
+               // the job of the player
 
 // listener registries
 UIQuestEventDispatcher* FUN_140bfc4b0();
-class Unk_LgStatusMgr { public: void FUN_141b0cd00(UIStatusEventListener*); void FUN_141b0cd90(UIStatusEventListener*); };
-Unk_LgStatusMgr* FUN_140aa6d40();
+UIStatusEventDispatcher* FUN_140aa6d40();
 
 // items bound to the slots of the rewards
 void FUN_141415600(const CString& strBindID);
@@ -138,8 +140,7 @@ public:
     void FUN_141b5bcc0(CStringW strText);
 };
 Unk_LgWorldMap* FUN_140961730(int nUiId);
-class Unk_LgFieldMeta { public: int FUN_1406fb700(unsigned nId, unsigned* pOut); };
-Unk_LgFieldMeta* FUN_140700390();
+CFieldMetaTable* FUN_140700390();
 class Unk_CommandUIRef
 {
 public:
@@ -436,7 +437,7 @@ void UILevelUpGuideDialog::FUN_140f857e0(int nQuest)
     MS2Ptr<CQuestData> spData = spQuest->GetData();
     if (!spData)
         return;
-    Unk_LgSelf* pSelf = static_cast<Unk_LgSelf*>(FUN_141bd0cc0(FUN_1403ed2d0()));
+    PC* pSelf = static_cast<PC*>(FUN_141bd0cc0(FUN_1403ed2d0()));
     if (pSelf == 0)
         return;
     if (spData->m_338.m_value == 1 && pSelf->FUN_141654700() == 1) {
@@ -642,7 +643,7 @@ void UILevelUpGuideDialog::FUN_140f87270(ASObj& rObj, int nQuest, int bName)
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuest);
     if (!spData)
         return;
-    Unk_LgSelf* pSelf = static_cast<Unk_LgSelf*>(FUN_141bd0cc0(FUN_1403ed2d0()));
+    PC* pSelf = static_cast<PC*>(FUN_141bd0cc0(FUN_1403ed2d0()));
     if (pSelf == 0)
         return;
     CQuestData::QuestRewardItem* pItem = 0;
