@@ -305,8 +305,8 @@ public:
     void FUN_14058d5c0(CInPacket& pkt);
     char m_pad_18[0x20 - 0x18];
     ATL::CAtlMap<Unk_PacketOptionB, Unk_PayloadPtr<BaseOption> > m_options;     // +0x20
-    char m_pad_48[0x68 - 0x48];
 };
+MS2_CHECK_SIZE(CEnchantOption, 0x68);
 
 #include "ms2/placeholder/notifygameeventchanged.h"
 
@@ -998,14 +998,14 @@ void UIItemEnchantDialog::FUN_1419c1f20(CInPacket& pkt)
     MyPC* pc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pc == 0)
         return;
-    if (m_expMode != pkt.ReadInt16()) {
+    if (m_expMode != (unsigned short)pkt.ReadInt16()) {
         vfunc_67();
         FUN_140967100()->FUN_141b1feb0();
         return;
     }
     m_selectedUid = pkt.ReadInt64();
     m_ingredients.FUN_14026c0b0(pkt);
-    m_2b0 = pkt.ReadInt16();
+    m_2b0 = (unsigned short)pkt.ReadInt16();
     m_option.AssignRaw(new CEnchantOption);
     m_option->FUN_14058d5c0(pkt);
     if (m_expMode == 1) {
@@ -1018,7 +1018,7 @@ void UIItemEnchantDialog::FUN_1419c1f20(CInPacket& pkt)
         __int64 id1 = pkt.ReadInt64();
         m_2b8 = pkt.ReadUInt8();
         m_result.m_itemId = pkt.ReadInt32();
-        m_result.SetRank(pkt.ReadInt16());
+        m_result.SetRank((unsigned short)pkt.ReadInt16());
         m_result.m_count = pkt.ReadInt32();
         MS2Ptr<CItem> first = DAT_143ab2a90.FUN_140a5d680(id0);
         if (first.get() != 0) {
@@ -1036,7 +1036,7 @@ void UIItemEnchantDialog::FUN_1419c1f20(CInPacket& pkt)
         m_228 = 100.0f;
         m_23c = 100.0f;
         m_result.m_itemId = pkt.ReadInt32();
-        m_result.SetRank(pkt.ReadInt16());
+        m_result.SetRank((unsigned short)pkt.ReadInt16());
         m_result.m_count = pkt.ReadInt32();
         m_2b4 = (float)FUN_140478b60(FUN_1401c0d90()) / 10000.0f;
         m_2b4 = m_2b4 + FUN_1411e1110(FUN_1416561a0(pc), 0x41);
