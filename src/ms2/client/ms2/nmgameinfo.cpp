@@ -101,16 +101,16 @@ unsigned int CNMGameInfo::Decode(CNMSerializableDecoder* pDecoder, CNMStream*)
 {
     m_10 = pDecoder->ReadU32();
     m_14 = pDecoder->ReadU32();
-    pDecoder->ReadBytes(reinterpret_cast<unsigned char*>(m_18), sizeof m_18);
-    pDecoder->ReadBytes(reinterpret_cast<unsigned char*>(m_38), sizeof m_38);
-    pDecoder->ReadBytes(reinterpret_cast<unsigned char*>(m_78), sizeof m_78);
-    pDecoder->ReadBytes(reinterpret_cast<unsigned char*>(m_98), sizeof m_98);
-    pDecoder->ReadBytes(reinterpret_cast<unsigned char*>(m_498), sizeof m_498);
-    pDecoder->ReadBytes(reinterpret_cast<unsigned char*>(m_898), sizeof m_898);
+    pDecoder->ReadStringBufAlias(reinterpret_cast<char*>(m_18), sizeof m_18);
+    pDecoder->ReadStringBufAlias(reinterpret_cast<char*>(m_38), sizeof m_38);
+    pDecoder->ReadStringBufAlias(reinterpret_cast<char*>(m_78), sizeof m_78);
+    pDecoder->ReadStringBufAlias(reinterpret_cast<char*>(m_98), sizeof m_98);
+    pDecoder->ReadStringBufAlias(reinterpret_cast<char*>(m_498), sizeof m_498);
+    pDecoder->ReadStringBufAlias(reinterpret_cast<char*>(m_898), sizeof m_898);
     m_c98 = pDecoder->ReadU8();
     m_c9c = pDecoder->ReadU32();
-    pDecoder->ReadBytes(reinterpret_cast<unsigned char*>(m_ca0), sizeof m_ca0);
-    pDecoder->ReadBytes(reinterpret_cast<unsigned char*>(m_10a0), sizeof m_10a0);
+    pDecoder->ReadStringBufAlias(reinterpret_cast<char*>(m_ca0), sizeof m_ca0);
+    pDecoder->ReadStringBufAlias(reinterpret_cast<char*>(m_10a0), sizeof m_10a0);
     m_14a0 = pDecoder->ReadU32();
     FUN_1415fb750(pDecoder);
     return 1;
