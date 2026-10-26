@@ -896,7 +896,8 @@ void CTriggerService::FUN_141863630(int nId, char bAdd, CStringA strName)
         Unk_TrigHandle nExisting;
         if (m_mapHandles.Lookup(nId, nExisting))
             return;
-        Unk_TrigSvcFxReq kRequest;
+        alignas(8) char kRequestBuf[sizeof(Unk_TrigSvcFxReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+        Unk_TrigSvcFxReq& kRequest = *reinterpret_cast<Unk_TrigSvcFxReq*>(kRequestBuf);
         FUN_140a52ef0(&kRequest);
         kRequest.m_strName = strName;
         kRequest.m_nOwnerId = 0;
