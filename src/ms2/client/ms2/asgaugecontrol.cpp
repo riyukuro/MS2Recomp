@@ -4,6 +4,7 @@
 // MS2-UNIT: ?\asgaugecontrol.cpp
 // MS2-RANGE: 0x1409b9ee0-0x1409ba1d0 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\asgaugecontrol.cpp"
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
 
 #include "ms2/placeholder/asdata.h"
