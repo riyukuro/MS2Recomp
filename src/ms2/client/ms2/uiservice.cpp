@@ -1864,7 +1864,15 @@ efd::AsyncResult CUIService::OnTick()
     {
         UIDialog* pDlg = m_mapDlg.GetValueAt(pos);      // MS2Ptr<UIDialog>::operator UIDialog* 0x1412784d0
         m_mapDlg.GetNext(pos);
-        (void)pDlg;
+        // per-frame update: always-tick dialogs (flag 3), else open and visible ones
+        if (pDlg->FUN_1419244c0(3) == 0)
+        {
+            if (pDlg->vfunc_55() != 0)
+                continue;
+            if (pDlg->vfunc_9() == 0)
+                continue;
+        }
+        pDlg->vfunc_72();
     }
     if (m_spDebugClick != 0)
         FUN_141e30f30(m_spDebugClick);
