@@ -159,7 +159,7 @@ unsigned int CNMGuildOnlineInfoEx::DecodeDispatch(CNMSerializableDecoder*d,CNMSt
 
 // MS2-FUNCTIONAL 0x1415754a0: decodes extended guild metadata and reconstructs its member vector.
 // @0x1415754a0
-unsigned int CNMGuildOnlineInfoEx::Decode(CNMSerializableDecoder*d,CNMStream*s){m_10=d->ReadU64();m_18=d->ReadU32();m_1c=d->ReadU32();d->ReadBytes(reinterpret_cast<unsigned char*>(m_20),0x20);m_40=d->ReadU16();const unsigned int n=d->ReadU32();m_aMembers.clear();for(unsigned int i=0;i<n;++i){m_aMembers.emplace_back();m_aMembers.back().DecodeDispatch(d,s);}m_60=d->ReadU32();return static_cast<unsigned int>(FUN_1415fb750(d));}
+unsigned int CNMGuildOnlineInfoEx::Decode(CNMSerializableDecoder*d,CNMStream*s){m_10=d->ReadU64();m_18=d->ReadU32();m_1c=d->ReadU32();d->ReadStringBufAlias(reinterpret_cast<char*>(m_20),0x20);m_40=d->ReadU16();const unsigned int n=d->ReadU32();m_aMembers.clear();for(unsigned int i=0;i<n;++i){m_aMembers.emplace_back();m_aMembers.back().DecodeDispatch(d,s);}m_60=d->ReadU32();return static_cast<unsigned int>(FUN_1415fb750(d));}
 
 // MS2-FUNCTIONAL 0x141575670: initializes the legacy guild-online record and its member vector.
 // @0x141575670
@@ -195,7 +195,7 @@ unsigned int CNMGuildOnlineInfo::DecodeDispatch(CNMSerializableDecoder*d,CNMStre
 
 // MS2-FUNCTIONAL 0x141575bd0: decodes the legacy guild-online fields and member vector.
 // @0x141575bd0
-unsigned int CNMGuildOnlineInfo::Decode(CNMSerializableDecoder*d,CNMStream*s){m_10=d->ReadU32();m_14=d->ReadU32();m_18=d->ReadU32();d->ReadBytes(reinterpret_cast<unsigned char*>(m_1c),0x20);m_3c=d->ReadU16();const unsigned int n=d->ReadU32();m_40.clear();for(unsigned int i=0;i<n;++i){m_40.emplace_back();m_40.back().DecodeDispatch(d,s);}return static_cast<unsigned int>(FUN_1415fb750(d));}
+unsigned int CNMGuildOnlineInfo::Decode(CNMSerializableDecoder*d,CNMStream*s){m_10=d->ReadU32();m_14=d->ReadU32();m_18=d->ReadU32();d->ReadStringBufAlias(reinterpret_cast<char*>(m_1c),0x20);m_3c=d->ReadU16();const unsigned int n=d->ReadU32();m_40.clear();for(unsigned int i=0;i<n;++i){m_40.emplace_back();m_40.back().DecodeDispatch(d,s);}return static_cast<unsigned int>(FUN_1415fb750(d));}
 
 // MS2-PIN: ??0CNMGuildMemberInfo@@QEAA@XZ 0x1415749d0 ; recovered guild-member constructor
 // MS2-PIN: ??0CNMGuildOnlineInfoEx@@QEAA@XZ 0x141574f80 ; recovered extended online constructor
