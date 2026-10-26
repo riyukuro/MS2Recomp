@@ -172,7 +172,7 @@ void MeshInstancing::FUN_14147cbc0() {
             FUN_14098c6e0(entity, 0xa0b6b179, false);
             FUN_14098c6e0(entity, 0x2a7fd9f4, true);
             if (!FUN_141bc7b20(FUN_1403ed2d0(), entity->GetEntityID()))
-                renderer->AddRenderedEntity(entity, it->second.original);
+                renderer->RemoveRenderedEntity(entity, it->second.original);
         }
     }
 }
