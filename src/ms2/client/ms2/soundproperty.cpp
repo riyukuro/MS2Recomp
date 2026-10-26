@@ -169,7 +169,12 @@ bool SoundPropertyMgr::s_bInit;
 // The exe also holds the iterator step forwarders of a map keyed by unsigned (0x1417a2db0); explicit instantiation keeps that copy.
 typedef std::_Tree_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const unsigned, Unk_EventVoice> > > > Unk_UEventIter;
 template Unk_UEventIter& Unk_UEventIter::operator--();
-template MS2Ptr<CCacheData>::MS2Ptr(const MS2Ptr<CCacheData>&);   // the TU's own copy (0x14179f040)
+// The TU's own copy of the MS2Ptr<CCacheData> copy constructor (the shared one is 0x1401ef790).
+// @0x14179f040
+MS2Ptr<CCacheData>* FUN_14179f040(MS2Ptr<CCacheData>* self, const MS2Ptr<CCacheData>* other)
+{
+    return new (self) MS2Ptr<CCacheData>(*other);
+}
 typedef std::_Tree_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const unsigned, Unk_SoundPitch> > > > Unk_UPitchIter;
 template Unk_UPitchIter& Unk_UPitchIter::operator--();
 
@@ -477,7 +482,7 @@ int SoundPropertyMgr::LoadHitSound(const char* pszPath)
             FUN_1408731e0(pElem, "DefenceMeterial", nDefence);
             FUN_1408731e0(pElem, "soundID", nSoundId);
             Unk_HitSoundKey key(nAttack, nDefence);
-            m_hitSounds[key].push_back(static_cast<int&&>(nSoundId));
+            m_hitSounds[key].push_back(nSoundId);
         }
         return 1;
     }
