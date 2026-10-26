@@ -31,6 +31,8 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/placeholder/uiugceventdispatcher.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -44,8 +46,7 @@ static CString s_strStun = "stun";
 CUIService* FUN_1403ed2b0();
 class Unk_RdStrings { public: CStringW FUN_141811980(int nTable, int nIndex); };
 Unk_RdStrings* FUN_1401a9d70();
-class Unk_RdScriptFilter { public: void FUN_1416fb300(CStringW& strText); };
-Unk_RdScriptFilter* FUN_1403b4750();
+CReservedWordTable* FUN_1403b4750();
 class Unk_TextFilter { public: };
 int FUN_1402252f0(Unk_TextFilter*, const CStringW& str, CStringW& strOut);
 class Unk_TextFilterPtr {
@@ -65,10 +66,10 @@ class CUserReportData : public CPtred
 {
 public:
     CUserReportData(int nType);                                     // 0x140c74fc0
-    void FUN_140ec3c70(int nKind);
-    void FUN_140ec3c90(__int64 nTargetId);
-    void FUN_140ec3d40(CStringW strTargetName);                     // by value: the callee destroys it
-    void FUN_140ec3e00(CStringW strReporterName);
+    void SetField28(int nKind);
+    void SetFielda0(__int64 nTargetId);
+    void SetFieldb8(CStringW strTargetName);                     // by value: the callee destroys it
+    void SetTitle(CStringW strReporterName);
     void FUN_141904a90(int n);
     void FUN_141904af0(int n);
     void FUN_141904b10(__int64 n);
@@ -126,8 +127,7 @@ private:
 
 class Unk_ReTrophy { public: int FUN_1409365a0(int nId); };         // the trophy was earned
 Unk_ReTrophy* FUN_1406c7600();
-class Unk_ReUgcEvents { public: void FUN_141b38be0(UIUGCEventListener* p); void FUN_141b38c70(UIUGCEventListener* p); };
-Unk_ReUgcEvents* FUN_140bc09f0();
+UIUGCEventDispatcher* FUN_140bc09f0();
 class Unk_ReInv { public: int FUN_140a5f180(unsigned nItem, int n); };   // the count of an item
 extern Unk_ReInv DAT_143ab2a90;
 extern __int64 DAT_143ab2898;                                       // the money
@@ -153,7 +153,7 @@ int FUN_1408a0b80(unsigned* pnItem, __int64* pnPrice, int nMapId, int nGroup);
 int FUN_1408a0890(int nMapId, int nGroup, int* pnKind);
 Unk_CubeOwnerPtr FUN_1408a0fa0(Unk_CubeOwners& owners, int nMapId, int nBlockId);
 bool FUN_140a467d0(const MS2Ptr<AScript>*);
-__int64 FUN_140869440();                                            // the server time
+__int64 GetServerTime();                                            // the server time
 int FUN_1406516a0();                                                // client language
 CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep);
 CStringW FUN_140979570(int nMapId);                                 // the address of a map
@@ -266,13 +266,13 @@ int UIRealEstateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         if (_stricmp("OnReport", szMethod) == 0)
         {
             MS2Ptr<CUserReportData> spReport(new CUserReportData(4));
-            spReport->FUN_140ec3c70(1);
+            spReport->SetField28(1);
             spReport->FUN_141904b10(m_nOwnerId);
-            spReport->FUN_140ec3e00(m_strOwnerName);
+            spReport->SetTitle(m_strOwnerName);
             spReport->FUN_141904a90(m_nMapId);
             spReport->FUN_141904af0(m_nGroup);
-            spReport->FUN_140ec3c90(m_nOwnerId);
-            spReport->FUN_140ec3d40(m_strOwnerName);
+            spReport->SetFielda0(m_nOwnerId);
+            spReport->SetFieldb8(m_strOwnerName);
             FUN_140d86260()->vfunc_48(spReport);
             return 1;
         }
@@ -294,7 +294,7 @@ int UIRealEstateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                 Unk_GmTargetRef target(pPC->FUN_141523c50());
                 if (target.FUN_140fa9d30() != 0)
                 {
-                    if (nNotice < target.FUN_14050dee0()->m_30 - FUN_140869440())
+                    if (nNotice < target.FUN_14050dee0()->m_30 - GetServerTime())
                     {
                         __int64 nExpire = target.FUN_14050dee0()->m_30 - nNotice;
                         CStringW strExpire = FUN_141ab5520(nExpire);
