@@ -720,7 +720,7 @@ int CUgcImageConverter::Convert(D3DFORMAT eFormat, int nWidth, int nHeight, int 
         {
             m_nMipLevels = GetMipLevels(nMipSize, nMipSize);
         }
-        hr = pDevice->CreateTexture(nWidth, nHeight, m_nMipLevels, 0, eFormat, D3DPOOL_MANAGED, &pDst, NULL);
+        hr = pDevice->CreateTexture(nWidth, nHeight, m_nMipLevels, 0, eFormat, D3DPOOL_SYSTEMMEM, &pDst, NULL);
         if (FAILED(hr))
             throw Exception(0x40);
         hr = CopySurfaces(0x7fffffff, pDst);
