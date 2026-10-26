@@ -16357,3 +16357,4 @@ DAT_1431921e0	1431921e0	data
 ?DAT_14317bc90@AS2@GFx@Scaleform@@3PAPEBXA	14317bc90	data
 ?DAT_1432172f0@AS2@GFx@Scaleform@@3PAPEBXA	1432172f0	data
 ?SetupSlotValues@Object@fl@Classes@AS3@GFx@Scaleform@@UEBAXAEAV1456@@Z	142423d80	func
+?AttachLibraryFont@Font@fl_text@Instances@AS3@GFx@Scaleform@@UEAA_NXZ	1424abe80	func
