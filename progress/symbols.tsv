@@ -231554,8 +231554,6 @@ DAT_14317b668	14317b668	data
 ??_7Sfr34_TextImageDesc@@6B@	14317c9c0	data
 ??_7Allocator@Text@Render@Scaleform@@6B@	14317c9d0	data
 ??_7LoadQueueEntry@GFx@Scaleform@@6B@	14317c9d8	data
-??_7LoadQueueEntry@AS3@GFx@Scaleform@@6B@	14317c9e0	data
-??_7MovieDefRootNode@AS3@GFx@Scaleform@@6B@	14317c9e0	data
 ??_7MovieDefRootNode@GFx@Scaleform@@6B@	14317c9e0	data
 ??_7?$RefCountBase@V?$RefCountCollector@$0BED@@AS3@GFx@Scaleform@@$0BED@@Scaleform@@6B@	14317c9f8	data
 ??_7?$RefCountBase@VASIntervalTimerIntf@GFx@Scaleform@@$0BED@@Scaleform@@6B@	14317c9f8	data
@@ -231579,10 +231577,12 @@ DAT_14317b668	14317b668	data
 ?DAT_14317d6f8@@3USd_14317d6f8@@A	14317d6f8	data
 ?AvmStage_vftable_40@AS3@GFx@Scaleform@@3QBQEAXB	14317d7b0	data
 ?DAT_14317d7b0@@3USd_14317d7b0@@A	14317d7b0	data
+??_7LoadQueueEntry@AS3@GFx@Scaleform@@6B@	14317d888	data
 ??_7LoadQueueEntryMT_LoadMovie@AS3@GFx@Scaleform@@6B@	14317d890	data
 ?DAT_14317d890@AS3@GFx@Scaleform@@3PAPEBXA	14317d890	data
 ??_7AbcFileWithMovieDef@ASVM@AS3@GFx@Scaleform@@6B@	14317d8a8	data
 ??_7ASVM@AS3@GFx@Scaleform@@6B@	14317d8b0	data
+??_7MovieDefRootNode@AS3@GFx@Scaleform@@6B@	14317d8c0	data
 ?DAT_14317d8c0@@3USd_14317d8c0@@A	14317d8c0	data
 DAT_14317d8c0	14317d8c0	data
 ??_7StickyVarNode@MovieRoot@AS3@GFx@Scaleform@@6B@	14317d8c8	data
