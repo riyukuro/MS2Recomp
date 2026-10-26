@@ -62,9 +62,10 @@ class Unk_AtConstants
 public:
     char m_pad_0[0xc768];
     Unk_AtConst m_c768;
-    char m_pad_c778[0x48];
+    char m_pad_c770[0xc7c0 - 0xc770];
     Unk_AtConst m_c7c0;
 };
+MS2_CHECK_OFFSET(Unk_AtConstants, m_c7c0, 0xc7c0);
 Unk_AtConstants* FUN_1401d3200();
 
 // The target point accessors (a "valid" flag then the point, see Unk_AkoTarget).
