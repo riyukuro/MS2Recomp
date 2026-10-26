@@ -107,7 +107,7 @@ void StateHit::vfunc_4(StateData* pData)
     {
         m_pOwner->FUN_14166dd20(m_strAnim, fSpeed, true, false);
         float fLength = FUN_14099eb30(m_pOwner->FUN_14123c460(), CString(m_strAnim.c_str()));
-        m_timer.FUN_140868750((int)(fLength * 1000.0 * 0.7));
+        m_timer.FUN_140868750((int)(fLength * 1000.0f * 0.7f));
     }
     m_bC8 = false;
 }
