@@ -351,7 +351,8 @@ void UIItemEditDialog::vfunc_24(void* p)
             if (pPc->FUN_14166c930() != 0xe)
                 pPc->vfunc_59(0xe, 0, 0, 0);
             pPc->FUN_14166cc40(0x4c);
-            Unk_IEEffectRequest effect;
+            alignas(8) char effectBuf[sizeof(Unk_IEEffectRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+            Unk_IEEffectRequest& effect = *reinterpret_cast<Unk_IEEffectRequest*>(effectBuf);
             FUN_140a52ef0(&effect);
             effect.m_strName = FUN_1401d31f0()->m_hairApply;
             effect.m_n08 = 1;
