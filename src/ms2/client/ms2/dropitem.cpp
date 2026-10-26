@@ -917,7 +917,7 @@ int CDropItem::FUN_1411903c0(GameObject* pActor, float fRange, int nA, int nB)
         {
             if (!FUN_141191060())
                 return 0;
-            if (FUN_140869420() < m_n294)
+            if (FUN_140869420() < m_nFadeTime)
                 return 0;
             if (FUN_1409331e0()->FUN_14138c900(7))
                 return 0;
