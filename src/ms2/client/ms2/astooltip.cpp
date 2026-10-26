@@ -1331,7 +1331,7 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
             int nStep = pItem->FUN_140528f90(0);   // the exe passes no argument (see item.cpp)
             if (nStep > 0)
             {
-                nNeed = (int)(10000.0 / (float)nStep + 0.5);
+                nNeed = (int)(10000.0f / (float)nStep + 0.5f);
                 nCur = pItem->FUN_1405270a0() / nStep;
             }
             CStringW strExp = StringFormat(L"{0} / {1}", nCur, nNeed);
