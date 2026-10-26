@@ -3460,14 +3460,16 @@ int UIMessengerBrowser::FUN_141a25410(TalkTab* pExcept, const CStringW& strName)
 }
 
 // MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
-// The timed log's rbegin (a COMDAT of this unit's range).
-// MS2-PIN: ?rbegin@?$_Tree@V?$_Tmap_traits@_JV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@4@$00@std@@@std@@QEAA?AV?$reverse_iterator@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@@2@XZ 0x141a30d70
+// The timed log's rend (a COMDAT of this unit's range; calls begin 141a2fd10).
+// MS2-PIN: ?rend@?$_Tree@V?$_Tmap_traits@_JV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@4@$00@std@@@std@@QEAA?AV?$reverse_iterator@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@@2@XZ 0x141a30d70
 
 // @0x141a254c0
 void UIMessengerBrowser::FUN_141a254c0(__int64 nSince, CStringW& strOut)
 {
-    std::multimap<__int64, CStringW>::reverse_iterator itStop(m_timedLogs.lower_bound(nSince));
-    for (std::multimap<__int64, CStringW>::const_reverse_iterator it = m_timedLogs.rbegin(); it != itStop; ++it)
+    // exe: walks back from the last entry before lower_bound(nSince) to the oldest (it = reverse(lower_bound), end = rend())
+    std::multimap<__int64, CStringW>::iterator itLower = m_timedLogs.lower_bound(nSince);
+    std::multimap<__int64, CStringW>::reverse_iterator it(itLower);
+    for (std::multimap<__int64, CStringW>::const_reverse_iterator itEnd = m_timedLogs.rend(); it != itEnd; ++it)
     {
         CMsTime time(it->first);
         int nHour = time.GetHour();
