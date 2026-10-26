@@ -221,7 +221,7 @@ class Unk_CashInvArr                                                // the cash 
 {
 public:
     size_t FUN_140b05be0();                                         // the count
-    MS2Ptr<Unk_CashInvItem> FUN_140b05b10(size_t nIndex);
+    MS2Ptr<Unk_CashInvItem>& FUN_140b05b10(size_t nIndex);          // 0x140b05b10 returns &slot[n] (0x10 stride) in rax, no hidden slot
 };
 
 class Unk_CashMgr                                                   // the cash shop manager singleton
