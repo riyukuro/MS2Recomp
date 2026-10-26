@@ -598,17 +598,19 @@ void StateLadder::FUN_1417d9240(float fDist)
 // @0x1417d9880
 float StateLadder::FUN_1417d9880(egf::Entity* pLadder)
 {
+    const float fDrop = 5.0f;
     efd::Point3 kProp = efd::Point3::ZERO;
     NiPoint3 kPos = m_pOwner->vfunc_18();
     efd::Point3 kAbove = kPos + efd::Point3(0.0f, 0.0f, 90.0f);
     FUN_1409618c0(pLadder, 0xfd95ca52, &kProp);
     float fNear = FUN_14059d930((kAbove.z - kProp.z) + 56.0f);
     float fFar = FUN_14059d930((kAbove.z - kProp.z) + 131.0f);
-    if (fFar <= fNear)
-        kProp.z = kProp.z + 131.0f;
+    float fZ;
+    if (fNear < fFar)
+        fZ = kProp.z + 56.0f - fDrop;
     else
-        kProp.z = kProp.z + 56.0f;
-    return kProp.z - 5.0f;
+        fZ = kProp.z + 131.0f - fDrop;
+    return fZ;
 }
 
 // @0x1417d99e0
