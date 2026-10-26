@@ -210167,7 +210167,6 @@ FUN_1423d9690	1423d9690	func
 ?AS3Constructor@TextFormat@fl_text@Instances@AS3@GFx@Scaleform@@MEAAXIPEBVValue@456@@Z	1424abc10	func
 ?AS3Constructor@TextLineMetrics@fl_text@Instances@AS3@GFx@Scaleform@@UEAAXIPEBVValue@456@@Z	1424abd70	func
 ?CheckExpand@?$HashSetBase@V?$Ptr@VFont@Render@Scaleform@@@Scaleform@@V?$FixedSizeHash@V?$Ptr@VFont@Render@Scaleform@@@Scaleform@@@2@V32@U?$AllocatorGH@V?$Ptr@VFont@Render@Scaleform@@@Scaleform@@$01@2@V?$HashsetCachedEntry@V?$Ptr@VFont@Render@Scaleform@@@Scaleform@@V?$FixedSizeHash@V?$Ptr@VFont@Render@Scaleform@@@Scaleform@@@2@@2@@Scaleform@@QEAAXPEAX@Z	1424abe30	func
-?AttachLibraryFont@Font@fl_text@Instances@AS3@GFx@Scaleform@@QEAA_NXZ	1424abe80	func
 ?CreateStageObject@TextField@fl_text@Instances@AS3@GFx@Scaleform@@UEAAPEAVDisplayObject@56@XZ	1424ac040	func
 ?ForEachChild_GC@TextFormat@fl_text@Instances@AS3@GFx@Scaleform@@UEBAXPEAV?$RefCountCollector@$0BED@@456@P6AX0PEAPEBV?$RefCountBaseGC@$0BED@@456@@Z@Z	1424ac140	func
 ?GetAS3ObjectType@AntiAliasType@fl_text@ClassTraits@AS3@GFx@Scaleform@@UEBAPEBDXZ	1424ac430	func
