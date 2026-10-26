@@ -340,7 +340,7 @@ public:
 // ---- the shield bar HUD -------------------------------------------------------------------------------------------------
 
 // The buff the shield bar shows (layout seen through the HUD's reads only; the object is owned elsewhere).
-class Unk_LsSkillRef { public: const unsigned* FUN_1403e8d90(); };      // the skill id behind a reference
+class Unk_LsSkillRef { public: Unk_LsSkillRef() : m_p(0) {} const unsigned* FUN_1403e8d90(); void* m_p; };   // list iterator: 8 bytes, returned through an sret slot (user ctor => not returned in rax)      // the skill id behind a reference
 class Unk_LsSkillList
 {
 public:
