@@ -233,6 +233,7 @@ public:
     void* FUN_140a16c00();
     Unk_QueryResult* FUN_140a16c30();
     Unk_QueryList* FUN_140a17e00();
+    void* m_p0;                                             // +0x00 the exe object is 8 bytes (FUN_140af0850 writes it through the sret slot)
 };
 struct Unk_140ae7ce0 { Unk_140ae7ce0(); void *m_p0, *m_p1, *m_p2, *m_p3, *m_p4, *m_p5; };
 class Unk_QueryMgr
