@@ -134,7 +134,7 @@ CString FUN_1401d2b10(const CString& strA, const CString& strB);
 #endif
 
 // The mesh name suffixes the ctor fills once.
-static ATL::CAtlList<CString> s_meshSuffixes(10);
+ATL::CAtlList<CString> s_meshSuffixes(10); // shared with equipmodel.cpp
 
 // Equip item tags.
 static CString s_tagCap("Cap");

@@ -83,7 +83,7 @@ extern char DAT_143af77a8;      // RTTI of the dummy attach node class
 extern float DAT_143ac3d08;     // the engine's frame step
 extern char DAT_143b01a60;      // NiPoint3::ZERO
 extern char DAT_143ad2348;      // the owner's default attach-state record
-extern char DAT_143ad2168;      // list of the side suffixes tried when resolving an attach point name
+extern ATL::CAtlList<CString> s_meshSuffixes; // equipment.cpp: side suffixes tried when resolving an attach point name
 extern char DAT_142ec05ba;      // ""
 
 // ---- out-of-unit callees ----
@@ -118,6 +118,7 @@ char FUN_14053d2b0(void* p);   char FUN_14053d510(void* p);   char FUN_14053cfd0
 char FUN_14053ce80(void* p);   unsigned FUN_14053c620(void* p);   char FUN_14053e370(void* p);   void* FUN_14053ec70(void* p);
 char FUN_1405471b0(void* p);   char FUN_14059a350(void* p);
 void FUN_140529f60(void* o, CString* out, unsigned a, unsigned b, unsigned c, int d);   void FUN_140529eb0(void* o, CString* out);
+bool FUN_14053d2f0(void* p);
 void* FUN_14099eef0(void* p);   void* FUN_140a53610(void* p);   void* FUN_140a535c0(void* p);
 void* FUN_1412041d0(void* p);   void* FUN_141204220(void* p);   void* FUN_1409a8b10();   void* FUN_140c77560(void* p);
 void FUN_1405451a0(void* p);   int FUN_1405451c0(CString* p);
@@ -991,10 +992,10 @@ void FUN_141202280(CEquipModel* self, NiTransform* pOut)
         return;
     CString kPart;
     FUN_1412029d0(self, &kPart);
-    void* pos = FUN_1405eb3a0(&DAT_143ad2168);
+    void* pos = FUN_1405eb3a0(&s_meshSuffixes);
     while (pos != 0) {
         CString kFull;
-        CString* pSuffix = (CString*)FUN_1405eb3b0(&DAT_143ad2168, &pos);
+        CString* pSuffix = (CString*)FUN_1405eb3b0(&s_meshSuffixes, &pos);
         kFull.Format("%s%s", (const char*)kPart, (const char*)*pSuffix);
         alignas(8) char fs[8], sp[8];
         FUN_140984450(fs, kFull);
@@ -1335,7 +1336,7 @@ CString FUN_141203830(CEquipModel* self)
         return kEmpty;
     }
     CString kResult;
-    if (FUN_140a53610(pTpl) == 0) {
+    if (!FUN_14053d2f0(pTpl)) {
         kResult = "";
     } else if (FUN_14053cf90(pTpl) != 0) {
         void* pParent = FUN_1411dc8c0(OWNER(self));
@@ -1346,7 +1347,7 @@ CString FUN_141203830(CEquipModel* self)
                 alignas(8) char kId2[16];
                 FUN_1411dc7a0(FUN_1405a8ed0(spPart), kId2);
                 char* pTpl2 = (char*)FUN_1411dc7f0(FUN_1405a8ed0(spPart));
-                if (FUN_1401c0050(kId2, 0) != 0 || pTpl2 == 0 || FUN_140a53610(pTpl2) == 0) {
+                if (FUN_1401c0050(kId2, 0) != 0 || pTpl2 == 0 || !FUN_14053d2f0(pTpl2)) {
                     FUN_1401bfde0(kId2);
                     FUN_1405a85f0(spPart);
                     FUN_1401bfde0(kId);
