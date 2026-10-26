@@ -4019,7 +4019,7 @@ HRESULT_FROM_WIN32	14015b330	func
 ?erase@?$_Tree@V?$_Tmap_traits@IV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@4@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@2@@Z	14018fcb0	func
 ?erase@?$_Tree@V?$_Tmap_traits@W4SAType@@HU?$less@W4SAType@@@std@@V?$allocator@U?$pair@$$CBW4SAType@@H@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4SAType@@H@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4SAType@@H@std@@@std@@@std@@@2@0@Z	14018fd60	func
 ?erase@?$_Tree@V?$_Tmap_traits@W4SAType@@HU?$less@W4SAType@@@std@@V?$allocator@U?$pair@$$CBW4SAType@@H@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4SAType@@H@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4SAType@@H@std@@@std@@@std@@@2@@Z	14018fe50	func
-?erase@?$_Tree@V?$_Tset_traits@_JU?$less@_J@std@@V?$allocator@_J@2@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@_J@std@@@std@@@2@V32@0@Z	14018ff00	func
+?erase@?$_Tree@V?$_Tset_traits@_JU?$less@_J@std@@V?$allocator@_J@2@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@_J@std@@@std@@@2@V32@0@Z	140342bc0	func
 ?find@?$_Tree@V?$_Tmap_traits@W4SAType@@HU?$less@W4SAType@@@std@@V?$allocator@U?$pair@$$CBW4SAType@@H@std@@@3@$0A@@std@@@std@@QEBA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4SAType@@H@std@@@std@@@std@@@2@AEBW4SAType@@@Z	1401900a0	func
 ?length@?$_WChar_traits@_W@std@@SA_KPEB_W@Z	140190180	func
 ?lower_bound@?$_Tree@V?$_Tmap_traits@W4SAType@@HU?$less@W4SAType@@@std@@V?$allocator@U?$pair@$$CBW4SAType@@H@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4SAType@@H@std@@@std@@@std@@@2@AEBW4SAType@@@Z	1401901a0	func
@@ -149739,7 +149739,6 @@ vsprintf	14116bc30	func
 ?IncRefCount@CMainSystem@@UEBAXXZ	141475db0	func
 ?NewItem@?$NiTPointerListBase@V?$NiTPointerAllocator@_K@@V?$SmartPointer@VNiRenderClick@@@efd@@@@MEAAPEAV?$NiTListItem@V?$SmartPointer@VNiRenderClick@@@efd@@@@XZ	141475dd0	func
 ?NewItem@?$NiTPointerListBase@V?$NiTPointerAllocator@_K@@V?$SmartPointer@VNiRenderView@@@efd@@@@MEAAPEAV?$NiTListItem@V?$SmartPointer@VNiRenderView@@@efd@@@@XZ	141475df0	func
-?AppendRenderStep@NiRenderFrame@@QEAAXPEAVNiRenderStep@@@Z	141475e10	func
 ?PrependRenderStep@NiRenderFrame@@QEAAXPEAVNiRenderStep@@@Z	141475e10	func
 ?FUN_141475e60@@YAXPEAX@Z	141475e60	func
 ?RemoveAll@?$NiTListBase@V?$NiTPointerAllocator@_K@@V?$SmartPointer@VNiRenderClick@@@efd@@@@QEAAXXZ	141475e60	func
