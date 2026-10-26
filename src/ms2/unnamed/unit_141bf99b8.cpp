@@ -267,9 +267,9 @@
 // MS2-PIN: ?AddTail@?$CAtlList@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$SmartPointer@VGameObject@@@efd@@@Z 0x141bfadc0 ; m_178 (NewNode 0x141c080f0)
 // MS2-PIN: ?AddTail@?$CAtlList@V?$SmartPointer@VPC@@@efd@@V?$CElementTraits@V?$SmartPointer@VPC@@@efd@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$SmartPointer@VPC@@@efd@@@Z 0x141bfae40 ; PC list (NewNode 0x141c081b0)
 // MS2-PIN: ?FreePlexes@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@AEAAXXZ 0x141bfe400
-// MS2-PIN: ?GetFreeNode@?$CAtlList@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@ATL@@@ATL@@AEAAXXZ 0x141bfe790
-// MS2-PIN: ?GetFreeNode@?$CAtlList@V?$SmartPointer@VPC@@@efd@@V?$CElementTraits@V?$SmartPointer@VPC@@@efd@@@ATL@@@ATL@@AEAAXXZ 0x141bfe870
-// MS2-PIN: ?GetFreeNode@?$CAtlList@V?$SmartPointer@VUnk_WsProp058@@@efd@@V?$CElementTraits@V?$SmartPointer@VUnk_WsProp058@@@efd@@@ATL@@@ATL@@AEAAXXZ 0x141bfe950
+// MS2-PIN: ?GetFreeNode@?$CAtlList@V?$SmartPointer@VUnk_WsProp058@@@efd@@V?$CElementTraits@V?$SmartPointer@VUnk_WsProp058@@@efd@@@ATL@@@ATL@@AEAAXXZ 0x141bfe790 ; m_058 (NewNode 0x141c08030)
+// MS2-PIN: ?GetFreeNode@?$CAtlList@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@ATL@@@ATL@@AEAAXXZ 0x141bfe870 ; m_178 (NewNode 0x141c080f0)
+// MS2-PIN: ?GetFreeNode@?$CAtlList@V?$SmartPointer@VPC@@@efd@@V?$CElementTraits@V?$SmartPointer@VPC@@@efd@@@ATL@@@ATL@@AEAAXXZ 0x141bfe950 ; PC list (NewNode 0x141c081b0)
 // MS2-PIN: ??_G?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VCEntityShower@@@efd@@@std@@QEAAPEAXI@Z 0x141bf9f90
 // MS2-PIN: ??_G?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntity@egf@@@efd@@@std@@QEAAPEAXI@Z 0x141bf9fd0
 // MS2-PIN: ?GetModuleInstance@CAtlBaseModule@ATL@@QEAAPEAUHINSTANCE__@@XZ 0x141bffe10
