@@ -2975,8 +2975,10 @@ int WorldService::FUN_141bbb1e0(GameObject* obj, int bFullInit, unsigned cameraA
         Unk_WsA_Val16 v;
         FUN_141bf48b0(&v);
         FUN_140af6ce0(&v, FUN_14099eef0(obj));
-        FUN_141c1b490(&m_1a8, obj->m_unk_70, &v);
-        FUN_141bf6870(&v);
+        ATL::CRBMap<unsigned, Unk_WsV1a8>::CPair* old = m_1a8.Lookup(obj->m_unk_70);
+        if (old)
+            FUN_141bf6870(reinterpret_cast<Unk_WsA_Val16*>(&old->m_value));
+        m_1a8.SetAt(obj->m_unk_70, *reinterpret_cast<Unk_WsV1a8*>(&v)); // transfer v's reference
     }
     return 1;
 }
@@ -3002,6 +3004,7 @@ void* FUN_14133ede0(void* sp);                          // m_2d8.get
 void FUN_141b6fc50(const CString& what, const CString& where, int n);
 // MS2-FUNCTIONAL: raw-byte smart-pointer locals: GS cookie the exe lacks and one missing dtor EH state (maxState 6 vs 5)
 // @0x141bbb7f0
+void* FUN_14123c460(void* obj, void* idBuf);
 void WorldService::FUN_141bbb7f0(GameObject* obj, int bImmediate)
 {
     if (m_97c != 0)
@@ -3019,7 +3022,8 @@ void WorldService::FUN_141bbb7f0(GameObject* obj, int bImmediate)
     pNotify = pNotify ? FUN_141bf4820(pNotify, obj->m_unk_70) : 0;
     FUN_140da4fe0(FUN_140939a10(), FUN_140938f40(holder, pNotify));
     Unk_WsA_Hud* pSvc = (Unk_WsA_Hud*)FUN_140c607b0();
-    pSvc->OnObjectRemoved(obj->m_unk_78);
+    alignas(8) char idBuf[8];
+    pSvc->OnObjectRemoved(FUN_14123c460(obj, idBuf));
     obj->vfunc_15();
     FUN_141c18c00(&m_0b8, FUN_14123c500(obj));
     FUN_141c18930(&m_0e8, obj->m_unk_70);
@@ -4210,10 +4214,11 @@ void FUN_141c1b730(void* map, unsigned __int64* key, MS2Ptr<Unk_WsB_Marker>& val
 void WorldService::FUN_141bc4b10(MS2Ptr<Unk_WsB_Marker> marker)
 {
     CString name = marker->m_name;
-    FUN_141c1b880(&m_4b0, name, marker);
+    typedef ATL::CRBMap<CString, MS2Ptr<Unk_WsB_Marker> > MarkerNameMap;
+    reinterpret_cast<MarkerNameMap*>(&m_4b0)->SetAt(name, marker);
     efd::SmartPointer<egf::Entity> entity = marker->m_entity;
-    unsigned __int64 key = (unsigned __int64)entity.data();
-    FUN_141c1b730(&m_4e0, &key, marker);
+    typedef ATL::CRBMap<egf::Entity*, MS2Ptr<Unk_WsB_Marker> > MarkerEntityMap;
+    reinterpret_cast<MarkerEntityMap*>(&m_4e0)->SetAt(entity.data(), marker);
 }
 MS2_REPLACE_METHOD(0x141BC4B10, WorldService, FUN_141bc4b10, 211, 0xD116D59C);
 
@@ -6818,7 +6823,9 @@ void WorldService::FUN_141bcda90()
                 void* mem = ::operator new(0x30);
                 Unk_WsC_ActorUpdater* upd = mem ? FUN_1414a8240(mem, ent->GetEntityID()) : 0;
                 MS2Ptr<Unk_WsC_ActorUpdater> updater(upd);
-                FUN_141c2ec30(&m_9a0, updater);
+                static_assert(sizeof(MS2Ptr<Unk_WsC_ActorUpdater>) == sizeof(Unk_WsV9a0), "actor updater value");
+                m_9a0.push_back(Unk_WsV9a0());
+                new (&m_9a0.back()) MS2Ptr<Unk_WsC_ActorUpdater>(std::move(updater));
                 char hasAnim = 0;
                 FUN_1408a20a0(ent, 0x8e5775cc, &hasAnim);
                 if (hasAnim == 0)
@@ -9295,7 +9302,9 @@ void WorldService::FUN_141bda580()
     for (unsigned __int64 i = 0; i < entities.size(); ++i)
     {
         MS2Ptr<Unk_WsRec708> holder((Unk_WsRec708*)new UgcBannerObject(*(Unk_EntRef*)&entities[i]));
-        FUN_141c1b650(&m_708, ((UgcBannerObject*)holder.operator->())->GetBannerId(), &holder);
+        static_assert(sizeof(MS2Ptr<Unk_WsRec708>) == sizeof(Unk_WsV708), "banner value");
+        POSITION pos = m_708.SetAt(((UgcBannerObject*)holder.operator->())->GetBannerId(), Unk_WsV708());
+        new (&m_708.GetValueAt(pos)) MS2Ptr<Unk_WsRec708>(std::move(holder));
     }
 }
 MS2_REPLACE_METHOD(0x141BDA580, WorldService, FUN_141bda580, 327, 0xAD4AA1B1);
@@ -9307,9 +9316,9 @@ void FUN_141bf18d0(Unk_WsP16* self, const Unk_WsP16* src);
 // @0x141bda6d0
 MS2Ptr<Unk_WsRec708> WorldService::FUN_141bda6d0(unsigned key)
 {
-    MS2Ptr<Unk_WsRec708> found;
-    if (FUN_141c07010(&m_708, key, &found))
-        return found;
+    const ATL::CRBMap<unsigned, Unk_WsV708>::CPair* pair = m_708.Lookup(key);
+    if (pair)
+        return *reinterpret_cast<const MS2Ptr<Unk_WsRec708>*>(&pair->m_value);
     return 0;
 }
 MS2_REPLACE_METHOD(0x141BDA6D0, WorldService, FUN_141bda6d0, 168, 0x4EC3E32F);
