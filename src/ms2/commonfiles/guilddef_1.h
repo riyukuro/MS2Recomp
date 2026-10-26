@@ -185,7 +185,7 @@ public:
     void FUN_1404ca910(CStringW value);
     CString FUN_1404ca980();
     void FUN_1404caa00(CString value);
-    __int64 f00,f08; unsigned char f10; int f14,f18; short f1c; int f20,f24,f28; Unk_GuildTriple f2c; int f38,f3c,f40; __int64 f48; CLockCriticalSection lock; CStringW name; CString code;
+    __int64 f00,f08; unsigned char f10; int f14,f18; unsigned short f1c; int f20,f24,f28; Unk_GuildTriple f2c; int f38,f3c,f40; __int64 f48; CLockCriticalSection lock; CStringW name; CString code;
 };
 MS2_CHECK_SIZE(Unk_GuildMemberData,0x90);
 class CGuildMemberRaid : public CPtred {
