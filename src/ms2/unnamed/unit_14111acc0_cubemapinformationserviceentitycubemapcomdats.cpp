@@ -16,6 +16,16 @@
 #include "ms2/client/ms2/cubemapinformationservice_tail.h"
 #include "ms2/commonfiles/ugcmapsetiteminfo.h"
 
+// la1: the column map efd::map<long, MS2Ptr<Cube>> (operator[] 0x141128350, erase(where) 0x141156050); its copies in this
+// unit's range are pinned at the end.
+void Unk_CMISDriveColumnMapAcc0()
+{
+    efd::map<long, MS2Ptr<Cube> > m;
+    const long k = 0;
+    m[k];
+    m.erase(m.begin());
+}
+
 class CGuideEntity;
 struct Unk_CMISIdPtr { int m_id; MS2Ptr<Cube> m_p; };
 
@@ -290,3 +300,4 @@ Unk_CMISIter<256>* FUN_14111d3f0(Unk_CMISTree<256>* pSet, Unk_CMISIter<256>* pOu
     return pOut;
 }
 
+// MS2-PIN: ??$emplace_hint@AEBUpiecewise_construct_t@std@@V?$tuple@AEBJ@2@V?$tuple@$$V@2@@?$_Tree@V?$_Tmap_traits@JV?$MS2Ptr@VCube@@@@U?$less@J@std@@V?$CustomAllocator@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBJ@1@$$QEAV?$tuple@$$V@1@@Z 0x14111c650 ; la1: the efd::map<long,MS2Ptr<Cube>> (column map, operator[] 0x141128350) chain
