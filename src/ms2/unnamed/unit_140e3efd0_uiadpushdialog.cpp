@@ -136,7 +136,6 @@ int FUN_1422b8a10(ASData* p);
 bool FUN_1406c4cc0(const CMsTime& a, const CMsTime& b);
 unsigned __int64 FUN_140282020(const CMsTime& t);
 CStringA FUN_140e01de0(MS2Ptr<Unk_AdMarketItem> item);
-void FUN_1422c3600(ASDisplayObject* p, const char* szName, Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> cb, int a, int b, int c, int d);
 int FUN_1422e6310(ASDisplayObject* p);
 int FUN_1422e6270(ASDisplayObject* p);
 int FUN_1422c2510(ASMovieClip* p, double* pX, void* pY);
@@ -354,7 +353,7 @@ void UIAdPushDialog::OnLoadComplete()
     m_limitedBundle = m_30->FUN_140e159f0<ASDialog>("m_limitedBundle");
     UIDialog::OnLoadComplete();
     if (m_limitedBundle.get())
-        FUN_1422c3600(m_limitedBundle.get(), "dirtyPos", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIAdPushDialog::OnDirtyPos), 0, 0, 0, 0);
+        static_cast<ASEventDispatcher*>(m_limitedBundle.get())->FUN_1422c3600(CString("dirtyPos"), Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIAdPushDialog::OnDirtyPos), false, 0, 0, (void*)0);
     Refresh(4);
     FUN_140939a10()->FUN_140da4e40(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIAdPushDialog::OnNotifyGameEventChanged));
 }
@@ -892,7 +891,7 @@ void AdPushEntityLimitedBundle::SetBadge(MS2Ptr<ASMovieClip> badge)
     if (!(m_badge == 0))
     {
         m_remain = m_badge->FUN_1409b4620("m_remainTime");
-        FUN_1422c3600(m_badge.get(), "clickMaximize", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &AdPushEntityLimitedBundle::OnMaximize), 0, 0, 0, 0);
+        static_cast<ASEventDispatcher*>(m_badge.get())->FUN_1422c3600(CString("clickMaximize"), Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &AdPushEntityLimitedBundle::OnMaximize), false, 0, 0, (void*)0);
     }
 }
 
