@@ -29,14 +29,15 @@
 static CString s_strReportClose("System_ReportClose");
 static CString s_strReportOpen("System_ReportOpen");
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/placeholder/notifysystem.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
-__int64 FUN_140869440();                                        // the server time
+__int64 GetServerTime();                                        // the server time
 void FUN_141275260(int nStringId, int nA, int nB);              // system message
 CStringW GetStringCommon(int nStringId);                          // string table text by id
-CStringW FUN_1409eec40(int nStringId);                          // string table text by id
+CStringW BlockFormat(int nStringId);                          // string table text by id
 void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag);   // open a message box
 void FUN_14028cd00(const CStringW& strText, CAtlArray<CStringW>& arrOut, const wchar_t* pszSep, int nMax);   // split
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);    // equals
@@ -55,8 +56,7 @@ private:
     int m_kind;
     Unk_ReportTarget m_target;
 };
-class Unk_ReportNotifyManager { public: void FUN_140da4fe0(MS2Ptr<NotifyObject>); };
-Unk_ReportNotifyManager* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 
 class Unk_ReportBlindManager
 {
@@ -66,7 +66,6 @@ public:
 };
 Unk_ReportBlindManager* FUN_1409c1730();
 CUgcManager* FUN_14052d220();
-CBuddyManager* FUN_14097a780();
 
 // ---- the report form ---------------------------------------------------------------------------------------------------
 
@@ -122,7 +121,7 @@ void UIReportDialog::OnLoadInit()
             strExtra = m_strPet;
         }
         m_30->FUN_1412e80d0("SetMode", strMode, m_strTarget, strExtra);
-        m_178 = FUN_140869440();
+        m_178 = GetServerTime();
     }
 }
 
@@ -240,16 +239,16 @@ int UIReportDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
             m_strText = strText;
             if (nMode == 1)
             {
-                FUN_140d73aa0(FUN_1409eec40(0x8a7), 1, static_cast<IMessageListener*>(this), CStringW(L"report"));
+                FUN_140d73aa0(BlockFormat(0x8a7), 1, static_cast<IMessageListener*>(this), CStringW(L"report"));
             }
             else
             {
-                CStringW strAsk = FUN_1409eec40(0x8a9);
+                CStringW strAsk = BlockFormat(0x8a9);
                 if (m_strMethod.CompareNoCase("OnSelectCharacter") == 0
                     || m_strMethod.CompareNoCase("OnSelectChatting") == 0
                     || m_strMethod.CompareNoCase("OnSelectPet") == 0)
                 {
-                    strAsk = FUN_1409eec40(0x8a8);
+                    strAsk = BlockFormat(0x8a8);
                 }
                 FUN_140d73aa0(strAsk, 1, static_cast<IMessageListener*>(this), CStringW(L"reportAndBan"));
             }
@@ -428,7 +427,7 @@ void UIReportDialog::FUN_141aba110(CString strMethod, unsigned int nFlags)
     {
         __int64 nBuddyId = 0;
         bool bRequest = true;
-        CBuddyManager::Ptr spBuddy = FUN_14097a780()->FUN_140ae4880(m_nCharacterId);
+        CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4880(m_nCharacterId);
         if (spBuddy.get() != 0)
         {
             nBuddyId = spBuddy->FUN_1401cc2f0();
@@ -443,7 +442,7 @@ void UIReportDialog::FUN_141aba110(CString strMethod, unsigned int nFlags)
             request.name = m_strTarget;
             request.memo = GetStringCommon(0x8af);
             request.id = nBuddyId;
-            FUN_14097a780()->FUN_140ae4820(request);
+            TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4820(request);
         }
     }
     else if (strMethod.CompareNoCase("OnSelectWallPoster") == 0)
@@ -455,7 +454,7 @@ void UIReportDialog::FUN_141aba110(CString strMethod, unsigned int nFlags)
     {
         FUN_1409c1730()->FUN_140a25950(3, m_nItemId);
         int nKind = 3;
-        FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyBlindTarget(nKind, reinterpret_cast<const Unk_ReportTarget&>(m_key))));
+        FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyBlindTarget(nKind, reinterpret_cast<const Unk_ReportTarget&>(m_key))));
     }
     else if (strMethod.CompareNoCase("OnSelectRealStatePage") == 0)
     {
