@@ -211532,7 +211532,6 @@ FUN_1423d9690	1423d9690	func
 ??1?$HashSetBase@V?$TextFormatPtrWrapper@VTextFormat@Text@Render@Scaleform@@@Text@Render@Scaleform@@UHashFunctor@1234@U51234@U?$AllocatorLH@V?$TextFormatPtrWrapper@VTextFormat@Text@Render@Scaleform@@@Text@Render@Scaleform@@$0EO@@4@V?$HashsetCachedEntry@V?$TextFormatPtrWrapper@VTextFormat@Text@Render@Scaleform@@@Text@Render@Scaleform@@UHashFunctor@1234@@4@@Scaleform@@QEAA@XZ	1424dd3b0	func
 ??1ASMovieRootBase@GFx@Scaleform@@UEAA@XZ	1424dd4d0	func
 ??1ASVM@AS3@GFx@Scaleform@@UEAA@XZ	1424dd500	func
-??1ShapeObject@AS3@GFx@Scaleform@@UEAA@XZ	1424ddb00	func
 ??1AvmDisplayObj@AS3@GFx@Scaleform@@UEAA@XZ	1424ddb80	func
 ??1AvmInteractiveObj@AS3@GFx@Scaleform@@UEAA@XZ	1424ddc20	func
 ?FUN_1424ddc20@@YAXPEAX@Z	1424ddc20	func
@@ -211547,6 +211546,7 @@ FUN_1423d9690	1423d9690	func
 ??1PropRef@AS3@GFx@Scaleform@@QEAA@XZ	1424de8f0	func
 ??1RTraits@InstanceTraits@AS3@GFx@Scaleform@@UEAA@XZ	1424de960	func
 ?FUN_1424dea90@@YAXPEAX@Z	1424dea90	func
+??1ShapeObject@AS3@GFx@Scaleform@@UEAA@XZ	1424deeb0	func
 ??1SlotInfo@AS3@GFx@Scaleform@@QEAA@XZ	1424def30	func
 FUN_1424df070	1424df070	func
 ??1Traits@AS3@GFx@Scaleform@@UEAA@XZ	1424df220	func
