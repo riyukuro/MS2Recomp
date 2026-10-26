@@ -772,7 +772,7 @@ MS2_REPLACE_METHOD(0x140a0db00, BGTransparencyMgr, vfunc_1, 2087, 0x0C0F44E6);
 MS2_REPLACE_METHOD(0x140a0ebf0, BGTransparencyMgr, UpdateFadeOut, 382, 0x360C1663);
 MS2_REPLACE_METHOD(0x140a0ed80, BGTransparencyMgr, UpdateFadeIn, 651, 0xFFB6C417);
 MS2_REPLACE_METHOD(0x140a0f020, BGTransparencyMgr, ReleaseMaterials, 270, 0x630D92CC);
-MS2_REPLACE(0x140a0f140, BGTransparencyMgr::DeleteMaterials, 186, 0xA24BC03D);
+MS2_REPLACE_METHOD(0x140a0f140, BGTransparencyMgr, DeleteMaterials, 186, 0xA24BC03D);
 MS2_REPLACE_METHOD(0x140a0f2d0, BGTransparencyMgr, MoveMissingToFadeIn, 383, 0x9B2EDDD8);
 MS2_REPLACE(0x140a0f460, BGTransparencyMgr::CompareDistance, 234, 0x97E118CA);
 

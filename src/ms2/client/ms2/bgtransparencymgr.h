@@ -100,7 +100,7 @@ public:
     void ReleaseMaterials(egf::Entity* pEntity, TransparencyElement* pElement);   // 0x140a0f020
     void MoveAllToFadeIn();                         // 0x140a0f200
     void MoveMissingToFadeIn(Unk_BGTEntitySet& kHit);   // 0x140a0f2d0
-    static void DeleteMaterials(TransparencyElement* pElement);   // 0x140a0f140
+    void DeleteMaterials(TransparencyElement* pElement);   // 0x140a0f140 (member: rcx = this, rdx = pElement)
     static bool CompareDistance(egf::Entity* pA, egf::Entity* pB);   // 0x140a0f460 farther first
 
     efd::SmartPointer<ecr::PickService> m_spService;                // 0x10
