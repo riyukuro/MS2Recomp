@@ -1993,7 +1993,9 @@ public:
     virtual void vfunc_37();
     virtual void vfunc_38();
     virtual void vfunc_39();
-    virtual void Notify(float a, float b, int c, float d);   // slot 40 (0x140)
+    virtual void Notify(float a, float b, float c, float d);   // slot 40 (0x140)
+    virtual void vfunc_41();
+    virtual void FadeOut(float alpha, int flag);             // slot 42 (0x150)
 };
 class Unk_WsD_Clock;                                    // game clock (FUN_14086d260)
 class Unk_WsD_ModalDlg
@@ -9178,13 +9180,13 @@ void WorldService::FUN_141bd9e60(float a, float b, float c, int skipId)
         Unk_WsD_Notified* obj = (Unk_WsD_Notified*)FUN_140aac420(FUN_140c20a80(&m_118, pos));
         if (obj->GetClassId() != 0x6200044 && obj->GetClassId() != 0x6200047 && obj->GetClassId() != 0x620005e &&
             obj->GetClassId() != 0x6200016 && FUN_14123c580(obj) != skipId)
-            obj->Notify(a, b, 0, c);
+            obj->Notify(a, b, 0.0f, c);
     }
     for (void* pos = FUN_140a7b840(&m_148); pos; FUN_140a7b860(&m_148, &pos))
     {
         Unk_WsD_Notified* obj = (Unk_WsD_Notified*)FUN_140a7b650(FUN_140a7b8e0(&m_148, pos));
         if (FUN_14123c580(obj) != skipId)
-            obj->Notify(a, b, 0, c);
+            obj->Notify(a, b, 0.0f, c);
     }
 }
 MS2_REPLACE_METHOD(0x141BD9E60, WorldService, FUN_141bd9e60, 479, 0xC702E5AF);
@@ -9205,7 +9207,7 @@ void WorldService::FUN_141bda050(float alpha, int skipId)
         {
             char nameBuf[8];
             FUN_1411a6f00(FUN_1403ed280(), FUN_14123c460(obj, nameBuf));
-            obj->Notify(alpha, 0, 0, 0);
+            obj->FadeOut(alpha, 0);
         }
     }
     for (void* pos = FUN_140a7b840(&m_148); pos; FUN_140a7b860(&m_148, &pos))
@@ -9215,7 +9217,7 @@ void WorldService::FUN_141bda050(float alpha, int skipId)
         {
             char nameBuf[8];
             FUN_1411a6f00(FUN_1403ed280(), FUN_14123c460(obj, nameBuf));
-            obj->Notify(alpha, 0, 0, 0);
+            obj->FadeOut(alpha, 0);
         }
     }
 }
