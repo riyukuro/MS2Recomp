@@ -16280,3 +16280,5 @@ DAT_1431921e0	1431921e0	data
 ?DAT_1431b79e0@@3QBUSd_1431b79e0@@B	1431b79e0	data
 ?HasButtonHandlers@EventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@QEBA_NXZ	14246a140	func
 ??1ShapeObject@AS3@GFx@Scaleform@@UEAA@XZ	1424ddb00	func
+??_GSharedObjectFlushVisitor@AS2@GFx@Scaleform@@UEAAPEAXI@Z	14292a6b0	func
+?CreateEmptyLevelMovie@MovieRoot@AS2@GFx@Scaleform@@QEAAPEAVSprite@34@PEAVLoadStates@34@H@Z	1429360e0	func
