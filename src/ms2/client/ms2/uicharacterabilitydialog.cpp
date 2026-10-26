@@ -63,7 +63,10 @@ extern void* DAT_143aac648;                             // the ability table
 class Unk_CaQuestState { public: int FUN_140745590(int nQuest); };
 class Unk_CaQuestHolder { public: char m_pad_0[0x10]; Unk_CaQuestState m_state; };
 Unk_CaQuestHolder* FUN_140764020();
-struct Unk_CaQuestRow { char m_pad_0[0x10]; int m_nType; char m_pad_14[0x14]; int m_28; char m_pad_2c[0x2c]; unsigned short m_58; };
+struct Unk_CaQuestRow { char m_pad_0[0x1c]; int m_nType; char m_pad_20[8]; int m_28; char m_pad_2c[0x2c]; unsigned short m_58; };
+MS2_CHECK_OFFSET(Unk_CaQuestRow, m_nType, 0x1c);   // the exe reads it through 0x14074b050 ([rcx+0x1c])
+MS2_CHECK_OFFSET(Unk_CaQuestRow, m_28, 0x28);
+MS2_CHECK_OFFSET(Unk_CaQuestRow, m_58, 0x58);
 class Unk_CaQuestRef
 {
 public:
