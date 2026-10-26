@@ -15794,3 +15794,4 @@ DAT_1431921e0	1431921e0	data
 ?CreateObject@Sfr33MovieRoot@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@PEBDPEBV534@I@Z	1424f39c0	func
 ?SpriteGetTextSnapshot@AvmSprite@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z	1429064b0	func
 ?SetWorkflowManager@PropService@ecrPhysX@@QEAAXPEAVNiSPWorkflowManager@@@Z	142064e10	func
+?s_meshSuffixes@@3V?$CAtlList@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@A	143ad2168	data
