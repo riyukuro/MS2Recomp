@@ -1342,7 +1342,7 @@ void CFishingManager::FUN_140cdcaa0(MS2Ptr<CFishCube> cube)
     NiTransform kXform;
     FUN_1420849a0(&kXform.m_Rotate);
     kXform.m_fScale = 1.0f;
-    efd::Point3 kUp(0.0f, 0.0f, 150.0f);
+    efd::Point3 kUp(0.0f, 0.0f, 149.0f);
     efd::Point3 kPos = FUN_1408a15b0(FUN_1408a0400(cube->m_id), kOffset) + kUp;
     kXform.m_Translate = NiPoint3(kPos.x, kPos.y, kPos.z);
     Unk_EffectTarget kTarget;
