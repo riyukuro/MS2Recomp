@@ -50,6 +50,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uicharacterlistdialog.cpp"    // assumed
 
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/client/ms2/uiserverlistdialog.h"
 
 #include "uicharacterlistdialog.h"
 
@@ -1520,8 +1521,20 @@ void UICharacterListDialog::FUN_1418f13f0()
 
 // @0x1418f1790
 // MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+void* FUN_14136f520(int nId);
 void UICharacterListDialog::FUN_1418f1790()
 {
+    UIServerListDialog* pList = static_cast<UIServerListDialog*>(FUN_14136f520(0x4ef0));
+    if (pList != 0)
+    {
+        CharPtr spCharacter(m_188);
+        if (spCharacter.get() != 0)
+        {
+            CStringW strName = spCharacter->FUN_1418e9cd0();
+            if (pList->FUN_141ad2c50((__int64)spCharacter->FUN_1418e9cb0(), (__int64)(const wchar_t*)strName) != 0)
+                return;
+        }
+    }
     ShowPopup();
 }
 
