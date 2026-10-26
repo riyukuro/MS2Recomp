@@ -1553,18 +1553,18 @@ CString FUN_140291c10(int nKind)
 
 // MS2-FUNCTIONAL: not yet byte-matched (std::string glue pairing / frame layout)
 // @0x140291d10
-int FUN_140291d10(int nKind)
+float FUN_140291d10(int nKind)
 {
     switch (nKind)
     {
     case 1:
-        return reinterpret_cast<Unk_IntOptionEntry*>((char*)FUN_1401d3200() + 0x8068)->FUN_140298f40();
+        return reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>((char*)FUN_1401d3200() + 0x8068)->FUN_140298f40());
     case 2:
-        return reinterpret_cast<Unk_IntOptionEntry*>((char*)FUN_1401d3200() + 0x80c0)->FUN_140298f40();
+        return reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>((char*)FUN_1401d3200() + 0x80c0)->FUN_140298f40());
     case 3:
-        return reinterpret_cast<Unk_IntOptionEntry*>((char*)FUN_1401d3200() + 0x8118)->FUN_140298f40();
+        return reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>((char*)FUN_1401d3200() + 0x8118)->FUN_140298f40());
     default:
-        return 0;
+        return 0.0f;
     }
 }
 
