@@ -129,7 +129,7 @@ public:
     static int Id() { return 0x4e8d; }
     void* p178; void* p180; int field188;
 };
-class UIItemDonationDialog : public UIItemBreakDialog {};
+class UIItemBreakDonationDialog : public UIItemBreakDialog {};
 class UIShopDialog : public UIDialog { public: void FUN_141afbd10(); };
 class Unk_BreakUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int); };
 Unk_BreakUIManager* FUN_1403ed2b0();
@@ -392,7 +392,7 @@ MS2_REPLACE_METHOD(0x140531AA0, CItemBreakManager, FUN_140531aa0, 187, 0x4B7E2A6
 int CItemBreakManager::FUN_140531b70() {
     if(type==0) { MS2_ASSERT_AT(1642,"m_type != ItemBreakTypeNone" && 0); return 0; }
     UIItemBreakDialog* a=Unk_BreakDialog<UIItemBreakDialog>(0x4e8d); if(a && a->FUN_141924630()) return 1;
-    UIItemDonationDialog* b=Unk_BreakDialog<UIItemDonationDialog>(0x4e8e); if(b && b->FUN_141924630()) return 1; return 0;
+    UIItemBreakDonationDialog* b=Unk_BreakDialog<UIItemBreakDonationDialog>(0x4e8e); if(b && b->FUN_141924630()) return 1; return 0;
 }
 MS2_REPLACE_METHOD(0x140531B70, CItemBreakManager, FUN_140531b70, 165, 0xC7E57465);
 // @0x140531c20
@@ -421,14 +421,14 @@ MS2_REPLACE_METHOD(0x140531ED0, CItemBreakManager, FUN_140531ed0, 392, 0x2F50DB8
 // @0x140532060
 void CItemBreakManager::FUN_140532060() {
     switch(type) { case 1: { UIItemBreakDialog* p=Unk_BreakDialog<UIItemBreakDialog>(0x4e8d); if(p) p->FUN_1419a1430(); } break;
-    case 2: { UIItemDonationDialog* p=Unk_BreakDialog<UIItemDonationDialog>(0x4e8e); if(p) p->FUN_1419a1430(); }
+    case 2: { UIItemBreakDonationDialog* p=Unk_BreakDialog<UIItemBreakDonationDialog>(0x4e8e); if(p) p->FUN_1419a1430(); }
     }
 }
 MS2_REPLACE_METHOD(0x140532060, CItemBreakManager, FUN_140532060, 110, 0x1A85706E);
 // @0x1405320e0
 void CItemBreakManager::FUN_1405320e0(int index) {
     switch(type) { case 1: { UIItemBreakDialog* p=Unk_BreakDialog<UIItemBreakDialog>(0x4e8d); if(p) p->FUN_1419a1d20(index); } break;
-    case 2: { UIItemDonationDialog* p=Unk_BreakDialog<UIItemDonationDialog>(0x4e8e); if(p) p->FUN_1419a1d20(index); }
+    case 2: { UIItemBreakDonationDialog* p=Unk_BreakDialog<UIItemBreakDonationDialog>(0x4e8e); if(p) p->FUN_1419a1d20(index); }
     }
 }
 MS2_REPLACE_METHOD(0x1405320E0, CItemBreakManager, FUN_1405320e0, 122, 0x94B746AD);
@@ -436,14 +436,14 @@ MS2_REPLACE_METHOD(0x1405320E0, CItemBreakManager, FUN_1405320e0, 122, 0x94B746A
 void CItemBreakManager::FUN_140532160(Unk_BreakPacket& packet) {
     switch(type) { case 1: { UIItemBreakDialog* p=Unk_BreakDialog<UIItemBreakDialog>(0x4e8d); if(p) p->vfunc_84(packet);
         UIShopDialog* shop=Unk_BreakDialog<UIShopDialog>(0x4e3b); if(shop) shop->FUN_141afbd10(); } break;
-    case 2: { UIItemDonationDialog* p=Unk_BreakDialog<UIItemDonationDialog>(0x4e8e); if(p) p->vfunc_84(packet); }
+    case 2: { UIItemBreakDonationDialog* p=Unk_BreakDialog<UIItemBreakDonationDialog>(0x4e8e); if(p) p->vfunc_84(packet); }
     }
 }
 MS2_REPLACE_METHOD(0x140532160, CItemBreakManager, FUN_140532160, 179, 0x46F57F72);
 // @0x140532220
 void CItemBreakManager::FUN_140532220() {
     switch(type) { case 1: { UIItemBreakDialog* p=Unk_BreakDialog<UIItemBreakDialog>(0x4e8d); if(p) p->vfunc_85(1,0); } break;
-    case 2: { UIItemDonationDialog* p=Unk_BreakDialog<UIItemDonationDialog>(0x4e8e); if(p) p->vfunc_85(1,0); }
+    case 2: { UIItemBreakDonationDialog* p=Unk_BreakDialog<UIItemBreakDonationDialog>(0x4e8e); if(p) p->vfunc_85(1,0); }
     }
 }
 MS2_REPLACE_METHOD(0x140532220, CItemBreakManager, FUN_140532220, 138, 0xD7B9754F);
@@ -486,7 +486,7 @@ void CItemBreakManager::FUN_1405322b0(Unk_BreakPacket& packet) {
 // @0x140532ab0
 int CItemBreakManager::FUN_140532ab0() {
     switch(type) { case 1: { UIItemBreakDialog* p=Unk_BreakDialog<UIItemBreakDialog>(0x4e8d); if(p && p->FUN_141924630()) return p->vfunc_86(); } break;
-    case 2: { UIItemDonationDialog* p=Unk_BreakDialog<UIItemDonationDialog>(0x4e8e); if(p && p->FUN_141924630()) return p->vfunc_86(); }
+    case 2: { UIItemBreakDonationDialog* p=Unk_BreakDialog<UIItemBreakDonationDialog>(0x4e8e); if(p && p->FUN_141924630()) return p->vfunc_86(); }
     } return 0;
 }
 MS2_REPLACE_METHOD(0x140532AB0, CItemBreakManager, FUN_140532ab0, 162, 0x5FF33FB6);
