@@ -69,9 +69,9 @@ CBufferCryptManager* FUN_1415415f0();
 void FUN_141541700();
 extern CBufferCryptManager* DAT_143aac528;
 CBufferCryptManager* GetBufferCryptManager();
-extern CString DAT_143ae0928;
-extern int DAT_143ae08f4,DAT_143ab2904,DAT_143ab0240;
-extern CString DAT_143ab2a50,DAT_143ab2a48;
+extern CString g_strServerAddr;
+extern int g_nPort,DAT_143ab2904,DAT_143ab0240;
+extern CString g_143ab2a50,DAT_143ab2a48;
 extern unsigned short DAT_143ab2854,DAT_143ab2848;
 extern unsigned char DAT_143ab284a;
 class Unk_NetworkPlayer { public: 
@@ -179,7 +179,7 @@ public:
 Unk_NetworkClientInfo* FUN_14086d260();
 void* FUN_141264060(int);
 void FUN_141357640(void*,__int64,__int64);
-__int64 FUN_140869440();
+__int64 GetServerTime();
 struct Unk_NetworkPong {
     Unk_NetworkPong() : sequence(0),value(0) {}
     void FUN_1401fa640(COutPacket&);
@@ -426,8 +426,8 @@ CNetworkService::~CNetworkService() { FUN_141541700(); }
 const char* CNetworkService::GetDisplayName() const { return "NetworkService"; }
 // @0x1415382c0
 int CNetworkService::FUN_1415382c0() {
-    CString host=DAT_143ae0928;
-    int port=DAT_143ae08f4;
+    CString host=g_strServerAddr;
+    int port=g_nPort;
     FUN_140d86260()->vfunc_22(700,"Connect : %s %d",(const char*)host,port);
     return FUN_1415383a0(host,port,0,1,0);
 }
@@ -541,11 +541,11 @@ void CNetworkService::FUN_141538f80() {
 // @0x141539130
 void CNetworkService::FUN_141539130() {
     CString& strHost=DAT_143ab2a48; unsigned short& nPort=DAT_143ab2848;
-    DAT_143ab2a50=strHost; DAT_143ab2854=nPort;
+    g_143ab2a50=strHost; DAT_143ab2854=nPort;
 }
 // @0x141539180
 int CNetworkService::FUN_141539180() {
-    CString& strHost=DAT_143ab2a50; unsigned short& nPort=DAT_143ab2854;
+    CString& strHost=g_143ab2a50; unsigned short& nPort=DAT_143ab2854;
     if(strHost.IsEmpty()||nPort==0) return 0;
     if(DAT_143ab284a!=0x11) return 0;
     DAT_143ab2a48=strHost; DAT_143ab2848=nPort;
@@ -743,7 +743,7 @@ void CNetworkService::FUN_14153a380(CInPacket& input) {
     else if(kind==4) {
         __int64 time=input.ReadInt64();
         void* dialog=FUN_141264060(0x4ebe);
-        if(dialog) FUN_141357640(dialog,FUN_140869440(),time);
+        if(dialog) FUN_141357640(dialog,GetServerTime(),time);
     }
 }
 // @0x14153a780
