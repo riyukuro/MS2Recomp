@@ -1953,7 +1953,7 @@ void UICommunityQueryDialog::FUN_1418dbcb0(int nMode)
         {
             CStringW strMemo(m_1a0.Trim());
             if (FUN_1418d3050(strMemo) != 0)
-                FUN_1414a5830()->FUN_140a47c80(m_198, CStringW(m_188));
+                FUN_1414a5830()->FUN_140a47c80(m_190, CStringW(strMemo));   // the exe passes the buddy id (+0x190) and the trimmed memo
         }
     }
     else
