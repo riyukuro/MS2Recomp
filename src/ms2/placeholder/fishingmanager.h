@@ -120,6 +120,7 @@ public:
 MS2_CHECK_OFFSET(CFishingManager, m_bFishing, 0x10);
 MS2_CHECK_OFFSET(CFishingManager, m_cubes, 0x38);
 MS2_CHECK_OFFSET(CFishingManager, m_bAutoFishing, 0xc8);
+MS2_CHECK_OFFSET(CFishingManager, m_nReelSound, 0xd4);
 MS2_CHECK_OFFSET(CFishingManager, m_resultTimer, 0xd8);
 MS2_CHECK_OFFSET(CFishingManager, m_uidRod, 0x148);
 MS2_CHECK_OFFSET(CFishingManager, m_record, 0x160);

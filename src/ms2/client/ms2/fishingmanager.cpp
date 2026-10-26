@@ -815,8 +815,8 @@ void CFishingManager::OnCastingFinished()
         pkt.Encode1(nResult);
         FUN_140710590(pkt);
     }
-    if (m_bGreat != 0)
-        FUN_1411a6060(FUN_1403ed280(), m_bGreat);
+    if (m_nReelSound != 0)   // exe: [this+0xcc] with this = the ICastingEventListener base at +8 -> +0xd4
+        FUN_1411a6060(FUN_1403ed280(), m_nReelSound);
 }
 
 // @0x140cdac20
