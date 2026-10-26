@@ -1120,11 +1120,11 @@ void UIPCInfoDialog::vfunc_87()
             {
                 if (m_spInfo->m_3c0 == 0)
                 {
-                    spText->vfunc_3(0);
+                    spText->vfunc_4(false);   // exe: call [rax+0x20] (slot 4, bool), not slot 3
                 }
                 else
                 {
-                    spText->vfunc_3(1);
+                    spText->vfunc_4(true);
                     spText->FUN_1422c4cd0(StringFormat(L"{0}", (unsigned int)nRemaining));
                     unsigned int nColor = 0xffffff;
                     if (nRemaining != 0)
