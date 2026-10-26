@@ -318,7 +318,7 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
         if (spEntry.get())
         {
             MS2Ptr<CItem> spItem = spEntry->m_item;
-            bool bRegister = FUN_1418d0da0(m_spItemRegister.get());
+            bool bRegister = FUN_1418d0da0(m_spItemSearch.get());
             FUN_1413490b0(spItem, pRetVal, bRegister, 0x400, 0);
             ASTooltip tip(*pRetVal, 2);
             if (!tip.FUN_1422ba9a0())
