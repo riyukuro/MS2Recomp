@@ -138,7 +138,8 @@ void StateSpawn::vfunc_3(double fTime)
             xf.m_fScale = 1.0f;
             Unk_SpawnNiPoint3 niPt(m_pOwner->vfunc_18());
             FUN_14097faa0(&xf.m_translate, &niPt);
-            Unk_SpawnRequest request;
+            alignas(8) char requestBuf[sizeof(Unk_SpawnRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+            Unk_SpawnRequest& request = *reinterpret_cast<Unk_SpawnRequest*>(requestBuf);
             FUN_140a52ef0(&request);
             Unk_SpawnProxy kProxy;
             FUN_141093270(pMount, &kProxy);
