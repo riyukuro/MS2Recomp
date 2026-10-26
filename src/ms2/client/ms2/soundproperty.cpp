@@ -289,7 +289,7 @@ CString SystemSoundProperty::GetSoundName(unsigned nGender, int nJob)
             return CString((*spNames.get())[nGender]);
         }
     }
-    if (!m_sounds.IsEmpty())
+    if (m_sounds.IsEmpty())
         return CString((const char*)0);
     if (!m_bByGender)
         return CString(m_sounds[0]);
