@@ -45,6 +45,8 @@
 // MS2-PIN: ?RemoveAll@?$CAtlMap@IV?$MS2Ptr@VCProxyGameObject@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCProxyGameObject@@@@@3@@ATL@@QEAAXXZ 0x141c16670
 //
 // MS2-PIN: ?RemoveAll@?$CAtlMap@W4Unk_WsMapKey7@@V?$MS2Ptr@VUnk_WsMapV7@@@@V?$CElementTraits@W4Unk_WsMapKey7@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsMapV7@@@@@4@@ATL@@QEAAXXZ 0x141c16890
+// MS2-PIN: ?RemoveAll@?$CAtlList@VUnk_WsPropRef@@V?$CElementTraits@VUnk_WsPropRef@@@ATL@@@ATL@@QEAAXXZ 0x141c16150 ; m_058 (node dtor 0x141bf60a0 -> ~Unk_WsPropRef)
+// MS2-PIN: ?RemoveAt@?$CAtlList@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@ATL@@@ATL@@QEAAXPEAU__POSITION@@@Z 0x141c17660 ; m_178 (FreeNode 0x140966ba0)
 // MS2-PIN: ?RemoveAll@?$CRBTree@HV?$MS2Ptr@VCLiftableTargetBox@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCLiftableTargetBox@@@@@3@@ATL@@QEAAXXZ 0x141c16de0
 // MS2-PIN: ?RemoveAll@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VCInteractObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCInteractObject@@@@@2@@ATL@@QEAAXXZ 0x141c17360
 // MS2-PIN: ?RemoveAll@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VCLiftableObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCLiftableObject@@@@@2@@ATL@@QEAAXXZ 0x141c173e0
@@ -373,11 +375,13 @@ template <class M> static void WsTailRBMulti(M& m)
     m.RemoveAt(pos);
     m.RemoveAll();
 }
+template <class E> static E WsTailElem() { return E(); }
+template <> Unk_WsPropRef WsTailElem<Unk_WsPropRef>() { return *static_cast<const Unk_WsPropRef*>(0); }   // no default ctor; never executed
 template <class E> static void WsTailAtlList(ATL::CAtlList<E>& l)
 {
     
-    l.AddTail(E());
-    l.AddHead(E());
+    l.AddTail(WsTailElem<E>());
+    l.AddHead(WsTailElem<E>());
     POSITION pos = l.GetHeadPosition();
     while (pos)
         l.GetNext(pos);
@@ -502,6 +506,8 @@ void Unk_WsInst7(WorldService* w)
     WorldService::SetupClassInfo(0, 0);                 // 0x141c1cac0
     MS2Ptr<WsReal::Rec1f8> p1f8;                        // AddRef 0x141c1f5c0 (pointee unidentified, see worldservice_real.h)
     MS2Ptr<WsReal::Rec1f8> q1f8(p1f8);
+    MS2Ptr<WsReal::Rec058> p058;                        // AddRef 0x141c1f590 (pointee unidentified; not m_058's elements, see worldservice_real.h)
+    MS2Ptr<WsReal::Rec058> q058(p058);
 }
 
 // The message handler instances registered by worldservice_1.cpp's EE_HANDLER statics (RegisterMessageFactory 0x141c14520 ..).

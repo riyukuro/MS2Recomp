@@ -29,6 +29,16 @@
 
 namespace egf { class Entity; }
 
+// m_058 element: an add-ref'd 8-byte prop reference. Same (global) class as worldservice_4.cpp's (copy 0x141bf10a0, dtor
+// 0x140ae16b0); the node dtor 0x141bf60a0 calls it, so the list's RemoveAll 0x141c16150 / FreeNode 0x141bfccb0 are over this type.
+class Unk_WsPropRef
+{
+public:
+    Unk_WsPropRef(const Unk_WsPropRef& o);
+    ~Unk_WsPropRef();
+    void* m_p;
+};
+
 namespace WsReal
 {
 // m_1d8 value: one tracked visible scene object (0x20 bytes; set construction 0x141beda30 allocates 0x20).
@@ -53,12 +63,12 @@ class Recad0 : public CPtred {};                        // m_ad0 values (held th
 // (0x140b28640). In that order T = MS2ActorUpdater, Rec1f8 (unidentified), Recad0 (= m_aa0's pointee too: ~MS2Ptr 0x141bf55d0), m_a80's,
 // FieldProperty, and two not yet identified (stand-ins below; 0x141bf5660 is used by the m_208 list holder, 0x141bf5690 by
 // the m_708 values in FUN_141bd0220).
-class Rec058 : public CPtred {};                        // m_058 elements (CAtlList<MS2Ptr>; FreeNode 0x141bfccb0, RemoveAll 0x141c16150)
+class Rec058 : public CPtred {};                        // unidentified MS2Ptr pointee (AddRef 0x141c1f590; m_058's elements are Unk_WsPropRef)
 class RecPtrA : public CPtred {};
 class RecPtrB : public CPtred {};
 
 typedef std::set<IWorldServiceCallback*> Set048;                                         // +0x048
-typedef ATL::CAtlList<MS2Ptr<Rec058> > List058;                                          // +0x058 (ctor 0x141bef200, dtor 0x141bf4960)
+typedef ATL::CAtlList< ::Unk_WsPropRef> List058;                                         // +0x058 (ctor 0x141bef200, dtor 0x141bf4960)
 typedef ATL::CAtlList<efd::SmartPointer<GameObject> > List178;                           // +0x178 (shared: ctor 0x140963ae0; RemoveHead 0x141c17660 here)
 // +0x738: a 4-byte-keyed CAtlMap of efd::SmartPointer (v2525: CAtlMap<int, SmartPointer<WsEntityC>>); its RemoveAll
 // 0x141c16340 is called by the member dtor 0x141bf49b0 and shares DisableAutoRehash with the other 4-byte-keyed maps.
