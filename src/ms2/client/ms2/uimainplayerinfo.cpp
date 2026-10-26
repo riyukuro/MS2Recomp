@@ -33,6 +33,10 @@
 static Unk_AsTimer s_refreshTimer;                                                         // @0x140116360
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/uimainplayerinfo_statics.h"
 #include "ms2/placeholder/header_statics_a.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/placeholder/cguidemanager.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;                                       // @0x140116510
 static CString s_strNotThisPlace = "system_notice_error_warningNotThisPlace";              // @0x140116540
@@ -182,18 +186,10 @@ class Unk_MpStrings { public: CStringW FUN_141811980(int nTable, int nId); };
 Unk_MpStrings* FUN_1401a9d70();
 class Unk_MpTitles { public: bool FUN_140d9f5d0(int nIndex); CStringW FUN_140d9f600(int nIndex); };
 Unk_MpTitles* FUN_140931510();
-class Unk_MpGuide { public: int FUN_14138c900(int nId); };
-Unk_MpGuide* FUN_1409331e0();
-class Unk_MpFeatures { public: bool FUN_14036d570(int nFeature); };
-Unk_MpFeatures* FUN_140166410();
+CGuideManager* FUN_1409331e0();
+CFeatureManager* FUN_140166410();
 
-class Unk_MpNotices
-{
-public:
-    void FUN_140da4e40(CStringW strName, Delegate<void(NotifyObject*)> cb);
-    void FUN_140da4eb0(CStringW strName, Delegate<void(NotifyObject*)> cb);
-};
-Unk_MpNotices* FUN_140939a10();
+NotifySystem* FUN_140939a10();
 class Unk_MpItemEvents
 {
 public:
@@ -201,13 +197,7 @@ public:
     void FUN_1419caeb0(UIItemEventListener* pListener);
 };
 Unk_MpItemEvents* FUN_140a6a840();
-class Unk_MpStatusEvents
-{
-public:
-    void FUN_141b0cd00(UIStatusEventListener* pListener);
-    void FUN_141b0cd90(UIStatusEventListener* pListener);
-};
-Unk_MpStatusEvents* FUN_140aa6d40();
+UIStatusEventDispatcher* FUN_140aa6d40();
 
 // The mount of the player.
 struct Unk_AdvMountRow;
@@ -407,7 +397,7 @@ void FUN_141b706a0(int nMs, int* pHour, int* pMin, int* pSec);
 bool FUN_14028d470(float a, float b);
 void FUN_1412751f0(const CStringW& str, int a, int b);
 CStringW FUN_140298ea0(CStringW strKey);
-CStringW FUN_1409eec40(int nId);
+CStringW BlockFormat(int nId);
 void FUN_141276180(const CString& a, const CString& b);
 CStringW FUN_14093b970(unsigned nId);
 CStringW FUN_140bfa7f0(CStringW strKey, const CStringW& strName, const int& nValue);
@@ -485,9 +475,9 @@ UIMainPlayerInfo::UIMainPlayerInfo()
 {
     FUN_1419f3740();
     m_80 = 1;
-    FUN_140939a10()->FUN_140da4e40(L"NotifyDebugState", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f14b0));
-    FUN_140939a10()->FUN_140da4e40(L"NotifyShortkeyPage", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f14e0));
-    FUN_140939a10()->FUN_140da4e40(L"NotifySkillSetMode", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f1580));
+    FUN_140939a10()->RegisterNotify(L"NotifyDebugState", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f14b0));
+    FUN_140939a10()->RegisterNotify(L"NotifyShortkeyPage", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f14e0));
+    FUN_140939a10()->RegisterNotify(L"NotifySkillSetMode", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f1580));
 }
 
 // @0x1419ee5d0
@@ -499,9 +489,9 @@ UIMainPlayerInfo::~UIMainPlayerInfo()
     m_ridee = 0;
     FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     FUN_140a6a840()->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyDebugState", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f14b0));
-    FUN_140939a10()->FUN_140da4eb0(L"NotifyShortkeyPage", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f14e0));
-    FUN_140939a10()->FUN_140da4eb0(L"NotifySkillSetMode", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f1580));
+    FUN_140939a10()->UnregisterNotify(L"NotifyDebugState", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f14b0));
+    FUN_140939a10()->UnregisterNotify(L"NotifyShortkeyPage", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f14e0));
+    FUN_140939a10()->UnregisterNotify(L"NotifySkillSetMode", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f1580));
 }
 
 // @0x1419eea30
@@ -747,7 +737,7 @@ int UIMainPlayerInfo::vfunc_13()
         return 0;
     if (FUN_14025e7c0()->FUN_14116dd30(0x493e1, 0, 0) && FUN_1403ed2d0()->FUN_141bdb660(0) != 0)
     {
-        FUN_1412751f0(FUN_1409eec40(0x60), 1, 1);
+        FUN_1412751f0(BlockFormat(0x60), 1, 1);
         FUN_141276180(s_strNotThisPlace, "");
     }
     if (FUN_1419f2b60())
@@ -984,7 +974,7 @@ void UIMainPlayerInfo::vfunc_33(int nClassId, int)
 // MS2-FUNCTIONAL: the exe keeps the row temp alive through a cleanup flag (local_d0 & 1); ternary spelling not found
 void UIMainPlayerInfo::FUN_1419f0bb0(Unk_MpAchieve* pAchieve)
 {
-    if (FUN_1409331e0()->FUN_14138c900(0x16) != 0 || pAchieve->FUN_14015a280() != 2)
+    if (FUN_1409331e0()->IsRestricted(0x16) != 0 || pAchieve->FUN_14015a280() != 2)
         return;
     float fPercent = (float)pAchieve->FUN_140941790() / (float)pAchieve->FUN_140158ef0() * 100.0f;
     if (fPercent < 99.0f)
