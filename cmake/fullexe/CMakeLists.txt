@@ -27,6 +27,11 @@ if(NOT MS2_CEF_ROOT)
   file(GLOB _cef "${MS2_ROOT}/third_party/src/cef_binary_*")
   list(GET _cef 0 MS2_CEF_ROOT)
 endif()
+# Scaleform GFx 4.1.x SDK headers: TEMPORARY BYO input, a known deviation from policy (Scaleform is recovered code; the real fix is
+# clean-room headers in src/ms2/scaleform/include). Pinned by cmake/sdk-manifest.txt (scaleform rows); progress.py reads it as MS2_SCALEFORM_SDK.
+if(NOT MS2_SCALEFORM_ROOT)
+  set(MS2_SCALEFORM_ROOT "${MS2_ROOT}/work/scaleform/4.1.19/Scaleform")
+endif()
 if(NOT MS2_PATHENGINE_ROOT)
   set(MS2_PATHENGINE_ROOT "${MS2_ROOT}/third_party/src/pathengine-sigmaco")
 endif()
@@ -70,7 +75,7 @@ endforeach()
 set(ENVV FULLEXE_DIR=${OUT} FULLEXE_TREE=${MS2_ROOT} FULLEXE_FRESH=all FULLEXE_GB_OVERLAY=${GB_OVERLAY}
     FULLEXE_OBJ_CACHES=${MS2_ROOT}/build/progress-${CACHE_TAG}
     FULLEXE_HERMETIC=1 FULLEXE_ENGINE_REFRESH=${_er} FULLEXE_ALIAS_CURRENT=${_ac}
-    MS2_CLASSES_DIR=${OUT}/classes MS2_THIRD_PARTY=${_tp} MS2_ENGINE_DIR=${MS2_GAMEBRYO_ROOT} MS2_AGENT=${CACHE_TAG})
+    MS2_CLASSES_DIR=${OUT}/classes MS2_THIRD_PARTY=${_tp} MS2_ENGINE_DIR=${MS2_GAMEBRYO_ROOT} MS2_SCALEFORM_SDK=${MS2_SCALEFORM_ROOT} MS2_AGENT=${CACHE_TAG})
 file(MAKE_DIRECTORY "${OUT}")
 
 set(_prev "")
