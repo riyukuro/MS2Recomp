@@ -34,6 +34,8 @@ int FUN_14059d150(float* p);
 CItemDataTable* FUN_140281980();                                // the item table singleton
 void FUN_140159b70(long hr);                                    // ATL throw
 float FUN_14029dd40(float f);                                   // fabs
+extern float DAT_1439f4838;                                     // 0.01f: FUN_14059bfe0's tolerance (a .data global in the exe)
+extern float DAT_1439f483c;                                     // 0.01f: FUN_14059c020's tolerance
 CStringW GetStringCommon(int nId, void* a, void* b, int nFlag);   // string table text with two arguments
 
 static bool FUN_14059d190(Vector3* p);
@@ -47,7 +49,7 @@ float FUN_14059d930(float f) { return FUN_14029dd40(f); }
 // @0x14059bfe0
 static int FUN_14059bfe0(float a, float b)
 {
-    if (FUN_14059d930(a - b) > 0.0001f)
+    if (FUN_14059d930(a - b) > DAT_1439f4838)
         return 1;
     return 0;
 }
@@ -56,7 +58,7 @@ static int FUN_14059bfe0(float a, float b)
 // MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
 static bool FUN_14059c020(const Vector3& a, const Vector3& b)
 {
-    return FUN_14059d930(a.x - b.x) > 0.0001f || FUN_14059d930(a.y - b.y) > 0.0001f || FUN_14059d930(a.z - b.z) > 0.0001f;
+    return FUN_14059d930(a.x - b.x) > DAT_1439f483c || FUN_14059d930(a.y - b.y) > DAT_1439f483c || FUN_14059d930(a.z - b.z) > DAT_1439f483c;
 }
 
 // ---- EquipColorInfo ----

@@ -2012,6 +2012,8 @@ alignas(16) unsigned char DAT_1439f4030[0x800] = {
     0xf5, 0x6c, 0xeb, 0x53, 0x09, 0x63, 0x68, 0xd7, 0xde, 0x2f, 0x1e, 0xae, 0x73, 0xd8, 0x0c, 0xb7,
 };
 double DAT_1439f4830 = 300.0;                                   // 0x1439f4830
+float DAT_1439f4838 = 0.01f;                                    // 0x1439f4838
+float DAT_1439f483c = 0.01f;                                    // 0x1439f483c
 int DAT_1439f4840 = 949;                                        // 0x1439f4840
 bool g_logLoadingError = true;                                  // 0x1439f4844
 // 0x1439f48d0
