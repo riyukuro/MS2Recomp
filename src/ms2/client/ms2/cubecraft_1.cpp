@@ -192,8 +192,9 @@ class Unk_FishData : public CPtred
 {
 public:
     int FUN_1403b1520(int nSize);
-    CString m_strName;
-    char m_pad_20[0x40];
+    char m_pad_18[0x30 - 0x18];
+    CString m_strName;                                          // +0x30: CFishingRodData::m_strLureEffect for FUN_1403b2dc0 rows
+    char m_pad_38[0x40];
 };
 class Unk_FishTable
 {
@@ -355,14 +356,14 @@ Unk_GuideEffectMgr* FUN_1403ed280();
 
 struct Unk_GuideConfig
 {
-    char m_pad_000[0x1e8];
+    char m_pad_000[0x1e0];
+    CString m_strGuideModel;                                    // +0x1e0 (CConstructionGuideObject ctor)
     CString m_str1e8;
     CString m_str1f0;
     CString m_str1f8;
     char m_pad_200[0x2a0 - 0x200];
     CString m_strLiftEffect;                                    // +0x2a0
-    CString m_strGuideModel;                                    // see ctor
-    char m_pad_2b0[0x410 - 0x2b0];
+    char m_pad_2a8[0x410 - 0x2a8];
     CString m_strFishEffectB;                                   // +0x410
     CString m_strFishEffectA;                                   // +0x418
     char m_pad_420[0x468 - 0x420];
