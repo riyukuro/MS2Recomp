@@ -272,7 +272,7 @@ int CEntityVibrator::FUN_1411cba60()
         if (nNow < m_34) {
             float fFade = 1.0f;
             if (m_38 <= nNow) {
-                fFade = 1.0f - (float)((unsigned __int64)(nNow - m_38) / (unsigned __int64)(unsigned)(m_34 - m_38));
+                fFade = 1.0f - (float)((unsigned)(nNow - m_38) / (unsigned)(m_34 - m_38));
             }
             float fFloor = m_28;
             float fAmp = m_24;
@@ -295,8 +295,11 @@ int CEntityVibrator::FUN_1411cba60()
         return 0;
     }
     unsigned nNow = FUN_141473390(FUN_14086d260());
-    if (m_90 < 3000) {
-        m_90 = 3000;
+    const unsigned kMinDelay = 3000;   // the exe stores these three locals (the uses below fold them)
+    const float kDropHeight = 3.0f;
+    const unsigned kDropTime = 500;
+    if (m_90 < kMinDelay) {
+        m_90 = kMinDelay;
     }
     if (m_68 != 0) {
         unsigned nSpawn = m_30;
@@ -338,15 +341,9 @@ int CEntityVibrator::FUN_1411cba60()
         if (nNow < m_8c) {
             m_8c = nNow;
         }
-        Vector3 ptDrop(0.0f, 0.0f, m_98.z * 3.0f);
+        Vector3 ptDrop(0.0f, 0.0f, m_98.z * kDropHeight);
         Vector3 ptStart = m_48.FUN_140965c40(ptDrop);
-        float fK;
-        float fRaw = (float)(nNow - m_8c) / 500.0f;
-        if (fRaw <= 1.0f) {
-            fK = fRaw;
-        } else {
-            fK = 1.0f;
-        }
+        float fK = ((float)(nNow - m_8c) / kDropTime > 1.0f) ? 1.0f : (float)(nNow - m_8c) / kDropTime;
         FUN_1411cda60(ptStart.FUN_14097fd50(ptDrop.FUN_14097fc90(fK)));
         if (1.0f <= fK) {
             FUN_1411cda60(m_48);
@@ -514,7 +511,7 @@ void CEntityVibrator::FUN_1411cd0c0()
         ptPos = ptPos.FUN_14097fd50(ptUp.FUN_14097fc90(ptBox.z * 0.5f));
         Vector3 ptEuler;
         if (rot.FUN_142085840(ptEuler.x, ptEuler.y, ptEuler.z)) {
-            FUN_140ad0c10(&ptEuler, -57.29578f);
+            FUN_140ad0c10(&ptEuler, -57.295776f);
             FUN_1411cdb00(ptEuler);
         }
         FUN_1411cda60(ptPos);
