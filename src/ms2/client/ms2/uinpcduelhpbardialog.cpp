@@ -19,13 +19,13 @@ class ASEffectManager : public ASDisplayObject
 {
 public:
     ASEffectManager(Scaleform::GFx::Value& root, int nMovieId);
-    void FUN_1409b5610();                                       // per-tick refresh
-    void FUN_1409b57b0(int x, int y);
-    void FUN_1409b5810(int x, int y);
+    void Update();                                       // per-tick refresh
+    void SetPosA(int x, int y);
+    void SetPosB(int x, int y);
     void FUN_1409b5940(MS2Ptr<Unk_NdBuff> buff);                // add the buff icon
     void FUN_1409b5aa0(MS2Ptr<Unk_NdBuff> buff);                // remove the buff icon
-    void FUN_1409b5b60(int nBuffId);
-    void FUN_1409b5c20();                                       // clear the icons
+    void RemoveEffect(int nBuffId);
+    void Clear();                                       // clear the icons
 private:
     unsigned char m_unrecovered_80[0xa0];
 };
@@ -169,7 +169,7 @@ void UINpcDuelHPBarDialog::vfunc_72()
     FUN_140e6c900();
     FUN_140e6c9c0();
     if (m_effects.get() != 0)
-        m_effects->FUN_1409b5610();
+        m_effects->Update();
 }
 
 // @0x140e6b9e0
@@ -177,8 +177,8 @@ void UINpcDuelHPBarDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     m_effects = FUN_140e6cd80(2, "flash.display.MovieClip", 0, 0);
-    m_effects->FUN_1409b57b0(0x2c4, 0x3c);
-    m_effects->FUN_1409b5810(0x2c4, 0x69);
+    m_effects->SetPosA(0x2c4, 0x3c);
+    m_effects->SetPosB(0x2c4, 0x69);
     m_30->Invoke("addChild", m_effects->FUN_1422bb870());
     FUN_140e6bc10();
 }
@@ -221,7 +221,7 @@ void UINpcDuelHPBarDialog::FUN_140e6bc10()
         CString strProfile(pNpc->FUN_141093270()->m_90);
         m_30->Invoke("setRightProfile", strProfile);
         FUN_140e6c9c0();
-        m_effects->FUN_1409b5c20();
+        m_effects->Clear();
         Unk_NdBuffList list;
         FUN_1409750c0(&list, 10);
         FUN_1416749a0(pNpc)->FUN_1409725f0(&list);
@@ -268,7 +268,7 @@ void UINpcDuelHPBarDialog::FUN_140e6c640(int nBuffId)
         return;
     if (m_effects == 0)
         return;
-    m_effects->FUN_1409b5b60(nBuffId);
+    m_effects->RemoveEffect(nBuffId);
 }
 
 // @0x140e6c6c0
