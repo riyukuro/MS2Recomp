@@ -1085,6 +1085,9 @@ ReloadablePostProcess::ReloadablePostProcess(unsigned __int64 a, const NiFixedSt
     m_a0 = name;
 }
 
+MS2_CHECK_OFFSET(ReloadablePostProcess, m_a0, 0xa0);
+MS2_CHECK_OFFSET(ReloadablePostProcess, m_b0, 0xb0);
+
 // @0x1416a2c60
 // MS2-FUNCTIONAL: the exe keeps the factory/library in different stack slots (frame 0x48 vs 0x38); behaviour equivalent
 void ReloadablePostProcess::vfunc_21()
@@ -1099,7 +1102,7 @@ void ReloadablePostProcess::vfunc_21()
         {
             FUN_1427b7820(pkLibrary, &m_b0, m_a0);
             if (m_b0 != 0)
-                pkLibrary->SetShaderLibraryDesc(static_cast<NiShaderLibraryDesc*>(m_b0));
+                pkLibrary->LoadShader(static_cast<const char*>(m_b0));   // exe: slot 9 [rax+0x48], not SetShaderLibraryDesc
             if (!vfunc_23())
                 vfunc_16();
             return;
