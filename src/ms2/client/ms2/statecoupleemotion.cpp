@@ -165,7 +165,7 @@ void FUN_140aacaa0(NiAVObject* pObject, const NiTransform* pXform);        // 0x
 void FUN_1409f7320(efd::Matrix3* pMatrix);                                 // 0x1409f7320 identity matrix
 efd::Matrix3* FUN_140a33480(const efd::Matrix3* pA, efd::Matrix3* pOut, const efd::Matrix3* pB);   // 0x140a33480 product
 void FUN_140a33240(efd::Matrix3* pOut, const efd::Matrix3* pIn);           // 0x140a33240 copy / orthonormalise
-void FUN_140965c40(NiPoint3* pOut, const NiPoint3& kA, const NiPoint3& kB);   // 0x140965c40 kA - kB
+void FUN_140965c40(const NiPoint3* pA, NiPoint3* pOut, const NiPoint3* pB);   // 0x140965c40 Vector3::operator-: this=rcx, hidden return=rdx, *pOut = *pA - *pB
 float FUN_140968990(const NiPoint3& kVec);                                 // 0x140968990 length / normalise in place
 void FUN_140b850d0(void* pLogger, int nLevel, int nId, const wchar_t* pszFmt, const char* const* ppszArg0,
     const CStringA& strArg1);                                              // 0x140b850d0 log with two {n} argumentsCStringA FUN_140a52ef0();                                                  // 0x140a52ef0 empty effect-param block ctor
@@ -892,7 +892,7 @@ bool StateCoupleEmotion::FindPlacement(efd::Point3& posA, efd::Point3& posB, flo
         {
             NiPoint3 kHit;
             NiPoint3 kDir;
-            FUN_140965c40(&kDir, ptPeer, ptOwner);
+            FUN_140965c40(&ptPeer, &kDir, &ptOwner);
             float fLen = FUN_140968990(kDir);
             if (FUN_1409f7ca0()->FUN_14168a230(efd::Point3(ptOwner.x, ptOwner.y, ptOwner.z), (efd::Point3&)kHit,
                 efd::Point3(kDir.x, kDir.y, kDir.z), fLen, 0) == 0)
