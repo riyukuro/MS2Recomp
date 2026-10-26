@@ -232,7 +232,8 @@ void StateTalk::vfunc_9(double fTime)
         FUN_1403ed280()->FUN_1411a6060(m_n44);
         if (m_n10 == 0x4a)
         {
-            Unk_TalkEffectReq kReq;
+            alignas(8) char kReqBuf[sizeof(Unk_TalkEffectReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+            Unk_TalkEffectReq& kReq = *reinterpret_cast<Unk_TalkEffectReq*>(kReqBuf);
             FUN_140a52ef0(&kReq);
             kReq.m_strName = *(const CString*)((const char*)FUN_1401d31f0() + 0x290);
             kReq.m_nObject = 0;
@@ -242,7 +243,8 @@ void StateTalk::vfunc_9(double fTime)
         }
         else if (m_n10 == 0x4b)
         {
-            Unk_TalkEffectReq kReq;
+            alignas(8) char kReqBuf[sizeof(Unk_TalkEffectReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
+            Unk_TalkEffectReq& kReq = *reinterpret_cast<Unk_TalkEffectReq*>(kReqBuf);
             FUN_140a52ef0(&kReq);
             kReq.m_strName = *(const CString*)((const char*)FUN_1401d31f0() + 0x298);
             kReq.m_nObject = 0;
