@@ -359,7 +359,7 @@ unsigned __int64 FUN_14151e7f0(Unk_SmallObjectAllocator* pAlloc)
 // MS2-FUNCTIONAL: the exe calls the NiRect/efd::Color constructors out of line; this keeps the engine inline forms
 void FUN_14151d0d0(egmVisualTracker::VisualTrackerService* pService)
 {
-    NiRect<float> kEntityRect(-1000.0f, 1000.0f, 1000.0f, -1000.0f);
+    NiRect<float> kEntityRect(-4000.0f, 4000.0f, 4000.0f, -4000.0f);
     pService->AddPage("Entities");
     pService->AddChart("Entities", kEntityRect, NiRect<float>(0.05f, 0.95f, 0.025f, 0.975f), 0.1f, 0, true);
     pService->AddLegend("Actors", efd::Color(0.0f, 0.0f, 1.0f), egmVisualTracker::VisualTrackerService::SGS_stick_man);
@@ -707,12 +707,12 @@ bool MS2VisualTrackerManager::CreateVisualTrackers()
     // --- charts (on the DebugString page) ---
     NiRect<float> windowRect1;
     windowRect1.m_left = 0.05f;
-    windowRect1.m_right = 0.95f;
+    windowRect1.m_right = windowRect1.m_left + 0.9f;   // the exe adds the width/height at run time
     windowRect1.m_top = 0.15f;
-    windowRect1.m_bottom = 0.4f;
+    windowRect1.m_bottom = windowRect1.m_top + 0.25f;
     NiRect<float> windowRect2;
     windowRect2.m_left = 0.05f;
-    windowRect2.m_right = 0.95f;
+    windowRect2.m_right = windowRect2.m_left + 0.9f;
     windowRect2.m_top = windowRect1.m_bottom + 0.025f;
     windowRect2.m_bottom = windowRect2.m_top + 0.25f;
 
