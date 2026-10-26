@@ -1326,8 +1326,8 @@ unsigned int CNMRealUserInfo::DecodeDispatch(CNMSerializableDecoder* d,CNMStream
 // @0x14156ec30
 unsigned int CNMRealUserInfo::Decode(CNMSerializableDecoder* d,CNMStream* s)
 {
-    CNMDefaultUserInfo::DecodeDispatch(d,s); d->ReadBytes(reinterpret_cast<unsigned char*>(m_b0),0x20); d->ReadBytes(reinterpret_cast<unsigned char*>(m_d0),0x40); m_110=d->ReadU32();m_114=d->ReadU8();m_118=d->ReadU32();m_11c=d->ReadU32();d->ReadBytes(reinterpret_cast<unsigned char*>(&m_120),2);m_124=d->ReadU32();d->ReadBytes(reinterpret_cast<unsigned char*>(&m_128),2);
-    auto*b=reinterpret_cast<unsigned char*>(&m_12a); const unsigned short lo=d->ReadU16();b[0]=lo;b[1]=lo>>8;b[2]=d->ReadU8();b[6]=d->ReadU8();m_140.DecodeDispatch(d,s);m_150=d->ReadU8();m_154=d->ReadU8();m_158=d->ReadU8();m_15c=d->ReadU8();if(m_bKind==2){m_160=d->ReadU8();d->ReadBytes(reinterpret_cast<unsigned char*>(m_161),0x40);}return static_cast<unsigned int>(FUN_1415fb750(d));
+    CNMDefaultUserInfo::DecodeDispatch(d,s); d->ReadStringBufAlias(reinterpret_cast<char*>(m_b0),0x20); d->ReadStringBufAlias(reinterpret_cast<char*>(m_d0),0x40); m_110=d->ReadU32();m_114=d->ReadU8();m_118=d->ReadU32();m_11c=d->ReadU32();d->ReadStringBufAlias(reinterpret_cast<char*>(&m_120),2);m_124=d->ReadU32();d->ReadStringBufAlias(reinterpret_cast<char*>(&m_128),2);
+    auto*b=reinterpret_cast<unsigned char*>(&m_12a); const unsigned short lo=d->ReadU16();b[0]=lo;b[1]=lo>>8;b[2]=d->ReadU8();b[6]=d->ReadU8();m_140.DecodeDispatch(d,s);m_150=d->ReadU8();m_154=d->ReadU8();m_158=d->ReadU8();m_15c=d->ReadU8();if(m_bKind==2){m_160=d->ReadU8();d->ReadStringBufAlias(reinterpret_cast<char*>(m_161),0x40);}return static_cast<unsigned int>(FUN_1415fb750(d));
 }
 
 // MS2-FUNCTIONAL 0x14156ef50: initializes the virtual-user record fields and serializable type.
@@ -1356,7 +1356,7 @@ unsigned int CNMVirtualUserInfo::DecodeDispatch(CNMSerializableDecoder*d,CNMStre
 
 // MS2-FUNCTIONAL 0x14156f2d0: reads all virtual-user fields and validates the decoder state.
 // @0x14156f2d0
-unsigned int CNMVirtualUserInfo::Decode(CNMSerializableDecoder*d,CNMStream*){m_10=d->ReadU32();m_14=d->ReadU32();d->ReadBytes(reinterpret_cast<unsigned char*>(m_18),0x40);d->ReadBytes(reinterpret_cast<unsigned char*>(m_58),0x40);m_480=d->ReadU8();m_484=d->ReadU8();m_488=d->ReadU8();m_48c=d->ReadU32();d->ReadBytes(reinterpret_cast<unsigned char*>(m_98),1000);return static_cast<unsigned int>(FUN_1415fb750(d));}
+unsigned int CNMVirtualUserInfo::Decode(CNMSerializableDecoder*d,CNMStream*){m_10=d->ReadU32();m_14=d->ReadU32();d->ReadStringBufAlias(reinterpret_cast<char*>(m_18),0x40);d->ReadStringBufAlias(reinterpret_cast<char*>(m_58),0x40);m_480=d->ReadU8();m_484=d->ReadU8();m_488=d->ReadU8();m_48c=d->ReadU32();d->ReadStringBufAlias(reinterpret_cast<char*>(m_98),1000);return static_cast<unsigned int>(FUN_1415fb750(d));}
 
 // MS2-FUNCTIONAL 0x14156e000: initializes the friend key and fixed-size profile fields after the real-friend base.
 // @0x14156e000
@@ -1384,7 +1384,7 @@ unsigned int CNMFriendInfo::DecodeDispatch(CNMSerializableDecoder*d,CNMStream*s)
 
 // MS2-FUNCTIONAL 0x14156e440: decodes the inherited and friend-list payload in original order.
 // @0x14156e440
-unsigned int CNMFriendInfo::Decode(CNMSerializableDecoder*d,CNMStream*s){CNMRealFriendInfo::DecodeDispatch(d,s);m_key.uIDCode=d->ReadU64();m_key.n08=d->ReadU32();m_key.n0c=d->ReadU32();m_key.n10=d->ReadU32();m_key.n14=d->ReadU32();d->ReadBytes(reinterpret_cast<unsigned char*>(m_f0),0x40);d->ReadBytes(reinterpret_cast<unsigned char*>(m_130),0x40);m_578=d->ReadU8();m_57c=d->ReadU32();auto*b=reinterpret_cast<unsigned char*>(&m_c0);unsigned short lo=d->ReadU16();b[0]=static_cast<unsigned char>(lo);b[1]=static_cast<unsigned char>(lo>>8);b[2]=d->ReadU8();b[6]=d->ReadU8();m_d0=static_cast<char>(d->ReadU8());d->ReadBytes(reinterpret_cast<unsigned char*>(m_170),1000);d->ReadBytes(reinterpret_cast<unsigned char*>(m_558),0x20);return static_cast<unsigned int>(FUN_1415fb750(d));}
+unsigned int CNMFriendInfo::Decode(CNMSerializableDecoder*d,CNMStream*s){CNMRealFriendInfo::DecodeDispatch(d,s);m_key.uIDCode=d->ReadU64();m_key.n08=d->ReadU32();m_key.n0c=d->ReadU32();m_key.n10=d->ReadU32();m_key.n14=d->ReadU32();d->ReadStringBufAlias(reinterpret_cast<char*>(m_f0),0x40);d->ReadStringBufAlias(reinterpret_cast<char*>(m_130),0x40);m_578=d->ReadU8();m_57c=d->ReadU32();auto*b=reinterpret_cast<unsigned char*>(&m_c0);unsigned short lo=d->ReadU16();b[0]=static_cast<unsigned char>(lo);b[1]=static_cast<unsigned char>(lo>>8);b[2]=d->ReadU8();b[6]=d->ReadU8();m_d0=static_cast<char>(d->ReadU8());d->ReadStringBufAlias(reinterpret_cast<char*>(m_170),1000);d->ReadStringBufAlias(reinterpret_cast<char*>(m_558),0x20);return static_cast<unsigned int>(FUN_1415fb750(d));}
 
 // MS2-PIN: ??0CNMSelfUserInfo@@QEAA@XZ 0x14156ef10 ; recovered self-user constructor
 // MS2-PIN: ??0CNMFriendInfo@@QEAA@XZ 0x14156e000 ; recovered friend info constructor
