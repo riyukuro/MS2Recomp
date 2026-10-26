@@ -48,6 +48,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
 #include <NiRect.h>
 
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -63,13 +64,7 @@ static CString s_strPCTakePhoto = "PC_take_photo";
 class ASDialog : public ASDisplayObject {};
 
 // The status-listener registry (singleton 0x140aa6d40).
-class Unk_UiStatusMgr
-{
-public:
-    void FUN_141b0cd00(UIStatusEventListener* pListener);       // register
-    void FUN_141b0cd90(UIStatusEventListener* pListener);       // unregister
-};
-Unk_UiStatusMgr* FUN_140aa6d40();
+UIStatusEventDispatcher* FUN_140aa6d40();
 
 // The movie root of the dialog: Invoke of a method with an int and an AS array (inline COMDAT 0x141b36aa0 / 0x141b36b60).
 class Unk_UgcScript : public AScript
@@ -143,7 +138,7 @@ void FUN_141276180(const CString& strName, const CString& strArg);
 CStringW FUN_141026920(int nKind);
 CStringW FUN_141028910(int nKind);
 Unk_UgcFileResult SaveUgcThumbnailImage(NiRect<unsigned int> kRect, int nTarget);
-__int64 FUN_140869440();                                        // the server time
+__int64 GetServerTime();                                        // the server time
 int FUN_140869420();                                            // the tick count
 bool FUN_1406c5200();                                           // CMsTime::IsTimeZoneSet
 Unk_DateParts* FUN_14088dfa0(Unk_DateParts* pOut, __int64 nTime, int nHourOffset);
@@ -239,7 +234,7 @@ void UIUGCBannerDialog::vfunc_72()
     if ((unsigned int)(nTick - m_228) >= 500 && FUN_1406c5200())
     {
         Unk_DateParts now;
-        FUN_14088dfa0(&now, FUN_140869440(), 0);
+        FUN_14088dfa0(&now, GetServerTime(), 0);
         if (now.m_hour != m_1f0)
         {
             m_1f0 = now.m_hour;
@@ -295,8 +290,8 @@ void UIUGCBannerDialog::OnLoadInit()
         vfunc_67();
         return;
     }
-    FUN_14088e140(&m_190, FUN_140869440());
-    FUN_14088e140(&m_1c0, FUN_140869440());
+    FUN_14088e140(&m_190, GetServerTime());
+    FUN_14088e140(&m_1c0, GetServerTime());
     if (m_230 >= 0x18)
         m_1f4 = 1;
     else
