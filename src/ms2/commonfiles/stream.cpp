@@ -9,6 +9,7 @@
 #include "stream.h"
 #include "ms2/ms2format.h"
 #include "hook/ms2hook.h"
+#define MS2_ASSERT_MSG_AT(line, msg, cond) (void)((!!(cond)) || (_wassert(msg, _CRT_WIDE(MS2_THIS_FILE), (unsigned)(line)), 0))
 extern "C" int compress(unsigned char*,unsigned long*,const unsigned char*,unsigned long);
 extern "C" int uncompress(unsigned char*,unsigned long*,const unsigned char*,unsigned long);
 CStringW FUN_14016a730(const char*,int);
@@ -126,7 +127,7 @@ MS2_REPLACE_METHOD_VIA(0x14083A1D0, CByteBuffer, COutputStream, WriteVector3, 13
 void CByteBuffer::WriteVector3Short(const Vector3& value) { WriteInt16((short)value.x);WriteInt16((short)value.y);WriteInt16((short)(value.z+0.0001f)); }
 MS2_REPLACE_METHOD_VIA(0x14083A260, CByteBuffer, COutputStream, WriteVector3Short, 147, 0x0CFE1934);
 // @0x14083a300
-void CByteBuffer::vfunc_2(int n,unsigned uOffset) { MS2_ASSERT_AT(200,m_aByteBuff.GetCount() >= uOffset + FUN_14020abe0(n));FUN_14020ad80(n,&m_aByteBuff[0]+uOffset); }
+void CByteBuffer::vfunc_2(int n,unsigned uOffset) { MS2_ASSERT_MSG_AT(200,L"m_aByteBuff.GetCount() >= uOffset + _BM::EncSize4(n)",m_aByteBuff.GetCount() >= uOffset + FUN_14020abe0(n));FUN_14020ad80(n,&m_aByteBuff[0]+uOffset); }
 MS2_REPLACE_METHOD(0x14083A300, CByteBuffer, vfunc_2, 141, 0xC46FB140);
 // @0x14083a3a0
 void CByteBuffer::WriteShortX10(float value) { short n=(short)(value/10.f);WriteInt16(n); }
