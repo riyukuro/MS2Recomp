@@ -55,7 +55,7 @@
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@U?$_List_node@HPEAX@std@@@std@@V?$_List_val@U?$_List_simple_types@H@std@@@2@$00@std@@QEAAAEAV?$allocator@U?$_List_node@HPEAX@std@@@2@XZ 0x1413744a0
 // MS2-PIN: ?_Getal@?$_List_alloc@U?$_List_base_types@HV?$allocator@H@std@@@std@@@std@@QEAAAEAV?$allocator@U?$_List_node@HPEAX@std@@@2@XZ 0x1413744b0
 // MS2-PIN: ?_Myhead@?$_List_alloc@U?$_List_base_types@HV?$allocator@H@std@@@std@@@std@@QEAAAEAPEAU?$_List_node@HPEAX@2@XZ 0x141374590
-// MS2-PIN: ?_Myhead@?$_List_alloc@U?$_List_base_types@V?$list@HV?$allocator@H@std@@@std@@V?$allocator@V?$list@HV?$allocator@H@std@@@std@@@2@@std@@@std@@QEAAAEAPEAU?$_List_node@V?$list@HV?$allocator@H@std@@@std@@PEAX@2@XZ 0x1413745d0
+// MS2-PIN: ?_Myhead@?$_List_alloc@U?$_List_base_types@V?$list@HV?$allocator@H@std@@@std@@V?$allocator@V?$list@HV?$allocator@H@std@@@std@@@2@@std@@@std@@QEAAAEAPEAU?$_List_node@V?$list@HV?$allocator@H@std@@@std@@PEAX@2@XZ 0x141374590 ; la1: deep-matches 141374590 (callers' target); 1413745d0 is _Mysize
 // MS2-PIN: ?_Tidy@?$list@V?$list@HV?$allocator@H@std@@@std@@V?$allocator@V?$list@HV?$allocator@H@std@@@std@@@2@@std@@QEAAXXZ 0x141374680
 // MS2-PIN: ?clear@?$list@V?$list@HV?$allocator@H@std@@@std@@V?$allocator@V?$list@HV?$allocator@H@std@@@std@@@2@@std@@QEAAXXZ 0x1413747e0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\usercommandcli.cpp"
