@@ -90,12 +90,11 @@ Unk_140694210::~Unk_140694210()
 {
 }
 
-// MS2-FUNCTIONAL: the exe passes the flag byte without bool normalisation (source spelling unknown)
 // @0x140694280
 void FUN_140694280(Unk_140694210& v, COutputStream& out)
 {
     out.WriteUnicodeString(v.m_00);
-    out.WriteBool((unsigned char)v.m_08);
+    out.WriteUInt8((unsigned char)v.m_08);
     FUN_14070f960(out, v.m_0c);
 }
 
