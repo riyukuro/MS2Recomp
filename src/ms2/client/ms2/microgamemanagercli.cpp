@@ -635,9 +635,9 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
     case 0x12:
         if (pMyPC->FUN_14166c930() == 0x45)
         {
-            CBasePane* pPane = (CBasePane*)FUN_140b769d0(0x4f71);
-            if (pPane != 0 && pPane->IsFloating() != 0)
-                ((UICoupleDanceEventDialog*)pPane)->vfunc_67();
+            UICoupleDanceEventDialog* pPane = (UICoupleDanceEventDialog*)FUN_140b769d0(0x4f71);
+            if (pPane != 0 && pPane->FUN_141924630() != 0)
+                pPane->vfunc_67();
             StateMicroGameCoupleDance* pState = dynamic_cast<StateMicroGameCoupleDance*>(pMyPC->FUN_14166ccb0());
             if (pState == 0)
             {
