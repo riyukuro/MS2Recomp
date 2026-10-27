@@ -508,7 +508,7 @@ void* FUN_140b632f0();
 int FUN_1418dd0c0();
 Unk_CubePicker* FUN_1409478c0();
 Unk_CubeMgr* FUN_1409670e0();
-Unk_CubeSpRef FUN_1401cd040(void* pSingleton);
+Unk_CubeMgr* FUN_1401cd040(void* pSingleton);   // returns in rax (the exe never takes a hidden return slot)
 UGCCubePalette* GetUGCCubePalette();
 struct Unk_ItemMgr { MS2Ptr<CItem> FUN_1408fbf90(unsigned __int64 uid); };
 int FUN_1408fc1b0(void* pBag, int nItemId);
