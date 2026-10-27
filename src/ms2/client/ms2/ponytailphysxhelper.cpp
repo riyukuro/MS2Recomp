@@ -107,7 +107,7 @@ float FUN_140a17940(float fValue, float fMin, float fMax);      // clamp
 // The model facts of a part and the model's non-virtual helpers (?\equipmodel.cpp, ?\itemugcmesh.cpp).
 struct Unk_PonyRanges { const Unk_CustomizeRange* FUN_140544f20(size_t nIndex); };
 Unk_PonyRanges* FUN_141200a90(Unk_PickTarget* pPart);           // the part's customize ranges
-void FUN_141200190(Unk_PickTarget* pPart, NiTransform* pXf);    // sets the part's local transform
+void FUN_141202240(CEquipModel* pPart, void* pXf);                  // sets the part's local transform
 void FUN_1412021a0(Unk_PickTarget* pPart, NiTransform* pOut);   // the part's local transform
 void FUN_1412021f0(Unk_PickTarget* pPart, NiTransform* pOut);   // the part's world transform
 void FUN_1412024f0(Unk_PickTarget* pPart, NiPoint3* pPos, NiPoint3* pEuler, float* pScale, NiPoint3* pA, NiPoint3* pB,
@@ -345,7 +345,7 @@ void CPonyTailController::vfunc_6()
         NiAVObject* pObj = FUN_1409f7cb0(pActor)->GetObjectByName(NiFixedString((const char*)strName));
         if (FUN_14098df90(&DAT_143afa4d8, pObj) != 0)
         {
-            FUN_141200190(spPart.operator->(), &apPart[i]->m_kRest);
+            FUN_141202240(reinterpret_cast<CEquipModel*>(spPart.operator->()), &apPart[i]->m_kRest);
             NiPoint3 kPos, kEuler, kA, kB;
             spPart->FUN_141202480(&kPos, &kEuler, &kA, &kB, &apPart[i]->m_kRest);
             reinterpret_cast<CEquipModel*>(spPart.operator->())->vfunc_24(kPos);
