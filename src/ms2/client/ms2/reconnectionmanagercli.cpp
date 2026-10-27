@@ -373,7 +373,11 @@ void* FUN_140aadf80() {
 // @0x140aadf90
 int ReconnectionOptions::FUN_140aadf90(int index) {
     if (index < 0 || index >= 11) {
-        MS2_ASSERT_AT(0xa4, 0);
+#undef MS2_THIS_FILE
+#define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\clientreconnectionstructs.h"
+        MS2_ASSERT_AT(0xa4, FALSE);
+#undef MS2_THIS_FILE
+#define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\reconnectionmanagercli.cpp"
         return 0;
     }
     return (&m_v0)[index];
