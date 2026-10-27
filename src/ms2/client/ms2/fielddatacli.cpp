@@ -434,10 +434,17 @@ bool CFieldDataCli::LoadXBlock()
 // @0x140a56ad0
 int FUN_140a56ad0(Unk_140165cf0* node, const char* name, int& out)
 {
+    // the tinyxmlhelper.h enum reader's compile-time-false type guard (ASSERT(FALSE) of its line 231)
+    if (false)
+    {
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 231), 0));
+        return 2;
+    }
     int v = 0;
     int r = FUN_140873890(node, name, v);
-    if (r == 0)
-        out = v;
+    if (r != 0)
+        return r;
+    out = v;
     return r;
 }
 
