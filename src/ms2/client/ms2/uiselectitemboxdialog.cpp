@@ -207,7 +207,7 @@ void UISelectItemBoxDialog::OnLoadComplete()
         }
     }
     m_selectItemList->Invoke("resetRenderer");
-    m_selectItemList->vfunc_50(list.FUN_1422bb870());
+    m_selectItemList->vfunc_25(list.FUN_1422bb870());
     m_selectItemList->vfunc_24(true);
     int nNext = pData->m_args.FUN_1408d1fd0(4, 1);
     int nHave = ((Unk_SibInventory*)&DAT_143ab2a90)->FUN_140a5f180(item->FUN_1405276c0(), 0);

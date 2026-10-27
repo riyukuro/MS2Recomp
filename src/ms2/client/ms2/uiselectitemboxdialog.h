@@ -39,32 +39,7 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bRefresh);
-    virtual void vfunc_25();
-    virtual void vfunc_26();
-    virtual void vfunc_27();
-    virtual void vfunc_28();
-    virtual void vfunc_29();
-    virtual void vfunc_30();
-    virtual void vfunc_31();
-    virtual void vfunc_32();
-    virtual void vfunc_33();
-    virtual void vfunc_34();
-    virtual void vfunc_35();
-    virtual void vfunc_36();
-    virtual void vfunc_37();
-    virtual void vfunc_38();
-    virtual void vfunc_39();
-    virtual void vfunc_40();
-    virtual void vfunc_41();
-    virtual void vfunc_42();
-    virtual void vfunc_43();
-    virtual void vfunc_44();
-    virtual void vfunc_45();
-    virtual void vfunc_46();
-    virtual void vfunc_47();
-    virtual void vfunc_48();
-    virtual void vfunc_49();
-    virtual void vfunc_50(const Scaleform::GFx::Value& data);           // slot 25 of the vftable (+0xc8): set the data provider
+    virtual void vfunc_25(const Scaleform::GFx::Value& data);           // +0xc8: set the data provider
     void FUN_1422cfa30(ATL::CAtlArray<unsigned>& out);                  // the selected indices
     unsigned FUN_1422cf920();                                           // the selection count
     void FUN_1422de0e0(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> cb, int n);   // change handler
