@@ -765,7 +765,7 @@ void StateSummonRevive::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
     PCBase* pPet = FUN_1417b83d0();
-    if (pPet != 0 && m_timer.FUN_140868ba0() != 0)
+    if (pPet != 0 && m_timer.FUN_140868c00() != 0)    // expired (0x140868c00), not still running
     {
         m_timer.FUN_1408687f0();
         if (pPet->FUN_14166ce30() != 0 && FUN_141661970(pPet) == 0)
