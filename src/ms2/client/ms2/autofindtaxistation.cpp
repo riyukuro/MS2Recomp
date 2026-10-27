@@ -22,6 +22,7 @@
 #include <atlcoll.h>
 #include "autofindtaxistation.h"
 #include "cameramode.h"
+#include "homecameramode.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/tfunctor.h"
 #include "ms2/placeholder/tptreddummy.h"
@@ -140,11 +141,16 @@ Unk_TaxiResTable* FUN_1409f24a0() { return DAT_143ab1f30; }
 // @0x1409f24b0
 Unk_TaxiTimer* FUN_1409f24b0() { return DAT_143ab47a0; }
 // @0x1409f2430
-// MS2-FUNCTIONAL: reads the mode distance through the camera manager's declared accessor
-float FUN_1409f2430(Unk_CameraManager* cam) { return cam->FUN_140b67d10(); }
+// The current mode's distance (slot 19; FUN_140b67d10 is the same shape over slot 17).
+float FUN_1409f2430(Unk_CameraManager* cam)
+{
+    if (static_cast<Unk_CameraManagerData*>(cam)->m_118.get())
+        return static_cast<Unk_CameraManagerData*>(cam)->m_118->vfunc_19();
+    return 0.0f;
+}
 
-// The camera manager's current-mode pointer (MS2Ptr<CCameraMode>, member of Unk_CameraManager, whose layout is not
-// declared): FUN_1409f2430 reads it through these two accessors (0x1409f2180 get, 0x1409f21a0 operator->).
+// The camera manager's current-mode pointer (MS2Ptr<CCameraMode> at +0x118): FUN_1409f2430 reads it through these two
+// accessors (0x1409f2180 get, 0x1409f21a0 operator->).
 template CCameraMode* MS2Ptr<CCameraMode>::get() const;
 template CCameraMode* MS2Ptr<CCameraMode>::operator->() const;
 
