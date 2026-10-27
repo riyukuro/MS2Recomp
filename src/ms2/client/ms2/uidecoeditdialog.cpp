@@ -222,7 +222,7 @@ void UIDecoEditDialog::FUN_14191bd30(CString strFile)
     WCHAR szCurrentDir[MAX_PATH] = {0};
     CString strName = FUN_140188f50(strFile, 0);
     GetCurrentDirectoryW(MAX_PATH, szCurrentDir);
-    CStringW strPath = FUN_141b6e360(CStringW(L"./Data/Resource/Model/"), L"", CStringW(L""));
+    CStringW strPath = FUN_141b6e360(CStringW(L"./Data/Resource/Model/"), L"Asset Files (*.nif, *.kfm)\0*.nif;*.kfm;", CStringW(L""));
     if (!strPath.IsEmpty())
     {
         if (SetCurrentDirectoryW(szCurrentDir))
