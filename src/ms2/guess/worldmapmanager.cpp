@@ -1479,10 +1479,17 @@ int WorldMapQuestTier(MS2Ptr<CQuestData> spQuest, const int& a, const int& b, co
 // The "tileType" enum attribute of a map tile.
 int FUN_141b9d850(Unk_140165cf0* pNode, const char* pszName, int* pOut)
 {
+    // the tinyxmlhelper.h enum reader's compile-time-false type guard (ASSERT(FALSE) of its line 231)
+    if (false)
+    {
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 231), 0));
+        return 2;
+    }
     int nValue = 0;
     int nResult = FUN_140873890(pNode, pszName, nValue);
-    if (nResult == 0)
-        *pOut = nValue;
+    if (nResult != 0)
+        return nResult;
+    *pOut = nValue;
     return nResult;
 }
 
