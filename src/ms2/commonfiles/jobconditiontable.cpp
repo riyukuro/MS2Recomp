@@ -96,13 +96,19 @@ CJobConditionTable::NpcJobDataPtr CJobConditionTable::GetData(int nNpcId)
 }
 
 // @0x1406363a0
-// MS2-FUNCTIONAL: the exe copy is a size-dispatching template (dead sizeof branches with a line-0xe7 assert) over the value type; the int case is reproduced
 static int FUN_1406363a0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
 {
+    // the tinyxmlhelper.h enum reader's compile-time-false type guard (ASSERT(FALSE) of its line 231)
+    if (false)
+    {
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 231), 0));
+        return 2;
+    }
     int nValue = 0;
     int nResult = FUN_140873890(pElem, pszName, nValue);
-    if (nResult == 0)
-        *pOut = nValue;
+    if (nResult != 0)
+        return nResult;
+    *pOut = nValue;
     return nResult;
 }
 
