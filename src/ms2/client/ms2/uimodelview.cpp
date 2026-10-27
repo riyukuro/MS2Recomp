@@ -139,7 +139,7 @@ void UIModelView::vfunc_8(float fDist)
 {
     if (m_nZoomState != 0)
         m_nZoomState = 0;
-    fDist = (std::max)(m_kCamera.m_fMinDistance, fDist);
+    fDist = (std::min)(m_kCamera.m_fMinDistance, fDist);   // sic: the exe takes min here (0x1409ffe80), not max
     if ((m_kCamera.m_kPosition - m_spCamera->GetTranslate()).Length() < fDist)
     {
         NiPoint3 kDir = -m_spCamera->GetWorldDirection();
@@ -154,7 +154,7 @@ void UIModelView::vfunc_9(float fDist)
 {
     if (m_nZoomState != 0)
         m_nZoomState = 0;
-    fDist = (std::min)(m_kCamera.m_fMaxDistance, fDist);
+    fDist = (std::max)(m_kCamera.m_fMaxDistance, fDist);   // sic: the exe takes max here (0x140805fc0), not min
     if (fDist < (m_kCamera.m_kPosition - m_spCamera->GetTranslate()).Length())
     {
         NiPoint3 kDir = -m_spCamera->GetWorldDirection();
