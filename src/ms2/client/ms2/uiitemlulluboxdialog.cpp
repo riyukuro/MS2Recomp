@@ -802,11 +802,11 @@ void UIItemLulluBoxDialog::FUN_140e9f870(const CStringW& kind, int itemId)
         return;
     CStringW popup = LULLUBOX_ATTR(data)->FUN_14042cad0(L"meratMarketPopup", L"");
     if (!FUN_14025cd60(popup, kind)) {
-        CStringW msg = FUN_14028dfa0(CStringW(L"s_lullu_key_not_enough_item"), itemId);
+        CStringW msg = FUN_14028dfa0(CStringW(L"s_lullu_key_not_enough_item"), (unsigned)itemId);   // FUN_14028dfa0<unsigned> in the exe
         FUN_1403b4750()->FUN_1416fb300(msg);
         FUN_1412751f0(msg, 1, 1);
     } else {
-        CStringW msg = FUN_14028dfa0(CStringW(L"s_lullu_key_not_enough_item_shop_link"), itemId);
+        CStringW msg = FUN_14028dfa0(CStringW(L"s_lullu_key_not_enough_item_shop_link"), (unsigned)itemId);
         FUN_1403b4750()->FUN_1416fb300(msg);
         MS2Ptr<CMsgBoxData> box = FUN_140d73f20(msg, 1);
         if (box.get()) {
