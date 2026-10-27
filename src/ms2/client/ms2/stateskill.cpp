@@ -1937,7 +1937,7 @@ int StateSkill::FUN_1417eaa50(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int
         PCBase* pPeer = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(pDialog->FUN_1417f5f70());
         if (pPeer == NULL)
         {
-            MS2_ASSERT_AT(0x486, "pPeer" && 0);
+            MS2_ASSERT_AT(0x486, "pPeerPC" && 0);
             break;
         }
         if (FUN_140ae51b0(FUN_14097a780(), nPartner) != 0)
@@ -1979,7 +1979,7 @@ int StateSkill::FUN_1417eaa50(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int
         MS2Ptr<StateCoupleEmotionData> spData(new StateCoupleEmotionData);
         if (!spData)
         {
-            MS2_ASSERT_AT(0x4b4, "spData" && 0);
+            MS2_ASSERT_AT(0x4b4, "pData" && 0);
             break;
         }
         spData->m_nEmotion = spRecord->GetSkillId();
