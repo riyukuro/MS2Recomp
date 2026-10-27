@@ -82,7 +82,7 @@ extern char DAT_143afbbb0;      // NiMesh::ms_RTTI
 extern char DAT_143af77a8;      // RTTI of the dummy attach node class
 extern float DAT_143ac3d08;     // the engine's frame step
 extern char DAT_143b01a60;      // NiPoint3::ZERO
-extern char DAT_143ad2348;      // the owner's default attach-state record
+// 0x143ad2348 is s_strWillUpdatePos (constructed in .text$di 0x1400e8b40); the data_bss_game blob of that name never is
 extern ATL::CAtlList<CString> s_meshSuffixes; // equipment.cpp: side suffixes tried when resolving an attach point name
 extern char DAT_142ec05ba;      // ""
 
@@ -663,7 +663,7 @@ void FUN_141200ca0(CEquipModel* self)
     if (FUN_1405a8e70(&self->m_spOwner) != 0) {
         if (FUN_1411dc7f0(OWNER(self)) != 0) {
             if (FUN_1405471b0(FUN_14053ec70(FUN_1411dc7f0(OWNER(self)))) != 0) {
-                FUN_1411dce60(OWNER(self), &DAT_143ad2348);
+                FUN_1411dce60(OWNER(self), &s_strWillUpdatePos);
                 FUN_1411dd280(OWNER(self));
             }
             void* pEnt = FUN_141200820(self);
