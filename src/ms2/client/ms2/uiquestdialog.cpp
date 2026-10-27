@@ -105,7 +105,6 @@ class Unk_QdActor
 {
 public:
     virtual ~Unk_QdActor();
-    virtual void Unk_Slot0();
     virtual void Unk_Slot1();
     virtual void Unk_Slot2();
     virtual void Unk_Slot3();
@@ -1649,7 +1648,7 @@ void UIQuestDialog::CollectEpisodes(CAtlArray<unsigned>& rOut)
         if (quests.GetCount() != 0)
         {
             Unk_PayloadPtr<CQuest> spFirst(quests[0]);
-            if (spFirst->IsRewarded() == 0)
+            if (spFirst->GetQuestType() == 0)
             {
                 __int64 nKey;
                 if (IsSubTabOne() == 0)
@@ -1769,38 +1768,52 @@ void UIQuestDialog::CollectRecommended(CAtlArray<MS2Ptr<CQuestData> >& rOut)
         for (size_t j = 0; j < chapterQuests.GetCount(); j++)
         {
             MS2Ptr<CQuestData> spData = FUN_14074bc40(chapterQuests[j]);
+            int nDummy;
             if (FUN_140764020()->vfunc_1(chapterQuests[j], 0) != 0)
-                continue;
+            {
+                // an available quest of the chapter is itself the recommendation
+                if (bProperLevel != 0 && nChapter != nFocusChapter && 5 < (int)pPlayer->vfunc_78() - spData->m_level)
+                    continue;
+                if (seenQuests.Lookup(FUN_14074b030(spData.operator->()), nDummy) || seenChapters.Lookup(nChapter, nDummy))
+                    continue;
+                if (FUN_1416e8060(spData->m_28) != 0)
+                    continue;
+                if (IsInCurrentTab(FUN_14074b030(spData.operator->())) == 0)
+                    continue;
+                if (FUN_14074b1c0(spData.operator->(), 1) != 0)
+                    continue;
+                sorted.Insert(spData->m_level, spData);
+                seenQuests.SetAt(FUN_14074b030(spData.operator->()), 1);
+                seenChapters.SetAt(nChapter, 1);
+                break;
+            }
             if (FUN_140764020()->FUN_140745630(chapterQuests[j]) == 0)
                 continue;
             bool bFound = false;
-            for (size_t k = 0; k < spData->m_require.m_followingQuests.GetCount() && !bFound; k++)
+            for (size_t k = 0; k < spData->m_require.m_followingQuests.GetCount(); k++)
             {
                 MS2Ptr<CQuestData> spNext = FUN_14074bc40(spData->m_require.m_followingQuests[k]);
                 if (!spNext)
                     continue;
                 if (FUN_1416e8060(spNext->m_28) != 0)
                     continue;
-                if (bProperLevel != 0 && nChapter != nFocusChapter)
-                {
-                    if (5 < (int)pPlayer->vfunc_78() - spNext->m_level)
-                        continue;
-                }
+                // the exe tests the completed quest's level here, not the following quest's
+                if (bProperLevel != 0 && nChapter != nFocusChapter && 5 < (int)pPlayer->vfunc_78() - spData->m_level)
+                    continue;
                 int nNextId = FUN_14074b030(spNext.operator->());
-                int nDummy;
                 if (seenQuests.Lookup(nNextId, nDummy) || seenChapters.Lookup(nChapter, nDummy))
                     continue;
-                if (FUN_1416e8060(spNext->m_28) == 0 && IsInCurrentTab(FUN_14074b030(spNext.operator->())) != 0)
-                {
-                    if (FUN_14074b1c0(spNext.operator->(), 1) == 0)
-                    {
-                        sorted.Insert(spNext->m_level, spNext);
-                        seenQuests.SetAt(nNextId, 1);
-                        seenChapters.SetAt(nChapter, 1);
-                        bFound = true;
-                    }
-                }
+                if (IsInCurrentTab(FUN_14074b030(spNext.operator->())) == 0)
+                    continue;
+                if (FUN_14074b1c0(spNext.operator->(), 1) != 0)
+                    continue;
+                sorted.Insert(spNext->m_level, spNext);
+                seenChapters.SetAt(nChapter, 1);
+                seenQuests.SetAt(FUN_14074b030(spNext.operator->()), 1);
+                bFound = true;
             }
+            if (bFound)
+                break;
         }
     }
     POSITION pos = sorted.GetHeadPosition();
@@ -1893,7 +1906,7 @@ void UIQuestDialog::GiveUpQuest(int nQuestId)
     if (spQuest->GetState() != 1)
         return;
     bool bConfirm = false;
-    if (FUN_14074b090(spQuest->GetData().operator->()) != 0 && spQuest->FUN_140744b90(0) == 0)
+    if (FUN_14074b090(spQuest->GetData().operator->()) != 0 && spQuest->FUN_1407447c0() == 0)
         bConfirm = true;
     if (bConfirm)
     {
