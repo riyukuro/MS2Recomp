@@ -136,6 +136,7 @@ public:
             p->AddRef();
         m_p = p;
     }
+    Unk_GfxRef(const Unk_GfxRef& o);    // declared (non-trivial): the by-value argument goes by reference to a caller temp
     // @0x140a5a8c0
     ~Unk_GfxRef()
     {
