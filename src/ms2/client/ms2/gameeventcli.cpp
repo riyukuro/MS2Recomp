@@ -67,6 +67,8 @@
 #include "uicashattenddialog.h"
 #include "uileveluppackagewidgetdialog.h"
 #include "uimessageboxdata.h"
+#include "ms2/placeholder/citem.h"
+#include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/notifyobject.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
@@ -1247,13 +1249,30 @@ public:
     unsigned short m_nOldLevel;
 };
 
-// MS2-FUNCTIONAL: the exe also fills the box with the reward item bag (CMsgBoxDataItem/CItem built from the jumping item or the reward list); only the text is shown here
-static void Unk_ShowBurningPopup(const CStringW& strKey)
+// Appends one reward item (as shown in the burning popup) to the message box item bag.
+static void Unk_AddBurningPopupItem(MS2Ptr<CMsgBoxData>& spBox, ItemEntity* pEntity)
+{
+    MS2Ptr<CMsgBoxDataItem> spData(new CMsgBoxDataItem());
+    MS2Ptr<CItem> spItem(new CItem());
+    spItem->FUN_140523c40(pEntity->vfunc_o18_0(), pEntity->vfunc_o18_1(), 0);
+    spItem->FUN_140526c70(pEntity->vfunc_o18_2());
+    int nRank = spItem->FUN_140526bd0();
+    spData->FUN_141a06630(spItem->FUN_140527b10(), true, nRank);
+    spData->m_spItem = spItem;
+    spData->m_nCount = spItem->FUN_140526c50();
+    spData->m_48 = 0x411;
+    spBox->FUN_141a01e60(spData);
+}
+
+// pItem: the entity shown in the popup's item bag (the jumping item or the first reward item), 0 for text only
+static void Unk_ShowBurningPopup(const CStringW& strKey, ItemEntity* pItem)
 {
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x2a, GetStringCommonByKey(strKey), 0, CStringW(L""));
     if (spBox == 0)
         return;
     spBox->FUN_141a01800(3);
+    if (pItem)
+        Unk_AddBurningPopupItem(spBox, pItem);
     FUN_140d73c60(spBox);
 }
 
@@ -1326,7 +1345,6 @@ void GameEventLongTermAttendGiftCli::vfunc_6()
     ((Unk_CliUiMgr*)FUN_1403ed2b0())->FUN_141adc5d0(0x4f98);
 }
 
-// MS2-FUNCTIONAL: see Unk_ShowBurningPopup (reward item bag not built)
 // @0x140ce65f0
 void GameEventBurningLevelupCli::vfunc_10(NotifyObject* pNotify)
 {
@@ -1340,13 +1358,12 @@ void GameEventBurningLevelupCli::vfunc_10(NotifyObject* pNotify)
     if (pChg->m_nLevel < m_d0->m_8c) {
         __int64 q = 0;
         if (DAT_143ab2fc0.FUN_140be8f80(0x7d3, m_d0->m_eventId, q) != 0)
-            Unk_ShowBurningPopup(m_d0->m_jumpingItemNotifyStringKey);
+            Unk_ShowBurningPopup(m_d0->m_jumpingItemNotifyStringKey, m_d0->m_spJumpingItem.operator->());
     } else if (pChg->m_nOldLevel < m_d0->m_8c && m_d0->m_8c <= pChg->m_nLevel) {
-        Unk_ShowBurningPopup(m_d0->m_jumpingCompleteStringKey);
+        Unk_ShowBurningPopup(m_d0->m_jumpingCompleteStringKey, m_d0->m_rewardItems.empty() ? 0 : &m_d0->m_rewardItems.front());
     }
 }
 
-// MS2-FUNCTIONAL: see Unk_ShowBurningPopup (reward item bag not built)
 // @0x140ce7250
 void GameEventBurningLevelupCli::FUN_140ce7250(Unk_CliPkt& pkt)
 {
@@ -1359,7 +1376,7 @@ void GameEventBurningLevelupCli::FUN_140ce7250(Unk_CliPkt& pkt)
             pDlg->FUN_140c5a100(&pkt);
     } else if (nType == 0x11) {
         if ((int)m_d0->m_eventId == pkt.GetId() && !m_d0->m_jumpingItemNotifyStringKey.IsEmpty())
-            Unk_ShowBurningPopup(m_d0->m_jumpingItemNotifyStringKey);
+            Unk_ShowBurningPopup(m_d0->m_jumpingItemNotifyStringKey, m_d0->m_spJumpingItem.operator->());
     }
 }
 
