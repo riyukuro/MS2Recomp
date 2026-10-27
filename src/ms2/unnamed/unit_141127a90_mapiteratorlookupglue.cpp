@@ -65,6 +65,9 @@ public:
 };
 
 struct Unk_Cursor { void* m_p; };
+// The insert wrappers (0x14111d6e0..0x14111dfa0, via 0x1410d7c20 / 0x1410da090) write a std::pair<iterator, bool>:
+// 16 bytes, the bool at +8. The callers' slot is the pair; they read .first through the returned pointer.
+template <class It> struct Unk_InsPair { It first; bool second; };
 struct Unk_Key;
 struct Unk_Elem52 { char m_acData[0x34]; };
 class Unk_Array52;
@@ -367,253 +370,253 @@ char* FUN_1411287e0(Unk_IterB<23>* pIter)
 // @0x141127a90
 char* FUN_141127a90(void* pMap, void* key)
 {
-    Unk_IterA<0> it;
-    return (FUN_141128500(FUN_14111d6e0(pMap, &it, key)) + 8);
+    Unk_InsPair<Unk_IterA<0>> it;
+    return (FUN_141128500(FUN_14111d6e0(pMap, &it.first, key)) + 8);
 }
 
 // @0x141127ad0
 char* FUN_141127ad0(void* pMap, void* key)
 {
-    Unk_IterB<1> it;
-    return (FUN_141128520(FUN_14111d720(pMap, &it, key)) + 4);
+    Unk_InsPair<Unk_IterB<1>> it;
+    return (FUN_141128520(FUN_14111d720(pMap, &it.first, key)) + 4);
 }
 
 // @0x141127b10
 char* FUN_141127b10(void* pMap, Unk_Key* pKey)
 {
-    Unk_IterA<2> it;
-    return (FUN_141128540(FUN_14111d760(pMap, &it, FUN_140181b70(pKey))) + 8);
+    Unk_InsPair<Unk_IterA<2>> it;
+    return (FUN_141128540(FUN_14111d760(pMap, &it.first, FUN_140181b70(pKey))) + 8);
 }
 
 // @0x141127b50
 char* FUN_141127b50(void* pMap, void* key)
 {
-    Unk_IterA<2> it;
-    return (FUN_141128540(FUN_14111d7a0(pMap, &it, key)) + 8);
+    Unk_InsPair<Unk_IterA<2>> it;
+    return (FUN_141128540(FUN_14111d7a0(pMap, &it.first, key)) + 8);
 }
 
 // @0x141127b90
 char* FUN_141127b90(void* pMap, void* key)
 {
-    Unk_IterA<3> it;
-    return (FUN_141128560(FUN_14111d7e0(pMap, &it, key)) + 8);
+    Unk_InsPair<Unk_IterA<3>> it;
+    return (FUN_141128560(FUN_14111d7e0(pMap, &it.first, key)) + 8);
 }
 
 // @0x141127bd0
 char* FUN_141127bd0(void* pMap, Unk_Key* pKey)
 {
-    Unk_IterA<4> it;
-    return (FUN_141128580(FUN_14111d820(pMap, &it, FUN_140181b70(pKey))) + 8);
+    Unk_InsPair<Unk_IterA<4>> it;
+    return (FUN_141128580(FUN_14111d820(pMap, &it.first, FUN_140181b70(pKey))) + 8);
 }
 
 // @0x141127c10
 char* FUN_141127c10(void* pMap, void* key)
 {
-    Unk_IterA<4> it;
-    return (FUN_141128580(FUN_14111d860(pMap, &it, key)) + 8);
+    Unk_InsPair<Unk_IterA<4>> it;
+    return (FUN_141128580(FUN_14111d860(pMap, &it.first, key)) + 8);
 }
 
 // @0x141127c50
 char* FUN_141127c50(void* pMap, void* key)
 {
-    Unk_IterA<5> it;
-    return (FUN_1411285a0(FUN_14111d8a0(pMap, &it, key)) + 8);
+    Unk_InsPair<Unk_IterA<5>> it;
+    return (FUN_1411285a0(FUN_14111d8a0(pMap, &it.first, key)) + 8);
 }
 
 // @0x141127c90
 char* FUN_141127c90(void* pMap, void* key)
 {
-    Unk_IterA<6> it;
-    return (FUN_1411285c0(FUN_14111d8e0(pMap, &it, key)) + 8);
+    Unk_InsPair<Unk_IterA<6>> it;
+    return (FUN_1411285c0(FUN_14111d8e0(pMap, &it.first, key)) + 8);
 }
 
 // @0x141127cd0
 char* FUN_141127cd0(void* pMap, void* key)
 {
-    Unk_IterA<7> it;
-    return (FUN_1411285e0(FUN_14111d920(pMap, &it, key)) + 8);
+    Unk_InsPair<Unk_IterA<7>> it;
+    return (FUN_1411285e0(FUN_14111d920(pMap, &it.first, key)) + 8);
 }
 
 // @0x141127d10
 char* FUN_141127d10(void* pMap, void* key)
 {
-    Unk_IterA<8> it;
-    return (FUN_141128600(FUN_14111d960(pMap, &it, key)) + 8);
+    Unk_InsPair<Unk_IterA<8>> it;
+    return (FUN_141128600(FUN_14111d960(pMap, &it.first, key)) + 8);
 }
 
 // @0x141127d50
 char* FUN_141127d50(void* pMap, void* key)
 {
-    Unk_IterA<9> it;
-    return (FUN_141128620(FUN_14111d9a0(pMap, &it, key)) + 8);
+    Unk_InsPair<Unk_IterA<9>> it;
+    return (FUN_141128620(FUN_14111d9a0(pMap, &it.first, key)) + 8);
 }
 
 // @0x141127d90
 char* FUN_141127d90(void* pMap, Unk_Key* pKey)
 {
-    Unk_IterA<10> it;
-    return (FUN_141128640(FUN_14111d9e0(pMap, &it, FUN_140181b70(pKey))) + 8);
+    Unk_InsPair<Unk_IterA<10>> it;
+    return (FUN_141128640(FUN_14111d9e0(pMap, &it.first, FUN_140181b70(pKey))) + 8);
 }
 
 // @0x141127dd0
 char* FUN_141127dd0(void* pMap, void* key)
 {
-    Unk_IterA<10> it;
-    return (FUN_141128640(FUN_14111da20(pMap, &it, key)) + 8);
+    Unk_InsPair<Unk_IterA<10>> it;
+    return (FUN_141128640(FUN_14111da20(pMap, &it.first, key)) + 8);
 }
 
 // @0x141127e10
 char* FUN_141127e10(void* pMap, void* key)
 {
-    Unk_IterA<11> it;
-    return (FUN_141128660(FUN_14111da60(pMap, &it, key)) + 8);
+    Unk_InsPair<Unk_IterA<11>> it;
+    return (FUN_141128660(FUN_14111da60(pMap, &it.first, key)) + 8);
 }
 
 // @0x141127e50
 char* FUN_141127e50(void* pMap, void* key)
 {
-    Unk_IterA<12> it;
-    return (FUN_141128680(FUN_14111daa0(pMap, &it, key)) + 8);
+    Unk_InsPair<Unk_IterA<12>> it;
+    return (FUN_141128680(FUN_14111daa0(pMap, &it.first, key)) + 8);
 }
 
 // @0x141127e90
 char* FUN_141127e90(void* pMap, Unk_Key* pKey)
 {
-    Unk_IterA<13> it;
-    return (FUN_1411286a0(FUN_14111dae0(pMap, &it, FUN_140181b70(pKey))) + 8);
+    Unk_InsPair<Unk_IterA<13>> it;
+    return (FUN_1411286a0(FUN_14111dae0(pMap, &it.first, FUN_140181b70(pKey))) + 8);
 }
 
 // @0x141127ed0
 char* FUN_141127ed0(void* pMap, void* key)
 {
-    Unk_IterA<13> it;
-    return (FUN_1411286a0(FUN_14111db20(pMap, &it, key)) + 8);
+    Unk_InsPair<Unk_IterA<13>> it;
+    return (FUN_1411286a0(FUN_14111db20(pMap, &it.first, key)) + 8);
 }
 
 // @0x141127f10
 char* FUN_141127f10(void* pMap, void* key)
 {
-    Unk_IterA<14> it;
-    return (FUN_1411286c0(FUN_14111db60(pMap, &it, key)) + 8);
+    Unk_InsPair<Unk_IterA<14>> it;
+    return (FUN_1411286c0(FUN_14111db60(pMap, &it.first, key)) + 8);
 }
 
 // @0x141127f50
 char* FUN_141127f50(void* pMap, Unk_Key* pKey)
 {
-    Unk_Cursor it;
-    return (FUN_140d7b4e0(FUN_14111dba0(pMap, &it, FUN_140181b70(pKey))) + 4);
+    Unk_InsPair<Unk_Cursor> it;
+    return (FUN_140d7b4e0(FUN_14111dba0(pMap, &it.first, FUN_140181b70(pKey))) + 4);
 }
 
 // @0x141127f90
 char* FUN_141127f90(void* pMap, Unk_Key* pKey)
 {
-    Unk_Cursor it;
-    return (FUN_14025cf40(FUN_14111dbe0(pMap, &it, FUN_140181b80(pKey))) + 4);
+    Unk_InsPair<Unk_Cursor> it;
+    return (FUN_14025cf40(FUN_14111dbe0(pMap, &it.first, FUN_140181b80(pKey))) + 4);
 }
 
 // @0x141127fd0
 char* FUN_141127fd0(void* pMap, Unk_Key* pKey)
 {
-    Unk_Cursor it;
-    return (FUN_1404482f0(FUN_14111dc20(pMap, &it, FUN_140181b80(pKey))) + 4);
+    Unk_InsPair<Unk_Cursor> it;
+    return (FUN_1404482f0(FUN_14111dc20(pMap, &it.first, FUN_140181b80(pKey))) + 4);
 }
 
 // @0x141128010
 char* FUN_141128010(void* pMap, Unk_Key* pKey)
 {
-    Unk_Cursor it;
-    return (FUN_1409ee2e0(FUN_14111dc60(pMap, &it, FUN_140181b80(pKey))) + 8);
+    Unk_InsPair<Unk_Cursor> it;
+    return (FUN_1409ee2e0(FUN_14111dc60(pMap, &it.first, FUN_140181b80(pKey))) + 8);
 }
 
 // @0x141128050
 char* FUN_141128050(void* pMap, void* key)
 {
-    Unk_IterA<15> it;
-    return (FUN_1411286e0(FUN_14111dca0(pMap, &it, key)) + 8);
+    Unk_InsPair<Unk_IterA<15>> it;
+    return (FUN_1411286e0(FUN_14111dca0(pMap, &it.first, key)) + 8);
 }
 
 // @0x141128090
 char* FUN_141128090(void* pMap, Unk_Key* pKey)
 {
-    Unk_IterA<16> it;
-    return (FUN_141128700(FUN_14111dce0(pMap, &it, FUN_1404eb810(pKey))) + 8);
+    Unk_InsPair<Unk_IterA<16>> it;
+    return (FUN_141128700(FUN_14111dce0(pMap, &it.first, FUN_1404eb810(pKey))) + 8);
 }
 
 // @0x1411280d0
 char* FUN_1411280d0(void* pMap, void* key)
 {
-    Unk_IterA<17> it;
-    return (FUN_141128720(FUN_14111dd20(pMap, &it, key)) + 8);
+    Unk_InsPair<Unk_IterA<17>> it;
+    return (FUN_141128720(FUN_14111dd20(pMap, &it.first, key)) + 8);
 }
 
 // @0x141128110
 char* FUN_141128110(void* pMap, void* key)
 {
-    Unk_IterA<18> it;
-    return (FUN_141128740(FUN_14111dd60(pMap, &it, key)) + 8);
+    Unk_InsPair<Unk_IterA<18>> it;
+    return (FUN_141128740(FUN_14111dd60(pMap, &it.first, key)) + 8);
 }
 
 // @0x141128150
 char* FUN_141128150(void* pMap, void* key)
 {
-    Unk_IterA<19> it;
-    return (FUN_141128760(FUN_14111dda0(pMap, &it, key)) + 8);
+    Unk_InsPair<Unk_IterA<19>> it;
+    return (FUN_141128760(FUN_14111dda0(pMap, &it.first, key)) + 8);
 }
 
 // @0x141128190
 char* FUN_141128190(void* pMap, void* key)
 {
-    Unk_IterA<20> it;
-    return (FUN_141128780(FUN_14111dde0(pMap, &it, key)) + 8);
+    Unk_InsPair<Unk_IterA<20>> it;
+    return (FUN_141128780(FUN_14111dde0(pMap, &it.first, key)) + 8);
 }
 
 // @0x1411281d0
 char* FUN_1411281d0(void* pMap, void* key)
 {
-    Unk_IterB<21> it;
-    return (FUN_1411287a0(FUN_14111de20(pMap, &it, key)) + 4);
+    Unk_InsPair<Unk_IterB<21>> it;
+    return (FUN_1411287a0(FUN_14111de20(pMap, &it.first, key)) + 4);
 }
 
 // @0x141128210
 char* FUN_141128210(void* pMap, void* key)
 {
-    Unk_IterB<21> it;
-    return (FUN_1411287a0(FUN_14111de60(pMap, &it, key)) + 4);
+    Unk_InsPair<Unk_IterB<21>> it;
+    return (FUN_1411287a0(FUN_14111de60(pMap, &it.first, key)) + 4);
 }
 
 // @0x141128250
 char* FUN_141128250(void* pMap, Unk_Key* pKey)
 {
-    Unk_IterB<22> it;
-    return (FUN_1411287c0(FUN_14111dea0(pMap, &it, FUN_14111d530(pKey))) + 4);
+    Unk_InsPair<Unk_IterB<22>> it;
+    return (FUN_1411287c0(FUN_14111dea0(pMap, &it.first, FUN_14111d530(pKey))) + 4);
 }
 
 // @0x141128290
 char* FUN_141128290(void* pMap, void* key)
 {
-    Unk_IterB<22> it;
-    return (FUN_1411287c0(FUN_14111dee0(pMap, &it, key)) + 4);
+    Unk_InsPair<Unk_IterB<22>> it;
+    return (FUN_1411287c0(FUN_14111dee0(pMap, &it.first, key)) + 4);
 }
 
 // @0x1411282d0
 char* FUN_1411282d0(void* pMap, Unk_Key* pKey)
 {
-    Unk_IterB<23> it;
-    return (FUN_1411287e0(FUN_14111df20(pMap, &it, FUN_14111d530(pKey))) + 4);
+    Unk_InsPair<Unk_IterB<23>> it;
+    return (FUN_1411287e0(FUN_14111df20(pMap, &it.first, FUN_14111d530(pKey))) + 4);
 }
 
 // @0x141128310
 char* FUN_141128310(void* pMap, void* key)
 {
-    Unk_IterB<23> it;
-    return (FUN_1411287e0(FUN_14111df60(pMap, &it, key)) + 4);
+    Unk_InsPair<Unk_IterB<23>> it;
+    return (FUN_1411287e0(FUN_14111df60(pMap, &it.first, key)) + 4);
 }
 
 // @0x141128350
 char* FUN_141128350(void* pMap, void* key)
 {
-    Unk_Cursor it;
-    return (FUN_140885360(FUN_14111dfa0(pMap, &it, key)) + 8);
+    Unk_InsPair<Unk_Cursor> it;
+    return (FUN_140885360(FUN_14111dfa0(pMap, &it.first, key)) + 8);
 }
 
 // @0x141128390
