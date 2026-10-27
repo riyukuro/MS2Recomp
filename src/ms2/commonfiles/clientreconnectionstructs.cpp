@@ -10,6 +10,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#define MS2_ASSERT_MSG_AT(line, msg, cond) (void)((!!(cond)) || (_wassert(msg, _CRT_WIDE(MS2_THIS_FILE), (unsigned)(line)), 0))
 
 void FUN_141267410(CGameSocket* pSocket, COutPacket& packet);     // CGameSocket::Send (client\ms2\gamesocket.cpp)
 
@@ -129,7 +130,7 @@ void COutPacketBuffer::ShrinkCapturedPackets()
                                   m_capturedSize, limit, shrink);
             while (m_capturedSize > shrink && !m_captured.IsEmpty()) {
                 COutPacketPtr packet = m_captured.RemoveHead();
-                MS2_ASSERT_AT(0x177, packet.get() != NULL);
+                MS2_ASSERT_MSG_AT(0x177, L"pPacket != NULL", packet.get() != NULL);
                 m_capturedSize -= packet->FUN_14020b9f0();
             }
         }
