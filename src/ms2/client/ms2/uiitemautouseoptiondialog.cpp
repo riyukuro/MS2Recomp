@@ -209,6 +209,7 @@ UIItemAutoUseOptionDialog* FUN_140cbe1c0(int nId);                  // the open 
 
 UIItemAutoUseOptionDialog::Slot* FUN_140f507b0(NotifyContext::BindData* p);
 UIItemAutoUseOptionDialog::SlotBag* FUN_140f50800(NotifyContext::BindData* p);
+DragSlotBag* FUN_140c544d0(NotifyContext::BindData* p);              // DragSlotBag cast (class id 0x6202736)
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(UIItemAutoUseOptionDialog::Slot);
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(UIItemAutoUseOptionDialog::SlotBag);
@@ -599,17 +600,17 @@ int UIItemAutoUseOptionDialog::vfunc_28(const char* szMethod, const Scaleform::G
 // @0x140f4fa30
 void UIItemAutoUseOptionDialog::vfunc_oa0_25(void* p)
 {
-    UIItemAutoUseOptionDialog::SlotBag* pBag = FUN_140f50800(FUN_1422c8e90(m_strBag));
+    DragSlotBag* pBag = FUN_140c544d0(FUN_1422c8e90(m_strBag));        // the exe casts to the base DragSlotBag here
     if (pBag != 0)
-        static_cast<DragSlotBag*>(pBag)->vfunc_11(p);
+        pBag->vfunc_11(p);
 }
 
 // @0x140f4fa90
 void UIItemAutoUseOptionDialog::vfunc_oa0_26(void* p)
 {
-    UIItemAutoUseOptionDialog::SlotBag* pBag = FUN_140f50800(FUN_1422c8e90(m_strBag));
+    DragSlotBag* pBag = FUN_140c544d0(FUN_1422c8e90(m_strBag));        // the exe casts to the base DragSlotBag here
     if (pBag != 0)
-        static_cast<DragSlotBag*>(pBag)->vfunc_12(p);
+        pBag->vfunc_12(p);
 }
 
 // @0x140f4faf0
