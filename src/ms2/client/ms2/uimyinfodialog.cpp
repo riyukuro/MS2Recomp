@@ -800,10 +800,11 @@ void UIMyInfoDialog::FUN_141a5ac90(unsigned short nLevel)
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == 0)
         return;
-    CStringW strSymbol = FUN_1401a9d70()->FUN_141811980(0x27, nLevel);
-    CStringW strName = FUN_14131e120()->FUN_1406c61a0(nLevel, pPc);
+    CStringW strName = FUN_1401a9d70()->FUN_141811980(0x27, nLevel);      // string table 0x27: the symbol's name text
+    CStringW strIcon = FUN_14131e120()->FUN_1406c61a0(nLevel, pPc);       // ranked icon path
     int nState = FUN_14131e120()->FUN_1406c5d60(nLevel);
-    static_cast<Unk_MiScript*>((AScript*)m_30)->FUN_140ed1090("setSymbol", CStringW(strName), CStringW(strSymbol), nState == 0);
+    // AS3 setSymbol(name, icon, enabled): the exe passes the name text first (r9) and the icon second
+    static_cast<Unk_MiScript*>((AScript*)m_30)->FUN_140ed1090("setSymbol", CStringW(strName), CStringW(strIcon), nState == 0);
 }
 
 // @0x141a5ae40
