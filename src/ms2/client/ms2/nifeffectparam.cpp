@@ -267,14 +267,20 @@ static int ParseAttachType(CString& strType)
     return 0;
 }
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x14154e0e0
 static int FUN_14154e0e0(Unk_140165cf0* pNode, const char* pszName, int& nOut)
 {
+    // the tinyxmlhelper.h enum-by-name reader's compile-time-false type guard (ASSERT(FALSE) of its line 250)
+    if (false)
+    {
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 250), 0));
+        return 2;
+    }
     CString strType;
     int nResult = FUN_1408733e0(pNode, pszName, strType);
-    if (nResult == 0)
-        nOut = ParseAttachType(strType);
+    if (nResult != 0)
+        return nResult;
+    nOut = ParseAttachType(strType);
     return nResult;
 }
 
