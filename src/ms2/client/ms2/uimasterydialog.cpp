@@ -799,7 +799,7 @@ void UIMasteryDialog::SetMainTab(int nMainTab)
 // @0x140eafde0
 void UIMasteryDialog::FUN_140eafde0()
 {
-    if (!vfunc_46())
+    if (!FUN_141924630())
         return;
     MS2Ptr<Unk_MSubTab> spSub = FUN_140c02870(CString("m_subTab"));
     if (!spSub.get())
