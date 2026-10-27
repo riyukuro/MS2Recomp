@@ -40,7 +40,9 @@ MS2_CHECK_SIZE(Unk_HitSoundKey, 8);
 // The sound names of one job (boxed array shared by the job table of the properties).
 typedef ATL::CAtlArray<CString> Unk_SoundNameArray;
 typedef Unk_FieldPtr<Unk_SoundNameArray> Unk_SoundNameArrayPtr;
-typedef ATL::CAtlMap<int, Unk_SoundNameArrayPtr> Unk_JobSoundMap;   // job code -> sound names (per gender)
+// The exe's map passes the job code by reference (ATL's default INARGTYPE): SetAt/Lookup take &key.
+struct Unk_JobSoundKeyTraits : ATL::CElementTraits<int> { typedef const int& INARGTYPE; };
+typedef ATL::CAtlMap<int, Unk_SoundNameArrayPtr, Unk_JobSoundKeyTraits> Unk_JobSoundMap;   // job code -> sound names (per gender)
 
 // <systemSound key= soundID= group= byGender= byJob= cooltimeID= jobSoundID=/> (0x98 bytes, CPtred based).
 class SystemSoundProperty : public CPtred
