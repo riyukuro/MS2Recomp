@@ -61,7 +61,7 @@ public:
 };
 class ASDialog : public Unk_HiScript {};
 
-// A button of the panel (slot 3 shows, slot 4 enables).
+// A button of the panel (ASDisplayObject slot 3 SetVisible, slot 4 SetVisible only on a change).
 class Unk_HiButton : public Unk_HiScript
 {
 public:
@@ -682,7 +682,7 @@ int UIHomeInfoDialog::FUN_1412c72d0()
             if (spBook.get() != 0)
             {
                 spBook->FUN_1422c1fe0(bBook);
-                spBook->vfunc_4(bBook);
+                spBook->vfunc_3(bBook);
             }
         }
     }
