@@ -158,9 +158,7 @@ void StateReact::vfunc_4(StateData* pData)
     m_spData.AssignRaw(dynamic_cast<StateReactData*>(pData));
     if (m_spData == 0)
     {
-#line 61
-        assert(0);
-#line 162
+        MS2_ASSERT_AT(0x3d, 0);
         return;
     }
     if (FUN_140b8e030())
@@ -346,36 +344,34 @@ void StateReact::FUN_140b8dfd0(Unk_ReactRef kRef)
 bool StateReact::FUN_140b8e030()
 {
     if (m_spData == 0)
+        return false;
+    MS2Ptr<Unk_ReactClips> spClips = FUN_14076dcd0()->FUN_14076bbd0(m_spData->m_nId);
+    if (spClips.IsNull())
     {
-        MS2Ptr<Unk_ReactClips> spClips = FUN_14076dcd0()->FUN_14076bbd0(m_spData->m_nId);
-        if (!spClips.IsNull())
-        {
-            efd::utf8string kName("");
-            if (m_spData->m_strAnim.GetLength() < 1)
-            {
-                CString strAnim("");
-                if (m_n10 == 0x9e)
-                    strAnim = spClips->FUN_14076b060();
-                else if (m_n10 == 0x9f)
-                    strAnim = spClips->FUN_14076b110();
-                if (strAnim.GetLength() > 0)
-                {
-                    kName = (const char*)strAnim;
-                    m_spData->m_strAnim = strAnim;
-                    m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
-                }
-            }
-            else
-            {
-                kName = (const char*)m_spData->m_strAnim;
-                m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
-            }
-            return true;
-        }
-        assert(0);
+        MS2_ASSERT_AT(0x6e, 0);
         return false;
     }
-    return false;
+    efd::utf8string kName("");
+    if (m_spData->m_strAnim.GetLength() < 1)
+    {
+        CString strAnim("");
+        if (m_n10 == 0x9e)
+            strAnim = spClips->FUN_14076b060();
+        else if (m_n10 == 0x9f)
+            strAnim = spClips->FUN_14076b110();
+        if (strAnim.GetLength() > 0)
+        {
+            kName = (const char*)strAnim;
+            m_spData->m_strAnim = strAnim;
+            m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+        }
+    }
+    else
+    {
+        kName = (const char*)m_spData->m_strAnim;
+        m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+    }
+    return true;
 }
 
 // @0x140b8e560
