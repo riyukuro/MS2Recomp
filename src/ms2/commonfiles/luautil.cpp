@@ -368,7 +368,7 @@ bool CLua::LoadScripts(lua_State* pLuaState)
             int nError = luaL_loadfile(pLuaState, strFile) == 0 && lua_pcall(pLuaState, 0, LUA_MULTRET, 0) == 0 ? 0 : 1;
             if (nError != 0)
             {
-                FUN_14015eb90(FUN_140166440(), 1, 0x12d, L"Lua script failed", strPath);
+                FUN_14015eb90(FUN_140166440(), 1, 0x12d, L"파일을 읽을 수 없습니다[{0}]", strPath);
                 return false;
             }
         }
@@ -381,7 +381,7 @@ bool CLua::LoadScripts(lua_State* pLuaState)
         int nSize[2];
         if (FUN_140166420()->FUN_1403972f0(strPath, &pBuffer, nSize, 0) == 0)
         {
-            FUN_14015eb90(FUN_140166440(), 1, 0x12d, L"Lua load failed", strPath);
+            FUN_14015eb90(FUN_140166440(), 1, 0x12d, L"파일을 읽을 수 없습니다[{0}]", strPath);
             return false;
         }
         int nError = luaL_loadbuffer(pLuaState, (const char*)pBuffer, nSize[0], strName) == 0 && lua_pcall(pLuaState, 0, LUA_MULTRET, 0) == 0 ? 0 : 1;
