@@ -220,13 +220,19 @@ CCinematicContent::~CCinematicContent()
 }
 
 // @0x14078ebd0
-// MS2-FUNCTIONAL: the exe copy has a dead assert(0)/return 2 branch (a compile-time type switch) in front of the xml read
 static int FUN_14078ebd0(Unk_ScriptXmlNode* pNode, const char* pszName, int* pOut)
 {
+    // the tinyxmlhelper.h enum reader's compile-time-false type guard (ASSERT(FALSE) of its line 231)
+    if (false)
+    {
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 231), 0));
+        return 2;
+    }
     int nValue = 0;
     int nResult = FUN_140873890(pNode, pszName, nValue);
-    if (nResult == 0)
-        *pOut = nValue;
+    if (nResult != 0)
+        return nResult;
+    *pOut = nValue;
     return nResult;
 }
 
