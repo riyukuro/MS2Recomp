@@ -895,22 +895,36 @@ int FUN_1403759c0(Unk_140165cf0* node,const char* attribute,std::vector<short>& 
     if (result==0) Unk_FieldSplit(value,out,",");
     return result;
 }
-// MS2-FUNCTIONAL: recovered enum reader; the compiler's unreachable type-trait branch is omitted.
 // @0x140375a40
 int FUN_140375a40(Unk_140165cf0* node,const char* attribute,int& out)
 {
+    // the tinyxmlhelper.h enum reader's compile-time-false type guard (ASSERT(FALSE) of its line 231)
+    if (false)
+    {
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 231), 0));
+        return 2;
+    }
     int value=0;
     int result=FUN_140873890(node,attribute,value);
-    if (result==0) out=value;
+    if (result != 0)
+        return result;
+    out=value;
     return result;
 }
-// MS2-FUNCTIONAL: same enum-reader contract for the distinct tutorial enum.
 // @0x140375ad0
 int FUN_140375ad0(Unk_140165cf0* node,const char* attribute,int& out)
 {
+    // the tinyxmlhelper.h enum reader's compile-time-false type guard (ASSERT(FALSE) of its line 231)
+    if (false)
+    {
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 231), 0));
+        return 2;
+    }
     int value=0;
     int result=FUN_140873890(node,attribute,value);
-    if (result==0) out=value;
+    if (result != 0)
+        return result;
+    out=value;
     return result;
 }
 
