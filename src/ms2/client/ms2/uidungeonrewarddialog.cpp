@@ -580,8 +580,8 @@ void UIDungeonRewardDialog::FUN_140e24060() {
    Unk_RewardEntryPtr entry=entries.FUN_140c9eb50(i);
    if(entry==0)continue;
    name->FUN_1422c4cd0(entry->FUN_140b1e060());
-   unsigned short a=entry->FUN_140b1e030();
-   unsigned short b=entry->FUN_140b1e010();
+   short a=entry->FUN_140b1e030();   // signed: the exe formats with StringFormat<short,short> (0x140b1f230)
+   short b=entry->FUN_140b1e010();
    score->FUN_1422c4cd0(StringFormat(L"{0}/{1}",b,a));
   } else label->vfunc_4(false);
  }
