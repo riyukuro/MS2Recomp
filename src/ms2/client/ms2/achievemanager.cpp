@@ -1564,20 +1564,34 @@ int CAchieveCategory::ParseTree(CStringA& strTree)
 // @0x140940370
 int FUN_140940370(Unk_140165cf0* pNode, const char* pszName, int* pOut)
 {
+    // the tinyxmlhelper.h enum-by-name reader's compile-time-false type guard (ASSERT(FALSE) of its line 250)
+    if (false)
+    {
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 250), 0));
+        return 2;
+    }
     CStringA str;
     int nRet = FUN_1408733e0(pNode, pszName, str);
-    if (nRet == 0)
-        *pOut = CAchieveCategory::ParseTab(str);
+    if (nRet != 0)
+        return nRet;
+    *pOut = CAchieveCategory::ParseTab(str);
     return nRet;
 }
 
 // @0x140940430
 int FUN_140940430(Unk_140165cf0* pNode, const char* pszName, int* pOut)
 {
+    // the tinyxmlhelper.h enum-by-name reader's compile-time-false type guard (ASSERT(FALSE) of its line 250)
+    if (false)
+    {
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 250), 0));
+        return 2;
+    }
     CStringA str;
     int nRet = FUN_1408733e0(pNode, pszName, str);
-    if (nRet == 0)
-        *pOut = CAchieveCategory::ParseTree(str);
+    if (nRet != 0)
+        return nRet;
+    *pOut = CAchieveCategory::ParseTree(str);
     return nRet;
 }
 
