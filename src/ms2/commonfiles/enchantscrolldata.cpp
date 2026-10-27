@@ -340,7 +340,7 @@ int FUN_14034e730(Unk_140165cf0* pElem, const char* pszName, int* pnOut)
 {
     if (FALSE)
     {
-        MS2_ASSERT_AT(231, FALSE);
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 231), 0));
         return 2;
     }
     int nValue = 0;
