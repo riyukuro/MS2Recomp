@@ -6,26 +6,19 @@
 #include "ms2/ms2recover.h"
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
-
-class CUserLimitArchive
-{
-public:
-    virtual void Slot0() = 0;
-    virtual void Transfer32(unsigned int& value) = 0; // byte offset 0x08
-    virtual void Slot2() = 0;
-    virtual void Slot3() = 0;
-    virtual void Transfer64(unsigned __int64& value) = 0; // byte offset 0x20
-};
+#include "ms2/placeholder/cinpacket.h"
 
 // vftable 0x142d15a98: ??_G (0x14027fef0, crt delete 0x50), Initialize, Serialize, Deserialize. The ctor runs
 // CPtred() (0x140159740) and stores that vftable; the old `void* m_vftable` stand-in left it null.
+// Serialize writes to a COutputStream (WriteUInt8 slot 1, WriteInt32 slot 3, WriteInt64 slot 4, values by value);
+// Deserialize reads from the CInPacket's CInputStream at +8 and stores the returned values.
 class CUserLimitHistory : public CPtred
 {
 public:
     CUserLimitHistory();
     virtual void Initialize();
-    virtual void Serialize(CUserLimitArchive& archive);
-    virtual void Deserialize(CUserLimitArchive& archive);
+    virtual void Serialize(COutputStream* pOut);
+    virtual void Deserialize(CInPacket& in);
     unsigned __int64 m_value18;
     unsigned __int64 m_value20;
     unsigned __int64 m_value28;
@@ -57,25 +50,25 @@ void CUserLimitHistory::Initialize()
 }
 
 // @0x140269220
-void CUserLimitHistory::Serialize(CUserLimitArchive& archive)
+void CUserLimitHistory::Serialize(COutputStream* pOut)
 {
-    archive.Transfer64(m_value18);
-    archive.Transfer64(m_value20);
-    archive.Transfer64(m_value28);
-    archive.Transfer32(m_value30);
-    archive.Transfer64(m_value38);
-    archive.Transfer32(m_value40);
-    archive.Transfer64(m_value48);
+    pOut->WriteInt64(m_value18);
+    pOut->WriteInt64(m_value20);
+    pOut->WriteInt64(m_value28);
+    pOut->WriteUInt8((unsigned char)m_value30);
+    pOut->WriteInt64(m_value38);
+    pOut->WriteInt32(m_value40);
+    pOut->WriteInt64(m_value48);
 }
 
 // @0x1402692f0
-void CUserLimitHistory::Deserialize(CUserLimitArchive& archive)
+void CUserLimitHistory::Deserialize(CInPacket& in)
 {
-    archive.Transfer64(m_value18);
-    archive.Transfer64(m_value20);
-    archive.Transfer64(m_value28);
-    archive.Transfer32(m_value30);
-    archive.Transfer64(m_value38);
-    archive.Transfer32(m_value40);
-    archive.Transfer64(m_value48);
+    m_value18 = in.ReadInt64();
+    m_value20 = in.ReadInt64();
+    m_value28 = in.ReadInt64();
+    m_value30 = in.ReadUInt8();
+    m_value38 = in.ReadInt64();
+    m_value40 = in.ReadInt32();
+    m_value48 = in.ReadInt64();
 }
