@@ -228,7 +228,7 @@ void CMD5Checksum::ByteToDWord(DWORD* Output, BYTE* Input, UINT nLength)
 {
     //entry invariants
     MS2_ASSERT_AT(273, nLength % 4 == 0);
-    MS2_ASSERT_AT(274, AfxIsValidAddress(Output, nLength / 4, TRUE));
+    MS2_ASSERT_AT(274, AfxIsValidAddress(Output, nLength/4, TRUE));
     MS2_ASSERT_AT(275, AfxIsValidAddress(Input, nLength, FALSE));
 
     //initialisations
@@ -357,7 +357,7 @@ void CMD5Checksum::DWordToByte(BYTE* Output, DWORD* Input, UINT nLength)
     //entry invariants
     MS2_ASSERT_AT(431, nLength % 4 == 0);
     MS2_ASSERT_AT(432, AfxIsValidAddress(Output, nLength, TRUE));
-    MS2_ASSERT_AT(433, AfxIsValidAddress(Input, nLength / 4, FALSE));
+    MS2_ASSERT_AT(433, AfxIsValidAddress(Input, nLength/4, FALSE));
 
     //transfer the data by shifting and copying
     UINT i = 0;
