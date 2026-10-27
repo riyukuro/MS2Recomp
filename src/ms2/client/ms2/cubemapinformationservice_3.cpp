@@ -133,7 +133,7 @@ public:
     int FUN_141bcfbd0();                                        // in a field with a home (state 4 and a map)
     Unk_PayloadPtr<Unk_CMISObj208> FUN_141bd30a0();             // the current field data
     void FUN_141bc58d0(struct Unk_CMISNpcList* pOut);           // fills the list of npcs
-    void FUN_141bc5a20(struct Unk_CMISNpcRef* pOut, CString strKey);   // looks an npc up by its "<kind>_<cell>" key
+    struct Unk_CMISNpcRef FUN_141bc5a20(CString strKey);        // looks an npc up by its "<kind>_<cell>" key (an MS2Ptr, 16 bytes)
     int FUN_141bd98d0();                                        // the current character id
     void FUN_141bdb690();                                       // flushes the cube change batch
 };
@@ -3216,7 +3216,7 @@ bool FUN_14035e9e0(Unk_CMISListIter*, Unk_CMISListEnd*);                        
 void FUN_140e47160(Unk_CMISCubeList*, const int*);                                          // insert
 void FUN_14035dea0(Unk_CMISCubeList*);                                                      // ctor
 void FUN_14035e6c0(Unk_CMISCubeList*);                                                      // dtor
-void FUN_14035d1e0(Unk_CMISCubeList*, Unk_CMISListIter*, const int*);                       // insert
+void FUN_14035d1e0(Unk_CMISCubeList*, Unk_CMISInsRes*, const int*);                         // insert (writes the pair)
 class Unk_CMISSetMgr;
 Unk_CMISSetMgr* FUN_1409eed50();
 Unk_CMISSetRef* FUN_140b9df60(Unk_CMISSetMgr*, Unk_CMISSetRef* pOut, int nSetId);
@@ -3275,7 +3275,7 @@ void CubeMapInformationService::FUN_1410bec60(MS2Ptr<Cube> spCube)
         FUN_140e47160(pCells, &nCell);
         Unk_CMISCubeList lstNew;
         FUN_14035dea0(&lstNew);
-        Unk_CMISListIter itIns;
+        Unk_CMISInsRes itIns;
         FUN_14035d1e0(&lstNew, &itIns, &nCell);
         FUN_1410bf610(pCells, Unk_CMISSetRef(rSet), &lstNew);
         FUN_14035e6c0(&lstNew);
@@ -3684,7 +3684,8 @@ void CubeMapInformationService::FUN_1410c93c0()
 struct Unk_CMISNpcElem;
 struct Unk_CMISNpcList { Unk_CMISNpcList(); ~Unk_CMISNpcList(); void* m_buf[4]; };           // ctor 140964560, dtor 140964ca0
 struct Unk_CMISNpcIter { void* m_p; };
-struct Unk_CMISNpcRef { Unk_CMISNpcRef(Unk_CMISNpcElem* p); ~Unk_CMISNpcRef(); void* m_p; };  // ctor 140963ff0, dtor 1409649e0
+// MS2Ptr<CLiftableObject>: the pointer is at +8. ctor 140963ff0 is the copy ctor (the element is an MS2Ptr), dtor 1409649e0
+struct Unk_CMISNpcRef { Unk_CMISNpcRef(Unk_CMISNpcElem* p); ~Unk_CMISNpcRef(); void* m_unk_00; void* m_p; };
 class Unk_CMISNpc { public: void FUN_141447410(egf::Entity* pEntity); int FUN_141447340(); Vector3 FUN_141447c80(); CString FUN_1414472a0(); };
 void* FUN_14096b140(Unk_CMISNpcList*);
 Unk_CMISNpcIter* FUN_14096adc0(Unk_CMISNpcList*, Unk_CMISNpcIter*);                            // end
@@ -4638,7 +4639,7 @@ void CubeMapInformationService::FUN_1410be6e0(MS2Ptr<Cube> spCube)
     Unk_CMISListEnd itCellEnd;
     Unk_CMISListIter itCell;
     if (FUN_14035e9e0(FUN_140368510(pCells, &itCell, &nCell), FUN_140368110(pCells, &itCellEnd)) != 0) {
-        Unk_CMISListIter itIns;
+        Unk_CMISInsRes itIns;
         FUN_14035d1e0(pCells, &itIns, &nCell);
     }
     FUN_14056c300(&rec);
@@ -6219,8 +6220,7 @@ void CubeMapInformationService::FUN_1410cf5c0(egf::Entity* pEntity)
             } else {
                 CString strKey;
                 strKey.Format("%d_%d", spCube->field44, FUN_1408a03c0(spCube->position));
-                Unk_CMISNpcRef spNpc(static_cast<Unk_CMISNpcElem*>(0));
-                FUN_1403ed2d0()->FUN_141bc5a20(&spNpc, strKey);
+                Unk_CMISNpcRef spNpc = FUN_1403ed2d0()->FUN_141bc5a20(strKey);   // returned in place, as in the exe (no ctor)
                 if (FUN_1409657f0(&spNpc) != 0)
                     FUN_140965930(&spNpc)->FUN_141447410(FUN_1408a9090(reinterpret_cast<Unk_CMISEntityRef*>(&spCube->entity)));
             }
