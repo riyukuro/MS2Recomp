@@ -62,6 +62,7 @@
 #include "ms2/placeholder/header_statics_a.h"
 #undef MS2_STATICS_A_BEFORE_CONDITION
 #include "ms2/ms2recover.h"
+#define MS2_ASSERT_MSG_AT(line, msg, cond) (void)((!!(cond)) || (_wassert(msg, _CRT_WIDE(MS2_THIS_FILE), (unsigned)(line)), 0))
 #include "hook/ms2hook.h"
 
 // The unit includes the statics six more times (without the pointer object), then the class-info and skill/stun.
@@ -276,7 +277,7 @@ void CStateManager::FUN_1417daaa0(double fTime)
 // @0x1417daeb0
 void CStateManager::FUN_1417daeb0(int state, State* pState)
 {
-    MS2_ASSERT_AT(0x45, state == pState->vfunc_1());
+    MS2_ASSERT_MSG_AT(0x45, L"state == pState->GetState()", state == pState->vfunc_1());
     State* pOld = 0;
     m_states.Lookup(state, pOld);
     m_states.SetAt(state, pState);
