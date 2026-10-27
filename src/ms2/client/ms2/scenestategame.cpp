@@ -3194,7 +3194,7 @@ void CSceneStateGame::FUN_141715860(CInPacket& packet)
     int nNew = 0;
     if (nCheck < 0)
     {
-        MS2_ASSERT_AT(0xadb, 0);
+        MS2_ASSERT_AT(0xadb, FALSE);
         return;
     }
     for (int i = 0; i < nCount; i++)
