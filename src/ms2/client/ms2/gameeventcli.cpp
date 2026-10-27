@@ -1522,3 +1522,6 @@ void FUN_140ce9720(void* p)
 // Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
 // MS2-RANGE: 0x142ca4450-0x142ca44b0 .text$yd
 // MS2-RANGE: 0x142ca4570-0x142ca45d0 .text$yd
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVGameEventItemBuffCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140cea4c0 ; la1: its vftable slot +0x8 holds 0x140cea4c0 (the three Clone copies were rotated)
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVGameEventBurningLevelupCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140cea400 ; la1: its vftable slot +0x8 holds 0x140cea400 (the three Clone copies were rotated)
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVGameEventDTRewardCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140cea460 ; la1: its vftable slot +0x8 holds 0x140cea460 (the three Clone copies were rotated)

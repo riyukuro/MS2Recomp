@@ -99854,11 +99854,11 @@ IsEqualGUID	140a9a460	func
 ??$make_pair@AEBQEAVUICoupleDanceEventDialog@@AEBQ81@EAAXPEAVGameEventVariable@@@Z@std@@YA?AU?$pair@PEAVUICoupleDanceEventDialog@@P81@EAAXPEAVGameEventVariable@@@Z@0@AEBQEAVUICoupleDanceEventDialog@@AEBQ82@EAAXPEAVGameEventVariable@@@Z@Z	140ce8800	func
 ??0?$DelegateImpl@U?$pair@PEAVGameEventBurningLevelupCli@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@QEAA@AEBV01@@Z	140ce8850	func
 ??0?$DelegateImpl@U?$pair@PEAVGameEventBurningLevelupCli@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@QEAA@AEBU?$pair@PEAVGameEventBurningLevelupCli@@P81@EAAXAEAVCInPacket@@@Z@std@@@Z	140ce88a0	func
-??0?$DelegateImpl@U?$pair@PEAVGameEventItemBuffCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBV01@@Z	140ce88f0	func
+??0?$DelegateImpl@U?$pair@PEAVGameEventItemBuffCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBV01@@Z	140ce8a30	func
 ??0?$DelegateImpl@U?$pair@PEAVGameEventBurningLevelupCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBU?$pair@PEAVGameEventBurningLevelupCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@Z	140ce8940	func
-??0?$DelegateImpl@U?$pair@PEAVGameEventBurningLevelupCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBV01@@Z	140ce8990	func
+??0?$DelegateImpl@U?$pair@PEAVGameEventBurningLevelupCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBV01@@Z	140ce88f0	func
 ??0?$DelegateImpl@U?$pair@PEAVGameEventDTRewardCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBU?$pair@PEAVGameEventDTRewardCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@Z	140ce89e0	func
-??0?$DelegateImpl@U?$pair@PEAVGameEventDTRewardCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBV01@@Z	140ce8a30	func
+??0?$DelegateImpl@U?$pair@PEAVGameEventDTRewardCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBV01@@Z	140ce8990	func
 ??0?$DelegateImpl@U?$pair@PEAVGameEventItemBuffCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBU?$pair@PEAVGameEventItemBuffCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@Z	140ce8a80	func
 ??0?$DelegateImpl@U?$pair@PEAVGameEventSnowmanCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBV01@@Z	140ce8ad0	func
 ??0?$DelegateImpl@U?$pair@PEAVGameEventSnowmanCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBU?$pair@PEAVGameEventSnowmanCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@Z	140ce8b20	func
@@ -99980,9 +99980,9 @@ IsEqualGUID	140a9a460	func
 ?Release@?$MS2Ptr@VCMsgBoxDataItem@@@@AEAAXXZ	140cea2c0	func
 ?ReleaseImpl@?$MS2Ptr@UItemGift@@@@AEAAXPEAX@Z	140cea300	func
 ?vfunc_1@?$DelegateImpl@U?$pair@PEAVGameEventBurningLevelupCli@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ	140cea3a0	func
-?vfunc_1@?$DelegateImpl@U?$pair@PEAVGameEventItemBuffCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ	140cea400	func
-?vfunc_1@?$DelegateImpl@U?$pair@PEAVGameEventBurningLevelupCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ	140cea460	func
-?vfunc_1@?$DelegateImpl@U?$pair@PEAVGameEventDTRewardCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ	140cea4c0	func
+?vfunc_1@?$DelegateImpl@U?$pair@PEAVGameEventItemBuffCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ	140cea4c0	func
+?vfunc_1@?$DelegateImpl@U?$pair@PEAVGameEventBurningLevelupCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ	140cea400	func
+?vfunc_1@?$DelegateImpl@U?$pair@PEAVGameEventDTRewardCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ	140cea460	func
 ?vfunc_1@?$DelegateImpl@U?$pair@PEAVGameEventSnowmanCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ	140cea520	func
 ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUICoupleDanceEventDialog@@P81@EAAXPEAVGameEventVariable@@@Z@std@@@?$Delegate@$$A6AXPEAVGameEventVariable@@@Z@@UEBAPEAVDelegateImplBase@2@XZ	140cea580	func
 ?vfunc_2@?$DelegateImpl@U?$pair@PEAVGameEventBurningLevelupCli@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAXAEAVCInPacket@@@Z	140cea5e0	func
