@@ -2171,50 +2171,70 @@ static CString FormatIconPath(const char* pszFormat, const CString& v0)
 }
 
 // @0x1405400f0
-// MS2-FUNCTIONAL: the exe copy carries a dead constant-condition _wassert branch (template instantiation); behaviour matches
 int FUN_1405400f0(Unk_140165cf0* pElem, const char* pszName, int& rnValue)
 {
+    // the tinyxmlhelper.h enum reader's compile-time-false type guard (ASSERT(FALSE) of its line 231)
+    if (false)
+    {
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 231), 0));
+        return 2;
+    }
     int nValue = 0;
     int nResult = FUN_140873890(pElem, pszName, nValue);
-    if (nResult == 0) {
-        rnValue = nValue;
-    }
+    if (nResult != 0)
+        return nResult;
+    rnValue = nValue;
     return nResult;
 }
 
 // @0x140540180
-// MS2-FUNCTIONAL: the exe copy carries a dead constant-condition _wassert branch (template instantiation); behaviour matches
 int FUN_140540180(Unk_140165cf0* pElem, const char* pszName, int& rnValue)
 {
+    // the tinyxmlhelper.h enum reader's compile-time-false type guard (ASSERT(FALSE) of its line 231)
+    if (false)
+    {
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 231), 0));
+        return 2;
+    }
     int nValue = 0;
     int nResult = FUN_140873890(pElem, pszName, nValue);
-    if (nResult == 0) {
-        rnValue = nValue;
-    }
+    if (nResult != 0)
+        return nResult;
+    rnValue = nValue;
     return nResult;
 }
 
 // @0x140540210
-// MS2-FUNCTIONAL: the exe copy carries a dead constant-condition _wassert branch (template instantiation); behaviour matches
 int FUN_140540210(Unk_140165cf0* pElem, const char* pszName, int& rnValue)
 {
+    // the tinyxmlhelper.h enum reader's compile-time-false type guard (ASSERT(FALSE) of its line 231)
+    if (false)
+    {
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 231), 0));
+        return 2;
+    }
     int nValue = 0;
     int nResult = FUN_140873890(pElem, pszName, nValue);
-    if (nResult == 0) {
-        rnValue = nValue;
-    }
+    if (nResult != 0)
+        return nResult;
+    rnValue = nValue;
     return nResult;
 }
 
 // @0x1405402a0
-// MS2-FUNCTIONAL: the exe copy carries a dead constant-condition _wassert branch (template instantiation); behaviour matches
 int FUN_1405402a0(Unk_140165cf0* pElem, const char* pszName, int& rnValue)
 {
+    // the tinyxmlhelper.h enum reader's compile-time-false type guard (ASSERT(FALSE) of its line 231)
+    if (false)
+    {
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 231), 0));
+        return 2;
+    }
     int nValue = 0;
     int nResult = FUN_140873890(pElem, pszName, nValue);
-    if (nResult == 0) {
-        rnValue = nValue;
-    }
+    if (nResult != 0)
+        return nResult;
+    rnValue = nValue;
     return nResult;
 }
 
