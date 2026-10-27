@@ -242,7 +242,7 @@ void UIInteriorBuildDialog::OnUseItem()
     unsigned char nWidth = FUN_1409670e0()->FUN_1410c3470();
     unsigned char nLength = FUN_1409670e0()->FUN_1410c34b0();
     ATL::CAtlArray<int> aSize;
-    FUN_140177de0(spPackage->m_strIndoorSizeType, &aSize, ",");
+    FUN_140177de0(spPackage->m_strIndoorSizeType, &aSize, "x");
     if (FUN_140186260(aSize) < 3)
     {
         FUN_140d73bc0(0xb9d, 1, static_cast<IMessageListener*>(this), CStringW(L"indoorSizeDifferent"));
