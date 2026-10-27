@@ -1503,6 +1503,13 @@ void UICharacterListDialog::FUN_1418f13d0()
     SendCharacterManagementMode2();
 }
 
+class Unk_ClBanCheck : public CPtred
+{
+public:
+    int FUN_140225210(const CStringW& strName, CStringW& strReason, int nMode);    // 2: the name must be changed
+};
+class Unk_ClBanMgr { public: MS2Ptr<Unk_ClBanCheck> FUN_140229a50(); };
+Unk_ClBanMgr* FUN_14025e7d0();
 // @0x1418f13f0
 // MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
 void UICharacterListDialog::FUN_1418f13f0()
@@ -1512,9 +1519,26 @@ void UICharacterListDialog::FUN_1418f13f0()
         CharPtr spCharacter(m_188);
         if (!(spCharacter == 0))
         {
-            // the name check of the selected character fell through to the plain enter in the exe when it was fine
-            m_1d4 = 0x620000c;
-            return;
+            Unk_ClBanCheck* pChecker = FUN_14025e7d0()->FUN_140229a50().get();
+            if (pChecker != 0)
+            {
+                // a character whose name is no longer valid must be renamed before it enters
+                CStringW strReason;
+                bool bRename = pChecker->FUN_140225210(spCharacter->FUN_1418e9cd0(), strReason, 1) == 2;
+                if (bRename)
+                {
+                    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10,
+                        GetStringCommonByKey(CStringW(L"s_char_rename_input")), 0, s_strChangeInvalidCharName);
+                    if (spBox.get() != 0)
+                    {
+                        CStringW strDefault(L"");
+                        spBox->FUN_1405340b0(spCharacter->FUN_1418e9cb0());
+                        spBox->FUN_141a01d30(2, strDefault, 0xc, 0, 0);
+                        FUN_140d73c60(spBox);
+                    }
+                    return;
+                }
+            }
         }
     }
     if (m_30.get() != 0 && m_180 == 0)
@@ -1922,7 +1946,7 @@ bool UICharacterListDialog::FUN_1418f3bd0(int nButton, const CMsgBoxData& box)
         if (!strInput.IsEmpty())
         {
             ATL::CAtlArray<CStringW> arrParts;
-            FUN_14025a680(strInput, arrParts, L"\t");
+            FUN_14025a680(strInput, arrParts, L",");
             if (arrParts.GetCount() != 2)
                 return false;
             str1 = arrParts[0];
