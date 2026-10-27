@@ -1140,7 +1140,7 @@ CStringW UIItemMergeOptionDialog::GetCurrentOption(MS2Ptr<CItem> spItem)
         CItemStatus* pStatus = reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0());
         if (!pStatus->FUN_140630810())
         {
-            MS2_ASSERT_AT(0x3fb, 0);
+            MS2_ASSERT_AT(0x3fb, FALSE);
             return CStringW(L"");
         }
         Unk_EnchantMap& stats = pStatus->m_spOption->FUN_1405cb8a0(4);
