@@ -713,7 +713,7 @@ void GFxMovieBackground::vfunc_39(int a, int b, int c, bool d, bool e)
             Scaleform::GFx::CharEvent kEvent(c, 0);
             m_60->HandleEvent(kEvent);
         }
-        GFxMovieEventHandler::vfunc_39(a, b, c, d, e);
+        SendKeyEvent(a, b, c, d, (Scaleform::KeyModifiers&)e);   // the exe sends the key directly (0x1422dac60), not the base OnKey
     }
 }
 // MS2-FUNCTIONAL: click list iteration temporaries differ
