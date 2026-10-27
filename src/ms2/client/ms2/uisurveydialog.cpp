@@ -235,7 +235,7 @@ void UISurveyDialog::FUN_140edad50(CInPacket& packet)
         }
         FUN_1412751b0(strLine, 0x14);
     }
-    if (FUN_141924740() != 0 && m_180 == nId)
+    if (FUN_141924630() != 0 && m_180 == nId)     // vfunc_55() == 0 here (0x141924630), not FUN_141924740
         vfunc_67();
 }
 
