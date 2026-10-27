@@ -874,7 +874,11 @@ void* FUN_140ad4b90();                                     // camera control sin
 void FUN_1418631c0(void* p);
 void FUN_1418631f0(void* p, int nId, char b);
 void FUN_141863260(void* p);
-void FUN_140947440(Unk_FlyByCameraData* p);
+// The camera manager's fly-by request (camera.h Unk_CameraFlyBy, 0x80 bytes): the 0x58-byte data plus the return
+// setting. The ctor and FUN_140aeffd0 write all of it, FUN_140aed580 reads m_return.
+struct Unk_TrigFlyBy : Unk_FlyByCameraData { Unk_CameraSetting m_return; };
+MS2_CHECK_SIZE(Unk_TrigFlyBy, 0x80);
+void FUN_140947440(Unk_TrigFlyBy* p);
 void FUN_140ae7de0(Unk_CameraSetting* pDst, const Unk_CameraSetting* pSrc);
 bool FUN_14028d470(float a, float b);
 void* FUN_140967100();
@@ -900,8 +904,8 @@ public:
     void FUN_140af7be0(unsigned n);
     void FUN_140aed180(Unk_CameraSetting* p);
     void FUN_140aed720(Unk_CameraSetting* p);
-    void FUN_140aeffd0(Unk_FlyByCameraData* pOut, float fSpeed, Unk_CameraSetting* p);
-    void FUN_140aed580(Unk_FlyByCameraData* p, int n, float f);
+    void FUN_140aeffd0(Unk_TrigFlyBy* pOut, float fSpeed, Unk_CameraSetting* p);
+    void FUN_140aed580(Unk_TrigFlyBy* p, int n, float f);
     void* FUN_1409478a0();
     void FUN_140aefb20(Unk_CamPathData* p);
     void FUN_140aed750(int n, int b);
@@ -990,7 +994,7 @@ void TriggerObjectCamera::vfunc_3()
     }
     else
     {
-        Unk_FlyByCameraData fb;
+        Unk_TrigFlyBy fb;
         FUN_1409478c0()->FUN_140aeffd0(&fb, fSpeed, &set);
         fb.m_nKind = nType;
         FUN_1409478c0()->FUN_140aed580(&fb, nType, 1.0f);
@@ -1078,7 +1082,7 @@ void TriggerObjectCamera::vfunc_4()
         }
         else
         {
-            Unk_FlyByCameraData fb;
+            Unk_TrigFlyBy fb;
             FUN_140947440(&fb);
             fb.m_fDuration = fDur;
             fb.m_nKind = nType;
