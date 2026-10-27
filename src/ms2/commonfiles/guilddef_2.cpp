@@ -970,19 +970,34 @@ int FUN_1404d9330(const CString& text){
 MS2_REPLACE(0x1404d9330, FUN_1404d9330, 103, 0xC017C860);
 // Container instantiations used by the guild XML tables (all member COMDATs are emitted, matching the exe).
 // These two enum readers are emitted in this object; failed reads leave the output unchanged.
-// MS2-FUNCTIONAL: recovered enum parsing without the original compile-time dispatch branches.
 // @0x1404da980
 int FUN_1404da980(void* node,const char* key,Unk_GuildContribution* result) {
+    // the tinyxmlhelper.h enum-by-name reader's compile-time-false type guard (ASSERT(FALSE) of its line 250)
+    if (false)
+    {
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 250), 0));
+        return 2;
+    }
     CString text;
     int error=FUN_1408733e0(node,key,&text);
-    if(error==0) *result=FUN_14021a0a0(text);
+    if (error != 0)
+        return error;
+    *result=FUN_14021a0a0(text);
     return error;
 }
 // @0x1404daa40
 int FUN_1404daa40(void* node,const char* key,Unk_GuildNpcKind* result) {
+    // the tinyxmlhelper.h enum-by-name reader's compile-time-false type guard (ASSERT(FALSE) of its line 250)
+    if (false)
+    {
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 250), 0));
+        return 2;
+    }
     CString text;
     int error=FUN_1408733e0(node,key,&text);
-    if(error==0) *result=FUN_140219f50(text);
+    if (error != 0)
+        return error;
+    *result=FUN_140219f50(text);
     return error;
 }
 
