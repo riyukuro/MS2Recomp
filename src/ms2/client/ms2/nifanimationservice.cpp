@@ -145,7 +145,7 @@ efd::AsyncResult CNifAnimationService::OnInit()
             pkClick = NiDynamicCast(NiViewRenderClick, kClicks.GetNext(kPos));
         } while (pkClick == 0);
     } while (!(pkClick->GetName() == "SceneGraphClick"));
-    pkClick->AppendRenderView(m_spView);
+    pkClick->PrependRenderView(m_spView);   // the exe puts the view first (0x14127cce0, AddHead)
     return efd::AsyncResult_Complete;
 }
 // @0x141545b30
