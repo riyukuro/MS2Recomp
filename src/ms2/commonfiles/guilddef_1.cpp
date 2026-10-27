@@ -9,6 +9,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
 #include "guilddef_2.h"
+#define MS2_ASSERT_MSG_AT(line, msg, cond) (void)((!!(cond)) || (_wassert(msg, _CRT_WIDE(MS2_THIS_FILE), (unsigned)(line)), 0))
 __time64_t FUN_140869440();
 int FUN_14086ace0(__int64);
 // ---- helpers of the guild containers/smart pointers: defined in neighbouring chunks, reached by address ----
@@ -2306,7 +2307,7 @@ void CGuildInfo::FUN_1404d3050(void* list)
     int n=FUN_1404f4450(list);
     for(int i=0;i<n;++i) {
         Unk_GuildRef* h=FUN_1404f0760(list,i);
-        MS2_ASSERT_AT(0x988,FUN_1404f0ae0(h));
+        MS2_ASSERT_MSG_AT(0x988,L"pHistory != NULL",FUN_1404f0ae0(h));
         FUN_140509c90((char*)&storage+0x38,h);
     }
 }
