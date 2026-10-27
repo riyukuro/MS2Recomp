@@ -628,7 +628,8 @@ public:
 };
 void* FUN_1409478c0();
 int FUN_140a18070(void*);
-void FUN_140a17e10(void*, Unk_Point2* pOut);
+struct Unk_HlpVec3 { float m_x, m_y, m_z; };   // CameraMgr::FUN_140a17e10 returns a Vector3 (12 bytes)
+void FUN_140a17e10(void*, Unk_HlpVec3* pOut);
 float FUN_140affe70(Unk_Vec2Pair*);
 float FUN_141032df0(void*);
 float FUN_141032e60(void*);
@@ -652,7 +653,7 @@ float FUN_1412762d0(const Unk_Point2* pPos)
     Unk_Vec2* pFrom;
     if (FUN_140a18070(FUN_1409478c0()) == 0)
         return 0.0f;
-    Unk_Point2 vOrigin;
+    Unk_HlpVec3 vOrigin;
     FUN_140a17e10(FUN_1409478c0(), &vOrigin);
     Unk_Vec2 vFromBuf, vToBuf;
     Unk_Vec2Pair vDelta;
