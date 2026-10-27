@@ -1425,10 +1425,17 @@ MS2_REPLACE(0x1406CFAA0, FUN_1406cfaa0, 121, 0x2DA8BB28);
 // MS2-FUNCTIONAL: the exe inlines the CStringA default ctor (stringmgr assert) and duplicates the dtor on both paths
 static int FUN_1406cfb20(Unk_140165cf0* pElem, const char* pszName, int& nOut)
 {
+    // the tinyxmlhelper.h enum-by-name reader's compile-time-false type guard (ASSERT(FALSE) of its line 250)
+    if (false)
+    {
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 250), 0));
+        return 2;
+    }
     CStringA str;
     int nRet = FUN_1408733e0(pElem, pszName, str);
-    if (nRet == 0)
-        nOut = FUN_14021c7c0(str);
+    if (nRet != 0)
+        return nRet;
+    nOut = FUN_14021c7c0(str);
     return nRet;
 }
 
