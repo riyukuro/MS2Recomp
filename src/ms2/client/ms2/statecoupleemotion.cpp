@@ -21,6 +21,8 @@
 #include <NiFixedString.h>
 #include <NiTimeController.h>
 #include <NiMultiTargetTransformController.h>
+#include <NiTransformController.h>
+#include <NiPathInterpolator.h>
 
 #include "ms2/placeholder/statecoupleemotion.h"
 #include "ms2/client/ms2/pcbase.h"
@@ -329,9 +331,16 @@ bool CoupleEmotionAnimInfo::Load(int nAni)
         float fEnd = pCtrl->GetEndKeyTime();
         if (m_fDuration < fEnd)
             m_fDuration = pCtrl->GetEndKeyTime();
-        m_spTarget = pCtrl->GetTarget();
-        if (m_spTarget != 0)
-            break;
+        // the path interpolator of the first transform controller that has one (later ones overwrite it)
+        NiTransformController* pXf = (NiTransformController*)FUN_14098d8d0(&NiTransformController::ms_RTTI, pCtrl);
+        if (pXf == 0)
+            continue;
+        for (int i = 0; i < pXf->GetInterpolatorCount(); ++i)
+        {
+            m_spTarget = (NiObjectNET*)FUN_14098d8d0(&NiPathInterpolator::ms_RTTI, pXf->GetInterpolator((unsigned short)i));
+            if (m_spTarget != 0)
+                break;
+        }
     }
     SetStartTime((float)FUN_141473280(FUN_14086d260()));
     UpdateNif();
@@ -871,8 +880,8 @@ bool StateCoupleEmotion::FindPlacement(efd::Point3& posA, efd::Point3& posB, flo
         MS2_ASSERT_AT(0x292, "spParentNode" && 0);
         return false;
     }
-    float fYaw = 0.0f;
-    for (int nStep = 0; nStep < 360; ++nStep)
+    efd::Point3 kRot(pOwnerPC->vfunc_20());   // the owner's angles; each step turns z by one degree
+    for (int nStep = 0; nStep < 360; ++nStep, kRot.z += 1.0f)
     {
         NiTransform kOwnerXf = FUN_1409478e0((NiAVObject*)FUN_1409475f0(&spOwnerNode));
         NiTransform kParentXf = FUN_1409478e0(FUN_14098d0f0(spParentNode));
@@ -881,7 +890,7 @@ bool StateCoupleEmotion::FindPlacement(efd::Point3& posA, efd::Point3& posB, flo
         FUN_140ae9200(&kPeerXf.m_Translate, &kOwnerXf.m_Translate);
         FUN_140ae9200(&kOwnerXf.m_Translate, &kOwnerXf.m_Translate);
         efd::Matrix3 matRot;
-        FUN_140b86230(efd::Point3(0.0f, 0.0f, fYaw), &matRot);
+        FUN_140b86230(kRot, &matRot);
         kOwnerXf.m_Rotate = matRot;
         NiTransform kTmp;
         kParentXf = *FUN_140a33de0(kOwnerXf, &kTmp, kParentXf);
