@@ -10,12 +10,12 @@
 #include "ms2/placeholder/asobj.h"
 
 struct Unk_HslColor { float r, g, b, a; Unk_HslColor() {} };
-struct Unk_HslRgb { float r, g, b; Unk_HslRgb() {} };
+struct Unk_HslRgb { float r, g, b, a; Unk_HslRgb() {} };   // NiColorA: FUN_14148a050 copies 16 bytes
 
 // ---- out-of-unit callees ----
 void* FUN_140aae430();                                                  // the renderer singleton
 
-void FUN_14148a050(void* pRenderer, Unk_HslRgb* pRgb);                      // reads the current colour (3 floats)
+void FUN_14148a050(void* pRenderer, Unk_HslRgb* pRgb);                      // reads the current colour (a NiColorA, 16 bytes)
 float FUN_140bf4fd0(float f);                                           // ceilf
 void* FUN_14097f1d0(void* out, float r, float g, float b, float a);     // builds a colour
 void FUN_141489ff0(void* pRenderer, Unk_HslColor kColor);               // sets the colour
