@@ -152,7 +152,7 @@ public:
     long long FUN_140674f30(long long nPrice, int nRarity, unsigned nGroup, unsigned nEnchant);
     float FUN_140675150(int);
     void FUN_1406752e0(long long);
-    void FUN_1406755d0();
+    __int64 FUN_1406755d0();
     float FUN_140675470();
 };
 int FUN_140479560(void* pEventMgr);                                 // fixed black market fee rate (negative when none)
@@ -236,9 +236,9 @@ void FUN_1401bcdb0(long long n)
 }
 
 // @0x1401bcde0
-void FUN_1401bcde0()
+__int64 FUN_1401bcde0()
 {
-    FUN_1401c0db0()->FUN_1406755d0();
+    return FUN_1401c0db0()->FUN_1406755d0();
 }
 
 // @0x1401bce00
