@@ -1160,6 +1160,7 @@ int CUserCommandCli::FUN_141367f20(Unk_CommandArgs& args) {
     return 1;
 }
 // @0x141368000
+// map ids are unsigned here: the exe formats with StringFormat<unsigned> (0x140292a70)
 int CUserCommandCli::FUN_141368000(Unk_CommandArgs& args) {
     CStringW query=args.FUN_1408d21c0(0,L"");
     CStringW extra1=args.FUN_1408d21c0(1,L"");
@@ -1180,7 +1181,7 @@ int CUserCommandCli::FUN_141368000(Unk_CommandArgs& args) {
                     FUN_1406ff2b0(&list);
                     return 1;
                 }
-                int mapId=*(int*)(FUN_140300710(it2)+0x18);
+                unsigned mapId=*(unsigned*)(FUN_140300710(it2)+0x18);
                 CStringW name=FUN_1401a9d70()->FUN_141811980(3,mapId);
                 FUN_140841420(name);
                 int found=FUN_14083fec0(CStringW(name),CStringW(query));
@@ -1189,12 +1190,12 @@ int CUserCommandCli::FUN_141368000(Unk_CommandArgs& args) {
             }
             Unk_CommandChat record;
             record.kind=0;
-            record.message=StringFormat(L"/MoveField {0} 1",*(int*)(FUN_140300710(it2)+0x18));
+            record.message=StringFormat(L"/MoveField {0} 1",*(unsigned*)(FUN_140300710(it2)+0x18));
             FUN_141276f80(record);
             FUN_1406ff2b0(&list);
             return 1;
         }
-        int mapId=*(int*)(FUN_140300710(it)+0x18);
+        unsigned mapId=*(unsigned*)(FUN_140300710(it)+0x18);
         CStringW idText=StringFormat(L"{0}",mapId);
         CStringW name=FUN_1401a9d70()->FUN_141811980(3,mapId);
         FUN_140841420(name);
