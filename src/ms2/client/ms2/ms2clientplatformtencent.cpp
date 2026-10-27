@@ -222,7 +222,7 @@ void CClientPlatformTencent::vfunc_42(void* a1)
         FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)static_cast<CInPacket*>(a1)->ReadInt32());
         break;
     default:
-        MS2_ASSERT_AT(500, 0);
+        MS2_ASSERT_AT(500, FALSE);
         break;
     }
 }
@@ -254,7 +254,7 @@ bool CClientPlatformTencent::vfunc_43(int nKind, bool bOn, int nParam)
             return FUN_140c7e3d0(this, 1, bOn, nParam);
         return false;
     default:
-        MS2_ASSERT_AT(0x235, 0);
+        MS2_ASSERT_AT(0x235, FALSE);
         return false;
     }
 }
