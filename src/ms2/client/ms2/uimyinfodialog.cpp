@@ -28,6 +28,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uimyinfodialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/client/ms2/uimyinfodialog.h"
+#include "ms2/client/ms2/uimodelview.h"
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asobj.h"
@@ -1237,6 +1238,14 @@ void UIMyInfoDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, v
         if (pObj == 0)
             return;
         m_spAvatar->vfunc_28(p1, p2, p3);
+        Unk_ModelViewCamera kCamera;
+        kCamera.FUN_141b48530();
+        kCamera.m_fMinDistance = 300.0f;
+        kCamera.m_fMaxDistance = 150.0f;
+        kCamera.m_kTarget += pObj->vfunc_18() + NiPoint3(0.0f, 0.0f, -5.0f);
+        kCamera.m_kPosition += kCamera.m_kTarget + NiPoint3(-30.0f, 0.0f, 0.0f);
+        kCamera.m_nSteps = 5;
+        m_spAvatar->GetView()->vfunc_13(kCamera);
     }
 }
 
