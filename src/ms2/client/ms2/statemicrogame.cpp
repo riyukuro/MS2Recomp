@@ -31,6 +31,7 @@
 #include "ms2/client/ms2/uimicrogamecoupledance.h"
 #include "ms2/client/ms2/uimicrogamecoupledancemessage.h"
 #include "ms2/client/ms2/uimicrogamerps.h"
+#include "ms2/client/ms2/uidialog.h"
 #include "ms2/commonfiles/gameevent.h"
 #include "ms2/commonfiles/gamerule.h"
 #include "ms2/placeholder/clientconstants.h"
@@ -1075,8 +1076,8 @@ void StateMicroGameCoupleDance::FUN_140b8a060()
                 break;
             case 0xb0:
                 {
-                    CBasePane* pPane = (CBasePane*)FUN_140b769d0(0x4f71);
-                    if (pPane != 0 && pPane->IsFloating() == 0)
+                    UIDialog* pPane = (UIDialog*)FUN_140b769d0(0x4f71);
+                    if (pPane != 0 && pPane->FUN_141924630() == 0)
                         FUN_141924680(pPane);
                     pRider->FUN_14166cc40(0xb1);
                     pRider->vfunc_59(1, 0, 0, 0);
