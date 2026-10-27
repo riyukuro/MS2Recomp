@@ -70,6 +70,7 @@ class Unk_CustomizeColorTable
 {
 public:
     MS2Ptr<ItemColorEx> FUN_1405587f0(int nPalette, int nIndex);
+    MS2Ptr<ItemColorEx> FUN_140558960(int nPalette, int nColorSN);    // CItemDataTable::GetPaletteColorBySN
 };
 Unk_CustomizeColorTable* FUN_140281980();
 MS2Ptr<ItemColorEx> FUN_140f022f0(int nPalette, unsigned nIndex);   // a colour of a palette (uibeautyshopstyledialog.cpp)
@@ -456,7 +457,7 @@ int Customize::EditItems::ApplyPalette(int nPalette, int nIndex, int n)
         return 0;
     if (m_pOwner && m_pOwner->GetPalette() > 0 && nPalette != FUN_140f02bc0())
         nPalette = m_pOwner->GetPalette();
-    MS2Ptr<ItemColorEx> spColor = FUN_140281980()->FUN_1405587f0(nPalette, nIndex);
+    MS2Ptr<ItemColorEx> spColor = FUN_140281980()->FUN_140558960(nPalette, nIndex);   // nIndex is the colour's serial number here (by-SN lookup, as in the exe)
     if (spColor == 0)
         return 0;
     if (m_spData->FUN_14053cf00())
