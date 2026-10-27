@@ -466,15 +466,9 @@ bool UIItemSocketScrollDialog::FUN_140f66680(MS2Ptr<CItem> spItem, CItemSocketSc
 // MS2-FUNCTIONAL: written from the decompile; temporaries / frame slots not tuned
 void UIItemSocketScrollDialog::OnClickAction()
 {
-    bool bHasItem = false;
     ItemScrollSlot* pSlot = FUN_140f65ab0(CString(m_strSlot));
-    if (pSlot != 0 && !(pSlot->vfunc_25() == 0))
-        bHasItem = true;
-    if (!bHasItem)
-    {
-        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_itemsocket_scroll_error_have_not_item")), 0, 0, CStringW(L""));
+    if (pSlot == 0 || pSlot->vfunc_25() == 0)
         return;
-    }
     __int64 nTargetUid = pSlot->FUN_140d428f0();
     MS2Ptr<CItem> spTarget = DAT_143ab2a90.FUN_140a5d680(pSlot->FUN_140d428f0());
     if (spTarget == 0)
