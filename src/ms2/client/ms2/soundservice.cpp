@@ -382,16 +382,22 @@ int CSoundService::FUN_1417aea70()
 {
     if (FUN_1417aec60() == 0)
         return 0;
-    const char* pszLanguage;
-    int nLanguage = FUN_1406516c0();
-    if (nLanguage == 1)
+    const char* pszLanguage = "Korea";
+    switch (FUN_1406516c0())
+    {
+    case 1:
         pszLanguage = "jp";
-    else if (nLanguage == 2)
+        break;
+    case 2:
         pszLanguage = "en";
-    else if (nLanguage == 3)
+        break;
+    case 3:
         pszLanguage = "cn";
-    else
+        break;
+    default:
         pszLanguage = "Korea";
+        break;
+    }
     return FUN_1417aee20(FUN_1401d31f0()->m_strTarget, pszLanguage);
 }
 
