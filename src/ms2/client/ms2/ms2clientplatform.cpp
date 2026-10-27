@@ -35,7 +35,7 @@ bool FUN_140d86270()
         DAT_143ac2fd8 = FUN_140d863f0();
         break;
     default:
-        MS2_ASSERT_AT(30, 0);
+        MS2_ASSERT_AT(30, FALSE);
         return false;
     }
     if (DAT_143ac2fd8 == 0 || !bResult)
