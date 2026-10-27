@@ -137,7 +137,7 @@ void UIPortalEmoticon::vfunc_52()
         if (spEntity.get() != 0)
         {
             spEntity->Invoke("open", m_strName);
-            spEntity->vfunc_3(1);
+            spEntity->vfunc_24(true);   // invalidate + validateNow
             spEntity->FUN_1422bfe00(50.0f);
             vfunc_8(1);
             m_bPending = 0;
