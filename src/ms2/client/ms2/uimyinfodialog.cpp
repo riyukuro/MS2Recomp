@@ -1183,11 +1183,11 @@ void UIMyInfoDialog::FUN_141a5c7c0(int nStat)
         spRow->FUN_1409b4620(CString("m_point"))->FUN_1422c50e0(nColor);
         MS2Ptr<ASButton> spPlus = spRow->FUN_140acce30<ASButton>(CString("m_plus"));
         if (spPlus.get() != 0 && (nRemain == 0 || FUN_1401d3200()->m_aStatCap[nKey] <= (unsigned)(nSpent + m_250)))
-            spPlus->vfunc_3(0);
+            spPlus->FUN_1422c1fe0(0);
     }
     MS2Ptr<ASButton> spReset = FUN_140bb4b10(CString("m_resetStatPoint"));
     if (spReset.get() != 0)
-        spReset->vfunc_3(nUsed != 0);
+        spReset->FUN_1422c1fe0(nUsed != 0);
     MS2Ptr<ASMovieClip> spRemain = FUN_140ba7930(CString("m_remainPoint"));
     if (spRemain.get() != 0)
     {
