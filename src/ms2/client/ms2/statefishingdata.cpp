@@ -182,10 +182,10 @@ static void FsPlay(PCBase* pOwner, const char* pszAnim)
 // The guide object (class id 0x6200064) of an object, NULL when it is none.
 CFishingGuideObject* FUN_140ddc910(GameObject* pObject)
 {
-    CFishingGuideObject* pValue = 0;
-    if (pObject == 0 || !pObject->TypeCast(0x6200064, (const void**)&pValue))
+    void* pValue = 0;
+    if (pObject == 0 || !pObject->TypeCast(0x6200064, &pValue))
         pValue = 0;
-    return pValue;
+    return (CFishingGuideObject*)pValue;
 }
 
 // ---- StateFishingData ----
