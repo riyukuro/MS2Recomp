@@ -709,14 +709,14 @@ void UIMarketBillDialog::FUN_140ea8df0()
                 bool bGift = false;
                 if (MS2Ptr<TMeratMarketBillDataParam> spMerat = dynamic_cast<TMeratMarketBillDataParam*>(m_spParam.get()))
                     bGift = spMerat->FUN_140eacf70();
-                const wchar_t* szNotice = bGift ? L"$s_marketbill_notice_meratmarket" : L"$s_marketbill_notice_meratmarket_only_premium";
+                const char* szNotice = bGift ? "$s_marketbill_notice_meratmarket" : "$s_marketbill_notice_meratmarket_only_premium";
                 strNotice = szNotice;
                 strNoticeGift = strNotice;
             }
             else if (nDialogId == 0x4ebc)
             {
-                strNotice = L"$s_marketbill_notice_cashshop";
-                strNoticeGift = L"$s_marketbill_notice_cashshop_gift";
+                strNotice = "$s_marketbill_notice_cashshop";
+                strNoticeGift = "$s_marketbill_notice_cashshop_gift";
             }
         }
         objData.FUN_1407cbb20("noticeKey", strNotice);
