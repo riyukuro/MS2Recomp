@@ -236,7 +236,6 @@ void* FUN_140166440();                                              // the logge
 bool FUN_1411c9940(NiAVObject* pObj);                               // object is a node
 int FUN_141676b00(Unk_UgcPlayer* pPlayer, __int64 nUid);
 void FUN_140710590(COutPacket& kPacket);
-extern char DAT_143adc208[];
 void FUN_141276180(void* pObj, const CString& strArg);
 void FUN_1412750f0(void* pCallback, int nCount, int nA, int nB);
 void FUN_1412751b0(const CStringW& strText, int nType);
@@ -1164,7 +1163,7 @@ void FUN_141425fc0(__int64 nUid, int nCount, void* pCallback)
     FUN_140710590(kPacket);
     {
         CString strEmpty("");
-        FUN_141276180(DAT_143adc208, strEmpty);
+        FUN_141276180(&s_strShopItemSell, strEmpty);   // the exe's 0x143adc208 is this static; the data_bss_game blob of that name is never constructed
     }
     if (pCallback != 0)
         FUN_1412750f0(pCallback, nCount, 0x28b, 0x28a);
