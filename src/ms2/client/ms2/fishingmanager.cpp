@@ -1036,8 +1036,8 @@ void CFishingManager::FUN_140cdb450()
                 CAtlArray<CString> texts;
                 TSingleton<Client::Constants>::GetInstance()->fishFightingCastingBarText.Get(texts);
                 Unk_CastingParam param;
-                param.m_str18 = L"showBlue";
-                param.m_str20 = L"blue";
+                param.m_str18 = "showBlue";
+                param.m_str20 = "blue";
                 param.m_str28 = FUN_140cddc70(texts);
                 param.m_nDuration = 5000;
                 pBar->FUN_1418e13c0(this, &param);
