@@ -473,7 +473,7 @@ AniCallbackBridge::~AniCallbackBridge()
 // @0x14099b330
 void AniCallbackBridge::FUN_14099b330(NiActorManager::CallbackObject* pObj)
 {
-    MS2_ASSERT_AT(0x16, pObj != 0);
+    MS2_ASSERT_AT(0x16, pObj);
     m_pTarget = pObj;
     m_queue.RemoveAll();
 }
