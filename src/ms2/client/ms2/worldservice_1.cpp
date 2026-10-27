@@ -7346,9 +7346,9 @@ void FUN_141094e60(void* obj);
 void* FUN_140ac5e20(void* map);                         // m_930.GetHeadPosition
 void* FUN_140ac5ed0(void* map, void* pos);              // m_930.GetValueAt
 void FUN_140ac5dd0(void* map, void** pos);              // m_930.GetNext
-void FUN_140ac58f0(Unk_WsP8* self, void* src);          // copy ctor (AddRef)
-void* FUN_1406c71d0(Unk_WsP8* sp);                      // get
-void FUN_1406c70a0(Unk_WsP8* self);                     // dtor (Release)
+void FUN_140ac58f0(Unk_WsP16* self, void* src);          // copy ctor (AddRef)
+void* FUN_1406c71d0(Unk_WsP16* sp);                      // get
+void FUN_1406c70a0(Unk_WsP16* self);                     // dtor (Release)
 void FUN_1416c2a80(void* obj);
 // MS2-FUNCTIONAL: not byte-identical (EH/unwind shape or opaque COMDAT callees)
 // @0x141bd3ae0
@@ -7363,7 +7363,7 @@ void WorldService::FUN_141bd3ae0()
     }
     for (void* pos = FUN_140ac5e20(&m_930); pos; FUN_140ac5dd0(&m_930, &pos))
     {
-        Unk_WsP8 sp;
+        Unk_WsP16 sp;
         FUN_140ac58f0(&sp, FUN_140ac5ed0(&m_930, pos));
         FUN_1416c2a80(FUN_1406c71d0(&sp));
         FUN_1406c70a0(&sp);
@@ -7680,11 +7680,11 @@ float FUN_140f4a450(void* obj);           // distance field
 void* FUN_140ac5e20(void* map);                         // m_930.GetHeadPosition
 void* FUN_140ac5ed0(void* map, void* pos);              // m_930.GetValueAt
 void FUN_140ac5dd0(void* map, void** pos);              // m_930.GetNext
-void FUN_140ac58f0(Unk_WsP8* self, void* src);          // copy ctor (AddRef)
-void FUN_1406c70a0(Unk_WsP8* self);                     // dtor (Release)
-void FUN_141a47d30(Unk_WsP8* self, int zero);           // ctor (null)
-void FUN_140ac5a20(Unk_WsP8* self, Unk_WsP8* src);      // assign
-void* FUN_1406c71b0(Unk_WsP8* sp);                      // raw pointer
+void FUN_140ac58f0(Unk_WsP16* self, void* src);          // copy ctor (AddRef)
+void FUN_1406c70a0(Unk_WsP16* self);                     // dtor (Release)
+void FUN_141a47d30(Unk_WsP16* self, int zero);           // ctor (null)
+void FUN_140ac5a20(Unk_WsP16* self, Unk_WsP16* src);      // assign
+void* FUN_1406c71b0(Unk_WsP16* sp);                      // raw pointer
 int FUN_1416c2090(void* obj);
 int FUN_1416c21c0(void* obj);
 unsigned FUN_1416c2350(void* obj);        // id used for the set test
@@ -7722,11 +7722,11 @@ int WorldService::FUN_141bd49d0(const std::set<unsigned>& ids, Vector3* pOutPos,
     if (!FUN_141bf7690(&best, 0))
     {
         bestDist = 3.402823466e+38f;
-        Unk_WsP8 best2;
+        Unk_WsP16 best2;
         FUN_141a47d30(&best2, 0);
         for (void* pos = FUN_140ac5e20(&m_930); pos; FUN_140ac5dd0(&m_930, &pos))
         {
-            Unk_WsP8 sp;
+            Unk_WsP16 sp;
             FUN_140ac58f0(&sp, FUN_140ac5ed0(&m_930, pos));
             if (FUN_1416c2090(FUN_1406c71d0(&sp)) != 0 || FUN_1416c21c0(FUN_1406c71d0(&sp)) != 0)
             {
@@ -8441,12 +8441,12 @@ bool FUN_141c04f70(void* npc);                          // npc is faded out
 void FUN_141bfaec0(void* npc, bool faded);
 int FUN_141bfed80(void* npc);                           // fade delay (ms)
 void* FUN_1416764a0(void* npc);                         // npc's mount holder
-void FUN_141707750(void* mountHolder, Unk_WsP8* out);
-void* FUN_1409f78a0(Unk_WsP8* p);                       // get
+void FUN_141707750(void* mountHolder, Unk_WsP16* out);
+void* FUN_1409f78a0(Unk_WsP16* p);                       // get
 struct Unk_WsD_MountRec { char pad[0xb4]; int m_zone; };   // the exe reads +0xb4 (0x141bd7974)
 MS2_CHECK_OFFSET(Unk_WsD_MountRec, m_zone, 0xb4);
-Unk_WsD_MountRec* FUN_1407895d0(Unk_WsP8* p);           // get (mount info)
-void FUN_140788ed0(Unk_WsP8* p);                        // release
+Unk_WsD_MountRec* FUN_1407895d0(Unk_WsP16* p);           // get (mount info)
+void FUN_140788ed0(Unk_WsP16* p);                        // release
 void* FUN_1403ed280();                                  // nameplate manager singleton
 void FUN_1411a6f00(void* mgr, void* name);
 void FUN_140c20410(Unk_WsP8* self, void* src);          // copy ctor
@@ -8515,7 +8515,7 @@ void WorldService::FUN_141bd7390()
             void* mount = FUN_1416764a0(FUN_140aac440(&holder));
             if (mount)
             {
-                Unk_WsP8 mountInfo;
+                Unk_WsP16 mountInfo;
                 FUN_141707750(mount, &mountInfo);
                 if (FUN_1409f78a0(&mountInfo) && FUN_1407895d0(&mountInfo)->m_zone != 0)
                     differs = false;
@@ -8575,10 +8575,10 @@ struct Unk_WsD_IdArray { int* m_data; unsigned __int64 m_count; unsigned __int64
 extern Unk_WsD_IdArray DAT_143ab3058;                   // ids already remembered
 struct Unk_WsD_Resource { char pad[0x21]; char m_loaded; };
 int FUN_140408410(Unk_WsD_IdArray* arr, int* id);       // CAtlArray<int>::Find
-void FUN_141b978e0(void* resMgr, Unk_WsP8* out, int id);   // get resource holder
-bool FUN_140cb1630(Unk_WsP8* p, void* other);           // holder == other
-Unk_WsD_Resource* FUN_140fb4090(Unk_WsP8* p);           // holder.get()
-void FUN_140cb1490(Unk_WsP8* p);                        // holder dtor
+void FUN_141b978e0(void* resMgr, Unk_WsP16* out, int id);   // get resource holder
+bool FUN_140cb1630(Unk_WsP16* p, void* other);           // holder == other
+Unk_WsD_Resource* FUN_140fb4090(Unk_WsP16* p);           // holder.get()
+void FUN_140cb1490(Unk_WsP16* p);                        // holder dtor
 unsigned __int64 FUN_1401855a0(Unk_WsD_IdArray* arr, int id);   // CAtlArray<int>::Add
 // MS2-FUNCTIONAL: opaque COMDATs by VA
 // @0x141bd7c60
@@ -8586,7 +8586,7 @@ void WorldService::FUN_141bd7c60(int resourceId)
 {
     if (FUN_140408410(&DAT_143ab3058, &resourceId) == -1)
     {
-        Unk_WsP8 res;
+        Unk_WsP16 res;
         FUN_141b978e0(FUN_140cb17d0(), &res, resourceId);
         if (!FUN_140cb1630(&res, 0))
         {
@@ -9089,15 +9089,15 @@ int WorldService::FUN_141bd99d0(int id)
     {
         Unk_WsP16 obj;
         FUN_140a7b410(&obj, FUN_141c009e0(&m_678, pos));
-        Unk_WsD_Entry* entry = (Unk_WsD_Entry*)*FUN_140965920(&obj);
+        Unk_WsD_Entry* entry = (Unk_WsD_Entry*)FUN_140965920(&obj);
         if (entry->GetKind() == 6)
         {
             Unk_WsP16 linkRef;
-            if (!FUN_140965160(FUN_140966e00(*FUN_140965920(&obj), &linkRef)))
+            if (!FUN_140965160(FUN_140966e00(FUN_140965920(&obj), &linkRef)))
             {
                 FUN_140520fc0(&linkRef);
                 Unk_WsP16 linkRef2;
-                FUN_140966e00(*FUN_140965920(&obj), &linkRef2);
+                FUN_140966e00(FUN_140965920(&obj), &linkRef2);
                 int linked = FUN_1405212e0(&linkRef2)->m_id;
                 FUN_140520fc0(&linkRef2);
                 if (linked == id)
