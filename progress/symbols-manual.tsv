@@ -16422,3 +16422,6 @@ DAT_14313b9c8	14313b9c8	data
 ?DAT_1439f4838@@3MA	1439f4838	data
 ?DAT_1439f483c@@3MA	1439f483c	data
 ?DAT_142d9c138@@3DA	142d9c138	data
+?SendQuestMode12@CQuestManager@@QEAAXH@Z	1416cf510	func
+?SendQuestMode13@CQuestManager@@QEAAXH@Z	1416cf630	func
+?SendQuestMode19@CQuestManager@@QEAAXH@Z	1416cf750	func
