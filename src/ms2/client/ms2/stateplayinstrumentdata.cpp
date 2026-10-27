@@ -157,10 +157,10 @@ static inline efd::Point3 PiEfd(const NiPoint3& k) { return efd::Point3(k.x, k.y
 // The owner as an AvatarPC (class id 0x6200044), NULL when it is none.
 static AvatarPC* FUN_140de0900(GameObject* pObject)
 {
-    AvatarPC* pValue = 0;
-    if (pObject == 0 || !pObject->TypeCast(0x6200044, (const void**)&pValue))
+    void* pValue = 0;
+    if (pObject == 0 || !pObject->TypeCast(0x6200044, &pValue))
         pValue = 0;
-    return pValue;
+    return (AvatarPC*)pValue;
 }
 
 // @0x140de0cb0
