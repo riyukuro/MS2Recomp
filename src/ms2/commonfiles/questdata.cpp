@@ -600,6 +600,8 @@ int CQuestManagerCommon::FUN_140746850(int questId, int npcId, int bStart)
     Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
     if (quest.IsNull())
         return 0;
+    if (!quest->GetData())
+        return 0;
     if (quest->FUN_1407447c0() != 0)
         return 0;
     if (quest->GetState() != 1)
