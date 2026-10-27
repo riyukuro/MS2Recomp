@@ -390,7 +390,7 @@ void UIChatEmoticonDialog::FUN_140bd1a60()
                     if (!spInfo.IsNull())
                     {
                         ChatEmoticonDataPtr spEmo = FUN_1409eecd0()->FUN_1401e7120(spInfo->m_nEmoticonId);
-                        if (!spEmo)
+                        if (spEmo)
                         {
                             bool bLocked = spCli->FUN_140a3a140(spEmo->m_nGroupId);
                             ASObj item(2);
