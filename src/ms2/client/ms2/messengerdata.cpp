@@ -838,7 +838,7 @@ void Unk_MdNames::FUN_141482c80(CStringW strName)
 // @0x141482d30
 void Unk_MdNames::FUN_141482d30(CStringW strName)
 {
-    for (POSITION pos = m_names.Find(strName, 0); pos != 0; pos = m_names.Find(strName, pos))
+    for (POSITION pos = m_names.Find(strName, 0); pos != 0; pos = m_names.Find(strName, 0))
         m_names.RemoveAt(pos);
     if (m_strCurrent == strName)
         m_strCurrent = L"";
