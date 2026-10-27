@@ -95,6 +95,9 @@ class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };     /
 static CString s_strSortTypeNames1[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill1 = "skill";
 static CString s_strStun1 = "stun";
+extern float DAT_1439f8cdc;     // 360.0f
+extern float DAT_1439f8ce4;     // 250.0f
+static float s_fRange1 = DAT_1439f8cdc - DAT_1439f8ce4;        // initializer 0x140111040
 static Unk_1401cd100 s_pointer1(NULL);
 static Unk_1402a9d70 s_condition1(17, 0.75f, 0.25f, 2.25f, 10);
 
@@ -1304,7 +1307,7 @@ class Unk_CcProxy                                                           // U
 {
 public:
     virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4();
-    virtual void vfunc_5(CByteBuffer* pOut);
+    virtual void vfunc_5(COutputStream* pOut);    // encode: the stream base (+0x10) of the buffer
 };
 
 // @0x1418e20a0
