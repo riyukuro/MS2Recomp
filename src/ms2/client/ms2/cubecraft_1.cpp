@@ -151,7 +151,7 @@ public:
 };
 Unk_CubeGridSvc* FUN_1401cd040(void*);
 class Unk_AnimSvc { public: char m_pad[8]; };
-struct Unk_GuideAnimName { char m_pad[0x10]; };
+struct Unk_GuideAnimName { alignas(8) char m_pad[0x20]; };   // efd::utf8string, 0x20 bytes
 void FUN_1409989e0(Unk_GuideAnimName*, const char*);
 void FUN_1409a1fc0(Unk_AnimSvc*, egf::EntityID&, Unk_GuideAnimName*, float, bool bForce);   // Unk_AnimSvc::FUN_1409a1fc0 (5th arg on the stack)
 void FUN_1408a8900(Unk_GuideAnimName*);

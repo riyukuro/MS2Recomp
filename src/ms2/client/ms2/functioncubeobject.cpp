@@ -269,7 +269,7 @@ public:
     char m_pad[0x120];
     efd::Category m_catAnim;                                        // +0x120
 };
-struct Unk_FcAnimName { char m_pad[0x10]; };
+struct Unk_FcAnimName { alignas(8) char m_pad[0x20]; };   // efd::utf8string, 0x20 bytes
 Unk_FcAnimSvc* FUN_141b6f910();
 void FUN_1409989e0(Unk_FcAnimName*, const char*);
 void FUN_1409a1fc0(Unk_FcAnimSvc*, const egf::EntityID&, Unk_FcAnimName*, float, bool bForce);
