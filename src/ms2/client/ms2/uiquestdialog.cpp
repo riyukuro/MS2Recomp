@@ -56,6 +56,7 @@
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiquestdialog.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/mstime.h"
 #include "uiquestdialog.h"
 #include "ms2/client/ms2/questmanager_1.h"
 #include "ms2/client/ms2/questmanager_2.h"
@@ -242,7 +243,8 @@ CStringW FUN_1416e4df0(int nQuestId);                           // the quest nam
 CStringW FUN_1416e5450(unsigned nQuestId);                      // the quest's end text
 CStringW FUN_1416e57d0(int nQuestId, int nCondition);
 CString FUN_14016a5c0(const char* psz, int n);
-CTime FUN_1406c47a0(__int64 nTime);
+// FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
+// locals had that byte written past them (rt1 stackovf.py).
 void FUN_141276180(const CString& strSound, const CString& strExtra);
 void FUN_141275260(int nStringId, int a, int b);
 void FUN_140874440(void* pCfg, const char* szSection, const char* szKey, int nValue, int bFlag);
@@ -1088,7 +1090,7 @@ CStringW UIQuestDialog::QuestProgressStory(CQuest* pQuest)
         }
         else
         {
-            CTime time(FUN_1406c47a0(pQuest->FUN_1407448a0()));
+            CMsTime time(pQuest->FUN_1407448a0());
             int nYear = time.GetYear();
             int nMonth = time.GetMonth();
             int nDay = time.GetDay();
@@ -1266,7 +1268,7 @@ CStringW UIQuestDialog::QuestDate(__int64 nTime)
 {
     if (nTime == 0)
         return L"";
-    CTime time(FUN_1406c47a0(nTime));
+    CMsTime time(nTime);
     int nHour = time.GetHour();
     CStringW strAmPm = (nHour > 11) ? GetStringCommon(0x458) : GetStringCommon(0x457);
     nHour = time.GetHour();

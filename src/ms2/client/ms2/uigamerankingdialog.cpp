@@ -67,6 +67,7 @@
 // placeholders") or in src/ms2/placeholder/; their names are Ghidra's (FUN_<va>) unless evident.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uigamerankingdialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/mstime.h"
 #include "uigamerankingdialog.h"
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
@@ -207,8 +208,9 @@ CString FUN_14016a600(const wchar_t*, int);
 CString FUN_141028be0(__int64 nId, const CString& strName, int nFlag, CString strExtra);
 CString FUN_141029590(unsigned __int64 nId, const CString& strKey, const CString& strName, CString strExtra);
 CString FUN_1410280d0(int, CString);
-CStringW FUN_14083bdc0(const ATL::CTime& t, int n, CStringW strSep, CStringW strSep2);
-void FUN_1406c4760(ATL::CTime* pOut, const void* pSrc);
+CStringW FUN_14083bdc0(const CMsTime& t, int n, CStringW strSep, CStringW strSep2);
+// FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
+// locals had that byte written past them (rt1 stackovf.py).
 CStringW FUN_1409eec40(int);
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
 void FUN_141275260(int, int, int);
@@ -1131,10 +1133,8 @@ Unk_RankTabsPtr UIGameRankingDialog::FUN_140e33240(Unk_RankCatPtr spCategory)
         {
             Unk_RankSeasonPtr spSeason(aSeasons[i]);
             CStringW strLabel = FUN_140e33ae0(Unk_RankCatPtr(spCategory), Unk_RankSeasonPtr(spSeason));
-            ATL::CTime tStart;
-            ATL::CTime tEnd;
-            FUN_1406c4760(&tStart, &spSeason.FUN_1404f0bf0()->m_start);
-            FUN_1406c4760(&tEnd, &spSeason.FUN_1404f0bf0()->m_end);
+            CMsTime tStart(*reinterpret_cast<const CMsTime*>(&spSeason.FUN_1404f0bf0()->m_start));
+            CMsTime tEnd(*reinterpret_cast<const CMsTime*>(&spSeason.FUN_1404f0bf0()->m_end));
             tEnd -= ATL::CTimeSpan(1);
             CStringW strStart = FUN_14083bdc0(tStart, 1, CStringW(L"/"), CStringW(L":"));
             CStringW strEnd = FUN_14083bdc0(tEnd, 1, CStringW(L"/"), CStringW(L":"));

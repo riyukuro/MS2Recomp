@@ -11,6 +11,7 @@
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\reservedwordtable.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/placeholder/cnpc.h"
@@ -139,7 +140,8 @@ __int64* FUN_1402e4970(__int64* pBase, __int64* pKey);
 struct Unk_RwConfig { char m_pad[0x50d0]; int m_nValue; };
 Unk_RwConfig* FUN_1401d3200();
 int* FUN_1402056b0(int* pValue);
-void FUN_1406c47a0(ATL::CTime* pTime, __int64 nTime);
+// FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
+// locals had that byte written past them (rt1 stackovf.py).
 CStringW FUN_1409e90c0(int nStringId, const int& nA, const int& nB, const int& nC, const int& nD, const int& nE);
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -354,10 +356,8 @@ void CReservedWordTable::FUN_1416fb400(CStringW& str, void* pMaid)
         __int64 nKey = FUN_140869440();
         __int64 nBase = *FUN_1402e4970(&FUN_14067e8c0(&kOwner)->m_nEnd, &nKey);
         __int64 nExtend = nBase + *FUN_1402056b0(&FUN_1401d3200()->m_nValue) * 0x15180;
-        ATL::CTime kEnd;
-        ATL::CTime kExtendTime;
-        FUN_1406c47a0(&kEnd, FUN_14067e8c0(&kOwner)->m_nEnd);
-        FUN_1406c47a0(&kExtendTime, nExtend);
+        CMsTime kEnd(FUN_14067e8c0(&kOwner)->m_nEnd);
+        CMsTime kExtendTime(nExtend);
         int nMinute = kEnd.GetMinute();
         int nHour = kEnd.GetHour();
         int nDay = kEnd.GetDay();

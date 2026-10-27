@@ -7,6 +7,7 @@
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uifamepointboarddialog.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/mstime.h"
 #include "uifamepointboarddialog.h"
 #include <atlcoll.h>
 #include <atltime.h>
@@ -52,7 +53,8 @@ CQuestManager* FUN_140764020();                                         // the q
 Unk_FpStrings* FUN_1401a9d70();                                         // the string tables
 Unk_FpTextFilter* FUN_1403b4750();                                      // the text filter
 __int64 FUN_140869440();                                                // the server time
-ATL::CTime FUN_1406c47a0(__int64 nTime);                                // CTime from a time_t
+// FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
+// locals had that byte written past them (rt1 stackovf.py).
 CStringW FUN_140762de0(int nAlliance);                                  // the alliance's name
 CString FUN_140762e90(int nAlliance);                                   // the alliance's symbol
 CStringW FUN_140762ee0(int nAlliance, int nGrade);                      // the grade's name
@@ -172,7 +174,7 @@ void UIFamePointBoardDialog::FUN_140c15a10(int nAlliance)
     data.FUN_1407cb9c0("currentFame", nCurrent);
     data.FUN_1407cb9c0("maxFame", nMax);
     data.FUN_1407cbb20("famePoint", strPoint);
-    ATL::CTime timeNow = FUN_1406c47a0(FUN_140869440());
+    CMsTime timeNow(FUN_140869440());
     ASArray logs(2);
     POSITION pos = DAT_143ab31e8.GetHeadPosition();
     while (pos != 0)
@@ -184,7 +186,7 @@ void UIFamePointBoardDialog::FUN_140c15a10(int nAlliance)
             CStringW strMsg = FUN_1401a9d70()->FUN_141811980(0x43, nLogId);
             FUN_1403b4750()->FUN_1416fb300(strMsg);
             CStringW strDate;
-            ATL::CTime timeLog = FUN_1406c47a0(nLogTime);
+            CMsTime timeLog(nLogTime);
             ATL::CTimeSpan span = timeNow - timeLog;
             if (span.GetTotalHours() < 0x19)
             {

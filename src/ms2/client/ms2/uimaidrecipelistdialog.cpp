@@ -16,6 +16,7 @@
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uimaidrecipelistdialog.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/mstime.h"
 #include "uimaidrecipelistdialog.h"
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/asdata.h"
@@ -387,8 +388,8 @@ Unk_MdMaidList* FUN_14127eff0(Unk_MdMaidOwner* pOwner);
 void FUN_140159b70(long hr);                                // AtlThrow
 unsigned FUN_140869420();                                   // millisecond clock
 __int64 FUN_140869440();                                    // the server time
-ATL::CTime FUN_1406c47a0(__int64 nTime);
-bool FUN_1406c4c60(const ATL::CTime& tReady, const ATL::CTime& tNow);   // still waiting
+// FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
+// locals had that byte written past them (rt1 stackovf.py).
 CStringW FUN_1412e1e50(ATL::CTimeSpan span, int bShort, int bSuffix);
 int FUN_14028cb70(const CStringW& strText, ATL::CAtlArray<CStringW>& arrOut, const wchar_t* pszSep, int nExpected);
 CStringW FUN_1401aa6a0(int nNpcId);
@@ -548,9 +549,9 @@ void UIManufactureStatus::vfunc_72()
             Unk_MdPtr<Unk_MdRecipe> spRecipe = FUN_1409eed30()->FUN_1406855c0(spItem->FUN_1409eedf0());
             if (spRecipe.get() != 0)
             {
-                ATL::CTime tReady = FUN_1406c47a0(spItem->FUN_140694170());
-                ATL::CTime tNow = FUN_1406c47a0(FUN_140869440());
-                if (!FUN_1406c4c60(tReady, tNow))
+                CMsTime tReady(spItem->FUN_140694170());
+                CMsTime tNow(FUN_140869440());
+                if (!(tReady > tNow))
                 {
                     nPercent = 100;
                     strRemain = GetStringCommon(0x7b8);
@@ -688,9 +689,9 @@ void UIManufactureStatus::FUN_1412dc480()
                     FUN_141415450(strBind, FUN_1402034d0(spItemObj), nIndex, 0x415, 0x800);
                     m_178.Add(strBind);
                 }
-                ATL::CTime tReady = FUN_1406c47a0(spItem->FUN_140694170());
-                ATL::CTime tNow = FUN_1406c47a0(FUN_140869440());
-                if (!FUN_1406c4c60(tReady, tNow))
+                CMsTime tReady(spItem->FUN_140694170());
+                CMsTime tNow(FUN_140869440());
+                if (!(tReady > tNow))
                 {
                     nPercent = 100;
                     strRemain = GetStringCommon(0x7b8);

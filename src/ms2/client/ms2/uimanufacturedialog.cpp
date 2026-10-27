@@ -11,6 +11,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uimanufacturedialog.cpp"    // assumed
 
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/mstime.h"
 
 #include "uimanufacturedialog.h"
 
@@ -222,8 +223,8 @@ class Unk_UmCrafts { public: unsigned FUN_14047b7c0(float fRate, int nValue); un
 Unk_UmCrafts* FUN_1401c0d90();
 unsigned FUN_140869420();                                       // millisecond clock
 __int64 FUN_140869440();                                        // the server time
-ATL::CTime FUN_1406c47a0(__int64 nTime);
-bool FUN_1406c4c60(const ATL::CTime& tReady, const ATL::CTime& tNow);   // still waiting
+// FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
+// locals had that byte written past them (rt1 stackovf.py).
 CStringW FUN_1412e1e50(ATL::CTimeSpan span, int bShort, int bSuffix);
 CStringW FUN_1418fec90(int nCurrency, __int64 nAmount, int nArg);
 class Unk_UmLua { public: int FUN_1406769f0(unsigned nSeconds); };
@@ -527,10 +528,10 @@ void UIManufactureDialog::vfunc_72()
     MS2Ptr<Unk_UmMfItem> spItem(0);
     if (FUN_1409eed40()->FUN_140d51370(m_nManufactureId, spItem) == 0)
         return;
-    ATL::CTime tReady = FUN_1406c47a0(spItem->FUN_140694170());
-    ATL::CTime tNow = FUN_1406c47a0(FUN_140869440());
+    CMsTime tReady(spItem->FUN_140694170());
+    CMsTime tNow(FUN_140869440());
     ATL::CTimeSpan span = tReady - tNow;
-    if (!FUN_1406c4c60(tReady, tNow))
+    if (!(tReady > tNow))
     {
         m_nState = 2;
         m_30->Invoke("setProgress", m_nState, FUN_14116d720(FUN_14025e7c0()) ? true : false);
@@ -691,8 +692,8 @@ void UIManufactureDialog::FUN_1412e4240()
                 FUN_141415450(m_strProgressKey, spItem, 0, 0x415, 0x800);
                 m_30->FUN_140c38f00("bindProgress", CString(m_strProgressKey), CStringW(strName));
             }
-            ATL::CTime tReady = FUN_1406c47a0(spMf->FUN_140694170());
-            ATL::CTime tNow = FUN_1406c47a0(FUN_140869440());
+            CMsTime tReady(spMf->FUN_140694170());
+            CMsTime tNow(FUN_140869440());
             ATL::CTimeSpan span = tReady - tNow;
             unsigned __int64 nSeconds = span.GetTotalSeconds();
             int nLeft = FUN_1401c0db0()->FUN_1406769f0((unsigned)nSeconds);
@@ -700,7 +701,7 @@ void UIManufactureDialog::FUN_1412e4240()
             if (FUN_140166410()->FUN_14036d710(0x102))
                 nCurrency = 10;
             m_30->Invoke("setItemMeratLabel", FUN_14052bd00(0x7ba, FUN_1418fec90(nCurrency, (__int64)nLeft, 0)));
-            if (!FUN_1406c4c60(tReady, tNow))
+            if (!(tReady > tNow))
                 m_nState = 2;
             else
                 m_nState = 1;
@@ -957,8 +958,8 @@ void UIManufactureDialog::OnRecieveByMerat()
     MS2Ptr<Unk_UmMfItem> spMf(0);
     if (FUN_1409eed40()->FUN_140d51370(m_nManufactureId, spMf) == 0)
         return;
-    ATL::CTime tReady = FUN_1406c47a0(spMf->FUN_140694170());
-    ATL::CTime tNow = FUN_1406c47a0(FUN_140869440());
+    CMsTime tReady(spMf->FUN_140694170());
+    CMsTime tNow(FUN_140869440());
     ATL::CTimeSpan span = tReady - tNow;
     unsigned __int64 nSeconds = span.GetTotalSeconds();
     __int64 nCost = FUN_1401c0db0()->FUN_1406769f0((unsigned)nSeconds);

@@ -24,6 +24,7 @@
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uidynamicactiondialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/mstime.h"
 #include "uidynamicactiondialog.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asobj.h"
@@ -128,7 +129,8 @@ CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& strArg0, const 
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
-ATL::CTime FUN_1406c47a0(__int64 nTime);                    // CTime from a time_t
+// FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
+// locals had that byte written past them (rt1 stackovf.py).
 __int64 FUN_140869440();                                    // the server time
 CStringW FUN_1409e90c0(int nStringId, const int& nYear, const int& nMonth, const int& nDay, const int& nHour,
                        const int& nMinute);
@@ -320,7 +322,7 @@ void UIDynamicActionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pAr
         tooltip.FUN_1409adbe0("statDescription", stat.FUN_1422bb870());
         tooltip.FUN_1409c0dc0("enablePuton", "");
         if (0 < nPeriod) {
-            ATL::CTime time = FUN_1406c47a0(nPeriod);
+            CMsTime time(nPeriod);
             int nStringId = 0xb8;
             if (nPeriod < FUN_140869440())
                 nStringId = 0xb9;
