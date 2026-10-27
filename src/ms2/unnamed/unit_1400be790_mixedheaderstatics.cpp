@@ -43,8 +43,8 @@ UNK_STATIC1(Unk_Be790F, FUN_140182e30, FUN_140183b40, 0x10)
 UNK_STATIC1(Unk_Be790H, FUN_140dfc480, FUN_140dfc4b0, 0x30)
 UNK_STATIC1(Unk_Be790J, FUN_1408fba50, FUN_1408fba80, 0x30)
 
-// 0x14185b130 / 0x14185b170 are this class's own ctor/dtor (symbols.tsv binds ??0/??1Unk_Be790G there; tpscameramode
-// pins the same folded code as ATL's _ATL_WIN_MODULE70), so the bodies are written out here: forwarding to FUN_14185b130
+// 0x14185b130 / 0x14185b170 are this class's own ctor/dtor (it is trademanagerex.h's Unk_TradeItemTable, whose
+// ctor/dtor trademanagerex_1 pins there), so the bodies are written out here: forwarding to FUN_14185b130
 // would make the full-exe ctor call itself. A block-size-10 container at +8 (FUN_140a698a0) and a CAtlArray<void*> at
 // +0x38, the same pair as unit_140de0f70's object.
 void FUN_140a698a0(void*, int, void*, void*, unsigned __int64);

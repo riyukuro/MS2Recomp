@@ -91,6 +91,8 @@ CTradeManagerEx* FUN_14140ea30();
 class Unk_TradeItemTable
 {
 public:
+    Unk_TradeItemTable();                           // 0x14185b130 (member ctors only; the exe dynamic-init calls it)
+    ~Unk_TradeItemTable();                          // 0x14185b170
     void FUN_14185b1b0();                           // m_nSlots = 5; size the slot array; Reset()
     void FUN_14185b200();                           // Reset: clear the map, size the slot array, clear every slot
     int FUN_14185b2a0(CItem* pItem);                // put the item on the table (assigns a free slot if its slot is -1)

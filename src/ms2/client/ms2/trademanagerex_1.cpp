@@ -1,13 +1,15 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). CTradeManagerEx: the player-to-player trade manager (first of
 // the three consecutive trademanagerex.cpp objs; the exe unit ?\trademanagerex.cpp was split in the queue).
 // MS2-UNIT: ?\trademanagerex.cpp#1
-// MS2-RANGE: 0x14185b1b0-0x14185dca0 .text$mn
+// MS2-RANGE: 0x14185b130-0x14185dca0 .text$mn
 // MS2-RANGE: 0x14010e4a0-0x14010e670 .text$di
 // MS2-PIN: ??0?$TSingleton@VCTradeManagerEx@@@@QEAA@XZ 0x14185db70
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??_GCTradeManagerEx@@UEAAPEAXI@Z 0x14185dc00 ; prop
 // MS2-PINS-END tplpin
 // MS2-PIN: memmove_s 0x14185b660
+// MS2-PIN: ??0Unk_TradeItemTable@@QEAA@XZ 0x14185b130
+// MS2-PIN: ??1Unk_TradeItemTable@@QEAA@XZ 0x14185b170
 // MS2-PIN: ??$?0W4Unk_TradeResult@@$0A@@?$MakeValue@V?$BasicFormatter@_W@fmt@@@internal@fmt@@QEAA@AEBW4Unk_TradeResult@@@Z 0x14185d930
 // MS2-PIN: ??$Unk_TradeFormat@W4Unk_TradeResult@@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HAEBW4Unk_TradeResult@@@Z 0x14185d960
 // MS2-PIN: ??$FormatCustomArg@W4Unk_TradeResult@@@?$MakeValue@V?$BasicFormatter@_W@fmt@@@internal@fmt@@SAXPEAXPEBX0@Z 0x14185db10
@@ -137,6 +139,9 @@ inline TSingleton<CTradeManagerEx>::TSingleton() { s_instance = static_cast<CTra
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- Unk_TradeItemTable ----
+Unk_TradeItemTable::Unk_TradeItemTable() {}
+Unk_TradeItemTable::~Unk_TradeItemTable() {}
+
 // @0x14185b1b0
 void Unk_TradeItemTable::FUN_14185b1b0()
 {
