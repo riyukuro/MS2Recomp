@@ -12,6 +12,9 @@ Lines that are >=80% identical to the SDK line they replace are emitted as
 column-addressed token substitutions (`N@COL s "old" "new"`) instead of whole
 lines, so they carry only the changed tokens.  engine-patches/manifest.tsv
 lists path, sha256(stock), sha256(result), kind[, source].
+--worktree PATH... reads those files (engine/gamebryo/... or relative to it) from the working tree instead of HEAD,
+so an engine edit and its .ed + manifest row can go into the same commit (agent-commit's engine guard); every
+other file still comes from HEAD, so other agents' uncommitted engine edits never reach the manifest.
 
 Script format (bytes decoded as latin-1 only inside JSON strings):
   N a / N,M c / N,M d   text lines follow for a/c, terminated by a "." line
@@ -207,6 +210,8 @@ def main():
     ap.add_argument("--out", default=str(ROOT / "engine-patches"))
     ap.add_argument("--policy", default=str(ROOT / "tools/engine-patches-policy.txt"))
     ap.add_argument("--review", help="write the similarity list (tsv) here")
+    ap.add_argument("--worktree", nargs="+", default=[], metavar="PATH",
+                    help="take these engine files from the working tree instead of HEAD (before committing them)")
     ap.add_argument("--sdk", default=os.environ.get("MS2_GAMEBRYO_SDK", str(ROOT / "third_party/gamebryo/APPDIR/Source")))
     a = ap.parse_args()
     out = Path(a.out)
@@ -217,6 +222,15 @@ def main():
     pol = load_policy(Path(a.policy))
     names = git("diff", "--name-status", "-z", STOCK, "HEAD", "--", SUB).decode("latin-1").split("\0")
     ents = [(names[i], names[i + 1]) for i in range(0, len(names) - 1, 2)]
+    wt = set()
+    for w in a.worktree:
+        w = os.path.relpath(os.path.abspath(w), ROOT) if os.path.exists(w) else w
+        w = w if w.startswith(SUB + "/") else f"{SUB}/{w}"
+        if not (ROOT / w).is_file():
+            sys.exit(f"engine-patches: --worktree {w}: no such file")
+        wt.add(w)
+    instock = set(git("ls-tree", "-r", "--name-only", "-z", STOCK, "--", *sorted(wt)).decode("latin-1").split("\0")) if wt else set()
+    ents = [e for e in ents if e[1] not in wt] + [("M" if w in instock else "A", w) for w in sorted(wt)]
     man, stats, nlines, withheld_tok = [], [], 0, 0
     import shutil
     if out.exists():
@@ -225,7 +239,7 @@ def main():
         rel = p[len(SUB) + 1:]
         if rel in pol["exclude-file"]:
             continue
-        new = git("show", f"HEAD:{p}")
+        new = (ROOT / p).read_bytes() if p in wt else git("show", f"HEAD:{p}")
         if st == "A":
             if rel in pol["withhold-file"] or p in pol["withhold-file"]:
                 man.append((rel, "-", sha(new), "withheld"))
