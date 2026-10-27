@@ -457,10 +457,10 @@ MS2_REPLACE_METHOD(0x140fec540, UIWorldChampionRewardDialog, FUN_140fec540, 472,
 #define MS2_ASCRIPT_INL_ASSERT(line, expression) \
     (void)((!!(expression)) || (_wassert(_CRT_WIDE(#expression), L"e:\\build\\kr\\22_04\\ms2code\\client\\gfxlib\\ascript.inl", (unsigned)(line)), 0))
 // @0x140fecae0
-template <> MS2Ptr<Unk_WcTitle> AScript::FUN_140bbe640<Unk_WcTitle>(const CString& name, MS2Ptr<Unk_WcTitle>& out) {
-    MS2_ASCRIPT_INL_ASSERT(0xd5, out == NULL);
-    out.operator=<Unk_WcTitle>(reinterpret_cast<Unk_WcTitleFinder*>(this)->FUN_140c436d0(name));
-    return out;
+template <> MS2Ptr<Unk_WcTitle> AScript::FUN_140bbe640<Unk_WcTitle>(const CString& name, MS2Ptr<Unk_WcTitle>& outChild) {
+    MS2_ASCRIPT_INL_ASSERT(0xd5, outChild == NULL);
+    outChild.operator=<Unk_WcTitle>(reinterpret_cast<Unk_WcTitleFinder*>(this)->FUN_140c436d0(name));
+    return outChild;
 }
 // @0x140fed2f0
 template <> MS2Ptr<Unk_WcTitle>::MS2Ptr() { m_p = 0; }
