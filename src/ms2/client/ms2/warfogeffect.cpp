@@ -186,7 +186,7 @@ void CWarFogEffect::FUN_141b73ab0(const Unk_WarFogParam* pParam)
     pMesh->Update(0.0f, true);
     pMesh->UpdateProperties();
     pMesh->UpdateEffects();
-    pMesh->UpdateWorldBound();
+    pMesh->UpdateNodeBound();
     pMesh->SetSelectiveUpdate(true);
     ((CMesh*)m_spMesh)->SetVertexCount(0xc0);
     ((CMesh*)m_spMesh)->SetTriangleCount(0x2f4);
@@ -194,7 +194,7 @@ void CWarFogEffect::FUN_141b73ab0(const Unk_WarFogParam* pParam)
     NiNode* pScene = FUN_1411a6b10(FUN_1403ed280());
     pScene->UpdateProperties();
     pScene->UpdateEffects();
-    pScene->UpdateWorldBound();
+    pScene->UpdateNodeBound();
     pScene->Update(0.0f, true);
     m_nTick = FUN_140869420();
 }
