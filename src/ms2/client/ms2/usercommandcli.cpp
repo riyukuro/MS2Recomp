@@ -2155,9 +2155,15 @@ void* FUN_14136f5c0(int id) {
 }
 // @0x14136f660
 int FUN_14136f660(void* element,const char* key,int& value) {
+    // the tinyxmlhelper.h enum reader's compile-time-false type guard (ASSERT(FALSE) of its line 231)
+    if (false) {
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 231), 0));
+        return 2;
+    }
     int parsed=0;
     int result=FUN_140873890(element,key,parsed);
-    if(result==0) value=parsed;
+    if(result!=0) return result;
+    value=parsed;
     return result;
 }
 // @0x14136f6f0
