@@ -175,7 +175,8 @@ class Unk_FcItemRow : public CPtred
 public:
     int FUN_1408b4f20();                                            // item id
     int FUN_1408b4f50();                                            // category
-    char m_pad_18[0xe8];
+    __int64 m_18;                                                   // +0x18 (the store id FUN_141228100 resets)
+    char m_pad_20[0xe0];
     MS2Ptr<Unk_FcItemText> m_spText;                                // +0x100
 };
 MS2_CHECK_OFFSET(Unk_FcItemRow, m_spText, 0x100);
@@ -356,7 +357,7 @@ void FUN_1422b82b0(Unk_FcUIMsg* p, const char* psz);                // append an
 void* FUN_1408e57f0();
 UISwfEntity* FUN_1422b9e20(void* pMgr, int nEvent);                 // the entity registered for the event
 void FUN_1422b9fd0(void* pMgr, int nEvent);                         // unregister
-void FUN_140de2a30(void* pCell, int nItemId, int nCubeItemId);
+void FUN_140de2a30(void* pCell, __int64 nId, int nCubeItemId);     // CStore::ResetId(__int64, int)
 extern char DAT_143ab2d80;
 
 // Physics helper (singleton): the interaction-start call.
@@ -1081,7 +1082,7 @@ void CFunctionCubeObject::FUN_141228100()
     Unk_FcItemRow* pRow = spSvc.FUN_1401cd1a0()->FUN_1410b8b00(m_nArg);
     if (pRow == 0)
         return;
-    FUN_140de2a30(&DAT_143ab2d80, pRow->FUN_1408b4f20(), FUN_141226cd0());
+    FUN_140de2a30(&DAT_143ab2d80, pRow->m_18, FUN_141226cd0());   // the exe passes the row's +0x18 qword, not the item id
     UIObjectStoreDialog* pDlg = Unk_FcDialog<UIObjectStoreDialog>(0x4e78);
     if (pDlg != 0)
     {
