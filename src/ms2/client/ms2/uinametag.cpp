@@ -70,6 +70,7 @@ float FUN_1412762d0(const NiPoint3& pt);
 NiPoint3* FUN_14027dcf0(NiPoint3* pDst, const NiPoint3* pSrc);              // Point3::operator=
 bool FUN_14028d470(float a, float b);                                       // a == b (within epsilon)
 bool FUN_14087ddc0(const efd::ClassInfo* pInfo, unsigned int nId);
+bool FUN_1417ddbf0(const efd::ClassInfo* pInfo, int nId);           // statemanager.cpp: exact-class check (entry 0 only)
 
 // The camera option row held by the game context (+0x1e0: far fade enabled).
 struct Unk_NtCamOption { char m_pad_000[0x1e0]; int m_1e0; };
@@ -635,7 +636,7 @@ bool UINameTag::Entity::FUN_141a60920()
     PCBase* pActor = FUN_140f49330();
     if (pActor == 0)
         return false;
-    if (FUN_14087ddc0(pActor ? pActor->GetClassDesc() : 0, 0x6200004))
+    if (FUN_1417ddbf0(pActor ? pActor->GetClassDesc() : 0, 0x6200004))   // the exe uses the exact-class check here
     {
         bool bName = FUN_1409a8b10()->FUN_140b123b0()->m_0;
         FUN_141a60b90(FUN_1409a8b10()->FUN_140b123b0()->m_1, bName);
