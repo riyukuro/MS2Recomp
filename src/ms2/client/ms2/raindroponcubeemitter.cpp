@@ -122,7 +122,7 @@ Unk_CubeService* FUN_1410b27c0();
 Unk_CubeWorld* FUN_1410b9e70(Unk_CubeService* pService);
 
 int FUN_1408a13d0(Vector3 kPos);                            // column key of a position
-void FUN_1408a1430(int* pXY, Vector3 kPos);                 // column (x, y) of a position
+Unk_Int3 FUN_1408a1430(Vector3 kPos);                       // cube cell of a position (all 3 ints)
 Vector3 FUN_1408a15b0(Unk_Int3 kCube, Vector3* pOut);   // position of a column (also in pOut)
 unsigned int FUN_1408a03c0(Unk_Int3 kCube);                      // key of a column
 
@@ -203,21 +203,21 @@ Unk_RainDrop::Unk_RainDrop(double dTime, const Unk_Int3& kPos)
 // MS2-FUNCTIONAL: cube column walk: register allocation / loop layout differs
 static void FillColumns(const Vector3& kPos, ATL::CAtlArray<Unk_Int3>& arrCube)
 {
-    Unk_CubeWorld* pWorld = FUN_1410b9e70(FUN_1410b27c0());
-    int arrXY[2];
-    FUN_1408a1430(arrXY, kPos);
-    for (int dx = -10; dx < 10; dx++)
+    const int nSpan = 20;
+    const int nHalf = 10;
+    Unk_CubeService* pService = FUN_1410b27c0();
+    Unk_CubeWorld* pWorld = FUN_1410b9e70(pService);
+    Unk_Int3 kCell = FUN_1408a1430(kPos);
+    for (int dx = -nHalf; dx < nHalf; dx++)
     {
-        for (int dy = -10; dy < 10; dy++)
+        for (int dy = -nHalf; dy < nHalf; dy++)
         {
-            int x = arrXY[0] + dx;
-            int y = arrXY[1] + dy;
+            int x = kCell.x + dx;
+            int y = kCell.y + dy;
             int z = pWorld->FUN_1410b24b0(x, y);
-            if (z != INT_MIN)
-            {
-                Unk_Int3 kCube(x, y, z + 1);
-                arrCube.Add(kCube);
-            }
+            if (z == INT_MIN)
+                continue;
+            arrCube.Add(Unk_Int3(x, y, z + 1));
         }
     }
 }
@@ -506,3 +506,5 @@ MS2_REPLACE_METHOD(0x1416ECCC0, RainDropOnCubeEmitter, ComputeVolumeInitialPosit
 MS2_REPLACE_METHOD(0x1416ED080, RainDropSystem, Create, 2289, 0xB9EA79DF);
 MS2_REPLACE_METHOD(0x1416EDA10, RainDropSystem, SetupProperties, 1205, 0xCE697E93);
 MS2_REPLACE_METHOD(0x1416EDED0, RainDropSystem, SelectTexture, 235, 0xF59B2BD0);
+
+// MS2-PIN: ??1?$CAtlArray@UUnk_Int3@@V?$CElementTraits@UUnk_Int3@@@ATL@@@ATL@@QEAA@XZ 0x1416f0160 ; look-alike of the NiTexture array dtor (FillColumns local order)
