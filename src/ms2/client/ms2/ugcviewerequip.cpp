@@ -788,8 +788,7 @@ int CUgcViewerProfile::vfunc_9()
 // @0x1418a1620
 CUgcViewerWeddingProfile::CUgcViewerWeddingProfile()
 {
-    m_bRefreshed = 0;
-    m_user.Clear();
+    // unlike the other viewers the exe neither clears m_bRefreshed nor the user proxy here
 }
 
 // @0x1418a1670
