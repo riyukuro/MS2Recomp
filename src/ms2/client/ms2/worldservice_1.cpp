@@ -129,6 +129,7 @@ struct Unk_WsHashList
 struct Unk_WsTagPtr { unsigned char raw[0x10]; };
 void* FUN_1401b7b90(void* out, int n);                  // new-tag construct (Unk_CommonNew)
 void FUN_141bf1270(Unk_WsTagPtr* self, void* tag);      // tag pointer from a new-tag
+CString FUN_140298360(const char* a, const CString& b);  // a + b
 void FUN_1409f20e0(Unk_WsTagPtr* self);                 // tag pointer dtor
 void FUN_141c1af10(void* map, unsigned key, Unk_WsTagPtr* value);   // m_208.SetAt(key, value)
 
@@ -2850,7 +2851,7 @@ int WorldService::FUN_141bbaf00(GameObject* obj, const unsigned __int64& id, boo
     {
         CString name = obj->m_str88;
         FUN_14015eb90(FUN_140166440(), 1, 0x13,
-                      L"Flat Model을 생성하지 못했습니다.name [{0}]", name);
+                      L"Flat Model을 생성하지 못햇습니다.name [{0}]", name);
         return 0;
     }
     if (DAT_143ae2b30 != 0 && bNewlyAdded)
@@ -5125,8 +5126,7 @@ void WorldService::FUN_141bc9560(CString name, CString model, char mode)
         if (FUN_1408a9bd0(entity.data())->ContainsModel(marker))
         {
             efd::AssetID wanted;
-            CString urn;
-            urn.Format("urn:gamebryo-scenegraph:%s", (const char*)model);
+            CString urn = FUN_140298360("urn:gamebryo-scenegraph:", model);
             efd::utf8string urnString((const char*)urn);
             FUN_140de0cb0(&wanted, &urnString);
             efd::AssetID current;
