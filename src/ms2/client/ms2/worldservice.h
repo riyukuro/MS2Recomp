@@ -505,7 +505,7 @@ public:
     Unk_WsP8* FUN_141bd87a0(Unk_WsP8* out, unsigned __int64 id);   // m_990 lookup
     bool FUN_141bd8860(void* pNpc);                     // move a pending npc from m_990 to m_980
     bool FUN_141bd8ae0(void* pNpc);                     // move a pending npc from m_980 to m_990
-    bool FUN_141bd8e30(unsigned __int64 entityId, char show, float fFade);   // fade an entity in or out over fFade seconds
+    bool FUN_141bd8e30(const unsigned __int64& entityId, char show, float fFade);   // fade an entity in or out over fFade seconds (id by reference: every exe caller passes &id)
     void FUN_141bd92c0(float scale, float scale2, float duration, int mode);   // start the time-scale change
     void FUN_141bd9380();                               // end the time-scale change
     void FUN_141bd9410(MS2Ptr<class Unk_WsB_Prop> spObj); // show a debug tooltip over an interactive object (releases spObj)

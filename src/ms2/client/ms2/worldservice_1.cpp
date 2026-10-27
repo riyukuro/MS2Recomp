@@ -8703,7 +8703,7 @@ Unk_WsP8* WorldService::FUN_141bd87a0(Unk_WsP8* out, unsigned __int64 id)
 MS2_REPLACE_METHOD(0x141BD87A0, WorldService, FUN_141bd87a0, 178, 0x09B4FD0A);
 
 unsigned __int64* FUN_141bffde0(void* npc, unsigned __int64* tmp);   // copy of the npc's entity id
-void* FUN_1411cf440(void* entityMgr, unsigned __int64 id);   // look up an entity
+void* FUN_1411cf440(void* entityMgr, const unsigned __int64& id);   // look up an entity (const EntityID&: by value, an invalid id -1 was read as the pointer, F8)
 Unk_WsP8* FUN_1408b6680(Unk_WsP8* self, void* entity);  // smart pointer ctor (AddRef)
 void* FUN_1408a9090(Unk_WsP8* ref);
 float FUN_141bfe630(void* p);                           // +0x14 (movss xmm0)
@@ -8830,7 +8830,7 @@ void* FUN_141bf7c30(Unk_WsP8* p);                       // get
 // hide or show an entity gradually; entities that are already fading are left alone
 // MS2-FUNCTIONAL: opaque COMDATs by VA, EH sentinel
 // @0x141bd8e30
-bool WorldService::FUN_141bd8e30(unsigned __int64 entityId, char show, float fFade)
+bool WorldService::FUN_141bd8e30(const unsigned __int64& entityId, char show, float fFade)
 {
     Unk_WsP8 ent;
     FUN_1408b6680(&ent, FUN_1411cf440(FUN_1409670f0(), entityId));
