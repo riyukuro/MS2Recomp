@@ -281,7 +281,7 @@ bool CoupleEmotionAnimInfo::Load(int nAni)
 {
     if (nAni < 0 || nAni >= (int)m_nifPaths.size())
     {
-        MS2_ASSERT_AT(0x6b, "0");
+        MS2_ASSERT_AT(0x6b, 0);
         return false;
     }
     CString strPath;
