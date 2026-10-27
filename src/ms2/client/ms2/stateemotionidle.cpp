@@ -116,7 +116,7 @@ public:
 };
 
 class Unk_Skills { public: int FUN_141768fb0(int nSkill, unsigned short nLevel); };
-class Unk_AnimName { public: char m_pad[0x10]; };       // efd::utf8string stand-in (ctor 0x1409989e0, dtor 0x1408a8900)
+class Unk_AnimName { public: alignas(8) char m_pad[0x20]; };   // efd::utf8string stand-in, 0x20 bytes (ctor 0x1409989e0, dtor 0x1408a8900)
 
 // The animation service lookup (cached actor manager of a model key) and the sequence table.
 class Unk_FNAnimSvc { public: NiActorManager* FUN_140999440(const Unk_GoModelKey& key); };

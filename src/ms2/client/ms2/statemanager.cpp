@@ -916,7 +916,7 @@ int StatePush::vfunc_1()
 
 extern long long DAT_143ab2820;
 
-class Unk_AnimName { public: char m_pad[0x10]; };       // efd::utf8string stand-in (ctor 0x1409989e0, dtor 0x1408a8900)
+class Unk_AnimName { public: alignas(8) char m_pad[0x20]; };   // efd::utf8string stand-in, 0x20 bytes (ctor 0x1409989e0, dtor 0x1408a8900)
 void FUN_1409989e0(Unk_AnimName* p, const char* psz);
 void FUN_1408a8900(Unk_AnimName* p);
 bool FUN_141b6fa90(const egf::EntityID& kKey, const Unk_AnimName* pName);
