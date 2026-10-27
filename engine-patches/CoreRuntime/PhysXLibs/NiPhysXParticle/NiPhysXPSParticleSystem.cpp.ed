@@ -1,0 +1,34 @@
+484c
+            // MS2: NaN guard (log, throw 13 if the game asks for it, else skip the pose)
+            if (kPose.isFinite())
+            {
+                pkActor->setGlobalPose(kPose);
+            }
+            else
+            {
+#line 500 // MS2 __LINE__
+                EE_LOG(efd::kPhysicsSystem, efd::ILogger::kERR1, ("NiPhysXPSParticleSystem::InitializeParticle else pkActor->setGlobalPose(kPose)"));
+                if (DAT_143afcba8)
+                    throw 13;
+            }
+.
+455c
+            // MS2: NaN guard (log, throw 13 if the game asks for it, else skip the pose)
+            if (kPose.isFinite())
+            {
+                pkActor->setGlobalPose(kPose);
+            }
+            else
+            {
+#line 462 // MS2 __LINE__
+                EE_LOG(efd::kPhysicsSystem, efd::ILogger::kERR1, ("NiPhysXPSParticleSystem::InitializeParticle if (GetBit(FLAG_PHYSX_SPACE)) pkActor->setGlobalPose(kPose)"));
+                if (DAT_143afcba8)
+                    throw 13;
+            }
+.
+25a
+// MS2: the game's "assertions throw" switch for this file (exe 0x143afcba8, a char): when set, the NaN guards in
+// InitializeParticle throw 13 after logging.
+extern char DAT_143afcba8;
+
+.
