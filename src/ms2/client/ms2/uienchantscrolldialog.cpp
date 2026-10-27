@@ -366,7 +366,7 @@ void UIEnchantScrollDialog::FUN_140f3cb10()
         data.FUN_140f3f020("scrollType", m_nType);
         data.FUN_1407cba60("bindID", GetTypeName());
         data.FUN_1407cb9c0("ready", 0);
-        data.FUN_1407cbb20("itemName", FUN_140f3e550(spScroll));
+        data.FUN_1407cbb20("desc", FUN_140f3e550(spScroll));
         data.FUN_1407cbb20("limit", FUN_1409eadb0(0xb6d, strLevel, strRanks, strTypes));
         data.FUN_1407cbb20("failDesc", FUN_140f3e730());
         static_cast<Unk_EsAS*>(FUN_1409ee290(&m_30))->FUN_140ba4cc0("setData", data);
