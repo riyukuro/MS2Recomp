@@ -133,6 +133,7 @@ class Unk_PiComp : public ASUIComponent
 {
 public:
     void FUN_1422bb7e0(ASObj& obj);                                     // set the data
+    void FUN_1407cba60(const char* szName, CString str);                // set a string member
     MS2Ptr<Unk_StatList> FUN_140bc7280(const CString& strName);         // child list by name
     Scaleform::GFx::Value FUN_140caf230(const char* szMethod, int a1);  // Invoke(int) (a copy outside the unit)
     Scaleform::GFx::Value FUN_140cbe3a0(const char* szMethod, const wchar_t* a1);   // Invoke(wchar_t*), the unit's COMDAT
@@ -639,6 +640,7 @@ void PetInfoBasic::vfunc_4()
         bg->vfunc_3(1);
     bg = 0;
     FUN_140cbcb90(m_strBag, 1, m_nPet);
+    PI(basic)->FUN_1407cba60("bagId", m_strBag);
     ASObj obj(2);
     obj.FUN_1409c0dc0(s_itemLevel, "");
     obj.FUN_1409adc90(s_itemPetRank, 0);
