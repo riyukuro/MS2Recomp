@@ -207,6 +207,7 @@ private:
 };
 class Unk_MsgCallback {                 // Delegate<bool(int, const CMsgBoxData&)> built from a plain function (8 bytes)
 public:
+    Unk_MsgCallback(const Unk_MsgCallback&);    // declared (as Delegate's): the by-value argument goes by reference to a caller temp
     ~Unk_MsgCallback();                 // 0x140534cb0
 private:
     void* m_p;

@@ -35,7 +35,11 @@ struct Unk_CtiColor                                             // 4 floats (r, 
 MS2_CHECK_SIZE(Unk_CtiColor, 0x10);
 
 struct Unk_CtiPixel { unsigned char r, g, b, a; };              // one RGBA8 pixel
-struct Unk_CtiUV { float u, v; };
+struct Unk_CtiUV                                                // NiPoint2-like: its user ctor (0x140a0a600) makes the
+{                                                               // return go through a hidden pointer (0x140a0a4c0 rcx)
+    Unk_CtiUV(float fU, float fV) : u(fU), v(fV) {}
+    float u, v;
+};
 struct Unk_CtiTexPtr { void* m_p; };                            // texture handle (ctor 0x14097ed60, assign 0x14097f9b0, release 0x14097f4a0)
 
 class Unk_CtiTexture                                            // a loaded texture
