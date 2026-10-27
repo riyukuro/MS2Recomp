@@ -16,6 +16,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/commonfiles/commonstruct_wa.h"
 #include "ms2/ms2recover.h"
+#define MS2_ASSERT_MSG_AT(line, msg, cond) (void)((!!(cond)) || (_wassert(msg, _CRT_WIDE(MS2_THIS_FILE), (unsigned)(line)), 0))
 #include <math.h>
 #include <algorithm>
 #include <efd/MemoryDefines.h>
@@ -85,14 +86,14 @@ CLua::CLuaContext::CLuaLock::~CLuaLock() { m_pParent = 0; }
 void CLua::CLuaContext::CLuaLock::vfunc_1()
 {
     CLockCriticalSection::vfunc_1();
-    MS2_ASSERT_AT(0x89, m_pParent);
+    MS2_ASSERT_MSG_AT(0x89, L"pParent", m_pParent);
     m_pParent->Begin();
 }
 
 // @0x140672a20
 void CLua::CLuaContext::CLuaLock::vfunc_2()
 {
-    MS2_ASSERT_AT(0x90, m_pParent);
+    MS2_ASSERT_MSG_AT(0x90, L"pParent", m_pParent);
     m_pParent->End();
     CLockCriticalSection::vfunc_2();
 }
@@ -101,13 +102,13 @@ void CLua::CLuaContext::CLuaLock::vfunc_2()
 void CLua::CLuaContext::CLuaLock::SetParent(CLuaContext* pParent)
 {
     m_pParent = pParent;
-    MS2_ASSERT_AT(0x76, m_pParent);
+    MS2_ASSERT_AT(0x76, pParent);
 }
 
 // @0x140672ad0
 void CLua::CLuaContext::Select(const char* pszName)
 {
-    MS2_ASSERT_AT(0xdf, m_nNumParam == 0);
+    MS2_ASSERT_MSG_AT(0xdf, L"m_numParam == 0", m_nNumParam == 0);
     lua_getfield(m_pState, LUA_GLOBALSINDEX, pszName);
 }
 
