@@ -201,7 +201,7 @@ int FUN_14035ba10(Unk_140165cf0* pElem, const char* pszName, int* pOut)
 {
     if (0)
     {
-        MS2_ASSERT_AT(0xe7, 0);
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 231), 0));
         return 2;
     }
     int nRet;
@@ -238,7 +238,7 @@ int FUN_14035bc20(Unk_140165cf0* pElem, const char* pszName, Unk_FameAlliance* p
 {
     if (0)
     {
-        MS2_ASSERT_AT(0xfa, 0);
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 250), 0));
         return 2;
     }
     int nRet;
