@@ -181,7 +181,7 @@ int Unk_ModelMgr::FUN_140a2aab0(Unk_140165cf0* pElem, CStringA strModel, const c
                 spData->id = atoi(strIndex);
                 ATL::CAtlArray<CStringA, ATL::CElementTraits<CStringA> > arrValue;
                 CStringA strValue = FUN_140188f50(FUN_14086f4b0(pSet, "value"), 0);
-                FUN_14015f050(strValue, arrValue, ",");
+                FUN_14015f050(strValue, arrValue, ", ");
                 if (arrValue.GetCount() != 0)
                     spData->count = atoi(arrValue[0]);
                 if (arrValue.GetCount() > 1)
