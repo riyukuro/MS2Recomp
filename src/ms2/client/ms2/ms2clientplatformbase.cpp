@@ -165,7 +165,7 @@ unsigned __int64 FUN_140c75430(void* pThis, int nKind)
     case 16: return 0x10;
     case 17: return 0x11;
     default:
-        MS2_ASSERT_AT(85, 0);
+        MS2_ASSERT_AT(85, FALSE);
         return 0;
     }
 }
@@ -193,7 +193,7 @@ int CClientPlatformBase::vfunc_2() { return 0; }
 // @0x140c75640
 const char* CClientPlatformBase::vfunc_3()
 {
-    MS2_ASSERT_AT(121, 0);
+    MS2_ASSERT_AT(121, FALSE);
     return 0;
 }
 
@@ -391,10 +391,10 @@ void CClientPlatformBase::vfunc_48(MS2Ptr<CUserReportData> spReport)
         pDialog->FUN_141ab9ce0(spReport->GetTitle(), spReport->GetField80());
         break;
     case 8:
-        MS2_ASSERT_AT(512, 0);
+        MS2_ASSERT_AT(512, FALSE);
         break;
     default:
-        MS2_ASSERT_AT(515, 0);
+        MS2_ASSERT_AT(515, FALSE);
         return;
     }
     pDialog->FUN_141924680();
