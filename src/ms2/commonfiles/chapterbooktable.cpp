@@ -254,7 +254,7 @@ int FUN_1401d9b90(Unk_140165cf0* pElem, const char* pszName, int* pnType)
 {
     if (FALSE)
     {
-        MS2_ASSERT_AT(250, FALSE);
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 250), 0));
         return 2;
     }
     CString str;
