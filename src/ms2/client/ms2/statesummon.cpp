@@ -252,7 +252,6 @@ void StateSummon::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
     Vector3 kPos = DAT_143b01a60;
-    m_pOwner->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kPos));
     m_pOwner->vfunc_68(&kPos, fTime, 0, 0, 0);
 }
 
