@@ -765,7 +765,7 @@ void FUN_1418fe280(const CString& strUrl)
     HRESULT hr = AssocQueryStringA(ASSOCF_NOTRUNCATE, ASSOCSTR_EXECUTABLE, "http", 0, szExe, &dwSize);
     if (hr < 0)
     {
-        MS2_ASSERT_AT(0x2ce, 0);
+        MS2_ASSERT_AT(0x2ce, FALSE);
         ShellExecuteA(0, "open", strUrl, 0, 0, SW_SHOW);
         return;
     }
