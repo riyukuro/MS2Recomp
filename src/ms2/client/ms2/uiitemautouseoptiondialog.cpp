@@ -163,7 +163,7 @@ class Unk_AuEntity : public UIDialog
 {
 public:
     MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);
-    MS2Ptr<Unk_AuCombo> FUN_140c28560(CString strName);
+    MS2Ptr<Unk_AuCombo> FUN_140c28560(const CString& strName);   // exe: no callee dtor, by reference
 };
 
 // The status listener registry.

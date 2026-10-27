@@ -42,7 +42,7 @@ class UIWeddingHallReservationDialog : public UIDialog
 {
 public:
     void SetPackage(int nMode);
-    void FUN_140fdcaa0(CString strTab);
+    void FUN_140fdcaa0(const CString& strTab);   // exe: Compare on [rdx home] (a CString*)
 };
 
 // The movie child "UIDialogCenterDialog_btn": a clip with a label, a position and a click delegate.

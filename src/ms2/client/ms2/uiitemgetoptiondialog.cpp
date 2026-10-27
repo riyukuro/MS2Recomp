@@ -28,7 +28,7 @@ class Unk_GoEntity : public UIDialog
 {
 public:
     MS2Ptr<Unk_GoCheck> FUN_140e52670(CString strName);
-    MS2Ptr<Unk_GoCombo> FUN_140c28560(CString strName);
+    MS2Ptr<Unk_GoCombo> FUN_140c28560(const CString& strName);   // exe: no callee dtor, by reference
 };
 
 // The auto-loot options as the server gets them: one dword per group and the grade.

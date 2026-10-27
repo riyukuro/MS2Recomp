@@ -569,8 +569,8 @@ int FUN_140930ce0();
 void FUN_140c02900(void* pDlg, RTypeList* pRet, CString strName);
 void FUN_140bb4b10(void* pDlg, RButton* pRet, CString strName);
 void FUN_140e52670(void* pDlg, RCheck* pRet, CString strName);
-void FUN_140c28560(void* pDlg, RCombo* pRet, CString strName);
-void FUN_140e35bd0(void* pDlg, Unk_SearchRef* pRet, CString strName);
+void FUN_140c28560(void* pDlg, RCombo* pRet, const CString& strName);   // exe forwards r8 untouched, no callee dtor: by reference
+void FUN_140e35bd0(void* pDlg, Unk_SearchRef* pRet, const CString& strName);
 void FUN_140ba4b70(void* pDlg, RCubeList* pRet, CString strName);
 int FUN_140c02d70(RTypeList* p);
 int FUN_140bcc0c0(RTypeList* p, int n);
