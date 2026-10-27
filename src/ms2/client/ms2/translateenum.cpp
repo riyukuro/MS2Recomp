@@ -9,6 +9,7 @@
 #include "translateenum.h"
 
 #include "hook/ms2hook.h"
+#include "ms2/ms2recover.h"
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 void FUN_141821bf0(CString strFirst, CString strSecond);                    // block-file modifier
@@ -82,7 +83,7 @@ CStringW TranslateEnumDungeonGroup(unsigned int nGroup)
     case 14:
         return GetStringCommonByKey(CStringW(L"s_enum_dungeon_group_turka"));
     default:
-        ASSERT(0);
+        MS2_ASSERT_AT(0x28, 0);
         return CStringW();
     }
 }
