@@ -714,8 +714,8 @@ bool FUN_140bd5690(const Unk_EdIter* pA, const Unk_EdIter* pB)
 // @0x140bd5710
 Unk_EdListVal* FUN_140bd5710(void* pTree, const int* pKey)
 {
-    Unk_EdIter it;
-    return &FUN_140bd5770(FUN_140bd4bc0(pTree, &it, pKey))->m_list;
+    struct { Unk_EdIter it; bool ok; } ins;  // exe writes pair<iterator,bool> (16 bytes)
+    return &FUN_140bd5770(FUN_140bd4bc0(pTree, &ins.it, pKey))->m_list;
 }
 
 // @0x140bd5750
