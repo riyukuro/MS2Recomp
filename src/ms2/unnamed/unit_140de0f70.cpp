@@ -48,7 +48,7 @@ void FUN_140de0ff0(Unk_De0f70* self)
 {
     self->m_items.~CAtlArray<void*>();
     FUN_140a69d20(&self->m_serviceStorage);
-    self->m_lock.~CLockCriticalSection();
+    self->m_lock.CLockCriticalSection::~CLockCriticalSection();
 }
 
 // @0x140de1040
